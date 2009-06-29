@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#FFE0E0FF"
+    >
+<net.cactii.kenken.GridView  
+	android:id="@+id/gridView"
+    android:layout_width="340px" 
+    android:layout_height="340px" 
+    android:layout_gravity="center"
+    android:layout_marginTop="25px"
+    />
+<RadioGroup android:id="@+id/radio"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:orientation="horizontal">
+	<RadioButton android:checked="true" android:id="@+id/radio4"
+		android:text="4"/>
+	<RadioButton android:checked="false" android:id="@+id/radio5"
+		android:text="5" android:layout_gravity="center"/>
+	<RadioButton android:checked="false" android:id="@+id/radio6"
+		android:text="6" android:layout_gravity="right"/>	
+</RadioGroup>
+<Button
+	android:id="@+id/refresh"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:layout_gravity="center"
+	android:layout_margin = "5dp"
+	android:text="Randomize grid"
+/>
+</LinearLayout>
