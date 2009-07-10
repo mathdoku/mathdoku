@@ -5,30 +5,55 @@
     android:layout_height="fill_parent"
     android:background="#FFE0E0FF"
     >
-<net.cactii.kenken.GridView  
-	android:id="@+id/gridView"
-    android:layout_width="340px" 
-    android:layout_height="340px" 
-    android:layout_gravity="center"
-    android:layout_marginTop="25px"
-    />
+<RelativeLayout
+	android:layout_width="256dp"
+	android:layout_gravity="center"
+	android:background="#FFDDFFDD"
+	android:layout_marginTop="20dp"
+	android:layout_height="wrap_content">
+	<net.cactii.mathdoku.GridView  
+		android:id="@+id/gridView"
+	    android:layout_width="wrap_content" 
+	    android:layout_height="wrap_content"
+	    android:layout_gravity="top"
+	    />
+	<TextView
+		android:id="@+id/solvedText"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Solved!!"
+		android:textSize="48dp"
+		android:textColor="#FF000000"
+		android:background="#F0D0D0D0"
+		android:layout_marginTop="96dp"
+		android:layout_marginLeft="48dp"
+		android:visibility="invisible"
+	/>
+</RelativeLayout>
+
 <RadioGroup android:id="@+id/radio"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
 	android:orientation="horizontal">
 	<RadioButton android:checked="true" android:id="@+id/radio4"
-		android:text="4"/>
+		android:text="4" android:textColor="#FF000000"/>
 	<RadioButton android:checked="false" android:id="@+id/radio5"
-		android:text="5" android:layout_gravity="center"/>
+		android:text="5" android:layout_marginLeft="30dp"
+		android:textColor="#FF000000"/>
 	<RadioButton android:checked="false" android:id="@+id/radio6"
-		android:text="6" android:layout_gravity="right"/>	
+		android:text="6" android:layout_marginLeft="30dp"
+		android:textColor="#FF000000"/>	
+	<RadioButton android:checked="false" android:id="@+id/radio7"
+		android:text="7" android:layout_marginLeft="30dp"
+		android:textColor="#FF000000"/>	
 </RadioGroup>
 <Button
-	android:id="@+id/refresh"
+	android:id="@+id/newGame"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
 	android:layout_gravity="center"
 	android:layout_margin = "5dp"
-	android:text="Randomize grid"
+	android:text="New Game"
 />
+
 </LinearLayout>

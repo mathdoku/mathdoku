@@ -1,9 +1,12 @@
-package net.cactii.kenken;
+package net.cactii.mathdoku;
+
+import java.util.ArrayList;
 
 import android.graphics.Canvas;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.util.Log;
 
 public class GridCell {
   // Index of the cell (left to right, top to bottom, zero-indexed)
@@ -26,6 +29,10 @@ public class GridCell {
   public String mCageText;
   // View context
   public GridView mContext;
+  // User's candidate digits
+  public ArrayList<Integer> mPossibles;
+  // Whether to show warning background (duplicate value in row/col)
+  public boolean mShowWarning;
   
   public static final int BORDER_NONE = 0;
   public static final int BORDER_SOLID = 1;
@@ -37,6 +44,8 @@ public class GridCell {
   private Paint mDashedBorderPaint;
   private Paint mBorderPaint;
   private Paint mCageTextPaint;
+  private Paint mPossiblesPaint;
+  private Paint mWarningPaint;
   
   public GridCell(GridView context, int cell) {
     int gridSize = context.mGridSize;
@@ -47,6 +56,8 @@ public class GridCell {
     this.mCageText = "";
     this.mCageId = -1;
     this.mValue = 0;
+    this.mUserValue = 0;
+    this.mShowWarning = false;
 
     this.mPosX = 0;
     this.mPosY = 0;
@@ -64,21 +75,42 @@ public class GridCell {
     this.mBorderPaint.setColor(0xFF000000);
     this.mBorderPaint.setStrokeWidth(3);
     
+    this.mWarningPaint = new Paint();
+    this.mWarningPaint.setColor(0x30FF0000);
+    this.mWarningPaint.setStyle(Paint.Style.FILL);
+    
     this.mCageTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     this.mCageTextPaint.setColor(0xFF000000);
     this.mCageTextPaint.setTextSize(14);
     this.mCageTextPaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD));
+   
+    this.mPossiblesPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    this.mPossiblesPaint.setColor(0xFF000000);
+    this.mPossiblesPaint.setTextSize(10);
+    this.mPossiblesPaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL));
+    
+    this.mPossibles = new ArrayList<Integer>();
+    //this.mPossibles.add(1);
+    //this.mPossibles.add(2);
+    //this.mPossibles.add(3);
+    //this.mPossibles.add(4);
 
+    //this.mPossibles.add(5);
+    
     this.setBorders(BORDER_NONE, BORDER_NONE, BORDER_NONE, BORDER_NONE);
   }
   
   public String toString() {
     String str = "<cell:" + this.mCellNumber + " col:" + this.mColumn +
                   " row:" + this.mRow + " posX:" + this.mPosX + " posY:" +
-                  this.mPosY + " val:" + this.mValue + ">";
+                  this.mPosY + " val:" + this.mValue + ", userval: " + this.mUserValue + ">";
     return str;
   }
   
+  /* Sets the cells border type to the given values.
+   * 
+   * Border is BORDER_NONE, BORDER_SOLID or BORDER_DASHED.
+   */
   public void setBorders(int north, int east, int south, int west) {
     int[] borders = new int[4];
     borders[0] = north;
@@ -87,6 +119,8 @@ public class GridCell {
     borders[3] = west;
     this.mBorderTypes = borders;
   }
+  
+  /* Returns the Paint object for the given border of this cell. */
   private Paint getBorderPaint(int border) {
     switch (this.mBorderTypes[border]) {
       case BORDER_NONE:
@@ -99,11 +133,22 @@ public class GridCell {
     return null;
   }
   
+  public void togglePossible(int digit) {
+	  if (this.mPossibles.indexOf(new Integer(digit)) == -1)
+		  this.mPossibles.add(digit);
+	  else
+		  this.mPossibles.remove(new Integer(digit));
+  }
+  
+  /* Draw the cell. Border and text is drawn. */
   public void onDraw(Canvas canvas) {
     int cellSize = this.mContext.getMeasuredWidth() / this.mContext.mGridSize;
     this.mPosX = cellSize * this.mColumn;
     this.mPosY = cellSize * this.mRow;
-
+    
+    if (this.mShowWarning) {
+    	canvas.drawRect(this.mPosX, this.mPosY, this.mPosX + cellSize, this.mPosY + cellSize, this.mWarningPaint);
+    }
     // North
     Paint borderPaint = this.getBorderPaint(0);
     if (borderPaint != null)
@@ -124,12 +169,22 @@ public class GridCell {
     if (borderPaint != null)
       canvas.drawLine(this.mPosX, this.mPosY, this.mPosX, this.mPosY+cellSize, borderPaint);
     
-    int textSize = (int)(cellSize/2);
-    this.mValuePaint.setTextSize(textSize);
-    canvas.drawText("" + this.mValue, this.mPosX + cellSize/2 - textSize/4, this.mPosY + cellSize/2 + textSize/2, this.mValuePaint);
+    // Cell value
+    if (this.mUserValue > 0) {
+	    int textSize = (int)(cellSize/2);
+	    this.mValuePaint.setTextSize(textSize);
+	    canvas.drawText("" + this.mUserValue, this.mPosX + cellSize/2 - textSize/4, this.mPosY + cellSize/2 + textSize/2, this.mValuePaint);
+    }
 
+    // Cage text
     if (!this.mCageText.equals("")) {
       canvas.drawText(this.mCageText, this.mPosX + 2, this.mPosY + 13, this.mCageTextPaint);
+    }
+    
+    for (int i = 0 ; i < this.mPossibles.size() ; i++) {
+    	canvas.drawText("" + this.mPossibles.get(i),
+    			this.mPosX + 3 + (8 * i), this.mPosY + cellSize-5,
+    			this.mPossiblesPaint);
     }
   }
   
