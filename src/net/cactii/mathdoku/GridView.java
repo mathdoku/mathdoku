@@ -339,7 +339,7 @@ private Context mContext;
 
 
     for (int i = 0 ; i < this.mGridSize ; i++) {
-      float pos = (this.mCurrentWidth / this.mGridSize) * i;
+      float pos = ((float)this.mCurrentWidth / (float)this.mGridSize) * i;
       canvas.drawLine(0, pos, this.mCurrentWidth, pos, this.mGridPaint);
       canvas.drawLine(pos, 0, pos, this.mCurrentWidth, this.mGridPaint);
     }
@@ -350,13 +350,16 @@ private Context mContext;
     canvas.drawLine(0, this.mCurrentWidth-1, this.mCurrentWidth-1, this.mCurrentWidth-1, this.mBorderPaint);
     canvas.drawLine(this.mCurrentWidth-1, 0, this.mCurrentWidth-1, this.mCurrentWidth-1, this.mBorderPaint);
     
+    for (GridCage cage : this.mCages)
+      cage.userValuesCorrect();
+    
     for (GridCell cell : this.mCells) {
-	  if ((cell.mUserValue > 0 && this.getNumValueInCol(cell) > 1) ||
-			  (cell.mUserValue > 0 && this.getNumValueInRow(cell) > 1))
-		  cell.mShowWarning = true;
-	  else
-		  cell.mShowWarning = false;
-      cell.onDraw(canvas);
+  	  if ((cell.mUserValue > 0 && this.getNumValueInCol(cell) > 1) ||
+  			  (cell.mUserValue > 0 && this.getNumValueInRow(cell) > 1))
+  		  cell.mShowWarning = true;
+  	  else
+  		  cell.mShowWarning = false;
+        cell.onDraw(canvas);
     }
     if (this.mSelector.mVisible)
     	this.mSelector.drawDigitSelectGrid(canvas);
@@ -391,17 +394,17 @@ private Context mContext;
   }
 
   public boolean onTouch(View arg0, MotionEvent event) {
-	if (event.getAction() != MotionEvent.ACTION_DOWN)
-		return false;
-	if (!this.mActive)
-		return false;
-	
-	if (this.mSelector.mVisible) {
-		return this.mSelector.onTouch(event);
-	}
-	float x = event.getX();
-	float y = event.getY();
-	int size = getMeasuredWidth();
+  	if (event.getAction() != MotionEvent.ACTION_DOWN)
+  		return false;
+  	if (!this.mActive)
+  		return false;
+  	
+  	if (this.mSelector.mVisible) {
+  		return this.mSelector.onTouch(event);
+  	}
+  	float x = event.getX();
+  	float y = event.getY();
+  	int size = getMeasuredWidth();
 	
     int row = (int)((size - (size-y))/(size/this.mGridSize));
     if (row > this.mGridSize-1) row = this.mGridSize-1;
@@ -416,6 +419,13 @@ private Context mContext;
     this.mSelector.mVisible = true;
     this.invalidate();
     // Log.d("KenKen", "Touched letter: " + cell.mValue);
+    return true;
+  }
+  
+  public boolean onTrackballEvent(MotionEvent event) {
+    float x = event.getX();
+    float y = event.getY();
+    Log.d("KenKen", "Trackball: x " + x + " y " + y);
     return true;
   }
   

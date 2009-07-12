@@ -1,7 +1,6 @@
 package net.cactii.mathdoku;
 
 
-import net.cactii.mathdoku.GridView.OnSolvedListener;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,20 +30,22 @@ public class MainActivity extends Activity {
         this.kenKenGrid.animText = this.solvedText;
         this.newGame = (Button)findViewById(R.id.newGame);
         this.newGame.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				MainActivity.this.startNewGame();
-			}
+    			public void onClick(View v) {
+    				MainActivity.this.startNewGame();
+    			}
         });
+        
         this.kenKenGrid.setSolvedHandler(this.kenKenGrid.new OnSolvedListener() {
-
-			@Override
-			public void puzzleSolved() {
-				// TODO Auto-generated method stub
-				Log.d("kenKen", "Solved!!!");
-				animText("Solved!!", 0xFF002F00);
-				MainActivity.this.newGame.setVisibility(View.VISIBLE);
-			}
+    			@Override
+    			public void puzzleSolved() {
+    				// TODO Auto-generated method stub
+    				Log.d("kenKen", "Solved!!!");
+    				animText("Solved!!", 0xFF002F00);
+    				MainActivity.this.newGame.setVisibility(View.VISIBLE);
+    			}
         });
+        this.kenKenGrid.setFocusable(true);
+        this.kenKenGrid.setFocusableInTouchMode(true);
     }
     
     @Override

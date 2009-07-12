@@ -143,8 +143,7 @@ public class GridSelector {
 	    }
 	    
 	    if (row == this.mGridRows && col == this.mGridCols) {
-	    	this.mContext.mSelectedCell.mUserValue = 0;
-	    	this.mContext.mSelectedCell.mPossibles.clear();
+	    	this.mContext.mSelectedCell.setUserValue(0);
 	    } else if (row == this.mGridRows && col == 1) {
 	    	this.mMaybe = !this.mMaybe;
 	    	this.mContext.invalidate();
@@ -154,8 +153,8 @@ public class GridSelector {
 		    if (digit > 0) {
 		    	if (this.mMaybe) {
 		    		this.mContext.mSelectedCell.togglePossible(digit);
-		    	}else
-		    		this.mContext.mSelectedCell.mUserValue = digit;
+		    	} else
+		    		this.mContext.mSelectedCell.setUserValue(digit);
 		    }
 	    }
 	    this.mVisible = false;

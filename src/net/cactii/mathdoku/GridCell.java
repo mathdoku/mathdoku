@@ -16,9 +16,9 @@ public class GridCell {
   // Y grid position, zero indexed
   public int mRow;
   // X pixel position
-  public int mPosX;
+  public float mPosX;
   // Y pixel position
-  public int mPosY;
+  public float mPosY;
   // Value of the digit in the cell
   public int mValue;
   // User's entered value
@@ -37,12 +37,15 @@ public class GridCell {
   public static final int BORDER_NONE = 0;
   public static final int BORDER_SOLID = 1;
   public static final int BORDER_DASHED = 2;
+  public static final int BORDER_WARN = 3;
 
   public int[] mBorderTypes;
   
   private Paint mValuePaint;
   private Paint mDashedBorderPaint;
   private Paint mBorderPaint;
+  
+  private Paint mWrongBorderPaint;
   private Paint mCageTextPaint;
   private Paint mPossiblesPaint;
   private Paint mWarningPaint;
@@ -73,7 +76,11 @@ public class GridCell {
     
     this.mBorderPaint = new Paint();
     this.mBorderPaint.setColor(0xFF000000);
-    this.mBorderPaint.setStrokeWidth(3);
+    this.mBorderPaint.setStrokeWidth(2);
+    
+    this.mWrongBorderPaint = new Paint();
+    this.mWrongBorderPaint.setColor(0xFFBB0000);
+    this.mWrongBorderPaint.setStrokeWidth(2);
     
     this.mWarningPaint = new Paint();
     this.mWarningPaint.setColor(0x30FF0000);
@@ -129,6 +136,8 @@ public class GridCell {
         return this.mDashedBorderPaint;
       case BORDER_SOLID :
         return this.mBorderPaint;
+      case BORDER_WARN :
+        return this.mWrongBorderPaint;
     }
     return null;
   }
@@ -140,9 +149,16 @@ public class GridCell {
 		  this.mPossibles.remove(new Integer(digit));
   }
   
+  public void setUserValue(int digit) {
+    this.mPossibles.clear();
+    this.mUserValue = digit;
+  }
+  
   /* Draw the cell. Border and text is drawn. */
   public void onDraw(Canvas canvas) {
-    int cellSize = this.mContext.getMeasuredWidth() / this.mContext.mGridSize;
+    
+    // Calculate x and y for the cell origin (topleft)
+    float cellSize = (float)this.mContext.getMeasuredWidth() / (float)this.mContext.mGridSize;
     this.mPosX = cellSize * this.mColumn;
     this.mPosY = cellSize * this.mRow;
     
@@ -152,7 +168,7 @@ public class GridCell {
     // North
     Paint borderPaint = this.getBorderPaint(0);
     if (borderPaint != null)
-      canvas.drawLine(this.mPosX, this.mPosY, cellSize, this.mPosY, borderPaint);
+      canvas.drawLine(this.mPosX, this.mPosY, this.mPosX + cellSize, this.mPosY, borderPaint);
     
     // East
     borderPaint = this.getBorderPaint(1);
@@ -181,6 +197,7 @@ public class GridCell {
       canvas.drawText(this.mCageText, this.mPosX + 2, this.mPosY + 13, this.mCageTextPaint);
     }
     
+    // Small 'possible' values.
     for (int i = 0 ; i < this.mPossibles.size() ; i++) {
     	canvas.drawText("" + this.mPossibles.get(i),
     			this.mPosX + 3 + (8 * i), this.mPosY + cellSize-5,

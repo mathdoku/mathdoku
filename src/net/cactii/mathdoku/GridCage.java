@@ -40,6 +40,8 @@ public class GridCage {
   public int mId;
   // Enclosing context
   public GridView mContext;
+  // User math is correct
+  public boolean mUserMathCorrect;
   
   public GridCage (GridView context) {
     this.mContext = context;
@@ -63,6 +65,7 @@ public class GridCage {
     this.mCells = new ArrayList<GridCell>();
     this.mCells.add(origin);
     this.mType = type;
+    this.mUserMathCorrect = true;
     
     while (type == CAGE_UNDEF && attempts.size() < 9) {
       
@@ -294,19 +297,47 @@ public class GridCage {
 	  throw new RuntimeException("isSolved() got to an unreachable point " + this.mAction + ": " + this.toString());
   }
   
+  // Determine whether user entered values match the arithmetic.
+  //
+  // Only marks cells bad if all cells have a uservalue, and they dont
+  // match the arithmetic hint.
+  public void userValuesCorrect() {
+    this.mUserMathCorrect = true;
+    for (GridCell cell : this.mCells)
+      if (cell.mUserValue < 1) {
+        this.setBorders();
+        return;
+      }
+    
+    this.mUserMathCorrect = this.isSolved();
+    this.setBorders();
+  }
+  
   /*
    * Sets the borders of the cage's cells.
    */
   public void setBorders() {
     for (GridCell cell : this.mCells) {
-      //if (this.mContext.CageIdAt(cell.mRow-1, cell.mColumn) != cell.mCageId)
-      //  cell.mBorderTypes[0] = GridCell.BORDER_SOLID;
-      if (this.mContext.CageIdAt(cell.mRow, cell.mColumn+1) != cell.mCageId)
-        cell.mBorderTypes[1] = GridCell.BORDER_SOLID;
-      if (this.mContext.CageIdAt(cell.mRow+1, cell.mColumn) != cell.mCageId)
-        cell.mBorderTypes[2] = GridCell.BORDER_SOLID;
-      //if (this.mContext.CageIdAt(cell.mRow, cell.mColumn-1) != cell.mCageId)
-      //  cell.mBorderTypes[3] = GridCell.BORDER_SOLID;
+      if (this.mContext.CageIdAt(cell.mRow-1, cell.mColumn) != this.mId)
+        if (this.mUserMathCorrect)
+          cell.mBorderTypes[0] = GridCell.BORDER_NONE;
+        else
+          cell.mBorderTypes[0] = GridCell.BORDER_WARN;
+      if (this.mContext.CageIdAt(cell.mRow, cell.mColumn+1) != this.mId)
+        if (this.mUserMathCorrect)
+          cell.mBorderTypes[1] = GridCell.BORDER_SOLID;
+        else
+          cell.mBorderTypes[1] = GridCell.BORDER_WARN;
+      if (this.mContext.CageIdAt(cell.mRow+1, cell.mColumn) != this.mId)
+        if (this.mUserMathCorrect)
+          cell.mBorderTypes[2] = GridCell.BORDER_SOLID;
+        else
+          cell.mBorderTypes[2] = GridCell.BORDER_WARN;
+      if (this.mContext.CageIdAt(cell.mRow, cell.mColumn-1) != this.mId)
+        if (this.mUserMathCorrect)
+          cell.mBorderTypes[3] = GridCell.BORDER_NONE;
+        else
+          cell.mBorderTypes[3] = GridCell.BORDER_WARN;
     }
   }
 
