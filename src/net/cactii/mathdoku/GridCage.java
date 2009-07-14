@@ -25,6 +25,11 @@ public class GridCage {
   public static final int CAGE_3UL = 7;
   public static final int CAGE_3UR = 8;
   public static final int CAGE_4SQ = 9;
+  public static final int CAGE_4UL = 10;
+  public static final int CAGE_4UR = 11;
+  public static final int CAGE_4LL = 12;
+  public static final int CAGE_4LR = 13;
+
 
 
   // Action for the cage
@@ -67,13 +72,13 @@ public class GridCage {
     this.mType = type;
     this.mUserMathCorrect = true;
     
-    while (type == CAGE_UNDEF && attempts.size() < 9) {
+    while (type == CAGE_UNDEF && attempts.size() < 13) {
       
       this.mCells.clear();
       this.mCells.add(origin);
       
       do {
-    	  this.mType = this.mContext.mRandom.nextInt(9) + 1;
+    	  this.mType = this.mContext.mRandom.nextInt(13) + 1;
       } while (attempts.contains(this.mType));
 
       attempts.add(this.mType);
@@ -82,7 +87,7 @@ public class GridCage {
         case CAGE_1 :
 
           type = -1;
-          if (attempts.size() < 10)
+          if (attempts.size() < 14)
         	  continue;
           /*
           if (origin.mCellNumber < (this.mContext.mGridSize * this.mContext.mGridSize) -1) {
@@ -171,7 +176,8 @@ public class GridCage {
           break;
         case CAGE_4SQ :
           if (origin.mColumn > this.mContext.mGridSize-2 ||
-              origin.mRow > this.mContext.mGridSize-2) {
+              origin.mRow > this.mContext.mGridSize-2 ||
+              this.mContext.mGridSize > 7) {
             type = -1;
             this.mType = CAGE_UNDEF;
             continue;
@@ -179,7 +185,57 @@ public class GridCage {
           this.mCells.add(this.mContext.getCellAt(origin.mRow, origin.mColumn+1));
           this.mCells.add(this.mContext.getCellAt(origin.mRow+1, origin.mColumn));
           this.mCells.add(this.mContext.getCellAt(origin.mRow+1, origin.mColumn+1));
+          break;
+        case CAGE_4UL :
+            if (origin.mColumn > this.mContext.mGridSize-2 ||
+                origin.mRow > this.mContext.mGridSize-3 ||
+                this.mContext.mGridSize > 7) {
+              type = -1;
+              this.mType = CAGE_UNDEF;
+              continue;
+            }
+            this.mCells.add(this.mContext.getCellAt(origin.mRow, origin.mColumn+1));
+            this.mCells.add(this.mContext.getCellAt(origin.mRow+1, origin.mColumn));
+            this.mCells.add(this.mContext.getCellAt(origin.mRow+2, origin.mColumn));
+            break;
+        case CAGE_4UR :
+            if (origin.mColumn > this.mContext.mGridSize-2 ||
+                origin.mRow > this.mContext.mGridSize-3 ||
+                this.mContext.mGridSize > 7) {
+              type = -1;
+              this.mType = CAGE_UNDEF;
+              continue;
+            }
+            this.mCells.add(this.mContext.getCellAt(origin.mRow, origin.mColumn+1));
+            this.mCells.add(this.mContext.getCellAt(origin.mRow+1, origin.mColumn+1));
+            this.mCells.add(this.mContext.getCellAt(origin.mRow+2, origin.mColumn+1));
+            break;
+        case CAGE_4LL :
+            if (origin.mColumn > this.mContext.mGridSize-2 ||
+                origin.mRow > this.mContext.mGridSize-3 ||
+                this.mContext.mGridSize > 7) {
+              type = -1;
+              this.mType = CAGE_UNDEF;
+              continue;
+            }
+            this.mCells.add(this.mContext.getCellAt(origin.mRow+1, origin.mColumn));
+            this.mCells.add(this.mContext.getCellAt(origin.mRow+2, origin.mColumn));
+            this.mCells.add(this.mContext.getCellAt(origin.mRow+2, origin.mColumn+1));
+            break;
+        case CAGE_4LR :
+            if (origin.mColumn < 1 ||
+                origin.mRow > this.mContext.mGridSize-3 ||
+                this.mContext.mGridSize > 7) {
+              type = -1;
+              this.mType = CAGE_UNDEF;
+              continue;
+            }
+            this.mCells.add(this.mContext.getCellAt(origin.mRow+1, origin.mColumn));
+            this.mCells.add(this.mContext.getCellAt(origin.mRow+2, origin.mColumn));
+            this.mCells.add(this.mContext.getCellAt(origin.mRow+2, origin.mColumn-1));
+            break;
         }
+      
     }
   }
   

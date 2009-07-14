@@ -11,6 +11,7 @@ import android.graphics.Typeface;
 import android.graphics.Paint.FontMetrics;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,9 @@ public class GridView extends View implements OnTouchListener {
 
   // Solved listener
   private OnSolvedListener mSolvedListener;
+  // Touched listener
+  public OnGridTouchListener mTouchedListener;
+
   // Size of the grid
   public int mGridSize;
   
@@ -37,7 +41,10 @@ public class GridView extends View implements OnTouchListener {
   
   public boolean mActive;
   
-  public GridSelector mSelector;
+  public boolean mSelectorShown = false;
+  
+  public float mTrackPosX;
+  public float mTrackPosY;
   
   public GridCell mSelectedCell;
   
@@ -54,24 +61,19 @@ public class GridView extends View implements OnTouchListener {
 private Paint mShadePaint;
 
 private Paint mSolvedPaint;
-
-private Context mContext;
   
   public GridView(Context context) {
     super(context);
-    this.mContext = context;
     initGridView();
   }
   
   public GridView(Context context, AttributeSet attrs) {
     super(context, attrs);
-    this.mContext = context;
     initGridView();
   }
   
   public GridView(Context context, AttributeSet attrs, int defStyle) {
     super(context, attrs, defStyle);
-    this.mContext = context;
     initGridView();
   }
   
@@ -112,7 +114,6 @@ private Context mContext;
 
     this.mCurrentWidth = 0;
     this.mGridSize = 0;
-	this.mSelector = new GridSelector(this);
 	this.mActive = false;
     this.setOnTouchListener((OnTouchListener) this);
   }
@@ -126,11 +127,12 @@ private Context mContext;
     for (int i = 0 ; i < this.mGridSize * this.mGridSize ; i++)
       this.mCells.add(new GridCell(this, cellnum++));
     randomiseGrid();
+    this.mTrackPosX = this.mTrackPosY = 0;
     this.mCages = new ArrayList<GridCage>();
     CreateCages();
-    this.mSelector.createGeometry();
     invalidate();
     this.mActive = true;
+    this.mSelectorShown = false;
   }
 
   
@@ -361,27 +363,13 @@ private Context mContext;
   		  cell.mShowWarning = false;
         cell.onDraw(canvas);
     }
-    if (this.mSelector.mVisible)
-    	this.mSelector.drawDigitSelectGrid(canvas);
-    else if (this.mActive && this.isSolved()) {
-  	  this.mActive = false;
+    if (this.mActive && this.isSolved()) {
   	  if (this.mSolvedListener != null)
   		  this.mSolvedListener.puzzleSolved();
+  	  this.mActive = false;
     }
 
     	// this.drawSolvedResult(canvas);
-  }
-  
-  private void drawSolvedResult(Canvas canvas) {
-	  canvas.drawARGB(0x7f, 0, 0, 0);
-	  final String SOLVED_TEXT = "SOLVED!!";
-	  float textWidth =  this.mSolvedPaint.measureText(SOLVED_TEXT);
-	  float textHeight = this.mSolvedPaint.ascent();
-	  canvas.drawRect(this.mCurrentWidth/2 - textWidth/2, this.mCurrentWidth/2 + textHeight,
-			  		  this.mCurrentWidth/2 + textWidth/2, this.mCurrentWidth/2 - textHeight,
-			  		  this.mGridBackgroundPaint);
-	  canvas.drawText("Solved!!", this.mCurrentWidth/2 - textWidth/2+8, this.mCurrentWidth/2 - textHeight/2, 
-	  				  this.mSolvedPaint);
   }
   
   private float[] CellToCoord(int cell) {
@@ -392,16 +380,20 @@ private Context mContext;
     yOrd = ((int)(cell / this.mGridSize) * cellWidth);
     return new float[] {xOrd, yOrd};
   }
+  
+  private GridCell CoordToCell(float x, float y) {
+	  int row = (int) ((y / (float)this.mCurrentWidth) * this.mGridSize);
+	  int col = (int) ((x / (float)this.mCurrentWidth) * this.mGridSize);
+	  // Log.d("KenKen", "Track x/y = " + col + " / " + row);
+	  return getCellAt(row, col);
+  }
 
   public boolean onTouch(View arg0, MotionEvent event) {
   	if (event.getAction() != MotionEvent.ACTION_DOWN)
   		return false;
   	if (!this.mActive)
   		return false;
-  	
-  	if (this.mSelector.mVisible) {
-  		return this.mSelector.onTouch(event);
-  	}
+
   	float x = event.getX();
   	float y = event.getY();
   	int size = getMeasuredWidth();
@@ -416,18 +408,66 @@ private Context mContext;
 	
     GridCell cell = getCellAt(row, col);
     this.mSelectedCell = cell;
-    this.mSelector.mVisible = true;
-    this.invalidate();
+    
+    float[] cellPos = this.CellToCoord(cell.mCellNumber);
+    this.mTrackPosX = cellPos[0];
+    this.mTrackPosY = cellPos[1];
+    
+    // this.mSelector.mVisible = true;
     // Log.d("KenKen", "Touched letter: " + cell.mValue);
+    for (GridCell c : this.mCells)
+    	c.mSelected = false;
+    if (this.mTouchedListener != null) {
+    	this.mSelectedCell.mSelected = true;
+    	this.mTouchedListener.gridTouched(this.mSelectedCell);
+    }
+    invalidate();
     return true;
   }
   
   public boolean onTrackballEvent(MotionEvent event) {
+	if (!this.mActive || this.mSelectorShown)
+		return false;
+	if (event.getAction() == MotionEvent.ACTION_DOWN) {
+		Log.d("KenKen", "Button down!");
+	    if (this.mTouchedListener != null) {
+	    	this.mSelectedCell.mSelected = true;
+	    	this.mTouchedListener.gridTouched(this.mSelectedCell);
+	    }
+	    return true;
+	}
+	int trackMult = 70;
+	switch (this.mGridSize) {
+		case 5:
+			trackMult = 60;
+			break;
+		case 6:
+			trackMult = 50;
+			break;
+		case 7:
+			trackMult = 40;
+			break;
+		case 8:
+			trackMult = 40;
+	}
     float x = event.getX();
     float y = event.getY();
-    Log.d("KenKen", "Trackball: x " + x + " y " + y);
+    this.mTrackPosX += x*trackMult;
+    this.mTrackPosY += y*trackMult;
+    GridCell cell = this.CoordToCell(this.mTrackPosX, this.mTrackPosY);
+    if (cell == null) {
+    	this.mTrackPosX -= x*trackMult;
+    	this.mTrackPosY -= y*trackMult;
+    	return true;
+    }
+    if (this.mSelectedCell != null)
+    	this.mSelectedCell.mSelected = false;
+    this.mSelectedCell = cell;
+    cell.mSelected = true;
+    invalidate();
     return true;
   }
+  
   
   // Return the number of times a given user value is in a row
   public int getNumValueInRow(GridCell ocell) {
@@ -476,5 +516,11 @@ private Context mContext;
   public abstract class OnSolvedListener {
 	  public abstract void puzzleSolved();
   }
-
+  
+  public void setOnGridTouchListener(OnGridTouchListener listener) {
+	  this.mTouchedListener = listener;
+  }
+  public abstract class OnGridTouchListener {
+	  public abstract void gridTouched(GridCell cell);
+  }
 }

@@ -1,54 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="#FFE0E0FF"
-    >
-<RelativeLayout
-	android:layout_width="290dp"
-	android:layout_gravity="center"
-	android:background="#FFDDFFDD"
-	android:layout_marginTop="10dp"
-	android:layout_height="wrap_content">
-	<net.cactii.mathdoku.GridView  
-		android:id="@+id/gridView"
-	    android:layout_width="wrap_content" 
-	    android:layout_height="wrap_content"
-	    android:layout_gravity="top"
-	    />
-	<TextView
-		android:id="@+id/solvedText"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="Solved!!"
-		android:textSize="48dp"
-		android:textColor="#FF000000"
-		android:background="#F0D0D0D0"
-		android:layout_marginTop="96dp"
-		android:layout_marginLeft="48dp"
-		android:visibility="invisible"
-	/>
-</RelativeLayout>
-
-<TextView
-	android:id="@+id/newGame"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:layout_gravity="center"
-	android:layout_marginTop = "50dp"
-	android:textColor="#FF000000"
-	android:text="Press 'Menu' for new game."
-/>
-
-<LinearLayout android:id="@+id/digitSelector"
+	android:id="@+id/digitSelector"
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:background="#FFE0E0FF"
-    android:visibility="gone"
-    android:layout_marginTop="10dp"
     >
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	    android:orientation="horizontal"
@@ -58,53 +15,40 @@
 	    android:background="#FFE0E0FF"
 	    >
 		<Button android:id="@+id/digitSelect1"
-			android:layout_width="75dp"
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text=" 1 "
 			/>
 		<Button android:id="@+id/digitSelect2"
-			android:layout_width="75dp"
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text=" 2 "
 		/>
 		<Button android:id="@+id/digitSelect3"
-			android:layout_width="75dp"
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text=" 3 "
 			/>
 		<Button android:id="@+id/digitSelect4"
-			android:layout_width="75dp"
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text=" 4 "
 			/>
-	</LinearLayout>
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:background="#FFE0E0FF"
-    >
 		<Button android:id="@+id/digitSelect5"
-			android:layout_width="75dp"
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text=" 5 "
 			/>
 		<Button android:id="@+id/digitSelect6"
-			android:layout_width="75dp"
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text=" 6 "
 			/>
 		<Button android:id="@+id/digitSelect7"
-			android:layout_width="75dp"
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text=" 7 "
 			/>	    
-		<Button android:id="@+id/digitSelect8"
-			android:layout_width="75dp"
-			android:layout_height="wrap_content"
-			android:text=" 8 "
-			/>	  
 	</LinearLayout>
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	    android:orientation="horizontal"
@@ -116,7 +60,7 @@
 	    <TextView
 	    	android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:textColor="#FF000000"
+						android:textColor="#00000000"
 			android:text="Maybe"
 			/>
 	    <CheckBox android:id="@+id/maybeButton"
@@ -130,6 +74,4 @@
 			android:text=" Clear "
 		/>
 	</LinearLayout>
-</LinearLayout>
-
 </LinearLayout>

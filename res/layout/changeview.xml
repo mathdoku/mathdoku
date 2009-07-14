@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+	<ScrollView android:id="@+id/aboutscrollview" 
+		android:orientation="vertical"
+		android:layout_width="fill_parent" 
+		android:layout_height="fill_parent">    
+		<LinearLayout
+		    android:orientation="vertical"
+		    android:layout_width="fill_parent"
+		    android:layout_height="fill_parent">
+			<TextView android:text="Thanks for installing Mathdoku for Android."
+				android:layout_width="fill_parent" 
+				android:layout_height="wrap_content"
+				android:paddingLeft="15px"		
+				android:layout_gravity="center_vertical"
+				android:textColor="#ffffff" />	
+			<TextView android:text="Changes: "
+				android:layout_width="fill_parent" 
+				android:layout_height="wrap_content"		
+				android:paddingTop="15px"
+				android:paddingLeft="15px"
+				android:textStyle="bold"
+				android:textColor="#ffffff" />
+
+			<TextView android:text="v1.0: Initial version."
+				android:layout_width="fill_parent" 
+				android:layout_height="wrap_content"
+				android:paddingLeft="15px"			
+				android:textColor="#ffffff" />
+			<TextView android:text="Bugs/requests? "
+				android:layout_width="fill_parent" 
+				android:layout_height="wrap_content"
+				android:paddingTop="15px"
+				android:paddingLeft="15px"
+				android:textStyle="bold"
+				android:textColor="#ffffff" />	
+			<TextView
+				android:text="Please report any issues or requests to the project page:\n\nhttp://mathdoku.googlecode.com/"
+				android:layout_width="fill_parent" 
+				android:layout_height="wrap_content"
+				android:paddingLeft="15px"
+				android:autoLink="web"
+				android:textColorLink="#ffffe0"			
+				android:textColor="#ffffff" />	
+			</LinearLayout>
+		</ScrollView>			
+</LinearLayout>

@@ -33,6 +33,8 @@ public class GridCell {
   public ArrayList<Integer> mPossibles;
   // Whether to show warning background (duplicate value in row/col)
   public boolean mShowWarning;
+  // Whether to show cell as selected
+  public boolean mSelected;
   
   public static final int BORDER_NONE = 0;
   public static final int BORDER_SOLID = 1;
@@ -49,6 +51,7 @@ public class GridCell {
   private Paint mCageTextPaint;
   private Paint mPossiblesPaint;
   private Paint mWarningPaint;
+  private Paint mSelectedPaint;
   
   public GridCell(GridView context, int cell) {
     int gridSize = context.mGridSize;
@@ -85,6 +88,10 @@ public class GridCell {
     this.mWarningPaint = new Paint();
     this.mWarningPaint.setColor(0x30FF0000);
     this.mWarningPaint.setStyle(Paint.Style.FILL);
+    
+    this.mSelectedPaint = new Paint();
+    this.mSelectedPaint.setColor(0x60FFFF00);
+    this.mSelectedPaint.setStyle(Paint.Style.FILL);
     
     this.mCageTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     this.mCageTextPaint.setColor(0xFF000000);
@@ -162,9 +169,11 @@ public class GridCell {
     this.mPosX = cellSize * this.mColumn;
     this.mPosY = cellSize * this.mRow;
     
-    if (this.mShowWarning) {
+    if (this.mShowWarning)
     	canvas.drawRect(this.mPosX, this.mPosY, this.mPosX + cellSize, this.mPosY + cellSize, this.mWarningPaint);
-    }
+    if (this.mSelected)
+    	canvas.drawRect(this.mPosX, this.mPosY, this.mPosX + cellSize, this.mPosY + cellSize, this.mSelectedPaint);
+
     // North
     Paint borderPaint = this.getBorderPaint(0);
     if (borderPaint != null)
