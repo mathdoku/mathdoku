@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen  
+    xmlns:android="http://schemas.android.com/apk/res/android">  
+	<PreferenceCategory android:title="General options">
+		<CheckBoxPreference
+			android:key="wakelock"
+			android:title="Keep screen on"
+			android:defaultValue="true" />
+		<CheckBoxPreference
+			android:key="alternatetheme"
+			android:title="Alternate theme"
+			android:summary="Use a different theme"
+			android:defaultValue="false" />
+		<CheckBoxPreference
+			android:key="badmaths"
+			android:title="Show bad maths"
+			android:summary="Highlight invalid arithmetic"
+			android:defaultValue="true" />
+		<CheckBoxPreference
+			android:key="dupedigits"
+			android:title="Mark duplicates"
+			android:summary="Highlight duplicate digits"
+			android:defaultValue="true" />
+	</PreferenceCategory>
+
+</PreferenceScreen>  

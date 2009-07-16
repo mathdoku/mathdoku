@@ -34,6 +34,8 @@ public class SaveGame {
 	        		writer.write(possible + ",");
 	        	writer.write("\n");
 	        }
+	        if (view.mSelectedCell != null)
+	        	writer.write("SELECTED:" + view.mSelectedCell.mCellNumber + "\n");
 	        for (GridCage cage : view.mCages) {
 	        	writer.write("CAGE:");
 	        	writer.write(cage.mId + ":");
@@ -91,6 +93,12 @@ public class SaveGame {
 		        	for (String possible : cellParts[7].split(","))
 		        		cell.mPossibles.add(Integer.parseInt(possible));
 	        	view.mCells.add(cell);
+	        }
+	        if (line.startsWith("SELECTED:")) {
+	        	int selected = Integer.parseInt(line.split(":")[1]);
+	        	view.mSelectedCell = view.mCells.get(selected);
+	        	view.mSelectedCell.mSelected = true;
+	        	line = br.readLine();
 	        }
 	        view.mCages = new ArrayList<GridCage>();
 	        do {

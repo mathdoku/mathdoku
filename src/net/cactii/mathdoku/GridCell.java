@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.graphics.Canvas;
 import android.graphics.DashPathEffect;
+import android.graphics.DiscretePathEffect;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.util.Log;
@@ -70,7 +71,8 @@ public class GridCell {
     
     this.mValuePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     this.mValuePaint.setColor(0xFF000000);
-    this.mValuePaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD));
+    // this.mValuePaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD));
+    this.mValuePaint.setTypeface(this.mContext.mFace);
 
     this.mDashedBorderPaint = new Paint();
     this.mDashedBorderPaint.setColor(0xFF000000);
@@ -80,23 +82,29 @@ public class GridCell {
     this.mBorderPaint = new Paint();
     this.mBorderPaint.setColor(0xFF000000);
     this.mBorderPaint.setStrokeWidth(2);
+    this.mBorderPaint.setAntiAlias(true);
+	this.mBorderPaint.setPathEffect(new DiscretePathEffect(20, 1));
+
     
     this.mWrongBorderPaint = new Paint();
     this.mWrongBorderPaint.setColor(0xFFBB0000);
-    this.mWrongBorderPaint.setStrokeWidth(2);
+    this.mWrongBorderPaint.setStrokeWidth(3);
+    this.mWrongBorderPaint.setAntiAlias(true);
+    this.mWrongBorderPaint.setPathEffect(new DiscretePathEffect(20, 1));
     
     this.mWarningPaint = new Paint();
-    this.mWarningPaint.setColor(0x30FF0000);
+    this.mWarningPaint.setColor(0x50FF0000);
     this.mWarningPaint.setStyle(Paint.Style.FILL);
     
     this.mSelectedPaint = new Paint();
-    this.mSelectedPaint.setColor(0x60FFFF00);
+    this.mSelectedPaint.setColor(0xD0F0D042);
     this.mSelectedPaint.setStyle(Paint.Style.FILL);
     
     this.mCageTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    this.mCageTextPaint.setColor(0xFF000000);
+    this.mCageTextPaint.setColor(0xFF0000A0);
     this.mCageTextPaint.setTextSize(14);
-    this.mCageTextPaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD));
+    //this.mCageTextPaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD));
+    this.mCageTextPaint.setTypeface(this.mContext.mFace);
    
     this.mPossiblesPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     this.mPossiblesPaint.setColor(0xFF000000);
@@ -169,10 +177,10 @@ public class GridCell {
     this.mPosX = cellSize * this.mColumn;
     this.mPosY = cellSize * this.mRow;
     
-    if (this.mShowWarning)
-    	canvas.drawRect(this.mPosX, this.mPosY, this.mPosX + cellSize, this.mPosY + cellSize, this.mWarningPaint);
+    if (this.mShowWarning && this.mContext.mContext.preferences.getBoolean("dupedigits", true))
+    	canvas.drawRect(this.mPosX+1, this.mPosY+1, this.mPosX + cellSize-1, this.mPosY + cellSize-1, this.mWarningPaint);
     if (this.mSelected)
-    	canvas.drawRect(this.mPosX, this.mPosY, this.mPosX + cellSize, this.mPosY + cellSize, this.mSelectedPaint);
+    	canvas.drawRect(this.mPosX+1, this.mPosY+1, this.mPosX + cellSize-1, this.mPosY + cellSize-1, this.mSelectedPaint);
 
     // North
     Paint borderPaint = this.getBorderPaint(0);
@@ -196,16 +204,21 @@ public class GridCell {
     
     // Cell value
     if (this.mUserValue > 0) {
-	    int textSize = (int)(cellSize/2);
+	    int textSize = (int)(cellSize*3/4);
 	    this.mValuePaint.setTextSize(textSize);
-	    canvas.drawText("" + this.mUserValue, this.mPosX + cellSize/2 - textSize/4, this.mPosY + cellSize/2 + textSize/2, this.mValuePaint);
-    }
-
-    // Cage text
-    if (!this.mCageText.equals("")) {
-      canvas.drawText(this.mCageText, this.mPosX + 2, this.mPosY + 13, this.mCageTextPaint);
+	    canvas.drawText("" + this.mUserValue, this.mPosX + cellSize/2 - textSize/4, this.mPosY + cellSize/2 + textSize/3, this.mValuePaint);
     }
     
+    int cageTextSize = (int)(cellSize/3);
+    this.mCageTextPaint.setTextSize(cageTextSize);
+    // Cage text
+    if (!this.mCageText.equals("")) {
+      canvas.drawText(this.mCageText, this.mPosX + 2, this.mPosY + cageTextSize, this.mCageTextPaint);
+
+      // canvas.drawText(this.mCageText, this.mPosX + 2, this.mPosY + 13, this.mCageTextPaint);
+    }
+    
+    this.mPossiblesPaint.setTextSize((int)(cellSize/4));
     // Small 'possible' values.
     for (int i = 0 ; i < this.mPossibles.size() ; i++) {
     	canvas.drawText("" + this.mPossibles.get(i),

@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/topLayout"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#FFE0E0FF"
+    android:background="@drawable/background"
     >
 <RelativeLayout
 	android:layout_width="290dp"
 	android:layout_gravity="center"
-	android:background="#FFDDFFDD"
+	android:background="#00000000"
 	android:layout_marginTop="10dp"
 	android:layout_height="wrap_content">
 	<net.cactii.mathdoku.GridView  
@@ -24,7 +25,7 @@
 		android:text="Solved!!"
 		android:textSize="48dp"
 		android:textColor="#FF000000"
-		android:background="#F0D0D0D0"
+		android:background="#D0DECA1E"
 		android:layout_marginTop="96dp"
 		android:layout_marginLeft="48dp"
 		android:visibility="invisible"
@@ -38,15 +39,21 @@
 	android:layout_gravity="center"
 	android:layout_marginTop = "50dp"
 	android:textColor="#FF000000"
-	android:text="Press 'Menu' for new game."
+	android:textSize="18dp"
+	android:textStyle="bold"
+	android:shadowColor="#7FFFFFFF"
+    android:shadowDx="1"
+    android:shadowDy="1"
+	android:text="Press 'Menu' to start."
 />
+
 
 <LinearLayout android:id="@+id/digitSelector"
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:background="#FFE0E0FF"
+    android:background="#00000000"
     android:visibility="gone"
     android:layout_marginTop="10dp"
     >
@@ -55,26 +62,34 @@
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:layout_gravity="center"
-	    android:background="#FFE0E0FF"
+	    android:background="#00000000"
 	    >
 		<Button android:id="@+id/digitSelect1"
 			android:layout_width="75dp"
 			android:layout_height="wrap_content"
+			android:textSize="16dp"
+			android:textStyle="bold"
 			android:text=" 1 "
 			/>
 		<Button android:id="@+id/digitSelect2"
 			android:layout_width="75dp"
 			android:layout_height="wrap_content"
+			android:textSize="16dp"
+			android:textStyle="bold"
 			android:text=" 2 "
 		/>
 		<Button android:id="@+id/digitSelect3"
 			android:layout_width="75dp"
 			android:layout_height="wrap_content"
+			android:textSize="16dp"
+			android:textStyle="bold"
 			android:text=" 3 "
 			/>
 		<Button android:id="@+id/digitSelect4"
 			android:layout_width="75dp"
 			android:layout_height="wrap_content"
+			android:textSize="16dp"
+			android:textStyle="bold"
 			android:text=" 4 "
 			/>
 	</LinearLayout>
@@ -83,26 +98,34 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:background="#FFE0E0FF"
+    android:background="#00000000"
     >
 		<Button android:id="@+id/digitSelect5"
 			android:layout_width="75dp"
 			android:layout_height="wrap_content"
+			android:textSize="16dp"
+			android:textStyle="bold"
 			android:text=" 5 "
 			/>
 		<Button android:id="@+id/digitSelect6"
 			android:layout_width="75dp"
 			android:layout_height="wrap_content"
+			android:textSize="16dp"
+			android:textStyle="bold"
 			android:text=" 6 "
 			/>
 		<Button android:id="@+id/digitSelect7"
 			android:layout_width="75dp"
 			android:layout_height="wrap_content"
+			android:textSize="16dp"
+			android:textStyle="bold"
 			android:text=" 7 "
 			/>	    
 		<Button android:id="@+id/digitSelect8"
 			android:layout_width="75dp"
 			android:layout_height="wrap_content"
+			android:textSize="16dp"
+			android:textStyle="bold"
 			android:text=" 8 "
 			/>	  
 	</LinearLayout>
@@ -111,12 +134,14 @@
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:layout_gravity="center"
-	    android:background="#FFE0E0FF"
+	    android:background="#00000000"
 	    >
 	    <TextView
 	    	android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:textColor="#FF000000"
+			android:textSize="16dp"
+			android:textStyle="bold"
 			android:text="Maybe"
 			/>
 	    <CheckBox android:id="@+id/maybeButton"
@@ -127,6 +152,8 @@
 		<Button android:id="@+id/clearButton"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:textSize="16dp"
+			android:textStyle="bold"
 			android:text=" Clear "
 		/>
 	</LinearLayout>

@@ -6,6 +6,7 @@ import java.util.Random;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.DashPathEffect;
+import android.graphics.DiscretePathEffect;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.Paint.FontMetrics;
@@ -33,6 +34,8 @@ public class GridView extends View implements OnTouchListener {
   
   // Random generator
   public Random mRandom;
+  
+  public MainActivity mContext;
 
   // Cages
   public ArrayList<GridCage> mCages;
@@ -61,6 +64,7 @@ public class GridView extends View implements OnTouchListener {
 private Paint mShadePaint;
 
 private Paint mSolvedPaint;
+public Typeface mFace;
   
   public GridView(Context context) {
     super(context);
@@ -81,22 +85,28 @@ private Paint mSolvedPaint;
   public void initGridView() {
 
 	this.mSolvedListener = null;
+		
     this.mGridPaint = new Paint();
-    this.mGridPaint.setColor(0xFF000000);
+    this.mGridPaint.setColor(0x80000000);
     this.mGridPaint.setStrokeWidth(0);
-    this.mGridPaint.setPathEffect(new DashPathEffect(new float[] {2, 2}, 0));
+    //this.mGridPaint.setPathEffect(new DashPathEffect(new float[] {2, 2}, 0));
+    this.mGridPaint.setAntiAlias(true);
+	this.mGridPaint.setPathEffect(new DiscretePathEffect(20, 1));
     
     this.mBorderPaint = new Paint();
     this.mBorderPaint.setColor(0xFF000000);
     this.mBorderPaint.setStrokeWidth(3);
+    this.mBorderPaint.setAntiAlias(true);
+    this.mBorderPaint.setPathEffect(new DiscretePathEffect(30, 1));
     
     this.mGridBackgroundPaint = new Paint();
     this.mGridBackgroundPaint.setColor(0xF0FFFFFF);
     this.mGridBackgroundPaint.setStrokeWidth(2);
     
     this.mCagePaint = new Paint();
-    this.mCagePaint.setColor(0xFF000000);
+    this.mCagePaint.setColor(0xFFF0D090);
     this.mCagePaint.setStrokeWidth(0);
+    this.mCagePaint.setPathEffect(new DiscretePathEffect(30, 1));
 
     this.mCageTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     this.mCageTextPaint.setColor(0xFF000000);
@@ -130,7 +140,6 @@ private Paint mSolvedPaint;
     this.mTrackPosX = this.mTrackPosY = 0;
     this.mCages = new ArrayList<GridCage>();
     CreateCages();
-    invalidate();
     this.mActive = true;
     this.mSelectorShown = false;
   }
@@ -159,7 +168,6 @@ private Paint mSolvedPaint;
   public int CreateSingleCages() {
     int singles = this.mGridSize / 2;
     int cageId = 0;
-    // Log.d("KenKen", "New cages.");
     for (int i = 0 ; i < singles ; i++) {
     	int cellNum;
     	boolean foundCell = false;
@@ -186,8 +194,6 @@ private Paint mSolvedPaint;
     	cage.setArithmetic();
     	cage.setCageId(cageId++);
     	this.mCages.add(cage);
-    	// Log.d("KenKen", "Cage: " + cage);
-    	// Log.d("KenKen", "Single cell: " + cell);
     }
     return cageId;
   }
@@ -214,7 +220,6 @@ private Paint mSolvedPaint;
         if (cage.mType == GridCage.CAGE_UNDEF || attempts > 35) {
         	ClearAllCages();
         	cellNum = -1;
-        	// Log.d("KenKen", "Gave up making cage! " + cageId);
         	cageId = CreateSingleCages();
         	validCage = false;
         	break;
@@ -225,7 +230,6 @@ private Paint mSolvedPaint;
           cage.setArithmetic();  // Make the maths puzzle
           cage.setCageId(cageId++);  // Set cage's id
           this.mCages.add(cage);  // Add to the cage list
-          // Log.d("KenKen", "Added cage! Type " + cage);
           break;
         }
       }
@@ -332,29 +336,20 @@ private Paint mSolvedPaint;
   protected void onDraw(Canvas canvas) {
 
     if (this.mGridSize < 4) return;
+    if (this.mCages == null) return;
     int width = getMeasuredWidth();
 
     if (width != this.mCurrentWidth)
       this.mCurrentWidth = width;
 
-    canvas.drawARGB(255, 255, 255, 255);
-
-
-    for (int i = 0 ; i < this.mGridSize ; i++) {
-      float pos = ((float)this.mCurrentWidth / (float)this.mGridSize) * i;
-      canvas.drawLine(0, pos, this.mCurrentWidth, pos, this.mGridPaint);
-      canvas.drawLine(pos, 0, pos, this.mCurrentWidth, this.mGridPaint);
-    }
+    // Fill canvas background
+    canvas.drawARGB(128, 0xF0, 0xD0, 0x90);
     
-    canvas.drawLine(0, 0, this.mCurrentWidth-1, 0, this.mBorderPaint);
-    canvas.drawLine(0, 0, 0, this.mCurrentWidth-1, this.mBorderPaint);
-
-    canvas.drawLine(0, this.mCurrentWidth-1, this.mCurrentWidth-1, this.mCurrentWidth-1, this.mBorderPaint);
-    canvas.drawLine(this.mCurrentWidth-1, 0, this.mCurrentWidth-1, this.mCurrentWidth-1, this.mBorderPaint);
-    
+    // Check cage correctness
     for (GridCage cage : this.mCages)
       cage.userValuesCorrect();
     
+    // Draw cells
     for (GridCell cell : this.mCells) {
   	  if ((cell.mUserValue > 0 && this.getNumValueInCol(cell) > 1) ||
   			  (cell.mUserValue > 0 && this.getNumValueInRow(cell) > 1))
@@ -363,6 +358,20 @@ private Paint mSolvedPaint;
   		  cell.mShowWarning = false;
         cell.onDraw(canvas);
     }
+    
+    // Draw (dashed) grid
+    for (int i = 1 ; i < this.mGridSize ; i++) {
+      float pos = ((float)this.mCurrentWidth / (float)this.mGridSize) * i;
+      canvas.drawLine(0, pos, this.mCurrentWidth, pos, this.mGridPaint);
+      canvas.drawLine(pos, 0, pos, this.mCurrentWidth, this.mGridPaint);
+    }
+    
+    // Draw borders
+    canvas.drawLine(1, 1, this.mCurrentWidth-1, 1, this.mBorderPaint);
+    canvas.drawLine(1, 1, 1, this.mCurrentWidth-1, this.mBorderPaint);
+    canvas.drawLine(1, this.mCurrentWidth-1, this.mCurrentWidth-2, this.mCurrentWidth-2, this.mBorderPaint);
+    canvas.drawLine(this.mCurrentWidth-1, 1, this.mCurrentWidth-2, this.mCurrentWidth-2, this.mBorderPaint);
+
     if (this.mActive && this.isSolved()) {
   	  if (this.mSolvedListener != null)
   		  this.mSolvedListener.puzzleSolved();
@@ -372,6 +381,7 @@ private Paint mSolvedPaint;
     	// this.drawSolvedResult(canvas);
   }
   
+  // Given a cell number, returns origin x,y coordinates.
   private float[] CellToCoord(int cell) {
     float xOrd;
     float yOrd;
@@ -381,6 +391,7 @@ private Paint mSolvedPaint;
     return new float[] {xOrd, yOrd};
   }
   
+  // Opposite of above - given a coordinate, returns the cell number within.
   private GridCell CoordToCell(float x, float y) {
 	  int row = (int) ((y / (float)this.mCurrentWidth) * this.mGridSize);
 	  int col = (int) ((x / (float)this.mCurrentWidth) * this.mGridSize);
@@ -394,6 +405,7 @@ private Paint mSolvedPaint;
   	if (!this.mActive)
   		return false;
 
+  	// Find out where the grid was touched.
   	float x = event.getX();
   	float y = event.getY();
   	int size = getMeasuredWidth();
@@ -406,15 +418,14 @@ private Paint mSolvedPaint;
     if (col > this.mGridSize-1) col = this.mGridSize-1;
     if (col < 0) col = 0;
 	
+    // We can now get the cell.
     GridCell cell = getCellAt(row, col);
     this.mSelectedCell = cell;
     
     float[] cellPos = this.CellToCoord(cell.mCellNumber);
     this.mTrackPosX = cellPos[0];
     this.mTrackPosY = cellPos[1];
-    
-    // this.mSelector.mVisible = true;
-    // Log.d("KenKen", "Touched letter: " + cell.mValue);
+
     for (GridCell c : this.mCells)
     	c.mSelected = false;
     if (this.mTouchedListener != null) {
@@ -425,17 +436,21 @@ private Paint mSolvedPaint;
     return true;
   }
   
+  // Handle trackball, both press down, and scrolling around to
+  // select a cell.
   public boolean onTrackballEvent(MotionEvent event) {
 	if (!this.mActive || this.mSelectorShown)
 		return false;
+	// On press event, take selected cell, call touched listener
+	// which will popup the digit selector.
 	if (event.getAction() == MotionEvent.ACTION_DOWN) {
-		Log.d("KenKen", "Button down!");
 	    if (this.mTouchedListener != null) {
 	    	this.mSelectedCell.mSelected = true;
 	    	this.mTouchedListener.gridTouched(this.mSelectedCell);
 	    }
 	    return true;
 	}
+	// A multiplier amplifies the trackball event values
 	int trackMult = 70;
 	switch (this.mGridSize) {
 		case 5:
@@ -450,6 +465,7 @@ private Paint mSolvedPaint;
 		case 8:
 			trackMult = 40;
 	}
+	// Fetch the trackball position, work out the cell it's at
     float x = event.getX();
     float y = event.getY();
     this.mTrackPosX += x*trackMult;
@@ -460,6 +476,7 @@ private Paint mSolvedPaint;
     	this.mTrackPosY -= y*trackMult;
     	return true;
     }
+    // Set the cell as selected
     if (this.mSelectedCell != null)
     	this.mSelectedCell.mSelected = false;
     this.mSelectedCell = cell;
@@ -488,12 +505,14 @@ private Paint mSolvedPaint;
 	  return count;
   }
   
+  // Solve the puzzle by setting the Uservalue to the actual value
   public void Solve() {
 	  for (GridCell cell : this.mCells)
 		  cell.mUserValue = cell.mValue;
 	  invalidate();
   }
   
+  // Returns whether the puzle is solved.
   public boolean isSolved() {
 	  for (GridCell cell : this.mCells) {
 		  if (cell.mUserValue < 1)
