@@ -9,17 +9,29 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import android.util.Log;
 
 public class SaveGame {
 	public static final String saveFilename = "/data/data/net.cactii.mathdoku/savedgame";
+	public String filename;
+	
+	public SaveGame() {
+		this.filename = SaveGame.saveFilename;
+	}
+	public SaveGame(String filename) {
+		this.filename = filename;
+	}
 	
 	public boolean Save(GridView view) {
 		BufferedWriter writer = null;
 	    try {
-	        writer = new BufferedWriter(new FileWriter(SaveGame.saveFilename));
+	        writer = new BufferedWriter(new FileWriter(this.filename));
+	        long now = System.currentTimeMillis();
+	        writer.write(now + "\n");
 	        writer.write(view.mGridSize + "\n");
 	        writer.write(view.mActive + "\n");
 	        for (GridCell cell : view.mCells) {
@@ -64,6 +76,36 @@ public class SaveGame {
 	    return true;
 	}
 	
+	
+	public long ReadDate() {
+	    BufferedReader br = null;
+	    InputStream ins = null;
+	    try {
+	        ins = new FileInputStream(new File(this.filename));
+	        br = new BufferedReader(new InputStreamReader(ins), 8192);
+	        return Long.parseLong(br.readLine());
+	    } catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			  try {
+			    ins.close();
+			    br.close();
+			  } catch (Exception e) {
+			    // Nothing.
+				  return 0;
+			  }
+			}
+		return 0;
+	}
+	
 	public boolean Restore(GridView view) {
 	    String line = null;
 	    BufferedReader br = null;
@@ -71,8 +113,9 @@ public class SaveGame {
 	    String[] cellParts;
 	    String[] cageParts;
 	    try {
-	        ins = new FileInputStream(new File(SaveGame.saveFilename));
+	        ins = new FileInputStream(new File(this.filename));
 	        br = new BufferedReader(new InputStreamReader(ins), 8192);
+	        view.mDate = Long.parseLong(br.readLine());
 	        view.mGridSize = Integer.parseInt(br.readLine());
 	        if (br.readLine().equals("true"))
 	        	view.mActive = true;
@@ -94,6 +137,7 @@ public class SaveGame {
 		        		cell.mPossibles.add(Integer.parseInt(possible));
 	        	view.mCells.add(cell);
 	        }
+	        view.mSelectedCell = null;
 	        if (line.startsWith("SELECTED:")) {
 	        	int selected = Integer.parseInt(line.split(":")[1]);
 	        	view.mSelectedCell = view.mCells.get(selected);
@@ -129,7 +173,8 @@ public class SaveGame {
 		  try {
 		    ins.close();
 		    br.close();
-		    new File(saveFilename).delete();
+		    if (this.filename.equals(SaveGame.saveFilename))
+		    	new File(filename).delete();
 		  } catch (Exception e) {
 		    // Nothing.
 			  return false;

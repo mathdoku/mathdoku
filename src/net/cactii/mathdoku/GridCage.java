@@ -375,22 +375,22 @@ public class GridCage {
   public void setBorders() {
     for (GridCell cell : this.mCells) {
       if (this.mContext.CageIdAt(cell.mRow-1, cell.mColumn) != this.mId)
-        if (!this.mUserMathCorrect && this.mContext.mContext.preferences.getBoolean("badmaths", true))
+        if (!this.mUserMathCorrect && this.mContext.mBadMaths)
           cell.mBorderTypes[0] = GridCell.BORDER_WARN;
         else
         	cell.mBorderTypes[0] = GridCell.BORDER_SOLID;
       if (this.mContext.CageIdAt(cell.mRow, cell.mColumn+1) != this.mId)
-    	  if(!this.mUserMathCorrect && this.mContext.mContext.preferences.getBoolean("badmaths", true))
+    	  if(!this.mUserMathCorrect && this.mContext.mBadMaths)
     		  cell.mBorderTypes[1] = GridCell.BORDER_WARN;
     	  else
     		  cell.mBorderTypes[1] = GridCell.BORDER_SOLID;
       if (this.mContext.CageIdAt(cell.mRow+1, cell.mColumn) != this.mId)
-        if(!this.mUserMathCorrect && this.mContext.mContext.preferences.getBoolean("badmaths", true))
+        if(!this.mUserMathCorrect && this.mContext.mBadMaths)
           cell.mBorderTypes[2] = GridCell.BORDER_WARN;
         else
         	cell.mBorderTypes[2] = GridCell.BORDER_SOLID;
       if (this.mContext.CageIdAt(cell.mRow, cell.mColumn-1) != this.mId)
-        if(!this.mUserMathCorrect && this.mContext.mContext.preferences.getBoolean("badmaths", true))
+        if(!this.mUserMathCorrect && this.mContext.mBadMaths)
           cell.mBorderTypes[3] = GridCell.BORDER_WARN;
         else
         	cell.mBorderTypes[3] = GridCell.BORDER_SOLID;

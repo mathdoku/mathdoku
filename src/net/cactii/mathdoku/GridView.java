@@ -3,6 +3,7 @@ package net.cactii.mathdoku;
 import java.util.ArrayList;
 import java.util.Random;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.DashPathEffect;
@@ -35,7 +36,7 @@ public class GridView extends View implements OnTouchListener {
   // Random generator
   public Random mRandom;
   
-  public MainActivity mContext;
+  public Activity mContext;
 
   // Cages
   public ArrayList<GridCage> mCages;
@@ -65,6 +66,11 @@ private Paint mShadePaint;
 
 private Paint mSolvedPaint;
 public Typeface mFace;
+public boolean mDupedigits;
+public boolean mBadMaths;
+
+	// Date of current game (used for saved games)
+	public long mDate;
   
   public GridView(Context context) {
     super(context);
@@ -85,6 +91,8 @@ public Typeface mFace;
   public void initGridView() {
 
 	this.mSolvedListener = null;
+	this.mDupedigits = true;
+	this.mBadMaths = true;
 		
     this.mGridPaint = new Paint();
     this.mGridPaint.setColor(0x80000000);
@@ -375,6 +383,8 @@ public Typeface mFace;
     if (this.mActive && this.isSolved()) {
   	  if (this.mSolvedListener != null)
   		  this.mSolvedListener.puzzleSolved();
+  	  if (this.mSelectedCell != null)
+  		  this.mSelectedCell.mSelected = false;
   	  this.mActive = false;
     }
 

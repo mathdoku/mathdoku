@@ -1,5 +1,7 @@
 package net.cactii.mathdoku;
 
+import java.io.File;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -8,9 +10,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageInfo;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
@@ -67,7 +72,7 @@ public class MainActivity extends Activity {
         
         this.preferences = PreferenceManager.getDefaultSharedPreferences(this);
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        this.wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "Target");
+        this.wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "Mathdoku");
         
         this.topLayout = (LinearLayout)findViewById(R.id.topLayout);
         this.kenKenGrid = (GridView)findViewById(R.id.gridView);
@@ -187,7 +192,8 @@ public class MainActivity extends Activity {
 				MainActivity.this.digitSelected(v.getId());
 			}
         });
-                
+        
+        newVersionCheck();
         this.kenKenGrid.setFocusable(true);
         this.kenKenGrid.setFocusableInTouchMode(true);
         SaveGame saver = new SaveGame();
@@ -215,10 +221,24 @@ public class MainActivity extends Activity {
 	    	this.topLayout.setBackgroundColor(0xFFE0E0FF);
 	    } else
 	    	this.topLayout.setBackgroundResource(R.drawable.background);
-	    
+	    this.kenKenGrid.mDupedigits = this.preferences.getBoolean("dupedigits", true);
+	    this.kenKenGrid.mBadMaths = this.preferences.getBoolean("badmaths", true);
 	    super.onResume();
 	}
-        
+    
+    protected void onActivityResult(int requestCode, int resultCode,
+    	      Intent data) {
+	    if (requestCode != 7 || resultCode != Activity.RESULT_OK)
+	      return;
+	    Bundle extras = data.getExtras();
+	    String filename = extras.getString("filename");
+    	Log.d("Mathdoku", "Loading game: " + filename);
+    	SaveGame saver = new SaveGame(filename);
+        if (saver.Restore(this.kenKenGrid)) {
+        	this.setButtonVisibility(this.kenKenGrid.mGridSize);
+        	this.kenKenGrid.mActive = true;
+        }
+    }
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -229,10 +249,11 @@ public class MainActivity extends Activity {
     	newGame.add("6x6  (hard)");
     	newGame.add("7x7  (harder)");
     	newGame.add("8x8  (hardest)");
-    	SubMenu solveGame = menu.addSubMenu(1, 1, 0, "Solve");
+    	SubMenu load = menu.addSubMenu(0, 1, 0, "Load/Save");
+    	SubMenu solveGame = menu.addSubMenu(1, 2, 0, "Solve");
     	
-    	SubMenu options = menu.addSubMenu(3, 2, 0, "Options");
-    	SubMenu about = menu.addSubMenu(2, 3, 0, "Help");
+    	SubMenu options = menu.addSubMenu(3, 3, 0, "Options");
+    	SubMenu about = menu.addSubMenu(2, 4, 0, "Help");
     	
     	return supRetVal;
     }
@@ -257,18 +278,22 @@ public class MainActivity extends Activity {
 	    			break;
 				this.startNewGame(this.kenKenGrid.mGridSize);
 				break;
-	    	case 1:
+	    	case 2:
 	    		if (this.kenKenGrid.mActive)
 	    			this.kenKenGrid.Solve();
 	    		this.newGame.setVisibility(View.VISIBLE);
 	    		break;
-	        case 2 :
+	        case 3 :
 	            startActivityForResult(new Intent(
 	                MainActivity.this, OptionsActivity.class), 0);
 	            break;
-	    	case 3:
+	    	case 4:
 	    		this.openHelpDialog();
 	    		break;
+	    	case 1:
+	            Intent i = new Intent(this, SavedGameList.class);
+	            startActivityForResult(i, 7);
+		            break;
     	}
     	return supRetVal;
     }
@@ -450,4 +475,27 @@ public class MainActivity extends Activity {
       })
       .show();  
     }
+    public void newVersionCheck() {
+        int pref_version = preferences.getInt("currentversion", -1);
+        Editor prefeditor = preferences.edit();
+        int current_version = getVersionNumber();
+        if (pref_version == -1 || pref_version != current_version) {
+          //new File(SaveGame.saveFilename).delete();
+          prefeditor.putInt("currentversion", current_version);
+          prefeditor.commit();
+          this.openChangesDialog();
+          return;
+        }
+
+    }
+    public int getVersionNumber() {
+        int version = -1;
+          try {
+              PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
+              version = pi.versionCode;
+          } catch (Exception e) {
+              Log.e("Mathdoku", "Package name not found", e);
+          }
+          return version;
+      }
 }

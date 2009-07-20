@@ -12,6 +12,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".OptionsActivity"/>
+        <activity android:name=".SavedGameList"/>
     </application>
     <uses-sdk android:minSdkVersion="3" />
     <uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>

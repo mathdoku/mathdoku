@@ -177,7 +177,7 @@ public class GridCell {
     this.mPosX = cellSize * this.mColumn;
     this.mPosY = cellSize * this.mRow;
     
-    if (this.mShowWarning && this.mContext.mContext.preferences.getBoolean("dupedigits", true))
+    if (this.mShowWarning && this.mContext.mDupedigits)
     	canvas.drawRect(this.mPosX+1, this.mPosY+1, this.mPosX + cellSize-1, this.mPosY + cellSize-1, this.mWarningPaint);
     if (this.mSelected)
     	canvas.drawRect(this.mPosX+1, this.mPosY+1, this.mPosX + cellSize-1, this.mPosY + cellSize-1, this.mSelectedPaint);
