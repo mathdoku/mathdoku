@@ -3,6 +3,7 @@ package net.cactii.mathdoku;
 import java.io.File;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -12,6 +13,7 @@ import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -83,6 +85,13 @@ public class SavedGameListAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		if (position == 0) {
 			convertView = inflater.inflate(R.layout.savedgamesaveitem, null);
+			if (PreferenceManager.getDefaultSharedPreferences(convertView.getContext()).getBoolean("alternatetheme", false)) {
+				convertView.findViewById(R.id.wordRow).setBackgroundDrawable(null);
+				convertView.findViewById(R.id.wordRow).setBackgroundColor(0xFFA0A0CC);
+			} else {
+				convertView.findViewById(R.id.wordRow).setBackgroundResource(R.drawable.background1);
+			}
+			
 			final Button saveCurrent = (Button)convertView.findViewById(R.id.saveCurrent);
 			saveCurrent.setOnClickListener(new OnClickListener() {
 				public void onClick(View v) {
@@ -96,7 +105,17 @@ public class SavedGameListAdapter extends BaseAdapter {
 		}
 		
 		convertView = inflater.inflate(R.layout.savedgameitem, null);
+		
+		
 		GridView grid = (GridView)convertView.findViewById(R.id.savedGridView);
+		if (PreferenceManager.getDefaultSharedPreferences(convertView.getContext()).getBoolean("alternatetheme", false)) {
+			grid.setTheme(GridView.THEME_NEWSPAPER);
+			convertView.findViewById(R.id.wordRow).setBackgroundDrawable(null);
+			convertView.findViewById(R.id.wordRow).setBackgroundColor(0xFFA0A0CC);
+		} else {
+			grid.setTheme(GridView.THEME_CARVED);
+			convertView.findViewById(R.id.wordRow).setBackgroundResource(R.drawable.background1);
+		}
 		TextView label = (TextView)convertView.findViewById(R.id.savedGridText);
 
 		final String saveFile = SAVEDGAME_DIR + "/" + this.mGameFiles.get(position-1);
@@ -114,7 +133,14 @@ public class SavedGameListAdapter extends BaseAdapter {
 			new File(saveFile).delete();
 			return convertView;
 		}
-		if (System.currentTimeMillis() - grid.mDate < 86400000)
+		Calendar currentTime = Calendar.getInstance();
+		Calendar gameTime = Calendar.getInstance();
+		gameTime.setTimeInMillis(grid.mDate);
+		if (System.currentTimeMillis() - grid.mDate < 86400000 &&
+			gameTime.get(Calendar.DAY_OF_YEAR) != currentTime.get(Calendar.DAY_OF_YEAR))
+			label.setText(gameTime.get(Calendar.HOUR) + ":" + gameTime.get(Calendar.MINUTE) + 
+					((gameTime.get(Calendar.AM_PM) == Calendar.AM) ? " AM" : " PM") + " yesterday");
+		else if (System.currentTimeMillis() - grid.mDate < 86400000)
 			label.setText("" + DateFormat.getTimeInstance(DateFormat.SHORT).format(grid.mDate));
 		else
 			label.setText("" + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(grid.mDate));

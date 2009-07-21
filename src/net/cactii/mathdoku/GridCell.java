@@ -54,6 +54,8 @@ public class GridCell {
   private Paint mWarningPaint;
   private Paint mSelectedPaint;
   
+  public int mTheme;
+  
   public GridCell(GridView context, int cell) {
     int gridSize = context.mGridSize;
     this.mContext = context;
@@ -72,25 +74,19 @@ public class GridCell {
     this.mValuePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     this.mValuePaint.setColor(0xFF000000);
     // this.mValuePaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD));
-    this.mValuePaint.setTypeface(this.mContext.mFace);
 
     this.mDashedBorderPaint = new Paint();
     this.mDashedBorderPaint.setColor(0xFF000000);
     this.mDashedBorderPaint.setStrokeWidth(0);
-    this.mDashedBorderPaint.setPathEffect(new DashPathEffect(new float[] {2, 2}, 0));
     
     this.mBorderPaint = new Paint();
     this.mBorderPaint.setColor(0xFF000000);
     this.mBorderPaint.setStrokeWidth(2);
-    this.mBorderPaint.setAntiAlias(true);
-	this.mBorderPaint.setPathEffect(new DiscretePathEffect(20, 1));
 
     
     this.mWrongBorderPaint = new Paint();
     this.mWrongBorderPaint.setColor(0xFFBB0000);
     this.mWrongBorderPaint.setStrokeWidth(3);
-    this.mWrongBorderPaint.setAntiAlias(true);
-    this.mWrongBorderPaint.setPathEffect(new DiscretePathEffect(20, 1));
     
     this.mWarningPaint = new Paint();
     this.mWarningPaint.setColor(0x50FF0000);
@@ -104,7 +100,6 @@ public class GridCell {
     this.mCageTextPaint.setColor(0xFF0000A0);
     this.mCageTextPaint.setTextSize(14);
     //this.mCageTextPaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD));
-    this.mCageTextPaint.setTypeface(this.mContext.mFace);
    
     this.mPossiblesPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     this.mPossiblesPaint.setColor(0xFF000000);
@@ -120,6 +115,27 @@ public class GridCell {
     //this.mPossibles.add(5);
     
     this.setBorders(BORDER_NONE, BORDER_NONE, BORDER_NONE, BORDER_NONE);
+  }
+  
+  public void setTheme(int theme) {
+	  this.mTheme = theme;
+	  if (theme == GridView.THEME_CARVED) {
+	    this.mDashedBorderPaint.setPathEffect(new DashPathEffect(new float[] {2, 2}, 0));
+	    this.mBorderPaint.setAntiAlias(true);
+		this.mBorderPaint.setPathEffect(new DiscretePathEffect(20, 1));
+	    this.mWrongBorderPaint.setAntiAlias(true);
+	    this.mWrongBorderPaint.setPathEffect(new DiscretePathEffect(20, 1));
+	    this.mValuePaint.setTypeface(this.mContext.mFace);
+	    this.mCageTextPaint.setTypeface(this.mContext.mFace);
+	  } else if (theme == GridView.THEME_NEWSPAPER) {
+	    this.mDashedBorderPaint.setPathEffect(null);
+	    this.mBorderPaint.setAntiAlias(true);
+		this.mBorderPaint.setPathEffect(null);
+	    this.mWrongBorderPaint.setAntiAlias(true);
+	    this.mWrongBorderPaint.setPathEffect(null);
+	    this.mValuePaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL));
+	    this.mCageTextPaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL));
+	  }
   }
   
   public String toString() {
@@ -206,7 +222,14 @@ public class GridCell {
     if (this.mUserValue > 0) {
 	    int textSize = (int)(cellSize*3/4);
 	    this.mValuePaint.setTextSize(textSize);
-	    canvas.drawText("" + this.mUserValue, this.mPosX + cellSize/2 - textSize/4, this.mPosY + cellSize/2 + textSize/3, this.mValuePaint);
+	    float leftOffset = cellSize/2 - textSize/4;
+	    float topOffset;
+	    if (this.mTheme == GridView.THEME_NEWSPAPER) {
+	    	topOffset = cellSize/2 + textSize*2/5;
+	    } else {
+	    	topOffset = cellSize/2 + textSize/3;
+	    }
+	    canvas.drawText("" + this.mUserValue, this.mPosX + leftOffset, this.mPosY + topOffset, this.mValuePaint);
     }
     
     int cageTextSize = (int)(cellSize/3);

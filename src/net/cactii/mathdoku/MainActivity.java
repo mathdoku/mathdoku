@@ -218,9 +218,12 @@ public class MainActivity extends Activity {
 	        this.wakeLock.acquire();
 	    if (this.preferences.getBoolean("alternatetheme", false)) {
 	    	this.topLayout.setBackgroundDrawable(null);
-	    	this.topLayout.setBackgroundColor(0xFFE0E0FF);
-	    } else
+	    	this.topLayout.setBackgroundColor(0xFFA0A0CC);
+	    	this.kenKenGrid.setTheme(GridView.THEME_NEWSPAPER);
+	    } else {
 	    	this.topLayout.setBackgroundResource(R.drawable.background);
+	    	this.kenKenGrid.setTheme(GridView.THEME_CARVED);
+	    }
 	    this.kenKenGrid.mDupedigits = this.preferences.getBoolean("dupedigits", true);
 	    this.kenKenGrid.mBadMaths = this.preferences.getBoolean("badmaths", true);
 	    super.onResume();
@@ -483,11 +486,14 @@ public class MainActivity extends Activity {
           //new File(SaveGame.saveFilename).delete();
           prefeditor.putInt("currentversion", current_version);
           prefeditor.commit();
-          this.openChangesDialog();
+          if (pref_version == -1)
+        	  this.openHelpDialog();
+          else
+        	  this.openChangesDialog();
           return;
         }
-
     }
+    
     public int getVersionNumber() {
         int version = -1;
           try {

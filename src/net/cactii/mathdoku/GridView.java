@@ -25,6 +25,8 @@ import android.widget.TextView;
 
 public class GridView extends View implements OnTouchListener {
 
+	public static final int THEME_CARVED = 0;
+	public static final int THEME_NEWSPAPER = 1;
   // Solved listener
   private OnSolvedListener mSolvedListener;
   // Touched listener
@@ -61,6 +63,7 @@ public class GridView extends View implements OnTouchListener {
   public Paint mCagePaint;
   public Paint mCageTextPaint;
   public Paint mGridBackgroundPaint;
+  public int mBackgroundColor;
 
 private Paint mShadePaint;
 
@@ -71,6 +74,8 @@ public boolean mBadMaths;
 
 	// Date of current game (used for saved games)
 	public long mDate;
+	// Current theme
+	public int mTheme;
   
   public GridView(Context context) {
     super(context);
@@ -98,14 +103,10 @@ public boolean mBadMaths;
     this.mGridPaint.setColor(0x80000000);
     this.mGridPaint.setStrokeWidth(0);
     //this.mGridPaint.setPathEffect(new DashPathEffect(new float[] {2, 2}, 0));
-    this.mGridPaint.setAntiAlias(true);
-	this.mGridPaint.setPathEffect(new DiscretePathEffect(20, 1));
     
     this.mBorderPaint = new Paint();
     this.mBorderPaint.setColor(0xFF000000);
     this.mBorderPaint.setStrokeWidth(3);
-    this.mBorderPaint.setAntiAlias(true);
-    this.mBorderPaint.setPathEffect(new DiscretePathEffect(30, 1));
     
     this.mGridBackgroundPaint = new Paint();
     this.mGridBackgroundPaint.setColor(0xF0FFFFFF);
@@ -114,7 +115,6 @@ public boolean mBadMaths;
     this.mCagePaint = new Paint();
     this.mCagePaint.setColor(0xFFF0D090);
     this.mCagePaint.setStrokeWidth(0);
-    this.mCagePaint.setPathEffect(new DiscretePathEffect(30, 1));
 
     this.mCageTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     this.mCageTextPaint.setColor(0xFF000000);
@@ -136,6 +136,30 @@ public boolean mBadMaths;
     this.setOnTouchListener((OnTouchListener) this);
   }
   
+  public void setTheme(int theme) {
+	  if (theme == THEME_CARVED) {
+	    this.mGridPaint.setAntiAlias(true);
+		this.mGridPaint.setPathEffect(new DiscretePathEffect(20, 1));
+	    this.mBorderPaint.setAntiAlias(true);
+	    this.mBorderPaint.setPathEffect(new DiscretePathEffect(30, 1));
+	    this.mCagePaint.setPathEffect(new DiscretePathEffect(30, 1));
+	    this.mBackgroundColor = 0x7ff0d090;
+	  } else if (theme == THEME_NEWSPAPER) {
+			this.mGridPaint.setPathEffect(null);
+		    this.mBorderPaint.setPathEffect(null);
+		    this.mCagePaint.setPathEffect(null);
+		    this.mBackgroundColor = 0xffffffff;
+	  }
+	  if (this.getMeasuredHeight() < 150)
+		this.mBorderPaint.setStrokeWidth(1);
+	  else
+	  	this.mBorderPaint.setStrokeWidth(3);
+	  
+	  if (this.mCells != null)
+		  for (GridCell cell : this.mCells)
+			  cell.setTheme(theme);
+  }
+  
   public void reCreate() {
     //this.mGridSize = 6; // TODO: Change based on initalisation (xml?)
 	this.mRandom = new Random();
@@ -150,6 +174,7 @@ public boolean mBadMaths;
     CreateCages();
     this.mActive = true;
     this.mSelectorShown = false;
+    this.setTheme(this.mTheme);
   }
 
   
@@ -351,7 +376,7 @@ public boolean mBadMaths;
       this.mCurrentWidth = width;
 
     // Fill canvas background
-    canvas.drawARGB(128, 0xF0, 0xD0, 0x90);
+    canvas.drawColor(this.mBackgroundColor);
     
     // Check cage correctness
     for (GridCage cage : this.mCages)
