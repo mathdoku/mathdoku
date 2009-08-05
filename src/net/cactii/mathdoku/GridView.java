@@ -140,12 +140,13 @@ public boolean mBadMaths;
 	  if (theme == THEME_CARVED) {
 	    this.mGridPaint.setAntiAlias(true);
 		this.mGridPaint.setPathEffect(new DiscretePathEffect(20, 1));
+		this.mGridPaint.setColor(0xff906050);
 	    this.mBorderPaint.setAntiAlias(true);
 	    this.mBorderPaint.setPathEffect(new DiscretePathEffect(30, 1));
 	    this.mCagePaint.setPathEffect(new DiscretePathEffect(30, 1));
 	    this.mBackgroundColor = 0x7ff0d090;
 	  } else if (theme == THEME_NEWSPAPER) {
-			this.mGridPaint.setPathEffect(null);
+			this.mGridPaint.setPathEffect(new DashPathEffect(new float[] {2, 2}, 0));
 		    this.mBorderPaint.setPathEffect(null);
 		    this.mCagePaint.setPathEffect(null);
 		    this.mBackgroundColor = 0xffffffff;
@@ -382,6 +383,13 @@ public boolean mBadMaths;
     for (GridCage cage : this.mCages)
       cage.userValuesCorrect();
     
+    // Draw (dashed) grid
+    for (int i = 1 ; i < this.mGridSize ; i++) {
+      float pos = ((float)this.mCurrentWidth / (float)this.mGridSize) * i;
+      canvas.drawLine(0, pos, this.mCurrentWidth, pos, this.mGridPaint);
+      canvas.drawLine(pos, 0, pos, this.mCurrentWidth, this.mGridPaint);
+    }
+    
     // Draw cells
     for (GridCell cell : this.mCells) {
   	  if ((cell.mUserValue > 0 && this.getNumValueInCol(cell) > 1) ||
@@ -391,13 +399,7 @@ public boolean mBadMaths;
   		  cell.mShowWarning = false;
         cell.onDraw(canvas);
     }
-    
-    // Draw (dashed) grid
-    for (int i = 1 ; i < this.mGridSize ; i++) {
-      float pos = ((float)this.mCurrentWidth / (float)this.mGridSize) * i;
-      canvas.drawLine(0, pos, this.mCurrentWidth, pos, this.mGridPaint);
-      canvas.drawLine(pos, 0, pos, this.mCurrentWidth, this.mGridPaint);
-    }
+
     
     // Draw borders
     canvas.drawLine(1, 1, this.mCurrentWidth-1, 1, this.mBorderPaint);

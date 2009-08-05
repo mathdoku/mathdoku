@@ -12,6 +12,11 @@
 			android:summary="Use a different theme"
 			android:defaultValue="false" />
 		<CheckBoxPreference
+			android:key="hideselector"
+			android:title="Auto-hide selector"
+			android:summary="Selector buttons hide after pressing"
+			android:defaultValue="false" />
+		<CheckBoxPreference
 			android:key="badmaths"
 			android:title="Show bad maths"
 			android:summary="Highlight invalid arithmetic"

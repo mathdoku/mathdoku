@@ -117,15 +117,22 @@ public class MainActivity extends Activity {
 			public void gridTouched(GridCell cell) {
 				if (digitSelector.getVisibility() == View.VISIBLE) {
 					// digitSelector.setVisibility(View.GONE);
-					digitSelector.startAnimation(outAnimation);
-					//cell.mSelected = false;
-					kenKenGrid.mSelectorShown = false;
+			    	if (MainActivity.this.preferences.getBoolean("hideselector", false)) {
+						digitSelector.startAnimation(outAnimation);
+						//cell.mSelected = false;
+						kenKenGrid.mSelectorShown = false;
+			    	} else {
+						maybeButton.setChecked((cell.mPossibles.size() > 0));
+						digitSelector.requestFocus();
+			    	}
 					kenKenGrid.requestFocus();
 				} else {
-					digitSelector.setVisibility(View.VISIBLE);
-					Animation animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.selectorzoomin);
-					digitSelector.startAnimation(animation);
-					kenKenGrid.mSelectorShown = true;
+			    	if (MainActivity.this.preferences.getBoolean("hideselector", false)) {
+						digitSelector.setVisibility(View.VISIBLE);
+						Animation animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.selectorzoomin);
+						digitSelector.startAnimation(animation);
+						kenKenGrid.mSelectorShown = true;
+			    	}
 					maybeButton.setChecked((cell.mPossibles.size() > 0));
 					digitSelector.requestFocus();
 				}
@@ -199,7 +206,7 @@ public class MainActivity extends Activity {
         SaveGame saver = new SaveGame();
         if (saver.Restore(this.kenKenGrid)) {
         	this.setButtonVisibility(this.kenKenGrid.mGridSize);
-        	this.kenKenGrid.mActive = true;
+        	this.kenKenGrid.mActive = true;    		
         }
     }
     
@@ -226,6 +233,9 @@ public class MainActivity extends Activity {
 	    }
 	    this.kenKenGrid.mDupedigits = this.preferences.getBoolean("dupedigits", true);
 	    this.kenKenGrid.mBadMaths = this.preferences.getBoolean("badmaths", true);
+	    if (this.kenKenGrid.mActive && !MainActivity.this.preferences.getBoolean("hideselector", false)) {
+	    	this.digitSelector.setVisibility(View.VISIBLE);
+	    }
 	    super.onResume();
 	}
     
@@ -348,15 +358,17 @@ public class MainActivity extends Activity {
     		break;
     	}
     	if (this.maybeButton.isChecked())
-    		if (value == 0)
+    		if (value == 0) {
     			this.kenKenGrid.mSelectedCell.mPossibles.clear();
-    		else
+				this.maybeButton.setChecked(false);
+    		} else
     			this.kenKenGrid.mSelectedCell.togglePossible(value);
     	else {
     		this.kenKenGrid.mSelectedCell.setUserValue(value);
     		this.kenKenGrid.mSelectedCell.mPossibles.clear();
     	}
-    	this.digitSelector.setVisibility(View.GONE);
+    	if (this.preferences.getBoolean("hideselector", false))
+    		this.digitSelector.setVisibility(View.GONE);
     	// this.kenKenGrid.mSelectedCell.mSelected = false;
     	this.kenKenGrid.requestFocus();
     	this.kenKenGrid.mSelectorShown = false;
@@ -368,6 +380,14 @@ public class MainActivity extends Activity {
     final Runnable newGameReady = new Runnable() {
         public void run() {
         	MainActivity.this.dismissDialog(0);
+    	    if (MainActivity.this.preferences.getBoolean("alternatetheme", false)) {
+    	    	MainActivity.this.topLayout.setBackgroundDrawable(null);
+    	    	MainActivity.this.topLayout.setBackgroundColor(0xFFA0A0CC);
+    	    	MainActivity.this.kenKenGrid.setTheme(GridView.THEME_NEWSPAPER);
+    	    } else {
+    	    	MainActivity.this.topLayout.setBackgroundResource(R.drawable.background);
+    	    	MainActivity.this.kenKenGrid.setTheme(GridView.THEME_CARVED);
+    	    }
         	MainActivity.this.kenKenGrid.invalidate();
         }
     };
@@ -375,6 +395,7 @@ public class MainActivity extends Activity {
     public void startNewGame(int gridSize) {
     	this.setButtonVisibility(kenKenGrid.mGridSize);
     	showDialog(0);
+
     	Thread t = new Thread() {
 			public void run() {
 				MainActivity.this.kenKenGrid.reCreate();
@@ -429,6 +450,9 @@ public class MainActivity extends Activity {
         }
 		this.solvedText.setVisibility(View.GONE);
 		this.newGame.setVisibility(View.GONE);
+    	if (!MainActivity.this.preferences.getBoolean("hideselector", false)) {
+			this.digitSelector.setVisibility(View.VISIBLE);
+    	}
     }
     
     private void animText(String text, int color) {

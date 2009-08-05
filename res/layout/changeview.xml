@@ -24,7 +24,11 @@
 				android:paddingLeft="15px"
 				android:textStyle="bold"
 				android:textColor="#ffffff" />
-
+			<TextView android:text="v1.1: Gameplay and appearance improvements."
+				android:layout_width="fill_parent" 
+				android:layout_height="wrap_content"
+				android:paddingLeft="15px"			
+				android:textColor="#ffffb0" />
 			<TextView android:text="v1.0: Initial version."
 				android:layout_width="fill_parent" 
 				android:layout_height="wrap_content"
