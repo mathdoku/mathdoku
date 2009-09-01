@@ -140,7 +140,7 @@ public boolean mBadMaths;
 	  if (theme == THEME_CARVED) {
 	    this.mGridPaint.setAntiAlias(true);
 		this.mGridPaint.setPathEffect(new DiscretePathEffect(20, 1));
-		this.mGridPaint.setColor(0xff906050);
+		this.mGridPaint.setColor(0xbf906050);
 	    this.mBorderPaint.setAntiAlias(true);
 	    this.mBorderPaint.setPathEffect(new DiscretePathEffect(30, 1));
 	    this.mCagePaint.setPathEffect(new DiscretePathEffect(30, 1));
@@ -514,8 +514,11 @@ public boolean mBadMaths;
     	return true;
     }
     // Set the cell as selected
-    if (this.mSelectedCell != null)
+    if (this.mSelectedCell != null) {
     	this.mSelectedCell.mSelected = false;
+	    if (this.mSelectedCell != cell)
+	    	this.mTouchedListener.gridTouched(cell);
+    }
     this.mSelectedCell = cell;
     cell.mSelected = true;
     invalidate();

@@ -223,7 +223,7 @@ public class MainActivity extends Activity {
     public void onResume() {
 	    if (this.preferences.getBoolean("wakelock", true))
 	        this.wakeLock.acquire();
-	    if (this.preferences.getBoolean("alternatetheme", false)) {
+	    if (this.preferences.getBoolean("alternatetheme", true)) {
 	    	this.topLayout.setBackgroundDrawable(null);
 	    	this.topLayout.setBackgroundColor(0xFFA0A0CC);
 	    	this.kenKenGrid.setTheme(GridView.THEME_NEWSPAPER);
@@ -380,7 +380,7 @@ public class MainActivity extends Activity {
     final Runnable newGameReady = new Runnable() {
         public void run() {
         	MainActivity.this.dismissDialog(0);
-    	    if (MainActivity.this.preferences.getBoolean("alternatetheme", false)) {
+    	    if (MainActivity.this.preferences.getBoolean("alternatetheme", true)) {
     	    	MainActivity.this.topLayout.setBackgroundDrawable(null);
     	    	MainActivity.this.topLayout.setBackgroundColor(0xFFA0A0CC);
     	    	MainActivity.this.kenKenGrid.setTheme(GridView.THEME_NEWSPAPER);
