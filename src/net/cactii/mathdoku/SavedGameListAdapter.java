@@ -85,7 +85,7 @@ public class SavedGameListAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		if (position == 0) {
 			convertView = inflater.inflate(R.layout.savedgamesaveitem, null);
-			if (PreferenceManager.getDefaultSharedPreferences(convertView.getContext()).getBoolean("alternatetheme", false)) {
+			if (PreferenceManager.getDefaultSharedPreferences(convertView.getContext()).getBoolean("alternatetheme", true)) {
 				convertView.findViewById(R.id.wordRow).setBackgroundDrawable(null);
 				convertView.findViewById(R.id.wordRow).setBackgroundColor(0xFFA0A0CC);
 			} else {
