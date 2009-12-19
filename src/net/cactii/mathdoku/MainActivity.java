@@ -24,18 +24,23 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.SoundEffectConstants;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class MainActivity extends Activity {
     GridView kenKenGrid;
@@ -198,6 +203,17 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				MainActivity.this.digitSelected(v.getId());
 			}
+        });
+        
+        this.maybeButton.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if (event.getAction() == MotionEvent.ACTION_UP)
+					v.playSoundEffect(SoundEffectConstants.CLICK);
+				return false;
+			}
+        	
         });
         
         newVersionCheck();

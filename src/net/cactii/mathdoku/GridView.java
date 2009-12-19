@@ -15,6 +15,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.MeasureSpec;
@@ -466,6 +467,7 @@ public boolean mBadMaths;
     for (GridCell c : this.mCells)
     	c.mSelected = false;
     if (this.mTouchedListener != null) {
+    	this.playSoundEffect(SoundEffectConstants.CLICK);
     	this.mSelectedCell.mSelected = true;
     	this.mTouchedListener.gridTouched(this.mSelectedCell);
     }
