@@ -357,6 +357,8 @@ public class MainActivity extends Activity {
     		value = 0;
     		break;
     	}
+    	if (this.kenKenGrid.mSelectedCell == null)
+    		return;
     	if (this.maybeButton.isChecked())
     		if (value == 0) {
     			this.kenKenGrid.mSelectedCell.mPossibles.clear();
