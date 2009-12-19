@@ -458,6 +458,8 @@ public boolean mBadMaths;
 	
     // We can now get the cell.
     GridCell cell = getCellAt(row, col);
+    if (this.mSelectedCell != cell)
+    	this.playSoundEffect(SoundEffectConstants.CLICK);
     this.mSelectedCell = cell;
     
     float[] cellPos = this.CellToCoord(cell.mCellNumber);
@@ -467,7 +469,6 @@ public boolean mBadMaths;
     for (GridCell c : this.mCells)
     	c.mSelected = false;
     if (this.mTouchedListener != null) {
-    	this.playSoundEffect(SoundEffectConstants.CLICK);
     	this.mSelectedCell.mSelected = true;
     	this.mTouchedListener.gridTouched(this.mSelectedCell);
     }

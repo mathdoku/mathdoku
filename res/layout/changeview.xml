@@ -24,11 +24,16 @@
 				android:paddingLeft="15px"
 				android:textStyle="bold"
 				android:textColor="#ffffff" />
-			<TextView android:text="v1.1: Bug fixes, default theme change."
+			<TextView android:text="v1.3: Crash fix. 'Click' sound effects."
 				android:layout_width="fill_parent" 
 				android:layout_height="wrap_content"
 				android:paddingLeft="15px"			
 				android:textColor="#ffffb0" />
+			<TextView android:text="v1.2: Bug fixes, default theme change."
+				android:layout_width="fill_parent" 
+				android:layout_height="wrap_content"
+				android:paddingLeft="15px"			
+				android:textColor="#ffffff" />
 			<TextView android:text="v1.1: Gameplay and appearance improvements."
 				android:layout_width="fill_parent" 
 				android:layout_height="wrap_content"

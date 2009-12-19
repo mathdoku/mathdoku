@@ -28,7 +28,7 @@ public class SavedGameList extends ListActivity {
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		this.mAdapter = new SavedGameListAdapter(this);
-		this.getListView().setBackgroundColor(0xFFA0A0CC);
+		//this.getListView().setBackgroundColor(0xFFA0A0CC);
 		setListAdapter(this.mAdapter);
 	}
 	
