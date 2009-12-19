@@ -60,6 +60,7 @@ public class MainActivity extends Activity {
     Button digit8;
     Button clearDigit;
     CheckBox maybeButton;
+    View[] sound_effect_views;
 	private Animation outAnimation;
 	private Animation solvedAnimation;
 	
@@ -98,6 +99,10 @@ public class MainActivity extends Activity {
         this.clearDigit = (Button)findViewById(R.id.clearButton);
         this.maybeButton = (CheckBox)findViewById(R.id.maybeButton);
        
+        this.sound_effect_views = new View[] { this.kenKenGrid, this.digit1, this.digit2,
+        		this.digit3, this.digit4, this.digit5, this.digit6, this.digit7, this.digit8,
+        		this.clearDigit, this.maybeButton
+        };
 
         solvedAnimation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.solvedanim);
         solvedAnimation.setAnimationListener(new AnimationListener() {
@@ -252,8 +257,14 @@ public class MainActivity extends Activity {
 	    if (this.kenKenGrid.mActive && !MainActivity.this.preferences.getBoolean("hideselector", false)) {
 	    	this.digitSelector.setVisibility(View.VISIBLE);
 	    }
+	    this.setSoundEffectsEnabled(this.preferences.getBoolean("soundeffects", true));
 	    super.onResume();
 	}
+    
+    public void setSoundEffectsEnabled(boolean enabled) {
+    	for (View v : this.sound_effect_views)
+    	v.setSoundEffectsEnabled(enabled);
+    }
     
     protected void onActivityResult(int requestCode, int resultCode,
     	      Intent data) {

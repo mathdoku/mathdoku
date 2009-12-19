@@ -3,10 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android">  
 	<PreferenceCategory android:title="General options">
 		<CheckBoxPreference
-			android:key="wakelock"
-			android:title="Keep screen on"
-			android:defaultValue="true" />
-		<CheckBoxPreference
 			android:key="alternatetheme"
 			android:title="Alternate theme"
 			android:summary="Use a different theme"
@@ -25,6 +21,14 @@
 			android:key="dupedigits"
 			android:title="Mark duplicates"
 			android:summary="Highlight duplicate digits"
+			android:defaultValue="true" />
+		<CheckBoxPreference
+			android:key="soundeffects"
+			android:title="Enable sound effects"
+			android:defaultValue="true" />
+		<CheckBoxPreference
+			android:key="wakelock"
+			android:title="Keep screen on"
 			android:defaultValue="true" />
 	</PreferenceCategory>
 
