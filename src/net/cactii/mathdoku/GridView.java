@@ -281,6 +281,14 @@ public boolean mBadMaths;
 	  this.mCages = new ArrayList<GridCage>();
   }
   
+  public void clearUserValues() {
+	  for (GridCell cell : this.mCells) {
+		  cell.mUserValue = 0;
+		  cell.mPossibles.clear();
+		  this.invalidate();
+	  }
+  }
+  
   /* Fetch the cell at the given row, column */
   public GridCell getCellAt(int row, int column) {
     for (GridCell cell : this.mCells)

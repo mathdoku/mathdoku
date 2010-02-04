@@ -43,7 +43,7 @@ import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class MainActivity extends Activity {
-    GridView kenKenGrid;
+    public GridView kenKenGrid;
     TextView solvedText;
     TextView newGame;
     ProgressDialog mProgressDialog;
@@ -59,6 +59,7 @@ public class MainActivity extends Activity {
     Button digit7;
     Button digit8;
     Button clearDigit;
+    Button clearAll;
     CheckBox maybeButton;
     View[] sound_effect_views;
 	private Animation outAnimation;
@@ -97,6 +98,7 @@ public class MainActivity extends Activity {
         this.digit7 = (Button)findViewById(R.id.digitSelect7);
         this.digit8 = (Button)findViewById(R.id.digitSelect8);
         this.clearDigit = (Button)findViewById(R.id.clearButton);
+        this.clearAll = (Button)findViewById(R.id.clearAllButton);
         this.maybeButton = (CheckBox)findViewById(R.id.maybeButton);
        
         this.sound_effect_views = new View[] { this.kenKenGrid, this.digit1, this.digit2,
@@ -121,6 +123,13 @@ public class MainActivity extends Activity {
             public void onAnimationRepeat(Animation animation) {}
             public void onAnimationStart(Animation animation) {}
           });
+        
+        this.clearAll.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				openClearDialog();
+			}
+        });
         
         this.kenKenGrid.setOnGridTouchListener(this.kenKenGrid.new OnGridTouchListener() {
 			@Override
@@ -162,7 +171,6 @@ public class MainActivity extends Activity {
     				MainActivity.this.newGame.setVisibility(View.VISIBLE);
     			}
         });
-
         
         this.digit1.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
@@ -533,6 +541,27 @@ public class MainActivity extends Activity {
       })
       .show();  
     }
+    
+    private void openClearDialog() {
+        LayoutInflater li = LayoutInflater.from(this);
+        View view = li.inflate(R.layout.clearview, null); 
+        new AlertDialog.Builder(MainActivity.this)
+        .setTitle("Clear All?")
+        .setView(view)
+        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+          public void onClick(DialogInterface dialog, int whichButton) {
+              //
+          }
+        })
+        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				MainActivity.this.kenKenGrid.clearUserValues();
+			}
+        })
+        .show();  
+      }
+    
     public void newVersionCheck() {
         int pref_version = preferences.getInt("currentversion", -1);
         Editor prefeditor = preferences.edit();
