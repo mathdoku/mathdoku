@@ -24,7 +24,7 @@
 				android:paddingLeft="15px"
 				android:textStyle="bold"
 				android:textColor="#ffffff" />
-			<TextView android:text="v1.4: Fixed display problems."
+			<TextView android:text="v1.4: Fixed display problems. Added 'clear all'"
 				android:layout_width="fill_parent" 
 				android:layout_height="wrap_content"
 				android:paddingLeft="15px"			
