@@ -41,12 +41,14 @@ public class GridCell {
   public static final int BORDER_SOLID = 1;
   public static final int BORDER_DASHED = 2;
   public static final int BORDER_WARN = 3;
+  public static final int BORDER_CAGE_SELECTED = 4;
 
   public int[] mBorderTypes;
   
   private Paint mValuePaint;
   private Paint mDashedBorderPaint;
   private Paint mBorderPaint;
+  private Paint mCageSelectedPaint;
   
   private Paint mWrongBorderPaint;
   private Paint mCageTextPaint;
@@ -86,7 +88,11 @@ public class GridCell {
     
     this.mWrongBorderPaint = new Paint();
     this.mWrongBorderPaint.setColor(0xFFBB0000);
-    this.mWrongBorderPaint.setStrokeWidth(3);
+    this.mWrongBorderPaint.setStrokeWidth(2);
+    
+    this.mCageSelectedPaint = new Paint();
+    this.mCageSelectedPaint.setColor(0xFF9BCF00);
+    this.mCageSelectedPaint.setStrokeWidth(2);
     
     this.mWarningPaint = new Paint();
     this.mWarningPaint.setColor(0x50FF0000);
@@ -169,6 +175,8 @@ public class GridCell {
         return this.mBorderPaint;
       case BORDER_WARN :
         return this.mWrongBorderPaint;
+      case BORDER_CAGE_SELECTED :
+          return this.mCageSelectedPaint;
     }
     return null;
   }
@@ -186,37 +194,81 @@ public class GridCell {
   }
   
   /* Draw the cell. Border and text is drawn. */
-  public void onDraw(Canvas canvas) {
+  public void onDraw(Canvas canvas, boolean onlyBorders) {
     
     // Calculate x and y for the cell origin (topleft)
     float cellSize = (float)this.mContext.getMeasuredWidth() / (float)this.mContext.mGridSize;
     this.mPosX = cellSize * this.mColumn;
     this.mPosY = cellSize * this.mRow;
     
-    if (this.mShowWarning && this.mContext.mDupedigits)
-    	canvas.drawRect(this.mPosX+1, this.mPosY+1, this.mPosX + cellSize-1, this.mPosY + cellSize-1, this.mWarningPaint);
-    if (this.mSelected)
-    	canvas.drawRect(this.mPosX+1, this.mPosY+1, this.mPosX + cellSize-1, this.mPosY + cellSize-1, this.mSelectedPaint);
+    float north = this.mPosY;
+    float south = this.mPosY + cellSize;
+    float east = this.mPosX + cellSize;
+    float west = this.mPosX;
+    GridCell cellAbove = this.mContext.getCellAt(this.mRow-1, this.mColumn);
+    GridCell cellLeft = this.mContext.getCellAt(this.mRow, this.mColumn-1);
+    GridCell cellRight = this.mContext.getCellAt(this.mRow, this.mColumn+1);
+    GridCell cellBelow = this.mContext.getCellAt(this.mRow+1, this.mColumn);
 
+    if (!onlyBorders) {
+	    if (this.mShowWarning && this.mContext.mDupedigits)
+	    	canvas.drawRect(west + 1, north+1, east-1, south-1, this.mWarningPaint);
+	    if (this.mSelected)
+	    	canvas.drawRect(west+1, north+1, east-1, south-1, this.mSelectedPaint);
+    } else {
+	    if (this.mBorderTypes[0] > 2)
+	    	if (cellAbove == null)
+	    		north += 2;
+	    	else
+	    		north += 1;
+	    if (this.mBorderTypes[3] > 2)
+	    	if (cellLeft == null)
+	    		west += 2;
+	    	else
+	    		west += 1;
+	    if (this.mBorderTypes[1] > 2)
+	    	if (cellRight == null)
+	    		east -= 3;
+	    	else
+	    		east -= 2;
+	    if (this.mBorderTypes[2] > 2)
+	    	if (cellBelow == null)
+	    		south -= 3;
+	    	else
+	    		south -= 2;
+    }
     // North
     Paint borderPaint = this.getBorderPaint(0);
-    if (borderPaint != null)
-      canvas.drawLine(this.mPosX, this.mPosY, this.mPosX + cellSize, this.mPosY, borderPaint);
+    if (!onlyBorders && this.mBorderTypes[0] > 2)
+    	borderPaint = this.mBorderPaint;
+    if (borderPaint != null) {
+      canvas.drawLine(west, north, east, north, borderPaint);
+    }
     
     // East
     borderPaint = this.getBorderPaint(1);
+    if (!onlyBorders && this.mBorderTypes[1] > 2)
+    	borderPaint = this.mBorderPaint;
     if (borderPaint != null)
-      canvas.drawLine(this.mPosX+cellSize, this.mPosY, this.mPosX+cellSize, this.mPosY+cellSize, borderPaint);
+      canvas.drawLine(east, north, east, south, borderPaint);
     
     // South
     borderPaint = this.getBorderPaint(2);
+    if (!onlyBorders && this.mBorderTypes[2] > 2)
+    	borderPaint = this.mBorderPaint;
     if (borderPaint != null)
-      canvas.drawLine(this.mPosX, this.mPosY+cellSize, this.mPosX+cellSize, this.mPosY+cellSize, borderPaint);
+      canvas.drawLine(west, south, east, south, borderPaint);
     
     // West
     borderPaint = this.getBorderPaint(3);
-    if (borderPaint != null)
-      canvas.drawLine(this.mPosX, this.mPosY, this.mPosX, this.mPosY+cellSize, borderPaint);
+    if (!onlyBorders && this.mBorderTypes[3] > 2)
+    	borderPaint = this.mBorderPaint;
+    if (borderPaint != null) {
+      canvas.drawLine(west, north, west, south, borderPaint);
+    }
+    
+    if (onlyBorders)
+    	return;
     
     // Cell value
     if (this.mUserValue > 0) {

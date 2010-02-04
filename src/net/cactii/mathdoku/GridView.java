@@ -398,16 +398,20 @@ public boolean mBadMaths;
   		  cell.mShowWarning = true;
   	  else
   		  cell.mShowWarning = false;
-        cell.onDraw(canvas);
+        cell.onDraw(canvas, false);
     }
 
-    
     // Draw borders
     canvas.drawLine(1, 1, this.mCurrentWidth-1, 1, this.mBorderPaint);
     canvas.drawLine(1, 1, 1, this.mCurrentWidth-1, this.mBorderPaint);
     canvas.drawLine(1, this.mCurrentWidth-1, this.mCurrentWidth-2, this.mCurrentWidth-2, this.mBorderPaint);
     canvas.drawLine(this.mCurrentWidth-1, 1, this.mCurrentWidth-2, this.mCurrentWidth-2, this.mBorderPaint);
-
+    
+    // Draw cells
+    for (GridCell cell : this.mCells) {
+        cell.onDraw(canvas, true);
+    }
+    
     if (this.mActive && this.isSolved()) {
   	  if (this.mSolvedListener != null)
   		  this.mSolvedListener.puzzleSolved();
@@ -466,10 +470,13 @@ public boolean mBadMaths;
     this.mTrackPosX = cellPos[0];
     this.mTrackPosY = cellPos[1];
 
-    for (GridCell c : this.mCells)
+    for (GridCell c : this.mCells) {
     	c.mSelected = false;
+    	this.mCages.get(c.mCageId).mSelected = false;
+    }
     if (this.mTouchedListener != null) {
     	this.mSelectedCell.mSelected = true;
+    	this.mCages.get(this.mSelectedCell.mCageId).mSelected = true;
     	this.mTouchedListener.gridTouched(this.mSelectedCell);
     }
     invalidate();

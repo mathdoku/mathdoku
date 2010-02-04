@@ -47,6 +47,8 @@ public class GridCage {
   public GridView mContext;
   // User math is correct
   public boolean mUserMathCorrect;
+  // Cage (or a cell within) is selected
+  public boolean mSelected;
   
   public GridCage (GridView context) {
     this.mContext = context;
@@ -71,6 +73,7 @@ public class GridCage {
     this.mCells.add(origin);
     this.mType = type;
     this.mUserMathCorrect = true;
+    this.mSelected = false;
     
     while (type == CAGE_UNDEF && attempts.size() < 13) {
       
@@ -374,24 +377,38 @@ public class GridCage {
    */
   public void setBorders() {
     for (GridCell cell : this.mCells) {
+        for(int x = 0 ; x < 4 ; x++) {
+      	  cell.mBorderTypes[x] = 0;
+        }
       if (this.mContext.CageIdAt(cell.mRow-1, cell.mColumn) != this.mId)
         if (!this.mUserMathCorrect && this.mContext.mBadMaths)
           cell.mBorderTypes[0] = GridCell.BORDER_WARN;
+        else if (this.mSelected)
+        	cell.mBorderTypes[0] = GridCell.BORDER_CAGE_SELECTED;
         else
         	cell.mBorderTypes[0] = GridCell.BORDER_SOLID;
+      
       if (this.mContext.CageIdAt(cell.mRow, cell.mColumn+1) != this.mId)
     	  if(!this.mUserMathCorrect && this.mContext.mBadMaths)
     		  cell.mBorderTypes[1] = GridCell.BORDER_WARN;
+          else if (this.mSelected)
+          	cell.mBorderTypes[1] = GridCell.BORDER_CAGE_SELECTED;
     	  else
     		  cell.mBorderTypes[1] = GridCell.BORDER_SOLID;
+      
       if (this.mContext.CageIdAt(cell.mRow+1, cell.mColumn) != this.mId)
         if(!this.mUserMathCorrect && this.mContext.mBadMaths)
           cell.mBorderTypes[2] = GridCell.BORDER_WARN;
+        else if (this.mSelected)
+        	cell.mBorderTypes[2] = GridCell.BORDER_CAGE_SELECTED;
         else
         	cell.mBorderTypes[2] = GridCell.BORDER_SOLID;
+      
       if (this.mContext.CageIdAt(cell.mRow, cell.mColumn-1) != this.mId)
         if(!this.mUserMathCorrect && this.mContext.mBadMaths)
           cell.mBorderTypes[3] = GridCell.BORDER_WARN;
+        else if (this.mSelected)
+        	cell.mBorderTypes[3] = GridCell.BORDER_CAGE_SELECTED;
         else
         	cell.mBorderTypes[3] = GridCell.BORDER_SOLID;
     }
