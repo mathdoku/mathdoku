@@ -43,6 +43,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class MainActivity extends Activity {
@@ -308,23 +309,39 @@ public class MainActivity extends Activity {
     public void onCreateContextMenu(ContextMenu menu, View v,
             ContextMenuInfo menuInfo) {
     	super.onCreateContextMenu(menu, v, menuInfo);
-    	menu.add(0, 100, 0,  "Clear cage values");
-    	menu.add(0, 101, 0,  "Clear all values");
+    	menu.add(1, 100, 0,  "Clear cage values");
+    	menu.setGroupEnabled(1, false);
+    	menu.add(0, 101, 0,  "Reveal this cell");
+    	menu.add(0, 102, 0,  "Clear entire grid");
+    	menu.setHeaderTitle("Mathdoku");
+
+    	for (GridCell cell : this.kenKenGrid.mCages.get(this.kenKenGrid.mSelectedCell.mCageId).mCells)
+    		if (cell.mUserValue > 0 || cell.mPossibles.size() > 0)
+    			menu.setGroupEnabled(1, true);
     }
     
     public boolean onContextItemSelected(MenuItem item) {
-    	  ContextMenuInfo info = (ContextMenuInfo) item.getMenuInfo();
+    	 GridCell  selectedCell = this.kenKenGrid.mSelectedCell;
     	  switch (item.getItemId()) {
     	  case 100:
-    		  if (this.kenKenGrid.mSelectedCell == null)
+    		  if (selectedCell == null)
     			  break;
-    		  for (GridCell cell : this.kenKenGrid.mCages.get(this.kenKenGrid.mSelectedCell.mCageId).mCells) {
+    		  for (GridCell cell : this.kenKenGrid.mCages.get(selectedCell.mCageId).mCells) {
     			  cell.mUserValue = 0;
     			  cell.mPossibles.clear();
     		  }
     		  this.kenKenGrid.invalidate();
     		  break;
     	  case 101:
+    		  if (selectedCell == null)
+    			  break;
+    		  selectedCell.mPossibles.clear();
+    		  selectedCell.mUserValue = selectedCell.mValue;
+    		  selectedCell.mCheated = true;
+    		  Toast.makeText(this, "Cheat! :P", Toast.LENGTH_SHORT).show();
+    		  this.kenKenGrid.invalidate();
+    		  break;
+    	  case 102:
     		  openClearDialog();
     		  break;
     	  }

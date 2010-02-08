@@ -36,6 +36,8 @@ public class GridCell {
   public boolean mShowWarning;
   // Whether to show cell as selected
   public boolean mSelected;
+  // Player cheated (revealed this cell)
+  public boolean mCheated;
   
   public static final int BORDER_NONE = 0;
   public static final int BORDER_SOLID = 1;
@@ -54,6 +56,7 @@ public class GridCell {
   private Paint mCageTextPaint;
   private Paint mPossiblesPaint;
   private Paint mWarningPaint;
+  private Paint mCheatedPaint;
   private Paint mSelectedPaint;
   
   public int mTheme;
@@ -69,6 +72,7 @@ public class GridCell {
     this.mValue = 0;
     this.mUserValue = 0;
     this.mShowWarning = false;
+    this.mCheated = false;
 
     this.mPosX = 0;
     this.mPosY = 0;
@@ -97,6 +101,10 @@ public class GridCell {
     this.mWarningPaint = new Paint();
     this.mWarningPaint.setColor(0x50FF0000);
     this.mWarningPaint.setStyle(Paint.Style.FILL);
+    
+    this.mCheatedPaint = new Paint();
+    this.mCheatedPaint.setColor(0x90ffcea0);
+    this.mCheatedPaint.setStyle(Paint.Style.FILL);
     
     this.mSelectedPaint = new Paint();
     this.mSelectedPaint.setColor(0xD0F0D042);
@@ -215,6 +223,8 @@ public class GridCell {
 	    	canvas.drawRect(west + 1, north+1, east-1, south-1, this.mWarningPaint);
 	    if (this.mSelected)
 	    	canvas.drawRect(west+1, north+1, east-1, south-1, this.mSelectedPaint);
+	    if (this.mCheated)
+	    	canvas.drawRect(west+1, north+1, east-1, south-1, this.mCheatedPaint);
     } else {
 	    if (this.mBorderTypes[0] > 2)
 	    	if (cellAbove == null)
