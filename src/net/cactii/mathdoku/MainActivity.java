@@ -20,6 +20,7 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,7 +30,9 @@ import android.view.SoundEffectConstants;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.Window;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.view.View.OnCreateContextMenuListener;
 import android.view.View.OnTouchListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -59,7 +62,6 @@ public class MainActivity extends Activity {
     Button digit7;
     Button digit8;
     Button clearDigit;
-    Button clearAll;
     CheckBox maybeButton;
     View[] sound_effect_views;
 	private Animation outAnimation;
@@ -98,7 +100,6 @@ public class MainActivity extends Activity {
         this.digit7 = (Button)findViewById(R.id.digitSelect7);
         this.digit8 = (Button)findViewById(R.id.digitSelect8);
         this.clearDigit = (Button)findViewById(R.id.clearButton);
-        this.clearAll = (Button)findViewById(R.id.clearAllButton);
         this.maybeButton = (CheckBox)findViewById(R.id.maybeButton);
        
         this.sound_effect_views = new View[] { this.kenKenGrid, this.digit1, this.digit2,
@@ -123,13 +124,6 @@ public class MainActivity extends Activity {
             public void onAnimationRepeat(Animation animation) {}
             public void onAnimationStart(Animation animation) {}
           });
-        
-        this.clearAll.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				openClearDialog();
-			}
-        });
         
         this.kenKenGrid.setOnGridTouchListener(this.kenKenGrid.new OnGridTouchListener() {
 			@Override
@@ -232,6 +226,9 @@ public class MainActivity extends Activity {
         newVersionCheck();
         this.kenKenGrid.setFocusable(true);
         this.kenKenGrid.setFocusableInTouchMode(true);
+
+        
+        registerForContextMenu(this.kenKenGrid);
         SaveGame saver = new SaveGame();
         if (saver.Restore(this.kenKenGrid)) {
         	this.setButtonVisibility(this.kenKenGrid.mGridSize);
@@ -305,6 +302,33 @@ public class MainActivity extends Activity {
     	SubMenu about = menu.addSubMenu(2, 4, 0, "Help");
     	
     	return supRetVal;
+    }
+    
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+            ContextMenuInfo menuInfo) {
+    	super.onCreateContextMenu(menu, v, menuInfo);
+    	menu.add(0, 100, 0,  "Clear cage values");
+    	menu.add(0, 101, 0,  "Clear all values");
+    }
+    
+    public boolean onContextItemSelected(MenuItem item) {
+    	  ContextMenuInfo info = (ContextMenuInfo) item.getMenuInfo();
+    	  switch (item.getItemId()) {
+    	  case 100:
+    		  if (this.kenKenGrid.mSelectedCell == null)
+    			  break;
+    		  for (GridCell cell : this.kenKenGrid.mCages.get(this.kenKenGrid.mSelectedCell.mCageId).mCells) {
+    			  cell.mUserValue = 0;
+    			  cell.mPossibles.clear();
+    		  }
+    		  this.kenKenGrid.invalidate();
+    		  break;
+    	  case 101:
+    		  openClearDialog();
+    		  break;
+    	  }
+		  return super.onContextItemSelected(item);
     }
     
     @Override

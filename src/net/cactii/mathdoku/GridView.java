@@ -10,21 +10,14 @@ import android.graphics.DashPathEffect;
 import android.graphics.DiscretePathEffect;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.graphics.Paint.FontMetrics;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.View.MeasureSpec;
 import android.view.View.OnTouchListener;
-import android.view.ViewGroup.LayoutParams;
-import android.view.animation.ScaleAnimation;
 import android.widget.TextView;
 
-public class GridView extends View implements OnTouchListener {
+public class GridView extends View implements OnTouchListener  {
 
 	public static final int THEME_CARVED = 0;
 	public static final int THEME_NEWSPAPER = 1;
@@ -488,7 +481,7 @@ public boolean mBadMaths;
     	this.mTouchedListener.gridTouched(this.mSelectedCell);
     }
     invalidate();
-    return true;
+    return false;
   }
   
   // Handle trackball, both press down, and scrolling around to
