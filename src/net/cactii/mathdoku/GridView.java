@@ -530,8 +530,13 @@ public boolean mBadMaths;
 	    if (this.mSelectedCell != cell)
 	    	this.mTouchedListener.gridTouched(cell);
     }
+    for (GridCell c : this.mCells) {
+    	c.mSelected = false;
+    	this.mCages.get(c.mCageId).mSelected = false;
+    }
     this.mSelectedCell = cell;
     cell.mSelected = true;
+    this.mCages.get(this.mSelectedCell.mCageId).mSelected = true;
     invalidate();
     return true;
   }

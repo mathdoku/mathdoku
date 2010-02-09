@@ -32,7 +32,7 @@
 				android:paddingLeft="15px"
 				android:textStyle="bold"
 				android:textColor="#ffffff" />
-			<TextView android:text="Touch the squares in the grid to choose a digit. The 'maybe' tickbox allows you to mark multiple possibilities.\n\nYou can also play using the trackball.\n\nThe current game will be saved when you exit the game, or use the Load/Save menu to save unlimited games."
+			<TextView android:text="Touch the squares in the grid to choose a digit. The 'maybe' tickbox allows you to mark multiple possibilities.\n\nLong-touch a cell for more options.\n\nYou can also play using the trackball.\n\nThe current game will be saved when you exit the game, or use the Load/Save menu to save unlimited games."
 				android:layout_width="fill_parent" 
 				android:layout_height="wrap_content"
 				android:textColorLink="#ffffff"
@@ -46,7 +46,7 @@
 				android:textStyle="bold"
 				android:textColor="#ffffff" />	
 			<TextView android:id="@+id/aboutVersionCode"
-				android:text="1.4"
+				android:text="1.5"
 				android:layout_width="fill_parent" 
 				android:layout_height="wrap_content"
 				android:paddingLeft="15px"					

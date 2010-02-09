@@ -296,12 +296,15 @@ public class MainActivity extends Activity {
     	newGame.add("6x6  (hard)");
     	newGame.add("7x7  (harder)");
     	newGame.add("8x8  (hardest)");
+    	newGame.setIcon(R.drawable.menu_new);
     	SubMenu load = menu.addSubMenu(0, 1, 0, "Load/Save");
+    	load.setIcon(R.drawable.menu_saveload);
     	SubMenu solveGame = menu.addSubMenu(1, 2, 0, "Solve");
-    	
+    	solveGame.setIcon(R.drawable.menu_solve);
     	SubMenu options = menu.addSubMenu(3, 3, 0, "Options");
+    	options.setIcon(R.drawable.menu_options);
     	SubMenu about = menu.addSubMenu(2, 4, 0, "Help");
-    	
+    	about.setIcon(R.drawable.menu_help);
     	return supRetVal;
     }
     
@@ -309,21 +312,26 @@ public class MainActivity extends Activity {
     public void onCreateContextMenu(ContextMenu menu, View v,
             ContextMenuInfo menuInfo) {
     	super.onCreateContextMenu(menu, v, menuInfo);
-    	menu.add(1, 100, 0,  "Clear cage values");
+    	menu.add(2, 101, 0, "Use cage 'Maybe's."); 
+    	menu.setGroupEnabled(2, false);
+    	menu.add(0, 102, 0,  "Reveal this cell");
+    	menu.add(1, 103, 0,  "Clear cage values");
     	menu.setGroupEnabled(1, false);
-    	menu.add(0, 101, 0,  "Reveal this cell");
-    	menu.add(0, 102, 0,  "Clear entire grid");
+    	menu.add(0, 104, 0,  "Clear entire grid");
     	menu.setHeaderTitle("Mathdoku");
 
-    	for (GridCell cell : this.kenKenGrid.mCages.get(this.kenKenGrid.mSelectedCell.mCageId).mCells)
+    	for (GridCell cell : this.kenKenGrid.mCages.get(this.kenKenGrid.mSelectedCell.mCageId).mCells) {
     		if (cell.mUserValue > 0 || cell.mPossibles.size() > 0)
     			menu.setGroupEnabled(1, true);
+    		if (cell.mPossibles.size() == 1)
+    			menu.setGroupEnabled(2, true);
+    	}
     }
     
     public boolean onContextItemSelected(MenuItem item) {
     	 GridCell  selectedCell = this.kenKenGrid.mSelectedCell;
     	  switch (item.getItemId()) {
-    	  case 100:
+    	  case 103: // Clear cage
     		  if (selectedCell == null)
     			  break;
     		  for (GridCell cell : this.kenKenGrid.mCages.get(selectedCell.mCageId).mCells) {
@@ -332,7 +340,18 @@ public class MainActivity extends Activity {
     		  }
     		  this.kenKenGrid.invalidate();
     		  break;
-    	  case 101:
+    	  case 101: // Use maybes
+    		  if (selectedCell == null)
+    			  break;
+    		  for (GridCell cell : this.kenKenGrid.mCages.get(selectedCell.mCageId).mCells) {
+    			  if (cell.mPossibles.size() == 1) {
+    				  cell.mUserValue = cell.mPossibles.get(0);
+    				  cell.mPossibles.clear();
+    			  }
+    		  }
+    		  this.kenKenGrid.invalidate();
+    		  break;
+    	  case 102: // Reveal cell
     		  if (selectedCell == null)
     			  break;
     		  selectedCell.mPossibles.clear();
@@ -341,7 +360,7 @@ public class MainActivity extends Activity {
     		  Toast.makeText(this, "Cheat! :P", Toast.LENGTH_SHORT).show();
     		  this.kenKenGrid.invalidate();
     		  break;
-    	  case 102:
+    	  case 104: // Clear grid
     		  openClearDialog();
     		  break;
     	  }

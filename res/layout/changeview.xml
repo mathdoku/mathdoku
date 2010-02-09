@@ -24,11 +24,17 @@
 				android:paddingLeft="15px"
 				android:textStyle="bold"
 				android:textColor="#ffffff" />
+			<TextView android:text="v1.5: Now with context menu on game grid."
+				android:layout_width="fill_parent" 
+				android:layout_height="wrap_content"
+				android:paddingLeft="15px"			
+				android:textColor="#ffffa0" />
+				
 			<TextView android:text="v1.4: Fixed display problems. Added 'clear all'"
 				android:layout_width="fill_parent" 
 				android:layout_height="wrap_content"
 				android:paddingLeft="15px"			
-				android:textColor="#ffffb0" />
+				android:textColor="#ffffff" />
 			<TextView android:text="v1.3: Crash fix. 'Click' sound effects."
 				android:layout_width="fill_parent" 
 				android:layout_height="wrap_content"
