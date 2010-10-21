@@ -172,18 +172,6 @@ public boolean mBadMaths;
     this.setTheme(this.mTheme);
   }
 
-  
-  /* Returns whether the given cell # is a member of any cage */
-  public boolean CellInAnyCage(int cell) {
-    for (GridCage cage : this.mCages) {
-      for (GridCell c : cage.mCells) {
-        if (c.mCellNumber == cell)
-          return true;
-      }
-    }
-    return false;
-  }
-  
   // Returns cage id of cell at row, column
   // Returns -1 if not a valid cell or cage
   public int CageIdAt(int row, int column) {
@@ -232,7 +220,7 @@ public boolean mBadMaths;
 
     for (int cellNum = 0 ; cellNum < this.mCells.size() ; cellNum++) {
       GridCell cell = this.mCells.get(cellNum);
-      if (CellInAnyCage(cell.mCellNumber))
+      if (cell.CellInAnyCage())
         continue; // Cell already in a cage, skip
       boolean validCage;
       int attempts = 0;
@@ -242,7 +230,7 @@ public boolean mBadMaths;
         GridCage cage = new GridCage(this);
         cage.createCage(GridCage.CAGE_UNDEF, cell);
         for (GridCell c : cage.mCells)
-            if (CellInAnyCage(c.mCellNumber))
+        	if (c.CellInAnyCage())
               validCage = false;
 
         if (cage.mType == GridCage.CAGE_UNDEF || attempts > 35) {
@@ -284,10 +272,12 @@ public boolean mBadMaths;
   
   /* Fetch the cell at the given row, column */
   public GridCell getCellAt(int row, int column) {
-    for (GridCell cell : this.mCells)
-      if (cell.mRow == row && cell.mColumn == column)
-        return cell;
-    return null;
+	  if (row < 0 || row >= mGridSize)
+		  return null;
+	  if (column < 0 || column >= mGridSize)
+		  return null;
+	  
+	  return this.mCells.get(column + row*this.mGridSize);
   }
   
   /*
@@ -340,10 +330,10 @@ public boolean mBadMaths;
   
   /* Determine if the given value is in the given column */
   public boolean valueInColumn(int column, int value) {
-    for (GridCell cell : this.mCells)
-      if (cell.mColumn == column && cell.mValue == value)
-        return true;
-    return false;
+		for (int row=0; row< mGridSize; row++)
+			if (this.mCells.get(column+row*mGridSize).mValue == value)
+				return true;
+	    return false;
   }
 
   

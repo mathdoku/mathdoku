@@ -201,6 +201,12 @@ public class GridCell {
     this.mUserValue = digit;
   }
   
+  /* Returns whether the cell is a member of any cage */
+  public boolean CellInAnyCage()
+  {
+	  return mCageId != -1;
+  }
+  
   /* Draw the cell. Border and text is drawn. */
   public void onDraw(Canvas canvas, boolean onlyBorders) {
     
