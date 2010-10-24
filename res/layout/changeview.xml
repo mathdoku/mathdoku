@@ -24,12 +24,16 @@
 				android:paddingLeft="15px"
 				android:textStyle="bold"
 				android:textColor="#ffffff" />
-			<TextView android:text="v1.5: Now with context menu on game grid."
+			<TextView android:text="v1.6: Support for Install to SD Card."
 				android:layout_width="fill_parent" 
 				android:layout_height="wrap_content"
 				android:paddingLeft="15px"			
 				android:textColor="#ffffa0" />
-				
+			<TextView android:text="v1.5: Now with context menu on game grid."
+				android:layout_width="fill_parent" 
+				android:layout_height="wrap_content"
+				android:paddingLeft="15px"			
+				android:textColor="#ffffff" />
 			<TextView android:text="v1.4: Fixed display problems. Added 'clear all'"
 				android:layout_width="fill_parent" 
 				android:layout_height="wrap_content"
