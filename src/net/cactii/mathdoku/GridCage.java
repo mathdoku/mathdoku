@@ -56,7 +56,41 @@ public class GridCage {
   
   public String toString() {
 	  String retStr = "";
-	  retStr += "Cage id: " + this.mId + ", Type " + this.mType + ", cells: ";
+	  retStr += "Cage id: " + this.mId + ", Type: ";
+	  switch (this.mType)
+	  {
+	  case CAGE_UNDEF: retStr += "UNDEF"; break;
+	  case CAGE_1: retStr += "1"; break;
+	  case CAGE_2V: retStr += "2V"; break;
+	  case CAGE_2H: retStr += "2H"; break;
+	  case CAGE_3V: retStr += "3V"; break;
+	  case CAGE_3H: retStr += "3H"; break;
+	  case CAGE_3LL: retStr += "3LL"; break;
+	  case CAGE_3LR: retStr += "3LR"; break;
+	  case CAGE_3UL: retStr += "3UL"; break;
+	  case CAGE_3UR: retStr += "3UR"; break;
+	  case CAGE_4SQ: retStr += "4SQ"; break;
+	  case CAGE_4UL: retStr += "4UL"; break;
+	  case CAGE_4UR: retStr += "4UR"; break;
+	  case CAGE_4LL: retStr += "4LL"; break;
+	  case CAGE_4LR: retStr += "4LR"; break;
+	  }
+	  retStr += ", Action: ";
+	  switch (this.mAction)
+	  {
+	  case ACTION_NONE:
+		  retStr += "None"; break;
+	  case ACTION_ADD:
+		  retStr += "Add"; break;
+	  case ACTION_SUBTRACT:
+		  retStr += "Subtract"; break;
+	  case ACTION_MULTIPLY:
+		  retStr += "Multiply"; break;
+	  case ACTION_DIVIDE:
+		  retStr += "Divide"; break;
+	  }
+	  retStr += ", Result: " + this.mResult;
+	  retStr += ", cells: ";
 	  for (GridCell cell : this.mCells)
 		  retStr += cell.mCellNumber + ", ";
 	  return retStr;
@@ -413,5 +447,155 @@ public class GridCage {
         	cell.mBorderTypes[3] = GridCell.BORDER_SOLID;
     }
   }
+
+/*
+ * Generates all combinations of numbers which satisfy the cage's arithmetic
+ * and MathDoku constraints i.e. a digit can only appear once in a column/row 
+ */
+public ArrayList<int[]> GetPossibleNums()
+{
+	ArrayList<int[]> AllResults = new ArrayList<int[]>();
+
+	switch (this.mAction) {
+	case ACTION_NONE:
+		assert (mCells.size() == 1);
+		int number[] = {mResult};
+		AllResults.add(number);
+		break;
+	  case ACTION_SUBTRACT:
+		  assert(mCells.size() == 2);
+		  for (int i1=1; i1<=this.mContext.mGridSize; i1++)
+			  for (int i2=1; i2<=this.mContext.mGridSize; i2++)
+				  if (i2 - i1 == mResult || i1 - i2 == mResult) {
+					  int numbers[] = {i1, i2};
+					  AllResults.add(numbers);
+				  }
+		  break;
+	  case ACTION_DIVIDE:
+		  assert(mCells.size() == 2);
+		  for (int i1=1; i1<=this.mContext.mGridSize; i1++)
+			  for (int i2=1; i2<=this.mContext.mGridSize; i2++)
+				  if (mResult*i1 == i2 || mResult*i2 == i1) {
+					  int numbers[] = {i1, i2};
+					  AllResults.add(numbers);
+				  }
+		  break;
+	  case ACTION_ADD:
+		  AllResults = getalladdcombos(this.mContext.mGridSize,mResult,mCells.size());
+		  break;
+	  case ACTION_MULTIPLY:
+		  AllResults = getallmultcombos(this.mContext.mGridSize,mResult,mCells.size());
+		  break;
+	}
+	return AllResults;
+}
+
+// The following two variables are required by the recursive methods below.
+// They could be passed as parameters of the recursive methods, but this
+// reduces performance.
+private int[] numbers;
+private ArrayList<int[]> result_set;
+
+private ArrayList<int[]> getalladdcombos (int max_val, int target_sum, int n_cells)
+{
+	numbers = new int[n_cells];
+	result_set = new ArrayList<int[]> ();
+	getaddcombos(max_val, target_sum, n_cells);
+	return result_set;
+}
+
+/*
+ * Recursive method to calculate all combinations of digits which add up to target
+ * 
+ * @param max_val		maximum permitted value of digit (= dimension of grid)
+ * @param target_sum	the value which all the digits should add up to
+ * @param n_cells		number of digits still to select
+ */
+private void getaddcombos(int max_val, int target_sum, int n_cells)
+{
+	for (int n=1; n<= max_val; n++)
+	{
+		if (n_cells == 1)
+		{
+			if (n == target_sum) {
+				numbers[0] = n;
+				if (satisfiesConstraints(numbers))
+					result_set.add(numbers.clone());
+			}
+		}
+		else {
+			numbers[n_cells-1] = n;
+			getaddcombos(max_val, target_sum-n, n_cells-1);
+		}
+	}
+	return;
+}
+
+private ArrayList<int[]> getallmultcombos (int max_val, int target_sum, int n_cells)
+{
+	numbers = new int[n_cells];
+	result_set = new ArrayList<int[]> ();
+	getmultcombos(max_val, target_sum, n_cells);
+	
+	return result_set;
+}
+
+/*
+ * Recursive method to calculate all combinations of digits which multiply up to target
+ * 
+ * @param max_val		maximum permitted value of digit (= dimension of grid)
+ * @param target_sum	the value which all the digits should multiply up to
+ * @param n_cells		number of digits still to select
+ */
+private void getmultcombos(int max_val, int target_sum, int n_cells)
+{
+	for (int n=1; n<= max_val; n++)
+	{
+		if (target_sum % n != 0)
+			continue;
+		
+		if (n_cells == 1)
+		{
+			if (n == target_sum) {
+				numbers[0] = n;
+				if (satisfiesConstraints(numbers))
+					result_set.add(numbers.clone());
+			}
+		}
+		else {
+			numbers[n_cells-1] = n;
+			getmultcombos(max_val, target_sum/n, n_cells-1);
+		}
+	}
+	return;
+}
+
+/*
+ * Check whether the set of numbers satisfies all constraints
+ * Looking for cases where a digit appears more than once in a column/row
+ * Constraints:
+ * 0 -> (mGridSize * mGridSize)-1 = column constraints
+ * (each column must contain each digit) 
+ * mGridSize * mGridSize -> 2*(mGridSize * mGridSize)-1 = row constraints
+ * (each row must contain each digit) 
+ */
+private boolean satisfiesConstraints(int[] test_nums) {
+	
+	boolean constraints[] = new boolean[mContext.mGridSize*mContext.mGridSize*2];
+	int constraint_num;
+	for (int i = 0; i<this.mCells.size(); i++) {
+		constraint_num = mContext.mGridSize*(test_nums[i]-1) + mCells.get(i).mColumn;
+		if (constraints[constraint_num])
+			return false;
+		else
+			constraints[constraint_num]= true;
+		constraint_num = mContext.mGridSize*mContext.mGridSize + mContext.mGridSize*(test_nums[i]-1) + mCells.get(i).mRow;
+		if (constraints[constraint_num])
+			return false;
+		else
+			constraints[constraint_num]= true;
+	}
+	return true;
+}
 
 }
