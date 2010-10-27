@@ -189,10 +189,9 @@ public boolean mBadMaths;
   // Returns cage id of cell at row, column
   // Returns -1 if not a valid cell or cage
   public int CageIdAt(int row, int column) {
-    for (GridCell cell : this.mCells)
-      if (cell.mRow == row && cell.mColumn == column)
-        return cell.mCageId;
-    return -1;
+	  if (row < 0 || row >= mGridSize || column < 0 || column >= mGridSize)
+		  return -1;
+	  return this.mCells.get(column + row*this.mGridSize).mCageId;
   }
   
   public int CreateSingleCages() {
@@ -303,8 +302,8 @@ public boolean mBadMaths;
   public void randomiseGrid() {
     int attempts;
     for (int value = 1 ; value < this.mGridSize+1 ; value++) {
-      attempts = 20;
       for (int row = 0 ; row < this.mGridSize ; row++) {
+        attempts = 20;
         GridCell cell;
         int column;
         while (true) {
