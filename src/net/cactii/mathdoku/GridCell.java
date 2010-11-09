@@ -309,13 +309,14 @@ public class GridCell {
       // canvas.drawText(this.mCageText, this.mPosX + 2, this.mPosY + 13, this.mCageTextPaint);
     }
     
-    this.mPossiblesPaint.setTextSize((int)(cellSize/4));
-    // Small 'possible' values.
-    for (int i = 0 ; i < this.mPossibles.size() ; i++) {
-    	canvas.drawText("" + this.mPossibles.get(i),
-    			this.mPosX + 3 + (8 * i), this.mPosY + cellSize-5,
-    			this.mPossiblesPaint);
+    if (mPossibles.size()>0) {
+    	// Small 'possible' values.
+    	mPossiblesPaint.setTextSize((int)(cellSize/4));
+    	String possibles = "";
+    	for (int i = 0 ; i < mPossibles.size() ; i++)
+    		possibles += Integer.toString(mPossibles.get(i));
+   		canvas.drawText(possibles, mPosX+3, mPosY + cellSize-5, mPossiblesPaint);
     }
   }
-  
+
 }
