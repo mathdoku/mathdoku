@@ -487,12 +487,12 @@ public class MainActivity extends Activity {
     	    	MainActivity.this.topLayout.setBackgroundResource(R.drawable.background);
     	    	MainActivity.this.kenKenGrid.setTheme(GridView.THEME_CARVED);
     	    }
+        	MainActivity.this.setButtonVisibility(kenKenGrid.mGridSize);
         	MainActivity.this.kenKenGrid.invalidate();
         }
     };
     
     public void startNewGame(int gridSize) {
-    	this.setButtonVisibility(kenKenGrid.mGridSize);
     	showDialog(0);
 
     	Thread t = new Thread() {

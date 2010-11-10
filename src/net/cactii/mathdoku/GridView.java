@@ -74,6 +74,9 @@ public boolean mBadMaths;
 	public long mDate;
 	// Current theme
 	public int mTheme;
+	
+	// Used to avoid redrawing grid during creation of new grid
+	static final Object lock = new Object();
   
   public GridView(Context context) {
     super(context);
@@ -160,30 +163,31 @@ public boolean mBadMaths;
   }
   
   public void reCreate() {
-    //this.mGridSize = 6; // TODO: Change based on initalisation (xml?)
-	int num_solns;
-	int num_attempts = 0;
-	this.mRandom = new Random();
-    if (this.mGridSize < 4) return;
-    do {
-    	this.mCells = new ArrayList<GridCell>();
-    	int cellnum = 0;
-    	for (int i = 0 ; i < this.mGridSize * this.mGridSize ; i++)
-    		this.mCells.add(new GridCell(this, cellnum++));
-    	randomiseGrid();
-    	this.mTrackPosX = this.mTrackPosY = 0;
-    	this.mCages = new ArrayList<GridCage>();
-    	CreateCages();
-    	num_attempts++;
-    	MathDokuDLX mdd = new MathDokuDLX(this.mGridSize, this.mCages);
-    	// Stop solving as soon as we find multiple solutions
-    	num_solns = mdd.Solve(SolveType.MULTIPLE);
-		Log.d ("MathDoku", "Num Solns = " + num_solns);
-	} while (num_solns > 1);
-	Log.d ("MathDoku", "Num Attempts = " + num_attempts);
-    this.mActive = true;
-    this.mSelectorShown = false;
-    this.setTheme(this.mTheme);
+	  synchronized (lock) {	// Avoid redrawing at the same time as creating puzzle
+		  int num_solns;
+		  int num_attempts = 0;
+		  this.mRandom = new Random();
+		  if (this.mGridSize < 4) return;
+		  do {
+			  this.mCells = new ArrayList<GridCell>();
+			  int cellnum = 0;
+			  for (int i = 0 ; i < this.mGridSize * this.mGridSize ; i++)
+				  this.mCells.add(new GridCell(this, cellnum++));
+			  randomiseGrid();
+			  this.mTrackPosX = this.mTrackPosY = 0;
+			  this.mCages = new ArrayList<GridCage>();
+			  CreateCages();
+			  num_attempts++;
+			  MathDokuDLX mdd = new MathDokuDLX(this.mGridSize, this.mCages);
+			  // Stop solving as soon as we find multiple solutions
+			  num_solns = mdd.Solve(SolveType.MULTIPLE);
+			  Log.d ("MathDoku", "Num Solns = " + num_solns);
+		  } while (num_solns > 1);
+		  Log.d ("MathDoku", "Num Attempts = " + num_attempts);
+		  this.mActive = true;
+		  this.mSelectorShown = false;
+		  this.setTheme(this.mTheme);
+	  }
   }
 
   // Returns cage id of cell at row, column
@@ -373,58 +377,58 @@ public boolean mBadMaths;
   
   @Override
   protected void onDraw(Canvas canvas) {
+	  synchronized (lock) {	// Avoid redrawing at the same time as creating puzzle
+		  if (this.mGridSize < 4) return;
+		  if (this.mCages == null) return;
 
-    if (this.mGridSize < 4) return;
-    if (this.mCages == null) return;
-    int width = getMeasuredWidth();
+		  int width = getMeasuredWidth();
 
-    if (width != this.mCurrentWidth)
-      this.mCurrentWidth = width;
+		  if (width != this.mCurrentWidth)
+			  this.mCurrentWidth = width;
 
-    // Fill canvas background
-    canvas.drawColor(this.mBackgroundColor);
-    
-    // Check cage correctness
-    for (GridCage cage : this.mCages)
-      cage.userValuesCorrect();
-    
-    // Draw (dashed) grid
-    for (int i = 1 ; i < this.mGridSize ; i++) {
-      float pos = ((float)this.mCurrentWidth / (float)this.mGridSize) * i;
-      canvas.drawLine(0, pos, this.mCurrentWidth, pos, this.mGridPaint);
-      canvas.drawLine(pos, 0, pos, this.mCurrentWidth, this.mGridPaint);
-    }
-    
-    // Draw cells
-    for (GridCell cell : this.mCells) {
-  	  if ((cell.mUserValue > 0 && this.getNumValueInCol(cell) > 1) ||
-  			  (cell.mUserValue > 0 && this.getNumValueInRow(cell) > 1))
-  		  cell.mShowWarning = true;
-  	  else
-  		  cell.mShowWarning = false;
-        cell.onDraw(canvas, false);
-    }
+		  // Fill canvas background
+		  canvas.drawColor(this.mBackgroundColor);
 
-    // Draw borders
-    canvas.drawLine(1, 1, this.mCurrentWidth-1, 1, this.mBorderPaint);
-    canvas.drawLine(1, 1, 1, this.mCurrentWidth-1, this.mBorderPaint);
-    canvas.drawLine(1, this.mCurrentWidth-1, this.mCurrentWidth-2, this.mCurrentWidth-2, this.mBorderPaint);
-    canvas.drawLine(this.mCurrentWidth-1, 1, this.mCurrentWidth-2, this.mCurrentWidth-2, this.mBorderPaint);
-    
-    // Draw cells
-    for (GridCell cell : this.mCells) {
-        cell.onDraw(canvas, true);
-    }
-    
-    if (this.mActive && this.isSolved()) {
-  	  if (this.mSolvedListener != null)
-  		  this.mSolvedListener.puzzleSolved();
-  	  if (this.mSelectedCell != null)
-  		  this.mSelectedCell.mSelected = false;
-  	  this.mActive = false;
-    }
+		  // Check cage correctness
+		  for (GridCage cage : this.mCages)
+			  cage.userValuesCorrect();
 
-    	// this.drawSolvedResult(canvas);
+		  // Draw (dashed) grid
+		  for (int i = 1 ; i < this.mGridSize ; i++) {
+			  float pos = ((float)this.mCurrentWidth / (float)this.mGridSize) * i;
+			  canvas.drawLine(0, pos, this.mCurrentWidth, pos, this.mGridPaint);
+			  canvas.drawLine(pos, 0, pos, this.mCurrentWidth, this.mGridPaint);
+		  }
+
+		  // Draw cells
+		  for (GridCell cell : this.mCells) {
+			  if ((cell.mUserValue > 0 && this.getNumValueInCol(cell) > 1) ||
+					  (cell.mUserValue > 0 && this.getNumValueInRow(cell) > 1))
+				  cell.mShowWarning = true;
+			  else
+				  cell.mShowWarning = false;
+			  cell.onDraw(canvas, false);
+		  }
+
+		  // Draw borders
+		  canvas.drawLine(1, 1, this.mCurrentWidth-1, 1, this.mBorderPaint);
+		  canvas.drawLine(1, 1, 1, this.mCurrentWidth-1, this.mBorderPaint);
+		  canvas.drawLine(1, this.mCurrentWidth-1, this.mCurrentWidth-2, this.mCurrentWidth-2, this.mBorderPaint);
+		  canvas.drawLine(this.mCurrentWidth-1, 1, this.mCurrentWidth-2, this.mCurrentWidth-2, this.mBorderPaint);
+
+		  // Draw cells
+		  for (GridCell cell : this.mCells) {
+			  cell.onDraw(canvas, true);
+		  }
+
+		  if (this.mActive && this.isSolved()) {
+			  if (this.mSolvedListener != null)
+				  this.mSolvedListener.puzzleSolved();
+			  if (this.mSelectedCell != null)
+				  this.mSelectedCell.mSelected = false;
+			  this.mActive = false;
+		  }
+	  }
   }
   
   // Given a cell number, returns origin x,y coordinates.
