@@ -24,7 +24,7 @@
 				android:paddingLeft="15px"
 				android:textStyle="bold"
 				android:textColor="#ffffff" />
-			<TextView android:text="v1.6: All puzzles have unique solution. Support for Install to SD Card."
+			<TextView android:text="v1.6: All puzzles have unique solution, Support for Install to SD Card, Bug fixes."
 				android:layout_width="fill_parent" 
 				android:layout_height="wrap_content"
 				android:paddingLeft="15px"			

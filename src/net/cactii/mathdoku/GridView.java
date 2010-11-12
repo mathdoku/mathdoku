@@ -75,8 +75,8 @@ public boolean mBadMaths;
 	// Current theme
 	public int mTheme;
 	
-	// Used to avoid redrawing grid during creation of new grid
-	static final Object lock = new Object();
+	// Used to avoid redrawing or saving grid during creation of new grid
+	public final Object mLock = new Object();
   
   public GridView(Context context) {
     super(context);
@@ -163,7 +163,7 @@ public boolean mBadMaths;
   }
   
   public void reCreate() {
-	  synchronized (lock) {	// Avoid redrawing at the same time as creating puzzle
+	  synchronized (mLock) {	// Avoid redrawing at the same time as creating puzzle
 		  int num_solns;
 		  int num_attempts = 0;
 		  this.mRandom = new Random();
@@ -377,7 +377,7 @@ public boolean mBadMaths;
   
   @Override
   protected void onDraw(Canvas canvas) {
-	  synchronized (lock) {	// Avoid redrawing at the same time as creating puzzle
+	  synchronized (mLock) {	// Avoid redrawing at the same time as creating puzzle
 		  if (this.mGridSize < 4) return;
 		  if (this.mCages == null) return;
 

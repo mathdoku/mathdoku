@@ -27,53 +27,55 @@ public class SaveGame {
 	}
 	
 	public boolean Save(GridView view) {
-		BufferedWriter writer = null;
-	    try {
-	        writer = new BufferedWriter(new FileWriter(this.filename));
-	        long now = System.currentTimeMillis();
-	        writer.write(now + "\n");
-	        writer.write(view.mGridSize + "\n");
-	        writer.write(view.mActive + "\n");
-	        for (GridCell cell : view.mCells) {
-	        	writer.write("CELL:");
-	        	writer.write(cell.mCellNumber + ":");
-	        	writer.write(cell.mRow + ":");
-	        	writer.write(cell.mColumn + ":");
-	        	writer.write(cell.mCageText + ":");
-	        	writer.write(cell.mValue + ":");
-	        	writer.write(cell.mUserValue + ":");
-	        	for (int possible : cell.mPossibles)
-	        		writer.write(possible + ",");
-	        	writer.write("\n");
-	        }
-	        if (view.mSelectedCell != null)
-	        	writer.write("SELECTED:" + view.mSelectedCell.mCellNumber + "\n");
-	        for (GridCage cage : view.mCages) {
-	        	writer.write("CAGE:");
-	        	writer.write(cage.mId + ":");
-	        	writer.write(cage.mAction + ":");
-	        	writer.write(cage.mResult + ":");
-	        	writer.write(cage.mType + ":");
-	        	for (GridCell cell : cage.mCells)
-	        		writer.write(cell.mCellNumber + ",");
-	        	writer.write("\n");
-	        }
-	    }
-	    catch (IOException e) {
-	        Log.d("MathDoku", "Error saving game: "+e.getMessage());
-	        return false;
-	    }
-	    finally {
-	        try {
-	          if (writer != null)
-	            writer.close();
-	        } catch (IOException e) {
-	          //pass
-	        	return false;
-	        }
-	    }
-	    Log.d("MathDoku", "Saved game.");
-	    return true;
+		synchronized (view.mLock) {	// Avoid saving game at the same time as creating puzzle
+			BufferedWriter writer = null;
+			try {
+				writer = new BufferedWriter(new FileWriter(this.filename));
+				long now = System.currentTimeMillis();
+				writer.write(now + "\n");
+				writer.write(view.mGridSize + "\n");
+				writer.write(view.mActive + "\n");
+				for (GridCell cell : view.mCells) {
+					writer.write("CELL:");
+					writer.write(cell.mCellNumber + ":");
+					writer.write(cell.mRow + ":");
+					writer.write(cell.mColumn + ":");
+					writer.write(cell.mCageText + ":");
+					writer.write(cell.mValue + ":");
+					writer.write(cell.mUserValue + ":");
+					for (int possible : cell.mPossibles)
+						writer.write(possible + ",");
+					writer.write("\n");
+				}
+				if (view.mSelectedCell != null)
+					writer.write("SELECTED:" + view.mSelectedCell.mCellNumber + "\n");
+				for (GridCage cage : view.mCages) {
+					writer.write("CAGE:");
+					writer.write(cage.mId + ":");
+					writer.write(cage.mAction + ":");
+					writer.write(cage.mResult + ":");
+					writer.write(cage.mType + ":");
+					for (GridCell cell : cage.mCells)
+						writer.write(cell.mCellNumber + ",");
+					writer.write("\n");
+				}
+			}
+			catch (IOException e) {
+				Log.d("MathDoku", "Error saving game: "+e.getMessage());
+				return false;
+			}
+			finally {
+				try {
+					if (writer != null)
+						writer.close();
+				} catch (IOException e) {
+					//pass
+					return false;
+				}
+			}
+		} // End of synchronised block
+		Log.d("MathDoku", "Saved game.");
+		return true;
 	}
 	
 	
