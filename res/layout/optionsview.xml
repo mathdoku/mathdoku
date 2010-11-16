@@ -6,7 +6,7 @@
 			android:key="alternatetheme"
 			android:title="Alternate theme"
 			android:summary="Use a different theme"
-			android:defaultValue="false" />
+			android:defaultValue="true" />
 		<CheckBoxPreference
 			android:key="hideselector"
 			android:title="Auto-hide selector"
