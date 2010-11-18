@@ -312,6 +312,9 @@ public class MainActivity extends Activity {
     public void onCreateContextMenu(ContextMenu menu, View v,
             ContextMenuInfo menuInfo) {
     	super.onCreateContextMenu(menu, v, menuInfo);
+    	if (!kenKenGrid.mActive)
+    		return;
+    	
     	menu.add(2, 101, 0, "Use cage 'Maybe's."); 
     	menu.setGroupEnabled(2, false);
     	menu.add(0, 102, 0,  "Reveal this cell");
