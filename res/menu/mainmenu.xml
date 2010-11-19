@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/newgame"
+          android:icon="@drawable/menu_new"
+          android:title="@string/menu_newgame" >
+        <menu>
+            <item android:id="@+id/size4"
+                  android:title="@string/menu_size4" />
+            <item android:id="@+id/size5"
+                  android:title="@string/menu_size5" />
+            <item android:id="@+id/size6"
+                  android:title="@string/menu_size6" />
+            <item android:id="@+id/size7"
+                  android:title="@string/menu_size7" />
+            <item android:id="@+id/size8"
+                  android:title="@string/menu_size8" />
+        </menu>
+    </item>
+	<item android:title="@string/menu_saveload"
+	  	  android:id="@+id/saveload"
+	  	  android:icon="@drawable/menu_saveload">
+	</item>
+	<item android:id="@+id/solve"
+		  android:title="@string/menu_solve"
+		  android:icon="@drawable/menu_solve">
+	</item>
+	<item android:id="@+id/options"
+	  	  android:icon="@drawable/menu_options"
+	  	  android:title="@string/menu_options">
+	</item>
+	<item android:id="@+id/help"
+		  android:title="@string/menu_help"
+		  android:icon="@drawable/menu_help">
+	</item>
+</menu>

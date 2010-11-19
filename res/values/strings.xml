@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MathDoku</string>
+<string name="app_name">MathDoku</string>
+<string name="menu_newgame">New Game</string>
+<string name="menu_size4">4x4 (easy)</string>
+<string name="menu_size5">5x5 (medium)</string>
+<string name="menu_size6">6x6 (hard)</string>
+<string name="menu_size7">7x7 (harder)</string>
+<string name="menu_size8">8x8 (hardest)</string>
+<string name="menu_saveload">Load/Save</string>
+<string name="menu_solve">Solve</string>
+<string name="menu_options">Options</string>
+<string name="menu_help">Help</string>
 </resources>

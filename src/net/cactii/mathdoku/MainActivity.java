@@ -1,7 +1,5 @@
 package net.cactii.mathdoku;
 
-import java.io.File;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -15,7 +13,6 @@ import android.content.pm.PackageInfo;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
@@ -24,15 +21,14 @@ import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
-import android.view.View.OnCreateContextMenuListener;
 import android.view.View.OnTouchListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -40,16 +36,14 @@ import android.view.animation.ScaleAnimation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class MainActivity extends Activity {
     public GridView kenKenGrid;
     TextView solvedText;
-    TextView newGame;
+    TextView pressMenu;
     ProgressDialog mProgressDialog;
     
     LinearLayout topLayout;
@@ -89,7 +83,7 @@ public class MainActivity extends Activity {
         this.kenKenGrid.mContext = this;
         this.solvedText = (TextView)findViewById(R.id.solvedText);
         this.kenKenGrid.animText = this.solvedText;
-        this.newGame = (TextView)findViewById(R.id.newGame);
+        this.pressMenu = (TextView)findViewById(R.id.pressMenu);
         this.digitSelector = (LinearLayout)findViewById(R.id.digitSelector);
         this.digit1 = (Button)findViewById(R.id.digitSelect1);
         this.digit2 = (Button)findViewById(R.id.digitSelect2);
@@ -163,7 +157,7 @@ public class MainActivity extends Activity {
     				if (kenKenGrid.mActive)
     					animText("Solved!!", 0xFF002F00);
     				MainActivity.this.digitSelector.setVisibility(View.GONE);
-    				MainActivity.this.newGame.setVisibility(View.VISIBLE);
+    				MainActivity.this.pressMenu.setVisibility(View.VISIBLE);
     			}
         });
         
@@ -289,23 +283,9 @@ public class MainActivity extends Activity {
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-    	boolean supRetVal = super.onCreateOptionsMenu(menu);
-    	SubMenu newGame = menu.addSubMenu(4, 0, 0, "New game");
-    	newGame.add("4x4  (easy)");
-    	newGame.add("5x5  (medium)");
-    	newGame.add("6x6  (hard)");
-    	newGame.add("7x7  (harder)");
-    	newGame.add("8x8  (hardest)");
-    	newGame.setIcon(R.drawable.menu_new);
-    	SubMenu load = menu.addSubMenu(0, 1, 0, "Load/Save");
-    	load.setIcon(R.drawable.menu_saveload);
-    	SubMenu solveGame = menu.addSubMenu(1, 2, 0, "Solve");
-    	solveGame.setIcon(R.drawable.menu_solve);
-    	SubMenu options = menu.addSubMenu(3, 3, 0, "Options");
-    	options.setIcon(R.drawable.menu_options);
-    	SubMenu about = menu.addSubMenu(2, 4, 0, "Help");
-    	about.setIcon(R.drawable.menu_help);
-    	return supRetVal;
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.mainmenu, menu);
+        return true;
     }
     
     @Override
@@ -372,42 +352,41 @@ public class MainActivity extends Activity {
     
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
-    	boolean supRetVal = super.onOptionsItemSelected(menuItem);
-    	String title = (String) menuItem.getTitle();
     	switch (menuItem.getItemId()) {
-	    	case 0 :
-	    		if (title.startsWith("4x4"))
-	    			this.kenKenGrid.mGridSize = 4;
-	    		else if (title.startsWith("5x5"))
-	    			this.kenKenGrid.mGridSize = 5;
-	    		else if (title.startsWith("6x6"))
-	    			this.kenKenGrid.mGridSize = 6;
-	    		else if (title.startsWith("7x7"))
-	    			this.kenKenGrid.mGridSize = 7;
-	    		else if (title.startsWith("8x8"))
-	    			this.kenKenGrid.mGridSize = 8;
-	    		else
-	    			break;
-				this.startNewGame(this.kenKenGrid.mGridSize);
-				break;
-	    	case 2:
-	    		if (this.kenKenGrid.mActive)
-	    			this.kenKenGrid.Solve();
-	    		this.newGame.setVisibility(View.VISIBLE);
-	    		break;
-	        case 3 :
-	            startActivityForResult(new Intent(
-	                MainActivity.this, OptionsActivity.class), 0);
-	            break;
-	    	case 4:
-	    		this.openHelpDialog();
-	    		break;
-	    	case 1:
-	            Intent i = new Intent(this, SavedGameList.class);
-	            startActivityForResult(i, 7);
-		            break;
-    	}
-    	return supRetVal;
+   		case R.id.size4:
+   			this.startNewGame(4);
+   			return true;
+   		case R.id.size5:
+   			this.startNewGame(5);
+   			return true;
+   		case R.id.size6:
+   			this.startNewGame(6);
+   			return true;
+   		case R.id.size7:
+   			this.startNewGame(7);
+   			return true;
+   		case R.id.size8:
+   			this.startNewGame(8);
+   			return true;
+   		case R.id.saveload:
+            Intent i = new Intent(this, SavedGameList.class);
+            startActivityForResult(i, 7);
+	        return true;
+   		case R.id.solve:
+    		if (this.kenKenGrid.mActive)
+    			this.kenKenGrid.Solve();
+    		this.pressMenu.setVisibility(View.VISIBLE);
+    		return true;
+   		case R.id.options:
+            startActivityForResult(new Intent(
+	                MainActivity.this, OptionsActivity.class), 0);  
+            return true;
+   		case R.id.help:
+    		this.openHelpDialog();
+    		return true;
+   	    default:
+   	        return super.onOptionsItemSelected(menuItem);
+   	    }
     }
     
     
@@ -496,6 +475,7 @@ public class MainActivity extends Activity {
     };
     
     public void startNewGame(int gridSize) {
+    	kenKenGrid.mGridSize = gridSize;
     	showDialog(0);
 
     	Thread t = new Thread() {
@@ -551,7 +531,7 @@ public class MainActivity extends Activity {
             break; 
         }
 		this.solvedText.setVisibility(View.GONE);
-		this.newGame.setVisibility(View.GONE);
+		this.pressMenu.setVisibility(View.GONE);
     	if (!MainActivity.this.preferences.getBoolean("hideselector", false)) {
 			this.digitSelector.setVisibility(View.VISIBLE);
     	}
