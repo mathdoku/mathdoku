@@ -1,8 +1,6 @@
 package net.cactii.mathdoku;
 
 import java.util.ArrayList;
-import java.util.Random;
-
 
 import android.util.Log;
 
@@ -16,28 +14,110 @@ public class GridCage {
   
   public static final int CAGE_UNDEF = -1;
   public static final int CAGE_1 = 0;
-  public static final int CAGE_2V = 1;
-  public static final int CAGE_2H = 2;
-  public static final int CAGE_3V = 3;
-  public static final int CAGE_3H = 4;
-  public static final int CAGE_3LL = 5;
-  public static final int CAGE_3LR = 6;
-  public static final int CAGE_3UL = 7;
-  public static final int CAGE_3UR = 8;
-  public static final int CAGE_4SQ = 9;
-  public static final int CAGE_4UL = 10;
-  public static final int CAGE_4UR = 11;
-  public static final int CAGE_4LL = 12;
-  public static final int CAGE_4LR = 13;
 
-
+  // O = Origin (0,0) - must be the upper leftmost cell
+  // X = Other cells used in cage
+  public static final int [][][] CAGE_COORDS = new int[][][] {
+	  // O
+	  {{0,0}},
+	  // O
+	  // X
+	  {{0,0},{0,1}},
+	  // OX
+	  {{0,0},{1,0}},
+	  // O
+	  // X
+	  // X
+	  {{0,0},{0,1},{0,2}},
+	  // OXX
+	  {{0,0},{1,0},{2,0}},
+	  // O
+	  // XX 
+	  {{0,0},{0,1},{1,1}},
+	  // O
+	  //XX
+	  {{0,0},{0,1},{-1,1}},
+	  // OX
+	  //  X
+	  {{0,0},{1,0},{1,1}},
+	  // OX
+	  // X
+	  {{0,0},{1,0},{0,1}},
+	  // OX
+	  // XX
+	  {{0,0},{1,0},{0,1},{1,1}},
+	  // OX
+	  // X
+	  // X
+	  {{0,0},{1,0},{0,1},{0,2}},
+	  // OX
+	  //  X
+	  //  X
+	  {{0,0},{1,0},{1,1},{1,2}},
+	  // O
+	  // X
+	  // XX
+	  {{0,0},{0,1},{0,2},{1,2}},
+	  // O
+	  // X
+	  //XX
+	  {{0,0},{0,1},{0,2},{-1,2}}
+	  /*
+	  // OXX
+	  // X
+	  {{0,0},{1,0},{2,0},{0,1}},
+	  // OXX
+	  //   X
+	  {{0,0},{1,0},{2,0},{2,1}},
+	  // O
+	  // XXX
+	  {{0,0},{0,1},{1,1},{2,1}},
+	  //  O
+	  //XXX
+	  {{0,0},{-2,1},{-1,1},{0,1}},
+	  // O
+	  // XX
+	  // X
+	  {{0,0},{0,1},{0,2},{1,1}},
+	  // O
+	  //XX
+	  // X
+	  {{0,0},{0,1},{0,2},{-1,1}},
+	  // OXX
+	  //  X
+	  {{0,0},{1,0},{2,0},{1,1}},
+	  // O
+	  //XXX
+	  {{0,0},{-1,1},{0,1},{1,1}},
+	  // OXXX
+	  {{0,0},{1,0},{2,0},{3,0}},
+	  // O
+	  // X
+	  // X
+	  // X
+	  {{0,0},{0,1},{0,2},{0,3}},
+	  // O
+	  // XX
+	  //  X
+	  {{0,0},{0,1},{1,1},{1,2}},
+	  // O
+	  //XX
+	  //X
+	  {{0,0},{0,1},{-1,1},{-1,2}},
+	  // OX
+	  //  XX
+	  {{0,0},{1,0},{1,1},{2,1}},
+	  // OX
+	  //XX
+	  {{0,0},{1,0},{0,1},{-1,1}}
+	  */
+  };
 
   // Action for the cage
   public int mAction;
   // Number the action results in
   public int mResult;
   // List of cage's cells
-  // public int[] mCells;
   public ArrayList<GridCell> mCells;
   // Type of the cage
   public int mType;
@@ -51,30 +131,20 @@ public class GridCage {
   public boolean mSelected;
   
   public GridCage (GridView context) {
-    this.mContext = context;
+	  this.mContext = context;
+  }
+
+  public GridCage (GridView context, int type) {
+	  this.mContext = context;
+	  mType = type;
+	  mUserMathCorrect = true;
+	  mSelected = false;
+	  mCells = new ArrayList<GridCell>();
   }
   
   public String toString() {
 	  String retStr = "";
-	  retStr += "Cage id: " + this.mId + ", Type: ";
-	  switch (this.mType)
-	  {
-	  case CAGE_UNDEF: retStr += "UNDEF"; break;
-	  case CAGE_1: retStr += "1"; break;
-	  case CAGE_2V: retStr += "2V"; break;
-	  case CAGE_2H: retStr += "2H"; break;
-	  case CAGE_3V: retStr += "3V"; break;
-	  case CAGE_3H: retStr += "3H"; break;
-	  case CAGE_3LL: retStr += "3LL"; break;
-	  case CAGE_3LR: retStr += "3LR"; break;
-	  case CAGE_3UL: retStr += "3UL"; break;
-	  case CAGE_3UR: retStr += "3UR"; break;
-	  case CAGE_4SQ: retStr += "4SQ"; break;
-	  case CAGE_4UL: retStr += "4UL"; break;
-	  case CAGE_4UR: retStr += "4UR"; break;
-	  case CAGE_4LL: retStr += "4LL"; break;
-	  case CAGE_4LR: retStr += "4LR"; break;
-	  }
+	  retStr += "Cage id: " + this.mId + ", Type: " + this.mType;
 	  retStr += ", Action: ";
 	  switch (this.mAction)
 	  {
@@ -94,186 +164,6 @@ public class GridCage {
 	  for (GridCell cell : this.mCells)
 		  retStr += cell.mCellNumber + ", ";
 	  return retStr;
-  }
-  
-  /*
-   * Create a random cage that starts at 'origin' and
-   * fits the grid in our context.
-   */
-  public void createCage(int type, GridCell origin) {
-
-    ArrayList<Integer> attempts = new ArrayList<Integer>();
-    this.mCells = new ArrayList<GridCell>();
-    this.mCells.add(origin);
-    this.mType = type;
-    this.mUserMathCorrect = true;
-    this.mSelected = false;
-    
-    while (type == CAGE_UNDEF && attempts.size() < 13) {
-      
-      this.mCells.clear();
-      this.mCells.add(origin);
-      
-      do {
-    	  this.mType = this.mContext.mRandom.nextInt(13) + 1;
-      } while (attempts.contains(this.mType));
-
-      attempts.add(this.mType);
-      type = this.mType;
-      switch (this.mType) {
-        case CAGE_1 :
-
-          type = -1;
-          if (attempts.size() < 14)
-        	  continue;
-          /*
-          if (origin.mCellNumber < (this.mContext.mGridSize * this.mContext.mGridSize) -1) {
-            type = -1;
-            continue;
-          }
-          */
-            
-          break;
-        case CAGE_2V :
-          if (origin.mRow > this.mContext.mGridSize-2) {
-            type = -1;
-            this.mType = CAGE_UNDEF;
-            continue;
-          }
-          
-          this.mCells.add(this.mContext.getCellAt(origin.mRow+1, origin.mColumn));
-
-          break;
-        case CAGE_2H :
-          if (origin.mColumn > this.mContext.mGridSize-2) {
-            type = -1;
-            this.mType = CAGE_UNDEF;
-            continue;
-          }
-          this.mCells.add(this.mContext.getCellAt(origin.mRow, origin.mColumn+1));
-          break;
-        case CAGE_3V :
-          if (origin.mRow > this.mContext.mGridSize-3) {
-            type = -1;
-            this.mType = CAGE_UNDEF;
-            continue;
-          }
-          this.mCells.add(this.mContext.getCellAt(origin.mRow+1, origin.mColumn));
-          this.mCells.add(this.mContext.getCellAt(origin.mRow+2, origin.mColumn));
-          break;
-        case CAGE_3H :
-          if (origin.mColumn > this.mContext.mGridSize - 3) {
-            type = -1;
-            this.mType = CAGE_UNDEF;
-            continue;
-          }
-          this.mCells.add(this.mContext.getCellAt(origin.mRow, origin.mColumn+1));
-          this.mCells.add(this.mContext.getCellAt(origin.mRow, origin.mColumn+2));
-          break;
-        case CAGE_3LL :
-          if (origin.mColumn > this.mContext.mGridSize-2 ||
-              origin.mRow > this.mContext.mGridSize-2) {
-            type = -1;
-            this.mType = CAGE_UNDEF;
-            continue;
-          }
-          this.mCells.add(this.mContext.getCellAt(origin.mRow+1, origin.mColumn));
-          this.mCells.add(this.mContext.getCellAt(origin.mRow+1, origin.mColumn+1));
-          break;
-        case CAGE_3LR :
-          if (origin.mRow > this.mContext.mGridSize-2 ||
-              origin.mColumn < 1) {
-            type = -1;
-            this.mType = CAGE_UNDEF;
-            continue;
-          }
-          this.mCells.add(this.mContext.getCellAt(origin.mRow+1, origin.mColumn));
-          this.mCells.add(this.mContext.getCellAt(origin.mRow+1, origin.mColumn-1));
-          break;
-        case CAGE_3UR :
-          if (origin.mColumn > this.mContext.mGridSize-2 ||
-              origin.mRow > this.mContext.mGridSize-2) {
-            type = -1;
-            this.mType = CAGE_UNDEF;
-            continue;
-          }
-          this.mCells.add(this.mContext.getCellAt(origin.mRow, origin.mColumn+1));
-          this.mCells.add(this.mContext.getCellAt(origin.mRow+1, origin.mColumn+1));
-
-          break;
-        case CAGE_3UL :
-          if (origin.mColumn > this.mContext.mGridSize-2 ||
-              origin.mRow > this.mContext.mGridSize-2) {
-            type = -1;
-            this.mType = CAGE_UNDEF;
-            continue;
-          }
-          this.mCells.add(this.mContext.getCellAt(origin.mRow, origin.mColumn+1));
-          this.mCells.add(this.mContext.getCellAt(origin.mRow+1, origin.mColumn));
-          break;
-        case CAGE_4SQ :
-          if (origin.mColumn > this.mContext.mGridSize-2 ||
-              origin.mRow > this.mContext.mGridSize-2 ||
-              this.mContext.mGridSize > 7) {
-            type = -1;
-            this.mType = CAGE_UNDEF;
-            continue;
-          }
-          this.mCells.add(this.mContext.getCellAt(origin.mRow, origin.mColumn+1));
-          this.mCells.add(this.mContext.getCellAt(origin.mRow+1, origin.mColumn));
-          this.mCells.add(this.mContext.getCellAt(origin.mRow+1, origin.mColumn+1));
-          break;
-        case CAGE_4UL :
-            if (origin.mColumn > this.mContext.mGridSize-2 ||
-                origin.mRow > this.mContext.mGridSize-3 ||
-                this.mContext.mGridSize > 7) {
-              type = -1;
-              this.mType = CAGE_UNDEF;
-              continue;
-            }
-            this.mCells.add(this.mContext.getCellAt(origin.mRow, origin.mColumn+1));
-            this.mCells.add(this.mContext.getCellAt(origin.mRow+1, origin.mColumn));
-            this.mCells.add(this.mContext.getCellAt(origin.mRow+2, origin.mColumn));
-            break;
-        case CAGE_4UR :
-            if (origin.mColumn > this.mContext.mGridSize-2 ||
-                origin.mRow > this.mContext.mGridSize-3 ||
-                this.mContext.mGridSize > 7) {
-              type = -1;
-              this.mType = CAGE_UNDEF;
-              continue;
-            }
-            this.mCells.add(this.mContext.getCellAt(origin.mRow, origin.mColumn+1));
-            this.mCells.add(this.mContext.getCellAt(origin.mRow+1, origin.mColumn+1));
-            this.mCells.add(this.mContext.getCellAt(origin.mRow+2, origin.mColumn+1));
-            break;
-        case CAGE_4LL :
-            if (origin.mColumn > this.mContext.mGridSize-2 ||
-                origin.mRow > this.mContext.mGridSize-3 ||
-                this.mContext.mGridSize > 7) {
-              type = -1;
-              this.mType = CAGE_UNDEF;
-              continue;
-            }
-            this.mCells.add(this.mContext.getCellAt(origin.mRow+1, origin.mColumn));
-            this.mCells.add(this.mContext.getCellAt(origin.mRow+2, origin.mColumn));
-            this.mCells.add(this.mContext.getCellAt(origin.mRow+2, origin.mColumn+1));
-            break;
-        case CAGE_4LR :
-            if (origin.mColumn < 1 ||
-                origin.mRow > this.mContext.mGridSize-3 ||
-                this.mContext.mGridSize > 7) {
-              type = -1;
-              this.mType = CAGE_UNDEF;
-              continue;
-            }
-            this.mCells.add(this.mContext.getCellAt(origin.mRow+1, origin.mColumn));
-            this.mCells.add(this.mContext.getCellAt(origin.mRow+2, origin.mColumn));
-            this.mCells.add(this.mContext.getCellAt(origin.mRow+2, origin.mColumn-1));
-            break;
-        }
-      
-    }
   }
   
   /*

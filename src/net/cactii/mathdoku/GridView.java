@@ -200,75 +200,95 @@ public boolean mBadMaths;
   
   public int CreateSingleCages() {
     int singles = this.mGridSize / 2;
-    int cageId = 0;
+    boolean RowUsed[] = new boolean[mGridSize];
+    boolean ColUsed[] = new boolean[mGridSize];
+    boolean ValUsed[] = new boolean[mGridSize];
     for (int i = 0 ; i < singles ; i++) {
-    	int cellNum;
-    	boolean foundCell = false;
-    	GridCell cell = null;
-    	while (!foundCell) {
-    		cellNum = this.mRandom.nextInt(this.mGridSize * this.mGridSize);
-    		cell = this.mCells.get(cellNum);
-    		foundCell = true;
-    		for (GridCell c : this.mCells) {
-    			if ((c.mRow == cell.mRow || c.mColumn == cell.mColumn) &&
-    					c.mCageId > -1) {
-    				foundCell = false;
-    				break;
-    			}
-    			if (c.mCellNumber != cell.mCellNumber && c.mValue == cell.mValue &&
-    					c.mCageId > -1) {
-    				foundCell = false;
-    				break;
-    			}
-    		}
+    	GridCell cell;
+    	while (true) {
+    		cell = mCells.get(mRandom.nextInt(mGridSize * mGridSize));
+    		if (!RowUsed[cell.mRow] && !ColUsed[cell.mColumn] && !ValUsed[cell.mValue-1])
+    			break;
     	}
-    	GridCage cage = new GridCage(this);
-    	cage.createCage(GridCage.CAGE_1, cell);
+    	ColUsed[cell.mColumn] = true;
+    	RowUsed[cell.mRow] = true;
+    	ValUsed[cell.mValue-1] = true;
+    	GridCage cage = new GridCage(this, GridCage.CAGE_1);
+    	cage.mCells.add(cell);
     	cage.setArithmetic();
-    	cage.setCageId(cageId++);
+    	cage.setCageId(i);
     	this.mCages.add(cage);
     }
-    return cageId;
+    return singles;
   }
    
   /* Take a filled grid and randomly create cages */
   public void CreateCages() {
-    int cageId = CreateSingleCages();
 
-    for (int cellNum = 0 ; cellNum < this.mCells.size() ; cellNum++) {
-      GridCell cell = this.mCells.get(cellNum);
-      if (cell.CellInAnyCage())
-        continue; // Cell already in a cage, skip
-      boolean validCage;
-      int attempts = 0;
-      while (true) {
-        validCage = true;
-        attempts++;
-        GridCage cage = new GridCage(this);
-        cage.createCage(GridCage.CAGE_UNDEF, cell);
-        for (GridCell c : cage.mCells)
-        	if (c.CellInAnyCage())
-              validCage = false;
+	  boolean restart;
 
-        if (cage.mType == GridCage.CAGE_UNDEF || attempts > 35) {
-        	ClearAllCages();
-        	cellNum = -1;
-        	cageId = CreateSingleCages();
-        	validCage = false;
-        	break;
-        }
+	  do {
+		  restart = false;
+		  int cageId = CreateSingleCages();
+		  for (int cellNum = 0 ; cellNum < this.mCells.size() ; cellNum++) {
+			  GridCell cell = this.mCells.get(cellNum);
+			  if (cell.CellInAnyCage())
+				  continue; // Cell already in a cage, skip
 
+			  ArrayList<Integer> possible_cages = getvalidCages(cell);
+			  if (possible_cages.size() == 1) {	// Only possible cage is a single
+				  ClearAllCages();
+				  restart=true;
+				  break;
+			  }
 
-        if (validCage) {
-          cage.setArithmetic();  // Make the maths puzzle
-          cage.setCageId(cageId++);  // Set cage's id
-          this.mCages.add(cage);  // Add to the cage list
-          break;
-        }
-      }
-    }
-    for (GridCage cage : this.mCages)
-      cage.setBorders();
+			  // Choose a random cage type from one of the possible (not single cage)
+			  int cage_type = possible_cages.get(mRandom.nextInt(possible_cages.size()-1)+1);
+			  GridCage cage = new GridCage(this, cage_type);
+			  int [][]cage_coords = GridCage.CAGE_COORDS[cage_type];
+			  for (int coord_num = 0; coord_num < cage_coords.length; coord_num++) {
+				  int col = cell.mColumn + cage_coords[coord_num][0];
+				  int row = cell.mRow + cage_coords[coord_num][1];
+				  cage.mCells.add(getCellAt(row, col));
+			  }
+
+			  cage.setArithmetic();  // Make the maths puzzle
+			  cage.setCageId(cageId++);  // Set cage's id
+			  this.mCages.add(cage);  // Add to the cage list
+		  }
+	  } while (restart);
+	  for (GridCage cage : this.mCages)
+		  cage.setBorders();
+  }
+  
+  public ArrayList<Integer> getvalidCages(GridCell origin)
+  {
+	  if (origin.CellInAnyCage())
+		  return null;
+	  
+	  boolean [] InvalidCages = new boolean[GridCage.CAGE_COORDS.length];
+	  
+	  // Don't need to check first cage type (single)
+	  for (int cage_num=1; cage_num < GridCage.CAGE_COORDS.length; cage_num++) {
+		  int [][]cage_coords = GridCage.CAGE_COORDS[cage_num];
+		  // Don't need to check first coordinate (0,0)
+		  for (int coord_num = 1; coord_num < cage_coords.length; coord_num++) {
+			  int col = origin.mColumn + cage_coords[coord_num][0];
+			  int row = origin.mRow + cage_coords[coord_num][1];
+			  GridCell c = getCellAt(row, col);
+			  if (c == null || c.CellInAnyCage()) {
+				  InvalidCages[cage_num] = true;
+				  break;
+			  }
+		  }
+	  }
+
+	  ArrayList<Integer> valid =  new ArrayList<Integer>();
+	  for (int i=0; i<GridCage.CAGE_COORDS.length; i++)
+		  if (!InvalidCages[i])
+			  valid.add(i);
+	  
+	  return valid;
   }
   
   public void ClearAllCages() {
