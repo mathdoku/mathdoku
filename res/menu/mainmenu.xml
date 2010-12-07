@@ -5,15 +5,15 @@
           android:title="@string/menu_newgame" >
         <menu>
             <item android:id="@+id/size4"
-                  android:title="@string/menu_size4" />
+                  android:title="@string/grid_size_4" />
             <item android:id="@+id/size5"
-                  android:title="@string/menu_size5" />
+                  android:title="@string/grid_size_5" />
             <item android:id="@+id/size6"
-                  android:title="@string/menu_size6" />
+                  android:title="@string/grid_size_6" />
             <item android:id="@+id/size7"
-                  android:title="@string/menu_size7" />
+                  android:title="@string/grid_size_7" />
             <item android:id="@+id/size8"
-                  android:title="@string/menu_size8" />
+                  android:title="@string/grid_size_8" />
         </menu>
     </item>
 	<item android:title="@string/menu_saveload"

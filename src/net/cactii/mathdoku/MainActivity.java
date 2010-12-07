@@ -89,7 +89,6 @@ public class MainActivity extends Activity {
         this.digit2 = (Button)findViewById(R.id.digitSelect2);
         this.digit3 = (Button)findViewById(R.id.digitSelect3);
         this.digit4 = (Button)findViewById(R.id.digitSelect4);
-
         this.digit5 = (Button)findViewById(R.id.digitSelect5);
         this.digit6 = (Button)findViewById(R.id.digitSelect6);
         this.digit7 = (Button)findViewById(R.id.digitSelect7);
@@ -155,7 +154,7 @@ public class MainActivity extends Activity {
     			public void puzzleSolved() {
     				// TODO Auto-generated method stub
     				if (kenKenGrid.mActive)
-    					animText("Solved!!", 0xFF002F00);
+    					animText(R.string.main_ui_solved_messsage, 0xFF002F00);
     				MainActivity.this.digitSelector.setVisibility(View.GONE);
     				MainActivity.this.pressMenu.setVisibility(View.VISIBLE);
     			}
@@ -295,13 +294,13 @@ public class MainActivity extends Activity {
     	if (!kenKenGrid.mActive)
     		return;
     	
-    	menu.add(2, 101, 0, "Use cage 'Maybe's."); 
+    	menu.add(2, 101, 0, R.string.context_menu_use_cage_maybes); 
     	menu.setGroupEnabled(2, false);
-    	menu.add(0, 102, 0,  "Reveal this cell");
-    	menu.add(1, 103, 0,  "Clear cage values");
+    	menu.add(0, 102, 0,  R.string.context_menu_reveal_cell);
+    	menu.add(1, 103, 0,  R.string.context_menu_clear_cage_cells);
     	menu.setGroupEnabled(1, false);
-    	menu.add(0, 104, 0,  "Clear entire grid");
-    	menu.setHeaderTitle("Mathdoku");
+    	menu.add(0, 104, 0,  R.string.context_menu_clear_grid);
+    	menu.setHeaderTitle(R.string.application_name);
 
     	for (GridCell cell : this.kenKenGrid.mCages.get(this.kenKenGrid.mSelectedCell.mCageId).mCells) {
     		if (cell.mUserValue > 0 || cell.mPossibles.size() > 0)
@@ -340,7 +339,7 @@ public class MainActivity extends Activity {
     		  selectedCell.mPossibles.clear();
     		  selectedCell.mUserValue = selectedCell.mValue;
     		  selectedCell.mCheated = true;
-    		  Toast.makeText(this, "Cheat! :P", Toast.LENGTH_SHORT).show();
+    		  Toast.makeText(this, R.string.main_ui_cheat_messsage, Toast.LENGTH_SHORT).show();
     		  this.kenKenGrid.invalidate();
     		  break;
     	  case 104: // Clear grid
@@ -490,8 +489,9 @@ public class MainActivity extends Activity {
     @Override
     protected Dialog onCreateDialog(int id) {
 	    mProgressDialog = new ProgressDialog(this);
-	    mProgressDialog.setTitle("Building puzzle");
-	    mProgressDialog.setMessage("Please wait...");
+	    mProgressDialog.setTitle(R.string.main_ui_building_puzzle_title);
+	    mProgressDialog.setMessage(getResources().getString(R.string.main_ui_building_puzzle_message));
+	    mProgressDialog.setIcon(android.R.drawable.ic_dialog_info);
 	    mProgressDialog.setIndeterminate(false);
 	    mProgressDialog.setCancelable(false);
 	    return mProgressDialog;
@@ -537,8 +537,8 @@ public class MainActivity extends Activity {
     	}
     }
     
-    private void animText(String text, int color) {
-  	    this.solvedText.setText(text);
+    private void animText(int textIdentifier, int color) {
+  	  this.solvedText.setText(textIdentifier);
   	  this.solvedText.setTextColor(color);
   	  this.solvedText.setVisibility(View.VISIBLE);
   	    final float SCALE_FROM = (float) 0;
@@ -554,17 +554,16 @@ public class MainActivity extends Activity {
         LayoutInflater li = LayoutInflater.from(this);
         View view = li.inflate(R.layout.aboutview, null); 
         new AlertDialog.Builder(MainActivity.this)
-        .setTitle("Mathdoku Help")
+        .setTitle(getResources().getString(R.string.application_name) + " " + getResources().getString(R.string.menu_help))
         .setIcon(R.drawable.about)
         .setView(view)
-        .setNeutralButton("Changes", new DialogInterface.OnClickListener() {
+        .setNeutralButton(R.string.menu_changes, new DialogInterface.OnClickListener() {
           public void onClick(DialogInterface dialog, int whichButton) {
               MainActivity.this.openChangesDialog();
           }
         })
-        .setNegativeButton("Close", new DialogInterface.OnClickListener() {
+        .setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
           public void onClick(DialogInterface dialog, int whichButton) {
-              //
           }
         })
         .show();  
@@ -574,10 +573,10 @@ public class MainActivity extends Activity {
       LayoutInflater li = LayoutInflater.from(this);
       View view = li.inflate(R.layout.changeview, null); 
       new AlertDialog.Builder(MainActivity.this)
-      .setTitle("Changelog")
+      .setTitle(R.string.changelog_title)
       .setIcon(R.drawable.about)
       .setView(view)
-      .setNegativeButton("Close", new DialogInterface.OnClickListener() {
+      .setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
         public void onClick(DialogInterface dialog, int whichButton) {
             //
         }
@@ -586,17 +585,16 @@ public class MainActivity extends Activity {
     }
     
     private void openClearDialog() {
-        LayoutInflater li = LayoutInflater.from(this);
-        View view = li.inflate(R.layout.clearview, null); 
         new AlertDialog.Builder(MainActivity.this)
-        .setTitle("Clear All?")
-        .setView(view)
-        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+        .setTitle(R.string.context_menu_clear_grid_confirmation_title)
+        .setMessage(R.string.context_menu_clear_grid_confirmation_message)
+        .setIcon(android.R.drawable.ic_dialog_alert)
+        .setNegativeButton(R.string.context_menu_clear_grid_negative_button_label, new DialogInterface.OnClickListener() {
           public void onClick(DialogInterface dialog, int whichButton) {
               //
           }
         })
-        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        .setPositiveButton(R.string.context_menu_clear_grid_positive_button_label, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				MainActivity.this.kenKenGrid.clearUserValues();

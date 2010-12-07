@@ -10,7 +10,7 @@
   	android:id="@+id/saveCurrent"
   	android:layout_width="wrap_content"
   	android:layout_height="wrap_content"
-  	android:text="Save Current Game"
+  	android:text="@string/save_game_screen_save_current_game"
   	android:layout_gravity="center"
   	android:layout_margin="15dp"
   	/>

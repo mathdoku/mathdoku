@@ -1,14 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<string name="app_name">MathDoku</string>
-<string name="menu_newgame">New Game</string>
-<string name="menu_size4">4x4 (easy)</string>
-<string name="menu_size5">5x5 (medium)</string>
-<string name="menu_size6">6x6 (hard)</string>
-<string name="menu_size7">7x7 (harder)</string>
-<string name="menu_size8">8x8 (hardest)</string>
-<string name="menu_saveload">Load/Save</string>
-<string name="menu_solve">Solve</string>
-<string name="menu_options">Options</string>
-<string name="menu_help">Help</string>
+	<string name="application_name">MathDoku</string>
+	<!-- The label of the buttons that close dialogs. -->
+	<string name="close">Close</string>
+	<!-- A text that informs the player that a certain amount of text is in English. -->
+	<string name="in_english">(in English)</string>
+	<!-- The visibility of the texts above. Should be 2 in English and 0 in all non-English translations. -->
+	<integer name="in_english_visibility">2</integer>
+	<!-- The different grid sizes with their difficulties. -->
+	<string name="grid_size_4">4x4 (easy)</string>
+	<string name="grid_size_5">5x5 (medium)</string>
+	<string name="grid_size_6">6x6 (hard)</string>
+	<string name="grid_size_7">7x7 (harder)</string>
+	<string name="grid_size_8">8x8 (hardest)</string>
+	<!-- The menu item that allows the player to start a new game. -->
+	<string name="menu_newgame">New Game</string>
+	<!-- The menu item that allows the player to load and save the game states. -->
+	<string name="menu_saveload">Load/Save</string>
+	<!-- The menu item that allows the player have the game solve the puzzle automatically. -->
+	<string name="menu_solve">Solve</string>
+	<!-- The menu item that allows the player to navigate to the options screen. -->
+	<string name="menu_options">Options</string>
+	<!-- The menu item that allows the player to navigate to the help screen. -->
+	<string name="menu_help">Help</string>
+	<!-- The menu item that allows the player to navigate to the changelog screen -->
+	<string name="menu_changes">Changes</string>
+	<!-- The message displayed on the screen to explain the player that (s)he has to press the "Menu" button on the device. -->
+	<string name="press_menu_button_message">Press the \"Menu\" button.</string>
+	<!-- The button in the save game screen that allows the player to save the state of the game (s)he's currently playing. -->
+	<string name="save_game_screen_save_current_game">Save current game</string>
+	<!-- The button in the save game screen that allows the player to load a previously saved game state. -->
+	<string name="save_game_screen_load_game">Load game</string>
+	<!-- The button in the save game screen that allows the player to delete a previously saved game state. -->
+	<string name="save_game_screen_delete_game">Delete game</string>
+	<!-- The confirmation message that shows up when a delete button is pressed, plus the associated title and button labels. -->
+	<string name="save_game_screen_delete_game_confirmation_message">Are you sure you want to delete this game?</string>
+	<string name="save_game_screen_delete_game_confirmation_title">Delete saved game?</string>
+	<string name="save_game_screen_delete_game_negative_button_label">No, keep it</string>
+	<string name="save_game_screen_delete_game_positive_button_label">Yes, delete it</string>
+	<!-- The title and summary of the "alternate theme" option. This option alters the theme used to display the puzzleboard. -->
+	<string name="option_alternate_theme_title">Alternate theme</string>
+	<string name="option_alternate_theme_summary">Use an alternative theme for the grid</string>
+	<!-- The title and summary of the "hide selector" option. This option auto-shows the digit buttons when the player selects a cell, and auto-hides those buttons when the player deselects a cell. -->
+	<string name="option_hide_selector_title">Auto-hide digit buttons</string>
+	<string name="option_hide_selector_summary">Digit buttons hide after pressing</string>
+	<!-- The title and summary of the "bad maths" option. This option highlights cages with incorrect maths. -->
+	<string name="option_mark_bad_maths_title">Mark bad maths</string>
+	<string name="option_mark_bad_maths_summary">Highlight cages with incorrect maths</string>
+	<!-- The title and summary of the "bad maths" option. This option highlights cells with digits already in the row or column. -->
+	<string name="option_mark_duplicates_title">Mark duplicates</string>
+	<string name="option_mark_duplicates_summary">Highlight duplicate digits in a row or column</string>
+	<!-- The title and summary of the "sound effects" option. -->
+	<string name="option_sound_effects_title">Sound effects</string>
+	<string name="option_sound_effects_summary">Enable the sound effects</string>
+	<!-- The title and summary of the "wake lock" option. This option highlights cells with digits already in the row or column. -->
+	<string name="option_wake_lock_title">Keep screen on</string>
+	<string name="option_wake_lock_summary">Prevent the screen from going off while playing</string>
+	<!-- The text before the "maybe" checkbox in the main UI. -->
+	<string name="main_ui_maybe">Maybe</string>
+	<!-- The text on the clear button in the main UI. -->
+	<string name="main_ui_clear">Clear</string>
+	<!-- The message that appears when the player has solved the puzzle. -->
+	<string name="main_ui_solved_messsage">Solved!</string>
+	<!-- The message that appears when the player reveals a cell. -->
+	<string name="main_ui_cheat_messsage">Cheat! :P</string>
+	<!-- The message displayed on the screen when building a new puzzle, along with the associated title. -->
+ 	<string name="main_ui_building_puzzle_message">Please wait...</string>
+	<string name="main_ui_building_puzzle_title">Building puzzle</string>
+	<!-- The context menu item that allows the user to fill in the "Maybe"s in the cage. -->
+	<string name="context_menu_use_cage_maybes">Use cage \"Maybe\"s</string>
+	<!-- The context menu item that allows the user to reveal a cell. -->
+	<string name="context_menu_reveal_cell">Reveal this cell</string>
+	<!-- The context menu item that allows the user to clear all of the cells in the cage. -->
+	<string name="context_menu_clear_cage_cells">Clear cage cells</string>
+	<!-- The context menu item that allows the user to clear the entire grid. -->
+	<string name="context_menu_clear_grid">Clear entire grid</string>
+	<!-- The confirmation message that shows up when the clear grid context menu item is selected, plus the associated title and button labels. -->
+	<string name="context_menu_clear_grid_confirmation_message">Are you sure you want to clear the entire grid?</string>
+	<string name="context_menu_clear_grid_confirmation_title">Clear entire grid?</string>
+	<string name="context_menu_clear_grid_negative_button_label">No, leave it</string>
+	<string name="context_menu_clear_grid_positive_button_label">Yes, start over</string>
+	<!-- The title of the changelog screen. -->
+	<string name="changelog_title">Changelog</string>
+	<!-- The title of the bugs and features part of the changelog screen. -->
+	<string name="changelog_bugs_features_title">Bugs and features</string>
+	<!-- The text of the bugs and features part of the changelog screen. -->
+	<string name="changelog_bugs_features">Please report any issues or feature requests on the project page:\n\nhttp://mathdoku.googlecode.com/</string>
+	<!-- The first line in the help screen. -->
+	<string name="help_leadin">Thanks for installing MathDoku for Android.</string>
+	<!-- The version title in the help screen. -->
+	<string name="help_version">Version</string>
+	<!-- The license title in the help screen. -->
+	<string name="help_license">License</string>
+	<!-- The project home title in the help screen. -->
+	<string name="help_project_home">Project Home</string>
+	<!-- The author title in the help screen. -->
+	<string name="help_author">Author</string>
 </resources>

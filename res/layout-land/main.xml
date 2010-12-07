@@ -22,7 +22,7 @@
 		android:id="@+id/solvedText"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="Solved!!"
+		android:text="@string/main_ui_solved_messsage"
 		android:textSize="48dp"
 		android:textColor="#FF000000"
 		android:background="#D0DECA1E"
@@ -40,7 +40,7 @@
 		android:layout_margin = "5dp"
 		android:textColor="#FF000000"
 		android:textStyle="bold"
-		android:text="Press 'Menu' to start"
+		android:text="@string/press_menu_button_message"
 	/>
 <LinearLayout android:id="@+id/digitSelector"
     android:orientation="vertical"
@@ -61,12 +61,12 @@
 		<Button android:id="@+id/digitSelect1"
 			android:layout_width="75dp"
 			android:layout_height="wrap_content"
-			android:text=" 1 "
+			android:text="1"
 			/>
 		<Button android:id="@+id/digitSelect2"
 			android:layout_width="75dp"
 			android:layout_height="wrap_content"
-			android:text=" 2 "
+			android:text="2"
 		/>
 	</LinearLayout>
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -79,12 +79,12 @@
    		<Button android:id="@+id/digitSelect3"
 		android:layout_width="75dp"
 		android:layout_height="wrap_content"
-		android:text=" 3 "
+		android:text="3"
 		/>
    		<Button android:id="@+id/digitSelect4"
 		android:layout_width="75dp"
 		android:layout_height="wrap_content"
-		android:text=" 4 "
+		android:text="4"
 		/>
 	</LinearLayout>
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -97,12 +97,12 @@
 		<Button android:id="@+id/digitSelect5"
 			android:layout_width="75dp"
 			android:layout_height="wrap_content"
-			android:text=" 5 "
+			android:text="5"
 			/>
 		<Button android:id="@+id/digitSelect6"
 			android:layout_width="75dp"
 			android:layout_height="wrap_content"
-			android:text=" 6 "
+			android:text="6"
 			/>
 	</LinearLayout>
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -115,12 +115,12 @@
 		<Button android:id="@+id/digitSelect7"
 			android:layout_width="75dp"
 			android:layout_height="wrap_content"
-			android:text=" 7 "
+			android:text="7"
 			/>	    
 		<Button android:id="@+id/digitSelect8"
 			android:layout_width="75dp"
 			android:layout_height="wrap_content"
-			android:text=" 8 "
+			android:text="8"
 			/>	    
 	</LinearLayout>
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -135,7 +135,7 @@
 			android:layout_height="wrap_content"
 			android:textColor="#FF000000"
 			android:textStyle="bold"
-			android:text="Maybe"
+			android:text="@string/main_ui_maybe"
 			/>
 	    <CheckBox android:id="@+id/maybeButton"
 	    	android:layout_width="wrap_content"
@@ -143,9 +143,9 @@
 			android:layout_marginRight="35dp"
 			/>
 		<Button android:id="@+id/clearButton"
-			android:layout_width="wrap_content"
+			android:layout_width="75dp"
 			android:layout_height="wrap_content"
-			android:text=" Clear "
+			android:text="@string/main_ui_clear"
 		/>
 
 	</LinearLayout>
