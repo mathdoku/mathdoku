@@ -42,13 +42,20 @@ public class SaveGame {
 					writer.write(cell.mColumn + ":");
 					writer.write(cell.mCageText + ":");
 					writer.write(cell.mValue + ":");
-					writer.write(cell.mUserValue + ":");
+					writer.write(cell.getUserValue() + ":");
 					for (int possible : cell.mPossibles)
 						writer.write(possible + ",");
 					writer.write("\n");
 				}
 				if (view.mSelectedCell != null)
 					writer.write("SELECTED:" + view.mSelectedCell.mCellNumber + "\n");
+				ArrayList<GridCell> invalidchoices = view.invalidsHighlighted();
+				if (invalidchoices.size() > 0) {
+					writer.write("INVALID:");
+					for (GridCell cell : invalidchoices)
+						writer.write(cell.mCellNumber + ",");
+					writer.write("\n");
+				}
 				for (GridCage cage : view.mCages) {
 					writer.write("CAGE:");
 					writer.write(cage.mId + ":");
@@ -133,7 +140,7 @@ public class SaveGame {
 	        	cell.mColumn = Integer.parseInt(cellParts[3]);
 	        	cell.mCageText = cellParts[4];
 	        	cell.mValue = Integer.parseInt(cellParts[5]);
-	        	cell.mUserValue = Integer.parseInt(cellParts[6]);
+	        	cell.setUserValue(Integer.parseInt(cellParts[6]));
 	        	if (cellParts.length == 8)
 		        	for (String possible : cellParts[7].split(","))
 		        		cell.mPossibles.add(Integer.parseInt(possible));
@@ -144,6 +151,15 @@ public class SaveGame {
 	        	int selected = Integer.parseInt(line.split(":")[1]);
 	        	view.mSelectedCell = view.mCells.get(selected);
 	        	view.mSelectedCell.mSelected = true;
+	        	line = br.readLine();
+	        }
+	        if (line.startsWith("INVALID:")) {
+	        	String invalidlist = line.split(":")[1];
+	        	for (String cellId : invalidlist.split(",")) {
+	        		int cellNum = Integer.parseInt(cellId);
+	        		GridCell c = view.mCells.get(cellNum);
+	        		c.setInvalidHighlight(true);
+	        	}
 	        	line = br.readLine();
 	        }
 	        view.mCages = new ArrayList<GridCage>();

@@ -17,8 +17,12 @@
 	<string name="menu_newgame">New Game</string>
 	<!-- The menu item that allows the player to load and save the game states. -->
 	<string name="menu_saveload">Load/Save</string>
-	<!-- The menu item that allows the player have the game solve the puzzle automatically. -->
-	<string name="menu_solve">Solve</string>
+	<!-- The top level menu item for solution related sub-menu. -->
+	<string name="menu_solution">Solution</string>
+	<!-- The sub-menu item to check user entries against the solution. -->
+	<string name="menu_checkprogress">Check Progress</string>
+	<!-- The sub-menu item to show the completed grid. -->
+	<string name="menu_showsolution">Show Solution</string>
 	<!-- The menu item that allows the player to navigate to the options screen. -->
 	<string name="menu_options">Options</string>
 	<!-- The menu item that allows the player to navigate to the help screen. -->
@@ -96,4 +100,8 @@
 	<string name="help_project_home">Project Home</string>
 	<!-- The author title in the help screen. -->
 	<string name="help_author">Author</string>
+	<!-- The message shown when no errors found when checking progress. -->
+	<string name="ProgressOK">All correct so far</string>
+	<!-- The message shown when error(s) found when checking progress. -->
+	<string name="ProgressBad">You have made an error</string>
 </resources>

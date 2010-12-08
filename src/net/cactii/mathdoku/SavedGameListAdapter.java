@@ -124,6 +124,8 @@ public class SavedGameListAdapter extends BaseAdapter {
 		grid.mContext = this.mContext;
 		grid.mFace = this.mFace;
 		grid.mActive = false;
+	    grid.mDupedigits = PreferenceManager.getDefaultSharedPreferences(convertView.getContext()).getBoolean("dupedigits", true);
+	    grid.mBadMaths = PreferenceManager.getDefaultSharedPreferences(convertView.getContext()).getBoolean("badmaths", true);
 
 		SaveGame saver = new SaveGame(saveFile);
 		try {

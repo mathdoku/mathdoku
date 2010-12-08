@@ -18,6 +18,7 @@ import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -281,6 +282,14 @@ public class MainActivity extends Activity {
     }
     
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+    	//Disable or enable solution option depending on whether grid is active
+    	menu.findItem(R.id.solution).setEnabled(kenKenGrid.mActive);
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+    
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.mainmenu, menu);
@@ -303,7 +312,7 @@ public class MainActivity extends Activity {
     	menu.setHeaderTitle(R.string.application_name);
 
     	for (GridCell cell : this.kenKenGrid.mCages.get(this.kenKenGrid.mSelectedCell.mCageId).mCells) {
-    		if (cell.mUserValue > 0 || cell.mPossibles.size() > 0)
+    		if (cell.isUserValueSet() || cell.mPossibles.size() > 0)
     			menu.setGroupEnabled(1, true);
     		if (cell.mPossibles.size() == 1)
     			menu.setGroupEnabled(2, true);
@@ -317,8 +326,7 @@ public class MainActivity extends Activity {
     		  if (selectedCell == null)
     			  break;
     		  for (GridCell cell : this.kenKenGrid.mCages.get(selectedCell.mCageId).mCells) {
-    			  cell.mUserValue = 0;
-    			  cell.mPossibles.clear();
+    			  cell.clearUserValue();
     		  }
     		  this.kenKenGrid.invalidate();
     		  break;
@@ -327,8 +335,7 @@ public class MainActivity extends Activity {
     			  break;
     		  for (GridCell cell : this.kenKenGrid.mCages.get(selectedCell.mCageId).mCells) {
     			  if (cell.mPossibles.size() == 1) {
-    				  cell.mUserValue = cell.mPossibles.get(0);
-    				  cell.mPossibles.clear();
+    				  cell.setUserValue(cell.mPossibles.get(0));
     			  }
     		  }
     		  this.kenKenGrid.invalidate();
@@ -336,8 +343,7 @@ public class MainActivity extends Activity {
     	  case 102: // Reveal cell
     		  if (selectedCell == null)
     			  break;
-    		  selectedCell.mPossibles.clear();
-    		  selectedCell.mUserValue = selectedCell.mValue;
+    		  selectedCell.setUserValue(selectedCell.mValue);
     		  selectedCell.mCheated = true;
     		  Toast.makeText(this, R.string.main_ui_cheat_messsage, Toast.LENGTH_SHORT).show();
     		  this.kenKenGrid.invalidate();
@@ -371,9 +377,22 @@ public class MainActivity extends Activity {
             Intent i = new Intent(this, SavedGameList.class);
             startActivityForResult(i, 7);
 	        return true;
-   		case R.id.solve:
-    		if (this.kenKenGrid.mActive)
-    			this.kenKenGrid.Solve();
+   		case R.id.checkprogress:
+   			int textId;
+   			if (kenKenGrid.isSolutionValidSoFar())
+   				textId = R.string.ProgressOK;
+			else {
+				textId = R.string.ProgressBad;
+				kenKenGrid.markInvalidChoices();
+			}
+   			Toast toast = Toast.makeText(getApplicationContext(),
+   									 	 textId,
+   									 	 Toast.LENGTH_SHORT);
+   			toast.setGravity(Gravity.CENTER,0,0);
+   			toast.show();
+   			return true;
+   		case R.id.showsolution:
+   			this.kenKenGrid.Solve();
     		this.pressMenu.setVisibility(View.VISIBLE);
     		return true;
    		case R.id.options:

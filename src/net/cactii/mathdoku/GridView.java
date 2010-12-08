@@ -301,10 +301,9 @@ public boolean mBadMaths;
   
   public void clearUserValues() {
 	  for (GridCell cell : this.mCells) {
-		  cell.mUserValue = 0;
-		  cell.mPossibles.clear();
-		  this.invalidate();
+		  cell.clearUserValue();
 	  }
+	  this.invalidate();
   }
   
   /* Fetch the cell at the given row, column */
@@ -422,8 +421,8 @@ public boolean mBadMaths;
 
 		  // Draw cells
 		  for (GridCell cell : this.mCells) {
-			  if ((cell.mUserValue > 0 && this.getNumValueInCol(cell) > 1) ||
-					  (cell.mUserValue > 0 && this.getNumValueInRow(cell) > 1))
+			  if ((cell.isUserValueSet() && this.getNumValueInCol(cell) > 1) ||
+					  (cell.isUserValueSet() && this.getNumValueInRow(cell) > 1))
 				  cell.mShowWarning = true;
 			  else
 				  cell.mShowWarning = false;
@@ -573,7 +572,7 @@ public boolean mBadMaths;
   public int getNumValueInRow(GridCell ocell) {
 	  int count = 0;
 	  for (GridCell cell : this.mCells) {
-		  if (cell.mRow == ocell.mRow && cell.mUserValue == ocell.mUserValue)
+		  if (cell.mRow == ocell.mRow && cell.getUserValue() == ocell.getUserValue())
 			  count++;
 	  }
 	  return count;
@@ -582,7 +581,7 @@ public boolean mBadMaths;
   public int getNumValueInCol(GridCell ocell) {
 	  int count = 0;
 	  for (GridCell cell : this.mCells) {
-		  if (cell.mColumn == ocell.mColumn && cell.mUserValue == ocell.mUserValue)
+		  if (cell.mColumn == ocell.mColumn && cell.getUserValue() == ocell.getUserValue())
 			  count++;
 	  }
 	  return count;
@@ -591,14 +590,14 @@ public boolean mBadMaths;
   // Solve the puzzle by setting the Uservalue to the actual value
   public void Solve() {
 	  for (GridCell cell : this.mCells)
-		  cell.mUserValue = cell.mValue;
+		  cell.setUserValue(cell.mValue);
 	  invalidate();
   }
   
-  // Returns whether the puzle is solved.
+  // Returns whether the puzzle is solved.
   public boolean isSolved() {
 	  for (GridCell cell : this.mCells) {
-		  if (cell.mUserValue < 1)
+		  if (!cell.isUserValueSet())
 			  return false;
 		  if (getNumValueInCol(cell) != 1)
 			  return false;
@@ -611,6 +610,44 @@ public boolean mBadMaths;
 	  return true;
   }
 
+  // Checks whether the user has made any mistakes
+  public boolean isSolutionValidSoFar()
+  {
+	  for (GridCell cell : this.mCells)
+		  if (cell.isUserValueSet())
+			  if (cell.getUserValue() != cell.mValue)
+				  return false;
+	  
+	  return true;
+  }
+  
+  // Highlight those cells where the user has made a mistake
+  public void markInvalidChoices()
+  {
+	  boolean isValid = true;
+	  for (GridCell cell : this.mCells)
+		  if (cell.isUserValueSet())
+			  if (cell.getUserValue() != cell.mValue) {
+				  cell.setInvalidHighlight(true);
+				  isValid = false;
+			  }
+
+	  if (!isValid)
+		  invalidate();
+	  
+	  return;
+  }
+  
+  // Return the list of cells that are highlighted as invalid
+  public ArrayList<GridCell> invalidsHighlighted()
+  {
+	  ArrayList<GridCell> invalids = new ArrayList<GridCell>();
+	  for (GridCell cell : this.mCells)
+		  if (cell.getInvalidHighlight())
+			  invalids.add(cell);
+	  
+	  return invalids;
+  }
   
   public void setSolvedHandler(OnSolvedListener listener) {
 	  this.mSolvedListener = listener;

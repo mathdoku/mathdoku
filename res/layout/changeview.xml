@@ -25,11 +25,16 @@
 				android:paddingBottom="15px"	
 				android:visibility="@integer/in_english_visibility"
 				android:textColor="#ffffff" />
-			<TextView android:text="v1.6: All puzzles have unique solution, Support for Install to SD Card, Bug fixes."
+			<TextView android:text="v1.7: Added Check Progress feature."
 				android:layout_width="fill_parent" 
 				android:layout_height="wrap_content"
 				android:paddingLeft="15px"			
 				android:textColor="#ffffa0" />
+			<TextView android:text="v1.6: All puzzles have unique solution, Support for Install to SD Card, Bug fixes."
+				android:layout_width="fill_parent" 
+				android:layout_height="wrap_content"
+				android:paddingLeft="15px"			
+				android:textColor="#ffffff" />
 			<TextView android:text="v1.5: Now with context menu on game grid."
 				android:layout_width="fill_parent" 
 				android:layout_height="wrap_content"

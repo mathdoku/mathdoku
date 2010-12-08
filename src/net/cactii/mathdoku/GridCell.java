@@ -23,7 +23,7 @@ public class GridCell {
   // Value of the digit in the cell
   public int mValue;
   // User's entered value
-  public int mUserValue;
+  private int mUserValue;
   // Id of the enclosing cage
   public int mCageId;
   // String of the cage
@@ -38,6 +38,8 @@ public class GridCell {
   public boolean mSelected;
   // Player cheated (revealed this cell)
   public boolean mCheated;
+  // Highlight user input isn't correct value
+  private boolean mInvalidHighlight;
   
   public static final int BORDER_NONE = 0;
   public static final int BORDER_SOLID = 1;
@@ -73,6 +75,7 @@ public class GridCell {
     this.mUserValue = 0;
     this.mShowWarning = false;
     this.mCheated = false;
+    this.mInvalidHighlight = false;
 
     this.mPosX = 0;
     this.mPosY = 0;
@@ -196,17 +199,37 @@ public class GridCell {
 		  this.mPossibles.remove(new Integer(digit));
   }
   
+  public int getUserValue() {
+	  return mUserValue;
+  }
+
+  public boolean isUserValueSet() {
+	  return mUserValue != 0;
+  }
+
   public void setUserValue(int digit) {
-    this.mPossibles.clear();
-    this.mUserValue = digit;
+	  this.mPossibles.clear();
+	  this.mUserValue = digit;
+	  mInvalidHighlight = false;
   }
   
+  public void clearUserValue() {
+	  setUserValue(0);
+  }
+
   /* Returns whether the cell is a member of any cage */
   public boolean CellInAnyCage()
   {
 	  return mCageId != -1;
   }
   
+  public void setInvalidHighlight(boolean value) {
+	  this.mInvalidHighlight = value;
+  }
+  public boolean getInvalidHighlight() {
+	  return this.mInvalidHighlight;
+  }
+
   /* Draw the cell. Border and text is drawn. */
   public void onDraw(Canvas canvas, boolean onlyBorders) {
     
@@ -225,7 +248,7 @@ public class GridCell {
     GridCell cellBelow = this.mContext.getCellAt(this.mRow+1, this.mColumn);
 
     if (!onlyBorders) {
-	    if (this.mShowWarning && this.mContext.mDupedigits)
+	    if ((this.mShowWarning && this.mContext.mDupedigits) || this.mInvalidHighlight)
 	    	canvas.drawRect(west + 1, north+1, east-1, south-1, this.mWarningPaint);
 	    if (this.mSelected)
 	    	canvas.drawRect(west+1, north+1, east-1, south-1, this.mSelectedPaint);
@@ -287,7 +310,7 @@ public class GridCell {
     	return;
     
     // Cell value
-    if (this.mUserValue > 0) {
+    if (this.isUserValueSet()) {
 	    int textSize = (int)(cellSize*3/4);
 	    this.mValuePaint.setTextSize(textSize);
 	    float leftOffset = cellSize/2 - textSize/4;
