@@ -130,7 +130,7 @@ public class MainActivity extends Activity {
 						//cell.mSelected = false;
 						kenKenGrid.mSelectorShown = false;
 			    	} else {
-						maybeButton.setChecked((cell.mPossibles.size() > 0));
+						//maybeButton.setChecked((cell.mPossibles.size() > 0));
 						digitSelector.requestFocus();
 			    	}
 					kenKenGrid.requestFocus();
@@ -141,7 +141,7 @@ public class MainActivity extends Activity {
 						digitSelector.startAnimation(animation);
 						kenKenGrid.mSelectorShown = true;
 			    	}
-					maybeButton.setChecked((cell.mPossibles.size() > 0));
+					//maybeButton.setChecked((cell.mPossibles.size() > 0));
 					digitSelector.requestFocus();
 				}
 			}
@@ -455,15 +455,20 @@ public class MainActivity extends Activity {
     	}
     	if (this.kenKenGrid.mSelectedCell == null)
     		return;
-    	if (this.maybeButton.isChecked())
-    		if (value == 0) {
-    			this.kenKenGrid.mSelectedCell.mPossibles.clear();
-				this.maybeButton.setChecked(false);
-    		} else
-    			this.kenKenGrid.mSelectedCell.togglePossible(value);
+    	if (value == 0) {	// Clear Button
+			this.kenKenGrid.mSelectedCell.mPossibles.clear();
+    		this.kenKenGrid.mSelectedCell.setUserValue(0);
+    	}
     	else {
-    		this.kenKenGrid.mSelectedCell.setUserValue(value);
-    		this.kenKenGrid.mSelectedCell.mPossibles.clear();
+        	if (this.maybeButton.isChecked()) {
+        		if (kenKenGrid.mSelectedCell.isUserValueSet())
+            		this.kenKenGrid.mSelectedCell.clearUserValue();
+    			this.kenKenGrid.mSelectedCell.togglePossible(value);
+        	}
+        	else {
+        		this.kenKenGrid.mSelectedCell.setUserValue(value);
+    			this.kenKenGrid.mSelectedCell.mPossibles.clear();
+        	}
     	}
     	if (this.preferences.getBoolean("hideselector", false))
     		this.digitSelector.setVisibility(View.GONE);

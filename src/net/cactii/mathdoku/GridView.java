@@ -432,8 +432,8 @@ public boolean mBadMaths;
 		  // Draw borders
 		  canvas.drawLine(1, 1, this.mCurrentWidth-1, 1, this.mBorderPaint);
 		  canvas.drawLine(1, 1, 1, this.mCurrentWidth-1, this.mBorderPaint);
-		  canvas.drawLine(1, this.mCurrentWidth-1, this.mCurrentWidth-2, this.mCurrentWidth-2, this.mBorderPaint);
-		  canvas.drawLine(this.mCurrentWidth-1, 1, this.mCurrentWidth-2, this.mCurrentWidth-2, this.mBorderPaint);
+		  canvas.drawLine(1, this.mCurrentWidth-1, this.mCurrentWidth-1, this.mCurrentWidth-1, this.mBorderPaint);
+		  canvas.drawLine(this.mCurrentWidth-1, 1, this.mCurrentWidth-1, this.mCurrentWidth-1, this.mBorderPaint);
 
 		  // Draw cells
 		  for (GridCell cell : this.mCells) {

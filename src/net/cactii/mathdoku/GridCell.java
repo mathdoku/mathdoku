@@ -121,6 +121,7 @@ public class GridCell {
     this.mPossiblesPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     this.mPossiblesPaint.setColor(0xFF000000);
     this.mPossiblesPaint.setTextSize(10);
+	this.mPossiblesPaint.setFakeBoldText(true);
     this.mPossiblesPaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL));
     
     this.mPossibles = new ArrayList<Integer>();
@@ -334,11 +335,17 @@ public class GridCell {
     
     if (mPossibles.size()>0) {
     	// Small 'possible' values.
-    	mPossiblesPaint.setTextSize((int)(cellSize/4));
-    	String possibles = "";
-    	for (int i = 0 ; i < mPossibles.size() ; i++)
-    		possibles += Integer.toString(mPossibles.get(i));
-   		canvas.drawText(possibles, mPosX+3, mPosY + cellSize-5, mPossiblesPaint);
+    	this.mPossiblesPaint.setTextSize((int)(cellSize/4.5));
+    	int xOffset = (int) (cellSize/3);
+    	int yOffset = (int) (cellSize/2) + 1;
+    	float xScale = (float) 0.21 * cellSize;
+    	float yScale = (float) 0.21 * cellSize;
+    	for (int i = 0 ; i < mPossibles.size() ; i++) {
+    		int possible = mPossibles.get(i);
+    		float xPos = mPosX + xOffset + ((possible-1)%3)*xScale;
+    		float yPos = mPosY + yOffset + ((int)(possible-1)/3)*yScale;
+       		canvas.drawText(Integer.toString(possible), xPos, yPos, this.mPossiblesPaint);
+    	}
     }
   }
 
