@@ -48,7 +48,7 @@ public class MainActivity extends Activity {
     ProgressDialog mProgressDialog;
     
     LinearLayout topLayout;
-    LinearLayout digitSelector;
+    LinearLayout controls;
     Button digit1;
     Button digit2;
     Button digit3;
@@ -85,7 +85,7 @@ public class MainActivity extends Activity {
         this.solvedText = (TextView)findViewById(R.id.solvedText);
         this.kenKenGrid.animText = this.solvedText;
         this.pressMenu = (TextView)findViewById(R.id.pressMenu);
-        this.digitSelector = (LinearLayout)findViewById(R.id.digitSelector);
+        this.controls = (LinearLayout)findViewById(R.id.controls);
         this.digit1 = (Button)findViewById(R.id.digitSelect1);
         this.digit2 = (Button)findViewById(R.id.digitSelect2);
         this.digit3 = (Button)findViewById(R.id.digitSelect3);
@@ -114,7 +114,7 @@ public class MainActivity extends Activity {
         outAnimation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.selectorzoomout);
         outAnimation.setAnimationListener(new AnimationListener() {
             public void onAnimationEnd(Animation animation) {
-              digitSelector.setVisibility(View.GONE);
+              controls.setVisibility(View.GONE);
             }
             public void onAnimationRepeat(Animation animation) {}
             public void onAnimationStart(Animation animation) {}
@@ -123,26 +123,26 @@ public class MainActivity extends Activity {
         this.kenKenGrid.setOnGridTouchListener(this.kenKenGrid.new OnGridTouchListener() {
 			@Override
 			public void gridTouched(GridCell cell) {
-				if (digitSelector.getVisibility() == View.VISIBLE) {
+				if (controls.getVisibility() == View.VISIBLE) {
 					// digitSelector.setVisibility(View.GONE);
 			    	if (MainActivity.this.preferences.getBoolean("hideselector", false)) {
-						digitSelector.startAnimation(outAnimation);
+						controls.startAnimation(outAnimation);
 						//cell.mSelected = false;
 						kenKenGrid.mSelectorShown = false;
 			    	} else {
 						//maybeButton.setChecked((cell.mPossibles.size() > 0));
-						digitSelector.requestFocus();
+						controls.requestFocus();
 			    	}
 					kenKenGrid.requestFocus();
 				} else {
 			    	if (MainActivity.this.preferences.getBoolean("hideselector", false)) {
-						digitSelector.setVisibility(View.VISIBLE);
+						controls.setVisibility(View.VISIBLE);
 						Animation animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.selectorzoomin);
-						digitSelector.startAnimation(animation);
+						controls.startAnimation(animation);
 						kenKenGrid.mSelectorShown = true;
 			    	}
 					//maybeButton.setChecked((cell.mPossibles.size() > 0));
-					digitSelector.requestFocus();
+					controls.requestFocus();
 				}
 			}
 		});
@@ -156,7 +156,7 @@ public class MainActivity extends Activity {
     				// TODO Auto-generated method stub
     				if (kenKenGrid.mActive)
     					animText(R.string.main_ui_solved_messsage, 0xFF002F00);
-    				MainActivity.this.digitSelector.setVisibility(View.GONE);
+    				MainActivity.this.controls.setVisibility(View.GONE);
     				MainActivity.this.pressMenu.setVisibility(View.VISIBLE);
     			}
         });
@@ -256,7 +256,7 @@ public class MainActivity extends Activity {
 	    this.kenKenGrid.mDupedigits = this.preferences.getBoolean("dupedigits", true);
 	    this.kenKenGrid.mBadMaths = this.preferences.getBoolean("badmaths", true);
 	    if (this.kenKenGrid.mActive && !MainActivity.this.preferences.getBoolean("hideselector", false)) {
-	    	this.digitSelector.setVisibility(View.VISIBLE);
+	    	this.controls.setVisibility(View.VISIBLE);
 	    }
 	    this.setSoundEffectsEnabled(this.preferences.getBoolean("soundeffects", true));
 	    super.onResume();
@@ -412,7 +412,7 @@ public class MainActivity extends Activity {
       if (event.getAction() == KeyEvent.ACTION_DOWN &&
     	  keyCode == KeyEvent.KEYCODE_BACK &&
     	  this.kenKenGrid.mSelectorShown) {
-      	this.digitSelector.setVisibility(View.GONE);
+      	this.controls.setVisibility(View.GONE);
     	this.kenKenGrid.requestFocus();
     	this.kenKenGrid.mSelectorShown = false;
     	this.kenKenGrid.invalidate();
@@ -471,7 +471,7 @@ public class MainActivity extends Activity {
         	}
     	}
     	if (this.preferences.getBoolean("hideselector", false))
-    		this.digitSelector.setVisibility(View.GONE);
+    		this.controls.setVisibility(View.GONE);
     	// this.kenKenGrid.mSelectedCell.mSelected = false;
     	this.kenKenGrid.requestFocus();
     	this.kenKenGrid.mSelectorShown = false;
@@ -557,7 +557,7 @@ public class MainActivity extends Activity {
 		this.solvedText.setVisibility(View.GONE);
 		this.pressMenu.setVisibility(View.GONE);
     	if (!MainActivity.this.preferences.getBoolean("hideselector", false)) {
-			this.digitSelector.setVisibility(View.VISIBLE);
+			this.controls.setVisibility(View.VISIBLE);
     	}
     }
     
