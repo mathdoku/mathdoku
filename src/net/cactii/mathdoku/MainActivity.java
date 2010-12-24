@@ -577,6 +577,8 @@ public class MainActivity extends Activity {
     private void openHelpDialog() {
         LayoutInflater li = LayoutInflater.from(this);
         View view = li.inflate(R.layout.aboutview, null); 
+        TextView tv = (TextView)view.findViewById(R.id.aboutVersionCode);
+        tv.setText(getVersionName());
         new AlertDialog.Builder(MainActivity.this)
         .setTitle(getResources().getString(R.string.application_name) + " " + getResources().getString(R.string.menu_help))
         .setIcon(R.drawable.about)
@@ -652,5 +654,16 @@ public class MainActivity extends Activity {
               Log.e("Mathdoku", "Package name not found", e);
           }
           return version;
+      }
+    
+    public String getVersionName() {
+        String versionname = "";
+          try {
+              PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
+              versionname = pi.versionName;
+          } catch (Exception e) {
+              Log.e("Mathdoku", "Package name not found", e);
+          }
+          return versionname;
       }
 }

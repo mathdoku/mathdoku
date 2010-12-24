@@ -147,7 +147,7 @@ public class GridCell {
 	    this.mCageTextPaint.setTypeface(this.mContext.mFace);
 	  } else if (theme == GridView.THEME_NEWSPAPER) {
 	    this.mDashedBorderPaint.setPathEffect(null);
-	    this.mBorderPaint.setAntiAlias(true);
+	    this.mBorderPaint.setAntiAlias(false);
 		this.mBorderPaint.setPathEffect(null);
 	    this.mWrongBorderPaint.setAntiAlias(true);
 	    this.mWrongBorderPaint.setPathEffect(null);

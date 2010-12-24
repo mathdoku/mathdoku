@@ -25,7 +25,7 @@
 				android:paddingBottom="15px"	
 				android:visibility="@integer/in_english_visibility"
 				android:textColor="#ffffff" />
-			<TextView android:text="v1.7: Added Check Progress feature. Added support for large (Tablet) screens."
+			<TextView android:text="v1.7: Added Check Progress feature. Added support for large (Tablet) and small screen devices."
 				android:layout_width="fill_parent" 
 				android:layout_height="wrap_content"
 				android:paddingLeft="15px"			

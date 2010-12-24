@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/topLayout" android:orientation="horizontal"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:background="@drawable/background">
+
+	<RelativeLayout android:id="@+id/puzzleGrid"
+		android:layout_width="wrap_content" android:layout_gravity="left|center_vertical"
+		android:background="#00000000" android:layout_height="fill_parent"
+		android:layout_marginBottom="15dp" android:layout_marginTop="15dp"
+		android:layout_marginLeft="5dp" android:layout_marginRight="5dp">
+		<net.cactii.mathdoku.GridView android:id="@+id/gridView"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_gravity="left" />
+		<TextView android:id="@+id/solvedText" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="@string/main_ui_solved_messsage"
+			android:textSize="48dp" android:textColor="#FF000000"
+			android:background="#D0DECA1E" android:layout_marginTop="96dp"
+			android:layout_marginLeft="48dp" android:visibility="invisible" />
+	</RelativeLayout>
+
+	<TextView android:id="@+id/pressMenu" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:layout_gravity="center"
+		android:layout_marginTop="50dp" android:textColor="#FF000000"
+		android:textSize="18dp" android:textStyle="bold" android:shadowColor="#7FFFFFFF"
+		android:shadowDx="1" android:shadowDy="1"
+		android:text="@string/press_menu_button_message" />
+
+	<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/controls" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:layout_marginTop="15dp"
+		android:visibility="gone" android:layout_gravity="center_vertical">
+		<TableRow android:id="@+id/buttons1to2">
+			<Button android:id="@+id/digitSelect1" android:layout_width="70dp"
+				android:layout_height="40dp" android:textSize="16dp"
+				android:textStyle="bold" android:text="1" />
+			<Button android:id="@+id/digitSelect2" android:layout_width="70dp"
+				android:layout_height="40dp" android:textSize="16dp"
+				android:textStyle="bold" android:text="2" />
+		</TableRow>
+		<TableRow android:id="@+id/buttons3to4">
+			<Button android:id="@+id/digitSelect3" android:layout_width="70dp"
+				android:layout_height="40dp" android:textSize="16dp"
+				android:textStyle="bold" android:text="3" />
+			<Button android:id="@+id/digitSelect4" android:layout_width="70dp"
+				android:layout_height="40dp" android:textSize="16dp"
+				android:textStyle="bold" android:text="4" />
+		</TableRow>
+		<TableRow android:id="@+id/buttons5to6">
+			<Button android:id="@+id/digitSelect5" android:layout_width="70dp"
+				android:layout_height="40dp" android:textSize="16dp"
+				android:textStyle="bold" android:text="5" />
+			<Button android:id="@+id/digitSelect6" android:layout_width="70dp"
+				android:layout_height="40dp" android:textSize="16dp"
+				android:textStyle="bold" android:text="6" />
+		</TableRow>
+		<TableRow android:id="@+id/buttons7to8">
+			<Button android:id="@+id/digitSelect7" android:layout_width="70dp"
+				android:layout_height="40dp" android:textSize="16dp"
+				android:textStyle="bold" android:text="7" />
+			<Button android:id="@+id/digitSelect8" android:layout_width="70dp"
+				android:layout_height="40dp" android:textSize="16dp"
+				android:textStyle="bold" android:text="8" />
+		</TableRow>
+		<TableRow android:id="@+id/additionalcontrols1">
+			<TextView android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:textColor="#FF000000"
+				android:textSize="16dp" android:textStyle="bold"
+				android:layout_gravity="center_vertical|right" android:text="@string/main_ui_maybe" />
+			<CheckBox android:id="@+id/maybeButton"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:layout_gravity="center_vertical|left" />
+		</TableRow>
+		<TableRow android:id="@+id/additionalcontrols2">
+			<TextView android:text="" />
+			<Button android:id="@+id/clearButton" android:layout_width="70dp"
+				android:layout_height="40dp" android:textSize="16dp"
+				android:textStyle="bold" android:text="@string/main_ui_clear" />
+		</TableRow>
+	</TableLayout>
+
+</LinearLayout>
