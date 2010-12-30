@@ -12,6 +12,7 @@ import android.graphics.Canvas;
 import android.graphics.DashPathEffect;
 import android.graphics.DiscretePathEffect;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -57,15 +58,8 @@ public class GridView extends View implements OnTouchListener  {
   public int mCurrentWidth;
   public Paint mGridPaint;
   public Paint mBorderPaint;
-  public Paint mDigitPaint;
-  public Paint mCagePaint;
-  public Paint mCageTextPaint;
-  public Paint mGridBackgroundPaint;
   public int mBackgroundColor;
 
-private Paint mShadePaint;
-
-private Paint mSolvedPaint;
 public Typeface mFace;
 public boolean mDupedigits;
 public boolean mBadMaths;
@@ -108,28 +102,7 @@ public boolean mBadMaths;
     this.mBorderPaint = new Paint();
     this.mBorderPaint.setColor(0xFF000000);
     this.mBorderPaint.setStrokeWidth(3);
-    
-    this.mGridBackgroundPaint = new Paint();
-    this.mGridBackgroundPaint.setColor(0xF0FFFFFF);
-    this.mGridBackgroundPaint.setStrokeWidth(2);
-    
-    this.mCagePaint = new Paint();
-    this.mCagePaint.setColor(0xFFF0D090);
-    this.mCagePaint.setStrokeWidth(0);
-
-    this.mCageTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    this.mCageTextPaint.setColor(0xFF000000);
-    this.mCageTextPaint.setTextSize(10);
-    this.mCageTextPaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD));
-    
-    this.mShadePaint = new Paint();
-    this.mShadePaint.setColor(0xA0000000);
-    this.mShadePaint.setStrokeWidth(0);
-    
-    this.mSolvedPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    this.mSolvedPaint.setColor(0xFF000000);
-    this.mSolvedPaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD));
-    this.mSolvedPaint.setTextSize(32);
+    this.mBorderPaint.setStyle(Style.STROKE);
 
     this.mCurrentWidth = 0;
     this.mGridSize = 0;
@@ -144,12 +117,11 @@ public boolean mBadMaths;
 		this.mGridPaint.setColor(0xbf906050);
 	    this.mBorderPaint.setAntiAlias(true);
 	    this.mBorderPaint.setPathEffect(new DiscretePathEffect(30, 1));
-	    this.mCagePaint.setPathEffect(new DiscretePathEffect(30, 1));
 	    this.mBackgroundColor = 0x7ff0d090;
 	  } else if (theme == THEME_NEWSPAPER) {
 			this.mGridPaint.setPathEffect(new DashPathEffect(new float[] {2, 2}, 0));
+		    this.mBorderPaint.setAntiAlias(false);
 		    this.mBorderPaint.setPathEffect(null);
-		    this.mCagePaint.setPathEffect(null);
 		    this.mBackgroundColor = 0xffffffff;
 	  }
 	  if (this.getMeasuredHeight() < 150)
@@ -430,10 +402,7 @@ public boolean mBadMaths;
 		  }
 
 		  // Draw borders
-		  canvas.drawLine(1, 1, this.mCurrentWidth-1, 1, this.mBorderPaint);
-		  canvas.drawLine(1, 1, 1, this.mCurrentWidth-1, this.mBorderPaint);
-		  canvas.drawLine(1, this.mCurrentWidth-1, this.mCurrentWidth-1, this.mCurrentWidth-1, this.mBorderPaint);
-		  canvas.drawLine(this.mCurrentWidth-1, 1, this.mCurrentWidth-1, this.mCurrentWidth-1, this.mBorderPaint);
+		  canvas.drawRect(1,1,this.mCurrentWidth-2,this.mCurrentWidth-2, this.mBorderPaint);
 
 		  // Draw cells
 		  for (GridCell cell : this.mCells) {

@@ -3,7 +3,6 @@ package net.cactii.mathdoku;
 import java.util.ArrayList;
 
 import android.graphics.Canvas;
-import android.graphics.DashPathEffect;
 import android.graphics.DiscretePathEffect;
 import android.graphics.Paint;
 import android.graphics.Typeface;
@@ -43,14 +42,12 @@ public class GridCell {
   
   public static final int BORDER_NONE = 0;
   public static final int BORDER_SOLID = 1;
-  public static final int BORDER_DASHED = 2;
   public static final int BORDER_WARN = 3;
   public static final int BORDER_CAGE_SELECTED = 4;
 
   public int[] mBorderTypes;
   
   private Paint mValuePaint;
-  private Paint mDashedBorderPaint;
   private Paint mBorderPaint;
   private Paint mCageSelectedPaint;
   
@@ -84,10 +81,6 @@ public class GridCell {
     this.mValuePaint.setColor(0xFF000000);
     // this.mValuePaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD));
 
-    this.mDashedBorderPaint = new Paint();
-    this.mDashedBorderPaint.setColor(0xFF000000);
-    this.mDashedBorderPaint.setStrokeWidth(0);
-    
     this.mBorderPaint = new Paint();
     this.mBorderPaint.setColor(0xFF000000);
     this.mBorderPaint.setStrokeWidth(2);
@@ -138,7 +131,6 @@ public class GridCell {
   public void setTheme(int theme) {
 	  this.mTheme = theme;
 	  if (theme == GridView.THEME_CARVED) {
-	    this.mDashedBorderPaint.setPathEffect(new DashPathEffect(new float[] {2, 2}, 0));
 	    this.mBorderPaint.setAntiAlias(true);
 		this.mBorderPaint.setPathEffect(new DiscretePathEffect(20, 1));
 	    this.mWrongBorderPaint.setAntiAlias(true);
@@ -146,7 +138,6 @@ public class GridCell {
 	    this.mValuePaint.setTypeface(this.mContext.mFace);
 	    this.mCageTextPaint.setTypeface(this.mContext.mFace);
 	  } else if (theme == GridView.THEME_NEWSPAPER) {
-	    this.mDashedBorderPaint.setPathEffect(null);
 	    this.mBorderPaint.setAntiAlias(false);
 		this.mBorderPaint.setPathEffect(null);
 	    this.mWrongBorderPaint.setAntiAlias(true);
@@ -165,7 +156,7 @@ public class GridCell {
   
   /* Sets the cells border type to the given values.
    * 
-   * Border is BORDER_NONE, BORDER_SOLID or BORDER_DASHED.
+   * Border is BORDER_NONE, BORDER_SOLID, BORDER_WARN or BORDER_CAGE_SELECTED.
    */
   public void setBorders(int north, int east, int south, int west) {
     int[] borders = new int[4];
@@ -181,8 +172,6 @@ public class GridCell {
     switch (this.mBorderTypes[border]) {
       case BORDER_NONE:
         return null;
-      case BORDER_DASHED:
-        return this.mDashedBorderPaint;
       case BORDER_SOLID :
         return this.mBorderPaint;
       case BORDER_WARN :

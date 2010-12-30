@@ -578,7 +578,7 @@ public class MainActivity extends Activity {
         LayoutInflater li = LayoutInflater.from(this);
         View view = li.inflate(R.layout.aboutview, null); 
         TextView tv = (TextView)view.findViewById(R.id.aboutVersionCode);
-        tv.setText(getVersionName());
+        tv.setText(getVersionName() + " (revision " + getVersionNumber() + ")");
         new AlertDialog.Builder(MainActivity.this)
         .setTitle(getResources().getString(R.string.application_name) + " " + getResources().getString(R.string.menu_help))
         .setIcon(R.drawable.about)
