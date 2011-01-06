@@ -8,13 +8,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ListActivity;
-import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

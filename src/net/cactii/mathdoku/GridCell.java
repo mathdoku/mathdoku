@@ -6,7 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.DiscretePathEffect;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.util.Log;
 
 public class GridCell {
   // Index of the cell (left to right, top to bottom, zero-indexed)
