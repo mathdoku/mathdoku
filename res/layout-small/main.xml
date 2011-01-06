@@ -147,6 +147,13 @@
 			android:textStyle="bold"
 			android:text="8"
 			/>	  
+		<Button android:id="@+id/digitSelect9"
+			android:layout_width="70dp"
+			android:layout_height="40dp"
+			android:textSize="16dp"
+			android:textStyle="bold"
+			android:text="9"
+			/>	  
 	</LinearLayout>
 	</LinearLayout>
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

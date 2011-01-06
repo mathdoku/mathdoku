@@ -53,7 +53,6 @@
     android:layout_gravity="center"
     android:background="#00000000"
     android:visibility="gone"
-    android:layout_marginTop="10dp"
     >
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	    android:orientation="horizontal"
@@ -125,6 +124,19 @@
 			android:layout_width="75dp"
 			android:layout_height="wrap_content"
 			android:text="8"
+			/>	    
+	</LinearLayout>
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="#00000000"
+    >
+		<Button android:id="@+id/digitSelect9"
+			android:layout_width="75dp"
+			android:layout_height="wrap_content"
+			android:text="9"
 			/>	    
 	</LinearLayout>
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

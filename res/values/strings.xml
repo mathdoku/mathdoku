@@ -13,6 +13,7 @@
 	<string name="grid_size_6">6x6 (hard)</string>
 	<string name="grid_size_7">7x7 (harder)</string>
 	<string name="grid_size_8">8x8 (hardest)</string>
+	<string name="grid_size_9">9x9 (ultimate)</string>
 	<!-- The menu item that allows the player to start a new game. -->
 	<string name="menu_newgame">New Game</string>
 	<!-- The menu item that allows the player to load and save the game states. -->

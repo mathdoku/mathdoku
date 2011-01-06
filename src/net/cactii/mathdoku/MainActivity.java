@@ -49,14 +49,7 @@ public class MainActivity extends Activity {
     
     LinearLayout topLayout;
     LinearLayout controls;
-    Button digit1;
-    Button digit2;
-    Button digit3;
-    Button digit4;
-    Button digit5;
-    Button digit6;
-    Button digit7;
-    Button digit8;
+    Button digits[] = new Button[9];
     Button clearDigit;
     CheckBox maybeButton;
     View[] sound_effect_views;
@@ -86,19 +79,20 @@ public class MainActivity extends Activity {
         this.kenKenGrid.animText = this.solvedText;
         this.pressMenu = (TextView)findViewById(R.id.pressMenu);
         this.controls = (LinearLayout)findViewById(R.id.controls);
-        this.digit1 = (Button)findViewById(R.id.digitSelect1);
-        this.digit2 = (Button)findViewById(R.id.digitSelect2);
-        this.digit3 = (Button)findViewById(R.id.digitSelect3);
-        this.digit4 = (Button)findViewById(R.id.digitSelect4);
-        this.digit5 = (Button)findViewById(R.id.digitSelect5);
-        this.digit6 = (Button)findViewById(R.id.digitSelect6);
-        this.digit7 = (Button)findViewById(R.id.digitSelect7);
-        this.digit8 = (Button)findViewById(R.id.digitSelect8);
+        digits[0] = (Button)findViewById(R.id.digitSelect1);
+        digits[1] = (Button)findViewById(R.id.digitSelect2);
+        digits[2] = (Button)findViewById(R.id.digitSelect3);
+        digits[3] = (Button)findViewById(R.id.digitSelect4);
+        digits[4] = (Button)findViewById(R.id.digitSelect5);
+        digits[5] = (Button)findViewById(R.id.digitSelect6);
+        digits[6] = (Button)findViewById(R.id.digitSelect7);
+        digits[7] = (Button)findViewById(R.id.digitSelect8);
+        digits[8] = (Button)findViewById(R.id.digitSelect9);
         this.clearDigit = (Button)findViewById(R.id.clearButton);
         this.maybeButton = (CheckBox)findViewById(R.id.maybeButton);
        
-        this.sound_effect_views = new View[] { this.kenKenGrid, this.digit1, this.digit2,
-        		this.digit3, this.digit4, this.digit5, this.digit6, this.digit7, this.digit8,
+        this.sound_effect_views = new View[] { this.kenKenGrid, this.digits[0], this.digits[1],
+        		this.digits[2], this.digits[3], this.digits[4], this.digits[5], this.digits[6], this.digits[7], this.digits[8],
         		this.clearDigit, this.maybeButton
         };
 
@@ -161,49 +155,17 @@ public class MainActivity extends Activity {
     			}
         });
         
-        this.digit1.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				MainActivity.this.digitSelected(v.getId());
-			}
-        });
-        this.digit2.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				MainActivity.this.digitSelected(v.getId());
-			}
-        });
-        this.digit3.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				MainActivity.this.digitSelected(v.getId());
-			}
-        });
-        this.digit4.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				MainActivity.this.digitSelected(v.getId());
-			}
-        });
-        this.digit5.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				MainActivity.this.digitSelected(v.getId());
-			}
-        });
-        this.digit6.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				MainActivity.this.digitSelected(v.getId());
-			}
-        });
-        this.digit7.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				MainActivity.this.digitSelected(v.getId());
-			}
-        });
-        this.digit8.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				MainActivity.this.digitSelected(v.getId());
-			}
-        });
+        for (int i = 0; i<digits.length; i++)
+        	this.digits[i].setOnClickListener(new OnClickListener() {
+        		public void onClick(View v) {
+        			// Convert text of button (number) to Integer
+        			int d = Integer.parseInt(((Button)v).getText().toString());
+        			MainActivity.this.digitSelected(d);
+        		}
+        	});
         this.clearDigit.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				MainActivity.this.digitSelected(v.getId());
+				MainActivity.this.digitSelected(0);
 			}
         });
         
@@ -378,6 +340,9 @@ public class MainActivity extends Activity {
    		case R.id.size8:
    			this.startNewGame(8);
    			return true;
+   		case R.id.size9:
+   			this.startNewGame(9);
+   			return true;
    		case R.id.saveload:
             Intent i = new Intent(this, SavedGameList.class);
             startActivityForResult(i, 7);
@@ -423,37 +388,7 @@ public class MainActivity extends Activity {
     }
     
     
-    public void digitSelected(int digitId) {
-    	int value = 0;
-    	switch (digitId) {
-    	case R.id.digitSelect1 :
-    		value = 1;
-    		break;
-    	case R.id.digitSelect2 :
-    		value = 2;
-    		break;
-    	case R.id.digitSelect3 :
-    		value = 3;
-    		break;
-    	case R.id.digitSelect4 :
-    		value = 4;
-    		break;
-    	case R.id.digitSelect5 :
-    		value = 5;
-    		break;
-    	case R.id.digitSelect6 :
-    		value = 6;
-    		break;
-    	case R.id.digitSelect7 :
-    		value = 7;
-    		break;
-    	case R.id.digitSelect8 :
-    		value = 8;
-    		break;
-    	case R.id.clearButton :
-    		value = 0;
-    		break;
-    	}
+    public void digitSelected(int value) {
     	if (this.kenKenGrid.mSelectedCell == null)
     		return;
     	if (value == 0) {	// Clear Button
@@ -523,38 +458,13 @@ public class MainActivity extends Activity {
     }
     
     public void setButtonVisibility(int gridSize) {
-        switch(gridSize) {
-        case 4:
-          this.digit5.setVisibility(View.GONE);
-          this.digit6.setVisibility(View.GONE);
-          this.digit7.setVisibility(View.GONE);
-          this.digit8.setVisibility(View.GONE);
-          break;
-        case 5:
-          this.digit5.setVisibility(View.VISIBLE);
-          this.digit6.setVisibility(View.GONE);
-          this.digit7.setVisibility(View.GONE);
-          this.digit8.setVisibility(View.GONE);
-          break;
-        case 6:
-          this.digit5.setVisibility(View.VISIBLE);
-          this.digit6.setVisibility(View.VISIBLE);
-          this.digit7.setVisibility(View.GONE);
-          this.digit8.setVisibility(View.GONE);
-          break; 
-        case 7:
-            this.digit5.setVisibility(View.VISIBLE);
-            this.digit6.setVisibility(View.VISIBLE);
-            this.digit7.setVisibility(View.VISIBLE);
-            this.digit8.setVisibility(View.GONE);
-            break; 
-        case 8:
-            this.digit5.setVisibility(View.VISIBLE);
-            this.digit6.setVisibility(View.VISIBLE);
-            this.digit7.setVisibility(View.VISIBLE);
-            this.digit8.setVisibility(View.VISIBLE);
-            break; 
-        }
+    	
+    	for (int i=4; i<9; i++)
+    		if (i<gridSize)
+    			this.digits[i].setVisibility(View.VISIBLE);
+    		else
+    			this.digits[i].setVisibility(View.GONE);
+    		
 		this.solvedText.setVisibility(View.GONE);
 		this.pressMenu.setVisibility(View.GONE);
     	if (!MainActivity.this.preferences.getBoolean("hideselector", false)) {
