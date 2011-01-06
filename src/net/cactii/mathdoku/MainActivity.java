@@ -284,7 +284,7 @@ public class MainActivity extends Activity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
     	//Disable or enable solution option depending on whether grid is active
-    	menu.findItem(R.id.solution).setEnabled(kenKenGrid.mActive);
+    	menu.findItem(R.id.checkprogress).setEnabled(kenKenGrid.mActive);
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -303,6 +303,7 @@ public class MainActivity extends Activity {
     	if (!kenKenGrid.mActive)
     		return;
     	
+		menu.add(3, 105, 0, R.string.context_menu_show_solution);
     	menu.add(2, 101, 0, R.string.context_menu_use_cage_maybes); 
     	menu.setGroupEnabled(2, false);
     	menu.add(0, 102, 0,  R.string.context_menu_reveal_cell);
@@ -351,6 +352,10 @@ public class MainActivity extends Activity {
     	  case 104: // Clear grid
     		  openClearDialog();
     		  break;
+    	  case 105: // Show solution
+    		  this.kenKenGrid.Solve();
+    		  this.pressMenu.setVisibility(View.VISIBLE);
+    		  break;
     	  }
 		  return super.onContextItemSelected(item);
     }
@@ -391,10 +396,6 @@ public class MainActivity extends Activity {
    			toast.setGravity(Gravity.CENTER,0,0);
    			toast.show();
    			return true;
-   		case R.id.showsolution:
-   			this.kenKenGrid.Solve();
-    		this.pressMenu.setVisibility(View.VISIBLE);
-    		return true;
    		case R.id.options:
             startActivityForResult(new Intent(
 	                MainActivity.this, OptionsActivity.class), 0);  

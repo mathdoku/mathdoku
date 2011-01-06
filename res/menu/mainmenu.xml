@@ -20,17 +20,9 @@
 	  	  android:id="@+id/saveload"
 	  	  android:icon="@drawable/menu_saveload">
 	</item>
-	<item android:id="@+id/solution"
-		  android:title="@string/menu_solution"
+	<item android:title="@string/menu_checkprogress"
+		  android:id="@+id/checkprogress"
 		  android:icon="@drawable/menu_solve">
-		<menu>
-			<item android:title="@string/menu_checkprogress"
-				  android:id="@+id/checkprogress">
-			</item>
-			<item android:title="@string/menu_showsolution"
-				  android:id="@+id/showsolution">
-			</item>
-		</menu>
 	</item>
 	<item android:id="@+id/options"
 	  	  android:icon="@drawable/menu_options"

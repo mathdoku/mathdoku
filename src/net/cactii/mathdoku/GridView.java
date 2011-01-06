@@ -402,7 +402,10 @@ public boolean mBadMaths;
 		  }
 
 		  // Draw borders
-		  canvas.drawRect(1,1,this.mCurrentWidth-2,this.mCurrentWidth-2, this.mBorderPaint);
+		  canvas.drawLine(0, 1, this.mCurrentWidth, 1, this.mBorderPaint);
+		  canvas.drawLine(1, 0, 1, this.mCurrentWidth, this.mBorderPaint);
+		  canvas.drawLine(0, this.mCurrentWidth-2, this.mCurrentWidth, this.mCurrentWidth-2, this.mBorderPaint);
+		  canvas.drawLine(this.mCurrentWidth-2, 0, this.mCurrentWidth-2, this.mCurrentWidth, this.mBorderPaint);
 
 		  // Draw cells
 		  for (GridCell cell : this.mCells) {

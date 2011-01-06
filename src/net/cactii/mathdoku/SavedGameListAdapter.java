@@ -108,7 +108,7 @@ public class SavedGameListAdapter extends BaseAdapter {
 		
 		
 		GridView grid = (GridView)convertView.findViewById(R.id.savedGridView);
-		if (PreferenceManager.getDefaultSharedPreferences(convertView.getContext()).getBoolean("alternatetheme", false)) {
+		if (PreferenceManager.getDefaultSharedPreferences(convertView.getContext()).getBoolean("alternatetheme", true)) {
 			grid.setTheme(GridView.THEME_NEWSPAPER);
 //			convertView.findViewById(R.id.wordRow).setBackgroundDrawable(null);
 //			convertView.findViewById(R.id.wordRow).setBackgroundColor(0xFFA0A0CC);

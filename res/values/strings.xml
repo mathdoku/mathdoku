@@ -17,12 +17,8 @@
 	<string name="menu_newgame">New Game</string>
 	<!-- The menu item that allows the player to load and save the game states. -->
 	<string name="menu_saveload">Load/Save</string>
-	<!-- The top level menu item for solution related sub-menu. -->
-	<string name="menu_solution">Solution</string>
 	<!-- The sub-menu item to check user entries against the solution. -->
 	<string name="menu_checkprogress">Check Progress</string>
-	<!-- The sub-menu item to show the completed grid. -->
-	<string name="menu_showsolution">Show Solution</string>
 	<!-- The menu item that allows the player to navigate to the options screen. -->
 	<string name="menu_options">Options</string>
 	<!-- The menu item that allows the player to navigate to the help screen. -->
@@ -79,6 +75,8 @@
 	<string name="context_menu_clear_cage_cells">Clear cage cells</string>
 	<!-- The context menu item that allows the user to clear the entire grid. -->
 	<string name="context_menu_clear_grid">Clear entire grid</string>
+	<!-- The context menu to show the completed grid. -->
+	<string name="context_menu_show_solution">Show Solution</string>
 	<!-- The confirmation message that shows up when the clear grid context menu item is selected, plus the associated title and button labels. -->
 	<string name="context_menu_clear_grid_confirmation_message">Are you sure you want to clear the entire grid?</string>
 	<string name="context_menu_clear_grid_confirmation_title">Clear entire grid?</string>
@@ -100,6 +98,8 @@
 	<string name="help_project_home">Project Home</string>
 	<!-- The author title in the help screen. -->
 	<string name="help_author">Author</string>
+	<!-- The contributor title in the help screen. -->
+	<string name="help_contributor">Contributor</string>
 	<!-- The message shown when no errors found when checking progress. -->
 	<string name="ProgressOK">All correct so far</string>
 	<!-- The message shown when error(s) found when checking progress. -->
