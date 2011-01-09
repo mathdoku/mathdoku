@@ -25,7 +25,7 @@
 				android:paddingBottom="15px"	
 				android:visibility="@integer/in_english_visibility"
 				android:textColor="#ffffff" />
-			<TextView android:text="v1.8: Added 9x9 grid."
+			<TextView android:text="v1.8: Added 9x9 grid. Dutch translation."
 				android:layout_width="fill_parent" 
 				android:layout_height="wrap_content"
 				android:paddingLeft="15px"			

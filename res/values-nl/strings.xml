@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This translation was contributed by Pimm Hogeling. I'm not a professional translator, merely a native Dutch speaker. I am
+a professional user experience designer, though, and the user experience of this game could be improved. Uh-huh. Feel free to
+contact me on my full name, all in one word, then comes the "at" character, then comes the gmail.com. Additionally, you can
+redistribute and/or modify this translation yourself under the terms of the GNU General Public License version 3 or later. -->
+<resources>
+	<string name="application_name">MathDoku</string>
+	<string name="close">Sluit</string>
+	<string name="in_english">(in het Engels)</string>
+	<integer name="in_english_visibility">0</integer>
+	<string name="grid_size_4">4x4 (makkelijk)</string>
+	<string name="grid_size_5">5x5 (normaal)</string>
+	<string name="grid_size_6">6x6 (moeilijk)</string>
+	<string name="grid_size_7">7x7 (moeilijker)</string>
+	<string name="grid_size_8">8x8 (moeilijkst)</string>
+	<string name="grid_size_9">9x9 (ultiem)</string>
+	<string name="menu_newgame">Nieuw Spel</string>
+	<string name="menu_saveload">Opslaan/Laden</string>
+	<string name="menu_checkprogress">Controleer Voortgang</string>
+	<string name="menu_solve">Oplossen</string>
+	<string name="menu_options">Opties</string>
+	<string name="menu_help">Help</string>
+	<string name="menu_changes">Aanpassingen</string>
+	<string name="press_menu_button_message">Druk op de \"Menu\" knop.</string>
+	<string name="save_game_screen_save_current_game">Sla huidig spel op</string>
+	<string name="save_game_screen_load_game">Laad spel</string>
+	<string name="save_game_screen_delete_game">Verwijder spel</string>
+	<string name="save_game_screen_delete_game_confirmation_message">Weet je zeker dat je dit spel wilt verwijderen?</string>
+	<string name="save_game_screen_delete_game_confirmation_title">Verwijder opgeslagen spel?</string>
+	<string name="save_game_screen_delete_game_negative_button_label">Nee, bewaar het</string>
+	<string name="save_game_screen_delete_game_positive_button_label">Ja, verwijder het</string>
+	<string name="option_alternate_theme_title">Alternatief thema</string>
+	<string name="option_alternate_theme_summary">Gebruik een alternatief thema voor het puzzelbord</string>
+	<string name="option_hide_operators_title">Verberg operaties</string>
+	<string name="option_hide_operators_summary">Verberg operatie tekens zoals +, -, x, /\n(heeft invloed op een nieuw spel, niet op het huidige)</string>
+	<string name="option_hide_selector_title">Verberg cijfer knoppen</string>
+	<string name="option_hide_selector_summary">Toon de cijfer knoppen alleen wanneer er een cel is geselecteerd</string>
+	<string name="option_mark_bad_maths_title">Markeer verkeerde berekeningen</string>
+	<string name="option_mark_bad_maths_summary">Markeer groepen met niet kloppende berekeningen</string>
+	<string name="option_mark_duplicates_title">Markeer duplicaten</string>
+	<string name="option_mark_duplicates_summary">Markeer cellen met cijfers die al in de rij of in de colom staan</string>
+	<string name="option_sound_effects_title">Geluidseffecten</string>
+	<string name="option_sound_effects_summary">Zet de geluidseffecten aan</string>
+	<string name="option_wake_lock_title">Houd scherm aan</string>
+	<string name="option_wake_lock_summary">Zorgt er voor dat het scherm niet uit gaat tijdens het spelen</string>
+	<string name="main_ui_maybe">Mogelijk</string>
+	<string name="main_ui_clear">Leeg</string>
+	<string name="main_ui_solved_messsage">Opgelost!</string>
+	<string name="main_ui_cheat_messsage">Valsspeler! :P</string>
+	<string name="main_ui_building_puzzle_message">Een moment...</string>
+	<string name="main_ui_building_puzzle_title">Er wordt een puzzel gegenereerd</string>
+	<string name="context_menu_use_cage_maybes">Vul \"Mogelijk\" in groep</string>
+	<string name="context_menu_reveal_cell">Onthul deze cel</string>
+	<string name="context_menu_clear_cage_cells">Leeg cellen in groep</string>
+	<string name="context_menu_clear_grid">Leeg alle cellen</string>
+	<string name="context_menu_show_solution">Toon oplossing</string>
+	<string name="context_menu_clear_grid_confirmation_message">Weet je zeker dat je alle cellen wilt legen?</string>
+	<string name="context_menu_clear_grid_confirmation_title">Leeg alle cellen?</string>
+	<string name="context_menu_clear_grid_negative_button_label">Nee, laat maar</string>
+	<string name="context_menu_clear_grid_positive_button_label">Ja, begin opnieuw</string>
+	<string name="changelog_title">Aanpassingen</string>
+	<string name="changelog_bugs_features_title">Bugs en ideeën</string>
+	<string name="changelog_bugs_features">Meld problemen of ideeën op de project pagina:\n\nhttp://mathdoku.googlecode.com/</string>
+	<string name="help_leadin">Bedankt voor het installeren van MathDoku voor Android.</string>
+	<string name="help_version">Versie</string>
+	<string name="help_license">Licentie</string>
+	<string name="help_project_home">Project Pagina</string>
+	<string name="help_author">Auteur</string>
+	<!-- Should "contributor" ever change to "contributors", the plural of "bijdrager" is "bijdragers". -->
+	<string name="help_contributor">Bijdrager</string>
+	<string name="ProgressOK">Alles klopt tot nu toe</string>
+	<string name="ProgressBad">Je hebt een fout gemaakt</string>
+</resources>
