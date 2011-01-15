@@ -42,6 +42,9 @@
 	<!-- The title and summary of the "alternate theme" option. This option alters the theme used to display the puzzleboard. -->
 	<string name="option_alternate_theme_title">Alternate theme</string>
 	<string name="option_alternate_theme_summary">Use an alternative theme for the grid</string>
+	<!-- The title and summary of the "hide operator" option. This option controls whether the mathematical operation signs (+x/-) are shown. -->
+	<string name="option_hide_operators_title">Hide operators</string>
+	<string name="option_hide_operators_summary">Hide operation signs like +, -, x, /\n(affects new game, not current)</string>
 	<!-- The title and summary of the "hide selector" option. This option auto-shows the digit buttons when the player selects a cell, and auto-hides those buttons when the player deselects a cell. -->
 	<string name="option_hide_selector_title">Auto-hide digit buttons</string>
 	<string name="option_hide_selector_summary">Digit buttons hide after pressing</string>

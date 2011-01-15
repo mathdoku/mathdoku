@@ -1,6 +1,7 @@
 package net.cactii.mathdoku;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import android.util.Log;
 
@@ -129,14 +130,16 @@ public class GridCage {
   public boolean mUserMathCorrect;
   // Cage (or a cell within) is selected
   public boolean mSelected;
+  // Flag to indicate whether operator (+,-,x,/) is hidden
+  private boolean mOperatorHidden;
+  // Cached list of numbers which satisfy the cage's arithmetic
+  private ArrayList<int[]> mPossibles;
   
-  public GridCage (GridView context) {
-	  this.mContext = context;
-  }
-
-  public GridCage (GridView context, int type) {
+  public GridCage (GridView context, int type, boolean hiddenoperator) {
 	  this.mContext = context;
 	  mType = type;
+	  mOperatorHidden = hiddenoperator;
+	  mPossibles = null;
 	  mUserMathCorrect = true;
 	  mSelected = false;
 	  mCells = new ArrayList<GridCell>();
@@ -165,7 +168,16 @@ public class GridCage {
 		  retStr += cell.mCellNumber + ", ";
 	  return retStr;
   }
-  
+
+  public boolean isOperatorHidden() {
+	  return mOperatorHidden;
+  }
+
+  public void setOperatorHidden(boolean operatorHidden) {
+	  this.mOperatorHidden = operatorHidden;
+	  this.mPossibles = null;	// Clear cached list of possible numbers
+  }
+
   /*
    * Generates the arithmetic for the cage, semi-randomly.
    * 
@@ -199,7 +211,10 @@ public class GridCage {
         total += cell.mValue;
       }
       this.mResult = total;
-      this.mCells.get(0).mCageText = this.mResult + "+";
+      if (mOperatorHidden)
+          this.mCells.get(0).mCageText = this.mResult + "";
+      else
+    	  this.mCells.get(0).mCageText = this.mResult + "+";
     }
     if (this.mAction == ACTION_MULTIPLY) {
       int total = 1;
@@ -207,7 +222,10 @@ public class GridCage {
         total *= cell.mValue;
       }
       this.mResult = total;
-      this.mCells.get(0).mCageText = this.mResult + "x";
+      if (mOperatorHidden)
+    	  this.mCells.get(0).mCageText = this.mResult + "";
+      else
+    	  this.mCells.get(0).mCageText = this.mResult + "x";
     }
     if (this.mAction > -1) {
       return;
@@ -231,11 +249,17 @@ public class GridCage {
       this.mResult = higher / lower;
       this.mAction = ACTION_DIVIDE;
       // this.mCells.get(0).mCageText = this.mResult + "\367";
-      this.mCells.get(0).mCageText = this.mResult + "/";
+      if (mOperatorHidden)
+          this.mCells.get(0).mCageText = this.mResult + "";
+      else
+    	  this.mCells.get(0).mCageText = this.mResult + "/";
     } else {
       this.mResult = higher - lower;
       this.mAction = ACTION_SUBTRACT;
-      this.mCells.get(0).mCageText = this.mResult + "-";
+      if (mOperatorHidden)
+          this.mCells.get(0).mCageText = this.mResult + "";
+      else
+    	  this.mCells.get(0).mCageText = this.mResult + "-";
     }
   }
   
@@ -248,34 +272,69 @@ public class GridCage {
       cell.mCageId = this.mId;
   }
   
-  // Returns whether the cage is solved (with mUserValue)
-  public boolean isSolved() {
-	  if (this.mCells.size() == 1)
-		  return (this.mCells.get(0).mValue == this.mCells.get(0).getUserValue());
+  public boolean isAddMathsCorrect()
+  {
+	  int total = 0;
+	  for (GridCell cell : this.mCells) {
+		  total += cell.getUserValue();
+	  }
+	  return (total == this.mResult);
+  }
+
+  public boolean isMultiplyMathsCorrect()
+  {
+	  int total = 1;
+	  for (GridCell cell : this.mCells) {
+		  total *= cell.getUserValue();
+	  }
+	  return (total == this.mResult);
+  }
+
+  public boolean isDivideMathsCorrect()
+  {
+	  if (this.mCells.size() != 2)
+		  return false;
 	  
-	  switch (this.mAction) {
-		  case ACTION_ADD :
-			  int total = 0;
-			  for (GridCell cell : this.mCells) {
-				  total += cell.getUserValue();
-			  }
-			  return (total == this.mResult);
-		  case ACTION_MULTIPLY :
-			  int mtotal = 1;
-			  for (GridCell cell : this.mCells) {
-				  mtotal *= cell.getUserValue();
-			  }
-			  return (mtotal == this.mResult);
-		  case ACTION_DIVIDE :
-			  if (this.mCells.get(0).getUserValue() > this.mCells.get(1).getUserValue())
-				  return ((this.mCells.get(0).getUserValue() / this.mCells.get(1).getUserValue()) == this.mResult);
-			  else
-				  return ((this.mCells.get(1).getUserValue() / this.mCells.get(0).getUserValue()) == this.mResult);
-		  case ACTION_SUBTRACT :
-			  if (this.mCells.get(0).getUserValue() > this.mCells.get(1).getUserValue())
-				  return ((this.mCells.get(0).getUserValue() - this.mCells.get(1).getUserValue()) == this.mResult);
-			  else
-				  return ((this.mCells.get(1).getUserValue() - this.mCells.get(0).getUserValue()) == this.mResult);
+	  if (this.mCells.get(0).getUserValue() > this.mCells.get(1).getUserValue())
+		  return this.mCells.get(0).getUserValue() == (this.mCells.get(1).getUserValue() * this.mResult);
+	  else
+		  return this.mCells.get(1).getUserValue() == (this.mCells.get(0).getUserValue() * this.mResult);
+  }
+
+  public boolean isSubtractMathsCorrect()
+  {
+	  if (this.mCells.size() != 2)
+		  return false;
+
+	  if (this.mCells.get(0).getUserValue() > this.mCells.get(1).getUserValue())
+		  return (this.mCells.get(0).getUserValue() - this.mCells.get(1).getUserValue()) == this.mResult;
+	  else
+		  return (this.mCells.get(1).getUserValue() - this.mCells.get(0).getUserValue()) == this.mResult;
+  }
+  
+  // Returns whether the user values in the cage match the cage text
+  public boolean isMathsCorrect() {
+	  if (this.mCells.size() == 1)
+		  return this.mCells.get(0).isUserValueCorrect();
+
+	  if (this.mOperatorHidden) {
+		  if (isAddMathsCorrect() || isMultiplyMathsCorrect() ||
+			  isDivideMathsCorrect() || isSubtractMathsCorrect())
+			  return true;
+		  else
+			  return false;
+	  }
+	  else {
+		  switch (this.mAction) {
+		  	  case ACTION_ADD :
+		  		  return isAddMathsCorrect();
+		  	  case ACTION_MULTIPLY :
+		  		  return isMultiplyMathsCorrect();
+		  	  case ACTION_DIVIDE :
+		  		  return isDivideMathsCorrect();
+		  	  case ACTION_SUBTRACT :
+		  		  return isSubtractMathsCorrect();
+		  }
 	  }
 	  throw new RuntimeException("isSolved() got to an unreachable point " + this.mAction + ": " + this.toString());
   }
@@ -292,7 +351,7 @@ public class GridCage {
         return;
       }
     
-    this.mUserMathCorrect = this.isSolved();
+    this.mUserMathCorrect = this.isMathsCorrect();
     this.setBorders();
   }
   
@@ -338,11 +397,68 @@ public class GridCage {
     }
   }
 
+public ArrayList<int[]> getPossibleNums()
+{
+	if (mPossibles == null) {
+		if (mOperatorHidden)
+			mPossibles = setPossibleNumsNoOperator();
+		else
+			mPossibles = setPossibleNums();
+	}
+	return mPossibles;
+}
+
+private ArrayList<int[]> setPossibleNumsNoOperator()
+{
+	ArrayList<int[]> AllResults = new ArrayList<int[]>();
+
+	if (this.mAction == ACTION_NONE) {
+		assert (mCells.size() == 1);
+		int number[] = {mResult};
+		AllResults.add(number);
+		return AllResults;
+	}
+	
+	if (mCells.size() == 2) {
+		for (int i1=1; i1<=this.mContext.mGridSize; i1++)
+			for (int i2=i1+1; i2<=this.mContext.mGridSize; i2++)
+				if (i2 - i1 == mResult || i1 - i2 == mResult || mResult*i1 == i2 || mResult*i2 == i1 || i1+i2 == mResult || i1*i2 == mResult) {
+					int numbers[] = {i1, i2};
+					AllResults.add(numbers);
+					numbers = new int[] {i2, i1};
+					AllResults.add(numbers);
+				}
+		return AllResults;
+	}
+
+	// ACTION_ADD:
+	AllResults = getalladdcombos(this.mContext.mGridSize,mResult,mCells.size());
+	
+	// ACTION_MULTIPLY:
+	ArrayList<int[]> multResults = getallmultcombos(this.mContext.mGridSize,mResult,mCells.size());
+	
+	// Combine Add & Multiply result sets
+	for (int[] possibleset: multResults)
+	{
+		boolean foundset = false;
+		for (int[] currentset: AllResults) {
+			if (Arrays.equals(possibleset, currentset)) {
+				foundset = true;
+				break;
+			}
+		}
+		if (!foundset)
+			AllResults.add(possibleset);
+	}
+		
+	return AllResults;
+}
+  
 /*
  * Generates all combinations of numbers which satisfy the cage's arithmetic
  * and MathDoku constraints i.e. a digit can only appear once in a column/row 
  */
-public ArrayList<int[]> GetPossibleNums()
+private ArrayList<int[]> setPossibleNums()
 {
 	ArrayList<int[]> AllResults = new ArrayList<int[]>();
 
@@ -355,18 +471,22 @@ public ArrayList<int[]> GetPossibleNums()
 	  case ACTION_SUBTRACT:
 		  assert(mCells.size() == 2);
 		  for (int i1=1; i1<=this.mContext.mGridSize; i1++)
-			  for (int i2=1; i2<=this.mContext.mGridSize; i2++)
+			  for (int i2=i1+1; i2<=this.mContext.mGridSize; i2++)
 				  if (i2 - i1 == mResult || i1 - i2 == mResult) {
 					  int numbers[] = {i1, i2};
+					  AllResults.add(numbers);
+					  numbers = new int[] {i2, i1};
 					  AllResults.add(numbers);
 				  }
 		  break;
 	  case ACTION_DIVIDE:
 		  assert(mCells.size() == 2);
 		  for (int i1=1; i1<=this.mContext.mGridSize; i1++)
-			  for (int i2=1; i2<=this.mContext.mGridSize; i2++)
+			  for (int i2=i1+1; i2<=this.mContext.mGridSize; i2++)
 				  if (mResult*i1 == i2 || mResult*i2 == i1) {
 					  int numbers[] = {i1, i2};
+					  AllResults.add(numbers);
+					  numbers = new int[] {i2, i1};
 					  AllResults.add(numbers);
 				  }
 		  break;

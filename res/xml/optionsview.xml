@@ -8,6 +8,11 @@
 			android:summary="@string/option_alternate_theme_summary"
 			android:defaultValue="true" />
 		<CheckBoxPreference
+			android:key="hideoperationsigns"
+			android:summary="@string/option_hide_operators_summary"
+			android:title="@string/option_hide_operators_title"
+			android:defaultValue="false" />
+		<CheckBoxPreference
 			android:key="hideselector"
 			android:title="@string/option_hide_selector_title"
 			android:summary="@string/option_hide_selector_summary"

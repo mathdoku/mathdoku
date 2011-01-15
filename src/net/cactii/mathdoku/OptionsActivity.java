@@ -10,7 +10,7 @@ public class OptionsActivity extends PreferenceActivity implements OnSharedPrefe
   @Override
   public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      addPreferencesFromResource(R.layout.optionsview); 
+      addPreferencesFromResource(R.xml.optionsview); 
   }
   
   public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {

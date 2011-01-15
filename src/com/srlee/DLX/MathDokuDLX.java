@@ -27,8 +27,8 @@ public class MathDokuDLX extends DLX {
         int total_moves=0;
         int total_nodes=0;
         for (GridCage gc : cages) {
-        	total_moves += gc.GetPossibleNums().size();
-        	total_nodes += gc.GetPossibleNums().size()*(2*gc.mCells.size()+1);
+       		total_moves += gc.getPossibleNums().size();
+       		total_nodes += gc.getPossibleNums().size()*(2*gc.mCells.size()+1);
         }
         Init (2*BOARD2 + cages.size(), total_moves, total_nodes);
         
@@ -36,7 +36,7 @@ public class MathDokuDLX extends DLX {
         int move_idx = 0;
         for (GridCage gc : cages)
         {
-        	ArrayList<int[]> allmoves = gc.GetPossibleNums();
+        	ArrayList<int[]> allmoves = gc.getPossibleNums();
         	for (int[] onemove : allmoves)
         	{
         		for (int i = 0; i<gc.mCells.size(); i++) {

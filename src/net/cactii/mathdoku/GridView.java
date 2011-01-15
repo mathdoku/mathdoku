@@ -185,7 +185,8 @@ public boolean mBadMaths;
     	ColUsed[cell.mColumn] = true;
     	RowUsed[cell.mRow] = true;
     	ValUsed[cell.mValue-1] = true;
-    	GridCage cage = new GridCage(this, GridCage.CAGE_1);
+	    boolean hideOperators = ((MainActivity)mContext).preferences.getBoolean("hideoperationsigns", false);
+    	GridCage cage = new GridCage(this, GridCage.CAGE_1, hideOperators);
     	cage.mCells.add(cell);
     	cage.setArithmetic();
     	cage.setCageId(i);
@@ -216,7 +217,8 @@ public boolean mBadMaths;
 
 			  // Choose a random cage type from one of the possible (not single cage)
 			  int cage_type = possible_cages.get(mRandom.nextInt(possible_cages.size()-1)+1);
-			  GridCage cage = new GridCage(this, cage_type);
+			  boolean hideOperators = ((MainActivity)mContext).preferences.getBoolean("hideoperationsigns", false);
+			  GridCage cage = new GridCage(this, cage_type, hideOperators);
 			  int [][]cage_coords = GridCage.CAGE_COORDS[cage_type];
 			  for (int coord_num = 0; coord_num < cage_coords.length; coord_num++) {
 				  int col = cell.mColumn + cage_coords[coord_num][0];
@@ -568,16 +570,8 @@ public boolean mBadMaths;
   
   // Returns whether the puzzle is solved.
   public boolean isSolved() {
-	  for (GridCell cell : this.mCells) {
-		  if (!cell.isUserValueSet())
-			  return false;
-		  if (getNumValueInCol(cell) != 1)
-			  return false;
-		  if (getNumValueInRow(cell) != 1)
-			  return false;
-	  }
-	  for (GridCage cage : this.mCages)
-		  if (!cage.isSolved())
+	  for (GridCell cell : this.mCells)
+		  if (!cell.isUserValueCorrect())
 			  return false;
 	  return true;
   }
