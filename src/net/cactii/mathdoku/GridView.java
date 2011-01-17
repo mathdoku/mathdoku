@@ -134,7 +134,7 @@ public boolean mBadMaths;
 			  cell.setTheme(theme);
   }
   
-  public void reCreate() {
+  public void reCreate(boolean hideOperators) {
 	  synchronized (mLock) {	// Avoid redrawing at the same time as creating puzzle
 		  int num_solns;
 		  int num_attempts = 0;
@@ -148,7 +148,7 @@ public boolean mBadMaths;
 			  randomiseGrid();
 			  this.mTrackPosX = this.mTrackPosY = 0;
 			  this.mCages = new ArrayList<GridCage>();
-			  CreateCages();
+			  CreateCages(hideOperators);
 			  num_attempts++;
 			  MathDokuDLX mdd = new MathDokuDLX(this.mGridSize, this.mCages);
 			  // Stop solving as soon as we find multiple solutions
@@ -170,7 +170,7 @@ public boolean mBadMaths;
 	  return this.mCells.get(column + row*this.mGridSize).mCageId;
   }
   
-  public int CreateSingleCages() {
+  public int CreateSingleCages(boolean hideOperators) {
     int singles = this.mGridSize / 2;
     boolean RowUsed[] = new boolean[mGridSize];
     boolean ColUsed[] = new boolean[mGridSize];
@@ -185,7 +185,6 @@ public boolean mBadMaths;
     	ColUsed[cell.mColumn] = true;
     	RowUsed[cell.mRow] = true;
     	ValUsed[cell.mValue-1] = true;
-	    boolean hideOperators = ((MainActivity)mContext).preferences.getBoolean("hideoperationsigns", false);
     	GridCage cage = new GridCage(this, GridCage.CAGE_1, hideOperators);
     	cage.mCells.add(cell);
     	cage.setArithmetic();
@@ -196,13 +195,13 @@ public boolean mBadMaths;
   }
    
   /* Take a filled grid and randomly create cages */
-  public void CreateCages() {
+  public void CreateCages(boolean hideOperators) {
 
 	  boolean restart;
 
 	  do {
 		  restart = false;
-		  int cageId = CreateSingleCages();
+		  int cageId = CreateSingleCages(hideOperators);
 		  for (int cellNum = 0 ; cellNum < this.mCells.size() ; cellNum++) {
 			  GridCell cell = this.mCells.get(cellNum);
 			  if (cell.CellInAnyCage())
@@ -217,7 +216,6 @@ public boolean mBadMaths;
 
 			  // Choose a random cage type from one of the possible (not single cage)
 			  int cage_type = possible_cages.get(mRandom.nextInt(possible_cages.size()-1)+1);
-			  boolean hideOperators = ((MainActivity)mContext).preferences.getBoolean("hideoperationsigns", false);
 			  GridCage cage = new GridCage(this, cage_type, hideOperators);
 			  int [][]cage_coords = GridCage.CAGE_COORDS[cage_type];
 			  for (int coord_num = 0; coord_num < cage_coords.length; coord_num++) {

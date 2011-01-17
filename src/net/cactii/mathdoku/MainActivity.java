@@ -324,25 +324,49 @@ public class MainActivity extends Activity {
     
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
+
+    	int menuId = menuItem.getItemId();
+    	if (menuId == R.id.size4 ||	menuId == R.id.size5 || 
+    		menuId == R.id.size6 ||	menuId == R.id.size7 || 
+    		menuId == R.id.size8 ||	menuId == R.id.size9) {
+    		final int gridSize;
+    		switch (menuId) {
+    			case R.id.size4: gridSize = 4; break;  
+    			case R.id.size5: gridSize = 5; break; 
+    			case R.id.size6: gridSize = 6; break;
+    			case R.id.size7: gridSize = 7; break;
+    			case R.id.size8: gridSize = 8; break;
+    			case R.id.size9: gridSize = 9; break;
+    			default: gridSize = 4; break;
+    		}
+   	    	String hideOperators = this.preferences.getString("hideoperatorsigns", "F");
+   	    	if (hideOperators.equals("T")) {
+   	    		this.startNewGame(gridSize, true);
+   	    		return true;
+   	    	}
+   	    	if (hideOperators.equals("F")) {
+   	    		this.startNewGame(gridSize, false);
+   	    		return true;
+   	    	}
+   			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+   			builder.setMessage(R.string.hide_operators_dialog_message)
+   			       .setCancelable(false)
+   			       .setPositiveButton(R.string.Yes, new DialogInterface.OnClickListener() {
+   			           public void onClick(DialogInterface dialog, int id) {
+   			                startNewGame(gridSize, true);
+   			           }
+   			       })
+   			       .setNegativeButton(R.string.No, new DialogInterface.OnClickListener() {
+   			           public void onClick(DialogInterface dialog, int id) {
+   			        	   	startNewGame(gridSize, false);
+   			           }
+   			       });
+   			AlertDialog dialog = builder.create();
+   			dialog.show();
+   			return true;
+    	}
+    	
     	switch (menuItem.getItemId()) {
-   		case R.id.size4:
-   			this.startNewGame(4);
-   			return true;
-   		case R.id.size5:
-   			this.startNewGame(5);
-   			return true;
-   		case R.id.size6:
-   			this.startNewGame(6);
-   			return true;
-   		case R.id.size7:
-   			this.startNewGame(7);
-   			return true;
-   		case R.id.size8:
-   			this.startNewGame(8);
-   			return true;
-   		case R.id.size9:
-   			this.startNewGame(9);
-   			return true;
    		case R.id.saveload:
             Intent i = new Intent(this, SavedGameList.class);
             startActivityForResult(i, 7);
@@ -433,13 +457,13 @@ public class MainActivity extends Activity {
         }
     };
     
-    public void startNewGame(int gridSize) {
+    public void startNewGame(final int gridSize, final boolean hideOperators) {
     	kenKenGrid.mGridSize = gridSize;
     	showDialog(0);
 
     	Thread t = new Thread() {
 			public void run() {
-				MainActivity.this.kenKenGrid.reCreate();
+				MainActivity.this.kenKenGrid.reCreate(hideOperators);
 				MainActivity.this.mHandler.post(newGameReady);
 			}
     	};

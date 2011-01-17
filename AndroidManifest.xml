@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="net.cactii.mathdoku"
       android:installLocation="auto"
-      android:versionName="1.8 Beta 3" android:versionCode="65">
+      android:versionCode="67" android:versionName="1.8 Beta 4">
     <application android:icon="@drawable/icon" android:label="@string/application_name">
         <activity android:name=".MainActivity"
                   android:label="@string/application_name">

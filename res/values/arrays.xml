@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string-array name="hideOpTexts">
+   <item>Always</item>
+   <item>Never</item>
+   <item>Ask</item>
+</string-array>
+<string-array name="hideOpValues">
+   <item>T</item>
+   <item>F</item>
+   <item>A</item>
+</string-array>
+</resources>

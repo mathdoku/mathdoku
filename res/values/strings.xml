@@ -108,4 +108,10 @@
 	<string name="ProgressOK">All correct so far</string>
 	<!-- The message shown when error(s) found when checking progress. -->
 	<string name="ProgressBad">You have made an error</string>
+	<!-- The message of the dialog box asking whether to hide operator signs -->
+	<string name="hide_operators_dialog_message">Hide operator signs?</string>
+	<!-- Alert Dialog Yes button text -->
+	<string name="Yes">Yes</string>
+	<!-- Alert Dialog No button text -->
+	<string name="No">No</string>
 </resources>
