@@ -1,11 +1,15 @@
 package net.cactii.mathdoku;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
+import android.app.Activity;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.DiscretePathEffect;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.preference.PreferenceManager;
 
 public class GridCell {
   // Index of the cell (left to right, top to bottom, zero-indexed)
@@ -113,7 +117,6 @@ public class GridCell {
     this.mPossiblesPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     this.mPossiblesPaint.setColor(0xFF000000);
     this.mPossiblesPaint.setTextSize(10);
-	this.mPossiblesPaint.setFakeBoldText(true);
     this.mPossiblesPaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL));
     
     this.mPossibles = new ArrayList<Integer>();
@@ -186,6 +189,7 @@ public class GridCell {
 		  this.mPossibles.add(digit);
 	  else
 		  this.mPossibles.remove(new Integer(digit));
+	  Collections.sort(mPossibles);
   }
   
   public int getUserValue() {
@@ -327,17 +331,29 @@ public class GridCell {
     }
     
     if (mPossibles.size()>0) {
-    	// Small 'possible' values.
-    	this.mPossiblesPaint.setTextSize((int)(cellSize/4.5));
-    	int xOffset = (int) (cellSize/3);
-    	int yOffset = (int) (cellSize/2) + 1;
-    	float xScale = (float) 0.21 * cellSize;
-    	float yScale = (float) 0.21 * cellSize;
-    	for (int i = 0 ; i < mPossibles.size() ; i++) {
-    		int possible = mPossibles.get(i);
-    		float xPos = mPosX + xOffset + ((possible-1)%3)*xScale;
-    		float yPos = mPosY + yOffset + ((int)(possible-1)/3)*yScale;
-       		canvas.drawText(Integer.toString(possible), xPos, yPos, this.mPossiblesPaint);
+    	Activity activity = mContext.mContext;
+    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
+    	if (prefs.getBoolean("maybe3x3", true)) {
+        	this.mPossiblesPaint.setFakeBoldText(true);
+        	this.mPossiblesPaint.setTextSize((int)(cellSize/4.5));
+        	int xOffset = (int) (cellSize/3);
+        	int yOffset = (int) (cellSize/2) + 1;
+        	float xScale = (float) 0.21 * cellSize;
+        	float yScale = (float) 0.21 * cellSize;
+        	for (int i = 0 ; i < mPossibles.size() ; i++) {
+        		int possible = mPossibles.get(i);
+        		float xPos = mPosX + xOffset + ((possible-1)%3)*xScale;
+        		float yPos = mPosY + yOffset + ((int)(possible-1)/3)*yScale;
+           		canvas.drawText(Integer.toString(possible), xPos, yPos, this.mPossiblesPaint);
+        	}
+    	}
+    	else {
+    		this.mPossiblesPaint.setFakeBoldText(false);
+    		mPossiblesPaint.setTextSize((int)(cellSize/4));
+    		String possibles = "";
+    		for (int i = 0 ; i < mPossibles.size() ; i++)
+    			possibles += Integer.toString(mPossibles.get(i));
+    		canvas.drawText(possibles, mPosX+3, mPosY + cellSize-5, mPossiblesPaint);
     	}
     }
   }

@@ -39,9 +39,20 @@
 	<string name="save_game_screen_delete_game_confirmation_title">Delete saved game?</string>
 	<string name="save_game_screen_delete_game_negative_button_label">No, keep it</string>
 	<string name="save_game_screen_delete_game_positive_button_label">Yes, delete it</string>
+	<!-- The preferences category title for options relating to how the puzzle is displayed. -->
+	<string name="options_group_display">Display</string>
+	<!-- The preferences category title for audio options. -->
+	<string name="options_group_sound">Sound</string>
+	<!-- The preferences category title for options to assist the user solve the puzzle. -->
+	<string name="options_group_assistance">Assistance</string>
+	<!-- The preferences category title for options related to puzzle generation. -->
+	<string name="options_group_puzzle">Puzzle Generation</string>
 	<!-- The title and summary of the "alternate theme" option. This option alters the theme used to display the puzzleboard. -->
 	<string name="option_alternate_theme_title">Alternate theme</string>
 	<string name="option_alternate_theme_summary">Use an alternative theme for the grid</string>
+	<!-- The title and summary of the "3x3 maybe" option. This option controls whether maybe numbers are displayed in 3x3 grid or straight line. -->
+	<string name="option_maybe_layout_title">Maybes in 3x3 grid</string>
+	<string name="option_maybe_layout_summary">Display maybe numbers in 3x3 grid</string>
 	<!-- The title and summary of the "hide operator" option. This option controls whether the mathematical operation signs (+x/-) are shown. -->
 	<string name="option_hide_operators_title">Hide operators</string>
 	<string name="option_hide_operators_summary">Hide operation signs like +, -, x, /\n(affects new game, not current)</string>
