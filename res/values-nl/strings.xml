@@ -29,8 +29,14 @@ redistribute and/or modify this translation yourself under the terms of the GNU 
 	<string name="save_game_screen_delete_game_confirmation_title">Verwijder opgeslagen spel?</string>
 	<string name="save_game_screen_delete_game_negative_button_label">Nee, bewaar het</string>
 	<string name="save_game_screen_delete_game_positive_button_label">Ja, verwijder het</string>
+	<string name="options_group_display">Weergave</string>
+	<string name="options_group_sound">Geluid</string>
+	<string name="options_group_assistance">Help</string>
+	<string name="options_group_puzzle">Puzzel Generatie</string>
 	<string name="option_alternate_theme_title">Alternatief thema</string>
 	<string name="option_alternate_theme_summary">Gebruik een alternatief thema voor het puzzelbord</string>
+	<string name="option_maybe_layout_title">Mogelijk in 3x3 raster</string>
+	<string name="option_maybe_layout_summary">Toon mogelijk getallen in een 3x3 raster</string>
 	<string name="option_hide_operators_title">Verberg operaties</string>
 	<string name="option_hide_operators_summary">Verberg operatie tekens zoals +, -, x, /\n(heeft invloed op een nieuw spel, niet op het huidige)</string>
 	<string name="option_hide_selector_title">Verberg cijfer knoppen</string>
@@ -70,4 +76,7 @@ redistribute and/or modify this translation yourself under the terms of the GNU 
 	<string name="help_contributor">Bijdrager</string>
 	<string name="ProgressOK">Alles klopt tot nu toe</string>
 	<string name="ProgressBad">Je hebt een fout gemaakt</string>
+	<string name="hide_operators_dialog_message">Operatie tekens verbergen?</string>
+	<string name="Yes">Ja, ik houd van een uitdaging</string>
+	<string name="No">Nee, houd het simpel</string>
 </resources>

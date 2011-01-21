@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+<!-- The possible values of the "hide operator" option. This option controls whether the mathematical operation signs (+x/-) are shown. The last value, "ask", means the game asks whether the signs should be hidden or visible on every new game. -->
 <string-array name="hideOpTexts">
    <item>Always</item>
    <item>Never</item>
    <item>Ask</item>
 </string-array>
+<!-- The actual under-the-hood values associated with the above. Serve merely as identifiers, and should not be translated. -->
 <string-array name="hideOpValues">
    <item>T</item>
    <item>F</item>

@@ -122,7 +122,7 @@
 	<!-- The message of the dialog box asking whether to hide operator signs -->
 	<string name="hide_operators_dialog_message">Hide operator signs?</string>
 	<!-- Alert Dialog Yes button text -->
-	<string name="Yes">Yes</string>
+	<string name="Yes">Yes, I like a challenge</string>
 	<!-- Alert Dialog No button text -->
-	<string name="No">No</string>
+	<string name="No">No, keep it simple</string>
 </resources>
