@@ -46,7 +46,7 @@ public class SavedGameListAdapter extends BaseAdapter {
 			catch (Exception e) {
 				//
 			}
-			return (int) (save2 - save1);
+			return (int) ((save2 - save1)/1000);
 		}
 		
 	}
