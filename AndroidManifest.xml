@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="net.cactii.mathdoku"
       android:installLocation="auto"
-      android:versionName="1.9 Beta 1" android:versionCode="71">
+      android:versionName="1.9 Beta 2" android:versionCode="72">
     <application android:icon="@drawable/icon" android:label="@string/application_name">
         <activity android:name=".MainActivity"
                   android:label="@string/application_name">
@@ -19,6 +19,7 @@
 	<supports-screens android:smallScreens="true"
 					  android:normalScreens="true"
 					  android:largeScreens="true"
+					  android:xlargeScreens="true"
 					  android:anyDensity="true">
 	</supports-screens>
 </manifest> 
