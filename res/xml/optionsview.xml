@@ -23,11 +23,13 @@
 			android:defaultValue="F" />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/options_group_display" android:key="Display">
-		<CheckBoxPreference
-			android:key="alternatetheme"
-			android:title="@string/option_alternate_theme_title"
-			android:summary="@string/option_alternate_theme_summary"
-			android:defaultValue="true" />
+		<ListPreference
+			android:title="@string/option_theme_title"
+			android:summary="@string/option_theme_summary"
+			android:key="theme"
+			android:entries="@array/themeTexts"
+			android:entryValues="@array/themeValues"
+			android:defaultValue="newspaper" />
 		<CheckBoxPreference
 			android:key="maybe3x3"
 			android:title="@string/option_maybe_layout_title"
@@ -41,6 +43,10 @@
 			android:key="wakelock"
 			android:title="@string/option_wake_lock_title"
 			android:summary="@string/option_wake_lock_summary"
+			android:defaultValue="true" />
+		<CheckBoxPreference
+			android:key="timer"
+			android:title="@string/option_enable_timer_title"
 			android:defaultValue="true" />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/options_group_sound" android:key="Sound">

@@ -31,6 +31,7 @@ public class SaveGame {
 				writer = new BufferedWriter(new FileWriter(this.filename));
 				long now = System.currentTimeMillis();
 				writer.write(now + "\n");
+				writer.write(view.mElapsed + "\n");
 				writer.write(view.mGridSize + "\n");
 				writer.write(view.mActive + "\n");
 				for (GridCell cell : view.mCells) {
@@ -124,6 +125,7 @@ public class SaveGame {
 	        ins = new FileInputStream(new File(this.filename));
 	        br = new BufferedReader(new InputStreamReader(ins), 8192);
 	        view.mDate = Long.parseLong(br.readLine());
+	        view.mElapsed = Long.parseLong(br.readLine());
 	        view.mGridSize = Integer.parseInt(br.readLine());
 	        if (br.readLine().equals("true"))
 	        	view.mActive = true;
@@ -185,12 +187,18 @@ public class SaveGame {
 	        	view.mCages.add(cage);
 	        } while ((line = br.readLine()) != null);
 	        
-	    } catch (FileNotFoundException e) {
+	  } catch (FileNotFoundException e) {
 	        Log.d("Mathdoku", "FNF Error restoring game: " + e.getMessage());
 	        return false;
 		} catch (IOException e) {
 		  Log.d("Mathdoku", "IO Error restoring game: " + e.getMessage());
 		  return false;
+		} catch (NumberFormatException e) {
+		  Log.d("Mathdoku", "Error restoring game: " + e.getMessage());
+		  return false;
+		} catch (IndexOutOfBoundsException e) {
+	     Log.d("Mathdoku", "Error restoring game: " + e.getMessage());
+	     return false;
 		}
 		finally {
 		  try {

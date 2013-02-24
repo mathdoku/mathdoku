@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="net.cactii.mathdoku"
-      android:installLocation="auto"
-      android:versionName="1.9 Beta 2" android:versionCode="72">
+      android:versionName="1.95d" android:versionCode="77">
     <application android:icon="@drawable/icon" android:label="@string/application_name">
         <activity android:name=".MainActivity"
                   android:label="@string/application_name">
@@ -15,11 +14,9 @@
         <activity android:name=".SavedGameList"/>
     </application>
     <uses-sdk android:minSdkVersion="3"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
 	<supports-screens android:smallScreens="true"
 					  android:normalScreens="true"
 					  android:largeScreens="true"
-					  android:xlargeScreens="true"
 					  android:anyDensity="true">
 	</supports-screens>
 </manifest> 

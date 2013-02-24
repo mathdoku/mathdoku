@@ -4,20 +4,20 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -31,6 +31,7 @@ import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
@@ -38,6 +39,7 @@ import android.view.animation.Animation.AnimationListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,32 +48,44 @@ public class MainActivity extends Activity {
     TextView solvedText;
     TextView pressMenu;
     ProgressDialog mProgressDialog;
+    TextView mTimerLabel;
+    GameTimer mTimerTask;
     
     LinearLayout topLayout;
     LinearLayout controls;
+    RelativeLayout mTimerLayout;
     Button digits[] = new Button[9];
     Button clearDigit;
     CheckBox maybeButton;
+    TextView mMaybeText;
     View[] sound_effect_views;
+    boolean mSmallScreen;
 	private Animation outAnimation;
 	private Animation solvedAnimation;
 	
 	public SharedPreferences preferences;
     
     final Handler mHandler = new Handler();
-	private WakeLock wakeLock;
     
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        
+        mSmallScreen = false;
+        Display display = getWindowManager().getDefaultDisplay();
+        if (display.getHeight() < 500 && display.getWidth() < 500) {
+            this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            mSmallScreen = true;
+        }
+        if (display.getHeight() < 750) {
+        	this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
+        
         setContentView(R.layout.main);
         
         this.preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        this.wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "Mathdoku");
-        
         this.topLayout = (LinearLayout)findViewById(R.id.topLayout);
         this.kenKenGrid = (GridView)findViewById(R.id.gridView);
         this.kenKenGrid.mContext = this;
@@ -79,6 +93,10 @@ public class MainActivity extends Activity {
         this.kenKenGrid.animText = this.solvedText;
         this.pressMenu = (TextView)findViewById(R.id.pressMenu);
         this.controls = (LinearLayout)findViewById(R.id.controls);
+
+        this.mTimerLayout = (RelativeLayout)findViewById(R.id.timerLayout);
+        this.mTimerLabel = (TextView)findViewById(R.id.timerText);
+        this.mMaybeText = (TextView)findViewById(R.id.maybeText);
         digits[0] = (Button)findViewById(R.id.digitSelect1);
         digits[1] = (Button)findViewById(R.id.digitSelect2);
         digits[2] = (Button)findViewById(R.id.digitSelect3);
@@ -140,18 +158,22 @@ public class MainActivity extends Activity {
 				}
 			}
 		});
-        
+
     	this.kenKenGrid.mFace=Typeface.createFromAsset(this.getAssets(), "fonts/font.ttf");
     	this.solvedText.setTypeface(this.kenKenGrid.mFace);
-        
+
         this.kenKenGrid.setSolvedHandler(this.kenKenGrid.new OnSolvedListener() {
     			@Override
     			public void puzzleSolved() {
-    				// TODO Auto-generated method stub
+    				MainActivity.this.controls.setVisibility(View.GONE);
     				if (kenKenGrid.mActive)
     					animText(R.string.main_ui_solved_messsage, 0xFF002F00);
-    				MainActivity.this.controls.setVisibility(View.GONE);
+
     				MainActivity.this.pressMenu.setVisibility(View.VISIBLE);
+
+    				if (MainActivity.this.mTimerTask != null) {
+    				  MainActivity.this.mTimerTask.cancel(true);
+    				}
     			}
         });
         
@@ -184,41 +206,81 @@ public class MainActivity extends Activity {
         this.kenKenGrid.setFocusable(true);
         this.kenKenGrid.setFocusableInTouchMode(true);
 
-        
         registerForContextMenu(this.kenKenGrid);
         SaveGame saver = new SaveGame();
         if (saver.Restore(this.kenKenGrid)) {
         	this.setButtonVisibility(this.kenKenGrid.mGridSize);
-        	this.kenKenGrid.mActive = true;    		
+        	this.kenKenGrid.mActive = true;
+        	this.mTimerTask = new GameTimer();
+        	this.mTimerTask.mElapsedTime = this.kenKenGrid.mElapsed;
+        	this.mTimerTask.mTimerLabel = mTimerLabel;
+        	if (this.preferences.getBoolean("timer", true)) {
+        		mTimerLayout.setVisibility(View.VISIBLE);
+        	}
+        	this.mTimerTask.execute();
         }
     }
     
     public void onPause() {
     	if (this.kenKenGrid.mGridSize > 3) {
 	    	SaveGame saver = new SaveGame();
+	    	this.kenKenGrid.mElapsed = mTimerTask.mElapsedTime;
 	    	saver.Save(this.kenKenGrid);
     	}
-        if (this.wakeLock.isHeld())
-            this.wakeLock.release();
+    	if (mTimerTask != null && !mTimerTask.isCancelled()) {
+    		mTimerTask.cancel(true);
+    	}
     	super.onPause();
+    }
+    
+    public void setTheme() {
+      pressMenu.setTextColor(0xff000000);
+      pressMenu.setBackgroundColor(0xa0f0f0f0);
+      String theme = preferences.getString("theme", "newspaper");
+      if (mSmallScreen) {
+    	  mTimerLabel.setTextSize(14);
+      }
+
+      if ("newspaper".equals(theme)) {
+        topLayout.setBackgroundResource(R.drawable.newspaper);
+        kenKenGrid.setTheme(GridView.THEME_NEWSPAPER);
+        mTimerLabel.setBackgroundColor(0x90808080);
+        mMaybeText.setTextColor(0xFF000000);
+      } else if ("inverted".equals(theme)) {
+        topLayout.setBackgroundResource(R.drawable.newspaper_dark);
+        kenKenGrid.setTheme(GridView.THEME_INVERT);
+        pressMenu.setTextColor(0xfff0f0f0);
+        pressMenu.setBackgroundColor(0xff000000);
+        mTimerLabel.setTextColor(0xFFF0F0F0);
+        mMaybeText.setTextColor(0xFFFFFFFF);
+      } else if ("carved".equals(theme)) {
+        topLayout.setBackgroundResource(R.drawable.background);
+        kenKenGrid.setTheme(GridView.THEME_CARVED);
+        mTimerLabel.setBackgroundColor(0x10000000);
+        mMaybeText.setTextColor(0xFF000000);
+      }
     }
     
     public void onResume() {
 	    if (this.preferences.getBoolean("wakelock", true))
-	        this.wakeLock.acquire();
-	    if (this.preferences.getBoolean("alternatetheme", true)) {
-	    	//this.topLayout.setBackgroundDrawable(null);
-	    	this.topLayout.setBackgroundResource(R.drawable.background);
-	    	//this.topLayout.setBackgroundColor(0xFFA0A0CC);
-	    	this.kenKenGrid.setTheme(GridView.THEME_NEWSPAPER);
-	    } else {
-	    	this.topLayout.setBackgroundResource(R.drawable.background);
-	    	this.kenKenGrid.setTheme(GridView.THEME_CARVED);
-	    }
+	    	getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+	    setTheme();
 	    this.kenKenGrid.mDupedigits = this.preferences.getBoolean("dupedigits", true);
 	    this.kenKenGrid.mBadMaths = this.preferences.getBoolean("badmaths", true);
 	    if (this.kenKenGrid.mActive && !MainActivity.this.preferences.getBoolean("hideselector", false)) {
 	    	this.controls.setVisibility(View.VISIBLE);
+	    }
+	    if (this.kenKenGrid.mActive && (this.mTimerTask == null || this.mTimerTask.isCancelled())) {
+        	this.mTimerTask = new GameTimer();
+        	this.mTimerTask.mElapsedTime = this.kenKenGrid.mElapsed;
+        	this.mTimerTask.mTimerLabel = mTimerLabel;
+        	if (this.preferences.getBoolean("timer", true)) {
+        		mTimerLayout.setVisibility(View.VISIBLE);
+        	} else {
+        		mTimerLayout.setVisibility(View.GONE);
+        	}
+        	this.mTimerTask.execute();
 	    }
 	    this.setSoundEffectsEnabled(this.preferences.getBoolean("soundeffects", true));
 	    super.onResume();
@@ -226,13 +288,16 @@ public class MainActivity extends Activity {
     
     public void setSoundEffectsEnabled(boolean enabled) {
     	for (View v : this.sound_effect_views)
-    	v.setSoundEffectsEnabled(enabled);
+    	  v.setSoundEffectsEnabled(enabled);
     }
     
     protected void onActivityResult(int requestCode, int resultCode,
     	      Intent data) {
 	    if (requestCode != 7 || resultCode != Activity.RESULT_OK)
 	      return;
+	    if (mTimerTask != null && !mTimerTask.isCancelled()) {
+	      mTimerTask.cancel(true);
+	    }
 	    Bundle extras = data.getExtras();
 	    String filename = extras.getString("filename");
     	Log.d("Mathdoku", "Loading game: " + filename);
@@ -240,6 +305,10 @@ public class MainActivity extends Activity {
         if (saver.Restore(this.kenKenGrid)) {
         	this.setButtonVisibility(this.kenKenGrid.mGridSize);
         	this.kenKenGrid.mActive = true;
+		    this.mTimerTask = new GameTimer();
+		    this.mTimerTask.mElapsedTime = this.kenKenGrid.mElapsed;
+		    this.mTimerTask.mTimerLabel = mTimerLabel;
+		    this.mTimerTask.execute();
         }
     }
     
@@ -340,6 +409,7 @@ public class MainActivity extends Activity {
     			default: gridSize = 4; break;
     		}
    	    	String hideOperators = this.preferences.getString("hideoperatorsigns", "F");
+   	    	
    	    	if (hideOperators.equals("T")) {
    	    		this.startNewGame(gridSize, true);
    	    		return true;
@@ -443,23 +513,23 @@ public class MainActivity extends Activity {
     final Runnable newGameReady = new Runnable() {
         public void run() {
         	MainActivity.this.dismissDialog(0);
-    	    if (MainActivity.this.preferences.getBoolean("alternatetheme", true)) {
-    	    	//MainActivity.this.topLayout.setBackgroundDrawable(null);
-    	    	//MainActivity.this.topLayout.setBackgroundColor(0xFFA0A0CC);
-    	    	MainActivity.this.topLayout.setBackgroundResource(R.drawable.background);
-    	    	MainActivity.this.kenKenGrid.setTheme(GridView.THEME_NEWSPAPER);
-    	    } else {
-    	    	MainActivity.this.topLayout.setBackgroundResource(R.drawable.background);
-    	    	MainActivity.this.kenKenGrid.setTheme(GridView.THEME_CARVED);
-    	    }
+        	MainActivity.this.setTheme();
         	MainActivity.this.setButtonVisibility(kenKenGrid.mGridSize);
-        	MainActivity.this.kenKenGrid.invalidate();
+        	MainActivity.this.maybeButton.setChecked(false);
+        	MainActivity.this.mTimerTask = new GameTimer();
+        	MainActivity.this.mTimerTask.mTimerLabel = MainActivity.this.mTimerLabel;
+        	MainActivity.this.mTimerTask.execute();
+        	MainActivity.this.kenKenGrid.clearUserValues();
         }
     };
     
     public void startNewGame(final int gridSize, final boolean hideOperators) {
     	kenKenGrid.mGridSize = gridSize;
     	showDialog(0);
+    	
+    	if (mTimerTask != null && !mTimerTask.isCancelled()) {
+    	  mTimerTask.cancel(true);
+    	}
 
     	Thread t = new Thread() {
 			public void run() {
@@ -491,22 +561,25 @@ public class MainActivity extends Activity {
     		
 		this.solvedText.setVisibility(View.GONE);
 		this.pressMenu.setVisibility(View.GONE);
+		if (this.preferences.getBoolean("timer", true)) {
+			this.mTimerLayout.setVisibility(View.VISIBLE);
+		}
     	if (!MainActivity.this.preferences.getBoolean("hideselector", false)) {
 			this.controls.setVisibility(View.VISIBLE);
     	}
     }
     
     private void animText(int textIdentifier, int color) {
-  	  this.solvedText.setText(textIdentifier);
-  	  this.solvedText.setTextColor(color);
-  	  this.solvedText.setVisibility(View.VISIBLE);
-  	    final float SCALE_FROM = (float) 0;
-  	    final float SCALE_TO = (float) 1.0;
-  	    ScaleAnimation anim = new ScaleAnimation(SCALE_FROM, SCALE_TO, SCALE_FROM, SCALE_TO,
-  	    		this.kenKenGrid.mCurrentWidth/2, this.kenKenGrid.mCurrentWidth/2);
-  	    anim.setDuration(1000);
-  	    //animText.setAnimation(anim);
-  	  this.solvedText.startAnimation(this.solvedAnimation);
+		this.solvedText.setText(textIdentifier);
+		this.solvedText.setTextColor(color);
+		this.solvedText.setVisibility(View.VISIBLE);
+		final float SCALE_FROM = (float) 0;
+		final float SCALE_TO = (float) 1.0;
+		ScaleAnimation anim = new ScaleAnimation(SCALE_FROM, SCALE_TO, SCALE_FROM, SCALE_TO,
+		this.kenKenGrid.mCurrentWidth/2, this.kenKenGrid.mCurrentWidth/2);
+		anim.setDuration(1000);
+		//animText.setAnimation(anim);
+		this.solvedText.startAnimation(this.solvedAnimation);
   	}
     
     private void openHelpDialog() {

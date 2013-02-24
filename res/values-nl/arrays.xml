@@ -5,4 +5,20 @@
 	   <item>Nooit</item>
 	   <item>Vraag</item>
 	</string-array>
+<!-- The actual under-the-hood values associated with the above. Serve merely as identifiers, and should not be translated. -->
+<string-array name="hideOpValues">
+   <item>T</item>
+   <item>F</item>
+   <item>A</item>
+</string-array>
+	<string-array name="themeTexts">
+    <item>Carved</item>
+    <item>Newspaper</item>
+    <item>Donker</item>
+</string-array>
+<string-array name="themeValues">
+    <item>carved</item>
+    <item>newspaper</item>
+    <item>inverted</item>
+</string-array>
 </resources>

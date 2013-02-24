@@ -33,8 +33,8 @@ redistribute and/or modify this translation yourself under the terms of the GNU 
 	<string name="options_group_sound">Geluid</string>
 	<string name="options_group_assistance">Help</string>
 	<string name="options_group_puzzle">Puzzel Generatie</string>
-	<string name="option_alternate_theme_title">Alternatief thema</string>
-	<string name="option_alternate_theme_summary">Gebruik een alternatief thema voor het puzzelbord</string>
+	<string name="option_theme_title">Thema</string>
+	<string name="option_theme_summary">Thema voor het puzzelbord</string>
 	<string name="option_maybe_layout_title">Mogelijk in 3x3 raster</string>
 	<string name="option_maybe_layout_summary">Toon mogelijk getallen in een 3x3 raster</string>
 	<string name="option_hide_operators_title">Verberg operaties</string>
@@ -49,6 +49,7 @@ redistribute and/or modify this translation yourself under the terms of the GNU 
 	<string name="option_sound_effects_summary">Zet de geluidseffecten aan</string>
 	<string name="option_wake_lock_title">Houd scherm aan</string>
 	<string name="option_wake_lock_summary">Zorgt er voor dat het scherm niet uit gaat tijdens het spelen</string>
+	<string name="option_enable_timer_title">Toon timer</string>
 	<string name="main_ui_maybe">Mogelijk</string>
 	<string name="main_ui_clear">Leeg</string>
 	<string name="main_ui_solved_messsage">Opgelost!</string>

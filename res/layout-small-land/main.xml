@@ -24,9 +24,31 @@
 		android:layout_height="wrap_content" android:layout_gravity="center"
 		android:layout_marginTop="50dp" android:textColor="#FF000000"
 		android:textSize="18dp" android:textStyle="bold" android:shadowColor="#7FFFFFFF"
-		android:shadowDx="1" android:shadowDy="1"
+		android:shadowDx="1" android:shadowDy="1" android:padding="10dp"
 		android:text="@string/press_menu_button_message" />
-
+	
+	<RelativeLayout
+	    android:id="@+id/timerLayout"
+		android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_gravity="center"
+	    android:layout_margin="5dp"
+	    android:background="#00000000">
+		<TextView
+			android:id="@+id/timerText"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_centerHorizontal="true"
+			android:layout_margin="5dp"
+			android:textColor="#FF000000"
+			android:background="#00000000"
+			android:textSize="24dp"
+			android:textStyle="bold"
+			android:text=""
+			android:visibility="invisible"
+		/>
+	</RelativeLayout>
+	
 	<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
 		android:id="@+id/controls" android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:layout_marginTop="5dp"
@@ -69,7 +91,8 @@
 				android:textStyle="bold" android:text="9" />
 		</TableRow>
 		<TableRow android:id="@+id/additionalcontrols1">
-			<TextView android:layout_width="wrap_content"
+			<TextView android:id="@+id/maybeText"
+			    android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:textColor="#FF000000"
 				android:textSize="16dp" android:textStyle="bold"
 				android:layout_gravity="center_vertical|right" android:text="@string/main_ui_maybe" />
