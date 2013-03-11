@@ -5,10 +5,10 @@ import java.util.Random;
 
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.Painter.GridPainter;
-import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
-import android.graphics.Typeface;
+import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -44,8 +44,6 @@ public class GridView extends View implements OnTouchListener {
 	// Random generator
 	public Random mRandom;
 	private long mGameSeed;
-
-	public Activity mContext;
 
 	// Cages
 	private CageTypeGenerator mGridCageTypeGenerator;
@@ -116,7 +114,7 @@ public class GridView extends View implements OnTouchListener {
 		this.mActive = false;
 
 		this.setOnTouchListener((OnTouchListener) this);
-		
+
 		Painter painter = Painter.getInstance(this.getContext());
 		painter.setGridBorder((this.getMeasuredHeight() < 150));
 		this.mGridPainter = painter.mGridPainter;
@@ -753,8 +751,16 @@ public class GridView extends View implements OnTouchListener {
 						mGridPainter.mInnerPaint);
 			}
 
+			// Get current setting for how to display possible values in a
+			// cell.
+			SharedPreferences prefs = PreferenceManager
+					.getDefaultSharedPreferences(getContext());
+			boolean possibleValuesIn3x3Grid = prefs
+					.getBoolean("maybe3x3", true);
+
 			// Draw cells
-			Painter.getInstance().setCellSize((float) width / (float) this.mGridSize);
+			Painter.getInstance().setCellSize(
+					(float) width / (float) this.mGridSize);
 			for (GridCell cell : this.mCells) {
 				if ((cell.isUserValueSet() && this.getNumValueInCol(cell) > 1)
 						|| (cell.isUserValueSet() && this
@@ -762,12 +768,14 @@ public class GridView extends View implements OnTouchListener {
 					cell.mShowWarning = true;
 				else
 					cell.mShowWarning = false;
-				cell.onDraw(canvas, false);
+				cell.onDraw(canvas, false, possibleValuesIn3x3Grid);
 			}
 
 			// Draw borders
-			canvas.drawLine(0, 1, this.mCurrentWidth, 1, mGridPainter.mOuterPaint);
-			canvas.drawLine(1, 0, 1, this.mCurrentWidth, mGridPainter.mOuterPaint);
+			canvas.drawLine(0, 1, this.mCurrentWidth, 1,
+					mGridPainter.mOuterPaint);
+			canvas.drawLine(1, 0, 1, this.mCurrentWidth,
+					mGridPainter.mOuterPaint);
 			canvas.drawLine(0, this.mCurrentWidth - 2, this.mCurrentWidth,
 					this.mCurrentWidth - 2, mGridPainter.mOuterPaint);
 			canvas.drawLine(this.mCurrentWidth - 2, 0, this.mCurrentWidth - 2,
@@ -775,17 +783,18 @@ public class GridView extends View implements OnTouchListener {
 
 			// Draw cells again
 			for (GridCell cell : this.mCells) {
-				cell.onDraw(canvas, true);
+				cell.onDraw(canvas, true, possibleValuesIn3x3Grid);
 			}
 			// Draw highlights for current cage.
 			if (this.mSelectedCell != null
 					&& this.mSelectedCell.getCageId() < this.mCages.size()) {
 				for (GridCell cell : this.mCages.get(this.mSelectedCell
 						.getCageId()).mCells) {
-					cell.onDraw(canvas, true);
+					cell.onDraw(canvas, true, possibleValuesIn3x3Grid);
 				}
 				// Draws highlights at top.
-				this.mSelectedCell.onDraw(canvas, false);
+				this.mSelectedCell.onDraw(canvas, false,
+						possibleValuesIn3x3Grid);
 			}
 			// Callback if puzzle is solved.
 			if (this.mActive && this.isSolved()) {
@@ -1151,5 +1160,37 @@ public class GridView extends View implements OnTouchListener {
 		mActive = Boolean.parseBoolean(viewParts[index++]);
 
 		return true;
+	}
+
+	/**
+	 * Merges a grid view with a given grid view. Following information will be
+	 * merged: grid size, cells, cages, time elapse, active status and the
+	 * selected cell.
+	 * 
+	 * The source object will be altered by this method and should not be used
+	 * after calling this method.
+	 * 
+	 * @param sourceGridView
+	 *            The grid view containing the information that will be merged
+	 *            into this grid view.
+	 * 
+	 */
+	public void merge(GridView sourceGridView) {
+		if (sourceGridView.equals(this)) {
+			// Not another object.
+			return;
+		}
+
+		mGridSize = sourceGridView.mGridSize;
+		mCells = sourceGridView.mCells;
+		mCages = sourceGridView.mCages;
+		mElapsed = sourceGridView.mElapsed;
+		mActive = sourceGridView.mActive;
+		mSelectedCell = sourceGridView.mSelectedCell;
+
+		// Cells keep a reference to the grid view to which they belong.
+		for (GridCell cell : mCells) {
+			cell.setGridViewReference(this);
+		}
 	}
 }

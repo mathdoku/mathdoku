@@ -8,13 +8,11 @@ import net.cactii.mathdoku.Painter.CellPainter;
 import net.cactii.mathdoku.Painter.Maybe1x9Painter;
 import net.cactii.mathdoku.Painter.Maybe3x3Painter;
 import net.cactii.mathdoku.Painter.UserValuePainter;
-import android.app.Activity;
-import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.preference.PreferenceManager;
 
 public class GridCell {
+	@SuppressWarnings("unused")
 	private static final String TAG = "MathDoku.GridCell";
 
 	// Identifiers of different versions of cell information which is stored in
@@ -45,7 +43,8 @@ public class GridCell {
 	public float mPosY;
 
 	// View context
-	public GridView mContext;
+	private GridView mGridView;
+	
 	// Whether to show warning background (duplicate value in row/col)
 	public boolean mShowWarning;
 	// Whether to show cell as selected
@@ -74,7 +73,7 @@ public class GridCell {
 
 	public GridCell(GridView context, int cell) {
 		int gridSize = context.mGridSize;
-		this.mContext = context;
+		this.mGridView = context;
 		this.mCellNumber = cell;
 		this.mColumn = cell % gridSize;
 		this.mRow = (int) (cell / gridSize);
@@ -110,7 +109,7 @@ public class GridCell {
 		return str;
 	}
 
-	private Paint getBorderPaint(BorderType borderType, boolean onlyBorders) { 
+	private Paint getBorderPaint(BorderType borderType, boolean onlyBorders) {
 		switch (borderType) {
 		case NONE:
 			return null;
@@ -184,7 +183,7 @@ public class GridCell {
 	}
 
 	/* Draw the cell. Border and text is drawn. */
-	public void onDraw(Canvas canvas, boolean onlyBorders) {
+	public void onDraw(Canvas canvas, boolean onlyBorders, boolean possibleValuesIn3x3Grid) {
 
 		// Calculate x and y for the cell origin (topleft)
 		this.mPosX = this.mCellPainter.mCellSize * this.mColumn;
@@ -194,13 +193,13 @@ public class GridCell {
 		float bottom = this.mPosY + this.mCellPainter.mCellSize;
 		float left = this.mPosX + this.mCellPainter.mCellSize;
 		float right = this.mPosX;
-		GridCell cellAbove = this.mContext.getCellAt(this.mRow - 1,
+		GridCell cellAbove = this.mGridView.getCellAt(this.mRow - 1,
 				this.mColumn);
-		GridCell cellLeft = this.mContext
+		GridCell cellLeft = this.mGridView
 				.getCellAt(this.mRow, this.mColumn - 1);
-		GridCell cellRight = this.mContext.getCellAt(this.mRow,
+		GridCell cellRight = this.mGridView.getCellAt(this.mRow,
 				this.mColumn + 1);
-		GridCell cellBelow = this.mContext.getCellAt(this.mRow + 1,
+		GridCell cellBelow = this.mGridView.getCellAt(this.mRow + 1,
 				this.mColumn);
 
 		// Top
@@ -228,8 +227,7 @@ public class GridCell {
 		}
 
 		if (!onlyBorders) {
-			if ((mShowWarning && mContext.mDupedigits)
-					|| mInvalidHighlight) {
+			if ((mShowWarning && mGridView.mDupedigits) || mInvalidHighlight) {
 				canvas.drawRect(right + 1, top + 1, left - 1, bottom - 1,
 						mCellPainter.mBackgroundWarningPaint);
 			}
@@ -291,10 +289,7 @@ public class GridCell {
 
 		// Draw pencilled in digits.
 		if (mPossibles.size() > 0) {
-			Activity activity = mContext.mContext;
-			SharedPreferences prefs = PreferenceManager
-					.getDefaultSharedPreferences(activity);
-			if (prefs.getBoolean("maybe3x3", true)) {
+			if (possibleValuesIn3x3Grid) {
 				for (int i = 0; i < mPossibles.size(); i++) {
 					int possible = mPossibles.get(i);
 					float xPos = mPosX + mMaybe3x3Painter.mLeftOffset
@@ -448,7 +443,7 @@ public class GridCell {
 		CellChange move = new CellChange(this, this.mUserValue, this.mPossibles);
 		if (originalCellChange == null) {
 			// This move is not a result of another move.
-			this.mContext.AddMove(move);
+			this.mGridView.AddMove(move);
 		} else {
 			originalCellChange.addRelatedMove(move);
 		}
@@ -468,7 +463,7 @@ public class GridCell {
 	}
 
 	public void Select() {
-		mContext.SetSelectedCell(this);
+		mGridView.SetSelectedCell(this);
 	}
 
 	/**
@@ -488,5 +483,14 @@ public class GridCell {
 	 */
 	public void setCheated() {
 		this.mCheated = true;
+	}
+	
+	/**
+	 * Sets the reference to the grid view to which this cell belongs.
+	 * 
+	 * @param gridView The grid view the cell should refer to.
+	 */
+	public void setGridViewReference(GridView gridView) {
+		mGridView = gridView;
 	}
 }

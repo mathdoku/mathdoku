@@ -4,7 +4,6 @@ import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.Painter.GridTheme;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -49,9 +48,6 @@ public class MainActivity extends Activity {
 	public final static Boolean PREF_CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT = false;
 	// TODO: add all other prefs here
 
-	// Identifiers for dialogs
-	private final static int DIALOG_CREATE_NEW_GAME = 0;
-
 	public GridView kenKenGrid;
 	public Painter mPainter;
 
@@ -76,6 +72,8 @@ public class MainActivity extends Activity {
 	private Animation solvedAnimation;
 
 	public SharedPreferences preferences;
+
+	private GridGenerator mGridGeneratorTask;
 
 	// Variables for process of creating preview images of game file for which
 	// no preview image does exist.
@@ -103,7 +101,6 @@ public class MainActivity extends Activity {
 		this.topLayout = (RelativeLayout) findViewById(R.id.topLayout);
 		this.puzzleGrid = (RelativeLayout) findViewById(R.id.puzzleGrid);
 		this.kenKenGrid = (GridView) findViewById(R.id.gridView);
-		this.kenKenGrid.mContext = this;
 		this.solvedText = (TextView) findViewById(R.id.solvedText);
 		this.kenKenGrid.animText = this.solvedText;
 		this.pressMenu = (TextView) findViewById(R.id.pressMenu);
@@ -129,7 +126,7 @@ public class MainActivity extends Activity {
 				this.digits[1], this.digits[2], this.digits[3], this.digits[4],
 				this.digits[5], this.digits[6], this.digits[7], this.digits[8],
 				this.clearDigit, this.maybeButton, this.undoButton };
-		
+
 		this.mPainter = Painter.getInstance(this);
 
 		solvedAnimation = AnimationUtils.loadAnimation(MainActivity.this,
@@ -314,7 +311,16 @@ public class MainActivity extends Activity {
 
 		registerForContextMenu(this.kenKenGrid);
 
-		if (!this.preferences.getBoolean(PREF_CREATE_PREVIEW_IMAGES_COMPLETED,
+		// Restore background process if running.
+		Object object = this.getLastNonConfigurationInstance();
+		if (object != null && object.getClass() == GridGenerator.class) {
+			mGridGeneratorTask = (GridGenerator) object;
+			mGridGeneratorTask.attachToActivity(this);
+		} 
+		
+		
+		if (!this.preferences.getBoolean(
+				PREF_CREATE_PREVIEW_IMAGES_COMPLETED,
 				PREF_CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT)) {
 			// Process of creating preview images is not yet completed. Last
 			// game can not yet be restarted.
@@ -355,13 +361,13 @@ public class MainActivity extends Activity {
 		pressMenu.setBackgroundColor(0xa0f0f0f0);
 		String theme = preferences.getString("theme", "newspaper");
 		solvedText.setTypeface(mPainter.mGridPainter.mSolvedTypeface);
-				
+
 		if ("newspaper".equals(theme)) {
 			topLayout.setBackgroundResource(R.drawable.newspaper);
 			mPainter.setTheme(GridTheme.NEWSPAPER);
 			mTimerText.setBackgroundColor(0x90808080);
 			mMaybeText.setTextColor(0xFF000000);
-			
+
 		} else if ("inverted".equals(theme)) {
 			topLayout.setBackgroundResource(R.drawable.newspaper_dark);
 			mPainter.setTheme(GridTheme.DARK);
@@ -683,27 +689,6 @@ public class MainActivity extends Activity {
 		this.kenKenGrid.invalidate();
 	}
 
-	// Create runnable for posting
-	final Runnable newGameReady = new Runnable() {
-		public void run() {
-			MainActivity.this.dismissDialog(DIALOG_CREATE_NEW_GAME);
-			MainActivity.this.puzzleGrid.setVisibility(View.VISIBLE);
-			MainActivity.this.setTheme();
-			MainActivity.this.setButtonVisibility(kenKenGrid.mGridSize);
-			MainActivity.this.maybeButton.setChecked(false);
-			MainActivity.this.mTimerTask = new GameTimer();
-			MainActivity.this.mTimerTask.mTimerLabel = MainActivity.this.mTimerText;
-			MainActivity.this.mTimerTask.execute();
-			MainActivity.this.kenKenGrid.clearUserValues();
-			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
-				MainActivity.this.mGameSeedLabel.setVisibility(View.VISIBLE);
-				MainActivity.this.mGameSeedText.setVisibility(View.VISIBLE);
-				MainActivity.this.mGameSeedText.setText(String.format("%,d",
-						MainActivity.this.kenKenGrid.getGameSeed()));
-			}
-		}
-	};
-
 	private void restartLastGame() {
 		GameFile defaultGameFile = new GameFile();
 		if (defaultGameFile.load(this.kenKenGrid)) {
@@ -740,37 +725,59 @@ public class MainActivity extends Activity {
 		}
 	}
 
+	/**
+	 * Starts a new game by building a new grid at the specified size.
+	 * 
+	 * @param gridSize
+	 *            The grid size of the new puzzle.
+	 * @param hideOperators
+	 *            True in case operators should be hidden in the new puzzle.
+	 */
 	public void startNewGame(final int gridSize, final boolean hideOperators) {
-		kenKenGrid.mGridSize = gridSize;
-		showDialog(DIALOG_CREATE_NEW_GAME);
-
+		// Cancel old timer if running.
 		if (mTimerTask != null && !mTimerTask.isCancelled()) {
 			mTimerTask.cancel(true);
 		}
+		kenKenGrid.mActive = false;
 
-		Thread t = new Thread() {
-			public void run() {
-				MainActivity.this.kenKenGrid.reCreate(hideOperators);
-				MainActivity.this.mHandler.post(newGameReady);
-			}
-		};
-		t.start();
+		// Start a background task to generate the new grid. As soon as the new
+		// grid is created, the method onNewGridReady will be called.
+		mGridGeneratorTask = new GridGenerator(this, gridSize, hideOperators);
+		mGridGeneratorTask.execute();
 	}
 
-	@Override
-	protected Dialog onCreateDialog(int id) {
-		ProgressDialog progressDialog = new ProgressDialog(this);
-		switch (id) {
-		case DIALOG_CREATE_NEW_GAME:
-			progressDialog.setTitle(R.string.main_ui_building_puzzle_title);
-			progressDialog.setMessage(getResources().getString(
-					R.string.main_ui_building_puzzle_message));
-			progressDialog.setIcon(android.R.drawable.ic_dialog_info);
-			progressDialog.setIndeterminate(false);
-			progressDialog.setCancelable(false);
-			break;
+	/**
+	 * Replace the current grid with the given grid.
+	 * 
+	 * @param gridView
+	 *            The grid which has to be shown.
+	 */
+	public void onNewGridReady(GridView gridView) {
+		mGridGeneratorTask = null;
+
+		// Get relevant information from the new grid view.
+		kenKenGrid.merge(gridView);
+
+		// Set UI components
+		puzzleGrid.setVisibility(View.VISIBLE);
+		setTheme();
+		setButtonVisibility(kenKenGrid.mGridSize);
+		maybeButton.setChecked(false);
+
+		// Start new timer
+		mTimerTask = new GameTimer();
+		mTimerTask.mTimerLabel = mTimerText;
+		mTimerTask.execute();
+
+		kenKenGrid.clearUserValues();
+
+		// Show game seed in case running in development mode.
+		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+			mGameSeedLabel.setVisibility(View.VISIBLE);
+			mGameSeedText.setVisibility(View.VISIBLE);
+			mGameSeedText
+					.setText(String.format("%,d", kenKenGrid.getGameSeed()));
 		}
-		return progressDialog;
 	}
 
 	public void setButtonVisibility(int gridSize) {
@@ -947,14 +954,11 @@ public class MainActivity extends Activity {
 		// At least one game file was found for which no preview exist. Show the
 		// progress dialog.
 		mProgressDialogImagePreviewCreation = new ProgressDialog(this);
-		mProgressDialogImagePreviewCreation
-				.setTitle(R.string.main_ui_creating_previews_title);
+		mProgressDialogImagePreviewCreation.setTitle(R.string.main_ui_creating_previews_title);
 		mProgressDialogImagePreviewCreation.setMessage(getResources().getString(
 				R.string.main_ui_creating_previews_message));
-		mProgressDialogImagePreviewCreation
-				.setIcon(android.R.drawable.ic_dialog_info);
-		mProgressDialogImagePreviewCreation
-				.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		mProgressDialogImagePreviewCreation.setIcon(android.R.drawable.ic_dialog_info);
+		mProgressDialogImagePreviewCreation.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		mProgressDialogImagePreviewCreation.setMax(countGameFilesWithoutPreview);
 		mProgressDialogImagePreviewCreation.setIndeterminate(false);
 		mProgressDialogImagePreviewCreation.setCancelable(false);
@@ -1003,6 +1007,8 @@ public class MainActivity extends Activity {
 						// Abort processing. On resume of activity this process
 						// is (or already has been) restarted.
 						return;
+					} finally {
+						mProgressDialogImagePreviewCreation = null;
 					}
 
 					Editor prefEditor = preferences.edit();
@@ -1012,12 +1018,12 @@ public class MainActivity extends Activity {
 
 					// Restart the last game
 					restartLastGame();
-					
-					//if (QUICK_CREATE_PUZZLE_WITHOUT_PREVIEW) {
+
+					// if (QUICK_CREATE_PUZZLE_WITHOUT_PREVIEW) {
 					// Reset theme to default after the last game was
 					// restored.
 					setTheme();
-				//}
+					// }
 
 				}
 			}
@@ -1073,5 +1079,21 @@ public class MainActivity extends Activity {
 		}
 
 		return countGameFilesWithoutPreview;
+	}
+
+	/*
+	 * Responds to a configuration change just before the activity is destroyed.
+	 * In case a background task is still running, a reference to this task will
+	 * be retained so that the activity can reconnect to this task as soon as it
+	 * is resumed.
+	 * 
+	 * @see android.app.Activity#onRetainNonConfigurationInstance()
+	 */
+	public Object onRetainNonConfigurationInstance() {
+		if (mGridGeneratorTask != null) {
+			// A new grid is generated in the background. Detach the background task from this activity. It will keep on running until finished.
+			mGridGeneratorTask.detachFromActivity();
+		}
+		return mGridGeneratorTask;
 	}
 }
