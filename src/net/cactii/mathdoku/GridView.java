@@ -73,6 +73,10 @@ public class GridView extends View implements OnTouchListener {
 	// Current theme
 	public int mTheme;
 
+	// Keep track of all moves as soon as grid is built or restored.
+	private boolean rememberMoves;
+	private ArrayList<Move> moves;
+
 	// Used to avoid redrawing or saving grid during creation of new grid
 	public final Object mLock = new Object();
 
@@ -111,6 +115,9 @@ public class GridView extends View implements OnTouchListener {
 		this.mCurrentWidth = 0;
 		this.mGridSize = 0;
 		this.mActive = false;
+
+		this.SetRememberMoves(false);
+
 		this.setOnTouchListener((OnTouchListener) this);
 	}
 
@@ -178,6 +185,7 @@ public class GridView extends View implements OnTouchListener {
 			this.mActive = true;
 			this.mSelectorShown = false;
 			this.setTheme(this.mTheme);
+			this.SetRememberMoves(true);
 		}
 	}
 
@@ -186,7 +194,7 @@ public class GridView extends View implements OnTouchListener {
 	public int CageIdAt(int row, int column) {
 		if (row < 0 || row >= mGridSize || column < 0 || column >= mGridSize)
 			return -1;
-		return this.mCells.get(column + row * this.mGridSize).mCageId;
+		return this.mCells.get(column + row * this.mGridSize).getCageId();
 	}
 
 	public int CreateSingleCages(boolean hideOperators) {
@@ -198,13 +206,13 @@ public class GridView extends View implements OnTouchListener {
 			GridCell cell;
 			while (true) {
 				cell = mCells.get(mRandom.nextInt(mGridSize * mGridSize));
-				if (!RowUsed[cell.mRow] && !ColUsed[cell.mColumn]
-						&& !ValUsed[cell.mValue - 1])
+				if (!RowUsed[cell.getRow()] && !ColUsed[cell.getColumn()]
+						&& !ValUsed[cell.getCorrectValue() - 1])
 					break;
 			}
-			ColUsed[cell.mColumn] = true;
-			RowUsed[cell.mRow] = true;
-			ValUsed[cell.mValue - 1] = true;
+			ColUsed[cell.getColumn()] = true;
+			RowUsed[cell.getRow()] = true;
+			ValUsed[cell.getCorrectValue() - 1] = true;
 			GridCage cage = new GridCage(this, GridCage.CAGE_1, hideOperators);
 			cage.mCells.add(cell);
 			cage.setArithmetic();
@@ -242,8 +250,8 @@ public class GridView extends View implements OnTouchListener {
 				GridCage cage = new GridCage(this, cage_type, hideOperators);
 				int[][] cage_coords = GridCage.CAGE_COORDS[cage_type];
 				for (int coord_num = 0; coord_num < cage_coords.length; coord_num++) {
-					int col = cell.mColumn + cage_coords[coord_num][0];
-					int row = cell.mRow + cage_coords[coord_num][1];
+					int col = cell.getColumn() + cage_coords[coord_num][0];
+					int row = cell.getRow() + cage_coords[coord_num][1];
 					cage.mCells.add(getCellAt(row, col));
 				}
 
@@ -267,8 +275,8 @@ public class GridView extends View implements OnTouchListener {
 			int[][] cage_coords = GridCage.CAGE_COORDS[cage_num];
 			// Don't need to check first coordinate (0,0)
 			for (int coord_num = 1; coord_num < cage_coords.length; coord_num++) {
-				int col = origin.mColumn + cage_coords[coord_num][0];
-				int row = origin.mRow + cage_coords[coord_num][1];
+				int col = origin.getColumn() + cage_coords[coord_num][0];
+				int row = origin.getRow() + cage_coords[coord_num][1];
 				GridCell c = getCellAt(row, col);
 				if (c == null || c.CellInAnyCage()) {
 					InvalidCages[cage_num] = true;
@@ -287,13 +295,15 @@ public class GridView extends View implements OnTouchListener {
 
 	public void ClearAllCages() {
 		for (GridCell cell : this.mCells) {
-			cell.mCageId = -1;
-			cell.mCageText = "";
+			cell.clearCage();
 		}
 		this.mCages = new ArrayList<GridCage>();
 	}
 
 	public void clearUserValues() {
+		if (this.moves != null) {
+			this.moves.clear();
+		}
 		for (GridCell cell : this.mCells) {
 			cell.clearUserValue();
 		}
@@ -328,7 +338,7 @@ public class GridView extends View implements OnTouchListener {
 					cell = getCellAt(row, column);
 					if (--attempts == 0)
 						break;
-					if (cell.mValue != 0)
+					if (cell.getCorrectValue() != 0)
 						continue;
 					if (valueInColumn(column, value))
 						continue;
@@ -338,7 +348,7 @@ public class GridView extends View implements OnTouchListener {
 					this.clearValue(value--);
 					break;
 				}
-				cell.mValue = value;
+				cell.setCorrectValue(value);
 				// Log.d("KenKen", "New cell: " + cell);
 			}
 		}
@@ -347,14 +357,14 @@ public class GridView extends View implements OnTouchListener {
 	/* Clear any cells containing the given number. */
 	public void clearValue(int value) {
 		for (GridCell cell : this.mCells)
-			if (cell.mValue == value)
-				cell.mValue = 0;
+			if (cell.getCorrectValue() == value)
+				cell.setCorrectValue(0);
 	}
 
 	/* Determine if the given value is in the given row */
 	public boolean valueInRow(int row, int value) {
 		for (GridCell cell : this.mCells)
-			if (cell.mRow == row && cell.mValue == value)
+			if (cell.getRow() == row && cell.getCorrectValue() == value)
 				return true;
 		return false;
 	}
@@ -362,7 +372,7 @@ public class GridView extends View implements OnTouchListener {
 	/* Determine if the given value is in the given column */
 	public boolean valueInColumn(int column, int value) {
 		for (int row = 0; row < mGridSize; row++)
-			if (this.mCells.get(column + row * mGridSize).mValue == value)
+			if (this.mCells.get(column + row * mGridSize).getCorrectValue() == value)
 				return true;
 		return false;
 	}
@@ -445,9 +455,9 @@ public class GridView extends View implements OnTouchListener {
 			}
 			// Draw highlights for current cage.
 			if (this.mSelectedCell != null
-					&& this.mSelectedCell.mCageId < this.mCages.size()) {
-				for (GridCell cell : this.mCages
-						.get(this.mSelectedCell.mCageId).mCells) {
+					&& this.mSelectedCell.getCageId() < this.mCages.size()) {
+				for (GridCell cell : this.mCages.get(this.mSelectedCell
+						.getCageId()).mCells) {
 					cell.onDraw(canvas, true);
 				}
 				// Draws highlights at top.
@@ -507,24 +517,17 @@ public class GridView extends View implements OnTouchListener {
 
 		// We can now get the cell.
 		GridCell cell = getCellAt(row, col);
-		if (this.mSelectedCell != cell)
-			this.playSoundEffect(SoundEffectConstants.CLICK);
-		this.mSelectedCell = cell;
-
-		float[] cellPos = this.CellToCoord(cell.mCellNumber);
+		float[] cellPos = this.CellToCoord(cell.getCellNumber());
 		this.mTrackPosX = cellPos[0];
 		this.mTrackPosY = cellPos[1];
 
-		for (GridCell c : this.mCells) {
-			c.mSelected = false;
-			this.mCages.get(c.mCageId).mSelected = false;
+		if (this.mSelectedCell != cell) {
+			// Another cell was touched
+			this.playSoundEffect(SoundEffectConstants.CLICK);
+			SetSelectedCell(cell);
+			invalidate();
 		}
-		if (this.mTouchedListener != null) {
-			this.mSelectedCell.mSelected = true;
-			this.mCages.get(this.mSelectedCell.mCageId).mSelected = true;
-			this.mTouchedListener.gridTouched(this.mSelectedCell);
-		}
-		invalidate();
+
 		return false;
 	}
 
@@ -576,11 +579,11 @@ public class GridView extends View implements OnTouchListener {
 		}
 		for (GridCell c : this.mCells) {
 			c.mSelected = false;
-			this.mCages.get(c.mCageId).mSelected = false;
+			this.mCages.get(c.getCageId()).mSelected = false;
 		}
 		this.mSelectedCell = cell;
 		cell.mSelected = true;
-		this.mCages.get(this.mSelectedCell.mCageId).mSelected = true;
+		this.mCages.get(this.mSelectedCell.getCageId()).mSelected = true;
 		invalidate();
 		return true;
 	}
@@ -589,7 +592,7 @@ public class GridView extends View implements OnTouchListener {
 	public int getNumValueInRow(GridCell ocell) {
 		int count = 0;
 		for (GridCell cell : this.mCells) {
-			if (cell.mRow == ocell.mRow
+			if (cell.getRow() == ocell.getRow()
 					&& cell.getUserValue() == ocell.getUserValue())
 				count++;
 		}
@@ -600,7 +603,7 @@ public class GridView extends View implements OnTouchListener {
 	public int getNumValueInCol(GridCell ocell) {
 		int count = 0;
 		for (GridCell cell : this.mCells) {
-			if (cell.mColumn == ocell.mColumn
+			if (cell.getColumn() == ocell.getColumn()
 					&& cell.getUserValue() == ocell.getUserValue())
 				count++;
 		}
@@ -609,8 +612,11 @@ public class GridView extends View implements OnTouchListener {
 
 	// Solve the puzzle by setting the Uservalue to the actual value
 	public void Solve() {
+		if (this.moves != null) {
+			this.moves.clear();
+		}
 		for (GridCell cell : this.mCells)
-			cell.setUserValue(cell.mValue);
+			cell.setUserValue(cell.getCorrectValue());
 		invalidate();
 	}
 
@@ -626,7 +632,7 @@ public class GridView extends View implements OnTouchListener {
 	public boolean isSolutionValidSoFar() {
 		for (GridCell cell : this.mCells)
 			if (cell.isUserValueSet())
-				if (cell.getUserValue() != cell.mValue)
+				if (cell.getUserValue() != cell.getCorrectValue())
 					return false;
 
 		return true;
@@ -637,7 +643,7 @@ public class GridView extends View implements OnTouchListener {
 		boolean isValid = true;
 		for (GridCell cell : this.mCells)
 			if (cell.isUserValueSet())
-				if (cell.getUserValue() != cell.mValue) {
+				if (cell.getUserValue() != cell.getCorrectValue()) {
 					cell.setInvalidHighlight(true);
 					isValid = false;
 				}
@@ -672,5 +678,61 @@ public class GridView extends View implements OnTouchListener {
 
 	public abstract class OnGridTouchListener {
 		public abstract void gridTouched(GridCell cell);
+	}
+
+	public void AddMove(Move move) {
+		if (rememberMoves) {
+			if (moves == null) {
+				moves = new ArrayList<Move>();
+			}
+
+			boolean identicalToLastMove = false;
+			int indexLastMove = moves.size() - 1;
+			if (indexLastMove >= 0) {
+				Move lastMove = moves.get(indexLastMove);
+				identicalToLastMove = lastMove.equals(move);
+			}
+			if (!identicalToLastMove) {
+				moves.add(move);
+			}
+		}
+	}
+
+	public void UndoLastMove() {
+		if (rememberMoves) {
+			if (moves != null) {
+				int undoPosition = moves.size() - 1;
+
+				if (undoPosition >= 0) {
+					moves.get(undoPosition).Undo();
+					moves.remove(undoPosition);
+					invalidate();
+				}
+			}
+		}
+	}
+
+	public void SetRememberMoves(boolean rememberMoves) {
+		this.rememberMoves = rememberMoves;
+		if (!rememberMoves && moves != null) {
+			moves.clear();
+		}
+	}
+
+	public void SetSelectedCell(GridCell cell) {
+		mSelectedCell = cell;
+
+		for (GridCell c : this.mCells) { // IMPROVE: use old value of
+											// mSelectedCell to deselect cell
+											// and cage ...
+			c.mSelected = false;
+			this.mCages.get(c.getCageId()).mSelected = false;
+		}
+
+		if (this.mTouchedListener != null) {
+			this.mSelectedCell.mSelected = true;
+			this.mCages.get(this.mSelectedCell.getCageId()).mSelected = true;
+			this.mTouchedListener.gridTouched(this.mSelectedCell);
+		}
 	}
 }

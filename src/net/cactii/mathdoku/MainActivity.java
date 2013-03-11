@@ -58,6 +58,7 @@ public class MainActivity extends Activity {
 	Button clearDigit;
 	CheckBox maybeButton;
 	TextView mMaybeText;
+	Button undoButton;
 	View[] sound_effect_views;
 	boolean mSmallScreen;
 	private Animation outAnimation;
@@ -110,11 +111,12 @@ public class MainActivity extends Activity {
 		digits[8] = (Button) findViewById(R.id.digitSelect9);
 		this.clearDigit = (Button) findViewById(R.id.clearButton);
 		this.maybeButton = (CheckBox) findViewById(R.id.maybeButton);
+		this.undoButton = (Button) findViewById(R.id.undoButton);
 
 		this.sound_effect_views = new View[] { this.kenKenGrid, this.digits[0],
 				this.digits[1], this.digits[2], this.digits[3], this.digits[4],
 				this.digits[5], this.digits[6], this.digits[7], this.digits[8],
-				this.clearDigit, this.maybeButton };
+				this.clearDigit, this.maybeButton, this.undoButton };
 
 		solvedAnimation = AnimationUtils.loadAnimation(MainActivity.this,
 				R.anim.solvedanim);
@@ -157,12 +159,13 @@ public class MainActivity extends Activity {
 								kenKenGrid.mSelectorShown = false;
 							} else {
 								// In case the cell holds multiple possible
-								// values, the maybe checkbox has to be checked as
+								// values, the maybe checkbox has to checked as
 								// it is more likely that one of possible values
 								// has to be removed.
-								if (cell.mPossibles.size() > 1) {
+								if (cell.countPossibles() > 1) {
 									maybeButton.setChecked(true);
 								}
+
 								controls.requestFocus();
 							}
 							kenKenGrid.requestFocus();
@@ -217,6 +220,11 @@ public class MainActivity extends Activity {
 				MainActivity.this.digitSelected(0);
 			}
 		});
+		this.undoButton.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				MainActivity.this.kenKenGrid.UndoLastMove();
+			}
+		});
 
 		this.maybeButton.setOnTouchListener(new OnTouchListener() {
 
@@ -224,7 +232,7 @@ public class MainActivity extends Activity {
 			public boolean onTouch(View v, MotionEvent event) {
 				if (event.getAction() == MotionEvent.ACTION_UP)
 					v.playSoundEffect(SoundEffectConstants.CLICK);
-				
+
 				if (kenKenGrid.mSelectedCell != null) {
 					// Apply new setting of maybe button on current selected
 					// cell.
@@ -237,6 +245,7 @@ public class MainActivity extends Activity {
 					// button is just checked.
 					if (maybeIsChecked
 							&& kenKenGrid.mSelectedCell.isUserValueSet()) {
+						kenKenGrid.mSelectedCell.SaveUndoInformation();
 						int curValue = kenKenGrid.mSelectedCell.getUserValue();
 						kenKenGrid.mSelectedCell.clearUserValue();
 						kenKenGrid.mSelectedCell.togglePossible(curValue);
@@ -247,13 +256,14 @@ public class MainActivity extends Activity {
 					// will be set as user value as the maybe button is just
 					// unchecked.
 					if (!maybeIsChecked
-							&& kenKenGrid.mSelectedCell.mPossibles.size() == 1) {
+							&& kenKenGrid.mSelectedCell.countPossibles() == 1) {
+						kenKenGrid.mSelectedCell.SaveUndoInformation();
 						kenKenGrid.mSelectedCell
 								.setUserValue(kenKenGrid.mSelectedCell
 										.getFirstPossible());
 						kenKenGrid.invalidate();
 					}
-				}				
+				}
 				return false;
 			}
 
@@ -407,10 +417,10 @@ public class MainActivity extends Activity {
 		menu.setHeaderTitle(R.string.application_name);
 
 		for (GridCell cell : this.kenKenGrid.mCages
-				.get(this.kenKenGrid.mSelectedCell.mCageId).mCells) {
-			if (cell.isUserValueSet() || cell.mPossibles.size() > 0)
+				.get(this.kenKenGrid.mSelectedCell.getCageId()).mCells) {
+			if (cell.isUserValueSet() || cell.countPossibles() > 0)
 				menu.setGroupEnabled(1, true);
-			if (cell.mPossibles.size() == 1)
+			if (cell.countPossibles() == 1)
 				menu.setGroupEnabled(2, true);
 		}
 	}
@@ -421,8 +431,9 @@ public class MainActivity extends Activity {
 		case 103: // Clear cage
 			if (selectedCell == null)
 				break;
-			for (GridCell cell : this.kenKenGrid.mCages
-					.get(selectedCell.mCageId).mCells) {
+			for (GridCell cell : this.kenKenGrid.mCages.get(selectedCell
+					.getCageId()).mCells) {
+				cell.SaveUndoInformation();
 				cell.clearUserValue();
 			}
 			this.kenKenGrid.invalidate();
@@ -430,10 +441,11 @@ public class MainActivity extends Activity {
 		case 101: // Use maybes
 			if (selectedCell == null)
 				break;
-			for (GridCell cell : this.kenKenGrid.mCages
-					.get(selectedCell.mCageId).mCells) {
-				if (cell.mPossibles.size() == 1) {
-					cell.setUserValue(cell.mPossibles.get(0));
+			for (GridCell cell : this.kenKenGrid.mCages.get(selectedCell
+					.getCageId()).mCells) {
+				if (cell.countPossibles() == 1) {
+					cell.SaveUndoInformation();
+					cell.setUserValue(cell.getFirstPossible());
 				}
 			}
 			this.kenKenGrid.invalidate();
@@ -441,7 +453,8 @@ public class MainActivity extends Activity {
 		case 102: // Reveal cell
 			if (selectedCell == null)
 				break;
-			selectedCell.setUserValue(selectedCell.mValue);
+			selectedCell.SaveUndoInformation();
+			selectedCell.setUserValue(selectedCell.getCorrectValue());
 			selectedCell.mCheated = true;
 			Toast.makeText(this, R.string.main_ui_cheat_messsage,
 					Toast.LENGTH_SHORT).show();
@@ -571,9 +584,11 @@ public class MainActivity extends Activity {
 					Toast.LENGTH_SHORT).show();
 			return;
 		}
+		this.kenKenGrid.mSelectedCell.SaveUndoInformation();
 		if (value == 0) { // Clear Button
-			this.kenKenGrid.mSelectedCell.mPossibles.clear();
+			this.kenKenGrid.mSelectedCell.clearPossibles();
 			this.kenKenGrid.mSelectedCell.setUserValue(0);
+
 		} else {
 			if (this.maybeButton.isChecked()) {
 				if (kenKenGrid.mSelectedCell.isUserValueSet())
@@ -581,7 +596,7 @@ public class MainActivity extends Activity {
 				this.kenKenGrid.mSelectedCell.togglePossible(value);
 			} else {
 				this.kenKenGrid.mSelectedCell.setUserValue(value);
-				this.kenKenGrid.mSelectedCell.mPossibles.clear();
+				this.kenKenGrid.mSelectedCell.clearPossibles();
 			}
 		}
 		if (this.preferences.getBoolean("hideselector", false))

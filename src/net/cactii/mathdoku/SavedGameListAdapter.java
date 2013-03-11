@@ -85,11 +85,11 @@ public class SavedGameListAdapter extends BaseAdapter {
 		ListActivity activity = (ListActivity) this.mContext;
 		if ("newspaper".equals(theme)) {
 			convertView.findViewById(R.id.wordRow).setBackgroundResource(
-					R.drawable.newspaper1);
+					R.drawable.newspaper);
 			activity.getListView().setBackgroundResource(R.drawable.newspaper);
 		} else if ("inverted".equals(theme)) {
 			convertView.findViewById(R.id.wordRow).setBackgroundResource(
-					R.drawable.newspaper_dark1);
+					R.drawable.newspaper_dark);
 			activity.getListView().setBackgroundResource(
 					R.drawable.newspaper_dark);
 		} else {
@@ -126,7 +126,7 @@ public class SavedGameListAdapter extends BaseAdapter {
 		if ("newspaper".equals(theme)) {
 			grid.setTheme(GridView.THEME_NEWSPAPER);
 			convertView.findViewById(R.id.wordRow).setBackgroundResource(
-					R.drawable.newspaper1);
+					R.drawable.newspaper);
 		} else if ("carved".equals(theme)) {
 			grid.setTheme(GridView.THEME_CARVED);
 			convertView.findViewById(R.id.wordRow).setBackgroundResource(

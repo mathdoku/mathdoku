@@ -32,9 +32,9 @@ public class LatinSquareDLX extends DLX {
 
 		// Now apply the "moves" we already know
 		for (GridCell cell : cells)
-			if (cell.mValue != 0)
-				if (!GivenRow((cell.mValue - 1) * BOARD2 + cell.mRow * BOARD
-						+ cell.mColumn + 1)) {
+			if (cell.getCorrectValue() != 0)
+				if (!GivenRow((cell.getCorrectValue() - 1) * BOARD2
+						+ cell.getRow() * BOARD + cell.getColumn() + 1)) {
 					isValid = false;
 					return;
 				}

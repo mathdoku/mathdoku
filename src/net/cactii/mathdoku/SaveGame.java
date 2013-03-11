@@ -37,25 +37,16 @@ public class SaveGame {
 				writer.write(view.mGridSize + "\n");
 				writer.write(view.mActive + "\n");
 				for (GridCell cell : view.mCells) {
-					writer.write("CELL:");
-					writer.write(cell.mCellNumber + ":");
-					writer.write(cell.mRow + ":");
-					writer.write(cell.mColumn + ":");
-					writer.write(cell.mCageText + ":");
-					writer.write(cell.mValue + ":");
-					writer.write(cell.getUserValue() + ":");
-					for (int possible : cell.mPossibles)
-						writer.write(possible + ",");
-					writer.write("\n");
+					cell.writeToFile(writer);
 				}
 				if (view.mSelectedCell != null)
-					writer.write("SELECTED:" + view.mSelectedCell.mCellNumber
-							+ "\n");
+					writer.write("SELECTED:"
+							+ view.mSelectedCell.getCellNumber() + "\n");
 				ArrayList<GridCell> invalidchoices = view.invalidsHighlighted();
 				if (invalidchoices.size() > 0) {
 					writer.write("INVALID:");
 					for (GridCell cell : invalidchoices)
-						writer.write(cell.mCellNumber + ",");
+						writer.write(cell.getCellNumber() + ",");
 					writer.write("\n");
 				}
 				for (GridCage cage : view.mCages) {
@@ -65,7 +56,7 @@ public class SaveGame {
 					writer.write(cage.mResult + ":");
 					writer.write(cage.mType + ":");
 					for (GridCell cell : cage.mCells)
-						writer.write(cell.mCellNumber + ",");
+						writer.write(cell.getCellNumber() + ",");
 					writer.write(":" + cage.isOperatorHidden());
 					writer.write("\n");
 				}
@@ -118,7 +109,6 @@ public class SaveGame {
 		String line = null;
 		BufferedReader br = null;
 		InputStream ins = null;
-		String[] cellParts;
 		String[] cageParts;
 		try {
 			ins = new FileInputStream(new File(this.filename));
@@ -134,17 +124,9 @@ public class SaveGame {
 			while ((line = br.readLine()) != null) {
 				if (!line.startsWith("CELL:"))
 					break;
-				cellParts = line.split(":");
-				int cellNum = Integer.parseInt(cellParts[1]);
-				GridCell cell = new GridCell(view, cellNum);
-				cell.mRow = Integer.parseInt(cellParts[2]);
-				cell.mColumn = Integer.parseInt(cellParts[3]);
-				cell.mCageText = cellParts[4];
-				cell.mValue = Integer.parseInt(cellParts[5]);
-				cell.setUserValue(Integer.parseInt(cellParts[6]));
-				if (cellParts.length == 8)
-					for (String possible : cellParts[7].split(","))
-						cell.mPossibles.add(Integer.parseInt(possible));
+				GridCell cell = new GridCell(view, 0);
+				cell.restoreFromFile(line);
+
 				view.mCells.add(cell);
 			}
 			view.mSelectedCell = null;
@@ -179,7 +161,7 @@ public class SaveGame {
 				for (String cellId : cageParts[5].split(",")) {
 					int cellNum = Integer.parseInt(cellId);
 					GridCell c = view.mCells.get(cellNum);
-					c.mCageId = cage.mId;
+					c.setCageId(cage.mId);
 					cage.mCells.add(c);
 				}
 				view.mCages.add(cage);

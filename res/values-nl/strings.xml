@@ -52,6 +52,7 @@ redistribute and/or modify this translation yourself under the terms of the GNU 
 	<string name="option_enable_timer_title">Toon timer</string>
 	<string name="main_ui_maybe">Mogelijk</string>
 	<string name="main_ui_clear">Leeg</string>
+    <string name="main_ui_undo">Zet terug</string>
 	<string name="main_ui_solved_messsage">Opgelost!</string>
 	<string name="main_ui_cheat_messsage">Valsspeler! :P</string>
 	<string name="main_ui_building_puzzle_message">Een moment...</string>

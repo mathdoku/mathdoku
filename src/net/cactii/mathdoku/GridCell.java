@@ -1,5 +1,7 @@
 package net.cactii.mathdoku;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -14,27 +16,29 @@ import android.preference.PreferenceManager;
 
 public class GridCell {
 	// Index of the cell (left to right, top to bottom, zero-indexed)
-	public int mCellNumber;
+	private int mCellNumber;
 	// X grid position, zero indexed
-	public int mColumn;
+	private int mColumn;
 	// Y grid position, zero indexed
-	public int mRow;
+	private int mRow;
+	// Value of the digit in the cell
+	private int mCorrectValue;
+	// User's entered value
+	private int mUserValue;
+	// Id of the enclosing cage
+	private int mCageId;
+	// String of the cage
+	private String mCageText;
+	// User's candidate digits
+	private ArrayList<Integer> mPossibles;
+
 	// X pixel position
 	public float mPosX;
 	// Y pixel position
 	public float mPosY;
-	// Value of the digit in the cell
-	public int mValue;
-	// User's entered value
-	private int mUserValue;
-	// Id of the enclosing cage
-	public int mCageId;
-	// String of the cage
-	public String mCageText;
+
 	// View context
 	public GridView mContext;
-	// User's candidate digits
-	public ArrayList<Integer> mPossibles;
 	// Whether to show warning background (duplicate value in row/col)
 	public boolean mShowWarning;
 	// Whether to show cell as selected
@@ -72,7 +76,7 @@ public class GridCell {
 		this.mRow = (int) (cell / gridSize);
 		this.mCageText = "";
 		this.mCageId = -1;
-		this.mValue = 0;
+		this.mCorrectValue = 0;
 		this.mUserValue = 0;
 		this.mShowWarning = false;
 		this.mCheated = false;
@@ -106,12 +110,6 @@ public class GridCell {
 		this.mPossiblesPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
 		this.mPossibles = new ArrayList<Integer>();
-		// this.mPossibles.add(1);
-		// this.mPossibles.add(2);
-		// this.mPossibles.add(3);
-		// this.mPossibles.add(4);
-
-		// this.mPossibles.add(5);
 
 		this.setBorders(BORDER_NONE, BORDER_NONE, BORDER_NONE, BORDER_NONE);
 	}
@@ -190,7 +188,7 @@ public class GridCell {
 	public String toString() {
 		String str = "<cell:" + this.mCellNumber + " col:" + this.mColumn
 				+ " row:" + this.mRow + " posX:" + this.mPosX + " posY:"
-				+ this.mPosY + " val:" + this.mValue + ", userval: "
+				+ this.mPosY + " val:" + this.mCorrectValue + ", userval: "
 				+ this.mUserValue + ">";
 		return str;
 	}
@@ -224,6 +222,18 @@ public class GridCell {
 		return null;
 	}
 
+	public int countPossibles() {
+		return this.mPossibles.size();
+	}
+
+	public void clearPossibles() {
+		this.mPossibles.clear();
+	}
+
+	public int getFirstPossible() {
+		return this.mPossibles.get(0);
+	}
+
 	public void togglePossible(int digit) {
 		if (this.mPossibles.indexOf(new Integer(digit)) == -1)
 			this.mPossibles.add(digit);
@@ -251,7 +261,7 @@ public class GridCell {
 	}
 
 	public boolean isUserValueCorrect() {
-		return mUserValue == mValue;
+		return mUserValue == mCorrectValue;
 	}
 
 	/* Returns whether the cell is a member of any cage */
@@ -415,7 +425,94 @@ public class GridCell {
 		}
 	}
 
-	public int getFirstPossible() {
-		return this.mPossibles.get(0);
+	public void writeToFile(BufferedWriter writer) throws IOException {
+		writer.write("CELL:");
+		writer.write(mCellNumber + ":");
+		writer.write(mRow + ":");
+		writer.write(mColumn + ":");
+		writer.write(mCageText + ":");
+		writer.write(mCorrectValue + ":");
+		writer.write(getUserValue() + ":");
+		for (int possible : mPossibles)
+			writer.write(possible + ",");
+		writer.write("\n");
+	}
+
+	public void restoreFromFile(String line) {
+		String[] cellParts = line.split(":");
+		mCellNumber = Integer.parseInt(cellParts[1]);
+		mRow = Integer.parseInt(cellParts[2]);
+		mColumn = Integer.parseInt(cellParts[3]);
+		mCageText = cellParts[4];
+		mCorrectValue = Integer.parseInt(cellParts[5]);
+		mUserValue = Integer.parseInt(cellParts[6]);
+		if (cellParts.length == 8) {
+			for (String possible : cellParts[7].split(",")) {
+				togglePossible(Integer.parseInt(possible));
+			}
+		}
+	}
+
+	public int getCellNumber() {
+		return mCellNumber;
+	}
+
+	public int getColumn() {
+		return mColumn;
+	}
+
+	public int getRow() {
+		return mRow;
+	}
+
+	public int getCorrectValue() {
+		return mCorrectValue;
+	}
+
+	public void setCorrectValue(int newValue) {
+		mCorrectValue = newValue;
+	}
+
+	public int getCageId() {
+		return mCageId;
+	}
+
+	public void setCageId(int newCageId) {
+		mCageId = newCageId;
+	}
+
+	public void clearCage() {
+		mCageId = -1;
+		mCageText = "";
+	}
+
+	public String getCageText() {
+		return mCageText;
+	}
+
+	public void setCageText(String newCageText) {
+		mCageText = newCageText;
+	}
+
+	public void SaveUndoInformation() {
+		// Store old values of this cell
+		Move move = new Move(this, this.mUserValue, this.mPossibles);
+		this.mContext.AddMove(move);
+	}
+
+	public void Undo(int previousUserValue,
+			ArrayList<Integer> previousPossibleValues) {
+		mUserValue = previousUserValue;
+		mPossibles.clear();
+		if (previousPossibleValues != null) {
+			for (int previousPossibleValue : previousPossibleValues) {
+				mPossibles.add(previousPossibleValue);
+			}
+			Collections.sort(mPossibles);
+		}
+	}
+
+	public void Select() {
+		mContext.SetSelectedCell(this);
 	}
 }

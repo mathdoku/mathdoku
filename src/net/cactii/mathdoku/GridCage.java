@@ -131,7 +131,7 @@ public class GridCage {
 		retStr += ", Result: " + this.mResult;
 		retStr += ", cells: ";
 		for (GridCell cell : this.mCells)
-			retStr += cell.mCellNumber + ", ";
+			retStr += cell.getCellNumber() + ", ";
 		return retStr;
 	}
 
@@ -155,8 +155,8 @@ public class GridCage {
 		this.mAction = -1;
 		if (this.mType == CAGE_1) {
 			this.mAction = ACTION_NONE;
-			this.mResult = this.mCells.get(0).mValue;
-			this.mCells.get(0).mCageText = "" + this.mResult;
+			this.mResult = this.mCells.get(0).getCorrectValue();
+			this.mCells.get(0).setCageText("" + this.mResult);
 			return;
 		}
 		double rand = this.mContext.mRandom.nextDouble();
@@ -174,24 +174,24 @@ public class GridCage {
 		if (this.mAction == ACTION_ADD) {
 			int total = 0;
 			for (GridCell cell : this.mCells) {
-				total += cell.mValue;
+				total += cell.getCorrectValue();
 			}
 			this.mResult = total;
 			if (mOperatorHidden)
-				this.mCells.get(0).mCageText = this.mResult + "";
+				this.mCells.get(0).setCageText(this.mResult + "");
 			else
-				this.mCells.get(0).mCageText = this.mResult + "+";
+				this.mCells.get(0).setCageText(this.mResult + "+");
 		}
 		if (this.mAction == ACTION_MULTIPLY) {
 			int total = 1;
 			for (GridCell cell : this.mCells) {
-				total *= cell.mValue;
+				total *= cell.getCorrectValue();
 			}
 			this.mResult = total;
 			if (mOperatorHidden)
-				this.mCells.get(0).mCageText = this.mResult + "";
+				this.mCells.get(0).setCageText(this.mResult + "");
 			else
-				this.mCells.get(0).mCageText = this.mResult + "x";
+				this.mCells.get(0).setCageText(this.mResult + "x");
 		}
 		if (this.mAction > -1) {
 			return;
@@ -200,8 +200,8 @@ public class GridCage {
 		if (this.mCells.size() < 2) {
 			Log.d("KenKen", "Why only length 1? Type: " + this);
 		}
-		int cell1Value = this.mCells.get(0).mValue;
-		int cell2Value = this.mCells.get(1).mValue;
+		int cell1Value = this.mCells.get(0).getCorrectValue();
+		int cell2Value = this.mCells.get(1).getCorrectValue();
 		int higher = cell1Value;
 		int lower = cell2Value;
 		boolean canDivide = false;
@@ -216,16 +216,16 @@ public class GridCage {
 			this.mAction = ACTION_DIVIDE;
 			// this.mCells.get(0).mCageText = this.mResult + "\367";
 			if (mOperatorHidden)
-				this.mCells.get(0).mCageText = this.mResult + "";
+				this.mCells.get(0).setCageText(this.mResult + "");
 			else
-				this.mCells.get(0).mCageText = this.mResult + "/";
+				this.mCells.get(0).setCageText(this.mResult + "/");
 		} else {
 			this.mResult = higher - lower;
 			this.mAction = ACTION_SUBTRACT;
 			if (mOperatorHidden)
-				this.mCells.get(0).mCageText = this.mResult + "";
+				this.mCells.get(0).setCageText(this.mResult + "");
 			else
-				this.mCells.get(0).mCageText = this.mResult + "-";
+				this.mCells.get(0).setCageText(this.mResult + "-");
 		}
 	}
 
@@ -235,7 +235,7 @@ public class GridCage {
 	public void setCageId(int id) {
 		this.mId = id;
 		for (GridCell cell : this.mCells)
-			cell.mCageId = this.mId;
+			cell.setCageId(this.mId);
 	}
 
 	public boolean isAddMathsCorrect() {
@@ -331,7 +331,7 @@ public class GridCage {
 			for (int x = 0; x < 4; x++) {
 				cell.mBorderTypes[x] = 0;
 			}
-			if (this.mContext.CageIdAt(cell.mRow - 1, cell.mColumn) != this.mId)
+			if (this.mContext.CageIdAt(cell.getRow() - 1, cell.getColumn()) != this.mId)
 				if (!this.mUserMathCorrect && this.mContext.mBadMaths)
 					cell.mBorderTypes[0] = GridCell.BORDER_WARN;
 				else if (this.mSelected)
@@ -339,7 +339,7 @@ public class GridCage {
 				else
 					cell.mBorderTypes[0] = GridCell.BORDER_SOLID;
 
-			if (this.mContext.CageIdAt(cell.mRow, cell.mColumn + 1) != this.mId)
+			if (this.mContext.CageIdAt(cell.getRow(), cell.getColumn() + 1) != this.mId)
 				if (!this.mUserMathCorrect && this.mContext.mBadMaths)
 					cell.mBorderTypes[1] = GridCell.BORDER_WARN;
 				else if (this.mSelected)
@@ -347,7 +347,7 @@ public class GridCage {
 				else
 					cell.mBorderTypes[1] = GridCell.BORDER_SOLID;
 
-			if (this.mContext.CageIdAt(cell.mRow + 1, cell.mColumn) != this.mId)
+			if (this.mContext.CageIdAt(cell.getRow() + 1, cell.getColumn()) != this.mId)
 				if (!this.mUserMathCorrect && this.mContext.mBadMaths)
 					cell.mBorderTypes[2] = GridCell.BORDER_WARN;
 				else if (this.mSelected)
@@ -355,7 +355,7 @@ public class GridCage {
 				else
 					cell.mBorderTypes[2] = GridCell.BORDER_SOLID;
 
-			if (this.mContext.CageIdAt(cell.mRow, cell.mColumn - 1) != this.mId)
+			if (this.mContext.CageIdAt(cell.getRow(), cell.getColumn() - 1) != this.mId)
 				if (!this.mUserMathCorrect && this.mContext.mBadMaths)
 					cell.mBorderTypes[3] = GridCell.BORDER_WARN;
 				else if (this.mSelected)
@@ -563,14 +563,14 @@ public class GridCage {
 		int constraint_num;
 		for (int i = 0; i < this.mCells.size(); i++) {
 			constraint_num = mContext.mGridSize * (test_nums[i] - 1)
-					+ mCells.get(i).mColumn;
+					+ mCells.get(i).getColumn();
 			if (constraints[constraint_num])
 				return false;
 			else
 				constraints[constraint_num] = true;
 			constraint_num = mContext.mGridSize * mContext.mGridSize
 					+ mContext.mGridSize * (test_nums[i] - 1)
-					+ mCells.get(i).mRow;
+					+ mCells.get(i).getRow();
 			if (constraints[constraint_num])
 				return false;
 			else
