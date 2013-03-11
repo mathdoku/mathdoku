@@ -1,48 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		android:id="@+id/wordRow"
-		android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:background="@drawable/background1"
-        android:layout_height="fill_parent">
-  <net.cactii.mathdoku.GridView  
-		android:id="@+id/savedGridView"
-	   android:layout_width="100dp" 
-	   android:layout_height="100dp"
-	   android:layout_alignParentLeft="true"
-	   android:layout_margin="15dp"
-	   />
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/gameFileListRow"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/background1"
+    android:padding="15dp" >
 
-   <Button
-  	android:id="@+id/gameLoad"
-  	android:layout_width="wrap_content"
-  	android:layout_height="wrap_content"
-  	android:text="@string/save_game_screen_load_game"
-  	android:layout_alignParentRight="true"
-  	android:layout_alignParentTop="true"
-  	android:layout_marginRight="10dp"
-  	android:layout_marginTop="10dp"
-  	/>
-  <Button
-  	android:id="@+id/gameDelete"
-  	android:layout_width="wrap_content"
-  	android:layout_height="wrap_content"
-  	android:text="@string/save_game_screen_delete_game"
-  	android:layout_alignParentRight="true"
-  	android:layout_alignParentBottom="true"
-  	android:layout_below="@+id/gameLoad"
-  	android:layout_marginRight="10dp"
-  	/>
-  <TextView
-    android:id="@+id/savedGridText"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:textSize="15dp"
-    android:textColor="#FFFFFFFF"
-    android:background="#80000000"    
-	android:layout_alignParentRight="true"
-	android:layout_below="@+id/gameDelete"
-	android:layout_marginRight="15dp"
-	android:text="Saved game"
-    />
+    <RelativeLayout
+        android:id="@+id/previewLayout"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="#FFFFFFFF" >
+
+        <ImageView
+            android:id="@+id/previewGameFile"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/previewGameFileNotAvailable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            android:layout_margin="15dp"
+            android:text="@string/game_file_preview_not_available"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/detailsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/previewLayout"
+        android:layout_marginLeft="15dp"
+        android:layout_toRightOf="@+id/previewLayout" >
+
+        <TextView
+            android:id="@+id/filename"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="5dp"
+            android:background="#80000000"
+            android:text="Filename"
+            android:textColor="#FFFFFFFF"
+            android:textSize="12sp"
+            android:visibility="gone"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/savedOnText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/filename"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_below="@+id/filename"
+            android:background="#80000000"
+            android:text="MMM, 99 9999 HH:MM AM"
+            android:textColor="#FFFFFFFF"
+            android:textSize="12sp"
+            tools:ignore="HardcodedText" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/buttonLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/previewLayout"
+        android:layout_marginLeft="15dp"
+        android:layout_toRightOf="@+id/previewLayout" >
+
+        <Button
+            android:id="@+id/gameLoad"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:lines="1"
+            android:text="@string/save_game_screen_load_game" />
+
+        <Button
+            android:id="@+id/gameDelete"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@+id/gameLoad"
+            android:lines="1"
+            android:text="@string/save_game_screen_delete_game" />
+    </RelativeLayout>
+
 </RelativeLayout>

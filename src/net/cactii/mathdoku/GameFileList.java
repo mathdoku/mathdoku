@@ -54,7 +54,7 @@ public class GameFileList extends ListActivity {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
 								// Deletion has been confirmed.
-								new File(filename).delete();
+								new GameFile(filename).delete();
 								GameFileList.this.mAdapter.refreshFiles();
 								GameFileList.this.mAdapter
 										.notifyDataSetChanged();
@@ -110,14 +110,6 @@ public class GameFileList extends ListActivity {
 	static boolean canBeUsed() {
 		// Check if a file exists that can be saved or loaded using the game
 		// file list.
-		File dir = new File(GameFile.PATH);
-		String[] allFiles = dir.list();
-		for (String entryName : allFiles) {
-			if (entryName.startsWith(GameFile.DEFAULT_FILENAME)
-					|| entryName.startsWith(GameFile.PREFIX_FILENAME)) {
-				return true;
-			}
-		}
-		return false;
+		return (GameFile.getAllGameFiles(1).size() > 0);
 	}
 }

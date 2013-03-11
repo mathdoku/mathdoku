@@ -1,5 +1,8 @@
 package net.cactii.mathdoku;
 
+import java.io.File;
+import java.util.Random;
+
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -12,6 +15,7 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.graphics.Typeface;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -43,11 +47,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
+	public final static String TAG = "MathDoku.MainActivity";
+
+	// Identifiers for preferences
+	public final static String PREF_CREATE_PREVIEW_IMAGES_COMPLETED = "CreatePreviewImagesCompleted";
+	public final static Boolean PREF_CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT = false;
+	// TODO: add all other prefs here
+
+	// Identifiers for dialogs
+	private final static int DIALOG_CREATE_NEW_GAME = 0;
+
 	public GridView kenKenGrid;
 
 	TextView solvedText;
 	TextView pressMenu;
-	ProgressDialog mProgressDialog;
 	GameTimer mTimerTask;
 
 	RelativeLayout topLayout;
@@ -67,6 +80,11 @@ public class MainActivity extends Activity {
 	private Animation solvedAnimation;
 
 	public SharedPreferences preferences;
+
+	// Variables for process of creating preview images of game file for which
+	// no preview image does exist.
+	private GameFile mGameFileImagePreviewCreation;
+	private ProgressDialog mProgressDialogImagePreviewCreation;
 
 	final Handler mHandler = new Handler();
 
@@ -296,28 +314,20 @@ public class MainActivity extends Activity {
 		});
 
 		newVersionCheck();
+
 		this.kenKenGrid.setFocusable(true);
 		this.kenKenGrid.setFocusableInTouchMode(true);
 
 		registerForContextMenu(this.kenKenGrid);
-		GameFile saver = new GameFile();
-		if (saver.load(this.kenKenGrid)) {
-			this.puzzleGrid.setVisibility(View.VISIBLE);
-			this.setButtonVisibility(this.kenKenGrid.mGridSize);
-			this.kenKenGrid.mActive = true;
-			this.mTimerTask = new GameTimer();
-			this.mTimerTask.mElapsedTime = this.kenKenGrid.mElapsed;
-			this.mTimerTask.mTimerLabel = mTimerText;
-			if (this.preferences.getBoolean("timer", true)) {
-				mTimerText.setVisibility(View.VISIBLE);
-			}
-			this.mTimerTask.execute();
-			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
-				MainActivity.this.mGameSeedLabel.setVisibility(View.VISIBLE);
-				MainActivity.this.mGameSeedText.setVisibility(View.VISIBLE);
-				MainActivity.this.mGameSeedText.setText(String.format("%,d",
-						MainActivity.this.kenKenGrid.getGameSeed()));
-			}
+
+		if (!this.preferences.getBoolean(PREF_CREATE_PREVIEW_IMAGES_COMPLETED,
+				PREF_CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT)) {
+			// Process of creating preview images is not yet completed. Last
+			// game can not yet be restarted.
+			return;
+		} else {
+			restartLastGame();
+			return;
 		}
 	}
 
@@ -331,6 +341,18 @@ public class MainActivity extends Activity {
 		if (mTimerTask != null && !mTimerTask.isCancelled()) {
 			mTimerTask.cancel(true);
 		}
+
+		if (mProgressDialogImagePreviewCreation != null
+				&& mProgressDialogImagePreviewCreation.isShowing()) {
+			try {
+				mProgressDialogImagePreviewCreation.dismiss();
+			} catch (IllegalArgumentException e) {
+				// Abort processing. On resume of activity this process
+				// is (or already has been) restarted.
+				return;
+			}
+		}
+
 		super.onPause();
 	}
 
@@ -360,9 +382,10 @@ public class MainActivity extends Activity {
 	}
 
 	public void onResume() {
-		if (this.preferences.getBoolean("wakelock", true))
+		if (this.preferences.getBoolean("wakelock", true)) {
 			getWindow()
 					.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		}
 
 		setTheme();
 		this.kenKenGrid.mDupedigits = this.preferences.getBoolean("dupedigits",
@@ -388,7 +411,18 @@ public class MainActivity extends Activity {
 		}
 		this.setSoundEffectsEnabled(this.preferences.getBoolean("soundeffects",
 				true));
+
 		super.onResume();
+
+		if (!this.preferences.getBoolean(PREF_CREATE_PREVIEW_IMAGES_COMPLETED,
+				PREF_CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT)) {
+			// It is a bit dirty to abuse the onResume method to start the
+			// preview image creation process. But for this process we need this
+			// activity to be started as the process will display each saved
+			// game in the interface in order to be able to make a preview
+			// image.
+			createPreviewImages();
+		}
 	}
 
 	public void setSoundEffectsEnabled(boolean enabled) {
@@ -656,7 +690,7 @@ public class MainActivity extends Activity {
 	// Create runnable for posting
 	final Runnable newGameReady = new Runnable() {
 		public void run() {
-			MainActivity.this.dismissDialog(0);
+			MainActivity.this.dismissDialog(DIALOG_CREATE_NEW_GAME);
 			MainActivity.this.puzzleGrid.setVisibility(View.VISIBLE);
 			MainActivity.this.setTheme();
 			MainActivity.this.setButtonVisibility(kenKenGrid.mGridSize);
@@ -674,9 +708,45 @@ public class MainActivity extends Activity {
 		}
 	};
 
+	private void restartLastGame() {
+		GameFile defaultGameFile = new GameFile();
+		if (defaultGameFile.load(this.kenKenGrid)) {
+			// Game file is loaded into grid.
+			this.kenKenGrid.invalidate();
+
+			// Set visibility of controls.
+			this.puzzleGrid.setVisibility(View.VISIBLE);
+			this.setButtonVisibility(this.kenKenGrid.mGridSize);
+
+			this.kenKenGrid.mActive = true;
+
+			// Start timer
+			this.mTimerTask = new GameTimer();
+			this.mTimerTask.mElapsedTime = this.kenKenGrid.mElapsed;
+			this.mTimerTask.mTimerLabel = mTimerText;
+			if (this.preferences.getBoolean("timer", true)) {
+				mTimerText.setVisibility(View.VISIBLE);
+			}
+			this.mTimerTask.execute();
+
+			// Debug information
+			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+				MainActivity.this.mGameSeedLabel.setVisibility(View.VISIBLE);
+				MainActivity.this.mGameSeedText.setVisibility(View.VISIBLE);
+				MainActivity.this.mGameSeedText.setText(String.format("%,d",
+						MainActivity.this.kenKenGrid.getGameSeed()));
+			}
+		} else {
+			// Can not load the last game.
+			this.puzzleGrid.setVisibility(View.GONE);
+			this.controls.setVisibility(View.GONE);
+			this.pressMenu.setVisibility(View.VISIBLE);
+		}
+	}
+
 	public void startNewGame(final int gridSize, final boolean hideOperators) {
 		kenKenGrid.mGridSize = gridSize;
-		showDialog(0);
+		showDialog(DIALOG_CREATE_NEW_GAME);
 
 		if (mTimerTask != null && !mTimerTask.isCancelled()) {
 			mTimerTask.cancel(true);
@@ -693,14 +763,18 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected Dialog onCreateDialog(int id) {
-		mProgressDialog = new ProgressDialog(this);
-		mProgressDialog.setTitle(R.string.main_ui_building_puzzle_title);
-		mProgressDialog.setMessage(getResources().getString(
-				R.string.main_ui_building_puzzle_message));
-		mProgressDialog.setIcon(android.R.drawable.ic_dialog_info);
-		mProgressDialog.setIndeterminate(false);
-		mProgressDialog.setCancelable(false);
-		return mProgressDialog;
+		ProgressDialog progressDialog = new ProgressDialog(this);
+		switch (id) {
+		case DIALOG_CREATE_NEW_GAME:
+			progressDialog.setTitle(R.string.main_ui_building_puzzle_title);
+			progressDialog.setMessage(getResources().getString(
+					R.string.main_ui_building_puzzle_message));
+			progressDialog.setIcon(android.R.drawable.ic_dialog_info);
+			progressDialog.setIndeterminate(false);
+			progressDialog.setCancelable(false);
+			break;
+		}
+		return progressDialog;
 	}
 
 	public void setButtonVisibility(int gridSize) {
@@ -807,16 +881,30 @@ public class MainActivity extends Activity {
 		int pref_version = preferences.getInt("currentversion", -1);
 		Editor prefeditor = preferences.edit();
 		int current_version = getVersionNumber();
+
+		if (!preferences.contains(PREF_CREATE_PREVIEW_IMAGES_COMPLETED)
+				|| QUICK_CREATE_PUZZLE_WITHOUT_PREVIEW) {
+			// When upgrading to this version we need to create image previews
+			// for saved game files. Insert a new preference which will be used
+			// to check if conversion of the previews has already been
+			// completed.
+			prefeditor.putBoolean(PREF_CREATE_PREVIEW_IMAGES_COMPLETED,
+					PREF_CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT);
+			prefeditor.commit();
+		}
+
 		if (pref_version == -1 || pref_version != current_version) {
-			// new File(SaveGame.saveFilename).delete();
 			prefeditor.putInt("currentversion", current_version);
 			prefeditor.commit();
-			if (pref_version == -1)
+			if (pref_version == -1) {
+				// On first install of the game, display the help dialog.
 				this.openHelpDialog();
-			else
+			} else {
+				// On upgrade of version show changes.
 				this.openChangesDialog();
-			return;
+			}
 		}
+		return;
 	}
 
 	public int getVersionNumber() {
@@ -841,5 +929,199 @@ public class MainActivity extends Activity {
 			Log.e("Mathdoku", "Package name not found", e);
 		}
 		return versionname;
+	}
+
+	/**
+	 * Create preview images for all stored games. Previews will be created one
+	 * at a time because each stored game has to be loaded and displayed before
+	 * a preview can be generated.
+	 */
+	public final static boolean QUICK_CREATE_PUZZLE_WITHOUT_PREVIEW = false;
+
+	public void createPreviewImages() {
+		if (QUICK_CREATE_PUZZLE_WITHOUT_PREVIEW) {
+			// Because this is only for testing purposes, no progress dialog is
+			// shown. Just be patient until the progress dialog for creating the
+			// preview images is shown.
+
+			// delete previews for all existing game files
+			int countGameFilesFound = 0;
+			int maxFileIndex = -1;
+			for (String filename : GameFile
+					.getAllGameFilesCreatedByUser(Integer.MAX_VALUE)) {
+				// This is a game file or its corresponding preview image.
+				countGameFilesFound++;
+
+				// Check if index number of the file is higher than current
+				// maximum
+				GameFile gameFile = new GameFile(filename);
+				int fileIndex = gameFile.getGameFileIndex();
+				if (fileIndex > maxFileIndex) {
+					maxFileIndex = fileIndex;
+				}
+				if (gameFile.hasPreviewImage()) {
+					gameFile.deletePreviewImage();
+				}
+			}
+
+			// Check the number of available game files. Create additional game
+			// files if to few exists for proper testing.
+			Random random = new Random();
+			while (countGameFilesFound < 50) {
+				kenKenGrid.mGridSize = 4 + random.nextInt(5);
+				kenKenGrid.reCreate(random.nextBoolean());
+				GameFile gameFile = new GameFile(++maxFileIndex);
+				gameFile.save(this.kenKenGrid);
+				Log.i(TAG, "Creating new dummy puzzle " + gameFile.getName());
+				countGameFilesFound++;
+			}
+		}
+
+		int countGameFilesWithoutPreview = countGameFilesWithoutPreview();
+		if (countGameFilesWithoutPreview == 0) {
+			// No games files without previews found.
+			Editor prefEditor = preferences.edit();
+			prefEditor.putBoolean(PREF_CREATE_PREVIEW_IMAGES_COMPLETED, true);
+			prefEditor.commit();
+
+			// Restart the last game.
+			restartLastGame();
+			return;
+		}
+
+		// At least one game file was found for which no preview exist. Show the
+		// progress dialog.
+		mProgressDialogImagePreviewCreation = new ProgressDialog(this);
+		mProgressDialogImagePreviewCreation
+				.setTitle(R.string.main_ui_creating_previews_title);
+		mProgressDialogImagePreviewCreation.setMessage(getResources().getString(
+				R.string.main_ui_creating_previews_message));
+		mProgressDialogImagePreviewCreation
+				.setIcon(android.R.drawable.ic_dialog_info);
+		mProgressDialogImagePreviewCreation
+				.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		mProgressDialogImagePreviewCreation.setMax(countGameFilesWithoutPreview);
+		mProgressDialogImagePreviewCreation.setIndeterminate(false);
+		mProgressDialogImagePreviewCreation.setCancelable(false);
+		mProgressDialogImagePreviewCreation.show();
+
+		// Display and hide elements so that the previews can be created.
+		puzzleGrid.setVisibility(View.VISIBLE);
+		pressMenu.setVisibility(View.GONE);
+
+		// Runnable for handling the next step of preview image
+		// creation process which can not be done until the grid view has been
+		// validated (refreshed).
+		final Runnable createNextPreviewImage = new Runnable() {
+			public void run() {
+				// If a game file was already loaded, it is now loaded and
+				// visible in the grid view.
+				if (mGameFileImagePreviewCreation != null) {
+					// Save preview for the current game file.
+					if (QUICK_CREATE_PUZZLE_WITHOUT_PREVIEW) {
+						// Pick a random layout as this layout will also be
+						// captured in the preview.
+						kenKenGrid.setTheme(new Random().nextInt(3));
+					}
+					mGameFileImagePreviewCreation.savePreviewImage(kenKenGrid);
+					mProgressDialogImagePreviewCreation.incrementProgressBy(1);
+				}
+
+				// Check if a preview for another game file needs to be
+				// created.
+				mGameFileImagePreviewCreation = getNextGameFileWithoutPreview();
+				if (mGameFileImagePreviewCreation != null) {
+					// Load the this next game file.
+					mGameFileImagePreviewCreation.load(kenKenGrid);
+					kenKenGrid.invalidate();
+
+					// Post a message for further processing of the
+					// conversion
+					// game after the view has been refreshed with the
+					// loaded
+					// game.
+					mHandler.post(this);
+				} else {
+					// All preview images have been created.
+
+					// Dismiss the dialog. In case the process was interrupted
+					// and restarted
+					// the dialog can not be dismissed without causing an error.
+					try {
+						mProgressDialogImagePreviewCreation.dismiss();
+					} catch (IllegalArgumentException e) {
+						// Abort processing. On resume of activity this process
+						// is (or already has been) restarted.
+						return;
+					}
+
+					Editor prefEditor = preferences.edit();
+					prefEditor.putBoolean(PREF_CREATE_PREVIEW_IMAGES_COMPLETED,
+							true);
+					prefEditor.commit();
+
+					// Restart the last game
+					restartLastGame();
+					
+					//if (QUICK_CREATE_PUZZLE_WITHOUT_PREVIEW) {
+					// Reset theme to default after the last game was
+					// restored.
+					setTheme();
+				//}
+
+				}
+			}
+		};
+
+		// Post a message to start the process of creating image previews.
+		mGameFileImagePreviewCreation = null;
+		(new Thread() {
+			public void run() {
+				MainActivity.this.mHandler.post(createNextPreviewImage);
+				mProgressDialogImagePreviewCreation.setProgress(1);
+			}
+		}).start();
+	}
+
+	/**
+	 * Get the next game file for which no preview image does exist.
+	 * 
+	 * @return A game file having no preview image. Null in case all game files
+	 *         have a preview image.
+	 */
+	private GameFile getNextGameFileWithoutPreview() {
+		// Check all files in the game file directory.
+		for (String filename : GameFile
+				.getAllGameFilesCreatedByUser(Integer.MAX_VALUE)) {
+			GameFile gameFile = new GameFile(filename);
+			if (!gameFile.hasPreviewImage()) {
+				// No preview image does exist.
+				return gameFile;
+			}
+		}
+
+		// No more game files found without having a preview image.
+		return null;
+	}
+
+	/**
+	 * Count number of game files without a preview.
+	 * 
+	 * @return The number of games files not having a preview image.
+	 */
+	private int countGameFilesWithoutPreview() {
+		int countGameFilesWithoutPreview = 0;
+
+		// Check all files in the game file directory.
+		for (String filename : GameFile
+				.getAllGameFilesCreatedByUser(Integer.MAX_VALUE)) {
+			GameFile gameFile = new GameFile(filename);
+			if (!gameFile.hasPreviewImage()) {
+				// No preview image does exist.
+				countGameFilesWithoutPreview++;
+			}
+		}
+
+		return countGameFilesWithoutPreview;
 	}
 }

@@ -32,9 +32,9 @@
     <!-- The button in the save game screen that allows the player to save the state of the game (s)he's currently playing. -->
     <string name="save_game_screen_save_current_game">Save current game</string>
     <!-- The button in the save game screen that allows the player to load a previously saved game state. -->
-    <string name="save_game_screen_load_game">Load game</string>
+    <string name="save_game_screen_load_game">Load</string>
     <!-- The button in the save game screen that allows the player to delete a previously saved game state. -->
-    <string name="save_game_screen_delete_game">Delete game</string>
+    <string name="save_game_screen_delete_game">Delete</string>
     <!-- The confirmation message that shows up when a delete button is pressed, plus the associated title and button labels. -->
     <string name="game_file_list__delete_game_file_confirmation_message">Are you sure you want to delete this game?</string>
     <string name="game_file_list__delete_game_file_confirmation_title">Delete saved game?</string>
@@ -86,9 +86,15 @@
     <string name="main_ui_solved_messsage">Solved!</string>
     <!-- The message that appears when the player reveals a cell. -->
     <string name="main_ui_cheat_messsage">Cheat! :P</string>
-    <!-- The message displayed on the screen when building a new puzzle, along with the associated title. -->
-    <string name="main_ui_building_puzzle_message">Please wait...</string>
+
+    <!-- The title and message for the dialog displayed on the screen when building a new puzzle. -->
     <string name="main_ui_building_puzzle_title">Building puzzle</string>
+    <string name="main_ui_building_puzzle_message">Please wait...</string>
+
+    <!-- The title and message for the dialog displayed on the screen when generating preview images, along with the associated title. -->
+    <string name="main_ui_creating_previews_title">Creating preview images</string>
+    <string name="main_ui_creating_previews_message">Please wait while creating preview images for all games stored.</string>
+
     <!-- The context menu item that allows the user to fill in the "Maybe"s in the cage. -->
     <string name="context_menu_use_cage_maybes">Use cage \"Maybe\"s</string>
     <!-- The context menu item that allows the user to reveal a cell. -->
@@ -134,5 +140,7 @@
     <string name="No">No, keep it simple</string>
     <!-- Alert to select a cell before a value is selected -->
     <string name="select_cell_before_value">Select a cell first.</string>
+    <!-- Text to display in case the preview image of a saved game is not yet available. -->
+    <string name="game_file_preview_not_available">Not yet available</string>
 
 </resources>
