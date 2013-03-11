@@ -16,6 +16,8 @@ import android.util.Log;
 public class SaveGame {
 	public static final String saveFilename = "/data/data/net.cactii.mathdoku/savedgame";
 	public String filename;
+	public static final String FIELD_DELIMITER_LEVEL1 = ":"; 
+	public static final String FIELD_DELIMITER_LEVEL2 = ","; 
 
 	public SaveGame() {
 		this.filename = SaveGame.saveFilename;
@@ -38,16 +40,6 @@ public class SaveGame {
 				writer.write(view.mActive + "\n");
 				for (GridCell cell : view.mCells) {
 					cell.writeToFile(writer);
-				}
-				if (view.mSelectedCell != null)
-					writer.write("SELECTED:"
-							+ view.mSelectedCell.getCellNumber() + "\n");
-				ArrayList<GridCell> invalidchoices = view.invalidsHighlighted();
-				if (invalidchoices.size() > 0) {
-					writer.write("INVALID:");
-					for (GridCell cell : invalidchoices)
-						writer.write(cell.getCellNumber() + ",");
-					writer.write("\n");
 				}
 				for (GridCage cage : view.mCages) {
 					writer.write("CAGE:");
@@ -120,23 +112,33 @@ public class SaveGame {
 				view.mActive = true;
 			else
 				view.mActive = false;
+			view.mSelectedCell = null;
 			view.mCells = new ArrayList<GridCell>();
 			while ((line = br.readLine()) != null) {
-				if (!line.startsWith("CELL:"))
-					break;
 				GridCell cell = new GridCell(view, 0);
-				cell.restoreFromFile(line);
-
+				if (!cell.restoreFromFile(line)) {
+					break;
+				}
 				view.mCells.add(cell);
+				if (cell.mSelected) {
+					view.mSelectedCell = cell;
+				}
 			}
-			view.mSelectedCell = null;
 			if (line.startsWith("SELECTED:")) {
-				int selected = Integer.parseInt(line.split(":")[1]);
-				view.mSelectedCell = view.mCells.get(selected);
-				view.mSelectedCell.mSelected = true;
+				// This information is now stored with the cell information. Do
+				// not remove as long as we want to be able to read files in old
+				// format.
+				if (view.mSelectedCell == null) {
+					int selected = Integer.parseInt(line.split(":")[1]);
+					view.mSelectedCell = view.mCells.get(selected);
+					view.mSelectedCell.mSelected = true;
+				}
 				line = br.readLine();
 			}
 			if (line.startsWith("INVALID:")) {
+				// This information is now stored with the cell information. Do
+				// not remove as long as we want to be able to read files in old
+				// format.
 				String invalidlist = line.split(":")[1];
 				for (String cellId : invalidlist.split(",")) {
 					int cellNum = Integer.parseInt(cellId);

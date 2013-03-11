@@ -15,6 +15,9 @@ import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 
 public class GridCell {
+	private final String SAVE_GAME_CELL_VERSION_01 = "CELL";
+	private final String SAVE_GAME_CELL_VERSION_02 = "CELL.v2";
+
 	// Index of the cell (left to right, top to bottom, zero-indexed)
 	private int mCellNumber;
 	// X grid position, zero indexed
@@ -425,32 +428,78 @@ public class GridCell {
 		}
 	}
 
+	/**
+	 * Write cell information to file.
+	 * 
+	 * @param writer
+	 *            The buffered writer which is used to store information for
+	 *            this cell.
+	 * @throws IOException
+	 */
 	public void writeToFile(BufferedWriter writer) throws IOException {
-		writer.write("CELL:");
-		writer.write(mCellNumber + ":");
-		writer.write(mRow + ":");
-		writer.write(mColumn + ":");
-		writer.write(mCageText + ":");
-		writer.write(mCorrectValue + ":");
-		writer.write(getUserValue() + ":");
-		for (int possible : mPossibles)
-			writer.write(possible + ",");
+		// Cell information will only be written in latest version. Order in
+		// which fields are written must correspond with order of cellParts in
+		// method restoreFromFile.
+		writer.write(SAVE_GAME_CELL_VERSION_02
+				+ SaveGame.FIELD_DELIMITER_LEVEL1);
+		writer.write(mCellNumber + SaveGame.FIELD_DELIMITER_LEVEL1);
+		writer.write(mRow + SaveGame.FIELD_DELIMITER_LEVEL1);
+		writer.write(mColumn + SaveGame.FIELD_DELIMITER_LEVEL1);
+		writer.write(mCageText + SaveGame.FIELD_DELIMITER_LEVEL1);
+		writer.write(mCorrectValue + SaveGame.FIELD_DELIMITER_LEVEL1);
+		writer.write(getUserValue() + SaveGame.FIELD_DELIMITER_LEVEL1);
+
+		for (int possible : mPossibles) {
+			writer.write(possible + SaveGame.FIELD_DELIMITER_LEVEL2);
+		}
+		writer.write(SaveGame.FIELD_DELIMITER_LEVEL1);
+
+		writer.write(Boolean.toString(mInvalidHighlight) + SaveGame.FIELD_DELIMITER_LEVEL1);
+		writer.write(Boolean.toString(mCheated) + SaveGame.FIELD_DELIMITER_LEVEL1);
+		writer.write(Boolean.toString(mSelected));
 		writer.write("\n");
 	}
 
-	public void restoreFromFile(String line) {
-		String[] cellParts = line.split(":");
+	/**
+	 * Read cell information for a saved game file which was created before.
+	 * 
+	 * @param line
+	 *            The line containing the cell information.
+	 * @return True in case the given line contain cell information and is
+	 *         processed correctly. False otherwise.
+	 */
+	public boolean restoreFromFile(String line) {
+		String[] cellParts = line.split(SaveGame.FIELD_DELIMITER_LEVEL1);
+
+		int cellInformationVersion = 0;
+		if (cellParts[0].equals(SAVE_GAME_CELL_VERSION_01)) {
+			cellInformationVersion = 1;
+		} else if (cellParts[0].equals(SAVE_GAME_CELL_VERSION_02)) {
+			cellInformationVersion = 2;
+		} else {
+			return false;
+		}
 		mCellNumber = Integer.parseInt(cellParts[1]);
 		mRow = Integer.parseInt(cellParts[2]);
 		mColumn = Integer.parseInt(cellParts[3]);
 		mCageText = cellParts[4];
 		mCorrectValue = Integer.parseInt(cellParts[5]);
 		mUserValue = Integer.parseInt(cellParts[6]);
-		if (cellParts.length == 8) {
-			for (String possible : cellParts[7].split(",")) {
-				togglePossible(Integer.parseInt(possible));
+		if ((cellInformationVersion == 1 && cellParts.length == 8)
+				|| cellInformationVersion > 1) {
+			if (!cellParts[7].equals("")) {
+				for (String possible : cellParts[7]
+						.split(SaveGame.FIELD_DELIMITER_LEVEL2)) {
+					togglePossible(Integer.parseInt(possible));
+				}
 			}
 		}
+		if (cellInformationVersion > 1) {
+			mInvalidHighlight = Boolean.parseBoolean(cellParts[8]);
+			mCheated = Boolean.parseBoolean(cellParts[9]);
+			mSelected = Boolean.parseBoolean(cellParts[10]);
+		}
+		return true;
 	}
 
 	public int getCellNumber() {
