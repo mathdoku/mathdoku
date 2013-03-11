@@ -25,10 +25,11 @@ redistribute and/or modify this translation yourself under the terms of the GNU 
 	<string name="save_game_screen_save_current_game">Sla huidig spel op</string>
 	<string name="save_game_screen_load_game">Laad spel</string>
 	<string name="save_game_screen_delete_game">Verwijder spel</string>
-	<string name="save_game_screen_delete_game_confirmation_message">Weet je zeker dat je dit spel wilt verwijderen?</string>
-	<string name="save_game_screen_delete_game_confirmation_title">Verwijder opgeslagen spel?</string>
-	<string name="save_game_screen_delete_game_negative_button_label">Nee, bewaar het</string>
-	<string name="save_game_screen_delete_game_positive_button_label">Ja, verwijder het</string>
+	<!-- The confirmation message that shows up when a delete button is pressed, plus the associated title and button labels. -->
+	<string name="game_file_list__delete_game_file_confirmation_message">Weet je zeker dat je dit spel wilt verwijderen?</string>
+	<string name="game_file_list__delete_game_file_confirmation_title">Verwijder opgeslagen spel?</string>
+	<string name="game_file_list__delete_game_file_negative_button">Nee, bewaar het</string>
+	<string name="game_file_list__delete_game_file_positive_button">Ja, verwijder het</string>
 	<string name="options_group_display">Weergave</string>
 	<string name="options_group_sound">Geluid</string>
 	<string name="options_group_assistance">Help</string>

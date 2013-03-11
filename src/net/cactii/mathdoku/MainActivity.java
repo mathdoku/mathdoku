@@ -300,8 +300,8 @@ public class MainActivity extends Activity {
 		this.kenKenGrid.setFocusableInTouchMode(true);
 
 		registerForContextMenu(this.kenKenGrid);
-		SaveGame saver = new SaveGame();
-		if (saver.Restore(this.kenKenGrid)) {
+		GameFile saver = new GameFile();
+		if (saver.load(this.kenKenGrid)) {
 			this.puzzleGrid.setVisibility(View.VISIBLE);
 			this.setButtonVisibility(this.kenKenGrid.mGridSize);
 			this.kenKenGrid.mActive = true;
@@ -323,10 +323,10 @@ public class MainActivity extends Activity {
 
 	public void onPause() {
 		if (this.kenKenGrid.mGridSize > 3) {
-			SaveGame saver = new SaveGame();
+			GameFile saver = new GameFile();
 			this.kenKenGrid.mElapsed = (mTimerTask == null ? 0
 					: mTimerTask.mElapsedTime);
-			saver.Save(this.kenKenGrid);
+			saver.save(this.kenKenGrid);
 		}
 		if (mTimerTask != null && !mTimerTask.isCancelled()) {
 			mTimerTask.cancel(true);
@@ -405,8 +405,8 @@ public class MainActivity extends Activity {
 		Bundle extras = data.getExtras();
 		String filename = extras.getString("filename");
 		Log.d("Mathdoku", "Loading game: " + filename);
-		SaveGame saver = new SaveGame(filename);
-		if (saver.Restore(this.kenKenGrid)) {
+		GameFile saver = new GameFile(filename);
+		if (saver.load(this.kenKenGrid)) {
 			this.puzzleGrid.setVisibility(View.VISIBLE);
 			this.setButtonVisibility(this.kenKenGrid.mGridSize);
 			this.kenKenGrid.mActive = true;
@@ -569,7 +569,7 @@ public class MainActivity extends Activity {
 
 		switch (menuItem.getItemId()) {
 		case R.id.saveload:
-			Intent i = new Intent(this, SavedGameList.class);
+			Intent i = new Intent(this, GameFileList.class);
 			startActivityForResult(i, 7);
 			return true;
 		case R.id.checkprogress:

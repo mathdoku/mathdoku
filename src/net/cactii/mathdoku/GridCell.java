@@ -15,6 +15,8 @@ import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 
 public class GridCell {
+	// Identifiers of different versions of cell information which is stored in
+	// saved game. 
 	private final String SAVE_GAME_CELL_VERSION_01 = "CELL";
 	private final String SAVE_GAME_CELL_VERSION_02 = "CELL.v2";
 
@@ -429,49 +431,42 @@ public class GridCell {
 	}
 
 	/**
-	 * Write cell information to file.
+	 * Create a string representation of the Grid Cell which can be used to
+	 * store a grid cell in a saved game.
 	 * 
-	 * @param writer
-	 *            The buffered writer which is used to store information for
-	 *            this cell.
-	 * @throws IOException
+	 * @return A string representation of the grid cell.
 	 */
-	public void writeToFile(BufferedWriter writer) throws IOException {
-		// Cell information will only be written in latest version. Order in
-		// which fields are written must correspond with order of cellParts in
-		// method restoreFromFile.
-		writer.write(SAVE_GAME_CELL_VERSION_02
-				+ SaveGame.FIELD_DELIMITER_LEVEL1);
-		writer.write(mCellNumber + SaveGame.FIELD_DELIMITER_LEVEL1);
-		writer.write(mRow + SaveGame.FIELD_DELIMITER_LEVEL1);
-		writer.write(mColumn + SaveGame.FIELD_DELIMITER_LEVEL1);
-		writer.write(mCageText + SaveGame.FIELD_DELIMITER_LEVEL1);
-		writer.write(mCorrectValue + SaveGame.FIELD_DELIMITER_LEVEL1);
-		writer.write(getUserValue() + SaveGame.FIELD_DELIMITER_LEVEL1);
-
+	public String toStorageString() {
+		String storageString = SAVE_GAME_CELL_VERSION_02
+				+ GameFile.FIELD_DELIMITER_LEVEL1 + mCellNumber
+				+ GameFile.FIELD_DELIMITER_LEVEL1 + mRow
+				+ GameFile.FIELD_DELIMITER_LEVEL1 + mColumn
+				+ GameFile.FIELD_DELIMITER_LEVEL1 + mCageText
+				+ GameFile.FIELD_DELIMITER_LEVEL1 + mCorrectValue
+				+ GameFile.FIELD_DELIMITER_LEVEL1 + mUserValue
+				+ GameFile.FIELD_DELIMITER_LEVEL1;
 		for (int possible : mPossibles) {
-			writer.write(possible + SaveGame.FIELD_DELIMITER_LEVEL2);
+			storageString += possible + GameFile.FIELD_DELIMITER_LEVEL2;
 		}
-		writer.write(SaveGame.FIELD_DELIMITER_LEVEL1);
+		storageString += GameFile.FIELD_DELIMITER_LEVEL1
+				+ Boolean.toString(mInvalidHighlight)
+				+ GameFile.FIELD_DELIMITER_LEVEL1 + Boolean.toString(mCheated)
+				+ GameFile.FIELD_DELIMITER_LEVEL1 + Boolean.toString(mSelected);
 
-		writer.write(Boolean.toString(mInvalidHighlight)
-				+ SaveGame.FIELD_DELIMITER_LEVEL1);
-		writer.write(Boolean.toString(mCheated)
-				+ SaveGame.FIELD_DELIMITER_LEVEL1);
-		writer.write(Boolean.toString(mSelected));
-		writer.write("\n");
+		return storageString;
 	}
 
 	/**
-	 * Read cell information for a saved game file which was created before.
+	 * Read cell information from or a storage string which was created with @
+	 * GridCell#toStorageString()} before.
 	 * 
 	 * @param line
 	 *            The line containing the cell information.
-	 * @return True in case the given line contain cell information and is
+	 * @return True in case the given line contains cell information and is
 	 *         processed correctly. False otherwise.
 	 */
-	public boolean restoreFromFile(String line) {
-		String[] cellParts = line.split(SaveGame.FIELD_DELIMITER_LEVEL1);
+	public boolean fromStorageString(String line) {
+		String[] cellParts = line.split(GameFile.FIELD_DELIMITER_LEVEL1);
 
 		int cellInformationVersion = 0;
 		if (cellParts[0].equals(SAVE_GAME_CELL_VERSION_01)) {
@@ -481,25 +476,29 @@ public class GridCell {
 		} else {
 			return false;
 		}
-		mCellNumber = Integer.parseInt(cellParts[1]);
-		mRow = Integer.parseInt(cellParts[2]);
-		mColumn = Integer.parseInt(cellParts[3]);
-		mCageText = cellParts[4];
-		mCorrectValue = Integer.parseInt(cellParts[5]);
-		mUserValue = Integer.parseInt(cellParts[6]);
-		if ((cellInformationVersion == 1 && cellParts.length == 8)
+
+		// Process all parts
+		int index = 1;
+		mCellNumber = Integer.parseInt(cellParts[index++]);
+		mRow = Integer.parseInt(cellParts[index++]);
+		mColumn = Integer.parseInt(cellParts[index++]);
+		mCageText = cellParts[index++];
+		mCorrectValue = Integer.parseInt(cellParts[index++]);
+		mUserValue = Integer.parseInt(cellParts[index++]);
+		if ((cellInformationVersion == 1 && index < cellParts.length)
 				|| cellInformationVersion > 1) {
-			if (!cellParts[7].equals("")) {
-				for (String possible : cellParts[7]
-						.split(SaveGame.FIELD_DELIMITER_LEVEL2)) {
+			if (!cellParts[index].equals("")) {
+				for (String possible : cellParts[index]
+						.split(GameFile.FIELD_DELIMITER_LEVEL2)) {
 					togglePossible(Integer.parseInt(possible));
 				}
 			}
+			index++;
 		}
 		if (cellInformationVersion > 1) {
-			mInvalidHighlight = Boolean.parseBoolean(cellParts[8]);
-			mCheated = Boolean.parseBoolean(cellParts[9]);
-			mSelected = Boolean.parseBoolean(cellParts[10]);
+			mInvalidHighlight = Boolean.parseBoolean(cellParts[index++]);
+			mCheated = Boolean.parseBoolean(cellParts[index++]);
+			mSelected = Boolean.parseBoolean(cellParts[index++]);
 		}
 		return true;
 	}
@@ -553,8 +552,8 @@ public class GridCell {
 	 *            modification made by the user itself. In case the cell is
 	 *            changed indirectly as a result of changing another cell, use
 	 *            the original cell change.
-	 * @return The cell change which is created. This value can be used optionally to
-	 *         related other cell changes to this cell change.
+	 * @return The cell change which is created. This value can be used
+	 *         optionally to related other cell changes to this cell change.
 	 */
 	public CellChange saveUndoInformation(CellChange originalCellChange) {
 		// Store old values of this cell
@@ -595,7 +594,7 @@ public class GridCell {
 	public boolean hasPossible(int digit) {
 		return (this.mPossibles.indexOf(new Integer(digit)) >= 0);
 	}
-	
+
 	/**
 	 * Confirm that the user has cheated to reveal the content of cell.
 	 */

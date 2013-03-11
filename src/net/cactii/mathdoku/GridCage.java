@@ -10,11 +10,9 @@ import android.util.Log;
 
 public class GridCage {
 	// Identifiers of different versions of cage information which is stored in
-	// saved game. Version one is also used as base identifier for all other
-	// versions.
+	// saved game. 
 	private static final String SAVE_GAME_CAGE_VERSION_01 = "CAGE";
-	private static final String SAVE_GAME_CAGE_VERSION_02 = SAVE_GAME_CAGE_VERSION_01
-			+ ".v2";
+	private static final String SAVE_GAME_CAGE_VERSION_02 = "CAGE.v2";
 
 	public static final int ACTION_NONE = 0;
 	public static final int ACTION_ADD = 1;
@@ -552,63 +550,62 @@ public class GridCage {
 	}
 
 	/**
-	 * Write cage information to file.
+	 * Create a string representation of the Grid Cage which can be used to
+	 * store a grid cage in a saved game.
 	 * 
-	 * @param writer
-	 *            The buffered writer which is used to store information for
-	 *            this cell.
-	 * @throws IOException
+	 * @return A string representation of the grid cage.
 	 */
-	public void writeToFile(BufferedWriter writer) throws IOException {
-		writer.write(SAVE_GAME_CAGE_VERSION_02
-				+ SaveGame.FIELD_DELIMITER_LEVEL1);
-		writer.write(mId + SaveGame.FIELD_DELIMITER_LEVEL1);
-		writer.write(mAction + SaveGame.FIELD_DELIMITER_LEVEL1);
-		writer.write(mResult + SaveGame.FIELD_DELIMITER_LEVEL1);
-		writer.write(SaveGame.FIELD_DELIMITER_LEVEL1); // field mType is no
-														// longer stored as it
-														// is removed from this
-														// object!
-
+	public String toStorageString() {
+		String storageString = SAVE_GAME_CAGE_VERSION_02
+				+ GameFile.FIELD_DELIMITER_LEVEL1 + mId
+				+ GameFile.FIELD_DELIMITER_LEVEL1 + mAction
+				+ GameFile.FIELD_DELIMITER_LEVEL1 + mResult
+				+ GameFile.FIELD_DELIMITER_LEVEL1;
 		for (GridCell cell : mCells) {
-			writer.write(cell.getCellNumber() + SaveGame.FIELD_DELIMITER_LEVEL2);
+			storageString += cell.getCellNumber()
+					+ GameFile.FIELD_DELIMITER_LEVEL2;
 		}
-		writer.write(SaveGame.FIELD_DELIMITER_LEVEL1);
+		storageString += GameFile.FIELD_DELIMITER_LEVEL1
+				+ Boolean.toString(isOperatorHidden());
 
-		writer.write(Boolean.toString(isOperatorHidden()));
-		writer.write("\n");
-	}
-
-	static public boolean isCageInformation(String lineType) {
-		return (lineType.startsWith(SAVE_GAME_CAGE_VERSION_01));
+		return storageString;
 	}
 
 	/**
-	 * Read cell information for a saved game file which was created before.
+	 * Read cage information from or a storage string which was created with @
+	 * GridCage#toStorageString()} before.
 	 * 
 	 * @param line
-	 *            The line containing the cell information.
-	 * @return True in case the given line contain cell information and is
+	 *            The line containing the cage information.
+	 * @return True in case the given line contains cage information and is
 	 *         processed correctly. False otherwise.
 	 */
-	public boolean restoreFromFile(String line) {
-		String[] cageParts = line.split(SaveGame.FIELD_DELIMITER_LEVEL1);
-		
+	public boolean fromStorageString(String line) {
+		String[] cageParts = line.split(GameFile.FIELD_DELIMITER_LEVEL1);
+
 		// Check version of stored cage information
 		int cageInformationVersion = 0;
 		if (cageParts[0].equals(SAVE_GAME_CAGE_VERSION_01)) {
 			cageInformationVersion = 1;
+
 		} else if (cageParts[0].equals(SAVE_GAME_CAGE_VERSION_02)) {
 			cageInformationVersion = 2;
 		} else {
 			return false;
 		}
 
-		mId = Integer.parseInt(cageParts[1]);
-		mAction = Integer.parseInt(cageParts[2]);
-		mResult = Integer.parseInt(cageParts[3]);
-		for (String cellId : cageParts[5]
-				.split(SaveGame.FIELD_DELIMITER_LEVEL2)) {
+		// Process all parts
+		int index = 1;
+		mId = Integer.parseInt(cageParts[index++]);
+		mAction = Integer.parseInt(cageParts[index++]);
+		mResult = Integer.parseInt(cageParts[index++]);
+		if (cageInformationVersion == 1) {
+			// Version 1 contained the cage type at this position but this field
+			// is not needed anymore to restore a cage. So skip this field.
+			index++;
+		}
+		for (String cellId : cageParts[index]
+				.split(GameFile.FIELD_DELIMITER_LEVEL2)) {
 			GridCell c = mContext.mCells.get(Integer.parseInt(cellId));
 			c.setCageId(mId);
 			mCells.add(c);
@@ -618,7 +615,7 @@ public class GridCage {
 			// part while the version with 7 parts does contain this field.
 			mOperatorHidden = false;
 		} else {
-			mOperatorHidden = Boolean.parseBoolean(cageParts[6]);
+			mOperatorHidden = Boolean.parseBoolean(cageParts[index++]);
 		}
 
 		return true;

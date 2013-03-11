@@ -15,78 +15,85 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
 
-public class SavedGameList extends ListActivity {
-	private SavedGameListAdapter mAdapter;
+public class GameFileList extends ListActivity {
+	private GameFileListAdapter mAdapter;
 	public boolean mCurrentSaved;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		this.mAdapter = new SavedGameListAdapter(this);
+		this.mAdapter = new GameFileListAdapter(this);
 		setListAdapter(this.mAdapter);
 	}
 
-	public void DeleteGame(final String filename) {
-		new AlertDialog.Builder(SavedGameList.this)
+	/**
+	 * Display a dialog to confirm deletion of the game file with the given
+	 * name.
+	 * 
+	 * @param filename
+	 *            Name of file to be deleted.
+	 */
+	public void deleteGameFile(final String filename) {
+		new AlertDialog.Builder(GameFileList.this)
 				.setTitle(
-						R.string.save_game_screen_delete_game_confirmation_title)
+						R.string.game_file_list__delete_game_file_confirmation_title)
 				.setMessage(
-						R.string.save_game_screen_delete_game_confirmation_message)
+						R.string.game_file_list__delete_game_file_confirmation_message)
 				.setNegativeButton(
-						R.string.save_game_screen_delete_game_negative_button_label,
+						R.string.game_file_list__delete_game_file_negative_button,
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
+								// Do nothing.
 							}
 						})
 				.setPositiveButton(
-						R.string.save_game_screen_delete_game_positive_button_label,
+						R.string.game_file_list__delete_game_file_positive_button,
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
+								// Deletion has been confirmed.
 								new File(filename).delete();
-								SavedGameList.this.mAdapter.refreshFiles();
-								SavedGameList.this.mAdapter
+								GameFileList.this.mAdapter.refreshFiles();
+								GameFileList.this.mAdapter
 										.notifyDataSetChanged();
 							}
 						}).setIcon(android.R.drawable.ic_dialog_alert).show();
 	}
 
-	public void LoadGame(String filename) {
+	/**
+	 * Load the game file with the give file name.
+	 * 
+	 * @param filename
+	 *            Name of the file to be loaded.
+	 */
+	public void loadGameFile(String filename) {
 		Intent i = new Intent().putExtra("filename", filename);
 		setResult(Activity.RESULT_OK, i);
 		finish();
 	}
 
-	void copy(File src, File dst) throws IOException {
-		InputStream in = new FileInputStream(src);
-		OutputStream out = new FileOutputStream(dst);
-
-		// Transfer bytes from in to out
-		byte[] buf = new byte[1024];
-		int len;
-		while ((len = in.read(buf)) > 0) {
-			out.write(buf, 0, len);
-		}
-		in.close();
-		out.close();
-	}
-
+	/**
+	 * Saves the current game to a new game file.
+	 */
 	public void saveCurrent() {
 		this.mCurrentSaved = true;
+
+		// Determine first file index number which is currently not in use.
 		int fileIndex;
-		for (fileIndex = 0;; fileIndex++)
-			if (!new File(SavedGameListAdapter.SAVEDGAME_DIR + "/savedgame_"
-					+ fileIndex).exists())
+		for (fileIndex = 0;; fileIndex++) {
+			if (!new GameFile(fileIndex).exists())
 				break;
-		String filename = SavedGameListAdapter.SAVEDGAME_DIR + "/savedgame_"
-				+ fileIndex;
+		}
+
+		// Save the file at the first unused file index number. The current game
+		// was already saved to the default game file when the game file list
+		// was shown. To save the current game a copy of the default file has to
+		// be made.
 		try {
-			this.copy(new File(SavedGameListAdapter.SAVEDGAME_DIR
-					+ "/savedgame"), new File(filename));
+			new GameFile().copyTo(fileIndex);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		this.mAdapter.refreshFiles();

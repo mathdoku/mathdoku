@@ -26,6 +26,12 @@ import com.srlee.DLX.MathDokuDLX;
 public class GridView extends View implements OnTouchListener {
 	private static final String TAG = "MathDoku.GridView";
 
+	// Identifiers of different versions of grid view information which is
+	// stored in a saved game. In the initial versions, view information was
+	// stored on several distinct lines. As from now all view variables are
+	// collected on single line as well.
+	public static final String SAVE_GAME_GRID_VERSION_01 = "VIEW.v1";
+
 	public static final int THEME_CARVED = 0;
 	public static final int THEME_NEWSPAPER = 1;
 	public static final int THEME_INVERT = 2;
@@ -399,11 +405,12 @@ public class GridView extends View implements OnTouchListener {
 		}
 		return mGridCageTypeGenerator.getSingleCellCageType();
 	}
-	
+
 	/**
 	 * Print debug information for create cage process to logging.
 	 * 
-	 * @param maskNewCage Mask of cage type which is currently processed.
+	 * @param maskNewCage
+	 *            Mask of cage type which is currently processed.
 	 */
 	private void printCageCreationDebugInformation(boolean[][] maskNewCage) {
 		Log.i(TAG, "   Checking cage type");
@@ -427,15 +434,12 @@ public class GridView extends View implements OnTouchListener {
 			line += "   ";
 			for (int col = 0; col < this.mGridSize; col++) {
 				line += " "
-						+ (cageMatrix[row][col] == -1 ? emptyCell
-								: String.format(cageIdFormat,
-										cageMatrix[row][col]));
+						+ (cageMatrix[row][col] == -1 ? emptyCell : String
+								.format(cageIdFormat, cageMatrix[row][col]));
 			}
 			line += "   ";
 			for (int col = 0; col < this.mGridSize; col++) {
-				line += " "
-						+ (maskNewCage[row][col] ? usedCell
-								: emptyCell);
+				line += " " + (maskNewCage[row][col] ? usedCell : emptyCell);
 			}
 			Log.i(TAG, line);
 		}
@@ -452,8 +456,8 @@ public class GridView extends View implements OnTouchListener {
 	 *            The number of rows per column in use by this new cage.
 	 * @return
 	 */
-	private boolean hasOverlappingSubsetOfValuesInColumns(boolean[][] maskNewCage,
-			int[] maskNewCageColCount) {
+	private boolean hasOverlappingSubsetOfValuesInColumns(
+			boolean[][] maskNewCage, int[] maskNewCageColCount) {
 		for (int newCageCol = 0; newCageCol < this.mGridSize; newCageCol++) {
 			if (maskNewCageColCount[newCageCol] > 1) {
 				// This column in the new cage has more than one row and
@@ -667,6 +671,7 @@ public class GridView extends View implements OnTouchListener {
 		if (this.mCages != null) {
 			this.mCages.clear();
 		}
+		mSelectedCell = null;
 	}
 
 	/* Fetch the cell at the given row, column */
@@ -1146,5 +1151,47 @@ public class GridView extends View implements OnTouchListener {
 	 */
 	public boolean isSolvedByCheating() {
 		return this.mCheated;
+	}
+
+	/**
+	 * Create a string representation of the Grid View which can be used to
+	 * store a grid view in a saved game.
+	 * 
+	 * @return A string representation of the grid cell.
+	 */
+	public String toStorageString() {
+		String storageString = SAVE_GAME_GRID_VERSION_01
+				+ GameFile.FIELD_DELIMITER_LEVEL1 + mElapsed
+				+ GameFile.FIELD_DELIMITER_LEVEL1 + mGridSize
+				+ GameFile.FIELD_DELIMITER_LEVEL1 + mActive;
+		return storageString;
+	}
+
+	/**
+	 * Read view information from or a storage string which was created with @
+	 * GridView#toStorageString()} before.
+	 * 
+	 * @param line
+	 *            The line containing the view information.
+	 * @return True in case the given line contains view information and is
+	 *         processed correctly. False otherwise.
+	 */
+	public boolean fromStorageString(String line) {
+		String[] viewParts = line.split(GameFile.FIELD_DELIMITER_LEVEL1);
+
+		int cellInformationVersion = 0;
+		if (viewParts[0].equals(SAVE_GAME_GRID_VERSION_01)) {
+			cellInformationVersion = 1;
+		} else {
+			return false;
+		}
+
+		// Process all parts
+		int index = 1;
+		mElapsed = Long.parseLong(viewParts[index++]);
+		mGridSize = Integer.parseInt(viewParts[index++]);
+		mActive = Boolean.parseBoolean(viewParts[index++]);
+
+		return true;
 	}
 }

@@ -19,15 +19,14 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class SavedGameListAdapter extends BaseAdapter {
+public class GameFileListAdapter extends BaseAdapter {
 
-	public static final String SAVEDGAME_DIR = "/data/data/net.cactii.mathdoku/";
 	public ArrayList<String> mGameFiles;
 	private LayoutInflater inflater;
-	private SavedGameList mContext;
+	private GameFileList mContext;
 	private Typeface mFace;
 
-	public SavedGameListAdapter(SavedGameList context) {
+	public GameFileListAdapter(GameFileList context) {
 		this.inflater = LayoutInflater.from(context);
 		this.mContext = context;
 		this.mGameFiles = new ArrayList<String>();
@@ -43,8 +42,8 @@ public class SavedGameListAdapter extends BaseAdapter {
 
 		public int compare(String object1, String object2) {
 			try {
-				save1 = new SaveGame(SAVEDGAME_DIR + "/" + object1).ReadDate();
-				save2 = new SaveGame(SAVEDGAME_DIR + "/" + object2).ReadDate();
+				save1 = new GameFile(object1).readDatetimeCreated();
+				save2 = new GameFile(object2).readDatetimeCreated();
 			} catch (Exception e) {
 				//
 			}
@@ -55,11 +54,13 @@ public class SavedGameListAdapter extends BaseAdapter {
 
 	public void refreshFiles() {
 		this.mGameFiles.clear();
-		File dir = new File(SAVEDGAME_DIR);
+		File dir = new File(GameFile.PATH);
 		String[] allFiles = dir.list();
-		for (String entryName : allFiles)
-			if (entryName.startsWith("savedgame_"))
+		for (String entryName : allFiles) {
+			if (entryName.startsWith(GameFile.PREFIX_FILENAME)) {
 				this.mGameFiles.add(entryName);
+			}
+		}
 
 		Collections.sort((List<String>) this.mGameFiles, new SortSavedGames());
 
@@ -139,8 +140,7 @@ public class SavedGameListAdapter extends BaseAdapter {
 		TextView label = (TextView) convertView
 				.findViewById(R.id.savedGridText);
 
-		final String saveFile = SAVEDGAME_DIR + "/"
-				+ this.mGameFiles.get(position - 1);
+		final String saveFile = this.mGameFiles.get(position - 1);
 
 		grid.mContext = this.mContext;
 		grid.mFace = this.mFace;
@@ -150,9 +150,9 @@ public class SavedGameListAdapter extends BaseAdapter {
 		grid.mBadMaths = PreferenceManager.getDefaultSharedPreferences(
 				convertView.getContext()).getBoolean("badmaths", true);
 
-		SaveGame saver = new SaveGame(saveFile);
+		GameFile saver = new GameFile(saveFile);
 		try {
-			saver.Restore(grid);
+			saver.load(grid);
 		} catch (Exception e) {
 			// Error, delete the file.
 			new File(saveFile).delete();
@@ -191,7 +191,7 @@ public class SavedGameListAdapter extends BaseAdapter {
 		Button loadButton = (Button) convertView.findViewById(R.id.gameLoad);
 		loadButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				mContext.LoadGame(saveFile);
+				mContext.loadGameFile(saveFile);
 			}
 		});
 
@@ -199,7 +199,7 @@ public class SavedGameListAdapter extends BaseAdapter {
 				.findViewById(R.id.gameDelete);
 		deleteButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				mContext.DeleteGame(saveFile);
+				mContext.deleteGameFile(saveFile);
 			}
 		});
 
