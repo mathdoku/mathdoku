@@ -223,7 +223,8 @@ public class MainActivity extends Activity {
 		this.undoButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				MainActivity.this.kenKenGrid.UndoLastMove();
-				if (MainActivity.this.preferences.getBoolean("hideselector", false))
+				if (MainActivity.this.preferences.getBoolean("hideselector",
+						false))
 					MainActivity.this.controls.setVisibility(View.GONE);
 			}
 		});
@@ -247,7 +248,7 @@ public class MainActivity extends Activity {
 					// button is just checked.
 					if (maybeIsChecked
 							&& kenKenGrid.mSelectedCell.isUserValueSet()) {
-						kenKenGrid.mSelectedCell.SaveUndoInformation();
+						kenKenGrid.mSelectedCell.saveUndoInformation(null);
 						int curValue = kenKenGrid.mSelectedCell.getUserValue();
 						kenKenGrid.mSelectedCell.clearUserValue();
 						kenKenGrid.mSelectedCell.togglePossible(curValue);
@@ -259,14 +260,17 @@ public class MainActivity extends Activity {
 					// unchecked.
 					if (!maybeIsChecked
 							&& kenKenGrid.mSelectedCell.countPossibles() == 1) {
-						kenKenGrid.mSelectedCell.SaveUndoInformation();
+						CellChange originalUserMove = kenKenGrid.mSelectedCell
+								.saveUndoInformation(null);
 						kenKenGrid.mSelectedCell
 								.setUserValue(kenKenGrid.mSelectedCell
 										.getFirstPossible());
 						if (MainActivity.this.preferences.getBoolean(
 								"redundantPossibles", false)) {
-							// Update possible values for other cells in this row and column.
-							kenKenGrid.clearRedundantPossiblesInSameRowOrColumn();
+							// Update possible values for other cells in this
+							// row and column.
+							kenKenGrid
+									.clearRedundantPossiblesInSameRowOrColumn(originalUserMove);
 						}
 						kenKenGrid.invalidate();
 					}
@@ -440,7 +444,7 @@ public class MainActivity extends Activity {
 				break;
 			for (GridCell cell : this.kenKenGrid.mCages.get(selectedCell
 					.getCageId()).mCells) {
-				cell.SaveUndoInformation();
+				cell.saveUndoInformation(null);
 				cell.clearUserValue();
 			}
 			this.kenKenGrid.invalidate();
@@ -451,7 +455,7 @@ public class MainActivity extends Activity {
 			for (GridCell cell : this.kenKenGrid.mCages.get(selectedCell
 					.getCageId()).mCells) {
 				if (cell.countPossibles() == 1) {
-					cell.SaveUndoInformation();
+					cell.saveUndoInformation(null);
 					cell.setUserValue(cell.getFirstPossible());
 				}
 			}
@@ -460,7 +464,7 @@ public class MainActivity extends Activity {
 		case 102: // Reveal cell
 			if (selectedCell == null)
 				break;
-			selectedCell.SaveUndoInformation();
+			selectedCell.saveUndoInformation(null);
 			selectedCell.setUserValue(selectedCell.getCorrectValue());
 			selectedCell.mCheated = true;
 			Toast.makeText(this, R.string.main_ui_cheat_messsage,
@@ -591,7 +595,7 @@ public class MainActivity extends Activity {
 					Toast.LENGTH_SHORT).show();
 			return;
 		}
-		this.kenKenGrid.mSelectedCell.SaveUndoInformation();
+		CellChange orginalUserMove = this.kenKenGrid.mSelectedCell.saveUndoInformation(null);
 		if (value == 0) { // Clear Button
 			this.kenKenGrid.mSelectedCell.clearPossibles();
 			this.kenKenGrid.mSelectedCell.setUserValue(0);
@@ -605,11 +609,12 @@ public class MainActivity extends Activity {
 				this.kenKenGrid.mSelectedCell.setUserValue(value);
 				this.kenKenGrid.mSelectedCell.clearPossibles();
 			}
-			
-			if (MainActivity.this.preferences.getBoolean(
-					"redundantPossibles", false)) {
-				// Update possible values for other cells in this row and column.
-				this.kenKenGrid.clearRedundantPossiblesInSameRowOrColumn();
+
+			if (MainActivity.this.preferences.getBoolean("redundantPossibles",
+					false)) {
+				// Update possible values for other cells in this row and
+				// column.
+				this.kenKenGrid.clearRedundantPossiblesInSameRowOrColumn(orginalUserMove);
 			}
 		}
 		if (this.preferences.getBoolean("hideselector", false))

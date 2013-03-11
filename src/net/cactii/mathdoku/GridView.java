@@ -74,7 +74,7 @@ public class GridView extends View implements OnTouchListener {
 	public int mTheme;
 
 	// Keep track of all moves as soon as grid is built or restored.
-	private ArrayList<Move> moves;
+	private ArrayList<CellChange> moves;
 
 	// Used to avoid redrawing or saving grid during creation of new grid
 	public final Object mLock = new Object();
@@ -679,15 +679,15 @@ public class GridView extends View implements OnTouchListener {
 		public abstract void gridTouched(GridCell cell);
 	}
 
-	public void AddMove(Move move) {
+	public void AddMove(CellChange move) {
 		if (moves == null) {
-			moves = new ArrayList<Move>();
+			moves = new ArrayList<CellChange>();
 		}
 
 		boolean identicalToLastMove = false;
 		int indexLastMove = moves.size() - 1;
 		if (indexLastMove >= 0) {
-			Move lastMove = moves.get(indexLastMove);
+			CellChange lastMove = moves.get(indexLastMove);
 			identicalToLastMove = lastMove.equals(move);
 		}
 		if (!identicalToLastMove) {
@@ -700,7 +700,7 @@ public class GridView extends View implements OnTouchListener {
 			int undoPosition = moves.size() - 1;
 
 			if (undoPosition >= 0) {
-				moves.get(undoPosition).Undo();
+				moves.get(undoPosition).restore();
 				moves.remove(undoPosition);
 				invalidate();
 			}
@@ -727,8 +727,12 @@ public class GridView extends View implements OnTouchListener {
 	 * Clear the user value of the selected cell from the list of possible
 	 * values in all other cells in the same row or in the same column as the
 	 * selected cell.
+	 * 
+	 * @param originalCellChange
+	 *            The cell which was originally changed.
 	 */
-	public void clearRedundantPossiblesInSameRowOrColumn() {
+	public void clearRedundantPossiblesInSameRowOrColumn(
+			CellChange originalCellChange) {
 		int rowSelectedCell = this.mSelectedCell.getRow();
 		int columnSelectedCell = this.mSelectedCell.getColumn();
 		int valueSelectedCell = this.mSelectedCell.getUserValue();
@@ -737,7 +741,7 @@ public class GridView extends View implements OnTouchListener {
 				if (cell.getRow() == rowSelectedCell
 						|| cell.getColumn() == columnSelectedCell) {
 					if (cell.hasPossible(valueSelectedCell)) {
-						cell.SaveUndoInformation();
+						cell.saveUndoInformation(originalCellChange);
 						cell.togglePossible(valueSelectedCell);
 					}
 				}

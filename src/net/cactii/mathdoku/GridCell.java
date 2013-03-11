@@ -454,8 +454,10 @@ public class GridCell {
 		}
 		writer.write(SaveGame.FIELD_DELIMITER_LEVEL1);
 
-		writer.write(Boolean.toString(mInvalidHighlight) + SaveGame.FIELD_DELIMITER_LEVEL1);
-		writer.write(Boolean.toString(mCheated) + SaveGame.FIELD_DELIMITER_LEVEL1);
+		writer.write(Boolean.toString(mInvalidHighlight)
+				+ SaveGame.FIELD_DELIMITER_LEVEL1);
+		writer.write(Boolean.toString(mCheated)
+				+ SaveGame.FIELD_DELIMITER_LEVEL1);
 		writer.write(Boolean.toString(mSelected));
 		writer.write("\n");
 	}
@@ -543,10 +545,27 @@ public class GridCell {
 		mCageText = newCageText;
 	}
 
-	public void SaveUndoInformation() {
+	/**
+	 * Saves all information needed to undo a user move on this cell.
+	 * 
+	 * @param originalCellChange
+	 *            Use null in case this cell change is a result of a
+	 *            modification made by the user itself. In case the cell is
+	 *            changed indirectly as a result of changing another cell, use
+	 *            the original cell change.
+	 * @return The cell change which is created. This value can be used optionally to
+	 *         related other cell changes to this cell change.
+	 */
+	public CellChange saveUndoInformation(CellChange originalCellChange) {
 		// Store old values of this cell
-		Move move = new Move(this, this.mUserValue, this.mPossibles);
-		this.mContext.AddMove(move);
+		CellChange move = new CellChange(this, this.mUserValue, this.mPossibles);
+		if (originalCellChange == null) {
+			// This move is not a result of another move.
+			this.mContext.AddMove(move);
+		} else {
+			originalCellChange.addRelatedMove(move);
+		}
+		return move;
 	}
 
 	public void Undo(int previousUserValue,
