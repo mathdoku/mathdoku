@@ -515,4 +515,16 @@ public class GridCell {
 	public void Select() {
 		mContext.SetSelectedCell(this);
 	}
+
+	/**
+	 * Check if the given digit is registered as a posibble value for this cell.
+	 * 
+	 * @param digit
+	 *            The digit which is to be checked.
+	 * @return True in case the digit is registered as a possible value for this
+	 *         cell. False otherwise.
+	 */
+	public boolean hasPossible(int digit) {
+		return (this.mPossibles.indexOf(new Integer(digit)) >= 0);
+	}
 }

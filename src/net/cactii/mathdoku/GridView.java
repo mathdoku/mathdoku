@@ -722,4 +722,26 @@ public class GridView extends View implements OnTouchListener {
 			this.mCages.get(this.mSelectedCell.getCageId()).mSelected = true;
 		}
 	}
+
+	/**
+	 * Clear the user value of the selected cell from the list of possible
+	 * values in all other cells in the same row or in the same column as the
+	 * selected cell.
+	 */
+	public void clearRedundantPossiblesInSameRowOrColumn() {
+		int rowSelectedCell = this.mSelectedCell.getRow();
+		int columnSelectedCell = this.mSelectedCell.getColumn();
+		int valueSelectedCell = this.mSelectedCell.getUserValue();
+		if (this.mSelectedCell != null) {
+			for (GridCell cell : this.mCells) {
+				if (cell.getRow() == rowSelectedCell
+						|| cell.getColumn() == columnSelectedCell) {
+					if (cell.hasPossible(valueSelectedCell)) {
+						cell.SaveUndoInformation();
+						cell.togglePossible(valueSelectedCell);
+					}
+				}
+			}
+		}
+	}
 }

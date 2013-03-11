@@ -45,6 +45,9 @@ redistribute and/or modify this translation yourself under the terms of the GNU 
 	<string name="option_mark_bad_maths_summary">Markeer groepen met niet kloppende berekeningen</string>
 	<string name="option_mark_duplicates_title">Markeer duplicaten</string>
 	<string name="option_mark_duplicates_summary">Markeer cellen met cijfers die al in de rij of in de colom staan</string>
+    <!-- The title and summary of the "redundant possibles" option. This option clears possibles values from cells in the same row or columns as the selected cell after setting a user value. -->
+    <string name="option_clear_redundant_possibles_title">Verwijder overbodige mogelijke waarden</string>
+    <string name="option_clear_redundant_possibles_summary">Na het vastleggen van een waarde in een cel die waarde bij cellen in dezelfde rij of kolom verwijderen als mogelijke waarde.</string>
 	<string name="option_sound_effects_title">Geluidseffecten</string>
 	<string name="option_sound_effects_summary">Zet de geluidseffecten aan</string>
 	<string name="option_wake_lock_title">Houd scherm aan</string>

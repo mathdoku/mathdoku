@@ -66,6 +66,9 @@
     <!-- The title and summary of the "bad maths" option. This option highlights cells with digits already in the row or column. -->
     <string name="option_mark_duplicates_title">Mark duplicates</string>
     <string name="option_mark_duplicates_summary">Highlight duplicate digits in a row or column</string>
+    <!-- The title and summary of the "redundant possibles" option. This option clears possibles values from cells in the same row or columns as the selected cell after setting a user value. -->
+    <string name="option_clear_redundant_possibles_title">Clear redundant possible values</string>
+    <string name="option_clear_redundant_possibles_summary">After setting a value in a cell, clear this value from the possible values in other cell in the same row or column.</string>
     <!-- The title and summary of the "sound effects" option. -->
     <string name="option_sound_effects_title">Sound effects</string>
     <string name="option_sound_effects_summary">Enable the sound effects</string>

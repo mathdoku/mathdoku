@@ -12,6 +12,11 @@
 			android:title="@string/option_mark_duplicates_title"
 			android:summary="@string/option_mark_duplicates_summary"
 			android:defaultValue="true" />
+		<CheckBoxPreference
+			android:key="redundantPossibles"
+			android:title="@string/option_clear_redundant_possibles_title"
+			android:summary="@string/option_clear_redundant_possibles_summary"
+			android:defaultValue="true" />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/options_group_puzzle" android:key="Puzzle Generation">
 		<ListPreference

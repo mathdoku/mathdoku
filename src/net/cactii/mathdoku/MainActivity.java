@@ -263,6 +263,11 @@ public class MainActivity extends Activity {
 						kenKenGrid.mSelectedCell
 								.setUserValue(kenKenGrid.mSelectedCell
 										.getFirstPossible());
+						if (MainActivity.this.preferences.getBoolean(
+								"redundantPossibles", false)) {
+							// Update possible values for other cells in this row and column.
+							kenKenGrid.clearRedundantPossiblesInSameRowOrColumn();
+						}
 						kenKenGrid.invalidate();
 					}
 				}
@@ -599,6 +604,12 @@ public class MainActivity extends Activity {
 			} else {
 				this.kenKenGrid.mSelectedCell.setUserValue(value);
 				this.kenKenGrid.mSelectedCell.clearPossibles();
+			}
+			
+			if (MainActivity.this.preferences.getBoolean(
+					"redundantPossibles", false)) {
+				// Update possible values for other cells in this row and column.
+				this.kenKenGrid.clearRedundantPossiblesInSameRowOrColumn();
 			}
 		}
 		if (this.preferences.getBoolean("hideselector", false))
