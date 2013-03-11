@@ -74,7 +74,6 @@ public class GridView extends View implements OnTouchListener {
 	public int mTheme;
 
 	// Keep track of all moves as soon as grid is built or restored.
-	private boolean rememberMoves;
 	private ArrayList<Move> moves;
 
 	// Used to avoid redrawing or saving grid during creation of new grid
@@ -115,8 +114,6 @@ public class GridView extends View implements OnTouchListener {
 		this.mCurrentWidth = 0;
 		this.mGridSize = 0;
 		this.mActive = false;
-
-		this.SetRememberMoves(false);
 
 		this.setOnTouchListener((OnTouchListener) this);
 	}
@@ -185,7 +182,6 @@ public class GridView extends View implements OnTouchListener {
 			this.mActive = true;
 			this.mSelectorShown = false;
 			this.setTheme(this.mTheme);
-			this.SetRememberMoves(true);
 		}
 	}
 
@@ -525,8 +521,11 @@ public class GridView extends View implements OnTouchListener {
 			// Another cell was touched
 			this.playSoundEffect(SoundEffectConstants.CLICK);
 			SetSelectedCell(cell);
-			invalidate();
 		}
+		if (this.mTouchedListener != null) {
+			this.mTouchedListener.gridTouched(cell);
+		}
+		invalidate();
 
 		return false;
 	}
@@ -681,41 +680,30 @@ public class GridView extends View implements OnTouchListener {
 	}
 
 	public void AddMove(Move move) {
-		if (rememberMoves) {
-			if (moves == null) {
-				moves = new ArrayList<Move>();
-			}
+		if (moves == null) {
+			moves = new ArrayList<Move>();
+		}
 
-			boolean identicalToLastMove = false;
-			int indexLastMove = moves.size() - 1;
-			if (indexLastMove >= 0) {
-				Move lastMove = moves.get(indexLastMove);
-				identicalToLastMove = lastMove.equals(move);
-			}
-			if (!identicalToLastMove) {
-				moves.add(move);
-			}
+		boolean identicalToLastMove = false;
+		int indexLastMove = moves.size() - 1;
+		if (indexLastMove >= 0) {
+			Move lastMove = moves.get(indexLastMove);
+			identicalToLastMove = lastMove.equals(move);
+		}
+		if (!identicalToLastMove) {
+			moves.add(move);
 		}
 	}
 
 	public void UndoLastMove() {
-		if (rememberMoves) {
-			if (moves != null) {
-				int undoPosition = moves.size() - 1;
+		if (moves != null) {
+			int undoPosition = moves.size() - 1;
 
-				if (undoPosition >= 0) {
-					moves.get(undoPosition).Undo();
-					moves.remove(undoPosition);
-					invalidate();
-				}
+			if (undoPosition >= 0) {
+				moves.get(undoPosition).Undo();
+				moves.remove(undoPosition);
+				invalidate();
 			}
-		}
-	}
-
-	public void SetRememberMoves(boolean rememberMoves) {
-		this.rememberMoves = rememberMoves;
-		if (!rememberMoves && moves != null) {
-			moves.clear();
 		}
 	}
 
@@ -732,7 +720,6 @@ public class GridView extends View implements OnTouchListener {
 		if (this.mTouchedListener != null) {
 			this.mSelectedCell.mSelected = true;
 			this.mCages.get(this.mSelectedCell.getCageId()).mSelected = true;
-			this.mTouchedListener.gridTouched(this.mSelectedCell);
 		}
 	}
 }

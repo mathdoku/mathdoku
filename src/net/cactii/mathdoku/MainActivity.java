@@ -223,6 +223,8 @@ public class MainActivity extends Activity {
 		this.undoButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				MainActivity.this.kenKenGrid.UndoLastMove();
+				if (MainActivity.this.preferences.getBoolean("hideselector", false))
+					MainActivity.this.controls.setVisibility(View.GONE);
 			}
 		});
 
