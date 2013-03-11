@@ -1,6 +1,7 @@
 package net.cactii.mathdoku;
 
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -16,7 +17,11 @@ public class GameTimer extends AsyncTask<Void, Long, Long> {
 	@Override
 	protected Long doInBackground(Void... arg0) {
 		long previousTime = 0;
-		mTimerLabel.setVisibility(View.VISIBLE);
+		
+		if (this.isCancelled()) {
+			return mElapsedTime;
+		}
+		
 		mStartTime = System.currentTimeMillis() - mElapsedTime;
 		publishProgress(mElapsedTime);
 		while (!this.isCancelled()) {
@@ -44,6 +49,9 @@ public class GameTimer extends AsyncTask<Void, Long, Long> {
 		} else {
 			timeString = String.format("%dh%02dm%02ds", hours,
 					(seconds % (3600)) / 60, seconds % 60);
+		}
+		if (this.isCancelled()) {
+			return;
 		}
 		mTimerLabel.setText(timeString);
 	}

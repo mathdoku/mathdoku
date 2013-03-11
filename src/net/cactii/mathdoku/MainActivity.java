@@ -206,7 +206,8 @@ public class MainActivity extends Activity {
 
 						MainActivity.this.pressMenu.setVisibility(View.VISIBLE);
 
-						if (MainActivity.this.mTimerTask != null) {
+						if (MainActivity.this.mTimerTask != null
+								&& !MainActivity.this.mTimerTask.isCancelled()) {
 							MainActivity.this.mTimerTask.cancel(true);
 						}
 
@@ -323,7 +324,8 @@ public class MainActivity extends Activity {
 	public void onPause() {
 		if (this.kenKenGrid.mGridSize > 3) {
 			SaveGame saver = new SaveGame();
-			this.kenKenGrid.mElapsed = mTimerTask.mElapsedTime;
+			this.kenKenGrid.mElapsed = (mTimerTask == null ? 0
+					: mTimerTask.mElapsedTime);
 			saver.Save(this.kenKenGrid);
 		}
 		if (mTimerTask != null && !mTimerTask.isCancelled()) {
