@@ -48,6 +48,14 @@ public class MainActivity extends Activity {
 	public final static Boolean PREF_CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT = false;
 	// TODO: add all other prefs here
 
+	// Identifiers for the context menu
+	private final static int CONTEXT_MENU_REVEAL_CELL = 1;
+	private final static int CONTEXT_MENU_USE_CAGE_MAYBES = 2;
+	private final static int CONTEXT_MENU_REVEAL_OPERATOR = 3;
+	private final static int CONTEXT_MENU_CLEAR_CAGE_CELLS = 4;
+	private final static int CONTEXT_MENU_CLEAR_GRID = 5;
+	private final static int CONTEXT_MENU_SHOW_SOLUTION = 6;
+
 	public GridView kenKenGrid;
 	public Painter mPainter;
 
@@ -316,11 +324,9 @@ public class MainActivity extends Activity {
 		if (object != null && object.getClass() == GridGenerator.class) {
 			mGridGeneratorTask = (GridGenerator) object;
 			mGridGeneratorTask.attachToActivity(this);
-		} 
-		
-		
-		if (!this.preferences.getBoolean(
-				PREF_CREATE_PREVIEW_IMAGES_COMPLETED,
+		}
+
+		if (!this.preferences.getBoolean(PREF_CREATE_PREVIEW_IMAGES_COMPLETED,
 				PREF_CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT)) {
 			// Process of creating preview images is not yet completed. Last
 			// game can not yet be restarted.
@@ -477,50 +483,90 @@ public class MainActivity extends Activity {
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
-		if (!kenKenGrid.mActive)
+		if (!kenKenGrid.mActive) {
+			// No context menu in case puzzle isn't active.
 			return;
-		
-		GridCage gridCage = kenKenGrid.getCageForSelectedCell();
-
-		menu.add(3, 105, 0, R.string.context_menu_show_solution);
-		menu.add(2, 101, 0, R.string.context_menu_use_cage_maybes);
-		menu.setGroupEnabled(2, false);
-		menu.add(0, 102, 0, R.string.context_menu_reveal_cell);
-		if (gridCage != null && gridCage.isOperatorHidden()) {
-			menu.add(4, 106, 0, R.string.context_menu_reveal_operator);
 		}
-		menu.add(1, 103, 0, R.string.context_menu_clear_cage_cells);
-		menu.setGroupEnabled(1, false);
-		menu.add(0, 104, 0, R.string.context_menu_clear_grid);
+
+		// Set title
 		menu.setHeaderTitle(R.string.application_name);
 
-		for (GridCell cell : this.kenKenGrid.mCages
-				.get(this.kenKenGrid.mSelectedCell.getCageId()).mCells) {
-			if (cell.isUserValueSet() || cell.countPossibles() > 0)
-				menu.setGroupEnabled(1, true);
-			if (cell.countPossibles() == 1)
-				menu.setGroupEnabled(2, true);
+		// Determine current selected cage.
+		GridCage selectedGridCage = kenKenGrid.getCageForSelectedCell();
+
+		// Add options to menu only in case the option can be chosen.
+
+		// Option: reveal correct value of selected cell only
+		menu.add(0, CONTEXT_MENU_REVEAL_CELL, 0,
+				R.string.context_menu_reveal_cell);
+
+		// Option: for all cells in the selected cage which have exactly one
+		// possible value, this possible value is set as the user value of the
+		// cell.
+		for (GridCell cell : selectedGridCage.mCells) {
+			if (cell.countPossibles() == 1) {
+				// At least one cell within this cage has exactly one possible
+				// value.
+				menu.add(0, CONTEXT_MENU_USE_CAGE_MAYBES, 0,
+						R.string.context_menu_use_cage_maybes);
+				break;
+			}
 		}
+
+		// Option: reveal the operator of the selected cage
+		if (selectedGridCage != null && selectedGridCage.isOperatorHidden()) {
+			menu.add(0, CONTEXT_MENU_REVEAL_OPERATOR, 0,
+					R.string.context_menu_reveal_operator);
+		}
+
+		// Option: clear all cell in the selected cage
+		for (GridCell cell : selectedGridCage.mCells) {
+			if (cell.isUserValueSet() || cell.countPossibles() > 0) {
+				// At least one cell within this cage has a value or a possible
+				// value.
+				menu.add(0, CONTEXT_MENU_CLEAR_CAGE_CELLS, 0,
+						R.string.context_menu_clear_cage_cells);
+				break;
+			}
+		}
+
+		// Option: clear all cells in the grid
+		for (GridCell cell : selectedGridCage.mCells) {
+			if (cell.isUserValueSet() || cell.countPossibles() > 0) {
+				// At least one cell within this grid view has a value or a
+				// possible value.
+				menu.add(0, CONTEXT_MENU_CLEAR_GRID, 0,
+						R.string.context_menu_clear_grid);
+				break;
+			}
+		}
+
+		// Option: show the solution for this puzzle
+		menu.add(3, CONTEXT_MENU_SHOW_SOLUTION, 0,
+				R.string.context_menu_show_solution);
 	}
 
 	public boolean onContextItemSelected(MenuItem item) {
+		// Get selected cell
 		GridCell selectedCell = this.kenKenGrid.mSelectedCell;
+		GridCage selectedGridCage = kenKenGrid.getCageForSelectedCell();
+
 		switch (item.getItemId()) {
-		case 103: // Clear cage
-			if (selectedCell == null)
+		case CONTEXT_MENU_CLEAR_CAGE_CELLS:
+			if (selectedCell == null) {
 				break;
-			for (GridCell cell : this.kenKenGrid.mCages.get(selectedCell
-					.getCageId()).mCells) {
+			}
+			for (GridCell cell : selectedGridCage.mCells) {
 				cell.saveUndoInformation(null);
 				cell.clearUserValue();
 			}
 			this.kenKenGrid.invalidate();
 			break;
-		case 101: // Use maybes
-			if (selectedCell == null)
+		case CONTEXT_MENU_USE_CAGE_MAYBES:
+			if (selectedCell == null) {
 				break;
-			for (GridCell cell : this.kenKenGrid.mCages.get(selectedCell
-					.getCageId()).mCells) {
+			}
+			for (GridCell cell : selectedGridCage.mCells) {
 				if (cell.countPossibles() == 1) {
 					cell.saveUndoInformation(null);
 					cell.setUserValue(cell.getFirstPossible());
@@ -528,9 +574,10 @@ public class MainActivity extends Activity {
 			}
 			this.kenKenGrid.invalidate();
 			break;
-		case 102: // Reveal cell
-			if (selectedCell == null)
+		case CONTEXT_MENU_REVEAL_CELL:
+			if (selectedCell == null) {
 				break;
+			}
 			selectedCell.saveUndoInformation(null);
 			selectedCell.setUserValue(selectedCell.getCorrectValue());
 			selectedCell.setCheated();
@@ -538,19 +585,19 @@ public class MainActivity extends Activity {
 					Toast.LENGTH_SHORT).show();
 			this.kenKenGrid.invalidate();
 			break;
-		case 104: // Clear grid
+		case CONTEXT_MENU_CLEAR_GRID:
 			openClearDialog();
 			break;
-		case 105: // Show solution
+		case CONTEXT_MENU_SHOW_SOLUTION:
 			this.kenKenGrid.Solve();
 			this.pressMenu.setVisibility(View.VISIBLE);
 			break;
-		case 106:
-			GridCage gridCage = kenKenGrid.getCageForSelectedCell();
-			if (gridCage != null) {
-				gridCage.revealOperator();
-				kenKenGrid.invalidate();
+		case CONTEXT_MENU_REVEAL_OPERATOR:
+			if (selectedGridCage == null) {
+				break;
 			}
+			selectedGridCage.revealOperator();
+			kenKenGrid.invalidate();
 		}
 		return super.onContextItemSelected(item);
 	}
@@ -965,12 +1012,16 @@ public class MainActivity extends Activity {
 		// At least one game file was found for which no preview exist. Show the
 		// progress dialog.
 		mProgressDialogImagePreviewCreation = new ProgressDialog(this);
-		mProgressDialogImagePreviewCreation.setTitle(R.string.main_ui_creating_previews_title);
-		mProgressDialogImagePreviewCreation.setMessage(getResources().getString(
-				R.string.main_ui_creating_previews_message));
-		mProgressDialogImagePreviewCreation.setIcon(android.R.drawable.ic_dialog_info);
-		mProgressDialogImagePreviewCreation.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-		mProgressDialogImagePreviewCreation.setMax(countGameFilesWithoutPreview);
+		mProgressDialogImagePreviewCreation
+				.setTitle(R.string.main_ui_creating_previews_title);
+		mProgressDialogImagePreviewCreation.setMessage(getResources()
+				.getString(R.string.main_ui_creating_previews_message));
+		mProgressDialogImagePreviewCreation
+				.setIcon(android.R.drawable.ic_dialog_info);
+		mProgressDialogImagePreviewCreation
+				.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		mProgressDialogImagePreviewCreation
+				.setMax(countGameFilesWithoutPreview);
 		mProgressDialogImagePreviewCreation.setIndeterminate(false);
 		mProgressDialogImagePreviewCreation.setCancelable(false);
 		mProgressDialogImagePreviewCreation.show();
@@ -1102,7 +1153,8 @@ public class MainActivity extends Activity {
 	 */
 	public Object onRetainNonConfigurationInstance() {
 		if (mGridGeneratorTask != null) {
-			// A new grid is generated in the background. Detach the background task from this activity. It will keep on running until finished.
+			// A new grid is generated in the background. Detach the background
+			// task from this activity. It will keep on running until finished.
 			mGridGeneratorTask.detachFromActivity();
 		}
 		return mGridGeneratorTask;
