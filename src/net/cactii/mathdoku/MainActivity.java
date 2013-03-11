@@ -156,8 +156,13 @@ public class MainActivity extends Activity {
 								// cell.mSelected = false;
 								kenKenGrid.mSelectorShown = false;
 							} else {
-								// maybeButton.setChecked((cell.mPossibles.size()
-								// > 0));
+								// In case the cell holds multiple possible
+								// values, the maybe checkbox has to be checked as
+								// it is more likely that one of possible values
+								// has to be removed.
+								if (cell.mPossibles.size() > 1) {
+									maybeButton.setChecked(true);
+								}
 								controls.requestFocus();
 							}
 							kenKenGrid.requestFocus();
