@@ -224,6 +224,36 @@ public class MainActivity extends Activity {
 			public boolean onTouch(View v, MotionEvent event) {
 				if (event.getAction() == MotionEvent.ACTION_UP)
 					v.playSoundEffect(SoundEffectConstants.CLICK);
+				
+				if (kenKenGrid.mSelectedCell != null) {
+					// Apply new setting of maybe button on current selected
+					// cell.
+
+					// Note: the maybeButton.isChecked holds *old* value
+					// until this method is finished...
+					boolean maybeIsChecked = !maybeButton.isChecked();
+
+					// Change user value to a possible value in case the maybe
+					// button is just checked.
+					if (maybeIsChecked
+							&& kenKenGrid.mSelectedCell.isUserValueSet()) {
+						int curValue = kenKenGrid.mSelectedCell.getUserValue();
+						kenKenGrid.mSelectedCell.clearUserValue();
+						kenKenGrid.mSelectedCell.togglePossible(curValue);
+						kenKenGrid.invalidate();
+					}
+
+					// In case the cell contains only one possible value, it
+					// will be set as user value as the maybe button is just
+					// unchecked.
+					if (!maybeIsChecked
+							&& kenKenGrid.mSelectedCell.mPossibles.size() == 1) {
+						kenKenGrid.mSelectedCell
+								.setUserValue(kenKenGrid.mSelectedCell
+										.getFirstPossible());
+						kenKenGrid.invalidate();
+					}
+				}				
 				return false;
 			}
 

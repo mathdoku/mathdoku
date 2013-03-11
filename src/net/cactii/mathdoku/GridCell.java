@@ -415,4 +415,7 @@ public class GridCell {
 		}
 	}
 
+	public int getFirstPossible() {
+		return this.mPossibles.get(0);
+	}
 }
