@@ -531,8 +531,11 @@ public class MainActivity extends Activity {
 	}
 
 	public void digitSelected(int value) {
-		if (this.kenKenGrid.mSelectedCell == null)
+		if (this.kenKenGrid.mSelectedCell == null) {
+			Toast.makeText(getBaseContext(), R.string.select_cell_before_value,
+					Toast.LENGTH_SHORT).show();
 			return;
+		}
 		if (value == 0) { // Clear Button
 			this.kenKenGrid.mSelectedCell.mPossibles.clear();
 			this.kenKenGrid.mSelectedCell.setUserValue(0);

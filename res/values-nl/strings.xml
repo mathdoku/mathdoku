@@ -80,4 +80,6 @@ redistribute and/or modify this translation yourself under the terms of the GNU 
 	<string name="hide_operators_dialog_message">Operatie tekens verbergen?</string>
 	<string name="Yes">Ja, ik houd van een uitdaging</string>
 	<string name="No">Nee, houd het simpel</string>
+	<!-- Alert to select a cell before a value is selected -->
+	<string name="select_cell_before_value">Selecteer eerst een cel.</string>
 </resources>

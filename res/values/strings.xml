@@ -126,4 +126,6 @@
 	<string name="Yes">Yes, I like a challenge</string>
 	<!-- Alert Dialog No button text -->
 	<string name="No">No, keep it simple</string>
+	<!-- Alert to select a cell before a value is selected -->
+	<string name="select_cell_before_value">Select a cell first.</string>
 </resources>
