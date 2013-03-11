@@ -35,10 +35,16 @@ public class GameTimer extends AsyncTask<Void, Long, Long> {
 	}
 
 	protected void onProgressUpdate(Long... time) {
+		String timeString;
 		int seconds = (int) (time[0] / 1000); // Whole seconds.
 		int hours = (int) Math.floor(seconds / (60 * 60));
-		String timeString = String.format("%dh%2dm%02ds", hours,
-				(seconds % (3600)) / 60, seconds % 60);
+		if (hours == 0) {
+			timeString = String.format("%2dm%02ds", 
+					(seconds % (3600)) / 60, seconds % 60);
+		} else {
+			timeString = String.format("%dh%02dm%02ds", hours,
+					(seconds % (3600)) / 60, seconds % 60);
+		}
 		mTimerLabel.setText(timeString);
 	}
 
