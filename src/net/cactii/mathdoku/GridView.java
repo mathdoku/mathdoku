@@ -4,13 +4,10 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
+import net.cactii.mathdoku.Painter.GridPainter;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.DashPathEffect;
-import android.graphics.DiscretePathEffect;
-import android.graphics.Paint;
-import android.graphics.Paint.Style;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -31,10 +28,6 @@ public class GridView extends View implements OnTouchListener {
 	// stored on several distinct lines. As from now all view variables are
 	// collected on single line as well.
 	public static final String SAVE_GAME_GRID_VERSION_01 = "VIEW.v1";
-
-	public static final int THEME_CARVED = 0;
-	public static final int THEME_NEWSPAPER = 1;
-	public static final int THEME_INVERT = 2;
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
@@ -77,11 +70,7 @@ public class GridView extends View implements OnTouchListener {
 	public TextView animText;
 
 	public int mCurrentWidth;
-	public Paint mGridPaint;
-	public Paint mBorderPaint;
-	public int mBackgroundColor;
 
-	public Typeface mFace;
 	public boolean mDupedigits;
 	public boolean mBadMaths;
 
@@ -94,6 +83,9 @@ public class GridView extends View implements OnTouchListener {
 
 	// Keep track of all moves as soon as grid is built or restored.
 	private ArrayList<CellChange> moves;
+
+	// Reference to the global grid painter object
+	private GridPainter mGridPainter;
 
 	// Used to avoid redrawing or saving grid during creation of new grid
 	public final Object mLock = new Object();
@@ -119,58 +111,15 @@ public class GridView extends View implements OnTouchListener {
 		this.mDupedigits = true;
 		this.mBadMaths = true;
 
-		this.mGridPaint = new Paint();
-		this.mGridPaint.setColor(0x80000000);
-		this.mGridPaint.setStrokeWidth(0);
-		// this.mGridPaint.setPathEffect(new DashPathEffect(new float[] {2, 2},
-		// 0));
-
-		this.mBorderPaint = new Paint();
-		this.mBorderPaint.setColor(0xFF000000);
-		this.mBorderPaint.setStrokeWidth(3);
-		this.mBorderPaint.setStyle(Style.STROKE);
-
 		this.mCurrentWidth = 0;
 		this.mGridSize = 0;
 		this.mActive = false;
 
 		this.setOnTouchListener((OnTouchListener) this);
-	}
-
-	public void setTheme(int theme) {
-		if (theme == THEME_CARVED) {
-			this.mGridPaint.setAntiAlias(true);
-			this.mGridPaint.setPathEffect(new DiscretePathEffect(20, 1));
-			this.mGridPaint.setColor(0xbf906050);
-			this.mBorderPaint.setAntiAlias(true);
-			this.mBorderPaint.setPathEffect(new DiscretePathEffect(30, 1));
-			this.mBorderPaint.setColor(0xff000000);
-			this.mBackgroundColor = 0x7ff0d090;
-		} else if (theme == THEME_NEWSPAPER) {
-			this.mGridPaint.setPathEffect(new DashPathEffect(
-					new float[] { 2, 2 }, 0));
-			this.mBorderPaint.setAntiAlias(false);
-			this.mBorderPaint.setPathEffect(null);
-			this.mBorderPaint.setColor(0xff000000);
-			this.mBackgroundColor = 0xffffffff;
-		} else if (theme == THEME_INVERT) {
-			this.mGridPaint.setColor(0xff7f7f7f);
-			this.mGridPaint.setPathEffect(new DashPathEffect(
-					new float[] { 2, 2 }, 0));
-			this.mBorderPaint.setPathEffect(new DiscretePathEffect(30, 1));
-
-			this.mBorderPaint.setPathEffect(null);
-			this.mBorderPaint.setColor(0xffe0e0e0);
-			this.mBackgroundColor = 0xff000000;
-		}
-		if (this.getMeasuredHeight() < 150)
-			this.mBorderPaint.setStrokeWidth(1);
-		else
-			this.mBorderPaint.setStrokeWidth(3);
-
-		if (this.mCells != null)
-			for (GridCell cell : this.mCells)
-				cell.setTheme(theme);
+		
+		Painter painter = Painter.getInstance(this.getContext());
+		painter.setGridBorder((this.getMeasuredHeight() < 150));
+		this.mGridPainter = painter.mGridPainter;
 	}
 
 	public void reCreate(boolean hideOperators) {
@@ -216,7 +165,6 @@ public class GridView extends View implements OnTouchListener {
 			Log.d("MathDoku", "Num Attempts = " + num_attempts);
 			this.mActive = true;
 			this.mSelectorShown = false;
-			this.setTheme(this.mTheme);
 		}
 	}
 
@@ -789,7 +737,7 @@ public class GridView extends View implements OnTouchListener {
 				this.mCurrentWidth = width;
 
 			// Fill canvas background
-			canvas.drawColor(this.mBackgroundColor);
+			canvas.drawColor(mGridPainter.mBackgroundColor);
 
 			// Check cage correctness
 			for (GridCage cage : this.mCages)
@@ -800,12 +748,13 @@ public class GridView extends View implements OnTouchListener {
 				float pos = ((float) this.mCurrentWidth / (float) this.mGridSize)
 						* i;
 				canvas.drawLine(0, pos, this.mCurrentWidth, pos,
-						this.mGridPaint);
+						mGridPainter.mInnerPaint);
 				canvas.drawLine(pos, 0, pos, this.mCurrentWidth,
-						this.mGridPaint);
+						mGridPainter.mInnerPaint);
 			}
 
 			// Draw cells
+			Painter.getInstance().setCellSize((float) width / (float) this.mGridSize);
 			for (GridCell cell : this.mCells) {
 				if ((cell.isUserValueSet() && this.getNumValueInCol(cell) > 1)
 						|| (cell.isUserValueSet() && this
@@ -817,12 +766,12 @@ public class GridView extends View implements OnTouchListener {
 			}
 
 			// Draw borders
-			canvas.drawLine(0, 1, this.mCurrentWidth, 1, this.mBorderPaint);
-			canvas.drawLine(1, 0, 1, this.mCurrentWidth, this.mBorderPaint);
+			canvas.drawLine(0, 1, this.mCurrentWidth, 1, mGridPainter.mOuterPaint);
+			canvas.drawLine(1, 0, 1, this.mCurrentWidth, mGridPainter.mOuterPaint);
 			canvas.drawLine(0, this.mCurrentWidth - 2, this.mCurrentWidth,
-					this.mCurrentWidth - 2, this.mBorderPaint);
+					this.mCurrentWidth - 2, mGridPainter.mOuterPaint);
 			canvas.drawLine(this.mCurrentWidth - 2, 0, this.mCurrentWidth - 2,
-					this.mCurrentWidth, this.mBorderPaint);
+					this.mCurrentWidth, mGridPainter.mOuterPaint);
 
 			// Draw cells again
 			for (GridCell cell : this.mCells) {

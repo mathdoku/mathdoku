@@ -1,22 +1,24 @@
 package net.cactii.mathdoku;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import net.cactii.mathdoku.Painter.CagePainter;
+import net.cactii.mathdoku.Painter.CellPainter;
+import net.cactii.mathdoku.Painter.Maybe1x9Painter;
+import net.cactii.mathdoku.Painter.Maybe3x3Painter;
+import net.cactii.mathdoku.Painter.UserValuePainter;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
-import android.graphics.DiscretePathEffect;
 import android.graphics.Paint;
-import android.graphics.Paint.Style;
-import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 
 public class GridCell {
+	private static final String TAG = "MathDoku.GridCell";
+
 	// Identifiers of different versions of cell information which is stored in
-	// saved game. 
+	// saved game.
 	private final String SAVE_GAME_CELL_VERSION_01 = "CELL";
 	private final String SAVE_GAME_CELL_VERSION_02 = "CELL.v2";
 
@@ -53,25 +55,22 @@ public class GridCell {
 	// Highlight user input isn't correct value
 	private boolean mInvalidHighlight;
 
-	public static final int BORDER_NONE = 0;
-	public static final int BORDER_SOLID = 1;
-	public static final int BORDER_WARN = 3;
-	public static final int BORDER_CAGE_SELECTED = 4;
+	public static enum BorderType {
+		NONE, CELL_WARNING, OUTER_OF_CAGE_NOT_SELECTED, OUTER_OF_CAGE_SELECTED
+	}
 
-	public int[] mBorderTypes;
+	// Borders of the cell
+	public BorderType borderTypeTop;
+	public BorderType borderTypeBottom;
+	public BorderType borderTypeLeft;
+	public BorderType borderTypeRight;
 
-	private Paint mValuePaint;
-	private Paint mBorderPaint;
-	private Paint mCageSelectedPaint;
-
-	private Paint mWrongBorderPaint;
-	private Paint mCageTextPaint;
-	private Paint mPossiblesPaint;
-	private Paint mWarningPaint;
-	private Paint mCheatedPaint;
-	private Paint mSelectedPaint;
-
-	public int mTheme;
+	// References to the global painter objects.
+	private CellPainter mCellPainter;
+	private UserValuePainter mUserValuePainter;
+	private Maybe3x3Painter mMaybe3x3Painter;
+	private Maybe1x9Painter mMaybe1x9Painter;
+	private CagePainter mCagePainter;
 
 	public GridCell(GridView context, int cell) {
 		int gridSize = context.mGridSize;
@@ -86,108 +85,21 @@ public class GridCell {
 		this.mShowWarning = false;
 		this.mCheated = false;
 		this.mInvalidHighlight = false;
-
+		this.mPossibles = new ArrayList<Integer>();
 		this.mPosX = 0;
 		this.mPosY = 0;
 
-		this.mValuePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		// Retrieve all painters
+		this.mCellPainter = Painter.getInstance().mCellPainter;
+		this.mUserValuePainter = Painter.getInstance().mUserValuePainter;
+		this.mMaybe3x3Painter = Painter.getInstance().mMaybe3x3Painter;
+		this.mMaybe1x9Painter = Painter.getInstance().mMaybe1x9Painter;
+		this.mCagePainter = Painter.getInstance().mCagePainter;
 
-		// this.mValuePaint.setTypeface(Typeface.create(Typeface.SANS_SERIF,
-		// Typeface.BOLD));
-
-		this.mBorderPaint = new Paint();
-
-		this.mWrongBorderPaint = new Paint();
-
-		this.mCageSelectedPaint = new Paint();
-
-		this.mWarningPaint = new Paint();
-
-		this.mCheatedPaint = new Paint();
-
-		this.mSelectedPaint = new Paint();
-
-		this.mCageTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
-		// this.mCageTextPaint.setTypeface(Typeface.create(Typeface.SANS_SERIF,
-		// Typeface.BOLD));
-
-		this.mPossiblesPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
-		this.mPossibles = new ArrayList<Integer>();
-
-		this.setBorders(BORDER_NONE, BORDER_NONE, BORDER_NONE, BORDER_NONE);
-	}
-
-	public void setTheme(int theme) {
-		this.mTheme = theme;
-
-		this.mValuePaint.setColor(0xFF000000);
-		this.mBorderPaint.setColor(0xFF000000);
-		this.mBorderPaint.setStrokeWidth(2);
-		this.mWrongBorderPaint.setColor(0xFFBB0000);
-		this.mWrongBorderPaint.setStrokeWidth(2);
-		// this.mCageSelectedPaint.setColor(0xFF9BCF00);
-		this.mCageSelectedPaint.setStrokeWidth(3);
-		this.mWarningPaint.setColor(0x50FF0000);
-		this.mWarningPaint.setStyle(Paint.Style.FILL);
-		this.mCheatedPaint.setColor(0x90ffcea0);
-		this.mCheatedPaint.setStyle(Paint.Style.FILL);
-		this.mSelectedPaint.setColor(0xD0F0D042);
-		this.mSelectedPaint.setStyle(Paint.Style.FILL);
-		this.mCageTextPaint.setColor(0xFF0000A0);
-		this.mCageTextPaint.setTextSize(14);
-		this.mPossiblesPaint.setColor(0xFF000000);
-		this.mPossiblesPaint.setTextSize(10);
-		this.mPossiblesPaint.setTypeface(Typeface.create(Typeface.SANS_SERIF,
-				Typeface.NORMAL));
-
-		if (theme == GridView.THEME_CARVED) {
-			this.mBorderPaint.setAntiAlias(true);
-			this.mBorderPaint.setPathEffect(new DiscretePathEffect(20, 1));
-			this.mWrongBorderPaint.setAntiAlias(true);
-			this.mWrongBorderPaint.setPathEffect(new DiscretePathEffect(20, 1));
-			this.mValuePaint.setTypeface(this.mContext.mFace);
-			this.mCageTextPaint.setTypeface(this.mContext.mFace);
-		} else if (theme == GridView.THEME_NEWSPAPER) {
-			this.mBorderPaint.setAntiAlias(false);
-			this.mBorderPaint.setPathEffect(null);
-			this.mWrongBorderPaint.setAntiAlias(true);
-			this.mWrongBorderPaint.setPathEffect(null);
-			this.mValuePaint.setTypeface(Typeface.create(Typeface.SANS_SERIF,
-					Typeface.NORMAL));
-			this.mCageTextPaint.setTypeface(Typeface.create(
-					Typeface.SANS_SERIF, Typeface.NORMAL));
-		} else if (theme == GridView.THEME_INVERT) {
-			this.mBorderPaint.setColor(0xFFFFFFFF);
-			this.mCageTextPaint.setColor(0xFFFFFFC0);
-			this.mPossiblesPaint.setColor(0xFFFFFFFF);
-			this.mBorderPaint.setStrokeWidth(3);
-			this.mValuePaint.setColor(0xFFFFFFFF);
-			this.mSelectedPaint.setColor(0xB0A0A030);
-			this.mSelectedPaint.setStyle(Paint.Style.STROKE);
-			this.mSelectedPaint.setStrokeWidth(5);
-			this.mCageSelectedPaint.setStrokeWidth(5);
-			this.mCageSelectedPaint.setColor(0xFF000000);
-
-			// this.mBorderPaint.setPathEffect(new DiscretePathEffect(20, 1));
-			// this.mWrongBorderPaint.setPathEffect(new DiscretePathEffect(20,
-			// 1));
-			this.mBorderPaint.setPathEffect(null);
-			this.mWrongBorderPaint.setPathEffect(null);
-			this.mWrongBorderPaint.setStrokeWidth(5);
-			this.mBorderPaint.setAntiAlias(true);
-			this.mWrongBorderPaint.setAntiAlias(true);
-
-			// this.mBorderPaint.setAntiAlias(false);
-			// this.mBorderPaint.setPathEffect(null);
-			// this.mWrongBorderPaint.setAntiAlias(true);
-			// this.mWrongBorderPaint.setPathEffect(null);
-			this.mValuePaint.setTypeface(Typeface.create(Typeface.SANS_SERIF,
-					Typeface.NORMAL));
-			this.mCageTextPaint.setTypeface(Typeface.create(
-					Typeface.SANS_SERIF, Typeface.NORMAL));
-		}
+		borderTypeTop = BorderType.NONE;
+		borderTypeRight = BorderType.NONE;
+		borderTypeBottom = BorderType.NONE;
+		borderTypeLeft = BorderType.NONE;
 	}
 
 	public String toString() {
@@ -198,31 +110,20 @@ public class GridCell {
 		return str;
 	}
 
-	/*
-	 * Sets the cells border type to the given values.
-	 * 
-	 * Border is BORDER_NONE, BORDER_SOLID, BORDER_WARN or BORDER_CAGE_SELECTED.
-	 */
-	public void setBorders(int north, int east, int south, int west) {
-		int[] borders = new int[4];
-		borders[0] = north;
-		borders[1] = east;
-		borders[2] = south;
-		borders[3] = west;
-		this.mBorderTypes = borders;
-	}
-
-	/* Returns the Paint object for the given border of this cell. */
-	private Paint getBorderPaint(int border) {
-		switch (this.mBorderTypes[border]) {
-		case BORDER_NONE:
+	private Paint getBorderPaint(BorderType borderType, boolean onlyBorders) { 
+		switch (borderType) {
+		case NONE:
 			return null;
-		case BORDER_SOLID:
-			return this.mBorderPaint;
-		case BORDER_WARN:
-			return this.mWrongBorderPaint;
-		case BORDER_CAGE_SELECTED:
-			return this.mCageSelectedPaint;
+		case CELL_WARNING:
+			return mCellPainter.mBorderWrongPaint;
+		case OUTER_OF_CAGE_NOT_SELECTED:
+			return mCagePainter.mBorderPaint;
+		case OUTER_OF_CAGE_SELECTED:
+			if (onlyBorders) {
+				return mCagePainter.mBorderSelectedPaint;
+			} else {
+				return mCagePainter.mBorderPaint;
+			}
 		}
 		return null;
 	}
@@ -286,15 +187,13 @@ public class GridCell {
 	public void onDraw(Canvas canvas, boolean onlyBorders) {
 
 		// Calculate x and y for the cell origin (topleft)
-		float cellSize = (float) this.mContext.getMeasuredWidth()
-				/ (float) this.mContext.mGridSize;
-		this.mPosX = cellSize * this.mColumn;
-		this.mPosY = cellSize * this.mRow;
+		this.mPosX = this.mCellPainter.mCellSize * this.mColumn;
+		this.mPosY = this.mCellPainter.mCellSize * this.mRow;
 
-		float north = this.mPosY;
-		float south = this.mPosY + cellSize;
-		float east = this.mPosX + cellSize;
-		float west = this.mPosX;
+		float top = this.mPosY;
+		float bottom = this.mPosY + this.mCellPainter.mCellSize;
+		float left = this.mPosX + this.mCellPainter.mCellSize;
+		float right = this.mPosX;
 		GridCell cellAbove = this.mContext.getCellAt(this.mRow - 1,
 				this.mColumn);
 		GridCell cellLeft = this.mContext
@@ -304,69 +203,73 @@ public class GridCell {
 		GridCell cellBelow = this.mContext.getCellAt(this.mRow + 1,
 				this.mColumn);
 
-		// North
-		Paint borderPaint = this.getBorderPaint(0);
-		if (!onlyBorders && this.mBorderTypes[0] > 2)
-			borderPaint = this.mBorderPaint;
+		// Top
+		Paint borderPaint = getBorderPaint(borderTypeTop, onlyBorders);
 		if (borderPaint != null) {
-			canvas.drawLine(west, north, east, north, borderPaint);
+			canvas.drawLine(right, top, left, top, borderPaint);
 		}
 
-		// East
-		borderPaint = this.getBorderPaint(1);
-		if (!onlyBorders && this.mBorderTypes[1] > 2)
-			borderPaint = this.mBorderPaint;
-		if (borderPaint != null)
-			canvas.drawLine(east, north, east, south, borderPaint);
-
-		// South
-		borderPaint = this.getBorderPaint(2);
-		if (!onlyBorders && this.mBorderTypes[2] > 2)
-			borderPaint = this.mBorderPaint;
-		if (borderPaint != null)
-			canvas.drawLine(west, south, east, south, borderPaint);
-
-		// West
-		borderPaint = this.getBorderPaint(3);
-		if (!onlyBorders && this.mBorderTypes[3] > 2)
-			borderPaint = this.mBorderPaint;
+		// Right
+		borderPaint = getBorderPaint(borderTypeRight, onlyBorders);
 		if (borderPaint != null) {
-			canvas.drawLine(west, north, west, south, borderPaint);
+			canvas.drawLine(left, top, left, bottom, borderPaint);
+		}
+
+		// Bottom
+		borderPaint = getBorderPaint(borderTypeBottom, onlyBorders);
+		if (borderPaint != null) {
+			canvas.drawLine(right, bottom, left, bottom, borderPaint);
+		}
+
+		// Left
+		borderPaint = getBorderPaint(borderTypeLeft, onlyBorders);
+		if (borderPaint != null) {
+			canvas.drawLine(right, top, right, bottom, borderPaint);
 		}
 
 		if (!onlyBorders) {
-			if ((this.mShowWarning && this.mContext.mDupedigits)
-					|| this.mInvalidHighlight)
-				canvas.drawRect(west + 1, north + 1, east - 1, south - 1,
-						this.mWarningPaint);
-			if (this.mSelected)
-				// canvas.drawRect(west + 1, north + 1, east - 1, south - 1,
-				canvas.drawRect(west + 3, north + 3, east - 3, south - 3,
-						this.mSelectedPaint);
-			if (this.mCheated)
-				canvas.drawRect(west + 1, north + 1, east - 1, south - 1,
-						this.mCheatedPaint);
+			if ((mShowWarning && mContext.mDupedigits)
+					|| mInvalidHighlight) {
+				canvas.drawRect(right + 1, top + 1, left - 1, bottom - 1,
+						mCellPainter.mBackgroundWarningPaint);
+			}
+			if (this.mSelected) {
+				canvas.drawRect(right + 3, top + 3, left - 3, bottom - 3,
+						mCellPainter.mBackgroundSelectedPaint);
+			}
+			if (this.mCheated) {
+				canvas.drawRect(right + 1, top + 1, left - 1, bottom - 1,
+						mCellPainter.mBackgroundCheatedPaint);
+			}
 		} else {
-			if (this.mBorderTypes[0] > 2)
-				if (cellAbove == null)
-					north += 2;
-				else
-					north += 1;
-			if (this.mBorderTypes[3] > 2)
-				if (cellLeft == null)
-					west += 2;
-				else
-					west += 1;
-			if (this.mBorderTypes[1] > 2)
-				if (cellRight == null)
-					east -= 3;
-				else
-					east -= 2;
-			if (this.mBorderTypes[2] > 2)
-				if (cellBelow == null)
-					south -= 3;
-				else
-					south -= 2;
+			if (this.borderTypeTop == BorderType.OUTER_OF_CAGE_SELECTED) {
+				if (cellAbove == null) {
+					top += 2;
+				} else {
+					top += 1;
+				}
+			}
+			if (this.borderTypeRight == BorderType.OUTER_OF_CAGE_SELECTED) {
+				if (cellRight == null) {
+					left -= 3;
+				} else {
+					left -= 2;
+				}
+			}
+			if (this.borderTypeBottom == BorderType.OUTER_OF_CAGE_SELECTED) {
+				if (cellBelow == null) {
+					bottom -= 3;
+				} else {
+					bottom -= 2;
+				}
+			}
+			if (this.borderTypeLeft == BorderType.OUTER_OF_CAGE_SELECTED) {
+				if (cellLeft == null) {
+					right += 2;
+				} else {
+					right += 1;
+				}
+			}
 		}
 
 		if (onlyBorders)
@@ -374,27 +277,16 @@ public class GridCell {
 
 		// Cell value
 		if (this.isUserValueSet()) {
-			int textSize = (int) (cellSize * 3 / 4);
-			this.mValuePaint.setTextSize(textSize);
-			float leftOffset = cellSize / 2 - textSize / 4;
-			float topOffset;
-			if (this.mTheme == GridView.THEME_NEWSPAPER) {
-				topOffset = cellSize / 2 + textSize * 2 / 5;
-			} else {
-				topOffset = cellSize / 2 + textSize / 3;
-			}
-			canvas.drawText("" + this.mUserValue, this.mPosX + leftOffset,
-					this.mPosY + topOffset, this.mValuePaint);
+			canvas.drawText("" + this.mUserValue, this.mPosX
+					+ this.mUserValuePainter.mLeftOffset, this.mPosY
+					+ this.mUserValuePainter.mTopOffset,
+					this.mUserValuePainter.mPaint);
 		}
 		// Cage text
-		int cageTextSize = (int) (cellSize / 3);
-		this.mCageTextPaint.setTextSize(cageTextSize);
 		if (!this.mCageText.equals("")) {
 			canvas.drawText(this.mCageText, this.mPosX + 2, this.mPosY
-					+ cageTextSize, this.mCageTextPaint);
-
-			// canvas.drawText(this.mCageText, this.mPosX + 2, this.mPosY + 13,
-			// this.mCageTextPaint);
+					+ mCagePainter.mTextPaint.getTextSize(),
+					mCagePainter.mTextPaint);
 		}
 
 		// Draw pencilled in digits.
@@ -403,29 +295,25 @@ public class GridCell {
 			SharedPreferences prefs = PreferenceManager
 					.getDefaultSharedPreferences(activity);
 			if (prefs.getBoolean("maybe3x3", true)) {
-				this.mPossiblesPaint.setFakeBoldText(true);
-				this.mPossiblesPaint.setTextSize((int) (cellSize / 4.5));
-				int xOffset = (int) (cellSize / 3);
-				int yOffset = (int) (cellSize / 2) + 1;
-				float xScale = (float) 0.21 * cellSize;
-				float yScale = (float) 0.21 * cellSize;
 				for (int i = 0; i < mPossibles.size(); i++) {
 					int possible = mPossibles.get(i);
-					float xPos = mPosX + xOffset + ((possible - 1) % 3)
-							* xScale;
-					float yPos = mPosY + yOffset + ((int) (possible - 1) / 3)
-							* yScale;
+					float xPos = mPosX + mMaybe3x3Painter.mLeftOffset
+							+ ((possible - 1) % 3) * mMaybe3x3Painter.mScale;
+					float yPos = mPosY + mMaybe3x3Painter.mTopOffset
+							+ ((int) (possible - 1) / 3)
+							* mMaybe3x3Painter.mScale;
 					canvas.drawText(Integer.toString(possible), xPos, yPos,
-							this.mPossiblesPaint);
+							this.mMaybe3x3Painter.mTextPaint);
 				}
 			} else {
-				this.mPossiblesPaint.setFakeBoldText(false);
-				mPossiblesPaint.setTextSize((int) (cellSize / 4));
 				String possibles = "";
-				for (int i = 0; i < mPossibles.size(); i++)
+				for (int i = 0; i < mPossibles.size(); i++) {
 					possibles += Integer.toString(mPossibles.get(i));
-				canvas.drawText(possibles, mPosX + 3, mPosY + cellSize - 5,
-						mPossiblesPaint);
+				}
+				canvas.drawText(possibles,
+						mPosX + mMaybe1x9Painter.mLeftOffset, mPosY
+								+ mMaybe1x9Painter.mTopOffset,
+						mMaybe1x9Painter.mTextPaint);
 			}
 		}
 	}

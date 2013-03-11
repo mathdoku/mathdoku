@@ -5,12 +5,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import net.cactii.mathdoku.GridCell.BorderType;
+
 import android.text.method.HideReturnsTransformationMethod;
 import android.util.Log;
 
 public class GridCage {
 	// Identifiers of different versions of cage information which is stored in
-	// saved game. 
+	// saved game.
 	private static final String SAVE_GAME_CAGE_VERSION_01 = "CAGE";
 	private static final String SAVE_GAME_CAGE_VERSION_02 = "CAGE.v2";
 
@@ -298,40 +300,49 @@ public class GridCage {
 	 */
 	public void setBorders() {
 		for (GridCell cell : this.mCells) {
-			for (int x = 0; x < 4; x++) {
-				cell.mBorderTypes[x] = 0;
+			cell.borderTypeTop = BorderType.NONE;
+			cell.borderTypeRight = BorderType.NONE;
+			cell.borderTypeBottom = BorderType.NONE;
+			cell.borderTypeLeft = BorderType.NONE;
+			if (this.mContext.CageIdAt(cell.getRow() - 1, cell.getColumn()) != this.mId) {
+				if (!this.mUserMathCorrect && this.mContext.mBadMaths) {
+					cell.borderTypeTop = BorderType.CELL_WARNING;
+				} else if (this.mSelected) {
+					cell.borderTypeTop = BorderType.OUTER_OF_CAGE_SELECTED;
+				} else {
+					cell.borderTypeTop = BorderType.OUTER_OF_CAGE_NOT_SELECTED;
+				}
 			}
-			if (this.mContext.CageIdAt(cell.getRow() - 1, cell.getColumn()) != this.mId)
-				if (!this.mUserMathCorrect && this.mContext.mBadMaths)
-					cell.mBorderTypes[0] = GridCell.BORDER_WARN;
-				else if (this.mSelected)
-					cell.mBorderTypes[0] = GridCell.BORDER_CAGE_SELECTED;
-				else
-					cell.mBorderTypes[0] = GridCell.BORDER_SOLID;
 
-			if (this.mContext.CageIdAt(cell.getRow(), cell.getColumn() + 1) != this.mId)
-				if (!this.mUserMathCorrect && this.mContext.mBadMaths)
-					cell.mBorderTypes[1] = GridCell.BORDER_WARN;
-				else if (this.mSelected)
-					cell.mBorderTypes[1] = GridCell.BORDER_CAGE_SELECTED;
-				else
-					cell.mBorderTypes[1] = GridCell.BORDER_SOLID;
+			if (this.mContext.CageIdAt(cell.getRow(), cell.getColumn() + 1) != this.mId) {
+				if (!this.mUserMathCorrect && this.mContext.mBadMaths) {
+					cell.borderTypeRight = BorderType.CELL_WARNING;
+				} else if (this.mSelected) {
+					cell.borderTypeRight = BorderType.OUTER_OF_CAGE_SELECTED;
+				} else {
+					cell.borderTypeRight = BorderType.OUTER_OF_CAGE_NOT_SELECTED;
+				}
+			}
 
-			if (this.mContext.CageIdAt(cell.getRow() + 1, cell.getColumn()) != this.mId)
-				if (!this.mUserMathCorrect && this.mContext.mBadMaths)
-					cell.mBorderTypes[2] = GridCell.BORDER_WARN;
-				else if (this.mSelected)
-					cell.mBorderTypes[2] = GridCell.BORDER_CAGE_SELECTED;
-				else
-					cell.mBorderTypes[2] = GridCell.BORDER_SOLID;
+			if (this.mContext.CageIdAt(cell.getRow() + 1, cell.getColumn()) != this.mId) {
+				if (!this.mUserMathCorrect && this.mContext.mBadMaths) {
+					cell.borderTypeBottom = BorderType.CELL_WARNING;
+				} else if (this.mSelected) {
+					cell.borderTypeBottom = BorderType.OUTER_OF_CAGE_SELECTED;
+				} else {
+					cell.borderTypeBottom = BorderType.OUTER_OF_CAGE_NOT_SELECTED;
+				}
+			}
 
-			if (this.mContext.CageIdAt(cell.getRow(), cell.getColumn() - 1) != this.mId)
-				if (!this.mUserMathCorrect && this.mContext.mBadMaths)
-					cell.mBorderTypes[3] = GridCell.BORDER_WARN;
-				else if (this.mSelected)
-					cell.mBorderTypes[3] = GridCell.BORDER_CAGE_SELECTED;
-				else
-					cell.mBorderTypes[3] = GridCell.BORDER_SOLID;
+			if (this.mContext.CageIdAt(cell.getRow(), cell.getColumn() - 1) != this.mId) {
+				if (!this.mUserMathCorrect && this.mContext.mBadMaths) {
+					cell.borderTypeLeft = BorderType.CELL_WARNING;
+				} else if (this.mSelected) {
+					cell.borderTypeLeft = BorderType.OUTER_OF_CAGE_SELECTED;
+				} else {
+					cell.borderTypeLeft = BorderType.OUTER_OF_CAGE_NOT_SELECTED;
+				}
+			}
 		}
 	}
 

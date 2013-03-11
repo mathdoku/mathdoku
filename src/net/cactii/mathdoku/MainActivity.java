@@ -1,9 +1,7 @@
 package net.cactii.mathdoku;
 
-import java.io.File;
-import java.util.Random;
-
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
+import net.cactii.mathdoku.Painter.GridTheme;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,10 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
-import android.graphics.Typeface;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -58,6 +53,7 @@ public class MainActivity extends Activity {
 	private final static int DIALOG_CREATE_NEW_GAME = 0;
 
 	public GridView kenKenGrid;
+	public Painter mPainter;
 
 	TextView solvedText;
 	TextView pressMenu;
@@ -133,6 +129,8 @@ public class MainActivity extends Activity {
 				this.digits[1], this.digits[2], this.digits[3], this.digits[4],
 				this.digits[5], this.digits[6], this.digits[7], this.digits[8],
 				this.clearDigit, this.maybeButton, this.undoButton };
+		
+		this.mPainter = Painter.getInstance(this);
 
 		solvedAnimation = AnimationUtils.loadAnimation(MainActivity.this,
 				R.anim.solvedanim);
@@ -201,10 +199,6 @@ public class MainActivity extends Activity {
 						}
 					}
 				});
-
-		this.kenKenGrid.mFace = Typeface.createFromAsset(this.getAssets(),
-				"fonts/font.ttf");
-		this.solvedText.setTypeface(this.kenKenGrid.mFace);
 
 		this.kenKenGrid
 				.setSolvedHandler(this.kenKenGrid.new OnSolvedListener() {
@@ -360,22 +354,24 @@ public class MainActivity extends Activity {
 		pressMenu.setTextColor(0xff000000);
 		pressMenu.setBackgroundColor(0xa0f0f0f0);
 		String theme = preferences.getString("theme", "newspaper");
-
+		solvedText.setTypeface(mPainter.mGridPainter.mSolvedTypeface);
+				
 		if ("newspaper".equals(theme)) {
 			topLayout.setBackgroundResource(R.drawable.newspaper);
-			kenKenGrid.setTheme(GridView.THEME_NEWSPAPER);
+			mPainter.setTheme(GridTheme.NEWSPAPER);
 			mTimerText.setBackgroundColor(0x90808080);
 			mMaybeText.setTextColor(0xFF000000);
+			
 		} else if ("inverted".equals(theme)) {
 			topLayout.setBackgroundResource(R.drawable.newspaper_dark);
-			kenKenGrid.setTheme(GridView.THEME_INVERT);
+			mPainter.setTheme(GridTheme.DARK);
 			pressMenu.setTextColor(0xfff0f0f0);
 			pressMenu.setBackgroundColor(0xff000000);
 			mTimerText.setTextColor(0xFFF0F0F0);
 			mMaybeText.setTextColor(0xFFFFFFFF);
 		} else if ("carved".equals(theme)) {
 			topLayout.setBackgroundResource(R.drawable.background);
-			kenKenGrid.setTheme(GridView.THEME_CARVED);
+			mPainter.setTheme(GridTheme.CARVED);
 			mTimerText.setBackgroundColor(0x10000000);
 			mMaybeText.setTextColor(0xFF000000);
 		}
