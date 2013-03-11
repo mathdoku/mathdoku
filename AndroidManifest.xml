@@ -1,22 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="net.cactii.mathdoku"
-      android:versionName="1.95d" android:versionCode="77">
-    <application android:icon="@drawable/icon" android:label="@string/application_name">
-        <activity android:name=".MainActivity"
-                  android:label="@string/application_name">
+    package="net.cactii.mathdoku"
+    android:versionCode="77"
+    android:versionName="1.95d" >
+
+    <application
+        android:icon="@drawable/icon"
+        android:label="@string/application_name" >
+        <activity
+            android:name="net.cactii.mathdoku.MainActivity"
+            android:label="@string/application_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".OptionsActivity"/>
-        <activity android:name="net.cactii.mathdoku.GameFileList"/>
+        <activity android:name="net.cactii.mathdoku.OptionsActivity" />
+        <activity android:name="net.cactii.mathdoku.GameFileList" />
     </application>
-    <uses-sdk android:minSdkVersion="3"/>
-	<supports-screens android:smallScreens="true"
-					  android:normalScreens="true"
-					  android:largeScreens="true"
-					  android:anyDensity="true">
-	</supports-screens>
-</manifest> 
+
+    <uses-sdk android:minSdkVersion="3" />
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true" >
+    </supports-screens>
+
+</manifest>
