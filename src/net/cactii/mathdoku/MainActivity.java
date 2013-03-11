@@ -407,6 +407,7 @@ public class MainActivity extends Activity {
 		Log.d("Mathdoku", "Loading game: " + filename);
 		SaveGame saver = new SaveGame(filename);
 		if (saver.Restore(this.kenKenGrid)) {
+			this.puzzleGrid.setVisibility(View.VISIBLE);
 			this.setButtonVisibility(this.kenKenGrid.mGridSize);
 			this.kenKenGrid.mActive = true;
 			this.mTimerTask = new GameTimer();
