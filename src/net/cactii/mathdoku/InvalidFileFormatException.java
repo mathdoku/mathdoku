@@ -4,7 +4,7 @@ public class InvalidFileFormatException extends Exception {
 	String errorMessage;
 
 	/**
-	 * Creates a new instance of {@link InvalidFileFormatException} in 
+	 * Creates a new instance of {@link InvalidFileFormatException}.
 	 */
 	public InvalidFileFormatException() {
 		super();
@@ -13,7 +13,7 @@ public class InvalidFileFormatException extends Exception {
 
 	/**
 	 * Creates a new instance of {@link InvalidFileFormatException}.
-
+	 * 
 	 * @param errorMessage
 	 */
 	public InvalidFileFormatException(String errorMessage) {

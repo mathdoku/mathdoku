@@ -234,7 +234,7 @@ public class Painter {
 			mGridPainter.mOuterPaint.setColor(0xff000000);
 
 			mGridPainter.mBackgroundColor = 0x7ff0d090;
-			
+
 			mGridPainter.mSolvedTypeface = mTypefaceCarved;
 
 			mCellPainter.mBorderWrongPaint.setColor(0xFFBB0000);
@@ -311,7 +311,7 @@ public class Painter {
 			mGridPainter.mOuterPaint.setColor(0xffe0e0e0);
 
 			mGridPainter.mBackgroundColor = 0xff000000;
-			
+
 			mGridPainter.mSolvedTypeface = mTypefaceSansSerif;
 
 			mCellPainter.mBorderWrongPaint.setColor(0xFFBB0000);

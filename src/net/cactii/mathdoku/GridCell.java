@@ -42,9 +42,8 @@ public class GridCell {
 	// Y pixel position
 	public float mPosY;
 
-	// View context
-	private GridView mGridView;
-	
+	private Grid mGrid;
+
 	// Whether to show warning background (duplicate value in row/col)
 	public boolean mShowWarning;
 	// Whether to show cell as selected
@@ -71,9 +70,9 @@ public class GridCell {
 	private Maybe1x9Painter mMaybe1x9Painter;
 	private CagePainter mCagePainter;
 
-	public GridCell(GridView context, int cell) {
-		int gridSize = context.mGridSize;
-		this.mGridView = context;
+	public GridCell(Grid grid, int cell) {
+		int gridSize = grid.getGridSize();
+		this.mGrid = grid;
 		this.mCellNumber = cell;
 		this.mColumn = cell % gridSize;
 		this.mRow = (int) (cell / gridSize);
@@ -159,6 +158,11 @@ public class GridCell {
 		this.mPossibles.clear();
 		this.mUserValue = digit;
 		mInvalidHighlight = false;
+
+		// Check if grid is solved.
+		if (mGrid != null) {
+			mGrid.checkIfSolved();
+		}
 	}
 
 	public void clearUserValue() {
@@ -183,7 +187,8 @@ public class GridCell {
 	}
 
 	/* Draw the cell. Border and text is drawn. */
-	public void onDraw(Canvas canvas, boolean onlyBorders, boolean possibleValuesIn3x3Grid) {
+	public void onDraw(Canvas canvas, boolean onlyBorders,
+			boolean showDupeDigits, boolean possibleValuesIn3x3Grid) {
 
 		// Calculate x and y for the cell origin (topleft)
 		this.mPosX = this.mCellPainter.mCellSize * this.mColumn;
@@ -193,13 +198,13 @@ public class GridCell {
 		float bottom = this.mPosY + this.mCellPainter.mCellSize;
 		float left = this.mPosX + this.mCellPainter.mCellSize;
 		float right = this.mPosX;
-		GridCell cellAbove = this.mGridView.getCellAt(this.mRow - 1,
+		GridCell cellAbove = this.mGrid.getCellAt(this.mRow - 1,
 				this.mColumn);
-		GridCell cellLeft = this.mGridView
-				.getCellAt(this.mRow, this.mColumn - 1);
-		GridCell cellRight = this.mGridView.getCellAt(this.mRow,
+		GridCell cellLeft = this.mGrid.getCellAt(this.mRow,
+				this.mColumn - 1);
+		GridCell cellRight = this.mGrid.getCellAt(this.mRow,
 				this.mColumn + 1);
-		GridCell cellBelow = this.mGridView.getCellAt(this.mRow + 1,
+		GridCell cellBelow = this.mGrid.getCellAt(this.mRow + 1,
 				this.mColumn);
 
 		// Top
@@ -227,7 +232,7 @@ public class GridCell {
 		}
 
 		if (!onlyBorders) {
-			if ((mShowWarning && mGridView.mDupedigits) || mInvalidHighlight) {
+			if ((mShowWarning && showDupeDigits) || mInvalidHighlight) {
 				canvas.drawRect(right + 1, top + 1, left - 1, bottom - 1,
 						mCellPainter.mBackgroundWarningPaint);
 			}
@@ -443,7 +448,7 @@ public class GridCell {
 		CellChange move = new CellChange(this, this.mUserValue, this.mPossibles);
 		if (originalCellChange == null) {
 			// This move is not a result of another move.
-			this.mGridView.AddMove(move);
+			this.mGrid.AddMove(move);
 		} else {
 			originalCellChange.addRelatedMove(move);
 		}
@@ -462,8 +467,8 @@ public class GridCell {
 		}
 	}
 
-	public void Select() {
-		mGridView.SetSelectedCell(this);
+	public void select() {
+		mGrid.setSelectedCell(this);
 	}
 
 	/**
@@ -484,13 +489,27 @@ public class GridCell {
 	public void setCheated() {
 		this.mCheated = true;
 	}
-	
+
 	/**
-	 * Sets the reference to the grid view to which this cell belongs.
+	 * Sets the reference to the grid to which this cell belongs.
 	 * 
-	 * @param gridView The grid view the cell should refer to.
+	 * @param grid
+	 *            The grid the cell should refer to.
 	 */
-	public void setGridViewReference(GridView gridView) {
-		mGridView = gridView;
+	public void setGridReference(Grid grid) {
+		mGrid = grid;
+	}
+
+	public void checkWithOtherValuesInRowAndColumn() {
+		if (isUserValueSet()) {
+			if (mGrid.getNumValueInCol(this) > 1
+					|| mGrid.getNumValueInRow(this) > 1) {
+				// Value has been used in another cell in the same row or
+				// column.
+				mShowWarning = true;
+				return;
+			}
+		}
+		mShowWarning = false;
 	}
 }

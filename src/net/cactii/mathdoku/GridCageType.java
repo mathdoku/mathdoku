@@ -1,10 +1,5 @@
 package net.cactii.mathdoku;
 
-import java.util.ArrayList;
-
-import net.cactii.mathdoku.DevelopmentHelper.Mode;
-
-import android.util.Log;
 
 public class GridCageType {
 	public static final String TAG = "MathDoku.GridCageType";

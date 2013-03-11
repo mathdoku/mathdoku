@@ -1,6 +1,5 @@
 package net.cactii.mathdoku;
 
-import java.io.File;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -66,12 +65,13 @@ public class GameFileListAdapter extends BaseAdapter {
 	 */
 	public void refreshFiles() {
 		this.mGameFiles.clear();
-		for (String gameFilename : GameFile.getAllGameFilesCreatedByUser(Integer.MAX_VALUE)) {
+		for (String gameFilename : GameFile
+				.getAllGameFilesCreatedByUser(Integer.MAX_VALUE)) {
 			// Load headers of this game file as they contain all
 			// information needed (except the preview image itself) to
 			// display and sort the list.
 			GameFile.GameFileHeader gameFileHeader = new GameFile(gameFilename)
-					.loadHeadersOnly(this.mContext);
+					.loadHeadersOnly();
 			if (gameFileHeader != null) {
 				this.mGameFiles.add(gameFileHeader);
 			}

@@ -38,8 +38,10 @@ public class CellChange {
 
 	/**
 	 * Restores a GridCell using the undo information.
+	 * 
+	 * @return The grid cell for which a change was made undone.
 	 */
-	public void restore() {
+	public GridCell restore() {
 		if (this.relatedCellChanges != null) {
 			// First Undo all related moves.
 			for (CellChange relatedMove : this.relatedCellChanges) {
@@ -47,7 +49,8 @@ public class CellChange {
 			}
 		}
 		cell.Undo(this.previousUserValue, this.previousPossibleValues);
-		cell.Select();
+
+		return cell;
 	}
 
 	/**
@@ -64,7 +67,9 @@ public class CellChange {
 		this.relatedCellChanges.add(relatedCellChange);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
@@ -76,7 +81,9 @@ public class CellChange {
 		return str;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -109,7 +116,9 @@ public class CellChange {
 								.equals(lhs.previousPossibleValues));
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override

@@ -56,7 +56,11 @@ public class MainActivity extends Activity {
 	private final static int CONTEXT_MENU_CLEAR_GRID = 5;
 	private final static int CONTEXT_MENU_SHOW_SOLUTION = 6;
 
-	public GridView kenKenGrid;
+	// The grid and the view which will display the grid.
+	public Grid grid;
+	public GridView mGridView;
+
+	// A global painter object to paint the grid in different themes.
 	public Painter mPainter;
 
 	TextView solvedText;
@@ -108,9 +112,9 @@ public class MainActivity extends Activity {
 		this.preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		this.topLayout = (RelativeLayout) findViewById(R.id.topLayout);
 		this.puzzleGrid = (RelativeLayout) findViewById(R.id.puzzleGrid);
-		this.kenKenGrid = (GridView) findViewById(R.id.gridView);
+		this.mGridView = (GridView) findViewById(R.id.gridView);
 		this.solvedText = (TextView) findViewById(R.id.solvedText);
-		this.kenKenGrid.animText = this.solvedText;
+		this.mGridView.animText = this.solvedText;
 		this.pressMenu = (TextView) findViewById(R.id.pressMenu);
 		this.controls = (RelativeLayout) findViewById(R.id.controls);
 		this.mGameSeedLabel = (TextView) findViewById(R.id.gameSeedLabel);
@@ -130,7 +134,7 @@ public class MainActivity extends Activity {
 		this.maybeButton = (CheckBox) findViewById(R.id.maybeButton);
 		this.undoButton = (Button) findViewById(R.id.undoButton);
 
-		this.sound_effect_views = new View[] { this.kenKenGrid, this.digits[0],
+		this.sound_effect_views = new View[] { this.mGridView, this.digits[0],
 				this.digits[1], this.digits[2], this.digits[3], this.digits[4],
 				this.digits[5], this.digits[6], this.digits[7], this.digits[8],
 				this.clearDigit, this.maybeButton, this.undoButton };
@@ -165,8 +169,8 @@ public class MainActivity extends Activity {
 			}
 		});
 
-		this.kenKenGrid
-				.setOnGridTouchListener(this.kenKenGrid.new OnGridTouchListener() {
+		this.mGridView
+				.setOnGridTouchListener(this.mGridView.new OnGridTouchListener() {
 					@Override
 					public void gridTouched(GridCell cell) {
 						if (controls.getVisibility() == View.VISIBLE) {
@@ -175,7 +179,7 @@ public class MainActivity extends Activity {
 									"hideselector", false)) {
 								controls.startAnimation(outAnimation);
 								// cell.mSelected = false;
-								kenKenGrid.mSelectorShown = false;
+								mGridView.mSelectorShown = false;
 							} else {
 								// In case the cell holds multiple possible
 								// values, the maybe checkbox has to checked as
@@ -187,7 +191,7 @@ public class MainActivity extends Activity {
 
 								controls.requestFocus();
 							}
-							kenKenGrid.requestFocus();
+							mGridView.requestFocus();
 						} else {
 							if (MainActivity.this.preferences.getBoolean(
 									"hideselector", false)) {
@@ -196,46 +200,12 @@ public class MainActivity extends Activity {
 										.loadAnimation(MainActivity.this,
 												R.anim.selectorzoomin);
 								controls.startAnimation(animation);
-								kenKenGrid.mSelectorShown = true;
+								mGridView.mSelectorShown = true;
 							}
 							// maybeButton.setChecked((cell.mPossibles.size() >
 							// 0));
 							controls.requestFocus();
 						}
-					}
-				});
-
-		this.kenKenGrid
-				.setSolvedHandler(this.kenKenGrid.new OnSolvedListener() {
-					@Override
-					public void puzzleSolved() {
-						MainActivity.this.controls.setVisibility(View.GONE);
-						if (kenKenGrid.mActive
-								&& !kenKenGrid.isSolvedByCheating()
-								&& kenKenGrid.countMoves() > 0) {
-							// Only display animation in case the user has just
-							// solved this game. Do not show in case the user
-							// cheated by requesting to show the solution or in
-							// case an already solved game was reloaded.
-							animText(R.string.main_ui_solved_messsage,
-									0xFF002F00);
-						}
-
-						MainActivity.this.pressMenu.setVisibility(View.VISIBLE);
-
-						if (MainActivity.this.mTimerTask != null
-								&& !MainActivity.this.mTimerTask.isCancelled()) {
-							MainActivity.this.mTimerTask.cancel(true);
-						}
-
-						if (MainActivity.this.mTimerText.getVisibility() == View.VISIBLE
-								&& kenKenGrid.isSolvedByCheating()) {
-							// Hide time in case the puzzle was solved by
-							// requesting to show the solution.
-							MainActivity.this.mTimerText
-									.setVisibility(View.INVISIBLE);
-						}
-
 					}
 				});
 
@@ -254,7 +224,11 @@ public class MainActivity extends Activity {
 		});
 		this.undoButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				MainActivity.this.kenKenGrid.UndoLastMove();
+				if (MainActivity.this.grid.UndoLastMove()) {
+					// Succesfull undo
+					mGridView.invalidate();
+				}
+
 				if (MainActivity.this.preferences.getBoolean("hideselector",
 						false))
 					MainActivity.this.controls.setVisibility(View.GONE);
@@ -268,7 +242,8 @@ public class MainActivity extends Activity {
 				if (event.getAction() == MotionEvent.ACTION_UP)
 					v.playSoundEffect(SoundEffectConstants.CLICK);
 
-				if (kenKenGrid.mSelectedCell != null) {
+				GridCell selectedCell = grid.getSelectedCell();
+				if (selectedCell != null) {
 					// Apply new setting of maybe button on current selected
 					// cell.
 
@@ -278,33 +253,30 @@ public class MainActivity extends Activity {
 
 					// Change user value to a possible value in case the maybe
 					// button is just checked.
-					if (maybeIsChecked
-							&& kenKenGrid.mSelectedCell.isUserValueSet()) {
-						kenKenGrid.mSelectedCell.saveUndoInformation(null);
-						int curValue = kenKenGrid.mSelectedCell.getUserValue();
-						kenKenGrid.mSelectedCell.clearUserValue();
-						kenKenGrid.mSelectedCell.togglePossible(curValue);
-						kenKenGrid.invalidate();
+					if (maybeIsChecked && selectedCell.isUserValueSet()) {
+						selectedCell.saveUndoInformation(null);
+						int curValue = selectedCell.getUserValue();
+						selectedCell.clearUserValue();
+						selectedCell.togglePossible(curValue);
+						mGridView.invalidate();
 					}
 
 					// In case the cell contains only one possible value, it
 					// will be set as user value as the maybe button is just
 					// unchecked.
-					if (!maybeIsChecked
-							&& kenKenGrid.mSelectedCell.countPossibles() == 1) {
-						CellChange originalUserMove = kenKenGrid.mSelectedCell
+					if (!maybeIsChecked && selectedCell.countPossibles() == 1) {
+						// TODO: move to GridCell and/or Grid
+						CellChange originalUserMove = selectedCell
 								.saveUndoInformation(null);
-						kenKenGrid.mSelectedCell
-								.setUserValue(kenKenGrid.mSelectedCell
-										.getFirstPossible());
+						selectedCell.setUserValue(selectedCell
+								.getFirstPossible());
 						if (MainActivity.this.preferences.getBoolean(
 								"redundantPossibles", false)) {
 							// Update possible values for other cells in this
 							// row and column.
-							kenKenGrid
-									.clearRedundantPossiblesInSameRowOrColumn(originalUserMove);
+							grid.clearRedundantPossiblesInSameRowOrColumn(originalUserMove);
 						}
-						kenKenGrid.invalidate();
+						mGridView.invalidate();
 					}
 				}
 				return false;
@@ -314,10 +286,10 @@ public class MainActivity extends Activity {
 
 		newVersionCheck();
 
-		this.kenKenGrid.setFocusable(true);
-		this.kenKenGrid.setFocusableInTouchMode(true);
+		this.mGridView.setFocusable(true);
+		this.mGridView.setFocusableInTouchMode(true);
 
-		registerForContextMenu(this.kenKenGrid);
+		registerForContextMenu(this.mGridView);
 
 		// Restore background process if running.
 		Object object = this.getLastNonConfigurationInstance();
@@ -338,11 +310,11 @@ public class MainActivity extends Activity {
 	}
 
 	public void onPause() {
-		if (this.kenKenGrid.mGridSize > 3) {
+		if (grid.getGridSize() > 3) {
 			GameFile saver = new GameFile();
-			this.kenKenGrid.mElapsed = (mTimerTask == null ? 0
-					: mTimerTask.mElapsedTime);
-			saver.save(this.kenKenGrid);
+			this.grid.setElapsedTime((mTimerTask == null ? 0
+					: mTimerTask.mElapsedTime));
+			saver.save(grid, this.mGridView);
 		}
 		if (mTimerTask != null && !mTimerTask.isCancelled()) {
 			mTimerTask.cancel(true);
@@ -396,27 +368,9 @@ public class MainActivity extends Activity {
 		}
 
 		setTheme();
-		this.kenKenGrid.mDupedigits = this.preferences.getBoolean("dupedigits",
-				true);
-		this.kenKenGrid.mBadMaths = this.preferences.getBoolean("badmaths",
-				true);
-		if (this.kenKenGrid.mActive
-				&& !MainActivity.this.preferences.getBoolean("hideselector",
-						false)) {
-			this.controls.setVisibility(View.VISIBLE);
-		}
-		if (this.kenKenGrid.mActive
-				&& (this.mTimerTask == null || this.mTimerTask.isCancelled())) {
-			this.mTimerTask = new GameTimer();
-			this.mTimerTask.mElapsedTime = this.kenKenGrid.mElapsed;
-			this.mTimerTask.mTimerLabel = mTimerText;
-			if (this.preferences.getBoolean("timer", true)) {
-				mTimerText.setVisibility(View.VISIBLE);
-			} else {
-				mTimerText.setVisibility(View.GONE);
-			}
-			this.mTimerTask.execute();
-		}
+		
+		this.mGridView.setPreferences(this.preferences);
+
 		this.setSoundEffectsEnabled(this.preferences.getBoolean("soundeffects",
 				true));
 
@@ -441,33 +395,26 @@ public class MainActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode != 7 || resultCode != Activity.RESULT_OK)
 			return;
-		if (mTimerTask != null && !mTimerTask.isCancelled()) {
-			mTimerTask.cancel(true);
-		}
 		Bundle extras = data.getExtras();
 		String filename = extras.getString("filename");
 		Log.d("Mathdoku", "Loading game: " + filename);
-		GameFile saver = new GameFile(filename);
-		if (saver.load(this.kenKenGrid)) {
-			this.puzzleGrid.setVisibility(View.VISIBLE);
-			this.setButtonVisibility(this.kenKenGrid.mGridSize);
-			this.kenKenGrid.mActive = true;
-			this.mTimerTask = new GameTimer();
-			this.mTimerTask.mElapsedTime = this.kenKenGrid.mElapsed;
-			this.mTimerTask.mTimerLabel = mTimerText;
-			this.mTimerTask.execute();
+		Grid newGrid = new GameFile(filename).load();
+		if (newGrid != null) {
+			setNewGrid(newGrid);
 		}
 	}
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		// Disable or enable solution option depending on whether grid is active
-		menu.findItem(R.id.checkprogress).setVisible(kenKenGrid.mActive);
+		// Disable or enable option to check progress depending on whether grid
+		// is active
+		menu.findItem(R.id.checkprogress).setVisible(
+				(grid != null && grid.isActive()));
 
 		// Load/save can only be used in case a grid is displayed (which can be
 		// saved) or in case a game file exists which can be loaded.
 		menu.findItem(R.id.saveload).setVisible(
-				kenKenGrid.mActive || GameFileList.canBeUsed());
+				(grid != null && grid.isActive()) || GameFileList.canBeUsed());
 
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -483,7 +430,7 @@ public class MainActivity extends Activity {
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
-		if (!kenKenGrid.mActive) {
+		if (grid == null || !grid.isActive()) {
 			// No context menu in case puzzle isn't active.
 			return;
 		}
@@ -492,7 +439,7 @@ public class MainActivity extends Activity {
 		menu.setHeaderTitle(R.string.application_name);
 
 		// Determine current selected cage.
-		GridCage selectedGridCage = kenKenGrid.getCageForSelectedCell();
+		GridCage selectedGridCage = grid.getCageForSelectedCell();
 
 		// Add options to menu only in case the option can be chosen.
 
@@ -548,8 +495,8 @@ public class MainActivity extends Activity {
 
 	public boolean onContextItemSelected(MenuItem item) {
 		// Get selected cell
-		GridCell selectedCell = this.kenKenGrid.mSelectedCell;
-		GridCage selectedGridCage = kenKenGrid.getCageForSelectedCell();
+		GridCell selectedCell = grid.getSelectedCell();
+		GridCage selectedGridCage = grid.getCageForSelectedCell();
 
 		switch (item.getItemId()) {
 		case CONTEXT_MENU_CLEAR_CAGE_CELLS:
@@ -560,7 +507,7 @@ public class MainActivity extends Activity {
 				cell.saveUndoInformation(null);
 				cell.clearUserValue();
 			}
-			this.kenKenGrid.invalidate();
+			this.mGridView.invalidate();
 			break;
 		case CONTEXT_MENU_USE_CAGE_MAYBES:
 			if (selectedCell == null) {
@@ -572,7 +519,7 @@ public class MainActivity extends Activity {
 					cell.setUserValue(cell.getFirstPossible());
 				}
 			}
-			this.kenKenGrid.invalidate();
+			this.mGridView.invalidate();
 			break;
 		case CONTEXT_MENU_REVEAL_CELL:
 			if (selectedCell == null) {
@@ -583,13 +530,14 @@ public class MainActivity extends Activity {
 			selectedCell.setCheated();
 			Toast.makeText(this, R.string.main_ui_cheat_messsage,
 					Toast.LENGTH_SHORT).show();
-			this.kenKenGrid.invalidate();
+			this.mGridView.invalidate();
 			break;
 		case CONTEXT_MENU_CLEAR_GRID:
 			openClearDialog();
 			break;
 		case CONTEXT_MENU_SHOW_SOLUTION:
-			this.kenKenGrid.Solve();
+			this.grid.Solve();
+			this.mGridView.invalidate();
 			this.pressMenu.setVisibility(View.VISIBLE);
 			break;
 		case CONTEXT_MENU_REVEAL_OPERATOR:
@@ -597,7 +545,7 @@ public class MainActivity extends Activity {
 				break;
 			}
 			selectedGridCage.revealOperator();
-			kenKenGrid.invalidate();
+			mGridView.invalidate();
 		}
 		return super.onContextItemSelected(item);
 	}
@@ -673,11 +621,11 @@ public class MainActivity extends Activity {
 			return true;
 		case R.id.checkprogress:
 			int textId;
-			if (kenKenGrid.isSolutionValidSoFar())
+			if (grid.isSolutionValidSoFar())
 				textId = R.string.ProgressOK;
 			else {
 				textId = R.string.ProgressBad;
-				kenKenGrid.markInvalidChoices();
+				mGridView.markInvalidChoices();
 			}
 			Toast toast = Toast.makeText(getApplicationContext(), textId,
 					Toast.LENGTH_SHORT);
@@ -699,88 +647,30 @@ public class MainActivity extends Activity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (event.getAction() == KeyEvent.ACTION_DOWN
 				&& keyCode == KeyEvent.KEYCODE_BACK
-				&& this.kenKenGrid.mSelectorShown) {
+				&& this.mGridView.mSelectorShown) {
 			this.controls.setVisibility(View.GONE);
-			this.kenKenGrid.requestFocus();
-			this.kenKenGrid.mSelectorShown = false;
-			this.kenKenGrid.invalidate();
+			this.mGridView.requestFocus();
+			this.mGridView.mSelectorShown = false;
+			this.mGridView.invalidate();
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
 	}
 
 	public void digitSelected(int value) {
-		if (this.kenKenGrid.mSelectedCell == null) {
-			Toast.makeText(getBaseContext(), R.string.select_cell_before_value,
-					Toast.LENGTH_SHORT).show();
-			return;
-		}
-		CellChange orginalUserMove = this.kenKenGrid.mSelectedCell
-				.saveUndoInformation(null);
-		if (value == 0) { // Clear Button
-			this.kenKenGrid.mSelectedCell.clearPossibles();
-			this.kenKenGrid.mSelectedCell.setUserValue(0);
+		this.mGridView.digitSelected(value, this.maybeButton.isChecked());
 
-		} else {
-			if (this.maybeButton.isChecked()) {
-				if (kenKenGrid.mSelectedCell.isUserValueSet())
-					this.kenKenGrid.mSelectedCell.clearUserValue();
-				this.kenKenGrid.mSelectedCell.togglePossible(value);
-			} else {
-				this.kenKenGrid.mSelectedCell.setUserValue(value);
-				this.kenKenGrid.mSelectedCell.clearPossibles();
-			}
-
-			if (MainActivity.this.preferences.getBoolean("redundantPossibles",
-					false)) {
-				// Update possible values for other cells in this row and
-				// column.
-				this.kenKenGrid
-						.clearRedundantPossiblesInSameRowOrColumn(orginalUserMove);
-			}
-		}
-		if (this.preferences.getBoolean("hideselector", false))
+		if (this.preferences.getBoolean("hideselector", false)) {
 			this.controls.setVisibility(View.GONE);
-		// this.kenKenGrid.mSelectedCell.mSelected = false;
-		this.kenKenGrid.requestFocus();
-		this.kenKenGrid.mSelectorShown = false;
-		this.kenKenGrid.invalidate();
+		}
+		this.mGridView.requestFocus();
+		this.mGridView.mSelectorShown = false;
+		this.mGridView.invalidate();
 	}
 
 	private void restartLastGame() {
-		GameFile defaultGameFile = new GameFile();
-		if (defaultGameFile.load(this.kenKenGrid)) {
-			// Game file is loaded into grid.
-			this.kenKenGrid.invalidate();
-
-			// Set visibility of controls.
-			this.puzzleGrid.setVisibility(View.VISIBLE);
-			this.setButtonVisibility(this.kenKenGrid.mGridSize);
-
-			this.kenKenGrid.mActive = true;
-
-			// Start timer
-			this.mTimerTask = new GameTimer();
-			this.mTimerTask.mElapsedTime = this.kenKenGrid.mElapsed;
-			this.mTimerTask.mTimerLabel = mTimerText;
-			if (this.preferences.getBoolean("timer", true)) {
-				mTimerText.setVisibility(View.VISIBLE);
-			}
-			this.mTimerTask.execute();
-
-			// Debug information
-			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
-				MainActivity.this.mGameSeedLabel.setVisibility(View.VISIBLE);
-				MainActivity.this.mGameSeedText.setVisibility(View.VISIBLE);
-				MainActivity.this.mGameSeedText.setText(String.format("%,d",
-						MainActivity.this.kenKenGrid.getGameSeed()));
-			}
-		} else {
-			// Can not load the last game.
-			this.puzzleGrid.setVisibility(View.GONE);
-			this.controls.setVisibility(View.GONE);
-			this.pressMenu.setVisibility(View.VISIBLE);
-		}
+		Grid newGrid = new GameFile().load();
+		setNewGrid(newGrid);
 	}
 
 	/**
@@ -796,7 +686,6 @@ public class MainActivity extends Activity {
 		if (mTimerTask != null && !mTimerTask.isCancelled()) {
 			mTimerTask.cancel(true);
 		}
-		kenKenGrid.mActive = false;
 
 		// Start a background task to generate the new grid. As soon as the new
 		// grid is created, the method onNewGridReady will be called.
@@ -805,41 +694,16 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Replace the current grid with the given grid.
-	 * 
-	 * @param gridView
-	 *            The grid which has to be shown.
+	 * Reactivate the main ui after a new game is loaded into the grid view by
+	 * the ASync GridGenerator task.
 	 */
-	public void onNewGridReady(GridView gridView) {
+	public void onNewGridReady(Grid grid) {
 		mGridGeneratorTask = null;
-
-		// Get relevant information from the new grid view.
-		kenKenGrid.merge(gridView);
-
-		// Set UI components
-		puzzleGrid.setVisibility(View.VISIBLE);
-		setTheme();
-		setButtonVisibility(kenKenGrid.mGridSize);
-		maybeButton.setChecked(false);
-
-		// Start new timer
-		mTimerTask = new GameTimer();
-		mTimerTask.mTimerLabel = mTimerText;
-		mTimerTask.execute();
-
-		kenKenGrid.clearUserValues();
-
-		// Show game seed in case running in development mode.
-		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
-			mGameSeedLabel.setVisibility(View.VISIBLE);
-			mGameSeedText.setVisibility(View.VISIBLE);
-			mGameSeedText
-					.setText(String.format("%,d", kenKenGrid.getGameSeed()));
-		}
+		setNewGrid(grid);
 	}
 
-	public void setButtonVisibility(int gridSize) {
-
+	public void setButtonVisibility() {
+		int gridSize = grid.getGridSize();
 		for (int i = 4; i < 9; i++)
 			if (i < gridSize)
 				this.digits[i].setVisibility(View.VISIBLE);
@@ -863,8 +727,8 @@ public class MainActivity extends Activity {
 		final float SCALE_FROM = (float) 0;
 		final float SCALE_TO = (float) 1.0;
 		ScaleAnimation anim = new ScaleAnimation(SCALE_FROM, SCALE_TO,
-				SCALE_FROM, SCALE_TO, this.kenKenGrid.mCurrentWidth / 2,
-				this.kenKenGrid.mCurrentWidth / 2);
+				SCALE_FROM, SCALE_TO, this.mGridView.mCurrentWidth / 2,
+				this.mGridView.mCurrentWidth / 2);
 		anim.setDuration(1000);
 		// animText.setAnimation(anim);
 		this.solvedText.startAnimation(this.solvedAnimation);
@@ -933,7 +797,8 @@ public class MainActivity extends Activity {
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-								MainActivity.this.kenKenGrid.clearUserValues();
+								MainActivity.this.grid.clearUserValues();
+								MainActivity.this.mGridView.invalidate();
 							}
 						}).show();
 	}
@@ -1039,7 +904,7 @@ public class MainActivity extends Activity {
 				// visible in the grid view.
 				if (mGameFileImagePreviewCreation != null) {
 					// Save preview for the current game file.
-					mGameFileImagePreviewCreation.savePreviewImage(kenKenGrid);
+					mGameFileImagePreviewCreation.savePreviewImage(mGridView);
 					mProgressDialogImagePreviewCreation.incrementProgressBy(1);
 				}
 
@@ -1047,16 +912,19 @@ public class MainActivity extends Activity {
 				// created.
 				mGameFileImagePreviewCreation = getNextGameFileWithoutPreview();
 				if (mGameFileImagePreviewCreation != null) {
-					// Load the this next game file.
-					mGameFileImagePreviewCreation.load(kenKenGrid);
-					kenKenGrid.invalidate();
+					Grid newGrid = mGameFileImagePreviewCreation.load();
+					if (newGrid != null) {
+						grid = newGrid;
+						mGridView.loadNewGrid(grid);
+						puzzleGrid.setVisibility(View.INVISIBLE);
+						controls.setVisibility(View.GONE);
+						pressMenu.setVisibility(View.GONE);
 
-					// Post a message for further processing of the
-					// conversion
-					// game after the view has been refreshed with the
-					// loaded
-					// game.
-					mHandler.post(this);
+						// Post a message for further processing of the
+						// conversion game after the view has been refreshed
+						// with the loaded game.
+						mHandler.post(this);
+					}
 				} else {
 					// All preview images have been created.
 
@@ -1158,5 +1026,92 @@ public class MainActivity extends Activity {
 			mGridGeneratorTask.detachFromActivity();
 		}
 		return mGridGeneratorTask;
+	}
+
+	public void setOnSolvedHandler() {
+		this.grid.setSolvedHandler(this.grid.new OnSolvedListener() {
+			@Override
+			public void puzzleSolved() {
+				MainActivity.this.controls.setVisibility(View.GONE);
+				if (grid.isActive() && !grid.isSolvedByCheating()
+						&& grid.countMoves() > 0) {
+					// Only display animation in case the user has just
+					// solved this game. Do not show in case the user
+					// cheated by requesting to show the solution or in
+					// case an already solved game was reloaded.
+					animText(R.string.main_ui_solved_messsage, 0xFF002F00);
+				}
+
+				MainActivity.this.pressMenu.setVisibility(View.VISIBLE);
+
+				if (MainActivity.this.mTimerTask != null
+						&& !MainActivity.this.mTimerTask.isCancelled()) {
+					MainActivity.this.mTimerTask.cancel(true);
+				}
+
+				if (MainActivity.this.mTimerText.getVisibility() == View.VISIBLE
+						&& grid.isSolvedByCheating()) {
+					// Hide time in case the puzzle was solved by
+					// requesting to show the solution.
+					MainActivity.this.mTimerText.setVisibility(View.INVISIBLE);
+				}
+
+			}
+		});
+	}
+
+	public void setNewGrid(Grid grid) {
+		if (grid != null) {
+			this.grid = grid;
+			this.mGridView.loadNewGrid(grid);
+
+			// Show the grid of the loaded puzzle.
+			this.puzzleGrid.setVisibility(View.VISIBLE);
+
+			if (this.grid.isActive()) {
+				// Set visibility of other controls
+				this.setButtonVisibility();
+
+				// Start the timer
+				this.mTimerTask = new GameTimer();
+				this.mTimerTask.mElapsedTime = grid.getElapsedTime();
+				this.mTimerTask.mTimerLabel = mTimerText;
+				if (this.preferences.getBoolean("timer", true)) {
+					mTimerText.setVisibility(View.VISIBLE);
+				}
+				this.mTimerTask.execute();
+
+				// Handler for solved game
+				setOnSolvedHandler();
+			} else {
+				// Set visibility of other controls
+				this.pressMenu.setVisibility(View.VISIBLE);
+				this.controls.setVisibility(View.GONE);
+
+				// Stop timer if running
+				if (mTimerTask != null && !mTimerTask.isCancelled()) {
+					mTimerTask.cancel(true);
+				}
+				if (this.mTimerText.getVisibility() == View.VISIBLE
+						&& grid.isSolvedByCheating()) {
+					// Hide time in case the puzzle was solved by
+					// requesting to show the solution.
+					this.mTimerText.setVisibility(View.INVISIBLE);
+				}
+			}
+
+			// Debug information
+			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+				MainActivity.this.mGameSeedLabel.setVisibility(View.VISIBLE);
+				MainActivity.this.mGameSeedText.setVisibility(View.VISIBLE);
+				MainActivity.this.mGameSeedText.setText(String.format("%,d",
+						MainActivity.this.grid.getGameSeed()));
+			}
+		} else {
+			// No grid available.
+			this.puzzleGrid.setVisibility(View.GONE);
+			this.controls.setVisibility(View.GONE);
+			this.pressMenu.setVisibility(View.VISIBLE);
+		}
 	}
 }

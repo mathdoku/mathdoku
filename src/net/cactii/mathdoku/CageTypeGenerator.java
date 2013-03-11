@@ -116,7 +116,7 @@ public class CageTypeGenerator {
 			this.mMaxCageSize = newPossibleCageType.size();
 		}
 
-		if (GridView.DEBUG_CREATE_CAGES) {
+		if (GridGenerator.DEBUG_CREATE_CAGES) {
 			Log.i(TAG,
 					"Found a new cage type:\n" + newPossibleCageType.toString());
 		}

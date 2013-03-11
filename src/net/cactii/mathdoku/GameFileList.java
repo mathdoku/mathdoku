@@ -1,12 +1,5 @@
 package net.cactii.mathdoku;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -78,24 +71,12 @@ public class GameFileList extends ListActivity {
 	 * Saves the current game to a new game file.
 	 */
 	public void saveCurrent() {
+		// The current game was already saved as the default game file when the
+		// game file list was shown. To save the current game a copy of the
+		// default file has to be made.
+		new GameFile().copyToNewGameFile();
 		this.mCurrentSaved = true;
 
-		// Determine first file index number which is currently not in use.
-		int fileIndex;
-		for (fileIndex = 0;; fileIndex++) {
-			if (!new GameFile(fileIndex).exists())
-				break;
-		}
-
-		// Save the file at the first unused file index number. The current game
-		// was already saved to the default game file when the game file list
-		// was shown. To save the current game a copy of the default file has to
-		// be made.
-		try {
-			new GameFile().copyTo(fileIndex);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		this.mAdapter.refreshFiles();
 		this.mAdapter.notifyDataSetChanged();
 	}

@@ -15,7 +15,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -92,14 +91,36 @@ public class GameFile extends File {
 	}
 
 	/**
+	 * Save the given grid to a game file. The preview image of the grid is
+	 * based upon the given grid view.
+	 * 
+	 * @param grid
+	 *            The grid to be saved.
+	 * @param gridView
+	 *            The grid view to be saved.
+	 * @return True in case both the grid and the preview image have been saved.
+	 *         False otherwise.
+	 */
+	public boolean save(Grid grid, GridView gridView) {
+		// First save the grid.
+		if (save(grid)) {
+			// Save a preview image of the grid view for faster scrolling in
+			// the GameFileListAdacpter.
+			return savePreviewImage(gridView);
+		} else {
+			return false;
+		}
+	}
+
+	/**
 	 * Save the given grid view to a game file.
 	 * 
-	 * @param view
-	 *            The grid view to be saved.
-	 * @return True in case the grid view was saved to a file. False otherwise.
+	 * @param grid
+	 *            The grid to be saved.
+	 * @return True in case the grid was saved to a file. False otherwise.
 	 */
-	public boolean save(GridView view) {
-		synchronized (view.mLock) { // Avoid saving game at the same time as
+	public boolean save(Grid grid) {
+		synchronized (grid.mLock) { // Avoid saving game at the same time as
 									// creating puzzle
 			BufferedWriter writer = null;
 			try {
@@ -110,23 +131,19 @@ public class GameFile extends File {
 				writer.write(System.currentTimeMillis() + EOL_DELIMITER);
 
 				// Store information about the Grid View on a single line
-				writer.write(view.toStorageString() + EOL_DELIMITER);
+				writer.write(grid.toStorageString() + EOL_DELIMITER);
 
 				// Store information about the cells. Use one line per single
 				// cell.
-				for (GridCell cell : view.mCells) {
+				for (GridCell cell : grid.mCells) {
 					writer.write(cell.toStorageString() + EOL_DELIMITER);
 				}
 
 				// Store information about the cages. Use one line per single
 				// cage.
-				for (GridCage cage : view.mCages) {
+				for (GridCage cage : grid.mCages) {
 					writer.write(cage.toStorageString() + EOL_DELIMITER);
 				}
-
-				// Save a preview image of the grid view for faster scrolling in
-				// the GameFileListAdacpter.
-				savePreviewImage(view);
 			} catch (IOException e) {
 				Log.e(TAG, "Error saving game: " + e.getMessage());
 				return false;
@@ -148,18 +165,19 @@ public class GameFile extends File {
 	}
 
 	/**
-	 * Load the game file header only. As cells and cages are not loaded this
+	 * Load the game file header only. As cells and cages are not loaded, this
 	 * will result in faster loading.
 	 * 
 	 * @return The game file header {@link GameFileHeader} if headers are
 	 *         loaded. Null otherwise.
 	 */
-	public GameFileHeader loadHeadersOnly(Context mContext) {
-		GridView gridView = new GridView(mContext);
-		if (load(gridView, true)) {
+	public GameFileHeader loadHeadersOnly() {
+		Grid grid = load(true);
+		if (grid != null) {
+			// Return game file header only if grid was successfully loaded
 			GameFileHeader gameFileHeader = new GameFileHeader();
 			gameFileHeader.filename = this.baseFilename;
-			gameFileHeader.datetimeCreated = gridView.mDate;
+			gameFileHeader.datetimeCreated = grid.getDateCreated();
 			gameFileHeader.hasPreviewAvailable = this.hasPreviewImage();
 			return gameFileHeader;
 		}
@@ -167,38 +185,26 @@ public class GameFile extends File {
 	}
 
 	/**
-	 * Load the game file into the given grid view.
+	 * Load the grid from the game file.
 	 * 
-	 * @param view
-	 *            The grid view which has to be filled with information loaded
-	 *            from the game file.
-	 * @return True in case the game file has been loaded successful in the grid
-	 *         view. False otherwise.
+	 * @return The grid which was loaded from the game file. Null in case of an
+	 *         error.
 	 */
-	public boolean load(GridView view) {
-		return load(view, false);
+	public Grid load() {
+		return load(false);
 	}
 
 	/**
-	 * Load the game file into the given grid view.
+	 * Load the grid from the game file.
 	 * 
-	 * @param gridView
-	 *            The grid view which has to be filled with information loaded
-	 *            from the game file.
 	 * @param headersOnly
-	 *            True in case only the headers have to be read.
-	 * @return True in case the game file has been loaded successful in the grid
-	 *         view. False otherwise.
+	 *            True in case only the headers of the game file have to be
+	 *            read. False in case the complete grid has to be returned.
+	 * @return The grid which was loaded from the game file. Null in case of an
+	 *         error.
 	 */
-	private boolean load(GridView gridView, boolean headersOnly) {
-		// Empty cells and cages
-		gridView.clear();
-		if (gridView.mCells == null) {
-			gridView.mCells = new ArrayList<GridCell>();
-		}
-		if (gridView.mCages == null) {
-			gridView.mCages = new ArrayList<GridCage>();
-		}
+	private Grid load(boolean headersOnly) {
+		Grid grid = new Grid(0);
 
 		String filenameLong = getFullFilename();
 		String line = null;
@@ -216,25 +222,25 @@ public class GameFile extends File {
 			}
 
 			// Read date/time created
-			gridView.mDate = Long.parseLong(line);
+			// TODO: move to grid-line in save file
+			grid.setDateCreated(Long.parseLong(line));
 			if ((line = br.readLine()) == null) {
 				throw new InvalidFileFormatException("Unexpected end of file");
 			}
 
 			// Read view information
-			if (!gridView.fromStorageString(line)) {
+			if (!grid.fromStorageString(line)) {
 				// The initial version of the saved games stored view
 				// information on 3 different lines. Rewrite to valid view
 				// storage information (version 1).
 				// Do not remove as long as backward compatibility with old save
 				// file should be remained.
-				line = GridView.SAVE_GAME_GRID_VERSION_01
-						+ FIELD_DELIMITER_LEVEL1 + line
-						+ FIELD_DELIMITER_LEVEL1 + br.readLine()
+				line = Grid.SAVE_GAME_GRID_VERSION_01 + FIELD_DELIMITER_LEVEL1
+						+ line + FIELD_DELIMITER_LEVEL1 + br.readLine()
 						+ FIELD_DELIMITER_LEVEL1 + br.readLine();
 
 				// Retry to process this line.
-				if (!gridView.fromStorageString(line)) {
+				if (!grid.fromStorageString(line)) {
 					throw new InvalidFileFormatException(
 							"View information can not be processed: " + line);
 				}
@@ -245,21 +251,26 @@ public class GameFile extends File {
 
 			// Exit loading file in case only headers should be loaded.
 			if (headersOnly) {
-				return true;
+				return grid;
 			}
 
 			// Read cell information
-			int countCellsToRead = gridView.mGridSize * gridView.mGridSize;
+			int gridSize = grid.getGridSize();
+			int countCellsToRead = gridSize * gridSize;
+			GridCell selectedCell = null;
 			while (countCellsToRead > 0) {
-				GridCell cell = new GridCell(gridView, 0);
+				GridCell cell = new GridCell(grid, 0);
 				if (!cell.fromStorageString(line)) {
 					throw new InvalidFileFormatException(
 							"Line does not contain cell information while this was expected:"
 									+ line);
 				}
-				gridView.mCells.add(cell);
-				if (cell.mSelected) {
-					gridView.mSelectedCell = cell;
+				grid.mCells.add(cell);
+				if (cell.mSelected && selectedCell == null) {
+					// Remember first cell which is marked as selected. Note the
+					// cell can not be selected until the cages are loaded as
+					// well.
+					selectedCell = cell;
 				}
 				countCellsToRead--;
 
@@ -274,11 +285,11 @@ public class GameFile extends File {
 				// Do not remove as long as backward compatibility with old save
 				// file should be remained. In new save files this information
 				// is stored as part of the cell information.
-				if (gridView.mSelectedCell == null) {
+				if (selectedCell == null) {
+					// No cell is selected yet.
 					int selected = Integer.parseInt(line
 							.split(FIELD_DELIMITER_LEVEL1)[1]);
-					gridView.mSelectedCell = gridView.mCells.get(selected);
-					gridView.mSelectedCell.mSelected = true;
+					selectedCell = grid.mCells.get(selected);
 				}
 
 				// Read next line
@@ -294,7 +305,7 @@ public class GameFile extends File {
 				String invalidlist = line.split(FIELD_DELIMITER_LEVEL1)[1];
 				for (String cellId : invalidlist.split(FIELD_DELIMITER_LEVEL2)) {
 					int cellNum = Integer.parseInt(cellId);
-					GridCell c = gridView.mCells.get(cellNum);
+					GridCell c = grid.mCells.get(cellNum);
 					c.setInvalidHighlight(true);
 				}
 
@@ -307,83 +318,77 @@ public class GameFile extends File {
 
 			// Remaining lines contain cage information
 			while (line != null) {
-				GridCage cage = new GridCage(gridView);
+				GridCage cage = new GridCage(grid);
 				if (!cage.fromStorageString(line)) {
 					throw new InvalidFileFormatException(
 							"Line does not contain cage  information while this was expected:"
 									+ line);
 				}
-				gridView.mCages.add(cage);
+				grid.mCages.add(cage);
 
 				// Read next line. No checking of unexpected end of file needed
 				// here because the last line of the file does contain a cage.
 				line = br.readLine();
 			}
+
+			// Set the selected cell (and indirectly the selected cage).
+			if (selectedCell != null) {
+				grid.setSelectedCell(selectedCell);
+			}
 		} catch (InvalidFileFormatException e) {
 			Log.d(TAG, "Invalid file format error when restoring game "
 					+ filenameLong + "\n" + e.getMessage());
-			
-			// Clear the grid view to remove anything which was already loaded.
-			gridView.clear();
-			
-			return false;
+			return null;
 		} catch (FileNotFoundException e) {
 			Log.d(TAG, "File not found error when restoring game "
 					+ filenameLong + "\n" + e.getMessage());
-			
-			// Clear the grid view to remove anything which was already loaded.
-			gridView.clear();
-			
-			return false;
+			return null;
 		} catch (IOException e) {
 			Log.d(TAG, "IO error when restoring game " + filenameLong + "\n"
 					+ e.getMessage());
-			
-			// Clear the grid view to remove anything which was already loaded.
-			gridView.clear();
-			
-			return false;
+			return null;
 		} catch (NumberFormatException e) {
 			Log.d(TAG, "Number format error when restoring game "
 					+ filenameLong + "\n" + e.getMessage());
-			
-			// Clear the grid view to remove anything which was already loaded.
-			gridView.clear();
-			
-			return false;
+			return null;
 		} catch (IndexOutOfBoundsException e) {
 			Log.d(TAG, "Index out of bound error when restoring game "
 					+ filenameLong + "\n" + e.getMessage());
-			
-			// Clear the grid view to remove anything which was already loaded.
-			gridView.clear();
-			
-			return false;
+			return null;
 		} finally {
 			try {
 				ins.close();
 				br.close();
 			} catch (Exception e) {
 				// Nothing.
-				return false;
+				return null;
 			}
 		}
-		return true;
+		return grid;
 	}
 
 	/**
-	 * Copy this game file to a new file with the given index number. The
-	 * preview image will be copied as well.
+	 * Copy this game file to a new file. The preview image will be copied as
+	 * well.
 	 * 
-	 * @param index
-	 *            The sequence number of the new game file.
 	 * @throws IOException
 	 */
-	public void copyTo(int index) throws IOException {
-		// TODO: remove parameter and change method to createDuplicateFiles.
+	public void copyToNewGameFile() {
+		// Determine first file index number which is currently not in use.
+		int fileIndex;
+		for (fileIndex = 0;; fileIndex++) {
+			if (!new GameFile(fileIndex).exists())
+				break;
+		}
+
+		// Save the file at the first unused file index number. The current game
+		// was already saved to the default game file when the game file list
+		// was shown. To save the current game a copy of the default file has to
+		// be made.
+
 		String filenameLong = getFullFilename();
-		copyFile(getFullFilename(), PATH + PREFIX_FILENAME + index);
-		copyFile(getFullFilenamePreview(), PATH + PREFIX_FILENAME + index
+		copyFile(getFullFilename(), PATH + PREFIX_FILENAME + fileIndex);
+		copyFile(getFullFilenamePreview(), PATH + PREFIX_FILENAME + fileIndex
 				+ PREVIEW_EXTENSION);
 	}
 
@@ -434,7 +439,7 @@ public class GameFile extends File {
 	 * @param view
 	 *            The grid view for which the preview image has to be generated.
 	 */
-	public void savePreviewImage(GridView view) {
+	public boolean savePreviewImage(GridView view) {
 		// Create a scaled bitmap and canvas and draw the view on this canvas.
 		int previewSize = (int) (view.getWidth() * PREVIEW_SCALE_FACTOR);
 		float scaleFactor = PREVIEW_SCALE_FACTOR;
@@ -454,7 +459,10 @@ public class GameFile extends File {
 			out.close();
 		} catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		}
+
+		return true;
 	}
 
 	/**
