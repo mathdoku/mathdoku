@@ -479,11 +479,16 @@ public class MainActivity extends Activity {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		if (!kenKenGrid.mActive)
 			return;
+		
+		GridCage gridCage = kenKenGrid.getCageForSelectedCell();
 
 		menu.add(3, 105, 0, R.string.context_menu_show_solution);
 		menu.add(2, 101, 0, R.string.context_menu_use_cage_maybes);
 		menu.setGroupEnabled(2, false);
 		menu.add(0, 102, 0, R.string.context_menu_reveal_cell);
+		if (gridCage != null && gridCage.isOperatorHidden()) {
+			menu.add(4, 106, 0, R.string.context_menu_reveal_operator);
+		}
 		menu.add(1, 103, 0, R.string.context_menu_clear_cage_cells);
 		menu.setGroupEnabled(1, false);
 		menu.add(0, 104, 0, R.string.context_menu_clear_grid);
@@ -540,6 +545,12 @@ public class MainActivity extends Activity {
 			this.kenKenGrid.Solve();
 			this.pressMenu.setVisibility(View.VISIBLE);
 			break;
+		case 106:
+			GridCage gridCage = kenKenGrid.getCageForSelectedCell();
+			if (gridCage != null) {
+				gridCage.revealOperator();
+				kenKenGrid.invalidate();
+			}
 		}
 		return super.onContextItemSelected(item);
 	}

@@ -175,6 +175,20 @@ public class GridView extends View implements OnTouchListener {
 	}
 
 	/**
+	 * Get the cage of the cell which is currently selected.
+	 * 
+	 * @return The cage to which the currently selected cell belongs. Null in
+	 *         case no cell is selected or no cage exists.
+	 */
+	public GridCage getCageForSelectedCell() {
+		if (mCages == null || mSelectedCell == null) {
+			return null;
+		}
+		
+		return mCages.get(mSelectedCell.getCageId());
+	}
+
+	/**
 	 * Creates cages for the current grid which is already filled with numbers.
 	 * 
 	 * @param hideOperators

@@ -39,7 +39,7 @@ redistribute and/or modify this translation yourself under the terms of the GNU 
 	<string name="option_maybe_layout_title">Mogelijk in 3x3 raster</string>
 	<string name="option_maybe_layout_summary">Toon mogelijk getallen in een 3x3 raster</string>
 	<string name="option_hide_operators_title">Verberg operaties</string>
-	<string name="option_hide_operators_summary">Verberg operatie tekens zoals +, -, x, /\n(heeft invloed op een nieuw spel, niet op het huidige)</string>
+	<string name="option_hide_operators_summary">Verberg operatie tekens zoals +, -, x en / bij het maken van een nieuw spel.</string>
 	<string name="option_hide_selector_title">Verberg cijfer knoppen</string>
 	<string name="option_hide_selector_summary">Toon de cijfer knoppen alleen wanneer er een cel is geselecteerd</string>
 	<string name="option_mark_bad_maths_title">Markeer verkeerde berekeningen</string>
@@ -69,6 +69,8 @@ redistribute and/or modify this translation yourself under the terms of the GNU 
 	
 	<string name="context_menu_use_cage_maybes">Vul \"Mogelijk\" in groep</string>
 	<string name="context_menu_reveal_cell">Onthul deze cel</string>
+    <!-- The context menu item that allows the user to reveal the hidden operator of a cage. -->
+    <string name="context_menu_reveal_operator">Toon groep teken</string>
 	<string name="context_menu_clear_cage_cells">Leeg cellen in groep</string>
 	<string name="context_menu_clear_grid">Leeg alle cellen</string>
 	<string name="context_menu_show_solution">Toon oplossing</string>

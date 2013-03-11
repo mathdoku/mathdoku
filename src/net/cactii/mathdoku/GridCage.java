@@ -15,6 +15,7 @@ public class GridCage {
 	// saved game.
 	private static final String SAVE_GAME_CAGE_VERSION_01 = "CAGE";
 	private static final String SAVE_GAME_CAGE_VERSION_02 = "CAGE.v2";
+	private static final String SAVE_GAME_CAGE_VERSION_03 = "CAGE.v3";
 
 	public static final int ACTION_NONE = 0;
 	public static final int ACTION_ADD = 1;
@@ -24,8 +25,13 @@ public class GridCage {
 
 	// Action for the cage
 	public int mAction;
+
 	// Number the action results in
 	public int mResult;
+	private String mOperator;
+	// Flag to indicate whether operator (+,-,x,/) is hidden.
+	private boolean mHideOperator;
+
 	// List of cage's cells
 	public ArrayList<GridCell> mCells;
 	// Id of the cage
@@ -36,8 +42,7 @@ public class GridCage {
 	public boolean mUserMathCorrect;
 	// Cage (or a cell within) is selected
 	public boolean mSelected;
-	// Flag to indicate whether operator (+,-,x,/) is hidden
-	private boolean mOperatorHidden;
+
 	// Cached list of numbers which satisfy the cage's arithmetic
 	private ArrayList<int[]> mPossibles;
 
@@ -56,12 +61,12 @@ public class GridCage {
 	 * 
 	 * @param gridView
 	 *            The grid view in which context this cage is defined.
-	 * @param hiddenoperator
+	 * @param hideOperator
 	 *            True in case the operator should be hidden. False otherwise.
 	 */
-	public GridCage(GridView gridView, boolean hiddenoperator) {
+	public GridCage(GridView gridView, boolean hideOperator) {
 		initGridCage(gridView);
-		mOperatorHidden = hiddenoperator;
+		mHideOperator = hideOperator;
 	}
 
 	/**
@@ -108,12 +113,12 @@ public class GridCage {
 	}
 
 	public boolean isOperatorHidden() {
-		return mOperatorHidden;
+		return mHideOperator;
 	}
 
-	public void setOperatorHidden(boolean operatorHidden) {
-		this.mOperatorHidden = operatorHidden;
-		this.mPossibles = null; // Clear cached list of possible numbers
+	public void revealOperator() {
+		mHideOperator = false;
+		setCageResults(mResult, mOperator);
 	}
 
 	/*
@@ -127,8 +132,13 @@ public class GridCage {
 		this.mAction = -1;
 		if (this.mCells.size() == 1) {
 			this.mAction = ACTION_NONE;
-			this.mResult = this.mCells.get(0).getCorrectValue();
-			this.mCells.get(0).setCageText("" + this.mResult);
+
+			// Single cell cage have an empty operator which is never hidden. IN
+			// this way it can be prevented that for a single cage cell it
+			// operator can be revealed using the context menu.
+			this.mHideOperator = false;
+			
+			setCageResults(this.mCells.get(0).getCorrectValue(), "");
 			return;
 		}
 		double rand = this.mContext.mRandom.nextDouble();
@@ -148,22 +158,14 @@ public class GridCage {
 			for (GridCell cell : this.mCells) {
 				total += cell.getCorrectValue();
 			}
-			this.mResult = total;
-			if (mOperatorHidden)
-				this.mCells.get(0).setCageText(this.mResult + "");
-			else
-				this.mCells.get(0).setCageText(this.mResult + "+");
+			setCageResults(total, "+");
 		}
 		if (this.mAction == ACTION_MULTIPLY) {
 			int total = 1;
 			for (GridCell cell : this.mCells) {
 				total *= cell.getCorrectValue();
 			}
-			this.mResult = total;
-			if (mOperatorHidden)
-				this.mCells.get(0).setCageText(this.mResult + "");
-			else
-				this.mCells.get(0).setCageText(this.mResult + "x");
+			setCageResults(total, "x");
 		}
 		if (this.mAction > -1) {
 			return;
@@ -184,21 +186,21 @@ public class GridCage {
 		if (higher % lower == 0)
 			canDivide = true;
 		if (canDivide) {
-			this.mResult = higher / lower;
 			this.mAction = ACTION_DIVIDE;
-			// this.mCells.get(0).mCageText = this.mResult + "\367";
-			if (mOperatorHidden)
-				this.mCells.get(0).setCageText(this.mResult + "");
-			else
-				this.mCells.get(0).setCageText(this.mResult + "/");
+			setCageResults(higher / lower, "/");
 		} else {
-			this.mResult = higher - lower;
 			this.mAction = ACTION_SUBTRACT;
-			if (mOperatorHidden)
-				this.mCells.get(0).setCageText(this.mResult + "");
-			else
-				this.mCells.get(0).setCageText(this.mResult + "-");
+			setCageResults(higher - lower, "-");
 		}
+	}
+
+	private void setCageResults(int result, String operator) {
+		// Store results in cage object
+		mResult = result;
+		mOperator = operator;
+
+		// Store cage outcome in top left cell of cage
+		mCells.get(0).setCageText(mResult + (mHideOperator ? "" : mOperator));
 	}
 
 	/*
@@ -257,7 +259,7 @@ public class GridCage {
 		if (this.mCells.size() == 1)
 			return this.mCells.get(0).isUserValueCorrect();
 
-		if (this.mOperatorHidden) {
+		if (this.mHideOperator) {
 			if (isAddMathsCorrect() || isMultiplyMathsCorrect()
 					|| isDivideMathsCorrect() || isSubtractMathsCorrect())
 				return true;
@@ -348,7 +350,7 @@ public class GridCage {
 
 	public ArrayList<int[]> getPossibleNums() {
 		if (mPossibles == null) {
-			if (mOperatorHidden)
+			if (mHideOperator)
 				mPossibles = setPossibleNumsNoOperator();
 			else
 				mPossibles = setPossibleNums();
@@ -567,10 +569,11 @@ public class GridCage {
 	 * @return A string representation of the grid cage.
 	 */
 	public String toStorageString() {
-		String storageString = SAVE_GAME_CAGE_VERSION_02
+		String storageString = SAVE_GAME_CAGE_VERSION_03
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mId
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mAction
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mResult
+				+ GameFile.FIELD_DELIMITER_LEVEL1 + mOperator
 				+ GameFile.FIELD_DELIMITER_LEVEL1;
 		for (GridCell cell : mCells) {
 			storageString += cell.getCellNumber()
@@ -601,6 +604,8 @@ public class GridCage {
 
 		} else if (cageParts[0].equals(SAVE_GAME_CAGE_VERSION_02)) {
 			cageInformationVersion = 2;
+		} else if (cageParts[0].equals(SAVE_GAME_CAGE_VERSION_03)) {
+			cageInformationVersion = 3;
 		} else {
 			return false;
 		}
@@ -615,7 +620,10 @@ public class GridCage {
 			// is not needed anymore to restore a cage. So skip this field.
 			index++;
 		}
-		for (String cellId : cageParts[index]
+		if (cageInformationVersion >= 3) {
+			mOperator = cageParts[index++];
+		}
+		for (String cellId : cageParts[index++]
 				.split(GameFile.FIELD_DELIMITER_LEVEL2)) {
 			GridCell c = mContext.mCells.get(Integer.parseInt(cellId));
 			c.setCageId(mId);
@@ -624,9 +632,9 @@ public class GridCage {
 		if (cageInformationVersion == 1 && cageParts.length == 6) {
 			// Version 1 with 6 cage parts does not contain the mOperatorHidden
 			// part while the version with 7 parts does contain this field.
-			mOperatorHidden = false;
+			mHideOperator = false;
 		} else {
-			mOperatorHidden = Boolean.parseBoolean(cageParts[index++]);
+			mHideOperator = Boolean.parseBoolean(cageParts[index++]);
 		}
 
 		return true;
