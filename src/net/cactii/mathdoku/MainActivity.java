@@ -1,5 +1,6 @@
 package net.cactii.mathdoku;
 
+import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -10,13 +11,13 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
-import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -27,40 +28,41 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 import android.view.View;
-import android.view.Window;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
-import android.view.animation.Animation.AnimationListener;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
 	public GridView kenKenGrid;
+	
 	TextView solvedText;
 	TextView pressMenu;
 	ProgressDialog mProgressDialog;
-	TextView mTimerLabel;
 	GameTimer mTimerTask;
 
-	LinearLayout topLayout;
-	LinearLayout controls;
-	RelativeLayout mTimerLayout;
+	RelativeLayout topLayout;
+	RelativeLayout puzzleGrid;
+	RelativeLayout controls;
+	TextView mGameSeedLabel;
+	TextView mGameSeedText;
+	TextView mTimerText;
+	
 	Button digits[] = new Button[9];
 	Button clearDigit;
 	CheckBox maybeButton;
 	TextView mMaybeText;
 	Button undoButton;
 	View[] sound_effect_views;
-	boolean mSmallScreen;
 	private Animation outAnimation;
 	private Animation solvedAnimation;
 
@@ -74,12 +76,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-		mSmallScreen = false;
 		Display display = getWindowManager().getDefaultDisplay();
-		if (display.getHeight() < 500 && display.getWidth() < 500) {
-			this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-			mSmallScreen = true;
-		}
 		if (display.getHeight() < 750) {
 			this.getWindow().setFlags(
 					WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -89,16 +86,17 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.main);
 
 		this.preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		this.topLayout = (LinearLayout) findViewById(R.id.topLayout);
+		this.topLayout = (RelativeLayout) findViewById(R.id.topLayout);
+		this.puzzleGrid = (RelativeLayout) findViewById(R.id.puzzleGrid);
 		this.kenKenGrid = (GridView) findViewById(R.id.gridView);
 		this.kenKenGrid.mContext = this;
 		this.solvedText = (TextView) findViewById(R.id.solvedText);
 		this.kenKenGrid.animText = this.solvedText;
 		this.pressMenu = (TextView) findViewById(R.id.pressMenu);
-		this.controls = (LinearLayout) findViewById(R.id.controls);
-
-		this.mTimerLayout = (RelativeLayout) findViewById(R.id.timerLayout);
-		this.mTimerLabel = (TextView) findViewById(R.id.timerText);
+		this.controls = (RelativeLayout) findViewById(R.id.controls);
+		this.mGameSeedLabel = (TextView) findViewById(R.id.gameSeedLabel);
+		this.mGameSeedText = (TextView) findViewById(R.id.gameSeedText);
+		this.mTimerText = (TextView) findViewById(R.id.timerText);
 		this.mMaybeText = (TextView) findViewById(R.id.maybeText);
 		digits[0] = (Button) findViewById(R.id.digitSelect1);
 		digits[1] = (Button) findViewById(R.id.digitSelect2);
@@ -287,15 +285,21 @@ public class MainActivity extends Activity {
 		registerForContextMenu(this.kenKenGrid);
 		SaveGame saver = new SaveGame();
 		if (saver.Restore(this.kenKenGrid)) {
+			this.puzzleGrid.setVisibility(View.VISIBLE);
 			this.setButtonVisibility(this.kenKenGrid.mGridSize);
 			this.kenKenGrid.mActive = true;
 			this.mTimerTask = new GameTimer();
 			this.mTimerTask.mElapsedTime = this.kenKenGrid.mElapsed;
-			this.mTimerTask.mTimerLabel = mTimerLabel;
+			this.mTimerTask.mTimerLabel = mTimerText;
 			if (this.preferences.getBoolean("timer", true)) {
-				mTimerLayout.setVisibility(View.VISIBLE);
+				mTimerText.setVisibility(View.VISIBLE);
 			}
 			this.mTimerTask.execute();
+			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+				MainActivity.this.mGameSeedLabel.setVisibility(View.VISIBLE);
+				MainActivity.this.mGameSeedText.setVisibility(View.VISIBLE);
+				MainActivity.this.mGameSeedText.setText(String.format("%,d", MainActivity.this.kenKenGrid.getGameSeed()));
+			}
 		}
 	}
 
@@ -315,26 +319,23 @@ public class MainActivity extends Activity {
 		pressMenu.setTextColor(0xff000000);
 		pressMenu.setBackgroundColor(0xa0f0f0f0);
 		String theme = preferences.getString("theme", "newspaper");
-		if (mSmallScreen) {
-			mTimerLabel.setTextSize(14);
-		}
 
 		if ("newspaper".equals(theme)) {
 			topLayout.setBackgroundResource(R.drawable.newspaper);
 			kenKenGrid.setTheme(GridView.THEME_NEWSPAPER);
-			mTimerLabel.setBackgroundColor(0x90808080);
+			mTimerText.setBackgroundColor(0x90808080);
 			mMaybeText.setTextColor(0xFF000000);
 		} else if ("inverted".equals(theme)) {
 			topLayout.setBackgroundResource(R.drawable.newspaper_dark);
 			kenKenGrid.setTheme(GridView.THEME_INVERT);
 			pressMenu.setTextColor(0xfff0f0f0);
 			pressMenu.setBackgroundColor(0xff000000);
-			mTimerLabel.setTextColor(0xFFF0F0F0);
+			mTimerText.setTextColor(0xFFF0F0F0);
 			mMaybeText.setTextColor(0xFFFFFFFF);
 		} else if ("carved".equals(theme)) {
 			topLayout.setBackgroundResource(R.drawable.background);
 			kenKenGrid.setTheme(GridView.THEME_CARVED);
-			mTimerLabel.setBackgroundColor(0x10000000);
+			mTimerText.setBackgroundColor(0x10000000);
 			mMaybeText.setTextColor(0xFF000000);
 		}
 	}
@@ -358,11 +359,11 @@ public class MainActivity extends Activity {
 				&& (this.mTimerTask == null || this.mTimerTask.isCancelled())) {
 			this.mTimerTask = new GameTimer();
 			this.mTimerTask.mElapsedTime = this.kenKenGrid.mElapsed;
-			this.mTimerTask.mTimerLabel = mTimerLabel;
+			this.mTimerTask.mTimerLabel = mTimerText;
 			if (this.preferences.getBoolean("timer", true)) {
-				mTimerLayout.setVisibility(View.VISIBLE);
+				mTimerText.setVisibility(View.VISIBLE);
 			} else {
-				mTimerLayout.setVisibility(View.GONE);
+				mTimerText.setVisibility(View.GONE);
 			}
 			this.mTimerTask.execute();
 		}
@@ -391,7 +392,7 @@ public class MainActivity extends Activity {
 			this.kenKenGrid.mActive = true;
 			this.mTimerTask = new GameTimer();
 			this.mTimerTask.mElapsedTime = this.kenKenGrid.mElapsed;
-			this.mTimerTask.mTimerLabel = mTimerLabel;
+			this.mTimerTask.mTimerLabel = mTimerText;
 			this.mTimerTask.execute();
 		}
 	}
@@ -629,13 +630,19 @@ public class MainActivity extends Activity {
 	final Runnable newGameReady = new Runnable() {
 		public void run() {
 			MainActivity.this.dismissDialog(0);
+			MainActivity.this.puzzleGrid.setVisibility(View.VISIBLE);
 			MainActivity.this.setTheme();
 			MainActivity.this.setButtonVisibility(kenKenGrid.mGridSize);
 			MainActivity.this.maybeButton.setChecked(false);
 			MainActivity.this.mTimerTask = new GameTimer();
-			MainActivity.this.mTimerTask.mTimerLabel = MainActivity.this.mTimerLabel;
+			MainActivity.this.mTimerTask.mTimerLabel = MainActivity.this.mTimerText;
 			MainActivity.this.mTimerTask.execute();
 			MainActivity.this.kenKenGrid.clearUserValues();
+			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+				MainActivity.this.mGameSeedLabel.setVisibility(View.VISIBLE);
+				MainActivity.this.mGameSeedText.setVisibility(View.VISIBLE);
+				MainActivity.this.mGameSeedText.setText(String.format("%,d", MainActivity.this.kenKenGrid.getGameSeed()));
+			}
 		}
 	};
 
@@ -679,7 +686,7 @@ public class MainActivity extends Activity {
 		this.solvedText.setVisibility(View.GONE);
 		this.pressMenu.setVisibility(View.GONE);
 		if (this.preferences.getBoolean("timer", true)) {
-			this.mTimerLayout.setVisibility(View.VISIBLE);
+			this.mTimerText.setVisibility(View.VISIBLE);
 		}
 		if (!MainActivity.this.preferences.getBoolean("hideselector", false)) {
 			this.controls.setVisibility(View.VISIBLE);

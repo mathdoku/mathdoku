@@ -1,111 +1,233 @@
 <?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/topLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background" >
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/topLayout" android:orientation="horizontal"
-	android:layout_width="fill_parent" android:layout_height="fill_parent"
-	android:background="@drawable/background">
+    <RelativeLayout
+        android:id="@+id/puzzleGrid"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="2dp"
+        android:background="#00000000"
+        android:visibility="gone" >
 
-	<RelativeLayout android:id="@+id/puzzleGrid"
-		android:layout_width="wrap_content" android:layout_gravity="left|center_vertical"
-		android:background="#00000000" android:layout_height="fill_parent"
-		android:layout_marginBottom="15dp" android:layout_marginTop="15dp"
-		android:layout_marginLeft="5dp" android:layout_marginRight="5dp">
-		<net.cactii.mathdoku.GridView android:id="@+id/gridView"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:layout_gravity="left" />
-		<TextView android:id="@+id/solvedText" android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:text="@string/main_ui_solved_messsage"
-			android:textSize="48dp" android:textColor="#FF000000"
-			android:background="#D0DECA1E" android:layout_marginTop="96dp"
-			android:layout_marginLeft="48dp" android:visibility="invisible" />
-	</RelativeLayout>
+        <net.cactii.mathdoku.GridView
+            android:id="@+id/gridView"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true" />
+    </RelativeLayout>
 
-	<TextView android:id="@+id/pressMenu" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:layout_gravity="center"
-		android:layout_marginTop="50dp" android:textColor="#FF000000"
-		android:textSize="18dp" android:textStyle="bold" android:shadowColor="#7FFFFFFF"
-		android:shadowDx="1" android:shadowDy="1" android:padding="10dp"
-		android:text="@string/press_menu_button_message" />
-	
-	<RelativeLayout
-	    android:id="@+id/timerLayout"
-		android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:layout_gravity="center"
-	    android:layout_margin="5dp"
-	    android:background="#00000000">
-		<TextView
-			android:id="@+id/timerText"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_centerHorizontal="true"
-			android:layout_margin="5dp"
-			android:textColor="#FF000000"
-			android:background="#00000000"
-			android:textSize="24dp"
-			android:textStyle="bold"
-			android:text=""
-			android:visibility="invisible"
-		/>
-	</RelativeLayout>
-	
-	<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		android:id="@+id/controls" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:layout_marginTop="5dp"
-		android:visibility="gone" android:layout_gravity="center_vertical">
-		<TableRow android:id="@+id/buttons1to2">
-			<Button android:id="@+id/digitSelect1" android:layout_width="70dp"
-				android:layout_height="40dp" android:textSize="16dp"
-				android:textStyle="bold" android:text="1" />
-			<Button android:id="@+id/digitSelect2" android:layout_width="70dp"
-				android:layout_height="40dp" android:textSize="16dp"
-				android:textStyle="bold" android:text="2" />
-		</TableRow>
-		<TableRow android:id="@+id/buttons3to4">
-			<Button android:id="@+id/digitSelect3" android:layout_width="70dp"
-				android:layout_height="40dp" android:textSize="16dp"
-				android:textStyle="bold" android:text="3" />
-			<Button android:id="@+id/digitSelect4" android:layout_width="70dp"
-				android:layout_height="40dp" android:textSize="16dp"
-				android:textStyle="bold" android:text="4" />
-		</TableRow>
-		<TableRow android:id="@+id/buttons5to6">
-			<Button android:id="@+id/digitSelect5" android:layout_width="70dp"
-				android:layout_height="40dp" android:textSize="16dp"
-				android:textStyle="bold" android:text="5" />
-			<Button android:id="@+id/digitSelect6" android:layout_width="70dp"
-				android:layout_height="40dp" android:textSize="16dp"
-				android:textStyle="bold" android:text="6" />
-		</TableRow>
-		<TableRow android:id="@+id/buttons7to8">
-			<Button android:id="@+id/digitSelect7" android:layout_width="70dp"
-				android:layout_height="40dp" android:textSize="16dp"
-				android:textStyle="bold" android:text="7" />
-			<Button android:id="@+id/digitSelect8" android:layout_width="70dp"
-				android:layout_height="40dp" android:textSize="16dp"
-				android:textStyle="bold" android:text="8" />
-		</TableRow>
-		<TableRow android:id="@+id/buttons9to9">
-			<Button android:id="@+id/digitSelect9" android:layout_width="70dp"
-				android:layout_height="40dp" android:textSize="16dp"
-				android:textStyle="bold" android:text="9" />
-		</TableRow>
-		<TableRow android:id="@+id/additionalcontrols1">
-			<TextView android:id="@+id/maybeText"
-			    android:layout_width="wrap_content"
-				android:layout_height="wrap_content" android:textColor="#FF000000"
-				android:textSize="16dp" android:textStyle="bold"
-				android:layout_gravity="center_vertical|right" android:text="@string/main_ui_maybe" />
-			<CheckBox android:id="@+id/maybeButton"
-				android:layout_width="wrap_content" android:layout_height="wrap_content"
-				android:layout_gravity="center_vertical|left" />
-		</TableRow>
-		<TableRow android:id="@+id/additionalcontrols2">
-			<TextView android:text="" />
-			<Button android:id="@+id/clearButton" android:layout_width="70dp"
-				android:layout_height="40dp" android:textSize="16dp"
-				android:textStyle="bold" android:text="@string/main_ui_clear" />
-		</TableRow>
-	</TableLayout>
+    <TextView
+        android:id="@+id/solvedText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#D0DECA1E"
+        android:text="@string/main_ui_solved_messsage"
+        android:textColor="#FF000000"
+        android:textSize="48sp"
+        android:visibility="gone" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/timerText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/puzzleGrid"
+        android:layout_toRightOf="@+id/puzzleGrid"
+        android:background="#00000000"
+        android:text="99h99m99s"
+        android:textColor="#FF000000"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/pressMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_toRightOf="@+id/puzzleGrid"
+        android:shadowColor="#7FFFFFFF"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:text="@string/press_menu_button_message"
+        android:textColor="#FF000000"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <RelativeLayout
+        android:id="@+id/controls"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_below="@+id/timerText"
+        android:layout_marginBottom="2dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginTop="2dp"
+        android:layout_toRightOf="@+id/puzzleGrid"
+        android:layout_toStartOf="@+id/gameSeedLabel"
+        android:background="#00000000"
+        android:visibility="gone" >
+
+        <Button
+            android:id="@+id/digitSelect1"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:text="1"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/digitSelect2"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignTop="@+id/digitSelect1"
+            android:layout_toRightOf="@+id/digitSelect1"
+            android:text="2"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/digitSelect3"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignTop="@+id/digitSelect2"
+            android:layout_toRightOf="@+id/digitSelect2"
+            android:text="3"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/digitSelect4"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignLeft="@+id/digitSelect1"
+            android:layout_below="@+id/digitSelect1"
+            android:text="4"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/digitSelect5"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignTop="@+id/digitSelect4"
+            android:layout_toRightOf="@+id/digitSelect4"
+            android:text="5"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/digitSelect6"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignTop="@+id/digitSelect5"
+            android:layout_toRightOf="@+id/digitSelect5"
+            android:text="6"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/digitSelect7"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignLeft="@+id/digitSelect4"
+            android:layout_below="@+id/digitSelect4"
+            android:text="7"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/digitSelect8"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignTop="@+id/digitSelect7"
+            android:layout_toRightOf="@+id/digitSelect7"
+            android:text="8"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/digitSelect9"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignTop="@+id/digitSelect8"
+            android:layout_toRightOf="@+id/digitSelect8"
+            android:text="9"
+            android:textSize="12sp" />
+
+        <RelativeLayout
+            android:id="@+id/maybe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/clearButton"
+            android:layout_alignRight="@+id/digitSelect3" >
+
+            <TextView
+                android:id="@+id/maybeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/maybeButton"
+                android:lines="1"
+                android:text="@string/main_ui_maybe"
+                android:textColor="#FF000000"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <CheckBox
+                android:id="@+id/maybeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true" />
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/clearButton"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/undoButton"
+            android:layout_alignRight="@+id/digitSelect3"
+            android:layout_alignWithParentIfMissing="true"
+            android:text="@string/main_ui_clear"
+            android:textAlignment="textStart"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/undoButton"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/gameSeedLabel"
+            android:layout_alignRight="@+id/digitSelect3"
+            android:layout_alignWithParentIfMissing="true"
+            android:text="@string/main_ui_undo"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/gameSeedLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/gameSeedText"
+        android:layout_alignLeft="@+id/gameSeedText"
+        android:background="#00000000"
+        android:text="Game seed:"
+        android:textColor="#FF000000"
+        android:textSize="7sp"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/gameSeedText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/puzzleGrid"
+        android:layout_toRightOf="@+id/puzzleGrid"
+        android:background="#00000000"
+        android:text="999.999.999.999.999.999"
+        android:textColor="#FF000000"
+        android:textSize="7sp"
+        android:visibility="gone" />
+
+</RelativeLayout>

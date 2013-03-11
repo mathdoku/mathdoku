@@ -3,9 +3,7 @@ package net.cactii.mathdoku;
 import java.util.ArrayList;
 import java.util.Random;
 
-import com.srlee.DLX.DLX.SolveType;
-import com.srlee.DLX.MathDokuDLX;
-
+import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -22,6 +20,9 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.TextView;
 
+import com.srlee.DLX.DLX.SolveType;
+import com.srlee.DLX.MathDokuDLX;
+
 public class GridView extends View implements OnTouchListener {
 	private static final String TAG = "MathDoku.GridView";
 
@@ -29,10 +30,9 @@ public class GridView extends View implements OnTouchListener {
 	public static final int THEME_NEWSPAPER = 1;
 	public static final int THEME_INVERT = 2;
 
-	public static final boolean DEBUG_CREATE_CAGES = false; // Set to false to
-															// exclude debug
-															// code in
-															// production
+	// Remove "&& false" in following line to show debug information about
+	// creating cages when running in development mode.
+	public static final boolean DEBUG_CREATE_CAGES = (DevelopmentHelper.mode == Mode.DEVELOPMENT) && false;
 
 	// Solved listener
 	private OnSolvedListener mSolvedListener;
@@ -44,6 +44,7 @@ public class GridView extends View implements OnTouchListener {
 
 	// Random generator
 	public Random mRandom;
+	private long mGameSeed;
 
 	public Activity mContext;
 
@@ -168,7 +169,14 @@ public class GridView extends View implements OnTouchListener {
 								// puzzle
 			int num_solns;
 			int num_attempts = 0;
-			this.mRandom = new Random();
+
+			// Generate a random seed. This seed will be used to for another
+			// Randomizer which will be used to generate the game. By saving and
+			// displaying the seed as game number, it should be possible to
+			// recreate a game (as long as the implementation of the Randomize
+			// has not changed).
+			this.mGameSeed = (new Random()).nextLong();
+			this.mRandom = new Random(this.mGameSeed);
 			if (this.mGridSize < 4)
 				return;
 			do {
@@ -270,7 +278,6 @@ public class GridView extends View implements OnTouchListener {
 			return null;
 
 		boolean[] InvalidCages = new boolean[GridCage.CAGE_COORDS.length];
-
 		if (DEBUG_CREATE_CAGES) {
 			Log.i(TAG, "Determine valid cages for cell[" + origin.getRow()
 					+ "," + origin.getColumn() + "]");
@@ -1070,5 +1077,14 @@ public class GridView extends View implements OnTouchListener {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Get the seed which is used to generate this puzzle.
+	 * 
+	 * @return The seed which can be used to generate this puzzle.
+	 */
+	public long getGameSeed() {
+		return this.mGameSeed;
 	}
 }

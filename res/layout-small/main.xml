@@ -1,218 +1,232 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/topLayout"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@drawable/background"
-    >
-<RelativeLayout
-	android:id="@+id/puzzleGrid"
-	android:layout_width="fill_parent"
-	android:layout_gravity="center"
-	android:background="#00000000"
-	android:layout_height="wrap_content"
-	android:layout_marginBottom="5dp"
-	android:layout_marginTop="5dp"
-	android:layout_marginLeft="25dp"
-	android:layout_marginRight="25dp">
-	<net.cactii.mathdoku.GridView  
-		android:id="@+id/gridView"
-	    android:layout_width="wrap_content" 
-	    android:layout_height="wrap_content"
-	    android:layout_gravity="top"
-	    />
-	<TextView
-		android:id="@+id/solvedText"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="@string/main_ui_solved_messsage"
-		android:textSize="48dp"
-		android:textColor="#FF000000"
-		android:background="#D0DECA1E"
-		android:layout_marginTop="96dp"
-		android:layout_marginLeft="48dp"
-		android:visibility="invisible"
-	/>
-</RelativeLayout>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/topLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background" >
+
     <RelativeLayout
-     android:id="@+id/timerLayout"
-     android:layout_width="fill_parent"
-     android:layout_height="wrap_content"
-     android:visibility="gone">
+        android:id="@+id/puzzleGrid"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="5dp"
+        android:background="#00000000"
+        android:visibility="gone" >
+
+        <net.cactii.mathdoku.GridView
+            android:id="@+id/gridView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true" />
+
         <TextView
-	    android:id="@+id/timerText"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_alignParentRight="true"
-	    android:layout_centerVertical="true"
-	    android:layout_margin="5dp"
-	    android:padding="5dp"
-	    android:text=""
-	    android:textColor="#FF000000"
-	    android:background="#00000000"
-	    android:textSize="18dp"
-	    android:textStyle="bold"/>
+            android:id="@+id/gameSeedLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/gridView"
+            android:layout_below="@+id/gridView"
+            android:background="#00000000"
+            android:text="Game seed: "
+            android:textColor="#FF000000"
+            android:textSize="9sp"
+            android:visibility="gone" />
+        
+        <TextView
+            android:id="@+id/gameSeedText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/gameSeedLabel"
+            android:layout_toRightOf="@+id/gameSeedLabel"
+            android:background="#00000000"
+            android:text="999.999.999.999.999.999"
+            android:textColor="#FF000000"
+            android:textSize="9sp"
+            android:visibility="gone" />
 
+        <TextView
+            android:id="@+id/timerText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/gridView"
+            android:layout_below="@+id/gridView"
+            android:background="#00000000"
+            android:text="99h99m99s"
+            android:textColor="#FF000000"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/solvedText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="#D0DECA1E"
+            android:text="@string/main_ui_solved_messsage"
+            android:textColor="#FF000000"
+            android:textSize="48sp"
+            android:visibility="gone" />
     </RelativeLayout>
-<TextView
-	android:id="@+id/pressMenu"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:layout_gravity="center"
-	android:layout_marginTop = "50dp"
-	android:textColor="#FF000000"
-	android:textSize="18dp"
-	android:textStyle="bold"
-	android:shadowColor="#7FFFFFFF"
-    android:shadowDx="1"
-    android:shadowDy="1"
-    android:padding="10dp"
-	android:text="@string/press_menu_button_message"
-/>
 
+    <TextView
+        android:id="@+id/pressMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/puzzleGrid"
+        android:layout_centerInParent="true"
+        android:shadowColor="#7FFFFFFF"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:text="@string/press_menu_button_message"
+        android:textColor="#FF000000"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
-<LinearLayout android:id="@+id/controls"
-    android:orientation="horizontal"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="#00000000"
-    android:visibility="gone"
-    android:layout_gravity="center_horizontal">
-<LinearLayout android:id="@+id/digits"
-    android:orientation="vertical"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="top|center"
-    android:background="#00000000">
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		android:id="@+id/buttons1to3"
-	    android:orientation="horizontal"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_gravity="left"
-	    android:background="#00000000"
-	    >
-		<Button android:id="@+id/digitSelect1"
-			android:layout_width="70dp"
-			android:layout_height="40dp"
-			android:textSize="16dp"
-			android:textStyle="bold"
-			android:text="1"
-			/>
-		<Button android:id="@+id/digitSelect2"
-			android:layout_width="70dp"
-			android:layout_height="40dp"
-			android:textSize="16dp"
-			android:textStyle="bold"
-			android:text="2"
-		/>
-		<Button android:id="@+id/digitSelect3"
-			android:layout_width="70dp"
-			android:layout_height="40dp"
-			android:textSize="16dp"
-			android:textStyle="bold"
-			android:text="3"
-			/>
-	</LinearLayout>
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/buttons4to6"
-    android:orientation="horizontal"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="left"
-    android:background="#00000000"
-    >
-		<Button android:id="@+id/digitSelect4"
-			android:layout_width="70dp"
-			android:layout_height="40dp"
-			android:textSize="16dp"
-			android:textStyle="bold"
-			android:text="4"
-			/>
-		<Button android:id="@+id/digitSelect5"
-			android:layout_width="70dp"
-			android:layout_height="40dp"
-			android:textSize="16dp"
-			android:textStyle="bold"
-			android:text="5"
-			/>
-		<Button android:id="@+id/digitSelect6"
-			android:layout_width="70dp"
-			android:layout_height="40dp"
-			android:textSize="16dp"
-			android:textStyle="bold"
-			android:text="6"
-			/>
-	</LinearLayout>
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/buttons7to9"
-    android:orientation="horizontal"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="left"
-    android:background="#00000000"
-    >
-		<Button android:id="@+id/digitSelect7"
-			android:layout_width="70dp"
-			android:layout_height="40dp"
-			android:textSize="16dp"
-			android:textStyle="bold"
-			android:text="7"
-			/>	    
-		<Button android:id="@+id/digitSelect8"
-			android:layout_width="70dp"
-			android:layout_height="40dp"
-			android:textSize="16dp"
-			android:textStyle="bold"
-			android:text="8"
-			/>	  
-		<Button android:id="@+id/digitSelect9"
-			android:layout_width="70dp"
-			android:layout_height="40dp"
-			android:textSize="16dp"
-			android:textStyle="bold"
-			android:text="9"
-			/>	  
-	</LinearLayout>
-	</LinearLayout>
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:orientation="vertical"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_gravity="top"
-	    android:background="#00000000" android:layout_marginLeft="5dp">
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:orientation="horizontal"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_gravity="center"
-	    android:background="#00000000"
-	    >
-	    <TextView
-	        android:id="@+id/maybeText"
-	    	android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:textColor="#FF000000"
-			android:textSize="16dp"
-			android:textStyle="bold"
-		    android:layout_gravity="center_vertical"
-			android:text="@string/main_ui_maybe"
-			/>
-	    <CheckBox android:id="@+id/maybeButton"
-	    	android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-		    android:layout_gravity="center_vertical|right"/>
-	</LinearLayout>
-		<Button android:id="@+id/clearButton"
-			android:layout_width="70dp"
-			android:layout_height="wrap_content"
-			android:textSize="16dp"
-			android:textStyle="bold"
-		    android:layout_gravity="right"
-			android:text="@string/main_ui_clear"
-		/>
-	</LinearLayout>
-</LinearLayout>
+    <RelativeLayout
+        android:id="@+id/controls"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/puzzleGrid"
+        android:layout_alignRight="@+id/puzzleGrid"
+        android:layout_below="@+id/puzzleGrid"
+        android:layout_marginBottom="5dp"
+        android:background="#00000000"
+        android:orientation="horizontal"
+        android:visibility="gone" >
 
-</LinearLayout>
+        <Button
+            android:id="@+id/digitSelect1"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:text="1"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/digitSelect2"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignTop="@+id/digitSelect1"
+            android:layout_toRightOf="@+id/digitSelect1"
+            android:text="2"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/digitSelect3"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignTop="@+id/digitSelect2"
+            android:layout_toRightOf="@+id/digitSelect2"
+            android:text="3"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/digitSelect4"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignTop="@+id/digitSelect3"
+            android:layout_toRightOf="@+id/digitSelect3"
+            android:text="4"
+            android:textSize="12sp" />
+
+                <Button
+            android:id="@+id/digitSelect5"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignTop="@+id/digitSelect4"
+            android:layout_toRightOf="@+id/digitSelect4"
+            android:text="5"
+            android:textSize="12sp" />
+        
+        <Button
+            android:id="@+id/digitSelect6"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignLeft="@+id/digitSelect1"
+            android:layout_below="@+id/digitSelect1"
+            android:text="6"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/digitSelect7"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignTop="@+id/digitSelect6"
+            android:layout_toRightOf="@+id/digitSelect6"
+            android:text="7"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/digitSelect8"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignTop="@+id/digitSelect7"
+            android:layout_toRightOf="@+id/digitSelect7"
+            android:text="8"
+            android:textSize="12sp" />
+        
+        <Button
+            android:id="@+id/digitSelect9"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignTop="@+id/digitSelect8"
+            android:layout_toRightOf="@+id/digitSelect8"
+            android:text="9"
+            android:textSize="12sp" />
+        
+        <RelativeLayout
+            android:id="@+id/maybe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/digitSelect3"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/digitSelect3" >
+
+            <TextView
+                android:id="@+id/maybeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/maybeButton"
+                android:lines="1"
+                android:text="@string/main_ui_maybe"
+                android:textColor="#FF000000"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <CheckBox
+                android:id="@+id/maybeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true" />
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/clearButton"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/undoButton"
+            android:layout_toLeftOf="@+id/undoButton"
+            android:text="@string/main_ui_clear"
+            android:textAlignment="textStart"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/undoButton"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/maybe"
+            android:text="@string/main_ui_undo"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+</RelativeLayout>
