@@ -98,6 +98,7 @@ public class SaveGame {
 	}
 
 	public boolean Restore(GridView view) {
+		view.clearUserValues();
 		String line = null;
 		BufferedReader br = null;
 		InputStream ins = null;

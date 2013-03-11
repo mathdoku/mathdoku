@@ -56,6 +56,8 @@ public class GridView extends View implements OnTouchListener {
 	public ArrayList<GridCell> mCells;
 	private int[][] solutionMatrix;
 
+	private boolean mCheated;
+
 	public boolean mActive;
 
 	public boolean mSelectorShown = false;
@@ -169,6 +171,8 @@ public class GridView extends View implements OnTouchListener {
 								// puzzle
 			int num_solns;
 			int num_attempts = 0;
+
+			this.mCheated = false;
 
 			// Generate a random seed. This seed will be used to for another
 			// Randomizer which will be used to generate the game. By saving and
@@ -628,8 +632,10 @@ public class GridView extends View implements OnTouchListener {
 		if (this.moves != null) {
 			this.moves.clear();
 		}
-		for (GridCell cell : this.mCells) {
-			cell.clearUserValue();
+		if (mCells != null) {
+			for (GridCell cell : this.mCells) {
+				cell.clearUserValue();
+			}
 		}
 		this.invalidate();
 	}
@@ -941,11 +947,16 @@ public class GridView extends View implements OnTouchListener {
 
 	// Solve the puzzle by setting the Uservalue to the actual value
 	public void Solve() {
+		this.mCheated = true;
 		if (this.moves != null) {
 			this.moves.clear();
 		}
-		for (GridCell cell : this.mCells)
+		for (GridCell cell : this.mCells) {
+			if (!cell.isUserValueCorrect()) {
+				cell.setCheated();
+			}
 			cell.setUserValue(cell.getCorrectValue());
+		}
 		invalidate();
 	}
 
@@ -1025,6 +1036,15 @@ public class GridView extends View implements OnTouchListener {
 		}
 	}
 
+	/**
+	 * Get the number of moves made by the user.
+	 * 
+	 * @return The number of moves made by the user.
+	 */
+	public int countMoves() {
+		return (moves == null ? 0 : moves.size());
+	}
+
 	public void UndoLastMove() {
 		if (moves != null) {
 			int undoPosition = moves.size() - 1;
@@ -1086,5 +1106,16 @@ public class GridView extends View implements OnTouchListener {
 	 */
 	public long getGameSeed() {
 		return this.mGameSeed;
+	}
+
+	/**
+	 * Check is user has cheated with solving this puzzle by requesting the
+	 * solution.
+	 * 
+	 * @return True in case the user has solved the puzzle by requesting the
+	 *         solution. False otherwise.
+	 */
+	public boolean isSolvedByCheating() {
+		return this.mCheated;
 	}
 }

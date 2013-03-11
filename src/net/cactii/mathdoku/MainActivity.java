@@ -44,7 +44,7 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 	public GridView kenKenGrid;
-	
+
 	TextView solvedText;
 	TextView pressMenu;
 	ProgressDialog mProgressDialog;
@@ -56,7 +56,7 @@ public class MainActivity extends Activity {
 	TextView mGameSeedLabel;
 	TextView mGameSeedText;
 	TextView mTimerText;
-	
+
 	Button digits[] = new Button[9];
 	Button clearDigit;
 	CheckBox maybeButton;
@@ -193,15 +193,31 @@ public class MainActivity extends Activity {
 					@Override
 					public void puzzleSolved() {
 						MainActivity.this.controls.setVisibility(View.GONE);
-						if (kenKenGrid.mActive)
+						if (kenKenGrid.mActive
+								&& !kenKenGrid.isSolvedByCheating()
+								&& kenKenGrid.countMoves() > 0) {
+							// Only display animation in case the user has just
+							// solved this game. Do not show in case the user
+							// cheated by requesting to show the solution or in
+							// case an already solved game was reloaded.
 							animText(R.string.main_ui_solved_messsage,
 									0xFF002F00);
+						}
 
 						MainActivity.this.pressMenu.setVisibility(View.VISIBLE);
 
 						if (MainActivity.this.mTimerTask != null) {
 							MainActivity.this.mTimerTask.cancel(true);
 						}
+
+						if (MainActivity.this.mTimerText.getVisibility() == View.VISIBLE
+								&& kenKenGrid.isSolvedByCheating()) {
+							// Hide time in case the puzzle was solved by
+							// requesting to show the solution.
+							MainActivity.this.mTimerText
+									.setVisibility(View.INVISIBLE);
+						}
+
 					}
 				});
 
@@ -298,7 +314,8 @@ public class MainActivity extends Activity {
 			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
 				MainActivity.this.mGameSeedLabel.setVisibility(View.VISIBLE);
 				MainActivity.this.mGameSeedText.setVisibility(View.VISIBLE);
-				MainActivity.this.mGameSeedText.setText(String.format("%,d", MainActivity.this.kenKenGrid.getGameSeed()));
+				MainActivity.this.mGameSeedText.setText(String.format("%,d",
+						MainActivity.this.kenKenGrid.getGameSeed()));
 			}
 		}
 	}
@@ -467,7 +484,7 @@ public class MainActivity extends Activity {
 				break;
 			selectedCell.saveUndoInformation(null);
 			selectedCell.setUserValue(selectedCell.getCorrectValue());
-			selectedCell.mCheated = true;
+			selectedCell.setCheated();
 			Toast.makeText(this, R.string.main_ui_cheat_messsage,
 					Toast.LENGTH_SHORT).show();
 			this.kenKenGrid.invalidate();
@@ -596,7 +613,8 @@ public class MainActivity extends Activity {
 					Toast.LENGTH_SHORT).show();
 			return;
 		}
-		CellChange orginalUserMove = this.kenKenGrid.mSelectedCell.saveUndoInformation(null);
+		CellChange orginalUserMove = this.kenKenGrid.mSelectedCell
+				.saveUndoInformation(null);
 		if (value == 0) { // Clear Button
 			this.kenKenGrid.mSelectedCell.clearPossibles();
 			this.kenKenGrid.mSelectedCell.setUserValue(0);
@@ -615,7 +633,8 @@ public class MainActivity extends Activity {
 					false)) {
 				// Update possible values for other cells in this row and
 				// column.
-				this.kenKenGrid.clearRedundantPossiblesInSameRowOrColumn(orginalUserMove);
+				this.kenKenGrid
+						.clearRedundantPossiblesInSameRowOrColumn(orginalUserMove);
 			}
 		}
 		if (this.preferences.getBoolean("hideselector", false))
@@ -641,7 +660,8 @@ public class MainActivity extends Activity {
 			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
 				MainActivity.this.mGameSeedLabel.setVisibility(View.VISIBLE);
 				MainActivity.this.mGameSeedText.setVisibility(View.VISIBLE);
-				MainActivity.this.mGameSeedText.setText(String.format("%,d", MainActivity.this.kenKenGrid.getGameSeed()));
+				MainActivity.this.mGameSeedText.setText(String.format("%,d",
+						MainActivity.this.kenKenGrid.getGameSeed()));
 			}
 		}
 	};

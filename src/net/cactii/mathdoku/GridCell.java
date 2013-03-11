@@ -47,7 +47,7 @@ public class GridCell {
 	// Whether to show cell as selected
 	public boolean mSelected;
 	// Player cheated (revealed this cell)
-	public boolean mCheated;
+	private boolean mCheated;
 	// Highlight user input isn't correct value
 	private boolean mInvalidHighlight;
 
@@ -594,5 +594,12 @@ public class GridCell {
 	 */
 	public boolean hasPossible(int digit) {
 		return (this.mPossibles.indexOf(new Integer(digit)) >= 0);
+	}
+	
+	/**
+	 * Confirm that the user has cheated to reveal the content of cell.
+	 */
+	public void setCheated() {
+		this.mCheated = true;
 	}
 }
