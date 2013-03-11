@@ -23,10 +23,16 @@ import android.view.View.OnTouchListener;
 import android.widget.TextView;
 
 public class GridView extends View implements OnTouchListener {
+	private static final String TAG = "MathDoku.GridView";
 
 	public static final int THEME_CARVED = 0;
 	public static final int THEME_NEWSPAPER = 1;
 	public static final int THEME_INVERT = 2;
+
+	public static final boolean DEBUG_CREATE_CAGES = false; // Set to false to
+															// exclude debug
+															// code in
+															// production
 
 	// Solved listener
 	private OnSolvedListener mSolvedListener;
@@ -43,8 +49,11 @@ public class GridView extends View implements OnTouchListener {
 
 	// Cages
 	public ArrayList<GridCage> mCages;
+	private int[][] cageMatrix;
 
+	// Cell and solution
 	public ArrayList<GridCell> mCells;
+	private int[][] solutionMatrix;
 
 	public boolean mActive;
 
@@ -193,31 +202,6 @@ public class GridView extends View implements OnTouchListener {
 		return this.mCells.get(column + row * this.mGridSize).getCageId();
 	}
 
-	public int CreateSingleCages(boolean hideOperators) {
-		int singles = this.mGridSize / 2;
-		boolean RowUsed[] = new boolean[mGridSize];
-		boolean ColUsed[] = new boolean[mGridSize];
-		boolean ValUsed[] = new boolean[mGridSize];
-		for (int i = 0; i < singles; i++) {
-			GridCell cell;
-			while (true) {
-				cell = mCells.get(mRandom.nextInt(mGridSize * mGridSize));
-				if (!RowUsed[cell.getRow()] && !ColUsed[cell.getColumn()]
-						&& !ValUsed[cell.getCorrectValue() - 1])
-					break;
-			}
-			ColUsed[cell.getColumn()] = true;
-			RowUsed[cell.getRow()] = true;
-			ValUsed[cell.getCorrectValue() - 1] = true;
-			GridCage cage = new GridCage(this, GridCage.CAGE_1, hideOperators);
-			cage.mCells.add(cell);
-			cage.setArithmetic();
-			cage.setCageId(i);
-			this.mCages.add(cage);
-		}
-		return singles;
-	}
-
 	/* Take a filled grid and randomly create cages */
 	public void CreateCages(boolean hideOperators) {
 
@@ -225,30 +209,50 @@ public class GridView extends View implements OnTouchListener {
 
 		do {
 			restart = false;
-			int cageId = CreateSingleCages(hideOperators);
-			for (int cellNum = 0; cellNum < this.mCells.size(); cellNum++) {
-				GridCell cell = this.mCells.get(cellNum);
+			cageMatrix = new int[this.mGridSize][this.mGridSize];
+			for (int row = 0; row < this.mGridSize; row++) {
+				for (int col = 0; col < this.mGridSize; col++) {
+					cageMatrix[row][col] = -1;
+				}
+			}
+			int cageId = 0;
+			int countSingles = 0;
+			boolean newTypeIncluded = false;
+			for (GridCell cell : this.mCells) {
 				if (cell.CellInAnyCage())
 					continue; // Cell already in a cage, skip
 
 				ArrayList<Integer> possible_cages = getvalidCages(cell);
-				if (possible_cages.size() == 1) { // Only possible cage is a
-													// single
-					ClearAllCages();
-					restart = true;
-					break;
+				int cage_type;
+				if (possible_cages.size() == 1) {
+					// Only possible cage is a single
+					countSingles++;
+					if (countSingles > this.mGridSize / 2) {
+						Log.i(" xx", " Too many single cells");
+						// Too many singles
+						ClearAllCages();
+						restart = true;
+						break;
+					}
+					cage_type = 0;
+				} else {
+					// Choose a random cage type from one of the possible (not
+					// single cage)
+					cage_type = possible_cages.get(mRandom
+							.nextInt(possible_cages.size() - 1) + 1);
+					if (!newTypeIncluded
+							&& possible_cages.contains(new Integer(
+									GridCage.CAGE_COORDS.length))) {
+						cage_type = GridCage.CAGE_COORDS.length - 1;
+					}
 				}
-
-				// Choose a random cage type from one of the possible (not
-				// single cage)
-				int cage_type = possible_cages.get(mRandom
-						.nextInt(possible_cages.size() - 1) + 1);
 				GridCage cage = new GridCage(this, cage_type, hideOperators);
 				int[][] cage_coords = GridCage.CAGE_COORDS[cage_type];
 				for (int coord_num = 0; coord_num < cage_coords.length; coord_num++) {
 					int col = cell.getColumn() + cage_coords[coord_num][0];
 					int row = cell.getRow() + cage_coords[coord_num][1];
 					cage.mCells.add(getCellAt(row, col));
+					cageMatrix[row][col] = cageId;
 				}
 
 				cage.setArithmetic(); // Make the maths puzzle
@@ -256,8 +260,9 @@ public class GridView extends View implements OnTouchListener {
 				this.mCages.add(cage); // Add to the cage list
 			}
 		} while (restart);
-		for (GridCage cage : this.mCages)
+		for (GridCage cage : this.mCages) {
 			cage.setBorders();
+		}
 	}
 
 	public ArrayList<Integer> getvalidCages(GridCell origin) {
@@ -266,18 +271,90 @@ public class GridView extends View implements OnTouchListener {
 
 		boolean[] InvalidCages = new boolean[GridCage.CAGE_COORDS.length];
 
+		if (DEBUG_CREATE_CAGES) {
+			Log.i(TAG, "Determine valid cages for cell[" + origin.getRow()
+					+ "," + origin.getColumn() + "]");
+		}
 		// Don't need to check first cage type (single)
 		for (int cage_num = 1; cage_num < GridCage.CAGE_COORDS.length; cage_num++) {
 			int[][] cage_coords = GridCage.CAGE_COORDS[cage_num];
-			// Don't need to check first coordinate (0,0)
-			for (int coord_num = 1; coord_num < cage_coords.length; coord_num++) {
+
+			// Build mask for this cage
+			int[][] maskNewCage = new int[this.mGridSize][this.mGridSize];
+			int[] maskNewCageRowCount = new int[this.mGridSize];
+			int[] maskNewCageColCount = new int[this.mGridSize];
+			for (int coord_num = 0; coord_num < cage_coords.length; coord_num++) {
 				int col = origin.getColumn() + cage_coords[coord_num][0];
 				int row = origin.getRow() + cage_coords[coord_num][1];
-				GridCell c = getCellAt(row, col);
-				if (c == null || c.CellInAnyCage()) {
+
+				if (row < 0 || row >= this.mGridSize || col < 0
+						|| col >= this.mGridSize) {
+					// Coordinates of this cell in cage falls outside the grid.
 					InvalidCages[cage_num] = true;
 					break;
+				} else if (cageMatrix[row][col] >= 0) {
+					// Cell is already used in another cage
+					InvalidCages[cage_num] = true;
+					break;
+				} else {
+					// Cell can be used for this new cage.
+					maskNewCage[row][col] = 1;
+					maskNewCageRowCount[row]++;
+					maskNewCageColCount[col]++;
 				}
+			}
+			if (InvalidCages[cage_num]) {
+				// Cage is not valid
+				continue;
+			}
+
+			if (DEBUG_CREATE_CAGES) {
+				// Print solution, cage matrix and makskNewCage
+				Log.i(TAG, "Cage " + cage_num + " does fit at this origin");
+				String cageIdFormat = "%d";
+				String emptyCell = ".";
+				String usedCell = "X";
+				if (this.mCages.size() > 100) {
+					cageIdFormat = "%03d";
+					emptyCell = "  .";
+					usedCell = "  X";
+				} else if (this.mCages.size() > 10) {
+					cageIdFormat = "%02d";
+					emptyCell = " .";
+					usedCell = " X";
+				}
+				for (int row = 0; row < this.mGridSize; row++) {
+					String line = "   ";
+					for (int col = 0; col < this.mGridSize; col++) {
+						line += " " + solutionMatrix[row][col];
+					}
+					line += "   ";
+					for (int col = 0; col < this.mGridSize; col++) {
+						line += " "
+								+ (cageMatrix[row][col] == -1 ? emptyCell
+										: String.format(cageIdFormat,
+												cageMatrix[row][col]));
+					}
+					line += "   ";
+					for (int col = 0; col < this.mGridSize; col++) {
+						line += " "
+								+ (maskNewCage[row][col] == 0 ? emptyCell
+										: usedCell);
+					}
+					Log.i(TAG, line);
+				}
+			}
+
+			if (hasOverlappingSubsetOfValuesInColumns(maskNewCage,
+					maskNewCageColCount)) {
+				InvalidCages[cage_num] = true;
+				continue;
+			}
+
+			if (hasOverlappingSubsetOfValuesInRows(maskNewCage,
+					maskNewCageRowCount)) {
+				InvalidCages[cage_num] = true;
+				continue;
 			}
 		}
 
@@ -287,6 +364,250 @@ public class GridView extends View implements OnTouchListener {
 				valid.add(i);
 
 		return valid;
+	}
+
+	/**
+	 * Determine whether the given new cage contains a subset of values in its
+	 * columns which is also used in the columns of another cage.
+	 * 
+	 * @param maskNewCage
+	 *            A mask of the new cage. Cells which are in use by this cage
+	 *            have value 1. Cells not used have a value -1.
+	 * @param maskNewCageColCount
+	 *            The number of rows per column in use by this new cage.
+	 * @return
+	 */
+	private boolean hasOverlappingSubsetOfValuesInColumns(int[][] maskNewCage,
+			int[] maskNewCageColCount) {
+		if (DEBUG_CREATE_CAGES) {
+			Log.i(TAG,
+					"Exclude this cage in case it contains a subset of two or more values "
+							+ "in any column which is also used in any other column of "
+							+ "cages which are already added.");
+		}
+		for (int newCageColumn = 0; newCageColumn < this.mGridSize; newCageColumn++) {
+			if (maskNewCageColCount[newCageColumn] > 1) {
+				// This column in the new cage has more than one row and
+				// therefore needs to be checked with columns of other cages.
+
+				// Compare the column in which the new cage is placed with cages
+				// in other columns of the grid.
+				for (int col = 0; col < this.mGridSize; col++) {
+					if (col != newCageColumn) {
+
+						// Cages which are already checked during processing of
+						// this column of the new cage, can be skipped.
+						ArrayList<Integer> cagesChecked = new ArrayList<Integer>();
+
+						// Iterate all cells in the column from top to bottom.
+						for (int row = 0; row < this.mGridSize; row++) {
+							int otherCageId = cageMatrix[row][col];
+							if (otherCageId >= 0
+									&& maskNewCage[row][newCageColumn] > 0
+									&& !cagesChecked.contains(otherCageId)) {
+								// Cell[row][col] is used in a cage which is not
+								// yet checked. This is the first row for which
+								// the new cage and the other cage has a cell in
+								// the columns which are compared.
+								cagesChecked.add(otherCageId);
+
+								// Check all remaining rows if the checked
+								// columns contain a cell for the new cage and
+								// the other cage.
+								int[] valuesUsed = new int[this.mGridSize];
+								for (int row2 = row; row2 < this.mGridSize; row2++) {
+									if (cageMatrix[row2][col] == otherCageId
+											&& maskNewCage[row2][newCageColumn] > 0) {
+										// Both cages contain a cell on the same
+										// row. Remember values used in those
+										// cells.
+										valuesUsed[solutionMatrix[row2][col] - 1]++;
+										valuesUsed[solutionMatrix[row2][newCageColumn] - 1]++;
+									}
+								}
+								if (DEBUG_CREATE_CAGES) {
+									Log.i(TAG,
+											"Comparing cells in overlapping rows for col "
+													+ newCageColumn
+													+ " of mask with colum "
+													+ col + " for cage "
+													+ otherCageId
+													+ " uses following values"
+													+ ArrayToString(valuesUsed));
+								}
+
+								// Determine which values are used in both cages
+								ArrayList<Integer> duplicateValues = new ArrayList<Integer>();
+								for (int i = 0; i < this.mGridSize; i++) {
+									if (valuesUsed[i] > 1) {
+										// Value (i+1) has been used in both
+										// columns of the new cage and the other
+										// cage.
+										duplicateValues.add(i + 1);
+									}
+								}
+								if (duplicateValues.size() > 1) {
+									// At least two values have been found which
+									// are used in both columns of the new cage
+									// and the other cage. As this would result
+									// in a non-unique solution, the cage is not
+									// valid.
+									if (DEBUG_CREATE_CAGES) {
+										Log.i(TAG,
+												"Cage has a overlapping subset of values "
+														+ ArrayListToString(duplicateValues)
+														+ " with cage "
+														+ otherCageId
+														+ " which will result in a non-unique solution.");
+									}
+									return true;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// No overlapping subset found
+		return false;
+	}
+
+	/**
+	 * Determine whether the given new cage contains a subset of values in its
+	 * rows which is also used in the rows of another cage.
+	 * 
+	 * @param maskNewCage
+	 *            A mask of the new cage. Cells which are in use by this cage
+	 *            have value 1. Cells not used have a value -1.
+	 * @param maskNewCageRowCount
+	 *            The number of columns per row in use by this new cage.
+	 * @return
+	 */
+	private boolean hasOverlappingSubsetOfValuesInRows(int[][] maskNewCage,
+			int[] maskNewCageRowCount) {
+		if (DEBUG_CREATE_CAGES) {
+			Log.i(TAG,
+					"Exclude this cage in case it contains a subset of two or more values "
+							+ "in any row which is also used in any other row of "
+							+ "cages which are already added.");
+		}
+		for (int newCageRow = 0; newCageRow < this.mGridSize; newCageRow++) {
+			if (maskNewCageRowCount[newCageRow] > 1) {
+				// This row in the new cage has more than one column and
+				// therefore needs to be checked with rows of other cages.
+
+				// Compare the row in which the new cage is placed with cages
+				// in other rows of the grid.
+				for (int row = 0; row < this.mGridSize; row++) {
+					if (row != newCageRow) {
+
+						// Cages which are already checked during processing of
+						// this row of the new cage, can be skipped.
+						ArrayList<Integer> cagesChecked = new ArrayList<Integer>();
+
+						// Iterate all cells in the row from left to right.
+						for (int col = 0; col < this.mGridSize; col++) {
+							int otherCageId = cageMatrix[row][col];
+							if (otherCageId >= 0
+									&& maskNewCage[newCageRow][col] > 0
+									&& !cagesChecked.contains(otherCageId)) {
+								// Cell[row][col] is used in a cage which is not
+								// yet checked. This is the first column for
+								// which
+								// the new cage and the other cage has a cell in
+								// the rows which are compared.
+								cagesChecked.add(otherCageId);
+
+								// Check all remaining columns if the checked
+								// rows contain a cell for the new cage and
+								// the other cage.
+								int[] valuesUsed = new int[this.mGridSize];
+								for (int cols2 = col; cols2 < this.mGridSize; cols2++) {
+									if (cageMatrix[row][cols2] == otherCageId
+											&& maskNewCage[newCageRow][cols2] > 0) {
+										// Both cages contain a cell on the same
+										// columns. Remember values used in
+										// those
+										// cells.
+										valuesUsed[solutionMatrix[row][cols2] - 1]++;
+										valuesUsed[solutionMatrix[newCageRow][cols2] - 1]++;
+									}
+								}
+								if (DEBUG_CREATE_CAGES) {
+									Log.i(TAG,
+											"Comparing cells in overlapping columns for row "
+													+ newCageRow
+													+ " of mask with row "
+													+ row + " for cage "
+													+ otherCageId
+													+ " uses following values"
+													+ ArrayToString(valuesUsed));
+								}
+
+								// Determine which values are used in both cages
+								ArrayList<Integer> duplicateValues = new ArrayList<Integer>();
+								for (int i = 0; i < this.mGridSize; i++) {
+									if (valuesUsed[i] > 1) {
+										// Value (i+1) has been used in both
+										// columns of the new cage and the other
+										// cage.
+										duplicateValues.add(i + 1);
+									}
+								}
+								if (duplicateValues.size() > 1) {
+									// At least two values have been found which
+									// are used in both rows of the new cage
+									// and the other cage. As this would result
+									// in a non-unique solution, the cage is not
+									// valid.
+									if (DEBUG_CREATE_CAGES) {
+										Log.i(TAG,
+												"Cage has a overlapping subset of values "
+														+ ArrayListToString(duplicateValues)
+														+ " with cage "
+														+ otherCageId
+														+ " which will result in a non-unique solution.");
+									}
+									return true;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// No overlapping subset found
+		return false;
+	}
+
+	public String ArrayToString(int[] list) {
+		String result = "[";
+		for (int item : list) {
+			if (result.equals("[")) {
+				// List does not yet contain an item
+				result += item;
+			} else {
+				result += "," + item;
+			}
+		}
+		result += "]";
+		return result;
+	}
+
+	public String ArrayListToString(ArrayList<Integer> list) {
+		String result = "[";
+		for (int item : list) {
+			if (result.equals("[")) {
+				// List does not yet contain an item
+				result += item;
+			} else {
+				result += "," + item;
+			}
+		}
+		result += "]";
+		return result;
 	}
 
 	public void ClearAllCages() {
@@ -324,6 +645,7 @@ public class GridView extends View implements OnTouchListener {
 	 */
 	public void randomiseGrid() {
 		int attempts;
+		solutionMatrix = new int[this.mGridSize][this.mGridSize];
 		for (int value = 1; value < this.mGridSize + 1; value++) {
 			for (int row = 0; row < this.mGridSize; row++) {
 				attempts = 20;
@@ -345,6 +667,7 @@ public class GridView extends View implements OnTouchListener {
 					break;
 				}
 				cell.setCorrectValue(value);
+				solutionMatrix[row][column] = value;
 				// Log.d("KenKen", "New cell: " + cell);
 			}
 		}
