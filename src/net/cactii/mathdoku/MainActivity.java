@@ -420,7 +420,12 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		// Disable or enable solution option depending on whether grid is active
-		menu.findItem(R.id.checkprogress).setEnabled(kenKenGrid.mActive);
+		menu.findItem(R.id.checkprogress).setVisible(kenKenGrid.mActive);
+
+		// Load/save can only be used in case a grid is displayed (which can be
+		// saved) or in case a game file exists which can be loaded.
+		menu.findItem(R.id.saveload).setVisible(
+				kenKenGrid.mActive || GameFileList.canBeUsed());
 
 		return super.onPrepareOptionsMenu(menu);
 	}

@@ -99,4 +99,25 @@ public class GameFileList extends ListActivity {
 		this.mAdapter.refreshFiles();
 		this.mAdapter.notifyDataSetChanged();
 	}
+
+	/**
+	 * Checks whether the load/save option, which will start the
+	 * {@link GameFileList} activity, can be used.
+	 * 
+	 * @return True in case the {@link GameFileList} activity can be used. False
+	 *         otherwise.
+	 */
+	static boolean canBeUsed() {
+		// Check if a file exists that can be saved or loaded using the game
+		// file list.
+		File dir = new File(GameFile.PATH);
+		String[] allFiles = dir.list();
+		for (String entryName : allFiles) {
+			if (entryName.startsWith(GameFile.DEFAULT_FILENAME)
+					|| entryName.startsWith(GameFile.PREFIX_FILENAME)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
