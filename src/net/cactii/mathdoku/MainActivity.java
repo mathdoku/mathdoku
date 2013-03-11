@@ -882,8 +882,7 @@ public class MainActivity extends Activity {
 		Editor prefeditor = preferences.edit();
 		int current_version = getVersionNumber();
 
-		if (!preferences.contains(PREF_CREATE_PREVIEW_IMAGES_COMPLETED)
-				|| QUICK_CREATE_PUZZLE_WITHOUT_PREVIEW) {
+		if (!preferences.contains(PREF_CREATE_PREVIEW_IMAGES_COMPLETED)) {
 			// When upgrading to this version we need to create image previews
 			// for saved game files. Insert a new preference which will be used
 			// to check if conversion of the previews has already been
@@ -936,47 +935,7 @@ public class MainActivity extends Activity {
 	 * at a time because each stored game has to be loaded and displayed before
 	 * a preview can be generated.
 	 */
-	public final static boolean QUICK_CREATE_PUZZLE_WITHOUT_PREVIEW = false;
-
 	public void createPreviewImages() {
-		if (QUICK_CREATE_PUZZLE_WITHOUT_PREVIEW) {
-			// Because this is only for testing purposes, no progress dialog is
-			// shown. Just be patient until the progress dialog for creating the
-			// preview images is shown.
-
-			// delete previews for all existing game files
-			int countGameFilesFound = 0;
-			int maxFileIndex = -1;
-			for (String filename : GameFile
-					.getAllGameFilesCreatedByUser(Integer.MAX_VALUE)) {
-				// This is a game file or its corresponding preview image.
-				countGameFilesFound++;
-
-				// Check if index number of the file is higher than current
-				// maximum
-				GameFile gameFile = new GameFile(filename);
-				int fileIndex = gameFile.getGameFileIndex();
-				if (fileIndex > maxFileIndex) {
-					maxFileIndex = fileIndex;
-				}
-				if (gameFile.hasPreviewImage()) {
-					gameFile.deletePreviewImage();
-				}
-			}
-
-			// Check the number of available game files. Create additional game
-			// files if to few exists for proper testing.
-			Random random = new Random();
-			while (countGameFilesFound < 50) {
-				kenKenGrid.mGridSize = 4 + random.nextInt(5);
-				kenKenGrid.reCreate(random.nextBoolean());
-				GameFile gameFile = new GameFile(++maxFileIndex);
-				gameFile.save(this.kenKenGrid);
-				Log.i(TAG, "Creating new dummy puzzle " + gameFile.getName());
-				countGameFilesFound++;
-			}
-		}
-
 		int countGameFilesWithoutPreview = countGameFilesWithoutPreview();
 		if (countGameFilesWithoutPreview == 0) {
 			// No games files without previews found.
@@ -1018,11 +977,6 @@ public class MainActivity extends Activity {
 				// visible in the grid view.
 				if (mGameFileImagePreviewCreation != null) {
 					// Save preview for the current game file.
-					if (QUICK_CREATE_PUZZLE_WITHOUT_PREVIEW) {
-						// Pick a random layout as this layout will also be
-						// captured in the preview.
-						kenKenGrid.setTheme(new Random().nextInt(3));
-					}
 					mGameFileImagePreviewCreation.savePreviewImage(kenKenGrid);
 					mProgressDialogImagePreviewCreation.incrementProgressBy(1);
 				}

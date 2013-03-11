@@ -208,15 +208,10 @@ public class GridView extends View implements OnTouchListener {
 				CreateCages(hideOperators);
 				num_attempts++;
 
-				if (MainActivity.QUICK_CREATE_PUZZLE_WITHOUT_PREVIEW) {
-					num_solns = 1;
-				} else {
-					MathDokuDLX mdd = new MathDokuDLX(this.mGridSize,
-							this.mCages);
-					// Stop solving as soon as we find multiple solutions
-					num_solns = mdd.Solve(SolveType.MULTIPLE);
-					Log.d("MathDoku", "Num Solns = " + num_solns);
-				}
+				MathDokuDLX mdd = new MathDokuDLX(this.mGridSize, this.mCages);
+				// Stop solving as soon as we find multiple solutions
+				num_solns = mdd.Solve(SolveType.MULTIPLE);
+				Log.d("MathDoku", "Num Solns = " + num_solns);
 			} while (num_solns > 1);
 			Log.d("MathDoku", "Num Attempts = " + num_attempts);
 			this.mActive = true;
@@ -276,16 +271,14 @@ public class GridView extends View implements OnTouchListener {
 
 				// Determine a random cage type which will start at this cell.
 				GridCageType cageType = selectRandomCageType(cell);
-				if (!MainActivity.QUICK_CREATE_PUZZLE_WITHOUT_PREVIEW) {
-					if (cageType.size() == 1) {
-						countSingles++;
-						if (countSingles > this.mGridSize / 2) {
-							// Too many singles
-							Log.i(" xx", " Too many single cells");
-							ClearAllCages();
-							restart = true;
-							break;
-						}
+				if (cageType.size() == 1) {
+					countSingles++;
+					if (countSingles > this.mGridSize / 2) {
+						// Too many singles
+						Log.i(" xx", " Too many single cells");
+						ClearAllCages();
+						restart = true;
+						break;
 					}
 				}
 
@@ -377,14 +370,13 @@ public class GridView extends View implements OnTouchListener {
 				continue;
 			}
 
-			if (MainActivity.QUICK_CREATE_PUZZLE_WITHOUT_PREVIEW) {
-				if (cageIsValid) {
-					// As we randomly check available cages, we can stop as soon as
-					// a valid cage is found which does fit on this position.
-					return selectedGridCageType;
-				}
+			if (cageIsValid) {
+				// As we randomly check available cages, we can stop as soon
+				// as
+				// a valid cage is found which does fit on this position.
+				return selectedGridCageType;
 			}
-			
+
 			if (DEBUG_CREATE_CAGES) {
 				// Print solution, cage matrix and makskNewCage
 				printCageCreationDebugInformation(maskNewCage);

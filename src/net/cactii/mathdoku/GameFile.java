@@ -35,7 +35,7 @@ public class GameFile extends File {
 
 	// Remove "&& false" in following line to show debug information about
 	// saving and restoring files when running in development mode.
-	public static final boolean DEBUG_SAVE_RESTORE = (DevelopmentHelper.mode == Mode.DEVELOPMENT) && true;
+	public static final boolean DEBUG_SAVE_RESTORE = (DevelopmentHelper.mode == Mode.DEVELOPMENT) && false;
 
 	// Base of filenames for this game file. The baseFilename does not include a
 	// path.
@@ -126,9 +126,7 @@ public class GameFile extends File {
 
 				// Save a preview image of the grid view for faster scrolling in
 				// the GameFileListAdacpter.
-				if (!MainActivity.QUICK_CREATE_PUZZLE_WITHOUT_PREVIEW) {
-					savePreviewImage(view);
-				}
+				savePreviewImage(view);
 			} catch (IOException e) {
 				Log.e(TAG, "Error saving game: " + e.getMessage());
 				return false;
