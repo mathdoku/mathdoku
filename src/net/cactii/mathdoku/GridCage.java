@@ -1,11 +1,20 @@
 package net.cactii.mathdoku;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import android.text.method.HideReturnsTransformationMethod;
 import android.util.Log;
 
 public class GridCage {
+	// Identifiers of different versions of cage information which is stored in
+	// saved game. Version one is also used as base identifier for all other
+	// versions.
+	private static final String SAVE_GAME_CAGE_VERSION_01 = "CAGE";
+	private static final String SAVE_GAME_CAGE_VERSION_02 = SAVE_GAME_CAGE_VERSION_01
+			+ ".v2";
 
 	public static final int ACTION_NONE = 0;
 	public static final int ACTION_ADD = 1;
@@ -13,77 +22,12 @@ public class GridCage {
 	public static final int ACTION_MULTIPLY = 3;
 	public static final int ACTION_DIVIDE = 4;
 
-	public static final int CAGE_UNDEF = -1;
-	public static final int CAGE_1 = 0;
-
-	// O = Origin (0,0) - must be the upper leftmost cell
-	// X = Other cells used in cage
-	public static final int[][][] CAGE_COORDS = new int[][][] {
-			// O
-			{ { 0, 0 } },
-			// O
-			// X
-			{ { 0, 0 }, { 0, 1 } },
-			// OX
-			{ { 0, 0 }, { 1, 0 } },
-			// O
-			// X
-			// X
-			{ { 0, 0 }, { 0, 1 }, { 0, 2 } },
-			// OXX
-			{ { 0, 0 }, { 1, 0 }, { 2, 0 } },
-			// O
-			// XX
-			{ { 0, 0 }, { 0, 1 }, { 1, 1 } },
-			// O
-			// XX
-			{ { 0, 0 }, { 0, 1 }, { -1, 1 } },
-			// OX
-			// X
-			{ { 0, 0 }, { 1, 0 }, { 1, 1 } },
-			// OX
-			// X
-			{ { 0, 0 }, { 1, 0 }, { 0, 1 } },
-			// OX
-			// XX
-			{ { 0, 0 }, { 1, 0 }, { 0, 1 }, { 1, 1 } },
-			// OX
-			// X
-			// X
-			{ { 0, 0 }, { 1, 0 }, { 0, 1 }, { 0, 2 } },
-			// OX
-			// X
-			// X
-			{ { 0, 0 }, { 1, 0 }, { 1, 1 }, { 1, 2 } },
-			// O
-			// X
-			// XX
-			{ { 0, 0 }, { 0, 1 }, { 0, 2 }, { 1, 2 } },
-			// O
-			// X
-			// XX
-			{ { 0, 0 }, { 0, 1 }, { 0, 2 }, { -1, 2 } }
-	/*
-	 * // OXX // X {{0,0},{1,0},{2,0},{0,1}}, // OXX // X
-	 * {{0,0},{1,0},{2,0},{2,1}}, // O // XXX {{0,0},{0,1},{1,1},{2,1}}, // O
-	 * //XXX {{0,0},{-2,1},{-1,1},{0,1}}, // O // XX // X
-	 * {{0,0},{0,1},{0,2},{1,1}}, // O //XX // X {{0,0},{0,1},{0,2},{-1,1}}, //
-	 * OXX // X {{0,0},{1,0},{2,0},{1,1}}, // O //XXX
-	 * {{0,0},{-1,1},{0,1},{1,1}}, // OXXX {{0,0},{1,0},{2,0},{3,0}}, // O // X
-	 * // X // X {{0,0},{0,1},{0,2},{0,3}}, // O // XX // X
-	 * {{0,0},{0,1},{1,1},{1,2}}, // O //XX //X {{0,0},{0,1},{-1,1},{-1,2}}, //
-	 * OX // XX {{0,0},{1,0},{1,1},{2,1}}, // OX //XX {{0,0},{1,0},{0,1},{-1,1}}
-	 */
-	};
-
 	// Action for the cage
 	public int mAction;
 	// Number the action results in
 	public int mResult;
 	// List of cage's cells
 	public ArrayList<GridCell> mCells;
-	// Type of the cage
-	public int mType;
 	// Id of the cage
 	public int mId;
 	// Enclosing context
@@ -97,10 +41,37 @@ public class GridCage {
 	// Cached list of numbers which satisfy the cage's arithmetic
 	private ArrayList<int[]> mPossibles;
 
-	public GridCage(GridView context, int type, boolean hiddenoperator) {
-		this.mContext = context;
-		mType = type;
+	/**
+	 * Creates a new instance of {@link GridCage}.
+	 * 
+	 * @param gridView
+	 *            The grid view in which context this cage is defined.
+	 */
+	public GridCage(GridView gridView) {
+		initGridCage(gridView);
+	}
+
+	/**
+	 * Creates a new instance of {@link GridCage}.
+	 * 
+	 * @param gridView
+	 *            The grid view in which context this cage is defined.
+	 * @param hiddenoperator
+	 *            True in case the operator should be hidden. False otherwise.
+	 */
+	public GridCage(GridView gridView, boolean hiddenoperator) {
+		initGridCage(gridView);
 		mOperatorHidden = hiddenoperator;
+	}
+
+	/**
+	 * Initializes the grid view variables.
+	 * 
+	 * @param gridView
+	 *            The grid view in which context this cage is defined.
+	 */
+	private void initGridCage(GridView gridView) {
+		this.mContext = gridView;
 		mPossibles = null;
 		mUserMathCorrect = true;
 		mSelected = false;
@@ -109,7 +80,8 @@ public class GridCage {
 
 	public String toString() {
 		String retStr = "";
-		retStr += "Cage id: " + this.mId + ", Type: " + this.mType;
+		retStr += "Cage id: " + this.mId + ", Size: "
+				+ (this.mCells == null ? 0 : this.mCells.size());
 		retStr += ", Action: ";
 		switch (this.mAction) {
 		case ACTION_NONE:
@@ -153,7 +125,7 @@ public class GridCage {
 	 */
 	public void setArithmetic() {
 		this.mAction = -1;
-		if (this.mType == CAGE_1) {
+		if (this.mCells.size() == 1) {
 			this.mAction = ACTION_NONE;
 			this.mResult = this.mCells.get(0).getCorrectValue();
 			this.mCells.get(0).setCageText("" + this.mResult);
@@ -579,4 +551,76 @@ public class GridCage {
 		return true;
 	}
 
+	/**
+	 * Write cage information to file.
+	 * 
+	 * @param writer
+	 *            The buffered writer which is used to store information for
+	 *            this cell.
+	 * @throws IOException
+	 */
+	public void writeToFile(BufferedWriter writer) throws IOException {
+		writer.write(SAVE_GAME_CAGE_VERSION_02
+				+ SaveGame.FIELD_DELIMITER_LEVEL1);
+		writer.write(mId + SaveGame.FIELD_DELIMITER_LEVEL1);
+		writer.write(mAction + SaveGame.FIELD_DELIMITER_LEVEL1);
+		writer.write(mResult + SaveGame.FIELD_DELIMITER_LEVEL1);
+		writer.write(SaveGame.FIELD_DELIMITER_LEVEL1); // field mType is no
+														// longer stored as it
+														// is removed from this
+														// object!
+
+		for (GridCell cell : mCells) {
+			writer.write(cell.getCellNumber() + SaveGame.FIELD_DELIMITER_LEVEL2);
+		}
+		writer.write(SaveGame.FIELD_DELIMITER_LEVEL1);
+
+		writer.write(Boolean.toString(isOperatorHidden()));
+		writer.write("\n");
+	}
+
+	static public boolean isCageInformation(String lineType) {
+		return (lineType.startsWith(SAVE_GAME_CAGE_VERSION_01));
+	}
+
+	/**
+	 * Read cell information for a saved game file which was created before.
+	 * 
+	 * @param line
+	 *            The line containing the cell information.
+	 * @return True in case the given line contain cell information and is
+	 *         processed correctly. False otherwise.
+	 */
+	public boolean restoreFromFile(String line) {
+		String[] cageParts = line.split(SaveGame.FIELD_DELIMITER_LEVEL1);
+		
+		// Check version of stored cage information
+		int cageInformationVersion = 0;
+		if (cageParts[0].equals(SAVE_GAME_CAGE_VERSION_01)) {
+			cageInformationVersion = 1;
+		} else if (cageParts[0].equals(SAVE_GAME_CAGE_VERSION_02)) {
+			cageInformationVersion = 2;
+		} else {
+			return false;
+		}
+
+		mId = Integer.parseInt(cageParts[1]);
+		mAction = Integer.parseInt(cageParts[2]);
+		mResult = Integer.parseInt(cageParts[3]);
+		for (String cellId : cageParts[5]
+				.split(SaveGame.FIELD_DELIMITER_LEVEL2)) {
+			GridCell c = mContext.mCells.get(Integer.parseInt(cellId));
+			c.setCageId(mId);
+			mCells.add(c);
+		}
+		if (cageInformationVersion == 1 && cageParts.length == 6) {
+			// Version 1 with 6 cage parts does not contain the mOperatorHidden
+			// part while the version with 7 parts does contain this field.
+			mOperatorHidden = false;
+		} else {
+			mOperatorHidden = Boolean.parseBoolean(cageParts[6]);
+		}
+
+		return true;
+	}
 }
