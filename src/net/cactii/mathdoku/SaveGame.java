@@ -16,16 +16,18 @@ import android.util.Log;
 public class SaveGame {
 	public static final String saveFilename = "/data/data/net.cactii.mathdoku/savedgame";
 	public String filename;
-	
+
 	public SaveGame() {
 		this.filename = SaveGame.saveFilename;
 	}
+
 	public SaveGame(String filename) {
 		this.filename = filename;
 	}
-	
+
 	public boolean Save(GridView view) {
-		synchronized (view.mLock) {	// Avoid saving game at the same time as creating puzzle
+		synchronized (view.mLock) { // Avoid saving game at the same time as
+									// creating puzzle
 			BufferedWriter writer = null;
 			try {
 				writer = new BufferedWriter(new FileWriter(this.filename));
@@ -47,7 +49,8 @@ public class SaveGame {
 					writer.write("\n");
 				}
 				if (view.mSelectedCell != null)
-					writer.write("SELECTED:" + view.mSelectedCell.mCellNumber + "\n");
+					writer.write("SELECTED:" + view.mSelectedCell.mCellNumber
+							+ "\n");
 				ArrayList<GridCell> invalidchoices = view.invalidsHighlighted();
 				if (invalidchoices.size() > 0) {
 					writer.write("INVALID:");
@@ -66,17 +69,15 @@ public class SaveGame {
 					writer.write(":" + cage.isOperatorHidden());
 					writer.write("\n");
 				}
-			}
-			catch (IOException e) {
-				Log.d("MathDoku", "Error saving game: "+e.getMessage());
+			} catch (IOException e) {
+				Log.d("MathDoku", "Error saving game: " + e.getMessage());
 				return false;
-			}
-			finally {
+			} finally {
 				try {
 					if (writer != null)
 						writer.close();
 				} catch (IOException e) {
-					//pass
+					// pass
 					return false;
 				}
 			}
@@ -84,16 +85,15 @@ public class SaveGame {
 		Log.d("MathDoku", "Saved game.");
 		return true;
 	}
-	
-	
+
 	public long ReadDate() {
-	    BufferedReader br = null;
-	    InputStream ins = null;
-	    try {
-	        ins = new FileInputStream(new File(this.filename));
-	        br = new BufferedReader(new InputStreamReader(ins), 8192);
-	        return Long.parseLong(br.readLine());
-	    } catch (FileNotFoundException e) {
+		BufferedReader br = null;
+		InputStream ins = null;
+		try {
+			ins = new FileInputStream(new File(this.filename));
+			br = new BufferedReader(new InputStreamReader(ins), 8192);
+			return Long.parseLong(br.readLine());
+		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (NumberFormatException e) {
@@ -102,114 +102,111 @@ public class SaveGame {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		finally {
-			  try {
-			    ins.close();
-			    br.close();
-			  } catch (Exception e) {
-			    // Nothing.
-				  return 0;
-			  }
+		} finally {
+			try {
+				ins.close();
+				br.close();
+			} catch (Exception e) {
+				// Nothing.
+				return 0;
 			}
+		}
 		return 0;
 	}
-	
+
 	public boolean Restore(GridView view) {
-	    String line = null;
-	    BufferedReader br = null;
-	    InputStream ins = null;
-	    String[] cellParts;
-	    String[] cageParts;
-	    try {
-	        ins = new FileInputStream(new File(this.filename));
-	        br = new BufferedReader(new InputStreamReader(ins), 8192);
-	        view.mDate = Long.parseLong(br.readLine());
-	        view.mElapsed = Long.parseLong(br.readLine());
-	        view.mGridSize = Integer.parseInt(br.readLine());
-	        if (br.readLine().equals("true"))
-	        	view.mActive = true;
-	        else
-	        	view.mActive = false;
-	        view.mCells = new ArrayList<GridCell>();
-	        while ((line = br.readLine()) != null) {
-	        	if (!line.startsWith("CELL:")) break;
-	        	cellParts = line.split(":");
-	        	int cellNum = Integer.parseInt(cellParts[1]);
-	        	GridCell cell = new GridCell(view, cellNum);
-	        	cell.mRow = Integer.parseInt(cellParts[2]);
-	        	cell.mColumn = Integer.parseInt(cellParts[3]);
-	        	cell.mCageText = cellParts[4];
-	        	cell.mValue = Integer.parseInt(cellParts[5]);
-	        	cell.setUserValue(Integer.parseInt(cellParts[6]));
-	        	if (cellParts.length == 8)
-		        	for (String possible : cellParts[7].split(","))
-		        		cell.mPossibles.add(Integer.parseInt(possible));
-	        	view.mCells.add(cell);
-	        }
-	        view.mSelectedCell = null;
-	        if (line.startsWith("SELECTED:")) {
-	        	int selected = Integer.parseInt(line.split(":")[1]);
-	        	view.mSelectedCell = view.mCells.get(selected);
-	        	view.mSelectedCell.mSelected = true;
-	        	line = br.readLine();
-	        }
-	        if (line.startsWith("INVALID:")) {
-	        	String invalidlist = line.split(":")[1];
-	        	for (String cellId : invalidlist.split(",")) {
-	        		int cellNum = Integer.parseInt(cellId);
-	        		GridCell c = view.mCells.get(cellNum);
-	        		c.setInvalidHighlight(true);
-	        	}
-	        	line = br.readLine();
-	        }
-	        view.mCages = new ArrayList<GridCage>();
-	        do {
-	        	cageParts = line.split(":");
-	        	GridCage cage;
-	        	if (cageParts.length >= 7)
-	        		cage = new GridCage(view,
-	        							Integer.parseInt(cageParts[4]),
-	        							Boolean.parseBoolean(cageParts[6]));
-	        	else
-	        		cage = new GridCage(view,
-							Integer.parseInt(cageParts[4]),
+		String line = null;
+		BufferedReader br = null;
+		InputStream ins = null;
+		String[] cellParts;
+		String[] cageParts;
+		try {
+			ins = new FileInputStream(new File(this.filename));
+			br = new BufferedReader(new InputStreamReader(ins), 8192);
+			view.mDate = Long.parseLong(br.readLine());
+			view.mElapsed = Long.parseLong(br.readLine());
+			view.mGridSize = Integer.parseInt(br.readLine());
+			if (br.readLine().equals("true"))
+				view.mActive = true;
+			else
+				view.mActive = false;
+			view.mCells = new ArrayList<GridCell>();
+			while ((line = br.readLine()) != null) {
+				if (!line.startsWith("CELL:"))
+					break;
+				cellParts = line.split(":");
+				int cellNum = Integer.parseInt(cellParts[1]);
+				GridCell cell = new GridCell(view, cellNum);
+				cell.mRow = Integer.parseInt(cellParts[2]);
+				cell.mColumn = Integer.parseInt(cellParts[3]);
+				cell.mCageText = cellParts[4];
+				cell.mValue = Integer.parseInt(cellParts[5]);
+				cell.setUserValue(Integer.parseInt(cellParts[6]));
+				if (cellParts.length == 8)
+					for (String possible : cellParts[7].split(","))
+						cell.mPossibles.add(Integer.parseInt(possible));
+				view.mCells.add(cell);
+			}
+			view.mSelectedCell = null;
+			if (line.startsWith("SELECTED:")) {
+				int selected = Integer.parseInt(line.split(":")[1]);
+				view.mSelectedCell = view.mCells.get(selected);
+				view.mSelectedCell.mSelected = true;
+				line = br.readLine();
+			}
+			if (line.startsWith("INVALID:")) {
+				String invalidlist = line.split(":")[1];
+				for (String cellId : invalidlist.split(",")) {
+					int cellNum = Integer.parseInt(cellId);
+					GridCell c = view.mCells.get(cellNum);
+					c.setInvalidHighlight(true);
+				}
+				line = br.readLine();
+			}
+			view.mCages = new ArrayList<GridCage>();
+			do {
+				cageParts = line.split(":");
+				GridCage cage;
+				if (cageParts.length >= 7)
+					cage = new GridCage(view, Integer.parseInt(cageParts[4]),
+							Boolean.parseBoolean(cageParts[6]));
+				else
+					cage = new GridCage(view, Integer.parseInt(cageParts[4]),
 							false);
-	        	cage.mId = Integer.parseInt(cageParts[1]);
-	        	cage.mAction = Integer.parseInt(cageParts[2]);
-	        	cage.mResult = Integer.parseInt(cageParts[3]);
-	        	for (String cellId : cageParts[5].split(",")) {
-	        		int cellNum = Integer.parseInt(cellId);
-	        		GridCell c = view.mCells.get(cellNum);
-	        		c.mCageId = cage.mId;
-	        		cage.mCells.add(c);
-	        	}
-	        	view.mCages.add(cage);
-	        } while ((line = br.readLine()) != null);
-	        
-	  } catch (FileNotFoundException e) {
-	        Log.d("Mathdoku", "FNF Error restoring game: " + e.getMessage());
-	        return false;
+				cage.mId = Integer.parseInt(cageParts[1]);
+				cage.mAction = Integer.parseInt(cageParts[2]);
+				cage.mResult = Integer.parseInt(cageParts[3]);
+				for (String cellId : cageParts[5].split(",")) {
+					int cellNum = Integer.parseInt(cellId);
+					GridCell c = view.mCells.get(cellNum);
+					c.mCageId = cage.mId;
+					cage.mCells.add(c);
+				}
+				view.mCages.add(cage);
+			} while ((line = br.readLine()) != null);
+
+		} catch (FileNotFoundException e) {
+			Log.d("Mathdoku", "FNF Error restoring game: " + e.getMessage());
+			return false;
 		} catch (IOException e) {
-		  Log.d("Mathdoku", "IO Error restoring game: " + e.getMessage());
-		  return false;
+			Log.d("Mathdoku", "IO Error restoring game: " + e.getMessage());
+			return false;
 		} catch (NumberFormatException e) {
-		  Log.d("Mathdoku", "Error restoring game: " + e.getMessage());
-		  return false;
+			Log.d("Mathdoku", "Error restoring game: " + e.getMessage());
+			return false;
 		} catch (IndexOutOfBoundsException e) {
-	     Log.d("Mathdoku", "Error restoring game: " + e.getMessage());
-	     return false;
-		}
-		finally {
-		  try {
-		    ins.close();
-		    br.close();
-		    if (this.filename.equals(SaveGame.saveFilename))
-		    	new File(filename).delete();
-		  } catch (Exception e) {
-		    // Nothing.
-			  return false;
-		  }
+			Log.d("Mathdoku", "Error restoring game: " + e.getMessage());
+			return false;
+		} finally {
+			try {
+				ins.close();
+				br.close();
+				if (this.filename.equals(SaveGame.saveFilename))
+					new File(filename).delete();
+			} catch (Exception e) {
+				// Nothing.
+				return false;
+			}
 		}
 		return true;
 	}
