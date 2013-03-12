@@ -316,9 +316,7 @@ public class MainActivity extends Activity {
 					: mTimerTask.mElapsedTime));
 			saver.save(grid, this.mGridView);
 		}
-		if (mTimerTask != null && !mTimerTask.isCancelled()) {
-			mTimerTask.cancel(true);
-		}
+		stopTimer();
 
 		if (mProgressDialogImagePreviewCreation != null
 				&& mProgressDialogImagePreviewCreation.isShowing()) {
@@ -368,7 +366,7 @@ public class MainActivity extends Activity {
 		}
 
 		setTheme();
-		
+
 		this.mGridView.setPreferences(this.preferences);
 
 		this.setSoundEffectsEnabled(this.preferences.getBoolean("soundeffects",
@@ -384,6 +382,10 @@ public class MainActivity extends Activity {
 			// game in the interface in order to be able to make a preview
 			// image.
 			createPreviewImages();
+		}
+
+		if (mTimerTask == null || (mTimerTask != null && mTimerTask.isCancelled())) {
+			startTimer();
 		}
 	}
 
@@ -683,9 +685,7 @@ public class MainActivity extends Activity {
 	 */
 	public void startNewGame(final int gridSize, final boolean hideOperators) {
 		// Cancel old timer if running.
-		if (mTimerTask != null && !mTimerTask.isCancelled()) {
-			mTimerTask.cancel(true);
-		}
+		stopTimer();
 
 		// Start a background task to generate the new grid. As soon as the new
 		// grid is created, the method onNewGridReady will be called.
@@ -949,12 +949,7 @@ public class MainActivity extends Activity {
 					// Restart the last game
 					restartLastGame();
 
-					// if (QUICK_CREATE_PUZZLE_WITHOUT_PREVIEW) {
-					// Reset theme to default after the last game was
-					// restored.
 					setTheme();
-					// }
-
 				}
 			}
 		};
@@ -1044,10 +1039,7 @@ public class MainActivity extends Activity {
 
 				MainActivity.this.pressMenu.setVisibility(View.VISIBLE);
 
-				if (MainActivity.this.mTimerTask != null
-						&& !MainActivity.this.mTimerTask.isCancelled()) {
-					MainActivity.this.mTimerTask.cancel(true);
-				}
+				stopTimer();
 
 				if (MainActivity.this.mTimerText.getVisibility() == View.VISIBLE
 						&& grid.isSolvedByCheating()) {
@@ -1072,14 +1064,7 @@ public class MainActivity extends Activity {
 				// Set visibility of other controls
 				this.setButtonVisibility();
 
-				// Start the timer
-				this.mTimerTask = new GameTimer();
-				this.mTimerTask.mElapsedTime = grid.getElapsedTime();
-				this.mTimerTask.mTimerLabel = mTimerText;
-				if (this.preferences.getBoolean("timer", true)) {
-					mTimerText.setVisibility(View.VISIBLE);
-				}
-				this.mTimerTask.execute();
+				startTimer();
 
 				// Handler for solved game
 				setOnSolvedHandler();
@@ -1088,10 +1073,7 @@ public class MainActivity extends Activity {
 				this.pressMenu.setVisibility(View.VISIBLE);
 				this.controls.setVisibility(View.GONE);
 
-				// Stop timer if running
-				if (mTimerTask != null && !mTimerTask.isCancelled()) {
-					mTimerTask.cancel(true);
-				}
+				stopTimer();
 				if (this.mTimerText.getVisibility() == View.VISIBLE
 						&& grid.isSolvedByCheating()) {
 					// Hide time in case the puzzle was solved by
@@ -1112,6 +1094,34 @@ public class MainActivity extends Activity {
 			this.puzzleGrid.setVisibility(View.GONE);
 			this.controls.setVisibility(View.GONE);
 			this.pressMenu.setVisibility(View.VISIBLE);
+		}
+	}
+
+	/**
+	 * Start a new timer (only in case the grid is active).
+	 */
+	private void startTimer() {
+		// Stop old timer
+		stopTimer();
+
+		if (grid != null && grid.isActive()) {
+			mTimerTask = new GameTimer();
+			mTimerTask.mElapsedTime = grid.getElapsedTime();
+			mTimerTask.mTimerLabel = mTimerText;
+			if (preferences.getBoolean("timer", true)) {
+				mTimerText.setVisibility(View.VISIBLE);
+			}
+			mTimerTask.execute();
+		}
+	}
+
+	/**
+	 * Stop the current timer.
+	 */
+	private void stopTimer() {
+		// Stop timer if running
+		if (mTimerTask != null && !mTimerTask.isCancelled()) {
+			mTimerTask.cancel(true);
 		}
 	}
 }
