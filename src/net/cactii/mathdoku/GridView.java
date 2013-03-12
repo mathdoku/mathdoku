@@ -4,6 +4,7 @@ import net.cactii.mathdoku.Painter.GridPainter;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
+import android.graphics.Path;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class GridView extends View implements OnTouchListener {
+	@SuppressWarnings("unused")
 	private static final String TAG = "MathDoku.GridView";
 
 	// Actual content of the puzzle in this grid view
@@ -264,10 +266,12 @@ public class GridView extends View implements OnTouchListener {
 			// Draw (dashed) grid
 			for (int i = 1; i < gridSize; i++) {
 				float pos = ((float) this.mCurrentWidth / (float) gridSize) * i;
-				canvas.drawLine(0, pos, this.mCurrentWidth, pos,
-						mGridPainter.mInnerPaint);
-				canvas.drawLine(pos, 0, pos, this.mCurrentWidth,
-						mGridPainter.mInnerPaint);
+
+				// Due to a bug
+				// (https://code.google.com/p/android/issues/detail?id=29944), a
+				// dashed line can not be drawn with drawLine at API-level 11 or above. 
+				drawDashedLine(canvas, 0, pos, this.mCurrentWidth, pos);
+				drawDashedLine(canvas, pos, 0, pos, this.mCurrentWidth);
 			}
 
 			// Get current setting for how to display possible values in a
@@ -356,4 +360,11 @@ public class GridView extends View implements OnTouchListener {
 		return;
 	}
 
+	private void drawDashedLine(Canvas canvas, float left, float top,
+			float right, float bottom) {
+		Path path = new Path();
+		path.moveTo(left, top);
+		path.lineTo(right, bottom);
+		canvas.drawPath(path, mGridPainter.mInnerPaint);
+	}
 }

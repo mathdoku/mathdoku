@@ -9,7 +9,6 @@ import java.util.List;
 
 import android.app.ListActivity;
 import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +25,6 @@ public class GameFileListAdapter extends BaseAdapter {
 
 	// Inflater and font for the previews
 	private LayoutInflater inflater;
-	private Typeface mFace;
 
 	// Activity context in which the adapter is used.
 	private GameFileList mContext;

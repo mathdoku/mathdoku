@@ -37,8 +37,7 @@ public class CageTypeGenerator {
 			// java.util.ConcurrentModificationException. So we use a cloned
 			// version of the mCageTypes list to iterate while modifying the
 			// original list.
-			ArrayList<GridCageType> cageTypesClone = (ArrayList<GridCageType>) mCageTypes
-					.clone();
+			ArrayList<GridCageType> cageTypesClone = new ArrayList<GridCageType>(mCageTypes);
 
 			for (GridCageType cageType : cageTypesClone) {
 				if (cageType.size() == cageSize - 1) {

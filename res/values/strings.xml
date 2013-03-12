@@ -144,5 +144,6 @@
     <string name="select_cell_before_value">Select a cell first.</string>
     <!-- Text to display in case the preview image of a saved game is not yet available. -->
     <string name="game_file_preview_not_available">Not yet available</string>
+    <string name="game_seed">"Game seed: "</string>
 
 </resources>

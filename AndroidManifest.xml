@@ -4,7 +4,19 @@
     android:versionCode="77"
     android:versionName="1.95d" >
 
+    <uses-sdk
+        android:minSdkVersion="3"
+        android:targetSdkVersion="17" />
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true" >
+    </supports-screens>
+
     <application
+        android:allowBackup="false"
         android:icon="@drawable/icon"
         android:label="@string/application_name" >
         <activity
@@ -19,14 +31,5 @@
         <activity android:name="net.cactii.mathdoku.OptionsActivity" />
         <activity android:name="net.cactii.mathdoku.GameFileList" />
     </application>
-
-    <uses-sdk android:minSdkVersion="3" />
-
-    <supports-screens
-        android:anyDensity="true"
-        android:largeScreens="true"
-        android:normalScreens="true"
-        android:smallScreens="true" >
-    </supports-screens>
 
 </manifest>

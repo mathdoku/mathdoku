@@ -143,8 +143,6 @@ public class GridCageType {
 				}
 			}
 		}
-		this.usedCells = usedCells;
-		this.mSize = mSize;
 	}
 
 	/*

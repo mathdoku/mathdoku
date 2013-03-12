@@ -21,6 +21,8 @@ import android.graphics.Canvas;
 import android.util.Log;
 
 public class GameFile extends File {
+	private static final long serialVersionUID = -1996348039574358140L;
+
 	private static final String TAG = "MathDoku.GameFile";
 
 	// Identifiers for building file names
@@ -39,7 +41,6 @@ public class GameFile extends File {
 	// Base of filenames for this game file. The baseFilename does not include a
 	// path.
 	private String baseFilename;
-	private boolean isDefaultGameFile;
 
 	// Delimiters used in files to separate objects, fields and field with
 	// multiple values.
@@ -62,7 +63,6 @@ public class GameFile extends File {
 	public GameFile() {
 		super(PATH + DEFAULT_FILENAME);
 		this.baseFilename = DEFAULT_FILENAME;
-		this.isDefaultGameFile = true;
 	}
 
 	/**
@@ -75,7 +75,6 @@ public class GameFile extends File {
 		// Only append filename with PATH if not yet included.
 		super(PATH + filename);
 		this.baseFilename = filename;
-		this.isDefaultGameFile = false;
 	}
 
 	/**
@@ -87,7 +86,6 @@ public class GameFile extends File {
 	public GameFile(int index) {
 		super(PATH + PREFIX_FILENAME + index);
 		this.baseFilename = PREFIX_FILENAME + index;
-		this.isDefaultGameFile = false;
 	}
 
 	/**
@@ -208,7 +206,6 @@ public class GameFile extends File {
 
 		String filenameLong = getFullFilename();
 		String line = null;
-		String[] lineParts;
 		BufferedReader br = null;
 		InputStream ins = null;
 		try {
@@ -381,12 +378,7 @@ public class GameFile extends File {
 				break;
 		}
 
-		// Save the file at the first unused file index number. The current game
-		// was already saved to the default game file when the game file list
-		// was shown. To save the current game a copy of the default file has to
-		// be made.
-
-		String filenameLong = getFullFilename();
+		// Save the file at the first unused file index number.
 		copyFile(getFullFilename(), PATH + PREFIX_FILENAME + fileIndex);
 		copyFile(getFullFilenamePreview(), PATH + PREFIX_FILENAME + fileIndex
 				+ PREVIEW_EXTENSION);
@@ -440,6 +432,17 @@ public class GameFile extends File {
 	 *            The grid view for which the preview image has to be generated.
 	 */
 	public boolean savePreviewImage(GridView view) {
+		if (DevelopmentHelper.mode != Mode.PRODUCTION) {
+			if (view.getWidth() == 0) {
+				Log.i(TAG,
+						"Can not save the preview image. If running on am Emulator for "
+						+ "Android 2.2 this is normal behavior when rotating screen "
+						+ "from landscap to portrait as the Activity.onCreate is called "
+						+ "twice instead of one time.");
+				return true;
+			}
+		}
+
 		// Create a scaled bitmap and canvas and draw the view on this canvas.
 		int previewSize = (int) (view.getWidth() * PREVIEW_SCALE_FACTOR);
 		float scaleFactor = PREVIEW_SCALE_FACTOR;
@@ -481,9 +484,6 @@ public class GameFile extends File {
 			bitmap = BitmapFactory.decodeStream(in);
 		} catch (FileNotFoundException e) {
 			Log.d(TAG, "File not found error when loading image preview "
-					+ filenamePreview + "\n" + e.getMessage());
-		} catch (IOException e) {
-			Log.d(TAG, "IO error when loading preview of game file "
 					+ filenamePreview + "\n" + e.getMessage());
 		} finally {
 			if (in != null) {

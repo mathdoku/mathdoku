@@ -15,7 +15,7 @@ public class DLX extends Object {
 	private DLXNode lastnodeadded;
 	private ArrayList<Integer> trysolution;
 	private ArrayList<Integer> foundsolution;
-	private int NumSolns, NumAttempts;
+	private int NumSolns;
 	protected boolean isValid;
 	private int prev_rowidx = -1;
 	private SolveType solvetype;
@@ -98,7 +98,6 @@ public class DLX extends Object {
 	private DLXColumn ChooseMinCol() {
 		int minsize = Integer.MAX_VALUE;
 		DLXColumn search, mincol;
-		int colNum = 0;
 
 		mincol = search = (DLXColumn) root.GetRight();
 
@@ -111,7 +110,6 @@ public class DLX extends Object {
 				}
 			}
 			search = (DLXColumn) search.GetRight();
-			++colNum;
 		}
 		if (minsize == 0)
 			return null;
@@ -165,7 +163,6 @@ public class DLX extends Object {
 
 		solvetype = st;
 		NumSolns = 0;
-		NumAttempts = 0;
 		search(trysolution.size());
 		return NumSolns;
 	}
@@ -189,7 +186,6 @@ public class DLX extends Object {
 					trysolution.add(((DLXNode) r).GetRowIdx());
 				else
 					trysolution.set(k, ((DLXNode) r).GetRowIdx());
-				NumAttempts++;
 				j = r.GetRight();
 				while (j != r) {
 					CoverCol(((DLXNode) j).GetColumn());

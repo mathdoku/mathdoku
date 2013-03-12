@@ -116,6 +116,7 @@ public class Painter {
 		mGridPainter.mInnerPaint = new Paint();
 		mGridPainter.mInnerPaint.setColor(0x80000000);
 		mGridPainter.mInnerPaint.setStrokeWidth(BORDER_STROKE_HAIR_LINE);
+		mGridPainter.mInnerPaint.setStyle(Style.STROKE);
 
 		mGridPainter.mOuterPaint = new Paint();
 		mGridPainter.mOuterPaint.setColor(0xFF000000);

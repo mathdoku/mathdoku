@@ -31,8 +31,7 @@ public class CellChange {
 			ArrayList<Integer> previousPossibleValues) {
 		this.cell = cell;
 		this.previousUserValue = previousUserValue;
-		this.previousPossibleValues = (ArrayList<Integer>) previousPossibleValues
-				.clone();
+		this.previousPossibleValues = new ArrayList<Integer>(previousPossibleValues);
 		this.relatedCellChanges = null;
 	}
 

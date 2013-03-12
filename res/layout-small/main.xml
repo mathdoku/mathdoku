@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/topLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -30,11 +31,11 @@
             android:layout_alignLeft="@+id/gridView"
             android:layout_below="@+id/gridView"
             android:background="#00000000"
-            android:text="Game seed: "
+            android:text="@string/game_seed"
             android:textColor="#FF000000"
             android:textSize="9sp"
             android:visibility="gone" />
-        
+
         <TextView
             android:id="@+id/gameSeedText"
             android:layout_width="wrap_content"
@@ -45,7 +46,8 @@
             android:text="999.999.999.999.999.999"
             android:textColor="#FF000000"
             android:textSize="9sp"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/timerText"
@@ -58,7 +60,8 @@
             android:textColor="#FF000000"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/solvedText"
@@ -105,7 +108,8 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:text="1"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            tools:ignore="HardcodedText" />
 
         <Button
             android:id="@+id/digitSelect2"
@@ -114,7 +118,8 @@
             android:layout_alignTop="@+id/digitSelect1"
             android:layout_toRightOf="@+id/digitSelect1"
             android:text="2"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            tools:ignore="HardcodedText" />
 
         <Button
             android:id="@+id/digitSelect3"
@@ -123,7 +128,8 @@
             android:layout_alignTop="@+id/digitSelect2"
             android:layout_toRightOf="@+id/digitSelect2"
             android:text="3"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            tools:ignore="HardcodedText" />
 
         <Button
             android:id="@+id/digitSelect4"
@@ -132,17 +138,19 @@
             android:layout_alignTop="@+id/digitSelect3"
             android:layout_toRightOf="@+id/digitSelect3"
             android:text="4"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            tools:ignore="HardcodedText" />
 
-                <Button
+        <Button
             android:id="@+id/digitSelect5"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_alignTop="@+id/digitSelect4"
             android:layout_toRightOf="@+id/digitSelect4"
             android:text="5"
-            android:textSize="12sp" />
-        
+            android:textSize="12sp"
+            tools:ignore="HardcodedText" />
+
         <Button
             android:id="@+id/digitSelect6"
             android:layout_width="32dp"
@@ -150,7 +158,8 @@
             android:layout_alignLeft="@+id/digitSelect1"
             android:layout_below="@+id/digitSelect1"
             android:text="6"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            tools:ignore="HardcodedText" />
 
         <Button
             android:id="@+id/digitSelect7"
@@ -159,7 +168,8 @@
             android:layout_alignTop="@+id/digitSelect6"
             android:layout_toRightOf="@+id/digitSelect6"
             android:text="7"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            tools:ignore="HardcodedText" />
 
         <Button
             android:id="@+id/digitSelect8"
@@ -168,8 +178,9 @@
             android:layout_alignTop="@+id/digitSelect7"
             android:layout_toRightOf="@+id/digitSelect7"
             android:text="8"
-            android:textSize="12sp" />
-        
+            android:textSize="12sp"
+            tools:ignore="HardcodedText" />
+
         <Button
             android:id="@+id/digitSelect9"
             android:layout_width="32dp"
@@ -177,8 +188,9 @@
             android:layout_alignTop="@+id/digitSelect8"
             android:layout_toRightOf="@+id/digitSelect8"
             android:text="9"
-            android:textSize="12sp" />
-        
+            android:textSize="12sp"
+            tools:ignore="HardcodedText" />
+
         <RelativeLayout
             android:id="@+id/maybe"
             android:layout_width="wrap_content"
@@ -214,7 +226,6 @@
             android:layout_alignTop="@+id/undoButton"
             android:layout_toLeftOf="@+id/undoButton"
             android:text="@string/main_ui_clear"
-            android:textAlignment="textStart"
             android:textSize="12sp"
             android:textStyle="bold" />
 

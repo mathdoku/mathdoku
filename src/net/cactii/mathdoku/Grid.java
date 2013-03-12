@@ -3,6 +3,7 @@ package net.cactii.mathdoku;
 import java.util.ArrayList;
 
 public class Grid {
+	@SuppressWarnings("unused")
 	private static final String TAG = "MathDoku.Grid";
 
 	// Identifiers of different versions of grid view information which is
@@ -19,7 +20,6 @@ public class Grid {
 
 	// Cell and solution
 	public ArrayList<GridCell> mCells;
-	private int[][] solutionMatrix;
 
 	private boolean mCheated;
 
@@ -32,8 +32,6 @@ public class Grid {
 	private long mDateCreated;
 	// Epalsed time
 	private long mElapsedTime;
-	// Current theme
-	private int mTheme;
 
 	private long mGameSeed;
 
@@ -335,6 +333,7 @@ public class Grid {
 	public boolean fromStorageString(String line) {
 		String[] viewParts = line.split(GameFile.FIELD_DELIMITER_LEVEL1);
 
+		@SuppressWarnings("unused")
 		int cellInformationVersion = 0;
 		if (viewParts[0].equals(SAVE_GAME_GRID_VERSION_01)) {
 			cellInformationVersion = 1;

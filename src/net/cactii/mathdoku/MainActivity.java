@@ -357,7 +357,9 @@ public class MainActivity extends Activity {
 			mTimerText.setBackgroundColor(0x10000000);
 			mMaybeText.setTextColor(0xFF000000);
 		}
-	}
+
+		this.mGridView.invalidate();
+}
 
 	public void onResume() {
 		if (this.preferences.getBoolean("wakelock", true)) {
