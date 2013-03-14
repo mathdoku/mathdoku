@@ -241,6 +241,10 @@ public class GridView extends View implements OnTouchListener {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
+		if (grid == null) {
+			// As long as no grid has been attached to the gridview, it can not be drawn.
+			return;
+		}
 		synchronized (grid.mLock) { // Avoid redrawing at the same time as
 									// creating
 			// puzzle

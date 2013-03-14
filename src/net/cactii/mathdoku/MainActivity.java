@@ -3,7 +3,6 @@ package net.cactii.mathdoku;
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.GameFile.GameFileType;
 import net.cactii.mathdoku.Painter.GridTheme;
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -319,7 +318,7 @@ public class MainActivity extends Activity {
 	}
 
 	public void onPause() {
-		if (mGrid.getGridSize() > 3) {
+		if (mGrid != null && mGrid.getGridSize() > 3) {
 			GameFile saver = new GameFile(GameFileType.LAST_GAME);
 			this.mGrid.setElapsedTime((mTimerTask == null ? 0
 					: mTimerTask.mElapsedTime));
@@ -869,6 +868,10 @@ public class MainActivity extends Activity {
 		}
 
 		if (pref_version == -1 || pref_version != current_version) {
+			// On Each update of the game, all game file will be converted to
+			// the latest definitions.
+			GameFile.ConvertGameFiles(pref_version, current_version);
+
 			prefeditor.putInt("currentversion", current_version);
 			prefeditor.commit();
 			if (pref_version == -1) {

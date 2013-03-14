@@ -28,11 +28,13 @@ public class Grid {
 
 	private GridCell mSelectedCell;
 
-	// Date of current game (used for saved games)
+	// Date of current game (used for saved games) and elapsed time while playing this game
 	private long mDateCreated;
-	// Epalsed time
 	private long mElapsedTime;
 
+	// The seed used to create the game. In case the seed equals 0 it can not be
+	// trusted as a valid seed in case the grid was restored from a game file
+	// prior to version 1 as the game seed was not stored until then.
 	private long mGameSeed;
 
 	// Keep track of all moves as soon as grid is built or restored.
@@ -279,13 +281,6 @@ public class Grid {
 	}
 
 	/**
-	 * Set the seed which is used to generate this puzzle.
-	 */
-	public void setGameSeed(long gameSeed) {
-		this.mGameSeed = gameSeed;
-	}
-
-	/**
 	 * Get the seed which is used to generate this puzzle.
 	 * 
 	 * @return The seed which can be used to generate this puzzle.
@@ -315,6 +310,8 @@ public class Grid {
 	 */
 	public String toStorageString() {
 		String storageString = SAVE_GAME_GRID_VERSION_01
+				+ GameFile.FIELD_DELIMITER_LEVEL1 + mGameSeed
+				+ GameFile.FIELD_DELIMITER_LEVEL1 + mDateCreated
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mElapsedTime
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mGridSize
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mActive;
@@ -334,15 +331,17 @@ public class Grid {
 		String[] viewParts = line.split(GameFile.FIELD_DELIMITER_LEVEL1);
 
 		@SuppressWarnings("unused")
-		int cellInformationVersion = 0;
+		int viewInformationVersion = 0;
 		if (viewParts[0].equals(SAVE_GAME_GRID_VERSION_01)) {
-			cellInformationVersion = 1;
+			viewInformationVersion = 1;
 		} else {
 			return false;
 		}
 
 		// Process all parts
 		int index = 1;
+		mGameSeed = Long.parseLong(viewParts[index++]);
+		mDateCreated = Long.parseLong(viewParts[index++]);
 		mElapsedTime = Long.parseLong(viewParts[index++]);
 		mGridSize = Integer.parseInt(viewParts[index++]);
 		mActive = Boolean.parseBoolean(viewParts[index++]);
@@ -369,6 +368,7 @@ public class Grid {
 			boolean mActive) {
 		clear();
 		this.mGameSeed = mGameSeed;
+		this.mDateCreated = System.currentTimeMillis();
 		this.mGridSize = mGridSize;
 		this.mCells = mCells;
 		this.mCages = mCages;

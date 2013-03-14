@@ -18,6 +18,7 @@ import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.renderscript.Type;
 import android.util.Log;
 
 public class GameFile extends File {
@@ -32,24 +33,11 @@ public class GameFile extends File {
 
 	// Identifiers for building file names
 	private static final String PATH = "/data/data/net.cactii.mathdoku/";
-	private static final String FILENAME_LAST_GAME = "savedgame"; // TODO:
-																	// rename to
-																	// "last_game"
-																	// +
-																	// converting
-																	// at
-																	// upgrade
-	private static final String FILENAME_SAVED_GAME = FILENAME_LAST_GAME + "_"; // TODO:
-																				// rename
-																				// to
-																				// "saved_game_#"
-																				// +
-																				// converting
-																				// at
-																				// upgrade
-	private static final String FILENAME_NEW_GAME = "new_game_";
-	private static final String GAMEFILE_EXTENSION = "mgf"; // MGF = Mathdoku
-															// Game File
+	private static final String FILENAME_LAST_GAME = "last_game";
+	private static final String FILENAME_SAVED_GAME = "saved_game_";
+	private static final String FILENAME_NEW_GAME = "new_game";
+	private static final String GAMEFILE_EXTENSION = ".mgf"; // MGF = Mathdoku
+																// Game File
 	private static final String PREVIEW_EXTENSION = ".png";
 
 	// Scaling factor for preview images
@@ -138,9 +126,6 @@ public class GameFile extends File {
 			try {
 				// Open file
 				writer = new BufferedWriter(new FileWriter(getFullFilename()));
-
-				// Store current time
-				writer.write(System.currentTimeMillis() + EOL_DELIMITER);
 
 				// Store information about the Grid View on a single line
 				writer.write(grid.toStorageString() + EOL_DELIMITER);
@@ -233,23 +218,20 @@ public class GameFile extends File {
 				throw new InvalidFileFormatException("Unexpected end of file");
 			}
 
-			// Read date/time created
-			// TODO: move to grid-line in save file
-			grid.setDateCreated(Long.parseLong(line));
-			if ((line = br.readLine()) == null) {
-				throw new InvalidFileFormatException("Unexpected end of file");
-			}
-
 			// Read view information
 			if (!grid.fromStorageString(line)) {
 				// The initial version of the saved games stored view
-				// information on 3 different lines. Rewrite to valid view
+				// information on 4 different lines. Rewrite to valid view
 				// storage information (version 1).
 				// Do not remove as long as backward compatibility with old save
 				// file should be remained.
 				line = Grid.SAVE_GAME_GRID_VERSION_01 + FIELD_DELIMITER_LEVEL1
-						+ line + FIELD_DELIMITER_LEVEL1 + br.readLine()
-						+ FIELD_DELIMITER_LEVEL1 + br.readLine();
+						+ 0 // game seed. Use 0 as it was not stored in initial
+							// files
+						+ FIELD_DELIMITER_LEVEL1 + line // date created
+						+ FIELD_DELIMITER_LEVEL1 + br.readLine() // elapsed time
+						+ FIELD_DELIMITER_LEVEL1 + br.readLine() // grid size
+						+ FIELD_DELIMITER_LEVEL1 + br.readLine(); // active
 
 				// Retry to process this line.
 				if (!grid.fromStorageString(line)) {
@@ -389,12 +371,15 @@ public class GameFile extends File {
 		// Determine first file index number which is currently not in use.
 		int fileIndex;
 		for (fileIndex = 0;; fileIndex++) {
-			if (!new File(PATH + FILENAME_NEW_GAME + fileIndex).exists()) // TODO: add extension
+			if (!new File(PATH + FILENAME_NEW_GAME + fileIndex
+					+ GAMEFILE_EXTENSION).exists()) {
 				break;
+			}
 		}
 
 		// Save the file at the first unused file index number.
-		copyFile(getFullFilename(), PATH + FILENAME_SAVED_GAME + fileIndex);
+		copyFile(getFullFilename(), PATH + FILENAME_SAVED_GAME + fileIndex
+				+ GAMEFILE_EXTENSION);
 		copyFile(getFullFilenamePreview(), PATH + FILENAME_SAVED_GAME
 				+ fileIndex + PREVIEW_EXTENSION);
 	}
@@ -560,29 +545,51 @@ public class GameFile extends File {
 	 * @return A list of files. An empty list in case of an error.
 	 */
 	private static ArrayList<String> getAllGameFiles(
-			boolean includeDefaultGameFile, boolean includePreviewsImages,
+			GameFileType[] gameFileType, boolean includePreviewsImages,
 			int maximumFiles) {
+		// Check which game file types have to be returned.
+		boolean includeLastGame = false;
+		boolean includeUserGame = false;
+		boolean includeNewGame = false;
+		for (int i = 0; i < gameFileType.length; i++) {
+			switch (gameFileType[i]) {
+			case LAST_GAME:
+				includeLastGame = true;
+				break;
+			case SAVED_GAME:
+				includeUserGame = true;
+				break;
+			case NEW_GAME:
+				includeNewGame = true;
+				break;
+			default:
+				// Ignore this game type.
+			}
+		}
+
+		// Resulting array list of file names.
 		ArrayList<String> gameFiles = new ArrayList<String>();
 
 		// Retrieve all files from game file directory
 		File dir = new File(PATH);
 		String[] filenames = dir.list();
 
-		// Check all files but stop is maximum is reached
+		// Check all files but stop if maximum is reached
 		int countFiles = 0;
 		for (String filename : filenames) {
-			if (filename.startsWith(GameFile.FILENAME_SAVED_GAME)
-					|| (includeDefaultGameFile && filename
-							.startsWith(GameFile.FILENAME_LAST_GAME))) {
-				if (filename.endsWith(GameFile.PREVIEW_EXTENSION)
-						&& !includePreviewsImages) {
-					// This is a preview file image which may not be included.
-				} else {
-					gameFiles.add(filename);
-					countFiles++;
-					if (countFiles == maximumFiles) {
-						break;
-					}
+			if ((includePreviewsImages && filename
+					.endsWith(GameFile.PREVIEW_EXTENSION))
+					|| (includeUserGame && filename
+							.startsWith(GameFile.FILENAME_SAVED_GAME))
+					|| (includeLastGame && filename
+							.startsWith(GameFile.FILENAME_LAST_GAME))
+					|| (includeNewGame && filename
+							.startsWith(GameFile.FILENAME_NEW_GAME))) {
+				// The file has to be included.
+				gameFiles.add(filename);
+				countFiles++;
+				if (countFiles == maximumFiles) {
+					break;
 				}
 			}
 		}
@@ -602,7 +609,9 @@ public class GameFile extends File {
 	 *         be returned than requested.
 	 */
 	public static ArrayList<String> getAllGameFiles(int maximumFiles) {
-		return getAllGameFiles(true, false, maximumFiles);
+		GameFileType[] gameFileTypes = new GameFileType[] {
+				GameFileType.SAVED_GAME, GameFileType.LAST_GAME };
+		return getAllGameFiles(gameFileTypes, false, maximumFiles);
 	}
 
 	/**
@@ -617,7 +626,8 @@ public class GameFile extends File {
 	 */
 	public static ArrayList<String> getAllGameFilesCreatedByUser(
 			int maximumFiles) {
-		return getAllGameFiles(false, false, maximumFiles);
+		GameFileType[] gameFileTypes = new GameFileType[] { GameFileType.SAVED_GAME };
+		return getAllGameFiles(gameFileTypes, false, maximumFiles);
 	}
 
 	/**
@@ -631,7 +641,7 @@ public class GameFile extends File {
 	private static String getFilenameForType(GameFileType gameFileType) {
 		switch (gameFileType) {
 		case LAST_GAME:
-			return FILENAME_LAST_GAME; // TODO: + GAMEFILE_EXTENSION;
+			return FILENAME_LAST_GAME + GAMEFILE_EXTENSION;
 		case SAVED_GAME:
 			throw new RuntimeException(
 					"Method getFilenameForType(GameFileType) can not be used for GameFileType = SAVED_GAME");
@@ -656,6 +666,59 @@ public class GameFile extends File {
 	 * @return The full path of the preview image of the game file.
 	 */
 	private String getFullFilenamePreview() {
-		return PATH + this.baseFilename + PREVIEW_EXTENSION;
+		return PATH
+				+ this.baseFilename.replace(GAMEFILE_EXTENSION,
+						PREVIEW_EXTENSION);
+	}
+
+	public static void ConvertGameFiles(int currentVersion, int newVersion) {
+		if (currentVersion <= 77) {
+			// Rename files and convert to new file formats.
+			File dir = new File(PATH);
+			String[] filenames = dir.list();
+			for (String filename : filenames) {
+				String newFilename = null;
+				if (filename.endsWith(PREVIEW_EXTENSION)) {
+					// This is a preview image of a game file. It only needs to
+					// be renamed.
+					if (filename.startsWith("savedgame_")) {
+						newFilename = PATH + FILENAME_SAVED_GAME
+								+ filename.substring(10);
+					} else if (filename.startsWith("savedgame")) {
+						newFilename = PATH + GameFile.FILENAME_LAST_GAME
+								+ PREVIEW_EXTENSION;
+					}
+				} else if (filename.startsWith("savedgame")) {
+					// This is a basic game file. Convert content to the latest
+					// format before renaming.
+
+					// Load and then save the game file.
+					GameFile gameFile = new GameFile(filename);
+					Grid grid = gameFile.load();
+					gameFile.save(grid);
+
+					// Determine new name
+					if (filename.startsWith("savedgame_")) {
+						newFilename = PATH + FILENAME_SAVED_GAME
+								+ filename.substring(10) + GAMEFILE_EXTENSION;
+					} else if (filename.startsWith("savedgame")) {
+						newFilename = PATH + FILENAME_LAST_GAME
+								+ GAMEFILE_EXTENSION;
+					}
+				}
+
+				// Rename if applicable.
+				if (newFilename != null) {
+					// Rename the file
+					if (new File(PATH + filename)
+							.renameTo(new File(newFilename))) {
+						// File is renamed.
+						if (new File(PATH + filename).exists()) {
+							new File(PATH + filename).delete();
+						}
+					}
+				}
+			}
+		}
 	}
 }
