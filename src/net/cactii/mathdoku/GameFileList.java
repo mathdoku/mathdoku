@@ -1,5 +1,6 @@
 package net.cactii.mathdoku;
 
+import net.cactii.mathdoku.GameFile.GameFileType;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -74,7 +75,7 @@ public class GameFileList extends ListActivity {
 		// The current game was already saved as the default game file when the
 		// game file list was shown. To save the current game a copy of the
 		// default file has to be made.
-		new GameFile().copyToNewGameFile();
+		new GameFile(GameFileType.LAST_GAME).copyToNewGameFile();
 		this.mCurrentSaved = true;
 
 		this.mAdapter.refreshFiles();

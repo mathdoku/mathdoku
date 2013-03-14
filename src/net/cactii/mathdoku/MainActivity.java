@@ -1,15 +1,20 @@
 package net.cactii.mathdoku;
 
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
+import net.cactii.mathdoku.GameFile.GameFileType;
 import net.cactii.mathdoku.Painter.GridTheme;
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -56,8 +61,11 @@ public class MainActivity extends Activity {
 	private final static int CONTEXT_MENU_CLEAR_GRID = 5;
 	private final static int CONTEXT_MENU_SHOW_SOLUTION = 6;
 
+	// Identifiers for the notifications
+	public final static int NOTIFICATION_GRID_GENERATOR = 1;
+
 	// The grid and the view which will display the grid.
-	public Grid grid;
+	public Grid mGrid;
 	public GridView mGridView;
 
 	// A global painter object to paint the grid in different themes.
@@ -85,6 +93,7 @@ public class MainActivity extends Activity {
 
 	public SharedPreferences preferences;
 
+	// Background task for generating a new puzzle
 	private GridGenerator mGridGeneratorTask;
 
 	// Variables for process of creating preview images of game file for which
@@ -224,7 +233,7 @@ public class MainActivity extends Activity {
 		});
 		this.undoButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				if (MainActivity.this.grid.UndoLastMove()) {
+				if (MainActivity.this.mGrid.UndoLastMove()) {
 					// Succesfull undo
 					mGridView.invalidate();
 				}
@@ -242,7 +251,7 @@ public class MainActivity extends Activity {
 				if (event.getAction() == MotionEvent.ACTION_UP)
 					v.playSoundEffect(SoundEffectConstants.CLICK);
 
-				GridCell selectedCell = grid.getSelectedCell();
+				GridCell selectedCell = mGrid.getSelectedCell();
 				if (selectedCell != null) {
 					// Apply new setting of maybe button on current selected
 					// cell.
@@ -274,7 +283,7 @@ public class MainActivity extends Activity {
 								"redundantPossibles", false)) {
 							// Update possible values for other cells in this
 							// row and column.
-							grid.clearRedundantPossiblesInSameRowOrColumn(originalUserMove);
+							mGrid.clearRedundantPossiblesInSameRowOrColumn(originalUserMove);
 						}
 						mGridView.invalidate();
 					}
@@ -310,11 +319,11 @@ public class MainActivity extends Activity {
 	}
 
 	public void onPause() {
-		if (grid.getGridSize() > 3) {
-			GameFile saver = new GameFile();
-			this.grid.setElapsedTime((mTimerTask == null ? 0
+		if (mGrid.getGridSize() > 3) {
+			GameFile saver = new GameFile(GameFileType.LAST_GAME);
+			this.mGrid.setElapsedTime((mTimerTask == null ? 0
 					: mTimerTask.mElapsedTime));
-			saver.save(grid, this.mGridView);
+			saver.save(mGrid, this.mGridView);
 		}
 		stopTimer();
 
@@ -359,12 +368,20 @@ public class MainActivity extends Activity {
 		}
 
 		this.mGridView.invalidate();
-}
+	}
 
 	public void onResume() {
 		if (this.preferences.getBoolean("wakelock", true)) {
 			getWindow()
 					.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		}
+
+		if (mGridGeneratorTask != null) {
+			// In case the grid is created in the background ans the dialog is
+			// closed, the activity will be moved to the background as well. In
+			// case the user starts this app again onResume is called but
+			// onCreate isn't. So we have to check here as well.
+			mGridGeneratorTask.attachToActivity(this);
 		}
 
 		setTheme();
@@ -386,9 +403,37 @@ public class MainActivity extends Activity {
 			createPreviewImages();
 		}
 
-		if (mTimerTask == null || (mTimerTask != null && mTimerTask.isCancelled())) {
+		if (mTimerTask == null
+				|| (mTimerTask != null && mTimerTask.isCancelled())) {
 			startTimer();
 		}
+	}
+
+	@Override
+	protected void onNewIntent(Intent intent) {
+		Bundle bundleExtras = intent.getExtras();
+		if (bundleExtras != null) {
+			int notificationId = bundleExtras.getInt("notificationId");
+			String nameGameFile = bundleExtras.getString("nameGameFile");
+			if (notificationId == NOTIFICATION_GRID_GENERATOR
+					&& nameGameFile != null) {
+				// The current grid will be overridden without consent of user
+				// as he deliberately has chosen to select the notification.
+				Grid newGrid = new GameFile(nameGameFile).load();
+				setNewGrid(newGrid);
+
+				// Cancel the notification
+				NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+				notificationManager.cancel(notificationId);
+
+				// Detach from the grid generator task
+				mGridGeneratorTask = null;
+			}
+		} else {
+			Log.d(TAG, "Unexpected intent received. Nothing special is done.");
+		}
+
+		super.onNewIntent(intent);
 	}
 
 	public void setSoundEffectsEnabled(boolean enabled) {
@@ -413,12 +458,14 @@ public class MainActivity extends Activity {
 		// Disable or enable option to check progress depending on whether grid
 		// is active
 		menu.findItem(R.id.checkprogress).setVisible(
-				(grid != null && grid.isActive()));
+				(mGrid != null && mGrid.isActive()));
 
 		// Load/save can only be used in case a grid is displayed (which can be
 		// saved) or in case a game file exists which can be loaded.
-		menu.findItem(R.id.saveload).setVisible(
-				(grid != null && grid.isActive()) || GameFileList.canBeUsed());
+		menu.findItem(R.id.saveload)
+				.setVisible(
+						(mGrid != null && mGrid.isActive())
+								|| GameFileList.canBeUsed());
 
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -434,7 +481,7 @@ public class MainActivity extends Activity {
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
-		if (grid == null || !grid.isActive()) {
+		if (mGrid == null || !mGrid.isActive()) {
 			// No context menu in case puzzle isn't active.
 			return;
 		}
@@ -443,7 +490,7 @@ public class MainActivity extends Activity {
 		menu.setHeaderTitle(R.string.application_name);
 
 		// Determine current selected cage.
-		GridCage selectedGridCage = grid.getCageForSelectedCell();
+		GridCage selectedGridCage = mGrid.getCageForSelectedCell();
 
 		// Add options to menu only in case the option can be chosen.
 
@@ -499,8 +546,8 @@ public class MainActivity extends Activity {
 
 	public boolean onContextItemSelected(MenuItem item) {
 		// Get selected cell
-		GridCell selectedCell = grid.getSelectedCell();
-		GridCage selectedGridCage = grid.getCageForSelectedCell();
+		GridCell selectedCell = mGrid.getSelectedCell();
+		GridCage selectedGridCage = mGrid.getCageForSelectedCell();
 
 		switch (item.getItemId()) {
 		case CONTEXT_MENU_CLEAR_CAGE_CELLS:
@@ -540,7 +587,7 @@ public class MainActivity extends Activity {
 			openClearDialog();
 			break;
 		case CONTEXT_MENU_SHOW_SOLUTION:
-			this.grid.Solve();
+			this.mGrid.Solve();
 			this.mGridView.invalidate();
 			this.pressMenu.setVisibility(View.VISIBLE);
 			break;
@@ -554,78 +601,31 @@ public class MainActivity extends Activity {
 		return super.onContextItemSelected(item);
 	}
 
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	public boolean onOptionsItemSelected(MenuItem menuItem) {
 
 		int menuId = menuItem.getItemId();
-		if (menuId == R.id.size4 || menuId == R.id.size5
-				|| menuId == R.id.size6 || menuId == R.id.size7
-				|| menuId == R.id.size8 || menuId == R.id.size9) {
-			final int gridSize;
-			switch (menuId) {
-			case R.id.size4:
-				gridSize = 4;
-				break;
-			case R.id.size5:
-				gridSize = 5;
-				break;
-			case R.id.size6:
-				gridSize = 6;
-				break;
-			case R.id.size7:
-				gridSize = 7;
-				break;
-			case R.id.size8:
-				gridSize = 8;
-				break;
-			case R.id.size9:
-				gridSize = 9;
-				break;
-			default:
-				gridSize = 4;
-				break;
-			}
-			String hideOperators = this.preferences.getString(
-					"hideoperatorsigns", "F");
-
-			if (hideOperators.equals("T")) {
-				this.startNewGame(gridSize, true);
-				return true;
-			}
-			if (hideOperators.equals("F")) {
-				this.startNewGame(gridSize, false);
-				return true;
-			}
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage(R.string.hide_operators_dialog_message)
-					.setCancelable(false)
-					.setPositiveButton(R.string.Yes,
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int id) {
-									startNewGame(gridSize, true);
-								}
-							})
-					.setNegativeButton(R.string.No,
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int id) {
-									startNewGame(gridSize, false);
-								}
-							});
-			AlertDialog dialog = builder.create();
-			dialog.show();
-			return true;
-		}
-
-		switch (menuItem.getItemId()) {
+		switch (menuId) {
+		case R.id.size4:
+			return prepareStartNewGame(4);
+		case R.id.size5:
+			return prepareStartNewGame(5);
+		case R.id.size6:
+			return prepareStartNewGame(6);
+		case R.id.size7:
+			return prepareStartNewGame(7);
+		case R.id.size8:
+			return prepareStartNewGame(8);
+		case R.id.size9:
+			return prepareStartNewGame(9);
 		case R.id.saveload:
 			Intent i = new Intent(this, GameFileList.class);
 			startActivityForResult(i, 7);
 			return true;
 		case R.id.checkprogress:
 			int textId;
-			if (grid.isSolutionValidSoFar())
+			if (mGrid.isSolutionValidSoFar())
 				textId = R.string.ProgressOK;
 			else {
 				textId = R.string.ProgressBad;
@@ -673,8 +673,54 @@ public class MainActivity extends Activity {
 	}
 
 	private void restartLastGame() {
-		Grid newGrid = new GameFile().load();
+		Grid newGrid = new GameFile(GameFileType.LAST_GAME).load();
 		setNewGrid(newGrid);
+	}
+
+	/**
+	 * Prepare to start a new game. This means that it has to be determined
+	 * whether the new game should be generated with operators hidden or
+	 * visible.
+	 * 
+	 * @param gridSize
+	 *            The size of the grid to be created.
+	 * @return True (always)
+	 */
+	private boolean prepareStartNewGame(final int gridSize) {
+		String hideOperators = this.preferences.getString("hideoperatorsigns",
+				"F");
+		if (hideOperators.equals("T")) {
+			// All new games should be generated with hidden operators.
+			this.startNewGame(gridSize, true);
+			return true;
+		} else if (hideOperators.equals("F")) {
+			// All new games should be generated with visible operators.
+			this.startNewGame(gridSize, false);
+			return true;
+		} else {
+			// Ask for every new game which is to be generated whether operators
+			// should be hidden or visible.
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage(R.string.hide_operators_dialog_message)
+					.setCancelable(false)
+					.setPositiveButton(R.string.Yes,
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									startNewGame(gridSize, true);
+								}
+							})
+					.setNegativeButton(R.string.No,
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									startNewGame(gridSize, false);
+								}
+							});
+			AlertDialog dialog = builder.create();
+			dialog.show();
+			return true;
+		}
 	}
 
 	/**
@@ -699,13 +745,15 @@ public class MainActivity extends Activity {
 	 * Reactivate the main ui after a new game is loaded into the grid view by
 	 * the ASync GridGenerator task.
 	 */
-	public void onNewGridReady(Grid grid) {
+	public void onNewGridReady(final Grid newGrid) {
+		// The background task for creating a new grid has been finished. The
+		// new grid will always overwrite the current game without any warning.
 		mGridGeneratorTask = null;
-		setNewGrid(grid);
+		setNewGrid(newGrid);
 	}
 
 	public void setButtonVisibility() {
-		int gridSize = grid.getGridSize();
+		int gridSize = mGrid.getGridSize();
 		for (int i = 4; i < 9; i++)
 			if (i < gridSize)
 				this.digits[i].setVisibility(View.VISIBLE);
@@ -799,7 +847,7 @@ public class MainActivity extends Activity {
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-								MainActivity.this.grid.clearUserValues();
+								MainActivity.this.mGrid.clearUserValues();
 								MainActivity.this.mGridView.invalidate();
 							}
 						}).show();
@@ -916,8 +964,8 @@ public class MainActivity extends Activity {
 				if (mGameFileImagePreviewCreation != null) {
 					Grid newGrid = mGameFileImagePreviewCreation.load();
 					if (newGrid != null) {
-						grid = newGrid;
-						mGridView.loadNewGrid(grid);
+						mGrid = newGrid;
+						mGridView.loadNewGrid(mGrid);
 						puzzleGrid.setVisibility(View.INVISIBLE);
 						controls.setVisibility(View.GONE);
 						pressMenu.setVisibility(View.GONE);
@@ -1026,12 +1074,12 @@ public class MainActivity extends Activity {
 	}
 
 	public void setOnSolvedHandler() {
-		this.grid.setSolvedHandler(this.grid.new OnSolvedListener() {
+		this.mGrid.setSolvedHandler(this.mGrid.new OnSolvedListener() {
 			@Override
 			public void puzzleSolved() {
 				MainActivity.this.controls.setVisibility(View.GONE);
-				if (grid.isActive() && !grid.isSolvedByCheating()
-						&& grid.countMoves() > 0) {
+				if (mGrid.isActive() && !mGrid.isSolvedByCheating()
+						&& mGrid.countMoves() > 0) {
 					// Only display animation in case the user has just
 					// solved this game. Do not show in case the user
 					// cheated by requesting to show the solution or in
@@ -1044,7 +1092,7 @@ public class MainActivity extends Activity {
 				stopTimer();
 
 				if (MainActivity.this.mTimerText.getVisibility() == View.VISIBLE
-						&& grid.isSolvedByCheating()) {
+						&& mGrid.isSolvedByCheating()) {
 					// Hide time in case the puzzle was solved by
 					// requesting to show the solution.
 					MainActivity.this.mTimerText.setVisibility(View.INVISIBLE);
@@ -1056,13 +1104,13 @@ public class MainActivity extends Activity {
 
 	public void setNewGrid(Grid grid) {
 		if (grid != null) {
-			this.grid = grid;
+			this.mGrid = grid;
 			this.mGridView.loadNewGrid(grid);
 
 			// Show the grid of the loaded puzzle.
 			this.puzzleGrid.setVisibility(View.VISIBLE);
 
-			if (this.grid.isActive()) {
+			if (this.mGrid.isActive()) {
 				// Set visibility of other controls
 				this.setButtonVisibility();
 
@@ -1089,7 +1137,7 @@ public class MainActivity extends Activity {
 				MainActivity.this.mGameSeedLabel.setVisibility(View.VISIBLE);
 				MainActivity.this.mGameSeedText.setVisibility(View.VISIBLE);
 				MainActivity.this.mGameSeedText.setText(String.format("%,d",
-						MainActivity.this.grid.getGameSeed()));
+						MainActivity.this.mGrid.getGameSeed()));
 			}
 		} else {
 			// No grid available.
@@ -1106,9 +1154,9 @@ public class MainActivity extends Activity {
 		// Stop old timer
 		stopTimer();
 
-		if (grid != null && grid.isActive()) {
+		if (mGrid != null && mGrid.isActive()) {
 			mTimerTask = new GameTimer();
-			mTimerTask.mElapsedTime = grid.getElapsedTime();
+			mTimerTask.mElapsedTime = mGrid.getElapsedTime();
 			mTimerTask.mTimerLabel = mTimerText;
 			if (preferences.getBoolean("timer", true)) {
 				mTimerText.setVisibility(View.VISIBLE);

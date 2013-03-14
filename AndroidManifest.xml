@@ -21,10 +21,10 @@
         android:label="@string/application_name" >
         <activity
             android:name="net.cactii.mathdoku.MainActivity"
-            android:label="@string/application_name" >
+            android:label="@string/application_name"
+            android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

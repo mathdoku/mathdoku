@@ -59,8 +59,11 @@ redistribute and/or modify this translation yourself under the terms of the GNU 
     <string name="main_ui_undo">Zet terug</string>
 	<string name="main_ui_solved_messsage">Opgelost!</string>
 	<string name="main_ui_cheat_messsage">Valsspeler! :P</string>
-	<string name="main_ui_building_puzzle_message">Een moment...</string>
-	<string name="main_ui_building_puzzle_title">Er wordt een puzzel gegenereerd</string>
+	
+    <!-- The title and message for the dialog displayed on the screen when building a new puzzle. -->
+    <string name="dialog_building_puzzle_title">Genereren nieuwe puzzel</string>
+    <string name="dialog_building_puzzle_message">Een nieuwe puzzel wordt nu gegenereerd. Wacht totdat dit gereed is of sluit en ontvang een bericht als de nieuwe puzzel klaar is.</string>
+    <string name="dialog_button_close">Sluit</string>
 	
 	    <!-- The title and message for the dialog displayed on the screen when generating preview images, along with the associated title. -->
     <string name="main_ui_creating_previews_title">Aanmaken voorbeeld weergave</string>
@@ -97,4 +100,8 @@ redistribute and/or modify this translation yourself under the terms of the GNU 
 	<string name="select_cell_before_value">Selecteer eerst een cel.</string>
     <!-- Text to display in case the preview image of a saved game is not yet available. -->
     <string name ="game_file_preview_not_available">Nog niet beschikbaar</string>
+
+    <!-- Text to display in the notification when a new grid has been generated. %1$d and %2$d in title will be replaced with the size of the grid which is generated. -->
+    <string name="notification_grid_ready_notification_title">Puzzel %1$dx%2$d klaar</string>
+    <string name="notification_grid_ready_notification_message">Raak aan om te starten met spelen.</string>
 </resources>

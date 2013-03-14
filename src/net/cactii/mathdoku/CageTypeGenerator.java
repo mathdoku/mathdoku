@@ -115,7 +115,7 @@ public class CageTypeGenerator {
 			this.mMaxCageSize = newPossibleCageType.size();
 		}
 
-		if (GridGenerator.DEBUG_CREATE_CAGES) {
+		if (GridGenerator.DEBUG_GRID_GENERATOR) {
 			Log.i(TAG,
 					"Found a new cage type:\n" + newPossibleCageType.toString());
 		}

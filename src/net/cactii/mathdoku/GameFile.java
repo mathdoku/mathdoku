@@ -25,10 +25,31 @@ public class GameFile extends File {
 
 	private static final String TAG = "MathDoku.GameFile";
 
+	// Game file types
+	public static enum GameFileType {
+		LAST_GAME, SAVED_GAME, NEW_GAME
+	};
+
 	// Identifiers for building file names
 	private static final String PATH = "/data/data/net.cactii.mathdoku/";
-	private static final String DEFAULT_FILENAME = "savedgame";
-	private static final String PREFIX_FILENAME = DEFAULT_FILENAME + "_";
+	private static final String FILENAME_LAST_GAME = "savedgame"; // TODO:
+																	// rename to
+																	// "last_game"
+																	// +
+																	// converting
+																	// at
+																	// upgrade
+	private static final String FILENAME_SAVED_GAME = FILENAME_LAST_GAME + "_"; // TODO:
+																				// rename
+																				// to
+																				// "saved_game_#"
+																				// +
+																				// converting
+																				// at
+																				// upgrade
+	private static final String FILENAME_NEW_GAME = "new_game_";
+	private static final String GAMEFILE_EXTENSION = "mgf"; // MGF = Mathdoku
+															// Game File
 	private static final String PREVIEW_EXTENSION = ".png";
 
 	// Scaling factor for preview images
@@ -54,15 +75,19 @@ public class GameFile extends File {
 	public class GameFileHeader {
 		public String filename;
 		public long datetimeCreated;
+		public int gridSize;
 		public boolean hasPreviewAvailable;
 	};
 
 	/**
 	 * Creates a new instance of {@link GameFile} for the default game file.
+	 * 
+	 * @param gameFileType
+	 *            The type of game file which needs to be instantiated.
 	 */
-	public GameFile() {
-		super(PATH + DEFAULT_FILENAME);
-		this.baseFilename = DEFAULT_FILENAME;
+	public GameFile(GameFileType gameFileType) {
+		super(PATH + getFilenameForType(gameFileType));
+		this.baseFilename = getFilenameForType(gameFileType);
 	}
 
 	/**
@@ -75,17 +100,6 @@ public class GameFile extends File {
 		// Only append filename with PATH if not yet included.
 		super(PATH + filename);
 		this.baseFilename = filename;
-	}
-
-	/**
-	 * Creates a new instance of {@link GameFile} for the given sequence number.
-	 * 
-	 * @param index
-	 *            Sequence number of the game file.
-	 */
-	public GameFile(int index) {
-		super(PATH + PREFIX_FILENAME + index);
-		this.baseFilename = PREFIX_FILENAME + index;
 	}
 
 	/**
@@ -176,6 +190,7 @@ public class GameFile extends File {
 			GameFileHeader gameFileHeader = new GameFileHeader();
 			gameFileHeader.filename = this.baseFilename;
 			gameFileHeader.datetimeCreated = grid.getDateCreated();
+			gameFileHeader.gridSize = grid.getGridSize();
 			gameFileHeader.hasPreviewAvailable = this.hasPreviewImage();
 			return gameFileHeader;
 		}
@@ -374,14 +389,14 @@ public class GameFile extends File {
 		// Determine first file index number which is currently not in use.
 		int fileIndex;
 		for (fileIndex = 0;; fileIndex++) {
-			if (!new GameFile(fileIndex).exists())
+			if (!new File(PATH + FILENAME_NEW_GAME + fileIndex).exists()) // TODO: add extension
 				break;
 		}
 
 		// Save the file at the first unused file index number.
-		copyFile(getFullFilename(), PATH + PREFIX_FILENAME + fileIndex);
-		copyFile(getFullFilenamePreview(), PATH + PREFIX_FILENAME + fileIndex
-				+ PREVIEW_EXTENSION);
+		copyFile(getFullFilename(), PATH + FILENAME_SAVED_GAME + fileIndex);
+		copyFile(getFullFilenamePreview(), PATH + FILENAME_SAVED_GAME
+				+ fileIndex + PREVIEW_EXTENSION);
 	}
 
 	/**
@@ -436,9 +451,9 @@ public class GameFile extends File {
 			if (view.getWidth() == 0) {
 				Log.i(TAG,
 						"Can not save the preview image. If running on am Emulator for "
-						+ "Android 2.2 this is normal behavior when rotating screen "
-						+ "from landscap to portrait as the Activity.onCreate is called "
-						+ "twice instead of one time.");
+								+ "Android 2.2 this is normal behavior when rotating screen "
+								+ "from landscap to portrait as the Activity.onCreate is called "
+								+ "twice instead of one time.");
 				return true;
 			}
 		}
@@ -556,9 +571,9 @@ public class GameFile extends File {
 		// Check all files but stop is maximum is reached
 		int countFiles = 0;
 		for (String filename : filenames) {
-			if (filename.startsWith(GameFile.PREFIX_FILENAME)
+			if (filename.startsWith(GameFile.FILENAME_SAVED_GAME)
 					|| (includeDefaultGameFile && filename
-							.startsWith(GameFile.DEFAULT_FILENAME))) {
+							.startsWith(GameFile.FILENAME_LAST_GAME))) {
 				if (filename.endsWith(GameFile.PREVIEW_EXTENSION)
 						&& !includePreviewsImages) {
 					// This is a preview file image which may not be included.
@@ -606,20 +621,24 @@ public class GameFile extends File {
 	}
 
 	/**
-	 * Get the file index number for this game file.
+	 * Converts a game file type to a file name.
 	 * 
-	 * @return The file index number for this game file or -1 in case of an
-	 *         error.
+	 * @param gameFileType
+	 *            The game file type. Can not be used for game file type
+	 *            SAVED_GAME.
+	 * @return The filename (without path) for the game file type.
 	 */
-	public int getGameFileIndex() {
-		if (!baseFilename.startsWith(PREFIX_FILENAME)) {
-			// Not a normal game file.
-			return -1;
-		} else {
-			int start = GameFile.PREFIX_FILENAME.length();
-			int end = baseFilename.length();
-			return Integer.parseInt(baseFilename.substring(start, end));
+	private static String getFilenameForType(GameFileType gameFileType) {
+		switch (gameFileType) {
+		case LAST_GAME:
+			return FILENAME_LAST_GAME; // TODO: + GAMEFILE_EXTENSION;
+		case SAVED_GAME:
+			throw new RuntimeException(
+					"Method getFilenameForType(GameFileType) can not be used for GameFileType = SAVED_GAME");
+		case NEW_GAME:
+			return FILENAME_NEW_GAME + GAMEFILE_EXTENSION;
 		}
+		return null;
 	}
 
 	/**
