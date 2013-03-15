@@ -2,8 +2,8 @@ package net.cactii.mathdoku;
 
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.GameFile.GameFileType;
+import net.cactii.mathdoku.GridGenerator.GridGeneratorOptions;
 import net.cactii.mathdoku.Painter.GridTheme;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
@@ -13,7 +13,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -93,7 +92,7 @@ public class MainActivity extends Activity {
 	public SharedPreferences preferences;
 
 	// Background task for generating a new puzzle
-	private GridGenerator mGridGeneratorTask;
+	public GridGenerator mGridGeneratorTask;
 
 	// Variables for process of creating preview images of game file for which
 	// no preview image does exist.
@@ -465,6 +464,13 @@ public class MainActivity extends Activity {
 				.setVisible(
 						(mGrid != null && mGrid.isActive())
 								|| GameFileList.canBeUsed());
+		
+		// When running in development mode, an extra menu is available.
+		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+			menu.findItem(R.id.menu_development_mode).setVisible(true);
+		} else {
+			menu.findItem(R.id.menu_development_mode).setVisible(false);
+		}
 
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -600,7 +606,6 @@ public class MainActivity extends Activity {
 		return super.onContextItemSelected(item);
 	}
 
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	public boolean onOptionsItemSelected(MenuItem menuItem) {
 
@@ -641,6 +646,30 @@ public class MainActivity extends Activity {
 			return true;
 		case R.id.help:
 			this.openHelpDialog();
+			return true;
+		case R.id.development_mode_generate_games:
+			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+				// Cancel old timer
+				stopTimer();
+				
+				// Generate games
+				DevelopmentHelper.generateGames(this);
+			}
+			return true;
+		case R.id.development_mode_delete_games:
+			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+				DevelopmentHelper.deleteAllGames(this);
+			}
+			return true;
+		case R.id.development_mode_recreate_previews:
+			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+				DevelopmentHelper.recreateAllPreviews(this);
+			}
+			return true;
+		case R.id.development_mode_reset_preferences:
+			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+				DevelopmentHelper.resetPreferences(this,77);
+			}
 			return true;
 		default:
 			return super.onOptionsItemSelected(menuItem);

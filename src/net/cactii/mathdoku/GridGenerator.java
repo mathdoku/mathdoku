@@ -53,6 +53,16 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 	public ArrayList<GridCage> mCages;
 	private int[][] cageMatrix;
 
+	// Additional option for generating the grid
+	private GridGeneratorOptions mGridGeneratorOptions;
+
+	// The grid generator options are used in development mode only to generate
+	// fake games.
+	public class GridGeneratorOptions {
+		public int numberOfGamesToGenerate;
+		public boolean createFakeUserGameFiles;
+	}
+
 	/**
 	 * Creates a new instance of {@link GridGenerator}.
 	 * 
@@ -68,9 +78,34 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 		this.mGridSize = gridSize;
 		this.mHideOperators = hideOperators;
 
+		setGridGeneratorOptions(null);
+
 		// Attach the task to the activity activity and show progress dialog if
 		// needed.
 		attachToActivity(activity);
+	}
+
+	/**
+	 * Sets the additional options for the grid generator. Only to be used in
+	 * development mode.
+	 * 
+	 * @param gridGeneratorOptions
+	 *            The additional options to be set.
+	 */
+	public void setGridGeneratorOptions(
+			GridGeneratorOptions gridGeneratorOptions) {
+		if (gridGeneratorOptions == null) {
+			// Use default values if options are not specified
+			this.mGridGeneratorOptions = new GridGeneratorOptions();
+			this.mGridGeneratorOptions.numberOfGamesToGenerate = 1;
+			this.mGridGeneratorOptions.createFakeUserGameFiles = false;
+			return;
+		}
+
+		// Use specified options only if running in development mode.
+		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+			this.mGridGeneratorOptions = gridGeneratorOptions;
+		}
 	}
 
 	/**
@@ -90,7 +125,7 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 		if (DEBUG_GRID_GENERATOR) {
 			Log.i(TAG, "Attach to activity");
 		}
-		
+
 		// Remember the activity that started this task.
 		this.mActivity = activity;
 
@@ -127,7 +162,7 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 		// Create a new empty grid.
 		mGrid = new Grid(mGridSize);
 
-		int num_solns;
+		int num_solns = 0;
 		int num_attempts = 0;
 
 		// Generate a random seed. This seed will be used to for another
@@ -146,7 +181,7 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 			num_attempts++;
 
 			if (DEBUG_GRID_GENERATOR) {
-				Log.i(TAG,"Puzzle generation attempt: " + num_attempts);
+				Log.i(TAG, "Puzzle generation attempt: " + num_attempts);
 				publishProgress(num_attempts);
 			}
 
@@ -161,8 +196,38 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 			this.mCages = new ArrayList<GridCage>();
 			CreateCages(mHideOperators);
 
+			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+				if (mGridGeneratorOptions.createFakeUserGameFiles) {
+					// The faked user games files do not require a unique
+					// solution which results in much faster generation time.
+
+					// Store grid as user file
+					mGrid.create(mGameSeed, mGridSize, mCells, mCages, true);
+					GameFile gameFile = new GameFile(GameFileType.NEW_GAME);
+					gameFile.save(mGrid);
+					gameFile.copyToNewGameFile();
+
+					// Check if more puzzles have to generated.
+					if (num_attempts < mGridGeneratorOptions.numberOfGamesToGenerate) {
+						// Determine random size and hide operator values of
+						// next grid
+						mGameSeed = (new Random()).nextLong();
+						mRandom = new Random(mGameSeed);
+						mGridSize = 4 + (new Random().nextInt(6));
+						mHideOperators = new Random().nextBoolean();
+						mGrid = new Grid(mGridSize);
+
+						// Fake a non unique solution so another grid is
+						// generated.
+						num_solns = 2;
+						continue;
+					} else {
+						return null;
+					}
+				}
+			}
+
 			// Determine whether grid has a unique solution.
-			// TODO: test on progress should be done inside Solve as well!!!
 			MathDokuDLX mdd = new MathDokuDLX(this.mGridSize, this.mCages);
 			num_solns = mdd.Solve(SolveType.MULTIPLE);
 
@@ -171,7 +236,8 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 			}
 		} while (num_solns > 1);
 		if (DEBUG_GRID_GENERATOR) {
-			Log.d(TAG, "Found puzzle with unique solution in " + num_attempts + " attempts.");
+			Log.d(TAG, "Found puzzle with unique solution in " + num_attempts
+					+ " attempts.");
 		}
 
 		return null;
@@ -194,6 +260,20 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 	 */
 	@Override
 	protected void onPostExecute(Void result) {
+		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+			if (mGridGeneratorOptions.createFakeUserGameFiles) {
+				mActivity.mGridGeneratorTask = null;
+				// Grids are already saved.
+				DevelopmentHelper.generateGamesReady(mActivity,
+						mGridGeneratorOptions.numberOfGamesToGenerate);
+				if (this.mAlertDialog != null) {
+					dismissAlertDialog();
+				}
+				super.onPostExecute(result);
+				return;
+			}
+		}
+
 		// Load results into the grid.
 		mGrid.create(mGameSeed, mGridSize, mCells, mCages, true);
 
@@ -203,7 +283,6 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 			if (DEBUG_GRID_GENERATOR) {
 				Log.d(TAG, "Create a notification for new puzzle");
 			}
-			
 
 			// Save game file. At any time either 0 or 1 new game file will
 			// exist.
@@ -241,7 +320,7 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 			if (DEBUG_GRID_GENERATOR) {
 				Log.d(TAG, "Send results to activity.");
 			}
-			
+
 			// The task is still attached to a activity. Inform activity about
 			// completing the new game generation. The activity will deal with
 			// showing or showing the new grid directly.
