@@ -18,7 +18,6 @@ import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.renderscript.Type;
 import android.util.Log;
 
 public class GameFile extends File {
@@ -371,7 +370,7 @@ public class GameFile extends File {
 		// Determine first file index number which is currently not in use.
 		int fileIndex;
 		for (fileIndex = 0;; fileIndex++) {
-			if (!new File(PATH + FILENAME_NEW_GAME + fileIndex
+			if (!new File(PATH + FILENAME_SAVED_GAME + fileIndex
 					+ GAMEFILE_EXTENSION).exists()) {
 				break;
 			}
@@ -380,8 +379,12 @@ public class GameFile extends File {
 		// Save the file at the first unused file index number.
 		copyFile(getFullFilename(), PATH + FILENAME_SAVED_GAME + fileIndex
 				+ GAMEFILE_EXTENSION);
-		copyFile(getFullFilenamePreview(), PATH + FILENAME_SAVED_GAME
+		
+		// Copy preview if it exists
+		if (hasPreviewImage()) {
+			copyFile(getFullFilenamePreview(), PATH + FILENAME_SAVED_GAME
 				+ fileIndex + PREVIEW_EXTENSION);
+		}
 	}
 
 	/**
