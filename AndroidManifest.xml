@@ -5,8 +5,7 @@
     android:versionName="1.96 (dev version)" >
 
     <uses-sdk
-        android:minSdkVersion="3"
-        android:targetSdkVersion="17" />
+        android:minSdkVersion="3" />
 
     <supports-screens
         android:anyDensity="true"
