@@ -656,19 +656,24 @@ public class MainActivity extends Activity {
 				DevelopmentHelper.generateGames(this);
 			}
 			return true;
-		case R.id.development_mode_delete_games:
-			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
-				DevelopmentHelper.deleteAllGames(this);
-			}
-			return true;
 		case R.id.development_mode_recreate_previews:
 			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
 				DevelopmentHelper.recreateAllPreviews(this);
 			}
 			return true;
+		case R.id.development_mode_delete_games:
+			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+				DevelopmentHelper.deleteAllGames(this);
+			}
+			return true;
 		case R.id.development_mode_reset_preferences:
 			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
 				DevelopmentHelper.resetPreferences(this, 77);
+			}
+			return true;
+		case R.id.development_mode_clear_data:
+			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+				DevelopmentHelper.deleteGamesAndPreferences(this);
 			}
 			return true;
 		default:

@@ -50,14 +50,17 @@
                 android:id="@+id/development_mode_generate_games"
                 android:title="Generate new dummy games"/>
             <item
-                android:id="@+id/development_mode_delete_games"
-                android:title="Delete all games and previews"/>
-            <item
                 android:id="@+id/development_mode_recreate_previews"
                 android:title="Recreate all preview images"/>
             <item
+                android:id="@+id/development_mode_delete_games"
+                android:title="Delete all games and previews"/>
+            <item
                 android:id="@+id/development_mode_reset_preferences"
-                android:title="Reset preferences to r77"/>
+                android:title="Reset preferences"/>
+            <item
+                android:id="@+id/development_mode_clear_data"
+                android:title="Clear data (games and prefs)"/>
             </menu>
     </item>
     <item

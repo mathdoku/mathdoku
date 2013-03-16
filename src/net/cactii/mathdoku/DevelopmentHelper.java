@@ -107,26 +107,7 @@ public class DevelopmentHelper {
 				.setPositiveButton("Delete all",
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
-								// Delete last game file
-								GameFile gameFileLastGame = new GameFile(
-										GameFileType.LAST_GAME);
-								if (gameFileLastGame.exists()) {
-									gameFileLastGame.delete();
-								}
-
-								// Delete new game file
-								GameFile gameFileNewGame = new GameFile(
-										GameFileType.NEW_GAME);
-								if (gameFileNewGame.exists()) {
-									gameFileNewGame.delete();
-								}
-
-								// Delete all user games
-								ArrayList<String> filenames = GameFile
-										.getAllGameFilesCreatedByUser(Integer.MAX_VALUE);
-								for (String filename : filenames) {
-									new GameFile(filename).delete();
-								}
+								executeDeleteAllGames();
 							}
 						});
 		AlertDialog dialog = builder.create();
@@ -231,7 +212,7 @@ public class DevelopmentHelper {
 
 		if (preferences != null) {
 			String finalDialogMessage = "";
-			
+
 			int currentVersion = preferences.getInt("currentversion", -1);
 			Editor prefeditor = preferences.edit();
 
@@ -245,15 +226,14 @@ public class DevelopmentHelper {
 			}
 
 			if (targetVersion <= 77 && currentVersion > 111) {
-				finalDialogMessage += 
-								"With upgrade to revision 111 or above, all filenames "
-										+ "have been changed. These changes have not been "
-										+ "reverted. Those games will be visible again after "
-										+ "the upgrade to this version has been completed.\n\n";
+				finalDialogMessage += "With upgrade to revision 111 or above, all filenames "
+						+ "have been changed. These changes have not been "
+						+ "reverted. Those games will be visible again after "
+						+ "the upgrade to this version has been completed.\n\n";
 			}
 
 			prefeditor.commit();
-			
+
 			// Show the final dialog
 			finalDialogMessage += "Press OK to close the app. Restart manually. ";
 			new AlertDialog.Builder(mainActivity)
@@ -269,5 +249,62 @@ public class DevelopmentHelper {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Delete all data (games and preferences). It is provided as an easy access
+	 * instead of using the button in the AppInfo dialog which involves opening
+	 * the application manager.
+	 * 
+	 * @param mainActivity
+	 *            The activity in which context the preferences are resetted.
+	 */
+	public static void deleteGamesAndPreferences(final MainActivity mainActivity) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
+		builder.setTitle("Delete all data and preferences?")
+				.setMessage(
+						"All data and preferences for MathDoku will be deleted.")
+				.setNegativeButton("Cancel",
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								// Do nothing
+							}
+						})
+				.setPositiveButton("Delete all",
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								executeDeleteAllGames();
+								Editor prefeditor = mainActivity.preferences
+										.edit();
+								prefeditor.clear();
+								prefeditor.commit();
+							}
+						});
+		AlertDialog dialog = builder.create();
+		dialog.show();
+	}
+
+	/**
+	 * Delete all game files (including previews) without warning.
+	 */
+	private static void executeDeleteAllGames() {
+		// Delete last game file
+		GameFile gameFileLastGame = new GameFile(GameFileType.LAST_GAME);
+		if (gameFileLastGame.exists()) {
+			gameFileLastGame.delete();
+		}
+
+		// Delete new game file
+		GameFile gameFileNewGame = new GameFile(GameFileType.NEW_GAME);
+		if (gameFileNewGame.exists()) {
+			gameFileNewGame.delete();
+		}
+
+		// Delete all user games
+		ArrayList<String> filenames = GameFile
+				.getAllGameFilesCreatedByUser(Integer.MAX_VALUE);
+		for (String filename : filenames) {
+			new GameFile(filename).delete();
+		}
 	}
 }
