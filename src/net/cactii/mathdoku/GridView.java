@@ -225,7 +225,8 @@ public class GridView extends View implements OnTouchListener {
 			}
 
 			if (((MainActivity) getContext()).preferences.getBoolean(
-					"redundantPossibles", false)) {
+					MainActivity.PREF_CLEAR_REDUNDANT_POSSIBLES,
+					MainActivity.PREF_CLEAR_REDUNDANT_POSSIBLES_DEFAULT)) {
 				// Update possible values for other cells in this row and
 				// column.
 				grid.clearRedundantPossiblesInSameRowOrColumn(orginalUserMove);
@@ -242,7 +243,8 @@ public class GridView extends View implements OnTouchListener {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		if (grid == null) {
-			// As long as no grid has been attached to the gridview, it can not be drawn.
+			// As long as no grid has been attached to the gridview, it can not
+			// be drawn.
 			return;
 		}
 		synchronized (grid.mLock) { // Avoid redrawing at the same time as
@@ -273,7 +275,8 @@ public class GridView extends View implements OnTouchListener {
 
 				// Due to a bug
 				// (https://code.google.com/p/android/issues/detail?id=29944), a
-				// dashed line can not be drawn with drawLine at API-level 11 or above. 
+				// dashed line can not be drawn with drawLine at API-level 11 or
+				// above.
 				drawDashedLine(canvas, 0, pos, this.mCurrentWidth, pos);
 				drawDashedLine(canvas, pos, 0, pos, this.mCurrentWidth);
 			}

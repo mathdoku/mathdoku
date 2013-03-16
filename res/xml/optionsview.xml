@@ -15,8 +15,7 @@
 		<CheckBoxPreference
 			android:key="redundantPossibles"
 			android:title="@string/option_clear_redundant_possibles_title"
-			android:summary="@string/option_clear_redundant_possibles_summary"
-			android:defaultValue="true" />
+			android:summary="@string/option_clear_redundant_possibles_summary"/>
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/options_group_puzzle" android:key="Puzzle Generation">
 		<ListPreference

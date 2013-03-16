@@ -46,9 +46,12 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 	public final static String TAG = "MathDoku.MainActivity";
 
-	// Identifiers for preferences
+	// Identifiers for preferences.
 	public final static String PREF_CREATE_PREVIEW_IMAGES_COMPLETED = "CreatePreviewImagesCompleted";
 	public final static Boolean PREF_CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT = false;
+
+	public final static String PREF_CLEAR_REDUNDANT_POSSIBLES = "redundantPossibles";
+	public final static Boolean PREF_CLEAR_REDUNDANT_POSSIBLES_DEFAULT = true;
 	// TODO: add all other prefs here
 
 	// Identifiers for the context menu
@@ -278,7 +281,8 @@ public class MainActivity extends Activity {
 						selectedCell.setUserValue(selectedCell
 								.getFirstPossible());
 						if (MainActivity.this.preferences.getBoolean(
-								"redundantPossibles", false)) {
+								PREF_CLEAR_REDUNDANT_POSSIBLES,
+								PREF_CLEAR_REDUNDANT_POSSIBLES_DEFAULT)) {
 							// Update possible values for other cells in this
 							// row and column.
 							mGrid.clearRedundantPossiblesInSameRowOrColumn(originalUserMove);
@@ -913,6 +917,15 @@ public class MainActivity extends Activity {
 			// On Each update of the game, all game file will be converted to
 			// the latest definitions.
 			GameFile.ConvertGameFiles(pref_version, current_version);
+
+			if (pref_version < 121 && current_version >= 121) {
+				// Add missing preferences to the Shared Preferences.
+				if (!preferences.contains(PREF_CLEAR_REDUNDANT_POSSIBLES)) {
+					prefeditor.putBoolean(
+							PREF_CLEAR_REDUNDANT_POSSIBLES,
+							PREF_CLEAR_REDUNDANT_POSSIBLES_DEFAULT);
+				}
+			}
 
 			prefeditor.putInt("currentversion", current_version);
 			prefeditor.commit();
