@@ -464,7 +464,7 @@ public class MainActivity extends Activity {
 				.setVisible(
 						(mGrid != null && mGrid.isActive())
 								|| GameFileList.canBeUsed());
-		
+
 		// When running in development mode, an extra menu is available.
 		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
 			menu.findItem(R.id.menu_development_mode).setVisible(true);
@@ -651,7 +651,7 @@ public class MainActivity extends Activity {
 			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
 				// Cancel old timer
 				stopTimer();
-				
+
 				// Generate games
 				DevelopmentHelper.generateGames(this);
 			}
@@ -668,7 +668,7 @@ public class MainActivity extends Activity {
 			return true;
 		case R.id.development_mode_reset_preferences:
 			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
-				DevelopmentHelper.resetPreferences(this,77);
+				DevelopmentHelper.resetPreferences(this, 77);
 			}
 			return true;
 		default:
@@ -820,7 +820,9 @@ public class MainActivity extends Activity {
 		new AlertDialog.Builder(MainActivity.this)
 				.setTitle(
 						getResources().getString(R.string.application_name)
-								+ " "
+								+ (DevelopmentHelper.mode == Mode.DEVELOPMENT ? " r"
+										+ getVersionNumber() + " "
+										: " ")
 								+ getResources().getString(R.string.menu_help))
 				.setIcon(R.drawable.about)
 				.setView(view)
@@ -843,7 +845,13 @@ public class MainActivity extends Activity {
 		LayoutInflater li = LayoutInflater.from(this);
 		View view = li.inflate(R.layout.changeview, null);
 		new AlertDialog.Builder(MainActivity.this)
-				.setTitle(R.string.changelog_title)
+				.setTitle(
+						getResources().getString(R.string.application_name)
+								+ (DevelopmentHelper.mode == Mode.DEVELOPMENT ? " r"
+										+ getVersionNumber() + " "
+										: " ")
+								+ getResources().getString(
+										R.string.changelog_title))
 				.setIcon(R.drawable.about)
 				.setView(view)
 				.setNegativeButton(R.string.close,
