@@ -3,10 +3,12 @@ package net.cactii.mathdoku;
 import java.util.ArrayList;
 
 import net.cactii.mathdoku.GameFile.GameFileType;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.Build;
 
 /**
  * The Development Helper class is intended to support Development and Unit
@@ -68,8 +70,8 @@ public class DevelopmentHelper {
 						Integer.toString(numberOfGamesGenerated)
 								+ " games have been generated. Note that it is not "
 								+ "guaranteed that those puzzles have unique solutions. "
-								+ "Please restart the activity in order to generate "
-								+ "preview images for the newly created games.")
+								+ "After restart of the activity the preview images "
+								+ "will be created for the newly created games.")
 				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						// Remove preference which controls the process
@@ -82,7 +84,7 @@ public class DevelopmentHelper {
 									.remove(MainActivity.PREF_CREATE_PREVIEW_IMAGES_COMPLETED);
 							prefeditor.commit();
 						}
-						mainActivity.finish();
+						restartActivity(mainActivity);
 					}
 				}).show();
 	}
@@ -176,21 +178,7 @@ public class DevelopmentHelper {
 									prefeditor.commit();
 								}
 
-								// Restart the activity on confirmation of user
-								new AlertDialog.Builder(mainActivity)
-										.setMessage(
-												"Press OK to close the app and restart the "
-														+ "activity yourself to start preview "
-														+ "creation process")
-										.setPositiveButton(
-												"OK",
-												new DialogInterface.OnClickListener() {
-													public void onClick(
-															DialogInterface dialog,
-															int id) {
-														mainActivity.finish();
-													}
-												}).show();
+								restartActivity(mainActivity);
 							}
 						});
 		AlertDialog dialog = builder.create();
@@ -235,14 +223,13 @@ public class DevelopmentHelper {
 			prefeditor.commit();
 
 			// Show the final dialog
-			finalDialogMessage += "Press OK to close the app. Restart manually. ";
 			new AlertDialog.Builder(mainActivity)
 					.setMessage(finalDialogMessage)
 					.setPositiveButton("OK",
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int id) {
-									mainActivity.finish();
+									restartActivity(mainActivity);
 								}
 							}).show();
 
@@ -278,6 +265,8 @@ public class DevelopmentHelper {
 										.edit();
 								prefeditor.clear();
 								prefeditor.commit();
+
+								restartActivity(mainActivity);
 							}
 						});
 		AlertDialog dialog = builder.create();
@@ -306,5 +295,32 @@ public class DevelopmentHelper {
 		for (String filename : filenames) {
 			new GameFile(filename).delete();
 		}
+	}
+
+	/**
+	 * Restart the activity automatically. If not possible due to OS version,
+	 * show a dialog and ask user to restat manually.
+	 * 
+	 * @param mainActivity The activity to be restarted.
+	 */
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private static void restartActivity(final MainActivity mainActivity) {
+		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			// The activity can be restarted automatically. No dialog needed.
+			mainActivity.recreate();
+			return;
+		}
+
+		// Can restart activity automatically on pre honeycomb. Show dialog an
+		// let user restart manually.
+		new AlertDialog.Builder(mainActivity)
+				.setMessage(
+						"Press OK to close the app and restart the "
+								+ "activity yourself")
+				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						mainActivity.finish();
+					}
+				}).show();
 	}
 }
