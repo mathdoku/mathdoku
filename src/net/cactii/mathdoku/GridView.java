@@ -24,8 +24,9 @@ public class GridView extends View implements OnTouchListener {
 	// Touched listener
 	public OnGridTouchListener mTouchedListener;
 
-	private boolean mDupedigits;
-	private boolean mBadMaths;
+	private boolean mPrefShowDupeDigits;
+	private boolean mPrefShowBadMaths;
+	private boolean mPrefShowMaybesAs3x3Grid;
 
 	public int mCurrentWidth;
 	public float mTrackPosX;
@@ -54,8 +55,8 @@ public class GridView extends View implements OnTouchListener {
 	}
 
 	private void initGridView() {
-		this.mDupedigits = true;
-		this.mBadMaths = true;
+		this.mPrefShowDupeDigits = true;
+		this.mPrefShowBadMaths = true;
 
 		this.mCurrentWidth = 0;
 
@@ -235,9 +236,15 @@ public class GridView extends View implements OnTouchListener {
 	}
 
 	public void setPreferences(SharedPreferences preferences) {
-		mDupedigits = preferences.getBoolean("dupedigits", true);
-		mBadMaths = preferences.getBoolean("badmaths", true);
-
+		mPrefShowDupeDigits = preferences.getBoolean(
+				MainActivity.PREF_SHOW_DUPE_DIGITS,
+				MainActivity.PREF_SHOW_DUPE_DIGITS_DEFAULT);
+		mPrefShowBadMaths = preferences.getBoolean(
+				MainActivity.PREF_SHOW_BAD_MATHS,
+				MainActivity.PREF_SHOW_BAD_MATHS_DEFAULT);
+		mPrefShowMaybesAs3x3Grid = preferences.getBoolean(
+				MainActivity.PREF_SHOW_MAYBES_AS_3X3_GRID,
+				MainActivity.PREF_SHOW_MAYBES_AS_3X3_GRID_DEFAULT);
 	}
 
 	@Override
@@ -267,7 +274,7 @@ public class GridView extends View implements OnTouchListener {
 
 			// Check cage correctness
 			for (GridCage cage : grid.mCages)
-				cage.userValuesCorrect(mBadMaths);
+				cage.userValuesCorrect(mPrefShowBadMaths);
 
 			// Draw (dashed) grid
 			for (int i = 1; i < gridSize; i++) {
@@ -281,18 +288,12 @@ public class GridView extends View implements OnTouchListener {
 				drawDashedLine(canvas, pos, 0, pos, this.mCurrentWidth);
 			}
 
-			// Get current setting for how to display possible values in a
-			// cell.
-			SharedPreferences prefs = PreferenceManager
-					.getDefaultSharedPreferences(getContext());
-			boolean possibleValuesIn3x3Grid = prefs
-					.getBoolean("maybe3x3", true);
-
 			// Draw cells
 			Painter.getInstance().setCellSize((float) width / (float) gridSize);
 			for (GridCell cell : grid.mCells) {
 				cell.checkWithOtherValuesInRowAndColumn();
-				cell.onDraw(canvas, false, mDupedigits, possibleValuesIn3x3Grid);
+				cell.onDraw(canvas, false, mPrefShowDupeDigits,
+						mPrefShowMaybesAs3x3Grid);
 			}
 
 			// Draw borders
@@ -307,18 +308,19 @@ public class GridView extends View implements OnTouchListener {
 
 			// Draw cells again
 			for (GridCell cell : grid.mCells) {
-				cell.onDraw(canvas, true, mDupedigits, possibleValuesIn3x3Grid);
+				cell.onDraw(canvas, true, mPrefShowDupeDigits,
+						mPrefShowMaybesAs3x3Grid);
 			}
 			// Draw highlights for current cage.
 			GridCage selectedCage = grid.getCageForSelectedCell();
 			if (selectedCage != null) {
 				for (GridCell cell : grid.getCageForSelectedCell().mCells) {
-					cell.onDraw(canvas, true, mDupedigits,
-							possibleValuesIn3x3Grid);
+					cell.onDraw(canvas, true, mPrefShowDupeDigits,
+							mPrefShowMaybesAs3x3Grid);
 				}
 				// Draws highlights for selected cell at top.
-				grid.getSelectedCell().onDraw(canvas, false, mDupedigits,
-						possibleValuesIn3x3Grid);
+				grid.getSelectedCell().onDraw(canvas, false,
+						mPrefShowDupeDigits, mPrefShowMaybesAs3x3Grid);
 			}
 		}
 	}

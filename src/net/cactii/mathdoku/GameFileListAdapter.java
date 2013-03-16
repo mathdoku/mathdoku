@@ -29,6 +29,9 @@ public class GameFileListAdapter extends BaseAdapter {
 	// Activity context in which the adapter is used.
 	private GameFileList mContext;
 
+	// Background for listview items
+	private int mResIdBackGroundListViewItem;
+
 	/**
 	 * Creates a new instance of {@link GameFileListAdapter}.
 	 * 
@@ -40,8 +43,26 @@ public class GameFileListAdapter extends BaseAdapter {
 		this.inflater = LayoutInflater.from(context);
 		this.mContext = context;
 		this.mGameFiles = new ArrayList<GameFile.GameFileHeader>();
-		this.refreshFiles();
 
+		// Apply theme to the list view
+		String theme = PreferenceManager.getDefaultSharedPreferences(context)
+				.getString(MainActivity.PREF_THEME,
+						MainActivity.PREF_THEME_DEFAULT);
+		if (theme.equals(MainActivity.PREF_THEME_NEWSPAPER)) {
+			mResIdBackGroundListViewItem = R.drawable.newspaper1;
+			((ListActivity) mContext).getListView().setBackgroundResource(
+					R.drawable.newspaper);
+		} else if (theme.equals(MainActivity.PREF_THEME_DARK)) {
+			mResIdBackGroundListViewItem = R.drawable.newspaper_dark1;
+			((ListActivity) mContext).getListView().setBackgroundResource(
+					R.drawable.newspaper_dark);
+		} else {
+			mResIdBackGroundListViewItem = R.drawable.background1;
+			((ListActivity) mContext).getListView().setBackgroundResource(
+					R.drawable.background);
+		}
+
+		refreshFiles();
 	}
 
 	/**
@@ -110,32 +131,6 @@ public class GameFileListAdapter extends BaseAdapter {
 		return position;
 	}
 
-	/**
-	 * Apply theme settings to the given view.
-	 * 
-	 * @param convertView
-	 *            The view to which the theme settings have to be applied.
-	 */
-	public void setTheme(View convertView) {
-		String theme = PreferenceManager.getDefaultSharedPreferences(
-				convertView.getContext()).getString("theme", "newspaper");
-		ListActivity activity = (ListActivity) this.mContext;
-		if ("newspaper".equals(theme)) {
-			convertView.findViewById(R.id.gameFileListRow)
-					.setBackgroundResource(R.drawable.newspaper1);
-			activity.getListView().setBackgroundResource(R.drawable.newspaper);
-		} else if ("inverted".equals(theme)) {
-			convertView.findViewById(R.id.gameFileListRow)
-					.setBackgroundResource(R.drawable.newspaper_dark1);
-			activity.getListView().setBackgroundResource(
-					R.drawable.newspaper_dark);
-		} else {
-			convertView.findViewById(R.id.gameFileListRow)
-					.setBackgroundResource(R.drawable.background1);
-			activity.getListView().setBackgroundResource(R.drawable.background);
-		}
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -147,7 +142,8 @@ public class GameFileListAdapter extends BaseAdapter {
 		// game.
 		if (position == 0) {
 			convertView = inflater.inflate(R.layout.savedgamesaveitem, null);
-			setTheme(convertView);
+			convertView.findViewById(R.id.gameFileListRow)
+					.setBackgroundResource(mResIdBackGroundListViewItem);
 			final Button saveCurrent = (Button) convertView
 					.findViewById(R.id.saveCurrent);
 			saveCurrent.setOnClickListener(new OnClickListener() {
@@ -164,21 +160,8 @@ public class GameFileListAdapter extends BaseAdapter {
 		// All other positions in this list will hold a saved game. For smooth
 		// scrolling in this list the preview images of saved games are used.
 		convertView = inflater.inflate(R.layout.savedgameitem, null);
-		setTheme(convertView);
-
-		String theme = PreferenceManager.getDefaultSharedPreferences(
-				convertView.getContext()).getString("theme", "newspaper");
-
-		if ("newspaper".equals(theme)) {
-			convertView.findViewById(R.id.gameFileListRow)
-					.setBackgroundResource(R.drawable.newspaper1);
-		} else if ("carved".equals(theme)) {
-			convertView.findViewById(R.id.gameFileListRow)
-					.setBackgroundResource(R.drawable.background1);
-		} else if ("inverted".equals(theme)) {
-			convertView.findViewById(R.id.gameFileListRow)
-					.setBackgroundResource(R.drawable.newspaper_dark1);
-		}
+		convertView.findViewById(R.id.gameFileListRow).setBackgroundResource(
+				mResIdBackGroundListViewItem);
 
 		// Get game file header information for current position.
 		final GameFile.GameFileHeader gameFile = this.mGameFiles

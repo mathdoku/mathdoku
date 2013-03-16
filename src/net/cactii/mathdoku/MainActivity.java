@@ -47,12 +47,48 @@ public class MainActivity extends Activity {
 	public final static String TAG = "MathDoku.MainActivity";
 
 	// Identifiers for preferences.
-	public final static String PREF_CREATE_PREVIEW_IMAGES_COMPLETED = "CreatePreviewImagesCompleted";
-	public final static Boolean PREF_CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT = false;
 
 	public final static String PREF_CLEAR_REDUNDANT_POSSIBLES = "redundantPossibles";
-	public final static Boolean PREF_CLEAR_REDUNDANT_POSSIBLES_DEFAULT = true;
-	// TODO: add all other prefs here
+	public final static boolean PREF_CLEAR_REDUNDANT_POSSIBLES_DEFAULT = true;
+
+	public final static String PREF_CREATE_PREVIEW_IMAGES_COMPLETED = "CreatePreviewImagesCompleted";
+	public final static boolean PREF_CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT = false;
+
+	public final static String PREF_CURRENT_VERSION = "currentversion";
+	public final static int PREF_CURRENT_VERSION_DEFAULT = -1;
+
+	public final static String PREF_HIDE_CONTROLS = "hideselector";
+	public final static boolean PREF_HIDE_CONTROLS_DEFAULT = false;
+
+	public final static String PREF_HIDE_OPERATORS = "hideoperatorsigns";
+	public final static String PREF_HIDE_OPERATORS_ALWAYS = "T";
+	public final static String PREF_HIDE_OPERATORS_ASK = "A";
+	public final static String PREF_HIDE_OPERATORS_NEVER = "F";
+	public final static String PREF_HIDE_OPERATORS_DEFAULT = PREF_HIDE_OPERATORS_NEVER;
+
+	public final static String PREF_SHOW_MAYBES_AS_3X3_GRID = "maybe3x3";
+	public final static boolean PREF_SHOW_MAYBES_AS_3X3_GRID_DEFAULT = true;
+
+	public final static String PREF_SHOW_BAD_MATHS = "badmaths";
+	public final static boolean PREF_SHOW_BAD_MATHS_DEFAULT = true;
+
+	public final static String PREF_SHOW_DUPE_DIGITS = "dupedigits";
+	public final static boolean PREF_SHOW_DUPE_DIGITS_DEFAULT = true;
+
+	public final static String PREF_SHOW_TIMER = "timer";
+	public final static boolean PREF_SHOW_TIMER_DEFAULT = true;
+
+	public final static String PREF_PLAY_SOUND_EFFECTS = "soundeffects";
+	public final static boolean PREF_PLAY_SOUND_EFFECTS_DEFAULT = true;
+
+	public final static String PREF_THEME = "theme";
+	public final static String PREF_THEME_CARVED = "carved";
+	public final static String PREF_THEME_DARK = "inverted";
+	public final static String PREF_THEME_NEWSPAPER = "newspaper";
+	public final static String PREF_THEME_DEFAULT = PREF_THEME_NEWSPAPER;
+
+	public final static String PREF_WAKE_LOCK = "wakelock";
+	public final static boolean PREF_WAKE_LOCK_DEFAULT = true;
 
 	// Identifiers for the context menu
 	private final static int CONTEXT_MENU_REVEAL_CELL = 1;
@@ -204,7 +240,8 @@ public class MainActivity extends Activity {
 							mGridView.requestFocus();
 						} else {
 							if (MainActivity.this.preferences.getBoolean(
-									"hideselector", false)) {
+									PREF_HIDE_CONTROLS,
+									PREF_HIDE_CONTROLS_DEFAULT)) {
 								controls.setVisibility(View.VISIBLE);
 								Animation animation = AnimationUtils
 										.loadAnimation(MainActivity.this,
@@ -239,8 +276,8 @@ public class MainActivity extends Activity {
 					mGridView.invalidate();
 				}
 
-				if (MainActivity.this.preferences.getBoolean("hideselector",
-						false))
+				if (MainActivity.this.preferences.getBoolean(
+						PREF_HIDE_CONTROLS, PREF_HIDE_CONTROLS_DEFAULT))
 					MainActivity.this.controls.setVisibility(View.GONE);
 			}
 		});
@@ -295,7 +332,7 @@ public class MainActivity extends Activity {
 
 		});
 
-		newVersionCheck();
+		checkVersion();
 
 		this.mGridView.setFocusable(true);
 		this.mGridView.setFocusableInTouchMode(true);
@@ -346,23 +383,23 @@ public class MainActivity extends Activity {
 	public void setTheme() {
 		pressMenu.setTextColor(0xff000000);
 		pressMenu.setBackgroundColor(0xa0f0f0f0);
-		String theme = preferences.getString("theme", "newspaper");
+		String theme = preferences.getString(PREF_THEME, PREF_THEME_DEFAULT);
 		solvedText.setTypeface(mPainter.mGridPainter.mSolvedTypeface);
 
-		if ("newspaper".equals(theme)) {
+		if (theme.equals(MainActivity.PREF_THEME_NEWSPAPER)) {
 			topLayout.setBackgroundResource(R.drawable.newspaper);
 			mPainter.setTheme(GridTheme.NEWSPAPER);
 			mTimerText.setBackgroundColor(0x90808080);
 			mMaybeText.setTextColor(0xFF000000);
 
-		} else if ("inverted".equals(theme)) {
+		} else if (theme.equals(MainActivity.PREF_THEME_DARK)) {
 			topLayout.setBackgroundResource(R.drawable.newspaper_dark);
 			mPainter.setTheme(GridTheme.DARK);
 			pressMenu.setTextColor(0xfff0f0f0);
 			pressMenu.setBackgroundColor(0xff000000);
 			mTimerText.setTextColor(0xFFF0F0F0);
 			mMaybeText.setTextColor(0xFFFFFFFF);
-		} else if ("carved".equals(theme)) {
+		} else if (theme.equals(MainActivity.PREF_THEME_CARVED)) {
 			topLayout.setBackgroundResource(R.drawable.background);
 			mPainter.setTheme(GridTheme.CARVED);
 			mTimerText.setBackgroundColor(0x10000000);
@@ -373,7 +410,7 @@ public class MainActivity extends Activity {
 	}
 
 	public void onResume() {
-		if (this.preferences.getBoolean("wakelock", true)) {
+		if (this.preferences.getBoolean(PREF_WAKE_LOCK, PREF_WAKE_LOCK_DEFAULT)) {
 			getWindow()
 					.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		}
@@ -388,10 +425,11 @@ public class MainActivity extends Activity {
 
 		setTheme();
 
+		// Propagate the preferences to the gridview
 		this.mGridView.setPreferences(this.preferences);
 
-		this.setSoundEffectsEnabled(this.preferences.getBoolean("soundeffects",
-				true));
+		this.setSoundEffectsEnabled(this.preferences.getBoolean(
+				PREF_PLAY_SOUND_EFFECTS, PREF_PLAY_SOUND_EFFECTS_DEFAULT));
 
 		super.onResume();
 
@@ -701,7 +739,8 @@ public class MainActivity extends Activity {
 	public void digitSelected(int value) {
 		this.mGridView.digitSelected(value, this.maybeButton.isChecked());
 
-		if (this.preferences.getBoolean("hideselector", false)) {
+		if (this.preferences.getBoolean(PREF_HIDE_CONTROLS,
+				PREF_HIDE_CONTROLS_DEFAULT)) {
 			this.controls.setVisibility(View.GONE);
 		}
 		this.mGridView.requestFocus();
@@ -721,20 +760,20 @@ public class MainActivity extends Activity {
 	 * 
 	 * @param gridSize
 	 *            The size of the grid to be created.
-	 * @return True (always)
+	 * @return True if start of game is prepared.
 	 */
 	private boolean prepareStartNewGame(final int gridSize) {
-		String hideOperators = this.preferences.getString("hideoperatorsigns",
-				"F");
-		if (hideOperators.equals("T")) {
+		String hideOperators = this.preferences.getString(PREF_HIDE_OPERATORS,
+				PREF_HIDE_OPERATORS_DEFAULT);
+		if (hideOperators.equals(PREF_HIDE_OPERATORS_ALWAYS)) {
 			// All new games should be generated with hidden operators.
 			this.startNewGame(gridSize, true);
 			return true;
-		} else if (hideOperators.equals("F")) {
+		} else if (hideOperators.equals(PREF_HIDE_OPERATORS_NEVER)) {
 			// All new games should be generated with visible operators.
 			this.startNewGame(gridSize, false);
 			return true;
-		} else {
+		} else if (hideOperators.equals(PREF_HIDE_OPERATORS_ASK)) {
 			// Ask for every new game which is to be generated whether operators
 			// should be hidden or visible.
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -758,6 +797,7 @@ public class MainActivity extends Activity {
 			dialog.show();
 			return true;
 		}
+		return false;
 	}
 
 	/**
@@ -799,10 +839,12 @@ public class MainActivity extends Activity {
 
 		this.solvedText.setVisibility(View.GONE);
 		this.pressMenu.setVisibility(View.GONE);
-		if (this.preferences.getBoolean("timer", true)) {
+		if (this.preferences.getBoolean(PREF_SHOW_TIMER,
+				PREF_SHOW_TIMER_DEFAULT)) {
 			this.mTimerText.setVisibility(View.VISIBLE);
 		}
-		if (!MainActivity.this.preferences.getBoolean("hideselector", false)) {
+		if (!MainActivity.this.preferences.getBoolean(PREF_HIDE_CONTROLS,
+				PREF_HIDE_CONTROLS_DEFAULT)) {
 			this.controls.setVisibility(View.VISIBLE);
 		}
 	}
@@ -898,38 +940,79 @@ public class MainActivity extends Activity {
 						}).show();
 	}
 
-	public void newVersionCheck() {
-		int pref_version = preferences.getInt("currentversion", -1);
-		Editor prefeditor = preferences.edit();
-		int current_version = getVersionNumber();
+	/**
+	 * Checks whether a new version of the game has been installed. If so,
+	 * modify preferences and convert if necessary.
+	 */
+	private void checkVersion() {
+		int currentVersion = getVersionNumber();
+		int previousInstalledVersion = preferences.getInt(PREF_CURRENT_VERSION,
+				PREF_CURRENT_VERSION_DEFAULT);
+		if (previousInstalledVersion < currentVersion) {
+			Editor prefeditor = preferences.edit();
 
-		if (!preferences.contains(PREF_CREATE_PREVIEW_IMAGES_COMPLETED)) {
-			// When upgrading to this version we need to create image previews
-			// for saved game files. Insert a new preference which will be used
-			// to check if conversion of the previews has already been
-			// completed.
-			prefeditor.putBoolean(PREF_CREATE_PREVIEW_IMAGES_COMPLETED,
-					PREF_CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT);
-			prefeditor.commit();
-		}
-
-		if (pref_version == -1 || pref_version != current_version) {
 			// On Each update of the game, all game file will be converted to
 			// the latest definitions.
-			GameFile.ConvertGameFiles(pref_version, current_version);
+			GameFile.ConvertGameFiles(previousInstalledVersion, currentVersion);
 
-			if (pref_version < 121 && current_version >= 121) {
+			if (previousInstalledVersion < 121 && currentVersion >= 121) {
 				// Add missing preferences to the Shared Preferences.
 				if (!preferences.contains(PREF_CLEAR_REDUNDANT_POSSIBLES)) {
-					prefeditor.putBoolean(
-							PREF_CLEAR_REDUNDANT_POSSIBLES,
+					prefeditor.putBoolean(PREF_CLEAR_REDUNDANT_POSSIBLES,
 							PREF_CLEAR_REDUNDANT_POSSIBLES_DEFAULT);
 				}
 			}
+			if (previousInstalledVersion < 123 && currentVersion >= 123) {
+				// Add missing preferences to the Shared Preferences. Note:
+				// those preferences have been introduced in revisions prior to
+				// revision 122. But as from revision 122 the default values
+				// have been removed from optionsview.xml to prevent conflicts
+				// in defaults values with default values defined in this
+				// activity.
+				if (!preferences.contains(PREF_HIDE_CONTROLS)) {
+					prefeditor.putBoolean(PREF_HIDE_CONTROLS,
+							PREF_HIDE_CONTROLS_DEFAULT);
+				}
+				if (!preferences.contains(PREF_HIDE_OPERATORS)) {
+					prefeditor.putString(PREF_HIDE_OPERATORS,
+							PREF_HIDE_OPERATORS_DEFAULT);
+				}
+				if (!preferences.contains(PREF_CREATE_PREVIEW_IMAGES_COMPLETED)) {
+					prefeditor.putBoolean(PREF_CREATE_PREVIEW_IMAGES_COMPLETED,
+							PREF_CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT);
+				}
+				if (!preferences.contains(PREF_PLAY_SOUND_EFFECTS)) {
+					prefeditor.putBoolean(PREF_PLAY_SOUND_EFFECTS,
+							PREF_PLAY_SOUND_EFFECTS_DEFAULT);
+				}
+				if (!preferences.contains(PREF_SHOW_BAD_MATHS)) {
+					prefeditor.putBoolean(PREF_SHOW_BAD_MATHS,
+							PREF_SHOW_BAD_MATHS_DEFAULT);
+				}
+				if (!preferences.contains(PREF_SHOW_DUPE_DIGITS)) {
+					prefeditor.putBoolean(PREF_SHOW_DUPE_DIGITS,
+							PREF_SHOW_DUPE_DIGITS_DEFAULT);
+				}
+				if (!preferences.contains(PREF_SHOW_MAYBES_AS_3X3_GRID)) {
+					prefeditor.putBoolean(PREF_SHOW_MAYBES_AS_3X3_GRID,
+							PREF_SHOW_MAYBES_AS_3X3_GRID_DEFAULT);
+				}
+				if (!preferences.contains(PREF_SHOW_TIMER)) {
+					prefeditor.putBoolean(PREF_SHOW_TIMER,
+							PREF_SHOW_TIMER_DEFAULT);
+				}
+				if (!preferences.contains(PREF_THEME)) {
+					prefeditor.putString(PREF_THEME, PREF_THEME_DEFAULT);
+				}
+				if (!preferences.contains(PREF_WAKE_LOCK)) {
+					prefeditor.putBoolean(PREF_WAKE_LOCK,
+							PREF_WAKE_LOCK_DEFAULT);
+				}
+			}
 
-			prefeditor.putInt("currentversion", current_version);
+			prefeditor.putInt(PREF_CURRENT_VERSION, currentVersion);
 			prefeditor.commit();
-			if (pref_version == -1) {
+			if (previousInstalledVersion == -1) {
 				// On first install of the game, display the help dialog.
 				this.openHelpDialog();
 			} else {
@@ -1216,7 +1299,8 @@ public class MainActivity extends Activity {
 			mTimerTask = new GameTimer();
 			mTimerTask.mElapsedTime = mGrid.getElapsedTime();
 			mTimerTask.mTimerLabel = mTimerText;
-			if (preferences.getBoolean("timer", true)) {
+			if (preferences
+					.getBoolean(PREF_SHOW_TIMER, PREF_SHOW_TIMER_DEFAULT)) {
 				mTimerText.setVisibility(View.VISIBLE);
 			}
 			mTimerTask.execute();

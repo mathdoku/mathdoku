@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string-array name="hideOpTexts">
-	   <item>Altijd</item>
-	   <item>Nooit</item>
-	   <item>Vraag</item>
-	</string-array>
-<!-- The actual under-the-hood values associated with the above. Serve merely as identifiers, and should not be translated. -->
-<string-array name="hideOpValues">
-   <item>T</item>
-   <item>F</item>
-   <item>A</item>
-</string-array>
-	<string-array name="themeTexts">
-    <item>Carved</item>
-    <item>Newspaper</item>
-    <item>Donker</item>
-</string-array>
-<string-array name="themeValues">
-    <item>carved</item>
-    <item>newspaper</item>
-    <item>inverted</item>
-</string-array>
+
+    <string-array name="hideOpTexts">
+        <item>Altijd</item>
+        <item>Nooit</item>
+        <item>Vraag</item>
+    </string-array>
+    <!-- The actual under-the-hood values associated with the above. Serve merely as identifiers, and should not be translated. -->
+    <string-array name="hideOpValues">
+        <item>T</item>
+        <item>F</item>
+        <item>A</item>
+    </string-array>
+    <string-array name="themeTexts">
+        <item>Carved</item>
+        <item>Newspaper</item>
+        <item>Donker</item>
+    </string-array>
+    <!-- The actual under-the-hood values associated with the above. Serve merely as identifiers, and should not be translated. -->
+    <string-array name="themeValues">
+        <item>carved</item>
+        <item>newspaper</item>
+        <item>inverted</item>
+    </string-array>
+
 </resources>

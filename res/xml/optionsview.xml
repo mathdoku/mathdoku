@@ -1,64 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen  
-    xmlns:android="http://schemas.android.com/apk/res/android">  
-	<PreferenceCategory android:title="@string/options_group_assistance" android:key="Assistance">
-		<CheckBoxPreference
-			android:key="badmaths"
-			android:title="@string/option_mark_bad_maths_title"
-			android:summary="@string/option_mark_bad_maths_summary"
-			android:defaultValue="true" />
-		<CheckBoxPreference
-			android:key="dupedigits"
-			android:title="@string/option_mark_duplicates_title"
-			android:summary="@string/option_mark_duplicates_summary"
-			android:defaultValue="true" />
-		<CheckBoxPreference
-			android:key="redundantPossibles"
-			android:title="@string/option_clear_redundant_possibles_title"
-			android:summary="@string/option_clear_redundant_possibles_summary"/>
-	</PreferenceCategory>
-	<PreferenceCategory android:title="@string/options_group_puzzle" android:key="Puzzle Generation">
-		<ListPreference
-			android:title="@string/option_hide_operators_title"
-			android:summary="@string/option_hide_operators_summary"
-			android:key="hideoperatorsigns"
-			android:entries="@array/hideOpTexts"
-			android:entryValues="@array/hideOpValues"
-			android:defaultValue="F" />
-	</PreferenceCategory>
-	<PreferenceCategory android:title="@string/options_group_display" android:key="Display">
-		<ListPreference
-			android:title="@string/option_theme_title"
-			android:summary="@string/option_theme_summary"
-			android:key="theme"
-			android:entries="@array/themeTexts"
-			android:entryValues="@array/themeValues"
-			android:defaultValue="newspaper" />
-		<CheckBoxPreference
-			android:key="maybe3x3"
-			android:title="@string/option_maybe_layout_title"
-			android:summary="@string/option_maybe_layout_summary" android:defaultValue="true"/>
-		<CheckBoxPreference
-			android:key="hideselector"
-			android:title="@string/option_hide_selector_title"
-			android:summary="@string/option_hide_selector_summary"
-			android:defaultValue="false" />
-		<CheckBoxPreference
-			android:key="wakelock"
-			android:title="@string/option_wake_lock_title"
-			android:summary="@string/option_wake_lock_summary"
-			android:defaultValue="true" />
-		<CheckBoxPreference
-			android:key="timer"
-			android:title="@string/option_enable_timer_title"
-			android:defaultValue="true" />
-	</PreferenceCategory>
-	<PreferenceCategory android:title="@string/options_group_sound" android:key="Sound">
-		<CheckBoxPreference
-			android:key="soundeffects"
-			android:title="@string/option_sound_effects_title"
-			android:summary="@string/option_sound_effects_summary"
-			android:defaultValue="true" />
-	</PreferenceCategory>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-</PreferenceScreen>  
+    <PreferenceCategory
+        android:key="Assistance"
+        android:title="@string/options_group_assistance" >
+        <CheckBoxPreference
+            android:key="badmaths"
+            android:summary="@string/option_mark_bad_maths_summary"
+            android:title="@string/option_mark_bad_maths_title" />
+        <CheckBoxPreference
+            android:key="dupedigits"
+            android:summary="@string/option_mark_duplicates_summary"
+            android:title="@string/option_mark_duplicates_title" />
+        <CheckBoxPreference
+            android:key="redundantPossibles"
+            android:summary="@string/option_clear_redundant_possibles_summary"
+            android:title="@string/option_clear_redundant_possibles_title" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="Puzzle Generation"
+        android:title="@string/options_group_puzzle" >
+        <ListPreference
+            android:entries="@array/hideOpTexts"
+            android:entryValues="@array/hideOpValues"
+            android:key="hideoperatorsigns"
+            android:summary="@string/option_hide_operators_summary"
+            android:title="@string/option_hide_operators_title" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="Display"
+        android:title="@string/options_group_display" >
+        <ListPreference
+            android:entries="@array/themeTexts"
+            android:entryValues="@array/themeValues"
+            android:key="theme"
+            android:summary="@string/option_theme_summary"
+            android:title="@string/option_theme_title" />
+
+        <CheckBoxPreference
+            android:key="maybe3x3"
+            android:summary="@string/option_maybe_layout_summary"
+            android:title="@string/option_maybe_layout_title" />
+        <CheckBoxPreference
+            android:key="hideselector"
+            android:summary="@string/option_hide_selector_summary"
+            android:title="@string/option_hide_selector_title" />
+        <CheckBoxPreference
+            android:key="wakelock"
+            android:summary="@string/option_wake_lock_summary"
+            android:title="@string/option_wake_lock_title" />
+        <CheckBoxPreference
+            android:key="timer"
+            android:summary="@string/option_show_timer_summary"
+            android:title="@string/option_show_timer_title" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="Sound"
+        android:title="@string/options_group_sound" >
+        <CheckBoxPreference
+            android:key="soundeffects"
+            android:summary="@string/option_sound_effects_summary"
+            android:title="@string/option_sound_effects_title" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -201,10 +201,12 @@ public class DevelopmentHelper {
 		if (preferences != null) {
 			String finalDialogMessage = "";
 
-			int currentVersion = preferences.getInt("currentversion", -1);
+			int currentVersion = preferences.getInt(
+					MainActivity.PREF_CURRENT_VERSION,
+					MainActivity.PREF_CURRENT_VERSION_DEFAULT);
 			Editor prefeditor = preferences.edit();
 
-			prefeditor.putInt("currentversion", targetVersion);
+			prefeditor.putInt(MainActivity.PREF_CURRENT_VERSION, targetVersion);
 
 			if (targetVersion <= 77
 					&& preferences
