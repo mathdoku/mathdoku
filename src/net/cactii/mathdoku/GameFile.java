@@ -413,11 +413,11 @@ public class GameFile extends File {
 		// Save the file at the first unused file index number.
 		copyFile(getFullFilename(), PATH + FILENAME_SAVED_GAME + fileIndex
 				+ GAMEFILE_EXTENSION);
-		
+
 		// Copy preview if it exists
 		if (hasPreviewImage()) {
 			copyFile(getFullFilenamePreview(), PATH + FILENAME_SAVED_GAME
-				+ fileIndex + PREVIEW_EXTENSION);
+					+ fileIndex + PREVIEW_EXTENSION);
 		}
 	}
 
@@ -574,16 +574,12 @@ public class GameFile extends File {
 	 * @param includeDefaultGameFile
 	 *            True in case the default game file should be included in the
 	 *            list of game files. False otherwise.
-	 * @param includePreviewsImages
-	 *            True in case the preview image files itself should be included
-	 *            in the list of game files. False otherwise.
 	 * @param maximumFiles
 	 *            The maximum number of files which should be returned.
 	 * @return A list of files. An empty list in case of an error.
 	 */
 	private static ArrayList<String> getAllGameFiles(
-			GameFileType[] gameFileType, boolean includePreviewsImages,
-			int maximumFiles) {
+			GameFileType[] gameFileType, int maximumFiles) {
 		// Check which game file types have to be returned.
 		boolean includeLastGame = false;
 		boolean includeUserGame = false;
@@ -614,10 +610,12 @@ public class GameFile extends File {
 		// Check all files but stop if maximum is reached
 		int countFiles = 0;
 		for (String filename : filenames) {
-			if ((includePreviewsImages && filename
-					.endsWith(GameFile.PREVIEW_EXTENSION))
-					|| (includeUserGame && filename
-							.startsWith(GameFile.FILENAME_SAVED_GAME))
+			if (filename.endsWith(GameFile.PREVIEW_EXTENSION)) {
+				// Skip previews images allways.
+				continue;
+			}
+			if ((includeUserGame && filename
+					.startsWith(GameFile.FILENAME_SAVED_GAME))
 					|| (includeLastGame && filename
 							.startsWith(GameFile.FILENAME_LAST_GAME))
 					|| (includeNewGame && filename
@@ -648,7 +646,7 @@ public class GameFile extends File {
 	public static ArrayList<String> getAllGameFiles(int maximumFiles) {
 		GameFileType[] gameFileTypes = new GameFileType[] {
 				GameFileType.SAVED_GAME, GameFileType.LAST_GAME };
-		return getAllGameFiles(gameFileTypes, false, maximumFiles);
+		return getAllGameFiles(gameFileTypes, maximumFiles);
 	}
 
 	/**
@@ -664,7 +662,7 @@ public class GameFile extends File {
 	public static ArrayList<String> getAllGameFilesCreatedByUser(
 			int maximumFiles) {
 		GameFileType[] gameFileTypes = new GameFileType[] { GameFileType.SAVED_GAME };
-		return getAllGameFiles(gameFileTypes, false, maximumFiles);
+		return getAllGameFiles(gameFileTypes, maximumFiles);
 	}
 
 	/**
