@@ -59,32 +59,32 @@ public class DevelopmentHelper {
 		// Start the background task to generate the new grids.
 		mainActivity.mGridGeneratorTask.execute();
 	}
-	
-	public static void generateGamesReady(final MainActivity mainActivity, int numberOfGamesGenerated) {
+
+	public static void generateGamesReady(final MainActivity mainActivity,
+			int numberOfGamesGenerated) {
 		new AlertDialog.Builder(mainActivity)
-		.setTitle("Games generated")
-		.setMessage(
-				Integer.toString(numberOfGamesGenerated)
-						+ " games have been generated. Note that it is not "
-						+ "guaranteed that those puzzles have unique solutions. "
-						+ "Please restart the activity in order to generate "
-						+ "preview images for the newly created games.")
-		.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				// Remove preference which controls the process
-				// of preview image creation
-				if (mainActivity.preferences != null
-						&& mainActivity.preferences
-								.contains(MainActivity.PREF_CREATE_PREVIEW_IMAGES_COMPLETED)) {
-					Editor prefeditor = mainActivity.preferences
-							.edit();
-					prefeditor
-							.remove(MainActivity.PREF_CREATE_PREVIEW_IMAGES_COMPLETED);
-					prefeditor.commit();
-				}
-				mainActivity.finish();
-			}
-		}).show();
+				.setTitle("Games generated")
+				.setMessage(
+						Integer.toString(numberOfGamesGenerated)
+								+ " games have been generated. Note that it is not "
+								+ "guaranteed that those puzzles have unique solutions. "
+								+ "Please restart the activity in order to generate "
+								+ "preview images for the newly created games.")
+				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						// Remove preference which controls the process
+						// of preview image creation
+						if (mainActivity.preferences != null
+								&& mainActivity.preferences
+										.contains(MainActivity.PREF_CREATE_PREVIEW_IMAGES_COMPLETED)) {
+							Editor prefeditor = mainActivity.preferences.edit();
+							prefeditor
+									.remove(MainActivity.PREF_CREATE_PREVIEW_IMAGES_COMPLETED);
+							prefeditor.commit();
+						}
+						mainActivity.finish();
+					}
+				}).show();
 	}
 
 	/**
@@ -230,8 +230,8 @@ public class DevelopmentHelper {
 		SharedPreferences preferences = mainActivity.preferences;
 
 		if (preferences != null) {
-			boolean updatePreferences = false;
-
+			String finalDialogMessage = "";
+			
 			int currentVersion = preferences.getInt("currentversion", -1);
 			Editor prefeditor = preferences.edit();
 
@@ -245,25 +245,28 @@ public class DevelopmentHelper {
 			}
 
 			if (targetVersion <= 77 && currentVersion > 111) {
-				new AlertDialog.Builder(mainActivity)
-						.setMessage(
+				finalDialogMessage += 
 								"With upgrade to revision 111 or above, all filenames "
 										+ "have been changed. These changes have not been "
 										+ "reverted. Those games will be visible again after "
-										+ "the upgrade to this version has been completed.")
-						.setPositiveButton("OK",
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int id) {
-										// do nothing
-									}
-								}).show();
+										+ "the upgrade to this version has been completed.\n\n";
 			}
 
-			if (updatePreferences) {
-				prefeditor.commit();
-				return true;
-			}
+			prefeditor.commit();
+			
+			// Show the final dialog
+			finalDialogMessage += "Press OK to close the app. Restart manually. ";
+			new AlertDialog.Builder(mainActivity)
+					.setMessage(finalDialogMessage)
+					.setPositiveButton("OK",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									mainActivity.finish();
+								}
+							}).show();
+
+			return true;
 		}
 		return false;
 	}
