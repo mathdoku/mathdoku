@@ -140,6 +140,14 @@ public class GameFile extends File {
 				for (GridCage cage : grid.mCages) {
 					writer.write(cage.toStorageString() + EOL_DELIMITER);
 				}
+
+				// Store information about the cell changes. Use one line per
+				// single
+				// cell change. Note: watch for lengthy line due to recursive
+				// cell changes.
+				for (CellChange cellChange : grid.moves) {
+					writer.write(cellChange.toStorageString() + EOL_DELIMITER);
+				}
 			} catch (IOException e) {
 				Log.e(TAG, "Error saving game: " + e.getMessage());
 				return false;
@@ -309,24 +317,50 @@ public class GameFile extends File {
 				}
 			}
 
-			// Remaining lines contain cage information
-			while (line != null) {
-				GridCage cage = new GridCage(grid);
-				if (!cage.fromStorageString(line)) {
-					throw new InvalidFileFormatException(
-							"Line does not contain cage  information while this was expected:"
-									+ line);
-				}
+			// Cages (at least one expected)
+			GridCage cage = new GridCage(grid);
+			if (!cage.fromStorageString(line)) {
+				throw new InvalidFileFormatException(
+						"Line does not contain cage  information while this was expected:"
+								+ line);
+			}
+			do {
 				grid.mCages.add(cage);
 
-				// Read next line. No checking of unexpected end of file needed
-				// here because the last line of the file does contain a cage.
+				// Read next line. No checking of unexpected end of file might
+				// be done here because the last line in a file can contain a
+				// cage.
 				line = br.readLine();
-			}
+
+				// Create a new empty cage
+				cage = new GridCage(grid);
+			} while (line != null && cage.fromStorageString(line));
 
 			// Set the selected cell (and indirectly the selected cage).
 			if (selectedCell != null) {
 				grid.setSelectedCell(selectedCell);
+			}
+
+			// Remaining lines contain cell changes (zero or more expected)
+			CellChange cellChange = new CellChange();
+			while (line != null && cellChange.fromStorageString(line, grid.mCells)) {
+				grid.AddMove(cellChange);
+
+				// Read next line. No checking of unexpected end of file might
+				// be done here because the last line in a file can contain a
+				// cage.
+				line = br.readLine();
+
+				// Create a new empty cell change
+				cellChange = new CellChange();
+			}
+
+			// Check if en of file is reached an no information was unread yet.
+			if (line != null) {
+				throw new InvalidFileFormatException(
+						"Unexpected line found while end of file was expected: "
+								+ line);
+
 			}
 		} catch (InvalidFileFormatException e) {
 			Log.d(TAG, "Invalid file format error when restoring game "

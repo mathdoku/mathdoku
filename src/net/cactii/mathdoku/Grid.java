@@ -38,7 +38,7 @@ public class Grid {
 	private long mGameSeed;
 
 	// Keep track of all moves as soon as grid is built or restored.
-	private ArrayList<CellChange> moves;
+	public ArrayList<CellChange> moves;
 
 	// Used to avoid redrawing or saving grid during creation of new grid
 	public final Object mLock = new Object();

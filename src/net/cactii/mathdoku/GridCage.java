@@ -555,7 +555,6 @@ public class GridCage {
 		int cageInformationVersion = 0;
 		if (cageParts[0].equals(SAVE_GAME_CAGE_VERSION_01)) {
 			cageInformationVersion = 1;
-
 		} else if (cageParts[0].equals(SAVE_GAME_CAGE_VERSION_02)) {
 			cageInformationVersion = 2;
 		} else if (cageParts[0].equals(SAVE_GAME_CAGE_VERSION_03)) {
