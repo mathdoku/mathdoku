@@ -61,6 +61,8 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 	public class GridGeneratorOptions {
 		public int numberOfGamesToGenerate;
 		public boolean createFakeUserGameFiles;
+		public boolean randomGridSize;
+		public boolean randomHideOperators;
 	}
 
 	/**
@@ -99,6 +101,8 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 			this.mGridGeneratorOptions = new GridGeneratorOptions();
 			this.mGridGeneratorOptions.numberOfGamesToGenerate = 1;
 			this.mGridGeneratorOptions.createFakeUserGameFiles = false;
+			this.mGridGeneratorOptions.randomGridSize = false;
+			this.mGridGeneratorOptions.randomHideOperators = false;
 			return;
 		}
 
@@ -213,8 +217,12 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 						// next grid
 						mGameSeed = (new Random()).nextLong();
 						mRandom = new Random(mGameSeed);
-						mGridSize = 4 + (new Random().nextInt(6));
-						mHideOperators = new Random().nextBoolean();
+						if (mGridGeneratorOptions.randomGridSize) {
+							mGridSize = 4 + (new Random().nextInt(6));
+						}
+						if (mGridGeneratorOptions.randomHideOperators) {
+							mHideOperators = new Random().nextBoolean();
+						}
 						mGrid = new Grid(mGridSize);
 
 						// Fake a non unique solution so another grid is
@@ -811,14 +819,14 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 		return false;
 	}
 
-	/*
+	/**
 	 * Generates the arithmetic for the cage, semi-randomly.
 	 * 
-	 * - If a cage has 3 or more cells, it can only be an add or multiply. -
-	 * else if the cells are evenly divisible, division is used, else
-	 * subtraction.
+	 * @param cage
+	 *            The cage for which the arithmetic has to be generated.
 	 */
 	public void setArithmetic(GridCage cage) {
+		// A cage consisting of one single cell has no operator.
 		if (cage.mCells.size() == 1) {
 			// Single cell cage have an empty operator which is never hidden. IN
 			// this way it can be prevented that for a single cage cell it
@@ -828,49 +836,83 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 			return;
 		}
 
-		double rand = mRandom.nextDouble();
-		double addChance = 0.25;
-		double multChance = 0.5;
-		if (cage.mCells.size() > 2) {
-			addChance = 0.5;
-			multChance = 1.0;
+		// For cages of size 2 and bigger a weight (i.e. the chance on choosing
+		// that operator) will be determined. 
+		int divisionWeight;
+		int subtractionWeight;
+		int addWeight;
+		int multiplyWeight;
+		int divisionCageResult = -1;
+		int subtractionCageResult = -1;
+
+		// A cage consisting of two cells can have any operator but we give
+		// divide and subtraction a little extra weight because those operators
+		// will not be used in bigger cages. Of course division can not always
+		// be used.
+		if (cage.mCells.size() == 2) {
+			int higher;
+			int lower;
+			if (cage.mCells.get(0).getCorrectValue() > cage.mCells.get(1)
+					.getCorrectValue()) {
+				higher = cage.mCells.get(0).getCorrectValue();
+				lower = cage.mCells.get(1).getCorrectValue();
+			} else {
+				higher = cage.mCells.get(1).getCorrectValue();
+				lower = cage.mCells.get(0).getCorrectValue();
+			}
+			// As division is less often possible compared to subtraction, it is
+			// given a bit more weight.
+			divisionWeight = ((higher % lower == 0) ? 50 : 0);
+			subtractionWeight = 30;
+			addWeight = 15;
+			multiplyWeight = 15;
+			// Also calculate the cage results for division and subtraction
+			divisionCageResult = higher / lower;
+			subtractionCageResult = higher - lower;
+		} else {
+			// Cage has three or more cells. Division and substration are not
+			// allowed as operators.
+			divisionWeight = 0;
+			subtractionWeight = 0;
+			addWeight = 50;
+			multiplyWeight = 50;
 		}
-		if (rand <= addChance) {
+
+		// Determine a random number in the range of the total weight of the
+		// operator available.
+		int totalWeight = divisionWeight + subtractionWeight + addWeight
+				+ multiplyWeight;
+		double index = mRandom.nextInt(totalWeight);
+		
+		// Check whether the division operator has to be applied 
+		if (index < divisionWeight) {
+			cage.setCageResults(divisionCageResult, GridCage.ACTION_DIVIDE,
+					mHideOperators);
+			return;
+		}
+		index -= divisionWeight;
+
+		// Check whether the subtraction operator has to be applied 
+		if (index < subtractionWeight) {
+			cage.setCageResults(subtractionCageResult, GridCage.ACTION_SUBTRACT,
+					mHideOperators);
+			return;
+		}
+		index -= subtractionWeight;
+
+		// Check whether the add operator has to be applied. If not, than multiply is chosen. 
+		if (index < addWeight) {
 			int total = 0;
 			for (GridCell cell : cage.mCells) {
 				total += cell.getCorrectValue();
 			}
 			cage.setCageResults(total, GridCage.ACTION_ADD, mHideOperators);
-			return;
-		} else if (rand <= multChance) {
+		} else {
 			int total = 1;
 			for (GridCell cell : cage.mCells) {
 				total *= cell.getCorrectValue();
 			}
 			cage.setCageResults(total, GridCage.ACTION_MULTIPLY, mHideOperators);
-			return;
-		}
-
-		if (cage.mCells.size() < 2) {
-			Log.d("KenKen", "Why only length 1? Type: " + this);
-		}
-		int cell1Value = cage.mCells.get(0).getCorrectValue();
-		int cell2Value = cage.mCells.get(1).getCorrectValue();
-		int higher = cell1Value;
-		int lower = cell2Value;
-		boolean canDivide = false;
-		if (cell1Value < cell2Value) {
-			higher = cell2Value;
-			lower = cell1Value;
-		}
-		if (higher % lower == 0)
-			canDivide = true;
-		if (canDivide) {
-			cage.setCageResults(higher / lower, GridCage.ACTION_DIVIDE,
-					mHideOperators);
-		} else {
-			cage.setCageResults(higher - lower, GridCage.ACTION_SUBTRACT,
-					mHideOperators);
 		}
 	}
 

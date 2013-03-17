@@ -50,13 +50,20 @@ public class DevelopmentHelper {
 	 *            shown.
 	 */
 	public static void generateGames(final MainActivity mainActivity) {
-		mainActivity.mGridGeneratorTask = new GridGenerator(mainActivity, 4,
-				true);
+		mainActivity.mGridGeneratorTask = new GridGenerator(mainActivity, 9,
+				false);
 		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
 			// Set the options for the grid generator
 			GridGenerator.GridGeneratorOptions gridGeneratorOptions = mainActivity.mGridGeneratorTask.new GridGeneratorOptions();
 			gridGeneratorOptions.createFakeUserGameFiles = true;
-			gridGeneratorOptions.numberOfGamesToGenerate = 10;
+			gridGeneratorOptions.numberOfGamesToGenerate = 50;
+
+			// Set to false to generate grids with same size nad hideOperators
+			// value as initial grid.
+			gridGeneratorOptions.randomGridSize = true;
+			gridGeneratorOptions.randomHideOperators = true;
+			
+			// Start the grid generator
 			mainActivity.mGridGeneratorTask
 					.setGridGeneratorOptions(gridGeneratorOptions);
 
