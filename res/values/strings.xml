@@ -75,7 +75,8 @@
     <!-- The title and summary of the "wake lock" option. This option highlights cells with digits already in the row or column. -->
     <string name="option_wake_lock_title">Keep screen on</string>
     <string name="option_wake_lock_summary">Prevent the screen from going off while playing</string>
-    <string name="option_enable_timer_title">Enable timer</string>
+    <string name="option_show_timer_title">Display timer</string>
+    <string name="option_show_timer_summary">Display a timer while solving a puzzle.</string>
     <!-- The text before the "maybe" checkbox in the main UI. -->
     <string name="main_ui_maybe">Maybe</string>
     <!-- The text on the clear button in the main UI. -->
@@ -150,6 +151,4 @@
     <!-- Text to display in the notification when a new grid has been generated. %1$d and %2$d in title will be replaced with the size of the grid which is generated. -->
     <string name="notification_grid_ready_notification_title">Grid %1$dx%2$d ready</string>
     <string name="notification_grid_ready_notification_message">Touch to start playing.</string>
-    <string name="option_show_timer_summary">TODO</string>
-    <string name="option_show_timer_title">TODO</string>
 </resources>
