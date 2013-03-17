@@ -67,7 +67,6 @@
             android:id="@+id/solvedText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
             android:background="#D0DECA1E"
             android:text="@string/main_ui_solved_messsage"
             android:textColor="#FF000000"
