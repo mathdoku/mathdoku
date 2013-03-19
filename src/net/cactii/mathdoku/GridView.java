@@ -2,10 +2,7 @@ package net.cactii.mathdoku;
 
 import net.cactii.mathdoku.Painter.GridPainter;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Canvas;
-import android.graphics.Path;
-import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
@@ -24,11 +21,7 @@ public class GridView extends View implements OnTouchListener {
 	// Touched listener
 	public OnGridTouchListener mTouchedListener;
 
-	private boolean mPrefShowDupeDigits;
-	private boolean mPrefShowBadMaths;
-	private boolean mPrefShowMaybesAs3x3Grid;
-
-	public int mCurrentWidth;
+	public float mGridViewSize;
 	public float mTrackPosX;
 	public float mTrackPosY;
 
@@ -55,16 +48,9 @@ public class GridView extends View implements OnTouchListener {
 	}
 
 	private void initGridView() {
-		this.mPrefShowDupeDigits = true;
-		this.mPrefShowBadMaths = true;
-
-		this.mCurrentWidth = 0;
+		this.mGridViewSize = 0;
 
 		this.setOnTouchListener((OnTouchListener) this);
-
-		Painter painter = Painter.getInstance(this.getContext());
-		painter.setGridBorder((this.getMeasuredHeight() < 150));
-		this.mGridPainter = painter.mGridPainter;
 	}
 
 	public void setOnGridTouchListener(OnGridTouchListener listener) {
@@ -184,7 +170,7 @@ public class GridView extends View implements OnTouchListener {
 		float xOrd;
 		float yOrd;
 		int gridSize = grid.getGridSize();
-		int cellWidth = this.mCurrentWidth / gridSize;
+		int cellWidth = (int) (this.mGridViewSize / gridSize);
 		xOrd = ((float) cell % gridSize) * cellWidth;
 		yOrd = ((int) (cell / gridSize) * cellWidth);
 		return new float[] { xOrd, yOrd };
@@ -193,8 +179,8 @@ public class GridView extends View implements OnTouchListener {
 	// Opposite of above - given a coordinate, returns the cell number within.
 	private GridCell CoordToCell(float x, float y) {
 		int gridSize = grid.getGridSize();
-		int row = (int) ((y / (float) this.mCurrentWidth) * gridSize);
-		int col = (int) ((x / (float) this.mCurrentWidth) * gridSize);
+		int row = (int) ((y / (float) this.mGridViewSize) * gridSize); 
+		int col = (int) ((x / (float) this.mGridViewSize) * gridSize);
 		return grid.getCellAt(row, col);
 	}
 
@@ -235,18 +221,6 @@ public class GridView extends View implements OnTouchListener {
 		}
 	}
 
-	public void setPreferences(SharedPreferences preferences) {
-		mPrefShowDupeDigits = preferences.getBoolean(
-				MainActivity.PREF_SHOW_DUPE_DIGITS,
-				MainActivity.PREF_SHOW_DUPE_DIGITS_DEFAULT);
-		mPrefShowBadMaths = preferences.getBoolean(
-				MainActivity.PREF_SHOW_BAD_MATHS,
-				MainActivity.PREF_SHOW_BAD_MATHS_DEFAULT);
-		mPrefShowMaybesAs3x3Grid = preferences.getBoolean(
-				MainActivity.PREF_SHOW_MAYBES_AS_3X3_GRID,
-				MainActivity.PREF_SHOW_MAYBES_AS_3X3_GRID_DEFAULT);
-	}
-
 	@Override
 	protected void onDraw(Canvas canvas) {
 		if (grid == null) {
@@ -254,6 +228,12 @@ public class GridView extends View implements OnTouchListener {
 			// be drawn.
 			return;
 		}
+
+		// Get painter if not yet retrieved.
+		if (mGridPainter == null) {
+			mGridPainter = Painter.getInstance(this.getContext()).mGridPainter;
+		}
+		
 		synchronized (grid.mLock) { // Avoid redrawing at the same time as
 									// creating
 			// puzzle
@@ -264,63 +244,43 @@ public class GridView extends View implements OnTouchListener {
 			if (grid.mCages == null)
 				return;
 
-			int width = getMeasuredWidth();
+			// Get the size of the gridview. As it is a square, either width or
+			// height can be used.
+			float realGridViewSize = getMeasuredWidth();
+			float gridBorderWidth = mGridPainter.mBorderPaint
+					.getStrokeWidth();
+			float cellSize = (float) Math
+					.floor((float) (realGridViewSize - 2 * gridBorderWidth)
+							/ (float) gridSize);
+			mGridViewSize = (float) (2 * gridBorderWidth + gridSize * cellSize);
 
-			if (width != this.mCurrentWidth)
-				this.mCurrentWidth = width;
+			// Draw background (can not use canvas.drawColor here as we maybe do
+			// not use entire canvas)
+			canvas.drawRect((float) 0, (float) 0, mGridViewSize, mGridViewSize,
+					mGridPainter.mBackgroundPaint);
 
-			// Fill canvas background
-			canvas.drawColor(mGridPainter.mBackgroundColor);
+			// Draw borders around grid. Use an of offset of 50% of strokewidth
+			// to ensure that full width of border is visible inside the
+			// gridview.
+			// Note: the offset will 0 for borders of width 1.
+			float gridBorderOffset = (float) Math
+					.floor((float) (0.5 * gridBorderWidth));
+			canvas.drawLine(0, 0 + gridBorderOffset, this.mGridViewSize,
+					0 + gridBorderOffset, mGridPainter.mBorderPaint); // Top
+			canvas.drawLine(this.mGridViewSize - gridBorderOffset, 0,
+					this.mGridViewSize - gridBorderOffset, this.mGridViewSize,
+					mGridPainter.mBorderPaint); // right
+			canvas.drawLine(0, this.mGridViewSize - gridBorderOffset,
+					this.mGridViewSize, this.mGridViewSize - gridBorderOffset,
+					mGridPainter.mBorderPaint); // bottom
+			canvas.drawLine(0 + gridBorderOffset, 0, 0 + gridBorderOffset,
+					this.mGridViewSize, mGridPainter.mBorderPaint); // left
 
-			// Check cage correctness
-			for (GridCage cage : grid.mCages)
-				cage.userValuesCorrect(mPrefShowBadMaths);
-
-			// Draw (dashed) grid
-			for (int i = 1; i < gridSize; i++) {
-				float pos = ((float) this.mCurrentWidth / (float) gridSize) * i;
-
-				// Due to a bug
-				// (https://code.google.com/p/android/issues/detail?id=29944), a
-				// dashed line can not be drawn with drawLine at API-level 11 or
-				// above.
-				drawDashedLine(canvas, 0, pos, this.mCurrentWidth, pos);
-				drawDashedLine(canvas, pos, 0, pos, this.mCurrentWidth);
-			}
-
-			// Draw cells
-			Painter.getInstance().setCellSize((float) width / (float) gridSize);
+			// Draw cells, except for cells in selected cage
+			Painter.getInstance(this.getContext()).setCellSize(cellSize);
 			for (GridCell cell : grid.mCells) {
-				cell.checkWithOtherValuesInRowAndColumn();
-				cell.onDraw(canvas, false, mPrefShowDupeDigits,
-						mPrefShowMaybesAs3x3Grid);
-			}
-
-			// Draw borders
-			canvas.drawLine(0, 1, this.mCurrentWidth, 1,
-					mGridPainter.mOuterPaint);
-			canvas.drawLine(1, 0, 1, this.mCurrentWidth,
-					mGridPainter.mOuterPaint);
-			canvas.drawLine(0, this.mCurrentWidth - 2, this.mCurrentWidth,
-					this.mCurrentWidth - 2, mGridPainter.mOuterPaint);
-			canvas.drawLine(this.mCurrentWidth - 2, 0, this.mCurrentWidth - 2,
-					this.mCurrentWidth, mGridPainter.mOuterPaint);
-
-			// Draw cells again
-			for (GridCell cell : grid.mCells) {
-				cell.onDraw(canvas, true, mPrefShowDupeDigits,
-						mPrefShowMaybesAs3x3Grid);
-			}
-			// Draw highlights for current cage.
-			GridCage selectedCage = grid.getCageForSelectedCell();
-			if (selectedCage != null) {
-				for (GridCell cell : grid.getCageForSelectedCell().mCells) {
-					cell.onDraw(canvas, true, mPrefShowDupeDigits,
-							mPrefShowMaybesAs3x3Grid);
-				}
-				// Draws highlights for selected cell at top.
-				grid.getSelectedCell().onDraw(canvas, false,
-						mPrefShowDupeDigits, mPrefShowMaybesAs3x3Grid);
+					cell.checkWithOtherValuesInRowAndColumn();
+					cell.draw(canvas, gridBorderWidth);
 			}
 		}
 	}
@@ -367,13 +327,5 @@ public class GridView extends View implements OnTouchListener {
 			invalidate();
 
 		return;
-	}
-
-	private void drawDashedLine(Canvas canvas, float left, float top,
-			float right, float bottom) {
-		Path path = new Path();
-		path.moveTo(left, top);
-		path.lineTo(right, bottom);
-		canvas.drawPath(path, mGridPainter.mInnerPaint);
 	}
 }

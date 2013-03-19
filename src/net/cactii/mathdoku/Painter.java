@@ -21,9 +21,8 @@ public class Painter {
 
 	// Painters for the grid itself
 	public class GridPainter {
-		public Paint mInnerPaint;
-		public Paint mOuterPaint;
-		public int mBackgroundColor;
+		public Paint mBorderPaint;
+		public Paint mBackgroundPaint;
 		public Typeface mSolvedTypeface;
 	}
 
@@ -40,12 +39,25 @@ public class Painter {
 	// Painter for the cell
 	public class CellPainter {
 		public float mCellSize;
+		
+		public Paint mUnusedBorderPaint;
 
-		public Paint mBackgroundWarningPaint;
-		public Paint mBackgroundCheatedPaint;
-		public Paint mBackgroundSelectedPaint;
+		public class CellBorderBackground {
+			public Paint mBorderPaint;
+			public Paint mBackgroundPaint;
+		}
 
-		public Paint mBorderWrongPaint;
+		public CellBorderBackground mInvalid;
+		public CellBorderBackground mCheated;
+		public CellBorderBackground mWarning;
+		public CellBorderBackground mSelected;
+
+		public CellPainter() {
+			mInvalid = new CellBorderBackground();
+			mCheated = new CellBorderBackground();
+			mWarning = new CellBorderBackground();
+			mSelected = new CellBorderBackground();
+		}
 	}
 
 	public CellPainter mCellPainter;
@@ -88,6 +100,8 @@ public class Painter {
 	public class CagePainter {
 		public Paint mBorderPaint;
 		public Paint mBorderSelectedPaint;
+		public Paint mBorderBadMathPaint;
+		public Paint mBorderSelectedBadMathPaint;
 
 		public Paint mTextPaint;
 	}
@@ -95,10 +109,10 @@ public class Painter {
 	public CagePainter mCagePainter;
 
 	// Border sizes
-	private final static int BORDER_STROKE_HAIR_LINE = 0;
-	private final static int BORDER_STROKE_WIDTH_THIN = 1;
-	private final static int BORDER_STROKE_WIDTH_NORMAL = 2;
-	private final static int BORDER_STROKE_WIDTH_THICK = 5;
+	private int BORDER_STROKE_HAIR_LINE = 0;
+	private int BORDER_STROKE_WIDTH_THIN = 1;
+	private int BORDER_STROKE_WIDTH_NORMAL = 2;
+	private int BORDER_STROKE_WIDTH_THICK = 4;
 
 	/**
 	 * Creates a new instance of {@link #GridPainter()}.
@@ -111,68 +125,12 @@ public class Painter {
 	 * 
 	 */
 	private Painter(Context context) {
-		// Create the grid painters
-		mGridPainter = new GridPainter();
-		mGridPainter.mInnerPaint = new Paint();
-		mGridPainter.mInnerPaint.setColor(0x80000000);
-		mGridPainter.mInnerPaint.setStrokeWidth(BORDER_STROKE_HAIR_LINE);
-		mGridPainter.mInnerPaint.setStyle(Style.STROKE);
+		// Initialize the common painter properties which will not vary during
+		// the lifecycle.
+		setCommonPaintProperties(context);
 
-		mGridPainter.mOuterPaint = new Paint();
-		mGridPainter.mOuterPaint.setColor(0xFF000000);
-		mGridPainter.mOuterPaint.setStrokeWidth(BORDER_STROKE_WIDTH_NORMAL);
-		mGridPainter.mOuterPaint.setStyle(Style.STROKE);
-
-		// Typefaces
-		mTypefaceCarved = Typeface.createFromAsset(context.getAssets(),
-				"fonts/font.ttf");
-		mTypefaceSansSerif = Typeface.create(Typeface.SANS_SERIF,
-				Typeface.NORMAL);
-
-		// Path effects
-		mPathEffectHandDrawn = new DiscretePathEffect(20, 1);
-		mPathEffectDashed = new DashPathEffect(new float[] { 2, 2 }, 0);
-
-		// Create the painter for the cell.
-		mCellPainter = new CellPainter();
-		mCellPainter.mBorderWrongPaint = new Paint();
-		mCellPainter.mBorderWrongPaint.setAntiAlias(true);
-		mCellPainter.mBackgroundWarningPaint = new Paint();
-		mCellPainter.mBackgroundWarningPaint.setColor(0x50FF0000);
-		mCellPainter.mBackgroundWarningPaint.setStyle(Paint.Style.FILL);
-		mCellPainter.mBackgroundCheatedPaint = new Paint();
-		mCellPainter.mBackgroundCheatedPaint.setColor(0x90ffcea0);
-		mCellPainter.mBackgroundCheatedPaint.setStyle(Paint.Style.FILL);
-		mCellPainter.mBackgroundSelectedPaint = new Paint();
-		mCellPainter.mBackgroundSelectedPaint.setColor(0xD0F0D042);
-
-		// Create the painter for the user value
-		mUserValuePainter = new UserValuePainter();
-		mUserValuePainter.mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
-		// Create the possible values 3x3 grid painter
-		mMaybe3x3Painter = new Maybe3x3Painter();
-		mMaybe3x3Painter.mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		mMaybe3x3Painter.mTextPaint.setTextSize(10);
-		mMaybe3x3Painter.mTextPaint.setTypeface(mTypefaceSansSerif);
-		mMaybe3x3Painter.mTextPaint.setFakeBoldText(true);
-
-		// Create the possible values single line painter
-		mMaybe1x9Painter = new Maybe1x9Painter();
-		mMaybe1x9Painter.mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		mMaybe1x9Painter.mTextPaint.setTextSize(10);
-		mMaybe1x9Painter.mTextPaint.setTypeface(mTypefaceSansSerif);
-		mMaybe1x9Painter.mTextPaint.setFakeBoldText(false);
-
-		// Create cage painter
-		mCagePainter = new CagePainter();
-		mCagePainter.mBorderPaint = new Paint();
-		mCagePainter.mBorderPaint.setStrokeWidth(BORDER_STROKE_WIDTH_NORMAL);
-		mCagePainter.mBorderSelectedPaint = new Paint();
-		mCagePainter.mBorderSelectedPaint
-				.setStrokeWidth(BORDER_STROKE_WIDTH_THICK);
-		mCagePainter.mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		mCagePainter.mTextPaint.setTextSize(14);
+		// Set the size of the borders.
+		setBorderSizes(false);
 
 		// Apply default theme to the painters.
 		setTheme(GridTheme.NEWSPAPER);
@@ -211,6 +169,138 @@ public class Painter {
 	}
 
 	/**
+	 * Sets all common paint properties which will not vary during the lifecylce
+	 * of the global painter object.
+	 */
+	private void setCommonPaintProperties(Context context) {
+		// Create the grid painters
+		mGridPainter = new GridPainter();
+
+		mGridPainter.mBorderPaint = new Paint();
+		mGridPainter.mBorderPaint.setStyle(Style.STROKE);
+
+		mGridPainter.mBackgroundPaint = new Paint();
+		mGridPainter.mBorderPaint.setStyle(Style.FILL);
+
+		// Typefaces
+		mTypefaceCarved = Typeface.createFromAsset(context.getAssets(),
+				"fonts/font.ttf");
+		mTypefaceSansSerif = Typeface.create(Typeface.SANS_SERIF,
+				Typeface.NORMAL);
+
+		// Path effects
+		mPathEffectHandDrawn = new DiscretePathEffect(20, 1);
+		mPathEffectDashed = new DashPathEffect(new float[] { 2, 2 }, 0);
+
+		// Create the painters for the cell.
+		mCellPainter = new CellPainter();
+
+		mCellPainter.mUnusedBorderPaint = new Paint();
+		mCellPainter.mUnusedBorderPaint.setColor(0x80000000);
+		mCellPainter.mUnusedBorderPaint.setStyle(Style.STROKE);
+
+		mCellPainter.mInvalid.mBorderPaint = new Paint();
+		mCellPainter.mInvalid.mBorderPaint.setAntiAlias(true);
+
+		mCellPainter.mInvalid.mBackgroundPaint = new Paint();
+
+		mCellPainter.mWarning.mBorderPaint = new Paint();
+		mCellPainter.mWarning.mBorderPaint.setColor(0x50FF0000);
+
+		mCellPainter.mWarning.mBackgroundPaint = new Paint();
+		mCellPainter.mWarning.mBackgroundPaint.setColor(0x50FF0000);
+
+		mCellPainter.mCheated.mBorderPaint = new Paint();
+		mCellPainter.mCheated.mBorderPaint.setColor(0x90ffcea0);
+
+		mCellPainter.mCheated.mBackgroundPaint = new Paint();
+		mCellPainter.mCheated.mBackgroundPaint.setColor(0x90ffcea0);
+
+		mCellPainter.mSelected.mBorderPaint = new Paint();
+		mCellPainter.mSelected.mBorderPaint.setColor(0xD0F0D042);
+
+		mCellPainter.mSelected.mBackgroundPaint = new Paint();
+		mCellPainter.mSelected.mBackgroundPaint.setColor(0xD0F0D042);
+
+		// Create the painter for the user value
+		mUserValuePainter = new UserValuePainter();
+		mUserValuePainter.mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+		// Create the possible values 3x3 grid painter
+		mMaybe3x3Painter = new Maybe3x3Painter();
+		mMaybe3x3Painter.mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		mMaybe3x3Painter.mTextPaint.setTextSize(10);
+		mMaybe3x3Painter.mTextPaint.setTypeface(mTypefaceSansSerif);
+		mMaybe3x3Painter.mTextPaint.setFakeBoldText(true);
+
+		// Create the possible values single line painter
+		mMaybe1x9Painter = new Maybe1x9Painter();
+		mMaybe1x9Painter.mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		mMaybe1x9Painter.mTextPaint.setTextSize(10);
+		mMaybe1x9Painter.mTextPaint.setTypeface(mTypefaceSansSerif);
+		mMaybe1x9Painter.mTextPaint.setFakeBoldText(false);
+
+		// Create cage painter
+		mCagePainter = new CagePainter();
+		mCagePainter.mBorderPaint = new Paint();
+		mCagePainter.mBorderSelectedPaint = new Paint();
+		mCagePainter.mBorderBadMathPaint = new Paint();
+		mCagePainter.mBorderSelectedBadMathPaint = new Paint();
+		mCagePainter.mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		mCagePainter.mTextPaint.setTextSize(14);
+	}
+
+	/**
+	 * Change the width of the border of the grid.
+	 * 
+	 * @param thin
+	 *            True in case a small border needs to be set. False in case a
+	 *            normal border should be used.
+	 */
+	private void setBorderSizes(boolean thin) {
+		mGridPainter.mBorderPaint.setStrokeWidth(BORDER_STROKE_WIDTH_THIN);
+		if (thin) {
+			mCellPainter.mUnusedBorderPaint
+					.setStrokeWidth(BORDER_STROKE_HAIR_LINE);
+			mCellPainter.mInvalid.mBorderPaint
+					.setStrokeWidth(BORDER_STROKE_WIDTH_NORMAL);
+			mCellPainter.mWarning.mBorderPaint
+					.setStrokeWidth(BORDER_STROKE_WIDTH_NORMAL);
+			mCellPainter.mCheated.mBorderPaint
+					.setStrokeWidth(BORDER_STROKE_WIDTH_NORMAL);
+			mCellPainter.mSelected.mBorderPaint
+					.setStrokeWidth(BORDER_STROKE_WIDTH_NORMAL);
+			mCagePainter.mBorderPaint.setStrokeWidth(BORDER_STROKE_WIDTH_THIN);
+			mCagePainter.mBorderSelectedPaint
+					.setStrokeWidth(BORDER_STROKE_WIDTH_NORMAL);
+			mCagePainter.mBorderBadMathPaint
+					.setStrokeWidth(BORDER_STROKE_WIDTH_THIN);
+			mCagePainter.mBorderSelectedBadMathPaint
+					.setStrokeWidth(BORDER_STROKE_WIDTH_NORMAL);
+		} else {
+			mCellPainter.mUnusedBorderPaint
+					.setStrokeWidth(BORDER_STROKE_HAIR_LINE);
+			// mGridPainter.mOuterBorderPaint.setStrokeWidth(BORDER_STROKE_WIDTH_THICK);
+			mCellPainter.mInvalid.mBorderPaint
+					.setStrokeWidth(BORDER_STROKE_WIDTH_THICK);
+			mCellPainter.mWarning.mBorderPaint
+					.setStrokeWidth(BORDER_STROKE_WIDTH_THICK);
+			mCellPainter.mCheated.mBorderPaint
+					.setStrokeWidth(BORDER_STROKE_WIDTH_THICK);
+			mCellPainter.mSelected.mBorderPaint
+					.setStrokeWidth(BORDER_STROKE_WIDTH_THICK);
+			mCagePainter.mBorderPaint
+					.setStrokeWidth(BORDER_STROKE_WIDTH_NORMAL);
+			mCagePainter.mBorderSelectedPaint
+					.setStrokeWidth(BORDER_STROKE_WIDTH_THICK);
+			mCagePainter.mBorderBadMathPaint
+					.setStrokeWidth(BORDER_STROKE_WIDTH_NORMAL);
+			mCagePainter.mBorderSelectedBadMathPaint
+					.setStrokeWidth(BORDER_STROKE_WIDTH_THICK);
+		}
+	}
+
+	/**
 	 * Apply settings for the given theme on the painter objects.
 	 * 
 	 * @param theme
@@ -221,29 +311,32 @@ public class Painter {
 			// Theme has not changed.
 			return;
 		}
-
 		mTheme = theme;
 
 		switch (theme) {
 		case CARVED:
-			mGridPainter.mInnerPaint.setAntiAlias(true);
-			mGridPainter.mInnerPaint.setPathEffect(mPathEffectHandDrawn);
-			mGridPainter.mInnerPaint.setColor(0xbf906050);
+			mGridPainter.mBorderPaint.setAntiAlias(true);
+			mGridPainter.mBorderPaint.setPathEffect(mPathEffectHandDrawn);
+			mGridPainter.mBorderPaint.setColor(0xff000000);
 
-			mGridPainter.mOuterPaint.setAntiAlias(true);
-			mGridPainter.mOuterPaint.setPathEffect(mPathEffectHandDrawn);
-			mGridPainter.mOuterPaint.setColor(0xff000000);
-
-			mGridPainter.mBackgroundColor = 0x7ff0d090;
+			mGridPainter.mBackgroundPaint.setColor(0x7ff0d090);
 
 			mGridPainter.mSolvedTypeface = mTypefaceCarved;
 
-			mCellPainter.mBorderWrongPaint.setColor(0xFFBB0000);
-			mCellPainter.mBorderWrongPaint
-					.setStrokeWidth(BORDER_STROKE_WIDTH_NORMAL);
-			mCellPainter.mBorderWrongPaint.setPathEffect(mPathEffectHandDrawn);
+			mCellPainter.mUnusedBorderPaint.setAntiAlias(true);
+			mCellPainter.mUnusedBorderPaint.setPathEffect(mPathEffectHandDrawn);
+			mCellPainter.mUnusedBorderPaint.setColor(0xbf906050);
 
-			mCellPainter.mBackgroundSelectedPaint.setStyle(Paint.Style.FILL);
+			mCellPainter.mInvalid.mBorderPaint.setColor(0xFFBB0000);
+
+			mCellPainter.mInvalid.mBackgroundPaint.setColor(0xFFBB0000);
+			mCellPainter.mInvalid.mBackgroundPaint.setStyle(Paint.Style.FILL);
+
+			mCellPainter.mWarning.mBackgroundPaint.setStyle(Paint.Style.FILL);
+
+			mCellPainter.mCheated.mBackgroundPaint.setStyle(Paint.Style.FILL);
+
+			mCellPainter.mSelected.mBackgroundPaint.setStyle(Paint.Style.FILL);
 
 			mUserValuePainter.mPaint.setColor(0xFF000000);
 			mUserValuePainter.mPaint.setTypeface(mTypefaceCarved);
@@ -255,9 +348,19 @@ public class Painter {
 			mCagePainter.mBorderPaint.setAntiAlias(true);
 			mCagePainter.mBorderPaint.setPathEffect(mPathEffectHandDrawn);
 
+			mCagePainter.mBorderBadMathPaint.setColor(0xFFBB0000);
+			mCagePainter.mBorderBadMathPaint.setAntiAlias(true);
+			mCagePainter.mBorderBadMathPaint
+					.setPathEffect(mPathEffectHandDrawn);
+
 			mCagePainter.mBorderSelectedPaint.setColor(0xFF000000);
 			mCagePainter.mBorderSelectedPaint.setAntiAlias(true);
 			mCagePainter.mBorderSelectedPaint
+					.setPathEffect(mPathEffectHandDrawn);
+
+			mCagePainter.mBorderSelectedBadMathPaint.setColor(0xFFBB0000);
+			mCagePainter.mBorderSelectedBadMathPaint.setAntiAlias(true);
+			mCagePainter.mBorderSelectedBadMathPaint
 					.setPathEffect(mPathEffectHandDrawn);
 
 			mMaybe3x3Painter.mTextPaint.setColor(0xFF000000);
@@ -265,24 +368,28 @@ public class Painter {
 			mMaybe1x9Painter.mTextPaint.setColor(0xFF000000);
 			break;
 		case NEWSPAPER:
-			mGridPainter.mInnerPaint.setAntiAlias(true);
-			mGridPainter.mInnerPaint.setPathEffect(mPathEffectDashed);
-			mGridPainter.mInnerPaint.setColor(0x80000000);
+			mGridPainter.mBorderPaint.setAntiAlias(false);
+			mGridPainter.mBorderPaint.setPathEffect(null);
+			mGridPainter.mBorderPaint.setColor(0xFFAAAAAA);
 
-			mGridPainter.mOuterPaint.setAntiAlias(false);
-			mGridPainter.mOuterPaint.setPathEffect(null);
-			mGridPainter.mOuterPaint.setColor(0xff000000);
-
-			mGridPainter.mBackgroundColor = 0xffffffff;
+			mGridPainter.mBackgroundPaint.setColor(0xffffffff);
 
 			mGridPainter.mSolvedTypeface = mTypefaceSansSerif;
 
-			mCellPainter.mBorderWrongPaint.setColor(0xFFBB0000);
-			mCellPainter.mBorderWrongPaint
-					.setStrokeWidth(BORDER_STROKE_WIDTH_NORMAL);
-			mCellPainter.mBorderWrongPaint.setPathEffect(null);
+			mCellPainter.mUnusedBorderPaint.setAntiAlias(true);
+			mCellPainter.mUnusedBorderPaint.setPathEffect(mPathEffectDashed);
+			mCellPainter.mUnusedBorderPaint.setColor(0x80000000);
 
-			mCellPainter.mBackgroundSelectedPaint.setStyle(Paint.Style.FILL);
+			mCellPainter.mInvalid.mBorderPaint.setColor(0xFFBB0000);
+
+			mCellPainter.mInvalid.mBackgroundPaint.setColor(0xFFBB0000);
+			mCellPainter.mInvalid.mBackgroundPaint.setStyle(Paint.Style.FILL);
+
+			mCellPainter.mWarning.mBackgroundPaint.setStyle(Paint.Style.FILL);
+
+			mCellPainter.mCheated.mBackgroundPaint.setStyle(Paint.Style.FILL);
+
+			mCellPainter.mSelected.mBackgroundPaint.setStyle(Paint.Style.FILL);
 
 			mUserValuePainter.mPaint.setColor(0xFF000000);
 			mUserValuePainter.mPaint.setTypeface(mTypefaceSansSerif);
@@ -294,33 +401,44 @@ public class Painter {
 			mCagePainter.mBorderPaint.setAntiAlias(false);
 			mCagePainter.mBorderPaint.setPathEffect(null);
 
+			mCagePainter.mBorderBadMathPaint.setColor(0xFFBB0000);
+			mCagePainter.mBorderBadMathPaint.setAntiAlias(true);
+			mCagePainter.mBorderBadMathPaint.setPathEffect(null);
+
 			mCagePainter.mBorderSelectedPaint.setColor(0xFF000000);
 			mCagePainter.mBorderSelectedPaint.setAntiAlias(false);
 			mCagePainter.mBorderSelectedPaint.setPathEffect(null);
+
+			mCagePainter.mBorderSelectedBadMathPaint.setColor(0xFFBB0000);
+			mCagePainter.mBorderSelectedBadMathPaint.setAntiAlias(true);
+			mCagePainter.mBorderSelectedBadMathPaint.setPathEffect(null);
 
 			mMaybe3x3Painter.mTextPaint.setColor(0xFF000000);
 
 			mMaybe1x9Painter.mTextPaint.setColor(0xFF000000);
 			break;
 		case DARK:
-			mGridPainter.mInnerPaint.setAntiAlias(true);
-			mGridPainter.mInnerPaint.setPathEffect(mPathEffectDashed);
-			mGridPainter.mInnerPaint.setColor(0xff7f7f7f);
+			mGridPainter.mBorderPaint.setAntiAlias(true);
+			mGridPainter.mBorderPaint.setPathEffect(null);
+			mGridPainter.mBorderPaint.setColor(0xFFAAAAAA);
 
-			mGridPainter.mOuterPaint.setAntiAlias(true);
-			mGridPainter.mOuterPaint.setPathEffect(null);
-			mGridPainter.mOuterPaint.setColor(0xffe0e0e0);
-
-			mGridPainter.mBackgroundColor = 0xff000000;
+			mGridPainter.mBackgroundPaint.setColor(0xff000000);
 
 			mGridPainter.mSolvedTypeface = mTypefaceSansSerif;
 
-			mCellPainter.mBorderWrongPaint.setColor(0xFFBB0000);
-			mCellPainter.mBorderWrongPaint
-					.setStrokeWidth(BORDER_STROKE_WIDTH_THICK);
-			mCellPainter.mBorderWrongPaint.setPathEffect(null);
+			mCellPainter.mUnusedBorderPaint.setAntiAlias(true);
+			mCellPainter.mUnusedBorderPaint.setPathEffect(mPathEffectDashed);
+			mCellPainter.mUnusedBorderPaint.setColor(0xff7f7f7f);
 
-			mCellPainter.mBackgroundSelectedPaint.setStyle(Paint.Style.STROKE);
+			mCellPainter.mInvalid.mBorderPaint.setColor(0xFFBB0000);
+			mCellPainter.mInvalid.mBackgroundPaint.setStyle(Paint.Style.STROKE);
+
+			mCellPainter.mWarning.mBackgroundPaint.setStyle(Paint.Style.STROKE);
+
+			mCellPainter.mCheated.mBackgroundPaint.setStyle(Paint.Style.STROKE);
+
+			mCellPainter.mSelected.mBackgroundPaint
+					.setStyle(Paint.Style.STROKE);
 
 			mUserValuePainter.mPaint.setColor(0xFFFFFFFF);
 			mUserValuePainter.mPaint.setTypeface(mTypefaceSansSerif);
@@ -332,9 +450,17 @@ public class Painter {
 			mCagePainter.mBorderPaint.setAntiAlias(true);
 			mCagePainter.mBorderPaint.setPathEffect(null);
 
-			mCagePainter.mBorderSelectedPaint.setColor(0xB0A0A030);
+			mCagePainter.mBorderBadMathPaint.setColor(0xFFBB0000);
+			mCagePainter.mBorderBadMathPaint.setAntiAlias(true);
+			mCagePainter.mBorderBadMathPaint.setPathEffect(null);
+
+			mCagePainter.mBorderSelectedPaint.setColor(0xFFA0A030);
 			mCagePainter.mBorderSelectedPaint.setAntiAlias(true);
 			mCagePainter.mBorderSelectedPaint.setPathEffect(null);
+
+			mCagePainter.mBorderSelectedBadMathPaint.setColor(0xFFBB0000);
+			mCagePainter.mBorderSelectedBadMathPaint.setAntiAlias(true);
+			mCagePainter.mBorderSelectedBadMathPaint.setPathEffect(null);
 
 			mMaybe3x3Painter.mTextPaint.setColor(0xFFFFFFFF);
 
@@ -354,6 +480,9 @@ public class Painter {
 	 */
 	public void setCellSize(float size) {
 		mCellPainter.mCellSize = size;
+
+		// Set width of borders dependent on new size of cells.
+		setBorderSizes(size <= 80);
 
 		// Text size is 75% of cell size
 		mUserValuePainter.mPaint.setTextSize((int) (size * 3 / 4));
@@ -388,20 +517,5 @@ public class Painter {
 
 		// Text size of cage text is 1/3 of cell size
 		mCagePainter.mTextPaint.setTextSize((int) (mCellPainter.mCellSize / 3));
-	}
-
-	/**
-	 * Change the width of the border of the grid.
-	 * 
-	 * @param thin
-	 *            True in case a small border needs to be set. False in case a
-	 *            normal border should be used.
-	 */
-	public void setGridBorder(boolean thin) {
-		if (thin) {
-			mGridPainter.mOuterPaint.setStrokeWidth(BORDER_STROKE_WIDTH_THIN);
-		} else {
-			mGridPainter.mOuterPaint.setStrokeWidth(BORDER_STROKE_WIDTH_NORMAL);
-		}
 	}
 }

@@ -3,8 +3,6 @@ package net.cactii.mathdoku;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import net.cactii.mathdoku.GridCell.BorderType;
-
 public class GridCage {
 	// Identifiers of different versions of cage information which is stored in
 	// saved game.
@@ -208,27 +206,95 @@ public class GridCage {
 					.getUserValue()) == this.mResult;
 	}
 
-	// Returns whether the user values in the cage match the cage text
-	public boolean isMathsCorrect() {
-		if (this.mCells.size() == 1)
-			return this.mCells.get(0).isUserValueCorrect();
+	/**
+	 * Checks whether the cage arithmetic is correct using the values the user
+	 * has filled in.
+	 */
+	public void checkCageMathsCorrect() {
+		// Assume maths are correct.
+		mUserMathCorrect = true;
+
+		// If not all cell in the cage are filled, the maths are not wrong.
+		for (GridCell cell : this.mCells) {
+			if (!cell.isUserValueSet()) {
+				return;
+			}
+		}
+
+		if (this.mCells.size() == 1) {
+			// A single cell cage is correct in case its user value is correct.
+			mUserMathCorrect = mCells.get(0).isUserValueCorrect();
+			return;
+		}
 
 		if (this.mHideOperator) {
 			if (isAddMathsCorrect() || isMultiplyMathsCorrect()
-					|| isDivideMathsCorrect() || isSubtractMathsCorrect())
-				return true;
-			else
-				return false;
+					|| isDivideMathsCorrect() || isSubtractMathsCorrect()) {
+				mUserMathCorrect = true;
+				return;
+			} else {
+				mUserMathCorrect = false;
+				return;
+			}
 		} else {
 			switch (this.mAction) {
 			case ACTION_ADD:
-				return isAddMathsCorrect();
+				mUserMathCorrect = isAddMathsCorrect();
+				return;
 			case ACTION_MULTIPLY:
-				return isMultiplyMathsCorrect();
+				mUserMathCorrect = isMultiplyMathsCorrect();
+				return;
 			case ACTION_DIVIDE:
-				return isDivideMathsCorrect();
+				mUserMathCorrect = isDivideMathsCorrect();
+				return;
 			case ACTION_SUBTRACT:
-				return isSubtractMathsCorrect();
+				mUserMathCorrect = isSubtractMathsCorrect();
+				return;
+			}
+		}
+		throw new RuntimeException("isSolved() got to an unreachable point "
+				+ this.mAction + ": " + this.toString());
+	}
+
+	// Returns whether the user values in the cage match the cage text
+	public boolean showBadCageMath(boolean mPrefShowBadCageMaths) {
+		if (!mPrefShowBadCageMaths) {
+			// Bad cage math should not be shown.
+			return false;
+		}
+
+		// Warning will not be shown if not all cells in cage are filled
+		for (GridCell cell : this.mCells)
+			if (!cell.isUserValueSet()) {
+				// This cell has no value
+				return false;
+			}
+
+		if (this.mCells.size() == 1) {
+			return !this.mCells.get(0).isUserValueCorrect();
+		}
+
+		if (this.mHideOperator) {
+			if (isAddMathsCorrect() || isMultiplyMathsCorrect()
+					|| isDivideMathsCorrect() || isSubtractMathsCorrect()) {
+				// At least one of the operators has a correct result with
+				// current cell values
+				return false;
+			} else {
+				// None of the operators has a correct result with current cell
+				// values
+				return true;
+			}
+		} else {
+			switch (this.mAction) {
+			case ACTION_ADD:
+				return !isAddMathsCorrect();
+			case ACTION_MULTIPLY:
+				return !isMultiplyMathsCorrect();
+			case ACTION_DIVIDE:
+				return !isDivideMathsCorrect();
+			case ACTION_SUBTRACT:
+				return !isSubtractMathsCorrect();
 			}
 		}
 		throw new RuntimeException("isSolved() got to an unreachable point "
@@ -291,73 +357,6 @@ public class GridCage {
 		}
 
 		return AllResults;
-	}
-
-	// Determine whether user entered values match the arithmetic.
-	//
-	// Only marks cells bad if all cells have a uservalue, and they dont
-	// match the arithmetic hint.
-	public void userValuesCorrect(boolean showBadMath) {
-		this.mUserMathCorrect = true;
-		for (GridCell cell : this.mCells)
-			if (!cell.isUserValueSet()) {
-				this.setBorders(showBadMath);
-				return;
-			}
-
-		this.mUserMathCorrect = this.isMathsCorrect();
-		this.setBorders(showBadMath);
-	}
-
-	/*
-	 * Sets the borders of the cage's cells.
-	 */
-	public void setBorders(boolean showBadMath) {
-		for (GridCell cell : this.mCells) {
-			cell.borderTypeTop = BorderType.NONE;
-			cell.borderTypeRight = BorderType.NONE;
-			cell.borderTypeBottom = BorderType.NONE;
-			cell.borderTypeLeft = BorderType.NONE;
-			if (this.mGrid.CageIdAt(cell.getRow() - 1, cell.getColumn()) != this.mId) {
-				if (!this.mUserMathCorrect && showBadMath) {
-					cell.borderTypeTop = BorderType.CELL_WARNING;
-				} else if (this.mSelected) {
-					cell.borderTypeTop = BorderType.OUTER_OF_CAGE_SELECTED;
-				} else {
-					cell.borderTypeTop = BorderType.OUTER_OF_CAGE_NOT_SELECTED;
-				}
-			}
-
-			if (this.mGrid.CageIdAt(cell.getRow(), cell.getColumn() + 1) != this.mId) {
-				if (!this.mUserMathCorrect && showBadMath) {
-					cell.borderTypeRight = BorderType.CELL_WARNING;
-				} else if (this.mSelected) {
-					cell.borderTypeRight = BorderType.OUTER_OF_CAGE_SELECTED;
-				} else {
-					cell.borderTypeRight = BorderType.OUTER_OF_CAGE_NOT_SELECTED;
-				}
-			}
-
-			if (this.mGrid.CageIdAt(cell.getRow() + 1, cell.getColumn()) != this.mId) {
-				if (!this.mUserMathCorrect && showBadMath) {
-					cell.borderTypeBottom = BorderType.CELL_WARNING;
-				} else if (this.mSelected) {
-					cell.borderTypeBottom = BorderType.OUTER_OF_CAGE_SELECTED;
-				} else {
-					cell.borderTypeBottom = BorderType.OUTER_OF_CAGE_NOT_SELECTED;
-				}
-			}
-
-			if (this.mGrid.CageIdAt(cell.getRow(), cell.getColumn() - 1) != this.mId) {
-				if (!this.mUserMathCorrect && showBadMath) {
-					cell.borderTypeLeft = BorderType.CELL_WARNING;
-				} else if (this.mSelected) {
-					cell.borderTypeLeft = BorderType.OUTER_OF_CAGE_SELECTED;
-				} else {
-					cell.borderTypeLeft = BorderType.OUTER_OF_CAGE_NOT_SELECTED;
-				}
-			}
-		}
 	}
 
 	/*
@@ -589,6 +588,8 @@ public class GridCage {
 		} else {
 			mHideOperator = Boolean.parseBoolean(cageParts[index++]);
 		}
+		
+		checkCageMathsCorrect();
 
 		return true;
 	}

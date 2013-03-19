@@ -2,6 +2,8 @@ package net.cactii.mathdoku;
 
 import java.util.ArrayList;
 
+import android.content.SharedPreferences;
+
 public class Grid {
 	@SuppressWarnings("unused")
 	private static final String TAG = "MathDoku.Grid";
@@ -28,7 +30,8 @@ public class Grid {
 
 	private GridCell mSelectedCell;
 
-	// Date of current game (used for saved games) and elapsed time while playing this game
+	// Date of current game (used for saved games) and elapsed time while
+	// playing this game
 	private long mDateCreated;
 	private long mElapsedTime;
 
@@ -43,6 +46,11 @@ public class Grid {
 	// Used to avoid redrawing or saving grid during creation of new grid
 	public final Object mLock = new Object();
 
+	// Preferences used when drawing the grid
+	private boolean mPrefShowDupeDigits;
+	private boolean mPrefShowBadCageMaths;
+	private boolean mPrefShowMaybesAs3x3Grid;
+
 	// Solved listener
 	private OnSolvedListener mSolvedListener;
 
@@ -52,6 +60,33 @@ public class Grid {
 		mCages = new ArrayList<GridCage>();
 		moves = new ArrayList<CellChange>();
 		this.mSolvedListener = null;
+
+		mPrefShowDupeDigits = MainActivity.PREF_SHOW_DUPE_DIGITS_DEFAULT;
+		mPrefShowBadCageMaths = MainActivity.PREF_SHOW_BAD_CAGE_MATHS_DEFAULT;
+		mPrefShowMaybesAs3x3Grid = MainActivity.PREF_SHOW_MAYBES_AS_3X3_GRID_DEFAULT;
+	}
+
+	/**
+	 * Remember preferences needed for setting cell borders and drawing a cell
+	 * as local values for easy access.
+	 * 
+	 * @param preferences
+	 *            The shared preferences of the app.
+	 */
+	public void setPreferences(SharedPreferences preferences) {
+		mPrefShowDupeDigits = preferences.getBoolean(
+				MainActivity.PREF_SHOW_DUPE_DIGITS,
+				MainActivity.PREF_SHOW_DUPE_DIGITS_DEFAULT);
+		mPrefShowMaybesAs3x3Grid = preferences.getBoolean(
+				MainActivity.PREF_SHOW_MAYBES_AS_3X3_GRID,
+				MainActivity.PREF_SHOW_MAYBES_AS_3X3_GRID_DEFAULT);
+		mPrefShowBadCageMaths = preferences.getBoolean(
+				MainActivity.PREF_SHOW_BAD_CAGE_MATHS,
+				MainActivity.PREF_SHOW_BAD_CAGE_MATHS_DEFAULT);
+
+		for (GridCell cell : mCells) {
+			cell.setBorders();
+		}
 	}
 
 	// Returns cage id of cell at row, column
@@ -236,9 +271,9 @@ public class Grid {
 
 	public void setSelectedCell(GridCell cell) {
 		// Unselect current cage
-		GridCage selectedCage = getCageForSelectedCell();
-		if (selectedCage != null) {
-			selectedCage.mSelected = false;
+		GridCage oldSelectedCage = getCageForSelectedCell();
+		if (oldSelectedCage != null) {
+			oldSelectedCage.mSelected = false;
 		}
 
 		// Unselect current cell
@@ -251,7 +286,20 @@ public class Grid {
 		mSelectedCell.mSelected = true;
 
 		// Select new cage
-		getCageForSelectedCell().mSelected = true;
+		GridCage newSelectedCage = getCageForSelectedCell();
+		if (!newSelectedCage.equals(oldSelectedCage)) {
+			getCageForSelectedCell().mSelected = true;
+
+			// Set borders for all cells in old and new selected cage
+			if (oldSelectedCage != null) {
+				for (GridCell cell2 : oldSelectedCage.mCells) {
+					cell2.setBorders();
+				}
+			}
+			for (GridCell cell2 : newSelectedCage.mCells) {
+				cell2.setBorders();
+			}
+		}
 	}
 
 	/**
@@ -423,5 +471,17 @@ public class Grid {
 
 	public void setDateCreated(long dateCreated) {
 		mDateCreated = dateCreated;
+	}
+
+	public boolean hasPrefShowDupeDigits() {
+		return mPrefShowDupeDigits;
+	}
+
+	public boolean hasPrefShowBadCageMaths() {
+		return mPrefShowBadCageMaths;
+	}
+
+	public boolean hasPrefShowMaybesAs3x3Grid() {
+		return mPrefShowMaybesAs3x3Grid;
 	}
 }

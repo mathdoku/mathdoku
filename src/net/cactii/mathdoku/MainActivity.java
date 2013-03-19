@@ -2,7 +2,6 @@ package net.cactii.mathdoku;
 
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.GameFile.GameFileType;
-import net.cactii.mathdoku.GridGenerator.GridGeneratorOptions;
 import net.cactii.mathdoku.Painter.GridTheme;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -69,8 +68,8 @@ public class MainActivity extends Activity {
 	public final static String PREF_SHOW_MAYBES_AS_3X3_GRID = "maybe3x3";
 	public final static boolean PREF_SHOW_MAYBES_AS_3X3_GRID_DEFAULT = true;
 
-	public final static String PREF_SHOW_BAD_MATHS = "badmaths";
-	public final static boolean PREF_SHOW_BAD_MATHS_DEFAULT = true;
+	public final static String PREF_SHOW_BAD_CAGE_MATHS = "badmaths";
+	public final static boolean PREF_SHOW_BAD_CAGE_MATHS_DEFAULT = true;
 
 	public final static String PREF_SHOW_DUPE_DIGITS = "dupedigits";
 	public final static boolean PREF_SHOW_DUPE_DIGITS_DEFAULT = true;
@@ -424,9 +423,11 @@ public class MainActivity extends Activity {
 		}
 
 		setTheme();
-
-		// Propagate the preferences to the gridview
-		this.mGridView.setPreferences(this.preferences);
+		
+		// Propagate preferences to grid
+		if (mGrid != null) {
+			mGrid.setPreferences(preferences);
+		}
 
 		this.setSoundEffectsEnabled(this.preferences.getBoolean(
 				PREF_PLAY_SOUND_EFFECTS, PREF_PLAY_SOUND_EFFECTS_DEFAULT));
@@ -856,8 +857,8 @@ public class MainActivity extends Activity {
 		final float SCALE_FROM = (float) 0;
 		final float SCALE_TO = (float) 1.0;
 		ScaleAnimation anim = new ScaleAnimation(SCALE_FROM, SCALE_TO,
-				SCALE_FROM, SCALE_TO, this.mGridView.mCurrentWidth / 2,
-				this.mGridView.mCurrentWidth / 2);
+				SCALE_FROM, SCALE_TO, this.mGridView.mGridViewSize / 2,
+				this.mGridView.mGridViewSize / 2);
 		anim.setDuration(1000);
 		// animText.setAnimation(anim);
 		this.solvedText.startAnimation(this.solvedAnimation);
@@ -985,9 +986,9 @@ public class MainActivity extends Activity {
 					prefeditor.putBoolean(PREF_PLAY_SOUND_EFFECTS,
 							PREF_PLAY_SOUND_EFFECTS_DEFAULT);
 				}
-				if (!preferences.contains(PREF_SHOW_BAD_MATHS)) {
-					prefeditor.putBoolean(PREF_SHOW_BAD_MATHS,
-							PREF_SHOW_BAD_MATHS_DEFAULT);
+				if (!preferences.contains(PREF_SHOW_BAD_CAGE_MATHS)) {
+					prefeditor.putBoolean(PREF_SHOW_BAD_CAGE_MATHS,
+							PREF_SHOW_BAD_CAGE_MATHS_DEFAULT);
 				}
 				if (!preferences.contains(PREF_SHOW_DUPE_DIGITS)) {
 					prefeditor.putBoolean(PREF_SHOW_DUPE_DIGITS,

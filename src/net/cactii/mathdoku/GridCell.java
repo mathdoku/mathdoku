@@ -1,5 +1,6 @@
 package net.cactii.mathdoku;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -10,6 +11,7 @@ import net.cactii.mathdoku.Painter.Maybe3x3Painter;
 import net.cactii.mathdoku.Painter.UserValuePainter;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
 
 public class GridCell {
 	@SuppressWarnings("unused")
@@ -54,7 +56,7 @@ public class GridCell {
 	private boolean mInvalidHighlight;
 
 	public static enum BorderType {
-		NONE, CELL_WARNING, OUTER_OF_CAGE_NOT_SELECTED, OUTER_OF_CAGE_SELECTED
+		NONE, SELECTED__BAD_MATH, SELECTED__GOOD_MATH, NOT_SELECTED__BAD_MATH, NOT_SELECTED__GOOD_MATH
 	}
 
 	// Borders of the cell
@@ -108,20 +110,18 @@ public class GridCell {
 		return str;
 	}
 
-	private Paint getBorderPaint(BorderType borderType, boolean onlyBorders) {
+	private Paint getBorderPaint(BorderType borderType) {
 		switch (borderType) {
 		case NONE:
 			return null;
-		case CELL_WARNING:
-			return mCellPainter.mBorderWrongPaint;
-		case OUTER_OF_CAGE_NOT_SELECTED:
+		case NOT_SELECTED__GOOD_MATH:
 			return mCagePainter.mBorderPaint;
-		case OUTER_OF_CAGE_SELECTED:
-			if (onlyBorders) {
-				return mCagePainter.mBorderSelectedPaint;
-			} else {
-				return mCagePainter.mBorderPaint;
-			}
+		case NOT_SELECTED__BAD_MATH:
+			return mCagePainter.mBorderBadMathPaint;
+		case SELECTED__GOOD_MATH:
+			return mCagePainter.mBorderSelectedPaint;
+		case SELECTED__BAD_MATH:
+			return mCagePainter.mBorderSelectedBadMathPaint;
 		}
 		return null;
 	}
@@ -159,6 +159,12 @@ public class GridCell {
 		this.mUserValue = digit;
 		mInvalidHighlight = false;
 
+		// Check cage maths
+		mGrid.mCages.get(mCageId).checkCageMathsCorrect();
+
+		// Set borders for this cells and adjacents cells
+		setBorders();
+
 		// Check if grid is solved.
 		if (mGrid != null) {
 			mGrid.checkIfSolved();
@@ -186,97 +192,203 @@ public class GridCell {
 		return this.mInvalidHighlight;
 	}
 
-	/* Draw the cell. Border and text is drawn. */
-	public void onDraw(Canvas canvas, boolean onlyBorders,
-			boolean showDupeDigits, boolean possibleValuesIn3x3Grid) {
-
-		// Calculate x and y for the cell origin (topleft)
-		this.mPosX = this.mCellPainter.mCellSize * this.mColumn;
-		this.mPosY = this.mCellPainter.mCellSize * this.mRow;
-
+	/**
+	 * Draw the cell inclusive borders, background and text.
+	 */
+	public void draw(Canvas canvas, float gridBorderWidth) {
+		// Calculate x and y for the cell origin (topleft). Use an offset to
+		// prevent overlapping of cells and border for entire grid.
+		this.mPosX = Math.round(gridBorderWidth + this.mCellPainter.mCellSize
+				* this.mColumn);
+		this.mPosY = Math.round(gridBorderWidth + this.mCellPainter.mCellSize
+				* this.mRow);
 		float top = this.mPosY;
 		float bottom = this.mPosY + this.mCellPainter.mCellSize;
-		float left = this.mPosX + this.mCellPainter.mCellSize;
-		float right = this.mPosX;
-		GridCell cellAbove = this.mGrid.getCellAt(this.mRow - 1,
-				this.mColumn);
-		GridCell cellLeft = this.mGrid.getCellAt(this.mRow,
+		float left = this.mPosX;
+		float right = this.mPosX + this.mCellPainter.mCellSize;
+
+		// ---------------------------------------------------------------------
+		// Draw cage borders first. In case a cell border is part of the cage
+		// border it might be necessary to extend the border into an adjacent
+		// cell to get a straight corner. Per border it has to be checked if the
+		// cell border overlaps with the cage border.
+		// IMPORTANT: Transparent cage borders are not correctly supported as
+		// overlapping borders will lead to a slightly darker color.
+		// ---------------------------------------------------------------------
+		boolean cellOnLeftIsInSameCage = isInSameCageAsCell(this.mRow,
 				this.mColumn - 1);
-		GridCell cellRight = this.mGrid.getCellAt(this.mRow,
+		boolean cellOnRightIsInSameCage = isInSameCageAsCell(this.mRow,
 				this.mColumn + 1);
-		GridCell cellBelow = this.mGrid.getCellAt(this.mRow + 1,
+		boolean cellAboveIsInSameCage = isInSameCageAsCell(this.mRow - 1,
+				this.mColumn);
+		boolean cellBelowIsInSameCage = isInSameCageAsCell(this.mRow + 1,
 				this.mColumn);
 
-		// Top
-		Paint borderPaint = getBorderPaint(borderTypeTop, onlyBorders);
-		if (borderPaint != null) {
-			canvas.drawLine(right, top, left, top, borderPaint);
-		}
+		Paint borderPaint;
 
-		// Right
-		borderPaint = getBorderPaint(borderTypeRight, onlyBorders);
-		if (borderPaint != null) {
-			canvas.drawLine(left, top, left, bottom, borderPaint);
-		}
+		// Top border of cell (will only be drawn for first row
+		float topOffset = 0;
+			borderPaint = getBorderPaint(borderTypeTop);
+			if (borderPaint != null) {
+				// Calculate offset and draw top border
+				float offset = (mRow == 0 ? (float) Math
+						.floor((float) (0.5 * borderPaint.getStrokeWidth()))
+						: 0);
+				canvas.drawLine(left - (cellOnLeftIsInSameCage ? offset : 0),
+						top + offset, right
+								+ (cellOnRightIsInSameCage ? offset : 0), top
+								+ offset, borderPaint);
 
-		// Bottom
-		borderPaint = getBorderPaint(borderTypeBottom, onlyBorders);
-		if (borderPaint != null) {
-			canvas.drawLine(right, bottom, left, bottom, borderPaint);
-		}
-
-		// Left
-		borderPaint = getBorderPaint(borderTypeLeft, onlyBorders);
-		if (borderPaint != null) {
-			canvas.drawLine(right, top, right, bottom, borderPaint);
-		}
-
-		if (!onlyBorders) {
-			if ((mShowWarning && showDupeDigits) || mInvalidHighlight) {
-				canvas.drawRect(right + 1, top + 1, left - 1, bottom - 1,
-						mCellPainter.mBackgroundWarningPaint);
+				// Calculate offset for inner space after drawing top border
+				topOffset = (float) Math
+						.floor((float) ((mRow == 0 ? 1 : 0.5) * borderPaint
+								.getStrokeWidth()));
 			}
-			if (this.mSelected) {
-				canvas.drawRect(right + 3, top + 3, left - 3, bottom - 3,
-						mCellPainter.mBackgroundSelectedPaint);
-			}
-			if (this.mCheated) {
-				canvas.drawRect(right + 1, top + 1, left - 1, bottom - 1,
-						mCellPainter.mBackgroundCheatedPaint);
-			}
+
+		// Right border of cell
+		borderPaint = getBorderPaint(borderTypeRight);
+		float rightOffset = 0;
+		if (borderPaint != null) {
+			// Calculate offset and draw right border
+			float offset = (mColumn == mGrid.getGridSize() - 1 ? (float) Math
+					.floor((float) (0.5 * borderPaint.getStrokeWidth())) : 0);
+			canvas.drawLine(right - offset, top
+					- (cellAboveIsInSameCage ? offset : 0), right - offset,
+					bottom + (cellBelowIsInSameCage ? offset : 0), borderPaint);
+
+			// Calculate offset for inner space after drawing right border
+			rightOffset = (float) Math.floor((float) ((mColumn == mGrid
+					.getGridSize() - 1 ? 1 : 0.5) * borderPaint
+					.getStrokeWidth()));
 		} else {
-			if (this.borderTypeTop == BorderType.OUTER_OF_CAGE_SELECTED) {
-				if (cellAbove == null) {
-					top += 2;
-				} else {
-					top += 1;
-				}
+			// Due to a bug
+			// (https://code.google.com/p/android/issues/detail?id=29944), a
+			// dashed line can not be drawn with drawLine at API-level 11 or
+			// above.
+			drawDashedLine(canvas, right, top, right, bottom);
+		}
+
+		// Bottom border of cell
+		borderPaint = getBorderPaint(borderTypeBottom);
+		float bottomOffset = 0;
+		if (borderPaint != null) {
+			// Calculate offset and draw bottom border
+			float offset = (mRow == mGrid.getGridSize() - 1 ? (float) Math
+					.floor((float) (0.5 * borderPaint.getStrokeWidth())) : 0);
+			canvas.drawLine(left - (cellOnLeftIsInSameCage ? offset : 0),
+					bottom - offset, right
+							+ (cellOnRightIsInSameCage ? offset : 0), bottom
+							- offset, borderPaint);
+
+			// Calculate offset for inner space after drawing bottom border
+			bottomOffset = (float) Math.floor((float) ((mRow == mGrid
+					.getGridSize() - 1 ? 1 : 0.5) * borderPaint
+					.getStrokeWidth()));
+		} else {
+			// Due to a bug
+			// (https://code.google.com/p/android/issues/detail?id=29944), a
+			// dashed line can not be drawn with drawLine at API-level 11 or
+			// above.
+			drawDashedLine(canvas, left, bottom, right, bottom);
+		}
+
+		// Left border of cell (will only be draw for first column
+		float leftOffset = 0;
+			borderPaint = getBorderPaint(borderTypeLeft);
+			if (borderPaint != null) {
+				// Calculate offset and draw left border
+				float offset = (mColumn == 0 ? (float) Math
+						.floor((float) (0.5 * borderPaint.getStrokeWidth()))
+						: 0);
+				canvas.drawLine(left + offset, top
+						- (cellAboveIsInSameCage ? offset : 0), left + offset,
+						bottom + (cellBelowIsInSameCage ? offset : 0),
+						borderPaint);
+
+				// Calculate offset for inner space after drawing left border
+				leftOffset = (float) Math.floor((float) ((mColumn == 0 ? 1
+						: 0.5) * borderPaint.getStrokeWidth()));
 			}
-			if (this.borderTypeRight == BorderType.OUTER_OF_CAGE_SELECTED) {
-				if (cellRight == null) {
-					left -= 3;
-				} else {
-					left -= 2;
-				}
+
+		// Calculate new offsets with respect to space used by cell border.
+		top += topOffset;
+		right -= rightOffset;
+		bottom -= bottomOffset;
+		left += leftOffset;
+
+		// ---------------------------------------------------------------------
+		// Next the inner borders are drawn for invalid, cheated and warnings.
+		// Theoretically multiple borders can be drawn. The less import signals
+		// will be drawn first so the most important signal is in the middle of
+		// the cell and adjacent to the corresponding background.
+		// Order of signals in increasing importance: warning, cheated, invalid,
+		// selected.
+		// ---------------------------------------------------------------------
+
+		for (int i = 1; i <= 4; i++) {
+			switch (i) {
+			case 1:
+				borderPaint = ((mShowWarning && mGrid.hasPrefShowDupeDigits()) ? mCellPainter.mWarning.mBorderPaint
+						: null);
+				break;
+			case 2:
+				borderPaint = (mCheated ? mCellPainter.mCheated.mBorderPaint
+						: null);
+				break;
+			case 3:
+				borderPaint = (mInvalidHighlight ? mCellPainter.mInvalid.mBorderPaint
+						: null);
+				break;
+			case 4:
+				borderPaint = (mSelected ? mCellPainter.mSelected.mBorderPaint
+						: null);
+				break;
 			}
-			if (this.borderTypeBottom == BorderType.OUTER_OF_CAGE_SELECTED) {
-				if (cellBelow == null) {
-					bottom -= 3;
-				} else {
-					bottom -= 2;
-				}
-			}
-			if (this.borderTypeLeft == BorderType.OUTER_OF_CAGE_SELECTED) {
-				if (cellLeft == null) {
-					right += 2;
-				} else {
-					right += 1;
-				}
+			if (borderPaint != null) {
+				// Draw this border
+				float borderWidth = borderPaint.getStrokeWidth();
+				float borderOffset = (float) Math
+						.ceil((float) (0.5 * borderWidth));
+
+				// For support of transparent borders it has to be avoided that
+				// lines do overlap.
+				canvas.drawLine(left, top + borderOffset, right - borderWidth,
+						top + borderOffset, borderPaint);
+				canvas.drawLine(right - borderOffset, top,
+						right - borderOffset, bottom - borderWidth, borderPaint);
+				canvas.drawLine(left + borderWidth, bottom - borderOffset,
+						right, bottom - borderOffset, borderPaint);
+				canvas.drawLine(left + borderOffset, top + borderWidth, left
+						+ borderOffset, bottom, borderPaint);
+				top += borderWidth;
+				right -= borderWidth;
+				bottom -= borderWidth;
+				left += borderWidth;
 			}
 		}
 
-		if (onlyBorders)
-			return;
+		// ---------------------------------------------------------------------
+		// Next the cell background is drawn. Of course only 1 background will
+		// be drawn. In case the cell is selected that will be the most
+		// important background. In the cell is not selected but we already have
+		// drawn a signal border, we will draw the background for the most
+		// import signal.
+		// Order of signals in increasing importance: warning, cheated, invalid.
+		// ---------------------------------------------------------------------
+
+		Paint background = null;
+		if (mSelected) {
+			background = mCellPainter.mSelected.mBackgroundPaint;
+		} else if (mInvalidHighlight) {
+			background = mCellPainter.mInvalid.mBackgroundPaint;
+		} else if (mCheated) {
+			background = mCellPainter.mCheated.mBackgroundPaint;
+		} else if (mShowWarning && mGrid.hasPrefShowDupeDigits()) {
+			background = mCellPainter.mWarning.mBackgroundPaint;
+		}
+		if (background != null) {
+			canvas.drawRect(left, top, right, bottom, background);
+		}
 
 		// Cell value
 		if (this.isUserValueSet()) {
@@ -294,7 +406,7 @@ public class GridCell {
 
 		// Draw pencilled in digits.
 		if (mPossibles.size() > 0) {
-			if (possibleValuesIn3x3Grid) {
+			if (mGrid.hasPrefShowMaybesAs3x3Grid()) {
 				for (int i = 0; i < mPossibles.size(); i++) {
 					int possible = mPossibles.get(i);
 					float xPos = mPosX + mMaybe3x3Painter.mLeftOffset
@@ -415,6 +527,10 @@ public class GridCell {
 		return mCageId;
 	}
 
+	public GridCage getCage() {
+		return (mGrid == null ? null : mGrid.mCages.get(mCageId));
+	}
+
 	public void setCageId(int newCageId) {
 		mCageId = newCageId;
 	}
@@ -457,8 +573,7 @@ public class GridCell {
 
 	public void Undo(int previousUserValue,
 			ArrayList<Integer> previousPossibleValues) {
-		mUserValue = previousUserValue;
-		mPossibles.clear();
+		setUserValue(previousUserValue);
 		if (previousPossibleValues != null) {
 			for (int previousPossibleValue : previousPossibleValues) {
 				mPossibles.add(previousPossibleValue);
@@ -511,5 +626,170 @@ public class GridCell {
 			}
 		}
 		mShowWarning = false;
+	}
+
+	/**
+	 * Checks whether this cell is part of the currently selected cage.
+	 * 
+	 * @return True in case this cell is part of the currently selected cage.
+	 *         False otherwise.
+	 */
+	public boolean isCellInSelectedCage() {
+		if (mGrid.getSelectedCell() == null) {
+			// When no cell is selected, a cage isn't selected as well.
+			return false;
+		}
+
+		return (mGrid.getCageForSelectedCell().mId == mCageId);
+	}
+
+	/**
+	 * Checks whether this cell is part of the same cage as the cell at the
+	 * given coordinates.
+	 * 
+	 * @param row
+	 *            Row number (zero based) of cell to compare with.
+	 * @param column
+	 *            Column number (zero based) of cell to compare with.
+	 * @return True in case cells are part of same cage. False otherwise.
+	 */
+	public boolean isInSameCageAsCell(int row, int column) {
+		GridCell cell = this.mGrid.getCellAt(row, column);
+		if (cell != null && cell.getCageId() == this.mCageId) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Draws a dashed line.
+	 * 
+	 * Due to a bug (https://code.google.com/p/android/issues/detail?id=29944),
+	 * a dashed line can not be drawn with drawLine at API-level 11 or above.
+	 * 
+	 * @param canvas
+	 *            The canvas on which will be drawed.
+	 * @param left
+	 *            Starting X position.
+	 * @param top
+	 *            Starting Y position.
+	 * @param right
+	 *            Ending X position.
+	 * @param bottom
+	 *            Ending Y position.
+	 */
+	private void drawDashedLine(Canvas canvas, float left, float top,
+			float right, float bottom) {
+		Path path = new Path();
+		path.moveTo(left, top);
+		path.lineTo(right, bottom);
+		canvas.drawPath(path, mCellPainter.mUnusedBorderPaint);
+	}
+
+	public GridCell getCellAbove() {
+		return mGrid.getCellAt(mRow - 1, mColumn);
+	}
+
+	public GridCell getCellOnRight() {
+		return mGrid.getCellAt(mRow, mColumn + 1);
+	}
+
+	public GridCell getCellBelow() {
+		return mGrid.getCellAt(mRow + 1, mColumn);
+	}
+
+	public GridCell getCellOnLeft() {
+		return mGrid.getCellAt(mRow, mColumn - 1);
+	}
+
+	/**
+	 * Sets the borders for this cell and cells adjacent to this cell.
+	 */
+	public void setBorders() {
+		// Set top border for this cell and the bottom border for the cell above
+		GridCell otherCell = getCellAbove();
+		borderTypeTop = getCommonBorderType(this, otherCell);
+		if (otherCell != null) {
+			otherCell.borderTypeBottom = borderTypeTop;
+		}
+
+		// Set right border for this cell and the left border for the cell on
+		// the right
+		otherCell = getCellOnRight();
+		borderTypeRight = getCommonBorderType(this, otherCell);
+		if (otherCell != null) {
+			otherCell.borderTypeLeft = borderTypeRight;
+		}
+
+		// Set bottom border for this cell and the top border for the cell below
+		otherCell = getCellBelow();
+		borderTypeBottom = getCommonBorderType(this, otherCell);
+		if (otherCell != null) {
+			otherCell.borderTypeTop = borderTypeBottom;
+		}
+
+		// Set left border for this cell and the right border for the cell on
+		// the left
+		otherCell = getCellOnLeft();
+		borderTypeLeft = getCommonBorderType(this, otherCell);
+		if (otherCell != null) {
+			otherCell.borderTypeRight = borderTypeLeft;
+		}
+	}
+
+	/**
+	 * Determines for two (adjacent) cells what border type to use for the
+	 * border between those cells. It is not checked whether two cell are really
+	 * adjacent.
+	 * 
+	 * @param cell1
+	 *            First cell.
+	 * @param cell2
+	 *            Second cell. This cell may be null in which case only the
+	 *            first cell will be used to determine the correct border.
+	 * @return The border type to be used between the given cell.
+	 */
+	private BorderType getCommonBorderType(GridCell cell1, GridCell cell2) {
+		if (cell1 == null) {
+			throw new InvalidParameterException(
+					"Method getMostImportantBorderType can not be called with "
+							+ "parameter cell1 equals null.");
+		}
+
+		// If both cells are part of the same cage there will be no border.
+		if (cell2 != null && cell1.getCage().equals(cell2.getCage())) {
+			return BorderType.NONE;
+		}
+
+		// If cell1 is part of the selected cage, it status is more important
+		// than status of cell 2.
+		if (cell1.isCellInSelectedCage()) {
+			if (!cell1.getCage().mUserMathCorrect
+					&& mGrid.hasPrefShowBadCageMaths()) {
+				return BorderType.SELECTED__BAD_MATH;
+			} else {
+				return BorderType.SELECTED__GOOD_MATH;
+			}
+		}
+
+		// If cell1 is not part of the selected cage, than status of cell2 will
+		// prevail in case it is part of the selected cage.
+		if (cell2 != null && cell2.isCellInSelectedCage()) {
+			if (!cell2.getCage().mUserMathCorrect
+					&& mGrid.hasPrefShowBadCageMaths()) {
+				return BorderType.SELECTED__BAD_MATH;
+			} else {
+				return BorderType.SELECTED__GOOD_MATH;
+			}
+		}
+
+		// Both cells are in a cage which is not selected.
+		if ((!cell1.getCage().mUserMathCorrect || (cell2 != null && !cell2
+				.getCage().mUserMathCorrect))
+				&& mGrid.hasPrefShowBadCageMaths()) {
+			return BorderType.NOT_SELECTED__BAD_MATH;
+		} else {
+			return BorderType.NOT_SELECTED__GOOD_MATH;
+		}
 	}
 }
