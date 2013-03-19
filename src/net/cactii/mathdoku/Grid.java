@@ -431,6 +431,12 @@ public class Grid {
 		for (GridCell cell : mCells) {
 			cell.setGridReference(this);
 		}
+		
+		// Set cell border for all cell
+		for (GridCell cell : mCells) {
+			cell.setBorders();
+		}
+		
 	}
 
 	public void setSolvedHandler(OnSolvedListener listener) {
