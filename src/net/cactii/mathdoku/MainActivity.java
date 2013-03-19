@@ -577,7 +577,7 @@ public class MainActivity extends Activity {
 		}
 
 		// Option: clear all cells in the grid
-		for (GridCell cell : selectedGridCage.mCells) {
+		for (GridCell cell : mGrid.mCells) {
 			if (cell.isUserValueSet() || cell.countPossibles() > 0) {
 				// At least one cell within this grid view has a value or a
 				// possible value.
@@ -739,7 +739,7 @@ public class MainActivity extends Activity {
 
 	public void digitSelected(int value) {
 		this.mGridView.digitSelected(value, this.maybeButton.isChecked());
-
+		
 		if (this.preferences.getBoolean(PREF_HIDE_CONTROLS,
 				PREF_HIDE_CONTROLS_DEFAULT)) {
 			this.controls.setVisibility(View.GONE);
