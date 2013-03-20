@@ -542,13 +542,6 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 				continue;
 			}
 
-			if (cageIsValid) {
-				// As we randomly check available cages, we can stop as soon
-				// as
-				// a valid cage is found which does fit on this position.
-				return selectedGridCageType;
-			}
-
 			if (DEBUG_GRID_GENERATOR) {
 				// Print solution, cage matrix and makskNewCage
 				printCageCreationDebugInformation(maskNewCage);
