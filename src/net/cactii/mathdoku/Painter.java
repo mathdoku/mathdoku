@@ -112,6 +112,7 @@ public class Painter {
 	private int BORDER_STROKE_HAIR_LINE = 0;
 	private int BORDER_STROKE_WIDTH_THIN = 1;
 	private int BORDER_STROKE_WIDTH_NORMAL = 2;
+	private int BORDER_STROKE_WIDTH_MEDIUM = 3;
 	private int BORDER_STROKE_WIDTH_THICK = 4;
 
 	/**
@@ -270,17 +271,16 @@ public class Painter {
 					.setStrokeWidth(BORDER_STROKE_WIDTH_NORMAL);
 			mCellPainter.mSelected.mBorderPaint
 					.setStrokeWidth(BORDER_STROKE_WIDTH_NORMAL);
-			mCagePainter.mBorderPaint.setStrokeWidth(BORDER_STROKE_WIDTH_THIN);
+			mCagePainter.mBorderPaint.setStrokeWidth(BORDER_STROKE_WIDTH_NORMAL);
 			mCagePainter.mBorderSelectedPaint
-					.setStrokeWidth(BORDER_STROKE_WIDTH_NORMAL);
+					.setStrokeWidth(BORDER_STROKE_WIDTH_MEDIUM);
 			mCagePainter.mBorderBadMathPaint
-					.setStrokeWidth(BORDER_STROKE_WIDTH_THIN);
-			mCagePainter.mBorderSelectedBadMathPaint
 					.setStrokeWidth(BORDER_STROKE_WIDTH_NORMAL);
+			mCagePainter.mBorderSelectedBadMathPaint
+					.setStrokeWidth(BORDER_STROKE_WIDTH_MEDIUM);
 		} else {
 			mCellPainter.mUnusedBorderPaint
 					.setStrokeWidth(BORDER_STROKE_HAIR_LINE);
-			// mGridPainter.mOuterBorderPaint.setStrokeWidth(BORDER_STROKE_WIDTH_THICK);
 			mCellPainter.mInvalid.mBorderPaint
 					.setStrokeWidth(BORDER_STROKE_WIDTH_THICK);
 			mCellPainter.mWarning.mBorderPaint
