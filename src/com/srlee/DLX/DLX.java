@@ -2,6 +2,8 @@ package com.srlee.DLX;
 
 import java.util.ArrayList;
 
+import net.cactii.mathdoku.GridGenerator;
+
 public class DLX extends Object {
 	public enum SolveType {
 		ONE, MULTIPLE, ALL
@@ -19,6 +21,9 @@ public class DLX extends Object {
 	protected boolean isValid;
 	private int prev_rowidx = -1;
 	private SolveType solvetype;
+	
+	// The grid generator to which progress updates will be sent.
+	private GridGenerator mGridGenerator;
 
 	public DLX() {
 		trysolution = new ArrayList<Integer>();
@@ -157,11 +162,25 @@ public class DLX extends Object {
 		return Given(Nodes[node]);
 	}
 
-	public int Solve(SolveType st) {
+	/**
+	 * Determines the number of solutions that can be found for this grid.
+	 * 
+	 * @param gridGenerator
+	 *            The GridGenerator start started this process and to which the
+	 *            progress updates will be sent.
+	 * @param solveType
+	 *            The solve type to be used to determine the number of
+	 *            solutions.
+	 * @return The number of solutions, given the solution type, that can be
+	 *         found for this grid.
+	 */
+	public int Solve(GridGenerator gridGenerator, SolveType solveType) {
+		mGridGenerator = gridGenerator;
+
 		if (!isValid)
 			return -1;
 
-		solvetype = st;
+		solvetype = solveType;
 		NumSolns = 0;
 		search(trysolution.size());
 		return NumSolns;
@@ -171,9 +190,13 @@ public class DLX extends Object {
 		DLXColumn chosenCol;
 		LL2DNode r, j;
 
+		if (k == 0) {
+			mGridGenerator.publishProgressGridSolutionCheck("Search level " + k);
+		}
 		if (root.GetRight() == root) {
 			foundsolution = new ArrayList<Integer>(trysolution);
 			NumSolns++;
+			mGridGenerator.publishProgressGridSolutionCheck(Integer.toString(NumSolns) + " solutions found so far"); 
 			return;
 		}
 		chosenCol = ChooseMinCol();
@@ -192,17 +215,14 @@ public class DLX extends Object {
 					j = j.GetRight();
 				}
 				search(k + 1);
-				if (solvetype == SolveType.ONE && NumSolns > 0) // Stop as soon
-																// as we find 1
-																// solution
+				if (solvetype == SolveType.ONE && NumSolns > 0) {
+					// Stop as soon as we find 1 solution
 					return;
-				if (solvetype == SolveType.MULTIPLE && NumSolns > 1) // Stop as
-																		// soon
-																		// as we
-																		// find
-																		// multiple
-																		// solutions
+				}
+				if (solvetype == SolveType.MULTIPLE && NumSolns > 1) {
+					// Stop as soon as we find multiple solutions
 					return;
+				}
 				j = r.GetLeft();
 				while (j != r) {
 					UncoverCol(((DLXNode) j).GetColumn());

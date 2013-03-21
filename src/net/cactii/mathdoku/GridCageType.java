@@ -1,6 +1,5 @@
 package net.cactii.mathdoku;
 
-
 public class GridCageType {
 	public static final String TAG = "MathDoku.GridCageType";
 
@@ -31,8 +30,26 @@ public class GridCageType {
 	 * 
 	 * @return The size, i.e. the number of cells, used by this cage type.
 	 */
-	public int size() {
+	public int cellsUsed() {
 		return mSize;
+	}
+
+	/**
+	 * Get the (maximum) width in number of cells of the cage type.
+	 * 
+	 * @return The (maximum) width in number of cells of the cage type.
+	 */
+	public int getWidth() {
+		return cols;
+	}
+
+	/**
+	 * Get the (maximum) height in number of cells of the cage type.
+	 * 
+	 * @return The (maximum) height in number of cells of the cage type.
+	 */
+	public int getHeight() {
+		return rows;
 	}
 
 	/**
@@ -88,6 +105,16 @@ public class GridCageType {
 		}
 
 		return coordinates;
+	}
+
+	/**
+	 * Return the coordinates of the origin cell within the cage type in case
+	 * the top left cell of the cage type mask is placed at given offsets.
+	 * 
+	 * @return The coordinates of the most top left cell used in the cage type.
+	 */
+	public int[] getOriginCoordinates(int rowOffset, int colOffset) {
+		return new int[] { rowOffset, colOffset + colOriginOffset };
 	}
 
 	/**

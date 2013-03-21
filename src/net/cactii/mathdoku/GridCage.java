@@ -154,6 +154,17 @@ public class GridCage {
 		// Store cage outcome in top left cell of cage
 		mCells.get(0).setCageText(mResult + (mHideOperator ? "" : mOperator));
 	}
+	
+	/**
+	 * Clears the cage result form the cage and the top left cell in the cage.
+	 */
+	public void clearCageResult() {
+		mResult = 0;
+		mAction = ACTION_NONE;
+		
+		// Remove outcome from top left cell of cage
+		mCells.get(0).setCageText("");
+	}
 
 	/*
 	 * Sets the cageId of the cage's cells.

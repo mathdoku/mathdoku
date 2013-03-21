@@ -38,6 +38,9 @@ redistribute and/or modify this translation yourself under the terms of the GNU 
 	<string name="option_theme_summary">Thema voor het puzzelbord</string>
 	<string name="option_maybe_layout_title">Mogelijk in 3x3 raster</string>
 	<string name="option_maybe_layout_summary">Toon mogelijk getallen in een 3x3 raster</string>
+    <!-- The title and summary of the "Allow big cages" option. This option controls whether puzzles can contain big cages (5 or 6 cells). -->
+    <string name="option_generate_big_cages_title">Grote groepen toestaan (beta)</string>
+    <string name="option_generate_big_cages_summary">Genereer puzzels met groepen van 5 of 6 cellen.</string>
 	<string name="option_hide_operators_title">Verberg operaties</string>
 	<string name="option_hide_operators_summary">Verberg operatie tekens zoals +, -, x en / bij het maken van een nieuw spel.</string>
 	<string name="option_hide_selector_title">Verberg cijfer knoppen</string>

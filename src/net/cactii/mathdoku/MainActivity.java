@@ -56,6 +56,9 @@ public class MainActivity extends Activity {
 	public final static String PREF_CURRENT_VERSION = "currentversion";
 	public final static int PREF_CURRENT_VERSION_DEFAULT = -1;
 
+	public final static String PREF_ALLOW_BIG_CAGES = "AllowBigCages";
+	public final static boolean PREF_ALLOW_BIG_CAGES_DEFAULT = false;
+
 	public final static String PREF_HIDE_CONTROLS = "hideselector";
 	public final static boolean PREF_HIDE_CONTROLS_DEFAULT = false;
 
@@ -423,7 +426,7 @@ public class MainActivity extends Activity {
 		}
 
 		setTheme();
-		
+
 		// Propagate preferences to grid
 		if (mGrid != null) {
 			mGrid.setPreferences(preferences);
@@ -739,7 +742,7 @@ public class MainActivity extends Activity {
 
 	public void digitSelected(int value) {
 		this.mGridView.digitSelected(value, this.maybeButton.isChecked());
-		
+
 		if (this.preferences.getBoolean(PREF_HIDE_CONTROLS,
 				PREF_HIDE_CONTROLS_DEFAULT)) {
 			this.controls.setVisibility(View.GONE);
@@ -815,7 +818,9 @@ public class MainActivity extends Activity {
 
 		// Start a background task to generate the new grid. As soon as the new
 		// grid is created, the method onNewGridReady will be called.
-		mGridGeneratorTask = new GridGenerator(this, gridSize, hideOperators);
+		int maxCageSize = (preferences.getBoolean(PREF_ALLOW_BIG_CAGES,
+				PREF_ALLOW_BIG_CAGES_DEFAULT) ? 6 : 4);
+		mGridGeneratorTask = new GridGenerator(this, gridSize, maxCageSize, hideOperators);
 		mGridGeneratorTask.execute();
 	}
 
@@ -1008,6 +1013,12 @@ public class MainActivity extends Activity {
 				if (!preferences.contains(PREF_WAKE_LOCK)) {
 					prefeditor.putBoolean(PREF_WAKE_LOCK,
 							PREF_WAKE_LOCK_DEFAULT);
+				}
+			}
+			if (previousInstalledVersion < 135 && currentVersion >= 135) {
+				if (!preferences.contains(PREF_ALLOW_BIG_CAGES)) {
+					prefeditor.putBoolean(PREF_ALLOW_BIG_CAGES,
+							PREF_ALLOW_BIG_CAGES_DEFAULT);
 				}
 			}
 

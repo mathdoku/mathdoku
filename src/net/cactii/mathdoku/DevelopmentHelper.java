@@ -50,7 +50,7 @@ public class DevelopmentHelper {
 	 *            shown.
 	 */
 	public static void generateGames(final MainActivity mainActivity) {
-		mainActivity.mGridGeneratorTask = new GridGenerator(mainActivity, 9,
+		mainActivity.mGridGeneratorTask = new GridGenerator(mainActivity, 9, 6,
 				false);
 		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
 			// Set the options for the grid generator

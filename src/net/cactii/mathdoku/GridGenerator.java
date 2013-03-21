@@ -21,12 +21,19 @@ import com.srlee.DLX.MathDokuDLX;
 /**
  * Generates a new grid while displaying a progress dialog.
  */
-public class GridGenerator extends AsyncTask<Void, Integer, Void> {
+public class GridGenerator extends AsyncTask<Void, String, Void> {
 	private static final String TAG = "MathDoku.GridGenerator";
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
 	public static final boolean DEBUG_GRID_GENERATOR = (DevelopmentHelper.mode == Mode.DEVELOPMENT) && false;
+	public static final boolean DEBUG_GRID_GENERATOR_FULL = DEBUG_GRID_GENERATOR && false;
+
+	// Cages with too many permutations will make cage generation and solving
+	// too hard. The following arbitrary treshold is used to maintain a balance
+	// between quick puzzle generation and solving complexity.
+	private static final int MAX_CAGE_PERMUTATIONS = 80;
+	private int mMaxCageSize;
 
 	// The grid created by the generator
 	private Grid mGrid;
@@ -56,6 +63,10 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 	// Additional option for generating the grid
 	private GridGeneratorOptions mGridGeneratorOptions;
 
+	// Timestamp for logging purposes
+	long timeStarted;
+	long timeStartedSolution;
+
 	// The grid generator options are used in development mode only to generate
 	// fake games.
 	public class GridGeneratorOptions {
@@ -75,10 +86,11 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 	 * @param hideOperators
 	 *            True in case should be solvable without using operators.
 	 */
-	public GridGenerator(MainActivity activity, int gridSize,
+	public GridGenerator(MainActivity activity, int gridSize, int maxCageSize,
 			boolean hideOperators) {
 		this.mGridSize = gridSize;
 		this.mHideOperators = hideOperators;
+		this.mMaxCageSize = maxCageSize;
 
 		setGridGeneratorOptions(null);
 
@@ -163,6 +175,8 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 			return null;
 		}
 
+		timeStarted = System.currentTimeMillis();
+
 		// Create a new empty grid.
 		mGrid = new Grid(mGridSize);
 
@@ -175,6 +189,7 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 		// recreate a game (as long as the implementation of the Randomize
 		// has not changed).
 		mGameSeed = (new Random()).nextLong();
+		mGameSeed = 12584052349087711L;
 		mRandom = new Random(mGameSeed);
 
 		if (DEBUG_GRID_GENERATOR) {
@@ -186,7 +201,7 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 
 			if (DEBUG_GRID_GENERATOR) {
 				Log.i(TAG, "Puzzle generation attempt: " + num_attempts);
-				publishProgress(num_attempts);
+				publishProgress(" (attempt " + num_attempts + ")");
 			}
 
 			mCells = new ArrayList<GridCell>();
@@ -237,7 +252,7 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 
 			// Determine whether grid has a unique solution.
 			MathDokuDLX mdd = new MathDokuDLX(this.mGridSize, this.mCages);
-			num_solns = mdd.Solve(SolveType.MULTIPLE);
+			num_solns = mdd.Solve(this, SolveType.MULTIPLE);
 
 			if (DEBUG_GRID_GENERATOR) {
 				Log.d(TAG, "Num Solns = " + num_solns);
@@ -251,14 +266,35 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 		return null;
 	}
 
-	protected void onProgressUpdate(Integer... values) {
+	protected void onProgressUpdate(String... values) {
+		long timeElapsed = System.currentTimeMillis() - timeStarted;
 		if (DEBUG_GRID_GENERATOR) {
-			if (mAlertDialog != null && values.length > 0) {
+			if (mAlertDialog != null && values.length > 0 && values[0] != null) {
 				mAlertDialog.setTitle(mActivity.getResources().getString(
 						R.string.dialog_building_puzzle_title)
-						+ " (attempt " + values[0] + ")");
+						+ values[0]);
+			}
+			if (values.length > 0 && values[0] != null) {
+				Log.i(TAG, Long.toString(timeElapsed) + ": " + values[0]);
+			}
+			if (values.length > 1 && values[1] != null) {
+				if (values[1].equals("Search level 0")) {
+					timeStartedSolution = System.currentTimeMillis();
+				}
+				if (values[1].endsWith("solutions found so far")) {
+					long timeElapsedSolution = System.currentTimeMillis()
+							- timeStartedSolution;
+					Log.i(TAG,
+							"Milliseconds need to find solution:"
+									+ Long.toString(timeElapsedSolution));
+				}
+				Log.i(TAG, Long.toString(timeElapsed) + ": " + values[1]);
 			}
 		}
+	}
+
+	public void publishProgressGridSolutionCheck(String message) {
+		publishProgress(null, message);
 	}
 
 	/*
@@ -374,7 +410,7 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 	 * - 1 to <rowsize> on every row and column - No duplicates in any row or
 	 * column.
 	 */
-	public void randomiseGrid() {
+	private void randomiseGrid() {
 		int attempts;
 		solutionMatrix = new int[this.mGridSize][this.mGridSize];
 		for (int value = 1; value < this.mGridSize + 1; value++) {
@@ -410,24 +446,10 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 	 *            True in case cages should hide the operator. False in
 	 *            operators should be visible.
 	 */
-	public void CreateCages(boolean hideOperators) {
-
-		// Create all possible grid cage types which can be used in this new
-		// grid.
-		if (this.mGridCageTypeGenerator == null) {
-			// Maxsize can be set to any number but it takes a (very) long time
-			// to create a new puzzle due to exponential growth of number of
-			// possible cage types. Also it seems to get very evil to play the
-			// game. Further testing needs to be done how much maxCageSize does
-			// influence difficulty of puzzle. If so, it can be added as an
-			// option to the player to wait longer for even more difficult
-			// puzzles ;-)
-			int maxCageSize = (this.mGridSize > 5 ? 5 : this.mGridSize);
-			this.mGridCageTypeGenerator = new CageTypeGenerator(maxCageSize);
-		}
+	private void CreateCages(boolean hideOperators) {
+		this.mGridCageTypeGenerator = CageTypeGenerator.getInstance();
 
 		boolean restart;
-
 		do {
 			restart = false;
 			cageMatrix = new int[this.mGridSize][this.mGridSize];
@@ -437,16 +459,71 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 				}
 			}
 
-			int cageId = 0;
+			if (mMaxCageSize >= CageTypeGenerator.MAX_CAGE_SIZE) {
+				// Drop a first (bigger) cage type somewhere in the grid.
+				int remaingAttemptsToPlaceBigCageType = 10;
+				while (remaingAttemptsToPlaceBigCageType > 0) {
+					GridCageType gridCageType = mGridCageTypeGenerator
+							.getRandomCageType(mMaxCageSize, mGridSize,
+									mGridSize, mRandom);
+					if (gridCageType != null) {
+						// Determine a random row and column at which the mask
+						// will
+						// be
+						// placed. Use +1 in calls to randomizer to prevent
+						// exceptions
+						// in case the entire height and/or width is needed for
+						// the
+						// cagetype.
+						int startRow = mRandom
+								.nextInt((mGridSize - gridCageType.getHeight()) + 1);
+						int startCol = mRandom
+								.nextInt((mGridSize - gridCageType.getWidth()) + 1);
+
+						// Determine the origin cell of the cage type in case
+						// the
+						// cage
+						// type mask is put at the randomly determined position.
+						int[] coordinatesTopLeft = gridCageType
+								.getOriginCoordinates(startRow, startCol);
+
+						// Get coordinates for the cage cells and add the cage.
+						// Note: no
+						// checking is done on the maximum permutations for the
+						// first
+						// cage.
+						int[][] cageTypeCoords = gridCageType
+								.getCellCoordinates(getCellAt(
+										coordinatesTopLeft[0],
+										coordinatesTopLeft[1]));
+						GridCage firstCage = createCage(cageTypeCoords,
+								4 * MAX_CAGE_PERMUTATIONS);
+						if (firstCage != null) {
+							this.mCages.add(firstCage);
+							for (GridCell cellinCage : firstCage.mCells) {
+								cageMatrix[cellinCage.getRow()][cellinCage
+										.getColumn()] = firstCage.mId;
+							}
+							break;
+						}
+					}
+
+					// Try another time to drop a big cage type unless maximum
+					// number of tries has been reached.
+					remaingAttemptsToPlaceBigCageType--;
+				}
+			}
+
+			// Fill remainder of grid
 			int countSingles = 0;
 			for (GridCell cell : this.mCells) {
 				if (cell.CellInAnyCage()) {
 					continue; // Cell already in a cage, skip
 				}
 
-				// Determine a random cage type which will start at this cell.
-				GridCageType cageType = selectRandomCageType(cell);
-				if (cageType.size() == 1) {
+				// Determine a random cage which will start at this cell.
+				GridCage cage = selectRandomCageType(cell);
+				if (cage.mCells.size() == 1) {
 					countSingles++;
 					if (countSingles > this.mGridSize / 2) {
 						// Too many singles
@@ -457,32 +534,29 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 					}
 				}
 
-				// Add the cage to the grid.
-				int[][] cage_coords = cageType.getCellCoordinates(cell);
-				GridCage cage = new GridCage(mGrid, hideOperators);
-				for (int coord_num = 0; coord_num < cage_coords.length; coord_num++) {
-					int row = cage_coords[coord_num][0];
-					int col = cage_coords[coord_num][1];
-					cage.mCells.add(getCellAt(row, col));
-					cageMatrix[row][col] = cageId;
+				// Add the cage to the grid
+				this.mCages.add(cage);
+				for (GridCell cellinCage : cage.mCells) {
+					cageMatrix[cellinCage.getRow()][cellinCage.getColumn()] = cage.mId;
 				}
-				setArithmetic(cage); // Make the maths puzzle
-				cage.setCageId(cageId++); // Set cage's id
-				this.mCages.add(cage); // Add to the cage list
-
 			}
 		} while (restart);
+
+		if (DEBUG_GRID_GENERATOR) {
+			printCageCreationDebugInformation(null);
+		}
 	}
 
 	/**
-	 * Selects a cage type which does fit on the given origin.
+	 * Create a new cage which originates at the given cell. The cage type for
+	 * this cage will be randomly determined.
 	 * 
 	 * @param origin
-	 *            The origin cell at which the cage type will start.
+	 *            The cell at which the cage originates.
 	 * @return The selected grid cage type.
 	 */
-	public GridCageType selectRandomCageType(GridCell origin) {
-		if (DEBUG_GRID_GENERATOR) {
+	private GridCage selectRandomCageType(GridCell origin) {
+		if (DEBUG_GRID_GENERATOR_FULL) {
 			Log.i(TAG, "Determine valid cages for cell[" + origin.getRow()
 					+ "," + origin.getColumn() + "]");
 		}
@@ -490,7 +564,7 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 		// Store indexes of all defined cages types, except cage type 0 which is
 		// a single cell, in a temporary list of available cages.
 		ArrayList<Integer> availableCages = new ArrayList<Integer>();
-		for (int i = 1; i < mGridCageTypeGenerator.size(); i++) {
+		for (int i = 1; i < mGridCageTypeGenerator.size(mMaxCageSize); i++) {
 			availableCages.add(i);
 		}
 
@@ -542,7 +616,7 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 				continue;
 			}
 
-			if (DEBUG_GRID_GENERATOR) {
+			if (DEBUG_GRID_GENERATOR_FULL) {
 				// Print solution, cage matrix and makskNewCage
 				printCageCreationDebugInformation(maskNewCage);
 			}
@@ -560,9 +634,16 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 			}
 
 			if (cageIsValid) {
+				GridCage cage = createCage(cageTypeCoords,
+						MAX_CAGE_PERMUTATIONS);
+				if (cage == null) {
+					// No cage created due to too many permutations.
+					continue;
+				}
+
 				// As we randomly check available cages, we can stop as soon as
 				// a valid cage is found which does fit on this position.
-				return selectedGridCageType;
+				return cage;
 			}
 
 			// Check next cage
@@ -570,13 +651,62 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 
 		// No cage, other than a single cell, does fit on this position in the
 		// grid.
-		if (DEBUG_GRID_GENERATOR) {
+		if (DEBUG_GRID_GENERATOR_FULL) {
 			// Print solution, cage matrix and makskNewCage
 			boolean[][] maskNewCage = new boolean[this.mGridSize][this.mGridSize];
 			maskNewCage[origin.getRow()][origin.getColumn()] = true;
 			printCageCreationDebugInformation(maskNewCage);
 		}
-		return mGridCageTypeGenerator.getSingleCellCageType();
+
+		// Create the new cage for a single cell.
+		return createCage(mGridCageTypeGenerator.getSingleCellCageType()
+				.getCellCoordinates(origin), 0);
+	}
+
+	/**
+	 * Create the cage at the given coordinates.
+	 * 
+	 * @param cageTypeCoords
+	 *            The coordinates to be used for the cage.
+	 * @param maxPermutations
+	 *            The maximum permutations allowed to create the cage. Use 0 in
+	 *            case no checking on the number of permutations needs to be
+	 *            done.
+	 * @return The grid cage which is created. Null in case the cage has too
+	 *         many permutations.
+	 */
+	private GridCage createCage(int[][] cageTypeCoords, int maxPermutations) {
+		GridCage cage = new GridCage(mGrid, mHideOperators);
+		int newCageId = this.mCages.size();
+		for (int coord_num = 0; coord_num < cageTypeCoords.length; coord_num++) {
+			int row = cageTypeCoords[coord_num][0];
+			int col = cageTypeCoords[coord_num][1];
+			cage.mCells.add(getCellAt(row, col));
+		}
+		setArithmetic(cage);
+		if (maxPermutations > 0
+				&& cage.getPossibleNums().size() > maxPermutations) {
+			// This cage has too many permutations which fulfill the
+			// cage requirements. As this reduces the chance to find a
+			// solution for the puzzle too much, the cage type will not
+			// returned.
+			if (DEBUG_GRID_GENERATOR_FULL) {
+				Log.i(TAG, "This cage type has been rejected as it has more "
+						+ "than " + maxPermutations + " initial "
+						+ "permutations which fulfill the cage requirement.");
+			}
+
+			// Clear the cage result from the cage and the top left cell of the
+			// cage.
+			cage.clearCageResult();
+
+			return null;
+		}
+
+		// Set cage id in cage (and indirectly in all cells in the cage as well)
+		cage.setCageId(newCageId);
+
+		return cage;
 	}
 
 	/**
@@ -610,9 +740,12 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 						+ (cageMatrix[row][col] == -1 ? emptyCell : String
 								.format(cageIdFormat, cageMatrix[row][col]));
 			}
-			line += "   ";
-			for (int col = 0; col < this.mGridSize; col++) {
-				line += " " + (maskNewCage[row][col] ? usedCell : emptyCell);
+			if (maskNewCage != null) {
+				line += "   ";
+				for (int col = 0; col < this.mGridSize; col++) {
+					line += " "
+							+ (maskNewCage[row][col] ? usedCell : emptyCell);
+				}
 			}
 			Log.i(TAG, line);
 		}
@@ -688,7 +821,7 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 									// and the other cage. As this would result
 									// in a non-unique solution, the cage is not
 									// valid.
-									if (DEBUG_GRID_GENERATOR) {
+									if (DEBUG_GRID_GENERATOR_FULL) {
 										Log.i(TAG,
 												"         This cage type will result in a "
 														+ "non-unique solution. The new cage "
@@ -786,7 +919,7 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 									// and the other cage. As this would result
 									// in a non-unique solution, the cage is not
 									// valid.
-									if (DEBUG_GRID_GENERATOR) {
+									if (DEBUG_GRID_GENERATOR_FULL) {
 										Log.i(TAG,
 												"         This cage type will result in a "
 														+ "non-unique solution. The new cage "
@@ -818,7 +951,7 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 	 * @param cage
 	 *            The cage for which the arithmetic has to be generated.
 	 */
-	public void setArithmetic(GridCage cage) {
+	private void setArithmetic(GridCage cage) {
 		// A cage consisting of one single cell has no operator.
 		if (cage.mCells.size() == 1) {
 			// Single cell cage have an empty operator which is never hidden. IN
@@ -830,7 +963,7 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 		}
 
 		// For cages of size 2 and bigger a weight (i.e. the chance on choosing
-		// that operator) will be determined. 
+		// that operator) will be determined.
 		int divisionWeight;
 		int subtractionWeight;
 		int addWeight;
@@ -876,8 +1009,8 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 		int totalWeight = divisionWeight + subtractionWeight + addWeight
 				+ multiplyWeight;
 		double index = mRandom.nextInt(totalWeight);
-		
-		// Check whether the division operator has to be applied 
+
+		// Check whether the division operator has to be applied
 		if (index < divisionWeight) {
 			cage.setCageResults(divisionCageResult, GridCage.ACTION_DIVIDE,
 					mHideOperators);
@@ -885,15 +1018,16 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 		}
 		index -= divisionWeight;
 
-		// Check whether the subtraction operator has to be applied 
+		// Check whether the subtraction operator has to be applied
 		if (index < subtractionWeight) {
-			cage.setCageResults(subtractionCageResult, GridCage.ACTION_SUBTRACT,
-					mHideOperators);
+			cage.setCageResults(subtractionCageResult,
+					GridCage.ACTION_SUBTRACT, mHideOperators);
 			return;
 		}
 		index -= subtractionWeight;
 
-		// Check whether the add operator has to be applied. If not, than multiply is chosen. 
+		// Check whether the add operator has to be applied. If not, than
+		// multiply is chosen.
 		if (index < addWeight) {
 			int total = 0;
 			for (GridCell cell : cage.mCells) {
@@ -909,7 +1043,7 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 		}
 	}
 
-	public void ClearAllCages() {
+	private void ClearAllCages() {
 		for (GridCell cell : this.mCells) {
 			cell.clearCage();
 		}
@@ -917,14 +1051,14 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 	}
 
 	/* Clear any cells containing the given number. */
-	public void clearValue(int value) {
+	private void clearValue(int value) {
 		for (GridCell cell : this.mCells)
 			if (cell.getCorrectValue() == value)
 				cell.setCorrectValue(0);
 	}
 
 	/* Determine if the given value is in the given row */
-	public boolean valueInRow(int row, int value) {
+	private boolean valueInRow(int row, int value) {
 		for (GridCell cell : this.mCells)
 			if (cell.getRow() == row && cell.getCorrectValue() == value)
 				return true;
@@ -932,7 +1066,7 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 	}
 
 	/* Determine if the given value is in the given column */
-	public boolean valueInColumn(int column, int value) {
+	private boolean valueInColumn(int column, int value) {
 		for (int row = 0; row < mGridSize; row++)
 			if (this.mCells.get(column + row * mGridSize).getCorrectValue() == value)
 				return true;
@@ -940,7 +1074,7 @@ public class GridGenerator extends AsyncTask<Void, Integer, Void> {
 	}
 
 	/* Fetch the cell at the given row, column */
-	public GridCell getCellAt(int row, int column) {
+	private GridCell getCellAt(int row, int column) {
 		if (row < 0 || row >= mGridSize)
 			return null;
 		if (column < 0 || column >= mGridSize)

@@ -54,6 +54,9 @@
     <!-- The title and summary of the "3x3 maybe" option. This option controls whether maybe numbers are displayed in 3x3 grid or straight line. -->
     <string name="option_maybe_layout_title">Maybes in 3x3 grid</string>
     <string name="option_maybe_layout_summary">Display maybe numbers in 3x3 grid</string>
+    <!-- The title and summary of the "Allow big cages" option. This option controls whether puzzles can contain big cages (5 or 6 cells). -->
+    <string name="option_generate_big_cages_title">Allow big cages (beta)</string>
+    <string name="option_generate_big_cages_summary">Generate puzzle having cages consisting of 5 or 6 cells.</string>
     <!-- The title and summary of the "hide operator" option. This option controls whether the mathematical operation signs (+x/-) are shown. -->
     <string name="option_hide_operators_title">Hide operators</string>
     <string name="option_hide_operators_summary">Hide operation signs like +, -, x and / when creating a new game.</string>
