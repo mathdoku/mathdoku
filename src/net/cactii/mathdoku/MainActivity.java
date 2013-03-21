@@ -235,6 +235,7 @@ public class MainActivity extends Activity {
 								// has to be removed.
 								if (cell.countPossibles() > 1) {
 									maybeButton.setChecked(true);
+									setButtonColor(true);
 								}
 
 								controls.requestFocus();
@@ -251,8 +252,6 @@ public class MainActivity extends Activity {
 								controls.startAnimation(animation);
 								mGridView.mSelectorShown = true;
 							}
-							// maybeButton.setChecked((cell.mPossibles.size() >
-							// 0));
 							controls.requestFocus();
 						}
 					}
@@ -288,45 +287,52 @@ public class MainActivity extends Activity {
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				if (event.getAction() == MotionEvent.ACTION_UP)
+				if (event.getAction() == MotionEvent.ACTION_UP) {
 					v.playSoundEffect(SoundEffectConstants.CLICK);
-
-				GridCell selectedCell = mGrid.getSelectedCell();
-				if (selectedCell != null) {
-					// Apply new setting of maybe button on current selected
-					// cell.
 
 					// Note: the maybeButton.isChecked holds *old* value
 					// until this method is finished...
 					boolean maybeIsChecked = !maybeButton.isChecked();
 
-					// Change user value to a possible value in case the maybe
-					// button is just checked.
-					if (maybeIsChecked && selectedCell.isUserValueSet()) {
-						selectedCell.saveUndoInformation(null);
-						int curValue = selectedCell.getUserValue();
-						selectedCell.clearUserValue();
-						selectedCell.togglePossible(curValue);
-						mGridView.invalidate();
-					}
+					GridCell selectedCell = mGrid.getSelectedCell();
+					if (selectedCell != null) {
+						// Apply new setting of maybe button on current selected
+						// cell.
 
-					// In case the cell contains only one possible value, it
-					// will be set as user value as the maybe button is just
-					// unchecked.
-					if (!maybeIsChecked && selectedCell.countPossibles() == 1) {
-						// TODO: move to GridCell and/or Grid
-						CellChange originalUserMove = selectedCell
-								.saveUndoInformation(null);
-						selectedCell.setUserValue(selectedCell
-								.getFirstPossible());
-						if (MainActivity.this.preferences.getBoolean(
-								PREF_CLEAR_REDUNDANT_POSSIBLES,
-								PREF_CLEAR_REDUNDANT_POSSIBLES_DEFAULT)) {
-							// Update possible values for other cells in this
-							// row and column.
-							mGrid.clearRedundantPossiblesInSameRowOrColumn(originalUserMove);
+						// Change user value to a possible value in case the
+						// maybe
+						// button is just checked.
+						if (maybeIsChecked && selectedCell.isUserValueSet()) {
+							selectedCell.saveUndoInformation(null);
+							int curValue = selectedCell.getUserValue();
+							selectedCell.clearUserValue();
+							selectedCell.togglePossible(curValue);
+							mGridView.invalidate();
 						}
-						mGridView.invalidate();
+
+						// In case the cell contains only one possible value, it
+						// will be set as user value as the maybe button is just
+						// unchecked.
+						if (!maybeIsChecked
+								&& selectedCell.countPossibles() == 1) {
+							// TODO: move to GridCell and/or Grid
+							CellChange originalUserMove = selectedCell
+									.saveUndoInformation(null);
+							selectedCell.setUserValue(selectedCell
+									.getFirstPossible());
+							if (MainActivity.this.preferences.getBoolean(
+									PREF_CLEAR_REDUNDANT_POSSIBLES,
+									PREF_CLEAR_REDUNDANT_POSSIBLES_DEFAULT)) {
+								// Update possible values for other cells in
+								// this
+								// row and column.
+								mGrid.clearRedundantPossiblesInSameRowOrColumn(originalUserMove);
+							}
+							mGridView.invalidate();
+						}
+
+						// Update colors of buttons
+						setButtonColor(maybeIsChecked);
 					}
 				}
 				return false;
@@ -836,6 +842,21 @@ public class MainActivity extends Activity {
 		setNewGrid(newGrid);
 	}
 
+	/**
+	 * Set the colors of number buttons based on the given status of the maybe
+	 * button.
+	 * 
+	 * @param maybeIsChecked
+	 *            True to change the color of the buttons to the same green
+	 *            color as the checkmark button. False for black.
+	 */
+	public void setButtonColor(boolean maybeIsChecked) {
+		int color = (maybeIsChecked ? 0xFF15DC23 : 0xFF000000);
+		for (int i = 0; i < mGrid.getGridSize(); i++) {
+			this.digits[i].setTextColor(color);
+		}
+	}
+
 	public void setButtonVisibility() {
 		int gridSize = mGrid.getGridSize();
 		for (int i = 4; i < 9; i++)
@@ -1265,6 +1286,12 @@ public class MainActivity extends Activity {
 			this.puzzleGrid.setVisibility(View.VISIBLE);
 
 			if (this.mGrid.isActive()) {
+				GridCell cell = this.mGrid.getSelectedCell();
+				if (cell != null && cell.countPossibles() > 1) {
+					maybeButton.setChecked(true);
+					setButtonColor(true);
+				}
+
 				// Set visibility of other controls
 				this.setButtonVisibility();
 
