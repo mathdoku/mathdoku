@@ -189,7 +189,6 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		// recreate a game (as long as the implementation of the Randomize
 		// has not changed).
 		mGameSeed = (new Random()).nextLong();
-		mGameSeed = 12584052349087711L;
 		mRandom = new Random(mGameSeed);
 
 		if (DEBUG_GRID_GENERATOR) {
