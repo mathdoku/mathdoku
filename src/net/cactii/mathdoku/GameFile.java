@@ -336,6 +336,11 @@ public class GameFile extends File {
 				cage = new GridCage(grid);
 			} while (line != null && cage.fromStorageString(line));
 
+			// Check cage maths after all cages have been read.
+			for (GridCage cage2 : grid.mCages) {
+				cage2.checkCageMathsCorrect();
+			}
+
 			// Set the selected cell (and indirectly the selected cage).
 			if (selectedCell != null) {
 				grid.setSelectedCell(selectedCell);

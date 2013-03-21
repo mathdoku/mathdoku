@@ -292,13 +292,9 @@ public class Grid {
 
 			// Set borders for all cells in old and new selected cage
 			if (oldSelectedCage != null) {
-				for (GridCell cell2 : oldSelectedCage.mCells) {
-					cell2.setBorders();
-				}
+				oldSelectedCage.setBorders();
 			}
-			for (GridCell cell2 : newSelectedCage.mCells) {
-				cell2.setBorders();
-			}
+			newSelectedCage.setBorders();
 		}
 	}
 

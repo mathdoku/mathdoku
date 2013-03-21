@@ -154,14 +154,14 @@ public class GridCage {
 		// Store cage outcome in top left cell of cage
 		mCells.get(0).setCageText(mResult + (mHideOperator ? "" : mOperator));
 	}
-	
+
 	/**
 	 * Clears the cage result form the cage and the top left cell in the cage.
 	 */
 	public void clearCageResult() {
 		mResult = 0;
 		mAction = ACTION_NONE;
-		
+
 		// Remove outcome from top left cell of cage
 		mCells.get(0).setCageText("");
 	}
@@ -222,49 +222,64 @@ public class GridCage {
 	 * has filled in.
 	 */
 	public void checkCageMathsCorrect() {
-		// Assume maths are correct.
-		mUserMathCorrect = true;
+		boolean oldUserMathCorrect = mUserMathCorrect;
 
-		// If not all cell in the cage are filled, the maths are not wrong.
+		// If not all cells in the cage are filled, the maths are not wrong.
+		boolean allCellsFilledIn = true;
 		for (GridCell cell : this.mCells) {
 			if (!cell.isUserValueSet()) {
-				return;
-			}
-		}
-
-		if (this.mCells.size() == 1) {
-			// A single cell cage is correct in case its user value is correct.
-			mUserMathCorrect = mCells.get(0).isUserValueCorrect();
-			return;
-		}
-
-		if (this.mHideOperator) {
-			if (isAddMathsCorrect() || isMultiplyMathsCorrect()
-					|| isDivideMathsCorrect() || isSubtractMathsCorrect()) {
 				mUserMathCorrect = true;
-				return;
-			} else {
-				mUserMathCorrect = false;
-				return;
-			}
-		} else {
-			switch (this.mAction) {
-			case ACTION_ADD:
-				mUserMathCorrect = isAddMathsCorrect();
-				return;
-			case ACTION_MULTIPLY:
-				mUserMathCorrect = isMultiplyMathsCorrect();
-				return;
-			case ACTION_DIVIDE:
-				mUserMathCorrect = isDivideMathsCorrect();
-				return;
-			case ACTION_SUBTRACT:
-				mUserMathCorrect = isSubtractMathsCorrect();
-				return;
+				allCellsFilledIn = false;
+				break;
 			}
 		}
-		throw new RuntimeException("isSolved() got to an unreachable point "
-				+ this.mAction + ": " + this.toString());
+
+		if (allCellsFilledIn) {
+			if (this.mCells.size() == 1) {
+				// A single cell cage is correct in case its user value is
+				// correct.
+				mUserMathCorrect = mCells.get(0).isUserValueCorrect();
+			} else {
+				if (this.mHideOperator) {
+					if (isAddMathsCorrect() || isMultiplyMathsCorrect()
+							|| isDivideMathsCorrect()
+							|| isSubtractMathsCorrect()) {
+						mUserMathCorrect = true;
+					} else {
+						mUserMathCorrect = false;
+					}
+				} else {
+					switch (this.mAction) {
+					case ACTION_ADD:
+						mUserMathCorrect = isAddMathsCorrect();
+						break;
+					case ACTION_MULTIPLY:
+						mUserMathCorrect = isMultiplyMathsCorrect();
+						break;
+					case ACTION_DIVIDE:
+						mUserMathCorrect = isDivideMathsCorrect();
+						break;
+					case ACTION_SUBTRACT:
+						mUserMathCorrect = isSubtractMathsCorrect();
+						break;
+					}
+				}
+			}
+		}
+		
+		if (oldUserMathCorrect != mUserMathCorrect) {
+			// Reset borders in all cells of this cage
+			setBorders();
+		}
+	}
+	
+	/**
+	 * Set borders for all cells in this cage.
+	 */
+	public void setBorders() {
+		for (GridCell cell2 : mCells) {
+			cell2.setBorders();
+		}
 	}
 
 	// Returns whether the user values in the cage match the cage text
@@ -599,8 +614,6 @@ public class GridCage {
 		} else {
 			mHideOperator = Boolean.parseBoolean(cageParts[index++]);
 		}
-		
-		checkCageMathsCorrect();
 
 		return true;
 	}
