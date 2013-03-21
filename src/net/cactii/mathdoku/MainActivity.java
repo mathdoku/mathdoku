@@ -820,7 +820,8 @@ public class MainActivity extends Activity {
 		// grid is created, the method onNewGridReady will be called.
 		int maxCageSize = (preferences.getBoolean(PREF_ALLOW_BIG_CAGES,
 				PREF_ALLOW_BIG_CAGES_DEFAULT) ? 6 : 4);
-		mGridGeneratorTask = new GridGenerator(this, gridSize, maxCageSize, hideOperators);
+		mGridGeneratorTask = new GridGenerator(this, gridSize, maxCageSize,
+				hideOperators);
 		mGridGeneratorTask.execute();
 	}
 
@@ -1314,6 +1315,8 @@ public class MainActivity extends Activity {
 			if (preferences
 					.getBoolean(PREF_SHOW_TIMER, PREF_SHOW_TIMER_DEFAULT)) {
 				mTimerText.setVisibility(View.VISIBLE);
+			} else {
+				mTimerText.setVisibility(View.GONE);
 			}
 			mTimerTask.execute();
 		}
