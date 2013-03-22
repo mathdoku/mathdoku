@@ -794,6 +794,7 @@ public class MainActivity extends Activity {
 		// new grid will always overwrite the current game without any warning.
 		mGridGeneratorTask = null;
 		setNewGrid(newGrid);
+		this.maybeButton.setChecked(false);
 	}
 
 	/**
@@ -1254,7 +1255,6 @@ public class MainActivity extends Activity {
 
 				// Set visibility of other controls
 				this.setButtonVisibility();
-				this.maybeButton.setChecked(false);
 				startTimer();
 
 				// Handler for solved game
