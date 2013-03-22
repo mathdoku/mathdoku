@@ -66,8 +66,7 @@ redistribute and/or modify this translation yourself under the terms of the GNU 
 	
     <!-- The title and message for the dialog displayed on the screen when building a new puzzle. -->
     <string name="dialog_building_puzzle_title">Genereren nieuwe puzzel</string>
-    <string name="dialog_building_puzzle_message">Een nieuwe puzzel wordt nu gegenereerd. Wacht totdat dit gereed is of sluit en ontvang een bericht als de nieuwe puzzel klaar is.</string>
-    <string name="dialog_button_close">Sluit</string>
+    <string name="dialog_building_puzzle_message">Een ogenblik geduld a.u.b.</string>
 	
 	    <!-- The title and message for the dialog displayed on the screen when generating preview images, along with the associated title. -->
     <string name="main_ui_creating_previews_title">Aanmaken voorbeeld weergave</string>

@@ -93,8 +93,7 @@
 
     <!-- The title and message for the dialog displayed on the screen when building a new puzzle. -->
     <string name="dialog_building_puzzle_title">Building puzzle</string>
-    <string name="dialog_building_puzzle_message">A new puzzle is being build. Either wait till finished or close and receive a notification when the new puzzle is ready.</string>
-    <string name="dialog_button_close">Close</string>
+    <string name="dialog_building_puzzle_message">A new puzzle is being build. It will be ready in few seconds.</string>
     
     <!-- The title and message for the dialog displayed on the screen when generating preview images, along with the associated title. -->
     <string name="main_ui_creating_previews_title">Creating preview images</string>

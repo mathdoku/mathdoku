@@ -41,6 +41,14 @@ public class DevelopmentHelper {
 
 	public static final Mode mode = Mode.DEVELOPMENT;
 
+	// In development mode the grid generator will show a modified progress
+	// dialog. Following types of progress updates are supported. Actual values
+	// do not matter as long they are unique strings.
+	public static final String GRID_GENERATOR_PROGRESS_UPDATE_TITLE = "Update title";
+	public static final String GRID_GENERATOR_PROGRESS_UPDATE_MESSAGE = "Update message";
+	public static final String GRID_GENERATOR_PROGRESS_UPDATE_PROGRESS = "Update progress";
+	public static final String GRID_GENERATOR_PROGRESS_UPDATE_SOLUTION = "Found a solution";
+
 	/**
 	 * Generate dummy games. A dummy game is not a real game which can be played
 	 * as it is not checked on having ###########
@@ -50,19 +58,19 @@ public class DevelopmentHelper {
 	 *            shown.
 	 */
 	public static void generateGames(final MainActivity mainActivity) {
-		mainActivity.mGridGeneratorTask = new GridGenerator(mainActivity, 9, 6,
+		mainActivity.mGridGeneratorTask = new GridGenerator(mainActivity, 5, 6,
 				false);
 		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
 			// Set the options for the grid generator
 			GridGenerator.GridGeneratorOptions gridGeneratorOptions = mainActivity.mGridGeneratorTask.new GridGeneratorOptions();
 			gridGeneratorOptions.createFakeUserGameFiles = true;
-			gridGeneratorOptions.numberOfGamesToGenerate = 50;
+			gridGeneratorOptions.numberOfGamesToGenerate = 20;
 
-			// Set to false to generate grids with same size nad hideOperators
+			// Set to false to generate grids with same size and hideOperators
 			// value as initial grid.
-			gridGeneratorOptions.randomGridSize = true;
-			gridGeneratorOptions.randomHideOperators = true;
-			
+			gridGeneratorOptions.randomGridSize = false;
+			gridGeneratorOptions.randomHideOperators = false;
+
 			// Start the grid generator
 			mainActivity.mGridGeneratorTask
 					.setGridGeneratorOptions(gridGeneratorOptions);

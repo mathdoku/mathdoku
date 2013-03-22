@@ -5,7 +5,6 @@ import net.cactii.mathdoku.GameFile.GameFileType;
 import net.cactii.mathdoku.Painter.GridTheme;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -99,9 +98,6 @@ public class MainActivity extends Activity {
 	private final static int CONTEXT_MENU_CLEAR_CAGE_CELLS = 4;
 	private final static int CONTEXT_MENU_CLEAR_GRID = 5;
 	private final static int CONTEXT_MENU_SHOW_SOLUTION = 6;
-
-	// Identifiers for the notifications
-	public final static int NOTIFICATION_GRID_GENERATOR = 1;
 
 	// The grid and the view which will display the grid.
 	public Grid mGrid;
@@ -411,33 +407,6 @@ public class MainActivity extends Activity {
 				|| (mTimerTask != null && mTimerTask.isCancelled())) {
 			startTimer();
 		}
-	}
-
-	@Override
-	protected void onNewIntent(Intent intent) {
-		Bundle bundleExtras = intent.getExtras();
-		if (bundleExtras != null) {
-			int notificationId = bundleExtras.getInt("notificationId");
-			String nameGameFile = bundleExtras.getString("nameGameFile");
-			if (notificationId == NOTIFICATION_GRID_GENERATOR
-					&& nameGameFile != null) {
-				// The current grid will be overridden without consent of user
-				// as he deliberately has chosen to select the notification.
-				Grid newGrid = new GameFile(nameGameFile).load();
-				setNewGrid(newGrid);
-
-				// Cancel the notification
-				NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-				notificationManager.cancel(notificationId);
-
-				// Detach from the grid generator task
-				mGridGeneratorTask = null;
-			}
-		} else {
-			Log.d(TAG, "Unexpected intent received. Nothing special is done.");
-		}
-
-		super.onNewIntent(intent);
 	}
 
 	public void setSoundEffectsEnabled(boolean enabled) {

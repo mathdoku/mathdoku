@@ -5,14 +5,8 @@ import java.util.Random;
 
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.GameFile.GameFileType;
-import android.app.AlertDialog;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.srlee.DLX.DLX.SolveType;
@@ -49,7 +43,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	public int mGridSize;
 
 	// The dialog for this task
-	private AlertDialog mAlertDialog;
+	private ProgressDialog mProgressDialog;
 
 	// Cell and solution
 	public ArrayList<GridCell> mCells;
@@ -121,6 +115,12 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		// Use specified options only if running in development mode.
 		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
 			this.mGridGeneratorOptions = gridGeneratorOptions;
+
+			// Rebuild the dialog using the grid generator options.
+			if (mProgressDialog != null) {
+				mProgressDialog.dismiss();
+				buildDialog();
+			}
 		}
 	}
 
@@ -132,8 +132,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	 *            this task.
 	 */
 	public void attachToActivity(MainActivity activity) {
-		if (activity.equals(this.mActivity) && mAlertDialog != null
-				&& mAlertDialog.isShowing()) {
+		if (activity.equals(this.mActivity) && mProgressDialog != null
+				&& mProgressDialog.isShowing()) {
 			// The activity is already attached to this task.
 			return;
 		}
@@ -145,23 +145,35 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		// Remember the activity that started this task.
 		this.mActivity = activity;
 
+		buildDialog();
+	}
+
+	/**
+	 * Build and show the dialog.
+	 */
+	private void buildDialog() {
 		// Build the dialog
-		AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-		builder.setTitle(R.string.dialog_building_puzzle_title);
-		builder.setMessage(R.string.dialog_building_puzzle_message);
-		builder.setPositiveButton(R.string.dialog_button_close,
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						mAlertDialog = null;
-						// Move activity to background until the game
-						// generation is finished.
-						mActivity.moveTaskToBack(true);
-					}
-				});
-		mAlertDialog = builder.create();
+		mProgressDialog = new ProgressDialog(mActivity);
+		mProgressDialog.setTitle(R.string.dialog_building_puzzle_title);
+		mProgressDialog.setMessage(mActivity.getResources().getString(
+				R.string.dialog_building_puzzle_message));
+		mProgressDialog.setIcon(android.R.drawable.ic_dialog_info);
+		mProgressDialog.setIndeterminate(false);
+		mProgressDialog.setCancelable(false);
+
+		// Set style of dialog.
+		mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+			if (mGridGeneratorOptions.numberOfGamesToGenerate > 1) {
+				mProgressDialog
+						.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+				mProgressDialog
+						.setMax(mGridGeneratorOptions.numberOfGamesToGenerate);
+			}
+		}
 
 		// Show the dialog
-		mAlertDialog.show();
+		mProgressDialog.show();
 	}
 
 	/*
@@ -198,9 +210,15 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		do {
 			num_attempts++;
 
+			timeStartedSolution = System.currentTimeMillis();
+
 			if (DEBUG_GRID_GENERATOR) {
 				Log.i(TAG, "Puzzle generation attempt: " + num_attempts);
-				publishProgress(" (attempt " + num_attempts + ")");
+				publishProgress(
+						DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_TITLE,
+						mActivity.getResources().getString(
+								R.string.dialog_building_puzzle_title)
+								+ " (attempt " + num_attempts + ")");
 			}
 
 			mCells = new ArrayList<GridCell>();
@@ -224,6 +242,11 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 					GameFile gameFile = new GameFile(GameFileType.NEW_GAME);
 					gameFile.save(mGrid);
 					gameFile.copyToNewGameFile();
+
+					publishProgress(
+							DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_MESSAGE,
+							"");
+					publishProgress(DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_PROGRESS);
 
 					// Check if more puzzles have to generated.
 					if (num_attempts < mGridGeneratorOptions.numberOfGamesToGenerate) {
@@ -249,6 +272,12 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 				}
 			}
 
+			if (DEBUG_GRID_GENERATOR) {
+				publishProgress(
+						DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_MESSAGE,
+						"Verify unique solution");
+			}
+
 			// Determine whether grid has a unique solution.
 			MathDokuDLX mdd = new MathDokuDLX(this.mGridSize, this.mCages);
 			num_solns = mdd.Solve(this, SolveType.MULTIPLE);
@@ -266,34 +295,48 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	}
 
 	protected void onProgressUpdate(String... values) {
-		long timeElapsed = System.currentTimeMillis() - timeStarted;
 		if (DEBUG_GRID_GENERATOR) {
-			if (mAlertDialog != null && values.length > 0 && values[0] != null) {
-				mAlertDialog.setTitle(mActivity.getResources().getString(
-						R.string.dialog_building_puzzle_title)
-						+ values[0]);
-			}
-			if (values.length > 0 && values[0] != null) {
-				Log.i(TAG, Long.toString(timeElapsed) + ": " + values[0]);
-			}
-			if (values.length > 1 && values[1] != null) {
-				if (values[1].equals("Search level 0")) {
+			long timeElapsed = System.currentTimeMillis() - timeStarted;
+			if (values.length == 1 && values[0] != null) {
+				if (values[0]
+						.equals(DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_SOLUTION)) {
+					Log.i(TAG,
+							Long.toString(timeElapsed)
+									+ ": found a solution for this puzzle in "
+									+ (System.currentTimeMillis() - timeStartedSolution)
+									+ " miliseconds");
 					timeStartedSolution = System.currentTimeMillis();
 				}
-				if (values[1].endsWith("solutions found so far")) {
-					long timeElapsedSolution = System.currentTimeMillis()
-							- timeStartedSolution;
-					Log.i(TAG,
-							"Milliseconds need to find solution:"
-									+ Long.toString(timeElapsedSolution));
+			}
+			if (values.length >= 2 && values[0] != null && values[1] != null) {
+
+				if (values[0]
+						.equals(DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_TITLE)) {
+					mProgressDialog.setTitle(values[1]);
+				} else if (values[0]
+						.equals(DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_MESSAGE)) {
+					mProgressDialog.setMessage(values[1]);
 				}
-				Log.i(TAG, Long.toString(timeElapsed) + ": " + values[1]);
+				if (!values[1].equals("")) {
+					Log.i(TAG, Long.toString(timeElapsed) + ": " + values[1]);
+				}
+			}
+		}
+		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+			if (values.length > 0
+					&& values[0] != null
+					&& values[0]
+							.equals(DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_PROGRESS)) {
+				mProgressDialog.incrementProgressBy(1);
 			}
 		}
 	}
 
-	public void publishProgressGridSolutionCheck(String message) {
-		publishProgress(null, message);
+	/**
+	 * Callback for the DLX algorithm in case a solution is found for a puzzle.
+	 */
+	public void publishProgressGridSolutionFound() {
+		publishProgress(DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_MESSAGE);
 	}
 
 	/*
@@ -309,8 +352,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 				// Grids are already saved.
 				DevelopmentHelper.generateGamesReady(mActivity,
 						mGridGeneratorOptions.numberOfGamesToGenerate);
-				if (this.mAlertDialog != null) {
-					dismissAlertDialog();
+				if (this.mProgressDialog != null) {
+					dismissProgressDialog();
 				}
 				super.onPostExecute(result);
 				return;
@@ -320,46 +363,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		// Load results into the grid.
 		mGrid.create(mGameSeed, mGridSize, mCells, mCages, true);
 
-		if (mAlertDialog == null) {
-			// The dialog was dismissed and the activity was sent to the
-			// background.
-			if (DEBUG_GRID_GENERATOR) {
-				Log.d(TAG, "Create a notification for new puzzle");
-			}
-
-			// Save game file. At any time either 0 or 1 new game file will
-			// exist.
-			GameFile gameFile = new GameFile(GameFileType.NEW_GAME);
-			gameFile.save(mGrid);
-
-			// Build the intent
-			Intent intent = new Intent(mActivity, MainActivity.class);
-			intent.putExtra("nameGameFile", gameFile.getName());
-			intent.putExtra("notificationId",
-					MainActivity.NOTIFICATION_GRID_GENERATOR);
-			PendingIntent pendingIntent = PendingIntent.getActivity(mActivity,
-					MainActivity.NOTIFICATION_GRID_GENERATOR, intent,
-					PendingIntent.FLAG_UPDATE_CURRENT);
-
-			// Build and send the notification
-			NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-					mActivity)
-					.setSmallIcon(R.drawable.icon)
-					.setContentTitle(
-							mActivity
-									.getString(
-											R.string.notification_grid_ready_notification_title,
-											mGridSize, mGridSize))
-					.setContentText(
-							mActivity
-									.getString(R.string.notification_grid_ready_notification_message))
-					.setContentIntent(pendingIntent);
-			// .setVibrate(new long[] {100, 250, 100, 500});
-			NotificationManager notificationManager = (NotificationManager) mActivity
-					.getSystemService(Context.NOTIFICATION_SERVICE);
-			notificationManager.notify(
-					MainActivity.NOTIFICATION_GRID_GENERATOR, mBuilder.build());
-		} else if (mActivity != null) {
+		if (mActivity != null) {
 			if (DEBUG_GRID_GENERATOR) {
 				Log.d(TAG, "Send results to activity.");
 			}
@@ -370,8 +374,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			mActivity.onNewGridReady(mGrid);
 
 			// Dismiss the dialog if still visible
-			if (this.mAlertDialog != null) {
-				dismissAlertDialog();
+			if (this.mProgressDialog != null) {
+				dismissProgressDialog();
 			}
 		}
 
@@ -388,7 +392,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			Log.d(TAG, "Detach from activity");
 		}
 
-		dismissAlertDialog();
+		dismissProgressDialog();
 		mActivity = null;
 	}
 
@@ -396,10 +400,10 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	 * Dismisses the progress dialog which was shown on start of this ASync
 	 * task. The ASync task however still keeps running until finished.
 	 */
-	public void dismissAlertDialog() {
-		if (mAlertDialog != null) {
-			mAlertDialog.dismiss();
-			mAlertDialog = null;
+	public void dismissProgressDialog() {
+		if (mProgressDialog != null) {
+			mProgressDialog.dismiss();
+			mProgressDialog = null;
 		}
 	}
 
@@ -449,6 +453,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		this.mGridCageTypeGenerator = CageTypeGenerator.getInstance();
 
 		boolean restart;
+		int attempts = 1;
 		do {
 			restart = false;
 			cageMatrix = new int[this.mGridSize][this.mGridSize];
@@ -467,30 +472,23 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 									mGridSize, mRandom);
 					if (gridCageType != null) {
 						// Determine a random row and column at which the mask
-						// will
-						// be
-						// placed. Use +1 in calls to randomizer to prevent
-						// exceptions
-						// in case the entire height and/or width is needed for
-						// the
-						// cagetype.
+						// will be placed. Use +1 in calls to randomizer to
+						// prevent exceptions in case the entire height and/or
+						// width is needed for the cagetype.
 						int startRow = mRandom
 								.nextInt((mGridSize - gridCageType.getHeight()) + 1);
 						int startCol = mRandom
 								.nextInt((mGridSize - gridCageType.getWidth()) + 1);
 
 						// Determine the origin cell of the cage type in case
-						// the
-						// cage
-						// type mask is put at the randomly determined position.
+						// the cagetype mask is put at the randomly determined
+						// position.
 						int[] coordinatesTopLeft = gridCageType
 								.getOriginCoordinates(startRow, startCol);
 
 						// Get coordinates for the cage cells and add the cage.
-						// Note: no
-						// checking is done on the maximum permutations for the
-						// first
-						// cage.
+						// Note: no checking is done on the maximum permutations
+						// for the first cage.
 						int[][] cageTypeCoords = gridCageType
 								.getCellCoordinates(getCellAt(
 										coordinatesTopLeft[0],
@@ -525,8 +523,13 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 				if (cage.mCells.size() == 1) {
 					countSingles++;
 					if (countSingles > this.mGridSize / 2) {
-						// Too many singles
-						Log.i(" xx", " Too many single cells");
+						if (DEBUG_GRID_GENERATOR) {
+							// Too many singles
+							publishProgress(
+									DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_MESSAGE,
+									"Too many single cells in attempt "
+											+ attempts);
+						}
 						ClearAllCages();
 						restart = true;
 						break;

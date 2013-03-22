@@ -21,7 +21,7 @@ public class DLX extends Object {
 	protected boolean isValid;
 	private int prev_rowidx = -1;
 	private SolveType solvetype;
-	
+
 	// The grid generator to which progress updates will be sent.
 	private GridGenerator mGridGenerator;
 
@@ -190,13 +190,10 @@ public class DLX extends Object {
 		DLXColumn chosenCol;
 		LL2DNode r, j;
 
-		if (k == 0) {
-			mGridGenerator.publishProgressGridSolutionCheck("Search level " + k);
-		}
 		if (root.GetRight() == root) {
 			foundsolution = new ArrayList<Integer>(trysolution);
 			NumSolns++;
-			mGridGenerator.publishProgressGridSolutionCheck(Integer.toString(NumSolns) + " solutions found so far"); 
+			mGridGenerator.publishProgressGridSolutionFound();
 			return;
 		}
 		chosenCol = ChooseMinCol();
