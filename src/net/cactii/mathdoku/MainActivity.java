@@ -288,52 +288,15 @@ public class MainActivity extends Activity {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				if (event.getAction() == MotionEvent.ACTION_UP) {
+					// Play sound
 					v.playSoundEffect(SoundEffectConstants.CLICK);
 
 					// Note: the maybeButton.isChecked holds *old* value
 					// until this method is finished...
 					boolean maybeIsChecked = !maybeButton.isChecked();
 
-					GridCell selectedCell = mGrid.getSelectedCell();
-					if (selectedCell != null) {
-						// Apply new setting of maybe button on current selected
-						// cell.
-
-						// Change user value to a possible value in case the
-						// maybe
-						// button is just checked.
-						if (maybeIsChecked && selectedCell.isUserValueSet()) {
-							selectedCell.saveUndoInformation(null);
-							int curValue = selectedCell.getUserValue();
-							selectedCell.clearUserValue();
-							selectedCell.togglePossible(curValue);
-							mGridView.invalidate();
-						}
-
-						// In case the cell contains only one possible value, it
-						// will be set as user value as the maybe button is just
-						// unchecked.
-						if (!maybeIsChecked
-								&& selectedCell.countPossibles() == 1) {
-							// TODO: move to GridCell and/or Grid
-							CellChange originalUserMove = selectedCell
-									.saveUndoInformation(null);
-							selectedCell.setUserValue(selectedCell
-									.getFirstPossible());
-							if (MainActivity.this.preferences.getBoolean(
-									PREF_CLEAR_REDUNDANT_POSSIBLES,
-									PREF_CLEAR_REDUNDANT_POSSIBLES_DEFAULT)) {
-								// Update possible values for other cells in
-								// this
-								// row and column.
-								mGrid.clearRedundantPossiblesInSameRowOrColumn(originalUserMove);
-							}
-							mGridView.invalidate();
-						}
-
-						// Update colors of buttons
-						setButtonColor(maybeIsChecked);
-					}
+					// Update colors of buttons
+					setButtonColor(maybeIsChecked);
 				}
 				return false;
 			}
