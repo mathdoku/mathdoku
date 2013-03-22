@@ -1,13 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Notes for translators: -->
+    <!-- Thank you for your help in translating MathDoku. Please follow guidelines below when -->
+    <!-- translating this file. -->
+    <!-- 1. Do not alter the order in which strings are sorted. We try to keep the same order in all languages -->
+    <!-- 2. Do not remove comments as the might be usefull for future maintenance. -->
+    <!-- 3. In case a string contact text like "%1$d" this means that a value will be substituted later. -->
+    <!-- 4. Do not translate the comments itself. -->
+    <!-- 5. Please read and follow the aditional instructions where applicable. -->
+
+
+    <!-- GENERAL - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <!-- Name of application. This should NOT be translated. -->
     <string name="application_name">MathDoku</string>
+
+    <!-- The message displayed on the screen to explain the player that (s)he has to press the "Menu" button on the device. -->
+    <string name="press_menu_button_message">Press your device\'s \"Menu\" button.</string>
+
     <!-- The label of the buttons that close dialogs. -->
-    <string name="close">Close</string>
-    <!-- A text that informs the player that a certain amount of text is in English. -->
-    <string name="in_english">(in English)</string>
-    <!-- The visibility of the texts above. Should be 2 in English and 0 in all non-English translations. -->
-    <integer name="in_english_visibility">2</integer>
+    <string name="dialog_general_button_close">Close</string>
+
+    <!-- HELP DIALOG - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    
+    <!-- The lead in text at top of the help dialog. -->
+    <string name="dialog_help_leadin">Thanks for installing MathDoku for Android.</string>
+
+    <!-- The title for the help section. -->
+    <string name="dialog_help_help_title">Help</string>
+    
+    <!-- The title and body describing the goal of the game. -->
+    <string name="dialog_help_goal_title">Your goal</string>
+    <string name="dialog_help_goal_body">Fill in each row and column with digits from 1 to grid size.\n\nDigits can and must be used only once per row and column.\n\nThick lines indicate \'cages\' - each cage has an arithmetic puzzle, which must be solved by the digits in the cage. Eg \'5+\' means all digits in that cage add to 5. The order in which the digits are used in the cage is not relevant.\n\nDigits can be used more than once per cage, so long as there is only one of a digit per row or column.</string>
+    
+    <!-- The title and body describing how to play the game. -->
+    <string name="dialog_help_how_to_play_title">How to play</string>
+    <string name="dialog_help_how_to_play_body">Touch the squares in the grid to choose a digit. The \'maybe\' tickbox allows you to mark multiple possibilities.\n\nLong-touch a cell for more options.\n\nYou can also play using the trackball.\n\nThe current game will be saved when you exit the game, or use the Load/Save menu to save unlimited games.</string>
+    
+    <!-- The version title in the help screen. -->
+    <string name="dialog_help_version_title">Version</string>
+   
+    <!-- The license title in the help screen. -->
+    <string name="dialog_help_license_title">License</string>
+    
+    <!-- The project home title in the help screen. -->
+    <string name="dialog_help_project_home_title">Project Home</string>
+    
+    <!-- The contributor title in the help screen. -->
+    <string name="dialog_help_contributors_title">Contributors</string>
+    <string name="dialog_help_contributors_body">MathDoku was initially developed by Ben Buxton. Contributions have been made by: Stephen Lee, Pimm Hogeling, Paul Dingemans and Anthony Paul. Also we We would to thank all users who have submitted bugs and feature requests.</string>
+    
+    
+    <!-- CHANGES DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<!-- The title of the changelog screen. -->
+    <string name="changelog_title">Changelog</string>
+    
+    <!-- The heading and body of the section referring to the list of changes (revision). -->
+    <string name="changelog_version_title">Version</string>
+    
+    <!-- The heading and body of the section refering to the list of changes. -->
+    <!-- Note for translators: Changes are only available in english. Please mention this in this field. -->
+    <string name="changelog_changes_title">Changes</string>
+    <string name="changelog_changes_body">For a full list of changes please go to our website with link below. Please note that revisions above %1$d will be released in a future release.</string>
+    
+    <!-- The heading and body of the section referring to the list of issues. -->
+    <!-- Note for translators: Only issues written in English will be deaLt with. Please mention this in field changelog_issues_body. -->
+    <string name="changelog_issues_title">Bugs and features</string>
+    <string name="changelog_issues_body">Please report any issues or feature requests via link below. Only issues written in English will be dealt with.</string>
+
+    <!-- MAIN MENU - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The menu item that allows the player to start a new game. -->
+    <string name="menu_newgame">New Game</string>
+
+    <!-- The menu item that allows the player to load and save the game states. -->
+    <string name="menu_saveload">Load/Save</string>
+
+    <!-- The sub-menu item to check user entries against the solution. -->
+    <string name="menu_checkprogress">Check Progress</string>
+
+    <!-- The menu item that allows the player to navigate to the options screen. -->
+    <string name="menu_options">Options</string>
+
+    <!-- The menu item that allows the player to navigate to the help screen. -->
+    <string name="menu_help">Help</string>
+
+    <!-- The menu item that allows the player to navigate to the changelog screen -->
+    <string name="menu_changes">Changes</string>
+
+    <!-- DIALOGS FOR GENERATING NEW PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
     <!-- The different grid sizes with their difficulties. -->
     <string name="grid_size_4">4x4 (easy)</string>
     <string name="grid_size_5">5x5 (medium)</string>
@@ -15,142 +100,160 @@
     <string name="grid_size_7">7x7 (harder)</string>
     <string name="grid_size_8">8x8 (hardest)</string>
     <string name="grid_size_9">9x9 (ultimate)</string>
-    <!-- The menu item that allows the player to start a new game. -->
-    <string name="menu_newgame">New Game</string>
-    <!-- The menu item that allows the player to load and save the game states. -->
-    <string name="menu_saveload">Load/Save</string>
-    <!-- The sub-menu item to check user entries against the solution. -->
-    <string name="menu_checkprogress">Check Progress</string>
-    <!-- The menu item that allows the player to navigate to the options screen. -->
-    <string name="menu_options">Options</string>
-    <!-- The menu item that allows the player to navigate to the help screen. -->
-    <string name="menu_help">Help</string>
-    <!-- The menu item that allows the player to navigate to the changelog screen -->
-    <string name="menu_changes">Changes</string>
-    <!-- The message displayed on the screen to explain the player that (s)he has to press the "Menu" button on the device. -->
-    <string name="press_menu_button_message">Press your device\'s \"Menu\" button.</string>
+
+    <!-- The message and buttons of the dialog box asking whether to hide operator signs. THis dialog will only be shown in case option "Hide operators" has been set to "Always" or "Ask". -->
+    <string name="dialog_hide_operators_message">Hide operator signs?</string>
+    <string name="dialog_hide_operators_positive_button">Yes, I like a challenge</string>
+    <string name="dialog_hide_operators_negative_button">No, keep it simple</string>
+    
+    <!-- The title and message for the dialog displayed on the screen when building a new puzzle. -->
+    <string name="dialog_building_puzzle_title">Building puzzle</string>
+    <string name="dialog_building_puzzle_message">A new puzzle is being build. It will be ready in few seconds.</string>
+
+    
+    <!-- DIALOG LOAD / SAVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
     <!-- The button in the save game screen that allows the player to save the state of the game (s)he's currently playing. -->
     <string name="save_game_screen_save_current_game">Save current game</string>
+
     <!-- The button in the save game screen that allows the player to load a previously saved game state. -->
     <string name="save_game_screen_load_game">Load</string>
+
     <!-- The button in the save game screen that allows the player to delete a previously saved game state. -->
     <string name="save_game_screen_delete_game">Delete</string>
+
     <!-- The confirmation message that shows up when a delete button is pressed, plus the associated title and button labels. -->
     <string name="game_file_list__delete_game_file_confirmation_message">Are you sure you want to delete this game?</string>
     <string name="game_file_list__delete_game_file_confirmation_title">Delete saved game?</string>
     <string name="game_file_list__delete_game_file_negative_button">No, keep it</string>
     <string name="game_file_list__delete_game_file_positive_button">Yes, delete it</string>
-    <!-- The preferences category title for options relating to how the puzzle is displayed. -->
-    <string name="options_group_display">Display</string>
-    <!-- The preferences category title for audio options. -->
-    <string name="options_group_sound">Sound</string>
+
+    <!-- OPTIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
     <!-- The preferences category title for options to assist the user solve the puzzle. -->
     <string name="options_group_assistance">Assistance</string>
-    <!-- The preferences category title for options related to puzzle generation. -->
-    <string name="options_group_puzzle">Puzzle Generation</string>
-    <!-- The theme option -->
-    <string name="option_theme_title">Theme</string>
-    <string name="option_theme_summary">Select display theme.</string>
-    <!-- The title and summary of the "3x3 maybe" option. This option controls whether maybe numbers are displayed in 3x3 grid or straight line. -->
-    <string name="option_maybe_layout_title">Maybes in 3x3 grid</string>
-    <string name="option_maybe_layout_summary">Display maybe numbers in 3x3 grid</string>
-    <!-- The title and summary of the "Allow big cages" option. This option controls whether puzzles can contain big cages (5 or 6 cells). -->
-    <string name="option_generate_big_cages_title">Allow big cages (beta)</string>
-    <string name="option_generate_big_cages_summary">Generate puzzle having cages consisting of 5 or 6 cells.</string>
-    <!-- The title and summary of the "hide operator" option. This option controls whether the mathematical operation signs (+x/-) are shown. -->
-    <string name="option_hide_operators_title">Hide operators</string>
-    <string name="option_hide_operators_summary">Hide operation signs like +, -, x and / when creating a new game.</string>
-    <!-- The title and summary of the "hide selector" option. This option auto-shows the digit buttons when the player selects a cell, and auto-hides those buttons when the player deselects a cell. -->
-    <string name="option_hide_selector_title">Auto-hide digit buttons</string>
-    <string name="option_hide_selector_summary">Digit buttons hide after pressing</string>
+
     <!-- The title and summary of the "bad maths" option. This option highlights cages with incorrect maths. -->
     <string name="option_mark_bad_maths_title">Mark bad maths</string>
     <string name="option_mark_bad_maths_summary">Highlight cages with incorrect maths</string>
+
     <!-- The title and summary of the "bad maths" option. This option highlights cells with digits already in the row or column. -->
     <string name="option_mark_duplicates_title">Mark duplicates</string>
     <string name="option_mark_duplicates_summary">Highlight duplicate digits in a row or column</string>
+
     <!-- The title and summary of the "redundant possibles" option. This option clears possibles values from cells in the same row or columns as the selected cell after setting a user value. -->
     <string name="option_clear_redundant_possibles_title">Clear redundant possible values</string>
     <string name="option_clear_redundant_possibles_summary">After setting a value in a cell, clear this value from the possible values in other cell in the same row or column.</string>
-    <!-- The title and summary of the "sound effects" option. -->
-    <string name="option_sound_effects_title">Sound effects</string>
-    <string name="option_sound_effects_summary">Enable the sound effects</string>
+
+    <!-- The preferences category title for options related to puzzle generation. -->
+    <string name="options_group_puzzle">Puzzle Generation</string>
+
+    <!-- The title and summary of the "Allow big cages" option. This option controls whether puzzles can contain big cages (5 or 6 cells). -->
+    <string name="option_generate_big_cages_title">Allow big cages (beta)</string>
+    <string name="option_generate_big_cages_summary">Generate puzzle having cages consisting of 5 or 6 cells.</string>
+
+    <!-- The title and summary of the "hide operator" option. This option controls whether the mathematical operation signs (+x/-) are shown. -->
+    <string name="option_hide_operators_title">Hide operators</string>
+    <string name="option_hide_operators_summary">Hide operation signs like +, -, x and / when creating a new game.</string>
+
+    <!-- The preferences category title for options relating to how the puzzle is displayed. -->
+    <string name="options_group_display">Display</string>
+
+    <!-- The theme option -->
+    <string name="option_theme_title">Theme</string>
+    <string name="option_theme_summary">Select display theme.</string>
+
+    <!-- The title and summary of the "3x3 maybe" option. This option controls whether maybe numbers are displayed in 3x3 grid or straight line. -->
+    <string name="option_maybe_layout_title">Maybes in 3x3 grid</string>
+    <string name="option_maybe_layout_summary">Display maybe numbers in 3x3 grid</string>
+
+    <!-- The title and summary of the "hide selector" option. This option auto-shows the digit buttons when the player selects a cell, and auto-hides those buttons when the player deselects a cell. -->
+    <string name="option_hide_selector_title">Auto-hide digit buttons</string>
+    <string name="option_hide_selector_summary">Digit buttons hide after pressing</string>
+
     <!-- The title and summary of the "wake lock" option. This option highlights cells with digits already in the row or column. -->
     <string name="option_wake_lock_title">Keep screen on</string>
     <string name="option_wake_lock_summary">Prevent the screen from going off while playing</string>
+
+    <!-- The title and summary of the "display timer" option. This option hides or shows the timer below the puzzle. -->
     <string name="option_show_timer_title">Display timer</string>
     <string name="option_show_timer_summary">Display a timer while solving a puzzle.</string>
+
+    <!-- The preferences category title for audio options. -->
+    <string name="options_group_sound">Sound</string>
+    <!-- The title and summary of the "sound effects" option. -->
+
+
+    <!-- The title and summary of the "Sounds effect" option. This option enables or disables soundeffects. -->
+    <string name="option_sound_effects_title">Sound effects</string>
+    <string name="option_sound_effects_summary">Enable the sound effects</string>
+
+    <!-- CONTEXT MENU IN PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The context menu item that allows the user to reveal a cell. -->
+    <string name="context_menu_reveal_cell">Reveal this cell</string>
+
+    <!-- The context menu item that allows the user to reveal the hidden operator of a cage. This item is only available in case a puzzle with hidden operators is shown and the operator has not yet been revealed. Note that a single cell cage does not have an operator. -->
+    <string name="context_menu_reveal_operator">Reveal cage operator</string>
+
+    <!-- The context menu item that allows the user to fill in the "Maybe"s in the cage. Note this item is only visible in case a maybe value has been entered in any cell in the selected cage. -->
+    <string name="context_menu_use_cage_maybes">Use cage \"Maybe\"s</string>
+
+    <!-- The context menu item that allows the user to clear all of the cells in the cage. Note this item is only visible in case at least one cell in the selected cage contains a (maybe) value. -->
+    <string name="context_menu_clear_cage_cells">Clear cage cells</string>
+
+    <!-- The context menu item that allows the user to clear the entire grid. Note this item is only available in case at least one cell in the entire puzzle contains a (maybe) value. -->
+    <string name="context_menu_clear_grid">Clear entire grid</string>
+
+    <!-- The context menu to show the completed grid. -->
+    <string name="context_menu_show_solution">Show solution</string>
+
+    <!-- The title, message and buttons confirmation message that shows up when the clear grid context menu item is selected, plus the associated title and button labels. -->
+    <string name="dialog_clear_grid_confirmation_title">Clear entire grid?</string>
+    <string name="dialog_clear_grid_confirmation_message">Are you sure you want to clear the entire grid?</string>
+    <string name="dialog_clear_grid_confirmation_negative_button">No, leave it</string>
+    <string name="dialog_clear_grid_confirmation_positive_button">Yes, start over</string>
+    
+    <!-- CONTROLS FOR PUZZLE SOLVING  - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
     <!-- The text before the "maybe" checkbox in the main UI. -->
     <string name="main_ui_maybe">Maybe</string>
+
     <!-- The text on the clear button in the main UI. -->
     <string name="main_ui_clear">Clear</string>
+
     <!-- The text on the undo button in the main UI. -->
     <string name="main_ui_undo">Undo</string>
-    <!-- The message that appears when the player has solved the puzzle. -->
-    <string name="main_ui_solved_messsage">Solved!</string>
-    <!-- The message that appears when the player reveals a cell. -->
-    <string name="main_ui_cheat_messsage">Cheat! :P</string>
 
-    <!-- The title and message for the dialog displayed on the screen when building a new puzzle. -->
-    <string name="dialog_building_puzzle_title">Building puzzle</string>
-    <string name="dialog_building_puzzle_message">A new puzzle is being build. It will be ready in few seconds.</string>
-    
+ 
+    <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
     <!-- The title and message for the dialog displayed on the screen when generating preview images, along with the associated title. -->
     <string name="main_ui_creating_previews_title">Creating preview images</string>
     <string name="main_ui_creating_previews_message">Please wait while creating preview images for all games stored.</string>
 
-    <!-- The context menu item that allows the user to fill in the "Maybe"s in the cage. -->
-    <string name="context_menu_use_cage_maybes">Use cage \"Maybe\"s</string>
-    <!-- The context menu item that allows the user to reveal a cell. -->
-    <string name="context_menu_reveal_cell">Reveal this cell</string>
-    <!-- The context menu item that allows the user to reveal the hidden operator of a cage. -->
-    <string name="context_menu_reveal_operator">Reveal cage operator</string>
-    <!-- The context menu item that allows the user to clear all of the cells in the cage. -->
-    <string name="context_menu_clear_cage_cells">Clear cage cells</string>
-    <!-- The context menu item that allows the user to clear the entire grid. -->
-    <string name="context_menu_clear_grid">Clear entire grid</string>
-    <!-- The context menu to show the completed grid. -->
-    <string name="context_menu_show_solution">Show solution</string>
-    <!-- The confirmation message that shows up when the clear grid context menu item is selected, plus the associated title and button labels. -->
-    <string name="context_menu_clear_grid_confirmation_message">Are you sure you want to clear the entire grid?</string>
-    <string name="context_menu_clear_grid_confirmation_title">Clear entire grid?</string>
-    <string name="context_menu_clear_grid_negative_button_label">No, leave it</string>
-    <string name="context_menu_clear_grid_positive_button_label">Yes, start over</string>
-    <!-- The title of the changelog screen. -->
-    <string name="changelog_title">Changelog</string>
-    <!-- The title of the bugs and features part of the changelog screen. -->
-    <string name="changelog_bugs_features_title">Bugs and features</string>
-    <!-- The text of the bugs and features part of the changelog screen. -->
-    <string name="changelog_bugs_features">Please report any issues or feature requests on the project page:\n\nhttp://mathdoku.googlecode.com/</string>
-    <!-- The first line in the help screen. -->
-    <string name="help_leadin">Thanks for installing MathDoku for Android.</string>
-    <!-- The version title in the help screen. -->
-    <string name="help_version">Version</string>
-    <!-- The license title in the help screen. -->
-    <string name="help_license">License</string>
-    <!-- The project home title in the help screen. -->
-    <string name="help_project_home">Project Home</string>
-    <!-- The author title in the help screen. -->
-    <string name="help_author">Author</string>
-    <!-- The contributor title in the help screen. -->
-    <string name="help_contributor">Contributor</string>
-    <!-- The message shown when no errors found when checking progress. -->
+    <!-- The message that appears when the player has solved the puzzle. -->
+    <string name="main_ui_solved_messsage">Solved!</string>
+
+    <!-- The message that appears when the player reveals a cell. -->
+    <string name="main_ui_cheat_messsage">Cheat! :P</string>
+    <!-- The message shown when no errors found when checking progress. -->
     <string name="ProgressOK">All correct so far</string>
+
     <!-- The message shown when error(s) found when checking progress. -->
     <string name="ProgressBad">Error(s) -  cells highlighted.</string>
-    <!-- The message of the dialog box asking whether to hide operator signs -->
-    <string name="hide_operators_dialog_message">Hide operator signs?</string>
-    <!-- Alert Dialog Yes button text -->
-    <string name="Yes">Yes, I like a challenge</string>
-    <!-- Alert Dialog No button text -->
-    <string name="No">No, keep it simple</string>
-    <!-- Alert to select a cell before a value is selected -->
+    
+        <!-- Alert to select a cell before a value is selected -->
     <string name="select_cell_before_value">Select a cell first.</string>
-    <!-- Text to display in case the preview image of a saved game is not yet available. -->
+    
+        <!-- Text to display in case the preview image of a saved game is not yet available. -->
     <string name="game_file_preview_not_available">Not yet available</string>
     <string name="game_seed">"Game seed: "</string>
 
-    <!-- Text to display in the notification when a new grid has been generated. %1$d and %2$d in title will be replaced with the size of the grid which is generated. -->
-    <string name="notification_grid_ready_notification_title">Grid %1$dx%2$d ready</string>
-    <string name="notification_grid_ready_notification_message">Touch to start playing.</string>
+    
 </resources>

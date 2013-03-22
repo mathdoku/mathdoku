@@ -44,6 +44,7 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 	public final static String TAG = "MathDoku.MainActivity";
 
+	public final static String PROJECT_HOME = "https://code.google.com/p/mathdoku/";
 	// Identifiers for preferences.
 
 	public final static String PREF_CLEAR_REDUNDANT_POSSIBLES = "redundantPossibles";
@@ -710,16 +711,16 @@ public class MainActivity extends Activity {
 			// Ask for every new game which is to be generated whether operators
 			// should be hidden or visible.
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage(R.string.hide_operators_dialog_message)
+			builder.setMessage(R.string.dialog_hide_operators_message)
 					.setCancelable(false)
-					.setPositiveButton(R.string.Yes,
+					.setPositiveButton(R.string.dialog_hide_operators_positive_button,
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int id) {
 									startNewGame(gridSize, true);
 								}
 							})
-					.setNegativeButton(R.string.No,
+					.setNegativeButton(R.string.dialog_hide_operators_negative_button,
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int id) {
@@ -816,10 +817,16 @@ public class MainActivity extends Activity {
 	}
 
 	private void openHelpDialog() {
+		// Get view and put relevant information into the view.
 		LayoutInflater li = LayoutInflater.from(this);
-		View view = li.inflate(R.layout.aboutview, null);
-		TextView tv = (TextView) view.findViewById(R.id.aboutVersionCode);
+		View view = li.inflate(R.layout.helpview, null);
+
+		TextView tv = (TextView) view.findViewById(R.id.dialog_help_version_body);
 		tv.setText(getVersionName() + " (revision " + getVersionNumber() + ")");
+		
+		tv = (TextView) view.findViewById(R.id.help_project_home_link);
+		tv.setText(PROJECT_HOME); 
+
 		new AlertDialog.Builder(MainActivity.this)
 				.setTitle(
 						getResources().getString(R.string.application_name)
@@ -836,7 +843,7 @@ public class MainActivity extends Activity {
 								MainActivity.this.openChangesDialog();
 							}
 						})
-				.setNegativeButton(R.string.close,
+				.setNegativeButton(R.string.dialog_general_button_close,
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
@@ -845,8 +852,29 @@ public class MainActivity extends Activity {
 	}
 
 	private void openChangesDialog() {
+		// Get revision number
+		int revisionNumber = getVersionNumber();
+
+		// Get view and put relevant information into the view.
 		LayoutInflater li = LayoutInflater.from(this);
-		View view = li.inflate(R.layout.changeview, null);
+		View view = li.inflate(R.layout.changelogview, null);
+
+		TextView textView = (TextView) view
+				.findViewById(R.id.changelog_version_body);
+		textView.setText(getVersionName() + " (revision " + getVersionNumber()
+				+ ")");
+
+		textView = (TextView) view.findViewById(R.id.changelog_changes_body);
+		textView.setText(getResources().getString(
+				R.string.changelog_changes_body, revisionNumber));
+
+		textView = (TextView) view.findViewById(R.id.changelog_changes_link);
+		textView.setText(PROJECT_HOME + "source/list?num=25&start="
+				+ revisionNumber);
+
+		textView = (TextView) view.findViewById(R.id.changelog_issues_link);
+		textView.setText(PROJECT_HOME + "issues/list?groupby=milestone");
+
 		new AlertDialog.Builder(MainActivity.this)
 				.setTitle(
 						getResources().getString(R.string.application_name)
@@ -857,7 +885,7 @@ public class MainActivity extends Activity {
 										R.string.changelog_title))
 				.setIcon(R.drawable.about)
 				.setView(view)
-				.setNegativeButton(R.string.close,
+				.setNegativeButton(R.string.dialog_general_button_close,
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
@@ -868,12 +896,12 @@ public class MainActivity extends Activity {
 
 	private void openClearDialog() {
 		new AlertDialog.Builder(MainActivity.this)
-				.setTitle(R.string.context_menu_clear_grid_confirmation_title)
+				.setTitle(R.string.dialog_clear_grid_confirmation_title)
 				.setMessage(
-						R.string.context_menu_clear_grid_confirmation_message)
+						R.string.dialog_clear_grid_confirmation_message)
 				.setIcon(android.R.drawable.ic_dialog_alert)
 				.setNegativeButton(
-						R.string.context_menu_clear_grid_negative_button_label,
+						R.string.dialog_clear_grid_confirmation_negative_button,
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
@@ -881,7 +909,7 @@ public class MainActivity extends Activity {
 							}
 						})
 				.setPositiveButton(
-						R.string.context_menu_clear_grid_positive_button_label,
+						R.string.dialog_clear_grid_confirmation_positive_button,
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog,
