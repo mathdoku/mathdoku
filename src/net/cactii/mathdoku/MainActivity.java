@@ -1277,6 +1277,12 @@ public class MainActivity extends Activity {
 		});
 	}
 
+	/**
+	 * Load the new grid and set control visibility.
+	 * 
+	 * @param grid
+	 *            The grid to display.
+	 */
 	public void setNewGrid(Grid grid) {
 		if (grid != null) {
 			this.mGrid = grid;
@@ -1294,7 +1300,7 @@ public class MainActivity extends Activity {
 
 				// Set visibility of other controls
 				this.setButtonVisibility();
-
+				this.maybeButton.setChecked(false);
 				startTimer();
 
 				// Handler for solved game
