@@ -229,15 +229,6 @@ public class MainActivity extends Activity {
 								// cell.mSelected = false;
 								mGridView.mSelectorShown = false;
 							} else {
-								// In case the cell holds multiple possible
-								// values, the maybe checkbox has to checked as
-								// it is more likely that one of possible values
-								// has to be removed.
-								if (cell.countPossibles() > 1) {
-									maybeButton.setChecked(true);
-									setButtonColor(true);
-								}
-
 								controls.requestFocus();
 							}
 							mGridView.requestFocus();
