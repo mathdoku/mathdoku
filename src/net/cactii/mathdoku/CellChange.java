@@ -12,12 +12,11 @@ import android.util.Log;
  * The CellChange holds undo information for a GridCell.
  */
 public class CellChange {
-	@SuppressWarnings("unused")
 	private static final String TAG = "MathDoku.CellChange";
 
 	// Remove "&& false" in following line to show debug information about
 	// reading information from a storage string
-	public static final boolean DEBUG_STRORAGE_STRING = (DevelopmentHelper.mode == Mode.DEVELOPMENT) && false;
+	public static final boolean DEBUG_STORAGE_STRING = (DevelopmentHelper.mode == Mode.DEVELOPMENT) && false;
 
 	// Base identifier for different versions of cell information which is
 	// stored in
@@ -218,7 +217,7 @@ public class CellChange {
 			return false;
 		}
 
-		if (DEBUG_STRORAGE_STRING) {
+		if (DEBUG_STORAGE_STRING) {
 			Log.i(TAG,
 					"---------------------------------------------------------------------------");
 			Log.i(TAG, "Line: " + line);
@@ -273,7 +272,7 @@ public class CellChange {
 		final int GROUP_RELATED_CELL_CHANGED = 7;
 
 		String indent = "";
-		if (DEBUG_STRORAGE_STRING) {
+		if (DEBUG_STORAGE_STRING) {
 			for (int i = 0; i < level; i++) {
 				indent += "..";
 			}
@@ -286,7 +285,7 @@ public class CellChange {
 		Pattern pattern = Pattern.compile(CELL_CHANGE_REGEXP);
 		Matcher matcher = pattern.matcher(line);
 		if (!matcher.matches()) {
-			if (DEBUG_STRORAGE_STRING) {
+			if (DEBUG_STORAGE_STRING) {
 				// Line does not match the pattern for a cell change
 				Log.i(TAG, indent
 						+ "Can not process this line. Format is invalid");
@@ -294,7 +293,7 @@ public class CellChange {
 			return false;
 		}
 
-		if (DEBUG_STRORAGE_STRING) {
+		if (DEBUG_STORAGE_STRING) {
 			Log.i(TAG,
 					indent + "Number of groups found: " + matcher.groupCount());
 			Log.i(TAG,

@@ -34,7 +34,8 @@
             android:text="@string/game_seed"
             android:textColor="#FF000000"
             android:textSize="9sp"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:ignore="SmallSp" />
 
         <TextView
             android:id="@+id/gameSeedText"
@@ -47,7 +48,7 @@
             android:textColor="#FF000000"
             android:textSize="9sp"
             android:visibility="gone"
-            tools:ignore="HardcodedText" />
+            tools:ignore="HardcodedText,SmallSp" />
 
         <TextView
             android:id="@+id/timerText"
