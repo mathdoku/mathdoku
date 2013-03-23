@@ -148,6 +148,26 @@ public class MainActivity extends Activity {
 
 	final Handler mHandler = new Handler();
 
+	// Object to save data on a configuration change
+	private class ConfigurationInstanceState {
+		private GridGenerator mGridGeneratorTask;
+		private InputMode mInputMode;
+		
+		public ConfigurationInstanceState(GridGenerator gridGeneratorTask, InputMode inputMode) {
+			mGridGeneratorTask = gridGeneratorTask;
+			mInputMode = inputMode;
+		}
+
+		public GridGenerator getGridGeneratorTask() {
+			return mGridGeneratorTask;
+		}
+
+		public InputMode getInputMode() {
+			return mInputMode;
+		}
+		
+	}
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -305,11 +325,19 @@ public class MainActivity extends Activity {
 
 		registerForContextMenu(this.mGridView);
 
-		// Restore background process if running.
+		// Restore the last configuration instance which was saved before the configuration change.
 		Object object = this.getLastNonConfigurationInstance();
-		if (object != null && object.getClass() == GridGenerator.class) {
-			mGridGeneratorTask = (GridGenerator) object;
-			mGridGeneratorTask.attachToActivity(this);
+		if (object != null && object.getClass() == ConfigurationInstanceState.class) {
+			ConfigurationInstanceState configurationInstanceState = (ConfigurationInstanceState) object;
+
+			// Restore input mode
+			setInputMode(configurationInstanceState.getInputMode());
+
+			// Restore background process if running.
+			mGridGeneratorTask = configurationInstanceState.getGridGeneratorTask();
+			if (mGridGeneratorTask != null) {
+				mGridGeneratorTask.attachToActivity(this);
+			}
 		}
 
 		if (!this.preferences.getBoolean(PREF_CREATE_PREVIEW_IMAGES_COMPLETED,
@@ -427,6 +455,7 @@ public class MainActivity extends Activity {
 		Grid newGrid = new GameFile(filename).load();
 		if (newGrid != null) {
 			setNewGrid(newGrid);
+			setInputMode(InputMode.NORMAL);
 		}
 	}
 
@@ -769,6 +798,7 @@ public class MainActivity extends Activity {
 		// new grid will always overwrite the current game without any warning.
 		mGridGeneratorTask = null;
 		setNewGrid(newGrid);
+		setInputMode(InputMode.NORMAL);
 	}
 
 	public void setButtonVisibility() {
@@ -1186,7 +1216,7 @@ public class MainActivity extends Activity {
 			// task from this activity. It will keep on running until finished.
 			mGridGeneratorTask.detachFromActivity();
 		}
-		return mGridGeneratorTask;
+		return new ConfigurationInstanceState(mGridGeneratorTask, mInputMode);
 	}
 
 	public void setOnSolvedHandler() {
@@ -1233,7 +1263,8 @@ public class MainActivity extends Activity {
 			this.puzzleGrid.setVisibility(View.VISIBLE);
 
 			if (this.mGrid.isActive()) {
-				setInputMode(InputMode.NORMAL);
+				// Reset the input mode to the current value in order to update all buttons
+				setInputMode(mInputMode);
 
 				// Set visibility of other controls
 				this.setButtonVisibility();
