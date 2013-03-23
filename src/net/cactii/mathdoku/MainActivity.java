@@ -3,6 +3,7 @@ package net.cactii.mathdoku;
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.GameFile.GameFileType;
 import net.cactii.mathdoku.Painter.GridTheme;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -106,15 +107,18 @@ public class MainActivity extends Activity {
 	// A global painter object to paint the grid in different themes.
 	public Painter mPainter;
 
-	// The input mode in which the puzzle can be
+	// The input mode in which the puzzle can be.
 	public enum InputMode {
 		NORMAL, // Digits entered are handled as a new cell value
 		MAYBE, // Digits entered are handled to toggle the possible value on/of
-		NONE // No game active
+		NO_INPUT__HIDE_GRID, // No game active, no grid shown
+		NO_INPUT__DISPLAY_GRID // No game active, solved puzzle shown
 	};
 
 	// The input mode which is currently active
 	private InputMode mInputMode;
+	TextView mInputModeTextView;
+	RelativeLayout mInputModeLayout;
 
 	TextView solvedText;
 	TextView pressMenu;
@@ -129,8 +133,6 @@ public class MainActivity extends Activity {
 
 	Button digits[] = new Button[9];
 	Button clearDigit;
-	TextView mInputModeTextView;
-	RelativeLayout mImputModeLayout;
 	Button undoButton;
 	View[] sound_effect_views;
 	private Animation outAnimation;
@@ -152,8 +154,9 @@ public class MainActivity extends Activity {
 	private class ConfigurationInstanceState {
 		private GridGenerator mGridGeneratorTask;
 		private InputMode mInputMode;
-		
-		public ConfigurationInstanceState(GridGenerator gridGeneratorTask, InputMode inputMode) {
+
+		public ConfigurationInstanceState(GridGenerator gridGeneratorTask,
+				InputMode inputMode) {
 			mGridGeneratorTask = gridGeneratorTask;
 			mInputMode = inputMode;
 		}
@@ -165,9 +168,9 @@ public class MainActivity extends Activity {
 		public InputMode getInputMode() {
 			return mInputMode;
 		}
-		
+
 	}
-	
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -195,7 +198,7 @@ public class MainActivity extends Activity {
 		this.mGameSeedText = (TextView) findViewById(R.id.gameSeedText);
 		this.mTimerText = (TextView) findViewById(R.id.timerText);
 
-		this.mImputModeLayout = (RelativeLayout) findViewById(R.id.inputModeLayout);
+		this.mInputModeLayout = (RelativeLayout) findViewById(R.id.inputModeLayout);
 		this.mInputModeTextView = (TextView) findViewById(R.id.inputModeText);
 
 		digits[0] = (Button) findViewById(R.id.digitSelect1);
@@ -213,12 +216,13 @@ public class MainActivity extends Activity {
 		this.sound_effect_views = new View[] { this.mGridView, this.digits[0],
 				this.digits[1], this.digits[2], this.digits[3], this.digits[4],
 				this.digits[5], this.digits[6], this.digits[7], this.digits[8],
-				this.clearDigit, this.mImputModeLayout, this.undoButton };
+				this.clearDigit, this.mInputModeLayout, this.undoButton };
 
 		this.mPainter = Painter.getInstance(this);
 
-		setInputMode(InputMode.NONE);
+		setInputMode(InputMode.NO_INPUT__HIDE_GRID);
 
+		// Animation for a solved puzzle
 		solvedAnimation = AnimationUtils.loadAnimation(MainActivity.this,
 				R.anim.solvedanim);
 		solvedAnimation.setAnimationListener(new AnimationListener() {
@@ -233,6 +237,7 @@ public class MainActivity extends Activity {
 			}
 		});
 
+		// Animation for controls.
 		outAnimation = AnimationUtils.loadAnimation(MainActivity.this,
 				R.anim.selectorzoomout);
 		outAnimation.setAnimationListener(new AnimationListener() {
@@ -250,30 +255,28 @@ public class MainActivity extends Activity {
 		this.mGridView
 				.setOnGridTouchListener(this.mGridView.new OnGridTouchListener() {
 					@Override
-					public void gridTouched(GridCell cell) {
-						if (controls.getVisibility() == View.VISIBLE) {
-							// digitSelector.setVisibility(View.GONE);
-							if (MainActivity.this.preferences.getBoolean(
-									"hideselector", false)) {
+					public void gridTouched(GridCell cell, boolean sameCellSelectedAgain) {
+						if (MainActivity.this.preferences.getBoolean(
+								PREF_HIDE_CONTROLS,
+								PREF_HIDE_CONTROLS_DEFAULT)) {
+							if (controls.getVisibility() == View.VISIBLE) {
 								controls.startAnimation(outAnimation);
-								// cell.mSelected = false;
 								mGridView.mSelectorShown = false;
+								mGridView.requestFocus();
 							} else {
-								controls.requestFocus();
-							}
-							mGridView.requestFocus();
-						} else {
-							if (MainActivity.this.preferences.getBoolean(
-									PREF_HIDE_CONTROLS,
-									PREF_HIDE_CONTROLS_DEFAULT)) {
 								controls.setVisibility(View.VISIBLE);
 								Animation animation = AnimationUtils
 										.loadAnimation(MainActivity.this,
 												R.anim.selectorzoomin);
 								controls.startAnimation(animation);
 								mGridView.mSelectorShown = true;
+								controls.requestFocus();
 							}
-							controls.requestFocus();
+						} else {
+							// Controls are always visible
+							if (sameCellSelectedAgain) {
+								toggleInputMode();
+							}
 						}
 					}
 				});
@@ -299,11 +302,12 @@ public class MainActivity extends Activity {
 				}
 
 				if (MainActivity.this.preferences.getBoolean(
-						PREF_HIDE_CONTROLS, PREF_HIDE_CONTROLS_DEFAULT))
+						PREF_HIDE_CONTROLS, PREF_HIDE_CONTROLS_DEFAULT)) {
 					MainActivity.this.controls.setVisibility(View.GONE);
+				}
 			}
 		});
-		this.mImputModeLayout.setOnTouchListener(new OnTouchListener() {
+		this.mInputModeLayout.setOnTouchListener(new OnTouchListener() {
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
@@ -325,16 +329,19 @@ public class MainActivity extends Activity {
 
 		registerForContextMenu(this.mGridView);
 
-		// Restore the last configuration instance which was saved before the configuration change.
+		// Restore the last configuration instance which was saved before the
+		// configuration change.
 		Object object = this.getLastNonConfigurationInstance();
-		if (object != null && object.getClass() == ConfigurationInstanceState.class) {
+		if (object != null
+				&& object.getClass() == ConfigurationInstanceState.class) {
 			ConfigurationInstanceState configurationInstanceState = (ConfigurationInstanceState) object;
 
 			// Restore input mode
 			setInputMode(configurationInstanceState.getInputMode());
 
 			// Restore background process if running.
-			mGridGeneratorTask = configurationInstanceState.getGridGeneratorTask();
+			mGridGeneratorTask = configurationInstanceState
+					.getGridGeneratorTask();
 			if (mGridGeneratorTask != null) {
 				mGridGeneratorTask.attachToActivity(this);
 			}
@@ -354,8 +361,10 @@ public class MainActivity extends Activity {
 	public void onPause() {
 		if (mGrid != null && mGrid.getGridSize() > 3) {
 			GameFile saver = new GameFile(GameFileType.LAST_GAME);
-			this.mGrid.setElapsedTime((mTimerTask == null ? 0
-					: mTimerTask.mElapsedTime));
+			if (mTimerTask != null) {
+				// Update elapsed time in grid.
+				this.mGrid.setElapsedTime(mTimerTask.mElapsedTime);
+			}
 			saver.save(mGrid, this.mGridView);
 		}
 		stopTimer();
@@ -601,8 +610,9 @@ public class MainActivity extends Activity {
 			break;
 		case CONTEXT_MENU_SHOW_SOLUTION:
 			this.mGrid.Solve();
-			this.mGridView.invalidate();
-			this.pressMenu.setVisibility(View.VISIBLE);
+			setInputMode(InputMode.NO_INPUT__DISPLAY_GRID);
+			// REMOVE: this.mGridView.invalidate();
+			// REMOVE: this.pressMenu.setVisibility(View.VISIBLE);
 			break;
 		case CONTEXT_MENU_REVEAL_OPERATOR:
 			if (selectedGridCage == null) {
@@ -717,6 +727,14 @@ public class MainActivity extends Activity {
 	private void restartLastGame() {
 		Grid newGrid = new GameFile(GameFileType.LAST_GAME).load();
 		setNewGrid(newGrid);
+
+		// Set input mode only if it was not set before. In case of a
+		// configuration change the input mode has already been set in the
+		// onCreate event and may not be overridden.
+		if (mInputMode == InputMode.NO_INPUT__HIDE_GRID) {
+			setInputMode((mGrid.isActive() ? InputMode.NORMAL
+					: InputMode.NO_INPUT__DISPLAY_GRID));
+		}
 	}
 
 	/**
@@ -799,26 +817,6 @@ public class MainActivity extends Activity {
 		mGridGeneratorTask = null;
 		setNewGrid(newGrid);
 		setInputMode(InputMode.NORMAL);
-	}
-
-	public void setButtonVisibility() {
-		int gridSize = mGrid.getGridSize();
-		for (int i = 4; i < 9; i++)
-			if (i < gridSize)
-				this.digits[i].setVisibility(View.VISIBLE);
-			else
-				this.digits[i].setVisibility(View.GONE);
-
-		this.solvedText.setVisibility(View.GONE);
-		this.pressMenu.setVisibility(View.GONE);
-		if (this.preferences.getBoolean(PREF_SHOW_TIMER,
-				PREF_SHOW_TIMER_DEFAULT)) {
-			this.mTimerText.setVisibility(View.VISIBLE);
-		}
-		if (!MainActivity.this.preferences.getBoolean(PREF_HIDE_CONTROLS,
-				PREF_HIDE_CONTROLS_DEFAULT)) {
-			this.controls.setVisibility(View.VISIBLE);
-		}
 	}
 
 	private void animText(int textIdentifier, int color) {
@@ -1223,7 +1221,12 @@ public class MainActivity extends Activity {
 		this.mGrid.setSolvedHandler(this.mGrid.new OnSolvedListener() {
 			@Override
 			public void puzzleSolved() {
-				MainActivity.this.controls.setVisibility(View.GONE);
+				// Update elapsed time in grid
+				mGrid.setElapsedTime(mTimerTask.mElapsedTime);
+				stopTimer();
+
+				setInputMode(InputMode.NO_INPUT__DISPLAY_GRID);
+				// REMOVE: MainActivity.this.controls.setVisibility(View.GONE);
 				if (mGrid.isActive() && !mGrid.isSolvedByCheating()
 						&& mGrid.countMoves() > 0) {
 					// Only display animation in case the user has just
@@ -1233,13 +1236,11 @@ public class MainActivity extends Activity {
 					animText(R.string.main_ui_solved_messsage, 0xFF002F00);
 				}
 
-				MainActivity.this.pressMenu.setVisibility(View.VISIBLE);
-
-				stopTimer();
-
+				// REMOVE:
+				// MainActivity.this.pressMenu.setVisibility(View.VISIBLE);
 				if (MainActivity.this.mTimerText.getVisibility() == View.VISIBLE
 						&& mGrid.isSolvedByCheating()) {
-					// Hide time in case the puzzle was solved by
+					// Hide timer in case the puzzle was solved by
 					// requesting to show the solution.
 					MainActivity.this.mTimerText.setVisibility(View.INVISIBLE);
 				}
@@ -1260,31 +1261,34 @@ public class MainActivity extends Activity {
 			this.mGridView.loadNewGrid(grid);
 
 			// Show the grid of the loaded puzzle.
-			this.puzzleGrid.setVisibility(View.VISIBLE);
+			// REMOVE: this.puzzleGrid.setVisibility(View.VISIBLE);
 
 			if (this.mGrid.isActive()) {
-				// Reset the input mode to the current value in order to update all buttons
+				// Reset the input mode to the current value in order to update
+				// all buttons
 				setInputMode(mInputMode);
 
-				// Set visibility of other controls
-				this.setButtonVisibility();
 				startTimer();
 
 				// Handler for solved game
 				setOnSolvedHandler();
 			} else {
-				setInputMode(InputMode.NONE);
+				setInputMode(InputMode.NO_INPUT__HIDE_GRID);
 
 				// Set visibility of other controls
-				this.pressMenu.setVisibility(View.VISIBLE);
-				this.controls.setVisibility(View.GONE);
+				// REMOVE: this.pressMenu.setVisibility(View.VISIBLE);
+				// REMOVE: this.controls.setVisibility(View.GONE);
 
 				stopTimer();
-				if (this.mTimerText.getVisibility() == View.VISIBLE
-						&& grid.isSolvedByCheating()) {
+				
+				if (grid.isSolvedByCheating()) {
 					// Hide time in case the puzzle was solved by
 					// requesting to show the solution.
 					this.mTimerText.setVisibility(View.INVISIBLE);
+				} else {
+					// Show time
+					this.mTimerText.setVisibility(View.VISIBLE);
+					setElapsedTime(mTimerText, grid.getElapsedTime());
 				}
 			}
 
@@ -1297,10 +1301,7 @@ public class MainActivity extends Activity {
 			}
 		} else {
 			// No grid available.
-			setInputMode(InputMode.NONE);
-			this.puzzleGrid.setVisibility(View.GONE);
-			this.controls.setVisibility(View.GONE);
-			this.pressMenu.setVisibility(View.VISIBLE);
+			setInputMode(InputMode.NO_INPUT__HIDE_GRID);
 		}
 	}
 
@@ -1314,7 +1315,7 @@ public class MainActivity extends Activity {
 		if (mGrid != null && mGrid.isActive()) {
 			mTimerTask = new GameTimer();
 			mTimerTask.mElapsedTime = mGrid.getElapsedTime();
-			mTimerTask.mTimerLabel = mTimerText;
+			mTimerTask.mTimerTextView = mTimerText;
 			if (preferences
 					.getBoolean(PREF_SHOW_TIMER, PREF_SHOW_TIMER_DEFAULT)) {
 				mTimerText.setVisibility(View.VISIBLE);
@@ -1353,44 +1354,75 @@ public class MainActivity extends Activity {
 	private void setInputMode(InputMode inputMode) {
 		this.mInputMode = inputMode;
 
-		// Determine the color which is used for text which depends on the
-		// actual input mode
-		int color = 0;
+		// Visibility of grid view
 		switch (inputMode) {
-		case NONE: // TODO: separate color for this mode???
-		case NORMAL:
-			color = mPainter.mActiveModeTextColor;
+		case NO_INPUT__HIDE_GRID:
+			puzzleGrid.setVisibility(View.GONE);
 			break;
+		case NO_INPUT__DISPLAY_GRID:
+		case NORMAL:
 		case MAYBE:
-			color = mPainter.mInactiveModeTextColor;
+			puzzleGrid.setVisibility(View.VISIBLE);
 			break;
 		}
 
-		// Set color of maybe label and the maybe checkbox (note: these fields
-		// are not visible in inputMode.None)
-		mInputModeTextView.setTextColor(color);
-		mInputModeTextView.setText(getResources().getString(
-				(inputMode == InputMode.MAYBE ? R.string.input_mode_maybe
-						: R.string.input_mode_normal)));
-
-		// Set colors of the number buttons (note: these fields are not visible
-		// in inputMode.None)
-		if (mGrid != null) {
-			for (int i = 0; i < mGrid.getGridSize(); i++) {
-				this.digits[i].setTextColor(color);
+		// visibility of pressMenu, controls and inputMode
+		switch (inputMode) {
+		case NO_INPUT__HIDE_GRID:
+		case NO_INPUT__DISPLAY_GRID:
+			pressMenu.setVisibility(View.VISIBLE);
+			mInputModeLayout.setVisibility(View.GONE);
+			controls.setVisibility(View.GONE);
+			break;
+		case NORMAL:
+		case MAYBE:
+			solvedText.setVisibility(View.GONE);
+			pressMenu.setVisibility(View.GONE);
+			mInputModeLayout.setVisibility(View.VISIBLE);
+			if (preferences.getBoolean(PREF_SHOW_TIMER,
+					PREF_SHOW_TIMER_DEFAULT)) {
+				mTimerText.setVisibility(View.VISIBLE);
 			}
+			if (!MainActivity.this.preferences.getBoolean(PREF_HIDE_CONTROLS,
+					PREF_HIDE_CONTROLS_DEFAULT)) {
+				this.controls.setVisibility(View.VISIBLE);
+			}
+
+			// Determine the color which is used for text which depends on the
+			// actual input mode
+			int color = (inputMode == InputMode.NORMAL ? mPainter.mHighlightedTextColorNormalInputMode
+					: mPainter.mHighlightedTextColorMaybeInputMode);
+
+			// Set text and color for input mode label
+			mInputModeTextView.setTextColor(color);
+			mInputModeTextView.setText(getResources().getString(
+					(inputMode == InputMode.NORMAL ? R.string.input_mode_normal
+							: R.string.input_mode_maybe)));
+
+			// Set visibility and colors of buttons
+			if (mGrid != null) {
+				int i = 0;
+				for (; i < mGrid.getGridSize(); i++) {
+					digits[i].setVisibility(View.VISIBLE);
+					digits[i].setTextColor(color);
+				}
+				for (; i < 9; i++) {
+					this.digits[i].setVisibility(View.GONE);
+				}
+			}
+			break;
 		}
 
 		mGridView.invalidate();
 	}
-
+	
 	/**
 	 * Toggles the input mode to the next available state.
 	 */
 	public void toggleInputMode() {
-		InputMode inputMode = InputMode.NONE;
+		InputMode inputMode = InputMode.NO_INPUT__HIDE_GRID;
 		switch (mInputMode) {
-		case NONE:
+		case NO_INPUT__HIDE_GRID:
 			inputMode = InputMode.NORMAL;
 			break;
 		case NORMAL:
@@ -1401,5 +1433,30 @@ public class MainActivity extends Activity {
 			break;
 		}
 		setInputMode(inputMode);
+	}
+
+	/**
+	 * Sets the timer text with the actual elapsed time.
+	 * 
+	 * @param timerTextView
+	 *            The textview which has to be filled.
+	 * @param elapsedTime
+	 *            The elapsed time (in mili seconds) while playing the game.
+	 */
+	@SuppressLint("DefaultLocale")
+	public static void setElapsedTime(TextView timerTextView, long elapsedTime) {
+		String timeString;
+		int seconds = (int) (elapsedTime / 1000); // Whole seconds.
+		int hours = (int) Math.floor(seconds / (60 * 60));
+		if (hours == 0) {
+			timeString = String.format("%2dm%02ds", (seconds % (3600)) / 60,
+					seconds % 60);
+		} else {
+			timeString = String.format("%dh%02dm%02ds", hours,
+					(seconds % (3600)) / 60, seconds % 60);
+		}
+		if (timerTextView != null) {
+			timerTextView.setText(timeString);
+		}
 	}
 }

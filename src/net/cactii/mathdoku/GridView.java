@@ -59,7 +59,8 @@ public class GridView extends View implements OnTouchListener {
 	}
 
 	public abstract class OnGridTouchListener {
-		public abstract void gridTouched(GridCell cell);
+		public abstract void gridTouched(GridCell cell,
+				boolean sameCellSelectedAgain);
 	}
 
 	public boolean onTouch(View arg0, MotionEvent event) {
@@ -92,21 +93,17 @@ public class GridView extends View implements OnTouchListener {
 		this.mTrackPosX = cellPos[0];
 		this.mTrackPosY = cellPos[1];
 
-		if (grid.getSelectedCell() == cell) {
-			// The selected cell has been touch again.
-			((MainActivity) getContext()).toggleInputMode();
-		} else {
-			// Another cell was touched
-			this.playSoundEffect(SoundEffectConstants.CLICK);
-			grid.setSelectedCell(cell);
-			if (this.mTouchedListener != null) {
-				grid.getSelectedCell().mSelected = true;
-				grid.getCageForSelectedCell().mSelected = true;
-			}
-		}
+		// Determine if same cell was touched again
+		boolean sameCellSelectedAgain = (grid.getSelectedCell() == null ? false
+				: grid.getSelectedCell().equals(cell));
+
+		// Select new cell
+		this.playSoundEffect(SoundEffectConstants.CLICK);
+		grid.setSelectedCell(cell);
 		if (this.mTouchedListener != null) {
-			this.mTouchedListener.gridTouched(cell);
+			mTouchedListener.gridTouched(cell, sameCellSelectedAgain);
 		}
+
 		invalidate();
 
 		return false;
@@ -122,13 +119,21 @@ public class GridView extends View implements OnTouchListener {
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
 			if (this.mTouchedListener != null) {
 				grid.getSelectedCell().mSelected = true;
-				this.mTouchedListener.gridTouched(grid.getSelectedCell());
+				this.mTouchedListener
+						.gridTouched(grid.getSelectedCell(), false); // TODO;
+																		// test
+																		// on
+																		// change
+																		// of
+																		// cell?
 			}
 			return true;
 		}
 		// A multiplier amplifies the trackball event values
 		int trackMult = 70;
 		switch (grid.getGridSize()) {
+		case 4:
+			// fall through
 		case 5:
 			trackMult = 60;
 			break;
@@ -136,10 +141,12 @@ public class GridView extends View implements OnTouchListener {
 			trackMult = 50;
 			break;
 		case 7:
+			// fall through
+		case 8:
+			// fall through
+		case 9:
 			trackMult = 40;
 			break;
-		case 8:
-			trackMult = 40;
 		}
 		// Fetch the trackball position, work out the cell it's at
 		float x = event.getX();
@@ -155,8 +162,9 @@ public class GridView extends View implements OnTouchListener {
 		// Set the cell as selected
 		if (grid.getSelectedCell() != null) {
 			grid.getSelectedCell().mSelected = false;
-			if (grid.getSelectedCell() != cell)
-				this.mTouchedListener.gridTouched(cell);
+			if (grid.getSelectedCell() != cell) // TODO: test with toggling
+												// input mode
+				this.mTouchedListener.gridTouched(cell, false);
 		}
 		for (GridCell c : grid.mCells) {
 			c.mSelected = false;
@@ -201,16 +209,15 @@ public class GridView extends View implements OnTouchListener {
 					.show();
 			return;
 		}
-		
+
 		// Save undo information
 		CellChange orginalUserMove = selectedCell.saveUndoInformation(null);
-		
-		
+
 		if (value == 0) { // Clear Button
 			selectedCell.clearPossibles();
 			selectedCell.setUserValue(0);
 		} else {
-			switch(inputMode) {
+			switch (inputMode) {
 			case MAYBE:
 				if (selectedCell.isUserValueSet()) {
 					selectedCell.clearUserValue();
@@ -230,7 +237,8 @@ public class GridView extends View implements OnTouchListener {
 				}
 
 				break;
-			case NONE:
+			case NO_INPUT__DISPLAY_GRID:
+			case NO_INPUT__HIDE_GRID:
 				// Should not be possible
 				return;
 			}

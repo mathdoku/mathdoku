@@ -8,10 +8,13 @@ import android.widget.TextView;
  */
 public class GameTimer extends AsyncTask<Void, Long, Long> {
 
-	public TextView mTimerLabel;
+	public TextView mTimerTextView;
 	public Long mStartTime;
 	public Long mElapsedTime = (long) 0;
 
+	/* (non-Javadoc)
+	 * @see android.os.AsyncTask#doInBackground(Params[])
+	 */
 	@Override
 	protected Long doInBackground(Void... arg0) {
 		long previousTime = 0;
@@ -37,25 +40,12 @@ public class GameTimer extends AsyncTask<Void, Long, Long> {
 		return mElapsedTime;
 	}
 
+	/* (non-Javadoc)
+	 * @see android.os.AsyncTask#onProgressUpdate(Progress[])
+	 */
 	protected void onProgressUpdate(Long... time) {
-		String timeString;
-		int seconds = (int) (time[0] / 1000); // Whole seconds.
-		int hours = (int) Math.floor(seconds / (60 * 60));
-		if (hours == 0) {
-			timeString = String.format("%2dm%02ds", (seconds % (3600)) / 60,
-					seconds % 60);
-		} else {
-			timeString = String.format("%dh%02dm%02ds", hours,
-					(seconds % (3600)) / 60, seconds % 60);
+		if (!this.isCancelled() & time.length > 0) {
+			MainActivity.setElapsedTime(mTimerTextView, time[0]);
 		}
-		if (this.isCancelled()) {
-			return;
-		}
-		mTimerLabel.setText(timeString);
 	}
-
-	protected void onPostExecute(Void none) {
-		//
-	}
-
 }

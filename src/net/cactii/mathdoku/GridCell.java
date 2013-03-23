@@ -391,8 +391,8 @@ public class GridCell {
 
 		// Cell value
 		if (this.isUserValueSet()) {
-			Paint paint = (inputMode == inputMode.NORMAL ? mUserValuePainter.mTextPaintActiveMode
-					: mUserValuePainter.mTextPaintInactiveMode);
+			Paint paint = (inputMode == inputMode.NORMAL ? mUserValuePainter.mTextPaintNormalInputMode
+					: mUserValuePainter.mTextPaintMaybeInputMode);
 			canvas.drawText("" + mUserValue, mPosX
 					+ mUserValuePainter.mLeftOffset, mPosY
 					+ mUserValuePainter.mTopOffset, paint);
@@ -407,8 +407,8 @@ public class GridCell {
 		// Draw pencilled in digits.
 		if (mPossibles.size() > 0) {
 			if (mGrid.hasPrefShowMaybesAs3x3Grid()) {
-				Paint paint = (inputMode == InputMode.MAYBE ? mMaybe3x3Painter.mTextPaintActiveMode
-						: mMaybe3x3Painter.mTextPaintInactiveMode);
+				Paint paint = (inputMode == InputMode.NORMAL ? mMaybe3x3Painter.mTextPaintNormalInputMode
+						: mMaybe3x3Painter.mTextPaintMaybeInputMode);
 				for (int i = 0; i < mPossibles.size(); i++) {
 					int possible = mPossibles.get(i);
 					float xPos = mPosX + mMaybe3x3Painter.mLeftOffset
@@ -420,8 +420,8 @@ public class GridCell {
 							paint);
 				}
 			} else {
-				Paint paint = (inputMode == InputMode.MAYBE ? mMaybe1x9Painter.mTextPaintActiveMode
-						: mMaybe1x9Painter.mTextPaintInactiveMode);
+				Paint paint = (inputMode == InputMode.NORMAL ? mMaybe1x9Painter.mTextPaintNormalInputMode
+						: mMaybe1x9Painter.mTextPaintMaybeInputMode);
 				String possibles = "";
 				for (int i = 0; i < mPossibles.size(); i++) {
 					possibles += Integer.toString(mPossibles.get(i));

@@ -64,8 +64,8 @@ public class Painter {
 
 	// Painter for the user value
 	public class UserValuePainter {
-		public Paint mTextPaintActiveMode;
-		public Paint mTextPaintInactiveMode;
+		public Paint mTextPaintNormalInputMode;
+		public Paint mTextPaintMaybeInputMode;
 
 		// Offsets of user value within cell
 		public float mLeftOffset;
@@ -76,8 +76,8 @@ public class Painter {
 
 	// Painter for 3x3 grid of possible values
 	public class Maybe3x3Painter {
-		public Paint mTextPaintActiveMode;
-		public Paint mTextPaintInactiveMode;
+		public Paint mTextPaintNormalInputMode;
+		public Paint mTextPaintMaybeInputMode;
 
 		// Offset within cell
 		public float mLeftOffset;
@@ -89,8 +89,8 @@ public class Painter {
 
 	// Painter for single line of possible values
 	public class Maybe1x9Painter {
-		public Paint mTextPaintActiveMode;
-		public Paint mTextPaintInactiveMode;
+		public Paint mTextPaintNormalInputMode;
+		public Paint mTextPaintMaybeInputMode;
 
 		// Offset within cell
 		public float mLeftOffset;
@@ -112,8 +112,8 @@ public class Painter {
 	public CagePainter mCagePainter;
 	
 	// Text colors (dependent on theme) per input mode
-	public int mActiveModeTextColor;
-	public int mInactiveModeTextColor;
+	public int mHighlightedTextColorNormalInputMode;
+	public int mHighlightedTextColorMaybeInputMode;
 
 	// Border sizes
 	private int BORDER_STROKE_HAIR_LINE = 0;
@@ -233,38 +233,38 @@ public class Painter {
 		// Create the painters for the user value
 		mUserValuePainter = new UserValuePainter();
 
-		mUserValuePainter.mTextPaintActiveMode = new Paint(
+		mUserValuePainter.mTextPaintNormalInputMode = new Paint(
 				Paint.ANTI_ALIAS_FLAG);
-		mUserValuePainter.mTextPaintInactiveMode = new Paint(
+		mUserValuePainter.mTextPaintMaybeInputMode = new Paint(
 				Paint.ANTI_ALIAS_FLAG);
 
 		// Create painters for the possible values 3x3 grid
 		mMaybe3x3Painter = new Maybe3x3Painter();
 
-		mMaybe3x3Painter.mTextPaintActiveMode = new Paint(Paint.ANTI_ALIAS_FLAG);
-		mMaybe3x3Painter.mTextPaintActiveMode.setTextSize(10);
-		mMaybe3x3Painter.mTextPaintActiveMode.setTypeface(mTypefaceSansSerif);
-		mMaybe3x3Painter.mTextPaintActiveMode.setFakeBoldText(true);
+		mMaybe3x3Painter.mTextPaintNormalInputMode = new Paint(Paint.ANTI_ALIAS_FLAG);
+		mMaybe3x3Painter.mTextPaintNormalInputMode.setTextSize(10);
+		mMaybe3x3Painter.mTextPaintNormalInputMode.setTypeface(mTypefaceSansSerif);
+		mMaybe3x3Painter.mTextPaintNormalInputMode.setFakeBoldText(true);
 
-		mMaybe3x3Painter.mTextPaintInactiveMode = new Paint(
+		mMaybe3x3Painter.mTextPaintMaybeInputMode = new Paint(
 				Paint.ANTI_ALIAS_FLAG);
-		mMaybe3x3Painter.mTextPaintInactiveMode.setTextSize(10);
-		mMaybe3x3Painter.mTextPaintInactiveMode.setTypeface(mTypefaceSansSerif);
-		mMaybe3x3Painter.mTextPaintInactiveMode.setFakeBoldText(true);
+		mMaybe3x3Painter.mTextPaintMaybeInputMode.setTextSize(10);
+		mMaybe3x3Painter.mTextPaintMaybeInputMode.setTypeface(mTypefaceSansSerif);
+		mMaybe3x3Painter.mTextPaintMaybeInputMode.setFakeBoldText(true);
 
 		// Create the painters for the possible values single line
 		mMaybe1x9Painter = new Maybe1x9Painter();
 
-		mMaybe1x9Painter.mTextPaintActiveMode = new Paint(Paint.ANTI_ALIAS_FLAG);
-		mMaybe1x9Painter.mTextPaintActiveMode.setTextSize(10);
-		mMaybe1x9Painter.mTextPaintActiveMode.setTypeface(mTypefaceSansSerif);
-		mMaybe1x9Painter.mTextPaintActiveMode.setFakeBoldText(false);
+		mMaybe1x9Painter.mTextPaintNormalInputMode = new Paint(Paint.ANTI_ALIAS_FLAG);
+		mMaybe1x9Painter.mTextPaintNormalInputMode.setTextSize(10);
+		mMaybe1x9Painter.mTextPaintNormalInputMode.setTypeface(mTypefaceSansSerif);
+		mMaybe1x9Painter.mTextPaintNormalInputMode.setFakeBoldText(false);
 
-		mMaybe1x9Painter.mTextPaintInactiveMode = new Paint(
+		mMaybe1x9Painter.mTextPaintMaybeInputMode = new Paint(
 				Paint.ANTI_ALIAS_FLAG);
-		mMaybe1x9Painter.mTextPaintInactiveMode.setTextSize(10);
-		mMaybe1x9Painter.mTextPaintInactiveMode.setTypeface(mTypefaceSansSerif);
-		mMaybe1x9Painter.mTextPaintInactiveMode.setFakeBoldText(false);
+		mMaybe1x9Painter.mTextPaintMaybeInputMode.setTextSize(10);
+		mMaybe1x9Painter.mTextPaintMaybeInputMode.setTypeface(mTypefaceSansSerif);
+		mMaybe1x9Painter.mTextPaintMaybeInputMode.setFakeBoldText(false);
 
 		// Create cage painter
 		mCagePainter = new CagePainter();
@@ -341,25 +341,24 @@ public class Painter {
 
 		switch (theme) {
 		case CARVED:
-			mActiveModeTextColor = 0xFF15DC23; // TODO: determine good color
-			mInactiveModeTextColor = 0xFFE61EBE; // TODO: determine good color
+			mHighlightedTextColorNormalInputMode = 0xFF15DC23; // TODO: determine good color
+			mHighlightedTextColorMaybeInputMode = 0xFFE61EBE; // TODO: determine good color
 			break;
 		case NEWSPAPER:
-			mActiveModeTextColor = 0xFF15DC23; // TODO: determine good color
-			mInactiveModeTextColor = 0xFFE61EBE; // TODO: determine good color
+			mHighlightedTextColorNormalInputMode = 0xFF15DC23; // TODO: determine good color
+			mHighlightedTextColorMaybeInputMode = 0xFFE61EBE; // TODO: determine good color
 			break;
 		case DARK:
-			mActiveModeTextColor = 0xFF15DC23; // TODO: determine good color
-			mInactiveModeTextColor = 0xFFE61EBE; // TODO: determine good color
+			mHighlightedTextColorNormalInputMode = 0xFF15DC23; // TODO: determine good color
+			mHighlightedTextColorMaybeInputMode = 0xFFE61EBE; // TODO: determine good color
 			break;
 		}
-		mUserValuePainter.mTextPaintActiveMode.setColor(mActiveModeTextColor);
-		mUserValuePainter.mTextPaintInactiveMode.setColor(0xFF000000);
-		// The maybe painter have inverted colors compared to the user value.
-		mMaybe3x3Painter.mTextPaintActiveMode.setColor(mInactiveModeTextColor);
-		mMaybe3x3Painter.mTextPaintInactiveMode.setColor(0xFF000000);
-		mMaybe1x9Painter.mTextPaintActiveMode.setColor(mInactiveModeTextColor);
-		mMaybe1x9Painter.mTextPaintInactiveMode.setColor(0xFF000000);
+		mUserValuePainter.mTextPaintNormalInputMode.setColor(mHighlightedTextColorNormalInputMode);
+		mUserValuePainter.mTextPaintMaybeInputMode.setColor(0xFF000000);
+		mMaybe3x3Painter.mTextPaintNormalInputMode.setColor(0xFF000000);
+		mMaybe3x3Painter.mTextPaintMaybeInputMode.setColor(mHighlightedTextColorMaybeInputMode);
+		mMaybe1x9Painter.mTextPaintNormalInputMode.setColor(0xFF000000);
+		mMaybe1x9Painter.mTextPaintMaybeInputMode.setColor(mHighlightedTextColorMaybeInputMode);
 
 		switch (theme) {
 		case CARVED:
@@ -386,9 +385,9 @@ public class Painter {
 
 			mCellPainter.mSelected.mBackgroundPaint.setStyle(Paint.Style.FILL);
 
-			mUserValuePainter.mTextPaintActiveMode.setTypeface(mTypefaceCarved);
+			mUserValuePainter.mTextPaintNormalInputMode.setTypeface(mTypefaceCarved);
 
-			mUserValuePainter.mTextPaintInactiveMode
+			mUserValuePainter.mTextPaintMaybeInputMode
 					.setTypeface(mTypefaceCarved);
 
 			mCagePainter.mTextPaint.setColor(0xFF0000A0);
@@ -437,10 +436,10 @@ public class Painter {
 
 			mCellPainter.mSelected.mBackgroundPaint.setStyle(Paint.Style.FILL);
 
-			mUserValuePainter.mTextPaintActiveMode
+			mUserValuePainter.mTextPaintNormalInputMode
 					.setTypeface(mTypefaceSansSerif);
 
-			mUserValuePainter.mTextPaintInactiveMode
+			mUserValuePainter.mTextPaintMaybeInputMode
 					.setTypeface(mTypefaceSansSerif);
 
 			mCagePainter.mTextPaint.setColor(0xFF0000A0);
@@ -485,10 +484,10 @@ public class Painter {
 			mCellPainter.mSelected.mBackgroundPaint
 					.setStyle(Paint.Style.STROKE);
 
-			mUserValuePainter.mTextPaintActiveMode
+			mUserValuePainter.mTextPaintNormalInputMode
 					.setTypeface(mTypefaceSansSerif);
 
-			mUserValuePainter.mTextPaintInactiveMode
+			mUserValuePainter.mTextPaintMaybeInputMode
 					.setTypeface(mTypefaceSansSerif);
 
 			mCagePainter.mTextPaint.setColor(0xFFFFFFC0);
@@ -530,8 +529,8 @@ public class Painter {
 
 		// Text size is 75% of cell size
 		int userValueTextSize = (int) (size * 3 / 4);
-		mUserValuePainter.mTextPaintActiveMode.setTextSize(userValueTextSize);
-		mUserValuePainter.mTextPaintInactiveMode.setTextSize(userValueTextSize);
+		mUserValuePainter.mTextPaintNormalInputMode.setTextSize(userValueTextSize);
+		mUserValuePainter.mTextPaintMaybeInputMode.setTextSize(userValueTextSize);
 
 		// Compute the offsets at which the user value will be displayed within
 		// the cell
@@ -548,8 +547,8 @@ public class Painter {
 		// Compute the offsets at which the 3x3 grid of possible values will be
 		// displayed within the cell
 		int maybe3x3TextSize = (int) (this.mCellPainter.mCellSize / 4.5);
-		mMaybe3x3Painter.mTextPaintActiveMode.setTextSize(maybe3x3TextSize);
-		mMaybe3x3Painter.mTextPaintInactiveMode.setTextSize(maybe3x3TextSize);
+		mMaybe3x3Painter.mTextPaintNormalInputMode.setTextSize(maybe3x3TextSize);
+		mMaybe3x3Painter.mTextPaintMaybeInputMode.setTextSize(maybe3x3TextSize);
 		mMaybe3x3Painter.mLeftOffset = (int) (mCellPainter.mCellSize / 3);
 		mMaybe3x3Painter.mTopOffset = (int) (mCellPainter.mCellSize / 2) + 1;
 		mMaybe3x3Painter.mScale = (float) 0.21 * mCellPainter.mCellSize;
@@ -557,8 +556,8 @@ public class Painter {
 		// Compute the offsets at which the 1x9 grid of possible values will be
 		// displayed within the cell
 		int maybe1x9TextSize = (int) (this.mCellPainter.mCellSize / 4);
-		mMaybe1x9Painter.mTextPaintActiveMode.setTextSize(maybe1x9TextSize);
-		mMaybe1x9Painter.mTextPaintInactiveMode.setTextSize(maybe1x9TextSize);
+		mMaybe1x9Painter.mTextPaintNormalInputMode.setTextSize(maybe1x9TextSize);
+		mMaybe1x9Painter.mTextPaintMaybeInputMode.setTextSize(maybe1x9TextSize);
 		mMaybe1x9Painter.mLeftOffset = 3;
 		mMaybe1x9Painter.mTopOffset = mCellPainter.mCellSize - maybe1x9TextSize;
 
