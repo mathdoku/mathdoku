@@ -76,12 +76,32 @@
         android:background="#00000000"
         android:visibility="gone" >
 
+        <RelativeLayout
+            android:id="@+id/inputModeLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true" >
+
+            <TextView
+                android:id="@+id/inputModeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/digitSelect1"
+                android:layout_centerHorizontal="true"
+                android:lines="1"
+                android:text="@string/input_mode_normal"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
         <Button
             android:id="@+id/digitSelect1"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
+            android:layout_alignLeft="@+id/inputModeLayout"
+            android:layout_below="@+id/inputModeLayout"
             android:text="1"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -175,33 +195,6 @@
             android:textStyle="bold"
             tools:ignore="HardcodedText" />
 
-        <RelativeLayout
-            android:id="@+id/maybe"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/clearButton"
-            android:layout_alignRight="@+id/digitSelect3" >
-
-            <TextView
-                android:id="@+id/maybeText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/maybeButton"
-                android:lines="1"
-                android:text="@string/main_ui_maybe"
-                android:textColor="#FF000000"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <CheckBox
-                android:id="@+id/maybeButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true" />
-        </RelativeLayout>
-
         <Button
             android:id="@+id/clearButton"
             android:layout_width="70dp"
@@ -235,7 +228,8 @@
         android:text="@string/game_seed"
         android:textColor="#FF000000"
         android:textSize="9sp"
-        android:visibility="gone" />
+        android:visibility="gone"
+        tools:ignore="SmallSp" />
 
     <TextView
         android:id="@+id/gameSeedText"
@@ -249,6 +243,6 @@
         android:textColor="#FF000000"
         android:textSize="9sp"
         android:visibility="gone"
-        tools:ignore="HardcodedText" />
+        tools:ignore="HardcodedText,SmallSp" />
 
 </RelativeLayout>

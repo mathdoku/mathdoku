@@ -4,6 +4,7 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import net.cactii.mathdoku.MainActivity.InputMode;
 import net.cactii.mathdoku.Painter.CagePainter;
 import net.cactii.mathdoku.Painter.CellPainter;
 import net.cactii.mathdoku.Painter.Maybe1x9Painter;
@@ -195,7 +196,8 @@ public class GridCell {
 	/**
 	 * Draw the cell inclusive borders, background and text.
 	 */
-	public void draw(Canvas canvas, float gridBorderWidth) {
+	public void draw(Canvas canvas, float gridBorderWidth,
+			MainActivity.InputMode inputMode) {
 		// Calculate x and y for the cell origin (topleft). Use an offset to
 		// prevent overlapping of cells and border for entire grid.
 		this.mPosX = Math.round(gridBorderWidth + this.mCellPainter.mCellSize
@@ -228,22 +230,20 @@ public class GridCell {
 
 		// Top border of cell (will only be drawn for first row
 		float topOffset = 0;
-			borderPaint = getBorderPaint(borderTypeTop);
-			if (borderPaint != null) {
-				// Calculate offset and draw top border
-				float offset = (mRow == 0 ? (float) Math
-						.floor((float) (0.5 * borderPaint.getStrokeWidth()))
-						: 0);
-				canvas.drawLine(left - (cellOnLeftIsInSameCage ? offset : 0),
-						top + offset, right
-								+ (cellOnRightIsInSameCage ? offset : 0), top
-								+ offset, borderPaint);
+		borderPaint = getBorderPaint(borderTypeTop);
+		if (borderPaint != null) {
+			// Calculate offset and draw top border
+			float offset = (mRow == 0 ? (float) Math
+					.floor((float) (0.5 * borderPaint.getStrokeWidth())) : 0);
+			canvas.drawLine(left - (cellOnLeftIsInSameCage ? offset : 0), top
+					+ offset, right + (cellOnRightIsInSameCage ? offset : 0),
+					top + offset, borderPaint);
 
-				// Calculate offset for inner space after drawing top border
-				topOffset = (float) Math
-						.floor((float) ((mRow == 0 ? 1 : 0.5) * borderPaint
-								.getStrokeWidth()));
-			}
+			// Calculate offset for inner space after drawing top border
+			topOffset = (float) Math
+					.floor((float) ((mRow == 0 ? 1 : 0.5) * borderPaint
+							.getStrokeWidth()));
+		}
 
 		// Right border of cell
 		borderPaint = getBorderPaint(borderTypeRight);
@@ -294,21 +294,20 @@ public class GridCell {
 
 		// Left border of cell (will only be draw for first column
 		float leftOffset = 0;
-			borderPaint = getBorderPaint(borderTypeLeft);
-			if (borderPaint != null) {
-				// Calculate offset and draw left border
-				float offset = (mColumn == 0 ? (float) Math
-						.floor((float) (0.5 * borderPaint.getStrokeWidth()))
-						: 0);
-				canvas.drawLine(left + offset, top
-						- (cellAboveIsInSameCage ? offset : 0), left + offset,
-						bottom + (cellBelowIsInSameCage ? offset : 0),
-						borderPaint);
+		borderPaint = getBorderPaint(borderTypeLeft);
+		if (borderPaint != null) {
+			// Calculate offset and draw left border
+			float offset = (mColumn == 0 ? (float) Math
+					.floor((float) (0.5 * borderPaint.getStrokeWidth())) : 0);
+			canvas.drawLine(left + offset, top
+					- (cellAboveIsInSameCage ? offset : 0), left + offset,
+					bottom + (cellBelowIsInSameCage ? offset : 0), borderPaint);
 
-				// Calculate offset for inner space after drawing left border
-				leftOffset = (float) Math.floor((float) ((mColumn == 0 ? 1
-						: 0.5) * borderPaint.getStrokeWidth()));
-			}
+			// Calculate offset for inner space after drawing left border
+			leftOffset = (float) Math
+					.floor((float) ((mColumn == 0 ? 1 : 0.5) * borderPaint
+							.getStrokeWidth()));
+		}
 
 		// Calculate new offsets with respect to space used by cell border.
 		top += topOffset;
@@ -392,10 +391,11 @@ public class GridCell {
 
 		// Cell value
 		if (this.isUserValueSet()) {
-			canvas.drawText("" + this.mUserValue, this.mPosX
-					+ this.mUserValuePainter.mLeftOffset, this.mPosY
-					+ this.mUserValuePainter.mTopOffset,
-					this.mUserValuePainter.mPaint);
+			Paint paint = (inputMode == inputMode.NORMAL ? mUserValuePainter.mTextPaintActiveMode
+					: mUserValuePainter.mTextPaintInactiveMode);
+			canvas.drawText("" + mUserValue, mPosX
+					+ mUserValuePainter.mLeftOffset, mPosY
+					+ mUserValuePainter.mTopOffset, paint);
 		}
 		// Cage text
 		if (!this.mCageText.equals("")) {
@@ -407,6 +407,8 @@ public class GridCell {
 		// Draw pencilled in digits.
 		if (mPossibles.size() > 0) {
 			if (mGrid.hasPrefShowMaybesAs3x3Grid()) {
+				Paint paint = (inputMode == InputMode.MAYBE ? mMaybe3x3Painter.mTextPaintActiveMode
+						: mMaybe3x3Painter.mTextPaintInactiveMode);
 				for (int i = 0; i < mPossibles.size(); i++) {
 					int possible = mPossibles.get(i);
 					float xPos = mPosX + mMaybe3x3Painter.mLeftOffset
@@ -415,17 +417,18 @@ public class GridCell {
 							+ ((int) (possible - 1) / 3)
 							* mMaybe3x3Painter.mScale;
 					canvas.drawText(Integer.toString(possible), xPos, yPos,
-							this.mMaybe3x3Painter.mTextPaint);
+							paint);
 				}
 			} else {
+				Paint paint = (inputMode == InputMode.MAYBE ? mMaybe1x9Painter.mTextPaintActiveMode
+						: mMaybe1x9Painter.mTextPaintInactiveMode);
 				String possibles = "";
 				for (int i = 0; i < mPossibles.size(); i++) {
 					possibles += Integer.toString(mPossibles.get(i));
 				}
 				canvas.drawText(possibles,
 						mPosX + mMaybe1x9Painter.mLeftOffset, mPosY
-								+ mMaybe1x9Painter.mTopOffset,
-						mMaybe1x9Painter.mTextPaint);
+								+ mMaybe1x9Painter.mTopOffset, paint);
 			}
 		}
 	}

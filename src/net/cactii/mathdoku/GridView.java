@@ -1,5 +1,6 @@
 package net.cactii.mathdoku;
 
+import net.cactii.mathdoku.MainActivity.InputMode;
 import net.cactii.mathdoku.Painter.GridPainter;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -91,7 +92,10 @@ public class GridView extends View implements OnTouchListener {
 		this.mTrackPosX = cellPos[0];
 		this.mTrackPosY = cellPos[1];
 
-		if (grid.getSelectedCell() != cell) {
+		if (grid.getSelectedCell() == cell) {
+			// The selected cell has been touch again.
+			((MainActivity) getContext()).toggleInputMode();
+		} else {
 			// Another cell was touched
 			this.playSoundEffect(SoundEffectConstants.CLICK);
 			grid.setSelectedCell(cell);
@@ -179,7 +183,7 @@ public class GridView extends View implements OnTouchListener {
 	// Opposite of above - given a coordinate, returns the cell number within.
 	private GridCell CoordToCell(float x, float y) {
 		int gridSize = grid.getGridSize();
-		int row = (int) ((y / (float) this.mGridViewSize) * gridSize); 
+		int row = (int) ((y / (float) this.mGridViewSize) * gridSize);
 		int col = (int) ((x / (float) this.mGridViewSize) * gridSize);
 		return grid.getCellAt(row, col);
 	}
@@ -188,7 +192,8 @@ public class GridView extends View implements OnTouchListener {
 		return grid.getSelectedCell();
 	}
 
-	public void digitSelected(int value, boolean maybeSelected) {
+	public void digitSelected(int value, MainActivity.InputMode inputMode) {
+		// Display a message in case no cell is selected.
 		GridCell selectedCell = grid.getSelectedCell();
 		if (selectedCell == null) {
 			Toast.makeText(this.getContext(),
@@ -196,27 +201,38 @@ public class GridView extends View implements OnTouchListener {
 					.show();
 			return;
 		}
+		
+		// Save undo information
 		CellChange orginalUserMove = selectedCell.saveUndoInformation(null);
+		
+		
 		if (value == 0) { // Clear Button
 			selectedCell.clearPossibles();
 			selectedCell.setUserValue(0);
-
 		} else {
-			if (maybeSelected) {
-				if (selectedCell.isUserValueSet())
+			switch(inputMode) {
+			case MAYBE:
+				if (selectedCell.isUserValueSet()) {
 					selectedCell.clearUserValue();
+				}
 				selectedCell.togglePossible(value);
-			} else {
+				break;
+			case NORMAL:
 				selectedCell.setUserValue(value);
 				selectedCell.clearPossibles();
-			}
 
-			if (((MainActivity) getContext()).preferences.getBoolean(
-					MainActivity.PREF_CLEAR_REDUNDANT_POSSIBLES,
-					MainActivity.PREF_CLEAR_REDUNDANT_POSSIBLES_DEFAULT)) {
-				// Update possible values for other cells in this row and
-				// column.
-				grid.clearRedundantPossiblesInSameRowOrColumn(orginalUserMove);
+				if (((MainActivity) getContext()).preferences.getBoolean(
+						MainActivity.PREF_CLEAR_REDUNDANT_POSSIBLES,
+						MainActivity.PREF_CLEAR_REDUNDANT_POSSIBLES_DEFAULT)) {
+					// Update possible values for other cells in this row and
+					// column.
+					grid.clearRedundantPossiblesInSameRowOrColumn(orginalUserMove);
+				}
+
+				break;
+			case NONE:
+				// Should not be possible
+				return;
 			}
 		}
 	}
@@ -233,7 +249,7 @@ public class GridView extends View implements OnTouchListener {
 		if (mGridPainter == null) {
 			mGridPainter = Painter.getInstance(this.getContext()).mGridPainter;
 		}
-		
+
 		synchronized (grid.mLock) { // Avoid redrawing at the same time as
 									// creating
 			// puzzle
@@ -247,8 +263,7 @@ public class GridView extends View implements OnTouchListener {
 			// Get the size of the gridview. As it is a square, either width or
 			// height can be used.
 			float realGridViewSize = getMeasuredWidth();
-			float gridBorderWidth = mGridPainter.mBorderPaint
-					.getStrokeWidth();
+			float gridBorderWidth = mGridPainter.mBorderPaint.getStrokeWidth();
 			float cellSize = (float) Math
 					.floor((float) (realGridViewSize - 2 * gridBorderWidth)
 							/ (float) gridSize);
@@ -277,10 +292,11 @@ public class GridView extends View implements OnTouchListener {
 					this.mGridViewSize, mGridPainter.mBorderPaint); // left
 
 			// Draw cells, except for cells in selected cage
+			InputMode inputMode = ((MainActivity) getContext()).getInputMode();
 			Painter.getInstance(this.getContext()).setCellSize(cellSize);
 			for (GridCell cell : grid.mCells) {
-					cell.checkWithOtherValuesInRowAndColumn();
-					cell.draw(canvas, gridBorderWidth);
+				cell.checkWithOtherValuesInRowAndColumn();
+				cell.draw(canvas, gridBorderWidth, inputMode);
 			}
 		}
 	}

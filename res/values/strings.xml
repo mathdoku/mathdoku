@@ -220,8 +220,11 @@
     <!-- CONTROLS FOR PUZZLE SOLVING  - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
-    <!-- The text before the "maybe" checkbox in the main UI. -->
-    <string name="main_ui_maybe">Maybe</string>
+    <!-- The text for input mode "normal" which is used to enter a definitive value into the selected cell. -->
+    <string name="input_mode_normal">Mode: definitive value</string>
+
+    <!-- The text for input mode "maybe" which is used to insert/remove a possible value into/from the selected cell. -->
+    <string name="input_mode_maybe">Mode: maybe value</string>
 
     <!-- The text on the clear button in the main UI. -->
     <string name="main_ui_clear">Clear</string>

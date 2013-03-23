@@ -36,7 +36,6 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -107,6 +106,16 @@ public class MainActivity extends Activity {
 	// A global painter object to paint the grid in different themes.
 	public Painter mPainter;
 
+	// The input mode in which the puzzle can be
+	public enum InputMode {
+		NORMAL, // Digits entered are handled as a new cell value
+		MAYBE, // Digits entered are handled to toggle the possible value on/of
+		NONE // No game active
+	};
+
+	// The input mode which is currently active
+	private InputMode mInputMode;
+
 	TextView solvedText;
 	TextView pressMenu;
 	GameTimer mTimerTask;
@@ -120,8 +129,8 @@ public class MainActivity extends Activity {
 
 	Button digits[] = new Button[9];
 	Button clearDigit;
-	CheckBox maybeButton;
-	TextView mMaybeText;
+	TextView mInputModeTextView;
+	RelativeLayout mImputModeLayout;
 	Button undoButton;
 	View[] sound_effect_views;
 	private Animation outAnimation;
@@ -165,7 +174,10 @@ public class MainActivity extends Activity {
 		this.mGameSeedLabel = (TextView) findViewById(R.id.gameSeedLabel);
 		this.mGameSeedText = (TextView) findViewById(R.id.gameSeedText);
 		this.mTimerText = (TextView) findViewById(R.id.timerText);
-		this.mMaybeText = (TextView) findViewById(R.id.maybeText);
+
+		this.mImputModeLayout = (RelativeLayout) findViewById(R.id.inputModeLayout);
+		this.mInputModeTextView = (TextView) findViewById(R.id.inputModeText);
+
 		digits[0] = (Button) findViewById(R.id.digitSelect1);
 		digits[1] = (Button) findViewById(R.id.digitSelect2);
 		digits[2] = (Button) findViewById(R.id.digitSelect3);
@@ -176,15 +188,16 @@ public class MainActivity extends Activity {
 		digits[7] = (Button) findViewById(R.id.digitSelect8);
 		digits[8] = (Button) findViewById(R.id.digitSelect9);
 		this.clearDigit = (Button) findViewById(R.id.clearButton);
-		this.maybeButton = (CheckBox) findViewById(R.id.maybeButton);
 		this.undoButton = (Button) findViewById(R.id.undoButton);
 
 		this.sound_effect_views = new View[] { this.mGridView, this.digits[0],
 				this.digits[1], this.digits[2], this.digits[3], this.digits[4],
 				this.digits[5], this.digits[6], this.digits[7], this.digits[8],
-				this.clearDigit, this.maybeButton, this.undoButton };
+				this.clearDigit, this.mImputModeLayout, this.undoButton };
 
 		this.mPainter = Painter.getInstance(this);
+
+		setInputMode(InputMode.NONE);
 
 		solvedAnimation = AnimationUtils.loadAnimation(MainActivity.this,
 				R.anim.solvedanim);
@@ -270,21 +283,15 @@ public class MainActivity extends Activity {
 					MainActivity.this.controls.setVisibility(View.GONE);
 			}
 		});
-
-		this.maybeButton.setOnTouchListener(new OnTouchListener() {
+		this.mImputModeLayout.setOnTouchListener(new OnTouchListener() {
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				if (event.getAction() == MotionEvent.ACTION_UP) {
+				if (event.getAction() == MotionEvent.ACTION_DOWN) {
 					// Play sound
 					v.playSoundEffect(SoundEffectConstants.CLICK);
 
-					// Note: the maybeButton.isChecked holds *old* value
-					// until this method is finished...
-					boolean maybeIsChecked = !maybeButton.isChecked();
-
-					// Update colors of buttons
-					setButtonColor(maybeIsChecked);
+					toggleInputMode();
 				}
 				return false;
 			}
@@ -349,20 +356,16 @@ public class MainActivity extends Activity {
 			topLayout.setBackgroundResource(R.drawable.newspaper);
 			mPainter.setTheme(GridTheme.NEWSPAPER);
 			mTimerText.setBackgroundColor(0x90808080);
-			mMaybeText.setTextColor(0xFF000000);
-
 		} else if (theme.equals(MainActivity.PREF_THEME_DARK)) {
 			topLayout.setBackgroundResource(R.drawable.newspaper_dark);
 			mPainter.setTheme(GridTheme.DARK);
 			pressMenu.setTextColor(0xfff0f0f0);
 			pressMenu.setBackgroundColor(0xff000000);
 			mTimerText.setTextColor(0xFFF0F0F0);
-			mMaybeText.setTextColor(0xFFFFFFFF);
 		} else if (theme.equals(MainActivity.PREF_THEME_CARVED)) {
 			topLayout.setBackgroundResource(R.drawable.background);
 			mPainter.setTheme(GridTheme.CARVED);
 			mTimerText.setBackgroundColor(0x10000000);
-			mMaybeText.setTextColor(0xFF000000);
 		}
 
 		this.mGridView.invalidate();
@@ -671,7 +674,7 @@ public class MainActivity extends Activity {
 	}
 
 	public void digitSelected(int value) {
-		this.mGridView.digitSelected(value, this.maybeButton.isChecked());
+		this.mGridView.digitSelected(value, mInputMode);
 
 		if (this.preferences.getBoolean(PREF_HIDE_CONTROLS,
 				PREF_HIDE_CONTROLS_DEFAULT)) {
@@ -713,14 +716,16 @@ public class MainActivity extends Activity {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage(R.string.dialog_hide_operators_message)
 					.setCancelable(false)
-					.setPositiveButton(R.string.dialog_hide_operators_positive_button,
+					.setPositiveButton(
+							R.string.dialog_hide_operators_positive_button,
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int id) {
 									startNewGame(gridSize, true);
 								}
 							})
-					.setNegativeButton(R.string.dialog_hide_operators_negative_button,
+					.setNegativeButton(
+							R.string.dialog_hide_operators_negative_button,
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int id) {
@@ -764,22 +769,6 @@ public class MainActivity extends Activity {
 		// new grid will always overwrite the current game without any warning.
 		mGridGeneratorTask = null;
 		setNewGrid(newGrid);
-		this.maybeButton.setChecked(false);
-	}
-
-	/**
-	 * Set the colors of number buttons based on the given status of the maybe
-	 * button.
-	 * 
-	 * @param maybeIsChecked
-	 *            True to change the color of the buttons to the same green
-	 *            color as the checkmark button. False for black.
-	 */
-	public void setButtonColor(boolean maybeIsChecked) {
-		int color = (maybeIsChecked ? 0xFF15DC23 : 0xFF000000);
-		for (int i = 0; i < mGrid.getGridSize(); i++) {
-			this.digits[i].setTextColor(color);
-		}
 	}
 
 	public void setButtonVisibility() {
@@ -821,11 +810,12 @@ public class MainActivity extends Activity {
 		LayoutInflater li = LayoutInflater.from(this);
 		View view = li.inflate(R.layout.helpview, null);
 
-		TextView tv = (TextView) view.findViewById(R.id.dialog_help_version_body);
+		TextView tv = (TextView) view
+				.findViewById(R.id.dialog_help_version_body);
 		tv.setText(getVersionName() + " (revision " + getVersionNumber() + ")");
-		
+
 		tv = (TextView) view.findViewById(R.id.help_project_home_link);
-		tv.setText(PROJECT_HOME); 
+		tv.setText(PROJECT_HOME);
 
 		new AlertDialog.Builder(MainActivity.this)
 				.setTitle(
@@ -897,8 +887,7 @@ public class MainActivity extends Activity {
 	private void openClearDialog() {
 		new AlertDialog.Builder(MainActivity.this)
 				.setTitle(R.string.dialog_clear_grid_confirmation_title)
-				.setMessage(
-						R.string.dialog_clear_grid_confirmation_message)
+				.setMessage(R.string.dialog_clear_grid_confirmation_message)
 				.setIcon(android.R.drawable.ic_dialog_alert)
 				.setNegativeButton(
 						R.string.dialog_clear_grid_confirmation_negative_button,
@@ -1244,11 +1233,7 @@ public class MainActivity extends Activity {
 			this.puzzleGrid.setVisibility(View.VISIBLE);
 
 			if (this.mGrid.isActive()) {
-				GridCell cell = this.mGrid.getSelectedCell();
-				if (cell != null && cell.countPossibles() > 1) {
-					maybeButton.setChecked(true);
-					setButtonColor(true);
-				}
+				setInputMode(InputMode.NORMAL);
 
 				// Set visibility of other controls
 				this.setButtonVisibility();
@@ -1257,6 +1242,8 @@ public class MainActivity extends Activity {
 				// Handler for solved game
 				setOnSolvedHandler();
 			} else {
+				setInputMode(InputMode.NONE);
+
 				// Set visibility of other controls
 				this.pressMenu.setVisibility(View.VISIBLE);
 				this.controls.setVisibility(View.GONE);
@@ -1279,6 +1266,7 @@ public class MainActivity extends Activity {
 			}
 		} else {
 			// No grid available.
+			setInputMode(InputMode.NONE);
 			this.puzzleGrid.setVisibility(View.GONE);
 			this.controls.setVisibility(View.GONE);
 			this.pressMenu.setVisibility(View.VISIBLE);
@@ -1314,5 +1302,73 @@ public class MainActivity extends Activity {
 		if (mTimerTask != null && !mTimerTask.isCancelled()) {
 			mTimerTask.cancel(true);
 		}
+	}
+
+	/**
+	 * Get the current input mode.
+	 * 
+	 * @return The current input mode.
+	 */
+	public InputMode getInputMode() {
+		return mInputMode;
+	}
+
+	/**
+	 * Set the new input mode.
+	 * 
+	 * @param inputMode
+	 *            The new input mode to be set.
+	 */
+	private void setInputMode(InputMode inputMode) {
+		this.mInputMode = inputMode;
+
+		// Determine the color which is used for text which depends on the
+		// actual input mode
+		int color = 0;
+		switch (inputMode) {
+		case NONE: // TODO: separate color for this mode???
+		case NORMAL:
+			color = mPainter.mActiveModeTextColor;
+			break;
+		case MAYBE:
+			color = mPainter.mInactiveModeTextColor;
+			break;
+		}
+
+		// Set color of maybe label and the maybe checkbox (note: these fields
+		// are not visible in inputMode.None)
+		mInputModeTextView.setTextColor(color);
+		mInputModeTextView.setText(getResources().getString(
+				(inputMode == InputMode.MAYBE ? R.string.input_mode_maybe
+						: R.string.input_mode_normal)));
+
+		// Set colors of the number buttons (note: these fields are not visible
+		// in inputMode.None)
+		if (mGrid != null) {
+			for (int i = 0; i < mGrid.getGridSize(); i++) {
+				this.digits[i].setTextColor(color);
+			}
+		}
+
+		mGridView.invalidate();
+	}
+
+	/**
+	 * Toggles the input mode to the next available state.
+	 */
+	public void toggleInputMode() {
+		InputMode inputMode = InputMode.NONE;
+		switch (mInputMode) {
+		case NONE:
+			inputMode = InputMode.NORMAL;
+			break;
+		case NORMAL:
+			inputMode = InputMode.MAYBE;
+			break;
+		case MAYBE:
+			inputMode = InputMode.NORMAL;
+			break;
+		}
+		setInputMode(inputMode);
 	}
 }

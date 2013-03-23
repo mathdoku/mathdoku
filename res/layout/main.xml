@@ -50,6 +50,24 @@
             android:visibility="gone"
             tools:ignore="HardcodedText,SmallSp" />
 
+        <RelativeLayout
+            android:id="@+id/inputModeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/gameSeedLabel"
+            android:layout_below="@+id/gameSeedLabel"
+            android:layout_toLeftOf="@+id/timerText" >
+
+            <TextView
+                android:id="@+id/inputModeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                android:text="@string/input_mode_normal"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
         <TextView
             android:id="@+id/timerText"
             android:layout_width="wrap_content"
@@ -200,40 +218,12 @@
             android:textStyle="bold"
             tools:ignore="HardcodedText" />
 
-        <RelativeLayout
-            android:id="@+id/maybe"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/digitSelect3"
-            android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/digitSelect3" >
-
-            <TextView
-                android:id="@+id/maybeText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/maybeButton"
-                android:lines="1"
-                android:text="@string/main_ui_maybe"
-                android:textColor="#FF000000"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <CheckBox
-                android:id="@+id/maybeButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true" />
-        </RelativeLayout>
-
         <Button
             android:id="@+id/clearButton"
             android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/maybe"
+            android:layout_below="@+id/inputModeLayout"
             android:text="@string/main_ui_clear"
             android:textSize="16sp"
             android:textStyle="bold" />
