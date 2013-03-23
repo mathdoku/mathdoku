@@ -49,7 +49,7 @@
     
     <!-- The contributor title in the help screen. -->
     <string name="dialog_help_contributors_title">Contributors</string>
-    <string name="dialog_help_contributors_body">MathDoku was initially developed by Ben Buxton. Contributions have been made by: Stephen Lee, Pimm Hogeling, Paul Dingemans and Anthony Paul. Also we We would to thank all users who have submitted bugs and feature requests.</string>
+    <string name="dialog_help_contributors_body">MathDoku was initially developed by Ben Buxton. Contributions have been made by: Stephen Lee, Pimm Hogeling, Paul Dingemans and Anthony Paul. Also we would like to thank all users who have submitted bugs and feature requests.</string>
     
     
     <!-- CHANGES DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -63,12 +63,12 @@
     <!-- The heading and body of the section refering to the list of changes. -->
     <!-- Note for translators: Changes are only available in english. Please mention this in this field. -->
     <string name="changelog_changes_title">Changes</string>
-    <string name="changelog_changes_body">For a full list of changes please go to our website with link below. Please note that revisions above %1$d will be released in a future release.</string>
+    <string name="changelog_changes_body">For a full list of changes please go to our website using the link below. Please note that revisions above %1$d will be released in a future release.</string>
     
     <!-- The heading and body of the section referring to the list of issues. -->
     <!-- Note for translators: Only issues written in English will be deaLt with. Please mention this in field changelog_issues_body. -->
     <string name="changelog_issues_title">Bugs and features</string>
-    <string name="changelog_issues_body">Please report any issues or feature requests via link below. Only issues written in English will be dealt with.</string>
+    <string name="changelog_issues_body">Please report any issues or feature requests via the link below. Only issues written in English will be dealt with.</string>
 
     <!-- MAIN MENU - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -108,7 +108,7 @@
     
     <!-- The title and message for the dialog displayed on the screen when building a new puzzle. -->
     <string name="dialog_building_puzzle_title">Building puzzle</string>
-    <string name="dialog_building_puzzle_message">A new puzzle is being build. It will be ready in few seconds.</string>
+    <string name="dialog_building_puzzle_message">A new puzzle is being built. It will be ready in a few seconds.</string>
 
     
     <!-- DIALOG LOAD / SAVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -145,7 +145,7 @@
 
     <!-- The title and summary of the "redundant possibles" option. This option clears possibles values from cells in the same row or columns as the selected cell after setting a user value. -->
     <string name="option_clear_redundant_possibles_title">Clear redundant possible values</string>
-    <string name="option_clear_redundant_possibles_summary">After setting a value in a cell, clear this value from the possible values in other cell in the same row or column.</string>
+    <string name="option_clear_redundant_possibles_summary">After setting a value in a cell, clear this value from the possible values in other cells in the same row or column.</string>
 
     <!-- The preferences category title for options related to puzzle generation. -->
     <string name="options_group_puzzle">Puzzle Generation</string>
@@ -235,7 +235,7 @@
 
     <!-- The title and message for the dialog displayed on the screen when generating preview images, along with the associated title. -->
     <string name="main_ui_creating_previews_title">Creating preview images</string>
-    <string name="main_ui_creating_previews_message">Please wait while creating preview images for all games stored.</string>
+    <string name="main_ui_creating_previews_message">Please wait while creating preview images for all stored games.</string>
 
     <!-- The message that appears when the player has solved the puzzle. -->
     <string name="main_ui_solved_messsage">Solved!</string>
@@ -246,7 +246,7 @@
     <string name="ProgressOK">All correct so far</string>
 
     <!-- The message shown when error(s) found when checking progress. -->
-    <string name="ProgressBad">Error(s) -  cells highlighted.</string>
+    <string name="ProgressBad">Error(s) - cells highlighted.</string>
     
         <!-- Alert to select a cell before a value is selected -->
     <string name="select_cell_before_value">Select a cell first.</string>
