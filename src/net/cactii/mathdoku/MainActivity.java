@@ -1244,7 +1244,9 @@ public class MainActivity extends Activity {
 					// requesting to show the solution.
 					MainActivity.this.mTimerText.setVisibility(View.INVISIBLE);
 				}
-
+				
+				// Unselect current cell / cage
+				mGrid.setSelectedCell(null);
 			}
 		});
 	}

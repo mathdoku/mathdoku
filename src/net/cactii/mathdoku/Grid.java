@@ -269,6 +269,13 @@ public class Grid {
 		return false;
 	}
 
+	/**
+	 * Selects the given cell.
+	 * 
+	 * @param cell
+	 *            The cell to be selected. If null, then the current selected
+	 *            cell will be unselected.
+	 */
 	public void setSelectedCell(GridCell cell) {
 		// Unselect current cage
 		GridCage oldSelectedCage = getCageForSelectedCell();
@@ -281,20 +288,33 @@ public class Grid {
 			mSelectedCell.mSelected = false;
 		}
 
-		// Select new cell
+		// Select the new cell
 		mSelectedCell = cell;
-		mSelectedCell.mSelected = true;
+		if (mSelectedCell != null) {
+			// A new cell was selected
+			mSelectedCell.mSelected = true;
+		}
 
-		// Select new cage
+		// Determine new cage (will return null in case no cell is selected)
 		GridCage newSelectedCage = getCageForSelectedCell();
-		if (!newSelectedCage.equals(oldSelectedCage)) {
-			getCageForSelectedCell().mSelected = true;
 
-			// Set borders for all cells in old and new selected cage
+		// Remove borders form old cage if needed
+		if ((newSelectedCage == null && oldSelectedCage != null)
+				|| (newSelectedCage != null && !newSelectedCage
+						.equals(oldSelectedCage))) {
 			if (oldSelectedCage != null) {
 				oldSelectedCage.setBorders();
 			}
-			newSelectedCage.setBorders();
+		}
+
+		// Select new cage
+		if (newSelectedCage != null) {
+			newSelectedCage.mSelected = true;
+			
+			//  Add border for new cage if needed
+			if (!newSelectedCage.equals(oldSelectedCage)) {
+				newSelectedCage.setBorders();
+			}
 		}
 	}
 
@@ -308,16 +328,18 @@ public class Grid {
 	 */
 	public void clearRedundantPossiblesInSameRowOrColumn(
 			CellChange originalCellChange) {
-		int rowSelectedCell = this.mSelectedCell.getRow();
-		int columnSelectedCell = this.mSelectedCell.getColumn();
-		int valueSelectedCell = this.mSelectedCell.getUserValue();
-		if (this.mSelectedCell != null) {
-			for (GridCell cell : this.mCells) {
-				if (cell.getRow() == rowSelectedCell
-						|| cell.getColumn() == columnSelectedCell) {
-					if (cell.hasPossible(valueSelectedCell)) {
-						cell.saveUndoInformation(originalCellChange);
-						cell.togglePossible(valueSelectedCell);
+		if (mSelectedCell != null) {
+			int rowSelectedCell = this.mSelectedCell.getRow();
+			int columnSelectedCell = this.mSelectedCell.getColumn();
+			int valueSelectedCell = this.mSelectedCell.getUserValue();
+			if (this.mSelectedCell != null) {
+				for (GridCell cell : this.mCells) {
+					if (cell.getRow() == rowSelectedCell
+							|| cell.getColumn() == columnSelectedCell) {
+						if (cell.hasPossible(valueSelectedCell)) {
+							cell.saveUndoInformation(originalCellChange);
+							cell.togglePossible(valueSelectedCell);
+						}
 					}
 				}
 			}
@@ -427,12 +449,12 @@ public class Grid {
 		for (GridCell cell : mCells) {
 			cell.setGridReference(this);
 		}
-		
+
 		// Set cell border for all cell
 		for (GridCell cell : mCells) {
 			cell.setBorders();
 		}
-		
+
 	}
 
 	public void setSolvedHandler(OnSolvedListener listener) {
