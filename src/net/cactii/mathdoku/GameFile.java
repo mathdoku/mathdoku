@@ -61,7 +61,7 @@ public class GameFile extends File {
 	// file which is needed by the GameFileAdapter.
 	public class GameFileHeader {
 		public String filename;
-		public long datetimeCreated;
+		public long datetimeSaved;
 		public int gridSize;
 		public boolean hasPreviewAvailable;
 	};
@@ -102,7 +102,7 @@ public class GameFile extends File {
 	 */
 	public boolean save(Grid grid, GridView gridView) {
 		// First save the grid.
-		if (save(grid)) {
+		if (save(grid, false)) {
 			// Save a preview image of the grid view for faster scrolling in
 			// the GameFileListAdacpter.
 			return savePreviewImage(gridView);
@@ -116,9 +116,13 @@ public class GameFile extends File {
 	 * 
 	 * @param grid
 	 *            The grid to be saved.
+	 * @param keepOriginalDatetimeLastSaved
+	 *            True in case the datetime on which the game was last saved may
+	 *            not be altered. When not converting an existing gamefile one
+	 *            should use false here.
 	 * @return True in case the grid was saved to a file. False otherwise.
 	 */
-	public boolean save(Grid grid) {
+	public boolean save(Grid grid, boolean keepOriginalDatetimeLastSaved) {
 		synchronized (grid.mLock) { // Avoid saving game at the same time as
 									// creating puzzle
 			BufferedWriter writer = null;
@@ -127,7 +131,7 @@ public class GameFile extends File {
 				writer = new BufferedWriter(new FileWriter(getFullFilename()));
 
 				// Store information about the Grid View on a single line
-				writer.write(grid.toStorageString() + EOL_DELIMITER);
+				writer.write(grid.toStorageString(keepOriginalDatetimeLastSaved) + EOL_DELIMITER);
 
 				// Store information about the cells. Use one line per single
 				// cell.
@@ -181,7 +185,7 @@ public class GameFile extends File {
 			// Return game file header only if grid was successfully loaded
 			GameFileHeader gameFileHeader = new GameFileHeader();
 			gameFileHeader.filename = this.baseFilename;
-			gameFileHeader.datetimeCreated = grid.getDateCreated();
+			gameFileHeader.datetimeSaved = grid.getDateSaved();
 			gameFileHeader.gridSize = grid.getGridSize();
 			gameFileHeader.hasPreviewAvailable = this.hasPreviewImage();
 			return gameFileHeader;
@@ -348,7 +352,8 @@ public class GameFile extends File {
 
 			// Remaining lines contain cell changes (zero or more expected)
 			CellChange cellChange = new CellChange();
-			while (line != null && cellChange.fromStorageString(line, grid.mCells)) {
+			while (line != null
+					&& cellChange.fromStorageString(line, grid.mCells)) {
 				grid.AddMove(cellChange);
 
 				// Read next line. No checking of unexpected end of file might
@@ -712,6 +717,7 @@ public class GameFile extends File {
 	}
 
 	public static void ConvertGameFiles(int currentVersion, int newVersion) {
+		// Rename files and convert to new file formats
 		if (currentVersion <= 77) {
 			// Rename files and convert to new file formats.
 			File dir = new File(PATH);
@@ -735,7 +741,7 @@ public class GameFile extends File {
 					// Load and then save the game file.
 					GameFile gameFile = new GameFile(filename);
 					Grid grid = gameFile.load();
-					gameFile.save(grid);
+					gameFile.save(grid, true);
 
 					// Determine new name
 					if (filename.startsWith("savedgame_")) {
@@ -758,6 +764,16 @@ public class GameFile extends File {
 						}
 					}
 				}
+			}
+		}
+
+		// Update game files only if needed.
+		if (currentVersion >= 77 && currentVersion < newVersion) {
+			for (String filename : getAllGameFiles(Integer.MAX_VALUE)) {
+				// Load and then save the game file.
+				GameFile gameFile = new GameFile(filename);
+				Grid grid = gameFile.load();
+				gameFile.save(grid, true);
 			}
 		}
 	}

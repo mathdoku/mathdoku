@@ -68,14 +68,14 @@ public class GameFileListAdapter extends BaseAdapter {
 	/**
 	 * Comparator to sort game file headers based on the date time of creation.
 	 */
-	public class SortGameFileOnDatetimeCreated implements
+	public class SortGameFileOnDatetimeSaved implements
 			Comparator<GameFile.GameFileHeader> {
 		public int compare(GameFile.GameFileHeader gameFileHeader1,
 				GameFile.GameFileHeader gameFileHeader2) {
 
 			// Convert to integer by ignoring the miliseconds part of the
 			// date/time.
-			return (int) ((gameFileHeader2.datetimeCreated - gameFileHeader1.datetimeCreated) / 1000);
+			return (int) ((gameFileHeader2.datetimeSaved - gameFileHeader1.datetimeSaved) / 1000);
 		}
 	}
 
@@ -98,7 +98,7 @@ public class GameFileListAdapter extends BaseAdapter {
 
 		// Sort the file on date/time created.
 		Collections.sort((List<GameFile.GameFileHeader>) this.mGameFiles,
-				new SortGameFileOnDatetimeCreated());
+				new SortGameFileOnDatetimeSaved());
 	}
 
 	/*
@@ -203,7 +203,7 @@ public class GameFileListAdapter extends BaseAdapter {
 		Calendar currentTime = Calendar.getInstance();
 		Calendar gameFileTime = Calendar.getInstance();
 		Calendar gameFileDate = Calendar.getInstance();
-		gameFileTime.setTimeInMillis(gameFile.datetimeCreated);
+		gameFileTime.setTimeInMillis(gameFile.datetimeSaved);
 		gameFileDate.set(gameFileTime.get(Calendar.YEAR),
 				gameFileTime.get(Calendar.MONTH),
 				gameFileTime.get(Calendar.DAY_OF_MONTH));
@@ -213,7 +213,7 @@ public class GameFileListAdapter extends BaseAdapter {
 			// Game file was saved today. Only display time.
 			savedOnTextView.setText(""
 					+ DateFormat.getTimeInstance(DateFormat.SHORT).format(
-							gameFile.datetimeCreated));
+							gameFile.datetimeSaved));
 		} else if (gameFileDate.get(Calendar.YEAR) == currentTime
 				.get(Calendar.YEAR)
 				&& gameFileDate.get(Calendar.DAY_OF_YEAR) == currentTime
@@ -228,7 +228,7 @@ public class GameFileListAdapter extends BaseAdapter {
 		} else {
 			savedOnTextView.setText(""
 					+ DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
-							DateFormat.SHORT).format(gameFile.datetimeCreated));
+							DateFormat.SHORT).format(gameFile.datetimeSaved));
 		}
 
 		// Set callback for loading this game.

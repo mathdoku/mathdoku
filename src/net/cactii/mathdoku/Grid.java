@@ -13,6 +13,7 @@ public class Grid {
 	// stored on several distinct lines. As from now all view variables are
 	// collected on single line as well.
 	public static final String SAVE_GAME_GRID_VERSION_01 = "VIEW.v1";
+	public static final String SAVE_GAME_GRID_VERSION_02 = "VIEW.v2";
 
 	// Size of the grid
 	private int mGridSize;
@@ -32,7 +33,8 @@ public class Grid {
 
 	// Date of current game (used for saved games) and elapsed time while
 	// playing this game
-	private long mDateCreated;
+	private long mDateGenerated;
+	private long mDateLastSaved;
 	private long mElapsedTime;
 
 	// The seed used to create the game. In case the seed equals 0 it can not be
@@ -310,8 +312,8 @@ public class Grid {
 		// Select new cage
 		if (newSelectedCage != null) {
 			newSelectedCage.mSelected = true;
-			
-			//  Add border for new cage if needed
+
+			// Add border for new cage if needed
 			if (!newSelectedCage.equals(oldSelectedCage)) {
 				newSelectedCage.setBorders();
 			}
@@ -372,15 +374,27 @@ public class Grid {
 	 * Create a string representation of the Grid View which can be used to
 	 * store a grid view in a saved game.
 	 * 
+	 * @param keepOriginalDatetimeLastSaved
+	 *            True in case the datetime on which the game was last saved may
+	 *            not be altered. When not converting an existing gamefile one
+	 *            should use false here.
+	 * 
 	 * @return A string representation of the grid cell.
 	 */
-	public String toStorageString() {
-		String storageString = SAVE_GAME_GRID_VERSION_01
+	public String toStorageString(boolean keepOriginalDatetimeLastSaved) {
+		// Update datetime last saved if needed
+		if (!keepOriginalDatetimeLastSaved) {
+			mDateLastSaved = System.currentTimeMillis();
+		}
+		
+		// Build storage string
+		String storageString = SAVE_GAME_GRID_VERSION_02
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mGameSeed
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mDateCreated
+				+ GameFile.FIELD_DELIMITER_LEVEL1 + mDateLastSaved
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mElapsedTime
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mGridSize
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mActive;
+				+ GameFile.FIELD_DELIMITER_LEVEL1 + mActive
+				+ GameFile.FIELD_DELIMITER_LEVEL1 + mDateGenerated;
 		return storageString;
 	}
 
@@ -400,6 +414,8 @@ public class Grid {
 		int viewInformationVersion = 0;
 		if (viewParts[0].equals(SAVE_GAME_GRID_VERSION_01)) {
 			viewInformationVersion = 1;
+		} else if (viewParts[0].equals(SAVE_GAME_GRID_VERSION_02)) {
+			viewInformationVersion = 2;
 		} else {
 			return false;
 		}
@@ -407,10 +423,17 @@ public class Grid {
 		// Process all parts
 		int index = 1;
 		mGameSeed = Long.parseLong(viewParts[index++]);
-		mDateCreated = Long.parseLong(viewParts[index++]);
+		mDateLastSaved = Long.parseLong(viewParts[index++]);
 		mElapsedTime = Long.parseLong(viewParts[index++]);
 		mGridSize = Integer.parseInt(viewParts[index++]);
 		mActive = Boolean.parseBoolean(viewParts[index++]);
+
+		if (viewInformationVersion >= 2) {
+			mDateGenerated = Long.parseLong(viewParts[index++]);
+		} else {
+			// Date generated was not saved prior to version 2.
+			mDateGenerated = mDateLastSaved - mElapsedTime;
+		}
 
 		return true;
 	}
@@ -434,7 +457,7 @@ public class Grid {
 			boolean mActive) {
 		clear();
 		this.mGameSeed = mGameSeed;
-		this.mDateCreated = System.currentTimeMillis();
+		this.mDateGenerated = System.currentTimeMillis();
 		this.mGridSize = mGridSize;
 		this.mCells = mCells;
 		this.mCages = mCages;
@@ -490,11 +513,15 @@ public class Grid {
 	}
 
 	public long getDateCreated() {
-		return mDateCreated;
+		return mDateGenerated;
 	}
 
 	public void setDateCreated(long dateCreated) {
-		mDateCreated = dateCreated;
+		mDateGenerated = dateCreated;
+	}
+
+	public long getDateSaved() {
+		return mDateLastSaved;
 	}
 
 	public boolean hasPrefShowDupeDigits() {

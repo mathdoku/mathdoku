@@ -240,7 +240,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 					// Store grid as user file
 					mGrid.create(mGameSeed, mGridSize, mCells, mCages, true);
 					GameFile gameFile = new GameFile(GameFileType.NEW_GAME);
-					gameFile.save(mGrid);
+					gameFile.save(mGrid, false);
 					gameFile.copyToNewGameFile();
 
 					publishProgress(
