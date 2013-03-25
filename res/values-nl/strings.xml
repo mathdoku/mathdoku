@@ -27,15 +27,15 @@
     <string name="dialog_help_leadin">Bedankt voor het installeren van MathDoku voor Android.</string>
 
     <!-- The title for the help section. -->
-    <string name="dialog_help_help_title">Versie</string>
+    <string name="dialog_help_help_title">Help</string>
 
     <!-- The title and body describing the goal of the game. -->
     <string name="dialog_help_goal_title">Doel</string>
     <string name="dialog_help_goal_body">Vul in elke rij en in elke kolom de getallen 1 tot en met de puzzelgrootte in.\n\nElk getal wordt precies eenmaal gebruikt in elke rij en kolom.\n\nDe dikke lijnen geven de \'groepen\' weer. Elke groep bevat een rekenkundige puzzel die opgelost moet worden met de getallen in de groep. Bijv. \'5+\' betekent dat alle getallen in de groep optellen tot 5. De volgorde waarin de getallen worden gebruikt is niet relevant.\n\nEen getal kan meerdere keren binnen een groep worden gebruikt zolang het getal nog steeds maar eenmal voor komt in elke rij of kolom.</string>
 
     <!-- The title and body describing how to play the game. -->
-    <string name="dialog_help_how_to_play_title">How to play</string>
-    <string name="dialog_help_how_to_play_body">Touch the squares in the grid to choose a digit. The \'maybe\' tickbox allows you to mark multiple possibilities.\n\nLong-touch a cell for more options.\n\nYou can also play using the trackball.\n\nThe current game will be saved when you exit the game, or use the Load/Save menu to save unlimited games.</string>
+    <string name="dialog_help_how_to_play_title">Hoe te spelen?</string>
+    <string name="dialog_help_how_to_play_body">Raak een vlak aan in de puzzel om een getal te kiezen. Raak hetzelfde vlak nogmaals aan om \'mogelijken\' waarde vast te leggen.\n\nRaak een vlak lang aan voor meer opties.\n\nJe kunt ook spelen met de trackball.\n\nDe huidige puzzel wordt bewaard bij het verlaten van de app, of gebruik het menu om een onbeperkt aantal puzzles op te slaan of te laden.</string>
 
     <!-- The version title in the help screen. -->
     <string name="dialog_help_version_title">Versie</string>
