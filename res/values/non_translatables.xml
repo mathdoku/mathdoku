@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- NON-TRANSLATABLE VALUES - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <!-- This file should NOT be translated. MathDoku will probably not work correctly in case values are translated or overwritten. -->
+
+    <!-- Name of application. This may NOT be translated. -->
+    <string name="application_name">MathDoku</string>
+
+    <!-- Identifiers associated with element hideOpText. This element may not be translated. -->
+    <string-array name="hideOpValues">
+        <item>T</item>
+        <item>F</item>
+        <item>A</item>
+    </string-array>
+
+    <!-- Identifiers associated with element themeTexts. This element may not be translated. -->
+    <string-array name="themeValues">
+        <item>carved</item>
+        <item>newspaper</item>
+        <item>inverted</item>
+    </string-array>
+    
+</resources>

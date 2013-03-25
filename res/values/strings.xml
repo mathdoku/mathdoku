@@ -13,9 +13,6 @@
 
     <!-- GENERAL - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-    <!-- Name of application. This should NOT be translated. -->
-    <string name="application_name">MathDoku</string>
-
     <!-- The message displayed on the screen to explain the player that (s)he has to press the "Menu" button on the device. -->
     <string name="press_menu_button_message">Press your device\'s \"Menu\" button.</string>
 
@@ -23,48 +20,49 @@
     <string name="dialog_general_button_close">Close</string>
 
     <!-- HELP DIALOG - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    
+
+
     <!-- The lead in text at top of the help dialog. -->
     <string name="dialog_help_leadin">Thanks for installing MathDoku for Android.</string>
 
     <!-- The title for the help section. -->
     <string name="dialog_help_help_title">Help</string>
-    
+
     <!-- The title and body describing the goal of the game. -->
     <string name="dialog_help_goal_title">Your goal</string>
     <string name="dialog_help_goal_body">Fill in each row and column with digits from 1 to grid size.\n\nDigits can and must be used only once per row and column.\n\nThick lines indicate \'cages\' - each cage has an arithmetic puzzle, which must be solved by the digits in the cage. Eg \'5+\' means all digits in that cage add to 5. The order in which the digits are used in the cage is not relevant.\n\nDigits can be used more than once per cage, so long as there is only one of a digit per row or column.</string>
-    
+
     <!-- The title and body describing how to play the game. -->
     <string name="dialog_help_how_to_play_title">How to play</string>
     <string name="dialog_help_how_to_play_body">Touch the squares in the grid to choose a digit. The \'maybe\' tickbox allows you to mark multiple possibilities.\n\nLong-touch a cell for more options.\n\nYou can also play using the trackball.\n\nThe current game will be saved when you exit the game, or use the Load/Save menu to save unlimited games.</string>
-    
+
     <!-- The version title in the help screen. -->
     <string name="dialog_help_version_title">Version</string>
-   
+
     <!-- The license title in the help screen. -->
     <string name="dialog_help_license_title">License</string>
-    
+
     <!-- The project home title in the help screen. -->
     <string name="dialog_help_project_home_title">Project Home</string>
-    
+
     <!-- The contributor title in the help screen. -->
     <string name="dialog_help_contributors_title">Contributors</string>
     <string name="dialog_help_contributors_body">MathDoku was initially developed by Ben Buxton. Contributions have been made by: Stephen Lee, Pimm Hogeling, Paul Dingemans and Anthony Paul. Also we would like to thank all users who have submitted bugs and feature requests.</string>
-    
-    
+
     <!-- CHANGES DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-	<!-- The title of the changelog screen. -->
+
+    <!-- The title of the changelog screen. -->
     <string name="changelog_title">Changelog</string>
-    
+
     <!-- The heading and body of the section referring to the list of changes (revision). -->
     <string name="changelog_version_title">Version</string>
-    
+
     <!-- The heading and body of the section refering to the list of changes. -->
     <!-- Note for translators: Changes are only available in english. Please mention this in this field. -->
     <string name="changelog_changes_title">Changes</string>
     <string name="changelog_changes_body">For a full list of changes please go to our website using the link below. Please note that revisions above %1$d will be released in a future release.</string>
-    
+
     <!-- The heading and body of the section referring to the list of issues. -->
     <!-- Note for translators: Only issues written in English will be deaLt with. Please mention this in field changelog_issues_body. -->
     <string name="changelog_issues_title">Bugs and features</string>
@@ -93,6 +91,7 @@
 
     <!-- DIALOGS FOR GENERATING NEW PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+
     <!-- The different grid sizes with their difficulties. -->
     <string name="grid_size_4">4x4 (easy)</string>
     <string name="grid_size_5">5x5 (medium)</string>
@@ -101,16 +100,22 @@
     <string name="grid_size_8">8x8 (hardest)</string>
     <string name="grid_size_9">9x9 (ultimate)</string>
 
+    <!-- The possible values of the "hide operator" option. This option controls whether the mathematical operation signs (+x/-) are shown. The last value, "ask", means the game asks whether the signs should be hidden or visible on every new game. -->
+    <string-array name="hideOpTexts">
+        <item>Always</item>
+        <item>Never</item>
+        <item>Ask</item>
+    </string-array>
+
     <!-- The message and buttons of the dialog box asking whether to hide operator signs. THis dialog will only be shown in case option "Hide operators" has been set to "Always" or "Ask". -->
     <string name="dialog_hide_operators_message">Hide operator signs?</string>
     <string name="dialog_hide_operators_positive_button">Yes, I like a challenge</string>
     <string name="dialog_hide_operators_negative_button">No, keep it simple</string>
-    
+
     <!-- The title and message for the dialog displayed on the screen when building a new puzzle. -->
     <string name="dialog_building_puzzle_title">Building puzzle</string>
     <string name="dialog_building_puzzle_message">A new puzzle is being built. It will be ready in a few seconds.</string>
 
-    
     <!-- DIALOG LOAD / SAVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -185,11 +190,19 @@
     <string name="options_group_sound">Sound</string>
     <!-- The title and summary of the "sound effects" option. -->
 
-
     <!-- The title and summary of the "Sounds effect" option. This option enables or disables soundeffects. -->
     <string name="option_sound_effects_title">Sound effects</string>
     <string name="option_sound_effects_summary">Enable the sound effects</string>
 
+    <!-- DIALOG THEME - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    
+    <!-- The possible values of the "themes" option. This option controls which theme is used for displaying. -->
+    <string-array name="themeTexts">
+        <item>Carved</item>
+        <item>Newspaper</item>
+        <item>Dark</item>
+    </string-array>
+    
     <!-- CONTEXT MENU IN PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -216,7 +229,7 @@
     <string name="dialog_clear_grid_confirmation_message">Are you sure you want to clear the entire grid?</string>
     <string name="dialog_clear_grid_confirmation_negative_button">No, leave it</string>
     <string name="dialog_clear_grid_confirmation_positive_button">Yes, start over</string>
-    
+
     <!-- CONTROLS FOR PUZZLE SOLVING  - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -232,7 +245,6 @@
     <!-- The text on the undo button in the main UI. -->
     <string name="main_ui_undo">Undo</string>
 
- 
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -245,18 +257,17 @@
 
     <!-- The message that appears when the player reveals a cell. -->
     <string name="main_ui_cheat_messsage">Cheat! :P</string>
-    <!-- The message shown when no errors found when checking progress. -->
+    <!-- The message shown when no errors found when checking progress. -->
     <string name="ProgressOK">All correct so far</string>
 
     <!-- The message shown when error(s) found when checking progress. -->
     <string name="ProgressBad">Error(s) - cells highlighted.</string>
-    
-        <!-- Alert to select a cell before a value is selected -->
+
+    <!-- Alert to select a cell before a value is selected -->
     <string name="select_cell_before_value">Select a cell first.</string>
-    
-        <!-- Text to display in case the preview image of a saved game is not yet available. -->
+
+    <!-- Text to display in case the preview image of a saved game is not yet available. -->
     <string name="game_file_preview_not_available">Not yet available</string>
     <string name="game_seed">"Game seed: "</string>
 
-    
 </resources>

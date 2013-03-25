@@ -14,9 +14,6 @@
     <!-- GENERAL - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
-    <!-- Name of application. This should NOT be translated. -->
-    <string name="application_name">MathDoku</string>
-
     <!-- The message displayed on the screen to explain the player that (s)he has to press the "Menu" button on the device. -->
     <string name="press_menu_button_message">Druk op de \"Menu\" knop.</string>
 
@@ -24,36 +21,37 @@
     <string name="dialog_general_button_close">Sluit</string>
 
     <!-- HELP DIALOG - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    
+
+
     <!-- The lead in text at top of the help dialog. -->
     <string name="dialog_help_leadin">Bedankt voor het installeren van MathDoku voor Android.</string>
-    
+
     <!-- The title for the help section. -->
     <string name="dialog_help_help_title">Versie</string>
-    
+
     <!-- The title and body describing the goal of the game. -->
     <string name="dialog_help_goal_title">Doel</string>
     <string name="dialog_help_goal_body">Vul in elke rij en in elke kolom de getallen 1 tot en met de puzzelgrootte in.\n\nElk getal wordt precies eenmaal gebruikt in elke rij en kolom.\n\nDe dikke lijnen geven de \'groepen\' weer. Elke groep bevat een rekenkundige puzzel die opgelost moet worden met de getallen in de groep. Bijv. \'5+\' betekent dat alle getallen in de groep optellen tot 5. De volgorde waarin de getallen worden gebruikt is niet relevant.\n\nEen getal kan meerdere keren binnen een groep worden gebruikt zolang het getal nog steeds maar eenmal voor komt in elke rij of kolom.</string>
- 
+
     <!-- The title and body describing how to play the game. -->
     <string name="dialog_help_how_to_play_title">How to play</string>
     <string name="dialog_help_how_to_play_body">Touch the squares in the grid to choose a digit. The \'maybe\' tickbox allows you to mark multiple possibilities.\n\nLong-touch a cell for more options.\n\nYou can also play using the trackball.\n\nThe current game will be saved when you exit the game, or use the Load/Save menu to save unlimited games.</string>
-    
-        <!-- The version title in the help screen. -->
+
+    <!-- The version title in the help screen. -->
     <string name="dialog_help_version_title">Versie</string>
-   
+
     <!-- The license title in the help screen. -->
     <string name="dialog_help_license_title">Licentie</string>
-    
+
     <!-- The project home title in the help screen. -->
     <string name="dialog_help_project_home_title">Project pagina</string>
-    
+
     <!-- The contributor title in the help screen. -->
     <string name="dialog_help_contributors_title">Ontwikkelaars</string>
     <string name="dialog_help_contributors_body">MathDoku is initieel ontwikkeld door Ben Buxton. Bijdragen zijn gemaakt: Stephen Lee, Pimm Hogeling, Paul Dingemans and Anthony Paul. Tevens willen we iedereen bedanken die fouten en verbeteringen heeft gemeld.</string>
-    
-    
+
     <!-- CHANGES DIALOG - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
 
     <!-- The title of the changelog screen. -->
     <string name="changelog_title">Aanpassingen</string>
@@ -94,6 +92,7 @@
 
     <!-- DIALOGS FOR GENERATING NEW PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+
     <!-- The different grid sizes with their difficulties. -->
     <string name="grid_size_4">4x4 (makkelijk)</string>
     <string name="grid_size_5">5x5 (normaal)</string>
@@ -101,12 +100,19 @@
     <string name="grid_size_7">7x7 (moeilijker)</string>
     <string name="grid_size_8">8x8 (moeilijkst)</string>
     <string name="grid_size_9">9x9 (ultiem)</string>
-    
-        <!-- The message of the dialog box asking whether to hide operator signs. THis dialog will only be shown in case option "Hide operators" has been set to "Always" or "Ask". -->
-        <string name="dialog_hide_operators_message">Operatie tekens verbergen?</string>
+
+    <!-- The possible values of the "hide operator" option. This option controls whether the mathematical operation signs (+x/-) are shown. The last value, "ask", means the game asks whether the signs should be hidden or visible on every new game. -->
+    <string-array name="hideOpTexts">
+        <item>Altijd</item>
+        <item>Nooit</item>
+        <item>Vraag</item>
+    </string-array>
+
+    <!-- The message of the dialog box asking whether to hide operator signs. THis dialog will only be shown in case option "Hide operators" has been set to "Always" or "Ask". -->
+    <string name="dialog_hide_operators_message">Operatie tekens verbergen?</string>
     <string name="dialog_hide_operators_positive_button">Ja, ik houd van een uitdaging</string>
     <string name="dialog_hide_operators_negative_button">Nee, houd het simpel</string>
-    
+
     <!-- The title and message for the dialog displayed on the screen when building a new puzzle. -->
     <string name="dialog_building_puzzle_title">Genereren nieuwe puzzel</string>
     <string name="dialog_building_puzzle_message">Een ogenblik geduld a.u.b.</string>
@@ -188,13 +194,22 @@
     <string name="option_sound_effects_title">Geluidseffecten</string>
     <string name="option_sound_effects_summary">Zet de geluidseffecten aan</string>
 
-        <!-- The title, message and buttons confirmation message that shows up when the clear grid context menu item is selected, plus the associated title and button labels. -->
+    <!-- The title, message and buttons confirmation message that shows up when the clear grid context menu item is selected, plus the associated title and button labels. -->
     <string name="dialog_clear_grid_confirmation_title">Leeg alle cellen?</string>
     <string name="dialog_clear_grid_confirmation_message">Weet je zeker dat je alle cellen wilt legen?</string>
     <string name="dialog_clear_grid_confirmation_negative_button">Nee, laat maar</string>
     <string name="dialog_clear_grid_confirmation_positive_button">Ja, begin opnieuw</string>
 
-    
+    <!-- DIALOG THEME - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The possible values of the "themes" option. This option controls which theme is used for displaying. -->
+    <string-array name="themeTexts">
+        <item>Hout</item>
+        <item>Krant</item>
+        <item>Donker</item>
+    </string-array>
+
     <!-- CONTEXT MENU IN PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -231,28 +246,29 @@
     <!-- The text on the undo button in the main UI. -->
     <string name="main_ui_undo">Zet terug</string>
 
-
     <!-- MISCELLANEOUS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
 
     <!-- The title and message for the dialog displayed on the screen when generating preview images, along with the associated title. -->
     <string name="main_ui_creating_previews_title">Aanmaken voorbeeld weergave</string>
     <string name="main_ui_creating_previews_message">Een ogenblik geduld a.u.b. Voorbeeld weergaves van bewaarde puzzels worden gemaakt.</string>
-    
+
     <!-- The message that appears when the player has solved the puzzle. -->
     <string name="main_ui_solved_messsage">Opgelost!</string>
-    
-        <!-- The message that appears when the player reveals a cell. -->
+
+    <!-- The message that appears when the player reveals a cell. -->
     <string name="main_ui_cheat_messsage">Valsspeler! :P</string>
-    
+
     <!-- The message shown when no errors found when checking progress. -->
     <string name="ProgressOK">Alles klopt tot nu toe</string>
-    
+
     <!-- The message shown when error(s) found when checking progress. -->
     <string name="ProgressBad">Je hebt een fout gemaakt</string>
 
-        <!-- Alert to select a cell before a value is selected -->
+    <!-- Alert to select a cell before a value is selected -->
     <string name="select_cell_before_value">Selecteer eerst een cel.</string>
-    
+
     <!-- Text to display in case the preview image of a saved game is not yet available. -->
     <string name="game_file_preview_not_available">Nog niet beschikbaar</string>
+
 </resources>
