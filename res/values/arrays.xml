@@ -1,24 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- TRANSLATABLE ARRAY VALUES - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
     <!-- The possible values of the "hide operator" option. This option controls whether the mathematical operation signs (+x/-) are shown. The last value, "ask", means the game asks whether the signs should be hidden or visible on every new game. -->
     <string-array name="hideOpTexts">
         <item>Always</item>
         <item>Never</item>
         <item>Ask</item>
     </string-array>
-    <!-- The actual under-the-hood values associated with the above. Serve merely as identifiers, and should not be translated. -->
-    <string-array name="hideOpValues">
-        <item>T</item>
-        <item>F</item>
-        <item>A</item>
-    </string-array>
+
+    <!-- The possible values of the "themes" option. This option controls which theme is used for displaying. -->
     <string-array name="themeTexts">
         <item>Carved</item>
         <item>Newspaper</item>
         <item>Dark</item>
     </string-array>
-    <!-- The actual under-the-hood values associated with the above. Serve merely as identifiers, and should not be translated. -->
+
+    <!-- NON-TRANSLATABLE ARRAY VALUES - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <!-- This section is supposed to be empty in translated versions.  -->
+
+    <!-- Note for translators: Values below have to be removed in translated versions of this file. These values are internally used by MathDoku. Altering values will affect correct working of MathDoku. -->
+
+    <!-- Identifiers associated with element hideOpText. This element may not be translated. -->
+    <!-- Note for translators: Remove element hideOpValues completely in the translation. It should only exists in the English version. -->
+    <string-array name="hideOpValues">
+        <item>T</item>
+        <item>F</item>
+        <item>A</item>
+    </string-array>
+
+    <!-- Identifiers associated with element themeTexts. This element may not be translated. -->
+    <!-- Note for translators: Remove element themeValues completely in the translation. It should only exists in the English version. -->
     <string-array name="themeValues">
         <item>carved</item>
         <item>newspaper</item>
