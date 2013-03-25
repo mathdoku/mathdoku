@@ -20,7 +20,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/changelog_version_title"
                 android:textColor="#ffffff"
-                android:textSize="18sp"
+                android:textSize="@dimen/dialog_text_size_heading1"
                 android:textStyle="bold" />
 
             <TextView
@@ -28,7 +28,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textColor="#ffffff"
-                android:textSize="15sp" />
+                android:textSize="@dimen/dialog_text_size_body" />
 
             <TextView
                 android:layout_width="fill_parent"
@@ -36,7 +36,7 @@
                 android:paddingTop="15dp"
                 android:text="@string/changelog_changes_title"
                 android:textColor="#ffffff"
-                android:textSize="18sp"
+                android:textSize="@dimen/dialog_text_size_heading1"
                 android:textStyle="bold" />
 
             <TextView
@@ -45,14 +45,15 @@
                 android:layout_height="wrap_content"
                 android:text="@string/changelog_changes_body"
                 android:textColor="#ffffff"
-                android:textSize="15sp" />
+                android:textSize="@dimen/dialog_text_size_heading2" />
 
             <TextView
                 android:id="@+id/changelog_changes_link"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:autoLink="web"
-                android:textColorLink="#ffffe0" />
+                android:textColorLink="#ffffe0"
+                android:textSize="@dimen/dialog_text_size_body" />
 
             <TextView
                 android:layout_width="fill_parent"
@@ -60,7 +61,7 @@
                 android:paddingTop="15dp"
                 android:text="@string/changelog_issues_title"
                 android:textColor="#ffffff"
-                android:textSize="18sp"
+                android:textSize="@dimen/dialog_text_size_heading1"
                 android:textStyle="bold" />
 
             <TextView
@@ -68,14 +69,15 @@
                 android:layout_height="wrap_content"
                 android:text="@string/changelog_issues_body"
                 android:textColor="#ffffff"
-                android:textSize="15sp" />
+                android:textSize="@dimen/dialog_text_size_body" />
 
             <TextView
                 android:id="@+id/changelog_issues_link"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:autoLink="web"
-                android:textColorLink="#ffffe0" />
+                android:textColorLink="#ffffe0"
+                android:textSize="@dimen/dialog_text_size_body" />
         </LinearLayout>
     </ScrollView>
 

@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_margin="15dp"
-        android:text="@string/save_game_screen_save_current_game" />
+        android:text="@string/save_game_screen_save_current_game"
+        android:textSize="@dimen/text_size_default" />
 
 </RelativeLayout>

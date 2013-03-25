@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Layout is used for small screens in portrait mode running old android versions. -->
+    <string name="dimension">small-port</string>
+    
+    <!-- This file should NOT be translated or altered per language. -->
+    <!-- Values can and should be overwritten for specific screen sizes if necessary. -->
+
+
+    <!-- GENERAL - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The text size used for giant text (e.g. solved message). -->
+    <dimen name="text_size_giant">48sp</dimen>
+
+    <!-- The text size used for default text. -->
+    <dimen name="text_size_default">17sp</dimen>
+
+    <!-- The text size used for tiny text (e.g. game seed). -->
+    <dimen name="text_size_tiny">9sp</dimen>
+
+    <!-- CONTROLS AND SUB ELEMENTS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The number of rows and columns used for the digit buttons inside element controls -->
+    <integer name="controls_digits_rows">2</integer>
+    <integer name="controls_digits_cols">5</integer>
+
+    <!-- The text size used for the digit buttons only. -->
+    <dimen name="controls_text_size_digits">20sp</dimen>
+
+    <!-- DIALOGS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The text size used for title text at level 1. -->
+    <dimen name="dialog_text_size_heading1">18sp</dimen>
+
+    <!-- The text size used for title text at level 2. -->
+    <dimen name="dialog_text_size_heading2">16sp</dimen>
+
+    <!-- The text size used for body text. -->
+    <dimen name="dialog_text_size_body">15sp</dimen>
+
+</resources>

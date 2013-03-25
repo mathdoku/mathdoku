@@ -29,6 +29,7 @@
             android:layout_centerInParent="true"
             android:layout_margin="15dp"
             android:text="@string/game_file_preview_not_available"
+            android:textSize="@dimen/text_size_default"
             android:visibility="gone" />
     </RelativeLayout>
 
@@ -50,7 +51,7 @@
             android:background="#80000000"
             android:text="Filename"
             android:textColor="#FFFFFFFF"
-            android:textSize="12sp"
+            android:textSize="@dimen/text_size_default"
             android:visibility="gone"
             tools:ignore="HardcodedText" />
 
@@ -64,35 +65,36 @@
             android:background="#80000000"
             android:text="MMM, 99 9999 HH:MM AM"
             android:textColor="#FFFFFFFF"
-            android:textSize="12sp"
+            android:textSize="@dimen/text_size_default"
             tools:ignore="HardcodedText" />
     </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/buttonLayout"
-        android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/previewLayout"
         android:layout_marginLeft="15dp"
-        android:layout_toRightOf="@+id/previewLayout">
+        android:layout_toRightOf="@+id/previewLayout"
+        android:orientation="horizontal" >
 
         <Button
             android:id="@+id/gameLoad"
-            android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:lines="1"
-            android:text="@string/save_game_screen_load_game" />
+            android:text="@string/save_game_screen_load_game"
+            android:textSize="@dimen/text_size_default" />
 
         <Button
             android:id="@+id/gameDelete"
-            android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:lines="1"
-            android:text="@string/save_game_screen_delete_game" />
-
+            android:text="@string/save_game_screen_delete_game"
+            android:textSize="@dimen/text_size_default" />
     </LinearLayout>
 
 </RelativeLayout>

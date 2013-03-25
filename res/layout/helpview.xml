@@ -21,7 +21,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="@string/dialog_help_leadin"
-                android:textColor="#ffffff" />
+                android:textColor="#ffffff"
+                android:textSize="@dimen/dialog_text_size_body" />
 
             <TextView
                 android:layout_width="fill_parent"
@@ -29,7 +30,7 @@
                 android:paddingTop="15dp"
                 android:text="@string/dialog_help_help_title"
                 android:textColor="#ffffff"
-                android:textSize="18sp"
+                android:textSize="@dimen/dialog_text_size_heading1"
                 android:textStyle="bold" />
 
             <TextView
@@ -38,13 +39,15 @@
                 android:paddingTop="15dp"
                 android:text="@string/dialog_help_goal_title"
                 android:textColor="#ffffff"
+                android:textSize="@dimen/dialog_text_size_heading2"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/dialog_help_goal_body"
-                android:textColor="#ffffff" />
+                android:textColor="#ffffff"
+                android:textSize="@dimen/dialog_text_size_body" />
 
             <TextView
                 android:layout_width="fill_parent"
@@ -52,36 +55,39 @@
                 android:paddingTop="15dp"
                 android:text="@string/dialog_help_how_to_play_title"
                 android:textColor="#ffffff"
+                android:textSize="@dimen/dialog_text_size_heading2"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/dialog_help_how_to_play_body"
-                android:textColor="#ffffff" />
+                android:textColor="#ffffff"
+                android:textSize="@dimen/dialog_text_size_body" />
 
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:paddingTop="15dp"
                 android:text="@string/dialog_help_version_title"
                 android:textColor="#ffffff"
-                android:textSize="18sp"
-                android:paddingTop="15dp"
+                android:textSize="@dimen/dialog_text_size_heading1"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/dialog_help_version_body"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#ffffff" />
+                android:textColor="#ffffff"
+                android:textSize="@dimen/dialog_text_size_body" />
 
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:paddingTop="15dp"
                 android:text="@string/dialog_help_license_title"
                 android:textColor="#ffffff"
-                android:textSize="18sp"
-                android:paddingTop="15dp"
+                android:textSize="@dimen/dialog_text_size_heading1"
                 android:textStyle="bold" />
 
             <TextView
@@ -89,6 +95,7 @@
                 android:layout_height="wrap_content"
                 android:text="GNU General Public License version 2"
                 android:textColor="#ffffff"
+                android:textSize="@dimen/dialog_text_size_body"
                 tools:ignore="HardcodedText" />
 
             <TextView
@@ -97,15 +104,16 @@
                 android:autoLink="web"
                 android:text="http://www.gnu.org/licenses/gpl.html"
                 android:textColorLink="#ffffff"
+                android:textSize="@dimen/dialog_text_size_body"
                 tools:ignore="HardcodedText" />
 
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:paddingTop="15dp"
                 android:text="@string/dialog_help_project_home_title"
                 android:textColor="#ffffff"
-                android:textSize="18sp"
-                android:paddingTop="15dp"
+                android:textSize="@dimen/dialog_text_size_heading1"
                 android:textStyle="bold" />
 
             <TextView
@@ -113,22 +121,24 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:autoLink="web"
-                android:textColorLink="#ffffff" />
+                android:textColorLink="#ffffff"
+                android:textSize="@dimen/dialog_text_size_body" />
 
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:paddingTop="15dp"
                 android:text="@string/dialog_help_contributors_title"
                 android:textColor="#ffffff"
-                android:textSize="18sp"
-                android:paddingTop="15dp"
+                android:textSize="@dimen/dialog_text_size_heading1"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/dialog_help_contributors_body"
-                android:textColor="#ffffff" />
+                android:textColor="#ffffff"
+                android:textSize="@dimen/dialog_text_size_body" />
         </LinearLayout>
     </ScrollView>
 

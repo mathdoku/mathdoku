@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -38,6 +39,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -118,7 +120,6 @@ public class MainActivity extends Activity {
 	// The input mode which is currently active
 	private InputMode mInputMode;
 	TextView mInputModeTextView;
-	RelativeLayout mInputModeLayout;
 
 	TextView solvedText;
 	TextView pressMenu;
@@ -126,12 +127,14 @@ public class MainActivity extends Activity {
 
 	RelativeLayout topLayout;
 	RelativeLayout puzzleGrid;
-	RelativeLayout controls;
+	TableLayout controls;
 	TextView mGameSeedLabel;
 	TextView mGameSeedText;
 	TextView mTimerText;
 
-	Button digits[] = new Button[9];
+	// Digit positions are the places on which the digit buttons can be placed.
+	Button mDigitPosition[] = new Button[9];
+	
 	Button clearDigit;
 	Button undoButton;
 	View[] sound_effect_views;
@@ -193,30 +196,28 @@ public class MainActivity extends Activity {
 		this.solvedText = (TextView) findViewById(R.id.solvedText);
 		this.mGridView.animText = this.solvedText;
 		this.pressMenu = (TextView) findViewById(R.id.pressMenu);
-		this.controls = (RelativeLayout) findViewById(R.id.controls);
+		this.controls = (TableLayout) findViewById(R.id.controls);
 		this.mGameSeedLabel = (TextView) findViewById(R.id.gameSeedLabel);
 		this.mGameSeedText = (TextView) findViewById(R.id.gameSeedText);
 		this.mTimerText = (TextView) findViewById(R.id.timerText);
 
-		this.mInputModeLayout = (RelativeLayout) findViewById(R.id.inputModeLayout);
 		this.mInputModeTextView = (TextView) findViewById(R.id.inputModeText);
-
-		digits[0] = (Button) findViewById(R.id.digitSelect1);
-		digits[1] = (Button) findViewById(R.id.digitSelect2);
-		digits[2] = (Button) findViewById(R.id.digitSelect3);
-		digits[3] = (Button) findViewById(R.id.digitSelect4);
-		digits[4] = (Button) findViewById(R.id.digitSelect5);
-		digits[5] = (Button) findViewById(R.id.digitSelect6);
-		digits[6] = (Button) findViewById(R.id.digitSelect7);
-		digits[7] = (Button) findViewById(R.id.digitSelect8);
-		digits[8] = (Button) findViewById(R.id.digitSelect9);
+		mDigitPosition[0] = (Button) findViewById(R.id.digitPosition1);
+		mDigitPosition[1] = (Button) findViewById(R.id.digitPosition2);
+		mDigitPosition[2] = (Button) findViewById(R.id.digitPosition3);
+		mDigitPosition[3] = (Button) findViewById(R.id.digitPosition4);
+		mDigitPosition[4] = (Button) findViewById(R.id.digitPosition5);
+		mDigitPosition[5] = (Button) findViewById(R.id.digitPosition6);
+		mDigitPosition[6] = (Button) findViewById(R.id.digitPosition7);
+		mDigitPosition[7] = (Button) findViewById(R.id.digitPosition8);
+		mDigitPosition[8] = (Button) findViewById(R.id.digitPosition9);
 		this.clearDigit = (Button) findViewById(R.id.clearButton);
 		this.undoButton = (Button) findViewById(R.id.undoButton);
 
-		this.sound_effect_views = new View[] { this.mGridView, this.digits[0],
-				this.digits[1], this.digits[2], this.digits[3], this.digits[4],
-				this.digits[5], this.digits[6], this.digits[7], this.digits[8],
-				this.clearDigit, this.mInputModeLayout, this.undoButton };
+		this.sound_effect_views = new View[] { this.mGridView, this.mDigitPosition[0],
+				this.mDigitPosition[1], this.mDigitPosition[2], this.mDigitPosition[3], this.mDigitPosition[4],
+				this.mDigitPosition[5], this.mDigitPosition[6], this.mDigitPosition[7], this.mDigitPosition[8],
+				this.clearDigit, this.mInputModeTextView, this.undoButton };
 
 		this.mPainter = Painter.getInstance(this);
 
@@ -255,10 +256,10 @@ public class MainActivity extends Activity {
 		this.mGridView
 				.setOnGridTouchListener(this.mGridView.new OnGridTouchListener() {
 					@Override
-					public void gridTouched(GridCell cell, boolean sameCellSelectedAgain) {
+					public void gridTouched(GridCell cell,
+							boolean sameCellSelectedAgain) {
 						if (MainActivity.this.preferences.getBoolean(
-								PREF_HIDE_CONTROLS,
-								PREF_HIDE_CONTROLS_DEFAULT)) {
+								PREF_HIDE_CONTROLS, PREF_HIDE_CONTROLS_DEFAULT)) {
 							if (controls.getVisibility() == View.VISIBLE) {
 								controls.startAnimation(outAnimation);
 								mGridView.mSelectorShown = false;
@@ -281,8 +282,8 @@ public class MainActivity extends Activity {
 					}
 				});
 
-		for (int i = 0; i < digits.length; i++)
-			this.digits[i].setOnClickListener(new OnClickListener() {
+		for (int i = 0; i < mDigitPosition.length; i++)
+			this.mDigitPosition[i].setOnClickListener(new OnClickListener() {
 				public void onClick(View v) {
 					// Convert text of button (number) to Integer
 					int d = Integer.parseInt(((Button) v).getText().toString());
@@ -307,7 +308,7 @@ public class MainActivity extends Activity {
 				}
 			}
 		});
-		this.mInputModeLayout.setOnTouchListener(new OnTouchListener() {
+		this.mInputModeTextView.setOnTouchListener(new OnTouchListener() {
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
@@ -731,7 +732,7 @@ public class MainActivity extends Activity {
 		// Set input mode only if it was not set before. In case of a
 		// configuration change the input mode has already been set in the
 		// onCreate event and may not be overridden.
-		if (mInputMode == InputMode.NO_INPUT__HIDE_GRID) {
+		if (mInputMode == InputMode.NO_INPUT__HIDE_GRID && mGrid != null) {
 			setInputMode((mGrid.isActive() ? InputMode.NORMAL
 					: InputMode.NO_INPUT__DISPLAY_GRID));
 		}
@@ -1244,7 +1245,7 @@ public class MainActivity extends Activity {
 					// requesting to show the solution.
 					MainActivity.this.mTimerText.setVisibility(View.INVISIBLE);
 				}
-				
+
 				// Unselect current cell / cage
 				mGrid.setSelectedCell(null);
 			}
@@ -1282,7 +1283,7 @@ public class MainActivity extends Activity {
 				// REMOVE: this.controls.setVisibility(View.GONE);
 
 				stopTimer();
-				
+
 				if (grid.isSolvedByCheating()) {
 					// Hide time in case the puzzle was solved by
 					// requesting to show the solution.
@@ -1371,18 +1372,18 @@ public class MainActivity extends Activity {
 		// visibility of pressMenu, controls and inputMode
 		switch (inputMode) {
 		case NO_INPUT__HIDE_GRID:
+			mTimerText.setVisibility(View.GONE);
+			// fall through
 		case NO_INPUT__DISPLAY_GRID:
 			pressMenu.setVisibility(View.VISIBLE);
-			mInputModeLayout.setVisibility(View.GONE);
 			controls.setVisibility(View.GONE);
 			break;
 		case NORMAL:
 		case MAYBE:
 			solvedText.setVisibility(View.GONE);
 			pressMenu.setVisibility(View.GONE);
-			mInputModeLayout.setVisibility(View.VISIBLE);
-			if (preferences.getBoolean(PREF_SHOW_TIMER,
-					PREF_SHOW_TIMER_DEFAULT)) {
+			if (preferences
+					.getBoolean(PREF_SHOW_TIMER, PREF_SHOW_TIMER_DEFAULT)) {
 				mTimerText.setVisibility(View.VISIBLE);
 			}
 			if (!MainActivity.this.preferences.getBoolean(PREF_HIDE_CONTROLS,
@@ -1401,15 +1402,85 @@ public class MainActivity extends Activity {
 					(inputMode == InputMode.NORMAL ? R.string.input_mode_normal
 							: R.string.input_mode_maybe)));
 
-			// Set visibility and colors of buttons
+			// Determin which buttons to show on what positions
 			if (mGrid != null) {
-				int i = 0;
-				for (; i < mGrid.getGridSize(); i++) {
-					digits[i].setVisibility(View.VISIBLE);
-					digits[i].setTextColor(color);
+
+				// Determine layout of position available for digit buttons
+				int digitButtonPositionRows = getResources().getInteger(
+						R.integer.controls_digits_rows);
+				int digitButtonPositionColumns = getResources().getInteger(
+						R.integer.controls_digits_cols);
+				String dimension = getResources().getString(
+						R.string.dimension);
+				if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+					// Small screens and tables have other dimension settings
+					// than the
+					// default screen. Which dimension settings file is used, is
+					// determinded by Android bases on screen dimensions and
+					// density.
+					Log.i(TAG, "Currently using dimensions file: " + dimension
+							+ " with button positions arranged in a "
+							+ digitButtonPositionRows + "x"
+							+ digitButtonPositionColumns + "matrix.");
 				}
-				for (; i < 9; i++) {
-					this.digits[i].setVisibility(View.GONE);
+
+				// Determine what grid to use for layout of digit buttons
+				int gridSize = mGrid.getGridSize();
+				int maxRows = (gridSize <= 6 ? 2 : 3);
+				if (dimension.equals("small-port")) {
+					// Buttons positions have to be arranged in a grid of 2
+					// rows with maximum of 5 positions each. Depending on the
+					// grid size the buttons are arranged as follows
+					// size 4: 2 rows of 2 buttons each
+					// size 5: 2 rows, first row 3 buttons, second row 2 buttons
+					// size 6: 2 rows, 3 buttons
+					// size 7: 2 rows, first row 4 buttons, second row 3 buttons
+					// size 8: 2 rows, 4 buttons
+					// size 9: 2 rows, first row 5 buttons, second row 4 buttons
+					maxRows = 2;
+				} else {
+					// Buttons positions have to be arranged in a grid of 2 or 3
+					// rows with maximum of 3 positions each. Depending on the
+					// grid size the buttons are arranged as follows
+					// size 4: 2 rows of 2 buttons each
+					// size 5: 2 rows, first row 3 buttons, second row 2 buttons
+					// size 6: 2 rows, 3 buttons
+					// size 7: 3 rows, 2 rows of 3 buttons, last row 1 button
+					// size 8: 3 rows, 2 rows of 3 buttons, last row 2 buttons
+					// size 9: 3 rows, 2 rows of 3 buttons, last row 3 buttons
+					maxRows = (gridSize <= 6 ? 2 : 3);
+				}
+				int digit = 1;
+				for (int row = 1; row <= maxRows; row++) {
+					int col = 1;
+					for (; col <= (int) Math
+							.ceil(((double) gridSize) / maxRows); col++) {
+						if (digit <= gridSize) {
+							assignDigitButtonPosition(row, col,
+									Integer.toString(digit++), color,
+									digitButtonPositionColumns);
+						} else {
+							// Clear this position. It can not be removed as
+							// it was used in the previous row.
+							clearDigitButtonPosition(row, col,
+									digitButtonPositionColumns);
+						}
+					}
+					// Remove remaining columns as they are not used in any
+					// rows.
+					for (; col <= digitButtonPositionColumns; col++) {
+						removeDigitButtonPosition(row, col,
+								digitButtonPositionColumns);
+					}
+				}
+				if (!dimension.equals("small-port")) {
+					// Set visibily of third row only because it is only need
+					// for grid size 7+
+					View view = findViewById(R.id.controlsButtonRow3);
+					if (view != null) {
+						view.setVisibility(maxRows == 2 ? View.GONE
+								: View.VISIBLE);
+					}
 				}
 			}
 			break;
@@ -1417,7 +1488,85 @@ public class MainActivity extends Activity {
 
 		mGridView.invalidate();
 	}
-	
+
+	/**
+	 * Assign a digit to a given position (row, col) in a virtual grid of
+	 * buttons with a given size.
+	 * 
+	 * @param row
+	 *            The row in the virtual grid where the digit is to be placed.
+	 *            Rows start counting at 1.
+	 * @param col
+	 *            The column in the virtual grid where the digit is to be
+	 *            placed. Columns start counting at 1.
+	 * @param digit
+	 *            The digit to be placed.
+	 * @param color
+	 *            The color of the digit.
+	 * @param colsPerRow
+	 *            The number of columns in the virtual grid.
+	 */
+	private void assignDigitButtonPosition(int row, int col, String digit,
+			int color, int colsPerRow) {
+		int index = ((row - 1) * colsPerRow) + (col - 1);
+		mDigitPosition[index].setText(digit);
+		mDigitPosition[index].setVisibility(View.VISIBLE);
+		mDigitPosition[index].setTextColor(color);
+	}
+
+	/**
+	 * Clears a digit position (row, col) in a virtual grid of buttons. The
+	 * digit position is not removed but only made invisible.
+	 * 
+	 * @param row
+	 *            The row in the virtual grid from which a digit position has to
+	 *            be cleared. Rows start counting at 1.
+	 * @param col
+	 *            The column in the virtual grid from which a digit position has
+	 *            to be cleared. Columns start counting at 1.
+	 * @param colsPerRow
+	 *            The number of columns in the virtual grid.
+	 */
+	private void clearDigitButtonPosition(int row, int col, int colsPerRow) {
+		int index = ((row - 1) * colsPerRow) + (col - 1);
+		if (index >= 0 && index < mDigitPosition.length) {
+			mDigitPosition[index].setText("");
+			mDigitPosition[index].setVisibility(View.INVISIBLE);
+		} else if (index == 9) {
+			// The small screen has in portrait mode 10 digit positions.
+			TextView textView = (TextView) findViewById(R.id.digitSelect10);
+			if (textView != null) {
+				textView.setVisibility(View.INVISIBLE);
+			}
+		}
+	}
+
+	/**
+	 * Removes a digit position (row, col) from a virtual grid of buttons.
+	 * 
+	 * @param row
+	 *            The row in the virtual grid from which a digit position has to
+	 *            be removed. Rows start counting at 1.
+	 * @param col
+	 *            The column in the virtual grid from which a digit position has
+	 *            to be removed. Columns start counting at 1.
+	 * @param colsPerRow
+	 *            The number of columns in the virtual grid.
+	 */
+	private void removeDigitButtonPosition(int row, int col, int colsPerRow) {
+		int index = ((row - 1) * colsPerRow) + (col - 1);
+		if (index >= 0 && index < mDigitPosition.length) {
+			mDigitPosition[index].setText("");
+			mDigitPosition[index].setVisibility(View.GONE);
+		} else if (index == 9) {
+			// The small screen has in portrait mode 10 digit positions.
+			TextView textView = (TextView) findViewById(R.id.digitSelect10);
+			if (textView != null) {
+				textView.setVisibility(View.GONE);
+			}
+		}
+	}
+
 	/**
 	 * Toggles the input mode to the next available state.
 	 */
@@ -1425,6 +1574,8 @@ public class MainActivity extends Activity {
 		InputMode inputMode = InputMode.NO_INPUT__HIDE_GRID;
 		switch (mInputMode) {
 		case NO_INPUT__HIDE_GRID:
+			// fall through
+		case NO_INPUT__DISPLAY_GRID:
 			inputMode = InputMode.NORMAL;
 			break;
 		case NORMAL:

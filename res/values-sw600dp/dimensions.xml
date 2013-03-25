@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <!-- Layout for 7 inch tablets or bigger. -->
+	<string name="dimension">sw600dp</string>
+    
+    <!-- This file should NOT be translated or altered per language. -->
+    <!-- Values can and should be overwritten for specific screen sizes if necessary. -->
+
+    <!-- GENERAL - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<!--  The text size used for giant text (e.g. solved message). -->
+    <dimen name="text_size_giant">96dp</dimen>
+
+	<!--  The text size used for default text. -->
+    <dimen name="text_size_default">34sp</dimen>
+    
+	<!--  The text size used for tiny text (e.g. game seed). -->
+    <dimen name="text_size_tiny">18sp</dimen>
+    
+    <!-- CONTROLS AND SUB ELEMENTS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    
+	<!--  The number of rows and columns used for the digit buttons inside element controls -->
+    <integer name="controls_digits_rows">3</integer>
+    <integer name="controls_digits_cols">3</integer>
+
+    <!--  The text size used for the digit buttons only. -->
+    <dimen name="controls_text_size_digits">40sp</dimen>
+
+    <!-- DIALOGS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <!-- The text size used for title text at level 1. -->
+    <dimen name="dialog_text_size_heading1">36sp</dimen>
+    
+    <!-- The text size used for title text at level 2. -->
+    <dimen name="dialog_text_size_heading2">32sp</dimen>
+    
+    <!-- The text size used for body text. -->
+    <dimen name="dialog_text_size_body">30sp</dimen>
+    
+</resources>
