@@ -13,11 +13,19 @@
 
     <!-- GENERAL - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+
     <!-- The message displayed on the screen to explain the player that (s)he has to press the "Menu" button on the device. -->
     <string name="press_menu_button_message">Press your device\'s \"Menu\" button.</string>
 
     <!-- The label of the buttons that close dialogs. -->
     <string name="dialog_general_button_close">Close</string>
+
+    <!-- DIALOG CONVERTING SAVED GAMES - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The title and message for the dialog displayed on the screen while upgrading to new version and saved games have to be converted. -->
+    <string name="dialog_converting_saved_games_title">Upgrading new version</string>
+    <string name="dialog_converting_saved_games_message">For this new version of MathDoku, your saved games are now being converted (one time only).</string>
 
     <!-- HELP DIALOG - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -190,19 +198,21 @@
     <string name="options_group_sound">Sound</string>
     <!-- The title and summary of the "sound effects" option. -->
 
+
     <!-- The title and summary of the "Sounds effect" option. This option enables or disables soundeffects. -->
     <string name="option_sound_effects_title">Sound effects</string>
     <string name="option_sound_effects_summary">Enable the sound effects</string>
 
     <!-- DIALOG THEME - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    
+
+
     <!-- The possible values of the "themes" option. This option controls which theme is used for displaying. -->
     <string-array name="themeTexts">
         <item>Carved</item>
         <item>Newspaper</item>
         <item>Dark</item>
     </string-array>
-    
+
     <!-- CONTEXT MENU IN PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 

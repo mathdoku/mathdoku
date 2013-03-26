@@ -38,6 +38,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	// Random generator
 	public Random mRandom;
 	private long mGameSeed;
+	private int mGeneratorRevisionNumber;
 
 	// Size of the grid
 	public int mGridSize;
@@ -85,6 +86,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		this.mGridSize = gridSize;
 		this.mHideOperators = hideOperators;
 		this.mMaxCageSize = maxCageSize;
+		this.mGeneratorRevisionNumber = activity.getVersionNumber();
 
 		setGridGeneratorOptions(null);
 
@@ -238,7 +240,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 					// solution which results in much faster generation time.
 
 					// Store grid as user file
-					mGrid.create(mGameSeed, mGridSize, mCells, mCages, true);
+					mGrid.create(mGameSeed, mGeneratorRevisionNumber,
+							mGridSize, mCells, mCages, true);
 					GameFile gameFile = new GameFile(GameFileType.NEW_GAME);
 					gameFile.save(mGrid, false);
 					gameFile.copyToNewGameFile();
@@ -361,7 +364,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		}
 
 		// Load results into the grid.
-		mGrid.create(mGameSeed, mGridSize, mCells, mCages, true);
+		mGrid.create(mGameSeed, mGeneratorRevisionNumber, mGridSize, mCells,
+				mCages, true);
 
 		if (mActivity != null) {
 			if (DEBUG_GRID_GENERATOR) {

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" >
 
     <item
         android:id="@+id/newgame"
@@ -44,24 +45,30 @@
     <item
         android:id="@+id/menu_development_mode"
         android:title="Development Tools"
-        android:visible="false">
+        android:visible="false"
+        tools:ignore="HardcodedText">
         <menu>
             <item
                 android:id="@+id/development_mode_generate_games"
-                android:title="Generate new dummy games"/>
+                android:title="Generate new dummy games"
+                tools:ignore="HardcodedText"/>
             <item
                 android:id="@+id/development_mode_recreate_previews"
-                android:title="Recreate all preview images"/>
+                android:title="Recreate all preview images"
+                tools:ignore="HardcodedText"/>
             <item
                 android:id="@+id/development_mode_delete_games"
-                android:title="Delete all games and previews"/>
+                android:title="Delete all games and previews"
+                tools:ignore="HardcodedText"/>
             <item
                 android:id="@+id/development_mode_reset_preferences"
-                android:title="Reset preferences"/>
+                android:title="Reset preferences"
+                tools:ignore="HardcodedText"/>
             <item
                 android:id="@+id/development_mode_clear_data"
-                android:title="Clear data (games and prefs)"/>
-            </menu>
+                android:title="Clear data (games and prefs)"
+                tools:ignore="HardcodedText"/>
+        </menu>
     </item>
     <item
         android:id="@+id/help"

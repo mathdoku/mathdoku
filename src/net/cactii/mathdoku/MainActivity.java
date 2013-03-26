@@ -134,7 +134,7 @@ public class MainActivity extends Activity {
 
 	// Digit positions are the places on which the digit buttons can be placed.
 	Button mDigitPosition[] = new Button[9];
-	
+
 	Button clearDigit;
 	Button undoButton;
 	View[] sound_effect_views;
@@ -143,8 +143,9 @@ public class MainActivity extends Activity {
 
 	public SharedPreferences preferences;
 
-	// Background task for generating a new puzzle
+	// Background tasks for generating a new puzzle and converting game files
 	public GridGenerator mGridGeneratorTask;
+	public GameFileConverter mGameFileConverter;
 
 	// Variables for process of creating preview images of game file for which
 	// no preview image does exist.
@@ -156,16 +157,22 @@ public class MainActivity extends Activity {
 	// Object to save data on a configuration change
 	private class ConfigurationInstanceState {
 		private GridGenerator mGridGeneratorTask;
+		private GameFileConverter mGameFileConverter;
 		private InputMode mInputMode;
 
 		public ConfigurationInstanceState(GridGenerator gridGeneratorTask,
-				InputMode inputMode) {
+				GameFileConverter gameFileConverterTask, InputMode inputMode) {
 			mGridGeneratorTask = gridGeneratorTask;
+			mGameFileConverter = gameFileConverterTask;
 			mInputMode = inputMode;
 		}
 
 		public GridGenerator getGridGeneratorTask() {
 			return mGridGeneratorTask;
+		}
+
+		public GameFileConverter getGameFileConverter() {
+			return mGameFileConverter;
 		}
 
 		public InputMode getInputMode() {
@@ -214,10 +221,13 @@ public class MainActivity extends Activity {
 		this.clearDigit = (Button) findViewById(R.id.clearButton);
 		this.undoButton = (Button) findViewById(R.id.undoButton);
 
-		this.sound_effect_views = new View[] { this.mGridView, this.mDigitPosition[0],
-				this.mDigitPosition[1], this.mDigitPosition[2], this.mDigitPosition[3], this.mDigitPosition[4],
-				this.mDigitPosition[5], this.mDigitPosition[6], this.mDigitPosition[7], this.mDigitPosition[8],
-				this.clearDigit, this.mInputModeTextView, this.undoButton };
+		this.sound_effect_views = new View[] { this.mGridView,
+				this.mDigitPosition[0], this.mDigitPosition[1],
+				this.mDigitPosition[2], this.mDigitPosition[3],
+				this.mDigitPosition[4], this.mDigitPosition[5],
+				this.mDigitPosition[6], this.mDigitPosition[7],
+				this.mDigitPosition[8], this.clearDigit,
+				this.mInputModeTextView, this.undoButton };
 
 		this.mPainter = Painter.getInstance(this);
 
@@ -323,8 +333,6 @@ public class MainActivity extends Activity {
 
 		});
 
-		checkVersion();
-
 		this.mGridView.setFocusable(true);
 		this.mGridView.setFocusableInTouchMode(true);
 
@@ -346,17 +354,18 @@ public class MainActivity extends Activity {
 			if (mGridGeneratorTask != null) {
 				mGridGeneratorTask.attachToActivity(this);
 			}
+
+			// Restore background process if running.
+			mGameFileConverter = configurationInstanceState
+					.getGameFileConverter();
+			if (mGameFileConverter != null) {
+				mGameFileConverter.attachToActivity(this);
+			}
 		}
 
-		if (!this.preferences.getBoolean(PREF_CREATE_PREVIEW_IMAGES_COMPLETED,
-				PREF_CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT)) {
-			// Process of creating preview images is not yet completed. Last
-			// game can not yet be restarted.
-			return;
-		} else {
-			restartLastGame();
-			return;
-		}
+		checkVersion();
+
+		restartLastGame();
 	}
 
 	public void onPause() {
@@ -416,7 +425,7 @@ public class MainActivity extends Activity {
 		}
 
 		if (mGridGeneratorTask != null) {
-			// In case the grid is created in the background ans the dialog is
+			// In case the grid is created in the background and the dialog is
 			// closed, the activity will be moved to the background as well. In
 			// case the user starts this app again onResume is called but
 			// onCreate isn't. So we have to check here as well.
@@ -434,16 +443,6 @@ public class MainActivity extends Activity {
 				PREF_PLAY_SOUND_EFFECTS, PREF_PLAY_SOUND_EFFECTS_DEFAULT));
 
 		super.onResume();
-
-		if (!this.preferences.getBoolean(PREF_CREATE_PREVIEW_IMAGES_COMPLETED,
-				PREF_CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT)) {
-			// It is a bit dirty to abuse the onResume method to start the
-			// preview image creation process. But for this process we need this
-			// activity to be started as the process will display each saved
-			// game in the interface in order to be able to make a preview
-			// image.
-			createPreviewImages();
-		}
 
 		if (mTimerTask == null
 				|| (mTimerTask != null && mTimerTask.isCancelled())) {
@@ -943,88 +942,120 @@ public class MainActivity extends Activity {
 	 * modify preferences and convert if necessary.
 	 */
 	private void checkVersion() {
+		if (mGameFileConverter != null) {
+			// Phase 1 of the upgrade is not yet completed. The upgrade process
+			// should not be restarted till the phase 1 backgroudn process is
+			// completed.
+			return;
+		}
+
 		int currentVersion = getVersionNumber();
 		int previousInstalledVersion = preferences.getInt(PREF_CURRENT_VERSION,
 				PREF_CURRENT_VERSION_DEFAULT);
+
+		// Start phase 1 of the upgrade process if needed.
 		if (previousInstalledVersion < currentVersion) {
-			Editor prefeditor = preferences.edit();
-
-			// On Each update of the game, all game file will be converted to
-			// the latest definitions.
-			GameFile.ConvertGameFiles(previousInstalledVersion, currentVersion);
-
-			if (previousInstalledVersion < 121 && currentVersion >= 121) {
-				// Add missing preferences to the Shared Preferences.
-				if (!preferences.contains(PREF_CLEAR_REDUNDANT_POSSIBLES)) {
-					prefeditor.putBoolean(PREF_CLEAR_REDUNDANT_POSSIBLES,
-							PREF_CLEAR_REDUNDANT_POSSIBLES_DEFAULT);
-				}
-			}
-			if (previousInstalledVersion < 123 && currentVersion >= 123) {
-				// Add missing preferences to the Shared Preferences. Note:
-				// those preferences have been introduced in revisions prior to
-				// revision 122. But as from revision 122 the default values
-				// have been removed from optionsview.xml to prevent conflicts
-				// in defaults values with default values defined in this
-				// activity.
-				if (!preferences.contains(PREF_HIDE_CONTROLS)) {
-					prefeditor.putBoolean(PREF_HIDE_CONTROLS,
-							PREF_HIDE_CONTROLS_DEFAULT);
-				}
-				if (!preferences.contains(PREF_HIDE_OPERATORS)) {
-					prefeditor.putString(PREF_HIDE_OPERATORS,
-							PREF_HIDE_OPERATORS_DEFAULT);
-				}
-				if (!preferences.contains(PREF_CREATE_PREVIEW_IMAGES_COMPLETED)) {
-					prefeditor.putBoolean(PREF_CREATE_PREVIEW_IMAGES_COMPLETED,
-							PREF_CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT);
-				}
-				if (!preferences.contains(PREF_PLAY_SOUND_EFFECTS)) {
-					prefeditor.putBoolean(PREF_PLAY_SOUND_EFFECTS,
-							PREF_PLAY_SOUND_EFFECTS_DEFAULT);
-				}
-				if (!preferences.contains(PREF_SHOW_BAD_CAGE_MATHS)) {
-					prefeditor.putBoolean(PREF_SHOW_BAD_CAGE_MATHS,
-							PREF_SHOW_BAD_CAGE_MATHS_DEFAULT);
-				}
-				if (!preferences.contains(PREF_SHOW_DUPE_DIGITS)) {
-					prefeditor.putBoolean(PREF_SHOW_DUPE_DIGITS,
-							PREF_SHOW_DUPE_DIGITS_DEFAULT);
-				}
-				if (!preferences.contains(PREF_SHOW_MAYBES_AS_3X3_GRID)) {
-					prefeditor.putBoolean(PREF_SHOW_MAYBES_AS_3X3_GRID,
-							PREF_SHOW_MAYBES_AS_3X3_GRID_DEFAULT);
-				}
-				if (!preferences.contains(PREF_SHOW_TIMER)) {
-					prefeditor.putBoolean(PREF_SHOW_TIMER,
-							PREF_SHOW_TIMER_DEFAULT);
-				}
-				if (!preferences.contains(PREF_THEME)) {
-					prefeditor.putString(PREF_THEME, PREF_THEME_DEFAULT);
-				}
-				if (!preferences.contains(PREF_WAKE_LOCK)) {
-					prefeditor.putBoolean(PREF_WAKE_LOCK,
-							PREF_WAKE_LOCK_DEFAULT);
-				}
-			}
-			if (previousInstalledVersion < 135 && currentVersion >= 135) {
-				if (!preferences.contains(PREF_ALLOW_BIG_CAGES)) {
-					prefeditor.putBoolean(PREF_ALLOW_BIG_CAGES,
-							PREF_ALLOW_BIG_CAGES_DEFAULT);
-				}
-			}
-
-			prefeditor.putInt(PREF_CURRENT_VERSION, currentVersion);
-			prefeditor.commit();
-			if (previousInstalledVersion == -1) {
-				// On first install of the game, display the help dialog.
-				this.openHelpDialog();
-			} else {
-				// On upgrade of version show changes.
-				this.openChangesDialog();
-			}
+			// On Each update of the game, all game files will be converted to
+			// the latest definitions. On completion of the game file
+			// conversion, method upgradePhase2_CreatePreviewImages will be
+			// called.
+			mGameFileConverter = new GameFileConverter(this,
+					previousInstalledVersion, currentVersion);
+			mGameFileConverter.execute();
+		} else if (preferences.contains(PREF_CREATE_PREVIEW_IMAGES_COMPLETED)
+				&& !preferences.getBoolean(
+						PREF_CREATE_PREVIEW_IMAGES_COMPLETED,
+						PREF_CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT)) {
+			// Skip Phase 1 and go directly to Phase to generate new previews.
+			upgradePhase2_createPreviewImages(previousInstalledVersion,
+					currentVersion);
 		}
 		return;
+	}
+
+	/**
+	 * Finishes the upgrading process after the game files have been converted
+	 * and the image previews have been created.
+	 * 
+	 * @param previousInstalledVersion
+	 *            : Latest version of MathDoku which was actually used.
+	 * @param currentVersion
+	 *            Current (new) revision number of MathDoku.
+	 */
+	public void upgradePhase3_UpdatePreferences(int previousInstalledVersion,
+			int currentVersion) {
+
+		// Update preferences
+		Editor prefeditor = preferences.edit();
+		if (previousInstalledVersion < 121 && currentVersion >= 121) {
+			// Add missing preferences to the Shared Preferences.
+			if (!preferences.contains(PREF_CLEAR_REDUNDANT_POSSIBLES)) {
+				prefeditor.putBoolean(PREF_CLEAR_REDUNDANT_POSSIBLES,
+						PREF_CLEAR_REDUNDANT_POSSIBLES_DEFAULT);
+			}
+		}
+		if (previousInstalledVersion < 123 && currentVersion >= 123) {
+			// Add missing preferences to the Shared Preferences. Note:
+			// those preferences have been introduced in revisions prior to
+			// revision 122. But as from revision 122 the default values
+			// have been removed from optionsview.xml to prevent conflicts
+			// in defaults values with default values defined in this
+			// activity.
+			if (!preferences.contains(PREF_HIDE_CONTROLS)) {
+				prefeditor.putBoolean(PREF_HIDE_CONTROLS,
+						PREF_HIDE_CONTROLS_DEFAULT);
+			}
+			if (!preferences.contains(PREF_HIDE_OPERATORS)) {
+				prefeditor.putString(PREF_HIDE_OPERATORS,
+						PREF_HIDE_OPERATORS_DEFAULT);
+			}
+			if (!preferences.contains(PREF_PLAY_SOUND_EFFECTS)) {
+				prefeditor.putBoolean(PREF_PLAY_SOUND_EFFECTS,
+						PREF_PLAY_SOUND_EFFECTS_DEFAULT);
+			}
+			if (!preferences.contains(PREF_SHOW_BAD_CAGE_MATHS)) {
+				prefeditor.putBoolean(PREF_SHOW_BAD_CAGE_MATHS,
+						PREF_SHOW_BAD_CAGE_MATHS_DEFAULT);
+			}
+			if (!preferences.contains(PREF_SHOW_DUPE_DIGITS)) {
+				prefeditor.putBoolean(PREF_SHOW_DUPE_DIGITS,
+						PREF_SHOW_DUPE_DIGITS_DEFAULT);
+			}
+			if (!preferences.contains(PREF_SHOW_MAYBES_AS_3X3_GRID)) {
+				prefeditor.putBoolean(PREF_SHOW_MAYBES_AS_3X3_GRID,
+						PREF_SHOW_MAYBES_AS_3X3_GRID_DEFAULT);
+			}
+			if (!preferences.contains(PREF_SHOW_TIMER)) {
+				prefeditor.putBoolean(PREF_SHOW_TIMER, PREF_SHOW_TIMER_DEFAULT);
+			}
+			if (!preferences.contains(PREF_THEME)) {
+				prefeditor.putString(PREF_THEME, PREF_THEME_DEFAULT);
+			}
+			if (!preferences.contains(PREF_WAKE_LOCK)) {
+				prefeditor.putBoolean(PREF_WAKE_LOCK, PREF_WAKE_LOCK_DEFAULT);
+			}
+		}
+		if (previousInstalledVersion < 135 && currentVersion >= 135) {
+			if (!preferences.contains(PREF_ALLOW_BIG_CAGES)) {
+				prefeditor.putBoolean(PREF_ALLOW_BIG_CAGES,
+						PREF_ALLOW_BIG_CAGES_DEFAULT);
+			}
+		}
+		prefeditor.putInt(PREF_CURRENT_VERSION, currentVersion);
+		prefeditor.commit();
+
+		// Show help dialog after new/fresh install or changes dialog
+		// otherwise.
+		if (previousInstalledVersion == -1) {
+			// On first install of the game, display the help dialog.
+			this.openHelpDialog();
+		} else if (previousInstalledVersion < currentVersion) {
+			// On upgrade of version show changes.
+			this.openChangesDialog();
+		}
+
+		// Restart the last game
+		restartLastGame();
 	}
 
 	public int getVersionNumber() {
@@ -1055,8 +1086,23 @@ public class MainActivity extends Activity {
 	 * Create preview images for all stored games. Previews will be created one
 	 * at a time because each stored game has to be loaded and displayed before
 	 * a preview can be generated.
+	 * 
+	 * @param previousInstalledVersion
+	 *            : Latest version of MathDoku which was actually used.
+	 * @param currentVersion
+	 *            Current (new) revision number of MathDoku.
 	 */
-	public void createPreviewImages() {
+	public void upgradePhase2_createPreviewImages(
+			final int previousInstalledVersion, final int currentVersion) {
+		if (this.preferences.getBoolean(PREF_CREATE_PREVIEW_IMAGES_COMPLETED,
+				PREF_CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT)) {
+			// Previews have already been created. Go to next phase of upgrading
+			upgradePhase3_UpdatePreferences(previousInstalledVersion,
+					currentVersion);
+			return;
+		}
+
+		// Determine the number of previews to be created.
 		int countGameFilesWithoutPreview = countGameFilesWithoutPreview();
 		if (countGameFilesWithoutPreview == 0) {
 			// No games files without previews found.
@@ -1064,13 +1110,14 @@ public class MainActivity extends Activity {
 			prefEditor.putBoolean(PREF_CREATE_PREVIEW_IMAGES_COMPLETED, true);
 			prefEditor.commit();
 
-			// Restart the last game.
-			restartLastGame();
+			// Go to next phase of upgrading
+			upgradePhase3_UpdatePreferences(previousInstalledVersion,
+					currentVersion);
 			return;
 		}
 
-		// At least one game file was found for which no preview exist. Show the
-		// progress dialog.
+		// At least one game file was found for which no preview exist. Show
+		// the progress dialog.
 		mProgressDialogImagePreviewCreation = new ProgressDialog(this);
 		mProgressDialogImagePreviewCreation
 				.setTitle(R.string.main_ui_creating_previews_title);
@@ -1090,9 +1137,9 @@ public class MainActivity extends Activity {
 		puzzleGrid.setVisibility(View.VISIBLE);
 		pressMenu.setVisibility(View.GONE);
 
-		// Runnable for handling the next step of preview image
-		// creation process which can not be done until the grid view has been
-		// validated (refreshed).
+		// Runnable for handling the next step of preview image creation process
+		// which can not be done until the grid view has been validated
+		// (refreshed).
 		final Runnable createNextPreviewImage = new Runnable() {
 			public void run() {
 				// If a game file was already loaded, it is now loaded and
@@ -1124,8 +1171,8 @@ public class MainActivity extends Activity {
 					// All preview images have been created.
 
 					// Dismiss the dialog. In case the process was interrupted
-					// and restarted
-					// the dialog can not be dismissed without causing an error.
+					// and restarted the dialog can not be dismissed without
+					// causing an error.
 					try {
 						mProgressDialogImagePreviewCreation.dismiss();
 					} catch (IllegalArgumentException e) {
@@ -1141,8 +1188,9 @@ public class MainActivity extends Activity {
 							true);
 					prefEditor.commit();
 
-					// Restart the last game
-					restartLastGame();
+					// Go to next phase of upgrading
+					upgradePhase3_UpdatePreferences(previousInstalledVersion,
+							currentVersion);
 
 					setTheme();
 				}
@@ -1215,7 +1263,14 @@ public class MainActivity extends Activity {
 			// task from this activity. It will keep on running until finished.
 			mGridGeneratorTask.detachFromActivity();
 		}
-		return new ConfigurationInstanceState(mGridGeneratorTask, mInputMode);
+		if (mGameFileConverter != null) {
+			// The game files are converted in the background. Detach the
+			// background
+			// task from this activity. It will keep on running until finished.
+			mGameFileConverter.detachFromActivity();
+		}
+		return new ConfigurationInstanceState(mGridGeneratorTask,
+				mGameFileConverter, mInputMode);
 	}
 
 	public void setOnSolvedHandler() {
@@ -1354,7 +1409,7 @@ public class MainActivity extends Activity {
 	 * @param inputMode
 	 *            The new input mode to be set.
 	 */
-	private void setInputMode(InputMode inputMode) {
+	public void setInputMode(InputMode inputMode) {
 		this.mInputMode = inputMode;
 
 		// Visibility of grid view
@@ -1410,8 +1465,7 @@ public class MainActivity extends Activity {
 						R.integer.controls_digits_rows);
 				int digitButtonPositionColumns = getResources().getInteger(
 						R.integer.controls_digits_cols);
-				String dimension = getResources().getString(
-						R.string.dimension);
+				String dimension = getResources().getString(R.string.dimension);
 				if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
 					// Small screens and tables have other dimension settings
 					// than the

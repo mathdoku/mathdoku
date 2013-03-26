@@ -3,6 +3,7 @@ package net.cactii.mathdoku;
 import java.util.ArrayList;
 
 import net.cactii.mathdoku.GameFile.GameFileType;
+import net.cactii.mathdoku.MainActivity.InputMode;
 import net.cactii.mathdoku.DevelopmentHelpers.DevelopmentHelperHoneycombAndAbove;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -120,7 +121,7 @@ public class DevelopmentHelper {
 	 *            The activity in which context the confirmation dialog will be
 	 *            shown.
 	 */
-	public static void deleteAllGames(MainActivity mainActivity) {
+	public static void deleteAllGames(final MainActivity mainActivity) {
 		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
 			builder.setTitle("Delete all?")
@@ -137,6 +138,8 @@ public class DevelopmentHelper {
 								public void onClick(DialogInterface dialog,
 										int id) {
 									executeDeleteAllGames();
+									mainActivity.mGrid = null;
+									mainActivity.setInputMode(InputMode.NO_INPUT__HIDE_GRID);
 								}
 							});
 			AlertDialog dialog = builder.create();
@@ -200,16 +203,15 @@ public class DevelopmentHelper {
 										}
 									}
 
-									// Remove preference which controls the
-									// process
-									// of preview image creation
-									if (mainActivity.preferences != null
-											&& mainActivity.preferences
-													.contains(MainActivity.PREF_CREATE_PREVIEW_IMAGES_COMPLETED)) {
+									// Reset preference which controls the
+									// process of preview image creation
+									if (mainActivity.preferences != null) {
 										Editor prefeditor = mainActivity.preferences
 												.edit();
 										prefeditor
-												.remove(MainActivity.PREF_CREATE_PREVIEW_IMAGES_COMPLETED);
+												.putBoolean(
+														MainActivity.PREF_CREATE_PREVIEW_IMAGES_COMPLETED,
+														MainActivity.PREF_CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT);
 										prefeditor.commit();
 									}
 
@@ -309,6 +311,9 @@ public class DevelopmentHelper {
 											.edit();
 									prefeditor.clear();
 									prefeditor.commit();
+
+									mainActivity.mGrid = null;
+									mainActivity.setInputMode(InputMode.NO_INPUT__HIDE_GRID);
 
 									restartActivity(mainActivity);
 								}

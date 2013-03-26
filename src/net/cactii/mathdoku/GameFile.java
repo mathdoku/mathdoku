@@ -131,7 +131,9 @@ public class GameFile extends File {
 				writer = new BufferedWriter(new FileWriter(getFullFilename()));
 
 				// Store information about the Grid View on a single line
-				writer.write(grid.toStorageString(keepOriginalDatetimeLastSaved) + EOL_DELIMITER);
+				writer.write(grid
+						.toStorageString(keepOriginalDatetimeLastSaved)
+						+ EOL_DELIMITER);
 
 				// Store information about the cells. Use one line per single
 				// cell.
@@ -342,14 +344,14 @@ public class GameFile extends File {
 
 			// Check cage maths after all cages have been read.
 			for (GridCage cage2 : grid.mCages) {
-				cage2.checkCageMathsCorrect();
+				cage2.checkCageMathsCorrect(true);
 			}
 
 			// Set the selected cell (and indirectly the selected cage).
 			if (selectedCell != null) {
 				grid.setSelectedCell(selectedCell);
 			}
-
+			
 			// Remaining lines contain cell changes (zero or more expected)
 			CellChange cellChange = new CellChange();
 			while (line != null
@@ -432,14 +434,14 @@ public class GameFile extends File {
 	}
 
 	/**
-	 * Copy this game file to a new file with the given file name. The preview
-	 * image will be copied as well.
+	 * Copy a file to a new file with the given file name.
 	 * 
-	 * @param index
-	 *            The sequence number of the new game file.
-	 * @throws IOException
+	 * @param filenameInput
+	 *            Name of file to be copied.
+	 * @param filenameOutput
+	 *            Name of file to which the input file is copied.
 	 */
-	private void copyFile(String filenameInput, String filenameOutput) {
+	public static void copyFile(String filenameInput, String filenameOutput) {
 		InputStream in = null;
 		OutputStream out = null;
 		try {
@@ -714,67 +716,5 @@ public class GameFile extends File {
 		return PATH
 				+ this.baseFilename.replace(GAMEFILE_EXTENSION,
 						PREVIEW_EXTENSION);
-	}
-
-	public static void ConvertGameFiles(int currentVersion, int newVersion) {
-		// Rename files and convert to new file formats
-		if (currentVersion <= 77) {
-			// Rename files and convert to new file formats.
-			File dir = new File(PATH);
-			String[] filenames = dir.list();
-			for (String filename : filenames) {
-				String newFilename = null;
-				if (filename.endsWith(PREVIEW_EXTENSION)) {
-					// This is a preview image of a game file. It only needs to
-					// be renamed.
-					if (filename.startsWith("savedgame_")) {
-						newFilename = PATH + FILENAME_SAVED_GAME
-								+ filename.substring(10);
-					} else if (filename.startsWith("savedgame")) {
-						newFilename = PATH + GameFile.FILENAME_LAST_GAME
-								+ PREVIEW_EXTENSION;
-					}
-				} else if (filename.startsWith("savedgame")) {
-					// This is a basic game file. Convert content to the latest
-					// format before renaming.
-
-					// Load and then save the game file.
-					GameFile gameFile = new GameFile(filename);
-					Grid grid = gameFile.load();
-					gameFile.save(grid, true);
-
-					// Determine new name
-					if (filename.startsWith("savedgame_")) {
-						newFilename = PATH + FILENAME_SAVED_GAME
-								+ filename.substring(10) + GAMEFILE_EXTENSION;
-					} else if (filename.startsWith("savedgame")) {
-						newFilename = PATH + FILENAME_LAST_GAME
-								+ GAMEFILE_EXTENSION;
-					}
-				}
-
-				// Rename if applicable.
-				if (newFilename != null) {
-					// Rename the file
-					if (new File(PATH + filename)
-							.renameTo(new File(newFilename))) {
-						// File is renamed.
-						if (new File(PATH + filename).exists()) {
-							new File(PATH + filename).delete();
-						}
-					}
-				}
-			}
-		}
-
-		// Update game files only if needed.
-		if (currentVersion >= 77 && currentVersion < newVersion) {
-			for (String filename : getAllGameFiles(Integer.MAX_VALUE)) {
-				// Load and then save the game file.
-				GameFile gameFile = new GameFile(filename);
-				Grid grid = gameFile.load();
-				gameFile.save(grid, true);
-			}
-		}
 	}
 }

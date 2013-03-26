@@ -14,6 +14,7 @@ public class Grid {
 	// collected on single line as well.
 	public static final String SAVE_GAME_GRID_VERSION_01 = "VIEW.v1";
 	public static final String SAVE_GAME_GRID_VERSION_02 = "VIEW.v2";
+	public static final String SAVE_GAME_GRID_VERSION_03 = "VIEW.v3";
 
 	// Size of the grid
 	private int mGridSize;
@@ -37,10 +38,11 @@ public class Grid {
 	private long mDateLastSaved;
 	private long mElapsedTime;
 
-	// The seed used to create the game. In case the seed equals 0 it can not be
-	// trusted as a valid seed in case the grid was restored from a game file
-	// prior to version 1 as the game seed was not stored until then.
+	// The revision number and seed used to create the game. In case the
+	// revision number or seed equals 0 it can not be trusted to regenerate a
+	// grid as both the revision number and seed are needed to do so.
 	private long mGameSeed;
+	private int mGeneratorRevisionNumber;
 
 	// Keep track of all moves as soon as grid is built or restored.
 	public ArrayList<CellChange> moves;
@@ -386,10 +388,11 @@ public class Grid {
 		if (!keepOriginalDatetimeLastSaved) {
 			mDateLastSaved = System.currentTimeMillis();
 		}
-		
+
 		// Build storage string
-		String storageString = SAVE_GAME_GRID_VERSION_02
+		String storageString = SAVE_GAME_GRID_VERSION_03
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mGameSeed
+				+ GameFile.FIELD_DELIMITER_LEVEL1 + mGeneratorRevisionNumber
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mDateLastSaved
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mElapsedTime
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mGridSize
@@ -416,6 +419,8 @@ public class Grid {
 			viewInformationVersion = 1;
 		} else if (viewParts[0].equals(SAVE_GAME_GRID_VERSION_02)) {
 			viewInformationVersion = 2;
+		} else if (viewParts[0].equals(SAVE_GAME_GRID_VERSION_03)) {
+			viewInformationVersion = 3;
 		} else {
 			return false;
 		}
@@ -423,6 +428,11 @@ public class Grid {
 		// Process all parts
 		int index = 1;
 		mGameSeed = Long.parseLong(viewParts[index++]);
+		if (viewInformationVersion >= 3) {
+			mGeneratorRevisionNumber = Integer.parseInt(viewParts[index++]);
+		} else {
+			mGeneratorRevisionNumber = 0;
+		}
 		mDateLastSaved = Long.parseLong(viewParts[index++]);
 		mElapsedTime = Long.parseLong(viewParts[index++]);
 		mGridSize = Integer.parseInt(viewParts[index++]);
@@ -441,40 +451,42 @@ public class Grid {
 	/**
 	 * Creates the grid with given information.
 	 * 
-	 * @param mGameSeed
-	 *            : The game seed used to generate this grid.
-	 * @param mGridSize
+	 * @param gameSeed
+	 *            The game seed used to generate this grid.
+	 * @param generatorRevisionNumber
+	 *            The revision number of the generator used to create the grid.
+	 * @param gridSize
 	 *            The size of grid.
-	 * @param mCells
+	 * @param cells
 	 *            The list of cell used in the grid.
-	 * @param mCages
+	 * @param cages
 	 *            The list of cages used in the grid.
-	 * @param mActive
+	 * @param active
 	 *            The status of the grid.
 	 */
-	public void create(long mGameSeed, int mGridSize,
-			ArrayList<GridCell> mCells, ArrayList<GridCage> mCages,
-			boolean mActive) {
+	public void create(long gameSeed, int generatorRevisionNumber, int gridSize,
+			ArrayList<GridCell> cells, ArrayList<GridCage> cages, boolean active) {
 		clear();
-		this.mGameSeed = mGameSeed;
+		this.mGameSeed = gameSeed;
+		this.mGeneratorRevisionNumber = generatorRevisionNumber;
 		this.mDateGenerated = System.currentTimeMillis();
-		this.mGridSize = mGridSize;
-		this.mCells = mCells;
-		this.mCages = mCages;
-		this.mActive = mActive;
+		this.mGridSize = gridSize;
+		this.mCells = cells;
+		this.mCages = cages;
+		this.mActive = active;
 
 		// Cages keep a reference to the grid view to which they belong.
-		for (GridCage cage : mCages) {
+		for (GridCage cage : cages) {
 			cage.setGridReference(this);
 		}
 
 		// Cells keep a reference to the grid view to which they belong.
-		for (GridCell cell : mCells) {
+		for (GridCell cell : cells) {
 			cell.setGridReference(this);
 		}
 
 		// Set cell border for all cell
-		for (GridCell cell : mCells) {
+		for (GridCell cell : cells) {
 			cell.setBorders();
 		}
 

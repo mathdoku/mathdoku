@@ -20,6 +20,13 @@
     <!-- The label of the buttons that close dialogs. -->
     <string name="dialog_general_button_close">Sluit</string>
 
+    <!-- DIALOG CONVERTING SAVED GAMES - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The title and message for the dialog displayed on the screen while upgrading to new version and saved games have to be converted. -->
+    <string name="dialog_converting_saved_games_title">Bijwerken nieuwe versie</string>
+    <string name="dialog_converting_saved_games_message">Voor deze nieuwe versie van MathDoku worden de opgeslagen spelen eenmalig omgezet. Een ogenblik geduld a.u.b.</string>
+
     <!-- HELP DIALOG - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 

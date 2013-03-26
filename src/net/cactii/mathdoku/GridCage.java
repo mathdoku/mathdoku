@@ -220,8 +220,13 @@ public class GridCage {
 	/**
 	 * Checks whether the cage arithmetic is correct using the values the user
 	 * has filled in.
+	 * 
+	 * @param forceBorderReset
+	 *            True if borders should always be reset. False in case borders
+	 *            only need to be reset in cage the status of the cage math has
+	 *            changed.
 	 */
-	public void checkCageMathsCorrect() {
+	public void checkCageMathsCorrect(boolean forceBorderReset) {
 		boolean oldUserMathCorrect = mUserMathCorrect;
 
 		// If not all cells in the cage are filled, the maths are not wrong.
@@ -266,13 +271,13 @@ public class GridCage {
 				}
 			}
 		}
-		
-		if (oldUserMathCorrect != mUserMathCorrect) {
+
+		if (oldUserMathCorrect != mUserMathCorrect || forceBorderReset) {
 			// Reset borders in all cells of this cage
 			setBorders();
 		}
 	}
-	
+
 	/**
 	 * Set borders for all cells in this cage.
 	 */
