@@ -114,6 +114,7 @@ public class Painter {
 	// Text colors (dependent on theme) per input mode
 	public int mHighlightedTextColorNormalInputMode;
 	public int mHighlightedTextColorMaybeInputMode;
+	public int mDefaultTextColor;
 
 	// Border sizes
 	private int BORDER_STROKE_HAIR_LINE = 0;
@@ -343,21 +344,24 @@ public class Painter {
 		case CARVED:
 			mHighlightedTextColorNormalInputMode = 0xFF15DC23; // TODO: determine good color
 			mHighlightedTextColorMaybeInputMode = 0xFFE61EBE; // TODO: determine good color
+			mDefaultTextColor = 0xFF000000;
 			break;
 		case NEWSPAPER:
 			mHighlightedTextColorNormalInputMode = 0xFF15DC23; // TODO: determine good color
 			mHighlightedTextColorMaybeInputMode = 0xFFE61EBE; // TODO: determine good color
+			mDefaultTextColor = 0xFF000000;
 			break;
 		case DARK:
 			mHighlightedTextColorNormalInputMode = 0xFF15DC23; // TODO: determine good color
 			mHighlightedTextColorMaybeInputMode = 0xFFE61EBE; // TODO: determine good color
+			mDefaultTextColor = 0xFFFFFFFF;
 			break;
 		}
 		mUserValuePainter.mTextPaintNormalInputMode.setColor(mHighlightedTextColorNormalInputMode);
-		mUserValuePainter.mTextPaintMaybeInputMode.setColor(0xFF000000);
-		mMaybe3x3Painter.mTextPaintNormalInputMode.setColor(0xFF000000);
+		mUserValuePainter.mTextPaintMaybeInputMode.setColor(mDefaultTextColor);
+		mMaybe3x3Painter.mTextPaintNormalInputMode.setColor(mDefaultTextColor);
 		mMaybe3x3Painter.mTextPaintMaybeInputMode.setColor(mHighlightedTextColorMaybeInputMode);
-		mMaybe1x9Painter.mTextPaintNormalInputMode.setColor(0xFF000000);
+		mMaybe1x9Painter.mTextPaintNormalInputMode.setColor(mDefaultTextColor);
 		mMaybe1x9Painter.mTextPaintMaybeInputMode.setColor(mHighlightedTextColorMaybeInputMode);
 
 		switch (theme) {
