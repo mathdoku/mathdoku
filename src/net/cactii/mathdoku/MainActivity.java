@@ -588,8 +588,14 @@ public class MainActivity extends Activity {
 			}
 			for (GridCell cell : selectedGridCage.mCells) {
 				if (cell.countPossibles() == 1) {
-					cell.saveUndoInformation(null);
+					CellChange orginalUserMove = cell.saveUndoInformation(null);
 					cell.setUserValue(cell.getFirstPossible());
+					if (preferences.getBoolean(PREF_CLEAR_REDUNDANT_POSSIBLES,
+							PREF_CLEAR_REDUNDANT_POSSIBLES_DEFAULT)) {
+						// Update possible values for other cells in this row and
+						// column.
+						mGrid.clearRedundantPossiblesInSameRowOrColumn(orginalUserMove);
+					}
 				}
 			}
 			this.mGridView.invalidate();
@@ -598,8 +604,14 @@ public class MainActivity extends Activity {
 			if (selectedCell == null) {
 				break;
 			}
-			selectedCell.saveUndoInformation(null);
+			CellChange orginalUserMove = selectedCell.saveUndoInformation(null);
 			selectedCell.setUserValue(selectedCell.getCorrectValue());
+			if (preferences.getBoolean(PREF_CLEAR_REDUNDANT_POSSIBLES,
+					PREF_CLEAR_REDUNDANT_POSSIBLES_DEFAULT)) {
+				// Update possible values for other cells in this row and
+				// column.
+				mGrid.clearRedundantPossiblesInSameRowOrColumn(orginalUserMove);
+			}
 			selectedCell.setCheated();
 			Toast.makeText(this, R.string.main_ui_cheat_messsage,
 					Toast.LENGTH_SHORT).show();
