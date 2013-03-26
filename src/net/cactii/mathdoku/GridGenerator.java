@@ -54,6 +54,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	private CageTypeGenerator mGridCageTypeGenerator;
 	public ArrayList<GridCage> mCages;
 	private int[][] cageMatrix;
+	private int mMaxCageResult;
 
 	// Additional option for generating the grid
 	private GridGeneratorOptions mGridGeneratorOptions;
@@ -82,10 +83,11 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	 *            True in case should be solvable without using operators.
 	 */
 	public GridGenerator(MainActivity activity, int gridSize, int maxCageSize,
-			boolean hideOperators) {
+			int maxCageResult, boolean hideOperators) {
 		this.mGridSize = gridSize;
 		this.mHideOperators = hideOperators;
 		this.mMaxCageSize = maxCageSize;
+		this.mMaxCageResult = maxCageResult;
 		this.mGeneratorRevisionNumber = activity.getVersionNumber();
 
 		setGridGeneratorOptions(null);
@@ -293,7 +295,6 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			Log.d(TAG, "Found puzzle with unique solution in " + num_attempts
 					+ " attempts.");
 		}
-
 		return null;
 	}
 
@@ -1032,21 +1033,32 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		}
 		index -= subtractionWeight;
 
-		// Check whether the add operator has to be applied. If not, than
-		// multiply is chosen.
-		if (index < addWeight) {
-			int total = 0;
-			for (GridCell cell : cage.mCells) {
-				total += cell.getCorrectValue();
-			}
-			cage.setCageResults(total, GridCage.ACTION_ADD, mHideOperators);
-		} else {
+		// Check whether the multiply operator has to and can be applied. If
+		// not, than
+		// add is chosen.
+		if (index < multiplyWeight) {
 			int total = 1;
 			for (GridCell cell : cage.mCells) {
 				total *= cell.getCorrectValue();
 			}
-			cage.setCageResults(total, GridCage.ACTION_MULTIPLY, mHideOperators);
+			if (total <= mMaxCageResult) {
+				cage.setCageResults(total, GridCage.ACTION_MULTIPLY,
+						mHideOperators);
+				return;
+			}
+			Log.i(TAG, "GameSeed: " + mGameSeed + " cage result " + total + " is rejected");
+			// Multplication leads to a cage value that is too big to be
+			// displayed on this device. For small screens this value is set to
+			// 9,999. For bigger screens the value is 99,999. Instead of
+			// multiplication the add operator will be used for this cage.
 		}
+
+		// Use ADD in all other cases.
+		int total = 0;
+		for (GridCell cell : cage.mCells) {
+			total += cell.getCorrectValue();
+		}
+		cage.setCageResults(total, GridCage.ACTION_ADD, mHideOperators);
 	}
 
 	private void ClearAllCages() {

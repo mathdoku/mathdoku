@@ -59,13 +59,15 @@ public class DevelopmentHelper {
 	 *            shown.
 	 */
 	public static void generateGames(final MainActivity mainActivity) {
-		mainActivity.mGridGeneratorTask = new GridGenerator(mainActivity, 5, 6,
-				false);
+		int maxCageResult = mainActivity.getResources().getInteger(
+				R.integer.maximum_cage_value);
+		mainActivity.mGridGeneratorTask = new GridGenerator(mainActivity, 9, 6,
+				maxCageResult, false);
 		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
 			// Set the options for the grid generator
 			GridGenerator.GridGeneratorOptions gridGeneratorOptions = mainActivity.mGridGeneratorTask.new GridGeneratorOptions();
 			gridGeneratorOptions.createFakeUserGameFiles = true;
-			gridGeneratorOptions.numberOfGamesToGenerate = 20;
+			gridGeneratorOptions.numberOfGamesToGenerate = 40;
 
 			// Set to false to generate grids with same size and hideOperators
 			// value as initial grid.
@@ -139,7 +141,8 @@ public class DevelopmentHelper {
 										int id) {
 									executeDeleteAllGames();
 									mainActivity.mGrid = null;
-									mainActivity.setInputMode(InputMode.NO_INPUT__HIDE_GRID);
+									mainActivity
+											.setInputMode(InputMode.NO_INPUT__HIDE_GRID);
 								}
 							});
 			AlertDialog dialog = builder.create();
@@ -313,7 +316,8 @@ public class DevelopmentHelper {
 									prefeditor.commit();
 
 									mainActivity.mGrid = null;
-									mainActivity.setInputMode(InputMode.NO_INPUT__HIDE_GRID);
+									mainActivity
+											.setInputMode(InputMode.NO_INPUT__HIDE_GRID);
 
 									restartActivity(mainActivity);
 								}

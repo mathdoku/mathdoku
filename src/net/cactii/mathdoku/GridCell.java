@@ -399,9 +399,16 @@ public class GridCell {
 		}
 		// Cage text
 		if (!this.mCageText.equals("")) {
-			canvas.drawText(this.mCageText, this.mPosX + 2, this.mPosY
+			// Clone the text painter and decrease text size until the cage text fits within the cell.
+			Paint textPaint = new Paint(mCagePainter.mTextPaint);
+			float scaleFactor = (mCellPainter.mCellSize - 4) / textPaint.measureText(mCageText);
+			if (scaleFactor < 1) {
+				textPaint.setTextSize(mCagePainter.mTextPaint.getTextSize() * scaleFactor);
+			}
+			
+			canvas.drawText(mCageText, this.mPosX + 2, this.mPosY
 					+ mCagePainter.mTextPaint.getTextSize(),
-					mCagePainter.mTextPaint);
+					textPaint);
 		}
 
 		// Draw pencilled in digits.

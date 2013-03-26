@@ -592,7 +592,8 @@ public class MainActivity extends Activity {
 					cell.setUserValue(cell.getFirstPossible());
 					if (preferences.getBoolean(PREF_CLEAR_REDUNDANT_POSSIBLES,
 							PREF_CLEAR_REDUNDANT_POSSIBLES_DEFAULT)) {
-						// Update possible values for other cells in this row and
+						// Update possible values for other cells in this row
+						// and
 						// column.
 						mGrid.clearRedundantPossiblesInSameRowOrColumn(orginalUserMove);
 					}
@@ -814,8 +815,10 @@ public class MainActivity extends Activity {
 		// grid is created, the method onNewGridReady will be called.
 		int maxCageSize = (preferences.getBoolean(PREF_ALLOW_BIG_CAGES,
 				PREF_ALLOW_BIG_CAGES_DEFAULT) ? 6 : 4);
+		int maxCageResult = getResources().getInteger(
+				R.integer.maximum_cage_value);
 		mGridGeneratorTask = new GridGenerator(this, gridSize, maxCageSize,
-				hideOperators);
+				maxCageResult, hideOperators);
 		mGridGeneratorTask.execute();
 	}
 
