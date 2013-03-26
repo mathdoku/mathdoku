@@ -38,208 +38,214 @@
             android:visibility="gone" />
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/timerText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/puzzleGrid"
-        android:layout_toRightOf="@+id/puzzleGrid"
-        android:background="#00000000"
-        android:lines="1"
-        android:text="99h99m99s"
-        android:textColor="#FF000000"
-        android:textSize="@dimen/text_size_default"
-        android:textStyle="bold"
-        android:visibility="gone"
-        tools:ignore="HardcodedText" />
-
-    <TableLayout
-        android:id="@+id/controls"
+    <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@+id/gameSeedLabel"
-        android:layout_alignWithParentIfMissing="true"
-        android:layout_below="@+id/timerText"
-        android:layout_marginRight="5dp"
+        android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/puzzleGrid"
-        android:visibility="gone"
-        android:weightSum="5" >
+        android:layout_margin="5dp" >
 
-        <TableRow
-            android:id="@+id/controlsHeadersRow"
-            android:layout_weight="1" >
+        <TextView
+            android:id="@+id/timerText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:background="#00000000"
+            android:lines="1"
+            android:text="99h99m99s"
+            android:textColor="#FF000000"
+            android:textSize="@dimen/text_size_default"
+            android:textStyle="bold"
+            android:visibility="gone"
+            tools:ignore="HardcodedText" />
 
-            <!-- Keep all properties that control height for elements timerText and inputModeText in line with each other. -->
+        <TableLayout
+            android:id="@+id/controls"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@+id/timerText"
+            android:layout_above="@+id/gameSeedLabel"
+            android:layout_alignParentLeft="true"
+            android:layout_marginRight="5dp"
+            android:visibility="gone"
+            android:weightSum="5" >
 
-            <TextView
-                android:id="@+id/inputModeText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:lines="1"
-                android:text="@string/input_mode_normal"
-                android:textSize="@dimen/text_size_default"
-                android:textStyle="bold" />
-        </TableRow>
+            <TableRow
+                android:id="@+id/controlsHeadersRow"
+                android:layout_weight="1" >
 
-        <TableRow
-            android:id="@+id/controlsButtonRow1"
-            android:layout_weight="1" >
+                <!-- Keep all properties that control height for elements timerText and inputModeText in line with each other. -->
 
-            <Button
-                android:id="@+id/digitPosition1"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:textSize="@dimen/controls_text_size_digits"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/inputModeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:lines="1"
+                    android:text="@string/input_mode_normal"
+                    android:textSize="@dimen/text_size_default"
+                    android:textStyle="bold" />
+            </TableRow>
 
-            <Button
-                android:id="@+id/digitPosition2"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:textSize="@dimen/controls_text_size_digits"
-                android:textStyle="bold" />
+            <TableRow
+                android:id="@+id/controlsButtonRow1"
+                android:layout_weight="1" >
 
-            <Button
-                android:id="@+id/digitPosition3"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:textSize="@dimen/controls_text_size_digits"
-                android:textStyle="bold" />
-        </TableRow>
+                <Button
+                    android:id="@+id/digitPosition1"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/controls_text_size_digits"
+                    android:textStyle="bold" />
 
-        <TableRow
-            android:id="@+id/controlsButtonRow2"
-            android:layout_weight="1" >
+                <Button
+                    android:id="@+id/digitPosition2"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/controls_text_size_digits"
+                    android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/digitPosition4"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:textSize="@dimen/controls_text_size_digits"
-                android:textStyle="bold" />
+                <Button
+                    android:id="@+id/digitPosition3"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/controls_text_size_digits"
+                    android:textStyle="bold" />
+            </TableRow>
 
-            <Button
-                android:id="@+id/digitPosition5"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:textSize="@dimen/controls_text_size_digits"
-                android:textStyle="bold" />
+            <TableRow
+                android:id="@+id/controlsButtonRow2"
+                android:layout_weight="1" >
 
-            <Button
-                android:id="@+id/digitPosition6"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:textSize="@dimen/controls_text_size_digits"
-                android:textStyle="bold" />
-        </TableRow>
+                <Button
+                    android:id="@+id/digitPosition4"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/controls_text_size_digits"
+                    android:textStyle="bold" />
 
-        <!-- The last row is an optional row which might be binnen in case not playing gridsize 7 or above. In case a button is added on the right the logic of hiding this row has to be revised! -->
+                <Button
+                    android:id="@+id/digitPosition5"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/controls_text_size_digits"
+                    android:textStyle="bold" />
 
-        <TableRow
-            android:id="@+id/controlsButtonRow3"
-            android:layout_weight="1" >
+                <Button
+                    android:id="@+id/digitPosition6"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/controls_text_size_digits"
+                    android:textStyle="bold" />
+            </TableRow>
 
-            <Button
-                android:id="@+id/digitPosition7"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:textSize="@dimen/controls_text_size_digits"
-                android:textStyle="bold" />
+            <!-- The last row is an optional row which might be binnen in case not playing gridsize 7 or above. In case a button is added on the right the logic of hiding this row has to be revised! -->
 
-            <Button
-                android:id="@+id/digitPosition8"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:textSize="@dimen/controls_text_size_digits"
-                android:textStyle="bold" />
+            <TableRow
+                android:id="@+id/controlsButtonRow3"
+                android:layout_weight="1" >
 
-            <Button
-                android:id="@+id/digitPosition9"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:textSize="@dimen/controls_text_size_digits"
-                android:textStyle="bold" />
-        </TableRow>
+                <Button
+                    android:id="@+id/digitPosition7"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/controls_text_size_digits"
+                    android:textStyle="bold" />
 
-        <TableRow
-            android:id="@+id/controlsButtonRow4"
-            android:layout_marginTop="10dp"
-            android:layout_weight="1" >
+                <Button
+                    android:id="@+id/digitPosition8"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/controls_text_size_digits"
+                    android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/clearButton"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1.5"
-                android:lines="1"
-                android:text="@string/main_ui_clear"
-                android:textSize="@dimen/text_size_default"
-                android:textStyle="bold" />
-        </TableRow>
+                <Button
+                    android:id="@+id/digitPosition9"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/controls_text_size_digits"
+                    android:textStyle="bold" />
+            </TableRow>
 
-        <TableRow
-            android:id="@+id/controlsButtonRow5"
-            android:layout_weight="1" >
+            <TableRow
+                android:id="@+id/controlsButtonRow4"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1" >
 
-            <Button
-                android:id="@+id/undoButton"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1.5"
-                android:lines="1"
-                android:text="@string/main_ui_undo"
-                android:textSize="@dimen/text_size_default"
-                android:textStyle="bold" />
-        </TableRow>
-    </TableLayout>
+                <Button
+                    android:id="@+id/clearButton"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1.5"
+                    android:lines="1"
+                    android:text="@string/main_ui_clear"
+                    android:textSize="@dimen/text_size_default"
+                    android:textStyle="bold" />
+            </TableRow>
 
-    <TextView
-        android:id="@+id/gameSeedLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/gameSeedText"
-        android:layout_alignLeft="@+id/gameSeedText"
-        android:background="#00000000"
-        android:text="@string/game_seed"
-        android:textColor="#FF000000"
-        android:textSize="@dimen/text_size_tiny"
-        android:visibility="gone" />
+            <TableRow
+                android:id="@+id/controlsButtonRow5"
+                android:layout_weight="1" >
 
-    <TextView
-        android:id="@+id/gameSeedText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/puzzleGrid"
-        android:layout_toRightOf="@+id/puzzleGrid"
-        android:background="#00000000"
-        android:text="999.999.999.999.999.999"
-        android:textColor="#FF000000"
-        android:textSize="@dimen/text_size_tiny"
-        android:visibility="gone"
-        tools:ignore="HardcodedText" />
+                <Button
+                    android:id="@+id/undoButton"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1.5"
+                    android:lines="1"
+                    android:text="@string/main_ui_undo"
+                    android:textSize="@dimen/text_size_default"
+                    android:textStyle="bold" />
+            </TableRow>
+        </TableLayout>
 
-    <TextView
-        android:id="@+id/pressMenu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_toRightOf="@+id/puzzleGrid"
-        android:shadowColor="#7FFFFFFF"
-        android:shadowDx="1"
-        android:shadowDy="1"
-        android:text="@string/press_menu_button_message"
-        android:textColor="#FF000000"
-        android:textSize="@dimen/text_size_default"
-        android:textStyle="bold" />
+        <TextView
+            android:id="@+id/gameSeedLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/gameSeedText"
+            android:layout_alignLeft="@+id/gameSeedText"
+            android:background="#00000000"
+            android:text="@string/game_seed"
+            android:textColor="#FF000000"
+            android:textSize="@dimen/text_size_tiny"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/gameSeedText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:background="#00000000"
+            android:text="999.999.999.999.999.999"
+            android:textColor="#FF000000"
+            android:textSize="@dimen/text_size_tiny"
+            android:visibility="gone"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/pressMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:shadowColor="#7FFFFFFF"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:text="@string/press_menu_button_message"
+            android:textColor="#FF000000"
+            android:textSize="@dimen/text_size_default"
+            android:textStyle="bold" />
+    </RelativeLayout>
 
 </RelativeLayout>

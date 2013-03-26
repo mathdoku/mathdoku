@@ -28,7 +28,7 @@
     <integer name="controls_digits_cols">3</integer>
 
     <!-- The text size used for the digit buttons only. -->
-    <dimen name="controls_text_size_digits">20sp</dimen>
+    <dimen name="controls_text_size_digits">12sp</dimen>
 
     <!-- DIALOGS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
