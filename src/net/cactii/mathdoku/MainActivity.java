@@ -1,6 +1,7 @@
 package net.cactii.mathdoku;
 
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
+import net.cactii.mathdoku.DigitPositionGrid.DigitPositionGridType;
 import net.cactii.mathdoku.GameFile.GameFileType;
 import net.cactii.mathdoku.Painter.GridTheme;
 import android.annotation.SuppressLint;
@@ -1112,7 +1113,7 @@ public class MainActivity extends Activity {
 		// The background task for game file conversion is completed. Destroy
 		// reference to the task.
 		mGameFileConverter = null;
-		
+
 		if (this.preferences.getBoolean(PREF_CREATE_PREVIEW_IMAGES_COMPLETED,
 				PREF_CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT)) {
 			// Previews have already been created. Go to next phase of upgrading
@@ -1476,168 +1477,44 @@ public class MainActivity extends Activity {
 					(inputMode == InputMode.NORMAL ? R.string.input_mode_normal
 							: R.string.input_mode_maybe)));
 
-			// Determin which buttons to show on what positions
+			// Determine which buttons to show on what positions
 			if (mGrid != null) {
+				// Create the mapping for mDigitPosition on the correct button
+				// grid layout.
+				DigitPositionGridType digitPositionGridType = DigitPositionGridType.GRID_3X3;
+				if (getResources().getString(R.string.dimension).equals(
+						"small-port")) {
+					digitPositionGridType = DigitPositionGridType.GRID_2X5;
+				}
+				DigitPositionGrid digitPositionGrid = new DigitPositionGrid(
+						digitPositionGridType, mGrid.getGridSize());
 
-				// Determine layout of position available for digit buttons
-				int digitButtonPositionRows = getResources().getInteger(
-						R.integer.controls_digits_rows);
-				int digitButtonPositionColumns = getResources().getInteger(
-						R.integer.controls_digits_cols);
-				String dimension = getResources().getString(R.string.dimension);
-				if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
-					// Small screens and tables have other dimension settings
-					// than the
-					// default screen. Which dimension settings file is used, is
-					// determinded by Android bases on screen dimensions and
-					// density.
-					Log.i(TAG, "Currently using dimensions file: " + dimension
-							+ " with button positions arranged in a "
-							+ digitButtonPositionRows + "x"
-							+ digitButtonPositionColumns + "matrix.");
+				// Use the created mapping to fill all digit positions.
+				for (int i = 0; i < mDigitPosition.length; i++) {
+					int value = digitPositionGrid.getValue(i);
+					mDigitPosition[i].setText(value > 0 ? Integer.toString(value) : "");
+					mDigitPosition[i].setVisibility(digitPositionGrid
+							.getVisibility(i));
+					mDigitPosition[i].setTextColor(color);
 				}
-
-				// Determine what grid to use for layout of digit buttons
-				int gridSize = mGrid.getGridSize();
-				int maxRows = (gridSize <= 6 ? 2 : 3);
-				if (dimension.equals("small-port")) {
-					// Buttons positions have to be arranged in a grid of 2
-					// rows with maximum of 5 positions each. Depending on the
-					// grid size the buttons are arranged as follows
-					// size 4: 2 rows of 2 buttons each
-					// size 5: 2 rows, first row 3 buttons, second row 2 buttons
-					// size 6: 2 rows, 3 buttons
-					// size 7: 2 rows, first row 4 buttons, second row 3 buttons
-					// size 8: 2 rows, 4 buttons
-					// size 9: 2 rows, first row 5 buttons, second row 4 buttons
-					maxRows = 2;
-				} else {
-					// Buttons positions have to be arranged in a grid of 2 or 3
-					// rows with maximum of 3 positions each. Depending on the
-					// grid size the buttons are arranged as follows
-					// size 4: 2 rows of 2 buttons each
-					// size 5: 2 rows, first row 3 buttons, second row 2 buttons
-					// size 6: 2 rows, 3 buttons
-					// size 7: 3 rows, 2 rows of 3 buttons, last row 1 button
-					// size 8: 3 rows, 2 rows of 3 buttons, last row 2 buttons
-					// size 9: 3 rows, 2 rows of 3 buttons, last row 3 buttons
-					maxRows = (gridSize <= 6 ? 2 : 3);
-				}
-				int digit = 1;
-				for (int row = 1; row <= maxRows; row++) {
-					int col = 1;
-					for (; col <= (int) Math
-							.ceil(((double) gridSize) / maxRows); col++) {
-						if (digit <= gridSize) {
-							assignDigitButtonPosition(row, col,
-									Integer.toString(digit++), color,
-									digitButtonPositionColumns);
-						} else {
-							// Clear this position. It can not be removed as
-							// it was used in the previous row.
-							clearDigitButtonPosition(row, col,
-									digitButtonPositionColumns);
-						}
-					}
-					// Remove remaining columns as they are not used in any
-					// rows.
-					for (; col <= digitButtonPositionColumns; col++) {
-						removeDigitButtonPosition(row, col,
-								digitButtonPositionColumns);
-					}
-				}
-				if (!dimension.equals("small-port")) {
-					// Set visibily of third row only because it is only need
-					// for grid size 7+
-					View view = findViewById(R.id.controlsButtonRow3);
+				if (digitPositionGridType == DigitPositionGridType.GRID_2X5) {
+					// This layout also has a buttonposition10 which is never
+					// used to put a button there. However for a correct layout
+					// of the buttons the visibility has to be set correctly.
+					View view = findViewById(R.id.digitSelect10);
 					if (view != null) {
-						view.setVisibility(maxRows == 2 ? View.GONE
-								: View.VISIBLE);
+						view.setVisibility(digitPositionGrid.getVisibility(9));
 					}
 				}
+
+				// Store mapping in the grid view so it can be reused when
+				// drawing the cells.
+				mGridView.setDigitPositionGrid(digitPositionGrid);
 			}
 			break;
 		}
 
 		mGridView.invalidate();
-	}
-
-	/**
-	 * Assign a digit to a given position (row, col) in a virtual grid of
-	 * buttons with a given size.
-	 * 
-	 * @param row
-	 *            The row in the virtual grid where the digit is to be placed.
-	 *            Rows start counting at 1.
-	 * @param col
-	 *            The column in the virtual grid where the digit is to be
-	 *            placed. Columns start counting at 1.
-	 * @param digit
-	 *            The digit to be placed.
-	 * @param color
-	 *            The color of the digit.
-	 * @param colsPerRow
-	 *            The number of columns in the virtual grid.
-	 */
-	private void assignDigitButtonPosition(int row, int col, String digit,
-			int color, int colsPerRow) {
-		int index = ((row - 1) * colsPerRow) + (col - 1);
-		mDigitPosition[index].setText(digit);
-		mDigitPosition[index].setVisibility(View.VISIBLE);
-		mDigitPosition[index].setTextColor(color);
-	}
-
-	/**
-	 * Clears a digit position (row, col) in a virtual grid of buttons. The
-	 * digit position is not removed but only made invisible.
-	 * 
-	 * @param row
-	 *            The row in the virtual grid from which a digit position has to
-	 *            be cleared. Rows start counting at 1.
-	 * @param col
-	 *            The column in the virtual grid from which a digit position has
-	 *            to be cleared. Columns start counting at 1.
-	 * @param colsPerRow
-	 *            The number of columns in the virtual grid.
-	 */
-	private void clearDigitButtonPosition(int row, int col, int colsPerRow) {
-		int index = ((row - 1) * colsPerRow) + (col - 1);
-		if (index >= 0 && index < mDigitPosition.length) {
-			mDigitPosition[index].setText("");
-			mDigitPosition[index].setVisibility(View.INVISIBLE);
-		} else if (index == 9) {
-			// The small screen has in portrait mode 10 digit positions.
-			TextView textView = (TextView) findViewById(R.id.digitSelect10);
-			if (textView != null) {
-				textView.setVisibility(View.INVISIBLE);
-			}
-		}
-	}
-
-	/**
-	 * Removes a digit position (row, col) from a virtual grid of buttons.
-	 * 
-	 * @param row
-	 *            The row in the virtual grid from which a digit position has to
-	 *            be removed. Rows start counting at 1.
-	 * @param col
-	 *            The column in the virtual grid from which a digit position has
-	 *            to be removed. Columns start counting at 1.
-	 * @param colsPerRow
-	 *            The number of columns in the virtual grid.
-	 */
-	private void removeDigitButtonPosition(int row, int col, int colsPerRow) {
-		int index = ((row - 1) * colsPerRow) + (col - 1);
-		if (index >= 0 && index < mDigitPosition.length) {
-			mDigitPosition[index].setText("");
-			mDigitPosition[index].setVisibility(View.GONE);
-		} else if (index == 9) {
-			// The small screen has in portrait mode 10 digit positions.
-			TextView textView = (TextView) findViewById(R.id.digitSelect10);
-			if (textView != null) {
-				textView.setVisibility(View.GONE);
-			}
-		}
 	}
 
 	/**

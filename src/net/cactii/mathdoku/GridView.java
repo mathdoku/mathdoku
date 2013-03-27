@@ -1,5 +1,6 @@
 package net.cactii.mathdoku;
 
+import net.cactii.mathdoku.DigitPositionGrid.DigitPositionGridType;
 import net.cactii.mathdoku.MainActivity.InputMode;
 import net.cactii.mathdoku.Painter.GridPainter;
 import android.content.Context;
@@ -7,13 +8,10 @@ import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +36,9 @@ public class GridView extends View implements OnTouchListener {
 
 	// Reference to the global grid painter object
 	private GridPainter mGridPainter;
+
+	// The layout to be used for positioning the maybe digits in a grid.
+	private DigitPositionGrid mDigitPositionGrid;
 
 	public TextView animText;
 
@@ -283,7 +284,7 @@ public class GridView extends View implements OnTouchListener {
 			Painter.getInstance(this.getContext()).setCellSize(mGridCellSize);
 			for (GridCell cell : grid.mCells) {
 				cell.checkWithOtherValuesInRowAndColumn();
-				cell.draw(canvas, gridBorderWidth, inputMode);
+				cell.draw(canvas, gridBorderWidth, inputMode, mDigitPositionGrid);
 			}
 		}
 	}
@@ -337,7 +338,7 @@ public class GridView extends View implements OnTouchListener {
 				.floor((float) (maxSize - 2 * gridBorderWidth)
 						/ (float) gridSize);
 		mGridViewSize = (float) (2 * gridBorderWidth + gridSize * mGridCellSize);
-		
+
 		setMeasuredDimension((int) mGridViewSize, (int) mGridViewSize);
 	}
 
@@ -366,5 +367,17 @@ public class GridView extends View implements OnTouchListener {
 			invalidate();
 
 		return;
+	}
+
+	/**
+	 * Sets the {@link DigitPositionGridType} used to position the digit buttons
+	 * for reuse when drawing the maybe values.
+	 * 
+	 * @param digitPositionGrid
+	 *            The digit position grid type to be set.
+	 */
+	public void setDigitPositionGrid(
+			DigitPositionGrid digitPositionGrid) {
+		mDigitPositionGrid = digitPositionGrid;
 	}
 }

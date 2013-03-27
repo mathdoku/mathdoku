@@ -4,11 +4,11 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import net.cactii.mathdoku.DigitPositionGrid.DigitPositionGridType;
 import net.cactii.mathdoku.MainActivity.InputMode;
 import net.cactii.mathdoku.Painter.CagePainter;
 import net.cactii.mathdoku.Painter.CellPainter;
-import net.cactii.mathdoku.Painter.Maybe1x9Painter;
-import net.cactii.mathdoku.Painter.Maybe3x3Painter;
+import net.cactii.mathdoku.Painter.MaybePainter;
 import net.cactii.mathdoku.Painter.UserValuePainter;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -69,8 +69,9 @@ public class GridCell {
 	// References to the global painter objects.
 	private CellPainter mCellPainter;
 	private UserValuePainter mUserValuePainter;
-	private Maybe3x3Painter mMaybe3x3Painter;
-	private Maybe1x9Painter mMaybe1x9Painter;
+	private MaybePainter mMaybe3x3Painter;
+	private MaybePainter mMaybe2x5Painter;
+	private MaybePainter mMaybe1x9Painter;
 	private CagePainter mCagePainter;
 
 	public GridCell(Grid grid, int cell) {
@@ -91,11 +92,13 @@ public class GridCell {
 		this.mPosY = 0;
 
 		// Retrieve all painters
-		this.mCellPainter = Painter.getInstance().mCellPainter;
-		this.mUserValuePainter = Painter.getInstance().mUserValuePainter;
-		this.mMaybe3x3Painter = Painter.getInstance().mMaybe3x3Painter;
-		this.mMaybe1x9Painter = Painter.getInstance().mMaybe1x9Painter;
-		this.mCagePainter = Painter.getInstance().mCagePainter;
+		Painter painter = Painter.getInstance();
+		this.mCellPainter = painter.mCellPainter;
+		this.mUserValuePainter = painter.mUserValuePainter;
+		this.mMaybe3x3Painter = painter.mMaybe3x3Painter;
+		this.mMaybe2x5Painter = painter.mMaybe2x5Painter;
+		this.mMaybe1x9Painter = painter.mMaybe1x9Painter;
+		this.mCagePainter = painter.mCagePainter;
 
 		borderTypeTop = BorderType.NONE;
 		borderTypeRight = BorderType.NONE;
@@ -197,7 +200,7 @@ public class GridCell {
 	 * Draw the cell inclusive borders, background and text.
 	 */
 	public void draw(Canvas canvas, float gridBorderWidth,
-			MainActivity.InputMode inputMode) {
+			MainActivity.InputMode inputMode, DigitPositionGrid digitPositionGrid) {
 		// Calculate x and y for the cell origin (topleft). Use an offset to
 		// prevent overlapping of cells and border for entire grid.
 		this.mPosX = Math.round(gridBorderWidth + this.mCellPainter.mCellSize
@@ -416,18 +419,26 @@ public class GridCell {
 		// Draw pencilled in digits.
 		if (mPossibles.size() > 0) {
 			if (mGrid.hasPrefShowMaybesAs3x3Grid()) {
-				Paint paint = (inputMode == InputMode.NORMAL ? mMaybe3x3Painter.mTextPaintNormalInputMode
-						: mMaybe3x3Painter.mTextPaintMaybeInputMode);
+				// Determine which painter to use
+				MaybePainter maybePainter = (digitPositionGrid.isGrid2x5() ? mMaybe2x5Painter : mMaybe3x3Painter);
+				Paint paint = (inputMode == InputMode.NORMAL ? maybePainter.mTextPaintNormalInputMode
+						: maybePainter.mTextPaintMaybeInputMode);
+
+				// Draw all possible which are currently set for this cell.
 				for (int i = 0; i < mPossibles.size(); i++) {
+					// Get the possible and the specific position in the digit position grid
 					int possible = mPossibles.get(i);
-					float xPos = mPosX + mMaybe3x3Painter.mLeftOffset
-							+ ((possible - 1) % 3) * mMaybe3x3Painter.mScale;
-					float yPos = mPosY + mMaybe3x3Painter.mTopOffset
-							+ ((int) (possible - 1) / 3)
-							* mMaybe3x3Painter.mScale;
+					int row = digitPositionGrid.getRow(possible);
+					int col = digitPositionGrid.getCol(possible);
+					
+					float xPos = mPosX + maybePainter.mLeftOffset
+							+ col * maybePainter.mMaybeDigitWidth;
+					float yPos = mPosY + maybePainter.mTopOffset
+							+ row * maybePainter.mMaybeDigitHeight;
 					canvas.drawText(Integer.toString(possible), xPos, yPos,
 							paint);
 				}
+				
 			} else {
 				// Build string of possible values
 				String possiblesText = "";
