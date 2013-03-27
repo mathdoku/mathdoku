@@ -22,9 +22,7 @@
             android:id="@+id/gridView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_centerInParent="true" />
+            android:layout_centerVertical="true" />
 
         <TextView
             android:id="@+id/solvedText"
@@ -83,6 +81,7 @@
                     android:layout_gravity="right"
                     android:text="@string/input_mode_normal"
                     android:textSize="@dimen/text_size_default"
+                    android:lines="1"
                     android:textStyle="bold" />
             </TableRow>
 
