@@ -1109,6 +1109,10 @@ public class MainActivity extends Activity {
 	 */
 	public void upgradePhase2_createPreviewImages(
 			final int previousInstalledVersion, final int currentVersion) {
+		// The background task for game file conversion is completed. Destroy
+		// reference to the task.
+		mGameFileConverter = null;
+		
 		if (this.preferences.getBoolean(PREF_CREATE_PREVIEW_IMAGES_COMPLETED,
 				PREF_CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT)) {
 			// Previews have already been created. Go to next phase of upgrading
