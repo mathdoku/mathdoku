@@ -399,16 +399,18 @@ public class GridCell {
 		}
 		// Cage text
 		if (!this.mCageText.equals("")) {
-			// Clone the text painter and decrease text size until the cage text fits within the cell.
+			// Clone the text painter and decrease text size until the cage text
+			// fits within the cell.
 			Paint textPaint = new Paint(mCagePainter.mTextPaint);
-			float scaleFactor = (mCellPainter.mCellSize - 4) / textPaint.measureText(mCageText);
+			float scaleFactor = (mCellPainter.mCellSize - 4)
+					/ textPaint.measureText(mCageText);
 			if (scaleFactor < 1) {
-				textPaint.setTextSize(mCagePainter.mTextPaint.getTextSize() * scaleFactor);
+				textPaint.setTextSize(mCagePainter.mTextPaint.getTextSize()
+						* scaleFactor);
 			}
-			
+
 			canvas.drawText(mCageText, this.mPosX + 2, this.mPosY
-					+ mCagePainter.mTextPaint.getTextSize(),
-					textPaint);
+					+ mCagePainter.mTextPaint.getTextSize(), textPaint);
 		}
 
 		// Draw pencilled in digits.
@@ -427,15 +429,27 @@ public class GridCell {
 							paint);
 				}
 			} else {
-				Paint paint = (inputMode == InputMode.NORMAL ? mMaybe1x9Painter.mTextPaintNormalInputMode
-						: mMaybe1x9Painter.mTextPaintMaybeInputMode);
-				String possibles = "";
+				// Build string of possible values
+				String possiblesText = "";
 				for (int i = 0; i < mPossibles.size(); i++) {
-					possibles += Integer.toString(mPossibles.get(i));
+					possiblesText += Integer.toString(mPossibles.get(i));
 				}
-				canvas.drawText(possibles,
+
+				// Clone the text painter and decrease text size until the
+				// possible values string fit within the cell.
+				Paint textPaint = new Paint(
+						inputMode == InputMode.NORMAL ? mMaybe1x9Painter.mTextPaintNormalInputMode
+								: mMaybe1x9Painter.mTextPaintMaybeInputMode);
+				float scaleFactor = (mCellPainter.mCellSize - 6)
+						/ textPaint.measureText(possiblesText);
+				if (scaleFactor < 1) {
+					textPaint.setTextSize(textPaint.getTextSize()
+							* scaleFactor);
+				}
+
+				canvas.drawText(possiblesText,
 						mPosX + mMaybe1x9Painter.mLeftOffset, mPosY
-								+ mMaybe1x9Painter.mTopOffset, paint);
+								+ mMaybe1x9Painter.mTopOffset, textPaint);
 			}
 		}
 	}
