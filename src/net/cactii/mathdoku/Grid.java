@@ -15,6 +15,7 @@ public class Grid {
 	public static final String SAVE_GAME_GRID_VERSION_01 = "VIEW.v1";
 	public static final String SAVE_GAME_GRID_VERSION_02 = "VIEW.v2";
 	public static final String SAVE_GAME_GRID_VERSION_03 = "VIEW.v3";
+	public static final String SAVE_GAME_GRID_VERSION_04 = "VIEW.v4";
 
 	// Size of the grid
 	private int mGridSize;
@@ -367,8 +368,6 @@ public class Grid {
 	 *         solution. False otherwise.
 	 */
 	public boolean isSolvedByCheating() {
-		// TODO: store mCheated in game file so for a restored game this
-		// variable is restored as well
 		return this.mCheated;
 	}
 
@@ -390,14 +389,15 @@ public class Grid {
 		}
 
 		// Build storage string
-		String storageString = SAVE_GAME_GRID_VERSION_03
+		String storageString = SAVE_GAME_GRID_VERSION_04
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mGameSeed
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mGeneratorRevisionNumber
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mDateLastSaved
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mElapsedTime
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mGridSize
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mActive
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mDateGenerated;
+				+ GameFile.FIELD_DELIMITER_LEVEL1 + mDateGenerated
+				+ GameFile.FIELD_DELIMITER_LEVEL1 + mCheated;
 		return storageString;
 	}
 
@@ -421,6 +421,8 @@ public class Grid {
 			viewInformationVersion = 2;
 		} else if (viewParts[0].equals(SAVE_GAME_GRID_VERSION_03)) {
 			viewInformationVersion = 3;
+		} else if (viewParts[0].equals(SAVE_GAME_GRID_VERSION_04)) {
+			viewInformationVersion = 4;
 		} else {
 			return false;
 		}
@@ -443,6 +445,12 @@ public class Grid {
 		} else {
 			// Date generated was not saved prior to version 2.
 			mDateGenerated = mDateLastSaved - mElapsedTime;
+		}
+		if (viewInformationVersion >= 4) {
+			mCheated = Boolean.parseBoolean(viewParts[index++]);
+		} else {
+			// Cheated was not saved prior to version 3.
+			mCheated = false;
 		}
 
 		return true;

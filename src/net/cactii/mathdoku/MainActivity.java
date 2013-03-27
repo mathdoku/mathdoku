@@ -465,7 +465,6 @@ public class MainActivity extends Activity {
 		Grid newGrid = new GameFile(filename).load();
 		if (newGrid != null) {
 			setNewGrid(newGrid);
-			setInputMode(InputMode.NORMAL);
 		}
 	}
 
@@ -624,9 +623,6 @@ public class MainActivity extends Activity {
 			break;
 		case CONTEXT_MENU_SHOW_SOLUTION:
 			this.mGrid.Solve();
-			setInputMode(InputMode.NO_INPUT__DISPLAY_GRID);
-			// REMOVE: this.mGridView.invalidate();
-			// REMOVE: this.pressMenu.setVisibility(View.VISIBLE);
 			break;
 		case CONTEXT_MENU_REVEAL_OPERATOR:
 			if (selectedGridCage == null) {
@@ -741,14 +737,6 @@ public class MainActivity extends Activity {
 	private void restartLastGame() {
 		Grid newGrid = new GameFile(GameFileType.LAST_GAME).load();
 		setNewGrid(newGrid);
-
-		// Set input mode only if it was not set before. In case of a
-		// configuration change the input mode has already been set in the
-		// onCreate event and may not be overridden.
-		if (mInputMode == InputMode.NO_INPUT__HIDE_GRID && mGrid != null) {
-			setInputMode((mGrid.isActive() ? InputMode.NORMAL
-					: InputMode.NO_INPUT__DISPLAY_GRID));
-		}
 	}
 
 	/**
@@ -1302,7 +1290,6 @@ public class MainActivity extends Activity {
 				stopTimer();
 
 				setInputMode(InputMode.NO_INPUT__DISPLAY_GRID);
-				// REMOVE: MainActivity.this.controls.setVisibility(View.GONE);
 				if (mGrid.isActive() && !mGrid.isSolvedByCheating()
 						&& mGrid.countMoves() > 0) {
 					// Only display animation in case the user has just
@@ -1310,15 +1297,6 @@ public class MainActivity extends Activity {
 					// cheated by requesting to show the solution or in
 					// case an already solved game was reloaded.
 					animText(R.string.main_ui_solved_messsage, 0xFF002F00);
-				}
-
-				// REMOVE:
-				// MainActivity.this.pressMenu.setVisibility(View.VISIBLE);
-				if (MainActivity.this.mTimerText.getVisibility() == View.VISIBLE
-						&& mGrid.isSolvedByCheating()) {
-					// Hide timer in case the puzzle was solved by
-					// requesting to show the solution.
-					MainActivity.this.mTimerText.setVisibility(View.INVISIBLE);
 				}
 
 				// Unselect current cell / cage
@@ -1339,35 +1317,27 @@ public class MainActivity extends Activity {
 			this.mGridView.loadNewGrid(grid);
 
 			// Show the grid of the loaded puzzle.
-			// REMOVE: this.puzzleGrid.setVisibility(View.VISIBLE);
-
 			if (this.mGrid.isActive()) {
-				// Reset the input mode to the current value in order to update
-				// all buttons
-				setInputMode(mInputMode);
+				// Determine input mode. The input mode will only be set if it
+				// was not yet set before.
+				if (mInputMode == InputMode.NO_INPUT__HIDE_GRID) {
+					setInputMode(InputMode.NORMAL);
+				} else {
+					// In case an unsolved game is displayed and the screen is
+					// rotated, the input mode (maybe versus normal) will
+					// already be restored in the onCreate. Reset the input mode
+					// to the same value in order to update all controls
+					// relavant to this new grid.
+					setInputMode(mInputMode);
+				}
 
 				startTimer();
 
 				// Handler for solved game
 				setOnSolvedHandler();
 			} else {
-				setInputMode(InputMode.NO_INPUT__HIDE_GRID);
-
-				// Set visibility of other controls
-				// REMOVE: this.pressMenu.setVisibility(View.VISIBLE);
-				// REMOVE: this.controls.setVisibility(View.GONE);
-
+				setInputMode(InputMode.NO_INPUT__DISPLAY_GRID);
 				stopTimer();
-
-				if (grid.isSolvedByCheating()) {
-					// Hide time in case the puzzle was solved by
-					// requesting to show the solution.
-					this.mTimerText.setVisibility(View.INVISIBLE);
-				} else {
-					// Show time
-					this.mTimerText.setVisibility(View.VISIBLE);
-					setElapsedTime(mTimerText, grid.getElapsedTime());
-				}
 			}
 
 			// Debug information
@@ -1448,10 +1418,21 @@ public class MainActivity extends Activity {
 		switch (inputMode) {
 		case NO_INPUT__HIDE_GRID:
 			mTimerText.setVisibility(View.GONE);
-			// fall through
-		case NO_INPUT__DISPLAY_GRID:
-			pressMenu.setVisibility(View.VISIBLE);
 			controls.setVisibility(View.GONE);
+			pressMenu.setVisibility(View.VISIBLE);
+			break;
+		case NO_INPUT__DISPLAY_GRID:
+			if (mGrid == null || (mGrid != null && mGrid.isSolvedByCheating())) {
+				// Hide time in case the puzzle was solved by
+				// requesting to show the solution.
+				this.mTimerText.setVisibility(View.INVISIBLE);
+			} else {
+				// Show time
+				this.mTimerText.setVisibility(View.VISIBLE);
+				setElapsedTime(mTimerText, mGrid.getElapsedTime());
+			}
+			controls.setVisibility(View.GONE);
+			pressMenu.setVisibility(View.VISIBLE);
 			break;
 		case NORMAL:
 		case MAYBE:
@@ -1492,7 +1473,8 @@ public class MainActivity extends Activity {
 				// Use the created mapping to fill all digit positions.
 				for (int i = 0; i < mDigitPosition.length; i++) {
 					int value = digitPositionGrid.getValue(i);
-					mDigitPosition[i].setText(value > 0 ? Integer.toString(value) : "");
+					mDigitPosition[i].setText(value > 0 ? Integer
+							.toString(value) : "");
 					mDigitPosition[i].setVisibility(digitPositionGrid
 							.getVisibility(i));
 					mDigitPosition[i].setTextColor(color);
