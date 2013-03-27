@@ -178,9 +178,9 @@
     <string name="option_theme_title">Theme</string>
     <string name="option_theme_summary">Select display theme.</string>
 
-    <!-- The title and summary of the "3x3 maybe" option. This option controls whether maybe numbers are displayed in 3x3 grid or straight line. -->
-    <string name="option_maybe_layout_title">Maybes in 3x3 grid</string>
-    <string name="option_maybe_layout_summary">Display maybe numbers in 3x3 grid</string>
+    <!-- The title and summary of the "maybe in grid" option. This option controls whether maybe numbers are displayed in 3x3 grid or straight line. -->
+    <string name="option_maybe_layout_title">Maybes in grid</string>
+    <string name="option_maybe_layout_summary">Display maybe numbers in a grid</string>
 
     <!-- The title and summary of the "hide selector" option. This option auto-shows the digit buttons when the player selects a cell, and auto-hides those buttons when the player deselects a cell. -->
     <string name="option_hide_selector_title">Auto-hide digit buttons</string>
