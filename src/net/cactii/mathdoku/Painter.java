@@ -186,10 +186,10 @@ public class Painter {
 		mGridPainter = new GridPainter();
 
 		mGridPainter.mBorderPaint = new Paint();
-		mGridPainter.mBorderPaint.setStyle(Style.STROKE);
+		mGridPainter.mBorderPaint.setStyle(Paint.Style.STROKE);
 
 		mGridPainter.mBackgroundPaint = new Paint();
-		mGridPainter.mBorderPaint.setStyle(Style.FILL);
+		mGridPainter.mBackgroundPaint.setStyle(Paint.Style.STROKE);
 
 		// Typefaces
 		mTypefaceCarved = Typeface.createFromAsset(context.getAssets(),

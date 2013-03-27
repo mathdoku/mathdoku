@@ -3,12 +3,17 @@ package net.cactii.mathdoku;
 import net.cactii.mathdoku.MainActivity.InputMode;
 import net.cactii.mathdoku.Painter.GridPainter;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,7 +27,10 @@ public class GridView extends View implements OnTouchListener {
 	// Touched listener
 	public OnGridTouchListener mTouchedListener;
 
+	// Size of the grid view and cells in grid
 	public float mGridViewSize;
+	private float mGridCellSize;
+
 	public float mTrackPosX;
 	public float mTrackPosY;
 
@@ -49,7 +57,8 @@ public class GridView extends View implements OnTouchListener {
 	}
 
 	private void initGridView() {
-		this.mGridViewSize = 0;
+		mGridViewSize = 0;
+		mGridPainter = Painter.getInstance(this.getContext()).mGridPainter;
 
 		this.setOnTouchListener((OnTouchListener) this);
 	}
@@ -182,17 +191,16 @@ public class GridView extends View implements OnTouchListener {
 		float xOrd;
 		float yOrd;
 		int gridSize = grid.getGridSize();
-		int cellWidth = (int) (this.mGridViewSize / gridSize);
-		xOrd = ((float) cell % gridSize) * cellWidth;
-		yOrd = ((int) (cell / gridSize) * cellWidth);
+		xOrd = ((float) cell % gridSize) * mGridCellSize;
+		yOrd = ((int) (cell / gridSize) * mGridCellSize);
 		return new float[] { xOrd, yOrd };
 	}
 
 	// Opposite of above - given a coordinate, returns the cell number within.
 	private GridCell CoordToCell(float x, float y) {
 		int gridSize = grid.getGridSize();
-		int row = (int) ((y / (float) this.mGridViewSize) * gridSize);
-		int col = (int) ((x / (float) this.mGridViewSize) * gridSize);
+		int row = (int) ((y / mGridViewSize) * gridSize);
+		int col = (int) ((x / mGridViewSize) * gridSize);
 		return grid.getCellAt(row, col);
 	}
 
@@ -253,11 +261,6 @@ public class GridView extends View implements OnTouchListener {
 			return;
 		}
 
-		// Get painter if not yet retrieved.
-		if (mGridPainter == null) {
-			mGridPainter = Painter.getInstance(this.getContext()).mGridPainter;
-		}
-
 		synchronized (grid.mLock) { // Avoid redrawing at the same time as
 									// creating
 			// puzzle
@@ -268,40 +271,16 @@ public class GridView extends View implements OnTouchListener {
 			if (grid.mCages == null)
 				return;
 
-			// Get the size of the gridview. As it is a square, either width or
-			// height can be used.
-			float realGridViewSize = getMeasuredWidth();
 			float gridBorderWidth = mGridPainter.mBorderPaint.getStrokeWidth();
-			float cellSize = (float) Math
-					.floor((float) (realGridViewSize - 2 * gridBorderWidth)
-							/ (float) gridSize);
-			mGridViewSize = (float) (2 * gridBorderWidth + gridSize * cellSize);
 
-			// Draw background (can not use canvas.drawColor here as we maybe do
-			// not use entire canvas)
-			canvas.drawRect((float) 0, (float) 0, mGridViewSize, mGridViewSize,
-					mGridPainter.mBackgroundPaint);
-
-			// Draw borders around grid. Use an of offset of 50% of strokewidth
-			// to ensure that full width of border is visible inside the
-			// gridview.
-			// Note: the offset will 0 for borders of width 1.
-			float gridBorderOffset = (float) Math
-					.floor((float) (0.5 * gridBorderWidth));
-			canvas.drawLine(0, 0 + gridBorderOffset, this.mGridViewSize,
-					0 + gridBorderOffset, mGridPainter.mBorderPaint); // Top
-			canvas.drawLine(this.mGridViewSize - gridBorderOffset, 0,
-					this.mGridViewSize - gridBorderOffset, this.mGridViewSize,
-					mGridPainter.mBorderPaint); // right
-			canvas.drawLine(0, this.mGridViewSize - gridBorderOffset,
-					this.mGridViewSize, this.mGridViewSize - gridBorderOffset,
-					mGridPainter.mBorderPaint); // bottom
-			canvas.drawLine(0 + gridBorderOffset, 0, 0 + gridBorderOffset,
-					this.mGridViewSize, mGridPainter.mBorderPaint); // left
+			// Draw grid background and border grid
+			canvas.drawColor(mGridPainter.mBackgroundPaint.getColor());
+			canvas.drawRect((float) 1, (float) 1, mGridViewSize, mGridViewSize,
+					mGridPainter.mBorderPaint);
 
 			// Draw cells, except for cells in selected cage
 			InputMode inputMode = ((MainActivity) getContext()).getInputMode();
-			Painter.getInstance(this.getContext()).setCellSize(cellSize);
+			Painter.getInstance(this.getContext()).setCellSize(mGridCellSize);
 			for (GridCell cell : grid.mCells) {
 				cell.checkWithOtherValuesInRowAndColumn();
 				cell.draw(canvas, gridBorderWidth, inputMode);
@@ -317,13 +296,49 @@ public class GridView extends View implements OnTouchListener {
 
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		// Our target grid is a square, measuring 80% of the minimum dimension
+		// Get maximum width and height available to display the grid view.
 		int measuredWidth = measure(widthMeasureSpec);
 		int measuredHeight = measure(heightMeasureSpec);
 
-		int dim = Math.min(measuredWidth, measuredHeight);
+		// Determine whether adjustments are needed due to low aspect ratio
+		// height/width. Small screens have specific layouts which do no need
+		// further adjustments.
+		if (!getResources().getString(R.string.dimension).startsWith("small")) {
+			Rect rect = new Rect();
+			getWindowVisibleDisplayFrame(rect);
+			if (!rect.isEmpty()) {
 
-		setMeasuredDimension(dim, dim);
+				// Get orientation
+				float scaleFactor = (float) 0.67;
+				if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+					// In landscape mode the grid view should be resized in case
+					// it
+					// size is bigger than 2/3 of the total width.
+					measuredWidth = (int) Math.min(measuredWidth, scaleFactor
+							* (float) rect.width());
+				} else {
+					measuredHeight = (int) Math.min(measuredHeight, scaleFactor
+							* (float) rect.height());
+				}
+			}
+		}
+
+		// Get the maximum space available for the grid. As it is a square we
+		// need the minimum of width and height.
+		int maxSize = (int) Math.min(measuredWidth, measuredHeight);
+
+		// Finally compute the exact size needed to display a grid in which the
+		// (integer) cell size is as big as possible but the grid still fits in
+		// the space available.
+		int gridSize = (grid == null ? 1 : grid.getGridSize());
+		float gridBorderWidth = (mGridPainter == null ? 0
+				: mGridPainter.mBorderPaint.getStrokeWidth());
+		mGridCellSize = (float) Math
+				.floor((float) (maxSize - 2 * gridBorderWidth)
+						/ (float) gridSize);
+		mGridViewSize = (float) (2 * gridBorderWidth + gridSize * mGridCellSize);
+		
+		setMeasuredDimension((int) mGridViewSize, (int) mGridViewSize);
 	}
 
 	private int measure(int measureSpec) {

@@ -251,7 +251,7 @@ public class GridCell {
 		if (borderPaint != null) {
 			// Calculate offset and draw right border
 			float offset = (mColumn == mGrid.getGridSize() - 1 ? (float) Math
-					.floor((float) (0.5 * borderPaint.getStrokeWidth())) : 0);
+					.ceil((float) (0.5 * borderPaint.getStrokeWidth())) : 0);
 			canvas.drawLine(right - offset, top
 					- (cellAboveIsInSameCage ? offset : 0), right - offset,
 					bottom + (cellBelowIsInSameCage ? offset : 0), borderPaint);
@@ -274,7 +274,7 @@ public class GridCell {
 		if (borderPaint != null) {
 			// Calculate offset and draw bottom border
 			float offset = (mRow == mGrid.getGridSize() - 1 ? (float) Math
-					.floor((float) (0.5 * borderPaint.getStrokeWidth())) : 0);
+					.ceil((float) (0.5 * borderPaint.getStrokeWidth())) : 0);
 			canvas.drawLine(left - (cellOnLeftIsInSameCage ? offset : 0),
 					bottom - offset, right
 							+ (cellOnRightIsInSameCage ? offset : 0), bottom
