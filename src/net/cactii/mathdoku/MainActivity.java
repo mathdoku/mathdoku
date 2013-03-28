@@ -1308,11 +1308,12 @@ public class MainActivity extends Activity {
 	 */
 	public void setNewGrid(Grid grid) {
 		if (grid != null) {
-			this.mGrid = grid;
-			this.mGridView.loadNewGrid(grid);
+			mGrid = grid;
+			mGrid.setPreferences(preferences);
+			mGridView.loadNewGrid(grid);
 
 			// Show the grid of the loaded puzzle.
-			if (this.mGrid.isActive()) {
+			if (mGrid.isActive()) {
 				// Determine input mode. The input mode will only be set if it
 				// was not yet set before.
 				if (mInputMode == InputMode.NO_INPUT__HIDE_GRID) {
@@ -1337,10 +1338,10 @@ public class MainActivity extends Activity {
 
 			// Debug information
 			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
-				MainActivity.this.mGameSeedLabel.setVisibility(View.VISIBLE);
-				MainActivity.this.mGameSeedText.setVisibility(View.VISIBLE);
-				MainActivity.this.mGameSeedText.setText(String.format("%,d",
-						MainActivity.this.mGrid.getGameSeed()));
+				mGameSeedLabel.setVisibility(View.VISIBLE);
+				mGameSeedText.setVisibility(View.VISIBLE);
+				mGameSeedText
+						.setText(String.format("%,d", mGrid.getGameSeed()));
 			}
 		} else {
 			// No grid available.
