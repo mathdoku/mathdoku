@@ -69,7 +69,7 @@
     <!-- The heading and body of the section refering to the list of changes. -->
     <!-- Note for translators: Changes are only available in english. Please mention this in this field. -->
     <string name="changelog_changes_title">Changes</string>
-    <string name="changelog_changes_body">For a full list of changes please go to our website using the link below. Please note that revisions above %1$d will be released in a future release.</string>
+    <string name="changelog_changes_body">For a full list of changes please go to our website using the link below.</string>
 
     <!-- The heading and body of the section referring to the list of issues. -->
     <!-- Note for translators: Only issues written in English will be deaLt with. Please mention this in field changelog_issues_body. -->

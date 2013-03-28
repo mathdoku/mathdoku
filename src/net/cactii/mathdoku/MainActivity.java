@@ -886,13 +886,8 @@ public class MainActivity extends Activity {
 		textView.setText(getVersionName() + " (revision " + getVersionNumber()
 				+ ")");
 
-		textView = (TextView) view.findViewById(R.id.changelog_changes_body);
-		textView.setText(getResources().getString(
-				R.string.changelog_changes_body, revisionNumber));
-
 		textView = (TextView) view.findViewById(R.id.changelog_changes_link);
-		textView.setText(PROJECT_HOME + "source/list?num=25&start="
-				+ revisionNumber);
+		textView.setText(PROJECT_HOME + "wiki/RevisionHistory");
 
 		textView = (TextView) view.findViewById(R.id.changelog_issues_link);
 		textView.setText(PROJECT_HOME + "issues/list?groupby=milestone");

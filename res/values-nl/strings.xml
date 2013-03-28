@@ -69,7 +69,7 @@
     <!-- The heading and body of the section referring to the list of changes (revision). -->
     <!-- Note for translators: Changes are only available in english. Please mention this in this field. -->
     <string name="changelog_changes_title">Wijzigingen</string>
-    <string name="changelog_changes_body">Ga voor een complete lijst van wijzigingen (alleen in het engels) naar onze website via de onderstaande link. Let op: revisies boven %1$d worden in een volgende versie opgenomen.</string>
+    <string name="changelog_changes_body">Ga voor een complete lijst van wijzigingen (alleen in het engels) naar onze website via de onderstaande link.</string>
 
     <!-- The heading and body of the section referring to the list of issues. -->
     <!-- Note for translators: Only issues written in English will be deaLt with. Please mention this in field changelog_issues_body. -->
