@@ -16,7 +16,7 @@
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
         android:background="#00000000"
-        android:visibility="visible" >
+        android:visibility="gone" >
 
         <net.cactii.mathdoku.GridView
             android:id="@+id/gridView"
@@ -32,7 +32,7 @@
             android:text="@string/main_ui_solved_messsage"
             android:textColor="#FF000000"
             android:textSize="@dimen/text_size_giant"
-            android:visibility="visible" />
+            android:visibility="gone" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -59,14 +59,14 @@
             android:textColor="#FF000000"
             android:textSize="@dimen/text_size_default"
             android:textStyle="bold"
-            android:visibility="visible"
+            android:visibility="gone"
             tools:ignore="HardcodedText" />
 
         <TableLayout
             android:id="@+id/controls"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:visibility="visible"
+            android:visibility="gone"
             android:weightSum="3" >
 
             <TableRow
@@ -233,7 +233,7 @@
             android:text="@string/game_seed"
             android:textColor="#FF000000"
             android:textSize="@dimen/text_size_tiny"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/gameSeedText"
@@ -245,7 +245,7 @@
             android:text="999.999.999.999.999.999"
             android:textColor="#FF000000"
             android:textSize="@dimen/text_size_tiny"
-            android:visibility="visible"
+            android:visibility="gone"
             tools:ignore="HardcodedText" />
     </RelativeLayout>
 
