@@ -339,6 +339,33 @@ public class MainActivity extends Activity {
 			}
 
 		});
+		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+			final MainActivity activity = this;
+			this.mGameSeedText.setOnTouchListener(new OnTouchListener() {
+	
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					if (event.getAction() == MotionEvent.ACTION_DOWN) {
+						if (mGrid != null) {
+							mGrid.getGridGeneratingParameters().show(activity);
+						}
+					}
+					return false;
+				}
+			});
+			this.mGameSeedLabel.setOnTouchListener(new OnTouchListener() {
+				
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					if (event.getAction() == MotionEvent.ACTION_DOWN) {
+						if (mGrid != null) {
+							mGrid.getGridGeneratingParameters().show(activity);
+						}
+					}
+					return false;
+				}
+			});
+		}
 
 		this.mGridView.setFocusable(true);
 		this.mGridView.setFocusableInTouchMode(true);
