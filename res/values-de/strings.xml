@@ -55,7 +55,7 @@
 
     <!-- The contributor title in the help screen. -->
     <string name="dialog_help_contributors_title">Mitwirkende</string>
-    <string name="dialog_help_contributors_body">MathDoku wurde von Ben Buxton entwickelt. Weiterentwicklungen wurden von Stephen Lee, Pimm Hogeling, Paul Dingemans und Anthony Paul durchgeführt. Dank an alle, die Fehler des Programms oder Anstöße für Weiterentwicklungen gemeldet haben.</string>
+    <string name="dialog_help_contributors_body">MathDoku wurde von Ben Buxton entwickelt. Weiterentwicklungen wurden von Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul und Christoph Steindl durchgeführt. Dank an alle, die Fehler des Programms oder Anstöße für Weiterentwicklungen gemeldet haben.</string>
 
     <!-- CHANGES DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -158,7 +158,7 @@
 
     <!-- The title and summary of the "redundant possibles" option. This option clears possibles values from cells in the same row or columns as the selected cell after setting a user value. -->
     <string name="option_clear_redundant_possibles_title">Überflüssige \"Vieleichtwerte\" löschen</string>
-    <string name="option_clear_redundant_possibles_summary">Nachdem ein Wert in einer Zelle gesetzt wurde, wird dieser Wert in den Zellen der selben Zeile und Spalte aus den Möglichkeiten gelöscht.</string>
+    <string name="option_clear_redundant_possibles_summary">Nachdem ein Wert in einer Zelle gesetzt wurde, wird dieser Wert in den Zellen derselben Zeile und Spalte aus den Möglichkeiten gelöscht.</string>
 
     <!-- The preferences category title for options related to puzzle generation. -->
     <string name="options_group_puzzle">Rätselerstellung</string>
@@ -244,12 +244,10 @@
 
 
     <!-- The text for input mode "normal" which is used to enter a definitive value into the selected cell. -->
-    <string name="input_mode_normal_short">definitive</string>
-    <string name="input_mode_normal_long">Modus: Definitive Werte</string>
+    <string name="input_mode_normal">Modus: Definitive Werte</string>
 
     <!-- The text for input mode "maybe" which is used to insert/remove a possible value into/from the selected cell. -->
-    <string name="input_mode_maybe_short">\" Vielleichtwerte\"</string>
-    <string name="input_mode_maybe_long">Modus: \" Vielleichtwerte\"</string>
+    <string name="input_mode_maybe">Modus: \"Vielleichtwerte\"</string>
 
     <!-- The text on the clear button in the main UI. -->
     <string name="main_ui_clear">Löschen</string>
@@ -259,37 +257,33 @@
 
     <!-- USAGE LOG AND OPT-IN FOR SURVEY - - - - - - - - - - - - - - - - - - - - - - -->
 
-
     <!-- Dialog for consent on sending usage log -->
     <string name="dialog_share_log_title">MathDoku-Entwicklung unterstützen</string>
     <string name="dialog_share_log_body">Lieber MathDoku-Spieler,\n\nwir haben Daten gesammelt, wie Sie MathDoku verwenden. Diese Daten enthalten keine persönlichen Informationen. Wir wären sehr dankbar, wenn Sie uns diese Daten senden würden. Wir werden sie zur Weiterentwicklung von MathDoku verwenden.\n\nWenn Sie nicht zustimmen, wird das erstellte Logfile gelöscht und es werden keine weiteren Informationen gesammelt.</string>
     <string name="dialog_share_log_negative_button">Ich stimme nicht zu.</string>
     <string name="dialog_share_log_positive_button">Ich stimme zu.</string>
-
+    
     <!-- Dialog for opt-in on survey about future use of MathDoku. -->
     <string name="dialog_survey_title">Umfrage</string>
-    <!-- Note for translators: please mention that the survey will be sent in english only. -->
+    <!--  Note for translators: please mention that the survey will be sent in english only.  -->
     <string name="dialog_survey_body">Danke für die Zustimmung uns das Logfile zu senden.\n\nWir planen einen Fragebogen an Benutzer, die an zukünftigen Versionen von MathDoku interessiert sind, zu senden. Falls Sie daran teilnehmen möchten, hinterlassen Sie Ihre E-Mail im folgenden Formular.</string>
     <string name="dialog_survey_user_name_hint">Ihr Name</string>
     <string name="dialog_survey_user_email_hint">Ihre E-Mail</string>
     <string name="dialog_survey_positive_button">Logfile senden</string>
-
+    
     <!-- Title of dialog used to choose the appropriate action for sending the usage log. -->
     <string name="usage_log_choose_action_title">Mathdoku Logfile senden</string>
-
+    
+    
     <!-- TIP DIALOGS - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
-
+    
     <!-- Label for check box "Do not show again" in the tip dialog. -->
-    <!-- TODO -->
-    <string name="dialog_tip_do_not_show_again">Do not show again</string>
-
-    <!-- Title, text, drawable for tip "Input mode changed" -->
-    <!-- TODO -->
-    <string name="dialog_tip_input_mode_changed_title">Input mode changed</string>
-    <!-- TODO -->
-    <string name="dialog_tip_input_mode_changed_text">You have just changed the input mode from %1$s to %2$s.  The input mode can be changed to normal by tapping the selected cell once more. Or you can tap the text Mode: maybe above the digit buttons.</string>
-
+    <string name="dialog_tip_do_not_show_again">Nicht nochmal anzeigen</string>
+    
+    <!--  Title, text, drawable for tip "Input mode changed" -->
+    <string name="dialog_tip_input_mode_changed_title">Eingabemodus geändert</string>
+    <string name="dialog_tip_input_mode_changed_text">Sie haben gerade den Eingabemodus von %1$s auf %2$s geändert. Der Eingabemodus kann durch nochmaliges Drücken auf die ausgewählte Zelle auf \"normal\" gestellt werden. Oder durch Dücken des Textmodues: Vielleicht über dem Zahlenblock.</string>
+    
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -314,5 +308,5 @@
     <!-- Text to display in case the preview image of a saved game is not yet available. -->
     <string name="game_file_preview_not_available">Derzeit nicht verfügbar</string>
     <string name="game_seed">"Spiel platzieren: "</string>
-
+    
 </resources>
