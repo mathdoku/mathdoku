@@ -342,7 +342,7 @@ public class MainActivity extends Activity {
 		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
 			final MainActivity activity = this;
 			this.mGameSeedText.setOnTouchListener(new OnTouchListener() {
-	
+
 				@Override
 				public boolean onTouch(View v, MotionEvent event) {
 					if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -354,7 +354,7 @@ public class MainActivity extends Activity {
 				}
 			});
 			this.mGameSeedLabel.setOnTouchListener(new OnTouchListener() {
-				
+
 				@Override
 				public boolean onTouch(View v, MotionEvent event) {
 					if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -1463,9 +1463,8 @@ public class MainActivity extends Activity {
 		stopTimer();
 
 		if (mGrid != null && mGrid.isActive()) {
-			mTimerTask = new GameTimer();
+			mTimerTask = new GameTimer(this);
 			mTimerTask.mElapsedTime = mGrid.getElapsedTime();
-			mTimerTask.mTimerTextView = mTimerText;
 			if (preferences
 					.getBoolean(PREF_SHOW_TIMER, PREF_SHOW_TIMER_DEFAULT)) {
 				mTimerText.setVisibility(View.VISIBLE);
@@ -1531,7 +1530,7 @@ public class MainActivity extends Activity {
 			} else {
 				// Show time
 				this.mTimerText.setVisibility(View.VISIBLE);
-				setElapsedTime(mTimerText, mGrid.getElapsedTime());
+				setElapsedTime(mGrid.getElapsedTime());
 			}
 			controls.setVisibility(View.GONE);
 			pressMenu.setVisibility(View.VISIBLE);
@@ -1631,19 +1630,21 @@ public class MainActivity extends Activity {
 	 *            The elapsed time (in mili seconds) while playing the game.
 	 */
 	@SuppressLint("DefaultLocale")
-	public static void setElapsedTime(TextView timerTextView, long elapsedTime) {
-		String timeString;
-		int seconds = (int) (elapsedTime / 1000); // Whole seconds.
-		int hours = (int) Math.floor(seconds / (60 * 60));
-		if (hours == 0) {
-			timeString = String.format("%2dm%02ds", (seconds % (3600)) / 60,
-					seconds % 60);
-		} else {
-			timeString = String.format("%dh%02dm%02ds", hours,
-					(seconds % (3600)) / 60, seconds % 60);
-		}
-		if (timerTextView != null) {
-			timerTextView.setText(timeString);
+	public void setElapsedTime(long elapsedTime) {
+		if (preferences.getBoolean(PREF_SHOW_TIMER, PREF_SHOW_TIMER_DEFAULT)) {
+			String timeString;
+			int seconds = (int) (elapsedTime / 1000); // Whole seconds.
+			int hours = (int) Math.floor(seconds / (60 * 60));
+			if (hours == 0) {
+				timeString = String.format("%2dm%02ds",
+						(seconds % (3600)) / 60, seconds % 60);
+			} else {
+				timeString = String.format("%dh%02dm%02ds", hours,
+						(seconds % (3600)) / 60, seconds % 60);
+			}
+			if (mTimerText != null) {
+				mTimerText.setText(timeString);
+			}
 		}
 	}
 }
