@@ -1090,14 +1090,6 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 				cell.setCorrectValue(0);
 	}
 
-	/* Determine if the given value is in the given row */
-	private boolean valueInRow(int row, int value) {
-		for (GridCell cell : this.mCells)
-			if (cell.getRow() == row && cell.getCorrectValue() == value)
-				return true;
-		return false;
-	}
-
 	/* Determine if the given value is in the given column */
 	private boolean valueInColumn(int column, int value) {
 		for (int row = 0; row < mGridSize; row++)

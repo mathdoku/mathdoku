@@ -967,9 +967,6 @@ public class MainActivity extends Activity {
 	}
 
 	private void openChangesDialog() {
-		// Get revision number
-		int revisionNumber = getVersionNumber();
-
 		// Get view and put relevant information into the view.
 		LayoutInflater li = LayoutInflater.from(this);
 		View view = li.inflate(R.layout.changelogview, null);

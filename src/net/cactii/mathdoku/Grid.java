@@ -455,7 +455,6 @@ public class Grid {
 	public boolean fromStorageString(String line) {
 		String[] viewParts = line.split(GameFile.FIELD_DELIMITER_LEVEL1);
 
-		@SuppressWarnings("unused")
 		int viewInformationVersion = 0;
 		if (viewParts[0].equals(SAVE_GAME_GRID_VERSION_01)) {
 			viewInformationVersion = 1;

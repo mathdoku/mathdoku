@@ -4,7 +4,6 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import net.cactii.mathdoku.DigitPositionGrid.DigitPositionGridType;
 import net.cactii.mathdoku.MainActivity.InputMode;
 import net.cactii.mathdoku.Painter.CagePainter;
 import net.cactii.mathdoku.Painter.CellPainter;
@@ -143,10 +142,10 @@ public class GridCell {
 	}
 
 	public void togglePossible(int digit) {
-		if (this.mPossibles.indexOf(new Integer(digit)) == -1)
+		if (this.mPossibles.indexOf(Integer.valueOf(digit)) == -1)
 			this.mPossibles.add(digit);
 		else
-			this.mPossibles.remove(new Integer(digit));
+			this.mPossibles.remove(Integer.valueOf(digit));
 		Collections.sort(mPossibles);
 	}
 
@@ -394,7 +393,7 @@ public class GridCell {
 
 		// Cell value
 		if (this.isUserValueSet()) {
-			Paint paint = (inputMode == inputMode.NORMAL ? mUserValuePainter.mTextPaintNormalInputMode
+			Paint paint = (inputMode == InputMode.NORMAL ? mUserValuePainter.mTextPaintNormalInputMode
 					: mUserValuePainter.mTextPaintMaybeInputMode);
 			canvas.drawText("" + mUserValue, mPosX
 					+ mUserValuePainter.mLeftOffset, mPosY
@@ -630,7 +629,7 @@ public class GridCell {
 	 *         cell. False otherwise.
 	 */
 	public boolean hasPossible(int digit) {
-		return (this.mPossibles.indexOf(new Integer(digit)) >= 0);
+		return (this.mPossibles.indexOf(Integer.valueOf(digit)) >= 0);
 	}
 
 	/**

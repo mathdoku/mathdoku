@@ -4,9 +4,9 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import android.util.Log;
 
-public class OptionsActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
+public class OptionsActivity extends PreferenceActivity implements
+		OnSharedPreferenceChangeListener {
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -14,21 +14,23 @@ public class OptionsActivity extends PreferenceActivity implements OnSharedPrefe
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.optionsview);
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onResume() {
 		UsageLog.getInstance(this);
 
-		getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+		getPreferenceScreen().getSharedPreferences()
+				.registerOnSharedPreferenceChangeListener(this);
 		super.onResume();
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onPause() {
 		super.onPause();
-		getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+		getPreferenceScreen().getSharedPreferences()
+				.unregisterOnSharedPreferenceChangeListener(this);
 	}
 
 	@Override
@@ -38,7 +40,8 @@ public class OptionsActivity extends PreferenceActivity implements OnSharedPrefe
 			UsageLog.getInstance().logPreference("Preference.Changed", key,
 					sharedPreferences.getAll().get(key));
 		} else {
-			UsageLog.getInstance().logPreference("Preference.Deleted", key, null);
+			UsageLog.getInstance().logPreference("Preference.Deleted", key,
+					null);
 		}
 		;
 	}

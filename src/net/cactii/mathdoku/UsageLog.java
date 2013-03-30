@@ -15,6 +15,7 @@ import java.util.TreeMap;
 
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.GridGenerating.GridGeneratingParameters;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -43,6 +44,8 @@ import android.widget.EditText;
  * INFORMATION MAT BE GATHERED AND STORED INTO THE LOG FILES.
  */
 @TargetApi(Build.VERSION_CODES.DONUT)
+//No harm can be done in case other apps can read the log file
+@SuppressLint("WorldReadableFiles")
 public class UsageLog {
 	public final static String TAG = "MathDoku.UsageLogging";
 

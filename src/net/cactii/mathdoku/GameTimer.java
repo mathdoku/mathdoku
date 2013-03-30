@@ -1,7 +1,6 @@
 package net.cactii.mathdoku;
 
 import android.os.AsyncTask;
-import android.widget.TextView;
 
 /*
  * Controls the timer within the game.
