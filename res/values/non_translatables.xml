@@ -21,4 +21,10 @@
         <item>inverted</item>
     </string-array>
     
+    <!-- USAGE LOG AND OPT-IN FOR SURVEY - - - - - - - - - - - - - - - - - - - - - - -->
+    
+    <!-- Default subject and message for the mail containing the usage log -->
+    <string name="usage_log_subject">I love to help MathDoku and sent you my log file</string>
+    <string name="usage_log_body">In case you want to share additional thoughts with us, please feel free to change this text. We can only deal with messages send in English.</string>
+    
 </resources>

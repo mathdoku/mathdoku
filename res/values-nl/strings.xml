@@ -253,6 +253,24 @@
     <!-- The text on the undo button in the main UI. -->
     <string name="main_ui_undo">Zet terug</string>
 
+        <!-- USAGE LOG AND OPT-IN FOR SURVEY - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <!-- Dialog for consent on sending usage log -->
+    <string name="dialog_share_log_title">Help MathDoku ontwikkeling</string>
+    <string name="dialog_share_log_body">Beste gebruiker,\n\nWe hebben wat data verzameld over de manier waarop je MathDoku gebruikt. Deze data bevat geen persoonlijke informatie. We stellen het op prijs als je deze data naar ons toe wil sturen. We zullen dit gebruiken bij de verdere ontwikkeling van MathDoku.\n\nAls je niet toestemt dan wordt de verzamelde data verwijderd. Er wordt verder geen data meer verzameld.</string>
+    <string name="dialog_share_log_negative_button">Niet akkoord</string>
+    <string name="dialog_share_log_positive_button">Akkoord</string>
+    
+    <!-- Dialog for opt-in on survey about future use of MathDoku. -->
+    <string name="dialog_survey_title">Enquete</string>
+    <string name="dialog_survey_body">Bedankt voor je toestemming om de data naar ons toe te sturen.\n\nWe zijn van plan om een (engelstalige) enquete te sturen naar gebruikers die geïnteresseerd zijn in de verdere ontwikkeling van MathDoku. Als je daarbij betrokken wil worden, laat dan onderstaand je naam en email-adres achter.</string>
+    <string name="dialog_survey_user_name_hint">Jouw naam</string>
+    <string name="dialog_survey_user_email_hint">Jouw email adres</string>
+    <string name="dialog_survey_positive_button">Verzend data</string>
+    
+    <!-- Title of dialog used to choose the appropriate action for sending the usage log. -->
+    <string name="usage_log_choose_action_title">Verzend MathDoku data</string>
+    
     <!-- MISCELLANEOUS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 

@@ -17,8 +17,8 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	private static final String TAG = "MathDoku.GameFileConverter";
 
 	// Remove "&& false" in following line to show debug information about
-	// creating cages when running in development mode.
-	private static final boolean DEBUG_GRID_GAME_FILE_CONVERTER = (DevelopmentHelper.mode == Mode.DEVELOPMENT) && true;
+	// converting game files when running in development mode.
+	private static final boolean DEBUG_GRID_GAME_FILE_CONVERTER = (DevelopmentHelper.mode == Mode.DEVELOPMENT) && false;
 
 	// The activity which started this task
 	private MainActivity mActivity;
@@ -44,6 +44,10 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	// The dialog for this task
 	private ProgressDialog mProgressDialog;
 
+	// Conversion results
+	private ArrayList<Integer> mGridSignatures;
+	private int mTotalGrids;
+	
 	/**
 	 * Creates a new instance of {@link GameFileConverter}.
 	 * 
@@ -120,6 +124,10 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 			// Show the dialog
 			mProgressDialog.show();
 		}
+		
+		// Initialize conversion results.
+		mGridSignatures = new ArrayList<Integer>();
+		mTotalGrids = 0;
 	}
 
 	/*
@@ -169,9 +177,19 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 			// Update game file contents
 			if (mFilenames.size() > 0) {
 				for (String filename : mFilenames) {
-					// Load and then save the game file.
+					// Load grid
 					GameFile gameFile = new GameFile(filename);
 					Grid grid = gameFile.load();
+					
+					// Get signature for grid. Update the number of occurrences for this signature.
+					mTotalGrids++;
+					int signature = grid.getSignatureString();
+					if (!mGridSignatures.contains(signature)) {
+						// New signature found
+						mGridSignatures.add(signature);
+					}
+					
+					// Save grid and publish progress
 					gameFile.save(grid, true);
 					publishProgress();
 				}
@@ -187,6 +205,8 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 
 	@Override
 	protected void onPostExecute(Void result) {
+		UsageLog.getInstance().logGameFileConversion(mCurrentVersion, mNewVersion, mTotalGrids, mGridSignatures.size());
+		
 		// Phase 1 of upgrade has been completed. Start next phase.
 		if (mActivity != null) {
 			mActivity.upgradePhase2_createPreviewImages(mCurrentVersion,

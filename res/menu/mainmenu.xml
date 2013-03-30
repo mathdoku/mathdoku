@@ -68,7 +68,15 @@
                 android:id="@+id/development_mode_clear_data"
                 android:title="Clear data (games and prefs)"
                 tools:ignore="HardcodedText"/>
-        </menu>
+            <item
+                android:id="@+id/development_mode_reset_log"
+                android:title="Reset logging"
+                tools:ignore="HardcodedText"/>
+            <item
+                android:id="@+id/development_mode_send_log"
+                android:title="Send log info"
+                tools:ignore="HardcodedText"/>
+            </menu>
     </item>
     <item
         android:id="@+id/help"

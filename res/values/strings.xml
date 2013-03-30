@@ -255,6 +255,26 @@
     <!-- The text on the undo button in the main UI. -->
     <string name="main_ui_undo">Undo</string>
 
+    <!-- USAGE LOG AND OPT-IN FOR SURVEY - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <!-- Dialog for consent on sending usage log -->
+    <string name="dialog_share_log_title">Help MathDoku development</string>
+    <string name="dialog_share_log_body">Dear user,\n\nWe have gathered some data about the way you used MathDoku. This data does not contain any personal information. We would appreciate if you will send this data to us. We will use it to decide on future development of MathDoku.\n\nIf you do not agree, the created log file will deleted and no further information will be collected.</string>
+    <string name="dialog_share_log_negative_button">I do not agree</string>
+    <string name="dialog_share_log_positive_button">I agree</string>
+    
+    <!-- Dialog for opt-in on survey about future use of MathDoku. -->
+    <string name="dialog_survey_title">Survey</string>
+    <!--  Note for translators: please mention that the survey will be sent in english only.  -->
+    <string name="dialog_survey_body">Thanks for agreeing to sent the log to us.\n\nWe plan to send a survey to users who are interested in future releases of MathDoku. In case you want to be involved, please leave your name and email address below.</string>
+    <string name="dialog_survey_user_name_hint">Your name</string>
+    <string name="dialog_survey_user_email_hint">Your email address</string>
+    <string name="dialog_survey_positive_button">Send log</string>
+    
+    <!-- Title of dialog used to choose the appropriate action for sending the usage log. -->
+    <string name="usage_log_choose_action_title">Send MathDoku Log</string>
+    
+    
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -279,5 +299,5 @@
     <!-- Text to display in case the preview image of a saved game is not yet available. -->
     <string name="game_file_preview_not_available">Not yet available</string>
     <string name="game_seed">"Game seed: "</string>
-
+    
 </resources>

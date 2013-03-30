@@ -5,6 +5,7 @@ import java.util.Random;
 
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.GameFile.GameFileType;
+import net.cactii.mathdoku.GridGenerating.GridGeneratingParameters;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -241,9 +242,17 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 					// The faked user games files do not require a unique
 					// solution which results in much faster generation time.
 
+					// Create the grid object
+					GridGeneratingParameters gridGeneratingParameters = new GridGeneratingParameters();
+					gridGeneratingParameters.mGameSeed = this.mGameSeed;
+					gridGeneratingParameters.mGeneratorRevisionNumber = this.mGeneratorRevisionNumber;
+					gridGeneratingParameters.mHideOperators = this.mHideOperators;
+					gridGeneratingParameters.mMaxCageResult = this.mMaxCageResult;
+					gridGeneratingParameters.mMaxCageSize = this.mMaxCageSize;
+					mGrid.create(mGridSize, mCells, mCages, true,
+							gridGeneratingParameters);
+
 					// Store grid as user file
-					mGrid.create(mGameSeed, mGeneratorRevisionNumber,
-							mGridSize, mCells, mCages, true);
 					GameFile gameFile = new GameFile(GameFileType.NEW_GAME);
 					gameFile.save(mGrid, false);
 					gameFile.copyToNewGameFile();
@@ -364,9 +373,14 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			}
 		}
 
-		// Load results into the grid.
-		mGrid.create(mGameSeed, mGeneratorRevisionNumber, mGridSize, mCells,
-				mCages, true);
+		// Create the grid object
+		GridGeneratingParameters gridGeneratingParameters = new GridGeneratingParameters();
+		gridGeneratingParameters.mGameSeed = this.mGameSeed;
+		gridGeneratingParameters.mGeneratorRevisionNumber = this.mGeneratorRevisionNumber;
+		gridGeneratingParameters.mHideOperators = this.mHideOperators;
+		gridGeneratingParameters.mMaxCageResult = this.mMaxCageResult;
+		gridGeneratingParameters.mMaxCageSize = this.mMaxCageSize;
+		mGrid.create(mGridSize, mCells, mCages, true, gridGeneratingParameters);
 
 		if (mActivity != null) {
 			if (DEBUG_GRID_GENERATOR) {
@@ -1046,7 +1060,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 						mHideOperators);
 				return;
 			}
-			Log.i(TAG, "GameSeed: " + mGameSeed + " cage result " + total + " is rejected");
+			Log.i(TAG, "GameSeed: " + mGameSeed + " cage result " + total
+					+ " is rejected");
 			// Multplication leads to a cage value that is too big to be
 			// displayed on this device. For small screens this value is set to
 			// 9,999. For bigger screens the value is 99,999. Instead of

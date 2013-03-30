@@ -2,6 +2,7 @@ package net.cactii.mathdoku;
 
 import java.util.ArrayList;
 
+import net.cactii.mathdoku.GridGenerating.GridGeneratingParameters;
 import android.content.SharedPreferences;
 
 public class Grid {
@@ -16,6 +17,7 @@ public class Grid {
 	public static final String SAVE_GAME_GRID_VERSION_02 = "VIEW.v2";
 	public static final String SAVE_GAME_GRID_VERSION_03 = "VIEW.v3";
 	public static final String SAVE_GAME_GRID_VERSION_04 = "VIEW.v4";
+	public static final String SAVE_GAME_GRID_VERSION_05 = "VIEW.v5";
 
 	// Size of the grid
 	private int mGridSize;
@@ -39,11 +41,9 @@ public class Grid {
 	private long mDateLastSaved;
 	private long mElapsedTime;
 
-	// The revision number and seed used to create the game. In case the
-	// revision number or seed equals 0 it can not be trusted to regenerate a
-	// grid as both the revision number and seed are needed to do so.
-	private long mGameSeed;
-	private int mGeneratorRevisionNumber;
+	// All parameters that influence the game generation and which are needed to
+	// regenerate a specific game again.
+	private GridGeneratingParameters mGridGeneratingParameters;
 
 	// Keep track of all moves as soon as grid is built or restored.
 	public ArrayList<CellChange> moves;
@@ -59,12 +59,19 @@ public class Grid {
 	// Solved listener
 	private OnSolvedListener mSolvedListener;
 
+	// UsagaeLog counters
+	private int mUndoLastMoveCount;
+	private int mclearRedundantPossiblesInSameRowOrColumnCount;
+
 	public Grid(int gridSize) {
 		mGridSize = gridSize;
 		mCells = new ArrayList<GridCell>();
 		mCages = new ArrayList<GridCage>();
 		moves = new ArrayList<CellChange>();
-		this.mSolvedListener = null;
+		mUndoLastMoveCount = 0;
+		mclearRedundantPossiblesInSameRowOrColumnCount = 0;
+		mSolvedListener = null;
+		mGridGeneratingParameters = new GridGeneratingParameters();
 
 		mPrefShowDupeDigits = MainActivity.PREF_SHOW_DUPE_DIGITS_DEFAULT;
 		mPrefShowBadCageMaths = MainActivity.PREF_SHOW_BAD_CAGE_MATHS_DEFAULT;
@@ -180,6 +187,7 @@ public class Grid {
 
 	// Solve the puzzle by setting the Uservalue to the actual value
 	public void Solve() {
+		UsageLog.getInstance().logFunction("ContextMenu.ShowSolution");
 		this.mCheated = true;
 		if (this.moves != null) {
 			this.moves.clear();
@@ -265,6 +273,7 @@ public class Grid {
 			int undoPosition = moves.size() - 1;
 
 			if (undoPosition >= 0) {
+				mUndoLastMoveCount++;
 				GridCell cell = moves.get(undoPosition).restore();
 				moves.remove(undoPosition);
 				setSelectedCell(cell);
@@ -334,6 +343,7 @@ public class Grid {
 	public void clearRedundantPossiblesInSameRowOrColumn(
 			CellChange originalCellChange) {
 		if (mSelectedCell != null) {
+			mclearRedundantPossiblesInSameRowOrColumnCount++;
 			int rowSelectedCell = this.mSelectedCell.getRow();
 			int columnSelectedCell = this.mSelectedCell.getColumn();
 			int valueSelectedCell = this.mSelectedCell.getUserValue();
@@ -357,7 +367,7 @@ public class Grid {
 	 * @return The seed which can be used to generate this puzzle.
 	 */
 	public long getGameSeed() {
-		return this.mGameSeed;
+		return mGridGeneratingParameters.mGameSeed;
 	}
 
 	/**
@@ -380,7 +390,7 @@ public class Grid {
 	 *            not be altered. When not converting an existing gamefile one
 	 *            should use false here.
 	 * 
-	 * @return A string representation of the grid cell.
+	 * @return A string representation of the grid.
 	 */
 	public String toStorageString(boolean keepOriginalDatetimeLastSaved) {
 		// Update datetime last saved if needed
@@ -389,16 +399,48 @@ public class Grid {
 		}
 
 		// Build storage string
-		String storageString = SAVE_GAME_GRID_VERSION_04
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mGameSeed
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mGeneratorRevisionNumber
+		String storageString = SAVE_GAME_GRID_VERSION_05
+				+ GameFile.FIELD_DELIMITER_LEVEL1
+				+ mGridGeneratingParameters.mGameSeed
+				+ GameFile.FIELD_DELIMITER_LEVEL1
+				+ mGridGeneratingParameters.mGeneratorRevisionNumber
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mDateLastSaved
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mElapsedTime
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mGridSize
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mActive
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mDateGenerated
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mCheated;
+				+ GameFile.FIELD_DELIMITER_LEVEL1 + mCheated
+				+ GameFile.FIELD_DELIMITER_LEVEL1 + mUndoLastMoveCount
+				+ GameFile.FIELD_DELIMITER_LEVEL1
+				+ mclearRedundantPossiblesInSameRowOrColumnCount
+				+ GameFile.FIELD_DELIMITER_LEVEL1
+				+ mGridGeneratingParameters.mHideOperators
+				+ GameFile.FIELD_DELIMITER_LEVEL1
+				+ mGridGeneratingParameters.mMaxCageResult
+				+ GameFile.FIELD_DELIMITER_LEVEL1
+				+ mGridGeneratingParameters.mMaxCageSize;
 		return storageString;
+	}
+
+	/**
+	 * Creates a (hashed) signature of this grid. The signature is based on
+	 * several identifying variables of the grid, cages and cells. Signatures
+	 * have a big change of being unique but this is not guaranteed.
+	 * 
+	 * @return A string representation of the grid.
+	 */
+	public int getSignatureString() {
+		String signatureString = mGridGeneratingParameters.mGameSeed
+				+ GameFile.FIELD_DELIMITER_LEVEL1
+				+ mGridGeneratingParameters.mGeneratorRevisionNumber
+				+ GameFile.FIELD_DELIMITER_LEVEL1 + mGridSize
+				+ GameFile.FIELD_DELIMITER_LEVEL1 + mDateGenerated;
+
+		for (GridCage cage : mCages) {
+			signatureString += cage.getSignatureString();
+		}
+
+		return signatureString.hashCode();
 	}
 
 	/**
@@ -423,17 +465,21 @@ public class Grid {
 			viewInformationVersion = 3;
 		} else if (viewParts[0].equals(SAVE_GAME_GRID_VERSION_04)) {
 			viewInformationVersion = 4;
+		} else if (viewParts[0].equals(SAVE_GAME_GRID_VERSION_05)) {
+			viewInformationVersion = 5;
 		} else {
 			return false;
 		}
 
 		// Process all parts
 		int index = 1;
-		mGameSeed = Long.parseLong(viewParts[index++]);
+		mGridGeneratingParameters.mGameSeed = Long
+				.parseLong(viewParts[index++]);
 		if (viewInformationVersion >= 3) {
-			mGeneratorRevisionNumber = Integer.parseInt(viewParts[index++]);
+			mGridGeneratingParameters.mGeneratorRevisionNumber = Integer
+					.parseInt(viewParts[index++]);
 		} else {
-			mGeneratorRevisionNumber = 0;
+			mGridGeneratingParameters.mGeneratorRevisionNumber = 0;
 		}
 		mDateLastSaved = Long.parseLong(viewParts[index++]);
 		mElapsedTime = Long.parseLong(viewParts[index++]);
@@ -451,6 +497,24 @@ public class Grid {
 		} else {
 			// Cheated was not saved prior to version 3.
 			mCheated = false;
+		}
+		if (viewInformationVersion >= 5) {
+			mUndoLastMoveCount = Integer.parseInt(viewParts[index++]);
+			mclearRedundantPossiblesInSameRowOrColumnCount = Integer
+					.parseInt(viewParts[index++]);
+			mGridGeneratingParameters.mHideOperators = Boolean
+					.parseBoolean(viewParts[index++]);
+			mGridGeneratingParameters.mMaxCageResult = Integer
+					.parseInt(viewParts[index++]);
+			mGridGeneratingParameters.mMaxCageSize = Integer
+					.parseInt(viewParts[index++]);
+		} else {
+			// Cheated was not saved prior to version 3.
+			mUndoLastMoveCount = 0;
+			mclearRedundantPossiblesInSameRowOrColumnCount = 0;
+			mGridGeneratingParameters.mHideOperators = false;
+			mGridGeneratingParameters.mMaxCageResult = 0;
+			mGridGeneratingParameters.mMaxCageSize = 0;
 		}
 
 		return true;
@@ -472,11 +536,11 @@ public class Grid {
 	 * @param active
 	 *            The status of the grid.
 	 */
-	public void create(long gameSeed, int generatorRevisionNumber, int gridSize,
-			ArrayList<GridCell> cells, ArrayList<GridCage> cages, boolean active) {
+	public void create(int gridSize, ArrayList<GridCell> cells,
+			ArrayList<GridCage> cages, boolean active,
+			GridGeneratingParameters gridGeneratingParameters) {
 		clear();
-		this.mGameSeed = gameSeed;
-		this.mGeneratorRevisionNumber = generatorRevisionNumber;
+		this.mGridGeneratingParameters = gridGeneratingParameters;
 		this.mDateGenerated = System.currentTimeMillis();
 		this.mGridSize = gridSize;
 		this.mCells = cells;
@@ -554,5 +618,21 @@ public class Grid {
 
 	public boolean hasPrefShowMaybesAs3x3Grid() {
 		return mPrefShowMaybesAs3x3Grid;
+	}
+
+	public int getUndoCount() {
+		return mUndoLastMoveCount;
+	}
+
+	public int getClearRedundantPossiblesInSameRowOrColumnCount() {
+		return mclearRedundantPossiblesInSameRowOrColumnCount;
+	}
+
+	public GridGeneratingParameters getGridGeneratingParameters() {
+		return mGridGeneratingParameters;
+	}
+
+	public boolean getCheated() {
+		return mCheated;
 	}
 }

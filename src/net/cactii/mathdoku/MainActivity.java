@@ -13,7 +13,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -91,6 +90,12 @@ public class MainActivity extends Activity {
 	public final static String PREF_THEME_DARK = "inverted";
 	public final static String PREF_THEME_NEWSPAPER = "newspaper";
 	public final static String PREF_THEME_DEFAULT = PREF_THEME_NEWSPAPER;
+
+	public final static String PREF_USAGE_LOG_COUNT_GAMES_STARTED = "UsageLogCountGamesStarted";
+	public final static int PREF_USAGE_LOG_COUNT_GAMES_STARTED_DEFAULT = 0;
+
+	public final static String PREF_USAGE_LOG_DISABLED = "UsageLogDisabled";
+	public final static boolean PREF_USAGE_LOG_DISABLED_DEFAULT = false;
 
 	public final static String PREF_WAKE_LOCK = "wakelock";
 	public final static boolean PREF_WAKE_LOCK_DEFAULT = true;
@@ -198,6 +203,7 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.main);
 
 		this.preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
 		this.topLayout = (RelativeLayout) findViewById(R.id.topLayout);
 		this.puzzleGrid = (RelativeLayout) findViewById(R.id.puzzleGrid);
 		this.mGridView = (GridView) findViewById(R.id.gridView);
@@ -344,6 +350,7 @@ public class MainActivity extends Activity {
 		Object object = this.getLastNonConfigurationInstance();
 		if (object != null
 				&& object.getClass() == ConfigurationInstanceState.class) {
+			UsageLog.getInstance(this).logConfigurationChange(this);
 			ConfigurationInstanceState configurationInstanceState = (ConfigurationInstanceState) object;
 
 			// Restore input mode
@@ -370,6 +377,8 @@ public class MainActivity extends Activity {
 	}
 
 	public void onPause() {
+		UsageLog.getInstance().close();
+
 		if (mGrid != null && mGrid.getGridSize() > 3) {
 			GameFile saver = new GameFile(GameFileType.LAST_GAME);
 			if (mTimerTask != null) {
@@ -420,6 +429,8 @@ public class MainActivity extends Activity {
 	}
 
 	public void onResume() {
+		UsageLog.getInstance(this);
+
 		if (this.preferences.getBoolean(PREF_WAKE_LOCK, PREF_WAKE_LOCK_DEFAULT)) {
 			getWindow()
 					.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -573,6 +584,7 @@ public class MainActivity extends Activity {
 
 		switch (item.getItemId()) {
 		case CONTEXT_MENU_CLEAR_CAGE_CELLS:
+			UsageLog.getInstance().logFunction("ContextMenu.ClearCageCells");
 			if (selectedCell == null) {
 				break;
 			}
@@ -583,6 +595,7 @@ public class MainActivity extends Activity {
 			this.mGridView.invalidate();
 			break;
 		case CONTEXT_MENU_USE_CAGE_MAYBES:
+			UsageLog.getInstance().logFunction("ContextMenu.UseCageMaybes");
 			if (selectedCell == null) {
 				break;
 			}
@@ -602,6 +615,7 @@ public class MainActivity extends Activity {
 			this.mGridView.invalidate();
 			break;
 		case CONTEXT_MENU_REVEAL_CELL:
+			UsageLog.getInstance().logFunction("ContextMenu.RevealCell");
 			if (selectedCell == null) {
 				break;
 			}
@@ -628,6 +642,7 @@ public class MainActivity extends Activity {
 			if (selectedGridCage == null) {
 				break;
 			}
+			UsageLog.getInstance().logFunction("ContextMenu.RevealOperator");
 			selectedGridCage.revealOperator();
 			mGridView.invalidate();
 		}
@@ -652,11 +667,13 @@ public class MainActivity extends Activity {
 		case R.id.size9:
 			return prepareStartNewGame(9);
 		case R.id.saveload:
+			UsageLog.getInstance().logFunction("Menu.SaveLoad");
 			Intent i = new Intent(this, GameFileList.class);
 			startActivityForResult(i, 7);
 			return true;
 		case R.id.checkprogress:
 			int textId;
+			UsageLog.getInstance().logFunction("Menu.CheckProgress");
 			if (mGrid.isSolutionValidSoFar())
 				textId = R.string.ProgressOK;
 			else {
@@ -669,10 +686,12 @@ public class MainActivity extends Activity {
 			toast.show();
 			return true;
 		case R.id.options:
+			UsageLog.getInstance().logFunction("Menu.ViewOptions");
 			startActivityForResult(new Intent(MainActivity.this,
 					OptionsActivity.class), 0);
 			return true;
 		case R.id.help:
+			UsageLog.getInstance().logFunction("Menu.ViewHelp.Manual");
 			this.openHelpDialog();
 			return true;
 		case R.id.development_mode_generate_games:
@@ -703,6 +722,26 @@ public class MainActivity extends Activity {
 			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
 				DevelopmentHelper.deleteGamesAndPreferences(this);
 			}
+			return true;
+		case R.id.development_mode_reset_log:
+			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+				// Delete old log
+				UsageLog.getInstance().delete();
+
+				// Reset preferences
+				Editor prefeditor = preferences.edit();
+				prefeditor.putBoolean(PREF_USAGE_LOG_DISABLED,
+						PREF_USAGE_LOG_DISABLED_DEFAULT);
+				prefeditor.putInt(PREF_USAGE_LOG_COUNT_GAMES_STARTED,
+						PREF_USAGE_LOG_COUNT_GAMES_STARTED_DEFAULT);
+				prefeditor.commit();
+
+				// Re-enable usage log
+				UsageLog.getInstance(this);
+			}
+			return true;
+		case R.id.development_mode_send_log:
+			UsageLog.getInstance().askConsentForSendingLog(this);
 			return true;
 		default:
 			return super.onOptionsItemSelected(menuItem);
@@ -816,6 +855,30 @@ public class MainActivity extends Activity {
 	 * the ASync GridGenerator task.
 	 */
 	public void onNewGridReady(final Grid newGrid) {
+		if (mGrid != null) {
+			UsageLog.getInstance().logGrid("Menu.StartNewGame.OldGame", mGrid);
+
+			if (mGrid.moves.size() > 0) {
+				// Increase counter for number of games on which playing has
+				// been started.
+				int countGamesStarted = preferences.getInt(
+						PREF_USAGE_LOG_COUNT_GAMES_STARTED, 0) + 1;
+				Editor prefeditor = preferences.edit();
+				prefeditor.putInt(PREF_USAGE_LOG_COUNT_GAMES_STARTED,
+						countGamesStarted);
+				prefeditor.commit();
+
+				// Check if we are going to ask the user to send feedback
+				// TODO: change to definitive values
+				if (countGamesStarted == 3 || countGamesStarted == 5
+						|| countGamesStarted == 20 || countGamesStarted == 50) {
+					UsageLog.getInstance().askConsentForSendingLog(this);
+
+				}
+			}
+		}
+		UsageLog.getInstance().logGrid("Menu.StartNewGame.NewGame", newGrid);
+
 		// The background task for creating a new grid has been finished. The
 		// new grid will always overwrite the current game without any warning.
 		mGridGeneratorTask = null;
@@ -862,6 +925,8 @@ public class MainActivity extends Activity {
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
+								UsageLog.getInstance().logFunction(
+										"ViewChanges.Manual");
 								MainActivity.this.openChangesDialog();
 							}
 						})
@@ -930,6 +995,8 @@ public class MainActivity extends Activity {
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
+								UsageLog.getInstance().logFunction(
+										"ContextMenu.ClearGrid");
 								MainActivity.this.mGrid.clearUserValues();
 								MainActivity.this.mGridView.invalidate();
 							}
@@ -1040,6 +1107,16 @@ public class MainActivity extends Activity {
 						PREF_ALLOW_BIG_CAGES_DEFAULT);
 			}
 		}
+		if (previousInstalledVersion < 175 && currentVersion >= 175) {
+			if (!preferences.contains(PREF_USAGE_LOG_DISABLED)) {
+				prefeditor.putBoolean(PREF_USAGE_LOG_DISABLED,
+						PREF_USAGE_LOG_DISABLED_DEFAULT);
+			}
+			if (!preferences.contains(PREF_USAGE_LOG_COUNT_GAMES_STARTED)) {
+				prefeditor.putInt(PREF_USAGE_LOG_COUNT_GAMES_STARTED,
+						PREF_USAGE_LOG_COUNT_GAMES_STARTED_DEFAULT);
+			}
+		}
 		prefeditor.putInt(PREF_CURRENT_VERSION, currentVersion);
 		prefeditor.commit();
 
@@ -1047,9 +1124,11 @@ public class MainActivity extends Activity {
 		// otherwise.
 		if (previousInstalledVersion == -1) {
 			// On first install of the game, display the help dialog.
+			UsageLog.getInstance().logFunction("ViewHelp.AfterUpgrade");
 			this.openHelpDialog();
 		} else if (previousInstalledVersion < currentVersion) {
 			// On upgrade of version show changes.
+			UsageLog.getInstance().logFunction("ViewChanges.AfterUpgrade");
 			this.openChangesDialog();
 		}
 
