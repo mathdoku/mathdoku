@@ -2,9 +2,9 @@
 <resources>
 
     <!-- The text for input mode "normal" which is used to enter a definitive value into the selected cell. -->
-    <string name="input_mode_normal">Definitive</string>
+    <string name="input_mode_normal_long">Definitive</string>
 
     <!-- The text for input mode "maybe" which is used to insert/remove a possible value into/from the selected cell. -->
-    <string name="input_mode_maybe">Maybe</string>
+    <string name="input_mode_maybe_long">Maybe</string>
 
 </resources>

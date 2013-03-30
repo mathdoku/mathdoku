@@ -4,6 +4,7 @@ import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.DigitPositionGrid.DigitPositionGridType;
 import net.cactii.mathdoku.GameFile.GameFileType;
 import net.cactii.mathdoku.Painter.GridTheme;
+import net.cactii.mathdoku.TipDialog.TipType;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -1558,8 +1559,8 @@ public class MainActivity extends Activity {
 			// Set text and color for input mode label
 			mInputModeTextView.setTextColor(color);
 			mInputModeTextView.setText(getResources().getString(
-					(inputMode == InputMode.NORMAL ? R.string.input_mode_normal
-							: R.string.input_mode_maybe)));
+					(inputMode == InputMode.NORMAL ? R.string.input_mode_normal_long
+							: R.string.input_mode_maybe_long)));
 
 			// Determine which buttons to show on what positions
 			if (mGrid != null) {
@@ -1614,9 +1615,11 @@ public class MainActivity extends Activity {
 			inputMode = InputMode.NORMAL;
 			break;
 		case NORMAL:
+			new TipDialog(this, TipType.INPUT_MODE_CHANGED).changeToInputMode(InputMode.MAYBE).show();
 			inputMode = InputMode.MAYBE;
 			break;
 		case MAYBE:
+			new TipDialog(this, TipType.INPUT_MODE_CHANGED).changeToInputMode(InputMode.NORMAL).show();
 			inputMode = InputMode.NORMAL;
 			break;
 		}

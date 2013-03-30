@@ -107,7 +107,7 @@
                     android:layout_weight="3"
                     android:lines="1"
                     android:padding="2dp"
-                    android:text="@string/input_mode_normal"
+                    android:text="@string/input_mode_normal_long"
                     android:textSize="@dimen/text_size_default"
                     android:textStyle="bold" />
 

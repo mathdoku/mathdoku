@@ -244,11 +244,13 @@
 
 
     <!-- The text for input mode "normal" which is used to enter a definitive value into the selected cell. -->
-    <string name="input_mode_normal">Mode: definitive value</string>
+    <string name="input_mode_normal_short">definitive</string>
+    <string name="input_mode_normal_long">Mode: definitive value</string>
 
     <!-- The text for input mode "maybe" which is used to insert/remove a possible value into/from the selected cell. -->
-    <string name="input_mode_maybe">Mode: maybe value</string>
-
+    <string name="input_mode_maybe_short">maybe</string>
+    <string name="input_mode_maybe_long">Mode: maybe value</string>
+    
     <!-- The text on the clear button in the main UI. -->
     <string name="main_ui_clear">Clear</string>
 
@@ -273,7 +275,15 @@
     
     <!-- Title of dialog used to choose the appropriate action for sending the usage log. -->
     <string name="usage_log_choose_action_title">Send MathDoku Log</string>
+
+    <!-- TIP DIALOGS - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     
+    <!-- Label for check box "Do not show again" in the tip dialog. -->
+    <string name="dialog_tip_do_not_show_again">Do not show again</string>
+    
+    <!--  Title, text, drawable for tip "Input mode changed" -->
+    <string name="dialog_tip_input_mode_changed_title">Input mode changed</string>
+    <string name="dialog_tip_input_mode_changed_text">You have just changed the input mode from %1$s to %2$s.  The input mode can be changed to normal by tapping the selected cell once more. Or you can tap the text Mode: maybe above the digit buttons.</string>
     
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

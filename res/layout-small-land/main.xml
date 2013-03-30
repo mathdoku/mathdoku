@@ -83,7 +83,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
                     android:lines="1"
-                    android:text="@string/input_mode_normal"
+                    android:text="@string/input_mode_normal_long"
                     android:textSize="@dimen/text_size_default"
                     android:textStyle="bold" />
             </TableRow>
