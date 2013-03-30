@@ -42,6 +42,9 @@ public class GridView extends View implements OnTouchListener {
 
 	public TextView animText;
 
+	// Visible window rectangle
+	private Rect mDisplayFrame;
+
 	public GridView(Context context) {
 		super(context);
 		initGridView();
@@ -61,6 +64,11 @@ public class GridView extends View implements OnTouchListener {
 		mGridViewSize = 0;
 		mGridPainter = Painter.getInstance(this.getContext()).mGridPainter;
 
+		// Initialize the display frame for the grid view.
+		mDisplayFrame = new Rect();
+		updateWindowVisibleDisplayFrame();
+
+		// Set listener
 		this.setOnTouchListener((OnTouchListener) this);
 	}
 
@@ -284,7 +292,8 @@ public class GridView extends View implements OnTouchListener {
 			Painter.getInstance(this.getContext()).setCellSize(mGridCellSize);
 			for (GridCell cell : grid.mCells) {
 				cell.checkWithOtherValuesInRowAndColumn();
-				cell.draw(canvas, gridBorderWidth, inputMode, mDigitPositionGrid);
+				cell.draw(canvas, gridBorderWidth, inputMode,
+						mDigitPositionGrid);
 			}
 		}
 	}
@@ -301,28 +310,9 @@ public class GridView extends View implements OnTouchListener {
 		int measuredWidth = measure(widthMeasureSpec);
 		int measuredHeight = measure(heightMeasureSpec);
 
-		// Determine whether adjustments are needed due to low aspect ratio
-		// height/width. Small screens have specific layouts which do no need
-		// further adjustments.
-		if (!getResources().getString(R.string.dimension).startsWith("small")) {
-			Rect rect = new Rect();
-			getWindowVisibleDisplayFrame(rect);
-			if (!rect.isEmpty()) {
-
-				// Get orientation
-				float scaleFactor = (float) 0.67;
-				if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-					// In landscape mode the grid view should be resized in case
-					// it
-					// size is bigger than 2/3 of the total width.
-					measuredWidth = (int) Math.min(measuredWidth, scaleFactor
-							* (float) rect.width());
-				} else {
-					measuredHeight = (int) Math.min(measuredHeight, scaleFactor
-							* (float) rect.height());
-				}
-			}
-		}
+		// Correct width/height for low aspect ratio screens.
+		measuredWidth = Math.min(measuredWidth, mDisplayFrame.width());
+		measuredHeight = Math.min(measuredHeight, mDisplayFrame.height());
 
 		// Get the maximum space available for the grid. As it is a square we
 		// need the minimum of width and height.
@@ -376,8 +366,37 @@ public class GridView extends View implements OnTouchListener {
 	 * @param digitPositionGrid
 	 *            The digit position grid type to be set.
 	 */
-	public void setDigitPositionGrid(
-			DigitPositionGrid digitPositionGrid) {
+	public void setDigitPositionGrid(DigitPositionGrid digitPositionGrid) {
 		mDigitPositionGrid = digitPositionGrid;
+	}
+
+	/**
+	 * Determine the maximum display frame for the grid view.
+	 */
+	public void updateWindowVisibleDisplayFrame() {
+		// Update display frame to size on entire screen in current orientation.
+		getWindowVisibleDisplayFrame(mDisplayFrame);
+
+		// Determine whether adjustments are needed due to low aspect ratio
+		// height/width. Small screens have specific layouts which do no need
+		// further adjustments.
+		if (!getResources().getString(R.string.dimension).startsWith("small")) {
+			if (!mDisplayFrame.isEmpty()) {
+				// Get orientation
+				float scaleFactor = (float) 0.67;
+				float newWidth = mDisplayFrame.width();
+				float newHeight = mDisplayFrame.height();
+				if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+					// In landscape mode the grid view should be resized in case
+					// its size is bigger than 2/3 of the total width.
+					newWidth *= scaleFactor;
+				} else {
+					// In portrait mode the grid view should be resized in case
+					// its size is bigger than 2/3 of the total height.
+					newHeight *= scaleFactor;
+				}
+				mDisplayFrame.set(0, 0, (int) newWidth, (int) newHeight);
+			}
+		}
 	}
 }
