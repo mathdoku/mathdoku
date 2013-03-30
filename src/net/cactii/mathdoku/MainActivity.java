@@ -1367,6 +1367,8 @@ public class MainActivity extends Activity {
 	 * @see android.app.Activity#onRetainNonConfigurationInstance()
 	 */
 	public Object onRetainNonConfigurationInstance() {
+		stopTimer();
+		
 		if (mGridGeneratorTask != null) {
 			// A new grid is generated in the background. Detach the background
 			// task from this activity. It will keep on running until finished.
