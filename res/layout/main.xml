@@ -100,7 +100,7 @@
 
                 <!-- Keep all properties that control height for elements timerText and inputModeText in line with each other. -->
 
-                <TextView
+                <Button
                     android:id="@+id/inputModeText"
                     android:layout_width="0dp"
                     android:layout_height="fill_parent"

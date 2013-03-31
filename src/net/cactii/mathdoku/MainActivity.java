@@ -126,7 +126,7 @@ public class MainActivity extends Activity {
 
 	// The input mode which is currently active
 	private InputMode mInputMode;
-	TextView mInputModeTextView;
+	Button mInputModeTextView;
 
 	TextView solvedText;
 	TextView pressMenu;
@@ -216,7 +216,7 @@ public class MainActivity extends Activity {
 		this.mGameSeedText = (TextView) findViewById(R.id.gameSeedText);
 		this.mTimerText = (TextView) findViewById(R.id.timerText);
 
-		this.mInputModeTextView = (TextView) findViewById(R.id.inputModeText);
+		this.mInputModeTextView = (Button) findViewById(R.id.inputModeText);
 		mDigitPosition[0] = (Button) findViewById(R.id.digitPosition1);
 		mDigitPosition[1] = (Button) findViewById(R.id.digitPosition2);
 		mDigitPosition[2] = (Button) findViewById(R.id.digitPosition3);
@@ -326,17 +326,12 @@ public class MainActivity extends Activity {
 				}
 			}
 		});
-		this.mInputModeTextView.setOnTouchListener(new OnTouchListener() {
+		this.mInputModeTextView.setOnClickListener(new OnClickListener() {
 
 			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				if (event.getAction() == MotionEvent.ACTION_DOWN) {
-					// Play sound
+			public void onClick(View v) {
 					v.playSoundEffect(SoundEffectConstants.CLICK);
-
 					toggleInputMode();
-				}
-				return false;
 			}
 
 		});

@@ -244,12 +244,12 @@
 
 
     <!-- The text for input mode "normal" which is used to enter a definitive value into the selected cell. -->
-    <string name="input_mode_normal_short">definitive</string>
-    <string name="input_mode_normal_long">Mode: definitive value</string>
+    <string name="input_mode_normal_short">normal</string>
+    <string name="input_mode_normal_long">Normal mode</string>
 
     <!-- The text for input mode "maybe" which is used to insert/remove a possible value into/from the selected cell. -->
     <string name="input_mode_maybe_short">maybe</string>
-    <string name="input_mode_maybe_long">Mode: maybe value</string>
+    <string name="input_mode_maybe_long">\"Maybe\" mode</string>
     
     <!-- The text on the clear button in the main UI. -->
     <string name="main_ui_clear">Clear</string>
