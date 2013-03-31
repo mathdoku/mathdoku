@@ -570,28 +570,6 @@ public class GridCage {
 	}
 
 	/**
-	 * Create a string representation of all variables in the cage which will
-	 * never change. This string is used to create a hashvalue which serves as a
-	 * signature for the grid.
-	 * 
-	 * @return A string representation of the cage.
-	 */
-	public String getSignatureString() {
-		String signatureString = mId + GameFile.FIELD_DELIMITER_LEVEL1
-				+ mAction + GameFile.FIELD_DELIMITER_LEVEL1 + mResult
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mOperator
-				+ GameFile.FIELD_DELIMITER_LEVEL1;
-		for (GridCell cell : mCells) {
-			signatureString += cell.getCellNumber()
-					+ GameFile.FIELD_DELIMITER_LEVEL1
-					+ cell.getCorrectValue()
-					+ GameFile.FIELD_DELIMITER_LEVEL1;
-		}
-
-		return signatureString;
-	}
-
-	/**
 	 * Read cage information from or a storage string which was created with @
 	 * GridCage#toStorageString()} before.
 	 * 

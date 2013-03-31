@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import net.cactii.mathdoku.GridGenerating.GridGeneratingParameters;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 public class Grid {
 	@SuppressWarnings("unused")
@@ -423,24 +424,26 @@ public class Grid {
 	}
 
 	/**
-	 * Creates a (hashed) signature of this grid. The signature is based on
-	 * several identifying variables of the grid, cages and cells. Signatures
-	 * have a big change of being unique but this is not guaranteed.
+	 * Creates a signature of this grid. The signature is unique for the grid regardless of the version of the grid generator used.
 	 * 
-	 * @return A string representation of the grid.
+	 * @return A unique string representation of the grid.
 	 */
-	public int getSignatureString() {
-		String signatureString = mGridGeneratingParameters.mGameSeed
-				+ GameFile.FIELD_DELIMITER_LEVEL1
-				+ mGridGeneratingParameters.mGeneratorRevisionNumber
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mGridSize
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mDateGenerated;
-
-		for (GridCage cage : mCages) {
-			signatureString += cage.getSignatureString();
+	public String getSignatureString() {
+		StringBuilder signatureString = new StringBuilder();
+		// First append all numbers of the entire grid
+		for (GridCell cell : mCells) {
+			signatureString.append(cell.getCorrectValue());
 		}
-
-		return signatureString.hashCode();
+		signatureString.append("|");
+		// Followed by all cage-id per cell
+		for (GridCell cell : mCells) {
+			signatureString.append(cell.getCageId());
+		}
+		// Followed by cages
+		for (GridCage cage : mCages) {
+			signatureString.append("|" + cage.mId + ":" + cage.mResult + ":" + cage.mAction);
+		}
+		return signatureString.toString();
 	}
 
 	/**

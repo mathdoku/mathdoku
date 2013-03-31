@@ -45,7 +45,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	private ProgressDialog mProgressDialog;
 
 	// Conversion results
-	private ArrayList<Integer> mGridSignatures;
+	private ArrayList<String> mGridSignatures;
 	private int mTotalGrids;
 	
 	/**
@@ -126,7 +126,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 		}
 		
 		// Initialize conversion results.
-		mGridSignatures = new ArrayList<Integer>();
+		mGridSignatures = new ArrayList<String>();
 		mTotalGrids = 0;
 	}
 
@@ -183,7 +183,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 					
 					// Get signature for grid. Update the number of occurrences for this signature.
 					mTotalGrids++;
-					int signature = grid.getSignatureString();
+					String signature = grid.getSignatureString();
 					if (!mGridSignatures.contains(signature)) {
 						// New signature found
 						mGridSignatures.add(signature);
