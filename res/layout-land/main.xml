@@ -74,14 +74,15 @@
                 android:layout_weight="1" >
 
                 <!-- Keep all properties that control height for elements timerText and inputModeText in line with each other. -->
+                <!-- Note: the weight of element inputModeText will be set programmatically to the number of digit columns used. -->
 
                 <Button
                     android:id="@+id/inputModeText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right"
+                    android:layout_gravity="bottom"
                     android:text="@string/input_mode_normal_long"
-                    android:textSize="@dimen/text_size_default"
+                    android:textSize="@dimen/controls_text_size_default"
                     android:lines="1"
                     android:textStyle="bold" />
             </TableRow>
@@ -186,7 +187,7 @@
                     android:layout_height="fill_parent"
                     android:layout_weight="1.5"
                     android:text="@string/main_ui_clear"
-                    android:textSize="@dimen/text_size_default"
+                    android:textSize="@dimen/controls_text_size_default"
                     android:textStyle="bold" />
 
                 <Button
@@ -195,7 +196,7 @@
                     android:layout_height="fill_parent"
                     android:layout_weight="1.5"
                     android:text="@string/main_ui_undo"
-                    android:textSize="@dimen/text_size_default"
+                    android:textSize="@dimen/controls_text_size_default"
                     android:textStyle="bold" />
             </TableRow>
         </TableLayout>

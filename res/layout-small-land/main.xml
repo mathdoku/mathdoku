@@ -42,15 +42,15 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/puzzleGrid"
-        android:layout_margin="5dp" >
+        android:layout_margin="5dp"
+        android:layout_toRightOf="@+id/puzzleGrid" >
 
         <TextView
             android:id="@+id/timerText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
             android:background="#00000000"
             android:lines="1"
             android:text="99h99m99s"
@@ -64,19 +64,21 @@
             android:id="@+id/controls"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_below="@+id/timerText"
             android:layout_above="@+id/gameSeedLabel"
             android:layout_alignParentLeft="true"
+            android:layout_below="@+id/timerText"
             android:layout_marginRight="5dp"
             android:visibility="gone"
             android:weightSum="5" >
 
             <TableRow
                 android:id="@+id/controlsHeadersRow"
-                android:gravity="center_horizontal"
-                android:layout_weight="1" >
+                android:layout_weight="1"
+                android:gravity="center_horizontal" >
 
                 <!-- Keep all properties that control height for elements timerText and inputModeText in line with each other. -->
+                <!-- Note: the weight of element inputModeText will be set programmatically to the number of digit columns used. -->
+                <!-- Note: textSize is not set explicitly for small screens. Let android determin optimal size. -->
 
                 <Button
                     android:id="@+id/inputModeText"
@@ -85,7 +87,6 @@
                     android:layout_gravity="right"
                     android:lines="1"
                     android:text="@string/input_mode_normal_long"
-                    android:textSize="@dimen/text_size_default"
                     android:textStyle="bold" />
             </TableRow>
 
@@ -98,7 +99,6 @@
                     android:layout_width="0dp"
                     android:layout_height="fill_parent"
                     android:layout_weight="1"
-                    android:textSize="@dimen/controls_text_size_digits"
                     android:textStyle="bold" />
 
                 <Button
@@ -106,7 +106,6 @@
                     android:layout_width="0dp"
                     android:layout_height="fill_parent"
                     android:layout_weight="1"
-                    android:textSize="@dimen/controls_text_size_digits"
                     android:textStyle="bold" />
 
                 <Button
@@ -114,7 +113,6 @@
                     android:layout_width="0dp"
                     android:layout_height="fill_parent"
                     android:layout_weight="1"
-                    android:textSize="@dimen/controls_text_size_digits"
                     android:textStyle="bold" />
             </TableRow>
 
@@ -127,7 +125,6 @@
                     android:layout_width="0dp"
                     android:layout_height="fill_parent"
                     android:layout_weight="1"
-                    android:textSize="@dimen/controls_text_size_digits"
                     android:textStyle="bold" />
 
                 <Button
@@ -135,7 +132,6 @@
                     android:layout_width="0dp"
                     android:layout_height="fill_parent"
                     android:layout_weight="1"
-                    android:textSize="@dimen/controls_text_size_digits"
                     android:textStyle="bold" />
 
                 <Button
@@ -143,7 +139,6 @@
                     android:layout_width="0dp"
                     android:layout_height="fill_parent"
                     android:layout_weight="1"
-                    android:textSize="@dimen/controls_text_size_digits"
                     android:textStyle="bold" />
             </TableRow>
 
@@ -158,7 +153,6 @@
                     android:layout_width="0dp"
                     android:layout_height="fill_parent"
                     android:layout_weight="1"
-                    android:textSize="@dimen/controls_text_size_digits"
                     android:textStyle="bold" />
 
                 <Button
@@ -166,7 +160,6 @@
                     android:layout_width="0dp"
                     android:layout_height="fill_parent"
                     android:layout_weight="1"
-                    android:textSize="@dimen/controls_text_size_digits"
                     android:textStyle="bold" />
 
                 <Button
@@ -174,7 +167,6 @@
                     android:layout_width="0dp"
                     android:layout_height="fill_parent"
                     android:layout_weight="1"
-                    android:textSize="@dimen/controls_text_size_digits"
                     android:textStyle="bold" />
             </TableRow>
 
@@ -190,7 +182,6 @@
                     android:layout_weight="1.5"
                     android:lines="1"
                     android:text="@string/main_ui_clear"
-                    android:textSize="@dimen/text_size_default"
                     android:textStyle="bold" />
             </TableRow>
 
@@ -205,7 +196,6 @@
                     android:layout_weight="1.5"
                     android:lines="1"
                     android:text="@string/main_ui_undo"
-                    android:textSize="@dimen/text_size_default"
                     android:textStyle="bold" />
             </TableRow>
         </TableLayout>

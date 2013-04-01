@@ -22,13 +22,11 @@
 
     <!-- CONTROLS AND SUB ELEMENTS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-
-    <!-- The number of rows and columns used for the digit buttons inside element controls -->
-    <integer name="controls_digits_rows">3</integer>
-    <integer name="controls_digits_cols">3</integer>
-
+    <!-- The text size used for text on non-digit buttons. -->
+    <dimen name="controls_text_size_default">14sp</dimen>
+    
     <!-- The text size used for the digit buttons only. -->
-    <dimen name="controls_text_size_digits">20sp</dimen>
+    <dimen name="controls_text_size_digits">18sp</dimen>
 
     <!-- DIALOGS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

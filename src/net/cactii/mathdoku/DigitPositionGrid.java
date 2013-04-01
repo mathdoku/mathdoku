@@ -17,12 +17,16 @@ public class DigitPositionGrid {
 
 	// Matrices holding information about the visibility and the content of the
 	// button positions available.
-	private int[][] visibility;
-	private int[][] value;
+	private int[][] mVisibility;
+	private int[][] mValue;
 
 	// Dimension of matrices
-	private int maxRows;
-	private int maxCols;
+	private int mMaxRows;
+	private int mMaxCols;
+	
+	// The number of rows and columns actually used
+	private int mRowsUsed;
+	private int mColsUsed;
 
 	/**
 	 * Creates a new instance of {@link DigitPositionGrid}.
@@ -36,15 +40,10 @@ public class DigitPositionGrid {
 			int maxDigit) {
 		mDigitPositionGridType = digitPositionGridType;
 
-		// The number of rows and cols that will actually used in the grid
-		// layout.
-		int maxRowsUsed;
-		int maxColsUsed;
-
 		if (mDigitPositionGridType == DigitPositionGridType.GRID_2X5) {
 			// Dimensions of grid in layout xml
-			maxRows = 2;
-			maxCols = 5;
+			mMaxRows = 2;
+			mMaxCols = 5;
 
 			// Buttons positions have to be arranged in a grid of 2
 			// rows with maximum of 5 positions each. Depending on the
@@ -55,11 +54,11 @@ public class DigitPositionGrid {
 			// size 7: 2 rows, first row 4 buttons, second row 3 buttons
 			// size 8: 2 rows, 4 buttons
 			// size 9: 2 rows, first row 5 buttons, second row 4 buttons
-			maxRowsUsed = 2;
+			mRowsUsed = 2;
 		} else {
 			// Dimensions of grid in layout xml
-			maxRows = 3;
-			maxCols = 3;
+			mMaxRows = 3;
+			mMaxCols = 3;
 
 			// Buttons positions have to be arranged in a grid of 2 or 3
 			// rows with maximum of 3 positions each. Depending on the
@@ -70,29 +69,29 @@ public class DigitPositionGrid {
 			// size 7: 3 rows, 2 rows of 3 buttons, last row 1 button
 			// size 8: 3 rows, 2 rows of 3 buttons, last row 2 buttons
 			// size 9: 3 rows, 2 rows of 3 buttons, last row 3 buttons
-			maxRowsUsed = (maxDigit <= 6 ? 2 : 3);
+			mRowsUsed = (maxDigit <= 6 ? 2 : 3);
 		}
-		visibility = new int[maxRows][maxCols];
-		value = new int[maxRows][maxCols];
-		maxColsUsed = (int) Math.ceil((double) maxDigit / (double) maxRowsUsed);
+		mVisibility = new int[mMaxRows][mMaxCols];
+		mValue = new int[mMaxRows][mMaxCols];
+		mColsUsed = (int) Math.ceil((double) maxDigit / (double) mRowsUsed);
 
 		// Fill the matrices
 		int digit = 1;
-		for (int row = 0; row < maxRows; row++) {
-			for (int col = 0; col < maxCols; col++) {
-				if (row >= maxRowsUsed || col >= maxColsUsed) {
+		for (int row = 0; row < mMaxRows; row++) {
+			for (int col = 0; col < mMaxCols; col++) {
+				if (row >= mRowsUsed || col >= mColsUsed) {
 					// This entire row or column will not be used.
-					visibility[row][col] = View.GONE;
-					value[row][col] = -1;
+					mVisibility[row][col] = View.GONE;
+					mValue[row][col] = -1;
 				} else if (digit <= maxDigit) {
 					// This position will be used to store a button.
-					visibility[row][col] = View.VISIBLE;
-					value[row][col] = digit++;
+					mVisibility[row][col] = View.VISIBLE;
+					mValue[row][col] = digit++;
 				} else {
 					// This position will not be user for a button but it is in
 					// a column in which a button is placed in another row.
-					visibility[row][col] = View.INVISIBLE;
-					value[row][col] = -1;
+					mVisibility[row][col] = View.INVISIBLE;
+					mValue[row][col] = -1;
 				}
 			}
 		}
@@ -106,7 +105,7 @@ public class DigitPositionGrid {
 	 * @return The visibility for the index.
 	 */
 	public int getVisibility(int index) {
-		return visibility[indexToRow(index)][indexToCol(index)];
+		return mVisibility[indexToRow(index)][indexToCol(index)];
 	}
 
 	/**
@@ -117,7 +116,7 @@ public class DigitPositionGrid {
 	 * @return The value at the index.
 	 */
 	public int getValue(int index) {
-		return value[indexToRow(index)][indexToCol(index)];
+		return mValue[indexToRow(index)][indexToCol(index)];
 	}
 
 	/**
@@ -128,7 +127,7 @@ public class DigitPositionGrid {
 	 * @return The row corresponding with the index.
 	 */
 	public int indexToRow(int index) {
-		return (index / maxCols);
+		return (index / mMaxCols);
 	}
 
 	/**
@@ -139,7 +138,7 @@ public class DigitPositionGrid {
 	 * @return The column corresponding with the index.
 	 */
 	public int indexToCol(int index) {
-		return (index - (indexToRow(index) * maxCols));
+		return (index - (indexToRow(index) * mMaxCols));
 	}
 
 	/**
@@ -150,9 +149,9 @@ public class DigitPositionGrid {
 	 * @return The row on which the digit is used.
 	 */
 	public int getRow(int digit) {
-		for (int row = 0; row < maxRows; row++) {
-			for (int col = 0; col < maxCols; col++) {
-				if (value[row][col] == digit) {
+		for (int row = 0; row < mMaxRows; row++) {
+			for (int col = 0; col < mMaxCols; col++) {
+				if (mValue[row][col] == digit) {
 					return row;
 				}
 			}
@@ -168,9 +167,9 @@ public class DigitPositionGrid {
 	 * @return The column in which the digit is used.
 	 */
 	public int getCol(int digit) {
-		for (int row = 0; row < maxRows; row++) {
-			for (int col = 0; col < maxCols; col++) {
-				if (value[row][col] == digit) {
+		for (int row = 0; row < mMaxRows; row++) {
+			for (int col = 0; col < mMaxCols; col++) {
+				if (mValue[row][col] == digit) {
 					return col;
 				}
 			}
@@ -185,5 +184,14 @@ public class DigitPositionGrid {
 	 */
 	public boolean isGrid2x5() {
 		return (mDigitPositionGridType == DigitPositionGridType.GRID_2X5);
+	}
+	
+	/**
+	 * Count the number of columns with at least one visible digit.
+	 * 
+	 * @return The number of of columns with at least one visible digit.
+	 */
+	public int countVisibleDigitColumns() {
+		return mColsUsed;
 	}
 }

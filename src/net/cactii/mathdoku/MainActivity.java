@@ -41,6 +41,7 @@ import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -330,8 +331,8 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-					v.playSoundEffect(SoundEffectConstants.CLICK);
-					toggleInputMode();
+				v.playSoundEffect(SoundEffectConstants.CLICK);
+				toggleInputMode();
 			}
 
 		});
@@ -1361,7 +1362,7 @@ public class MainActivity extends Activity {
 	 */
 	public Object onRetainNonConfigurationInstance() {
 		stopTimer();
-		
+
 		if (mGridGeneratorTask != null) {
 			// A new grid is generated in the background. Detach the background
 			// task from this activity. It will keep on running until finished.
@@ -1550,9 +1551,11 @@ public class MainActivity extends Activity {
 
 			// Set text and color for input mode label
 			mInputModeTextView.setTextColor(color);
-			mInputModeTextView.setText(getResources().getString(
-					(inputMode == InputMode.NORMAL ? R.string.input_mode_normal_long
-							: R.string.input_mode_maybe_long)));
+			mInputModeTextView
+					.setText(getResources()
+							.getString(
+									(inputMode == InputMode.NORMAL ? R.string.input_mode_normal_long
+											: R.string.input_mode_maybe_long)));
 
 			// Determine which buttons to show on what positions
 			if (mGrid != null) {
@@ -1585,6 +1588,14 @@ public class MainActivity extends Activity {
 					}
 				}
 
+				// The weight of the input mode has to be aligned with the
+				// number of columns containing digit buttons.
+				TableRow.LayoutParams layoutParams = (TableRow.LayoutParams) mInputModeTextView
+						.getLayoutParams();
+				layoutParams.weight = digitPositionGrid
+						.countVisibleDigitColumns();
+				mInputModeTextView.setLayoutParams(layoutParams);
+
 				// Store mapping in the grid view so it can be reused when
 				// drawing the cells.
 				mGridView.setDigitPositionGrid(digitPositionGrid);
@@ -1607,11 +1618,13 @@ public class MainActivity extends Activity {
 			inputMode = InputMode.NORMAL;
 			break;
 		case NORMAL:
-			new TipDialog(this, TipType.INPUT_MODE_CHANGED).changeToInputMode(InputMode.MAYBE).show();
+			new TipDialog(this, TipType.INPUT_MODE_CHANGED).changeToInputMode(
+					InputMode.MAYBE).show();
 			inputMode = InputMode.MAYBE;
 			break;
 		case MAYBE:
-			new TipDialog(this, TipType.INPUT_MODE_CHANGED).changeToInputMode(InputMode.NORMAL).show();
+			new TipDialog(this, TipType.INPUT_MODE_CHANGED).changeToInputMode(
+					InputMode.NORMAL).show();
 			inputMode = InputMode.NORMAL;
 			break;
 		}

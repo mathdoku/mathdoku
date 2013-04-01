@@ -383,17 +383,18 @@ public class GridView extends View implements OnTouchListener {
 		if (!getResources().getString(R.string.dimension).startsWith("small")) {
 			if (!mDisplayFrame.isEmpty()) {
 				// Get orientation
-				float scaleFactor = (float) 0.67;
 				float newWidth = mDisplayFrame.width();
 				float newHeight = mDisplayFrame.height();
 				if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
 					// In landscape mode the grid view should be resized in case
-					// its size is bigger than 2/3 of the total width.
-					newWidth *= scaleFactor;
+					// its size is bigger than 67% of the total width. Optimal
+					// scaling factor has been determined based on a Nexus7 display.
+					newWidth *= (float) 0.67;
 				} else {
 					// In portrait mode the grid view should be resized in case
-					// its size is bigger than 2/3 of the total height.
-					newHeight *= scaleFactor;
+					// its size is bigger than 60% of the total height. Optimal
+					// scaling factor has been determined based on a Nexus7 display.
+					newHeight *= (float) 0.6;
 				}
 				mDisplayFrame.set(0, 0, (int) newWidth, (int) newHeight);
 			}
