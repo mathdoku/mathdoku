@@ -38,7 +38,7 @@
 
     <!-- The title and body describing the goal of the game. -->
     <string name="dialog_help_goal_title">Doel</string>
-    <string name="dialog_help_goal_body">Vul in elke rij en in elke kolom de getallen 1 tot en met de puzzelgrootte in.\n\nElk getal wordt precies eenmaal gebruikt in elke rij en kolom.\n\nDe dikke lijnen geven de \'groepen\' weer. Elke groep bevat een rekenkundige puzzel die opgelost moet worden met de getallen in de groep. Bijv. \'5+\' betekent dat alle getallen in de groep optellen tot 5. De volgorde waarin de getallen worden gebruikt is niet relevant.\n\nEen getal kan meerdere keren binnen een groep worden gebruikt zolang het getal nog steeds maar eenmal voor komt in elke rij of kolom.</string>
+    <string name="dialog_help_goal_body">Vul in elke rij en in elke kolom de getallen 1 tot en met de puzzelgrootte in.\n\nElk getal wordt precies eenmaal gebruikt in elke rij en kolom.\n\nDe dikke lijnen geven de \'groepen\' weer. Elke groep bevat een rekenkundige puzzel die opgelost moet worden met de getallen in de groep. Bijv. \'5+\' betekent dat alle getallen in de groep optellen tot 5. De volgorde waarin de getallen worden gebruikt is niet relevant.\n\nEen getal kan meerdere keren binnen een groep worden gebruikt zolang het getal nog steeds maar eenmaal voor komt in elke rij of kolom.</string>
 
     <!-- The title and body describing how to play the game. -->
     <string name="dialog_help_how_to_play_title">Hoe te spelen?</string>
@@ -154,7 +154,7 @@
 
     <!-- The title and summary of the "bad maths" option. This option highlights cells with digits already in the row or column. -->
     <string name="option_mark_duplicates_title">Markeer duplicaten</string>
-    <string name="option_mark_duplicates_summary">Markeer cellen met cijfers die al in de rij of in de colom staan</string>
+    <string name="option_mark_duplicates_summary">Markeer cellen met cijfers die al in de rij of in de kolom staan</string>
 
     <!-- The title and summary of the "redundant possibles" option. This option clears possibles values from cells in the same row or columns as the selected cell after setting a user value. -->
     <string name="option_clear_redundant_possibles_title">Verwijder overbodige mogelijke waarden</string>
@@ -179,8 +179,8 @@
     <string name="option_theme_summary">Thema voor het puzzelbord</string>
 
     <!-- The title and summary of the "maybe in grid" option. This option controls whether maybe numbers are displayed in 3x3 grid or straight line. -->
-    <string name="option_maybe_layout_title">Mogelijk in raster</string>
-    <string name="option_maybe_layout_summary">Toon mogelijk getallen in een raster</string>
+    <string name="option_maybe_layout_title">Mogelijken in raster</string>
+    <string name="option_maybe_layout_summary">Toon mogelijke getallen in een raster</string>
 
     <!-- The title and summary of the "hide selector" option. This option auto-shows the digit buttons when the player selects a cell, and auto-hides those buttons when the player deselects a cell. -->
     <string name="option_hide_selector_title">Verberg cijfer knoppen</string>
