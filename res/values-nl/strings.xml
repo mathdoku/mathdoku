@@ -21,8 +21,6 @@
     <string name="dialog_general_button_close">Sluit</string>
 
     <!-- DIALOG CONVERTING SAVED GAMES - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
-
     <!-- The title and message for the dialog displayed on the screen while upgrading to new version and saved games have to be converted. -->
     <string name="dialog_converting_saved_games_title">Bijwerken nieuwe versie</string>
     <string name="dialog_converting_saved_games_message">Voor deze nieuwe versie van MathDoku worden de opgeslagen spelen eenmalig omgezet. Een ogenblik geduld a.u.b.</string>
@@ -201,12 +199,6 @@
     <string name="option_sound_effects_title">Geluidseffecten</string>
     <string name="option_sound_effects_summary">Zet de geluidseffecten aan</string>
 
-    <!-- The title, message and buttons confirmation message that shows up when the clear grid context menu item is selected, plus the associated title and button labels. -->
-    <string name="dialog_clear_grid_confirmation_title">Leeg alle cellen?</string>
-    <string name="dialog_clear_grid_confirmation_message">Weet je zeker dat je alle cellen wilt legen?</string>
-    <string name="dialog_clear_grid_confirmation_negative_button">Nee, laat maar</string>
-    <string name="dialog_clear_grid_confirmation_positive_button">Ja, begin opnieuw</string>
-
     <!-- DIALOG THEME - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -238,13 +230,20 @@
     <!-- The context menu to show the completed grid. -->
     <string name="context_menu_show_solution">Toon oplossing</string>
 
+    <!-- The title, message and buttons confirmation message that shows up when the clear grid context menu item is selected, plus the associated title and button labels. -->
+    <string name="dialog_clear_grid_confirmation_title">Leeg alle cellen?</string>
+    <string name="dialog_clear_grid_confirmation_message">Weet je zeker dat je alle cellen wilt legen?</string>
+    <string name="dialog_clear_grid_confirmation_negative_button">Nee, laat maar</string>
+    <string name="dialog_clear_grid_confirmation_positive_button">Ja, begin opnieuw</string>
+
     <!-- CONTROLS FOR PUZZLE SOLVING  - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-
     <!-- The text for input mode "normal" which is used to enter a definitive value into the selected cell. -->
+    <string name="input_mode_normal_short">definitief</string>
     <string name="input_mode_normal_long">Modus: definitieve waarde</string>
 
     <!-- The text for input mode "maybe" which is used to insert/remove a possible value into/from the selected cell. -->
+    <string name="input_mode_maybe_short">mogelijk</string>
     <string name="input_mode_maybe_long">Modus: mogelijke waarde</string>
 
     <!-- The text on the clear button in the main UI. -->
