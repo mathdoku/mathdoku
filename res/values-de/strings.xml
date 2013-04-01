@@ -260,7 +260,7 @@
     <!-- Dialog for consent on sending usage log -->
     <string name="dialog_usagelog_title">MathDoku-Entwicklung unterstützen</string>
     <!-- TODO --><string name="dialog_usagelog_body_1">Lieber MathDoku-Spieler,\n\nwir haben Daten gesammelt, wie Sie MathDoku verwenden. Diese Daten enthalten keine persönlichen Informationen. Wir wären sehr dankbar, wenn Sie uns diese Daten senden würden. Wir werden sie zur Weiterentwicklung von MathDoku verwenden.\n\nWenn Sie nicht zustimmen, wird das erstellte Logfile gelöscht und es werden keine weiteren Informationen gesammelt.</string>
-    <!-- TODO --><string name="dialog_usagelog_body_1"></string>
+    <!-- TODO --><string name="dialog_usagelog_body_2"></string>
     <string name="dialog_usagelog_negative_button">Ich stimme nicht zu.</string>
     <string name="dialog_usagelog_positive_button">Ich stimme zu.</string>
     
