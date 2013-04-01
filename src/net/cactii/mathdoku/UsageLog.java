@@ -35,6 +35,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 /**
  * Simple logging of usage of functionality. Log data will be sent via email
@@ -44,7 +45,7 @@ import android.widget.EditText;
  * INFORMATION MAT BE GATHERED AND STORED INTO THE LOG FILES.
  */
 @TargetApi(Build.VERSION_CODES.DONUT)
-//No harm can be done in case other apps can read the log file
+// No harm can be done in case other apps can read the log file
 @SuppressLint("WorldReadableFiles")
 public class UsageLog {
 	public final static String TAG = "MathDoku.UsageLogging";
@@ -493,11 +494,20 @@ public class UsageLog {
 			// No email client available anymore.
 			return;
 		}
+		
+		// Insert link into the dialog
+		LayoutInflater inflater = LayoutInflater.from(mainActivity);
+		View usagelogView = inflater.inflate(R.layout.usagelog_dialog, null);
+		TextView textView = (TextView) usagelogView
+				.findViewById(R.id.dialog_share_log_link);
+		textView.setText(MainActivity.PROJECT_HOME
+										+ "wiki/UsageLogging");
 
+		// Build dialog
 		new AlertDialog.Builder(mainActivity)
-				.setTitle(R.string.dialog_share_log_title)
-				.setMessage(R.string.dialog_share_log_body)
-				.setNegativeButton(R.string.dialog_share_log_negative_button,
+			.setTitle(R.string.dialog_usagelog_title)
+			.setView(usagelogView)
+				.setNegativeButton(R.string.dialog_usagelog_negative_button,
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 								getInstance().delete();
@@ -512,12 +522,15 @@ public class UsageLog {
 								prefeditor.commit();
 							}
 						})
-				.setPositiveButton(R.string.dialog_share_log_positive_button,
+				.setPositiveButton(R.string.dialog_usagelog_positive_button,
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 								askConsentForSurvey(mainActivity);
 							}
 						}).show();
+	/*
+		 FrameLayout fl = (FrameLayout) builder.findViewById(android.R.id.custom);
+		 fl.addView(textView, new LayoutParams(MATCH_PARENT, WRAP_CONTENT));*/
 	}
 
 	/**

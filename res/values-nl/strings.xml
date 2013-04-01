@@ -256,10 +256,11 @@
 
 
     <!-- Dialog for consent on sending usage log -->
-    <string name="dialog_share_log_title">Help MathDoku ontwikkeling</string>
-    <string name="dialog_share_log_body">Beste gebruiker,\n\nWe hebben wat data verzameld over de manier waarop je MathDoku gebruikt. Deze data bevat geen persoonlijke informatie. We stellen het op prijs als je deze data naar ons toe wil sturen. We zullen dit gebruiken bij de verdere ontwikkeling van MathDoku.\n\nAls je niet toestemt dan wordt de verzamelde data verwijderd. Er wordt verder geen data meer verzameld.</string>
-    <string name="dialog_share_log_negative_button">Niet akkoord</string>
-    <string name="dialog_share_log_positive_button">Akkoord</string>
+    <string name="dialog_usagelog_title">Help MathDoku ontwikkeling</string>
+    <string name="dialog_usagelog_body_1">Beste gebruiker,\n\nWe hebben wat data verzameld over de manier waarop je MathDoku gebruikt. Deze data bevat geen persoonlijke informatie. We stellen het op prijs als je deze data naar ons toe wil sturen. We zullen dit gebruiken bij de verdere ontwikkeling van MathDoku. Bezoek onze website voor meer informatie:</string>
+    <string name="dialog_usagelog_body_2">Als je niet toestemt dan wordt de verzamelde data verwijderd. Er wordt verder geen data meer verzameld.</string>
+    <string name="dialog_usagelog_negative_button">Niet akkoord</string>
+    <string name="dialog_usagelog_positive_button">Akkoord</string>
 
     <!-- Dialog for opt-in on survey about future use of MathDoku. -->
     <string name="dialog_survey_title">Enquete</string>
