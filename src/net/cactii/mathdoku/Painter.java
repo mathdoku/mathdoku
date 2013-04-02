@@ -358,7 +358,7 @@ public class Painter {
 
 		switch (theme) {
 		case CARVED:
-			mHighlightedTextColorNormalInputMode = 0xFF15DC23; // TODO:
+			mHighlightedTextColorNormalInputMode = 0xFF2215DD; // TODO:
 																// determine
 																// good color
 			mHighlightedTextColorMaybeInputMode = 0xFFE61EBE; // TODO: determine
@@ -366,7 +366,7 @@ public class Painter {
 			mDefaultTextColor = 0xFF000000;
 			break;
 		case NEWSPAPER:
-			mHighlightedTextColorNormalInputMode = 0xFF15DC23; // TODO:
+			mHighlightedTextColorNormalInputMode = 0xFF2215DD; // TODO:
 																// determine
 																// good color
 			mHighlightedTextColorMaybeInputMode = 0xFFE61EBE; // TODO: determine
@@ -374,7 +374,7 @@ public class Painter {
 			mDefaultTextColor = 0xFF000000;
 			break;
 		case DARK:
-			mHighlightedTextColorNormalInputMode = 0xFF15DC23; // TODO:
+			mHighlightedTextColorNormalInputMode = 0xFF9080ED; // TODO:
 																// determine
 																// good color
 			mHighlightedTextColorMaybeInputMode = 0xFFE61EBE; // TODO: determine
