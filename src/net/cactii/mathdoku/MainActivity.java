@@ -4,7 +4,8 @@ import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.DigitPositionGrid.DigitPositionGridType;
 import net.cactii.mathdoku.GameFile.GameFileType;
 import net.cactii.mathdoku.Painter.GridTheme;
-import net.cactii.mathdoku.TipDialog.TipType;
+import net.cactii.mathdoku.Tip.TipDialog;
+import net.cactii.mathdoku.Tip.TipInputModeChanged;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -1138,6 +1139,9 @@ public class MainActivity extends Activity {
 						PREF_USAGE_LOG_COUNT_GAMES_STARTED_DEFAULT);
 			}
 		}
+		if (previousInstalledVersion < 198 && currentVersion >= 198) {
+			TipDialog.initializeCategoryPreferences(preferences, previousInstalledVersion == -1);
+		}
 		prefeditor.putInt(PREF_CURRENT_VERSION, currentVersion);
 		prefeditor.commit();
 
@@ -1618,13 +1622,15 @@ public class MainActivity extends Activity {
 			inputMode = InputMode.NORMAL;
 			break;
 		case NORMAL:
-			new TipDialog(this, TipType.INPUT_MODE_CHANGED).changeToInputMode(
-					InputMode.MAYBE).show();
+			if (TipInputModeChanged.toBeDisplayed(preferences)) {
+				new TipInputModeChanged(this, InputMode.MAYBE).show();
+			}
 			inputMode = InputMode.MAYBE;
 			break;
 		case MAYBE:
-			new TipDialog(this, TipType.INPUT_MODE_CHANGED).changeToInputMode(
-					InputMode.NORMAL).show();
+			if (TipInputModeChanged.toBeDisplayed(preferences)) {
+				new TipInputModeChanged(this, InputMode.MAYBE).show();
+			}
 			inputMode = InputMode.NORMAL;
 			break;
 		}

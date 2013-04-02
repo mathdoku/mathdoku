@@ -5,6 +5,7 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
+import net.cactii.mathdoku.Tip.TipDialog;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
@@ -47,6 +48,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	// Conversion results
 	private ArrayList<String> mGridSignatures;
 	private int mTotalGrids;
+	private int mTotalGridsSolved;
 	
 	/**
 	 * Creates a new instance of {@link GameFileConverter}.
@@ -128,6 +130,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 		// Initialize conversion results.
 		mGridSignatures = new ArrayList<String>();
 		mTotalGrids = 0;
+		mTotalGridsSolved = 0;
 	}
 
 	/*
@@ -188,6 +191,9 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 						// New signature found
 						mGridSignatures.add(signature);
 					}
+					if (grid.checkIfSolved()) {
+						mTotalGridsSolved++;
+					}
 					
 					// Save grid and publish progress
 					gameFile.save(grid, true);
@@ -206,6 +212,9 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	@Override
 	protected void onPostExecute(Void result) {
 		UsageLog.getInstance().logGameFileConversion(mCurrentVersion, mNewVersion, mTotalGrids, mGridSignatures.size());
+
+		// We assume the user knows the rules as soon as two game have been solved.
+		TipDialog.setUserIsFamiliarWithRules(mActivity, mTotalGridsSolved > 1);
 		
 		// Phase 1 of upgrade has been completed. Start next phase.
 		if (mActivity != null) {

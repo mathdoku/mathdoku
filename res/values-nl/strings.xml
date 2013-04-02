@@ -282,6 +282,10 @@
     <string name="dialog_tip_input_mode_changed_title">Invoer modus gewijzigd</string>
     <string name="dialog_tip_input_mode_changed_text">Je hebt zojuist de invoer modus gewijzigd van %1$s in %2$s. De invoer modus kan gewijzigd worden door de geselecteerde cel nogmaals aan te raken. Of je kunt de tekst boven de cijfer knoppen aanraken.</string>
 
+    <!--  Title, text, drawable for tip "Order of values in cage" -->
+    <string name="dialog_tip_order_of_values_in_cage_title">Cel waarden</string>
+    <string name="dialog_tip_order_of_values_in_cage_text">De volgorde van de getallen in de cellen is niet belangrijk in een MathDoku puzzel. De resultaten van de berekeningen \"3 &#8212; 1\"  en \"2 / 4\" zijn beide ook gelijk aan 2. De waarden in de onderstaande afbeelding zijn dus correct.</string>
+    
     <!-- MISCELLANEOUS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 

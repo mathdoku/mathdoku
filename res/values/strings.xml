@@ -286,6 +286,10 @@
     <string name="dialog_tip_input_mode_changed_title">Input mode changed</string>
     <string name="dialog_tip_input_mode_changed_text">You have just changed the input mode from %1$s to %2$s.  The input mode can be changed to normal by tapping the selected cell once more. Or you can tap the text Mode: maybe above the digit buttons.</string>
     
+    <!--  Title, text, drawable for tip "Order of values in cage" -->
+    <string name="dialog_tip_order_of_values_in_cage_title">Cell values</string>
+    <string name="dialog_tip_order_of_values_in_cage_text">The order of values in the cells of the cage is not relevant in a MathDoku puzzle. The results of cages \"3 &#8212; 1\"  and \"2 / 4\" both equals 2. The entire grid below is therefore valid.</string>
+    
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 

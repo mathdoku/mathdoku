@@ -257,34 +257,43 @@
 
     <!-- USAGE LOG AND OPT-IN FOR SURVEY - - - - - - - - - - - - - - - - - - - - - - -->
 
+
     <!-- Dialog for consent on sending usage log -->
     <string name="dialog_usagelog_title">MathDoku-Entwicklung unterstützen</string>
-    <!-- TODO --><string name="dialog_usagelog_body_1">Lieber MathDoku-Spieler,\n\nwir haben Daten gesammelt, wie Sie MathDoku verwenden. Diese Daten enthalten keine persönlichen Informationen. Wir wären sehr dankbar, wenn Sie uns diese Daten senden würden. Wir werden sie zur Weiterentwicklung von MathDoku verwenden.\n\nWenn Sie nicht zustimmen, wird das erstellte Logfile gelöscht und es werden keine weiteren Informationen gesammelt.</string>
-    <!-- TODO --><string name="dialog_usagelog_body_2"></string>
+    <!-- TODO -->
+    <string name="dialog_usagelog_body_1">Lieber MathDoku-Spieler,\n\nwir haben Daten gesammelt, wie Sie MathDoku verwenden. Diese Daten enthalten keine persönlichen Informationen. Wir wären sehr dankbar, wenn Sie uns diese Daten senden würden. Wir werden sie zur Weiterentwicklung von MathDoku verwenden.\n\nWenn Sie nicht zustimmen, wird das erstellte Logfile gelöscht und es werden keine weiteren Informationen gesammelt.</string>
+    <!-- TODO -->
+    <string name="dialog_usagelog_body_2"></string>
     <string name="dialog_usagelog_negative_button">Ich stimme nicht zu.</string>
     <string name="dialog_usagelog_positive_button">Ich stimme zu.</string>
-    
+
     <!-- Dialog for opt-in on survey about future use of MathDoku. -->
     <string name="dialog_survey_title">Umfrage</string>
-    <!--  Note for translators: please mention that the survey will be sent in english only.  -->
+    <!-- Note for translators: please mention that the survey will be sent in english only. -->
     <string name="dialog_survey_body">Danke für die Zustimmung uns das Logfile zu senden.\n\nWir planen einen Fragebogen an Benutzer, die an zukünftigen Versionen von MathDoku interessiert sind, zu senden. Falls Sie daran teilnehmen möchten, hinterlassen Sie Ihre E-Mail im folgenden Formular.</string>
     <string name="dialog_survey_user_name_hint">Ihr Name</string>
     <string name="dialog_survey_user_email_hint">Ihre E-Mail</string>
     <string name="dialog_survey_positive_button">Logfile senden</string>
-    
+
     <!-- Title of dialog used to choose the appropriate action for sending the usage log. -->
     <string name="usage_log_choose_action_title">Mathdoku Logfile senden</string>
-    
-    
+
     <!-- TIP DIALOGS - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    
+
+
     <!-- Label for check box "Do not show again" in the tip dialog. -->
     <string name="dialog_tip_do_not_show_again">Nicht nochmal anzeigen</string>
-    
-    <!--  Title, text, drawable for tip "Input mode changed" -->
+
+    <!-- Title, text, drawable for tip "Input mode changed" -->
     <string name="dialog_tip_input_mode_changed_title">Eingabemodus geändert</string>
     <string name="dialog_tip_input_mode_changed_text">Sie haben gerade den Eingabemodus von %1$s auf %2$s geändert. Der Eingabemodus kann durch nochmaliges Drücken auf die ausgewählte Zelle auf \"normal\" gestellt werden. Oder durch Dücken des Textmodues: Vielleicht über dem Zahlenblock.</string>
-    
+
+    <!-- Title, text, drawable for tip "Order of values in cage" -->
+    <!-- TODO -->
+    <string name="dialog_tip_order_of_values_in_cage_title">Cel waarden</string>
+    <!-- TODO -->
+    <string name="dialog_tip_order_of_values_in_cage_text">De volgorde van de getallen in de cellen is niet belangrijk in een MathDoku puzzel. De resultaten van de berekeningen \"3 &#8212; 1\"  en \"2 / 4\" zijn beide ook gelijk aan 2. De waarden in de onderstaande afbeelding zijn dus correct.</string>
+
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -309,5 +318,5 @@
     <!-- Text to display in case the preview image of a saved game is not yet available. -->
     <string name="game_file_preview_not_available">Derzeit nicht verfügbar</string>
     <string name="game_seed">"Spiel platzieren: "</string>
-    
+
 </resources>

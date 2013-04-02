@@ -202,11 +202,11 @@ public class Grid {
 	}
 
 	// Returns whether the puzzle is solved.
-	public void checkIfSolved() {
+	public boolean checkIfSolved() {
 		// Check if alls cell contain correct value.
 		for (GridCell cell : this.mCells) {
 			if (!cell.isUserValueCorrect()) {
-				return;
+				return false;
 			}
 		}
 
@@ -222,6 +222,8 @@ public class Grid {
 
 		// Deactivate grid
 		mActive = false;
+		
+		return true;
 	}
 
 	// Checks whether the user has made any mistakes

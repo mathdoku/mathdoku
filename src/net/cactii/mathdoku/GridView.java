@@ -3,10 +3,13 @@ package net.cactii.mathdoku;
 import net.cactii.mathdoku.DigitPositionGrid.DigitPositionGridType;
 import net.cactii.mathdoku.MainActivity.InputMode;
 import net.cactii.mathdoku.Painter.GridPainter;
+import net.cactii.mathdoku.Tip.TipOrderOfValuesInCage;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
@@ -19,6 +22,10 @@ public class GridView extends View implements OnTouchListener {
 	@SuppressWarnings("unused")
 	private static final String TAG = "MathDoku.GridView";
 
+	// Context and preferences in context
+	MainActivity mMainActivity;
+	SharedPreferences mMainActivityPreferences;
+	
 	// Actual content of the puzzle in this grid view
 	private Grid grid;
 
@@ -47,22 +54,25 @@ public class GridView extends View implements OnTouchListener {
 
 	public GridView(Context context) {
 		super(context);
-		initGridView();
+		initGridView(context);
 	}
 
 	public GridView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		initGridView();
+		initGridView(context);
 	}
 
 	public GridView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		initGridView();
+		initGridView(context);
 	}
 
-	private void initGridView() {
+	private void initGridView(Context context) {
+		mMainActivity = (MainActivity) context;
+		mMainActivityPreferences = PreferenceManager.getDefaultSharedPreferences(mMainActivity);
+		
 		mGridViewSize = 0;
-		mGridPainter = Painter.getInstance(this.getContext()).mGridPainter;
+		mGridPainter = Painter.getInstance(mMainActivity).mGridPainter;
 
 		// Initialize the display frame for the grid view.
 		mDisplayFrame = new Rect();
@@ -221,7 +231,7 @@ public class GridView extends View implements OnTouchListener {
 		// Display a message in case no cell is selected.
 		GridCell selectedCell = grid.getSelectedCell();
 		if (selectedCell == null) {
-			Toast.makeText(this.getContext(),
+			Toast.makeText(mMainActivity,
 					R.string.select_cell_before_value, Toast.LENGTH_SHORT)
 					.show();
 			return;
@@ -234,6 +244,11 @@ public class GridView extends View implements OnTouchListener {
 			selectedCell.clearPossibles();
 			selectedCell.setUserValue(0);
 		} else {
+			if (TipOrderOfValuesInCage.toBeDisplayed(
+					mMainActivityPreferences,
+					selectedCell.getCage())) {
+				new TipOrderOfValuesInCage(mMainActivity).show();
+			}
 			switch (inputMode) {
 			case MAYBE:
 				if (selectedCell.isUserValueSet()) {
@@ -245,7 +260,7 @@ public class GridView extends View implements OnTouchListener {
 				selectedCell.setUserValue(value);
 				selectedCell.clearPossibles();
 
-				if (((MainActivity) getContext()).preferences.getBoolean(
+				if (mMainActivityPreferences.getBoolean(
 						MainActivity.PREF_CLEAR_REDUNDANT_POSSIBLES,
 						MainActivity.PREF_CLEAR_REDUNDANT_POSSIBLES_DEFAULT)) {
 					// Update possible values for other cells in this row and
@@ -288,8 +303,8 @@ public class GridView extends View implements OnTouchListener {
 					mGridPainter.mBorderPaint);
 
 			// Draw cells, except for cells in selected cage
-			InputMode inputMode = ((MainActivity) getContext()).getInputMode();
-			Painter.getInstance(this.getContext()).setCellSize(mGridCellSize);
+			InputMode inputMode = mMainActivity.getInputMode();
+			Painter.getInstance(mMainActivity).setCellSize(mGridCellSize);
 			for (GridCell cell : grid.mCells) {
 				cell.checkWithOtherValuesInRowAndColumn();
 				cell.draw(canvas, gridBorderWidth, inputMode,
@@ -388,12 +403,14 @@ public class GridView extends View implements OnTouchListener {
 				if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
 					// In landscape mode the grid view should be resized in case
 					// its size is bigger than 67% of the total width. Optimal
-					// scaling factor has been determined based on a Nexus7 display.
+					// scaling factor has been determined based on a Nexus7
+					// display.
 					newWidth *= (float) 0.67;
 				} else {
 					// In portrait mode the grid view should be resized in case
 					// its size is bigger than 60% of the total height. Optimal
-					// scaling factor has been determined based on a Nexus7 display.
+					// scaling factor has been determined based on a Nexus7
+					// display.
 					newHeight *= (float) 0.6;
 				}
 				mDisplayFrame.set(0, 0, (int) newWidth, (int) newHeight);
