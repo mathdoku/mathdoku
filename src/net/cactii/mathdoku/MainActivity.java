@@ -404,15 +404,11 @@ public class MainActivity extends Activity {
 	public void onPause() {
 		UsageLog.getInstance().close();
 
+		stopTimer();
 		if (mGrid != null && mGrid.getGridSize() > 3) {
 			GameFile saver = new GameFile(GameFileType.LAST_GAME);
-			if (mTimerTask != null) {
-				// Update elapsed time in grid.
-				this.mGrid.setElapsedTime(mTimerTask.mElapsedTime);
-			}
 			saver.save(mGrid, this.mGridView);
 		}
-		stopTimer();
 
 		if (mProgressDialogImagePreviewCreation != null
 				&& mProgressDialogImagePreviewCreation.isShowing()) {
@@ -1386,8 +1382,6 @@ public class MainActivity extends Activity {
 		this.mGrid.setSolvedHandler(this.mGrid.new OnSolvedListener() {
 			@Override
 			public void puzzleSolved() {
-				// Update elapsed time in grid
-				mGrid.setElapsedTime(mTimerTask.mElapsedTime);
 				stopTimer();
 
 				setInputMode(InputMode.NO_INPUT__DISPLAY_GRID);
@@ -1481,6 +1475,9 @@ public class MainActivity extends Activity {
 	private void stopTimer() {
 		// Stop timer if running
 		if (mTimerTask != null && !mTimerTask.isCancelled()) {
+			if (mGrid != null) {
+				this.mGrid.setElapsedTime(mTimerTask.mElapsedTime);
+			}
 			mTimerTask.cancel(true);
 		}
 	}
