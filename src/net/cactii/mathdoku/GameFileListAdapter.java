@@ -9,7 +9,6 @@ import java.util.List;
 
 import android.app.ListActivity;
 import android.graphics.Bitmap;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -45,21 +44,22 @@ public class GameFileListAdapter extends BaseAdapter {
 		this.mGameFiles = new ArrayList<GameFile.GameFileHeader>();
 
 		// Apply theme to the list view
-		String theme = PreferenceManager.getDefaultSharedPreferences(context)
-				.getString(MainActivity.PREF_THEME,
-						MainActivity.PREF_THEME_DEFAULT);
-		if (theme.equals(MainActivity.PREF_THEME_NEWSPAPER)) {
+		switch (Preferences.getInstance().getTheme()) {
+		case NEWSPAPER:
 			mResIdBackGroundListViewItem = R.drawable.newspaper1;
 			((ListActivity) mContext).getListView().setBackgroundResource(
 					R.drawable.newspaper);
-		} else if (theme.equals(MainActivity.PREF_THEME_DARK)) {
+			break;
+		case DARK:
 			mResIdBackGroundListViewItem = R.drawable.newspaper_dark1;
 			((ListActivity) mContext).getListView().setBackgroundResource(
 					R.drawable.newspaper_dark);
-		} else {
+			break;
+		case CARVED:
 			mResIdBackGroundListViewItem = R.drawable.background1;
 			((ListActivity) mContext).getListView().setBackgroundResource(
 					R.drawable.background);
+			break;
 		}
 
 		refreshFiles();

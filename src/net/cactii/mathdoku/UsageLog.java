@@ -22,14 +22,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -98,18 +95,15 @@ public class UsageLog {
 		mMainActivity = activity;
 
 		// Get preferences and check whether it is allowed to gather new data.
-		SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(activity);
-		if (preferences.getBoolean(MainActivity.PREF_USAGE_LOG_DISABLED,
-				MainActivity.PREF_USAGE_LOG_DISABLED_DEFAULT)) {
+		Preferences preferences = Preferences.getInstance();
+		if (preferences.isUsageLogDisabled()) {
 			mBuildLog = false;
 			return;
 		}
 
 		// Determine path and file names
 		mLogFileName = LOG_FILE_PREFIX
-				+ preferences.getInt(MainActivity.PREF_CURRENT_VERSION,
-						MainActivity.PREF_CURRENT_VERSION_DEFAULT)
+				+ preferences.getCurrentInstalledVersion()
 				+ LOG_FILE_EXTENSION;
 		mLogFilePath = mMainActivity.getFileStreamPath(mLogFileName)
 				.getAbsolutePath();
@@ -154,7 +148,7 @@ public class UsageLog {
 			logPreferences("Preference.Initial", preferences);
 		}
 
-		preferences.registerOnSharedPreferenceChangeListener(null);
+		preferences.mSharedPreferences.registerOnSharedPreferenceChangeListener(null);
 	}
 
 	/**
@@ -199,11 +193,11 @@ public class UsageLog {
 	 * @param preferences
 	 *            The preferences to be logged.
 	 */
-	public void logPreferences(String identifier, SharedPreferences preferences) {
+	public void logPreferences(String identifier, Preferences preferences) {
 		if (mBuildLog && preferences != null) {
 			SortedMap<String, String> sortedMap = new TreeMap<String, String>();
 
-			for (Map.Entry<String, ?> entry : preferences.getAll().entrySet()) {
+			for (Map.Entry<String, ?> entry : preferences.getAllSharedPreferences().entrySet()) {
 				if (entry != null) {
 					String key = (String) entry.getKey();
 					if (key == null) {
@@ -259,7 +253,7 @@ public class UsageLog {
 	 * 
 	 * @param identifier
 	 *            Identifier for this log item.
-	 * @param preferences
+	 * @param mSharedPreferences
 	 *            The preferences to be logged.
 	 */
 	public void logPreference(String identifier, String key, Object value) {
@@ -513,13 +507,7 @@ public class UsageLog {
 								getInstance().delete();
 
 								// Update preferences
-								SharedPreferences preferences = PreferenceManager
-										.getDefaultSharedPreferences(mainActivity);
-								Editor prefeditor = preferences.edit();
-								prefeditor.putBoolean(
-										MainActivity.PREF_USAGE_LOG_DISABLED,
-										true);
-								prefeditor.commit();
+								Preferences.getInstance().setUsageLogDisabled();
 							}
 						})
 				.setPositiveButton(R.string.dialog_usagelog_positive_button,
@@ -556,9 +544,7 @@ public class UsageLog {
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 								// Write actual preferences to log.
-								SharedPreferences preferences = PreferenceManager
-										.getDefaultSharedPreferences(mainActivity);
-								logPreferences("Preference.Final", preferences);
+								logPreferences("Preference.Final", Preferences.getInstance());
 
 								// If user has entered his email address, and
 								// optionally a name these should be added to

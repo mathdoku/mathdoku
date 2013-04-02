@@ -2,8 +2,8 @@ package net.cactii.mathdoku.Tip;
 
 import net.cactii.mathdoku.GridCage;
 import net.cactii.mathdoku.MainActivity;
+import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
-import android.content.SharedPreferences;
 
 public class TipOrderOfValuesInCage extends TipDialog {
 
@@ -42,7 +42,7 @@ public class TipOrderOfValuesInCage extends TipDialog {
 	 * @param cage
 	 * @return
 	 */
-	public static boolean toBeDisplayed(SharedPreferences preferences,
+	public static boolean toBeDisplayed(Preferences preferences,
 			GridCage cage) {
 		// No tip to be displayed for non existing cages or single cell cages
 		if (cage == null || cage.mAction == GridCage.ACTION_NONE) {
@@ -57,6 +57,6 @@ public class TipOrderOfValuesInCage extends TipDialog {
 		}
 
 		// Determine on basis of preferences whether the tip should be shown.
-		return displayTip(preferences, TIP_NAME, TIP_CATEGORY);
+		return preferences.getDisplayTipAgain(TIP_NAME, TIP_CATEGORY);
 	}
 }

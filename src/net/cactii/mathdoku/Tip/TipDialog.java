@@ -1,13 +1,11 @@
 package net.cactii.mathdoku.Tip;
 
 import net.cactii.mathdoku.MainActivity;
+import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.graphics.drawable.Drawable;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -20,12 +18,6 @@ import android.widget.TextView;
  */
 public class TipDialog extends AlertDialog {
 
-	private static String TIP_CATEGORY_FAMILIAR_WITH_APP = "Tip.Category.FamiliarWithApp";
-	private static boolean TIP_CATEGORY_FAMILIAR_WITH_APP_DEFAULT = false;
-
-	private static String TIP_CATEGORY_FAMILIAR_WITH_RULES = "Tip.Category.FamiliarWithRules";
-	private static boolean TIP_CATEGORY_FAMILIAR_WITH_RULES_DEFAULT = false;
-
 	// Category of tips
 	public enum TipCategory {
 		GAME_RULES, APP_USAGE
@@ -35,11 +27,11 @@ public class TipDialog extends AlertDialog {
 	private MainActivity mMainActivity;
 
 	// Preferences defined for the current context.
-	final SharedPreferences mPreferences;
+	Preferences mPreferences;
 
 	// Name of the preference used to determine whether it should be shown again
 	// or not.
-	private String mPreferenceDisplayAgain;
+	private String mPreferenceDisplayAgain; // TODO: rename
 	private boolean mDisplayAgain;
 
 	// The category the tip falls in.
@@ -57,8 +49,7 @@ public class TipDialog extends AlertDialog {
 
 		// Store reference to activity and preferences
 		mMainActivity = mainActivity;
-		mPreferences = PreferenceManager
-				.getDefaultSharedPreferences(mainActivity);
+		mPreferences = Preferences.getInstance();
 		mPreferenceDisplayAgain = preference;
 		mTipCategory = tipCategory;
 
@@ -108,10 +99,7 @@ public class TipDialog extends AlertDialog {
 						// Check if do not show again checkbox is
 						// checked
 						if (checkBoxView.isChecked()) {
-							Editor prefeditor = mPreferences.edit();
-							prefeditor.putBoolean(mPreferenceDisplayAgain,
-									false);
-							prefeditor.commit();
+							mPreferences.setDoNotDisplayTipAgain(mPreferenceDisplayAgain);
 						}
 					}
 				});
@@ -139,77 +127,7 @@ public class TipDialog extends AlertDialog {
 	 * @return True in case the tip has to be shown. False otherwise.
 	 */
 	public boolean displayTip() {
-		return displayTip(mPreferences, mPreferenceDisplayAgain, mTipCategory);
+		return mPreferences.getDisplayTipAgain(mPreferenceDisplayAgain, mTipCategory);
 	}
 
-	/**
-	 * Check whether this tip will be shown. Tips which are checked frequently
-	 * should always call the static displayTip method of the corresponding
-	 * subclass before actually call method show as this always creates a dialog
-	 * while not knowing whether the tip has to be displayed.
-	 * 
-	 * @return True in case the tip has to be shown. False otherwise.
-	 */
-	protected static boolean displayTip(SharedPreferences preferences,
-			String preference, TipCategory tipCategory) {
-		// Tip will not be displayed in case its checkbox was checked before.
-		if (!preferences.getBoolean(preference, true)) {
-			return false;
-		}
-
-		switch (tipCategory) {
-		case APP_USAGE:
-			// Do not display this tip in case the user is already familiar
-			// with the app
-			return !preferences.getBoolean(TIP_CATEGORY_FAMILIAR_WITH_APP,
-					TIP_CATEGORY_FAMILIAR_WITH_APP_DEFAULT);
-		case GAME_RULES:
-			// Do not display this tip in case the user is already familiar
-			// with the game rules
-			return !preferences.getBoolean(TIP_CATEGORY_FAMILIAR_WITH_RULES,
-					TIP_CATEGORY_FAMILIAR_WITH_RULES_DEFAULT);
-		}
-
-		return true;
-	}
-
-	/**
-	 * Initializes the tip category preferences.
-	 */
-	public static void initializeCategoryPreferences(
-			SharedPreferences preferences, boolean newInstall) {
-		Editor prefeditor = preferences.edit();
-		if (newInstall) {
-			if (!preferences.contains(TIP_CATEGORY_FAMILIAR_WITH_APP)) {
-				prefeditor.putBoolean(TIP_CATEGORY_FAMILIAR_WITH_APP,
-						TIP_CATEGORY_FAMILIAR_WITH_APP_DEFAULT);
-			}
-		}
-		if (!preferences.contains(TIP_CATEGORY_FAMILIAR_WITH_RULES)) {
-			prefeditor.putBoolean(TIP_CATEGORY_FAMILIAR_WITH_RULES,
-					TIP_CATEGORY_FAMILIAR_WITH_RULES_DEFAULT);
-		}
-		prefeditor.commit();
-	}
-
-	/**
-	 * Initializes the preference "familiar with rules".
-	 * 
-	 * @param mainActivity
-	 *            The activity for which the preference has to set.
-	 * 
-	 * @param familiarWithRules
-	 *            The new value for this preference.
-	 */
-	public static void setUserIsFamiliarWithRules(MainActivity mainActivity,
-			boolean familiarWithRules) {
-		SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(mainActivity);
-		Editor prefeditor = preferences.edit();
-		if (!preferences.contains(TIP_CATEGORY_FAMILIAR_WITH_RULES)) {
-			prefeditor.putBoolean(TIP_CATEGORY_FAMILIAR_WITH_RULES,
-					TIP_CATEGORY_FAMILIAR_WITH_RULES_DEFAULT);
-		}
-		prefeditor.commit();
-	}
 }

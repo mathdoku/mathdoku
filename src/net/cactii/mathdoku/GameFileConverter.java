@@ -5,7 +5,6 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
-import net.cactii.mathdoku.Tip.TipDialog;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
@@ -214,7 +213,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 		UsageLog.getInstance().logGameFileConversion(mCurrentVersion, mNewVersion, mTotalGrids, mGridSignatures.size());
 
 		// We assume the user knows the rules as soon as two game have been solved.
-		TipDialog.setUserIsFamiliarWithRules(mActivity, mTotalGridsSolved > 1);
+		Preferences.getInstance().setUserIsFamiliarWithRules(mTotalGridsSolved > 1);
 		
 		// Phase 1 of upgrade has been completed. Start next phase.
 		if (mActivity != null) {

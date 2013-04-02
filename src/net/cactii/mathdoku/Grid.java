@@ -3,8 +3,6 @@ package net.cactii.mathdoku;
 import java.util.ArrayList;
 
 import net.cactii.mathdoku.GridGenerating.GridGeneratingParameters;
-import android.content.SharedPreferences;
-import android.util.Log;
 
 public class Grid {
 	@SuppressWarnings("unused")
@@ -73,30 +71,19 @@ public class Grid {
 		mclearRedundantPossiblesInSameRowOrColumnCount = 0;
 		mSolvedListener = null;
 		mGridGeneratingParameters = new GridGeneratingParameters();
-
-		mPrefShowDupeDigits = MainActivity.PREF_SHOW_DUPE_DIGITS_DEFAULT;
-		mPrefShowBadCageMaths = MainActivity.PREF_SHOW_BAD_CAGE_MATHS_DEFAULT;
-		mPrefShowMaybesAs3x3Grid = MainActivity.PREF_SHOW_MAYBES_AS_3X3_GRID_DEFAULT;
+		setPreferences();
 	}
-
+	
 	/**
-	 * Remember preferences needed for setting cell borders and drawing a cell
-	 * as local values for easy access.
-	 * 
-	 * @param preferences
-	 *            The shared preferences of the app.
+	 * Set preferences which are used for drawing the grid.
 	 */
-	public void setPreferences(SharedPreferences preferences) {
-		mPrefShowDupeDigits = preferences.getBoolean(
-				MainActivity.PREF_SHOW_DUPE_DIGITS,
-				MainActivity.PREF_SHOW_DUPE_DIGITS_DEFAULT);
-		mPrefShowMaybesAs3x3Grid = preferences.getBoolean(
-				MainActivity.PREF_SHOW_MAYBES_AS_3X3_GRID,
-				MainActivity.PREF_SHOW_MAYBES_AS_3X3_GRID_DEFAULT);
-		mPrefShowBadCageMaths = preferences.getBoolean(
-				MainActivity.PREF_SHOW_BAD_CAGE_MATHS,
-				MainActivity.PREF_SHOW_BAD_CAGE_MATHS_DEFAULT);
+	public void setPreferences() {
+		Preferences preferences = Preferences.getInstance();
+		mPrefShowDupeDigits = preferences.showDuplicateDigits();
+		mPrefShowMaybesAs3x3Grid = preferences.showMaybesAsGrid();
+		mPrefShowBadCageMaths = preferences.showBadCageMaths();
 
+		// Reset borders of cells as they are affected by the preferences;
 		for (GridCell cell : mCells) {
 			cell.setBorders();
 		}

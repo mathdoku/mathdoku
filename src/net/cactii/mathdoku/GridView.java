@@ -5,11 +5,9 @@ import net.cactii.mathdoku.MainActivity.InputMode;
 import net.cactii.mathdoku.Painter.GridPainter;
 import net.cactii.mathdoku.Tip.TipOrderOfValuesInCage;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
@@ -24,7 +22,7 @@ public class GridView extends View implements OnTouchListener {
 
 	// Context and preferences in context
 	MainActivity mMainActivity;
-	SharedPreferences mMainActivityPreferences;
+	Preferences mPreferences;
 	
 	// Actual content of the puzzle in this grid view
 	private Grid grid;
@@ -69,7 +67,7 @@ public class GridView extends View implements OnTouchListener {
 
 	private void initGridView(Context context) {
 		mMainActivity = (MainActivity) context;
-		mMainActivityPreferences = PreferenceManager.getDefaultSharedPreferences(mMainActivity);
+		mPreferences = Preferences.getInstance(mMainActivity);
 		
 		mGridViewSize = 0;
 		mGridPainter = Painter.getInstance(mMainActivity).mGridPainter;
@@ -245,7 +243,7 @@ public class GridView extends View implements OnTouchListener {
 			selectedCell.setUserValue(0);
 		} else {
 			if (TipOrderOfValuesInCage.toBeDisplayed(
-					mMainActivityPreferences,
+					mPreferences,
 					selectedCell.getCage())) {
 				new TipOrderOfValuesInCage(mMainActivity).show();
 			}
@@ -260,9 +258,7 @@ public class GridView extends View implements OnTouchListener {
 				selectedCell.setUserValue(value);
 				selectedCell.clearPossibles();
 
-				if (mMainActivityPreferences.getBoolean(
-						MainActivity.PREF_CLEAR_REDUNDANT_POSSIBLES,
-						MainActivity.PREF_CLEAR_REDUNDANT_POSSIBLES_DEFAULT)) {
+				if (mPreferences.isClearRedundantPossiblesEnabled()) {
 					// Update possible values for other cells in this row and
 					// column.
 					grid.clearRedundantPossiblesInSameRowOrColumn(orginalUserMove);

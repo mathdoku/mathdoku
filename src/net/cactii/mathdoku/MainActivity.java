@@ -4,7 +4,6 @@ import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.DigitPositionGrid.DigitPositionGridType;
 import net.cactii.mathdoku.GameFile.GameFileType;
 import net.cactii.mathdoku.Painter.GridTheme;
-import net.cactii.mathdoku.Tip.TipDialog;
 import net.cactii.mathdoku.Tip.TipInputModeChanged;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -12,12 +11,9 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -50,58 +46,6 @@ public class MainActivity extends Activity {
 	public final static String TAG = "MathDoku.MainActivity";
 
 	public final static String PROJECT_HOME = "https://code.google.com/p/mathdoku/";
-	// Identifiers for preferences.
-
-	public final static String PREF_CLEAR_REDUNDANT_POSSIBLES = "redundantPossibles";
-	public final static boolean PREF_CLEAR_REDUNDANT_POSSIBLES_DEFAULT = true;
-
-	public final static String PREF_CREATE_PREVIEW_IMAGES_COMPLETED = "CreatePreviewImagesCompleted";
-	public final static boolean PREF_CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT = false;
-
-	public final static String PREF_CURRENT_VERSION = "currentversion";
-	public final static int PREF_CURRENT_VERSION_DEFAULT = -1;
-
-	public final static String PREF_ALLOW_BIG_CAGES = "AllowBigCages";
-	public final static boolean PREF_ALLOW_BIG_CAGES_DEFAULT = false;
-
-	public final static String PREF_HIDE_CONTROLS = "hideselector";
-	public final static boolean PREF_HIDE_CONTROLS_DEFAULT = false;
-
-	public final static String PREF_HIDE_OPERATORS = "hideoperatorsigns";
-	public final static String PREF_HIDE_OPERATORS_ALWAYS = "T";
-	public final static String PREF_HIDE_OPERATORS_ASK = "A";
-	public final static String PREF_HIDE_OPERATORS_NEVER = "F";
-	public final static String PREF_HIDE_OPERATORS_DEFAULT = PREF_HIDE_OPERATORS_NEVER;
-
-	public final static String PREF_SHOW_MAYBES_AS_3X3_GRID = "maybe3x3";
-	public final static boolean PREF_SHOW_MAYBES_AS_3X3_GRID_DEFAULT = true;
-
-	public final static String PREF_SHOW_BAD_CAGE_MATHS = "badmaths";
-	public final static boolean PREF_SHOW_BAD_CAGE_MATHS_DEFAULT = true;
-
-	public final static String PREF_SHOW_DUPE_DIGITS = "dupedigits";
-	public final static boolean PREF_SHOW_DUPE_DIGITS_DEFAULT = true;
-
-	public final static String PREF_SHOW_TIMER = "timer";
-	public final static boolean PREF_SHOW_TIMER_DEFAULT = true;
-
-	public final static String PREF_PLAY_SOUND_EFFECTS = "soundeffects";
-	public final static boolean PREF_PLAY_SOUND_EFFECTS_DEFAULT = true;
-
-	public final static String PREF_THEME = "theme";
-	public final static String PREF_THEME_CARVED = "carved";
-	public final static String PREF_THEME_DARK = "inverted";
-	public final static String PREF_THEME_NEWSPAPER = "newspaper";
-	public final static String PREF_THEME_DEFAULT = PREF_THEME_NEWSPAPER;
-
-	public final static String PREF_USAGE_LOG_COUNT_GAMES_STARTED = "UsageLogCountGamesStarted";
-	public final static int PREF_USAGE_LOG_COUNT_GAMES_STARTED_DEFAULT = 0;
-
-	public final static String PREF_USAGE_LOG_DISABLED = "UsageLogDisabled";
-	public final static boolean PREF_USAGE_LOG_DISABLED_DEFAULT = false;
-
-	public final static String PREF_WAKE_LOCK = "wakelock";
-	public final static boolean PREF_WAKE_LOCK_DEFAULT = true;
 
 	// Identifiers for the context menu
 	private final static int CONTEXT_MENU_REVEAL_CELL = 1;
@@ -150,7 +94,7 @@ public class MainActivity extends Activity {
 	private Animation outAnimation;
 	private Animation solvedAnimation;
 
-	public SharedPreferences preferences;
+	public Preferences mMathDokuPreferences;
 
 	// Background tasks for generating a new puzzle and converting game files
 	public GridGenerator mGridGeneratorTask;
@@ -205,7 +149,7 @@ public class MainActivity extends Activity {
 
 		setContentView(R.layout.main);
 
-		this.preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		mMathDokuPreferences = Preferences.getInstance(this);
 
 		this.topLayout = (RelativeLayout) findViewById(R.id.topLayout);
 		this.puzzleGrid = (RelativeLayout) findViewById(R.id.puzzleGrid);
@@ -278,8 +222,7 @@ public class MainActivity extends Activity {
 					@Override
 					public void gridTouched(GridCell cell,
 							boolean sameCellSelectedAgain) {
-						if (MainActivity.this.preferences.getBoolean(
-								PREF_HIDE_CONTROLS, PREF_HIDE_CONTROLS_DEFAULT)) {
+						if (mMathDokuPreferences.isControlsBlockHidden()) {
 							if (controls.getVisibility() == View.VISIBLE) {
 								controls.startAnimation(outAnimation);
 								mGridView.mSelectorShown = false;
@@ -322,8 +265,7 @@ public class MainActivity extends Activity {
 					mGridView.invalidate();
 				}
 
-				if (MainActivity.this.preferences.getBoolean(
-						PREF_HIDE_CONTROLS, PREF_HIDE_CONTROLS_DEFAULT)) {
+				if (mMathDokuPreferences.isControlsBlockHidden()) {
 					MainActivity.this.controls.setVisibility(View.GONE);
 				}
 			}
@@ -427,23 +369,26 @@ public class MainActivity extends Activity {
 	public void setTheme() {
 		pressMenu.setTextColor(0xff000000);
 		pressMenu.setBackgroundColor(0xa0f0f0f0);
-		String theme = preferences.getString(PREF_THEME, PREF_THEME_DEFAULT);
 		solvedText.setTypeface(mPainter.mGridPainter.mSolvedTypeface);
 
-		if (theme.equals(MainActivity.PREF_THEME_NEWSPAPER)) {
+		switch (mMathDokuPreferences.getTheme()) {
+		case NEWSPAPER:
 			topLayout.setBackgroundResource(R.drawable.newspaper);
 			mPainter.setTheme(GridTheme.NEWSPAPER);
 			mTimerText.setBackgroundColor(0x90808080);
-		} else if (theme.equals(MainActivity.PREF_THEME_DARK)) {
+			break;
+		case DARK:
 			topLayout.setBackgroundResource(R.drawable.newspaper_dark);
 			mPainter.setTheme(GridTheme.DARK);
 			pressMenu.setTextColor(0xfff0f0f0);
 			pressMenu.setBackgroundColor(0xff000000);
 			mTimerText.setTextColor(0xFFF0F0F0);
-		} else if (theme.equals(MainActivity.PREF_THEME_CARVED)) {
+			break;
+		case CARVED:
 			topLayout.setBackgroundResource(R.drawable.background);
 			mPainter.setTheme(GridTheme.CARVED);
 			mTimerText.setBackgroundColor(0x10000000);
+			break;
 		}
 
 		this.mGridView.invalidate();
@@ -452,7 +397,7 @@ public class MainActivity extends Activity {
 	public void onResume() {
 		UsageLog.getInstance(this);
 
-		if (this.preferences.getBoolean(PREF_WAKE_LOCK, PREF_WAKE_LOCK_DEFAULT)) {
+		if (mMathDokuPreferences.isWakeLockEnabled()) {
 			getWindow()
 					.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		}
@@ -466,14 +411,13 @@ public class MainActivity extends Activity {
 		}
 
 		setTheme();
-
-		// Propagate preferences to grid
+		
+		// Propagate current preferences to the grid.
 		if (mGrid != null) {
-			mGrid.setPreferences(preferences);
+			mGrid.setPreferences();
 		}
 
-		this.setSoundEffectsEnabled(this.preferences.getBoolean(
-				PREF_PLAY_SOUND_EFFECTS, PREF_PLAY_SOUND_EFFECTS_DEFAULT));
+		this.setSoundEffectsEnabled(mMathDokuPreferences.isPlaySoundEffectEnabled());
 
 		super.onResume();
 
@@ -624,8 +568,7 @@ public class MainActivity extends Activity {
 				if (cell.countPossibles() == 1) {
 					CellChange orginalUserMove = cell.saveUndoInformation(null);
 					cell.setUserValue(cell.getFirstPossible());
-					if (preferences.getBoolean(PREF_CLEAR_REDUNDANT_POSSIBLES,
-							PREF_CLEAR_REDUNDANT_POSSIBLES_DEFAULT)) {
+					if (mMathDokuPreferences.isClearRedundantPossiblesEnabled()) {
 						// Update possible values for other cells in this row
 						// and
 						// column.
@@ -642,8 +585,7 @@ public class MainActivity extends Activity {
 			}
 			CellChange orginalUserMove = selectedCell.saveUndoInformation(null);
 			selectedCell.setUserValue(selectedCell.getCorrectValue());
-			if (preferences.getBoolean(PREF_CLEAR_REDUNDANT_POSSIBLES,
-					PREF_CLEAR_REDUNDANT_POSSIBLES_DEFAULT)) {
+			if (mMathDokuPreferences.isClearRedundantPossiblesEnabled()) {
 				// Update possible values for other cells in this row and
 				// column.
 				mGrid.clearRedundantPossiblesInSameRowOrColumn(orginalUserMove);
@@ -736,7 +678,7 @@ public class MainActivity extends Activity {
 			return true;
 		case R.id.development_mode_reset_preferences:
 			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
-				DevelopmentHelper.resetPreferences(this, 77);
+				DevelopmentHelper.resetPreferences(this);
 			}
 			return true;
 		case R.id.development_mode_clear_data:
@@ -750,13 +692,8 @@ public class MainActivity extends Activity {
 				UsageLog.getInstance().delete();
 
 				// Reset preferences
-				Editor prefeditor = preferences.edit();
-				prefeditor.putBoolean(PREF_USAGE_LOG_DISABLED,
-						PREF_USAGE_LOG_DISABLED_DEFAULT);
-				prefeditor.putInt(PREF_USAGE_LOG_COUNT_GAMES_STARTED,
-						PREF_USAGE_LOG_COUNT_GAMES_STARTED_DEFAULT);
-				prefeditor.commit();
-
+				mMathDokuPreferences.resetUsageLogDisabled();
+				
 				// Re-enable usage log
 				UsageLog.getInstance(this);
 			}
@@ -785,8 +722,7 @@ public class MainActivity extends Activity {
 	public void digitSelected(int value) {
 		this.mGridView.digitSelected(value, mInputMode);
 
-		if (this.preferences.getBoolean(PREF_HIDE_CONTROLS,
-				PREF_HIDE_CONTROLS_DEFAULT)) {
+		if (mMathDokuPreferences.isControlsBlockHidden()) {
 			this.controls.setVisibility(View.GONE);
 		}
 		this.mGridView.requestFocus();
@@ -809,17 +745,16 @@ public class MainActivity extends Activity {
 	 * @return True if start of game is prepared.
 	 */
 	private boolean prepareStartNewGame(final int gridSize) {
-		String hideOperators = this.preferences.getString(PREF_HIDE_OPERATORS,
-				PREF_HIDE_OPERATORS_DEFAULT);
-		if (hideOperators.equals(PREF_HIDE_OPERATORS_ALWAYS)) {
+		switch (mMathDokuPreferences.getHideOperator()) {
+		case ALWAYS:
 			// All new games should be generated with hidden operators.
 			this.startNewGame(gridSize, true);
 			return true;
-		} else if (hideOperators.equals(PREF_HIDE_OPERATORS_NEVER)) {
+		case NEVER:
 			// All new games should be generated with visible operators.
 			this.startNewGame(gridSize, false);
 			return true;
-		} else if (hideOperators.equals(PREF_HIDE_OPERATORS_ASK)) {
+		case ASK:
 			// Ask for every new game which is to be generated whether operators
 			// should be hidden or visible.
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -862,8 +797,7 @@ public class MainActivity extends Activity {
 
 		// Start a background task to generate the new grid. As soon as the new
 		// grid is created, the method onNewGridReady will be called.
-		int maxCageSize = (preferences.getBoolean(PREF_ALLOW_BIG_CAGES,
-				PREF_ALLOW_BIG_CAGES_DEFAULT) ? 6 : 4);
+		int maxCageSize = (mMathDokuPreferences.isAllowBigCagesEnabled() ? 6 : 4);
 		int maxCageResult = getResources().getInteger(
 				R.integer.maximum_cage_value);
 		mGridGeneratorTask = new GridGenerator(this, gridSize, maxCageSize,
@@ -882,12 +816,7 @@ public class MainActivity extends Activity {
 			if (mGrid.moves.size() > 0) {
 				// Increase counter for number of games on which playing has
 				// been started.
-				int countGamesStarted = preferences.getInt(
-						PREF_USAGE_LOG_COUNT_GAMES_STARTED, 0) + 1;
-				Editor prefeditor = preferences.edit();
-				prefeditor.putInt(PREF_USAGE_LOG_COUNT_GAMES_STARTED,
-						countGamesStarted);
-				prefeditor.commit();
+				int countGamesStarted = mMathDokuPreferences.increaseGamesStarted();
 
 				// Check if we are going to ask the user to send feedback
 				// TODO: change to definitive values
@@ -1033,9 +962,11 @@ public class MainActivity extends Activity {
 			return;
 		}
 
+		// Determine currently installed version
+		int previousInstalledVersion = mMathDokuPreferences.getCurrentInstalledVersion();
+		
+		// Determine to which version will be upgraded.
 		int currentVersion = getVersionNumber();
-		int previousInstalledVersion = preferences.getInt(PREF_CURRENT_VERSION,
-				PREF_CURRENT_VERSION_DEFAULT);
 
 		// Start phase 1 of the upgrade process if needed.
 		if (previousInstalledVersion < currentVersion) {
@@ -1046,11 +977,8 @@ public class MainActivity extends Activity {
 			mGameFileConverter = new GameFileConverter(this,
 					previousInstalledVersion, currentVersion);
 			mGameFileConverter.execute();
-		} else if (preferences.contains(PREF_CREATE_PREVIEW_IMAGES_COMPLETED)
-				&& !preferences.getBoolean(
-						PREF_CREATE_PREVIEW_IMAGES_COMPLETED,
-						PREF_CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT)) {
-			// Skip Phase 1 and go directly to Phase to generate new previews.
+		} else if (!mMathDokuPreferences.isCreatePreviewImagesCompleted()) {
+			// Skip Phase 1 and go directly to Phase 2 to generate new previews.
 			upgradePhase2_createPreviewImages(previousInstalledVersion,
 					currentVersion);
 		}
@@ -1070,76 +998,7 @@ public class MainActivity extends Activity {
 			int currentVersion) {
 
 		// Update preferences
-		Editor prefeditor = preferences.edit();
-		if (previousInstalledVersion < 121 && currentVersion >= 121) {
-			// Add missing preferences to the Shared Preferences.
-			if (!preferences.contains(PREF_CLEAR_REDUNDANT_POSSIBLES)) {
-				prefeditor.putBoolean(PREF_CLEAR_REDUNDANT_POSSIBLES,
-						PREF_CLEAR_REDUNDANT_POSSIBLES_DEFAULT);
-			}
-		}
-		if (previousInstalledVersion < 123 && currentVersion >= 123) {
-			// Add missing preferences to the Shared Preferences. Note:
-			// those preferences have been introduced in revisions prior to
-			// revision 122. But as from revision 122 the default values
-			// have been removed from optionsview.xml to prevent conflicts
-			// in defaults values with default values defined in this
-			// activity.
-			if (!preferences.contains(PREF_HIDE_CONTROLS)) {
-				prefeditor.putBoolean(PREF_HIDE_CONTROLS,
-						PREF_HIDE_CONTROLS_DEFAULT);
-			}
-			if (!preferences.contains(PREF_HIDE_OPERATORS)) {
-				prefeditor.putString(PREF_HIDE_OPERATORS,
-						PREF_HIDE_OPERATORS_DEFAULT);
-			}
-			if (!preferences.contains(PREF_PLAY_SOUND_EFFECTS)) {
-				prefeditor.putBoolean(PREF_PLAY_SOUND_EFFECTS,
-						PREF_PLAY_SOUND_EFFECTS_DEFAULT);
-			}
-			if (!preferences.contains(PREF_SHOW_BAD_CAGE_MATHS)) {
-				prefeditor.putBoolean(PREF_SHOW_BAD_CAGE_MATHS,
-						PREF_SHOW_BAD_CAGE_MATHS_DEFAULT);
-			}
-			if (!preferences.contains(PREF_SHOW_DUPE_DIGITS)) {
-				prefeditor.putBoolean(PREF_SHOW_DUPE_DIGITS,
-						PREF_SHOW_DUPE_DIGITS_DEFAULT);
-			}
-			if (!preferences.contains(PREF_SHOW_MAYBES_AS_3X3_GRID)) {
-				prefeditor.putBoolean(PREF_SHOW_MAYBES_AS_3X3_GRID,
-						PREF_SHOW_MAYBES_AS_3X3_GRID_DEFAULT);
-			}
-			if (!preferences.contains(PREF_SHOW_TIMER)) {
-				prefeditor.putBoolean(PREF_SHOW_TIMER, PREF_SHOW_TIMER_DEFAULT);
-			}
-			if (!preferences.contains(PREF_THEME)) {
-				prefeditor.putString(PREF_THEME, PREF_THEME_DEFAULT);
-			}
-			if (!preferences.contains(PREF_WAKE_LOCK)) {
-				prefeditor.putBoolean(PREF_WAKE_LOCK, PREF_WAKE_LOCK_DEFAULT);
-			}
-		}
-		if (previousInstalledVersion < 135 && currentVersion >= 135) {
-			if (!preferences.contains(PREF_ALLOW_BIG_CAGES)) {
-				prefeditor.putBoolean(PREF_ALLOW_BIG_CAGES,
-						PREF_ALLOW_BIG_CAGES_DEFAULT);
-			}
-		}
-		if (previousInstalledVersion < 175 && currentVersion >= 175) {
-			if (!preferences.contains(PREF_USAGE_LOG_DISABLED)) {
-				prefeditor.putBoolean(PREF_USAGE_LOG_DISABLED,
-						PREF_USAGE_LOG_DISABLED_DEFAULT);
-			}
-			if (!preferences.contains(PREF_USAGE_LOG_COUNT_GAMES_STARTED)) {
-				prefeditor.putInt(PREF_USAGE_LOG_COUNT_GAMES_STARTED,
-						PREF_USAGE_LOG_COUNT_GAMES_STARTED_DEFAULT);
-			}
-		}
-		if (previousInstalledVersion < 198 && currentVersion >= 198) {
-			TipDialog.initializeCategoryPreferences(preferences, previousInstalledVersion == -1);
-		}
-		prefeditor.putInt(PREF_CURRENT_VERSION, currentVersion);
-		prefeditor.commit();
+		mMathDokuPreferences.upgrade(previousInstalledVersion, currentVersion);
 
 		// Show help dialog after new/fresh install or changes dialog
 		// otherwise.
@@ -1197,8 +1056,7 @@ public class MainActivity extends Activity {
 		// reference to the task.
 		mGameFileConverter = null;
 
-		if (this.preferences.getBoolean(PREF_CREATE_PREVIEW_IMAGES_COMPLETED,
-				PREF_CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT)) {
+		if (mMathDokuPreferences.isCreatePreviewImagesCompleted()) {
 			// Previews have already been created. Go to next phase of upgrading
 			upgradePhase3_UpdatePreferences(previousInstalledVersion,
 					currentVersion);
@@ -1209,10 +1067,8 @@ public class MainActivity extends Activity {
 		int countGameFilesWithoutPreview = countGameFilesWithoutPreview();
 		if (countGameFilesWithoutPreview == 0) {
 			// No games files without previews found.
-			Editor prefEditor = preferences.edit();
-			prefEditor.putBoolean(PREF_CREATE_PREVIEW_IMAGES_COMPLETED, true);
-			prefEditor.commit();
-
+			mMathDokuPreferences.setCreatePreviewImagesCompleted();
+			
 			// Go to next phase of upgrading
 			upgradePhase3_UpdatePreferences(previousInstalledVersion,
 					currentVersion);
@@ -1286,10 +1142,7 @@ public class MainActivity extends Activity {
 						mProgressDialogImagePreviewCreation = null;
 					}
 
-					Editor prefEditor = preferences.edit();
-					prefEditor.putBoolean(PREF_CREATE_PREVIEW_IMAGES_COMPLETED,
-							true);
-					prefEditor.commit();
+					mMathDokuPreferences.setCreatePreviewImagesCompleted();
 
 					// Go to next phase of upgrading
 					upgradePhase3_UpdatePreferences(previousInstalledVersion,
@@ -1409,7 +1262,6 @@ public class MainActivity extends Activity {
 	public void setNewGrid(Grid grid) {
 		if (grid != null) {
 			mGrid = grid;
-			mGrid.setPreferences(preferences);
 			mGridView.loadNewGrid(grid);
 
 			// Show the grid of the loaded puzzle.
@@ -1459,8 +1311,7 @@ public class MainActivity extends Activity {
 		if (mGrid != null && mGrid.isActive()) {
 			mTimerTask = new GameTimer(this);
 			mTimerTask.mElapsedTime = mGrid.getElapsedTime();
-			if (preferences
-					.getBoolean(PREF_SHOW_TIMER, PREF_SHOW_TIMER_DEFAULT)) {
+			if (mMathDokuPreferences.isTimerVisible()) {
 				mTimerText.setVisibility(View.VISIBLE);
 			} else {
 				mTimerText.setVisibility(View.GONE);
@@ -1536,12 +1387,10 @@ public class MainActivity extends Activity {
 		case MAYBE:
 			solvedText.setVisibility(View.GONE);
 			pressMenu.setVisibility(View.GONE);
-			if (preferences
-					.getBoolean(PREF_SHOW_TIMER, PREF_SHOW_TIMER_DEFAULT)) {
+			if (mMathDokuPreferences.isTimerVisible()) {
 				mTimerText.setVisibility(View.VISIBLE);
 			}
-			if (!MainActivity.this.preferences.getBoolean(PREF_HIDE_CONTROLS,
-					PREF_HIDE_CONTROLS_DEFAULT)) {
+			if (!mMathDokuPreferences.isControlsBlockHidden()) {
 				this.controls.setVisibility(View.VISIBLE);
 			}
 
@@ -1619,13 +1468,13 @@ public class MainActivity extends Activity {
 			inputMode = InputMode.NORMAL;
 			break;
 		case NORMAL:
-			if (TipInputModeChanged.toBeDisplayed(preferences)) {
+			if (TipInputModeChanged.toBeDisplayed(mMathDokuPreferences)) {
 				new TipInputModeChanged(this, InputMode.MAYBE).show();
 			}
 			inputMode = InputMode.MAYBE;
 			break;
 		case MAYBE:
-			if (TipInputModeChanged.toBeDisplayed(preferences)) {
+			if (TipInputModeChanged.toBeDisplayed(mMathDokuPreferences)) {
 				new TipInputModeChanged(this, InputMode.MAYBE).show();
 			}
 			inputMode = InputMode.NORMAL;
@@ -1644,7 +1493,7 @@ public class MainActivity extends Activity {
 	 */
 	@SuppressLint("DefaultLocale")
 	public void setElapsedTime(long elapsedTime) {
-		if (preferences.getBoolean(PREF_SHOW_TIMER, PREF_SHOW_TIMER_DEFAULT)) {
+		if (mMathDokuPreferences.isTimerVisible()) {
 			String timeString;
 			int seconds = (int) (elapsedTime / 1000); // Whole seconds.
 			int hours = (int) Math.floor(seconds / (60 * 60));

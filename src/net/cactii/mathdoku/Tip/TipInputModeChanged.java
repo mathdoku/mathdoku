@@ -1,11 +1,9 @@
 package net.cactii.mathdoku.Tip;
 
-import net.cactii.mathdoku.GridCage;
 import net.cactii.mathdoku.MainActivity;
 import net.cactii.mathdoku.MainActivity.InputMode;
-import net.cactii.mathdoku.Tip.TipDialog.TipCategory;
+import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
-import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 
 public class TipInputModeChanged extends TipDialog {
@@ -63,8 +61,8 @@ public class TipInputModeChanged extends TipDialog {
 	 * @param cage
 	 * @return
 	 */
-	public static boolean toBeDisplayed(SharedPreferences preferences) {
+	public static boolean toBeDisplayed(Preferences preferences) {
 		// Determine on basis of preferences whether the tip should be shown.
-		return displayTip(preferences, TIP_NAME, TIP_CATEGORY);
+		return preferences.getDisplayTipAgain(TIP_NAME, TIP_CATEGORY);
 	}
 }

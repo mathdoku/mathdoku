@@ -8,7 +8,6 @@ import net.cactii.mathdoku.DevelopmentHelpers.DevelopmentHelperHoneycombAndAbove
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Build;
 
@@ -98,18 +97,8 @@ public class DevelopmentHelper {
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int id) {
-									// Remove preference which controls the
-									// process
-									// of preview image creation
-									if (mainActivity.preferences != null
-											&& mainActivity.preferences
-													.contains(MainActivity.PREF_CREATE_PREVIEW_IMAGES_COMPLETED)) {
-										Editor prefeditor = mainActivity.preferences
-												.edit();
-										prefeditor
-												.remove(MainActivity.PREF_CREATE_PREVIEW_IMAGES_COMPLETED);
-										prefeditor.commit();
-									}
+									Preferences.getInstance(mainActivity)
+											.initCreatePreviewImagesCompleted();
 									restartActivity(mainActivity);
 								}
 							}).show();
@@ -151,7 +140,7 @@ public class DevelopmentHelper {
 	}
 
 	/**
-	 * Delete all preview images and resets the preference which is used to
+	 * Delete all preview images and resets the preferences at the default which is used to
 	 * check whether preview images have to be generated.
 	 * 
 	 * @param mainActivity
@@ -206,18 +195,8 @@ public class DevelopmentHelper {
 										}
 									}
 
-									// Reset preference which controls the
-									// process of preview image creation
-									if (mainActivity.preferences != null) {
-										Editor prefeditor = mainActivity.preferences
-												.edit();
-										prefeditor
-												.putBoolean(
-														MainActivity.PREF_CREATE_PREVIEW_IMAGES_COMPLETED,
-														MainActivity.PREF_CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT);
-										prefeditor.commit();
-									}
-
+									Preferences.getInstance(mainActivity)
+											.initCreatePreviewImagesCompleted();
 									restartActivity(mainActivity);
 								}
 							});
@@ -227,59 +206,32 @@ public class DevelopmentHelper {
 	}
 
 	/**
-	 * Reset the preferences to a given version of the game.
+	 * Removes all preferences. After restart of the app the preferences will be
+	 * initalised with default values. Saved games will not be deleted!
 	 * 
 	 * @param mainActivity
 	 *            The activity in which context the preferences are resetted.
-	 * @param targetVersion
-	 *            The version of the game to which preferences will be resetted.
 	 * @return
 	 */
-	public static boolean resetPreferences(final MainActivity mainActivity,
-			int targetVersion) {
+	public static boolean resetPreferences(final MainActivity mainActivity) {
 		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
-			SharedPreferences preferences = mainActivity.preferences;
+			executeDeleteAllPreferences();
 
-			if (preferences != null) {
-				String finalDialogMessage = "";
+			// Show dialog
+			new AlertDialog.Builder(mainActivity)
+					.setMessage(
+							"All preferences have been removed. After restart "
+									+ "of the app the preferences will be "
+									+ "initialized with default values.")
+					.setPositiveButton("OK",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									restartActivity(mainActivity);
+								}
+							}).show();
 
-				int currentVersion = preferences.getInt(
-						MainActivity.PREF_CURRENT_VERSION,
-						MainActivity.PREF_CURRENT_VERSION_DEFAULT);
-				Editor prefeditor = preferences.edit();
-
-				prefeditor.putInt(MainActivity.PREF_CURRENT_VERSION,
-						targetVersion);
-
-				if (targetVersion <= 77
-						&& preferences
-								.contains(MainActivity.PREF_CREATE_PREVIEW_IMAGES_COMPLETED)) {
-					prefeditor
-							.remove(MainActivity.PREF_CREATE_PREVIEW_IMAGES_COMPLETED);
-				}
-
-				if (targetVersion <= 77 && currentVersion > 111) {
-					finalDialogMessage += "With upgrade to revision 111 or above, all filenames "
-							+ "have been changed. These changes have not been "
-							+ "reverted. Those games will be visible again after "
-							+ "the upgrade to this version has been completed.\n\n";
-				}
-
-				prefeditor.commit();
-
-				// Show the final dialog
-				new AlertDialog.Builder(mainActivity)
-						.setMessage(finalDialogMessage)
-						.setPositiveButton("OK",
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int id) {
-										restartActivity(mainActivity);
-									}
-								}).show();
-
-				return true;
-			}
+			return true;
 		}
 		return false;
 	}
@@ -310,10 +262,7 @@ public class DevelopmentHelper {
 								public void onClick(DialogInterface dialog,
 										int id) {
 									executeDeleteAllGames();
-									Editor prefeditor = mainActivity.preferences
-											.edit();
-									prefeditor.clear();
-									prefeditor.commit();
+									executeDeleteAllPreferences();
 
 									mainActivity.mGrid = null;
 									mainActivity
@@ -350,6 +299,14 @@ public class DevelopmentHelper {
 			for (String filename : filenames) {
 				new GameFile(filename).delete();
 			}
+		}
+	}
+
+	private static void executeDeleteAllPreferences() {
+		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+			Editor prefeditor = Preferences.getInstance().mSharedPreferences.edit();
+			prefeditor.clear();
+			prefeditor.commit();
 		}
 	}
 
