@@ -481,15 +481,18 @@ public class GameFile extends File {
 	 *            The grid view for which the preview image has to be generated.
 	 */
 	public boolean savePreviewImage(GridView view) {
-		if (DevelopmentHelper.mode != Mode.PRODUCTION) {
-			if (view.getWidth() == 0) {
+		// Check if the view dimensions allow to make a preview. 
+		if (view.getWidth() == 0 || view.getHeight() == 0) {
+			if (DevelopmentHelper.mode != Mode.PRODUCTION) {
 				Log.i(TAG,
-						"Can not save the preview image. If running on am Emulator for "
+						"Can not save the preview image. If running on an Emulator for "
 								+ "Android 2.2 this is normal behavior when rotating screen "
 								+ "from landscap to portrait as the Activity.onCreate is called "
 								+ "twice instead of one time.");
 				return true;
-			}
+			}  
+			// Could not create a preview.
+			return false;
 		}
 
 		// Create a scaled bitmap and canvas and draw the view on this canvas.
