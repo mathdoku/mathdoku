@@ -7,8 +7,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import android.app.Activity;
 import android.app.ListActivity;
 import android.graphics.Bitmap;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class GameFileListAdapter extends BaseAdapter {
@@ -30,6 +33,11 @@ public class GameFileListAdapter extends BaseAdapter {
 
 	// Background for listview items
 	private int mResIdBackGroundListViewItem;
+
+	// Column width and margins for the list rows.
+	private int mImageHeightWidth;
+	private int mColumnWidth;
+	private int mColumnMargin;
 
 	/**
 	 * Creates a new instance of {@link GameFileListAdapter}.
@@ -62,6 +70,20 @@ public class GameFileListAdapter extends BaseAdapter {
 			break;
 		}
 
+		// Get the display metrics
+		DisplayMetrics displayMetrics = new DisplayMetrics();
+		mContext.getWindowManager().getDefaultDisplay()
+				.getMetrics(displayMetrics);
+
+		// Calculate size of margins and columns. Both columns are 50% of total
+		// width. Margins are calculated to center the columns horizontally
+		int previewImageSize = getPreviewImageSize(mContext);
+		mImageHeightWidth = previewImageSize;
+		mColumnWidth = (int) ((float) 0.5 * displayMetrics.widthPixels);
+		mColumnMargin = (int) Math.max(0,
+				(mColumnWidth - (float) previewImageSize));
+
+		// Read and sort the files
 		refreshFiles();
 	}
 
@@ -131,123 +153,247 @@ public class GameFileListAdapter extends BaseAdapter {
 		return position;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see android.widget.Adapter#getView(int, android.view.View,
-	 * android.view.ViewGroup)
-	 */
+	// Following variables are declared outside method ViewHolder to reduce
+	// memory usage and increase speed. These variables are intended to be used
+	// inside this method only.
+	Calendar getView_CurrentTime = null;
+	Calendar getView_GameFileTime;
+	Calendar getView_GameFileDate;
+	ViewHolder getView_ViewHolder;
+	RelativeLayout.LayoutParams getView_LayoutParams;
+
+	// Class for holding references to all fields in the convertView of method
+	// getView as described in the ViewHolder pattern on page
+	// http://developer.android.com/training/improving-layouts/smooth-scrolling.html.
+	private static class ViewHolder {
+		boolean isSavedGameViewHolder;
+
+		// Fields used for view holders which are used to display saved games.
+		RelativeLayout previewRelativeLayout;
+		RelativeLayout detailsRelativeLayout;
+		ImageView imageView;
+		RelativeLayout imagePreviewNotAvailable;
+		TextView filenameTextView;
+		TextView savedOnTextView;
+		Button loadButton;
+		Button deleteButton;
+	}
+
 	public View getView(int position, View convertView, ViewGroup parent) {
-		// Check if current position should hold the button to save the current
-		// game.
+		// The first row in the list contains the button for saving the current
+		// game. It has a different layout compared to the other rows.
 		if (position == 0) {
-			convertView = inflater.inflate(R.layout.savedgamesaveitem, null);
-			convertView.findViewById(R.id.gameFileListRow)
-					.setBackgroundResource(mResIdBackGroundListViewItem);
-			final Button saveCurrent = (Button) convertView
-					.findViewById(R.id.saveCurrent);
-			saveCurrent.setOnClickListener(new OnClickListener() {
-				public void onClick(View v) {
+			// Create a new convertView only in case it can not be recycled.
+			// Note: for this row no references are stored in the viewHolder
+			// object as they are not needed to refresh data.
+			if (convertView == null
+					|| ((ViewHolder) convertView.getTag()).isSavedGameViewHolder) {
+				// Define and initialise the viewHolder
+				getView_ViewHolder = new ViewHolder();
+				getView_ViewHolder.isSavedGameViewHolder = false;
+
+				// Inflate the convertView and set the background.
+				convertView = inflater
+						.inflate(R.layout.savedgamesaveitem, null);
+				convertView.findViewById(R.id.gameFileListRow)
+						.setBackgroundResource(mResIdBackGroundListViewItem);
+
+				// Set button and listener.
+				final Button saveCurrent = (Button) convertView
+						.findViewById(R.id.saveCurrent);
+				saveCurrent.setOnClickListener(new OnClickListener() {
+					public void onClick(View v) {
+						saveCurrent.setEnabled(false);
+						mContext.saveCurrent();
+					}
+				});
+				if (mContext.mCurrentSaved) {
 					saveCurrent.setEnabled(false);
-					mContext.saveCurrent();
 				}
-			});
-			if (mContext.mCurrentSaved)
-				saveCurrent.setEnabled(false);
+
+				// Store the view holder as a tag in the convert view so it can
+				// be distinguished from the other rows.
+				convertView.setTag(getView_ViewHolder);
+			}
 			return convertView;
 		}
 
-		// All other positions in this list will hold a saved game. For smooth
-		// scrolling in this list the preview images of saved games are used.
-		convertView = inflater.inflate(R.layout.savedgameitem, null);
-		convertView.findViewById(R.id.gameFileListRow).setBackgroundResource(
-				mResIdBackGroundListViewItem);
+		// All other rows of this list view contain saved games. Create a new
+		// convertView only in case it can not be recycled.
+		if (convertView == null
+				|| !((ViewHolder) convertView.getTag()).isSavedGameViewHolder) {
+			// Define and initialise the viewHolder
+			getView_ViewHolder = new ViewHolder();
+			getView_ViewHolder.isSavedGameViewHolder = true;
+
+			// Inflate the convertView and set the background.
+			convertView = inflater.inflate(R.layout.savedgameitem, null);
+			convertView.findViewById(R.id.gameFileListRow)
+					.setBackgroundResource(mResIdBackGroundListViewItem);
+
+			// Set layout for column containing the previews
+			getView_ViewHolder.previewRelativeLayout = (RelativeLayout) convertView
+					.findViewById(R.id.detailsLayout);
+			getView_LayoutParams = (RelativeLayout.LayoutParams) getView_ViewHolder.previewRelativeLayout
+					.getLayoutParams();
+			getView_LayoutParams.width = mColumnWidth;
+			getView_ViewHolder.previewRelativeLayout
+					.setLayoutParams(getView_LayoutParams);
+
+			// Set height and width of the preview image
+			getView_ViewHolder.imageView = (ImageView) convertView
+					.findViewById(R.id.previewGameFile);
+			getView_LayoutParams = (RelativeLayout.LayoutParams) getView_ViewHolder.imageView
+					.getLayoutParams();
+			getView_LayoutParams.height = mImageHeightWidth;
+			getView_LayoutParams.width = mImageHeightWidth;
+			getView_LayoutParams.leftMargin = mColumnMargin;
+			getView_ViewHolder.imageView.setLayoutParams(getView_LayoutParams);
+
+			// Set height and width of place holder which is used in case the
+			// preview image is missing
+			getView_ViewHolder.imagePreviewNotAvailable = ((RelativeLayout) convertView
+					.findViewById(R.id.previewGameFileNotAvailable));
+			getView_LayoutParams = (RelativeLayout.LayoutParams) getView_ViewHolder.imagePreviewNotAvailable
+					.getLayoutParams();
+			getView_LayoutParams.height = mImageHeightWidth;
+			getView_LayoutParams.width = mImageHeightWidth;
+			getView_LayoutParams.leftMargin = mColumnMargin;
+			getView_ViewHolder.imagePreviewNotAvailable
+					.setLayoutParams(getView_LayoutParams);
+
+			// Set width and margin for layout for column containing the details
+			// and buttons
+			getView_ViewHolder.detailsRelativeLayout = (RelativeLayout) convertView
+					.findViewById(R.id.detailsLayout);
+			getView_LayoutParams = (RelativeLayout.LayoutParams) getView_ViewHolder.detailsRelativeLayout
+					.getLayoutParams();
+			getView_LayoutParams.width = mColumnWidth;
+			getView_LayoutParams.rightMargin = mColumnMargin;
+			getView_ViewHolder.detailsRelativeLayout
+					.setLayoutParams(getView_LayoutParams);
+
+			// Set reference to field filename
+			if (GameFile.DEBUG_SAVE_RESTORE) {
+				getView_ViewHolder.filenameTextView = ((TextView) convertView
+						.findViewById(R.id.filename));
+				getView_ViewHolder.filenameTextView.setVisibility(View.VISIBLE);
+			}
+
+			// Set reference to field save date time
+			getView_ViewHolder.savedOnTextView = (TextView) convertView
+					.findViewById(R.id.savedOnText);
+
+			// Set reference to buttons.
+			getView_ViewHolder.loadButton = (Button) convertView
+					.findViewById(R.id.gameLoad);
+			getView_ViewHolder.deleteButton = (Button) convertView
+					.findViewById(R.id.gameDelete);
+
+			// Store the view holder as a tag in the convert view.
+			convertView.setTag(getView_ViewHolder);
+		} else {
+			// In case a convertView is recycled, the references in the
+			// viewHolder object can be reused.
+			getView_ViewHolder = (ViewHolder) convertView.getTag();
+		}
 
 		// Get game file header information for current position.
 		final GameFile.GameFileHeader gameFile = this.mGameFiles
 				.get(position - 1);
 
-		// Show preview image or textview when the preview is missing.
-		ImageView imageView = (ImageView) convertView
-				.findViewById(R.id.previewGameFile);
+		// Display the preview image if available. Else display the placeholder.
 		if (gameFile.hasPreviewAvailable) {
-			// Load the preview for displaying.
+			getView_ViewHolder.imageView.setVisibility(View.VISIBLE);
+			getView_ViewHolder.imagePreviewNotAvailable
+					.setVisibility(View.GONE);
 			GameFile saver = new GameFile(gameFile.filename);
 			Bitmap preview = saver.getPreviewImage();
-			imageView.setImageBitmap(preview);
+			getView_ViewHolder.imageView.setImageBitmap(preview);
 		} else {
-			// Preview image is not yet available. Create a back ground process
-			// to create it.
-			// new GameFilePreviewCreator(this.mContext,
-			// gameFile.filenameShort).execute();
-
-			// Replace image preview with text view containing a message that
-			// the preview is missing.
-			imageView.setVisibility(View.GONE);
-			((TextView) convertView
-					.findViewById(R.id.previewGameFileNotAvailable))
+			getView_ViewHolder.imageView.setVisibility(View.GONE);
+			getView_ViewHolder.imagePreviewNotAvailable
 					.setVisibility(View.VISIBLE);
-
 		}
 
+		// Set filename
 		if (GameFile.DEBUG_SAVE_RESTORE) {
-			TextView filenameTextView = ((TextView) convertView
-					.findViewById(R.id.filename));
-			filenameTextView.setText(gameFile.filename);
-			filenameTextView.setVisibility(View.VISIBLE);
+			getView_ViewHolder.filenameTextView.setText(gameFile.filename);
 		}
 
 		// Calculate the time elapsed since creating the game file.
-		TextView savedOnTextView = (TextView) convertView
-				.findViewById(R.id.savedOnText);
-		Calendar currentTime = Calendar.getInstance();
-		Calendar gameFileTime = Calendar.getInstance();
-		Calendar gameFileDate = Calendar.getInstance();
-		gameFileTime.setTimeInMillis(gameFile.datetimeSaved);
-		gameFileDate.set(gameFileTime.get(Calendar.YEAR),
-				gameFileTime.get(Calendar.MONTH),
-				gameFileTime.get(Calendar.DAY_OF_MONTH));
-		if (gameFileDate.get(Calendar.YEAR) == currentTime.get(Calendar.YEAR)
-				&& gameFileDate.get(Calendar.DAY_OF_YEAR) == currentTime
+		if (getView_CurrentTime == null) {
+			getView_CurrentTime = Calendar.getInstance();
+		}
+		getView_GameFileTime = Calendar.getInstance();
+		getView_GameFileDate = Calendar.getInstance();
+
+		getView_GameFileTime.setTimeInMillis(gameFile.datetimeSaved);
+		getView_GameFileDate.set(getView_GameFileTime.get(Calendar.YEAR),
+				getView_GameFileTime.get(Calendar.MONTH),
+				getView_GameFileTime.get(Calendar.DAY_OF_MONTH));
+		if (getView_GameFileDate.get(Calendar.YEAR) == getView_CurrentTime
+				.get(Calendar.YEAR)
+				&& getView_GameFileDate.get(Calendar.DAY_OF_YEAR) == getView_CurrentTime
 						.get(Calendar.DAY_OF_YEAR)) {
 			// Game file was saved today. Only display time.
-			savedOnTextView.setText(""
+			getView_ViewHolder.savedOnTextView.setText(""
 					+ DateFormat.getTimeInstance(DateFormat.SHORT).format(
 							gameFile.datetimeSaved));
-		} else if (gameFileDate.get(Calendar.YEAR) == currentTime
+		} else if (getView_GameFileDate.get(Calendar.YEAR) == getView_CurrentTime
 				.get(Calendar.YEAR)
-				&& gameFileDate.get(Calendar.DAY_OF_YEAR) == currentTime
+				&& getView_GameFileDate.get(Calendar.DAY_OF_YEAR) == getView_CurrentTime
 						.get(Calendar.DAY_OF_YEAR) - 1) {
 			// Game file was saved yesterday.
-			savedOnTextView
-					.setText(gameFileTime.get(Calendar.HOUR)
+			getView_ViewHolder.savedOnTextView
+					.setText(getView_GameFileTime.get(Calendar.HOUR)
 							+ ":"
-							+ gameFileTime.get(Calendar.MINUTE)
-							+ ((gameFileTime.get(Calendar.AM_PM) == Calendar.AM) ? " AM"
+							+ getView_GameFileTime.get(Calendar.MINUTE)
+							+ ((getView_GameFileTime.get(Calendar.AM_PM) == Calendar.AM) ? " AM"
 									: " PM") + " yesterday");
 		} else {
-			savedOnTextView.setText(""
+			getView_ViewHolder.savedOnTextView.setText(""
 					+ DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
 							DateFormat.SHORT).format(gameFile.datetimeSaved));
 		}
 
 		// Set callback for loading this game.
-		Button loadButton = (Button) convertView.findViewById(R.id.gameLoad);
-		loadButton.setOnClickListener(new OnClickListener() {
+		getView_ViewHolder.loadButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				mContext.loadGameFile(gameFile.filename);
 			}
 		});
 
 		// Set callback for deleting this game.
-		Button deleteButton = (Button) convertView
-				.findViewById(R.id.gameDelete);
-		deleteButton.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				mContext.deleteGameFile(gameFile.filename);
-			}
-		});
+		getView_ViewHolder.deleteButton
+				.setOnClickListener(new OnClickListener() {
+					public void onClick(View v) {
+						mContext.deleteGameFile(gameFile.filename);
+					}
+				});
 
 		return convertView;
+	}
+
+	/**
+	 * Determine the preview size used for this device.
+	 * 
+	 * @param activity
+	 *            The activity in which context the image preview size has to be
+	 *            determined.
+	 * @return The size of the preview images. 0 in case of an error.
+	 */
+	public static int getPreviewImageSize(Activity activity) {
+		if (activity == null) {
+			return 0;
+		}
+
+		// Get the display metrics
+		DisplayMetrics displayMetrics = new DisplayMetrics();
+		activity.getWindowManager().getDefaultDisplay()
+				.getMetrics(displayMetrics);
+
+		return (int) ((float) 0.45 * (float) Math.min(
+				displayMetrics.heightPixels, displayMetrics.widthPixels));
 	}
 }

@@ -4,42 +4,50 @@
     android:id="@+id/gameFileListRow"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/background1"
-    android:padding="15dp" >
+    android:paddingBottom="15dp"
+    android:paddingTop="15dp" >
 
     <RelativeLayout
         android:id="@+id/previewLayout"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:background="#FFFFFFFF" >
+        android:layout_alignParentTop="true" >
 
         <ImageView
             android:id="@+id/previewGameFile"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            tools:ignore="ContentDescription" />
-
-        <TextView
-            android:id="@+id/previewGameFileNotAvailable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_centerInParent="true"
-            android:layout_margin="15dp"
-            android:text="@string/game_file_preview_not_available"
-            android:textSize="@dimen/text_size_default"
-            android:visibility="gone" />
+            android:layout_alignParentTop="true"
+            android:scaleType="fitXY"
+            tools:ignore="ContentDescription" />
+
+        <RelativeLayout
+            android:id="@+id/previewGameFileNotAvailable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFFFF"
+            android:padding="5dp"
+            android:visibility="gone" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/game_file_preview_not_available"
+                android:textSize="@dimen/text_size_default" />
+        </RelativeLayout>
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/detailsLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignBottom="@+id/previewLayout"
         android:layout_alignTop="@+id/previewLayout"
-        android:layout_marginLeft="15dp"
-        android:layout_toRightOf="@+id/previewLayout" >
+        android:layout_toRightOf="@+id/previewLayout"
+        android:paddingLeft="15dp" >
 
         <TextView
             android:id="@+id/filename"
@@ -47,7 +55,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_marginBottom="5dp"
             android:background="#80000000"
             android:text="Filename"
             android:textColor="#FFFFFFFF"
@@ -67,34 +74,26 @@
             android:textColor="#FFFFFFFF"
             android:textSize="@dimen/text_size_default"
             tools:ignore="HardcodedText" />
-    </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/buttonLayout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/previewLayout"
-        android:layout_marginLeft="15dp"
-        android:layout_toRightOf="@+id/previewLayout"
-        android:orientation="horizontal" >
 
         <Button
             android:id="@+id/gameLoad"
-            android:layout_width="0dp"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_above="@+id/gameDelete"
+            android:layout_alignLeft="@+id/gameDelete"
             android:lines="1"
             android:text="@string/save_game_screen_load_game"
             android:textSize="@dimen/text_size_default" />
 
         <Button
             android:id="@+id/gameDelete"
-            android:layout_width="0dp"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
             android:lines="1"
             android:text="@string/save_game_screen_delete_game"
             android:textSize="@dimen/text_size_default" />
-    </LinearLayout>
+    </RelativeLayout>
 
 </RelativeLayout>

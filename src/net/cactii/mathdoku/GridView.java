@@ -140,6 +140,9 @@ public class GridView extends View implements OnTouchListener {
 	public boolean onTrackballEvent(MotionEvent event) {
 		if (!this.grid.isActive() || this.mSelectorShown)
 			return false;
+		
+		UsageLog.getInstance().logTrackball(grid.getSignatureString());
+		
 		// On press event, take selected cell, call touched listener
 		// which will popup the digit selector.
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
