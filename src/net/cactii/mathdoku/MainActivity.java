@@ -416,7 +416,7 @@ public class MainActivity extends Activity {
 		stopTimer();
 		if (mGrid != null && mGrid.getGridSize() > 3) {
 			GameFile saver = new GameFile(GameFileType.LAST_GAME);
-			saver.save(mGrid, this.mGridView);
+			saver.save(this);
 		}
 
 		if (mProgressDialogImagePreviewCreation != null
@@ -1249,13 +1249,14 @@ public class MainActivity extends Activity {
 		// Runnable for handling the next step of preview image creation process
 		// which can not be done until the grid view has been validated
 		// (refreshed).
+		final MainActivity mainActivity = this;
 		final Runnable createNextPreviewImage = new Runnable() {
 			public void run() {
 				// If a game file was already loaded, it is now loaded and
 				// visible in the grid view.
 				if (mGameFileImagePreviewCreation != null) {
 					// Save preview for the current game file.
-					mGameFileImagePreviewCreation.savePreviewImage(mGridView);
+					mGameFileImagePreviewCreation.savePreviewImage(mainActivity, mGridView);
 					mProgressDialogImagePreviewCreation.incrementProgressBy(1);
 				}
 

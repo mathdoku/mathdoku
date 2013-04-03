@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -38,9 +39,6 @@ public class GameFile extends File {
 	private static final String GAMEFILE_EXTENSION = ".mgf"; // MGF = Mathdoku
 																// Game File
 	private static final String PREVIEW_EXTENSION = ".png";
-
-	// Scaling factor for preview images
-	private static final float PREVIEW_SCALE_FACTOR = (float) 0.5;
 
 	// Remove "&& false" in following line to show debug information about
 	// saving and restoring files when running in development mode.
@@ -93,19 +91,26 @@ public class GameFile extends File {
 	 * Save the given grid to a game file. The preview image of the grid is
 	 * based upon the given grid view.
 	 * 
-	 * @param grid
-	 *            The grid to be saved.
-	 * @param gridView
-	 *            The grid view to be saved.
+	 * @param mainActivity
+	 *            The main activity in which context the game is saved.
+	 * 
 	 * @return True in case both the grid and the preview image have been saved.
 	 *         False otherwise.
 	 */
-	public boolean save(Grid grid, GridView gridView) {
+	public boolean save(MainActivity mainActivity) {
+		if (mainActivity.mGrid == null) {
+			return false;
+		}
+
 		// First save the grid.
-		if (save(grid, false)) {
+		if (save(mainActivity.mGrid, false)) {
+			if (mainActivity.mGridView == null) {
+				return false;
+			}
+
 			// Save a preview image of the grid view for faster scrolling in
 			// the GameFileListAdacpter.
-			return savePreviewImage(gridView);
+			return savePreviewImage(mainActivity, mainActivity.mGridView);
 		} else {
 			return false;
 		}
@@ -351,7 +356,7 @@ public class GameFile extends File {
 			if (selectedCell != null) {
 				grid.setSelectedCell(selectedCell);
 			}
-			
+
 			// Remaining lines contain cell changes (zero or more expected)
 			CellChange cellChange = new CellChange();
 			while (line != null
@@ -477,11 +482,13 @@ public class GameFile extends File {
 	/**
 	 * Save a preview image of the grid view.
 	 * 
+	 * @param activity
+	 *            The activity in which context the preview image is saved.
 	 * @param view
 	 *            The grid view for which the preview image has to be generated.
 	 */
-	public boolean savePreviewImage(GridView view) {
-		// Check if the view dimensions allow to make a preview. 
+	public boolean savePreviewImage(Activity activity, GridView view) {
+		// Check if the view dimensions allow to make a preview.
 		if (view.getWidth() == 0 || view.getHeight() == 0) {
 			if (DevelopmentHelper.mode != Mode.PRODUCTION) {
 				Log.i(TAG,
@@ -490,14 +497,22 @@ public class GameFile extends File {
 								+ "from landscap to portrait as the Activity.onCreate is called "
 								+ "twice instead of one time.");
 				return true;
-			}  
+			}
 			// Could not create a preview.
 			return false;
 		}
 
+		// Determine size of preview images as needed by the file adapter.
+		int previewSize = GameFileListAdapter
+				.getPreviewImageSize(activity);
+		if (previewSize == 0) {
+			// Can not calculate size of preview image.
+			return false;
+		}
+
 		// Create a scaled bitmap and canvas and draw the view on this canvas.
-		int previewSize = (int) (view.getWidth() * PREVIEW_SCALE_FACTOR);
-		float scaleFactor = PREVIEW_SCALE_FACTOR;
+		float scaleFactor = (float) previewSize
+				/ (float) Math.max(view.getWidth(), view.getHeight());
 		Bitmap bitmap = Bitmap.createBitmap(previewSize, previewSize,
 				Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(bitmap);
