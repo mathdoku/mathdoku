@@ -13,10 +13,9 @@
 
     <!-- GENERAL - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-
-    <!-- The message displayed on the screen to explain the player that (s)he has to press the "Menu" button on the device. -->
-    <string name="press_menu_button_message">Press your device\'s \"Menu\" button.</string>
-
+    <!--  The message displayed on the "start" button. -->
+    <string name="start_button_message">Start here</string>
+    
     <!-- The label of the buttons that close dialogs. -->
     <string name="dialog_general_button_close">Close</string>
 

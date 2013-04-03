@@ -227,15 +227,14 @@
             android:visibility="gone"
             tools:ignore="HardcodedText" />
 
-        <TextView
-            android:id="@+id/pressMenu"
+
+        <Button
+            android:id="@+id/startButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:shadowColor="#7FFFFFFF"
-            android:shadowDx="1"
-            android:shadowDy="1"
-            android:text="@string/press_menu_button_message"
+            android:layout_marginTop="10dp"
+            android:text="@string/start_button_message"
             android:textColor="#FF000000"
             android:textSize="@dimen/text_size_default"
             android:textStyle="bold" />

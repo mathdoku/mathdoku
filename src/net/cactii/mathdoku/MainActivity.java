@@ -131,7 +131,6 @@ public class MainActivity extends Activity {
 	Button mInputModeTextView;
 
 	TextView solvedText;
-	TextView pressMenu;
 	GameTimer mTimerTask;
 
 	RelativeLayout topLayout;
@@ -144,6 +143,8 @@ public class MainActivity extends Activity {
 	// Digit positions are the places on which the digit buttons can be placed.
 	Button mDigitPosition[] = new Button[9];
 
+	Button mStartButton;
+	
 	Button clearDigit;
 	Button undoButton;
 	View[] sound_effect_views;
@@ -212,11 +213,11 @@ public class MainActivity extends Activity {
 		this.mGridView = (GridView) findViewById(R.id.gridView);
 		this.solvedText = (TextView) findViewById(R.id.solvedText);
 		this.mGridView.animText = this.solvedText;
-		this.pressMenu = (TextView) findViewById(R.id.pressMenu);
 		this.controls = (TableLayout) findViewById(R.id.controls);
 		this.mGameSeedLabel = (TextView) findViewById(R.id.gameSeedLabel);
 		this.mGameSeedText = (TextView) findViewById(R.id.gameSeedText);
 		this.mTimerText = (TextView) findViewById(R.id.timerText);
+		this.mStartButton = (Button) findViewById(R.id.startButton);
 
 		this.mInputModeTextView = (Button) findViewById(R.id.inputModeText);
 		mDigitPosition[0] = (Button) findViewById(R.id.digitPosition1);
@@ -337,6 +338,14 @@ public class MainActivity extends Activity {
 			}
 
 		});
+		this.mStartButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				openOptionsMenu();
+			}
+			
+		});
 		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
 			final MainActivity activity = this;
 			this.mGameSeedText.setOnTouchListener(new OnTouchListener() {
@@ -425,8 +434,7 @@ public class MainActivity extends Activity {
 	}
 
 	public void setTheme() {
-		pressMenu.setTextColor(0xff000000);
-		pressMenu.setBackgroundColor(0xa0f0f0f0);
+
 		String theme = preferences.getString(PREF_THEME, PREF_THEME_DEFAULT);
 		solvedText.setTypeface(mPainter.mGridPainter.mSolvedTypeface);
 
@@ -437,8 +445,6 @@ public class MainActivity extends Activity {
 		} else if (theme.equals(MainActivity.PREF_THEME_DARK)) {
 			topLayout.setBackgroundResource(R.drawable.newspaper_dark);
 			mPainter.setTheme(GridTheme.DARK);
-			pressMenu.setTextColor(0xfff0f0f0);
-			pressMenu.setBackgroundColor(0xff000000);
 			mTimerText.setTextColor(0xFFF0F0F0);
 		} else if (theme.equals(MainActivity.PREF_THEME_CARVED)) {
 			topLayout.setBackgroundResource(R.drawable.background);
@@ -1238,7 +1244,7 @@ public class MainActivity extends Activity {
 
 		// Display and hide elements so that the previews can be created.
 		puzzleGrid.setVisibility(View.VISIBLE);
-		pressMenu.setVisibility(View.GONE);
+		mStartButton.setVisibility(View.GONE);
 
 		// Runnable for handling the next step of preview image creation process
 		// which can not be done until the grid view has been validated
@@ -1263,7 +1269,7 @@ public class MainActivity extends Activity {
 						mGridView.loadNewGrid(mGrid);
 						puzzleGrid.setVisibility(View.INVISIBLE);
 						controls.setVisibility(View.GONE);
-						pressMenu.setVisibility(View.GONE);
+						mStartButton.setVisibility(View.GONE);
 
 						// Post a message for further processing of the
 						// conversion game after the view has been refreshed
@@ -1517,7 +1523,7 @@ public class MainActivity extends Activity {
 		case NO_INPUT__HIDE_GRID:
 			mTimerText.setVisibility(View.GONE);
 			controls.setVisibility(View.GONE);
-			pressMenu.setVisibility(View.VISIBLE);
+			mStartButton.setVisibility(View.VISIBLE);
 			break;
 		case NO_INPUT__DISPLAY_GRID:
 			if (mGrid == null || (mGrid != null && mGrid.isSolvedByCheating())) {
@@ -1530,12 +1536,12 @@ public class MainActivity extends Activity {
 				setElapsedTime(mGrid.getElapsedTime());
 			}
 			controls.setVisibility(View.GONE);
-			pressMenu.setVisibility(View.VISIBLE);
+			mStartButton.setVisibility(View.VISIBLE);
 			break;
 		case NORMAL:
 		case MAYBE:
 			solvedText.setVisibility(View.GONE);
-			pressMenu.setVisibility(View.GONE);
+			mStartButton.setVisibility(View.GONE);
 			if (preferences
 					.getBoolean(PREF_SHOW_TIMER, PREF_SHOW_TIMER_DEFAULT)) {
 				mTimerText.setVisibility(View.VISIBLE);
