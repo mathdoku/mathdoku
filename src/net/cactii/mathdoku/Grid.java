@@ -436,14 +436,14 @@ public class Grid {
 		for (GridCell cell : mCells) {
 			signatureString.append(cell.getCorrectValue());
 		}
-		signatureString.append("|");
+		signatureString.append(":");
 		// Followed by all cage-id per cell
 		for (GridCell cell : mCells) {
 			signatureString.append(cell.getCageId());
 		}
 		// Followed by cages
 		for (GridCage cage : mCages) {
-			signatureString.append("|" + cage.mId + ":" + cage.mResult + ":" + cage.mAction);
+			signatureString.append(":" + cage.mId + "," + cage.mResult + "," + cage.mAction);
 		}
 		return signatureString.toString();
 	}

@@ -84,6 +84,12 @@ public class UsageLog {
 	// The activity which has started this usage logger
 	private static Activity mMainActivity;
 
+	// Signature of the most recent played game
+	private String mLastGridSignature = "";
+	
+	// Keep track of the trackback is used in the current game.
+	private static boolean mTrackbalUsageLoggedInSession = false;
+
 	/**
 	 * Creates a new instance of {@link #UsageLogging()}.
 	 * 
@@ -324,6 +330,8 @@ public class UsageLog {
 					.put("Grid.ClearRedundantPossiblesInSameRowOrColumnCount",
 							Integer.toString(grid
 									.getClearRedundantPossiblesInSameRowOrColumnCount()));
+			
+			sortedMap.put("Grid.Signature", grid.getSignatureString());
 
 			GridGeneratingParameters gridGeneratingParameters = grid
 					.getGridGeneratingParameters();
@@ -360,6 +368,28 @@ public class UsageLog {
 					Integer.toString(configuration.orientation));
 
 			logSortedMap("Configuration", sortedMap);
+		}
+	}
+	
+	/**
+	 * Log usage of trackball.
+	 */
+	public void logTrackball(String gridSignature) {
+		if (mBuildLog) {
+
+			if (mTrackbalUsageLoggedInSession && gridSignature.equals(mLastGridSignature)) {
+				// Already logged the trackball for this game
+				return;
+			}
+			mLastGridSignature = gridSignature;
+
+			SortedMap<String, String> sortedMap = new TreeMap<String, String>();
+
+			sortedMap.put("isUsedInCurrentGame", Boolean.toString(true));
+
+			logSortedMap("Trackball", sortedMap);
+			
+			mTrackbalUsageLoggedInSession = true;
 		}
 	}
 
@@ -494,19 +524,18 @@ public class UsageLog {
 			// No email client available anymore.
 			return;
 		}
-		
+
 		// Insert link into the dialog
 		LayoutInflater inflater = LayoutInflater.from(mainActivity);
 		View usagelogView = inflater.inflate(R.layout.usagelog_dialog, null);
 		TextView textView = (TextView) usagelogView
 				.findViewById(R.id.dialog_share_log_link);
-		textView.setText(MainActivity.PROJECT_HOME
-										+ "wiki/UsageLogging");
+		textView.setText(MainActivity.PROJECT_HOME + "wiki/UsageLogging");
 
 		// Build dialog
 		new AlertDialog.Builder(mainActivity)
-			.setTitle(R.string.dialog_usagelog_title)
-			.setView(usagelogView)
+				.setTitle(R.string.dialog_usagelog_title)
+				.setView(usagelogView)
 				.setNegativeButton(R.string.dialog_usagelog_negative_button,
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
@@ -528,9 +557,11 @@ public class UsageLog {
 								askConsentForSurvey(mainActivity);
 							}
 						}).show();
-	/*
-		 FrameLayout fl = (FrameLayout) builder.findViewById(android.R.id.custom);
-		 fl.addView(textView, new LayoutParams(MATCH_PARENT, WRAP_CONTENT));*/
+		/*
+		 * FrameLayout fl = (FrameLayout)
+		 * builder.findViewById(android.R.id.custom); fl.addView(textView, new
+		 * LayoutParams(MATCH_PARENT, WRAP_CONTENT));
+		 */
 	}
 
 	/**
