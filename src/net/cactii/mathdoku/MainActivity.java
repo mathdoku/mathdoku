@@ -130,12 +130,12 @@ public class MainActivity extends Activity {
 	private InputMode mInputMode;
 	Button mInputModeTextView;
 
-	TextView solvedText;
+	TextView mSolvedTextView;
 	GameTimer mTimerTask;
 
-	RelativeLayout topLayout;
-	RelativeLayout puzzleGrid;
-	TableLayout controls;
+	RelativeLayout mTopLayout;
+	RelativeLayout mPuzzleGridLayout;
+	TableLayout mControls;
 	TextView mGameSeedLabel;
 	TextView mGameSeedText;
 	TextView mTimerText;
@@ -145,13 +145,13 @@ public class MainActivity extends Activity {
 
 	Button mStartButton;
 
-	Button clearDigit;
-	Button undoButton;
-	View[] sound_effect_views;
-	private Animation outAnimation;
-	private Animation solvedAnimation;
+	Button mClearDigit;
+	Button mUndoButton;
+	View[] mSoundEffectViews;
+	private Animation mOutAnimation;
+	private Animation mSolvedAnimation;
 
-	public SharedPreferences preferences;
+	public SharedPreferences mPreferences;
 
 	// Background tasks for generating a new puzzle and converting game files
 	public GridGenerator mGridGeneratorTask;
@@ -206,14 +206,14 @@ public class MainActivity extends Activity {
 
 		setContentView(R.layout.main);
 
-		this.preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		this.mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-		this.topLayout = (RelativeLayout) findViewById(R.id.topLayout);
-		this.puzzleGrid = (RelativeLayout) findViewById(R.id.puzzleGrid);
+		this.mTopLayout = (RelativeLayout) findViewById(R.id.topLayout);
+		this.mPuzzleGridLayout = (RelativeLayout) findViewById(R.id.puzzleGrid);
 		this.mGridView = (GridView) findViewById(R.id.gridView);
-		this.solvedText = (TextView) findViewById(R.id.solvedText);
-		this.mGridView.animText = this.solvedText;
-		this.controls = (TableLayout) findViewById(R.id.controls);
+		this.mSolvedTextView = (TextView) findViewById(R.id.solvedText);
+		this.mGridView.mAnimationText = this.mSolvedTextView;
+		this.mControls = (TableLayout) findViewById(R.id.controls);
 		this.mGameSeedLabel = (TextView) findViewById(R.id.gameSeedLabel);
 		this.mGameSeedText = (TextView) findViewById(R.id.gameSeedText);
 		this.mTimerText = (TextView) findViewById(R.id.timerText);
@@ -229,27 +229,27 @@ public class MainActivity extends Activity {
 		mDigitPosition[6] = (Button) findViewById(R.id.digitPosition7);
 		mDigitPosition[7] = (Button) findViewById(R.id.digitPosition8);
 		mDigitPosition[8] = (Button) findViewById(R.id.digitPosition9);
-		this.clearDigit = (Button) findViewById(R.id.clearButton);
-		this.undoButton = (Button) findViewById(R.id.undoButton);
+		this.mClearDigit = (Button) findViewById(R.id.clearButton);
+		this.mUndoButton = (Button) findViewById(R.id.undoButton);
 
-		this.sound_effect_views = new View[] { this.mGridView,
+		this.mSoundEffectViews = new View[] { this.mGridView,
 				this.mDigitPosition[0], this.mDigitPosition[1],
 				this.mDigitPosition[2], this.mDigitPosition[3],
 				this.mDigitPosition[4], this.mDigitPosition[5],
 				this.mDigitPosition[6], this.mDigitPosition[7],
-				this.mDigitPosition[8], this.clearDigit,
-				this.mInputModeTextView, this.undoButton };
+				this.mDigitPosition[8], this.mClearDigit,
+				this.mInputModeTextView, this.mUndoButton };
 
 		this.mPainter = Painter.getInstance(this);
 
 		setInputMode(InputMode.NO_INPUT__HIDE_GRID);
 
 		// Animation for a solved puzzle
-		solvedAnimation = AnimationUtils.loadAnimation(MainActivity.this,
+		mSolvedAnimation = AnimationUtils.loadAnimation(MainActivity.this,
 				R.anim.solvedanim);
-		solvedAnimation.setAnimationListener(new AnimationListener() {
+		mSolvedAnimation.setAnimationListener(new AnimationListener() {
 			public void onAnimationEnd(Animation animation) {
-				solvedText.setVisibility(View.GONE);
+				mSolvedTextView.setVisibility(View.GONE);
 			}
 
 			public void onAnimationRepeat(Animation animation) {
@@ -260,11 +260,11 @@ public class MainActivity extends Activity {
 		});
 
 		// Animation for controls.
-		outAnimation = AnimationUtils.loadAnimation(MainActivity.this,
+		mOutAnimation = AnimationUtils.loadAnimation(MainActivity.this,
 				R.anim.selectorzoomout);
-		outAnimation.setAnimationListener(new AnimationListener() {
+		mOutAnimation.setAnimationListener(new AnimationListener() {
 			public void onAnimationEnd(Animation animation) {
-				controls.setVisibility(View.GONE);
+				mControls.setVisibility(View.GONE);
 			}
 
 			public void onAnimationRepeat(Animation animation) {
@@ -279,20 +279,20 @@ public class MainActivity extends Activity {
 					@Override
 					public void gridTouched(GridCell cell,
 							boolean sameCellSelectedAgain) {
-						if (MainActivity.this.preferences.getBoolean(
+						if (MainActivity.this.mPreferences.getBoolean(
 								PREF_HIDE_CONTROLS, PREF_HIDE_CONTROLS_DEFAULT)) {
-							if (controls.getVisibility() == View.VISIBLE) {
-								controls.startAnimation(outAnimation);
+							if (mControls.getVisibility() == View.VISIBLE) {
+								mControls.startAnimation(mOutAnimation);
 								mGridView.mSelectorShown = false;
 								mGridView.requestFocus();
 							} else {
-								controls.setVisibility(View.VISIBLE);
+								mControls.setVisibility(View.VISIBLE);
 								Animation animation = AnimationUtils
 										.loadAnimation(MainActivity.this,
 												R.anim.selectorzoomin);
-								controls.startAnimation(animation);
+								mControls.startAnimation(animation);
 								mGridView.mSelectorShown = true;
-								controls.requestFocus();
+								mControls.requestFocus();
 							}
 						} else {
 							// Controls are always visible
@@ -311,21 +311,21 @@ public class MainActivity extends Activity {
 					MainActivity.this.digitSelected(d);
 				}
 			});
-		this.clearDigit.setOnClickListener(new OnClickListener() {
+		this.mClearDigit.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				MainActivity.this.digitSelected(0);
 			}
 		});
-		this.undoButton.setOnClickListener(new OnClickListener() {
+		this.mUndoButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				if (MainActivity.this.mGrid.UndoLastMove()) {
+				if (MainActivity.this.mGrid.undoLastMove()) {
 					// Succesfull undo
 					mGridView.invalidate();
 				}
 
-				if (MainActivity.this.preferences.getBoolean(
+				if (MainActivity.this.mPreferences.getBoolean(
 						PREF_HIDE_CONTROLS, PREF_HIDE_CONTROLS_DEFAULT)) {
-					MainActivity.this.controls.setVisibility(View.GONE);
+					MainActivity.this.mControls.setVisibility(View.GONE);
 				}
 			}
 		});
@@ -346,7 +346,7 @@ public class MainActivity extends Activity {
 			}
 
 		});
-		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			final MainActivity activity = this;
 			this.mGameSeedText.setOnTouchListener(new OnTouchListener() {
 
@@ -435,19 +435,19 @@ public class MainActivity extends Activity {
 
 	public void setTheme() {
 
-		String theme = preferences.getString(PREF_THEME, PREF_THEME_DEFAULT);
-		solvedText.setTypeface(mPainter.mGridPainter.mSolvedTypeface);
+		String theme = mPreferences.getString(PREF_THEME, PREF_THEME_DEFAULT);
+		mSolvedTextView.setTypeface(mPainter.mGridPainter.mSolvedTypeface);
 
 		if (theme.equals(MainActivity.PREF_THEME_NEWSPAPER)) {
-			topLayout.setBackgroundResource(R.drawable.newspaper);
+			mTopLayout.setBackgroundResource(R.drawable.newspaper);
 			mPainter.setTheme(GridTheme.NEWSPAPER);
 			mTimerText.setBackgroundColor(0x90808080);
 		} else if (theme.equals(MainActivity.PREF_THEME_DARK)) {
-			topLayout.setBackgroundResource(R.drawable.newspaper_dark);
+			mTopLayout.setBackgroundResource(R.drawable.newspaper_dark);
 			mPainter.setTheme(GridTheme.DARK);
 			mTimerText.setTextColor(0xFFF0F0F0);
 		} else if (theme.equals(MainActivity.PREF_THEME_CARVED)) {
-			topLayout.setBackgroundResource(R.drawable.background);
+			mTopLayout.setBackgroundResource(R.drawable.background);
 			mPainter.setTheme(GridTheme.CARVED);
 			mTimerText.setBackgroundColor(0x10000000);
 		}
@@ -458,7 +458,7 @@ public class MainActivity extends Activity {
 	public void onResume() {
 		UsageLog.getInstance(this);
 
-		if (this.preferences.getBoolean(PREF_WAKE_LOCK, PREF_WAKE_LOCK_DEFAULT)) {
+		if (this.mPreferences.getBoolean(PREF_WAKE_LOCK, PREF_WAKE_LOCK_DEFAULT)) {
 			getWindow()
 					.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		}
@@ -475,10 +475,10 @@ public class MainActivity extends Activity {
 
 		// Propagate preferences to grid
 		if (mGrid != null) {
-			mGrid.setPreferences(preferences);
+			mGrid.setPreferences(mPreferences);
 		}
 
-		this.setSoundEffectsEnabled(this.preferences.getBoolean(
+		this.setSoundEffectsEnabled(this.mPreferences.getBoolean(
 				PREF_PLAY_SOUND_EFFECTS, PREF_PLAY_SOUND_EFFECTS_DEFAULT));
 
 		super.onResume();
@@ -490,7 +490,7 @@ public class MainActivity extends Activity {
 	}
 
 	public void setSoundEffectsEnabled(boolean enabled) {
-		for (View v : this.sound_effect_views)
+		for (View v : this.mSoundEffectViews)
 			v.setSoundEffectsEnabled(enabled);
 	}
 
@@ -521,7 +521,7 @@ public class MainActivity extends Activity {
 								|| GameFileList.canBeUsed());
 
 		// When running in development mode, an extra menu is available.
-		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			menu.findItem(R.id.menu_development_mode).setVisible(true);
 		} else {
 			menu.findItem(R.id.menu_development_mode).setVisible(false);
@@ -630,7 +630,7 @@ public class MainActivity extends Activity {
 				if (cell.countPossibles() == 1) {
 					CellChange orginalUserMove = cell.saveUndoInformation(null);
 					cell.setUserValue(cell.getFirstPossible());
-					if (preferences.getBoolean(PREF_CLEAR_REDUNDANT_POSSIBLES,
+					if (mPreferences.getBoolean(PREF_CLEAR_REDUNDANT_POSSIBLES,
 							PREF_CLEAR_REDUNDANT_POSSIBLES_DEFAULT)) {
 						// Update possible values for other cells in this row
 						// and
@@ -648,7 +648,7 @@ public class MainActivity extends Activity {
 			}
 			CellChange orginalUserMove = selectedCell.saveUndoInformation(null);
 			selectedCell.setUserValue(selectedCell.getCorrectValue());
-			if (preferences.getBoolean(PREF_CLEAR_REDUNDANT_POSSIBLES,
+			if (mPreferences.getBoolean(PREF_CLEAR_REDUNDANT_POSSIBLES,
 					PREF_CLEAR_REDUNDANT_POSSIBLES_DEFAULT)) {
 				// Update possible values for other cells in this row and
 				// column.
@@ -663,7 +663,7 @@ public class MainActivity extends Activity {
 			openClearDialog();
 			break;
 		case CONTEXT_MENU_SHOW_SOLUTION:
-			this.mGrid.Solve();
+			this.mGrid.solve();
 			break;
 		case CONTEXT_MENU_REVEAL_OPERATOR:
 			if (selectedGridCage == null) {
@@ -722,7 +722,7 @@ public class MainActivity extends Activity {
 			this.openHelpDialog();
 			return true;
 		case R.id.development_mode_generate_games:
-			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 				// Cancel old timer
 				stopTimer();
 
@@ -731,32 +731,32 @@ public class MainActivity extends Activity {
 			}
 			return true;
 		case R.id.development_mode_recreate_previews:
-			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 				DevelopmentHelper.recreateAllPreviews(this);
 			}
 			return true;
 		case R.id.development_mode_delete_games:
-			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 				DevelopmentHelper.deleteAllGames(this);
 			}
 			return true;
 		case R.id.development_mode_reset_preferences:
-			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 				DevelopmentHelper.resetPreferences(this, 77);
 			}
 			return true;
 		case R.id.development_mode_clear_data:
-			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 				DevelopmentHelper.deleteGamesAndPreferences(this);
 			}
 			return true;
 		case R.id.development_mode_reset_log:
-			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 				// Delete old log
 				UsageLog.getInstance().delete();
 
 				// Reset preferences
-				Editor prefeditor = preferences.edit();
+				Editor prefeditor = mPreferences.edit();
 				prefeditor.putBoolean(PREF_USAGE_LOG_DISABLED,
 						PREF_USAGE_LOG_DISABLED_DEFAULT);
 				prefeditor.putInt(PREF_USAGE_LOG_COUNT_GAMES_STARTED,
@@ -779,7 +779,7 @@ public class MainActivity extends Activity {
 		if (event.getAction() == KeyEvent.ACTION_DOWN
 				&& keyCode == KeyEvent.KEYCODE_BACK
 				&& this.mGridView.mSelectorShown) {
-			this.controls.setVisibility(View.GONE);
+			this.mControls.setVisibility(View.GONE);
 			this.mGridView.requestFocus();
 			this.mGridView.mSelectorShown = false;
 			this.mGridView.invalidate();
@@ -791,9 +791,9 @@ public class MainActivity extends Activity {
 	public void digitSelected(int value) {
 		this.mGridView.digitSelected(value, mInputMode);
 
-		if (this.preferences.getBoolean(PREF_HIDE_CONTROLS,
+		if (this.mPreferences.getBoolean(PREF_HIDE_CONTROLS,
 				PREF_HIDE_CONTROLS_DEFAULT)) {
-			this.controls.setVisibility(View.GONE);
+			this.mControls.setVisibility(View.GONE);
 		}
 		this.mGridView.requestFocus();
 		this.mGridView.mSelectorShown = false;
@@ -815,7 +815,7 @@ public class MainActivity extends Activity {
 	 * @return True if start of game is prepared.
 	 */
 	private boolean prepareStartNewGame(final int gridSize) {
-		String hideOperators = this.preferences.getString(PREF_HIDE_OPERATORS,
+		String hideOperators = this.mPreferences.getString(PREF_HIDE_OPERATORS,
 				PREF_HIDE_OPERATORS_DEFAULT);
 		if (hideOperators.equals(PREF_HIDE_OPERATORS_ALWAYS)) {
 			// All new games should be generated with hidden operators.
@@ -868,7 +868,7 @@ public class MainActivity extends Activity {
 
 		// Start a background task to generate the new grid. As soon as the new
 		// grid is created, the method onNewGridReady will be called.
-		int maxCageSize = (preferences.getBoolean(PREF_ALLOW_BIG_CAGES,
+		int maxCageSize = (mPreferences.getBoolean(PREF_ALLOW_BIG_CAGES,
 				PREF_ALLOW_BIG_CAGES_DEFAULT) ? 6 : 4);
 		int maxCageResult = getResources().getInteger(
 				R.integer.maximum_cage_value);
@@ -885,19 +885,19 @@ public class MainActivity extends Activity {
 		if (mGrid != null) {
 			UsageLog.getInstance().logGrid("Menu.StartNewGame.OldGame", mGrid);
 
-			if (mGrid.moves.size() > 0) {
+			if (mGrid.mMoves.size() > 0) {
 				// Increase counter for number of games on which playing has
 				// been started.
-				int countGamesStarted = preferences.getInt(
+				int countGamesStarted = mPreferences.getInt(
 						PREF_USAGE_LOG_COUNT_GAMES_STARTED, 0) + 1;
-				Editor prefeditor = preferences.edit();
+				Editor prefeditor = mPreferences.edit();
 				prefeditor.putInt(PREF_USAGE_LOG_COUNT_GAMES_STARTED,
 						countGamesStarted);
 				prefeditor.commit();
 
 				// As long as the user has not opted out for sending feedback,
 				// check if we are going to ask the user to send feedback
-				if (!preferences.getBoolean(PREF_USAGE_LOG_DISABLED,
+				if (!mPreferences.getBoolean(PREF_USAGE_LOG_DISABLED,
 						PREF_USAGE_LOG_DISABLED_DEFAULT)) {
 					// Check if we are going to ask the user to send feedback
 					if (countGamesStarted == 3 || countGamesStarted == 10
@@ -918,9 +918,9 @@ public class MainActivity extends Activity {
 	}
 
 	private void animText(int textIdentifier, int color) {
-		this.solvedText.setText(textIdentifier);
-		this.solvedText.setTextColor(color);
-		this.solvedText.setVisibility(View.VISIBLE);
+		this.mSolvedTextView.setText(textIdentifier);
+		this.mSolvedTextView.setTextColor(color);
+		this.mSolvedTextView.setVisibility(View.VISIBLE);
 		final float SCALE_FROM = (float) 0;
 		final float SCALE_TO = (float) 1.0;
 		ScaleAnimation anim = new ScaleAnimation(SCALE_FROM, SCALE_TO,
@@ -928,7 +928,7 @@ public class MainActivity extends Activity {
 				this.mGridView.mGridViewSize / 2);
 		anim.setDuration(1000);
 		// animText.setAnimation(anim);
-		this.solvedText.startAnimation(this.solvedAnimation);
+		this.mSolvedTextView.startAnimation(this.mSolvedAnimation);
 	}
 
 	private void openHelpDialog() {
@@ -946,7 +946,7 @@ public class MainActivity extends Activity {
 		new AlertDialog.Builder(MainActivity.this)
 				.setTitle(
 						getResources().getString(R.string.application_name)
-								+ (DevelopmentHelper.mode == Mode.DEVELOPMENT ? " r"
+								+ (DevelopmentHelper.mMode == Mode.DEVELOPMENT ? " r"
 										+ getVersionNumber() + " "
 										: " ")
 								+ getResources().getString(R.string.menu_help))
@@ -988,7 +988,7 @@ public class MainActivity extends Activity {
 		new AlertDialog.Builder(MainActivity.this)
 				.setTitle(
 						getResources().getString(R.string.application_name)
-								+ (DevelopmentHelper.mode == Mode.DEVELOPMENT ? " r"
+								+ (DevelopmentHelper.mMode == Mode.DEVELOPMENT ? " r"
 										+ getVersionNumber() + " "
 										: " ")
 								+ getResources().getString(
@@ -1044,7 +1044,7 @@ public class MainActivity extends Activity {
 		}
 
 		int currentVersion = getVersionNumber();
-		int previousInstalledVersion = preferences.getInt(PREF_CURRENT_VERSION,
+		int previousInstalledVersion = mPreferences.getInt(PREF_CURRENT_VERSION,
 				PREF_CURRENT_VERSION_DEFAULT);
 
 		// Start phase 1 of the upgrade process if needed.
@@ -1056,8 +1056,8 @@ public class MainActivity extends Activity {
 			mGameFileConverter = new GameFileConverter(this,
 					previousInstalledVersion, currentVersion);
 			mGameFileConverter.execute();
-		} else if (preferences.contains(PREF_CREATE_PREVIEW_IMAGES_COMPLETED)
-				&& !preferences.getBoolean(
+		} else if (mPreferences.contains(PREF_CREATE_PREVIEW_IMAGES_COMPLETED)
+				&& !mPreferences.getBoolean(
 						PREF_CREATE_PREVIEW_IMAGES_COMPLETED,
 						PREF_CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT)) {
 			// Skip Phase 1 and go directly to Phase to generate new previews.
@@ -1080,10 +1080,10 @@ public class MainActivity extends Activity {
 			int currentVersion) {
 
 		// Update preferences
-		Editor prefeditor = preferences.edit();
+		Editor prefeditor = mPreferences.edit();
 		if (previousInstalledVersion < 121 && currentVersion >= 121) {
 			// Add missing preferences to the Shared Preferences.
-			if (!preferences.contains(PREF_CLEAR_REDUNDANT_POSSIBLES)) {
+			if (!mPreferences.contains(PREF_CLEAR_REDUNDANT_POSSIBLES)) {
 				prefeditor.putBoolean(PREF_CLEAR_REDUNDANT_POSSIBLES,
 						PREF_CLEAR_REDUNDANT_POSSIBLES_DEFAULT);
 			}
@@ -1095,58 +1095,58 @@ public class MainActivity extends Activity {
 			// have been removed from optionsview.xml to prevent conflicts
 			// in defaults values with default values defined in this
 			// activity.
-			if (!preferences.contains(PREF_HIDE_CONTROLS)) {
+			if (!mPreferences.contains(PREF_HIDE_CONTROLS)) {
 				prefeditor.putBoolean(PREF_HIDE_CONTROLS,
 						PREF_HIDE_CONTROLS_DEFAULT);
 			}
-			if (!preferences.contains(PREF_HIDE_OPERATORS)) {
+			if (!mPreferences.contains(PREF_HIDE_OPERATORS)) {
 				prefeditor.putString(PREF_HIDE_OPERATORS,
 						PREF_HIDE_OPERATORS_DEFAULT);
 			}
-			if (!preferences.contains(PREF_PLAY_SOUND_EFFECTS)) {
+			if (!mPreferences.contains(PREF_PLAY_SOUND_EFFECTS)) {
 				prefeditor.putBoolean(PREF_PLAY_SOUND_EFFECTS,
 						PREF_PLAY_SOUND_EFFECTS_DEFAULT);
 			}
-			if (!preferences.contains(PREF_SHOW_BAD_CAGE_MATHS)) {
+			if (!mPreferences.contains(PREF_SHOW_BAD_CAGE_MATHS)) {
 				prefeditor.putBoolean(PREF_SHOW_BAD_CAGE_MATHS,
 						PREF_SHOW_BAD_CAGE_MATHS_DEFAULT);
 			}
-			if (!preferences.contains(PREF_SHOW_DUPE_DIGITS)) {
+			if (!mPreferences.contains(PREF_SHOW_DUPE_DIGITS)) {
 				prefeditor.putBoolean(PREF_SHOW_DUPE_DIGITS,
 						PREF_SHOW_DUPE_DIGITS_DEFAULT);
 			}
-			if (!preferences.contains(PREF_SHOW_MAYBES_AS_3X3_GRID)) {
+			if (!mPreferences.contains(PREF_SHOW_MAYBES_AS_3X3_GRID)) {
 				prefeditor.putBoolean(PREF_SHOW_MAYBES_AS_3X3_GRID,
 						PREF_SHOW_MAYBES_AS_3X3_GRID_DEFAULT);
 			}
-			if (!preferences.contains(PREF_SHOW_TIMER)) {
+			if (!mPreferences.contains(PREF_SHOW_TIMER)) {
 				prefeditor.putBoolean(PREF_SHOW_TIMER, PREF_SHOW_TIMER_DEFAULT);
 			}
-			if (!preferences.contains(PREF_THEME)) {
+			if (!mPreferences.contains(PREF_THEME)) {
 				prefeditor.putString(PREF_THEME, PREF_THEME_DEFAULT);
 			}
-			if (!preferences.contains(PREF_WAKE_LOCK)) {
+			if (!mPreferences.contains(PREF_WAKE_LOCK)) {
 				prefeditor.putBoolean(PREF_WAKE_LOCK, PREF_WAKE_LOCK_DEFAULT);
 			}
 		}
 		if (previousInstalledVersion < 135 && currentVersion >= 135) {
-			if (!preferences.contains(PREF_ALLOW_BIG_CAGES)) {
+			if (!mPreferences.contains(PREF_ALLOW_BIG_CAGES)) {
 				prefeditor.putBoolean(PREF_ALLOW_BIG_CAGES,
 						PREF_ALLOW_BIG_CAGES_DEFAULT);
 			}
 		}
 		if (previousInstalledVersion < 175 && currentVersion >= 175) {
-			if (!preferences.contains(PREF_USAGE_LOG_DISABLED)) {
+			if (!mPreferences.contains(PREF_USAGE_LOG_DISABLED)) {
 				prefeditor.putBoolean(PREF_USAGE_LOG_DISABLED,
 						PREF_USAGE_LOG_DISABLED_DEFAULT);
 			}
-			if (!preferences.contains(PREF_USAGE_LOG_COUNT_GAMES_STARTED)) {
+			if (!mPreferences.contains(PREF_USAGE_LOG_COUNT_GAMES_STARTED)) {
 				prefeditor.putInt(PREF_USAGE_LOG_COUNT_GAMES_STARTED,
 						PREF_USAGE_LOG_COUNT_GAMES_STARTED_DEFAULT);
 			}
 		}
 		if (previousInstalledVersion < 198 && currentVersion >= 198) {
-			TipDialog.initializeCategoryPreferences(preferences,
+			TipDialog.initializeCategoryPreferences(mPreferences,
 					previousInstalledVersion == -1);
 		}
 		prefeditor.putInt(PREF_CURRENT_VERSION, currentVersion);
@@ -1208,7 +1208,7 @@ public class MainActivity extends Activity {
 		// reference to the task.
 		mGameFileConverter = null;
 
-		if (this.preferences.getBoolean(PREF_CREATE_PREVIEW_IMAGES_COMPLETED,
+		if (this.mPreferences.getBoolean(PREF_CREATE_PREVIEW_IMAGES_COMPLETED,
 				PREF_CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT)) {
 			// Previews have already been created. Go to next phase of upgrading
 			upgradePhase3_UpdatePreferences(previousInstalledVersion,
@@ -1220,7 +1220,7 @@ public class MainActivity extends Activity {
 		int countGameFilesWithoutPreview = countGameFilesWithoutPreview();
 		if (countGameFilesWithoutPreview == 0) {
 			// No games files without previews found.
-			Editor prefEditor = preferences.edit();
+			Editor prefEditor = mPreferences.edit();
 			prefEditor.putBoolean(PREF_CREATE_PREVIEW_IMAGES_COMPLETED, true);
 			prefEditor.commit();
 
@@ -1248,7 +1248,7 @@ public class MainActivity extends Activity {
 		mProgressDialogImagePreviewCreation.show();
 
 		// Display and hide elements so that the previews can be created.
-		puzzleGrid.setVisibility(View.VISIBLE);
+		mPuzzleGridLayout.setVisibility(View.VISIBLE);
 		mStartButton.setVisibility(View.GONE);
 
 		// Runnable for handling the next step of preview image creation process
@@ -1274,8 +1274,8 @@ public class MainActivity extends Activity {
 					if (newGrid != null) {
 						mGrid = newGrid;
 						mGridView.loadNewGrid(mGrid);
-						puzzleGrid.setVisibility(View.INVISIBLE);
-						controls.setVisibility(View.GONE);
+						mPuzzleGridLayout.setVisibility(View.INVISIBLE);
+						mControls.setVisibility(View.GONE);
 						mStartButton.setVisibility(View.GONE);
 
 						// Post a message for further processing of the
@@ -1299,7 +1299,7 @@ public class MainActivity extends Activity {
 						mProgressDialogImagePreviewCreation = null;
 					}
 
-					Editor prefEditor = preferences.edit();
+					Editor prefEditor = mPreferences.edit();
 					prefEditor.putBoolean(PREF_CREATE_PREVIEW_IMAGES_COMPLETED,
 							true);
 					prefEditor.commit();
@@ -1422,7 +1422,7 @@ public class MainActivity extends Activity {
 	public void setNewGrid(Grid grid) {
 		if (grid != null) {
 			mGrid = grid;
-			mGrid.setPreferences(preferences);
+			mGrid.setPreferences(mPreferences);
 			mGridView.loadNewGrid(grid);
 
 			// Show the grid of the loaded puzzle.
@@ -1450,7 +1450,7 @@ public class MainActivity extends Activity {
 			}
 
 			// Debug information
-			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 				mGameSeedLabel.setVisibility(View.VISIBLE);
 				mGameSeedText.setVisibility(View.VISIBLE);
 				mGameSeedText
@@ -1472,7 +1472,7 @@ public class MainActivity extends Activity {
 		if (mGrid != null && mGrid.isActive()) {
 			mTimerTask = new GameTimer(this);
 			mTimerTask.mElapsedTime = mGrid.getElapsedTime();
-			if (preferences
+			if (mPreferences
 					.getBoolean(PREF_SHOW_TIMER, PREF_SHOW_TIMER_DEFAULT)) {
 				mTimerText.setVisibility(View.VISIBLE);
 			} else {
@@ -1516,12 +1516,12 @@ public class MainActivity extends Activity {
 		// Visibility of grid view
 		switch (inputMode) {
 		case NO_INPUT__HIDE_GRID:
-			puzzleGrid.setVisibility(View.GONE);
+			mPuzzleGridLayout.setVisibility(View.GONE);
 			break;
 		case NO_INPUT__DISPLAY_GRID:
 		case NORMAL:
 		case MAYBE:
-			puzzleGrid.setVisibility(View.VISIBLE);
+			mPuzzleGridLayout.setVisibility(View.VISIBLE);
 			break;
 		}
 
@@ -1529,7 +1529,7 @@ public class MainActivity extends Activity {
 		switch (inputMode) {
 		case NO_INPUT__HIDE_GRID:
 			mTimerText.setVisibility(View.GONE);
-			controls.setVisibility(View.GONE);
+			mControls.setVisibility(View.GONE);
 			mStartButton.setVisibility(View.VISIBLE);
 			break;
 		case NO_INPUT__DISPLAY_GRID:
@@ -1542,20 +1542,20 @@ public class MainActivity extends Activity {
 				this.mTimerText.setVisibility(View.VISIBLE);
 				setElapsedTime(mGrid.getElapsedTime());
 			}
-			controls.setVisibility(View.GONE);
+			mControls.setVisibility(View.GONE);
 			mStartButton.setVisibility(View.VISIBLE);
 			break;
 		case NORMAL:
 		case MAYBE:
-			solvedText.setVisibility(View.GONE);
+			mSolvedTextView.setVisibility(View.GONE);
 			mStartButton.setVisibility(View.GONE);
-			if (preferences
+			if (mPreferences
 					.getBoolean(PREF_SHOW_TIMER, PREF_SHOW_TIMER_DEFAULT)) {
 				mTimerText.setVisibility(View.VISIBLE);
 			}
-			if (!MainActivity.this.preferences.getBoolean(PREF_HIDE_CONTROLS,
+			if (!MainActivity.this.mPreferences.getBoolean(PREF_HIDE_CONTROLS,
 					PREF_HIDE_CONTROLS_DEFAULT)) {
-				this.controls.setVisibility(View.VISIBLE);
+				this.mControls.setVisibility(View.VISIBLE);
 			}
 
 			// Determine the color which is used for text which depends on the
@@ -1632,13 +1632,13 @@ public class MainActivity extends Activity {
 			inputMode = InputMode.NORMAL;
 			break;
 		case NORMAL:
-			if (TipInputModeChanged.toBeDisplayed(preferences)) {
+			if (TipInputModeChanged.toBeDisplayed(mPreferences)) {
 				new TipInputModeChanged(this, InputMode.MAYBE).show();
 			}
 			inputMode = InputMode.MAYBE;
 			break;
 		case MAYBE:
-			if (TipInputModeChanged.toBeDisplayed(preferences)) {
+			if (TipInputModeChanged.toBeDisplayed(mPreferences)) {
 				new TipInputModeChanged(this, InputMode.MAYBE).show();
 			}
 			inputMode = InputMode.NORMAL;
@@ -1657,7 +1657,7 @@ public class MainActivity extends Activity {
 	 */
 	@SuppressLint("DefaultLocale")
 	public void setElapsedTime(long elapsedTime) {
-		if (preferences.getBoolean(PREF_SHOW_TIMER, PREF_SHOW_TIMER_DEFAULT)) {
+		if (mPreferences.getBoolean(PREF_SHOW_TIMER, PREF_SHOW_TIMER_DEFAULT)) {
 			String timeString;
 			int seconds = (int) (elapsedTime / 1000); // Whole seconds.
 			int hours = (int) Math.floor(seconds / (60 * 60));

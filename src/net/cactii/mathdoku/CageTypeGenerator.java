@@ -29,7 +29,7 @@ public class CageTypeGenerator {
 	public static final int MAX_CAGE_SIZE = 5;
 
 	// Singleton reference for the cage type generator.
-	private static CageTypeGenerator cageTypeGeneratorSingletonInstance = null;
+	private static CageTypeGenerator mCageTypeGeneratorSingletonInstance = null;
 
 	// All available cage types.
 	private GridCageType mSingleCellCageType;
@@ -45,10 +45,10 @@ public class CageTypeGenerator {
 	 * @return The singleton instance for the cage type generator.
 	 */
 	public static CageTypeGenerator getInstance() {
-		if (cageTypeGeneratorSingletonInstance == null) {
-			cageTypeGeneratorSingletonInstance = new CageTypeGenerator();
+		if (mCageTypeGeneratorSingletonInstance == null) {
+			mCageTypeGeneratorSingletonInstance = new CageTypeGenerator();
 		}
-		return cageTypeGeneratorSingletonInstance;
+		return mCageTypeGeneratorSingletonInstance;
 	}
 
 	/**

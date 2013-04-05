@@ -47,7 +47,7 @@ public class Grid {
 	private GridGeneratingParameters mGridGeneratingParameters;
 
 	// Keep track of all moves as soon as grid is built or restored.
-	public ArrayList<CellChange> moves;
+	public ArrayList<CellChange> mMoves;
 
 	// Used to avoid redrawing or saving grid during creation of new grid
 	public final Object mLock = new Object();
@@ -62,15 +62,15 @@ public class Grid {
 
 	// UsagaeLog counters
 	private int mUndoLastMoveCount;
-	private int mclearRedundantPossiblesInSameRowOrColumnCount;
+	private int mClearRedundantPossiblesInSameRowOrColumnCount;
 
 	public Grid(int gridSize) {
 		mGridSize = gridSize;
 		mCells = new ArrayList<GridCell>();
 		mCages = new ArrayList<GridCage>();
-		moves = new ArrayList<CellChange>();
+		mMoves = new ArrayList<CellChange>();
 		mUndoLastMoveCount = 0;
-		mclearRedundantPossiblesInSameRowOrColumnCount = 0;
+		mClearRedundantPossiblesInSameRowOrColumnCount = 0;
 		mSolvedListener = null;
 		mGridGeneratingParameters = new GridGeneratingParameters();
 
@@ -104,7 +104,7 @@ public class Grid {
 
 	// Returns cage id of cell at row, column
 	// Returns -1 if not a valid cell or cage
-	public int CageIdAt(int row, int column) {
+	public int cageIdAt(int row, int column) {
 		if (row < 0 || row >= mGridSize || column < 0 || column >= mGridSize)
 			return -1;
 		return this.mCells.get(column + row * this.mGridSize).getCageId();
@@ -125,8 +125,8 @@ public class Grid {
 	}
 
 	public void clearUserValues() {
-		if (this.moves != null) {
-			this.moves.clear();
+		if (this.mMoves != null) {
+			this.mMoves.clear();
 		}
 		if (mCells != null) {
 			for (GridCell cell : this.mCells) {
@@ -139,8 +139,8 @@ public class Grid {
 	 * Clear this view so a new game can be restored.
 	 */
 	public void clear() {
-		if (this.moves != null) {
-			this.moves.clear();
+		if (this.mMoves != null) {
+			this.mMoves.clear();
 		}
 		if (this.mCells != null) {
 			this.mCells.clear();
@@ -187,11 +187,11 @@ public class Grid {
 	}
 
 	// Solve the puzzle by setting the Uservalue to the actual value
-	public void Solve() {
+	public void solve() {
 		UsageLog.getInstance().logFunction("ContextMenu.ShowSolution");
 		this.mCheated = true;
-		if (this.moves != null) {
-			this.moves.clear();
+		if (this.mMoves != null) {
+			this.mMoves.clear();
 		}
 		for (GridCell cell : this.mCells) {
 			if (!cell.isUserValueCorrect()) {
@@ -246,19 +246,19 @@ public class Grid {
 		return invalids;
 	}
 
-	public void AddMove(CellChange move) {
-		if (moves == null) {
-			moves = new ArrayList<CellChange>();
+	public void addMove(CellChange move) {
+		if (mMoves == null) {
+			mMoves = new ArrayList<CellChange>();
 		}
 
 		boolean identicalToLastMove = false;
-		int indexLastMove = moves.size() - 1;
+		int indexLastMove = mMoves.size() - 1;
 		if (indexLastMove >= 0) {
-			CellChange lastMove = moves.get(indexLastMove);
+			CellChange lastMove = mMoves.get(indexLastMove);
 			identicalToLastMove = lastMove.equals(move);
 		}
 		if (!identicalToLastMove) {
-			moves.add(move);
+			mMoves.add(move);
 		}
 	}
 
@@ -268,17 +268,17 @@ public class Grid {
 	 * @return The number of moves made by the user.
 	 */
 	public int countMoves() {
-		return (moves == null ? 0 : moves.size());
+		return (mMoves == null ? 0 : mMoves.size());
 	}
 
-	public boolean UndoLastMove() {
-		if (moves != null) {
-			int undoPosition = moves.size() - 1;
+	public boolean undoLastMove() {
+		if (mMoves != null) {
+			int undoPosition = mMoves.size() - 1;
 
 			if (undoPosition >= 0) {
 				mUndoLastMoveCount++;
-				GridCell cell = moves.get(undoPosition).restore();
-				moves.remove(undoPosition);
+				GridCell cell = mMoves.get(undoPosition).restore();
+				mMoves.remove(undoPosition);
 				setSelectedCell(cell);
 				return true;
 			}
@@ -346,7 +346,7 @@ public class Grid {
 	public void clearRedundantPossiblesInSameRowOrColumn(
 			CellChange originalCellChange) {
 		if (mSelectedCell != null) {
-			mclearRedundantPossiblesInSameRowOrColumnCount++;
+			mClearRedundantPossiblesInSameRowOrColumnCount++;
 			int rowSelectedCell = this.mSelectedCell.getRow();
 			int columnSelectedCell = this.mSelectedCell.getColumn();
 			int valueSelectedCell = this.mSelectedCell.getUserValue();
@@ -415,7 +415,7 @@ public class Grid {
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mCheated
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mUndoLastMoveCount
 				+ GameFile.FIELD_DELIMITER_LEVEL1
-				+ mclearRedundantPossiblesInSameRowOrColumnCount
+				+ mClearRedundantPossiblesInSameRowOrColumnCount
 				+ GameFile.FIELD_DELIMITER_LEVEL1
 				+ mGridGeneratingParameters.mHideOperators
 				+ GameFile.FIELD_DELIMITER_LEVEL1
@@ -504,7 +504,7 @@ public class Grid {
 		}
 		if (viewInformationVersion >= 5) {
 			mUndoLastMoveCount = Integer.parseInt(viewParts[index++]);
-			mclearRedundantPossiblesInSameRowOrColumnCount = Integer
+			mClearRedundantPossiblesInSameRowOrColumnCount = Integer
 					.parseInt(viewParts[index++]);
 			mGridGeneratingParameters.mHideOperators = Boolean
 					.parseBoolean(viewParts[index++]);
@@ -515,7 +515,7 @@ public class Grid {
 		} else {
 			// Cheated was not saved prior to version 3.
 			mUndoLastMoveCount = 0;
-			mclearRedundantPossiblesInSameRowOrColumnCount = 0;
+			mClearRedundantPossiblesInSameRowOrColumnCount = 0;
 			mGridGeneratingParameters.mHideOperators = false;
 			mGridGeneratingParameters.mMaxCageResult = 0;
 			mGridGeneratingParameters.mMaxCageSize = 0;
@@ -629,7 +629,7 @@ public class Grid {
 	}
 
 	public int getClearRedundantPossiblesInSameRowOrColumnCount() {
-		return mclearRedundantPossiblesInSameRowOrColumnCount;
+		return mClearRedundantPossiblesInSameRowOrColumnCount;
 	}
 
 	public GridGeneratingParameters getGridGeneratingParameters() {

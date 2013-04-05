@@ -17,7 +17,7 @@ public class DevelopmentHelperHoneycombAndAbove {
 	 * @param mainActivity
 	 */
 	public static void restartActivity(final MainActivity mainActivity) {
-		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				// The activity can be restarted automatically. No dialog
 				// needed.

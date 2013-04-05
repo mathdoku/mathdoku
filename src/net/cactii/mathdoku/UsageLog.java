@@ -52,7 +52,7 @@ public class UsageLog {
 
 	// Remove "&& false" in following line to show debug information about
 	// creating the usage log when running in development mode.
-	private static final boolean DEBUG_USAGE_LOG = (DevelopmentHelper.mode == Mode.DEVELOPMENT) && false;
+	private static final boolean DEBUG_USAGE_LOG = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
 
 	// Path and file for log information
 	private final static String LOG_FILE_PREFIX = "usage_log_r";
@@ -263,7 +263,7 @@ public class UsageLog {
 	 * 
 	 * @param identifier
 	 *            Identifier for this log item.
-	 * @param preferences
+	 * @param mPreferences
 	 *            The preferences to be logged.
 	 */
 	public void logPreference(String identifier, String key, Object value) {
@@ -503,7 +503,7 @@ public class UsageLog {
 						"**************** Log has been deleted ******************");
 			}
 
-			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 				// Clear references to he activity after delete log, so it can
 				// be recreated.
 				mMainActivity = null;

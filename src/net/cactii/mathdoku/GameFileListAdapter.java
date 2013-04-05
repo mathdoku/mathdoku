@@ -27,7 +27,7 @@ public class GameFileListAdapter extends BaseAdapter {
 	public ArrayList<GameFile.GameFileHeader> mGameFiles;
 
 	// Inflater and font for the previews
-	private LayoutInflater inflater;
+	private LayoutInflater mLayoutInflater;
 
 	// Activity context in which the adapter is used.
 	private GameFileList mContext;
@@ -48,7 +48,7 @@ public class GameFileListAdapter extends BaseAdapter {
 	 *            adapted is used.
 	 */
 	public GameFileListAdapter(GameFileList context) {
-		this.inflater = LayoutInflater.from(context);
+		this.mLayoutInflater = LayoutInflater.from(context);
 		this.mContext = context;
 		this.mGameFiles = new ArrayList<GameFile.GameFileHeader>();
 
@@ -193,7 +193,7 @@ public class GameFileListAdapter extends BaseAdapter {
 				getView_ViewHolder.isSavedGameViewHolder = false;
 
 				// Inflate the convertView and set the background.
-				convertView = inflater
+				convertView = mLayoutInflater
 						.inflate(R.layout.savedgamesaveitem, null);
 				convertView.findViewById(R.id.gameFileListRow)
 						.setBackgroundResource(mResIdBackGroundListViewItem);
@@ -227,7 +227,7 @@ public class GameFileListAdapter extends BaseAdapter {
 			getView_ViewHolder.isSavedGameViewHolder = true;
 
 			// Inflate the convertView and set the background.
-			convertView = inflater.inflate(R.layout.savedgameitem, null);
+			convertView = mLayoutInflater.inflate(R.layout.savedgameitem, null);
 			convertView.findViewById(R.id.gameFileListRow)
 					.setBackgroundResource(mResIdBackGroundListViewItem);
 

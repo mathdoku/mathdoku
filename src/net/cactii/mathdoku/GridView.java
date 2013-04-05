@@ -27,7 +27,7 @@ public class GridView extends View implements OnTouchListener {
 	SharedPreferences mMainActivityPreferences;
 	
 	// Actual content of the puzzle in this grid view
-	private Grid grid;
+	private Grid mGrid;
 
 	// Touched listener
 	public OnGridTouchListener mTouchedListener;
@@ -47,7 +47,7 @@ public class GridView extends View implements OnTouchListener {
 	// The layout to be used for positioning the maybe digits in a grid.
 	private DigitPositionGrid mDigitPositionGrid;
 
-	public TextView animText;
+	public TextView mAnimationText;
 
 	// Visible window rectangle
 	private Rect mDisplayFrame;
@@ -94,7 +94,7 @@ public class GridView extends View implements OnTouchListener {
 	public boolean onTouch(View arg0, MotionEvent event) {
 		if (event.getAction() != MotionEvent.ACTION_DOWN)
 			return false;
-		if (!this.grid.isActive())
+		if (!this.mGrid.isActive())
 			return false;
 
 		// Find out where the grid was touched.
@@ -102,7 +102,7 @@ public class GridView extends View implements OnTouchListener {
 		float y = event.getY();
 		int size = getMeasuredWidth();
 
-		int gridSize = grid.getGridSize();
+		int gridSize = mGrid.getGridSize();
 		int row = (int) ((size - (size - y)) / (size / gridSize));
 		if (row > gridSize - 1)
 			row = gridSize - 1;
@@ -116,18 +116,18 @@ public class GridView extends View implements OnTouchListener {
 			col = 0;
 
 		// We can now get the cell.
-		GridCell cell = grid.getCellAt(row, col);
-		float[] cellPos = this.CellToCoord(cell.getCellNumber());
+		GridCell cell = mGrid.getCellAt(row, col);
+		float[] cellPos = this.cellToCoordinates(cell.getCellNumber());
 		this.mTrackPosX = cellPos[0];
 		this.mTrackPosY = cellPos[1];
 
 		// Determine if same cell was touched again
-		boolean sameCellSelectedAgain = (grid.getSelectedCell() == null ? false
-				: grid.getSelectedCell().equals(cell));
+		boolean sameCellSelectedAgain = (mGrid.getSelectedCell() == null ? false
+				: mGrid.getSelectedCell().equals(cell));
 
 		// Select new cell
 		this.playSoundEffect(SoundEffectConstants.CLICK);
-		grid.setSelectedCell(cell);
+		mGrid.setSelectedCell(cell);
 		if (this.mTouchedListener != null) {
 			mTouchedListener.gridTouched(cell, sameCellSelectedAgain);
 		}
@@ -140,18 +140,18 @@ public class GridView extends View implements OnTouchListener {
 	// Handle trackball, both press down, and scrolling around to
 	// select a cell.
 	public boolean onTrackballEvent(MotionEvent event) {
-		if (!this.grid.isActive() || this.mSelectorShown)
+		if (!this.mGrid.isActive() || this.mSelectorShown)
 			return false;
 		
-		UsageLog.getInstance().logTrackball(grid.getSignatureString());
+		UsageLog.getInstance().logTrackball(mGrid.getSignatureString());
 		
 		// On press event, take selected cell, call touched listener
 		// which will popup the digit selector.
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
 			if (this.mTouchedListener != null) {
-				grid.getSelectedCell().mSelected = true;
+				mGrid.getSelectedCell().mSelected = true;
 				this.mTouchedListener
-						.gridTouched(grid.getSelectedCell(), false); // TODO;
+						.gridTouched(mGrid.getSelectedCell(), false); // TODO;
 																		// test
 																		// on
 																		// change
@@ -162,7 +162,7 @@ public class GridView extends View implements OnTouchListener {
 		}
 		// A multiplier amplifies the trackball event values
 		int trackMult = 70;
-		switch (grid.getGridSize()) {
+		switch (mGrid.getGridSize()) {
 		case 4:
 			// fall through
 		case 5:
@@ -184,55 +184,55 @@ public class GridView extends View implements OnTouchListener {
 		float y = event.getY();
 		this.mTrackPosX += x * trackMult;
 		this.mTrackPosY += y * trackMult;
-		GridCell cell = this.CoordToCell(this.mTrackPosX, this.mTrackPosY);
+		GridCell cell = this.coordinatesToCell(this.mTrackPosX, this.mTrackPosY);
 		if (cell == null) {
 			this.mTrackPosX -= x * trackMult;
 			this.mTrackPosY -= y * trackMult;
 			return true;
 		}
 		// Set the cell as selected
-		if (grid.getSelectedCell() != null) {
-			grid.getSelectedCell().mSelected = false;
-			if (grid.getSelectedCell() != cell) // TODO: test with toggling
+		if (mGrid.getSelectedCell() != null) {
+			mGrid.getSelectedCell().mSelected = false;
+			if (mGrid.getSelectedCell() != cell) // TODO: test with toggling
 												// input mode
 				this.mTouchedListener.gridTouched(cell, false);
 		}
-		for (GridCell c : grid.mCells) {
+		for (GridCell c : mGrid.mCells) {
 			c.mSelected = false;
-			grid.mCages.get(c.getCageId()).mSelected = false;
+			mGrid.mCages.get(c.getCageId()).mSelected = false;
 		}
-		grid.setSelectedCell(cell);
+		mGrid.setSelectedCell(cell);
 		cell.mSelected = true;
-		grid.mCages.get(grid.getSelectedCell().getCageId()).mSelected = true;
+		mGrid.mCages.get(mGrid.getSelectedCell().getCageId()).mSelected = true;
 		invalidate();
 		return true;
 	}
 
 	// Given a cell number, returns origin x,y coordinates.
-	private float[] CellToCoord(int cell) {
+	private float[] cellToCoordinates(int cell) {
 		float xOrd;
 		float yOrd;
-		int gridSize = grid.getGridSize();
+		int gridSize = mGrid.getGridSize();
 		xOrd = ((float) cell % gridSize) * mGridCellSize;
 		yOrd = ((int) (cell / gridSize) * mGridCellSize);
 		return new float[] { xOrd, yOrd };
 	}
 
 	// Opposite of above - given a coordinate, returns the cell number within.
-	private GridCell CoordToCell(float x, float y) {
-		int gridSize = grid.getGridSize();
+	private GridCell coordinatesToCell(float x, float y) {
+		int gridSize = mGrid.getGridSize();
 		int row = (int) ((y / mGridViewSize) * gridSize);
 		int col = (int) ((x / mGridViewSize) * gridSize);
-		return grid.getCellAt(row, col);
+		return mGrid.getCellAt(row, col);
 	}
 
 	public GridCell getSelectedCell() {
-		return grid.getSelectedCell();
+		return mGrid.getSelectedCell();
 	}
 
 	public void digitSelected(int value, MainActivity.InputMode inputMode) {
 		// Display a message in case no cell is selected.
-		GridCell selectedCell = grid.getSelectedCell();
+		GridCell selectedCell = mGrid.getSelectedCell();
 		if (selectedCell == null) {
 			Toast.makeText(mMainActivity,
 					R.string.select_cell_before_value, Toast.LENGTH_SHORT)
@@ -268,7 +268,7 @@ public class GridView extends View implements OnTouchListener {
 						MainActivity.PREF_CLEAR_REDUNDANT_POSSIBLES_DEFAULT)) {
 					// Update possible values for other cells in this row and
 					// column.
-					grid.clearRedundantPossiblesInSameRowOrColumn(orginalUserMove);
+					mGrid.clearRedundantPossiblesInSameRowOrColumn(orginalUserMove);
 				}
 
 				break;
@@ -282,20 +282,20 @@ public class GridView extends View implements OnTouchListener {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		if (grid == null) {
+		if (mGrid == null) {
 			// As long as no grid has been attached to the gridview, it can not
 			// be drawn.
 			return;
 		}
 
-		synchronized (grid.mLock) { // Avoid redrawing at the same time as
+		synchronized (mGrid.mLock) { // Avoid redrawing at the same time as
 									// creating
 			// puzzle
-			int gridSize = grid.getGridSize();
+			int gridSize = mGrid.getGridSize();
 
 			if (gridSize < 4)
 				return;
-			if (grid.mCages == null)
+			if (mGrid.mCages == null)
 				return;
 
 			float gridBorderWidth = mGridPainter.mBorderPaint.getStrokeWidth();
@@ -308,7 +308,7 @@ public class GridView extends View implements OnTouchListener {
 			// Draw cells, except for cells in selected cage
 			InputMode inputMode = mMainActivity.getInputMode();
 			Painter.getInstance(mMainActivity).setCellSize(mGridCellSize);
-			for (GridCell cell : grid.mCells) {
+			for (GridCell cell : mGrid.mCells) {
 				cell.checkWithOtherValuesInRowAndColumn();
 				cell.draw(canvas, gridBorderWidth, inputMode,
 						mDigitPositionGrid);
@@ -318,7 +318,7 @@ public class GridView extends View implements OnTouchListener {
 
 	public void loadNewGrid(Grid grid) {
 		mSelectorShown = false;
-		this.grid = grid;
+		this.mGrid = grid;
 		invalidate();
 	}
 
@@ -339,7 +339,7 @@ public class GridView extends View implements OnTouchListener {
 		// Finally compute the exact size needed to display a grid in which the
 		// (integer) cell size is as big as possible but the grid still fits in
 		// the space available.
-		int gridSize = (grid == null ? 1 : grid.getGridSize());
+		int gridSize = (mGrid == null ? 1 : mGrid.getGridSize());
 		float gridBorderWidth = (mGridPainter == null ? 0
 				: mGridPainter.mBorderPaint.getStrokeWidth());
 		mGridCellSize = (float) Math
@@ -364,7 +364,7 @@ public class GridView extends View implements OnTouchListener {
 	// Highlight those cells where the user has made a mistake
 	public void markInvalidChoices() {
 		boolean isValid = true;
-		for (GridCell cell : grid.mCells)
+		for (GridCell cell : mGrid.mCells)
 			if (cell.isUserValueSet())
 				if (cell.getUserValue() != cell.getCorrectValue()) {
 					cell.setInvalidHighlight(true);

@@ -3,14 +3,14 @@ package net.cactii.mathdoku;
 public class InvalidFileFormatException extends Exception {
 	private static final long serialVersionUID = 6377920643705765951L;
 
-	String errorMessage;
+	String mErrorMessage;
 
 	/**
 	 * Creates a new instance of {@link InvalidFileFormatException}.
 	 */
 	public InvalidFileFormatException() {
 		super();
-		errorMessage = "unknown";
+		mErrorMessage = "unknown";
 	}
 
 	/**
@@ -20,10 +20,10 @@ public class InvalidFileFormatException extends Exception {
 	 */
 	public InvalidFileFormatException(String errorMessage) {
 		super(errorMessage); // call super class constructor
-		this.errorMessage = errorMessage; // save message
+		this.mErrorMessage = errorMessage; // save message
 	}
 
 	public String getError() {
-		return errorMessage;
+		return mErrorMessage;
 	}
 }

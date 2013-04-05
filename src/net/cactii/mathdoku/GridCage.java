@@ -368,10 +368,10 @@ public class GridCage {
 		}
 
 		// ACTION_ADD:
-		AllResults = getalladdcombos(gridSize, mResult, mCells.size());
+		AllResults = getAllAddCombos(gridSize, mResult, mCells.size());
 
 		// ACTION_MULTIPLY:
-		ArrayList<int[]> multResults = getallmultcombos(gridSize, mResult,
+		ArrayList<int[]> multResults = getAllMultiplyCombos(gridSize, mResult,
 				mCells.size());
 
 		// Combine Add & Multiply result sets
@@ -429,10 +429,10 @@ public class GridCage {
 					}
 			break;
 		case ACTION_ADD:
-			AllResults = getalladdcombos(gridSize, mResult, mCells.size());
+			AllResults = getAllAddCombos(gridSize, mResult, mCells.size());
 			break;
 		case ACTION_MULTIPLY:
-			AllResults = getallmultcombos(gridSize, mResult, mCells.size());
+			AllResults = getAllMultiplyCombos(gridSize, mResult, mCells.size());
 			break;
 		}
 		return AllResults;
@@ -441,15 +441,15 @@ public class GridCage {
 	// The following two variables are required by the recursive methods below.
 	// They could be passed as parameters of the recursive methods, but this
 	// reduces performance.
-	private int[] numbers;
-	private ArrayList<int[]> result_set;
+	private int[] getAllCombos_Numbers;
+	private ArrayList<int[]> getAllCombos_ResultSet;
 
-	private ArrayList<int[]> getalladdcombos(int max_val, int target_sum,
+	private ArrayList<int[]> getAllAddCombos(int max_val, int target_sum,
 			int n_cells) {
-		numbers = new int[n_cells];
-		result_set = new ArrayList<int[]>();
-		getaddcombos(max_val, target_sum, n_cells);
-		return result_set;
+		getAllCombos_Numbers = new int[n_cells];
+		getAllCombos_ResultSet = new ArrayList<int[]>();
+		getAddCombos(max_val, target_sum, n_cells);
+		return getAllCombos_ResultSet;
 	}
 
 	/*
@@ -462,29 +462,29 @@ public class GridCage {
 	 * 
 	 * @param n_cells number of digits still to select
 	 */
-	private void getaddcombos(int max_val, int target_sum, int n_cells) {
+	private void getAddCombos(int max_val, int target_sum, int n_cells) {
 		for (int n = 1; n <= max_val; n++) {
 			if (n_cells == 1) {
 				if (n == target_sum) {
-					numbers[0] = n;
-					if (satisfiesConstraints(numbers))
-						result_set.add(numbers.clone());
+					getAllCombos_Numbers[0] = n;
+					if (satisfiesConstraints(getAllCombos_Numbers))
+						getAllCombos_ResultSet.add(getAllCombos_Numbers.clone());
 				}
 			} else {
-				numbers[n_cells - 1] = n;
-				getaddcombos(max_val, target_sum - n, n_cells - 1);
+				getAllCombos_Numbers[n_cells - 1] = n;
+				getAddCombos(max_val, target_sum - n, n_cells - 1);
 			}
 		}
 		return;
 	}
 
-	private ArrayList<int[]> getallmultcombos(int max_val, int target_sum,
+	private ArrayList<int[]> getAllMultiplyCombos(int max_val, int target_sum,
 			int n_cells) {
-		numbers = new int[n_cells];
-		result_set = new ArrayList<int[]>();
-		getmultcombos(max_val, target_sum, n_cells);
+		getAllCombos_Numbers = new int[n_cells];
+		getAllCombos_ResultSet = new ArrayList<int[]>();
+		getMultiplyCombos(max_val, target_sum, n_cells);
 
-		return result_set;
+		return getAllCombos_ResultSet;
 	}
 
 	/*
@@ -497,20 +497,20 @@ public class GridCage {
 	 * 
 	 * @param n_cells number of digits still to select
 	 */
-	private void getmultcombos(int max_val, int target_sum, int n_cells) {
+	private void getMultiplyCombos(int max_val, int target_sum, int n_cells) {
 		for (int n = 1; n <= max_val; n++) {
 			if (target_sum % n != 0)
 				continue;
 
 			if (n_cells == 1) {
 				if (n == target_sum) {
-					numbers[0] = n;
-					if (satisfiesConstraints(numbers))
-						result_set.add(numbers.clone());
+					getAllCombos_Numbers[0] = n;
+					if (satisfiesConstraints(getAllCombos_Numbers))
+						getAllCombos_ResultSet.add(getAllCombos_Numbers.clone());
 				}
 			} else {
-				numbers[n_cells - 1] = n;
-				getmultcombos(max_val, target_sum / n, n_cells - 1);
+				getAllCombos_Numbers[n_cells - 1] = n;
+				getMultiplyCombos(max_val, target_sum / n, n_cells - 1);
 			}
 		}
 		return;

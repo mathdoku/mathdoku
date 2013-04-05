@@ -60,10 +60,10 @@ public class GridCell {
 	}
 
 	// Borders of the cell
-	public BorderType borderTypeTop;
-	public BorderType borderTypeBottom;
-	public BorderType borderTypeLeft;
-	public BorderType borderTypeRight;
+	public BorderType mBorderTypeTop;
+	public BorderType mBorderTypeBottom;
+	public BorderType mBorderTypeLeft;
+	public BorderType mBorderTypeRight;
 
 	// References to the global painter objects.
 	private CellPainter mCellPainter;
@@ -99,10 +99,10 @@ public class GridCell {
 		this.mMaybe1x9Painter = painter.mMaybe1x9Painter;
 		this.mCagePainter = painter.mCagePainter;
 
-		borderTypeTop = BorderType.NONE;
-		borderTypeRight = BorderType.NONE;
-		borderTypeBottom = BorderType.NONE;
-		borderTypeLeft = BorderType.NONE;
+		mBorderTypeTop = BorderType.NONE;
+		mBorderTypeRight = BorderType.NONE;
+		mBorderTypeBottom = BorderType.NONE;
+		mBorderTypeLeft = BorderType.NONE;
 	}
 
 	public String toString() {
@@ -183,7 +183,7 @@ public class GridCell {
 	}
 
 	/* Returns whether the cell is a member of any cage */
-	public boolean CellInAnyCage() {
+	public boolean cellInAnyCage() {
 		return mCageId != -1;
 	}
 
@@ -232,7 +232,7 @@ public class GridCell {
 
 		// Top border of cell (will only be drawn for first row
 		float topOffset = 0;
-		borderPaint = getBorderPaint(borderTypeTop);
+		borderPaint = getBorderPaint(mBorderTypeTop);
 		if (borderPaint != null) {
 			// Calculate offset and draw top border
 			float offset = (mRow == 0 ? (float) Math
@@ -248,7 +248,7 @@ public class GridCell {
 		}
 
 		// Right border of cell
-		borderPaint = getBorderPaint(borderTypeRight);
+		borderPaint = getBorderPaint(mBorderTypeRight);
 		float rightOffset = 0;
 		if (borderPaint != null) {
 			// Calculate offset and draw right border
@@ -271,7 +271,7 @@ public class GridCell {
 		}
 
 		// Bottom border of cell
-		borderPaint = getBorderPaint(borderTypeBottom);
+		borderPaint = getBorderPaint(mBorderTypeBottom);
 		float bottomOffset = 0;
 		if (borderPaint != null) {
 			// Calculate offset and draw bottom border
@@ -296,7 +296,7 @@ public class GridCell {
 
 		// Left border of cell (will only be draw for first column
 		float leftOffset = 0;
-		borderPaint = getBorderPaint(borderTypeLeft);
+		borderPaint = getBorderPaint(mBorderTypeLeft);
 		if (borderPaint != null) {
 			// Calculate offset and draw left border
 			float offset = (mColumn == 0 ? (float) Math
@@ -598,14 +598,14 @@ public class GridCell {
 		CellChange move = new CellChange(this, this.mUserValue, this.mPossibles);
 		if (originalCellChange == null) {
 			// This move is not a result of another move.
-			this.mGrid.AddMove(move);
+			this.mGrid.addMove(move);
 		} else {
 			originalCellChange.addRelatedMove(move);
 		}
 		return move;
 	}
 
-	public void Undo(int previousUserValue,
+	public void undo(int previousUserValue,
 			ArrayList<Integer> previousPossibleValues) {
 		setUserValue(previousUserValue);
 		if (previousPossibleValues != null) {
@@ -742,32 +742,32 @@ public class GridCell {
 	public void setBorders() {
 		// Set top border for this cell and the bottom border for the cell above
 		GridCell otherCell = getCellAbove();
-		borderTypeTop = getCommonBorderType(this, otherCell);
+		mBorderTypeTop = getCommonBorderType(this, otherCell);
 		if (otherCell != null) {
-			otherCell.borderTypeBottom = borderTypeTop;
+			otherCell.mBorderTypeBottom = mBorderTypeTop;
 		}
 
 		// Set right border for this cell and the left border for the cell on
 		// the right
 		otherCell = getCellOnRight();
-		borderTypeRight = getCommonBorderType(this, otherCell);
+		mBorderTypeRight = getCommonBorderType(this, otherCell);
 		if (otherCell != null) {
-			otherCell.borderTypeLeft = borderTypeRight;
+			otherCell.mBorderTypeLeft = mBorderTypeRight;
 		}
 
 		// Set bottom border for this cell and the top border for the cell below
 		otherCell = getCellBelow();
-		borderTypeBottom = getCommonBorderType(this, otherCell);
+		mBorderTypeBottom = getCommonBorderType(this, otherCell);
 		if (otherCell != null) {
-			otherCell.borderTypeTop = borderTypeBottom;
+			otherCell.mBorderTypeTop = mBorderTypeBottom;
 		}
 
 		// Set left border for this cell and the right border for the cell on
 		// the left
 		otherCell = getCellOnLeft();
-		borderTypeLeft = getCommonBorderType(this, otherCell);
+		mBorderTypeLeft = getCommonBorderType(this, otherCell);
 		if (otherCell != null) {
-			otherCell.borderTypeRight = borderTypeLeft;
+			otherCell.mBorderTypeRight = mBorderTypeLeft;
 		}
 	}
 

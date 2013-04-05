@@ -21,7 +21,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
-	public static final boolean DEBUG_GRID_GENERATOR = (DevelopmentHelper.mode == Mode.DEVELOPMENT) && false;
+	public static final boolean DEBUG_GRID_GENERATOR = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
 	public static final boolean DEBUG_GRID_GENERATOR_FULL = DEBUG_GRID_GENERATOR && false;
 
 	// Cages with too many permutations will make cage generation and solving
@@ -49,20 +49,20 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 	// Cell and solution
 	public ArrayList<GridCell> mCells;
-	private int[][] solutionMatrix;
+	private int[][] mSolutionMatrix;
 
 	// Cages
 	private CageTypeGenerator mGridCageTypeGenerator;
 	public ArrayList<GridCage> mCages;
-	private int[][] cageMatrix;
+	private int[][] mCageMatrix;
 	private int mMaxCageResult;
 
 	// Additional option for generating the grid
 	private GridGeneratorOptions mGridGeneratorOptions;
 
 	// Timestamp for logging purposes
-	long timeStarted;
-	long timeStartedSolution;
+	long mTimeStarted;
+	long mTimeStartedSolution;
 
 	// The grid generator options are used in development mode only to generate
 	// fake games.
@@ -118,7 +118,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		}
 
 		// Use specified options only if running in development mode.
-		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			this.mGridGeneratorOptions = gridGeneratorOptions;
 
 			// Rebuild the dialog using the grid generator options.
@@ -168,7 +168,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 		// Set style of dialog.
 		mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			if (mGridGeneratorOptions.numberOfGamesToGenerate > 1) {
 				mProgressDialog
 						.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -192,7 +192,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			return null;
 		}
 
-		timeStarted = System.currentTimeMillis();
+		mTimeStarted = System.currentTimeMillis();
 
 		// Create a new empty grid.
 		mGrid = new Grid(mGridSize);
@@ -215,7 +215,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		do {
 			num_attempts++;
 
-			timeStartedSolution = System.currentTimeMillis();
+			mTimeStartedSolution = System.currentTimeMillis();
 
 			if (DEBUG_GRID_GENERATOR) {
 				Log.i(TAG, "Puzzle generation attempt: " + num_attempts);
@@ -235,9 +235,9 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			randomiseGrid();
 
 			this.mCages = new ArrayList<GridCage>();
-			CreateCages(mHideOperators);
+			createCages(mHideOperators);
 
-			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 				if (mGridGeneratorOptions.createFakeUserGameFiles) {
 					// The faked user games files do not require a unique
 					// solution which results in much faster generation time.
@@ -309,16 +309,16 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 	protected void onProgressUpdate(String... values) {
 		if (DEBUG_GRID_GENERATOR) {
-			long timeElapsed = System.currentTimeMillis() - timeStarted;
+			long timeElapsed = System.currentTimeMillis() - mTimeStarted;
 			if (values.length == 1 && values[0] != null) {
 				if (values[0]
 						.equals(DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_SOLUTION)) {
 					Log.i(TAG,
 							Long.toString(timeElapsed)
 									+ ": found a solution for this puzzle in "
-									+ (System.currentTimeMillis() - timeStartedSolution)
+									+ (System.currentTimeMillis() - mTimeStartedSolution)
 									+ " miliseconds");
-					timeStartedSolution = System.currentTimeMillis();
+					mTimeStartedSolution = System.currentTimeMillis();
 				}
 			}
 			if (values.length >= 2 && values[0] != null && values[1] != null) {
@@ -335,7 +335,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 				}
 			}
 		}
-		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			if (values.length > 0
 					&& values[0] != null
 					&& values[0]
@@ -359,7 +359,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	 */
 	@Override
 	protected void onPostExecute(Void result) {
-		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			if (mGridGeneratorOptions.createFakeUserGameFiles) {
 				mActivity.mGridGeneratorTask = null;
 				// Grids are already saved.
@@ -434,7 +434,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	 */
 	private void randomiseGrid() {
 		int attempts;
-		solutionMatrix = new int[this.mGridSize][this.mGridSize];
+		mSolutionMatrix = new int[this.mGridSize][this.mGridSize];
 		for (int value = 1; value < this.mGridSize + 1; value++) {
 			for (int row = 0; row < this.mGridSize; row++) {
 				attempts = 20;
@@ -456,7 +456,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 					break;
 				}
 				cell.setCorrectValue(value);
-				solutionMatrix[row][column] = value;
+				mSolutionMatrix[row][column] = value;
 			}
 		}
 	}
@@ -468,17 +468,17 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	 *            True in case cages should hide the operator. False in
 	 *            operators should be visible.
 	 */
-	private void CreateCages(boolean hideOperators) {
+	private void createCages(boolean hideOperators) {
 		this.mGridCageTypeGenerator = CageTypeGenerator.getInstance();
 
 		boolean restart;
 		int attempts = 1;
 		do {
 			restart = false;
-			cageMatrix = new int[this.mGridSize][this.mGridSize];
+			mCageMatrix = new int[this.mGridSize][this.mGridSize];
 			for (int row = 0; row < this.mGridSize; row++) {
 				for (int col = 0; col < this.mGridSize; col++) {
-					cageMatrix[row][col] = -1;
+					mCageMatrix[row][col] = -1;
 				}
 			}
 
@@ -517,7 +517,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 						if (firstCage != null) {
 							this.mCages.add(firstCage);
 							for (GridCell cellinCage : firstCage.mCells) {
-								cageMatrix[cellinCage.getRow()][cellinCage
+								mCageMatrix[cellinCage.getRow()][cellinCage
 										.getColumn()] = firstCage.mId;
 							}
 							break;
@@ -533,7 +533,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			// Fill remainder of grid
 			int countSingles = 0;
 			for (GridCell cell : this.mCells) {
-				if (cell.CellInAnyCage()) {
+				if (cell.cellInAnyCage()) {
 					continue; // Cell already in a cage, skip
 				}
 
@@ -558,7 +558,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 				// Add the cage to the grid
 				this.mCages.add(cage);
 				for (GridCell cellinCage : cage.mCells) {
-					cageMatrix[cellinCage.getRow()][cellinCage.getColumn()] = cage.mId;
+					mCageMatrix[cellinCage.getRow()][cellinCage.getColumn()] = cage.mId;
 				}
 			}
 		} while (restart);
@@ -622,7 +622,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 					// grid.
 					cageIsValid = false;
 					break;
-				} else if (cageMatrix[row][col] >= 0) {
+				} else if (mCageMatrix[row][col] >= 0) {
 					// Cell is already used in another cage
 					cageIsValid = false;
 					break;
@@ -753,13 +753,13 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		for (int row = 0; row < this.mGridSize; row++) {
 			String line = "      ";
 			for (int col = 0; col < this.mGridSize; col++) {
-				line += " " + solutionMatrix[row][col];
+				line += " " + mSolutionMatrix[row][col];
 			}
 			line += "   ";
 			for (int col = 0; col < this.mGridSize; col++) {
 				line += " "
-						+ (cageMatrix[row][col] == -1 ? emptyCell : String
-								.format(cageIdFormat, cageMatrix[row][col]));
+						+ (mCageMatrix[row][col] == -1 ? emptyCell : String
+								.format(cageIdFormat, mCageMatrix[row][col]));
 			}
 			if (maskNewCage != null) {
 				line += "   ";
@@ -801,7 +801,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 						// Iterate all cells in the column from top to bottom.
 						for (int row = 0; row < this.mGridSize; row++) {
-							int otherCageId = cageMatrix[row][col];
+							int otherCageId = mCageMatrix[row][col];
 							if (otherCageId >= 0
 									&& maskNewCage[row][newCageCol]
 									&& !cagesChecked.contains(otherCageId)) {
@@ -816,13 +816,13 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 								// the other cage.
 								int[] valuesUsed = new int[this.mGridSize];
 								for (int row2 = row; row2 < this.mGridSize; row2++) {
-									if (cageMatrix[row2][col] == otherCageId
+									if (mCageMatrix[row2][col] == otherCageId
 											&& maskNewCage[row2][newCageCol]) {
 										// Both cages contain a cell on the same
 										// row. Remember values used in those
 										// cells.
-										valuesUsed[solutionMatrix[row2][col] - 1]++;
-										valuesUsed[solutionMatrix[row2][newCageCol] - 1]++;
+										valuesUsed[mSolutionMatrix[row2][col] - 1]++;
+										valuesUsed[mSolutionMatrix[row2][newCageCol] - 1]++;
 									}
 								}
 
@@ -897,7 +897,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 						// Iterate all cells in the row from left to right.
 						for (int col = 0; col < this.mGridSize; col++) {
-							int otherCageId = cageMatrix[row][col];
+							int otherCageId = mCageMatrix[row][col];
 							if (otherCageId >= 0
 									&& maskNewCage[newCageRow][col]
 									&& !cagesChecked.contains(otherCageId)) {
@@ -913,14 +913,14 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 								// the other cage.
 								int[] valuesUsed = new int[this.mGridSize];
 								for (int cols2 = col; cols2 < this.mGridSize; cols2++) {
-									if (cageMatrix[row][cols2] == otherCageId
+									if (mCageMatrix[row][cols2] == otherCageId
 											&& maskNewCage[newCageRow][cols2]) {
 										// Both cages contain a cell on the same
 										// columns. Remember values used in
 										// those
 										// cells.
-										valuesUsed[solutionMatrix[row][cols2] - 1]++;
-										valuesUsed[solutionMatrix[newCageRow][cols2] - 1]++;
+										valuesUsed[mSolutionMatrix[row][cols2] - 1]++;
+										valuesUsed[mSolutionMatrix[newCageRow][cols2] - 1]++;
 									}
 								}
 
