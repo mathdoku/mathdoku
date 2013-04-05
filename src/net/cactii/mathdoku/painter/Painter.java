@@ -1,6 +1,6 @@
 package net.cactii.mathdoku.painter;
 
-import net.cactii.mathdoku.painter.MaybeValuePainter.MaybeGridType;
+import net.cactii.mathdoku.DigitPositionGrid;
 import android.content.Context;
 import android.graphics.DashPathEffect;
 import android.graphics.DiscretePathEffect;
@@ -38,10 +38,9 @@ public class Painter {
 	private CagePainter mCagePainter;
 	private CellPainter mCellPainter;
 	private UserValuePainter mUserValuePainter;
-	private MaybeValuePainter mMaybe3x3Painter;
-	private MaybeValuePainter mMaybe2x5Painter;
-	private MaybeValuePainter mMaybe1x9Painter;
-	
+	private MaybeValuePainter mMaybeGridPainter;
+	private MaybeValuePainter mMaybeLinePainter;
+
 	/**
 	 * Creates a new instance of {@link #GridPainter()}.
 	 * 
@@ -60,15 +59,14 @@ public class Painter {
 		mCagePainter = new CagePainter(this);
 		mCellPainter = new CellPainter(this);
 		mUserValuePainter = new UserValuePainter(this);
-		mMaybe3x3Painter = new MaybeValuePainter(this, MaybeGridType.GRID_3X3);
-		mMaybe2x5Painter = new MaybeValuePainter(this, MaybeGridType.GRID_2X5);
-		mMaybe1x9Painter = new MaybeValuePainter(this, MaybeGridType.GRID_1X9);
+		mMaybeGridPainter = new MaybeValuePainter(this);
+		mMaybeLinePainter = new MaybeValuePainter(this);
 
 		// Set the size of the borders.
 		setBorderSizes(false);
 
 		// Apply default theme to the painters.
-		setTheme(GridTheme.NEWSPAPER); // TODO: Add theme to constructor????
+		setTheme(GridTheme.NEWSPAPER);
 	}
 
 	/**
@@ -139,12 +137,11 @@ public class Painter {
 		mCagePainter.setTheme(theme);
 		mCellPainter.setTheme(theme);
 		mUserValuePainter.setTheme(theme);
-		mMaybe3x3Painter.setTheme(theme);
-		mMaybe2x5Painter.setTheme(theme);
-		mMaybe1x9Painter.setTheme(theme);
+		mMaybeGridPainter.setTheme(theme);
+		mMaybeLinePainter.setTheme(theme);
 
 		// To be sure, reapply size specific settings as well.
-		setCellSize(mCellPainter.getCellSize());
+		// REMOVE: setCellSize(mCellPainter.getCellSize());
 	}
 
 	/**
@@ -152,13 +149,11 @@ public class Painter {
 	 * 
 	 * @param size
 	 *            The size of cells.
+	 * @param digitPositionGrid
+	 *            The digit position grid used to display maybe values into a
+	 *            grid.
 	 */
-	public void setCellSize(float size) {
-		if (size == mCellPainter.getCellSize()) {
-			// No change in cell size.
-			return;
-		}
-
+	public void setCellSize(float size, DigitPositionGrid digitPositionGrid) {
 		// Set width of borders dependent on new size of cells.
 		setBorderSizes(size <= 80);
 
@@ -166,9 +161,8 @@ public class Painter {
 		mCagePainter.setCellSize(size);
 		mCellPainter.setCellSize(size);
 		mUserValuePainter.setCellSize(size);
-		mMaybe3x3Painter.setCellSize(size);
-		mMaybe2x5Painter.setCellSize(size);
-		mMaybe1x9Painter.setCellSize(size);
+		mMaybeGridPainter.setCellSize(size, digitPositionGrid);
+		mMaybeLinePainter.setCellSize(size, null);
 	}
 
 	/**
@@ -228,18 +222,18 @@ public class Painter {
 	private void setTextColors(GridTheme gridTheme) {
 		switch (gridTheme) {
 		case CARVED:
-			mHighlightedTextColorNormalInputMode = 0xFF2215DD; 
-			mHighlightedTextColorMaybeInputMode = 0xFFE61EBE; 
+			mHighlightedTextColorNormalInputMode = 0xFF2215DD;
+			mHighlightedTextColorMaybeInputMode = 0xFFE61EBE;
 			mDefaultTextColor = 0xFF000000;
 			break;
 		case NEWSPAPER:
 			mHighlightedTextColorNormalInputMode = 0xFF2215DD;
-			mHighlightedTextColorMaybeInputMode = 0xFFE61EBE; 
+			mHighlightedTextColorMaybeInputMode = 0xFFE61EBE;
 			mDefaultTextColor = 0xFF000000;
 			break;
 		case DARK:
 			mHighlightedTextColorNormalInputMode = 0xFF9080ED;
-			mHighlightedTextColorMaybeInputMode = 0xFFE61EBE; 
+			mHighlightedTextColorMaybeInputMode = 0xFFE61EBE;
 			mDefaultTextColor = 0xFFFFFFFF;
 			break;
 		}
@@ -309,29 +303,20 @@ public class Painter {
 	}
 
 	/**
-	 * Get the maybe 3x3 painter.
+	 * Get the maybe grid painter.
 	 * 
-	 * @return The maybe 3x3 painter.
+	 * @return The maybe grid painter.
 	 */
-	public MaybeValuePainter getMaybe3x3Painter() {
-		return mMaybe3x3Painter;
+	public MaybeValuePainter getMaybeGridPainter() {
+		return mMaybeGridPainter;
 	}
 
 	/**
-	 * Get the maybe 2x5 painter.
+	 * Get the maybe line painter.
 	 * 
-	 * @return The maybe 2x5 painter.
+	 * @return The maybe line painter.
 	 */
-	public MaybeValuePainter getMaybe2x5Painter() {
-		return mMaybe2x5Painter;
-	}
-
-	/**
-	 * Get the maybe 1x9 painter.
-	 * 
-	 * @return The maybe 1x9 painter.
-	 */
-	public MaybeValuePainter getMaybe1x9Painter() {
-		return mMaybe1x9Painter;
+	public MaybeValuePainter getMaybeLinePainter() {
+		return mMaybeLinePainter;
 	}
 }

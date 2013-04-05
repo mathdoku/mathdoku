@@ -69,9 +69,8 @@ public class GridCell {
 	// References to the global painter objects.
 	private CellPainter mCellPainter;
 	private UserValuePainter mUserValuePainter;
-	private MaybeValuePainter mMaybe3x3Painter;
-	private MaybeValuePainter mMaybe2x5Painter;
-	private MaybeValuePainter mMaybe1x9Painter;
+	private MaybeValuePainter mMaybeGridPainter;
+	private MaybeValuePainter mMaybeLinePainter;
 	private CagePainter mCagePainter;
 
 	public GridCell(Grid grid, int cell) {
@@ -95,9 +94,8 @@ public class GridCell {
 		Painter painter = Painter.getInstance();
 		this.mCellPainter = painter.getCellPainter();
 		this.mUserValuePainter = painter.getUserValuePainter();
-		this.mMaybe3x3Painter = painter.getMaybe3x3Painter();
-		this.mMaybe2x5Painter = painter.getMaybe2x5Painter();
-		this.mMaybe1x9Painter = painter.getMaybe1x9Painter();
+		this.mMaybeGridPainter = painter.getMaybeGridPainter();
+		this.mMaybeLinePainter = painter.getMaybeLinePainter();
 		this.mCagePainter = painter.getCagePainter();
 
 		borderTypeTop = BorderType.NONE;
@@ -200,8 +198,7 @@ public class GridCell {
 	 * Draw the cell inclusive borders, background and text.
 	 */
 	public void draw(Canvas canvas, float gridBorderWidth,
-			MainActivity.InputMode inputMode,
-			DigitPositionGrid digitPositionGrid) {
+			MainActivity.InputMode inputMode) {
 		// Get cell size
 		int cellSize = (int) this.mCellPainter.getCellSize();
 
@@ -399,9 +396,13 @@ public class GridCell {
 			Paint paint = (inputMode == InputMode.NORMAL ? mUserValuePainter
 					.getTextPaintNormalInputMode() : mUserValuePainter
 					.getTextPaintMaybeInputMode());
-			canvas.drawText("" + mUserValue,
-					mPosX + mUserValuePainter.getLeftOffset(), mPosY
-							+ mUserValuePainter.getTopOffset(), paint);
+
+			// Calculate left offset to get the use value centered horizontally.
+			int centerOffset = (int) ((cellSize - paint.measureText(Integer
+					.toString(mUserValue))) / 2);
+
+			canvas.drawText("" + mUserValue, mPosX + centerOffset, mPosY
+					+ mUserValuePainter.getBottomOffset(), paint);
 		}
 		// Cage text
 		if (!this.mCageText.equals("")) {
@@ -416,17 +417,19 @@ public class GridCell {
 
 			canvas.drawText(mCageText,
 					this.mPosX + mCagePainter.getTextLeftOffset(), this.mPosY
-							+ mCagePainter.getTextTopOffset(), textPaint);
+							+ mCagePainter.getTextBottomOffset(), textPaint);
 		}
 
 		// Draw pencilled in digits.
 		if (mPossibles.size() > 0) {
 			if (mGrid.hasPrefShowMaybesAs3x3Grid()) {
+				// Get the digit positioner to be used
+				DigitPositionGrid digitPositionGrid = mMaybeGridPainter
+						.getDigitPositionGrid();
+
 				// Determine which painter to use
-				MaybeValuePainter maybePainter = (digitPositionGrid.isGrid2x5() ? mMaybe2x5Painter
-						: mMaybe3x3Painter);
-				Paint paint = (inputMode == InputMode.NORMAL ? maybePainter
-						.getTextPaintNormalInputMode() : maybePainter
+				Paint paint = (inputMode == InputMode.NORMAL ? mMaybeGridPainter
+						.getTextPaintNormalInputMode() : mMaybeGridPainter
 						.getTextPaintMaybeInputMode());
 
 				// Draw all possible which are currently set for this cell.
@@ -437,10 +440,10 @@ public class GridCell {
 					int row = digitPositionGrid.getRow(possible);
 					int col = digitPositionGrid.getCol(possible);
 
-					float xPos = mPosX + maybePainter.getLeftOffset() + col
-							* maybePainter.getMaybeDigitWidth();
-					float yPos = mPosY + maybePainter.getTopOffset() + row
-							* maybePainter.getMaybeDigitHeight();
+					float xPos = mPosX + mMaybeGridPainter.getLeftOffset()
+							+ col * mMaybeGridPainter.getMaybeDigitWidth();
+					float yPos = mPosY + mMaybeGridPainter.getBottomOffset()
+							+ row * mMaybeGridPainter.getMaybeDigitHeight();
 					canvas.drawText(Integer.toString(possible), xPos, yPos,
 							paint);
 				}
@@ -455,19 +458,25 @@ public class GridCell {
 				// Clone the text painter and decrease text size until the
 				// possible values string fit within the cell.
 				Paint textPaint = new Paint(
-						inputMode == InputMode.NORMAL ? mMaybe1x9Painter
+						inputMode == InputMode.NORMAL ? mMaybeLinePainter
 								.getTextPaintNormalInputMode()
-								: mMaybe1x9Painter.getTextPaintMaybeInputMode());
-				float scaleFactor = (cellSize - 2 * mMaybe1x9Painter.getLeftOffset())
+								: mMaybeLinePainter
+										.getTextPaintMaybeInputMode());
+				float scaleFactor = (cellSize - 2 * mMaybeLinePainter
+						.getLeftOffset())
 						/ textPaint.measureText(possiblesText);
 				if (scaleFactor < 1) {
 					textPaint
 							.setTextSize(textPaint.getTextSize() * scaleFactor);
 				}
 
-				canvas.drawText(possiblesText,
-						mPosX + mMaybe1x9Painter.getLeftOffset(), mPosY
-								+ mMaybe1x9Painter.getTopOffset(), textPaint);
+				// Calculate addition left offset to get the maybe values
+				// centrered horizontally.
+				int centerOffset = (int) ((cellSize - textPaint
+						.measureText(possiblesText)) / 2);
+
+				canvas.drawText(possiblesText, mPosX + centerOffset, mPosY
+						+ mMaybeLinePainter.getBottomOffset(), textPaint);
 			}
 		}
 	}

@@ -31,8 +31,10 @@ public class UserValuePainter extends DigitPainter {
 
 	@Override
 	protected void setCellSize(float size) {
-		// Text size is 75% of cell size
-		int userValueTextSize = (int) (size * 3 / 4);
+		// 1/3 of cell is used for the cage results. Remainig space can be sued
+		// to display the user value.
+		int bottomMargin = (int) (size * 0.1);
+		int userValueTextSize = (int) (size * 2 / 3);
 
 		mTextPaintNormalInputMode.setTextSize(userValueTextSize);
 		mTextPaintMaybeInputMode.setTextSize(userValueTextSize);
@@ -41,14 +43,7 @@ public class UserValuePainter extends DigitPainter {
 		// the cell
 		mLeftOffset = size / 2 - userValueTextSize / 4;
 
-		// TODO: Why a different approach for top offset based on theme?? This
-		// is not logical.
-		// if (mTheme == GridTheme.NEWSPAPER) {
-		mTopOffset = size / 2 + userValueTextSize * 2 / 5;
-		// } else {
-		// mTopOffset = size / 2
-		// + userValueTextSize / 3;
-		// }
+		mBottomOffset = size - bottomMargin;
 	}
 
 }

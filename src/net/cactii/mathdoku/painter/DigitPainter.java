@@ -8,9 +8,9 @@ abstract class DigitPainter extends BasePainter {
 	protected Paint mTextPaintNormalInputMode;
 	protected Paint mTextPaintMaybeInputMode;
 
-	// Offsets (top, left) of the region in which the value will be painted.
+	// Offsets (bottom, left) of the region in which the value will be painted.
 	protected float mLeftOffset;
-	protected float mTopOffset;
+	protected float mBottomOffset;
 
 	/**
 	 * Creates a new instance of {@link DigitPainter}.
@@ -54,7 +54,7 @@ abstract class DigitPainter extends BasePainter {
 	 * 
 	 * @return
 	 */
-	public float getTopOffset() {
-		return mTopOffset;
+	public float getBottomOffset() {
+		return mBottomOffset;
 	}
 }

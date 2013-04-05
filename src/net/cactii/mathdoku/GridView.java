@@ -24,7 +24,7 @@ public class GridView extends View implements OnTouchListener {
 	// Context and preferences in context
 	MainActivity mMainActivity;
 	Preferences mPreferences;
-	
+
 	// Actual content of the puzzle in this grid view
 	private Grid grid;
 
@@ -69,7 +69,7 @@ public class GridView extends View implements OnTouchListener {
 	private void initGridView(Context context) {
 		mMainActivity = (MainActivity) context;
 		mPreferences = Preferences.getInstance(mMainActivity);
-		
+
 		mGridViewSize = 0;
 		mGridPainter = Painter.getInstance(mMainActivity).getGridPainter();
 
@@ -141,9 +141,9 @@ public class GridView extends View implements OnTouchListener {
 	public boolean onTrackballEvent(MotionEvent event) {
 		if (!this.grid.isActive() || this.mSelectorShown)
 			return false;
-		
+
 		UsageLog.getInstance().logTrackball(grid.getSignatureString());
-		
+
 		// On press event, take selected cell, call touched listener
 		// which will popup the digit selector.
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -233,9 +233,8 @@ public class GridView extends View implements OnTouchListener {
 		// Display a message in case no cell is selected.
 		GridCell selectedCell = grid.getSelectedCell();
 		if (selectedCell == null) {
-			Toast.makeText(mMainActivity,
-					R.string.select_cell_before_value, Toast.LENGTH_SHORT)
-					.show();
+			Toast.makeText(mMainActivity, R.string.select_cell_before_value,
+					Toast.LENGTH_SHORT).show();
 			return;
 		}
 
@@ -246,8 +245,7 @@ public class GridView extends View implements OnTouchListener {
 			selectedCell.clearPossibles();
 			selectedCell.setUserValue(0);
 		} else {
-			if (TipOrderOfValuesInCage.toBeDisplayed(
-					mPreferences,
+			if (TipOrderOfValuesInCage.toBeDisplayed(mPreferences,
 					selectedCell.getCage())) {
 				new TipOrderOfValuesInCage(mMainActivity).show();
 			}
@@ -295,7 +293,8 @@ public class GridView extends View implements OnTouchListener {
 			if (grid.mCages == null)
 				return;
 
-			float gridBorderWidth = mGridPainter.getBorderPaint().getStrokeWidth();
+			float gridBorderWidth = mGridPainter.getBorderPaint()
+					.getStrokeWidth();
 
 			// Draw grid background and border grid
 			canvas.drawColor(mGridPainter.getBackgroundPaint().getColor());
@@ -304,11 +303,11 @@ public class GridView extends View implements OnTouchListener {
 
 			// Draw cells, except for cells in selected cage
 			InputMode inputMode = mMainActivity.getInputMode();
-			Painter.getInstance(mMainActivity).setCellSize(mGridCellSize);
+			Painter.getInstance(mMainActivity).setCellSize(mGridCellSize,
+					mDigitPositionGrid);
 			for (GridCell cell : grid.mCells) {
 				cell.checkWithOtherValuesInRowAndColumn();
-				cell.draw(canvas, gridBorderWidth, inputMode,
-						mDigitPositionGrid);
+				cell.draw(canvas, gridBorderWidth, inputMode);
 			}
 		}
 	}
@@ -337,8 +336,8 @@ public class GridView extends View implements OnTouchListener {
 		// (integer) cell size is as big as possible but the grid still fits in
 		// the space available.
 		int gridSize = (grid == null ? 1 : grid.getGridSize());
-		float gridBorderWidth = (mGridPainter == null ? 0
-				: mGridPainter.getBorderPaint().getStrokeWidth());
+		float gridBorderWidth = (mGridPainter == null ? 0 : mGridPainter
+				.getBorderPaint().getStrokeWidth());
 		mGridCellSize = (float) Math
 				.floor((float) (maxSize - 2 * gridBorderWidth)
 						/ (float) gridSize);
@@ -382,7 +381,9 @@ public class GridView extends View implements OnTouchListener {
 	 *            The digit position grid type to be set.
 	 */
 	public void setDigitPositionGrid(DigitPositionGrid digitPositionGrid) {
-		mDigitPositionGrid = digitPositionGrid;
+		mDigitPositionGrid = (grid == null
+				|| !grid.hasPrefShowMaybesAs3x3Grid() ? null
+				: digitPositionGrid);
 	}
 
 	/**

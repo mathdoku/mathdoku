@@ -87,6 +87,7 @@ public class MainActivity extends Activity {
 
 	// Digit positions are the places on which the digit buttons can be placed.
 	Button mDigitPosition[] = new Button[9];
+	DigitPositionGrid mDigitPositionGrid;
 
 	Button mStartButton;
 
@@ -1279,6 +1280,10 @@ public class MainActivity extends Activity {
 
 			// Show the grid of the loaded puzzle.
 			if (mGrid.isActive()) {
+				// Set the digit position grid to be used for displaying the
+				// input buttons.
+				setDigitPositionGrid();
+
 				// Determine input mode. The input mode will only be set if it
 				// was not yet set before.
 				if (mInputMode == InputMode.NO_INPUT__HIDE_GRID) {
@@ -1422,33 +1427,23 @@ public class MainActivity extends Activity {
 											: R.string.input_mode_maybe_long)));
 
 			// Determine which buttons to show on what positions
-			if (mGrid != null) {
-				// Create the mapping for mDigitPosition on the correct button
-				// grid layout.
-				DigitPositionGridType digitPositionGridType = DigitPositionGridType.GRID_3X3;
-				if (getResources().getString(R.string.dimension).equals(
-						"small-port")) {
-					digitPositionGridType = DigitPositionGridType.GRID_2X5;
-				}
-				DigitPositionGrid digitPositionGrid = new DigitPositionGrid(
-						digitPositionGridType, mGrid.getGridSize());
-
+			if (mGrid != null && mDigitPositionGrid != null) {
 				// Use the created mapping to fill all digit positions.
 				for (int i = 0; i < mDigitPosition.length; i++) {
-					int value = digitPositionGrid.getValue(i);
+					int value = mDigitPositionGrid.getValue(i);
 					mDigitPosition[i].setText(value > 0 ? Integer
 							.toString(value) : "");
-					mDigitPosition[i].setVisibility(digitPositionGrid
+					mDigitPosition[i].setVisibility(mDigitPositionGrid
 							.getVisibility(i));
 					mDigitPosition[i].setTextColor(color);
 				}
-				if (digitPositionGridType == DigitPositionGridType.GRID_2X5) {
+				if (mDigitPositionGrid.isGrid2x5()) {
 					// This layout also has a buttonposition10 which is never
 					// used to put a button there. However for a correct layout
 					// of the buttons the visibility has to be set correctly.
 					View view = findViewById(R.id.digitSelect10);
 					if (view != null) {
-						view.setVisibility(digitPositionGrid.getVisibility(9));
+						view.setVisibility(mDigitPositionGrid.getVisibility(9));
 					}
 				}
 
@@ -1456,13 +1451,9 @@ public class MainActivity extends Activity {
 				// number of columns containing digit buttons.
 				TableRow.LayoutParams layoutParams = (TableRow.LayoutParams) mInputModeTextView
 						.getLayoutParams();
-				layoutParams.weight = digitPositionGrid
-						.countVisibleDigitColumns();
+				layoutParams.weight = mDigitPositionGrid
+						.getVisibleDigitColumns();
 				mInputModeTextView.setLayoutParams(layoutParams);
-
-				// Store mapping in the grid view so it can be reused when
-				// drawing the cells.
-				mGridView.setDigitPositionGrid(digitPositionGrid);
 			}
 			break;
 		}
@@ -1521,6 +1512,32 @@ public class MainActivity extends Activity {
 			if (mTimerText != null) {
 				mTimerText.setText(timeString);
 			}
+		}
+	}
+
+	/**
+	 * Set the digit position grid to be used for displaying the digit buttons.
+	 */
+	private void setDigitPositionGrid() {
+		// Determine the digit position grid type to used based on screen
+		// dimensions.
+		DigitPositionGridType digitPositionGridType = DigitPositionGridType.GRID_3X3;
+		if (getResources().getString(R.string.dimension).equals("small-port")) {
+			digitPositionGridType = DigitPositionGridType.GRID_2X5;
+		}
+
+		// Only create the digit position grid if needed
+		if (mDigitPositionGrid == null
+				|| !mDigitPositionGrid.isReusable(digitPositionGridType,
+						mGrid.getGridSize())) {
+			// Create the mapping for mDigitPosition on the correct button
+			// grid layout.
+			mDigitPositionGrid = new DigitPositionGrid(digitPositionGridType,
+					mGrid.getGridSize());
+
+			// Propagate setting to the grid view as well for displaying maybe
+			// values (dependent on preferences).
+			mGridView.setDigitPositionGrid(mDigitPositionGrid);
 		}
 	}
 }

@@ -27,6 +27,9 @@ public class DigitPositionGrid {
 	// The number of rows and columns actually used
 	private int mRowsUsed;
 	private int mColsUsed;
+	
+	// The number of positions used in the grid
+	private int mPositionsUsed;
 
 	/**
 	 * Creates a new instance of {@link DigitPositionGrid}.
@@ -39,6 +42,7 @@ public class DigitPositionGrid {
 	public DigitPositionGrid(DigitPositionGridType digitPositionGridType,
 			int maxDigit) {
 		mDigitPositionGridType = digitPositionGridType;
+		mPositionsUsed = maxDigit;
 
 		if (mDigitPositionGridType == DigitPositionGridType.GRID_2X5) {
 			// Dimensions of grid in layout xml
@@ -95,6 +99,19 @@ public class DigitPositionGrid {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Checks if this digit position grid can be reused for the given type and maximum digits.
+	 * 
+	 * @param digitPositionGridType
+	 *            The type of button grid layout.
+	 * @param maxDigit
+	 *            The number of digit buttons to put in the grid.
+	 */
+	public boolean isReusable(DigitPositionGridType digitPositionGridType,
+			int maxDigit) {
+		return (mDigitPositionGridType == digitPositionGridType && mPositionsUsed == maxDigit);
 	}
 
 	/**
@@ -187,11 +204,20 @@ public class DigitPositionGrid {
 	}
 	
 	/**
-	 * Count the number of columns with at least one visible digit.
+	 * Get the number of rows with at least one visible digit.
 	 * 
-	 * @return The number of of columns with at least one visible digit.
+	 * @return The number of rows with at least one visible digit.
 	 */
-	public int countVisibleDigitColumns() {
+	public int getVisibleDigitRows() {
+		return mRowsUsed;
+	}
+
+	/**
+	 * Get the number of columns with at least one visible digit.
+	 * 
+	 * @return The number of columns with at least one visible digit.
+	 */
+	public int getVisibleDigitColumns() {
 		return mColsUsed;
 	}
 }

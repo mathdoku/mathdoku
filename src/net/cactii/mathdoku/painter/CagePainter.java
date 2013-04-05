@@ -11,7 +11,7 @@ public class CagePainter extends BorderPainter {
 
 	private Paint mTextPaint;
 	private float mTextLeftOffset;
-	private float mTextTopOffset;
+	private float mTextBottomOffset;
 
 	/**
 	 * Creates a new instance of {@link CagePainter}.
@@ -154,7 +154,7 @@ public class CagePainter extends BorderPainter {
 		
 		mTextPaint.setTextSize(cageTextSize);
 		mTextLeftOffset = 2;
-		mTextTopOffset = cageTextSize;  
+		mTextBottomOffset = cageTextSize;  
 	}
 	
 	/**
@@ -207,7 +207,7 @@ public class CagePainter extends BorderPainter {
 	 * 
 	 * @return The vertical (top) offset for the cage result inside a cell.
 	 */
-	public float getTextTopOffset() {
-		return mTextTopOffset;
+	public float getTextBottomOffset() {
+		return mTextBottomOffset;
 	}
 }

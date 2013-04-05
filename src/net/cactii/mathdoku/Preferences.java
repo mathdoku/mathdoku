@@ -44,8 +44,8 @@ public class Preferences {
 	public final static String PLAY_SOUND_EFFECTS = "soundeffects";
 	public final static boolean PLAY_SOUND_EFFECTS_DEFAULT = true;
 
-	public final static String SHOW_MAYBES_AS_3X3_GRID = "maybe3x3";
-	public final static boolean SHOW_MAYBES_AS_3X3_GRID_DEFAULT = true;
+	public final static String SHOW_MAYBES_AS_GRID = "maybe3x3";
+	public final static boolean SHOW_MAYBES_AS_GRID_DEFAULT = true;
 
 	public final static String SHOW_BAD_CAGE_MATHS = "badmaths";
 	public final static boolean SHOW_BAD_CAGE_MATHS_DEFAULT = true;
@@ -181,9 +181,9 @@ public class Preferences {
 				prefeditor.putBoolean(SHOW_DUPE_DIGITS,
 						SHOW_DUPE_DIGITS_DEFAULT);
 			}
-			if (!mSharedPreferences.contains(SHOW_MAYBES_AS_3X3_GRID)) {
-				prefeditor.putBoolean(SHOW_MAYBES_AS_3X3_GRID,
-						SHOW_MAYBES_AS_3X3_GRID_DEFAULT);
+			if (!mSharedPreferences.contains(SHOW_MAYBES_AS_GRID)) {
+				prefeditor.putBoolean(SHOW_MAYBES_AS_GRID,
+						SHOW_MAYBES_AS_GRID_DEFAULT);
 			}
 			if (!mSharedPreferences.contains(SHOW_TIMER)) {
 				prefeditor.putBoolean(SHOW_TIMER, SHOW_TIMER_DEFAULT);
@@ -505,8 +505,8 @@ public class Preferences {
 	 *         digit buttons. False otherwise.
 	 */
 	public boolean showMaybesAsGrid() {
-		return mSharedPreferences.getBoolean(SHOW_MAYBES_AS_3X3_GRID,
-				SHOW_MAYBES_AS_3X3_GRID_DEFAULT);
+		return mSharedPreferences.getBoolean(SHOW_MAYBES_AS_GRID,
+				SHOW_MAYBES_AS_GRID_DEFAULT);
 	}
 
 	/**
