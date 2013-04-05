@@ -144,7 +144,7 @@ public class MainActivity extends Activity {
 	Button mDigitPosition[] = new Button[9];
 
 	Button mStartButton;
-	
+
 	Button clearDigit;
 	Button undoButton;
 	View[] sound_effect_views;
@@ -344,7 +344,7 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				openOptionsMenu();
 			}
-			
+
 		});
 		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
 			final MainActivity activity = this;
@@ -895,12 +895,16 @@ public class MainActivity extends Activity {
 						countGamesStarted);
 				prefeditor.commit();
 
-				// Check if we are going to ask the user to send feedback
-				// TODO: change to definitive values
-				if (countGamesStarted == 3 || countGamesStarted == 5
-						|| countGamesStarted == 20 || countGamesStarted == 50) {
-					UsageLog.getInstance().askConsentForSendingLog(this);
-
+				// As long as the user has not opted out for sending feedback,
+				// check if we are going to ask the user to send feedback
+				if (!preferences.getBoolean(PREF_USAGE_LOG_DISABLED,
+						PREF_USAGE_LOG_DISABLED_DEFAULT)) {
+					// Check if we are going to ask the user to send feedback
+					if (countGamesStarted == 3 || countGamesStarted == 10
+							|| countGamesStarted == 30
+							|| countGamesStarted == 60) {
+						UsageLog.getInstance().askConsentForSendingLog(this);
+					}
 				}
 			}
 		}
@@ -1142,7 +1146,8 @@ public class MainActivity extends Activity {
 			}
 		}
 		if (previousInstalledVersion < 198 && currentVersion >= 198) {
-			TipDialog.initializeCategoryPreferences(preferences, previousInstalledVersion == -1);
+			TipDialog.initializeCategoryPreferences(preferences,
+					previousInstalledVersion == -1);
 		}
 		prefeditor.putInt(PREF_CURRENT_VERSION, currentVersion);
 		prefeditor.commit();
@@ -1256,7 +1261,8 @@ public class MainActivity extends Activity {
 				// visible in the grid view.
 				if (mGameFileImagePreviewCreation != null) {
 					// Save preview for the current game file.
-					mGameFileImagePreviewCreation.savePreviewImage(mainActivity, mGridView);
+					mGameFileImagePreviewCreation.savePreviewImage(
+							mainActivity, mGridView);
 					mProgressDialogImagePreviewCreation.incrementProgressBy(1);
 				}
 
