@@ -14,9 +14,9 @@ import android.os.Build;
 /**
  * The Development Helper class is intended to support Development and Unit
  * Testing of this application. Variables and methods should not be used in
- * production code with exception of static variable {@link #mode}.
+ * production code with exception of static variable {@link #mMode}.
  * 
- * Checks on variable {@link #mode} should always be made in such a way that the
+ * Checks on variable {@link #mMode} should always be made in such a way that the
  * result can be determined at compile time. In this way the enclosed block will
  * not be included in the compiled case when the condition for executing the
  * block evaluates to false. Example of intended usage:
@@ -39,7 +39,7 @@ public class DevelopmentHelper {
 		DEVELOPMENT, UNIT_TESTING, PRODUCTION
 	};
 
-	public static final Mode mode = Mode.DEVELOPMENT;
+	public static final Mode mMode = Mode.DEVELOPMENT;
 
 	// In development mode the grid generator will show a modified progress
 	// dialog. Following types of progress updates are supported. Actual values
@@ -62,7 +62,7 @@ public class DevelopmentHelper {
 				R.integer.maximum_cage_value);
 		mainActivity.mGridGeneratorTask = new GridGenerator(mainActivity, 6, 4,
 				maxCageResult, false);
-		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			// Set the options for the grid generator
 			GridGenerator.GridGeneratorOptions gridGeneratorOptions = mainActivity.mGridGeneratorTask.new GridGeneratorOptions();
 			gridGeneratorOptions.createFakeUserGameFiles = true;
@@ -84,7 +84,7 @@ public class DevelopmentHelper {
 
 	public static void generateGamesReady(final MainActivity mainActivity,
 			int numberOfGamesGenerated) {
-		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			new AlertDialog.Builder(mainActivity)
 					.setTitle("Games generated")
 					.setMessage(
@@ -113,7 +113,7 @@ public class DevelopmentHelper {
 	 *            shown.
 	 */
 	public static void deleteAllGames(final MainActivity mainActivity) {
-		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
 			builder.setTitle("Delete all?")
 					.setMessage("All games and previews will be deleted.")
@@ -148,7 +148,7 @@ public class DevelopmentHelper {
 	 *            shown.
 	 */
 	public static void recreateAllPreviews(final MainActivity mainActivity) {
-		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
 			builder.setTitle("Recreate all previews?")
 					.setMessage(
@@ -214,7 +214,7 @@ public class DevelopmentHelper {
 	 * @return
 	 */
 	public static boolean resetPreferences(final MainActivity mainActivity) {
-		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			executeDeleteAllPreferences();
 
 			// Show dialog
@@ -245,7 +245,7 @@ public class DevelopmentHelper {
 	 *            The activity in which context the preferences are resetted.
 	 */
 	public static void deleteGamesAndPreferences(final MainActivity mainActivity) {
-		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
 			builder.setTitle("Delete all data and preferences?")
 					.setMessage(
@@ -280,7 +280,7 @@ public class DevelopmentHelper {
 	 * Delete all game files (including previews) without warning.
 	 */
 	private static void executeDeleteAllGames() {
-		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			// Delete last game file
 			GameFile gameFileLastGame = new GameFile(GameFileType.LAST_GAME);
 			if (gameFileLastGame.exists()) {
@@ -303,7 +303,7 @@ public class DevelopmentHelper {
 	}
 
 	private static void executeDeleteAllPreferences() {
-		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			Editor prefeditor = Preferences.getInstance().mSharedPreferences.edit();
 			prefeditor.clear();
 			prefeditor.commit();
@@ -319,7 +319,7 @@ public class DevelopmentHelper {
 	 */
 	@TargetApi(Build.VERSION_CODES.DONUT)
 	private static void restartActivity(final MainActivity mainActivity) {
-		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				// The activity can be restarted automatically. No dialog
 				// needed. Note: we can not call mainActivity.recreate here as

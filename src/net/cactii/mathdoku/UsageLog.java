@@ -49,7 +49,7 @@ public class UsageLog {
 
 	// Remove "&& false" in following line to show debug information about
 	// creating the usage log when running in development mode.
-	private static final boolean DEBUG_USAGE_LOG = (DevelopmentHelper.mode == Mode.DEVELOPMENT) && false;
+	private static final boolean DEBUG_USAGE_LOG = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
 
 	// Path and file for log information
 	private final static String LOG_FILE_PREFIX = "usage_log_r";
@@ -83,7 +83,7 @@ public class UsageLog {
 
 	// Signature of the most recent played game
 	private String mLastGridSignature = "";
-	
+
 	// Keep track of the trackback is used in the current game.
 	private static boolean mTrackbalUsageLoggedInSession = false;
 
@@ -93,12 +93,12 @@ public class UsageLog {
 	 * This object can not be instantiated directly. Use {@link #getInstance()}
 	 * to get the singleton reference to the UsageLogging object.
 	 * 
-	 * @param activity
+	 * @param mainActivity
 	 *            The activity context in which the UsageLogging is created.
 	 */
 	@SuppressWarnings("deprecation")
-	private UsageLog(Activity activity) {
-		mMainActivity = activity;
+	private UsageLog(MainActivity mainActivity) {
+		mMainActivity = mainActivity;
 
 		// Get preferences and check whether it is allowed to gather new data.
 		Preferences preferences = Preferences.getInstance();
@@ -108,8 +108,7 @@ public class UsageLog {
 		}
 
 		// Determine path and file names
-		mLogFileName = LOG_FILE_PREFIX
-				+ preferences.getCurrentInstalledVersion()
+		mLogFileName = LOG_FILE_PREFIX + mainActivity.getVersionNumber()
 				+ LOG_FILE_EXTENSION;
 		mLogFilePath = mMainActivity.getFileStreamPath(mLogFileName)
 				.getAbsolutePath();
@@ -149,8 +148,8 @@ public class UsageLog {
 
 		// Log all preferences in case this is a new logfile.
 		if (newLogFile) {
-			logDevice(activity);
-			logConfigurationChange(activity);
+			logDevice(mainActivity);
+			logConfigurationChange(mainActivity);
 			logPreferences("Preference.Initial", preferences);
 		}
 
@@ -167,12 +166,12 @@ public class UsageLog {
 	 * 
 	 * @return The singleton reference to the UsageLogging object.
 	 */
-	public static UsageLog getInstance(Activity activity) {
+	public static UsageLog getInstance(MainActivity mainActivity) {
 		if (mUsageLogginSingletonInstance == null
-				|| !activity.equals(mMainActivity)) {
+				|| !mainActivity.equals(mMainActivity)) {
 			// Only the first time this method is called for this activity, the
 			// object will be created.
-			mUsageLogginSingletonInstance = new UsageLog(activity);
+			mUsageLogginSingletonInstance = new UsageLog(mainActivity);
 		}
 		return mUsageLogginSingletonInstance;
 	}
@@ -324,7 +323,7 @@ public class UsageLog {
 					.put("Grid.ClearRedundantPossiblesInSameRowOrColumnCount",
 							Integer.toString(grid
 									.getClearRedundantPossiblesInSameRowOrColumnCount()));
-			
+
 			sortedMap.put("Grid.Signature", grid.getSignatureString());
 
 			GridGeneratingParameters gridGeneratingParameters = grid
@@ -364,14 +363,15 @@ public class UsageLog {
 			logSortedMap("Configuration", sortedMap);
 		}
 	}
-	
+
 	/**
 	 * Log usage of trackball.
 	 */
 	public void logTrackball(String gridSignature) {
 		if (mBuildLog) {
 
-			if (mTrackbalUsageLoggedInSession && gridSignature.equals(mLastGridSignature)) {
+			if (mTrackbalUsageLoggedInSession
+					&& gridSignature.equals(mLastGridSignature)) {
 				// Already logged the trackball for this game
 				return;
 			}
@@ -382,7 +382,7 @@ public class UsageLog {
 			sortedMap.put("isUsedInCurrentGame", Boolean.toString(true));
 
 			logSortedMap("Trackball", sortedMap);
-			
+
 			mTrackbalUsageLoggedInSession = true;
 		}
 	}
@@ -498,7 +498,7 @@ public class UsageLog {
 						"**************** Log has been deleted ******************");
 			}
 
-			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 				// Clear references to he activity after delete log, so it can
 				// be recreated.
 				mMainActivity = null;

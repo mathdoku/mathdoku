@@ -16,7 +16,7 @@ public class CellChange {
 
 	// Remove "&& false" in following line to show debug information about
 	// reading information from a storage string
-	public static final boolean DEBUG_STORAGE_STRING = (DevelopmentHelper.mode == Mode.DEVELOPMENT) && false;
+	public static final boolean DEBUG_STORAGE_STRING = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
 
 	// Base identifier for different versions of cell information which is
 	// stored in

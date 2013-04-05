@@ -42,7 +42,7 @@ public class GameFile extends File {
 
 	// Remove "&& false" in following line to show debug information about
 	// saving and restoring files when running in development mode.
-	public static final boolean DEBUG_SAVE_RESTORE = (DevelopmentHelper.mode == Mode.DEVELOPMENT) && false;
+	public static final boolean DEBUG_SAVE_RESTORE = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
 
 	// Base of filenames for this game file. The baseFilename does not include a
 	// path.
@@ -490,7 +490,7 @@ public class GameFile extends File {
 	public boolean savePreviewImage(Activity activity, GridView view) {
 		// Check if the view dimensions allow to make a preview.
 		if (view.getWidth() == 0 || view.getHeight() == 0) {
-			if (DevelopmentHelper.mode != Mode.PRODUCTION) {
+			if (DevelopmentHelper.mMode != Mode.PRODUCTION) {
 				Log.i(TAG,
 						"Can not save the preview image. If running on an Emulator for "
 								+ "Android 2.2 this is normal behavior when rotating screen "

@@ -60,7 +60,7 @@ public class Grid {
 
 	// UsagaeLog counters
 	private int mUndoLastMoveCount;
-	private int mclearRedundantPossiblesInSameRowOrColumnCount;
+	private int mClearRedundantPossiblesInSameRowOrColumnCount;
 
 	public Grid(int gridSize) {
 		mGridSize = gridSize;
@@ -68,7 +68,7 @@ public class Grid {
 		mCages = new ArrayList<GridCage>();
 		mMoves = new ArrayList<CellChange>();
 		mUndoLastMoveCount = 0;
-		mclearRedundantPossiblesInSameRowOrColumnCount = 0;
+		mClearRedundantPossiblesInSameRowOrColumnCount = 0;
 		mSolvedListener = null;
 		mGridGeneratingParameters = new GridGeneratingParameters();
 		setPreferences();
@@ -333,7 +333,7 @@ public class Grid {
 	public void clearRedundantPossiblesInSameRowOrColumn(
 			CellChange originalCellChange) {
 		if (mSelectedCell != null) {
-			mclearRedundantPossiblesInSameRowOrColumnCount++;
+			mClearRedundantPossiblesInSameRowOrColumnCount++;
 			int rowSelectedCell = this.mSelectedCell.getRow();
 			int columnSelectedCell = this.mSelectedCell.getColumn();
 			int valueSelectedCell = this.mSelectedCell.getUserValue();
@@ -402,7 +402,7 @@ public class Grid {
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mCheated
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mUndoLastMoveCount
 				+ GameFile.FIELD_DELIMITER_LEVEL1
-				+ mclearRedundantPossiblesInSameRowOrColumnCount
+				+ mClearRedundantPossiblesInSameRowOrColumnCount
 				+ GameFile.FIELD_DELIMITER_LEVEL1
 				+ mGridGeneratingParameters.mHideOperators
 				+ GameFile.FIELD_DELIMITER_LEVEL1
@@ -491,7 +491,7 @@ public class Grid {
 		}
 		if (viewInformationVersion >= 5) {
 			mUndoLastMoveCount = Integer.parseInt(viewParts[index++]);
-			mclearRedundantPossiblesInSameRowOrColumnCount = Integer
+			mClearRedundantPossiblesInSameRowOrColumnCount = Integer
 					.parseInt(viewParts[index++]);
 			mGridGeneratingParameters.mHideOperators = Boolean
 					.parseBoolean(viewParts[index++]);
@@ -502,7 +502,7 @@ public class Grid {
 		} else {
 			// Cheated was not saved prior to version 3.
 			mUndoLastMoveCount = 0;
-			mclearRedundantPossiblesInSameRowOrColumnCount = 0;
+			mClearRedundantPossiblesInSameRowOrColumnCount = 0;
 			mGridGeneratingParameters.mHideOperators = false;
 			mGridGeneratingParameters.mMaxCageResult = 0;
 			mGridGeneratingParameters.mMaxCageSize = 0;
@@ -616,7 +616,7 @@ public class Grid {
 	}
 
 	public int getClearRedundantPossiblesInSameRowOrColumnCount() {
-		return mclearRedundantPossiblesInSameRowOrColumnCount;
+		return mClearRedundantPossiblesInSameRowOrColumnCount;
 	}
 
 	public GridGeneratingParameters getGridGeneratingParameters() {

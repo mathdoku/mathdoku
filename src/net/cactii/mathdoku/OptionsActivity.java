@@ -18,7 +18,7 @@ public class OptionsActivity extends PreferenceActivity implements
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onResume() {
-		UsageLog.getInstance(this);
+		UsageLog.getInstance();
 
 		getPreferenceScreen().getSharedPreferences()
 				.registerOnSharedPreferenceChangeListener(this);

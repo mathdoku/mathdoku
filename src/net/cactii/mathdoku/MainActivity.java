@@ -79,7 +79,7 @@ public class MainActivity extends Activity {
 	GameTimer mTimerTask;
 
 	RelativeLayout mTopLayout;
-	RelativeLayout mPuzzleGrid;
+	RelativeLayout mPuzzleGridLayout;
 	TableLayout mControls;
 	TextView mGameSeedLabel;
 	TextView mGameSeedText;
@@ -155,10 +155,10 @@ public class MainActivity extends Activity {
 		mMathDokuPreferences = Preferences.getInstance(this);
 
 		this.mTopLayout = (RelativeLayout) findViewById(R.id.topLayout);
-		this.mPuzzleGrid = (RelativeLayout) findViewById(R.id.puzzleGrid);
+		this.mPuzzleGridLayout = (RelativeLayout) findViewById(R.id.puzzleGrid);
 		this.mGridView = (GridView) findViewById(R.id.gridView);
 		this.mSolvedText = (TextView) findViewById(R.id.solvedText);
-		this.mGridView.mAnimText = this.mSolvedText;
+		this.mGridView.mAnimationText = this.mSolvedText;
 		this.mControls = (TableLayout) findViewById(R.id.controls);
 		this.mGameSeedLabel = (TextView) findViewById(R.id.gameSeedLabel);
 		this.mGameSeedText = (TextView) findViewById(R.id.gameSeedText);
@@ -290,7 +290,7 @@ public class MainActivity extends Activity {
 			}
 
 		});
-		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			final MainActivity activity = this;
 			this.mGameSeedText.setOnTouchListener(new OnTouchListener() {
 
@@ -468,7 +468,7 @@ public class MainActivity extends Activity {
 								|| GameFileList.canBeUsed());
 
 		// When running in development mode, an extra menu is available.
-		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			menu.findItem(R.id.menu_development_mode).setVisible(true);
 		} else {
 			menu.findItem(R.id.menu_development_mode).setVisible(false);
@@ -667,7 +667,7 @@ public class MainActivity extends Activity {
 			this.openHelpDialog();
 			return true;
 		case R.id.development_mode_generate_games:
-			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 				// Cancel old timer
 				stopTimer();
 
@@ -676,27 +676,27 @@ public class MainActivity extends Activity {
 			}
 			return true;
 		case R.id.development_mode_recreate_previews:
-			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 				DevelopmentHelper.recreateAllPreviews(this);
 			}
 			return true;
 		case R.id.development_mode_delete_games:
-			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 				DevelopmentHelper.deleteAllGames(this);
 			}
 			return true;
 		case R.id.development_mode_reset_preferences:
-			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 				DevelopmentHelper.resetPreferences(this);
 			}
 			return true;
 		case R.id.development_mode_clear_data:
-			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 				DevelopmentHelper.deleteGamesAndPreferences(this);
 			}
 			return true;
 		case R.id.development_mode_reset_log:
-			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 				// Delete old log
 				UsageLog.getInstance().delete();
 
@@ -829,12 +829,15 @@ public class MainActivity extends Activity {
 				int countGamesStarted = mMathDokuPreferences
 						.increaseGamesStarted();
 
-				// Check if we are going to ask the user to send feedback
-				// TODO: change to definitive values
-				if (countGamesStarted == 3 || countGamesStarted == 5
-						|| countGamesStarted == 20 || countGamesStarted == 50) {
-					UsageLog.getInstance().askConsentForSendingLog(this);
-
+				// As long as the user has not opted out for sending feedback,
+				// check if we are going to ask the user to send feedback
+				if (!mMathDokuPreferences.isUsageLogDisabled()) {
+					// Check if we are going to ask the user to send feedback
+					if (countGamesStarted == 3 || countGamesStarted == 10
+							|| countGamesStarted == 30
+							|| countGamesStarted == 60) {
+						UsageLog.getInstance().askConsentForSendingLog(this);
+					}
 				}
 			}
 		}
@@ -876,7 +879,7 @@ public class MainActivity extends Activity {
 		new AlertDialog.Builder(MainActivity.this)
 				.setTitle(
 						getResources().getString(R.string.application_name)
-								+ (DevelopmentHelper.mode == Mode.DEVELOPMENT ? " r"
+								+ (DevelopmentHelper.mMode == Mode.DEVELOPMENT ? " r"
 										+ getVersionNumber() + " "
 										: " ")
 								+ getResources().getString(R.string.menu_help))
@@ -918,7 +921,7 @@ public class MainActivity extends Activity {
 		new AlertDialog.Builder(MainActivity.this)
 				.setTitle(
 						getResources().getString(R.string.application_name)
-								+ (DevelopmentHelper.mode == Mode.DEVELOPMENT ? " r"
+								+ (DevelopmentHelper.mMode == Mode.DEVELOPMENT ? " r"
 										+ getVersionNumber() + " "
 										: " ")
 								+ getResources().getString(
@@ -1105,7 +1108,7 @@ public class MainActivity extends Activity {
 		mProgressDialogImagePreviewCreation.show();
 
 		// Display and hide elements so that the previews can be created.
-		mPuzzleGrid.setVisibility(View.VISIBLE);
+		mPuzzleGridLayout.setVisibility(View.VISIBLE);
 		mStartButton.setVisibility(View.GONE);
 
 		// Runnable for handling the next step of preview image creation process
@@ -1131,7 +1134,7 @@ public class MainActivity extends Activity {
 					if (newGrid != null) {
 						mGrid = newGrid;
 						mGridView.loadNewGrid(mGrid);
-						mPuzzleGrid.setVisibility(View.INVISIBLE);
+						mPuzzleGridLayout.setVisibility(View.INVISIBLE);
 						mControls.setVisibility(View.GONE);
 						mStartButton.setVisibility(View.GONE);
 
@@ -1307,7 +1310,7 @@ public class MainActivity extends Activity {
 			}
 
 			// Debug information
-			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 				mGameSeedLabel.setVisibility(View.VISIBLE);
 				mGameSeedText.setVisibility(View.VISIBLE);
 				mGameSeedText
@@ -1372,12 +1375,12 @@ public class MainActivity extends Activity {
 		// Visibility of grid view
 		switch (inputMode) {
 		case NO_INPUT__HIDE_GRID:
-			mPuzzleGrid.setVisibility(View.GONE);
+			mPuzzleGridLayout.setVisibility(View.GONE);
 			break;
 		case NO_INPUT__DISPLAY_GRID:
 		case NORMAL:
 		case MAYBE:
-			mPuzzleGrid.setVisibility(View.VISIBLE);
+			mPuzzleGridLayout.setVisibility(View.VISIBLE);
 			break;
 		}
 

@@ -46,7 +46,7 @@ public class GridView extends View implements OnTouchListener {
 	// The layout to be used for positioning the maybe digits in a grid.
 	private DigitPositionGrid mDigitPositionGrid;
 
-	public TextView mAnimText;
+	public TextView mAnimationText;
 
 	// Visible window rectangle
 	private Rect mDisplayFrame;
@@ -116,7 +116,7 @@ public class GridView extends View implements OnTouchListener {
 
 		// We can now get the cell.
 		GridCell cell = mGrid.getCellAt(row, col);
-		float[] cellPos = this.cellToCoord(cell.getCellNumber());
+		float[] cellPos = this.cellToCoordinates(cell.getCellNumber());
 		this.mTrackPosX = cellPos[0];
 		this.mTrackPosY = cellPos[1];
 
@@ -183,7 +183,7 @@ public class GridView extends View implements OnTouchListener {
 		float y = event.getY();
 		this.mTrackPosX += x * trackMult;
 		this.mTrackPosY += y * trackMult;
-		GridCell cell = this.coordToCell(this.mTrackPosX, this.mTrackPosY);
+		GridCell cell = this.coordinatesToCell(this.mTrackPosX, this.mTrackPosY);
 		if (cell == null) {
 			this.mTrackPosX -= x * trackMult;
 			this.mTrackPosY -= y * trackMult;
@@ -208,7 +208,7 @@ public class GridView extends View implements OnTouchListener {
 	}
 
 	// Given a cell number, returns origin x,y coordinates.
-	private float[] cellToCoord(int cell) {
+	private float[] cellToCoordinates(int cell) {
 		float xOrd;
 		float yOrd;
 		int gridSize = mGrid.getGridSize();
@@ -218,7 +218,7 @@ public class GridView extends View implements OnTouchListener {
 	}
 
 	// Opposite of above - given a coordinate, returns the cell number within.
-	private GridCell coordToCell(float x, float y) {
+	private GridCell coordinatesToCell(float x, float y) {
 		int gridSize = mGrid.getGridSize();
 		int row = (int) ((y / mGridViewSize) * gridSize);
 		int col = (int) ((x / mGridViewSize) * gridSize);

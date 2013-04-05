@@ -441,15 +441,15 @@ public class GridCage {
 	// The following two variables are required by the recursive methods below.
 	// They could be passed as parameters of the recursive methods, but this
 	// reduces performance.
-	private int[] getAllAddCombos_Numbers;
-	private ArrayList<int[]> getAllAddCombos_ResultSet;
+	private int[] getAllCombos_Numbers;
+	private ArrayList<int[]> getAllCombos_ResultSet;
 
 	private ArrayList<int[]> getAllAddCombos(int max_val, int target_sum,
 			int n_cells) {
-		getAllAddCombos_Numbers = new int[n_cells];
-		getAllAddCombos_ResultSet = new ArrayList<int[]>();
+		getAllCombos_Numbers = new int[n_cells];
+		getAllCombos_ResultSet = new ArrayList<int[]>();
 		getAddCombos(max_val, target_sum, n_cells);
-		return getAllAddCombos_ResultSet;
+		return getAllCombos_ResultSet;
 	}
 
 	/*
@@ -466,12 +466,12 @@ public class GridCage {
 		for (int n = 1; n <= max_val; n++) {
 			if (n_cells == 1) {
 				if (n == target_sum) {
-					getAllAddCombos_Numbers[0] = n;
-					if (satisfiesConstraints(getAllAddCombos_Numbers))
-						getAllAddCombos_ResultSet.add(getAllAddCombos_Numbers.clone());
+					getAllCombos_Numbers[0] = n;
+					if (satisfiesConstraints(getAllCombos_Numbers))
+						getAllCombos_ResultSet.add(getAllCombos_Numbers.clone());
 				}
 			} else {
-				getAllAddCombos_Numbers[n_cells - 1] = n;
+				getAllCombos_Numbers[n_cells - 1] = n;
 				getAddCombos(max_val, target_sum - n, n_cells - 1);
 			}
 		}
@@ -480,11 +480,11 @@ public class GridCage {
 
 	private ArrayList<int[]> getAllMultiplyCombos(int max_val, int target_sum,
 			int n_cells) {
-		getAllAddCombos_Numbers = new int[n_cells];
-		getAllAddCombos_ResultSet = new ArrayList<int[]>();
+		getAllCombos_Numbers = new int[n_cells];
+		getAllCombos_ResultSet = new ArrayList<int[]>();
 		getMultiplyCombos(max_val, target_sum, n_cells);
 
-		return getAllAddCombos_ResultSet;
+		return getAllCombos_ResultSet;
 	}
 
 	/*
@@ -504,12 +504,12 @@ public class GridCage {
 
 			if (n_cells == 1) {
 				if (n == target_sum) {
-					getAllAddCombos_Numbers[0] = n;
-					if (satisfiesConstraints(getAllAddCombos_Numbers))
-						getAllAddCombos_ResultSet.add(getAllAddCombos_Numbers.clone());
+					getAllCombos_Numbers[0] = n;
+					if (satisfiesConstraints(getAllCombos_Numbers))
+						getAllCombos_ResultSet.add(getAllCombos_Numbers.clone());
 				}
 			} else {
-				getAllAddCombos_Numbers[n_cells - 1] = n;
+				getAllCombos_Numbers[n_cells - 1] = n;
 				getMultiplyCombos(max_val, target_sum / n, n_cells - 1);
 			}
 		}

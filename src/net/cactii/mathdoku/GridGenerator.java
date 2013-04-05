@@ -21,7 +21,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
-	public static final boolean DEBUG_GRID_GENERATOR = (DevelopmentHelper.mode == Mode.DEVELOPMENT) && false;
+	public static final boolean DEBUG_GRID_GENERATOR = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
 	public static final boolean DEBUG_GRID_GENERATOR_FULL = DEBUG_GRID_GENERATOR && false;
 
 	// Cages with too many permutations will make cage generation and solving
@@ -118,7 +118,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		}
 
 		// Use specified options only if running in development mode.
-		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			this.mGridGeneratorOptions = gridGeneratorOptions;
 
 			// Rebuild the dialog using the grid generator options.
@@ -168,7 +168,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 		// Set style of dialog.
 		mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			if (mGridGeneratorOptions.numberOfGamesToGenerate > 1) {
 				mProgressDialog
 						.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -237,7 +237,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			this.mCages = new ArrayList<GridCage>();
 			createCages(mHideOperators);
 
-			if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 				if (mGridGeneratorOptions.createFakeUserGameFiles) {
 					// The faked user games files do not require a unique
 					// solution which results in much faster generation time.
@@ -335,7 +335,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 				}
 			}
 		}
-		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			if (values.length > 0
 					&& values[0] != null
 					&& values[0]
@@ -359,7 +359,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	 */
 	@Override
 	protected void onPostExecute(Void result) {
-		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
+		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			if (mGridGeneratorOptions.createFakeUserGameFiles) {
 				mActivity.mGridGeneratorTask = null;
 				// Grids are already saved.

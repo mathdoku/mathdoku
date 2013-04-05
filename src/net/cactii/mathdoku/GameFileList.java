@@ -23,7 +23,7 @@ public class GameFileList extends ListActivity {
 	
 	@Override
 	protected void onResume() {
-		UsageLog.getInstance(this);
+		UsageLog.getInstance();
 		super.onResume();
 	}
 
