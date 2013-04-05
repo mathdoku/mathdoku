@@ -75,12 +75,12 @@ public class MainActivity extends Activity {
 	private InputMode mInputMode;
 	Button mInputModeTextView;
 
-	TextView solvedText;
+	TextView mSolvedText;
 	GameTimer mTimerTask;
 
-	RelativeLayout topLayout;
-	RelativeLayout puzzleGrid;
-	TableLayout controls;
+	RelativeLayout mTopLayout;
+	RelativeLayout mPuzzleGrid;
+	TableLayout mControls;
 	TextView mGameSeedLabel;
 	TextView mGameSeedText;
 	TextView mTimerText;
@@ -91,11 +91,11 @@ public class MainActivity extends Activity {
 
 	Button mStartButton;
 
-	Button clearDigit;
-	Button undoButton;
-	View[] sound_effect_views;
-	private Animation outAnimation;
-	private Animation solvedAnimation;
+	Button mClearDigit;
+	Button mUndoButton;
+	View[] mSoundEffectViews;
+	private Animation mOutAnimation;
+	private Animation mSolvedAnimation;
 
 	public Preferences mMathDokuPreferences;
 
@@ -154,12 +154,12 @@ public class MainActivity extends Activity {
 
 		mMathDokuPreferences = Preferences.getInstance(this);
 
-		this.topLayout = (RelativeLayout) findViewById(R.id.topLayout);
-		this.puzzleGrid = (RelativeLayout) findViewById(R.id.puzzleGrid);
+		this.mTopLayout = (RelativeLayout) findViewById(R.id.topLayout);
+		this.mPuzzleGrid = (RelativeLayout) findViewById(R.id.puzzleGrid);
 		this.mGridView = (GridView) findViewById(R.id.gridView);
-		this.solvedText = (TextView) findViewById(R.id.solvedText);
-		this.mGridView.animText = this.solvedText;
-		this.controls = (TableLayout) findViewById(R.id.controls);
+		this.mSolvedText = (TextView) findViewById(R.id.solvedText);
+		this.mGridView.mAnimText = this.mSolvedText;
+		this.mControls = (TableLayout) findViewById(R.id.controls);
 		this.mGameSeedLabel = (TextView) findViewById(R.id.gameSeedLabel);
 		this.mGameSeedText = (TextView) findViewById(R.id.gameSeedText);
 		this.mTimerText = (TextView) findViewById(R.id.timerText);
@@ -175,27 +175,27 @@ public class MainActivity extends Activity {
 		mDigitPosition[6] = (Button) findViewById(R.id.digitPosition7);
 		mDigitPosition[7] = (Button) findViewById(R.id.digitPosition8);
 		mDigitPosition[8] = (Button) findViewById(R.id.digitPosition9);
-		this.clearDigit = (Button) findViewById(R.id.clearButton);
-		this.undoButton = (Button) findViewById(R.id.undoButton);
+		this.mClearDigit = (Button) findViewById(R.id.clearButton);
+		this.mUndoButton = (Button) findViewById(R.id.undoButton);
 
-		this.sound_effect_views = new View[] { this.mGridView,
+		this.mSoundEffectViews = new View[] { this.mGridView,
 				this.mDigitPosition[0], this.mDigitPosition[1],
 				this.mDigitPosition[2], this.mDigitPosition[3],
 				this.mDigitPosition[4], this.mDigitPosition[5],
 				this.mDigitPosition[6], this.mDigitPosition[7],
-				this.mDigitPosition[8], this.clearDigit,
-				this.mInputModeTextView, this.undoButton };
+				this.mDigitPosition[8], this.mClearDigit,
+				this.mInputModeTextView, this.mUndoButton };
 
 		this.mPainter = Painter.getInstance(this);
 
 		setInputMode(InputMode.NO_INPUT__HIDE_GRID);
 
 		// Animation for a solved puzzle
-		solvedAnimation = AnimationUtils.loadAnimation(MainActivity.this,
+		mSolvedAnimation = AnimationUtils.loadAnimation(MainActivity.this,
 				R.anim.solvedanim);
-		solvedAnimation.setAnimationListener(new AnimationListener() {
+		mSolvedAnimation.setAnimationListener(new AnimationListener() {
 			public void onAnimationEnd(Animation animation) {
-				solvedText.setVisibility(View.GONE);
+				mSolvedText.setVisibility(View.GONE);
 			}
 
 			public void onAnimationRepeat(Animation animation) {
@@ -206,11 +206,11 @@ public class MainActivity extends Activity {
 		});
 
 		// Animation for controls.
-		outAnimation = AnimationUtils.loadAnimation(MainActivity.this,
+		mOutAnimation = AnimationUtils.loadAnimation(MainActivity.this,
 				R.anim.selectorzoomout);
-		outAnimation.setAnimationListener(new AnimationListener() {
+		mOutAnimation.setAnimationListener(new AnimationListener() {
 			public void onAnimationEnd(Animation animation) {
-				controls.setVisibility(View.GONE);
+				mControls.setVisibility(View.GONE);
 			}
 
 			public void onAnimationRepeat(Animation animation) {
@@ -226,18 +226,18 @@ public class MainActivity extends Activity {
 					public void gridTouched(GridCell cell,
 							boolean sameCellSelectedAgain) {
 						if (mMathDokuPreferences.isControlsBlockHidden()) {
-							if (controls.getVisibility() == View.VISIBLE) {
-								controls.startAnimation(outAnimation);
+							if (mControls.getVisibility() == View.VISIBLE) {
+								mControls.startAnimation(mOutAnimation);
 								mGridView.mSelectorShown = false;
 								mGridView.requestFocus();
 							} else {
-								controls.setVisibility(View.VISIBLE);
+								mControls.setVisibility(View.VISIBLE);
 								Animation animation = AnimationUtils
 										.loadAnimation(MainActivity.this,
 												R.anim.selectorzoomin);
-								controls.startAnimation(animation);
+								mControls.startAnimation(animation);
 								mGridView.mSelectorShown = true;
-								controls.requestFocus();
+								mControls.requestFocus();
 							}
 						} else {
 							// Controls are always visible
@@ -256,20 +256,20 @@ public class MainActivity extends Activity {
 					MainActivity.this.digitSelected(d);
 				}
 			});
-		this.clearDigit.setOnClickListener(new OnClickListener() {
+		this.mClearDigit.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				MainActivity.this.digitSelected(0);
 			}
 		});
-		this.undoButton.setOnClickListener(new OnClickListener() {
+		this.mUndoButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				if (MainActivity.this.mGrid.UndoLastMove()) {
+				if (MainActivity.this.mGrid.undoLastMove()) {
 					// Succesfull undo
 					mGridView.invalidate();
 				}
 
 				if (mMathDokuPreferences.isControlsBlockHidden()) {
-					MainActivity.this.controls.setVisibility(View.GONE);
+					MainActivity.this.mControls.setVisibility(View.GONE);
 				}
 			}
 		});
@@ -379,21 +379,21 @@ public class MainActivity extends Activity {
 
 	public void setTheme() {
 
-		solvedText.setTypeface(mPainter.getTypeface());
+		mSolvedText.setTypeface(mPainter.getTypeface());
 
 		switch (mMathDokuPreferences.getTheme()) {
 		case NEWSPAPER:
-			topLayout.setBackgroundResource(R.drawable.newspaper);
+			mTopLayout.setBackgroundResource(R.drawable.newspaper);
 			mPainter.setTheme(GridTheme.NEWSPAPER);
 			mTimerText.setBackgroundColor(0x90808080);
 			break;
 		case DARK:
-			topLayout.setBackgroundResource(R.drawable.newspaper_dark);
+			mTopLayout.setBackgroundResource(R.drawable.newspaper_dark);
 			mPainter.setTheme(GridTheme.DARK);
 			mTimerText.setTextColor(0xFFF0F0F0);
 			break;
 		case CARVED:
-			topLayout.setBackgroundResource(R.drawable.background);
+			mTopLayout.setBackgroundResource(R.drawable.background);
 			mPainter.setTheme(GridTheme.CARVED);
 			mTimerText.setBackgroundColor(0x10000000);
 			break;
@@ -437,7 +437,7 @@ public class MainActivity extends Activity {
 	}
 
 	public void setSoundEffectsEnabled(boolean enabled) {
-		for (View v : this.sound_effect_views)
+		for (View v : this.mSoundEffectViews)
 			v.setSoundEffectsEnabled(enabled);
 	}
 
@@ -608,7 +608,7 @@ public class MainActivity extends Activity {
 			openClearDialog();
 			break;
 		case CONTEXT_MENU_SHOW_SOLUTION:
-			this.mGrid.Solve();
+			this.mGrid.solve();
 			break;
 		case CONTEXT_MENU_REVEAL_OPERATOR:
 			if (selectedGridCage == null) {
@@ -719,7 +719,7 @@ public class MainActivity extends Activity {
 		if (event.getAction() == KeyEvent.ACTION_DOWN
 				&& keyCode == KeyEvent.KEYCODE_BACK
 				&& this.mGridView.mSelectorShown) {
-			this.controls.setVisibility(View.GONE);
+			this.mControls.setVisibility(View.GONE);
 			this.mGridView.requestFocus();
 			this.mGridView.mSelectorShown = false;
 			this.mGridView.invalidate();
@@ -732,7 +732,7 @@ public class MainActivity extends Activity {
 		this.mGridView.digitSelected(value, mInputMode);
 
 		if (mMathDokuPreferences.isControlsBlockHidden()) {
-			this.controls.setVisibility(View.GONE);
+			this.mControls.setVisibility(View.GONE);
 		}
 		this.mGridView.requestFocus();
 		this.mGridView.mSelectorShown = false;
@@ -823,7 +823,7 @@ public class MainActivity extends Activity {
 		if (mGrid != null) {
 			UsageLog.getInstance().logGrid("Menu.StartNewGame.OldGame", mGrid);
 
-			if (mGrid.moves.size() > 0) {
+			if (mGrid.mMoves.size() > 0) {
 				// Increase counter for number of games on which playing has
 				// been started.
 				int countGamesStarted = mMathDokuPreferences
@@ -848,9 +848,9 @@ public class MainActivity extends Activity {
 	}
 
 	private void animText(int textIdentifier, int color) {
-		this.solvedText.setText(textIdentifier);
-		this.solvedText.setTextColor(color);
-		this.solvedText.setVisibility(View.VISIBLE);
+		this.mSolvedText.setText(textIdentifier);
+		this.mSolvedText.setTextColor(color);
+		this.mSolvedText.setVisibility(View.VISIBLE);
 		final float SCALE_FROM = (float) 0;
 		final float SCALE_TO = (float) 1.0;
 		ScaleAnimation anim = new ScaleAnimation(SCALE_FROM, SCALE_TO,
@@ -858,7 +858,7 @@ public class MainActivity extends Activity {
 				this.mGridView.mGridViewSize / 2);
 		anim.setDuration(1000);
 		// animText.setAnimation(anim);
-		this.solvedText.startAnimation(this.solvedAnimation);
+		this.mSolvedText.startAnimation(this.mSolvedAnimation);
 	}
 
 	private void openHelpDialog() {
@@ -1105,7 +1105,7 @@ public class MainActivity extends Activity {
 		mProgressDialogImagePreviewCreation.show();
 
 		// Display and hide elements so that the previews can be created.
-		puzzleGrid.setVisibility(View.VISIBLE);
+		mPuzzleGrid.setVisibility(View.VISIBLE);
 		mStartButton.setVisibility(View.GONE);
 
 		// Runnable for handling the next step of preview image creation process
@@ -1131,8 +1131,8 @@ public class MainActivity extends Activity {
 					if (newGrid != null) {
 						mGrid = newGrid;
 						mGridView.loadNewGrid(mGrid);
-						puzzleGrid.setVisibility(View.INVISIBLE);
-						controls.setVisibility(View.GONE);
+						mPuzzleGrid.setVisibility(View.INVISIBLE);
+						mControls.setVisibility(View.GONE);
 						mStartButton.setVisibility(View.GONE);
 
 						// Post a message for further processing of the
@@ -1372,12 +1372,12 @@ public class MainActivity extends Activity {
 		// Visibility of grid view
 		switch (inputMode) {
 		case NO_INPUT__HIDE_GRID:
-			puzzleGrid.setVisibility(View.GONE);
+			mPuzzleGrid.setVisibility(View.GONE);
 			break;
 		case NO_INPUT__DISPLAY_GRID:
 		case NORMAL:
 		case MAYBE:
-			puzzleGrid.setVisibility(View.VISIBLE);
+			mPuzzleGrid.setVisibility(View.VISIBLE);
 			break;
 		}
 
@@ -1385,7 +1385,7 @@ public class MainActivity extends Activity {
 		switch (inputMode) {
 		case NO_INPUT__HIDE_GRID:
 			mTimerText.setVisibility(View.GONE);
-			controls.setVisibility(View.GONE);
+			mControls.setVisibility(View.GONE);
 			mStartButton.setVisibility(View.VISIBLE);
 			break;
 		case NO_INPUT__DISPLAY_GRID:
@@ -1398,18 +1398,18 @@ public class MainActivity extends Activity {
 				this.mTimerText.setVisibility(View.VISIBLE);
 				setElapsedTime(mGrid.getElapsedTime());
 			}
-			controls.setVisibility(View.GONE);
+			mControls.setVisibility(View.GONE);
 			mStartButton.setVisibility(View.VISIBLE);
 			break;
 		case NORMAL:
 		case MAYBE:
-			solvedText.setVisibility(View.GONE);
+			mSolvedText.setVisibility(View.GONE);
 			mStartButton.setVisibility(View.GONE);
 			if (mMathDokuPreferences.isTimerVisible()) {
 				mTimerText.setVisibility(View.VISIBLE);
 			}
 			if (!mMathDokuPreferences.isControlsBlockHidden()) {
-				this.controls.setVisibility(View.VISIBLE);
+				this.mControls.setVisibility(View.VISIBLE);
 			}
 
 			// Determine the color which is used for text which depends on the

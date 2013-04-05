@@ -7,17 +7,17 @@ public class GridCageType {
 	private int mSize;
 
 	// Dimensions of matrix needed to store the cage type shape.
-	private int rows;
-	private int cols;
+	private int mRows;
+	private int mCols;
 
 	// Each cage type has an origin cell which is defined as the left most
 	// occupied cell in the top row of the shape. As empty top rows can not
 	// occur by default, there is no rowOriginOffset.
-	private int colOriginOffset;
+	private int mColOriginOffset;
 
 	// Matrix to store the cage type. True in case the cell is part of the cage
 	// type. False in case the cell is unused.
-	public boolean[][] usedCells;
+	public boolean[][] mUsedCells;
 
 	/**
 	 * Creates a new instance of {@link CageType}.
@@ -40,7 +40,7 @@ public class GridCageType {
 	 * @return The (maximum) width in number of cells of the cage type.
 	 */
 	public int getWidth() {
-		return cols;
+		return mCols;
 	}
 
 	/**
@@ -49,7 +49,7 @@ public class GridCageType {
 	 * @return The (maximum) height in number of cells of the cage type.
 	 */
 	public int getHeight() {
-		return rows;
+		return mRows;
 	}
 
 	/**
@@ -62,12 +62,12 @@ public class GridCageType {
 	 *         shape.
 	 */
 	public boolean[][] getExtendedCageTypeMatrix() {
-		boolean[][] extendedUsedCells = new boolean[rows + 2][cols + 2];
+		boolean[][] extendedUsedCells = new boolean[mRows + 2][mCols + 2];
 
 		// Shift cage type one row down and 1 column to the right.
-		for (int row = 0; row < rows; row++) {
-			for (int col = 0; col < cols; col++) {
-				extendedUsedCells[row + 1][col + 1] = usedCells[row][col];
+		for (int row = 0; row < mRows; row++) {
+			for (int col = 0; col < mCols; col++) {
+				extendedUsedCells[row + 1][col + 1] = mUsedCells[row][col];
 			}
 		}
 
@@ -87,7 +87,7 @@ public class GridCageType {
 		int colOrigin = origin.getColumn();
 
 		// Get cage type matrix
-		if (usedCells == null) {
+		if (mUsedCells == null) {
 			return new int[][] { { rowOrigin, colOrigin } };
 		}
 
@@ -95,11 +95,11 @@ public class GridCageType {
 		// at the given origin cell.
 		int[][] coordinates = new int[mSize][2];
 		int coordinatesIndex = 0;
-		for (int row = 0; row < rows; row++) {
-			for (int col = 0; col < cols; col++) {
-				if (usedCells[row][col]) {
+		for (int row = 0; row < mRows; row++) {
+			for (int col = 0; col < mCols; col++) {
+				if (mUsedCells[row][col]) {
 					coordinates[coordinatesIndex++] = new int[] {
-							rowOrigin + row, colOrigin + col - colOriginOffset };
+							rowOrigin + row, colOrigin + col - mColOriginOffset };
 				}
 			}
 		}
@@ -114,7 +114,7 @@ public class GridCageType {
 	 * @return The coordinates of the most top left cell used in the cage type.
 	 */
 	public int[] getOriginCoordinates(int rowOffset, int colOffset) {
-		return new int[] { rowOffset, colOffset + colOriginOffset };
+		return new int[] { rowOffset, colOffset + mColOriginOffset };
 	}
 
 	/**
@@ -153,19 +153,19 @@ public class GridCageType {
 
 		// Create a new cage type matrix by stripping all unused rows and
 		// columns
-		this.rows = bottom - top + 1;
-		this.cols = right - left + 1;
-		this.usedCells = new boolean[this.rows][this.cols];
+		this.mRows = bottom - top + 1;
+		this.mCols = right - left + 1;
+		this.mUsedCells = new boolean[this.mRows][this.mCols];
 		boolean originFound = false;
 		this.mSize = 0;
 		for (int row = top; row <= bottom; row++) {
 			for (int col = left; col <= right; col++) {
-				this.usedCells[row - top][col - left] = newCageTypeMatrix[row][col];
+				this.mUsedCells[row - top][col - left] = newCageTypeMatrix[row][col];
 				if (newCageTypeMatrix[row][col]) {
 					this.mSize++;
 					if (!originFound) {
 						originFound = true;
-						this.colOriginOffset = col - left;
+						this.mColOriginOffset = col - left;
 					}
 				}
 			}
@@ -179,10 +179,10 @@ public class GridCageType {
 	 */
 	public String toString() {
 		String result = "";
-		for (int row = 0; row < rows; row++) {
+		for (int row = 0; row < mRows; row++) {
 			result += "  ";
-			for (int col = 0; col < cols; col++) {
-				result += (usedCells[row][col] ? " X" : " -");
+			for (int col = 0; col < mCols; col++) {
+				result += (mUsedCells[row][col] ? " X" : " -");
 			}
 			result += "\n";
 		}
@@ -215,14 +215,14 @@ public class GridCageType {
 		GridCageType lhs = (GridCageType) o;
 
 		// Return false in case dimensions are not the same.
-		if (rows != lhs.rows || cols != lhs.cols) {
+		if (mRows != lhs.mRows || mCols != lhs.mCols) {
 			return false;
 		}
 
 		// Return false in case content of shape matrixes are not the same.
-		for (int row = 0; row < rows; row++) {
-			for (int col = 0; col < cols; col++) {
-				if (usedCells[row][col] != lhs.usedCells[row][col]) {
+		for (int row = 0; row < mRows; row++) {
+			for (int col = 0; col < mCols; col++) {
+				if (mUsedCells[row][col] != lhs.mUsedCells[row][col]) {
 					return false;
 				}
 			}

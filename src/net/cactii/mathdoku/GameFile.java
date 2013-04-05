@@ -46,7 +46,7 @@ public class GameFile extends File {
 
 	// Base of filenames for this game file. The baseFilename does not include a
 	// path.
-	private String baseFilename;
+	private String mBaseFilename;
 
 	// Delimiters used in files to separate objects, fields and field with
 	// multiple values.
@@ -72,7 +72,7 @@ public class GameFile extends File {
 	 */
 	public GameFile(GameFileType gameFileType) {
 		super(PATH + getFilenameForType(gameFileType));
-		this.baseFilename = getFilenameForType(gameFileType);
+		this.mBaseFilename = getFilenameForType(gameFileType);
 	}
 
 	/**
@@ -84,7 +84,7 @@ public class GameFile extends File {
 	public GameFile(String filename) {
 		// Only append filename with PATH if not yet included.
 		super(PATH + filename);
-		this.baseFilename = filename;
+		this.mBaseFilename = filename;
 	}
 
 	/**
@@ -156,7 +156,7 @@ public class GameFile extends File {
 				// single
 				// cell change. Note: watch for lengthy line due to recursive
 				// cell changes.
-				for (CellChange cellChange : grid.moves) {
+				for (CellChange cellChange : grid.mMoves) {
 					writer.write(cellChange.toStorageString() + EOL_DELIMITER);
 				}
 			} catch (IOException e) {
@@ -191,7 +191,7 @@ public class GameFile extends File {
 		if (grid != null) {
 			// Return game file header only if grid was successfully loaded
 			GameFileHeader gameFileHeader = new GameFileHeader();
-			gameFileHeader.filename = this.baseFilename;
+			gameFileHeader.filename = this.mBaseFilename;
 			gameFileHeader.datetimeSaved = grid.getDateSaved();
 			gameFileHeader.gridSize = grid.getGridSize();
 			gameFileHeader.hasPreviewAvailable = this.hasPreviewImage();
@@ -361,7 +361,7 @@ public class GameFile extends File {
 			CellChange cellChange = new CellChange();
 			while (line != null
 					&& cellChange.fromStorageString(line, grid.mCells)) {
-				grid.AddMove(cellChange);
+				grid.addMove(cellChange);
 
 				// Read next line. No checking of unexpected end of file might
 				// be done here because the last line in a file can contain a
@@ -722,7 +722,7 @@ public class GameFile extends File {
 	 * @return The full path of the game file.
 	 */
 	private String getFullFilename() {
-		return PATH + baseFilename;
+		return PATH + mBaseFilename;
 	}
 
 	/**
@@ -732,7 +732,7 @@ public class GameFile extends File {
 	 */
 	private String getFullFilenamePreview() {
 		return PATH
-				+ this.baseFilename.replace(GAMEFILE_EXTENSION,
+				+ this.mBaseFilename.replace(GAMEFILE_EXTENSION,
 						PREVIEW_EXTENSION);
 	}
 }

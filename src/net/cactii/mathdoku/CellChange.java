@@ -24,24 +24,24 @@ public class CellChange {
 	private final String SAVE_GAME_CELL_CHANGE_VERSION_BASE = "CELL_CHANGE.v";
 
 	// The cell for which the undo information is stored.
-	private GridCell cell;
+	private GridCell mGridCell;
 
 	// Properties of the GridCell which can be restored.
-	private int previousUserValue;
-	private ArrayList<Integer> previousPossibleValues;
+	private int mPreviousUserValue;
+	private ArrayList<Integer> mPreviousPossibleValues;
 
 	// Undo information for other cell which are changed as a result of changing
 	// the cell.
-	private ArrayList<CellChange> relatedCellChanges;
+	private ArrayList<CellChange> mRelatedCellChanges;
 
 	/**
 	 * Creates a new empty [@link #CellChange] instance.
 	 */
 	public CellChange() {
-		this.cell = null;
-		this.previousUserValue = -1;
-		this.previousPossibleValues = new ArrayList<Integer>();
-		this.relatedCellChanges = null;
+		this.mGridCell = null;
+		this.mPreviousUserValue = -1;
+		this.mPreviousPossibleValues = new ArrayList<Integer>();
+		this.mRelatedCellChanges = null;
 	}
 
 	/**
@@ -56,11 +56,11 @@ public class CellChange {
 	 */
 	public CellChange(GridCell cell, int previousUserValue,
 			ArrayList<Integer> previousPossibleValues) {
-		this.cell = cell;
-		this.previousUserValue = previousUserValue;
-		this.previousPossibleValues = new ArrayList<Integer>(
+		this.mGridCell = cell;
+		this.mPreviousUserValue = previousUserValue;
+		this.mPreviousPossibleValues = new ArrayList<Integer>(
 				previousPossibleValues);
-		this.relatedCellChanges = null;
+		this.mRelatedCellChanges = null;
 	}
 
 	/**
@@ -69,15 +69,15 @@ public class CellChange {
 	 * @return The grid cell for which a change was made undone.
 	 */
 	public GridCell restore() {
-		if (this.relatedCellChanges != null) {
+		if (this.mRelatedCellChanges != null) {
 			// First Undo all related moves.
-			for (CellChange relatedMove : this.relatedCellChanges) {
+			for (CellChange relatedMove : this.mRelatedCellChanges) {
 				relatedMove.restore();
 			}
 		}
-		cell.Undo(this.previousUserValue, this.previousPossibleValues);
+		mGridCell.undo(this.mPreviousUserValue, this.mPreviousPossibleValues);
 
-		return cell;
+		return mGridCell;
 	}
 
 	/**
@@ -88,10 +88,10 @@ public class CellChange {
 	 *            The cell change which will be related to this cell change.
 	 */
 	public void addRelatedMove(CellChange relatedCellChange) {
-		if (this.relatedCellChanges == null) {
-			this.relatedCellChanges = new ArrayList<CellChange>();
+		if (this.mRelatedCellChanges == null) {
+			this.mRelatedCellChanges = new ArrayList<CellChange>();
 		}
-		this.relatedCellChanges.add(relatedCellChange);
+		this.mRelatedCellChanges.add(relatedCellChange);
 	}
 
 	/*
@@ -100,11 +100,11 @@ public class CellChange {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		String str = "<cell:" + this.cell.getCellNumber() + " col:"
-				+ this.cell.getColumn() + " row:" + this.cell.getRow()
-				+ " previous userval:" + this.previousUserValue
+		String str = "<cell:" + this.mGridCell.getCellNumber() + " col:"
+				+ this.mGridCell.getColumn() + " row:" + this.mGridCell.getRow()
+				+ " previous userval:" + this.mPreviousUserValue
 				+ " previous possible values:"
-				+ previousPossibleValues.toString() + ">";
+				+ mPreviousPossibleValues.toString() + ">";
 		return str;
 	}
 
@@ -136,11 +136,11 @@ public class CellChange {
 		// Check each field. Primitive fields, reference fields, and nullable
 		// reference
 		// fields are all treated differently.
-		return previousUserValue == lhs.previousUserValue
-				&& cell.equals(lhs.cell)
-				&& (previousPossibleValues == null ? lhs.previousPossibleValues == null
-						: previousPossibleValues
-								.equals(lhs.previousPossibleValues));
+		return mPreviousUserValue == lhs.mPreviousUserValue
+				&& mGridCell.equals(lhs.mGridCell)
+				&& (mPreviousPossibleValues == null ? lhs.mPreviousPossibleValues == null
+						: mPreviousPossibleValues
+								.equals(lhs.mPreviousPossibleValues));
 	}
 
 	/*
@@ -172,16 +172,16 @@ public class CellChange {
 	 * @return A string representation of the grid cell.
 	 */
 	private String toStorageStringRecursive() {
-		String storageString = "[" + cell.getCellNumber()
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + previousUserValue
+		String storageString = "[" + mGridCell.getCellNumber()
+				+ GameFile.FIELD_DELIMITER_LEVEL1 + mPreviousUserValue
 				+ GameFile.FIELD_DELIMITER_LEVEL1;
-		for (int previousPossibleValue : previousPossibleValues) {
+		for (int previousPossibleValue : mPreviousPossibleValues) {
 			storageString += Integer.toString(previousPossibleValue)
 					+ GameFile.FIELD_DELIMITER_LEVEL2;
 		}
 		storageString += GameFile.FIELD_DELIMITER_LEVEL1;
-		if (relatedCellChanges != null) {
-			for (CellChange cellChange : relatedCellChanges) {
+		if (mRelatedCellChanges != null) {
+			for (CellChange cellChange : mRelatedCellChanges) {
 				storageString += cellChange.toStorageStringRecursive()
 						+ GameFile.FIELD_DELIMITER_LEVEL2;
 			}
@@ -309,15 +309,15 @@ public class CellChange {
 							+ matcher.group(GROUP_RELATED_CELL_CHANGED));
 		}
 
-		this.cell = cells
+		this.mGridCell = cells
 				.get(Integer.valueOf(matcher.group(GROUP_CELL_NUMBER)));
-		previousUserValue = Integer.valueOf(matcher
+		mPreviousUserValue = Integer.valueOf(matcher
 				.group(GROUP_PREVIOUS_USER_VALUE));
 		if (!matcher.group(GROUP_PREVIOUS_POSSIBLE_VALUES).equals("")) {
 			for (String possible : matcher
 					.group(GROUP_PREVIOUS_POSSIBLE_VALUES).split(
 							GameFile.FIELD_DELIMITER_LEVEL2)) {
-				previousPossibleValues.add(Integer.valueOf(possible));
+				mPreviousPossibleValues.add(Integer.valueOf(possible));
 			}
 		}
 
