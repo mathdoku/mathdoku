@@ -2,8 +2,9 @@ package net.cactii.mathdoku;
 
 import java.util.Map;
 
-import net.cactii.mathdoku.Painter.GridTheme;
 import net.cactii.mathdoku.Tip.TipDialog.TipCategory;
+import net.cactii.mathdoku.painter.Painter;
+import net.cactii.mathdoku.painter.Painter.GridTheme;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;

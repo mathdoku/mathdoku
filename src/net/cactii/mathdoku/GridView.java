@@ -2,8 +2,9 @@ package net.cactii.mathdoku;
 
 import net.cactii.mathdoku.DigitPositionGrid.DigitPositionGridType;
 import net.cactii.mathdoku.MainActivity.InputMode;
-import net.cactii.mathdoku.Painter.GridPainter;
 import net.cactii.mathdoku.Tip.TipOrderOfValuesInCage;
+import net.cactii.mathdoku.painter.GridPainter;
+import net.cactii.mathdoku.painter.Painter;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
@@ -70,7 +71,7 @@ public class GridView extends View implements OnTouchListener {
 		mPreferences = Preferences.getInstance(mMainActivity);
 		
 		mGridViewSize = 0;
-		mGridPainter = Painter.getInstance(mMainActivity).mGridPainter;
+		mGridPainter = Painter.getInstance(mMainActivity).getGridPainter();
 
 		// Initialize the display frame for the grid view.
 		mDisplayFrame = new Rect();
@@ -294,12 +295,12 @@ public class GridView extends View implements OnTouchListener {
 			if (grid.mCages == null)
 				return;
 
-			float gridBorderWidth = mGridPainter.mBorderPaint.getStrokeWidth();
+			float gridBorderWidth = mGridPainter.getBorderPaint().getStrokeWidth();
 
 			// Draw grid background and border grid
-			canvas.drawColor(mGridPainter.mBackgroundPaint.getColor());
+			canvas.drawColor(mGridPainter.getBackgroundPaint().getColor());
 			canvas.drawRect((float) 1, (float) 1, mGridViewSize, mGridViewSize,
-					mGridPainter.mBorderPaint);
+					mGridPainter.getBorderPaint());
 
 			// Draw cells, except for cells in selected cage
 			InputMode inputMode = mMainActivity.getInputMode();
@@ -337,7 +338,7 @@ public class GridView extends View implements OnTouchListener {
 		// the space available.
 		int gridSize = (grid == null ? 1 : grid.getGridSize());
 		float gridBorderWidth = (mGridPainter == null ? 0
-				: mGridPainter.mBorderPaint.getStrokeWidth());
+				: mGridPainter.getBorderPaint().getStrokeWidth());
 		mGridCellSize = (float) Math
 				.floor((float) (maxSize - 2 * gridBorderWidth)
 						/ (float) gridSize);

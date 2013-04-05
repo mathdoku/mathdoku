@@ -3,8 +3,9 @@ package net.cactii.mathdoku;
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.DigitPositionGrid.DigitPositionGridType;
 import net.cactii.mathdoku.GameFile.GameFileType;
-import net.cactii.mathdoku.Painter.GridTheme;
 import net.cactii.mathdoku.Tip.TipInputModeChanged;
+import net.cactii.mathdoku.painter.Painter;
+import net.cactii.mathdoku.painter.Painter.GridTheme;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -88,7 +89,7 @@ public class MainActivity extends Activity {
 	Button mDigitPosition[] = new Button[9];
 
 	Button mStartButton;
-	
+
 	Button clearDigit;
 	Button undoButton;
 	View[] sound_effect_views;
@@ -286,7 +287,7 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				openOptionsMenu();
 			}
-			
+
 		});
 		if (DevelopmentHelper.mode == Mode.DEVELOPMENT) {
 			final MainActivity activity = this;
@@ -377,7 +378,7 @@ public class MainActivity extends Activity {
 
 	public void setTheme() {
 
-		solvedText.setTypeface(mPainter.mGridPainter.mSolvedTypeface);
+		solvedText.setTypeface(mPainter.getTypeface());
 
 		switch (mMathDokuPreferences.getTheme()) {
 		case NEWSPAPER:
@@ -417,13 +418,14 @@ public class MainActivity extends Activity {
 		}
 
 		setTheme();
-		
+
 		// Propagate current preferences to the grid.
 		if (mGrid != null) {
 			mGrid.setPreferences();
 		}
 
-		this.setSoundEffectsEnabled(mMathDokuPreferences.isPlaySoundEffectEnabled());
+		this.setSoundEffectsEnabled(mMathDokuPreferences
+				.isPlaySoundEffectEnabled());
 
 		super.onResume();
 
@@ -699,7 +701,7 @@ public class MainActivity extends Activity {
 
 				// Reset preferences
 				mMathDokuPreferences.resetUsageLogDisabled();
-				
+
 				// Re-enable usage log
 				UsageLog.getInstance(this);
 			}
@@ -803,7 +805,8 @@ public class MainActivity extends Activity {
 
 		// Start a background task to generate the new grid. As soon as the new
 		// grid is created, the method onNewGridReady will be called.
-		int maxCageSize = (mMathDokuPreferences.isAllowBigCagesEnabled() ? 6 : 4);
+		int maxCageSize = (mMathDokuPreferences.isAllowBigCagesEnabled() ? 6
+				: 4);
 		int maxCageResult = getResources().getInteger(
 				R.integer.maximum_cage_value);
 		mGridGeneratorTask = new GridGenerator(this, gridSize, maxCageSize,
@@ -822,7 +825,8 @@ public class MainActivity extends Activity {
 			if (mGrid.moves.size() > 0) {
 				// Increase counter for number of games on which playing has
 				// been started.
-				int countGamesStarted = mMathDokuPreferences.increaseGamesStarted();
+				int countGamesStarted = mMathDokuPreferences
+						.increaseGamesStarted();
 
 				// Check if we are going to ask the user to send feedback
 				// TODO: change to definitive values
@@ -969,8 +973,9 @@ public class MainActivity extends Activity {
 		}
 
 		// Determine currently installed version
-		int previousInstalledVersion = mMathDokuPreferences.getCurrentInstalledVersion();
-		
+		int previousInstalledVersion = mMathDokuPreferences
+				.getCurrentInstalledVersion();
+
 		// Determine to which version will be upgraded.
 		int currentVersion = getVersionNumber();
 
@@ -1074,7 +1079,7 @@ public class MainActivity extends Activity {
 		if (countGameFilesWithoutPreview == 0) {
 			// No games files without previews found.
 			mMathDokuPreferences.setCreatePreviewImagesCompleted();
-			
+
 			// Go to next phase of upgrading
 			upgradePhase3_UpdatePreferences(previousInstalledVersion,
 					currentVersion);
@@ -1112,7 +1117,8 @@ public class MainActivity extends Activity {
 				// visible in the grid view.
 				if (mGameFileImagePreviewCreation != null) {
 					// Save preview for the current game file.
-					mGameFileImagePreviewCreation.savePreviewImage(mainActivity, mGridView);
+					mGameFileImagePreviewCreation.savePreviewImage(
+							mainActivity, mGridView);
 					mProgressDialogImagePreviewCreation.incrementProgressBy(1);
 				}
 
@@ -1403,8 +1409,9 @@ public class MainActivity extends Activity {
 
 			// Determine the color which is used for text which depends on the
 			// actual input mode
-			int color = (inputMode == InputMode.NORMAL ? mPainter.mHighlightedTextColorNormalInputMode
-					: mPainter.mHighlightedTextColorMaybeInputMode);
+			int color = (inputMode == InputMode.NORMAL ? mPainter
+					.getHighlightedTextColorNormalInputMode() : mPainter
+					.getHighlightedTextColorMaybeInputMode());
 
 			// Set text and color for input mode label
 			mInputModeTextView.setTextColor(color);

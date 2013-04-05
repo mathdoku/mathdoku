@@ -5,10 +5,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import net.cactii.mathdoku.MainActivity.InputMode;
-import net.cactii.mathdoku.Painter.CagePainter;
-import net.cactii.mathdoku.Painter.CellPainter;
-import net.cactii.mathdoku.Painter.MaybePainter;
-import net.cactii.mathdoku.Painter.UserValuePainter;
+import net.cactii.mathdoku.painter.CagePainter;
+import net.cactii.mathdoku.painter.CellPainter;
+import net.cactii.mathdoku.painter.MaybeValuePainter;
+import net.cactii.mathdoku.painter.Painter;
+import net.cactii.mathdoku.painter.UserValuePainter;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -68,9 +69,9 @@ public class GridCell {
 	// References to the global painter objects.
 	private CellPainter mCellPainter;
 	private UserValuePainter mUserValuePainter;
-	private MaybePainter mMaybe3x3Painter;
-	private MaybePainter mMaybe2x5Painter;
-	private MaybePainter mMaybe1x9Painter;
+	private MaybeValuePainter mMaybe3x3Painter;
+	private MaybeValuePainter mMaybe2x5Painter;
+	private MaybeValuePainter mMaybe1x9Painter;
 	private CagePainter mCagePainter;
 
 	public GridCell(Grid grid, int cell) {
@@ -92,12 +93,12 @@ public class GridCell {
 
 		// Retrieve all painters
 		Painter painter = Painter.getInstance();
-		this.mCellPainter = painter.mCellPainter;
-		this.mUserValuePainter = painter.mUserValuePainter;
-		this.mMaybe3x3Painter = painter.mMaybe3x3Painter;
-		this.mMaybe2x5Painter = painter.mMaybe2x5Painter;
-		this.mMaybe1x9Painter = painter.mMaybe1x9Painter;
-		this.mCagePainter = painter.mCagePainter;
+		this.mCellPainter = painter.getCellPainter();
+		this.mUserValuePainter = painter.getUserValuePainter();
+		this.mMaybe3x3Painter = painter.getMaybe3x3Painter();
+		this.mMaybe2x5Painter = painter.getMaybe2x5Painter();
+		this.mMaybe1x9Painter = painter.getMaybe1x9Painter();
+		this.mCagePainter = painter.getCagePainter();
 
 		borderTypeTop = BorderType.NONE;
 		borderTypeRight = BorderType.NONE;
@@ -118,13 +119,13 @@ public class GridCell {
 		case NONE:
 			return null;
 		case NOT_SELECTED__GOOD_MATH:
-			return mCagePainter.mBorderPaint;
+			return mCagePainter.getBorderPaint();
 		case NOT_SELECTED__BAD_MATH:
-			return mCagePainter.mBorderBadMathPaint;
+			return mCagePainter.getBorderBadMathPaint();
 		case SELECTED__GOOD_MATH:
-			return mCagePainter.mBorderSelectedPaint;
+			return mCagePainter.getBorderSelectedPaint();
 		case SELECTED__BAD_MATH:
-			return mCagePainter.mBorderSelectedBadMathPaint;
+			return mCagePainter.getBorderSelectedBadMathPaint();
 		}
 		return null;
 	}
@@ -199,17 +200,19 @@ public class GridCell {
 	 * Draw the cell inclusive borders, background and text.
 	 */
 	public void draw(Canvas canvas, float gridBorderWidth,
-			MainActivity.InputMode inputMode, DigitPositionGrid digitPositionGrid) {
+			MainActivity.InputMode inputMode,
+			DigitPositionGrid digitPositionGrid) {
+		// Get cell size
+		int cellSize = (int) this.mCellPainter.getCellSize();
+
 		// Calculate x and y for the cell origin (topleft). Use an offset to
 		// prevent overlapping of cells and border for entire grid.
-		this.mPosX = Math.round(gridBorderWidth + this.mCellPainter.mCellSize
-				* this.mColumn);
-		this.mPosY = Math.round(gridBorderWidth + this.mCellPainter.mCellSize
-				* this.mRow);
+		this.mPosX = Math.round(gridBorderWidth + cellSize * this.mColumn);
+		this.mPosY = Math.round(gridBorderWidth + cellSize * this.mRow);
 		float top = this.mPosY;
-		float bottom = this.mPosY + this.mCellPainter.mCellSize;
+		float bottom = this.mPosY + cellSize;
 		float left = this.mPosX;
-		float right = this.mPosX + this.mCellPainter.mCellSize;
+		float right = this.mPosX + cellSize;
 
 		// ---------------------------------------------------------------------
 		// Draw cage borders first. In case a cell border is part of the cage
@@ -329,20 +332,20 @@ public class GridCell {
 		for (int i = 1; i <= 4; i++) {
 			switch (i) {
 			case 1:
-				borderPaint = ((mShowWarning && mGrid.hasPrefShowDupeDigits()) ? mCellPainter.mWarning.mBorderPaint
-						: null);
+				borderPaint = ((mShowWarning && mGrid.hasPrefShowDupeDigits()) ? mCellPainter
+						.getDuplicateBorderPaint() : null);
 				break;
 			case 2:
-				borderPaint = (mCheated ? mCellPainter.mCheated.mBorderPaint
+				borderPaint = (mCheated ? mCellPainter.getCheatedBorderPaint()
 						: null);
 				break;
 			case 3:
-				borderPaint = (mInvalidHighlight ? mCellPainter.mInvalid.mBorderPaint
-						: null);
+				borderPaint = (mInvalidHighlight ? mCellPainter
+						.getInvalidBorderPaint() : null);
 				break;
 			case 4:
-				borderPaint = (mSelected ? mCellPainter.mSelected.mBorderPaint
-						: null);
+				borderPaint = (mSelected ? mCellPainter
+						.getSelectedBorderPaint() : null);
 				break;
 			}
 			if (borderPaint != null) {
@@ -379,13 +382,13 @@ public class GridCell {
 
 		Paint background = null;
 		if (mSelected) {
-			background = mCellPainter.mSelected.mBackgroundPaint;
+			background = mCellPainter.getSelectedBackgroundPaint();
 		} else if (mInvalidHighlight) {
-			background = mCellPainter.mInvalid.mBackgroundPaint;
+			background = mCellPainter.getInvalidBackgroundPaint();
 		} else if (mCheated) {
-			background = mCellPainter.mCheated.mBackgroundPaint;
+			background = mCellPainter.getCheatedBackgroundPaint();
 		} else if (mShowWarning && mGrid.hasPrefShowDupeDigits()) {
-			background = mCellPainter.mWarning.mBackgroundPaint;
+			background = mCellPainter.getWarningBackgroundPaint();
 		}
 		if (background != null) {
 			canvas.drawRect(left, top, right, bottom, background);
@@ -393,51 +396,55 @@ public class GridCell {
 
 		// Cell value
 		if (this.isUserValueSet()) {
-			Paint paint = (inputMode == InputMode.NORMAL ? mUserValuePainter.mTextPaintNormalInputMode
-					: mUserValuePainter.mTextPaintMaybeInputMode);
-			canvas.drawText("" + mUserValue, mPosX
-					+ mUserValuePainter.mLeftOffset, mPosY
-					+ mUserValuePainter.mTopOffset, paint);
+			Paint paint = (inputMode == InputMode.NORMAL ? mUserValuePainter
+					.getTextPaintNormalInputMode() : mUserValuePainter
+					.getTextPaintMaybeInputMode());
+			canvas.drawText("" + mUserValue,
+					mPosX + mUserValuePainter.getLeftOffset(), mPosY
+							+ mUserValuePainter.getTopOffset(), paint);
 		}
 		// Cage text
 		if (!this.mCageText.equals("")) {
 			// Clone the text painter and decrease text size until the cage text
 			// fits within the cell.
-			Paint textPaint = new Paint(mCagePainter.mTextPaint);
-			float scaleFactor = (mCellPainter.mCellSize - 4)
+			Paint textPaint = new Paint(mCagePainter.getTextPaint());
+			float scaleFactor = (cellSize - 4)
 					/ textPaint.measureText(mCageText);
 			if (scaleFactor < 1) {
-				textPaint.setTextSize(mCagePainter.mTextPaint.getTextSize()
-						* scaleFactor);
+				textPaint.setTextSize(textPaint.getTextSize() * scaleFactor);
 			}
 
-			canvas.drawText(mCageText, this.mPosX + 2, this.mPosY
-					+ mCagePainter.mTextPaint.getTextSize(), textPaint);
+			canvas.drawText(mCageText,
+					this.mPosX + mCagePainter.getTextLeftOffset(), this.mPosY
+							+ mCagePainter.getTextTopOffset(), textPaint);
 		}
 
 		// Draw pencilled in digits.
 		if (mPossibles.size() > 0) {
 			if (mGrid.hasPrefShowMaybesAs3x3Grid()) {
 				// Determine which painter to use
-				MaybePainter maybePainter = (digitPositionGrid.isGrid2x5() ? mMaybe2x5Painter : mMaybe3x3Painter);
-				Paint paint = (inputMode == InputMode.NORMAL ? maybePainter.mTextPaintNormalInputMode
-						: maybePainter.mTextPaintMaybeInputMode);
+				MaybeValuePainter maybePainter = (digitPositionGrid.isGrid2x5() ? mMaybe2x5Painter
+						: mMaybe3x3Painter);
+				Paint paint = (inputMode == InputMode.NORMAL ? maybePainter
+						.getTextPaintNormalInputMode() : maybePainter
+						.getTextPaintMaybeInputMode());
 
 				// Draw all possible which are currently set for this cell.
 				for (int i = 0; i < mPossibles.size(); i++) {
-					// Get the possible and the specific position in the digit position grid
+					// Get the possible and the specific position in the digit
+					// position grid
 					int possible = mPossibles.get(i);
 					int row = digitPositionGrid.getRow(possible);
 					int col = digitPositionGrid.getCol(possible);
-					
-					float xPos = mPosX + maybePainter.mLeftOffset
-							+ col * maybePainter.mMaybeDigitWidth;
-					float yPos = mPosY + maybePainter.mTopOffset
-							+ row * maybePainter.mMaybeDigitHeight;
+
+					float xPos = mPosX + maybePainter.getLeftOffset() + col
+							* maybePainter.getMaybeDigitWidth();
+					float yPos = mPosY + maybePainter.getTopOffset() + row
+							* maybePainter.getMaybeDigitHeight();
 					canvas.drawText(Integer.toString(possible), xPos, yPos,
 							paint);
 				}
-				
+
 			} else {
 				// Build string of possible values
 				String possiblesText = "";
@@ -448,18 +455,19 @@ public class GridCell {
 				// Clone the text painter and decrease text size until the
 				// possible values string fit within the cell.
 				Paint textPaint = new Paint(
-						inputMode == InputMode.NORMAL ? mMaybe1x9Painter.mTextPaintNormalInputMode
-								: mMaybe1x9Painter.mTextPaintMaybeInputMode);
-				float scaleFactor = (mCellPainter.mCellSize - 6)
+						inputMode == InputMode.NORMAL ? mMaybe1x9Painter
+								.getTextPaintNormalInputMode()
+								: mMaybe1x9Painter.getTextPaintMaybeInputMode());
+				float scaleFactor = (cellSize - 2 * mMaybe1x9Painter.getLeftOffset())
 						/ textPaint.measureText(possiblesText);
 				if (scaleFactor < 1) {
-					textPaint.setTextSize(textPaint.getTextSize()
-							* scaleFactor);
+					textPaint
+							.setTextSize(textPaint.getTextSize() * scaleFactor);
 				}
 
 				canvas.drawText(possiblesText,
-						mPosX + mMaybe1x9Painter.mLeftOffset, mPosY
-								+ mMaybe1x9Painter.mTopOffset, textPaint);
+						mPosX + mMaybe1x9Painter.getLeftOffset(), mPosY
+								+ mMaybe1x9Painter.getTopOffset(), textPaint);
 			}
 		}
 	}
@@ -717,7 +725,7 @@ public class GridCell {
 		Path path = new Path();
 		path.moveTo(left, top);
 		path.lineTo(right, bottom);
-		canvas.drawPath(path, mCellPainter.mUnusedBorderPaint);
+		canvas.drawPath(path, mCellPainter.getUnusedBorderPaint());
 	}
 
 	public GridCell getCellAbove() {
