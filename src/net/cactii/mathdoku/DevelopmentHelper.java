@@ -2,9 +2,10 @@ package net.cactii.mathdoku;
 
 import java.util.ArrayList;
 
-import net.cactii.mathdoku.GameFile.GameFileType;
 import net.cactii.mathdoku.MainActivity.InputMode;
 import net.cactii.mathdoku.DevelopmentHelpers.DevelopmentHelperHoneycombAndAbove;
+import net.cactii.mathdoku.storage.GameFile;
+import net.cactii.mathdoku.storage.GameFile.GameFileType;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;

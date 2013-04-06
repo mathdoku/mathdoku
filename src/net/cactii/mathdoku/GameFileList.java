@@ -1,6 +1,7 @@
 package net.cactii.mathdoku;
 
-import net.cactii.mathdoku.GameFile.GameFileType;
+import net.cactii.mathdoku.storage.GameFile;
+import net.cactii.mathdoku.storage.GameFile.GameFileType;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListActivity;

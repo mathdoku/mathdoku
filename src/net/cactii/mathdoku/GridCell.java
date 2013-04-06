@@ -10,6 +10,7 @@ import net.cactii.mathdoku.painter.CellPainter;
 import net.cactii.mathdoku.painter.MaybeValuePainter;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.painter.UserValuePainter;
+import net.cactii.mathdoku.storage.GameFile;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;

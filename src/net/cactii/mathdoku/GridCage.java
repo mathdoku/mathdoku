@@ -3,6 +3,8 @@ package net.cactii.mathdoku;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import net.cactii.mathdoku.storage.GameFile;
+
 public class GridCage {
 	// Identifiers of different versions of cage information which is stored in
 	// saved game.

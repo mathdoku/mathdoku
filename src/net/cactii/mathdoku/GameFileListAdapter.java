@@ -7,7 +7,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import android.app.Activity;
+import net.cactii.mathdoku.storage.GameFile;
+import net.cactii.mathdoku.storage.GameFileHeader;
+import net.cactii.mathdoku.storage.PreviewImage;
 import android.app.ListActivity;
 import android.graphics.Bitmap;
 import android.util.DisplayMetrics;
@@ -23,7 +25,7 @@ import android.widget.TextView;
 
 public class GameFileListAdapter extends BaseAdapter {
 	// The list of game files available.
-	public ArrayList<GameFile.GameFileHeader> mGameFiles;
+	public ArrayList<GameFileHeader> mGameFiles;
 
 	// Inflater and font for the previews
 	private LayoutInflater mLayoutInflater;
@@ -49,7 +51,7 @@ public class GameFileListAdapter extends BaseAdapter {
 	public GameFileListAdapter(GameFileList context) {
 		this.mLayoutInflater = LayoutInflater.from(context);
 		this.mContext = context;
-		this.mGameFiles = new ArrayList<GameFile.GameFileHeader>();
+		this.mGameFiles = new ArrayList<GameFileHeader>();
 
 		// Apply theme to the list view
 		switch (Preferences.getInstance().getTheme()) {
@@ -77,7 +79,7 @@ public class GameFileListAdapter extends BaseAdapter {
 
 		// Calculate size of margins and columns. Both columns are 50% of total
 		// width. Margins are calculated to center the columns horizontally
-		int previewImageSize = getPreviewImageSize(mContext);
+		int previewImageSize = PreviewImage.getPreviewImageSize();
 		mImageHeightWidth = previewImageSize;
 		mColumnWidth = (int) ((float) 0.5 * displayMetrics.widthPixels);
 		mColumnMargin = (int) Math.max(0,
@@ -91,13 +93,13 @@ public class GameFileListAdapter extends BaseAdapter {
 	 * Comparator to sort game file headers based on the date time of creation.
 	 */
 	public class SortGameFileOnDatetimeSaved implements
-			Comparator<GameFile.GameFileHeader> {
-		public int compare(GameFile.GameFileHeader gameFileHeader1,
-				GameFile.GameFileHeader gameFileHeader2) {
+			Comparator<GameFileHeader> {
+		public int compare(GameFileHeader gameFileHeader1,
+				GameFileHeader gameFileHeader2) {
 
 			// Convert to integer by ignoring the miliseconds part of the
 			// date/time.
-			return (int) ((gameFileHeader2.datetimeSaved - gameFileHeader1.datetimeSaved) / 1000);
+			return (int) ((gameFileHeader2.mDatetimeSaved - gameFileHeader1.mDatetimeSaved) / 1000);
 		}
 	}
 
@@ -111,15 +113,14 @@ public class GameFileListAdapter extends BaseAdapter {
 			// Load headers of this game file as they contain all
 			// information needed (except the preview image itself) to
 			// display and sort the list.
-			GameFile.GameFileHeader gameFileHeader = new GameFile(gameFilename)
-					.loadHeadersOnly();
-			if (gameFileHeader != null) {
+			GameFileHeader gameFileHeader = new GameFileHeader();
+			if (gameFileHeader.load(gameFilename)) {
 				this.mGameFiles.add(gameFileHeader);
 			}
 		}
 
 		// Sort the file on date/time created.
-		Collections.sort((List<GameFile.GameFileHeader>) this.mGameFiles,
+		Collections.sort((List<GameFileHeader>) this.mGameFiles,
 				new SortGameFileOnDatetimeSaved());
 	}
 
@@ -299,16 +300,15 @@ public class GameFileListAdapter extends BaseAdapter {
 		}
 
 		// Get game file header information for current position.
-		final GameFile.GameFileHeader gameFile = this.mGameFiles
+		final GameFileHeader gameFile = this.mGameFiles
 				.get(position - 1);
 
 		// Display the preview image if available. Else display the placeholder.
-		if (gameFile.hasPreviewAvailable) {
+		if (gameFile.mHasPreviewAvailable) {
 			getView_ViewHolder.imageView.setVisibility(View.VISIBLE);
 			getView_ViewHolder.imagePreviewNotAvailable
 					.setVisibility(View.GONE);
-			GameFile saver = new GameFile(gameFile.filename);
-			Bitmap preview = saver.getPreviewImage();
+			Bitmap preview = new PreviewImage(gameFile.mFilenamePreview).load();
 			getView_ViewHolder.imageView.setImageBitmap(preview);
 		} else {
 			getView_ViewHolder.imageView.setVisibility(View.GONE);
@@ -318,7 +318,7 @@ public class GameFileListAdapter extends BaseAdapter {
 
 		// Set filename
 		if (GameFile.DEBUG_SAVE_RESTORE) {
-			getView_ViewHolder.filenameTextView.setText(gameFile.filename);
+			getView_ViewHolder.filenameTextView.setText(gameFile.mFilename);
 		}
 
 		// Calculate the time elapsed since creating the game file.
@@ -328,7 +328,7 @@ public class GameFileListAdapter extends BaseAdapter {
 		getView_GameFileTime = Calendar.getInstance();
 		getView_GameFileDate = Calendar.getInstance();
 
-		getView_GameFileTime.setTimeInMillis(gameFile.datetimeSaved);
+		getView_GameFileTime.setTimeInMillis(gameFile.mDatetimeSaved);
 		getView_GameFileDate.set(getView_GameFileTime.get(Calendar.YEAR),
 				getView_GameFileTime.get(Calendar.MONTH),
 				getView_GameFileTime.get(Calendar.DAY_OF_MONTH));
@@ -339,7 +339,7 @@ public class GameFileListAdapter extends BaseAdapter {
 			// Game file was saved today. Only display time.
 			getView_ViewHolder.savedOnTextView.setText(""
 					+ DateFormat.getTimeInstance(DateFormat.SHORT).format(
-							gameFile.datetimeSaved));
+							gameFile.mDatetimeSaved));
 		} else if (getView_GameFileDate.get(Calendar.YEAR) == getView_CurrentTime
 				.get(Calendar.YEAR)
 				&& getView_GameFileDate.get(Calendar.DAY_OF_YEAR) == getView_CurrentTime
@@ -354,13 +354,13 @@ public class GameFileListAdapter extends BaseAdapter {
 		} else {
 			getView_ViewHolder.savedOnTextView.setText(""
 					+ DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
-							DateFormat.SHORT).format(gameFile.datetimeSaved));
+							DateFormat.SHORT).format(gameFile.mDatetimeSaved));
 		}
 
 		// Set callback for loading this game.
 		getView_ViewHolder.loadButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				mContext.loadGameFile(gameFile.filename);
+				mContext.loadGameFile(gameFile.mFilename);
 			}
 		});
 
@@ -368,32 +368,10 @@ public class GameFileListAdapter extends BaseAdapter {
 		getView_ViewHolder.deleteButton
 				.setOnClickListener(new OnClickListener() {
 					public void onClick(View v) {
-						mContext.deleteGameFile(gameFile.filename);
+						mContext.deleteGameFile(gameFile.mFilename);
 					}
 				});
 
 		return convertView;
-	}
-
-	/**
-	 * Determine the preview size used for this device.
-	 * 
-	 * @param activity
-	 *            The activity in which context the image preview size has to be
-	 *            determined.
-	 * @return The size of the preview images. 0 in case of an error.
-	 */
-	public static int getPreviewImageSize(Activity activity) {
-		if (activity == null) {
-			return 0;
-		}
-
-		// Get the display metrics
-		DisplayMetrics displayMetrics = new DisplayMetrics();
-		activity.getWindowManager().getDefaultDisplay()
-				.getMetrics(displayMetrics);
-
-		return (int) ((float) 0.45 * (float) Math.min(
-				displayMetrics.heightPixels, displayMetrics.widthPixels));
 	}
 }

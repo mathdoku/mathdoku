@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
-import net.cactii.mathdoku.GameFile.GameFileType;
 import net.cactii.mathdoku.GridGenerating.GridGeneratingParameters;
+import net.cactii.mathdoku.storage.GameFile;
+import net.cactii.mathdoku.storage.GameFile.GameFileType;
+import net.cactii.mathdoku.storage.GridFile;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -252,10 +254,12 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 					mGrid.create(mGridSize, mCells, mCages, true,
 							gridGeneratingParameters);
 
-					// Store grid as user file
-					GameFile gameFile = new GameFile(GameFileType.NEW_GAME);
-					gameFile.save(mGrid, false);
-					gameFile.copyToNewGameFile();
+					// Store grid as a grid file only. Preview image and statistics are not saved.
+					GridFile gridFile = new GridFile(GameFile.getFilenameForType(GameFileType.NEW_GAME));
+					gridFile.save(mGrid, false);
+					
+					// Create new game file.
+					new GameFile(GameFileType.NEW_GAME).copyToNewGameFile();
 
 					publishProgress(
 							DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_MESSAGE,

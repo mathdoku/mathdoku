@@ -3,6 +3,10 @@ package net.cactii.mathdoku;
 import java.util.ArrayList;
 
 import net.cactii.mathdoku.GridGenerating.GridGeneratingParameters;
+import net.cactii.mathdoku.storage.GameFile;
+import net.cactii.mathdoku.storage.GameFile.GameFileType;
+import net.cactii.mathdoku.storage.GridFile;
+import net.cactii.mathdoku.storage.PreviewImage;
 
 public class Grid {
 	@SuppressWarnings("unused")
@@ -62,14 +66,44 @@ public class Grid {
 	private int mUndoLastMoveCount;
 	private int mClearRedundantPossiblesInSameRowOrColumnCount;
 
+	// The file from which the grid is loaded. Null in case the grid has never
+	// been saved.
+	private GridFile mGridFile;
+
 	public Grid(int gridSize) {
+		initialize();
 		mGridSize = gridSize;
+	}
+
+	/**
+	 * Creates a new instance of a {@link Grid} by loading it from the specified
+	 * file.
+	 * 
+	 * @param filename
+	 *            The filename (without path) from which the grid has to be
+	 *            loaded.
+	 */
+	public Grid(String filename) {
+		initialize();
+		
+		mGridFile = new GridFile(filename);
+		if (!mGridFile.loadIntoGrid(this)) {
+			// Error loading. Initialize again to clean up.
+			initialize();
+		}
+	}
+
+	/**
+	 * Initializes a new grid object.
+	 */
+	private void initialize() {
 		mCells = new ArrayList<GridCell>();
 		mCages = new ArrayList<GridCage>();
 		mMoves = new ArrayList<CellChange>();
 		mUndoLastMoveCount = 0;
 		mClearRedundantPossiblesInSameRowOrColumnCount = 0;
 		mSolvedListener = null;
+		mGridFile = null;
 		mGridGeneratingParameters = new GridGeneratingParameters();
 		setPreferences();
 	}
@@ -120,25 +154,6 @@ public class Grid {
 				cell.clearUserValue();
 			}
 		}
-	}
-
-	/**
-	 * Clear this view so a new game can be restored.
-	 */
-	public void clear() {
-		if (this.mMoves != null) {
-			this.mMoves.clear();
-		}
-		if (this.mCells != null) {
-			this.mCells.clear();
-		}
-		if (this.mCages != null) {
-			this.mCages.clear();
-		}
-		mSelectedCell = null;
-		mActive = false;
-		mCheated = false;
-		mElapsedTime = 0;
 	}
 
 	/* Fetch the cell at the given row, column */
@@ -209,7 +224,7 @@ public class Grid {
 
 		// Deactivate grid
 		mActive = false;
-		
+
 		return true;
 	}
 
@@ -413,7 +428,8 @@ public class Grid {
 	}
 
 	/**
-	 * Creates a signature of this grid. The signature is unique for the grid regardless of the version of the grid generator used.
+	 * Creates a signature of this grid. The signature is unique for the grid
+	 * regardless of the version of the grid generator used.
 	 * 
 	 * @return A unique string representation of the grid.
 	 */
@@ -430,7 +446,8 @@ public class Grid {
 		}
 		// Followed by cages
 		for (GridCage cage : mCages) {
-			signatureString.append(":" + cage.mId + "," + cage.mResult + "," + cage.mAction);
+			signatureString.append(":" + cage.mId + "," + cage.mResult + ","
+					+ cage.mAction);
 		}
 		return signatureString.toString();
 	}
@@ -530,13 +547,23 @@ public class Grid {
 	public void create(int gridSize, ArrayList<GridCell> cells,
 			ArrayList<GridCage> cages, boolean active,
 			GridGeneratingParameters gridGeneratingParameters) {
-		clear();
-		this.mGridGeneratingParameters = gridGeneratingParameters;
-		this.mDateGenerated = System.currentTimeMillis();
-		this.mGridSize = gridSize;
-		this.mCells = cells;
-		this.mCages = cages;
-		this.mActive = active;
+
+		// In case an existing grid object is reused, we have to clean up old
+		// data
+		if (this.mMoves != null) {
+			this.mMoves.clear();
+		}
+		mSelectedCell = null;
+		mCheated = false;
+		mGridFile = null;
+
+		// Set new data in grid
+		mGridGeneratingParameters = gridGeneratingParameters;
+		mDateGenerated = System.currentTimeMillis();
+		mGridSize = gridSize;
+		mCells = cells;
+		mCages = cages;
+		mActive = active;
 
 		// Cages keep a reference to the grid view to which they belong.
 		for (GridCage cage : cages) {
@@ -552,7 +579,6 @@ public class Grid {
 		for (GridCell cell : cells) {
 			cell.setBorders();
 		}
-
 	}
 
 	public void setSolvedHandler(OnSolvedListener listener) {
@@ -625,5 +651,35 @@ public class Grid {
 
 	public boolean getCheated() {
 		return mCheated;
+	}
+
+	/**
+	 * Save this grid (game file, statistics and preview). The preview image of
+	 * the grid is based upon the given grid view.
+	 * 
+	 * @param gridView
+	 *            The gridView in which the grid is currently displayed.
+	 * 
+	 * @return True in case everything has been saved. False otherwise.
+	 */
+	public boolean save(GridView gridView) {
+		GameFile gameFile = new GameFile(GameFileType.LAST_GAME);
+
+		// Save to game file first
+		GridFile gridFile = new GridFile(gameFile);
+		if (!gridFile.save(this, false)) {
+			return false;
+		}
+
+		// Save the preview image.
+		PreviewImage previewImage = new PreviewImage(gameFile);
+		boolean savedPreview = (gridView == null ? false : previewImage
+				.save(gridView));
+
+		return (savedPreview);
+	}
+
+	public boolean isLoadedFromFile() {
+		return (mGridFile != null);
 	}
 }

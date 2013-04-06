@@ -1,4 +1,4 @@
-package net.cactii.mathdoku;
+package net.cactii.mathdoku.storage;
 
 public class InvalidFileFormatException extends Exception {
 	private static final long serialVersionUID = 6377920643705765951L;

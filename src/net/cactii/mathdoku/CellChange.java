@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
+import net.cactii.mathdoku.storage.GameFile;
 
 import android.util.Log;
 

@@ -36,6 +36,5 @@ public class GridGeneratingParameters {
 						});
 		AlertDialog dialog = builder.create();
 		dialog.show();
-
 	}
 }

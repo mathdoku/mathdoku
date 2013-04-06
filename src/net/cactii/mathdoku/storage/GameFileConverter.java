@@ -1,10 +1,16 @@
-package net.cactii.mathdoku;
+package net.cactii.mathdoku.storage;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 
+import net.cactii.mathdoku.DevelopmentHelper;
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
+import net.cactii.mathdoku.Grid;
+import net.cactii.mathdoku.MainActivity;
+import net.cactii.mathdoku.Preferences;
+import net.cactii.mathdoku.R;
+import net.cactii.mathdoku.UsageLog;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
@@ -48,7 +54,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	private ArrayList<String> mGridSignatures;
 	private int mTotalGrids;
 	private int mTotalGridsSolved;
-	
+
 	/**
 	 * Creates a new instance of {@link GameFileConverter}.
 	 * 
@@ -125,11 +131,17 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 			// Show the dialog
 			mProgressDialog.show();
 		}
-		
+
 		// Initialize conversion results.
 		mGridSignatures = new ArrayList<String>();
 		mTotalGrids = 0;
 		mTotalGridsSolved = 0;
+	}
+
+	@Override
+	protected void onPreExecute() {
+		// Open database adapter
+		super.onPreExecute();
 	}
 
 	/*
@@ -180,10 +192,10 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 			if (mFilenames.size() > 0) {
 				for (String filename : mFilenames) {
 					// Load grid
-					GameFile gameFile = new GameFile(filename);
-					Grid grid = gameFile.load();
-					
-					// Get signature for grid. Update the number of occurrences for this signature.
+					Grid grid = new Grid(filename);
+
+					// Get signature for grid. Update the number of occurrences
+					// for this signature.
 					mTotalGrids++;
 					String signature = grid.getSignatureString();
 					if (!mGridSignatures.contains(signature)) {
@@ -193,9 +205,18 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 					if (grid.checkIfSolved()) {
 						mTotalGridsSolved++;
 					}
-					
-					// Save grid and publish progress
-					gameFile.save(grid, true);
+
+					// Save grid. Do not use default save method of grid as we
+					// do not want to change the last update date. Also no
+					// gridview containing the preview image is available in
+					// this background process.
+					GridFile gridFile = new GridFile(filename);
+					if (gridFile.save(grid, true)) {
+						// Update statistics
+						// TODO: when converting files do grid.mGridStatistics.save() ???
+					}
+
+					// Update progress
 					publishProgress();
 				}
 			}
@@ -210,11 +231,14 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 
 	@Override
 	protected void onPostExecute(Void result) {
-		UsageLog.getInstance().logGameFileConversion(mCurrentVersion, mNewVersion, mTotalGrids, mGridSignatures.size());
+		UsageLog.getInstance().logGameFileConversion(mCurrentVersion,
+				mNewVersion, mTotalGrids, mGridSignatures.size());
 
-		// We assume the user knows the rules as soon as two game have been solved.
-		Preferences.getInstance().setUserIsFamiliarWithRules(mTotalGridsSolved > 1);
-		
+		// We assume the user knows the rules as soon as two game have been
+		// solved.
+		Preferences.getInstance().setUserIsFamiliarWithRules(
+				mTotalGridsSolved > 1);
+
 		// Phase 1 of upgrade has been completed. Start next phase.
 		if (mActivity != null) {
 			mActivity.upgradePhase2_createPreviewImages(mCurrentVersion,

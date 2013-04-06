@@ -2,10 +2,13 @@ package net.cactii.mathdoku;
 
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.DigitPositionGrid.DigitPositionGridType;
-import net.cactii.mathdoku.GameFile.GameFileType;
 import net.cactii.mathdoku.Tip.TipInputModeChanged;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.painter.Painter.GridTheme;
+import net.cactii.mathdoku.storage.GameFile;
+import net.cactii.mathdoku.storage.GameFile.GameFileType;
+import net.cactii.mathdoku.storage.GameFileConverter;
+import net.cactii.mathdoku.storage.PreviewImage;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -186,7 +189,10 @@ public class MainActivity extends Activity {
 				this.mDigitPosition[8], this.mClearDigit,
 				this.mInputModeTextView, this.mUndoButton };
 
+
+		// Initialize global objects (singleton instances)
 		this.mPainter = Painter.getInstance(this);
+		PreviewImage.setSize(this);
 
 		setInputMode(InputMode.NO_INPUT__HIDE_GRID);
 
@@ -358,9 +364,8 @@ public class MainActivity extends Activity {
 		UsageLog.getInstance().close();
 
 		stopTimer();
-		if (mGrid != null && mGrid.getGridSize() > 3) {
-			GameFile saver = new GameFile(GameFileType.LAST_GAME);
-			saver.save(this);
+		if (mGrid != null) {
+			mGrid.save(mGridView);
 		}
 
 		if (mProgressDialogImagePreviewCreation != null
@@ -447,8 +452,8 @@ public class MainActivity extends Activity {
 		Bundle extras = data.getExtras();
 		String filename = extras.getString("filename");
 		Log.d("Mathdoku", "Loading game: " + filename);
-		Grid newGrid = new GameFile(filename).load();
-		if (newGrid != null) {
+		Grid newGrid = new Grid(filename);
+		if (newGrid.isLoadedFromFile()) {
 			setNewGrid(newGrid);
 		}
 	}
@@ -740,8 +745,11 @@ public class MainActivity extends Activity {
 	}
 
 	private void restartLastGame() {
-		Grid newGrid = new GameFile(GameFileType.LAST_GAME).load();
-		setNewGrid(newGrid);
+		Grid newGrid = new Grid(
+				GameFile.getFilenameForType(GameFileType.LAST_GAME));
+		if (newGrid.isLoadedFromFile()) {
+			setNewGrid(newGrid);
+		}
 	}
 
 	/**
@@ -1114,15 +1122,13 @@ public class MainActivity extends Activity {
 		// Runnable for handling the next step of preview image creation process
 		// which can not be done until the grid view has been validated
 		// (refreshed).
-		final MainActivity mainActivity = this;
 		final Runnable createNextPreviewImage = new Runnable() {
 			public void run() {
 				// If a game file was already loaded, it is now loaded and
 				// visible in the grid view.
 				if (mGameFileImagePreviewCreation != null) {
 					// Save preview for the current game file.
-					mGameFileImagePreviewCreation.savePreviewImage(
-							mainActivity, mGridView);
+					new PreviewImage(mGameFileImagePreviewCreation).save(mGridView);
 					mProgressDialogImagePreviewCreation.incrementProgressBy(1);
 				}
 
@@ -1130,8 +1136,9 @@ public class MainActivity extends Activity {
 				// created.
 				mGameFileImagePreviewCreation = getNextGameFileWithoutPreview();
 				if (mGameFileImagePreviewCreation != null) {
-					Grid newGrid = mGameFileImagePreviewCreation.load();
-					if (newGrid != null) {
+					Grid newGrid = new Grid(
+							mGameFileImagePreviewCreation.getName());
+					if (newGrid.isLoadedFromFile()) {
 						mGrid = newGrid;
 						mGridView.loadNewGrid(mGrid);
 						mPuzzleGridLayout.setVisibility(View.INVISIBLE);
