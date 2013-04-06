@@ -1,12 +1,9 @@
 package net.cactii.mathdoku;
 
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
-public class OptionsActivity extends PreferenceActivity implements
-		OnSharedPreferenceChangeListener {
+public class OptionsActivity extends PreferenceActivity {
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -19,9 +16,6 @@ public class OptionsActivity extends PreferenceActivity implements
 	@Override
 	protected void onResume() {
 		UsageLog.getInstance();
-
-		getPreferenceScreen().getSharedPreferences()
-				.registerOnSharedPreferenceChangeListener(this);
 		super.onResume();
 	}
 
@@ -29,20 +23,5 @@ public class OptionsActivity extends PreferenceActivity implements
 	@Override
 	protected void onPause() {
 		super.onPause();
-		getPreferenceScreen().getSharedPreferences()
-				.unregisterOnSharedPreferenceChangeListener(this);
-	}
-
-	@Override
-	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
-			String key) {
-		if (sharedPreferences.contains(key)) {
-			UsageLog.getInstance().logPreference("Preference.Changed", key,
-					sharedPreferences.getAll().get(key));
-		} else {
-			UsageLog.getInstance().logPreference("Preference.Deleted", key,
-					null);
-		}
-		;
 	}
 }

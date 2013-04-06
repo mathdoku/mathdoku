@@ -14,6 +14,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageInfo;
 import android.os.Bundle;
 import android.os.Handler;
@@ -46,7 +47,8 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements
+		OnSharedPreferenceChangeListener {
 	public final static String TAG = "MathDoku.MainActivity";
 
 	public final static String PROJECT_HOME = "https://code.google.com/p/mathdoku/";
@@ -103,6 +105,9 @@ public class MainActivity extends Activity {
 
 	public final static String PREF_WAKE_LOCK = "wakelock";
 	public final static boolean PREF_WAKE_LOCK_DEFAULT = true;
+
+	// Identifiers for request codes sent to other activities
+	private final static int REQUEST_CODE_SAVE_LOAD = 1;
 
 	// Identifiers for the context menu
 	private final static int CONTEXT_MENU_REVEAL_CELL = 1;
@@ -408,6 +413,8 @@ public class MainActivity extends Activity {
 
 		checkVersion();
 
+		mPreferences.registerOnSharedPreferenceChangeListener(this);
+
 		restartLastGame();
 	}
 
@@ -433,6 +440,12 @@ public class MainActivity extends Activity {
 
 		super.onPause();
 	}
+	
+	@Override
+	protected void onDestroy() {
+		mPreferences.unregisterOnSharedPreferenceChangeListener(this);
+		super.onDestroy();
+	}
 
 	public void setTheme() {
 
@@ -444,9 +457,9 @@ public class MainActivity extends Activity {
 			mPainter.setTheme(GridTheme.NEWSPAPER);
 			mTimerText.setBackgroundColor(0x90808080);
 		} else if (theme.equals(MainActivity.PREF_THEME_NEWSPAPER_OLD)) {
-				mTopLayout.setBackgroundResource(R.drawable.newspaper);
-				mPainter.setTheme(GridTheme.NEWSPAPER_OLD);
-				mTimerText.setBackgroundColor(0x90808080);
+			mTopLayout.setBackgroundResource(R.drawable.newspaper);
+			mPainter.setTheme(GridTheme.NEWSPAPER_OLD);
+			mTimerText.setBackgroundColor(0x90808080);
 		} else if (theme.equals(MainActivity.PREF_THEME_DARK)) {
 			mTopLayout.setBackgroundResource(R.drawable.newspaper_dark);
 			mPainter.setTheme(GridTheme.DARK);
@@ -463,7 +476,8 @@ public class MainActivity extends Activity {
 	public void onResume() {
 		UsageLog.getInstance(this);
 
-		if (this.mPreferences.getBoolean(PREF_WAKE_LOCK, PREF_WAKE_LOCK_DEFAULT)) {
+		if (this.mPreferences
+				.getBoolean(PREF_WAKE_LOCK, PREF_WAKE_LOCK_DEFAULT)) {
 			getWindow()
 					.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		}
@@ -500,14 +514,18 @@ public class MainActivity extends Activity {
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode != 7 || resultCode != Activity.RESULT_OK)
+		switch (requestCode) {
+		case REQUEST_CODE_SAVE_LOAD:
+			if (resultCode == Activity.RESULT_OK) {
+				Bundle extras = data.getExtras();
+				String filename = extras.getString("filename");
+				Log.d("Mathdoku", "Loading game: " + filename);
+				Grid newGrid = new GameFile(filename).load();
+				if (newGrid != null) {
+					setNewGrid(newGrid);
+				}
+			}
 			return;
-		Bundle extras = data.getExtras();
-		String filename = extras.getString("filename");
-		Log.d("Mathdoku", "Loading game: " + filename);
-		Grid newGrid = new GameFile(filename).load();
-		if (newGrid != null) {
-			setNewGrid(newGrid);
 		}
 	}
 
@@ -701,7 +719,7 @@ public class MainActivity extends Activity {
 		case R.id.saveload:
 			UsageLog.getInstance().logFunction("Menu.SaveLoad");
 			Intent i = new Intent(this, GameFileList.class);
-			startActivityForResult(i, 7);
+			startActivityForResult(i, REQUEST_CODE_SAVE_LOAD);
 			return true;
 		case R.id.checkprogress:
 			int textId;
@@ -719,8 +737,7 @@ public class MainActivity extends Activity {
 			return true;
 		case R.id.options:
 			UsageLog.getInstance().logFunction("Menu.ViewOptions");
-			startActivityForResult(new Intent(MainActivity.this,
-					OptionsActivity.class), 0);
+			startActivity(new Intent(MainActivity.this, OptionsActivity.class));
 			return true;
 		case R.id.help:
 			UsageLog.getInstance().logFunction("Menu.ViewHelp.Manual");
@@ -1049,8 +1066,8 @@ public class MainActivity extends Activity {
 		}
 
 		int currentVersion = getVersionNumber();
-		int previousInstalledVersion = mPreferences.getInt(PREF_CURRENT_VERSION,
-				PREF_CURRENT_VERSION_DEFAULT);
+		int previousInstalledVersion = mPreferences.getInt(
+				PREF_CURRENT_VERSION, PREF_CURRENT_VERSION_DEFAULT);
 
 		// Start phase 1 of the upgrade process if needed.
 		if (previousInstalledVersion < currentVersion) {
@@ -1477,8 +1494,8 @@ public class MainActivity extends Activity {
 		if (mGrid != null && mGrid.isActive()) {
 			mTimerTask = new GameTimer(this);
 			mTimerTask.mElapsedTime = mGrid.getElapsedTime();
-			if (mPreferences
-					.getBoolean(PREF_SHOW_TIMER, PREF_SHOW_TIMER_DEFAULT)) {
+			if (mPreferences.getBoolean(PREF_SHOW_TIMER,
+					PREF_SHOW_TIMER_DEFAULT)) {
 				mTimerText.setVisibility(View.VISIBLE);
 			} else {
 				mTimerText.setVisibility(View.GONE);
@@ -1554,8 +1571,8 @@ public class MainActivity extends Activity {
 		case MAYBE:
 			mSolvedTextView.setVisibility(View.GONE);
 			mStartButton.setVisibility(View.GONE);
-			if (mPreferences
-					.getBoolean(PREF_SHOW_TIMER, PREF_SHOW_TIMER_DEFAULT)) {
+			if (mPreferences.getBoolean(PREF_SHOW_TIMER,
+					PREF_SHOW_TIMER_DEFAULT)) {
 				mTimerText.setVisibility(View.VISIBLE);
 			}
 			if (!MainActivity.this.mPreferences.getBoolean(PREF_HIDE_CONTROLS,
@@ -1676,6 +1693,22 @@ public class MainActivity extends Activity {
 			if (mTimerText != null) {
 				mTimerText.setText(timeString);
 			}
+		}
+	}
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+			String key) {
+		if (sharedPreferences.contains(key)) {
+			UsageLog.getInstance().logPreference("Preference.Changed", key,
+					sharedPreferences.getAll().get(key));
+		} else {
+			UsageLog.getInstance().logPreference("Preference.Deleted", key,
+					null);
+		}
+		if (key.equals(PREF_THEME)) {
+			setTheme();
+			setInputMode(mInputMode);
 		}
 	}
 }
