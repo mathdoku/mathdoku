@@ -5,8 +5,10 @@ import net.cactii.mathdoku.DigitPositionGrid.DigitPositionGridType;
 import net.cactii.mathdoku.Tip.TipInputModeChanged;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.painter.Painter.GridTheme;
+import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import net.cactii.mathdoku.storage.GameFile;
 import net.cactii.mathdoku.storage.GameFile.GameFileType;
+import net.cactii.mathdoku.storage.database.DatabaseHelper;
 import net.cactii.mathdoku.storage.GameFileConverter;
 import net.cactii.mathdoku.storage.PreviewImage;
 import android.annotation.SuppressLint;
@@ -189,9 +191,9 @@ public class MainActivity extends Activity {
 				this.mDigitPosition[8], this.mClearDigit,
 				this.mInputModeTextView, this.mUndoButton };
 
-
 		// Initialize global objects (singleton instances)
 		this.mPainter = Painter.getInstance(this);
+		DatabaseHelper.getInstance(this);
 		PreviewImage.setSize(this);
 
 		setInputMode(InputMode.NO_INPUT__HIDE_GRID);
@@ -305,6 +307,7 @@ public class MainActivity extends Activity {
 					if (event.getAction() == MotionEvent.ACTION_DOWN) {
 						if (mGrid != null) {
 							mGrid.getGridGeneratingParameters().show(activity);
+							mGrid.showStatistics(activity);
 						}
 					}
 					return false;
@@ -317,6 +320,7 @@ public class MainActivity extends Activity {
 					if (event.getAction() == MotionEvent.ACTION_DOWN) {
 						if (mGrid != null) {
 							mGrid.getGridGeneratingParameters().show(activity);
+							mGrid.showStatistics(activity);
 						}
 					}
 					return false;
@@ -605,6 +609,7 @@ public class MainActivity extends Activity {
 				mGrid.clearRedundantPossiblesInSameRowOrColumn(orginalUserMove);
 			}
 			selectedCell.setCheated();
+			mGrid.increaseCounter(StatisticsCounterType.CELLS_REVEALED);
 			Toast.makeText(this, R.string.main_ui_cheat_messsage,
 					Toast.LENGTH_SHORT).show();
 			this.mGridView.invalidate();
@@ -621,6 +626,7 @@ public class MainActivity extends Activity {
 			}
 			UsageLog.getInstance().logFunction("ContextMenu.RevealOperator");
 			selectedGridCage.revealOperator();
+			mGrid.increaseCounter(StatisticsCounterType.OPERATORS_REVEALED);
 			mGridView.invalidate();
 		}
 		return super.onContextItemSelected(item);
@@ -671,52 +677,19 @@ public class MainActivity extends Activity {
 			UsageLog.getInstance().logFunction("Menu.ViewHelp.Manual");
 			this.openHelpDialog();
 			return true;
-		case R.id.development_mode_generate_games:
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-				// Cancel old timer
-				stopTimer();
-
-				// Generate games
-				DevelopmentHelper.generateGames(this);
-			}
-			return true;
-		case R.id.development_mode_recreate_previews:
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-				DevelopmentHelper.recreateAllPreviews(this);
-			}
-			return true;
-		case R.id.development_mode_delete_games:
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-				DevelopmentHelper.deleteAllGames(this);
-			}
-			return true;
-		case R.id.development_mode_reset_preferences:
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-				DevelopmentHelper.resetPreferences(this);
-			}
-			return true;
-		case R.id.development_mode_clear_data:
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-				DevelopmentHelper.deleteGamesAndPreferences(this);
-			}
-			return true;
-		case R.id.development_mode_reset_log:
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-				// Delete old log
-				UsageLog.getInstance().delete();
-
-				// Reset preferences
-				mMathDokuPreferences.resetUsageLogDisabled();
-
-				// Re-enable usage log
-				UsageLog.getInstance(this);
-			}
-			return true;
-		case R.id.development_mode_send_log:
-			UsageLog.getInstance().askConsentForSendingLog(this);
-			return true;
 		default:
-			return super.onOptionsItemSelected(menuItem);
+			// When running in development mode it should be checked whether a
+			// development menu item was selected.
+			if (DevelopmentHelper.mMode != Mode.DEVELOPMENT) {
+				return super.onOptionsItemSelected(menuItem);
+			} else {
+				if (DevelopmentHelper.onDevelopmentHelperOption(this, menuId)) {
+					// A development helper menu option was processed succesfully.
+					return true;
+				} else {
+					return super.onOptionsItemSelected(menuItem);
+				}
+			}
 		}
 	}
 
@@ -1128,7 +1101,8 @@ public class MainActivity extends Activity {
 				// visible in the grid view.
 				if (mGameFileImagePreviewCreation != null) {
 					// Save preview for the current game file.
-					new PreviewImage(mGameFileImagePreviewCreation).save(mGridView);
+					new PreviewImage(mGameFileImagePreviewCreation)
+							.save(mGridView);
 					mProgressDialogImagePreviewCreation.incrementProgressBy(1);
 				}
 
@@ -1351,7 +1325,7 @@ public class MainActivity extends Activity {
 	/**
 	 * Stop the current timer.
 	 */
-	private void stopTimer() {
+	protected void stopTimer() {
 		// Stop timer if running
 		if (mTimerTask != null && !mTimerTask.isCancelled()) {
 			if (mGrid != null) {

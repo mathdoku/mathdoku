@@ -11,6 +11,7 @@ import net.cactii.mathdoku.MainActivity;
 import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.UsageLog;
+import net.cactii.mathdoku.storage.database.StatisticsDatabaseAdapter;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
@@ -54,6 +55,9 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	private ArrayList<String> mGridSignatures;
 	private int mTotalGrids;
 	private int mTotalGridsSolved;
+
+	// Database adapter for the statistics
+	StatisticsDatabaseAdapter mStatisticsDatabaseAdapter;
 
 	/**
 	 * Creates a new instance of {@link GameFileConverter}.

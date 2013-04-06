@@ -312,6 +312,9 @@ public class GridFile {
 								+ line);
 
 			}
+
+			// Load the statistics of the grid
+			grid.loadStatistics();
 		} catch (InvalidFileFormatException e) {
 			Log.d(TAG, "Invalid file format error when restoring game "
 					+ mFilename + "\n" + e.getMessage());

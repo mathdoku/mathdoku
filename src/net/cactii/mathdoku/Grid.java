@@ -3,10 +3,14 @@ package net.cactii.mathdoku;
 import java.util.ArrayList;
 
 import net.cactii.mathdoku.GridGenerating.GridGeneratingParameters;
+import net.cactii.mathdoku.statistics.GridStatistics;
+import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import net.cactii.mathdoku.storage.GameFile;
 import net.cactii.mathdoku.storage.GameFile.GameFileType;
 import net.cactii.mathdoku.storage.GridFile;
 import net.cactii.mathdoku.storage.PreviewImage;
+import net.cactii.mathdoku.storage.database.DatabaseHelper;
+import net.cactii.mathdoku.storage.database.StatisticsDatabaseAdapter;
 
 public class Grid {
 	@SuppressWarnings("unused")
@@ -21,6 +25,7 @@ public class Grid {
 	public static final String SAVE_GAME_GRID_VERSION_03 = "VIEW.v3";
 	public static final String SAVE_GAME_GRID_VERSION_04 = "VIEW.v4";
 	public static final String SAVE_GAME_GRID_VERSION_05 = "VIEW.v5";
+	public static final String SAVE_GAME_GRID_VERSION_06 = "VIEW.v6";
 
 	// Size of the grid
 	private int mGridSize;
@@ -42,7 +47,6 @@ public class Grid {
 	// playing this game
 	private long mDateGenerated;
 	private long mDateLastSaved;
-	private long mElapsedTime;
 
 	// All parameters that influence the game generation and which are needed to
 	// regenerate a specific game again.
@@ -62,8 +66,10 @@ public class Grid {
 	// Solved listener
 	private OnSolvedListener mSolvedListener;
 
+	// Statistics for this grid
+	GridStatistics mGridStatistics;
+
 	// UsagaeLog counters
-	private int mUndoLastMoveCount;
 	private int mClearRedundantPossiblesInSameRowOrColumnCount;
 
 	// The file from which the grid is loaded. Null in case the grid has never
@@ -85,7 +91,7 @@ public class Grid {
 	 */
 	public Grid(String filename) {
 		initialize();
-		
+
 		mGridFile = new GridFile(filename);
 		if (!mGridFile.loadIntoGrid(this)) {
 			// Error loading. Initialize again to clean up.
@@ -100,14 +106,14 @@ public class Grid {
 		mCells = new ArrayList<GridCell>();
 		mCages = new ArrayList<GridCage>();
 		mMoves = new ArrayList<CellChange>();
-		mUndoLastMoveCount = 0;
 		mClearRedundantPossiblesInSameRowOrColumnCount = 0;
 		mSolvedListener = null;
 		mGridFile = null;
 		mGridGeneratingParameters = new GridGeneratingParameters();
+		mGridStatistics = new GridStatistics();
 		setPreferences();
 	}
-	
+
 	/**
 	 * Set preferences which are used for drawing the grid.
 	 */
@@ -201,6 +207,7 @@ public class Grid {
 			}
 			cell.setUserValue(cell.getCorrectValue());
 		}
+		mGridStatistics.solutionRevealed();
 	}
 
 	// Returns whether the puzzle is solved.
@@ -224,6 +231,8 @@ public class Grid {
 
 		// Deactivate grid
 		mActive = false;
+
+		mGridStatistics.solved();
 
 		return true;
 	}
@@ -278,10 +287,10 @@ public class Grid {
 			int undoPosition = mMoves.size() - 1;
 
 			if (undoPosition >= 0) {
-				mUndoLastMoveCount++;
 				GridCell cell = mMoves.get(undoPosition).restore();
 				mMoves.remove(undoPosition);
 				setSelectedCell(cell);
+				mGridStatistics.increaseCounter(StatisticsCounterType.UNDOS);
 				return true;
 			}
 		}
@@ -404,18 +413,16 @@ public class Grid {
 		}
 
 		// Build storage string
-		String storageString = SAVE_GAME_GRID_VERSION_05
+		String storageString = SAVE_GAME_GRID_VERSION_06
 				+ GameFile.FIELD_DELIMITER_LEVEL1
 				+ mGridGeneratingParameters.mGameSeed
 				+ GameFile.FIELD_DELIMITER_LEVEL1
 				+ mGridGeneratingParameters.mGeneratorRevisionNumber
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mDateLastSaved
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mElapsedTime
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mGridSize
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mActive
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mDateGenerated
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mCheated
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mUndoLastMoveCount
 				+ GameFile.FIELD_DELIMITER_LEVEL1
 				+ mClearRedundantPossiblesInSameRowOrColumnCount
 				+ GameFile.FIELD_DELIMITER_LEVEL1
@@ -475,6 +482,8 @@ public class Grid {
 			viewInformationVersion = 4;
 		} else if (viewParts[0].equals(SAVE_GAME_GRID_VERSION_05)) {
 			viewInformationVersion = 5;
+		} else if (viewParts[0].equals(SAVE_GAME_GRID_VERSION_06)) {
+			viewInformationVersion = 6;
 		} else {
 			return false;
 		}
@@ -490,7 +499,10 @@ public class Grid {
 			mGridGeneratingParameters.mGeneratorRevisionNumber = 0;
 		}
 		mDateLastSaved = Long.parseLong(viewParts[index++]);
-		mElapsedTime = Long.parseLong(viewParts[index++]);
+		if (viewInformationVersion <= 5) {
+			// Field elapsedTime has been removed in version 6 and above.
+			mGridStatistics.elapsedTime = Long.parseLong(viewParts[index++]);
+		}
 		mGridSize = Integer.parseInt(viewParts[index++]);
 		mActive = Boolean.parseBoolean(viewParts[index++]);
 
@@ -498,7 +510,7 @@ public class Grid {
 			mDateGenerated = Long.parseLong(viewParts[index++]);
 		} else {
 			// Date generated was not saved prior to version 2.
-			mDateGenerated = mDateLastSaved - mElapsedTime;
+			mDateGenerated = mDateLastSaved - mGridStatistics.elapsedTime;
 		}
 		if (viewInformationVersion >= 4) {
 			mCheated = Boolean.parseBoolean(viewParts[index++]);
@@ -506,8 +518,13 @@ public class Grid {
 			// Cheated was not saved prior to version 3.
 			mCheated = false;
 		}
+		if (viewInformationVersion == 5) {
+			// UndoCounter was only stored in version 5 in the game file.
+			// Starting form version 6 it has been moved to the statistics
+			// database.
+			mGridStatistics.undos = Integer.parseInt(viewParts[index++]);
+		}
 		if (viewInformationVersion >= 5) {
-			mUndoLastMoveCount = Integer.parseInt(viewParts[index++]);
 			mClearRedundantPossiblesInSameRowOrColumnCount = Integer
 					.parseInt(viewParts[index++]);
 			mGridGeneratingParameters.mHideOperators = Boolean
@@ -518,7 +535,6 @@ public class Grid {
 					.parseInt(viewParts[index++]);
 		} else {
 			// Cheated was not saved prior to version 3.
-			mUndoLastMoveCount = 0;
 			mClearRedundantPossiblesInSameRowOrColumnCount = 0;
 			mGridGeneratingParameters.mHideOperators = false;
 			mGridGeneratingParameters.mMaxCageResult = 0;
@@ -579,6 +595,9 @@ public class Grid {
 		for (GridCell cell : cells) {
 			cell.setBorders();
 		}
+
+		// Create a new statistics object
+		loadStatistics();
 	}
 
 	public void setSolvedHandler(OnSolvedListener listener) {
@@ -606,11 +625,11 @@ public class Grid {
 	}
 
 	public long getElapsedTime() {
-		return mElapsedTime;
+		return mGridStatistics.elapsedTime;
 	}
 
 	public void setElapsedTime(long elapsedTime) {
-		mElapsedTime = elapsedTime;
+		mGridStatistics.elapsedTime = elapsedTime;
 	}
 
 	public long getDateCreated() {
@@ -637,10 +656,6 @@ public class Grid {
 		return mPrefShowMaybesAs3x3Grid;
 	}
 
-	public int getUndoCount() {
-		return mUndoLastMoveCount;
-	}
-
 	public int getClearRedundantPossiblesInSameRowOrColumnCount() {
 		return mClearRedundantPossiblesInSameRowOrColumnCount;
 	}
@@ -651,6 +666,32 @@ public class Grid {
 
 	public boolean getCheated() {
 		return mCheated;
+	}
+
+	/**
+	 * Load the current statistics for this grid.
+	 */
+	public void loadStatistics() {
+		// Determine signature
+		String signature = getSignatureString();
+
+		// Check is statistics exists. If not create them.
+		DatabaseHelper databaseHelper = DatabaseHelper.getInstance();
+		StatisticsDatabaseAdapter statisticsDatabaseAdapter = new StatisticsDatabaseAdapter(
+				databaseHelper);
+		mGridStatistics = statisticsDatabaseAdapter
+				.getByGridSignature(signature);
+		if (mGridStatistics == null) {
+			// The statistics do not yet exists.
+			mGridStatistics = statisticsDatabaseAdapter.insertGrid(signature,
+					mGridSize);
+		}
+	}
+
+	public void showStatistics(MainActivity activity) {
+		if (mGridStatistics != null) {
+			mGridStatistics.show(activity);
+		}
 	}
 
 	/**
@@ -671,15 +712,29 @@ public class Grid {
 			return false;
 		}
 
+		// Update statistics
+		boolean savedStatistics = (mGridStatistics == null ? false
+				: mGridStatistics.save());
+
 		// Save the preview image.
 		PreviewImage previewImage = new PreviewImage(gameFile);
 		boolean savedPreview = (gridView == null ? false : previewImage
 				.save(gridView));
 
-		return (savedPreview);
+		return (savedStatistics && savedPreview);
 	}
 
 	public boolean isLoadedFromFile() {
 		return (mGridFile != null);
+	}
+
+	/**
+	 * Increase given counter with 1.
+	 * 
+	 * @param statisticsCounterType
+	 *            The counter which has to be increased.
+	 */
+	public void increaseCounter(StatisticsCounterType statisticsCounterType) {
+		mGridStatistics.increaseCounter(statisticsCounterType);
 	}
 }

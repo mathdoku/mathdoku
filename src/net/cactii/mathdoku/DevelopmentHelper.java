@@ -3,9 +3,10 @@ package net.cactii.mathdoku;
 import java.util.ArrayList;
 
 import net.cactii.mathdoku.MainActivity.InputMode;
-import net.cactii.mathdoku.DevelopmentHelpers.DevelopmentHelperHoneycombAndAbove;
 import net.cactii.mathdoku.storage.GameFile;
 import net.cactii.mathdoku.storage.GameFile.GameFileType;
+import net.cactii.mathdoku.storage.database.DatabaseHelper;
+import net.cactii.mathdoku.DevelopmentHelpers.DevelopmentHelperHoneycombAndAbove;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -17,10 +18,10 @@ import android.os.Build;
  * Testing of this application. Variables and methods should not be used in
  * production code with exception of static variable {@link #mMode}.
  * 
- * Checks on variable {@link #mMode} should always be made in such a way that the
- * result can be determined at compile time. In this way the enclosed block will
- * not be included in the compiled case when the condition for executing the
- * block evaluates to false. Example of intended usage:
+ * Checks on variable {@link #mMode} should always be made in such a way that
+ * the result can be determined at compile time. In this way the enclosed block
+ * will not be included in the compiled case when the condition for executing
+ * the block evaluates to false. Example of intended usage:
  * 
  * <pre class="prettyprint">
  * if (DevelopmentHelper.mode = Mode.UNIT_TESTING) {
@@ -49,6 +50,95 @@ public class DevelopmentHelper {
 	public static final String GRID_GENERATOR_PROGRESS_UPDATE_MESSAGE = "Update message";
 	public static final String GRID_GENERATOR_PROGRESS_UPDATE_PROGRESS = "Update progress";
 	public static final String GRID_GENERATOR_PROGRESS_UPDATE_SOLUTION = "Found a solution";
+
+	/**
+	 * Checks if given menu item id can be processed by the development helper.
+	 * 
+	 * @param mainActivity
+	 *            The main activity in which context the menu item was selected.
+	 * @param menuId
+	 *            The selected menu item.
+	 * @return True in case the menu item is processed succesfully. False
+	 *         otherwise.
+	 */
+	public static boolean onDevelopmentHelperOption(MainActivity mainActivity,
+			int menuId) {
+		if (mMode == Mode.DEVELOPMENT) {
+			switch (menuId) {
+			case R.id.development_mode_delete_database:
+				deleteDatabase(mainActivity);
+				break;
+			case R.id.development_mode_generate_games:
+				// Cancel old timer
+				mainActivity.stopTimer();
+
+				// Generate games
+				generateGames(mainActivity);
+				return true;
+			case R.id.development_mode_recreate_previews:
+				recreateAllPreviews(mainActivity);
+				return true;
+			case R.id.development_mode_delete_games:
+				deleteAllGames(mainActivity);
+				return true;
+			case R.id.development_mode_reset_preferences:
+				resetPreferences(mainActivity);
+				return true;
+			case R.id.development_mode_clear_data:
+				deleteGamesAndPreferences(mainActivity);
+				return true;
+			case R.id.development_mode_reset_log:
+				// Delete old log
+				UsageLog.getInstance().delete();
+
+				// Reset preferences
+				Preferences.getInstance().resetUsageLogDisabled();
+
+				// Re-enable usage log
+				UsageLog.getInstance(mainActivity);
+				return true;
+			case R.id.development_mode_send_log:
+				UsageLog.getInstance().askConsentForSendingLog(mainActivity);
+				return true;
+			default:
+				return false;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Delete database.
+	 * 
+	 * @param context
+	 *            The activity in which context the confirmation dialog will be
+	 *            shown.
+	 */
+	public static void deleteDatabase(final MainActivity mainActivity) {
+		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
+			builder.setTitle("Delete database?")
+					.setMessage("The database will be deleted. All statistic "
+							+ "information will be lost permanently.")
+					.setNegativeButton("Cancel",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									// Do nothing
+								}
+							})
+					.setPositiveButton("Delete database",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									mainActivity.deleteDatabase(DatabaseHelper.DATABASE_NAME);
+								}
+							});
+			AlertDialog dialog = builder.create();
+			dialog.show();
+		}
+	}
+
 
 	/**
 	 * Generate dummy games. A dummy game is not a real game which can be played
@@ -141,8 +231,8 @@ public class DevelopmentHelper {
 	}
 
 	/**
-	 * Delete all preview images and resets the preferences at the default which is used to
-	 * check whether preview images have to be generated.
+	 * Delete all preview images and resets the preferences at the default which
+	 * is used to check whether preview images have to be generated.
 	 * 
 	 * @param mainActivity
 	 *            The activity in which context the confirmation dialog will be
@@ -305,7 +395,8 @@ public class DevelopmentHelper {
 
 	private static void executeDeleteAllPreferences() {
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-			Editor prefeditor = Preferences.getInstance().mSharedPreferences.edit();
+			Editor prefeditor = Preferences.getInstance().mSharedPreferences
+					.edit();
 			prefeditor.clear();
 			prefeditor.commit();
 		}

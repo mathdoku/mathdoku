@@ -316,8 +316,6 @@ public class UsageLog {
 			SortedMap<String, String> sortedMap = new TreeMap<String, String>();
 
 			sortedMap.put("Grid.Size", Integer.toString(grid.getGridSize()));
-			sortedMap.put("Grid.UndoCount",
-					Integer.toString(grid.getUndoCount()));
 			sortedMap.put("Grid.Cheated", Boolean.toString(grid.getCheated()));
 			sortedMap
 					.put("Grid.ClearRedundantPossiblesInSameRowOrColumnCount",

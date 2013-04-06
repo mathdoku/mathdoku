@@ -5,6 +5,7 @@ import net.cactii.mathdoku.MainActivity.InputMode;
 import net.cactii.mathdoku.Tip.TipOrderOfValuesInCage;
 import net.cactii.mathdoku.painter.GridPainter;
 import net.cactii.mathdoku.painter.Painter;
+import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
@@ -255,10 +256,12 @@ public class GridView extends View implements OnTouchListener {
 					selectedCell.clearUserValue();
 				}
 				selectedCell.togglePossible(value);
+				mGrid.increaseCounter(StatisticsCounterType.POSSIBLES);
 				break;
 			case NORMAL:
 				selectedCell.setUserValue(value);
 				selectedCell.clearPossibles();
+				mGrid.increaseCounter(StatisticsCounterType.MOVES);
 
 				if (mPreferences.isClearRedundantPossiblesEnabled()) {
 					// Update possible values for other cells in this row and
