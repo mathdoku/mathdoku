@@ -60,6 +60,7 @@ public class Preferences {
 	public final static String THEME_CARVED = "carved";
 	public final static String THEME_DARK = "inverted";
 	public final static String THEME_NEWSPAPER = "newspaper";
+	public final static String THEME_NEWSPAPER_OLD = "newspaperold";
 	public final static String THEME_DEFAULT = THEME_NEWSPAPER;
 
 	private static String TIP_CATEGORY_FAMILIAR_WITH_APP = "Tip.Category.FamiliarWithApp";
@@ -290,6 +291,8 @@ public class Preferences {
 
 		if (theme.equals(THEME_NEWSPAPER)) {
 			return GridTheme.NEWSPAPER;
+		} else if (theme.equals(THEME_NEWSPAPER_OLD)) {
+			return GridTheme.NEWSPAPER_OLD;
 		} else if (theme.equals(THEME_DARK)) {
 			return GridTheme.DARK;
 		} else if (theme.equals(THEME_CARVED)) {

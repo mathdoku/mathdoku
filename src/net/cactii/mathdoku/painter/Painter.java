@@ -27,7 +27,7 @@ public class Painter {
 
 	// Themes available
 	public enum GridTheme {
-		CARVED, NEWSPAPER, DARK
+		CARVED, NEWSPAPER, NEWSPAPER_OLD, DARK
 	};
 
 	// Theme installed in painter
@@ -227,6 +227,11 @@ public class Painter {
 			mDefaultTextColor = 0xFF000000;
 			break;
 		case NEWSPAPER:
+			mHighlightedTextColorNormalInputMode = 0xFF3C6583;
+			mHighlightedTextColorMaybeInputMode = 0xFF73a8d0;
+			mDefaultTextColor = 0xFF000000;
+			break;
+		case NEWSPAPER_OLD:
 			mHighlightedTextColorNormalInputMode = 0xFF2215DD;
 			mHighlightedTextColorMaybeInputMode = 0xFFE61EBE;
 			mDefaultTextColor = 0xFF000000;

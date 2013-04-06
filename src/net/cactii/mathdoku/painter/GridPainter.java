@@ -36,6 +36,9 @@ public class GridPainter extends BorderPainter {
 		case NEWSPAPER:
 			mBackgroundPaint.setColor(0xffffffff);
 			break;
+		case NEWSPAPER_OLD:
+			mBackgroundPaint.setColor(0xffffffff);
+			break;
 		case DARK:
 			mBackgroundPaint.setColor(0xff000000);
 			break;
@@ -49,6 +52,11 @@ public class GridPainter extends BorderPainter {
 			mBorderPaint.setColor(0xff000000);
 			break;
 		case NEWSPAPER:
+			mBorderPaint.setAntiAlias(false);
+			mBorderPaint.setPathEffect(null);
+			mBorderPaint.setColor(0xFFAAAAAA);
+			break;
+		case NEWSPAPER_OLD:
 			mBorderPaint.setAntiAlias(false);
 			mBorderPaint.setPathEffect(null);
 			mBorderPaint.setColor(0xFFAAAAAA);

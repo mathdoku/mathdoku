@@ -17,6 +17,8 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageInfo;
 import android.os.Bundle;
 import android.os.Handler;
@@ -48,10 +50,14 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements
+		OnSharedPreferenceChangeListener {
 	public final static String TAG = "MathDoku.MainActivity";
 
 	public final static String PROJECT_HOME = "https://code.google.com/p/mathdoku/";
+
+	// Identifiers for request codes sent to other activities
+	private final static int REQUEST_CODE_SAVE_LOAD = 1;
 
 	// Identifiers for the context menu
 	private final static int CONTEXT_MENU_REVEAL_CELL = 1;
@@ -361,6 +367,8 @@ public class MainActivity extends Activity {
 
 		checkVersion();
 
+		mMathDokuPreferences.mSharedPreferences.registerOnSharedPreferenceChangeListener(this);
+
 		restartLastGame();
 	}
 
@@ -385,6 +393,12 @@ public class MainActivity extends Activity {
 
 		super.onPause();
 	}
+	
+	@Override
+	protected void onDestroy() {
+		mMathDokuPreferences.mSharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+		super.onDestroy();
+	}
 
 	public void setTheme() {
 
@@ -394,6 +408,11 @@ public class MainActivity extends Activity {
 		case NEWSPAPER:
 			mTopLayout.setBackgroundResource(R.drawable.newspaper);
 			mPainter.setTheme(GridTheme.NEWSPAPER);
+			mTimerText.setBackgroundColor(0x90808080);
+			break;
+		case NEWSPAPER_OLD:
+			mTopLayout.setBackgroundResource(R.drawable.newspaper);
+			mPainter.setTheme(GridTheme.NEWSPAPER_OLD);
 			mTimerText.setBackgroundColor(0x90808080);
 			break;
 		case DARK:
@@ -451,14 +470,18 @@ public class MainActivity extends Activity {
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode != 7 || resultCode != Activity.RESULT_OK)
+		switch (requestCode) {
+		case REQUEST_CODE_SAVE_LOAD:
+			if (resultCode == Activity.RESULT_OK) {
+				Bundle extras = data.getExtras();
+				String filename = extras.getString("filename");
+				Log.d("Mathdoku", "Loading game: " + filename);
+				Grid newGrid = new Grid(filename);
+				if (newGrid.isLoadedFromFile()) {
+					setNewGrid(newGrid);
+				}
+			}
 			return;
-		Bundle extras = data.getExtras();
-		String filename = extras.getString("filename");
-		Log.d("Mathdoku", "Loading game: " + filename);
-		Grid newGrid = new Grid(filename);
-		if (newGrid.isLoadedFromFile()) {
-			setNewGrid(newGrid);
 		}
 	}
 
@@ -652,7 +675,7 @@ public class MainActivity extends Activity {
 		case R.id.saveload:
 			UsageLog.getInstance().logFunction("Menu.SaveLoad");
 			Intent i = new Intent(this, GameFileList.class);
-			startActivityForResult(i, 7);
+			startActivityForResult(i, REQUEST_CODE_SAVE_LOAD);
 			return true;
 		case R.id.checkprogress:
 			int textId;
@@ -670,8 +693,7 @@ public class MainActivity extends Activity {
 			return true;
 		case R.id.options:
 			UsageLog.getInstance().logFunction("Menu.ViewOptions");
-			startActivityForResult(new Intent(MainActivity.this,
-					OptionsActivity.class), 0);
+			startActivity(new Intent(MainActivity.this, OptionsActivity.class));
 			return true;
 		case R.id.help:
 			UsageLog.getInstance().logFunction("Menu.ViewHelp.Manual");
@@ -1522,6 +1544,22 @@ public class MainActivity extends Activity {
 			// Propagate setting to the grid view as well for displaying maybe
 			// values (dependent on preferences).
 			mGridView.setDigitPositionGrid(mDigitPositionGrid);
+		}
+	}
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+			String key) {
+		if (sharedPreferences.contains(key)) {
+			UsageLog.getInstance().logPreference("Preference.Changed", key,
+					sharedPreferences.getAll().get(key));
+		} else {
+			UsageLog.getInstance().logPreference("Preference.Deleted", key,
+					null);
+		}
+		if (key.equals(Preferences.THEME)) {
+			setTheme();
+			setInputMode(mInputMode);
 		}
 	}
 }

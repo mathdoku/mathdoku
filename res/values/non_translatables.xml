@@ -18,6 +18,7 @@
     <string-array name="themeValues">
         <item>carved</item>
         <item>newspaper</item>
+        <item>newspaperold</item>
         <item>inverted</item>
     </string-array>
     

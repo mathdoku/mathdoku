@@ -209,6 +209,7 @@
     <string-array name="themeTexts">
         <item>Carved</item>
         <item>Newspaper</item>
+        <item>Newspaper old</item>
         <item>Dark</item>
     </string-array>
 
