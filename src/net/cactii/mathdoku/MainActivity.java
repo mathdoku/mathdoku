@@ -92,6 +92,7 @@ public class MainActivity extends Activity {
 	public final static String PREF_THEME_CARVED = "carved";
 	public final static String PREF_THEME_DARK = "inverted";
 	public final static String PREF_THEME_NEWSPAPER = "newspaper";
+	public final static String PREF_THEME_NEWSPAPER_OLD = "newspaperold";
 	public final static String PREF_THEME_DEFAULT = PREF_THEME_NEWSPAPER;
 
 	public final static String PREF_USAGE_LOG_COUNT_GAMES_STARTED = "UsageLogCountGamesStarted";
@@ -442,6 +443,10 @@ public class MainActivity extends Activity {
 			mTopLayout.setBackgroundResource(R.drawable.newspaper);
 			mPainter.setTheme(GridTheme.NEWSPAPER);
 			mTimerText.setBackgroundColor(0x90808080);
+		} else if (theme.equals(MainActivity.PREF_THEME_NEWSPAPER_OLD)) {
+				mTopLayout.setBackgroundResource(R.drawable.newspaper);
+				mPainter.setTheme(GridTheme.NEWSPAPER_OLD);
+				mTimerText.setBackgroundColor(0x90808080);
 		} else if (theme.equals(MainActivity.PREF_THEME_DARK)) {
 			mTopLayout.setBackgroundResource(R.drawable.newspaper_dark);
 			mPainter.setTheme(GridTheme.DARK);
