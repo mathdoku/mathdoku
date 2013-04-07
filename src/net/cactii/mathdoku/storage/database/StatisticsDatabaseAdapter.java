@@ -7,6 +7,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteConstraintException;
+import android.database.sqlite.SQLiteDatabase;
 
 /**
  * The database adapter for the statistics table.
@@ -29,6 +30,8 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	static final String KEY_UNDOS = "undos";
 	static final String KEY_CELLS_REVEALED = "cells_revealed";
 	static final String KEY_OPERATORS_REVEALED = "operators_revealed";
+	static final String KEY_CHECK_PROGRESS_USED = "check_progress_used";
+	static final String KEY_CHECK_PROGRESS_INVALIDS_FOUND = "check_progress_invalids_found";
 	static final String KEY_SOLUTION_REVEALED = "solution_revealed";
 	static final String KEY_SOLVED_MANUALLY = "solved_manually";
 	static final String KEY_FINISHED = "finished";
@@ -36,8 +39,9 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	static final String[] allColumns = { KEY_ROWID, KEY_GRID_SIGNATURE,
 			KEY_GRID_SIZE, KEY_FIRST_MOVE, KEY_LAST_MOVE, KEY_ELAPSED_TIME,
 			KEY_CHEAT_PENALTY_TIME, KEY_MOVES, KEY_POSSIBLES, KEY_UNDOS,
-			KEY_CELLS_REVEALED, KEY_OPERATORS_REVEALED, KEY_SOLUTION_REVEALED,
-			KEY_SOLVED_MANUALLY, KEY_FINISHED };
+			KEY_CELLS_REVEALED, KEY_OPERATORS_REVEALED,
+			KEY_CHECK_PROGRESS_USED, KEY_CHECK_PROGRESS_INVALIDS_FOUND,
+			KEY_SOLUTION_REVEALED, KEY_SOLVED_MANUALLY, KEY_FINISHED };
 
 	/**
 	 * Constructs a new instance of the statistics database adapter.
@@ -50,12 +54,14 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	}
 
 	/**
-	 * Generates the SQLite create table statement for this database adapter.
+	 * Creates the table.
 	 * 
-	 * @return A SQLite create table statement.
+	 * @param db
+	 *            The database in which the table has to be created.
 	 */
-	public static String getCreateTableSQL() {
-		return DatabaseAdapter
+	protected static void create(SQLiteDatabase db) {
+		// Build create statement
+		String createSQL = DatabaseAdapter
 				.createTable(
 						TABLE,
 						createColumn(KEY_ROWID, "integer",
@@ -79,12 +85,42 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 								" not null default 0"),
 						createColumn(KEY_OPERATORS_REVEALED, "integer",
 								" not null default 0"),
+						createColumn(KEY_CHECK_PROGRESS_USED, "integer",
+								" not null default 0"),
+						createColumn(KEY_CHECK_PROGRESS_INVALIDS_FOUND,
+								"integer", " not null default 0"),
 						createColumn(KEY_SOLUTION_REVEALED, "string",
 								" not null default `false`"),
 						createColumn(KEY_SOLVED_MANUALLY, "string",
 								" not null default `false`"),
 						createColumn(KEY_FINISHED, "string",
 								" not null default `false`"));
+
+		// Execute create statement
+		db.execSQL(createSQL);
+
+	}
+
+	/**
+	 * Upgrades the table to an other version.
+	 * 
+	 * @param db
+	 *            The database in which the table has to be updated.
+	 * @param oldVersion
+	 *            The old version of the database. Use the app revision number
+	 *            to identify the database version.
+	 * @param newVersion
+	 *            The new version of the database. Use the app revision number
+	 *            to identify the database version.
+	 */
+	protected static void upgrade(SQLiteDatabase db, int oldVersion,
+			int newVersion) {
+		if (oldVersion > 0 && newVersion > oldVersion) {
+			// In development revisions the table is simply dropped and
+			// recreated.
+			db.execSQL("DROP TABLE " + TABLE);
+			create(db);
+		}
 	}
 
 	/**
@@ -175,6 +211,10 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				.getColumnIndexOrThrow(KEY_CELLS_REVEALED));
 		gridStatistics.operatorsRevevealed = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_OPERATORS_REVEALED));
+		gridStatistics.checkProgressUsed = cursor.getInt(cursor
+				.getColumnIndexOrThrow(KEY_CHECK_PROGRESS_USED));
+		gridStatistics.checkProgressInvalidsFound = cursor.getInt(cursor
+				.getColumnIndexOrThrow(KEY_CHECK_PROGRESS_INVALIDS_FOUND));
 		gridStatistics.solutionRevealed = Boolean
 				.valueOf(cursor.getString(cursor
 						.getColumnIndexOrThrow(KEY_SOLUTION_REVEALED)));
@@ -210,6 +250,10 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		newValues.put(KEY_CELLS_REVEALED, gridStatistics.cellsRevealed);
 		newValues.put(KEY_OPERATORS_REVEALED,
 				gridStatistics.operatorsRevevealed);
+		newValues
+				.put(KEY_CHECK_PROGRESS_USED, gridStatistics.checkProgressUsed);
+		newValues.put(KEY_CHECK_PROGRESS_INVALIDS_FOUND,
+				gridStatistics.checkProgressInvalidsFound);
 		newValues.put(KEY_SOLUTION_REVEALED, gridStatistics.solutionRevealed);
 		newValues.put(KEY_SOLVED_MANUALLY, gridStatistics.solvedManually);
 		newValues.put(KEY_FINISHED, gridStatistics.finished);

@@ -47,6 +47,11 @@ public class GridStatistics {
 	// The number of cage operators revealed (a cheat)
 	public int operatorsRevevealed;
 
+	// The number of times "check progress" was used and the total number of
+	// invalids values which have been found when using this option (a cheat)
+	public int checkProgressUsed;
+	public int checkProgressInvalidsFound;
+
 	// Has the entire solution been revealed?
 	public boolean solutionRevealed;
 
@@ -58,29 +63,73 @@ public class GridStatistics {
 
 	// Counters available
 	public enum StatisticsCounterType {
-		MOVES, POSSIBLES, UNDOS, CELLS_REVEALED, OPERATORS_REVEALED
+		MOVES, POSSIBLES, UNDOS, CELLS_REVEALED, OPERATORS_REVEALED, CHECK_PROGRESS_USED, CHECK_PROGRESS_INVALIDS_FOUND
 	};
 
 	public void show(Activity activity) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 		builder.setTitle("Grid statistics")
 				.setMessage(
-						"Current statistics for grid " + " * id: " + _id
-								+ " \n" + " * grid size: " + gridSize + " \n"
-								+ " * First move: " + firstMove.toString()
-								+ " \n" + " * Last move: " + lastMove + " \n"
-								+ " * Elapsed: " + elapsedTime + " \n"
-								+ " * Cheat penalty: " + cheatPenaltyTime
-								+ " (not yet implemented)\n" + " * Moves: "
-								+ moves + " \n" + " * Possibles: " + possibles
-								+ " \n" + " * Undos: " + undos + " \n"
-								+ " * Cells revealed: " + cellsRevealed + " \n"
-								+ " * Operators revealed "
-								+ operatorsRevevealed + " \n"
+						"Current statistics for grid "
+						// Line 1
+								+ " * id: "
+								+ _id
+								+ " \n"
+								// Line 2
+								+ " * grid size: "
+								+ gridSize
+								+ " \n"
+								// Line 3
+								+ " * First move: "
+								+ firstMove.toString()
+								+ " \n"
+								// Line 4
+								+ " * Last move: "
+								+ lastMove
+								+ " \n"
+								// Line 5
+								+ " * Elapsed: "
+								+ elapsedTime
+								+ " \n"
+								// Line 6
+								+ " * Cheat penalty: "
+								+ cheatPenaltyTime
+								+ " (not yet implemented)\n"
+								// Line 7
+								+ " * Moves: "
+								+ moves
+								+ " \n"
+								// Line 8
+								+ " * Possibles: "
+								+ possibles
+								+ " \n"
+								// Line 9
+								+ " * Undos: "
+								+ undos
+								+ " \n"
+								// Line 10
+								+ " * Cells revealed: "
+								+ cellsRevealed
+								+ " \n"
+								// Line 11
+								+ " * Operators revealed: "
+								+ operatorsRevevealed
+								+ " \n"
+								// Line 12
+								+ " * Check progress used: "
+								+ checkProgressUsed
+								+ " \n"
+								// Line 13
+								+ " * Invalids found with check progress: "
+								+ checkProgressInvalidsFound
+								+ " \n"
+								// Line 14
 								+ " * solutionRevealed: "
 								+ Boolean.toString(solutionRevealed) + " \n"
+								// Line 15
 								+ " * solved: "
 								+ Boolean.toString(solvedManually) + " \n"
+								// Line 16
 								+ " * finished: " + Boolean.toString(finished))
 				.setCancelable(false)
 				.setPositiveButton(R.string.dialog_general_button_close,
@@ -116,6 +165,12 @@ public class GridStatistics {
 			break;
 		case OPERATORS_REVEALED:
 			operatorsRevevealed++;
+			break;
+		case CHECK_PROGRESS_USED:
+			checkProgressUsed++;
+			break;
+		case CHECK_PROGRESS_INVALIDS_FOUND:
+			checkProgressInvalidsFound++;
 			break;
 		}
 		setLastMoveToCurrentTime();

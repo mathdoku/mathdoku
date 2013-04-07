@@ -363,10 +363,12 @@ public class GridView extends View implements OnTouchListener {
 	// Highlight those cells where the user has made a mistake
 	public void markInvalidChoices() {
 		boolean isValid = true;
+		mGrid.increaseCounter(StatisticsCounterType.CHECK_PROGRESS_USED);
 		for (GridCell cell : mGrid.mCells)
 			if (cell.isUserValueSet())
 				if (cell.getUserValue() != cell.getCorrectValue()) {
 					cell.setInvalidHighlight(true);
+					mGrid.increaseCounter(StatisticsCounterType.CHECK_PROGRESS_INVALIDS_FOUND);
 					isValid = false;
 				}
 

@@ -1,8 +1,10 @@
 package net.cactii.mathdoku.storage.database;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 /**
  * The DatabaseHelper is a generic access point for this application to
@@ -10,10 +12,9 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-	static final String TAG_LOG = "DatabaseHelper";
+	static final String TAG = "MathDoku.DatabaseHelper";
 
 	public static final String DATABASE_NAME = "MathDoku.sqlite";
-	static final int DATABASE_VERSION = 1;
 
 	private static DatabaseHelper mDatabaseHelperSingletonInstance = null;
 	private static Context currentRenamingDelegatingContext = null;
@@ -26,7 +27,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 *            : The context in which the database helper is needed.
 	 */
 	private DatabaseHelper(Context context) {
-		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+		super(context, DATABASE_NAME, null, getVersion(context));
 	}
 
 	/**
@@ -85,13 +86,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		String createSQL;
-
-		createSQL = StatisticsDatabaseAdapter.getCreateTableSQL();
-		db.execSQL(createSQL);
+		StatisticsDatabaseAdapter.create(db);
 	}
-
+	
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		StatisticsDatabaseAdapter.upgrade(db, oldVersion, newVersion);
+	}
+	
+	/**
+	 * Get the version (revision) number of the app.
+	 * 
+	 * @param context Context from which the version has to eb determined.
+	 */
+	private static int getVersion(Context context) {
+		int version = -1;
+		try {
+			PackageInfo pi = context.getPackageManager().getPackageInfo(
+					context.getPackageName(), 0);
+			version = pi.versionCode;
+		} catch (Exception e) {
+			Log.e(TAG, "Package name '" + context.getPackageName() + "' not found", e);
+		}
+		return version;
 	}
 }
