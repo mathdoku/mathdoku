@@ -55,7 +55,7 @@
 
     <!-- The contributor title in the help screen. -->
     <string name="dialog_help_contributors_title">Mitwirkende</string>
-    <string name="dialog_help_contributors_body">MathDoku wurde von Ben Buxton entwickelt. Weiterentwicklungen wurden von Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul und Christoph Steindl durchgeführt. Dank an alle, die Fehler des Programms oder Anstöße für Weiterentwicklungen gemeldet haben.</string>
+    <string name="dialog_help_contributors_body">MathDoku wurde von Ben Buxton entwickelt. Weiterentwicklungen wurden von Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul, Christoph Steindl und Alexander Tesfamichael durchgeführt. Dank an alle, die Fehler des Programms oder Anstöße für Weiterentwicklungen gemeldet haben.</string>
 
     <!-- CHANGES DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

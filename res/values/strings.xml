@@ -54,7 +54,7 @@
 
     <!-- The contributor title in the help screen. -->
     <string name="dialog_help_contributors_title">Contributors</string>
-    <string name="dialog_help_contributors_body">MathDoku was initially developed by Ben Buxton. Contributions have been made by: Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul and Christoph Steindl. Also we would like to thank all users who have submitted bugs and feature requests.</string>
+    <string name="dialog_help_contributors_body">MathDoku was initially developed by Ben Buxton. Contributions have been made by: Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul, Christoph Steindl and Alexander Tesfamichael. Also we would like to thank all users who have submitted bugs and feature requests.</string>
 
     <!-- CHANGES DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
