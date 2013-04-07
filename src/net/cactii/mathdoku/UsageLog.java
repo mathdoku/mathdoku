@@ -266,7 +266,8 @@ public class UsageLog {
 
 			SortedMap<String, String> sortedMap = new TreeMap<String, String>();
 
-			sortedMap.put(key, value.toString());
+			// In case of delete of preference the value willl be null.
+			sortedMap.put(key, (value == null ? "###NULL###" : value.toString()));
 
 			logSortedMap(identifier, sortedMap);
 		}
