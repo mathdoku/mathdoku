@@ -285,13 +285,14 @@
 
     <!-- Title, text, drawable for tip "Input mode changed" -->
     <string name="dialog_tip_input_mode_changed_title">Eingabemodus geändert</string>
+    <!-- TODO: Enlish text and meaning has changed to: You have just changed the input mode from %1$s to %2$s by tapping the selected cell more than once. Tap the selected cell again to change the input mode back to the previous state. -->
     <string name="dialog_tip_input_mode_changed_text">Sie haben gerade den Eingabemodus von %1$s auf %2$s geändert. Der Eingabemodus kann durch nochmaliges Drücken auf die ausgewählte Zelle auf \"normal\" gestellt werden. Oder durch Dücken des Textmodues: Vielleicht über dem Zahlenblock.</string>
 
     <!-- Title, text, drawable for tip "Order of values in cage" -->
     <!-- TODO -->
-    <string name="dialog_tip_order_of_values_in_cage_title">Cel waarden</string>
+    <string name="dialog_tip_order_of_values_in_cage_title">Cell values</string>
     <!-- TODO -->
-    <string name="dialog_tip_order_of_values_in_cage_text">De volgorde van de getallen in de cellen is niet belangrijk in een MathDoku puzzel. De resultaten van de berekeningen \"3 &#8212; 1\"  en \"2 / 4\" zijn beide ook gelijk aan 2. De waarden in de onderstaande afbeelding zijn dus correct.</string>
+    <string name="dialog_tip_order_of_values_in_cage_text">The order of values in the cells of the cage is not relevant in a MathDoku puzzle. The results of cages \"2 &#8212; 3\"  and \"3 &#8212; 2\" both equals 1. The entire grid below is therefore valid.</string>
 
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

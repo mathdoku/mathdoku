@@ -188,7 +188,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	 */
 	@Override
 	protected Void doInBackground(Void... params) {
-		if (mGridSize < 4) {
+		if (mGridSize < 3) {
 			return null;
 		}
 

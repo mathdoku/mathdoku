@@ -271,7 +271,7 @@ public class UsageLog {
 
 			SortedMap<String, String> sortedMap = new TreeMap<String, String>();
 
-			sortedMap.put(key, value.toString());
+			sortedMap.put(key, (value == null ? "###null###" : value.toString()));
 
 			logSortedMap(identifier, sortedMap);
 		}

@@ -293,7 +293,7 @@ public class GridView extends View implements OnTouchListener {
 			// puzzle
 			int gridSize = mGrid.getGridSize();
 
-			if (gridSize < 4)
+			if (gridSize < 3)
 				return;
 			if (mGrid.mCages == null)
 				return;

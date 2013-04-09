@@ -304,7 +304,15 @@ public class MainActivity extends Activity implements
 							}
 						} else {
 							// Controls are always visible
+
 							if (sameCellSelectedAgain) {
+								if (TipInputModeChanged
+										.toBeDisplayed(mPreferences)) {
+									new TipInputModeChanged(
+											MainActivity.this,
+											(mInputMode == InputMode.MAYBE ? InputMode.NORMAL
+													: InputMode.MAYBE)).show();
+								}
 								toggleInputMode();
 							}
 						}
@@ -443,7 +451,7 @@ public class MainActivity extends Activity implements
 
 		super.onPause();
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		mPreferences.unregisterOnSharedPreferenceChangeListener(this);
@@ -1658,15 +1666,9 @@ public class MainActivity extends Activity implements
 			inputMode = InputMode.NORMAL;
 			break;
 		case NORMAL:
-			if (TipInputModeChanged.toBeDisplayed(mPreferences)) {
-				new TipInputModeChanged(this, InputMode.MAYBE).show();
-			}
 			inputMode = InputMode.MAYBE;
 			break;
 		case MAYBE:
-			if (TipInputModeChanged.toBeDisplayed(mPreferences)) {
-				new TipInputModeChanged(this, InputMode.MAYBE).show();
-			}
 			inputMode = InputMode.NORMAL;
 			break;
 		}

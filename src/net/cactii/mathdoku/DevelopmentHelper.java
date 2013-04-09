@@ -61,7 +61,7 @@ public class DevelopmentHelper {
 	public static void generateGames(final MainActivity mainActivity) {
 		int maxCageResult = mainActivity.getResources().getInteger(
 				R.integer.maximum_cage_value);
-		mainActivity.mGridGeneratorTask = new GridGenerator(mainActivity, 6, 4,
+		mainActivity.mGridGeneratorTask = new GridGenerator(mainActivity, 3, 2,
 				maxCageResult, false);
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			// Set the options for the grid generator

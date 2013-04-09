@@ -1,34 +1,44 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
 
-    <LinearLayout
-        android:layout_width="fill_parent"
+    <ScrollView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="10dp" >
+        android:layout_above="@+id/dialog_tip_do_not_show_again"
+        android:layout_alignParentTop="true" >
 
-        <TextView
-            android:id="@+id/dialog_tip_text"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp" />
+            android:orientation="vertical"
+            android:padding="10dp" >
 
-        <ImageView
-            android:id="@+id/dialog_tip_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleType="fitXY"
-            tools:ignore="ContentDescription" />
+            <TextView
+                android:id="@+id/dialog_tip_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp" />
 
-        <CheckBox
-            android:id="@+id/dialog_tip_do_not_show_again"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:text="@string/dialog_tip_do_not_show_again" >
+            <ImageView
+                android:id="@+id/dialog_tip_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="centerInside"
+                tools:ignore="ContentDescription" />
+        </LinearLayout>
+    </ScrollView>
 
-            <requestFocus />
-        </CheckBox>
-    </LinearLayout>
+    <CheckBox
+        android:id="@+id/dialog_tip_do_not_show_again"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:ems="10"
+        android:text="@string/dialog_tip_do_not_show_again" >
 
-</ScrollView>
+        <requestFocus />
+    </CheckBox>
+
+</RelativeLayout>
