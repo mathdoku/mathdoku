@@ -14,7 +14,7 @@
     <!-- GENERAL - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <!--  The message displayed on the "start" button. -->
-    <string name="start_button_message">Start here</string>
+    <string name="start_button_message">New Game</string>
     
     <!-- The label of the buttons that close dialogs. -->
     <string name="dialog_general_button_close">Close</string>

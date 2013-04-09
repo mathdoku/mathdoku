@@ -146,6 +146,8 @@ public class MainActivity extends Activity implements
 	TextView mGameSeedText;
 	TextView mTimerText;
 
+	Menu mMainMenu;
+
 	// Digit positions are the places on which the digit buttons can be placed.
 	Button mDigitPosition[] = new Button[9];
 
@@ -349,6 +351,7 @@ public class MainActivity extends Activity implements
 			@Override
 			public void onClick(View v) {
 				openOptionsMenu();
+				mMainMenu.performIdentifierAction(R.id.newgame, 0);
 			}
 
 		});
@@ -557,6 +560,7 @@ public class MainActivity extends Activity implements
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.mainmenu, menu);
+		mMainMenu = menu;
 		return true;
 	}
 
