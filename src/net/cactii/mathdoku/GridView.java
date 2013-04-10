@@ -92,7 +92,7 @@ public class GridView extends View implements OnTouchListener {
 	}
 
 	public boolean onTouch(View arg0, MotionEvent event) {
-		if (event.getAction() != MotionEvent.ACTION_DOWN)
+		if (event.getAction() != MotionEvent.ACTION_UP)
 			return false;
 		if (!this.mGrid.isActive())
 			return false;

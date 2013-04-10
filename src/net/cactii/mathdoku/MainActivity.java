@@ -170,6 +170,8 @@ public class MainActivity extends Activity implements
 	private ProgressDialog mProgressDialogImagePreviewCreation;
 
 	private Util mUtil;
+	
+	private boolean mBlockTouchSameCell = false; 
 
 	final Handler mHandler = new Handler();
 
@@ -309,7 +311,7 @@ public class MainActivity extends Activity implements
 						} else {
 							// Controls are always visible
 
-							if (sameCellSelectedAgain) {
+							if (sameCellSelectedAgain && !mBlockTouchSameCell) {
 								if (TipInputModeChanged
 										.toBeDisplayed(mPreferences)) {
 									new TipInputModeChanged(
@@ -579,6 +581,7 @@ public class MainActivity extends Activity implements
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
+		mBlockTouchSameCell = true;
 		super.onCreateContextMenu(menu, v, menuInfo);
 		if (mGrid == null || !mGrid.isActive()) {
 			// No context menu in case puzzle isn't active.
@@ -713,6 +716,12 @@ public class MainActivity extends Activity implements
 			mGridView.invalidate();
 		}
 		return super.onContextItemSelected(item);
+	}
+	
+	@Override
+	public void onContextMenuClosed(Menu menu) {
+		mBlockTouchSameCell = false;
+		super.onContextMenuClosed(menu);
 	}
 
 	@Override
