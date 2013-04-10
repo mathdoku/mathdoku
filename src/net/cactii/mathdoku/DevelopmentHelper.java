@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import net.cactii.mathdoku.GameFile.GameFileType;
 import net.cactii.mathdoku.MainActivity.InputMode;
 import net.cactii.mathdoku.DevelopmentHelpers.DevelopmentHelperHoneycombAndAbove;
+import net.cactii.mathdoku.util.Util;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -17,10 +18,10 @@ import android.os.Build;
  * Testing of this application. Variables and methods should not be used in
  * production code with exception of static variable {@link #mMode}.
  * 
- * Checks on variable {@link #mMode} should always be made in such a way that the
- * result can be determined at compile time. In this way the enclosed block will
- * not be included in the compiled case when the condition for executing the
- * block evaluates to false. Example of intended usage:
+ * Checks on variable {@link #mMode} should always be made in such a way that
+ * the result can be determined at compile time. In this way the enclosed block
+ * will not be included in the compiled case when the condition for executing
+ * the block evaluates to false. Example of intended usage:
  * 
  * <pre class="prettyprint">
  * if (DevelopmentHelper.mode = Mode.UNIT_TESTING) {
@@ -61,8 +62,9 @@ public class DevelopmentHelper {
 	public static void generateGames(final MainActivity mainActivity) {
 		int maxCageResult = mainActivity.getResources().getInteger(
 				R.integer.maximum_cage_value);
-		mainActivity.mGridGeneratorTask = new GridGenerator(mainActivity, 3, 2,
-				maxCageResult, false);
+		mainActivity.mGridGeneratorTask = new GridGenerator(mainActivity, 8, 4,
+				maxCageResult, false,
+				new Util(mainActivity).getPackageVersionNumber());
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			// Set the options for the grid generator
 			GridGenerator.GridGeneratorOptions gridGeneratorOptions = mainActivity.mGridGeneratorTask.new GridGeneratorOptions();

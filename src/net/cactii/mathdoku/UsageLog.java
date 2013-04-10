@@ -15,6 +15,7 @@ import java.util.TreeMap;
 
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.GridGenerating.GridGeneratingParameters;
+import net.cactii.mathdoku.util.Util;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -73,6 +74,10 @@ public class UsageLog {
 	// Date at or after which the logging should be stopped.
 	Calendar mDateEndLogging;
 
+	// Reference to the application context
+	private static Activity mActivity;
+	private static Util mUtil;
+
 	// Reference to log file
 	private String mLogFileName;
 	private String mLogFilePath;
@@ -81,13 +86,10 @@ public class UsageLog {
 	// Flag whether log information should be written or not.
 	private boolean mBuildLog;
 
-	// The activity which has started this usage logger
-	private static Activity mMainActivity;
-
 	// Signature of the most recent played game
 	private String mLastGridSignature = "";
 
-	// Keep track of the trackback is used in the current game.
+	// Keep track of the trackball is used in the current game.
 	private static boolean mTrackbalUsageLoggedInSession = false;
 
 	/**
@@ -96,16 +98,17 @@ public class UsageLog {
 	 * This object can not be instantiated directly. Use {@link #getInstance()}
 	 * to get the singleton reference to the UsageLogging object.
 	 * 
-	 * @param mainActivity
+	 * @param activity
 	 *            The activity context in which the UsageLogging is created.
 	 */
 	@SuppressWarnings("deprecation")
-	private UsageLog(MainActivity mainActivity) {
-		mMainActivity = mainActivity;
+	private UsageLog(Activity activity) {
+		mActivity = activity;
+		mUtil = new Util(mActivity);
 
 		// Get preferences and check whether it is allowed to gather new data.
 		SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(mainActivity);
+				.getDefaultSharedPreferences(activity);
 		if (preferences.getBoolean(MainActivity.PREF_USAGE_LOG_DISABLED,
 				MainActivity.PREF_USAGE_LOG_DISABLED_DEFAULT)) {
 			mBuildLog = false;
@@ -113,9 +116,9 @@ public class UsageLog {
 		}
 
 		// Determine path and file names
-		mLogFileName = LOG_FILE_PREFIX + mainActivity.getVersionNumber()
+		mLogFileName = LOG_FILE_PREFIX + mUtil.getPackageVersionNumber()
 				+ LOG_FILE_EXTENSION;
-		mLogFilePath = mMainActivity.getFileStreamPath(mLogFileName)
+		mLogFilePath = mActivity.getFileStreamPath(mLogFileName)
 				.getAbsolutePath();
 
 		// Initialize the fixed date at which the logging should be closed
@@ -126,7 +129,7 @@ public class UsageLog {
 
 		// Check if logging should continue or closed
 		if (Calendar.getInstance().after(mDateEndLogging)) {
-			askConsentForSendingLog(mMainActivity);
+			askConsentForSendingLog(mActivity);
 			mBuildLog = false;
 			return;
 		}
@@ -143,7 +146,7 @@ public class UsageLog {
 		try {
 			// Open file for append, file needs to be world readable in oder to
 			// be able to send it via email.
-			mLogFile = mMainActivity.openFileOutput(mLogFileName,
+			mLogFile = mActivity.openFileOutput(mLogFileName,
 					Context.MODE_APPEND | Context.MODE_WORLD_READABLE);
 		} catch (IOException e) {
 			// Could not create the file.
@@ -153,8 +156,8 @@ public class UsageLog {
 
 		// Log all preferences in case this is a new logfile.
 		if (newLogFile) {
-			logDevice(mainActivity);
-			logConfigurationChange(mainActivity);
+			logDevice(activity);
+			logConfigurationChange(activity);
 			logPreferences("Preference.Initial", preferences);
 		}
 
@@ -165,18 +168,18 @@ public class UsageLog {
 	 * Gets the singleton reference to the UsageLogging object. If it does not
 	 * yet exist than it will be created.
 	 * 
-	 * @param mainActivity
+	 * @param activity
 	 *            The main activity context in which the UsageLogging is
 	 *            created.
 	 * 
 	 * @return The singleton reference to the UsageLogging object.
 	 */
-	public static UsageLog getInstance(MainActivity mainActivity) {
+	public static UsageLog getInstance(Activity activity) {
 		if (mUsageLogginSingletonInstance == null
-				|| !mainActivity.equals(mMainActivity)) {
+				|| !activity.equals(mActivity)) {
 			// Only the first time this method is called for this activity, the
 			// object will be created.
-			mUsageLogginSingletonInstance = new UsageLog(mainActivity);
+			mUsageLogginSingletonInstance = new UsageLog(activity);
 		}
 		return mUsageLogginSingletonInstance;
 	}
@@ -245,8 +248,7 @@ public class UsageLog {
 			sortedMap.put("Dimension",
 					activity.getResources().getString(R.string.dimension));
 
-			DisplayMetrics metrics = new DisplayMetrics();
-			activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+			DisplayMetrics metrics = mUtil.getDisplayMetrics();
 			sortedMap.put("Display.Density", Float.toString(metrics.density));
 			sortedMap.put("Display.Width", Float.toString(metrics.widthPixels));
 			sortedMap.put("Display.Height",
@@ -271,7 +273,8 @@ public class UsageLog {
 
 			SortedMap<String, String> sortedMap = new TreeMap<String, String>();
 
-			sortedMap.put(key, (value == null ? "###null###" : value.toString()));
+			sortedMap.put(key,
+					(value == null ? "###null###" : value.toString()));
 
 			logSortedMap(identifier, sortedMap);
 		}
@@ -465,7 +468,7 @@ public class UsageLog {
 
 		// Check if logging period has ended.
 		if (Calendar.getInstance().after(mDateEndLogging)) {
-			askConsentForSendingLog(mMainActivity);
+			askConsentForSendingLog(mActivity);
 			mBuildLog = false;
 			return;
 		}
@@ -506,7 +509,7 @@ public class UsageLog {
 			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 				// Clear references to he activity after delete log, so it can
 				// be recreated.
-				mMainActivity = null;
+				mActivity = null;
 			}
 		}
 	}
@@ -514,25 +517,25 @@ public class UsageLog {
 	/**
 	 * Ask consent of user to send log via email.
 	 * 
-	 * @param mainActivity
+	 * @param activity
 	 *            The main activity context in which the UsageLogging is
 	 *            created.
 	 */
-	public void askConsentForSendingLog(final Activity mainActivity) {
-		if (!isEmailIntentAvailable(mainActivity)) {
+	public void askConsentForSendingLog(final Activity activity) {
+		if (!isEmailIntentAvailable(activity)) {
 			// No email client available anymore.
 			return;
 		}
 
 		// Insert link into the dialog
-		LayoutInflater inflater = LayoutInflater.from(mainActivity);
+		LayoutInflater inflater = LayoutInflater.from(activity);
 		View usagelogView = inflater.inflate(R.layout.usagelog_dialog, null);
 		TextView textView = (TextView) usagelogView
 				.findViewById(R.id.dialog_share_log_link);
 		textView.setText(MainActivity.PROJECT_HOME + "wiki/UsageLogging");
 
 		// Build dialog
-		new AlertDialog.Builder(mainActivity)
+		new AlertDialog.Builder(activity)
 				.setTitle(R.string.dialog_usagelog_title)
 				.setView(usagelogView)
 				.setNegativeButton(R.string.dialog_usagelog_negative_button,
@@ -542,7 +545,7 @@ public class UsageLog {
 
 								// Update preferences
 								SharedPreferences preferences = PreferenceManager
-										.getDefaultSharedPreferences(mainActivity);
+										.getDefaultSharedPreferences(activity);
 								Editor prefeditor = preferences.edit();
 								prefeditor.putBoolean(
 										MainActivity.PREF_USAGE_LOG_DISABLED,
@@ -553,7 +556,7 @@ public class UsageLog {
 				.setPositiveButton(R.string.dialog_usagelog_positive_button,
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
-								askConsentForSurvey(mainActivity);
+								askConsentForSurvey(activity);
 							}
 						}).show();
 		/*
@@ -566,19 +569,19 @@ public class UsageLog {
 	/**
 	 * Ask consent for sending an additional survey.
 	 * 
-	 * @param mainActivity
+	 * @param activity
 	 *            The main activity context in which the UsageLogging is
 	 *            created.
 	 */
-	private void askConsentForSurvey(final Activity mainActivity) {
-		if (!isEmailIntentAvailable(mainActivity)) {
+	private void askConsentForSurvey(final Activity activity) {
+		if (!isEmailIntentAvailable(activity)) {
 			// No email client available anymore.
 			return;
 		}
 
-		AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
+		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
-		LayoutInflater inflater = LayoutInflater.from(mainActivity);
+		LayoutInflater inflater = LayoutInflater.from(activity);
 		final View surveyView = inflater.inflate(R.layout.survey_dialog, null);
 		builder.setTitle(R.string.dialog_survey_title)
 				.setView(surveyView)
@@ -587,7 +590,7 @@ public class UsageLog {
 							public void onClick(DialogInterface dialog, int id) {
 								// Write actual preferences to log.
 								SharedPreferences preferences = PreferenceManager
-										.getDefaultSharedPreferences(mainActivity);
+										.getDefaultSharedPreferences(activity);
 								logPreferences("Preference.Final", preferences);
 
 								// If user has entered his email address, and
@@ -616,19 +619,19 @@ public class UsageLog {
 										new String[] { "log@mathdoku.net" });
 								i.putExtra(
 										Intent.EXTRA_SUBJECT,
-										mainActivity.getResources().getString(
+										activity.getResources().getString(
 												R.string.usage_log_subject));
 								i.putExtra(
 										Intent.EXTRA_TEXT,
-										mainActivity.getResources().getString(
+										activity.getResources().getString(
 												R.string.usage_log_body));
 								i.putExtra(Intent.EXTRA_STREAM,
 										Uri.parse("file://" + mLogFilePath));
 								try {
-									mainActivity.startActivity(Intent
+									activity.startActivity(Intent
 											.createChooser(
 													i,
-													mainActivity
+													activity
 															.getResources()
 															.getString(
 																	R.string.usage_log_choose_action_title)));

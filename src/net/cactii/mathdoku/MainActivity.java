@@ -6,6 +6,7 @@ import net.cactii.mathdoku.GameFile.GameFileType;
 import net.cactii.mathdoku.Painter.GridTheme;
 import net.cactii.mathdoku.Tip.TipDialog;
 import net.cactii.mathdoku.Tip.TipInputModeChanged;
+import net.cactii.mathdoku.util.Util;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -15,14 +16,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.content.pm.PackageInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -170,6 +169,8 @@ public class MainActivity extends Activity implements
 	private GameFile mGameFileImagePreviewCreation;
 	private ProgressDialog mProgressDialogImagePreviewCreation;
 
+	private Util mUtil;
+
 	final Handler mHandler = new Handler();
 
 	// Object to save data on a configuration change
@@ -205,8 +206,11 @@ public class MainActivity extends Activity implements
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-		Display display = getWindowManager().getDefaultDisplay();
-		if (display.getHeight() < 750) {
+		// Initialize the util helper.
+		mUtil = new Util(this);
+		
+		// If too little height then request full screen usage 
+		if (mUtil.getDisplayHeight() < 750) {
 			this.getWindow().setFlags(
 					WindowManager.LayoutParams.FLAG_FULLSCREEN,
 					WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -907,7 +911,7 @@ public class MainActivity extends Activity implements
 		int maxCageResult = getResources().getInteger(
 				R.integer.maximum_cage_value);
 		mGridGeneratorTask = new GridGenerator(this, gridSize, maxCageSize,
-				maxCageResult, hideOperators);
+				maxCageResult, hideOperators, mUtil.getPackageVersionNumber());
 		mGridGeneratorTask.execute();
 	}
 
@@ -972,7 +976,8 @@ public class MainActivity extends Activity implements
 
 		TextView tv = (TextView) view
 				.findViewById(R.id.dialog_help_version_body);
-		tv.setText(getVersionName() + " (revision " + getVersionNumber() + ")");
+		tv.setText(mUtil.getPackageVersionName() + " (revision "
+				+ mUtil.getPackageVersionNumber() + ")");
 
 		tv = (TextView) view.findViewById(R.id.help_project_home_link);
 		tv.setText(PROJECT_HOME);
@@ -981,7 +986,7 @@ public class MainActivity extends Activity implements
 				.setTitle(
 						getResources().getString(R.string.application_name)
 								+ (DevelopmentHelper.mMode == Mode.DEVELOPMENT ? " r"
-										+ getVersionNumber() + " "
+										+ mUtil.getPackageVersionNumber() + " "
 										: " ")
 								+ getResources().getString(R.string.menu_help))
 				.setIcon(R.drawable.about)
@@ -1010,8 +1015,8 @@ public class MainActivity extends Activity implements
 
 		TextView textView = (TextView) view
 				.findViewById(R.id.changelog_version_body);
-		textView.setText(getVersionName() + " (revision " + getVersionNumber()
-				+ ")");
+		textView.setText(mUtil.getPackageVersionName() + " (revision "
+				+ mUtil.getPackageVersionNumber() + ")");
 
 		textView = (TextView) view.findViewById(R.id.changelog_changes_link);
 		textView.setText(PROJECT_HOME + "wiki/RevisionHistory");
@@ -1023,7 +1028,7 @@ public class MainActivity extends Activity implements
 				.setTitle(
 						getResources().getString(R.string.application_name)
 								+ (DevelopmentHelper.mMode == Mode.DEVELOPMENT ? " r"
-										+ getVersionNumber() + " "
+										+ mUtil.getPackageVersionNumber() + " "
 										: " ")
 								+ getResources().getString(
 										R.string.changelog_title))
@@ -1077,18 +1082,21 @@ public class MainActivity extends Activity implements
 			return;
 		}
 
-		int currentVersion = getVersionNumber();
+		// Get current version number from the package.
+		int packageVersionNumber = mUtil.getPackageVersionNumber();
+
+		// Get the previous installed version from the preferences.
 		int previousInstalledVersion = mPreferences.getInt(
 				PREF_CURRENT_VERSION, PREF_CURRENT_VERSION_DEFAULT);
 
 		// Start phase 1 of the upgrade process if needed.
-		if (previousInstalledVersion < currentVersion) {
+		if (previousInstalledVersion < packageVersionNumber) {
 			// On Each update of the game, all game files will be converted to
 			// the latest definitions. On completion of the game file
 			// conversion, method upgradePhase2_CreatePreviewImages will be
 			// called.
 			mGameFileConverter = new GameFileConverter(this,
-					previousInstalledVersion, currentVersion);
+					previousInstalledVersion, packageVersionNumber);
 			mGameFileConverter.execute();
 		} else if (mPreferences.contains(PREF_CREATE_PREVIEW_IMAGES_COMPLETED)
 				&& !mPreferences.getBoolean(
@@ -1096,7 +1104,7 @@ public class MainActivity extends Activity implements
 						PREF_CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT)) {
 			// Skip Phase 1 and go directly to Phase to generate new previews.
 			upgradePhase2_createPreviewImages(previousInstalledVersion,
-					currentVersion);
+					packageVersionNumber);
 		}
 		return;
 	}
@@ -1200,30 +1208,6 @@ public class MainActivity extends Activity implements
 
 		// Restart the last game
 		restartLastGame();
-	}
-
-	public int getVersionNumber() {
-		int version = -1;
-		try {
-			PackageInfo pi = getPackageManager().getPackageInfo(
-					getPackageName(), 0);
-			version = pi.versionCode;
-		} catch (Exception e) {
-			Log.e("Mathdoku", "Package name not found", e);
-		}
-		return version;
-	}
-
-	public String getVersionName() {
-		String versionname = "";
-		try {
-			PackageInfo pi = getPackageManager().getPackageInfo(
-					getPackageName(), 0);
-			versionname = pi.versionName;
-		} catch (Exception e) {
-			Log.e("Mathdoku", "Package name not found", e);
-		}
-		return versionname;
 	}
 
 	/**
@@ -1411,7 +1395,7 @@ public class MainActivity extends Activity implements
 		// Cleanup
 		stopTimer();
 		TipDialog.resetDisplayedDialogs();
-		
+
 		if (mGridGeneratorTask != null) {
 			// A new grid is generated in the background. Detach the background
 			// task from this activity. It will keep on running until finished.

@@ -12,14 +12,12 @@ public class OptionsActivity extends PreferenceActivity {
 		addPreferencesFromResource(R.xml.optionsview);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void onResume() {
-		UsageLog.getInstance();
+		UsageLog.getInstance(this);
 		super.onResume();
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void onPause() {
 		super.onPause();
