@@ -13,9 +13,8 @@
 
     <!-- GENERAL - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-
-    <!-- The message displayed on the screen to explain the player that (s)he has to press the "Menu" button on the device. -->
-    <string name="press_menu_button_message">Druk op de \"Menu\" knop.</string>
+    <!--  The message displayed on the "start" button. -->
+    <string name="start_button_message">Nieuw Spel</string>
 
     <!-- The label of the buttons that close dialogs. -->
     <string name="dialog_general_button_close">Sluit</string>
@@ -53,7 +52,7 @@
 
     <!-- The contributor title in the help screen. -->
     <string name="dialog_help_contributors_title">Ontwikkelaars</string>
-    <string name="dialog_help_contributors_body">MathDoku is initieel ontwikkeld door Ben Buxton. Bijdragen zijn gemaakt door: Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul en Christoph Steindl. Tevens willen we iedereen bedanken die fouten en verbeteringen heeft gemeld.</string>
+    <string name="dialog_help_contributors_body">MathDoku is initieel ontwikkeld door Ben Buxton. Bijdragen zijn gemaakt door: Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul, Christoph Steindl en Alexander Tesfamichael. Tevens willen we iedereen bedanken die fouten en verbeteringen heeft gemeld.</string>
 
     <!-- CHANGES DIALOG - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -284,11 +283,11 @@
 
     <!-- Title, text, drawable for tip "Input mode changed" -->
     <string name="dialog_tip_input_mode_changed_title">Invoer modus gewijzigd</string>
-    <string name="dialog_tip_input_mode_changed_text">Je hebt zojuist de invoer modus gewijzigd van %1$s in %2$s. De invoer modus kan gewijzigd worden door de geselecteerde cel nogmaals aan te raken. Of je kunt de tekst boven de cijfer knoppen aanraken.</string>
+    <string name="dialog_tip_input_mode_changed_text">Je hebt zojuist de invoer modus gewijzigd van %1$s in %2$s door de geslecteerde cel meer dan eens aan te raken. Raak de geselecteerde cel nogmaals aan om de invoer modus te wijzigen naar de vorige waarde.</string>
 
     <!-- Title, text, drawable for tip "Order of values in cage" -->
     <string name="dialog_tip_order_of_values_in_cage_title">Cel waarden</string>
-    <string name="dialog_tip_order_of_values_in_cage_text">De volgorde van de getallen in de cellen is niet belangrijk in een MathDoku puzzel. De resultaten van de berekeningen \"3 &#8212; 1\"  en \"2 / 4\" zijn beide ook gelijk aan 2. De waarden in de onderstaande afbeelding zijn dus correct.</string>
+    <string name="dialog_tip_order_of_values_in_cage_text">De volgorde van de getallen in de cellen is niet belangrijk in een MathDoku puzzel. De resultaten van de berekeningen \"2 &#8212; 3\"  en \"3 &#8212; 2\" zijn beide gelijk aan 1. De waarden in de onderstaande afbeelding zijn dus correct.</string>
 
     <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

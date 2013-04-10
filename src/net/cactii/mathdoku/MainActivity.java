@@ -2,15 +2,17 @@ package net.cactii.mathdoku;
 
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.DigitPositionGrid.DigitPositionGridType;
+import net.cactii.mathdoku.Tip.TipDialog;
 import net.cactii.mathdoku.Tip.TipInputModeChanged;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.painter.Painter.GridTheme;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import net.cactii.mathdoku.storage.GameFile;
 import net.cactii.mathdoku.storage.GameFile.GameFileType;
-import net.cactii.mathdoku.storage.database.DatabaseHelper;
 import net.cactii.mathdoku.storage.GameFileConverter;
 import net.cactii.mathdoku.storage.PreviewImage;
+import net.cactii.mathdoku.storage.database.DatabaseHelper;
+import net.cactii.mathdoku.util.Util;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -19,13 +21,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.content.pm.PackageInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -96,6 +96,8 @@ public class MainActivity extends Activity implements
 	TextView mGameSeedText;
 	TextView mTimerText;
 
+	Menu mMainMenu;
+
 	// Digit positions are the places on which the digit buttons can be placed.
 	Button mDigitPosition[] = new Button[9];
 	DigitPositionGrid mDigitPositionGrid;
@@ -118,6 +120,10 @@ public class MainActivity extends Activity implements
 	// no preview image does exist.
 	private GameFile mGameFileImagePreviewCreation;
 	private ProgressDialog mProgressDialogImagePreviewCreation;
+
+	private Util mUtil;
+	
+	private boolean mBlockTouchSameCell = false; 
 
 	final Handler mHandler = new Handler();
 
@@ -154,8 +160,11 @@ public class MainActivity extends Activity implements
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-		Display display = getWindowManager().getDefaultDisplay();
-		if (display.getHeight() < 750) {
+		// Initialize the util helper.
+		mUtil = new Util(this);
+		
+		// If too little height then request full screen usage 
+		if (mUtil.getDisplayHeight() < 750) {
 			this.getWindow().setFlags(
 					WindowManager.LayoutParams.FLAG_FULLSCREEN,
 					WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -255,7 +264,15 @@ public class MainActivity extends Activity implements
 							}
 						} else {
 							// Controls are always visible
-							if (sameCellSelectedAgain) {
+
+							if (sameCellSelectedAgain && !mBlockTouchSameCell) {
+								if (TipInputModeChanged
+										.toBeDisplayed(mMathDokuPreferences)) {
+									new TipInputModeChanged(
+											MainActivity.this,
+											(mInputMode == InputMode.MAYBE ? InputMode.NORMAL
+													: InputMode.MAYBE)).show();
+								}
 								toggleInputMode();
 							}
 						}
@@ -301,6 +318,7 @@ public class MainActivity extends Activity implements
 			@Override
 			public void onClick(View v) {
 				openOptionsMenu();
+				mMainMenu.performIdentifierAction(R.id.newgame, 0);
 			}
 
 		});
@@ -513,6 +531,8 @@ public class MainActivity extends Activity implements
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.mainmenu, menu);
+		mMainMenu = menu;
+
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			inflater.inflate(R.menu.development_mode_menu, menu);
 		}
@@ -522,6 +542,7 @@ public class MainActivity extends Activity implements
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
+		mBlockTouchSameCell = true;
 		super.onCreateContextMenu(menu, v, menuInfo);
 		if (mGrid == null || !mGrid.isActive()) {
 			// No context menu in case puzzle isn't active.
@@ -650,6 +671,12 @@ public class MainActivity extends Activity implements
 			mGridView.invalidate();
 		}
 		return super.onContextItemSelected(item);
+	}
+	
+	@Override
+	public void onContextMenuClosed(Menu menu) {
+		mBlockTouchSameCell = false;
+		super.onContextMenuClosed(menu);
 	}
 
 	@Override
@@ -826,7 +853,7 @@ public class MainActivity extends Activity implements
 		int maxCageResult = getResources().getInteger(
 				R.integer.maximum_cage_value);
 		mGridGeneratorTask = new GridGenerator(this, gridSize, maxCageSize,
-				maxCageResult, hideOperators);
+				maxCageResult, hideOperators, mUtil.getPackageVersionNumber());
 		mGridGeneratorTask.execute();
 	}
 
@@ -886,7 +913,8 @@ public class MainActivity extends Activity implements
 
 		TextView tv = (TextView) view
 				.findViewById(R.id.dialog_help_version_body);
-		tv.setText(getVersionName() + " (revision " + getVersionNumber() + ")");
+		tv.setText(mUtil.getPackageVersionName() + " (revision "
+				+ mUtil.getPackageVersionNumber() + ")");
 
 		tv = (TextView) view.findViewById(R.id.help_project_home_link);
 		tv.setText(PROJECT_HOME);
@@ -895,7 +923,7 @@ public class MainActivity extends Activity implements
 				.setTitle(
 						getResources().getString(R.string.application_name)
 								+ (DevelopmentHelper.mMode == Mode.DEVELOPMENT ? " r"
-										+ getVersionNumber() + " "
+										+ mUtil.getPackageVersionNumber() + " "
 										: " ")
 								+ getResources().getString(R.string.menu_help))
 				.setIcon(R.drawable.about)
@@ -924,8 +952,8 @@ public class MainActivity extends Activity implements
 
 		TextView textView = (TextView) view
 				.findViewById(R.id.changelog_version_body);
-		textView.setText(getVersionName() + " (revision " + getVersionNumber()
-				+ ")");
+		textView.setText(mUtil.getPackageVersionName() + " (revision "
+				+ mUtil.getPackageVersionNumber() + ")");
 
 		textView = (TextView) view.findViewById(R.id.changelog_changes_link);
 		textView.setText(PROJECT_HOME + "wiki/RevisionHistory");
@@ -937,7 +965,7 @@ public class MainActivity extends Activity implements
 				.setTitle(
 						getResources().getString(R.string.application_name)
 								+ (DevelopmentHelper.mMode == Mode.DEVELOPMENT ? " r"
-										+ getVersionNumber() + " "
+										+ mUtil.getPackageVersionNumber() + " "
 										: " ")
 								+ getResources().getString(
 										R.string.changelog_title))
@@ -991,26 +1019,25 @@ public class MainActivity extends Activity implements
 			return;
 		}
 
-		// Determine currently installed version
-		int previousInstalledVersion = mMathDokuPreferences
-				.getCurrentInstalledVersion();
+		// Get current version number from the package.
+		int packageVersionNumber = mUtil.getPackageVersionNumber();
 
-		// Determine to which version will be upgraded.
-		int currentVersion = getVersionNumber();
+		// Get the previous installed version from the preferences.
+		int previousInstalledVersion = mMathDokuPreferences.getCurrentInstalledVersion();
 
 		// Start phase 1 of the upgrade process if needed.
-		if (previousInstalledVersion < currentVersion) {
+		if (previousInstalledVersion < packageVersionNumber) {
 			// On Each update of the game, all game files will be converted to
 			// the latest definitions. On completion of the game file
 			// conversion, method upgradePhase2_CreatePreviewImages will be
 			// called.
 			mGameFileConverter = new GameFileConverter(this,
-					previousInstalledVersion, currentVersion);
+					previousInstalledVersion, packageVersionNumber);
 			mGameFileConverter.execute();
 		} else if (!mMathDokuPreferences.isCreatePreviewImagesCompleted()) {
 			// Skip Phase 1 and go directly to Phase 2 to generate new previews.
 			upgradePhase2_createPreviewImages(previousInstalledVersion,
-					currentVersion);
+					packageVersionNumber);
 		}
 		return;
 	}
@@ -1044,30 +1071,6 @@ public class MainActivity extends Activity implements
 
 		// Restart the last game
 		restartLastGame();
-	}
-
-	public int getVersionNumber() {
-		int version = -1;
-		try {
-			PackageInfo pi = getPackageManager().getPackageInfo(
-					getPackageName(), 0);
-			version = pi.versionCode;
-		} catch (Exception e) {
-			Log.e("Mathdoku", "Package name not found", e);
-		}
-		return version;
-	}
-
-	public String getVersionName() {
-		String versionname = "";
-		try {
-			PackageInfo pi = getPackageManager().getPackageInfo(
-					getPackageName(), 0);
-			versionname = pi.versionName;
-		} catch (Exception e) {
-			Log.e("Mathdoku", "Package name not found", e);
-		}
-		return versionname;
 	}
 
 	/**
@@ -1246,7 +1249,9 @@ public class MainActivity extends Activity implements
 	 * @see android.app.Activity#onRetainNonConfigurationInstance()
 	 */
 	public Object onRetainNonConfigurationInstance() {
+		// Cleanup
 		stopTimer();
+		TipDialog.resetDisplayedDialogs();
 
 		if (mGridGeneratorTask != null) {
 			// A new grid is generated in the background. Detach the background

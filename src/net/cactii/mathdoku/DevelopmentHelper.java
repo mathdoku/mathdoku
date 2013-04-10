@@ -7,6 +7,7 @@ import net.cactii.mathdoku.storage.GameFile;
 import net.cactii.mathdoku.storage.GameFile.GameFileType;
 import net.cactii.mathdoku.storage.database.DatabaseHelper;
 import net.cactii.mathdoku.DevelopmentHelpers.DevelopmentHelperHoneycombAndAbove;
+import net.cactii.mathdoku.util.Util;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -151,8 +152,9 @@ public class DevelopmentHelper {
 	public static void generateGames(final MainActivity mainActivity) {
 		int maxCageResult = mainActivity.getResources().getInteger(
 				R.integer.maximum_cage_value);
-		mainActivity.mGridGeneratorTask = new GridGenerator(mainActivity, 6, 4,
-				maxCageResult, false);
+		mainActivity.mGridGeneratorTask = new GridGenerator(mainActivity, 8, 4,
+				maxCageResult, false,
+				new Util(mainActivity).getPackageVersionNumber());
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			// Set the options for the grid generator
 			GridGenerator.GridGeneratorOptions gridGeneratorOptions = mainActivity.mGridGeneratorTask.new GridGeneratorOptions();

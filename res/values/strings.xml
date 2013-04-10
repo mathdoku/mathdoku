@@ -15,7 +15,7 @@
 
 
     <!-- The message displayed on the "start" button. -->
-    <string name="start_button_message">Start here</string>
+    <string name="start_button_message">New Game</string>
 
     <!-- The label of the buttons that close dialogs. -->
     <string name="dialog_general_button_close">Close</string>
@@ -55,7 +55,7 @@
 
     <!-- The contributor title in the help screen. -->
     <string name="dialog_help_contributors_title">Contributors</string>
-    <string name="dialog_help_contributors_body">MathDoku was initially developed by Ben Buxton. Contributions have been made by: Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul and Christoph Steindl. Also we would like to thank all users who have submitted bugs and feature requests.</string>
+    <string name="dialog_help_contributors_body">MathDoku was initially developed by Ben Buxton. Contributions have been made by: Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul, Christoph Steindl and Alexander Tesfamichael. Also we would like to thank all users who have submitted bugs and feature requests.</string>
 
     <!-- CHANGES DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -290,11 +290,11 @@
 
     <!-- Title, text, drawable for tip "Input mode changed" -->
     <string name="dialog_tip_input_mode_changed_title">Input mode changed</string>
-    <string name="dialog_tip_input_mode_changed_text">You have just changed the input mode from %1$s to %2$s.  The input mode can be changed to normal by tapping the selected cell once more. Or you can tap the text Mode: maybe above the digit buttons.</string>
+    <string name="dialog_tip_input_mode_changed_text">You have just changed the input mode from %1$s to %2$s by tapping the selected cell more than once. Tap the selected cell again to change the input mode back to the previous state.</string>
 
     <!-- Title, text, drawable for tip "Order of values in cage" -->
     <string name="dialog_tip_order_of_values_in_cage_title">Cell values</string>
-    <string name="dialog_tip_order_of_values_in_cage_text">The order of values in the cells of the cage is not relevant in a MathDoku puzzle. The results of cages \"3 &#8212; 1\"  and \"2 / 4\" both equals 2. The entire grid below is therefore valid.</string>
+    <string name="dialog_tip_order_of_values_in_cage_text">The order of values in the cells of the cage is not relevant in a MathDoku puzzle. The results of cages \"2 &#8212; 3\"  and \"3 &#8212; 2\" both equals 1. The entire grid below is therefore valid.</string>
 
     <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

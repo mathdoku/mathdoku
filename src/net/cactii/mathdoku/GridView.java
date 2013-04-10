@@ -92,7 +92,7 @@ public class GridView extends View implements OnTouchListener {
 	}
 
 	public boolean onTouch(View arg0, MotionEvent event) {
-		if (event.getAction() != MotionEvent.ACTION_DOWN)
+		if (event.getAction() != MotionEvent.ACTION_UP)
 			return false;
 		if (!this.mGrid.isActive())
 			return false;
@@ -311,7 +311,7 @@ public class GridView extends View implements OnTouchListener {
 			// puzzle
 			int gridSize = mGrid.getGridSize();
 
-			if (gridSize < 4)
+			if (gridSize < 3)
 				return;
 			if (mGrid.mCages == null)
 				return;

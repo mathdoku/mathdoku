@@ -86,12 +86,12 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	 *            True in case should be solvable without using operators.
 	 */
 	public GridGenerator(MainActivity activity, int gridSize, int maxCageSize,
-			int maxCageResult, boolean hideOperators) {
+			int maxCageResult, boolean hideOperators, int packageVersionNumber) {
 		this.mGridSize = gridSize;
 		this.mHideOperators = hideOperators;
 		this.mMaxCageSize = maxCageSize;
 		this.mMaxCageResult = maxCageResult;
-		this.mGeneratorRevisionNumber = activity.getVersionNumber();
+		this.mGeneratorRevisionNumber = packageVersionNumber;
 
 		setGridGeneratorOptions(null);
 
@@ -190,7 +190,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	 */
 	@Override
 	protected Void doInBackground(Void... params) {
-		if (mGridSize < 4) {
+		if (mGridSize < 3) {
 			return null;
 		}
 

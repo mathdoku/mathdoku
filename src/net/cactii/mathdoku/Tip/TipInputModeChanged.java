@@ -46,7 +46,7 @@ public class TipInputModeChanged extends TipDialog {
 
 			// Determine image
 			Drawable mImage = mainActivity.getResources().getDrawable(
-					R.drawable.tip_input_mode_maybe_discovered);
+					R.drawable.tip_input_mode_changed);
 
 			build(mTitle, mText, mImage);
 	}

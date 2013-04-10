@@ -37,6 +37,7 @@ public class OptionsActivity extends PreferenceActivity {
 
 	@Override
 	protected void onResume() {
+		UsageLog.getInstance(this);
 		super.onResume();
 	}
 

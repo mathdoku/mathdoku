@@ -21,10 +21,10 @@ public class GameFileList extends ListActivity {
 		this.mAdapter = new GameFileListAdapter(this);
 		setListAdapter(this.mAdapter);
 	}
-	
+
 	@Override
 	protected void onResume() {
-		UsageLog.getInstance();
+		UsageLog.getInstance(this);
 		super.onResume();
 	}
 
@@ -53,7 +53,8 @@ public class GameFileList extends ListActivity {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
 								// Do nothing.
-								UsageLog.getInstance().logFunction("DeleteGame.Cancelled");
+								UsageLog.getInstance().logFunction(
+										"DeleteGame.Cancelled");
 							}
 						})
 				.setPositiveButton(
@@ -61,7 +62,8 @@ public class GameFileList extends ListActivity {
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
-								UsageLog.getInstance().logFunction("DeleteGame.Confirmed");
+								UsageLog.getInstance().logFunction(
+										"DeleteGame.Confirmed");
 								// Deletion has been confirmed.
 								new GameFile(filename).delete();
 								GameFileList.this.mAdapter.refreshFiles();
@@ -89,7 +91,7 @@ public class GameFileList extends ListActivity {
 	 */
 	public void saveCurrent() {
 		UsageLog.getInstance().logFunction("SaveGame");
-		
+
 		// The current game was already saved as the default game file when the
 		// game file list was shown. To save the current game a copy of the
 		// default file has to be made.
