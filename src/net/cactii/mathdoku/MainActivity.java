@@ -1408,8 +1408,10 @@ public class MainActivity extends Activity implements
 	 * @see android.app.Activity#onRetainNonConfigurationInstance()
 	 */
 	public Object onRetainNonConfigurationInstance() {
+		// Cleanup
 		stopTimer();
-
+		TipDialog.resetDisplayedDialogs();
+		
 		if (mGridGeneratorTask != null) {
 			// A new grid is generated in the background. Detach the background
 			// task from this activity. It will keep on running until finished.

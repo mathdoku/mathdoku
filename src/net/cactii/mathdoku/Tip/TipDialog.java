@@ -144,6 +144,13 @@ public class TipDialog extends AlertDialog {
 	}
 
 	/**
+	 * Resets the list of displayed dialogs.
+	 */
+	public static void resetDisplayedDialogs() {
+		mDisplayedDialogs.clear();
+	}
+	
+	/**
 	 * Checks if this tips needs to be displayed. If so, it is displayed as
 	 * well. If not, nothing will happen.
 	 */
