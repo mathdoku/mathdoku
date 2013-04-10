@@ -151,13 +151,27 @@ public class Grid {
 		return mCages.get(mSelectedCell.getCageId());
 	}
 
-	public void clearUserValues() {
+	/**
+	 * Clears all cells in the entire grid.
+	 */
+	public void clearCells() {
 		if (this.mMoves != null) {
 			this.mMoves.clear();
 		}
 		if (mCells != null) {
+			boolean updateGridClearCounter = false;
 			for (GridCell cell : this.mCells) {
-				cell.clearUserValue();
+				if (cell.getUserValue() != 0) {
+					mGridStatistics.increaseCounter(StatisticsCounterType.CELLS_EMPTY);
+					mGridStatistics.decreaseCounter(StatisticsCounterType.CELLS_FILLED);
+					updateGridClearCounter = true;
+				} else if (cell.countPossibles() > 0) {
+					updateGridClearCounter = true;
+				}
+				cell.clear();
+			}
+			if (updateGridClearCounter) {
+				mGridStatistics.increaseCounter(StatisticsCounterType.GRID_CLEARED);
 			}
 		}
 	}
@@ -367,7 +381,7 @@ public class Grid {
 							|| cell.getColumn() == columnSelectedCell) {
 						if (cell.hasPossible(valueSelectedCell)) {
 							cell.saveUndoInformation(originalCellChange);
-							cell.togglePossible(valueSelectedCell);
+							cell.removePossible(valueSelectedCell);
 						}
 					}
 				}
@@ -522,7 +536,7 @@ public class Grid {
 			// UndoCounter was only stored in version 5 in the game file.
 			// Starting form version 6 it has been moved to the statistics
 			// database.
-			mGridStatistics.undos = Integer.parseInt(viewParts[index++]);
+			mGridStatistics.undoButton = Integer.parseInt(viewParts[index++]);
 		}
 		if (viewInformationVersion >= 5) {
 			mClearRedundantPossiblesInSameRowOrColumnCount = Integer
@@ -688,12 +702,6 @@ public class Grid {
 		}
 	}
 
-	public void showStatistics(MainActivity activity) {
-		if (mGridStatistics != null) {
-			mGridStatistics.show(activity);
-		}
-	}
-
 	/**
 	 * Save this grid (game file, statistics and preview). The preview image of
 	 * the grid is based upon the given grid view.
@@ -736,5 +744,14 @@ public class Grid {
 	 */
 	public void increaseCounter(StatisticsCounterType statisticsCounterType) {
 		mGridStatistics.increaseCounter(statisticsCounterType);
+	}
+	
+	/**
+	 * Get the grid statistics related to this grid.
+	 * 
+	 * @return The grid statistics related to this grid.
+	 */
+	public GridStatistics getGridStatistics() {
+		return mGridStatistics;
 	}
 }

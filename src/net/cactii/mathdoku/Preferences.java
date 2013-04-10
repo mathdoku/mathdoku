@@ -50,6 +50,9 @@ public class Preferences {
 	public final static String SHOW_BAD_CAGE_MATHS = "badmaths";
 	public final static boolean SHOW_BAD_CAGE_MATHS_DEFAULT = true;
 
+	public final static String SHOW_STATISTICS_DESCRIPTION = "ShowStatisticsDescription";
+	public final static boolean SHOW_STATISTICS_DESCRIPTION_DEFAULT = true;
+
 	public final static String SHOW_DUPE_DIGITS = "dupedigits";
 	public final static boolean SHOW_DUPE_DIGITS_DEFAULT = true;
 
@@ -222,6 +225,12 @@ public class Preferences {
 						TIP_CATEGORY_FAMILIAR_WITH_RULES_DEFAULT);
 			}
 		}
+		if (previousInstalledVersion < 198 && currentVersion >= 198) {
+			if (!mSharedPreferences.contains(SHOW_STATISTICS_DESCRIPTION)) {
+				prefeditor.putBoolean(SHOW_STATISTICS_DESCRIPTION, SHOW_STATISTICS_DESCRIPTION_DEFAULT);
+			}
+		}		
+		
 		prefeditor.putInt(CURRENT_VERSION, currentVersion);
 		prefeditor.commit();
 	}
@@ -521,5 +530,16 @@ public class Preferences {
 	public boolean showBadCageMaths() {
 		return mSharedPreferences.getBoolean(SHOW_BAD_CAGE_MATHS,
 				SHOW_BAD_CAGE_MATHS_DEFAULT);
+	}
+
+	/**
+	 * Checks whether a description has to be shown below a statistics chart.
+	 * 
+	 * @return True in case statistic descriptions have to be shown. False
+	 *         otherwise.
+	 */
+	public boolean showStatisticsDescription() {
+		return mSharedPreferences.getBoolean(SHOW_STATISTICS_DESCRIPTION,
+				SHOW_STATISTICS_DESCRIPTION_DEFAULT);
 	}
 }

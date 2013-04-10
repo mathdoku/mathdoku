@@ -313,7 +313,6 @@ public class MainActivity extends Activity implements
 					if (event.getAction() == MotionEvent.ACTION_DOWN) {
 						if (mGrid != null) {
 							mGrid.getGridGeneratingParameters().show(activity);
-							mGrid.showStatistics(activity);
 						}
 					}
 					return false;
@@ -326,7 +325,6 @@ public class MainActivity extends Activity implements
 					if (event.getAction() == MotionEvent.ACTION_DOWN) {
 						if (mGrid != null) {
 							mGrid.getGridGeneratingParameters().show(activity);
-							mGrid.showStatistics(activity);
 						}
 					}
 					return false;
@@ -367,7 +365,8 @@ public class MainActivity extends Activity implements
 
 		checkVersion();
 
-		mMathDokuPreferences.mSharedPreferences.registerOnSharedPreferenceChangeListener(this);
+		mMathDokuPreferences.mSharedPreferences
+				.registerOnSharedPreferenceChangeListener(this);
 
 		restartLastGame();
 	}
@@ -393,10 +392,11 @@ public class MainActivity extends Activity implements
 
 		super.onPause();
 	}
-	
+
 	@Override
 	protected void onDestroy() {
-		mMathDokuPreferences.mSharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+		mMathDokuPreferences.mSharedPreferences
+				.unregisterOnSharedPreferenceChangeListener(this);
 		super.onDestroy();
 	}
 
@@ -513,6 +513,9 @@ public class MainActivity extends Activity implements
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.mainmenu, menu);
+		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			inflater.inflate(R.menu.development_mode_menu, menu);
+		}
 		return true;
 	}
 
@@ -591,13 +594,7 @@ public class MainActivity extends Activity implements
 		switch (item.getItemId()) {
 		case CONTEXT_MENU_CLEAR_CAGE_CELLS:
 			UsageLog.getInstance().logFunction("ContextMenu.ClearCageCells");
-			if (selectedCell == null) {
-				break;
-			}
-			for (GridCell cell : selectedGridCage.mCells) {
-				cell.saveUndoInformation(null);
-				cell.clearUserValue();
-			}
+			selectedGridCage.clearCells(mGrid.getGridStatistics());
 			this.mGridView.invalidate();
 			break;
 		case CONTEXT_MENU_USE_CAGE_MAYBES:
@@ -680,6 +677,7 @@ public class MainActivity extends Activity implements
 		case R.id.checkprogress:
 			int textId;
 			UsageLog.getInstance().logFunction("Menu.CheckProgress");
+			mGrid.increaseCounter(StatisticsCounterType.CHECK_PROGRESS_USED);
 			if (mGrid.isSolutionValidSoFar())
 				textId = R.string.ProgressOK;
 			else {
@@ -691,9 +689,22 @@ public class MainActivity extends Activity implements
 			toast.setGravity(Gravity.CENTER, 0, 0);
 			toast.show();
 			return true;
+		case R.id.menu_statistics:
+			UsageLog.getInstance().logFunction("Menu.Statistics");
+			Intent intentStatistics = new Intent(this, StatisticsActivity.class);
+			if (mGrid != null) {
+				intentStatistics.putExtra(
+						StatisticsActivity.BUNDLE_KEY_SIGNATURE_ID, mGrid
+								.getGridStatistics().getSignatureId());
+			}
+			startActivity(intentStatistics);
+			return true;
 		case R.id.options:
 			UsageLog.getInstance().logFunction("Menu.ViewOptions");
-			startActivity(new Intent(MainActivity.this, OptionsActivity.class));
+			Intent intent = new Intent(this, OptionsActivity.class);
+			intent.putExtra(OptionsActivity.BUNDLE_KEY_OPTIONS_VIEW_XML_RES_ID,
+					R.xml.optionsview);
+			startActivity(intent);
 			return true;
 		case R.id.help:
 			UsageLog.getInstance().logFunction("Menu.ViewHelp.Manual");
@@ -706,7 +717,8 @@ public class MainActivity extends Activity implements
 				return super.onOptionsItemSelected(menuItem);
 			} else {
 				if (DevelopmentHelper.onDevelopmentHelperOption(this, menuId)) {
-					// A development helper menu option was processed succesfully.
+					// A development helper menu option was processed
+					// succesfully.
 					return true;
 				} else {
 					return super.onOptionsItemSelected(menuItem);
@@ -961,7 +973,7 @@ public class MainActivity extends Activity implements
 									int which) {
 								UsageLog.getInstance().logFunction(
 										"ContextMenu.ClearGrid");
-								MainActivity.this.mGrid.clearUserValues();
+								MainActivity.this.mGrid.clearCells();
 								MainActivity.this.mGridView.invalidate();
 							}
 						}).show();

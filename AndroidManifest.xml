@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="net.cactii.mathdoku"
-    android:versionCode="225"
+    android:versionCode="228"
     android:versionName="2.0 (dev version)" >
 
-    <uses-sdk android:minSdkVersion="3" />
+    <uses-sdk android:minSdkVersion="5" />
 
     <supports-screens
         android:anyDensity="true"
@@ -30,6 +30,10 @@
         </activity>
         <activity android:name="net.cactii.mathdoku.OptionsActivity" />
         <activity android:name="net.cactii.mathdoku.GameFileList" />
+        <activity
+            android:name="net.cactii.mathdoku.StatisticsActivity"
+            android:label="@string/statistics_activity_title" >
+        </activity>
     </application>
 
 </manifest>

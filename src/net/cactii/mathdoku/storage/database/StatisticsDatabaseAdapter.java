@@ -25,9 +25,14 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	static final String KEY_LAST_MOVE = "last_move";
 	static final String KEY_ELAPSED_TIME = "elapsed_time";
 	static final String KEY_CHEAT_PENALTY_TIME = "cheat_penalty_time";
-	static final String KEY_MOVES = "moves";
+	static final String KEY_CELLS_USER_VALUE_FILLED = "cells_user_value_filled";
+	static final String KEY_CELLS_USER_VALUES_EMPTY = "cells_user_value_empty";
+	static final String KEY_CELLS_USER_VALUES_REPLACED = "cells_user_value_replaced";
 	static final String KEY_POSSIBLES = "possibles";
 	static final String KEY_UNDOS = "undos";
+	static final String KEY_CELLS_CLEARED = "cells_cleared";
+	static final String KEY_CAGE_CLEARED = "cage_cleared";
+	static final String KEY_GRID_CLEARED = "grid_cleared";
 	static final String KEY_CELLS_REVEALED = "cells_revealed";
 	static final String KEY_OPERATORS_REVEALED = "operators_revealed";
 	static final String KEY_CHECK_PROGRESS_USED = "check_progress_used";
@@ -38,8 +43,10 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 
 	static final String[] allColumns = { KEY_ROWID, KEY_GRID_SIGNATURE,
 			KEY_GRID_SIZE, KEY_FIRST_MOVE, KEY_LAST_MOVE, KEY_ELAPSED_TIME,
-			KEY_CHEAT_PENALTY_TIME, KEY_MOVES, KEY_POSSIBLES, KEY_UNDOS,
-			KEY_CELLS_REVEALED, KEY_OPERATORS_REVEALED,
+			KEY_CHEAT_PENALTY_TIME, KEY_CELLS_USER_VALUE_FILLED,
+			KEY_CELLS_USER_VALUES_EMPTY, KEY_CELLS_USER_VALUES_REPLACED,
+			KEY_POSSIBLES, KEY_UNDOS, KEY_CELLS_CLEARED, KEY_CAGE_CLEARED,
+			KEY_GRID_CLEARED, KEY_CELLS_REVEALED, KEY_OPERATORS_REVEALED,
 			KEY_CHECK_PROGRESS_USED, KEY_CHECK_PROGRESS_INVALIDS_FOUND,
 			KEY_SOLUTION_REVEALED, KEY_SOLVED_MANUALLY, KEY_FINISHED };
 
@@ -75,11 +82,21 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 								"not null default 0"),
 						createColumn(KEY_CHEAT_PENALTY_TIME, "long",
 								"not null default 0"),
-						createColumn(KEY_MOVES, "integer",
+						createColumn(KEY_CELLS_USER_VALUE_FILLED, "integer",
+								" not null default 0"),
+						createColumn(KEY_CELLS_USER_VALUES_EMPTY, "integer",
+								" not null default 0"),
+						createColumn(KEY_CELLS_USER_VALUES_REPLACED, "integer",
 								" not null default 0"),
 						createColumn(KEY_POSSIBLES, "integer",
 								" not null default 0"),
 						createColumn(KEY_UNDOS, "integer",
+								" not null default 0"),
+						createColumn(KEY_CELLS_CLEARED, "integer",
+								" not null default 0"),
+						createColumn(KEY_CAGE_CLEARED, "integer",
+								" not null default 0"),
+						createColumn(KEY_GRID_CLEARED, "integer",
 								" not null default 0"),
 						createColumn(KEY_CELLS_REVEALED, "integer",
 								" not null default 0"),
@@ -125,7 +142,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 
 	/**
 	 * Inserts a new grid into the database. The signature should be unique. The
-	 * record should be created as soon as the user makes his very first move.
+	 * record should be created as soon as the grid is created.
 	 * 
 	 * @param signature
 	 *            The unique signature of the game.
@@ -148,6 +165,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(KEY_GRID_SIGNATURE, signature.trim());
 		initialValues.put(KEY_GRID_SIZE, gridSize);
+		initialValues.put(KEY_CELLS_USER_VALUES_EMPTY, gridSize * gridSize);
 		initialValues.put(KEY_FIRST_MOVE, now.toString());
 		initialValues.put(KEY_LAST_MOVE, now.toString());
 
@@ -169,6 +187,21 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	}
 
 	/**
+	 * Get a grid by searching on (row) id.
+	 * 
+	 * @param id
+	 *            The unique row id of the grid to be found.
+	 * @return The grid statistics for the grid with the given signature id.
+	 */
+	public GridStatistics get(int signatureId) {
+		Cursor cursor = db.query(true, TABLE, allColumns, KEY_ROWID + "="
+				+ signatureId, null, null, null, null, null);
+		GridStatistics gridStatistics = toGridStatistics(cursor);
+		cursor.close();
+		return gridStatistics;
+	}
+
+	/**
 	 * Get a grid by searching on the signature.
 	 * 
 	 * @param signature
@@ -179,7 +212,21 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		Cursor cursor = db.query(true, TABLE, allColumns, KEY_GRID_SIGNATURE
 				+ "=" + DatabaseAdapter.stringBetweenQuotes(signature), null,
 				null, null, null, null);
+		GridStatistics gridStatistics = toGridStatistics(cursor);
+		cursor.close();
+		return gridStatistics;
+	}
 
+	/**
+	 * Convert first record in the given cursor to a GridStatistics object.
+	 * 
+	 * @param cursor
+	 *            The cursor to be converted.
+	 * 
+	 * @return A GridStatistics object for the first statistics record stored in
+	 *         the given cursor. Null in case of an error.
+	 */
+	private GridStatistics toGridStatistics(Cursor cursor) {
 		if (cursor == null || !cursor.moveToFirst()) {
 			// Record can not be processed.
 			return null;
@@ -187,7 +234,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 
 		// Convert cursor record to a grid statics object.
 		GridStatistics gridStatistics = new GridStatistics();
-		gridStatistics._id = cursor.getLong(cursor
+		gridStatistics.mId = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_ROWID));
 		gridStatistics.gridSignature = cursor.getString(cursor
 				.getColumnIndexOrThrow(KEY_GRID_SIGNATURE));
@@ -201,12 +248,22 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				.getColumnIndexOrThrow(KEY_ELAPSED_TIME));
 		gridStatistics.cheatPenaltyTime = cursor.getLong(cursor
 				.getColumnIndexOrThrow(KEY_CHEAT_PENALTY_TIME));
-		gridStatistics.moves = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_MOVES));
-		gridStatistics.possibles = cursor.getInt(cursor
+		gridStatistics.cellsUserValueFilled = cursor.getInt(cursor
+				.getColumnIndexOrThrow(KEY_CELLS_USER_VALUE_FILLED));
+		gridStatistics.cellsUserValueEmtpty = cursor.getInt(cursor
+				.getColumnIndexOrThrow(KEY_CELLS_USER_VALUES_EMPTY));
+		gridStatistics.userValueReplaced = cursor.getInt(cursor
+				.getColumnIndexOrThrow(KEY_CELLS_USER_VALUES_REPLACED));
+		gridStatistics.maybeValue = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_POSSIBLES));
-		gridStatistics.undos = cursor.getInt(cursor
+		gridStatistics.undoButton = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_UNDOS));
+		gridStatistics.cellCleared = cursor.getInt(cursor
+				.getColumnIndexOrThrow(KEY_CELLS_CLEARED));
+		gridStatistics.cageCleared = cursor.getInt(cursor
+				.getColumnIndexOrThrow(KEY_CAGE_CLEARED));
+		gridStatistics.gridCleared = cursor.getInt(cursor
+				.getColumnIndexOrThrow(KEY_GRID_CLEARED));
 		gridStatistics.cellsRevealed = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_CELLS_REVEALED));
 		gridStatistics.operatorsRevevealed = cursor.getInt(cursor
@@ -223,6 +280,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		gridStatistics.finished = Boolean.valueOf(cursor.getString(cursor
 				.getColumnIndexOrThrow(KEY_FINISHED)));
 
+		cursor.close();
 		return gridStatistics;
 	}
 
@@ -237,16 +295,24 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 */
 	public boolean update(GridStatistics gridStatistics) {
 		ContentValues newValues = new ContentValues();
-		newValues.put(KEY_ROWID, gridStatistics._id);
+		newValues.put(KEY_ROWID, gridStatistics.mId);
 		newValues.put(KEY_GRID_SIGNATURE, gridStatistics.gridSignature);
 		newValues.put(KEY_GRID_SIZE, gridStatistics.gridSize);
 		newValues.put(KEY_FIRST_MOVE, gridStatistics.firstMove.toString());
 		newValues.put(KEY_LAST_MOVE, gridStatistics.lastMove.toString());
 		newValues.put(KEY_ELAPSED_TIME, gridStatistics.elapsedTime);
 		newValues.put(KEY_CHEAT_PENALTY_TIME, gridStatistics.cheatPenaltyTime);
-		newValues.put(KEY_MOVES, gridStatistics.moves);
-		newValues.put(KEY_POSSIBLES, gridStatistics.possibles);
-		newValues.put(KEY_UNDOS, gridStatistics.undos);
+		newValues.put(KEY_CELLS_USER_VALUE_FILLED,
+				gridStatistics.cellsUserValueFilled);
+		newValues.put(KEY_CELLS_USER_VALUES_EMPTY,
+				gridStatistics.cellsUserValueEmtpty);
+		newValues.put(KEY_CELLS_USER_VALUES_REPLACED,
+				gridStatistics.userValueReplaced);
+		newValues.put(KEY_POSSIBLES, gridStatistics.maybeValue);
+		newValues.put(KEY_UNDOS, gridStatistics.undoButton);
+		newValues.put(KEY_CELLS_CLEARED, gridStatistics.cellCleared);
+		newValues.put(KEY_CAGE_CLEARED, gridStatistics.cageCleared);
+		newValues.put(KEY_GRID_CLEARED, gridStatistics.gridCleared);
 		newValues.put(KEY_CELLS_REVEALED, gridStatistics.cellsRevealed);
 		newValues.put(KEY_OPERATORS_REVEALED,
 				gridStatistics.operatorsRevevealed);
@@ -254,16 +320,18 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				.put(KEY_CHECK_PROGRESS_USED, gridStatistics.checkProgressUsed);
 		newValues.put(KEY_CHECK_PROGRESS_INVALIDS_FOUND,
 				gridStatistics.checkProgressInvalidsFound);
-		newValues.put(KEY_SOLUTION_REVEALED, gridStatistics.solutionRevealed);
-		newValues.put(KEY_SOLVED_MANUALLY, gridStatistics.solvedManually);
-		newValues.put(KEY_FINISHED, gridStatistics.finished);
+		newValues.put(KEY_SOLUTION_REVEALED,
+				Boolean.toString(gridStatistics.solutionRevealed));
+		newValues.put(KEY_SOLVED_MANUALLY,
+				Boolean.toString(gridStatistics.solvedManually));
+		newValues.put(KEY_FINISHED, Boolean.toString(gridStatistics.finished));
 
 		return (db
 				.update(TABLE,
 						newValues,
 						KEY_ROWID
 								+ " = "
-								+ gridStatistics._id
+								+ gridStatistics.mId
 								+ " AND "
 								+ KEY_GRID_SIGNATURE
 								+ " = "

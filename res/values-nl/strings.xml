@@ -86,6 +86,9 @@
     <!-- The sub-menu item to check user entries against the solution. -->
     <string name="menu_checkprogress">Controleer Voortgang</string>
 
+    <!-- The sub-menu item to go to the statistics. -->
+    <string name="menu_statistics">Statistieken</string>
+
     <!-- The menu item that allows the player to navigate to the options screen. -->
     <string name="menu_options">Opties</string>
 
@@ -238,6 +241,7 @@
 
     <!-- CONTROLS FOR PUZZLE SOLVING  - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+
     <!-- The text for input mode "normal" which is used to enter a definitive value into the selected cell. -->
     <string name="input_mode_normal_short">Normaal</string>
     <string name="input_mode_normal_long">Normale invoer</string>
@@ -282,10 +286,52 @@
     <string name="dialog_tip_input_mode_changed_title">Invoer modus gewijzigd</string>
     <string name="dialog_tip_input_mode_changed_text">Je hebt zojuist de invoer modus gewijzigd van %1$s in %2$s. De invoer modus kan gewijzigd worden door de geselecteerde cel nogmaals aan te raken. Of je kunt de tekst boven de cijfer knoppen aanraken.</string>
 
-    <!--  Title, text, drawable for tip "Order of values in cage" -->
+    <!-- Title, text, drawable for tip "Order of values in cage" -->
     <string name="dialog_tip_order_of_values_in_cage_title">Cel waarden</string>
     <string name="dialog_tip_order_of_values_in_cage_text">De volgorde van de getallen in de cellen is niet belangrijk in een MathDoku puzzel. De resultaten van de berekeningen \"3 &#8212; 1\"  en \"2 / 4\" zijn beide ook gelijk aan 2. De waarden in de onderstaande afbeelding zijn dus correct.</string>
-    
+
+    <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- Title of statistics activity. -->
+    <string name="statistics_activity_title">Puzzel statistieken</string>
+    <string name="statistics_not_available">Sorry, geen statistieken beschikbaar voor dit spel.</string>
+
+    <!-- Name of settings option menu in activity statistics. -->
+    <string name="statistics_settings">Settings</string>
+
+    <!-- Title and a body which explains the purpose of the chart "Progress". -->
+    <string name="progress_chart_title">Voortgang</string>
+    <string name="progress_chart_body">Deze afbeelding toont de voortgang van het oplossen van deze puzzel. Voor ingevulde cellen wordt niet getoond of de ingevulde waarde (in)correct is. Een cel die mogelijke waarden bevat wordt geteld als een lege cel.</string>
+    <!-- Dimensions displayed in chart "Progress". -->
+    <string name="progress_chart_cells_filled">Cellen ingevuld</string>
+    <string name="progress_chart_cells_empty">Cellen leeg</string>
+
+    <!-- Title and a body which explains the purpose of the chart "Avoidable moves". -->
+    <string name="avoidable_moves_chart_title">Vermijdbare zetten</string>
+    <string name="avoidable_moves_chart_body">Minder ervaren spelers maken meer vermijdbare zetten dan ervaren spelers. Een vermijdbare zet is een zet die niet noodzakelijk is om de puzzel op te lossen. Corrigeren of leegmaken van waarden in een cell, het gebruiken van \"mogelijke waarden\" of terugzetten van waarden zijn zetten die voorkomen moeten worden om een betere speler te worden.</string>
+    <!-- Dimensions displayed in chart "Avoidable moves". -->
+    <string name="avoidable_moves_chart_user_value_replaced">Cel waarden gecorrigeerd</string>
+    <string name="avoidable_moves_chart_maybe_value_used">Mogelijke waarden gebruikt</string>
+    <string name="avoidable_moves_chart_undo_button_used">Terugzetten gebruikt</string>
+    <string name="avoidable_moves_chart_clear_used">Leegmaken (cel, groep of puzzel) gebruikt</string>
+
+    <!-- Title and a body which explains the purpose of the chart "Cheats used". -->
+    <string name="statistics_cheats_used_title">Vals spelen</string>
+    <string name="statistics_cheats_used_body">Je hebt minimaal eenmaal vals gespeeld in dit spel. Onervaren spelers spelen vaker vals dan meer ervaren spelers. Elke puzzel heeft één unieke oplossing die gevonden kan worden zonder vals te spelen.</string>
+    <!-- Dimensions displayed in chart "Cheats used". -->
+    <string name="statistics_cheats_check_progress">Voortgang gecontroleerd</string>
+    <string name="statistics_cheats_cells_revealed">Cellen onthuld</string>
+    <string name="statistics_cheats_operators_revealed">Operatatietekens onthuld</string>
+    <string name="statistics_cheats_solution_revealed">Oplossing onthuld</string>
+
+    <!-- OPTIONS STATISTICS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The title and summary of the "Hide explanation" option. This option enables or disables displayin the explanations below the statistics charts. -->
+    <string name="option_show_statistics_description_title">Grafiek toelichting</string>
+    <string name="option_show_statistics_description_summary">Toon toelichting beneden de grafiek.</string>
+
     <!-- MISCELLANEOUS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 

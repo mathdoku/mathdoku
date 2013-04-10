@@ -141,12 +141,39 @@ public class GridCell {
 		return this.mPossibles.get(0);
 	}
 
-	public void togglePossible(int digit) {
-		if (this.mPossibles.indexOf(Integer.valueOf(digit)) == -1)
+	/**
+	 * Adds the given digit to the possible values if not yet added before.
+	 * 
+	 * @param digit
+	 *            The digit which has to be added.
+	 * @return True in case the digit has been added. False otherwise or in case
+	 *         the digit was added before.
+	 */
+	public boolean addPossible(int digit) {
+		if (!hasPossible(digit)) {
 			this.mPossibles.add(digit);
-		else
+			Collections.sort(mPossibles);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Removes the given digit from the possible values if it was added before.
+	 * 
+	 * @param digit
+	 *            The digit which has to be removed.
+	 * @return True in case the digit has been removed. False otherwise or in case
+	 *         the digit was not added before.
+	 */
+	public boolean removePossible(int digit) {
+		if (hasPossible(digit)) {
 			this.mPossibles.remove(Integer.valueOf(digit));
-		Collections.sort(mPossibles);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public int getUserValue() {
@@ -174,7 +201,11 @@ public class GridCell {
 		}
 	}
 
-	public void clearUserValue() {
+	/**
+	 * Clear the user value and/or possible values in a cell.
+	 */
+	public void clear() {
+		// Note: setting the userValue to 0 clear the cell but also the possible values!
 		setUserValue(0);
 	}
 
@@ -542,7 +573,7 @@ public class GridCell {
 			if (!cellParts[index].equals("")) {
 				for (String possible : cellParts[index]
 						.split(GameFile.FIELD_DELIMITER_LEVEL2)) {
-					togglePossible(Integer.parseInt(possible));
+					addPossible(Integer.parseInt(possible));
 				}
 			}
 			index++;

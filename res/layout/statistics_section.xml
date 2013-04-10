@@ -1,0 +1,30 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/statistics_section"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:context=".StatisticsActivity" >
+
+    <TextView
+        android:id="@+id/statistics_section_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:lines="1"
+        android:textSize="@dimen/dialog_text_size_heading1"
+        android:layout_gravity="center_horizontal" />
+    
+    <LinearLayout
+        android:id="@+id/statistics_section_chart"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:orientation="vertical" />
+
+    <TextView
+        android:id="@+id/statistics_section_body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="20dp" />
+
+</LinearLayout>

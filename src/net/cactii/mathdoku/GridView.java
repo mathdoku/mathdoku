@@ -150,13 +150,13 @@ public class GridView extends View implements OnTouchListener {
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
 			if (this.mTouchedListener != null) {
 				mGrid.getSelectedCell().mSelected = true;
-				this.mTouchedListener
-						.gridTouched(mGrid.getSelectedCell(), false); // TODO;
-																		// test
-																		// on
-																		// change
-																		// of
-																		// cell?
+				this.mTouchedListener.gridTouched(mGrid.getSelectedCell(),
+						false); // TODO;
+								// test
+								// on
+								// change
+								// of
+								// cell?
 			}
 			return true;
 		}
@@ -184,7 +184,8 @@ public class GridView extends View implements OnTouchListener {
 		float y = event.getY();
 		this.mTrackPosX += x * trackMult;
 		this.mTrackPosY += y * trackMult;
-		GridCell cell = this.coordinatesToCell(this.mTrackPosX, this.mTrackPosY);
+		GridCell cell = this
+				.coordinatesToCell(this.mTrackPosX, this.mTrackPosY);
 		if (cell == null) {
 			this.mTrackPosX -= x * trackMult;
 			this.mTrackPosY -= y * trackMult;
@@ -194,7 +195,7 @@ public class GridView extends View implements OnTouchListener {
 		if (mGrid.getSelectedCell() != null) {
 			mGrid.getSelectedCell().mSelected = false;
 			if (mGrid.getSelectedCell() != cell) // TODO: test with toggling
-												// input mode
+													// input mode
 				this.mTouchedListener.gridTouched(cell, false);
 		}
 		for (GridCell c : mGrid.mCells) {
@@ -230,7 +231,7 @@ public class GridView extends View implements OnTouchListener {
 		return mGrid.getSelectedCell();
 	}
 
-	public void digitSelected(int value, MainActivity.InputMode inputMode) {
+	public void digitSelected(int newValue, MainActivity.InputMode inputMode) {
 		// Display a message in case no cell is selected.
 		GridCell selectedCell = mGrid.getSelectedCell();
 		if (selectedCell == null) {
@@ -242,9 +243,17 @@ public class GridView extends View implements OnTouchListener {
 		// Save undo information
 		CellChange orginalUserMove = selectedCell.saveUndoInformation(null);
 
-		if (value == 0) { // Clear Button
-			selectedCell.clearPossibles();
-			selectedCell.setUserValue(0);
+		// Get old value of selected cell
+		int oldValue = selectedCell.getUserValue();
+
+		if (newValue == 0) { // Clear Button
+			if (oldValue != 0) {
+				selectedCell.clearPossibles();
+				selectedCell.setUserValue(0);
+				mGrid.getGridStatistics().increaseCounter(StatisticsCounterType.CELL_CLEARED);
+				mGrid.getGridStatistics().increaseCounter(StatisticsCounterType.CELLS_EMPTY);
+				mGrid.getGridStatistics().decreaseCounter(StatisticsCounterType.CELLS_FILLED);
+			}
 		} else {
 			if (TipOrderOfValuesInCage.toBeDisplayed(mPreferences,
 					selectedCell.getCage())) {
@@ -253,22 +262,33 @@ public class GridView extends View implements OnTouchListener {
 			switch (inputMode) {
 			case MAYBE:
 				if (selectedCell.isUserValueSet()) {
-					selectedCell.clearUserValue();
+					selectedCell.clear();
 				}
-				selectedCell.togglePossible(value);
-				mGrid.increaseCounter(StatisticsCounterType.POSSIBLES);
+				if (selectedCell.hasPossible(newValue)) {
+					selectedCell.removePossible(newValue);
+				} else {
+					selectedCell.addPossible(newValue);
+					mGrid.increaseCounter(StatisticsCounterType.POSSIBLES);
+				}
 				break;
 			case NORMAL:
-				selectedCell.setUserValue(value);
-				selectedCell.clearPossibles();
-				mGrid.increaseCounter(StatisticsCounterType.MOVES);
-
-				if (mPreferences.isClearRedundantPossiblesEnabled()) {
-					// Update possible values for other cells in this row and
-					// column.
-					mGrid.clearRedundantPossiblesInSameRowOrColumn(orginalUserMove);
+				if (newValue != oldValue) {
+					// User value of cell has actually changed.
+					selectedCell.setUserValue(newValue);
+					selectedCell.clearPossibles();
+					if (oldValue == 0) {
+						mGrid.getGridStatistics().increaseCounter(StatisticsCounterType.CELLS_FILLED);
+						mGrid.getGridStatistics().decreaseCounter(StatisticsCounterType.CELLS_EMPTY);
+					} else {
+						mGrid.getGridStatistics().increaseCounter(StatisticsCounterType.USER_VALUE_REPLACED);
+					}
+					if (mPreferences.isClearRedundantPossiblesEnabled()) {
+						// Update possible values for other cells in this row
+						// and
+						// column.
+						mGrid.clearRedundantPossiblesInSameRowOrColumn(orginalUserMove);
+					}
 				}
-
 				break;
 			case NO_INPUT__DISPLAY_GRID:
 			case NO_INPUT__HIDE_GRID:
@@ -287,7 +307,7 @@ public class GridView extends View implements OnTouchListener {
 		}
 
 		synchronized (mGrid.mLock) { // Avoid redrawing at the same time as
-									// creating
+										// creating
 			// puzzle
 			int gridSize = mGrid.getGridSize();
 
@@ -363,7 +383,6 @@ public class GridView extends View implements OnTouchListener {
 	// Highlight those cells where the user has made a mistake
 	public void markInvalidChoices() {
 		boolean isValid = true;
-		mGrid.increaseCounter(StatisticsCounterType.CHECK_PROGRESS_USED);
 		for (GridCell cell : mGrid.mCells)
 			if (cell.isUserValueSet())
 				if (cell.getUserValue() != cell.getCorrectValue()) {

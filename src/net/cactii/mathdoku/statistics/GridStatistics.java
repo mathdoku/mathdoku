@@ -1,20 +1,14 @@
 package net.cactii.mathdoku.statistics;
 
-import java.sql.Timestamp;
-
-import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.storage.database.DatabaseHelper;
 import net.cactii.mathdoku.storage.database.StatisticsDatabaseAdapter;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 
 /**
  * Statistics for a single grid.
  */
 public class GridStatistics {
-	// Unique row id in database
-	public long _id;
+	// Unique row id for the signature in database.
+	public int mId;
 
 	// Unique string representation of this grid
 	public String gridSignature;
@@ -32,14 +26,31 @@ public class GridStatistics {
 	// Time added to the elapsed time because of using cheats
 	public long cheatPenaltyTime; // TODO: implement cheat penalty time
 
-	// The number of moves (e.g. number of user values entered) made
-	public int moves;
+	// ****************
+	// Avoidable moves
+	// ****************
+
+	// The number of times a user value in cell was replaced by another value
+	public int userValueReplaced;
 
 	// The number of possible values used
-	public int possibles;
+	public int maybeValue;
 
-	// THe number of moves reverse via undo
-	public int undos;
+	// The number of moves reversed via undo
+	public int undoButton;
+
+	// The number of times the clear button is used to clear a single cell
+	public int cellCleared;
+
+	// The number of times a cage was cleared
+	public int cageCleared;
+
+	// The number of times the entire grid was cleared
+	public int gridCleared;
+
+	// *******
+	// Cheats
+	// *******
 
 	// The number of cells revealed (a cheat)
 	public int cellsRevealed;
@@ -55,6 +66,14 @@ public class GridStatistics {
 	// Has the entire solution been revealed?
 	public boolean solutionRevealed;
 
+	// ***********************
+	// Status for entire grid
+	// ***********************
+
+	// Cells filled and empty
+	public int cellsUserValueFilled;
+	public int cellsUserValueEmtpty;
+
 	// Has the grid been solved manually (i.e. not revealed)?
 	public boolean solvedManually;
 
@@ -63,85 +82,14 @@ public class GridStatistics {
 
 	// Counters available
 	public enum StatisticsCounterType {
-		MOVES, POSSIBLES, UNDOS, CELLS_REVEALED, OPERATORS_REVEALED, CHECK_PROGRESS_USED, CHECK_PROGRESS_INVALIDS_FOUND
+		CELLS_FILLED, CELLS_EMPTY, USER_VALUE_REPLACED, POSSIBLES, UNDOS, CELL_CLEARED, CAGE_CLEARED, GRID_CLEARED, CELLS_REVEALED, OPERATORS_REVEALED, CHECK_PROGRESS_USED, CHECK_PROGRESS_INVALIDS_FOUND
 	};
 
-	public void show(Activity activity) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-		builder.setTitle("Grid statistics")
-				.setMessage(
-						"Current statistics for grid "
-						// Line 1
-								+ " * id: "
-								+ _id
-								+ " \n"
-								// Line 2
-								+ " * grid size: "
-								+ gridSize
-								+ " \n"
-								// Line 3
-								+ " * First move: "
-								+ firstMove.toString()
-								+ " \n"
-								// Line 4
-								+ " * Last move: "
-								+ lastMove
-								+ " \n"
-								// Line 5
-								+ " * Elapsed: "
-								+ elapsedTime
-								+ " \n"
-								// Line 6
-								+ " * Cheat penalty: "
-								+ cheatPenaltyTime
-								+ " (not yet implemented)\n"
-								// Line 7
-								+ " * Moves: "
-								+ moves
-								+ " \n"
-								// Line 8
-								+ " * Possibles: "
-								+ possibles
-								+ " \n"
-								// Line 9
-								+ " * Undos: "
-								+ undos
-								+ " \n"
-								// Line 10
-								+ " * Cells revealed: "
-								+ cellsRevealed
-								+ " \n"
-								// Line 11
-								+ " * Operators revealed: "
-								+ operatorsRevevealed
-								+ " \n"
-								// Line 12
-								+ " * Check progress used: "
-								+ checkProgressUsed
-								+ " \n"
-								// Line 13
-								+ " * Invalids found with check progress: "
-								+ checkProgressInvalidsFound
-								+ " \n"
-								// Line 14
-								+ " * solutionRevealed: "
-								+ Boolean.toString(solutionRevealed) + " \n"
-								// Line 15
-								+ " * solved: "
-								+ Boolean.toString(solvedManually) + " \n"
-								// Line 16
-								+ " * finished: " + Boolean.toString(finished))
-				.setCancelable(false)
-				.setPositiveButton(R.string.dialog_general_button_close,
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {
-								// do nothing
-							}
-						});
-		AlertDialog dialog = builder.create();
-		dialog.show();
-	}
-
+	/**
+	 * Save the statistics to the database.
+	 * 
+	 * @return True in case the statistics have been saved. False otherwise.
+	 */
 	public boolean save() {
 		DatabaseHelper databaseHelper = DatabaseHelper.getInstance();
 		StatisticsDatabaseAdapter statisticsDatabaseAdapter = new StatisticsDatabaseAdapter(
@@ -149,16 +97,37 @@ public class GridStatistics {
 		return statisticsDatabaseAdapter.update(this);
 	}
 
+	/**
+	 * Increases the given counter with 1.
+	 * 
+	 * @param statisticsCounterType
+	 *            The counter which has to be increased.
+	 */
 	public void increaseCounter(StatisticsCounterType statisticsCounterType) {
 		switch (statisticsCounterType) {
-		case MOVES:
-			moves++;
+		case CELLS_FILLED:
+			cellsUserValueFilled++;
+			break;
+		case CELLS_EMPTY:
+			cellsUserValueEmtpty++;
+			break;
+		case USER_VALUE_REPLACED:
+			userValueReplaced++;
 			break;
 		case POSSIBLES:
-			possibles++;
+			maybeValue++;
 			break;
 		case UNDOS:
-			undos++;
+			undoButton++;
+			break;
+		case CELL_CLEARED:
+			cellCleared++;
+			break;
+		case CAGE_CLEARED:
+			cageCleared++;
+			break;
+		case GRID_CLEARED:
+			gridCleared++;
 			break;
 		case CELLS_REVEALED:
 			cellsRevealed++;
@@ -176,6 +145,29 @@ public class GridStatistics {
 		setLastMoveToCurrentTime();
 	}
 
+	/**
+	 * Decreases the given counter with 1.
+	 * 
+	 * @param statisticsCounterType
+	 *            The counter which has to be increased.
+	 */
+	public void decreaseCounter(StatisticsCounterType statisticsCounterType) {
+		switch (statisticsCounterType) {
+		case CELLS_FILLED:
+			cellsUserValueFilled--;
+			break;
+		case CELLS_EMPTY:
+			cellsUserValueEmtpty--;
+			break;
+		default:
+			// Not available for other counters.
+		}
+		setLastMoveToCurrentTime();
+	}
+
+	/**
+	 * Update the statistics in case a grid is solved.
+	 */
 	public void solved() {
 		if (!solutionRevealed) {
 			solvedManually = true;
@@ -184,6 +176,9 @@ public class GridStatistics {
 		setLastMoveToCurrentTime();
 	}
 
+	/**
+	 * Update the statistics in case the solution of a grid has been revealed.
+	 */
 	public void solutionRevealed() {
 		solutionRevealed = true;
 		solvedManually = false;
@@ -191,7 +186,101 @@ public class GridStatistics {
 		setLastMoveToCurrentTime();
 	}
 
-	public void setLastMoveToCurrentTime() {
+	/**
+	 * Updates the date time of the last move.
+	 */
+	private void setLastMoveToCurrentTime() {
 		lastMove = new java.sql.Timestamp(System.currentTimeMillis());
+	}
+
+	/**
+	 * Get the signature id for these statistics.
+	 * 
+	 * @return The signature id for these statistics.
+	 */
+	public int getSignatureId() {
+		return mId;
+	}
+
+	/**
+	 * Get the full grid signature.
+	 * 
+	 * @return The full grid signature.
+	 */
+	public String getGridSignature() {
+		return gridSignature;
+	}
+
+	/**
+	 * Get the grid size.
+	 * 
+	 * @return The grid size.
+	 */
+	public int getGridSize() {
+		return gridSize;
+	}
+
+	/**
+	 * Get the timestamp of the first move.
+	 * 
+	 * @return The timestamp of the first move.
+	 */
+	public java.sql.Timestamp getFirstMove() {
+		return firstMove;
+	}
+
+	/**
+	 * Get the timestamp of the last move.
+	 * 
+	 * @return The timestamp of the first move.
+	 */
+	public java.sql.Timestamp getLastMove() {
+		return lastMove;
+	}
+
+	/**
+	 * Get the elapsed time (including penalty time).
+	 * 
+	 * @return The elapsed time (including penalty time).
+	 */
+	public long getElapsedTime() {
+		return elapsedTime;
+	}
+
+	/**
+	 * Gets the elapsed time (including penalty time).
+	 * 
+	 * @return The elapsed time (including penalty time).
+	 */
+	public long getCheatPenaltyTime() {
+		return cheatPenaltyTime;
+	}
+
+	/**
+	 * Check whether the solution was revealed.
+	 * 
+	 * @return True in case the solution was revealed. False otherwise.
+	 */
+	public boolean isSolutionRevealed() {
+		return solutionRevealed;
+	}
+
+	/**
+	 * Check whether the grid was solved manually.
+	 * 
+	 * @return True in case the solution was solved manually. False otherwise.
+	 */
+	public boolean isSolvedManually() {
+		return solvedManually;
+	}
+
+	/**
+	 * Check whether the grid is finished (either solved manually or solution
+	 * revelead).
+	 * 
+	 * @return True in case the grid is finished. False otherwise.
+	 */
+	public boolean isFinished() {
+		return finished;
 	}
 }

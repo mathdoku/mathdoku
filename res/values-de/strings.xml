@@ -88,6 +88,10 @@
     <!-- The sub-menu item to check user entries against the solution. -->
     <string name="menu_checkprogress">Fortschritt kontrollieren</string>
 
+    <!-- The sub-menu item to go to the statistics. -->
+    <!-- TODO -->
+    <string name="menu_statistics">Statistics</string>
+
     <!-- The menu item that allows the player to navigate to the options screen. -->
     <string name="menu_options">Optionen</string>
 
@@ -293,6 +297,41 @@
     <string name="dialog_tip_order_of_values_in_cage_title">Cel waarden</string>
     <!-- TODO -->
     <string name="dialog_tip_order_of_values_in_cage_text">De volgorde van de getallen in de cellen is niet belangrijk in een MathDoku puzzel. De resultaten van de berekeningen \"3 &#8212; 1\"  en \"2 / 4\" zijn beide ook gelijk aan 2. De waarden in de onderstaande afbeelding zijn dus correct.</string>
+
+    <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- TODO: TRANSLATE ENTIRE SECTION -->
+
+    <!-- Title of statistics activity. -->
+    <string name="statistics_activity_title">Game Statistics</string>
+    <string name="statistics_not_available">Sorry, no statistics available for this game.</string>
+
+    <!-- Name of settings option menu in activity statistics. -->
+    <string name="statistics_settings">Settings</string>
+
+    <!-- Title and a body which explains the purpose of the chart "Progress". -->
+    <string name="progress_chart_title">Progress</string>
+    <string name="progress_chart_body">This chart displays the progress in solving the current game. For filled cells it is not shown whether the value is correct or not. A cell containing maybe values is counted as an empty cell.</string>
+    <!-- Dimensions displayed in chart "Progress". -->
+    <string name="progress_chart_cells_filled">Cells filled</string>
+    <string name="progress_chart_cells_empty">Cells empty</string>
+
+    <!-- Title and a body which explains the purpose of the chart "Avoidable moves". -->
+    <string name="avoidable_moves_chart_title">Avoidable moves</string>
+    <string name="avoidable_moves_chart_body">Less experienced players make more avoidable moves than experienced players. An avoidable move is a move which is not necessary to solve a game. Correcting or clearing values in cell, using \"maybe values\" or undo moved are moves which should be avoided in order to become a better player.</string>
+    <!-- Dimensions displayed in chart "Avoidable moves". -->
+    <string name="avoidable_moves_chart_user_value_replaced">Cell value replaced</string>
+    <string name="avoidable_moves_chart_maybe_value_used">Maybe values</string>
+    <string name="avoidable_moves_chart_undo_button_used">Undo used</string>
+    <string name="avoidable_moves_chart_clear_used">Clear (cell, cage or grid) used</string>
+
+    <!-- Title and a body which explains the purpose of the chart "Cheats used". -->
+    <string name="statistics_cheats_used_title">Cheats used</string>
+    <string name="statistics_cheats_used_body">You have used at least one cheat while playing this game. Cheats are more often used by inexperienced players. Each puzzle has a unique solution which can be found without using cheats.</string>
+    <!-- Dimensions displayed in chart "Cheats used". -->
+    <string name="statistics_cheats_check_progress">Checked progress</string>
+    <string name="statistics_cheats_cells_revealed">Cells revealed</string>
+    <string name="statistics_cheats_operators_revealed">Operators revealed</string>
+    <string name="statistics_cheats_solution_revealed">Solution revealed</string>
 
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

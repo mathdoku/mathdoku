@@ -13,9 +13,10 @@
 
     <!-- GENERAL - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-    <!--  The message displayed on the "start" button. -->
+
+    <!-- The message displayed on the "start" button. -->
     <string name="start_button_message">Start here</string>
-    
+
     <!-- The label of the buttons that close dialogs. -->
     <string name="dialog_general_button_close">Close</string>
 
@@ -86,6 +87,9 @@
 
     <!-- The sub-menu item to check user entries against the solution. -->
     <string name="menu_checkprogress">Check Progress</string>
+
+    <!-- The sub-menu item to go to the statistics. -->
+    <string name="menu_statistics">Statistics</string>
 
     <!-- The menu item that allows the player to navigate to the options screen. -->
     <string name="menu_options">Options</string>
@@ -250,7 +254,7 @@
     <!-- The text for input mode "maybe" which is used to insert/remove a possible value into/from the selected cell. -->
     <string name="input_mode_maybe_short">maybe</string>
     <string name="input_mode_maybe_long">\"Maybe\" mode</string>
-    
+
     <!-- The text on the clear button in the main UI. -->
     <string name="main_ui_clear">Clear</string>
 
@@ -259,37 +263,81 @@
 
     <!-- USAGE LOG AND OPT-IN FOR SURVEY - - - - - - - - - - - - - - - - - - - - - - -->
 
+
     <!-- Dialog for consent on sending usage log -->
     <string name="dialog_usagelog_title">Help MathDoku development</string>
     <string name="dialog_usagelog_body_1">Dear user,\n\nWe have gathered some data about the way you used MathDoku. This data does not contain any personal information. We would appreciate if you will send this data to us. We will use it to decide on future development of MathDoku. For more information visit our website at:</string>
     <string name="dialog_usagelog_body_2">If you do not agree, the created log file will deleted and no further information will be collected.</string>
     <string name="dialog_usagelog_negative_button">I do not agree</string>
     <string name="dialog_usagelog_positive_button">I agree</string>
-    
+
     <!-- Dialog for opt-in on survey about future use of MathDoku. -->
     <string name="dialog_survey_title">Survey</string>
-    <!--  Note for translators: please mention that the survey will be sent in english only.  -->
+    <!-- Note for translators: please mention that the survey will be sent in english only. -->
     <string name="dialog_survey_body">Thanks for agreeing to sent the log to us.\n\nWe plan to send a survey to users who are interested in future releases of MathDoku. In case you want to be involved, please leave your name and email address below.</string>
     <string name="dialog_survey_user_name_hint">Your name</string>
     <string name="dialog_survey_user_email_hint">Your email address</string>
     <string name="dialog_survey_positive_button">Send log</string>
-    
+
     <!-- Title of dialog used to choose the appropriate action for sending the usage log. -->
     <string name="usage_log_choose_action_title">Send MathDoku Log</string>
 
     <!-- TIP DIALOGS - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    
+
+
     <!-- Label for check box "Do not show again" in the tip dialog. -->
     <string name="dialog_tip_do_not_show_again">Do not show again</string>
-    
-    <!--  Title, text, drawable for tip "Input mode changed" -->
+
+    <!-- Title, text, drawable for tip "Input mode changed" -->
     <string name="dialog_tip_input_mode_changed_title">Input mode changed</string>
     <string name="dialog_tip_input_mode_changed_text">You have just changed the input mode from %1$s to %2$s.  The input mode can be changed to normal by tapping the selected cell once more. Or you can tap the text Mode: maybe above the digit buttons.</string>
-    
-    <!--  Title, text, drawable for tip "Order of values in cage" -->
+
+    <!-- Title, text, drawable for tip "Order of values in cage" -->
     <string name="dialog_tip_order_of_values_in_cage_title">Cell values</string>
     <string name="dialog_tip_order_of_values_in_cage_text">The order of values in the cells of the cage is not relevant in a MathDoku puzzle. The results of cages \"3 &#8212; 1\"  and \"2 / 4\" both equals 2. The entire grid below is therefore valid.</string>
-    
+
+    <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- Title of statistics activity. -->
+    <string name="statistics_activity_title">Game Statistics</string>
+    <string name="statistics_not_available">Sorry, no statistics available for this game.</string>
+
+    <!-- Name of settings option menu in activity statistics. -->
+    <string name="statistics_settings">Settings</string>
+
+    <!-- Title and a body which explains the purpose of the chart "Progress". -->
+    <string name="progress_chart_title">Progress</string>
+    <string name="progress_chart_body">This chart displays the progress in solving the current game. For filled cells it is not shown whether the value is correct or not. A cell containing maybe values is counted as an empty cell.</string>
+    <!-- Dimensions displayed in chart "Progress". -->
+    <string name="progress_chart_cells_filled">Cells filled</string>
+    <string name="progress_chart_cells_empty">Cells empty</string>
+
+    <!-- Title and a body which explains the purpose of the chart "Avoidable moves". -->
+    <string name="avoidable_moves_chart_title">Avoidable moves</string>
+    <string name="avoidable_moves_chart_body">Less experienced players make more avoidable moves than experienced players. An avoidable move is a move which is not necessary to solve a game. Correcting or clearing values in cell, using \"maybe values\" or undo moved are moves which should be avoided in order to become a better player.</string>
+    <!-- Dimensions displayed in chart "Avoidable moves". -->
+    <string name="avoidable_moves_chart_user_value_replaced">Cell value replaced</string>
+    <string name="avoidable_moves_chart_maybe_value_used">Maybe values</string>
+    <string name="avoidable_moves_chart_undo_button_used">Undo used</string>
+    <string name="avoidable_moves_chart_clear_used">Clear (cell, cage or grid) used</string>
+
+    <!-- Title and a body which explains the purpose of the chart "Cheats used". -->
+    <string name="statistics_cheats_used_title">Cheats used</string>
+    <string name="statistics_cheats_used_body">You have used at least one cheat while playing this game. Cheats are more often used by inexperienced players. Each puzzle has a unique solution which can be found without using cheats.</string>
+    <!-- Dimensions displayed in chart "Cheats used". -->
+    <string name="statistics_cheats_check_progress">Checked progress</string>
+    <string name="statistics_cheats_cells_revealed">Cells revealed</string>
+    <string name="statistics_cheats_operators_revealed">Operators revealed</string>
+    <string name="statistics_cheats_solution_revealed">Solution revealed</string>
+
+    <!-- OPTIONS STATISTICS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The title and summary of the "Hide explanation" option. This option enables or disables displayin the explanations below the statistics charts. -->
+    <string name="option_show_statistics_description_title">Chart description</string>
+    <string name="option_show_statistics_description_summary">Display description below chart.</string>
+
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -314,5 +362,5 @@
     <!-- Text to display in case the preview image of a saved game is not yet available. -->
     <string name="game_file_preview_not_available">Not yet available</string>
     <string name="game_seed">"Game seed: "</string>
-    
+
 </resources>
