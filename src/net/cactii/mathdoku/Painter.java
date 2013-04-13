@@ -13,7 +13,7 @@ public class Painter {
 
 	// Themes available
 	public enum GridTheme {
-		CARVED, NEWSPAPER, NEWSPAPER_OLD, DARK
+		CARVED, NEWSPAPER, DARK
 	};
 
 	// Theme installed in painter
@@ -362,17 +362,9 @@ public class Painter {
 			mDefaultTextColor = 0xFF000000;
 			break;
 		case NEWSPAPER:
-			mHighlightedTextColorNormalInputMode = 0xFF3C6583;
-			mHighlightedTextColorMaybeInputMode = 0xFF73a8d0;
-			mDefaultTextColor = 0xFF000000;
-			break;
-		case NEWSPAPER_OLD:
-			mHighlightedTextColorNormalInputMode = 0xFF2215DD; // TODO:
-																// determine
-																// good color
-			mHighlightedTextColorMaybeInputMode = 0xFFE61EBE; // TODO: determine
-																// good color
-			mDefaultTextColor = 0xFF000000;
+			mHighlightedTextColorNormalInputMode = 0xFF0C97FA;
+			mHighlightedTextColorMaybeInputMode =  0xFF75C6FF;
+			mDefaultTextColor = 0xFF212121;
 			break;
 		case DARK:
 			mHighlightedTextColorNormalInputMode = 0xFF9080ED; // TODO:
@@ -466,9 +458,9 @@ public class Painter {
 			mCellPainter.mUnusedBorderPaint.setPathEffect(mPathEffectDashed);
 			mCellPainter.mUnusedBorderPaint.setColor(0x80000000);
 
-			mCellPainter.mInvalid.mBorderPaint.setColor(0xFFF0C873);
+			mCellPainter.mInvalid.mBorderPaint.setColor(0xFFF8A86B);
 
-			mCellPainter.mInvalid.mBackgroundPaint.setColor(0xFFF0C873);
+			mCellPainter.mInvalid.mBackgroundPaint.setColor(0xFFF8A86B);
 			mCellPainter.mInvalid.mBackgroundPaint.setStyle(Paint.Style.FILL);
 
 			mCellPainter.mWarning.mBorderPaint.setColor(0xFFFFA091);
@@ -501,59 +493,6 @@ public class Painter {
 			mCagePainter.mBorderSelectedPaint.setPathEffect(null);
 
 			mCagePainter.mBorderSelectedBadMathPaint.setColor(0xFFff4444);
-			mCagePainter.mBorderSelectedBadMathPaint.setAntiAlias(true);
-			mCagePainter.mBorderSelectedBadMathPaint.setPathEffect(null);
-			break;
-		case NEWSPAPER_OLD:
-			mGridPainter.mBorderPaint.setAntiAlias(false);
-			mGridPainter.mBorderPaint.setPathEffect(null);
-			mGridPainter.mBorderPaint.setColor(0xFFAAAAAA);
-
-			mGridPainter.mBackgroundPaint.setColor(0xffffffff);
-
-			mGridPainter.mSolvedTypeface = mTypefaceSansSerif;
-
-			mCellPainter.mUnusedBorderPaint.setAntiAlias(true);
-			mCellPainter.mUnusedBorderPaint.setPathEffect(mPathEffectDashed);
-			mCellPainter.mUnusedBorderPaint.setColor(0x80000000);
-
-			mCellPainter.mInvalid.mBorderPaint.setColor(0xFFBB0000);
-
-			mCellPainter.mInvalid.mBackgroundPaint.setColor(0xFFBB0000);
-			mCellPainter.mInvalid.mBackgroundPaint.setStyle(Paint.Style.FILL);
-
-			mCellPainter.mWarning.mBorderPaint.setColor(0x50FF0000);
-			mCellPainter.mWarning.mBackgroundPaint.setColor(0x50FF0000);
-			mCellPainter.mWarning.mBackgroundPaint.setStyle(Paint.Style.FILL);
-
-			mCellPainter.mCheated.mBackgroundPaint.setStyle(Paint.Style.FILL);
-
-			mCellPainter.mSelected.mBorderPaint.setColor(0xD0F0D042);
-			mCellPainter.mSelected.mBackgroundPaint.setColor(0xD0F0D042);
-			mCellPainter.mSelected.mBackgroundPaint.setStyle(Paint.Style.FILL);
-
-			mUserValuePainter.mTextPaintNormalInputMode
-					.setTypeface(mTypefaceSansSerif);
-
-			mUserValuePainter.mTextPaintMaybeInputMode
-					.setTypeface(mTypefaceSansSerif);
-
-			mCagePainter.mTextPaint.setColor(0xFF0000A0);
-			mCagePainter.mTextPaint.setTypeface(mTypefaceSansSerif);
-
-			mCagePainter.mBorderPaint.setColor(0xFF000000);
-			mCagePainter.mBorderPaint.setAntiAlias(false);
-			mCagePainter.mBorderPaint.setPathEffect(null);
-
-			mCagePainter.mBorderBadMathPaint.setColor(0xFFBB0000);
-			mCagePainter.mBorderBadMathPaint.setAntiAlias(true);
-			mCagePainter.mBorderBadMathPaint.setPathEffect(null);
-
-			mCagePainter.mBorderSelectedPaint.setColor(0xFF000000);
-			mCagePainter.mBorderSelectedPaint.setAntiAlias(false);
-			mCagePainter.mBorderSelectedPaint.setPathEffect(null);
-
-			mCagePainter.mBorderSelectedBadMathPaint.setColor(0xFFBB0000);
 			mCagePainter.mBorderSelectedBadMathPaint.setAntiAlias(true);
 			mCagePainter.mBorderSelectedBadMathPaint.setPathEffect(null);
 			break;
@@ -638,7 +577,7 @@ public class Painter {
 		// the cell
 		mUserValuePainter.mLeftOffset = mCellPainter.mCellSize / 2
 				- userValueTextSize / 4;
-		if (mTheme == GridTheme.NEWSPAPER || mTheme == GridTheme.NEWSPAPER_OLD) {
+		if (mTheme == GridTheme.NEWSPAPER) {
 			mUserValuePainter.mTopOffset = mCellPainter.mCellSize / 2
 					+ userValueTextSize * 2 / 5;
 		} else {
