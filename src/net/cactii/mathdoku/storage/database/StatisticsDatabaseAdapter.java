@@ -2,6 +2,7 @@ package net.cactii.mathdoku.storage.database;
 
 import java.security.InvalidParameterException;
 
+import net.cactii.mathdoku.statistics.CumulativeStatistics;
 import net.cactii.mathdoku.statistics.GridStatistics;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -236,48 +237,48 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		GridStatistics gridStatistics = new GridStatistics();
 		gridStatistics.mId = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_ROWID));
-		gridStatistics.gridSignature = cursor.getString(cursor
+		gridStatistics.mGridSignature = cursor.getString(cursor
 				.getColumnIndexOrThrow(KEY_GRID_SIGNATURE));
 		gridStatistics.gridSize = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_GRID_SIZE));
-		gridStatistics.firstMove = java.sql.Timestamp.valueOf(cursor
+		gridStatistics.mFirstMove = java.sql.Timestamp.valueOf(cursor
 				.getString(cursor.getColumnIndexOrThrow(KEY_FIRST_MOVE)));
-		gridStatistics.lastMove = java.sql.Timestamp.valueOf(cursor
+		gridStatistics.mLastMove = java.sql.Timestamp.valueOf(cursor
 				.getString(cursor.getColumnIndexOrThrow(KEY_LAST_MOVE)));
-		gridStatistics.elapsedTime = cursor.getLong(cursor
+		gridStatistics.mElapsedTime = cursor.getLong(cursor
 				.getColumnIndexOrThrow(KEY_ELAPSED_TIME));
-		gridStatistics.cheatPenaltyTime = cursor.getLong(cursor
+		gridStatistics.mCheatPenaltyTime = cursor.getLong(cursor
 				.getColumnIndexOrThrow(KEY_CHEAT_PENALTY_TIME));
-		gridStatistics.cellsUserValueFilled = cursor.getInt(cursor
+		gridStatistics.mCellsUserValueFilled = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_CELLS_USER_VALUE_FILLED));
-		gridStatistics.cellsUserValueEmtpty = cursor.getInt(cursor
+		gridStatistics.mCellsUserValueEmtpty = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_CELLS_USER_VALUES_EMPTY));
-		gridStatistics.userValueReplaced = cursor.getInt(cursor
+		gridStatistics.mUserValueReplaced = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_CELLS_USER_VALUES_REPLACED));
-		gridStatistics.maybeValue = cursor.getInt(cursor
+		gridStatistics.mMaybeValue = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_POSSIBLES));
-		gridStatistics.undoButton = cursor.getInt(cursor
+		gridStatistics.mUndoButton = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_UNDOS));
-		gridStatistics.cellCleared = cursor.getInt(cursor
+		gridStatistics.mCellCleared = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_CELLS_CLEARED));
-		gridStatistics.cageCleared = cursor.getInt(cursor
+		gridStatistics.mCageCleared = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_CAGE_CLEARED));
-		gridStatistics.gridCleared = cursor.getInt(cursor
+		gridStatistics.mGridCleared = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_GRID_CLEARED));
-		gridStatistics.cellsRevealed = cursor.getInt(cursor
+		gridStatistics.mCellsRevealed = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_CELLS_REVEALED));
-		gridStatistics.operatorsRevevealed = cursor.getInt(cursor
+		gridStatistics.mOperatorsRevevealed = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_OPERATORS_REVEALED));
-		gridStatistics.checkProgressUsed = cursor.getInt(cursor
+		gridStatistics.mCheckProgressUsed = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_CHECK_PROGRESS_USED));
-		gridStatistics.checkProgressInvalidsFound = cursor.getInt(cursor
+		gridStatistics.mCheckProgressInvalidsFound = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_CHECK_PROGRESS_INVALIDS_FOUND));
-		gridStatistics.solutionRevealed = Boolean
+		gridStatistics.mSolutionRevealed = Boolean
 				.valueOf(cursor.getString(cursor
 						.getColumnIndexOrThrow(KEY_SOLUTION_REVEALED)));
-		gridStatistics.solvedManually = Boolean.valueOf(cursor.getString(cursor
+		gridStatistics.mSolvedManually = Boolean.valueOf(cursor.getString(cursor
 				.getColumnIndexOrThrow(KEY_SOLVED_MANUALLY)));
-		gridStatistics.finished = Boolean.valueOf(cursor.getString(cursor
+		gridStatistics.mFinished = Boolean.valueOf(cursor.getString(cursor
 				.getColumnIndexOrThrow(KEY_FINISHED)));
 
 		cursor.close();
@@ -296,35 +297,35 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	public boolean update(GridStatistics gridStatistics) {
 		ContentValues newValues = new ContentValues();
 		newValues.put(KEY_ROWID, gridStatistics.mId);
-		newValues.put(KEY_GRID_SIGNATURE, gridStatistics.gridSignature);
+		newValues.put(KEY_GRID_SIGNATURE, gridStatistics.mGridSignature);
 		newValues.put(KEY_GRID_SIZE, gridStatistics.gridSize);
-		newValues.put(KEY_FIRST_MOVE, gridStatistics.firstMove.toString());
-		newValues.put(KEY_LAST_MOVE, gridStatistics.lastMove.toString());
-		newValues.put(KEY_ELAPSED_TIME, gridStatistics.elapsedTime);
-		newValues.put(KEY_CHEAT_PENALTY_TIME, gridStatistics.cheatPenaltyTime);
+		newValues.put(KEY_FIRST_MOVE, gridStatistics.mFirstMove.toString());
+		newValues.put(KEY_LAST_MOVE, gridStatistics.mLastMove.toString());
+		newValues.put(KEY_ELAPSED_TIME, gridStatistics.mElapsedTime);
+		newValues.put(KEY_CHEAT_PENALTY_TIME, gridStatistics.mCheatPenaltyTime);
 		newValues.put(KEY_CELLS_USER_VALUE_FILLED,
-				gridStatistics.cellsUserValueFilled);
+				gridStatistics.mCellsUserValueFilled);
 		newValues.put(KEY_CELLS_USER_VALUES_EMPTY,
-				gridStatistics.cellsUserValueEmtpty);
+				gridStatistics.mCellsUserValueEmtpty);
 		newValues.put(KEY_CELLS_USER_VALUES_REPLACED,
-				gridStatistics.userValueReplaced);
-		newValues.put(KEY_POSSIBLES, gridStatistics.maybeValue);
-		newValues.put(KEY_UNDOS, gridStatistics.undoButton);
-		newValues.put(KEY_CELLS_CLEARED, gridStatistics.cellCleared);
-		newValues.put(KEY_CAGE_CLEARED, gridStatistics.cageCleared);
-		newValues.put(KEY_GRID_CLEARED, gridStatistics.gridCleared);
-		newValues.put(KEY_CELLS_REVEALED, gridStatistics.cellsRevealed);
+				gridStatistics.mUserValueReplaced);
+		newValues.put(KEY_POSSIBLES, gridStatistics.mMaybeValue);
+		newValues.put(KEY_UNDOS, gridStatistics.mUndoButton);
+		newValues.put(KEY_CELLS_CLEARED, gridStatistics.mCellCleared);
+		newValues.put(KEY_CAGE_CLEARED, gridStatistics.mCageCleared);
+		newValues.put(KEY_GRID_CLEARED, gridStatistics.mGridCleared);
+		newValues.put(KEY_CELLS_REVEALED, gridStatistics.mCellsRevealed);
 		newValues.put(KEY_OPERATORS_REVEALED,
-				gridStatistics.operatorsRevevealed);
+				gridStatistics.mOperatorsRevevealed);
 		newValues
-				.put(KEY_CHECK_PROGRESS_USED, gridStatistics.checkProgressUsed);
+				.put(KEY_CHECK_PROGRESS_USED, gridStatistics.mCheckProgressUsed);
 		newValues.put(KEY_CHECK_PROGRESS_INVALIDS_FOUND,
-				gridStatistics.checkProgressInvalidsFound);
+				gridStatistics.mCheckProgressInvalidsFound);
 		newValues.put(KEY_SOLUTION_REVEALED,
-				Boolean.toString(gridStatistics.solutionRevealed));
+				Boolean.toString(gridStatistics.mSolutionRevealed));
 		newValues.put(KEY_SOLVED_MANUALLY,
-				Boolean.toString(gridStatistics.solvedManually));
-		newValues.put(KEY_FINISHED, Boolean.toString(gridStatistics.finished));
+				Boolean.toString(gridStatistics.mSolvedManually));
+		newValues.put(KEY_FINISHED, Boolean.toString(gridStatistics.mFinished));
 
 		return (db
 				.update(TABLE,
@@ -336,8 +337,151 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 								+ KEY_GRID_SIGNATURE
 								+ " = "
 								+ DatabaseAdapter
-										.stringBetweenQuotes(gridStatistics.gridSignature),
+										.stringBetweenQuotes(gridStatistics.mGridSignature),
 						null) == 1);
 
+	}
+
+	/**
+	 * Get cumulative statistics for all grids with a given grid size.
+	 * 
+	 * @param minGridSize
+	 *            The minimum size of the grid for which the cumulative
+	 *            statistics have to be determined.
+	 * @param maxGridSize
+	 *            The maximum size of the grid for which the cumulative
+	 *            statistics have to be determined. Use same value as minimum
+	 *            grid size to retireve statistics for 1 specific grid size.
+	 * @return The cumulative statistics for the given grid size.
+	 */
+	public CumulativeStatistics getByGridSize(int minGridSize, int maxGridSize) {
+
+		String[] columns = {
+				// Grid size minimum and maximum
+				min(KEY_GRID_SIZE),
+				max(KEY_GRID_SIZE),
+				// First and last move
+				min(KEY_FIRST_MOVE),
+				max(KEY_LAST_MOVE),
+				// Total, average, minimum and maximum elapsed time
+				sum(KEY_ELAPSED_TIME),
+				avg(KEY_ELAPSED_TIME),
+				min(KEY_ELAPSED_TIME),
+				max(KEY_ELAPSED_TIME),
+				// Average, minimum and maximum penalty time
+				sum(KEY_CHEAT_PENALTY_TIME),
+				avg(KEY_CHEAT_PENALTY_TIME),
+				min(KEY_CHEAT_PENALTY_TIME),
+				max(KEY_CHEAT_PENALTY_TIME),
+				// not (yet) used KEY_CELLS_USER_VALUE_FILLED,
+				// not (yet) used KEY_CELLS_USER_VALUES_EMPTY
+				// not (yet) used KEY_CELLS_USER_VALUES_REPLACED,
+				// Totals of avoidable moves
+				sum(KEY_POSSIBLES),
+				sum(KEY_UNDOS),
+				sum(KEY_CELLS_CLEARED),
+				sum(KEY_CAGE_CLEARED),
+				sum(KEY_GRID_CLEARED),
+				// Totals per cheat
+				sum(KEY_CELLS_REVEALED),
+				sum(KEY_OPERATORS_REVEALED),
+				sum(KEY_CHECK_PROGRESS_USED),
+				sum(KEY_CHECK_PROGRESS_INVALIDS_FOUND),
+				// Totals per status of game
+				countIf(KEY_SOLUTION_REVEALED, "true"),
+				countIf(KEY_SOLVED_MANUALLY, "true"),
+				countIf(KEY_FINISHED, "true"),
+				// Total games
+				"COUNT(1)" };
+
+		Cursor cursor = db.query(true, TABLE, columns, KEY_GRID_SIZE + " BETWEEN "
+				+ minGridSize + " AND " + maxGridSize, null, null, null, null, null);
+
+		CumulativeStatistics cumulativeStatistics = toCumulativeStatistics(cursor);
+		cursor.close();
+		return cumulativeStatistics;
+	}
+
+	/**
+	 * Convert first record in the given cursor to a CumulativeStatistics
+	 * object.
+	 * 
+	 * @param cursor
+	 *            The cursor to be converted.
+	 * 
+	 * @return A CumulativeStatistics object for the first statistics record
+	 *         stored in the given cursor. Null in case of an error.
+	 */
+	private CumulativeStatistics toCumulativeStatistics(Cursor cursor) {
+		if (cursor == null || !cursor.moveToFirst()) {
+			// Record can not be processed.
+			return null;
+		}
+
+		// Convert cursor record to a grid statics object.
+		CumulativeStatistics cumulativeStatistics = new CumulativeStatistics();
+
+		cumulativeStatistics.mMinGridSize = cursor.getInt(cursor
+				.getColumnIndexOrThrow(min(KEY_GRID_SIZE)));
+		cumulativeStatistics.mMaxGridSize = cursor.getInt(cursor
+				.getColumnIndexOrThrow(max(KEY_GRID_SIZE)));
+
+		cumulativeStatistics.mMinFirstMove = java.sql.Timestamp.valueOf(cursor
+				.getString(cursor.getColumnIndexOrThrow(min(KEY_FIRST_MOVE))));
+		cumulativeStatistics.mMaxLastMove = java.sql.Timestamp.valueOf(cursor
+				.getString(cursor.getColumnIndexOrThrow(max(KEY_LAST_MOVE))));
+
+		cumulativeStatistics.mSumElapsedTime = cursor.getInt(cursor
+				.getColumnIndexOrThrow(sum(KEY_ELAPSED_TIME)));
+		cumulativeStatistics.mAvgElapsedTime = cursor.getInt(cursor
+				.getColumnIndexOrThrow(avg(KEY_ELAPSED_TIME)));
+		cumulativeStatistics.mMinElapsedTime = cursor.getInt(cursor
+				.getColumnIndexOrThrow(min(KEY_ELAPSED_TIME)));
+		cumulativeStatistics.mMaxElapsedTime = cursor.getInt(cursor
+				.getColumnIndexOrThrow(max(KEY_ELAPSED_TIME)));
+
+		cumulativeStatistics.mSumCheatPenaltyTime = cursor.getInt(cursor
+				.getColumnIndexOrThrow(sum(KEY_CHEAT_PENALTY_TIME)));
+		cumulativeStatistics.mAvgCheatPenaltyTime = cursor.getInt(cursor
+				.getColumnIndexOrThrow(avg(KEY_CHEAT_PENALTY_TIME)));
+		cumulativeStatistics.mMinCheatPenaltyTime = cursor.getInt(cursor
+				.getColumnIndexOrThrow(min(KEY_CHEAT_PENALTY_TIME)));
+		cumulativeStatistics.mMaxCheatPenaltyTime = cursor.getInt(cursor
+				.getColumnIndexOrThrow(max(KEY_CHEAT_PENALTY_TIME)));
+
+		// not (yet) used KEY_CELLS_USER_VALUE_FILLED,
+		// not (yet) used KEY_CELLS_USER_VALUES_EMPTY
+		// not (yet) used KEY_CELLS_USER_VALUES_REPLACED,
+
+		cumulativeStatistics.mSumMaybeValue = cursor.getInt(cursor
+				.getColumnIndexOrThrow(sum(KEY_POSSIBLES)));
+		cumulativeStatistics.mSumUndoButton = cursor.getInt(cursor
+				.getColumnIndexOrThrow(sum(KEY_UNDOS)));
+		cumulativeStatistics.mSumCellCleared = cursor.getInt(cursor
+				.getColumnIndexOrThrow(sum(KEY_CELLS_CLEARED)));
+		cumulativeStatistics.mSumCageCleared = cursor.getInt(cursor
+				.getColumnIndexOrThrow(sum(KEY_CAGE_CLEARED)));
+		cumulativeStatistics.mSumGridCleared = cursor.getInt(cursor
+				.getColumnIndexOrThrow(sum(KEY_GRID_CLEARED)));
+		cumulativeStatistics.mSumCellsRevealed = cursor.getInt(cursor
+				.getColumnIndexOrThrow(sum(KEY_CELLS_REVEALED)));
+		cumulativeStatistics.mSumOperatorsRevevealed = cursor.getInt(cursor
+				.getColumnIndexOrThrow(sum(KEY_OPERATORS_REVEALED)));
+		cumulativeStatistics.mSumCheckProgressUsed = cursor.getInt(cursor
+				.getColumnIndexOrThrow(sum(KEY_CHECK_PROGRESS_USED)));
+		cumulativeStatistics.mSumcheckProgressInvalidsFound = cursor
+				.getInt(cursor
+						.getColumnIndexOrThrow(sum(KEY_CHECK_PROGRESS_INVALIDS_FOUND)));
+		cumulativeStatistics.mCountSolutionRevealed = cursor.getInt(cursor
+				.getColumnIndexOrThrow(countIf(KEY_SOLUTION_REVEALED, "true")));
+		cumulativeStatistics.mCountSolvedManually = cursor.getInt(cursor
+				.getColumnIndexOrThrow(countIf(KEY_SOLVED_MANUALLY, "true")));
+		cumulativeStatistics.mCountFinished = cursor.getInt(cursor
+				.getColumnIndexOrThrow(countIf(KEY_FINISHED, "true")));
+		cumulativeStatistics.mCountStarted = cursor.getInt(cursor
+				.getColumnIndexOrThrow("COUNT(1)"));
+
+		cursor.close();
+		return cumulativeStatistics;
 	}
 }

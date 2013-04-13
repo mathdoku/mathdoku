@@ -15,7 +15,7 @@ public class DatabaseAdapter {
 
 	static final char BACK_TICK = '`';
 	static final char QUOTE = '\'';
-	
+
 	static final String SQLITE_TRUE = "true";
 	static final String SQLITE_FALSE = "false";
 
@@ -38,16 +38,23 @@ public class DatabaseAdapter {
 			String constraint) throws InvalidParameterException {
 
 		if (column == null || column.trim().equals("")) {
-			Log.e(TAG,"Method createColumn has invalid parameter 'column' with value '" + column + "'.");
+			Log.e(TAG,
+					"Method createColumn has invalid parameter 'column' with value '"
+							+ column + "'.");
 			throw new InvalidParameterException();
 		}
 		if (datatype == null || datatype.trim().equals("")) {
-			Log.e(TAG,"Method createColumn has invalid parameter 'datatype' with value '" + datatype + "'.");
+			Log.e(TAG,
+					"Method createColumn has invalid parameter 'datatype' with value '"
+							+ datatype + "'.");
 			throw new InvalidParameterException();
 		}
-		
-		return stringBetweenBackTicks(column) + " " + datatype
-				+ ((constraint != null && !constraint.equals("")) ? " " + constraint.trim() : "");
+
+		return stringBetweenBackTicks(column)
+				+ " "
+				+ datatype
+				+ ((constraint != null && !constraint.equals("")) ? " "
+						+ constraint.trim() : "");
 	}
 
 	/**
@@ -67,7 +74,9 @@ public class DatabaseAdapter {
 		StringBuilder query = new StringBuilder();
 
 		if (table == null || table.trim().equals("")) {
-			Log.e(TAG,"Method createTable has invalid parameter 'table' with value '" + table + "'.");
+			Log.e(TAG,
+					"Method createTable has invalid parameter 'table' with value '"
+							+ table + "'.");
 			throw new InvalidParameterException();
 		}
 		if (columns == null || columns.length < 1) {
@@ -79,7 +88,8 @@ public class DatabaseAdapter {
 				+ stringBetweenBackTicks(table) + " (");
 		for (int i = 0; i < columns.length; i++) {
 			if (columns[i] == null || columns[i].trim().equals("")) {
-				Log.e(TAG,"Method createTable has invalid parameter 'columns[" + i + "]' with value '" + columns[i] + "'.");
+				Log.e(TAG, "Method createTable has invalid parameter 'columns["
+						+ i + "]' with value '" + columns[i] + "'.");
 				throw new InvalidParameterException();
 			}
 			query.append(columns[i] + (i < columns.length - 1 ? ", " : ");"));
@@ -131,10 +141,79 @@ public class DatabaseAdapter {
 	/**
 	 * Converts a boolean value to a SQLite representation.
 	 * 
-	 * @param value: The boolean value to be converted.
-	 * @return The string representation of the boolean value as it is stored in SQLite.
+	 * @param value
+	 *            : The boolean value to be converted.
+	 * @return The string representation of the boolean value as it is stored in
+	 *         SQLite.
 	 */
 	public String booleanToSQLiteString(boolean value) {
 		return (value ? SQLITE_TRUE : SQLITE_FALSE);
+	}
+
+	/**
+	 * Put a given column name as argument of SQL MIN-function.
+	 * 
+	 * @param column
+	 *            The column name to be enclosed in a SQL MIN-function.
+	 * @return A string representing a call to SQL MIN-function with given
+	 *         column name as argument.
+	 */
+	protected String min(String column) {
+		return ("MIN(" + column + ")");
+	}
+
+	/**
+	 * Put a given column name as argument of SQL MAX-function.
+	 * 
+	 * @param column
+	 *            The column name to be enclosed in a SQL MAX-function.
+	 * @return A string representing a call to SQL MAX-function with given
+	 *         column name as argument.
+	 */
+	protected String max(String column) {
+		return ("MAX(" + column + ")");
+	}
+
+	/**
+	 * Put a given column name as argument of SQL SUM-function.
+	 * 
+	 * @param column
+	 *            The column name to be enclosed in a SQL SUM-function.
+	 * @return A string representing a call to SQL SUM-function with given
+	 *         column name as argument.
+	 */
+	protected String sum(String column) {
+		return ("SUM(" + column + ")");
+	}
+
+	/**
+	 * Put a given column name as argument of SQL AVG-function.
+	 * 
+	 * @param column
+	 *            The column name to be enclosed in a SQL AVG-function.
+	 * @return A string representing a call to SQL AVG-function with given
+	 *         column name as argument.
+	 */
+	protected String avg(String column) {
+		return ("AVG(" + column + ")");
+	}
+
+	/**
+	 * Encloses a given column name as argument of SQL statement to count the
+	 * number of records having the specified value.
+	 * 
+	 * @param column
+	 *            The column name for which the total number of occurrences for
+	 *            the given value has to be determined.
+	 * @param value
+	 *            The value for which the number of occurences has to be
+	 *            determined.
+	 * 
+	 * @return A string representing a SQL statement which will count the total
+	 *         occurrences for the given value.
+	 */
+	protected String countIf(String column, String value) {
+		return ("SUM(CASE WHEN " + stringBetweenBackTicks(column) + " = "
+				+ stringBetweenQuotes(value) + " THEN 1 ELSE 0 END)");
 	}
 }

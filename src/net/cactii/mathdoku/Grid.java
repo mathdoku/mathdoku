@@ -515,7 +515,7 @@ public class Grid {
 		mDateLastSaved = Long.parseLong(viewParts[index++]);
 		if (viewInformationVersion <= 5) {
 			// Field elapsedTime has been removed in version 6 and above.
-			mGridStatistics.elapsedTime = Long.parseLong(viewParts[index++]);
+			mGridStatistics.mElapsedTime = Long.parseLong(viewParts[index++]);
 		}
 		mGridSize = Integer.parseInt(viewParts[index++]);
 		mActive = Boolean.parseBoolean(viewParts[index++]);
@@ -524,7 +524,7 @@ public class Grid {
 			mDateGenerated = Long.parseLong(viewParts[index++]);
 		} else {
 			// Date generated was not saved prior to version 2.
-			mDateGenerated = mDateLastSaved - mGridStatistics.elapsedTime;
+			mDateGenerated = mDateLastSaved - mGridStatistics.mElapsedTime;
 		}
 		if (viewInformationVersion >= 4) {
 			mCheated = Boolean.parseBoolean(viewParts[index++]);
@@ -536,7 +536,7 @@ public class Grid {
 			// UndoCounter was only stored in version 5 in the game file.
 			// Starting form version 6 it has been moved to the statistics
 			// database.
-			mGridStatistics.undoButton = Integer.parseInt(viewParts[index++]);
+			mGridStatistics.mUndoButton = Integer.parseInt(viewParts[index++]);
 		}
 		if (viewInformationVersion >= 5) {
 			mClearRedundantPossiblesInSameRowOrColumnCount = Integer
@@ -639,11 +639,11 @@ public class Grid {
 	}
 
 	public long getElapsedTime() {
-		return mGridStatistics.elapsedTime;
+		return mGridStatistics.mElapsedTime;
 	}
 
 	public void setElapsedTime(long elapsedTime) {
-		mGridStatistics.elapsedTime = elapsedTime;
+		mGridStatistics.mElapsedTime = elapsedTime;
 	}
 
 	public long getDateCreated() {

@@ -13,7 +13,8 @@
 
     <!-- GENERAL - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-    <!--  The message displayed on the "start" button. -->
+
+    <!-- The message displayed on the "start" button. -->
     <string name="start_button_message">Nieuw Spel</string>
 
     <!-- The label of the buttons that close dialogs. -->
@@ -296,6 +297,10 @@
     <string name="statistics_activity_title">Puzzel statistieken</string>
     <string name="statistics_not_available">Sorry, geen statistieken beschikbaar voor dit spel.</string>
 
+    <!-- Sub title for charts displaying cumulative statistics for a certain grid size or on all grid sizes. -->
+    <string name="statistics_chart_one_grid_size_subtitle">Game size %1$d</string>
+    <string name="statistics_chart_all_grid_sizes_subtitle">All games</string>
+
     <!-- Name of settings option menu in activity statistics. -->
     <string name="statistics_settings">Settings</string>
 
@@ -323,6 +328,14 @@
     <string name="statistics_cheats_cells_revealed">Cellen onthuld</string>
     <string name="statistics_cheats_operators_revealed">Operatatietekens onthuld</string>
     <string name="statistics_cheats_solution_revealed">Oplossing onthuld</string>
+
+    <!-- Title and a body which explains the purpose of the chart "Solved games". -->
+    <string name="solved_chart_title">Solved games</string>
+    <string name="solved_chart_body">This chart displays the number of games solved versus the number of games which have not been solved or in which the solution was revealed.</string>
+    <!-- Dimensions displayed in chart "Unsolved games". -->
+    <string name="solved_chart_games_solved">Solved</string>
+    <string name="solved_chart_games_solution_revealed">Solution revealed</string>
+    <string name="solved_chart_games_unfinished">Unfinished</string>
 
     <!-- OPTIONS STATISTICS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

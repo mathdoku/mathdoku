@@ -1,5 +1,6 @@
 package net.cactii.mathdoku;
 
+import net.cactii.mathdoku.statistics.CumulativeStatistics;
 import net.cactii.mathdoku.statistics.GridStatistics;
 import net.cactii.mathdoku.storage.database.DatabaseHelper;
 import net.cactii.mathdoku.storage.database.StatisticsDatabaseAdapter;
@@ -34,7 +35,10 @@ public class StatisticsActivity extends Activity {
 
 	private LinearLayout mChartsLayout;
 	private int mGridSignatureId;
+
 	private GridStatistics mGridStatistics;
+	private CumulativeStatistics mCumulativeStatisticsCurrentGridSize;
+	private CumulativeStatistics mCumulativeStatisticsAllGridSizes;
 
 	// Text size for body text
 	private int mDefaultTextSize;
@@ -70,10 +74,23 @@ public class StatisticsActivity extends Activity {
 		StatisticsDatabaseAdapter statisticsDatabaseAdapter = new StatisticsDatabaseAdapter(
 				databaseHelper);
 		mGridStatistics = statisticsDatabaseAdapter.get(mGridSignatureId);
-		if (mGridStatistics == null) {
-			// Invalid grid signature
+
+		if (mGridStatistics != null) {
+			mCumulativeStatisticsCurrentGridSize = statisticsDatabaseAdapter
+					.getByGridSize(mGridStatistics.gridSize, mGridStatistics.gridSize);
+			mCumulativeStatisticsAllGridSizes = statisticsDatabaseAdapter
+					.getByGridSize(1, 9);
+		}
+
+		if (mGridStatistics == null
+				&& mCumulativeStatisticsCurrentGridSize == null) {
+			Toast.makeText(
+					getBaseContext(),
+					getResources().getString(R.string.statistics_not_available),
+					Toast.LENGTH_SHORT).show();
 			finish();
 		}
+
 	}
 
 	@Override
@@ -93,11 +110,19 @@ public class StatisticsActivity extends Activity {
 		mDisplayStatisticDescription = Preferences.getInstance(this)
 				.showStatisticsDescription();
 
-		// Build all charts
+		// Build all charts for current game only
 		boolean statisticsDisplayed = createProgressChart();
 		statisticsDisplayed = createAvoidableMovesChart()
 				|| statisticsDisplayed;
 		statisticsDisplayed = createUsedCheatsChart() || statisticsDisplayed;
+
+		// Build all charts for all games at current level
+		statisticsDisplayed = createSolvedUnSolvedChart(mCumulativeStatisticsCurrentGridSize)
+				|| statisticsDisplayed;
+
+		// Build all charts regardless of level
+		statisticsDisplayed = createSolvedUnSolvedChart(mCumulativeStatisticsAllGridSizes)
+				|| statisticsDisplayed;
 
 		// Check if at least one statistic is displayed.
 		if (!statisticsDisplayed) {
@@ -138,7 +163,7 @@ public class StatisticsActivity extends Activity {
 	 * @return True in case the chart has been created. False otherwise.
 	 */
 	private boolean createProgressChart() {
-		if (mGridStatistics.solvedManually) {
+		if (mGridStatistics.mSolvedManually) {
 			// No progress to report.
 			return false;
 		}
@@ -148,8 +173,8 @@ public class StatisticsActivity extends Activity {
 
 		// Display chart only if grid not completely filled and not completely
 		// empty.
-		if (mGridStatistics.cellsUserValueFilled == 0
-				|| mGridStatistics.cellsUserValueFilled == totalCells) {
+		if (mGridStatistics.mCellsUserValueFilled == 0
+				|| mGridStatistics.mCellsUserValueFilled == totalCells) {
 			return false;
 		}
 
@@ -168,18 +193,18 @@ public class StatisticsActivity extends Activity {
 		// Cells filled
 		categorySeries.add(
 				getResources().getString(R.string.progress_chart_cells_filled)
-						+ " (" + mGridStatistics.cellsUserValueFilled + ")",
-				(double) mGridStatistics.cellsUserValueFilled / totalCells);
+						+ " (" + mGridStatistics.mCellsUserValueFilled + ")",
+				(double) mGridStatistics.mCellsUserValueFilled / totalCells);
 		renderer.addSeriesRenderer(createSimpleSeriesRenderer(0xFF80FF00));
 
 		// Cells empty
 		categorySeries.add(
 				getResources().getString(R.string.progress_chart_cells_empty)
-						+ " (" + mGridStatistics.cellsUserValueEmtpty + ")",
-				(double) mGridStatistics.cellsUserValueEmtpty / totalCells);
+						+ " (" + mGridStatistics.mCellsUserValueEmtpty + ")",
+				(double) mGridStatistics.mCellsUserValueEmtpty / totalCells);
 		renderer.addSeriesRenderer(createSimpleSeriesRenderer(0xFFD4D4D4));
 
-		addStatisticsSection(R.string.progress_chart_title,
+		addStatisticsSection(R.string.progress_chart_title, null,
 				R.string.progress_chart_body,
 				ChartFactory.getPieChartView(this, categorySeries, renderer));
 		return true;
@@ -193,10 +218,10 @@ public class StatisticsActivity extends Activity {
 	private boolean createAvoidableMovesChart() {
 		// Build chart for analysis of moves only in case at least one move
 		// has been made.
-		int totalAvoidableMoves = mGridStatistics.userValueReplaced
-				+ mGridStatistics.maybeValue + mGridStatistics.undoButton
-				+ mGridStatistics.cellCleared
-				+ mGridStatistics.cageCleared + mGridStatistics.gridCleared;
+		int totalAvoidableMoves = mGridStatistics.mUserValueReplaced
+				+ mGridStatistics.mMaybeValue + mGridStatistics.mUndoButton
+				+ mGridStatistics.mCellCleared + mGridStatistics.mCageCleared
+				+ mGridStatistics.mGridCleared;
 		if (totalAvoidableMoves == 0) {
 			return false;
 		}
@@ -225,44 +250,44 @@ public class StatisticsActivity extends Activity {
 
 		// Bar for number of times a user value in a cell was replace by another
 		// value
-		if (mGridStatistics.userValueReplaced > 0) {
+		if (mGridStatistics.mUserValueReplaced > 0) {
 			XYSeries xySeries = new XYSeries(getResources().getString(
 					R.string.avoidable_moves_chart_user_value_replaced));
-			xySeries.add(++countCategories, mGridStatistics.userValueReplaced);
+			xySeries.add(++countCategories, mGridStatistics.mUserValueReplaced);
 			xyMultipleSeriesDataset.addSeries(xySeries);
 			xyMultipleSeriesRenderer
 					.addSeriesRenderer(createSimpleSeriesRenderer(0xFF80FF00));
-			maxYValue = Math.max(maxYValue, mGridStatistics.userValueReplaced);
+			maxYValue = Math.max(maxYValue, mGridStatistics.mUserValueReplaced);
 		}
 
 		// Bar for number of maybe values that have been used while playing the
 		// game. Note this is *not* the actual number ofpossible value currently
 		// visible.
-		if (mGridStatistics.maybeValue > 0) {
+		if (mGridStatistics.mMaybeValue > 0) {
 			XYSeries xySeries = new XYSeries(getResources().getString(
 					R.string.avoidable_moves_chart_maybe_value_used));
-			xySeries.add(++countCategories, mGridStatistics.maybeValue);
+			xySeries.add(++countCategories, mGridStatistics.mMaybeValue);
 			xyMultipleSeriesDataset.addSeries(xySeries);
 			xyMultipleSeriesRenderer
 					.addSeriesRenderer(createSimpleSeriesRenderer(0xFFFF00FF));
-			maxYValue = Math.max(maxYValue, mGridStatistics.maybeValue);
+			maxYValue = Math.max(maxYValue, mGridStatistics.mMaybeValue);
 		}
 
 		// Bar for number of times the undo button was used
-		if (mGridStatistics.undoButton > 0) {
+		if (mGridStatistics.mUndoButton > 0) {
 			XYSeries xySeries = new XYSeries(getResources().getString(
 					R.string.avoidable_moves_chart_undo_button_used));
-			xySeries.add(++countCategories, mGridStatistics.undoButton);
+			xySeries.add(++countCategories, mGridStatistics.mUndoButton);
 			xyMultipleSeriesDataset.addSeries(xySeries);
 			xyMultipleSeriesRenderer
 					.addSeriesRenderer(createSimpleSeriesRenderer(0xFF8000FF));
-			maxYValue = Math.max(maxYValue, mGridStatistics.undoButton);
+			maxYValue = Math.max(maxYValue, mGridStatistics.mUndoButton);
 		}
 
 		// Bar for number of times a user cleared a value in a cell, the cage or
 		// the entire grid.
-		int totalClears = mGridStatistics.cellCleared
-				+ mGridStatistics.cageCleared + mGridStatistics.gridCleared;
+		int totalClears = mGridStatistics.mCellCleared
+				+ mGridStatistics.mCageCleared + mGridStatistics.mGridCleared;
 		if (totalClears > 0) {
 			XYSeries xySeries = new XYSeries(getResources().getString(
 					R.string.avoidable_moves_chart_clear_used));
@@ -283,7 +308,7 @@ public class StatisticsActivity extends Activity {
 				.setBarWidth(getElementWidth(countCategories) / 2);
 
 		// Add new statistics section to the activity
-		addStatisticsSection(R.string.avoidable_moves_chart_title,
+		addStatisticsSection(R.string.avoidable_moves_chart_title, null,
 				R.string.avoidable_moves_chart_body,
 				ChartFactory.getBarChartView(this, xyMultipleSeriesDataset,
 						xyMultipleSeriesRenderer, Type.DEFAULT));
@@ -299,24 +324,24 @@ public class StatisticsActivity extends Activity {
 	private boolean createUsedCheatsChart() {
 		// Build chart for analysis of moves only in case at least one cheat
 		// has been used.
-		int totalCheats = mGridStatistics.checkProgressUsed
-				+ mGridStatistics.cellsRevealed
-				+ mGridStatistics.operatorsRevevealed
+		int totalCheats = mGridStatistics.mCheckProgressUsed
+				+ mGridStatistics.mCellsRevealed
+				+ mGridStatistics.mOperatorsRevevealed
 				+ (mGridStatistics.isSolutionRevealed() ? 1 : 0);
 		if (totalCheats == 0) {
 			return false;
 		}
 
 		// Determine number of cheat categories to show
-		int cheatCategories = (mGridStatistics.checkProgressUsed > 0 ? 1 : 0)
-				+ (mGridStatistics.cellsRevealed > 0 ? 1 : 0)
-				+ (mGridStatistics.operatorsRevevealed > 0 ? 1 : 0)
+		int cheatCategories = (mGridStatistics.mCheckProgressUsed > 0 ? 1 : 0)
+				+ (mGridStatistics.mCellsRevealed > 0 ? 1 : 0)
+				+ (mGridStatistics.mOperatorsRevevealed > 0 ? 1 : 0)
 				+ (mGridStatistics.isSolutionRevealed() ? 1 : 0);
 
 		// Determine the highest number of cheats for a single category
-		int maxCheats = Math.max(mGridStatistics.checkProgressUsed,
-				mGridStatistics.cellsRevealed);
-		maxCheats = Math.max(maxCheats, mGridStatistics.checkProgressUsed);
+		int maxCheats = Math.max(mGridStatistics.mCheckProgressUsed,
+				mGridStatistics.mCellsRevealed);
+		maxCheats = Math.max(maxCheats, mGridStatistics.mCheckProgressUsed);
 		maxCheats = Math.max(maxCheats,
 				(mGridStatistics.isSolutionRevealed() ? 1 : 0));
 
@@ -345,10 +370,10 @@ public class StatisticsActivity extends Activity {
 		int categoryIndex = 1;
 
 		// Check progress option used
-		if (mGridStatistics.checkProgressUsed > 0) {
+		if (mGridStatistics.mCheckProgressUsed > 0) {
 			XYSeries xySeries = new XYSeries(getResources().getString(
 					R.string.statistics_cheats_check_progress));
-			xySeries.add(categoryIndex, mGridStatistics.checkProgressUsed);
+			xySeries.add(categoryIndex, mGridStatistics.mCheckProgressUsed);
 			xyMultipleSeriesDataset.addSeries(xySeries);
 			xyMultipleSeriesRenderer
 					.addSeriesRenderer(createSimpleSeriesRenderer(0xFFFE9980));
@@ -356,10 +381,10 @@ public class StatisticsActivity extends Activity {
 		}
 
 		// Cell revealed option used
-		if (mGridStatistics.cellsRevealed > 0) {
+		if (mGridStatistics.mCellsRevealed > 0) {
 			XYSeries xySeries = new XYSeries(getResources().getString(
 					R.string.statistics_cheats_cells_revealed));
-			xySeries.add(categoryIndex, mGridStatistics.cellsRevealed);
+			xySeries.add(categoryIndex, mGridStatistics.mCellsRevealed);
 			xyMultipleSeriesDataset.addSeries(xySeries);
 			xyMultipleSeriesRenderer
 					.addSeriesRenderer(createSimpleSeriesRenderer(0xFFFECCBF));
@@ -367,10 +392,10 @@ public class StatisticsActivity extends Activity {
 		}
 
 		// Cage operator revealed option used
-		if (mGridStatistics.operatorsRevevealed > 0) {
+		if (mGridStatistics.mOperatorsRevevealed > 0) {
 			XYSeries xySeries = new XYSeries(getResources().getString(
 					R.string.statistics_cheats_operators_revealed));
-			xySeries.add(categoryIndex, mGridStatistics.operatorsRevevealed);
+			xySeries.add(categoryIndex, mGridStatistics.mOperatorsRevevealed);
 			xyMultipleSeriesDataset.addSeries(xySeries);
 			xyMultipleSeriesRenderer
 					.addSeriesRenderer(createSimpleSeriesRenderer(0xFFB22400));
@@ -389,11 +414,98 @@ public class StatisticsActivity extends Activity {
 			categoryIndex++;
 		}
 
-		addStatisticsSection(R.string.statistics_cheats_used_title,
+		addStatisticsSection(R.string.statistics_cheats_used_title, null,
 				R.string.statistics_cheats_used_body,
 				ChartFactory.getBarChartView(this, xyMultipleSeriesDataset,
 						xyMultipleSeriesRenderer, Type.DEFAULT));
 
+		return true;
+	}
+
+	/**
+	 * Create a pie chart for the number of solved versus unsolved games.
+	 * 
+	 * @return True in case the chart has been created. False otherwise.
+	 */
+	private boolean createSolvedUnSolvedChart(CumulativeStatistics cumulativeStatistics) {
+		if (cumulativeStatistics == null) {
+			// No progress to report.
+			return false;
+		}
+
+		// Display chart only if at least 1 game have been started for this grid
+		// size
+		if (cumulativeStatistics.mCountStarted <= 0) {
+			return false;
+		}
+
+		// Define the renderer
+		DefaultRenderer renderer = new DefaultRenderer();
+		renderer.setLabelsTextSize(mDefaultTextSize);
+		renderer.setLegendTextSize(mDefaultTextSize);
+		renderer.setZoomButtonsVisible(false);
+		renderer.setZoomEnabled(false);
+		renderer.setPanEnabled(false);
+		renderer.setInScroll(true);
+
+		// Create object for category series and the series renderer
+		CategorySeries categorySeries = new CategorySeries("");
+
+		// Games solved manually
+		if (cumulativeStatistics.mCountSolvedManually > 0) {
+			categorySeries
+					.add(getResources().getString(
+							R.string.solved_chart_games_solved)
+							+ " ("
+							+ cumulativeStatistics.mCountSolvedManually
+							+ ")",
+							(double) cumulativeStatistics.mCountSolvedManually
+									/ cumulativeStatistics.mCountStarted);
+			renderer.addSeriesRenderer(createSimpleSeriesRenderer(0xFF80FF00));
+		}
+
+		// Games for which the solution is revealed
+		if (cumulativeStatistics.mCountSolutionRevealed > 0) {
+			categorySeries
+					.add(getResources().getString(
+							R.string.solved_chart_games_solution_revealed)
+							+ " ("
+							+ cumulativeStatistics.mCountSolutionRevealed
+							+ ")",
+							(double) cumulativeStatistics.mCountSolutionRevealed
+									/ cumulativeStatistics.mCountStarted);
+			renderer.addSeriesRenderer(createSimpleSeriesRenderer(0xFFFF0000));
+		}
+
+		// Games which have not yet been finished
+		int countUnfinished = cumulativeStatistics.mCountStarted
+				- cumulativeStatistics.mCountFinished;
+		if (countUnfinished > 0) {
+			categorySeries
+					.add(getResources().getString(
+							R.string.solved_chart_games_unfinished)
+							+ " (" + countUnfinished + ")",
+							(double) countUnfinished
+									/ cumulativeStatistics.mCountStarted);
+			renderer.addSeriesRenderer(createSimpleSeriesRenderer(0xFFD4D4D4));
+		}
+
+		// Determine title
+		String subTitle;
+		if (cumulativeStatistics.mMinGridSize == cumulativeStatistics.mMaxGridSize) {
+			subTitle = this.getResources().getString(
+					R.string.statistics_chart_one_grid_size_subtitle,
+					cumulativeStatistics.mMinGridSize);
+		} else {
+			subTitle = this.getResources().getString(
+					R.string.statistics_chart_all_grid_sizes_subtitle,
+					cumulativeStatistics.mMinGridSize);
+		}
+
+		// Add section to activity
+		addStatisticsSection(R.string.solved_chart_title, subTitle,
+				R.string.solved_chart_body,
+				ChartFactory.getPieChartView(this, categorySeries, renderer));
 		return true;
 	}
 
@@ -416,21 +528,33 @@ public class StatisticsActivity extends Activity {
 	 * 
 	 * @param titleResId
 	 *            Resource id for the title of this section.
+	 * @param gridSize
+	 *            The grid size to be displayed as subtitle for the chart.
+	 *            <b>Only specify for charts which relates to all grids of this
+	 *            specific size. Use a value <= 0 if no subtitle should be
+	 *            shown.</b>
 	 * @param bodyResId
 	 *            Resource id for the body text (explanation of this section).
 	 * @param chart
 	 *            The chart view.
 	 */
-	private void addStatisticsSection(int titleResId, int bodyResId,
-			GraphicalView chart) {
+	private void addStatisticsSection(int titleResId, String subTitle,
+			int bodyResId, GraphicalView chart) {
 		// Inflate a new view for this statistics section
 		View sectionView = mLayoutInflater.inflate(R.layout.statistics_section,
 				null);
 
-		// Set title. The char title should not be used as it can overlap with
-		// the chart itself.
+		// Set title and subtitle. The chart title of achartengine is not used.
 		((TextView) sectionView.findViewById(R.id.statistics_section_title))
 				.setText(titleResId);
+		TextView subtitle = (TextView) sectionView
+				.findViewById(R.id.statistics_section_subtitle);
+		if (subTitle != null && !subtitle.equals("")) {
+			subtitle.setText(subTitle);
+			subtitle.setVisibility(View.VISIBLE);
+		} else {
+			subtitle.setVisibility(View.GONE);
+		}
 
 		// Add chart
 		((LinearLayout) sectionView.findViewById(R.id.statistics_section_chart))

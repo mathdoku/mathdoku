@@ -122,8 +122,8 @@ public class MainActivity extends Activity implements
 	private ProgressDialog mProgressDialogImagePreviewCreation;
 
 	private Util mUtil;
-	
-	private boolean mBlockTouchSameCell = false; 
+
+	private boolean mBlockTouchSameCell = false;
 
 	final Handler mHandler = new Handler();
 
@@ -162,8 +162,8 @@ public class MainActivity extends Activity implements
 
 		// Initialize the util helper.
 		mUtil = new Util(this);
-		
-		// If too little height then request full screen usage 
+
+		// If too little height then request full screen usage
 		if (mUtil.getDisplayHeight() < 750) {
 			this.getWindow().setFlags(
 					WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -564,13 +564,16 @@ public class MainActivity extends Activity implements
 		// Option: for all cells in the selected cage which have exactly one
 		// possible value, this possible value is set as the user value of the
 		// cell.
-		for (GridCell cell : selectedGridCage.mCells) {
-			if (cell.countPossibles() == 1) {
-				// At least one cell within this cage has exactly one possible
-				// value.
-				menu.add(0, CONTEXT_MENU_USE_CAGE_MAYBES, 0,
-						R.string.context_menu_use_cage_maybes);
-				break;
+		if (selectedGridCage != null) {
+			for (GridCell cell : selectedGridCage.mCells) {
+				if (cell.countPossibles() == 1) {
+					// At least one cell within this cage has exactly one
+					// possible
+					// value.
+					menu.add(0, CONTEXT_MENU_USE_CAGE_MAYBES, 0,
+							R.string.context_menu_use_cage_maybes);
+					break;
+				}
 			}
 		}
 
@@ -581,13 +584,16 @@ public class MainActivity extends Activity implements
 		}
 
 		// Option: clear all cell in the selected cage
-		for (GridCell cell : selectedGridCage.mCells) {
-			if (cell.isUserValueSet() || cell.countPossibles() > 0) {
-				// At least one cell within this cage has a value or a possible
-				// value.
-				menu.add(0, CONTEXT_MENU_CLEAR_CAGE_CELLS, 0,
-						R.string.context_menu_clear_cage_cells);
-				break;
+		if (selectedGridCage != null) {
+			for (GridCell cell : selectedGridCage.mCells) {
+				if (cell.isUserValueSet() || cell.countPossibles() > 0) {
+					// At least one cell within this cage has a value or a
+					// possible
+					// value.
+					menu.add(0, CONTEXT_MENU_CLEAR_CAGE_CELLS, 0,
+							R.string.context_menu_clear_cage_cells);
+					break;
+				}
 			}
 		}
 
@@ -672,7 +678,7 @@ public class MainActivity extends Activity implements
 		}
 		return super.onContextItemSelected(item);
 	}
-	
+
 	@Override
 	public void onContextMenuClosed(Menu menu) {
 		mBlockTouchSameCell = false;
@@ -1023,7 +1029,8 @@ public class MainActivity extends Activity implements
 		int packageVersionNumber = mUtil.getPackageVersionNumber();
 
 		// Get the previous installed version from the preferences.
-		int previousInstalledVersion = mMathDokuPreferences.getCurrentInstalledVersion();
+		int previousInstalledVersion = mMathDokuPreferences
+				.getCurrentInstalledVersion();
 
 		// Start phase 1 of the upgrade process if needed.
 		if (previousInstalledVersion < packageVersionNumber) {

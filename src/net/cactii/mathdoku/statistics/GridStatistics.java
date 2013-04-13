@@ -11,74 +11,74 @@ public class GridStatistics {
 	public int mId;
 
 	// Unique string representation of this grid
-	public String gridSignature;
+	public String mGridSignature;
 
 	// Size of the grid
 	public int gridSize;
 
 	// Timestamp of first and last move
-	public java.sql.Timestamp firstMove;
-	public java.sql.Timestamp lastMove;
+	public java.sql.Timestamp mFirstMove;
+	public java.sql.Timestamp mLastMove;
 
 	// Time elapsed while playing (e.d. displaying the game)
-	public long elapsedTime;
+	public long mElapsedTime;
 
 	// Time added to the elapsed time because of using cheats
-	public long cheatPenaltyTime; // TODO: implement cheat penalty time
+	public long mCheatPenaltyTime; // TODO: implement cheat penalty time
 
 	// ****************
 	// Avoidable moves
 	// ****************
 
 	// The number of times a user value in cell was replaced by another value
-	public int userValueReplaced;
+	public int mUserValueReplaced;
 
 	// The number of possible values used
-	public int maybeValue;
+	public int mMaybeValue;
 
 	// The number of moves reversed via undo
-	public int undoButton;
+	public int mUndoButton;
 
 	// The number of times the clear button is used to clear a single cell
-	public int cellCleared;
+	public int mCellCleared;
 
 	// The number of times a cage was cleared
-	public int cageCleared;
+	public int mCageCleared;
 
 	// The number of times the entire grid was cleared
-	public int gridCleared;
+	public int mGridCleared;
 
 	// *******
 	// Cheats
 	// *******
 
 	// The number of cells revealed (a cheat)
-	public int cellsRevealed;
+	public int mCellsRevealed;
 
 	// The number of cage operators revealed (a cheat)
-	public int operatorsRevevealed;
+	public int mOperatorsRevevealed;
 
 	// The number of times "check progress" was used and the total number of
 	// invalids values which have been found when using this option (a cheat)
-	public int checkProgressUsed;
-	public int checkProgressInvalidsFound;
+	public int mCheckProgressUsed;
+	public int mCheckProgressInvalidsFound;
 
 	// Has the entire solution been revealed?
-	public boolean solutionRevealed;
+	public boolean mSolutionRevealed;
 
 	// ***********************
 	// Status for entire grid
 	// ***********************
 
 	// Cells filled and empty
-	public int cellsUserValueFilled;
-	public int cellsUserValueEmtpty;
+	public int mCellsUserValueFilled;
+	public int mCellsUserValueEmtpty;
 
 	// Has the grid been solved manually (i.e. not revealed)?
-	public boolean solvedManually;
+	public boolean mSolvedManually;
 
 	// Has the grid been finished (either solved or revealed solution)?
-	public boolean finished;
+	public boolean mFinished;
 
 	// Counters available
 	public enum StatisticsCounterType {
@@ -106,40 +106,40 @@ public class GridStatistics {
 	public void increaseCounter(StatisticsCounterType statisticsCounterType) {
 		switch (statisticsCounterType) {
 		case CELLS_FILLED:
-			cellsUserValueFilled++;
+			mCellsUserValueFilled++;
 			break;
 		case CELLS_EMPTY:
-			cellsUserValueEmtpty++;
+			mCellsUserValueEmtpty++;
 			break;
 		case USER_VALUE_REPLACED:
-			userValueReplaced++;
+			mUserValueReplaced++;
 			break;
 		case POSSIBLES:
-			maybeValue++;
+			mMaybeValue++;
 			break;
 		case UNDOS:
-			undoButton++;
+			mUndoButton++;
 			break;
 		case CELL_CLEARED:
-			cellCleared++;
+			mCellCleared++;
 			break;
 		case CAGE_CLEARED:
-			cageCleared++;
+			mCageCleared++;
 			break;
 		case GRID_CLEARED:
-			gridCleared++;
+			mGridCleared++;
 			break;
 		case CELLS_REVEALED:
-			cellsRevealed++;
+			mCellsRevealed++;
 			break;
 		case OPERATORS_REVEALED:
-			operatorsRevevealed++;
+			mOperatorsRevevealed++;
 			break;
 		case CHECK_PROGRESS_USED:
-			checkProgressUsed++;
+			mCheckProgressUsed++;
 			break;
 		case CHECK_PROGRESS_INVALIDS_FOUND:
-			checkProgressInvalidsFound++;
+			mCheckProgressInvalidsFound++;
 			break;
 		}
 		setLastMoveToCurrentTime();
@@ -154,10 +154,10 @@ public class GridStatistics {
 	public void decreaseCounter(StatisticsCounterType statisticsCounterType) {
 		switch (statisticsCounterType) {
 		case CELLS_FILLED:
-			cellsUserValueFilled--;
+			mCellsUserValueFilled--;
 			break;
 		case CELLS_EMPTY:
-			cellsUserValueEmtpty--;
+			mCellsUserValueEmtpty--;
 			break;
 		default:
 			// Not available for other counters.
@@ -169,10 +169,10 @@ public class GridStatistics {
 	 * Update the statistics in case a grid is solved.
 	 */
 	public void solved() {
-		if (!solutionRevealed) {
-			solvedManually = true;
+		if (!mSolutionRevealed) {
+			mSolvedManually = true;
 		}
-		finished = true;
+		mFinished = true;
 		setLastMoveToCurrentTime();
 	}
 
@@ -180,9 +180,9 @@ public class GridStatistics {
 	 * Update the statistics in case the solution of a grid has been revealed.
 	 */
 	public void solutionRevealed() {
-		solutionRevealed = true;
-		solvedManually = false;
-		finished = true;
+		mSolutionRevealed = true;
+		mSolvedManually = false;
+		mFinished = true;
 		setLastMoveToCurrentTime();
 	}
 
@@ -190,7 +190,7 @@ public class GridStatistics {
 	 * Updates the date time of the last move.
 	 */
 	private void setLastMoveToCurrentTime() {
-		lastMove = new java.sql.Timestamp(System.currentTimeMillis());
+		mLastMove = new java.sql.Timestamp(System.currentTimeMillis());
 	}
 
 	/**
@@ -208,7 +208,7 @@ public class GridStatistics {
 	 * @return The full grid signature.
 	 */
 	public String getGridSignature() {
-		return gridSignature;
+		return mGridSignature;
 	}
 
 	/**
@@ -226,7 +226,7 @@ public class GridStatistics {
 	 * @return The timestamp of the first move.
 	 */
 	public java.sql.Timestamp getFirstMove() {
-		return firstMove;
+		return mFirstMove;
 	}
 
 	/**
@@ -235,7 +235,7 @@ public class GridStatistics {
 	 * @return The timestamp of the first move.
 	 */
 	public java.sql.Timestamp getLastMove() {
-		return lastMove;
+		return mLastMove;
 	}
 
 	/**
@@ -244,7 +244,7 @@ public class GridStatistics {
 	 * @return The elapsed time (including penalty time).
 	 */
 	public long getElapsedTime() {
-		return elapsedTime;
+		return mElapsedTime;
 	}
 
 	/**
@@ -253,7 +253,7 @@ public class GridStatistics {
 	 * @return The elapsed time (including penalty time).
 	 */
 	public long getCheatPenaltyTime() {
-		return cheatPenaltyTime;
+		return mCheatPenaltyTime;
 	}
 
 	/**
@@ -262,7 +262,7 @@ public class GridStatistics {
 	 * @return True in case the solution was revealed. False otherwise.
 	 */
 	public boolean isSolutionRevealed() {
-		return solutionRevealed;
+		return mSolutionRevealed;
 	}
 
 	/**
@@ -271,7 +271,7 @@ public class GridStatistics {
 	 * @return True in case the solution was solved manually. False otherwise.
 	 */
 	public boolean isSolvedManually() {
-		return solvedManually;
+		return mSolvedManually;
 	}
 
 	/**
@@ -281,6 +281,6 @@ public class GridStatistics {
 	 * @return True in case the grid is finished. False otherwise.
 	 */
 	public boolean isFinished() {
-		return finished;
+		return mFinished;
 	}
 }
