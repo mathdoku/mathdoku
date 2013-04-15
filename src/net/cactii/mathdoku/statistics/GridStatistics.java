@@ -24,7 +24,7 @@ public class GridStatistics {
 	public long mElapsedTime;
 
 	// Time added to the elapsed time because of using cheats
-	public long mCheatPenaltyTime; // TODO: implement cheat penalty time
+	public long mCheatPenaltyTime;
 
 	// ****************
 	// Avoidable moves
@@ -104,42 +104,52 @@ public class GridStatistics {
 	 *            The counter which has to be increased.
 	 */
 	public void increaseCounter(StatisticsCounterType statisticsCounterType) {
+		increaseCounter(statisticsCounterType, 1);
+	}
+
+	/**
+	 * Increases the given counter with 1.
+	 * 
+	 * @param statisticsCounterType
+	 *            The counter which has to be increased.
+	 */
+	public void increaseCounter(StatisticsCounterType statisticsCounterType, int occurrences) {
 		switch (statisticsCounterType) {
 		case CELLS_FILLED:
-			mCellsUserValueFilled++;
+			mCellsUserValueFilled += occurrences;
 			break;
 		case CELLS_EMPTY:
-			mCellsUserValueEmtpty++;
+			mCellsUserValueEmtpty += occurrences;;
 			break;
 		case USER_VALUE_REPLACED:
-			mUserValueReplaced++;
+			mUserValueReplaced += occurrences;;
 			break;
 		case POSSIBLES:
-			mMaybeValue++;
+			mMaybeValue += occurrences;;
 			break;
 		case UNDOS:
-			mUndoButton++;
+			mUndoButton += occurrences;;
 			break;
 		case CELL_CLEARED:
-			mCellCleared++;
+			mCellCleared += occurrences;;
 			break;
 		case CAGE_CLEARED:
-			mCageCleared++;
+			mCageCleared += occurrences;;
 			break;
 		case GRID_CLEARED:
-			mGridCleared++;
+			mGridCleared += occurrences;;
 			break;
 		case CELLS_REVEALED:
-			mCellsRevealed++;
+			mCellsRevealed += occurrences;;
 			break;
 		case OPERATORS_REVEALED:
-			mOperatorsRevevealed++;
+			mOperatorsRevevealed += occurrences;;
 			break;
 		case CHECK_PROGRESS_USED:
-			mCheckProgressUsed++;
+			mCheckProgressUsed += occurrences;;
 			break;
 		case CHECK_PROGRESS_INVALIDS_FOUND:
-			mCheckProgressInvalidsFound++;
+			mCheckProgressInvalidsFound += occurrences;;
 			break;
 		}
 		setLastMoveToCurrentTime();

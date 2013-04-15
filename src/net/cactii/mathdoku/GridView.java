@@ -250,9 +250,12 @@ public class GridView extends View implements OnTouchListener {
 			if (oldValue != 0) {
 				selectedCell.clearPossibles();
 				selectedCell.setUserValue(0);
-				mGrid.getGridStatistics().increaseCounter(StatisticsCounterType.CELL_CLEARED);
-				mGrid.getGridStatistics().increaseCounter(StatisticsCounterType.CELLS_EMPTY);
-				mGrid.getGridStatistics().decreaseCounter(StatisticsCounterType.CELLS_FILLED);
+				mGrid.getGridStatistics().increaseCounter(
+						StatisticsCounterType.CELL_CLEARED);
+				mGrid.getGridStatistics().increaseCounter(
+						StatisticsCounterType.CELLS_EMPTY);
+				mGrid.getGridStatistics().decreaseCounter(
+						StatisticsCounterType.CELLS_FILLED);
 			}
 		} else {
 			if (TipOrderOfValuesInCage.toBeDisplayed(mPreferences,
@@ -277,10 +280,13 @@ public class GridView extends View implements OnTouchListener {
 					selectedCell.setUserValue(newValue);
 					selectedCell.clearPossibles();
 					if (oldValue == 0) {
-						mGrid.getGridStatistics().increaseCounter(StatisticsCounterType.CELLS_FILLED);
-						mGrid.getGridStatistics().decreaseCounter(StatisticsCounterType.CELLS_EMPTY);
+						mGrid.getGridStatistics().increaseCounter(
+								StatisticsCounterType.CELLS_FILLED);
+						mGrid.getGridStatistics().decreaseCounter(
+								StatisticsCounterType.CELLS_EMPTY);
 					} else {
-						mGrid.getGridStatistics().increaseCounter(StatisticsCounterType.USER_VALUE_REPLACED);
+						mGrid.getGridStatistics().increaseCounter(
+								StatisticsCounterType.USER_VALUE_REPLACED);
 					}
 					if (mPreferences.isClearRedundantPossiblesEnabled()) {
 						// Update possible values for other cells in this row
@@ -380,21 +386,30 @@ public class GridView extends View implements OnTouchListener {
 			return (int) (specSize);
 	}
 
-	// Highlight those cells where the user has made a mistake
-	public void markInvalidChoices() {
-		boolean isValid = true;
-		for (GridCell cell : mGrid.mCells)
-			if (cell.isUserValueSet())
+	/**
+	 * Highlight those cells where the user has made a mistake.
+	 * 
+	 * @return The number of cells which have been marked as invalid. Cells
+	 *         which were already marked as invalid will not be counted again.
+	 */
+	public int markInvalidChoices() {
+		int countNewInvalids = 0;
+		for (GridCell cell : mGrid.mCells) {
+			// Check all cells having a value and not (yet) marked as invalid.
+			if (cell.isUserValueSet() && !cell.hasInvalidUserValueHighlight()) {
 				if (cell.getUserValue() != cell.getCorrectValue()) {
 					cell.setInvalidHighlight(true);
 					mGrid.increaseCounter(StatisticsCounterType.CHECK_PROGRESS_INVALIDS_FOUND);
-					isValid = false;
+					countNewInvalids++;
 				}
+			}
+		}
 
-		if (!isValid)
+		if (countNewInvalids > 0) {
 			invalidate();
+		}
 
-		return;
+		return countNewInvalids;
 	}
 
 	/**

@@ -55,7 +55,7 @@ public class GridCell {
 	// Player cheated (revealed this cell)
 	private boolean mCheated;
 	// Highlight user input isn't correct value
-	private boolean mInvalidHighlight;
+	private boolean mInvalidUserValueHighlight;
 
 	public static enum BorderType {
 		NONE, SELECTED__BAD_MATH, SELECTED__GOOD_MATH, NOT_SELECTED__BAD_MATH, NOT_SELECTED__GOOD_MATH
@@ -86,7 +86,7 @@ public class GridCell {
 		this.mUserValue = 0;
 		this.mShowWarning = false;
 		this.mCheated = false;
-		this.mInvalidHighlight = false;
+		this.mInvalidUserValueHighlight = false;
 		this.mPossibles = new ArrayList<Integer>();
 		this.mPosX = 0;
 		this.mPosY = 0;
@@ -164,8 +164,8 @@ public class GridCell {
 	 * 
 	 * @param digit
 	 *            The digit which has to be removed.
-	 * @return True in case the digit has been removed. False otherwise or in case
-	 *         the digit was not added before.
+	 * @return True in case the digit has been removed. False otherwise or in
+	 *         case the digit was not added before.
 	 */
 	public boolean removePossible(int digit) {
 		if (hasPossible(digit)) {
@@ -187,7 +187,7 @@ public class GridCell {
 	public void setUserValue(int digit) {
 		this.mPossibles.clear();
 		this.mUserValue = digit;
-		mInvalidHighlight = false;
+		mInvalidUserValueHighlight = false;
 
 		// Check cage maths
 		mGrid.mCages.get(mCageId).checkCageMathsCorrect(false);
@@ -205,7 +205,8 @@ public class GridCell {
 	 * Clear the user value and/or possible values in a cell.
 	 */
 	public void clear() {
-		// Note: setting the userValue to 0 clear the cell but also the possible values!
+		// Note: setting the userValue to 0 clear the cell but also the possible
+		// values!
 		setUserValue(0);
 	}
 
@@ -219,11 +220,19 @@ public class GridCell {
 	}
 
 	public void setInvalidHighlight(boolean value) {
-		this.mInvalidHighlight = value;
+		this.mInvalidUserValueHighlight = value;
 	}
 
-	public boolean getInvalidHighlight() {
-		return this.mInvalidHighlight;
+	/**
+	 * Checks whether the cell is higlighted as invalid. Note: a cell can
+	 * contain an invalid value without being marked as invalid. A cell will
+	 * only be marked as invalid after using the option "Check Progress".
+	 * 
+	 * @return True in case the cell has been marked as invalid. False
+	 *         otherwise.
+	 */
+	public boolean hasInvalidUserValueHighlight() {
+		return this.mInvalidUserValueHighlight;
 	}
 
 	/**
@@ -369,7 +378,7 @@ public class GridCell {
 						: null);
 				break;
 			case 3:
-				borderPaint = (mInvalidHighlight ? mCellPainter
+				borderPaint = (mInvalidUserValueHighlight ? mCellPainter
 						.getInvalidBorderPaint() : null);
 				break;
 			case 4:
@@ -412,7 +421,7 @@ public class GridCell {
 		Paint background = null;
 		if (mSelected) {
 			background = mCellPainter.getSelectedBackgroundPaint();
-		} else if (mInvalidHighlight) {
+		} else if (mInvalidUserValueHighlight) {
 			background = mCellPainter.getInvalidBackgroundPaint();
 		} else if (mCheated) {
 			background = mCellPainter.getCheatedBackgroundPaint();
@@ -532,7 +541,7 @@ public class GridCell {
 			storageString += possible + GameFile.FIELD_DELIMITER_LEVEL2;
 		}
 		storageString += GameFile.FIELD_DELIMITER_LEVEL1
-				+ Boolean.toString(mInvalidHighlight)
+				+ Boolean.toString(mInvalidUserValueHighlight)
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + Boolean.toString(mCheated)
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + Boolean.toString(mSelected);
 
@@ -579,7 +588,7 @@ public class GridCell {
 			index++;
 		}
 		if (cellInformationVersion > 1) {
-			mInvalidHighlight = Boolean.parseBoolean(cellParts[index++]);
+			mInvalidUserValueHighlight = Boolean.parseBoolean(cellParts[index++]);
 			mCheated = Boolean.parseBoolean(cellParts[index++]);
 			mSelected = Boolean.parseBoolean(cellParts[index++]);
 		}

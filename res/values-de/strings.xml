@@ -288,16 +288,49 @@
     <!-- Label for check box "Do not show again" in the tip dialog. -->
     <string name="dialog_tip_do_not_show_again">Nicht nochmal anzeigen</string>
 
-    <!-- Title, text, drawable for tip "Input mode changed" -->
+    <!-- Title and text for tip "Input mode changed" -->
     <string name="dialog_tip_input_mode_changed_title">Eingabemodus geändert</string>
     <!-- TODO: Enlish text and meaning has changed to: You have just changed the input mode from %1$s to %2$s by tapping the selected cell more than once. Tap the selected cell again to change the input mode back to the previous state. -->
     <string name="dialog_tip_input_mode_changed_text">Sie haben gerade den Eingabemodus von %1$s auf %2$s geändert. Der Eingabemodus kann durch nochmaliges Drücken auf die ausgewählte Zelle auf \"normal\" gestellt werden. Oder durch Dücken des Textmodues: Vielleicht über dem Zahlenblock.</string>
 
-    <!-- Title, text, drawable for tip "Order of values in cage" -->
+    <!-- Title, and text for tip "Order of values in cage" -->
     <!-- TODO -->
     <string name="dialog_tip_order_of_values_in_cage_title">Cell values</string>
-    <!-- TODO -->
     <string name="dialog_tip_order_of_values_in_cage_text">The order of values in the cells of the cage is not relevant in a MathDoku puzzle. The results of cages \"2 &#8212; 3\"  and \"3 &#8212; 2\" both equals 1. The entire grid below is therefore valid.</string>
+
+    <!-- Title, and text for tip "Cheat which reveals the value of a cell". Note "%1$s" in the text will be replaced with an amount and units (e.d. "20 seconds" or "5 minutes"). -->
+    <!-- TODO -->
+    <string name="dialog_tip_cheat_reveal_value_title">Cheat: reveal value</string>
+    <string name="dialog_tip_cheat_reveal_value_text">You have revealed the value of a cell. Revealing the value of a cell is not needed to solve the puzzle as each puzzle has one unqiue solution which can be found without using cheats.\nEach time you will use this cheat, the elapsed time will be increased with %1$s.</string>
+
+    <!-- Title, and text for tip "Cheat which reveals the operator of a cell". Note "%1$s" in the text will be replaced with an amount and units (e.d. "20 seconds" or "5 minutes"). -->
+    <!-- TODO -->
+    <string name="dialog_tip_cheat_reveal_operator_title">Cheat: reveal operator</string>
+    <string name="dialog_tip_cheat_reveal_operator_text">You have revealed the operator of a cage. Revealing the operator of a cage is not needed to solve the puzzle as each puzzle has one unqiue solution which can be found without using cheats.\nEach time you will use this cheat, the elapsed time will be increased with %1$s.</string>
+
+    <!-- Title, and text for tip "Cheat which reveals the solutions of a puzzle". Note "%1$s" in the text will be replaced with an amount and units (e.d. "20 seconds" or "5 minutes"). -->
+    <!-- TODO -->
+    <string name="dialog_tip_cheat_reveal_solution_title">Cheat: reveal solution</string>
+    <string name="dialog_tip_cheat_reveal_solution_text">You have revealed the solution of the puzzle. When you use this cheat, the elapsed time will be increased with %1$s.</string>
+
+    <!-- Title, and text for tip "Cheat progress checking". Note "%1$s" and "%2$s" in the text will be replaced with an amount and units (e.d. "20 seconds" or "5 minutes"). -->
+    <!-- TODO -->
+    <string name="dialog_tip_cheat_check_progress_title">Cheat: check progress</string>
+    <string name="dialog_tip_cheat_check_progress_text">You have checked the progress of your solution. Invalid cells have been highlighted.\nEach time you use this cheat, the elapsed time will be increased with %1$s plus %2$s for each new invalid value which has been found.</string>
+
+    <!-- Units for penalty time when using cheats. -->
+    <!-- TODO -->
+    <string name="dialog_tip_cheat_seconds_singular">second</string>
+    <string name="dialog_tip_cheat_seconds_plural">seconds</string>
+    <string name="dialog_tip_cheat_minutes_singular">minute</string>
+    <string name="dialog_tip_cheat_minutes_plural">minutes</string>
+    <string name="dialog_tip_cheat_hours_singular">hour</string>
+    <string name="dialog_tip_cheat_hours_pluaral">hours</string>
+    <string name="dialog_tip_cheat_days_singular">day</string>
+    <string name="dialog_tip_cheat_days_plural">days</string>
+    <!-- Connector in case penalty time consists of different units (e.g. "1 minute and 15 seconds") -->
+    <!-- TODO -->
+    <string name="dialog_tip_cheat_unit_connector">and</string>
 
     <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- TODO: TRANSLATE ENTIRE SECTION -->
@@ -348,6 +381,7 @@
     <string name="solved_chart_games_unfinished">Unfinished</string>
 
     <!-- OPTIONS STATISTICS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
 
     <!-- The title and summary of the "Hide explanation" option. This option enables or disables displayin the explanations below the statistics charts. -->
     <string name="option_show_statistics_description_title">Chart description</string>

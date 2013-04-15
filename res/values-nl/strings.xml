@@ -290,6 +290,34 @@
     <string name="dialog_tip_order_of_values_in_cage_title">Cel waarden</string>
     <string name="dialog_tip_order_of_values_in_cage_text">De volgorde van de getallen in de cellen is niet belangrijk in een MathDoku puzzel. De resultaten van de berekeningen \"2 &#8212; 3\"  en \"3 &#8212; 2\" zijn beide gelijk aan 1. De waarden in de onderstaande afbeelding zijn dus correct.</string>
 
+        <!-- Title, and text for tip "Cheat which reveals the value of a cell". Note "%1$s" in the text will be replaced with an amount and units (e.d. "20 seconds" or "5 minutes"). -->
+    <string name="dialog_tip_cheat_reveal_value_title">Vals spel: waarde onthuld</string>
+    <string name="dialog_tip_cheat_reveal_value_text">Je hebt de waarde van een cel onthuld. Het onthullen van de waarde van een cel is niet nodig om een puzzel op te kunnen lossen omdat elke puzzel een unieke oplossing heeft die gevonden kan worden zonder vals te spelen. \nElke keer als je een waarde onthuld dan wordt de speeltijd verhoogd met %1$s.</string>
+
+    <!-- Title, and text for tip "Cheat which reveals the operator of a cell". Note "%1$s" in the text will be replaced with an amount and units (e.d. "20 seconds" or "5 minutes"). -->
+    <string name="dialog_tip_cheat_reveal_operator_title">Vals spel: operatie teken onthuld</string>
+    <string name="dialog_tip_cheat_reveal_operator_text">Je hebt het operatie teken van een groep onthuld. Het onthullen van een operatie teken van een groep is niet nodig om een puzzel op te kunnen lossen omdat elke puzzel een unieke oplossing heeft die gevonden kan worden zonder vals te spelen. \nElke keer als je een operatie teken van een groep onthuld dan wordt de speeltijd verhoogd met %1$s.</string>
+
+    <!-- Title, and text for tip "Cheat which reveals the solutions of a puzzle". Note "%1$s" in the text will be replaced with an amount and units (e.d. "20 seconds" or "5 minutes"). -->
+    <string name="dialog_tip_cheat_reveal_solution_title">Vals spel: oplossing onthuld</string>
+    <string name="dialog_tip_cheat_reveal_solution_text">Je hebt de oplossing van de puzzel onthuld. De speeltijd is verhoogd met %1$s.</string>
+
+    <!-- Title, and text for tip "Cheat progress checking". Note "%1$s" and "%2$s" in the text will be replaced with an amount and units (e.d. "20 seconds" or "5 minutes"). -->
+    <string name="dialog_tip_cheat_check_progress_title">Vals spel: voortgang gecontroleerd</string>
+    <string name="dialog_tip_cheat_check_progress_text">Je hebt de voortgang van je oplossing gecontroleerd. Cellen met een ongeldige waarde zijn gemarkeerd.\nElke keer als je de voortgang controleert dan wordt de speeltijd verhoogd met %1$s en nog eens met %2$s voor elke nieuwe onjuiste waarde die is gevonden.</string>
+
+    <!-- Units for penalty time when using cheats. -->
+    <string name="dialog_tip_cheat_seconds_singular">seconde</string>
+    <string name="dialog_tip_cheat_seconds_plural">seconden</string>
+    <string name="dialog_tip_cheat_minutes_singular">minuut</string>
+    <string name="dialog_tip_cheat_minutes_plural">minuten</string>
+    <string name="dialog_tip_cheat_hours_singular">uur</string>
+    <string name="dialog_tip_cheat_hours_pluaral">uren</string>
+    <string name="dialog_tip_cheat_days_singular">dag</string>
+    <string name="dialog_tip_cheat_days_plural">dagen</string>
+    <!-- Connector in case penalty time consists of different units (e.g. "1 minute and 15 seconds") -->
+    <string name="dialog_tip_cheat_unit_connector">en</string>
+    
     <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 

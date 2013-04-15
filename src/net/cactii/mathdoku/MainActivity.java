@@ -1,7 +1,9 @@
 package net.cactii.mathdoku;
 
+import net.cactii.mathdoku.Cheat.CheatType;
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.DigitPositionGrid.DigitPositionGridType;
+import net.cactii.mathdoku.Tip.TipCheat;
 import net.cactii.mathdoku.Tip.TipDialog;
 import net.cactii.mathdoku.Tip.TipInputModeChanged;
 import net.cactii.mathdoku.painter.Painter;
@@ -644,37 +646,19 @@ public class MainActivity extends Activity implements
 			this.mGridView.invalidate();
 			break;
 		case CONTEXT_MENU_REVEAL_CELL:
-			UsageLog.getInstance().logFunction("ContextMenu.RevealCell");
-			if (selectedCell == null) {
-				break;
-			}
-			CellChange orginalUserMove = selectedCell.saveUndoInformation(null);
-			selectedCell.setUserValue(selectedCell.getCorrectValue());
-			if (mMathDokuPreferences.isClearRedundantPossiblesEnabled()) {
-				// Update possible values for other cells in this row and
-				// column.
-				mGrid.clearRedundantPossiblesInSameRowOrColumn(orginalUserMove);
-			}
-			selectedCell.setCheated();
-			mGrid.increaseCounter(StatisticsCounterType.CELLS_REVEALED);
-			Toast.makeText(this, R.string.main_ui_cheat_messsage,
-					Toast.LENGTH_SHORT).show();
-			this.mGridView.invalidate();
+			revealCell(selectedCell);
 			break;
 		case CONTEXT_MENU_CLEAR_GRID:
 			openClearDialog();
 			break;
 		case CONTEXT_MENU_SHOW_SOLUTION:
-			this.mGrid.solve();
+			mGrid.solve();
+			mGrid.getGridStatistics().solutionRevealed();
+			registerAndProcessCheat(CheatType.SOLUTION_REVEALED);
 			break;
 		case CONTEXT_MENU_REVEAL_OPERATOR:
-			if (selectedGridCage == null) {
-				break;
-			}
-			UsageLog.getInstance().logFunction("ContextMenu.RevealOperator");
-			selectedGridCage.revealOperator();
-			mGrid.increaseCounter(StatisticsCounterType.OPERATORS_REVEALED);
-			mGridView.invalidate();
+			revealOperator(selectedGridCage);
+			break;
 		}
 		return super.onContextItemSelected(item);
 	}
@@ -708,19 +692,7 @@ public class MainActivity extends Activity implements
 			startActivityForResult(i, REQUEST_CODE_SAVE_LOAD);
 			return true;
 		case R.id.checkprogress:
-			int textId;
-			UsageLog.getInstance().logFunction("Menu.CheckProgress");
-			mGrid.increaseCounter(StatisticsCounterType.CHECK_PROGRESS_USED);
-			if (mGrid.isSolutionValidSoFar())
-				textId = R.string.ProgressOK;
-			else {
-				textId = R.string.ProgressBad;
-				mGridView.markInvalidChoices();
-			}
-			Toast toast = Toast.makeText(getApplicationContext(), textId,
-					Toast.LENGTH_SHORT);
-			toast.setGravity(Gravity.CENTER, 0, 0);
-			toast.show();
+			checkProgress();
 			return true;
 		case R.id.menu_statistics:
 			UsageLog.getInstance().logFunction("Menu.Statistics");
@@ -1359,6 +1331,7 @@ public class MainActivity extends Activity implements
 		if (mGrid != null && mGrid.isActive()) {
 			mTimerTask = new GameTimer(this);
 			mTimerTask.mElapsedTime = mGrid.getElapsedTime();
+			mTimerTask.mCheatPenaltyTime = mGrid.getCheatPenaltyTime();
 			if (mMathDokuPreferences.isTimerVisible()) {
 				mTimerText.setVisibility(View.VISIBLE);
 			} else {
@@ -1375,7 +1348,8 @@ public class MainActivity extends Activity implements
 		// Stop timer if running
 		if (mTimerTask != null && !mTimerTask.isCancelled()) {
 			if (mGrid != null) {
-				this.mGrid.setElapsedTime(mTimerTask.mElapsedTime);
+				this.mGrid.setElapsedTime(mTimerTask.mElapsedTime,
+						mTimerTask.mCheatPenaltyTime);
 			}
 			mTimerTask.cancel(true);
 		}
@@ -1521,8 +1495,6 @@ public class MainActivity extends Activity implements
 	/**
 	 * Sets the timer text with the actual elapsed time.
 	 * 
-	 * @param timerTextView
-	 *            The textview which has to be filled.
 	 * @param elapsedTime
 	 *            The elapsed time (in mili seconds) while playing the game.
 	 */
@@ -1584,6 +1556,119 @@ public class MainActivity extends Activity implements
 		if (key.equals(Preferences.THEME)) {
 			setTheme();
 			setInputMode(mInputMode);
+		}
+	}
+
+	/**
+	 * Handles revealing of user value in the given cell.
+	 * 
+	 * @param selectedCell
+	 *            The cell for which the user value has to be revealed.
+	 */
+	private void revealCell(GridCell selectedCell) {
+		UsageLog.getInstance().logFunction("ContextMenu.RevealCell");
+		if (selectedCell == null) {
+			return;
+		}
+
+		// Reveal the user value
+		CellChange orginalUserMove = selectedCell.saveUndoInformation(null);
+		selectedCell.setUserValue(selectedCell.getCorrectValue());
+		if (mMathDokuPreferences.isClearRedundantPossiblesEnabled()) {
+			// Update possible values for other cells in this row and
+			// column.
+			mGrid.clearRedundantPossiblesInSameRowOrColumn(orginalUserMove);
+		}
+		selectedCell.setCheated();
+
+		mGrid.increaseCounter(StatisticsCounterType.CELLS_REVEALED);
+		registerAndProcessCheat(CheatType.CELL_REVEALED);
+
+		this.mGridView.invalidate();
+	}
+
+	/**
+	 * Handles revealing of the operator of the given cage.
+	 * 
+	 * @param selectedCell
+	 *            The cage for which the operator has to be revealed.
+	 */
+	private void revealOperator(GridCage selectedGridCage) {
+		UsageLog.getInstance().logFunction("ContextMenu.RevealOperator");
+		if (selectedGridCage == null) {
+			return;
+		}
+
+		selectedGridCage.revealOperator();
+
+		mGrid.increaseCounter(StatisticsCounterType.OPERATORS_REVEALED);
+		registerAndProcessCheat(CheatType.OPERATOR_REVEALED);
+
+		mGridView.invalidate();
+	}
+
+	/**
+	 * Registers and processes a cheat of the given type.
+	 * 
+	 * @param cheatType
+	 *            The type of cheat to be processed.
+	 */
+	private void registerAndProcessCheat(CheatType cheatType) {
+		// Create new cheat
+		Cheat cheat = new Cheat(this, cheatType);
+
+		// Add penalty time
+		if (mTimerTask != null) {
+			mTimerTask.addCheatPenaltyTime(cheat);
+		}
+
+		// Display hint or toast
+		if (TipCheat.toBeDisplayed(mMathDokuPreferences, cheat)) {
+			new TipCheat(this, cheat).show();
+		} else {
+			Toast.makeText(this, R.string.main_ui_cheat_messsage,
+					Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	/**
+	 * Checks the progress of solving the current grid
+	 */
+	private void checkProgress() {
+		UsageLog.getInstance().logFunction("Menu.CheckProgress");
+		if (mGrid == null || mGridView == null) {
+			return;
+		}
+		
+		boolean allUserValuesValid = mGrid.isSolutionValidSoFar();
+		int countNewInvalidChoices = (allUserValuesValid ? 0 : mGridView
+				.markInvalidChoices());
+
+		// Create new cheat
+		Cheat cheat = new Cheat(this, CheatType.CHECK_PROGRESS_USED,
+				countNewInvalidChoices);
+
+		// Register cheat in statistics
+		mGrid.getGridStatistics().increaseCounter(
+				StatisticsCounterType.CHECK_PROGRESS_USED);
+		mGrid.getGridStatistics().increaseCounter(
+				StatisticsCounterType.CHECK_PROGRESS_INVALIDS_FOUND,
+				countNewInvalidChoices);
+
+		// Add penalty time
+		if (mTimerTask != null) {
+			mTimerTask.addCheatPenaltyTime(cheat);
+		}
+
+		// Display hint or toast
+		if (TipCheat.toBeDisplayed(mMathDokuPreferences, cheat)) {
+			new TipCheat(this, cheat).show();
+		} else if (allUserValuesValid) {
+			Toast.makeText(this, R.string.ProgressOK, Toast.LENGTH_SHORT)
+					.show();
+		} else {
+			Toast.makeText(this, R.string.ProgressBad, Toast.LENGTH_SHORT)
+					.show();
 		}
 	}
 }

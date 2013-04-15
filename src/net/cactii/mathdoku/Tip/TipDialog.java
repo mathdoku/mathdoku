@@ -75,7 +75,9 @@ public class TipDialog extends AlertDialog {
 	 * @param tipText
 	 *            The body text of the tip.
 	 * @param tipImage
-	 *            The image to be shown with this tip.
+	 *            The image to be shown with this tip. It is preferred to have
+	 *            an image in each tip. In case the tip can no be clarified with
+	 *            an image use value null.
 	 * @return
 	 */
 	protected TipDialog build(String tipTitle, String tipText, Drawable tipImage) {
@@ -94,8 +96,12 @@ public class TipDialog extends AlertDialog {
 
 		ImageView imageView = (ImageView) tipView
 				.findViewById(R.id.dialog_tip_image);
-		imageView.setImageDrawable(tipImage);
-		imageView.requestLayout();
+		if (tipImage != null) {
+			imageView.setImageDrawable(tipImage);
+			imageView.requestLayout();
+		} else {
+			imageView.setVisibility(View.GONE);
+		}
 
 		final CheckBox checkBoxView = (CheckBox) tipView
 				.findViewById(R.id.dialog_tip_do_not_show_again);

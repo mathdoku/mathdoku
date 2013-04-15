@@ -265,7 +265,7 @@ public class Grid {
 	public ArrayList<GridCell> invalidsHighlighted() {
 		ArrayList<GridCell> invalids = new ArrayList<GridCell>();
 		for (GridCell cell : this.mCells)
-			if (cell.getInvalidHighlight())
+			if (cell.hasInvalidUserValueHighlight())
 				invalids.add(cell);
 
 		return invalids;
@@ -642,8 +642,13 @@ public class Grid {
 		return mGridStatistics.mElapsedTime;
 	}
 
-	public void setElapsedTime(long elapsedTime) {
+	public long getCheatPenaltyTime() {
+		return mGridStatistics.mCheatPenaltyTime;
+	}
+
+	public void setElapsedTime(long elapsedTime, long cheatPenaltyTime) {
 		mGridStatistics.mElapsedTime = elapsedTime;
+		mGridStatistics.mCheatPenaltyTime = cheatPenaltyTime;
 	}
 
 	public long getDateCreated() {
