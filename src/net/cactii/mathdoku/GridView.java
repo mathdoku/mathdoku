@@ -31,6 +31,7 @@ public class GridView extends View implements OnTouchListener {
 
 	// Touched listener
 	public OnGridTouchListener mTouchedListener;
+	private boolean mSameCellSelectedAgain;
 
 	// Size of the grid view and cells in grid
 	public float mGridViewSize;
@@ -92,8 +93,6 @@ public class GridView extends View implements OnTouchListener {
 	}
 
 	public boolean onTouch(View arg0, MotionEvent event) {
-		if (event.getAction() != MotionEvent.ACTION_UP)
-			return false;
 		if (!this.mGrid.isActive())
 			return false;
 
@@ -121,15 +120,32 @@ public class GridView extends View implements OnTouchListener {
 		this.mTrackPosX = cellPos[0];
 		this.mTrackPosY = cellPos[1];
 
-		// Determine if same cell was touched again
-		boolean sameCellSelectedAgain = (mGrid.getSelectedCell() == null ? false
-				: mGrid.getSelectedCell().equals(cell));
+		// Only at the down event it is determined whether the same cell is
+		// selected again.
+		if (event.getAction() == MotionEvent.ACTION_DOWN) {
+			mSameCellSelectedAgain = (mGrid.getSelectedCell() == null ? false
+					: mGrid.getSelectedCell().equals(cell));
 
-		// Select new cell
+			if (mSameCellSelectedAgain) {
+				// Do not process the down event right now (as it will result in
+				// toggling the input mode) because this touch can become a long
+				// press which will be fired later.
+				return false;
+			}
+		}
+
+		if (!mSameCellSelectedAgain
+				&& event.getAction() == MotionEvent.ACTION_UP) {
+			// In case another cell was selected, the touch has already been
+			// processed at the down event.
+			return false;
+		}
+
+		// Select the cell
 		this.playSoundEffect(SoundEffectConstants.CLICK);
 		mGrid.setSelectedCell(cell);
 		if (this.mTouchedListener != null) {
-			mTouchedListener.gridTouched(cell, sameCellSelectedAgain);
+			mTouchedListener.gridTouched(cell, mSameCellSelectedAgain);
 		}
 
 		invalidate();
