@@ -303,27 +303,15 @@
     <!-- Title, and text for tip "Cheat which reveals the operator of a cell". Note "%1$s" in the text will be replaced with an amount and units (e.d. "20 seconds" or "5 minutes"). -->
     <string name="dialog_tip_cheat_reveal_operator_title">Cheat: reveal operator</string>
     <string name="dialog_tip_cheat_reveal_operator_text">You have revealed the operator of a cage. Revealing the operator of a cage is not needed to solve the puzzle as each puzzle has one unqiue solution which can be found without using cheats.\nEach time you will use this cheat, the elapsed time will be increased with %1$s.</string>
-    
+
     <!-- Title, and text for tip "Cheat which reveals the solutions of a puzzle". Note "%1$s" in the text will be replaced with an amount and units (e.d. "20 seconds" or "5 minutes"). -->
     <string name="dialog_tip_cheat_reveal_solution_title">Cheat: reveal solution</string>
     <string name="dialog_tip_cheat_reveal_solution_text">You have revealed the solution of the puzzle. When you use this cheat, the elapsed time will be increased with %1$s.</string>
-    
+
     <!-- Title, and text for tip "Cheat progress checking". Note "%1$s" and "%2$s" in the text will be replaced with an amount and units (e.d. "20 seconds" or "5 minutes"). -->
     <string name="dialog_tip_cheat_check_progress_title">Cheat: check progress</string>
     <string name="dialog_tip_cheat_check_progress_text">You have checked the progress of your solution. Invalid cells have been highlighted.\nEach time you use this cheat, the elapsed time will be increased with %1$s plus %2$s for each new invalid value which has been found.</string>
-    
-    <!-- Units for penalty time when using cheats. -->
-    <string name="dialog_tip_cheat_seconds_singular">second</string>
-    <string name="dialog_tip_cheat_seconds_plural">seconds</string>
-    <string name="dialog_tip_cheat_minutes_singular">minute</string>
-    <string name="dialog_tip_cheat_minutes_plural">minutes</string>
-    <string name="dialog_tip_cheat_hours_singular">hour</string>
-    <string name="dialog_tip_cheat_hours_pluaral">hours</string>
-    <string name="dialog_tip_cheat_days_singular">day</string>
-    <string name="dialog_tip_cheat_days_plural">days</string>
-    <!-- Connector in case penalty time consists of different units (e.g. "1 minute and 15 seconds") -->
-    <string name="dialog_tip_cheat_unit_connector">and</string>
-    
+
     <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -366,11 +354,17 @@
     <!-- Title and a body which explains the purpose of the chart "Solved games". -->
     <string name="solved_chart_title">Solved games</string>
     <string name="solved_chart_body">This chart displays the number of games solved versus the number of games which have not been solved or in which the solution was revealed.</string>
-    <!-- Dimensions displayed in chart "Unsolved games". -->
-    <string name="solved_chart_games_solved">Solved</string>
-    <string name="solved_chart_games_solution_revealed">Solution revealed</string>
-    <string name="solved_chart_games_unfinished">Unfinished</string>
 
+    <!-- Series used to split charts like "Unsolved games" and "Elapsed time historic". -->
+    <string name="chart_serie_solved">Solved games</string>
+    <string name="chart_serie_solution_revealed">Cheated games</string>
+    <string name="chart_serie_unfinished">Unfinished games</string>
+
+    <!-- Title and a body which explains the purpose of the chart "Elapsed time historic". -->
+    <string name="statistics_elapsed_time_historic_title">Elapsed time</string>
+    <string name="statistics_elapsed_time_historic_body">This chart shows the time elapsed per game and the average elapsed time. Games are sorted in order of playing. More recent games will be on the right of this chart. As you got more experienced at this level the elapsed time per game should diminish. Also there should be less games unfinished or for which the solution was revealed.</string>
+    <string name="statistics_elapsed_time_historic_solved_average">Average (solved games only)</string>
+    
     <!-- OPTIONS STATISTICS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -402,5 +396,17 @@
     <!-- Text to display in case the preview image of a saved game is not yet available. -->
     <string name="game_file_preview_not_available">Not yet available</string>
     <string name="game_seed">"Game seed: "</string>
+
+    <!-- Units for time. -->
+    <string name="time_unit_seconds_singular">second</string>
+    <string name="time_unit_seconds_plural">seconds</string>
+    <string name="time_unit_minutes_singular">minute</string>
+    <string name="time_unit_minutes_plural">minutes</string>
+    <string name="time_unit_hours_singular">hour</string>
+    <string name="time_unit_hours_plural">hours</string>
+    <string name="time_unit_days_singular">day</string>
+    <string name="time_unit_days_plural">days</string>
+    <!-- Connector in case penalty time consists of different units (e.g. "1 minute and 15 seconds") -->
+    <string name="time_unit_connector">and</string>
 
 </resources>

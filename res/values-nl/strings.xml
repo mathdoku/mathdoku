@@ -306,18 +306,6 @@
     <string name="dialog_tip_cheat_check_progress_title">Vals spel: voortgang gecontroleerd</string>
     <string name="dialog_tip_cheat_check_progress_text">Je hebt de voortgang van je oplossing gecontroleerd. Cellen met een ongeldige waarde zijn gemarkeerd.\nElke keer als je de voortgang controleert dan wordt de speeltijd verhoogd met %1$s en nog eens met %2$s voor elke nieuwe onjuiste waarde die is gevonden.</string>
 
-    <!-- Units for penalty time when using cheats. -->
-    <string name="dialog_tip_cheat_seconds_singular">seconde</string>
-    <string name="dialog_tip_cheat_seconds_plural">seconden</string>
-    <string name="dialog_tip_cheat_minutes_singular">minuut</string>
-    <string name="dialog_tip_cheat_minutes_plural">minuten</string>
-    <string name="dialog_tip_cheat_hours_singular">uur</string>
-    <string name="dialog_tip_cheat_hours_pluaral">uren</string>
-    <string name="dialog_tip_cheat_days_singular">dag</string>
-    <string name="dialog_tip_cheat_days_plural">dagen</string>
-    <!-- Connector in case penalty time consists of different units (e.g. "1 minute and 15 seconds") -->
-    <string name="dialog_tip_cheat_unit_connector">en</string>
-    
     <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -358,12 +346,18 @@
     <string name="statistics_cheats_solution_revealed">Oplossing onthuld</string>
 
     <!-- Title and a body which explains the purpose of the chart "Solved games". -->
-    <string name="solved_chart_title">Solved games</string>
-    <string name="solved_chart_body">This chart displays the number of games solved versus the number of games which have not been solved or in which the solution was revealed.</string>
-    <!-- Dimensions displayed in chart "Unsolved games". -->
-    <string name="solved_chart_games_solved">Solved</string>
-    <string name="solved_chart_games_solution_revealed">Solution revealed</string>
-    <string name="solved_chart_games_unfinished">Unfinished</string>
+    <string name="solved_chart_title">Opgeloste puzzels</string>
+    <string name="solved_chart_body">Deze grafiek toont het aantal puzzels dat opgelost is versus het aantal puzzels die nog niet zijn opgelost of waarvan de oplossing is onthuld.</string>
+
+    <!-- Series used to split charts like "Unsolved games" and "Elapsed time historic". -->
+    <string name="chart_serie_solved">Opgeloste puzzels</string>
+    <string name="chart_serie_solution_revealed">Oplossing onthuld</string>
+    <string name="chart_serie_unfinished">Onvoltooide puzzels</string>
+
+    <!-- Title and a body which explains the purpose of the chart "Elapsed time historic". -->
+    <string name="statistics_elapsed_time_historic_title">Speeltijd</string>
+    <string name="statistics_elapsed_time_historic_body">Deze grafiek toon de verstreken speeltijd per puzzel en de gemiddelde speeltijd. Puzzels zijn gesorteerd in de volgorde waarin ze zijn gespeeld. Recente puzzels staan meer aan de rechterzijde van de grafiek. Als je meer ervaring hebt op dit niveau dan zal de gemiddelde speeltijd per puzzel afnemen. Tevens behoren er dan minder puzzels te zijn die niet zijn voltooid of waarvan de oplossing is onthuld.</string>
+    <string name="statistics_elapsed_time_historic_solved_average">Average (solved games only)</string>
 
     <!-- OPTIONS STATISTICS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -397,4 +391,15 @@
     <!-- Text to display in case the preview image of a saved game is not yet available. -->
     <string name="game_file_preview_not_available">Nog niet beschikbaar</string>
 
+    <!-- Units for time. -->
+    <string name="time_unit_seconds_singular">seconde</string>
+    <string name="time_unit_seconds_plural">seconden</string>
+    <string name="time_unit_minutes_singular">minuut</string>
+    <string name="time_unit_minutes_plural">minuten</string>
+    <string name="time_unit_hours_singular">uur</string>
+    <string name="time_unit_hours_plural">uren</string>
+    <string name="time_unit_days_singular">dag</string>
+    <string name="time_unit_days_plural">dagen</string>
+    <!-- Connector in case penalty time consists of different units (e.g. "1 minute and 15 seconds") -->
+    <string name="time_unit_connector">en</string>
 </resources>

@@ -1,19 +1,27 @@
 package net.cactii.mathdoku;
 
+import java.util.ArrayList;
+
 import net.cactii.mathdoku.statistics.CumulativeStatistics;
 import net.cactii.mathdoku.statistics.GridStatistics;
+import net.cactii.mathdoku.statistics.HistoricStatistics;
+import net.cactii.mathdoku.statistics.HistoricStatistics.Scale;
+import net.cactii.mathdoku.statistics.HistoricStatistics.Serie;
 import net.cactii.mathdoku.storage.database.DatabaseHelper;
 import net.cactii.mathdoku.storage.database.StatisticsDatabaseAdapter;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
+import org.achartengine.chart.BarChart;
 import org.achartengine.chart.BarChart.Type;
+import org.achartengine.chart.LineChart;
 import org.achartengine.model.CategorySeries;
 import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.DefaultRenderer;
 import org.achartengine.renderer.SimpleSeriesRenderer;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
+import org.achartengine.renderer.XYSeriesRenderer;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -40,6 +48,12 @@ public class StatisticsActivity extends Activity {
 	private CumulativeStatistics mCumulativeStatisticsCurrentGridSize;
 	private CumulativeStatistics mCumulativeStatisticsAllGridSizes;
 
+	// Database adapter for the statistics data
+	StatisticsDatabaseAdapter mStatisticsDatabaseAdapter;
+
+	// Grid size for currently selected grid
+	private int mGridsize;
+
 	// Text size for body text
 	private int mDefaultTextSize;
 
@@ -47,6 +61,23 @@ public class StatisticsActivity extends Activity {
 	private LayoutInflater mLayoutInflater;
 
 	private boolean mDisplayStatisticDescription;
+
+	// Green colors will be used at things which are positive
+	private int chartGreen1 = 0xFF80FF00;
+	private int chartGreen2 = 0xFF59B200;
+
+	// Grey colors will be used at things which are neutral
+	private int chartGrey1 = 0xFFD4D4D4;
+	private int chartSignal1 = 0xFFFF00FF;
+	private int chartSignal2 = 0xFF8000FF;
+	private int chartSignal3 = 0xFF0000FF;
+
+	// Green colors will be used at things which are negative
+	private int chartRed1 = 0xFFFF0000;
+	private int chartRed2 = 0xFFFF3300;
+	private int chartRed3 = 0xFFB22400;
+	private int chartRed4 = 0xFFFECCBF;
+	private int chartRed5 = 0xFFFE9980;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,14 +102,15 @@ public class StatisticsActivity extends Activity {
 
 		// Retrieve the statistics.
 		DatabaseHelper databaseHelper = DatabaseHelper.getInstance();
-		StatisticsDatabaseAdapter statisticsDatabaseAdapter = new StatisticsDatabaseAdapter(
+		mStatisticsDatabaseAdapter = new StatisticsDatabaseAdapter(
 				databaseHelper);
-		mGridStatistics = statisticsDatabaseAdapter.get(mGridSignatureId);
+		mGridStatistics = mStatisticsDatabaseAdapter.get(mGridSignatureId);
 
 		if (mGridStatistics != null) {
-			mCumulativeStatisticsCurrentGridSize = statisticsDatabaseAdapter
-					.getByGridSize(mGridStatistics.gridSize, mGridStatistics.gridSize);
-			mCumulativeStatisticsAllGridSizes = statisticsDatabaseAdapter
+			mGridsize = mGridStatistics.gridSize;
+			mCumulativeStatisticsCurrentGridSize = mStatisticsDatabaseAdapter
+					.getByGridSize(mGridsize, mGridsize);
+			mCumulativeStatisticsAllGridSizes = mStatisticsDatabaseAdapter
 					.getByGridSize(1, 9);
 		}
 
@@ -118,6 +150,9 @@ public class StatisticsActivity extends Activity {
 
 		// Build all charts for all games at current level
 		statisticsDisplayed = createSolvedUnSolvedChart(mCumulativeStatisticsCurrentGridSize)
+				|| statisticsDisplayed;
+
+		statisticsDisplayed = createElapsedTimeHistoryChart()
 				|| statisticsDisplayed;
 
 		// Build all charts regardless of level
@@ -195,14 +230,14 @@ public class StatisticsActivity extends Activity {
 				getResources().getString(R.string.progress_chart_cells_filled)
 						+ " (" + mGridStatistics.mCellsUserValueFilled + ")",
 				(double) mGridStatistics.mCellsUserValueFilled / totalCells);
-		renderer.addSeriesRenderer(createSimpleSeriesRenderer(0xFF80FF00));
+		renderer.addSeriesRenderer(createSimpleSeriesRenderer(chartGreen1));
 
 		// Cells empty
 		categorySeries.add(
 				getResources().getString(R.string.progress_chart_cells_empty)
 						+ " (" + mGridStatistics.mCellsUserValueEmtpty + ")",
 				(double) mGridStatistics.mCellsUserValueEmtpty / totalCells);
-		renderer.addSeriesRenderer(createSimpleSeriesRenderer(0xFFD4D4D4));
+		renderer.addSeriesRenderer(createSimpleSeriesRenderer(chartGrey1));
 
 		addStatisticsSection(R.string.progress_chart_title, null,
 				R.string.progress_chart_body,
@@ -230,7 +265,10 @@ public class StatisticsActivity extends Activity {
 		XYMultipleSeriesRenderer xyMultipleSeriesRenderer = new XYMultipleSeriesRenderer();
 		xyMultipleSeriesRenderer.setLabelsTextSize(mDefaultTextSize);
 		xyMultipleSeriesRenderer.setLegendTextSize(mDefaultTextSize);
-		xyMultipleSeriesRenderer.setYTitle("Number of times used");
+		xyMultipleSeriesRenderer.setYTitle("Number of times used"); // TODO:
+																	// hard
+																	// coded
+																	// string
 		xyMultipleSeriesRenderer.setXAxisMin(-1);
 		xyMultipleSeriesRenderer.setYLabelsAlign(Align.RIGHT);
 		xyMultipleSeriesRenderer.setMargins(new int[] { 0, 50, 40, 10 });
@@ -256,20 +294,20 @@ public class StatisticsActivity extends Activity {
 			xySeries.add(++countCategories, mGridStatistics.mUserValueReplaced);
 			xyMultipleSeriesDataset.addSeries(xySeries);
 			xyMultipleSeriesRenderer
-					.addSeriesRenderer(createSimpleSeriesRenderer(0xFF80FF00));
+					.addSeriesRenderer(createSimpleSeriesRenderer(chartGreen1));
 			maxYValue = Math.max(maxYValue, mGridStatistics.mUserValueReplaced);
 		}
 
 		// Bar for number of maybe values that have been used while playing the
-		// game. Note this is *not* the actual number ofpossible value currently
-		// visible.
+		// game. Note this is *not* the actual number of possible values
+		// currently visible.
 		if (mGridStatistics.mMaybeValue > 0) {
 			XYSeries xySeries = new XYSeries(getResources().getString(
 					R.string.avoidable_moves_chart_maybe_value_used));
 			xySeries.add(++countCategories, mGridStatistics.mMaybeValue);
 			xyMultipleSeriesDataset.addSeries(xySeries);
 			xyMultipleSeriesRenderer
-					.addSeriesRenderer(createSimpleSeriesRenderer(0xFFFF00FF));
+					.addSeriesRenderer(createSimpleSeriesRenderer(chartSignal1));
 			maxYValue = Math.max(maxYValue, mGridStatistics.mMaybeValue);
 		}
 
@@ -280,7 +318,7 @@ public class StatisticsActivity extends Activity {
 			xySeries.add(++countCategories, mGridStatistics.mUndoButton);
 			xyMultipleSeriesDataset.addSeries(xySeries);
 			xyMultipleSeriesRenderer
-					.addSeriesRenderer(createSimpleSeriesRenderer(0xFF8000FF));
+					.addSeriesRenderer(createSimpleSeriesRenderer(chartSignal2));
 			maxYValue = Math.max(maxYValue, mGridStatistics.mUndoButton);
 		}
 
@@ -294,7 +332,7 @@ public class StatisticsActivity extends Activity {
 			xySeries.add(++countCategories, totalClears);
 			xyMultipleSeriesDataset.addSeries(xySeries);
 			xyMultipleSeriesRenderer
-					.addSeriesRenderer(createSimpleSeriesRenderer(0xFF0000FF));
+					.addSeriesRenderer(createSimpleSeriesRenderer(chartSignal3));
 			maxYValue = Math.max(maxYValue, totalClears);
 		}
 
@@ -376,7 +414,7 @@ public class StatisticsActivity extends Activity {
 			xySeries.add(categoryIndex, mGridStatistics.mCheckProgressUsed);
 			xyMultipleSeriesDataset.addSeries(xySeries);
 			xyMultipleSeriesRenderer
-					.addSeriesRenderer(createSimpleSeriesRenderer(0xFFFE9980));
+					.addSeriesRenderer(createSimpleSeriesRenderer(chartRed1));
 			categoryIndex++;
 		}
 
@@ -387,7 +425,7 @@ public class StatisticsActivity extends Activity {
 			xySeries.add(categoryIndex, mGridStatistics.mCellsRevealed);
 			xyMultipleSeriesDataset.addSeries(xySeries);
 			xyMultipleSeriesRenderer
-					.addSeriesRenderer(createSimpleSeriesRenderer(0xFFFECCBF));
+					.addSeriesRenderer(createSimpleSeriesRenderer(chartRed2));
 			categoryIndex++;
 		}
 
@@ -398,7 +436,7 @@ public class StatisticsActivity extends Activity {
 			xySeries.add(categoryIndex, mGridStatistics.mOperatorsRevevealed);
 			xyMultipleSeriesDataset.addSeries(xySeries);
 			xyMultipleSeriesRenderer
-					.addSeriesRenderer(createSimpleSeriesRenderer(0xFFB22400));
+					.addSeriesRenderer(createSimpleSeriesRenderer(chartRed3));
 			categoryIndex++;
 		}
 
@@ -410,7 +448,7 @@ public class StatisticsActivity extends Activity {
 					(mGridStatistics.isSolutionRevealed() ? 1 : 0));
 			xyMultipleSeriesDataset.addSeries(xySeries);
 			xyMultipleSeriesRenderer
-					.addSeriesRenderer(createSimpleSeriesRenderer(0xFFFF3300));
+					.addSeriesRenderer(createSimpleSeriesRenderer(chartRed4));
 			categoryIndex++;
 		}
 
@@ -427,7 +465,8 @@ public class StatisticsActivity extends Activity {
 	 * 
 	 * @return True in case the chart has been created. False otherwise.
 	 */
-	private boolean createSolvedUnSolvedChart(CumulativeStatistics cumulativeStatistics) {
+	private boolean createSolvedUnSolvedChart(
+			CumulativeStatistics cumulativeStatistics) {
 		if (cumulativeStatistics == null) {
 			// No progress to report.
 			return false;
@@ -453,41 +492,37 @@ public class StatisticsActivity extends Activity {
 
 		// Games solved manually
 		if (cumulativeStatistics.mCountSolvedManually > 0) {
-			categorySeries
-					.add(getResources().getString(
-							R.string.solved_chart_games_solved)
-							+ " ("
-							+ cumulativeStatistics.mCountSolvedManually
+			categorySeries.add(
+					getResources().getString(R.string.chart_serie_solved)
+							+ " (" + cumulativeStatistics.mCountSolvedManually
 							+ ")",
-							(double) cumulativeStatistics.mCountSolvedManually
-									/ cumulativeStatistics.mCountStarted);
-			renderer.addSeriesRenderer(createSimpleSeriesRenderer(0xFF80FF00));
+					(double) cumulativeStatistics.mCountSolvedManually
+							/ cumulativeStatistics.mCountStarted);
+			renderer.addSeriesRenderer(createSimpleSeriesRenderer(chartGreen1));
 		}
 
 		// Games for which the solution is revealed
 		if (cumulativeStatistics.mCountSolutionRevealed > 0) {
 			categorySeries
 					.add(getResources().getString(
-							R.string.solved_chart_games_solution_revealed)
+							R.string.chart_serie_solution_revealed)
 							+ " ("
-							+ cumulativeStatistics.mCountSolutionRevealed
-							+ ")",
+							+ cumulativeStatistics.mCountSolutionRevealed + ")",
 							(double) cumulativeStatistics.mCountSolutionRevealed
 									/ cumulativeStatistics.mCountStarted);
-			renderer.addSeriesRenderer(createSimpleSeriesRenderer(0xFFFF0000));
+			renderer.addSeriesRenderer(createSimpleSeriesRenderer(chartRed1));
 		}
 
 		// Games which have not yet been finished
 		int countUnfinished = cumulativeStatistics.mCountStarted
 				- cumulativeStatistics.mCountFinished;
 		if (countUnfinished > 0) {
-			categorySeries
-					.add(getResources().getString(
-							R.string.solved_chart_games_unfinished)
+			categorySeries.add(
+					getResources().getString(R.string.chart_serie_unfinished)
 							+ " (" + countUnfinished + ")",
-							(double) countUnfinished
-									/ cumulativeStatistics.mCountStarted);
-			renderer.addSeriesRenderer(createSimpleSeriesRenderer(0xFFD4D4D4));
+					(double) countUnfinished
+							/ cumulativeStatistics.mCountStarted);
+			renderer.addSeriesRenderer(createSimpleSeriesRenderer(chartGrey1));
 		}
 
 		// Determine title
@@ -584,4 +619,146 @@ public class StatisticsActivity extends Activity {
 		return (int) ((float) 0.90 * displayMetrics.widthPixels / elements);
 	}
 
+	private boolean createElapsedTimeHistoryChart() {
+		// Retrieve the data
+		HistoricStatistics historicStatistics = mStatisticsDatabaseAdapter
+				.getHistoricData(StatisticsDatabaseAdapter.KEY_ELAPSED_TIME,
+						mGridsize, mGridsize);
+
+		// Check if at least one serie will contain data.
+		if (!historicStatistics.isXYSeriesUsed(null)) {
+			return false;
+		}
+
+		// Define the renderer
+		XYMultipleSeriesRenderer xyMultipleSeriesRenderer = new XYMultipleSeriesRenderer();
+		xyMultipleSeriesRenderer.setLabelsTextSize(mDefaultTextSize);
+		xyMultipleSeriesRenderer.setLegendTextSize(mDefaultTextSize);
+		xyMultipleSeriesRenderer.setXAxisMin(0);
+		xyMultipleSeriesRenderer.setXAxisMax(historicStatistics.getMaxX() + 1);
+		xyMultipleSeriesRenderer.setYAxisMin(0);
+		xyMultipleSeriesRenderer.setMargins(new int[] { 0, 50, 40, 10 });
+		xyMultipleSeriesRenderer.setZoomButtonsVisible(false);
+		xyMultipleSeriesRenderer.setZoomEnabled(false);
+		xyMultipleSeriesRenderer.setPanEnabled(false);
+		xyMultipleSeriesRenderer.setInScroll(true);
+
+		// Y-axis
+		Scale yScale = Scale.DAYS;
+		double maxY = historicStatistics.getMaxY(yScale) * 1.1;
+		if (maxY < 1) {
+			yScale = Scale.HOURS;
+			maxY = historicStatistics.getMaxY(yScale) * 1.1;
+			if (maxY < 1) {
+				yScale = Scale.MINUTES;
+				maxY = historicStatistics.getMaxY(yScale) * 1.1;
+				if (maxY < 1) {
+					yScale = Scale.SECONDS;
+					maxY = historicStatistics.getMaxY(yScale) * 1.1;
+				}
+			}
+		}
+		xyMultipleSeriesRenderer.setYAxisMax(maxY);
+		switch (yScale) {
+		case DAYS:
+			xyMultipleSeriesRenderer.setYTitle(getResources().getString(
+					R.string.statistics_elapsed_time_historic_title)
+					+ " ("
+					+ getResources().getString(R.string.time_unit_days_plural)
+					+ ")");
+			break;
+		case HOURS:
+			xyMultipleSeriesRenderer.setYTitle(getResources().getString(
+					R.string.statistics_elapsed_time_historic_title)
+					+ " ("
+					+ getResources().getString(R.string.time_unit_hours_plural)
+					+ ")");
+			break;
+		case MINUTES:
+			xyMultipleSeriesRenderer.setYTitle(getResources().getString(
+					R.string.statistics_elapsed_time_historic_title)
+					+ " ("
+					+ getResources().getString(
+							R.string.time_unit_minutes_plural) + ")");
+			break;
+		case SECONDS:
+			xyMultipleSeriesRenderer.setYTitle(getResources().getString(
+					R.string.statistics_elapsed_time_historic_title)
+					+ " ("
+					+ getResources().getString(
+							R.string.time_unit_seconds_plural) + ")");
+			break;
+		case NO_SCALE:
+			break;
+		}
+		xyMultipleSeriesRenderer.setYLabelsAlign(Align.RIGHT);
+		xyMultipleSeriesRenderer.setYLabelsPadding(5f);
+
+		// Create object for category series and the series renderer
+		XYMultipleSeriesDataset xyMultipleSeriesDataset = new XYMultipleSeriesDataset();
+
+		ArrayList<String> typesList = new ArrayList<String>();
+
+		// Add series for solved games
+		if (historicStatistics.isXYSeriesUsed(Serie.SOLVED)) {
+			typesList.add(BarChart.TYPE);
+			xyMultipleSeriesDataset.addSeries(historicStatistics.getXYSeries(
+					Serie.SOLVED,
+					getResources().getString(R.string.chart_serie_solved),
+					yScale));
+			xyMultipleSeriesRenderer
+					.addSeriesRenderer(createSimpleSeriesRenderer(chartGreen1));
+		}
+
+		// Add series for games in which the solution was revealed
+		if (historicStatistics.isXYSeriesUsed(Serie.SOLUTION_REVEALED)) {
+			typesList.add(BarChart.TYPE);
+			xyMultipleSeriesDataset.addSeries(historicStatistics.getXYSeries(
+					Serie.SOLUTION_REVEALED,
+					getResources().getString(
+							R.string.chart_serie_solution_revealed), yScale));
+			xyMultipleSeriesRenderer
+					.addSeriesRenderer(createSimpleSeriesRenderer(chartRed1));
+		}
+
+		// Add series for unfinished games
+		if (historicStatistics.isXYSeriesUsed(Serie.UNFINISHED)) {
+			typesList.add(BarChart.TYPE);
+			xyMultipleSeriesDataset.addSeries(historicStatistics.getXYSeries(
+					Serie.UNFINISHED,
+					getResources().getString(R.string.chart_serie_unfinished),
+					yScale));
+			xyMultipleSeriesRenderer
+					.addSeriesRenderer(createSimpleSeriesRenderer(chartGrey1));
+		}
+
+		// Add series for historic average of solved games
+		if (historicStatistics.isXYSeriesUsed(Serie.SOLVED)) {
+			typesList.add(LineChart.TYPE);
+			xyMultipleSeriesDataset
+					.addSeries(historicStatistics
+							.getXYSeriesHistoricAverage(
+									Serie.SOLVED,
+									getResources()
+											.getString(
+													R.string.statistics_elapsed_time_historic_solved_average),
+									yScale));
+			XYSeriesRenderer xySeriesRenderer = new XYSeriesRenderer();
+			xySeriesRenderer.setColor(chartSignal2);
+			xySeriesRenderer.setLineWidth(4);
+			xyMultipleSeriesRenderer.addSeriesRenderer(xySeriesRenderer);
+		}
+
+		// Display as stacked bar chart here. As the series are mutually
+		// exclusive this will result in one single bar per game which is
+		// entirely colored based on status of game.
+		String[] types = typesList.toArray(new String[typesList.size()]);
+		addStatisticsSection(R.string.statistics_elapsed_time_historic_title,
+				null, R.string.statistics_elapsed_time_historic_body,
+				ChartFactory.getCombinedXYChartView(this,
+						xyMultipleSeriesDataset, xyMultipleSeriesRenderer,
+						types));
+
+		return true;
+	}
 }

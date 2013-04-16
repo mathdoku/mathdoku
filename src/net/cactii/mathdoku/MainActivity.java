@@ -28,7 +28,6 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -652,9 +651,9 @@ public class MainActivity extends Activity implements
 			openClearDialog();
 			break;
 		case CONTEXT_MENU_SHOW_SOLUTION:
-			mGrid.solve();
 			mGrid.getGridStatistics().solutionRevealed();
 			registerAndProcessCheat(CheatType.SOLUTION_REVEALED);
+			mGrid.solve();
 			break;
 		case CONTEXT_MENU_REVEAL_OPERATOR:
 			revealOperator(selectedGridCage);

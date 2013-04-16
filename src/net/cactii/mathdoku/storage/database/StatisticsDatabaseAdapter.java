@@ -4,6 +4,8 @@ import java.security.InvalidParameterException;
 
 import net.cactii.mathdoku.statistics.CumulativeStatistics;
 import net.cactii.mathdoku.statistics.GridStatistics;
+import net.cactii.mathdoku.statistics.HistoricStatistics;
+import net.cactii.mathdoku.statistics.HistoricStatistics.Serie;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -15,34 +17,35 @@ import android.database.sqlite.SQLiteDatabase;
  */
 public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 
-	static final String TAG = "MathDoku.StatisticsDatabaseAdapter";
+	@SuppressWarnings("unused")
+	private static final String TAG = "MathDoku.StatisticsDatabaseAdapter";
 
 	// Columns for table statistics
-	static final String TABLE = "statistics";
-	static final String KEY_ROWID = "_id";
-	static final String KEY_GRID_SIGNATURE = "grid_signature";
-	static final String KEY_GRID_SIZE = "grid_size";
-	static final String KEY_FIRST_MOVE = "first_move";
-	static final String KEY_LAST_MOVE = "last_move";
-	static final String KEY_ELAPSED_TIME = "elapsed_time";
-	static final String KEY_CHEAT_PENALTY_TIME = "cheat_penalty_time";
-	static final String KEY_CELLS_USER_VALUE_FILLED = "cells_user_value_filled";
-	static final String KEY_CELLS_USER_VALUES_EMPTY = "cells_user_value_empty";
-	static final String KEY_CELLS_USER_VALUES_REPLACED = "cells_user_value_replaced";
-	static final String KEY_POSSIBLES = "possibles";
-	static final String KEY_UNDOS = "undos";
-	static final String KEY_CELLS_CLEARED = "cells_cleared";
-	static final String KEY_CAGE_CLEARED = "cage_cleared";
-	static final String KEY_GRID_CLEARED = "grid_cleared";
-	static final String KEY_CELLS_REVEALED = "cells_revealed";
-	static final String KEY_OPERATORS_REVEALED = "operators_revealed";
-	static final String KEY_CHECK_PROGRESS_USED = "check_progress_used";
-	static final String KEY_CHECK_PROGRESS_INVALIDS_FOUND = "check_progress_invalids_found";
-	static final String KEY_SOLUTION_REVEALED = "solution_revealed";
-	static final String KEY_SOLVED_MANUALLY = "solved_manually";
-	static final String KEY_FINISHED = "finished";
+	private static final String TABLE = "statistics";
+	private static final String KEY_ROWID = "_id";
+	private static final String KEY_GRID_SIGNATURE = "grid_signature";
+	private static final String KEY_GRID_SIZE = "grid_size";
+	private static final String KEY_FIRST_MOVE = "first_move";
+	private static final String KEY_LAST_MOVE = "last_move";
+	public static final String KEY_ELAPSED_TIME = "elapsed_time";
+	public static final String KEY_CHEAT_PENALTY_TIME = "cheat_penalty_time";
+	public static final String KEY_CELLS_USER_VALUE_FILLED = "cells_user_value_filled";
+	public static final String KEY_CELLS_USER_VALUES_EMPTY = "cells_user_value_empty";
+	public static final String KEY_CELLS_USER_VALUES_REPLACED = "cells_user_value_replaced";
+	public static final String KEY_POSSIBLES = "possibles";
+	public static final String KEY_UNDOS = "undos";
+	public static final String KEY_CELLS_CLEARED = "cells_cleared";
+	public static final String KEY_CAGE_CLEARED = "cage_cleared";
+	public static final String KEY_GRID_CLEARED = "grid_cleared";
+	public static final String KEY_CELLS_REVEALED = "cells_revealed";
+	public static final String KEY_OPERATORS_REVEALED = "operators_revealed";
+	public static final String KEY_CHECK_PROGRESS_USED = "check_progress_used";
+	public static final String KEY_CHECK_PROGRESS_INVALIDS_FOUND = "check_progress_invalids_found";
+	private static final String KEY_SOLUTION_REVEALED = "solution_revealed";
+	private static final String KEY_SOLVED_MANUALLY = "solved_manually";
+	private static final String KEY_FINISHED = "finished";
 
-	static final String[] allColumns = { KEY_ROWID, KEY_GRID_SIGNATURE,
+	private static final String[] allColumns = { KEY_ROWID, KEY_GRID_SIGNATURE,
 			KEY_GRID_SIZE, KEY_FIRST_MOVE, KEY_LAST_MOVE, KEY_ELAPSED_TIME,
 			KEY_CHEAT_PENALTY_TIME, KEY_CELLS_USER_VALUE_FILLED,
 			KEY_CELLS_USER_VALUES_EMPTY, KEY_CELLS_USER_VALUES_REPLACED,
@@ -276,8 +279,8 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		gridStatistics.mSolutionRevealed = Boolean
 				.valueOf(cursor.getString(cursor
 						.getColumnIndexOrThrow(KEY_SOLUTION_REVEALED)));
-		gridStatistics.mSolvedManually = Boolean.valueOf(cursor.getString(cursor
-				.getColumnIndexOrThrow(KEY_SOLVED_MANUALLY)));
+		gridStatistics.mSolvedManually = Boolean.valueOf(cursor
+				.getString(cursor.getColumnIndexOrThrow(KEY_SOLVED_MANUALLY)));
 		gridStatistics.mFinished = Boolean.valueOf(cursor.getString(cursor
 				.getColumnIndexOrThrow(KEY_FINISHED)));
 
@@ -317,8 +320,8 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		newValues.put(KEY_CELLS_REVEALED, gridStatistics.mCellsRevealed);
 		newValues.put(KEY_OPERATORS_REVEALED,
 				gridStatistics.mOperatorsRevevealed);
-		newValues
-				.put(KEY_CHECK_PROGRESS_USED, gridStatistics.mCheckProgressUsed);
+		newValues.put(KEY_CHECK_PROGRESS_USED,
+				gridStatistics.mCheckProgressUsed);
 		newValues.put(KEY_CHECK_PROGRESS_INVALIDS_FOUND,
 				gridStatistics.mCheckProgressInvalidsFound);
 		newValues.put(KEY_SOLUTION_REVEALED,
@@ -394,8 +397,9 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				// Total games
 				"COUNT(1)" };
 
-		Cursor cursor = db.query(true, TABLE, columns, KEY_GRID_SIZE + " BETWEEN "
-				+ minGridSize + " AND " + maxGridSize, null, null, null, null, null);
+		Cursor cursor = db.query(true, TABLE, columns, KEY_GRID_SIZE
+				+ " BETWEEN " + minGridSize + " AND " + maxGridSize, null,
+				null, null, null, null);
 
 		CumulativeStatistics cumulativeStatistics = toCumulativeStatistics(cursor);
 		cursor.close();
@@ -484,4 +488,69 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		cursor.close();
 		return cumulativeStatistics;
 	}
+
+	/**
+	 * Get the historic statistics for the given column for all grids with a
+	 * given grid size.
+	 * 
+	 * @param minGridSize
+	 *            The minimum size of the grid for which the cumulative
+	 *            statistics have to be determined.
+	 * @param maxGridSize
+	 *            The maximum size of the grid for which the cumulative
+	 *            statistics have to be determined. Use same value as minimum
+	 *            grid size to retireve statistics for 1 specific grid size.
+	 * @return The cumulative statistics for the given grid size.
+	 */
+	public HistoricStatistics getHistoricData(String column, int minGridSize,
+			int maxGridSize) {
+
+		// Check if historic data is available for given column
+		String[] validColumns = { KEY_ELAPSED_TIME, KEY_CHEAT_PENALTY_TIME,
+				KEY_CELLS_USER_VALUE_FILLED, KEY_CELLS_USER_VALUES_EMPTY,
+				KEY_CELLS_USER_VALUES_REPLACED, KEY_POSSIBLES, KEY_UNDOS,
+				KEY_CELLS_CLEARED, KEY_CAGE_CLEARED, KEY_GRID_CLEARED,
+				KEY_CELLS_REVEALED, KEY_OPERATORS_REVEALED,
+				KEY_CHECK_PROGRESS_USED, KEY_CHECK_PROGRESS_INVALIDS_FOUND };
+		boolean valid = false;
+		for (String validColumn : validColumns) {
+			if (validColumn.equals(column)) {
+				valid = true;
+				break;
+			}
+		}
+		if (!valid) {
+			return null;
+		}
+
+		// Retrieve all data
+		String[] columnsData = {
+				KEY_ROWID + " AS " + HistoricStatistics.DATA_COL_ID,
+				column + " AS " + HistoricStatistics.DATA_COL_VALUE,
+				"CASE WHEN "
+						+ KEY_FINISHED
+						+ " <> "
+						+ stringBetweenQuotes("true")
+						+ " THEN "
+						+ stringBetweenQuotes(Serie.UNFINISHED.toString())
+						+ " WHEN "
+						+ KEY_SOLUTION_REVEALED
+						+ " = "
+						+ stringBetweenQuotes("true")
+						+ " THEN "
+						+ stringBetweenQuotes(Serie.SOLUTION_REVEALED
+								.toString()) + " ELSE "
+						+ stringBetweenQuotes(Serie.SOLVED.toString())
+						+ " END AS " + HistoricStatistics.DATA_COL_SERIES };
+		Cursor cursorData = db.query(true, TABLE, columnsData, KEY_GRID_SIZE
+				+ " BETWEEN " + minGridSize + " AND " + maxGridSize, null,
+				null, null, KEY_FIRST_MOVE, null);
+
+		HistoricStatistics historicStatistics = new HistoricStatistics(
+				cursorData);
+		cursorData.close();
+
+		return historicStatistics;
+	}
+
 }
