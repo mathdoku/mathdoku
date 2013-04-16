@@ -249,7 +249,7 @@
 
     <!-- The text for input mode "maybe" which is used to insert/remove a possible value into/from the selected cell. -->
     <string name="input_mode_maybe_short">maybe</string>
-    <string name="input_mode_maybe_long">\"Maybe\" mode</string>
+    <string name="input_mode_maybe_long">Maybe mode</string>
 
     <!-- The text on the clear button in the main UI. -->
     <string name="main_ui_clear">Clear</string>
