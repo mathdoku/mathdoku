@@ -531,7 +531,7 @@ public class UsageLog {
 		View usagelogView = inflater.inflate(R.layout.usagelog_dialog, null);
 		TextView textView = (TextView) usagelogView
 				.findViewById(R.id.dialog_share_log_link);
-		textView.setText(MainActivity.PROJECT_HOME + "wiki/UsageLogging");
+		textView.setText(MainActivity.PROJECT_HOME + "usagelogging.php");
 
 		// Build dialog
 		new AlertDialog.Builder(activity)
