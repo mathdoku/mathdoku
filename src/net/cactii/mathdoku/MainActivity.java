@@ -50,9 +50,9 @@ public class MainActivity extends Activity implements
 		OnSharedPreferenceChangeListener {
 	public final static String TAG = "MathDoku.MainActivity";
 
-	public final static String PROJECT_HOME = "https://code.google.com/p/mathdoku/";
-	// Identifiers for preferences.
+	public final static String PROJECT_HOME = "http://mathdoku.net/";
 
+	// Identifiers for preferences.
 	public final static String PREF_CLEAR_REDUNDANT_POSSIBLES = "redundantPossibles";
 	public final static boolean PREF_CLEAR_REDUNDANT_POSSIBLES_DEFAULT = true;
 
@@ -1029,10 +1029,10 @@ public class MainActivity extends Activity implements
 				+ mUtil.getPackageVersionNumber() + ")");
 
 		textView = (TextView) view.findViewById(R.id.changelog_changes_link);
-		textView.setText(PROJECT_HOME + "wiki/RevisionHistory");
+		textView.setText(PROJECT_HOME + "changes.php");
 
 		textView = (TextView) view.findViewById(R.id.changelog_issues_link);
-		textView.setText(PROJECT_HOME + "issues/list?groupby=milestone");
+		textView.setText(PROJECT_HOME + "issues.php");
 
 		new AlertDialog.Builder(MainActivity.this)
 				.setTitle(

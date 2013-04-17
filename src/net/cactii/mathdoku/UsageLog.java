@@ -124,8 +124,7 @@ public class UsageLog {
 		// Initialize the fixed date at which the logging should be closed
 		// anyway.
 		mDateEndLogging = Calendar.getInstance();
-		mDateEndLogging.set(2013, 5, 1); // TODO: Should be three weeks
-											// after the release
+		mDateEndLogging.set(2013, 5, 19);
 
 		// Check if logging should continue or closed
 		if (Calendar.getInstance().after(mDateEndLogging)) {
