@@ -363,7 +363,7 @@ public class Painter {
 			break;
 		case NEWSPAPER:
 			mHighlightedTextColorNormalInputMode = 0xFF0C97FA;
-			mHighlightedTextColorMaybeInputMode =  0xFF75C6FF;
+			mHighlightedTextColorMaybeInputMode =  0xFFFF8A00;
 			mDefaultTextColor = 0xFF212121;
 			break;
 		case DARK:
@@ -469,8 +469,8 @@ public class Painter {
 
 			mCellPainter.mCheated.mBackgroundPaint.setStyle(Paint.Style.FILL);
 
-			mCellPainter.mSelected.mBorderPaint.setColor(0x90A8A8A8);
-			mCellPainter.mSelected.mBackgroundPaint.setColor(0x90A8A8A8);
+			mCellPainter.mSelected.mBorderPaint.setColor(0xFFE6E6E6);
+			mCellPainter.mSelected.mBackgroundPaint.setColor(0xFFE6E6E6);
 			mCellPainter.mSelected.mBackgroundPaint.setStyle(Paint.Style.FILL);
 
 			mUserValuePainter.mTextPaintNormalInputMode.setTypeface(mTypefaceSansSerif);
