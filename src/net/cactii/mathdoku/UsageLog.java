@@ -17,7 +17,6 @@ import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.GridGenerating.GridGeneratingParameters;
 import net.cactii.mathdoku.util.Util;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -42,7 +41,6 @@ import android.widget.TextView;
  * IMPORTANT: KEEP IN MIND THAT DO RESPECT THE PRIVACY OF OUR USERS. NO PERSONAL
  * INFORMATION MAT BE GATHERED AND STORED INTO THE LOG FILES.
  */
-@TargetApi(Build.VERSION_CODES.DONUT)
 // No harm can be done in case other apps can read the log file
 @SuppressLint("WorldReadableFiles")
 public class UsageLog {
@@ -228,7 +226,6 @@ public class UsageLog {
 		if (mBuildLog) {
 			SortedMap<String, String> sortedMap = new TreeMap<String, String>();
 
-			sortedMap.put("Android.SDK", android.os.Build.VERSION.SDK);
 			if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				sortedMap.put("Android.Version",
 						android.os.Build.VERSION.CODENAME);

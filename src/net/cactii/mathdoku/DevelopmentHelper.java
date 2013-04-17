@@ -3,12 +3,11 @@ package net.cactii.mathdoku;
 import java.util.ArrayList;
 
 import net.cactii.mathdoku.MainActivity.InputMode;
+import net.cactii.mathdoku.DevelopmentHelpers.DevelopmentHelperHoneycombAndAbove;
 import net.cactii.mathdoku.storage.GameFile;
 import net.cactii.mathdoku.storage.GameFile.GameFileType;
 import net.cactii.mathdoku.storage.database.DatabaseHelper;
-import net.cactii.mathdoku.DevelopmentHelpers.DevelopmentHelperHoneycombAndAbove;
 import net.cactii.mathdoku.util.Util;
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences.Editor;
@@ -411,7 +410,6 @@ public class DevelopmentHelper {
 	 * @param mainActivity
 	 *            The activity to be restarted.
 	 */
-	@TargetApi(Build.VERSION_CODES.DONUT)
 	private static void restartActivity(final MainActivity mainActivity) {
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {

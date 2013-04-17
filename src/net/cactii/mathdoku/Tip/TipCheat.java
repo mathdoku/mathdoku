@@ -3,7 +3,6 @@ package net.cactii.mathdoku.Tip;
 import net.cactii.mathdoku.Cheat;
 import net.cactii.mathdoku.MainActivity;
 import net.cactii.mathdoku.Preferences;
-import net.cactii.mathdoku.R;
 
 public class TipCheat extends TipDialog {
 	

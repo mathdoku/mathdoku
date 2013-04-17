@@ -27,7 +27,7 @@ public class Painter {
 
 	// Themes available
 	public enum GridTheme {
-		CARVED, NEWSPAPER, NEWSPAPER_OLD, DARK
+		CARVED, NEWSPAPER, DARK
 	};
 
 	// Theme installed in painter
