@@ -213,7 +213,6 @@
     <string-array name="themeTexts">
         <item>Carved</item>
         <item>Newspaper</item>
-        <item>Newspaper old</item>
         <item>Dark</item>
     </string-array>
 
@@ -253,7 +252,7 @@
 
     <!-- The text for input mode "maybe" which is used to insert/remove a possible value into/from the selected cell. -->
     <string name="input_mode_maybe_short">maybe</string>
-    <string name="input_mode_maybe_long">\"Maybe\" mode</string>
+    <string name="input_mode_maybe_long">Maybe mode</string>
 
     <!-- The text on the clear button in the main UI. -->
     <string name="main_ui_clear">Clear</string>
@@ -266,10 +265,9 @@
 
     <!-- Dialog for consent on sending usage log -->
     <string name="dialog_usagelog_title">Help MathDoku development</string>
-    <string name="dialog_usagelog_body_1">Dear user,\n\nWe have gathered some data about the way you used MathDoku. This data does not contain any personal information. We would appreciate if you will send this data to us. We will use it to decide on future development of MathDoku. For more information visit our website at:</string>
-    <string name="dialog_usagelog_body_2">If you do not agree, the created log file will deleted and no further information will be collected.</string>
-    <string name="dialog_usagelog_negative_button">I do not agree</string>
-    <string name="dialog_usagelog_positive_button">I agree</string>
+    <string name="dialog_usagelog_body">Dear user,\n\nMathDoku wants to send usage data to the developers. We would be grateful to receive this anonymous usage data to help understand which features are most popular and hence guide future development. For more information visit our website at:</string>
+    <string name="dialog_usagelog_negative_button">Cancel</string>
+    <string name="dialog_usagelog_positive_button">Send usage data</string>
 
     <!-- Dialog for opt-in on survey about future use of MathDoku. -->
     <string name="dialog_survey_title">Survey</string>

@@ -74,12 +74,6 @@ public class CellPainter extends BorderPainter {
 			mUnusedBorderPaint.setStyle(Style.STROKE);
 			mUnusedBorderPaint.setColor(0x80000000);
 			break;
-		case NEWSPAPER_OLD:
-			mUnusedBorderPaint.setAntiAlias(true);
-			mUnusedBorderPaint.setPathEffect(mPainter.getPathEffect());
-			mUnusedBorderPaint.setStyle(Style.STROKE);
-			mUnusedBorderPaint.setColor(0x80000000);
-			break;
 		case DARK:
 			mUnusedBorderPaint.setAntiAlias(true);
 			mUnusedBorderPaint.setPathEffect(mPainter.getPathEffect());
@@ -97,13 +91,7 @@ public class CellPainter extends BorderPainter {
 			mInvalidBackgroundPaint.setStyle(Paint.Style.FILL);
 			break;
 		case NEWSPAPER:
-			mInvalidBorderPaint.setColor(0xFFF0C873);
-			mInvalidBorderPaint.setAntiAlias(true);
-			mInvalidBackgroundPaint.setColor(mInvalidBorderPaint.getColor());
-			mInvalidBackgroundPaint.setStyle(Paint.Style.FILL);
-			break;
-		case NEWSPAPER_OLD:
-			mInvalidBorderPaint.setColor(0xFFBB0000);
+			mInvalidBorderPaint.setColor(0xFFF8A86B);
 			mInvalidBorderPaint.setAntiAlias(true);
 			mInvalidBackgroundPaint.setColor(mInvalidBorderPaint.getColor());
 			mInvalidBackgroundPaint.setStyle(Paint.Style.FILL);
@@ -129,11 +117,6 @@ public class CellPainter extends BorderPainter {
 			mDuplicateBackgroundPaint.setColor(mDuplicateBorderPaint.getColor());
 			mDuplicateBackgroundPaint.setStyle(Paint.Style.FILL);
 			break;
-		case NEWSPAPER_OLD:
-			mDuplicateBorderPaint.setColor(0x50FF0000);
-			mDuplicateBackgroundPaint.setColor(mDuplicateBorderPaint.getColor());
-			mDuplicateBackgroundPaint.setStyle(Paint.Style.FILL);
-			break;
 		case DARK:
 			mDuplicateBorderPaint.setColor(0x50FF0000);
 			mDuplicateBackgroundPaint.setColor(mDuplicateBorderPaint.getColor());
@@ -153,11 +136,6 @@ public class CellPainter extends BorderPainter {
 			mCheatedBackgroundPaint.setColor(mCheatedBorderPaint.getColor());
 			mCheatedBackgroundPaint.setStyle(Paint.Style.FILL);
 			break;
-		case NEWSPAPER_OLD:
-			mCheatedBorderPaint.setColor(0x90ffcea0);
-			mCheatedBackgroundPaint.setColor(mCheatedBorderPaint.getColor());
-			mCheatedBackgroundPaint.setStyle(Paint.Style.FILL);
-			break;
 		case DARK:
 			mCheatedBorderPaint.setColor(0x90ffcea0);
 			mCheatedBackgroundPaint.setColor(mCheatedBorderPaint.getColor());
@@ -173,12 +151,7 @@ public class CellPainter extends BorderPainter {
 			mSelectedBackgroundPaint.setStyle(Paint.Style.FILL);
 			break;
 		case NEWSPAPER:
-			mSelectedBorderPaint.setColor(0x90A8A8A8);
-			mSelectedBackgroundPaint.setColor(mSelectedBorderPaint.getColor());
-			mSelectedBackgroundPaint.setStyle(Paint.Style.FILL);
-			break;
-		case NEWSPAPER_OLD:
-			mSelectedBorderPaint.setColor(0xD0F0D042);
+			mSelectedBorderPaint.setColor(0xFFE6E6E6);
 			mSelectedBackgroundPaint.setColor(mSelectedBorderPaint.getColor());
 			mSelectedBackgroundPaint.setStyle(Paint.Style.FILL);
 			break;

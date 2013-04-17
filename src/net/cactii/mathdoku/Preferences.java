@@ -300,8 +300,6 @@ public class Preferences {
 
 		if (theme.equals(THEME_NEWSPAPER)) {
 			return GridTheme.NEWSPAPER;
-		} else if (theme.equals(THEME_NEWSPAPER_OLD)) {
-			return GridTheme.NEWSPAPER_OLD;
 		} else if (theme.equals(THEME_DARK)) {
 			return GridTheme.DARK;
 		} else if (theme.equals(THEME_CARVED)) {

@@ -55,7 +55,7 @@ public class MainActivity extends Activity implements
 		OnSharedPreferenceChangeListener {
 	public final static String TAG = "MathDoku.MainActivity";
 
-	public final static String PROJECT_HOME = "https://code.google.com/p/mathdoku/";
+	public final static String PROJECT_HOME = "http://mathdoku.net/";
 
 	// Identifiers for request codes sent to other activities
 	private final static int REQUEST_CODE_SAVE_LOAD = 1;
@@ -427,11 +427,6 @@ public class MainActivity extends Activity implements
 		case NEWSPAPER:
 			mTopLayout.setBackgroundResource(R.drawable.newspaper);
 			mPainter.setTheme(GridTheme.NEWSPAPER);
-			mTimerText.setBackgroundColor(0x90808080);
-			break;
-		case NEWSPAPER_OLD:
-			mTopLayout.setBackgroundResource(R.drawable.newspaper);
-			mPainter.setTheme(GridTheme.NEWSPAPER_OLD);
 			mTimerText.setBackgroundColor(0x90808080);
 			break;
 		case DARK:
@@ -933,10 +928,10 @@ public class MainActivity extends Activity implements
 				+ mUtil.getPackageVersionNumber() + ")");
 
 		textView = (TextView) view.findViewById(R.id.changelog_changes_link);
-		textView.setText(PROJECT_HOME + "wiki/RevisionHistory");
+		textView.setText(PROJECT_HOME + "changes.php");
 
 		textView = (TextView) view.findViewById(R.id.changelog_issues_link);
-		textView.setText(PROJECT_HOME + "issues/list?groupby=milestone");
+		textView.setText(PROJECT_HOME + "issues.php");
 
 		new AlertDialog.Builder(MainActivity.this)
 				.setTitle(

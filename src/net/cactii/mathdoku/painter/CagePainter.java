@@ -41,10 +41,6 @@ public class CagePainter extends BorderPainter {
 			mTextPaint.setColor(0xFF212121);
 			mTextPaint.setTypeface(mPainter.getTypeface());
 			break;
-		case NEWSPAPER_OLD:
-			mTextPaint.setColor(0xFF0000A0);
-			mTextPaint.setTypeface(mPainter.getTypeface());
-			break;
 		case DARK:
 			mTextPaint.setColor(0xFFFFFFC0);
 			mTextPaint.setTypeface(mPainter.getTypeface());
@@ -60,11 +56,6 @@ public class CagePainter extends BorderPainter {
 			mBorderPaint.setPathEffect(mPainter.getPathEffect());
 			break;
 		case NEWSPAPER:
-			mBorderPaint.setColor(0xFF000000);
-			mBorderPaint.setAntiAlias(false);
-			mBorderPaint.setPathEffect(null);
-			break;
-		case NEWSPAPER_OLD:
 			mBorderPaint.setColor(0xFF000000);
 			mBorderPaint.setAntiAlias(false);
 			mBorderPaint.setPathEffect(null);
@@ -89,11 +80,6 @@ public class CagePainter extends BorderPainter {
 			mBorderBadMathPaint.setAntiAlias(true);
 			mBorderBadMathPaint.setPathEffect(null);
 			break;
-		case NEWSPAPER_OLD:
-			mBorderBadMathPaint.setColor(0xFFBB0000);
-			mBorderBadMathPaint.setAntiAlias(true);
-			mBorderBadMathPaint.setPathEffect(null);
-			break;
 		case DARK:
 			mBorderBadMathPaint.setColor(0xFFBB0000);
 			mBorderBadMathPaint.setAntiAlias(true);
@@ -109,11 +95,6 @@ public class CagePainter extends BorderPainter {
 			mBorderSelectedPaint.setPathEffect(mPainter.getPathEffect());
 			break;
 		case NEWSPAPER:
-			mBorderSelectedPaint.setColor(0xFF000000);
-			mBorderSelectedPaint.setAntiAlias(false);
-			mBorderSelectedPaint.setPathEffect(null);
-			break;
-		case NEWSPAPER_OLD:
 			mBorderSelectedPaint.setColor(0xFF000000);
 			mBorderSelectedPaint.setAntiAlias(false);
 			mBorderSelectedPaint.setPathEffect(null);
@@ -134,11 +115,6 @@ public class CagePainter extends BorderPainter {
 			break;
 		case NEWSPAPER:
 			mBorderSelectedBadMathPaint.setColor(0xFFff4444);
-			mBorderSelectedBadMathPaint.setAntiAlias(true);
-			mBorderSelectedBadMathPaint.setPathEffect(null);
-			break;
-		case NEWSPAPER_OLD:
-			mBorderSelectedBadMathPaint.setColor(0xFFBB0000);
 			mBorderSelectedBadMathPaint.setAntiAlias(true);
 			mBorderSelectedBadMathPaint.setPathEffect(null);
 			break;

@@ -55,8 +55,6 @@ public class GameFileListAdapter extends BaseAdapter {
 
 		// Apply theme to the list view
 		switch (Preferences.getInstance().getTheme()) {
-		case NEWSPAPER_OLD:
-			// fall through
 		case NEWSPAPER:
 			mResIdBackGroundListViewItem = R.drawable.newspaper1;
 			((ListActivity) mContext).getListView().setBackgroundResource(

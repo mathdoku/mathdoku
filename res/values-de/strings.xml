@@ -248,10 +248,12 @@
 
 
     <!-- The text for input mode "normal" which is used to enter a definitive value into the selected cell. -->
-    <string name="input_mode_normal">Modus: Definitive Werte</string>
+    <string name="input_mode_normal_short">Definitiv</string>
+    <string name="input_mode_normal_long">Definitive Werte</string>
 
     <!-- The text for input mode "maybe" which is used to insert/remove a possible value into/from the selected cell. -->
-    <string name="input_mode_maybe">Modus: \"Vielleichtwerte\"</string>
+    <string name="input_mode_maybe_short">Vielleicht</string>
+    <string name="input_mode_maybe_long">Vielleichtwerte</string>
 
     <!-- The text on the clear button in the main UI. -->
     <string name="main_ui_clear">Löschen</string>
@@ -264,10 +266,7 @@
 
     <!-- Dialog for consent on sending usage log -->
     <string name="dialog_usagelog_title">MathDoku-Entwicklung unterstützen</string>
-    <!-- TODO -->
-    <string name="dialog_usagelog_body_1">Lieber MathDoku-Spieler,\n\nwir haben Daten gesammelt, wie Sie MathDoku verwenden. Diese Daten enthalten keine persönlichen Informationen. Wir wären sehr dankbar, wenn Sie uns diese Daten senden würden. Wir werden sie zur Weiterentwicklung von MathDoku verwenden.\n\nWenn Sie nicht zustimmen, wird das erstellte Logfile gelöscht und es werden keine weiteren Informationen gesammelt.</string>
-    <!-- TODO -->
-    <string name="dialog_usagelog_body_2"></string>
+    <string name="dialog_usagelog_body">Lieber MathDoku-Spieler,\n\nwir haben Daten gesammelt, wie Sie MathDoku verwenden. Diese Daten enthalten keine persönlichen Informationen. Wir wären sehr dankbar, wenn Sie uns diese Daten senden würden. Wir werden sie zur Weiterentwicklung von MathDoku verwenden. Für weitere Informationen besuchen Sie bitte unsere Website:</string>
     <string name="dialog_usagelog_negative_button">Ich stimme nicht zu.</string>
     <string name="dialog_usagelog_positive_button">Ich stimme zu.</string>
 
@@ -280,7 +279,7 @@
     <string name="dialog_survey_positive_button">Logfile senden</string>
 
     <!-- Title of dialog used to choose the appropriate action for sending the usage log. -->
-    <string name="usage_log_choose_action_title">Mathdoku Logfile senden</string>
+    <string name="usage_log_choose_action_title">MathDoku Logfile senden</string>
 
     <!-- TIP DIALOGS - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -290,13 +289,11 @@
 
     <!-- Title and text for tip "Input mode changed" -->
     <string name="dialog_tip_input_mode_changed_title">Eingabemodus geändert</string>
-    <!-- TODO: Enlish text and meaning has changed to: You have just changed the input mode from %1$s to %2$s by tapping the selected cell more than once. Tap the selected cell again to change the input mode back to the previous state. -->
-    <string name="dialog_tip_input_mode_changed_text">Sie haben gerade den Eingabemodus von %1$s auf %2$s geändert. Der Eingabemodus kann durch nochmaliges Drücken auf die ausgewählte Zelle auf \"normal\" gestellt werden. Oder durch Dücken des Textmodues: Vielleicht über dem Zahlenblock.</string>
+    <string name="dialog_tip_input_mode_changed_text">Sie haben gerade den Eingabemodus von %1$s auf %2$s durch mehrmaliges Drücken auf eine Zelle geändert. Berühren Sie die Zelle nochmals, um den vorigen Eingabemodus wieder zu aktivieren.</string>
 
     <!-- Title, and text for tip "Order of values in cage" -->
-    <!-- TODO -->
-    <string name="dialog_tip_order_of_values_in_cage_title">Cell values</string>
-    <string name="dialog_tip_order_of_values_in_cage_text">The order of values in the cells of the cage is not relevant in a MathDoku puzzle. The results of cages \"2 &#8212; 3\"  and \"3 &#8212; 2\" both equals 1. The entire grid below is therefore valid.</string>
+    <string name="dialog_tip_order_of_values_in_cage_title">Werte einer Zelle</string>
+    <string name="dialog_tip_order_of_values_in_cage_text">Die Reihenfolge in der die Werte in den Zellen einer Box angeordnet sind, ist für das MathDoku-Rätsel nicht relevant. Die Ergebnisse von den Boxen \"2 &#8212; 3\"  und \"3 &#8212; 2\" sind beide Male gleich 1. Der nachfolgende Raster ist demnach gültig.</string>
 
     <!-- Title, and text for tip "Cheat which reveals the value of a cell". Note "%1$s" in the text will be replaced with an amount and units (e.d. "20 seconds" or "5 minutes"). -->
     <!-- TODO -->

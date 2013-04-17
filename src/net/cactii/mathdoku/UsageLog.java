@@ -119,8 +119,7 @@ public class UsageLog {
 		// Initialize the fixed date at which the logging should be closed
 		// anyway.
 		mDateEndLogging = Calendar.getInstance();
-		mDateEndLogging.set(2013, 5, 1); // TODO: Should be three weeks
-											// after the release
+		mDateEndLogging.set(2013, 5, 19);
 
 		// Check if logging should continue or closed
 		if (Calendar.getInstance().after(mDateEndLogging)) {
@@ -525,12 +524,13 @@ public class UsageLog {
 		View usagelogView = inflater.inflate(R.layout.usagelog_dialog, null);
 		TextView textView = (TextView) usagelogView
 				.findViewById(R.id.dialog_share_log_link);
-		textView.setText(MainActivity.PROJECT_HOME + "wiki/UsageLogging");
+		textView.setText(MainActivity.PROJECT_HOME + "usagelogging.php");
 
 		// Build dialog
 		new AlertDialog.Builder(activity)
 				.setTitle(R.string.dialog_usagelog_title)
 				.setView(usagelogView)
+				.setCancelable(false)
 				.setNegativeButton(R.string.dialog_usagelog_negative_button,
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
@@ -572,6 +572,7 @@ public class UsageLog {
 		final View surveyView = inflater.inflate(R.layout.survey_dialog, null);
 		builder.setTitle(R.string.dialog_survey_title)
 				.setView(surveyView)
+				.setCancelable(false)
 				.setPositiveButton(R.string.dialog_survey_positive_button,
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
