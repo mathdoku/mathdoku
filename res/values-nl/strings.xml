@@ -257,10 +257,9 @@
 
     <!-- Dialog for consent on sending usage log -->
     <string name="dialog_usagelog_title">Help MathDoku ontwikkeling</string>
-    <string name="dialog_usagelog_body_1">Beste gebruiker,\n\nWe hebben wat data verzameld over de manier waarop je MathDoku gebruikt. Deze data bevat geen persoonlijke informatie. We stellen het op prijs als je deze data naar ons toe wil sturen. We zullen dit gebruiken bij de verdere ontwikkeling van MathDoku. Bezoek onze website voor meer informatie:</string>
-    <string name="dialog_usagelog_body_2">Als je niet toestemt dan wordt de verzamelde data verwijderd. Er wordt verder geen data meer verzameld.</string>
-    <string name="dialog_usagelog_negative_button">Niet akkoord</string>
-    <string name="dialog_usagelog_positive_button">Akkoord</string>
+    <string name="dialog_usagelog_body">Beste gebruiker,\n\nMathDoku wil gebruiksdata verzenden naar de ontwikkelaars. We ontvangen deze anonieme gebruiksdata graag om beter te begrijpen welke onderdelen het meest populair zijn. Dit helpt ons bij de verdere ontwikkeling van MathDoku. Bezoek onze website voor meer informatie (alleen in het engels):</string>
+    <string name="dialog_usagelog_negative_button">Annuleer</string>
+    <string name="dialog_usagelog_positive_button">Gebruiksdata versturen</string>
 
     <!-- Dialog for opt-in on survey about future use of MathDoku. -->
     <string name="dialog_survey_title">Enquete</string>

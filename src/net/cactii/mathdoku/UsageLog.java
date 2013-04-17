@@ -537,6 +537,7 @@ public class UsageLog {
 		new AlertDialog.Builder(activity)
 				.setTitle(R.string.dialog_usagelog_title)
 				.setView(usagelogView)
+				.setCancelable(false)
 				.setNegativeButton(R.string.dialog_usagelog_negative_button,
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
@@ -584,6 +585,7 @@ public class UsageLog {
 		final View surveyView = inflater.inflate(R.layout.survey_dialog, null);
 		builder.setTitle(R.string.dialog_survey_title)
 				.setView(surveyView)
+				.setCancelable(false)
 				.setPositiveButton(R.string.dialog_survey_positive_button,
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {

@@ -9,18 +9,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/dialog_usagelog_body_1" />
+            android:text="@string/dialog_usagelog_body" />
 
         <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autoLink="web"
         android:id="@+id/dialog_share_log_link" />
-
-        <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/dialog_usagelog_body_2" />
 
         </LinearLayout>
 
