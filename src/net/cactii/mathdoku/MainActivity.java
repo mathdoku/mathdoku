@@ -98,8 +98,12 @@ public class MainActivity extends Activity implements
 	public final static String PREF_USAGE_LOG_COUNT_GAMES_STARTED = "UsageLogCountGamesStarted";
 	public final static int PREF_USAGE_LOG_COUNT_GAMES_STARTED_DEFAULT = 0;
 
-	public final static String PREF_USAGE_LOG_DISABLED = "UsageLogDisabled";
-	public final static boolean PREF_USAGE_LOG_DISABLED_DEFAULT = false;
+	public final static String PREF_USAGE_LOG_STATUS = "UsageLogStatus";
+	public final static String PREF_USAGE_LOG_NEVER_ENABLED = "NeverEnabled";
+	public final static String PREF_USAGE_LOG_ENABLED = "Enabled";
+	public final static String PREF_USAGE_LOG_OPTED_OUT = "OptedOut";
+	public final static String PREF_USAGE_LOG_AUTO_DISABLED = "AutoDisabled";
+	public final static String PREF_USAGE_LOG_STATUS_DEFAULT = PREF_USAGE_LOG_ENABLED;
 
 	public final static String PREF_WAKE_LOCK = "wakelock";
 	public final static boolean PREF_WAKE_LOCK_DEFAULT = true;
@@ -805,8 +809,8 @@ public class MainActivity extends Activity implements
 
 				// Reset preferences
 				Editor prefeditor = mPreferences.edit();
-				prefeditor.putBoolean(PREF_USAGE_LOG_DISABLED,
-						PREF_USAGE_LOG_DISABLED_DEFAULT);
+				prefeditor.putString(PREF_USAGE_LOG_STATUS,
+						PREF_USAGE_LOG_STATUS_DEFAULT);
 				prefeditor.putInt(PREF_USAGE_LOG_COUNT_GAMES_STARTED,
 						PREF_USAGE_LOG_COUNT_GAMES_STARTED_DEFAULT);
 				prefeditor.commit();
@@ -943,10 +947,11 @@ public class MainActivity extends Activity implements
 						countGamesStarted);
 				prefeditor.commit();
 
-				// As long as the user has not opted out for sending feedback,
-				// check if we are going to ask the user to send feedback
-				if (!mPreferences.getBoolean(PREF_USAGE_LOG_DISABLED,
-						PREF_USAGE_LOG_DISABLED_DEFAULT)) {
+				// As long as logging is enabled check if we are going to ask
+				// the user to send feedback
+				if (mPreferences.getString(PREF_USAGE_LOG_STATUS,
+						PREF_USAGE_LOG_STATUS_DEFAULT).equals(
+						PREF_USAGE_LOG_ENABLED)) {
 					// Check if we are going to ask the user to send feedback
 					if (countGamesStarted == 3 || countGamesStarted == 10
 							|| countGamesStarted == 30
@@ -1187,19 +1192,19 @@ public class MainActivity extends Activity implements
 						PREF_ALLOW_BIG_CAGES_DEFAULT);
 			}
 		}
-		if (previousInstalledVersion < 175 && currentVersion >= 175) {
-			if (!mPreferences.contains(PREF_USAGE_LOG_DISABLED)) {
-				prefeditor.putBoolean(PREF_USAGE_LOG_DISABLED,
-						PREF_USAGE_LOG_DISABLED_DEFAULT);
+		if (previousInstalledVersion < 198 && currentVersion >= 198) {
+			TipDialog.initializeCategoryPreferences(mPreferences,
+					previousInstalledVersion == -1);
+		}
+		if (previousInstalledVersion < 259 && currentVersion >= 259) {
+			if (!mPreferences.contains(PREF_USAGE_LOG_STATUS)) {
+				prefeditor.putString(PREF_USAGE_LOG_STATUS,
+						UsageLog.getInstance().getInitialValuePreferenceUsageLogStatus());
 			}
 			if (!mPreferences.contains(PREF_USAGE_LOG_COUNT_GAMES_STARTED)) {
 				prefeditor.putInt(PREF_USAGE_LOG_COUNT_GAMES_STARTED,
 						PREF_USAGE_LOG_COUNT_GAMES_STARTED_DEFAULT);
 			}
-		}
-		if (previousInstalledVersion < 198 && currentVersion >= 198) {
-			TipDialog.initializeCategoryPreferences(mPreferences,
-					previousInstalledVersion == -1);
 		}
 		prefeditor.putInt(PREF_CURRENT_VERSION, currentVersion);
 		prefeditor.commit();

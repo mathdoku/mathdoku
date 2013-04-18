@@ -71,8 +71,12 @@ public class UsageLog {
 	// Singleton reference to the logger
 	private static UsageLog mUsageLogginSingletonInstance = null;
 
-	// Date at or after which the logging should be stopped.
-	Calendar mDateEndLogging;
+	// Set begin and end date of period in which the usage logging will close
+	// down. In case a logging message is generated in this period, the user
+	// will be requested to send his log file unless the user already opted out
+	// before.
+	Calendar mDateLoggingClosePeriodStart;
+	Calendar mDateLoggingClosePeriodEnd;
 
 	// Reference to the application context
 	private static Activity mActivity;
@@ -109,8 +113,9 @@ public class UsageLog {
 		// Get preferences and check whether it is allowed to gather new data.
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(activity);
-		if (preferences.getBoolean(MainActivity.PREF_USAGE_LOG_DISABLED,
-				MainActivity.PREF_USAGE_LOG_DISABLED_DEFAULT)) {
+		if (!preferences.getString(MainActivity.PREF_USAGE_LOG_STATUS,
+				MainActivity.PREF_USAGE_LOG_STATUS_DEFAULT).equals(
+				MainActivity.PREF_USAGE_LOG_ENABLED)) {
 			mBuildLog = false;
 			return;
 		}
@@ -123,15 +128,10 @@ public class UsageLog {
 
 		// Initialize the fixed date at which the logging should be closed
 		// anyway.
-		mDateEndLogging = Calendar.getInstance();
-		mDateEndLogging.set(2013, 5, 19);
-
-		// Check if logging should continue or closed
-		if (Calendar.getInstance().after(mDateEndLogging)) {
-			askConsentForSendingLog(mActivity);
-			mBuildLog = false;
-			return;
-		}
+		mDateLoggingClosePeriodStart = Calendar.getInstance();
+		mDateLoggingClosePeriodStart.set(2013, Calendar.MAY, 19);
+		mDateLoggingClosePeriodEnd = Calendar.getInstance();
+		mDateLoggingClosePeriodEnd.set(2013, Calendar.JUNE, 19);
 
 		// Check if log already exists.
 		boolean newLogFile = false;
@@ -463,13 +463,45 @@ public class UsageLog {
 				mBuildLog = false;
 				return;
 			}
-		}
 
-		// Check if logging period has ended.
-		if (Calendar.getInstance().after(mDateEndLogging)) {
-			askConsentForSendingLog(mActivity);
-			mBuildLog = false;
-			return;
+			// In case a logging message is generated in the logging close down
+			// period, the user will be requested to send his log file.
+			Date now = Calendar.getInstance().getTime();
+			if (now.after(mDateLoggingClosePeriodStart.getTime())
+					&& now.before(mDateLoggingClosePeriodEnd.getTime())) {
+				SharedPreferences preferences = PreferenceManager
+						.getDefaultSharedPreferences(mActivity);
+
+				// Only request to send logfile in case minimal 3 games have
+				// been started.
+				int countGamesStarted = preferences.getInt(
+						MainActivity.PREF_USAGE_LOG_COUNT_GAMES_STARTED, 0);
+				if (countGamesStarted >= 2 && preferences.getString(MainActivity.PREF_USAGE_LOG_STATUS,
+						MainActivity.PREF_USAGE_LOG_STATUS_DEFAULT).equals(
+								MainActivity.PREF_USAGE_LOG_ENABLED)) {
+					
+					// Set auto disable as soon as we have asked the consent of the user in the close down period.
+					Editor prefeditor = preferences.edit();
+					prefeditor.putString(MainActivity.PREF_USAGE_LOG_STATUS,
+							MainActivity.PREF_USAGE_LOG_AUTO_DISABLED);
+					prefeditor.commit();
+
+					askConsentForSendingLog(mActivity);
+					mBuildLog = false;
+					return;
+				}
+			}
+
+			// Auto disable the preference after end date of closing down period
+			if (now.after(mDateLoggingClosePeriodEnd.getTime())) {
+				SharedPreferences preferences = PreferenceManager
+						.getDefaultSharedPreferences(mActivity);
+				
+				Editor prefeditor = preferences.edit();
+				prefeditor.putString(MainActivity.PREF_USAGE_LOG_STATUS,
+						MainActivity.PREF_USAGE_LOG_AUTO_DISABLED);
+				prefeditor.commit();
+			}
 		}
 	}
 
@@ -547,9 +579,9 @@ public class UsageLog {
 								SharedPreferences preferences = PreferenceManager
 										.getDefaultSharedPreferences(activity);
 								Editor prefeditor = preferences.edit();
-								prefeditor.putBoolean(
-										MainActivity.PREF_USAGE_LOG_DISABLED,
-										true);
+								prefeditor.putString(
+										MainActivity.PREF_USAGE_LOG_STATUS,
+										MainActivity.PREF_USAGE_LOG_OPTED_OUT);
 								prefeditor.commit();
 							}
 						})
@@ -559,11 +591,6 @@ public class UsageLog {
 								askConsentForSurvey(activity);
 							}
 						}).show();
-		/*
-		 * FrameLayout fl = (FrameLayout)
-		 * builder.findViewById(android.R.id.custom); fl.addView(textView, new
-		 * LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-		 */
 	}
 
 	/**
@@ -632,8 +659,7 @@ public class UsageLog {
 									activity.startActivity(Intent
 											.createChooser(
 													i,
-													activity
-															.getResources()
+													activity.getResources()
 															.getString(
 																	R.string.usage_log_choose_action_title)));
 								} catch (android.content.ActivityNotFoundException ex) {
@@ -659,5 +685,18 @@ public class UsageLog {
 				PackageManager.MATCH_DEFAULT_ONLY);
 
 		return list.size() > 0;
+	}
+
+	public String getInitialValuePreferenceUsageLogStatus() {
+		Date now = Calendar.getInstance().getTime();
+		if (now.before(mDateLoggingClosePeriodStart.getTime())) {
+			// CLosing down period has not yet started. So the logging should be
+			// enabled.
+			return MainActivity.PREF_USAGE_LOG_ENABLED;
+		} else {
+			// Close down period has already started. Do not enable for new
+			// users.
+			return MainActivity.PREF_USAGE_LOG_NEVER_ENABLED;
+		}
 	}
 }
