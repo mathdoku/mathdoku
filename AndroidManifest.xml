@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="net.cactii.mathdoku"
-    android:versionCode="255"
+    android:versionCode="258"
     android:versionName="1.96" >
 
     <uses-sdk android:minSdkVersion="3" />
