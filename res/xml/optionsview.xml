@@ -28,7 +28,6 @@
             android:entries="@array/hideOpTexts"
             android:entryValues="@array/hideOpValues"
             android:key="hideoperatorsigns"
-            android:summary="@string/option_hide_operators_summary"
             android:title="@string/option_hide_operators_title" />
     </PreferenceCategory>
     <PreferenceCategory
@@ -38,7 +37,6 @@
             android:entries="@array/themeTexts"
             android:entryValues="@array/themeValues"
             android:key="theme"
-            android:summary="@string/option_theme_summary"
             android:title="@string/option_theme_title" />
 
         <CheckBoxPreference

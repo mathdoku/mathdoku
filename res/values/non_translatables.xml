@@ -14,6 +14,13 @@
         <item>A</item>
     </string-array>
 
+    <!-- The possible values of the "themes" option. This option controls which theme is used for displaying. -->
+    <string-array name="themeTexts">
+        <item>@string/theme_carved</item>
+        <item>@string/theme_newspaper</item>
+        <item>@string/theme_dark</item>
+    </string-array>
+    
     <!-- Identifiers associated with element themeTexts. This element may not be translated. -->
     <string-array name="themeValues">
         <item>carved</item>

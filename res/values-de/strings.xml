@@ -119,7 +119,7 @@
         <item>Fragen</item>
     </string-array>
 
-    <!-- The message and buttons of the dialog box asking whether to hide operator signs. THis dialog will only be shown in case option "Hide operators" has been set to "Always" or "Ask". -->
+    <!-- The message and buttons of the dialog box asking whether to hide operator signs. This dialog will only be shown in case option "Hide operators" has been set to "Always" or "Ask". -->
     <string name="dialog_hide_operators_message">Rechenoperatoren verstecken?</string>
     <string name="dialog_hide_operators_positive_button">Ja. Ich suche eine Herausforderung.</string>
     <string name="dialog_hide_operators_negative_button">Nein. Ich mag es einfach.</string>
@@ -161,6 +161,7 @@
     <string name="option_mark_duplicates_summary">Doppelte Nummern in einer Zeile oder Spalte hervorheben.</string>
 
     <!-- The title and summary of the "redundant possibles" option. This option clears possibles values from cells in the same row or columns as the selected cell after setting a user value. -->
+    <!-- TODO: check with updated english version. 2x -->
     <string name="option_clear_redundant_possibles_title">Überflüssige \"Vieleichtwerte\" löschen</string>
     <string name="option_clear_redundant_possibles_summary">Nachdem ein Wert in einer Zelle gesetzt wurde, wird dieser Wert in den Zellen derselben Zeile und Spalte aus den Möglichkeiten gelöscht.</string>
 
@@ -173,14 +174,16 @@
 
     <!-- The title and summary of the "hide operator" option. This option controls whether the mathematical operation signs (+x/-) are shown. -->
     <string name="option_hide_operators_title">Rechenoperatoren verstecken</string>
-    <string name="option_hide_operators_summary">Verstecke Rechenoperatoren wie +, -, x und / beim Erstellen des Rätsels.</string>
-
+    <!-- TODO: 3x -->
+    <string name="option_hide_operators_summary_always">Always hide operation signs like +, -, x and / when creating a new game</string>
+    <string name="option_hide_operators_summary_never">Never hide operation signs like +, -, x and / when creating a new game</string>
+    <string name="option_hide_operators_summary_ask">Ask whether operation signs like +, -, x and / should be hidden when creating a new game</string>
+    
     <!-- The preferences category title for options relating to how the puzzle is displayed. -->
     <string name="options_group_display">Anzeige</string>
 
     <!-- The theme option -->
     <string name="option_theme_title">Thema</string>
-    <string name="option_theme_summary">Anzeigethema auswählen.</string>
 
     <!-- The title and summary of the "maybe in grid" option. This option controls whether maybe numbers are displayed in 3x3 grid or straight line. -->
     <string name="option_maybe_layout_title">\"Vielleichtwerte\" im Raster</string>
@@ -188,6 +191,7 @@
 
     <!-- The title and summary of the "hide selector" option. This option auto-shows the digit buttons when the player selects a cell, and auto-hides those buttons when the player deselects a cell. -->
     <string name="option_hide_selector_title">Automatisches Ausblenden des Nummernblocks</string>
+    <!-- TODO: check with updated english version. 1x -->
     <string name="option_hide_selector_summary">Nummernblock wird nach dem Drücken ausgeblendet.</string>
 
     <!-- The title and summary of the "wake lock" option. This option highlights cells with digits already in the row or column. -->
@@ -211,12 +215,10 @@
 
 
     <!-- The possible values of the "themes" option. This option controls which theme is used for displaying. -->
-    <string-array name="themeTexts">
-        <item>Geschnitzt</item>
-        <item>Zeitung</item>
-        <item>Dunkel</item>
-    </string-array>
-
+    <string name="theme_carved">Geschnitzt</string>
+    <string name="theme_newspaper">Zeitung</string>
+    <string name="theme_dark">Dunkel</string>
+    
     <!-- CONTEXT MENU IN PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 

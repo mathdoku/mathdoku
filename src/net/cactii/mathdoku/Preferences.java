@@ -227,10 +227,11 @@ public class Preferences {
 		}
 		if (previousInstalledVersion < 198 && currentVersion >= 198) {
 			if (!mSharedPreferences.contains(SHOW_STATISTICS_DESCRIPTION)) {
-				prefeditor.putBoolean(SHOW_STATISTICS_DESCRIPTION, SHOW_STATISTICS_DESCRIPTION_DEFAULT);
+				prefeditor.putBoolean(SHOW_STATISTICS_DESCRIPTION,
+						SHOW_STATISTICS_DESCRIPTION_DEFAULT);
 			}
-		}		
-		
+		}
+
 		prefeditor.putInt(CURRENT_VERSION, currentVersion);
 		prefeditor.commit();
 	}
@@ -379,8 +380,11 @@ public class Preferences {
 	/**
 	 * Checks whether operators should be hidden when creating a new game.
 	 * 
-	 * @return True in case operators should be hidden when creating a new game.
-	 *         False otherwise.
+	 * @return {@value HideOperator.ALWAYS} in case the operators should always
+	 *         be hidden. {@value HideOperator.NEVER} in case the operators
+	 *         should never be hidden. {@value HideOperator.ASK} in case it has
+	 *         to be asked whether the operators should be hidden when creating
+	 *         a new game.
 	 */
 	public HideOperator getHideOperator() {
 		String hideOperator = mSharedPreferences.getString(HIDE_OPERATORS,

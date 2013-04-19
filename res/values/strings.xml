@@ -118,7 +118,8 @@
         <item>Ask</item>
     </string-array>
 
-    <!-- The message and buttons of the dialog box asking whether to hide operator signs. THis dialog will only be shown in case option "Hide operators" has been set to "Always" or "Ask". -->
+    <!-- The message and buttons of the dialog box asking whether to hide operator signs. This dialog will only be shown in case option "
+" has been set to "Always" or "Ask". -->
     <string name="dialog_hide_operators_message">Hide operator signs?</string>
     <string name="dialog_hide_operators_positive_button">Yes, I like a challenge</string>
     <string name="dialog_hide_operators_negative_button">No, keep it simple</string>
@@ -160,26 +161,27 @@
     <string name="option_mark_duplicates_summary">Highlight duplicate digits in a row or column</string>
 
     <!-- The title and summary of the "redundant possibles" option. This option clears possibles values from cells in the same row or columns as the selected cell after setting a user value. -->
-    <string name="option_clear_redundant_possibles_title">Clear redundant possible values</string>
-    <string name="option_clear_redundant_possibles_summary">After setting a value in a cell, clear this value from the possible values in other cells in the same row or column.</string>
+    <string name="option_clear_redundant_possibles_title">Clear maybes</string>
+    <string name="option_clear_redundant_possibles_summary">Clear maybes when used in another cell on the same row or column</string>
 
     <!-- The preferences category title for options related to puzzle generation. -->
     <string name="options_group_puzzle">Puzzle Generation</string>
 
     <!-- The title and summary of the "Allow big cages" option. This option controls whether puzzles can contain big cages (5 or 6 cells). -->
     <string name="option_generate_big_cages_title">Allow big cages (beta)</string>
-    <string name="option_generate_big_cages_summary">Generate puzzle having cages consisting of 5 or 6 cells.</string>
+    <string name="option_generate_big_cages_summary">Generate puzzles having cages consisting of 5 or 6 cells</string>
 
     <!-- The title and summary of the "hide operator" option. This option controls whether the mathematical operation signs (+x/-) are shown. -->
     <string name="option_hide_operators_title">Hide operators</string>
-    <string name="option_hide_operators_summary">Hide operation signs like +, -, x and / when creating a new game.</string>
-
+    <string name="option_hide_operators_summary_always">Always hide operation signs like +, -, x and / when creating a new game</string>
+    <string name="option_hide_operators_summary_never">Never hide operation signs like +, -, x and / when creating a new game</string>
+    <string name="option_hide_operators_summary_ask">Ask whether operation signs like +, -, x and / should be hidden when creating a new game</string>
+    
     <!-- The preferences category title for options relating to how the puzzle is displayed. -->
     <string name="options_group_display">Display</string>
 
     <!-- The theme option -->
     <string name="option_theme_title">Theme</string>
-    <string name="option_theme_summary">Select display theme.</string>
 
     <!-- The title and summary of the "maybe in grid" option. This option controls whether maybe numbers are displayed in 3x3 grid or straight line. -->
     <string name="option_maybe_layout_title">Maybes in grid</string>
@@ -187,7 +189,7 @@
 
     <!-- The title and summary of the "hide selector" option. This option auto-shows the digit buttons when the player selects a cell, and auto-hides those buttons when the player deselects a cell. -->
     <string name="option_hide_selector_title">Auto-hide digit buttons</string>
-    <string name="option_hide_selector_summary">Digit buttons hide after pressing</string>
+    <string name="option_hide_selector_summary">Hide digit buttons after pressing</string>
 
     <!-- The title and summary of the "wake lock" option. This option highlights cells with digits already in the row or column. -->
     <string name="option_wake_lock_title">Keep screen on</string>
@@ -195,7 +197,7 @@
 
     <!-- The title and summary of the "display timer" option. This option hides or shows the timer below the puzzle. -->
     <string name="option_show_timer_title">Display timer</string>
-    <string name="option_show_timer_summary">Display a timer while solving a puzzle.</string>
+    <string name="option_show_timer_summary">Display a timer while solving a puzzle</string>
 
     <!-- The preferences category title for audio options. -->
     <string name="options_group_sound">Sound</string>
@@ -208,14 +210,11 @@
 
     <!-- DIALOG THEME - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-
     <!-- The possible values of the "themes" option. This option controls which theme is used for displaying. -->
-    <string-array name="themeTexts">
-        <item>Carved</item>
-        <item>Newspaper</item>
-        <item>Dark</item>
-    </string-array>
-
+    <string name="theme_carved">Carved</string>
+    <string name="theme_newspaper">Newspaper</string>
+    <string name="theme_dark">Dark</string>
+    
     <!-- CONTEXT MENU IN PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
