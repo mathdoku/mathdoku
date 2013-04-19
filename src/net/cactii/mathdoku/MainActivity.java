@@ -277,6 +277,8 @@ public class MainActivity extends Activity implements
 								toggleInputMode();
 							}
 						}
+
+						setClearAndUndoButtonVisibility(cell);
 					}
 				});
 
@@ -297,6 +299,7 @@ public class MainActivity extends Activity implements
 			public void onClick(View v) {
 				if (MainActivity.this.mGrid.undoLastMove()) {
 					// Succesfull undo
+					setClearAndUndoButtonVisibility(mGrid.getSelectedCell());
 					mGridView.invalidate();
 				}
 
@@ -745,6 +748,7 @@ public class MainActivity extends Activity implements
 		if (mMathDokuPreferences.isControlsBlockHidden()) {
 			this.mControls.setVisibility(View.GONE);
 		}
+		setClearAndUndoButtonVisibility(mGrid.getSelectedCell());
 		this.mGridView.requestFocus();
 		this.mGridView.mSelectorShown = false;
 		this.mGridView.invalidate();
@@ -1292,6 +1296,7 @@ public class MainActivity extends Activity implements
 					// relavant to this new grid.
 					setInputMode(mInputMode);
 				}
+				setClearAndUndoButtonVisibility(null);
 
 				startTimer();
 
@@ -1633,7 +1638,7 @@ public class MainActivity extends Activity implements
 		if (mGrid == null || mGridView == null) {
 			return;
 		}
-		
+
 		boolean allUserValuesValid = mGrid.isSolutionValidSoFar();
 		int countNewInvalidChoices = (allUserValuesValid ? 0 : mGridView
 				.markInvalidChoices());
@@ -1664,5 +1669,22 @@ public class MainActivity extends Activity implements
 			Toast.makeText(this, R.string.ProgressBad, Toast.LENGTH_SHORT)
 					.show();
 		}
+	}
+
+	/**
+	 * Checks whether the clear and undo buttons should be visible in case the
+	 * given cell is selected.
+	 * 
+	 * @param cell
+	 *            The cell to be used to check whether the clear and undo button
+	 *            should be visible. Use null in case no cell is selected.
+	 */
+	private void setClearAndUndoButtonVisibility(GridCell cell) {
+		((Button) MainActivity.this.findViewById(R.id.clearButton))
+				.setVisibility((cell == null || cell.isEmpty()) ? View.INVISIBLE
+						: View.VISIBLE);
+		((Button) MainActivity.this.findViewById(R.id.undoButton))
+				.setVisibility((mGrid == null || mGrid.countMoves() == 0) ? View.INVISIBLE
+						: View.VISIBLE);
 	}
 }

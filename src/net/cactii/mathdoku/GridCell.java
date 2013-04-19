@@ -588,7 +588,8 @@ public class GridCell {
 			index++;
 		}
 		if (cellInformationVersion > 1) {
-			mInvalidUserValueHighlight = Boolean.parseBoolean(cellParts[index++]);
+			mInvalidUserValueHighlight = Boolean
+					.parseBoolean(cellParts[index++]);
 			mCheated = Boolean.parseBoolean(cellParts[index++]);
 			mSelected = Boolean.parseBoolean(cellParts[index++]);
 		}
@@ -883,5 +884,15 @@ public class GridCell {
 		} else {
 			return BorderType.NOT_SELECTED__GOOD_MATH;
 		}
+	}
+
+	/**
+	 * Checks if this cell is emtpy, i.e. it does not contain a user value nor
+	 * possible values.
+	 * 
+	 * @return True in case the cell is empty. False otherwise.
+	 */
+	public boolean isEmpty() {
+		return (mUserValue == 0 && mPossibles.size() == 0);
 	}
 }
