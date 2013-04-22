@@ -123,47 +123,36 @@ public class GridStatistics {
 			break;
 		case CELLS_EMPTY:
 			mCellsUserValueEmtpty += occurrences;
-			;
 			break;
 		case USER_VALUE_REPLACED:
 			mUserValueReplaced += occurrences;
-			;
 			break;
 		case POSSIBLES:
 			mMaybeValue += occurrences;
-			;
 			break;
 		case UNDOS:
 			mUndoButton += occurrences;
-			;
 			break;
 		case CELL_CLEARED:
 			mCellCleared += occurrences;
-			;
 			break;
 		case CAGE_CLEARED:
 			mCageCleared += occurrences;
-			;
 			break;
 		case GRID_CLEARED:
 			mGridCleared += occurrences;
-			;
 			break;
 		case CELLS_REVEALED:
 			mCellsRevealed += occurrences;
-			;
 			break;
 		case OPERATORS_REVEALED:
 			mOperatorsRevevealed += occurrences;
-			;
 			break;
 		case CHECK_PROGRESS_USED:
 			mCheckProgressUsed += occurrences;
-			;
 			break;
 		case CHECK_PROGRESS_INVALIDS_FOUND:
 			mCheckProgressInvalidsFound += occurrences;
-			;
 			break;
 		}
 		setLastMoveToCurrentTime();
