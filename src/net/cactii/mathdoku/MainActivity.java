@@ -212,6 +212,11 @@ public class MainActivity extends Activity implements
 		DatabaseHelper.getInstance(this);
 		PreviewImage.setSize(this);
 
+		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			// Check if database is consistent.
+			DevelopmentHelper.checkDatabaseConsistency(this);
+		}
+		
 		setInputMode(InputMode.NO_INPUT__HIDE_GRID);
 
 		// Animation for a solved puzzle
@@ -696,8 +701,8 @@ public class MainActivity extends Activity implements
 			Intent intentStatistics = new Intent(this, StatisticsActivity.class);
 			if (mGrid != null) {
 				intentStatistics.putExtra(
-						StatisticsActivity.BUNDLE_KEY_SIGNATURE_ID, mGrid
-								.getGridStatistics().getSignatureId());
+						StatisticsActivity.BUNDLE_KEY_STATISTICS_ID, mGrid
+								.getGridStatistics().getId());
 			}
 			startActivity(intentStatistics);
 			return true;

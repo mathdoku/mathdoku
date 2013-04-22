@@ -44,7 +44,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		// Use the application context, which will ensure that you
 		// don't accidentally leak an Activity's context.
 		if (mDatabaseHelperSingletonInstance == null) {
-			mDatabaseHelperSingletonInstance = new DatabaseHelper(context.getApplicationContext());
+			mDatabaseHelperSingletonInstance = new DatabaseHelper(
+					context.getApplicationContext());
 		}
 
 		if (context.getClass().getSimpleName()
@@ -82,22 +83,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		}
 		return mDatabaseHelperSingletonInstance;
 	}
-
+	
+	@Override
+	public synchronized void close() {
+		super.close();
+		mDatabaseHelperSingletonInstance = null;
+	}
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
+		GridDatabaseAdapter.create(db);
 		StatisticsDatabaseAdapter.create(db);
+
+		// Enable foreign key constraints
+		db.execSQL("PRAGMA foreign_keys=ON;");
 	}
-	
+
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		GridDatabaseAdapter.upgrade(db, oldVersion, newVersion);
 		StatisticsDatabaseAdapter.upgrade(db, oldVersion, newVersion);
 	}
-	
+
 	/**
 	 * Get the version (revision) number of the app.
 	 * 
-	 * @param context Context from which the version has to eb determined.
+	 * @param context
+	 *            Context from which the version has to eb determined.
 	 */
 	private static int getVersion(Context context) {
 		int version = -1;
@@ -106,7 +118,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					context.getPackageName(), 0);
 			version = pi.versionCode;
 		} catch (Exception e) {
-			Log.e(TAG, "Package name '" + context.getPackageName() + "' not found", e);
+			Log.e(TAG, "Package name '" + context.getPackageName()
+					+ "' not found", e);
 		}
 		return version;
 	}

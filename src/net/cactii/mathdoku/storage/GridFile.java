@@ -21,9 +21,11 @@ import android.util.Log;
 public class GridFile {
 	private static final String TAG = "MathDoku.GridFile";
 
-	String mFilename; // TODO
-	boolean mLoadedSuccesfully; // TODO
-
+	// The filename in which the puzzle and solving progress is stored. The
+	// filename should never been changed as a reference to this filename is
+	// stored in the statistics database.
+	String mFilename;
+	
 	/**
 	 * Creates a new instance of {@link PreviewImage}.
 	 * 
@@ -310,11 +312,16 @@ public class GridFile {
 				throw new InvalidFileFormatException(
 						"Unexpected line found while end of file was expected: "
 								+ line);
-
 			}
 
 			// Load the statistics of the grid
-			grid.loadStatistics();
+			if (!grid.loadStatistics()) {
+				throw new InvalidStatisticsException("Can not load statistics neither create a new statistics records.");
+			}
+		} catch (InvalidStatisticsException e) {
+			Log.d(TAG, "Statistics exception when restoring game "
+					+ mFilename + "\n" + e.getMessage());
+			return false;
 		} catch (InvalidFileFormatException e) {
 			Log.d(TAG, "Invalid file format error when restoring game "
 					+ mFilename + "\n" + e.getMessage());
@@ -346,5 +353,14 @@ public class GridFile {
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * Get the file name.
+	 * 
+	 * @return The file name.
+	 */
+	public String getFilename() {
+		return mFilename;
 	}
 }

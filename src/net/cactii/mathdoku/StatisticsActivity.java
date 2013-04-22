@@ -8,6 +8,8 @@ import net.cactii.mathdoku.statistics.HistoricStatistics;
 import net.cactii.mathdoku.statistics.HistoricStatistics.Scale;
 import net.cactii.mathdoku.statistics.HistoricStatistics.Serie;
 import net.cactii.mathdoku.storage.database.DatabaseHelper;
+import net.cactii.mathdoku.storage.database.GridDatabaseAdapter;
+import net.cactii.mathdoku.storage.database.GridRow;
 import net.cactii.mathdoku.storage.database.StatisticsDatabaseAdapter;
 
 import org.achartengine.ChartFactory;
@@ -39,10 +41,10 @@ import android.widget.Toast;
 
 public class StatisticsActivity extends Activity {
 
-	public final static String BUNDLE_KEY_SIGNATURE_ID = "GridSignatureId";
+	public final static String BUNDLE_KEY_STATISTICS_ID = "GridStatisticsId";
 
 	private LinearLayout mChartsLayout;
-	private int mGridSignatureId;
+	private int mGridStatisticsId;
 
 	private GridStatistics mGridStatistics;
 	private CumulativeStatistics mCumulativeStatisticsCurrentGridSize;
@@ -52,7 +54,7 @@ public class StatisticsActivity extends Activity {
 	StatisticsDatabaseAdapter mStatisticsDatabaseAdapter;
 
 	// Grid size for currently selected grid
-	private int mGridsize;
+	private int mGridSize;
 
 	// Text size for body text
 	private int mDefaultTextSize;
@@ -85,33 +87,37 @@ public class StatisticsActivity extends Activity {
 
 		setContentView(R.layout.statistics);
 
-		// Determine if statistics for a specific signature have to be shown.
+		// Determine if specific statistics for a grid have to be shown.
 		Intent intent = getIntent();
-		mGridSignatureId = -1;
+		mGridStatisticsId = -1;
 		if (intent != null) {
 			Bundle extras = intent.getExtras();
 			if (extras != null) {
-				mGridSignatureId = extras.getInt(BUNDLE_KEY_SIGNATURE_ID, -1);
+				mGridStatisticsId = extras.getInt(BUNDLE_KEY_STATISTICS_ID, -1);
 			}
 		}
 
-		// Currently no cumulative statistics are implemented.
-		if (mGridSignatureId < 0) {
-			finish();
-		}
+		// Retrieve the grid and the statistics for this grid
+		if (mGridStatisticsId >= 0) {
+			DatabaseHelper databaseHelper = DatabaseHelper.getInstance();
+			mStatisticsDatabaseAdapter = new StatisticsDatabaseAdapter(
+					databaseHelper);
+			mGridStatistics = mStatisticsDatabaseAdapter.get(mGridStatisticsId);
 
-		// Retrieve the statistics.
-		DatabaseHelper databaseHelper = DatabaseHelper.getInstance();
-		mStatisticsDatabaseAdapter = new StatisticsDatabaseAdapter(
-				databaseHelper);
-		mGridStatistics = mStatisticsDatabaseAdapter.get(mGridSignatureId);
+			if (mGridStatistics != null) {
+				GridRow gridRow = new GridDatabaseAdapter(databaseHelper)
+						.get(mGridStatistics.mGridId);
+				if (gridRow != null) {
+					mGridSize = gridRow.mGridSize;
 
-		if (mGridStatistics != null) {
-			mGridsize = mGridStatistics.gridSize;
-			mCumulativeStatisticsCurrentGridSize = mStatisticsDatabaseAdapter
-					.getByGridSize(mGridsize, mGridsize);
-			mCumulativeStatisticsAllGridSizes = mStatisticsDatabaseAdapter
-					.getByGridSize(1, 9);
+					mCumulativeStatisticsCurrentGridSize = mStatisticsDatabaseAdapter
+							.getCumulativeStatistics(mGridSize, mGridSize);
+					mCumulativeStatisticsAllGridSizes = mStatisticsDatabaseAdapter
+							.getCumulativeStatistics(1, 9);
+				} else {
+					mGridStatistics = null;
+				}
+			}
 		}
 
 		if (mGridStatistics == null
@@ -204,7 +210,7 @@ public class StatisticsActivity extends Activity {
 		}
 
 		// Determine total number of cells in grid
-		float totalCells = mGridStatistics.gridSize * mGridStatistics.gridSize;
+		float totalCells = mGridSize * mGridSize;
 
 		// Display chart only if grid not completely filled and not completely
 		// empty.
@@ -563,7 +569,7 @@ public class StatisticsActivity extends Activity {
 	 * 
 	 * @param titleResId
 	 *            Resource id for the title of this section.
-	 * @param gridSize
+	 * @param mGridSize
 	 *            The grid size to be displayed as subtitle for the chart.
 	 *            <b>Only specify for charts which relates to all grids of this
 	 *            specific size. Use a value <= 0 if no subtitle should be
@@ -623,7 +629,7 @@ public class StatisticsActivity extends Activity {
 		// Retrieve the data
 		HistoricStatistics historicStatistics = mStatisticsDatabaseAdapter
 				.getHistoricData(StatisticsDatabaseAdapter.KEY_ELAPSED_TIME,
-						mGridsize, mGridsize);
+						mGridSize, mGridSize);
 
 		// Check if at least one serie will contain data.
 		if (!historicStatistics.isXYSeriesUsed(null)) {

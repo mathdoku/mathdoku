@@ -52,7 +52,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	private ProgressDialog mProgressDialog;
 
 	// Conversion results
-	private ArrayList<String> mGridSignatures;
+	private ArrayList<String> mGridDefinitions;
 	private int mTotalGrids;
 	private int mTotalGridsSolved;
 
@@ -137,7 +137,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 		}
 
 		// Initialize conversion results.
-		mGridSignatures = new ArrayList<String>();
+		mGridDefinitions = new ArrayList<String>();
 		mTotalGrids = 0;
 		mTotalGridsSolved = 0;
 	}
@@ -198,13 +198,13 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 					// Load grid
 					Grid grid = new Grid(filename);
 
-					// Get signature for grid. Update the number of occurrences
-					// for this signature.
+					// Get definition for the grid. Update the number of occurrences
+					// for this definition.
 					mTotalGrids++;
-					String signature = grid.getSignatureString();
-					if (!mGridSignatures.contains(signature)) {
-						// New signature found
-						mGridSignatures.add(signature);
+					String definition = grid.toGridDefinitionString();
+					if (!mGridDefinitions.contains(definition)) {
+						// New definition found
+						mGridDefinitions.add(definition);
 					}
 					if (grid.checkIfSolved()) {
 						mTotalGridsSolved++;
@@ -236,7 +236,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	@Override
 	protected void onPostExecute(Void result) {
 		UsageLog.getInstance().logGameFileConversion(mCurrentVersion,
-				mNewVersion, mTotalGrids, mGridSignatures.size());
+				mNewVersion, mTotalGrids, mGridDefinitions.size());
 
 		// We assume the user knows the rules as soon as two game have been
 		// solved.

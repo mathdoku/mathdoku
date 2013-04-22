@@ -10,6 +10,8 @@ import net.cactii.mathdoku.storage.GameFile.GameFileType;
 import net.cactii.mathdoku.storage.GridFile;
 import net.cactii.mathdoku.storage.PreviewImage;
 import net.cactii.mathdoku.storage.database.DatabaseHelper;
+import net.cactii.mathdoku.storage.database.GridDatabaseAdapter;
+import net.cactii.mathdoku.storage.database.GridRow;
 import net.cactii.mathdoku.storage.database.StatisticsDatabaseAdapter;
 
 public class Grid {
@@ -27,33 +29,57 @@ public class Grid {
 	public static final String SAVE_GAME_GRID_VERSION_05 = "VIEW.v5";
 	public static final String SAVE_GAME_GRID_VERSION_06 = "VIEW.v6";
 
+	// ************************************************************************
+	// Grid variables which are determined when generating the grid and which do
+	// not alter anymore.
+	// ************************************************************************
+
+	// Unique row id of grid in database
+	private int mRowId;
+
 	// Size of the grid
 	private int mGridSize;
 
-	// Cages
-	public ArrayList<GridCage> mCages;
+	// All parameters that influence the game generation and which are needed to
+	// regenerate a specific game again.
+	private long mDateCreated;
+	private GridGeneratingParameters mGridGeneratingParameters;
 
-	// Cell and solution
-	public ArrayList<GridCell> mCells;
+	// ************************************************************************
+	// Grid elements and references which do change while solving the game.
+	// ************************************************************************
 
+	private long mDateLastSaved;
+
+	// Has the solutiuon of the grid been revealed?
 	private boolean mCheated;
 
 	// Puzzle is active as long as it has not been solved.
 	private boolean mActive;
 
+	// Which cell is currently be selected? Null if no cell has been selected
+	// yet.
 	private GridCell mSelectedCell;
 
-	// Date of current game (used for saved games) and elapsed time while
-	// playing this game
-	private long mDateGenerated;
-	private long mDateLastSaved;
+	// Statistics for this grid
+	GridStatistics mGridStatistics;
 
-	// All parameters that influence the game generation and which are needed to
-	// regenerate a specific game again.
-	private GridGeneratingParameters mGridGeneratingParameters;
+	// ************************************************************************
+	// References to other elements of which the grid is constructed.
+	// ************************************************************************
+
+	// Cages
+	public ArrayList<GridCage> mCages;
+
+	// Cells
+	public ArrayList<GridCell> mCells;
 
 	// Keep track of all moves as soon as grid is built or restored.
 	public ArrayList<CellChange> mMoves;
+
+	// ************************************************************************
+	// Miscelleaneous
+	// ************************************************************************
 
 	// Used to avoid redrawing or saving grid during creation of new grid
 	public final Object mLock = new Object();
@@ -66,14 +92,11 @@ public class Grid {
 	// Solved listener
 	private OnSolvedListener mSolvedListener;
 
-	// Statistics for this grid
-	GridStatistics mGridStatistics;
-
 	// UsagaeLog counters
 	private int mClearRedundantPossiblesInSameRowOrColumnCount;
 
-	// The file from which the grid is loaded. Null in case the grid has never
-	// been saved.
+	// The file from which the current solving attempt is loaded. Null in case
+	// the solving attempt was not yet saved before.
 	private GridFile mGridFile;
 
 	public Grid(int gridSize) {
@@ -162,8 +185,10 @@ public class Grid {
 			boolean updateGridClearCounter = false;
 			for (GridCell cell : this.mCells) {
 				if (cell.getUserValue() != 0) {
-					mGridStatistics.increaseCounter(StatisticsCounterType.CELLS_EMPTY);
-					mGridStatistics.decreaseCounter(StatisticsCounterType.CELLS_FILLED);
+					mGridStatistics
+							.increaseCounter(StatisticsCounterType.CELLS_EMPTY);
+					mGridStatistics
+							.decreaseCounter(StatisticsCounterType.CELLS_FILLED);
 					updateGridClearCounter = true;
 				} else if (cell.countPossibles() > 0) {
 					updateGridClearCounter = true;
@@ -171,7 +196,8 @@ public class Grid {
 				cell.clear();
 			}
 			if (updateGridClearCounter) {
-				mGridStatistics.increaseCounter(StatisticsCounterType.GRID_CLEARED);
+				mGridStatistics
+						.increaseCounter(StatisticsCounterType.GRID_CLEARED);
 			}
 		}
 	}
@@ -435,7 +461,7 @@ public class Grid {
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mDateLastSaved
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mGridSize
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mActive
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mDateGenerated
+				+ GameFile.FIELD_DELIMITER_LEVEL1 + mDateCreated
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mCheated
 				+ GameFile.FIELD_DELIMITER_LEVEL1
 				+ mClearRedundantPossiblesInSameRowOrColumnCount
@@ -449,28 +475,28 @@ public class Grid {
 	}
 
 	/**
-	 * Creates a signature of this grid. The signature is unique for the grid
-	 * regardless of the version of the grid generator used.
+	 * Converts the definition of this grid to a string. This definitions only
+	 * consists of information needed to rebuild the puzzle. It does not include
+	 * information about how it was created or about the current status of
+	 * solving. This definition is unique regardless of grid size and or the
+	 * version of the grid generator used.
 	 * 
 	 * @return A unique string representation of the grid.
 	 */
-	public String getSignatureString() {
-		StringBuilder signatureString = new StringBuilder();
-		// First append all numbers of the entire grid
+	public String toGridDefinitionString() {
+		StringBuilder definitionString = new StringBuilder();
+		// Get the cage number (represented as a value of two digits, if needed
+		// prefixed with a 0) for each cell. Note: with a maximum of 81 cells in
+		// a 9x9 grid we can never have a cage-id > 99.
 		for (GridCell cell : mCells) {
-			signatureString.append(cell.getCorrectValue());
-		}
-		signatureString.append(":");
-		// Followed by all cage-id per cell
-		for (GridCell cell : mCells) {
-			signatureString.append(cell.getCageId());
+			definitionString.append(String.format("%02d", cell.getCageId()));
 		}
 		// Followed by cages
 		for (GridCage cage : mCages) {
-			signatureString.append(":" + cage.mId + "," + cage.mResult + ","
+			definitionString.append(":" + cage.mId + "," + cage.mResult + ","
 					+ cage.mAction);
 		}
-		return signatureString.toString();
+		return definitionString.toString();
 	}
 
 	/**
@@ -521,10 +547,10 @@ public class Grid {
 		mActive = Boolean.parseBoolean(viewParts[index++]);
 
 		if (viewInformationVersion >= 2) {
-			mDateGenerated = Long.parseLong(viewParts[index++]);
+			mDateCreated = Long.parseLong(viewParts[index++]);
 		} else {
 			// Date generated was not saved prior to version 2.
-			mDateGenerated = mDateLastSaved - mGridStatistics.mElapsedTime;
+			mDateCreated = mDateLastSaved - mGridStatistics.mElapsedTime;
 		}
 		if (viewInformationVersion >= 4) {
 			mCheated = Boolean.parseBoolean(viewParts[index++]);
@@ -589,7 +615,7 @@ public class Grid {
 
 		// Set new data in grid
 		mGridGeneratingParameters = gridGeneratingParameters;
-		mDateGenerated = System.currentTimeMillis();
+		mDateCreated = System.currentTimeMillis();
 		mGridSize = gridSize;
 		mCells = cells;
 		mCages = cages;
@@ -610,8 +636,7 @@ public class Grid {
 			cell.setBorders();
 		}
 
-		// Create a new statistics object
-		loadStatistics();
+		insertInDatabase();
 	}
 
 	public void setSolvedHandler(OnSolvedListener listener) {
@@ -652,11 +677,11 @@ public class Grid {
 	}
 
 	public long getDateCreated() {
-		return mDateGenerated;
+		return mDateCreated;
 	}
 
 	public void setDateCreated(long dateCreated) {
-		mDateGenerated = dateCreated;
+		mDateCreated = dateCreated;
 	}
 
 	public long getDateSaved() {
@@ -688,23 +713,51 @@ public class Grid {
 	}
 
 	/**
-	 * Load the current statistics for this grid.
+	 * Create new objects in the databases for this grid.
 	 */
-	public void loadStatistics() {
-		// Determine signature
-		String signature = getSignatureString();
-
-		// Check is statistics exists. If not create them.
+	public void insertInDatabase() {
+		// First insert the grid object. In very rare cases it can occur that
+		// the grid already has been generated before.
 		DatabaseHelper databaseHelper = DatabaseHelper.getInstance();
+		GridDatabaseAdapter gridDatabaseAdapter = new GridDatabaseAdapter(
+				databaseHelper);
+		mRowId = gridDatabaseAdapter.insert(this);
+
+		// Insert statistics
 		StatisticsDatabaseAdapter statisticsDatabaseAdapter = new StatisticsDatabaseAdapter(
 				databaseHelper);
-		mGridStatistics = statisticsDatabaseAdapter
-				.getByGridSignature(signature);
-		if (mGridStatistics == null) {
-			// The statistics do not yet exists.
-			mGridStatistics = statisticsDatabaseAdapter.insertGrid(signature,
-					mGridSize);
+		mGridStatistics = statisticsDatabaseAdapter.insert(this);
+	}
+
+	/**
+	 * Load the current statistics for this grid.
+	 */
+	public boolean loadStatistics() {
+		// Determine definition
+		String definition = toGridDefinitionString();
+
+		// First load grid.
+		DatabaseHelper databaseHelper = DatabaseHelper.getInstance();
+		GridDatabaseAdapter gridDatabaseAdapter = new GridDatabaseAdapter(
+				databaseHelper);
+		GridRow gridRow = gridDatabaseAdapter.getByGridDefinition(definition);
+		if (gridRow == null) {
+			// Insert grid into database.
+			mRowId = gridDatabaseAdapter.insert(this);
+		} else {
+			mRowId = gridRow.mId;
 		}
+
+		// Load most recent statistics for this grid
+		StatisticsDatabaseAdapter statisticsDatabaseAdapter = new StatisticsDatabaseAdapter(
+				databaseHelper);
+		mGridStatistics = statisticsDatabaseAdapter.getMostRecent(mRowId);
+		if (mGridStatistics == null) {
+			// No statistics available. Create a new statistics records.
+			mGridStatistics = statisticsDatabaseAdapter.insert(this);
+		}
+
+		return (mGridStatistics != null);
 	}
 
 	/**
@@ -750,7 +803,7 @@ public class Grid {
 	public void increaseCounter(StatisticsCounterType statisticsCounterType) {
 		mGridStatistics.increaseCounter(statisticsCounterType);
 	}
-	
+
 	/**
 	 * Get the grid statistics related to this grid.
 	 * 
@@ -758,5 +811,23 @@ public class Grid {
 	 */
 	public GridStatistics getGridStatistics() {
 		return mGridStatistics;
+	}
+
+	/**
+	 * Get the row id of this grid.
+	 * 
+	 * @return The row id of this grid.
+	 */
+	public int getRowId() {
+		return mRowId;
+	}
+
+	/**
+	 * Gets the file name in which the current solving attempt is stored.
+	 * 
+	 * @return The file name in which the current solving attempt is stored.
+	 */
+	public String getSolvingAttemptFilename() {
+		return (mGridFile == null ? "" : mGridFile.getFilename());
 	}
 }

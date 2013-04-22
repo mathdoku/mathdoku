@@ -159,7 +159,7 @@ public class GridView extends View implements OnTouchListener {
 		if (!this.mGrid.isActive() || this.mSelectorShown)
 			return false;
 
-		UsageLog.getInstance().logTrackball(mGrid.getSignatureString());
+		UsageLog.getInstance().logTrackball(mGrid.toGridDefinitionString());
 
 		// On press event, take selected cell, call touched listener
 		// which will popup the digit selector.

@@ -7,14 +7,16 @@ import net.cactii.mathdoku.storage.database.StatisticsDatabaseAdapter;
  * Statistics for a single grid.
  */
 public class GridStatistics {
-	// Unique row id for the signature in database.
+	// Unique row id for the statistics. This value may not be altered.
 	public int mId;
 
-	// Unique string representation of this grid
-	public String mGridSignature;
+	// Row id of the grid on which these statistics apply
+	public int mGridId;
 
-	// Size of the grid
-	public int gridSize;
+	// Filename of the solving attempt for the grid on which the statistics have
+	// been based. This value may not be altered. This value can however be
+	// empty in case the file has been deleted.
+	public String mFilenameSolvingAttempt;
 
 	// Timestamp of first and last move
 	public java.sql.Timestamp mFirstMove;
@@ -113,43 +115,55 @@ public class GridStatistics {
 	 * @param statisticsCounterType
 	 *            The counter which has to be increased.
 	 */
-	public void increaseCounter(StatisticsCounterType statisticsCounterType, int occurrences) {
+	public void increaseCounter(StatisticsCounterType statisticsCounterType,
+			int occurrences) {
 		switch (statisticsCounterType) {
 		case CELLS_FILLED:
 			mCellsUserValueFilled += occurrences;
 			break;
 		case CELLS_EMPTY:
-			mCellsUserValueEmtpty += occurrences;;
+			mCellsUserValueEmtpty += occurrences;
+			;
 			break;
 		case USER_VALUE_REPLACED:
-			mUserValueReplaced += occurrences;;
+			mUserValueReplaced += occurrences;
+			;
 			break;
 		case POSSIBLES:
-			mMaybeValue += occurrences;;
+			mMaybeValue += occurrences;
+			;
 			break;
 		case UNDOS:
-			mUndoButton += occurrences;;
+			mUndoButton += occurrences;
+			;
 			break;
 		case CELL_CLEARED:
-			mCellCleared += occurrences;;
+			mCellCleared += occurrences;
+			;
 			break;
 		case CAGE_CLEARED:
-			mCageCleared += occurrences;;
+			mCageCleared += occurrences;
+			;
 			break;
 		case GRID_CLEARED:
-			mGridCleared += occurrences;;
+			mGridCleared += occurrences;
+			;
 			break;
 		case CELLS_REVEALED:
-			mCellsRevealed += occurrences;;
+			mCellsRevealed += occurrences;
+			;
 			break;
 		case OPERATORS_REVEALED:
-			mOperatorsRevevealed += occurrences;;
+			mOperatorsRevevealed += occurrences;
+			;
 			break;
 		case CHECK_PROGRESS_USED:
-			mCheckProgressUsed += occurrences;;
+			mCheckProgressUsed += occurrences;
+			;
 			break;
 		case CHECK_PROGRESS_INVALIDS_FOUND:
-			mCheckProgressInvalidsFound += occurrences;;
+			mCheckProgressInvalidsFound += occurrences;
+			;
 			break;
 		}
 		setLastMoveToCurrentTime();
@@ -204,30 +218,21 @@ public class GridStatistics {
 	}
 
 	/**
-	 * Get the signature id for these statistics.
+	 * Get the id for these statistics.
 	 * 
-	 * @return The signature id for these statistics.
+	 * @return The id for these statistics.
 	 */
-	public int getSignatureId() {
+	public int getId() {
 		return mId;
 	}
 
 	/**
-	 * Get the full grid signature.
+	 * Get the grid id for these statistics.
 	 * 
-	 * @return The full grid signature.
+	 * @return The grid id for these statistics.
 	 */
-	public String getGridSignature() {
-		return mGridSignature;
-	}
-
-	/**
-	 * Get the grid size.
-	 * 
-	 * @return The grid size.
-	 */
-	public int getGridSize() {
-		return gridSize;
+	public int getGridId() {
+		return mGridId;
 	}
 
 	/**

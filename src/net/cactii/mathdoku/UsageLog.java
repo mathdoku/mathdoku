@@ -81,8 +81,8 @@ public class UsageLog {
 	// Flag whether log information should be written or not.
 	private boolean mBuildLog;
 
-	// Signature of the most recent played game
-	private String mLastGridSignature = "";
+	// Definition of the most recent played game
+	private String mLastGridDefinition = "";
 
 	// Keep track of the trackball is used in the current game.
 	private static boolean mTrackbalUsageLoggedInSession = false;
@@ -321,7 +321,7 @@ public class UsageLog {
 							Integer.toString(grid
 									.getClearRedundantPossiblesInSameRowOrColumnCount()));
 
-			sortedMap.put("Grid.Signature", grid.getSignatureString());
+			sortedMap.put("Grid.Definition", grid.toGridDefinitionString());
 
 			GridGeneratingParameters gridGeneratingParameters = grid
 					.getGridGeneratingParameters();
@@ -364,15 +364,15 @@ public class UsageLog {
 	/**
 	 * Log usage of trackball.
 	 */
-	public void logTrackball(String gridSignature) {
+	public void logTrackball(String gridDefinition) {
 		if (mBuildLog) {
 
 			if (mTrackbalUsageLoggedInSession
-					&& gridSignature.equals(mLastGridSignature)) {
+					&& gridDefinition.equals(mLastGridDefinition)) {
 				// Already logged the trackball for this game
 				return;
 			}
-			mLastGridSignature = gridSignature;
+			mLastGridDefinition = gridDefinition;
 
 			SortedMap<String, String> sortedMap = new TreeMap<String, String>();
 
