@@ -8,11 +8,13 @@ import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import net.cactii.mathdoku.storage.GameFile;
 
 public class GridCage {
-	// Identifiers of different versions of cage information which is stored in
-	// saved game.
-	private static final String SAVE_GAME_CAGE_VERSION_01 = "CAGE";
-	private static final String SAVE_GAME_CAGE_VERSION_02 = "CAGE.v2";
-	private static final String SAVE_GAME_CAGE_VERSION_03 = "CAGE.v3";
+	// Each line in the GridFile which contains information about the cell
+	// starts with an identifier. This identifier consists of a generic part and
+	// the package revision number.
+	private static final String SAVE_GAME_CAGE_LINE = "CAGE";
+	
+	// Converting from old version name to new.
+	private static final String SAVE_GAME_CAGE_VERSION_READONLY = "CAGE.v";
 
 	public static final int ACTION_NONE = 0;
 	public static final int ACTION_ADD = 1;
@@ -559,7 +561,7 @@ public class GridCage {
 	 * @return A string representation of the grid cage.
 	 */
 	public String toStorageString() {
-		String storageString = SAVE_GAME_CAGE_VERSION_03
+		String storageString = SAVE_GAME_CAGE_LINE
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mId
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mAction
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mResult
@@ -584,17 +586,19 @@ public class GridCage {
 	 * @return True in case the given line contains cage information and is
 	 *         processed correctly. False otherwise.
 	 */
-	public boolean fromStorageString(String line) {
+	public boolean fromStorageString(String line, int savedWithRevisionNumber) {
 		String[] cageParts = line.split(GameFile.FIELD_DELIMITER_LEVEL1);
 
-		// Check version of stored cage information
-		int cageInformationVersion = 0;
-		if (cageParts[0].equals(SAVE_GAME_CAGE_VERSION_01)) {
-			cageInformationVersion = 1;
-		} else if (cageParts[0].equals(SAVE_GAME_CAGE_VERSION_02)) {
-			cageInformationVersion = 2;
-		} else if (cageParts[0].equals(SAVE_GAME_CAGE_VERSION_03)) {
-			cageInformationVersion = 3;
+		// Determine if this line contains cell-information. If so, also
+		// determine with which revision number the information was stored.
+		int revisionNumber = 0;
+		if (cageParts[0].equals(SAVE_GAME_CAGE_LINE)) {
+			revisionNumber = (savedWithRevisionNumber > 0 ? savedWithRevisionNumber : 1);
+		} else if (cageParts[0].startsWith(SAVE_GAME_CAGE_VERSION_READONLY)) {
+			// Extract version number from the cage information itself.
+			String revisionNumberString = cageParts[0]
+					.substring(SAVE_GAME_CAGE_VERSION_READONLY.length());
+			revisionNumber = Integer.valueOf(revisionNumberString);
 		} else {
 			return false;
 		}
@@ -604,12 +608,12 @@ public class GridCage {
 		mId = Integer.parseInt(cageParts[index++]);
 		mAction = Integer.parseInt(cageParts[index++]);
 		mResult = Integer.parseInt(cageParts[index++]);
-		if (cageInformationVersion == 1) {
+		if (revisionNumber == 1) {
 			// Version 1 contained the cage type at this position but this field
 			// is not needed anymore to restore a cage. So skip this field.
 			index++;
 		}
-		if (cageInformationVersion >= 3) {
+		if (revisionNumber >= 3) {
 			mOperator = cageParts[index++];
 		}
 		for (String cellId : cageParts[index++]
@@ -618,7 +622,7 @@ public class GridCage {
 			c.setCageId(mId);
 			mCells.add(c);
 		}
-		if (cageInformationVersion == 1 && cageParts.length == 6) {
+		if (revisionNumber == 1 && cageParts.length == 6) {
 			// Version 1 with 6 cage parts does not contain the mOperatorHidden
 			// part while the version with 7 parts does contain this field.
 			mHideOperator = false;

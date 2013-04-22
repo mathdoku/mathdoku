@@ -1,5 +1,6 @@
 package net.cactii.mathdoku.storage.database;
 
+import net.cactii.mathdoku.SingletonInstanceNotInstantiated;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.database.sqlite.SQLiteDatabase;
@@ -78,8 +79,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 */
 	public static DatabaseHelper getInstance() {
 		if (mDatabaseHelperSingletonInstance == null) {
-			throw new NullPointerException(
-					"DatabaseHelper can not be retrieved if not instantiated before.");
+			throw new SingletonInstanceNotInstantiated();
 		}
 		return mDatabaseHelperSingletonInstance;
 	}

@@ -1,5 +1,6 @@
 package net.cactii.mathdoku.util;
 
+import net.cactii.mathdoku.SingletonInstanceNotInstantiated;
 import android.app.Activity;
 import android.content.pm.PackageInfo;
 import android.util.DisplayMetrics;
@@ -8,10 +9,12 @@ import android.util.Log;
 public class Util {
 	public final static String TAG = "MathDoku.Util";
 
-	private int mPackageVersionNumber;
-	private String mPackageVersionName;
+	private static boolean mInitialized = false;
 
-	private DisplayMetrics mDisplayMetrics;
+	private static int mPackageVersionNumber;
+	private static String mPackageVersionName;
+
+	private static DisplayMetrics mDisplayMetrics;
 
 	public Util(Activity activity) {
 		// Get package name and version
@@ -30,6 +33,10 @@ public class Util {
 		mDisplayMetrics = new DisplayMetrics();
 		activity.getWindowManager().getDefaultDisplay()
 				.getMetrics(mDisplayMetrics);
+
+		// Set flag to indicate that it is now save to call the static
+		// functions.
+		mInitialized = true;
 	}
 
 	/**
@@ -38,7 +45,10 @@ public class Util {
 	 * @return The package version number.
 	 * 
 	 */
-	public int getPackageVersionNumber() {
+	public static int getPackageVersionNumber() {
+		if (!mInitialized) {
+			throw new SingletonInstanceNotInstantiated();
+		}
 		return mPackageVersionNumber;
 	}
 
@@ -48,7 +58,10 @@ public class Util {
 	 * @return The package version name.
 	 * 
 	 */
-	public String getPackageVersionName() {
+	public static String getPackageVersionName() {
+		if (!mInitialized) {
+			throw new SingletonInstanceNotInstantiated();
+		}
 		return mPackageVersionName;
 	}
 
@@ -58,6 +71,8 @@ public class Util {
 	 * @return The package version number.
 	 * 
 	 */
+	// Static call not implemented as the value changes at each configuration
+	// change
 	public DisplayMetrics getDisplayMetrics() {
 		return mDisplayMetrics;
 	}

@@ -18,16 +18,13 @@ public class Grid {
 	@SuppressWarnings("unused")
 	private static final String TAG = "MathDoku.Grid";
 
-	// Identifiers of different versions of grid view information which is
-	// stored in a saved game. In the initial versions, view information was
-	// stored on several distinct lines. As from now all view variables are
-	// collected on single line as well.
-	public static final String SAVE_GAME_GRID_VERSION_01 = "VIEW.v1";
-	public static final String SAVE_GAME_GRID_VERSION_02 = "VIEW.v2";
-	public static final String SAVE_GAME_GRID_VERSION_03 = "VIEW.v3";
-	public static final String SAVE_GAME_GRID_VERSION_04 = "VIEW.v4";
-	public static final String SAVE_GAME_GRID_VERSION_05 = "VIEW.v5";
-	public static final String SAVE_GAME_GRID_VERSION_06 = "VIEW.v6";
+	// Each line in the GridFile which contains information about the grid
+	// starts with an identifier. This identifier consists of a generic part and
+	// the package revision number.
+	public static final String SAVE_GAME_GRID_LINE = "GRID";
+
+	// Converting from old version name to new.
+	private static final String SAVE_GAME_GRID_VERSION_READONLY = "VIEW.v";
 
 	// ************************************************************************
 	// Grid variables which are determined when generating the grid and which do
@@ -453,7 +450,7 @@ public class Grid {
 		}
 
 		// Build storage string
-		String storageString = SAVE_GAME_GRID_VERSION_06
+		String storageString = SAVE_GAME_GRID_LINE
 				+ GameFile.FIELD_DELIMITER_LEVEL1
 				+ mGridGeneratingParameters.mGameSeed
 				+ GameFile.FIELD_DELIMITER_LEVEL1
@@ -508,22 +505,20 @@ public class Grid {
 	 * @return True in case the given line contains view information and is
 	 *         processed correctly. False otherwise.
 	 */
-	public boolean fromStorageString(String line) {
+	public boolean fromStorageString(String line, int savedWithRevisionNumber) {
 		String[] viewParts = line.split(GameFile.FIELD_DELIMITER_LEVEL1);
 
-		int viewInformationVersion = 0;
-		if (viewParts[0].equals(SAVE_GAME_GRID_VERSION_01)) {
-			viewInformationVersion = 1;
-		} else if (viewParts[0].equals(SAVE_GAME_GRID_VERSION_02)) {
-			viewInformationVersion = 2;
-		} else if (viewParts[0].equals(SAVE_GAME_GRID_VERSION_03)) {
-			viewInformationVersion = 3;
-		} else if (viewParts[0].equals(SAVE_GAME_GRID_VERSION_04)) {
-			viewInformationVersion = 4;
-		} else if (viewParts[0].equals(SAVE_GAME_GRID_VERSION_05)) {
-			viewInformationVersion = 5;
-		} else if (viewParts[0].equals(SAVE_GAME_GRID_VERSION_06)) {
-			viewInformationVersion = 6;
+		// Determine if this line contains Grid-information. If so, also
+		// determine with which revision number the information was stored.
+		int revisionNumber = 0;
+		if (viewParts[0].equals(SAVE_GAME_GRID_LINE)
+				&& savedWithRevisionNumber > 0) {
+			revisionNumber = savedWithRevisionNumber;
+		} else if (viewParts[0].startsWith(SAVE_GAME_GRID_VERSION_READONLY)) {
+			// Extract version number from the view information itself.
+			String revisionNumberString = viewParts[0]
+					.substring(SAVE_GAME_GRID_VERSION_READONLY.length());
+			revisionNumber = Integer.valueOf(revisionNumberString);
 		} else {
 			return false;
 		}
@@ -532,39 +527,39 @@ public class Grid {
 		int index = 1;
 		mGridGeneratingParameters.mGameSeed = Long
 				.parseLong(viewParts[index++]);
-		if (viewInformationVersion >= 3) {
+		if (revisionNumber >= 3) {
 			mGridGeneratingParameters.mGeneratorRevisionNumber = Integer
 					.parseInt(viewParts[index++]);
 		} else {
 			mGridGeneratingParameters.mGeneratorRevisionNumber = 0;
 		}
 		mDateLastSaved = Long.parseLong(viewParts[index++]);
-		if (viewInformationVersion <= 5) {
+		if (revisionNumber <= 5) {
 			// Field elapsedTime has been removed in version 6 and above.
 			mGridStatistics.mElapsedTime = Long.parseLong(viewParts[index++]);
 		}
 		mGridSize = Integer.parseInt(viewParts[index++]);
 		mActive = Boolean.parseBoolean(viewParts[index++]);
 
-		if (viewInformationVersion >= 2) {
+		if (revisionNumber >= 2) {
 			mDateCreated = Long.parseLong(viewParts[index++]);
 		} else {
 			// Date generated was not saved prior to version 2.
 			mDateCreated = mDateLastSaved - mGridStatistics.mElapsedTime;
 		}
-		if (viewInformationVersion >= 4) {
+		if (revisionNumber >= 4) {
 			mCheated = Boolean.parseBoolean(viewParts[index++]);
 		} else {
 			// Cheated was not saved prior to version 3.
 			mCheated = false;
 		}
-		if (viewInformationVersion == 5) {
+		if (revisionNumber == 5) {
 			// UndoCounter was only stored in version 5 in the game file.
 			// Starting form version 6 it has been moved to the statistics
 			// database.
 			mGridStatistics.mUndoButton = Integer.parseInt(viewParts[index++]);
 		}
-		if (viewInformationVersion >= 5) {
+		if (revisionNumber >= 5) {
 			mClearRedundantPossiblesInSameRowOrColumnCount = Integer
 					.parseInt(viewParts[index++]);
 			mGridGeneratingParameters.mHideOperators = Boolean

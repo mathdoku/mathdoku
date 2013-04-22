@@ -834,7 +834,7 @@ public class MainActivity extends Activity implements
 		int maxCageResult = getResources().getInteger(
 				R.integer.maximum_cage_value);
 		mGridGeneratorTask = new GridGenerator(this, gridSize, maxCageSize,
-				maxCageResult, hideOperators, mUtil.getPackageVersionNumber());
+				maxCageResult, hideOperators, Util.getPackageVersionNumber());
 		mGridGeneratorTask.execute();
 	}
 
@@ -894,8 +894,8 @@ public class MainActivity extends Activity implements
 
 		TextView tv = (TextView) view
 				.findViewById(R.id.dialog_help_version_body);
-		tv.setText(mUtil.getPackageVersionName() + " (revision "
-				+ mUtil.getPackageVersionNumber() + ")");
+		tv.setText(Util.getPackageVersionName() + " (revision "
+				+ Util.getPackageVersionNumber() + ")");
 
 		tv = (TextView) view.findViewById(R.id.help_project_home_link);
 		tv.setText(PROJECT_HOME);
@@ -904,7 +904,7 @@ public class MainActivity extends Activity implements
 				.setTitle(
 						getResources().getString(R.string.application_name)
 								+ (DevelopmentHelper.mMode == Mode.DEVELOPMENT ? " r"
-										+ mUtil.getPackageVersionNumber() + " "
+										+ Util.getPackageVersionNumber() + " "
 										: " ")
 								+ getResources().getString(R.string.menu_help))
 				.setIcon(R.drawable.about)
@@ -933,8 +933,8 @@ public class MainActivity extends Activity implements
 
 		TextView textView = (TextView) view
 				.findViewById(R.id.changelog_version_body);
-		textView.setText(mUtil.getPackageVersionName() + " (revision "
-				+ mUtil.getPackageVersionNumber() + ")");
+		textView.setText(Util.getPackageVersionName() + " (revision "
+				+ Util.getPackageVersionNumber() + ")");
 
 		textView = (TextView) view.findViewById(R.id.changelog_changes_link);
 		textView.setText(PROJECT_HOME + "changes.php");
@@ -946,7 +946,7 @@ public class MainActivity extends Activity implements
 				.setTitle(
 						getResources().getString(R.string.application_name)
 								+ (DevelopmentHelper.mMode == Mode.DEVELOPMENT ? " r"
-										+ mUtil.getPackageVersionNumber() + " "
+										+ Util.getPackageVersionNumber() + " "
 										: " ")
 								+ getResources().getString(
 										R.string.changelog_title))
@@ -1001,7 +1001,7 @@ public class MainActivity extends Activity implements
 		}
 
 		// Get current version number from the package.
-		int packageVersionNumber = mUtil.getPackageVersionNumber();
+		int packageVersionNumber = Util.getPackageVersionNumber();
 
 		// Get the previous installed version from the preferences.
 		int previousInstalledVersion = mMathDokuPreferences

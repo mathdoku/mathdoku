@@ -16,16 +16,21 @@ import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.Grid;
 import net.cactii.mathdoku.GridCage;
 import net.cactii.mathdoku.GridCell;
+import net.cactii.mathdoku.util.Util;
 import android.util.Log;
 
 public class GridFile {
 	private static final String TAG = "MathDoku.GridFile";
 
+	// Identifier for line in grid file which holds information about the
+	// revision which was used to save the file.
+	public static final String SAVE_GAME_REVISION = "SAVED_WITH_REVISION";
+
 	// The filename in which the puzzle and solving progress is stored. The
 	// filename should never been changed as a reference to this filename is
 	// stored in the statistics database.
 	String mFilename;
-	
+
 	/**
 	 * Creates a new instance of {@link PreviewImage}.
 	 * 
@@ -80,6 +85,12 @@ public class GridFile {
 			try {
 				// Open file
 				writer = new BufferedWriter(new FileWriter(mFilename));
+
+				// Store information about the revision number
+				writer.write(SAVE_GAME_REVISION
+						+ GameFile.FIELD_DELIMITER_LEVEL1
+						+ Util.getPackageVersionNumber()
+						+ GameFile.EOL_DELIMITER);
 
 				// Store information about the Grid View on a single line
 				writer.write(grid
@@ -164,14 +175,27 @@ public class GridFile {
 				throw new InvalidFileFormatException("Unexpected end of file");
 			}
 
+			int savedWithRevisionNumber = -1;
+			if (line.startsWith(SAVE_GAME_REVISION)) {
+				savedWithRevisionNumber = Integer.parseInt(line
+						.split(GameFile.FIELD_DELIMITER_LEVEL1)[1]);
+
+				// Read next line
+				if ((line = br.readLine()) == null) {
+					throw new InvalidFileFormatException(
+							"Unexpected end of file");
+				}
+
+			}
+
 			// Read view information
-			if (!grid.fromStorageString(line)) {
+			if (!grid.fromStorageString(line, savedWithRevisionNumber)) {
 				// The initial version of the saved games stored view
 				// information on 4 different lines. Rewrite to valid view
 				// storage information (version 1).
 				// Do not remove as long as backward compatibility with old save
 				// file should be remained.
-				line = Grid.SAVE_GAME_GRID_VERSION_01
+				line = Grid.SAVE_GAME_GRID_LINE
 						+ GameFile.FIELD_DELIMITER_LEVEL1 + 0 // game seed. Use
 																// 0 as it was
 																// not stored in
@@ -184,8 +208,9 @@ public class GridFile {
 																			// size
 						+ GameFile.FIELD_DELIMITER_LEVEL1 + br.readLine(); // active
 
-				// Retry to process this line.
-				if (!grid.fromStorageString(line)) {
+				// Retry to process this line as if it was saved with revision
+				// 1.
+				if (!grid.fromStorageString(line, 1)) {
 					throw new InvalidFileFormatException(
 							"View information can not be processed: " + line);
 				}
@@ -205,7 +230,7 @@ public class GridFile {
 			GridCell selectedCell = null;
 			while (countCellsToRead > 0) {
 				GridCell cell = new GridCell(grid, 0);
-				if (!cell.fromStorageString(line)) {
+				if (!cell.fromStorageString(line, savedWithRevisionNumber)) {
 					throw new InvalidFileFormatException(
 							"Line does not contain cell information while this was expected:"
 									+ line);
@@ -265,7 +290,7 @@ public class GridFile {
 
 			// Cages (at least one expected)
 			GridCage cage = new GridCage(grid);
-			if (!cage.fromStorageString(line)) {
+			if (!cage.fromStorageString(line, savedWithRevisionNumber)) {
 				throw new InvalidFileFormatException(
 						"Line does not contain cage  information while this was expected:"
 								+ line);
@@ -280,7 +305,8 @@ public class GridFile {
 
 				// Create a new empty cage
 				cage = new GridCage(grid);
-			} while (line != null && cage.fromStorageString(line));
+			} while (line != null
+					&& cage.fromStorageString(line, savedWithRevisionNumber));
 
 			// Check cage maths after all cages have been read.
 			for (GridCage cage2 : grid.mCages) {
@@ -295,7 +321,8 @@ public class GridFile {
 			// Remaining lines contain cell changes (zero or more expected)
 			CellChange cellChange = new CellChange();
 			while (line != null
-					&& cellChange.fromStorageString(line, grid.mCells)) {
+					&& cellChange.fromStorageString(line, grid.mCells,
+							savedWithRevisionNumber)) {
 				grid.addMove(cellChange);
 
 				// Read next line. No checking of unexpected end of file might
@@ -316,11 +343,12 @@ public class GridFile {
 
 			// Load the statistics of the grid
 			if (!grid.loadStatistics()) {
-				throw new InvalidStatisticsException("Can not load statistics neither create a new statistics records.");
+				throw new InvalidStatisticsException(
+						"Can not load statistics neither create a new statistics records.");
 			}
 		} catch (InvalidStatisticsException e) {
-			Log.d(TAG, "Statistics exception when restoring game "
-					+ mFilename + "\n" + e.getMessage());
+			Log.d(TAG, "Statistics exception when restoring game " + mFilename
+					+ "\n" + e.getMessage());
 			return false;
 		} catch (InvalidFileFormatException e) {
 			Log.d(TAG, "Invalid file format error when restoring game "

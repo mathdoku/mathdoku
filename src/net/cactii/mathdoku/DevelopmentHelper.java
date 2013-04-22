@@ -155,7 +155,7 @@ public class DevelopmentHelper {
 				R.integer.maximum_cage_value);
 		mainActivity.mGridGeneratorTask = new GridGenerator(mainActivity, 8, 4,
 				maxCageResult, false,
-				new Util(mainActivity).getPackageVersionNumber());
+				Util.getPackageVersionNumber());
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			// Set the options for the grid generator
 			GridGenerator.GridGeneratorOptions gridGeneratorOptions = mainActivity.mGridGeneratorTask.new GridGeneratorOptions();

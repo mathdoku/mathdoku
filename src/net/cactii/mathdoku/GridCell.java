@@ -19,10 +19,13 @@ public class GridCell {
 	@SuppressWarnings("unused")
 	private static final String TAG = "MathDoku.GridCell";
 
-	// Identifiers of different versions of cell information which is stored in
-	// saved game.
-	private final String SAVE_GAME_CELL_VERSION_01 = "CELL";
-	private final String SAVE_GAME_CELL_VERSION_02 = "CELL.v2";
+	// Each line in the GridFile which contains information about the cell
+	// starts with an identifier. This identifier consists of a generic part and
+	// the package revision number.
+	private static final String SAVE_GAME_CELL_LINE = "CELL";
+	
+	// Converting from old version name to new.
+	private static final String SAVE_GAME_CELL_VERSION_02_READONLY = "CELL.v2";
 
 	// Index of the cell (left to right, top to bottom, zero-indexed)
 	private int mCellNumber;
@@ -529,7 +532,7 @@ public class GridCell {
 	 * @return A string representation of the grid cell.
 	 */
 	public String toStorageString() {
-		String storageString = SAVE_GAME_CELL_VERSION_02
+		String storageString = SAVE_GAME_CELL_LINE
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mCellNumber
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mRow
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + mColumn
@@ -557,14 +560,16 @@ public class GridCell {
 	 * @return True in case the given line contains cell information and is
 	 *         processed correctly. False otherwise.
 	 */
-	public boolean fromStorageString(String line) {
+	public boolean fromStorageString(String line, int savedWithRevisionNumber) {
 		String[] cellParts = line.split(GameFile.FIELD_DELIMITER_LEVEL1);
 
-		int cellInformationVersion = 0;
-		if (cellParts[0].equals(SAVE_GAME_CELL_VERSION_01)) {
-			cellInformationVersion = 1;
-		} else if (cellParts[0].equals(SAVE_GAME_CELL_VERSION_02)) {
-			cellInformationVersion = 2;
+		// Determine if this line contains cell-information. If so, also
+		// determine with which revision number the information was stored.
+		int revisionNumber = 0;
+		if (cellParts[0].equals(SAVE_GAME_CELL_LINE)) {
+			revisionNumber = (savedWithRevisionNumber > 0 ? savedWithRevisionNumber : 1);
+		} else if (cellParts[0].equals(SAVE_GAME_CELL_VERSION_02_READONLY)) {
+			revisionNumber = 2;
 		} else {
 			return false;
 		}
@@ -577,8 +582,8 @@ public class GridCell {
 		mCageText = cellParts[index++];
 		mCorrectValue = Integer.parseInt(cellParts[index++]);
 		mUserValue = Integer.parseInt(cellParts[index++]);
-		if ((cellInformationVersion == 1 && index < cellParts.length)
-				|| cellInformationVersion > 1) {
+		if ((revisionNumber == 1 && index < cellParts.length)
+				|| revisionNumber > 1) {
 			if (!cellParts[index].equals("")) {
 				for (String possible : cellParts[index]
 						.split(GameFile.FIELD_DELIMITER_LEVEL2)) {
@@ -587,7 +592,7 @@ public class GridCell {
 			}
 			index++;
 		}
-		if (cellInformationVersion > 1) {
+		if (revisionNumber > 1) {
 			mInvalidUserValueHighlight = Boolean
 					.parseBoolean(cellParts[index++]);
 			mCheated = Boolean.parseBoolean(cellParts[index++]);

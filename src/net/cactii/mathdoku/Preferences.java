@@ -126,8 +126,7 @@ public class Preferences {
 	 */
 	public static Preferences getInstance() {
 		if (mPreferencesSingletonInstance == null) {
-			throw new NullPointerException(
-					"Preferences can not be retrieved if not instantiated before.");
+			throw new SingletonInstanceNotInstantiated();
 		}
 		return mPreferencesSingletonInstance;
 	}

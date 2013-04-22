@@ -1,6 +1,7 @@
 package net.cactii.mathdoku.painter;
 
 import net.cactii.mathdoku.DigitPositionGrid;
+import net.cactii.mathdoku.SingletonInstanceNotInstantiated;
 import android.content.Context;
 import android.graphics.DashPathEffect;
 import android.graphics.DiscretePathEffect;
@@ -95,8 +96,7 @@ public class Painter {
 	 */
 	public static Painter getInstance() {
 		if (mPainterSingletonInstance == null) {
-			throw new NullPointerException(
-					"GridPainter can not be retrieved if not instantiated before.");
+			throw new SingletonInstanceNotInstantiated();
 		}
 		return mPainterSingletonInstance;
 	}

@@ -22,7 +22,7 @@ public class CellChange {
 	// Base identifier for different versions of cell information which is
 	// stored in
 	// saved game. The base should be extended with a integer value
-	private final String SAVE_GAME_CELL_CHANGE_VERSION_BASE = "CELL_CHANGE.v";
+	private final String SAVE_GAME_CELL_CHANGE_LINE = "CELL_CHANGE";
 
 	// The cell for which the undo information is stored.
 	private GridCell mGridCell;
@@ -161,7 +161,7 @@ public class CellChange {
 	 * @return A string representation of the grid cell.
 	 */
 	public String toStorageString() {
-		return SAVE_GAME_CELL_CHANGE_VERSION_BASE + "1"
+		return SAVE_GAME_CELL_CHANGE_LINE
 				+ GameFile.FIELD_DELIMITER_LEVEL1
 				+ this.toStorageStringRecursive();
 	}
@@ -203,9 +203,9 @@ public class CellChange {
 	 * @return True in case the given line contains cell information and is
 	 *         processed correctly. False otherwise.
 	 */
-	public boolean fromStorageString(String line, ArrayList<GridCell> cells) {
+	public boolean fromStorageString(String line, ArrayList<GridCell> cells, int savedWithRevisionNumber) {
 		final String CELL_CHANGE_LINE_REGEXP = "^"
-				+ SAVE_GAME_CELL_CHANGE_VERSION_BASE + "(\\d+)"
+				+ SAVE_GAME_CELL_CHANGE_LINE + "(\\.v\\d+)?"
 				+ GameFile.FIELD_DELIMITER_LEVEL1 + "(.*)$";
 		final int GROUP_VERSION_NUMBER = 1;
 		final int GROUP_CELL_CHANGE = 2;
@@ -224,20 +224,14 @@ public class CellChange {
 			Log.i(TAG, "Line: " + line);
 			Log.i(TAG, "Start index: " + matcher.start() + " End index: "
 					+ matcher.end() + " #groups: " + matcher.groupCount());
-			Log.i(TAG,
-					"Cell change version: "
-							+ matcher.group(GROUP_VERSION_NUMBER));
 			Log.i(TAG, "Cell change: " + matcher.group(GROUP_CELL_CHANGE));
 		}
-
-		int cellChangeInformationVersion = Integer.valueOf(matcher
-				.group(GROUP_VERSION_NUMBER));
-		if (cellChangeInformationVersion != 1) {
-			return false;
-		}
+		
+		int revisionNumber = (savedWithRevisionNumber > 0 ? savedWithRevisionNumber :  Integer.valueOf(matcher
+				.group(GROUP_VERSION_NUMBER).substring(2)));
 
 		// Recursively process the content of the cell change
-		return fromStorageStringRecursive(cellChangeInformationVersion,
+		return fromStorageStringRecursive(revisionNumber,
 				matcher.group(GROUP_CELL_CHANGE), 1, cells);
 	}
 
@@ -245,7 +239,7 @@ public class CellChange {
 	 * Read cell information from or a storage string which was created with @
 	 * GridCell#toStorageString()} before.
 	 * 
-	 * @param cellChangeInformationVersion
+	 * @param revisionNumber
 	 *            The version of the cell change information.
 	 * @param line
 	 *            The line containing the cell information.
@@ -257,7 +251,7 @@ public class CellChange {
 	 *         processed correctly. False otherwise.
 	 */
 	private boolean fromStorageStringRecursive(
-			int cellChangeInformationVersion, String line, int level,
+			int revisionNumber, String line, int level,
 			ArrayList<GridCell> cells) {
 		// Regexp and groups inside. Groups 4 - 6 are helper groups which are
 		// needed to ensure the validity of the cell information but are not
@@ -348,7 +342,7 @@ public class CellChange {
 								startPosGroup, index + 1);
 						CellChange relatedCellChange = new CellChange();
 						if (!relatedCellChange.fromStorageStringRecursive(
-								cellChangeInformationVersion, group, level + 1,
+								revisionNumber, group, level + 1,
 								cells)) {
 							return false;
 						}

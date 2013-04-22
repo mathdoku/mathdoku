@@ -109,7 +109,7 @@ public class UsageLog {
 		}
 
 		// Determine path and file names
-		mLogFileName = LOG_FILE_PREFIX + mUtil.getPackageVersionNumber()
+		mLogFileName = LOG_FILE_PREFIX + Util.getPackageVersionNumber()
 				+ LOG_FILE_EXTENSION;
 		mLogFilePath = mActivity.getFileStreamPath(mLogFileName)
 				.getAbsolutePath();
@@ -184,8 +184,7 @@ public class UsageLog {
 	 */
 	public static UsageLog getInstance() {
 		if (mUsageLogginSingletonInstance == null) {
-			throw new NullPointerException(
-					"UsageLogging can not be retrieved if not instantiated before.");
+			throw new SingletonInstanceNotInstantiated();
 		}
 		return mUsageLogginSingletonInstance;
 	}
