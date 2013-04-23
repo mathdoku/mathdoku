@@ -38,30 +38,19 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 			KEY_GENERATOR_REVISION_NUMBER, KEY_HIDE_OPERATORS,
 			KEY_MAX_CAGE_RESULT, KEY_MAX_CAGE_SIZE };
 
-	/**
-	 * Constructs a new instance of the grid database adapter.
-	 * 
-	 * @param databaseHelper
-	 *            The database helper needed to open the adapter.
-	 */
-	public GridDatabaseAdapter(DatabaseHelper databaseHelper) {
-		super(databaseHelper);
-	}
-
 	protected String getTableName() {
 		return TABLE;
 	}
-	
+
 	/**
 	 * Builds the SQL create statement for this table.
 	 * 
 	 * @return The SQL create statement for this table.
 	 */
 	protected static String buildCreateSQL() {
-		return 	createTable(
+		return createTable(
 				TABLE,
-				createColumn(KEY_ROWID, "integer",
-						"primary key autoincrement"),
+				createColumn(KEY_ROWID, "integer", "primary key autoincrement"),
 				createColumn(KEY_DEFINITION, "text", "not null unique"),
 				createColumn(KEY_GRID_SIZE, "integer", " not null"),
 				createColumn(KEY_DATE_CREATED, "datetime", "not null"),
@@ -70,15 +59,16 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 				// historic games. Neither will they be know when games
 				// will be exchanged in the future.
 				createColumn(KEY_GAME_SEED, "long", null),
-				//createColumn("xx", "long", null), // dummy column to test changes in tables
-				createColumn(KEY_GENERATOR_REVISION_NUMBER, "integer",
-						null),
+				// changes in tables
+				createColumn(KEY_GENERATOR_REVISION_NUMBER, "integer", null),
 				createColumn(KEY_HIDE_OPERATORS, "string", null),
 				createColumn(KEY_MAX_CAGE_RESULT, "integer", null),
 				createColumn(KEY_MAX_CAGE_SIZE, "integer", null));
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.cactii.mathdoku.storage.database.DatabaseAdapter#getCreateSQL()
 	 */
 	protected String getCreateSQL() {
@@ -167,7 +157,8 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 				gridGeneratingParameters.mMaxCageSize);
 
 		try {
-			id = (int) db.insertOrThrow(TABLE, null, initialValues);
+			id = (int) mSQLiteDatabase
+					.insertOrThrow(TABLE, null, initialValues);
 		} catch (SQLiteConstraintException e) {
 			InvalidParameterException ipe = new InvalidParameterException(
 					e.getLocalizedMessage());
@@ -188,8 +179,8 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		GridRow gridRow = null;
 		Cursor cursor = null;
 		try {
-			cursor = db.query(true, TABLE, allColumns, KEY_ROWID + "="
-					+ id, null, null, null, null, null);
+			cursor = mSQLiteDatabase.query(true, TABLE, allColumns, KEY_ROWID
+					+ "=" + id, null, null, null, null, null);
 			gridRow = toGridRow(cursor);
 		} catch (SQLiteException e) {
 			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
@@ -215,8 +206,8 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		GridRow gridRow = null;
 		Cursor cursor = null;
 		try {
-			cursor = db.query(true, TABLE, allColumns, KEY_DEFINITION
-					+ "=" + stringBetweenQuotes(definition),
+			cursor = mSQLiteDatabase.query(true, TABLE, allColumns,
+					KEY_DEFINITION + "=" + stringBetweenQuotes(definition),
 					null, null, null, null, null);
 			gridRow = toGridRow(cursor);
 		} catch (SQLiteException e) {

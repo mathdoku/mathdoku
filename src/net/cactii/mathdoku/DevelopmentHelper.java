@@ -154,8 +154,7 @@ public class DevelopmentHelper {
 		int maxCageResult = mainActivity.getResources().getInteger(
 				R.integer.maximum_cage_value);
 		mainActivity.mGridGeneratorTask = new GridGenerator(mainActivity, 8, 4,
-				maxCageResult, false,
-				Util.getPackageVersionNumber());
+				maxCageResult, false, Util.getPackageVersionNumber());
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			// Set the options for the grid generator
 			GridGenerator.GridGeneratorOptions gridGeneratorOptions = mainActivity.mGridGeneratorTask.new GridGeneratorOptions();
@@ -477,9 +476,8 @@ public class DevelopmentHelper {
 			// will be consistent just after it has been created.
 			databaseHelper.getWritableDatabase();
 
-			if (new GridDatabaseAdapter(databaseHelper)
-					.isTableDefinitionChanged()
-					|| new StatisticsDatabaseAdapter(databaseHelper)
+			if (new GridDatabaseAdapter().isTableDefinitionChanged()
+					|| new StatisticsDatabaseAdapter()
 							.isTableDefinitionChanged()) {
 				AlertDialog.Builder builder = new AlertDialog.Builder(
 						mainActivity);

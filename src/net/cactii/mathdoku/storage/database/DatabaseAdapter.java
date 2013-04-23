@@ -3,7 +3,6 @@ package net.cactii.mathdoku.storage.database;
 import java.security.InvalidParameterException;
 
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
@@ -19,7 +18,19 @@ public abstract class DatabaseAdapter {
 
 	static final String SQLITE_TRUE = "true";
 	static final String SQLITE_FALSE = "false";
-	
+
+	public SQLiteDatabase mSQLiteDatabase;
+
+	/**
+	 * Creates a new instance of {@link DatabaseAdapter}.
+	 * 
+	 * @param sqliteDatabase
+	 *            The database to be used by the adapter.
+	 */
+	public DatabaseAdapter() {
+		mSQLiteDatabase = DatabaseHelper.getInstance().getWritableDatabase();
+	}
+
 	/**
 	 * Generates a SQLite column definition. This method should best be used in
 	 * conjunction with method createTable.
@@ -168,18 +179,6 @@ public abstract class DatabaseAdapter {
 		return QUOTE + string + QUOTE;
 	}
 
-	public DatabaseHelper databaseHelper;
-
-	public SQLiteDatabase db;
-
-	/**
-	 * @param context
-	 *            The context in which the database adapter will be used.
-	 */
-	public DatabaseAdapter(DatabaseHelper databaseHelper) throws SQLException {
-		db = databaseHelper.getWritableDatabase();
-	}
-
 	/**
 	 * Converts a boolean value to a SQLite representation.
 	 * 
@@ -254,9 +253,10 @@ public abstract class DatabaseAdapter {
 		final String KEY_SQL = "sql";
 		String columns[] = { KEY_SQL };
 
-		Cursor cursor = db.query(true, "sqlite_master", columns, "name = "
-				+ stringBetweenQuotes(getTableName()) + " AND type = "
-				+ stringBetweenQuotes("table"), null, null, null, null, null);
+		Cursor cursor = mSQLiteDatabase.query(true, "sqlite_master", columns,
+				"name = " + stringBetweenQuotes(getTableName())
+						+ " AND type = " + stringBetweenQuotes("table"), null,
+				null, null, null, null);
 		if (cursor != null && cursor.moveToFirst()) {
 			String sql = cursor
 					.getString(cursor.getColumnIndexOrThrow(KEY_SQL));

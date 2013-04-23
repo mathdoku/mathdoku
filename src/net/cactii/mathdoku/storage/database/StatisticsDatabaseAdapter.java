@@ -11,7 +11,6 @@ import net.cactii.mathdoku.storage.database.Projection.Aggregation;
 import android.annotation.TargetApi;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteQueryBuilder;
@@ -68,17 +67,6 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	private static Projection mCumulativeStatisticsProjection = null;
 	private static Projection mHistoricStatisticsProjection = null;
 
-	/**
-	 * Constructs a new instance of {@link StatisticsDatabaseAdapter}.
-	 * 
-	 * @param databaseHelper
-	 *            The database helper needed to open the adapter.
-	 */
-	public StatisticsDatabaseAdapter(DatabaseHelper databaseHelper)
-			throws SQLException {
-		super(databaseHelper);
-	}
-
 	protected String getTableName() {
 		return TABLE;
 	}
@@ -93,8 +81,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				TABLE,
 				createColumn(KEY_ROWID, "integer", "primary key autoincrement"),
 				createColumn(KEY_GRID_ID, "integer", " not null"),
-				createColumn(KEY_FILENAME_SOLVING_ATTEMPT, "string",
-						""),
+				createColumn(KEY_FILENAME_SOLVING_ATTEMPT, "string", ""),
 				createColumn(KEY_FIRST_MOVE, "datetime", "not null"),
 				createColumn(KEY_LAST_MOVE, "datetime", "not null"),
 				createColumn(KEY_ELAPSED_TIME, "long", "not null default 0"),
@@ -199,14 +186,16 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				new java.util.Date().getTime());
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(KEY_GRID_ID, grid.getRowId());
-		initialValues.put(KEY_FILENAME_SOLVING_ATTEMPT, grid.getSolvingAttemptFilename());
-		initialValues.put(KEY_CELLS_USER_VALUES_EMPTY, grid.getGridSize() * grid.getGridSize());
+		initialValues.put(KEY_FILENAME_SOLVING_ATTEMPT,
+				grid.getSolvingAttemptFilename());
+		initialValues.put(KEY_CELLS_USER_VALUES_EMPTY, grid.getGridSize()
+				* grid.getGridSize());
 		initialValues.put(KEY_FIRST_MOVE, now.toString());
 		initialValues.put(KEY_LAST_MOVE, now.toString());
 
 		long id = -1;
 		try {
-			id = db.insertOrThrow(TABLE, null, initialValues);
+			id = mSQLiteDatabase.insertOrThrow(TABLE, null, initialValues);
 		} catch (SQLiteException e) {
 			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 				e.printStackTrace();
@@ -233,8 +222,8 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		GridStatistics gridStatistics = null;
 		Cursor cursor = null;
 		try {
-			cursor = db.query(true, TABLE, allColumns, KEY_ROWID + "=" + id,
-					null, null, null, null, null);
+			cursor = mSQLiteDatabase.query(true, TABLE, allColumns, KEY_ROWID
+					+ "=" + id, null, null, null, null, null);
 			gridStatistics = toGridStatistics(cursor);
 		} catch (SQLiteException e) {
 			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
@@ -261,8 +250,8 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		GridStatistics gridStatistics = null;
 		Cursor cursor = null;
 		try {
-			cursor = db.query(true, TABLE, allColumns, KEY_GRID_ID + "="
-					+ gridId, null, null, null, KEY_ROWID + " DESC", "1");
+			cursor = mSQLiteDatabase.query(true, TABLE, allColumns, KEY_GRID_ID
+					+ "=" + gridId, null, null, null, KEY_ROWID + " DESC", "1");
 			gridStatistics = toGridStatistics(cursor);
 		} catch (SQLiteException e) {
 			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
@@ -298,8 +287,8 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				.getColumnIndexOrThrow(KEY_ROWID));
 		gridStatistics.mGridId = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_GRID_ID));
-		gridStatistics.mFilenameSolvingAttempt = cursor
-				.getString(cursor.getColumnIndexOrThrow(KEY_FILENAME_SOLVING_ATTEMPT));
+		gridStatistics.mFilenameSolvingAttempt = cursor.getString(cursor
+				.getColumnIndexOrThrow(KEY_FILENAME_SOLVING_ATTEMPT));
 		gridStatistics.mFirstMove = java.sql.Timestamp.valueOf(cursor
 				.getString(cursor.getColumnIndexOrThrow(KEY_FIRST_MOVE)));
 		gridStatistics.mLastMove = java.sql.Timestamp.valueOf(cursor
@@ -383,7 +372,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				Boolean.toString(gridStatistics.mSolvedManually));
 		newValues.put(KEY_FINISHED, Boolean.toString(gridStatistics.mFinished));
 
-		return (db.update(TABLE, newValues, KEY_ROWID + " = "
+		return (mSQLiteDatabase.update(TABLE, newValues, KEY_ROWID + " = "
 				+ gridStatistics.mId, null) == 1);
 	}
 
@@ -508,7 +497,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		Cursor cursor = null;
 		try {
 			cursor = sqliteQueryBuilder
-					.query(db,
+					.query(mSQLiteDatabase,
 							mCumulativeStatisticsProjection.getAllColumnNames(),
 							GridDatabaseAdapter
 									.getPrefixedColumnName(GridDatabaseAdapter.KEY_GRID_SIZE)
@@ -766,7 +755,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		Cursor cursor = null;
 		try {
 			cursor = sqliteQueryBuilder
-					.query(db,
+					.query(mSQLiteDatabase,
 							columnsData,
 							GridDatabaseAdapter
 									.getPrefixedColumnName(GridDatabaseAdapter.KEY_GRID_SIZE)

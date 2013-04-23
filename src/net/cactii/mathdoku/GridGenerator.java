@@ -7,6 +7,7 @@ import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.GridGenerating.GridGeneratingParameters;
 import net.cactii.mathdoku.storage.GameFile;
 import net.cactii.mathdoku.storage.GameFile.GameFileType;
+import net.cactii.mathdoku.storage.database.GridDatabaseAdapter;
 import net.cactii.mathdoku.storage.GridFile;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
@@ -254,10 +255,12 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 					mGrid.create(mGridSize, mCells, mCages, true,
 							gridGeneratingParameters);
 
-					// Store grid as a grid file only. Preview image and statistics are not saved.
-					GridFile gridFile = new GridFile(GameFile.getFilenameForType(GameFileType.NEW_GAME));
+					// Store grid as a grid file only. Preview image and
+					// statistics are not saved.
+					GridFile gridFile = new GridFile(
+							GameFile.getFilenameForType(GameFileType.NEW_GAME));
 					gridFile.save(mGrid, false);
-					
+
 					// Create new game file.
 					new GameFile(GameFileType.NEW_GAME).copyToNewGameFile();
 
@@ -563,6 +566,21 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 				this.mCages.add(cage);
 				for (GridCell cellinCage : cage.mCells) {
 					mCageMatrix[cellinCage.getRow()][cellinCage.getColumn()] = cage.mId;
+				}
+			}
+
+			// If a valid grid is generated check if it was not generated
+			// before.
+			if (!restart) {
+				if (isGeneratedBefore(mCells, mCages)) {
+					clearAllCages();
+					restart = true;
+					if (DEBUG_GRID_GENERATOR) {
+						publishProgress(
+								DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_MESSAGE,
+								"Grid has been generated before " + attempts);
+					}
+					continue;
 				}
 			}
 		} while (restart);
@@ -1111,4 +1129,23 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 		return mCells.get(column + row * mGridSize);
 	}
+
+	/**
+	 * Checks if a grid with same definition has been generated before.
+	 * 
+	 * @param cells
+	 *            The cells included in the grid.
+	 * @param cages
+	 *            The cages included in the grid.
+	 * @return True in case no grid exists with this definition. False
+	 *         otherwise.
+	 */
+	public boolean isGeneratedBefore(ArrayList<GridCell> cells,
+			ArrayList<GridCage> cages) {
+		// Check if this grid definition is unique
+		GridDatabaseAdapter gridDatabaseAdapter = new GridDatabaseAdapter();
+		return (gridDatabaseAdapter.getByGridDefinition(Grid
+				.toGridDefinitionString(cells, cages)) != null);
+	}
+
 }

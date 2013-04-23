@@ -7,7 +7,6 @@ import net.cactii.mathdoku.statistics.GridStatistics;
 import net.cactii.mathdoku.statistics.HistoricStatistics;
 import net.cactii.mathdoku.statistics.HistoricStatistics.Scale;
 import net.cactii.mathdoku.statistics.HistoricStatistics.Serie;
-import net.cactii.mathdoku.storage.database.DatabaseHelper;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter;
 import net.cactii.mathdoku.storage.database.GridRow;
 import net.cactii.mathdoku.storage.database.StatisticsDatabaseAdapter;
@@ -99,13 +98,11 @@ public class StatisticsActivity extends Activity {
 
 		// Retrieve the grid and the statistics for this grid
 		if (mGridStatisticsId >= 0) {
-			DatabaseHelper databaseHelper = DatabaseHelper.getInstance();
-			mStatisticsDatabaseAdapter = new StatisticsDatabaseAdapter(
-					databaseHelper);
+			mStatisticsDatabaseAdapter = new StatisticsDatabaseAdapter();
 			mGridStatistics = mStatisticsDatabaseAdapter.get(mGridStatisticsId);
 
 			if (mGridStatistics != null) {
-				GridRow gridRow = new GridDatabaseAdapter(databaseHelper)
+				GridRow gridRow = new GridDatabaseAdapter()
 						.get(mGridStatistics.mGridId);
 				if (gridRow != null) {
 					mGridSize = gridRow.mGridSize;

@@ -472,6 +472,16 @@ public class Grid {
 	}
 
 	/**
+	 * Converts the definition of this grid to a string. This is a shortcut for
+	 * calling {@link #toGridDefinitionString(ArrayList, ArrayList)}.
+	 * 
+	 * @return A unique string representation of the grid.
+	 */
+	public String toGridDefinitionString() {
+		return toGridDefinitionString(mCells, mCages);
+	}
+
+	/**
 	 * Converts the definition of this grid to a string. This definitions only
 	 * consists of information needed to rebuild the puzzle. It does not include
 	 * information about how it was created or about the current status of
@@ -480,16 +490,18 @@ public class Grid {
 	 * 
 	 * @return A unique string representation of the grid.
 	 */
-	public String toGridDefinitionString() {
+	public static String toGridDefinitionString(ArrayList<GridCell> cells,
+			ArrayList<GridCage> cages) {
 		StringBuilder definitionString = new StringBuilder();
+
 		// Get the cage number (represented as a value of two digits, if needed
 		// prefixed with a 0) for each cell. Note: with a maximum of 81 cells in
 		// a 9x9 grid we can never have a cage-id > 99.
-		for (GridCell cell : mCells) {
+		for (GridCell cell : cells) {
 			definitionString.append(String.format("%02d", cell.getCageId()));
 		}
 		// Followed by cages
-		for (GridCage cage : mCages) {
+		for (GridCage cage : cages) {
 			definitionString.append(":" + cage.mId + "," + cage.mResult + ","
 					+ cage.mAction);
 		}
@@ -709,19 +721,31 @@ public class Grid {
 
 	/**
 	 * Create new objects in the databases for this grid.
+	 * 
+	 * @return True in case the gird has been inserted. False otherwise.
 	 */
-	public void insertInDatabase() {
-		// First insert the grid object. In very rare cases it can occur that
-		// the grid already has been generated before.
-		DatabaseHelper databaseHelper = DatabaseHelper.getInstance();
-		GridDatabaseAdapter gridDatabaseAdapter = new GridDatabaseAdapter(
-				databaseHelper);
-		mRowId = gridDatabaseAdapter.insert(this);
+	public boolean insertInDatabase() {
+		boolean insertedInDatase = false;
 
-		// Insert statistics
-		StatisticsDatabaseAdapter statisticsDatabaseAdapter = new StatisticsDatabaseAdapter(
-				databaseHelper);
-		mGridStatistics = statisticsDatabaseAdapter.insert(this);
+		DatabaseHelper.beginTransaction();
+
+		// First insert the grid object.
+		GridDatabaseAdapter gridDatabaseAdapter = new GridDatabaseAdapter();
+		mRowId = gridDatabaseAdapter.insert(this);
+		if (mRowId >= 0) {
+
+			// Insert statistics
+			StatisticsDatabaseAdapter statisticsDatabaseAdapter = new StatisticsDatabaseAdapter();
+			mGridStatistics = statisticsDatabaseAdapter.insert(this);
+			if (mGridStatistics != null) {
+				insertedInDatase = DatabaseHelper.setTransactionSuccessful();
+			}
+		}
+
+		// CLose transaction
+		DatabaseHelper.endTransaction();
+
+		return insertedInDatase;
 	}
 
 	/**
@@ -732,9 +756,7 @@ public class Grid {
 		String definition = toGridDefinitionString();
 
 		// First load grid.
-		DatabaseHelper databaseHelper = DatabaseHelper.getInstance();
-		GridDatabaseAdapter gridDatabaseAdapter = new GridDatabaseAdapter(
-				databaseHelper);
+		GridDatabaseAdapter gridDatabaseAdapter = new GridDatabaseAdapter();
 		GridRow gridRow = gridDatabaseAdapter.getByGridDefinition(definition);
 		if (gridRow == null) {
 			// Insert grid into database.
@@ -744,8 +766,7 @@ public class Grid {
 		}
 
 		// Load most recent statistics for this grid
-		StatisticsDatabaseAdapter statisticsDatabaseAdapter = new StatisticsDatabaseAdapter(
-				databaseHelper);
+		StatisticsDatabaseAdapter statisticsDatabaseAdapter = new StatisticsDatabaseAdapter();
 		mGridStatistics = statisticsDatabaseAdapter.getMostRecent(mRowId);
 		if (mGridStatistics == null) {
 			// No statistics available. Create a new statistics records.

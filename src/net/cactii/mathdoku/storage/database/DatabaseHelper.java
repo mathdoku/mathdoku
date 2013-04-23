@@ -72,10 +72,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	/**
-	 * Gets the singleton reference to the GridPainter object. If it does not
+	 * Gets the singleton reference to the DatabaseHelper object. If it does not
 	 * yet exist an exception will be thrown.
 	 * 
-	 * @return The singleton reference to the GridPainter object.
+	 * @return The singleton reference to the DatabaseHelper object.
 	 */
 	public static DatabaseHelper getInstance() {
 		if (mDatabaseHelperSingletonInstance == null) {
@@ -83,7 +83,82 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		}
 		return mDatabaseHelperSingletonInstance;
 	}
-	
+
+	/**
+	 * Gets the (writeable) database connected to this DatabaseHelper object. As
+	 * it is a shortcut for DatabaseHelper.getInstance().getWriteableDatabase()
+	 * you have to be sure that the DatabaseHelper has been instantiated before.
+	 * 
+	 * @return The SQLiteDatabase. Null in case of an error.
+	 */
+	public static SQLiteDatabase getDatabase() {
+		if (mDatabaseHelperSingletonInstance == null) {
+			throw new SingletonInstanceNotInstantiated();
+		}
+		return mDatabaseHelperSingletonInstance.getWritableDatabase();
+	}
+
+	/**
+	 * Begin a transaction for the database connected to this DatabaseHelper
+	 * object. As it is a shortcut for
+	 * DatabaseHelper.getInstance().getWriteableDatabase().beginTransaction()
+	 * you have to be sure that the DatabaseHelper has been instantiated before.
+	 * 
+	 * @return The SQLiteDatabase. Null in case of an error.
+	 */
+	public static void beginTransaction() {
+		if (mDatabaseHelperSingletonInstance == null) {
+			throw new SingletonInstanceNotInstantiated();
+		}
+		SQLiteDatabase sqliteDatabase = mDatabaseHelperSingletonInstance
+				.getWritableDatabase();
+		if (sqliteDatabase != null) {
+			sqliteDatabase.beginTransaction();
+		}
+	}
+
+	/**
+	 * End a transaction for the database connected to this DatabaseHelper
+	 * object. As it is a shortcut for
+	 * DatabaseHelper.getInstance().getWriteableDatabase().endTransaction() you
+	 * have to be sure that the DatabaseHelper has been instantiated before.
+	 * 
+	 * @return The SQLiteDatabase. Null in case of an error.
+	 */
+	public static void endTransaction() {
+		if (mDatabaseHelperSingletonInstance == null) {
+			throw new SingletonInstanceNotInstantiated();
+		}
+		SQLiteDatabase sqliteDatabase = mDatabaseHelperSingletonInstance
+				.getWritableDatabase();
+		if (sqliteDatabase != null) {
+			sqliteDatabase.endTransaction();
+		}
+	}
+
+	/**
+	 * Commit a transaction for the database connected to this DatabaseHelper
+	 * object. As it is a shortcut for
+	 * DatabaseHelper.getInstance().getWriteableDatabase
+	 * ().setTransactionSuccessful() you have to be sure that the DatabaseHelper
+	 * has been instantiated before.
+	 * 
+	 * @return The SQLiteDatabase. Null in case of an error.
+	 */
+	public static boolean setTransactionSuccessful() {
+		if (mDatabaseHelperSingletonInstance == null) {
+			throw new SingletonInstanceNotInstantiated();
+		}
+		SQLiteDatabase sqliteDatabase = mDatabaseHelperSingletonInstance
+				.getWritableDatabase();
+		if (sqliteDatabase != null) {
+			sqliteDatabase.setTransactionSuccessful();
+			return true;
+		}
+
+		return false;
+	}
+
 	@Override
 	public synchronized void close() {
 		super.close();

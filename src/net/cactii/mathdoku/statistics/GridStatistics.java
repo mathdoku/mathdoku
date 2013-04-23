@@ -1,6 +1,5 @@
 package net.cactii.mathdoku.statistics;
 
-import net.cactii.mathdoku.storage.database.DatabaseHelper;
 import net.cactii.mathdoku.storage.database.StatisticsDatabaseAdapter;
 
 /**
@@ -93,9 +92,7 @@ public class GridStatistics {
 	 * @return True in case the statistics have been saved. False otherwise.
 	 */
 	public boolean save() {
-		DatabaseHelper databaseHelper = DatabaseHelper.getInstance();
-		StatisticsDatabaseAdapter statisticsDatabaseAdapter = new StatisticsDatabaseAdapter(
-				databaseHelper);
+		StatisticsDatabaseAdapter statisticsDatabaseAdapter = new StatisticsDatabaseAdapter();
 		return statisticsDatabaseAdapter.update(this);
 	}
 
