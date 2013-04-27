@@ -9,11 +9,10 @@ import net.cactii.mathdoku.Tip.TipInputModeChanged;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.painter.Painter.GridTheme;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
-import net.cactii.mathdoku.storage.GameFile;
-import net.cactii.mathdoku.storage.GameFile.GameFileType;
 import net.cactii.mathdoku.storage.GameFileConverter;
 import net.cactii.mathdoku.storage.PreviewImage;
 import net.cactii.mathdoku.storage.database.DatabaseHelper;
+import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 import net.cactii.mathdoku.util.Util;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -119,7 +118,7 @@ public class MainActivity extends Activity implements
 
 	// Variables for process of creating preview images of game file for which
 	// no preview image does exist.
-	private GameFile mGameFileImagePreviewCreation;
+	private int mSolvingAttemptImagePreviewCreation;
 	private ProgressDialog mProgressDialogImagePreviewCreation;
 
 	private Util mUtil;
@@ -210,13 +209,12 @@ public class MainActivity extends Activity implements
 		// Initialize global objects (singleton instances)
 		this.mPainter = Painter.getInstance(this);
 		DatabaseHelper.getInstance(this);
-		PreviewImage.setSize(this);
 
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			// Check if database is consistent.
 			DevelopmentHelper.checkDatabaseConsistency(this);
 		}
-		
+
 		setInputMode(InputMode.NO_INPUT__HIDE_GRID);
 
 		// Animation for a solved puzzle
@@ -496,10 +494,11 @@ public class MainActivity extends Activity implements
 		case REQUEST_CODE_SAVE_LOAD:
 			if (resultCode == Activity.RESULT_OK) {
 				Bundle extras = data.getExtras();
-				String filename = extras.getString("filename");
-				Log.d("Mathdoku", "Loading game: " + filename);
-				Grid newGrid = new Grid(filename);
-				if (newGrid.isLoadedFromFile()) {
+				int solvingAttemptId = extras
+						.getInt(GameFileList.INTENT_EXTRA_KEY_SOLVING_ATTEMPT_ID);
+				Log.d("Mathdoku", "Loading grid id: " + solvingAttemptId);
+				Grid newGrid = new Grid();
+				if (newGrid.load(solvingAttemptId)) {
 					setNewGrid(newGrid);
 				}
 			}
@@ -759,11 +758,26 @@ public class MainActivity extends Activity implements
 		this.mGridView.invalidate();
 	}
 
+	/**
+	 * Restart the last game which was played.
+	 */
 	private void restartLastGame() {
-		Grid newGrid = new Grid(
-				GameFile.getFilenameForType(GameFileType.LAST_GAME));
-		if (newGrid.isLoadedFromFile()) {
-			setNewGrid(newGrid);
+		// Determine if and which grid was last played
+		int solvingAttemptId = new SolvingAttemptDatabaseAdapter()
+				.getMostRecentPlayedId();
+		if (solvingAttemptId >= 0) {
+			// Load the grid
+			try {
+				Grid newGrid = new Grid();
+				newGrid.load(solvingAttemptId);
+				setNewGrid(newGrid);
+			} catch (InvalidGridException e) {
+				if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+					Log.e(TAG,
+							"MainActivity.restartLastGame can not load grid with id '"
+									+ solvingAttemptId + "'.");
+				}
+			}
 		}
 	}
 
@@ -826,6 +840,11 @@ public class MainActivity extends Activity implements
 	public void startNewGame(final int gridSize, final boolean hideOperators) {
 		// Cancel old timer if running.
 		stopTimer();
+		
+		// Save the game.
+		if (mGrid != null) {
+			mGrid.save(mGridView);
+		}
 
 		// Start a background task to generate the new grid. As soon as the new
 		// grid is created, the method onNewGridReady will be called.
@@ -1079,7 +1098,8 @@ public class MainActivity extends Activity implements
 		}
 
 		// Determine the number of previews to be created.
-		int countGameFilesWithoutPreview = countGameFilesWithoutPreview();
+		int countGameFilesWithoutPreview = new SolvingAttemptDatabaseAdapter()
+				.countSolvingAttemptsWithoutPreviewImage();
 		if (countGameFilesWithoutPreview == 0) {
 			// No games files without previews found.
 			mMathDokuPreferences.setCreatePreviewImagesCompleted();
@@ -1116,22 +1136,22 @@ public class MainActivity extends Activity implements
 		// (refreshed).
 		final Runnable createNextPreviewImage = new Runnable() {
 			public void run() {
-				// If a game file was already loaded, it is now loaded and
-				// visible in the grid view.
-				if (mGameFileImagePreviewCreation != null) {
+				// If a game file was already loaded, it is now visible in the
+				// grid view.
+				if (mSolvingAttemptImagePreviewCreation >= 0) {
 					// Save preview for the current game file.
-					new PreviewImage(mGameFileImagePreviewCreation)
+					new PreviewImage(mSolvingAttemptImagePreviewCreation)
 							.save(mGridView);
 					mProgressDialogImagePreviewCreation.incrementProgressBy(1);
 				}
 
 				// Check if a preview for another game file needs to be
 				// created.
-				mGameFileImagePreviewCreation = getNextGameFileWithoutPreview();
-				if (mGameFileImagePreviewCreation != null) {
-					Grid newGrid = new Grid(
-							mGameFileImagePreviewCreation.getName());
-					if (newGrid.isLoadedFromFile()) {
+				mSolvingAttemptImagePreviewCreation = new SolvingAttemptDatabaseAdapter()
+						.getSolvingAttemptWithoutPreviewImage();
+				if (mSolvingAttemptImagePreviewCreation >= 0) {
+					Grid newGrid = new Grid();
+					if (newGrid.load(mSolvingAttemptImagePreviewCreation)) {
 						mGrid = newGrid;
 						mGridView.loadNewGrid(mGrid);
 						mPuzzleGridLayout.setVisibility(View.INVISIBLE);
@@ -1171,55 +1191,13 @@ public class MainActivity extends Activity implements
 		};
 
 		// Post a message to start the process of creating image previews.
-		mGameFileImagePreviewCreation = null;
+		mSolvingAttemptImagePreviewCreation = -1;
 		(new Thread() {
 			public void run() {
 				MainActivity.this.mHandler.post(createNextPreviewImage);
 				mProgressDialogImagePreviewCreation.setProgress(1);
 			}
 		}).start();
-	}
-
-	/**
-	 * Get the next game file for which no preview image does exist.
-	 * 
-	 * @return A game file having no preview image. Null in case all game files
-	 *         have a preview image.
-	 */
-	private GameFile getNextGameFileWithoutPreview() {
-		// Check all files in the game file directory.
-		for (String filename : GameFile
-				.getAllGameFilesCreatedByUser(Integer.MAX_VALUE)) {
-			GameFile gameFile = new GameFile(filename);
-			if (!gameFile.hasPreviewImage()) {
-				// No preview image does exist.
-				return gameFile;
-			}
-		}
-
-		// No more game files found without having a preview image.
-		return null;
-	}
-
-	/**
-	 * Count number of game files without a preview.
-	 * 
-	 * @return The number of games files not having a preview image.
-	 */
-	private int countGameFilesWithoutPreview() {
-		int countGameFilesWithoutPreview = 0;
-
-		// Check all files in the game file directory.
-		for (String filename : GameFile
-				.getAllGameFilesCreatedByUser(Integer.MAX_VALUE)) {
-			GameFile gameFile = new GameFile(filename);
-			if (!gameFile.hasPreviewImage()) {
-				// No preview image does exist.
-				countGameFilesWithoutPreview++;
-			}
-		}
-
-		return countGameFilesWithoutPreview;
 	}
 
 	/*

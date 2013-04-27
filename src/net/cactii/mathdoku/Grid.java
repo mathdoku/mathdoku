@@ -2,20 +2,22 @@ package net.cactii.mathdoku;
 
 import java.util.ArrayList;
 
+import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.GridGenerating.GridGeneratingParameters;
 import net.cactii.mathdoku.statistics.GridStatistics;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
-import net.cactii.mathdoku.storage.GameFile;
-import net.cactii.mathdoku.storage.GameFile.GameFileType;
-import net.cactii.mathdoku.storage.GridFile;
+import net.cactii.mathdoku.storage.InvalidStatisticsException;
 import net.cactii.mathdoku.storage.PreviewImage;
 import net.cactii.mathdoku.storage.database.DatabaseHelper;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter;
 import net.cactii.mathdoku.storage.database.GridRow;
+import net.cactii.mathdoku.storage.database.SolvingAttemptData;
+import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 import net.cactii.mathdoku.storage.database.StatisticsDatabaseAdapter;
+import net.cactii.mathdoku.util.Util;
+import android.util.Log;
 
 public class Grid {
-	@SuppressWarnings("unused")
 	private static final String TAG = "MathDoku.Grid";
 
 	// Each line in the GridFile which contains information about the grid
@@ -78,6 +80,9 @@ public class Grid {
 	// Miscelleaneous
 	// ************************************************************************
 
+	// The solving attempt which is merged into this grid.
+	private int mSolvingAttemptId;
+
 	// Used to avoid redrawing or saving grid during creation of new grid
 	public final Object mLock = new Object();
 
@@ -92,46 +97,43 @@ public class Grid {
 	// UsagaeLog counters
 	private int mClearRedundantPossiblesInSameRowOrColumnCount;
 
-	// The file from which the current solving attempt is loaded. Null in case
-	// the solving attempt was not yet saved before.
-	private GridFile mGridFile;
-
-	public Grid(int gridSize) {
+	public Grid() {
 		initialize();
-		mGridSize = gridSize;
-	}
-
-	/**
-	 * Creates a new instance of a {@link Grid} by loading it from the specified
-	 * file.
-	 * 
-	 * @param filename
-	 *            The filename (without path) from which the grid has to be
-	 *            loaded.
-	 */
-	public Grid(String filename) {
-		initialize();
-
-		mGridFile = new GridFile(filename);
-		if (!mGridFile.loadIntoGrid(this)) {
-			// Error loading. Initialize again to clean up.
-			initialize();
-		}
 	}
 
 	/**
 	 * Initializes a new grid object.
 	 */
 	private void initialize() {
+		mRowId = -1;
+		mSolvingAttemptId = -1;
+		mGridSize = 0;
 		mCells = new ArrayList<GridCell>();
 		mCages = new ArrayList<GridCage>();
 		mMoves = new ArrayList<CellChange>();
 		mClearRedundantPossiblesInSameRowOrColumnCount = 0;
 		mSolvedListener = null;
-		mGridFile = null;
 		mGridGeneratingParameters = new GridGeneratingParameters();
 		mGridStatistics = new GridStatistics();
 		setPreferences();
+	}
+
+	/**
+	 * Sets the size for the grid. The size can only be set once.
+	 * 
+	 * @param gridSize
+	 *            The size of the grid.
+	 */
+	public void setGridSize(int gridSize) {
+		if (mGridSize == 0) {
+			mGridSize = gridSize;
+		} else if (gridSize != mGridSize) {
+			// Ignore changes to grid size.
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+				throw new RuntimeException(
+						"GridSize can not be changed after it has been set.");
+			}
+		}
 	}
 
 	/**
@@ -436,37 +438,28 @@ public class Grid {
 	 * Create a string representation of the Grid View which can be used to
 	 * store a grid view in a saved game.
 	 * 
-	 * @param keepOriginalDatetimeLastSaved
-	 *            True in case the datetime on which the game was last saved may
-	 *            not be altered. When not converting an existing gamefile one
-	 *            should use false here.
-	 * 
 	 * @return A string representation of the grid.
 	 */
-	public String toStorageString(boolean keepOriginalDatetimeLastSaved) {
-		// Update datetime last saved if needed
-		if (!keepOriginalDatetimeLastSaved) {
-			mDateLastSaved = System.currentTimeMillis();
-		}
-
+	public String toStorageString() {
 		// Build storage string
 		String storageString = SAVE_GAME_GRID_LINE
-				+ GameFile.FIELD_DELIMITER_LEVEL1
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ mGridGeneratingParameters.mGameSeed
-				+ GameFile.FIELD_DELIMITER_LEVEL1
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ mGridGeneratingParameters.mGeneratorRevisionNumber
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mDateLastSaved
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mGridSize
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mActive
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mDateCreated
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mCheated
-				+ GameFile.FIELD_DELIMITER_LEVEL1
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ mGridSize
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ mActive
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ mCheated
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ mClearRedundantPossiblesInSameRowOrColumnCount
-				+ GameFile.FIELD_DELIMITER_LEVEL1
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ mGridGeneratingParameters.mHideOperators
-				+ GameFile.FIELD_DELIMITER_LEVEL1
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ mGridGeneratingParameters.mMaxCageResult
-				+ GameFile.FIELD_DELIMITER_LEVEL1
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ mGridGeneratingParameters.mMaxCageSize;
 		return storageString;
 	}
@@ -518,7 +511,8 @@ public class Grid {
 	 *         processed correctly. False otherwise.
 	 */
 	public boolean fromStorageString(String line, int savedWithRevisionNumber) {
-		String[] viewParts = line.split(GameFile.FIELD_DELIMITER_LEVEL1);
+		String[] viewParts = line
+				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1);
 
 		// Determine if this line contains Grid-information. If so, also
 		// determine with which revision number the information was stored.
@@ -545,7 +539,9 @@ public class Grid {
 		} else {
 			mGridGeneratingParameters.mGeneratorRevisionNumber = 0;
 		}
-		mDateLastSaved = Long.parseLong(viewParts[index++]);
+		if (revisionNumber < 271) {
+			mDateLastSaved = Long.parseLong(viewParts[index++]);
+		}
 		if (revisionNumber <= 5) {
 			// Field elapsedTime has been removed in version 6 and above.
 			mGridStatistics.mElapsedTime = Long.parseLong(viewParts[index++]);
@@ -553,11 +549,13 @@ public class Grid {
 		mGridSize = Integer.parseInt(viewParts[index++]);
 		mActive = Boolean.parseBoolean(viewParts[index++]);
 
-		if (revisionNumber >= 2) {
-			mDateCreated = Long.parseLong(viewParts[index++]);
-		} else {
-			// Date generated was not saved prior to version 2.
-			mDateCreated = mDateLastSaved - mGridStatistics.mElapsedTime;
+		if (revisionNumber < 271) {
+			if (revisionNumber >= 2) {
+				mDateCreated = Long.parseLong(viewParts[index++]);
+			} else {
+				// Date generated was not saved prior to version 2.
+				mDateCreated = mDateLastSaved - mGridStatistics.mElapsedTime;
+			}
 		}
 		if (revisionNumber >= 4) {
 			mCheated = Boolean.parseBoolean(viewParts[index++]);
@@ -607,7 +605,7 @@ public class Grid {
 	 * @param active
 	 *            The status of the grid.
 	 */
-	public void create(int gridSize, ArrayList<GridCell> cells,
+	public boolean create(int gridSize, ArrayList<GridCell> cells,
 			ArrayList<GridCage> cages, boolean active,
 			GridGeneratingParameters gridGeneratingParameters) {
 
@@ -618,7 +616,7 @@ public class Grid {
 		}
 		mSelectedCell = null;
 		mCheated = false;
-		mGridFile = null;
+		mSolvingAttemptId = -1;
 
 		// Set new data in grid
 		mGridGeneratingParameters = gridGeneratingParameters;
@@ -643,7 +641,7 @@ public class Grid {
 			cell.setBorders();
 		}
 
-		insertInDatabase();
+		return insertInDatabase();
 	}
 
 	public void setSolvedHandler(OnSolvedListener listener) {
@@ -725,27 +723,62 @@ public class Grid {
 	 * @return True in case the gird has been inserted. False otherwise.
 	 */
 	public boolean insertInDatabase() {
-		boolean insertedInDatase = false;
-
 		DatabaseHelper.beginTransaction();
 
-		// First insert the grid object.
-		GridDatabaseAdapter gridDatabaseAdapter = new GridDatabaseAdapter();
-		mRowId = gridDatabaseAdapter.insert(this);
-		if (mRowId >= 0) {
-
-			// Insert statistics
-			StatisticsDatabaseAdapter statisticsDatabaseAdapter = new StatisticsDatabaseAdapter();
-			mGridStatistics = statisticsDatabaseAdapter.insert(this);
-			if (mGridStatistics != null) {
-				insertedInDatase = DatabaseHelper.setTransactionSuccessful();
+		// Insert grid record if it does not yet exists.
+		if (mRowId < 0) {
+			GridDatabaseAdapter gridDatabaseAdapter = new GridDatabaseAdapter();
+			GridRow gridRow = gridDatabaseAdapter
+					.getByGridDefinition(toGridDefinitionString());
+			if (gridRow == null) {
+				// Insert grid into database.
+				mRowId = gridDatabaseAdapter.insert(this);
+				if (mRowId < 0) {
+					if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+						throw new RuntimeException(
+								"Error while inserting a new grid into database.");
+					} else {
+						DatabaseHelper.endTransaction();
+						return false;
+					}
+				}
+			} else {
+				mRowId = gridRow.mId;
 			}
 		}
 
-		// CLose transaction
+		// Insert new solving attempt.
+		SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = new SolvingAttemptDatabaseAdapter();
+		mSolvingAttemptId = solvingAttemptDatabaseAdapter.insert(this,
+				Util.getPackageVersionNumber(), toStorageString());
+		if (mSolvingAttemptId < 0) {
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+				throw new RuntimeException(
+						"Error while inserting a new grid into database.");
+			} else {
+				DatabaseHelper.endTransaction();
+				return false;
+			}
+		}
+
+		// Insert new statistics.
+		StatisticsDatabaseAdapter statisticsDatabaseAdapter = new StatisticsDatabaseAdapter();
+		mGridStatistics = statisticsDatabaseAdapter.insert(this);
+		if (mGridStatistics == null) {
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+				throw new RuntimeException(
+						"Error while inserting a new grid into database.");
+			} else {
+				DatabaseHelper.endTransaction();
+				return false;
+			}
+		}
+
+		// Commit and close transaction
+		DatabaseHelper.setTransactionSuccessful();
 		DatabaseHelper.endTransaction();
 
-		return insertedInDatase;
+		return true;
 	}
 
 	/**
@@ -777,40 +810,6 @@ public class Grid {
 	}
 
 	/**
-	 * Save this grid (game file, statistics and preview). The preview image of
-	 * the grid is based upon the given grid view.
-	 * 
-	 * @param gridView
-	 *            The gridView in which the grid is currently displayed.
-	 * 
-	 * @return True in case everything has been saved. False otherwise.
-	 */
-	public boolean save(GridView gridView) {
-		GameFile gameFile = new GameFile(GameFileType.LAST_GAME);
-
-		// Save to game file first
-		GridFile gridFile = new GridFile(gameFile);
-		if (!gridFile.save(this, false)) {
-			return false;
-		}
-
-		// Update statistics
-		boolean savedStatistics = (mGridStatistics == null ? false
-				: mGridStatistics.save());
-
-		// Save the preview image.
-		PreviewImage previewImage = new PreviewImage(gameFile);
-		boolean savedPreview = (gridView == null ? false : previewImage
-				.save(gridView));
-
-		return (savedStatistics && savedPreview);
-	}
-
-	public boolean isLoadedFromFile() {
-		return (mGridFile != null);
-	}
-
-	/**
 	 * Increase given counter with 1.
 	 * 
 	 * @param statisticsCounterType
@@ -839,11 +838,328 @@ public class Grid {
 	}
 
 	/**
-	 * Gets the file name in which the current solving attempt is stored.
+	 * Gets the id of the solving attempt which is merged into this grid.
 	 * 
-	 * @return The file name in which the current solving attempt is stored.
+	 * @return The id of the solving attempt which is merged into this grid.
 	 */
-	public String getSolvingAttemptFilename() {
-		return (mGridFile == null ? "" : mGridFile.getFilename());
+	public int getSolvingAttemptId() {
+		return mSolvingAttemptId;
+	}
+
+	/**
+	 * Save the grid (solving attempt only). Preferably {@link #save(GridView)}
+	 * is used.
+	 * 
+	 * @return True in case the solving attempt has been saved. False otherwise.
+	 */
+	public boolean saveWithoutPreview() {
+		return save(null);
+	}
+
+	/**
+	 * Save this grid (game file, statistics and preview). The preview image of
+	 * the grid is based upon the given grid view.
+	 * 
+	 * @param gridView
+	 *            The gridView in which the grid is currently displayed.
+	 * @return True in case everything has been saved. False otherwise.
+	 */
+	public boolean save(GridView gridView) {
+		boolean saved = true;
+
+		synchronized (mLock) { // Avoid saving game at the same time as
+								// creating puzzle
+			// Build the data string for the solving attempt.
+			StringBuffer stringBuffer = new StringBuffer(256);
+
+			// Store information about the Grid View on a single line
+			stringBuffer.append(toStorageString()
+					+ SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+
+			// Store information about the cells. Use one line per single
+			// cell.
+			for (GridCell cell : mCells) {
+				stringBuffer.append(cell.toStorageString()
+						+ SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+			}
+
+			// Store information about the cages. Use one line per single
+			// cage.
+			for (GridCage cage : mCages) {
+				stringBuffer.append(cage.toStorageString()
+						+ SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+			}
+
+			// Store information about the cell changes. Use one line per single
+			// cell change. Note: watch for lengthy line due to recursive cell
+			// changes.
+			for (CellChange cellChange : mMoves) {
+				stringBuffer.append(cellChange.toStorageString()
+						+ SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+			}
+
+			// The solving attempt was already created as soon as the grid was
+			// created first. So only an update is needed.
+			SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = new SolvingAttemptDatabaseAdapter();
+			if (!solvingAttemptDatabaseAdapter.update(mSolvingAttemptId,
+					stringBuffer.toString())) {
+				return false;
+			}
+
+			// Update statistics. Do not abort in case statistics could not be
+			// saved.
+			saved = (mGridStatistics == null ? false : mGridStatistics.save());
+
+			// Update the preview image. Do not abort in case the preview image
+			// could not be saved.
+			if (gridView != null) {
+				PreviewImage previewImage = new PreviewImage(mSolvingAttemptId);
+				saved = previewImage.save(gridView) && saved;
+			}
+
+		} // End of synchronised block
+
+		return saved;
+	}
+
+	/**
+	 * Load a grid and corresponding solving attempt from the database.
+	 * 
+	 * @return True in case the grid has been loaded successfully. False
+	 *         otherwise.
+	 */
+	public boolean load(int id) throws InvalidGridException {
+		SolvingAttemptData solvingAttemptData = new SolvingAttemptDatabaseAdapter()
+				.getData(id);
+		return load(solvingAttemptData);
+	}
+
+	/**
+	 * Load a grid from the given solving attempt.
+	 * 
+	 * @return True in case the grid has been loaded successfully. False
+	 *         otherwise.
+	 */
+	public boolean load(SolvingAttemptData solvingAttemptData) {
+		boolean loaded = true;
+
+		if (solvingAttemptData == null) {
+			// Could not retrieve this solving attempt.
+			loaded = false;
+			throw new InvalidGridException();
+		}
+
+		String line;
+		try {
+			// Read first line
+			if ((line = solvingAttemptData.getFirstLine()) == null) {
+				throw new InvalidGridException(
+						"Unexpected end of solving attempt at first line");
+			}
+
+			// Read view information
+			if (!fromStorageString(line, solvingAttemptData.mSavedWithRevision)) {
+				// The initial version of the saved games stored view
+				// information on 4 different lines. Rewrite to valid view
+				// storage information (version 1).
+				// Do not remove as long as backward compatibility with old save
+				// file should be remained.
+				line = Grid.SAVE_GAME_GRID_LINE
+						+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+						+ 0 // game seed. Use
+							// 0 as it was
+							// not stored in
+							// initial
+							// files
+						+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+						+ line // date created
+						+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+						+ solvingAttemptData.getNextLine() // elapsed time
+						+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+						+ solvingAttemptData.getNextLine() // grid size
+						+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+						+ solvingAttemptData.getNextLine(); // active
+
+				// Retry to process this line as if it was saved with revision
+				// 1.
+				if (!fromStorageString(line, 1)) {
+					throw new InvalidGridException(
+							"View information can not be processed: " + line);
+				}
+			}
+			if ((line = solvingAttemptData.getNextLine()) == null) {
+				throw new InvalidGridException(
+						"Unexpected end of solving attempt after processing view information.");
+			}
+
+			// Read cell information
+			int countCellsToRead = mGridSize * mGridSize;
+			GridCell selectedCell = null;
+			while (countCellsToRead > 0) {
+				GridCell cell = new GridCell(this, 0);
+				if (!cell.fromStorageString(line,
+						solvingAttemptData.mSavedWithRevision)) {
+					throw new InvalidGridException(
+							"Line does not contain cell information while this was expected:"
+									+ line);
+				}
+				mCells.add(cell);
+				if (cell.mSelected && selectedCell == null) {
+					// Remember first cell which is marked as selected. Note the
+					// cell can not be selected until the cages are loaded as
+					// well.
+					selectedCell = cell;
+				}
+				countCellsToRead--;
+
+				// Read next line
+				if ((line = solvingAttemptData.getNextLine()) == null) {
+					throw new InvalidGridException(
+							"Unexpected end of solving attempt when processing cell information.");
+				}
+			}
+
+			if (line.startsWith("SELECTED:")) {
+				// Do not remove as long as backward compatibility with old save
+				// file should be remained. In new save files this information
+				// is stored as part of the cell information.
+				if (selectedCell == null) {
+					// No cell is selected yet.
+					int selected = Integer
+							.parseInt(line
+									.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1)[1]);
+					selectedCell = mCells.get(selected);
+				}
+
+				// Read next line
+				if ((line = solvingAttemptData.getNextLine()) == null) {
+					throw new InvalidGridException(
+							"Unexpected end of solving attempt after processing SELECTED line.");
+				}
+			}
+			if (line.startsWith("INVALID:")) {
+				// Do not remove as long as backward compatibility with old save
+				// file should be remained. In new save files this information
+				// is stored as part of the cell information.
+				String invalidlist = line
+						.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1)[1];
+				for (String cellId : invalidlist
+						.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
+					int cellNum = Integer.parseInt(cellId);
+					GridCell c = mCells.get(cellNum);
+					c.setInvalidHighlight(true);
+				}
+
+				// Read next line
+				if ((line = solvingAttemptData.getNextLine()) == null) {
+					throw new InvalidGridException(
+							"Unexpected end of solving attempt after processing INVALID line.");
+				}
+			}
+
+			// Cages (at least one expected)
+			GridCage cage = new GridCage(this);
+			if (!cage.fromStorageString(line,
+					solvingAttemptData.mSavedWithRevision)) {
+				throw new InvalidGridException(
+						"Line does not contain cage  information while this was expected:"
+								+ line);
+			}
+			do {
+				mCages.add(cage);
+
+				// Read next line. No checking of unexpected end of file might
+				// be done here because the last line in a file can contain a
+				// cage.
+				line = solvingAttemptData.getNextLine();
+
+				// Create a new empty cage
+				cage = new GridCage(this);
+			} while (line != null
+					&& cage.fromStorageString(line,
+							solvingAttemptData.mSavedWithRevision));
+
+			// Check cage maths after all cages have been read.
+			for (GridCage cage2 : mCages) {
+				cage2.checkCageMathsCorrect(true);
+			}
+
+			// Set the selected cell (and indirectly the selected cage).
+			if (selectedCell != null) {
+				setSelectedCell(selectedCell);
+			}
+
+			// Remaining lines contain cell changes (zero or more expected)
+			CellChange cellChange = new CellChange();
+			while (line != null
+					&& cellChange.fromStorageString(line, mCells,
+							solvingAttemptData.mSavedWithRevision)) {
+				addMove(cellChange);
+
+				// Read next line. No checking of unexpected end of file might
+				// be done here because the last line in a file can contain a
+				// cage.
+				line = solvingAttemptData.getNextLine();
+
+				// Create a new empty cell change
+				cellChange = new CellChange();
+			}
+
+			// Check if end of file is reached an no information was unread yet.
+			if (line != null) {
+				throw new InvalidGridException(
+						"Unexpected line found while end of file was expected: "
+								+ line);
+			}
+
+			// The solving attempt has been loaded succesfully into the grid
+			// object
+			mSolvingAttemptId = solvingAttemptData.mId;
+			mRowId = solvingAttemptData.mGridId;
+
+			// Load the statistics of the grid
+			if (!loadStatistics()) {
+				throw new InvalidStatisticsException(
+						"Can not load statistics neither create a new statistics records.");
+			}
+		} catch (InvalidStatisticsException e) {
+			loaded = false;
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+				Log.d(TAG,
+						"Statistics exception when restoring solving attempt with id '"
+								+ solvingAttemptData.mId + "'\n"
+								+ e.getMessage());
+			}
+			initialize();
+			return false;
+		} catch (InvalidGridException e) {
+			loaded = false;
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+				Log.d(TAG,
+						"Invalid file format error when  restoring solving attempt with id '"
+								+ solvingAttemptData.mId + "'\n"
+								+ e.getMessage());
+			}
+			initialize();
+		} catch (NumberFormatException e) {
+			loaded = false;
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+				Log.d(TAG,
+						"Number format error when  restoring solving attempt with id '"
+								+ solvingAttemptData.mId + "'\n"
+								+ e.getMessage());
+			}
+			initialize();
+		} catch (IndexOutOfBoundsException e) {
+			loaded = false;
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+				Log.d(TAG,
+						"Index out of bound error when  restoring solving attempt with id '"
+								+ solvingAttemptData.mId + "'\n"
+								+ e.getMessage());
+			}
+			initialize();
+		}
+		return loaded;
 	}
 }

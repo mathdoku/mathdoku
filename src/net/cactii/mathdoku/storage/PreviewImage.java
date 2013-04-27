@@ -11,60 +11,33 @@ import java.io.InputStream;
 import net.cactii.mathdoku.DevelopmentHelper;
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.GridView;
-import android.app.Activity;
+import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
+import net.cactii.mathdoku.util.Util;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.util.DisplayMetrics;
 import android.util.Log;
 
 public class PreviewImage extends Object {
 	private static final String TAG = "MathDoku.PreviewImage";
 
-	String mFilename;
-
-	// This object will only be statically initialized once.
-	static boolean mInitialized = false;
-	static int mSize;
-
-	/**
-	 * Creates a new instance of {@link PreviewImage}.
-	 * 
-	 * @param filename
-	 *            The name (full path) of the preview file.
-	 */
-	public PreviewImage(String filename) {
-		init(filename);
-	}
+	public static final String FILENAME_BASE = "Preview_";
+	public static final String FILENAME_EXTENSION = ".png";
+	
+	private int mSolvingAttemptId;
+	
+	// Filename for this preview image
+	private String mFilename;
 
 	/**
 	 * Creates a new instance of {@link PreviewImage}.
 	 * 
-	 * @param gameFile
-	 *            The game file for which a preview has to be saved.
+	 * @param solvingAttemptId
+	 *            The if of the solving attempt on which this preview applies.
 	 */
-	public PreviewImage(GameFile gameFile) {
-		init(gameFile == null ? "" : gameFile.getFullFilenamePreview());
-	}
-
-	/**
-	 * Initializes the object.
-	 * 
-	 * @param filename
-	 *            The name (full path) of the preview file.
-	 */
-	private void init(String filename) {
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-			if (filename == null || filename.equals("")) {
-				throw new RuntimeException(
-						"Filename should not be null or emtpy.");
-			}
-			if (!mInitialized) {
-				throw new RuntimeException(
-						"PreviewImage has not been initialized statically.");
-			}
-		}
-		mFilename = filename;
+	public PreviewImage(int solvingAttemptId) {
+		mFilename = Util.getPath() + FILENAME_BASE + solvingAttemptId + FILENAME_EXTENSION;
+		mSolvingAttemptId = solvingAttemptId;
 	}
 
 	/**
@@ -91,13 +64,14 @@ public class PreviewImage extends Object {
 		}
 
 		// Create a scaled bitmap and canvas and draw the view on this canvas.
-		if (mSize == 0) {
+		int size = getPreviewImageSize();
+		if (size == 0) {
 			// Can not calculate size of preview image.
 			return false;
 		}
-		float scaleFactor = (float) mSize
+		float scaleFactor = (float) size
 				/ (float) Math.max(view.getWidth(), view.getHeight());
-		Bitmap bitmap = Bitmap.createBitmap(mSize, mSize,
+		Bitmap bitmap = Bitmap.createBitmap(size, size,
 				Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(bitmap);
 		canvas.scale(scaleFactor, scaleFactor);
@@ -115,6 +89,9 @@ public class PreviewImage extends Object {
 			return false;
 		}
 
+		// Update reference in database if needed.
+		new SolvingAttemptDatabaseAdapter().updatePreviewFilename(mSolvingAttemptId, mFilename);
+		
 		return true;
 	}
 
@@ -147,40 +124,12 @@ public class PreviewImage extends Object {
 		return bitmap;
 	}
 
-	public static boolean setSize(Activity activity) {
-		if (mInitialized) {
-			// PreviewImage needs only to initialized once
-			return true;
-		}
-
-		if (activity == null) {
-			return false;
-		}
-
-		// Get the display metrics
-		DisplayMetrics displayMetrics = new DisplayMetrics();
-		activity.getWindowManager().getDefaultDisplay()
-				.getMetrics(displayMetrics);
-
-		mSize = (int) ((float) 0.45 * (float) Math.min(
-				displayMetrics.heightPixels, displayMetrics.widthPixels));
-		mInitialized = true;
-
-		return mInitialized;
-	}
-
 	/**
 	 * Get the size (height equals width) for preview images used on this device.
 	 * 
 	 * @return The size of the preview images.
 	 */
 	public static int getPreviewImageSize() {
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-			if (!mInitialized) {
-				throw new RuntimeException(
-						"PreviewImage has not been initialized statically.");
-			}
-		}
-		return mSize;
+		return (int) ((float) 0.45 * Util.getMinimumDisplayHeigthWidth());
 	}
 }

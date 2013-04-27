@@ -79,20 +79,10 @@
             android:id="@+id/gameLoad"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/gameDelete"
-            android:layout_alignLeft="@+id/gameDelete"
+            android:layout_below="@+id/savedOnText"
+            android:layout_alignLeft="@+id/savedOnText"
             android:lines="1"
             android:text="@string/save_game_screen_load_game"
-            android:textSize="@dimen/text_size_default" />
-
-        <Button
-            android:id="@+id/gameDelete"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:lines="1"
-            android:text="@string/save_game_screen_delete_game"
             android:textSize="@dimen/text_size_default" />
     </RelativeLayout>
 

@@ -1,7 +1,13 @@
 package net.cactii.mathdoku.storage;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import net.cactii.mathdoku.DevelopmentHelper;
@@ -11,6 +17,8 @@ import net.cactii.mathdoku.MainActivity;
 import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.UsageLog;
+import net.cactii.mathdoku.storage.database.SolvingAttemptData;
+import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 import net.cactii.mathdoku.storage.database.StatisticsDatabaseAdapter;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -43,10 +51,10 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	private static final String FILENAME_LAST_GAME_R111 = "last_game";
 	private static final String FILENAME_SAVED_GAME_R111 = "saved_game_";
 	private static final String GAMEFILE_EXTENSION_R111 = ".mgf";
-	private String[] mFilenamesR77;
+	private String[] mFilenames;
 
-	// File which need to be upgraded
-	private ArrayList<String> mFilenames;
+	// Solving attempts to be converted
+	ArrayList<Integer> solvingAttemptIds;
 
 	// The dialog for this task
 	private ProgressDialog mProgressDialog;
@@ -104,18 +112,17 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 		// Remember the activity that started this task.
 		this.mActivity = activity;
 
-		// Determine how much work must be done
-		int maxProgressCounter = 0;
-		if (mCurrentVersion <= 111) {
-			// When converting from revision 110, both a rename and a conversion
-			// has to be done on files folling R110 naming convention.
-			mFilenamesR77 = getFiles(PATH_R110, GAMEFILE_PREFIX_R110);
-			maxProgressCounter += 2 * mFilenamesR77.length;
+		// Determine how much (old) game files have to be moved from file to
+		// database.
+		mFilenames = getFilesToBeConverted(PATH_R110);
+		int maxProgressCounter = mFilenames.length;
+
+		// Determine how many solving attempts in the database have to be
+		// converted.
+		if ((solvingAttemptIds = new SolvingAttemptDatabaseAdapter()
+				.getAllToBeConverted()) != null) {
+			maxProgressCounter += solvingAttemptIds.size();
 		}
-		// For files following current naming convention only a single pass
-		// conversion is needed.
-		mFilenames = GameFile.getAllGameFiles(Integer.MAX_VALUE);
-		maxProgressCounter += mFilenames.size();
 
 		if (maxProgressCounter > 0) {
 			// Build the dialog
@@ -156,72 +163,49 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	@Override
 	protected Void doInBackground(Void... params) {
 		if (mCurrentVersion < mNewVersion) {
-			// Rename files
-			if (mCurrentVersion <= 111 && mFilenamesR77.length > 0) {
-				// Rename files
-				for (String filename : mFilenamesR77) {
-					String newFilename = null;
-					if (filename.startsWith(GAMEFILE_PREFIX_R110 + "_")) {
-						newFilename = PATH_R110 + FILENAME_SAVED_GAME_R111
-								+ filename.substring(10)
-								+ GAMEFILE_EXTENSION_R111;
-					} else if (filename.startsWith("savedgame")) {
-						newFilename = PATH_R110 + FILENAME_LAST_GAME_R111
-								+ GAMEFILE_EXTENSION_R111;
-					}
+			if (mCurrentVersion < 271 && mFilenames.length > 0) {
+				for (String filename : mFilenames) {
+					// Load data from file and store it in a fake
+					// solvingAttemptData object.
+					SolvingAttemptData solvingAttemptData = new SolvingAttemptData();
+					solvingAttemptData.mId = -1;
+					solvingAttemptData.mGridId = -1;
+					solvingAttemptData.mSavedWithRevision = -1;
+					solvingAttemptData.setData(readFile(filename));
 
-					// Rename if applicable.
-					if (newFilename != null) {
-						// Rename the file
-						if (new File(PATH_R110 + filename).renameTo(new File(
-								newFilename))) {
-							// File is renamed.
-							if (new File(PATH_R110 + filename).exists()) {
-								new File(PATH_R110 + filename).delete();
-							}
-						}
+					// Load the fake solving attempt into a grid object.
+					Grid grid = new Grid();
+					if (grid.load(solvingAttemptData)) {
+						grid.insertInDatabase();
+						new File(filename).delete();
 					}
 					publishProgress();
 				}
-
-				// Now the files have been renamed, the file list has to be
-				// determined again.
-				mFilenames = GameFile.getAllGameFiles(Integer.MAX_VALUE);
-
-				// Update current version to enforce content conversion as well.
-				mCurrentVersion = 111;
 			}
 
-			// Update game file contents
-			if (mFilenames.size() > 0) {
-				for (String filename : mFilenames) {
-					// Load grid
-					Grid grid = new Grid(filename);
+			if (solvingAttemptIds != null) {
+				for (int solvingAttemptId : solvingAttemptIds) {
+					Grid grid = new Grid();
+					if (grid.load(solvingAttemptId)) {
+						mTotalGrids++;
 
-					// Get definition for the grid. Update the number of occurrences
-					// for this definition.
-					mTotalGrids++;
-					String definition = grid.toGridDefinitionString();
-					if (!mGridDefinitions.contains(definition)) {
-						// New definition found
-						mGridDefinitions.add(definition);
-					}
-					if (grid.checkIfSolved()) {
-						mTotalGridsSolved++;
-					}
+						// Get definition for the grid.
+						// REMOVE: stats for converted games.
+						String definition = grid.toGridDefinitionString();
+						if (!mGridDefinitions.contains(definition)) {
+							// New definition found
+							mGridDefinitions.add(definition);
+						}
+						if (grid.checkIfSolved()) {
+							mTotalGridsSolved++;
+						}
 
-					// Save grid. Do not use default save method of grid as we
-					// do not want to change the last update date. Also no
-					// gridview containing the preview image is available in
-					// this background process.
-					GridFile gridFile = new GridFile(filename);
-					if (gridFile.save(grid, true)) {
-						// Update statistics
-						// TODO: when converting files do grid.mGridStatistics.save() ???
-					}
+						// Save grid. 
+						grid.saveWithoutPreview();
 
-					// Update progress
-					publishProgress();
+						// Update progress
+						publishProgress();
+					}
 				}
 			}
 		}
@@ -230,7 +214,9 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	}
 
 	protected void onProgressUpdate(Void... values) {
-		mProgressDialog.incrementProgressBy(1);
+		if (!isCancelled() && mProgressDialog != null) {
+			mProgressDialog.incrementProgressBy(1);
+		}
 	}
 
 	@Override
@@ -278,7 +264,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	}
 
 	/**
-	 * Retrieve all files with a give prefix from a directory with given path.
+	 * Retrieve all files which have to be converted
 	 * 
 	 * @param path
 	 *            Path to a directory.
@@ -286,13 +272,55 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	 *            Prefix of files to be returned.
 	 * @return An array of filenames with given prefix in the given directory.
 	 */
-	private String[] getFiles(String path, final String filePrefix) {
+	private String[] getFilesToBeConverted(String path) {
 		FilenameFilter filter = new FilenameFilter() {
 			public boolean accept(File dir, String name) {
-				return name.startsWith(filePrefix);
+				if (name.startsWith(GAMEFILE_PREFIX_R110)) {
+					return true;
+				} else if (name.endsWith(GAMEFILE_EXTENSION_R111)) {
+					return name.startsWith(FILENAME_SAVED_GAME_R111)
+							|| name.startsWith(FILENAME_LAST_GAME_R111);
+				} else {
+					return false;
+				}
 			}
 		};
 		File dir = new File(path);
 		return (dir == null ? null : dir.list(filter));
+	}
+
+	/**
+	 * Get the (entire) content of a file.
+	 * 
+	 * @param filename
+	 *            The name of the file to be read.
+	 * @return The content of the file.
+	 */
+	private String readFile(String filename) {
+		StringBuffer stringBuffer = new StringBuffer(256);
+		String line;
+		BufferedReader bufferedReader = null;
+		InputStream inputStream = null;
+		try {
+			inputStream = new FileInputStream(new File(filename));
+			bufferedReader = new BufferedReader(new InputStreamReader(
+					inputStream), 8192);
+
+			while ((line = bufferedReader.readLine()) != null) {
+				stringBuffer.append(line);
+			}
+		} catch (FileNotFoundException e) {
+			Log.d(TAG, "File '" + filename + "' not found: " + e.getMessage());
+		} catch (IOException e) {
+			Log.d(TAG, "IO Exception when reading file '" + filename + "': "
+					+ e.getMessage());
+		} finally {
+			try {
+				inputStream.close();
+			} catch (Exception e) {
+				// Do nothing
+			}
+		}
+		return stringBuffer.toString();
 	}
 }

@@ -26,10 +26,6 @@
                 android:title="Generate new dummy games"
                 tools:ignore="HardcodedText"/>
             <item
-                android:id="@+id/development_mode_delete_games"
-                android:title="Delete all games and previews"
-                tools:ignore="HardcodedText"/>
-            <item
                 android:id="@+id/development_mode_reset_log"
                 android:title="Reset logging"
                 tools:ignore="HardcodedText"/>

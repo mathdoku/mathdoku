@@ -5,7 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
-import net.cactii.mathdoku.storage.GameFile;
+import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 
 import android.util.Log;
 
@@ -162,7 +162,7 @@ public class CellChange {
 	 */
 	public String toStorageString() {
 		return SAVE_GAME_CELL_CHANGE_LINE
-				+ GameFile.FIELD_DELIMITER_LEVEL1
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ this.toStorageStringRecursive();
 	}
 
@@ -174,17 +174,17 @@ public class CellChange {
 	 */
 	private String toStorageStringRecursive() {
 		String storageString = "[" + mGridCell.getCellNumber()
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mPreviousUserValue
-				+ GameFile.FIELD_DELIMITER_LEVEL1;
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + mPreviousUserValue
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1;
 		for (int previousPossibleValue : mPreviousPossibleValues) {
 			storageString += Integer.toString(previousPossibleValue)
-					+ GameFile.FIELD_DELIMITER_LEVEL2;
+					+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2;
 		}
-		storageString += GameFile.FIELD_DELIMITER_LEVEL1;
+		storageString += SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1;
 		if (mRelatedCellChanges != null) {
 			for (CellChange cellChange : mRelatedCellChanges) {
 				storageString += cellChange.toStorageStringRecursive()
-						+ GameFile.FIELD_DELIMITER_LEVEL2;
+						+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2;
 			}
 		}
 		storageString += "]";
@@ -206,7 +206,7 @@ public class CellChange {
 	public boolean fromStorageString(String line, ArrayList<GridCell> cells, int savedWithRevisionNumber) {
 		final String CELL_CHANGE_LINE_REGEXP = "^"
 				+ SAVE_GAME_CELL_CHANGE_LINE + "(\\.v\\d+)?"
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + "(.*)$";
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + "(.*)$";
 		final int GROUP_VERSION_NUMBER = 1;
 		final int GROUP_CELL_CHANGE = 2;
 
@@ -257,10 +257,10 @@ public class CellChange {
 		// needed to ensure the validity of the cell information but are not
 		// used programmaticly.
 		final String CELL_CHANGE_REGEXP = "^\\[(\\d+)"
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + "(\\d*)"
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + "((\\d*)|((\\d*"
-				+ GameFile.FIELD_DELIMITER_LEVEL2 + ")+))"
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + "(.*)\\]$";
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + "(\\d*)"
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + "((\\d*)|((\\d*"
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2 + ")+))"
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + "(.*)\\]$";
 		final int GROUP_CELL_NUMBER = 1;
 		final int GROUP_PREVIOUS_USER_VALUE = 2;
 		final int GROUP_PREVIOUS_POSSIBLE_VALUES = 3;
@@ -311,7 +311,7 @@ public class CellChange {
 		if (!matcher.group(GROUP_PREVIOUS_POSSIBLE_VALUES).equals("")) {
 			for (String possible : matcher
 					.group(GROUP_PREVIOUS_POSSIBLE_VALUES).split(
-							GameFile.FIELD_DELIMITER_LEVEL2)) {
+							SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
 				mPreviousPossibleValues.add(Integer.valueOf(possible));
 			}
 		}
@@ -352,7 +352,7 @@ public class CellChange {
 				default:
 					if (levelNestedGroup == 0
 							&& !Character.toString(c).equals(
-									GameFile.FIELD_DELIMITER_LEVEL2)) {
+									SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
 						Log.i(TAG, indent + "Unexpected character '" + c
 								+ "'at position " + index);
 						return false;

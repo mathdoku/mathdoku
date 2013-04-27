@@ -1,14 +1,13 @@
 package net.cactii.mathdoku;
 
-import java.util.ArrayList;
+import java.io.File;
+import java.io.FilenameFilter;
 
 import net.cactii.mathdoku.MainActivity.InputMode;
 import net.cactii.mathdoku.DevelopmentHelpers.DevelopmentHelperHoneycombAndAbove;
-import net.cactii.mathdoku.storage.GameFile;
-import net.cactii.mathdoku.storage.GameFile.GameFileType;
+import net.cactii.mathdoku.storage.PreviewImage;
 import net.cactii.mathdoku.storage.database.DatabaseHelper;
-import net.cactii.mathdoku.storage.database.GridDatabaseAdapter;
-import net.cactii.mathdoku.storage.database.StatisticsDatabaseAdapter;
+import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 import net.cactii.mathdoku.util.Util;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -79,9 +78,6 @@ public class DevelopmentHelper {
 				return true;
 			case R.id.development_mode_recreate_previews:
 				recreateAllPreviews(mainActivity);
-				return true;
-			case R.id.development_mode_delete_games:
-				deleteAllGames(mainActivity);
 				return true;
 			case R.id.development_mode_reset_preferences:
 				resetPreferences(mainActivity);
@@ -199,40 +195,6 @@ public class DevelopmentHelper {
 	}
 
 	/**
-	 * Delete all games (including preview images).
-	 * 
-	 * @param context
-	 *            The activity in which context the confirmation dialog will be
-	 *            shown.
-	 */
-	public static void deleteAllGames(final MainActivity mainActivity) {
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-			AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
-			builder.setTitle("Delete all?")
-					.setMessage("All games and previews will be deleted.")
-					.setNegativeButton("Cancel",
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int id) {
-									// Do nothing
-								}
-							})
-					.setPositiveButton("Delete all",
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int id) {
-									executeDeleteAllGames();
-									mainActivity.mGrid = null;
-									mainActivity
-											.setInputMode(InputMode.NO_INPUT__HIDE_GRID);
-								}
-							});
-			AlertDialog dialog = builder.create();
-			dialog.show();
-		}
-	}
-
-	/**
 	 * Delete all preview images and resets the preferences at the default which
 	 * is used to check whether preview images have to be generated.
 	 * 
@@ -259,35 +221,7 @@ public class DevelopmentHelper {
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int id) {
-									// Delete preview last game file
-									GameFile gameFileLastGame = new GameFile(
-											GameFileType.LAST_GAME);
-									if (gameFileLastGame.exists()
-											&& gameFileLastGame
-													.hasPreviewImage()) {
-										gameFileLastGame.deletePreviewImage();
-									}
-
-									// Delete preview new game file
-									GameFile gameFileNewGame = new GameFile(
-											GameFileType.NEW_GAME);
-									if (gameFileNewGame.exists()
-											&& gameFileNewGame
-													.hasPreviewImage()) {
-										gameFileNewGame.deletePreviewImage();
-									}
-
-									// Delete preview all user games
-									ArrayList<String> filenames = GameFile
-											.getAllGameFilesCreatedByUser(Integer.MAX_VALUE);
-									for (String filename : filenames) {
-										GameFile gameFile = new GameFile(
-												filename);
-										if (gameFile.hasPreviewImage()) {
-											gameFile.deletePreviewImage();
-										}
-									}
-
+									executeDeleteAllPreviews();
 									Preferences.getInstance(mainActivity)
 											.initCreatePreviewImagesCompleted();
 									restartActivity(mainActivity);
@@ -355,6 +289,7 @@ public class DevelopmentHelper {
 								public void onClick(DialogInterface dialog,
 										int id) {
 									executeDeleteAllGames();
+									executeDeleteAllPreviews();
 									executeDeleteAllPreferences();
 									executeDeleteDatabase(mainActivity);
 									mainActivity.mGrid = null;
@@ -370,27 +305,25 @@ public class DevelopmentHelper {
 	}
 
 	/**
-	 * Delete all game files (including previews) without warning.
+	 * Delete all game files and previews without warning.
 	 */
 	private static void executeDeleteAllGames() {
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-			// Delete last game file
-			GameFile gameFileLastGame = new GameFile(GameFileType.LAST_GAME);
-			if (gameFileLastGame.exists()) {
-				gameFileLastGame.delete();
-			}
-
-			// Delete new game file
-			GameFile gameFileNewGame = new GameFile(GameFileType.NEW_GAME);
-			if (gameFileNewGame.exists()) {
-				gameFileNewGame.delete();
-			}
-
-			// Delete all user games
-			ArrayList<String> filenames = GameFile
-					.getAllGameFilesCreatedByUser(Integer.MAX_VALUE);
-			for (String filename : filenames) {
-				new GameFile(filename).delete();
+			FilenameFilter filter = new FilenameFilter() {
+				public boolean accept(File dir, String name) {
+					if (name.endsWith(".mgf") || name.endsWith(".png")) {
+						return true;
+					} else {
+						return false;
+					}
+				}
+			};
+			String path = Util.getPath();
+			File dir = new File(path);
+			if (dir != null) {
+				for (String file : dir.list(filter)) {
+					new File(path + file).delete();
+				}
 			}
 		}
 	}
@@ -476,9 +409,7 @@ public class DevelopmentHelper {
 			// will be consistent just after it has been created.
 			databaseHelper.getWritableDatabase();
 
-			if (new GridDatabaseAdapter().isTableDefinitionChanged()
-					|| new StatisticsDatabaseAdapter()
-							.isTableDefinitionChanged()) {
+			if (DatabaseHelper.hasChangedTableDefinitions()) {
 				AlertDialog.Builder builder = new AlertDialog.Builder(
 						mainActivity);
 				builder.setTitle("Database is inconsistent?")
@@ -508,6 +439,29 @@ public class DevelopmentHelper {
 								});
 				AlertDialog dialog = builder.create();
 				dialog.show();
+			}
+		}
+	}
+
+	/**
+	 * Deletes all preview images.
+	 */
+	private static void executeDeleteAllPreviews() {
+		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			FilenameFilter filter = new FilenameFilter() {
+				public boolean accept(File dir, String name) {
+					return name.endsWith(PreviewImage.FILENAME_EXTENSION);
+				}
+			};
+			String path = Util.getPath();
+			File dir = new File(Util.getPath());
+			String[] previewImages = dir.list(filter);
+
+			SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = new SolvingAttemptDatabaseAdapter();
+			for (String previewImage : previewImages) {
+				new File(path + previewImage).delete();
+				solvingAttemptDatabaseAdapter
+						.removeReferenceToPreviewFilename(path + previewImage);
 			}
 		}
 	}

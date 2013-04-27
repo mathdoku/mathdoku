@@ -5,10 +5,7 @@ import java.util.Random;
 
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.GridGenerating.GridGeneratingParameters;
-import net.cactii.mathdoku.storage.GameFile;
-import net.cactii.mathdoku.storage.GameFile.GameFileType;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter;
-import net.cactii.mathdoku.storage.GridFile;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -198,7 +195,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		mTimeStarted = System.currentTimeMillis();
 
 		// Create a new empty grid.
-		mGrid = new Grid(mGridSize);
+		mGrid = new Grid();
+		mGrid.setGridSize(mGridSize);
 
 		int num_solns = 0;
 		int num_attempts = 0;
@@ -252,17 +250,12 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 					gridGeneratingParameters.mHideOperators = this.mHideOperators;
 					gridGeneratingParameters.mMaxCageResult = this.mMaxCageResult;
 					gridGeneratingParameters.mMaxCageSize = this.mMaxCageSize;
-					mGrid.create(mGridSize, mCells, mCages, true,
-							gridGeneratingParameters);
-
-					// Store grid as a grid file only. Preview image and
-					// statistics are not saved.
-					GridFile gridFile = new GridFile(
-							GameFile.getFilenameForType(GameFileType.NEW_GAME));
-					gridFile.save(mGrid, false);
-
-					// Create new game file.
-					new GameFile(GameFileType.NEW_GAME).copyToNewGameFile();
+					if (!mGrid.create(mGridSize, mCells, mCages, true,
+							gridGeneratingParameters)) {
+						Log.e(TAG, "Can not create grid.");
+						continue;
+					}
+					mGrid.saveWithoutPreview();
 
 					publishProgress(
 							DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_MESSAGE,
@@ -281,7 +274,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 						if (mGridGeneratorOptions.randomHideOperators) {
 							mHideOperators = new Random().nextBoolean();
 						}
-						mGrid = new Grid(mGridSize);
+						mGrid = new Grid();
+						mGrid.setGridSize(mGridSize);
 
 						// Fake a non unique solution so another grid is
 						// generated.
@@ -387,9 +381,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		gridGeneratingParameters.mHideOperators = this.mHideOperators;
 		gridGeneratingParameters.mMaxCageResult = this.mMaxCageResult;
 		gridGeneratingParameters.mMaxCageSize = this.mMaxCageSize;
-		mGrid.create(mGridSize, mCells, mCages, true, gridGeneratingParameters);
-
-		if (mActivity != null) {
+		boolean gridCreated = mGrid.create(mGridSize, mCells, mCages, true, gridGeneratingParameters);
+		if (mActivity != null && gridCreated) {
 			if (DEBUG_GRID_GENERATOR) {
 				Log.d(TAG, "Send results to activity.");
 			}
@@ -398,11 +391,11 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			// completing the new game generation. The activity will deal with
 			// showing or showing the new grid directly.
 			mActivity.onNewGridReady(mGrid);
+		}
 
-			// Dismiss the dialog if still visible
-			if (this.mProgressDialog != null) {
-				dismissProgressDialog();
-			}
+		// Dismiss the dialog if still visible
+		if (this.mProgressDialog != null) {
+			dismissProgressDialog();
 		}
 
 		super.onPostExecute(result);

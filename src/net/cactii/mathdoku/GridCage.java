@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 import net.cactii.mathdoku.statistics.GridStatistics;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
-import net.cactii.mathdoku.storage.GameFile;
+import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 
 public class GridCage {
 	// Each line in the GridFile which contains information about the cell
@@ -562,16 +562,16 @@ public class GridCage {
 	 */
 	public String toStorageString() {
 		String storageString = SAVE_GAME_CAGE_LINE
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mId
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mAction
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mResult
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mOperator
-				+ GameFile.FIELD_DELIMITER_LEVEL1;
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + mId
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + mAction
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + mResult
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + mOperator
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1;
 		for (GridCell cell : mCells) {
 			storageString += cell.getCellNumber()
-					+ GameFile.FIELD_DELIMITER_LEVEL2;
+					+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2;
 		}
-		storageString += GameFile.FIELD_DELIMITER_LEVEL1
+		storageString += SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ Boolean.toString(isOperatorHidden());
 
 		return storageString;
@@ -587,7 +587,7 @@ public class GridCage {
 	 *         processed correctly. False otherwise.
 	 */
 	public boolean fromStorageString(String line, int savedWithRevisionNumber) {
-		String[] cageParts = line.split(GameFile.FIELD_DELIMITER_LEVEL1);
+		String[] cageParts = line.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1);
 
 		// Determine if this line contains cell-information. If so, also
 		// determine with which revision number the information was stored.
@@ -617,7 +617,7 @@ public class GridCage {
 			mOperator = cageParts[index++];
 		}
 		for (String cellId : cageParts[index++]
-				.split(GameFile.FIELD_DELIMITER_LEVEL2)) {
+				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
 			GridCell c = mGrid.mCells.get(Integer.parseInt(cellId));
 			c.setCageId(mId);
 			mCells.add(c);

@@ -187,7 +187,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(KEY_GRID_ID, grid.getRowId());
 		initialValues.put(KEY_FILENAME_SOLVING_ATTEMPT,
-				grid.getSolvingAttemptFilename());
+				grid.getSolvingAttemptId());
 		initialValues.put(KEY_CELLS_USER_VALUES_EMPTY, grid.getGridSize()
 				* grid.getGridSize());
 		initialValues.put(KEY_FIRST_MOVE, now.toString());

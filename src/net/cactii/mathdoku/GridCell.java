@@ -10,7 +10,7 @@ import net.cactii.mathdoku.painter.CellPainter;
 import net.cactii.mathdoku.painter.MaybeValuePainter;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.painter.UserValuePainter;
-import net.cactii.mathdoku.storage.GameFile;
+import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -533,20 +533,20 @@ public class GridCell {
 	 */
 	public String toStorageString() {
 		String storageString = SAVE_GAME_CELL_LINE
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mCellNumber
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mRow
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mColumn
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mCageText
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mCorrectValue
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mUserValue
-				+ GameFile.FIELD_DELIMITER_LEVEL1;
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + mCellNumber
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + mRow
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + mColumn
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + mCageText
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + mCorrectValue
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + mUserValue
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1;
 		for (int possible : mPossibles) {
-			storageString += possible + GameFile.FIELD_DELIMITER_LEVEL2;
+			storageString += possible + SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2;
 		}
-		storageString += GameFile.FIELD_DELIMITER_LEVEL1
+		storageString += SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ Boolean.toString(mInvalidUserValueHighlight)
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + Boolean.toString(mCheated)
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + Boolean.toString(mSelected);
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + Boolean.toString(mCheated)
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + Boolean.toString(mSelected);
 
 		return storageString;
 	}
@@ -561,7 +561,7 @@ public class GridCell {
 	 *         processed correctly. False otherwise.
 	 */
 	public boolean fromStorageString(String line, int savedWithRevisionNumber) {
-		String[] cellParts = line.split(GameFile.FIELD_DELIMITER_LEVEL1);
+		String[] cellParts = line.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1);
 
 		// Determine if this line contains cell-information. If so, also
 		// determine with which revision number the information was stored.
@@ -586,7 +586,7 @@ public class GridCell {
 				|| revisionNumber > 1) {
 			if (!cellParts[index].equals("")) {
 				for (String possible : cellParts[index]
-						.split(GameFile.FIELD_DELIMITER_LEVEL2)) {
+						.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
 					addPossible(Integer.parseInt(possible));
 				}
 			}

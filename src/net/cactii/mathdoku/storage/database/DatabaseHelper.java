@@ -19,7 +19,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static DatabaseHelper mDatabaseHelperSingletonInstance = null;
 	private static Context currentRenamingDelegatingContext = null;
-
+	
 	/**
 	 * Constructor should be private to prevent direct instantiation. Call the
 	 * static factory method "getInstance()" instead.
@@ -168,6 +168,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		GridDatabaseAdapter.create(db);
+		SolvingAttemptDatabaseAdapter.create(db);
 		StatisticsDatabaseAdapter.create(db);
 
 		// Enable foreign key constraints
@@ -177,7 +178,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		GridDatabaseAdapter.upgrade(db, oldVersion, newVersion);
+		SolvingAttemptDatabaseAdapter.upgrade(db, oldVersion, newVersion);
 		StatisticsDatabaseAdapter.upgrade(db, oldVersion, newVersion);
+	}
+
+	public static boolean hasChangedTableDefinitions() {
+		return new GridDatabaseAdapter().isTableDefinitionChanged()
+				|| new StatisticsDatabaseAdapter().isTableDefinitionChanged()
+				|| new SolvingAttemptDatabaseAdapter()
+						.isTableDefinitionChanged();
 	}
 
 	/**

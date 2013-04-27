@@ -258,6 +258,7 @@ public abstract class DatabaseAdapter {
 						+ " AND type = " + stringBetweenQuotes("table"), null,
 				null, null, null, null);
 		if (cursor != null && cursor.moveToFirst()) {
+			// Table exists. Check if definition matches with expected definition. 
 			String sql = cursor
 					.getString(cursor.getColumnIndexOrThrow(KEY_SQL));
 			tableDefinitionChanged = !sql.equals(getCreateSQL());
@@ -268,6 +269,11 @@ public abstract class DatabaseAdapter {
 				Log.e(TAG, "Database-version: " + sql);
 				Log.e(TAG, "Expected version: " + getCreateSQL());
 			}
+		} else {
+			// Table does not exist.
+			Log.e(TAG, "Table '" + getTableName() + "' not found in database.");
+			Log.e(TAG, "Expected version: " + getCreateSQL());
+			tableDefinitionChanged = true;
 		}
 		cursor.close();
 

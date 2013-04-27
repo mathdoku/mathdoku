@@ -137,9 +137,6 @@
     <!-- The button in the save game screen that allows the player to load a previously saved game state. -->
     <string name="save_game_screen_load_game">Laden</string>
 
-    <!-- The button in the save game screen that allows the player to delete a previously saved game state. -->
-    <string name="save_game_screen_delete_game">Löschen</string>
-
     <!-- The confirmation message that shows up when a delete button is pressed, plus the associated title and button labels. -->
     <string name="game_file_list__delete_game_file_confirmation_message">Sind Sie sicher, dass Sie dieses Spiel löschen möchten?</string>
     <string name="game_file_list__delete_game_file_confirmation_title">Gespeichertes Spiel löschen?</string>
