@@ -42,7 +42,7 @@
 
     <!-- The title and body describing how to play the game. -->
     <string name="dialog_help_how_to_play_title">How to play</string>
-    <string name="dialog_help_how_to_play_body">Touch the squares in the grid to choose a digit. The \'maybe\' tickbox allows you to mark multiple possibilities.\n\nLong-touch a cell for more options.\n\nYou can also play using the trackball.\n\nThe current game will be saved when you exit the game, or use the Load/Save menu to save unlimited games.</string>
+    <string name="dialog_help_how_to_play_body">Touch to select a cell in the grid, then choose a digit. The \'normal / maybe\' mode button allows you to mark multiple possibilities.\n\nLong-touch a cell for more options.\n\nYou can also play using the trackball.\n\nThe current game will be saved when you exit the game, or use the Load/Save menu to save unlimited games.</string>
 
     <!-- The version title in the help screen. -->
     <string name="dialog_help_version_title">Version</string>
