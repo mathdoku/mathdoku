@@ -66,8 +66,12 @@ public class UsageLog {
 	// Singleton reference to the logger
 	private static UsageLog mUsageLogginSingletonInstance = null;
 
-	// Date at or after which the logging should be stopped.
-	Calendar mDateEndLogging;
+	// Set begin and end date of period in which the usage logging will close
+	// down. In case a logging message is generated in this period, the user
+	// will be requested to send his log file unless the user already opted out
+	// before.
+	Calendar mDateLoggingClosePeriodStart;
+	Calendar mDateLoggingClosePeriodEnd;
 
 	// Reference to the application context
 	private static Activity mActivity;
@@ -116,15 +120,10 @@ public class UsageLog {
 
 		// Initialize the fixed date at which the logging should be closed
 		// anyway.
-		mDateEndLogging = Calendar.getInstance();
-		mDateEndLogging.set(2013, 5, 19);
-
-		// Check if logging should continue or closed
-		if (Calendar.getInstance().after(mDateEndLogging)) {
-			askConsentForSendingLog(mActivity);
-			mBuildLog = false;
-			return;
-		}
+		mDateLoggingClosePeriodStart = Calendar.getInstance();
+		mDateLoggingClosePeriodStart.set(2013, Calendar.MAY, 19);
+		mDateLoggingClosePeriodEnd = Calendar.getInstance();
+		mDateLoggingClosePeriodEnd.set(2013, Calendar.JUNE, 19);
 
 		// Check if log already exists.
 		boolean newLogFile = false;
@@ -275,7 +274,7 @@ public class UsageLog {
 	 * 
 	 */
 	public void logGameFileConversion(int mCurrentVersion, int mNewVersion,
-			int mTotalGrids, int mUniqueGrids) {
+			int mTotalGrids, int mUniqueGrids, int totalGridsNotConverted) {
 		if (mBuildLog) {
 			SortedMap<String, String> sortedMap = new TreeMap<String, String>();
 
@@ -283,6 +282,7 @@ public class UsageLog {
 			sortedMap.put("ToRevision", Integer.toString(mNewVersion));
 			sortedMap.put("TotalGrids", Integer.toString(mTotalGrids));
 			sortedMap.put("UniqueGrids", Integer.toString(mUniqueGrids));
+			sortedMap.put("TotalGridsNotConvertedDueToErrorWhenLoading", Integer.toString(totalGridsNotConverted));
 
 			logSortedMap("GameFileConversion", sortedMap);
 		}
@@ -452,13 +452,30 @@ public class UsageLog {
 				mBuildLog = false;
 				return;
 			}
-		}
 
-		// Check if logging period has ended.
-		if (Calendar.getInstance().after(mDateEndLogging)) {
-			askConsentForSendingLog(mActivity);
-			mBuildLog = false;
-			return;
+			// Get preferences
+			Preferences preferences = Preferences.getInstance(); 
+
+			// In case a logging message is generated in the logging close down
+			// period, the user will be requested to send his log file.
+			Date now = Calendar.getInstance().getTime();
+			if (now.after(mDateLoggingClosePeriodStart.getTime())
+					&& now.before(mDateLoggingClosePeriodEnd.getTime())) {
+				// Only request to send logfile in case minimal 3 games have
+				// been started.
+				if (preferences.getNumberOfGamesStarted() >= 2 && !preferences.isUsageLogDisabled()) {
+					// Set auto disable as soon as we have asked the consent of the user in the close down period.
+					preferences.setUsageLogDisabled();
+					askConsentForSendingLog(mActivity);
+					mBuildLog = false;
+					return;
+				}
+			}
+
+			// Auto disable the preference after end date of closing down period
+			if (now.after(mDateLoggingClosePeriodEnd.getTime())) {
+				preferences.setUsageLogDisabled();
+			}
 		}
 	}
 
@@ -542,11 +559,6 @@ public class UsageLog {
 								askConsentForSurvey(activity);
 							}
 						}).show();
-		/*
-		 * FrameLayout fl = (FrameLayout)
-		 * builder.findViewById(android.R.id.custom); fl.addView(textView, new
-		 * LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-		 */
 	}
 
 	/**
@@ -613,8 +625,7 @@ public class UsageLog {
 									activity.startActivity(Intent
 											.createChooser(
 													i,
-													activity
-															.getResources()
+													activity.getResources()
 															.getString(
 																	R.string.usage_log_choose_action_title)));
 								} catch (android.content.ActivityNotFoundException ex) {

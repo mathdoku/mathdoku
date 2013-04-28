@@ -46,7 +46,6 @@ import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -1154,6 +1153,11 @@ public class MainActivity extends Activity implements
 					if (newGrid.load(mSolvingAttemptImagePreviewCreation)) {
 						mGrid = newGrid;
 						mGridView.loadNewGrid(mGrid);
+						if (mGrid.isActive()) {
+							// As this grid can contain maybe value we have to
+							// set the corresponding digit position grid.
+							setDigitPositionGrid(InputMode.NORMAL);
+						}
 						mPuzzleGridLayout.setVisibility(View.INVISIBLE);
 						mControls.setVisibility(View.GONE);
 						mStartButton.setVisibility(View.GONE);
@@ -1263,10 +1267,6 @@ public class MainActivity extends Activity implements
 
 			// Show the grid of the loaded puzzle.
 			if (mGrid.isActive()) {
-				// Set the digit position grid to be used for displaying the
-				// input buttons.
-				setDigitPositionGrid();
-
 				// Determine input mode. The input mode will only be set if it
 				// was not yet set before.
 				if (mInputMode == InputMode.NO_INPUT__HIDE_GRID) {
@@ -1386,6 +1386,11 @@ public class MainActivity extends Activity implements
 			}
 			mControls.setVisibility(View.GONE);
 			mStartButton.setVisibility(View.VISIBLE);
+
+			// Determine the layout to be used for maybe values inside a grid
+			if (mGrid != null) {
+				setDigitPositionGrid(inputMode);
+			}
 			break;
 		case NORMAL:
 		case MAYBE:
@@ -1412,34 +1417,9 @@ public class MainActivity extends Activity implements
 									(inputMode == InputMode.NORMAL ? R.string.input_mode_normal_long
 											: R.string.input_mode_maybe_long)));
 
-			// Determine which buttons to show on what positions
-			if (mGrid != null && mDigitPositionGrid != null) {
-				// Use the created mapping to fill all digit positions.
-				for (int i = 0; i < mDigitPosition.length; i++) {
-					int value = mDigitPositionGrid.getValue(i);
-					mDigitPosition[i].setText(value > 0 ? Integer
-							.toString(value) : "");
-					mDigitPosition[i].setVisibility(mDigitPositionGrid
-							.getVisibility(i));
-					mDigitPosition[i].setTextColor(color);
-				}
-				if (mDigitPositionGrid.isGrid2x5()) {
-					// This layout also has a buttonposition10 which is never
-					// used to put a button there. However for a correct layout
-					// of the buttons the visibility has to be set correctly.
-					View view = findViewById(R.id.digitSelect10);
-					if (view != null) {
-						view.setVisibility(mDigitPositionGrid.getVisibility(9));
-					}
-				}
-
-				// The weight of the input mode has to be aligned with the
-				// number of columns containing digit buttons.
-				TableRow.LayoutParams layoutParams = (TableRow.LayoutParams) mInputModeTextView
-						.getLayoutParams();
-				layoutParams.weight = mDigitPositionGrid
-						.getVisibleDigitColumns();
-				mInputModeTextView.setLayoutParams(layoutParams);
+			// Determine the layout to be used for the digit buttons and maybe values inside a grid
+			if (mGrid != null) {
+				setDigitPositionGrid(inputMode);
 			}
 			break;
 		}
@@ -1500,10 +1480,18 @@ public class MainActivity extends Activity implements
 	}
 
 	/**
-	 * Set the digit position grid to be used for displaying the digit buttons.
+	 * Set the digit position grid for layout the digit buttons and maybe values.
+	 * 
+	 * @param inputMode
+	 *            The new input mode to be set.
 	 */
-	private void setDigitPositionGrid() {
-		// Determine the digit position grid type to used based on screen
+	private void setDigitPositionGrid(InputMode inputMode) {
+		// Determine the color which is used for text which depends on the
+		// actual input mode
+		int color = (inputMode == InputMode.NORMAL ? mPainter.getHighlightedTextColorNormalInputMode()
+				: mPainter.getHighlightedTextColorMaybeInputMode());
+
+		// Determine the digit position grid type to be used based on screen
 		// dimensions.
 		DigitPositionGridType digitPositionGridType = DigitPositionGridType.GRID_3X3;
 		if (getResources().getString(R.string.dimension).equals("small-port")) {
@@ -1522,6 +1510,25 @@ public class MainActivity extends Activity implements
 			// Propagate setting to the grid view as well for displaying maybe
 			// values (dependent on preferences).
 			mGridView.setDigitPositionGrid(mDigitPositionGrid);
+		}
+		
+		// Use the created mapping to fill all digit positions.
+		for (int i = 0; i < mDigitPosition.length; i++) {
+			int value = mDigitPositionGrid.getValue(i);
+			mDigitPosition[i].setText(value > 0 ? Integer
+					.toString(value) : "");
+			mDigitPosition[i].setVisibility(mDigitPositionGrid
+					.getVisibility(i));
+			mDigitPosition[i].setTextColor(color);
+		}
+		if (mDigitPositionGrid.isGrid2x5()) {
+			// This layout also has a buttonposition10 which is never
+			// used to put a button there. However for a correct layout
+			// of the buttons the visibility has to be set correctly.
+			View view = findViewById(R.id.digitSelect10);
+			if (view != null) {
+				view.setVisibility(mDigitPositionGrid.getVisibility(9));
+			}
 		}
 	}
 

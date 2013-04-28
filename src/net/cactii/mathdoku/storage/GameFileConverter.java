@@ -63,6 +63,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	private ArrayList<String> mGridDefinitions;
 	private int mTotalGrids;
 	private int mTotalGridsSolved;
+	private int mTotalGridsNotConverted;
 
 	// Database adapter for the statistics
 	StatisticsDatabaseAdapter mStatisticsDatabaseAdapter;
@@ -147,6 +148,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 		mGridDefinitions = new ArrayList<String>();
 		mTotalGrids = 0;
 		mTotalGridsSolved = 0;
+		mTotalGridsNotConverted = 0;
 	}
 
 	@Override
@@ -200,11 +202,13 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 							mTotalGridsSolved++;
 						}
 
-						// Save grid. 
+						// Save grid.
 						grid.saveWithoutPreview();
 
 						// Update progress
 						publishProgress();
+					} else {
+						mTotalGridsNotConverted++;
 					}
 				}
 			}
@@ -222,7 +226,8 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	@Override
 	protected void onPostExecute(Void result) {
 		UsageLog.getInstance().logGameFileConversion(mCurrentVersion,
-				mNewVersion, mTotalGrids, mGridDefinitions.size());
+				mNewVersion, mTotalGrids, mGridDefinitions.size(),
+				mTotalGridsNotConverted);
 
 		// We assume the user knows the rules as soon as two game have been
 		// solved.

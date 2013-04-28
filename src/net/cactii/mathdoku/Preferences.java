@@ -331,6 +331,16 @@ public class Preferences {
 	}
 
 	/**
+	 * Gets the number of games which have been started.
+	 * 
+	 * @return The number of games which have been started.
+	 */
+	public int getNumberOfGamesStarted() {
+		return mSharedPreferences.getInt(USAGE_LOG_COUNT_GAMES_STARTED,
+				USAGE_LOG_COUNT_GAMES_STARTED_DEFAULT);
+	}
+
+	/**
 	 * Increase the number of games which have been started by the user.
 	 * 
 	 * @return The total number of games which have been started by the user.
