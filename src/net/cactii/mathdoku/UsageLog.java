@@ -284,7 +284,7 @@ public class UsageLog {
 	 * 
 	 */
 	public void logGameFileConversion(int mCurrentVersion, int mNewVersion,
-			int mTotalGrids, int mUniqueGrids) {
+			int mTotalGrids, int mUniqueGrids, int totalGridsNotConverted) {
 		if (mBuildLog) {
 			SortedMap<String, String> sortedMap = new TreeMap<String, String>();
 
@@ -292,6 +292,7 @@ public class UsageLog {
 			sortedMap.put("ToRevision", Integer.toString(mNewVersion));
 			sortedMap.put("TotalGrids", Integer.toString(mTotalGrids));
 			sortedMap.put("UniqueGrids", Integer.toString(mUniqueGrids));
+			sortedMap.put("TotalGridsNotConvertedDueToErrorWhenLoading", Integer.toString(totalGridsNotConverted));
 
 			logSortedMap("GameFileConversion", sortedMap);
 		}

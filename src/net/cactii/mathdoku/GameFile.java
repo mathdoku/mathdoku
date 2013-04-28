@@ -38,6 +38,9 @@ public class GameFile extends File {
 	private static final String FILENAME_NEW_GAME = "new_game";
 	private static final String GAMEFILE_EXTENSION = ".mgf"; // MGF = Mathdoku
 																// Game File
+	private static final String GAMEFILE_EXTENSION_ERROR = ".err"; // Game File
+																	// with an
+																	// error
 	private static final String PREVIEW_EXTENSION = ".png";
 
 	// Remove "&& false" in following line to show debug information about
@@ -503,8 +506,7 @@ public class GameFile extends File {
 		}
 
 		// Determine size of preview images as needed by the file adapter.
-		int previewSize = GameFileListAdapter
-				.getPreviewImageSize(activity);
+		int previewSize = GameFileListAdapter.getPreviewImageSize(activity);
 		if (previewSize == 0) {
 			// Can not calculate size of preview image.
 			return false;
@@ -640,10 +642,12 @@ public class GameFile extends File {
 		// Check all files but stop if maximum is reached
 		int countFiles = 0;
 		for (String filename : filenames) {
-			if (filename.endsWith(GameFile.PREVIEW_EXTENSION)) {
-				// Skip previews images allways.
+			if (filename.endsWith(GameFile.PREVIEW_EXTENSION)
+					|| filename.endsWith(GameFile.GAMEFILE_EXTENSION_ERROR)) {
+				// Always skip these files.
 				continue;
 			}
+
 			if ((includeUserGame && filename
 					.startsWith(GameFile.FILENAME_SAVED_GAME))
 					|| (includeLastGame && filename

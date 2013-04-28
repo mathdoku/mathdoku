@@ -37,6 +37,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	private static final String FILENAME_LAST_GAME_R111 = "last_game";
 	private static final String FILENAME_SAVED_GAME_R111 = "saved_game_";
 	private static final String GAMEFILE_EXTENSION_R111 = ".mgf";
+	private static final String GAMEFILE_EXTENSION_ERROR_R111 = ".err";
 	private String[] mFilenamesR77;
 
 	// File which need to be upgraded
@@ -49,6 +50,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	private ArrayList<String> mGridSignatures;
 	private int mTotalGrids;
 	private int mTotalGridsSolved;
+	private int mTotalGridsNotConverted;
 	
 	/**
 	 * Creates a new instance of {@link GameFileConverter}.
@@ -131,6 +133,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 		mGridSignatures = new ArrayList<String>();
 		mTotalGrids = 0;
 		mTotalGridsSolved = 0;
+		mTotalGridsNotConverted = 0;
 	}
 
 	/*
@@ -183,20 +186,26 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 					// Load grid
 					GameFile gameFile = new GameFile(filename);
 					Grid grid = gameFile.load();
-					
-					// Get signature for grid. Update the number of occurrences for this signature.
-					mTotalGrids++;
-					String signature = grid.getSignatureString();
-					if (!mGridSignatures.contains(signature)) {
-						// New signature found
-						mGridSignatures.add(signature);
+					if (grid == null) {
+						// An error occurred while loading this game.
+						File errorFile = new File(PATH_R110 + filename + GAMEFILE_EXTENSION_ERROR_R111);
+						new File(PATH_R110 + filename).renameTo(errorFile);
+						mTotalGridsNotConverted++;
+					} else {
+						// Get signature for grid. Update the number of occurrences for this signature.
+						mTotalGrids++;
+						String signature = grid.getSignatureString();
+						if (!mGridSignatures.contains(signature)) {
+							// New signature found
+							mGridSignatures.add(signature);
+						}
+						if (grid.checkIfSolved()) {
+							mTotalGridsSolved++;
+						}
+						
+						// Save grid and publish progress
+						gameFile.save(grid, true);
 					}
-					if (grid.checkIfSolved()) {
-						mTotalGridsSolved++;
-					}
-					
-					// Save grid and publish progress
-					gameFile.save(grid, true);
 					publishProgress();
 				}
 			}
@@ -211,7 +220,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 
 	@Override
 	protected void onPostExecute(Void result) {
-		UsageLog.getInstance().logGameFileConversion(mCurrentVersion, mNewVersion, mTotalGrids, mGridSignatures.size());
+		UsageLog.getInstance().logGameFileConversion(mCurrentVersion, mNewVersion, mTotalGrids, mGridSignatures.size(), mTotalGridsNotConverted);
 
 		// We assume the user knows the rules as soon as two game have been solved.
 		TipDialog.setUserIsFamiliarWithRules(mActivity, mTotalGridsSolved > 1);
@@ -251,7 +260,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	}
 
 	/**
-	 * Retrieve all files with a give prefix from a directory with given path.
+	 * Retrieve all files with a given prefix from a directory with given path.
 	 * 
 	 * @param path
 	 *            Path to a directory.
@@ -262,7 +271,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	private String[] getFiles(String path, final String filePrefix) {
 		FilenameFilter filter = new FilenameFilter() {
 			public boolean accept(File dir, String name) {
-				return name.startsWith(filePrefix);
+				return (name.startsWith(filePrefix) && !name.endsWith(GAMEFILE_EXTENSION_ERROR_R111));
 			}
 		};
 		File dir = new File(path);
