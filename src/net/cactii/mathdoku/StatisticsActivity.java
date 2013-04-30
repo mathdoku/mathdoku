@@ -111,6 +111,13 @@ public class StatisticsActivity extends Activity {
 							.getCumulativeStatistics(mGridSize, mGridSize);
 					mCumulativeStatisticsAllGridSizes = mStatisticsDatabaseAdapter
 							.getCumulativeStatistics(1, 9);
+					if (mCumulativeStatisticsAllGridSizes.mMinGridSize == mCumulativeStatisticsAllGridSizes.mMaxGridSize) {
+						// Up until now the user has only played games for one
+						// grid size. Cumulative graphic for all grid size are
+						// only relevant if games are played for different grid
+						// sizes.
+						mCumulativeStatisticsAllGridSizes = null;
+					}
 				} else {
 					mGridStatistics = null;
 				}
@@ -751,7 +758,7 @@ public class StatisticsActivity extends Activity {
 			xySeriesRenderer.setLineWidth(4);
 			xyMultipleSeriesRenderer.addSeriesRenderer(xySeriesRenderer);
 		}
-
+		
 		// Display as stacked bar chart here. As the series are mutually
 		// exclusive this will result in one single bar per game which is
 		// entirely colored based on status of game.
