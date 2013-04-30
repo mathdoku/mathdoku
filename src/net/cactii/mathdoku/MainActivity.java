@@ -47,6 +47,7 @@ import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -1495,6 +1496,13 @@ public class MainActivity extends Activity implements
 			// grid layout.
 			mDigitPositionGrid = new DigitPositionGrid(digitPositionGridType,
 					mGrid.getGridSize());
+			
+			// The weight of the input mode has to be aligned with the
+			// number of columns containing digit buttons.
+			TableRow.LayoutParams layoutParams = (TableRow.LayoutParams) mInputModeTextView
+					.getLayoutParams();
+			layoutParams.weight = mDigitPositionGrid.getVisibleDigitColumns();
+			mInputModeTextView.setLayoutParams(layoutParams);
 
 			// Propagate setting to the grid view as well for displaying maybe
 			// values (dependent on preferences).
