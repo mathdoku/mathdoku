@@ -2,6 +2,7 @@ package net.cactii.mathdoku;
 
 import net.cactii.mathdoku.DigitPositionGrid.DigitPositionGridType;
 import net.cactii.mathdoku.MainActivity.InputMode;
+import net.cactii.mathdoku.Tip.TipIncorrectValue;
 import net.cactii.mathdoku.Tip.TipOrderOfValuesInCage;
 import net.cactii.mathdoku.painter.GridPainter;
 import net.cactii.mathdoku.painter.Painter;
@@ -309,6 +310,10 @@ public class GridView extends View implements OnTouchListener {
 						// and
 						// column.
 						mGrid.clearRedundantPossiblesInSameRowOrColumn(orginalUserMove);
+					}
+					if (newValue != selectedCell.getCorrectValue()
+							&& TipIncorrectValue.toBeDisplayed(mPreferences)) {
+						new TipIncorrectValue(mMainActivity).show();
 					}
 				}
 				break;

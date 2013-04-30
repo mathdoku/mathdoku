@@ -19,6 +19,9 @@ public class Preferences {
 	public SharedPreferences mSharedPreferences;
 
 	// Identifiers for preferences.
+	public final static String CHECK_PROGRESS_USED = "CheckProgressUsed";
+	public final static boolean CHECK_PROGRESS_USED_DEFAULT = false;
+
 	public final static String CLEAR_REDUNDANT_POSSIBLES = "redundantPossibles";
 	public final static boolean CLEAR_REDUNDANT_POSSIBLES_DEFAULT = true;
 
@@ -228,6 +231,12 @@ public class Preferences {
 			if (!mSharedPreferences.contains(SHOW_STATISTICS_DESCRIPTION)) {
 				prefeditor.putBoolean(SHOW_STATISTICS_DESCRIPTION,
 						SHOW_STATISTICS_DESCRIPTION_DEFAULT);
+			}
+		}
+		if (previousInstalledVersion < 282 && currentVersion >= 282) {
+			if (!mSharedPreferences.contains(CHECK_PROGRESS_USED)) {
+				prefeditor.putBoolean(CHECK_PROGRESS_USED,
+						CHECK_PROGRESS_USED_DEFAULT);
 			}
 		}
 
@@ -450,6 +459,15 @@ public class Preferences {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Sets a tip to do-not-display-again.
+	 */
+	public void doNotDisplayTipAgain(String preference) {
+		Editor prefeditor = mSharedPreferences.edit();
+		prefeditor.putBoolean(preference, false);
+		prefeditor.commit();
 	}
 
 	/**

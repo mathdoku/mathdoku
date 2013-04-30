@@ -314,6 +314,11 @@
     <string name="dialog_tip_cheat_check_progress_title">Cheat: check progress</string>
     <string name="dialog_tip_cheat_check_progress_text">You have checked the progress of your solution. Invalid cells have been highlighted.\nEach time you use this cheat, the elapsed time will be increased with %1$s plus %2$s for each new invalid value which has been found.</string>
 
+    <!-- Title, and text for tip "Incorrect value" which refers to menu option "Check Progress". -->
+    <!-- TODO -->
+    <string name="dialog_tip_incorrect_value_title">Incorrect value</string>
+    <string name="dialog_tip_incorrect_value_text">You have entered an incorrect value. You will not be able to solve this puzzle in case you do not correct it. You can use menu option \'Check Progress\' to mark all cells having an incorrect value. Be aware: using \'Check Progress\' will raise the time elapsed with a penalty to discourage you from using it.</string>
+    
     <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- TODO: TRANSLATE ENTIRE SECTION -->
 

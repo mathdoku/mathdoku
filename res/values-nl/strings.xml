@@ -300,6 +300,10 @@
     <string name="dialog_tip_cheat_check_progress_title">Vals spel: voortgang gecontroleerd</string>
     <string name="dialog_tip_cheat_check_progress_text">Je hebt de voortgang van je oplossing gecontroleerd. Cellen met een ongeldige waarde zijn gemarkeerd.\nElke keer als je de voortgang controleert dan wordt de speeltijd verhoogd met %1$s en nog eens met %2$s voor elke nieuwe onjuiste waarde die is gevonden.</string>
 
+    <!-- Title, and text for tip "Incorrect value" which refers to menu option "Check Progress". -->
+    <string name="dialog_tip_incorrect_value_title">Foute waarde</string>
+    <string name="dialog_tip_incorrect_value_text">Je hebt een foute waarde ingevoerd. Je kan deze puzzel niet oplossen zonder deze fout te verbeteren. Gebruik de menu optie \'Controleer voortgang\' om alle cellen met een een foutieve waarde te markeren. Pas op: het gebruiken van \'Controleer voortgang\' leidt tot het verhogen van de speeltijd met een boete om het gebruik van deze functie te ontmoedigen.</string>
+
     <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 

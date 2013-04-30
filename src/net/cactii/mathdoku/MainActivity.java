@@ -5,6 +5,7 @@ import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.DigitPositionGrid.DigitPositionGridType;
 import net.cactii.mathdoku.Tip.TipCheat;
 import net.cactii.mathdoku.Tip.TipDialog;
+import net.cactii.mathdoku.Tip.TipIncorrectValue;
 import net.cactii.mathdoku.Tip.TipInputModeChanged;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.painter.Painter.GridTheme;
@@ -1659,6 +1660,9 @@ public class MainActivity extends Activity implements
 			Toast.makeText(this, R.string.ProgressBad, Toast.LENGTH_SHORT)
 					.show();
 		}
+		
+		// Never show the tip about incorrect values and reference to function Check Progress again.
+		TipIncorrectValue.doNotDisplayAgain(mMathDokuPreferences);
 	}
 
 	/**
