@@ -10,6 +10,7 @@ import net.cactii.mathdoku.statistics.HistoricStatistics.Serie;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter;
 import net.cactii.mathdoku.storage.database.GridRow;
 import net.cactii.mathdoku.storage.database.StatisticsDatabaseAdapter;
+import net.cactii.mathdoku.util.Util;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
@@ -35,6 +36,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -251,7 +254,8 @@ public class StatisticsActivity extends Activity {
 
 		addStatisticsSection(R.string.progress_chart_title, null,
 				R.string.progress_chart_body,
-				ChartFactory.getPieChartView(this, categorySeries, renderer));
+				ChartFactory.getPieChartView(this, categorySeries, renderer),
+				null);
 		return true;
 	}
 
@@ -359,7 +363,7 @@ public class StatisticsActivity extends Activity {
 		addStatisticsSection(R.string.avoidable_moves_chart_title, null,
 				R.string.avoidable_moves_chart_body,
 				ChartFactory.getBarChartView(this, xyMultipleSeriesDataset,
-						xyMultipleSeriesRenderer, Type.DEFAULT));
+						xyMultipleSeriesRenderer, Type.DEFAULT), null);
 
 		return true;
 	}
@@ -465,7 +469,7 @@ public class StatisticsActivity extends Activity {
 		addStatisticsSection(R.string.statistics_cheats_used_title, null,
 				R.string.statistics_cheats_used_body,
 				ChartFactory.getBarChartView(this, xyMultipleSeriesDataset,
-						xyMultipleSeriesRenderer, Type.DEFAULT));
+						xyMultipleSeriesRenderer, Type.DEFAULT), null);
 
 		return true;
 	}
@@ -550,7 +554,8 @@ public class StatisticsActivity extends Activity {
 		// Add section to activity
 		addStatisticsSection(R.string.solved_chart_title, subTitle,
 				R.string.solved_chart_body,
-				ChartFactory.getPieChartView(this, categorySeries, renderer));
+				ChartFactory.getPieChartView(this, categorySeries, renderer),
+				null);
 		return true;
 	}
 
@@ -584,7 +589,7 @@ public class StatisticsActivity extends Activity {
 	 *            The chart view.
 	 */
 	private void addStatisticsSection(int titleResId, String subTitle,
-			int bodyResId, GraphicalView chart) {
+			int bodyResId, GraphicalView chart, View extraDataView) {
 		// Inflate a new view for this statistics section
 		View sectionView = mLayoutInflater.inflate(R.layout.statistics_section,
 				null);
@@ -604,6 +609,14 @@ public class StatisticsActivity extends Activity {
 		// Add chart
 		((LinearLayout) sectionView.findViewById(R.id.statistics_section_chart))
 				.addView(chart);
+
+		// Add extra data
+		if (extraDataView != null) {
+			LinearLayout linearLayout = ((LinearLayout) sectionView
+					.findViewById(R.id.statistics_section_extra_data));
+			linearLayout.setVisibility(View.VISIBLE);
+			linearLayout.addView(extraDataView);
+		}
 
 		// Add body text for explaining the chart
 		TextView textView = ((TextView) sectionView
@@ -751,14 +764,53 @@ public class StatisticsActivity extends Activity {
 									Serie.SOLVED,
 									getResources()
 											.getString(
-													R.string.statistics_elapsed_time_historic_solved_average),
+													R.string.statistics_elapsed_time_historic_solved_average_serie),
 									yScale));
 			XYSeriesRenderer xySeriesRenderer = new XYSeriesRenderer();
 			xySeriesRenderer.setColor(chartSignal2);
 			xySeriesRenderer.setLineWidth(4);
 			xyMultipleSeriesRenderer.addSeriesRenderer(xySeriesRenderer);
 		}
+
+		// Create a table with extra data for fastest, average and slowest time.
+		TableLayout tableLayout = new TableLayout(this);
+		TableLayout.LayoutParams tableLayoutParams = new TableLayout.LayoutParams(
+				TableLayout.LayoutParams.WRAP_CONTENT,
+				TableLayout.LayoutParams.WRAP_CONTENT);
+		tableLayout.setLayoutParams(tableLayoutParams);
 		
+		tableLayout
+				.addView(createDataTableRow(
+						tableLayoutParams,
+						getResources()
+								.getString(
+										R.string.chart_serie_solved),
+						null));
+		tableLayout
+				.addView(createDataTableRow(
+						tableLayoutParams,
+						getResources()
+								.getString(
+										R.string.statistics_elapsed_time_historic_solved_slowest),
+						Util.durationTimeToString(historicStatistics
+								.getSolvedSlowest())));
+		tableLayout
+				.addView(createDataTableRow(
+						tableLayoutParams,
+						getResources()
+								.getString(
+										R.string.statistics_elapsed_time_historic_solved_average),
+						Util.durationTimeToString(historicStatistics
+								.getSolvedAverage())));
+		tableLayout
+				.addView(createDataTableRow(
+						tableLayoutParams,
+						getResources()
+								.getString(
+										R.string.statistics_elapsed_time_historic_solved_fastest),
+						Util.durationTimeToString(historicStatistics
+								.getSolvedFastest())));
+
 		// Display as stacked bar chart here. As the series are mutually
 		// exclusive this will result in one single bar per game which is
 		// entirely colored based on status of game.
@@ -767,8 +819,49 @@ public class StatisticsActivity extends Activity {
 				null, R.string.statistics_elapsed_time_historic_body,
 				ChartFactory.getCombinedXYChartView(this,
 						xyMultipleSeriesDataset, xyMultipleSeriesRenderer,
-						types));
+						types), tableLayout);
 
 		return true;
+	}
+
+	/**
+	 * Creates a new row in a data table consisting of two columns (label and
+	 * value).
+	 * 
+	 * @param tableLayoutParams
+	 *            The layout parameters for the table.
+	 * @param label
+	 *            The label (required) for the row
+	 * @param value
+	 *            The value (optional) for the row
+	 * @return The table row with fields for label and optionally the value.
+	 */
+	private TableRow createDataTableRow(
+			TableLayout.LayoutParams tableLayoutParams, String label,
+			String value) {
+		// Create new TableRow
+		TableRow tableRow = new TableRow(this);
+		tableRow.setLayoutParams(tableLayoutParams);
+
+		// Set layout parameters for fields in the row
+		TableRow.LayoutParams tableRowLayoutParams = new TableRow.LayoutParams(
+				TableRow.LayoutParams.WRAP_CONTENT,
+				TableRow.LayoutParams.WRAP_CONTENT);
+
+		// Add label to row
+		TextView textViewLabel = new TextView(this);
+		textViewLabel.setLayoutParams(tableRowLayoutParams);
+		textViewLabel.setText(label);
+		tableRow.addView(textViewLabel);
+
+		// Add value to row
+		if (value != null) {
+			TextView textViewValue = new TextView(this);
+			textViewValue.setLayoutParams(tableRowLayoutParams);
+			textViewValue.setText(value);
+			tableRow.addView(textViewValue);
+		}
+
+		return tableRow;
 	}
 }

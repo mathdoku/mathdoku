@@ -1463,20 +1463,8 @@ public class MainActivity extends Activity implements
 	 */
 	@SuppressLint("DefaultLocale")
 	public void setElapsedTime(long elapsedTime) {
-		if (mMathDokuPreferences.isTimerVisible()) {
-			String timeString;
-			int seconds = (int) (elapsedTime / 1000); // Whole seconds.
-			int hours = (int) Math.floor(seconds / (60 * 60));
-			if (hours == 0) {
-				timeString = String.format("%2dm%02ds",
-						(seconds % (3600)) / 60, seconds % 60);
-			} else {
-				timeString = String.format("%dh%02dm%02ds", hours,
-						(seconds % (3600)) / 60, seconds % 60);
-			}
-			if (mTimerText != null) {
-				mTimerText.setText(timeString);
-			}
+		if (mMathDokuPreferences.isTimerVisible()  && mTimerText != null) {
+			mTimerText.setText(Util.durationTimeToString(elapsedTime));
 		}
 	}
 

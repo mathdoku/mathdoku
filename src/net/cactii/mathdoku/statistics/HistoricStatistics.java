@@ -43,6 +43,7 @@ public class HistoricStatistics {
 	private class SeriesSummary {
 		private long mMinValue;
 		private long mMaxValue;
+		private long mSumValue;
 		private long mCount;
 
 		/**
@@ -63,7 +64,17 @@ public class HistoricStatistics {
 		public void addValue(long value) {
 			mMinValue = (value < mMinValue ? value : mMinValue);
 			mMaxValue = (value > mMaxValue ? value : mMaxValue);
+			mSumValue += value;
 			mCount++;
+		}
+
+		/**
+		 * Gets the minimum value found for this serie.
+		 * 
+		 * @return The minimum value found for this serie.
+		 */
+		public long getMinimum() {
+			return mMinValue;
 		}
 
 		/**
@@ -73,6 +84,15 @@ public class HistoricStatistics {
 		 */
 		public long getMaximum() {
 			return mMaxValue;
+		}
+
+		/**
+		 * Gets the average value for this serie.
+		 * 
+		 * @return The average value for this serie.
+		 */
+		public long getAverage() {
+			return mSumValue / mCount;
 		}
 
 		/**
@@ -277,5 +297,32 @@ public class HistoricStatistics {
 			break;
 		}
 		return scaleFactor;
+	}
+	
+	/**
+	 * Get the slowest time in which a game was solved.
+	 * 
+	 * @return The slowest time in which a game was solved.
+	 */
+	public long getSolvedSlowest() {
+		return mSolvedSeriesSummary.getMaximum();
+	}
+
+	/**
+	 * Get the fastest time in which a game was solved.
+	 * 
+	 * @return The fastest time in which a game was solved.
+	 */
+	public long getSolvedFastest() {
+		return mSolvedSeriesSummary.getMinimum();
+	}
+
+	/**
+	 * Get the average time in which game have been solved.
+	 * 
+	 * @return The average time in which game have been solved.
+	 */
+	public long getSolvedAverage() {
+		return mSolvedSeriesSummary.getAverage();
 	}
 }
