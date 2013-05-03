@@ -581,7 +581,6 @@ public class MainActivity extends Activity implements
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		mBlockTouchSameCell = true;
-		super.onCreateContextMenu(menu, v, menuInfo);
 		if (mGrid == null || !mGrid.isActive()) {
 			// No context menu in case puzzle isn't active.
 			return;
@@ -649,6 +648,8 @@ public class MainActivity extends Activity implements
 		// Option: show the solution for this puzzle
 		menu.add(3, CONTEXT_MENU_SHOW_SOLUTION, 0,
 				R.string.context_menu_show_solution);
+		
+		super.onCreateContextMenu(menu, v, menuInfo);
 	}
 
 	public boolean onContextItemSelected(MenuItem item) {

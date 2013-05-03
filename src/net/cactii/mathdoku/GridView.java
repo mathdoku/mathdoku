@@ -25,12 +25,15 @@ public class GridView extends View implements OnTouchListener {
 	// Context and preferences in context
 	MainActivity mMainActivity;
 	SharedPreferences mMainActivityPreferences;
-	
+
 	// Actual content of the puzzle in this grid view
 	private Grid mGrid;
 
 	// Touched listener
 	public OnGridTouchListener mTouchedListener;
+
+	// Previously touched cell
+	private GridCell mPreviouslyTouchedCell;
 
 	// Size of the grid view and cells in grid
 	public float mGridViewSize;
@@ -69,8 +72,9 @@ public class GridView extends View implements OnTouchListener {
 
 	private void initGridView(Context context) {
 		mMainActivity = (MainActivity) context;
-		mMainActivityPreferences = PreferenceManager.getDefaultSharedPreferences(mMainActivity);
-		
+		mMainActivityPreferences = PreferenceManager
+				.getDefaultSharedPreferences(mMainActivity);
+
 		mGridViewSize = 0;
 		mGridPainter = Painter.getInstance(mMainActivity).mGridPainter;
 
@@ -92,44 +96,55 @@ public class GridView extends View implements OnTouchListener {
 	}
 
 	public boolean onTouch(View arg0, MotionEvent event) {
-		if (event.getAction() != MotionEvent.ACTION_UP)
-			return false;
 		if (!this.mGrid.isActive())
 			return false;
 
-		// Find out where the grid was touched.
-		float x = event.getX();
-		float y = event.getY();
-		int size = getMeasuredWidth();
+		// On down event select the cell but no further processing until we are
+		// sure the long press event has been caught.
+		if (event.getAction() == MotionEvent.ACTION_DOWN) {
+			// Remember which cell was selected before.
+			mPreviouslyTouchedCell = mGrid.getSelectedCell();
 
-		int gridSize = mGrid.getGridSize();
-		int row = (int) ((size - (size - y)) / (size / gridSize));
-		if (row > gridSize - 1)
-			row = gridSize - 1;
-		if (row < 0)
-			row = 0;
+			// Find out where the grid was touched.
+			float x = event.getX();
+			float y = event.getY();
+			int size = getMeasuredWidth();
 
-		int col = (int) ((size - (size - x)) / (size / gridSize));
-		if (col > gridSize - 1)
-			col = gridSize - 1;
-		if (col < 0)
-			col = 0;
+			int gridSize = mGrid.getGridSize();
+			int row = (int) ((size - (size - y)) / (size / gridSize));
+			if (row > gridSize - 1)
+				row = gridSize - 1;
+			if (row < 0)
+				row = 0;
 
-		// We can now get the cell.
-		GridCell cell = mGrid.getCellAt(row, col);
-		float[] cellPos = this.cellToCoordinates(cell.getCellNumber());
-		this.mTrackPosX = cellPos[0];
-		this.mTrackPosY = cellPos[1];
+			int col = (int) ((size - (size - x)) / (size / gridSize));
+			if (col > gridSize - 1)
+				col = gridSize - 1;
+			if (col < 0)
+				col = 0;
 
-		// Determine if same cell was touched again
-		boolean sameCellSelectedAgain = (mGrid.getSelectedCell() == null ? false
-				: mGrid.getSelectedCell().equals(cell));
+			// We can now get the cell.
+			GridCell cell = mGrid.getCellAt(row, col);
+			float[] cellPos = this.cellToCoordinates(cell.getCellNumber());
+			this.mTrackPosX = cellPos[0];
+			this.mTrackPosY = cellPos[1];
 
-		// Select new cell
-		this.playSoundEffect(SoundEffectConstants.CLICK);
-		mGrid.setSelectedCell(cell);
-		if (this.mTouchedListener != null) {
-			mTouchedListener.gridTouched(cell, sameCellSelectedAgain);
+			// Select new cell
+			mGrid.setSelectedCell(cell);
+		}
+
+		// On up event complete processing of cell selection.
+		if (event.getAction() == MotionEvent.ACTION_UP) {
+			this.playSoundEffect(SoundEffectConstants.CLICK);
+
+			if (this.mTouchedListener != null) {
+				// Determine if same cell was touched again
+				boolean sameCellSelectedAgain = (mGrid.getSelectedCell() != null && mGrid
+						.getSelectedCell().equals(mPreviouslyTouchedCell));
+
+				mTouchedListener.gridTouched(mGrid.getSelectedCell(),
+						sameCellSelectedAgain);
+			}
 		}
 
 		invalidate();
@@ -142,21 +157,21 @@ public class GridView extends View implements OnTouchListener {
 	public boolean onTrackballEvent(MotionEvent event) {
 		if (!this.mGrid.isActive() || this.mSelectorShown)
 			return false;
-		
+
 		UsageLog.getInstance().logTrackball(mGrid.getSignatureString());
-		
+
 		// On press event, take selected cell, call touched listener
 		// which will popup the digit selector.
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
 			if (this.mTouchedListener != null) {
 				mGrid.getSelectedCell().mSelected = true;
-				this.mTouchedListener
-						.gridTouched(mGrid.getSelectedCell(), false); // TODO;
-																		// test
-																		// on
-																		// change
-																		// of
-																		// cell?
+				this.mTouchedListener.gridTouched(mGrid.getSelectedCell(),
+						false); // TODO;
+								// test
+								// on
+								// change
+								// of
+								// cell?
 			}
 			return true;
 		}
@@ -184,7 +199,8 @@ public class GridView extends View implements OnTouchListener {
 		float y = event.getY();
 		this.mTrackPosX += x * trackMult;
 		this.mTrackPosY += y * trackMult;
-		GridCell cell = this.coordinatesToCell(this.mTrackPosX, this.mTrackPosY);
+		GridCell cell = this
+				.coordinatesToCell(this.mTrackPosX, this.mTrackPosY);
 		if (cell == null) {
 			this.mTrackPosX -= x * trackMult;
 			this.mTrackPosY -= y * trackMult;
@@ -194,7 +210,7 @@ public class GridView extends View implements OnTouchListener {
 		if (mGrid.getSelectedCell() != null) {
 			mGrid.getSelectedCell().mSelected = false;
 			if (mGrid.getSelectedCell() != cell) // TODO: test with toggling
-												// input mode
+													// input mode
 				this.mTouchedListener.gridTouched(cell, false);
 		}
 		for (GridCell c : mGrid.mCells) {
@@ -234,9 +250,8 @@ public class GridView extends View implements OnTouchListener {
 		// Display a message in case no cell is selected.
 		GridCell selectedCell = mGrid.getSelectedCell();
 		if (selectedCell == null) {
-			Toast.makeText(mMainActivity,
-					R.string.select_cell_before_value, Toast.LENGTH_SHORT)
-					.show();
+			Toast.makeText(mMainActivity, R.string.select_cell_before_value,
+					Toast.LENGTH_SHORT).show();
 			return;
 		}
 
@@ -247,8 +262,7 @@ public class GridView extends View implements OnTouchListener {
 			selectedCell.clearPossibles();
 			selectedCell.setUserValue(0);
 		} else {
-			if (TipOrderOfValuesInCage.toBeDisplayed(
-					mMainActivityPreferences,
+			if (TipOrderOfValuesInCage.toBeDisplayed(mMainActivityPreferences,
 					selectedCell.getCage())) {
 				new TipOrderOfValuesInCage(mMainActivity).show();
 			}
@@ -289,7 +303,7 @@ public class GridView extends View implements OnTouchListener {
 		}
 
 		synchronized (mGrid.mLock) { // Avoid redrawing at the same time as
-									// creating
+										// creating
 			// puzzle
 			int gridSize = mGrid.getGridSize();
 
