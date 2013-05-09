@@ -2,10 +2,11 @@ package net.cactii.mathdoku.Tip;
 
 import java.util.ArrayList;
 
-import net.cactii.mathdoku.MainActivity;
 import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -26,7 +27,7 @@ public class TipDialog extends AlertDialog {
 	};
 
 	// Context in which the tip is created.
-	private MainActivity mMainActivity;
+	private Context mMainActivity;
 
 	// Preferences defined for the current context.
 	Preferences mPreferences;
@@ -48,7 +49,7 @@ public class TipDialog extends AlertDialog {
 	 * @param mainActivity
 	 *            The activity in which context the tip is used.
 	 */
-	public TipDialog(MainActivity mainActivity, String preference,
+	public TipDialog(Context mainActivity, String preference,
 			TipCategory tipCategory) {
 		super(mainActivity);
 

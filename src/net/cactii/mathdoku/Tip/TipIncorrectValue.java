@@ -1,8 +1,8 @@
 package net.cactii.mathdoku.Tip;
 
-import net.cactii.mathdoku.MainActivity;
 import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
+import android.content.Context;
 
 public class TipIncorrectValue extends TipDialog {
 
@@ -15,7 +15,7 @@ public class TipIncorrectValue extends TipDialog {
 	 * @param mainActivity
 	 *            The activity in which this tip has to be shown.
 	 */
-	public TipIncorrectValue(MainActivity mainActivity) {
+	public TipIncorrectValue(Context mainActivity) {
 		super(mainActivity, TIP_NAME, TIP_CATEGORY);
 
 		build(

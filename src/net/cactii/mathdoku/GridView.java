@@ -24,7 +24,7 @@ public class GridView extends View implements OnTouchListener {
 	private static final String TAG = "MathDoku.GridView";
 
 	// Context and preferences in context
-	MainActivity mMainActivity;
+	Context context;
 	Preferences mPreferences;
 
 	// Actual content of the puzzle in this grid view
@@ -56,6 +56,15 @@ public class GridView extends View implements OnTouchListener {
 
 	// Visible window rectangle
 	private Rect mDisplayFrame;
+	
+	// Used to grab the current input mode from.
+	public InputModeDeterminer mInputModeDeterminer;
+	public static interface InputModeDeterminer {
+		/**
+		 * Returns the current input mode the game this grid view is a part of, is in.
+		 */
+		public InputMode getInputMode();
+	}
 
 	public GridView(Context context) {
 		super(context);
@@ -73,11 +82,10 @@ public class GridView extends View implements OnTouchListener {
 	}
 
 	private void initGridView(Context context) {
-		mMainActivity = (MainActivity) context;
-		mPreferences = Preferences.getInstance(mMainActivity);
+		mPreferences = Preferences.getInstance(this.context = context);
 
 		mGridViewSize = 0;
-		mGridPainter = Painter.getInstance(mMainActivity).getGridPainter();
+		mGridPainter = Painter.getInstance(context).getGridPainter();
 
 		// Initialize the display frame for the grid view.
 		mDisplayFrame = new Rect();
@@ -251,7 +259,7 @@ public class GridView extends View implements OnTouchListener {
 		// Display a message in case no cell is selected.
 		GridCell selectedCell = mGrid.getSelectedCell();
 		if (selectedCell == null) {
-			Toast.makeText(mMainActivity, R.string.select_cell_before_value,
+			Toast.makeText(context, R.string.select_cell_before_value,
 					Toast.LENGTH_SHORT).show();
 			return;
 		}
@@ -276,7 +284,7 @@ public class GridView extends View implements OnTouchListener {
 		} else {
 			if (TipOrderOfValuesInCage.toBeDisplayed(mPreferences,
 					selectedCell.getCage())) {
-				new TipOrderOfValuesInCage(mMainActivity).show();
+				new TipOrderOfValuesInCage(context).show();
 			}
 			switch (inputMode) {
 			case MAYBE:
@@ -312,7 +320,7 @@ public class GridView extends View implements OnTouchListener {
 					}
 					if (newValue != selectedCell.getCorrectValue()
 							&& TipIncorrectValue.toBeDisplayed(mPreferences)) {
-						new TipIncorrectValue(mMainActivity).show();
+						new TipIncorrectValue(context).show();
 					}
 				}
 				break;
@@ -351,8 +359,8 @@ public class GridView extends View implements OnTouchListener {
 					mGridPainter.getBorderPaint());
 
 			// Draw cells, except for cells in selected cage
-			InputMode inputMode = mMainActivity.getInputMode();
-			Painter.getInstance(mMainActivity).setCellSize(mGridCellSize,
+			InputMode inputMode = mInputModeDeterminer.getInputMode();
+			Painter.getInstance(context).setCellSize(mGridCellSize,
 					mDigitPositionGrid);
 			for (GridCell cell : mGrid.mCells) {
 				cell.checkWithOtherValuesInRowAndColumn();

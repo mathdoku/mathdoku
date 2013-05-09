@@ -3,6 +3,7 @@ package net.cactii.mathdoku;
 import net.cactii.mathdoku.Cheat.CheatType;
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.DigitPositionGrid.DigitPositionGridType;
+import net.cactii.mathdoku.GridView.InputModeDeterminer;
 import net.cactii.mathdoku.Tip.TipCheat;
 import net.cactii.mathdoku.Tip.TipDialog;
 import net.cactii.mathdoku.Tip.TipIncorrectValue;
@@ -83,8 +84,11 @@ public class MainActivity extends Activity implements
 		NO_INPUT__DISPLAY_GRID // No game active, solved puzzle shown
 	};
 
-	// The input mode which is currently active
-	private InputMode mInputMode;
+	/**
+	 * The input mode which is currently active. Access level is not private, to prevent the an extra access method (see
+	 * http://developer.android.com/training/articles/perf-tips.html#PackageInner).
+	 */
+	/* package */ InputMode mInputMode;
 	Button mInputModeTextView;
 
 	TextView mSolvedText;
@@ -177,7 +181,13 @@ public class MainActivity extends Activity implements
 
 		this.mTopLayout = (RelativeLayout) findViewById(R.id.topLayout);
 		this.mPuzzleGridLayout = (RelativeLayout) findViewById(R.id.puzzleGrid);
-		this.mGridView = (GridView) findViewById(R.id.gridView);
+		(this.mGridView = (GridView) findViewById(R.id.gridView))
+			.mInputModeDeterminer = new InputModeDeterminer() {
+				@Override
+				public final InputMode getInputMode() {
+					return mInputMode;
+				}
+			};
 		this.mSolvedText = (TextView) findViewById(R.id.solvedText);
 		this.mGridView.mAnimationText = this.mSolvedText;
 		this.mControls = (TableLayout) findViewById(R.id.controls);
@@ -1338,15 +1348,6 @@ public class MainActivity extends Activity implements
 			}
 			mTimerTask.cancel(true);
 		}
-	}
-
-	/**
-	 * Get the current input mode.
-	 * 
-	 * @return The current input mode.
-	 */
-	public InputMode getInputMode() {
-		return mInputMode;
 	}
 
 	/**
