@@ -24,7 +24,7 @@ public class GridView extends View implements OnTouchListener {
 	private static final String TAG = "MathDoku.GridView";
 
 	// Context and preferences in context
-	Context context;
+	Context mContext;
 	Preferences mPreferences;
 
 	// Actual content of the puzzle in this grid view
@@ -82,7 +82,7 @@ public class GridView extends View implements OnTouchListener {
 	}
 
 	private void initGridView(Context context) {
-		mPreferences = Preferences.getInstance(this.context = context);
+		mPreferences = Preferences.getInstance(/*this.*/mContext = context);
 
 		mGridViewSize = 0;
 		mGridPainter = Painter.getInstance(context).getGridPainter();
@@ -259,7 +259,7 @@ public class GridView extends View implements OnTouchListener {
 		// Display a message in case no cell is selected.
 		GridCell selectedCell = mGrid.getSelectedCell();
 		if (selectedCell == null) {
-			Toast.makeText(context, R.string.select_cell_before_value,
+			Toast.makeText(mContext, R.string.select_cell_before_value,
 					Toast.LENGTH_SHORT).show();
 			return;
 		}
@@ -284,7 +284,7 @@ public class GridView extends View implements OnTouchListener {
 		} else {
 			if (TipOrderOfValuesInCage.toBeDisplayed(mPreferences,
 					selectedCell.getCage())) {
-				new TipOrderOfValuesInCage(context).show();
+				new TipOrderOfValuesInCage(mContext).show();
 			}
 			switch (inputMode) {
 			case MAYBE:
@@ -320,7 +320,7 @@ public class GridView extends View implements OnTouchListener {
 					}
 					if (newValue != selectedCell.getCorrectValue()
 							&& TipIncorrectValue.toBeDisplayed(mPreferences)) {
-						new TipIncorrectValue(context).show();
+						new TipIncorrectValue(mContext).show();
 					}
 				}
 				break;
@@ -360,7 +360,7 @@ public class GridView extends View implements OnTouchListener {
 
 			// Draw cells, except for cells in selected cage
 			InputMode inputMode = mInputModeDeterminer.getInputMode();
-			Painter.getInstance(context).setCellSize(mGridCellSize,
+			Painter.getInstance(mContext).setCellSize(mGridCellSize,
 					mDigitPositionGrid);
 			for (GridCell cell : mGrid.mCells) {
 				cell.checkWithOtherValuesInRowAndColumn();
