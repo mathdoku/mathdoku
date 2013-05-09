@@ -157,7 +157,7 @@ public class UsageLog {
 
 	/**
 	 * Gets the singleton reference to the UsageLogging object. If it does not
-	 * yet exist than it will be created.
+	 * yet exist then it will be created.
 	 * 
 	 * @param activity
 	 *            The main activity context in which the UsageLogging is

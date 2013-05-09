@@ -590,7 +590,8 @@ public class Grid {
 	}
 
 	/**
-	 * Creates the grid with given information.
+	 * Creates the grid with given information. Returns whether the grid was succesfully inserted into the database (true), or
+	 * an error occurred in the process (false).
 	 * 
 	 * @param gameSeed
 	 *            The game seed used to generate this grid.

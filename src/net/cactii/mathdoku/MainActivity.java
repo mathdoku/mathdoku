@@ -114,7 +114,7 @@ public class MainActivity extends Activity implements
 	public Preferences mMathDokuPreferences;
 
 	// Background tasks for generating a new puzzle and converting game files
-	public GridGenerator mGridGeneratorTask;
+	public DialogPresentingGridGenerator mGridGeneratorTask;
 	public GameFileConverter mGameFileConverter;
 
 	// Variables for process of creating preview images of game file for which
@@ -130,18 +130,18 @@ public class MainActivity extends Activity implements
 
 	// Object to save data on a configuration change
 	private class ConfigurationInstanceState {
-		private GridGenerator mGridGeneratorTask;
+		private DialogPresentingGridGenerator mGridGeneratorTask;
 		private GameFileConverter mGameFileConverter;
 		private InputMode mInputMode;
 
-		public ConfigurationInstanceState(GridGenerator gridGeneratorTask,
+		public ConfigurationInstanceState(DialogPresentingGridGenerator gridGeneratorTask,
 				GameFileConverter gameFileConverterTask, InputMode inputMode) {
 			mGridGeneratorTask = gridGeneratorTask;
 			mGameFileConverter = gameFileConverterTask;
 			mInputMode = inputMode;
 		}
 
-		public GridGenerator getGridGeneratorTask() {
+		public DialogPresentingGridGenerator getGridGeneratorTask() {
 			return mGridGeneratorTask;
 		}
 
@@ -854,7 +854,7 @@ public class MainActivity extends Activity implements
 				: 4);
 		int maxCageResult = getResources().getInteger(
 				R.integer.maximum_cage_value);
-		mGridGeneratorTask = new GridGenerator(this, gridSize, maxCageSize,
+		mGridGeneratorTask = new DialogPresentingGridGenerator(this, gridSize, maxCageSize,
 				maxCageResult, hideOperators, Util.getPackageVersionNumber());
 		mGridGeneratorTask.execute();
 	}

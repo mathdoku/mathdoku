@@ -105,7 +105,7 @@ public class Preferences {
 
 	/**
 	 * Gets the singleton reference to the Preference object. If it does not yet
-	 * exist than it will be created.
+	 * exist then it will be created.
 	 * 
 	 * @param context
 	 *            The context in which the GridPainter is created.

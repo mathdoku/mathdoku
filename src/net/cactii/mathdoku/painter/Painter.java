@@ -72,7 +72,7 @@ public class Painter {
 
 	/**
 	 * Gets the singleton reference to the GridPainter object. If it does not
-	 * yet exist than it will be created.
+	 * yet exist then it will be created.
 	 * 
 	 * @param context
 	 *            The context in which the GridPainter is created.

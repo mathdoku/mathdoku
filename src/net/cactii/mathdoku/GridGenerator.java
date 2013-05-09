@@ -5,8 +5,10 @@ import java.util.Random;
 
 import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.GridGenerating.GridGeneratingParameters;
+import net.cactii.mathdoku.painter.Painter;
+import net.cactii.mathdoku.storage.database.DatabaseHelper;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter;
-import android.app.ProgressDialog;
+import net.cactii.mathdoku.util.Util;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -14,10 +16,10 @@ import com.srlee.DLX.DLX.SolveType;
 import com.srlee.DLX.MathDokuDLX;
 
 /**
- * Generates a new grid while displaying a progress dialog.
+ * An asynchronous task that generates a grid.
  */
 public class GridGenerator extends AsyncTask<Void, String, Void> {
-	private static final String TAG = "MathDoku.GridGenerator";
+	protected static final String TAG = "MathDoku.GridGenerator";
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
@@ -32,9 +34,11 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 	// The grid created by the generator
 	private Grid mGrid;
-
+	
+	// The user that'll use the generated grid.
+	protected final GridUser mUser;
+	
 	private boolean mHideOperators;
-	private MainActivity mActivity;
 
 	// Random generator
 	public Random mRandom;
@@ -43,9 +47,6 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 	// Size of the grid
 	public int mGridSize;
-
-	// The dialog for this task
-	private ProgressDialog mProgressDialog;
 
 	// Cell and solution
 	public ArrayList<GridCell> mCells;
@@ -58,7 +59,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	private int mMaxCageResult;
 
 	// Additional option for generating the grid
-	private GridGeneratorOptions mGridGeneratorOptions;
+	protected GridGeneratorOptions mGridGeneratorOptions;
 
 	// Timestamp for logging purposes
 	long mTimeStarted;
@@ -68,34 +69,45 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	// fake games.
 	public class GridGeneratorOptions {
 		public int numberOfGamesToGenerate;
+		/**
+		 * Whether a dummy game will be generated (true), rather than a regular game (false). A dummy game might have more than
+		 * one solution (and is therefore not playable).
+		 */
 		public boolean createFakeUserGameFiles;
 		public boolean randomGridSize;
 		public boolean randomHideOperators;
 	}
+	
+	/**
+	 * The user that will use the grid once this task finished generating it.
+	 */
+	public interface GridUser {
+		/**
+		 * Uses the newly created grid. This method will run in the UI thread, as it is called from onPostExecute.
+		 */
+		public void useCreatedGrid(Grid value);
+	}
 
 	/**
-	 * Creates a new instance of {@link GridGenerator}.
+	 * Creates a new instance of {@link GridGenerator}. Though the signature of the constructor suggests otherwise, the
+	 * singleton classes {@link DatabaseHelper}, {@link Painter}, {@link Preferences} and {@link Util} all have to be
+	 * initialised before this generator can be used.
 	 * 
-	 * @param activity
-	 *            The activity from which this task is started.
 	 * @param gridSize
 	 *            The size of the gird to be created.
 	 * @param hideOperators
 	 *            True in case should be solvable without using operators.
 	 */
-	public GridGenerator(MainActivity activity, int gridSize, int maxCageSize,
-			int maxCageResult, boolean hideOperators, int packageVersionNumber) {
+	public GridGenerator(int gridSize, int maxCageSize, int maxCageResult,
+			boolean hideOperators, int packageVersionNumber, GridUser user) {
 		this.mGridSize = gridSize;
-		this.mHideOperators = hideOperators;
 		this.mMaxCageSize = maxCageSize;
 		this.mMaxCageResult = maxCageResult;
+		this.mHideOperators = hideOperators;
 		this.mGeneratorRevisionNumber = packageVersionNumber;
+		/*this.*/mUser = user;
 
 		setGridGeneratorOptions(null);
-
-		// Attach the task to the activity activity and show progress dialog if
-		// needed.
-		attachToActivity(activity);
 	}
 
 	/**
@@ -120,65 +132,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		// Use specified options only if running in development mode.
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			this.mGridGeneratorOptions = gridGeneratorOptions;
-
-			// Rebuild the dialog using the grid generator options.
-			if (mProgressDialog != null) {
-				mProgressDialog.dismiss();
-				buildDialog();
-			}
 		}
-	}
-
-	/**
-	 * Attaches the activity to the ASync task.
-	 * 
-	 * @param activity
-	 *            The activity to which results will be sent on completion of
-	 *            this task.
-	 */
-	public void attachToActivity(MainActivity activity) {
-		if (activity.equals(this.mActivity) && mProgressDialog != null
-				&& mProgressDialog.isShowing()) {
-			// The activity is already attached to this task.
-			return;
-		}
-
-		if (DEBUG_GRID_GENERATOR) {
-			Log.i(TAG, "Attach to activity");
-		}
-
-		// Remember the activity that started this task.
-		this.mActivity = activity;
-
-		buildDialog();
-	}
-
-	/**
-	 * Build and show the dialog.
-	 */
-	private void buildDialog() {
-		// Build the dialog
-		mProgressDialog = new ProgressDialog(mActivity);
-		mProgressDialog.setTitle(R.string.dialog_building_puzzle_title);
-		mProgressDialog.setMessage(mActivity.getResources().getString(
-				R.string.dialog_building_puzzle_message));
-		mProgressDialog.setIcon(android.R.drawable.ic_dialog_info);
-		mProgressDialog.setIndeterminate(false);
-		mProgressDialog.setCancelable(false);
-
-		// Set style of dialog.
-		mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-			if (mGridGeneratorOptions.numberOfGamesToGenerate > 1) {
-				mProgressDialog
-						.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-				mProgressDialog
-						.setMax(mGridGeneratorOptions.numberOfGamesToGenerate);
-			}
-		}
-
-		// Show the dialog
-		mProgressDialog.show();
 	}
 
 	/*
@@ -218,14 +172,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 			mTimeStartedSolution = System.currentTimeMillis();
 
-			if (DEBUG_GRID_GENERATOR) {
-				Log.i(TAG, "Puzzle generation attempt: " + num_attempts);
-				publishProgress(
-						DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_TITLE,
-						mActivity.getResources().getString(
-								R.string.dialog_building_puzzle_title)
-								+ " (attempt " + num_attempts + ")");
-			}
+			handleNewAttemptStarted(num_attempts);
 
 			mCells = new ArrayList<GridCell>();
 			int cellnum = 0;
@@ -307,6 +254,12 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		}
 		return null;
 	}
+	
+	/**
+	 * Handles the generator starting a new attempt.
+	 */
+	protected void handleNewAttemptStarted(int attemptCount) {
+	}
 
 	protected void onProgressUpdate(String... values) {
 		if (DEBUG_GRID_GENERATOR) {
@@ -322,26 +275,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 					mTimeStartedSolution = System.currentTimeMillis();
 				}
 			}
-			if (values.length >= 2 && values[0] != null && values[1] != null) {
-
-				if (values[0]
-						.equals(DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_TITLE)) {
-					mProgressDialog.setTitle(values[1]);
-				} else if (values[0]
-						.equals(DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_MESSAGE)) {
-					mProgressDialog.setMessage(values[1]);
-				}
-				if (!values[1].equals("")) {
-					Log.i(TAG, Long.toString(timeElapsed) + ": " + values[1]);
-				}
-			}
-		}
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-			if (values.length > 0
-					&& values[0] != null
-					&& values[0]
-							.equals(DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_PROGRESS)) {
-				mProgressDialog.incrementProgressBy(1);
+			if (values.length >= 2 && values[0] != null && values[1] != null && !values[1].equals("")) {
+				Log.i(TAG, Long.toString(timeElapsed) + ": " + values[1]);
 			}
 		}
 	}
@@ -360,20 +295,6 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	 */
 	@Override
 	protected void onPostExecute(Void result) {
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-			if (mGridGeneratorOptions.createFakeUserGameFiles) {
-				mActivity.mGridGeneratorTask = null;
-				// Grids are already saved.
-				DevelopmentHelper.generateGamesReady(mActivity,
-						mGridGeneratorOptions.numberOfGamesToGenerate);
-				if (this.mProgressDialog != null) {
-					dismissProgressDialog();
-				}
-				super.onPostExecute(result);
-				return;
-			}
-		}
-
 		// Create the grid object
 		GridGeneratingParameters gridGeneratingParameters = new GridGeneratingParameters();
 		gridGeneratingParameters.mGameSeed = this.mGameSeed;
@@ -381,48 +302,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		gridGeneratingParameters.mHideOperators = this.mHideOperators;
 		gridGeneratingParameters.mMaxCageResult = this.mMaxCageResult;
 		gridGeneratingParameters.mMaxCageSize = this.mMaxCageSize;
-		boolean gridCreated = mGrid.create(mGridSize, mCells, mCages, true, gridGeneratingParameters);
-		if (mActivity != null && gridCreated) {
-			if (DEBUG_GRID_GENERATOR) {
-				Log.d(TAG, "Send results to activity.");
-			}
-
-			// The task is still attached to a activity. Inform activity about
-			// completing the new game generation. The activity will deal with
-			// showing or showing the new grid directly.
-			mActivity.onNewGridReady(mGrid);
-		}
-
-		// Dismiss the dialog if still visible
-		if (this.mProgressDialog != null) {
-			dismissProgressDialog();
-		}
-
-		super.onPostExecute(result);
-	}
-
-	/**
-	 * Detaches the activity form the ASyn task. The progress dialog which was
-	 * shown will be dismissed. The ASync task however still keeps running until
-	 * finished.
-	 */
-	public void detachFromActivity() {
-		if (DEBUG_GRID_GENERATOR) {
-			Log.d(TAG, "Detach from activity");
-		}
-
-		dismissProgressDialog();
-		mActivity = null;
-	}
-
-	/**
-	 * Dismisses the progress dialog which was shown on start of this ASync
-	 * task. The ASync task however still keeps running until finished.
-	 */
-	public void dismissProgressDialog() {
-		if (mProgressDialog != null) {
-			mProgressDialog.dismiss();
-			mProgressDialog = null;
+		if (mGrid.create(mGridSize, mCells, mCages, true, gridGeneratingParameters)) {
+			mUser.useCreatedGrid(mGrid);
 		}
 	}
 
