@@ -34,6 +34,9 @@ public class GridView extends View implements OnTouchListener {
 	public OnGridTouchListener mTouchedListener;
 	private boolean mSameCellSelectedAgain;
 
+	// Previously touched cell
+	private GridCell mPreviouslyTouchedCell;
+
 	// Size of the grid view and cells in grid
 	public float mGridViewSize;
 	private float mGridCellSize;
@@ -97,56 +100,52 @@ public class GridView extends View implements OnTouchListener {
 		if (!this.mGrid.isActive())
 			return false;
 
-		// Find out where the grid was touched.
-		float x = event.getX();
-		float y = event.getY();
-		int size = getMeasuredWidth();
-
-		int gridSize = mGrid.getGridSize();
-		int row = (int) ((size - (size - y)) / (size / gridSize));
-		if (row > gridSize - 1)
-			row = gridSize - 1;
-		if (row < 0)
-			row = 0;
-
-		int col = (int) ((size - (size - x)) / (size / gridSize));
-		if (col > gridSize - 1)
-			col = gridSize - 1;
-		if (col < 0)
-			col = 0;
-
-		// We can now get the cell.
-		GridCell cell = mGrid.getCellAt(row, col);
-		float[] cellPos = this.cellToCoordinates(cell.getCellNumber());
-		this.mTrackPosX = cellPos[0];
-		this.mTrackPosY = cellPos[1];
-
-		// Only at the down event it is determined whether the same cell is
-		// selected again.
+		// On down event select the cell but no further processing until we are
+		// sure the long press event has been caught.
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			mSameCellSelectedAgain = (mGrid.getSelectedCell() == null ? false
-					: mGrid.getSelectedCell().equals(cell));
+			// Remember which cell was selected before.
+			mPreviouslyTouchedCell = mGrid.getSelectedCell();
 
-			if (mSameCellSelectedAgain) {
-				// Do not process the down event right now (as it will result in
-				// toggling the input mode) because this touch can become a long
-				// press which will be fired later.
-				return false;
+			// Find out where the grid was touched.
+			float x = event.getX();
+			float y = event.getY();
+			int size = getMeasuredWidth();
+
+			int gridSize = mGrid.getGridSize();
+			int row = (int) ((size - (size - y)) / (size / gridSize));
+			if (row > gridSize - 1)
+				row = gridSize - 1;
+			if (row < 0)
+				row = 0;
+
+			int col = (int) ((size - (size - x)) / (size / gridSize));
+			if (col > gridSize - 1)
+				col = gridSize - 1;
+			if (col < 0)
+				col = 0;
+
+			// We can now get the cell.
+			GridCell cell = mGrid.getCellAt(row, col);
+			float[] cellPos = this.cellToCoordinates(cell.getCellNumber());
+			this.mTrackPosX = cellPos[0];
+			this.mTrackPosY = cellPos[1];
+
+			// Select new cell
+			mGrid.setSelectedCell(cell);
+		}
+
+		// On up event complete processing of cell selection.
+		if (event.getAction() == MotionEvent.ACTION_UP) {
+			this.playSoundEffect(SoundEffectConstants.CLICK);
+
+			if (this.mTouchedListener != null) {
+				// Determine if same cell was touched again
+				boolean sameCellSelectedAgain = (mGrid.getSelectedCell() != null && mGrid
+						.getSelectedCell().equals(mPreviouslyTouchedCell));
+
+				mTouchedListener.gridTouched(mGrid.getSelectedCell(),
+						sameCellSelectedAgain);
 			}
-		}
-
-		if (!mSameCellSelectedAgain
-				&& event.getAction() == MotionEvent.ACTION_UP) {
-			// In case another cell was selected, the touch has already been
-			// processed at the down event.
-			return false;
-		}
-
-		// Select the cell
-		this.playSoundEffect(SoundEffectConstants.CLICK);
-		mGrid.setSelectedCell(cell);
-		if (this.mTouchedListener != null) {
-			mTouchedListener.gridTouched(cell, mSameCellSelectedAgain);
 		}
 
 		invalidate();
