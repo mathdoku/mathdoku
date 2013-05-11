@@ -12,11 +12,10 @@
             android:text="@string/dialog_usagelog_body" />
 
         <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:autoLink="web"
-        android:id="@+id/dialog_share_log_link" />
-
-        </LinearLayout>
+            android:id="@+id/dialog_share_log_link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autoLink="web" />
+    </LinearLayout>
 
 </ScrollView>

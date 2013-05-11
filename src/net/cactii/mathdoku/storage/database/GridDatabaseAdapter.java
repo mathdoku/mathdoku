@@ -2,10 +2,10 @@ package net.cactii.mathdoku.storage.database;
 
 import java.security.InvalidParameterException;
 
-import net.cactii.mathdoku.DevelopmentHelper;
 import net.cactii.mathdoku.Grid;
-import net.cactii.mathdoku.DevelopmentHelper.Mode;
-import net.cactii.mathdoku.GridGenerating.GridGeneratingParameters;
+import net.cactii.mathdoku.developmentHelpers.DevelopmentHelper;
+import net.cactii.mathdoku.developmentHelpers.DevelopmentHelper.Mode;
+import net.cactii.mathdoku.gridGenerating.GridGeneratingParameters;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -20,6 +20,8 @@ import android.util.Log;
 public class GridDatabaseAdapter extends DatabaseAdapter {
 
 	private static final String TAG = "MathDoku.GridDatabaseAdapter";
+
+	public static final boolean DEBUG_SQL = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && true;
 
 	// Columns for table statistics
 	protected static final String TABLE = "grid";
@@ -275,5 +277,36 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 */
 	public static String getPrefixedColumnName(String column) {
 		return TABLE + "." + column;
+	}
+
+	/**
+	 * Get a list of all grid id's.
+	 * 
+	 * @return The list of all grid id's.
+	 */
+	public int[] getAllGridIds() {
+		int[] gridIds = null;
+		Cursor cursor = null;
+		try {
+			cursor = mSQLiteDatabase.query(true, TABLE, new String[] {KEY_ROWID}, null, null, null, null, KEY_ROWID, null);
+			if (cursor.moveToFirst()) {
+				gridIds = new int[cursor.getCount()];
+				int i = 0;
+				int columnIndex = cursor.getColumnIndexOrThrow(KEY_ROWID);
+				do {
+					gridIds[i++] = cursor.getInt(columnIndex);
+				} while (cursor.moveToNext());
+			}
+		} catch (SQLiteException e) {
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+				e.printStackTrace();
+			}
+			return null;
+		} finally {
+			if (cursor != null) {
+				cursor.close();
+			}
+		}
+		return gridIds;
 	}
 }

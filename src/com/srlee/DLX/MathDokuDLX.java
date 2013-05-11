@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import net.cactii.mathdoku.GridCage;
-import net.cactii.mathdoku.GridGenerator;
+import net.cactii.mathdoku.gridGenerating.GridGenerator;
 import android.util.Log;
 
 public class MathDokuDLX extends DLX {

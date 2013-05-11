@@ -2,9 +2,10 @@ package net.cactii.mathdoku;
 
 import java.util.Map;
 
-import net.cactii.mathdoku.Tip.TipDialog.TipCategory;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.painter.Painter.GridTheme;
+import net.cactii.mathdoku.tip.TipDialog.TipCategory;
+import net.cactii.mathdoku.util.SingletonInstanceNotInstantiated;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -523,13 +524,13 @@ public class Preferences {
 	 * 
 	 * @return A mapset of all shared preferences.
 	 */
-	Map<String, ?> getAllSharedPreferences() {
+	public Map<String, ?> getAllSharedPreferences() {
 		return mSharedPreferences.getAll();
 	}
 
 	/**
 	 * Checks whether duplicate digits should be shown in the grid.
-	 * 
+	 *  
 	 * @return True in case duplicate digits should be shown in the grid. False
 	 *         otherwise.
 	 */

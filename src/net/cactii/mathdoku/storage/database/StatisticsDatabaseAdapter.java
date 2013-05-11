@@ -1,8 +1,8 @@
 package net.cactii.mathdoku.storage.database;
 
-import net.cactii.mathdoku.DevelopmentHelper;
-import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.Grid;
+import net.cactii.mathdoku.developmentHelpers.DevelopmentHelper;
+import net.cactii.mathdoku.developmentHelpers.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.statistics.CumulativeStatistics;
 import net.cactii.mathdoku.statistics.GridStatistics;
 import net.cactii.mathdoku.statistics.HistoricStatistics;
@@ -26,7 +26,7 @@ import android.util.Log;
 public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	private static final String TAG = "MathDoku.StatisticsDatabaseAdapter";
 
-	public static final boolean DEBUG_SQL = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && true;
+	public static final boolean DEBUG_SQL = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
 
 	// Columns for table statistics
 	private static final String TABLE = "statistics";
@@ -244,7 +244,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 * @param gridId
 	 *            The grid id for which the most recent statistics have to be
 	 *            determined.
-	 * @return The most grid statistics for the grid.
+	 * @return The most recent grid statistics for the grid.
 	 */
 	public GridStatistics getMostRecent(int gridId) {
 		GridStatistics gridStatistics = null;
@@ -289,9 +289,9 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				.getColumnIndexOrThrow(KEY_GRID_ID));
 		gridStatistics.mFilenameSolvingAttempt = cursor.getString(cursor
 				.getColumnIndexOrThrow(KEY_FILENAME_SOLVING_ATTEMPT));
-		gridStatistics.mFirstMove = java.sql.Timestamp.valueOf(cursor
+		gridStatistics.mFirstMove = toSQLTimestamp(cursor
 				.getString(cursor.getColumnIndexOrThrow(KEY_FIRST_MOVE)));
-		gridStatistics.mLastMove = java.sql.Timestamp.valueOf(cursor
+		gridStatistics.mLastMove = toSQLTimestamp(cursor
 				.getString(cursor.getColumnIndexOrThrow(KEY_LAST_MOVE)));
 		gridStatistics.mElapsedTime = cursor.getLong(cursor
 				.getColumnIndexOrThrow(KEY_ELAPSED_TIME));
@@ -534,12 +534,12 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 								GridDatabaseAdapter.KEY_GRID_SIZE)));
 
 		// First and last move
-		cumulativeStatistics.mMinFirstMove = java.sql.Timestamp.valueOf(cursor
+		cumulativeStatistics.mMinFirstMove = toSQLTimestamp(cursor
 				.getString(cursor
 						.getColumnIndexOrThrow(mCumulativeStatisticsProjection
 								.getAggregatedKey(Aggregation.MIN,
 										KEY_FIRST_MOVE))));
-		cumulativeStatistics.mMaxLastMove = java.sql.Timestamp.valueOf(cursor
+		cumulativeStatistics.mMaxLastMove = toSQLTimestamp(cursor
 				.getString(cursor
 						.getColumnIndexOrThrow(mCumulativeStatisticsProjection
 								.getAggregatedKey(Aggregation.MAX,

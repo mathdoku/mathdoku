@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- NON-TRANSLATABLE VALUES - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+
     <!-- This file should NOT be translated. MathDoku will probably not work correctly in case values are translated or overwritten. -->
+
 
     <!-- Name of application. This may NOT be translated. -->
     <string name="application_name">MathDoku</string>
@@ -20,18 +23,19 @@
         <item>@string/theme_newspaper</item>
         <item>@string/theme_dark</item>
     </string-array>
-    
+
     <!-- Identifiers associated with element themeTexts. This element may not be translated. -->
     <string-array name="themeValues">
         <item>carved</item>
         <item>newspaper</item>
         <item>inverted</item>
     </string-array>
-    
+
     <!-- USAGE LOG AND OPT-IN FOR SURVEY - - - - - - - - - - - - - - - - - - - - - - -->
-    
+
+
     <!-- Default subject and message for the mail containing the usage log -->
     <string name="usage_log_subject">I\'d love to help MathDoku - here is my log file</string>
     <string name="usage_log_body">In case you want to share additional thoughts with us, please feel free to change this text. We can only deal with messages send in English.</string>
-    
+
 </resources>

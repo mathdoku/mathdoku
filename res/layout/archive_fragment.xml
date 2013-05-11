@@ -1,0 +1,62 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true" >
+
+    <RelativeLayout
+        android:id="@+id/puzzleGrid"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="#00000000" >
+
+        <net.cactii.mathdoku.ui.GridView
+            android:id="@+id/gridView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:id="@+id/gameSeedLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/gridView"
+            android:layout_below="@+id/gridView"
+            android:background="#00000000"
+            android:text="@string/game_seed"
+            android:textColor="#FF000000"
+            android:textSize="@dimen/text_size_tiny"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/gameSeedText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/gameSeedLabel"
+            android:layout_toRightOf="@+id/gameSeedLabel"
+            android:background="#00000000"
+            android:text="999.999.999.999.999.999"
+            android:textColor="#FF000000"
+            android:textSize="@dimen/text_size_tiny"
+            android:visibility="gone"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/timerText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/gridView"
+            android:layout_below="@+id/gridView"
+            android:layout_margin="5dp"
+            android:background="#00000000"
+            android:lines="1"
+            android:text="99h99m99s"
+            android:textColor="#FF000000"
+            android:textSize="@dimen/text_size_default"
+            android:textStyle="bold"
+            android:visibility="gone"
+            tools:ignore="HardcodedText" />
+    </RelativeLayout>
+
+</ScrollView>

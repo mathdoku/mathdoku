@@ -2,7 +2,7 @@ package com.srlee.DLX;
 
 import java.util.ArrayList;
 
-import net.cactii.mathdoku.GridGenerator;
+import net.cactii.mathdoku.gridGenerating.GridGenerator;
 
 public class DLX extends Object {
 	public enum SolveType {

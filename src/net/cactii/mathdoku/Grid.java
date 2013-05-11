@@ -2,8 +2,9 @@ package net.cactii.mathdoku;
 
 import java.util.ArrayList;
 
-import net.cactii.mathdoku.DevelopmentHelper.Mode;
-import net.cactii.mathdoku.GridGenerating.GridGeneratingParameters;
+import net.cactii.mathdoku.developmentHelpers.DevelopmentHelper;
+import net.cactii.mathdoku.developmentHelpers.DevelopmentHelper.Mode;
+import net.cactii.mathdoku.gridGenerating.GridGeneratingParameters;
 import net.cactii.mathdoku.statistics.GridStatistics;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import net.cactii.mathdoku.storage.InvalidStatisticsException;
@@ -14,6 +15,8 @@ import net.cactii.mathdoku.storage.database.GridRow;
 import net.cactii.mathdoku.storage.database.SolvingAttemptData;
 import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 import net.cactii.mathdoku.storage.database.StatisticsDatabaseAdapter;
+import net.cactii.mathdoku.ui.GridView;
+import net.cactii.mathdoku.util.UsageLog;
 import net.cactii.mathdoku.util.Util;
 import android.util.Log;
 
@@ -590,8 +593,9 @@ public class Grid {
 	}
 
 	/**
-	 * Creates the grid with given information. Returns whether the grid was succesfully inserted into the database (true), or
-	 * an error occurred in the process (false).
+	 * Creates the grid with given information. Returns whether the grid was
+	 * successfully inserted into the database (true), or an error occurred in
+	 * the process (false).
 	 * 
 	 * @param gameSeed
 	 *            The game seed used to generate this grid.

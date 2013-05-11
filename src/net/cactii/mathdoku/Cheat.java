@@ -1,6 +1,7 @@
 package net.cactii.mathdoku;
 
-import net.cactii.mathdoku.DevelopmentHelper.Mode;
+import net.cactii.mathdoku.developmentHelpers.DevelopmentHelper;
+import net.cactii.mathdoku.developmentHelpers.DevelopmentHelper.Mode;
 import android.content.Context;
 import android.content.res.Resources;
 

@@ -1,8 +1,7 @@
-package net.cactii.mathdoku.DevelopmentHelpers;
+package net.cactii.mathdoku.developmentHelpers;
 
-import net.cactii.mathdoku.DevelopmentHelper;
-import net.cactii.mathdoku.DevelopmentHelper.Mode;
-import net.cactii.mathdoku.MainActivity;
+import net.cactii.mathdoku.developmentHelpers.DevelopmentHelper.Mode;
+import net.cactii.mathdoku.ui.PuzzleFragmentActivity;
 import android.annotation.TargetApi;
 import android.os.Build;
 
@@ -16,7 +15,7 @@ public class DevelopmentHelperHoneycombAndAbove {
 	 * 
 	 * @param mainActivity
 	 */
-	public static void restartActivity(final MainActivity mainActivity) {
+	public static void restartActivity(final PuzzleFragmentActivity mainActivity) {
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				// The activity can be restarted automatically. No dialog

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <CheckBoxPreference
+        android:key="ShowStatisticsDescription"
+        android:summary="@string/option_show_statistics_description_summary"
+        android:title="@string/option_show_statistics_description_title" />
+
+</PreferenceScreen>

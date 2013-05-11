@@ -1,5 +1,6 @@
 package net.cactii.mathdoku;
 
+import net.cactii.mathdoku.ui.PuzzleFragmentActivity;
 import android.os.AsyncTask;
 
 /*
@@ -9,7 +10,7 @@ public class GameTimer extends AsyncTask<Void, Long, Long> {
 
 
 	// Reference to activity that started the timer.
-	public MainActivity mActivity;
+	public PuzzleFragmentActivity mActivity;
 
 	// Starting point of timer. Note this is not the real time at which the game
 	// started but the actual time at which the timer started minus the time
@@ -23,7 +24,7 @@ public class GameTimer extends AsyncTask<Void, Long, Long> {
 	// the starting time of the game is decreased.
 	public Long mCheatPenaltyTime = (long) 0;
 
-	public GameTimer(MainActivity mainActivity) {
+	public GameTimer(PuzzleFragmentActivity mainActivity) {
 		mActivity = mainActivity;
 	}
 

@@ -215,6 +215,21 @@ public abstract class DatabaseAdapter {
 	}
 
 	/**
+	 * Converts a datetime value from a string to a SQL timestamp representation.
+	 * 
+	 * @param value
+	 *            The string value to be converted.
+	 * @return The SQL timestamp representation of the string value.
+	 */
+	public java.sql.Timestamp toSQLTimestamp(String value) {
+		if (value == null) {
+			return new java.sql.Timestamp(0);
+		} else {
+			return java.sql.Timestamp.valueOf(value);
+		}
+	}
+
+	/**
 	 * Converts a string value from the SQLite representation to a long.
 	 * 
 	 * @param value

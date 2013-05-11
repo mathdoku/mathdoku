@@ -92,7 +92,11 @@ public class HistoricStatistics {
 		 * @return The average value for this serie.
 		 */
 		public long getAverage() {
-			return mSumValue / mCount;
+			if (mCount == 0) {
+				return 0;
+			} else {
+				return mSumValue / mCount;
+			}
 		}
 
 		/**

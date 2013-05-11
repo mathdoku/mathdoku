@@ -1,6 +1,6 @@
 package net.cactii.mathdoku.storage.database;
 
-import net.cactii.mathdoku.SingletonInstanceNotInstantiated;
+import net.cactii.mathdoku.util.SingletonInstanceNotInstantiated;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.database.sqlite.SQLiteDatabase;

@@ -1,6 +1,6 @@
 package net.cactii.mathdoku.storage.database;
 
-import net.cactii.mathdoku.GridGenerating.GridGeneratingParameters;
+import net.cactii.mathdoku.gridGenerating.GridGeneratingParameters;
 
 /**
  * Mapping for records in database table Grid

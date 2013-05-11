@@ -55,8 +55,10 @@
     <string name="dialog_help_contributors_title">Ontwikkelaars</string>
     <string name="dialog_help_contributors_body">MathDoku is initieel ontwikkeld door Ben Buxton. Bijdragen zijn gemaakt door: Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul, Christoph Steindl en Alexander Tesfamichael. Tevens willen we iedereen bedanken die fouten en verbeteringen heeft gemeld.</string>
 
+    <!-- The menu item that allows the player to navigate to the changelog screen -->
+    <string name="dialog_help_neutral_button">Aanpassingen</string>
+    
     <!-- CHANGES DIALOG - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
 
     <!-- The title of the changelog screen. -->
     <string name="changelog_title">Aanpassingen</string>
@@ -74,29 +76,25 @@
     <string name="changelog_issues_title">Fouten en verzoeken</string>
     <string name="changelog_issues_body">Fouten en wijzingsverzoeken kun je doorgeven via onze website. Wij nemen alleen engelstalige verzoeken in behandeling.</string>
 
-    <!-- MAIN MENU - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- ACTION BAR ITEMS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+    <!-- The menu item that allows the player to display the archive of played games. -->
+    <string name="action_archive">Archief</string>
 
     <!-- The menu item that allows the player to start a new game. -->
-    <string name="menu_newgame">Nieuw Spel</string>
-
-    <!-- The menu item that allows the player to load and save the game states. -->
-    <string name="menu_saveload">Opslaan/Laden</string>
+    <string name="action_new_game">Nieuw Spel</string>
 
     <!-- The sub-menu item to check user entries against the solution. -->
-    <string name="menu_checkprogress">Controleer Voortgang</string>
+    <string name="action_check_progress">Controleer Voortgang</string>
 
     <!-- The sub-menu item to go to the statistics. -->
-    <string name="menu_statistics">Statistieken</string>
+    <string name="action_statistics">Statistieken</string>
 
     <!-- The menu item that allows the player to navigate to the options screen. -->
-    <string name="menu_options">Opties</string>
+    <string name="action_options">Opties</string>
 
     <!-- The menu item that allows the player to navigate to the help screen. -->
-    <string name="menu_help">Help</string>
-
-    <!-- The menu item that allows the player to navigate to the changelog screen -->
-    <string name="menu_changes">Aanpassingen</string>
+    <string name="action_help">Help</string>
 
     <!-- DIALOGS FOR GENERATING NEW PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

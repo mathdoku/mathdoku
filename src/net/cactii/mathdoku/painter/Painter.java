@@ -1,7 +1,7 @@
 package net.cactii.mathdoku.painter;
 
 import net.cactii.mathdoku.DigitPositionGrid;
-import net.cactii.mathdoku.SingletonInstanceNotInstantiated;
+import net.cactii.mathdoku.util.SingletonInstanceNotInstantiated;
 import android.content.Context;
 import android.graphics.DashPathEffect;
 import android.graphics.DiscretePathEffect;

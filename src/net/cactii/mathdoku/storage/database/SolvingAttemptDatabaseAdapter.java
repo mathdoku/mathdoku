@@ -2,9 +2,9 @@ package net.cactii.mathdoku.storage.database;
 
 import java.util.ArrayList;
 
-import net.cactii.mathdoku.DevelopmentHelper;
-import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.Grid;
+import net.cactii.mathdoku.developmentHelpers.DevelopmentHelper;
+import net.cactii.mathdoku.developmentHelpers.DevelopmentHelper.Mode;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;

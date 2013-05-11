@@ -10,16 +10,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-import net.cactii.mathdoku.DevelopmentHelper;
-import net.cactii.mathdoku.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.Grid;
-import net.cactii.mathdoku.MainActivity;
 import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
-import net.cactii.mathdoku.UsageLog;
+import net.cactii.mathdoku.developmentHelpers.DevelopmentHelper;
+import net.cactii.mathdoku.developmentHelpers.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.storage.database.SolvingAttemptData;
 import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 import net.cactii.mathdoku.storage.database.StatisticsDatabaseAdapter;
+import net.cactii.mathdoku.ui.PuzzleFragmentActivity;
+import net.cactii.mathdoku.util.UsageLog;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
@@ -36,7 +36,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	private static final boolean DEBUG_GRID_GAME_FILE_CONVERTER = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
 
 	// The activity which started this task
-	private MainActivity mActivity;
+	private PuzzleFragmentActivity mActivity;
 
 	// Last used revision number
 	private int mCurrentVersion;
@@ -78,7 +78,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	 * @param newVersion
 	 *            The new version to which will be upgraded.
 	 */
-	public GameFileConverter(MainActivity activity, int currentVersion,
+	public GameFileConverter(PuzzleFragmentActivity activity, int currentVersion,
 			int newVersion) {
 		mActivity = activity;
 		mCurrentVersion = currentVersion;
@@ -99,7 +99,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	 *            The activity to which results will be sent on completion of
 	 *            this task.
 	 */
-	public void attachToActivity(MainActivity activity) {
+	public void attachToActivity(PuzzleFragmentActivity activity) {
 		if (activity.equals(this.mActivity) && mProgressDialog != null
 				&& mProgressDialog.isShowing()) {
 			// The activity is already attached to this task.

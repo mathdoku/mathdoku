@@ -71,7 +71,8 @@ public class Projection extends HashMap<String, String> {
 	 *            Name of table in which the source column can be found.
 	 * @param sourceColumn
 	 *            Name of column on which the aggregation function will be
-	 *            applied to determine the value of the target column.
+	 *            applied to determine the value of the target column. Can be
+	 *            NULL for aggregation COUNT.
 	 */
 	public void put(Aggregation aggregation, String sourceTable,
 			String sourceColumn) {

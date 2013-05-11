@@ -57,6 +57,9 @@
     <string name="dialog_help_contributors_title">Contributors</string>
     <string name="dialog_help_contributors_body">MathDoku was initially developed by Ben Buxton. Contributions have been made by: Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul, Christoph Steindl and Alexander Tesfamichael. Also we would like to thank all users who have submitted bugs and feature requests.</string>
 
+    <!-- The menu item that allows the player to navigate to the changelog screen -->
+    <string name="dialog_help_neutral_button">Changes</string>
+
     <!-- CHANGES DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -76,29 +79,26 @@
     <string name="changelog_issues_title">Bugs and features</string>
     <string name="changelog_issues_body">Please report any issues or feature requests via the link below. Only issues written in English will be dealt with.</string>
 
-    <!-- MAIN MENU - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- ACTION BAR ITEMS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+
+    <!-- The menu item that allows the player to display the archive of played games. -->
+    <string name="action_archive">Archive</string>
 
     <!-- The menu item that allows the player to start a new game. -->
-    <string name="menu_newgame">New Game</string>
-
-    <!-- The menu item that allows the player to load and save the game states. -->
-    <string name="menu_saveload">Load/Save</string>
+    <string name="action_new_game">New Game</string>
 
     <!-- The sub-menu item to check user entries against the solution. -->
-    <string name="menu_checkprogress">Check Progress</string>
+    <string name="action_check_progress">Check Progress</string>
 
     <!-- The sub-menu item to go to the statistics. -->
-    <string name="menu_statistics">Statistics</string>
+    <string name="action_statistics">Statistics</string>
 
     <!-- The menu item that allows the player to navigate to the options screen. -->
-    <string name="menu_options">Options</string>
+    <string name="action_options">Options</string>
 
     <!-- The menu item that allows the player to navigate to the help screen. -->
-    <string name="menu_help">Help</string>
-
-    <!-- The menu item that allows the player to navigate to the changelog screen -->
-    <string name="menu_changes">Changes</string>
+    <string name="action_help">Help</string>
 
     <!-- DIALOGS FOR GENERATING NEW PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -118,8 +118,10 @@
         <item>Ask</item>
     </string-array>
 
-    <!-- The message and buttons of the dialog box asking whether to hide operator signs. This dialog will only be shown in case option "
-" has been set to "Always" or "Ask". -->
+    <!--
+The message and buttons of the dialog box asking whether to hide operator signs. This dialog will only be shown in case option "
+" has been set to "Always" or "Ask".
+    -->
     <string name="dialog_hide_operators_message">Hide operator signs?</string>
     <string name="dialog_hide_operators_positive_button">Yes, I like a challenge</string>
     <string name="dialog_hide_operators_negative_button">No, keep it simple</string>
@@ -173,7 +175,7 @@
     <string name="option_hide_operators_summary_always">Always hide operation signs like +, -, x and / when creating a new game</string>
     <string name="option_hide_operators_summary_never">Never hide operation signs like +, -, x and / when creating a new game</string>
     <string name="option_hide_operators_summary_ask">Ask whether operation signs like +, -, x and / should be hidden when creating a new game</string>
-    
+
     <!-- The preferences category title for options relating to how the puzzle is displayed. -->
     <string name="options_group_display">Display</string>
 
@@ -207,11 +209,12 @@
 
     <!-- DIALOG THEME - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+
     <!-- The possible values of the "themes" option. This option controls which theme is used for displaying. -->
     <string name="theme_carved">Carved</string>
     <string name="theme_newspaper">Newspaper</string>
     <string name="theme_dark">Dark</string>
-    
+
     <!-- CONTEXT MENU IN PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -309,7 +312,7 @@
     <!-- Title, and text for tip "Incorrect value" which refers to menu option "Check Progress". -->
     <string name="dialog_tip_incorrect_value_title">Incorrect value</string>
     <string name="dialog_tip_incorrect_value_text">You have entered an incorrect value. You will not be able to solve this puzzle in case you do not correct it. You can use menu option \'Check Progress\' to mark all cells having an incorrect value. Be aware: using \'Check Progress\' will raise the time elapsed with a penalty to discourage you from using it.</string>
-    
+
     <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -365,7 +368,7 @@
     <string name="statistics_elapsed_time_historic_solved_slowest">Slowest</string>
     <string name="statistics_elapsed_time_historic_solved_average">Average</string>
     <string name="statistics_elapsed_time_historic_solved_fastest">Fastest</string>
-    
+
     <!-- OPTIONS STATISTICS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 

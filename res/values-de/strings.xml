@@ -57,6 +57,9 @@
     <string name="dialog_help_contributors_title">Mitwirkende</string>
     <string name="dialog_help_contributors_body">MathDoku wurde von Ben Buxton entwickelt. Weiterentwicklungen wurden von Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul, Christoph Steindl und Alexander Tesfamichael durchgeführt. Dank an alle, die Fehler des Programms oder Anstöße für Weiterentwicklungen gemeldet haben.</string>
 
+    <!-- The menu item that allows the player to navigate to the changelog screen -->
+    <string name="dialog_help_neutral_button">Änderungen</string>
+    
     <!-- CHANGES DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -76,30 +79,27 @@
     <string name="changelog_issues_title">Fehler und Weiterentwicklungen</string>
     <string name="changelog_issues_body">Bitte melden sie alle Fehler und Anfragen für Weiterenwicklungen mit dem folgenden Link. Nur Anfragen auf Englisch werden behandelt.</string>
 
-    <!-- MAIN MENU - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- ACTION BAR ITEMS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+    <!-- The menu item that allows the player to display the archive of played games. -->
+    <!--  TODO -->
+    <string name="action_archive">Archive</string>
 
     <!-- The menu item that allows the player to start a new game. -->
-    <string name="menu_newgame">Neues Spiel</string>
-
-    <!-- The menu item that allows the player to load and save the game states. -->
-    <string name="menu_saveload">Laden/Speichern</string>
+    <string name="action_new_game">Neues Spiel</string>
 
     <!-- The sub-menu item to check user entries against the solution. -->
-    <string name="menu_checkprogress">Fortschritt kontrollieren</string>
+    <string name="action_check_progress">Fortschritt kontrollieren</string>
 
     <!-- The sub-menu item to go to the statistics. -->
     <!-- TODO -->
-    <string name="menu_statistics">Statistics</string>
+    <string name="action_statistics">Statistics</string>
 
     <!-- The menu item that allows the player to navigate to the options screen. -->
-    <string name="menu_options">Optionen</string>
+    <string name="action_options">Optionen</string>
 
     <!-- The menu item that allows the player to navigate to the help screen. -->
-    <string name="menu_help">Hilfe</string>
-
-    <!-- The menu item that allows the player to navigate to the changelog screen -->
-    <string name="menu_changes">Änderungen</string>
+    <string name="action_help">Hilfe</string>
 
     <!-- DIALOGS FOR GENERATING NEW PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

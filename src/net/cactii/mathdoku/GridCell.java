@@ -4,13 +4,14 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import net.cactii.mathdoku.MainActivity.InputMode;
 import net.cactii.mathdoku.painter.CagePainter;
 import net.cactii.mathdoku.painter.CellPainter;
 import net.cactii.mathdoku.painter.MaybeValuePainter;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.painter.UserValuePainter;
 import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
+import net.cactii.mathdoku.ui.PuzzleFragmentActivity;
+import net.cactii.mathdoku.ui.PuzzleFragmentActivity.InputMode;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -242,7 +243,7 @@ public class GridCell {
 	 * Draw the cell inclusive borders, background and text.
 	 */
 	public void draw(Canvas canvas, float gridBorderWidth,
-			MainActivity.InputMode inputMode) {
+			PuzzleFragmentActivity.InputMode inputMode) {
 		// Get cell size
 		int cellSize = (int) this.mCellPainter.getCellSize();
 

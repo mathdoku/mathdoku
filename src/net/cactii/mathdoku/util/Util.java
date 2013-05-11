@@ -1,6 +1,5 @@
 package net.cactii.mathdoku.util;
 
-import net.cactii.mathdoku.SingletonInstanceNotInstantiated;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.pm.PackageInfo;

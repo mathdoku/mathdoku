@@ -2,9 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" >
 
-    <!-- Lower API-version do not allow nested submenu's. Just list all development tools in one list. -->
+    <!-- Up until API-version 10 nested submenu's are not supported. Just list all development tools in one list. See menu-v11 for the menu containing nested submenu's which is used on API 11 or above. -->
     <item
         android:id="@+id/menu_development_mode"
+        android:orderInCategory="1000"
+        android:showAsAction="never"
         android:title="Development Tools"
         android:visible="false"
         tools:ignore="HardcodedText">
