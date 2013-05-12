@@ -1,3 +1,44 @@
+/** ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * 
+ * Currently this class is not in use. In future when we are going to share games it 
+ * will be nice to send a preview image of the empty puzzle along.
+ * 
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ * ***********************************************************************************
+ */
+
 package net.cactii.mathdoku.storage;
 
 import java.io.BufferedInputStream;
@@ -10,7 +51,6 @@ import java.io.InputStream;
 
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
-import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 import net.cactii.mathdoku.ui.GridView;
 import net.cactii.mathdoku.util.Util;
 import android.graphics.Bitmap;
@@ -21,11 +61,9 @@ import android.util.Log;
 public class PreviewImage extends Object {
 	private static final String TAG = "MathDoku.PreviewImage";
 
-	public static final String FILENAME_BASE = "Preview_";
+	public static final String FILENAME_BASE = "Preview";
 	public static final String FILENAME_EXTENSION = ".png";
-	
-	private int mSolvingAttemptId;
-	
+
 	// Filename for this preview image
 	private String mFilename;
 
@@ -35,9 +73,8 @@ public class PreviewImage extends Object {
 	 * @param solvingAttemptId
 	 *            The if of the solving attempt on which this preview applies.
 	 */
-	public PreviewImage(int solvingAttemptId) {
-		mFilename = Util.getPath() + FILENAME_BASE + solvingAttemptId + FILENAME_EXTENSION;
-		mSolvingAttemptId = solvingAttemptId;
+	public PreviewImage() {
+		mFilename = Util.getPath() + FILENAME_BASE + FILENAME_EXTENSION;
 	}
 
 	/**
@@ -71,8 +108,8 @@ public class PreviewImage extends Object {
 		}
 		float scaleFactor = (float) size
 				/ (float) Math.max(view.getWidth(), view.getHeight());
-		Bitmap bitmap = Bitmap.createBitmap(size, size,
-				Bitmap.Config.ARGB_8888);
+		Bitmap bitmap = Bitmap
+				.createBitmap(size, size, Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(bitmap);
 		canvas.scale(scaleFactor, scaleFactor);
 		view.draw(canvas);
@@ -89,9 +126,6 @@ public class PreviewImage extends Object {
 			return false;
 		}
 
-		// Update reference in database if needed.
-		new SolvingAttemptDatabaseAdapter().updatePreviewFilename(mSolvingAttemptId, mFilename);
-		
 		return true;
 	}
 
@@ -125,7 +159,8 @@ public class PreviewImage extends Object {
 	}
 
 	/**
-	 * Get the size (height equals width) for preview images used on this device.
+	 * Get the size (height equals width) for preview images used on this
+	 * device.
 	 * 
 	 * @return The size of the preview images.
 	 */

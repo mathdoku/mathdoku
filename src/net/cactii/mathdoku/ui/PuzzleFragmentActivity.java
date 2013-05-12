@@ -19,7 +19,6 @@ import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.painter.Painter.GridTheme;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import net.cactii.mathdoku.storage.GameFileConverter;
-import net.cactii.mathdoku.storage.PreviewImage;
 import net.cactii.mathdoku.storage.database.DatabaseHelper;
 import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 import net.cactii.mathdoku.tip.TipCheat;
@@ -33,7 +32,6 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -135,11 +133,6 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 	public DialogPresentingGridGenerator mDialogPresentingGridGenerator;
 	public GameFileConverter mGameFileConverter;
 
-	// Variables for process of creating preview images of game file for which
-	// no preview image does exist.
-	private int mSolvingAttemptImagePreviewCreation;
-	private ProgressDialog mProgressDialogImagePreviewCreation;
-
 	private Util mUtil;
 
 	private boolean mBlockTouchSameCell = false;
@@ -179,7 +172,7 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		// REMOVE: FRAGMENT-CONVERSION
 		// this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -443,18 +436,7 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 
 		stopTimer();
 		if (mGrid != null) {
-			mGrid.save(mGridView);
-		}
-
-		if (mProgressDialogImagePreviewCreation != null
-				&& mProgressDialogImagePreviewCreation.isShowing()) {
-			try {
-				mProgressDialogImagePreviewCreation.dismiss();
-			} catch (IllegalArgumentException e) {
-				// Abort processing. On resume of activity this process
-				// is (or already has been) restarted.
-				return;
-			}
+			mGrid.save();
 		}
 
 		super.onPause();
@@ -860,7 +842,7 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 
 		// Save the game.
 		if (mGrid != null) {
-			mGrid.save(mGridView);
+			mGrid.save();
 		}
 
 		// Start a background task to generate the new grid. As soon as the new
@@ -869,8 +851,8 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 				: 4);
 		int maxCageResult = getResources().getInteger(
 				R.integer.maximum_cage_value);
-		mDialogPresentingGridGenerator = new DialogPresentingGridGenerator(this, gridSize,
-				maxCageSize, maxCageResult, hideOperators,
+		mDialogPresentingGridGenerator = new DialogPresentingGridGenerator(
+				this, gridSize, maxCageSize, maxCageResult, hideOperators,
 				Util.getPackageVersionNumber());
 		mDialogPresentingGridGenerator.execute();
 	}
@@ -944,7 +926,8 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 								+ (DevelopmentHelper.mMode == Mode.DEVELOPMENT ? " r"
 										+ Util.getPackageVersionNumber() + " "
 										: " ")
-								+ getResources().getString(R.string.action_help))
+								+ getResources()
+										.getString(R.string.action_help))
 				.setIcon(R.drawable.about)
 				.setView(view)
 				.setNeutralButton(R.string.dialog_help_neutral_button,
@@ -1048,31 +1031,26 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 
 		// Start phase 1 of the upgrade process if needed.
 		if (previousInstalledVersion < packageVersionNumber) {
-			// On Each update of the game, all game files will be converted to
+			// On Each update of the game, all game data will be converted to
 			// the latest definitions. On completion of the game file
-			// conversion, method upgradePhase2_CreatePreviewImages will be
+			// conversion, method upgradePhase2_UpdatePreferences will be
 			// called.
 			mGameFileConverter = new GameFileConverter(this,
 					previousInstalledVersion, packageVersionNumber);
 			mGameFileConverter.execute();
-		} else if (!mMathDokuPreferences.isCreatePreviewImagesCompleted()) {
-			// Skip Phase 1 and go directly to Phase 2 to generate new previews.
-			upgradePhase2_createPreviewImages(previousInstalledVersion,
-					packageVersionNumber);
 		}
 		return;
 	}
 
 	/**
-	 * Finishes the upgrading process after the game files have been converted
-	 * and the image previews have been created.
+	 * Finishes the upgrading process after the game files have been converted.
 	 * 
 	 * @param previousInstalledVersion
 	 *            : Latest version of MathDoku which was actually used.
 	 * @param currentVersion
 	 *            Current (new) revision number of MathDoku.
 	 */
-	public void upgradePhase3_UpdatePreferences(int previousInstalledVersion,
+	public void upgradePhase2_UpdatePreferences(int previousInstalledVersion,
 			int currentVersion) {
 
 		// Update preferences
@@ -1092,138 +1070,6 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 
 		// Restart the last game
 		restartLastGame();
-	}
-
-	/**
-	 * Create preview images for all stored games. Previews will be created one
-	 * at a time because each stored game has to be loaded and displayed before
-	 * a preview can be generated.
-	 * 
-	 * @param previousInstalledVersion
-	 *            : Latest version of MathDoku which was actually used.
-	 * @param currentVersion
-	 *            Current (new) revision number of MathDoku.
-	 */
-	public void upgradePhase2_createPreviewImages(
-			final int previousInstalledVersion, final int currentVersion) {
-		// The background task for game file conversion is completed. Destroy
-		// reference to the task.
-		mGameFileConverter = null;
-
-		if (mMathDokuPreferences.isCreatePreviewImagesCompleted()) {
-			// Previews have already been created. Go to next phase of upgrading
-			upgradePhase3_UpdatePreferences(previousInstalledVersion,
-					currentVersion);
-			return;
-		}
-
-		// Determine the number of previews to be created.
-		int countGameFilesWithoutPreview = new SolvingAttemptDatabaseAdapter()
-				.countSolvingAttemptsWithoutPreviewImage();
-		if (countGameFilesWithoutPreview == 0) {
-			// No games files without previews found.
-			mMathDokuPreferences.setCreatePreviewImagesCompleted();
-
-			// Go to next phase of upgrading
-			upgradePhase3_UpdatePreferences(previousInstalledVersion,
-					currentVersion);
-			return;
-		}
-
-		// At least one game file was found for which no preview exist. Show
-		// the progress dialog.
-		mProgressDialogImagePreviewCreation = new ProgressDialog(this);
-		mProgressDialogImagePreviewCreation
-				.setTitle(R.string.main_ui_creating_previews_title);
-		mProgressDialogImagePreviewCreation.setMessage(getResources()
-				.getString(R.string.main_ui_creating_previews_message));
-		mProgressDialogImagePreviewCreation
-				.setIcon(android.R.drawable.ic_dialog_info);
-		mProgressDialogImagePreviewCreation
-				.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-		mProgressDialogImagePreviewCreation
-				.setMax(countGameFilesWithoutPreview);
-		mProgressDialogImagePreviewCreation.setIndeterminate(false);
-		mProgressDialogImagePreviewCreation.setCancelable(false);
-		mProgressDialogImagePreviewCreation.show();
-
-		// Display and hide elements so that the previews can be created.
-		mPuzzleGridLayout.setVisibility(View.VISIBLE);
-		mStartButton.setVisibility(View.GONE);
-
-		// Runnable for handling the next step of preview image creation process
-		// which can not be done until the grid view has been validated
-		// (refreshed).
-		final Runnable createNextPreviewImage = new Runnable() {
-			public void run() {
-				// If a game file was already loaded, it is now visible in the
-				// grid view.
-				if (mSolvingAttemptImagePreviewCreation >= 0) {
-					// Save preview for the current game file.
-					new PreviewImage(mSolvingAttemptImagePreviewCreation)
-							.save(mGridView);
-					mProgressDialogImagePreviewCreation.incrementProgressBy(1);
-				}
-
-				// Check if a preview for another game file needs to be
-				// created.
-				mSolvingAttemptImagePreviewCreation = new SolvingAttemptDatabaseAdapter()
-						.getSolvingAttemptWithoutPreviewImage();
-				if (mSolvingAttemptImagePreviewCreation >= 0) {
-					Grid newGrid = new Grid();
-					if (newGrid.load(mSolvingAttemptImagePreviewCreation)) {
-						mGrid = newGrid;
-						mGridView.loadNewGrid(mGrid);
-						if (mGrid.isActive()) {
-							// As this grid can contain maybe value we have to
-							// set the corresponding digit position grid.
-							setDigitPositionGrid(InputMode.NORMAL);
-						}
-						mPuzzleGridLayout.setVisibility(View.INVISIBLE);
-						mControls.setVisibility(View.GONE);
-						mStartButton.setVisibility(View.GONE);
-
-						// Post a message for further processing of the
-						// conversion game after the view has been refreshed
-						// with the loaded game.
-						mHandler.post(this);
-					}
-				} else {
-					// All preview images have been created.
-
-					// Dismiss the dialog. In case the process was interrupted
-					// and restarted the dialog can not be dismissed without
-					// causing an error.
-					try {
-						mProgressDialogImagePreviewCreation.dismiss();
-					} catch (IllegalArgumentException e) {
-						// Abort processing. On resume of activity this process
-						// is (or already has been) restarted.
-						return;
-					} finally {
-						mProgressDialogImagePreviewCreation = null;
-					}
-
-					mMathDokuPreferences.setCreatePreviewImagesCompleted();
-
-					// Go to next phase of upgrading
-					upgradePhase3_UpdatePreferences(previousInstalledVersion,
-							currentVersion);
-
-					setTheme();
-				}
-			}
-		};
-
-		// Post a message to start the process of creating image previews.
-		mSolvingAttemptImagePreviewCreation = -1;
-		(new Thread() {
-			public void run() {
-				PuzzleFragmentActivity.this.mHandler
-						.post(createNextPreviewImage);
-				mProgressDialogImagePreviewCreation.setProgress(1);
-			}
-		}).start();
 	}
 
 	/*
@@ -1440,7 +1286,7 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 			}
 			break;
 		}
-		
+
 		mGridView.invalidate();
 	}
 

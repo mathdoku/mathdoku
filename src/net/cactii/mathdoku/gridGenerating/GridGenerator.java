@@ -224,7 +224,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 						Log.e(TAG, "Can not create grid.");
 						continue;
 					}
-					mGrid.saveWithoutPreview();
+					mGrid.save();
 
 					publishProgress(
 							DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_MESSAGE,

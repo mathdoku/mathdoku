@@ -8,14 +8,12 @@ import net.cactii.mathdoku.gridGenerating.GridGeneratingParameters;
 import net.cactii.mathdoku.statistics.GridStatistics;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import net.cactii.mathdoku.storage.InvalidStatisticsException;
-import net.cactii.mathdoku.storage.PreviewImage;
 import net.cactii.mathdoku.storage.database.DatabaseHelper;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter;
 import net.cactii.mathdoku.storage.database.GridRow;
 import net.cactii.mathdoku.storage.database.SolvingAttemptData;
 import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 import net.cactii.mathdoku.storage.database.StatisticsDatabaseAdapter;
-import net.cactii.mathdoku.ui.GridView;
 import net.cactii.mathdoku.util.UsageLog;
 import net.cactii.mathdoku.util.Util;
 import android.util.Log;
@@ -438,14 +436,16 @@ public class Grid {
 	}
 
 	/**
-	 * Create a string representation of the Grid View which can be used to
-	 * store a grid view in a saved game.
+	 * Create a string representation of the Grid which can be used to store a
+	 * grid.
 	 * 
 	 * @return A string representation of the grid.
 	 */
 	public String toStorageString() {
-		// Build storage string
-		String storageString = SAVE_GAME_GRID_LINE
+		StringBuffer stringBuffer = new StringBuffer(256);
+
+		// First store data for the grid object itself.
+		stringBuffer.append(SAVE_GAME_GRID_LINE
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ mGridGeneratingParameters.mGameSeed
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
@@ -463,8 +463,32 @@ public class Grid {
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ mGridGeneratingParameters.mMaxCageResult
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ mGridGeneratingParameters.mMaxCageSize;
-		return storageString;
+				+ mGridGeneratingParameters.mMaxCageSize
+				+ SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+
+		// Store information about the cells. Use one line per single
+		// cell.
+		for (GridCell cell : mCells) {
+			stringBuffer.append(cell.toStorageString()
+					+ SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+		}
+
+		// Store information about the cages. Use one line per single
+		// cage.
+		for (GridCage cage : mCages) {
+			stringBuffer.append(cage.toStorageString()
+					+ SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+		}
+
+		// Store information about the cell changes. Use one line per single
+		// cell change. Note: watch for lengthy line due to recursive cell
+		// changes.
+		for (CellChange cellChange : mMoves) {
+			stringBuffer.append(cellChange.toStorageString()
+					+ SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+		}
+
+		return stringBuffer.toString();
 	}
 
 	/**
@@ -852,76 +876,27 @@ public class Grid {
 	}
 
 	/**
-	 * Save the grid (solving attempt only). Preferably {@link #save(GridView)}
-	 * is used.
+	 * Save this grid (game file and statistics).
 	 * 
-	 * @return True in case the solving attempt has been saved. False otherwise.
-	 */
-	public boolean saveWithoutPreview() {
-		return save(null);
-	}
-
-	/**
-	 * Save this grid (game file, statistics and preview). The preview image of
-	 * the grid is based upon the given grid view.
-	 * 
-	 * @param gridView
-	 *            The gridView in which the grid is currently displayed.
 	 * @return True in case everything has been saved. False otherwise.
 	 */
-	public boolean save(GridView gridView) {
+	public boolean save() {
 		boolean saved = true;
 
 		synchronized (mLock) { // Avoid saving game at the same time as
 								// creating puzzle
-			// Build the data string for the solving attempt.
-			StringBuffer stringBuffer = new StringBuffer(256);
-
-			// Store information about the Grid View on a single line
-			stringBuffer.append(toStorageString()
-					+ SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
-
-			// Store information about the cells. Use one line per single
-			// cell.
-			for (GridCell cell : mCells) {
-				stringBuffer.append(cell.toStorageString()
-						+ SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
-			}
-
-			// Store information about the cages. Use one line per single
-			// cage.
-			for (GridCage cage : mCages) {
-				stringBuffer.append(cage.toStorageString()
-						+ SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
-			}
-
-			// Store information about the cell changes. Use one line per single
-			// cell change. Note: watch for lengthy line due to recursive cell
-			// changes.
-			for (CellChange cellChange : mMoves) {
-				stringBuffer.append(cellChange.toStorageString()
-						+ SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
-			}
 
 			// The solving attempt was already created as soon as the grid was
 			// created first. So only an update is needed.
 			SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = new SolvingAttemptDatabaseAdapter();
 			if (!solvingAttemptDatabaseAdapter.update(mSolvingAttemptId,
-					stringBuffer.toString())) {
+					toStorageString())) {
 				return false;
 			}
 
 			// Update statistics. Do not abort in case statistics could not be
 			// saved.
 			saved = (mGridStatistics == null ? false : mGridStatistics.save());
-
-			// Update the preview image. Do not abort in case the preview image
-			// could not be saved.
-			if (gridView != null) {
-				PreviewImage previewImage = new PreviewImage(mSolvingAttemptId);
-				saved = previewImage.save(gridView) && saved;
-			}
-
 		} // End of synchronised block
 
 		return saved;

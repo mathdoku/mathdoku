@@ -1,15 +1,10 @@
 package net.cactii.mathdoku.developmentHelper;
 
-import java.io.File;
-import java.io.FilenameFilter;
-
 import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.gridGenerating.DialogPresentingGridGenerator;
 import net.cactii.mathdoku.gridGenerating.GridGenerator;
-import net.cactii.mathdoku.storage.PreviewImage;
 import net.cactii.mathdoku.storage.database.DatabaseHelper;
-import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 import net.cactii.mathdoku.ui.PuzzleFragmentActivity;
 import net.cactii.mathdoku.ui.PuzzleFragmentActivity.InputMode;
 import net.cactii.mathdoku.util.UsageLog;
@@ -80,9 +75,6 @@ public class DevelopmentHelper {
 
 				// Generate games
 				generateGames(puzzleFragmentActivity);
-				return true;
-			case R.id.development_mode_recreate_previews:
-				recreateAllPreviews(puzzleFragmentActivity);
 				return true;
 			case R.id.development_mode_reset_preferences:
 				resetPreferences(puzzleFragmentActivity);
@@ -190,60 +182,14 @@ public class DevelopmentHelper {
 					.setMessage(
 							Integer.toString(numberOfGamesGenerated)
 									+ " games have been generated. Note that it is not "
-									+ "guaranteed that those puzzles have unique solutions. "
-									+ "After restart of the activity the preview images "
-									+ "will be created for the newly created games.")
+									+ "guaranteed that those puzzles have unique solutions.")
 					.setPositiveButton("OK",
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int id) {
-									Preferences.getInstance(
-											puzzleFragmentActivity)
-											.initCreatePreviewImagesCompleted();
-									restartActivity(puzzleFragmentActivity);
-								}
-							}).show();
-		}
-	}
-
-	/**
-	 * Delete all preview images and resets the preferences at the default which
-	 * is used to check whether preview images have to be generated.
-	 * 
-	 * @param puzzleFragmentActivity
-	 *            The activity in which context the confirmation dialog will be
-	 *            shown.
-	 */
-	public static void recreateAllPreviews(
-			final PuzzleFragmentActivity puzzleFragmentActivity) {
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-			AlertDialog.Builder builder = new AlertDialog.Builder(
-					puzzleFragmentActivity);
-			builder.setTitle("Recreate all previews?")
-					.setMessage(
-							"All previews will be deleted. Also the preference which "
-									+ "is used to check whether previews have to be "
-									+ "generated is resetted.")
-					.setNegativeButton("Cancel",
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int id) {
 									// Do nothing
 								}
-							})
-					.setPositiveButton("Create new previews",
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int id) {
-									executeDeleteAllPreviews();
-									Preferences.getInstance(
-											puzzleFragmentActivity)
-											.initCreatePreviewImagesCompleted();
-									restartActivity(puzzleFragmentActivity);
-								}
-							});
-			AlertDialog dialog = builder.create();
-			dialog.show();
+							}).show();
 		}
 	}
 
@@ -285,7 +231,7 @@ public class DevelopmentHelper {
 	 * involves opening the application manager.
 	 * 
 	 * @param puzzleFragmentActivity
-	 *            The activity in which context the preferences are resetted.
+	 *            The activity in which context the preferences are reseted.
 	 */
 	public static void deleteGamesAndPreferences(
 			final PuzzleFragmentActivity puzzleFragmentActivity) {
@@ -306,8 +252,6 @@ public class DevelopmentHelper {
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int id) {
-									executeDeleteAllGames();
-									executeDeleteAllPreviews();
 									executeDeleteAllPreferences();
 									executeDeleteDatabase(puzzleFragmentActivity);
 									puzzleFragmentActivity.mGrid = null;
@@ -319,30 +263,6 @@ public class DevelopmentHelper {
 							});
 			AlertDialog dialog = builder.create();
 			dialog.show();
-		}
-	}
-
-	/**
-	 * Delete all game files and previews without warning.
-	 */
-	private static void executeDeleteAllGames() {
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-			FilenameFilter filter = new FilenameFilter() {
-				public boolean accept(File dir, String name) {
-					if (name.endsWith(".mgf") || name.endsWith(".png")) {
-						return true;
-					} else {
-						return false;
-					}
-				}
-			};
-			String path = Util.getPath();
-			File dir = new File(path);
-			if (dir != null) {
-				for (String file : dir.list(filter)) {
-					new File(path + file).delete();
-				}
-			}
 		}
 	}
 
@@ -461,29 +381,6 @@ public class DevelopmentHelper {
 								});
 				AlertDialog dialog = builder.create();
 				dialog.show();
-			}
-		}
-	}
-
-	/**
-	 * Deletes all preview images.
-	 */
-	private static void executeDeleteAllPreviews() {
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-			FilenameFilter filter = new FilenameFilter() {
-				public boolean accept(File dir, String name) {
-					return name.endsWith(PreviewImage.FILENAME_EXTENSION);
-				}
-			};
-			String path = Util.getPath();
-			File dir = new File(Util.getPath());
-			String[] previewImages = dir.list(filter);
-
-			SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = new SolvingAttemptDatabaseAdapter();
-			for (String previewImage : previewImages) {
-				new File(path + previewImage).delete();
-				solvingAttemptDatabaseAdapter
-						.removeReferenceToPreviewFilename(path + previewImage);
 			}
 		}
 	}

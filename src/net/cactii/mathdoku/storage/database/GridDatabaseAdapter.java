@@ -159,7 +159,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 				gridGeneratingParameters.mMaxCageSize);
 
 		try {
-			id = (int) mSQLiteDatabase
+			id = (int) mSqliteDatabase
 					.insertOrThrow(TABLE, null, initialValues);
 		} catch (SQLiteConstraintException e) {
 			InvalidParameterException ipe = new InvalidParameterException(
@@ -181,7 +181,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		GridRow gridRow = null;
 		Cursor cursor = null;
 		try {
-			cursor = mSQLiteDatabase.query(true, TABLE, allColumns, KEY_ROWID
+			cursor = mSqliteDatabase.query(true, TABLE, allColumns, KEY_ROWID
 					+ "=" + id, null, null, null, null, null);
 			gridRow = toGridRow(cursor);
 		} catch (SQLiteException e) {
@@ -208,7 +208,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		GridRow gridRow = null;
 		Cursor cursor = null;
 		try {
-			cursor = mSQLiteDatabase.query(true, TABLE, allColumns,
+			cursor = mSqliteDatabase.query(true, TABLE, allColumns,
 					KEY_DEFINITION + "=" + stringBetweenQuotes(definition),
 					null, null, null, null, null);
 			gridRow = toGridRow(cursor);
@@ -288,7 +288,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		int[] gridIds = null;
 		Cursor cursor = null;
 		try {
-			cursor = mSQLiteDatabase.query(true, TABLE, new String[] {KEY_ROWID}, null, null, null, null, KEY_ROWID, null);
+			cursor = mSqliteDatabase.query(true, TABLE, new String[] {KEY_ROWID}, null, null, null, null, KEY_ROWID, null);
 			if (cursor.moveToFirst()) {
 				gridIds = new int[cursor.getCount()];
 				int i = 0;

@@ -367,11 +367,6 @@
 
     <!-- MISCELLANEOUS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-
-    <!-- The title and message for the dialog displayed on the screen when generating preview images, along with the associated title. -->
-    <string name="main_ui_creating_previews_title">Aanmaken voorbeeld weergave</string>
-    <string name="main_ui_creating_previews_message">Een ogenblik geduld a.u.b. Voorbeeld weergaves van bewaarde puzzels worden gemaakt.</string>
-
     <!-- The message that appears when the player has solved the puzzle. -->
     <string name="main_ui_solved_messsage">Opgelost!</string>
 
@@ -386,9 +381,6 @@
 
     <!-- Alert to select a cell before a value is selected -->
     <string name="select_cell_before_value">Selecteer eerst een cel.</string>
-
-    <!-- Text to display in case the preview image of a saved game is not yet available. -->
-    <string name="game_file_preview_not_available">Nog niet beschikbaar</string>
 
     <!-- Units for time. -->
     <string name="time_unit_seconds_singular">seconde</string>

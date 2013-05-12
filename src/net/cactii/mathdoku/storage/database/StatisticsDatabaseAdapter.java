@@ -195,7 +195,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 
 		long id = -1;
 		try {
-			id = mSQLiteDatabase.insertOrThrow(TABLE, null, initialValues);
+			id = mSqliteDatabase.insertOrThrow(TABLE, null, initialValues);
 		} catch (SQLiteException e) {
 			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 				e.printStackTrace();
@@ -222,7 +222,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		GridStatistics gridStatistics = null;
 		Cursor cursor = null;
 		try {
-			cursor = mSQLiteDatabase.query(true, TABLE, allColumns, KEY_ROWID
+			cursor = mSqliteDatabase.query(true, TABLE, allColumns, KEY_ROWID
 					+ "=" + id, null, null, null, null, null);
 			gridStatistics = toGridStatistics(cursor);
 		} catch (SQLiteException e) {
@@ -250,7 +250,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		GridStatistics gridStatistics = null;
 		Cursor cursor = null;
 		try {
-			cursor = mSQLiteDatabase.query(true, TABLE, allColumns, KEY_GRID_ID
+			cursor = mSqliteDatabase.query(true, TABLE, allColumns, KEY_GRID_ID
 					+ "=" + gridId, null, null, null, KEY_ROWID + " DESC", "1");
 			gridStatistics = toGridStatistics(cursor);
 		} catch (SQLiteException e) {
@@ -372,7 +372,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				Boolean.toString(gridStatistics.mSolvedManually));
 		newValues.put(KEY_FINISHED, Boolean.toString(gridStatistics.mFinished));
 
-		return (mSQLiteDatabase.update(TABLE, newValues, KEY_ROWID + " = "
+		return (mSqliteDatabase.update(TABLE, newValues, KEY_ROWID + " = "
 				+ gridStatistics.mId, null) == 1);
 	}
 
@@ -497,7 +497,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		Cursor cursor = null;
 		try {
 			cursor = sqliteQueryBuilder
-					.query(mSQLiteDatabase,
+					.query(mSqliteDatabase,
 							mCumulativeStatisticsProjection.getAllColumnNames(),
 							GridDatabaseAdapter
 									.getPrefixedColumnName(GridDatabaseAdapter.KEY_GRID_SIZE)
@@ -755,7 +755,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		Cursor cursor = null;
 		try {
 			cursor = sqliteQueryBuilder
-					.query(mSQLiteDatabase,
+					.query(mSqliteDatabase,
 							columnsData,
 							GridDatabaseAdapter
 									.getPrefixedColumnName(GridDatabaseAdapter.KEY_GRID_SIZE)

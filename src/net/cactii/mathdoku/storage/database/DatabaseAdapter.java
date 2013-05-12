@@ -1,9 +1,17 @@
 package net.cactii.mathdoku.storage.database;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
+import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 import android.util.Log;
 
 /**
@@ -19,16 +27,13 @@ public abstract class DatabaseAdapter {
 	static final String SQLITE_TRUE = "true";
 	static final String SQLITE_FALSE = "false";
 
-	public SQLiteDatabase mSQLiteDatabase;
+	public SQLiteDatabase mSqliteDatabase;
 
 	/**
 	 * Creates a new instance of {@link DatabaseAdapter}.
-	 * 
-	 * @param sqliteDatabase
-	 *            The database to be used by the adapter.
 	 */
 	public DatabaseAdapter() {
-		mSQLiteDatabase = DatabaseHelper.getInstance().getWritableDatabase();
+		mSqliteDatabase = DatabaseHelper.getInstance().getWritableDatabase();
 	}
 
 	/**
@@ -215,7 +220,8 @@ public abstract class DatabaseAdapter {
 	}
 
 	/**
-	 * Converts a datetime value from a string to a SQL timestamp representation.
+	 * Converts a datetime value from a string to a SQL timestamp
+	 * representation.
 	 * 
 	 * @param value
 	 *            The string value to be converted.
@@ -268,12 +274,13 @@ public abstract class DatabaseAdapter {
 		final String KEY_SQL = "sql";
 		String columns[] = { KEY_SQL };
 
-		Cursor cursor = mSQLiteDatabase.query(true, "sqlite_master", columns,
+		Cursor cursor = mSqliteDatabase.query(true, "sqlite_master", columns,
 				"name = " + stringBetweenQuotes(getTableName())
 						+ " AND type = " + stringBetweenQuotes("table"), null,
 				null, null, null, null);
 		if (cursor != null && cursor.moveToFirst()) {
-			// Table exists. Check if definition matches with expected definition. 
+			// Table exists. Check if definition matches with expected
+			// definition.
 			String sql = cursor
 					.getString(cursor.getColumnIndexOrThrow(KEY_SQL));
 			tableDefinitionChanged = !sql.equals(getCreateSQL());
@@ -293,5 +300,109 @@ public abstract class DatabaseAdapter {
 		cursor.close();
 
 		return tableDefinitionChanged;
+	}
+
+	/**
+	 * Drops one or more columns from the table.
+	 * 
+	 * @param sqliteDatabase
+	 *            The database to be used by the adapter.
+	 * @param tableName
+	 *            The table name.
+	 * @param columnsToDropped
+	 *            The array of columns to be dropped.
+	 * @param createSQL
+	 *            The SQL statement to create the new version of the table.
+	 * @return True in case the table is recreated. False otherwise.
+	 */
+	protected static boolean dropColumn(SQLiteDatabase sqliteDatabase,
+			String tableName, String[] columnsToDropped, String createSQL) {
+		// Check if columns to be dropped has beeen specified.
+		if (columnsToDropped == null || columnsToDropped.length == 0) {
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+				throw new RuntimeException(TAG
+						+ ".dropColumn has invalid parameter '"
+						+ columnsToDropped.toString() + "'.");
+			} else {
+				return false;
+			}
+		}
+
+		// Build the list of columns for the new version of the table.
+		List<String> currentColumnList = getTableColumns(sqliteDatabase,
+				tableName);
+		List<String> newColumnList = new ArrayList<String>(currentColumnList);
+		if (newColumnList.removeAll(Arrays.asList(columnsToDropped)) == false
+				|| newColumnList.isEmpty()
+				|| newColumnList.equals(currentColumnList)) {
+			// Can not delete.
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+				throw new RuntimeException(TAG
+						+ ".dropColumn can not drop columns '"
+						+ columnsToDropped.toString() + "'.");
+			} else {
+				return false;
+			}
+		}
+
+		// Start a new transaction.
+		sqliteDatabase.beginTransaction();
+
+		try {
+			// Rename current table to temporary table.
+			sqliteDatabase.execSQL("ALTER TABLE " + tableName + " RENAME TO "
+					+ tableName + "_old;");
+
+			// Create the (new version of the) table on its new format (no
+			// redundant
+			// columns).
+			sqliteDatabase.execSQL(createSQL);
+
+			String newColumnsString = TextUtils.join(",", newColumnList);
+
+			// Populating the (new version of the) table with the data from the
+			// temporary table.
+			sqliteDatabase.execSQL("INSERT INTO " + tableName + "("
+					+ newColumnsString + ") SELECT " + newColumnsString
+					+ " FROM " + tableName + "_old;");
+
+			// Drop the temporary table.
+			sqliteDatabase.execSQL("DROP TABLE " + tableName + "_old;");
+
+			// Commit changes.
+			sqliteDatabase.setTransactionSuccessful();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			sqliteDatabase.endTransaction();
+		}
+		return true;
+	}
+
+	/**
+	 * Get the actual column names for the given table.
+	 * 
+	 * @param sqliteDatabase
+	 *            The database to be used by the adapter.
+	 * @param tableName
+	 *            The table for which the actual columns have to be determined.
+	 * @return The list of columns in the given table.
+	 */
+	public static List<String> getTableColumns(SQLiteDatabase sqliteDatabase,
+			String tableName) {
+		// Retrieve columns
+		String cmd = "pragma table_info(" + tableName + ");";
+		Cursor cur = sqliteDatabase.rawQuery(cmd, null);
+
+		// Convert columns to list.
+		ArrayList<String> columns = new ArrayList<String>();
+		while (cur.moveToNext()) {
+			columns.add(cur.getString(cur.getColumnIndex("name")));
+		}
+		cur.close();
+
+		return columns;
 	}
 }

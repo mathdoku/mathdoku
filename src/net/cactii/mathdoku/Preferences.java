@@ -26,9 +26,6 @@ public class Preferences {
 	public final static String CLEAR_REDUNDANT_POSSIBLES = "redundantPossibles";
 	public final static boolean CLEAR_REDUNDANT_POSSIBLES_DEFAULT = true;
 
-	public final static String CREATE_PREVIEW_IMAGES_COMPLETED = "CreatePreviewImagesCompleted";
-	public final static boolean CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT = false;
-
 	public final static String CURRENT_VERSION = "currentversion";
 	public final static int CURRENT_VERSION_DEFAULT = -1;
 
@@ -148,14 +145,6 @@ public class Preferences {
 		// Update preferences
 		Editor prefeditor = mSharedPreferences.edit();
 
-		if (previousInstalledVersion < 98 && currentVersion >= 98) {
-			if (!mSharedPreferences.contains(CREATE_PREVIEW_IMAGES_COMPLETED)) {
-				mSharedPreferences.getBoolean(
-						Preferences.CREATE_PREVIEW_IMAGES_COMPLETED,
-						Preferences.CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT);
-			}
-		}
-
 		if (previousInstalledVersion < 121 && currentVersion >= 121) {
 			// Add missing preferences to the Shared Preferences.
 			if (!mSharedPreferences.contains(CLEAR_REDUNDANT_POSSIBLES)) {
@@ -240,6 +229,12 @@ public class Preferences {
 						CHECK_PROGRESS_USED_DEFAULT);
 			}
 		}
+		if (previousInstalledVersion <= 298 && currentVersion >= 298) {
+			// Remove obsolete preference
+			if (mSharedPreferences.contains("CreatePreviewImagesCompleted")) {
+				prefeditor.remove("CreatePreviewImagesCompleted");
+			}
+		}
 
 		prefeditor.putInt(CURRENT_VERSION, currentVersion);
 		prefeditor.commit();
@@ -253,42 +248,6 @@ public class Preferences {
 	public boolean isControlsBlockHidden() {
 		return mSharedPreferences.getBoolean(HIDE_CONTROLS,
 				HIDE_CONTROLS_DEFAULT);
-	}
-
-	/**
-	 * Checks whether the preview images creation process has completed.
-	 * 
-	 * @return True in case the preview images creation process has completed.
-	 *         False otherwise.
-	 */
-	public boolean isCreatePreviewImagesCompleted() {
-		return mSharedPreferences.getBoolean(CREATE_PREVIEW_IMAGES_COMPLETED,
-				CREATE_PREVIEW_IMAGES_COMPLETED_DEFAULT);
-	}
-
-	/**
-	 * Marks the process of preview image creation as completed.
-	 */
-	public void setCreatePreviewImagesCompleted() {
-		Editor prefEditor = mSharedPreferences.edit();
-		prefEditor.putBoolean(CREATE_PREVIEW_IMAGES_COMPLETED, true);
-		prefEditor.commit();
-
-	}
-
-	/**
-	 * Resets preferences which determine whether the preview image creation
-	 * process should be (re)started.
-	 */
-	public void initCreatePreviewImagesCompleted() {
-		// Remove preference which controls the process of preview image
-		// creation.
-		if (mSharedPreferences
-				.contains(Preferences.CREATE_PREVIEW_IMAGES_COMPLETED)) {
-			Editor prefeditor = mSharedPreferences.edit();
-			prefeditor.remove(Preferences.CREATE_PREVIEW_IMAGES_COMPLETED);
-			prefeditor.commit();
-		}
 	}
 
 	/**

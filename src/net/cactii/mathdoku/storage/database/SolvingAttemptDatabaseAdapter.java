@@ -26,12 +26,9 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	private static final String KEY_GRID_ID = "grid_id";
 	private static final String KEY_DATE_CREATED = "date_created";
 	private static final String KEY_DATE_UPDATED = "date_updated";
-	private static final String KEY_PREVIEW_IMAGE_FILENAME = "preview_image_filename";
 	private static final String KEY_SAVED_WITH_REVISION = "revision";
 	private static final String KEY_DATA = "data";
 
-	private static final String[] previewColumns = { KEY_ROWID, KEY_GRID_ID,
-			KEY_DATE_CREATED, KEY_DATE_UPDATED, KEY_PREVIEW_IMAGE_FILENAME };
 	private static final String[] dataColumns = { KEY_ROWID, KEY_GRID_ID,
 			KEY_DATE_CREATED, KEY_DATE_UPDATED, KEY_SAVED_WITH_REVISION,
 			KEY_DATA };
@@ -64,7 +61,6 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 				createColumn(KEY_GRID_ID, "integer", " not null"),
 				createColumn(KEY_DATE_CREATED, "datetime", "not null"),
 				createColumn(KEY_DATE_UPDATED, "datetime", "not null"),
-				createColumn(KEY_PREVIEW_IMAGE_FILENAME, "string", ""),
 				createColumn(KEY_SAVED_WITH_REVISION, "integer", " not null"),
 				createColumn(KEY_DATA, "string", "not null"),
 				createForeignKey(KEY_GRID_ID, GridDatabaseAdapter.TABLE,
@@ -126,6 +122,9 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 			}
 			create(db);
 		}
+		if (oldVersion >= 276 && oldVersion < 298 && newVersion >= 298 ) {
+			dropColumn(db, TABLE, new String[] {"preview_image_filename"}, buildCreateSQL());
+		}
 	}
 
 	/**
@@ -150,7 +149,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 
 		long id = -1;
 		try {
-			id = mSQLiteDatabase.insertOrThrow(TABLE, null, initialValues);
+			id = mSqliteDatabase.insertOrThrow(TABLE, null, initialValues);
 		} catch (SQLiteException e) {
 			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 				e.printStackTrace();
@@ -171,7 +170,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		SolvingAttemptData solvingAttemptData = null;
 		Cursor cursor = null;
 		try {
-			cursor = mSQLiteDatabase.query(true, TABLE, dataColumns, KEY_ROWID
+			cursor = mSqliteDatabase.query(true, TABLE, dataColumns, KEY_ROWID
 					+ "=" + solvingAttemptId, null, null, null, null, null);
 
 			if (cursor == null || !cursor.moveToFirst()) {
@@ -216,7 +215,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		int id = -1;
 		Cursor cursor = null;
 		try {
-			cursor = mSQLiteDatabase.query(true, TABLE,
+			cursor = mSqliteDatabase.query(true, TABLE,
 					new String[] { KEY_ROWID }, null, null, null, null,
 					KEY_DATE_UPDATED + " DESC", "1");
 
@@ -241,57 +240,6 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	}
 
 	/**
-	 * Get a sorted list of solving attempts.
-	 * 
-	 * @return The sorted list of solving attempts.
-	 */
-	public ArrayList<SolvingAttemptPreview> getPreviewList() {
-		ArrayList<SolvingAttemptPreview> solvingAttemptPreviewArrayList = null;
-		Cursor cursor = null;
-		try {
-			cursor = mSQLiteDatabase.query(true, TABLE, previewColumns, null,
-					null, null, null, KEY_DATE_UPDATED + " DESC", null); // TODO:
-																			// add
-																			// filters
-
-			if (cursor == null || !cursor.moveToFirst()) {
-				// No record found for this grid.
-				return null;
-			}
-
-			// Convert cursor records to an array list of SolvingAttemptPreview.
-			solvingAttemptPreviewArrayList = new ArrayList<SolvingAttemptPreview>();
-			do {
-				SolvingAttemptPreview solvingAttemptPreview = new SolvingAttemptPreview();
-				solvingAttemptPreview.mId = cursor.getInt(cursor
-						.getColumnIndexOrThrow(KEY_ROWID));
-				solvingAttemptPreview.mGridId = cursor.getInt(cursor
-						.getColumnIndexOrThrow(KEY_GRID_ID));
-				solvingAttemptPreview.mDateCreated = valueOfSQLiteTimestamp(cursor
-						.getString(cursor
-								.getColumnIndexOrThrow(KEY_DATE_CREATED)));
-				solvingAttemptPreview.mDateUpdated = valueOfSQLiteTimestamp(cursor
-						.getString(cursor
-								.getColumnIndexOrThrow(KEY_DATE_UPDATED)));
-				solvingAttemptPreview.mPreviewImageFilename = cursor
-						.getString(cursor
-								.getColumnIndexOrThrow(KEY_PREVIEW_IMAGE_FILENAME));
-				solvingAttemptPreviewArrayList.add(solvingAttemptPreview);
-			} while (cursor.moveToNext());
-		} catch (SQLiteException e) {
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-				e.printStackTrace();
-			}
-			return null;
-		} finally {
-			if (cursor != null) {
-				cursor.close();
-			}
-		}
-		return solvingAttemptPreviewArrayList;
-	}
-
-	/**
 	 * Update the data of a solving attempt with given data. It is required that
 	 * the record already exists. The id should never be changed.
 	 * 
@@ -308,78 +256,8 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 				toSQLiteTimestamp(new java.util.Date().getTime()));
 		newValues.put(KEY_DATA, data);
 
-		return (mSQLiteDatabase.update(TABLE, newValues,
+		return (mSqliteDatabase.update(TABLE, newValues,
 				KEY_ROWID + " = " + id, null) == 1);
-	}
-
-	/**
-	 * Gets a (one) solving attempt for which no preview image does exist.
-	 * 
-	 * @return The id of a solving attempt for which no preview image exists. -1
-	 *         in case no such solving attempt is found.
-	 */
-	public int getSolvingAttemptWithoutPreviewImage() {
-		int id = -1;
-		Cursor cursor = null;
-		String[] columns = { KEY_ROWID };
-		try {
-			cursor = mSQLiteDatabase.query(true, TABLE, columns,
-					KEY_PREVIEW_IMAGE_FILENAME + " IS NULL", null, null, null,
-					null, "1");
-
-			if (cursor == null || !cursor.moveToFirst()) {
-				// No record found
-				return -1;
-			}
-
-			// Convert cursor record to a SolvingAttempt row
-			id = cursor.getInt(cursor.getColumnIndexOrThrow(KEY_ROWID));
-		} catch (SQLiteException e) {
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-				e.printStackTrace();
-			}
-			return -1;
-		} finally {
-			if (cursor != null) {
-				cursor.close();
-			}
-		}
-		return id;
-	}
-
-	/**
-	 * Counts the number of solving attempts for which no preview image does
-	 * exist.
-	 * 
-	 * @return The number of solving attempts for which no preview image does
-	 *         exist.
-	 */
-	public int countSolvingAttemptsWithoutPreviewImage() {
-		int count = 0;
-		Cursor cursor = null;
-		String[] columns = { "COUNT(1)" };
-		try {
-			cursor = mSQLiteDatabase.query(true, TABLE, columns,
-					KEY_PREVIEW_IMAGE_FILENAME + " IS NULL", null, null, null,
-					null, null);
-
-			if (cursor == null || !cursor.moveToFirst()) {
-				// No record found
-				return 0;
-			}
-
-			count = cursor.getInt(0);
-		} catch (SQLiteException e) {
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-				e.printStackTrace();
-			}
-			return 0;
-		} finally {
-			if (cursor != null) {
-				cursor.close();
-			}
-		}
-		return count;
 	}
 
 	/**
@@ -395,7 +273,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		try {
 			// Currently all solving attempts are returned. In future this can
 			// be restricted to games which are not solved.
-			cursor = mSQLiteDatabase.query(true, TABLE, columns, null, null,
+			cursor = mSqliteDatabase.query(true, TABLE, columns, null, null,
 					null, null, null, null);
 
 			if (cursor == null || !cursor.moveToFirst()) {
@@ -403,7 +281,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 				return null;
 			}
 
-			// Convert cursor records to an array list of SolvingAttemptPreview.
+			// Convert cursor records to an array list of id's.
 			idArrayList = new ArrayList<Integer>();
 			do {
 				idArrayList.add(cursor.getInt(cursor
@@ -420,38 +298,5 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 			}
 		}
 		return idArrayList;
-	}
-
-	/**
-	 * Update the filename of the preview image for the given solving attempt.
-	 * 
-	 * @param solvingAttemptId
-	 *            The solving attempt for which the filename of the preview has
-	 *            to be updated.
-	 * @param filename
-	 *            The filename of the preview image.
-	 * @return True in case the preview image filename has been updated. False
-	 *         otherwise.
-	 */
-	public boolean updatePreviewFilename(int solvingAttemptId, String filename) {
-		ContentValues newValues = new ContentValues();
-		newValues.put(KEY_PREVIEW_IMAGE_FILENAME, filename);
-
-		return (mSQLiteDatabase.update(TABLE, newValues, KEY_ROWID + " = "
-				+ solvingAttemptId, null) == 1);
-	}
-
-	/**
-	 * Removes the references to the given preview file name.
-	 * 
-	 * @param filename
-	 *            The filename of the preview image.
-	 */
-	public void removeReferenceToPreviewFilename(String filename) {
-		ContentValues newValues = new ContentValues();
-		newValues.put(KEY_PREVIEW_IMAGE_FILENAME, (String) null);
-
-		mSQLiteDatabase.update(TABLE, newValues, KEY_PREVIEW_IMAGE_FILENAME
-				+ " = " + stringBetweenQuotes(filename), null);
 	}
 }
