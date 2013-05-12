@@ -197,7 +197,7 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 				actionBar.setHomeButtonEnabled(false);
 			}
 			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-			actionBar.setSubtitle("Playing a game");
+			actionBar.setSubtitle(getResources().getString(R.string.action_bar_subtitle_puzzle_fragment));
 		}
 
 		mMathDokuPreferences = Preferences.getInstance(this);

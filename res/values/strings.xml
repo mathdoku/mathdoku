@@ -81,6 +81,8 @@
 
     <!-- ACTION BAR ITEMS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+    <!-- Subtitle for the puzzle fragment. -->
+    <string name="action_bar_subtitle_puzzle_fragment">Play a game</string>
 
     <!-- The menu item that allows the player to display the archive of played games. -->
     <string name="action_archive">Archive</string>
