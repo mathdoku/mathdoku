@@ -1,6 +1,6 @@
-package net.cactii.mathdoku.developmentHelpers;
+package net.cactii.mathdoku.developmentHelper;
 
-import net.cactii.mathdoku.developmentHelpers.DevelopmentHelper.Mode;
+import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.ui.PuzzleFragmentActivity;
 import android.annotation.TargetApi;
 import android.os.Build;

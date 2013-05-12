@@ -1,4 +1,4 @@
-package net.cactii.mathdoku.developmentHelpers;
+package net.cactii.mathdoku.developmentHelper;
 
 import java.io.File;
 import java.io.FilenameFilter;

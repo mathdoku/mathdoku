@@ -8,8 +8,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.cactii.mathdoku.developmentHelpers.DevelopmentHelper;
-import net.cactii.mathdoku.developmentHelpers.DevelopmentHelper.Mode;
+import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
+import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 import net.cactii.mathdoku.ui.GridView;
 import net.cactii.mathdoku.util.Util;

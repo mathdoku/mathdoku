@@ -2,8 +2,8 @@ package net.cactii.mathdoku;
 
 import java.util.ArrayList;
 
-import net.cactii.mathdoku.developmentHelpers.DevelopmentHelper;
-import net.cactii.mathdoku.developmentHelpers.DevelopmentHelper.Mode;
+import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
+import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.gridGenerating.GridGeneratingParameters;
 import net.cactii.mathdoku.statistics.GridStatistics;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;

@@ -1,8 +1,8 @@
 package net.cactii.mathdoku.storage.database;
 
 import net.cactii.mathdoku.Grid;
-import net.cactii.mathdoku.developmentHelpers.DevelopmentHelper;
-import net.cactii.mathdoku.developmentHelpers.DevelopmentHelper.Mode;
+import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
+import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.statistics.CumulativeStatistics;
 import net.cactii.mathdoku.statistics.GridStatistics;
 import net.cactii.mathdoku.statistics.HistoricStatistics;

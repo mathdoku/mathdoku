@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.cactii.mathdoku.developmentHelpers.DevelopmentHelper;
-import net.cactii.mathdoku.developmentHelpers.DevelopmentHelper.Mode;
+import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
+import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 import android.util.Log;
 
