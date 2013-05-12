@@ -2,7 +2,7 @@ package net.cactii.mathdoku.tip;
 
 import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
-import android.support.v4.app.FragmentActivity;
+import android.content.Context;
 
 public class TipIncorrectValue extends TipDialog {
 
@@ -13,16 +13,16 @@ public class TipIncorrectValue extends TipDialog {
 	 * Creates a new tip dialog which explains that an incorrect value has been
 	 * entered.
 	 * 
-	 * @param mainActivity
+	 * @param context
 	 *            The activity in which this tip has to be shown.
 	 */
-	public TipIncorrectValue(FragmentActivity mainActivity) {
-		super(mainActivity, TIP_NAME, TIP_CATEGORY);
+	public TipIncorrectValue(Context context) {
+		super(context, TIP_NAME, TIP_CATEGORY);
 
 		build(
-				mainActivity.getResources().getString(
+				context.getResources().getString(
 						R.string.dialog_tip_incorrect_value_title),
-				mainActivity.getResources().getString(
+				context.getResources().getString(
 						R.string.dialog_tip_incorrect_value_text), null).show();
 	}
 

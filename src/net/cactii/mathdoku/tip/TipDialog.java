@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -26,7 +26,7 @@ public class TipDialog extends AlertDialog {
 	};
 
 	// Context in which the tip is created.
-	private FragmentActivity mMainActivity;
+	private Context mContext;
 
 	// Preferences defined for the current context.
 	Preferences mPreferences;
@@ -45,15 +45,15 @@ public class TipDialog extends AlertDialog {
 	/**
 	 * Creates a new instance of {@link TipDialog}.
 	 * 
-	 * @param mainActivity
+	 * @param context
 	 *            The activity in which context the tip is used.
 	 */
-	public TipDialog(FragmentActivity mainActivity, String preference,
+	public TipDialog(Context context, String preference,
 			TipCategory tipCategory) {
-		super(mainActivity);
+		super(context);
 
 		// Store reference to activity and preferences
-		mMainActivity = mainActivity;
+		mContext = context;
 		mPreferences = Preferences.getInstance();
 		mTip = preference;
 		mTipCategory = tipCategory;
@@ -87,7 +87,7 @@ public class TipDialog extends AlertDialog {
 		}
 
 		// Fill the fields for this dialog
-		LayoutInflater inflater = LayoutInflater.from(mMainActivity);
+		LayoutInflater inflater = LayoutInflater.from(mContext);
 		View tipView = inflater.inflate(R.layout.tip_dialog, null);
 
 		TextView textView = (TextView) tipView
@@ -111,7 +111,7 @@ public class TipDialog extends AlertDialog {
 		setView(tipView);
 		setCancelable(true);
 
-		setButton(DialogInterface.BUTTON_POSITIVE, mMainActivity.getResources()
+		setButton(DialogInterface.BUTTON_POSITIVE, mContext.getResources()
 				.getString(R.string.dialog_general_button_close),
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {

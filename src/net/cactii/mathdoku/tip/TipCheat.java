@@ -2,7 +2,7 @@ package net.cactii.mathdoku.tip;
 
 import net.cactii.mathdoku.Cheat;
 import net.cactii.mathdoku.Preferences;
-import net.cactii.mathdoku.ui.PuzzleFragmentActivity;
+import android.content.Context;
 
 public class TipCheat extends TipDialog {
 	
@@ -15,11 +15,11 @@ public class TipCheat extends TipDialog {
 	 * Creates a new tip dialog which explains that cheating will increase the
 	 * elapsed time.
 	 * 
-	 * @param mainActivity
+	 * @param context
 	 *            The activity in which this tip has to be shown.
 	 */
-	public TipCheat(PuzzleFragmentActivity mainActivity, Cheat cheat) {
-		super(mainActivity, getTipName(cheat), TIP_CATEGORY);
+	public TipCheat(Context context, Cheat cheat) {
+		super(context, getTipName(cheat), TIP_CATEGORY);
 
 		// Set the title
 		String mTitle = cheat.getTipTitle();

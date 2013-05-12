@@ -3,7 +3,7 @@ package net.cactii.mathdoku.tip;
 import net.cactii.mathdoku.GridCage;
 import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
-import android.support.v4.app.FragmentActivity;
+import android.content.Context;
 
 public class TipOrderOfValuesInCage extends TipDialog {
 
@@ -17,18 +17,18 @@ public class TipOrderOfValuesInCage extends TipDialog {
 	 * For performance reasons this method should only be called in case the
 	 * static call to method {@link #toBeDisplayed} returned true.
 	 * 
-	 * @param mainActivity
+	 * @param context
 	 *            The activity in which this tip has to be shown.
 	 */
-	public TipOrderOfValuesInCage(FragmentActivity mainActivity) {
-		super(mainActivity, TIP_NAME, TIP_CATEGORY);
+	public TipOrderOfValuesInCage(Context context) {
+		super(context, TIP_NAME, TIP_CATEGORY);
 
 		build(
-				mainActivity.getResources().getString(
+				context.getResources().getString(
 						R.string.dialog_tip_order_of_values_in_cage_title),
-				mainActivity.getResources().getString(
+				context.getResources().getString(
 						R.string.dialog_tip_order_of_values_in_cage_text),
-				mainActivity.getResources().getDrawable(
+				context.getResources().getDrawable(
 						R.drawable.tip_order_of_values_in_cage)).show();
 	}
 

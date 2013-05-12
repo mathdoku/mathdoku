@@ -69,7 +69,7 @@ import android.widget.Toast;
 
 public class PuzzleFragmentActivity extends FragmentActivity implements
 		OnSharedPreferenceChangeListener {
-	public final static String TAG = "MathDoku.MainActivity";
+	public final static String TAG = "MathDoku.PuzzleFragmentActivity";
 
 	public final static String PROJECT_HOME = "http://mathdoku.net/";
 
@@ -791,7 +791,7 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 			} catch (InvalidGridException e) {
 				if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 					Log.e(TAG,
-							"MainActivity.restartLastGame can not load grid with id '"
+							"PuzzleFragmentActivity.restartLastGame can not load grid with id '"
 									+ solvingAttemptId + "'.");
 				}
 			}

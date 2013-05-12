@@ -1,9 +1,9 @@
 package net.cactii.mathdoku.developmentHelper;
 
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
-import net.cactii.mathdoku.ui.PuzzleFragmentActivity;
 import android.annotation.TargetApi;
 import android.os.Build;
+import android.support.v4.app.FragmentActivity;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class DevelopmentHelperHoneycombAndAbove {
@@ -13,14 +13,14 @@ public class DevelopmentHelperHoneycombAndAbove {
 	 * resulted in a verification error when running on android 1.6 as this
 	 * method does not exist in that version.
 	 * 
-	 * @param mainActivity
+	 * @param fragmentActivity
 	 */
-	public static void restartActivity(final PuzzleFragmentActivity mainActivity) {
+	public static void restartActivity(final FragmentActivity fragmentActivity) {
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				// The activity can be restarted automatically. No dialog
 				// needed.
-				mainActivity.recreate();
+				fragmentActivity.recreate();
 				return;
 			}
 		}

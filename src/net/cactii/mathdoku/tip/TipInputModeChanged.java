@@ -2,8 +2,8 @@ package net.cactii.mathdoku.tip;
 
 import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
-import net.cactii.mathdoku.ui.PuzzleFragmentActivity;
 import net.cactii.mathdoku.ui.PuzzleFragmentActivity.InputMode;
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 
 public class TipInputModeChanged extends TipDialog {
@@ -18,34 +18,34 @@ public class TipInputModeChanged extends TipDialog {
 	 * For performance reasons this method should only be called in case the
 	 * static call to method {@link #toBeDisplayed} returned true.
 	 * 
-	 * @param mainActivity
+	 * @param context
 	 *            The activity in which this tip has to be shown.
 	 */
-	public TipInputModeChanged(PuzzleFragmentActivity mainActivity, InputMode newInputMode) {
-		super(mainActivity, TIP_NAME, TIP_CATEGORY);
+	public TipInputModeChanged(Context context, InputMode newInputMode) {
+		super(context, TIP_NAME, TIP_CATEGORY);
 
 			// Set the title
-			String mTitle = mainActivity.getResources().getString(
+			String mTitle = context.getResources().getString(
 					R.string.dialog_tip_input_mode_changed_title);
 
 			// Determine body text
 			String mText;
-			String normalInputMode = mainActivity.getResources().getString(
+			String normalInputMode = context.getResources().getString(
 					R.string.input_mode_normal_short);
-			String maybeInputMode = mainActivity.getResources().getString(
+			String maybeInputMode = context.getResources().getString(
 					R.string.input_mode_maybe_short);
 			if (newInputMode == InputMode.MAYBE) {
-				mText = mainActivity.getResources().getString(
+				mText = context.getResources().getString(
 						R.string.dialog_tip_input_mode_changed_text,
 						normalInputMode, maybeInputMode);
 			} else {
-				mText = mainActivity.getResources().getString(
+				mText = context.getResources().getString(
 						R.string.dialog_tip_input_mode_changed_text,
 						maybeInputMode, normalInputMode);
 			}
 
 			// Determine image
-			Drawable mImage = mainActivity.getResources().getDrawable(
+			Drawable mImage = context.getResources().getDrawable(
 					R.drawable.tip_input_mode_changed);
 
 			build(mTitle, mText, mImage);

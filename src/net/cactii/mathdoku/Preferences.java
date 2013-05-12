@@ -474,9 +474,6 @@ public class Preferences {
 	/**
 	 * Initializes the preference "familiar with rules".
 	 * 
-	 * @param mainActivity
-	 *            The activity for which the preference has to set.
-	 * 
 	 * @param familiarWithRules
 	 *            The new value for this preference.
 	 */
