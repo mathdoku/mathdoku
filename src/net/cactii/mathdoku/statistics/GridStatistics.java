@@ -12,11 +12,6 @@ public class GridStatistics {
 	// Row id of the grid on which these statistics apply
 	public int mGridId;
 
-	// Filename of the solving attempt for the grid on which the statistics have
-	// been based. This value may not be altered. This value can however be
-	// empty in case the file has been deleted.
-	public String mFilenameSolvingAttempt;
-
 	// Timestamp of first and last move
 	public java.sql.Timestamp mFirstMove;
 	public java.sql.Timestamp mLastMove;
