@@ -101,7 +101,8 @@ public class DevelopmentHelper {
 				UsageLog.getInstance(puzzleFragmentActivity);
 				return true;
 			case R.id.development_mode_send_log:
-				UsageLog.getInstance().askConsentForSendingLog(puzzleFragmentActivity);
+				UsageLog.getInstance().askConsentForSendingLog(
+						puzzleFragmentActivity);
 				return true;
 			default:
 				return false;
@@ -117,9 +118,11 @@ public class DevelopmentHelper {
 	 *            The activity in which context the confirmation dialog will be
 	 *            shown.
 	 */
-	public static void deleteDatabase(final PuzzleFragmentActivity puzzleFragmentActivity) {
+	public static void deleteDatabase(
+			final PuzzleFragmentActivity puzzleFragmentActivity) {
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-			AlertDialog.Builder builder = new AlertDialog.Builder(puzzleFragmentActivity);
+			AlertDialog.Builder builder = new AlertDialog.Builder(
+					puzzleFragmentActivity);
 			builder.setTitle("Delete database?")
 					.setMessage(
 							"The database will be deleted. All statistic "
@@ -151,15 +154,16 @@ public class DevelopmentHelper {
 	 *            The activity in which context the confirmation dialog will be
 	 *            shown.
 	 */
-	public static void generateGames(final PuzzleFragmentActivity puzzleFragmentActivity) {
+	public static void generateGames(
+			final PuzzleFragmentActivity puzzleFragmentActivity) {
 		int maxCageResult = puzzleFragmentActivity.getResources().getInteger(
 				R.integer.maximum_cage_value);
-		puzzleFragmentActivity.mGridGeneratorTask = new DialogPresentingGridGenerator(
+		puzzleFragmentActivity.mDialogPresentingGridGenerator = new DialogPresentingGridGenerator(
 				puzzleFragmentActivity, 8, 4, maxCageResult, false,
 				Util.getPackageVersionNumber());
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			// Set the options for the grid generator
-			GridGenerator.GridGeneratorOptions gridGeneratorOptions = puzzleFragmentActivity.mGridGeneratorTask.new GridGeneratorOptions();
+			GridGenerator.GridGeneratorOptions gridGeneratorOptions = puzzleFragmentActivity.mDialogPresentingGridGenerator.new GridGeneratorOptions();
 			gridGeneratorOptions.createFakeUserGameFiles = true;
 			gridGeneratorOptions.numberOfGamesToGenerate = 8;
 
@@ -169,11 +173,11 @@ public class DevelopmentHelper {
 			gridGeneratorOptions.randomHideOperators = false;
 
 			// Start the grid generator
-			puzzleFragmentActivity.mGridGeneratorTask
+			puzzleFragmentActivity.mDialogPresentingGridGenerator
 					.setGridGeneratorOptions(gridGeneratorOptions);
 
 			// Start the background task to generate the new grids.
-			puzzleFragmentActivity.mGridGeneratorTask.execute();
+			puzzleFragmentActivity.mDialogPresentingGridGenerator.execute();
 		}
 	}
 
@@ -193,7 +197,8 @@ public class DevelopmentHelper {
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int id) {
-									Preferences.getInstance(puzzleFragmentActivity)
+									Preferences.getInstance(
+											puzzleFragmentActivity)
 											.initCreatePreviewImagesCompleted();
 									restartActivity(puzzleFragmentActivity);
 								}
@@ -212,7 +217,8 @@ public class DevelopmentHelper {
 	public static void recreateAllPreviews(
 			final PuzzleFragmentActivity puzzleFragmentActivity) {
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-			AlertDialog.Builder builder = new AlertDialog.Builder(puzzleFragmentActivity);
+			AlertDialog.Builder builder = new AlertDialog.Builder(
+					puzzleFragmentActivity);
 			builder.setTitle("Recreate all previews?")
 					.setMessage(
 							"All previews will be deleted. Also the preference which "
@@ -230,7 +236,8 @@ public class DevelopmentHelper {
 								public void onClick(DialogInterface dialog,
 										int id) {
 									executeDeleteAllPreviews();
-									Preferences.getInstance(puzzleFragmentActivity)
+									Preferences.getInstance(
+											puzzleFragmentActivity)
 											.initCreatePreviewImagesCompleted();
 									restartActivity(puzzleFragmentActivity);
 								}
@@ -283,7 +290,8 @@ public class DevelopmentHelper {
 	public static void deleteGamesAndPreferences(
 			final PuzzleFragmentActivity puzzleFragmentActivity) {
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-			AlertDialog.Builder builder = new AlertDialog.Builder(puzzleFragmentActivity);
+			AlertDialog.Builder builder = new AlertDialog.Builder(
+					puzzleFragmentActivity);
 			builder.setTitle("Delete all data and preferences?")
 					.setMessage(
 							"All data and preferences for MathDoku will be deleted.")
@@ -382,7 +390,8 @@ public class DevelopmentHelper {
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				// The activity can be restarted automatically. No dialog
-				// needed. Note: we can not call puzzleFragmentActivity.recreate here as
+				// needed. Note: we can not call puzzleFragmentActivity.recreate
+				// here as
 				// the app can't be run anymore on Android 1.6.
 				DevelopmentHelperHoneycombAndAbove
 						.restartActivity(puzzleFragmentActivity);

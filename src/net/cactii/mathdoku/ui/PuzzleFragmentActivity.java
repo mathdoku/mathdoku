@@ -132,7 +132,7 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 	public Preferences mMathDokuPreferences;
 
 	// Background tasks for generating a new puzzle and converting game files
-	public DialogPresentingGridGenerator mGridGeneratorTask;
+	public DialogPresentingGridGenerator mDialogPresentingGridGenerator;
 	public GameFileConverter mGameFileConverter;
 
 	// Variables for process of creating preview images of game file for which
@@ -148,20 +148,20 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 
 	// Object to save data on a configuration change
 	private class ConfigurationInstanceState {
-		private DialogPresentingGridGenerator mGridGeneratorTask;
+		private DialogPresentingGridGenerator mDialogPresentingGridGenerator;
 		private GameFileConverter mGameFileConverter;
 		private InputMode mInputMode;
 
 		public ConfigurationInstanceState(
 				DialogPresentingGridGenerator gridGeneratorTask,
 				GameFileConverter gameFileConverterTask, InputMode inputMode) {
-			mGridGeneratorTask = gridGeneratorTask;
+			mDialogPresentingGridGenerator = gridGeneratorTask;
 			mGameFileConverter = gameFileConverterTask;
 			mInputMode = inputMode;
 		}
 
 		public DialogPresentingGridGenerator getGridGeneratorTask() {
-			return mGridGeneratorTask;
+			return mDialogPresentingGridGenerator;
 		}
 
 		public GameFileConverter getGameFileConverter() {
@@ -416,10 +416,10 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 			setInputMode(configurationInstanceState.getInputMode());
 
 			// Restore background process if running.
-			mGridGeneratorTask = configurationInstanceState
+			mDialogPresentingGridGenerator = configurationInstanceState
 					.getGridGeneratorTask();
-			if (mGridGeneratorTask != null) {
-				mGridGeneratorTask.attachToActivity(this);
+			if (mDialogPresentingGridGenerator != null) {
+				mDialogPresentingGridGenerator.attachToActivity(this);
 			}
 
 			// Restore background process if running.
@@ -500,12 +500,12 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 					.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		}
 
-		if (mGridGeneratorTask != null) {
+		if (mDialogPresentingGridGenerator != null) {
 			// In case the grid is created in the background and the dialog is
 			// closed, the activity will be moved to the background as well. In
 			// case the user starts this app again onResume is called but
 			// onCreate isn't. So we have to check here as well.
-			mGridGeneratorTask.attachToActivity(this);
+			mDialogPresentingGridGenerator.attachToActivity(this);
 		}
 
 		setTheme();
@@ -869,10 +869,10 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 				: 4);
 		int maxCageResult = getResources().getInteger(
 				R.integer.maximum_cage_value);
-		mGridGeneratorTask = new DialogPresentingGridGenerator(this, gridSize,
+		mDialogPresentingGridGenerator = new DialogPresentingGridGenerator(this, gridSize,
 				maxCageSize, maxCageResult, hideOperators,
 				Util.getPackageVersionNumber());
-		mGridGeneratorTask.execute();
+		mDialogPresentingGridGenerator.execute();
 	}
 
 	/**
@@ -905,7 +905,7 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 
 		// The background task for creating a new grid has been finished. The
 		// new grid will always overwrite the current game without any warning.
-		mGridGeneratorTask = null;
+		mDialogPresentingGridGenerator = null;
 		setNewGrid(newGrid);
 		setInputMode(InputMode.NORMAL);
 	}
@@ -1242,10 +1242,10 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 		stopTimer();
 		TipDialog.resetDisplayedDialogs();
 
-		if (mGridGeneratorTask != null) {
+		if (mDialogPresentingGridGenerator != null) {
 			// A new grid is generated in the background. Detach the background
 			// task from this activity. It will keep on running until finished.
-			mGridGeneratorTask.detachFromActivity();
+			mDialogPresentingGridGenerator.detachFromActivity();
 		}
 		if (mGameFileConverter != null) {
 			// The game files are converted in the background. Detach the
@@ -1253,7 +1253,7 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 			// task from this activity. It will keep on running until finished.
 			mGameFileConverter.detachFromActivity();
 		}
-		return new ConfigurationInstanceState(mGridGeneratorTask,
+		return new ConfigurationInstanceState(mDialogPresentingGridGenerator,
 				mGameFileConverter, mInputMode);
 	}
 

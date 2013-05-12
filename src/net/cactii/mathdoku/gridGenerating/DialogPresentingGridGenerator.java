@@ -14,6 +14,8 @@ import android.util.Log;
  * task and the activity aren't detached before this may happen.
  */
 public final class DialogPresentingGridGenerator extends GridGenerator {
+	private static final String TAG = "MathDoku.DialogPresentingGridGenerator";
+	
 	/**
 	 * The activity used to display the dialog, and to forward the generated
 	 * grid to. Access level is not private, to prevent the an extra access
@@ -21,24 +23,24 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 	 * http://developer.android.com/training/articles/perf-tips.html#
 	 * PackageInner).
 	 */
-	/* package */PuzzleFragmentActivity mActivity;
+	/* package */PuzzleFragmentActivity mPuzzleFragmentActivity;
 
 	// The dialog for this task
 	private ProgressDialog mProgressDialog;
 
 	private static final class GridForwarder implements GridUser {
-		public DialogPresentingGridGenerator gridGenerator;
+		public DialogPresentingGridGenerator mDialogPresentingGridGenerator;
 
 		@Override
 		public final void useCreatedGrid(Grid grid) {
-			if (gridGenerator.mActivity != null) {
+			if (mDialogPresentingGridGenerator.mPuzzleFragmentActivity != null) {
 				if (DEBUG_GRID_GENERATOR) {
 					Log.d(TAG, "Send results to activity.");
 				}
 				// The task is still attached to a activity. Inform activity
 				// about completing the new game generation. The activity will
 				// deal with showing the new grid directly.
-				gridGenerator.mActivity.onNewGridReady(grid);
+				mDialogPresentingGridGenerator.mPuzzleFragmentActivity.onNewGridReady(grid);
 			}
 		}
 	}
@@ -58,7 +60,7 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 			boolean hideOperators, int packageVersionNumber) {
 		super(gridSize, maxCageSize, maxCageResult, hideOperators,
 				packageVersionNumber, new GridForwarder());
-		((GridForwarder) mUser).gridGenerator = this;
+		((GridForwarder) mUser).mDialogPresentingGridGenerator = this;
 
 		// Attach the task to the activity activity and show progress dialog if
 		// needed.
@@ -73,7 +75,7 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 	 *            this task.
 	 */
 	public void attachToActivity(PuzzleFragmentActivity activity) {
-		if (activity.equals(this.mActivity) && mProgressDialog != null
+		if (activity.equals(this.mPuzzleFragmentActivity) && mProgressDialog != null
 				&& mProgressDialog.isShowing()) {
 			// The activity is already attached to this task.
 			return;
@@ -84,7 +86,7 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 		}
 
 		// Remember the activity that started this task.
-		this.mActivity = activity;
+		this.mPuzzleFragmentActivity = activity;
 
 		buildDialog();
 	}
@@ -94,9 +96,9 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 	 */
 	private void buildDialog() {
 		// Build the dialog
-		mProgressDialog = new ProgressDialog(mActivity);
+		mProgressDialog = new ProgressDialog(mPuzzleFragmentActivity);
 		mProgressDialog.setTitle(R.string.dialog_building_puzzle_title);
-		mProgressDialog.setMessage(mActivity.getResources().getString(
+		mProgressDialog.setMessage(mPuzzleFragmentActivity.getResources().getString(
 				R.string.dialog_building_puzzle_message));
 		mProgressDialog.setIcon(android.R.drawable.ic_dialog_info);
 		mProgressDialog.setIndeterminate(false);
@@ -128,7 +130,7 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 		}
 
 		dismissProgressDialog();
-		mActivity = null;
+		mPuzzleFragmentActivity = null;
 	}
 
 	/**
@@ -148,7 +150,7 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 			Log.i(TAG, "Puzzle generation attempt: " + attemptCount);
 			publishProgress(
 					DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_TITLE,
-					mActivity.getResources().getString(
+					mPuzzleFragmentActivity.getResources().getString(
 							R.string.dialog_building_puzzle_title)
 							+ " (attempt " + attemptCount + ")");
 		}
@@ -158,9 +160,9 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 	protected void onPostExecute(Void result) {
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			if (mGridGeneratorOptions.createFakeUserGameFiles) {
-				mActivity.mGridGeneratorTask = null;
+				mPuzzleFragmentActivity.mDialogPresentingGridGenerator = null;
 				// Grids are already saved.
-				DevelopmentHelper.generateGamesReady(mActivity,
+				DevelopmentHelper.generateGamesReady(mPuzzleFragmentActivity,
 						mGridGeneratorOptions.numberOfGamesToGenerate);
 				if (this.mProgressDialog != null) {
 					dismissProgressDialog();

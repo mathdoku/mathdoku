@@ -23,7 +23,7 @@ import com.srlee.DLX.MathDokuDLX;
  * An asynchronous task that generates a grid.
  */
 public class GridGenerator extends AsyncTask<Void, String, Void> {
-	protected static final String TAG = "MathDoku.GridGenerator";
+	private static final String TAG = "MathDoku.GridGenerator";
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
@@ -72,26 +72,30 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	// The grid generator options are used in development mode only to generate
 	// fake games.
 	public class GridGeneratorOptions {
+		// The number of games to be generated.
 		public int numberOfGamesToGenerate;
-		/**
-		 * Whether a dummy game will be generated (true), rather than a regular
-		 * game (false). A dummy game might have more than one solution (and is
-		 * therefore not playable).
-		 */
+
+		// Whether a dummy game will be generated (true), rather than a regular
+		// game (false). A dummy game might have more than one solution (and is
+		// therefore not playable).
 		public boolean createFakeUserGameFiles;
+
+		// Grid size and setting for hiding/displaying the operators will be
+		// randomly chosen when set to true. If false than all generated games
+		// will have the specified grid size and operator setting.
 		public boolean randomGridSize;
 		public boolean randomHideOperators;
 	}
 
-	/**
-	 * The user that will use the grid once this task finished generating it.
-	 */
+	// The user that will use the grid once this task finished generating it.
 	public interface GridUser {
 		/**
 		 * Uses the newly created grid. This method will run in the UI thread,
 		 * as it is called from onPostExecute.
+		 * 
+		 * @param grid
 		 */
-		public void useCreatedGrid(Grid value);
+		public void useCreatedGrid(Grid grid);
 	}
 
 	/**
@@ -274,7 +278,11 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	}
 
 	/**
-	 * Handles the generator starting a new attempt.
+	 * Handles the generator starting a new attempt. Should be overridden in
+	 * subclass in case special handling is needed.
+	 * 
+	 * @param attemptCount
+	 *            The number of the attempt already completed plus 1.
 	 */
 	protected void handleNewAttemptStarted(int attemptCount) {
 	}
