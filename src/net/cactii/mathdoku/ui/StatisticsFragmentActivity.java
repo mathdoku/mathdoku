@@ -126,7 +126,7 @@ public class StatisticsFragmentActivity extends FragmentActivity implements
 				NavUtils.navigateUpTo(this, upIntent);
 			}
 			return true;
-		case R.id.menu_statistics_options:
+		case R.id.statistics_settings:
 			UsageLog.getInstance().logFunction("Menu.ViewStatisticsOptions");
 			startActivity(new Intent(this, StatisticsPreferenceActivity.class));
 			break;

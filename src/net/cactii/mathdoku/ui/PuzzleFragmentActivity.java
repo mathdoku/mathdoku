@@ -705,7 +705,7 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 			}
 			startActivity(intentStatistics);
 			return true;
-		case R.id.options:
+		case R.id.puzzle_settings:
 			UsageLog.getInstance().logFunction("Menu.ViewOptions");
 			startActivity(new Intent(this, PuzzlePreferenceActivity.class));
 			return true;
@@ -1119,6 +1119,9 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 
 				// Unselect current cell / cage
 				mGrid.setSelectedCell(null);
+				
+				// Update action bar
+				invalidateOptionsMenu();
 			}
 		});
 	}

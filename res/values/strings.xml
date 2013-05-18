@@ -20,6 +20,10 @@
     <!-- The label of the buttons that close dialogs. -->
     <string name="dialog_general_button_close">Close</string>
 
+    <!-- Name of settings menu. -->
+    <string name="settings">Settings</string>
+
+    
     <!-- DIALOG CONVERTING SAVED GAMES - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <!-- The title and message for the dialog displayed on the screen while upgrading to new version and saved games have to be converted. -->
@@ -94,9 +98,6 @@
 
     <!-- The sub-menu item to go to the statistics. -->
     <string name="action_statistics">Statistics</string>
-
-    <!-- The menu item that allows the player to navigate to the options screen. -->
-    <string name="action_options">Options</string>
 
     <!-- The menu item that allows the player to navigate to the help screen. -->
     <string name="action_help">Help</string>

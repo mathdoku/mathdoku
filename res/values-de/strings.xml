@@ -22,7 +22,7 @@
 
     <!-- Name of settings menu. -->
     <!-- TODO -->
-    <string name="settings">Settings</string>
+    <string name="settings">Optionen</string>
 
     <!-- DIALOG CONVERTING SAVED GAMES - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -102,9 +102,6 @@
     <!-- The sub-menu item to go to the statistics. -->
     <!-- TODO -->
     <string name="action_statistics">Statistics</string>
-
-    <!-- The menu item that allows the player to navigate to the options screen. -->
-    <string name="action_options">Optionen</string>
 
     <!-- The menu item that allows the player to navigate to the help screen. -->
     <string name="action_help">Hilfe</string>
