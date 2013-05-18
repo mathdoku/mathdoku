@@ -45,11 +45,17 @@ public class Preferences {
 	public final static String PLAY_SOUND_EFFECTS = "soundeffects";
 	public final static boolean PLAY_SOUND_EFFECTS_DEFAULT = true;
 
-	public final static String SHOW_MAYBES_AS_GRID = "maybe3x3";
-	public final static boolean SHOW_MAYBES_AS_GRID_DEFAULT = true;
-
 	public final static String SHOW_BAD_CAGE_MATHS = "badmaths";
 	public final static boolean SHOW_BAD_CAGE_MATHS_DEFAULT = true;
+
+	public final static String SHOW_STATUS_FILTER = "archive_show_filter_status";
+	public final static boolean SHOW_STATUS_FILTER_DEFAULT = true;
+
+	public final static String SHOW_SIZE_FILTER = "archive_show_filter_size";
+	public final static boolean SHOW_SIZE_FILTER_DEFAULT = false;
+
+	public final static String SHOW_MAYBES_AS_GRID = "maybe3x3";
+	public final static boolean SHOW_MAYBES_AS_GRID_DEFAULT = true;
 
 	public final static String SHOW_STATISTICS_DESCRIPTION = "ShowStatisticsDescription";
 	public final static boolean SHOW_STATISTICS_DESCRIPTION_DEFAULT = true;
@@ -233,6 +239,16 @@ public class Preferences {
 			// Remove obsolete preference
 			if (mSharedPreferences.contains("CreatePreviewImagesCompleted")) {
 				prefeditor.remove("CreatePreviewImagesCompleted");
+			}
+		}
+		if (previousInstalledVersion <= 301 && currentVersion >= 301) {
+			if (!mSharedPreferences.contains(SHOW_STATUS_FILTER)) {
+				prefeditor.putBoolean(SHOW_STATUS_FILTER,
+						SHOW_STATUS_FILTER_DEFAULT);
+			}
+			if (!mSharedPreferences.contains(SHOW_SIZE_FILTER)) {
+				prefeditor.putBoolean(SHOW_SIZE_FILTER,
+						SHOW_SIZE_FILTER_DEFAULT);
 			}
 		}
 
@@ -486,7 +502,7 @@ public class Preferences {
 
 	/**
 	 * Checks whether duplicate digits should be shown in the grid.
-	 *  
+	 * 
 	 * @return True in case duplicate digits should be shown in the grid. False
 	 *         otherwise.
 	 */
@@ -527,5 +543,29 @@ public class Preferences {
 	public boolean showStatisticsDescription() {
 		return mSharedPreferences.getBoolean(SHOW_STATISTICS_DESCRIPTION,
 				SHOW_STATISTICS_DESCRIPTION_DEFAULT);
+	}
+
+	/**
+	 * Checks whether the filter status should be shown in the archive action
+	 * bar.
+	 * 
+	 * @return True in case the filter status should be shown in the archive
+	 *         action bar. False otherwise.
+	 */
+	public boolean showArchiveStatusFilter() {
+		return mSharedPreferences.getBoolean(SHOW_STATUS_FILTER,
+				SHOW_STATUS_FILTER_DEFAULT);
+	}
+
+	/**
+	 * Checks whether the size status should be shown in the archive action
+	 * bar.
+	 * 
+	 * @return True in case the size filter should be shown in the archive
+	 *         action bar. False otherwise.
+	 */
+	public boolean showArchiveSizeFilter() {
+		return mSharedPreferences.getBoolean(SHOW_SIZE_FILTER,
+				SHOW_SIZE_FILTER_DEFAULT);
 	}
 }

@@ -68,11 +68,11 @@ public class ArchiveFragment extends android.support.v4.app.Fragment {
 								digitPositionGridType, grid.getGridSize())) {
 					mDigitPositionGrid = new DigitPositionGrid(
 							digitPositionGridType, grid.getGridSize());
-
-					// Propagate setting to the grid view for displaying maybe
-					// values (dependent on preferences).
-					mGridView.setDigitPositionGrid(mDigitPositionGrid);
 				}
+
+				// Propagate setting to the grid view for displaying maybe
+				// values (dependent on preferences).
+				mGridView.setDigitPositionGrid(mDigitPositionGrid);
 
 				// Disable the grid as the user should not be able to click
 				// cells in the archive view

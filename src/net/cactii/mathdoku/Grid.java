@@ -779,7 +779,7 @@ public class Grid {
 		// Insert new solving attempt.
 		SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = new SolvingAttemptDatabaseAdapter();
 		mSolvingAttemptId = solvingAttemptDatabaseAdapter.insert(this,
-				Util.getPackageVersionNumber(), toStorageString());
+				Util.getPackageVersionNumber());
 		if (mSolvingAttemptId < 0) {
 			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 				throw new RuntimeException(
@@ -890,7 +890,7 @@ public class Grid {
 			// created first. So only an update is needed.
 			SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = new SolvingAttemptDatabaseAdapter();
 			if (!solvingAttemptDatabaseAdapter.update(mSolvingAttemptId,
-					toStorageString())) {
+					this)) {
 				return false;
 			}
 
@@ -1141,5 +1141,22 @@ public class Grid {
 			initialize();
 		}
 		return loaded;
+	}
+	
+	/**
+	 * Checks if the grid is empty (i.e. cells do not contain a user value nor a possible value).
+	 * 
+	 * @return True in case the grid is empty. False otherwise
+	 */
+	public boolean isEmpty() {
+		for (GridCell cell : mCells) {
+			if (cell.isUserValueSet() || cell.countPossibles() > 0) {
+				// Not empty as this cell contains a user value or a possible value
+				return false;
+			}
+		}
+		
+		// All cells are empty
+		return true;
 	}
 }

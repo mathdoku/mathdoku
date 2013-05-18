@@ -197,7 +197,8 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 				actionBar.setHomeButtonEnabled(false);
 			}
 			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-			actionBar.setSubtitle(getResources().getString(R.string.action_bar_subtitle_puzzle_fragment));
+			actionBar.setSubtitle(getResources().getString(
+					R.string.action_bar_subtitle_puzzle_fragment));
 		}
 
 		mMathDokuPreferences = Preferences.getInstance(this);
@@ -600,14 +601,11 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 		}
 
 		// Option: clear all cells in the grid
-		for (GridCell cell : mGrid.mCells) {
-			if (cell.isUserValueSet() || cell.countPossibles() > 0) {
-				// At least one cell within this grid view has a value or a
-				// possible value.
-				menu.add(0, CONTEXT_MENU_CLEAR_GRID, 0,
-						R.string.context_menu_clear_grid);
-				break;
-			}
+		if (mGrid.isEmpty() == false) {
+			// At least one cell within this grid view has a value or a
+			// possible value.
+			menu.add(0, CONTEXT_MENU_CLEAR_GRID, 0,
+					R.string.context_menu_clear_grid);
 		}
 
 		// Option: show the solution for this puzzle

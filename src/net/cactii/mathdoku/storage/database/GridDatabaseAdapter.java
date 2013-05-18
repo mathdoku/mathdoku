@@ -6,12 +6,16 @@ import net.cactii.mathdoku.Grid;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.gridGenerating.GridGeneratingParameters;
+import net.cactii.mathdoku.ui.ArchiveFragmentStatePagerAdapter.SizeFilter;
+import net.cactii.mathdoku.ui.ArchiveFragmentStatePagerAdapter.StatusFilter;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.database.sqlite.SQLiteQueryBuilder;
+import android.os.Build;
 import android.util.Log;
 
 /**
@@ -284,11 +288,49 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 * 
 	 * @return The list of all grid id's.
 	 */
-	public int[] getAllGridIds() {
+	public int[] getAllGridIds(StatusFilter statusFilter, SizeFilter sizeFilter) {
+		// Build projection
+		Projection projection = new Projection();
+		projection.put(KEY_ROWID, TABLE, KEY_ROWID);
+
+		// Build query
+		SQLiteQueryBuilder sqliteQueryBuilder = new SQLiteQueryBuilder();
+		sqliteQueryBuilder.setProjectionMap(projection);
+		sqliteQueryBuilder
+				.setTables(TABLE
+						+ " INNER JOIN "
+						+ SolvingAttemptDatabaseAdapter.TABLE
+						+ " ON "
+						+ SolvingAttemptDatabaseAdapter
+								.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_GRID_ID)
+						+ " = " + getPrefixedColumnName(KEY_ROWID));
+
+		// Retrieve all data. Note: in case column is not added to the
+		// projection, no data will be retrieved!
+		String[] columnsData = { stringBetweenBackTicks(KEY_ROWID) };
+
+		// Build where clause
+		String selectionStatus = getStatusSelectionString(statusFilter);
+		String selectionSize = getSizeSelectionString(sizeFilter);
+		String selection = selectionStatus
+				+ (selectionStatus.isEmpty() == false
+						&& selectionSize.isEmpty() == false ? " AND " : "")
+				+ selectionSize;
+
+		if (DEBUG_SQL) {
+			if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				String sql = sqliteQueryBuilder.buildQuery(columnsData,
+						selection, null, null, null, null);
+				Log.i(TAG, sql);
+			}
+		}
+
+		// Convert results in cursor to array of grid id's
 		int[] gridIds = null;
 		Cursor cursor = null;
 		try {
-			cursor = mSqliteDatabase.query(true, TABLE, new String[] {KEY_ROWID}, null, null, null, null, KEY_ROWID, null);
+			cursor = sqliteQueryBuilder.query(mSqliteDatabase, columnsData,
+					selection, null, null, null, null);
 			if (cursor.moveToFirst()) {
 				gridIds = new int[cursor.getCount()];
 				int i = 0;
@@ -308,5 +350,257 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 			}
 		}
 		return gridIds;
+	}
+
+	/**
+	 * Get a list of statuses used by grids which matches with the given size
+	 * filter.
+	 * 
+	 * @param sizeFilter
+	 *            The size filter which has to be matched by the grids.
+	 * 
+	 * @return The list of statuses used by grids which matches with the given
+	 *         size filter.
+	 */
+	public StatusFilter[] getUsedStatuses(SizeFilter sizeFilter) {
+		// Build the projection
+		Projection projection = new Projection();
+		final String KEY_STATUS_FILTER = "status_filter";
+		projection
+				.put(KEY_STATUS_FILTER,
+						"CASE WHEN "
+								+ SolvingAttemptDatabaseAdapter
+										.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_STATUS)
+								+ " = "
+								+ SolvingAttemptDatabaseAdapter.STATUS_FINISHED_CHEATED
+								+ " THEN "
+								+ StatusFilter.CHEATED.ordinal()
+								+ " WHEN "
+								+ SolvingAttemptDatabaseAdapter
+										.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_STATUS)
+								+ " = "
+								+ SolvingAttemptDatabaseAdapter.STATUS_FINISHED_SOLVED
+								+ " THEN " + StatusFilter.SOLVED.ordinal()
+								+ " ELSE " + StatusFilter.UNFINISHED.ordinal()
+								+ " END");
+
+		// Build query
+		SQLiteQueryBuilder sqliteQueryBuilder = new SQLiteQueryBuilder();
+		sqliteQueryBuilder.setProjectionMap(projection);
+		sqliteQueryBuilder
+				.setTables(TABLE
+						+ " INNER JOIN "
+						+ SolvingAttemptDatabaseAdapter.TABLE
+						+ " ON "
+						+ SolvingAttemptDatabaseAdapter
+								.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_GRID_ID)
+						+ " = " + getPrefixedColumnName(KEY_ROWID));
+
+		// Retrieve all data. Note: in case column is not added to the
+		// projection, no data will be retrieved!
+		String[] columnsData = { KEY_STATUS_FILTER };
+
+		// Build where clause
+		String selection = getSizeSelectionString(sizeFilter);
+
+		if (DEBUG_SQL) {
+			if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				String sql = sqliteQueryBuilder.buildQuery(columnsData,
+						selection, KEY_STATUS_FILTER, null, KEY_STATUS_FILTER,
+						null);
+				Log.i(TAG, sql);
+			}
+		}
+
+		// Convert results in cursor to array of grid id's
+		StatusFilter[] statuses = null;
+		Cursor cursor = null;
+		try {
+			cursor = sqliteQueryBuilder.query(mSqliteDatabase, columnsData,
+					selection, null, KEY_STATUS_FILTER, null, null);
+			if (cursor.moveToFirst()) {
+				statuses = new StatusFilter[cursor.getCount() + 1];
+				statuses[0] = StatusFilter.ALL;
+				int i = 1;
+				int columnIndex = cursor
+						.getColumnIndexOrThrow(KEY_STATUS_FILTER);
+				do {
+					int status = cursor.getInt(columnIndex);
+					if (status == StatusFilter.UNFINISHED.ordinal()) {
+						statuses[i++] = StatusFilter.UNFINISHED;
+					} else if (status == StatusFilter.SOLVED.ordinal()) {
+						statuses[i++] = StatusFilter.SOLVED;
+					} else if (status == StatusFilter.CHEATED.ordinal()) {
+						statuses[i++] = StatusFilter.CHEATED;
+					}
+				} while (cursor.moveToNext());
+			}
+		} catch (SQLiteException e) {
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+				e.printStackTrace();
+			}
+			return null;
+		} finally {
+			if (cursor != null) {
+				cursor.close();
+			}
+		}
+		return statuses;
+	}
+
+	/**
+	 * Get a list of sized used by grids which matches with the given status
+	 * filter.
+	 * 
+	 * @param statusFilter
+	 *            The status filter which has to be matched by the grids.
+	 * 
+	 * @return The list of sizes used by grids which matches with the given
+	 *         status filter.
+	 */
+	public SizeFilter[] getUsedSizes(StatusFilter statusFilter) {
+		// Build the projection
+		Projection projection = new Projection();
+		projection.put(KEY_GRID_SIZE, TABLE, KEY_GRID_SIZE);
+
+		// Build query
+		SQLiteQueryBuilder sqliteQueryBuilder = new SQLiteQueryBuilder();
+		sqliteQueryBuilder.setProjectionMap(projection);
+		sqliteQueryBuilder
+				.setTables(TABLE
+						+ " INNER JOIN "
+						+ SolvingAttemptDatabaseAdapter.TABLE
+						+ " ON "
+						+ SolvingAttemptDatabaseAdapter
+								.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_GRID_ID)
+						+ " = " + getPrefixedColumnName(KEY_ROWID));
+
+		// Retrieve all data. Note: in case column is not added to the
+		// projection, no data will be retrieved!
+		String[] columnsData = { stringBetweenBackTicks(KEY_GRID_SIZE) };
+
+		// Build where clause
+		String selection = getStatusSelectionString(statusFilter);
+
+		if (DEBUG_SQL) {
+			if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				String sql = sqliteQueryBuilder.buildQuery(columnsData,
+						selection, KEY_GRID_SIZE, null, KEY_GRID_SIZE, null);
+				Log.i(TAG, sql);
+			}
+		}
+
+		// Convert results in cursor to array of grid id's
+		SizeFilter[] sizes = null;
+		Cursor cursor = null;
+		try {
+			cursor = sqliteQueryBuilder.query(mSqliteDatabase, columnsData,
+					selection, null, KEY_GRID_SIZE, null, null);
+			if (cursor.moveToFirst()) {
+				sizes = new SizeFilter[cursor.getCount() + 1];
+				sizes[0] = SizeFilter.ALL;
+				int i = 1;
+				int columnIndex = cursor.getColumnIndexOrThrow(KEY_GRID_SIZE);
+				do {
+					int size = cursor.getInt(columnIndex);
+					switch (size) {
+					case 4:
+						sizes[i++] = SizeFilter.SIZE_4;
+						break;
+					case 5:
+						sizes[i++] = SizeFilter.SIZE_5;
+						break;
+					case 6:
+						sizes[i++] = SizeFilter.SIZE_6;
+						break;
+					case 7:
+						sizes[i++] = SizeFilter.SIZE_7;
+						break;
+					case 8:
+						sizes[i++] = SizeFilter.SIZE_8;
+						break;
+					case 9:
+						sizes[i++] = SizeFilter.SIZE_9;
+						break;
+					}
+				} while (cursor.moveToNext());
+			}
+		} catch (SQLiteException e) {
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+				e.printStackTrace();
+			}
+			return null;
+		} finally {
+			if (cursor != null) {
+				cursor.close();
+			}
+		}
+		return sizes;
+	}
+
+	/**
+	 * Get the SQL where clause to select solving attempts for which the status
+	 * matches the given status filter.
+	 * 
+	 * @param statusFilter
+	 *            The status filter to be matched.
+	 * @return The SQL where clause which matches solving attempts with the
+	 *         given status filter.
+	 */
+	private String getStatusSelectionString(StatusFilter statusFilter) {
+		// Determine selection for status filter
+		switch (statusFilter) {
+		case ALL:
+			// no filter on status
+			return "";
+		case CHEATED:
+			return SolvingAttemptDatabaseAdapter
+					.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_STATUS)
+					+ " = "
+					+ SolvingAttemptDatabaseAdapter.STATUS_FINISHED_CHEATED;
+		case SOLVED:
+			return SolvingAttemptDatabaseAdapter
+					.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_STATUS)
+					+ " = "
+					+ SolvingAttemptDatabaseAdapter.STATUS_FINISHED_SOLVED;
+		case UNFINISHED:
+			return SolvingAttemptDatabaseAdapter
+					.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_STATUS)
+					+ " IN ("
+					+ SolvingAttemptDatabaseAdapter.STATUS_NOT_STARTED
+					+ ","
+					+ SolvingAttemptDatabaseAdapter.STATUS_UNFINISHED + ")";
+		}
+		return null;
+	}
+
+	/**
+	 * Get the SQL where clause to select solving attempts for which the size
+	 * matches the given size filter.
+	 * 
+	 * @param sizeFilter
+	 *            The size filter to be matched.
+	 * @return The SQL where clause which matches solving attempts with the
+	 *         given size filter.
+	 */
+	private String getSizeSelectionString(SizeFilter sizeFilter) {
+		switch (sizeFilter) {
+		case ALL:
+			// no filter on status
+			return "";
+		case SIZE_4:
+			return getPrefixedColumnName(KEY_GRID_SIZE) + " = " + 4;
+		case SIZE_5:
+			return getPrefixedColumnName(KEY_GRID_SIZE) + " = " + 5;
+		case SIZE_6:
+			return getPrefixedColumnName(KEY_GRID_SIZE) + " = " + 6;
+		case SIZE_7:
+			return getPrefixedColumnName(KEY_GRID_SIZE) + " = " + 7;
+		case SIZE_8:
+			return getPrefixedColumnName(KEY_GRID_SIZE) + " = " + 8;
+		case SIZE_9:
+			return getPrefixedColumnName(KEY_GRID_SIZE) + " = " + 9;
+		}
+		return null;
 	}
 }

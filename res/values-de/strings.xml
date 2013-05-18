@@ -20,6 +20,10 @@
     <!-- The label of the buttons that close dialogs. -->
     <string name="dialog_general_button_close">Schließen</string>
 
+    <!-- Name of settings menu. -->
+    <!-- TODO -->
+    <string name="settings">Settings</string>
+
     <!-- DIALOG CONVERTING SAVED GAMES - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -147,7 +151,7 @@
     <string name="game_file_list__delete_game_file_negative_button">Nein. Behalten.</string>
     <string name="game_file_list__delete_game_file_positive_button">Ja. Löschen.</string>
 
-    <!-- OPTIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- OPTIONS PUZZLES  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
     <!-- The preferences category title for options to assist the user solve the puzzle. -->
@@ -206,7 +210,6 @@
     <!-- The preferences category title for audio options. -->
     <string name="options_group_sound">Sound</string>
     <!-- The title and summary of the "sound effects" option. -->
-
 
     <!-- The title and summary of the "Sounds effect" option. This option enables or disables soundeffects. -->
     <string name="option_sound_effects_title">Soundeffekte</string>
@@ -335,9 +338,6 @@
     <string name="statistics_chart_one_grid_size_subtitle">Game size %1$d</string>
     <string name="statistics_chart_all_grid_sizes_subtitle">All games</string>
 
-    <!-- Name of settings option menu in activity statistics. -->
-    <string name="statistics_settings">Settings</string>
-
     <!-- Title and a body which explains the purpose of the chart "Progress". -->
     <string name="progress_chart_title">Progress</string>
     <string name="progress_chart_body">This chart displays the progress in solving the current game. For filled cells it is not shown whether the value is correct or not. A cell containing maybe values is counted as an empty cell.</string>
@@ -387,7 +387,43 @@
     <string name="option_show_statistics_description_title">Chart description</string>
     <string name="option_show_statistics_description_summary">Display description below chart.</string>
 
-    <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    
+   	<!-- TODO: TRANSLATE ENTIRE SECTION -->
+   	
+    <!-- Subtitle for the archive fragment. -->
+    <string name="action_bar_subtitle_archive_fragment">Lookup an old game</string>
+
+    <!-- The possible values of the archive filter on the game status. -->
+    <string-array name="archiveStatusFilter">
+        <item>All</item>
+        <item>Unfinished</item>
+        <item>Solved</item>
+        <item>Cheated</item>
+    </string-array>
+
+    <!-- The possible values of the archive filter on game size. -->
+    <string-array name="archiveSizeFilter">
+        <item>All</item>
+        <item>4x4</item>
+        <item>5x5</item>
+        <item>6x6</item>
+        <item>7x7</item>
+        <item>8x8</item>
+        <item>9x9</item>
+    </string-array>
+    
+    <!-- The title and summary of the "Show status filter" option. This option enables or disables showing of the status filter in the action bar of the archive. -->
+    <string name="option_archive_show_status_filter_title">Show status filter</string>
+    <string name="option_archive_show_status_filter_enabled">Allows filtering on status of games</string>
+    <string name="option_archive_show_status_filter_disabled">Hides the filter for selecting on status</string>
+
+    <!-- The title and summary of the "Show size filter" option. This option enables or disables showing of the size filter in the action bar of the archive. -->
+    <string name="option_archive_show_size_filter_title">Show size filter</string>
+    <string name="option_archive_show_size_filter_enabled">Allows filtering on size of games</string>
+    <string name="option_archive_show_size_filter_disabled">Hides the filter for selecting on game size</string>
+    
+        <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <!-- The message that appears when the player has solved the puzzle. -->
     <string name="main_ui_solved_messsage">Gelöst!</string>

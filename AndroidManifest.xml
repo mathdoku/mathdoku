@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="net.cactii.mathdoku"
-    android:versionCode="300"
-    android:versionName="2 (dev version)" 
-    android:installLocation="auto" >
+    android:installLocation="auto"
+    android:versionCode="301"
+    android:versionName="2 (dev version)" >
 
     <uses-sdk
         android:minSdkVersion="11"
@@ -18,7 +18,7 @@
     </supports-screens>
 
     <application
-        android:allowBackup="false"
+        android:allowBackup="true"
         android:icon="@drawable/icon"
         android:label="@string/application_name" >
         <activity
@@ -33,8 +33,9 @@
         </activity>
         <activity android:name="net.cactii.mathdoku.ui.PuzzlePreferenceActivity" />
         <activity android:name="net.cactii.mathdoku.ui.ArchiveFragmentActivity" />
+        <activity android:name="net.cactii.mathdoku.ui.ArchivePreferenceActivity" />
         <activity android:name="net.cactii.mathdoku.ui.StatisticsFragmentActivity" />
         <activity android:name="net.cactii.mathdoku.ui.StatisticsPreferenceActivity" />
-        </application>
+    </application>
 
 </manifest>

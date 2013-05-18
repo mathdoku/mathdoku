@@ -282,8 +282,8 @@ public abstract class DatabaseAdapter {
 			// Table exists. Check if definition matches with expected
 			// definition.
 			String sql = cursor
-					.getString(cursor.getColumnIndexOrThrow(KEY_SQL));
-			tableDefinitionChanged = !sql.equals(getCreateSQL());
+					.getString(cursor.getColumnIndexOrThrow(KEY_SQL)).toUpperCase();
+			tableDefinitionChanged = !sql.equals(getCreateSQL().toUpperCase());
 
 			if (tableDefinitionChanged) {
 				Log.e(TAG, "Change in table '" + getTableName()

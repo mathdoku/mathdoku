@@ -13,25 +13,35 @@ import android.util.Log;
 
 /**
  * The database adapter for the solving attempt table. For each grid one or more
- * solving attempt records can exists in the database.
+ * solving attempt records can exists in the database. For grid created with
+ * version 2 of this app, a statistics record will exist. For grids created with
+ * an older version, statistics data is not available.
  */
 public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	private static final String TAG = "MathDoku.SolvingAttemptDatabaseAdapter";
 
 	public static final boolean DEBUG_SQL = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && true;
 
-	// Columns for table statistics
-	private static final String TABLE = "solving_attempt";
-	private static final String KEY_ROWID = "_id";
-	private static final String KEY_GRID_ID = "grid_id";
-	private static final String KEY_DATE_CREATED = "date_created";
-	private static final String KEY_DATE_UPDATED = "date_updated";
-	private static final String KEY_SAVED_WITH_REVISION = "revision";
-	private static final String KEY_DATA = "data";
+	// Columns for table
+	protected static final String TABLE = "solving_attempt";
+	protected static final String KEY_ROWID = "_id";
+	protected static final String KEY_GRID_ID = "grid_id";
+	protected static final String KEY_DATE_CREATED = "date_created";
+	protected static final String KEY_DATE_UPDATED = "date_updated";
+	protected static final String KEY_SAVED_WITH_REVISION = "revision";
+	protected static final String KEY_DATA = "data";
+	protected static final String KEY_STATUS = "status";
+
+	// Status of solving attempt
+	public static final int STATUS_UNDETERMINED = -1;
+	public static final int STATUS_NOT_STARTED = 0;
+	public static final int STATUS_UNFINISHED = 50;
+	public static final int STATUS_FINISHED_SOLVED = 100;
+	public static final int STATUS_FINISHED_CHEATED = 101;
 
 	private static final String[] dataColumns = { KEY_ROWID, KEY_GRID_ID,
 			KEY_DATE_CREATED, KEY_DATE_UPDATED, KEY_SAVED_WITH_REVISION,
-			KEY_DATA };
+			KEY_DATA, KEY_STATUS };
 
 	// Delimiters used in the data field to separate objects, fields and values
 	// in a field which can hold multiple values.
@@ -63,6 +73,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 				createColumn(KEY_DATE_UPDATED, "datetime", "not null"),
 				createColumn(KEY_SAVED_WITH_REVISION, "integer", " not null"),
 				createColumn(KEY_DATA, "string", "not null"),
+				createColumn(KEY_STATUS, "integer", "not null default " + STATUS_UNDETERMINED),
 				createForeignKey(KEY_GRID_ID, GridDatabaseAdapter.TABLE,
 						GridDatabaseAdapter.KEY_ROWID));
 	}
@@ -122,8 +133,25 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 			}
 			create(db);
 		}
-		if (oldVersion >= 276 && oldVersion < 298 && newVersion >= 298 ) {
-			dropColumn(db, TABLE, new String[] {"preview_image_filename"}, buildCreateSQL());
+		if (oldVersion >= 276 && oldVersion < 298 && newVersion >= 298) {
+			dropColumn(db, TABLE, new String[] { "preview_image_filename" },
+					buildCreateSQL());
+		}
+		if (oldVersion < 301 && newVersion >= 301) {
+			try {
+				String sql = "ALTER TABLE " + stringBetweenBackTicks(TABLE)
+						+ " ADD COLUMN " + stringBetweenBackTicks(KEY_STATUS)
+						+ " INTEGER NOT NULL DEFAULT " + STATUS_UNDETERMINED
+						+ ";";
+				if (DEBUG_SQL) {
+					Log.i(TAG, sql);
+				}
+				db.execSQL(sql);
+			} catch (SQLiteException e) {
+				if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -137,7 +165,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 *            The data for the solving attempt.
 	 * @return The row id of the row created. -1 in case of an error.
 	 */
-	public int insert(Grid grid, int revision, String data) {
+	public int insert(Grid grid, int revision) {
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(KEY_GRID_ID, grid.getRowId());
 		initialValues.put(KEY_DATE_CREATED,
@@ -145,7 +173,11 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		initialValues.put(KEY_DATE_UPDATED,
 				toSQLiteTimestamp(grid.getDateSaved()));
 		initialValues.put(KEY_SAVED_WITH_REVISION, revision);
-		initialValues.put(KEY_DATA, data);
+		initialValues.put(KEY_DATA, grid.toStorageString());
+
+		// Status is derived from grid. It is stored as derived data for easy
+		// filtering on solving attempts for the archive
+		initialValues.put(KEY_STATUS, getDerivedStatus(grid));
 
 		long id = -1;
 		try {
@@ -250,11 +282,15 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 * 
 	 * @return True in case the statistics have been updated. False otherwise.
 	 */
-	public boolean update(int id, String data) {
+	public boolean update(int id, Grid grid) {
 		ContentValues newValues = new ContentValues();
 		newValues.put(KEY_DATE_UPDATED,
 				toSQLiteTimestamp(new java.util.Date().getTime()));
-		newValues.put(KEY_DATA, data);
+		newValues.put(KEY_DATA, grid.toStorageString());
+
+		// Status is derived from grid. It is stored as derived data for easy
+		// filtering on solving attempts for the archive
+		newValues.put(KEY_STATUS, getDerivedStatus(grid));
 
 		return (mSqliteDatabase.update(TABLE, newValues,
 				KEY_ROWID + " = " + id, null) == 1);
@@ -298,5 +334,45 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 			}
 		}
 		return idArrayList;
+	}
+
+	/**
+	 * Get the status of this solving attempt.
+	 * 
+	 * @param grid
+	 *            The grid to which the solving attempt applies.
+	 * 
+	 * @return The status of the solving attempt.
+	 */
+	private int getDerivedStatus(Grid grid) {
+		// Check if the game was finished by revealing the solution
+		if (grid.isSolvedByCheating()) {
+			return STATUS_FINISHED_CHEATED;
+		}
+
+		// Check if the game has been solved manually
+		if (grid.isActive() == false) {
+			return STATUS_FINISHED_SOLVED;
+		}
+
+		// Check if the grid is empty
+		if (grid.isEmpty()) {
+			return STATUS_NOT_STARTED;
+		}
+
+		return STATUS_UNFINISHED;
+	}
+
+	/**
+	 * Prefix the given column name with the table name.
+	 * 
+	 * @param column
+	 *            The column name which has to be prefixed.
+	 * 
+	 * @return The prefixed column name.
+	 */
+	public static String getPrefixedColumnName(String column) {
+		return stringBetweenBackTicks(TABLE) + "."
+				+ stringBetweenBackTicks(column);
 	}
 }

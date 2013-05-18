@@ -21,6 +21,7 @@
     <string name="dialog_general_button_close">Sluit</string>
 
     <!-- DIALOG CONVERTING SAVED GAMES - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
     <!-- The title and message for the dialog displayed on the screen while upgrading to new version and saved games have to be converted. -->
     <string name="dialog_converting_saved_games_title">Bijwerken nieuwe versie</string>
     <string name="dialog_converting_saved_games_message">Voor deze nieuwe versie van MathDoku worden de opgeslagen spelen eenmalig omgezet. Een ogenblik geduld a.u.b.</string>
@@ -57,8 +58,8 @@
 
     <!-- The menu item that allows the player to navigate to the changelog screen -->
     <string name="dialog_help_neutral_button">Aanpassingen</string>
-    
-    <!-- CHANGES DIALOG - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <!-- CHANGES DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <!-- The title of the changelog screen. -->
     <string name="changelog_title">Aanpassingen</string>
@@ -81,6 +82,9 @@
     <!-- Subtitle for the puzzle fragment. -->
     <string name="action_bar_subtitle_puzzle_fragment">Speel een spel</string>
 
+    <!-- Subtitle for the archive fragment. -->
+    <string name="action_bar_subtitle_archive_fragment">Bekijk een oud spel</string>
+    
     <!-- The menu item that allows the player to display the archive of played games. -->
     <string name="action_archive">Archief</string>
 
@@ -317,7 +321,7 @@
     <string name="statistics_chart_all_grid_sizes_subtitle">All games</string>
 
     <!-- Name of settings option menu in activity statistics. -->
-    <string name="statistics_settings">Settings</string>
+    <string name="settings">Settings</string>
 
     <!-- Title and a body which explains the purpose of the chart "Progress". -->
     <string name="progress_chart_title">Voortgang</string>
@@ -368,6 +372,40 @@
     <string name="option_show_statistics_description_title">Grafiek toelichting</string>
     <string name="option_show_statistics_description_summary">Toon toelichting beneden de grafiek.</string>
 
+    <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    
+    <!-- Subtitle for the archive fragment. -->
+    <string name="action_bar_subtitle_archive_fragment">Zoek een oud spel</string>
+
+    <!-- The possible values of the archive filter on the game status. -->
+    <string-array name="archiveStatusFilter">
+        <item>Alle</item>
+        <item>Onafgerond</item>
+        <item>Opgelost</item>
+        <item>Vals spel</item>
+    </string-array>
+
+    <!-- The possible values of the archive filter on game size. -->
+    <string-array name="archiveSizeFilter">
+        <item>Alle</item>
+        <item>4x4</item>
+        <item>5x5</item>
+        <item>6x6</item>
+        <item>7x7</item>
+        <item>8x8</item>
+        <item>9x9</item>
+    </string-array>
+    
+    <!-- The title and summary of the "Show status filter" option. This option enables or disables showing of the status filter in the action bar of the archive. -->
+    <string name="option_archive_show_status_filter_title">Toon status filter</string>
+    <string name="option_archive_show_status_filter_enabled">Sta filtering op status van de puzzel toe</string>
+    <string name="option_archive_show_status_filter_disabled">Verberg het filter voor het selecteren op status</string>
+
+    <!-- The title and summary of the "Show size filter" option. This option enables or disables showing of the size filter in the action bar of the archive. -->
+    <string name="option_archive_show_size_filter_title">Toon grootte filter</string>
+    <string name="option_archive_show_size_filter_enabled">Sta filtering op grootte van de puzzel toe</string>
+    <string name="option_archive_show_size_filter_disabled">Verberg het filter voor het selecteren op grootte</string>
+    
     <!-- MISCELLANEOUS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <!-- The message that appears when the player has solved the puzzle. -->
