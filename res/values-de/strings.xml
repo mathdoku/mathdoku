@@ -136,23 +136,7 @@
     <string name="dialog_building_puzzle_title">Rätsel erstellt</string>
     <string name="dialog_building_puzzle_message">Das Rätsel wurde erstellt und ist in ein paar Sekunden bereit.</string>
 
-    <!-- DIALOG LOAD / SAVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
-
-    <!-- The button in the save game screen that allows the player to save the state of the game (s)he's currently playing. -->
-    <string name="save_game_screen_save_current_game">Aktuellen Spielstand speichern</string>
-
-    <!-- The button in the save game screen that allows the player to load a previously saved game state. -->
-    <string name="save_game_screen_load_game">Laden</string>
-
-    <!-- The confirmation message that shows up when a delete button is pressed, plus the associated title and button labels. -->
-    <string name="game_file_list__delete_game_file_confirmation_message">Sind Sie sicher, dass Sie dieses Spiel löschen möchten?</string>
-    <string name="game_file_list__delete_game_file_confirmation_title">Gespeichertes Spiel löschen?</string>
-    <string name="game_file_list__delete_game_file_negative_button">Nein. Behalten.</string>
-    <string name="game_file_list__delete_game_file_positive_button">Ja. Löschen.</string>
-
     <!-- OPTIONS PUZZLES  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
 
     <!-- The preferences category title for options to assist the user solve the puzzle. -->
     <string name="options_group_assistance">Hilfestellung</string>
