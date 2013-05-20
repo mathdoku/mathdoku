@@ -4,26 +4,28 @@ import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
 import android.content.Context;
 
-public class TipIncorrectValue extends TipDialog {
+public class TipStatistics extends TipDialog {
 
-	private static String TIP_NAME = "Tip.TipIncorrectValue.DisplayAgain";
-	private static TipCategory TIP_CATEGORY = TipCategory.APP_USAGE_V1_9;
+	private static String TIP_NAME = "Tip.TipStatistics.DisplayAgain";
+	private static TipCategory TIP_CATEGORY = TipCategory.APP_USAGE_V2;
 
 	/**
-	 * Creates a new tip dialog which explains that an incorrect value has been
-	 * entered.
+	 * Creates a new tip dialog which explains that the statistics have been
+	 * made available.
 	 * 
 	 * @param context
 	 *            The activity in which this tip has to be shown.
 	 */
-	public TipIncorrectValue(Context context) {
+	public TipStatistics(Context context) {
 		super(context, TIP_NAME, TIP_CATEGORY);
 
 		build(
 				context.getResources().getString(
-						R.string.dialog_tip_incorrect_value_title),
+						R.string.dialog_tip_statistics_title),
 				context.getResources().getString(
-						R.string.dialog_tip_incorrect_value_text), null).show();
+						R.string.dialog_tip_statistics_text), 
+						// TODO: Add image of statistics to tip
+						null).show(); 
 	}
 
 	/**

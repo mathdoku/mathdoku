@@ -22,7 +22,7 @@ public class TipDialog extends AlertDialog {
 
 	// Category of tips
 	public enum TipCategory {
-		GAME_RULES, APP_USAGE
+		GAME_RULES, APP_USAGE_V1_9, APP_USAGE_V2
 	};
 
 	// Context in which the tip is created.

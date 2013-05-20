@@ -37,23 +37,23 @@
     <item
         android:id="@+id/action_archive"
         android:orderInCategory="10"
-        android:showAsAction="ifRoom"
+        android:showAsAction="never"
         android:title="@string/action_archive"/>
     <item
-        android:id="@+id/menu_statistics"
+        android:id="@+id/action_statistics"
         android:icon="@drawable/menu_statistics"
         android:orderInCategory="20"
-        android:showAsAction="ifRoom"
+        android:showAsAction="never"
         android:title="@string/action_statistics">
     </item>
     <item
-        android:id="@+id/puzzle_settings"
+        android:id="@+id/action_puzzle_settings"
         android:orderInCategory="99"
         android:showAsAction="never"
         android:title="@string/settings">
     </item>
     <item
-        android:id="@+id/help"
+        android:id="@+id/action_puzzle_help"
         android:icon="@drawable/menu_help"
         android:orderInCategory="100"
         android:showAsAction="never"

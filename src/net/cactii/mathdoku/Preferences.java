@@ -45,23 +45,29 @@ public class Preferences {
 	public final static String PLAY_SOUND_EFFECTS = "soundeffects";
 	public final static boolean PLAY_SOUND_EFFECTS_DEFAULT = true;
 
+	public final static String SHOW_ARCHIVE = "show_archive";
+	public final static boolean SHOW_ARCHIVE_DEFAULT = false;
+
 	public final static String SHOW_BAD_CAGE_MATHS = "badmaths";
 	public final static boolean SHOW_BAD_CAGE_MATHS_DEFAULT = true;
+
+	public final static String SHOW_DUPE_DIGITS = "dupedigits";
+	public final static boolean SHOW_DUPE_DIGITS_DEFAULT = true;
+
+	public final static String SHOW_MAYBES_AS_GRID = "maybe3x3";
+	public final static boolean SHOW_MAYBES_AS_GRID_DEFAULT = true;
+
+	public final static String SHOW_STATISTICS = "show_statistics";
+	public final static boolean SHOW_STATISTICS_DEFAULT = false;
+
+	public final static String SHOW_STATISTICS_DESCRIPTION = "ShowStatisticsDescription";
+	public final static boolean SHOW_STATISTICS_DESCRIPTION_DEFAULT = true;
 
 	public final static String SHOW_STATUS_FILTER = "archive_show_filter_status";
 	public final static boolean SHOW_STATUS_FILTER_DEFAULT = true;
 
 	public final static String SHOW_SIZE_FILTER = "archive_show_filter_size";
 	public final static boolean SHOW_SIZE_FILTER_DEFAULT = false;
-
-	public final static String SHOW_MAYBES_AS_GRID = "maybe3x3";
-	public final static boolean SHOW_MAYBES_AS_GRID_DEFAULT = true;
-
-	public final static String SHOW_STATISTICS_DESCRIPTION = "ShowStatisticsDescription";
-	public final static boolean SHOW_STATISTICS_DESCRIPTION_DEFAULT = true;
-
-	public final static String SHOW_DUPE_DIGITS = "dupedigits";
-	public final static boolean SHOW_DUPE_DIGITS_DEFAULT = true;
 
 	public final static String SHOW_TIMER = "timer";
 	public final static boolean SHOW_TIMER_DEFAULT = true;
@@ -420,12 +426,15 @@ public class Preferences {
 		}
 
 		switch (tipCategory) {
-		case APP_USAGE:
+		case APP_USAGE_V1_9:
 			// Do not display this tip in case the user is already familiar
 			// with the app
 			return !mSharedPreferences.getBoolean(
 					TIP_CATEGORY_FAMILIAR_WITH_APP,
 					TIP_CATEGORY_FAMILIAR_WITH_APP_DEFAULT);
+		case APP_USAGE_V2:
+			// User can not be familiar with these functions as they are completely new.
+			return true;
 		case GAME_RULES:
 			// Do not display this tip in case the user is already familiar
 			// with the game rules
@@ -567,5 +576,43 @@ public class Preferences {
 	public boolean showArchiveSizeFilter() {
 		return mSharedPreferences.getBoolean(SHOW_SIZE_FILTER,
 				SHOW_SIZE_FILTER_DEFAULT);
+	}
+	
+	/**
+	 * Checks whether the archive is visible.
+	 * 
+	 * @return True in case the archive is visible. False otherwise.
+	 */
+	public boolean isArchiveAvailable() {
+		return mSharedPreferences.getBoolean(SHOW_ARCHIVE,
+				SHOW_ARCHIVE_DEFAULT);
+	}
+
+	/**
+	 * Enables the archive. 
+	 */
+	public void setArchiveVisible() {
+		Editor prefeditor = mSharedPreferences.edit();
+		prefeditor.putBoolean(SHOW_ARCHIVE, true);
+		prefeditor.commit();
+	}
+
+	/**
+	 * Checks whether the statistics are visible.
+	 * 
+	 * @return True in case the statistics are visible. False otherwise.
+	 */
+	public boolean isStatisticsAvailable() {
+		return mSharedPreferences.getBoolean(SHOW_STATISTICS,
+				SHOW_STATISTICS_DEFAULT);
+	}
+
+	/**
+	 * Enables the statistics. 
+	 */
+	public void setStatisticsVisible() {
+		Editor prefeditor = mSharedPreferences.edit();
+		prefeditor.putBoolean(SHOW_STATISTICS, true);
+		prefeditor.commit();
 	}
 }

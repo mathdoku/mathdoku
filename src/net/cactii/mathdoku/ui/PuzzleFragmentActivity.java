@@ -21,10 +21,12 @@ import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import net.cactii.mathdoku.storage.GameFileConverter;
 import net.cactii.mathdoku.storage.database.DatabaseHelper;
 import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
+import net.cactii.mathdoku.tip.TipArchive;
 import net.cactii.mathdoku.tip.TipCheat;
 import net.cactii.mathdoku.tip.TipDialog;
 import net.cactii.mathdoku.tip.TipIncorrectValue;
 import net.cactii.mathdoku.tip.TipInputModeChanged;
+import net.cactii.mathdoku.tip.TipStatistics;
 import net.cactii.mathdoku.ui.GridView.InputModeDeterminer;
 import net.cactii.mathdoku.util.UsageLog;
 import net.cactii.mathdoku.util.Util;
@@ -517,6 +519,12 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
+		// Disable or enable the archive and the settings
+		menu.findItem(R.id.action_archive).setVisible(
+				mMathDokuPreferences.isArchiveAvailable());
+		menu.findItem(R.id.action_statistics).setVisible(
+				mMathDokuPreferences.isStatisticsAvailable());
+
 		// Disable or enable option to check progress depending on whether grid
 		// is active
 		menu.findItem(R.id.checkprogress).setVisible(
@@ -695,17 +703,17 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 					ArchiveFragmentActivity.class);
 			startActivity(intentArchive);
 			return true;
-		case R.id.menu_statistics:
+		case R.id.action_statistics:
 			UsageLog.getInstance().logFunction("Menu.Statistics");
 			Intent intentStatistics = new Intent(this,
 					StatisticsFragmentActivity.class);
 			startActivity(intentStatistics);
 			return true;
-		case R.id.puzzle_settings:
+		case R.id.action_puzzle_settings:
 			UsageLog.getInstance().logFunction("Menu.ViewOptions");
 			startActivity(new Intent(this, PuzzlePreferenceActivity.class));
 			return true;
-		case R.id.help:
+		case R.id.action_puzzle_help:
 			UsageLog.getInstance().logFunction("Menu.ViewHelp.Manual");
 			this.openHelpDialog();
 			return true;
@@ -875,6 +883,16 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 						UsageLog.getInstance().askConsentForSendingLog(this);
 					}
 				}
+			}
+
+			// Enable the archive as soon as the second game has been
+			// generated. Note: mGrid will only be null after a clean install.
+			if (mMathDokuPreferences.isArchiveAvailable() == false) {
+				mMathDokuPreferences.setArchiveVisible();
+				invalidateOptionsMenu();
+			}
+			if (TipArchive.toBeDisplayed(mMathDokuPreferences)) {
+				new TipArchive(PuzzleFragmentActivity.this).show();
 			}
 		}
 		UsageLog.getInstance().logGrid("Menu.StartNewGame.NewGame", newGrid);
@@ -1115,9 +1133,16 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 
 				// Unselect current cell / cage
 				mGrid.setSelectedCell(null);
-				
-				// Update action bar
-				invalidateOptionsMenu();
+
+				// Enable the statistics as soon as the first game has been
+				// finished.
+				if (mMathDokuPreferences.isStatisticsAvailable() == false) {
+					mMathDokuPreferences.setStatisticsVisible();
+					invalidateOptionsMenu();
+				}
+				if (TipStatistics.toBeDisplayed(mMathDokuPreferences)) {
+					new TipStatistics(PuzzleFragmentActivity.this).show();
+				}
 			}
 		});
 	}

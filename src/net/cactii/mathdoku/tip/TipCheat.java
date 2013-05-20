@@ -9,7 +9,7 @@ public class TipCheat extends TipDialog {
 	/*
 	 * Note: this class is used for multiple different cheats. 
 	 */
-	private static TipCategory TIP_CATEGORY = TipCategory.APP_USAGE;
+	private static TipCategory TIP_CATEGORY = TipCategory.APP_USAGE_V1_9;
 
 	/**
 	 * Creates a new tip dialog which explains that cheating will increase the

@@ -9,7 +9,7 @@ import android.graphics.drawable.Drawable;
 public class TipInputModeChanged extends TipDialog {
 
 	private static String TIP_NAME = "Tip.InputModeMaybeDiscovered.DisplayAgain";
-	private static TipCategory TIP_CATEGORY = TipCategory.APP_USAGE;
+	private static TipCategory TIP_CATEGORY = TipCategory.APP_USAGE_V1_9;
 
 	/**
 	 * Creates a new tip dialog which explains that the input mode has been
