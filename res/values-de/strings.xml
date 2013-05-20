@@ -63,7 +63,7 @@
 
     <!-- The menu item that allows the player to navigate to the changelog screen -->
     <string name="puzzle_help_dialog_neutral_button">Änderungen</string>
-    
+
     <!-- CHANGES DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -85,12 +85,13 @@
 
     <!-- ACTION BAR ITEMS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+
     <!-- Subtitle for the puzzle fragment. -->
-    <!--  TODO -->
+    <!-- TODO -->
     <string name="action_bar_subtitle_puzzle_fragment">Play a game</string>
 
     <!-- The menu item that allows the player to display the archive of played games. -->
-    <!--  TODO -->
+    <!-- TODO -->
     <string name="action_archive">Archive</string>
 
     <!-- The menu item that allows the player to start a new game. -->
@@ -135,6 +136,7 @@
 
     <!-- OPTIONS PUZZLES  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+
     <!-- The preferences category title for options to assist the user solve the puzzle. -->
     <string name="options_group_assistance">Hilfestellung</string>
 
@@ -164,7 +166,7 @@
     <string name="option_hide_operators_summary_always">Always hide operation signs like +, -, x and / when creating a new game</string>
     <string name="option_hide_operators_summary_never">Never hide operation signs like +, -, x and / when creating a new game</string>
     <string name="option_hide_operators_summary_ask">Ask whether operation signs like +, -, x and / should be hidden when creating a new game</string>
-    
+
     <!-- The preferences category title for options relating to how the puzzle is displayed. -->
     <string name="options_group_display">Anzeige</string>
 
@@ -192,6 +194,7 @@
     <string name="options_group_sound">Sound</string>
     <!-- The title and summary of the "sound effects" option. -->
 
+
     <!-- The title and summary of the "Sounds effect" option. This option enables or disables soundeffects. -->
     <string name="option_sound_effects_title">Soundeffekte</string>
     <string name="option_sound_effects_summary">Soundeffekte einschalten.</string>
@@ -203,7 +206,7 @@
     <string name="theme_carved">Geschnitzt</string>
     <string name="theme_newspaper">Zeitung</string>
     <string name="theme_dark">Dunkel</string>
-    
+
     <!-- CONTEXT MENU IN PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -306,7 +309,17 @@
     <!-- TODO -->
     <string name="dialog_tip_incorrect_value_title">Incorrect value</string>
     <string name="dialog_tip_incorrect_value_text">You have entered an incorrect value. You will not be able to solve this puzzle in case you do not correct it. You can use menu option \'Check Progress\' to mark all cells having an incorrect value. Be aware: using \'Check Progress\' will raise the time elapsed with a penalty to discourage you from using it.</string>
-    
+
+    <!-- Title, and text for tip "Archive" which explains about this new menu option. -->
+    <!-- TODO -->
+    <string name="dialog_tip_archive_title">Archive</string>
+    <string name="dialog_tip_archive_text">The previous game has been added to the archive. The archive contains all games you have started. The archive can be opened via the menu.</string>
+
+    <!-- Title, and text for tip "Statistics" which explains about this new menu option. -->
+    <!-- TODO -->
+    <string name="dialog_tip_statistics_title">Statistics</string>
+    <string name="dialog_tip_statistics_text">For each game you have played, some statistics are collected. You can use the statistics just to view your historic results. Also you can use the statistics to improve your solving techniques.</string>
+
     <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- TODO: TRANSLATE ENTIRE SECTION -->
 
@@ -322,7 +335,7 @@
     <string name="statistics_general_elapsed_time">Time played</string>
     <string name="statistics_general_cheat_penalty_time">Cheat penalty</string>
     <string name="statistics_general_replay">Replay game</string>
-    
+
     <!-- Sub title for charts displaying cumulative statistics for a certain grid size or on all grid sizes. -->
     <string name="statistics_chart_one_grid_size_subtitle">Game size %1$d</string>
     <string name="statistics_chart_all_grid_sizes_subtitle">All games</string>
@@ -368,7 +381,7 @@
     <string name="statistics_elapsed_time_historic_solved_slowest">Slowest</string>
     <string name="statistics_elapsed_time_historic_solved_average">Average</string>
     <string name="statistics_elapsed_time_historic_solved_fastest">Fastest</string>
-    
+
     <!-- OPTIONS STATISTICS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -377,9 +390,11 @@
     <string name="option_show_statistics_description_summary">Display description below chart.</string>
 
     <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    
-   	<!-- TODO: TRANSLATE ENTIRE SECTION -->
-   	
+
+
+    <!-- TODO: TRANSLATE ENTIRE SECTION -->
+
+
     <!-- Subtitle for the archive fragment. -->
     <string name="action_bar_subtitle_archive_fragment">Lookup an old game</string>
 
@@ -404,7 +419,7 @@
 
     <!-- The label in the pager bar for the "puzzle number" -->
     <string name="archive_pager_puzzle_number">Puzzle no.</string>
-    
+
     <!-- The title and summary of the "Show status filter" option. This option enables or disables showing of the status filter in the action bar of the archive. -->
     <string name="option_archive_show_status_filter_title">Show status filter</string>
     <string name="option_archive_show_status_filter_enabled">Allows filtering on status of games</string>
@@ -414,10 +429,10 @@
     <string name="option_archive_show_size_filter_title">Show size filter</string>
     <string name="option_archive_show_size_filter_enabled">Allows filtering on size of games</string>
     <string name="option_archive_show_size_filter_disabled">Hides the filter for selecting on game size</string>
-    
+
     <!-- The lead in text at top of the help dialog. -->
     <string name="archive_help_dialog_general">The archive contains the history of all games you have played. Swipe from left to right to go to an older puzzle. Swipe from right to left to go to a newer puzzle.\n\nYou can use filters to view only puzzles having a specific status or size. Filters can be enabled and disabled via the settings menu. Note: a filter will only be shown in case it contains multiple values.</string>
-    
+
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -434,7 +449,6 @@
 
     <!-- Alert to select a cell before a value is selected -->
     <string name="select_cell_before_value">Zuerst eine Zelle auswählen</string>
-
     <string name="game_seed">"Spiel platzieren: "</string>
 
     <!-- Units for time. -->
@@ -450,6 +464,5 @@
     <!-- Connector in case penalty time consists of different units (e.g. "1 minute and 15 seconds") -->
     <!-- TODO -->
     <string name="time_unit_connector">and</string>
-    
-    
+
 </resources>
