@@ -76,9 +76,10 @@ public class ArchiveFragmentActivity extends FragmentActivity {
 		mArchiveFragmentStatePagerAdapter = new ArchiveFragmentStatePagerAdapter(
 				getSupportFragmentManager(), this);
 
+		// Get preferences for displaying the filter.
 		mShowStatusFilter = Preferences.getInstance(this)
 				.showArchiveStatusFilter();
-		mShowSizeFilter = Preferences.getInstance(this).showArchiveSizeFilter();
+		mShowSizeFilter = Preferences.getInstance().showArchiveSizeFilter();
 
 		mActionBar = getActionBar();
 		if (mActionBar != null) {
@@ -90,15 +91,8 @@ public class ArchiveFragmentActivity extends FragmentActivity {
 
 			mActionBar.setCustomView(R.layout.archive_action_bar_custom);
 
-			// Display spinners only if the archive is not empty.
-			if (mArchiveFragmentStatePagerAdapter.getCount() > 0) {
-				if (mShowStatusFilter) {
-					setStatusSpinner();
-				}
-				if (mShowSizeFilter) {
-					setSizeSpinner();
-				}
-			}
+			setStatusSpinner();
+			setSizeSpinner();
 		}
 
 		// Set up the ViewPager, attaching the adapter.
@@ -115,6 +109,9 @@ public class ArchiveFragmentActivity extends FragmentActivity {
 
 	@Override
 	protected void onResumeFragments() {
+		// Get preferences for displaying the filter as they might have been
+		// changed in case the onPause of this activity was caused by displaying
+		// the settings.
 		boolean showStatusFilter = Preferences.getInstance(this)
 				.showArchiveStatusFilter();
 		boolean showSizeFilter = Preferences.getInstance(this)
@@ -184,7 +181,7 @@ public class ArchiveFragmentActivity extends FragmentActivity {
 	protected void setStatusSpinner() {
 		Spinner spinner = (Spinner) mActionBar.getCustomView().findViewById(
 				R.id.spinner_status);
-		if (!mShowStatusFilter) {
+		if (!mShowStatusFilter || mArchiveFragmentStatePagerAdapter.getCount() == 0) {
 			spinner.setVisibility(View.GONE);
 			return;
 		}
@@ -255,7 +252,7 @@ public class ArchiveFragmentActivity extends FragmentActivity {
 	protected void setSizeSpinner() {
 		Spinner spinner = (Spinner) mActionBar.getCustomView().findViewById(
 				R.id.spinner_size);
-		if (!mShowSizeFilter) {
+		if (!mShowSizeFilter || mArchiveFragmentStatePagerAdapter.getCount() == 0) {
 			spinner.setVisibility(View.GONE);
 			return;
 		}

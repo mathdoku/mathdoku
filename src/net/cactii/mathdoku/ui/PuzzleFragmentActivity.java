@@ -1011,7 +1011,7 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 	private void checkVersion() {
 		if (mGameFileConverter != null) {
 			// Phase 1 of the upgrade is not yet completed. The upgrade process
-			// should not be restarted till the phase 1 backgroudn process is
+			// should not be restarted till the phase 1 background process is
 			// completed.
 			return;
 		}
