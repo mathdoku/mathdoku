@@ -33,34 +33,34 @@
 
 
     <!-- The lead in text at top of the help dialog. -->
-    <string name="dialog_help_leadin">Bedankt voor het installeren van MathDoku voor Android.</string>
+    <string name="puzzle_help_dialog_leadin">Bedankt voor het installeren van MathDoku voor Android.</string>
 
     <!-- The title for the help section. -->
-    <string name="dialog_help_help_title">Help</string>
+    <string name="puzzle_help_dialog_help_section_title">Help</string>
 
     <!-- The title and body describing the goal of the game. -->
-    <string name="dialog_help_goal_title">Doel</string>
-    <string name="dialog_help_goal_body">Vul in elke rij en in elke kolom de getallen 1 tot en met de puzzelgrootte in.\n\nElk getal wordt precies eenmaal gebruikt in elke rij en kolom.\n\nDe dikke lijnen geven de \'groepen\' weer. Elke groep bevat een rekenkundige puzzel die opgelost moet worden met de getallen in de groep. Bijv. \'5+\' betekent dat alle getallen in de groep optellen tot 5. De volgorde waarin de getallen worden gebruikt is niet relevant.\n\nEen getal kan meerdere keren binnen een groep worden gebruikt zolang het getal nog steeds maar eenmaal voor komt in elke rij of kolom.</string>
+    <string name="puzzle_help_dialog_goal_section_title">Doel</string>
+    <string name="puzzle_help_dialog_goal_section_body">Vul in elke rij en in elke kolom de getallen 1 tot en met de puzzelgrootte in.\n\nElk getal wordt precies eenmaal gebruikt in elke rij en kolom.\n\nDe dikke lijnen geven de \'groepen\' weer. Elke groep bevat een rekenkundige puzzel die opgelost moet worden met de getallen in de groep. Bijv. \'5+\' betekent dat alle getallen in de groep optellen tot 5. De volgorde waarin de getallen worden gebruikt is niet relevant.\n\nEen getal kan meerdere keren binnen een groep worden gebruikt zolang het getal nog steeds maar eenmaal voor komt in elke rij of kolom.</string>
 
     <!-- The title and body describing how to play the game. -->
-    <string name="dialog_help_how_to_play_title">Hoe te spelen?</string>
-    <string name="dialog_help_how_to_play_body">Raak een vlak aan in de puzzel om een getal te kiezen. Raak hetzelfde vlak nogmaals aan om \'mogelijken\' waarde vast te leggen.\n\nRaak een vlak lang aan voor meer opties.\n\nJe kunt ook spelen met de trackball.\n\nDe huidige puzzel wordt bewaard bij het verlaten van de app, of gebruik het menu om een onbeperkt aantal puzzles op te slaan of te laden.</string>
+    <string name="puzzle_help_dialog_how_to_play__section_title">Hoe te spelen?</string>
+    <string name="puzzle_help_dialog_how_to_play_section_body">Raak een vlak aan in de puzzel om een getal te kiezen. Raak hetzelfde vlak nogmaals aan om \'mogelijken\' waarde vast te leggen.\n\nRaak een vlak lang aan voor meer opties.\n\nJe kunt ook spelen met de trackball.\n\nDe huidige puzzel wordt bewaard bij het verlaten van de app, of gebruik het menu om een onbeperkt aantal puzzles op te slaan of te laden.</string>
 
     <!-- The version title in the help screen. -->
-    <string name="dialog_help_version_title">Versie</string>
+    <string name="puzzle_help_dialog_version_section_title">Versie</string>
 
     <!-- The license title in the help screen. -->
-    <string name="dialog_help_license_title">Licentie</string>
+    <string name="puzzle_help_dialog_license_section_title">Licentie</string>
 
     <!-- The project home title in the help screen. -->
-    <string name="dialog_help_project_home_title">Project pagina</string>
+    <string name="puzzle_help_dialog_project_home_section_title">Project pagina</string>
 
     <!-- The contributor title in the help screen. -->
-    <string name="dialog_help_contributors_title">Ontwikkelaars</string>
-    <string name="dialog_help_contributors_body">MathDoku is initieel ontwikkeld door Ben Buxton. Bijdragen zijn gemaakt door: Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul, Christoph Steindl en Alexander Tesfamichael. Tevens willen we iedereen bedanken die fouten en verbeteringen heeft gemeld.</string>
+    <string name="puzzle_help_dialog_contributors_section_title">Ontwikkelaars</string>
+    <string name="puzzle_help_dialog_contributors_section_body">MathDoku is initieel ontwikkeld door Ben Buxton. Bijdragen zijn gemaakt door: Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul, Christoph Steindl en Alexander Tesfamichael. Tevens willen we iedereen bedanken die fouten en verbeteringen heeft gemeld.</string>
 
     <!-- The menu item that allows the player to navigate to the changelog screen -->
-    <string name="dialog_help_neutral_button">Aanpassingen</string>
+    <string name="puzzle_help_dialog_neutral_button">Aanpassingen</string>
 
     <!-- CHANGES DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -298,6 +298,14 @@
     <string name="statistics_activity_title">Puzzel statistieken</string>
     <string name="statistics_not_available">Sorry, geen statistieken beschikbaar voor dit spel.</string>
 
+    <!-- Labels for general game statistics. -->
+    <string name="statistics_general_date_created">Aangemaakt op</string>
+    <string name="statistics_general_date_finished">Beëindigd op</string>
+    <string name="statistics_general_status">Status</string>
+    <string name="statistics_general_elapsed_time">Speeltijd</string>
+    <string name="statistics_general_cheat_penalty_time">Boete vals spel</string>
+    <string name="statistics_general_replay">Opnieuw spelen</string>
+    
     <!-- Sub title for charts displaying cumulative statistics for a certain grid size or on all grid sizes. -->
     <string name="statistics_chart_one_grid_size_subtitle">Game size %1$d</string>
     <string name="statistics_chart_all_grid_sizes_subtitle">All games</string>
@@ -374,6 +382,9 @@
         <item>8x8</item>
         <item>9x9</item>
     </string-array>
+
+    <!-- The label in the pager bar for the "puzzle number" -->
+    <string name="archive_pager_puzzle_number">Puzzle nr.</string>
     
     <!-- The title and summary of the "Show status filter" option. This option enables or disables showing of the status filter in the action bar of the archive. -->
     <string name="option_archive_show_status_filter_title">Toon status filter</string>
@@ -385,7 +396,11 @@
     <string name="option_archive_show_size_filter_enabled">Sta filtering op grootte van de puzzel toe</string>
     <string name="option_archive_show_size_filter_disabled">Verberg het filter voor het selecteren op grootte</string>
     
-    <!-- MISCELLANEOUS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- The lead in text at top of the help dialog. -->
+    <string name="archive_help_dialog_general">The archive contains the history of all games you have played. Swipe from left to right to go to an older puzzle. Swipe from right to left to go to a newer puzzle.\n\nYou can use filters to view only puzzles having a specific status or size. Filters can be enabled and disabled via the settings menu. Note: a filter will only be shown in case it contains multiple values.</string>
+    
+    <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
 
     <!-- The message that appears when the player has solved the puzzle. -->
     <string name="main_ui_solved_messsage">Opgelost!</string>

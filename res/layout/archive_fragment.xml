@@ -4,59 +4,133 @@
     android:layout_height="match_parent"
     android:fillViewport="true" >
 
-    <RelativeLayout
-        android:id="@+id/puzzleGrid"
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:background="#00000000" >
+        android:orientation="vertical" >
 
-        <net.cactii.mathdoku.ui.GridView
-            android:id="@+id/gridView"
+        <RelativeLayout
+            android:id="@+id/puzzleGrid"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_centerHorizontal="true" />
-
-        <TextView
-            android:id="@+id/gameSeedLabel"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/gridView"
-            android:layout_below="@+id/gridView"
-            android:background="#00000000"
-            android:text="@string/game_seed"
-            android:textColor="#FF000000"
-            android:textSize="@dimen/text_size_tiny"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/gameSeedText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/gameSeedLabel"
-            android:layout_toRightOf="@+id/gameSeedLabel"
-            android:background="#00000000"
-            android:text="999.999.999.999.999.999"
-            android:textColor="#FF000000"
-            android:textSize="@dimen/text_size_tiny"
-            android:visibility="gone"
-            tools:ignore="HardcodedText" />
-
-        <TextView
-            android:id="@+id/timerText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignRight="@+id/gridView"
-            android:layout_below="@+id/gridView"
             android:layout_margin="5dp"
-            android:background="#00000000"
-            android:lines="1"
-            android:text="99h99m99s"
-            android:textColor="#FF000000"
-            android:textSize="@dimen/text_size_default"
-            android:textStyle="bold"
-            android:visibility="gone"
-            tools:ignore="HardcodedText" />
-    </RelativeLayout>
+            android:background="#00000000" >
+
+            <net.cactii.mathdoku.ui.GridView
+                android:id="@+id/gridView"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:id="@+id/gameSeedLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/gridView"
+                android:layout_below="@+id/gridView"
+                android:text="@string/game_seed"
+                android:textSize="@dimen/text_size_tiny"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/gameSeedText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/gameSeedLabel"
+                android:layout_toRightOf="@+id/gameSeedLabel"
+                android:text="999.999.999.999.999.999"
+                android:textSize="@dimen/text_size_tiny"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+        </RelativeLayout>
+
+        <TableLayout
+            android:id="@+id/puzzleStatistics"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp" >
+
+            <TableRow
+                android:id="@+id/statistics_general_date_created_row"
+                android:visibility="gone" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:text="@string/statistics_general_date_created"
+                    android:textSize="@dimen/text_size_default" />
+
+                <TextView
+                    android:id="@+id/statistics_general_date_created"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_default" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/statistics_general_date_finished_row"
+                android:visibility="gone" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:text="@string/statistics_general_date_finished"
+                    android:textSize="@dimen/text_size_default" />
+
+                <TextView
+                    android:id="@+id/statistics_general_date_finished"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_default" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/statistics_general_elapsed_time_row"
+                android:visibility="gone" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:text="@string/statistics_general_elapsed_time"
+                    android:textSize="@dimen/text_size_default" />
+
+                <TextView
+                    android:id="@+id/timerText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_default" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/statistics_general_cheat_penalty_time_row"
+                android:visibility="gone" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:text="@string/statistics_general_cheat_penalty_time"
+                    android:textSize="@dimen/text_size_default" />
+
+                <TextView
+                    android:id="@+id/statistics_general_cheat_penalty_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_default" />
+            </TableRow>
+        </TableLayout>
+
+        <LinearLayout
+            android:id="@+id/chartLayouts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+        </LinearLayout>
+    </LinearLayout>
 
 </ScrollView>

@@ -34,19 +34,9 @@ public class StatisticsFragmentActivity extends FragmentActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.statistics_activity_fragment);
 
-		// Determine if specific statistics for a grid have to be shown.
-		Intent intent = getIntent();
-		int mGridStatisticsId = -1;
-		if (intent != null) {
-			Bundle extras = intent.getExtras();
-			if (extras != null) {
-				mGridStatisticsId = extras.getInt(StatisticsGameFragment.BUNDLE_KEY_STATISTICS_ID, -1);
-			}
-		}
-
 		// Create the adapter that will return the statistics fragments.
 		mStatisticsFragmentPagerAdapter = new StatisticsFragmentPagerAdapter(
-				getSupportFragmentManager(), mGridStatisticsId);
+				getSupportFragmentManager());
 
 		// Set up the action bar.
 		final ActionBar actionBar = getActionBar();

@@ -14,7 +14,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="@string/dialog_help_leadin"
+            android:text="@string/puzzle_help_dialog_leadin"
             android:textColor="#ffffff"
             android:textSize="@dimen/dialog_text_size_body" />
 
@@ -22,7 +22,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:paddingTop="15dp"
-            android:text="@string/dialog_help_help_title"
+            android:text="@string/puzzle_help_dialog_help_section_title"
             android:textColor="#ffffff"
             android:textSize="@dimen/dialog_text_size_heading1"
             android:textStyle="bold" />
@@ -31,7 +31,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:paddingTop="15dp"
-            android:text="@string/dialog_help_goal_title"
+            android:text="@string/puzzle_help_dialog_goal_section_title"
             android:textColor="#ffffff"
             android:textSize="@dimen/dialog_text_size_heading2"
             android:textStyle="bold" />
@@ -39,7 +39,7 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/dialog_help_goal_body"
+            android:text="@string/puzzle_help_dialog_goal_section_body"
             android:textColor="#ffffff"
             android:textSize="@dimen/dialog_text_size_body" />
 
@@ -47,7 +47,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:paddingTop="15dp"
-            android:text="@string/dialog_help_how_to_play_title"
+            android:text="@string/puzzle_help_dialog_how_to_play__section_title"
             android:textColor="#ffffff"
             android:textSize="@dimen/dialog_text_size_heading2"
             android:textStyle="bold" />
@@ -55,7 +55,7 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/dialog_help_how_to_play_body"
+            android:text="@string/puzzle_help_dialog_how_to_play_section_body"
             android:textColor="#ffffff"
             android:textSize="@dimen/dialog_text_size_body" />
 
@@ -63,7 +63,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:paddingTop="15dp"
-            android:text="@string/dialog_help_version_title"
+            android:text="@string/puzzle_help_dialog_version_section_title"
             android:textColor="#ffffff"
             android:textSize="@dimen/dialog_text_size_heading1"
             android:textStyle="bold" />
@@ -79,7 +79,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:paddingTop="15dp"
-            android:text="@string/dialog_help_license_title"
+            android:text="@string/puzzle_help_dialog_license_section_title"
             android:textColor="#ffffff"
             android:textSize="@dimen/dialog_text_size_heading1"
             android:textStyle="bold" />
@@ -105,7 +105,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:paddingTop="15dp"
-            android:text="@string/dialog_help_project_home_title"
+            android:text="@string/puzzle_help_dialog_project_home_section_title"
             android:textColor="#ffffff"
             android:textSize="@dimen/dialog_text_size_heading1"
             android:textStyle="bold" />
@@ -122,7 +122,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:paddingTop="15dp"
-            android:text="@string/dialog_help_contributors_title"
+            android:text="@string/puzzle_help_dialog_contributors_section_title"
             android:textColor="#ffffff"
             android:textSize="@dimen/dialog_text_size_heading1"
             android:textStyle="bold" />
@@ -130,7 +130,7 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/dialog_help_contributors_body"
+            android:text="@string/puzzle_help_dialog_contributors_section_body"
             android:textColor="#ffffff"
             android:textSize="@dimen/dialog_text_size_body" />
     </LinearLayout>

@@ -13,7 +13,8 @@
         android:layout_gravity="center_horizontal"
         android:lines="1"
         android:paddingBottom="10dp"
-        android:textSize="@dimen/dialog_text_size_heading1" />
+        android:textSize="@dimen/dialog_text_size_heading1"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/statistics_section_subtitle"
@@ -29,7 +30,8 @@
         android:id="@+id/statistics_section_chart"
         android:layout_width="match_parent"
         android:layout_height="350dp"
-        android:orientation="vertical" />
+        android:orientation="vertical"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/statistics_section_extra_data"
@@ -41,9 +43,10 @@
         android:visibility="gone" />
 
     <TextView
-        android:id="@+id/statistics_section_body"
+        android:id="@+id/statistics_section_explanation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="20dp" />
+        android:paddingBottom="20dp"
+        android:visibility="gone" />
 
 </LinearLayout>

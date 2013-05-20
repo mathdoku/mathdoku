@@ -30,38 +30,37 @@
     <string name="dialog_converting_saved_games_title">Upgrading new version</string>
     <string name="dialog_converting_saved_games_message">For this new version of MathDoku, your saved games are now being converted (one time only).</string>
 
-    <!-- HELP DIALOG - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
+    <!-- PUZZLE HELP DIALOG - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <!-- The lead in text at top of the help dialog. -->
-    <string name="dialog_help_leadin">Thanks for installing MathDoku for Android.</string>
+    <string name="puzzle_help_dialog_leadin">Thanks for installing MathDoku for Android.</string>
 
     <!-- The title for the help section. -->
-    <string name="dialog_help_help_title">Help</string>
+    <string name="puzzle_help_dialog_help_section_title">Help</string>
 
     <!-- The title and body describing the goal of the game. -->
-    <string name="dialog_help_goal_title">Your goal</string>
-    <string name="dialog_help_goal_body">Fill in each row and column with digits from 1 to grid size.\n\nDigits can and must be used only once per row and column.\n\nThick lines indicate \'cages\' - each cage has an arithmetic puzzle, which must be solved by the digits in the cage. Eg \'5+\' means all digits in that cage add to 5. The order in which the digits are used in the cage is not relevant.\n\nDigits can be used more than once per cage, so long as there is only one of a digit per row or column.</string>
+    <string name="puzzle_help_dialog_goal_section_title">Your goal</string>
+    <string name="puzzle_help_dialog_goal_section_body">Fill in each row and column with digits from 1 to grid size.\n\nDigits can and must be used only once per row and column.\n\nThick lines indicate \'cages\' - each cage has an arithmetic puzzle, which must be solved by the digits in the cage. Eg \'5+\' means all digits in that cage add to 5. The order in which the digits are used in the cage is not relevant.\n\nDigits can be used more than once per cage, so long as there is only one of a digit per row or column.</string>
 
     <!-- The title and body describing how to play the game. -->
-    <string name="dialog_help_how_to_play_title">How to play</string>
-    <string name="dialog_help_how_to_play_body">Touch to select a cell in the grid, then choose a digit. The \'normal / maybe\' mode button allows you to mark multiple possibilities.\n\nLong-touch a cell for more options.\n\nYou can also play using the trackball.\n\nThe current game will be saved when you exit the game, or use the Load/Save menu to save unlimited games.</string>
+    <string name="puzzle_help_dialog_how_to_play__section_title">How to play</string>
+    <string name="puzzle_help_dialog_how_to_play_section_body">Touch to select a cell in the grid, then choose a digit. The \'normal / maybe\' mode button allows you to mark multiple possibilities.\n\nLong-touch a cell for more options.\n\nYou can also play using the trackball.\n\nThe current game will be saved when you exit the game, or use the Load/Save menu to save unlimited games.</string>
 
     <!-- The version title in the help screen. -->
-    <string name="dialog_help_version_title">Version</string>
+    <string name="puzzle_help_dialog_version_section_title">Version</string>
 
     <!-- The license title in the help screen. -->
-    <string name="dialog_help_license_title">License</string>
+    <string name="puzzle_help_dialog_license_section_title">License</string>
 
     <!-- The project home title in the help screen. -->
-    <string name="dialog_help_project_home_title">Project Home</string>
+    <string name="puzzle_help_dialog_project_home_section_title">Project Home</string>
 
     <!-- The contributor title in the help screen. -->
-    <string name="dialog_help_contributors_title">Contributors</string>
-    <string name="dialog_help_contributors_body">MathDoku was initially developed by Ben Buxton. Contributions have been made by: Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul, Christoph Steindl and Alexander Tesfamichael. Also we would like to thank all users who have submitted bugs and feature requests.</string>
+    <string name="puzzle_help_dialog_contributors_section_title">Contributors</string>
+    <string name="puzzle_help_dialog_contributors_section_body">MathDoku was initially developed by Ben Buxton. Contributions have been made by: Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul, Christoph Steindl and Alexander Tesfamichael. Also we would like to thank all users who have submitted bugs and feature requests.</string>
 
     <!-- The menu item that allows the player to navigate to the changelog screen -->
-    <string name="dialog_help_neutral_button">Changes</string>
+    <string name="puzzle_help_dialog_neutral_button">Changes</string>
 
     <!-- CHANGES DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -302,6 +301,14 @@
     <string name="statistics_activity_title">Game Statistics</string>
     <string name="statistics_not_available">Sorry, no statistics available for this game.</string>
 
+    <!-- Labels for general game statistics. -->
+    <string name="statistics_general_date_created">Created on</string>
+    <string name="statistics_general_date_finished">Finished on</string>
+    <string name="statistics_general_status">Status</string>
+    <string name="statistics_general_elapsed_time">Time played</string>
+    <string name="statistics_general_cheat_penalty_time">Cheat penalty</string>
+    <string name="statistics_general_replay">Replay game</string>
+    
     <!-- Sub title for charts displaying cumulative statistics for a certain grid size or on all grid sizes. -->
     <string name="statistics_chart_one_grid_size_subtitle">Game size %1$d</string>
     <string name="statistics_chart_all_grid_sizes_subtitle">All games</string>
@@ -378,6 +385,9 @@
         <item>8x8</item>
         <item>9x9</item>
     </string-array>
+
+    <!-- The label in the pager bar for the "puzzle number" -->
+    <string name="archive_pager_puzzle_number">Puzzle no.</string>
     
     <!-- The title and summary of the "Show status filter" option. This option enables or disables showing of the status filter in the action bar of the archive. -->
     <string name="option_archive_show_status_filter_title">Show status filter</string>
@@ -388,6 +398,9 @@
     <string name="option_archive_show_size_filter_title">Show size filter</string>
     <string name="option_archive_show_size_filter_enabled">Allows filtering on size of games</string>
     <string name="option_archive_show_size_filter_disabled">Hides the filter for selecting on game size</string>
+    
+    <!-- The lead in text at top of the help dialog. -->
+    <string name="archive_help_dialog_general">The archive contains the history of all games you have played. Swipe from left to right to go to an older puzzle. Swipe from right to left to go to a newer puzzle.\n\nYou can use filters to view only puzzles having a specific status or size. Filters can be enabled and disabled via the settings menu. Note: a filter will only be shown in case it contains multiple values.</string>
     
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

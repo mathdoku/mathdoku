@@ -698,11 +698,6 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 			UsageLog.getInstance().logFunction("Menu.Statistics");
 			Intent intentStatistics = new Intent(this,
 					StatisticsFragmentActivity.class);
-			if (mGrid != null) {
-				intentStatistics.putExtra(
-						StatisticsGameFragment.BUNDLE_KEY_STATISTICS_ID, mGrid
-								.getGridStatistics().getId());
-			}
 			startActivity(intentStatistics);
 			return true;
 		case R.id.puzzle_settings:
@@ -907,7 +902,7 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 	private void openHelpDialog() {
 		// Get view and put relevant information into the view.
 		LayoutInflater li = LayoutInflater.from(this);
-		View view = li.inflate(R.layout.help_dialog, null);
+		View view = li.inflate(R.layout.puzzle_help_dialog, null);
 
 		TextView tv = (TextView) view
 				.findViewById(R.id.dialog_help_version_body);
@@ -928,7 +923,7 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 										.getString(R.string.action_help))
 				.setIcon(R.drawable.about)
 				.setView(view)
-				.setNeutralButton(R.string.dialog_help_neutral_button,
+				.setNeutralButton(R.string.puzzle_help_dialog_neutral_button,
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {

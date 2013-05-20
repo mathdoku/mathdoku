@@ -1,5 +1,6 @@
 package net.cactii.mathdoku.ui;
 
+import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -21,6 +22,8 @@ public class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter 
 	// Selected filter on status
 	private StatusFilter mStatusFilter;
 
+	private String mLabelPuzzleNumber;
+
 	public enum StatusFilter {
 		ALL, UNFINISHED, SOLVED, CHEATED
 	};
@@ -40,7 +43,10 @@ public class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter 
 
 		mStatusFilter = StatusFilter.ALL;
 		mSizeFilter = SizeFilter.ALL;
-		
+
+		mLabelPuzzleNumber = mArchiveFragmentActivity.getResources().getString(
+				R.string.archive_pager_puzzle_number);
+
 		// Determine number of grid available.
 		setGridIds();
 	}
@@ -55,11 +61,11 @@ public class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter 
 		fragment.setArguments(args);
 		return fragment;
 	}
-	
+
 	@Override
-    public int getItemPosition(Object item) {
+	public int getItemPosition(Object item) {
 		return POSITION_NONE;
-    }
+	}
 
 	@Override
 	public int getCount() {
@@ -68,9 +74,13 @@ public class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter 
 
 	@Override
 	public CharSequence getPageTitle(int position) {
-		return "Puzzle " + (position + 1);
+		if (mGridIds != null && position >= 0 && position < mGridIds.length) {
+			return mLabelPuzzleNumber + " " + mGridIds[position];
+		} else {
+			return mLabelPuzzleNumber;
+		}
 	}
-	
+
 	public void setStatusFilter(StatusFilter statusFilter) {
 		mStatusFilter = statusFilter;
 		setGridIds();
@@ -88,11 +98,12 @@ public class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter 
 	public SizeFilter getSizeFilter() {
 		return mSizeFilter;
 	}
-	
+
 	private void setGridIds() {
 		// Determine which grid should be shown
 		GridDatabaseAdapter gridDatabaseAdapter = new GridDatabaseAdapter();
-		mGridIds = gridDatabaseAdapter.getAllGridIds(mStatusFilter, mSizeFilter);
+		mGridIds = gridDatabaseAdapter
+				.getAllGridIds(mStatusFilter, mSizeFilter);
 		notifyDataSetChanged();
 	}
 }

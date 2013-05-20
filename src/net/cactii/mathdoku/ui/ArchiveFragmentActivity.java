@@ -22,12 +22,15 @@ import net.cactii.mathdoku.storage.database.GridDatabaseAdapter;
 import net.cactii.mathdoku.ui.ArchiveFragmentStatePagerAdapter.SizeFilter;
 import net.cactii.mathdoku.ui.ArchiveFragmentStatePagerAdapter.StatusFilter;
 import android.app.ActionBar;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -75,8 +78,7 @@ public class ArchiveFragmentActivity extends FragmentActivity {
 
 		mShowStatusFilter = Preferences.getInstance(this)
 				.showArchiveStatusFilter();
-		mShowSizeFilter = Preferences.getInstance(this)
-				.showArchiveSizeFilter();
+		mShowSizeFilter = Preferences.getInstance(this).showArchiveSizeFilter();
 
 		mActionBar = getActionBar();
 		if (mActionBar != null) {
@@ -117,16 +119,14 @@ public class ArchiveFragmentActivity extends FragmentActivity {
 				.showArchiveStatusFilter();
 		boolean showSizeFilter = Preferences.getInstance(this)
 				.showArchiveSizeFilter();
-		if (mShowStatusFilter != showStatusFilter ||
-				mShowSizeFilter != showSizeFilter
-				) {
+		if (mShowStatusFilter != showStatusFilter
+				|| mShowSizeFilter != showSizeFilter) {
 			mShowStatusFilter = showStatusFilter;
 			mShowSizeFilter = showSizeFilter;
 
 			// Reset all filters in case the settings for displaying a filter
 			// have been changed.
-			mArchiveFragmentStatePagerAdapter
-						.setStatusFilter(StatusFilter.ALL);
+			mArchiveFragmentStatePagerAdapter.setStatusFilter(StatusFilter.ALL);
 			mArchiveFragmentStatePagerAdapter.setSizeFilter(SizeFilter.ALL);
 
 			// Refresh the spinners
@@ -167,6 +167,9 @@ public class ArchiveFragmentActivity extends FragmentActivity {
 			return true;
 		case R.id.action_settings:
 			startActivity(new Intent(this, ArchivePreferenceActivity.class));
+			return true;
+		case R.id.action_help:
+			openHelpDialog();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -256,7 +259,7 @@ public class ArchiveFragmentActivity extends FragmentActivity {
 			spinner.setVisibility(View.GONE);
 			return;
 		}
-		
+
 		// Determine which sizes are actually used for the currently
 		// selected status filter.
 		GridDatabaseAdapter gridDatabaseAdapter = new GridDatabaseAdapter();
@@ -314,5 +317,29 @@ public class ArchiveFragmentActivity extends FragmentActivity {
 				// Do nothing
 			}
 		});
+	}
+
+	/**
+	 * Displays the help dialog for the archive activity.
+	 */
+	private void openHelpDialog() {
+		// Get view and put relevant information into the view.
+		LayoutInflater li = LayoutInflater.from(this);
+		View view = li.inflate(R.layout.archive_help_dialog, null);
+
+		new AlertDialog.Builder(this)
+				.setTitle(
+						getResources().getString(R.string.action_archive)
+								+ " "
+								+ getResources()
+										.getString(R.string.action_help))
+				.setIcon(R.drawable.icon)
+				.setView(view)
+				.setNegativeButton(R.string.dialog_general_button_close,
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+							}
+						}).show();
 	}
 }

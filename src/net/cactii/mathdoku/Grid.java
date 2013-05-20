@@ -928,6 +928,9 @@ public class Grid {
 			loaded = false;
 			throw new InvalidGridException();
 		}
+		
+		mDateCreated = solvingAttemptData.mDateCreated;
+		mDateLastSaved = solvingAttemptData.mDateUpdated;
 
 		String line;
 		try {

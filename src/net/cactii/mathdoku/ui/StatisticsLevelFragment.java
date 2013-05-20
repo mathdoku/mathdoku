@@ -26,8 +26,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -161,9 +159,11 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment {
 		}
 
 		// Add section to activity
-		addStatisticsSection(R.string.solved_chart_title, subTitle,
-				R.string.solved_chart_body, ChartFactory.getPieChartView(
-						getActivity(), categorySeries, renderer), null);
+		addStatisticsSection(
+				getResources().getString(R.string.solved_chart_title),
+				subTitle, ChartFactory.getPieChartView(getActivity(),
+						categorySeries, renderer), null, getResources()
+						.getString(R.string.solved_chart_body));
 		return true;
 	}
 
@@ -341,53 +341,17 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment {
 		// exclusive this will result in one single bar per game which is
 		// entirely colored based on status of game.
 		String[] types = typesList.toArray(new String[typesList.size()]);
-		addStatisticsSection(R.string.statistics_elapsed_time_historic_title,
-				null, R.string.statistics_elapsed_time_historic_body,
+		addStatisticsSection(
+				getResources().getString(
+						R.string.statistics_elapsed_time_historic_title),
+				null,
 				ChartFactory.getCombinedXYChartView(getActivity(),
 						xyMultipleSeriesDataset, xyMultipleSeriesRenderer,
-						types), tableLayout);
+						types),
+				tableLayout,
+				getResources().getString(
+						R.string.statistics_elapsed_time_historic_body));
 
 		return true;
-	}
-
-	/**
-	 * Creates a new row in a data table consisting of two columns (label and
-	 * value).
-	 * 
-	 * @param tableLayoutParams
-	 *            The layout parameters for the table.
-	 * @param label
-	 *            The label (required) for the row
-	 * @param value
-	 *            The value (optional) for the row
-	 * @return The table row with fields for label and optionally the value.
-	 */
-	private TableRow createDataTableRow(
-			TableLayout.LayoutParams tableLayoutParams, String label,
-			String value) {
-		// Create new TableRow
-		TableRow tableRow = new TableRow(getActivity());
-		tableRow.setLayoutParams(tableLayoutParams);
-
-		// Set layout parameters for fields in the row
-		TableRow.LayoutParams tableRowLayoutParams = new TableRow.LayoutParams(
-				TableRow.LayoutParams.WRAP_CONTENT,
-				TableRow.LayoutParams.WRAP_CONTENT);
-
-		// Add label to row
-		TextView textViewLabel = new TextView(getActivity());
-		textViewLabel.setLayoutParams(tableRowLayoutParams);
-		textViewLabel.setText(label);
-		tableRow.addView(textViewLabel);
-
-		// Add value to row
-		if (value != null) {
-			TextView textViewValue = new TextView(getActivity());
-			textViewValue.setLayoutParams(tableRowLayoutParams);
-			textViewValue.setText(value);
-			tableRow.addView(textViewValue);
-		}
-
-		return tableRow;
 	}
 }

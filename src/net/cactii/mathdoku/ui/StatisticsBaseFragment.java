@@ -12,13 +12,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 /**
  * A base fragment representing the statistics for a game or a grid size.
  */
-public class StatisticsBaseFragment extends
-		android.support.v4.app.Fragment {
+public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 
 	protected LinearLayout mChartsLayout;
 
@@ -53,10 +54,16 @@ public class StatisticsBaseFragment extends
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		return onCreateView(inflater, R.layout.statistics_fragment, container,
+				savedInstanceState);
+	}
+
+	public View onCreateView(LayoutInflater inflater, int layout,
+			ViewGroup container, Bundle savedInstanceState) {
 		// Get default sizes for text
 		mDefaultTextSize = getResources().getDimensionPixelSize(
 				R.dimen.text_size_default);
-		
+
 		// Determine if a description of the statistic has to be shown below
 		// each statistic
 		mDisplayStatisticDescription = Preferences.getInstance(getActivity())
@@ -64,12 +71,11 @@ public class StatisticsBaseFragment extends
 
 		// Get inflater and return view
 		mLayoutInflater = inflater;
-		View rootView = inflater.inflate(R.layout.statistics_fragment,
-				container, false);
-		
+		View rootView = inflater.inflate(layout, container, false);
+
 		return rootView;
 	}
-	
+
 	/**
 	 * Creates a new simple series renderer for the given color.
 	 * 
@@ -87,59 +93,121 @@ public class StatisticsBaseFragment extends
 	/**
 	 * Add a statistics section to the activity.
 	 * 
-	 * @param titleResId
-	 *            Resource id for the title of this section.
-	 * @param mMinGridSize
-	 *            The grid size to be displayed as subtitle for the chart.
-	 *            <b>Only specify for charts which relates to all grids of this
-	 *            specific size. Use a value <= 0 if no subtitle should be
-	 *            shown.</b>
-	 * @param bodyResId
-	 *            Resource id for the body text (explanation of this section).
+	 * @param title
+	 *            The title of this section. Null in case no title has to be
+	 *            displayed.
+	 * @param subTitle
+	 *            The subtitle of this section. Null in case no subtitle has to
+	 *            be displayed.
+	 * @param explanation
+	 *            The explanatory text of this section which will be displayed
+	 *            with respect to settings. Null in case explanation is never
+	 *            available.
 	 * @param chart
-	 *            The chart view.
+	 *            The chart view. Null in case no chart has to be displayed.
+	 * @param extraDataView
+	 *            An additional view which has to be displayed between chart and
+	 *            explanation.
 	 */
-	protected void addStatisticsSection(int titleResId, String subTitle,
-			int bodyResId, GraphicalView chart, View extraDataView) {
+	protected void addStatisticsSection(String title, String subTitle,
+			GraphicalView chart, View extraDataView, String explanation) {
 		// Inflate a new view for this statistics section
 		View sectionView = mLayoutInflater.inflate(R.layout.statistics_section,
 				null);
 
-		// Set title and subtitle. The chart title of achartengine is not used.
-		((TextView) sectionView.findViewById(R.id.statistics_section_title))
-				.setText(titleResId);
-		TextView subtitle = (TextView) sectionView
-				.findViewById(R.id.statistics_section_subtitle);
-		if (subTitle != null && !subtitle.equals("")) {
-			subtitle.setText(subTitle);
-			subtitle.setVisibility(View.VISIBLE);
-		} else {
-			subtitle.setVisibility(View.GONE);
+		// Set title. The chart title of achartengine is not used.
+		if (title != null && title.isEmpty() == false) {
+			TextView textView = (TextView) sectionView
+					.findViewById(R.id.statistics_section_title);
+			if (textView != null) {
+				textView.setText(title);
+				textView.setVisibility(View.VISIBLE);
+			}
+		}
+
+		// Set subtitle.
+		if (subTitle != null && subTitle.isEmpty() == false) {
+			TextView textView = (TextView) sectionView
+					.findViewById(R.id.statistics_section_subtitle);
+			if (textView != null) {
+				textView.setText(subTitle);
+				textView.setVisibility(View.VISIBLE);
+			}
 		}
 
 		// Add chart
-		((LinearLayout) sectionView.findViewById(R.id.statistics_section_chart))
-				.addView(chart);
+		if (chart != null) {
+			LinearLayout linearLayout = (LinearLayout) sectionView
+					.findViewById(R.id.statistics_section_chart);
+			if (linearLayout != null) {
+				linearLayout.addView(chart);
+				linearLayout.setVisibility(View.VISIBLE);
+			}
+		}
 
 		// Add extra data
 		if (extraDataView != null) {
 			LinearLayout linearLayout = ((LinearLayout) sectionView
 					.findViewById(R.id.statistics_section_extra_data));
-			linearLayout.setVisibility(View.VISIBLE);
-			linearLayout.addView(extraDataView);
+			if (linearLayout != null) {
+				linearLayout.setVisibility(View.VISIBLE);
+				linearLayout.addView(extraDataView);
+			}
 		}
 
 		// Add body text for explaining the chart
-		TextView textView = ((TextView) sectionView
-				.findViewById(R.id.statistics_section_body));
-		if (mDisplayStatisticDescription) {
-			textView.setText(bodyResId);
-			textView.setVisibility(View.VISIBLE);
-		} else {
-			textView.setVisibility(View.GONE);
+		if (explanation != null && explanation.isEmpty() == false
+				&& mDisplayStatisticDescription) {
+			TextView textView = (TextView) sectionView
+					.findViewById(R.id.statistics_section_explanation);
+			if (textView != null) {
+				textView.setText(explanation);
+				textView.setVisibility(View.VISIBLE);
+			}
 		}
 
 		// Add the section to the general charts layout
 		mChartsLayout.addView(sectionView);
+	}
+
+	/**
+	 * Creates a new row in a data table consisting of two columns (label and
+	 * value).
+	 * 
+	 * @param tableLayoutParams
+	 *            The layout parameters for the table.
+	 * @param label
+	 *            The label (required) for the row
+	 * @param value
+	 *            The value (optional) for the row
+	 * @return The table row with fields for label and optionally the value.
+	 */
+	protected TableRow createDataTableRow(
+			TableLayout.LayoutParams tableLayoutParams, String label,
+			String value) {
+		// Create new TableRow
+		TableRow tableRow = new TableRow(getActivity());
+		tableRow.setLayoutParams(tableLayoutParams);
+
+		// Set layout parameters for fields in the row
+		TableRow.LayoutParams tableRowLayoutParams = new TableRow.LayoutParams(
+				TableRow.LayoutParams.WRAP_CONTENT,
+				TableRow.LayoutParams.WRAP_CONTENT);
+
+		// Add label to row
+		TextView textViewLabel = new TextView(getActivity());
+		textViewLabel.setLayoutParams(tableRowLayoutParams);
+		textViewLabel.setText(label);
+		tableRow.addView(textViewLabel);
+
+		// Add value to row
+		if (value != null) {
+			TextView textViewValue = new TextView(getActivity());
+			textViewValue.setLayoutParams(tableRowLayoutParams);
+			textViewValue.setText(value);
+			tableRow.addView(textViewValue);
+		}
+
+		return tableRow;
 	}
 }

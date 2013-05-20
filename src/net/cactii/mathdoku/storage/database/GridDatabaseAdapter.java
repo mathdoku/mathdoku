@@ -245,14 +245,14 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		}
 
 		// Convert cursor record to a grid statics object.
-		GridRow gridStatistics = new GridRow();
-		gridStatistics.mId = cursor.getInt(cursor
+		GridRow gridRow = new GridRow();
+		gridRow.mId = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_ROWID));
-		gridStatistics.mDefinition = cursor.getString(cursor
+		gridRow.mDefinition = cursor.getString(cursor
 				.getColumnIndexOrThrow(KEY_DEFINITION));
-		gridStatistics.mGridSize = cursor.getInt(cursor
+		gridRow.mGridSize = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_GRID_SIZE));
-		gridStatistics.mDateCreated = valueOfSQLiteTimestamp(cursor
+		gridRow.mDateCreated = valueOfSQLiteTimestamp(cursor
 				.getString(cursor.getColumnIndexOrThrow(KEY_DATE_CREATED)));
 
 		GridGeneratingParameters gridGeneratingParameters = new GridGeneratingParameters();
@@ -268,7 +268,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		gridGeneratingParameters.mMaxCageSize = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_MAX_CAGE_SIZE));
 
-		return gridStatistics;
+		return gridRow;
 	}
 
 	/**

@@ -35,34 +35,34 @@
 
 
     <!-- The lead in text at top of the help dialog. -->
-    <string name="dialog_help_leadin">Danke, dass Sie MathDoku für Android installiert haben.</string>
+    <string name="puzzle_help_dialog_leadin">Danke, dass Sie MathDoku für Android installiert haben.</string>
 
     <!-- The title for the help section. -->
-    <string name="dialog_help_help_title">Hilfe</string>
+    <string name="puzzle_help_dialog_help_section_title">Hilfe</string>
 
     <!-- The title and body describing the goal of the game. -->
-    <string name="dialog_help_goal_title">Ziel des Spieles</string>
-    <string name="dialog_help_goal_body">Füllen Sie jede Zeile und Spalte des Rasters mit Nummern von 1 bis zur Größe des Rasters aus.\n\nDie Zahlen dürfen maximal einmal für jede Zeile und Spalte verwendet werden.\n\nDicke Linien zeigen \"Boxen\" an - jede Box hat ein mathematisches Rätsel, welches mit den Zahlen in der Box gelöst werden muss. Zum Beispiel: \"5+\" bedeutet, dass alle Zahlen in der Box addiert 5 ergeben. Die Reihenfolge in der die Zahlen in der Box angeordnet werden ist irrelevant.\n\nZahlen können pro Box mehrmals verwendet werden, solange sie pro Zeile und Spalte jeweils nur einmal vorkommen.</string>
+    <string name="puzzle_help_dialog_goal_section_title">Ziel des Spieles</string>
+    <string name="puzzle_help_dialog_goal_section_body">Füllen Sie jede Zeile und Spalte des Rasters mit Nummern von 1 bis zur Größe des Rasters aus.\n\nDie Zahlen dürfen maximal einmal für jede Zeile und Spalte verwendet werden.\n\nDicke Linien zeigen \"Boxen\" an - jede Box hat ein mathematisches Rätsel, welches mit den Zahlen in der Box gelöst werden muss. Zum Beispiel: \"5+\" bedeutet, dass alle Zahlen in der Box addiert 5 ergeben. Die Reihenfolge in der die Zahlen in der Box angeordnet werden ist irrelevant.\n\nZahlen können pro Box mehrmals verwendet werden, solange sie pro Zeile und Spalte jeweils nur einmal vorkommen.</string>
 
     <!-- The title and body describing how to play the game. -->
-    <string name="dialog_help_how_to_play_title">Spielweise</string>
-    <string name="dialog_help_how_to_play_body">Berühren Sie die Quadrate im Raster um eine Zelle auszuwählen. Das \'Vielleicht\' Auswahlfeld erlaubt es mehrere Möglichkeiten auszuwählen.\n\nFür mehr Optionen drücken Sie lange auf eine Zelle.\n\nSie können auch mit dem Trackball spielen.\n\nDer aktuelle Spielstand wird gespeichert, wenn sie das Spiel verlassen oder verwenden Sie das Speichern/Laden-Menü, um unlimitiert Spiele zu speichern.</string>
+    <string name="puzzle_help_dialog_how_to_play__section_title">Spielweise</string>
+    <string name="puzzle_help_dialog_how_to_play_section_body">Berühren Sie die Quadrate im Raster um eine Zelle auszuwählen. Das \'Vielleicht\' Auswahlfeld erlaubt es mehrere Möglichkeiten auszuwählen.\n\nFür mehr Optionen drücken Sie lange auf eine Zelle.\n\nSie können auch mit dem Trackball spielen.\n\nDer aktuelle Spielstand wird gespeichert, wenn sie das Spiel verlassen oder verwenden Sie das Speichern/Laden-Menü, um unlimitiert Spiele zu speichern.</string>
 
     <!-- The version title in the help screen. -->
-    <string name="dialog_help_version_title">Version</string>
+    <string name="puzzle_help_dialog_version_section_title">Version</string>
 
     <!-- The license title in the help screen. -->
-    <string name="dialog_help_license_title">Lizenz</string>
+    <string name="puzzle_help_dialog_license_section_title">Lizenz</string>
 
     <!-- The project home title in the help screen. -->
-    <string name="dialog_help_project_home_title">Projekt</string>
+    <string name="puzzle_help_dialog_project_home_section_title">Projekt</string>
 
     <!-- The contributor title in the help screen. -->
-    <string name="dialog_help_contributors_title">Mitwirkende</string>
-    <string name="dialog_help_contributors_body">MathDoku wurde von Ben Buxton entwickelt. Weiterentwicklungen wurden von Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul, Christoph Steindl und Alexander Tesfamichael durchgeführt. Dank an alle, die Fehler des Programms oder Anstöße für Weiterentwicklungen gemeldet haben.</string>
+    <string name="puzzle_help_dialog_contributors_section_title">Mitwirkende</string>
+    <string name="puzzle_help_dialog_contributors_section_body">MathDoku wurde von Ben Buxton entwickelt. Weiterentwicklungen wurden von Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul, Christoph Steindl und Alexander Tesfamichael durchgeführt. Dank an alle, die Fehler des Programms oder Anstöße für Weiterentwicklungen gemeldet haben.</string>
 
     <!-- The menu item that allows the player to navigate to the changelog screen -->
-    <string name="dialog_help_neutral_button">Änderungen</string>
+    <string name="puzzle_help_dialog_neutral_button">Änderungen</string>
     
     <!-- CHANGES DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -315,6 +315,14 @@
     <string name="statistics_activity_title">Game Statistics</string>
     <string name="statistics_not_available">Sorry, no statistics available for this game.</string>
 
+    <!-- Labels for general game statistics. -->
+    <string name="statistics_general_date_created">Created on</string>
+    <string name="statistics_general_date_finished">Finished on</string>
+    <string name="statistics_general_status">Status</string>
+    <string name="statistics_general_elapsed_time">Time played</string>
+    <string name="statistics_general_cheat_penalty_time">Cheat penalty</string>
+    <string name="statistics_general_replay">Replay game</string>
+    
     <!-- Sub title for charts displaying cumulative statistics for a certain grid size or on all grid sizes. -->
     <string name="statistics_chart_one_grid_size_subtitle">Game size %1$d</string>
     <string name="statistics_chart_all_grid_sizes_subtitle">All games</string>
@@ -393,6 +401,9 @@
         <item>8x8</item>
         <item>9x9</item>
     </string-array>
+
+    <!-- The label in the pager bar for the "puzzle number" -->
+    <string name="archive_pager_puzzle_number">Puzzle no.</string>
     
     <!-- The title and summary of the "Show status filter" option. This option enables or disables showing of the status filter in the action bar of the archive. -->
     <string name="option_archive_show_status_filter_title">Show status filter</string>
@@ -404,7 +415,11 @@
     <string name="option_archive_show_size_filter_enabled">Allows filtering on size of games</string>
     <string name="option_archive_show_size_filter_disabled">Hides the filter for selecting on game size</string>
     
-        <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- The lead in text at top of the help dialog. -->
+    <string name="archive_help_dialog_general">The archive contains the history of all games you have played. Swipe from left to right to go to an older puzzle. Swipe from right to left to go to a newer puzzle.\n\nYou can use filters to view only puzzles having a specific status or size. Filters can be enabled and disabled via the settings menu. Note: a filter will only be shown in case it contains multiple values.</string>
+    
+    <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
 
     <!-- The message that appears when the player has solved the puzzle. -->
     <string name="main_ui_solved_messsage">Gelöst!</string>
