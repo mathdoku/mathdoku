@@ -1,13 +1,7 @@
 package net.cactii.mathdoku.storage;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import net.cactii.mathdoku.Grid;
@@ -15,7 +9,6 @@ import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
-import net.cactii.mathdoku.storage.database.SolvingAttemptData;
 import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 import net.cactii.mathdoku.storage.database.StatisticsDatabaseAdapter;
 import net.cactii.mathdoku.ui.PuzzleFragmentActivity;
@@ -52,7 +45,6 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	private static final String FILENAME_SAVED_GAME_R111 = "saved_game_";
 	private static final String GAMEFILE_EXTENSION_R111 = ".mgf";
 	private static final String PREVIEW_EXTENSION_R111 = ".png";
-	private String[] mFilenamesToBeConverted;
 	private String[] mFilenamesToBeDeleted;
 
 	// Solving attempts to be converted
@@ -115,15 +107,11 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 		// Remember the activity that started this task.
 		this.mActivity = activity;
 
-		// Determine how much (old) game files have to be moved from file to
-		// database.
-		mFilenamesToBeConverted = getFilesToBeConverted();
-		int maxProgressCounter = mFilenamesToBeConverted.length;
-
-		// Determine how much (old) preview files have to be deleted.
+		// Determine how much (old) game files and preview files have to be
+		// deleted.
 		mFilenamesToBeDeleted = getFilesToBeDeleted();
-		maxProgressCounter += mFilenamesToBeDeleted.length;
-		
+		int maxProgressCounter = mFilenamesToBeDeleted.length;
+
 		// Determine how many solving attempts in the database have to be
 		// converted.
 		if ((solvingAttemptIds = new SolvingAttemptDatabaseAdapter()
@@ -171,28 +159,8 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	@Override
 	protected Void doInBackground(Void... params) {
 		if (mCurrentVersion < mNewVersion) {
-			// Convert from game file to database
-			if (mCurrentVersion < 271 && mFilenamesToBeConverted.length > 0) {
-				for (String filename : mFilenamesToBeConverted) {
-					// Load data from file and store it in a fake
-					// solvingAttemptData object.
-					SolvingAttemptData solvingAttemptData = new SolvingAttemptData();
-					solvingAttemptData.mId = -1;
-					solvingAttemptData.mGridId = -1;
-					solvingAttemptData.mSavedWithRevision = -1;
-					solvingAttemptData.setData(readFile(PATH_R110 + filename));
-
-					// Load the fake solving attempt into a grid object.
-					Grid grid = new Grid();
-					if (grid.load(solvingAttemptData)) {
-						grid.insertInDatabase();
-						new File(PATH_R110 + filename).delete();
-					}
-					publishProgress();
-				}
-			}
 			// Delete preview images
-			if (mCurrentVersion < 299 && mFilenamesToBeDeleted.length > 0) {
+			if (mCurrentVersion < 305 && mFilenamesToBeDeleted.length > 0) {
 				for (String filename : mFilenamesToBeDeleted) {
 					new File(PATH_R110 + filename).delete();
 					publishProgress();
@@ -218,7 +186,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 						}
 
 						// Save grid.
-						grid.save();
+						grid.saveOnUpgrade();
 
 						// Update progress
 						publishProgress();
@@ -284,32 +252,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	}
 
 	/**
-	 * Retrieve all files which have to be converted
-	 * 
-	 * @param path
-	 *            Path to a directory.
-	 * @return An array of filenames with given prefix in the given directory.
-	 */
-	private String[] getFilesToBeConverted() {
-		String path = PATH_R110;
-		FilenameFilter filter = new FilenameFilter() {
-			public boolean accept(File dir, String name) {
-				if (name.startsWith(GAMEFILE_PREFIX_R110)) {
-					return true;
-				} else if (name.endsWith(GAMEFILE_EXTENSION_R111)) {
-					return name.startsWith(FILENAME_SAVED_GAME_R111)
-							|| name.startsWith(FILENAME_LAST_GAME_R111);
-				} else {
-					return false;
-				}
-			}
-		};
-		File dir = new File(path);
-		return (dir == null ? null : dir.list(filter));
-	}
-
-	/**
-	 * Retrieve all preview images which have to be deleted
+	 * Retrieve all game files and preview images which have to be deleted
 	 * 
 	 * @param path
 	 *            Path to a directory.
@@ -320,8 +263,12 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 		String path = PATH_R110;
 		FilenameFilter filter = new FilenameFilter() {
 			public boolean accept(File dir, String name) {
-				if (name.endsWith(PREVIEW_EXTENSION_R111)) {
+				if (name.startsWith(GAMEFILE_PREFIX_R110)) {
 					return true;
+				} else if (name.endsWith(GAMEFILE_EXTENSION_R111)
+						|| name.endsWith(PREVIEW_EXTENSION_R111)) {
+					return name.startsWith(FILENAME_SAVED_GAME_R111)
+							|| name.startsWith(FILENAME_LAST_GAME_R111);
 				} else {
 					return false;
 				}
@@ -329,40 +276,5 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 		};
 		File dir = new File(path);
 		return (dir == null ? null : dir.list(filter));
-	}
-
-	/**
-	 * Get the (entire) content of a file.
-	 * 
-	 * @param filename
-	 *            The name of the file to be read.
-	 * @return The content of the file.
-	 */
-	private String readFile(String filename) {
-		StringBuffer stringBuffer = new StringBuffer(256);
-		String line;
-		BufferedReader bufferedReader = null;
-		InputStream inputStream = null;
-		try {
-			inputStream = new FileInputStream(new File(filename));
-			bufferedReader = new BufferedReader(new InputStreamReader(
-					inputStream), 8192);
-
-			while ((line = bufferedReader.readLine()) != null) {
-				stringBuffer.append(line + SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
-			}
-		} catch (FileNotFoundException e) {
-			Log.d(TAG, "File '" + filename + "' not found: " + e.getMessage());
-		} catch (IOException e) {
-			Log.d(TAG, "IO Exception when reading file '" + filename + "': "
-					+ e.getMessage());
-		} finally {
-			try {
-				inputStream.close();
-			} catch (Exception e) {
-				// Do nothing
-			}
-		}
-		return stringBuffer.toString();
 	}
 }

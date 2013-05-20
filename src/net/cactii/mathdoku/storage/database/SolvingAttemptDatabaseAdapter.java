@@ -73,7 +73,8 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 				createColumn(KEY_DATE_UPDATED, "datetime", "not null"),
 				createColumn(KEY_SAVED_WITH_REVISION, "integer", " not null"),
 				createColumn(KEY_DATA, "string", "not null"),
-				createColumn(KEY_STATUS, "integer", "not null default " + STATUS_UNDETERMINED),
+				createColumn(KEY_STATUS, "integer", "not null default "
+						+ STATUS_UNDETERMINED),
 				createForeignKey(KEY_GRID_ID, GridDatabaseAdapter.TABLE,
 						GridDatabaseAdapter.KEY_ROWID));
 	}
@@ -279,13 +280,19 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 *            The id of the solving attempt to be updated.
 	 * @param data
 	 *            The data string to be stored for this solving attempt.
+	 * @param saveDueToUpgrade
+	 *            False (default) in case of normal save. True in case saving is
+	 *            done while upgrading the grid to the current version of the
+	 *            app.
 	 * 
 	 * @return True in case the statistics have been updated. False otherwise.
 	 */
-	public boolean update(int id, Grid grid) {
+	public boolean update(int id, Grid grid, boolean saveDueToUpgrade) {
 		ContentValues newValues = new ContentValues();
-		newValues.put(KEY_DATE_UPDATED,
-				toSQLiteTimestamp(new java.util.Date().getTime()));
+		if (!saveDueToUpgrade) {
+			newValues.put(KEY_DATE_UPDATED,
+					toSQLiteTimestamp(new java.util.Date().getTime()));
+		}
 		newValues.put(KEY_DATA, grid.toStorageString());
 
 		// Status is derived from grid. It is stored as derived data for easy

@@ -243,6 +243,7 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 		// Initialize global objects (singleton instances)
 		this.mPainter = Painter.getInstance(this);
 		DatabaseHelper.getInstance(this);
+		UsageLog.getInstance(this);
 
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			// Check if database is consistent.

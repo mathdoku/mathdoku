@@ -7,7 +7,6 @@ import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.gridGenerating.GridGeneratingParameters;
 import net.cactii.mathdoku.statistics.GridStatistics;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
-import net.cactii.mathdoku.storage.InvalidStatisticsException;
 import net.cactii.mathdoku.storage.database.DatabaseHelper;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter;
 import net.cactii.mathdoku.storage.database.GridRow;
@@ -876,11 +875,35 @@ public class Grid {
 	}
 
 	/**
-	 * Save this grid (game file and statistics).
+	 * Save this grid (solving attempt and statistics).
 	 * 
 	 * @return True in case everything has been saved. False otherwise.
 	 */
 	public boolean save() {
+		return save(false);
+	}
+
+	/**
+	 * Upgrade this grid (solving attempt and statistics) to the current app
+	 * version.
+	 * 
+	 * @return True in case everything has been saved. False otherwise.
+	 */
+	public boolean saveOnUpgrade() {
+		return save(true);
+	}
+
+	/**
+	 * Save this grid (solving attempt and statistics).
+	 * 
+	 * @param saveDueToUpgrade
+	 *            False (default) in case of normal save. True in case saving is
+	 *            done while upgrading the grid to the current version of the
+	 *            app.
+	 * 
+	 * @return True in case everything has been saved. False otherwise.
+	 */
+	private boolean save(boolean saveDueToUpgrade) {
 		boolean saved = true;
 
 		synchronized (mLock) { // Avoid saving game at the same time as
@@ -889,8 +912,8 @@ public class Grid {
 			// The solving attempt was already created as soon as the grid was
 			// created first. So only an update is needed.
 			SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = new SolvingAttemptDatabaseAdapter();
-			if (!solvingAttemptDatabaseAdapter.update(mSolvingAttemptId,
-					this)) {
+			if (!solvingAttemptDatabaseAdapter.update(mSolvingAttemptId, this,
+					saveDueToUpgrade)) {
 				return false;
 			}
 
@@ -911,7 +934,12 @@ public class Grid {
 	public boolean load(int id) throws InvalidGridException {
 		SolvingAttemptData solvingAttemptData = new SolvingAttemptDatabaseAdapter()
 				.getData(id);
-		return load(solvingAttemptData);
+		if (load(solvingAttemptData)) {
+			// Load the statistics of the grid
+			return loadStatistics();
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -928,7 +956,11 @@ public class Grid {
 			loaded = false;
 			throw new InvalidGridException();
 		}
-		
+
+		// Get date created and date last saved from the solving attempt record.
+		// When converting from game file to database the fields will be 0. They
+		// will be overwritten with dates stored in the VIEW-line of the
+		// solvingAttempData.
 		mDateCreated = solvingAttemptData.mDateCreated;
 		mDateLastSaved = solvingAttemptData.mDateUpdated;
 
@@ -1099,22 +1131,6 @@ public class Grid {
 			// object
 			mSolvingAttemptId = solvingAttemptData.mId;
 			mRowId = solvingAttemptData.mGridId;
-
-			// Load the statistics of the grid
-			if (!loadStatistics()) {
-				throw new InvalidStatisticsException(
-						"Can not load statistics neither create a new statistics records.");
-			}
-		} catch (InvalidStatisticsException e) {
-			loaded = false;
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-				Log.d(TAG,
-						"Statistics exception when restoring solving attempt with id '"
-								+ solvingAttemptData.mId + "'\n"
-								+ e.getMessage());
-			}
-			initialize();
-			return false;
 		} catch (InvalidGridException e) {
 			loaded = false;
 			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
@@ -1145,20 +1161,22 @@ public class Grid {
 		}
 		return loaded;
 	}
-	
+
 	/**
-	 * Checks if the grid is empty (i.e. cells do not contain a user value nor a possible value).
+	 * Checks if the grid is empty (i.e. cells do not contain a user value nor a
+	 * possible value).
 	 * 
 	 * @return True in case the grid is empty. False otherwise
 	 */
 	public boolean isEmpty() {
 		for (GridCell cell : mCells) {
 			if (cell.isUserValueSet() || cell.countPossibles() > 0) {
-				// Not empty as this cell contains a user value or a possible value
+				// Not empty as this cell contains a user value or a possible
+				// value
 				return false;
 			}
 		}
-		
+
 		// All cells are empty
 		return true;
 	}
