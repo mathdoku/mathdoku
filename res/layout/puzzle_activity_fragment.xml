@@ -256,17 +256,6 @@
                     android:textSize="@dimen/text_size_default" />
             </TableRow>
         </TableLayout>
-
-        <Button
-            android:id="@+id/startButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="10dp"
-            android:text="@string/start_button_message"
-            android:textColor="#FF000000"
-            android:textSize="@dimen/text_size_default"
-            android:textStyle="bold" />
     </RelativeLayout>
 
 </RelativeLayout>

@@ -8,8 +8,8 @@
         android:title="@string/action_check_progress">
     </item>
     <item
-        android:id="@+id/newgame"
-        android:icon="@drawable/menu_new"
+        android:id="@+id/action_new_game"
+        android:icon="@drawable/content_new"
         android:orderInCategory="5"
         android:showAsAction="ifRoom"
         android:title="@string/action_new_game">

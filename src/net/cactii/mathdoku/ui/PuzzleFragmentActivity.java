@@ -121,8 +121,6 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 	Button mDigitPosition[] = new Button[9];
 	DigitPositionGrid mDigitPositionGrid;
 
-	Button mStartButton;
-
 	Button mClearDigit;
 	Button mUndoButton;
 	View[] mSoundEffectViews;
@@ -219,7 +217,6 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 		this.mGameSeedLabel = (TextView) findViewById(R.id.gameSeedLabel);
 		this.mGameSeedText = (TextView) findViewById(R.id.gameSeedText);
 		this.mTimerText = (TextView) findViewById(R.id.timerText);
-		this.mStartButton = (Button) findViewById(R.id.startButton);
 
 		this.mInputModeTextView = (Button) findViewById(R.id.inputModeText);
 		mDigitPosition[0] = (Button) findViewById(R.id.digitPosition1);
@@ -358,15 +355,6 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 			public void onClick(View v) {
 				v.playSoundEffect(SoundEffectConstants.CLICK);
 				toggleInputMode();
-			}
-
-		});
-		this.mStartButton.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				openOptionsMenu();
-				mMainMenu.performIdentifierAction(R.id.newgame, 0);
 			}
 
 		});
@@ -532,6 +520,13 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 		// is active
 		menu.findItem(R.id.checkprogress).setVisible(
 				(mGrid != null && mGrid.isActive() && !mGrid.isEmpty(false)));
+		
+		// Determine position of new game button
+		if (mGrid == null || !mGrid.isActive()) {
+			menu.findItem(R.id.action_new_game).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+		} else {
+			menu.findItem(R.id.action_new_game).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+		}
 
 		// When running in development mode, an extra menu is available.
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
@@ -1264,7 +1259,6 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 		case NO_INPUT__HIDE_GRID:
 			mTimerText.setVisibility(View.GONE);
 			mControls.setVisibility(View.GONE);
-			mStartButton.setVisibility(View.VISIBLE);
 			break;
 		case NO_INPUT__DISPLAY_GRID:
 			if (mGrid == null || (mGrid != null && mGrid.isSolvedByCheating())) {
@@ -1277,7 +1271,6 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 				setElapsedTime(mGrid.getElapsedTime());
 			}
 			mControls.setVisibility(View.GONE);
-			mStartButton.setVisibility(View.VISIBLE);
 
 			// Determine the layout to be used for maybe values inside a grid
 			if (mGrid != null) {
@@ -1287,7 +1280,6 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 		case NORMAL:
 		case MAYBE:
 			mSolvedText.setVisibility(View.GONE);
-			mStartButton.setVisibility(View.GONE);
 			if (mMathDokuPreferences.isTimerVisible()) {
 				mTimerText.setVisibility(View.VISIBLE);
 			}
