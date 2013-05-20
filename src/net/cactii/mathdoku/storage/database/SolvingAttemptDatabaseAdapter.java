@@ -363,7 +363,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		}
 
 		// Check if the grid is empty
-		if (grid.isEmpty()) {
+		if (grid.isEmpty(true)) {
 			return STATUS_NOT_STARTED;
 		}
 

@@ -342,6 +342,9 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 					// Succesfull undo
 					setClearAndUndoButtonVisibility(mGrid.getSelectedCell());
 					mGridView.invalidate();
+					
+					// Undo can toggle the visibility of the check progress button in the action bar
+					invalidateOptionsMenu();
 				}
 
 				if (mMathDokuPreferences.isControlsBlockHidden()) {
@@ -528,7 +531,7 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 		// Disable or enable option to check progress depending on whether grid
 		// is active
 		menu.findItem(R.id.checkprogress).setVisible(
-				(mGrid != null && mGrid.isActive()));
+				(mGrid != null && mGrid.isActive() && !mGrid.isEmpty(false)));
 
 		// When running in development mode, an extra menu is available.
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
@@ -610,7 +613,7 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 		}
 
 		// Option: clear all cells in the grid
-		if (mGrid.isEmpty() == false) {
+		if (mGrid.isEmpty(true) == false) {
 			// At least one cell within this grid view has a value or a
 			// possible value.
 			menu.add(0, CONTEXT_MENU_CLEAR_GRID, 0,
@@ -1138,11 +1141,13 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 				// finished.
 				if (mMathDokuPreferences.isStatisticsAvailable() == false) {
 					mMathDokuPreferences.setStatisticsVisible();
-					invalidateOptionsMenu();
 				}
 				if (TipStatistics.toBeDisplayed(mMathDokuPreferences)) {
 					new TipStatistics(PuzzleFragmentActivity.this).show();
 				}
+
+				// Refresh option menu. For example check progress should be hidden.
+				invalidateOptionsMenu();
 			}
 		});
 	}
@@ -1182,6 +1187,9 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 				setInputMode(InputMode.NO_INPUT__DISPLAY_GRID);
 				stopTimer();
 			}
+			
+			// Check actionbar and menu options
+			invalidateOptionsMenu();
 
 			// Debug information
 			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {

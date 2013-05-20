@@ -285,6 +285,12 @@ public class GridView extends View implements OnTouchListener {
 						StatisticsCounterType.CELLS_EMPTY);
 				mGrid.getGridStatistics().decreaseCounter(
 						StatisticsCounterType.CELLS_FILLED);
+
+				// In case the last user value has been cleared in the grid, the
+				// check progress should nog longer be available.
+				if (mGrid.isEmpty(false)) {
+					((PuzzleFragmentActivity) mContext).invalidateOptionsMenu();
+				}
 			}
 		} else {
 			if (TipOrderOfValuesInCage.toBeDisplayed(mPreferences,
@@ -313,6 +319,10 @@ public class GridView extends View implements OnTouchListener {
 								StatisticsCounterType.CELLS_FILLED);
 						mGrid.getGridStatistics().decreaseCounter(
 								StatisticsCounterType.CELLS_EMPTY);
+						
+						// In case a user value has been entered, the
+						// check progress should be made available.
+						((PuzzleFragmentActivity) mContext).invalidateOptionsMenu();
 					} else {
 						mGrid.getGridStatistics().increaseCounter(
 								StatisticsCounterType.USER_VALUE_REPLACED);
