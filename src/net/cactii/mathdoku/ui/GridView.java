@@ -403,7 +403,7 @@ public class GridView extends View implements OnTouchListener {
 		// Get the maximum space available for the grid. As it is a square we
 		// need the minimum of width and height.
 		int maxSize = (int) Math.min(measuredWidth, measuredHeight);
-
+		
 		// Finally compute the exact size needed to display a grid in which the
 		// (integer) cell size is as big as possible but the grid still fits in
 		// the space available.
@@ -419,14 +419,9 @@ public class GridView extends View implements OnTouchListener {
 	}
 
 	private int measure(int measureSpec) {
-
-		int specMode = MeasureSpec.getMode(measureSpec);
 		int specSize = MeasureSpec.getSize(measureSpec);
 
-		if (specMode == MeasureSpec.UNSPECIFIED)
-			return 180;
-		else
-			return (int) (specSize);
+		return (int) (specSize);
 	}
 
 	/**
