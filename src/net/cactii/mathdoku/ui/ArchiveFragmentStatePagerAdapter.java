@@ -47,7 +47,8 @@ public class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter 
 		mLabelPuzzleNumber = mArchiveFragmentActivity.getResources().getString(
 				R.string.archive_pager_puzzle_number);
 
-		// Determine number of grid available.
+		// Determine id's of grids/solving attempts which are available for
+		// display.
 		setGridIds();
 	}
 
@@ -57,7 +58,8 @@ public class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter 
 
 		android.support.v4.app.Fragment fragment = new ArchiveFragment();
 		Bundle args = new Bundle();
-		args.putInt(ArchiveFragment.ARG_OBJECT, mCurrentGridId);
+		args.putInt(ArchiveFragment.BUNDLE_KEY_SOLVING_ATTEMPT_ID,
+				mCurrentGridId);
 		fragment.setArguments(args);
 		return fragment;
 	}
@@ -105,5 +107,24 @@ public class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter 
 		mGridIds = gridDatabaseAdapter
 				.getAllGridIds(mStatusFilter, mSizeFilter);
 		notifyDataSetChanged();
+	}
+
+	/**
+	 * Get the position in the adapter at which the given grid is placed.
+	 * 
+	 * @param gridId
+	 *            The grid id to be found.
+	 * @returns The position in the adapter at which the given grid is placed.
+	 *          -1 in case the grid id is not known to this adapter.
+	 */
+	public int getPositionOfGridId(int gridId) {
+		// Check position of given solving attempt id.
+		for (int i = 0; i < mGridIds.length; i++) {
+			if (mGridIds[i] == gridId) {
+				return i;
+			}
+		}
+
+		return -1;
 	}
 }

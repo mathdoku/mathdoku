@@ -38,9 +38,10 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 public class ArchiveFragmentActivity extends FragmentActivity {
+
+	public static final String BUNDLE_KEY_SOLVING_ATTEMPT_ID = "solvingAttemptId";
 
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -99,12 +100,27 @@ public class ArchiveFragmentActivity extends FragmentActivity {
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mArchiveFragmentStatePagerAdapter);
 
-		if (mArchiveFragmentStatePagerAdapter.getCount() == 0) {
-			Toast.makeText(ArchiveFragmentActivity.this,
-					"Archive is still empty. Create and play a game first.", // TODO:
-																				// i18n
-					Toast.LENGTH_LONG).show();
+		// Get the solving attempt which should be displayed.
+		int position = -1;
+		Intent intent = getIntent();
+		if (intent != null) {
+			Bundle bundle = intent.getExtras();
+			if (bundle != null) {
+				int solvingAttemptId = bundle
+						.getInt(BUNDLE_KEY_SOLVING_ATTEMPT_ID);
+				if (solvingAttemptId >= 0) {
+					position = mArchiveFragmentStatePagerAdapter
+							.getPositionOfGridId(solvingAttemptId);
+				}
+			}
 		}
+
+		// In case the solving attempt is not known to the adapter, the last
+		// page in the adapter will be displayed.
+		if (position < 0) {
+			position = mArchiveFragmentStatePagerAdapter.getCount() - 1;
+		}
+		mViewPager.setCurrentItem(position);
 	}
 
 	@Override
@@ -130,6 +146,7 @@ public class ArchiveFragmentActivity extends FragmentActivity {
 			setStatusSpinner();
 			setSizeSpinner();
 		}
+
 		super.onResumeFragments();
 	}
 
@@ -181,7 +198,8 @@ public class ArchiveFragmentActivity extends FragmentActivity {
 	protected void setStatusSpinner() {
 		Spinner spinner = (Spinner) mActionBar.getCustomView().findViewById(
 				R.id.spinner_status);
-		if (!mShowStatusFilter || mArchiveFragmentStatePagerAdapter.getCount() == 0) {
+		if (!mShowStatusFilter
+				|| mArchiveFragmentStatePagerAdapter.getCount() == 0) {
 			spinner.setVisibility(View.GONE);
 			return;
 		}
@@ -252,7 +270,8 @@ public class ArchiveFragmentActivity extends FragmentActivity {
 	protected void setSizeSpinner() {
 		Spinner spinner = (Spinner) mActionBar.getCustomView().findViewById(
 				R.id.spinner_size);
-		if (!mShowSizeFilter || mArchiveFragmentStatePagerAdapter.getCount() == 0) {
+		if (!mShowSizeFilter
+				|| mArchiveFragmentStatePagerAdapter.getCount() == 0) {
 			spinner.setVisibility(View.GONE);
 			return;
 		}

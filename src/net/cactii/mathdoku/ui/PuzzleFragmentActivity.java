@@ -699,6 +699,7 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 		case R.id.action_archive:
 			Intent intentArchive = new Intent(this,
 					ArchiveFragmentActivity.class);
+			intentArchive.putExtra(ArchiveFragmentActivity.BUNDLE_KEY_SOLVING_ATTEMPT_ID, mGrid.getSolvingAttemptId());
 			startActivity(intentArchive);
 			return true;
 		case R.id.action_statistics:

@@ -25,7 +25,6 @@ import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import android.graphics.Paint.Align;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,9 +37,10 @@ import android.widget.TextView;
  */
 public class ArchiveFragment extends StatisticsBaseFragment {
 
+	@SuppressWarnings("unused")
 	private static final String TAG = "ArchiveFragment";
 
-	public static final String ARG_OBJECT = "object";
+	public static final String BUNDLE_KEY_SOLVING_ATTEMPT_ID = "solvingAttemptId";
 
 	private static DigitPositionGrid mDigitPositionGrid = null;
 
@@ -54,7 +54,7 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 				container, savedInstanceState);
 
 		Bundle args = getArguments();
-		int gameId = args.getInt(ARG_OBJECT);
+		int solvingAttemptId = args.getInt(BUNDLE_KEY_SOLVING_ATTEMPT_ID);
 
 		// Get fragment manager and start a transaction.
 		GridView mGridView;
@@ -67,9 +67,7 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 
 		// Load grid from database
 		Grid grid = new Grid();
-		if (grid.load(gameId)) {
-			Log.i(TAG, "Grid loaded with id: " + grid.getRowId());
-
+		if (grid.load(solvingAttemptId)) {
 			// Load grid into grid view
 			mGridView.loadNewGrid(grid);
 
@@ -170,8 +168,6 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 			createProgressChart();
 			createAvoidableMovesChart();
 			createUsedCheatsChart();
-		} else {
-			Log.i(TAG, "No grid statistics loaded");
 		}
 
 		return rootView;

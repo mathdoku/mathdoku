@@ -928,12 +928,14 @@ public class Grid {
 	/**
 	 * Load a grid and corresponding solving attempt from the database.
 	 * 
+	 * @param solvingAttemptId
+	 *            The unique id of the solving attempt which has to be loaded.
 	 * @return True in case the grid has been loaded successfully. False
 	 *         otherwise.
 	 */
-	public boolean load(int id) throws InvalidGridException {
+	public boolean load(int solvingAttemptId) throws InvalidGridException {
 		SolvingAttemptData solvingAttemptData = new SolvingAttemptDatabaseAdapter()
-				.getData(id);
+				.getData(solvingAttemptId);
 		if (load(solvingAttemptData)) {
 			// Load the statistics of the grid
 			return loadStatistics();
