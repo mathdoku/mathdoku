@@ -71,16 +71,19 @@ public class ArchiveFragmentActivity extends FragmentActivity {
 
 		// Create an adapter that when requested, will return a fragment
 		// representing an object in the collection.
-		//
 		// ViewPager and its adapters use support library fragments, so we must
 		// use getSupportFragmentManager.
 		mArchiveFragmentStatePagerAdapter = new ArchiveFragmentStatePagerAdapter(
 				getSupportFragmentManager(), this);
 
 		// Get preferences for displaying the filter.
-		mShowStatusFilter = Preferences.getInstance(this)
-				.showArchiveStatusFilter();
-		mShowSizeFilter = Preferences.getInstance().showArchiveSizeFilter();
+		Preferences preferences = Preferences.getInstance(this);
+		mShowStatusFilter = preferences.showArchiveStatusFilter();
+		mShowSizeFilter = preferences.showArchiveSizeFilter();
+		mArchiveFragmentStatePagerAdapter.setStatusFilter(preferences
+				.getArchiveStatusFilterLastValueUsed());
+		mArchiveFragmentStatePagerAdapter.setSizeFilter(preferences
+				.getArchiveSizeFilterLastValueUsed());
 
 		mActionBar = getActionBar();
 		if (mActionBar != null) {
@@ -100,54 +103,72 @@ public class ArchiveFragmentActivity extends FragmentActivity {
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mArchiveFragmentStatePagerAdapter);
 
-		// Get the solving attempt which should be displayed.
-		int position = -1;
+		// In case a solving attempt has been specified in the bundle, this
+		// solving attempt will be showed as selected grid as long as it does
+		// meet the selection criteria of the filters.
+		boolean selected = false;
 		Intent intent = getIntent();
 		if (intent != null) {
 			Bundle bundle = intent.getExtras();
 			if (bundle != null) {
 				int solvingAttemptId = bundle
 						.getInt(BUNDLE_KEY_SOLVING_ATTEMPT_ID);
-				if (solvingAttemptId >= 0) {
-					position = mArchiveFragmentStatePagerAdapter
-							.getPositionOfGridId(solvingAttemptId);
+				if (solvingAttemptId >= 0 && mArchiveFragmentStatePagerAdapter
+							.getPositionOfGridId(solvingAttemptId) >= 0) {
+					preferences.setArchiveSelectedGridIdLastValueUsed(solvingAttemptId);
 				}
 			}
 		}
-
-		// In case the solving attempt is not known to the adapter, the last
-		// page in the adapter will be displayed.
-		if (position < 0) {
-			position = mArchiveFragmentStatePagerAdapter.getCount() - 1;
-		}
-		mViewPager.setCurrentItem(position);
 	}
 
 	@Override
 	protected void onResumeFragments() {
-		// Get preferences for displaying the filter as they might have been
-		// changed in case the onPause of this activity was caused by displaying
-		// the settings.
-		boolean showStatusFilter = Preferences.getInstance(this)
-				.showArchiveStatusFilter();
-		boolean showSizeFilter = Preferences.getInstance(this)
-				.showArchiveSizeFilter();
-		if (mShowStatusFilter != showStatusFilter
-				|| mShowSizeFilter != showSizeFilter) {
-			mShowStatusFilter = showStatusFilter;
-			mShowSizeFilter = showSizeFilter;
+		Preferences preferences = Preferences.getInstance(this);
 
-			// Reset all filters in case the settings for displaying a filter
-			// have been changed.
+		// Check for changes in visibility of status spinner. Reset the filters
+		// for which the visibility changes.
+		boolean showStatusFilterNew = preferences.showArchiveStatusFilter();
+		boolean setSpinners = false;
+		if (mShowStatusFilter != showStatusFilterNew) {
+			mShowStatusFilter = showStatusFilterNew;
 			mArchiveFragmentStatePagerAdapter.setStatusFilter(StatusFilter.ALL);
+			setSpinners = true;
+		}
+		boolean showSizeFilterNew = preferences.showArchiveSizeFilter();
+		if (mShowSizeFilter != showSizeFilterNew) {
+			mShowSizeFilter = showSizeFilterNew;
 			mArchiveFragmentStatePagerAdapter.setSizeFilter(SizeFilter.ALL);
+			setSpinners = true;
+		}
 
-			// Refresh the spinners
+		// After all filters have been set to possible new values, the spinners
+		// can set.
+		if (setSpinners) {
 			setStatusSpinner();
 			setSizeSpinner();
 		}
 
+		// Select the same grid which was selected before. If not possible,
+		// the last page will be shown.
+		selectGridId(preferences.getArchiveSelectedGridIdLastValueUsed());
+
 		super.onResumeFragments();
+	}
+
+	@Override
+	protected void onPause() {
+		// Save preferences
+		Preferences preferences = Preferences.getInstance(this);
+		preferences
+				.setArchiveStatusFilterLastValueUsed(mArchiveFragmentStatePagerAdapter
+						.getStatusFilter());
+		preferences
+				.setArchiveSizeFilterLastValueUsed(mArchiveFragmentStatePagerAdapter
+						.getSizeFilter());
+		preferences
+				.setArchiveSelectedGridIdLastValueUsed(getCurrentSelectedGridId());
+
+		super.onPause();
 	}
 
 	@Override
@@ -246,12 +267,26 @@ public class ArchiveFragmentActivity extends FragmentActivity {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int position, long id) {
+				// Get the selected status
+				StatusFilter statusFilter = usedStatuses[(int) id];
+
 				// Check if value for status spinner has changed.
-				if (usedStatuses[(int) id] != mArchiveFragmentStatePagerAdapter
+				if (statusFilter != mArchiveFragmentStatePagerAdapter
 						.getStatusFilter()) {
+					// Remember currently displayed grid id.
+					int gridId = getCurrentSelectedGridId();
+
+					// Refresh pager adapter with new status.
 					mArchiveFragmentStatePagerAdapter
-							.setStatusFilter(usedStatuses[(int) id]);
+							.setStatusFilter(statusFilter);
+
+					// Refresh the size spinner as the content of the spinners
+					// are related.
 					setSizeSpinner();
+
+					// If possible select the grid id which was selected before
+					// changing the spinner(s). Otherwise select last page.
+					selectGridId(gridId);
 				}
 			}
 
@@ -317,15 +352,27 @@ public class ArchiveFragmentActivity extends FragmentActivity {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int position, long id) {
-				// Check if value for size spinner has changed.
-				if (usedSizes[(int) id] != mArchiveFragmentStatePagerAdapter
+				// Remember currently displayed grid id.
+				int gridId = getCurrentSelectedGridId();
+
+				// Get the selected status
+				SizeFilter sizeFilter = usedSizes[(int) id];
+
+				// Check if value for status spinner has changed.
+				if (sizeFilter != mArchiveFragmentStatePagerAdapter
 						.getSizeFilter()) {
-					mArchiveFragmentStatePagerAdapter
-							.setSizeFilter(usedSizes[(int) id]);
-					if (mShowStatusFilter) {
-						setStatusSpinner();
-					}
+					// Refresh pager adapter with new status.
+					mArchiveFragmentStatePagerAdapter.setSizeFilter(sizeFilter);
+
+					// Refresh the status spinner as the content of the spinners
+					// are related.
+					setStatusSpinner();
+
+					// If possible select the grid id which was selected before
+					// changing the spinner(s). Otherwise select last page.
+					selectGridId(gridId);
 				}
+
 			}
 
 			@Override
@@ -357,5 +404,46 @@ public class ArchiveFragmentActivity extends FragmentActivity {
 									int whichButton) {
 							}
 						}).show();
+	}
+
+	/**
+	 * Get the grid id which is currently displayed in the archive.
+	 * 
+	 * @return The grid id which is currently displayed in the archive.
+	 */
+	private int getCurrentSelectedGridId() {
+		if (mArchiveFragmentStatePagerAdapter != null && mViewPager != null) {
+			return mArchiveFragmentStatePagerAdapter.getGridId(mViewPager
+					.getCurrentItem());
+		} else {
+			return -1;
+		}
+	}
+
+	/**
+	 * Select the page with the given grid id. In case the specified grid id was
+	 * not found, the last page is selected.
+	 * 
+	 * @param gridId
+	 *            The grid id for which the corresponding page in the archive
+	 *            has to be selected.
+	 * @return True in case the grid id has been found and is selected. False
+	 *         otherwise.
+	 */
+	private boolean selectGridId(int gridId) {
+		// Get the position of the grid in the adapter.
+		int position = mArchiveFragmentStatePagerAdapter
+				.getPositionOfGridId(gridId);
+
+		// In case the grid id is found in the adapter it is selected.
+		if (position >= 0) {
+			mViewPager.setCurrentItem(position);
+			return true;
+		} else {
+			// Show last page
+			mViewPager.setCurrentItem(mArchiveFragmentStatePagerAdapter
+					.getCount() - 1);
+			return false;
+		}
 	}
 }

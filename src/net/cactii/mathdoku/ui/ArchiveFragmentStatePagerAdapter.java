@@ -11,40 +11,41 @@ import android.support.v4.app.FragmentStatePagerAdapter;
  */
 public class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 
-	ArchiveFragmentActivity mArchiveFragmentActivity;
+	public static final int UNKNOWN_GRID_ID = -1;
+	public static final int INVALID_POSITION_ID = -2;
 
-	// The list of grid id's which have to be shown.
-	private int[] mGridIds;
-
-	// The grid id which is currently shown
-	private int mCurrentGridId;
-
-	// Selected filter on status
-	private StatusFilter mStatusFilter;
-
-	private String mLabelPuzzleNumber;
-
+	// Allowed values for the status filter
 	public enum StatusFilter {
 		ALL, UNFINISHED, SOLVED, CHEATED
 	};
 
-	// Selected filter on size
-	private SizeFilter mSizeFilter;
-
-	public enum SizeFilter {
+	// Allowed values for the size filter
+	public enum SizeFilter { 
 		ALL, SIZE_4, SIZE_5, SIZE_6, SIZE_7, SIZE_8, SIZE_9
 	};
+
+	// The list of grid id's which can be shown with the adapter.
+	private int[] mGridIds;
+
+	// Selected filters
+	private StatusFilter mStatusFilter;
+	private SizeFilter mSizeFilter;
+
+	// Label used in the pager strip
+	private static String mLabelPuzzleNumber;
+
 
 	public ArchiveFragmentStatePagerAdapter(
 			android.support.v4.app.FragmentManager fragmentManager,
 			ArchiveFragmentActivity archiveFragmentActivity) {
 		super(fragmentManager);
-		mArchiveFragmentActivity = archiveFragmentActivity;
 
+		// Initialize the filters
 		mStatusFilter = StatusFilter.ALL;
 		mSizeFilter = SizeFilter.ALL;
 
-		mLabelPuzzleNumber = mArchiveFragmentActivity.getResources().getString(
+		// Initialize the label used in the page titles.
+		mLabelPuzzleNumber = archiveFragmentActivity.getResources().getString(
 				R.string.archive_pager_puzzle_number);
 
 		// Determine id's of grids/solving attempts which are available for
@@ -54,12 +55,10 @@ public class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter 
 
 	@Override
 	public android.support.v4.app.Fragment getItem(int i) {
-		mCurrentGridId = mGridIds[i];
-
 		android.support.v4.app.Fragment fragment = new ArchiveFragment();
 		Bundle args = new Bundle();
 		args.putInt(ArchiveFragment.BUNDLE_KEY_SOLVING_ATTEMPT_ID,
-				mCurrentGridId);
+				mGridIds[i]);
 		fragment.setArguments(args);
 		return fragment;
 	}
@@ -83,24 +82,51 @@ public class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter 
 		}
 	}
 
+	/**
+	 * Set the status filter to the given value.
+	 * 
+	 * @param statusFilter The new value of the status filter.
+	 */
 	public void setStatusFilter(StatusFilter statusFilter) {
-		mStatusFilter = statusFilter;
-		setGridIds();
+		if (statusFilter != mStatusFilter) {
+			mStatusFilter = statusFilter;
+			setGridIds();
+		}
 	}
 
+	/**
+	 * Get the currently selected value of the status filter.
+	 * 
+	 * @return The currently selected value of the status filter.
+	 */
 	public StatusFilter getStatusFilter() {
 		return mStatusFilter;
 	}
 
+	/**
+	 * Set the size  filter to the given value.
+	 * 
+	 * @param statusFilter The new value of the size filter.
+	 */
 	public void setSizeFilter(SizeFilter sizeFilter) {
-		mSizeFilter = sizeFilter;
-		setGridIds();
+		if (sizeFilter != mSizeFilter) {
+			mSizeFilter = sizeFilter;
+			setGridIds();
+		}
 	}
 
+	/**
+	 * Get the currently selected value of the size filter.
+	 * 
+	 * @return The currently selected value of the size filter.
+	 */
 	public SizeFilter getSizeFilter() {
 		return mSizeFilter;
 	}
 
+	/**
+	 * Set all grid id's which can be displayed using the adapter.
+	 */
 	private void setGridIds() {
 		// Determine which grid should be shown
 		GridDatabaseAdapter gridDatabaseAdapter = new GridDatabaseAdapter();
@@ -115,7 +141,7 @@ public class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter 
 	 * @param gridId
 	 *            The grid id to be found.
 	 * @returns The position in the adapter at which the given grid is placed.
-	 *          -1 in case the grid id is not known to this adapter.
+	 *          {@value #UNKNOWN_GRID_ID} in case the grid id is not known to this adapter.
 	 */
 	public int getPositionOfGridId(int gridId) {
 		// Check position of given solving attempt id.
@@ -125,6 +151,21 @@ public class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter 
 			}
 		}
 
-		return -1;
+		return UNKNOWN_GRID_ID;
+	}
+	
+	/**
+	 * Get the grid id at the given position.
+	 * 
+	 * @param position Position in adapter for which the grid id has to be returned.
+	 * 
+	 * @return The grid id at the given position.
+	 */
+	public int getGridId(int position) {
+		if (mGridIds != null && position >= 0 && position < mGridIds.length) {
+			return mGridIds[position];
+		} else {
+			return INVALID_POSITION_ID;
+		}
 	}
 }

@@ -5,6 +5,8 @@ import java.util.Map;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.painter.Painter.GridTheme;
 import net.cactii.mathdoku.tip.TipDialog.TipCategory;
+import net.cactii.mathdoku.ui.ArchiveFragmentStatePagerAdapter.SizeFilter;
+import net.cactii.mathdoku.ui.ArchiveFragmentStatePagerAdapter.StatusFilter;
 import net.cactii.mathdoku.util.SingletonInstanceNotInstantiated;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -41,6 +43,15 @@ public class Preferences {
 	public final static String HIDE_OPERATORS_ASK = "A";
 	public final static String HIDE_OPERATORS_NEVER = "F";
 	public final static String HIDE_OPERATORS_DEFAULT = HIDE_OPERATORS_NEVER;
+	
+	public final static String ARCHIVE_SIZE_FILTER_LAST_VALUE = "archive_filter_size_last_value";
+	public final static String ARCHIVE_SIZE_FILTER_LAST_VALUE_DEFAULT = SizeFilter.ALL.toString();
+
+	public final static String ARCHIVE_STATUS_FILTER_LAST_VALUE = "archive_filter_status_last_value";
+	public final static String ARCHIVE_STATUS_FILTER_LAST_VALUE_DEFAULT = StatusFilter.ALL.toString();
+
+	public final static String ARCHIVE_GRID_SELECTED_LAST_VALUE = "archive_grid_selected_last_value";
+	public final static int ARCHIVE_GRID_SELECTED_LAST_VALUE_DEFAULT = -1;
 
 	public final static String PLAY_SOUND_EFFECTS = "soundeffects";
 	public final static boolean PLAY_SOUND_EFFECTS_DEFAULT = true;
@@ -613,6 +624,69 @@ public class Preferences {
 	public void setStatisticsVisible() {
 		Editor prefeditor = mSharedPreferences.edit();
 		prefeditor.putBoolean(SHOW_STATISTICS, true);
+		prefeditor.commit();
+	}
+
+	/**
+	 * Get the last value used for the status filter in the archive.
+	 * 
+	 * @return The last value used for the status filter in the archive.
+	 */
+	public StatusFilter getArchiveStatusFilterLastValueUsed() {
+		return StatusFilter.valueOf(mSharedPreferences.getString(ARCHIVE_STATUS_FILTER_LAST_VALUE,
+				ARCHIVE_STATUS_FILTER_LAST_VALUE_DEFAULT));
+	}
+
+	/**
+	 * Set the last value used for the status filter in the archive.
+	 * 
+	 * @param statusFilter The status filter which has to be saved as last selected in the archive.
+	 */
+	public void setArchiveStatusFilterLastValueUsed(StatusFilter statusFilter) {
+		Editor prefeditor = mSharedPreferences.edit();
+		prefeditor.putString(ARCHIVE_STATUS_FILTER_LAST_VALUE, statusFilter.toString());
+		prefeditor.commit();
+	}
+
+	/**
+	 * Get the last value used for the size filter in the archive.
+	 * 
+	 * @return The last value used for the size filter in the archive.
+	 */
+	public SizeFilter getArchiveSizeFilterLastValueUsed() {
+		return SizeFilter.valueOf(mSharedPreferences.getString(ARCHIVE_SIZE_FILTER_LAST_VALUE,
+				ARCHIVE_SIZE_FILTER_LAST_VALUE_DEFAULT));
+	}
+
+	/**
+	 * Set the last value used for the size filter in the archive.
+	 * 
+	 * @param sizeFilter The size filter which has to be saved as last selected in the archive.
+	 */
+	public void setArchiveSizeFilterLastValueUsed(SizeFilter sizeFilter) {
+		Editor prefeditor = mSharedPreferences.edit();
+		prefeditor.putString(ARCHIVE_SIZE_FILTER_LAST_VALUE, sizeFilter.toString());
+		prefeditor.commit();
+	}
+
+	/**
+	 * Get the id of the grid which was last shown in the archive.
+	 * 
+	 * @return The id of the grid which was last shown in the archive.
+	 */
+	public int getArchiveSelectedGridIdLastValueUsed() {
+		return mSharedPreferences.getInt(ARCHIVE_GRID_SELECTED_LAST_VALUE,
+				ARCHIVE_GRID_SELECTED_LAST_VALUE_DEFAULT);
+	}
+
+	/**
+	 * Set the id of the grid which is currently is shown when the archive is closed.
+	 * 
+	 * @return The last value used for the size filter in the archive.
+	 */
+	public void setArchiveSelectedGridIdLastValueUsed(int gridId) {
+		Editor prefeditor = mSharedPreferences.edit();
+		prefeditor.putInt(ARCHIVE_GRID_SELECTED_LAST_VALUE, gridId);
 		prefeditor.commit();
 	}
 }
