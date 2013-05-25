@@ -559,4 +559,11 @@ public class PuzzleFragmentActivity extends FragmentActivity {
 		return new ConfigurationInstanceState(mDialogPresentingGridGenerator,
 				mGameFileConverter);
 	}
+
+	@Override
+	public void onContextMenuClosed(Menu menu) {
+		if (mPuzzleFragment != null) {
+			mPuzzleFragment.onContextMenuClosed(menu);
+		}
+	}
 }

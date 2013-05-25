@@ -489,8 +489,13 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		super.onCreateContextMenu(menu, v, menuInfo);
 	}
 
+	/**
+	 * Callback for responding on closing the context menu.
+	 * 
+	 * @param menu The context menu which was closed.
+	 */
 	public void onContextMenuClosed(Menu menu) {
-		mBlockTouchSameCell = false; /* TTTTTTTTTTTTTTTTTTTTTTTTTTTTEEEEEEEEEEESSSSSSSSSSSSSSSSSSTTTTTTTTTTTTTTT */
+		mBlockTouchSameCell = false;
 	}
 
 	public boolean onContextItemSelected(MenuItem item) {
