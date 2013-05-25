@@ -106,7 +106,6 @@ public class ArchiveFragmentActivity extends FragmentActivity {
 		// In case a solving attempt has been specified in the bundle, this
 		// solving attempt will be showed as selected grid as long as it does
 		// meet the selection criteria of the filters.
-		boolean selected = false;
 		Intent intent = getIntent();
 		if (intent != null) {
 			Bundle bundle = intent.getExtras();

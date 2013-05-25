@@ -6,7 +6,6 @@ import net.cactii.mathdoku.gridGenerating.DialogPresentingGridGenerator;
 import net.cactii.mathdoku.gridGenerating.GridGenerator;
 import net.cactii.mathdoku.storage.database.DatabaseHelper;
 import net.cactii.mathdoku.ui.PuzzleFragmentActivity;
-import net.cactii.mathdoku.ui.PuzzleFragmentActivity.InputMode;
 import net.cactii.mathdoku.util.UsageLog;
 import net.cactii.mathdoku.util.Util;
 import android.app.AlertDialog;
@@ -70,9 +69,6 @@ public class DevelopmentHelper {
 				executeDeleteDatabase(puzzleFragmentActivity);
 				break;
 			case R.id.development_mode_generate_games:
-				// Cancel old timer
-				puzzleFragmentActivity.stopTimer();
-
 				// Generate games
 				generateGames(puzzleFragmentActivity);
 				return true;
@@ -254,10 +250,6 @@ public class DevelopmentHelper {
 										int id) {
 									executeDeleteAllPreferences();
 									executeDeleteDatabase(puzzleFragmentActivity);
-									puzzleFragmentActivity.mGrid = null;
-									puzzleFragmentActivity
-											.setInputMode(InputMode.NO_INPUT__HIDE_GRID);
-
 									restartActivity(puzzleFragmentActivity);
 								}
 							});

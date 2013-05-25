@@ -11,7 +11,7 @@ import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.statistics.GridStatistics;
 import net.cactii.mathdoku.storage.database.GridRow;
 import net.cactii.mathdoku.ui.GridView.InputModeDeterminer;
-import net.cactii.mathdoku.ui.PuzzleFragmentActivity.InputMode;
+import net.cactii.mathdoku.ui.PuzzleFragment.InputMode;
 import net.cactii.mathdoku.util.Util;
 
 import org.achartengine.ChartFactory;
@@ -61,7 +61,7 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 		(mGridView = (GridView) rootView.findViewById(R.id.gridView)).mInputModeDeterminer = new InputModeDeterminer() {
 			@Override
 			public final InputMode getInputMode() {
-				return PuzzleFragmentActivity.InputMode.NO_INPUT__DISPLAY_GRID;
+				return InputMode.NO_INPUT__DISPLAY_GRID;
 			}
 		};
 

@@ -12,7 +12,7 @@ import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import net.cactii.mathdoku.tip.TipIncorrectValue;
 import net.cactii.mathdoku.tip.TipOrderOfValuesInCage;
-import net.cactii.mathdoku.ui.PuzzleFragmentActivity.InputMode;
+import net.cactii.mathdoku.ui.PuzzleFragment.InputMode;
 import net.cactii.mathdoku.util.UsageLog;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -260,7 +260,7 @@ public class GridView extends View implements OnTouchListener {
 	}
 
 	public void digitSelected(int newValue,
-			PuzzleFragmentActivity.InputMode inputMode) {
+			InputMode inputMode) {
 		// Display a message in case no cell is selected.
 		GridCell selectedCell = mGrid.getSelectedCell();
 		if (selectedCell == null) {

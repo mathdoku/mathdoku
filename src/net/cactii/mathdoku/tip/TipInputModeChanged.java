@@ -2,7 +2,7 @@ package net.cactii.mathdoku.tip;
 
 import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
-import net.cactii.mathdoku.ui.PuzzleFragmentActivity.InputMode;
+import net.cactii.mathdoku.ui.PuzzleFragment.InputMode;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 
@@ -21,7 +21,7 @@ public class TipInputModeChanged extends TipDialog {
 	 * @param context
 	 *            The activity in which this tip has to be shown.
 	 */
-	public TipInputModeChanged(Context context, InputMode newInputMode) {
+	public TipInputModeChanged(Context context, InputMode inputMode) {
 		super(context, TIP_NAME, TIP_CATEGORY);
 
 			// Set the title
@@ -34,7 +34,7 @@ public class TipInputModeChanged extends TipDialog {
 					R.string.input_mode_normal_short);
 			String maybeInputMode = context.getResources().getString(
 					R.string.input_mode_maybe_short);
-			if (newInputMode == InputMode.MAYBE) {
+			if (inputMode == InputMode.MAYBE) {
 				mText = context.getResources().getString(
 						R.string.dialog_tip_input_mode_changed_text,
 						normalInputMode, maybeInputMode);

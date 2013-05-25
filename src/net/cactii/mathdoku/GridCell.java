@@ -10,8 +10,7 @@ import net.cactii.mathdoku.painter.MaybeValuePainter;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.painter.UserValuePainter;
 import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
-import net.cactii.mathdoku.ui.PuzzleFragmentActivity;
-import net.cactii.mathdoku.ui.PuzzleFragmentActivity.InputMode;
+import net.cactii.mathdoku.ui.PuzzleFragment.InputMode;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -243,7 +242,7 @@ public class GridCell {
 	 * Draw the cell inclusive borders, background and text.
 	 */
 	public void draw(Canvas canvas, float gridBorderWidth,
-			PuzzleFragmentActivity.InputMode inputMode) {
+			InputMode inputMode) {
 		// Get cell size
 		int cellSize = (int) this.mCellPainter.getCellSize();
 
