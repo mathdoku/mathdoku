@@ -14,11 +14,9 @@ import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
-import net.cactii.mathdoku.gridGenerating.DialogPresentingGridGenerator;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.painter.Painter.GridTheme;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
-import net.cactii.mathdoku.storage.GameFileConverter;
 import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 import net.cactii.mathdoku.tip.TipCheat;
 import net.cactii.mathdoku.tip.TipIncorrectValue;
@@ -117,10 +115,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	private Animation mSolvedAnimation;
 
 	public Preferences mMathDokuPreferences;
-
-	// Background tasks for generating a new puzzle and converting game files
-	public DialogPresentingGridGenerator mDialogPresentingGridGenerator;
-	public GameFileConverter mGameFileConverter;
 
 	private boolean mBlockTouchSameCell = false;
 
@@ -367,17 +361,14 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 		switch (mMathDokuPreferences.getTheme()) {
 		case NEWSPAPER:
-			mTopLayout.setBackgroundResource(R.drawable.newspaper);
 			mPainter.setTheme(GridTheme.NEWSPAPER);
 			mTimerText.setBackgroundColor(0x90808080);
 			break;
 		case DARK:
-			mTopLayout.setBackgroundResource(R.drawable.newspaper_dark);
 			mPainter.setTheme(GridTheme.DARK);
 			mTimerText.setTextColor(0xFFF0F0F0);
 			break;
 		case CARVED:
-			mTopLayout.setBackgroundResource(R.drawable.background);
 			mPainter.setTheme(GridTheme.CARVED);
 			mTimerText.setBackgroundColor(0x10000000);
 			break;
