@@ -94,7 +94,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	/* package */InputMode mInputMode;
 	Button mInputModeTextView;
 
-	TextView mSolvedText;
 	GameTimer mTimerTask;
 
 	RelativeLayout mTopLayout;
@@ -112,7 +111,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	Button mUndoButton;
 	View[] mSoundEffectViews;
 	private Animation mOutAnimation;
-	private Animation mSolvedAnimation;
 
 	public Preferences mMathDokuPreferences;
 
@@ -121,6 +119,27 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	private Context mContext;
 
 	private View mRootView;
+
+	OnGridFinishedListener mOnGridFinishedListener;
+
+	// Container Activity must implement this interface
+	public interface OnGridFinishedListener {
+		public void onGridFinishedListener(int solvingAttemptId);
+	}
+
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+
+		// This makes sure that the container activity has implemented
+		// the callback interface. If not, it throws an exception
+		try {
+			mOnGridFinishedListener = (OnGridFinishedListener) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString()
+					+ " must implement OnGridFinishedListener");
+		}
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -152,8 +171,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				return mInputMode;
 			}
 		};
-		this.mSolvedText = (TextView) mRootView.findViewById(R.id.solvedText);
-		this.mGridView.mAnimationText = this.mSolvedText;
 		this.mControls = (TableLayout) mRootView.findViewById(R.id.controls);
 		this.mGameSeedLabel = (TextView) mRootView
 				.findViewById(R.id.gameSeedLabel);
@@ -193,21 +210,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				this.mInputModeTextView, this.mUndoButton };
 
 		setInputMode(InputMode.NO_INPUT__HIDE_GRID);
-
-		// Animation for a solved puzzle
-		mSolvedAnimation = AnimationUtils.loadAnimation(mContext,
-				R.anim.solvedanim);
-		mSolvedAnimation.setAnimationListener(new AnimationListener() {
-			public void onAnimationEnd(Animation animation) {
-				mSolvedText.setVisibility(View.GONE);
-			}
-
-			public void onAnimationRepeat(Animation animation) {
-			}
-
-			public void onAnimationStart(Animation animation) {
-			}
-		});
 
 		// Animation for controls.
 		mOutAnimation = AnimationUtils.loadAnimation(mContext,
@@ -356,9 +358,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	}
 
 	public void setTheme() {
-
-		mSolvedText.setTypeface(mPainter.getTypeface());
-
 		switch (mMathDokuPreferences.getTheme()) {
 		case NEWSPAPER:
 			mPainter.setTheme(GridTheme.NEWSPAPER);
@@ -483,7 +482,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	/**
 	 * Callback for responding on closing the context menu.
 	 * 
-	 * @param menu The context menu which was closed.
+	 * @param menu
+	 *            The context menu which was closed.
 	 */
 	public void onContextMenuClosed(Menu menu) {
 		mBlockTouchSameCell = false;
@@ -583,20 +583,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		}
 	}
 
-	private void animText(int textIdentifier, int color) {
-		this.mSolvedText.setText(textIdentifier);
-		this.mSolvedText.setTextColor(color);
-		this.mSolvedText.setVisibility(View.VISIBLE);
-		final float SCALE_FROM = (float) 0;
-		final float SCALE_TO = (float) 1.0;
-		ScaleAnimation anim = new ScaleAnimation(SCALE_FROM, SCALE_TO,
-				SCALE_FROM, SCALE_TO, this.mGridView.mGridViewSize / 2,
-				this.mGridView.mGridViewSize / 2);
-		anim.setDuration(1000);
-		// animText.setAnimation(anim);
-		this.mSolvedText.startAnimation(this.mSolvedAnimation);
-	}
-
 	private void openClearDialog() {
 		new AlertDialog.Builder(this.getActivity())
 				.setTitle(R.string.dialog_clear_grid_confirmation_title)
@@ -634,18 +620,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				mGrid.setSelectedCell(null);
 				mGrid.save();
 
-				setInputMode(InputMode.NO_INPUT__DISPLAY_GRID);
-				if (mGrid.isActive() && !mGrid.isSolvedByCheating()
-						&& mGrid.countMoves() > 0) {
-					// Only display animation in case the user has just
-					// solved this game. Do not show in case the user
-					// cheated by requesting to show the solution or in
-					// case an already solved game was reloaded.
-					animText(R.string.main_ui_solved_messsage, 0xFF002F00);
-					
-					// TODO: The animation is currently NOT SHOWN due to replacing the fragment !!!!!!!!!!!!!!!!!!
-				}
-
 				// Enable the statistics as soon as the first game has been
 				// finished.
 				if (mMathDokuPreferences.isStatisticsAvailable() == false) {
@@ -655,19 +629,50 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 					new TipStatistics(mContext).show();
 				}
 
-				// Refresh option menu. For example check progress should be
-				// hidden.
-				((Activity) mContext).invalidateOptionsMenu();
+				// Notify the containing fragment activity about the finishing
+				// of the grid. In case the puzzle has been solved manually, a
+				// animation is played first.
+				if (!mGrid.isActive() || mGrid.isSolvedByCheating()
+						|| mGrid.countMoves() == 0) {
+					mOnGridFinishedListener.onGridFinishedListener(mGrid
+							.getSolvingAttemptId());
+				} else {
+					// Set input mode to hide controls while playing the animation.
+					setInputMode(InputMode.NO_INPUT__DISPLAY_GRID);
+					
+					// Set the text view which will be animated
+					final TextView textView = (TextView) mRootView
+							.findViewById(R.id.solvedText);
+					textView.setText(R.string.main_ui_solved_messsage);
+					textView.setTextColor(0xFF002F00);
+					textView
+							.setTypeface(Painter.getInstance().getTypeface());
+					textView.setVisibility(View.VISIBLE);
 
-				// Display the statistics fragment
-				android.support.v4.app.Fragment fragment = new ArchiveFragment();
-				Bundle args = new Bundle();
-				args.putInt(ArchiveFragment.BUNDLE_KEY_SOLVING_ATTEMPT_ID,
-						mGrid.getSolvingAttemptId());
-				fragment.setArguments(args);
-				((FragmentActivity) mContext).getSupportFragmentManager()
-						.beginTransaction()
-						.replace(android.R.id.content, fragment).commit();
+					// Build the animation
+					Animation animation = AnimationUtils.loadAnimation(
+							mContext, R.anim.solved);
+					animation
+							.setAnimationListener(new AnimationListener() {
+								public void onAnimationEnd(Animation animation) {
+									textView.setVisibility(View.GONE);
+									mOnGridFinishedListener
+											.onGridFinishedListener(mGrid
+													.getSolvingAttemptId());
+								}
+
+								public void onAnimationRepeat(
+										Animation animation) {
+								}
+
+								public void onAnimationStart(Animation animation) {
+								}
+							});
+
+					// Start animation of the text view.
+					textView.startAnimation(animation);
+				}
+
 			}
 		});
 	}
@@ -806,7 +811,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			break;
 		case NORMAL:
 		case MAYBE:
-			mSolvedText.setVisibility(View.GONE);
 			if (mMathDokuPreferences.isTimerVisible()) {
 				mTimerText.setVisibility(View.VISIBLE);
 			}

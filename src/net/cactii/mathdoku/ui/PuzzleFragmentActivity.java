@@ -22,6 +22,8 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,7 +33,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-public class PuzzleFragmentActivity extends FragmentActivity {
+public class PuzzleFragmentActivity extends FragmentActivity implements
+		PuzzleFragment.OnGridFinishedListener {
 	public final static String TAG = "MathDoku.PuzzleFragmentActivity";
 
 	// Home directory url of promotion website. Most url's used in this app will
@@ -48,8 +51,9 @@ public class PuzzleFragmentActivity extends FragmentActivity {
 	// Reference to utilities
 	private Util mUtil;
 
-	// Reference for the puzzle fragment which is displayed.
+	// Reference to fragments which can be displayed in this activity
 	private PuzzleFragment mPuzzleFragment;
+	private ArchiveFragment mArchiveFragment;
 
 	// Object to save data on a configuration change. Note: for the puzzle
 	// fragment the RetainInstance property is set to true.
@@ -116,6 +120,7 @@ public class PuzzleFragmentActivity extends FragmentActivity {
 		mPuzzleFragment = new PuzzleFragment();
 		getSupportFragmentManager().beginTransaction()
 				.replace(android.R.id.content, mPuzzleFragment).commit();
+		mArchiveFragment = null;
 
 		// Restore the last configuration instance which was saved before the
 		// configuration change.
@@ -255,17 +260,22 @@ public class PuzzleFragmentActivity extends FragmentActivity {
 			if (DevelopmentHelper.mMode != Mode.DEVELOPMENT) {
 				return super.onOptionsItemSelected(menuItem);
 			} else {
-				// Cancel old timer
-				mPuzzleFragment.stopTimer();
-
-				if (DevelopmentHelper.onDevelopmentHelperOption(this, menuId)) {
-					// A development helper menu option was processed
-					// succesfully.
-					mPuzzleFragment.startTimer();
-					return true;
-				} else {
-					mPuzzleFragment.startTimer();
+				if (mPuzzleFragment == null) {
 					return super.onOptionsItemSelected(menuItem);
+				} else {
+					// Cancel old timer
+					mPuzzleFragment.stopTimer();
+
+					if (DevelopmentHelper.onDevelopmentHelperOption(this,
+							menuId)) {
+						// A development helper menu option was processed
+						// succesfully.
+						mPuzzleFragment.startTimer();
+						return true;
+					} else {
+						mPuzzleFragment.startTimer();
+						return super.onOptionsItemSelected(menuItem);
+					}
 				}
 			}
 		}
@@ -274,7 +284,7 @@ public class PuzzleFragmentActivity extends FragmentActivity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (event.getAction() == KeyEvent.ACTION_DOWN
 				&& keyCode == KeyEvent.KEYCODE_BACK) {
-			if (mPuzzleFragment.hideControls()) {
+			if (mPuzzleFragment != null && mPuzzleFragment.hideControls()) {
 				return true;
 			}
 		}
@@ -338,7 +348,9 @@ public class PuzzleFragmentActivity extends FragmentActivity {
 	 *            True in case operators should be hidden in the new puzzle.
 	 */
 	public void startNewGame(final int gridSize, final boolean hideOperators) {
-		mPuzzleFragment.prepareLoadNewGame();
+		if (mPuzzleFragment != null) {
+			mPuzzleFragment.prepareLoadNewGame();
+		}
 
 		// Start a background task to generate the new grid. As soon as the new
 		// grid is created, the method onNewGridReady will be called.
@@ -372,9 +384,13 @@ public class PuzzleFragmentActivity extends FragmentActivity {
 		// transaction is completed before loading the fragment with the new
 		// grid.
 		mPuzzleFragment = new PuzzleFragment();
-		getSupportFragmentManager().beginTransaction()
-				.replace(android.R.id.content, mPuzzleFragment).commit();
-		getSupportFragmentManager().executePendingTransactions();
+		FragmentManager fragmentManager = getSupportFragmentManager();
+		FragmentTransaction fragmentTransaction = fragmentManager
+				.beginTransaction();
+		fragmentTransaction.replace(android.R.id.content, mPuzzleFragment);
+		fragmentTransaction.commit();
+		fragmentManager.executePendingTransactions();
+		mArchiveFragment = null;
 
 		// The background task for creating a new grid has been finished. The
 		// new grid will always overwrite the current game without any warning.
@@ -526,7 +542,9 @@ public class PuzzleFragmentActivity extends FragmentActivity {
 		}
 
 		// Restart the last game
-		mPuzzleFragment.restartLastGame();
+		if (mPuzzleFragment != null) {
+			mPuzzleFragment.restartLastGame();
+		}
 	}
 
 	/*
@@ -542,7 +560,9 @@ public class PuzzleFragmentActivity extends FragmentActivity {
 		// http://stackoverflow.com/questions/11591302/unable-to-use-fragment-setretaininstance-as-a-replacement-for-activity-onretai
 
 		// Cleanup
-		mPuzzleFragment.stopTimer();
+		if (mPuzzleFragment != null) {
+			mPuzzleFragment.stopTimer();
+		}
 		TipDialog.resetDisplayedDialogs();
 
 		if (mDialogPresentingGridGenerator != null) {
@@ -565,5 +585,24 @@ public class PuzzleFragmentActivity extends FragmentActivity {
 		if (mPuzzleFragment != null) {
 			mPuzzleFragment.onContextMenuClosed(menu);
 		}
+	}
+
+	@Override
+	public void onGridFinishedListener(final int solvingAttemptId) {
+		// Once the grid has been solved, the statistics fragment has to be
+		// displayed.
+		mArchiveFragment = new ArchiveFragment();
+		Bundle args = new Bundle();
+		args.putInt(ArchiveFragment.BUNDLE_KEY_SOLVING_ATTEMPT_ID,
+				solvingAttemptId);
+		mArchiveFragment.setArguments(args);
+		getSupportFragmentManager().beginTransaction()
+				.replace(android.R.id.content, mArchiveFragment).commit();
+		// fragmentManager.executePendingTransactions();
+		mPuzzleFragment = null;
+
+		// Refresh option menu. For example check progress should be
+		// hidden.
+		invalidateOptionsMenu();
 	}
 }

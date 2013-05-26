@@ -58,8 +58,6 @@ public class GridView extends View implements OnTouchListener {
 	// The layout to be used for positioning the maybe digits in a grid.
 	private DigitPositionGrid mDigitPositionGrid;
 
-	public TextView mAnimationText;
-
 	// Visible window rectangle
 	private Rect mDisplayFrame;
 
