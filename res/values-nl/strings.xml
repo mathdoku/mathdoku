@@ -327,6 +327,7 @@
 
     <!-- Title and a body which explains the purpose of the chart "Avoidable moves". -->
     <string name="avoidable_moves_chart_title">Vermijdbare zetten</string>
+    <string name="avoidable_moves_yaxis_description">Aantal zetten</string>
     <string name="avoidable_moves_chart_body">Minder ervaren spelers maken meer vermijdbare zetten dan ervaren spelers. Een vermijdbare zet is een zet die niet noodzakelijk is om de puzzel op te lossen. Corrigeren of leegmaken van waarden in een cell, het gebruiken van \"mogelijke waarden\" of terugzetten van waarden zijn zetten die voorkomen moeten worden om een betere speler te worden.</string>
     <!-- Dimensions displayed in chart "Avoidable moves". -->
     <string name="avoidable_moves_chart_user_value_replaced">Cel waarden gecorrigeerd</string>
@@ -336,6 +337,7 @@
 
     <!-- Title and a body which explains the purpose of the chart "Cheats used". -->
     <string name="statistics_cheats_used_title">Vals spelen</string>
+    <string name="statistics_cheats_yaxis_description">Aantal keer gebruikt</string>
     <string name="statistics_cheats_used_body">Je hebt minimaal eenmaal vals gespeeld in dit spel. Onervaren spelers spelen vaker vals dan meer ervaren spelers. Elke puzzel heeft één unieke oplossing die gevonden kan worden zonder vals te spelen.</string>
     <!-- Dimensions displayed in chart "Cheats used". -->
     <string name="statistics_cheats_check_progress">Voortgang gecontroleerd</string>

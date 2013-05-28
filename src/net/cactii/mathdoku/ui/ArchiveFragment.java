@@ -248,10 +248,7 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 		XYMultipleSeriesRenderer xyMultipleSeriesRenderer = new XYMultipleSeriesRenderer();
 		xyMultipleSeriesRenderer.setLabelsTextSize(mDefaultTextSize);
 		xyMultipleSeriesRenderer.setLegendTextSize(mDefaultTextSize);
-		xyMultipleSeriesRenderer.setYTitle("Number of times used"); // TODO:
-																	// hard
-																	// coded
-																	// string
+		xyMultipleSeriesRenderer.setYTitle(getResources().getString(R.string.avoidable_moves_yaxis_description));
 		xyMultipleSeriesRenderer.setXAxisMin(-1);
 		xyMultipleSeriesRenderer.setYLabelsAlign(Align.RIGHT);
 		xyMultipleSeriesRenderer.setMargins(new int[] { 0, 50, 40, 10 });
@@ -320,11 +317,12 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 		}
 
 		// Fill dimensions of axis based on number of categories and maximum
-		// Y-value
+		// Y-value.
 		xyMultipleSeriesRenderer.setXAxisMax(countCategories + 2);
-		xyMultipleSeriesRenderer.setXLabels(countCategories);
+		xyMultipleSeriesRenderer.setXLabels(0);
 		xyMultipleSeriesRenderer.setYAxisMin(0);
 		xyMultipleSeriesRenderer.setYAxisMax(maxYValue + 1);
+		xyMultipleSeriesRenderer.setYLabels(Math.min(4, maxYValue + 1));
 		xyMultipleSeriesRenderer
 				.setBarWidth(getElementWidth(countCategories) / 2);
 
@@ -372,7 +370,7 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 		XYMultipleSeriesRenderer xyMultipleSeriesRenderer = new XYMultipleSeriesRenderer();
 		xyMultipleSeriesRenderer.setLabelsTextSize(mDefaultTextSize);
 		xyMultipleSeriesRenderer.setLegendTextSize(mDefaultTextSize);
-		xyMultipleSeriesRenderer.setYTitle("Number of times used");
+		xyMultipleSeriesRenderer.setYTitle(getResources().getString(R.string.statistics_cheats_yaxis_description));
 		xyMultipleSeriesRenderer.setXAxisMin(-1);
 		xyMultipleSeriesRenderer.setXAxisMax(cheatCategories + 2);
 		xyMultipleSeriesRenderer.setXLabels(cheatCategories);
@@ -390,7 +388,12 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 
 		// Create object for category series and the series renderer
 		XYMultipleSeriesDataset xyMultipleSeriesDataset = new XYMultipleSeriesDataset();
+		
+		// While filling the categories the number of categories used and the
+		// maximum Y-value is determined.
 		int categoryIndex = 1;
+		int maxYValue = 0;
+
 
 		// Check progress option used
 		if (mGridStatistics.mCheckProgressUsed > 0) {
@@ -401,6 +404,7 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 			xyMultipleSeriesRenderer
 					.addSeriesRenderer(createSimpleSeriesRenderer(chartRed1));
 			categoryIndex++;
+			maxYValue = Math.max(maxYValue, mGridStatistics.mCheckProgressUsed);
 		}
 
 		// Cell revealed option used
@@ -412,6 +416,7 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 			xyMultipleSeriesRenderer
 					.addSeriesRenderer(createSimpleSeriesRenderer(chartRed2));
 			categoryIndex++;
+			maxYValue = Math.max(maxYValue, mGridStatistics.mCellsRevealed);
 		}
 
 		// Cage operator revealed option used
@@ -423,6 +428,7 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 			xyMultipleSeriesRenderer
 					.addSeriesRenderer(createSimpleSeriesRenderer(chartRed3));
 			categoryIndex++;
+			maxYValue = Math.max(maxYValue, mGridStatistics.mOperatorsRevevealed);
 		}
 
 		// Solution revealed option used
@@ -435,7 +441,18 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 			xyMultipleSeriesRenderer
 					.addSeriesRenderer(createSimpleSeriesRenderer(chartRed4));
 			categoryIndex++;
+			maxYValue = Math.max(maxYValue, (mGridStatistics.isSolutionRevealed() ? 1 : 0));
 		}
+
+		// Fill dimensions of axis based on number of categories and maximum
+		// Y-value.
+		xyMultipleSeriesRenderer.setXAxisMax(categoryIndex + 2);
+		xyMultipleSeriesRenderer.setXLabels(0);
+		xyMultipleSeriesRenderer.setYAxisMin(0);
+		xyMultipleSeriesRenderer.setYAxisMax(maxYValue + 1);
+		xyMultipleSeriesRenderer.setYLabels(Math.min(4, maxYValue + 1));
+		xyMultipleSeriesRenderer
+				.setBarWidth(getElementWidth(categoryIndex) / 2);
 
 		addStatisticsSection(
 				getResources().getString(R.string.statistics_cheats_used_title),
