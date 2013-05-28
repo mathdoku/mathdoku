@@ -45,7 +45,6 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 	private static DigitPositionGrid mDigitPositionGrid = null;
 
 	private GridStatistics mGridStatistics;
-	private GridRow mGridRow;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -165,7 +164,7 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 			mChartsLayout.removeAllViewsInLayout();
 
 			// Build all charts for current game only
-			createProgressChart();
+			createProgressChart(grid.getGridSize());
 			createAvoidableMovesChart();
 			createUsedCheatsChart();
 		}
@@ -178,15 +177,15 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 	 * 
 	 * @return True in case the chart has been created. False otherwise.
 	 */
-	private boolean createProgressChart() {
-		if (mGridRow == null || mGridStatistics == null
+	private boolean createProgressChart(int gridSize) {
+		if (gridSize == 0 || mGridStatistics == null
 				|| mGridStatistics.mSolvedManually) {
 			// No progress to report.
 			return false;
 		}
 
 		// Determine total number of cells in grid
-		float totalCells = mGridRow.mGridSize * mGridRow.mGridSize;
+		float totalCells = gridSize * gridSize;
 
 		// Display chart only if grid not completely filled and not completely
 		// empty.
