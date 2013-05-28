@@ -879,7 +879,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 */
 	@SuppressLint("DefaultLocale")
 	public void setElapsedTime(long elapsedTime) {
-		if (mMathDokuPreferences.isTimerVisible() && mTimerText != null) {
+		if (mTimerText != null) {
 			mTimerText.setText(Util.durationTimeToString(elapsedTime));
 		}
 	}
