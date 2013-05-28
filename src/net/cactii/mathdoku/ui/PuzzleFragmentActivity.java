@@ -1,14 +1,17 @@
 package net.cactii.mathdoku.ui;
 
 import net.cactii.mathdoku.Grid;
+import net.cactii.mathdoku.InvalidGridException;
 import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.gridGenerating.DialogPresentingGridGenerator;
+import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.storage.GameFileConverter;
 import net.cactii.mathdoku.storage.database.DatabaseHelper;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter;
+import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 import net.cactii.mathdoku.tip.TipArchive;
 import net.cactii.mathdoku.tip.TipDialog;
 import net.cactii.mathdoku.ui.PuzzleFragment.InputMode;
@@ -24,6 +27,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -51,7 +55,7 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 	// Reference to utilities
 	private Util mUtil;
 
-	// Reference to fragments which can be displayed in this activity
+	// Reference to fragments which can be displayed in this activity.
 	private PuzzleFragment mPuzzleFragment;
 	private ArchiveFragment mArchiveFragment;
 
@@ -90,6 +94,7 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 		mMathDokuPreferences = Preferences.getInstance(this);
 		DatabaseHelper.getInstance(this);
 		UsageLog.getInstance(this);
+		Painter.getInstance(this);
 
 		// Check if database is consistent.
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
@@ -116,12 +121,6 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 					R.string.action_bar_subtitle_puzzle_fragment));
 		}
 
-		// Set the puzzle fragment
-		mPuzzleFragment = new PuzzleFragment();
-		getSupportFragmentManager().beginTransaction()
-				.replace(android.R.id.content, mPuzzleFragment).commit();
-		mArchiveFragment = null;
-
 		// Restore the last configuration instance which was saved before the
 		// configuration change.
 		Object object = this.getLastCustomNonConfigurationInstance();
@@ -146,6 +145,8 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 		}
 
 		checkVersion();
+
+		restartLastGame();
 	}
 
 	public void onPause() {
@@ -380,23 +381,14 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 			new TipArchive(PuzzleFragmentActivity.this).show();
 		}
 
+		// The background task for creating a new grid has been finished.
+		mDialogPresentingGridGenerator = null;
+
 		// Create a new puzzle fragment. Make sure that the transformation
 		// transaction is completed before loading the fragment with the new
-		// grid.
-		mPuzzleFragment = new PuzzleFragment();
-		FragmentManager fragmentManager = getSupportFragmentManager();
-		FragmentTransaction fragmentTransaction = fragmentManager
-				.beginTransaction();
-		fragmentTransaction.replace(android.R.id.content, mPuzzleFragment);
-		fragmentTransaction.commit();
-		fragmentManager.executePendingTransactions();
-		mArchiveFragment = null;
-
-		// The background task for creating a new grid has been finished. The
-		// new grid will always overwrite the current game without any warning.
-		mDialogPresentingGridGenerator = null;
-		mPuzzleFragment.setInputMode(InputMode.NORMAL);
-		mPuzzleFragment.setNewGrid(newGrid);
+		// grid. The new grid will always overwrite the current game without any
+		// warning.
+		initializePuzzleFragment(newGrid.getSolvingAttemptId(), true);
 	}
 
 	/**
@@ -542,9 +534,7 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 		}
 
 		// Restart the last game
-		if (mPuzzleFragment != null) {
-			mPuzzleFragment.restartLastGame();
-		}
+		restartLastGame();
 	}
 
 	/*
@@ -588,21 +578,107 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 	}
 
 	@Override
-	public void onGridFinishedListener(final int solvingAttemptId) {
+	public void onGridFinishedListener(int solvingAttemptId) {
 		// Once the grid has been solved, the statistics fragment has to be
 		// displayed.
+		initializeArchiveFragment(solvingAttemptId, false);
+
+		// Refresh option menu. For example check progress should be
+		// hidden.
+		invalidateOptionsMenu();
+	}
+
+	/**
+	 * Initializes the puzzle fragment. The archive fragment will be disabled.
+	 * 
+	 * @param forceFragmentTransaction
+	 *            Force the execution of the fragment transition which is needed
+	 *            in case the content of the fragment needs to be accessed right
+	 *            away.
+	 */
+	private void initializePuzzleFragment(int solvingAttemptId,
+			boolean forceFragmentTransaction) {
+		// Set the puzzle fragment
+		mPuzzleFragment = new PuzzleFragment();
+		if (solvingAttemptId >= 0) {
+			Bundle args = new Bundle();
+			args.putInt(PuzzleFragment.BUNDLE_KEY_SOLVING_ATTEMPT_ID,
+					solvingAttemptId);
+			mPuzzleFragment.setArguments(args);
+		}
+
+		FragmentManager fragmentManager = getSupportFragmentManager();
+		FragmentTransaction fragmentTransaction = fragmentManager
+				.beginTransaction();
+		fragmentTransaction.replace(android.R.id.content, mPuzzleFragment);
+		fragmentTransaction.commit();
+		if (forceFragmentTransaction) {
+			fragmentManager.executePendingTransactions();
+		}
+
+		// Disable the archive fragment
+		mArchiveFragment = null;
+	}
+
+	/**
+	 * Initializes the archive fragment. The puzzle fragment will be disabled.
+	 * 
+	 * @param forceFragmentTransaction
+	 *            Force the execution of the fragment transition which is needed
+	 *            in case the content of the fragment needs to be accessed right
+	 *            away.
+	 */
+	private void initializeArchiveFragment(int solvingAttemptId,
+			boolean forceFragmentTransaction) {
+		// Set the archive fragment
 		mArchiveFragment = new ArchiveFragment();
 		Bundle args = new Bundle();
 		args.putInt(ArchiveFragment.BUNDLE_KEY_SOLVING_ATTEMPT_ID,
 				solvingAttemptId);
 		mArchiveFragment.setArguments(args);
-		getSupportFragmentManager().beginTransaction()
-				.replace(android.R.id.content, mArchiveFragment).commit();
-		// fragmentManager.executePendingTransactions();
+		FragmentManager fragmentManager = getSupportFragmentManager();
+		FragmentTransaction fragmentTransaction = fragmentManager
+				.beginTransaction();
+		fragmentTransaction.replace(android.R.id.content, mArchiveFragment)
+				.commit();
+		if (forceFragmentTransaction) {
+			fragmentManager.executePendingTransactions();
+		}
+
+		// Disable the archive fragment
 		mPuzzleFragment = null;
 
-		// Refresh option menu. For example check progress should be
-		// hidden.
-		invalidateOptionsMenu();
+	}
+
+	/**
+	 * Restart the last game which was played.
+	 */
+	protected void restartLastGame() {
+		// Determine if and which grid was last played
+		int solvingAttemptId = new SolvingAttemptDatabaseAdapter()
+				.getMostRecentPlayedId();
+		if (solvingAttemptId >= 0) {
+			// Load the grid
+			try {
+				Grid newGrid = new Grid();
+				newGrid.load(solvingAttemptId);
+
+				if (newGrid.isActive()) {
+					// Create a new puzzle fragment. Make sure that the
+					// transformation transaction is completed before loading
+					// the fragment with the new grid. The new grid will always
+					// overwrite the current game without any warning.
+					initializePuzzleFragment(solvingAttemptId, true);
+				} else {
+					initializeArchiveFragment(solvingAttemptId, true);
+				}
+			} catch (InvalidGridException e) {
+				if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+					Log.e(TAG,
+							"PuzzleFragmentActivity.restartLastGame can not load solvingAttempt with id '"
+									+ solvingAttemptId + "'.");
+				}
+			}
+		}
 	}
 }

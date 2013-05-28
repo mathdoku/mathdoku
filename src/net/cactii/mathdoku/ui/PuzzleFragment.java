@@ -9,7 +9,6 @@ import net.cactii.mathdoku.GameTimer;
 import net.cactii.mathdoku.Grid;
 import net.cactii.mathdoku.GridCage;
 import net.cactii.mathdoku.GridCell;
-import net.cactii.mathdoku.InvalidGridException;
 import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
@@ -17,7 +16,6 @@ import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.painter.Painter.GridTheme;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
-import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 import net.cactii.mathdoku.tip.TipCheat;
 import net.cactii.mathdoku.tip.TipIncorrectValue;
 import net.cactii.mathdoku.tip.TipInputModeChanged;
@@ -34,7 +32,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -50,7 +47,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
-import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
@@ -61,6 +57,8 @@ import android.widget.Toast;
 public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		OnSharedPreferenceChangeListener, OnCreateContextMenuListener {
 	public final static String TAG = "MathDoku.PuzzleFragment";
+
+	public static final String BUNDLE_KEY_SOLVING_ATTEMPT_ID = "PuzzleFragment.solvingAttemptId";
 
 	// Identifiers for the context menu
 	private final static int CONTEXT_MENU_REVEAL_CELL = 1;
@@ -155,9 +153,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 		mContext = (Context) this.getActivity();
 
-		mPainter = Painter.getInstance(mContext);
-
-		mMathDokuPreferences = Preferences.getInstance(mContext);
+		mPainter = Painter.getInstance();
+		mMathDokuPreferences = Preferences.getInstance();
 		mMathDokuPreferences.mSharedPreferences
 				.registerOnSharedPreferenceChangeListener(this);
 
@@ -337,13 +334,18 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 		registerForContextMenu(this.mGridView);
 
-		return mRootView;
-	}
+		// In case a solving attempt id has been passed, this attempt has to be loaded.
+		Bundle args = getArguments();
+		if (args != null) {
+			int solvingAttemptId = args.getInt(BUNDLE_KEY_SOLVING_ATTEMPT_ID);
+			
+			mGrid = new Grid();
+			if (mGrid.load(solvingAttemptId)) {
+				setNewGrid(mGrid);
+			}
+		}
 
-	@Override
-	public void onStart() {
-		restartLastGame();
-		super.onStart();
+		return mRootView;
 	}
 
 	public void onPause() {
@@ -558,29 +560,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		this.mGridView.requestFocus();
 		this.mGridView.mSelectorShown = false;
 		this.mGridView.invalidate();
-	}
-
-	/**
-	 * Restart the last game which was played.
-	 */
-	protected void restartLastGame() {
-		// Determine if and which grid was last played
-		int solvingAttemptId = new SolvingAttemptDatabaseAdapter()
-				.getMostRecentPlayedId();
-		if (solvingAttemptId >= 0) {
-			// Load the grid
-			try {
-				Grid newGrid = new Grid();
-				newGrid.load(solvingAttemptId);
-				setNewGrid(newGrid);
-			} catch (InvalidGridException e) {
-				if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-					Log.e(TAG,
-							"PuzzleFragmentActivity.restartLastGame can not load grid with id '"
-									+ solvingAttemptId + "'.");
-				}
-			}
-		}
 	}
 
 	private void openClearDialog() {
