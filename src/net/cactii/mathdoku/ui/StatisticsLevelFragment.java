@@ -195,6 +195,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment {
 		xyMultipleSeriesRenderer.setLegendTextSize(mDefaultTextSize);
 		xyMultipleSeriesRenderer.setXAxisMin(0);
 		xyMultipleSeriesRenderer.setXAxisMax(historicStatistics.getMaxX() + 1);
+		xyMultipleSeriesRenderer.setXLabels((int) Math.min(historicStatistics.getMaxX() + 1,4));
 		xyMultipleSeriesRenderer.setYAxisMin(0);
 		xyMultipleSeriesRenderer.setMargins(new int[] { 0, 80, 50, 40 });
 		xyMultipleSeriesRenderer.setZoomButtonsVisible(false);
@@ -253,7 +254,6 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment {
 		xyMultipleSeriesRenderer.setYLabelsAlign(Align.RIGHT);
 		xyMultipleSeriesRenderer.setYLabelsPadding(5f);
 
-
 		// Create object for category series and the series renderer
 		XYMultipleSeriesDataset xyMultipleSeriesDataset = new XYMultipleSeriesDataset();
 
@@ -308,7 +308,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment {
 			xySeriesRenderer.setLineWidth(4);
 			xyMultipleSeriesRenderer.addSeriesRenderer(xySeriesRenderer);
 		}
-
+		
 		// Create a table with extra data for fastest, average and slowest time.
 		TableLayout tableLayout = null;
 		if (historicStatistics.isXYSeriesUsed(Serie.SOLVED)) {
