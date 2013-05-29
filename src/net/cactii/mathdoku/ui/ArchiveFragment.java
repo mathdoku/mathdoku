@@ -22,6 +22,7 @@ import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.DefaultRenderer;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 
+import android.graphics.Color;
 import android.graphics.Paint.Align;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -246,6 +247,10 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 
 		// Define the renderer
 		XYMultipleSeriesRenderer xyMultipleSeriesRenderer = new XYMultipleSeriesRenderer();
+		
+		// Fix background color problem of margin in AChartEngine
+		xyMultipleSeriesRenderer.setMarginsColor(Color.argb(0, 50, 50, 50));
+
 		xyMultipleSeriesRenderer.setLabelsTextSize(mDefaultTextSize);
 		xyMultipleSeriesRenderer.setLegendTextSize(mDefaultTextSize);
 		xyMultipleSeriesRenderer.setYTitle(getResources().getString(R.string.avoidable_moves_yaxis_description));
@@ -368,6 +373,10 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 
 		// Define the renderer
 		XYMultipleSeriesRenderer xyMultipleSeriesRenderer = new XYMultipleSeriesRenderer();
+		
+		// Fix background color problem of margin in AChartEngine
+		xyMultipleSeriesRenderer.setMarginsColor(Color.argb(0, 50, 50, 50));
+
 		xyMultipleSeriesRenderer.setLabelsTextSize(mDefaultTextSize);
 		xyMultipleSeriesRenderer.setLegendTextSize(mDefaultTextSize);
 		xyMultipleSeriesRenderer.setYTitle(getResources().getString(R.string.statistics_cheats_yaxis_description));
