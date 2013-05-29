@@ -334,11 +334,12 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 		registerForContextMenu(this.mGridView);
 
-		// In case a solving attempt id has been passed, this attempt has to be loaded.
+		// In case a solving attempt id has been passed, this attempt has to be
+		// loaded.
 		Bundle args = getArguments();
 		if (args != null) {
 			int solvingAttemptId = args.getInt(BUNDLE_KEY_SOLVING_ATTEMPT_ID);
-			
+
 			mGrid = new Grid();
 			if (mGrid.load(solvingAttemptId)) {
 				setNewGrid(mGrid);
@@ -360,20 +361,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	}
 
 	public void setTheme() {
-		switch (mMathDokuPreferences.getTheme()) {
-		case NEWSPAPER:
-			mPainter.setTheme(GridTheme.NEWSPAPER);
-			mTimerText.setBackgroundColor(0x90808080);
-			break;
-		case DARK:
-			mPainter.setTheme(GridTheme.DARK);
-			mTimerText.setTextColor(0xFFF0F0F0);
-			break;
-		case CARVED:
-			mPainter.setTheme(GridTheme.CARVED);
-			mTimerText.setBackgroundColor(0x10000000);
-			break;
-		}
+		mPainter.setTheme(mMathDokuPreferences.getTheme());
 
 		this.mGridView.invalidate();
 	}
@@ -616,37 +604,35 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 					mOnGridFinishedListener.onGridFinishedListener(mGrid
 							.getSolvingAttemptId());
 				} else {
-					// Set input mode to hide controls while playing the animation.
+					// Set input mode to hide controls while playing the
+					// animation.
 					setInputMode(InputMode.NO_INPUT__DISPLAY_GRID);
-					
+
 					// Set the text view which will be animated
 					final TextView textView = (TextView) mRootView
 							.findViewById(R.id.solvedText);
 					textView.setText(R.string.main_ui_solved_messsage);
 					textView.setTextColor(0xFF002F00);
-					textView
-							.setTypeface(Painter.getInstance().getTypeface());
+					textView.setTypeface(Painter.getInstance().getTypeface());
 					textView.setVisibility(View.VISIBLE);
 
 					// Build the animation
 					Animation animation = AnimationUtils.loadAnimation(
 							mContext, R.anim.solved);
-					animation
-							.setAnimationListener(new AnimationListener() {
-								public void onAnimationEnd(Animation animation) {
-									textView.setVisibility(View.GONE);
-									mOnGridFinishedListener
-											.onGridFinishedListener(mGrid
-													.getSolvingAttemptId());
-								}
+					animation.setAnimationListener(new AnimationListener() {
+						public void onAnimationEnd(Animation animation) {
+							textView.setVisibility(View.GONE);
+							mOnGridFinishedListener
+									.onGridFinishedListener(mGrid
+											.getSolvingAttemptId());
+						}
 
-								public void onAnimationRepeat(
-										Animation animation) {
-								}
+						public void onAnimationRepeat(Animation animation) {
+						}
 
-								public void onAnimationStart(Animation animation) {
-								}
-							});
+						public void onAnimationStart(Animation animation) {
+						}
+					});
 
 					// Start animation of the text view.
 					textView.startAnimation(animation);
