@@ -19,6 +19,7 @@ import org.achartengine.renderer.DefaultRenderer;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
 
+import android.graphics.Color;
 import android.graphics.Paint.Align;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -186,6 +187,10 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment {
 
 		// Define the renderer
 		XYMultipleSeriesRenderer xyMultipleSeriesRenderer = new XYMultipleSeriesRenderer();
+		
+		// Fix background color problem of margin in AChartEngine
+		xyMultipleSeriesRenderer.setMarginsColor(Color.argb(0, 50, 50, 50));
+		
 		xyMultipleSeriesRenderer.setLabelsTextSize(mDefaultTextSize);
 		xyMultipleSeriesRenderer.setLegendTextSize(mDefaultTextSize);
 		xyMultipleSeriesRenderer.setXAxisMin(0);
