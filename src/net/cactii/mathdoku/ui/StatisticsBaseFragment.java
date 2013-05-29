@@ -109,8 +109,8 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	 *            An additional view which has to be displayed between chart and
 	 *            explanation.
 	 */
-	protected void addStatisticsSection(String title, String subTitle,
-			GraphicalView chart, View extraDataView, String explanation) {
+	protected void addStatisticsSection(String title, GraphicalView chart,
+			View extraDataView, String explanation) {
 		// Inflate a new view for this statistics section
 		View sectionView = mLayoutInflater.inflate(R.layout.statistics_section,
 				null);
@@ -121,16 +121,6 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 					.findViewById(R.id.statistics_section_title);
 			if (textView != null) {
 				textView.setText(title);
-				textView.setVisibility(View.VISIBLE);
-			}
-		}
-
-		// Set subtitle.
-		if (subTitle != null && subTitle.isEmpty() == false) {
-			TextView textView = (TextView) sectionView
-					.findViewById(R.id.statistics_section_subtitle);
-			if (textView != null) {
-				textView.setText(subTitle);
 				textView.setVisibility(View.VISIBLE);
 			}
 		}

@@ -147,22 +147,10 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment {
 			renderer.addSeriesRenderer(createSimpleSeriesRenderer(chartGrey1));
 		}
 
-		// Determine title
-		String subTitle;
-		if (cumulativeStatistics.mMinGridSize == cumulativeStatistics.mMaxGridSize) {
-			subTitle = this.getResources().getString(
-					R.string.statistics_chart_one_grid_size_subtitle,
-					cumulativeStatistics.mMinGridSize);
-		} else {
-			subTitle = this.getResources().getString(
-					R.string.statistics_chart_all_grid_sizes_subtitle,
-					cumulativeStatistics.mMinGridSize);
-		}
-
 		// Add section to activity
 		addStatisticsSection(
 				getResources().getString(R.string.solved_chart_title),
-				subTitle, ChartFactory.getPieChartView(getActivity(),
+				ChartFactory.getPieChartView(getActivity(),
 						categorySeries, renderer), null, getResources()
 						.getString(R.string.solved_chart_body));
 		return true;
@@ -356,7 +344,6 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment {
 		addStatisticsSection(
 				getResources().getString(
 						R.string.statistics_elapsed_time_historic_title),
-				null,
 				ChartFactory.getCombinedXYChartView(getActivity(),
 						xyMultipleSeriesDataset, xyMultipleSeriesRenderer,
 						types),

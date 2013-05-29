@@ -9,7 +9,6 @@ import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.statistics.GridStatistics;
-import net.cactii.mathdoku.storage.database.GridRow;
 import net.cactii.mathdoku.ui.GridView.InputModeDeterminer;
 import net.cactii.mathdoku.ui.PuzzleFragment.InputMode;
 import net.cactii.mathdoku.util.Util;
@@ -222,7 +221,7 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 		renderer.addSeriesRenderer(createSimpleSeriesRenderer(chartGrey1));
 
 		addStatisticsSection(
-				getResources().getString(R.string.progress_chart_title), null,
+				getResources().getString(R.string.progress_chart_title),
 				ChartFactory.getPieChartView(getActivity(), categorySeries,
 						renderer), null,
 				getResources().getString(R.string.progress_chart_body));
@@ -247,13 +246,14 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 
 		// Define the renderer
 		XYMultipleSeriesRenderer xyMultipleSeriesRenderer = new XYMultipleSeriesRenderer();
-		
+
 		// Fix background color problem of margin in AChartEngine
 		xyMultipleSeriesRenderer.setMarginsColor(Color.argb(0, 50, 50, 50));
 
 		xyMultipleSeriesRenderer.setLabelsTextSize(mDefaultTextSize);
 		xyMultipleSeriesRenderer.setLegendTextSize(mDefaultTextSize);
-		xyMultipleSeriesRenderer.setYTitle(getResources().getString(R.string.avoidable_moves_yaxis_description));
+		xyMultipleSeriesRenderer.setYTitle(getResources().getString(
+				R.string.avoidable_moves_yaxis_description));
 		xyMultipleSeriesRenderer.setXAxisMin(-1);
 		xyMultipleSeriesRenderer.setYLabelsAlign(Align.RIGHT);
 		xyMultipleSeriesRenderer.setMargins(new int[] { 0, 50, 40, 10 });
@@ -334,7 +334,7 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 		// Add new statistics section to the activity
 		addStatisticsSection(
 				getResources().getString(R.string.avoidable_moves_chart_title),
-				null, ChartFactory.getBarChartView(getActivity(),
+				ChartFactory.getBarChartView(getActivity(),
 						xyMultipleSeriesDataset, xyMultipleSeriesRenderer,
 						Type.DEFAULT), null,
 				getResources().getString(R.string.avoidable_moves_chart_body));
@@ -373,13 +373,14 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 
 		// Define the renderer
 		XYMultipleSeriesRenderer xyMultipleSeriesRenderer = new XYMultipleSeriesRenderer();
-		
+
 		// Fix background color problem of margin in AChartEngine
 		xyMultipleSeriesRenderer.setMarginsColor(Color.argb(0, 50, 50, 50));
 
 		xyMultipleSeriesRenderer.setLabelsTextSize(mDefaultTextSize);
 		xyMultipleSeriesRenderer.setLegendTextSize(mDefaultTextSize);
-		xyMultipleSeriesRenderer.setYTitle(getResources().getString(R.string.statistics_cheats_yaxis_description));
+		xyMultipleSeriesRenderer.setYTitle(getResources().getString(
+				R.string.statistics_cheats_yaxis_description));
 		xyMultipleSeriesRenderer.setXAxisMin(-1);
 		xyMultipleSeriesRenderer.setXAxisMax(cheatCategories + 2);
 		xyMultipleSeriesRenderer.setXLabels(cheatCategories);
@@ -397,12 +398,11 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 
 		// Create object for category series and the series renderer
 		XYMultipleSeriesDataset xyMultipleSeriesDataset = new XYMultipleSeriesDataset();
-		
+
 		// While filling the categories the number of categories used and the
 		// maximum Y-value is determined.
 		int categoryIndex = 1;
 		int maxYValue = 0;
-
 
 		// Check progress option used
 		if (mGridStatistics.mCheckProgressUsed > 0) {
@@ -437,7 +437,8 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 			xyMultipleSeriesRenderer
 					.addSeriesRenderer(createSimpleSeriesRenderer(chartRed3));
 			categoryIndex++;
-			maxYValue = Math.max(maxYValue, mGridStatistics.mOperatorsRevevealed);
+			maxYValue = Math.max(maxYValue,
+					mGridStatistics.mOperatorsRevevealed);
 		}
 
 		// Solution revealed option used
@@ -450,7 +451,8 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 			xyMultipleSeriesRenderer
 					.addSeriesRenderer(createSimpleSeriesRenderer(chartRed4));
 			categoryIndex++;
-			maxYValue = Math.max(maxYValue, (mGridStatistics.isSolutionRevealed() ? 1 : 0));
+			maxYValue = Math.max(maxYValue,
+					(mGridStatistics.isSolutionRevealed() ? 1 : 0));
 		}
 
 		// Fill dimensions of axis based on number of categories and maximum
@@ -465,7 +467,7 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 
 		addStatisticsSection(
 				getResources().getString(R.string.statistics_cheats_used_title),
-				null, ChartFactory.getBarChartView(getActivity(),
+				ChartFactory.getBarChartView(getActivity(),
 						xyMultipleSeriesDataset, xyMultipleSeriesRenderer,
 						Type.DEFAULT), null,
 				getResources().getString(R.string.statistics_cheats_used_body));

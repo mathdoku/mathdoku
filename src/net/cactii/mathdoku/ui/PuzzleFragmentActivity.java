@@ -14,7 +14,6 @@ import net.cactii.mathdoku.storage.database.GridDatabaseAdapter;
 import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 import net.cactii.mathdoku.tip.TipArchive;
 import net.cactii.mathdoku.tip.TipDialog;
-import net.cactii.mathdoku.ui.PuzzleFragment.InputMode;
 import net.cactii.mathdoku.util.UsageLog;
 import net.cactii.mathdoku.util.Util;
 import android.annotation.TargetApi;

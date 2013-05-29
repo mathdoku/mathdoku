@@ -314,10 +314,6 @@
     <string name="statistics_general_cheat_penalty_time">Boete vals spel</string>
     <string name="statistics_general_replay">Opnieuw spelen</string>
     
-    <!-- Sub title for charts displaying cumulative statistics for a certain grid size or on all grid sizes. -->
-    <string name="statistics_chart_one_grid_size_subtitle">Game size %1$d</string>
-    <string name="statistics_chart_all_grid_sizes_subtitle">All games</string>
-
     <!-- Title and a body which explains the purpose of the chart "Progress". -->
     <string name="progress_chart_title">Voortgang</string>
     <string name="progress_chart_body">Deze afbeelding toont de voortgang van het oplossen van deze puzzel. Voor ingevulde cellen wordt niet getoond of de ingevulde waarde (in)correct is. Een cel die mogelijke waarden bevat wordt geteld als een lege cel.</string>
