@@ -309,7 +309,7 @@ public class HistoricStatistics {
 	 * @return The slowest time in which a game was solved.
 	 */
 	public long getSolvedSlowest() {
-		return mSolvedSeriesSummary.getMaximum();
+		return (mSolvedSeriesSummary.getCount() > 0 ? mSolvedSeriesSummary.getMaximum() : 0);
 	}
 
 	/**
@@ -318,7 +318,7 @@ public class HistoricStatistics {
 	 * @return The fastest time in which a game was solved.
 	 */
 	public long getSolvedFastest() {
-		return mSolvedSeriesSummary.getMinimum();
+		return (mSolvedSeriesSummary.getCount() > 0 ? mSolvedSeriesSummary.getMinimum() : 0);
 	}
 
 	/**
@@ -327,6 +327,6 @@ public class HistoricStatistics {
 	 * @return The average time in which game have been solved.
 	 */
 	public long getSolvedAverage() {
-		return mSolvedSeriesSummary.getAverage();
+		return (mSolvedSeriesSummary.getCount() > 0 ? mSolvedSeriesSummary.getAverage() : 0);
 	}
 }

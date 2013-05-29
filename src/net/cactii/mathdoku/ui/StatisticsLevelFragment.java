@@ -304,38 +304,44 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment {
 		}
 
 		// Create a table with extra data for fastest, average and slowest time.
-		TableLayout tableLayout = new TableLayout(getActivity());
-		TableLayout.LayoutParams tableLayoutParams = new TableLayout.LayoutParams(
-				TableLayout.LayoutParams.WRAP_CONTENT,
-				TableLayout.LayoutParams.WRAP_CONTENT);
-		tableLayout.setLayoutParams(tableLayoutParams);
+		TableLayout tableLayout = null;
+		if (historicStatistics.isXYSeriesUsed(Serie.SOLVED)) {
+			tableLayout = new TableLayout(getActivity());
+			TableLayout.LayoutParams tableLayoutParams = new TableLayout.LayoutParams(
+					TableLayout.LayoutParams.WRAP_CONTENT,
+					TableLayout.LayoutParams.WRAP_CONTENT);
+			tableLayout.setLayoutParams(tableLayoutParams);
 
-		tableLayout.addView(createDataTableRow(tableLayoutParams,
-				getResources().getString(R.string.chart_serie_solved), null));
-		tableLayout
-				.addView(createDataTableRow(
-						tableLayoutParams,
-						getResources()
-								.getString(
-										R.string.statistics_elapsed_time_historic_solved_slowest),
-						Util.durationTimeToString(historicStatistics
-								.getSolvedSlowest())));
-		tableLayout
-				.addView(createDataTableRow(
-						tableLayoutParams,
-						getResources()
-								.getString(
-										R.string.statistics_elapsed_time_historic_solved_average),
-						Util.durationTimeToString(historicStatistics
-								.getSolvedAverage())));
-		tableLayout
-				.addView(createDataTableRow(
-						tableLayoutParams,
-						getResources()
-								.getString(
-										R.string.statistics_elapsed_time_historic_solved_fastest),
-						Util.durationTimeToString(historicStatistics
-								.getSolvedFastest())));
+			tableLayout
+					.addView(createDataTableRow(
+							tableLayoutParams,
+							getResources().getString(
+									R.string.chart_serie_solved), null));
+			tableLayout
+					.addView(createDataTableRow(
+							tableLayoutParams,
+							getResources()
+									.getString(
+											R.string.statistics_elapsed_time_historic_solved_slowest),
+							Util.durationTimeToString(historicStatistics
+									.getSolvedSlowest())));
+			tableLayout
+					.addView(createDataTableRow(
+							tableLayoutParams,
+							getResources()
+									.getString(
+											R.string.statistics_elapsed_time_historic_solved_average),
+							Util.durationTimeToString(historicStatistics
+									.getSolvedAverage())));
+			tableLayout
+					.addView(createDataTableRow(
+							tableLayoutParams,
+							getResources()
+									.getString(
+											R.string.statistics_elapsed_time_historic_solved_fastest),
+							Util.durationTimeToString(historicStatistics
+									.getSolvedFastest())));
+		}
 
 		// Display as stacked bar chart here. As the series are mutually
 		// exclusive this will result in one single bar per game which is
