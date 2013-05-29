@@ -200,7 +200,7 @@ public class HistoricStatistics {
 		XYSeries xySeries = new XYSeries(title);
 
 		double scaleFactor = getScaleFactor(scale);
-		int index = 0;
+		int index = 1;
 		for (DataPoint dataPoint : dataPoints) {
 			xySeries.add(index++,
 					(dataPoint.mSerie == serie ? ((double) dataPoint.mValue)
