@@ -92,9 +92,6 @@ public class UsageLog {
 	// Definition of the most recent played game
 	private String mLastGridDefinition = "";
 
-	// Keep track of the trackball is used in the current game.
-	private static boolean mTrackbalUsageLoggedInSession = false;
-
 	/**
 	 * Creates a new instance of {@link #UsageLogging()}.
 	 * 
@@ -361,29 +358,6 @@ public class UsageLog {
 					Integer.toString(configuration.orientation));
 
 			logSortedMap("Configuration", sortedMap);
-		}
-	}
-
-	/**
-	 * Log usage of trackball.
-	 */
-	public void logTrackball(String gridDefinition) {
-		if (mBuildLog) {
-
-			if (mTrackbalUsageLoggedInSession
-					&& gridDefinition.equals(mLastGridDefinition)) {
-				// Already logged the trackball for this game
-				return;
-			}
-			mLastGridDefinition = gridDefinition;
-
-			SortedMap<String, String> sortedMap = new TreeMap<String, String>();
-
-			sortedMap.put("isUsedInCurrentGame", Boolean.toString(true));
-
-			logSortedMap("Trackball", sortedMap);
-
-			mTrackbalUsageLoggedInSession = true;
 		}
 	}
 

@@ -44,7 +44,7 @@
 
     <!-- The title and body describing how to play the game. -->
     <string name="puzzle_help_dialog_how_to_play__section_title">How to play</string>
-    <string name="puzzle_help_dialog_how_to_play_section_body">Touch to select a cell in the grid, then choose a digit. The \'normal / maybe\' mode button allows you to mark multiple possibilities.\n\nLong-touch a cell for more options.\n\nYou can also play using the trackball.\n\nThe current game will be saved when you exit the game, or use the Load/Save menu to save unlimited games.</string>
+    <string name="puzzle_help_dialog_how_to_play_section_body">Touch to select a cell in the grid, then choose a digit. The \'normal / maybe\' mode button allows you to mark multiple possibilities.\n\nLong-touch a cell for more options.\n\nThe current game will be saved when you exit the game, or use the Load/Save menu to save unlimited games.</string>
 
     <!-- The version title in the help screen. -->
     <string name="puzzle_help_dialog_version_section_title">Version</string>

@@ -44,7 +44,7 @@
 
     <!-- The title and body describing how to play the game. -->
     <string name="puzzle_help_dialog_how_to_play__section_title">Hoe te spelen?</string>
-    <string name="puzzle_help_dialog_how_to_play_section_body">Raak een vlak aan in de puzzel om een getal te kiezen. Raak hetzelfde vlak nogmaals aan om \'mogelijken\' waarde vast te leggen.\n\nRaak een vlak lang aan voor meer opties.\n\nJe kunt ook spelen met de trackball.\n\nDe huidige puzzel wordt bewaard bij het verlaten van de app, of gebruik het menu om een onbeperkt aantal puzzles op te slaan of te laden.</string>
+    <string name="puzzle_help_dialog_how_to_play_section_body">Raak een vlak aan in de puzzel om een getal te kiezen. Raak hetzelfde vlak nogmaals aan om \'mogelijken\' waarde vast te leggen.\n\nRaak een vlak lang aan voor meer opties.\n\nDe huidige puzzel wordt bewaard bij het verlaten van de app, of gebruik het menu om een onbeperkt aantal puzzles op te slaan of te laden.</string>
 
     <!-- The version title in the help screen. -->
     <string name="puzzle_help_dialog_version_section_title">Versie</string>

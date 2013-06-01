@@ -13,17 +13,16 @@ import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import net.cactii.mathdoku.tip.TipIncorrectValue;
 import net.cactii.mathdoku.tip.TipOrderOfValuesInCage;
 import net.cactii.mathdoku.ui.PuzzleFragment.InputMode;
-import net.cactii.mathdoku.util.UsageLog;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class GridView extends View implements OnTouchListener {
@@ -46,9 +45,6 @@ public class GridView extends View implements OnTouchListener {
 	// Size of the grid view and cells in grid
 	public float mGridViewSize;
 	private float mGridCellSize;
-
-	public float mTrackPosX;
-	public float mTrackPosY;
 
 	public boolean mSelectorShown = false;
 
@@ -117,43 +113,36 @@ public class GridView extends View implements OnTouchListener {
 
 		// On down event select the cell but no further processing until we are
 		// sure the long press event has been caught.
-		if (event.getAction() == MotionEvent.ACTION_DOWN) {
+		switch(event.getAction()) {
+		case MotionEvent.ACTION_DOWN:
 			// Remember which cell was selected before.
 			mPreviouslyTouchedCell = mGrid.getSelectedCell();
 
-			// Find out where the grid was touched.
-			float x = event.getX();
-			float y = event.getY();
-			int size = getMeasuredWidth();
-
 			int gridSize = mGrid.getGridSize();
-			int row = (int) ((size - (size - y)) / (size / gridSize));
-			if (row > gridSize - 1)
+			
+			// Find out where the grid was touched.
+			int row = (int) (event.getY() / mGridCellSize);
+			if (row > gridSize - 1) {
 				row = gridSize - 1;
-			if (row < 0)
+			} else if (row < 0) {
 				row = 0;
-
-			int col = (int) ((size - (size - x)) / (size / gridSize));
-			if (col > gridSize - 1)
+			}
+			int col = (int) (event.getX() / mGridCellSize);
+			if (col > gridSize - 1) {
 				col = gridSize - 1;
-			if (col < 0)
+			} else if (col < 0) {
 				col = 0;
-
-			// We can now get the cell.
-			GridCell cell = mGrid.getCellAt(row, col);
-			float[] cellPos = this.cellToCoordinates(cell.getCellNumber());
-			this.mTrackPosX = cellPos[0];
-			this.mTrackPosY = cellPos[1];
+			}
 
 			// Select new cell
-			mGrid.setSelectedCell(cell);
-		}
-
-		// On up event complete processing of cell selection.
-		if (event.getAction() == MotionEvent.ACTION_UP) {
-			this.playSoundEffect(SoundEffectConstants.CLICK);
-
+			mGrid.setSelectedCell(mGrid.getCellAt(row, col));
+			
+			invalidate();
+			break;
+		case MotionEvent.ACTION_UP:
 			if (this.mTouchedListener != null) {
+				this.playSoundEffect(SoundEffectConstants.CLICK);
+
 				// Determine if same cell was touched again
 				boolean sameCellSelectedAgain = (mGrid.getSelectedCell() != null && mGrid
 						.getSelectedCell().equals(mPreviouslyTouchedCell));
@@ -161,96 +150,12 @@ public class GridView extends View implements OnTouchListener {
 				mTouchedListener.gridTouched(mGrid.getSelectedCell(),
 						sameCellSelectedAgain);
 			}
+			break;
+		default:
+			break;
 		}
-
-		invalidate();
 
 		return false;
-	}
-
-	// Handle trackball, both press down, and scrolling around to
-	// select a cell.
-	public boolean onTrackballEvent(MotionEvent event) {
-		if (!this.mGrid.isActive() || this.mSelectorShown)
-			return false;
-
-		UsageLog.getInstance().logTrackball(mGrid.toGridDefinitionString());
-
-		// On press event, take selected cell, call touched listener
-		// which will popup the digit selector.
-		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			if (this.mTouchedListener != null) {
-				mGrid.getSelectedCell().mSelected = true;
-				this.mTouchedListener.gridTouched(mGrid.getSelectedCell(),
-						false); // TODO: test on change of cell?
-			}
-			return true;
-		}
-		// A multiplier amplifies the trackball event values
-		int trackMult = 70;
-		switch (mGrid.getGridSize()) {
-		case 4:
-			// fall through
-		case 5:
-			trackMult = 60;
-			break;
-		case 6:
-			trackMult = 50;
-			break;
-		case 7:
-			// fall through
-		case 8:
-			// fall through
-		case 9:
-			trackMult = 40;
-			break;
-		}
-		// Fetch the trackball position, work out the cell it's at
-		float x = event.getX();
-		float y = event.getY();
-		this.mTrackPosX += x * trackMult;
-		this.mTrackPosY += y * trackMult;
-		GridCell cell = this
-				.coordinatesToCell(this.mTrackPosX, this.mTrackPosY);
-		if (cell == null) {
-			this.mTrackPosX -= x * trackMult;
-			this.mTrackPosY -= y * trackMult;
-			return true;
-		}
-		// Set the cell as selected
-		if (mGrid.getSelectedCell() != null) {
-			mGrid.getSelectedCell().mSelected = false;
-			if (mGrid.getSelectedCell() != cell) // TODO: test with toggling
-													// input mode
-				this.mTouchedListener.gridTouched(cell, false);
-		}
-		for (GridCell c : mGrid.mCells) {
-			c.mSelected = false;
-			mGrid.mCages.get(c.getCageId()).mSelected = false;
-		}
-		mGrid.setSelectedCell(cell);
-		cell.mSelected = true;
-		mGrid.mCages.get(mGrid.getSelectedCell().getCageId()).mSelected = true;
-		invalidate();
-		return true;
-	}
-
-	// Given a cell number, returns origin x,y coordinates.
-	private float[] cellToCoordinates(int cell) {
-		float xOrd;
-		float yOrd;
-		int gridSize = mGrid.getGridSize();
-		xOrd = ((float) cell % gridSize) * mGridCellSize;
-		yOrd = ((int) (cell / gridSize) * mGridCellSize);
-		return new float[] { xOrd, yOrd };
-	}
-
-	// Opposite of above - given a coordinate, returns the cell number within.
-	private GridCell coordinatesToCell(float x, float y) {
-		int gridSize = mGrid.getGridSize();
-		int row = (int) ((y / mGridViewSize) * gridSize);
-		int col = (int) ((x / mGridViewSize) * gridSize);
-		return mGrid.getCellAt(row, col);
 	}
 
 	public GridCell getSelectedCell() {
