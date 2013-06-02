@@ -48,6 +48,7 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -94,6 +95,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 	RelativeLayout mTopLayout;
 	RelativeLayout mPuzzleGridLayout;
+	TableLayout mControls;
 	TextView mGameSeedLabel;
 	TextView mGameSeedText;
 	TextView mTimerText;
@@ -164,6 +166,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				return mInputMode;
 			}
 		};
+		this.mControls = (TableLayout) mRootView.findViewById(R.id.controls);
 		this.mGameSeedLabel = (TextView) mRootView
 				.findViewById(R.id.gameSeedLabel);
 		this.mGameSeedText = (TextView) mRootView
@@ -704,6 +707,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		switch (inputMode) {
 		case NO_INPUT__HIDE_GRID:
 			mTimerText.setVisibility(View.GONE);
+			mControls.setVisibility(View.GONE);
 			break;
 		case NO_INPUT__DISPLAY_GRID:
 			if (mGrid == null || (mGrid != null && mGrid.isSolvedByCheating())) {
@@ -715,6 +719,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				this.mTimerText.setVisibility(View.VISIBLE);
 				setElapsedTime(mGrid.getElapsedTime());
 			}
+			mControls.setVisibility(View.GONE);
 
 			// Determine the layout to be used for maybe values inside a grid
 			if (mGrid != null) {
@@ -726,6 +731,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			if (mMathDokuPreferences.isTimerVisible()) {
 				mTimerText.setVisibility(View.VISIBLE);
 			}
+			mControls.setVisibility(View.VISIBLE);
 
 			// Determine the color which is used for text which depends on the
 			// actual input mode
