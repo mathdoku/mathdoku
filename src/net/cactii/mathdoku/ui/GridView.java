@@ -18,7 +18,6 @@ import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 import android.view.View;
@@ -42,7 +41,9 @@ public class GridView extends View implements OnTouchListener {
 	// Previously touched cell
 	private GridCell mPreviouslyTouchedCell;
 
-	// Size of the grid view and cells in grid
+	// Size (in cells and pixels) of the grid view and size (in pixel) of cells
+	// in grid
+	private int mGridSize;
 	public float mGridViewSize;
 	private float mGridCellSize;
 
@@ -56,6 +57,11 @@ public class GridView extends View implements OnTouchListener {
 
 	// Visible window rectangle
 	private Rect mDisplayFrame;
+
+	// Cell on which last touch down event took place
+	private int mRowLastTouchDownCell;
+	private int mColLastTouchDownCell;
+	private boolean mHasLeftCellAfterTouchDown;
 
 	// Used to grab the current input mode from.
 	public InputModeDeterminer mInputModeDeterminer;
@@ -113,42 +119,148 @@ public class GridView extends View implements OnTouchListener {
 
 		// On down event select the cell but no further processing until we are
 		// sure the long press event has been caught.
-		switch(event.getAction()) {
+		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
 			// Remember which cell was selected before.
 			mPreviouslyTouchedCell = mGrid.getSelectedCell();
 
-			int gridSize = mGrid.getGridSize();
-			
 			// Find out where the grid was touched.
-			int row = (int) (event.getY() / mGridCellSize);
-			if (row > gridSize - 1) {
-				row = gridSize - 1;
-			} else if (row < 0) {
-				row = 0;
+			mRowLastTouchDownCell = (int) (event.getY() / mGridCellSize);
+			if (mRowLastTouchDownCell > mGridSize - 1) {
+				mRowLastTouchDownCell = mGridSize - 1;
+			} else if (mRowLastTouchDownCell < 0) {
+				mRowLastTouchDownCell = 0;
 			}
-			int col = (int) (event.getX() / mGridCellSize);
-			if (col > gridSize - 1) {
-				col = gridSize - 1;
-			} else if (col < 0) {
-				col = 0;
+			mColLastTouchDownCell = (int) (event.getX() / mGridCellSize);
+			if (mColLastTouchDownCell > mGridSize - 1) {
+				mColLastTouchDownCell = mGridSize - 1;
+			} else if (mColLastTouchDownCell < 0) {
+				mColLastTouchDownCell = 0;
 			}
 
 			// Select new cell
-			mGrid.setSelectedCell(mGrid.getCellAt(row, col));
-			
+			mGrid.setSelectedCell(mGrid.getCellAt(mRowLastTouchDownCell,
+					mColLastTouchDownCell));
+			mHasLeftCellAfterTouchDown = false;
+
 			invalidate();
 			break;
 		case MotionEvent.ACTION_UP:
 			if (this.mTouchedListener != null) {
 				this.playSoundEffect(SoundEffectConstants.CLICK);
 
-				// Determine if same cell was touched again
-				boolean sameCellSelectedAgain = (mGrid.getSelectedCell() != null && mGrid
+				// Find out where the grid was released
+				float rowRelease = event.getY() / mGridCellSize;
+				if (rowRelease > mGridSize) {
+					rowRelease = mGridSize;
+				} else if (rowRelease < 0) {
+					rowRelease = -1;
+				} else {
+					rowRelease = (int) rowRelease;
+				}
+				float colRelease = event.getX() / mGridCellSize;
+				if (colRelease > mGridSize) {
+					colRelease = mGridSize;
+				} else if (colRelease < 0) {
+					colRelease = -1;
+				} else {
+					colRelease = (int) colRelease;
+				}
+
+				// If a valid swype movement was made, set the value
+				// corresponding to the swype in the cell.
+				boolean swyped = false;
+				if (((int) colRelease == mColLastTouchDownCell)
+						&& ((int) rowRelease == mRowLastTouchDownCell)) {
+					if (mHasLeftCellAfterTouchDown && mGridSize >= 5) {
+						// A swipe has been made outside the cell which was
+						// initially touched but it was release again a the same
+						// cell.
+						swyped = true;
+						digitSelected(5, mInputModeDeterminer.getInputMode());
+						invalidate();
+					}
+				} else {
+					// A swipe has been made outside the cell which was
+					// initially touched. Fill the initially touched cell with a
+					// user value dependent on the direction the initially
+					// touched cell was left.
+					if (colRelease < mColLastTouchDownCell
+							&& rowRelease < mRowLastTouchDownCell
+							&& mGridSize >= 1) {
+						// Release cell is to upper left of touched cell
+						swyped = true;
+						digitSelected(1, mInputModeDeterminer.getInputMode());
+					} else if (colRelease == mColLastTouchDownCell
+							&& rowRelease < mRowLastTouchDownCell
+							&& mGridSize >= 2) {
+						// Release cell is to upper of touched cell
+						swyped = true;
+						digitSelected(2, mInputModeDeterminer.getInputMode());
+					} else if (colRelease > mColLastTouchDownCell
+							&& rowRelease < mRowLastTouchDownCell
+							&& mGridSize >= 3) {
+						// Release cell is to upper right of touched cell
+						swyped = true;
+						digitSelected(3, mInputModeDeterminer.getInputMode());
+					} else if (colRelease < mColLastTouchDownCell
+							&& rowRelease == mRowLastTouchDownCell
+							&& mGridSize >= 4) {
+						// Release cell is to left of touched cell
+						swyped = true;
+						digitSelected(4, mInputModeDeterminer.getInputMode());
+					} else if (colRelease > mColLastTouchDownCell
+							&& rowRelease == mRowLastTouchDownCell
+							&& mGridSize >= 6) {
+						// Release cell is to right of touched cell
+						swyped = true;
+						digitSelected(6, mInputModeDeterminer.getInputMode());
+					} else if (colRelease < mColLastTouchDownCell
+							&& rowRelease > mRowLastTouchDownCell
+							&& mGridSize >= 7) {
+						// Release cell is to bottom left of touched cell
+						swyped = true;
+						digitSelected(7, mInputModeDeterminer.getInputMode());
+					} else if (colRelease == mColLastTouchDownCell
+							&& rowRelease > mRowLastTouchDownCell
+							&& mGridSize >= 8) {
+						// Release cell is to bottom of touched cell
+						swyped = true;
+						digitSelected(8, mInputModeDeterminer.getInputMode());
+					} else if (colRelease > mColLastTouchDownCell
+							&& rowRelease > mRowLastTouchDownCell
+							&& mGridSize >= 9) {
+						// Release cell is to bottom right of touched cell
+						swyped = true;
+						digitSelected(9, mInputModeDeterminer.getInputMode());
+					}
+					invalidate();
+				}
+
+				// In case no valid swype movement was made, determine if same cell was touched again.
+				boolean sameCellSelectedAgain = (swyped == false && mGrid.getSelectedCell() != null && mGrid
 						.getSelectedCell().equals(mPreviouslyTouchedCell));
 
+				// Inform listener of puzzle fragment about the release action
 				mTouchedListener.gridTouched(mGrid.getSelectedCell(),
 						sameCellSelectedAgain);
+			}
+			break;
+		case MotionEvent.ACTION_MOVE:
+			if (!mHasLeftCellAfterTouchDown) {
+				// Check if touch cell is left
+				float rowRelease = event.getY() / mGridCellSize;
+				if (rowRelease < 0 || rowRelease > mGridSize
+						|| (int) rowRelease != mRowLastTouchDownCell) {
+					mHasLeftCellAfterTouchDown = true;
+					break;
+				}
+				float colRelease = event.getX() / mGridCellSize;
+				if (colRelease < 0 || colRelease > mGridSize
+						|| (int) colRelease != mColLastTouchDownCell) {
+					mHasLeftCellAfterTouchDown = true;
+					break;
+				}
 			}
 			break;
 		default:
@@ -162,8 +274,7 @@ public class GridView extends View implements OnTouchListener {
 		return mGrid.getSelectedCell();
 	}
 
-	public void digitSelected(int newValue,
-			InputMode inputMode) {
+	public void digitSelected(int newValue, InputMode inputMode) {
 		// Display a message in case no cell is selected.
 		GridCell selectedCell = mGrid.getSelectedCell();
 		if (selectedCell == null) {
@@ -222,10 +333,11 @@ public class GridView extends View implements OnTouchListener {
 								StatisticsCounterType.CELLS_FILLED);
 						mGrid.getGridStatistics().decreaseCounter(
 								StatisticsCounterType.CELLS_EMPTY);
-						
+
 						// In case a user value has been entered, the
 						// check progress should be made available.
-						((PuzzleFragmentActivity) mContext).invalidateOptionsMenu();
+						((PuzzleFragmentActivity) mContext)
+								.invalidateOptionsMenu();
 					} else {
 						mGrid.getGridStatistics().increaseCounter(
 								StatisticsCounterType.USER_VALUE_REPLACED);
@@ -260,10 +372,7 @@ public class GridView extends View implements OnTouchListener {
 
 		synchronized (mGrid.mLock) { // Avoid redrawing at the same time as
 										// creating
-			// puzzle
-			int gridSize = mGrid.getGridSize();
-
-			if (gridSize < 3)
+			if (mGridSize < 3)
 				return;
 			if (mGrid.mCages == null)
 				return;
@@ -289,7 +398,13 @@ public class GridView extends View implements OnTouchListener {
 
 	public void loadNewGrid(Grid grid) {
 		mSelectorShown = false;
-		this.mGrid = grid;
+
+		mGrid = grid;
+
+		// Compute grid size. Set to 1 in case grid is null to avoid problems in
+		// onMeasure as this will be called before the grid is loaded.
+		mGridSize = (mGrid == null ? 1 : mGrid.getGridSize());
+
 		invalidate();
 	}
 
@@ -306,17 +421,17 @@ public class GridView extends View implements OnTouchListener {
 		// Get the maximum space available for the grid. As it is a square we
 		// need the minimum of width and height.
 		int maxSize = (int) Math.min(measuredWidth, measuredHeight);
-		
+
 		// Finally compute the exact size needed to display a grid in which the
 		// (integer) cell size is as big as possible but the grid still fits in
 		// the space available.
-		int gridSize = (mGrid == null ? 1 : mGrid.getGridSize());
 		float gridBorderWidth = (mGridPainter == null ? 0 : mGridPainter
 				.getBorderPaint().getStrokeWidth());
 		mGridCellSize = (float) Math
 				.floor((float) (maxSize - 2 * gridBorderWidth)
-						/ (float) gridSize);
-		mGridViewSize = (float) (2 * gridBorderWidth + gridSize * mGridCellSize);
+						/ (float) mGridSize);
+		mGridViewSize = (float) (2 * gridBorderWidth + mGridSize
+				* mGridCellSize);
 
 		setMeasuredDimension((int) mGridViewSize, (int) mGridViewSize);
 	}

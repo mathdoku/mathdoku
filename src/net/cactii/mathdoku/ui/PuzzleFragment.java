@@ -14,7 +14,6 @@ import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.painter.Painter;
-import net.cactii.mathdoku.painter.Painter.GridTheme;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import net.cactii.mathdoku.tip.TipCheat;
 import net.cactii.mathdoku.tip.TipIncorrectValue;
@@ -30,6 +29,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.gesture.GestureOverlayView;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.ContextMenu;
@@ -346,7 +346,13 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			}
 		}
 
-		return mRootView;
+		// Return a gesture overlay so swype movements will be displayed
+		// automatically. Gesture detection and handling is solely done by the
+		// gridview.
+		GestureOverlayView gestureOverlayView = new GestureOverlayView(mContext);
+		gestureOverlayView.addView(mRootView);
+
+		return gestureOverlayView;
 	}
 
 	public void onPause() {

@@ -89,9 +89,6 @@ public class UsageLog {
 	// Flag whether log information should be written or not.
 	private boolean mBuildLog;
 
-	// Definition of the most recent played game
-	private String mLastGridDefinition = "";
-
 	/**
 	 * Creates a new instance of {@link #UsageLogging()}.
 	 * 
