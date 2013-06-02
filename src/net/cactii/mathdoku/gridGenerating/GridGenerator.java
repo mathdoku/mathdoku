@@ -972,8 +972,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		index -= subtractionWeight;
 
 		// Check whether the multiply operator has to and can be applied. If
-		// not, than
-		// add is chosen.
+		// not, than add is chosen.
 		if (index < multiplyWeight) {
 			int total = 1;
 			for (GridCell cell : cage.mCells) {
@@ -987,9 +986,9 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			Log.i(TAG, "GameSeed: " + mGameSeed + " cage result " + total
 					+ " is rejected");
 			// Multplication leads to a cage value that is too big to be
-			// displayed on this device. For small screens this value is set to
-			// 9,999. For bigger screens the value is 99,999. Instead of
-			// multiplication the add operator will be used for this cage.
+			// displayed on this device. Instead of multiplication the add
+			// operator will be used for this cage which leads to a small cage
+			// outcome.
 		}
 
 		// Use ADD in all other cases.

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Default dimensions for layout. For small screen and tables, refer to specific files. -->
+    <!-- Default dimensions for layout. For tablets, see values-sw600dp. -->
     <string name="dimension">default</string>
 
     <!-- This file should NOT be translated or altered per language. -->

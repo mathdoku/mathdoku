@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="net.cactii.mathdoku"
     android:installLocation="auto"
-    android:versionCode="334"
+    android:versionCode="335"
     android:versionName="2 (dev version)" >
 
     <uses-sdk
@@ -13,8 +13,7 @@
         android:anyDensity="true"
         android:largeScreens="true"
         android:normalScreens="true"
-        android:smallScreens="true"
-        android:xlargeScreens="true" >
+        android:xlargeScreens="true">
     </supports-screens>
 
     <application

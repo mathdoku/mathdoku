@@ -4,7 +4,6 @@ import net.cactii.mathdoku.CellChange;
 import net.cactii.mathdoku.Cheat;
 import net.cactii.mathdoku.Cheat.CheatType;
 import net.cactii.mathdoku.DigitPositionGrid;
-import net.cactii.mathdoku.DigitPositionGrid.DigitPositionGridType;
 import net.cactii.mathdoku.GameTimer;
 import net.cactii.mathdoku.Grid;
 import net.cactii.mathdoku.GridCage;
@@ -808,22 +807,12 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				.getHighlightedTextColorNormalInputMode() : mPainter
 				.getHighlightedTextColorMaybeInputMode());
 
-		// Determine the digit position grid type to be used based on screen
-		// dimensions.
-		DigitPositionGridType digitPositionGridType = DigitPositionGridType.GRID_3X3;
-		if (mContext.getResources().getString(R.string.dimension)
-				.equals("small-port")) {
-			digitPositionGridType = DigitPositionGridType.GRID_2X5;
-		}
-
 		// Only create the digit position grid if needed
 		if (mDigitPositionGrid == null
-				|| !mDigitPositionGrid.isReusable(digitPositionGridType,
-						mGrid.getGridSize())) {
+				|| !mDigitPositionGrid.isReusable(mGrid.getGridSize())) {
 			// Create the mapping for mDigitPosition on the correct button
 			// grid layout.
-			mDigitPositionGrid = new DigitPositionGrid(digitPositionGridType,
-					mGrid.getGridSize());
+			mDigitPositionGrid = new DigitPositionGrid(mGrid.getGridSize());
 
 			// The weight of the input mode has to be aligned with the
 			// number of columns containing digit buttons.
@@ -844,15 +833,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			mDigitPosition[i]
 					.setVisibility(mDigitPositionGrid.getVisibility(i));
 			mDigitPosition[i].setTextColor(color);
-		}
-		if (mDigitPositionGrid.isGrid2x5()) {
-			// This layout also has a buttonposition10 which is never
-			// used to put a button there. However for a correct layout
-			// of the buttons the visibility has to be set correctly.
-			View view = mRootView.findViewById(R.id.digitSelect10);
-			if (view != null) {
-				view.setVisibility(mDigitPositionGrid.getVisibility(9));
-			}
 		}
 	}
 

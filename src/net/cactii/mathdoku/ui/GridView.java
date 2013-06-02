@@ -2,7 +2,6 @@ package net.cactii.mathdoku.ui;
 
 import net.cactii.mathdoku.CellChange;
 import net.cactii.mathdoku.DigitPositionGrid;
-import net.cactii.mathdoku.DigitPositionGrid.DigitPositionGridType;
 import net.cactii.mathdoku.Grid;
 import net.cactii.mathdoku.GridCell;
 import net.cactii.mathdoku.Preferences;
@@ -235,8 +234,10 @@ public class GridView extends View implements OnTouchListener {
 					invalidate();
 				}
 
-				// In case no valid swype movement was made, determine if same cell was touched again.
-				boolean sameCellSelectedAgain = (swyped == false && mGrid.getSelectedCell() != null && mGrid
+				// In case no valid swype movement was made, determine if same
+				// cell was touched again.
+				boolean sameCellSelectedAgain = (swyped == false
+						&& mGrid.getSelectedCell() != null && mGrid
 						.getSelectedCell().equals(mPreviouslyTouchedCell));
 
 				// Inform listener of puzzle fragment about the release action
@@ -485,28 +486,25 @@ public class GridView extends View implements OnTouchListener {
 		getWindowVisibleDisplayFrame(mDisplayFrame);
 
 		// Determine whether adjustments are needed due to low aspect ratio
-		// height/width. Small screens have specific layouts which do no need
-		// further adjustments.
-		if (!getResources().getString(R.string.dimension).startsWith("small")) {
-			if (!mDisplayFrame.isEmpty()) {
-				// Get orientation
-				float newWidth = mDisplayFrame.width();
-				float newHeight = mDisplayFrame.height();
-				if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-					// In landscape mode the grid view should be resized in case
-					// its size is bigger than 67% of the total width. Optimal
-					// scaling factor has been determined based on a Nexus7
-					// display.
-					newWidth *= (float) 0.67;
-				} else {
-					// In portrait mode the grid view should be resized in case
-					// its size is bigger than 60% of the total height. Optimal
-					// scaling factor has been determined based on a Nexus7
-					// display.
-					newHeight *= (float) 0.6;
-				}
-				mDisplayFrame.set(0, 0, (int) newWidth, (int) newHeight);
+		// height/width.
+		if (!mDisplayFrame.isEmpty()) {
+			// Get orientation
+			float newWidth = mDisplayFrame.width();
+			float newHeight = mDisplayFrame.height();
+			if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+				// In landscape mode the grid view should be resized in case
+				// its size is bigger than 67% of the total width. Optimal
+				// scaling factor has been determined based on a Nexus7
+				// display.
+				newWidth *= (float) 0.67;
+			} else {
+				// In portrait mode the grid view should be resized in case
+				// its size is bigger than 60% of the total height. Optimal
+				// scaling factor has been determined based on a Nexus7
+				// display.
+				newHeight *= (float) 0.6;
 			}
+			mDisplayFrame.set(0, 0, (int) newWidth, (int) newHeight);
 		}
 	}
 }

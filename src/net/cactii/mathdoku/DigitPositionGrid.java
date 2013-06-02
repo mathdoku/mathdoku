@@ -9,12 +9,6 @@ import android.view.View;
 public class DigitPositionGrid {
 	public final static String TAG = "MathDoku.DigitPositionGrid";
 
-	public enum DigitPositionGridType {
-		GRID_3X3, GRID_2X5
-	};
-	
-	private DigitPositionGridType mDigitPositionGridType;
-
 	// Matrices holding information about the visibility and the content of the
 	// button positions available.
 	private int[][] mVisibility;
@@ -23,58 +17,37 @@ public class DigitPositionGrid {
 	// Dimension of matrices
 	private int mMaxRows;
 	private int mMaxCols;
-	
+
 	// The number of rows and columns actually used
 	private int mRowsUsed;
 	private int mColsUsed;
-	
+
 	// The number of positions used in the grid
 	private int mPositionsUsed;
 
 	/**
 	 * Creates a new instance of {@link DigitPositionGrid}.
 	 * 
-	 * @param digitPositionGridType
-	 *            The type of button grid layout.
 	 * @param maxDigit
 	 *            The number of digit buttons to put in the grid.
 	 */
-	public DigitPositionGrid(DigitPositionGridType digitPositionGridType,
-			int maxDigit) {
-		mDigitPositionGridType = digitPositionGridType;
+	public DigitPositionGrid(int maxDigit) {
 		mPositionsUsed = maxDigit;
 
-		if (mDigitPositionGridType == DigitPositionGridType.GRID_2X5) {
-			// Dimensions of grid in layout xml
-			mMaxRows = 2;
-			mMaxCols = 5;
+		mMaxRows = 3;
+		mMaxCols = 3;
 
-			// Buttons positions have to be arranged in a grid of 2
-			// rows with maximum of 5 positions each. Depending on the
-			// grid size the buttons are arranged as follows
-			// size 4: 2 rows of 2 buttons each
-			// size 5: 2 rows, first row 3 buttons, second row 2 buttons
-			// size 6: 2 rows, 3 buttons
-			// size 7: 2 rows, first row 4 buttons, second row 3 buttons
-			// size 8: 2 rows, 4 buttons
-			// size 9: 2 rows, first row 5 buttons, second row 4 buttons
-			mRowsUsed = 2;
-		} else {
-			// Dimensions of grid in layout xml
-			mMaxRows = 3;
-			mMaxCols = 3;
+		// Buttons positions have to be arranged in a grid of 2 or 3
+		// rows with maximum of 3 positions each. Depending on the
+		// grid size the buttons are arranged as follows
+		// size 4: 2 rows of 2 buttons each
+		// size 5: 2 rows, first row 3 buttons, second row 2 buttons
+		// size 6: 2 rows, 3 buttons
+		// size 7: 3 rows, 2 rows of 3 buttons, last row 1 button
+		// size 8: 3 rows, 2 rows of 3 buttons, last row 2 buttons
+		// size 9: 3 rows, 2 rows of 3 buttons, last row 3 buttons
+		mRowsUsed = (maxDigit <= 6 ? 2 : 3);
 
-			// Buttons positions have to be arranged in a grid of 2 or 3
-			// rows with maximum of 3 positions each. Depending on the
-			// grid size the buttons are arranged as follows
-			// size 4: 2 rows of 2 buttons each
-			// size 5: 2 rows, first row 3 buttons, second row 2 buttons
-			// size 6: 2 rows, 3 buttons
-			// size 7: 3 rows, 2 rows of 3 buttons, last row 1 button
-			// size 8: 3 rows, 2 rows of 3 buttons, last row 2 buttons
-			// size 9: 3 rows, 2 rows of 3 buttons, last row 3 buttons
-			mRowsUsed = (maxDigit <= 6 ? 2 : 3);
-		}
 		mVisibility = new int[mMaxRows][mMaxCols];
 		mValue = new int[mMaxRows][mMaxCols];
 		mColsUsed = (int) Math.ceil((double) maxDigit / (double) mRowsUsed);
@@ -102,16 +75,14 @@ public class DigitPositionGrid {
 	}
 
 	/**
-	 * Checks if this digit position grid can be reused for the given type and maximum digits.
+	 * Checks if this digit position grid can be reused for the given type and
+	 * maximum digits.
 	 * 
-	 * @param digitPositionGridType
-	 *            The type of button grid layout.
 	 * @param maxDigit
 	 *            The number of digit buttons to put in the grid.
 	 */
-	public boolean isReusable(DigitPositionGridType digitPositionGridType,
-			int maxDigit) {
-		return (mDigitPositionGridType == digitPositionGridType && mPositionsUsed == maxDigit);
+	public boolean isReusable(int maxDigit) {
+		return (mPositionsUsed == maxDigit);
 	}
 
 	/**
@@ -194,15 +165,6 @@ public class DigitPositionGrid {
 		return -1;
 	}
 
-	/**
-	 * Checks whether the current digit position grid is a 2x5 grid.
-	 * 
-	 * @return True in case the current grid is a 2x5 grid. False otherwise.
-	 */
-	public boolean isGrid2x5() {
-		return (mDigitPositionGridType == DigitPositionGridType.GRID_2X5);
-	}
-	
 	/**
 	 * Get the number of rows with at least one visible digit.
 	 * 

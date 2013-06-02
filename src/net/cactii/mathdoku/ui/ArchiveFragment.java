@@ -3,7 +3,6 @@ package net.cactii.mathdoku.ui;
 import java.text.DateFormat;
 
 import net.cactii.mathdoku.DigitPositionGrid;
-import net.cactii.mathdoku.DigitPositionGrid.DigitPositionGridType;
 import net.cactii.mathdoku.Grid;
 import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
@@ -74,20 +73,11 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 			// has to be determined for positioning maybe values inside the
 			// cells.
 			if (grid.isActive()) {
-				// Determine the digit position grid type to be used based
-				// on screen dimensions.
-				DigitPositionGridType digitPositionGridType = DigitPositionGridType.GRID_3X3;
-				if (getResources().getString(R.string.dimension).equals(
-						"small-port")) {
-					digitPositionGridType = DigitPositionGridType.GRID_2X5;
-				}
-
 				// Only create the digit position grid if needed
 				if (mDigitPositionGrid == null
-						|| !mDigitPositionGrid.isReusable(
-								digitPositionGridType, grid.getGridSize())) {
+						|| !mDigitPositionGrid.isReusable(grid.getGridSize())) {
 					mDigitPositionGrid = new DigitPositionGrid(
-							digitPositionGridType, grid.getGridSize());
+							grid.getGridSize());
 				}
 
 				// Propagate setting to the grid view for displaying maybe
