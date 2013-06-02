@@ -87,7 +87,6 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_marginBottom="5dp"
-            android:visibility="gone"
             android:weightSum="4" >
 
             <TableRow

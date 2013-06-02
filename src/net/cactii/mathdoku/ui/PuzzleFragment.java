@@ -49,7 +49,6 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -96,7 +95,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 	RelativeLayout mTopLayout;
 	RelativeLayout mPuzzleGridLayout;
-	TableLayout mControls;
 	TextView mGameSeedLabel;
 	TextView mGameSeedText;
 	TextView mTimerText;
@@ -108,7 +106,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	Button mClearDigit;
 	Button mUndoButton;
 	View[] mSoundEffectViews;
-	private Animation mOutAnimation;
 
 	public Preferences mMathDokuPreferences;
 
@@ -168,7 +165,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				return mInputMode;
 			}
 		};
-		this.mControls = (TableLayout) mRootView.findViewById(R.id.controls);
 		this.mGameSeedLabel = (TextView) mRootView
 				.findViewById(R.id.gameSeedLabel);
 		this.mGameSeedText = (TextView) mRootView
@@ -208,53 +204,20 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 		setInputMode(InputMode.NO_INPUT__HIDE_GRID);
 
-		// Animation for controls.
-		mOutAnimation = AnimationUtils.loadAnimation(mContext,
-				R.anim.selectorzoomout);
-		mOutAnimation.setAnimationListener(new AnimationListener() {
-			public void onAnimationEnd(Animation animation) {
-				mControls.setVisibility(View.GONE);
-			}
-
-			public void onAnimationRepeat(Animation animation) {
-			}
-
-			public void onAnimationStart(Animation animation) {
-			}
-		});
-
 		this.mGridView
 				.setOnGridTouchListener(this.mGridView.new OnGridTouchListener() {
 					@Override
 					public void gridTouched(GridCell cell,
 							boolean sameCellSelectedAgain) {
-						if (mMathDokuPreferences.isControlsBlockHidden()) {
-							if (mControls.getVisibility() == View.VISIBLE) {
-								mControls.startAnimation(mOutAnimation);
-								mGridView.mSelectorShown = false;
-								mGridView.requestFocus();
-							} else {
-								mControls.setVisibility(View.VISIBLE);
-								Animation animation = AnimationUtils
-										.loadAnimation(mContext,
-												R.anim.selectorzoomin);
-								mControls.startAnimation(animation);
-								mGridView.mSelectorShown = true;
-								mControls.requestFocus();
+						if (sameCellSelectedAgain && !mBlockTouchSameCell) {
+							if (TipInputModeChanged
+									.toBeDisplayed(mMathDokuPreferences)) {
+								new TipInputModeChanged(
+										mContext,
+										(mInputMode == InputMode.MAYBE ? InputMode.NORMAL
+												: InputMode.MAYBE)).show();
 							}
-						} else {
-							// Controls are always visible
-
-							if (sameCellSelectedAgain && !mBlockTouchSameCell) {
-								if (TipInputModeChanged
-										.toBeDisplayed(mMathDokuPreferences)) {
-									new TipInputModeChanged(
-											mContext,
-											(mInputMode == InputMode.MAYBE ? InputMode.NORMAL
-													: InputMode.MAYBE)).show();
-								}
-								toggleInputMode();
-							}
+							toggleInputMode();
 						}
 
 						setClearAndUndoButtonVisibility(cell);
@@ -284,10 +247,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 					// Undo can toggle the visibility of the check progress
 					// button in the action bar
 					((FragmentActivity) mContext).invalidateOptionsMenu();
-				}
-
-				if (mMathDokuPreferences.isControlsBlockHidden()) {
-					mControls.setVisibility(View.GONE);
 				}
 			}
 		});
@@ -533,26 +492,11 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		return super.onContextItemSelected(item);
 	}
 
-	public boolean hideControls() {
-		if (mGridView.mSelectorShown) {
-			mControls.setVisibility(View.GONE);
-			mGridView.requestFocus();
-			mGridView.mSelectorShown = false;
-			mGridView.invalidate();
-			return true;
-		}
-		return false;
-	}
-
 	public void digitSelected(int value) {
 		this.mGridView.digitSelected(value, mInputMode);
 
-		if (mMathDokuPreferences.isControlsBlockHidden()) {
-			this.mControls.setVisibility(View.GONE);
-		}
 		setClearAndUndoButtonVisibility(mGrid.getSelectedCell());
 		this.mGridView.requestFocus();
-		this.mGridView.mSelectorShown = false;
 		this.mGridView.invalidate();
 	}
 
@@ -761,7 +705,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		switch (inputMode) {
 		case NO_INPUT__HIDE_GRID:
 			mTimerText.setVisibility(View.GONE);
-			mControls.setVisibility(View.GONE);
 			break;
 		case NO_INPUT__DISPLAY_GRID:
 			if (mGrid == null || (mGrid != null && mGrid.isSolvedByCheating())) {
@@ -773,7 +716,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				this.mTimerText.setVisibility(View.VISIBLE);
 				setElapsedTime(mGrid.getElapsedTime());
 			}
-			mControls.setVisibility(View.GONE);
 
 			// Determine the layout to be used for maybe values inside a grid
 			if (mGrid != null) {
@@ -784,9 +726,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		case MAYBE:
 			if (mMathDokuPreferences.isTimerVisible()) {
 				mTimerText.setVisibility(View.VISIBLE);
-			}
-			if (!mMathDokuPreferences.isControlsBlockHidden()) {
-				this.mControls.setVisibility(View.VISIBLE);
 			}
 
 			// Determine the color which is used for text which depends on the

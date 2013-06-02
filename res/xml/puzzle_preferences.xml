@@ -44,10 +44,6 @@
             android:summary="@string/option_maybe_layout_summary"
             android:title="@string/option_maybe_layout_title" />
         <CheckBoxPreference
-            android:key="hideselector"
-            android:summary="@string/option_hide_selector_summary"
-            android:title="@string/option_hide_selector_title" />
-        <CheckBoxPreference
             android:key="wakelock"
             android:summary="@string/option_wake_lock_summary"
             android:title="@string/option_wake_lock_title" />

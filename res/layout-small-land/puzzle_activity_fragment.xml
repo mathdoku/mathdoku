@@ -67,7 +67,6 @@
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/timerText"
             android:layout_marginRight="5dp"
-            android:visibility="gone"
             android:weightSum="5" >
 
             <TableRow

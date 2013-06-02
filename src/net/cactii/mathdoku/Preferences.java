@@ -34,9 +34,6 @@ public class Preferences {
 	public final static String ALLOW_BIG_CAGES = "AllowBigCages";
 	public final static boolean ALLOW_BIG_CAGES_DEFAULT = false;
 
-	public final static String HIDE_CONTROLS = "hideselector";
-	public final static boolean HIDE_CONTROLS_DEFAULT = false;
-
 	public final static String HIDE_OPERATORS = "hideoperatorsigns";
 
 	public final static String HIDE_OPERATORS_ALWAYS = "T";
@@ -182,9 +179,6 @@ public class Preferences {
 			// have been removed from optionsview.xml to prevent conflicts
 			// in defaults values with default values defined in this
 			// activity.
-			if (!mSharedPreferences.contains(HIDE_CONTROLS)) {
-				prefeditor.putBoolean(HIDE_CONTROLS, HIDE_CONTROLS_DEFAULT);
-			}
 			if (!mSharedPreferences.contains(HIDE_OPERATORS)) {
 				prefeditor.putString(HIDE_OPERATORS, HIDE_OPERATORS_DEFAULT);
 			}
@@ -268,19 +262,15 @@ public class Preferences {
 						SHOW_SIZE_FILTER_DEFAULT);
 			}
 		}
+		if (previousInstalledVersion <= 333 && currentVersion >= 333) {
+			// Remove obsolete preference
+			if (mSharedPreferences.contains("hideselector")) {
+				prefeditor.remove("hideselector");
+			}
+		}
 
 		prefeditor.putInt(CURRENT_VERSION, currentVersion);
 		prefeditor.commit();
-	}
-
-	/**
-	 * Checks whether the control digits should be hidden automatically.
-	 * 
-	 * @return
-	 */
-	public boolean isControlsBlockHidden() {
-		return mSharedPreferences.getBoolean(HIDE_CONTROLS,
-				HIDE_CONTROLS_DEFAULT);
 	}
 
 	/**

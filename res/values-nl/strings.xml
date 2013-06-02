@@ -168,10 +168,6 @@
     <string name="option_maybe_layout_title">Mogelijken in raster</string>
     <string name="option_maybe_layout_summary">Toon mogelijke getallen in een raster</string>
 
-    <!-- The title and summary of the "hide selector" option. This option auto-shows the digit buttons when the player selects a cell, and auto-hides those buttons when the player deselects a cell. -->
-    <string name="option_hide_selector_title">Verberg cijfer knoppen</string>
-    <string name="option_hide_selector_summary">Verberg de cijfer knoppen na elk gebruik</string>
-
     <!-- The title and summary of the "wake lock" option. This option highlights cells with digits already in the row or column. -->
     <string name="option_wake_lock_title">Houd scherm aan</string>
     <string name="option_wake_lock_summary">Voorkom dat het scherm uit gaat tijdens het spelen</string>

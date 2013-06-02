@@ -27,7 +27,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -279,16 +278,6 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 				}
 			}
 		}
-	}
-
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (event.getAction() == KeyEvent.ACTION_DOWN
-				&& keyCode == KeyEvent.KEYCODE_BACK) {
-			if (mPuzzleFragment != null && mPuzzleFragment.hideControls()) {
-				return true;
-			}
-		}
-		return super.onKeyDown(keyCode, event);
 	}
 
 	/**

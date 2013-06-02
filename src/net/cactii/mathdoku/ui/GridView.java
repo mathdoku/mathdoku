@@ -47,8 +47,6 @@ public class GridView extends View implements OnTouchListener {
 	public float mGridViewSize;
 	private float mGridCellSize;
 
-	public boolean mSelectorShown = false;
-
 	// Reference to the global grid painter object
 	private GridPainter mGridPainter;
 
@@ -397,8 +395,6 @@ public class GridView extends View implements OnTouchListener {
 	}
 
 	public void loadNewGrid(Grid grid) {
-		mSelectorShown = false;
-
 		mGrid = grid;
 
 		// Compute grid size. Set to 1 in case grid is null to avoid problems in

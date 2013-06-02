@@ -177,11 +177,6 @@
     <string name="option_maybe_layout_title">\"Vielleichtwerte\" im Raster</string>
     <string name="option_maybe_layout_summary">\"Vielleichtwerte\" werden im Raster angezeigt.</string>
 
-    <!-- The title and summary of the "hide selector" option. This option auto-shows the digit buttons when the player selects a cell, and auto-hides those buttons when the player deselects a cell. -->
-    <string name="option_hide_selector_title">Automatisches Ausblenden des Nummernblocks</string>
-    <!-- TODO: check with updated english version. 1x -->
-    <string name="option_hide_selector_summary">Nummernblock wird nach dem Drücken ausgeblendet.</string>
-
     <!-- The title and summary of the "wake lock" option. This option highlights cells with digits already in the row or column. -->
     <string name="option_wake_lock_title">Automatisches Abschalten</string>
     <string name="option_wake_lock_summary">Das Abschalten des Bildschirms während dem Spiel verhindern.</string>
