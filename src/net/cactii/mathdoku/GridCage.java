@@ -3,8 +3,6 @@ package net.cactii.mathdoku;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import net.cactii.mathdoku.statistics.GridStatistics;
-import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 
 public class GridCage {

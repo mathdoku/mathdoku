@@ -159,7 +159,11 @@ public class GridView extends View implements OnTouchListener {
 			mYPosSwype = event.getY();
 
 			invalidate();
-			break;
+
+			// Do not allow other view to respond to this action, for example by
+			// handling the long press, which would result in malfunction of the
+			// swype movement.
+			return true;
 		case MotionEvent.ACTION_UP:
 			if (this.mTouchedListener != null) {
 				this.playSoundEffect(SoundEffectConstants.CLICK);
@@ -191,7 +195,7 @@ public class GridView extends View implements OnTouchListener {
 					invalidate();
 				}
 			}
-			break;
+			return true;
 		case MotionEvent.ACTION_MOVE:
 			// Check whether another swypeDigit is active. Only after a change
 			// of the value the grid is invalidated.
@@ -199,7 +203,7 @@ public class GridView extends View implements OnTouchListener {
 			if (swypeDigit > 0 && swypeDigit != mPreviousSwypeDigit) {
 				invalidate();
 			}
-			break;
+			return true;
 		default:
 			break;
 		}
@@ -534,11 +538,12 @@ public class GridView extends View implements OnTouchListener {
 				return 8;
 			} else if (colSwypePosition > mColLastTouchDownCell
 					&& rowSwypePosition > mRowLastTouchDownCell) {
-				// Swype position is at a cell is to bottom right of touched cell
+				// Swype position is at a cell is to bottom right of touched
+				// cell
 				return 9;
 			}
 		}
-		
+
 		// Swype digit could not be determined.
 		return -1;
 	}

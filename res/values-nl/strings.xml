@@ -70,7 +70,7 @@
     <!-- The heading of the section containg the version name and revision number. -->
     <string name="changelog_version_title">Versie</string>
 
-    <!-- The heading and body of the section referring to the list of changes (revision). -->
+	<!-- The heading and body of the section referring to the list of changes (revision). -->
     <!-- Note for translators: Changes are only available in english. Please mention this in this field. -->
     <string name="changelog_changes_title">Wijzigingen</string>
     <string name="changelog_changes_body">Ga voor een complete lijst van wijzigingen (alleen in het engels) naar onze website via de onderstaande link.</string>
@@ -88,6 +88,12 @@
     <!-- The menu item that allows the player to display the archive of played games. -->
     <string name="action_archive">Archief</string>
 
+    <!-- The menu item that allows the player to use some less frequently used cheats. -->
+    <string name="action_cheats">Vals spelen</string>
+    
+    <!-- The menu item that allows the user to clear the entire grid. Note this item is only available in case at least one cell in the entire puzzle contains a (maybe) value. -->
+    <string name="action_clear_grid">Leeg alle cellen</string>
+    
     <!-- The menu item that allows the player to start a new game. -->
     <string name="action_new_game">Nieuw Spel</string>
 
@@ -99,6 +105,17 @@
 
     <!-- The menu item that allows the player to navigate to the help screen. -->
     <string name="action_help">Help</string>
+
+    <!-- ACTIONS IN SUB MENU CHEATS - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    
+    <!-- The menu item that allows the user to reveal a cell. -->
+    <string name="action_reveal_cell">Onthul deze cel</string>
+    
+    <!-- The menu item that allows the user to reveal the hidden operator of a cage. This item is only available in case a puzzle with hidden operators is shown and the operator has not yet been revealed. Note that a single cell cage does not have an operator. -->
+    <string name="action_reveal_operator">Toon groep teken</string>
+
+    <!-- The menu to show the completed grid. -->
+    <string name="action_show_solution">Toon oplossing</string>
 
     <!-- DIALOGS FOR GENERATING NEW PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -127,7 +144,7 @@
     <string name="dialog_building_puzzle_title">Genereren nieuwe puzzel</string>
     <string name="dialog_building_puzzle_message">Een ogenblik geduld a.u.b.</string>
 
-    <!-- OPTIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- OPTIONS PUZZLES  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
     <!-- The preferences category title for options to assist the user solve the puzzle. -->
@@ -190,23 +207,7 @@
     <string name="theme_newspaper">Krant</string>
     <string name="theme_dark">Donker</string>
 
-    <!-- CONTEXT MENU IN PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
-
-    <!-- The context menu item that allows the user to reveal a cell. -->
-    <string name="context_menu_reveal_cell">Onthul deze cel</string>
-
-    <!-- The context menu item that allows the user to reveal the hidden operator of a cage. This item is only available in case a puzzle with hidden operators is shown and the operator has not yet been revealed. Note that a single cell cage does not have an operator. -->
-    <string name="context_menu_reveal_operator">Toon groep teken</string>
-
-    <!-- The context menu item that allows the user to fill in the "Maybe"s in the cage. Note this item is only visible in case a maybe value has been entered in any cell in the selected cage. -->
-    <string name="context_menu_use_cage_maybes">Vul \"Mogelijk\" in groep</string>
-
-    <!-- The context menu item that allows the user to clear the entire grid. Note this item is only available in case at least one cell in the entire puzzle contains a (maybe) value. -->
-    <string name="context_menu_clear_grid">Leeg alle cellen</string>
-
-    <!-- The context menu to show the completed grid. -->
-    <string name="context_menu_show_solution">Toon oplossing</string>
+    <!-- DIALOG CLEAR GRID CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <!-- The title, message and buttons confirmation message that shows up when the clear grid context menu item is selected, plus the associated title and button labels. -->
     <string name="dialog_clear_grid_confirmation_title">Leeg alle cellen?</string>
@@ -284,7 +285,7 @@
     <string name="dialog_tip_incorrect_value_title">Foute waarde</string>
     <string name="dialog_tip_incorrect_value_text">Je hebt een foute waarde ingevoerd. Je kan deze puzzel niet oplossen zonder deze fout te verbeteren. Gebruik de menu optie \'Controleer voortgang\' om alle cellen met een een foutieve waarde te markeren. Pas op: het gebruiken van \'Controleer voortgang\' leidt tot het verhogen van de speeltijd met een boete om het gebruik van deze functie te ontmoedigen.</string>
 
-        <!-- Title, and text for tip "Archive" which explains about this new menu option. -->
+    <!-- Title, and text for tip "Archive" which explains about this new menu option. -->
     <string name="dialog_tip_archive_title">Archief</string>
     <string name="dialog_tip_archive_text">De vorige puzzel is toegevoegd aan het archief. Het archief bevat alle puzzels die je hebt gestart. Het archief kan worden geopend via het menu.</string>
 
@@ -425,6 +426,7 @@
     <string name="time_unit_hours_plural">uren</string>
     <string name="time_unit_days_singular">dag</string>
     <string name="time_unit_days_plural">dagen</string>
+
     <!-- Connector in case penalty time consists of different units (e.g. "1 minute and 15 seconds") -->
     <string name="time_unit_connector">en</string>
 </resources>

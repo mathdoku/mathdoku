@@ -173,6 +173,17 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 	}
 
 	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.puzzle_menu, menu);
+
+		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			inflater.inflate(R.menu.development_mode_menu, menu);
+		}
+		return true;
+	}
+
+	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		// Disable or enable the archive and the settings
 		menu.findItem(R.id.action_archive).setVisible(
@@ -180,10 +191,43 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 		menu.findItem(R.id.action_statistics).setVisible(
 				mMathDokuPreferences.isStatisticsAvailable());
 
-		// Disable or enable option to check progress depending on whether grid
-		// is active
+		boolean showCheats = false;
+
+		// Set visibility for menu option check progress
 		menu.findItem(R.id.checkprogress).setVisible(
 				mPuzzleFragment != null && mPuzzleFragment.showCheckProgress());
+
+		// Set visibility for menu option to reveal a cell
+		if (mPuzzleFragment != null && mPuzzleFragment.showRevealCell()) {
+			menu.findItem(R.id.action_reveal_cell).setVisible(true);
+			showCheats = true;
+		} else {
+			menu.findItem(R.id.action_reveal_cell).setVisible(false);
+		}
+
+		// Set visibility for menu option to reveal a operator
+		if (mPuzzleFragment != null && mPuzzleFragment.showRevealOperator()) {
+			menu.findItem(R.id.action_reveal_operator).setVisible(true);
+			showCheats = true;
+		} else {
+			menu.findItem(R.id.action_reveal_operator).setVisible(false);
+		}
+
+		// Set visibility for menu option to reveal a operator
+		if (mPuzzleFragment != null && mPuzzleFragment.showRevealSolution()) {
+			menu.findItem(R.id.action_show_solution).setVisible(true);
+			showCheats = true;
+		} else {
+			menu.findItem(R.id.action_show_solution).setVisible(false);
+		}
+
+		// The cheats menu is only visible in case at lease one submenu item is
+		// visible.
+		menu.findItem(R.id.action_cheat).setVisible(showCheats);
+
+		// Set visibility for menu option to clear the grid
+		menu.findItem(R.id.action_clear_grid).setVisible(
+				mPuzzleFragment != null && mPuzzleFragment.showClearGrid());
 
 		// Determine position of new game button
 		menu.findItem(R.id.action_new_game)
@@ -199,17 +243,6 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 		}
 
 		return super.onPrepareOptionsMenu(menu);
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.puzzle_menu, menu);
-
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-			inflater.inflate(R.menu.development_mode_menu, menu);
-		}
-		return true;
 	}
 
 	@Override
@@ -232,6 +265,26 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 		case R.id.checkprogress:
 			if (mPuzzleFragment != null) {
 				mPuzzleFragment.checkProgress();
+			}
+			return true;
+		case R.id.action_reveal_cell:
+			if (mPuzzleFragment != null) {
+				mPuzzleFragment.revealCell();
+			}
+			return true;
+		case R.id.action_reveal_operator:
+			if (mPuzzleFragment != null) {
+				mPuzzleFragment.revealOperator();
+			}
+			return true;
+		case R.id.action_show_solution:
+			if (mPuzzleFragment != null) {
+				mPuzzleFragment.revealSolution();
+			}
+			return true;
+		case R.id.action_clear_grid:
+			if (mPuzzleFragment != null) {
+				mPuzzleFragment.clearGrid();
 			}
 			return true;
 		case R.id.action_archive:
@@ -556,13 +609,6 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 		}
 		return new ConfigurationInstanceState(mDialogPresentingGridGenerator,
 				mGameFileConverter);
-	}
-
-	@Override
-	public void onContextMenuClosed(Menu menu) {
-		if (mPuzzleFragment != null) {
-			mPuzzleFragment.onContextMenuClosed(menu);
-		}
 	}
 
 	@Override

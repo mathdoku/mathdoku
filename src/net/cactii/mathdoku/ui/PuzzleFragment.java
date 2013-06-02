@@ -30,11 +30,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 import android.view.View;
@@ -57,13 +53,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	public final static String TAG = "MathDoku.PuzzleFragment";
 
 	public static final String BUNDLE_KEY_SOLVING_ATTEMPT_ID = "PuzzleFragment.solvingAttemptId";
-
-	// Identifiers for the context menu
-	private final static int CONTEXT_MENU_REVEAL_CELL = 1;
-	private final static int CONTEXT_MENU_USE_CAGE_MAYBES = 2;
-	private final static int CONTEXT_MENU_REVEAL_OPERATOR = 3;
-	private final static int CONTEXT_MENU_CLEAR_GRID = 5;
-	private final static int CONTEXT_MENU_SHOW_SOLUTION = 6;
 
 	// The grid and the view which will display the grid.
 	public Grid mGrid;
@@ -107,8 +96,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	View[] mSoundEffectViews;
 
 	public Preferences mMathDokuPreferences;
-
-	private boolean mBlockTouchSameCell = false;
 
 	private Context mContext;
 
@@ -209,7 +196,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 					@Override
 					public void gridTouched(GridCell cell,
 							boolean sameCellSelectedAgain) {
-						if (sameCellSelectedAgain && !mBlockTouchSameCell) {
+						if (sameCellSelectedAgain) {
 							if (TipInputModeChanged
 									.toBeDisplayed(mMathDokuPreferences)) {
 								new TipInputModeChanged(
@@ -356,117 +343,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			v.setSoundEffectsEnabled(enabled);
 	}
 
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
-		mBlockTouchSameCell = true;
-		if (mGrid == null || !mGrid.isActive()) {
-			// No context menu in case puzzle isn't active.
-			return;
-		}
-
-		// Set title
-		menu.setHeaderTitle(R.string.application_name);
-
-		// Determine current selected cage.
-		GridCage selectedGridCage = mGrid.getCageForSelectedCell();
-
-		// Add options to menu only in case the option can be chosen.
-
-		// Option: reveal correct value of selected cell only
-		menu.add(0, CONTEXT_MENU_REVEAL_CELL, 0,
-				R.string.context_menu_reveal_cell);
-
-		// Option: for all cells in the selected cage which have exactly one
-		// possible value, this possible value is set as the user value of the
-		// cell.
-		if (selectedGridCage != null) {
-			for (GridCell cell : selectedGridCage.mCells) {
-				if (cell.countPossibles() == 1) {
-					// At least one cell within this cage has exactly one
-					// possible
-					// value.
-					menu.add(0, CONTEXT_MENU_USE_CAGE_MAYBES, 0,
-							R.string.context_menu_use_cage_maybes);
-					break;
-				}
-			}
-		}
-
-		// Option: reveal the operator of the selected cage
-		if (selectedGridCage != null && selectedGridCage.isOperatorHidden()) {
-			menu.add(0, CONTEXT_MENU_REVEAL_OPERATOR, 0,
-					R.string.context_menu_reveal_operator);
-		}
-
-		// Option: clear all cells in the grid
-		if (mGrid.isEmpty(true) == false) {
-			// At least one cell within this grid view has a value or a
-			// possible value.
-			menu.add(0, CONTEXT_MENU_CLEAR_GRID, 0,
-					R.string.context_menu_clear_grid);
-		}
-
-		// Option: show the solution for this puzzle
-		menu.add(3, CONTEXT_MENU_SHOW_SOLUTION, 0,
-				R.string.context_menu_show_solution);
-
-		super.onCreateContextMenu(menu, v, menuInfo);
-	}
-
-	/**
-	 * Callback for responding on closing the context menu.
-	 * 
-	 * @param menu
-	 *            The context menu which was closed.
-	 */
-	public void onContextMenuClosed(Menu menu) {
-		mBlockTouchSameCell = false;
-	}
-
-	public boolean onContextItemSelected(MenuItem item) {
-		// Get selected cell
-		GridCell selectedCell = mGrid.getSelectedCell();
-		GridCage selectedGridCage = mGrid.getCageForSelectedCell();
-
-		switch (item.getItemId()) {
-		case CONTEXT_MENU_USE_CAGE_MAYBES:
-			UsageLog.getInstance().logFunction("ContextMenu.UseCageMaybes");
-			if (selectedCell == null) {
-				break;
-			}
-			for (GridCell cell : selectedGridCage.mCells) {
-				if (cell.countPossibles() == 1) {
-					CellChange orginalUserMove = cell.saveUndoInformation(null);
-					cell.setUserValue(cell.getFirstPossible());
-					if (mMathDokuPreferences.isClearRedundantPossiblesEnabled()) {
-						// Update possible values for other cells in this row
-						// and
-						// column.
-						mGrid.clearRedundantPossiblesInSameRowOrColumn(orginalUserMove);
-					}
-				}
-			}
-			this.mGridView.invalidate();
-			break;
-		case CONTEXT_MENU_REVEAL_CELL:
-			revealCell(selectedCell);
-			break;
-		case CONTEXT_MENU_CLEAR_GRID:
-			openClearDialog();
-			break;
-		case CONTEXT_MENU_SHOW_SOLUTION:
-			mGrid.getGridStatistics().solutionRevealed();
-			registerAndProcessCheat(CheatType.SOLUTION_REVEALED);
-			mGrid.solve();
-			break;
-		case CONTEXT_MENU_REVEAL_OPERATOR:
-			revealOperator(selectedGridCage);
-			break;
-		}
-		return super.onContextItemSelected(item);
-	}
-
 	public void digitSelected(int value) {
 		this.mGridView.digitSelected(value, mInputMode);
 
@@ -475,7 +351,21 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		this.mGridView.invalidate();
 	}
 
-	private void openClearDialog() {
+	/**
+	 * Checks whether the clear grid menu item is available.
+	 * 
+	 * @return True in case the clear grid menu item is available. False
+	 *         otherwise.
+	 */
+	protected boolean showClearGrid() {
+		return (mGrid != null && mGrid.isActive() && mGrid.isEmpty(true) == false);
+	}
+
+	/**
+	 * Handles clearing of the entire grid. The grid will only be cleared after
+	 * the user has confirmed clearing.
+	 */
+	protected void clearGrid() {
 		new AlertDialog.Builder(this.getActivity())
 				.setTitle(R.string.dialog_clear_grid_confirmation_title)
 				.setMessage(R.string.dialog_clear_grid_confirmation_message)
@@ -832,16 +722,31 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	}
 
 	/**
+	 * Checks whether the reveal cell menu item is available.
+	 * 
+	 * @return
+	 */
+	protected boolean showRevealCell() {
+		return (mGrid != null && mGrid.isActive() && mGrid.getSelectedCell() != null);
+	}
+
+	/**
 	 * Handles revealing of user value in the given cell.
 	 * 
 	 * @param selectedCell
 	 *            The cell for which the user value has to be revealed.
 	 */
-	private void revealCell(GridCell selectedCell) {
-		UsageLog.getInstance().logFunction("ContextMenu.RevealCell");
+	protected void revealCell() {
+		if (mGrid == null) {
+			return;
+		}
+
+		GridCell selectedCell = mGrid.getSelectedCell();
 		if (selectedCell == null) {
 			return;
 		}
+
+		UsageLog.getInstance().logFunction("ContextMenu.RevealCell");
 
 		// Reveal the user value
 		CellChange orginalUserMove = selectedCell.saveUndoInformation(null);
@@ -852,6 +757,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			mGrid.clearRedundantPossiblesInSameRowOrColumn(orginalUserMove);
 		}
 		selectedCell.setCheated();
+		setClearAndUndoButtonVisibility(selectedCell);
 
 		mGrid.increaseCounter(StatisticsCounterType.CELLS_REVEALED);
 		registerAndProcessCheat(CheatType.CELL_REVEALED);
@@ -860,17 +766,37 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	}
 
 	/**
-	 * Handles revealing of the operator of the given cage.
+	 * Checks whether the reveal operator menu item is available.
 	 * 
-	 * @param selectedCell
-	 *            The cage for which the operator has to be revealed.
+	 * @return True in case the reveal operator menu item is available. False
+	 *         otherwise.
 	 */
-	private void revealOperator(GridCage selectedGridCage) {
-		UsageLog.getInstance().logFunction("ContextMenu.RevealOperator");
+	protected boolean showRevealOperator() {
+		if (mGrid == null || mGrid.isActive() == false) {
+			return false;
+		}
+
+		// Determine current selected cage.
+		GridCage selectedGridCage = mGrid.getCageForSelectedCell();
+		return (selectedGridCage != null && selectedGridCage.isOperatorHidden());
+	}
+
+	/**
+	 * Handles revealing of the operator of the given cage.
+	 */
+	protected void revealOperator() {
+		if (mGrid == null || mGrid.isActive() == false) {
+			return;
+		}
+
+		// Determine current selected cage.
+		GridCage selectedGridCage = mGrid.getCageForSelectedCell();
+
 		if (selectedGridCage == null) {
 			return;
 		}
 
+		UsageLog.getInstance().logFunction("ContextMenu.RevealOperator");
 		selectedGridCage.revealOperator();
 
 		mGrid.increaseCounter(StatisticsCounterType.OPERATORS_REVEALED);
@@ -903,6 +829,11 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		}
 	}
 
+	/**
+	 * Checks whether the check progress menu item is available.
+	 * 
+	 * @return
+	 */
 	protected boolean showCheckProgress() {
 		return (mGrid != null && mGrid.isActive() && !mGrid.isEmpty(false));
 	}
@@ -981,5 +912,28 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		if (mGrid != null) {
 			mGrid.save();
 		}
+	}
+
+	/**
+	 * Checks whether the reveal solution menu item is available.
+	 * 
+	 * @return True in case the reveal solution menu item is available. False
+	 *         otherwise.
+	 */
+	protected boolean showRevealSolution() {
+		return (mGrid != null && mGrid.isActive());
+	}
+
+	/**
+	 * Handles revealing of the solution of the grid.
+	 */
+	protected void revealSolution() {
+		if (mGrid == null) {
+			return;
+		}
+
+		mGrid.getGridStatistics().solutionRevealed();
+		registerAndProcessCheat(CheatType.SOLUTION_REVEALED);
+		mGrid.solve();
 	}
 }

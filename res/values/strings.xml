@@ -23,7 +23,6 @@
     <!-- Name of settings menu. -->
     <string name="settings">Settings</string>
 
-    
     <!-- DIALOG CONVERTING SAVED GAMES - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <!-- The title and message for the dialog displayed on the screen while upgrading to new version and saved games have to be converted. -->
@@ -82,13 +81,18 @@
 
     <!-- ACTION BAR ITEMS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-
     <!-- Subtitle for the puzzle fragment. -->
     <string name="action_bar_subtitle_puzzle_fragment">Play a game</string>
 
     <!-- The menu item that allows the player to display the archive of played games. -->
     <string name="action_archive">Archive</string>
 
+    <!-- The menu item that allows the player to use some less frequently used cheats. -->
+    <string name="action_cheats">Cheats</string>
+    
+    <!-- The menu item that allows the user to clear the entire grid. Note this item is only available in case at least one cell in the entire puzzle contains a (maybe) value. -->
+    <string name="action_clear_grid">Clear grid</string>
+    
     <!-- The menu item that allows the player to start a new game. -->
     <string name="action_new_game">New Game</string>
 
@@ -100,6 +104,17 @@
 
     <!-- The menu item that allows the player to navigate to the help screen. -->
     <string name="action_help">Help</string>
+
+    <!-- ACTIONS IN SUB MENU CHEATS - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    
+    <!-- The menu item that allows the user to reveal a cell. -->
+    <string name="action_reveal_cell">Reveal cell</string>
+
+    <!-- The menu item that allows the user to reveal the hidden operator of a cage. This item is only available in case a puzzle with hidden operators is shown and the operator has not yet been revealed. Note that a single cell cage does not have an operator. -->
+    <string name="action_reveal_operator">Reveal operator</string>
+
+    <!-- The menu to show the completed grid. -->
+    <string name="action_show_solution">Show solution</string>
 
     <!-- DIALOGS FOR GENERATING NEW PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -186,30 +201,13 @@
     
     <!-- DIALOG THEME - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-
     <!-- The possible values of the "themes" option. This option controls which theme is used for displaying. -->
     <string name="theme_carved">Carved</string>
     <string name="theme_newspaper">Newspaper</string>
     <string name="theme_dark">Dark</string>
 
-    <!-- CONTEXT MENU IN PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
-
-    <!-- The context menu item that allows the user to reveal a cell. -->
-    <string name="context_menu_reveal_cell">Reveal this cell</string>
-
-    <!-- The context menu item that allows the user to reveal the hidden operator of a cage. This item is only available in case a puzzle with hidden operators is shown and the operator has not yet been revealed. Note that a single cell cage does not have an operator. -->
-    <string name="context_menu_reveal_operator">Reveal cage operator</string>
-
-    <!-- The context menu item that allows the user to fill in the "Maybe"s in the cage. Note this item is only visible in case a maybe value has been entered in any cell in the selected cage. -->
-    <string name="context_menu_use_cage_maybes">Use cage \"Maybe\"s</string>
-
-    <!-- The context menu item that allows the user to clear the entire grid. Note this item is only available in case at least one cell in the entire puzzle contains a (maybe) value. -->
-    <string name="context_menu_clear_grid">Clear entire grid</string>
-
-    <!-- The context menu to show the completed grid. -->
-    <string name="context_menu_show_solution">Show solution</string>
-
+    <!-- DIALOG CLEAR GRID CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    
     <!-- The title, message and buttons confirmation message that shows up when the clear grid context menu item is selected, plus the associated title and button labels. -->
     <string name="dialog_clear_grid_confirmation_title">Clear entire grid?</string>
     <string name="dialog_clear_grid_confirmation_message">Are you sure you want to clear the entire grid?</string>
@@ -428,7 +426,7 @@
     <string name="time_unit_hours_plural">hours</string>
     <string name="time_unit_days_singular">day</string>
     <string name="time_unit_days_plural">days</string>
-    
+
     <!-- Connector in case penalty time consists of different units (e.g. "1 minute and 15 seconds") -->
     <string name="time_unit_connector">and</string>
 
