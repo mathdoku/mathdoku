@@ -290,7 +290,7 @@ public class GridView extends View implements OnTouchListener {
 		int oldValue = selectedCell.getUserValue();
 
 		if (newValue == 0) { // Clear Button
-			if (oldValue != 0) {
+			if (selectedCell.isEmpty() == false) {
 				selectedCell.clearPossibles();
 				selectedCell.setUserValue(0);
 				mGrid.getGridStatistics().increaseCounter(
@@ -301,7 +301,7 @@ public class GridView extends View implements OnTouchListener {
 						StatisticsCounterType.CELLS_FILLED);
 
 				// In case the last user value has been cleared in the grid, the
-				// check progress should nog longer be available.
+				// check progress should no longer be available.
 				if (mGrid.isEmpty(false)) {
 					((PuzzleFragmentActivity) mContext).invalidateOptionsMenu();
 				}
