@@ -642,32 +642,4 @@ public class GridCage {
 	public void setGridReference(Grid grid) {
 		mGrid = grid;
 	}
-
-	/**
-	 * Clear all cells in the cage.
-	 * 
-	 * @param gridStatistics
-	 *            The gridStatistics for the grid to which the cage belongs.
-	 */
-	public void clearCells(GridStatistics gridStatistics) {
-		if (mCells != null) {
-			boolean updateCageClearCounter = false;
-			for (GridCell cell : mCells) {
-				cell.saveUndoInformation(null);
-				if (cell.getUserValue() != 0) {
-					gridStatistics
-							.increaseCounter(StatisticsCounterType.CELLS_EMPTY);
-					gridStatistics
-							.decreaseCounter(StatisticsCounterType.CELLS_FILLED);
-					updateCageClearCounter = true;
-				} else if (cell.countPossibles() > 0) {
-					updateCageClearCounter = true;
-				}
-				cell.clear();
-			}
-			if (updateCageClearCounter) {
-				gridStatistics.increaseCounter(StatisticsCounterType.CAGE_CLEARED);
-			}
-		}
-	}
 }

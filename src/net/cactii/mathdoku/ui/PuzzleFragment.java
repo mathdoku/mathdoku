@@ -62,7 +62,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	private final static int CONTEXT_MENU_REVEAL_CELL = 1;
 	private final static int CONTEXT_MENU_USE_CAGE_MAYBES = 2;
 	private final static int CONTEXT_MENU_REVEAL_OPERATOR = 3;
-	private final static int CONTEXT_MENU_CLEAR_CAGE_CELLS = 4;
 	private final static int CONTEXT_MENU_CLEAR_GRID = 5;
 	private final static int CONTEXT_MENU_SHOW_SOLUTION = 6;
 
@@ -400,20 +399,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 					R.string.context_menu_reveal_operator);
 		}
 
-		// Option: clear all cell in the selected cage
-		if (selectedGridCage != null) {
-			for (GridCell cell : selectedGridCage.mCells) {
-				if (cell.isUserValueSet() || cell.countPossibles() > 0) {
-					// At least one cell within this cage has a value or a
-					// possible
-					// value.
-					menu.add(0, CONTEXT_MENU_CLEAR_CAGE_CELLS, 0,
-							R.string.context_menu_clear_cage_cells);
-					break;
-				}
-			}
-		}
-
 		// Option: clear all cells in the grid
 		if (mGrid.isEmpty(true) == false) {
 			// At least one cell within this grid view has a value or a
@@ -445,11 +430,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		GridCage selectedGridCage = mGrid.getCageForSelectedCell();
 
 		switch (item.getItemId()) {
-		case CONTEXT_MENU_CLEAR_CAGE_CELLS:
-			UsageLog.getInstance().logFunction("ContextMenu.ClearCageCells");
-			selectedGridCage.clearCells(mGrid.getGridStatistics());
-			this.mGridView.invalidate();
-			break;
 		case CONTEXT_MENU_USE_CAGE_MAYBES:
 			UsageLog.getInstance().logFunction("ContextMenu.UseCageMaybes");
 			if (selectedCell == null) {

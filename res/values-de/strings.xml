@@ -214,9 +214,6 @@
     <!-- The context menu item that allows the user to fill in the "Maybe"s in the cage. Note this item is only visible in case a maybe value has been entered in any cell in the selected cage. -->
     <string name="context_menu_use_cage_maybes">Verwende \"Vielleichtwerte\"</string>
 
-    <!-- The context menu item that allows the user to clear all of the cells in the cage. Note this item is only visible in case at least one cell in the selected cage contains a (maybe) value. -->
-    <string name="context_menu_clear_cage_cells">Zellen der Box löschen</string>
-
     <!-- The context menu item that allows the user to clear the entire grid. Note this item is only available in case at least one cell in the entire puzzle contains a (maybe) value. -->
     <string name="context_menu_clear_grid">Gesamten Raster löschen</string>
 
