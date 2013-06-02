@@ -28,7 +28,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.gesture.GestureOverlayView;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.ContextMenu;
@@ -307,13 +306,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			}
 		}
 
-		// Return a gesture overlay so swype movements will be displayed
-		// automatically. Gesture detection and handling is solely done by the
-		// gridview.
-		GestureOverlayView gestureOverlayView = new GestureOverlayView(mContext);
-		gestureOverlayView.addView(mRootView);
-
-		return gestureOverlayView;
+		return mRootView;
 	}
 
 	public void onPause() {

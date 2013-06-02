@@ -8,6 +8,7 @@ import net.cactii.mathdoku.painter.CagePainter;
 import net.cactii.mathdoku.painter.CellPainter;
 import net.cactii.mathdoku.painter.MaybeValuePainter;
 import net.cactii.mathdoku.painter.Painter;
+import net.cactii.mathdoku.painter.SwypeBorderPainter;
 import net.cactii.mathdoku.painter.UserValuePainter;
 import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 import net.cactii.mathdoku.ui.PuzzleFragment.InputMode;
@@ -23,7 +24,7 @@ public class GridCell {
 	// starts with an identifier. This identifier consists of a generic part and
 	// the package revision number.
 	private static final String SAVE_GAME_CELL_LINE = "CELL";
-	
+
 	// Converting from old version name to new.
 	private static final String SAVE_GAME_CELL_VERSION_02_READONLY = "CELL.v2";
 
@@ -76,31 +77,33 @@ public class GridCell {
 	private MaybeValuePainter mMaybeGridPainter;
 	private MaybeValuePainter mMaybeLinePainter;
 	private CagePainter mCagePainter;
+	private SwypeBorderPainter mSwypeBorderPainter;
 
 	public GridCell(Grid grid, int cell) {
 		int gridSize = grid.getGridSize();
-		this.mGrid = grid;
-		this.mCellNumber = cell;
-		this.mColumn = cell % gridSize;
-		this.mRow = (int) (cell / gridSize);
-		this.mCageText = "";
-		this.mCageId = -1;
-		this.mCorrectValue = 0;
-		this.mUserValue = 0;
-		this.mShowWarning = false;
-		this.mCheated = false;
-		this.mInvalidUserValueHighlight = false;
-		this.mPossibles = new ArrayList<Integer>();
-		this.mPosX = 0;
-		this.mPosY = 0;
+		mGrid = grid;
+		mCellNumber = cell;
+		mColumn = cell % gridSize;
+		mRow = (int) (cell / gridSize);
+		mCageText = "";
+		mCageId = -1;
+		mCorrectValue = 0;
+		mUserValue = 0;
+		mShowWarning = false;
+		mCheated = false;
+		mInvalidUserValueHighlight = false;
+		mPossibles = new ArrayList<Integer>();
+		mPosX = 0;
+		mPosY = 0;
 
 		// Retrieve all painters
 		Painter painter = Painter.getInstance();
-		this.mCellPainter = painter.getCellPainter();
-		this.mUserValuePainter = painter.getUserValuePainter();
-		this.mMaybeGridPainter = painter.getMaybeGridPainter();
-		this.mMaybeLinePainter = painter.getMaybeLinePainter();
-		this.mCagePainter = painter.getCagePainter();
+		mCellPainter = painter.getCellPainter();
+		mUserValuePainter = painter.getUserValuePainter();
+		mMaybeGridPainter = painter.getMaybeGridPainter();
+		mMaybeLinePainter = painter.getMaybeLinePainter();
+		mCagePainter = painter.getCagePainter();
+		mSwypeBorderPainter = painter.getSwypeBorderPainter();
 
 		mBorderTypeTop = BorderType.NONE;
 		mBorderTypeRight = BorderType.NONE;
@@ -241,8 +244,7 @@ public class GridCell {
 	/**
 	 * Draw the cell inclusive borders, background and text.
 	 */
-	public void draw(Canvas canvas, float gridBorderWidth,
-			InputMode inputMode) {
+	public void draw(Canvas canvas, float gridBorderWidth, InputMode inputMode) {
 		// Get cell size
 		int cellSize = (int) this.mCellPainter.getCellSize();
 
@@ -526,6 +528,131 @@ public class GridCell {
 	}
 
 	/**
+	 * Draw the overlay for the selected cell.
+	 */
+	public void drawOverlay(Canvas canvas, float gridBorderWidth,
+			InputMode inputMode, float mXPosSwype, float mYPosSwype) {
+		if (mGrid.getSelectedCell() != this) {
+			// This cell is not the selected cell.
+			return;
+		}
+
+		// Get cell size
+		int cellSize = (int) this.mCellPainter.getCellSize();
+
+		// Calculate x and y for the cell origin (topleft). Use an offset to
+		// prevent overlapping of cells and border for entire grid.
+		this.mPosX = Math.round(gridBorderWidth + cellSize * this.mColumn);
+		this.mPosY = Math.round(gridBorderWidth + cellSize * this.mRow);
+		float top = this.mPosY;
+		float bottom = this.mPosY + cellSize;
+		float left = this.mPosX;
+		float right = this.mPosX + cellSize;
+
+		// Get the painter for the overlay border
+		// Determine which painter to use
+		Paint borderPaint = (inputMode == InputMode.NORMAL ? mSwypeBorderPainter
+				.getUserValueBackgroundBorderPaint() : mSwypeBorderPainter
+				.getMaybeValueBackgroundBorderPaint());
+		float borderOverlayWidth = mSwypeBorderPainter.getBorderWidth();
+
+		// Top border
+		if (borderPaint != null) {
+			// Calculate offset and draw top border
+			canvas.drawRect(left - borderOverlayWidth,
+					top - borderOverlayWidth, right, top, borderPaint);
+			canvas.drawRect(right, top - borderOverlayWidth, right
+					+ borderOverlayWidth, bottom, borderPaint);
+			canvas.drawRect(left, bottom, right + borderOverlayWidth, bottom
+					+ borderOverlayWidth, borderPaint);
+			canvas.drawRect(left - borderOverlayWidth, top, left, bottom
+					+ borderOverlayWidth, borderPaint);
+		}
+
+		// Draw pencilled in digits.
+		int gridSize = mGrid.getGridSize();
+		int horizontalOffset = 0;
+		int verticalOffset = 0;
+		Paint textPaint = mSwypeBorderPainter.getDigitPaint();
+
+		// Draw digit 1
+		horizontalOffset = (int) ((borderOverlayWidth - textPaint
+				.measureText("1")) / 2);
+		canvas.drawText("1", left - borderOverlayWidth + horizontalOffset, top
+				- mSwypeBorderPainter.getBottomOffset(), textPaint);
+
+		// Draw digit 2
+		horizontalOffset = (int) ((right - left - textPaint.measureText("2")) / 2);
+		canvas.drawText("2", left + horizontalOffset,
+				top - mSwypeBorderPainter.getBottomOffset(), textPaint);
+
+		// Draw digit 3
+		horizontalOffset = (int) ((borderOverlayWidth - textPaint
+				.measureText("3")) / 2);
+		canvas.drawText("3", right + horizontalOffset, top
+				- mSwypeBorderPainter.getBottomOffset(), textPaint);
+
+		// Draw digit 4
+		horizontalOffset = (int) ((borderOverlayWidth - textPaint
+				.measureText("4")) / 2);
+		verticalOffset = (int) ((bottom - top - textPaint.getTextSize()) / 2);
+		canvas.drawText("4", left - borderOverlayWidth + horizontalOffset, top
+				+ verticalOffset + textPaint.getTextSize()
+				- mSwypeBorderPainter.getBottomOffset(), textPaint);
+
+		// Note: Digit 5 can not be drawn as it should be placed in the middle
+		// of the cell which could be confusing.
+
+		if (gridSize >= 6) {
+			// Draw digit 6
+			horizontalOffset = (int) ((borderOverlayWidth - textPaint
+					.measureText("6")) / 2);
+			verticalOffset = (int) ((bottom - top - textPaint.getTextSize()) / 2);
+			canvas.drawText("6", right + horizontalOffset,
+					top + verticalOffset + textPaint.getTextSize()
+							- mSwypeBorderPainter.getBottomOffset(), textPaint);
+
+			if (gridSize >= 7) {
+				// Draw digit 7
+				horizontalOffset = (int) ((borderOverlayWidth - textPaint
+						.measureText("7")) / 2);
+				canvas.drawText("7", left - borderOverlayWidth
+						+ horizontalOffset, bottom + borderOverlayWidth
+						- mSwypeBorderPainter.getBottomOffset(), textPaint);
+
+				if (gridSize >= 8) {
+					// Draw digit 8
+					horizontalOffset = (int) ((right - left - textPaint
+							.measureText("8")) / 2);
+					canvas.drawText(
+							"8",
+							left + horizontalOffset,
+							bottom + borderOverlayWidth
+									- mSwypeBorderPainter.getBottomOffset(),
+							textPaint);
+
+					if (gridSize >= 9) {
+						// Draw digit 9
+						horizontalOffset = (int) ((borderOverlayWidth - textPaint
+								.measureText("9")) / 2);
+						canvas.drawText(
+								"9",
+								right + horizontalOffset,
+								bottom + borderOverlayWidth
+										- mSwypeBorderPainter.getBottomOffset(),
+								textPaint);
+					}
+				}
+			}
+		}
+
+		// Draw a line from the middle of the selected cell to the current swype
+		// position to indicate which digit will be selected on release.
+		canvas.drawLine(left + (cellSize / 2), top + (cellSize / 2),
+				mXPosSwype, mYPosSwype, mSwypeBorderPainter.getSwypeLinePaint());
+	}
+
+	/**
 	 * Create a string representation of the Grid Cell which can be used to
 	 * store a grid cell in a saved game.
 	 * 
@@ -533,20 +660,28 @@ public class GridCell {
 	 */
 	public String toStorageString() {
 		String storageString = SAVE_GAME_CELL_LINE
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + mCellNumber
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ mCellNumber
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + mRow
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + mColumn
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + mCageText
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + mCorrectValue
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + mUserValue
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ mColumn
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ mCageText
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ mCorrectValue
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ mUserValue
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1;
 		for (int possible : mPossibles) {
-			storageString += possible + SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2;
+			storageString += possible
+					+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2;
 		}
 		storageString += SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ Boolean.toString(mInvalidUserValueHighlight)
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + Boolean.toString(mCheated)
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + Boolean.toString(mSelected);
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ Boolean.toString(mCheated)
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ Boolean.toString(mSelected);
 
 		return storageString;
 	}
@@ -561,13 +696,15 @@ public class GridCell {
 	 *         processed correctly. False otherwise.
 	 */
 	public boolean fromStorageString(String line, int savedWithRevisionNumber) {
-		String[] cellParts = line.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1);
+		String[] cellParts = line
+				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1);
 
 		// Determine if this line contains cell-information. If so, also
 		// determine with which revision number the information was stored.
 		int revisionNumber = 0;
 		if (cellParts[0].equals(SAVE_GAME_CELL_LINE)) {
-			revisionNumber = (savedWithRevisionNumber > 0 ? savedWithRevisionNumber : 1);
+			revisionNumber = (savedWithRevisionNumber > 0 ? savedWithRevisionNumber
+					: 1);
 		} else if (cellParts[0].equals(SAVE_GAME_CELL_VERSION_02_READONLY)) {
 			revisionNumber = 2;
 		} else {

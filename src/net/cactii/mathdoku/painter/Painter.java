@@ -41,6 +41,7 @@ public class Painter {
 	private UserValuePainter mUserValuePainter;
 	private MaybeValuePainter mMaybeGridPainter;
 	private MaybeValuePainter mMaybeLinePainter;
+	private SwypeBorderPainter mSwypeBorderPainter;
 
 	/**
 	 * Creates a new instance of {@link #GridPainter()}.
@@ -62,6 +63,7 @@ public class Painter {
 		mUserValuePainter = new UserValuePainter(this);
 		mMaybeGridPainter = new MaybeValuePainter(this);
 		mMaybeLinePainter = new MaybeValuePainter(this);
+		mSwypeBorderPainter = new SwypeBorderPainter(this);
 
 		// Set the size of the borders.
 		setBorderSizes(false);
@@ -112,6 +114,7 @@ public class Painter {
 		mGridPainter.setBorderSizes(thin);
 		mCagePainter.setBorderSizes(thin);
 		mCellPainter.setBorderSizes(thin);
+		mSwypeBorderPainter.setBorderSizes(thin);
 	}
 
 	/**
@@ -139,9 +142,7 @@ public class Painter {
 		mUserValuePainter.setTheme(theme);
 		mMaybeGridPainter.setTheme(theme);
 		mMaybeLinePainter.setTheme(theme);
-
-		// To be sure, reapply size specific settings as well.
-		// REMOVE: setCellSize(mCellPainter.getCellSize());
+		mSwypeBorderPainter.setTheme(theme);
 	}
 
 	/**
@@ -163,6 +164,7 @@ public class Painter {
 		mUserValuePainter.setCellSize(size);
 		mMaybeGridPainter.setCellSize(size, digitPositionGrid);
 		mMaybeLinePainter.setCellSize(size, null);
+		mSwypeBorderPainter.setCellSize(size);
 	}
 
 	/**
@@ -318,5 +320,14 @@ public class Painter {
 	 */
 	public MaybeValuePainter getMaybeLinePainter() {
 		return mMaybeLinePainter;
+	}
+	
+	/**
+	 * Get the swype border painter.
+	 * 
+	 * @return The swype border painter.
+	 */
+	public SwypeBorderPainter getSwypeBorderPainter() {
+		return mSwypeBorderPainter;
 	}
 }

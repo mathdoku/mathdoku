@@ -48,7 +48,7 @@ public class MaybeValuePainter extends DigitPainter {
 	protected void setCellSize(float size) {
 		throw new RuntimeException("Method should not be called for object "
 				+ this.getClass().getSimpleName()
-				+ ". Call setCellSize instead,");
+				+ ". Call setCellSize(float, DigitPositionGrid) instead,");
 	}
 
 	protected void setCellSize(float size, DigitPositionGrid digitPositionGrid) {

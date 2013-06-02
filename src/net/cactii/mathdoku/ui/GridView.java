@@ -58,7 +58,10 @@ public class GridView extends View implements OnTouchListener {
 	// Cell on which last touch down event took place
 	private int mRowLastTouchDownCell;
 	private int mColLastTouchDownCell;
-	private boolean mHasLeftCellAfterTouchDown;
+	private boolean mDisplaySwypeBorder;
+	private float mXPosSwype;
+	private float mYPosSwype;
+	private int mPreviousSwypeDigit;
 
 	// Used to grab the current input mode from.
 	public InputModeDeterminer mInputModeDeterminer;
@@ -138,7 +141,22 @@ public class GridView extends View implements OnTouchListener {
 			// Select new cell
 			mGrid.setSelectedCell(mGrid.getCellAt(mRowLastTouchDownCell,
 					mColLastTouchDownCell));
-			mHasLeftCellAfterTouchDown = false;
+
+			// While moving the swype position, a line is drawn from the middle
+			// of the initially touched cell to the middle of the cell which is
+			// hovered by the swype position. This variable will be set as soon
+			// as the swype movement leave this cell.
+			mPreviousSwypeDigit = -1;
+
+			// Indicate to the onDraw method that the swype border has to be
+			// shown.
+			// TODO: for advanced used who succesfully have used this function
+			// the border can be hidden.
+			mDisplaySwypeBorder = true;
+
+			// Store current position of swype position
+			mXPosSwype = event.getX();
+			mYPosSwype = event.getY();
 
 			invalidate();
 			break;
@@ -146,120 +164,40 @@ public class GridView extends View implements OnTouchListener {
 			if (this.mTouchedListener != null) {
 				this.playSoundEffect(SoundEffectConstants.CLICK);
 
-				// Find out where the grid was released
-				float rowRelease = event.getY() / mGridCellSize;
-				if (rowRelease > mGridSize) {
-					rowRelease = mGridSize;
-				} else if (rowRelease < 0) {
-					rowRelease = -1;
-				} else {
-					rowRelease = (int) rowRelease;
-				}
-				float colRelease = event.getX() / mGridCellSize;
-				if (colRelease > mGridSize) {
-					colRelease = mGridSize;
-				} else if (colRelease < 0) {
-					colRelease = -1;
-				} else {
-					colRelease = (int) colRelease;
-				}
-
-				// If a valid swype movement was made, set the value
-				// corresponding to the swype in the cell.
-				boolean swyped = false;
-				if (((int) colRelease == mColLastTouchDownCell)
-						&& ((int) rowRelease == mRowLastTouchDownCell)) {
-					if (mHasLeftCellAfterTouchDown && mGridSize >= 5) {
-						// A swipe has been made outside the cell which was
-						// initially touched but it was release again a the same
-						// cell.
-						swyped = true;
-						digitSelected(5, mInputModeDeterminer.getInputMode());
-						invalidate();
-					}
-				} else {
-					// A swipe has been made outside the cell which was
-					// initially touched. Fill the initially touched cell with a
-					// user value dependent on the direction the initially
-					// touched cell was left.
-					if (colRelease < mColLastTouchDownCell
-							&& rowRelease < mRowLastTouchDownCell
-							&& mGridSize >= 1) {
-						// Release cell is to upper left of touched cell
-						swyped = true;
-						digitSelected(1, mInputModeDeterminer.getInputMode());
-					} else if (colRelease == mColLastTouchDownCell
-							&& rowRelease < mRowLastTouchDownCell
-							&& mGridSize >= 2) {
-						// Release cell is to upper of touched cell
-						swyped = true;
-						digitSelected(2, mInputModeDeterminer.getInputMode());
-					} else if (colRelease > mColLastTouchDownCell
-							&& rowRelease < mRowLastTouchDownCell
-							&& mGridSize >= 3) {
-						// Release cell is to upper right of touched cell
-						swyped = true;
-						digitSelected(3, mInputModeDeterminer.getInputMode());
-					} else if (colRelease < mColLastTouchDownCell
-							&& rowRelease == mRowLastTouchDownCell
-							&& mGridSize >= 4) {
-						// Release cell is to left of touched cell
-						swyped = true;
-						digitSelected(4, mInputModeDeterminer.getInputMode());
-					} else if (colRelease > mColLastTouchDownCell
-							&& rowRelease == mRowLastTouchDownCell
-							&& mGridSize >= 6) {
-						// Release cell is to right of touched cell
-						swyped = true;
-						digitSelected(6, mInputModeDeterminer.getInputMode());
-					} else if (colRelease < mColLastTouchDownCell
-							&& rowRelease > mRowLastTouchDownCell
-							&& mGridSize >= 7) {
-						// Release cell is to bottom left of touched cell
-						swyped = true;
-						digitSelected(7, mInputModeDeterminer.getInputMode());
-					} else if (colRelease == mColLastTouchDownCell
-							&& rowRelease > mRowLastTouchDownCell
-							&& mGridSize >= 8) {
-						// Release cell is to bottom of touched cell
-						swyped = true;
-						digitSelected(8, mInputModeDeterminer.getInputMode());
-					} else if (colRelease > mColLastTouchDownCell
-							&& rowRelease > mRowLastTouchDownCell
-							&& mGridSize >= 9) {
-						// Release cell is to bottom right of touched cell
-						swyped = true;
-						digitSelected(9, mInputModeDeterminer.getInputMode());
-					}
-					invalidate();
+				int swypeDigit = getSwypeDigit(event);
+				if (swypeDigit > mGridSize) {
+					// This value is not allowed for this grid size.
+					swypeDigit = -1;
+				} else if (swypeDigit > 0) {
+					// Set the swype digit as selected value for the cell which
+					// was initially touched.
+					digitSelected(swypeDigit,
+							mInputModeDeterminer.getInputMode());
 				}
 
 				// In case no valid swype movement was made, determine if same
 				// cell was touched again.
-				boolean sameCellSelectedAgain = (swyped == false
+				boolean sameCellSelectedAgain = (swypeDigit <= 0
 						&& mGrid.getSelectedCell() != null && mGrid
 						.getSelectedCell().equals(mPreviouslyTouchedCell));
 
 				// Inform listener of puzzle fragment about the release action
 				mTouchedListener.gridTouched(mGrid.getSelectedCell(),
 						sameCellSelectedAgain);
+
+				// Hide swype border if displayed.
+				if (mDisplaySwypeBorder) {
+					mDisplaySwypeBorder = false;
+					invalidate();
+				}
 			}
 			break;
 		case MotionEvent.ACTION_MOVE:
-			if (!mHasLeftCellAfterTouchDown) {
-				// Check if touch cell is left
-				float rowRelease = event.getY() / mGridCellSize;
-				if (rowRelease < 0 || rowRelease > mGridSize
-						|| (int) rowRelease != mRowLastTouchDownCell) {
-					mHasLeftCellAfterTouchDown = true;
-					break;
-				}
-				float colRelease = event.getX() / mGridCellSize;
-				if (colRelease < 0 || colRelease > mGridSize
-						|| (int) colRelease != mColLastTouchDownCell) {
-					mHasLeftCellAfterTouchDown = true;
-					break;
-				}
+			// Check whether another swypeDigit is active. Only after a change
+			// of the value the grid is invalidated.
+			int swypeDigit = getSwypeDigit(event);
+			if (swypeDigit > 0 && swypeDigit != mPreviousSwypeDigit) {
+				invalidate();
 			}
 			break;
 		default:
@@ -384,13 +322,22 @@ public class GridView extends View implements OnTouchListener {
 			canvas.drawRect((float) 1, (float) 1, mGridViewSize, mGridViewSize,
 					mGridPainter.getBorderPaint());
 
-			// Draw cells, except for cells in selected cage
+			// Draw cells
 			InputMode inputMode = mInputModeDeterminer.getInputMode();
 			Painter.getInstance(mContext).setCellSize(mGridCellSize,
 					mDigitPositionGrid);
 			for (GridCell cell : mGrid.mCells) {
 				cell.checkWithOtherValuesInRowAndColumn();
 				cell.draw(canvas, gridBorderWidth, inputMode);
+			}
+
+			// Draw the overlay for the selected cell
+			if (mDisplaySwypeBorder) {
+				GridCell gridCell = mGrid.getSelectedCell();
+				if (gridCell != null) {
+					gridCell.drawOverlay(canvas, gridBorderWidth, inputMode,
+							mXPosSwype, mYPosSwype);
+				}
 			}
 		}
 	}
@@ -506,5 +453,93 @@ public class GridView extends View implements OnTouchListener {
 			}
 			mDisplayFrame.set(0, 0, (int) newWidth, (int) newHeight);
 		}
+	}
+
+	/**
+	 * Checks to which digit the swype line currently points.
+	 * 
+	 * @param event
+	 *            The motion event related for the touching of the grid view.
+	 * @return The digit to which the swype line currently points. -1 in case no
+	 *         value can be selected for the current swype position.
+	 */
+	private int getSwypeDigit(MotionEvent event) {
+		// Store current position of swype position
+		mXPosSwype = event.getX();
+		mYPosSwype = event.getY();
+
+		// Determine the cell in which is hovered by the current swype position.
+		float rowSwypePosition = event.getY() / mGridCellSize;
+		if (rowSwypePosition > mGridSize) {
+			rowSwypePosition = mGridSize;
+		} else if (rowSwypePosition < 0) {
+			rowSwypePosition = -1;
+		} else {
+			rowSwypePosition = (int) rowSwypePosition;
+		}
+		float colSwypePosition = event.getX() / mGridCellSize;
+		if (colSwypePosition > mGridSize) {
+			colSwypePosition = mGridSize;
+		} else if (colSwypePosition < 0) {
+			colSwypePosition = -1;
+		} else {
+			colSwypePosition = (int) colSwypePosition;
+		}
+
+		// Based on the relative position of the cell which is currently hovered
+		// by the swype position compared to the originally selected cell, the
+		// swype digit is determined.
+		if (((int) colSwypePosition == mColLastTouchDownCell)
+				&& ((int) rowSwypePosition == mRowLastTouchDownCell)) {
+			// The initial touched cell will only be converted to a swype digit
+			// in case the swype movement has left the originally touched at
+			// least once before going back to it.
+			if (mPreviousSwypeDigit > 0) {
+				return 5;
+			}
+		} else {
+			// The swype movement is currently outside the initial touched cell.
+			// The swype digit is dermined based on the relative position of the
+			// current swype position compared to the originally touch cell. The
+			// cell on the left and above of the initially touched cell equals
+			// 1. The cell below and on the right of the initially touched cell
+			// equals 9.
+			if (colSwypePosition < mColLastTouchDownCell
+					&& rowSwypePosition < mRowLastTouchDownCell) {
+				// Swype position is at a cell is to upper left of touched cell.
+				return 1;
+			} else if (colSwypePosition == mColLastTouchDownCell
+					&& rowSwypePosition < mRowLastTouchDownCell) {
+				// Swype position is at a cell is to upper of touched cell
+				return 2;
+			} else if (colSwypePosition > mColLastTouchDownCell
+					&& rowSwypePosition < mRowLastTouchDownCell) {
+				// Swype position is at a cell is to upper right of touched cell
+				return 3;
+			} else if (colSwypePosition < mColLastTouchDownCell
+					&& rowSwypePosition == mRowLastTouchDownCell) {
+				// Swype position is at a cell is to left of touched cell
+				return 4;
+			} else if (colSwypePosition > mColLastTouchDownCell
+					&& rowSwypePosition == mRowLastTouchDownCell) {
+				// Swype position is at a cell is to right of touched cell
+				return 6;
+			} else if (colSwypePosition < mColLastTouchDownCell
+					&& rowSwypePosition > mRowLastTouchDownCell) {
+				// Swype position is at a cell is to bottom left of touched cell
+				return 7;
+			} else if (colSwypePosition == mColLastTouchDownCell
+					&& rowSwypePosition > mRowLastTouchDownCell) {
+				// Swype position is at a cell is to bottom of touched cell
+				return 8;
+			} else if (colSwypePosition > mColLastTouchDownCell
+					&& rowSwypePosition > mRowLastTouchDownCell) {
+				// Swype position is at a cell is to bottom right of touched cell
+				return 9;
+			}
+		}
+		
+		// Swype digit could not be determined.
+		return -1;
 	}
 }
