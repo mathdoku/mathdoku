@@ -201,6 +201,7 @@ public class GridView extends View implements OnTouchListener {
 			// of the value the grid is invalidated.
 			int swypeDigit = getSwypeDigit(event);
 			if (swypeDigit > 0 && swypeDigit != mPreviousSwypeDigit) {
+				mPreviousSwypeDigit = swypeDigit;
 				invalidate();
 			}
 			return true;
