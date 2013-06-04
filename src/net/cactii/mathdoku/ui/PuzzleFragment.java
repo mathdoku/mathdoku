@@ -931,9 +931,29 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		if (mGrid == null) {
 			return;
 		}
-
-		mGrid.getGridStatistics().solutionRevealed();
-		registerAndProcessCheat(CheatType.SOLUTION_REVEALED);
-		mGrid.solve();
+		
+		new AlertDialog.Builder(this.getActivity())
+		.setTitle(R.string.dialog_reveal_solution_confirmation_title)
+		.setMessage(R.string.dialog_reveal_solution_confirmation_message)
+		.setIcon(android.R.drawable.ic_dialog_alert)
+		.setNegativeButton(
+				R.string.dialog_reveal_solution_confirmation_negative_button,
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,
+							int whichButton) {
+						// do nothing
+					}
+				})
+		.setPositiveButton(
+				R.string.dialog_reveal_solution_confirmation_positive_button,
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog,
+							int which) {
+						mGrid.getGridStatistics().solutionRevealed();
+						registerAndProcessCheat(CheatType.SOLUTION_REVEALED);
+						mGrid.solve();
+					}
+				}).show();
 	}
 }

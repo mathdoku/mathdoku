@@ -205,7 +205,15 @@
     <string name="theme_carved">Carved</string>
     <string name="theme_newspaper">Newspaper</string>
     <string name="theme_dark">Dark</string>
-
+    
+    <!-- DIALOG REVEAL SOLUTION CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    
+    <!-- The title, message and buttons confirmation message that shows up when the "reveal solution" menu item is selected, plus the associated title and button labels. -->
+    <string name="dialog_reveal_solution_confirmation_title">Reveal solution?</string>
+    <string name="dialog_reveal_solution_confirmation_message">Are you sure you want to reveal the solution of this puzzle?</string>
+    <string name="dialog_reveal_solution_confirmation_negative_button">No, I\'ll solve it myself</string>
+    <string name="dialog_reveal_solution_confirmation_positive_button">Yes, I give up</string>
+    
     <!-- DIALOG CLEAR GRID CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     
     <!-- The title, message and buttons confirmation message that shows up when the clear grid context menu item is selected, plus the associated title and button labels. -->
