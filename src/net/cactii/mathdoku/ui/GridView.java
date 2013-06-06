@@ -62,6 +62,7 @@ public class GridView extends View implements OnTouchListener {
 	private float mXPosSwype;
 	private float mYPosSwype;
 	private int mPreviousSwypeDigit;
+	private boolean mSwypeHasLeftSelectedCell;
 
 	// Used to grab the current input mode from.
 	public InputModeDeterminer mInputModeDeterminer;
@@ -146,7 +147,7 @@ public class GridView extends View implements OnTouchListener {
 			// of the initially touched cell to the middle of the cell which is
 			// hovered by the swype position. This variable will be set as soon
 			// as the swype movement leave this cell.
-			mPreviousSwypeDigit = -1;
+			mSwypeHasLeftSelectedCell = false;
 
 			// Indicate to the onDraw method that the swype border has to be
 			// shown.
@@ -169,19 +170,16 @@ public class GridView extends View implements OnTouchListener {
 				this.playSoundEffect(SoundEffectConstants.CLICK);
 
 				int swypeDigit = getSwypeDigit(event);
-				if (swypeDigit > mGridSize) {
-					// This value is not allowed for this grid size.
-					swypeDigit = -1;
-				} else if (swypeDigit > 0) {
+				if (swypeDigit > 0 && swypeDigit <= mGridSize) {
 					// Set the swype digit as selected value for the cell which
 					// was initially touched.
 					digitSelected(swypeDigit,
 							mInputModeDeterminer.getInputMode());
-				}
+				} 
 
 				// In case no valid swype movement was made, determine if same
 				// cell was touched again.
-				boolean sameCellSelectedAgain = (swypeDigit <= 0
+				boolean sameCellSelectedAgain = (swypeDigit == -1
 						&& mGrid.getSelectedCell() != null && mGrid
 						.getSelectedCell().equals(mPreviouslyTouchedCell));
 
@@ -197,11 +195,26 @@ public class GridView extends View implements OnTouchListener {
 			}
 			return true;
 		case MotionEvent.ACTION_MOVE:
-			// Check whether another swypeDigit is active. Only after a change
-			// of the value the grid is invalidated.
+			// What was the previous swype position when the ACTION_MOVE event
+			// was processed.
+			int coordinatesPrevious[] = getSwypePosition(mXPosSwype, mYPosSwype);
+
+			// Check which swypeDigit would be selected if the swype was release
+			// at this position.
 			int swypeDigit = getSwypeDigit(event);
-			if (swypeDigit > 0 && swypeDigit != mPreviousSwypeDigit) {
-				mPreviousSwypeDigit = swypeDigit;
+			if (swypeDigit > 0 && mSwypeHasLeftSelectedCell == false) {
+				// As soon as swype digit can be determined, the swype position
+				// has left the originally selected cell. From that moment on,
+				// the digit 5 becomes selectable as well by stopping and
+				// releasing the swype movement in the originally touched cell.
+				mSwypeHasLeftSelectedCell = true;
+			}
+
+			// For performance reasons, only invalidate the grid view in case
+			// the current swype position has moved to another cell.
+			int coordinatesCurrent[] = getSwypePosition(mXPosSwype, mYPosSwype);
+			if (coordinatesPrevious[0] != coordinatesCurrent[0]
+					|| coordinatesPrevious[1] != coordinatesCurrent[1]) {
 				invalidate();
 			}
 			return true;
@@ -474,71 +487,61 @@ public class GridView extends View implements OnTouchListener {
 		mYPosSwype = event.getY();
 
 		// Determine the cell in which is hovered by the current swype position.
-		float rowSwypePosition = event.getY() / mGridCellSize;
-		if (rowSwypePosition > mGridSize) {
-			rowSwypePosition = mGridSize;
-		} else if (rowSwypePosition < 0) {
-			rowSwypePosition = -1;
-		} else {
-			rowSwypePosition = (int) rowSwypePosition;
-		}
-		float colSwypePosition = event.getX() / mGridCellSize;
-		if (colSwypePosition > mGridSize) {
-			colSwypePosition = mGridSize;
-		} else if (colSwypePosition < 0) {
-			colSwypePosition = -1;
-		} else {
-			colSwypePosition = (int) colSwypePosition;
-		}
+		int[] coordinates = getSwypePosition(mXPosSwype, mYPosSwype);
 
 		// Based on the relative position of the cell which is currently hovered
 		// by the swype position compared to the originally selected cell, the
 		// swype digit is determined.
-		if (((int) colSwypePosition == mColLastTouchDownCell)
-				&& ((int) rowSwypePosition == mRowLastTouchDownCell)) {
+		if (((int) coordinates[0] == mColLastTouchDownCell)
+				&& ((int) coordinates[1] == mRowLastTouchDownCell)) {
 			// The initial touched cell will only be converted to a swype digit
 			// in case the swype movement has left the originally touched at
 			// least once before going back to it.
-			if (mPreviousSwypeDigit > 0) {
+			if (mSwypeHasLeftSelectedCell) {
 				return 5;
 			}
 		} else {
 			// The swype movement is currently outside the initial touched cell.
+			// From this moment on, the digit 5 becomes selectable as well by
+			// stopping and releasing the swype movement in the originally
+			// touched cell.
+			mSwypeHasLeftSelectedCell = true;
+
 			// The swype digit is dermined based on the relative position of the
 			// current swype position compared to the originally touch cell. The
 			// cell on the left and above of the initially touched cell equals
 			// 1. The cell below and on the right of the initially touched cell
 			// equals 9.
-			if (colSwypePosition < mColLastTouchDownCell
-					&& rowSwypePosition < mRowLastTouchDownCell) {
+			if (coordinates[0] < mColLastTouchDownCell
+					&& coordinates[1] < mRowLastTouchDownCell) {
 				// Swype position is at a cell is to upper left of touched cell.
 				return 1;
-			} else if (colSwypePosition == mColLastTouchDownCell
-					&& rowSwypePosition < mRowLastTouchDownCell) {
+			} else if (coordinates[0] == mColLastTouchDownCell
+					&& coordinates[1] < mRowLastTouchDownCell) {
 				// Swype position is at a cell is to upper of touched cell
 				return 2;
-			} else if (colSwypePosition > mColLastTouchDownCell
-					&& rowSwypePosition < mRowLastTouchDownCell) {
+			} else if (coordinates[0] > mColLastTouchDownCell
+					&& coordinates[1] < mRowLastTouchDownCell) {
 				// Swype position is at a cell is to upper right of touched cell
 				return 3;
-			} else if (colSwypePosition < mColLastTouchDownCell
-					&& rowSwypePosition == mRowLastTouchDownCell) {
+			} else if (coordinates[0] < mColLastTouchDownCell
+					&& coordinates[1] == mRowLastTouchDownCell) {
 				// Swype position is at a cell is to left of touched cell
 				return 4;
-			} else if (colSwypePosition > mColLastTouchDownCell
-					&& rowSwypePosition == mRowLastTouchDownCell) {
+			} else if (coordinates[0] > mColLastTouchDownCell
+					&& coordinates[1] == mRowLastTouchDownCell) {
 				// Swype position is at a cell is to right of touched cell
 				return 6;
-			} else if (colSwypePosition < mColLastTouchDownCell
-					&& rowSwypePosition > mRowLastTouchDownCell) {
+			} else if (coordinates[0] < mColLastTouchDownCell
+					&& coordinates[1] > mRowLastTouchDownCell) {
 				// Swype position is at a cell is to bottom left of touched cell
 				return 7;
-			} else if (colSwypePosition == mColLastTouchDownCell
-					&& rowSwypePosition > mRowLastTouchDownCell) {
+			} else if (coordinates[0] == mColLastTouchDownCell
+					&& coordinates[1] > mRowLastTouchDownCell) {
 				// Swype position is at a cell is to bottom of touched cell
 				return 8;
-			} else if (colSwypePosition > mColLastTouchDownCell
-					&& rowSwypePosition > mRowLastTouchDownCell) {
+			} else if (coordinates[0] > mColLastTouchDownCell
+					&& coordinates[1] > mRowLastTouchDownCell) {
 				// Swype position is at a cell is to bottom right of touched
 				// cell
 				return 9;
@@ -547,5 +550,44 @@ public class GridView extends View implements OnTouchListener {
 
 		// Swype digit could not be determined.
 		return -1;
+	}
+
+	/**
+	 * Converts a given position (pixels) to coordinates relative to the grid.
+	 * 
+	 * @param xPos
+	 *            The absolute x-position on the display
+	 * @param yPos
+	 *            The absolute y-position on the display
+	 * @return The (x,y)-position relative to the grid. For x-position -1 means
+	 *         left of grid, mGridSize means right of grid. For y-position -1
+	 *         means above grid, mGridSize means below grid.
+	 */
+	int[] getSwypePosition(float xPos, float yPos) {
+		int[] coordinates = { -1, -1 };
+
+		// Convert x-position to a column number. -1 means left of grid,
+		// mGridSize means right of grid.
+		xPos = xPos / mGridCellSize;
+		if (xPos > mGridSize) {
+			coordinates[0] = mGridSize;
+		} else if (xPos < 0) {
+			coordinates[0] = -1;
+		} else {
+			coordinates[0] = (int) xPos;
+		}
+
+		// Convert y-position to a column number. -1 means above grid, mGridSize
+		// means below grid.
+		yPos = yPos / mGridCellSize;
+		if (yPos > mGridSize) {
+			coordinates[1] = mGridSize;
+		} else if (yPos < 0) {
+			coordinates[1] = -1;
+		} else {
+			coordinates[1] = (int) yPos;
+		}
+
+		return coordinates;
 	}
 }
