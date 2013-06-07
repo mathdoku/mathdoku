@@ -531,7 +531,8 @@ public class GridCell {
 	 * Draw the overlay for the selected cell.
 	 */
 	public void drawOverlay(Canvas canvas, float gridBorderWidth,
-			InputMode inputMode, float mXPosSwype, float mYPosSwype) {
+			InputMode inputMode, float mXPosSwype, float mYPosSwype,
+			int swypeDigit) {
 		if (mGrid.getSelectedCell() != this) {
 			// This cell is not the selected cell.
 			return;
@@ -573,74 +574,87 @@ public class GridCell {
 		int gridSize = mGrid.getGridSize();
 		int horizontalOffset = 0;
 		int verticalOffset = 0;
-		Paint textPaint = mSwypeBorderPainter.getDigitPaint();
+		Paint textNormalPaint = mSwypeBorderPainter.getNormalDigitPaint();
+		Paint textHighlightedPaint = mSwypeBorderPainter
+				.getHighlightedDigitPaint();
 
 		// Draw digit 1
-		horizontalOffset = (int) ((borderOverlayWidth - textPaint
+		horizontalOffset = (int) ((borderOverlayWidth - textNormalPaint
 				.measureText("1")) / 2);
 		canvas.drawText("1", left - borderOverlayWidth + horizontalOffset, top
-				- mSwypeBorderPainter.getBottomOffset(), textPaint);
+				- mSwypeBorderPainter.getBottomOffset(),
+				(swypeDigit == 1 ? textHighlightedPaint : textNormalPaint));
 
 		// Draw digit 2
-		horizontalOffset = (int) ((right - left - textPaint.measureText("2")) / 2);
+		horizontalOffset = (int) ((right - left - textNormalPaint
+				.measureText("2")) / 2);
 		canvas.drawText("2", left + horizontalOffset,
-				top - mSwypeBorderPainter.getBottomOffset(), textPaint);
+				top - mSwypeBorderPainter.getBottomOffset(),
+				(swypeDigit == 2 ? textHighlightedPaint : textNormalPaint));
 
 		// Draw digit 3
-		horizontalOffset = (int) ((borderOverlayWidth - textPaint
+		horizontalOffset = (int) ((borderOverlayWidth - textNormalPaint
 				.measureText("3")) / 2);
 		canvas.drawText("3", right + horizontalOffset, top
-				- mSwypeBorderPainter.getBottomOffset(), textPaint);
+				- mSwypeBorderPainter.getBottomOffset(),
+				(swypeDigit == 3 ? textHighlightedPaint : textNormalPaint));
 
 		// Draw digit 4
-		horizontalOffset = (int) ((borderOverlayWidth - textPaint
+		horizontalOffset = (int) ((borderOverlayWidth - textNormalPaint
 				.measureText("4")) / 2);
-		verticalOffset = (int) ((bottom - top - textPaint.getTextSize()) / 2);
+		verticalOffset = (int) ((bottom - top - textNormalPaint.getTextSize()) / 2);
 		canvas.drawText("4", left - borderOverlayWidth + horizontalOffset, top
-				+ verticalOffset + textPaint.getTextSize()
-				- mSwypeBorderPainter.getBottomOffset(), textPaint);
+				+ verticalOffset + textNormalPaint.getTextSize()
+				- mSwypeBorderPainter.getBottomOffset(),
+				(swypeDigit == 4 ? textHighlightedPaint : textNormalPaint));
 
 		// Note: Digit 5 can not be drawn as it should be placed in the middle
 		// of the cell which could be confusing.
 
 		if (gridSize >= 6) {
 			// Draw digit 6
-			horizontalOffset = (int) ((borderOverlayWidth - textPaint
+			horizontalOffset = (int) ((borderOverlayWidth - textNormalPaint
 					.measureText("6")) / 2);
-			verticalOffset = (int) ((bottom - top - textPaint.getTextSize()) / 2);
+			verticalOffset = (int) ((bottom - top - textNormalPaint
+					.getTextSize()) / 2);
 			canvas.drawText("6", right + horizontalOffset,
-					top + verticalOffset + textPaint.getTextSize()
-							- mSwypeBorderPainter.getBottomOffset(), textPaint);
+					top + verticalOffset + textNormalPaint.getTextSize()
+							- mSwypeBorderPainter.getBottomOffset(),
+					(swypeDigit == 6 ? textHighlightedPaint : textNormalPaint));
 
 			if (gridSize >= 7) {
 				// Draw digit 7
-				horizontalOffset = (int) ((borderOverlayWidth - textPaint
+				horizontalOffset = (int) ((borderOverlayWidth - textNormalPaint
 						.measureText("7")) / 2);
 				canvas.drawText("7", left - borderOverlayWidth
 						+ horizontalOffset, bottom + borderOverlayWidth
-						- mSwypeBorderPainter.getBottomOffset(), textPaint);
+						- mSwypeBorderPainter.getBottomOffset(),
+						(swypeDigit == 7 ? textHighlightedPaint
+								: textNormalPaint));
 
 				if (gridSize >= 8) {
 					// Draw digit 8
-					horizontalOffset = (int) ((right - left - textPaint
+					horizontalOffset = (int) ((right - left - textNormalPaint
 							.measureText("8")) / 2);
 					canvas.drawText(
 							"8",
 							left + horizontalOffset,
 							bottom + borderOverlayWidth
 									- mSwypeBorderPainter.getBottomOffset(),
-							textPaint);
+							(swypeDigit == 8 ? textHighlightedPaint
+									: textNormalPaint));
 
 					if (gridSize >= 9) {
 						// Draw digit 9
-						horizontalOffset = (int) ((borderOverlayWidth - textPaint
+						horizontalOffset = (int) ((borderOverlayWidth - textNormalPaint
 								.measureText("9")) / 2);
 						canvas.drawText(
 								"9",
 								right + horizontalOffset,
 								bottom + borderOverlayWidth
 										- mSwypeBorderPainter.getBottomOffset(),
-								textPaint);
+								(swypeDigit == 9 ? textHighlightedPaint
+										: textNormalPaint));
 					}
 				}
 			}
@@ -1036,5 +1050,23 @@ public class GridCell {
 	 */
 	public boolean isEmpty() {
 		return (mUserValue == 0 && mPossibles.size() == 0);
+	}
+
+	/**
+	 * Get the coordinates of the center of the cell.
+	 * 
+	 * @param gridBorderWidth The width of the border for which has to be corrected.
+	 * @return The (x,y) coordinated of the center of the cell.
+	 */
+	public float[] getCellCentreCoordinates(float gridBorderWidth) {
+		// Get cell size
+		int cellSize = (int) this.mCellPainter.getCellSize();
+
+		float top = Math.round(gridBorderWidth + cellSize * this.mRow);
+		// float bottom = this.mPosY + cellSize;
+		float left = Math.round(gridBorderWidth + cellSize * this.mColumn);
+		// float right = this.mPosX + cellSize;
+
+		return new float[] { left + (cellSize / 2), top + (cellSize / 2) };
 	}
 }

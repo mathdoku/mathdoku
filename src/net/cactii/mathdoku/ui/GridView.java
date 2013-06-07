@@ -6,6 +6,8 @@ import net.cactii.mathdoku.Grid;
 import net.cactii.mathdoku.GridCell;
 import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
+import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
+import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.painter.GridPainter;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
@@ -17,6 +19,7 @@ import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 import android.view.View;
@@ -26,6 +29,10 @@ import android.widget.Toast;
 public class GridView extends View implements OnTouchListener {
 	@SuppressWarnings("unused")
 	private static final String TAG = "MathDoku.GridView";
+
+	// Remove "&& false" in following line to show debug information about
+	// creating cages when running in development mode.
+	public static final boolean DEBUG_GRID_VIEW_SWYPE = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && true;
 
 	// Context and preferences in context
 	Context mContext;
@@ -61,8 +68,8 @@ public class GridView extends View implements OnTouchListener {
 	private boolean mDisplaySwypeBorder;
 	private float mXPosSwype;
 	private float mYPosSwype;
-	private int mPreviousSwypeDigit;
 	private boolean mSwypeHasLeftSelectedCell;
+	private int mSwypeDigit;
 
 	// Used to grab the current input mode from.
 	public InputModeDeterminer mInputModeDeterminer;
@@ -143,6 +150,9 @@ public class GridView extends View implements OnTouchListener {
 			mGrid.setSelectedCell(mGrid.getCellAt(mRowLastTouchDownCell,
 					mColLastTouchDownCell));
 
+			// When starting a swype movement, the swype digit is not yet known.
+			mSwypeDigit = -1;
+
 			// While moving the swype position, a line is drawn from the middle
 			// of the initially touched cell to the middle of the cell which is
 			// hovered by the swype position. This variable will be set as soon
@@ -169,17 +179,17 @@ public class GridView extends View implements OnTouchListener {
 			if (this.mTouchedListener != null) {
 				this.playSoundEffect(SoundEffectConstants.CLICK);
 
-				int swypeDigit = getSwypeDigit(event);
-				if (swypeDigit > 0 && swypeDigit <= mGridSize) {
+				mSwypeDigit = getSwypeDigit(event);
+				if (mSwypeDigit > 0 && mSwypeDigit <= mGridSize) {
 					// Set the swype digit as selected value for the cell which
 					// was initially touched.
-					digitSelected(swypeDigit,
+					digitSelected(mSwypeDigit,
 							mInputModeDeterminer.getInputMode());
-				} 
+				}
 
 				// In case no valid swype movement was made, determine if same
 				// cell was touched again.
-				boolean sameCellSelectedAgain = (swypeDigit == -1
+				boolean sameCellSelectedAgain = (mSwypeDigit == -1
 						&& mGrid.getSelectedCell() != null && mGrid
 						.getSelectedCell().equals(mPreviouslyTouchedCell));
 
@@ -195,27 +205,33 @@ public class GridView extends View implements OnTouchListener {
 			}
 			return true;
 		case MotionEvent.ACTION_MOVE:
-			// What was the previous swype position when the ACTION_MOVE event
+			// What was the swype position when the previous ACTION_MOVE event
 			// was processed.
 			int coordinatesPrevious[] = getSwypePosition(mXPosSwype, mYPosSwype);
 
-			// Check which swypeDigit would be selected if the swype was release
-			// at this position.
-			int swypeDigit = getSwypeDigit(event);
-			if (swypeDigit > 0 && mSwypeHasLeftSelectedCell == false) {
-				// As soon as swype digit can be determined, the swype position
-				// has left the originally selected cell. From that moment on,
-				// the digit 5 becomes selectable as well by stopping and
-				// releasing the swype movement in the originally touched cell.
-				mSwypeHasLeftSelectedCell = true;
-			}
+			// Store current position of swype position
+			mXPosSwype = event.getX();
+			mYPosSwype = event.getY();
 
-			// For performance reasons, only invalidate the grid view in case
-			// the current swype position has moved to another cell.
+			// Get the current coordinates of the swype position
 			int coordinatesCurrent[] = getSwypePosition(mXPosSwype, mYPosSwype);
-			if (coordinatesPrevious[0] != coordinatesCurrent[0]
-					|| coordinatesPrevious[1] != coordinatesCurrent[1]) {
+
+			int newSwypeDigit = getSwypeDigit(event);
+			if (newSwypeDigit > 0 && mSwypeDigit != newSwypeDigit) {
+				mSwypeHasLeftSelectedCell = true;
+				mSwypeDigit = newSwypeDigit;
+
+				// As the swype digit has been changed, the grid view needs to
+				// be updated.
 				invalidate();
+			} else {
+				// Check if swype position has changed enough to be updated. For
+				// performance reasons, the grid view is only update in case the
+				// current swype position has moved to another cell.
+				if (coordinatesPrevious[0] != coordinatesCurrent[0]
+						|| coordinatesPrevious[1] != coordinatesCurrent[1]) {
+					invalidate();
+				}
 			}
 			return true;
 		default:
@@ -354,7 +370,7 @@ public class GridView extends View implements OnTouchListener {
 				GridCell gridCell = mGrid.getSelectedCell();
 				if (gridCell != null) {
 					gridCell.drawOverlay(canvas, gridBorderWidth, inputMode,
-							mXPosSwype, mYPosSwype);
+							mXPosSwype, mYPosSwype, mSwypeDigit);
 				}
 			}
 		}
@@ -474,85 +490,6 @@ public class GridView extends View implements OnTouchListener {
 	}
 
 	/**
-	 * Checks to which digit the swype line currently points.
-	 * 
-	 * @param event
-	 *            The motion event related for the touching of the grid view.
-	 * @return The digit to which the swype line currently points. -1 in case no
-	 *         value can be selected for the current swype position.
-	 */
-	private int getSwypeDigit(MotionEvent event) {
-		// Store current position of swype position
-		mXPosSwype = event.getX();
-		mYPosSwype = event.getY();
-
-		// Determine the cell in which is hovered by the current swype position.
-		int[] coordinates = getSwypePosition(mXPosSwype, mYPosSwype);
-
-		// Based on the relative position of the cell which is currently hovered
-		// by the swype position compared to the originally selected cell, the
-		// swype digit is determined.
-		if (((int) coordinates[0] == mColLastTouchDownCell)
-				&& ((int) coordinates[1] == mRowLastTouchDownCell)) {
-			// The initial touched cell will only be converted to a swype digit
-			// in case the swype movement has left the originally touched at
-			// least once before going back to it.
-			if (mSwypeHasLeftSelectedCell) {
-				return 5;
-			}
-		} else {
-			// The swype movement is currently outside the initial touched cell.
-			// From this moment on, the digit 5 becomes selectable as well by
-			// stopping and releasing the swype movement in the originally
-			// touched cell.
-			mSwypeHasLeftSelectedCell = true;
-
-			// The swype digit is dermined based on the relative position of the
-			// current swype position compared to the originally touch cell. The
-			// cell on the left and above of the initially touched cell equals
-			// 1. The cell below and on the right of the initially touched cell
-			// equals 9.
-			if (coordinates[0] < mColLastTouchDownCell
-					&& coordinates[1] < mRowLastTouchDownCell) {
-				// Swype position is at a cell is to upper left of touched cell.
-				return 1;
-			} else if (coordinates[0] == mColLastTouchDownCell
-					&& coordinates[1] < mRowLastTouchDownCell) {
-				// Swype position is at a cell is to upper of touched cell
-				return 2;
-			} else if (coordinates[0] > mColLastTouchDownCell
-					&& coordinates[1] < mRowLastTouchDownCell) {
-				// Swype position is at a cell is to upper right of touched cell
-				return 3;
-			} else if (coordinates[0] < mColLastTouchDownCell
-					&& coordinates[1] == mRowLastTouchDownCell) {
-				// Swype position is at a cell is to left of touched cell
-				return 4;
-			} else if (coordinates[0] > mColLastTouchDownCell
-					&& coordinates[1] == mRowLastTouchDownCell) {
-				// Swype position is at a cell is to right of touched cell
-				return 6;
-			} else if (coordinates[0] < mColLastTouchDownCell
-					&& coordinates[1] > mRowLastTouchDownCell) {
-				// Swype position is at a cell is to bottom left of touched cell
-				return 7;
-			} else if (coordinates[0] == mColLastTouchDownCell
-					&& coordinates[1] > mRowLastTouchDownCell) {
-				// Swype position is at a cell is to bottom of touched cell
-				return 8;
-			} else if (coordinates[0] > mColLastTouchDownCell
-					&& coordinates[1] > mRowLastTouchDownCell) {
-				// Swype position is at a cell is to bottom right of touched
-				// cell
-				return 9;
-			}
-		}
-
-		// Swype digit could not be determined.
-		return -1;
-	}
-
-	/**
 	 * Converts a given position (pixels) to coordinates relative to the grid.
 	 * 
 	 * @param xPos
@@ -589,5 +526,75 @@ public class GridView extends View implements OnTouchListener {
 		}
 
 		return coordinates;
+	}
+
+	private int getSwypeDigit(MotionEvent event) {
+		int[] coordinatesCurrent = getSwypePosition(event.getX(), event.getY());
+
+		if (coordinatesCurrent[0] == mColLastTouchDownCell
+				&& coordinatesCurrent[1] == mRowLastTouchDownCell) {
+			// As long as the swype position has not left the cell, the swype
+			// digit is undetermined. As the cell has been left at least once,
+			// return to the cell will result in choosing digit 5.
+			return (mSwypeHasLeftSelectedCell ? 5 : -1);
+		}
+
+		// In case the swype position is not inside the originally selected
+		// cell, the digit is determined based on the angle of the swype line.
+
+		// Get the start position of the swype line.
+		float[] startCoordinates = mGrid.getSelectedCell()
+				.getCellCentreCoordinates(
+						mGridPainter.getBorderPaint().getStrokeWidth());
+
+		// Compute current swype position relative to start position of swype.
+		// Note the delta's are computed in such a way that we can compute the
+		// angle between a horizontal line which crosses the start coordinates
+		// and the swype line.
+		float deltaX = startCoordinates[0] - event.getX();
+		float deltaY = startCoordinates[1] - event.getY();
+		double angle = Math.toDegrees(Math.atan2(deltaY, deltaX));
+
+		if (DEBUG_GRID_VIEW_SWYPE) {
+			Log.i(TAG, "getSwypeDigitOnAngle");
+			Log.i(TAG, " - start = (" + startCoordinates[0] + ", "
+					+ startCoordinates[1] + ")");
+			Log.i(TAG, " - current = (" + event.getX() + ", " + event.getY()
+					+ ")");
+			Log.i(TAG, " - deltaX = " + deltaX + " - deltaY = " + deltaY);
+			Log.i(TAG, " - angle = " + angle);
+		}
+
+		// Starting from the horizontal line which crosses the start coordinate
+		// we will divide the circle in 16 segments of each 22.5 degrees. Each
+		// digit (1 - 4 and 6 to 9) will be associated with two segments. Note
+		// that for segments below the x-asis the segments are order
+		// counter-clockwise.
+		if (angle >= 0) {
+			if (angle <= 22.5) {
+				return 4;
+			} else if (angle <= 22.5 + 45) {
+				return 1;
+			} else if (angle <= 22.5 + 90) {
+				return 2;
+			} else if (angle <= 22.5 + 135) {
+				return 3;
+			} else {
+				return 6;
+			}
+		} else {
+			angle *= -1;
+			if (angle <= 22.5) {
+				return 4;
+			} else if (angle <= 22.5 + 45) {
+				return 7;
+			} else if (angle <= 22.5 + 90) {
+				return 8;
+			} else if (angle <= 22.5 + 135) {
+				return 9;
+			} else {
+				return 6;
+			}
+		}
 	}
 }

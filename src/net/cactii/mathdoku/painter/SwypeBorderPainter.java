@@ -14,7 +14,8 @@ public class SwypeBorderPainter extends BorderPainter {
 	private Paint mMaybeValueBackgroundBorderPaint;
 	
 	// Painter for digits inside the swype border
-	private Paint mDigitPaint;
+	private Paint mNormalDigitPaint;
+	private Paint mHighlightedDigitPaint;
 
 	// Painter for the swype line
 	private Paint mSwypeLinePaint;
@@ -37,9 +38,11 @@ public class SwypeBorderPainter extends BorderPainter {
 		mMaybeValueBackgroundBorderPaint = new Paint();
 		mMaybeValueBackgroundBorderPaint.setStyle(Paint.Style.FILL);
 		
-		// The digit painter
-		mDigitPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		mDigitPaint.setFakeBoldText(true);
+		// The digit painters
+		mNormalDigitPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		mNormalDigitPaint.setFakeBoldText(true);
+		mHighlightedDigitPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		mHighlightedDigitPaint.setFakeBoldText(true);
 		
 		mSwypeLinePaint = new Paint();
 		mSwypeLinePaint.setAntiAlias(true);
@@ -56,8 +59,10 @@ public class SwypeBorderPainter extends BorderPainter {
 		mMaybeValueBackgroundBorderPaint.setColor(mPainter.getHighlightedTextColorMaybeInputMode());
 		mMaybeValueBackgroundBorderPaint.setAlpha(150);
 
-		mDigitPaint.setTypeface(mPainter.getTypeface());
-		mDigitPaint.setColor(mPainter.getDefaultTextColor());
+		mNormalDigitPaint.setTypeface(mPainter.getTypeface());
+		mNormalDigitPaint.setColor(0xFF7D7D7D);
+		mHighlightedDigitPaint.setTypeface(mPainter.getTypeface());
+		mHighlightedDigitPaint.setColor(0xFF000000);
 		
 		mSwypeLinePaint.setPathEffect(mPainter.getPathEffect());
 	}
@@ -71,7 +76,8 @@ public class SwypeBorderPainter extends BorderPainter {
 		mBorderWidth = cellSize / 2;
 		
 		int textSize = (int) (mBorderWidth * 0.8f);
-		mDigitPaint.setTextSize(textSize);
+		mNormalDigitPaint.setTextSize(textSize);
+		mHighlightedDigitPaint.setTextSize(textSize);
 		mBottomOffset = (int) ((mBorderWidth - textSize) / 2);
 	}
 
@@ -112,12 +118,21 @@ public class SwypeBorderPainter extends BorderPainter {
 	}
 
 	/**
-	 * Get the paint for the digits inside the swype border.
+	 * Get the paint for the normal digits inside the swype border.
 	 * 
-	 * @return The paint for the digits inside the swype border.
+	 * @return The paint for the normal digits inside the swype border.
 	 */
-	public Paint getDigitPaint() {
-		return mDigitPaint;
+	public Paint getNormalDigitPaint() {
+		return mNormalDigitPaint;
+	}
+
+	/**
+	 * Get the paint for the highlighted digit inside the swype border.
+	 * 
+	 * @return The paint for the highlighted digit inside the swype border.
+	 */
+	public Paint getHighlightedDigitPaint() {
+		return mHighlightedDigitPaint;
 	}
 
 	/**
