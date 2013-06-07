@@ -74,79 +74,18 @@
                 <!-- Keep all properties that control height for elements timerText and inputModeText in line with each other. -->
                 <!-- Note: the weight of element inputModeText will be set programmatically to the number of digit columns used. -->
 
-                <Button
-                    android:id="@+id/inputModeText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:lines="1"
-                    android:text="@string/input_mode_normal_long"
-                    android:textSize="@dimen/controls_text_size_default"
-                    android:textStyle="bold" />
             </TableRow>
 
             <TableRow
                 android:id="@+id/controlsButtonRow1"
                 android:layout_weight="1" >
 
-                <Button
-                    android:id="@+id/digitPosition1"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/controls_text_size_digits"
-                    android:textStyle="bold"
-                    tools:ignore="ButtonStyle" />
-
-                <Button
-                    android:id="@+id/digitPosition2"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/controls_text_size_digits"
-                    android:textStyle="bold"
-                    tools:ignore="ButtonStyle" />
-
-                <Button
-                    android:id="@+id/digitPosition3"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/controls_text_size_digits"
-                    android:textStyle="bold"
-                    tools:ignore="ButtonStyle" />
             </TableRow>
 
             <TableRow
                 android:id="@+id/controlsButtonRow2"
                 android:layout_weight="1" >
 
-                <Button
-                    android:id="@+id/digitPosition4"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/controls_text_size_digits"
-                    android:textStyle="bold"
-                    tools:ignore="ButtonStyle" />
-
-                <Button
-                    android:id="@+id/digitPosition5"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/controls_text_size_digits"
-                    android:textStyle="bold"
-                    tools:ignore="ButtonStyle" />
-
-                <Button
-                    android:id="@+id/digitPosition6"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/controls_text_size_digits"
-                    android:textStyle="bold"
-                    tools:ignore="ButtonStyle" />
             </TableRow>
 
             <!-- The last row is an optional row which might be binnen in case not playing gridsize 7 or above. In case a button is added on the right the logic of hiding this row has to be revised! -->
@@ -155,32 +94,6 @@
                 android:id="@+id/controlsButtonRow3"
                 android:layout_weight="1" >
 
-                <Button
-                    android:id="@+id/digitPosition7"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/controls_text_size_digits"
-                    android:textStyle="bold"
-                    tools:ignore="ButtonStyle" />
-
-                <Button
-                    android:id="@+id/digitPosition8"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/controls_text_size_digits"
-                    android:textStyle="bold"
-                    tools:ignore="ButtonStyle" />
-
-                <Button
-                    android:id="@+id/digitPosition9"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/controls_text_size_digits"
-                    android:textStyle="bold"
-                    tools:ignore="ButtonStyle" />
             </TableRow>
 
             <TableRow

@@ -96,17 +96,6 @@
                 <!-- Keep all properties that control height for elements timerText and inputModeText in line with each other. -->
                 <!-- Note: the weight of element inputModeText will be set programmatically to the number of digit columns used. -->
 
-                <Button
-                    android:id="@+id/inputModeText"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="3"
-                    android:lines="1"
-                    android:padding="2dp"
-                    android:text="@string/input_mode_normal_long"
-                    android:textSize="@dimen/controls_text_size_default"
-                    android:textStyle="bold" />
-
                 <!-- placeholder to create empty space above clear and undo buttons -->
                 <!-- Do not remove textSize of placeholder as this ensure a minimum height of the row on a Nexus7 with API-17 -->
 
@@ -125,33 +114,6 @@
                 android:layout_weight="1" >
 
                 <Button
-                    android:id="@+id/digitPosition1"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/controls_text_size_digits"
-                    android:textStyle="bold"
-                    tools:ignore="ButtonStyle" />
-
-                <Button
-                    android:id="@+id/digitPosition2"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/controls_text_size_digits"
-                    android:textStyle="bold"
-                    tools:ignore="ButtonStyle" />
-
-                <Button
-                    android:id="@+id/digitPosition3"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/controls_text_size_digits"
-                    android:textStyle="bold"
-                    tools:ignore="ButtonStyle" />
-
-                <Button
                     android:id="@+id/clearButton"
                     android:layout_width="0dp"
                     android:layout_height="fill_parent"
@@ -168,32 +130,6 @@
                 android:id="@+id/controlsButtonRow2"
                 android:layout_weight="1" >
 
-                <Button
-                    android:id="@+id/digitPosition4"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/controls_text_size_digits"
-                    android:textStyle="bold"
-                    tools:ignore="ButtonStyle" />
-
-                <Button
-                    android:id="@+id/digitPosition5"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/controls_text_size_digits"
-                    android:textStyle="bold"
-                    tools:ignore="ButtonStyle" />
-
-                <Button
-                    android:id="@+id/digitPosition6"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/controls_text_size_digits"
-                    android:textStyle="bold"
-                    tools:ignore="ButtonStyle" />
 
                 <Button
                     android:id="@+id/undoButton"
@@ -214,32 +150,6 @@
                 android:id="@+id/controlsButtonRow3"
                 android:layout_weight="1" >
 
-                <Button
-                    android:id="@+id/digitPosition7"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/controls_text_size_digits"
-                    android:textStyle="bold"
-                    tools:ignore="ButtonStyle" />
-
-                <Button
-                    android:id="@+id/digitPosition8"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/controls_text_size_digits"
-                    android:textStyle="bold"
-                    tools:ignore="ButtonStyle" />
-
-                <Button
-                    android:id="@+id/digitPosition9"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/controls_text_size_digits"
-                    android:textStyle="bold"
-                    tools:ignore="ButtonStyle" />
 
                 <!-- placeholder to create empty space below clear and undo buttons. In case this space is used for a button, the login of hiding element lastRow has to be checked. -->
 

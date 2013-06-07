@@ -32,7 +32,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnCreateContextMenuListener;
@@ -44,7 +43,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -76,7 +74,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * /articles/perf-tips.html#PackageInner).
 	 */
 	/* package */InputMode mInputMode;
-	Button mInputModeTextView;
 
 	GameTimer mTimerTask;
 
@@ -88,10 +85,9 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	TextView mTimerText;
 
 	// Digit positions are the places on which the digit buttons can be placed.
-	Button mDigitPosition[] = new Button[9];
 	DigitPositionGrid mDigitPositionGrid;
 
-	Button mClearDigit;
+	Button mClearButton;
 	Button mUndoButton;
 	View[] mSoundEffectViews;
 
@@ -158,36 +154,11 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				.findViewById(R.id.gameSeedText);
 		this.mTimerText = (TextView) mRootView.findViewById(R.id.timerText);
 
-		this.mInputModeTextView = (Button) mRootView
-				.findViewById(R.id.inputModeText);
-		mDigitPosition[0] = (Button) mRootView
-				.findViewById(R.id.digitPosition1);
-		mDigitPosition[1] = (Button) mRootView
-				.findViewById(R.id.digitPosition2);
-		mDigitPosition[2] = (Button) mRootView
-				.findViewById(R.id.digitPosition3);
-		mDigitPosition[3] = (Button) mRootView
-				.findViewById(R.id.digitPosition4);
-		mDigitPosition[4] = (Button) mRootView
-				.findViewById(R.id.digitPosition5);
-		mDigitPosition[5] = (Button) mRootView
-				.findViewById(R.id.digitPosition6);
-		mDigitPosition[6] = (Button) mRootView
-				.findViewById(R.id.digitPosition7);
-		mDigitPosition[7] = (Button) mRootView
-				.findViewById(R.id.digitPosition8);
-		mDigitPosition[8] = (Button) mRootView
-				.findViewById(R.id.digitPosition9);
-		this.mClearDigit = (Button) mRootView.findViewById(R.id.clearButton);
+		this.mClearButton = (Button) mRootView.findViewById(R.id.clearButton);
 		this.mUndoButton = (Button) mRootView.findViewById(R.id.undoButton);
 
-		this.mSoundEffectViews = new View[] { this.mGridView,
-				this.mDigitPosition[0], this.mDigitPosition[1],
-				this.mDigitPosition[2], this.mDigitPosition[3],
-				this.mDigitPosition[4], this.mDigitPosition[5],
-				this.mDigitPosition[6], this.mDigitPosition[7],
-				this.mDigitPosition[8], this.mClearDigit,
-				this.mInputModeTextView, this.mUndoButton };
+		this.mSoundEffectViews = new View[] { mGridView, mClearButton,
+				mUndoButton };
 
 		setInputMode(InputMode.NO_INPUT__HIDE_GRID);
 
@@ -211,17 +182,14 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 					}
 				});
 
-		for (int i = 0; i < mDigitPosition.length; i++)
-			this.mDigitPosition[i].setOnClickListener(new OnClickListener() {
-				public void onClick(View v) {
-					// Convert text of button (number) to Integer
-					int d = Integer.parseInt(((Button) v).getText().toString());
-					digitSelected(d);
-				}
-			});
-		this.mClearDigit.setOnClickListener(new OnClickListener() {
+		this.mClearButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				digitSelected(0);
+				if (mGridView != null) {
+					mGridView.digitSelected(0);
+
+					setClearAndUndoButtonVisibility(mGrid.getSelectedCell());
+					mGridView.invalidate();
+				}
 			}
 		});
 		this.mUndoButton.setOnClickListener(new OnClickListener() {
@@ -236,15 +204,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 					((FragmentActivity) mContext).invalidateOptionsMenu();
 				}
 			}
-		});
-		this.mInputModeTextView.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				v.playSoundEffect(SoundEffectConstants.CLICK);
-				toggleInputMode();
-			}
-
 		});
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			this.mGameSeedText.setOnTouchListener(new OnTouchListener() {
@@ -341,14 +300,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	public void setSoundEffectsEnabled(boolean enabled) {
 		for (View v : this.mSoundEffectViews)
 			v.setSoundEffectsEnabled(enabled);
-	}
-
-	public void digitSelected(int value) {
-		this.mGridView.digitSelected(value, mInputMode);
-
-		setClearAndUndoButtonVisibility(mGrid.getSelectedCell());
-		this.mGridView.requestFocus();
-		this.mGridView.invalidate();
 	}
 
 	/**
@@ -482,7 +433,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 					// relavant to this new grid.
 					setInputMode(mInputMode);
 				}
-				setClearAndUndoButtonVisibility(null);
+				setClearAndUndoButtonVisibility(mGrid.getSelectedCell());
 
 				startTimer();
 
@@ -596,21 +547,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			}
 			mControls.setVisibility(View.VISIBLE);
 
-			// Determine the color which is used for text which depends on the
-			// actual input mode
-			int color = (inputMode == InputMode.NORMAL ? mPainter
-					.getHighlightedTextColorNormalInputMode() : mPainter
-					.getHighlightedTextColorMaybeInputMode());
-
-			// Set text and color for input mode label
-			mInputModeTextView.setTextColor(color);
-			mInputModeTextView
-					.setText(mContext
-							.getResources()
-							.getString(
-									(inputMode == InputMode.NORMAL ? R.string.input_mode_normal_long
-											: R.string.input_mode_maybe_long)));
-
 			// Determine the layout to be used for the digit buttons and maybe
 			// values inside a grid
 			if (mGrid != null) {
@@ -670,12 +606,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 *            The new input mode to be set.
 	 */
 	private void setDigitPositionGrid(InputMode inputMode) {
-		// Determine the color which is used for text which depends on the
-		// actual input mode
-		int color = (inputMode == InputMode.NORMAL ? mPainter
-				.getHighlightedTextColorNormalInputMode() : mPainter
-				.getHighlightedTextColorMaybeInputMode());
-
 		// Only create the digit position grid if needed
 		if (mDigitPositionGrid == null
 				|| !mDigitPositionGrid.isReusable(mGrid.getGridSize())) {
@@ -683,25 +613,9 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			// grid layout.
 			mDigitPositionGrid = new DigitPositionGrid(mGrid.getGridSize());
 
-			// The weight of the input mode has to be aligned with the
-			// number of columns containing digit buttons.
-			TableRow.LayoutParams layoutParams = (TableRow.LayoutParams) mInputModeTextView
-					.getLayoutParams();
-			layoutParams.weight = mDigitPositionGrid.getVisibleDigitColumns();
-			mInputModeTextView.setLayoutParams(layoutParams);
-
 			// Propagate setting to the grid view as well for displaying maybe
 			// values (dependent on preferences).
 			mGridView.setDigitPositionGrid(mDigitPositionGrid);
-		}
-
-		// Use the created mapping to fill all digit positions.
-		for (int i = 0; i < mDigitPosition.length; i++) {
-			int value = mDigitPositionGrid.getValue(i);
-			mDigitPosition[i].setText(value > 0 ? Integer.toString(value) : "");
-			mDigitPosition[i]
-					.setVisibility(mDigitPositionGrid.getVisibility(i));
-			mDigitPosition[i].setTextColor(color);
 		}
 	}
 
@@ -892,12 +806,16 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 *            should be visible. Use null in case no cell is selected.
 	 */
 	private void setClearAndUndoButtonVisibility(GridCell cell) {
-		((Button) mRootView.findViewById(R.id.clearButton))
-				.setVisibility((cell == null || cell.isEmpty()) ? View.INVISIBLE
-						: View.VISIBLE);
-		((Button) mRootView.findViewById(R.id.undoButton))
-				.setVisibility((mGrid == null || mGrid.countMoves() == 0) ? View.INVISIBLE
-						: View.VISIBLE);
+		if (mClearButton != null) {
+			mClearButton
+					.setVisibility((cell == null || cell.isEmpty()) ? View.INVISIBLE
+							: View.VISIBLE);
+		}
+		if (mUndoButton != null) {
+			mUndoButton
+					.setVisibility((mGrid == null || mGrid.countMoves() == 0) ? View.INVISIBLE
+							: View.VISIBLE);
+		}
 	}
 
 	public boolean isActive() {
@@ -931,29 +849,30 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		if (mGrid == null) {
 			return;
 		}
-		
+
 		new AlertDialog.Builder(this.getActivity())
-		.setTitle(R.string.dialog_reveal_solution_confirmation_title)
-		.setMessage(R.string.dialog_reveal_solution_confirmation_message)
-		.setIcon(android.R.drawable.ic_dialog_alert)
-		.setNegativeButton(
-				R.string.dialog_reveal_solution_confirmation_negative_button,
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog,
-							int whichButton) {
-						// do nothing
-					}
-				})
-		.setPositiveButton(
-				R.string.dialog_reveal_solution_confirmation_positive_button,
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog,
-							int which) {
-						mGrid.getGridStatistics().solutionRevealed();
-						registerAndProcessCheat(CheatType.SOLUTION_REVEALED);
-						mGrid.solve();
-					}
-				}).show();
+				.setTitle(R.string.dialog_reveal_solution_confirmation_title)
+				.setMessage(
+						R.string.dialog_reveal_solution_confirmation_message)
+				.setIcon(android.R.drawable.ic_dialog_alert)
+				.setNegativeButton(
+						R.string.dialog_reveal_solution_confirmation_negative_button,
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+								// do nothing
+							}
+						})
+				.setPositiveButton(
+						R.string.dialog_reveal_solution_confirmation_positive_button,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								mGrid.getGridStatistics().solutionRevealed();
+								registerAndProcessCheat(CheatType.SOLUTION_REVEALED);
+								mGrid.solve();
+							}
+						}).show();
 	}
 }

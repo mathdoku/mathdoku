@@ -183,8 +183,7 @@ public class GridView extends View implements OnTouchListener {
 				if (mSwypeDigit > 0 && mSwypeDigit <= mGridSize) {
 					// Set the swype digit as selected value for the cell which
 					// was initially touched.
-					digitSelected(mSwypeDigit,
-							mInputModeDeterminer.getInputMode());
+					digitSelected(mSwypeDigit);
 				}
 
 				// In case no valid swype movement was made, determine if same
@@ -245,7 +244,9 @@ public class GridView extends View implements OnTouchListener {
 		return mGrid.getSelectedCell();
 	}
 
-	public void digitSelected(int newValue, InputMode inputMode) {
+	public void digitSelected(int newValue) {
+		InputMode inputMode = mInputModeDeterminer.getInputMode();
+				
 		// Display a message in case no cell is selected.
 		GridCell selectedCell = mGrid.getSelectedCell();
 		if (selectedCell == null) {
