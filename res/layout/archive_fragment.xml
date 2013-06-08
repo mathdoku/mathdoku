@@ -13,35 +13,13 @@
             android:id="@+id/puzzleGrid"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:background="#00000000" >
+            android:layout_margin="5dp" >
 
             <net.cactii.mathdoku.ui.GridView
                 android:id="@+id/gridView"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:layout_centerHorizontal="true" />
-
-            <TextView
-                android:id="@+id/gameSeedLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/gridView"
-                android:layout_below="@+id/gridView"
-                android:text="@string/game_seed"
-                android:textSize="@dimen/text_size_tiny"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/gameSeedText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/gameSeedLabel"
-                android:layout_toRightOf="@+id/gameSeedLabel"
-                android:text="999.999.999.999.999.999"
-                android:textSize="@dimen/text_size_tiny"
-                android:visibility="gone"
-                tools:ignore="HardcodedText" />
         </RelativeLayout>
 
         <TableLayout

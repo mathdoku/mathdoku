@@ -10,8 +10,6 @@ import net.cactii.mathdoku.GridCage;
 import net.cactii.mathdoku.GridCell;
 import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
-import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
-import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import net.cactii.mathdoku.tip.TipCheat;
@@ -29,18 +27,15 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnCreateContextMenuListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,9 +56,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 	RelativeLayout mTopLayout;
 	RelativeLayout mPuzzleGridLayout;
-	TableLayout mControls;
-	TextView mGameSeedLabel;
-	TextView mGameSeedText;
 	TextView mTimerText;
 
 	// Digit positions are the places on which the digit buttons can be placed.
@@ -124,11 +116,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		this.mPuzzleGridLayout = (RelativeLayout) mRootView
 				.findViewById(R.id.puzzleGrid);
 		this.mGridView = (GridView) mRootView.findViewById(R.id.gridView);
-		this.mControls = (TableLayout) mRootView.findViewById(R.id.controls);
-		this.mGameSeedLabel = (TextView) mRootView
-				.findViewById(R.id.gameSeedLabel);
-		this.mGameSeedText = (TextView) mRootView
-				.findViewById(R.id.gameSeedText);
 		this.mTimerText = (TextView) mRootView.findViewById(R.id.timerText);
 
 		this.mClearButton = (Button) mRootView.findViewById(R.id.clearButton);
@@ -171,34 +158,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				}
 			}
 		});
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-			this.mGameSeedText.setOnTouchListener(new OnTouchListener() {
-
-				@Override
-				public boolean onTouch(View v, MotionEvent event) {
-					if (event.getAction() == MotionEvent.ACTION_DOWN) {
-						if (mGrid != null) {
-							mGrid.getGridGeneratingParameters().show(
-									(Activity) mContext);
-						}
-					}
-					return false;
-				}
-			});
-			this.mGameSeedLabel.setOnTouchListener(new OnTouchListener() {
-
-				@Override
-				public boolean onTouch(View v, MotionEvent event) {
-					if (event.getAction() == MotionEvent.ACTION_DOWN) {
-						if (mGrid != null) {
-							mGrid.getGridGeneratingParameters().show(
-									(Activity) mContext);
-						}
-					}
-					return false;
-				}
-			});
-		}
 
 		this.mGridView.setFocusable(true);
 		this.mGridView.setFocusableInTouchMode(true);
@@ -415,14 +374,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 			// Check actionbar and menu options
 			((Activity) mContext).invalidateOptionsMenu();
-
-			// Debug information
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-				mGameSeedLabel.setVisibility(View.VISIBLE);
-				mGameSeedText.setVisibility(View.VISIBLE);
-				mGameSeedText
-						.setText(String.format("%,d", mGrid.getGameSeed()));
-			}
 
 			mRootView.invalidate();
 		} else {
@@ -784,9 +735,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		if (mUndoButton != null) {
 			mUndoButton.setVisibility(View.GONE);
 			mUndoButton.invalidate();
-		}
-		if (mControls != null) {
-			mControls.invalidate();
 		}
 	}
 }

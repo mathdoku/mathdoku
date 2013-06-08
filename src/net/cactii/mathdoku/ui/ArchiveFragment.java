@@ -5,8 +5,6 @@ import java.text.DateFormat;
 import net.cactii.mathdoku.DigitPositionGrid;
 import net.cactii.mathdoku.Grid;
 import net.cactii.mathdoku.R;
-import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
-import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.statistics.GridStatistics;
 import net.cactii.mathdoku.util.Util;
 
@@ -80,18 +78,6 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 				// Disable the grid as the user should not be able to click
 				// cells in the archive view
 				grid.setActive(false);
-			}
-
-			// Debug information
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-				TextView mGameSeedLabel = (TextView) rootView
-						.findViewById(R.id.gameSeedLabel);
-				TextView mGameSeedText = (TextView) rootView
-						.findViewById(R.id.gameSeedText);
-
-				mGameSeedLabel.setVisibility(View.VISIBLE);
-				mGameSeedText.setVisibility(View.VISIBLE);
-				mGameSeedText.setText(String.format("%,d", grid.getGameSeed()));
 			}
 
 			// Load grid statistics
