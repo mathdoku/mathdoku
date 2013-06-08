@@ -12,8 +12,8 @@ import net.cactii.mathdoku.painter.GridPainter;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import net.cactii.mathdoku.tip.TipIncorrectValue;
+import net.cactii.mathdoku.tip.TipInputModeChanged;
 import net.cactii.mathdoku.tip.TipOrderOfValuesInCage;
-import net.cactii.mathdoku.ui.PuzzleFragment.InputMode;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
@@ -71,16 +71,13 @@ public class GridView extends View implements OnTouchListener {
 	private boolean mSwypeHasLeftSelectedCell;
 	private int mSwypeDigit;
 
-	// Used to grab the current input mode from.
-	public InputModeDeterminer mInputModeDeterminer;
+	// The input mode in which the puzzle can be.
+	public enum InputMode {
+		NORMAL, // Digits entered are handled as a new cell value
+		MAYBE, // Digits entered are handled to toggle the possible value on/of
+	};
 
-	public static interface InputModeDeterminer {
-		/**
-		 * Returns the current input mode the game this grid view is a part of,
-		 * is in.
-		 */
-		public InputMode getInputMode();
-	}
+	InputMode mInputMode;
 
 	public GridView(Context context) {
 		super(context);
@@ -117,8 +114,7 @@ public class GridView extends View implements OnTouchListener {
 	}
 
 	public abstract class OnGridTouchListener {
-		public abstract void gridTouched(GridCell cell,
-				boolean sameCellSelectedAgain);
+		public abstract void gridTouched(GridCell cell);
 	}
 
 	public boolean onTouch(View arg0, MotionEvent event) {
@@ -186,15 +182,27 @@ public class GridView extends View implements OnTouchListener {
 					digitSelected(mSwypeDigit);
 				}
 
+				// Get selected cell
+				GridCell selectedCell = mGrid.getSelectedCell();
+
 				// In case no valid swype movement was made, determine if same
 				// cell was touched again.
-				boolean sameCellSelectedAgain = (mSwypeDigit == -1
-						&& mGrid.getSelectedCell() != null && mGrid
-						.getSelectedCell().equals(mPreviouslyTouchedCell));
+				if (mSwypeDigit == -1
+						&& selectedCell != null
+						&& selectedCell.equals(
+								mPreviouslyTouchedCell)) {
+
+					// Toggle the inputMode
+					mInputMode = (mInputMode == InputMode.MAYBE ? InputMode.NORMAL
+							: InputMode.MAYBE);
+
+					if (TipInputModeChanged.toBeDisplayed(mPreferences)) {
+						new TipInputModeChanged(mContext, mInputMode).show();
+					}
+				}
 
 				// Inform listener of puzzle fragment about the release action
-				mTouchedListener.gridTouched(mGrid.getSelectedCell(),
-						sameCellSelectedAgain);
+				mTouchedListener.gridTouched(selectedCell);
 
 				// Hide swype border if displayed.
 				if (mDisplaySwypeBorder) {
@@ -245,8 +253,6 @@ public class GridView extends View implements OnTouchListener {
 	}
 
 	public void digitSelected(int newValue) {
-		InputMode inputMode = mInputModeDeterminer.getInputMode();
-
 		// Display a message in case no cell is selected.
 		GridCell selectedCell = mGrid.getSelectedCell();
 		if (selectedCell == null) {
@@ -283,8 +289,7 @@ public class GridView extends View implements OnTouchListener {
 					selectedCell.getCage())) {
 				new TipOrderOfValuesInCage(mContext).show();
 			}
-			switch (inputMode) {
-			case MAYBE:
+			if (mInputMode == InputMode.MAYBE) {
 				if (selectedCell.isUserValueSet()) {
 					selectedCell.clear();
 				}
@@ -294,8 +299,8 @@ public class GridView extends View implements OnTouchListener {
 					selectedCell.addPossible(newValue);
 					mGrid.increaseCounter(StatisticsCounterType.POSSIBLES);
 				}
-				break;
-			case NORMAL:
+			}
+			else {
 				if (newValue != oldValue) {
 					// User value of cell has actually changed.
 					selectedCell.setUserValue(newValue);
@@ -325,10 +330,6 @@ public class GridView extends View implements OnTouchListener {
 						new TipIncorrectValue(mContext).show();
 					}
 				}
-				break;
-			default:
-				// Should not be possible
-				return;
 			}
 		}
 	}
@@ -357,19 +358,18 @@ public class GridView extends View implements OnTouchListener {
 					mGridPainter.getBorderPaint());
 
 			// Draw cells
-			InputMode inputMode = mInputModeDeterminer.getInputMode();
 			Painter.getInstance(mContext).setCellSize(mGridCellSize,
 					mDigitPositionGrid);
 			for (GridCell cell : mGrid.mCells) {
 				cell.checkWithOtherValuesInRowAndColumn();
-				cell.draw(canvas, gridBorderWidth, inputMode);
+				cell.draw(canvas, gridBorderWidth, mInputMode);
 			}
 
 			// Draw the overlay for the selected cell
 			if (mDisplaySwypeBorder) {
 				GridCell gridCell = mGrid.getSelectedCell();
 				if (gridCell != null) {
-					gridCell.drawOverlay(canvas, gridBorderWidth, inputMode,
+					gridCell.drawOverlay(canvas, gridBorderWidth, mInputMode,
 							mXPosSwype, mYPosSwype, mSwypeDigit);
 				}
 			}
@@ -388,6 +388,9 @@ public class GridView extends View implements OnTouchListener {
 		mDigitPositionGrid = (mGrid != null
 				&& mGrid.hasPrefShowMaybesAs3x3Grid() ? new DigitPositionGrid(
 				mGrid.getGridSize()) : null);
+		
+		// Set default input mode to normal
+		mInputMode = InputMode.NORMAL;
 
 		invalidate();
 	}

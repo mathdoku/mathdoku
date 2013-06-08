@@ -16,9 +16,7 @@ import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import net.cactii.mathdoku.tip.TipCheat;
 import net.cactii.mathdoku.tip.TipIncorrectValue;
-import net.cactii.mathdoku.tip.TipInputModeChanged;
 import net.cactii.mathdoku.tip.TipStatistics;
-import net.cactii.mathdoku.ui.GridView.InputModeDeterminer;
 import net.cactii.mathdoku.util.UsageLog;
 import net.cactii.mathdoku.util.Util;
 import android.annotation.SuppressLint;
@@ -58,20 +56,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 	// A global painter object to paint the grid in different themes.
 	public Painter mPainter;
-
-	// The input mode in which the puzzle can be.
-	public enum InputMode {
-		NORMAL, // Digits entered are handled as a new cell value
-		MAYBE, // Digits entered are handled to toggle the possible value on/of
-	};
-
-	/**
-	 * The input mode which is currently active. Access level is not private, to
-	 * prevent the an extra access method (see
-	 * http://developer.android.com/training
-	 * /articles/perf-tips.html#PackageInner).
-	 */
-	/* package */InputMode mInputMode;
 
 	GameTimer mTimerTask;
 
@@ -139,12 +123,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				.findViewById(R.id.topLayout);
 		this.mPuzzleGridLayout = (RelativeLayout) mRootView
 				.findViewById(R.id.puzzleGrid);
-		(this.mGridView = (GridView) mRootView.findViewById(R.id.gridView)).mInputModeDeterminer = new InputModeDeterminer() {
-			@Override
-			public final InputMode getInputMode() {
-				return mInputMode;
-			}
-		};
+		this.mGridView = (GridView) mRootView.findViewById(R.id.gridView);
 		this.mControls = (TableLayout) mRootView.findViewById(R.id.controls);
 		this.mGameSeedLabel = (TextView) mRootView
 				.findViewById(R.id.gameSeedLabel);
@@ -164,19 +143,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		this.mGridView
 				.setOnGridTouchListener(this.mGridView.new OnGridTouchListener() {
 					@Override
-					public void gridTouched(GridCell cell,
-							boolean sameCellSelectedAgain) {
-						if (sameCellSelectedAgain) {
-							if (TipInputModeChanged
-									.toBeDisplayed(mMathDokuPreferences)) {
-								new TipInputModeChanged(
-										mContext,
-										(mInputMode == InputMode.MAYBE ? InputMode.NORMAL
-												: InputMode.MAYBE)).show();
-							}
-							toggleInputMode();
-						}
-
+					public void gridTouched(GridCell cell) {
 						setClearAndUndoButtonVisibility(cell);
 					}
 				});
@@ -372,8 +339,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 					mOnGridFinishedListener.onGridFinishedListener(mGrid
 							.getSolvingAttemptId());
 				} else {
-					// Set input mode to hide controls while playing the
-					// animation.
+					// Hide controls while showing the animation.
 					setInactiveGridLoaded();
 
 					// Set the text view which will be animated
@@ -423,12 +389,22 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 			// Show the grid of the loaded puzzle.
 			if (mGrid.isActive()) {
-				// Determine input mode. The input mode will only be set if it
-				// was not yet set before.
-				setActiveGridLoaded();
-				setClearAndUndoButtonVisibility(mGrid.getSelectedCell());
-
+				// Set visibility of grid layout
+				if (mPuzzleGridLayout != null) {
+					mPuzzleGridLayout.setVisibility(View.VISIBLE);
+					mPuzzleGridLayout.invalidate();
+				}
+				
+				// Set timer
+				if (mMathDokuPreferences.isTimerVisible() && mTimerText != null) {
+					mTimerText.setVisibility(View.VISIBLE);
+					mTimerText.invalidate();
+				}
 				startTimer();
+				
+				setClearAndUndoButtonVisibility((mGrid == null ? null : mGrid
+						.getSelectedCell()));
+
 
 				// Handler for solved game
 				setOnSolvedHandler();
@@ -486,26 +462,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 						mTimerTask.mCheatPenaltyTime);
 			}
 			mTimerTask.cancel(true);
-		}
-	}
-
-	/**
-	 * Toggles the input mode to the next available state.
-	 */
-	public void toggleInputMode() {
-		switch (mInputMode) {
-		case NORMAL:
-			if (TipInputModeChanged.toBeDisplayed(mMathDokuPreferences)) {
-				new TipInputModeChanged(mContext, InputMode.MAYBE).show();
-			}
-			mInputMode = InputMode.MAYBE;
-			break;
-		case MAYBE:
-			if (TipInputModeChanged.toBeDisplayed(mMathDokuPreferences)) {
-				new TipInputModeChanged(mContext, InputMode.MAYBE).show();
-			}
-			mInputMode = InputMode.NORMAL;
-			break;
 		}
 	}
 
@@ -781,6 +737,9 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 						}).show();
 	}
 
+	/**
+	 * Set visibility of controls for the case no grid could be loaded.
+	 */
 	private void setNoGridLoaded() {
 		if (mPuzzleGridLayout != null) {
 			mPuzzleGridLayout.setVisibility(View.GONE);
@@ -796,6 +755,9 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		}
 	}
 
+	/**
+	 * Set visibility of controls for an inactive grid.
+	 */
 	private void setInactiveGridLoaded() {
 		if (mPuzzleGridLayout != null) {
 			mPuzzleGridLayout.setVisibility(View.VISIBLE);
@@ -826,19 +788,5 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		if (mControls != null) {
 			mControls.invalidate();
 		}
-	}
-
-	private void setActiveGridLoaded() {
-		mInputMode = InputMode.NORMAL;
-		if (mPuzzleGridLayout != null) {
-			mPuzzleGridLayout.setVisibility(View.VISIBLE);
-			mPuzzleGridLayout.invalidate();
-		}
-		if (mMathDokuPreferences.isTimerVisible() && mTimerText != null) {
-			mTimerText.setVisibility(View.VISIBLE);
-			mTimerText.invalidate();
-		}
-		setClearAndUndoButtonVisibility((mGrid == null ? null : mGrid
-				.getSelectedCell()));
 	}
 }

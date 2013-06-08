@@ -2,7 +2,7 @@ package net.cactii.mathdoku.tip;
 
 import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
-import net.cactii.mathdoku.ui.PuzzleFragment.InputMode;
+import net.cactii.mathdoku.ui.GridView.InputMode;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 

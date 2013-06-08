@@ -8,8 +8,6 @@ import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.statistics.GridStatistics;
-import net.cactii.mathdoku.ui.GridView.InputModeDeterminer;
-import net.cactii.mathdoku.ui.PuzzleFragment.InputMode;
 import net.cactii.mathdoku.util.Util;
 
 import org.achartengine.ChartFactory;
@@ -56,12 +54,7 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 
 		// Get fragment manager and start a transaction.
 		GridView mGridView;
-		(mGridView = (GridView) rootView.findViewById(R.id.gridView)).mInputModeDeterminer = new InputModeDeterminer() {
-			@Override
-			public final InputMode getInputMode() {
-				return InputMode.NORMAL;
-			}
-		};
+		mGridView = (GridView) rootView.findViewById(R.id.gridView);
 
 		// Load grid from database
 		Grid grid = new Grid();
