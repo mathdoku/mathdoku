@@ -426,5 +426,11 @@
 
     <!-- Connector in case penalty time consists of different units (e.g. "1 minute and 15 seconds") -->
     <string name="time_unit_connector">and</string>
+    
+    <!-- The text for input mode "normal" which is used to enter a definitive value into the selected cell. -->
+    <string name="input_mode_normal_short">normal</string>
+
+    <!-- The text for input mode "maybe" which is used to insert/remove a possible value into/from the selected cell. -->
+    <string name="input_mode_maybe_short">maybe</string>
 
 </resources>
