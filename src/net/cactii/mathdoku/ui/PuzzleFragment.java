@@ -63,8 +63,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	public enum InputMode {
 		NORMAL, // Digits entered are handled as a new cell value
 		MAYBE, // Digits entered are handled to toggle the possible value on/of
-		NO_INPUT__HIDE_GRID, // No game active, no grid shown
-		NO_INPUT__DISPLAY_GRID // No game active, solved puzzle shown
 	};
 
 	/**
@@ -160,7 +158,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		this.mSoundEffectViews = new View[] { mGridView, mClearButton,
 				mUndoButton };
 
-		setInputMode(InputMode.NO_INPUT__HIDE_GRID);
+		// Hide all controls untill sure a grid view can be displayed.
+		setNoGridLoaded();
 
 		this.mGridView
 				.setOnGridTouchListener(this.mGridView.new OnGridTouchListener() {
@@ -268,7 +267,10 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	public void setTheme() {
 		mPainter.setTheme(mMathDokuPreferences.getTheme());
 
-		this.mGridView.invalidate();
+		// Invalidate the grid view in order to used the new theme setting
+		if (mGridView != null) {
+			mGridView.invalidate();
+		}
 	}
 
 	@Override
@@ -372,7 +374,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				} else {
 					// Set input mode to hide controls while playing the
 					// animation.
-					setInputMode(InputMode.NO_INPUT__DISPLAY_GRID);
+					setInactiveGridLoaded();
 
 					// Set the text view which will be animated
 					final TextView textView = (TextView) mRootView
@@ -423,16 +425,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			if (mGrid.isActive()) {
 				// Determine input mode. The input mode will only be set if it
 				// was not yet set before.
-				if (mInputMode == InputMode.NO_INPUT__HIDE_GRID) {
-					setInputMode(InputMode.NORMAL);
-				} else {
-					// In case an unsolved game is displayed and the screen is
-					// rotated, the input mode (maybe versus normal) will
-					// already be restored in the onCreate. Reset the input mode
-					// to the same value in order to update all controls
-					// relavant to this new grid.
-					setInputMode(mInputMode);
-				}
+				setActiveGridLoaded();
 				setClearAndUndoButtonVisibility(mGrid.getSelectedCell());
 
 				startTimer();
@@ -440,7 +433,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				// Handler for solved game
 				setOnSolvedHandler();
 			} else {
-				setInputMode(InputMode.NO_INPUT__DISPLAY_GRID);
+				setInactiveGridLoaded();
 				stopTimer();
 			}
 
@@ -458,7 +451,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			mRootView.invalidate();
 		} else {
 			// No grid available.
-			setInputMode(InputMode.NO_INPUT__HIDE_GRID);
+			setNoGridLoaded();
 		}
 	}
 
@@ -497,92 +490,23 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	}
 
 	/**
-	 * Set the new input mode.
-	 * 
-	 * @param inputMode
-	 *            The new input mode to be set.
-	 */
-	public void setInputMode(InputMode inputMode) {
-		this.mInputMode = inputMode;
-
-		// Visibility of grid view
-		switch (inputMode) {
-		case NO_INPUT__HIDE_GRID:
-			mPuzzleGridLayout.setVisibility(View.GONE);
-			break;
-		case NO_INPUT__DISPLAY_GRID:
-		case NORMAL:
-		case MAYBE:
-			mPuzzleGridLayout.setVisibility(View.VISIBLE);
-			break;
-		}
-
-		// visibility of pressMenu, controls and inputMode
-		switch (inputMode) {
-		case NO_INPUT__HIDE_GRID:
-			mTimerText.setVisibility(View.GONE);
-			mControls.setVisibility(View.GONE);
-			break;
-		case NO_INPUT__DISPLAY_GRID:
-			if (mGrid == null || (mGrid != null && mGrid.isSolvedByCheating())) {
-				// Hide time in case the puzzle was solved by
-				// requesting to show the solution.
-				this.mTimerText.setVisibility(View.INVISIBLE);
-			} else {
-				// Show time
-				this.mTimerText.setVisibility(View.VISIBLE);
-				setElapsedTime(mGrid.getElapsedTime());
-			}
-			mControls.setVisibility(View.GONE);
-
-			// Determine the layout to be used for maybe values inside a grid
-			if (mGrid != null) {
-				setDigitPositionGrid(inputMode);
-			}
-			break;
-		case NORMAL:
-		case MAYBE:
-			if (mMathDokuPreferences.isTimerVisible()) {
-				mTimerText.setVisibility(View.VISIBLE);
-			}
-			mControls.setVisibility(View.VISIBLE);
-
-			// Determine the layout to be used for the digit buttons and maybe
-			// values inside a grid
-			if (mGrid != null) {
-				setDigitPositionGrid(inputMode);
-			}
-			break;
-		}
-
-		mGridView.invalidate();
-	}
-
-	/**
 	 * Toggles the input mode to the next available state.
 	 */
 	public void toggleInputMode() {
-		InputMode inputMode = InputMode.NO_INPUT__HIDE_GRID;
 		switch (mInputMode) {
-		case NO_INPUT__HIDE_GRID:
-			// fall through
-		case NO_INPUT__DISPLAY_GRID:
-			inputMode = InputMode.NORMAL;
-			break;
 		case NORMAL:
 			if (TipInputModeChanged.toBeDisplayed(mMathDokuPreferences)) {
 				new TipInputModeChanged(mContext, InputMode.MAYBE).show();
 			}
-			inputMode = InputMode.MAYBE;
+			mInputMode = InputMode.MAYBE;
 			break;
 		case MAYBE:
 			if (TipInputModeChanged.toBeDisplayed(mMathDokuPreferences)) {
 				new TipInputModeChanged(mContext, InputMode.MAYBE).show();
 			}
-			inputMode = InputMode.NORMAL;
+			mInputMode = InputMode.NORMAL;
 			break;
 		}
-		setInputMode(inputMode);
 	}
 
 	/**
@@ -598,27 +522,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		}
 	}
 
-	/**
-	 * Set the digit position grid for layout the digit buttons and maybe
-	 * values.
-	 * 
-	 * @param inputMode
-	 *            The new input mode to be set.
-	 */
-	private void setDigitPositionGrid(InputMode inputMode) {
-		// Only create the digit position grid if needed
-		if (mDigitPositionGrid == null
-				|| !mDigitPositionGrid.isReusable(mGrid.getGridSize())) {
-			// Create the mapping for mDigitPosition on the correct button
-			// grid layout.
-			mDigitPositionGrid = new DigitPositionGrid(mGrid.getGridSize());
-
-			// Propagate setting to the grid view as well for displaying maybe
-			// values (dependent on preferences).
-			mGridView.setDigitPositionGrid(mDigitPositionGrid);
-		}
-	}
-
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
@@ -631,7 +534,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		}
 		if (key.equals(Preferences.THEME)) {
 			setTheme();
-			setInputMode(mInputMode);
 		}
 	}
 
@@ -810,11 +712,14 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			mClearButton
 					.setVisibility((cell == null || cell.isEmpty()) ? View.INVISIBLE
 							: View.VISIBLE);
+			mClearButton.invalidate();
 		}
 		if (mUndoButton != null) {
 			mUndoButton
-					.setVisibility((mGrid == null || mGrid.countMoves() == 0) ? View.INVISIBLE
+					.setVisibility((mGrid == null || mGrid.countMoves() == 0 || mGrid
+							.isActive() == false) ? View.INVISIBLE
 							: View.VISIBLE);
+			mUndoButton.invalidate();
 		}
 	}
 
@@ -874,5 +779,66 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 								mGrid.solve();
 							}
 						}).show();
+	}
+
+	private void setNoGridLoaded() {
+		if (mPuzzleGridLayout != null) {
+			mPuzzleGridLayout.setVisibility(View.GONE);
+		}
+		if (mTimerText != null) {
+			mTimerText.setVisibility(View.GONE);
+		}
+		if (mClearButton != null) {
+			mClearButton.setVisibility(View.GONE);
+		}
+		if (mUndoButton != null) {
+			mUndoButton.setVisibility(View.GONE);
+		}
+	}
+
+	private void setInactiveGridLoaded() {
+		if (mPuzzleGridLayout != null) {
+			mPuzzleGridLayout.setVisibility(View.VISIBLE);
+		}
+		if (mGrid == null || (mGrid != null && mGrid.isSolvedByCheating())) {
+			// Hide time in case the puzzle was solved by
+			// requesting to show the solution.
+			if (mTimerText != null) {
+				mTimerText.setVisibility(View.INVISIBLE);
+				mTimerText.invalidate();
+			}
+		} else {
+			// Show time
+			if (mTimerText != null) {
+				mTimerText.setVisibility(View.VISIBLE);
+				mTimerText.invalidate();
+				setElapsedTime(mGrid.getElapsedTime());
+			}
+		}
+		if (mClearButton != null) {
+			mClearButton.setVisibility(View.GONE);
+			mClearButton.invalidate();
+		}
+		if (mUndoButton != null) {
+			mUndoButton.setVisibility(View.GONE);
+			mUndoButton.invalidate();
+		}
+		if (mControls != null) {
+			mControls.invalidate();
+		}
+	}
+
+	private void setActiveGridLoaded() {
+		mInputMode = InputMode.NORMAL;
+		if (mPuzzleGridLayout != null) {
+			mPuzzleGridLayout.setVisibility(View.VISIBLE);
+			mPuzzleGridLayout.invalidate();
+		}
+		if (mMathDokuPreferences.isTimerVisible() && mTimerText != null) {
+			mTimerText.setVisibility(View.VISIBLE);
+			mTimerText.invalidate();
+		}
+		setClearAndUndoButtonVisibility((mGrid == null ? null : mGrid
+				.getSelectedCell()));
 	}
 }

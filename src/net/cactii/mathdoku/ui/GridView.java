@@ -246,7 +246,7 @@ public class GridView extends View implements OnTouchListener {
 
 	public void digitSelected(int newValue) {
 		InputMode inputMode = mInputModeDeterminer.getInputMode();
-				
+
 		// Display a message in case no cell is selected.
 		GridCell selectedCell = mGrid.getSelectedCell();
 		if (selectedCell == null) {
@@ -326,8 +326,7 @@ public class GridView extends View implements OnTouchListener {
 					}
 				}
 				break;
-			case NO_INPUT__DISPLAY_GRID:
-			case NO_INPUT__HIDE_GRID:
+			default:
 				// Should not be possible
 				return;
 			}
@@ -383,6 +382,12 @@ public class GridView extends View implements OnTouchListener {
 		// Compute grid size. Set to 1 in case grid is null to avoid problems in
 		// onMeasure as this will be called before the grid is loaded.
 		mGridSize = (mGrid == null ? 1 : mGrid.getGridSize());
+
+		// Determine the layout which has to be used for drawing the possible
+		// values inside a cell.
+		mDigitPositionGrid = (mGrid != null
+				&& mGrid.hasPrefShowMaybesAs3x3Grid() ? new DigitPositionGrid(
+				mGrid.getGridSize()) : null);
 
 		invalidate();
 	}

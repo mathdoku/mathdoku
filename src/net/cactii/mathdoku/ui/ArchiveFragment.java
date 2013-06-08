@@ -59,7 +59,7 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 		(mGridView = (GridView) rootView.findViewById(R.id.gridView)).mInputModeDeterminer = new InputModeDeterminer() {
 			@Override
 			public final InputMode getInputMode() {
-				return InputMode.NO_INPUT__DISPLAY_GRID;
+				return InputMode.NORMAL;
 			}
 		};
 
