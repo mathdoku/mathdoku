@@ -146,7 +146,6 @@
 
     <!-- OPTIONS PUZZLES  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-
     <!-- The preferences category title for options to assist the user solve the puzzle. -->
     <string name="options_group_assistance">Help</string>
 
@@ -207,6 +206,15 @@
     <string name="theme_newspaper">Krant</string>
     <string name="theme_dark">Donker</string>
 
+    <!-- DIALOG REVEAL SOLUTION CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    
+    <!-- The title, message and buttons confirmation message that shows up when the "reveal solution" menu item is selected, plus the associated title and button labels. -->
+    <string name="dialog_reveal_solution_confirmation_title">Onthul oplossing?</string>
+    <string name="dialog_reveal_solution_confirmation_message">Weet je zeker dat je de oplossing van deze puzzel wil onthullen?</string>
+    <string name="dialog_reveal_solution_confirmation_negative_button">Nee, ik los het zelf op</string>
+    <string name="dialog_reveal_solution_confirmation_positive_button">Ja, ik geef op</string>
+    
+
     <!-- DIALOG CLEAR GRID CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <!-- The title, message and buttons confirmation message that shows up when the clear grid context menu item is selected, plus the associated title and button labels. -->
@@ -216,15 +224,6 @@
     <string name="dialog_clear_grid_confirmation_positive_button">Ja, begin opnieuw</string>
 
     <!-- CONTROLS FOR PUZZLE SOLVING  - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
-
-    <!-- The text for input mode "normal" which is used to enter a definitive value into the selected cell. -->
-    <string name="input_mode_normal_short">Normaal</string>
-    <string name="input_mode_normal_long">Normale invoer</string>
-
-    <!-- The text for input mode "maybe" which is used to insert/remove a possible value into/from the selected cell. -->
-    <string name="input_mode_maybe_short">Mogelijk</string>
-    <string name="input_mode_maybe_long">Mogelijke waarden</string>
 
     <!-- The text on the clear button in the main UI. -->
     <string name="main_ui_clear">Leeg</string>

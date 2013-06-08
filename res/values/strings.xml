@@ -193,8 +193,7 @@
 
     <!-- The preferences category title for audio options. -->
     <string name="options_group_sound">Sound</string>
-    <!-- The title and summary of the "sound effects" option. -->
-
+    
     <!-- The title and summary of the "Sounds effect" option. This option enables or disables soundeffects. -->
     <string name="option_sound_effects_title">Sound effects</string>
     <string name="option_sound_effects_summary">Enable the sound effects</string>

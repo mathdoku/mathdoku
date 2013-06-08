@@ -217,6 +217,16 @@
     <string name="theme_newspaper">Zeitung</string>
     <string name="theme_dark">Dunkel</string>
 
+    <!-- DIALOG REVEAL SOLUTION CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    
+    <!-- The title, message and buttons confirmation message that shows up when the "reveal solution" menu item is selected, plus the associated title and button labels. -->
+    <!-- TODO: Translate entire section -->
+    <string name="dialog_reveal_solution_confirmation_title">Reveal solution?</string>
+    <string name="dialog_reveal_solution_confirmation_message">Are you sure you want to reveal the solution of this puzzle?</string>
+    <string name="dialog_reveal_solution_confirmation_negative_button">No, I\'ll solve it myself</string>
+    <string name="dialog_reveal_solution_confirmation_positive_button">Yes, I give up</string>
+    
+
     <!-- DIALOG CLEAR GRID CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <!-- The title, message and buttons confirmation message that shows up when the clear grid context menu item is selected, plus the associated title and button labels. -->
@@ -226,15 +236,6 @@
     <string name="dialog_clear_grid_confirmation_positive_button">Ja. Werte löschen.</string>
 
     <!-- CONTROLS FOR PUZZLE SOLVING  - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
-
-    <!-- The text for input mode "normal" which is used to enter a definitive value into the selected cell. -->
-    <string name="input_mode_normal_short">Definitiv</string>
-    <string name="input_mode_normal_long">Definitive Werte</string>
-
-    <!-- The text for input mode "maybe" which is used to insert/remove a possible value into/from the selected cell. -->
-    <string name="input_mode_maybe_short">Vielleicht</string>
-    <string name="input_mode_maybe_long">Vielleichtwerte</string>
 
     <!-- The text on the clear button in the main UI. -->
     <string name="main_ui_clear">Löschen</string>
@@ -380,9 +381,7 @@
 
     <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-
     <!-- TODO: TRANSLATE ENTIRE SECTION -->
-
 
     <!-- Subtitle for the archive fragment. -->
     <string name="action_bar_subtitle_archive_fragment">Lookup an old game</string>
@@ -438,7 +437,6 @@
 
     <!-- Alert to select a cell before a value is selected -->
     <string name="select_cell_before_value">Zuerst eine Zelle auswählen</string>
-    <string name="game_seed">"Spiel platzieren: "</string>
 
     <!-- Units for time. -->
     <!-- TODO -->
