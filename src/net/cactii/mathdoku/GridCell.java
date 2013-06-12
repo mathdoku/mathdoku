@@ -756,10 +756,18 @@ public class GridCell {
 		return mCellNumber;
 	}
 
+	/**
+	 * The column number (zero based) of the cell.
+	 * @return
+	 */
 	public int getColumn() {
 		return mColumn;
 	}
 
+	/**
+	 * The row number (zero based) of the cell.
+	 * @return
+	 */
 	public int getRow() {
 		return mRow;
 	}

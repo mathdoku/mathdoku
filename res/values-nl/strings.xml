@@ -29,8 +29,7 @@
     <string name="dialog_converting_saved_games_title">Bijwerken nieuwe versie</string>
     <string name="dialog_converting_saved_games_message">Voor deze nieuwe versie van MathDoku worden de opgeslagen spelen eenmalig omgezet. Een ogenblik geduld a.u.b.</string>
 
-    <!-- HELP DIALOG - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
+    <!-- PUZZLE HELP DIALOG - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <!-- The lead in text at top of the help dialog. -->
     <string name="puzzle_help_dialog_leadin">Bedankt voor het installeren van MathDoku voor Android.</string>
@@ -214,7 +213,6 @@
     <string name="dialog_reveal_solution_confirmation_negative_button">Nee, ik los het zelf op</string>
     <string name="dialog_reveal_solution_confirmation_positive_button">Ja, ik geef op</string>
     
-
     <!-- DIALOG CLEAR GRID CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <!-- The title, message and buttons confirmation message that shows up when the clear grid context menu item is selected, plus the associated title and button labels. -->
@@ -249,6 +247,23 @@
 
     <!-- Title of dialog used to choose the appropriate action for sending the usage log. -->
     <string name="usage_log_choose_action_title">Verzend MathDoku data</string>
+
+    <!-- PLAYING HINT - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    
+    <!-- Hint to start swiping to select a digit. Will be displayed as no swipe movement has begun yet. -->
+    <string name="hint_swipe_basic">Raak de cel waarvan je de waarde wil wijzigen lang aan.</string>
+    
+    <!-- Hint to stretch the swipe outside the current cell. The swipe movement has begun but has not yet left the cell. -->
+    <string name="hint_swipe_outside_cell">Veeg nu naar het gewenste getal totdat het oplicht.</string>
+    <string name="hint_swipe_basic_cell_at_border">Ook indien het gewenste getal niet zichtbaar is, kun je nog steeds vegen in de goede richting. Raak een cel in het midden van de puzzel aan om bekend te worden met de posities van de getallen %1$s.</string>
+
+    <!-- Hint to finish swiping to select a digit.  -->
+    <string name="hint_swipe_rotate">Draai de veeglijn om een getal te selecteren. Beëindig de veegbeweging om het opgelichtte getal te selecteren.</string>
+    <string name="hint_swipe_release">Stop met vegen om het opgelichtte getal te selecteren, of draai de veeglijn om een ander getal te selecteren.</string>
+    <string name="hint_swipe_digit_5">Om een 5 te selecteren, veeg tot buiten de geselecteerde cel en stop de veegbeweging pas weer in de geselecteerde cel.</string>
+    
+    <string name="hint_swipe_valid_digit_completed">Je hebt de veegbeweging voor getal %1$s gemaakt.</string>
+    <string name="hint_swipe_invalid_digit_completed">Dze veegrichting onthult alleen een getal in een grotere puzzel.</string>
 
     <!-- TIP DIALOGS - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -426,8 +441,8 @@
     <string name="time_unit_days_singular">dag</string>
     <string name="time_unit_days_plural">dagen</string>
 
-    <!-- Connector in case penalty time consists of different units (e.g. "1 minute and 15 seconds") -->
-    <string name="time_unit_connector">en</string>
+    <!-- Connection word for the last two elements in a list. Example: "1 minute and 15 seconds" or "1, 2, 3 and 4)" -->
+    <string name="connector_last_two_elements">en</string>
     
      <!-- The text for input mode "normal" which is used to enter a definitive value into the selected cell. -->
     <string name="input_mode_normal_short">Normaal</string>

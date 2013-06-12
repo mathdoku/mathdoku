@@ -44,6 +44,7 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/clearUndo"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -73,5 +74,14 @@
             android:textStyle="bold"
             tools:ignore="ButtonStyle" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tipText"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/clearUndo"
+        android:textSize="@dimen/controls_text_size_default"
+        android:textIsSelectable="false"
+        android:layout_margin="5dp" />
 
 </RelativeLayout>

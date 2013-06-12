@@ -3,13 +3,13 @@ package net.cactii.mathdoku.ui;
 import net.cactii.mathdoku.CellChange;
 import net.cactii.mathdoku.Cheat;
 import net.cactii.mathdoku.Cheat.CheatType;
-import net.cactii.mathdoku.DigitPositionGrid;
 import net.cactii.mathdoku.GameTimer;
 import net.cactii.mathdoku.Grid;
 import net.cactii.mathdoku.GridCage;
 import net.cactii.mathdoku.GridCell;
 import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
+import net.cactii.mathdoku.hint.OnHintChangedListener;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import net.cactii.mathdoku.tip.TipCheat;
@@ -40,7 +40,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class PuzzleFragment extends android.support.v4.app.Fragment implements
-		OnSharedPreferenceChangeListener, OnCreateContextMenuListener {
+		OnSharedPreferenceChangeListener, OnCreateContextMenuListener,
+		OnHintChangedListener {
 	public final static String TAG = "MathDoku.PuzzleFragment";
 
 	public static final String BUNDLE_KEY_SOLVING_ATTEMPT_ID = "PuzzleFragment.solvingAttemptId";
@@ -57,9 +58,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	RelativeLayout mTopLayout;
 	RelativeLayout mPuzzleGridLayout;
 	TextView mTimerText;
-
-	// Digit positions are the places on which the digit buttons can be placed.
-	DigitPositionGrid mDigitPositionGrid;
+	TextView mTipText;
 
 	Button mClearButton;
 	Button mUndoButton;
@@ -104,38 +103,37 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		mRootView = inflater.inflate(R.layout.puzzle_activity_fragment,
 				container, false);
 
-		mContext = (Context) this.getActivity();
+		mContext = (Context) getActivity();
 
 		mPainter = Painter.getInstance();
 		mMathDokuPreferences = Preferences.getInstance();
 		mMathDokuPreferences.mSharedPreferences
 				.registerOnSharedPreferenceChangeListener(this);
 
-		this.mTopLayout = (RelativeLayout) mRootView
-				.findViewById(R.id.topLayout);
-		this.mPuzzleGridLayout = (RelativeLayout) mRootView
+		mTopLayout = (RelativeLayout) mRootView.findViewById(R.id.topLayout);
+		mPuzzleGridLayout = (RelativeLayout) mRootView
 				.findViewById(R.id.puzzleGrid);
-		this.mGridView = (GridView) mRootView.findViewById(R.id.gridView);
-		this.mTimerText = (TextView) mRootView.findViewById(R.id.timerText);
+		mGridView = (GridView) mRootView.findViewById(R.id.gridView);
+		mTimerText = (TextView) mRootView.findViewById(R.id.timerText);
 
-		this.mClearButton = (Button) mRootView.findViewById(R.id.clearButton);
-		this.mUndoButton = (Button) mRootView.findViewById(R.id.undoButton);
+		mClearButton = (Button) mRootView.findViewById(R.id.clearButton);
+		mUndoButton = (Button) mRootView.findViewById(R.id.undoButton);
 
-		this.mSoundEffectViews = new View[] { mGridView, mClearButton,
-				mUndoButton };
+		mTipText = (TextView) mRootView.findViewById(R.id.tipText);
+
+		mSoundEffectViews = new View[] { mGridView, mClearButton, mUndoButton };
 
 		// Hide all controls untill sure a grid view can be displayed.
 		setNoGridLoaded();
 
-		this.mGridView
-				.setOnGridTouchListener(this.mGridView.new OnGridTouchListener() {
-					@Override
-					public void gridTouched(GridCell cell) {
-						setClearAndUndoButtonVisibility(cell);
-					}
-				});
-
-		this.mClearButton.setOnClickListener(new OnClickListener() {
+		mGridView.setOnGridTouchListener(mGridView.new OnGridTouchListener() {
+			@Override
+			public void gridTouched(GridCell cell) {
+				setClearAndUndoButtonVisibility(cell);
+			}
+		});
+		mGridView.setOnHintChangedListener(this);
+		mClearButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				if (mGridView != null) {
 					mGridView.digitSelected(0);
@@ -145,7 +143,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				}
 			}
 		});
-		this.mUndoButton.setOnClickListener(new OnClickListener() {
+		mUndoButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				if (mGrid.undoLastMove()) {
 					// Successful undo
@@ -159,10 +157,10 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			}
 		});
 
-		this.mGridView.setFocusable(true);
-		this.mGridView.setFocusableInTouchMode(true);
+		mGridView.setFocusable(true);
+		mGridView.setFocusableInTouchMode(true);
 
-		registerForContextMenu(this.mGridView);
+		registerForContextMenu(mGridView);
 
 		// In case a solving attempt id has been passed, this attempt has to be
 		// loaded.
@@ -353,17 +351,16 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 					mPuzzleGridLayout.setVisibility(View.VISIBLE);
 					mPuzzleGridLayout.invalidate();
 				}
-				
+
 				// Set timer
 				if (mMathDokuPreferences.isTimerVisible() && mTimerText != null) {
 					mTimerText.setVisibility(View.VISIBLE);
 					mTimerText.invalidate();
 				}
 				startTimer();
-				
+
 				setClearAndUndoButtonVisibility((mGrid == null ? null : mGrid
 						.getSelectedCell()));
-
 
 				// Handler for solved game
 				setOnSolvedHandler();
@@ -735,6 +732,14 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		if (mUndoButton != null) {
 			mUndoButton.setVisibility(View.GONE);
 			mUndoButton.invalidate();
+		}
+	}
+
+	@Override
+	public void setHint(String hint) {
+		if (mTipText != null) {
+			mTipText.setText((hint == null ? "" : hint));
+			mTipText.invalidate();
 		}
 	}
 }

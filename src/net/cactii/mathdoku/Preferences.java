@@ -40,12 +40,14 @@ public class Preferences {
 	public final static String HIDE_OPERATORS_ASK = "A";
 	public final static String HIDE_OPERATORS_NEVER = "F";
 	public final static String HIDE_OPERATORS_DEFAULT = HIDE_OPERATORS_NEVER;
-	
+
 	public final static String ARCHIVE_SIZE_FILTER_LAST_VALUE = "archive_filter_size_last_value";
-	public final static String ARCHIVE_SIZE_FILTER_LAST_VALUE_DEFAULT = SizeFilter.ALL.toString();
+	public final static String ARCHIVE_SIZE_FILTER_LAST_VALUE_DEFAULT = SizeFilter.ALL
+			.toString();
 
 	public final static String ARCHIVE_STATUS_FILTER_LAST_VALUE = "archive_filter_status_last_value";
-	public final static String ARCHIVE_STATUS_FILTER_LAST_VALUE_DEFAULT = StatusFilter.ALL.toString();
+	public final static String ARCHIVE_STATUS_FILTER_LAST_VALUE_DEFAULT = StatusFilter.ALL
+			.toString();
 
 	public final static String ARCHIVE_GRID_SELECTED_LAST_VALUE = "archive_grid_selected_last_value";
 	public final static int ARCHIVE_GRID_SELECTED_LAST_VALUE_DEFAULT = -1;
@@ -79,6 +81,19 @@ public class Preferences {
 
 	public final static String SHOW_TIMER = "timer";
 	public final static boolean SHOW_TIMER_DEFAULT = true;
+
+	public final static String SWIPE_DIGIT_INVALID_COUNTER = "swipe_digit_valid_counter";
+	public final static String SWIPE_DIGIT_VALID_COUNTER = "swipe_digit_valid_counter";
+	public final static String SWIPE_DIGIT_1_COUNTER = "swipe_digit_1_counter";
+	public final static String SWIPE_DIGIT_2_COUNTER = "swipe_digit_2_counter";
+	public final static String SWIPE_DIGIT_3_COUNTER = "swipe_digit_3_counter";
+	public final static String SWIPE_DIGIT_4_COUNTER = "swipe_digit_4_counter";
+	public final static String SWIPE_DIGIT_5_COUNTER = "swipe_digit_5_counter";
+	public final static String SWIPE_DIGIT_6_COUNTER = "swipe_digit_6_counter";
+	public final static String SWIPE_DIGIT_7_COUNTER = "swipe_digit_7_counter";
+	public final static String SWIPE_DIGIT_8_COUNTER = "swipe_digit_8_counter";
+	public final static String SWIPE_DIGIT_9_COUNTER = "swipe_digit_9_counter";
+	public final static int SWIPE_DIGIT_COUNTER_DEFAULT = 0;
 
 	public final static String THEME = "theme";
 	public final static String THEME_CARVED = "carved";
@@ -268,6 +283,52 @@ public class Preferences {
 				prefeditor.remove("hideselector");
 			}
 		}
+		if (previousInstalledVersion < 350 && currentVersion >= 350) {
+			if (!mSharedPreferences.contains(SWIPE_DIGIT_INVALID_COUNTER)) {
+				prefeditor.putInt(SWIPE_DIGIT_INVALID_COUNTER,
+						SWIPE_DIGIT_COUNTER_DEFAULT);
+			}
+			if (!mSharedPreferences.contains(SWIPE_DIGIT_VALID_COUNTER)) {
+				prefeditor.putInt(SWIPE_DIGIT_VALID_COUNTER,
+						SWIPE_DIGIT_COUNTER_DEFAULT);
+			}
+			if (!mSharedPreferences.contains(SWIPE_DIGIT_1_COUNTER)) {
+				prefeditor.putInt(SWIPE_DIGIT_1_COUNTER,
+						SWIPE_DIGIT_COUNTER_DEFAULT);
+			}
+			if (!mSharedPreferences.contains(SWIPE_DIGIT_2_COUNTER)) {
+				prefeditor.putInt(SWIPE_DIGIT_2_COUNTER,
+						SWIPE_DIGIT_COUNTER_DEFAULT);
+			}
+			if (!mSharedPreferences.contains(SWIPE_DIGIT_3_COUNTER)) {
+				prefeditor.putInt(SWIPE_DIGIT_3_COUNTER,
+						SWIPE_DIGIT_COUNTER_DEFAULT);
+			}
+			if (!mSharedPreferences.contains(SWIPE_DIGIT_4_COUNTER)) {
+				prefeditor.putInt(SWIPE_DIGIT_4_COUNTER,
+						SWIPE_DIGIT_COUNTER_DEFAULT);
+			}
+			if (!mSharedPreferences.contains(SWIPE_DIGIT_5_COUNTER)) {
+				prefeditor.putInt(SWIPE_DIGIT_5_COUNTER,
+						SWIPE_DIGIT_COUNTER_DEFAULT);
+			}
+			if (!mSharedPreferences.contains(SWIPE_DIGIT_6_COUNTER)) {
+				prefeditor.putInt(SWIPE_DIGIT_6_COUNTER,
+						SWIPE_DIGIT_COUNTER_DEFAULT);
+			}
+			if (!mSharedPreferences.contains(SWIPE_DIGIT_7_COUNTER)) {
+				prefeditor.putInt(SWIPE_DIGIT_7_COUNTER,
+						SWIPE_DIGIT_COUNTER_DEFAULT);
+			}
+			if (!mSharedPreferences.contains(SWIPE_DIGIT_8_COUNTER)) {
+				prefeditor.putInt(SWIPE_DIGIT_8_COUNTER,
+						SWIPE_DIGIT_COUNTER_DEFAULT);
+			}
+			if (!mSharedPreferences.contains(SWIPE_DIGIT_9_COUNTER)) {
+				prefeditor.putInt(SWIPE_DIGIT_9_COUNTER,
+						SWIPE_DIGIT_COUNTER_DEFAULT);
+			}
+		}
 
 		prefeditor.putInt(CURRENT_VERSION, currentVersion);
 		prefeditor.commit();
@@ -338,13 +399,7 @@ public class Preferences {
 	 * @return The total number of games which have been started by the user.
 	 */
 	public int increaseGamesStarted() {
-		int countGamesStarted = mSharedPreferences.getInt(
-				USAGE_LOG_COUNT_GAMES_STARTED, 0) + 1;
-		Editor prefeditor = mSharedPreferences.edit();
-		prefeditor.putInt(USAGE_LOG_COUNT_GAMES_STARTED, countGamesStarted);
-		prefeditor.commit();
-
-		return countGamesStarted;
+		return increaseCounter(USAGE_LOG_COUNT_GAMES_STARTED);
 	}
 
 	/**
@@ -434,7 +489,8 @@ public class Preferences {
 					TIP_CATEGORY_FAMILIAR_WITH_APP,
 					TIP_CATEGORY_FAMILIAR_WITH_APP_DEFAULT);
 		case APP_USAGE_V2:
-			// User can not be familiar with these functions as they are completely new.
+			// User can not be familiar with these functions as they are
+			// completely new.
 			return true;
 		case GAME_RULES:
 			// Do not display this tip in case the user is already familiar
@@ -568,8 +624,7 @@ public class Preferences {
 	}
 
 	/**
-	 * Checks whether the size status should be shown in the archive action
-	 * bar.
+	 * Checks whether the size status should be shown in the archive action bar.
 	 * 
 	 * @return True in case the size filter should be shown in the archive
 	 *         action bar. False otherwise.
@@ -578,19 +633,19 @@ public class Preferences {
 		return mSharedPreferences.getBoolean(SHOW_SIZE_FILTER,
 				SHOW_SIZE_FILTER_DEFAULT);
 	}
-	
+
 	/**
 	 * Checks whether the archive is visible.
 	 * 
 	 * @return True in case the archive is visible. False otherwise.
 	 */
 	public boolean isArchiveAvailable() {
-		return mSharedPreferences.getBoolean(SHOW_ARCHIVE,
-				SHOW_ARCHIVE_DEFAULT);
+		return mSharedPreferences
+				.getBoolean(SHOW_ARCHIVE, SHOW_ARCHIVE_DEFAULT);
 	}
 
 	/**
-	 * Enables the archive. 
+	 * Enables the archive.
 	 */
 	public void setArchiveVisible() {
 		Editor prefeditor = mSharedPreferences.edit();
@@ -609,7 +664,7 @@ public class Preferences {
 	}
 
 	/**
-	 * Enables the statistics. 
+	 * Enables the statistics.
 	 */
 	public void setStatisticsVisible() {
 		Editor prefeditor = mSharedPreferences.edit();
@@ -623,18 +678,22 @@ public class Preferences {
 	 * @return The last value used for the status filter in the archive.
 	 */
 	public StatusFilter getArchiveStatusFilterLastValueUsed() {
-		return StatusFilter.valueOf(mSharedPreferences.getString(ARCHIVE_STATUS_FILTER_LAST_VALUE,
+		return StatusFilter.valueOf(mSharedPreferences.getString(
+				ARCHIVE_STATUS_FILTER_LAST_VALUE,
 				ARCHIVE_STATUS_FILTER_LAST_VALUE_DEFAULT));
 	}
 
 	/**
 	 * Set the last value used for the status filter in the archive.
 	 * 
-	 * @param statusFilter The status filter which has to be saved as last selected in the archive.
+	 * @param statusFilter
+	 *            The status filter which has to be saved as last selected in
+	 *            the archive.
 	 */
 	public void setArchiveStatusFilterLastValueUsed(StatusFilter statusFilter) {
 		Editor prefeditor = mSharedPreferences.edit();
-		prefeditor.putString(ARCHIVE_STATUS_FILTER_LAST_VALUE, statusFilter.toString());
+		prefeditor.putString(ARCHIVE_STATUS_FILTER_LAST_VALUE,
+				statusFilter.toString());
 		prefeditor.commit();
 	}
 
@@ -644,18 +703,22 @@ public class Preferences {
 	 * @return The last value used for the size filter in the archive.
 	 */
 	public SizeFilter getArchiveSizeFilterLastValueUsed() {
-		return SizeFilter.valueOf(mSharedPreferences.getString(ARCHIVE_SIZE_FILTER_LAST_VALUE,
+		return SizeFilter.valueOf(mSharedPreferences.getString(
+				ARCHIVE_SIZE_FILTER_LAST_VALUE,
 				ARCHIVE_SIZE_FILTER_LAST_VALUE_DEFAULT));
 	}
 
 	/**
 	 * Set the last value used for the size filter in the archive.
 	 * 
-	 * @param sizeFilter The size filter which has to be saved as last selected in the archive.
+	 * @param sizeFilter
+	 *            The size filter which has to be saved as last selected in the
+	 *            archive.
 	 */
 	public void setArchiveSizeFilterLastValueUsed(SizeFilter sizeFilter) {
 		Editor prefeditor = mSharedPreferences.edit();
-		prefeditor.putString(ARCHIVE_SIZE_FILTER_LAST_VALUE, sizeFilter.toString());
+		prefeditor.putString(ARCHIVE_SIZE_FILTER_LAST_VALUE,
+				sizeFilter.toString());
 		prefeditor.commit();
 	}
 
@@ -670,7 +733,8 @@ public class Preferences {
 	}
 
 	/**
-	 * Set the id of the grid which is currently is shown when the archive is closed.
+	 * Set the id of the grid which is currently is shown when the archive is
+	 * closed.
 	 * 
 	 * @return The last value used for the size filter in the archive.
 	 */
@@ -678,5 +742,117 @@ public class Preferences {
 		Editor prefeditor = mSharedPreferences.edit();
 		prefeditor.putInt(ARCHIVE_GRID_SELECTED_LAST_VALUE, gridId);
 		prefeditor.commit();
+	}
+
+	/**
+	 * Increase the current value of a preference counter with 1 occurrence.
+	 * 
+	 * @param preferenceName
+	 *            The name of the preferences counter.
+	 * @return The number of occurrence for this counter (after being updated).
+	 */
+	private int increaseCounter(String preferenceName) {
+		int counter = mSharedPreferences.getInt(preferenceName, 0) + 1;
+		Editor prefeditor = mSharedPreferences.edit();
+		prefeditor.putInt(preferenceName, counter);
+		prefeditor.commit();
+
+		return counter;
+	}
+
+	/**
+	 * Get the number of invalid swipe motions which have successfully been
+	 * completed.
+	 * 
+	 * @return The number of invalid swipe motions which have successfully been
+	 *         completed.
+	 */
+	public int getSwipeInvalidMotionCounter() {
+		return mSharedPreferences.getInt(SWIPE_DIGIT_INVALID_COUNTER,
+				SWIPE_DIGIT_COUNTER_DEFAULT);
+	}
+
+	/**
+	 * Get the number of valid swipe motions which have successfully been
+	 * completed.
+	 * 
+	 * @return The number of valid swipe motions which have successfully been
+	 *         completed.
+	 */
+	public int getSwipeValidMotionCounter() {
+		return mSharedPreferences.getInt(SWIPE_DIGIT_VALID_COUNTER,
+				SWIPE_DIGIT_COUNTER_DEFAULT);
+	}
+
+	/**
+	 * Get the preference name associated with the discovery of the given digit.
+	 * 
+	 * @param digit
+	 *            The digit for which the preference has to be determined.
+	 * @return The preference name associated with the discovery of the given
+	 *         digit.
+	 */
+	private String getSwipeDigitDiscoveredPreferenceName(int digit) {
+		switch (digit) {
+		case 1:
+			return SWIPE_DIGIT_1_COUNTER;
+		case 2:
+			return SWIPE_DIGIT_2_COUNTER;
+		case 3:
+			return SWIPE_DIGIT_3_COUNTER;
+		case 4:
+			return SWIPE_DIGIT_4_COUNTER;
+		case 5:
+			return SWIPE_DIGIT_5_COUNTER;
+		case 6:
+			return SWIPE_DIGIT_6_COUNTER;
+		case 7:
+			return SWIPE_DIGIT_7_COUNTER;
+		case 8:
+			return SWIPE_DIGIT_8_COUNTER;
+		case 9:
+			return SWIPE_DIGIT_9_COUNTER;
+		}
+		return null;
+	}
+
+	/**
+	 * Get the number of times a swipe motion for the given digit has been
+	 * successfully completed.
+	 * 
+	 * @param digit
+	 *            The digit for which the counter has to be determined.
+	 * @return The number of times a swipe motion for the given digit has been
+	 *         successfully completed.
+	 */
+	public int getSwipeMotionCounter(int digit) {
+		return mSharedPreferences.getInt(
+				getSwipeDigitDiscoveredPreferenceName(digit),
+				SWIPE_DIGIT_COUNTER_DEFAULT);
+	}
+
+	/**
+	 * Increase the number of times a swipe motion for the given digit has been
+	 * succesfully completed. Also the total number of completed swipe motions
+	 * is increased.
+	 * 
+	 * @param digit
+	 *            The digit for which the counter has to be determined.
+	 * @return The (updated) number of times a swipe motion for the given digit
+	 *         has been successfully completed.
+	 */
+	public int increaseSwipeValidMotionCounter(int digit) {
+		increaseCounter(SWIPE_DIGIT_VALID_COUNTER);
+		return increaseCounter(getSwipeDigitDiscoveredPreferenceName(digit));
+	}
+
+	/**
+	 * Increase the number of times an invalid swipe motion has been completed.
+	 * 
+	 * @return The (updated) number of times an invalid swipe motion has been
+	 *         completed.
+	 */
+	public int increaseSwipeInvalidMotionCounter() {
+		return increaseCounter(SWIPE_DIGIT_INVALID_COUNTER);
 	}
 }

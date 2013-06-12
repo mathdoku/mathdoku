@@ -184,7 +184,7 @@ public class Cheat {
 		String penaltyTimeText = "";
 		String and = " "
 				+ mResources
-						.getString(R.string.time_unit_connector)
+						.getString(R.string.connector_last_two_elements)
 				+ " ";
 
 		// Determine number of days

@@ -197,7 +197,7 @@
     <!-- The title and summary of the "Sounds effect" option. This option enables or disables soundeffects. -->
     <string name="option_sound_effects_title">Sound effects</string>
     <string name="option_sound_effects_summary">Enable the sound effects</string>
-    
+
     <!-- DIALOG THEME - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <!-- The possible values of the "themes" option. This option controls which theme is used for displaying. -->
@@ -249,8 +249,24 @@
     <!-- Title of dialog used to choose the appropriate action for sending the usage log. -->
     <string name="usage_log_choose_action_title">Send MathDoku Log</string>
 
-    <!-- TIP DIALOGS - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- PLAYING HINT - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    
+    <!-- Hint to start swiping to select a digit. Will be displayed as no swipe movement has begun yet. -->
+    <string name="hint_swipe_basic">Touch and hold the cell for which you want to enter a digit.</string>
+    
+    <!-- Hint to stretch the swipe outside the current cell. The swipe movement has begun but has not yet left the cell. -->
+    <string name="hint_swipe_outside_cell">Now swipe towards the appropriate digit until it is highlighted.</string>
+    <string name="hint_swipe_basic_cell_at_border">Even if the appropriate digit is not visible, you can still swipe in the appropriate direction. Touch a cell near the middle of the grid to become familiar with position of digit(s) %1$s.</string>
 
+    <!-- Hint to finish swiping to select a digit.  -->
+    <string name="hint_swipe_rotate">Rotate the swipe line to select a digit. End the swipe when the appropriate digit is highlighted.</string>
+    <string name="hint_swipe_release">Stop swiping to select the highlighted digit or rotate the swipe line to select another digit.</string>
+    <string name="hint_swipe_digit_5">To select a 5, swipe outside the selected cell and end this swipe in the cell where you started this swipe.</string>
+    
+    <string name="hint_swipe_valid_digit_completed">You have just completed a swipe for digit %1$s.</string>
+    <string name="hint_swipe_invalid_digit_completed">Swiping in this direction will reveal a digit when playing a bigger puzzle.</string>
+    
+    <!-- TIP DIALOGS - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <!-- Label for check box "Do not show again" in the tip dialog. -->
     <string name="dialog_tip_do_not_show_again">Do not show again</string>
@@ -424,8 +440,8 @@
     <string name="time_unit_days_singular">day</string>
     <string name="time_unit_days_plural">days</string>
 
-    <!-- Connector in case penalty time consists of different units (e.g. "1 minute and 15 seconds") -->
-    <string name="time_unit_connector">and</string>
+    <!-- Connection word for the last two elements in a list. Example: "1 minute and 15 seconds" or "1, 2, 3 and 4)" -->
+    <string name="connector_last_two_elements">and</string>
     
     <!-- The text for input mode "normal" which is used to enter a definitive value into the selected cell. -->
     <string name="input_mode_normal_short">normal</string>
