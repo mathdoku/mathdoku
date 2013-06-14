@@ -8,8 +8,8 @@ import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
-import net.cactii.mathdoku.hint.Hint;
-import net.cactii.mathdoku.hint.OnHintChangedListener;
+import net.cactii.mathdoku.hint.OnTickerTapeChangedListener;
+import net.cactii.mathdoku.hint.TickerTape;
 import net.cactii.mathdoku.painter.GridPainter;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
@@ -45,7 +45,7 @@ public class GridView extends View implements OnTouchListener {
 
 	// Listeners
 	public OnGridTouchListener mTouchedListener;
-	private OnHintChangedListener mOnHintChangedListener;
+	private OnTickerTapeChangedListener mOnTickerTapeChangedListener;
 
 	// Previously touched cell
 	private GridCell mPreviouslyTouchedCell;
@@ -110,7 +110,7 @@ public class GridView extends View implements OnTouchListener {
 
 		// Set listeners
 		this.setOnTouchListener((OnTouchListener) this);
-		mOnHintChangedListener = null;
+		mOnTickerTapeChangedListener = null;
 	}
 
 	public void setOnGridTouchListener(OnGridTouchListener listener) {
@@ -174,31 +174,9 @@ public class GridView extends View implements OnTouchListener {
 			mYPosSwype = event.getY();
 
 			// Show the basic swype hint. Replace this hint after a short pause.
-			if (mOnHintChangedListener != null
+			if (mOnTickerTapeChangedListener != null
 					&& mPreferences.getSwipeValidMotionCounter() < 30) {
-				class RepeatHint extends Hint {
-					public RepeatHint(
-							OnHintChangedListener onHintChangedListener) {
-						super(onHintChangedListener);
-					}
-
-					@Override
-					public boolean repeat() {
-						return mSwypeBorderIsVisible;
-					}
-
-					@Override
-					public String getNextHint() {
-						return showUnfinishedSwypeHint(getRepetitionCounter());
-					}
-				}
-				;
-
-				new RepeatHint(mOnHintChangedListener)
-						.setInitialDelay(1500)
-						.setRepeatDelay(3000)
-						.show(getResources().getString(
-								R.string.hint_swipe_basic));
+				setTickerTapeOnCellDown();
 			}
 
 			invalidate();
@@ -220,27 +198,38 @@ public class GridView extends View implements OnTouchListener {
 					digitSelected(mSwypeDigit);
 
 					// Update preferences and inform listeners
-					if (mOnHintChangedListener != null) {
+					if (mOnTickerTapeChangedListener != null) {
 						if (mPreferences
 								.increaseSwipeValidMotionCounter(mSwypeDigit) <= 6) {
-							Hint hint = new Hint(mOnHintChangedListener);
-							hint.setEraseDelay(3000)
-									.show(getResources()
-											.getString(
-													R.string.hint_swipe_valid_digit_completed,
-													mSwypeDigit));
+							TickerTape tickerTape = new TickerTape(mContext);
+							tickerTape
+									.addItem(
+											getResources()
+													.getString(
+															R.string.hint_swipe_valid_digit_completed,
+															mSwypeDigit))
+									.setEraseDelay(3000);
+							mOnTickerTapeChangedListener
+									.onTickerTapeChanged(tickerTape);
+						} else {
+							mOnTickerTapeChangedListener
+									.onTickerTapeChanged(null);
 						}
 					}
 				} else if (mSwypeDigit > mGridSize
-						&& mOnHintChangedListener != null
+						&& mOnTickerTapeChangedListener != null
 						&& mPreferences.increaseSwipeInvalidMotionCounter() <= 6) {
-					// Inform listeners about completing a swype motion for a
-					// invalid digit.
-					Hint hint = new Hint(mOnHintChangedListener);
-					hint.setEraseDelay(3000)
-							.show(getResources()
-									.getString(
-											R.string.hint_swipe_invalid_digit_completed));
+					TickerTape tickerTape = new TickerTape(mContext);
+					tickerTape
+							.addItem(
+									getResources()
+											.getString(
+													R.string.hint_swipe_invalid_digit_completed))
+							.setEraseDelay(3000);
+					mOnTickerTapeChangedListener
+							.onTickerTapeChanged(tickerTape);
+				} else if (mOnTickerTapeChangedListener != null) {
+					mOnTickerTapeChangedListener.onTickerTapeChanged(null);
 				}
 
 				// Get selected cell
@@ -284,8 +273,14 @@ public class GridView extends View implements OnTouchListener {
 
 			int newSwypeDigit = getSwypeDigit(event);
 			if (newSwypeDigit > 0 && mSwypeDigit != newSwypeDigit) {
-				mSwypeHasLeftSelectedCell = true;
 				mSwypeDigit = newSwypeDigit;
+
+				if (mSwypeHasLeftSelectedCell == false) {
+					// When the cell is left for the first time, reset the hints
+					// in the ticker tape.
+					setTickerTapeOnLeavingSelectedCell();
+					mSwypeHasLeftSelectedCell = true;
+				}
 
 				// As the swype digit has been changed, the grid view needs to
 				// be updated.
@@ -450,9 +445,12 @@ public class GridView extends View implements OnTouchListener {
 		// Set default input mode to normal
 		mInputMode = InputMode.NORMAL;
 
-		if (mPreferences.getSwipeValidMotionCounter() < 30) {
-			new Hint(mOnHintChangedListener).show(getResources().getString(
+		if (mOnTickerTapeChangedListener != null
+				&& mPreferences.getSwipeValidMotionCounter() < 30) {
+			TickerTape tickerTape = new TickerTape(mContext);
+			tickerTape.addItem(getResources().getString(
 					R.string.hint_swipe_basic));
+			mOnTickerTapeChangedListener.onTickerTapeChanged(tickerTape);
 		}
 
 		invalidate();
@@ -671,124 +669,174 @@ public class GridView extends View implements OnTouchListener {
 	}
 
 	/**
-	 * Register the listener to call in case a hint has to be set.
+	 * Register the listener to call in case the ticker tape for the hints has
+	 * to be set.
 	 * 
 	 * @param onHintChangedListener
 	 *            The listener to call in case a hint has to be set.
 	 */
-	public void setOnHintChangedListener(
-			OnHintChangedListener onHintChangedListener) {
-		mOnHintChangedListener = onHintChangedListener;
+	public void setOnTickerTapeChangedListener(
+			OnTickerTapeChangedListener onTickerTapeChangedListener) {
+		mOnTickerTapeChangedListener = onTickerTapeChangedListener;
 	}
 
 	/**
-	 * Get the appropriate basic swype hint.
+	 * Set the ticker tape for situation in which a cell is just touched and the
+	 * swipe motion has not yet left the cell.
 	 */
-	private String showUnfinishedSwypeHint(int hintCounterCurrentSwipeMotion) {
+	private void setTickerTapeOnCellDown() {
+		// Create the ticker tape.
+		TickerTape tickerTape = new TickerTape(mContext);
+
+		// Get information about position of the cell in the grid.
+		int gridSize = mGrid.getGridSize();
+		GridCell selectedCell = mGrid.getSelectedCell();
+		boolean isTopRow = (selectedCell.getRow() == 0);
+		boolean isBottomRow = (selectedCell.getRow() == gridSize - 1);
+		boolean isLeftColumn = (selectedCell.getColumn() == 0);
+		boolean isRightColumn = (selectedCell.getColumn() == gridSize - 1);
+
+		// In case the digit is on an outer row or column of the grid an
+		// additional hint has to be shown.
+		if (isTopRow || isBottomRow || isLeftColumn || isRightColumn) {
+			// List for all digits which can not be shown.
+			boolean digitNotVisible[] = { false, false, false, false, false,
+					false, false, false, false, false, false, false };
+
+			// Determine invisible digits in case the selected cell is in the
+			// top row.
+			if (isTopRow) {
+				digitNotVisible[1] = true;
+				digitNotVisible[2] = true;
+				digitNotVisible[3] = true;
+			}
+
+			// Determine invisible digits in case the selected cell is in the
+			// left column.
+			if (isLeftColumn) {
+				digitNotVisible[1] = true;
+				digitNotVisible[4] = true;
+				if (gridSize >= 7) {
+					digitNotVisible[7] = true;
+				}
+			}
+
+			// Determine invisible digits in case the selected cell is in the
+			// right column.
+			if (isRightColumn) {
+				digitNotVisible[3] = true;
+				if (gridSize >= 6) {
+					digitNotVisible[6] = true;
+					if (gridSize >= 9) {
+						digitNotVisible[9] = true;
+					}
+				}
+			}
+
+			// Determine invisible digits in case the selected cell is in the
+			// bottom row.
+			if (isBottomRow && gridSize >= 7) {
+				digitNotVisible[7] = true;
+				if (gridSize >= 8) {
+					digitNotVisible[8] = true;
+					if (gridSize >= 9) {
+						digitNotVisible[9] = true;
+					}
+				}
+			}
+
+			// Determine the minimum and maximum value of the invisible digits.
+			int minDigitNotVisible = 0;
+			int maxDigitNotVisible = 0;
+			for (int i = 1; i <= gridSize; i++) {
+				if (digitNotVisible[i]) {
+					if (minDigitNotVisible == 0) {
+						minDigitNotVisible = i;
+					}
+					maxDigitNotVisible = i;
+				}
+			}
+
+			// Determine full text of hint in case an invisible digit has been
+			// determined.
+			if (minDigitNotVisible > 0) {
+				String digits = Integer.toString(minDigitNotVisible);
+				for (int i = minDigitNotVisible + 1; i <= maxDigitNotVisible; i++) {
+					if (digitNotVisible[i]) {
+						if (i == maxDigitNotVisible) {
+							digits += " "
+									+ getResources()
+											.getString(
+													R.string.connector_last_two_elements,
+													digits) + " "
+									+ Integer.toString(i);
+						} else {
+							digits += ", " + Integer.toString(i);
+						}
+					}
+				}
+				tickerTape.addItem(getResources().getString(
+						R.string.hint_swipe_basic_cell_at_border, digits));
+			} else {
+				tickerTape.addItem(getResources().getString(
+						R.string.hint_swipe_outside_cell));
+			}
+		} else {
+			tickerTape.addItem(getResources().getString(
+					R.string.hint_swipe_outside_cell));
+		}
+
+		// Inform listeners about change
+		if (mOnTickerTapeChangedListener != null) {
+			mOnTickerTapeChangedListener.onTickerTapeChanged(tickerTape);
+		}
+	}
+
+	/**
+	 * Set the ticker tape for situation in which a swipe motions has just left
+	 * the selected cell for the first time.
+	 */
+	private void setTickerTapeOnLeavingSelectedCell() {
 		// Hint can not be determined if grid is empty. Neither will hint be
 		// showed for inactive grids.
 		if (mGrid == null || mGrid.isActive() == false) {
-			return null;
+			return;
 		}
 
-		int gridSize = mGrid.getGridSize();
-		int swipeMotionCounter = mPreferences.getSwipeValidMotionCounter();
-
-		// For grid size 5 and above the hints will be alternated.
-		if (gridSize >= 5 && hintCounterCurrentSwipeMotion % 2 == 0
-				&& mPreferences.getSwipeMotionCounter(5) < 6) {
-			return getResources().getString(R.string.hint_swipe_digit_5);
-		} else if (swipeMotionCounter < 20
-				&& mSwypeHasLeftSelectedCell == false) {
-			// Swype motion has not yet left the cell. In case a cell is
-			// selected at the border of the grid view, not all digits in the
-			// swype border might be visible.
-			GridCell selectedCell = mGrid.getSelectedCell();
-
-			boolean isTopRow = (selectedCell.getRow() == 0);
-			boolean isBottomRow = (selectedCell.getRow() == gridSize - 1);
-			boolean isLeftColumn = (selectedCell.getColumn() == 0);
-			boolean isRightColumn = (selectedCell.getColumn() == gridSize - 1);
-
-			if (isTopRow || isBottomRow || isLeftColumn || isRightColumn) {
-				// List for all digits which can not be shown.
-				boolean digitNotVisible[] = { false, false, false, false,
-						false, false, false, false, false, false, false, false };
-
-				if (isTopRow) {
-					digitNotVisible[1] = true;
-					digitNotVisible[2] = true;
-					digitNotVisible[3] = true;
-				}
-				if (isLeftColumn) {
-					digitNotVisible[1] = true;
-					digitNotVisible[4] = true;
-					if (gridSize >= 7) {
-						digitNotVisible[7] = true;
-					}
-				}
-				if (isRightColumn) {
-					digitNotVisible[3] = true;
-					if (gridSize >= 6) {
-						digitNotVisible[6] = true;
-						if (gridSize >= 9) {
-							digitNotVisible[9] = true;
-						}
-					}
-				}
-				if (isBottomRow && gridSize >= 7) {
-					digitNotVisible[7] = true;
-					if (gridSize >= 8) {
-						digitNotVisible[8] = true;
-						if (gridSize >= 9) {
-							digitNotVisible[9] = true;
-						}
-					}
-				}
-				int minDigitNotVisible = 0;
-				int maxDigitNotVisible = 0;
-				for (int i = 1; i <= gridSize; i++) {
-					if (digitNotVisible[i]) {
-						if (minDigitNotVisible == 0) {
-							minDigitNotVisible = i;
-						}
-						maxDigitNotVisible = i;
-					}
-				}
-				if (minDigitNotVisible > 0) {
-					String digits = Integer.toString(minDigitNotVisible);
-					for (int i = minDigitNotVisible + 1; i <= maxDigitNotVisible; i++) {
-						if (digitNotVisible[i]) {
-							if (i == maxDigitNotVisible) {
-								digits += " "
-										+ getResources()
-												.getString(
-														R.string.connector_last_two_elements,
-														digits) + " "
-										+ Integer.toString(i);
-							} else {
-								digits += ", " + Integer.toString(i);
-							}
-						}
-					}
-					return getResources().getString(
-							R.string.hint_swipe_basic_cell_at_border, digits);
-				}
+		// Create the ticker tape.
+		TickerTape tickerTape = null;
+		if (mPreferences.getSwipeValidMotionCounter() <= 10) {
+			if (tickerTape == null) {
+				tickerTape = new TickerTape(mContext);
 			}
-			return getResources().getString(R.string.hint_swipe_outside_cell);
-		} else if (swipeMotionCounter <= 10) {
+
+			// Determine hint to show.
 			if (mSwypeDigit >= 1 && mSwypeDigit <= mGrid.getGridSize()) {
 				// Swype motion has left the cell and a valid swype digit will
 				// be selected when the motion stops.
-				return getResources().getString(R.string.hint_swipe_release);
+				tickerTape.addItem(getResources().getString(
+						R.string.hint_swipe_release));
 			} else {
 				// Swype motion has left the cell but no valid swype digit will
 				// be selected when the motion stops at this moment.
-				return getResources().getString(R.string.hint_swipe_rotate);
+				tickerTape.addItem(getResources().getString(
+						R.string.hint_swipe_rotate));
 			}
-		} else {
-			// Clear hint
-			return "";
+		}
+
+		// Add hint for digit 5
+		if (mGrid.getGridSize() >= 5
+				&& mPreferences.getSwipeMotionCounter(5) < 6) {
+			if (tickerTape == null) {
+				tickerTape = new TickerTape(mContext);
+			}
+			tickerTape.addItem(getResources().getString(
+					R.string.hint_swipe_digit_5));
+		}
+
+		// Inform listeners about change
+		if (tickerTape != null && mOnTickerTapeChangedListener != null) {
+			mOnTickerTapeChangedListener.onTickerTapeChanged(tickerTape);
 		}
 	}
 }

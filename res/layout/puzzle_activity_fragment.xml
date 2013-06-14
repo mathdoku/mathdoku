@@ -4,26 +4,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <TextView
-        android:id="@+id/tipText"
+    <RelativeLayout
+        android:id="@+id/tickerTapeLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:lines="2"
-        android:textSize="@dimen/controls_text_size_default"
         android:textIsSelectable="false"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp" />
-    
+        android:textSize="@dimen/controls_text_size_default" />
+
     <RelativeLayout
         android:id="@+id/puzzleGrid"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/tipText"
-        android:layout_alignWithParentIfMissing="true"
+        android:layout_alignParentTop="true"
         android:layout_margin="5dp"
+        android:paddingTop="25dp"
         android:visibility="gone" >
 
         <TextView
@@ -87,4 +84,5 @@
             android:textStyle="bold"
             tools:ignore="ButtonStyle" />
     </LinearLayout>
+
 </RelativeLayout>

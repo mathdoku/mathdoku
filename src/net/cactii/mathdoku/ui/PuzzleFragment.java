@@ -9,7 +9,8 @@ import net.cactii.mathdoku.GridCage;
 import net.cactii.mathdoku.GridCell;
 import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
-import net.cactii.mathdoku.hint.OnHintChangedListener;
+import net.cactii.mathdoku.hint.OnTickerTapeChangedListener;
+import net.cactii.mathdoku.hint.TickerTape;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import net.cactii.mathdoku.tip.TipCheat;
@@ -41,7 +42,7 @@ import android.widget.Toast;
 
 public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		OnSharedPreferenceChangeListener, OnCreateContextMenuListener,
-		OnHintChangedListener {
+		OnTickerTapeChangedListener {
 	public final static String TAG = "MathDoku.PuzzleFragment";
 
 	public static final String BUNDLE_KEY_SOLVING_ATTEMPT_ID = "PuzzleFragment.solvingAttemptId";
@@ -58,7 +59,9 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	RelativeLayout mTopLayout;
 	RelativeLayout mPuzzleGridLayout;
 	TextView mTimerText;
-	TextView mTipText;
+
+	RelativeLayout mTickerTapeLayout;
+	TickerTape mTickerTape;
 
 	Button mClearButton;
 	Button mUndoButton;
@@ -119,7 +122,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		mClearButton = (Button) mRootView.findViewById(R.id.clearButton);
 		mUndoButton = (Button) mRootView.findViewById(R.id.undoButton);
 
-		mTipText = (TextView) mRootView.findViewById(R.id.tipText);
+		mTickerTapeLayout = (RelativeLayout) mRootView
+				.findViewById(R.id.tickerTapeLayout);
 
 		mSoundEffectViews = new View[] { mGridView, mClearButton, mUndoButton };
 
@@ -132,7 +136,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				setClearAndUndoButtonVisibility(cell);
 			}
 		});
-		mGridView.setOnHintChangedListener(this);
+		mGridView.setOnTickerTapeChangedListener(this);
 		mClearButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				if (mGridView != null) {
@@ -184,6 +188,9 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		if (mGrid != null) {
 			mGrid.save();
 		}
+		if (mTickerTape != null) {
+			mTickerTape.cancel();
+		}
 
 		super.onPause();
 	}
@@ -220,6 +227,10 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		if (mTimerTask == null
 				|| (mTimerTask != null && mTimerTask.isCancelled())) {
 			startTimer();
+		}
+
+		if (mTickerTape != null && mTickerTape.isCancelled()) {
+			mTickerTape.show();
 		}
 	}
 
@@ -540,7 +551,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			mTimerTask.addCheatPenaltyTime(cheat);
 		}
 
-		// Display hint or toast
+		// Display tip or toast
 		if (TipCheat.toBeDisplayed(mMathDokuPreferences, cheat)) {
 			new TipCheat(mContext, cheat).show();
 		} else {
@@ -587,7 +598,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			mTimerTask.addCheatPenaltyTime(cheat);
 		}
 
-		// Display hint or toast
+		// Display tip or toast
 		if (TipCheat.toBeDisplayed(mMathDokuPreferences, cheat)) {
 			new TipCheat(mContext, cheat).show();
 		} else if (allUserValuesValid) {
@@ -736,10 +747,17 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	}
 
 	@Override
-	public void setHint(String hint) {
-		if (mTipText != null) {
-			mTipText.setText((hint == null ? "" : hint));
-			mTipText.invalidate();
+	public void onTickerTapeChanged(TickerTape tickerTape) {
+		// First cancel the old ticker tape
+		if (mTickerTape != null) {
+			mTickerTape.cancel();
+		}
+		mTickerTapeLayout.removeAllViews();
+
+		mTickerTape = tickerTape;
+		if (mTickerTape != null) {
+			mTickerTapeLayout.addView(mTickerTape);
+			mTickerTape.show();
 		}
 	}
 }
