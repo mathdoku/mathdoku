@@ -4,23 +4,23 @@ import net.cactii.mathdoku.painter.Painter.GridTheme;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 
-public class SwypeBorderPainter extends BorderPainter {
+public class SwipeBorderPainter extends BorderPainter {
 
-	// Width of the swype border
+	// Width of the swipe border
 	private float mBorderWidth;
 
-	// Background of swype border
+	// Background of swipe border
 	private Paint mUserValueBackgroundBorderPaint;
 	private Paint mMaybeValueBackgroundBorderPaint;
 	
-	// Painter for digits inside the swype border
+	// Painter for digits inside the swipe border
 	private Paint mNormalDigitPaint;
 	private Paint mHighlightedDigitPaint;
 
-	// Painter for the swype line
-	private Paint mSwypeLinePaint;
+	// Painter for the swipe line
+	private Paint mSwipeLinePaint;
 	
-	// Offset from bottom for text inside swype border
+	// Offset from bottom for text inside swipe border
 	private float mBottomOffset;
 
 	/**
@@ -29,10 +29,10 @@ public class SwypeBorderPainter extends BorderPainter {
 	 * @param painter
 	 *            The global container for all painters.
 	 */
-	public SwypeBorderPainter(Painter painter) {
+	public SwipeBorderPainter(Painter painter) {
 		super(painter);
 		
-		// Background painters of swype border.
+		// Background painters of swipe border.
 		mUserValueBackgroundBorderPaint = new Paint();
 		mUserValueBackgroundBorderPaint.setStyle(Paint.Style.FILL);
 		mMaybeValueBackgroundBorderPaint = new Paint();
@@ -44,11 +44,11 @@ public class SwypeBorderPainter extends BorderPainter {
 		mHighlightedDigitPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		mHighlightedDigitPaint.setFakeBoldText(true);
 		
-		mSwypeLinePaint = new Paint();
-		mSwypeLinePaint.setAntiAlias(true);
-		mSwypeLinePaint.setStrokeWidth(10);
-		mSwypeLinePaint.setStyle(Style.STROKE);
-		mSwypeLinePaint.setColor(0x80FFFF00);
+		mSwipeLinePaint = new Paint();
+		mSwipeLinePaint.setAntiAlias(true);
+		mSwipeLinePaint.setStrokeWidth(10);
+		mSwipeLinePaint.setStyle(Style.STROKE);
+		mSwipeLinePaint.setColor(0x80FFFF00);
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class SwypeBorderPainter extends BorderPainter {
 		mHighlightedDigitPaint.setTypeface(mPainter.getTypeface());
 		mHighlightedDigitPaint.setColor(0xFF000000);
 		
-		mSwypeLinePaint.setPathEffect(mPainter.getPathEffect());
+		mSwipeLinePaint.setPathEffect(mPainter.getPathEffect());
 	}
 
 	@Override
@@ -82,65 +82,65 @@ public class SwypeBorderPainter extends BorderPainter {
 	}
 
 	/**
-	 * Get the size of the swype border.
+	 * Get the size of the swipe border.
 	 * 
-	 * @return The size of the swype border.
+	 * @return The size of the swipe border.
 	 */
 	public float getBorderWidth() {
 		return mBorderWidth;
 	}
 
 	/**
-	 * Get the offset of text form the bottom of the swype border.
+	 * Get the offset of text form the bottom of the swipe border.
 	 * 
-	 * @return The offset of text form the bottom of the swype border.
+	 * @return The offset of text form the bottom of the swipe border.
 	 */
 	public float getBottomOffset() {
 		return mBottomOffset;
 	}
 
 	/**
-	 * Get the paint for the background of the swype border which is used to enter a user value.
+	 * Get the paint for the background of the swipe border which is used to enter a user value.
 	 * 
-	 * @return The paint for the background of the swype border which is used to enter a user value.
+	 * @return The paint for the background of the swipe border which is used to enter a user value.
 	 */
 	public Paint getUserValueBackgroundBorderPaint() {
 		return mUserValueBackgroundBorderPaint;
 	}
 
 	/**
-	 * Get the paint for the background of the swype border which is used to enter a maybe value.
+	 * Get the paint for the background of the swipe border which is used to enter a maybe value.
 	 * 
-	 * @return The paint for the background of the swype border which is used to enter a maybe value.
+	 * @return The paint for the background of the swipe border which is used to enter a maybe value.
 	 */
 	public Paint getMaybeValueBackgroundBorderPaint() {
 		return mMaybeValueBackgroundBorderPaint;
 	}
 
 	/**
-	 * Get the paint for the normal digits inside the swype border.
+	 * Get the paint for the normal digits inside the swipe border.
 	 * 
-	 * @return The paint for the normal digits inside the swype border.
+	 * @return The paint for the normal digits inside the swipe border.
 	 */
 	public Paint getNormalDigitPaint() {
 		return mNormalDigitPaint;
 	}
 
 	/**
-	 * Get the paint for the highlighted digit inside the swype border.
+	 * Get the paint for the highlighted digit inside the swipe border.
 	 * 
-	 * @return The paint for the highlighted digit inside the swype border.
+	 * @return The paint for the highlighted digit inside the swipe border.
 	 */
 	public Paint getHighlightedDigitPaint() {
 		return mHighlightedDigitPaint;
 	}
 
 	/**
-	 * Get the paint for the swype line.
+	 * Get the paint for the swipe line.
 	 * 
-	 * @return The paint for the swype line
+	 * @return The paint for the swipe line
 	 */
-	public Paint getSwypeLinePaint() {
-		return mSwypeLinePaint;
+	public Paint getSwipeLinePaint() {
+		return mSwipeLinePaint;
 	}
 }

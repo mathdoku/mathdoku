@@ -6,8 +6,6 @@ import net.cactii.mathdoku.Grid;
 import net.cactii.mathdoku.GridCell;
 import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
-import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
-import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.hint.OnTickerTapeChangedListener;
 import net.cactii.mathdoku.hint.TickerTape;
 import net.cactii.mathdoku.painter.GridPainter;
@@ -21,7 +19,6 @@ import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 import android.view.View;
@@ -31,10 +28,6 @@ import android.widget.Toast;
 public class GridView extends View implements OnTouchListener {
 	@SuppressWarnings("unused")
 	private static final String TAG = "MathDoku.GridView";
-
-	// Remove "&& false" in following line to show debug information about
-	// creating cages when running in development mode.
-	public static final boolean DEBUG_GRID_VIEW_SWYPE = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
 
 	// Context and preferences in context
 	Context mContext;
@@ -54,6 +47,7 @@ public class GridView extends View implements OnTouchListener {
 	// in grid
 	private int mGridSize;
 	public float mGridViewSize;
+	private float mGridBorderWidth;
 	private float mGridCellSize;
 
 	// Reference to the global grid painter object
@@ -65,14 +59,8 @@ public class GridView extends View implements OnTouchListener {
 	// Visible window rectangle
 	private Rect mDisplayFrame;
 
-	// Cell on which last touch down event took place
-	private int mRowLastTouchDownCell;
-	private int mColLastTouchDownCell;
-	private boolean mSwypeBorderIsVisible;
-	private float mXPosSwype;
-	private float mYPosSwype;
-	private boolean mSwypeHasLeftSelectedCell;
-	private int mSwypeDigit;
+	// Reference to the last swipe motion which was started.
+	private SwipeMotion mSwipeMotion;
 
 	// The input mode in which the puzzle can be.
 	public enum InputMode {
@@ -103,6 +91,8 @@ public class GridView extends View implements OnTouchListener {
 
 		mGridViewSize = 0;
 		mGridPainter = Painter.getInstance(mContext).getGridPainter();
+		mGridBorderWidth = (mGridPainter == null ? 0 : mGridPainter
+				.getBorderPaint().getStrokeWidth());
 
 		// Initialize the display frame for the grid view.
 		mDisplayFrame = new Rect();
@@ -132,48 +122,19 @@ public class GridView extends View implements OnTouchListener {
 			// Remember which cell was selected before.
 			mPreviouslyTouchedCell = mGrid.getSelectedCell();
 
-			// Find out where the grid was touched.
-			mRowLastTouchDownCell = (int) (event.getY() / mGridCellSize);
-			if (mRowLastTouchDownCell > mGridSize - 1) {
-				mRowLastTouchDownCell = mGridSize - 1;
-			} else if (mRowLastTouchDownCell < 0) {
-				mRowLastTouchDownCell = 0;
+			if (mSwipeMotion == null) {
+				mSwipeMotion = new SwipeMotion(mGrid, mGridBorderWidth,
+						mGridCellSize);
 			}
-			mColLastTouchDownCell = (int) (event.getX() / mGridCellSize);
-			if (mColLastTouchDownCell > mGridSize - 1) {
-				mColLastTouchDownCell = mGridSize - 1;
-			} else if (mColLastTouchDownCell < 0) {
-				mColLastTouchDownCell = 0;
-			}
+			mSwipeMotion.setTouchDownEvent(event);
+			GridCell selectedCell = mSwipeMotion.getTouchDownCell();
 
-			// Select new cell
-			GridCell selectedCell = mGrid.getCellAt(mRowLastTouchDownCell,
-					mColLastTouchDownCell);
+			// Select new cell and inform listener of puzzle fragment of start
+			// of motion event.
 			mGrid.setSelectedCell(selectedCell);
-
-			// Inform listener of puzzle fragment of start of motion event.
 			mTouchedListener.gridTouched(selectedCell);
 
-			// When starting a swype motion, the swype digit is not yet known.
-			mSwypeDigit = -1;
-
-			// While moving the swype position, a line is drawn from the middle
-			// of the initially touched cell to the middle of the cell which is
-			// hovered by the swype position. This variable will be set as soon
-			// as the swype motion leave this cell.
-			mSwypeHasLeftSelectedCell = false;
-
-			// Indicate to the onDraw method that the swype border has to be
-			// shown.
-			// TODO: for advanced used who succesfully have used this function
-			// the border can be hidden.
-			mSwypeBorderIsVisible = true;
-
-			// Store current position of swype position
-			mXPosSwype = event.getX();
-			mYPosSwype = event.getY();
-
-			// Show the basic swype hint. Replace this hint after a short pause.
+			// Show the basic swipe hint. Replace this hint after a short pause.
 			if (mOnTickerTapeChangedListener != null
 					&& mPreferences.getSwipeValidMotionCounter() < 30) {
 				setTickerTapeOnCellDown();
@@ -183,31 +144,32 @@ public class GridView extends View implements OnTouchListener {
 
 			// Do not allow other view to respond to this action, for example by
 			// handling the long press, which would result in malfunction of the
-			// swype motion.
+			// swipe motion.
 			return true;
 		case MotionEvent.ACTION_UP:
-			if (this.mTouchedListener != null) {
+			if (this.mTouchedListener != null && mSwipeMotion != null) {
 				this.playSoundEffect(SoundEffectConstants.CLICK);
 
-				mSwypeDigit = getSwypeDigit(event);
-				if (mSwypeDigit > 0 && mSwypeDigit <= mGridSize) {
-					// A swype motion for a valid digit was completed.
+				mSwipeMotion.release(event);
+				int swipeDigit = mSwipeMotion.getFocussedDigit();
+				if (swipeDigit >= 1 && swipeDigit <= mGridSize) {
+					// A swipe motion for a valid digit was completed.
 
-					// Set the swype digit as selected value for the cell which
+					// Set the swipe digit as selected value for the cell which
 					// was initially touched.
-					digitSelected(mSwypeDigit);
+					digitSelected(swipeDigit);
 
 					// Update preferences and inform listeners
 					if (mOnTickerTapeChangedListener != null) {
 						if (mPreferences
-								.increaseSwipeValidMotionCounter(mSwypeDigit) <= 6) {
+								.increaseSwipeValidMotionCounter(swipeDigit) <= 6) {
 							TickerTape tickerTape = new TickerTape(mContext);
 							tickerTape
 									.addItem(
 											getResources()
 													.getString(
 															R.string.hint_swipe_valid_digit_completed,
-															mSwypeDigit))
+															swipeDigit))
 									.setEraseDelay(3000);
 							mOnTickerTapeChangedListener
 									.onTickerTapeChanged(tickerTape);
@@ -216,7 +178,19 @@ public class GridView extends View implements OnTouchListener {
 									.onTickerTapeChanged(null);
 						}
 					}
-				} else if (mSwypeDigit > mGridSize
+				} else if (swipeDigit <= 0 && mSwipeMotion.hasLeftTouchDownCell() == false) {
+					// In case no valid swipe motion was made, determine if same
+					// cell was touched again.
+					if (mSwipeMotion.getTouchDownCell().equals(mPreviouslyTouchedCell)) {
+						// Toggle the inputMode
+						mInputMode = (mInputMode == InputMode.MAYBE ? InputMode.NORMAL
+								: InputMode.MAYBE);
+
+						if (TipInputModeChanged.toBeDisplayed(mPreferences)) {
+							new TipInputModeChanged(mContext, mInputMode).show();
+						}
+					}
+				} else if (swipeDigit > mGridSize
 						&& mOnTickerTapeChangedListener != null
 						&& mPreferences.increaseSwipeInvalidMotionCounter() <= 6) {
 					TickerTape tickerTape = new TickerTape(mContext);
@@ -232,65 +206,43 @@ public class GridView extends View implements OnTouchListener {
 					mOnTickerTapeChangedListener.onTickerTapeChanged(null);
 				}
 
-				// Get selected cell
-				selectedCell = mGrid.getSelectedCell();
-
-				// In case no valid swype motion was made, determine if same
-				// cell was touched again.
-				if (mSwypeDigit == -1 && selectedCell != null
-						&& selectedCell.equals(mPreviouslyTouchedCell)) {
-
-					// Toggle the inputMode
-					mInputMode = (mInputMode == InputMode.MAYBE ? InputMode.NORMAL
-							: InputMode.MAYBE);
-
-					if (TipInputModeChanged.toBeDisplayed(mPreferences)) {
-						new TipInputModeChanged(mContext, mInputMode).show();
-					}
-				}
-
 				// Inform listener of puzzle fragment about the release action
-				mTouchedListener.gridTouched(selectedCell);
+				mTouchedListener.gridTouched(mGrid.getSelectedCell());
 
-				// Hide swype border if displayed.
-				if (mSwypeBorderIsVisible) {
-					mSwypeBorderIsVisible = false;
-					invalidate();
-				}
+				// Update to remove the swipe line
+				invalidate();
 			}
 			return true;
 		case MotionEvent.ACTION_MOVE:
-			// What was the swype position when the previous ACTION_MOVE event
-			// was processed.
-			int coordinatesPrevious[] = getSwypePosition(mXPosSwype, mYPosSwype);
+			if (mSwipeMotion != null) {
+				// Check whether the touch down cell was already left once
+				// before this event.
+				boolean hasLeftTouchDownCellBefore = mSwipeMotion
+						.hasLeftTouchDownCell();
 
-			// Store current position of swype position
-			mXPosSwype = event.getX();
-			mYPosSwype = event.getY();
+				// Update current swipe position
+				mSwipeMotion.update(event);
+				
+				// Check if the grid view has to be invalidated
+				int swipeDigit = mSwipeMotion.getFocussedDigit();
+				if (swipeDigit >= 1 && swipeDigit <= 9
+						&& mSwipeMotion.hasChangedDigit()) {
 
-			// Get the current coordinates of the swype position
-			int coordinatesCurrent[] = getSwypePosition(mXPosSwype, mYPosSwype);
+					if (hasLeftTouchDownCellBefore == false
+							&& mSwipeMotion.hasLeftTouchDownCell()) {
+						// When the cell is left for the first time, reset the
+						// hints in the ticker tape.
+						setTickerTapeOnLeavingSelectedCell((swipeDigit >= 1 && swipeDigit <= mGrid.getGridSize()));
+					}
 
-			int newSwypeDigit = getSwypeDigit(event);
-			if (newSwypeDigit > 0 && mSwypeDigit != newSwypeDigit) {
-				mSwypeDigit = newSwypeDigit;
-
-				if (mSwypeHasLeftSelectedCell == false) {
-					// When the cell is left for the first time, reset the hints
-					// in the ticker tape.
-					setTickerTapeOnLeavingSelectedCell();
-					mSwypeHasLeftSelectedCell = true;
-				}
-
-				// As the swype digit has been changed, the grid view needs to
-				// be updated.
-				invalidate();
-			} else {
-				// Check if swype position has changed enough to be updated. For
-				// performance reasons, the grid view is only update in case the
-				// current swype position has moved to another cell.
-				if (coordinatesPrevious[0] != coordinatesCurrent[0]
-						|| coordinatesPrevious[1] != coordinatesCurrent[1]) {
+					// As the swipe digit has been changed, the grid view needs
+					// to be updated.
+					invalidate();
+				} else if (mSwipeMotion
+						.hasChangedCoordinatesCurrentSwipePosition()) {
+					// For performance reasons, the swipe position will only be
+					// updated in case the current swipe position has moved to
+					// another cell.
 					invalidate();
 				}
 			}
@@ -418,12 +370,26 @@ public class GridView extends View implements OnTouchListener {
 				cell.draw(canvas, gridBorderWidth, mInputMode);
 			}
 
-			// Draw the overlay for the selected cell
-			if (mSwypeBorderIsVisible) {
-				GridCell gridCell = mGrid.getSelectedCell();
-				if (gridCell != null) {
-					gridCell.drawOverlay(canvas, gridBorderWidth, mInputMode,
-							mXPosSwype, mYPosSwype, mSwypeDigit);
+			// Draw the overlay for the swipe border around the selected cell
+			// plus the swipe line.
+			if (mSwipeMotion != null && mSwipeMotion.isVisible()) {
+				if (mSwipeMotion.isReleased()) {
+					// The swipe motion was released. Now it can be set to
+					// completed as it is confirmed that the overlay border has
+					// been removed by not drawing it.
+					mSwipeMotion.finish();
+				} else {
+					// The overlay needs to be draw as the swipe motion is not
+					// yet released.
+					GridCell gridCell = mGrid.getSelectedCell();
+					if (gridCell != null) {
+						gridCell.drawSwipeOverlay(canvas, gridBorderWidth,
+								mInputMode,
+								mSwipeMotion.getCurrentSwipePositionX(),
+								mSwipeMotion.getCurrentSwipePositionY(),
+								mSwipeMotion.getFocussedDigit());
+					}
+
 				}
 			}
 		}
@@ -560,115 +526,6 @@ public class GridView extends View implements OnTouchListener {
 	}
 
 	/**
-	 * Converts a given position (pixels) to coordinates relative to the grid.
-	 * 
-	 * @param xPos
-	 *            The absolute x-position on the display
-	 * @param yPos
-	 *            The absolute y-position on the display
-	 * @return The (x,y)-position relative to the grid. For x-position -1 means
-	 *         left of grid, mGridSize means right of grid. For y-position -1
-	 *         means above grid, mGridSize means below grid.
-	 */
-	int[] getSwypePosition(float xPos, float yPos) {
-		int[] coordinates = { -1, -1 };
-
-		// Convert x-position to a column number. -1 means left of grid,
-		// mGridSize means right of grid.
-		xPos = xPos / mGridCellSize;
-		if (xPos > mGridSize) {
-			coordinates[0] = mGridSize;
-		} else if (xPos < 0) {
-			coordinates[0] = -1;
-		} else {
-			coordinates[0] = (int) xPos;
-		}
-
-		// Convert y-position to a column number. -1 means above grid, mGridSize
-		// means below grid.
-		yPos = yPos / mGridCellSize;
-		if (yPos > mGridSize) {
-			coordinates[1] = mGridSize;
-		} else if (yPos < 0) {
-			coordinates[1] = -1;
-		} else {
-			coordinates[1] = (int) yPos;
-		}
-
-		return coordinates;
-	}
-
-	private int getSwypeDigit(MotionEvent event) {
-		int[] coordinatesCurrent = getSwypePosition(event.getX(), event.getY());
-
-		if (coordinatesCurrent[0] == mColLastTouchDownCell
-				&& coordinatesCurrent[1] == mRowLastTouchDownCell) {
-			// As long as the swype position has not left the cell, the swype
-			// digit is undetermined. As the cell has been left at least once,
-			// return to the cell will result in choosing digit 5.
-			return (mSwypeHasLeftSelectedCell ? 5 : -1);
-		}
-
-		// In case the swype position is not inside the originally selected
-		// cell, the digit is determined based on the angle of the swype line.
-
-		// Get the start position of the swype line.
-		float[] startCoordinates = mGrid.getSelectedCell()
-				.getCellCentreCoordinates(
-						mGridPainter.getBorderPaint().getStrokeWidth());
-
-		// Compute current swype position relative to start position of swype.
-		// Note the delta's are computed in such a way that we can compute the
-		// angle between a horizontal line which crosses the start coordinates
-		// and the swype line.
-		float deltaX = startCoordinates[0] - event.getX();
-		float deltaY = startCoordinates[1] - event.getY();
-		double angle = Math.toDegrees(Math.atan2(deltaY, deltaX));
-
-		if (DEBUG_GRID_VIEW_SWYPE) {
-			Log.i(TAG, "getSwypeDigitOnAngle");
-			Log.i(TAG, " - start = (" + startCoordinates[0] + ", "
-					+ startCoordinates[1] + ")");
-			Log.i(TAG, " - current = (" + event.getX() + ", " + event.getY()
-					+ ")");
-			Log.i(TAG, " - deltaX = " + deltaX + " - deltaY = " + deltaY);
-			Log.i(TAG, " - angle = " + angle);
-		}
-
-		// Starting from the horizontal line which crosses the start coordinate
-		// we will divide the circle in 16 segments of each 22.5 degrees. Each
-		// digit (1 - 4 and 6 to 9) will be associated with two segments. Note
-		// that for segments below the x-asis the segments are order
-		// counter-clockwise.
-		if (angle >= 0) {
-			if (angle <= 22.5) {
-				return 4;
-			} else if (angle <= 22.5 + 45) {
-				return 1;
-			} else if (angle <= 22.5 + 90) {
-				return 2;
-			} else if (angle <= 22.5 + 135) {
-				return 3;
-			} else {
-				return 6;
-			}
-		} else {
-			angle *= -1;
-			if (angle <= 22.5) {
-				return 4;
-			} else if (angle <= 22.5 + 45) {
-				return 7;
-			} else if (angle <= 22.5 + 90) {
-				return 8;
-			} else if (angle <= 22.5 + 135) {
-				return 9;
-			} else {
-				return 6;
-			}
-		}
-	}
-
-	/**
 	 * Register the listener to call in case the ticker tape for the hints has
 	 * to be set.
 	 * 
@@ -795,8 +652,9 @@ public class GridView extends View implements OnTouchListener {
 	/**
 	 * Set the ticker tape for situation in which a swipe motions has just left
 	 * the selected cell for the first time.
+	 * @param The digit
 	 */
-	private void setTickerTapeOnLeavingSelectedCell() {
+	private void setTickerTapeOnLeavingSelectedCell(boolean selectableDigit) {
 		// Hint can not be determined if grid is empty. Neither will hint be
 		// showed for inactive grids.
 		if (mGrid == null || mGrid.isActive() == false) {
@@ -810,18 +668,9 @@ public class GridView extends View implements OnTouchListener {
 				tickerTape = new TickerTape(mContext);
 			}
 
-			// Determine hint to show.
-			if (mSwypeDigit >= 1 && mSwypeDigit <= mGrid.getGridSize()) {
-				// Swype motion has left the cell and a valid swype digit will
-				// be selected when the motion stops.
-				tickerTape.addItem(getResources().getString(
-						R.string.hint_swipe_release));
-			} else {
-				// Swype motion has left the cell but no valid swype digit will
-				// be selected when the motion stops at this moment.
-				tickerTape.addItem(getResources().getString(
-						R.string.hint_swipe_rotate));
-			}
+			tickerTape.addItem(getResources().getString((selectableDigit ? 
+						R.string.hint_swipe_release : 
+						R.string.hint_swipe_rotate)));
 		}
 
 		// Add hint for digit 5

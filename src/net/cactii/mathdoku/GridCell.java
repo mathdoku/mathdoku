@@ -8,7 +8,7 @@ import net.cactii.mathdoku.painter.CagePainter;
 import net.cactii.mathdoku.painter.CellPainter;
 import net.cactii.mathdoku.painter.MaybeValuePainter;
 import net.cactii.mathdoku.painter.Painter;
-import net.cactii.mathdoku.painter.SwypeBorderPainter;
+import net.cactii.mathdoku.painter.SwipeBorderPainter;
 import net.cactii.mathdoku.painter.UserValuePainter;
 import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 import net.cactii.mathdoku.ui.GridView.InputMode;
@@ -77,7 +77,7 @@ public class GridCell {
 	private MaybeValuePainter mMaybeGridPainter;
 	private MaybeValuePainter mMaybeLinePainter;
 	private CagePainter mCagePainter;
-	private SwypeBorderPainter mSwypeBorderPainter;
+	private SwipeBorderPainter mSwipeBorderPainter;
 
 	public GridCell(Grid grid, int cell) {
 		int gridSize = grid.getGridSize();
@@ -103,7 +103,7 @@ public class GridCell {
 		mMaybeGridPainter = painter.getMaybeGridPainter();
 		mMaybeLinePainter = painter.getMaybeLinePainter();
 		mCagePainter = painter.getCagePainter();
-		mSwypeBorderPainter = painter.getSwypeBorderPainter();
+		mSwipeBorderPainter = painter.getSwipeBorderPainter();
 
 		mBorderTypeTop = BorderType.NONE;
 		mBorderTypeRight = BorderType.NONE;
@@ -530,9 +530,9 @@ public class GridCell {
 	/**
 	 * Draw the overlay for the selected cell.
 	 */
-	public void drawOverlay(Canvas canvas, float gridBorderWidth,
-			InputMode inputMode, float mXPosSwype, float mYPosSwype,
-			int swypeDigit) {
+	public void drawSwipeOverlay(Canvas canvas, float gridBorderWidth,
+			InputMode inputMode, float mXPosSwipe, float mYPosSwipe,
+			int swipeDigit) {
 		if (mGrid.getSelectedCell() != this) {
 			// This cell is not the selected cell.
 			return;
@@ -552,10 +552,10 @@ public class GridCell {
 
 		// Get the painter for the overlay border
 		// Determine which painter to use
-		Paint borderPaint = (inputMode == InputMode.NORMAL ? mSwypeBorderPainter
-				.getUserValueBackgroundBorderPaint() : mSwypeBorderPainter
+		Paint borderPaint = (inputMode == InputMode.NORMAL ? mSwipeBorderPainter
+				.getUserValueBackgroundBorderPaint() : mSwipeBorderPainter
 				.getMaybeValueBackgroundBorderPaint());
-		float borderOverlayWidth = mSwypeBorderPainter.getBorderWidth();
+		float borderOverlayWidth = mSwipeBorderPainter.getBorderWidth();
 
 		// Top border
 		if (borderPaint != null) {
@@ -574,30 +574,30 @@ public class GridCell {
 		int gridSize = mGrid.getGridSize();
 		int horizontalOffset = 0;
 		int verticalOffset = 0;
-		Paint textNormalPaint = mSwypeBorderPainter.getNormalDigitPaint();
-		Paint textHighlightedPaint = mSwypeBorderPainter
+		Paint textNormalPaint = mSwipeBorderPainter.getNormalDigitPaint();
+		Paint textHighlightedPaint = mSwipeBorderPainter
 				.getHighlightedDigitPaint();
 
 		// Draw digit 1
 		horizontalOffset = (int) ((borderOverlayWidth - textNormalPaint
 				.measureText("1")) / 2);
 		canvas.drawText("1", left - borderOverlayWidth + horizontalOffset, top
-				- mSwypeBorderPainter.getBottomOffset(),
-				(swypeDigit == 1 ? textHighlightedPaint : textNormalPaint));
+				- mSwipeBorderPainter.getBottomOffset(),
+				(swipeDigit == 1 ? textHighlightedPaint : textNormalPaint));
 
 		// Draw digit 2
 		horizontalOffset = (int) ((right - left - textNormalPaint
 				.measureText("2")) / 2);
 		canvas.drawText("2", left + horizontalOffset,
-				top - mSwypeBorderPainter.getBottomOffset(),
-				(swypeDigit == 2 ? textHighlightedPaint : textNormalPaint));
+				top - mSwipeBorderPainter.getBottomOffset(),
+				(swipeDigit == 2 ? textHighlightedPaint : textNormalPaint));
 
 		// Draw digit 3
 		horizontalOffset = (int) ((borderOverlayWidth - textNormalPaint
 				.measureText("3")) / 2);
 		canvas.drawText("3", right + horizontalOffset, top
-				- mSwypeBorderPainter.getBottomOffset(),
-				(swypeDigit == 3 ? textHighlightedPaint : textNormalPaint));
+				- mSwipeBorderPainter.getBottomOffset(),
+				(swipeDigit == 3 ? textHighlightedPaint : textNormalPaint));
 
 		// Draw digit 4
 		horizontalOffset = (int) ((borderOverlayWidth - textNormalPaint
@@ -605,8 +605,8 @@ public class GridCell {
 		verticalOffset = (int) ((bottom - top - textNormalPaint.getTextSize()) / 2);
 		canvas.drawText("4", left - borderOverlayWidth + horizontalOffset, top
 				+ verticalOffset + textNormalPaint.getTextSize()
-				- mSwypeBorderPainter.getBottomOffset(),
-				(swypeDigit == 4 ? textHighlightedPaint : textNormalPaint));
+				- mSwipeBorderPainter.getBottomOffset(),
+				(swipeDigit == 4 ? textHighlightedPaint : textNormalPaint));
 
 		// Note: Digit 5 can not be drawn as it should be placed in the middle
 		// of the cell which could be confusing.
@@ -619,8 +619,8 @@ public class GridCell {
 					.getTextSize()) / 2);
 			canvas.drawText("6", right + horizontalOffset,
 					top + verticalOffset + textNormalPaint.getTextSize()
-							- mSwypeBorderPainter.getBottomOffset(),
-					(swypeDigit == 6 ? textHighlightedPaint : textNormalPaint));
+							- mSwipeBorderPainter.getBottomOffset(),
+					(swipeDigit == 6 ? textHighlightedPaint : textNormalPaint));
 
 			if (gridSize >= 7) {
 				// Draw digit 7
@@ -628,8 +628,8 @@ public class GridCell {
 						.measureText("7")) / 2);
 				canvas.drawText("7", left - borderOverlayWidth
 						+ horizontalOffset, bottom + borderOverlayWidth
-						- mSwypeBorderPainter.getBottomOffset(),
-						(swypeDigit == 7 ? textHighlightedPaint
+						- mSwipeBorderPainter.getBottomOffset(),
+						(swipeDigit == 7 ? textHighlightedPaint
 								: textNormalPaint));
 
 				if (gridSize >= 8) {
@@ -640,8 +640,8 @@ public class GridCell {
 							"8",
 							left + horizontalOffset,
 							bottom + borderOverlayWidth
-									- mSwypeBorderPainter.getBottomOffset(),
-							(swypeDigit == 8 ? textHighlightedPaint
+									- mSwipeBorderPainter.getBottomOffset(),
+							(swipeDigit == 8 ? textHighlightedPaint
 									: textNormalPaint));
 
 					if (gridSize >= 9) {
@@ -652,18 +652,18 @@ public class GridCell {
 								"9",
 								right + horizontalOffset,
 								bottom + borderOverlayWidth
-										- mSwypeBorderPainter.getBottomOffset(),
-								(swypeDigit == 9 ? textHighlightedPaint
+										- mSwipeBorderPainter.getBottomOffset(),
+								(swipeDigit == 9 ? textHighlightedPaint
 										: textNormalPaint));
 					}
 				}
 			}
 		}
 
-		// Draw a line from the middle of the selected cell to the current swype
+		// Draw a line from the middle of the selected cell to the current swipe
 		// position to indicate which digit will be selected on release.
 		canvas.drawLine(left + (cellSize / 2), top + (cellSize / 2),
-				mXPosSwype, mYPosSwype, mSwypeBorderPainter.getSwypeLinePaint());
+				mXPosSwipe, mYPosSwipe, mSwipeBorderPainter.getSwipeLinePaint());
 	}
 
 	/**
