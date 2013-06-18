@@ -5,5 +5,12 @@
         android:key="ShowStatisticsDescription"
         android:summary="@string/option_show_statistics_description_summary"
         android:title="@string/option_show_statistics_description_title" />
+    
+    <ListPreference
+        android:key="elapsed_time_chart_maximum_games_displayed"
+        android:summary="@string/option_max_games_in_elapsed_time_chart_summary"
+        android:title="@string/option_max_games_in_elapsed_time_chart_title"
+        android:entries="@array/maxGamesElapsedTimeChartValues"
+        android:entryValues="@array/maxGamesElapsedTimeChartValues" />
 
 </PreferenceScreen>

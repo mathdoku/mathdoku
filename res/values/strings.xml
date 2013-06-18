@@ -372,6 +372,11 @@
     <!-- The title and summary of the "Hide explanation" option. This option enables or disables displayin the explanations below the statistics charts. -->
     <string name="option_show_statistics_description_title">Chart description</string>
     <string name="option_show_statistics_description_summary">Display description below chart.</string>
+    
+    <!-- The title and summary of the "Maximum games in elapsed time chart" option. This option restricts the number of games which will be displayed in an elapsed time chart. -->
+    <string name="option_max_games_in_elapsed_time_chart_title">Number of games in elapsed time chart</string>
+    <string name="option_max_games_in_elapsed_time_chart_summary">Display no more than %1$d games in elapsed time chart.</string>
+    
 
     <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     

@@ -32,7 +32,7 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	// The inflater for this activity.
 	protected LayoutInflater mLayoutInflater;
 
-	private boolean mDisplayStatisticDescription;
+	protected boolean mDisplayStatisticDescription;
 
 	// Green colors will be used at things which are positive
 	protected static final int chartGreen1 = 0xFF80FF00;

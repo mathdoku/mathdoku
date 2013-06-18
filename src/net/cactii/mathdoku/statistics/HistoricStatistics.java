@@ -110,10 +110,14 @@ public class HistoricStatistics {
 	}
 
 	// Storage of the series.
-	SeriesSummary mAllSeriesSummary;
-	SeriesSummary mSolvedSeriesSummary;
-	SeriesSummary mSolutionRevealedSeriesSummary;
-	SeriesSummary mUnfinishedSeriesSummary;
+	private SeriesSummary mAllSeriesSummary;
+	private SeriesSummary mSolvedSeriesSummary;
+	private SeriesSummary mSolutionRevealedSeriesSummary;
+	private SeriesSummary mUnfinishedSeriesSummary;
+	
+	// Limit on XYSeries
+	public final static int XYSERIES_NOT_LIMITED = -1;
+	private int mLimit;
 
 	/**
 	 * Creates a new instance of {@link HistoricStatistics}. Note that order of
@@ -156,6 +160,8 @@ public class HistoricStatistics {
 				// Add data point to the list
 				dataPoints.add(dataPoint);
 			} while (data.moveToNext());
+			
+			mLimit = XYSERIES_NOT_LIMITED;
 		}
 	}
 
@@ -194,18 +200,29 @@ public class HistoricStatistics {
 	 * @param scale
 	 *            The scaling factor which has to be applied when converting
 	 *            values.
+	 * 
 	 * @return A XYSerie object which can be processed by AChartEngine
 	 */
 	public XYSeries getXYSeries(Serie serie, String title, Scale scale) {
 		XYSeries xySeries = new XYSeries(title);
 
 		double scaleFactor = getScaleFactor(scale);
-		int index = 1;
+
+		// In case a limit is specified, only the last <limit> number of
+		// datapoints are converted to the series.
+		int start = getIndexFirstEntry();
+		int index = 0;
+
 		for (DataPoint dataPoint : dataPoints) {
-			xySeries.add(index++,
-					(dataPoint.mSerie == serie ? ((double) dataPoint.mValue)
-							/ scaleFactor : 0));
+			if (index++ >= start) {
+				xySeries.add(
+						index,
+						(dataPoint.mSerie == serie ? ((double) dataPoint.mValue)
+								/ scaleFactor
+								: 0));
+			}
 		}
+
 		return xySeries;
 	}
 
@@ -219,6 +236,7 @@ public class HistoricStatistics {
 	 * @param scale
 	 *            The scaling factor which has to be applied when converting
 	 *            values.
+	 * 
 	 * @return A XYSerie object which can be processed by AChartEngine
 	 */
 	public XYSeries getXYSeriesHistoricAverage(Serie serie, String title,
@@ -228,16 +246,20 @@ public class HistoricStatistics {
 		double totalValue = 0;
 		long countValue = 0;
 		double scaleFactor = getScaleFactor(scale);
+
+		// In case a limit is specified, only the last <limit> number of
+		// datapoints are converted to the series.
+		int start = getIndexFirstEntry();
 		int index = 0;
+		
 		for (DataPoint dataPoint : dataPoints) {
 			if (serie == null || dataPoint.mSerie == serie) {
 				totalValue += (double) dataPoint.mValue;
 				countValue++;
 			}
-			if (countValue > 0) {
+			if (countValue > 0 && index++ >= start) {
 				xySeries.add(index, totalValue / countValue / scaleFactor);
 			}
-			index++;
 		}
 		return xySeries;
 	}
@@ -248,7 +270,7 @@ public class HistoricStatistics {
 	 * @return The maximum X value to be used for displaying the historic
 	 *         statistics.
 	 */
-	public double getMaxX() {
+	public double getIndexLastEntry() {
 		return dataPoints.size();
 	}
 
@@ -276,7 +298,8 @@ public class HistoricStatistics {
 	 * Converts a given scale to a scaleFactor which can be applied on the value
 	 * in the data points.
 	 * 
-	 * @param scale The scale to be converted.
+	 * @param scale
+	 *            The scale to be converted.
 	 * @return The scale factor associated with the given scale.
 	 */
 	private double getScaleFactor(Scale scale) {
@@ -302,14 +325,15 @@ public class HistoricStatistics {
 		}
 		return scaleFactor;
 	}
-	
+
 	/**
 	 * Get the slowest time in which a game was solved.
 	 * 
 	 * @return The slowest time in which a game was solved.
 	 */
 	public long getSolvedSlowest() {
-		return (mSolvedSeriesSummary.getCount() > 0 ? mSolvedSeriesSummary.getMaximum() : 0);
+		return (mSolvedSeriesSummary.getCount() > 0 ? mSolvedSeriesSummary
+				.getMaximum() : 0);
 	}
 
 	/**
@@ -318,7 +342,8 @@ public class HistoricStatistics {
 	 * @return The fastest time in which a game was solved.
 	 */
 	public long getSolvedFastest() {
-		return (mSolvedSeriesSummary.getCount() > 0 ? mSolvedSeriesSummary.getMinimum() : 0);
+		return (mSolvedSeriesSummary.getCount() > 0 ? mSolvedSeriesSummary
+				.getMinimum() : 0);
 	}
 
 	/**
@@ -327,6 +352,25 @@ public class HistoricStatistics {
 	 * @return The average time in which game have been solved.
 	 */
 	public long getSolvedAverage() {
-		return (mSolvedSeriesSummary.getCount() > 0 ? mSolvedSeriesSummary.getAverage() : 0);
+		return (mSolvedSeriesSummary.getCount() > 0 ? mSolvedSeriesSummary
+				.getAverage() : 0);
+	}
+	
+	/**
+	 * Set a limit on the number of entries returned in the XYSeries.
+	 * 
+	 * @param limit The maximum number of entries to return.
+	 */
+	public void setLimit(int limit) {
+		mLimit = limit;
+	}
+	
+	/**
+	 * Get the index number of the first entry in the series to be returned.
+	 * 
+	 * @return The index number of the first entry in the series to be returned.
+	 */
+	public int getIndexFirstEntry() {
+		return Math.max(dataPoints.size() - mLimit, 1);
 	}
 }

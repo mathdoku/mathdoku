@@ -2,12 +2,14 @@ package net.cactii.mathdoku.ui;
 
 import java.util.ArrayList;
 
+import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.statistics.CumulativeStatistics;
 import net.cactii.mathdoku.statistics.HistoricStatistics;
 import net.cactii.mathdoku.statistics.HistoricStatistics.Scale;
 import net.cactii.mathdoku.statistics.HistoricStatistics.Serie;
 import net.cactii.mathdoku.storage.database.StatisticsDatabaseAdapter;
+import net.cactii.mathdoku.util.UsageLog;
 import net.cactii.mathdoku.util.Util;
 
 import org.achartengine.ChartFactory;
@@ -19,6 +21,8 @@ import org.achartengine.renderer.DefaultRenderer;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
 
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Color;
 import android.graphics.Paint.Align;
 import android.os.Bundle;
@@ -33,7 +37,7 @@ import android.widget.Toast;
  * A fragment representing the statistics for a specific grid size or the
  * cumulative statistics for all levels.
  */
-public class StatisticsLevelFragment extends StatisticsBaseFragment {
+public class StatisticsLevelFragment extends StatisticsBaseFragment implements OnSharedPreferenceChangeListener {
 
 	public static final String ARG_GRID_SIZE_MIN = "grid_size_min";
 	public static final String ARG_GRID_SIZE_MAX = "grid_size_max";
@@ -43,6 +47,8 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment {
 	private int mMaxGridSize;
 
 	private CumulativeStatistics mCumulativeStatistics;
+	
+	private Preferences mPreferences;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,6 +60,10 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment {
 		Bundle bundle = getArguments();
 		mMinGridSize = bundle.getInt(ARG_GRID_SIZE_MIN);
 		mMaxGridSize = bundle.getInt(ARG_GRID_SIZE_MAX);
+		
+		
+		mPreferences = Preferences.getInstance();
+		mPreferences.mSharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
 		// Retrieve statistics from database
 		mStatisticsDatabaseAdapter = new StatisticsDatabaseAdapter();
@@ -63,6 +73,31 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment {
 		// Get layout where charts will be drawn and the inflater for
 		// creating new statistics sections.
 		mChartsLayout = (LinearLayout) rootView.findViewById(R.id.chartLayouts);
+		createAllCharts();
+
+		return rootView;
+	}
+	
+	@Override
+	public void onDestroy() {
+		mPreferences.mSharedPreferences
+				.unregisterOnSharedPreferenceChangeListener(this);
+		super.onDestroy();
+	}
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+			String key) {
+		if (key.equals(Preferences.SHOW_STATISTICS_DESCRIPTION)) {
+			mDisplayStatisticDescription = Preferences.getInstance(getActivity())
+				.showStatisticsDescription();
+		}
+
+		createAllCharts();
+	}
+
+	
+	private void createAllCharts() {
 		mChartsLayout.removeAllViewsInLayout();
 
 		// Build all charts for all games at current level
@@ -79,7 +114,6 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment {
 					Toast.LENGTH_SHORT).show();
 		}
 
-		return rootView;
 	}
 
 	/**
@@ -150,9 +184,9 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment {
 		// Add section to activity
 		addStatisticsSection(
 				getResources().getString(R.string.solved_chart_title),
-				ChartFactory.getPieChartView(getActivity(),
-						categorySeries, renderer), null, getResources()
-						.getString(R.string.solved_chart_body));
+				ChartFactory.getPieChartView(getActivity(), categorySeries,
+						renderer), null,
+				getResources().getString(R.string.solved_chart_body));
 		return true;
 	}
 
@@ -173,17 +207,21 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment {
 			return false;
 		}
 
+		// The number of entries to be displayed is restricted to the maximum set in the preferences.
+		historicStatistics.setLimit(Preferences.getInstance().getMaximumGamesElapsedTimeChart());
+
 		// Define the renderer
 		XYMultipleSeriesRenderer xyMultipleSeriesRenderer = new XYMultipleSeriesRenderer();
-		
+
 		// Fix background color problem of margin in AChartEngine
 		xyMultipleSeriesRenderer.setMarginsColor(Color.argb(0, 50, 50, 50));
-		
+
 		xyMultipleSeriesRenderer.setLabelsTextSize(mDefaultTextSize);
 		xyMultipleSeriesRenderer.setLegendTextSize(mDefaultTextSize);
-		xyMultipleSeriesRenderer.setXAxisMin(0);
-		xyMultipleSeriesRenderer.setXAxisMax(historicStatistics.getMaxX() + 1);
-		xyMultipleSeriesRenderer.setXLabels((int) Math.min(historicStatistics.getMaxX() + 1,4));
+		xyMultipleSeriesRenderer.setXAxisMin(historicStatistics.getIndexFirstEntry() - 1);
+		xyMultipleSeriesRenderer.setXAxisMax(historicStatistics.getIndexLastEntry() + 1);
+		xyMultipleSeriesRenderer.setXLabels((int) Math.min(
+				historicStatistics.getIndexLastEntry() + 1, 4));
 		xyMultipleSeriesRenderer.setYAxisMin(0);
 		xyMultipleSeriesRenderer.setMargins(new int[] { 0, 80, 50, 40 });
 		xyMultipleSeriesRenderer.setZoomButtonsVisible(false);
@@ -296,7 +334,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment {
 			xySeriesRenderer.setLineWidth(4);
 			xyMultipleSeriesRenderer.addSeriesRenderer(xySeriesRenderer);
 		}
-		
+
 		// Create a table with extra data for fastest, average and slowest time.
 		TableLayout tableLayout = null;
 		if (historicStatistics.isXYSeriesUsed(Serie.SOLVED)) {

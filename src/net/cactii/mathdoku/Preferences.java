@@ -52,6 +52,9 @@ public class Preferences {
 	public final static String ARCHIVE_GRID_SELECTED_LAST_VALUE = "archive_grid_selected_last_value";
 	public final static int ARCHIVE_GRID_SELECTED_LAST_VALUE_DEFAULT = -1;
 
+	public final static String ELAPSED_TIME_CHART_MAXIMUM_GAMES_DISPLAYED = "elapsed_time_chart_maximum_games_displayed";
+	public final static String ELAPSED_TIME_CHART_MAXIMUM_GAMES_DISPLAYED_DEFAULT = Integer.toString(100);
+
 	public final static String PLAY_SOUND_EFFECTS = "soundeffects";
 	public final static boolean PLAY_SOUND_EFFECTS_DEFAULT = true;
 
@@ -327,6 +330,14 @@ public class Preferences {
 			if (!mSharedPreferences.contains(SWIPE_DIGIT_9_COUNTER)) {
 				prefeditor.putInt(SWIPE_DIGIT_9_COUNTER,
 						SWIPE_DIGIT_COUNTER_DEFAULT);
+			}
+		}
+		if (previousInstalledVersion <= 354 && currentVersion >= 354) {
+			if (!mSharedPreferences
+					.contains(ELAPSED_TIME_CHART_MAXIMUM_GAMES_DISPLAYED)) {
+				prefeditor.putString(
+						ELAPSED_TIME_CHART_MAXIMUM_GAMES_DISPLAYED,
+						ELAPSED_TIME_CHART_MAXIMUM_GAMES_DISPLAYED_DEFAULT);
 			}
 		}
 
@@ -854,5 +865,18 @@ public class Preferences {
 	 */
 	public int increaseSwipeInvalidMotionCounter() {
 		return increaseCounter(SWIPE_DIGIT_INVALID_COUNTER);
+	}
+
+	/**
+	 * Get the maximum number of games which should be shown in a
+	 * elapsed-time-chart.
+	 * 
+	 * @return The maximum number of games which should be shown in a
+	 *         elapsed-time-chart.
+	 */
+	public int getMaximumGamesElapsedTimeChart() {
+		return Integer.parseInt(mSharedPreferences.getString(
+				ELAPSED_TIME_CHART_MAXIMUM_GAMES_DISPLAYED,
+				ELAPSED_TIME_CHART_MAXIMUM_GAMES_DISPLAYED_DEFAULT));
 	}
 }
