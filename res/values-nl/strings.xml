@@ -265,15 +265,13 @@
     <string name="hint_swipe_valid_digit_completed">Je hebt de veegbeweging voor getal %1$s gemaakt.</string>
     <string name="hint_swipe_invalid_digit_completed">Dze veegrichting onthult alleen een getal in een grotere puzzel.</string>
 
+    <!-- Hint to inform about change of Input mode -->
+    <string name="hint_input_mode_changed">Je hebt zojuist de invoermethode gewijzigd van %1$s naar %2$s door een dubbeltik op een cel.</string>
+    
     <!-- TIP DIALOGS - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
 
     <!-- Label for check box "Do not show again" in the tip dialog. -->
     <string name="dialog_tip_do_not_show_again">Niet meer tonen</string>
-
-    <!-- Title, text, drawable for tip "Input mode changed" -->
-    <string name="dialog_tip_input_mode_changed_title">Invoer modus gewijzigd</string>
-    <string name="dialog_tip_input_mode_changed_text">Je hebt zojuist de invoer modus gewijzigd van %1$s in %2$s door de geslecteerde cel meer dan eens aan te raken. Raak de geselecteerde cel nogmaals aan om de invoer modus te wijzigen naar de vorige waarde.</string>
 
     <!-- Title, text, drawable for tip "Order of values in cage" -->
     <string name="dialog_tip_order_of_values_in_cage_title">Cel waarden</string>
@@ -361,17 +359,20 @@
     <!-- Title and a body which explains the purpose of the chart "Elapsed time historic". -->
     <string name="statistics_elapsed_time_historic_title">Speeltijd</string>
     <string name="statistics_elapsed_time_historic_body">Deze grafiek toon de verstreken speeltijd per puzzel en de gemiddelde speeltijd. Puzzels zijn gesorteerd in de volgorde waarin ze zijn gespeeld. Recente puzzels staan meer aan de rechterzijde van de grafiek. Als je meer ervaring hebt op dit niveau dan zal de gemiddelde speeltijd per puzzel afnemen. Tevens behoren er dan minder puzzels te zijn die niet zijn voltooid of waarvan de oplossing is onthuld.</string>
-    <string name="statistics_elapsed_time_historic_solved_average_serie">Average (solved games only)</string>
+    <string name="statistics_elapsed_time_historic_solved_average_serie">Gemiddelde (alleen opgeloste puzzels)</string>
     <string name="statistics_elapsed_time_historic_solved_slowest">Langzaamste</string>
     <string name="statistics_elapsed_time_historic_solved_average">Gemiddelde</string>
     <string name="statistics_elapsed_time_historic_solved_fastest">Snelste</string>
-    
-    <!-- OPTIONS STATISTICS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+    <!-- OPTIONS STATISTICS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <!-- The title and summary of the "Hide explanation" option. This option enables or disables displayin the explanations below the statistics charts. -->
     <string name="option_show_statistics_description_title">Grafiek toelichting</string>
-    <string name="option_show_statistics_description_summary">Toon toelichting beneden de grafiek.</string>
+    <string name="option_show_statistics_description_summary">Toon een toelichting onder elke grafiek.</string>
+    
+    <!-- The title and summary of the "Maximum games in elapsed time chart" option. This option restricts the number of games which will be displayed in an elapsed time chart. -->
+    <string name="option_max_games_in_elapsed_time_chart_title">Aantal puzzels in grafiek speeltijd</string>
+    <string name="option_max_games_in_elapsed_time_chart_summary">Toon maximaal %1$d puzzels in de grafiek speeltijd.</string>
 
     <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     

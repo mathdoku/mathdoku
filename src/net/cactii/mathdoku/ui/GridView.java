@@ -12,7 +12,6 @@ import net.cactii.mathdoku.painter.GridPainter;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import net.cactii.mathdoku.tip.TipIncorrectValue;
-import net.cactii.mathdoku.tip.TipInputModeChanged;
 import net.cactii.mathdoku.tip.TipOrderOfValuesInCage;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -40,9 +39,6 @@ public class GridView extends View implements OnTouchListener {
 	public OnGridTouchListener mTouchedListener;
 	private OnTickerTapeChangedListener mOnTickerTapeChangedListener;
 
-	// Previously touched cell
-	private GridCell mPreviouslyTouchedCell;
-
 	// Size (in cells and pixels) of the grid view and size (in pixel) of cells
 	// in grid
 	private int mGridSize;
@@ -69,6 +65,9 @@ public class GridView extends View implements OnTouchListener {
 	};
 
 	InputMode mInputMode;
+
+	// Reference to the last ticker tape started by the grid view.
+	TickerTape mTickerTape;
 
 	public GridView(Context context) {
 		super(context);
@@ -119,20 +118,23 @@ public class GridView extends View implements OnTouchListener {
 		// sure the long press event has been caught.
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
-			// Remember which cell was selected before.
-			mPreviouslyTouchedCell = mGrid.getSelectedCell();
-
 			if (mSwipeMotion == null) {
 				mSwipeMotion = new SwipeMotion(mGrid, mGridBorderWidth,
 						mGridCellSize);
 			}
 			mSwipeMotion.setTouchDownEvent(event);
-			GridCell selectedCell = mSwipeMotion.getTouchDownCell();
+			if (mSwipeMotion.isDoubleTap()) {
+				mInputMode = (mInputMode == InputMode.MAYBE ? InputMode.NORMAL
+						: InputMode.MAYBE);
+				mSwipeMotion.clearDoubleTap();
+			} else {
+				GridCell selectedCell = mSwipeMotion.getTouchDownCell();
 
-			// Select new cell and inform listener of puzzle fragment of start
-			// of motion event.
-			mGrid.setSelectedCell(selectedCell);
-			mTouchedListener.gridTouched(selectedCell);
+				// Select new cell and inform listener of puzzle fragment of
+				// start of motion event.
+				mGrid.setSelectedCell(selectedCell);
+				mTouchedListener.gridTouched(selectedCell);
+			}
 
 			// Show the basic swipe hint. Replace this hint after a short pause.
 			if (mOnTickerTapeChangedListener != null
@@ -163,46 +165,54 @@ public class GridView extends View implements OnTouchListener {
 					if (mOnTickerTapeChangedListener != null) {
 						if (mPreferences
 								.increaseSwipeValidMotionCounter(swipeDigit) <= 6) {
-							TickerTape tickerTape = new TickerTape(mContext);
-							tickerTape
-									.addItem(
-											getResources()
-													.getString(
-															R.string.hint_swipe_valid_digit_completed,
-															swipeDigit))
-									.setEraseDelay(3000);
-							mOnTickerTapeChangedListener
-									.onTickerTapeChanged(tickerTape);
-						} else {
+							setTickerTapeWithEraseConditions(
+									getResources()
+											.getString(
+													R.string.hint_swipe_valid_digit_completed,
+													swipeDigit), 2, 3000);
+						} else if (mTickerTape != null) {
+							mTickerTape.cancel();
+							mTickerTape = null;
 							mOnTickerTapeChangedListener
 									.onTickerTapeChanged(null);
 						}
 					}
-				} else if (swipeDigit <= 0 && mSwipeMotion.hasLeftTouchDownCell() == false) {
-					// In case no valid swipe motion was made, determine if same
-					// cell was touched again.
-					if (mSwipeMotion.getTouchDownCell().equals(mPreviouslyTouchedCell)) {
-						// Toggle the inputMode
-						mInputMode = (mInputMode == InputMode.MAYBE ? InputMode.NORMAL
-								: InputMode.MAYBE);
+				} else if (mSwipeMotion.isDoubleTap()) {
+					mInputMode = (mInputMode == InputMode.MAYBE ? InputMode.NORMAL
+							: InputMode.MAYBE);
+					mSwipeMotion.clearDoubleTap();
 
-						if (TipInputModeChanged.toBeDisplayed(mPreferences)) {
-							new TipInputModeChanged(mContext, mInputMode).show();
-						}
+					if (mPreferences.increaseHintInputModeShowedCounter() < 4) {
+
+						// Determine old and new input mode (short) description.
+						String mOldInputModeText = (mInputMode == InputMode.MAYBE ? mContext
+								.getResources().getString(
+										R.string.input_mode_normal_short)
+								: mContext.getResources().getString(
+										R.string.input_mode_maybe_short));
+						String mNewInputModeText = (mInputMode == InputMode.NORMAL ? mContext
+								.getResources().getString(
+										R.string.input_mode_normal_short)
+								: mContext.getResources().getString(
+										R.string.input_mode_maybe_short));
+
+						setTickerTapeWithEraseConditions(
+								getResources().getString(
+										R.string.hint_input_mode_changed,
+										mOldInputModeText, mNewInputModeText),
+								2, 3000);
 					}
 				} else if (swipeDigit > mGridSize
 						&& mOnTickerTapeChangedListener != null
 						&& mPreferences.increaseSwipeInvalidMotionCounter() <= 6) {
-					TickerTape tickerTape = new TickerTape(mContext);
-					tickerTape
-							.addItem(
-									getResources()
-											.getString(
-													R.string.hint_swipe_invalid_digit_completed))
-							.setEraseDelay(3000);
-					mOnTickerTapeChangedListener
-							.onTickerTapeChanged(tickerTape);
-				} else if (mOnTickerTapeChangedListener != null) {
+					setTickerTapeWithEraseConditions(
+							getResources()
+									.getString(
+											R.string.hint_swipe_invalid_digit_completed),
+							1, 3000);
+				} else if (mTickerTape != null) {
+					mTickerTape.cancel();
+					mTickerTape = null;
 					mOnTickerTapeChangedListener.onTickerTapeChanged(null);
 				}
 
@@ -222,7 +232,7 @@ public class GridView extends View implements OnTouchListener {
 
 				// Update current swipe position
 				mSwipeMotion.update(event);
-				
+
 				// Check if the grid view has to be invalidated
 				int swipeDigit = mSwipeMotion.getFocussedDigit();
 				if (swipeDigit >= 1 && swipeDigit <= 9
@@ -232,7 +242,8 @@ public class GridView extends View implements OnTouchListener {
 							&& mSwipeMotion.hasLeftTouchDownCell()) {
 						// When the cell is left for the first time, reset the
 						// hints in the ticker tape.
-						setTickerTapeOnLeavingSelectedCell((swipeDigit >= 1 && swipeDigit <= mGrid.getGridSize()));
+						setTickerTapeOnLeavingSelectedCell((swipeDigit >= 1 && swipeDigit <= mGrid
+								.getGridSize()));
 					}
 
 					// As the swipe digit has been changed, the grid view needs
@@ -413,10 +424,13 @@ public class GridView extends View implements OnTouchListener {
 
 		if (mOnTickerTapeChangedListener != null
 				&& mPreferences.getSwipeValidMotionCounter() < 30) {
-			TickerTape tickerTape = new TickerTape(mContext);
-			tickerTape.addItem(getResources().getString(
+			if (mTickerTape != null) {
+				mTickerTape.cancel();
+			}
+			mTickerTape = new TickerTape(mContext);
+			mTickerTape.addItem(getResources().getString(
 					R.string.hint_swipe_basic));
-			mOnTickerTapeChangedListener.onTickerTapeChanged(tickerTape);
+			mOnTickerTapeChangedListener.onTickerTapeChanged(mTickerTape);
 		}
 
 		invalidate();
@@ -543,7 +557,10 @@ public class GridView extends View implements OnTouchListener {
 	 */
 	private void setTickerTapeOnCellDown() {
 		// Create the ticker tape.
-		TickerTape tickerTape = new TickerTape(mContext);
+		if (mTickerTape != null) {
+			mTickerTape.cancel();
+		}
+		mTickerTape = new TickerTape(mContext);
 
 		// Get information about position of the cell in the grid.
 		int gridSize = mGrid.getGridSize();
@@ -632,27 +649,29 @@ public class GridView extends View implements OnTouchListener {
 						}
 					}
 				}
-				tickerTape.addItem(getResources().getString(
+				mTickerTape.addItem(getResources().getString(
 						R.string.hint_swipe_basic_cell_at_border, digits));
 			} else {
-				tickerTape.addItem(getResources().getString(
+				mTickerTape.addItem(getResources().getString(
 						R.string.hint_swipe_outside_cell));
 			}
 		} else {
-			tickerTape.addItem(getResources().getString(
+			mTickerTape.addItem(getResources().getString(
 					R.string.hint_swipe_outside_cell));
 		}
 
 		// Inform listeners about change
 		if (mOnTickerTapeChangedListener != null) {
-			mOnTickerTapeChangedListener.onTickerTapeChanged(tickerTape);
+			mOnTickerTapeChangedListener.onTickerTapeChanged(mTickerTape);
 		}
 	}
 
 	/**
 	 * Set the ticker tape for situation in which a swipe motions has just left
 	 * the selected cell for the first time.
-	 * @param The digit
+	 * 
+	 * @param The
+	 *            digit
 	 */
 	private void setTickerTapeOnLeavingSelectedCell(boolean selectableDigit) {
 		// Hint can not be determined if grid is empty. Neither will hint be
@@ -662,30 +681,60 @@ public class GridView extends View implements OnTouchListener {
 		}
 
 		// Create the ticker tape.
-		TickerTape tickerTape = null;
+		if (mTickerTape != null) {
+			mTickerTape.cancel();
+		}
+		mTickerTape = null;
 		if (mPreferences.getSwipeValidMotionCounter() <= 10) {
-			if (tickerTape == null) {
-				tickerTape = new TickerTape(mContext);
+			if (mTickerTape == null) {
+				mTickerTape = new TickerTape(mContext);
 			}
 
-			tickerTape.addItem(getResources().getString((selectableDigit ? 
-						R.string.hint_swipe_release : 
-						R.string.hint_swipe_rotate)));
+			mTickerTape.addItem(getResources().getString(
+					(selectableDigit ? R.string.hint_swipe_release
+							: R.string.hint_swipe_rotate)));
 		}
 
 		// Add hint for digit 5
 		if (mGrid.getGridSize() >= 5
 				&& mPreferences.getSwipeMotionCounter(5) < 6) {
-			if (tickerTape == null) {
-				tickerTape = new TickerTape(mContext);
+			if (mTickerTape == null) {
+				mTickerTape = new TickerTape(mContext);
 			}
-			tickerTape.addItem(getResources().getString(
+			mTickerTape.addItem(getResources().getString(
 					R.string.hint_swipe_digit_5));
 		}
 
 		// Inform listeners about change
-		if (tickerTape != null && mOnTickerTapeChangedListener != null) {
-			mOnTickerTapeChangedListener.onTickerTapeChanged(tickerTape);
+		if (mTickerTape != null && mOnTickerTapeChangedListener != null) {
+			mOnTickerTapeChangedListener.onTickerTapeChanged(mTickerTape);
 		}
+	}
+
+	/**
+	 * Set a message in the ticket tape.
+	 * 
+	 * @param message
+	 *            The message to be set.
+	 * @param minDisplayCycles
+	 *            The minimum number of times each message has to be displayed.
+	 * @param minDisplayTime
+	 *            The minimum amount of milliseconds the ticker tape has to be
+	 *            displayed.
+	 */
+	private void setTickerTapeWithEraseConditions(String message, int minDisplayCycles,
+			int minDisplayTime) {
+		// Cancel the previous ticker tape
+		if (mTickerTape != null) {
+			mTickerTape.cancel();
+		}
+
+		// Create a new ticker tape
+		mTickerTape = new TickerTape(mContext);
+		mTickerTape.addItem(message).setEraseConditions(minDisplayCycles,
+				minDisplayTime).show();
+
+		// Inform listeners about the new ticker tape.
+		mOnTickerTapeChangedListener.onTickerTapeChanged(mTickerTape);
 	}
 }

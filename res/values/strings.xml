@@ -265,15 +265,14 @@
     
     <string name="hint_swipe_valid_digit_completed">You have just completed a swipe for digit %1$s.</string>
     <string name="hint_swipe_invalid_digit_completed">Swiping in this direction will reveal a digit when playing a bigger puzzle.</string>
+
+    <!-- Hint to inform about change of Input mode -->
+    <string name="hint_input_mode_changed">You have just changed the input mode from %1$s to %2$s by double tapping the selected cell.</string>
     
     <!-- TIP DIALOGS - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <!-- Label for check box "Do not show again" in the tip dialog. -->
     <string name="dialog_tip_do_not_show_again">Do not show again</string>
-
-    <!-- Title and text for tip "Input mode changed" -->
-    <string name="dialog_tip_input_mode_changed_title">Input mode changed</string>
-    <string name="dialog_tip_input_mode_changed_text">You have just changed the input mode from %1$s to %2$s by tapping the selected cell more than once. Tap the selected cell again to change the input mode back to the previous state.</string>
 
     <!-- Title, and text for tip "Order of values in cage" -->
     <string name="dialog_tip_order_of_values_in_cage_title">Cell values</string>
@@ -368,7 +367,6 @@
 
     <!-- OPTIONS STATISTICS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-
     <!-- The title and summary of the "Hide explanation" option. This option enables or disables displayin the explanations below the statistics charts. -->
     <string name="option_show_statistics_description_title">Chart description</string>
     <string name="option_show_statistics_description_summary">Display description below chart.</string>
@@ -376,7 +374,6 @@
     <!-- The title and summary of the "Maximum games in elapsed time chart" option. This option restricts the number of games which will be displayed in an elapsed time chart. -->
     <string name="option_max_games_in_elapsed_time_chart_title">Number of games in elapsed time chart</string>
     <string name="option_max_games_in_elapsed_time_chart_summary">Display no more than %1$d games in elapsed time chart.</string>
-    
 
     <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     
@@ -426,6 +423,7 @@
 
     <!-- The message that appears when the player reveals a cell. -->
     <string name="main_ui_cheat_messsage">Cheat! :P</string>
+    
     <!-- The message shown when no errors found when checking progress. -->
     <string name="ProgressOK">All correct so far</string>
 
@@ -453,5 +451,4 @@
 
     <!-- The text for input mode "maybe" which is used to insert/remove a possible value into/from the selected cell. -->
     <string name="input_mode_maybe_short">maybe</string>
-
 </resources>

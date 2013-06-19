@@ -53,7 +53,11 @@ public class Preferences {
 	public final static int ARCHIVE_GRID_SELECTED_LAST_VALUE_DEFAULT = -1;
 
 	public final static String ELAPSED_TIME_CHART_MAXIMUM_GAMES_DISPLAYED = "elapsed_time_chart_maximum_games_displayed";
-	public final static String ELAPSED_TIME_CHART_MAXIMUM_GAMES_DISPLAYED_DEFAULT = Integer.toString(100);
+	public final static String ELAPSED_TIME_CHART_MAXIMUM_GAMES_DISPLAYED_DEFAULT = Integer
+			.toString(100);
+
+	public final static String HINT_INPUT_MODE_CHANGED_DISPLAYED = "hint_input_mode_displayed_showed";
+	public final static int HINT_INPUT_MODE_CHANGED_DISPLAYED_DEFAULT = 0;
 
 	public final static String PLAY_SOUND_EFFECTS = "soundeffects";
 	public final static boolean PLAY_SOUND_EFFECTS_DEFAULT = true;
@@ -338,6 +342,12 @@ public class Preferences {
 				prefeditor.putString(
 						ELAPSED_TIME_CHART_MAXIMUM_GAMES_DISPLAYED,
 						ELAPSED_TIME_CHART_MAXIMUM_GAMES_DISPLAYED_DEFAULT);
+			}
+		}
+		if (previousInstalledVersion <= 355 && currentVersion >= 355) {
+			if (!mSharedPreferences.contains(HINT_INPUT_MODE_CHANGED_DISPLAYED)) {
+				prefeditor.putInt(HINT_INPUT_MODE_CHANGED_DISPLAYED,
+						HINT_INPUT_MODE_CHANGED_DISPLAYED_DEFAULT);
 			}
 		}
 
@@ -878,5 +888,16 @@ public class Preferences {
 		return Integer.parseInt(mSharedPreferences.getString(
 				ELAPSED_TIME_CHART_MAXIMUM_GAMES_DISPLAYED,
 				ELAPSED_TIME_CHART_MAXIMUM_GAMES_DISPLAYED_DEFAULT));
+	}
+
+	/**
+	 * Increase the number of times the input mode changed hint has been
+	 * displayed.
+	 * 
+	 * @return The (updated) number of times the input mode changed hint has
+	 *         been displayed.
+	 */
+	public int increaseHintInputModeShowedCounter() {
+		return increaseCounter(HINT_INPUT_MODE_CHANGED_DISPLAYED);
 	}
 }

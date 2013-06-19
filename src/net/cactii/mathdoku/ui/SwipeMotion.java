@@ -40,8 +40,12 @@ class SwipeMotion {
 	private float mGridCellSize;
 
 	// Coordinates of the cell in the grid for which the touch down was
-	// registered
-	private int[] mTouchDownCellCoordinates = { -1, -1 };
+	// registered. Will be kept statically so it can be compared with the
+	// previous touch down event.
+	static private int[] mTouchDownCellCoordinates = { -1, -1 };
+
+	// In case two consecutive touch downs on the same cell have been completed
+	// within a small amount of time, this motion event might
 
 	// Cell coordinates of the previous and the current swipe position. Note the
 	// special values:
@@ -60,6 +64,13 @@ class SwipeMotion {
 	// Status if the swipe motion has left the touch down cell at any
 	// moment.
 	private boolean mHasLeftTouchDownCell;
+
+	// Registration of event time to detect a double tap on the same touch down
+	// cell. It is kept statically in order to compare with the previous swipe
+	// motion.
+	static private long mDoubleTapTouchDownTime = 0;
+	private boolean mDoubleTapCheck;
+	private boolean mDoubleTapDetected;
 
 	/**
 	 * Creates a new instance of the {@see SwipeMotion}.
@@ -99,6 +110,10 @@ class SwipeMotion {
 		// Update swipe position.
 		setCurrentSwipeCoordinates(event);
 
+		// Store coordinates of previous touch down cell
+		int[] previousTouchDownCellCoordinates = mTouchDownCellCoordinates
+				.clone();
+
 		// Find out where the grid was touched.
 		mTouchDownCellCoordinates[X_POS] = (int) (mCurrentSwipePositionPixelCoordinates[X_POS] / mGridCellSize);
 		if (mTouchDownCellCoordinates[X_POS] > mGridSize - 1) {
@@ -111,6 +126,30 @@ class SwipeMotion {
 			mTouchDownCellCoordinates[Y_POS] = mGridSize - 1;
 		} else if (mTouchDownCellCoordinates[Y_POS] < 0) {
 			mTouchDownCellCoordinates[Y_POS] = 0;
+		}
+
+		// Determine whether a new double tap motion is started
+		mDoubleTapDetected = false;
+		if (mTouchDownCellCoordinates[X_POS] != previousTouchDownCellCoordinates[X_POS]
+				|| mTouchDownCellCoordinates[Y_POS] != previousTouchDownCellCoordinates[Y_POS]) {
+			// Another cell is selected. Checking for double tap is not needed
+			// as this is not the second (or more) consecutive swipe motion on
+			// the same selected cell.
+			mDoubleTapTouchDownTime = event.getDownTime();
+			mDoubleTapCheck = false;
+		} else {
+			// The same cell is selected again. The touch down time may not be
+			// reseted as for the double tap it is required that tow
+			// consecutive swipe motion haven been completed entire within the
+			// double tap time duration.
+			mDoubleTapCheck = true;
+			if (event.getEventTime() - mDoubleTapTouchDownTime < 300) {
+				// A double tap is only allowed in case the total time
+				// between
+				// touch down of the first swipe motion until release of the
+				// second swipe motion took less than 300 milliseconds.
+				mDoubleTapDetected = true;
+			}
 		}
 
 		// Touch down has been fully completed.
@@ -152,6 +191,28 @@ class SwipeMotion {
 		update(event);
 		if (mStatus == Status.TOUCH_DOWN || mStatus == Status.MOVING) {
 			mStatus = Status.RELEASED;
+
+			// Check for double tap
+			if (mDoubleTapCheck) {
+				// Check whether the user was fast enough.
+				if (event.getEventTime() - mDoubleTapTouchDownTime < 300) {
+					// A double tap is only allowed in case the total time
+					// between touch down of the first swipe motion until
+					// release of the second swipe motion took less than 300
+					// milliseconds.
+					mDoubleTapDetected = true;
+
+					// A nex tap within the same interval of should not be
+					// treated again as double tap, so clear the touch down
+					// time.
+					mDoubleTapTouchDownTime = 0;
+				} else {
+					// Too slow for being recognized as double tap. Use touch
+					// down time of this swipe motion as new start time of the
+					// double tap event.
+					mDoubleTapTouchDownTime = event.getDownTime();
+				}
+			}
 		} else if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			throw new RuntimeException(
 					"Swipe Motion status can not be changed from "
@@ -165,7 +226,7 @@ class SwipeMotion {
 	 * @return True in case the motion is visible. False otherwise.
 	 */
 	protected boolean isVisible() {
-		switch(mStatus) {
+		switch (mStatus) {
 		case TOUCH_DOWN: // fall through
 		case MOVING: // fall through
 			return true;
@@ -444,5 +505,24 @@ class SwipeMotion {
 	 */
 	public int getFocussedDigit() {
 		return mCurrentSwipePositionDigit;
+	}
+
+	/**
+	 * Checks whether this swipe motion completes a double tap on the touch down
+	 * cell.
+	 * 
+	 * @return True in case this swipe motion results in a double tap detection.
+	 *         False otherwise.
+	 */
+	public boolean isDoubleTap() {
+		return mDoubleTapDetected;
+	}
+
+	/**
+	 * Clear the double tap detection.
+	 * 
+	 */
+	public void clearDoubleTap() {
+		mDoubleTapDetected = false;
 	}
 }
