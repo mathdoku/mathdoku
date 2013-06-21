@@ -6,14 +6,13 @@ import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class StatisticsFragmentActivity extends FragmentActivity implements
+public class StatisticsFragmentActivity extends AppFragmentActivity implements
 		ActionBar.TabListener {
 	
 	/**

@@ -47,6 +47,9 @@ public class Preferences {
 	public final static String ELAPSED_TIME_CHART_MAXIMUM_GAMES_DISPLAYED_DEFAULT = Integer
 			.toString(100);
 
+	public final static String FULL_SCREEN = "full_screen";
+	public final static boolean FULL_SCREEN_DEFAULT = false;
+
 	public final static String HINT_INPUT_MODE_CHANGED_DISPLAYED = "hint_input_mode_displayed_showed";
 	public final static int HINT_INPUT_MODE_CHANGED_DISPLAYED_DEFAULT = 0;
 
@@ -361,7 +364,12 @@ public class Preferences {
 				prefeditor.putInt(PUZZLE_PARAMETER_SIZE,
 						PUZZLE_PARAMETER_SIZE_DEFAULT);
 			}
-			
+		}
+		if (previousInstalledVersion <= 357 && currentVersion >= 357) {
+			if (!mSharedPreferences.contains(FULL_SCREEN)) {
+				prefeditor.putBoolean(FULL_SCREEN,
+						FULL_SCREEN_DEFAULT);
+			}
 		}
 
 		prefeditor.putInt(CURRENT_VERSION, currentVersion);
@@ -941,5 +949,14 @@ public class Preferences {
 		Editor prefeditor = mSharedPreferences.edit();
 		prefeditor.putInt(PUZZLE_PARAMETER_SIZE, gridSize);
 		prefeditor.commit();
+	}
+
+	/**
+	 * Checks whether the full screen preference is enabled.
+	 * 
+	 * @return True in case the activity should request full screen mode while playing.
+	 */
+	public boolean isFullScreenEnabled() {
+		return mSharedPreferences.getBoolean(FULL_SCREEN, FULL_SCREEN_DEFAULT);
 	}
 }

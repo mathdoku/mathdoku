@@ -2,7 +2,6 @@ package net.cactii.mathdoku.ui;
 
 import net.cactii.mathdoku.Grid;
 import net.cactii.mathdoku.InvalidGridException;
-import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
@@ -24,7 +23,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -33,14 +31,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class PuzzleFragmentActivity extends FragmentActivity implements
+public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		PuzzleFragment.OnGridFinishedListener {
 	public final static String TAG = "MathDoku.PuzzleFragmentActivity";
 
@@ -48,15 +45,9 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 	// be forwarded from the promotion website to code.google.com/p/mathdoku.
 	public final static String PROJECT_HOME = "http://mathdoku.net/";
 
-	// Preferences
-	public Preferences mMathDokuPreferences;
-
 	// Background tasks for generating a new puzzle and converting game files
 	public DialogPresentingGridGenerator mDialogPresentingGridGenerator;
 	public GameFileConverter mGameFileConverter;
-
-	// Reference to utilities
-	private Util mUtil;
 
 	// Reference to fragments which can be displayed in this activity.
 	private PuzzleFragment mPuzzleFragment;
@@ -90,11 +81,7 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// Initialize the util helper.
-		mUtil = new Util(this);
-
 		// Initialize global objects (singleton instances)
-		mMathDokuPreferences = Preferences.getInstance(this);
 		DatabaseHelper.getInstance(this);
 		UsageLog.getInstance(this);
 		Painter.getInstance(this);
@@ -102,13 +89,6 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 		// Check if database is consistent.
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			DevelopmentHelper.checkDatabaseConsistency(this);
-		}
-
-		// If too little height then request full screen usage
-		if (mUtil.getDisplayHeight() < 750) {
-			this.getWindow().setFlags(
-					WindowManager.LayoutParams.FLAG_FULLSCREEN,
-					WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		}
 
 		// Set up the action bar.
@@ -160,11 +140,6 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 
 	public void onResume() {
 		UsageLog.getInstance(this);
-
-		if (mMathDokuPreferences.isWakeLockEnabled()) {
-			getWindow()
-					.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-		}
 
 		if (mDialogPresentingGridGenerator != null) {
 			// In case the grid is created in the background and the dialog is

@@ -156,14 +156,18 @@
     <string name="option_maybe_layout_title">Maybes in grid</string>
     <string name="option_maybe_layout_summary">Display maybe numbers in a grid</string>
 
-    <!-- The title and summary of the "wake lock" option. This option highlights cells with digits already in the row or column. -->
-    <string name="option_wake_lock_title">Keep screen on</string>
-    <string name="option_wake_lock_summary">Prevent the screen from going off while playing</string>
-
     <!-- The title and summary of the "display timer" option. This option hides or shows the timer below the puzzle. -->
     <string name="option_show_timer_title">Display timer</string>
     <string name="option_show_timer_summary">Display a timer while solving a puzzle</string>
 
+    <!-- The title and summary of the "full screen" option. This option hide the android notification bar. -->
+    <string name="option_full_screen_title">Full screen</string>
+    <string name="option_full_screen_summary">Play in full screen mode by hiding Android\'s notification bar</string>
+
+    <!-- The title and summary of the "wake lock" option. This option highlights cells with digits already in the row or column. -->
+    <string name="option_wake_lock_title">Keep screen on</string>
+    <string name="option_wake_lock_summary">Prevent the screen from going off while playing</string>
+    
     <!-- The preferences category title for audio options. -->
     <string name="options_group_sound">Sound</string>
     

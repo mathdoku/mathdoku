@@ -31,14 +31,18 @@
             android:summary="@string/option_maybe_layout_summary"
             android:title="@string/option_maybe_layout_title" />
         <CheckBoxPreference
-            android:key="wakelock"
-            android:summary="@string/option_wake_lock_summary"
-            android:title="@string/option_wake_lock_title" />
-        <CheckBoxPreference
             android:key="timer"
             android:summary="@string/option_show_timer_summary"
             android:title="@string/option_show_timer_title" />
-    </PreferenceCategory>
+        <CheckBoxPreference
+            android:key="full_screen"
+            android:summary="@string/option_full_screen_summary"
+            android:title="@string/option_full_screen_title" />
+        <CheckBoxPreference
+            android:key="wakelock"
+            android:summary="@string/option_wake_lock_summary"
+            android:title="@string/option_wake_lock_title" />
+        </PreferenceCategory>
     <PreferenceCategory
         android:key="Sound"
         android:title="@string/options_group_sound" >

@@ -1,12 +1,11 @@
 package net.cactii.mathdoku.ui;
 
-import android.app.Activity;
 import android.os.Bundle;
 
-public class ArchivePreferenceActivity extends Activity {
+public class ArchivePreferenceActivity extends AppActivity {
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		getFragmentManager().beginTransaction()

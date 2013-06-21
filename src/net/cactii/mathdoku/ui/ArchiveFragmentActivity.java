@@ -26,7 +26,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
@@ -39,7 +38,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-public class ArchiveFragmentActivity extends FragmentActivity {
+public class ArchiveFragmentActivity extends AppFragmentActivity {
 
 	public static final String BUNDLE_KEY_SOLVING_ATTEMPT_ID = "solvingAttemptId";
 
