@@ -14,7 +14,7 @@ class SwipeMotion {
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
-	public static final boolean DEBUG_SWIPE_MOTION = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && true;
+	public static final boolean DEBUG_SWIPE_MOTION = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
 
 	// Indexes for coordinates arrays
 	private static final int X_POS = 0;
