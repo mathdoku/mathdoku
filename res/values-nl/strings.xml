@@ -118,26 +118,12 @@
 
     <!-- DIALOGS FOR GENERATING NEW PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-
-    <!-- The different grid sizes with their difficulties. -->
-    <string name="grid_size_4">4x4 (makkelijk)</string>
-    <string name="grid_size_5">5x5 (normaal)</string>
-    <string name="grid_size_6">6x6 (moeilijk)</string>
-    <string name="grid_size_7">7x7 (moeilijker)</string>
-    <string name="grid_size_8">8x8 (moeilijkst)</string>
-    <string name="grid_size_9">9x9 (ultiem)</string>
-
-    <!-- The possible values of the "hide operator" option. This option controls whether the mathematical operation signs (+x/-) are shown. The last value, "ask", means the game asks whether the signs should be hidden or visible on every new game. -->
-    <string-array name="hideOpTexts">
-        <item>Altijd</item>
-        <item>Nooit</item>
-        <item>Vraag</item>
-    </string-array>
-
-    <!-- The message of the dialog box asking whether to hide operator signs. This dialog will only be shown in case option "Hide operators" has been set to "Always" or "Ask". -->
-    <string name="dialog_hide_operators_message">Operatie tekens verbergen?</string>
-    <string name="dialog_hide_operators_positive_button">Ja, ik houd van een uitdaging</string>
-    <string name="dialog_hide_operators_negative_button">Nee, houd het simpel</string>
+	<!--  Titles and lables used in the dialog "Create new game". -->
+    <string name="dialog_puzzle_parameters_title">Genereer nieuwe puzzel</string>
+    <string name="dialog_puzzle_parameters_puzzle_size">Puzzel grootte</string>
+    <string name="dialog_puzzle_parameters_operators_in_cage_visible">Groep tekens zichtbaar</string>
+    <string name="dialog_puzzle_parameters_difficulty">Moeilijkheid</string>
+    <string name="dialog_puzzle_parameters_neutral_button">Genereer</string>
 
     <!-- The title and message for the dialog displayed on the screen when building a new puzzle. -->
     <string name="dialog_building_puzzle_title">Genereren nieuwe puzzel</string>
@@ -160,19 +146,6 @@
     <string name="option_clear_redundant_possibles_title">Verwijder mogelijke</string>
     <string name="option_clear_redundant_possibles_summary">Verwijder een mogelijke waarde indien deze is gebruikt in een andere cel in dezelfde rij of kolom</string>
 
-    <!-- The preferences category title for options related to puzzle generation. -->
-    <string name="options_group_puzzle">Puzzel generatie</string>
-
-    <!-- The title and summary of the "Allow big cages" option. This option controls whether puzzles can contain big cages (5 or 6 cells). -->
-    <string name="option_generate_big_cages_title">Grote groepen toestaan (beta)</string>
-    <string name="option_generate_big_cages_summary">Genereer puzzels met groepen van 5 of 6 cellen</string>
-
-    <!-- The title and summary of the "hide operator" option. This option controls whether the mathematical operation signs (+x/-) are shown. -->
-    <string name="option_hide_operators_title">Verberg operaties</string>
-    <string name="option_hide_operators_summary_always">Altijd de operatie tekens zoals +, -, x en / verbergen bij het maken van een nieuw spel</string>
-    <string name="option_hide_operators_summary_never">Nooit de operatie tekens zoals +, -, x en / verbergen bij het maken van een nieuw spel</string> 
-    <string name="option_hide_operators_summary_ask">Vraag of de operatie tekens zoals +, -, x en / verborgen moeten worden bij het maken van een nieuw spel</string> 
-    
     <!-- The preferences category title for options relating to how the puzzle is displayed. -->
     <string name="options_group_display">Weergave</string>
 

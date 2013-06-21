@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="net.cactii.mathdoku"
     android:installLocation="auto"
-    android:versionCode="355"
+    android:versionCode="356"
     android:versionName="2 (dev version)" >
 
     <uses-sdk

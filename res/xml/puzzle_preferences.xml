@@ -18,19 +18,6 @@
             android:title="@string/option_clear_redundant_possibles_title" />
     </PreferenceCategory>
     <PreferenceCategory
-        android:key="Puzzle Generation"
-        android:title="@string/options_group_puzzle" >
-        <CheckBoxPreference
-            android:key="AllowBigCages"
-            android:summary="@string/option_generate_big_cages_summary"
-            android:title="@string/option_generate_big_cages_title" />
-        <ListPreference
-            android:entries="@array/hideOpTexts"
-            android:entryValues="@array/hideOpValues"
-            android:key="hideoperatorsigns"
-            android:title="@string/option_hide_operators_title" />
-    </PreferenceCategory>
-    <PreferenceCategory
         android:key="Display"
         android:title="@string/options_group_display" >
         <ListPreference

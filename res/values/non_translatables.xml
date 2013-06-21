@@ -10,13 +10,6 @@
     <!-- Name of application. This may NOT be translated. -->
     <string name="application_name">MathDoku</string>
 
-    <!-- Identifiers associated with element hideOpText. This element may not be translated. -->
-    <string-array name="hideOpValues">
-        <item>T</item>
-        <item>F</item>
-        <item>A</item>
-    </string-array>
-
     <!-- The possible values of the "themes" option. This option controls which theme is used for displaying. -->
     <string-array name="themeTexts">
         <item>@string/theme_carved</item>

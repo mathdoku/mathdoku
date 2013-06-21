@@ -56,9 +56,8 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 	 *            True in case should be solvable without using operators.
 	 */
 	public DialogPresentingGridGenerator(PuzzleFragmentActivity activity,
-			int gridSize, int maxCageSize, int maxCageResult,
-			boolean hideOperators, int packageVersionNumber) {
-		super(gridSize, maxCageSize, maxCageResult, hideOperators,
+			int gridSize, boolean hideOperators, PuzzleComplexity puzzleComplexity, int packageVersionNumber) {
+		super(gridSize, hideOperators, puzzleComplexity,
 				packageVersionNumber, new GridForwarder());
 		((GridForwarder) mUser).mDialogPresentingGridGenerator = this;
 

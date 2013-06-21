@@ -118,27 +118,13 @@
 
     <!-- DIALOGS FOR GENERATING NEW PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-
-    <!-- The different grid sizes with their difficulties. -->
-    <string name="grid_size_4">4x4 (easy)</string>
-    <string name="grid_size_5">5x5 (medium)</string>
-    <string name="grid_size_6">6x6 (hard)</string>
-    <string name="grid_size_7">7x7 (harder)</string>
-    <string name="grid_size_8">8x8 (hardest)</string>
-    <string name="grid_size_9">9x9 (ultimate)</string>
-
-    <!-- The possible values of the "hide operator" option. This option controls whether the mathematical operation signs (+x/-) are shown. The last value, "ask", means the game asks whether the signs should be hidden or visible on every new game. -->
-    <string-array name="hideOpTexts">
-        <item>Always</item>
-        <item>Never</item>
-        <item>Ask</item>
-    </string-array>
-
-    <!-- The message and buttons of the dialog box asking whether to hide operator signs. This dialog will only be shown in case option "Hide operators" has been set to "Always" or "Ask". -->
-    <string name="dialog_hide_operators_message">Hide operator signs?</string>
-    <string name="dialog_hide_operators_positive_button">Yes, I like a challenge</string>
-    <string name="dialog_hide_operators_negative_button">No, keep it simple</string>
-
+	<!--  Titles and lables used in the dialog "Create new game". -->
+    <string name="dialog_puzzle_parameters_title">Create new game</string>
+    <string name="dialog_puzzle_parameters_puzzle_size">Puzzle size</string>
+    <string name="dialog_puzzle_parameters_operators_in_cage_visible">Operators in cage visible</string>
+    <string name="dialog_puzzle_parameters_difficulty">Difficulty</string>
+    <string name="dialog_puzzle_parameters_neutral_button">Generate</string>
+    
     <!-- The title and message for the dialog displayed on the screen when building a new puzzle. -->
     <string name="dialog_building_puzzle_title">Building puzzle</string>
     <string name="dialog_building_puzzle_message">A new puzzle is being built. It will be ready in a few seconds.</string>
@@ -159,19 +145,6 @@
     <!-- The title and summary of the "redundant possibles" option. This option clears possibles values from cells in the same row or columns as the selected cell after setting a user value. -->
     <string name="option_clear_redundant_possibles_title">Clear maybes</string>
     <string name="option_clear_redundant_possibles_summary">Clear maybes when used in another cell on the same row or column</string>
-
-    <!-- The preferences category title for options related to puzzle generation. -->
-    <string name="options_group_puzzle">Puzzle Generation</string>
-
-    <!-- The title and summary of the "Allow big cages" option. This option controls whether puzzles can contain big cages (5 or 6 cells). -->
-    <string name="option_generate_big_cages_title">Allow big cages (beta)</string>
-    <string name="option_generate_big_cages_summary">Generate puzzles having cages consisting of 5 or 6 cells</string>
-
-    <!-- The title and summary of the "hide operator" option. This option controls whether the mathematical operation signs (+x/-) are shown. -->
-    <string name="option_hide_operators_title">Hide operators</string>
-    <string name="option_hide_operators_summary_always">Always hide operation signs like +, -, x and / when creating a new game</string>
-    <string name="option_hide_operators_summary_never">Never hide operation signs like +, -, x and / when creating a new game</string>
-    <string name="option_hide_operators_summary_ask">Ask whether operation signs like +, -, x and / should be hidden when creating a new game</string>
 
     <!-- The preferences category title for options relating to how the puzzle is displayed. -->
     <string name="options_group_display">Display</string>

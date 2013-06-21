@@ -7,6 +7,7 @@ import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.gridGenerating.DialogPresentingGridGenerator;
+import net.cactii.mathdoku.gridGenerating.GridGenerator.PuzzleComplexity;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.storage.GameFileConverter;
 import net.cactii.mathdoku.storage.database.DatabaseHelper;
@@ -33,6 +34,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.RatingBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 public class PuzzleFragmentActivity extends FragmentActivity implements
@@ -250,18 +255,9 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 
 		int menuId = menuItem.getItemId();
 		switch (menuId) {
-		case R.id.size4:
-			return prepareStartNewGame(4);
-		case R.id.size5:
-			return prepareStartNewGame(5);
-		case R.id.size6:
-			return prepareStartNewGame(6);
-		case R.id.size7:
-			return prepareStartNewGame(7);
-		case R.id.size8:
-			return prepareStartNewGame(8);
-		case R.id.size9:
-			return prepareStartNewGame(9);
+		case R.id.action_new_game:
+			showDialogNewGame();
+			return true;
 		case R.id.checkprogress:
 			if (mPuzzleFragment != null) {
 				mPuzzleFragment.checkProgress();
@@ -334,54 +330,6 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 	}
 
 	/**
-	 * Prepare to start a new game. This means that it has to be determined
-	 * whether the new game should be generated with operators hidden or
-	 * visible.
-	 * 
-	 * @param gridSize
-	 *            The size of the grid to be created.
-	 * @return True if start of game is prepared.
-	 */
-	private boolean prepareStartNewGame(final int gridSize) {
-		switch (mMathDokuPreferences.getHideOperator()) {
-		case ALWAYS:
-			// All new games should be generated with hidden operators.
-			this.startNewGame(gridSize, true);
-			return true;
-		case NEVER:
-			// All new games should be generated with visible operators.
-			this.startNewGame(gridSize, false);
-			return true;
-		case ASK:
-			// Ask for every new game which is to be generated whether operators
-			// should be hidden or visible.
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage(R.string.dialog_hide_operators_message)
-					.setCancelable(false)
-					.setPositiveButton(
-							R.string.dialog_hide_operators_positive_button,
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int id) {
-									startNewGame(gridSize, true);
-								}
-							})
-					.setNegativeButton(
-							R.string.dialog_hide_operators_negative_button,
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int id) {
-									startNewGame(gridSize, false);
-								}
-							});
-			AlertDialog dialog = builder.create();
-			dialog.show();
-			return true;
-		}
-		return false;
-	}
-
-	/**
 	 * Starts a new game by building a new grid at the specified size.
 	 * 
 	 * @param gridSize
@@ -389,19 +337,16 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 	 * @param hideOperators
 	 *            True in case operators should be hidden in the new puzzle.
 	 */
-	public void startNewGame(final int gridSize, final boolean hideOperators) {
+	public void startNewGame(int gridSize, boolean hideOperators,
+			PuzzleComplexity puzzleComplexity) {
 		if (mPuzzleFragment != null) {
 			mPuzzleFragment.prepareLoadNewGame();
 		}
 
 		// Start a background task to generate the new grid. As soon as the new
 		// grid is created, the method onNewGridReady will be called.
-		int maxCageSize = (mMathDokuPreferences.isAllowBigCagesEnabled() ? 6
-				: 4);
-		int maxCageResult = getResources().getInteger(
-				R.integer.maximum_cage_value);
 		mDialogPresentingGridGenerator = new DialogPresentingGridGenerator(
-				this, gridSize, maxCageSize, maxCageResult, hideOperators,
+				this, gridSize, hideOperators, puzzleComplexity,
 				Util.getPackageVersionNumber());
 		mDialogPresentingGridGenerator.execute();
 	}
@@ -714,5 +659,107 @@ public class PuzzleFragmentActivity extends FragmentActivity implements
 				}
 			}
 		}
+	}
+
+	/**
+	 * Shows the dialog in which the parameters have to specified which will be
+	 * used to create the new game.
+	 */
+	private void showDialogNewGame() {
+		// Get view and put relevant information into the view.
+		LayoutInflater layoutInflater = LayoutInflater.from(this);
+		View view = layoutInflater.inflate(R.layout.puzzle_parameter_dialog,
+				null);
+
+		// Get views for the puzzle generating parameters
+		final Spinner puzzleParameterSizeSpinner = (Spinner) view
+				.findViewById(R.id.puzzleParameterSizeSpinner);
+		final CheckBox puzzleParameterDisplayOperatorsCheckBox = (CheckBox) view
+				.findViewById(R.id.puzzleParameterDisplayOperatorsCheckBox);
+		final RatingBar puzzleParameterDifficultyRatingBar = (RatingBar) view
+				.findViewById(R.id.puzzleParameterDifficultyRatingBar);
+
+		// Create the list of available puzzle sizes.
+		String[] puzzleSizes = { "4x4", "5x5", "6x6", "7x7", "8x8", "9x9" };
+		final int OFFSET_INDEX_TO_GRID_SIZE = 4;
+
+		// Populate the spinner. Initial value is set to value used for
+		// generating the previous puzzle.
+		ArrayAdapter<String> adapterStatus = new ArrayAdapter<String>(this,
+				android.R.layout.simple_spinner_item, puzzleSizes);
+		adapterStatus
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		puzzleParameterSizeSpinner.setAdapter(adapterStatus);
+
+		// Restore value which were used when generating the previous game
+		puzzleParameterSizeSpinner.setSelection(mMathDokuPreferences
+				.getPuzzleParameterSize() - OFFSET_INDEX_TO_GRID_SIZE);
+		puzzleParameterDisplayOperatorsCheckBox.setChecked(mMathDokuPreferences
+				.getPuzzleParameterOperatorsVisible());
+		switch (mMathDokuPreferences.getPuzzleParameterComplexity()) {
+		case VERY_EASY:
+			puzzleParameterDifficultyRatingBar.setRating(1);
+			break;
+		case EASY:
+			puzzleParameterDifficultyRatingBar.setRating(2);
+			break;
+		case NORMAL:
+			puzzleParameterDifficultyRatingBar.setRating(3);
+			break;
+		case DIFFICULT:
+			puzzleParameterDifficultyRatingBar.setRating(4);
+			break;
+		case VERY_DIFFICULT:
+			puzzleParameterDifficultyRatingBar.setRating(5);
+			break;
+		}
+
+		new AlertDialog.Builder(this)
+				.setTitle(R.string.dialog_puzzle_parameters_title)
+				.setView(view)
+				.setNeutralButton(
+						R.string.dialog_puzzle_parameters_neutral_button,
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+								// Transform size spinner to grid size
+								int gridSize = (int) puzzleParameterSizeSpinner
+										.getSelectedItemId()
+										+ OFFSET_INDEX_TO_GRID_SIZE;
+
+								// Transform rating to puzzle complexity.
+								int rating = Math
+										.round(puzzleParameterDifficultyRatingBar
+												.getRating());
+								PuzzleComplexity puzzleComplexity;
+								if (rating >= 5) {
+									puzzleComplexity = PuzzleComplexity.VERY_DIFFICULT;
+								} else if (rating >= 4) {
+									puzzleComplexity = PuzzleComplexity.DIFFICULT;
+								} else if (rating >= 3) {
+									puzzleComplexity = PuzzleComplexity.NORMAL;
+								} else if (rating >= 2) {
+									puzzleComplexity = PuzzleComplexity.EASY;
+								} else {
+									puzzleComplexity = PuzzleComplexity.VERY_EASY;
+								}
+
+								// Store current settings in the preferences
+								mMathDokuPreferences
+										.setPuzzleParameterSize(gridSize);
+								mMathDokuPreferences
+										.setPuzzleParameterOperatorsVisible(puzzleParameterDisplayOperatorsCheckBox
+												.isChecked());
+								mMathDokuPreferences
+										.setPuzzleParameterComplexity(puzzleComplexity);
+
+								// Start a new game with specified parameters
+								startNewGame(
+										gridSize,
+										(puzzleParameterDisplayOperatorsCheckBox
+												.isChecked() == false),
+										puzzleComplexity);
+							}
+						}).show();
 	}
 }

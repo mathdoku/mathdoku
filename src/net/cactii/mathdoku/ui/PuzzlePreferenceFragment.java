@@ -19,7 +19,6 @@ public class PuzzlePreferenceFragment extends PreferenceFragment implements
 
 		addPreferencesFromResource(R.xml.puzzle_preferences);
 		
-		setHideOperatorsSummary();
 		setThemeSummary();
 		
 	}
@@ -43,35 +42,8 @@ public class PuzzlePreferenceFragment extends PreferenceFragment implements
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-		if (key.equals(Preferences.HIDE_OPERATORS)) {
-			setHideOperatorsSummary();
-		}
 		if (key.equals(Preferences.THEME)) {
 			setThemeSummary();
-		}
-	}
-
-	/**
-	 * Set summary for option "hide operators" based on current value of the
-	 * option.
-	 */
-	private void setHideOperatorsSummary() {
-		switch (Preferences.getInstance().getHideOperator()) {
-		case ALWAYS:
-			findPreference(Preferences.HIDE_OPERATORS).setSummary(
-					getResources().getString(
-							R.string.option_hide_operators_summary_always));
-			break;
-		case NEVER:
-			findPreference(Preferences.HIDE_OPERATORS).setSummary(
-					getResources().getString(
-							R.string.option_hide_operators_summary_never));
-			break;
-		case ASK:
-			findPreference(Preferences.HIDE_OPERATORS).setSummary(
-					getResources().getString(
-							R.string.option_hide_operators_summary_ask));
-			break;
 		}
 	}
 

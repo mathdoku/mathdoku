@@ -2,6 +2,7 @@ package net.cactii.mathdoku;
 
 import java.util.Map;
 
+import net.cactii.mathdoku.gridGenerating.GridGenerator.PuzzleComplexity;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.painter.Painter.GridTheme;
 import net.cactii.mathdoku.tip.TipDialog.TipCategory;
@@ -31,16 +32,6 @@ public class Preferences {
 	public final static String CURRENT_VERSION = "currentversion";
 	public final static int CURRENT_VERSION_DEFAULT = -1;
 
-	public final static String ALLOW_BIG_CAGES = "AllowBigCages";
-	public final static boolean ALLOW_BIG_CAGES_DEFAULT = false;
-
-	public final static String HIDE_OPERATORS = "hideoperatorsigns";
-
-	public final static String HIDE_OPERATORS_ALWAYS = "T";
-	public final static String HIDE_OPERATORS_ASK = "A";
-	public final static String HIDE_OPERATORS_NEVER = "F";
-	public final static String HIDE_OPERATORS_DEFAULT = HIDE_OPERATORS_NEVER;
-
 	public final static String ARCHIVE_SIZE_FILTER_LAST_VALUE = "archive_filter_size_last_value";
 	public final static String ARCHIVE_SIZE_FILTER_LAST_VALUE_DEFAULT = SizeFilter.ALL
 			.toString();
@@ -61,6 +52,15 @@ public class Preferences {
 
 	public final static String PLAY_SOUND_EFFECTS = "soundeffects";
 	public final static boolean PLAY_SOUND_EFFECTS_DEFAULT = true;
+
+	public final static String PUZZLE_PARAMETER_COMPLEXITY = "puzzle_parameter_complexity";
+	public final static String PUZZLE_PARAMETER_COMPLEXITY_DEFAULT = PuzzleComplexity.VERY_EASY.toString();
+
+	public final static String PUZZLE_PARAMETER_OPERATORS_VISIBLE = "puzzle_parameter_operators_visible";
+	public final static boolean PUZZLE_PARAMETER_OPERATORS_VISIBLE_DEFAULT = true;
+
+	public final static String PUZZLE_PARAMETER_SIZE = "puzzle_parameter_size";
+	public final static int PUZZLE_PARAMETER_SIZE_DEFAULT = 4;
 
 	public final static String SHOW_ARCHIVE = "show_archive";
 	public final static boolean SHOW_ARCHIVE_DEFAULT = false;
@@ -123,10 +123,6 @@ public class Preferences {
 
 	public final static String WAKE_LOCK = "wakelock";
 	public final static boolean WAKE_LOCK_DEFAULT = true;
-
-	public enum HideOperator {
-		ALWAYS, ASK, NEVER
-	};
 
 	/**
 	 * Creates a new instance of {@link Preferences}.
@@ -201,9 +197,6 @@ public class Preferences {
 			// have been removed from optionsview.xml to prevent conflicts
 			// in defaults values with default values defined in this
 			// activity.
-			if (!mSharedPreferences.contains(HIDE_OPERATORS)) {
-				prefeditor.putString(HIDE_OPERATORS, HIDE_OPERATORS_DEFAULT);
-			}
 			if (!mSharedPreferences.contains(PLAY_SOUND_EFFECTS)) {
 				prefeditor.putBoolean(PLAY_SOUND_EFFECTS,
 						PLAY_SOUND_EFFECTS_DEFAULT);
@@ -228,11 +221,6 @@ public class Preferences {
 			}
 			if (!mSharedPreferences.contains(WAKE_LOCK)) {
 				prefeditor.putBoolean(WAKE_LOCK, WAKE_LOCK_DEFAULT);
-			}
-		}
-		if (previousInstalledVersion < 135 && currentVersion >= 135) {
-			if (!mSharedPreferences.contains(ALLOW_BIG_CAGES)) {
-				prefeditor.putBoolean(ALLOW_BIG_CAGES, ALLOW_BIG_CAGES_DEFAULT);
 			}
 		}
 		if (previousInstalledVersion < 175 && currentVersion >= 175) {
@@ -350,6 +338,31 @@ public class Preferences {
 						HINT_INPUT_MODE_CHANGED_DISPLAYED_DEFAULT);
 			}
 		}
+		if (previousInstalledVersion <= 356 && currentVersion >= 356) {
+			// Remove obsolete preference
+			if (mSharedPreferences.contains("AllowBigCages")) {
+				prefeditor.remove("AllowBigCages");
+			}
+			if (mSharedPreferences.contains("hideoperatorsigns")) {
+				prefeditor.remove("hideoperatorsigns");
+			}
+
+			// Add new preferences
+			if (!mSharedPreferences.contains(PUZZLE_PARAMETER_COMPLEXITY)) {
+				prefeditor.putString(PUZZLE_PARAMETER_COMPLEXITY,
+						PUZZLE_PARAMETER_COMPLEXITY_DEFAULT);
+			}
+			if (!mSharedPreferences.contains(PUZZLE_PARAMETER_OPERATORS_VISIBLE)) {
+
+				prefeditor.putBoolean(PUZZLE_PARAMETER_OPERATORS_VISIBLE,
+						PUZZLE_PARAMETER_OPERATORS_VISIBLE_DEFAULT);
+			}
+			if (!mSharedPreferences.contains(PUZZLE_PARAMETER_SIZE)) {
+				prefeditor.putInt(PUZZLE_PARAMETER_SIZE,
+						PUZZLE_PARAMETER_SIZE_DEFAULT);
+			}
+			
+		}
 
 		prefeditor.putInt(CURRENT_VERSION, currentVersion);
 		prefeditor.commit();
@@ -392,16 +405,6 @@ public class Preferences {
 	public boolean isClearRedundantPossiblesEnabled() {
 		return mSharedPreferences.getBoolean(CLEAR_REDUNDANT_POSSIBLES,
 				CLEAR_REDUNDANT_POSSIBLES_DEFAULT);
-	}
-
-	/**
-	 * Checks whether big cages are allowed.
-	 * 
-	 * @return
-	 */
-	public boolean isAllowBigCagesEnabled() {
-		return mSharedPreferences.getBoolean(ALLOW_BIG_CAGES,
-				ALLOW_BIG_CAGES_DEFAULT);
 	}
 
 	/**
@@ -452,28 +455,6 @@ public class Preferences {
 	public boolean isPlaySoundEffectEnabled() {
 		return mSharedPreferences.getBoolean(PLAY_SOUND_EFFECTS,
 				PLAY_SOUND_EFFECTS_DEFAULT);
-	}
-
-	/**
-	 * Checks whether operators should be hidden when creating a new game.
-	 * 
-	 * @return {@value HideOperator.ALWAYS} in case the operators should always
-	 *         be hidden. {@value HideOperator.NEVER} in case the operators
-	 *         should never be hidden. {@value HideOperator.ASK} in case it has
-	 *         to be asked whether the operators should be hidden when creating
-	 *         a new game.
-	 */
-	public HideOperator getHideOperator() {
-		String hideOperator = mSharedPreferences.getString(HIDE_OPERATORS,
-				HIDE_OPERATORS_DEFAULT);
-		if (hideOperator.equals(HIDE_OPERATORS_ALWAYS)) {
-			return HideOperator.ALWAYS;
-		} else if (hideOperator.equals(Preferences.HIDE_OPERATORS_NEVER)) {
-			return HideOperator.NEVER;
-		} else if (hideOperator.equals(Preferences.HIDE_OPERATORS_ASK)) {
-			return HideOperator.ASK;
-		}
-		return null;
 	}
 
 	/**
@@ -899,5 +880,66 @@ public class Preferences {
 	 */
 	public int increaseHintInputModeShowedCounter() {
 		return increaseCounter(HINT_INPUT_MODE_CHANGED_DISPLAYED);
+	}
+	
+	/**
+	 * Get the complexity of the puzzle which was last generated.
+	 * 
+	 * @return The complexity of the puzzle which was last generated.
+	 */
+	public PuzzleComplexity getPuzzleParameterComplexity() {
+		return PuzzleComplexity.valueOf(mSharedPreferences.getString(PUZZLE_PARAMETER_COMPLEXITY,
+				PUZZLE_PARAMETER_COMPLEXITY_DEFAULT));
+	}
+
+	/**
+	 * Set the complexity of the puzzle which was last generated.
+	 * closed.
+	 * 
+	 * @param puzzleComplexity The complexity of the puzzle.
+	 */
+	public void setPuzzleParameterComplexity(PuzzleComplexity puzzleComplexity) {
+		Editor prefeditor = mSharedPreferences.edit();
+		prefeditor.putString(PUZZLE_PARAMETER_COMPLEXITY, puzzleComplexity.toString());
+		prefeditor.commit();
+	}
+
+	/**
+	 * Get the setting for showing or hiding the operators for the puzzle which was last generated.
+	 * 
+	 * @return True in case the operators were hidden in the last puzzle generated.
+	 */
+	public boolean getPuzzleParameterOperatorsVisible() {
+		return mSharedPreferences.getBoolean(PUZZLE_PARAMETER_OPERATORS_VISIBLE,
+				PUZZLE_PARAMETER_OPERATORS_VISIBLE_DEFAULT);
+	}
+
+	/**
+	 * Set the setting for showing or hiding the operators for the puzzle which was last generated.
+	 */
+	public void setPuzzleParameterOperatorsVisible(boolean visible) {
+		Editor prefeditor = mSharedPreferences.edit();
+		prefeditor.putBoolean(PUZZLE_PARAMETER_OPERATORS_VISIBLE, visible);
+		prefeditor.commit();
+	}
+
+	/**
+	 * Get the size of the puzzle which was last generated.
+	 * 
+	 * @return The size of the puzzle which was last generated.
+	 */
+	public int getPuzzleParameterSize() {
+		return mSharedPreferences.getInt(PUZZLE_PARAMETER_SIZE,
+				PUZZLE_PARAMETER_SIZE_DEFAULT);
+	}
+
+	/**
+	 * Set the size of the puzzle which was last generated.
+	 * closed.
+	 */
+	public void setPuzzleParameterSize(int gridSize) {
+		Editor prefeditor = mSharedPreferences.edit();
+		prefeditor.putInt(PUZZLE_PARAMETER_SIZE, gridSize);
+		prefeditor.commit();
 	}
 }

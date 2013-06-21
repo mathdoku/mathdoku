@@ -4,6 +4,7 @@ import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.gridGenerating.DialogPresentingGridGenerator;
 import net.cactii.mathdoku.gridGenerating.GridGenerator;
+import net.cactii.mathdoku.gridGenerating.GridGenerator.PuzzleComplexity;
 import net.cactii.mathdoku.storage.database.DatabaseHelper;
 import net.cactii.mathdoku.ui.PuzzleFragmentActivity;
 import net.cactii.mathdoku.util.UsageLog;
@@ -144,10 +145,8 @@ public class DevelopmentHelper {
 	 */
 	public static void generateGames(
 			final PuzzleFragmentActivity puzzleFragmentActivity) {
-		int maxCageResult = puzzleFragmentActivity.getResources().getInteger(
-				R.integer.maximum_cage_value);
 		puzzleFragmentActivity.mDialogPresentingGridGenerator = new DialogPresentingGridGenerator(
-				puzzleFragmentActivity, 8, 4, maxCageResult, false,
+				puzzleFragmentActivity, 6, false, PuzzleComplexity.NORMAL,
 				Util.getPackageVersionNumber());
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			// Set the options for the grid generator

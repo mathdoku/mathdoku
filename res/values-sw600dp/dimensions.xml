@@ -36,7 +36,4 @@
     
     <!-- The text size used for body text. -->
     <dimen name="dialog_text_size_body">30sp</dimen>
-    
-    <!-- The maxmimum value for the result of cage in order to let the cage value and operator to fit within a single cell. -->
-    <integer name="maximum_cage_value">99999</integer>
 </resources>

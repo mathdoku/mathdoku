@@ -30,11 +30,15 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	public static final boolean DEBUG_GRID_GENERATOR = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
 	public static final boolean DEBUG_GRID_GENERATOR_FULL = DEBUG_GRID_GENERATOR && false;
 
-	// Cages with too many permutations will make cage generation and solving
-	// too hard. The following arbitrary treshold is used to maintain a balance
-	// between quick puzzle generation and solving complexity.
-	private static final int MAX_CAGE_PERMUTATIONS = 80;
+	// Complexity of puzzle
+	public enum PuzzleComplexity {
+		VERY_EASY, EASY, NORMAL, DIFFICULT, VERY_DIFFICULT
+	};
+
+	// The complexity of a puzzle will be determined by following factors. 
+	private int mMaxCagePermutations;
 	private int mMaxCageSize;
+	private int mMaxCageResult;
 
 	// The grid created by the generator
 	private Grid mGrid;
@@ -60,7 +64,6 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	private CageTypeGenerator mGridCageTypeGenerator;
 	public ArrayList<GridCage> mCages;
 	private int[][] mCageMatrix;
-	private int mMaxCageResult;
 
 	// Additional option for generating the grid
 	protected GridGeneratorOptions mGridGeneratorOptions;
@@ -120,11 +123,39 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	 *            who will receive the callback as soon as the grid is
 	 *            generated.
 	 */
-	public GridGenerator(int gridSize, int maxCageSize, int maxCageResult,
-			boolean hideOperators, int packageVersionNumber, GridUser user) {
+	public GridGenerator(int gridSize, boolean hideOperators,
+			PuzzleComplexity puzzleComplexity, int packageVersionNumber,
+			GridUser user) {
 		mGridSize = gridSize;
-		mMaxCageSize = maxCageSize;
-		mMaxCageResult = maxCageResult;
+		
+		switch (puzzleComplexity) {
+		case VERY_EASY:
+			mMaxCageSize = 2;
+			mMaxCageResult = 99; // Not used effectively as the maximum will be 9 * 8 = 72
+			mMaxCagePermutations = 20;
+			break;
+		case EASY:
+			mMaxCageSize = 3;
+			mMaxCageResult = 999; // Not used effectively as the maximum will be 9 * 8 = 648
+			mMaxCagePermutations = 20;
+			break;
+		case NORMAL:
+			mMaxCageSize = 4;
+			mMaxCageResult = 2500; // Real maximum = 9 * 9 * 8 * 8 = 5,184
+			mMaxCagePermutations = 40;
+			break;
+		case DIFFICULT:
+			mMaxCageSize = 5;
+			mMaxCageResult = 9999; // Real maximum = 9 * 9 * 9 * 8 * 8 = 46,656
+			mMaxCagePermutations = 80;
+			break;
+		case VERY_DIFFICULT:
+			mMaxCageSize = 6;
+			mMaxCageResult = 99999; // Real maximum = 9 * 9 * 9 * 8 * 8 * 8 = 373,248
+			mMaxCagePermutations = 120;
+			break;
+		}
+		
 		mHideOperators = hideOperators;
 		mGeneratorRevisionNumber = packageVersionNumber;
 		mUser = user;
@@ -422,7 +453,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 										coordinatesTopLeft[0],
 										coordinatesTopLeft[1]));
 						GridCage firstCage = createCage(cageTypeCoords,
-								4 * MAX_CAGE_PERMUTATIONS);
+								4 * mMaxCagePermutations);
 						if (firstCage != null) {
 							this.mCages.add(firstCage);
 							for (GridCell cellinCage : firstCage.mCells) {
@@ -580,7 +611,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 			if (cageIsValid) {
 				GridCage cage = createCage(cageTypeCoords,
-						MAX_CAGE_PERMUTATIONS);
+						mMaxCagePermutations);
 				if (cage == null) {
 					// No cage created due to too many permutations.
 					continue;
