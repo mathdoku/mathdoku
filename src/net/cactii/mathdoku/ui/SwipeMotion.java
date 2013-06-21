@@ -14,7 +14,7 @@ class SwipeMotion {
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
-	public static final boolean DEBUG_SWIPE_MOTION = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
+	public static final boolean DEBUG_SWIPE_MOTION = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && true;
 
 	// Indexes for coordinates arrays
 	private static final int X_POS = 0;
@@ -69,7 +69,6 @@ class SwipeMotion {
 	// cell. It is kept statically in order to compare with the previous swipe
 	// motion.
 	static private long mDoubleTapTouchDownTime = 0;
-	private boolean mDoubleTapCheck;
 	private boolean mDoubleTapDetected;
 
 	/**
@@ -136,19 +135,25 @@ class SwipeMotion {
 			// as this is not the second (or more) consecutive swipe motion on
 			// the same selected cell.
 			mDoubleTapTouchDownTime = event.getDownTime();
-			mDoubleTapCheck = false;
+			Log.i(TAG,"Start of detection double tap mode: " + mDoubleTapTouchDownTime);
 		} else {
 			// The same cell is selected again. The touch down time may not be
 			// reseted as for the double tap it is required that tow
 			// consecutive swipe motion haven been completed entire within the
 			// double tap time duration.
-			mDoubleTapCheck = true;
 			if (event.getEventTime() - mDoubleTapTouchDownTime < 300) {
 				// A double tap is only allowed in case the total time
 				// between
 				// touch down of the first swipe motion until release of the
 				// second swipe motion took less than 300 milliseconds.
 				mDoubleTapDetected = true;
+				Log.i(TAG,"Double tap detected at touch down.");
+			} else {
+				// Too slow for being recognized as double tap. Use touch
+				// down time of this swipe motion as new start time of the
+				// double tap event.
+				mDoubleTapTouchDownTime = event.getDownTime();
+				Log.i(TAG,"Too slow for double tap.");
 			}
 		}
 
@@ -191,28 +196,6 @@ class SwipeMotion {
 		update(event);
 		if (mStatus == Status.TOUCH_DOWN || mStatus == Status.MOVING) {
 			mStatus = Status.RELEASED;
-
-			// Check for double tap
-			if (mDoubleTapCheck) {
-				// Check whether the user was fast enough.
-				if (event.getEventTime() - mDoubleTapTouchDownTime < 300) {
-					// A double tap is only allowed in case the total time
-					// between touch down of the first swipe motion until
-					// release of the second swipe motion took less than 300
-					// milliseconds.
-					mDoubleTapDetected = true;
-
-					// A nex tap within the same interval of should not be
-					// treated again as double tap, so clear the touch down
-					// time.
-					mDoubleTapTouchDownTime = 0;
-				} else {
-					// Too slow for being recognized as double tap. Use touch
-					// down time of this swipe motion as new start time of the
-					// double tap event.
-					mDoubleTapTouchDownTime = event.getDownTime();
-				}
-			}
 		} else if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			throw new RuntimeException(
 					"Swipe Motion status can not be changed from "
