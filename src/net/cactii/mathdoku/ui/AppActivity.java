@@ -1,6 +1,8 @@
 package net.cactii.mathdoku.ui;
 
 import net.cactii.mathdoku.Preferences;
+import net.cactii.mathdoku.R;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -76,6 +78,15 @@ public class AppActivity extends Activity implements
 		} else {
 			getWindow().clearFlags(
 					WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		}
+	}
+	
+	public void setTitle(int resId) {
+		ActionBar actionBar = getActionBar();
+		if (actionBar != null) {
+			actionBar.setDisplayHomeAsUpEnabled(true);
+			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+			actionBar.setTitle(resId);
 		}
 	}
 }

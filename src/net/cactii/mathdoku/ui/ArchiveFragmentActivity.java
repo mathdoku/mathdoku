@@ -88,8 +88,8 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 		if (mActionBar != null) {
 			mActionBar.setDisplayHomeAsUpEnabled(true);
 			mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-			mActionBar.setSubtitle(getResources().getString(
-					R.string.action_bar_subtitle_archive_fragment));
+			mActionBar.setTitle(getResources().getString(
+					R.string.archive_action_bar_title));
 			mActionBar.setDisplayShowCustomEnabled(true);
 
 			mActionBar.setCustomView(R.layout.archive_action_bar_custom);
@@ -237,7 +237,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 		String[] usedStatusesDescription = new String[usedStatuses.length];
 		for (int i = 0; i < usedStatuses.length; i++) {
 			usedStatusesDescription[i] = getResources().getStringArray(
-					R.array.archiveStatusFilter)[usedStatuses[i].ordinal()];
+					R.array.archive_status_filter)[usedStatuses[i].ordinal()];
 		}
 		ArrayAdapter<String> adapterStatus = new ArrayAdapter<String>(this,
 				android.R.layout.simple_spinner_item, usedStatusesDescription);
@@ -323,7 +323,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 		String[] usedSizesDescription = new String[usedSizes.length];
 		for (int i = 0; i < usedSizes.length; i++) {
 			usedSizesDescription[i] = getResources().getStringArray(
-					R.array.archiveSizeFilter)[usedSizes[i].ordinal()];
+					R.array.archive_size_filter)[usedSizes[i].ordinal()];
 		}
 		ArrayAdapter<String> adapterStatus = new ArrayAdapter<String>(this,
 				android.R.layout.simple_spinner_item, usedSizesDescription);

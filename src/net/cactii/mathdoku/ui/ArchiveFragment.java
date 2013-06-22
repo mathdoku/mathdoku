@@ -77,7 +77,7 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 				mGridView.setDigitPositionGrid(mDigitPositionGrid);
 
 				// Change text of button below grid
-				((Button) rootView.findViewById(R.id.archiveReloadButton)).setText(R.string.archive_pager_reload_unfinished_game);
+				((Button) rootView.findViewById(R.id.archiveReloadButton)).setText(R.string.archive_reload_unfinished_game);
 				
 				// Disable the grid as the user should not be able to click
 				// cells in the archive view

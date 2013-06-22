@@ -117,7 +117,7 @@
 
     <!-- The menu item that allows the user to reveal the hidden operator of a cage. This item is only available in case a puzzle with hidden operators is shown and the operator has not yet been revealed. Note that a single cell cage does not have an operator. -->
     <string name="action_reveal_operator">Rechenoperator lösen</string>
-    
+
     <!-- The menu to show the completed grid. -->
     <string name="action_show_solution">Rätsel lösen</string>
     
@@ -135,48 +135,55 @@
     <string name="dialog_building_puzzle_title">Rätsel erstellt</string>
     <string name="dialog_building_puzzle_message">Das Rätsel wurde erstellt und ist in ein paar Sekunden bereit.</string>
 
-    <!-- OPTIONS PUZZLES  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- GENERAL SETTINGS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <!-- The titles for the general puzzling settings. -->
+    <string name="general_settings_actionbar_title">General settings</string>
 
     <!-- The preferences category title for options to assist the user solve the puzzle. -->
-    <string name="options_group_assistance">Hilfestellung</string>
+    <string name="general_settings_group_assistance">Hilfestellung</string>
 
     <!-- The title and summary of the "bad maths" option. This option highlights cages with incorrect maths. -->
-    <string name="option_mark_bad_maths_title">Falsche Rechnungen markieren</string>
-    <string name="option_mark_bad_maths_summary">Boxen mit falschen Rechnungsergebnissen hervorheben.</string>
+    <string name="general_settings_mark_bad_maths_title">Falsche Rechnungen markieren</string>
+    <string name="general_settings_mark_bad_maths_summary">Boxen mit falschen Rechnungsergebnissen hervorheben.</string>
 
     <!-- The title and summary of the "bad maths" option. This option highlights cells with digits already in the row or column. -->
-    <string name="option_mark_duplicates_title">Doppelte Zahlen markieren</string>
-    <string name="option_mark_duplicates_summary">Doppelte Nummern in einer Zeile oder Spalte hervorheben.</string>
+    <string name="general_settings_mark_duplicates_title">Doppelte Zahlen markieren</string>
+    <string name="general_settings_mark_duplicates_summary">Doppelte Nummern in einer Zeile oder Spalte hervorheben.</string>
 
     <!-- The title and summary of the "redundant possibles" option. This option clears possibles values from cells in the same row or columns as the selected cell after setting a user value. -->
     <!-- TODO: check with updated english version. 2x -->
-    <string name="option_clear_redundant_possibles_title">Überflüssige \"Vieleichtwerte\" löschen</string>
-    <string name="option_clear_redundant_possibles_summary">Nachdem ein Wert in einer Zelle gesetzt wurde, wird dieser Wert in den Zellen derselben Zeile und Spalte aus den Möglichkeiten gelöscht.</string>
+    <string name="general_settings_clear_redundant_possibles_title">Überflüssige \"Vieleichtwerte\" löschen</string>
+    <string name="general_settings_clear_redundant_possibles_summary">Nachdem ein Wert in einer Zelle gesetzt wurde, wird dieser Wert in den Zellen derselben Zeile und Spalte aus den Möglichkeiten gelöscht.</string>
 
     <!-- The preferences category title for options relating to how the puzzle is displayed. -->
-    <string name="options_group_display">Anzeige</string>
+    <string name="general_settings_group_display">Anzeige</string>
 
     <!-- The theme option -->
-    <string name="option_theme_title">Thema</string>
+    <string name="general_settings_theme_title">Thema</string>
 
     <!-- The title and summary of the "maybe in grid" option. This option controls whether maybe numbers are displayed in 3x3 grid or straight line. -->
-    <string name="option_maybe_layout_title">\"Vielleichtwerte\" im Raster</string>
-    <string name="option_maybe_layout_summary">\"Vielleichtwerte\" werden im Raster angezeigt.</string>
-
-    <!-- The title and summary of the "wake lock" option. This option highlights cells with digits already in the row or column. -->
-    <string name="option_wake_lock_title">Automatisches Abschalten</string>
-    <string name="option_wake_lock_summary">Das Abschalten des Bildschirms während dem Spiel verhindern.</string>
+    <string name="general_settings_maybe_layout_title">\"Vielleichtwerte\" im Raster</string>
+    <string name="general_settings_maybe_layout_summary">\"Vielleichtwerte\" werden im Raster angezeigt.</string>
 
     <!-- The title and summary of the "display timer" option. This option hides or shows the timer below the puzzle. -->
-    <string name="option_show_timer_title">Stoppuhr einblenden</string>
-    <string name="option_show_timer_summary">Beim lösen des Rätsels wird eine Stoppuhr eingeblendet.</string>
+    <string name="general_settings_show_timer_title">Stoppuhr einblenden</string>
+    <string name="general_settings_show_timer_summary">Beim lösen des Rätsels wird eine Stoppuhr eingeblendet.</string>
+
+    <!-- The title and summary of the "full screen" option. This option hide the android notification bar. -->
+    <string name="general_settings_full_screen_title">Full screen</string>
+    <string name="general_settings_full_screen_summary">Play in full screen mode by hiding Android\'s notification bar</string>
+
+    <!-- The title and summary of the "wake lock" option. This option highlights cells with digits already in the row or column. -->
+    <string name="general_settings_wake_lock_title">Automatisches Abschalten</string>
+    <string name="general_settings_wake_lock_summary">Das Abschalten des Bildschirms während dem Spiel verhindern.</string>
 
     <!-- The preferences category title for audio options. -->
-    <string name="options_group_sound">Sound</string>
+    <string name="general_settings_group_sound">Sound</string>
 
     <!-- The title and summary of the "Sounds effect" option. This option enables or disables soundeffects. -->
-    <string name="option_sound_effects_title">Soundeffekte</string>
-    <string name="option_sound_effects_summary">Soundeffekte einschalten.</string>
+    <string name="general_settings_sound_effects_title">Soundeffekte</string>
+    <string name="general_settings_sound_effects_summary">Soundeffekte einschalten.</string>
 
     <!-- DIALOG THEME - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -194,7 +201,6 @@
     <string name="dialog_reveal_solution_confirmation_negative_button">No, I\'ll solve it myself</string>
     <string name="dialog_reveal_solution_confirmation_positive_button">Yes, I give up</string>
     
-
     <!-- DIALOG CLEAR GRID CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <!-- The title, message and buttons confirmation message that shows up when the clear grid context menu item is selected, plus the associated title and button labels. -->
@@ -301,7 +307,7 @@
 
 
     <!-- Title of statistics activity. -->
-    <string name="statistics_activity_title">Game Statistics</string>
+    <string name="statistics_actionbar_title">Statistics</string>
     <string name="statistics_not_available">Statistics are not yet available for this level as no games of size %1$d have been played yet.</string>
 
     <!-- Labels for general game statistics. -->
@@ -356,8 +362,11 @@
     <string name="statistics_elapsed_time_historic_solved_average">Average</string>
     <string name="statistics_elapsed_time_historic_solved_fastest">Fastest</string>
 
-    <!-- OPTIONS STATISTICS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- STATISTICS  SETTINGS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- TODO: TRANSLATE ENTIRE SECTION -->
+
+    <!-- Title of statistics preferences activity. -->
+    <string name="statistics_settings_actionbar_title">Statistics settings</string>
 
     <!-- The title and summary of the "Hide explanation" option. This option enables or disables displayin the explanations below the statistics charts. -->
     <string name="option_show_statistics_description_title">Chart description</string>
@@ -371,11 +380,11 @@
 
     <!-- TODO: TRANSLATE ENTIRE SECTION -->
 
-    <!-- Subtitle for the archive fragment. -->
-    <string name="action_bar_subtitle_archive_fragment">Lookup an old game</string>
+    <!-- Title for the archive fragment. -->
+    <string name="archive_action_bar_title">Archive</string>
 
     <!-- The possible values of the archive filter on the game status. -->
-    <string-array name="archiveStatusFilter">
+    <string-array name="archive_status_filter">
         <item>All</item>
         <item>Unfinished</item>
         <item>Solved</item>
@@ -383,7 +392,7 @@
     </string-array>
 
     <!-- The possible values of the archive filter on game size. -->
-    <string-array name="archiveSizeFilter">
+    <string-array name="archive_size_filter">
         <item>All</item>
         <item>4x4</item>
         <item>5x5</item>
@@ -394,22 +403,24 @@
     </string-array>
 
     <!-- The label in the pager bar for the "puzzle number" -->
-    <string name="archive_pager_puzzle_number">Puzzle no.</string>
+    <string name="archive_puzzle_number">Puzzle no.</string>
     
     <!-- The label of the button below a puzzle. -->
-    <!-- TODO -->
-    <string name="archive_pager_reload_unfinished_game">Continue this puzzle</string>
-    <string name="archive_pager_reload_finished_game">Replay this puzzle</string>
+    <string name="archive_reload_unfinished_game">Continue this puzzle</string>
+    <string name="archive_reload_finished_game">Replay this puzzle</string>
+    
+    <!-- Title for the archive settings fragment. -->
+    <string name="archive_settings_action_bar_title">Archive settings</string>
     
     <!-- The title and summary of the "Show status filter" option. This option enables or disables showing of the status filter in the action bar of the archive. -->
-    <string name="option_archive_show_status_filter_title">Show status filter</string>
-    <string name="option_archive_show_status_filter_enabled">Allows filtering on status of games</string>
-    <string name="option_archive_show_status_filter_disabled">Hides the filter for selecting on status</string>
+    <string name="archive_settings_show_status_filter_title">Show status filter</string>
+    <string name="archive_settings_show_status_filter_enabled">Allows filtering on status of games</string>
+    <string name="archive_settings_show_status_filter_disabled">Hides the filter for selecting on status</string>
 
     <!-- The title and summary of the "Show size filter" option. This option enables or disables showing of the size filter in the action bar of the archive. -->
-    <string name="option_archive_show_size_filter_title">Show size filter</string>
-    <string name="option_archive_show_size_filter_enabled">Allows filtering on size of games</string>
-    <string name="option_archive_show_size_filter_disabled">Hides the filter for selecting on game size</string>
+    <string name="archive_settings_show_size_filter_title">Show size filter</string>
+    <string name="archive_settings_show_size_filter_enabled">Allows filtering on size of games</string>
+    <string name="archive_settings_show_size_filter_disabled">Hides the filter for selecting on game size</string>
 
     <!-- The lead in text at top of the help dialog. -->
     <string name="archive_help_dialog_general">The archive contains the history of all games you have played. Swipe from left to right to go to an older puzzle. Swipe from right to left to go to a newer puzzle.\n\nYou can use filters to view only puzzles having a specific status or size. Filters can be enabled and disabled via the settings menu. Note: a filter will only be shown in case it contains multiple values.</string>
@@ -422,6 +433,7 @@
 
     <!-- The message that appears when the player reveals a cell. -->
     <string name="main_ui_cheat_messsage">Cheat! :P</string>
+    
     <!-- The message shown when no errors found when checking progress. -->
     <string name="ProgressOK">Bis jetzt alles richtig.</string>
 

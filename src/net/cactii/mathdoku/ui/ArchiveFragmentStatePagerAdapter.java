@@ -44,7 +44,7 @@ public class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter 
 
 		// Initialize the label used in the page titles.
 		mLabelPuzzleNumber = archiveFragmentActivity.getResources().getString(
-				R.string.archive_pager_puzzle_number);
+				R.string.archive_puzzle_number);
 
 		// Determine id's of grids/solving attempts which are available for
 		// display.

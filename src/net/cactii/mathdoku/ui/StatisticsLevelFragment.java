@@ -32,7 +32,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * A fragment representing the statistics for a specific grid size or the

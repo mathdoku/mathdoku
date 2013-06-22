@@ -31,7 +31,7 @@
             android:layout_marginRight="5dp"
             android:lines="1"
             android:onClick="onClickReloadGame"
-            android:text="@string/archive_pager_reload_finished_game" />
+            android:text="@string/archive_reload_finished_game" />
 
         <TableLayout
             android:id="@+id/puzzleStatistics"

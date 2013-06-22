@@ -3,53 +3,53 @@
 
     <PreferenceCategory
         android:key="Assistance"
-        android:title="@string/options_group_assistance" >
+        android:title="@string/general_settings_group_assistance" >
         <CheckBoxPreference
             android:key="badmaths"
-            android:summary="@string/option_mark_bad_maths_summary"
-            android:title="@string/option_mark_bad_maths_title" />
+            android:summary="@string/general_settings_mark_bad_maths_summary"
+            android:title="@string/general_settings_mark_bad_maths_title" />
         <CheckBoxPreference
             android:key="dupedigits"
-            android:summary="@string/option_mark_duplicates_summary"
-            android:title="@string/option_mark_duplicates_title" />
+            android:summary="@string/general_settings_mark_duplicates_summary"
+            android:title="@string/general_settings_mark_duplicates_title" />
         <CheckBoxPreference
             android:key="redundantPossibles"
-            android:summary="@string/option_clear_redundant_possibles_summary"
-            android:title="@string/option_clear_redundant_possibles_title" />
+            android:summary="@string/general_settings_clear_redundant_possibles_summary"
+            android:title="@string/general_settings_clear_redundant_possibles_title" />
     </PreferenceCategory>
     <PreferenceCategory
         android:key="Display"
-        android:title="@string/options_group_display" >
+        android:title="@string/general_settings_group_display" >
         <ListPreference
             android:entries="@array/themeTexts"
             android:entryValues="@array/themeValues"
             android:key="theme"
-            android:title="@string/option_theme_title" />
+            android:title="@string/general_settings_theme_title" />
 
         <CheckBoxPreference
             android:key="maybe3x3"
-            android:summary="@string/option_maybe_layout_summary"
-            android:title="@string/option_maybe_layout_title" />
+            android:summary="@string/general_settings_maybe_layout_summary"
+            android:title="@string/general_settings_maybe_layout_title" />
         <CheckBoxPreference
             android:key="timer"
-            android:summary="@string/option_show_timer_summary"
-            android:title="@string/option_show_timer_title" />
+            android:summary="@string/general_settings_show_timer_summary"
+            android:title="@string/general_settings_show_timer_title" />
         <CheckBoxPreference
             android:key="full_screen"
-            android:summary="@string/option_full_screen_summary"
-            android:title="@string/option_full_screen_title" />
+            android:summary="@string/general_settings_full_screen_summary"
+            android:title="@string/general_settings_full_screen_title" />
         <CheckBoxPreference
             android:key="wakelock"
-            android:summary="@string/option_wake_lock_summary"
-            android:title="@string/option_wake_lock_title" />
+            android:summary="@string/general_settings_wake_lock_summary"
+            android:title="@string/general_settings_wake_lock_title" />
         </PreferenceCategory>
     <PreferenceCategory
         android:key="Sound"
-        android:title="@string/options_group_sound" >
+        android:title="@string/general_settings_group_sound" >
         <CheckBoxPreference
             android:key="soundeffects"
-            android:summary="@string/option_sound_effects_summary"
-            android:title="@string/option_sound_effects_title" />
+            android:summary="@string/general_settings_sound_effects_summary"
+            android:title="@string/general_settings_sound_effects_title" />
     </PreferenceCategory>
 
 </PreferenceScreen>

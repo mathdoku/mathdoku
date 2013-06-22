@@ -3,11 +3,11 @@
 
     <CheckBoxPreference
         android:key="archive_show_filter_status"
-        android:summary="@string/option_archive_show_status_filter_enabled"
-        android:title="@string/option_archive_show_status_filter_title" />
+        android:summary="@string/archive_settings_show_status_filter_enabled"
+        android:title="@string/archive_settings_show_status_filter_title" />
     <CheckBoxPreference
         android:key="archive_show_filter_size"
-        android:summary="@string/option_archive_show_size_filter_enabled"
-        android:title="@string/option_archive_show_size_filter_title" />
+        android:summary="@string/archive_settings_show_size_filter_enabled"
+        android:title="@string/archive_settings_show_size_filter_title" />
 
 </PreferenceScreen>

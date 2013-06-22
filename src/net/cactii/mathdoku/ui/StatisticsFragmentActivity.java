@@ -41,6 +41,9 @@ public class StatisticsFragmentActivity extends AppFragmentActivity implements
 		final ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		actionBar.setDisplayHomeAsUpEnabled(true);
+		actionBar.setTitle(getResources().getString(
+				R.string.statistics_actionbar_title));
+
 
 		// Set up the ViewPager, attaching the adapter and setting up a listener
 		// for when the user swipes between the statistics fragments.

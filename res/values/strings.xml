@@ -124,56 +124,59 @@
     <string name="dialog_puzzle_parameters_operators_in_cage_visible">Operators in cage visible</string>
     <string name="dialog_puzzle_parameters_difficulty">Difficulty</string>
     <string name="dialog_puzzle_parameters_neutral_button">Generate</string>
-    
+
     <!-- The title and message for the dialog displayed on the screen when building a new puzzle. -->
     <string name="dialog_building_puzzle_title">Building puzzle</string>
     <string name="dialog_building_puzzle_message">A new puzzle is being built. It will be ready in a few seconds.</string>
 
-    <!-- OPTIONS PUZZLES  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- GENERAL SETTINGS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <!-- The titles for the general puzzling settings. -->
+    <string name="general_settings_actionbar_title">General settings</string>
 
     <!-- The preferences category title for options to assist the user solve the puzzle. -->
-    <string name="options_group_assistance">Assistance</string>
+    <string name="general_settings_group_assistance">Assistance</string>
 
     <!-- The title and summary of the "bad maths" option. This option highlights cages with incorrect maths. -->
-    <string name="option_mark_bad_maths_title">Mark bad maths</string>
-    <string name="option_mark_bad_maths_summary">Highlight cages with incorrect maths</string>
+    <string name="general_settings_mark_bad_maths_title">Mark bad maths</string>
+    <string name="general_settings_mark_bad_maths_summary">Highlight cages with incorrect maths</string>
 
     <!-- The title and summary of the "bad maths" option. This option highlights cells with digits already in the row or column. -->
-    <string name="option_mark_duplicates_title">Mark duplicates</string>
-    <string name="option_mark_duplicates_summary">Highlight duplicate digits in a row or column</string>
+    <string name="general_settings_mark_duplicates_title">Mark duplicates</string>
+    <string name="general_settings_mark_duplicates_summary">Highlight duplicate digits in a row or column</string>
 
     <!-- The title and summary of the "redundant possibles" option. This option clears possibles values from cells in the same row or columns as the selected cell after setting a user value. -->
-    <string name="option_clear_redundant_possibles_title">Clear maybes</string>
-    <string name="option_clear_redundant_possibles_summary">Clear maybes when used in another cell on the same row or column</string>
+    <string name="general_settings_clear_redundant_possibles_title">Clear maybes</string>
+    <string name="general_settings_clear_redundant_possibles_summary">Clear maybes when used in another cell on the same row or column</string>
 
     <!-- The preferences category title for options relating to how the puzzle is displayed. -->
-    <string name="options_group_display">Display</string>
+    <string name="general_settings_group_display">Display</string>
 
     <!-- The theme option -->
-    <string name="option_theme_title">Theme</string>
+    <string name="general_settings_theme_title">Theme</string>
 
     <!-- The title and summary of the "maybe in grid" option. This option controls whether maybe numbers are displayed in 3x3 grid or straight line. -->
-    <string name="option_maybe_layout_title">Maybes in grid</string>
-    <string name="option_maybe_layout_summary">Display maybe numbers in a grid</string>
+    <string name="general_settings_maybe_layout_title">Maybes in grid</string>
+    <string name="general_settings_maybe_layout_summary">Display maybe numbers in a grid</string>
 
     <!-- The title and summary of the "display timer" option. This option hides or shows the timer below the puzzle. -->
-    <string name="option_show_timer_title">Display timer</string>
-    <string name="option_show_timer_summary">Display a timer while solving a puzzle</string>
+    <string name="general_settings_show_timer_title">Display timer</string>
+    <string name="general_settings_show_timer_summary">Display a timer while solving a puzzle</string>
 
     <!-- The title and summary of the "full screen" option. This option hide the android notification bar. -->
-    <string name="option_full_screen_title">Full screen</string>
-    <string name="option_full_screen_summary">Play in full screen mode by hiding Android\'s notification bar</string>
+    <string name="general_settings_full_screen_title">Full screen</string>
+    <string name="general_settings_full_screen_summary">Play in full screen mode by hiding Android\'s notification bar</string>
 
     <!-- The title and summary of the "wake lock" option. This option highlights cells with digits already in the row or column. -->
-    <string name="option_wake_lock_title">Keep screen on</string>
-    <string name="option_wake_lock_summary">Prevent the screen from going off while playing</string>
-    
+    <string name="general_settings_wake_lock_title">Keep screen on</string>
+    <string name="general_settings_wake_lock_summary">Prevent the screen from going off while playing</string>
+
     <!-- The preferences category title for audio options. -->
-    <string name="options_group_sound">Sound</string>
-    
+    <string name="general_settings_group_sound">Sound</string>
+
     <!-- The title and summary of the "Sounds effect" option. This option enables or disables soundeffects. -->
-    <string name="option_sound_effects_title">Sound effects</string>
-    <string name="option_sound_effects_summary">Enable the sound effects</string>
+    <string name="general_settings_sound_effects_title">Sound effects</string>
+    <string name="general_settings_sound_effects_summary">Enable the sound effects</string>
 
     <!-- DIALOG THEME - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -181,7 +184,7 @@
     <string name="theme_carved">Carved</string>
     <string name="theme_newspaper">Newspaper</string>
     <string name="theme_dark">Dark</string>
-    
+
     <!-- DIALOG REVEAL SOLUTION CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     
     <!-- The title, message and buttons confirmation message that shows up when the "reveal solution" menu item is selected, plus the associated title and button labels. -->
@@ -191,7 +194,7 @@
     <string name="dialog_reveal_solution_confirmation_positive_button">Yes, I give up</string>
     
     <!-- DIALOG CLEAR GRID CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    
+
     <!-- The title, message and buttons confirmation message that shows up when the clear grid context menu item is selected, plus the associated title and button labels. -->
     <string name="dialog_clear_grid_confirmation_title">Clear entire grid?</string>
     <string name="dialog_clear_grid_confirmation_message">Are you sure you want to clear the entire grid?</string>
@@ -249,7 +252,6 @@
     <!-- Hint about the "Archive" function which has been made available as menu option. -->
     <string name="hint_archive_available">The previous game has been added to the archive. The archive contains all games you have started. The archive can be opened via the menu.</string>
     
-    
     <!-- TIP DIALOGS - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <!-- Label for check box "Do not show again" in the tip dialog. -->
@@ -282,12 +284,12 @@
     <!-- Title, and text for tip "Statistics" which explains about this new menu option. -->
     <string name="dialog_tip_statistics_title">Statistics</string>
     <string name="dialog_tip_statistics_text">For each game you have played, some statistics are collected. You can use the statistics just to view your historic results. Also you can use the statistics to improve your solving techniques.</string>
-    
+
     <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
     <!-- Title of statistics activity. -->
-    <string name="statistics_activity_title">Game Statistics</string>
+    <string name="statistics_actionbar_title">Statistics</string>
     <string name="statistics_not_available">Statistics are not yet available for this level as no games of size %1$d have been played yet.</string>
 
     <!-- Labels for general game statistics. -->
@@ -297,7 +299,7 @@
     <string name="statistics_general_elapsed_time">Time played</string>
     <string name="statistics_general_cheat_penalty_time">Cheat penalty</string>
     <string name="statistics_general_replay">Replay game</string>
-    
+
     <!-- Title and a body which explains the purpose of the chart "Progress". -->
     <string name="progress_chart_title">Progress</string>
     <string name="progress_chart_body">This chart displays the progress in solving the current game. For filled cells it is not shown whether the value is correct or not. A cell containing maybe values is counted as an empty cell.</string>
@@ -342,7 +344,11 @@
     <string name="statistics_elapsed_time_historic_solved_average">Average</string>
     <string name="statistics_elapsed_time_historic_solved_fastest">Fastest</string>
 
-    <!-- OPTIONS STATISTICS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- STATISTICS  SETTINGS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- TODO: TRANSLATE ENTIRE SECTION -->
+
+    <!-- Title of statistics preferences activity. -->
+    <string name="statistics_settings_actionbar_title">Statistics settings</string>
 
     <!-- The title and summary of the "Hide explanation" option. This option enables or disables displayin the explanations below the statistics charts. -->
     <string name="option_show_statistics_description_title">Chart description</string>
@@ -353,12 +359,12 @@
     <string name="option_max_games_in_elapsed_time_chart_summary">Display no more than %1$d games in elapsed time chart.</string>
 
     <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    
-    <!-- Subtitle for the archive fragment. -->
-    <string name="action_bar_subtitle_archive_fragment">Lookup an old game</string>
+
+    <!-- Title for the archive fragment. -->
+    <string name="archive_action_bar_title">Archive</string>
 
     <!-- The possible values of the archive filter on the game status. -->
-    <string-array name="archiveStatusFilter">
+    <string-array name="archive_status_filter">
         <item>All</item>
         <item>Unfinished</item>
         <item>Solved</item>
@@ -366,7 +372,7 @@
     </string-array>
 
     <!-- The possible values of the archive filter on game size. -->
-    <string-array name="archiveSizeFilter">
+    <string-array name="archive_size_filter">
         <item>All</item>
         <item>4x4</item>
         <item>5x5</item>
@@ -377,22 +383,25 @@
     </string-array>
 
     <!-- The label in the pager bar for the "puzzle number" -->
-    <string name="archive_pager_puzzle_number">Puzzle no.</string>
+    <string name="archive_puzzle_number">Puzzle no.</string>
     
     <!-- The label of the button below a puzzle. -->
-    <string name="archive_pager_reload_unfinished_game">Continue this puzzle</string>
-    <string name="archive_pager_reload_finished_game">Replay this puzzle</string>
+    <string name="archive_reload_unfinished_game">Continue this puzzle</string>
+    <string name="archive_reload_finished_game">Replay this puzzle</string>
+
+    <!-- Title for the archive settings fragment. -->
+    <string name="archive_settings_action_bar_title">Archive settings</string>
     
     <!-- The title and summary of the "Show status filter" option. This option enables or disables showing of the status filter in the action bar of the archive. -->
-    <string name="option_archive_show_status_filter_title">Show status filter</string>
-    <string name="option_archive_show_status_filter_enabled">Allows filtering on status of games</string>
-    <string name="option_archive_show_status_filter_disabled">Hides the filter for selecting on status</string>
+    <string name="archive_settings_show_status_filter_title">Show status filter</string>
+    <string name="archive_settings_show_status_filter_enabled">Allows filtering on status of games</string>
+    <string name="archive_settings_show_status_filter_disabled">Hides the filter for selecting on status</string>
 
     <!-- The title and summary of the "Show size filter" option. This option enables or disables showing of the size filter in the action bar of the archive. -->
-    <string name="option_archive_show_size_filter_title">Show size filter</string>
-    <string name="option_archive_show_size_filter_enabled">Allows filtering on size of games</string>
-    <string name="option_archive_show_size_filter_disabled">Hides the filter for selecting on game size</string>
-    
+    <string name="archive_settings_show_size_filter_title">Show size filter</string>
+    <string name="archive_settings_show_size_filter_enabled">Allows filtering on size of games</string>
+    <string name="archive_settings_show_size_filter_disabled">Hides the filter for selecting on game size</string>
+
     <!-- The lead in text at top of the help dialog. -->
     <string name="archive_help_dialog_general">The archive contains the history of all games you have played. Swipe from left to right to go to an older puzzle. Swipe from right to left to go to a newer puzzle.\n\nYou can use filters to view only puzzles having a specific status or size. Filters can be enabled and disabled via the settings menu. Note: a filter will only be shown in case it contains multiple values.</string>
     
@@ -404,7 +413,7 @@
 
     <!-- The message that appears when the player reveals a cell. -->
     <string name="main_ui_cheat_messsage">Cheat! :P</string>
-    
+
     <!-- The message shown when no errors found when checking progress. -->
     <string name="ProgressOK">All correct so far</string>
 
@@ -426,7 +435,7 @@
 
     <!-- Connection word for the last two elements in a list. Example: "1 minute and 15 seconds" or "1, 2, 3 and 4)" -->
     <string name="connector_last_two_elements">and</string>
-    
+
     <!-- The text for input mode "normal" which is used to enter a definitive value into the selected cell. -->
     <string name="input_mode_normal_short">normal</string>
 

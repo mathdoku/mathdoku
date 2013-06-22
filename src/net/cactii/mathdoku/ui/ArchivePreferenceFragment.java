@@ -55,8 +55,8 @@ public class ArchivePreferenceFragment extends PreferenceFragment implements
 	 * option.
 	 */
 	private void setStatusFilterSummary() {
-		int summaryResId = Preferences.getInstance().showArchiveStatusFilter() ? R.string.option_archive_show_status_filter_enabled
-				: R.string.option_archive_show_status_filter_disabled;
+		int summaryResId = Preferences.getInstance().showArchiveStatusFilter() ? R.string.archive_settings_show_status_filter_enabled
+				: R.string.archive_settings_show_status_filter_disabled;
 		findPreference(Preferences.SHOW_STATUS_FILTER).setSummary(
 				getResources().getString(summaryResId));
 	}
@@ -66,8 +66,8 @@ public class ArchivePreferenceFragment extends PreferenceFragment implements
 	 * option.
 	 */
 	private void setSizeFilterSummary() {
-		int summaryResId = Preferences.getInstance().showArchiveSizeFilter() ? R.string.option_archive_show_size_filter_enabled
-				: R.string.option_archive_show_size_filter_disabled;
+		int summaryResId = Preferences.getInstance().showArchiveSizeFilter() ? R.string.archive_settings_show_size_filter_enabled
+				: R.string.archive_settings_show_size_filter_disabled;
 		findPreference(Preferences.SHOW_SIZE_FILTER).setSummary(
 				getResources().getString(summaryResId));
 	}

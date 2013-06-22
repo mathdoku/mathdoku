@@ -11,7 +11,7 @@
     <!-- 5. Please read and follow the aditional instructions where applicable. -->
 
 
-    <!-- GENERAL - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- GENERAL - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
     <!-- The message displayed on the "start" button. -->
@@ -22,7 +22,7 @@
 
     <!-- Name of settings menu. -->
     <string name="settings">Opties</string>
-    
+
     <!-- DIALOG CONVERTING SAVED GAMES - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <!-- The title and message for the dialog displayed on the screen while upgrading to new version and saved games have to be converted. -->
@@ -69,7 +69,7 @@
     <!-- The heading of the section containg the version name and revision number. -->
     <string name="changelog_version_title">Versie</string>
 
-	<!-- The heading and body of the section referring to the list of changes (revision). -->
+    <!-- The heading and body of the section refering to the list of changes. -->
     <!-- Note for translators: Changes are only available in english. Please mention this in this field. -->
     <string name="changelog_changes_title">Wijzigingen</string>
     <string name="changelog_changes_body">Ga voor een complete lijst van wijzigingen (alleen in het engels) naar onze website via de onderstaande link.</string>
@@ -109,7 +109,7 @@
     
     <!-- The menu item that allows the user to reveal a cell. -->
     <string name="action_reveal_cell">Onthul deze cel</string>
-    
+
     <!-- The menu item that allows the user to reveal the hidden operator of a cage. This item is only available in case a puzzle with hidden operators is shown and the operator has not yet been revealed. Note that a single cell cage does not have an operator. -->
     <string name="action_reveal_operator">Toon groep teken</string>
 
@@ -129,47 +129,54 @@
     <string name="dialog_building_puzzle_title">Genereren nieuwe puzzel</string>
     <string name="dialog_building_puzzle_message">Een ogenblik geduld a.u.b.</string>
 
-    <!-- OPTIONS PUZZLES  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- GENERAL SETTINGS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <!-- The titles for the general puzzling settings. -->
+    <string name="general_settings_actionbar_title">General settings</string>
 
     <!-- The preferences category title for options to assist the user solve the puzzle. -->
-    <string name="options_group_assistance">Help</string>
+    <string name="general_settings_group_assistance">Help</string>
 
     <!-- The title and summary of the "bad maths" option. This option highlights cages with incorrect maths. -->
-    <string name="option_mark_bad_maths_title">Markeer verkeerde berekeningen</string>
-    <string name="option_mark_bad_maths_summary">Markeer groepen met niet kloppende berekeningen</string>
+    <string name="general_settings_mark_bad_maths_title">Markeer verkeerde berekeningen</string>
+    <string name="general_settings_mark_bad_maths_summary">Markeer groepen met niet kloppende berekeningen</string>
 
     <!-- The title and summary of the "bad maths" option. This option highlights cells with digits already in the row or column. -->
-    <string name="option_mark_duplicates_title">Markeer duplicaten</string>
-    <string name="option_mark_duplicates_summary">Markeer cellen met cijfers die al in de rij of in de kolom staan</string>
+    <string name="general_settings_mark_duplicates_title">Markeer duplicaten</string>
+    <string name="general_settings_mark_duplicates_summary">Markeer cellen met cijfers die al in de rij of in de kolom staan</string>
 
     <!-- The title and summary of the "redundant possibles" option. This option clears possibles values from cells in the same row or columns as the selected cell after setting a user value. -->
-    <string name="option_clear_redundant_possibles_title">Verwijder mogelijke</string>
-    <string name="option_clear_redundant_possibles_summary">Verwijder een mogelijke waarde indien deze is gebruikt in een andere cel in dezelfde rij of kolom</string>
+    <string name="general_settings_clear_redundant_possibles_title">Verwijder mogelijke</string>
+    <string name="general_settings_clear_redundant_possibles_summary">Verwijder een mogelijke waarde indien deze is gebruikt in een andere cel in dezelfde rij of kolom</string>
 
     <!-- The preferences category title for options relating to how the puzzle is displayed. -->
-    <string name="options_group_display">Weergave</string>
+    <string name="general_settings_group_display">Weergave</string>
 
     <!-- The theme option -->
-    <string name="option_theme_title">Thema</string>
+    <string name="general_settings_theme_title">Thema</string>
 
     <!-- The title and summary of the "maybe in grid" option. This option controls whether maybe numbers are displayed in 3x3 grid or straight line. -->
-    <string name="option_maybe_layout_title">Mogelijken in raster</string>
-    <string name="option_maybe_layout_summary">Toon mogelijke getallen in een raster</string>
-
-    <!-- The title and summary of the "wake lock" option. This option highlights cells with digits already in the row or column. -->
-    <string name="option_wake_lock_title">Houd scherm aan</string>
-    <string name="option_wake_lock_summary">Voorkom dat het scherm uit gaat tijdens het spelen</string>
+    <string name="general_settings_maybe_layout_title">Mogelijken in raster</string>
+    <string name="general_settings_maybe_layout_summary">Toon mogelijke getallen in een raster</string>
 
     <!-- The title and summary of the "display timer" option. This option hides or shows the timer below the puzzle. -->
-    <string name="option_show_timer_title">Toon speelduur</string>
-    <string name="option_show_timer_summary">Toon de speelduur tijdens het spelen</string>
+    <string name="general_settings_show_timer_title">Toon speelduur</string>
+    <string name="general_settings_show_timer_summary">Toon de speelduur tijdens het spelen</string>
+
+    <!-- The title and summary of the "full screen" option. This option hide the android notification bar. -->
+    <string name="general_settings_full_screen_title">Volledig scherm</string>
+    <string name="general_settings_full_screen_summary">Gebruik het gehele scherm voor het spel door Androids notificatiebalk te verwijderen</string>
+
+    <!-- The title and summary of the "wake lock" option. This option highlights cells with digits already in the row or column. -->
+    <string name="general_settings_wake_lock_title">Houd scherm aan</string>
+    <string name="general_settings_wake_lock_summary">Voorkom dat het scherm uit gaat tijdens het spelen</string>
 
     <!-- The preferences category title for audio options. -->
-    <string name="options_group_sound">Geluid</string>
+    <string name="general_settings_group_sound">Geluid</string>
 
     <!-- The title and summary of the "Sounds effect" option. This option enables or disables soundeffects. -->
-    <string name="option_sound_effects_title">Geluidseffecten</string>
-    <string name="option_sound_effects_summary">Zet de geluidseffecten aan</string>
+    <string name="general_settings_sound_effects_title">Geluidseffecten</string>
+    <string name="general_settings_sound_effects_summary">Zet de geluidseffecten aan</string>
 
     <!-- DIALOG THEME - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -253,7 +260,7 @@
     <string name="dialog_tip_order_of_values_in_cage_title">Cel waarden</string>
     <string name="dialog_tip_order_of_values_in_cage_text">De volgorde van de getallen in de cellen is niet belangrijk in een MathDoku puzzel. De resultaten van de berekeningen \"2 &#8212; 3\"  en \"3 &#8212; 2\" zijn beide gelijk aan 1. De waarden in de onderstaande afbeelding zijn dus correct.</string>
 
-        <!-- Title, and text for tip "Cheat which reveals the value of a cell". Note "%1$s" in the text will be replaced with an amount and units (e.d. "20 seconds" or "5 minutes"). -->
+    <!-- Title, and text for tip "Cheat which reveals the value of a cell". Note "%1$s" in the text will be replaced with an amount and units (e.d. "20 seconds" or "5 minutes"). -->
     <string name="dialog_tip_cheat_reveal_value_title">Vals spel: waarde onthuld</string>
     <string name="dialog_tip_cheat_reveal_value_text">Je hebt de waarde van een cel onthuld. Het onthullen van de waarde van een cel is niet nodig om een puzzel op te kunnen lossen omdat elke puzzel een unieke oplossing heeft die gevonden kan worden zonder vals te spelen. \nElke keer als je een waarde onthuld dan wordt de speeltijd verhoogd met %1$s.</string>
 
@@ -276,12 +283,12 @@
     <!-- Title, and text for tip "Statistics" which explains about this new menu option. -->
     <string name="dialog_tip_statistics_title">Statistieken</string>
     <string name="dialog_tip_statistics_text">Voor elke puzzel die je hebt gespeeld, worden statistieken bijgehouden. Je kunt de statistieken gebruiken om je historische resultaten te bekijken. Je kunt de statistieken ook gebruiken om je oplossingsstrategieën te verbeteren.</string>
-    
+
     <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
     <!-- Title of statistics activity. -->
-    <string name="statistics_activity_title">Puzzel statistieken</string>
+    <string name="statistics_actionbar_title">Statistieken</string>
     <string name="statistics_not_available">Voor dit niveau zijn nog geen statistieken beschikbaar omdat nog geen puzzels met grootte %1$d zijn gespeeld.</string>
 
     <!-- Labels for general game statistics. -->
@@ -291,7 +298,7 @@
     <string name="statistics_general_elapsed_time">Speeltijd</string>
     <string name="statistics_general_cheat_penalty_time">Boete vals spel</string>
     <string name="statistics_general_replay">Opnieuw spelen</string>
-    
+
     <!-- Title and a body which explains the purpose of the chart "Progress". -->
     <string name="progress_chart_title">Voortgang</string>
     <string name="progress_chart_body">Deze afbeelding toont de voortgang van het oplossen van deze puzzel. Voor ingevulde cellen wordt niet getoond of de ingevulde waarde (in)correct is. Een cel die mogelijke waarden bevat wordt geteld als een lege cel.</string>
@@ -336,7 +343,10 @@
     <string name="statistics_elapsed_time_historic_solved_average">Gemiddelde</string>
     <string name="statistics_elapsed_time_historic_solved_fastest">Snelste</string>
 
-    <!-- OPTIONS STATISTICS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- STATISTICS  SETTINGS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <!-- Title of statistics preferences activity. -->
+    <string name="statistics_settings_actionbar_title">Statistieken settings</string>
 
     <!-- The title and summary of the "Hide explanation" option. This option enables or disables displayin the explanations below the statistics charts. -->
     <string name="option_show_statistics_description_title">Grafiek toelichting</string>
@@ -347,12 +357,12 @@
     <string name="option_max_games_in_elapsed_time_chart_summary">Toon maximaal %1$d puzzels in de grafiek speeltijd.</string>
 
     <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    
+
     <!-- Subtitle for the archive fragment. -->
-    <string name="action_bar_subtitle_archive_fragment">Bekijk een oud spel</string>
+    <string name="archive_action_bar_title">Bekijk een oud spel</string>
 
     <!-- The possible values of the archive filter on the game status. -->
-    <string-array name="archiveStatusFilter">
+    <string-array name="archive_status_filter">
         <item>Alle</item>
         <item>Onafgerond</item>
         <item>Opgelost</item>
@@ -360,7 +370,7 @@
     </string-array>
 
     <!-- The possible values of the archive filter on game size. -->
-    <string-array name="archiveSizeFilter">
+    <string-array name="archive_size_filter">
         <item>Alle</item>
         <item>4x4</item>
         <item>5x5</item>
@@ -371,21 +381,25 @@
     </string-array>
 
     <!-- The label in the pager bar for the "puzzle number" -->
-    <string name="archive_pager_puzzle_number">Puzzle nr.</string>
+    <string name="archive_puzzle_number">Puzzle nr.</string>
     
-    <string name="archive_pager_reload_unfinished_game">Verder gaan</string>
-    <string name="archive_pager_reload_finished_game">Opnieuw spelen</string>
+    <!-- The label of the button below a puzzle. -->
+    <string name="archive_reload_unfinished_game">Verder gaan</string>
+    <string name="archive_reload_finished_game">Opnieuw spelen</string>
+    
+    <!-- Title for the archive settings fragment. -->
+    <string name="archive_settings_action_bar_title">Archief settings</string>
     
     <!-- The title and summary of the "Show status filter" option. This option enables or disables showing of the status filter in the action bar of the archive. -->
-    <string name="option_archive_show_status_filter_title">Toon status filter</string>
-    <string name="option_archive_show_status_filter_enabled">Sta filtering op status van de puzzel toe</string>
-    <string name="option_archive_show_status_filter_disabled">Verberg het filter voor het selecteren op status</string>
+    <string name="archive_settings_show_status_filter_title">Toon status filter</string>
+    <string name="archive_settings_show_status_filter_enabled">Sta filtering op status van de puzzel toe</string>
+    <string name="archive_settings_show_status_filter_disabled">Verberg het filter voor het selecteren op status</string>
 
     <!-- The title and summary of the "Show size filter" option. This option enables or disables showing of the size filter in the action bar of the archive. -->
-    <string name="option_archive_show_size_filter_title">Toon grootte filter</string>
-    <string name="option_archive_show_size_filter_enabled">Sta filtering op grootte van de puzzel toe</string>
-    <string name="option_archive_show_size_filter_disabled">Verberg het filter voor het selecteren op grootte</string>
-    
+    <string name="archive_settings_show_size_filter_title">Toon grootte filter</string>
+    <string name="archive_settings_show_size_filter_enabled">Sta filtering op grootte van de puzzel toe</string>
+    <string name="archive_settings_show_size_filter_disabled">Verberg het filter voor het selecteren op grootte</string>
+
     <!-- The lead in text at top of the help dialog. -->
     <string name="archive_help_dialog_general">The archive contains the history of all games you have played. Swipe from left to right to go to an older puzzle. Swipe from right to left to go to a newer puzzle.\n\nYou can use filters to view only puzzles having a specific status or size. Filters can be enabled and disabled via the settings menu. Note: a filter will only be shown in case it contains multiple values.</string>
     
@@ -419,8 +433,8 @@
 
     <!-- Connection word for the last two elements in a list. Example: "1 minute and 15 seconds" or "1, 2, 3 and 4)" -->
     <string name="connector_last_two_elements">en</string>
-    
-     <!-- The text for input mode "normal" which is used to enter a definitive value into the selected cell. -->
+
+    <!-- The text for input mode "normal" which is used to enter a definitive value into the selected cell. -->
     <string name="input_mode_normal_short">Normaal</string>
 
     <!-- The text for input mode "maybe" which is used to insert/remove a possible value into/from the selected cell. -->
