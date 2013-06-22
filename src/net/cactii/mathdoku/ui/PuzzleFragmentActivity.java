@@ -358,7 +358,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		if (mPuzzleFragment != null && mMathDokuPreferences.showArchiveAvailableHint()) {
 			TickerTape tickerTape = new TickerTape(this);
 			tickerTape.addItem(getResources().getString(
-					R.string.dialog_tip_archive_text)).setEraseConditions(2, 0).show();
+					R.string.hint_archive_available)).setEraseConditions(2, 0).show();
 			mPuzzleFragment.onTickerTapeChanged(tickerTape);
 		}
 

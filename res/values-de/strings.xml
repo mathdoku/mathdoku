@@ -253,6 +253,10 @@
     <!-- TODO: Check with english text which has been changed! -->
     <string name="hint_input_mode_changed">Sie haben gerade den Eingabemodus von %1$s auf %2$s durch mehrmaliges Drücken auf eine Zelle geändert. Berühren Sie die Zelle nochmals, um den vorigen Eingabemodus wieder zu aktivieren.</string>
 
+    <!-- Hint about the "Archive" function which has been made available as menu option. -->
+    <!-- TODO -->
+    <string name="hint_archive_available">The previous game has been added to the archive. The archive contains all games you have started. The archive can be opened via the menu.</string>
+    
     <!-- TIP DIALOGS - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <!-- Label for check box "Do not show again" in the tip dialog. -->
@@ -286,11 +290,6 @@
     <!-- TODO -->
     <string name="dialog_tip_incorrect_value_title">Incorrect value</string>
     <string name="dialog_tip_incorrect_value_text">You have entered an incorrect value. You will not be able to solve this puzzle in case you do not correct it. You can use menu option \'Check Progress\' to mark all cells having an incorrect value. Be aware: using \'Check Progress\' will raise the time elapsed with a penalty to discourage you from using it.</string>
-
-    <!-- Title, and text for tip "Archive" which explains about this new menu option. -->
-    <!-- TODO -->
-    <string name="dialog_tip_archive_title">Archive</string>
-    <string name="dialog_tip_archive_text">The previous game has been added to the archive. The archive contains all games you have started. The archive can be opened via the menu.</string>
 
     <!-- Title, and text for tip "Statistics" which explains about this new menu option. -->
     <!-- TODO -->

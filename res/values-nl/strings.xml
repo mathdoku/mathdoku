@@ -241,6 +241,9 @@
     <!-- Hint to inform about change of Input mode -->
     <string name="hint_input_mode_changed">Je hebt zojuist de invoermethode gewijzigd van %1$s naar %2$s door een dubbeltik op een cel.</string>
     
+    <!-- Hint about the "Archive" function which has been made available as menu option. -->
+    <string name="hint_archive_available">De vorige puzzel is toegevoegd aan het archief. Het archief bevat alle puzzels die je hebt gestart. Het archief kan worden geopend via het menu.</string>
+    
     <!-- TIP DIALOGS - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <!-- Label for check box "Do not show again" in the tip dialog. -->
@@ -269,10 +272,6 @@
     <!-- Title, and text for tip "Incorrect value" which refers to menu option "Check Progress". -->
     <string name="dialog_tip_incorrect_value_title">Foute waarde</string>
     <string name="dialog_tip_incorrect_value_text">Je hebt een foute waarde ingevoerd. Je kan deze puzzel niet oplossen zonder deze fout te verbeteren. Gebruik de menu optie \'Controleer voortgang\' om alle cellen met een een foutieve waarde te markeren. Pas op: het gebruiken van \'Controleer voortgang\' leidt tot het verhogen van de speeltijd met een boete om het gebruik van deze functie te ontmoedigen.</string>
-
-    <!-- Title, and text for tip "Archive" which explains about this new menu option. -->
-    <string name="dialog_tip_archive_title">Archief</string>
-    <string name="dialog_tip_archive_text">De vorige puzzel is toegevoegd aan het archief. Het archief bevat alle puzzels die je hebt gestart. Het archief kan worden geopend via het menu.</string>
 
     <!-- Title, and text for tip "Statistics" which explains about this new menu option. -->
     <string name="dialog_tip_statistics_title">Statistieken</string>
