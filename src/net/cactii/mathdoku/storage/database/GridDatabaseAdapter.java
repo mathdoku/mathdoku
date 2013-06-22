@@ -25,7 +25,9 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 
 	private static final String TAG = "MathDoku.GridDatabaseAdapter";
 
-	public static final boolean DEBUG_SQL = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && true;
+	// Remove "&& false" in following line to show the SQL-statements in the
+	// debug information
+	public static final boolean DEBUG_SQL = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
 
 	// Columns for table statistics
 	protected static final String TABLE = "grid";
@@ -43,6 +45,10 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 			KEY_GRID_SIZE, KEY_DATE_CREATED, KEY_GAME_SEED,
 			KEY_GENERATOR_REVISION_NUMBER, KEY_HIDE_OPERATORS,
 			KEY_MAX_CAGE_RESULT, KEY_MAX_CAGE_SIZE };
+
+	// Columns used in result of function getLatestSolvingAttemptsPerGrid
+	public static final int LATEST_SOLVING_ATTEMPT_PER_GRID__GRID_ID = 0;
+	public static final int LATEST_SOLVING_ATTEMPT_PER_GRID__SOLVING_ATTEMP_ID = 1;
 
 	protected String getTableName() {
 		return TABLE;
@@ -246,14 +252,13 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 
 		// Convert cursor record to a grid statics object.
 		GridRow gridRow = new GridRow();
-		gridRow.mId = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_ROWID));
+		gridRow.mId = cursor.getInt(cursor.getColumnIndexOrThrow(KEY_ROWID));
 		gridRow.mDefinition = cursor.getString(cursor
 				.getColumnIndexOrThrow(KEY_DEFINITION));
 		gridRow.mGridSize = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_GRID_SIZE));
-		gridRow.mDateCreated = valueOfSQLiteTimestamp(cursor
-				.getString(cursor.getColumnIndexOrThrow(KEY_DATE_CREATED)));
+		gridRow.mDateCreated = valueOfSQLiteTimestamp(cursor.getString(cursor
+				.getColumnIndexOrThrow(KEY_DATE_CREATED)));
 
 		GridGeneratingParameters gridGeneratingParameters = new GridGeneratingParameters();
 		gridGeneratingParameters.mGameSeed = cursor.getLong(cursor
@@ -284,14 +289,20 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	}
 
 	/**
-	 * Get a list of all grid id's.
+	 * Get a list of all grid id's and the latest solving attempt per grid.
 	 * 
-	 * @return The list of all grid id's.
+	 * @return The list of all grid id's and the latest solving attempt per
+	 *         grid.
 	 */
-	public int[] getAllGridIds(StatusFilter statusFilter, SizeFilter sizeFilter) {
+	public int[][] getLatestSolvingAttemptsPerGrid(StatusFilter statusFilter,
+			SizeFilter sizeFilter) {
+		String SOLVING_ATTEMPT_ID = "solving_attempt_id";
+
 		// Build projection
 		Projection projection = new Projection();
 		projection.put(KEY_ROWID, TABLE, KEY_ROWID);
+		projection.put(SOLVING_ATTEMPT_ID, SolvingAttemptDatabaseAdapter.TABLE,
+				SolvingAttemptDatabaseAdapter.KEY_ROWID);
 
 		// Build query
 		SQLiteQueryBuilder sqliteQueryBuilder = new SQLiteQueryBuilder();
@@ -305,38 +316,64 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 								.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_GRID_ID)
 						+ " = " + getPrefixedColumnName(KEY_ROWID));
 
-		// Retrieve all data. Note: in case column is not added to the
-		// projection, no data will be retrieved!
-		String[] columnsData = { stringBetweenBackTicks(KEY_ROWID) };
-
-		// Build where clause
+		// Determine where clause elements for the filters.
 		String selectionStatus = getStatusSelectionString(statusFilter);
 		String selectionSize = getSizeSelectionString(sizeFilter);
-		String selection = selectionStatus
-				+ (selectionStatus.isEmpty() == false
-						&& selectionSize.isEmpty() == false ? " AND " : "")
-				+ selectionSize;
+
+		// Build where clause. Note: it is not possible to use an aggregation
+		// function like MAX(solving_attempt_id) as the selection on status
+		// should only be based on the status of the last solving attempt. Using
+		// an aggregate function results in wrong data when a status filter is
+		// applied as the aggregation would only be based on the solving attempt
+		// which do match the status while ignore the fact that a more recent
+		// solving attempt exists with another status.
+		String selection = "not exists (select 1 from "
+				+ SolvingAttemptDatabaseAdapter.TABLE
+				+ " as sa2 where sa2."
+				+ SolvingAttemptDatabaseAdapter.KEY_GRID_ID
+				+ " = "
+				+ SolvingAttemptDatabaseAdapter
+						.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_GRID_ID)
+				+ " and sa2."
+				+ SolvingAttemptDatabaseAdapter.KEY_ROWID
+				+ " > "
+				+ SolvingAttemptDatabaseAdapter
+						.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_ROWID)
+				+ ") "
+				+ (selectionStatus.isEmpty() == false ? " AND "
+						+ selectionStatus : "")
+				+ (selectionSize.isEmpty() == false ? " AND " + selectionSize
+						: "");
 
 		if (DEBUG_SQL) {
 			if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-				String sql = sqliteQueryBuilder.buildQuery(columnsData,
-						selection, null, null, null, null);
+				String sql = sqliteQueryBuilder.buildQuery(
+						projection.getAllColumnNames(), selection, KEY_ROWID,
+						null, null, null);
 				Log.i(TAG, sql);
 			}
 		}
 
 		// Convert results in cursor to array of grid id's
-		int[] gridIds = null;
+		int[][] gridIds = null;
 		Cursor cursor = null;
 		try {
-			cursor = sqliteQueryBuilder.query(mSqliteDatabase, columnsData,
-					selection, null, null, null, null);
+			cursor = sqliteQueryBuilder.query(mSqliteDatabase,
+					projection.getAllColumnNames(), selection, null, KEY_ROWID,
+					null, null);
 			if (cursor.moveToFirst()) {
-				gridIds = new int[cursor.getCount()];
+				gridIds = new int[cursor.getCount()][2];
 				int i = 0;
-				int columnIndex = cursor.getColumnIndexOrThrow(KEY_ROWID);
+				int gridIdColumnIndex = cursor.getColumnIndexOrThrow(KEY_ROWID);
+				int maxSolvingAttemptColumnIndex = cursor
+						.getColumnIndexOrThrow(SOLVING_ATTEMPT_ID);
 				do {
-					gridIds[i++] = cursor.getInt(columnIndex);
+					gridIds[i][LATEST_SOLVING_ATTEMPT_PER_GRID__GRID_ID] = cursor
+							.getInt(gridIdColumnIndex);
+					gridIds[i][LATEST_SOLVING_ATTEMPT_PER_GRID__SOLVING_ATTEMP_ID] = cursor
+							.getInt(maxSolvingAttemptColumnIndex);
+
+					i++;
 				} while (cursor.moveToNext());
 			}
 		} catch (SQLiteException e) {
@@ -603,7 +640,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Get the number of grids available.
 	 * 
@@ -614,8 +651,8 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		Cursor cursor = null;
 		try {
 			cursor = mSqliteDatabase.query(true, TABLE,
-					new String[] { "COUNT(1)" }, null, null, null, null,
-					null, null);
+					new String[] { "COUNT(1)" }, null, null, null, null, null,
+					null);
 
 			if (cursor == null || !cursor.moveToFirst()) {
 				// No record found

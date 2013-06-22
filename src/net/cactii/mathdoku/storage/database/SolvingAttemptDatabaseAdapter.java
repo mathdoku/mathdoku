@@ -20,7 +20,8 @@ import android.util.Log;
 public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	private static final String TAG = "MathDoku.SolvingAttemptDatabaseAdapter";
 
-	public static final boolean DEBUG_SQL = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && true;
+	// Remove "&& false" in following line to show the SQL-statements in the debug information
+	public static final boolean DEBUG_SQL = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
 
 	// Columns for table
 	protected static final String TABLE = "solving_attempt";

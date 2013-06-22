@@ -111,9 +111,11 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 			if (bundle != null) {
 				int solvingAttemptId = bundle
 						.getInt(BUNDLE_KEY_SOLVING_ATTEMPT_ID);
-				if (solvingAttemptId >= 0 && mArchiveFragmentStatePagerAdapter
-							.getPositionOfGridId(solvingAttemptId) >= 0) {
-					preferences.setArchiveSelectedGridIdLastValueUsed(solvingAttemptId);
+				if (solvingAttemptId >= 0
+						&& mArchiveFragmentStatePagerAdapter
+								.getPositionOfGridId(solvingAttemptId) >= 0) {
+					preferences
+							.setArchiveSelectedGridIdLastValueUsed(solvingAttemptId);
 				}
 			}
 		}
@@ -419,6 +421,22 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 	}
 
 	/**
+	 * Get the solving attempt id of the grid which is currently displayed in
+	 * the archive.
+	 * 
+	 * @return The solving attempt id of the grid which is currently displayed
+	 *         in the archive.
+	 */
+	private int getSolvingAttemptIdForCurrentSelectedGrid() {
+		if (mArchiveFragmentStatePagerAdapter != null && mViewPager != null) {
+			return mArchiveFragmentStatePagerAdapter
+					.getSolvingAttemptId(mViewPager.getCurrentItem());
+		} else {
+			return -1;
+		}
+	}
+
+	/**
 	 * Select the page with the given grid id. In case the specified grid id was
 	 * not found, the last page is selected.
 	 * 
@@ -443,5 +461,20 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 					.getCount() - 1);
 			return false;
 		}
+	}
+
+	/**
+	 * Reload the game currently displayed in the archive.
+	 * 
+	 * @param view
+	 */
+	public void onClickReloadGame(View view) {
+		Intent intent = new Intent();
+		intent.putExtra(BUNDLE_KEY_SOLVING_ATTEMPT_ID,
+				getSolvingAttemptIdForCurrentSelectedGrid());
+		setResult(RESULT_OK, intent);
+
+		// Finish the archive activity
+		finish();
 	}
 }

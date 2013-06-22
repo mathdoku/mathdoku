@@ -419,6 +419,9 @@ public class GridView extends View implements OnTouchListener {
 				&& mGrid.hasPrefShowMaybesAs3x3Grid() ? new DigitPositionGrid(
 				mGrid.getGridSize()) : null);
 
+		// Reset the swipe motion
+		mSwipeMotion = null;
+		
 		// Set default input mode to normal
 		mInputMode = InputMode.NORMAL;
 

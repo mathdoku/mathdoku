@@ -75,6 +75,9 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		}
 	}
 
+	// Request code
+	private final static int REQUEST_ARCHIVE = 1;
+
 	/** Called when the activity is first created. */
 	@Override
 	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
@@ -261,7 +264,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		case R.id.action_archive:
 			Intent intentArchive = new Intent(this,
 					ArchiveFragmentActivity.class);
-			startActivity(intentArchive);
+			startActivityForResult(intentArchive, REQUEST_ARCHIVE);
 			return true;
 		case R.id.action_statistics:
 			UsageLog.getInstance().logFunction("Menu.Statistics");
@@ -565,7 +568,12 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		FragmentTransaction fragmentTransaction = fragmentManager
 				.beginTransaction();
 		fragmentTransaction.replace(android.R.id.content, mPuzzleFragment);
-		fragmentTransaction.commit();
+
+		// Commit with allowing state loss. Using normal commit results in a
+		// forced close when reloading a finished puzzle from the archive. I am
+		// not sure why commitAllowingStateLoss solves this problem.
+		fragmentTransaction.commitAllowingStateLoss();
+
 		if (forceFragmentTransaction) {
 			fragmentManager.executePendingTransactions();
 		}
@@ -736,5 +744,51 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 										puzzleComplexity);
 							}
 						}).show();
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode,
+			Intent intent) {
+		if (requestCode == REQUEST_ARCHIVE && resultCode == RESULT_OK) {
+			// When returning from the archive with result code OK, the grid
+			// which was displayed in the archive will be reloaded if the
+			// returned solving attempt can be loaded.
+			if (intent != null) {
+				Bundle bundle = intent.getExtras();
+				if (bundle != null) {
+					int solvingAttemptId = bundle
+							.getInt(ArchiveFragmentActivity.BUNDLE_KEY_SOLVING_ATTEMPT_ID);
+					if (solvingAttemptId >= 0) {
+
+						// Load the grid for the returned solving attempt id.
+						Grid grid = new Grid();
+						if (grid.load(solvingAttemptId)) {
+							if (grid.isActive() == false) {
+								grid.replay();
+							}
+
+							// Either load the grid in the existing puzzle
+							// fragment or transform the fragment.
+							if (mPuzzleFragment != null) {
+								mPuzzleFragment.setNewGrid(grid);
+							} else {
+								// In case a finished grid is replayed a new
+								// solving attempt has been be created for the
+								// grid.
+								initializePuzzleFragment(
+										grid.getSolvingAttemptId(), true);
+							}
+							return;
+						}
+					}
+				}
+			}
+		}
+		super.onActivityResult(requestCode, resultCode, intent);
+	}
+	
+	@Override
+	protected void onResumeFragments() {
+		super.onResumeFragments();
 	}
 }

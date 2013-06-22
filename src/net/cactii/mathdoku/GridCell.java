@@ -216,6 +216,15 @@ public class GridCell {
 		setUserValue(0);
 	}
 
+	/**
+	 * Clear cheat and error flags.
+	 */
+	public void clearAllFlags() {
+		mShowWarning = false;
+		mCheated = false;
+		mInvalidUserValueHighlight = false;
+	}
+
 	public boolean isUserValueCorrect() {
 		return mUserValue == mCorrectValue;
 	}

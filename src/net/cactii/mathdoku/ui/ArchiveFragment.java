@@ -23,6 +23,7 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -75,6 +76,9 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 				// values (dependent on preferences).
 				mGridView.setDigitPositionGrid(mDigitPositionGrid);
 
+				// Change text of button below grid
+				((Button) rootView.findViewById(R.id.archiveReloadButton)).setText(R.string.archive_pager_reload_unfinished_game);
+				
 				// Disable the grid as the user should not be able to click
 				// cells in the archive view
 				grid.setActive(false);

@@ -274,7 +274,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 									int which) {
 								UsageLog.getInstance().logFunction(
 										"ContextMenu.ClearGrid");
-								PuzzleFragment.this.mGrid.clearCells();
+								PuzzleFragment.this.mGrid.clearCells(false);
 								PuzzleFragment.this.mGridView.invalidate();
 							}
 						}).show();

@@ -77,7 +77,7 @@ public class Grid {
 	public ArrayList<CellChange> mMoves;
 
 	// ************************************************************************
-	// Miscelleaneous
+	// Miscellaneous
 	// ************************************************************************
 
 	// The solving attempt which is merged into this grid.
@@ -175,8 +175,12 @@ public class Grid {
 
 	/**
 	 * Clears all cells in the entire grid.
+	 * 
+	 * @param replay
+	 *            True if clear is needed for replay of a finished grid. False
+	 *            otherwise.
 	 */
-	public void clearCells() {
+	public void clearCells(boolean replay) {
 		if (this.mMoves != null) {
 			this.mMoves.clear();
 		}
@@ -193,6 +197,9 @@ public class Grid {
 					updateGridClearCounter = true;
 				}
 				cell.clear();
+				if (replay) {
+					cell.clearAllFlags();
+				}
 			}
 			if (updateGridClearCounter) {
 				mGridStatistics
@@ -773,7 +780,7 @@ public class Grid {
 			} else {
 				mRowId = gridRow.mId;
 			}
-		}
+		} 
 
 		// Insert new solving attempt.
 		SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = new SolvingAttemptDatabaseAdapter();
@@ -1186,5 +1193,35 @@ public class Grid {
 
 		// All cells are empty
 		return true;
+	}
+
+	/**
+	 * Replay a grid as if the grid was just created.
+	 */
+	public void replay() {
+		// Clear the cells and the moves list.
+		clearCells(true);
+		mClearRedundantPossiblesInSameRowOrColumnCount = 0;
+
+		// No cell may be selected.
+		setSelectedCell(null);
+
+		// The solving attempt is not yet saved.
+		mDateLastSaved = 0;
+
+		// Forget it if we have cheated before.
+		mCheated = false;
+
+		// Make the grid active again.
+		mActive = true;
+
+		// mGridStatistics ???
+		// mSolvingAttemptId
+
+		// Insert new solving attempt and statistics.
+		insertInDatabase();
+		
+		// Save the grid
+		save();
 	}
 }
