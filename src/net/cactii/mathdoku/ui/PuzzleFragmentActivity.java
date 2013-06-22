@@ -7,12 +7,14 @@ import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.gridGenerating.DialogPresentingGridGenerator;
 import net.cactii.mathdoku.gridGenerating.GridGenerator.PuzzleComplexity;
+import net.cactii.mathdoku.hint.TickerTape;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.storage.GameFileConverter;
 import net.cactii.mathdoku.storage.database.DatabaseHelper;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter;
+import net.cactii.mathdoku.storage.database.GridDatabaseAdapter.SizeFilter;
+import net.cactii.mathdoku.storage.database.GridDatabaseAdapter.StatusFilter;
 import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
-import net.cactii.mathdoku.tip.TipArchive;
 import net.cactii.mathdoku.tip.TipDialog;
 import net.cactii.mathdoku.util.UsageLog;
 import net.cactii.mathdoku.util.Util;
@@ -334,16 +336,6 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	 * the ASync GridGenerator task.
 	 */
 	public void onNewGridReady(final Grid newGrid) {
-		// Enable the archive as soon as the second game has been generated.
-		if (mMathDokuPreferences.isArchiveAvailable() == false
-				&& new GridDatabaseAdapter().countGrids() >= 2) {
-			mMathDokuPreferences.setArchiveVisible();
-			invalidateOptionsMenu();
-		}
-		if (TipArchive.toBeDisplayed(mMathDokuPreferences)) {
-			new TipArchive(PuzzleFragmentActivity.this).show();
-		}
-
 		// The background task for creating a new grid has been finished.
 		mDialogPresentingGridGenerator = null;
 
@@ -352,6 +344,24 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		// grid. The new grid will always overwrite the current game without any
 		// warning.
 		initializePuzzleFragment(newGrid.getSolvingAttemptId(), true);
+
+		// Enable the archive after at least 5 games have been solved. The
+		// archive will then contain at least 5 solved games and zero or more
+		// unfinished or cheated games. Also most hints will then have been displayed.
+		if (mMathDokuPreferences.isArchiveAvailable() == false
+				&& new GridDatabaseAdapter().countGrids(StatusFilter.SOLVED,
+						SizeFilter.ALL) >= 5) {
+			mMathDokuPreferences.setArchiveVisible();
+			invalidateOptionsMenu();
+		}
+		// Display the hint if applicable (maximum 3 times)
+		if (mPuzzleFragment != null && mMathDokuPreferences.showArchiveAvailableHint()) {
+			TickerTape tickerTape = new TickerTape(this);
+			tickerTape.addItem(getResources().getString(
+					R.string.dialog_tip_archive_text)).setEraseConditions(2, 0).show();
+			mPuzzleFragment.onTickerTapeChanged(tickerTape);
+		}
+
 	}
 
 	/**

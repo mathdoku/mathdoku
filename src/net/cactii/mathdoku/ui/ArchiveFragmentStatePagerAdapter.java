@@ -4,6 +4,8 @@ import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter;
+import net.cactii.mathdoku.storage.database.GridDatabaseAdapter.SizeFilter;
+import net.cactii.mathdoku.storage.database.GridDatabaseAdapter.StatusFilter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
@@ -19,16 +21,6 @@ public class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter 
 
 	public static final int UNKNOWN_GRID_ID = -1;
 	public static final int INVALID_POSITION_ID = -2;
-
-	// Allowed values for the status filter
-	public enum StatusFilter {
-		ALL, UNFINISHED, SOLVED, CHEATED
-	};
-
-	// Allowed values for the size filter
-	public enum SizeFilter {
-		ALL, SIZE_4, SIZE_5, SIZE_6, SIZE_7, SIZE_8, SIZE_9
-	};
 
 	// The list of grids which can be shown with the adapter. Per grid the
 	// latest solving attempt is also retrieved.

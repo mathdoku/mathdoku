@@ -5,9 +5,9 @@ import java.util.Map;
 import net.cactii.mathdoku.gridGenerating.GridGenerator.PuzzleComplexity;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.painter.Painter.GridTheme;
+import net.cactii.mathdoku.storage.database.GridDatabaseAdapter.SizeFilter;
+import net.cactii.mathdoku.storage.database.GridDatabaseAdapter.StatusFilter;
 import net.cactii.mathdoku.tip.TipDialog.TipCategory;
-import net.cactii.mathdoku.ui.ArchiveFragmentStatePagerAdapter.SizeFilter;
-import net.cactii.mathdoku.ui.ArchiveFragmentStatePagerAdapter.StatusFilter;
 import net.cactii.mathdoku.util.SingletonInstanceNotInstantiated;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -50,6 +50,9 @@ public class Preferences {
 	public final static String FULL_SCREEN = "full_screen";
 	public final static boolean FULL_SCREEN_DEFAULT = false;
 
+	public final static String HINT_ARCHIVE_AVAILABLE_SHOWED_COUNTDOWN = "hint_archive_available_showed_count_down";
+	public final static int HINT_ARCHIVE_AVAILABLE_SHOWED_COUNTDOWN_DEFAULT = 3;
+
 	public final static String HINT_INPUT_MODE_CHANGED_DISPLAYED = "hint_input_mode_displayed_showed";
 	public final static int HINT_INPUT_MODE_CHANGED_DISPLAYED_DEFAULT = 0;
 
@@ -57,7 +60,8 @@ public class Preferences {
 	public final static boolean PLAY_SOUND_EFFECTS_DEFAULT = true;
 
 	public final static String PUZZLE_PARAMETER_COMPLEXITY = "puzzle_parameter_complexity";
-	public final static String PUZZLE_PARAMETER_COMPLEXITY_DEFAULT = PuzzleComplexity.VERY_EASY.toString();
+	public final static String PUZZLE_PARAMETER_COMPLEXITY_DEFAULT = PuzzleComplexity.VERY_EASY
+			.toString();
 
 	public final static String PUZZLE_PARAMETER_OPERATORS_VISIBLE = "puzzle_parameter_operators_visible";
 	public final static boolean PUZZLE_PARAMETER_OPERATORS_VISIBLE_DEFAULT = true;
@@ -355,7 +359,8 @@ public class Preferences {
 				prefeditor.putString(PUZZLE_PARAMETER_COMPLEXITY,
 						PUZZLE_PARAMETER_COMPLEXITY_DEFAULT);
 			}
-			if (!mSharedPreferences.contains(PUZZLE_PARAMETER_OPERATORS_VISIBLE)) {
+			if (!mSharedPreferences
+					.contains(PUZZLE_PARAMETER_OPERATORS_VISIBLE)) {
 
 				prefeditor.putBoolean(PUZZLE_PARAMETER_OPERATORS_VISIBLE,
 						PUZZLE_PARAMETER_OPERATORS_VISIBLE_DEFAULT);
@@ -367,8 +372,7 @@ public class Preferences {
 		}
 		if (previousInstalledVersion <= 357 && currentVersion >= 357) {
 			if (!mSharedPreferences.contains(FULL_SCREEN)) {
-				prefeditor.putBoolean(FULL_SCREEN,
-						FULL_SCREEN_DEFAULT);
+				prefeditor.putBoolean(FULL_SCREEN, FULL_SCREEN_DEFAULT);
 			}
 		}
 
@@ -879,41 +883,47 @@ public class Preferences {
 	public int increaseHintInputModeShowedCounter() {
 		return increaseCounter(HINT_INPUT_MODE_CHANGED_DISPLAYED);
 	}
-	
+
 	/**
 	 * Get the complexity of the puzzle which was last generated.
 	 * 
 	 * @return The complexity of the puzzle which was last generated.
 	 */
 	public PuzzleComplexity getPuzzleParameterComplexity() {
-		return PuzzleComplexity.valueOf(mSharedPreferences.getString(PUZZLE_PARAMETER_COMPLEXITY,
+		return PuzzleComplexity.valueOf(mSharedPreferences.getString(
+				PUZZLE_PARAMETER_COMPLEXITY,
 				PUZZLE_PARAMETER_COMPLEXITY_DEFAULT));
 	}
 
 	/**
-	 * Set the complexity of the puzzle which was last generated.
-	 * closed.
+	 * Set the complexity of the puzzle which was last generated. closed.
 	 * 
-	 * @param puzzleComplexity The complexity of the puzzle.
+	 * @param puzzleComplexity
+	 *            The complexity of the puzzle.
 	 */
 	public void setPuzzleParameterComplexity(PuzzleComplexity puzzleComplexity) {
 		Editor prefeditor = mSharedPreferences.edit();
-		prefeditor.putString(PUZZLE_PARAMETER_COMPLEXITY, puzzleComplexity.toString());
+		prefeditor.putString(PUZZLE_PARAMETER_COMPLEXITY,
+				puzzleComplexity.toString());
 		prefeditor.commit();
 	}
 
 	/**
-	 * Get the setting for showing or hiding the operators for the puzzle which was last generated.
+	 * Get the setting for showing or hiding the operators for the puzzle which
+	 * was last generated.
 	 * 
-	 * @return True in case the operators were hidden in the last puzzle generated.
+	 * @return True in case the operators were hidden in the last puzzle
+	 *         generated.
 	 */
 	public boolean getPuzzleParameterOperatorsVisible() {
-		return mSharedPreferences.getBoolean(PUZZLE_PARAMETER_OPERATORS_VISIBLE,
+		return mSharedPreferences.getBoolean(
+				PUZZLE_PARAMETER_OPERATORS_VISIBLE,
 				PUZZLE_PARAMETER_OPERATORS_VISIBLE_DEFAULT);
 	}
 
 	/**
-	 * Set the setting for showing or hiding the operators for the puzzle which was last generated.
+	 * Set the setting for showing or hiding the operators for the puzzle which
+	 * was last generated.
 	 */
 	public void setPuzzleParameterOperatorsVisible(boolean visible) {
 		Editor prefeditor = mSharedPreferences.edit();
@@ -932,8 +942,7 @@ public class Preferences {
 	}
 
 	/**
-	 * Set the size of the puzzle which was last generated.
-	 * closed.
+	 * Set the size of the puzzle which was last generated. closed.
 	 */
 	public void setPuzzleParameterSize(int gridSize) {
 		Editor prefeditor = mSharedPreferences.edit();
@@ -944,9 +953,40 @@ public class Preferences {
 	/**
 	 * Checks whether the full screen preference is enabled.
 	 * 
-	 * @return True in case the activity should request full screen mode while playing.
+	 * @return True in case the activity should request full screen mode while
+	 *         playing.
 	 */
 	public boolean isFullScreenEnabled() {
 		return mSharedPreferences.getBoolean(FULL_SCREEN, FULL_SCREEN_DEFAULT);
+	}
+
+	/**
+	 * Checks if the archive available hint should be displayed.
+	 * 
+	 * @return True in case the archive available hint has to be displayed.
+	 */
+	public boolean showArchiveAvailableHint() {
+		return decreaseCounterIfApplicable(HINT_ARCHIVE_AVAILABLE_SHOWED_COUNTDOWN, HINT_ARCHIVE_AVAILABLE_SHOWED_COUNTDOWN_DEFAULT);
+	}
+	
+	/**
+	 * Decrease the current value of a preference counter with 1 occurrence if
+	 * not yet zero.
+	 * 
+	 * @param preferenceName
+	 *            The name of the preferences counter.
+	 *            @param The start value of the count down counter.
+	 * @return True in case the counter is increased. False otherwise.
+	 */
+	private boolean decreaseCounterIfApplicable(String preferenceName, int startValue) {
+		int counter = mSharedPreferences.getInt(preferenceName, startValue);
+		if (counter <= 0) {
+			return false;
+		} else {
+			Editor prefeditor = mSharedPreferences.edit();
+			prefeditor.putInt(preferenceName, counter - 1);
+			prefeditor.commit();
+			return true;
+		}
 	}
 }

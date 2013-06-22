@@ -6,8 +6,6 @@ import net.cactii.mathdoku.Grid;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.gridGenerating.GridGeneratingParameters;
-import net.cactii.mathdoku.ui.ArchiveFragmentStatePagerAdapter.SizeFilter;
-import net.cactii.mathdoku.ui.ArchiveFragmentStatePagerAdapter.StatusFilter;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -49,6 +47,16 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	// Columns used in result of function getLatestSolvingAttemptsPerGrid
 	public static final int LATEST_SOLVING_ATTEMPT_PER_GRID__GRID_ID = 0;
 	public static final int LATEST_SOLVING_ATTEMPT_PER_GRID__SOLVING_ATTEMP_ID = 1;
+
+	// Allowed values for the status filter
+	public enum StatusFilter {
+		ALL, UNFINISHED, SOLVED, CHEATED
+	};
+
+	// Allowed values for the size filter
+	public enum SizeFilter {
+		ALL, SIZE_4, SIZE_5, SIZE_6, SIZE_7, SIZE_8, SIZE_9
+	};
 
 	protected String getTableName() {
 		return TABLE;
@@ -673,4 +681,11 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		}
 		return count;
 	}
+	
+	public int countGrids(StatusFilter statusFilter,
+			SizeFilter sizeFilter) {
+		int gridIds[][] = getLatestSolvingAttemptsPerGrid(statusFilter, sizeFilter);
+		return (gridIds == null ? 0 : gridIds.length);
+	}
+
 }
