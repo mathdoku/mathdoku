@@ -374,6 +374,9 @@
     <!-- The label in the pager bar for the "puzzle number" -->
     <string name="archive_pager_puzzle_number">Puzzle nr.</string>
     
+    <string name="archive_pager_reload_unfinished_game">Verder gaan</string>
+    <string name="archive_pager_reload_finished_game">Opnieuw spelen</string>
+    
     <!-- The title and summary of the "Show status filter" option. This option enables or disables showing of the status filter in the action bar of the archive. -->
     <string name="option_archive_show_status_filter_title">Toon status filter</string>
     <string name="option_archive_show_status_filter_enabled">Sta filtering op status van de puzzel toe</string>
