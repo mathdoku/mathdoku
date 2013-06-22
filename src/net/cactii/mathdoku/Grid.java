@@ -962,8 +962,7 @@ public class Grid {
 
 		if (solvingAttemptData == null) {
 			// Could not retrieve this solving attempt.
-			loaded = false;
-			throw new InvalidGridException();
+			return false;
 		}
 
 		// Get date created and date last saved from the solving attempt record.

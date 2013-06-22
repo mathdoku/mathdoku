@@ -39,7 +39,7 @@ public class TipArchive extends TipDialog {
 	 */
 	public static boolean toBeDisplayed(Preferences preferences) {
 		// Determine on basis of preferences whether the tip should be shown.
-		return preferences.getDisplayTipAgain(TIP_NAME, TIP_CATEGORY);
+		return (preferences.isArchiveAvailable() && preferences.getDisplayTipAgain(TIP_NAME, TIP_CATEGORY));
 	}
 
 	/**

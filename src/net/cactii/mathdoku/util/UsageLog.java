@@ -436,9 +436,7 @@ public class UsageLog {
 			Date now = Calendar.getInstance().getTime();
 			if (now.after(mDateLoggingClosePeriodStart.getTime())
 					&& now.before(mDateLoggingClosePeriodEnd.getTime())) {
-				// Only request to send logfile in case minimal 3 games have
-				// been started.
-				if (preferences.getNumberOfGamesStarted() >= 2 && !preferences.isUsageLogDisabled()) {
+				if (!preferences.isUsageLogDisabled()) {
 					// Set auto disable as soon as we have asked the consent of the user in the close down period.
 					preferences.setUsageLogDisabled();
 					askConsentForSendingLog(mActivity);

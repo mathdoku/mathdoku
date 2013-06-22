@@ -127,7 +127,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 		mSoundEffectViews = new View[] { mGridView, mClearButton, mUndoButton };
 
-		// Hide all controls untill sure a grid view can be displayed.
+		// Hide all controls until sure a grid view can be displayed.
 		setNoGridLoaded();
 
 		mGridView.setOnGridTouchListener(mGridView.new OnGridTouchListener() {

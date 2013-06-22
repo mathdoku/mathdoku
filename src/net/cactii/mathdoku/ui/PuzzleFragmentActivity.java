@@ -234,7 +234,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		int menuId = menuItem.getItemId();
 		switch (menuId) {
 		case R.id.action_new_game:
-			showDialogNewGame();
+			showDialogNewGame(true);
 			return true;
 		case R.id.checkprogress:
 			if (mPuzzleFragment != null) {
@@ -335,11 +335,10 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	 */
 	public void onNewGridReady(final Grid newGrid) {
 		// Enable the archive as soon as the second game has been generated.
-		if (mMathDokuPreferences.isArchiveAvailable() == false) {
-			if (new GridDatabaseAdapter().countGrids() >= 2) {
-				mMathDokuPreferences.setArchiveVisible();
-				invalidateOptionsMenu();
-			}
+		if (mMathDokuPreferences.isArchiveAvailable() == false
+				&& new GridDatabaseAdapter().countGrids() >= 2) {
+			mMathDokuPreferences.setArchiveVisible();
+			invalidateOptionsMenu();
 		}
 		if (TipArchive.toBeDisplayed(mMathDokuPreferences)) {
 			new TipArchive(PuzzleFragmentActivity.this).show();
@@ -492,13 +491,16 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 			UsageLog.getInstance().logFunction("ViewHelp.AfterUpgrade");
 			this.openHelpDialog();
 		} else if (previousInstalledVersion < currentVersion) {
+			// Restart the last game
+			restartLastGame();
+
 			// On upgrade of version show changes.
 			UsageLog.getInstance().logFunction("ViewChanges.AfterUpgrade");
 			this.openChangesDialog();
+		} else {
+			// Restart the last game
+			restartLastGame();
 		}
-
-		// Restart the last game
-		restartLastGame();
 	}
 
 	/*
@@ -641,14 +643,19 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 									+ solvingAttemptId + "'.");
 				}
 			}
+		} else {
+			showDialogNewGame(false);
 		}
 	}
 
 	/**
 	 * Shows the dialog in which the parameters have to specified which will be
 	 * used to create the new game.
+	 * 
+	 * @param cancelable
+	 *            True in case the dialog can be cancelled.
 	 */
-	private void showDialogNewGame() {
+	private void showDialogNewGame(boolean cancelable) {
 		// Get view and put relevant information into the view.
 		LayoutInflater layoutInflater = LayoutInflater.from(this);
 		View view = layoutInflater.inflate(R.layout.puzzle_parameter_dialog,
@@ -700,6 +707,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		new AlertDialog.Builder(this)
 				.setTitle(R.string.dialog_puzzle_parameters_title)
 				.setView(view)
+				.setCancelable(cancelable)
 				.setNeutralButton(
 						R.string.dialog_puzzle_parameters_neutral_button,
 						new DialogInterface.OnClickListener() {
@@ -786,7 +794,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		}
 		super.onActivityResult(requestCode, resultCode, intent);
 	}
-	
+
 	@Override
 	protected void onResumeFragments() {
 		super.onResumeFragments();
