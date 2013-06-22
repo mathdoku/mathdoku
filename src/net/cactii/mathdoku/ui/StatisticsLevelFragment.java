@@ -9,7 +9,6 @@ import net.cactii.mathdoku.statistics.HistoricStatistics;
 import net.cactii.mathdoku.statistics.HistoricStatistics.Scale;
 import net.cactii.mathdoku.statistics.HistoricStatistics.Serie;
 import net.cactii.mathdoku.storage.database.StatisticsDatabaseAdapter;
-import net.cactii.mathdoku.util.UsageLog;
 import net.cactii.mathdoku.util.Util;
 
 import org.achartengine.ChartFactory;
@@ -29,8 +28,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -108,10 +109,13 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
 
 		// Check if at least one statistic is displayed.
 		if (!statisticsDisplayed) {
-			Toast.makeText(
-					getActivity().getBaseContext(),
-					getResources().getString(R.string.statistics_not_available),
-					Toast.LENGTH_SHORT).show();
+			TextView textView = new TextView(getActivity());
+			textView.setLayoutParams(new LayoutParams(
+					ViewGroup.LayoutParams.WRAP_CONTENT,
+					ViewGroup.LayoutParams.WRAP_CONTENT));
+			textView.setText(getResources().getString(R.string.statistics_not_available, mMinGridSize));
+			
+			mChartsLayout.addView(textView);
 		}
 
 	}

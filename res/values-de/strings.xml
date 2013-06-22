@@ -303,7 +303,7 @@
 
     <!-- Title of statistics activity. -->
     <string name="statistics_activity_title">Game Statistics</string>
-    <string name="statistics_not_available">Sorry, no statistics available for this game.</string>
+    <string name="statistics_not_available">Statistics are not yet available for this level as no games of size %1$d have been played yet.</string>
 
     <!-- Labels for general game statistics. -->
     <string name="statistics_general_date_created">Created on</string>

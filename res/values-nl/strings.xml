@@ -283,7 +283,7 @@
 
     <!-- Title of statistics activity. -->
     <string name="statistics_activity_title">Puzzel statistieken</string>
-    <string name="statistics_not_available">Sorry, geen statistieken beschikbaar voor dit spel.</string>
+    <string name="statistics_not_available">Voor dit niveau zijn nog geen statistieken beschikbaar omdat nog geen puzzels met grootte %1$d zijn gespeeld.</string>
 
     <!-- Labels for general game statistics. -->
     <string name="statistics_general_date_created">Aangemaakt op</string>
