@@ -135,7 +135,6 @@ class SwipeMotion {
 			// as this is not the second (or more) consecutive swipe motion on
 			// the same selected cell.
 			mDoubleTapTouchDownTime = event.getDownTime();
-			Log.i(TAG,"Start of detection double tap mode: " + mDoubleTapTouchDownTime);
 		} else {
 			// The same cell is selected again. The touch down time may not be
 			// reseted as for the double tap it is required that tow
@@ -147,13 +146,11 @@ class SwipeMotion {
 				// touch down of the first swipe motion until release of the
 				// second swipe motion took less than 300 milliseconds.
 				mDoubleTapDetected = true;
-				Log.i(TAG,"Double tap detected at touch down.");
 			} else {
 				// Too slow for being recognized as double tap. Use touch
 				// down time of this swipe motion as new start time of the
 				// double tap event.
 				mDoubleTapTouchDownTime = event.getDownTime();
-				Log.i(TAG,"Too slow for double tap.");
 			}
 		}
 
