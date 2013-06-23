@@ -809,4 +809,19 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	protected void onResumeFragments() {
 		super.onResumeFragments();
 	}
+	
+	@Override
+	protected void onNewIntent(Intent intent) {
+		if (intent != null) {
+			Bundle bundle = intent.getExtras();
+			
+			if (bundle != null) {
+				if (bundle.getBoolean(SharedPuzzleActivity.RESTART_LAST_GAME_SHARED_PUZZLE)) {
+					restartLastGame();
+				}
+			}
+		}
+		
+		super.onNewIntent(intent);
+	}
 }

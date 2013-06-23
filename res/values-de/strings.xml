@@ -93,7 +93,7 @@
     <!-- The menu item that allows the player to use some less frequently used cheats. -->
     <!-- TODO -->
     <string name="action_cheats">Cheats</string>
-    
+
     <!-- The context menu item that allows the user to clear the entire grid. Note this item is only available in case at least one cell in the entire puzzle contains a (maybe) value. -->
     <string name="action_clear_grid">Gesamten Raster löschen</string>
     
@@ -109,6 +109,10 @@
 
     <!-- The menu item that allows the player to navigate to the help screen. -->
     <string name="action_help">Hilfe</string>
+
+    <!-- The menu item that allows the player to share an archived game with another user via emai. -->
+    <!-- TODO -->
+    <string name="action_share">Share</string>
 
     <!-- ACTIONS IN SUB MENU CHEATS - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     
@@ -251,7 +255,6 @@
     <string name="hint_swipe_rotate">Rotate the swipe line to select a digit. End the swipe when the appropriate digit is highlighted.</string>
     <string name="hint_swipe_release">Stop swiping to select the highlighted digit or rotate the swipe line to select another digit.</string>
     <string name="hint_swipe_digit_5">To select a 5, swipe outside the selected cell and end this swipe in the cell where you started this swipe.</string>
-    
     <string name="hint_swipe_valid_digit_completed">You have just completed a swipe for digit %1$s.</string>
     <string name="hint_swipe_invalid_digit_completed">Swiping in this direction will reveal a digit when playing a bigger puzzle.</string>
 
@@ -262,7 +265,7 @@
     <!-- Hint about the "Archive" function which has been made available as menu option. -->
     <!-- TODO -->
     <string name="hint_archive_available">The previous game has been added to the archive. The archive contains all games you have started. The archive can be opened via the menu.</string>
-    
+
     <!-- TIP DIALOGS - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <!-- Label for check box "Do not show again" in the tip dialog. -->
@@ -424,7 +427,28 @@
 
     <!-- The lead in text at top of the help dialog. -->
     <string name="archive_help_dialog_general">The archive contains the history of all games you have played. Swipe from left to right to go to an older puzzle. Swipe from right to left to go to a newer puzzle.\n\nYou can use filters to view only puzzles having a specific status or size. Filters can be enabled and disabled via the settings menu. Note: a filter will only be shown in case it contains multiple values.</string>
+    <string name="archive_share_subject">Mathdoku puzzle</string>
+    <string name="archive_share_body">I want to share this MathDoku puzzle with you. Click the %1$s link and choose the MathDoku app to preview the puzzle. In case you haven\'t installed MathDoku for Android, please install an alpha version (revision 368 or above) from %2$s in which this feature is added.</string>
 
+    <!-- SHARED PUZZLE  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <!-- TODO: TRANSLATE ENTIRE SECTION -->
+
+    <!-- Title for the shared puzzle fragment. -->
+    <string name="shared_puzzle_action_bar_title">Preview Shared Puzzle</string>
+
+    <!-- Introduction text at top of screen. -->
+    <string name="shared_puzzle_introduction">This puzzle was sent to you via an email link. See email for more details if included by sender. In case you choose to play this puzzle right now, it will also be added to your own archive of played puzzles.</string>
+
+    <!-- The label of the button below a puzzle. -->
+    <string name="shared_puzzle_play_button">Play this puzzle</string>
+    
+    <!-- The title and message for the dialog in which the user is informed that the shared puzzle already exists in the archive. -->
+    <string name="shared_puzzle_exists_title">Puzzle duplicate</string>
+    <string name="shared_puzzle_exists_message">This puzzle already exists in your archive (see puzzle %1$d). Playing this puzzle will overwrite the previous solution and statistics.</string>
+    <string name="shared_puzzle_exists_positive_button">Yes</string>
+    <string name="shared_puzzle_exists_negative_button">No</string>
+    
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 

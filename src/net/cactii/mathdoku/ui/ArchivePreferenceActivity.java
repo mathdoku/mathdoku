@@ -1,7 +1,6 @@
 package net.cactii.mathdoku.ui;
 
 import net.cactii.mathdoku.R;
-import android.app.ActionBar;
 import android.os.Bundle;
 
 public class ArchivePreferenceActivity extends AppActivity {

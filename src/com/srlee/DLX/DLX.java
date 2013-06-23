@@ -2,9 +2,11 @@ package com.srlee.DLX;
 
 import java.util.ArrayList;
 
-import net.cactii.mathdoku.gridGenerating.GridGenerator;
+import android.util.Log;
 
 public class DLX extends Object {
+	private static final String TAG = "MathDoku.DLX";
+
 	public enum SolveType {
 		ONE, MULTIPLE, ALL
 	};
@@ -21,9 +23,6 @@ public class DLX extends Object {
 	protected boolean isValid;
 	private int prev_rowidx = -1;
 	private SolveType solvetype;
-
-	// The grid generator to which progress updates will be sent.
-	private GridGenerator mGridGenerator;
 
 	public DLX() {
 		trysolution = new ArrayList<Integer>();
@@ -174,9 +173,7 @@ public class DLX extends Object {
 	 * @return The number of solutions, given the solution type, that can be
 	 *         found for this grid.
 	 */
-	public int Solve(GridGenerator gridGenerator, SolveType solveType) {
-		mGridGenerator = gridGenerator;
-
+	protected int Solve(SolveType solveType) {
 		if (!isValid)
 			return -1;
 
@@ -191,9 +188,11 @@ public class DLX extends Object {
 		LL2DNode r, j;
 
 		if (root.GetRight() == root) {
-			foundsolution = new ArrayList<Integer>(trysolution);
 			NumSolns++;
-			mGridGenerator.publishProgressGridSolutionFound();
+			foundsolution = new ArrayList<Integer>(trysolution);
+			if (MathDokuDLX.DEBUG_DLX) {
+				Log.i(TAG, "Solution " + NumSolns + " found which consists of following moves: " + trysolution.toString());
+			}
 			return;
 		}
 		chosenCol = ChooseMinCol();

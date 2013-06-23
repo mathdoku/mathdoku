@@ -16,7 +16,6 @@ import net.cactii.mathdoku.util.Util;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.srlee.DLX.DLX.SolveType;
 import com.srlee.DLX.MathDokuDLX;
 
 /**
@@ -205,7 +204,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		mGrid = new Grid();
 		mGrid.setGridSize(mGridSize);
 
-		int num_solns = 0;
+		boolean hasUniqueSolution = false;
 		int num_attempts = 0;
 
 		// Generate a random seed. This seed will be used to for another
@@ -279,7 +278,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 						// Fake a non unique solution so another grid is
 						// generated.
-						num_solns = 2;
+						hasUniqueSolution = true;
 						continue;
 					} else {
 						return null;
@@ -294,13 +293,12 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			}
 
 			// Determine whether grid has a unique solution.
-			MathDokuDLX mdd = new MathDokuDLX(this.mGridSize, this.mCages);
-			num_solns = mdd.Solve(this, SolveType.MULTIPLE);
-
+			hasUniqueSolution = new MathDokuDLX(mGridSize, mCages).hasUniqueSolution();
+			
 			if (DEBUG_GRID_GENERATOR) {
-				Log.d(TAG, "Num Solns = " + num_solns);
+				Log.d(TAG, "This grid does not have a unique solution.");
 			}
-		} while (num_solns > 1);
+		} while (hasUniqueSolution == false);
 		if (DEBUG_GRID_GENERATOR) {
 			Log.d(TAG, "Found puzzle with unique solution in " + num_attempts
 					+ " attempts.");

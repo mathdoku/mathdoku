@@ -1,0 +1,3 @@
+RewriteEngine On
+#Look for puzzle pages which are not openened with the MathDoku app but a browser instead.
+RewriteRule  ^puzzle/[\d]*/.*$   /puzzle.html [NC,L]

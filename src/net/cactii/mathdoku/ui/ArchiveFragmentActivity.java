@@ -16,6 +16,7 @@
 
 package net.cactii.mathdoku.ui;
 
+import net.cactii.mathdoku.Grid;
 import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter;
@@ -25,10 +26,12 @@ import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -199,6 +202,9 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 				// navigate up to the hierarchical parent activity.
 				NavUtils.navigateUpTo(this, upIntent);
 			}
+			return true;
+		case R.id.action_share:
+			shareGame();
 			return true;
 		case R.id.action_settings:
 			startActivity(new Intent(this, ArchivePreferenceActivity.class));
@@ -476,5 +482,39 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 
 		// Finish the archive activity
 		finish();
+	}
+
+	/**
+	 * Start an email client with a prepared email which can be used to share a
+	 * game with another user.
+	 */
+	public void shareGame() {
+		int solvingAttemptId = getSolvingAttemptIdForCurrentSelectedGrid();
+		Grid grid = new Grid();
+		if (grid.load(solvingAttemptId)) {
+		
+		Intent intent = new Intent(Intent.ACTION_SENDTO);
+		intent.setData(Uri.parse("mailto:"));
+		intent.putExtra(Intent.EXTRA_SUBJECT,
+				getResources().getString(R.string.archive_share_subject));
+		
+		String ShareURL = SharedPuzzleActivity.getShareUrl(grid.toGridDefinitionString());
+		String downloadUrl = "https://code.google.com/p/mathdoku/downloads/list"; // TODO: replace before going live to Play Store!!
+		intent.putExtra(
+				Intent.EXTRA_TEXT,
+				Html.fromHtml(getResources()
+						.getString(
+								R.string.archive_share_body,
+								"<a href =\"" + ShareURL + "\">puzzle</a>",
+								"<a href =\"" + downloadUrl + "\">MathDoku Project Download Page</a>")));
+
+		try {
+			startActivity(Intent.createChooser(intent, getResources()
+					.getString(R.string.usage_log_choose_action_title)));
+		} catch (android.content.ActivityNotFoundException ex) {
+			// No clients installed which can handle
+			// this intent.
+		}
+	}
 	}
 }

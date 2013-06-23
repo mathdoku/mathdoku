@@ -1,6 +1,10 @@
 package net.cactii.mathdoku;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.srlee.DLX.MathDokuDLX;
 
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
@@ -780,7 +784,7 @@ public class Grid {
 			} else {
 				mRowId = gridRow.mId;
 			}
-		} 
+		}
 
 		// Insert new solving attempt.
 		SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = new SolvingAttemptDatabaseAdapter();
@@ -1219,8 +1223,126 @@ public class Grid {
 
 		// Insert new solving attempt and statistics.
 		insertInDatabase();
-		
+
 		// Save the grid
 		save();
+	}
+
+	/**
+	 * Load a grid from the given definition string.
+	 * 
+	 * @return True in case the grid has been loaded successfully. False
+	 *         otherwise.
+	 */
+	public boolean load(String definition) {
+		// Be sure to start with an empty grid when load from a definition.
+		initialize();
+
+		// Example of a grid definition:
+		// 00010202000103040506030405060707:0,4,1:1,2,4:2,2,4:3,1,2:4,4,4:5,2,4:6,4,1:7,6,3
+		
+		// Split the definition into parts.
+		String[] definitionParts = definition.split(":");
+
+		// The definition should contain at least two parts.
+		if (definitionParts == null || definitionParts.length < 2) {
+			return false;
+		}
+
+		// Create empty cages. Except the first part of the definition, each
+		// part represents a single cage.
+		for (int i = 1; i < definitionParts.length; i++) {
+			// Define new cage
+			GridCage gridCage = new GridCage(this);
+			gridCage.setCageId(i - 1);
+
+			// Add cage to cages list
+			if (mCages.add(gridCage) == false) {
+				return false;
+			}
+		}
+
+		// The first part of the definitions contains the cage number for each
+		// individual cell. The cage number always consists of two digits.
+		int cellCount = definitionParts[0].length() / 2;
+		switch (cellCount) {
+		case 16:
+			mGridSize = 4;
+			break;
+		case 25:
+			mGridSize = 5;
+			break;
+		case 36:
+			mGridSize = 6;
+			break;
+		case 49:
+			mGridSize = 7;
+			break;
+		case 64:
+			mGridSize = 8;
+			break;
+		case 81:
+			mGridSize = 9;
+			break;
+		default:
+			// Invalid number of cells.
+			return false;
+		}
+		Pattern pattern = Pattern.compile("\\d\\d");
+		Matcher matcher = pattern.matcher(definitionParts[0]);
+		int cellNumber = 0;
+		while (matcher.find()) {
+			int cageId = Integer.valueOf(matcher.group());
+			
+			// Create new cell and add it to the cells list.
+			GridCell gridCell = new GridCell(this, cellNumber++);
+			gridCell.setCageId(cageId);
+			mCells.add(gridCell);
+
+			// Determine the cage to which the cell has to be added.
+			GridCage gridCage = mCages.get(cageId);
+			if (gridCage == null) {
+				return false;
+			}
+			gridCage.mCells.add(gridCell);
+		}
+
+		// Finalize the grid cages which only can be done after the cell have
+		// been attached to the cages.
+		for (int i = 1; i < definitionParts.length; i++) {
+			// Split the cage part into elements
+			String[] cageElements = definitionParts[i].split(",");
+
+			// Define new cage
+			GridCage gridCage = mCages.get(i - 1);
+			if (gridCage == null) {
+				return false;
+			}
+			gridCage.setCageResults(Integer.valueOf(cageElements[1]),
+					Integer.valueOf(cageElements[2]), false);
+		}
+
+		// Check whether a single solution can be found.
+		int[][] solution = new MathDokuDLX(mGridSize, mCages).getSolutionGrid();
+		if (solution == null) {
+			// Either no or multiple solutions can be found. In both case this
+			// would mean that the grid definition string was manipulated by the
+			// user.
+			return false;
+		}
+		
+		// Store the solution in the grid cells.
+		for (int row = 0; row < this.mGridSize; row++) {
+			for (int col = 0; col < this.mGridSize; col++) {
+				getCellAt(row, col).setCorrectValue(solution[row][col]);
+			}
+		}
+		
+		// Finally set all cage borders by checking their math
+		for (GridCage gridCage : mCages) {
+			gridCage.checkCageMathsCorrect(true);
+		}
+
+		return true;
 	}
 }

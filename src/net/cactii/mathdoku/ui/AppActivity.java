@@ -1,7 +1,6 @@
 package net.cactii.mathdoku.ui;
 
 import net.cactii.mathdoku.Preferences;
-import net.cactii.mathdoku.R;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.SharedPreferences;

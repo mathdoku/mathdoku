@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="net.cactii.mathdoku"
     android:installLocation="auto"
-    android:versionCode="367"
+    android:versionCode="368"
     android:versionName="2 (dev version)" >
 
     <uses-sdk
@@ -13,7 +13,7 @@
         android:anyDensity="true"
         android:largeScreens="true"
         android:normalScreens="true"
-        android:xlargeScreens="true">
+        android:xlargeScreens="true" >
     </supports-screens>
 
     <application
@@ -28,6 +28,19 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="net.cactii.mathdoku.ui.SharedPuzzleActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="mathdoku.net"
+                    android:pathPrefix="/puzzle"
+                    android:scheme="http" />
             </intent-filter>
         </activity>
         <activity android:name="net.cactii.mathdoku.ui.PuzzlePreferenceActivity" />

@@ -105,6 +105,9 @@
     <!-- The menu item that allows the player to navigate to the help screen. -->
     <string name="action_help">Help</string>
 
+    <!-- The menu item that allows the player to share an archived game with another user via emai. -->
+    <string name="action_share">Delen</string>
+
     <!-- ACTIONS IN SUB MENU CHEATS - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     
     <!-- The menu item that allows the user to reveal a cell. -->
@@ -192,7 +195,7 @@
     <string name="dialog_reveal_solution_confirmation_message">Weet je zeker dat je de oplossing van deze puzzel wil onthullen?</string>
     <string name="dialog_reveal_solution_confirmation_negative_button">Nee, ik los het zelf op</string>
     <string name="dialog_reveal_solution_confirmation_positive_button">Ja, ik geef op</string>
-    
+
     <!-- DIALOG CLEAR GRID CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <!-- The title, message and buttons confirmation message that shows up when the clear grid context menu item is selected, plus the associated title and button labels. -->
@@ -229,10 +232,10 @@
     <string name="usage_log_choose_action_title">Verzend MathDoku data</string>
 
     <!-- PLAYING HINT - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    
+
     <!-- Hint to start swiping to select a digit. Will be displayed as no swipe movement has begun yet. -->
     <string name="hint_swipe_basic">Raak de cel waarvan je de waarde wil wijzigen lang aan.</string>
-    
+
     <!-- Hint to stretch the swipe outside the current cell. The swipe movement has begun but has not yet left the cell. -->
     <string name="hint_swipe_outside_cell">Veeg nu naar het gewenste getal totdat het oplicht.</string>
     <string name="hint_swipe_basic_cell_at_border">Ook indien het gewenste getal niet zichtbaar is, kun je nog steeds vegen in de goede richting. Raak een cel in het midden van de puzzel aan om bekend te worden met de posities van de getallen %1$s.</string>
@@ -241,16 +244,15 @@
     <string name="hint_swipe_rotate">Draai de veeglijn om een getal te selecteren. Beëindig de veegbeweging om het opgelichtte getal te selecteren.</string>
     <string name="hint_swipe_release">Stop met vegen om het opgelichtte getal te selecteren, of draai de veeglijn om een ander getal te selecteren.</string>
     <string name="hint_swipe_digit_5">Om een 5 te selecteren, veeg tot buiten de geselecteerde cel en stop de veegbeweging pas weer in de geselecteerde cel.</string>
-    
     <string name="hint_swipe_valid_digit_completed">Je hebt de veegbeweging voor getal %1$s gemaakt.</string>
     <string name="hint_swipe_invalid_digit_completed">Dze veegrichting onthult alleen een getal in een grotere puzzel.</string>
 
     <!-- Hint to inform about change of Input mode -->
     <string name="hint_input_mode_changed">Je hebt zojuist de invoermethode gewijzigd van %1$s naar %2$s door een dubbeltik op een cel.</string>
-    
+
     <!-- Hint about the "Archive" function which has been made available as menu option. -->
     <string name="hint_archive_available">De vorige puzzel is toegevoegd aan het archief. Het archief bevat alle puzzels die je hebt gestart. Het archief kan worden geopend via het menu.</string>
-    
+
     <!-- TIP DIALOGS - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <!-- Label for check box "Do not show again" in the tip dialog. -->
@@ -351,15 +353,15 @@
     <!-- The title and summary of the "Hide explanation" option. This option enables or disables displayin the explanations below the statistics charts. -->
     <string name="option_show_statistics_description_title">Grafiek toelichting</string>
     <string name="option_show_statistics_description_summary">Toon een toelichting onder elke grafiek.</string>
-    
+
     <!-- The title and summary of the "Maximum games in elapsed time chart" option. This option restricts the number of games which will be displayed in an elapsed time chart. -->
     <string name="option_max_games_in_elapsed_time_chart_title">Aantal puzzels in grafiek speeltijd</string>
     <string name="option_max_games_in_elapsed_time_chart_summary">Toon maximaal %1$d puzzels in de grafiek speeltijd.</string>
 
     <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-    <!-- Subtitle for the archive fragment. -->
-    <string name="archive_action_bar_title">Bekijk een oud spel</string>
+    <!-- Title for the archive fragment. -->
+    <string name="archive_action_bar_title">Archief</string>
 
     <!-- The possible values of the archive filter on the game status. -->
     <string-array name="archive_status_filter">
@@ -382,14 +384,14 @@
 
     <!-- The label in the pager bar for the "puzzle number" -->
     <string name="archive_puzzle_number">Puzzle nr.</string>
-    
+
     <!-- The label of the button below a puzzle. -->
     <string name="archive_reload_unfinished_game">Verder gaan</string>
     <string name="archive_reload_finished_game">Opnieuw spelen</string>
-    
+
     <!-- Title for the archive settings fragment. -->
     <string name="archive_settings_action_bar_title">Archief settings</string>
-    
+
     <!-- The title and summary of the "Show status filter" option. This option enables or disables showing of the status filter in the action bar of the archive. -->
     <string name="archive_settings_show_status_filter_title">Toon status filter</string>
     <string name="archive_settings_show_status_filter_enabled">Sta filtering op status van de puzzel toe</string>
@@ -402,6 +404,25 @@
 
     <!-- The lead in text at top of the help dialog. -->
     <string name="archive_help_dialog_general">The archive contains the history of all games you have played. Swipe from left to right to go to an older puzzle. Swipe from right to left to go to a newer puzzle.\n\nYou can use filters to view only puzzles having a specific status or size. Filters can be enabled and disabled via the settings menu. Note: a filter will only be shown in case it contains multiple values.</string>
+    <string name="archive_share_subject">Mathdoku puzzel</string>
+    <string name="archive_share_body">Ik wil een MathDoku puzzel met je delen. Klik op de %1$s link en kies de MathDoku app om de puzzel te bekijken. In het geval dat je MathDoku niet hebt geïnstalleerd, installeer dan de alpha versie (revision 368 of hoger) van %2$s waarin deze functie is toegevoegd.</string>
+
+    <!-- SHARED PUZZLE  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <!-- Title for the shared puzzle fragment. -->
+    <string name="shared_puzzle_action_bar_title">Voorvertoning Gedeelde Puzzel</string>
+
+    <!-- Introduction text at top of screen. -->
+    <string name="shared_puzzle_introduction">Deze puzzel is door middel van een email link naar je verstuurd. Zie email for meer details indien toegevoegd door de verzender. In het geval dat je er voor kiest om deze puzzel te spelen, dan wordt deze ook aan je archief toegevoegd.</string>
+
+    <!-- The label of the button below a puzzle. -->
+    <string name="shared_puzzle_play_button">Speel deze puzzel</string>
+    
+    <!-- The title and message for the dialog in which the user is informed that the shared puzzle already exists in the archive. -->
+    <string name="shared_puzzle_exists_title">Puzzel duplicaat</string>
+    <string name="shared_puzzle_exists_message">Deze puzzel bestaat al in jouw archief (zie puzzel %1$d). Als je deze puzzel speelt dan worden de oplossing en statistieken van de vorige oplossing overschreven.</string>
+    <string name="shared_puzzle_exists_positive_button">Ja</string>
+    <string name="shared_puzzle_exists_negative_button">Nee</string>
     
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

@@ -89,10 +89,10 @@
 
     <!-- The menu item that allows the player to use some less frequently used cheats. -->
     <string name="action_cheats">Cheats</string>
-    
+
     <!-- The menu item that allows the user to clear the entire grid. Note this item is only available in case at least one cell in the entire puzzle contains a (maybe) value. -->
     <string name="action_clear_grid">Clear grid</string>
-    
+
     <!-- The menu item that allows the player to start a new game. -->
     <string name="action_new_game">New Game</string>
 
@@ -105,8 +105,11 @@
     <!-- The menu item that allows the player to navigate to the help screen. -->
     <string name="action_help">Help</string>
 
+    <!-- The menu item that allows the player to share an archived game with another user via emai. -->
+    <string name="action_share">Share</string>
+
     <!-- ACTIONS IN SUB MENU CHEATS - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    
+
     <!-- The menu item that allows the user to reveal a cell. -->
     <string name="action_reveal_cell">Reveal cell</string>
 
@@ -118,7 +121,7 @@
 
     <!-- DIALOGS FOR GENERATING NEW PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-	<!--  Titles and lables used in the dialog "Create new game". -->
+    <!-- Titles and lables used in the dialog "Create new game". -->
     <string name="dialog_puzzle_parameters_title">Create new game</string>
     <string name="dialog_puzzle_parameters_puzzle_size">Puzzle size</string>
     <string name="dialog_puzzle_parameters_operators_in_cage_visible">Operators in cage visible</string>
@@ -186,13 +189,13 @@
     <string name="theme_dark">Dark</string>
 
     <!-- DIALOG REVEAL SOLUTION CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    
+
     <!-- The title, message and buttons confirmation message that shows up when the "reveal solution" menu item is selected, plus the associated title and button labels. -->
     <string name="dialog_reveal_solution_confirmation_title">Reveal solution?</string>
     <string name="dialog_reveal_solution_confirmation_message">Are you sure you want to reveal the solution of this puzzle?</string>
     <string name="dialog_reveal_solution_confirmation_negative_button">No, I\'ll solve it myself</string>
     <string name="dialog_reveal_solution_confirmation_positive_button">Yes, I give up</string>
-    
+
     <!-- DIALOG CLEAR GRID CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <!-- The title, message and buttons confirmation message that shows up when the clear grid context menu item is selected, plus the associated title and button labels. -->
@@ -230,28 +233,27 @@
     <string name="usage_log_choose_action_title">Send MathDoku Log</string>
 
     <!-- PLAYING HINT - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    
+
     <!-- Hint to start swiping to select a digit. Will be displayed as no swipe movement has begun yet. -->
     <string name="hint_swipe_basic">Touch and hold the cell for which you want to enter a digit.</string>
-    
+
     <!-- Hint to stretch the swipe outside the current cell. The swipe movement has begun but has not yet left the cell. -->
     <string name="hint_swipe_outside_cell">Now swipe towards the appropriate digit until it is highlighted.</string>
     <string name="hint_swipe_basic_cell_at_border">Even if the appropriate digit is not visible, you can still swipe in the appropriate direction. Touch a cell near the middle of the grid to become familiar with position of digit(s) %1$s.</string>
 
-    <!-- Hint to finish swiping to select a digit.  -->
+    <!-- Hint to finish swiping to select a digit. -->
     <string name="hint_swipe_rotate">Rotate the swipe line to select a digit. End the swipe when the appropriate digit is highlighted.</string>
     <string name="hint_swipe_release">Stop swiping to select the highlighted digit or rotate the swipe line to select another digit.</string>
     <string name="hint_swipe_digit_5">To select a 5, swipe outside the selected cell and end this swipe in the cell where you started this swipe.</string>
-    
     <string name="hint_swipe_valid_digit_completed">You have just completed a swipe for digit %1$s.</string>
     <string name="hint_swipe_invalid_digit_completed">Swiping in this direction will reveal a digit when playing a bigger puzzle.</string>
 
     <!-- Hint to inform about change of Input mode -->
     <string name="hint_input_mode_changed">You have just changed the input mode from %1$s to %2$s by double tapping the selected cell.</string>
-    
+
     <!-- Hint about the "Archive" function which has been made available as menu option. -->
     <string name="hint_archive_available">The previous game has been added to the archive. The archive contains all games you have started. The archive can be opened via the menu.</string>
-    
+
     <!-- TIP DIALOGS - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <!-- Label for check box "Do not show again" in the tip dialog. -->
@@ -345,7 +347,6 @@
     <string name="statistics_elapsed_time_historic_solved_fastest">Fastest</string>
 
     <!-- STATISTICS  SETTINGS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    <!-- TODO: TRANSLATE ENTIRE SECTION -->
 
     <!-- Title of statistics preferences activity. -->
     <string name="statistics_settings_actionbar_title">Statistics settings</string>
@@ -353,7 +354,7 @@
     <!-- The title and summary of the "Hide explanation" option. This option enables or disables displayin the explanations below the statistics charts. -->
     <string name="option_show_statistics_description_title">Chart description</string>
     <string name="option_show_statistics_description_summary">Display description below chart.</string>
-    
+
     <!-- The title and summary of the "Maximum games in elapsed time chart" option. This option restricts the number of games which will be displayed in an elapsed time chart. -->
     <string name="option_max_games_in_elapsed_time_chart_title">Number of games in elapsed time chart</string>
     <string name="option_max_games_in_elapsed_time_chart_summary">Display no more than %1$d games in elapsed time chart.</string>
@@ -384,14 +385,14 @@
 
     <!-- The label in the pager bar for the "puzzle number" -->
     <string name="archive_puzzle_number">Puzzle no.</string>
-    
+
     <!-- The label of the button below a puzzle. -->
     <string name="archive_reload_unfinished_game">Continue this puzzle</string>
     <string name="archive_reload_finished_game">Replay this puzzle</string>
 
     <!-- Title for the archive settings fragment. -->
     <string name="archive_settings_action_bar_title">Archive settings</string>
-    
+
     <!-- The title and summary of the "Show status filter" option. This option enables or disables showing of the status filter in the action bar of the archive. -->
     <string name="archive_settings_show_status_filter_title">Show status filter</string>
     <string name="archive_settings_show_status_filter_enabled">Allows filtering on status of games</string>
@@ -404,6 +405,25 @@
 
     <!-- The lead in text at top of the help dialog. -->
     <string name="archive_help_dialog_general">The archive contains the history of all games you have played. Swipe from left to right to go to an older puzzle. Swipe from right to left to go to a newer puzzle.\n\nYou can use filters to view only puzzles having a specific status or size. Filters can be enabled and disabled via the settings menu. Note: a filter will only be shown in case it contains multiple values.</string>
+    <string name="archive_share_subject">Mathdoku puzzle</string>
+    <string name="archive_share_body">I want to share this MathDoku puzzle with you. Click the %1$s link and choose the MathDoku app to preview the puzzle. In case you haven\'t installed MathDoku for Android, please install an alpha version (revision 368 or above) from %2$s in which this feature is added.</string>
+
+    <!-- SHARED PUZZLE  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <!-- Title for the shared puzzle fragment. -->
+    <string name="shared_puzzle_action_bar_title">Preview Shared Puzzle</string>
+
+    <!-- Introduction text at top of screen. -->
+    <string name="shared_puzzle_introduction">This puzzle was sent to you via an email link. See email for more details if included by sender. In case you choose to play this puzzle right now, it will also be added to your own archive of played puzzles.</string>
+
+    <!-- The label of the button below a puzzle. -->
+    <string name="shared_puzzle_play_button">Play this puzzle</string>
+    
+    <!-- The title and message for the dialog in which the user is informed that the shared puzzle already exists in the archive. -->
+    <string name="shared_puzzle_exists_title">Puzzle duplicate</string>
+    <string name="shared_puzzle_exists_message">This puzzle already exists in your archive (see puzzle %1$d). Playing this puzzle will overwrite the previous solution and statistics.</string>
+    <string name="shared_puzzle_exists_positive_button">Yes</string>
+    <string name="shared_puzzle_exists_negative_button">No</string>
     
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -441,4 +461,5 @@
 
     <!-- The text for input mode "maybe" which is used to insert/remove a possible value into/from the selected cell. -->
     <string name="input_mode_maybe_short">maybe</string>
+
 </resources>
