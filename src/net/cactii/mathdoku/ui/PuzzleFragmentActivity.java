@@ -132,9 +132,10 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 			}
 		}
 
-		checkVersion();
-
-		restartLastGame();
+		// Check if app needs to be upgraded. If not, restart the last game.
+		if (isUpgradeRunning() == false) {
+			restartLastGame();
+		}
 	}
 
 	public void onPause() {
@@ -347,7 +348,8 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 
 		// Enable the archive after at least 5 games have been solved. The
 		// archive will then contain at least 5 solved games and zero or more
-		// unfinished or cheated games. Also most hints will then have been displayed.
+		// unfinished or cheated games. Also most hints will then have been
+		// displayed.
 		if (mMathDokuPreferences.isArchiveAvailable() == false
 				&& new GridDatabaseAdapter().countGrids(StatusFilter.SOLVED,
 						SizeFilter.ALL) >= 5) {
@@ -355,10 +357,14 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 			invalidateOptionsMenu();
 		}
 		// Display the hint if applicable (maximum 3 times)
-		if (mPuzzleFragment != null && mMathDokuPreferences.showArchiveAvailableHint()) {
+		if (mPuzzleFragment != null
+				&& mMathDokuPreferences.showArchiveAvailableHint()) {
 			TickerTape tickerTape = new TickerTape(this);
-			tickerTape.addItem(getResources().getString(
-					R.string.hint_archive_available)).setEraseConditions(2, 0).show();
+			tickerTape
+					.addItem(
+							getResources().getString(
+									R.string.hint_archive_available))
+					.setEraseConditions(2, 0).show();
 			mPuzzleFragment.onTickerTapeChanged(tickerTape);
 		}
 
@@ -397,7 +403,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 									int whichButton) {
 								UsageLog.getInstance().logFunction(
 										"ViewChanges.Manual");
-								puzzleFragmentActivity.openChangesDialog();
+								puzzleFragmentActivity.openChangesDialog(false);
 							}
 						})
 				.setNegativeButton(R.string.dialog_general_button_close,
@@ -410,10 +416,10 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 
 	/**
 	 * Displayes the changes dialog. As from version 1.96 the changes itself are
-	 * no longer described in this dialog. Instead a reference to the wehsite is
+	 * no longer described in this dialog. Instead a reference to the website is
 	 * shown.
 	 */
-	private void openChangesDialog() {
+	private void openChangesDialog(boolean showLeadInVersion2) {
 		// Get view and put relevant information into the view.
 		LayoutInflater li = LayoutInflater.from(this);
 		View view = li.inflate(R.layout.changelog_dialog, null);
@@ -423,6 +429,11 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		textView.setText(Util.getPackageVersionName() + " (revision "
 				+ Util.getPackageVersionNumber() + ")");
 
+		if (showLeadInVersion2) {
+			textView = (TextView) view.findViewById(R.id.changelog_lead_in_version_2);
+			textView.setVisibility(View.VISIBLE);
+		}
+		
 		textView = (TextView) view.findViewById(R.id.changelog_changes_link);
 		textView.setText(PROJECT_HOME + "changes.php");
 
@@ -452,12 +463,12 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	 * Checks whether a new version of the game has been installed. If so,
 	 * modify preferences and convert if necessary.
 	 */
-	private void checkVersion() {
+	private boolean isUpgradeRunning() {
 		if (mGameFileConverter != null) {
 			// Phase 1 of the upgrade is not yet completed. The upgrade process
 			// should not be restarted till the phase 1 background process is
 			// completed.
-			return;
+			return true;
 		}
 
 		// Get current version number from the package.
@@ -476,8 +487,11 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 			mGameFileConverter = new GameFileConverter(this,
 					previousInstalledVersion, packageVersionNumber);
 			mGameFileConverter.execute();
+
+			return true;
 		}
-		return;
+
+		return false;
 	}
 
 	/**
@@ -497,18 +511,23 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		// Show help dialog after new/fresh install or changes dialog
 		// otherwise.
 		if (previousInstalledVersion == -1) {
-			// On first install of the game, display the help dialog.
-			UsageLog.getInstance().logFunction("ViewHelp.AfterUpgrade");
+			// At clean install display the create-new-game-dialog and on top of
+			// it show the help-dialog.
+			showDialogNewGame(false);
 			this.openHelpDialog();
+		} else if (previousInstalledVersion <= 286) {
+			// On upgrade from a MathDoku version 1.x revision to a MathDoku
+			// version 2.x revision the history and the last played game are
+			// lost. Show the create-new-game-dialog and on top of it show a
+			// dialog to welcome.
+			showDialogNewGame(false);
+			this.openChangesDialog(true);
 		} else if (previousInstalledVersion < currentVersion) {
-			// Restart the last game
+			// Restart the last game and show the changes dialog on top of it.
 			restartLastGame();
-
-			// On upgrade of version show changes.
-			UsageLog.getInstance().logFunction("ViewChanges.AfterUpgrade");
-			this.openChangesDialog();
+			this.openChangesDialog(false);
 		} else {
-			// Restart the last game
+			// No upgrade was needed. Restart the last game
 			restartLastGame();
 		}
 	}
@@ -809,19 +828,20 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	protected void onResumeFragments() {
 		super.onResumeFragments();
 	}
-	
+
 	@Override
 	protected void onNewIntent(Intent intent) {
 		if (intent != null) {
 			Bundle bundle = intent.getExtras();
-			
+
 			if (bundle != null) {
-				if (bundle.getBoolean(SharedPuzzleActivity.RESTART_LAST_GAME_SHARED_PUZZLE)) {
+				if (bundle
+						.getBoolean(SharedPuzzleActivity.RESTART_LAST_GAME_SHARED_PUZZLE)) {
 					restartLastGame();
 				}
 			}
 		}
-		
+
 		super.onNewIntent(intent);
 	}
 }

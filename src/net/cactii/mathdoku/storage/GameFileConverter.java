@@ -124,8 +124,12 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 			mProgressDialog = new ProgressDialog(mActivity);
 			mProgressDialog
 					.setTitle(R.string.dialog_converting_saved_games_title);
-			mProgressDialog.setMessage(mActivity.getResources().getString(
-					R.string.dialog_converting_saved_games_message));
+			mProgressDialog
+					.setMessage(mActivity
+							.getResources()
+							.getString(
+									(mCurrentVersion < 369 ? R.string.dialog_converting_cleanup_v1_message
+											: R.string.dialog_converting_saved_games_message)));
 			mProgressDialog.setIcon(android.R.drawable.ic_dialog_info);
 			mProgressDialog.setIndeterminate(false);
 			mProgressDialog.setCancelable(false);

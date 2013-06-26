@@ -25,11 +25,14 @@
 
     <!-- DIALOG CONVERTING SAVED GAMES - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+
     <!-- The title and message for the dialog displayed on the screen while upgrading to new version and saved games have to be converted. -->
     <string name="dialog_converting_saved_games_title">Bijwerken nieuwe versie</string>
     <string name="dialog_converting_saved_games_message">Voor deze nieuwe versie van MathDoku worden de opgeslagen spelen eenmalig omgezet. Een ogenblik geduld a.u.b.</string>
+    <string name="dialog_converting_cleanup_v1_message">Opschonen van data van versie 1 van MathDoku (eenmalig).</string>
 
     <!-- PUZZLE HELP DIALOG - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
 
     <!-- The lead in text at top of the help dialog. -->
     <string name="puzzle_help_dialog_leadin">Bedankt voor het installeren van MathDoku voor Android.</string>
@@ -63,8 +66,12 @@
 
     <!-- CHANGES DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+
     <!-- The title of the changelog screen. -->
     <string name="changelog_title">Aanpassingen</string>
+
+    <!-- Lead in to version 2 of MathDoku in the changes dialog. -->
+    <string name="changelog_lead_in_version_2">Welkom bij versie 2 van MathDoku. Gave nieuwe functies zoals statistieken, een archief en het delen van puzzels zijn toegevoegd. We hebben er voor gekozen om opgeslagen puzzels van versie 1 van MathDoku niet te converteren. Speel eerst een aantal eenvoudige puzzles om aan de nieuwe besturing te wennen. We hopen dat je deze nieuwe versie waardeert.</string>
 
     <!-- The heading of the section containg the version name and revision number. -->
     <string name="changelog_version_title">Versie</string>
@@ -81,6 +88,7 @@
 
     <!-- ACTION BAR ITEMS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+
     <!-- Subtitle for the puzzle fragment. -->
     <string name="action_bar_subtitle_puzzle_fragment">Speel een spel</string>
 
@@ -89,10 +97,10 @@
 
     <!-- The menu item that allows the player to use some less frequently used cheats. -->
     <string name="action_cheats">Vals spelen</string>
-    
+
     <!-- The menu item that allows the user to clear the entire grid. Note this item is only available in case at least one cell in the entire puzzle contains a (maybe) value. -->
     <string name="action_clear_grid">Leeg alle cellen</string>
-    
+
     <!-- The menu item that allows the player to start a new game. -->
     <string name="action_new_game">Nieuw Spel</string>
 
@@ -109,7 +117,8 @@
     <string name="action_share">Delen</string>
 
     <!-- ACTIONS IN SUB MENU CHEATS - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    
+
+
     <!-- The menu item that allows the user to reveal a cell. -->
     <string name="action_reveal_cell">Onthul deze cel</string>
 
@@ -121,7 +130,8 @@
 
     <!-- DIALOGS FOR GENERATING NEW PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-	<!--  Titles and lables used in the dialog "Create new game". -->
+
+    <!-- Titles and lables used in the dialog "Create new game". -->
     <string name="dialog_puzzle_parameters_title">Genereer nieuwe puzzel</string>
     <string name="dialog_puzzle_parameters_puzzle_size">Puzzel grootte</string>
     <string name="dialog_puzzle_parameters_operators_in_cage_visible">Groep tekens zichtbaar</string>
@@ -133,6 +143,7 @@
     <string name="dialog_building_puzzle_message">Een ogenblik geduld a.u.b.</string>
 
     <!-- GENERAL SETTINGS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
 
     <!-- The titles for the general puzzling settings. -->
     <string name="general_settings_actionbar_title">General settings</string>
@@ -183,13 +194,15 @@
 
     <!-- DIALOG THEME - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+
     <!-- The possible values of the "themes" option. This option controls which theme is used for displaying. -->
     <string name="theme_carved">Hout</string>
     <string name="theme_newspaper">Krant</string>
     <string name="theme_dark">Donker</string>
 
     <!-- DIALOG REVEAL SOLUTION CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    
+
+
     <!-- The title, message and buttons confirmation message that shows up when the "reveal solution" menu item is selected, plus the associated title and button labels. -->
     <string name="dialog_reveal_solution_confirmation_title">Onthul oplossing?</string>
     <string name="dialog_reveal_solution_confirmation_message">Weet je zeker dat je de oplossing van deze puzzel wil onthullen?</string>
@@ -198,6 +211,7 @@
 
     <!-- DIALOG CLEAR GRID CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+
     <!-- The title, message and buttons confirmation message that shows up when the clear grid context menu item is selected, plus the associated title and button labels. -->
     <string name="dialog_clear_grid_confirmation_title">Leeg alle cellen?</string>
     <string name="dialog_clear_grid_confirmation_message">Weet je zeker dat je alle cellen wilt legen?</string>
@@ -205,6 +219,7 @@
     <string name="dialog_clear_grid_confirmation_positive_button">Ja, begin opnieuw</string>
 
     <!-- CONTROLS FOR PUZZLE SOLVING  - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
 
     <!-- The text on the clear button in the main UI. -->
     <string name="main_ui_clear">Leeg</string>
@@ -233,6 +248,7 @@
 
     <!-- PLAYING HINT - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+
     <!-- Hint to start swiping to select a digit. Will be displayed as no swipe movement has begun yet. -->
     <string name="hint_swipe_basic">Raak de cel waarvan je de waarde wil wijzigen lang aan.</string>
 
@@ -240,7 +256,7 @@
     <string name="hint_swipe_outside_cell">Veeg nu naar het gewenste getal totdat het oplicht.</string>
     <string name="hint_swipe_basic_cell_at_border">Ook indien het gewenste getal niet zichtbaar is, kun je nog steeds vegen in de goede richting. Raak een cel in het midden van de puzzel aan om bekend te worden met de posities van de getallen %1$s.</string>
 
-    <!-- Hint to finish swiping to select a digit.  -->
+    <!-- Hint to finish swiping to select a digit. -->
     <string name="hint_swipe_rotate">Draai de veeglijn om een getal te selecteren. Beëindig de veegbeweging om het opgelichtte getal te selecteren.</string>
     <string name="hint_swipe_release">Stop met vegen om het opgelichtte getal te selecteren, of draai de veeglijn om een ander getal te selecteren.</string>
     <string name="hint_swipe_digit_5">Om een 5 te selecteren, veeg tot buiten de geselecteerde cel en stop de veegbeweging pas weer in de geselecteerde cel.</string>
@@ -254,6 +270,7 @@
     <string name="hint_archive_available">De vorige puzzel is toegevoegd aan het archief. Het archief bevat alle puzzels die je hebt gestart. Het archief kan worden geopend via het menu.</string>
 
     <!-- TIP DIALOGS - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
 
     <!-- Label for check box "Do not show again" in the tip dialog. -->
     <string name="dialog_tip_do_not_show_again">Niet meer tonen</string>
@@ -347,6 +364,7 @@
 
     <!-- STATISTICS  SETTINGS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+
     <!-- Title of statistics preferences activity. -->
     <string name="statistics_settings_actionbar_title">Statistieken settings</string>
 
@@ -359,6 +377,7 @@
     <string name="option_max_games_in_elapsed_time_chart_summary">Toon maximaal %1$d puzzels in de grafiek speeltijd.</string>
 
     <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
 
     <!-- Title for the archive fragment. -->
     <string name="archive_action_bar_title">Archief</string>
@@ -409,6 +428,7 @@
 
     <!-- SHARED PUZZLE  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+
     <!-- Title for the shared puzzle fragment. -->
     <string name="shared_puzzle_action_bar_title">Voorvertoning Gedeelde Puzzel</string>
 
@@ -417,13 +437,13 @@
 
     <!-- The label of the button below a puzzle. -->
     <string name="shared_puzzle_play_button">Speel deze puzzel</string>
-    
+
     <!-- The title and message for the dialog in which the user is informed that the shared puzzle already exists in the archive. -->
     <string name="shared_puzzle_exists_title">Puzzel duplicaat</string>
     <string name="shared_puzzle_exists_message">Deze puzzel bestaat al in jouw archief (zie puzzel %1$d). Als je deze puzzel speelt dan worden de oplossing en statistieken van de vorige oplossing overschreven.</string>
     <string name="shared_puzzle_exists_positive_button">Ja</string>
     <string name="shared_puzzle_exists_negative_button">Nee</string>
-    
+
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -460,4 +480,5 @@
 
     <!-- The text for input mode "maybe" which is used to insert/remove a possible value into/from the selected cell. -->
     <string name="input_mode_maybe_short">Mogelijk</string>
+
 </resources>

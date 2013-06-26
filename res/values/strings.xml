@@ -25,11 +25,14 @@
 
     <!-- DIALOG CONVERTING SAVED GAMES - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+
     <!-- The title and message for the dialog displayed on the screen while upgrading to new version and saved games have to be converted. -->
     <string name="dialog_converting_saved_games_title">Upgrading new version</string>
     <string name="dialog_converting_saved_games_message">For this new version of MathDoku, your saved games are now being converted (one time only).</string>
+    <string name="dialog_converting_cleanup_v1_message">Clean up data of version 1 of MathDoku (one time only).</string>
 
     <!-- PUZZLE HELP DIALOG - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
 
     <!-- The lead in text at top of the help dialog. -->
     <string name="puzzle_help_dialog_leadin">Thanks for installing MathDoku for Android.</string>
@@ -63,8 +66,12 @@
 
     <!-- CHANGES DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+
     <!-- The title of the changelog screen. -->
     <string name="changelog_title">Changelog</string>
+
+    <!-- Lead in to version 2 of MathDoku in the changes dialog. -->
+    <string name="changelog_lead_in_version_2">Welcome to version 2 of MathDoku. New cool features like statistics, an archive and game sharing have been added. We have chosen not to convert games stored with version 1 of MathDoku. Please play a few simple games first to get accustomed to the new way of playing. We hope you will enjoy this new version.</string>
 
     <!-- The heading and body of the section referring to the list of changes (revision). -->
     <string name="changelog_version_title">Version</string>
@@ -80,6 +87,7 @@
     <string name="changelog_issues_body">Please report any issues or feature requests via the link below. Only issues written in English will be dealt with.</string>
 
     <!-- ACTION BAR ITEMS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
 
     <!-- Subtitle for the puzzle fragment. -->
     <string name="action_bar_subtitle_puzzle_fragment">Play a game</string>
@@ -110,6 +118,7 @@
 
     <!-- ACTIONS IN SUB MENU CHEATS - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+
     <!-- The menu item that allows the user to reveal a cell. -->
     <string name="action_reveal_cell">Reveal cell</string>
 
@@ -120,6 +129,7 @@
     <string name="action_show_solution">Show solution</string>
 
     <!-- DIALOGS FOR GENERATING NEW PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
 
     <!-- Titles and lables used in the dialog "Create new game". -->
     <string name="dialog_puzzle_parameters_title">Create new game</string>
@@ -133,6 +143,7 @@
     <string name="dialog_building_puzzle_message">A new puzzle is being built. It will be ready in a few seconds.</string>
 
     <!-- GENERAL SETTINGS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
 
     <!-- The titles for the general puzzling settings. -->
     <string name="general_settings_actionbar_title">General settings</string>
@@ -183,12 +194,14 @@
 
     <!-- DIALOG THEME - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+
     <!-- The possible values of the "themes" option. This option controls which theme is used for displaying. -->
     <string name="theme_carved">Carved</string>
     <string name="theme_newspaper">Newspaper</string>
     <string name="theme_dark">Dark</string>
 
     <!-- DIALOG REVEAL SOLUTION CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
 
     <!-- The title, message and buttons confirmation message that shows up when the "reveal solution" menu item is selected, plus the associated title and button labels. -->
     <string name="dialog_reveal_solution_confirmation_title">Reveal solution?</string>
@@ -198,6 +211,7 @@
 
     <!-- DIALOG CLEAR GRID CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+
     <!-- The title, message and buttons confirmation message that shows up when the clear grid context menu item is selected, plus the associated title and button labels. -->
     <string name="dialog_clear_grid_confirmation_title">Clear entire grid?</string>
     <string name="dialog_clear_grid_confirmation_message">Are you sure you want to clear the entire grid?</string>
@@ -205,6 +219,7 @@
     <string name="dialog_clear_grid_confirmation_positive_button">Yes, start over</string>
 
     <!-- CONTROLS FOR PUZZLE SOLVING  - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
 
     <!-- The text on the clear button in the main UI. -->
     <string name="main_ui_clear">Clear</string>
@@ -234,6 +249,7 @@
 
     <!-- PLAYING HINT - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+
     <!-- Hint to start swiping to select a digit. Will be displayed as no swipe movement has begun yet. -->
     <string name="hint_swipe_basic">Touch and hold the cell for which you want to enter a digit.</string>
 
@@ -255,6 +271,7 @@
     <string name="hint_archive_available">The previous game has been added to the archive. The archive contains all games you have started. The archive can be opened via the menu.</string>
 
     <!-- TIP DIALOGS - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
 
     <!-- Label for check box "Do not show again" in the tip dialog. -->
     <string name="dialog_tip_do_not_show_again">Do not show again</string>
@@ -348,6 +365,7 @@
 
     <!-- STATISTICS  SETTINGS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+
     <!-- Title of statistics preferences activity. -->
     <string name="statistics_settings_actionbar_title">Statistics settings</string>
 
@@ -360,6 +378,7 @@
     <string name="option_max_games_in_elapsed_time_chart_summary">Display no more than %1$d games in elapsed time chart.</string>
 
     <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
 
     <!-- Title for the archive fragment. -->
     <string name="archive_action_bar_title">Archive</string>
@@ -410,6 +429,7 @@
 
     <!-- SHARED PUZZLE  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+
     <!-- Title for the shared puzzle fragment. -->
     <string name="shared_puzzle_action_bar_title">Preview Shared Puzzle</string>
 
@@ -418,13 +438,13 @@
 
     <!-- The label of the button below a puzzle. -->
     <string name="shared_puzzle_play_button">Play this puzzle</string>
-    
+
     <!-- The title and message for the dialog in which the user is informed that the shared puzzle already exists in the archive. -->
     <string name="shared_puzzle_exists_title">Puzzle duplicate</string>
     <string name="shared_puzzle_exists_message">This puzzle already exists in your archive (see puzzle %1$d). Playing this puzzle will overwrite the previous solution and statistics.</string>
     <string name="shared_puzzle_exists_positive_button">Yes</string>
     <string name="shared_puzzle_exists_negative_button">No</string>
-    
+
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 

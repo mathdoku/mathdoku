@@ -10,9 +10,6 @@ public class GridCage {
 	// starts with an identifier. This identifier consists of a generic part and
 	// the package revision number.
 	private static final String SAVE_GAME_CAGE_LINE = "CAGE";
-	
-	// Converting from old version name to new.
-	private static final String SAVE_GAME_CAGE_VERSION_READONLY = "CAGE.v";
 
 	public static final int ACTION_NONE = 0;
 	public static final int ACTION_ADD = 1;
@@ -25,7 +22,6 @@ public class GridCage {
 
 	// Number the action results in
 	public int mResult;
-	private String mOperator;
 	// Flag to indicate whether operator (+,-,x,/) is hidden.
 	private boolean mHideOperator;
 
@@ -136,27 +132,28 @@ public class GridCage {
 		// Store results in cage object
 		mResult = resultValue;
 		mAction = action;
+		String operator = "";
 		switch (mAction) {
 		case ACTION_NONE:
-			mOperator = "";
+			operator = "";
 			break;
 		case ACTION_ADD:
-			mOperator = "+";
+			operator = "+";
 			break;
 		case ACTION_SUBTRACT:
-			mOperator = "-";
+			operator = "-";
 			break;
 		case ACTION_MULTIPLY:
-			mOperator = "x";
+			operator = "x";
 			break;
 		case ACTION_DIVIDE:
-			mOperator = "/";
+			operator = "/";
 			break;
 		}
 		mHideOperator = hideOperator;
 
 		// Store cage outcome in top left cell of cage
-		mCells.get(0).setCageText(mResult + (mHideOperator ? "" : mOperator));
+		mCells.get(0).setCageText(mResult + (mHideOperator ? "" : operator));
 	}
 
 	/**
@@ -561,9 +558,10 @@ public class GridCage {
 	public String toStorageString() {
 		String storageString = SAVE_GAME_CAGE_LINE
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + mId
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + mAction
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + mResult
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + mOperator
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ mAction
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ mResult
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1;
 		for (GridCell cell : mCells) {
 			storageString += cell.getCellNumber()
@@ -585,19 +583,19 @@ public class GridCage {
 	 *         processed correctly. False otherwise.
 	 */
 	public boolean fromStorageString(String line, int savedWithRevisionNumber) {
-		String[] cageParts = line.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1);
+		String[] cageParts = line
+				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1);
 
-		// Determine if this line contains cell-information. If so, also
-		// determine with which revision number the information was stored.
-		int revisionNumber = 0;
-		if (cageParts[0].equals(SAVE_GAME_CAGE_LINE)) {
-			revisionNumber = (savedWithRevisionNumber > 0 ? savedWithRevisionNumber : 1);
-		} else if (cageParts[0].startsWith(SAVE_GAME_CAGE_VERSION_READONLY)) {
-			// Extract version number from the cage information itself.
-			String revisionNumberString = cageParts[0]
-					.substring(SAVE_GAME_CAGE_VERSION_READONLY.length());
-			revisionNumber = Integer.valueOf(revisionNumberString);
-		} else {
+		// Only process the storage string if it starts with the correct
+		// identifier.
+		if (cageParts[0].equals(SAVE_GAME_CAGE_LINE) == false) {
+			return false;
+		}
+
+		// When upgrading to MathDoku v2 the history is not converted. As of
+		// revision 369 all logic for handling games stored with older versions
+		// is removed.
+		if (savedWithRevisionNumber <= 368) {
 			return false;
 		}
 
@@ -606,27 +604,13 @@ public class GridCage {
 		mId = Integer.parseInt(cageParts[index++]);
 		mAction = Integer.parseInt(cageParts[index++]);
 		mResult = Integer.parseInt(cageParts[index++]);
-		if (revisionNumber == 1) {
-			// Version 1 contained the cage type at this position but this field
-			// is not needed anymore to restore a cage. So skip this field.
-			index++;
-		}
-		if (revisionNumber >= 3) {
-			mOperator = cageParts[index++];
-		}
 		for (String cellId : cageParts[index++]
 				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
 			GridCell c = mGrid.mCells.get(Integer.parseInt(cellId));
 			c.setCageId(mId);
 			mCells.add(c);
 		}
-		if (revisionNumber == 1 && cageParts.length == 6) {
-			// Version 1 with 6 cage parts does not contain the mOperatorHidden
-			// part while the version with 7 parts does contain this field.
-			mHideOperator = false;
-		} else {
-			mHideOperator = Boolean.parseBoolean(cageParts[index++]);
-		}
+		mHideOperator = Boolean.parseBoolean(cageParts[index++]);
 
 		return true;
 	}

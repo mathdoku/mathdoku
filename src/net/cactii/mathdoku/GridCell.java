@@ -25,9 +25,6 @@ public class GridCell {
 	// the package revision number.
 	private static final String SAVE_GAME_CELL_LINE = "CELL";
 
-	// Converting from old version name to new.
-	private static final String SAVE_GAME_CELL_VERSION_02_READONLY = "CELL.v2";
-
 	// Index of the cell (left to right, top to bottom, zero-indexed)
 	private int mCellNumber;
 	// X grid position, zero indexed
@@ -722,15 +719,16 @@ public class GridCell {
 		String[] cellParts = line
 				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1);
 
-		// Determine if this line contains cell-information. If so, also
-		// determine with which revision number the information was stored.
-		int revisionNumber = 0;
-		if (cellParts[0].equals(SAVE_GAME_CELL_LINE)) {
-			revisionNumber = (savedWithRevisionNumber > 0 ? savedWithRevisionNumber
-					: 1);
-		} else if (cellParts[0].equals(SAVE_GAME_CELL_VERSION_02_READONLY)) {
-			revisionNumber = 2;
-		} else {
+		// Only process the storage string if it starts with the correct
+		// identifier.
+		if (cellParts[0].equals(SAVE_GAME_CELL_LINE) == false) {
+			return false;
+		}
+		
+		// When upgrading to MathDoku v2 the history is not converted. As of
+		// revision 369 all logic for handling games stored with older versions
+		// is removed.
+		if (savedWithRevisionNumber <= 368) {
 			return false;
 		}
 
@@ -742,22 +740,20 @@ public class GridCell {
 		mCageText = cellParts[index++];
 		mCorrectValue = Integer.parseInt(cellParts[index++]);
 		mUserValue = Integer.parseInt(cellParts[index++]);
-		if ((revisionNumber == 1 && index < cellParts.length)
-				|| revisionNumber > 1) {
-			if (!cellParts[index].equals("")) {
-				for (String possible : cellParts[index]
-						.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
-					addPossible(Integer.parseInt(possible));
-				}
+
+		// Get possible values
+		if (!cellParts[index].equals("")) {
+			for (String possible : cellParts[index]
+					.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
+				addPossible(Integer.parseInt(possible));
 			}
-			index++;
 		}
-		if (revisionNumber > 1) {
-			mInvalidUserValueHighlight = Boolean
-					.parseBoolean(cellParts[index++]);
-			mCheated = Boolean.parseBoolean(cellParts[index++]);
-			mSelected = Boolean.parseBoolean(cellParts[index++]);
-		}
+		index++;
+
+		mInvalidUserValueHighlight = Boolean.parseBoolean(cellParts[index++]);
+		mCheated = Boolean.parseBoolean(cellParts[index++]);
+		mSelected = Boolean.parseBoolean(cellParts[index++]);
+
 		return true;
 	}
 
@@ -767,6 +763,7 @@ public class GridCell {
 
 	/**
 	 * The column number (zero based) of the cell.
+	 * 
 	 * @return
 	 */
 	public int getColumn() {
@@ -775,6 +772,7 @@ public class GridCell {
 
 	/**
 	 * The row number (zero based) of the cell.
+	 * 
 	 * @return
 	 */
 	public int getRow() {
@@ -1072,7 +1070,8 @@ public class GridCell {
 	/**
 	 * Get the coordinates of the center of the cell.
 	 * 
-	 * @param gridBorderWidth The width of the border for which has to be corrected.
+	 * @param gridBorderWidth
+	 *            The width of the border for which has to be corrected.
 	 * @return The (x,y) coordinated of the center of the cell.
 	 */
 	public float[] getCellCentreCoordinates(float gridBorderWidth) {

@@ -205,10 +205,9 @@ public class CellChange {
 	 */
 	public boolean fromStorageString(String line, ArrayList<GridCell> cells, int savedWithRevisionNumber) {
 		final String CELL_CHANGE_LINE_REGEXP = "^"
-				+ SAVE_GAME_CELL_CHANGE_LINE + "(\\.v\\d+)?"
+				+ SAVE_GAME_CELL_CHANGE_LINE 
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + "(.*)$";
-		final int GROUP_VERSION_NUMBER = 1;
-		final int GROUP_CELL_CHANGE = 2;
+		final int GROUP_CELL_CHANGE = 1;
 
 		Pattern pattern = Pattern.compile(CELL_CHANGE_LINE_REGEXP);
 		Matcher matcher = pattern.matcher(line);
@@ -226,12 +225,16 @@ public class CellChange {
 					+ matcher.end() + " #groups: " + matcher.groupCount());
 			Log.i(TAG, "Cell change: " + matcher.group(GROUP_CELL_CHANGE));
 		}
-		
-		int revisionNumber = (savedWithRevisionNumber > 0 ? savedWithRevisionNumber :  Integer.valueOf(matcher
-				.group(GROUP_VERSION_NUMBER).substring(2)));
+
+		// When upgrading to MathDoku v2 the history is not converted. As of
+		// revision 369 all logic for handling games stored with older versions
+		// is removed.
+		if (savedWithRevisionNumber <= 368) {
+			return false;
+		}
 
 		// Recursively process the content of the cell change
-		return fromStorageStringRecursive(revisionNumber,
+		return fromStorageStringRecursive(savedWithRevisionNumber,
 				matcher.group(GROUP_CELL_CHANGE), 1, cells);
 	}
 

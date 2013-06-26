@@ -29,9 +29,6 @@ public class Grid {
 	// the package revision number.
 	public static final String SAVE_GAME_GRID_LINE = "GRID";
 
-	// Converting from old version name to new.
-	private static final String SAVE_GAME_GRID_VERSION_READONLY = "VIEW.v";
-
 	// ************************************************************************
 	// Grid variables which are determined when generating the grid and which do
 	// not alter anymore.
@@ -551,18 +548,16 @@ public class Grid {
 		String[] viewParts = line
 				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1);
 
-		// Determine if this line contains Grid-information. If so, also
-		// determine with which revision number the information was stored.
-		int revisionNumber = 0;
-		if (viewParts[0].equals(SAVE_GAME_GRID_LINE)
-				&& savedWithRevisionNumber > 0) {
-			revisionNumber = savedWithRevisionNumber;
-		} else if (viewParts[0].startsWith(SAVE_GAME_GRID_VERSION_READONLY)) {
-			// Extract version number from the view information itself.
-			String revisionNumberString = viewParts[0]
-					.substring(SAVE_GAME_GRID_VERSION_READONLY.length());
-			revisionNumber = Integer.valueOf(revisionNumberString);
-		} else {
+		// Only process the storage string if it starts with the correct
+		// identifier.
+		if (viewParts[0].equals(SAVE_GAME_GRID_LINE) == false) {
+			return false;
+		}
+
+		// When upgrading to MathDoku v2 the history is not converted. As of
+		// revision 369 all logic for handling games stored with older versions
+		// is removed.
+		if (savedWithRevisionNumber <= 368) {
 			return false;
 		}
 
@@ -570,58 +565,20 @@ public class Grid {
 		int index = 1;
 		mGridGeneratingParameters.mGameSeed = Long
 				.parseLong(viewParts[index++]);
-		if (revisionNumber >= 3) {
-			mGridGeneratingParameters.mGeneratorRevisionNumber = Integer
-					.parseInt(viewParts[index++]);
-		} else {
-			mGridGeneratingParameters.mGeneratorRevisionNumber = 0;
-		}
-		if (revisionNumber < 271) {
-			mDateLastSaved = Long.parseLong(viewParts[index++]);
-		}
-		if (revisionNumber <= 5) {
-			// Field elapsedTime has been removed in version 6 and above.
-			mGridStatistics.mElapsedTime = Long.parseLong(viewParts[index++]);
-		}
+		mGridGeneratingParameters.mGeneratorRevisionNumber = Integer
+				.parseInt(viewParts[index++]);
 		mGridSize = Integer.parseInt(viewParts[index++]);
 		mActive = Boolean.parseBoolean(viewParts[index++]);
 
-		if (revisionNumber < 271) {
-			if (revisionNumber >= 2) {
-				mDateCreated = Long.parseLong(viewParts[index++]);
-			} else {
-				// Date generated was not saved prior to version 2.
-				mDateCreated = mDateLastSaved - mGridStatistics.mElapsedTime;
-			}
-		}
-		if (revisionNumber >= 4) {
-			mCheated = Boolean.parseBoolean(viewParts[index++]);
-		} else {
-			// Cheated was not saved prior to version 3.
-			mCheated = false;
-		}
-		if (revisionNumber == 5) {
-			// UndoCounter was only stored in version 5 in the game file.
-			// Starting form version 6 it has been moved to the statistics
-			// database.
-			mGridStatistics.mUndoButton = Integer.parseInt(viewParts[index++]);
-		}
-		if (revisionNumber >= 5) {
-			mClearRedundantPossiblesInSameRowOrColumnCount = Integer
-					.parseInt(viewParts[index++]);
-			mGridGeneratingParameters.mHideOperators = Boolean
-					.parseBoolean(viewParts[index++]);
-			mGridGeneratingParameters.mMaxCageResult = Integer
-					.parseInt(viewParts[index++]);
-			mGridGeneratingParameters.mMaxCageSize = Integer
-					.parseInt(viewParts[index++]);
-		} else {
-			// Cheated was not saved prior to version 3.
-			mClearRedundantPossiblesInSameRowOrColumnCount = 0;
-			mGridGeneratingParameters.mHideOperators = false;
-			mGridGeneratingParameters.mMaxCageResult = 0;
-			mGridGeneratingParameters.mMaxCageSize = 0;
-		}
+		mCheated = Boolean.parseBoolean(viewParts[index++]);
+		mClearRedundantPossiblesInSameRowOrColumnCount = Integer
+				.parseInt(viewParts[index++]);
+		mGridGeneratingParameters.mHideOperators = Boolean
+				.parseBoolean(viewParts[index++]);
+		mGridGeneratingParameters.mMaxCageResult = Integer
+				.parseInt(viewParts[index++]);
+		mGridGeneratingParameters.mMaxCageSize = Integer
+				.parseInt(viewParts[index++]);
 
 		return true;
 	}
@@ -986,33 +943,9 @@ public class Grid {
 
 			// Read view information
 			if (!fromStorageString(line, solvingAttemptData.mSavedWithRevision)) {
-				// The initial version of the saved games stored view
-				// information on 4 different lines. Rewrite to valid view
-				// storage information (version 1).
-				// Do not remove as long as backward compatibility with old save
-				// file should be remained.
-				line = Grid.SAVE_GAME_GRID_LINE
-						+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-						+ 0 // game seed. Use
-							// 0 as it was
-							// not stored in
-							// initial
-							// files
-						+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-						+ line // date created
-						+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-						+ solvingAttemptData.getNextLine() // elapsed time
-						+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-						+ solvingAttemptData.getNextLine() // grid size
-						+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-						+ solvingAttemptData.getNextLine(); // active
-
-				// Retry to process this line as if it was saved with revision
-				// 1.
-				if (!fromStorageString(line, 1)) {
-					throw new InvalidGridException(
-							"View information can not be processed: " + line);
-				}
+				throw new InvalidGridException(
+						"Line does not contain grid information while this was expected:"
+								+ line);
 			}
 			if ((line = solvingAttemptData.getNextLine()) == null) {
 				throw new InvalidGridException(
@@ -1240,7 +1173,7 @@ public class Grid {
 
 		// Example of a grid definition:
 		// 00010202000103040506030405060707:0,4,1:1,2,4:2,2,4:3,1,2:4,4,4:5,2,4:6,4,1:7,6,3
-		
+
 		// Split the definition into parts.
 		String[] definitionParts = definition.split(":");
 
@@ -1293,7 +1226,7 @@ public class Grid {
 		int cellNumber = 0;
 		while (matcher.find()) {
 			int cageId = Integer.valueOf(matcher.group());
-			
+
 			// Create new cell and add it to the cells list.
 			GridCell gridCell = new GridCell(this, cellNumber++);
 			gridCell.setCageId(cageId);
@@ -1330,14 +1263,14 @@ public class Grid {
 			// user.
 			return false;
 		}
-		
+
 		// Store the solution in the grid cells.
 		for (int row = 0; row < this.mGridSize; row++) {
 			for (int col = 0; col < this.mGridSize; col++) {
 				getCellAt(row, col).setCorrectValue(solution[row][col]);
 			}
 		}
-		
+
 		// Finally set all cage borders by checking their math
 		for (GridCage gridCage : mCages) {
 			gridCage.checkCageMathsCorrect(true);
