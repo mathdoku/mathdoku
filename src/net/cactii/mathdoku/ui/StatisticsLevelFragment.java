@@ -16,6 +16,7 @@ import org.achartengine.chart.BarChart;
 import org.achartengine.chart.LineChart;
 import org.achartengine.model.CategorySeries;
 import org.achartengine.model.XYMultipleSeriesDataset;
+import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.DefaultRenderer;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
@@ -37,7 +38,8 @@ import android.widget.TextView;
  * A fragment representing the statistics for a specific grid size or the
  * cumulative statistics for all levels.
  */
-public class StatisticsLevelFragment extends StatisticsBaseFragment implements OnSharedPreferenceChangeListener {
+public class StatisticsLevelFragment extends StatisticsBaseFragment implements
+		OnSharedPreferenceChangeListener {
 
 	public static final String ARG_GRID_SIZE_MIN = "grid_size_min";
 	public static final String ARG_GRID_SIZE_MAX = "grid_size_max";
@@ -47,7 +49,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
 	private int mMaxGridSize;
 
 	private CumulativeStatistics mCumulativeStatistics;
-	
+
 	private Preferences mPreferences;
 
 	@Override
@@ -60,10 +62,10 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
 		Bundle bundle = getArguments();
 		mMinGridSize = bundle.getInt(ARG_GRID_SIZE_MIN);
 		mMaxGridSize = bundle.getInt(ARG_GRID_SIZE_MAX);
-		
-		
+
 		mPreferences = Preferences.getInstance();
-		mPreferences.mSharedPreferences.registerOnSharedPreferenceChangeListener(this);
+		mPreferences.mSharedPreferences
+				.registerOnSharedPreferenceChangeListener(this);
 
 		// Retrieve statistics from database
 		mStatisticsDatabaseAdapter = new StatisticsDatabaseAdapter();
@@ -77,7 +79,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
 
 		return rootView;
 	}
-	
+
 	@Override
 	public void onDestroy() {
 		mPreferences.mSharedPreferences
@@ -89,14 +91,13 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
 		if (key.equals(Preferences.SHOW_STATISTICS_DESCRIPTION)) {
-			mDisplayStatisticDescription = Preferences.getInstance(getActivity())
-				.showStatisticsDescription();
+			mDisplayStatisticDescription = Preferences.getInstance(
+					getActivity()).showStatisticsDescription();
 		}
 
 		createAllCharts();
 	}
 
-	
 	private void createAllCharts() {
 		mChartsLayout.removeAllViewsInLayout();
 
@@ -112,8 +113,9 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
 			textView.setLayoutParams(new LayoutParams(
 					ViewGroup.LayoutParams.WRAP_CONTENT,
 					ViewGroup.LayoutParams.WRAP_CONTENT));
-			textView.setText(getResources().getString(R.string.statistics_not_available, mMinGridSize));
-			
+			textView.setText(getResources().getString(
+					R.string.statistics_not_available, mMinGridSize));
+
 			mChartsLayout.addView(textView);
 		}
 
@@ -210,8 +212,10 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
 			return false;
 		}
 
-		// The number of entries to be displayed is restricted to the maximum set in the preferences.
-		historicStatistics.setLimit(Preferences.getInstance().getMaximumGamesElapsedTimeChart());
+		// The number of entries to be displayed is restricted to the maximum
+		// set in the preferences.
+		historicStatistics.setLimit(Preferences.getInstance()
+				.getMaximumGamesElapsedTimeChart());
 
 		// Define the renderer
 		XYMultipleSeriesRenderer xyMultipleSeriesRenderer = new XYMultipleSeriesRenderer();
@@ -221,8 +225,10 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
 
 		xyMultipleSeriesRenderer.setLabelsTextSize(mDefaultTextSize);
 		xyMultipleSeriesRenderer.setLegendTextSize(mDefaultTextSize);
-		xyMultipleSeriesRenderer.setXAxisMin(historicStatistics.getIndexFirstEntry() - 1);
-		xyMultipleSeriesRenderer.setXAxisMax(historicStatistics.getIndexLastEntry() + 1);
+		xyMultipleSeriesRenderer.setXAxisMin(historicStatistics
+				.getIndexFirstEntry() - 1);
+		xyMultipleSeriesRenderer.setXAxisMax(historicStatistics
+				.getIndexLastEntry() + 1);
 		xyMultipleSeriesRenderer.setXLabels((int) Math.min(
 				historicStatistics.getIndexLastEntry() + 1, 4));
 		xyMultipleSeriesRenderer.setYAxisMin(0);
@@ -321,21 +327,25 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
 					.addSeriesRenderer(createSimpleSeriesRenderer(chartGrey1));
 		}
 
-		// Add series for historic average of solved games
+		// Add series for the historic average of solved games. As this series
+		// is displayed as a line chart, it can only be shown if at least two
+		// datapoints in the series are available.
 		if (historicStatistics.isXYSeriesUsed(Serie.SOLVED)) {
-			typesList.add(LineChart.TYPE);
-			xyMultipleSeriesDataset
-					.addSeries(historicStatistics
-							.getXYSeriesHistoricAverage(
-									Serie.SOLVED,
-									getResources()
-											.getString(
-													R.string.statistics_elapsed_time_historic_solved_average_serie),
-									yScale));
-			XYSeriesRenderer xySeriesRenderer = new XYSeriesRenderer();
-			xySeriesRenderer.setColor(chartSignal2);
-			xySeriesRenderer.setLineWidth(4);
-			xyMultipleSeriesRenderer.addSeriesRenderer(xySeriesRenderer);
+			XYSeries xySeries = historicStatistics
+					.getXYSeriesHistoricAverage(
+							Serie.SOLVED,
+							getResources()
+									.getString(
+											R.string.statistics_elapsed_time_historic_solved_average_serie),
+							yScale);
+			if (xySeries.getItemCount() > 1) {
+				typesList.add(LineChart.TYPE);
+				xyMultipleSeriesDataset.addSeries(xySeries);
+				XYSeriesRenderer xySeriesRenderer = new XYSeriesRenderer();
+				xySeriesRenderer.setColor(chartSignal2);
+				xySeriesRenderer.setLineWidth(4);
+				xyMultipleSeriesRenderer.addSeriesRenderer(xySeriesRenderer);
+			}
 		}
 
 		// Create a table with extra data for fastest, average and slowest time.

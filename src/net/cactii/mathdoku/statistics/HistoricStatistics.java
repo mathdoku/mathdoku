@@ -211,16 +211,17 @@ public class HistoricStatistics {
 		// In case a limit is specified, only the last <limit> number of
 		// datapoints are converted to the series.
 		int start = getIndexFirstEntry();
-		int index = 0;
+		int index = 1;
 
 		for (DataPoint dataPoint : dataPoints) {
-			if (index++ >= start) {
+			if (index >= start) {
 				xySeries.add(
 						index,
 						(dataPoint.mSerie == serie ? ((double) dataPoint.mValue)
 								/ scaleFactor
 								: 0));
 			}
+			index++;
 		}
 
 		return xySeries;
@@ -250,16 +251,17 @@ public class HistoricStatistics {
 		// In case a limit is specified, only the last <limit> number of
 		// datapoints are converted to the series.
 		int start = getIndexFirstEntry();
-		int index = 0;
+		int index = 1;
 		
 		for (DataPoint dataPoint : dataPoints) {
 			if (serie == null || dataPoint.mSerie == serie) {
 				totalValue += (double) dataPoint.mValue;
 				countValue++;
 			}
-			if (countValue > 0 && index++ >= start) {
+			if (countValue > 0 && index >= start) {
 				xySeries.add(index, totalValue / countValue / scaleFactor);
 			}
+			index++;
 		}
 		return xySeries;
 	}
