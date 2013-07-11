@@ -918,7 +918,7 @@ public class Grid {
 	 * @return True in case the grid has been loaded successfully. False
 	 *         otherwise.
 	 */
-	public boolean load(SolvingAttemptData solvingAttemptData) {
+	private boolean load(SolvingAttemptData solvingAttemptData) {
 		boolean loaded = true;
 
 		if (solvingAttemptData == null) {
