@@ -114,7 +114,7 @@ public class HistoricStatistics {
 	private SeriesSummary mSolvedSeriesSummary;
 	private SeriesSummary mSolutionRevealedSeriesSummary;
 	private SeriesSummary mUnfinishedSeriesSummary;
-	
+
 	// Limit on XYSeries
 	public final static int XYSERIES_NOT_LIMITED = -1;
 	private int mLimit;
@@ -160,7 +160,7 @@ public class HistoricStatistics {
 				// Add data point to the list
 				dataPoints.add(dataPoint);
 			} while (data.moveToNext());
-			
+
 			mLimit = XYSERIES_NOT_LIMITED;
 		}
 	}
@@ -204,6 +204,12 @@ public class HistoricStatistics {
 	 * @return A XYSerie object which can be processed by AChartEngine
 	 */
 	public XYSeries getXYSeries(Serie serie, String title, Scale scale) {
+		if (serie == Serie.SOLUTION_REVEALED) {
+			throw new RuntimeException(
+					"Method getXYSeries should not be used for the solution "
+							+ "revealed series. Use getXYSeriesSolutionsRevelead "
+							+ "instead.");
+		}
 		XYSeries xySeries = new XYSeries(title);
 
 		double scaleFactor = getScaleFactor(scale);
@@ -220,6 +226,40 @@ public class HistoricStatistics {
 						(dataPoint.mSerie == serie ? ((double) dataPoint.mValue)
 								/ scaleFactor
 								: 0));
+			}
+			index++;
+		}
+
+		return xySeries;
+	}
+
+	/**
+	 * Converts the solution revealed series to a XYSerie object which can be
+	 * processed by AChartEngine.
+	 * 
+	 * @param title
+	 *            The title to be used in the XYSeries.
+	 * @param maxY
+	 *            The maximum Y value to be used for each game in which the
+	 *            solution was revealed.
+	 * 
+	 * @return A XYSerie object which can be processed by AChartEngine
+	 */
+	public XYSeries getXYSeriesSolutionRevealed(String title, double maxY) {
+		XYSeries xySeries = new XYSeries(title);
+
+		// In case a limit is specified, only the last <limit> number of
+		// datapoints are converted to the series.
+		int start = getIndexFirstEntry();
+		int index = 1;
+
+		// For games in which the solution is revealed the Y-value of the
+		// games will always be equals to the maximum Y-value.
+		for (DataPoint dataPoint : dataPoints) {
+			if (index >= start) {
+				xySeries.add(
+						index,
+						(dataPoint.mSerie == Serie.SOLUTION_REVEALED ? maxY : 0));
 			}
 			index++;
 		}
@@ -252,7 +292,7 @@ public class HistoricStatistics {
 		// datapoints are converted to the series.
 		int start = getIndexFirstEntry();
 		int index = 1;
-		
+
 		for (DataPoint dataPoint : dataPoints) {
 			if (serie == null || dataPoint.mSerie == serie) {
 				totalValue += (double) dataPoint.mValue;
@@ -287,10 +327,10 @@ public class HistoricStatistics {
 	public double getMaxY(Scale scale) {
 		double scaleFactor = getScaleFactor(scale);
 
-		double maxY = Math.max(mSolvedSeriesSummary.getMaximum(),
-				mUnfinishedSeriesSummary.getMaximum());
-		if (maxY != 0) {
-			return maxY / scaleFactor;
+		if (mSolvedSeriesSummary.getCount() > 0
+				|| mUnfinishedSeriesSummary.getCount() > 0) {
+			return (Math.max(mSolvedSeriesSummary.getMaximum(),
+					mUnfinishedSeriesSummary.getMaximum()) / scaleFactor);
 		} else {
 			return mSolutionRevealedSeriesSummary.getMaximum() / scaleFactor;
 		}
@@ -357,16 +397,17 @@ public class HistoricStatistics {
 		return (mSolvedSeriesSummary.getCount() > 0 ? mSolvedSeriesSummary
 				.getAverage() : 0);
 	}
-	
+
 	/**
 	 * Set a limit on the number of entries returned in the XYSeries.
 	 * 
-	 * @param limit The maximum number of entries to return.
+	 * @param limit
+	 *            The maximum number of entries to return.
 	 */
 	public void setLimit(int limit) {
 		mLimit = limit;
 	}
-	
+
 	/**
 	 * Get the index number of the first entry in the series to be returned.
 	 * 
