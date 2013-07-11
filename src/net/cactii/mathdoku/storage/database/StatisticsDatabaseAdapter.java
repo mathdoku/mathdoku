@@ -650,7 +650,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 * @return The cumulative statistics for the given grid size.
 	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	public HistoricStatistics getHistoricData(String column, int minGridSize,
+	public HistoricStatistics getHistoricData(int minGridSize,
 			int maxGridSize) {
 
 		// Build projection if not yet done. As this projection is only build
@@ -730,7 +730,8 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		// projection, no data will be retrieved!
 		String[] columnsData = {
 				stringBetweenBackTicks(HistoricStatistics.DATA_COL_ID),
-				stringBetweenBackTicks(column) + " AS "
+				stringBetweenBackTicks(KEY_ELAPSED_TIME)
+				+ " AS "
 						+ HistoricStatistics.DATA_COL_VALUE,
 				stringBetweenBackTicks(HistoricStatistics.DATA_COL_SERIES) };
 

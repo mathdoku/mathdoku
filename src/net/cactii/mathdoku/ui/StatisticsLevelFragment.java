@@ -204,8 +204,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 	private boolean createElapsedTimeHistoryChart() {
 		// Retrieve the data
 		HistoricStatistics historicStatistics = mStatisticsDatabaseAdapter
-				.getHistoricData(StatisticsDatabaseAdapter.KEY_ELAPSED_TIME,
-						mMinGridSize, mMaxGridSize);
+				.getHistoricData(mMinGridSize, mMaxGridSize);
 
 		// Check if at least one serie will contain data.
 		if (!historicStatistics.isXYSeriesUsed(null)) {
