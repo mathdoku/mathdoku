@@ -76,6 +76,9 @@ public class DevelopmentHelper {
 			case R.id.development_mode_reset_preferences:
 				resetPreferences(puzzleFragmentActivity);
 				return true;
+			case R.id.development_mode_unlock_archive:
+				unlockArchiveAndStatistics();
+				return true;
 			case R.id.development_mode_clear_data:
 				deleteGamesAndPreferences(puzzleFragmentActivity);
 				return true;
@@ -373,6 +376,19 @@ public class DevelopmentHelper {
 				AlertDialog dialog = builder.create();
 				dialog.show();
 			}
+		}
+	}
+	
+	/**
+	 * Make options Archive and Statistics visible in the main menu.
+	 */
+	private static void unlockArchiveAndStatistics() {
+		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			Editor prefeditor = Preferences.getInstance().mSharedPreferences
+					.edit();
+			prefeditor.putBoolean(Preferences.SHOW_ARCHIVE,true);
+			prefeditor.putBoolean(Preferences.SHOW_STATISTICS,true);
+			prefeditor.commit();
 		}
 	}
 }

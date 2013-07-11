@@ -289,22 +289,23 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 			if (DevelopmentHelper.mMode != Mode.DEVELOPMENT) {
 				return super.onOptionsItemSelected(menuItem);
 			} else {
-				if (mPuzzleFragment == null) {
-					return super.onOptionsItemSelected(menuItem);
-				} else {
+				if (mPuzzleFragment != null) {
 					// Cancel old timer
 					mPuzzleFragment.stopTimer();
+				}
 
-					if (DevelopmentHelper.onDevelopmentHelperOption(this,
-							menuId)) {
-						// A development helper menu option was processed
-						// succesfully.
+				if (DevelopmentHelper.onDevelopmentHelperOption(this, menuId)) {
+					// A development helper menu option was processed
+					// succesfully.
+					if (mPuzzleFragment != null) {
 						mPuzzleFragment.startTimer();
-						return true;
-					} else {
-						mPuzzleFragment.startTimer();
-						return super.onOptionsItemSelected(menuItem);
 					}
+					return true;
+				} else {
+					if (mPuzzleFragment != null) {
+						mPuzzleFragment.startTimer();
+					}
+					return super.onOptionsItemSelected(menuItem);
 				}
 			}
 		}
@@ -430,10 +431,11 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 				+ Util.getPackageVersionNumber() + ")");
 
 		if (showLeadInVersion2) {
-			textView = (TextView) view.findViewById(R.id.changelog_lead_in_version_2);
+			textView = (TextView) view
+					.findViewById(R.id.changelog_lead_in_version_2);
 			textView.setVisibility(View.VISIBLE);
 		}
-		
+
 		textView = (TextView) view.findViewById(R.id.changelog_changes_link);
 		textView.setText(PROJECT_HOME + "changes.php");
 

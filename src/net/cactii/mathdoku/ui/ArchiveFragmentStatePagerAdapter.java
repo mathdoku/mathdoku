@@ -157,10 +157,12 @@ public class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter 
 	 *          this adapter.
 	 */
 	public int getPositionOfGridId(int gridId) {
-		// Check position of given solving attempt id.
-		for (int i = 0; i < mGridIds.length; i++) {
-			if (mGridIds[i][GridDatabaseAdapter.LATEST_SOLVING_ATTEMPT_PER_GRID__GRID_ID] == gridId) {
-				return i;
+		if (mGridIds != null) {
+			// Check position of given solving attempt id.
+			for (int i = 0; i < mGridIds.length; i++) {
+				if (mGridIds[i][GridDatabaseAdapter.LATEST_SOLVING_ATTEMPT_PER_GRID__GRID_ID] == gridId) {
+					return i;
+				}
 			}
 		}
 

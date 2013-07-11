@@ -16,6 +16,10 @@
                 android:title="Reset preferences"
                 tools:ignore="HardcodedText"/>
             <item
+                android:id="@+id/development_mode_unlock_archive"
+                android:title="Unlock Archive + stats"
+                tools:ignore="HardcodedText"/>
+            <item
                 android:id="@+id/development_mode_delete_database"
                 android:title="Delete database"
                 tools:ignore="HardcodedText"/>
