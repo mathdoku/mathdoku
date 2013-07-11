@@ -308,10 +308,11 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		// Add series for games in which the solution was revealed
 		if (historicStatistics.isXYSeriesUsed(Serie.SOLUTION_REVEALED)) {
 			typesList.add(BarChart.TYPE);
-			xyMultipleSeriesDataset.addSeries(historicStatistics.getXYSeries(
-					Serie.SOLUTION_REVEALED,
-					getResources().getString(
-							R.string.chart_serie_solution_revealed), yScale));
+			xyMultipleSeriesDataset.addSeries(historicStatistics
+					.getXYSeriesSolutionRevealed(
+							getResources().getString(
+									R.string.chart_serie_solution_revealed),
+							maxY));
 			xyMultipleSeriesRenderer
 					.addSeriesRenderer(createSimpleSeriesRenderer(chartRed1));
 		}
