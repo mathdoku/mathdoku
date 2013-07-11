@@ -278,7 +278,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 						// Fake a non unique solution so another grid is
 						// generated.
-						hasUniqueSolution = true;
+						hasUniqueSolution = false;
 						continue;
 					} else {
 						return null;
