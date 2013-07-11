@@ -798,25 +798,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 					int solvingAttemptId = bundle
 							.getInt(ArchiveFragmentActivity.BUNDLE_KEY_SOLVING_ATTEMPT_ID);
 					if (solvingAttemptId >= 0) {
-
-						// Load the grid for the returned solving attempt id.
-						Grid grid = new Grid();
-						if (grid.load(solvingAttemptId)) {
-							if (grid.isActive() == false) {
-								grid.replay();
-							}
-
-							// Either load the grid in the existing puzzle
-							// fragment or transform the fragment.
-							if (mPuzzleFragment != null) {
-								mPuzzleFragment.setNewGrid(grid);
-							} else {
-								// In case a finished grid is replayed a new
-								// solving attempt has been be created for the
-								// grid.
-								initializePuzzleFragment(
-										grid.getSolvingAttemptId(), true);
-							}
+						if (replayPuzzle(solvingAttemptId)) {
 							return;
 						}
 					}
@@ -845,5 +827,48 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		}
 
 		super.onNewIntent(intent);
+	}
+
+	/**
+	 * The grid for the given solving attempt has to be replayed.
+	 * 
+	 * @param solvingAttemptId
+	 *            The solving attempt for which the grid has to be replayed.
+	 * @return
+	 */
+	private boolean replayPuzzle(int solvingAttemptId) {
+		// Load the grid for the returned solving attempt id.
+		Grid grid = new Grid();
+		if (grid.load(solvingAttemptId)) {
+			if (grid.isActive() == false) {
+				grid.replay();
+			}
+
+			// Either load the grid in the existing puzzle
+			// fragment or transform the fragment.
+			if (mPuzzleFragment != null) {
+				mPuzzleFragment.setNewGrid(grid);
+			} else {
+				// In case a finished grid is replayed a new
+				// solving attempt has been be created for the
+				// grid.
+				initializePuzzleFragment(grid.getSolvingAttemptId(), true);
+			}
+			return true;
+		} else {
+			return false;
+		}
+
+	}
+
+	/**
+	 * Reload the finished game currently displayed.
+	 * 
+	 * @param view
+	 */
+	public void onClickReloadGame(View view) {
+		if (mArchiveFragment != null) {
+			replayPuzzle(mArchiveFragment.getSolvingAttemptId());
+		}
 	}
 }

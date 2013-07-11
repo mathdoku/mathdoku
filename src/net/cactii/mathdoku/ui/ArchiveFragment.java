@@ -42,6 +42,8 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 
 	private GridStatistics mGridStatistics;
 
+	private int mSolvingAttemptId;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -49,7 +51,7 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 				container, savedInstanceState);
 
 		Bundle args = getArguments();
-		int solvingAttemptId = args.getInt(BUNDLE_KEY_SOLVING_ATTEMPT_ID);
+		mSolvingAttemptId = args.getInt(BUNDLE_KEY_SOLVING_ATTEMPT_ID);
 
 		// Get fragment manager and start a transaction.
 		GridView mGridView;
@@ -57,7 +59,7 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 
 		// Load grid from database
 		Grid grid = new Grid();
-		if (grid.load(solvingAttemptId)) {
+		if (grid.load(mSolvingAttemptId)) {
 			// Load grid into grid view
 			mGridView.loadNewGrid(grid);
 
@@ -77,8 +79,9 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 				mGridView.setDigitPositionGrid(mDigitPositionGrid);
 
 				// Change text of button below grid
-				((Button) rootView.findViewById(R.id.archiveReloadButton)).setText(R.string.archive_reload_unfinished_game);
-				
+				((Button) rootView.findViewById(R.id.archiveReloadButton))
+						.setText(R.string.archive_reload_unfinished_game);
+
 				// Disable the grid as the user should not be able to click
 				// cells in the archive view
 				grid.setActive(false);
@@ -456,5 +459,16 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 		// Assume 90% of screen width is actually available to display all
 		// elements
 		return (int) ((float) 0.90 * displayMetrics.widthPixels / elements);
+	}
+
+	/**
+	 * Get the solving attempt id which is being showed in this archive
+	 * fragment.
+	 * 
+	 * @return The solving attempt id which is being showed in this archive
+	 *         fragment.
+	 */
+	public int getSolvingAttemptId() {
+		return mSolvingAttemptId;
 	}
 }
