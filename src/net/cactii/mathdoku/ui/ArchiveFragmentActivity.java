@@ -30,6 +30,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -105,6 +106,17 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mArchiveFragmentStatePagerAdapter);
 
+		// Set up the pager tab strip
+		final PagerTabStrip pagerTabStrip = (PagerTabStrip) findViewById(R.id.pager_tab_strip);
+		pagerTabStrip.setDrawFullUnderline(false);
+		
+		// Hide the tab indicator by setting color identical to backgroud color.
+		pagerTabStrip.setTabIndicatorColor(0xFF33b5e5);
+		pagerTabStrip.setBackgroundColor(0xFF33b5e5);
+		
+		// Non primary items are semi transparent.
+		pagerTabStrip.setNonPrimaryAlpha(0.75f);
+		
 		// In case a solving attempt has been specified in the bundle, this
 		// solving attempt will be showed as selected grid as long as it does
 		// meet the selection criteria of the filters.
@@ -492,29 +504,41 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 		int solvingAttemptId = getSolvingAttemptIdForCurrentSelectedGrid();
 		Grid grid = new Grid();
 		if (grid.load(solvingAttemptId)) {
-		
-		Intent intent = new Intent(Intent.ACTION_SENDTO);
-		intent.setData(Uri.parse("mailto:"));
-		intent.putExtra(Intent.EXTRA_SUBJECT,
-				getResources().getString(R.string.archive_share_subject));
-		
-		String ShareURL = SharedPuzzleActivity.getShareUrl(grid.toGridDefinitionString());
-		String downloadUrl = "https://code.google.com/p/mathdoku/downloads/list"; // TODO: replace before going live to Play Store!!
-		intent.putExtra(
-				Intent.EXTRA_TEXT,
-				Html.fromHtml(getResources()
-						.getString(
-								R.string.archive_share_body,
-								"<a href =\"" + ShareURL + "\">puzzle</a>",
-								"<a href =\"" + downloadUrl + "\">MathDoku Project Download Page</a>")));
 
-		try {
-			startActivity(Intent.createChooser(intent, getResources()
-					.getString(R.string.usage_log_choose_action_title)));
-		} catch (android.content.ActivityNotFoundException ex) {
-			// No clients installed which can handle
-			// this intent.
+			Intent intent = new Intent(Intent.ACTION_SENDTO);
+			intent.setData(Uri.parse("mailto:"));
+			intent.putExtra(Intent.EXTRA_SUBJECT,
+					getResources().getString(R.string.archive_share_subject));
+
+			String ShareURL = SharedPuzzleActivity.getShareUrl(grid
+					.toGridDefinitionString());
+			String downloadUrl = "https://code.google.com/p/mathdoku/downloads/list"; // TODO:
+																						// replace
+																						// before
+																						// going
+																						// live
+																						// to
+																						// Play
+																						// Store!!
+			intent.putExtra(
+					Intent.EXTRA_TEXT,
+					Html.fromHtml(getResources().getString(
+							R.string.archive_share_body,
+							"<a href =\"" + ShareURL + "\">puzzle</a>",
+							"<a href =\"" + downloadUrl
+									+ "\">MathDoku Project Download Page</a>")));
+
+			try {
+				startActivity(Intent.createChooser(intent, getResources()
+						.getString(R.string.usage_log_choose_action_title)));
+			} catch (android.content.ActivityNotFoundException ex) {
+				// No clients installed which can handle
+				// this intent.
+			}
 		}
 	}
+	
+	public int getViewPagerCurrentPosition() {
+		return (mViewPager == null ? -1 : mViewPager.getCurrentItem());
 	}
 }

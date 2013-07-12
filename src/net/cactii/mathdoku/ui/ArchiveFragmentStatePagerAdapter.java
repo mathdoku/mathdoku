@@ -22,6 +22,8 @@ public class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter 
 	public static final int UNKNOWN_GRID_ID = -1;
 	public static final int INVALID_POSITION_ID = -2;
 
+	private ArchiveFragmentActivity mArchiveFragmentActivity;
+
 	// The list of grids which can be shown with the adapter. Per grid the
 	// latest solving attempt is also retrieved.
 	private int[][] mGridIds;
@@ -43,7 +45,8 @@ public class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter 
 		mSizeFilter = SizeFilter.ALL;
 
 		// Initialize the label used in the page titles.
-		mLabelPuzzleNumber = archiveFragmentActivity.getResources().getString(
+		mArchiveFragmentActivity = archiveFragmentActivity;
+		mLabelPuzzleNumber = mArchiveFragmentActivity.getResources().getString(
 				R.string.archive_puzzle_number);
 
 		// Determine id's of grids/solving attempts which are available for
@@ -83,9 +86,19 @@ public class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter 
 						+ mGridIds[position][GridDatabaseAdapter.LATEST_SOLVING_ATTEMPT_PER_GRID__SOLVING_ATTEMP_ID]
 						+ ")";
 			} else {
-				return mLabelPuzzleNumber
-						+ " "
-						+ mGridIds[position][GridDatabaseAdapter.LATEST_SOLVING_ATTEMPT_PER_GRID__GRID_ID];
+				int currentPosition = mArchiveFragmentActivity
+						.getViewPagerCurrentPosition();
+				if (position < currentPosition) {
+					return "< "
+							+ mGridIds[position][GridDatabaseAdapter.LATEST_SOLVING_ATTEMPT_PER_GRID__GRID_ID];
+				} else if (position == currentPosition) {
+					return mLabelPuzzleNumber
+							+ " "
+							+ mGridIds[position][GridDatabaseAdapter.LATEST_SOLVING_ATTEMPT_PER_GRID__GRID_ID];
+				} else {
+					return mGridIds[position][GridDatabaseAdapter.LATEST_SOLVING_ATTEMPT_PER_GRID__GRID_ID]
+							+ " >";
+				}
 			}
 		} else {
 			return mLabelPuzzleNumber;
