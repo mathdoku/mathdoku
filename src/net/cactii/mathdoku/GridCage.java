@@ -335,7 +335,7 @@ public class GridCage {
 
 	public ArrayList<int[]> getPossibleNums() {
 		if (mPossibles == null) {
-			if (mHideOperator)
+			if (mHideOperator || (mAction == ACTION_NONE && mCells.size() > 1))
 				mPossibles = setPossibleNumsNoOperator();
 			else
 				mPossibles = setPossibleNums();
@@ -343,20 +343,27 @@ public class GridCage {
 		return mPossibles;
 	}
 
+	/**
+	 * Get all permutations of cell values for this cage.
+	 * 
+	 * @return The list of all permutations of cell values which can be used for
+	 *         this cage.
+	 */
 	private ArrayList<int[]> setPossibleNumsNoOperator() {
 		ArrayList<int[]> AllResults = new ArrayList<int[]>();
 
-		if (this.mAction == ACTION_NONE) {
-			assert (mCells.size() == 1);
+		// Single cell cages can only contain the value of the single cell.
+		if (mCells.size() == 1) {
 			int number[] = { mResult };
 			AllResults.add(number);
 			return AllResults;
 		}
 
+		// Cages of size two can contain any operation
 		int gridSize = mGrid.getGridSize();
 		if (mCells.size() == 2) {
-			for (int i1 = 1; i1 <= gridSize; i1++)
-				for (int i2 = i1 + 1; i2 <= gridSize; i2++)
+			for (int i1 = 1; i1 <= gridSize; i1++) {
+				for (int i2 = i1 + 1; i2 <= gridSize; i2++) {
 					if (i2 - i1 == mResult || i1 - i2 == mResult
 							|| mResult * i1 == i2 || mResult * i2 == i1
 							|| i1 + i2 == mResult || i1 * i2 == mResult) {
@@ -365,13 +372,14 @@ public class GridCage {
 						numbers = new int[] { i2, i1 };
 						AllResults.add(numbers);
 					}
+				}
+			}
 			return AllResults;
 		}
 
-		// ACTION_ADD:
+		// Cages of size two and above can only contain an add or a multiply
+		// operation
 		AllResults = getAllAddCombos(gridSize, mResult, mCells.size());
-
-		// ACTION_MULTIPLY:
 		ArrayList<int[]> multResults = getAllMultiplyCombos(gridSize, mResult,
 				mCells.size());
 
@@ -384,8 +392,9 @@ public class GridCage {
 					break;
 				}
 			}
-			if (!foundset)
+			if (!foundset) {
 				AllResults.add(possibleset);
+			}
 		}
 
 		return AllResults;

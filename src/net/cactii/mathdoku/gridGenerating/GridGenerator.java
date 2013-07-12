@@ -503,7 +503,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			// If a valid grid is generated check if it was not generated
 			// before.
 			if (!restart) {
-				if (isGeneratedBefore(mCells, mCages)) {
+				if (isGeneratedBefore(mCells, mCages, hideOperators)) {
 					clearAllCages();
 					restart = true;
 					if (DEBUG_GRID_GENERATOR) {
@@ -1071,11 +1071,11 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	 *         otherwise.
 	 */
 	public boolean isGeneratedBefore(ArrayList<GridCell> cells,
-			ArrayList<GridCage> cages) {
+			ArrayList<GridCage> cages, boolean hideOperators) {
 		// Check if this grid definition is unique
 		GridDatabaseAdapter gridDatabaseAdapter = new GridDatabaseAdapter();
 		return (gridDatabaseAdapter.getByGridDefinition(Grid
-				.toGridDefinitionString(cells, cages)) != null);
+				.toGridDefinitionString(cells, cages, hideOperators)) != null);
 	}
 
 }

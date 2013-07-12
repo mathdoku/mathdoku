@@ -505,7 +505,7 @@ public class Grid {
 	 * @return A unique string representation of the grid.
 	 */
 	public String toGridDefinitionString() {
-		return toGridDefinitionString(mCells, mCages);
+		return toGridDefinitionString(mCells, mCages, mGridGeneratingParameters.mHideOperators);
 	}
 
 	/**
@@ -518,7 +518,7 @@ public class Grid {
 	 * @return A unique string representation of the grid.
 	 */
 	public static String toGridDefinitionString(ArrayList<GridCell> cells,
-			ArrayList<GridCage> cages) {
+			ArrayList<GridCage> cages, boolean hideOperators) {
 		StringBuilder definitionString = new StringBuilder();
 
 		// Get the cage number (represented as a value of two digits, if needed
@@ -530,7 +530,7 @@ public class Grid {
 		// Followed by cages
 		for (GridCage cage : cages) {
 			definitionString.append(":" + cage.mId + "," + cage.mResult + ","
-					+ cage.mAction);
+					+ (hideOperators ? GridCage.ACTION_NONE : cage.mAction));
 		}
 		return definitionString.toString();
 	}
