@@ -103,7 +103,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		mRootView = inflater.inflate(R.layout.puzzle_activity_fragment,
+		mRootView = inflater.inflate(R.layout.puzzle_fragment,
 				container, false);
 
 		mContext = (Context) getActivity();

@@ -23,18 +23,23 @@ import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -54,6 +59,11 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	// Reference to fragments which can be displayed in this activity.
 	private PuzzleFragment mPuzzleFragment;
 	private ArchiveFragment mArchiveFragment;
+
+	// References to the navigation drawer
+	private DrawerLayout mDrawerLayout;
+	private ActionBarDrawerToggle mActionBarDrawerToggle;
+	private ListView mDrawerListView;
 
 	// Object to save data on a configuration change. Note: for the puzzle
 	// fragment the RetainInstance property is set to true.
@@ -85,6 +95,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.puzzle_activity_fragment);
 
 		// Initialize global objects (singleton instances)
 		DatabaseHelper.getInstance(this);
@@ -99,15 +110,70 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		// Set up the action bar.
 		final ActionBar actionBar = getActionBar();
 		if (actionBar != null) {
-			// Disable home as up on Ice Cream Sandwich and above. On Honeycomb
-			// it will be enabled by default but this can do no harm.
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-				actionBar.setHomeButtonEnabled(false);
-			}
 			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 			actionBar.setSubtitle(getResources().getString(
 					R.string.action_bar_subtitle_puzzle_fragment));
+
+			// Prepare actionBar for usage in combination with navigation
+			// drawer.
+			actionBar.setHomeButtonEnabled(true);
+			actionBar.setDisplayHomeAsUpEnabled(true);
 		}
+
+		// Set up the navigation drawer
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.puzzle_activity_drawer_layout);
+		mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+				R.drawable.ic_drawer, R.string.navigation_drawer_open,
+				R.string.navigation_drawer_close) {
+
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see
+			 * android.support.v4.app.ActionBarDrawerToggle#onDrawerClosed(android
+			 * .view.View)
+			 */
+			public void onDrawerClosed(View view) {
+				// Update the options menu with relevant options.
+				invalidateOptionsMenu();
+
+				// Reset the subtitle
+				actionBar.setSubtitle(getResources().getString(
+						R.string.action_bar_subtitle_puzzle_fragment));
+			}
+
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see
+			 * android.support.v4.app.ActionBarDrawerToggle#onDrawerOpened(android
+			 * .view.View)
+			 */
+			public void onDrawerOpened(View drawerView) {
+				// Update the options menu with relevant options.
+				invalidateOptionsMenu();
+
+				// Remove the subtitle
+				actionBar.setSubtitle(null);
+			}
+		};
+
+		// Set the drawer toggle as the DrawerListener
+		mDrawerLayout.setDrawerListener(mActionBarDrawerToggle);
+
+		String[] navigationDrawerMenuItems = getResources().getStringArray(
+				R.array.navigation_drawer_menu_items);
+		mDrawerListView = (ListView) findViewById(R.id.left_drawer);
+
+		// Set the adapter for the list view containing the navigation items
+		mDrawerListView
+				.setAdapter(new ArrayAdapter<String>(this,
+						R.layout.navigation_drawer_list_item,
+						navigationDrawerMenuItems));
+
+		// Set the list's click listener
+		mDrawerListView
+				.setOnItemClickListener(new NavigationDrawerItemClickListener());
 
 		// Restore the last configuration instance which was saved before the
 		// configuration change.
@@ -155,7 +221,19 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 			mDialogPresentingGridGenerator.attachToActivity(this);
 		}
 
+		// Reset the selected item in the drawer.
+		if (mDrawerListView != null) {
+			mDrawerListView.setItemChecked(0, true);
+		}
+
 		super.onResume();
+	}
+
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
+		// Sync the toggle state after onRestoreInstanceState has occurred.
+		mActionBarDrawerToggle.syncState();
 	}
 
 	@Override
@@ -171,20 +249,20 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		// Disable or enable the archive and the settings
-		menu.findItem(R.id.action_archive).setVisible(
-				mMathDokuPreferences.isArchiveAvailable());
-		menu.findItem(R.id.action_statistics).setVisible(
-				mMathDokuPreferences.isStatisticsAvailable());
+		// If the navigation drawer is open, hide action items related to the
+		// content view
+		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerListView);
 
 		boolean showCheats = false;
 
 		// Set visibility for menu option check progress
 		menu.findItem(R.id.checkprogress).setVisible(
-				mPuzzleFragment != null && mPuzzleFragment.showCheckProgress());
+				!drawerOpen && mPuzzleFragment != null
+						&& mPuzzleFragment.showCheckProgress());
 
 		// Set visibility for menu option to reveal a cell
-		if (mPuzzleFragment != null && mPuzzleFragment.showRevealCell()) {
+		if (!drawerOpen && mPuzzleFragment != null
+				&& mPuzzleFragment.showRevealCell()) {
 			menu.findItem(R.id.action_reveal_cell).setVisible(true);
 			showCheats = true;
 		} else {
@@ -192,15 +270,17 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		}
 
 		// Set visibility for menu option to reveal a operator
-		if (mPuzzleFragment != null && mPuzzleFragment.showRevealOperator()) {
+		if (!drawerOpen && mPuzzleFragment != null
+				&& mPuzzleFragment.showRevealOperator()) {
 			menu.findItem(R.id.action_reveal_operator).setVisible(true);
 			showCheats = true;
 		} else {
 			menu.findItem(R.id.action_reveal_operator).setVisible(false);
 		}
 
-		// Set visibility for menu option to reveal a operator
-		if (mPuzzleFragment != null && mPuzzleFragment.showRevealSolution()) {
+		// Set visibility for menu option to reveal the solution
+		if (!drawerOpen && mPuzzleFragment != null
+				&& mPuzzleFragment.showRevealSolution()) {
 			menu.findItem(R.id.action_show_solution).setVisible(true);
 			showCheats = true;
 		} else {
@@ -209,14 +289,16 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 
 		// The cheats menu is only visible in case at lease one submenu item is
 		// visible.
-		menu.findItem(R.id.action_cheat).setVisible(showCheats);
+		menu.findItem(R.id.action_cheat).setVisible(!drawerOpen && showCheats);
 
 		// Set visibility for menu option to clear the grid
 		menu.findItem(R.id.action_clear_grid).setVisible(
-				mPuzzleFragment != null && mPuzzleFragment.showClearGrid());
+				!drawerOpen && mPuzzleFragment != null
+						&& mPuzzleFragment.showClearGrid());
 
 		// Determine position of new game button
 		menu.findItem(R.id.action_new_game)
+				.setVisible(!drawerOpen)
 				.setShowAsAction(
 						(mPuzzleFragment != null && mPuzzleFragment.isActive() ? MenuItem.SHOW_AS_ACTION_NEVER
 								: MenuItem.SHOW_AS_ACTION_ALWAYS));
@@ -233,6 +315,11 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem menuItem) {
+		// First pass the event to ActionBarDrawerToggle, if it returns
+		// true, then it has handled the app icon touch event
+		if (mActionBarDrawerToggle.onOptionsItemSelected(menuItem)) {
+			return true;
+		}
 
 		int menuId = menuItem.getItemId();
 		switch (menuId) {
@@ -263,17 +350,6 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 			if (mPuzzleFragment != null) {
 				mPuzzleFragment.clearGrid();
 			}
-			return true;
-		case R.id.action_archive:
-			Intent intentArchive = new Intent(this,
-					ArchiveFragmentActivity.class);
-			startActivityForResult(intentArchive, REQUEST_ARCHIVE);
-			return true;
-		case R.id.action_statistics:
-			UsageLog.getInstance().logFunction("Menu.Statistics");
-			Intent intentStatistics = new Intent(this,
-					StatisticsFragmentActivity.class);
-			startActivity(intentStatistics);
 			return true;
 		case R.id.action_puzzle_settings:
 			UsageLog.getInstance().logFunction("Menu.ViewOptions");
@@ -534,6 +610,12 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		}
 	}
 
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		mActionBarDrawerToggle.onConfigurationChanged(newConfig);
+	}
+
 	/*
 	 * Responds to a configuration change just before the activity is destroyed.
 	 * In case a background task is still running, a reference to this task will
@@ -600,7 +682,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager
 				.beginTransaction();
-		fragmentTransaction.replace(android.R.id.content, mPuzzleFragment);
+		fragmentTransaction.replace(R.id.content_frame, mPuzzleFragment);
 
 		// Commit with allowing state loss. Using normal commit results in a
 		// forced close when reloading a finished puzzle from the archive. I am
@@ -634,7 +716,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager
 				.beginTransaction();
-		fragmentTransaction.replace(android.R.id.content, mArchiveFragment)
+		fragmentTransaction.replace(R.id.content_frame, mArchiveFragment)
 				.commit();
 		if (forceFragmentTransaction) {
 			fragmentManager.executePendingTransactions();
@@ -869,6 +951,36 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	public void onClickReloadGame(View view) {
 		if (mArchiveFragment != null) {
 			replayPuzzle(mArchiveFragment.getSolvingAttemptId());
+		}
+	}
+
+	/* The click listener for the list view in the navigation drawer */
+	private class NavigationDrawerItemClickListener implements
+			ListView.OnItemClickListener {
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+			switch (position) {
+			case 0:
+				// The puzzle activity is already opened.
+				break;
+			case 1:
+				Intent intentArchive = new Intent(PuzzleFragmentActivity.this,
+						ArchiveFragmentActivity.class);
+				startActivityForResult(intentArchive, REQUEST_ARCHIVE);
+				break;
+			case 2:
+				UsageLog.getInstance().logFunction("Menu.Statistics");
+				Intent intentStatistics = new Intent(
+						PuzzleFragmentActivity.this,
+						StatisticsFragmentActivity.class);
+				startActivity(intentStatistics);
+				break;
+			}
+
+			// Highlight the selected item, and close the drawer
+			mDrawerListView.setItemChecked(position, true);
+			mDrawerLayout.closeDrawer(mDrawerListView);
 		}
 	}
 }
