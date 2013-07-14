@@ -1,5 +1,8 @@
 package net.cactii.mathdoku.ui;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import net.cactii.mathdoku.Grid;
 import net.cactii.mathdoku.InvalidGridException;
 import net.cactii.mathdoku.R;
@@ -16,6 +19,7 @@ import net.cactii.mathdoku.storage.database.GridDatabaseAdapter.SizeFilter;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter.StatusFilter;
 import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 import net.cactii.mathdoku.tip.TipDialog;
+import net.cactii.mathdoku.tip.TipStatistics;
 import net.cactii.mathdoku.util.UsageLog;
 import net.cactii.mathdoku.util.Util;
 import android.annotation.TargetApi;
@@ -64,6 +68,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	private DrawerLayout mDrawerLayout;
 	private ActionBarDrawerToggle mActionBarDrawerToggle;
 	private ListView mDrawerListView;
+	private String[] mNavigationDrawerItems;
 
 	// Object to save data on a configuration change. Note: for the puzzle
 	// fragment the RetainInstance property is set to true.
@@ -113,67 +118,10 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 			actionBar.setSubtitle(getResources().getString(
 					R.string.action_bar_subtitle_puzzle_fragment));
-
-			// Prepare actionBar for usage in combination with navigation
-			// drawer.
-			actionBar.setHomeButtonEnabled(true);
-			actionBar.setDisplayHomeAsUpEnabled(true);
 		}
 
-		// Set up the navigation drawer
-		mDrawerLayout = (DrawerLayout) findViewById(R.id.puzzle_activity_drawer_layout);
-		mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-				R.drawable.ic_drawer, R.string.navigation_drawer_open,
-				R.string.navigation_drawer_close) {
-
-			/*
-			 * (non-Javadoc)
-			 * 
-			 * @see
-			 * android.support.v4.app.ActionBarDrawerToggle#onDrawerClosed(android
-			 * .view.View)
-			 */
-			public void onDrawerClosed(View view) {
-				// Update the options menu with relevant options.
-				invalidateOptionsMenu();
-
-				// Reset the subtitle
-				actionBar.setSubtitle(getResources().getString(
-						R.string.action_bar_subtitle_puzzle_fragment));
-			}
-
-			/*
-			 * (non-Javadoc)
-			 * 
-			 * @see
-			 * android.support.v4.app.ActionBarDrawerToggle#onDrawerOpened(android
-			 * .view.View)
-			 */
-			public void onDrawerOpened(View drawerView) {
-				// Update the options menu with relevant options.
-				invalidateOptionsMenu();
-
-				// Remove the subtitle
-				actionBar.setSubtitle(null);
-			}
-		};
-
-		// Set the drawer toggle as the DrawerListener
-		mDrawerLayout.setDrawerListener(mActionBarDrawerToggle);
-
-		String[] navigationDrawerMenuItems = getResources().getStringArray(
-				R.array.navigation_drawer_menu_items);
-		mDrawerListView = (ListView) findViewById(R.id.left_drawer);
-
-		// Set the adapter for the list view containing the navigation items
-		mDrawerListView
-				.setAdapter(new ArrayAdapter<String>(this,
-						R.layout.navigation_drawer_list_item,
-						navigationDrawerMenuItems));
-
-		// Set the list's click listener
-		mDrawerListView
-				.setOnItemClickListener(new NavigationDrawerItemClickListener());
+		// Set up the navigation drawer.
+		setNavigationDrawer();
 
 		// Restore the last configuration instance which was saved before the
 		// configuration change.
@@ -220,20 +168,18 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 			// onCreate isn't. So we have to check here as well.
 			mDialogPresentingGridGenerator.attachToActivity(this);
 		}
-
-		// Reset the selected item in the drawer.
-		if (mDrawerListView != null) {
-			mDrawerListView.setItemChecked(0, true);
-		}
-
 		super.onResume();
 	}
 
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
-		// Sync the toggle state after onRestoreInstanceState has occurred.
-		mActionBarDrawerToggle.syncState();
+
+		// Sync the navigation drawer toggle state after onRestoreInstanceState
+		// has occurred.
+		if (mActionBarDrawerToggle != null) {
+			mActionBarDrawerToggle.syncState();
+		}
 	}
 
 	@Override
@@ -251,7 +197,8 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		// If the navigation drawer is open, hide action items related to the
 		// content view
-		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerListView);
+		boolean drawerOpen = (mDrawerLayout == null || mDrawerListView == null ? false
+				: mDrawerLayout.isDrawerOpen(mDrawerListView));
 
 		boolean showCheats = false;
 
@@ -317,7 +264,8 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	public boolean onOptionsItemSelected(MenuItem menuItem) {
 		// First pass the event to ActionBarDrawerToggle, if it returns
 		// true, then it has handled the app icon touch event
-		if (mActionBarDrawerToggle.onOptionsItemSelected(menuItem)) {
+		if (mActionBarDrawerToggle != null
+				&& mActionBarDrawerToggle.onOptionsItemSelected(menuItem)) {
 			return true;
 		}
 
@@ -431,7 +379,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 				&& new GridDatabaseAdapter().countGrids(StatusFilter.SOLVED,
 						SizeFilter.ALL) >= 5) {
 			mMathDokuPreferences.setArchiveVisible();
-			invalidateOptionsMenu();
+			setNavigationDrawer();
 		}
 		// Display the hint if applicable (maximum 3 times)
 		if (mPuzzleFragment != null
@@ -492,9 +440,9 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	}
 
 	/**
-	 * Displayes the changes dialog. As from version 1.96 the changes itself are
-	 * no longer described in this dialog. Instead a reference to the website is
-	 * shown.
+	 * Displays the changes dialog. As from version 1.96 the changes itself are
+	 * no longer described in this dialog. Instead a reference to the web site
+	 * is shown.
 	 */
 	private void openChangesDialog(boolean showLeadInVersion2) {
 		// Get view and put relevant information into the view.
@@ -613,7 +561,9 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
-		mActionBarDrawerToggle.onConfigurationChanged(newConfig);
+		if (mActionBarDrawerToggle != null) {
+			mActionBarDrawerToggle.onConfigurationChanged(newConfig);
+		}
 	}
 
 	/*
@@ -655,9 +605,15 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		// displayed.
 		initializeArchiveFragment(solvingAttemptId, false);
 
-		// Refresh option menu. For example check progress should be
-		// hidden.
-		invalidateOptionsMenu();
+		// Enable the statistics as soon as the first game has been
+		// finished.
+		if (mMathDokuPreferences.isStatisticsAvailable() == false) {
+			mMathDokuPreferences.setStatisticsVisible();
+			setNavigationDrawer();
+		}
+		if (TipStatistics.toBeDisplayed(mMathDokuPreferences)) {
+			new TipStatistics(this).show();
+		}
 	}
 
 	/**
@@ -960,27 +916,129 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-			switch (position) {
-			case 0:
-				// The puzzle activity is already opened.
-				break;
-			case 1:
+			if (mNavigationDrawerItems[position].equals(getResources()
+					.getString(R.string.action_archive))) {
 				Intent intentArchive = new Intent(PuzzleFragmentActivity.this,
 						ArchiveFragmentActivity.class);
 				startActivityForResult(intentArchive, REQUEST_ARCHIVE);
-				break;
-			case 2:
+			} else if (mNavigationDrawerItems[position].equals(getResources()
+					.getString(R.string.action_statistics))) {
 				UsageLog.getInstance().logFunction("Menu.Statistics");
 				Intent intentStatistics = new Intent(
 						PuzzleFragmentActivity.this,
 						StatisticsFragmentActivity.class);
 				startActivity(intentStatistics);
-				break;
 			}
-
-			// Highlight the selected item, and close the drawer
-			mDrawerListView.setItemChecked(position, true);
 			mDrawerLayout.closeDrawer(mDrawerListView);
 		}
+	}
+
+	/**
+	 * Set the navigation drawer. The drawer can be open in following ways: -
+	 * tapping the drawer or the app icon - tapping the left side of the screen.
+	 * 
+	 * The drawer icon will only be visible as soon as the archive or the
+	 * statistics are unlocked. From that moment it will be possible to open the
+	 * drawer by tapping the drawer or the app icon.
+	 * 
+	 * It is not possible to disable the navigation drawer entirely in case the
+	 * archive and statistics are not yet unlocked. To prevent showing an empty
+	 * drawer, the puzzle activity itself will always be displayed as a
+	 * navigation item. In case the user opens the drawer accidently by tapping
+	 * the left side of the screen before the archive or statistics are unlocked
+	 * it will be less confusing.
+	 */
+	private void setNavigationDrawer() {
+		// Determine the item which have to be shown in the drawer.
+		boolean openDrawer = false;
+		boolean mDrawerIconVisible = false;
+		ArrayList<String> navigationDrawerItems = new ArrayList<String>();
+		navigationDrawerItems.add(getResources().getString(
+				R.string.action_bar_subtitle_puzzle_fragment));
+		if (mMathDokuPreferences.isArchiveAvailable()) {
+			String string = getResources().getString(R.string.action_archive);
+			navigationDrawerItems.add(string);
+			openDrawer = (mNavigationDrawerItems != null && Arrays.asList(
+					mNavigationDrawerItems).contains(string) == false);
+			mDrawerIconVisible = true;
+		}
+		if (mMathDokuPreferences.isStatisticsAvailable()) {
+			String string = getResources()
+					.getString(R.string.action_statistics);
+			navigationDrawerItems.add(string);
+			openDrawer = (mNavigationDrawerItems != null && Arrays.asList(
+					mNavigationDrawerItems).contains(string) == false);
+			mDrawerIconVisible = true;
+		}
+		mNavigationDrawerItems = navigationDrawerItems
+				.toArray(new String[navigationDrawerItems.size()]);
+
+		// Set up the action bar for displaying the drawer icon and making the
+		// app icon clickable in order to display the drawer. 
+		final ActionBar actionBar = getActionBar();
+		if (actionBar != null && mDrawerIconVisible) {
+			actionBar.setHomeButtonEnabled(true);
+			actionBar.setDisplayHomeAsUpEnabled(true);
+		}
+
+		// Set up the navigation drawer.
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.puzzle_activity_drawer_layout);
+		mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+				R.drawable.ic_drawer, R.string.navigation_drawer_open,
+				R.string.navigation_drawer_close) {
+
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see
+			 * android.support.v4.app.ActionBarDrawerToggle#onDrawerClosed(android
+			 * .view.View)
+			 */
+			public void onDrawerClosed(View view) {
+				// Update the options menu with relevant options.
+				invalidateOptionsMenu();
+
+				// Reset the subtitle
+				actionBar.setSubtitle(getResources().getString(
+						R.string.action_bar_subtitle_puzzle_fragment));
+			}
+
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see
+			 * android.support.v4.app.ActionBarDrawerToggle#onDrawerOpened(android
+			 * .view.View)
+			 */
+			public void onDrawerOpened(View drawerView) {
+				// Update the options menu with relevant options.
+				invalidateOptionsMenu();
+
+				// Remove the subtitle
+				actionBar.setSubtitle(null);
+			}
+		};
+
+		// Set the drawer toggle as the DrawerListener
+		mDrawerLayout.setDrawerListener(mActionBarDrawerToggle);
+
+		// Get list view for drawer
+		mDrawerListView = (ListView) findViewById(R.id.left_drawer);
+
+		// Set the adapter for the list view containing the navigation items
+		mDrawerListView.setAdapter(new ArrayAdapter<String>(this,
+				R.layout.navigation_drawer_list_item, mNavigationDrawerItems));
+
+		// Set the list's click listener
+		mDrawerListView
+				.setOnItemClickListener(new NavigationDrawerItemClickListener());
+		
+		// Select the the play puzzle item as active item.
+		mDrawerListView.setItemChecked(0, true);
+
+		if (openDrawer) {
+			mDrawerLayout.openDrawer(mDrawerListView);
+		}
+		mDrawerLayout.invalidate();
 	}
 }

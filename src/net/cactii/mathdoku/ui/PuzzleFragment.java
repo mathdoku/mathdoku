@@ -15,7 +15,6 @@ import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import net.cactii.mathdoku.tip.TipCheat;
 import net.cactii.mathdoku.tip.TipIncorrectValue;
-import net.cactii.mathdoku.tip.TipStatistics;
 import net.cactii.mathdoku.util.UsageLog;
 import net.cactii.mathdoku.util.Util;
 import android.annotation.SuppressLint;
@@ -289,15 +288,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				stopTimer();
 				mGrid.setSelectedCell(null);
 				mGrid.save();
-
-				// Enable the statistics as soon as the first game has been
-				// finished.
-				if (mMathDokuPreferences.isStatisticsAvailable() == false) {
-					mMathDokuPreferences.setStatisticsVisible();
-				}
-				if (TipStatistics.toBeDisplayed(mMathDokuPreferences)) {
-					new TipStatistics(mContext).show();
-				}
 
 				// Notify the containing fragment activity about the finishing
 				// of the grid. In case the puzzle has been solved manually, a

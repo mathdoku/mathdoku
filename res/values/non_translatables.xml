@@ -38,12 +38,4 @@
         <item>150</item>
         <item>250</item>
     </string-array>
-
-    <!-- The values of option in the navigation drawer menu. -->
-    <string-array name="navigation_drawer_menu_items">
-        <item>@string/action_bar_subtitle_puzzle_fragment</item>
-        <item>@string/action_archive</item>
-        <item>@string/action_statistics</item>
-    </string-array>
-
-</resources>
+</resources>
