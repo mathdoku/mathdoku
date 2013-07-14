@@ -524,12 +524,16 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	 * Finishes the upgrading process after the game files have been converted.
 	 * 
 	 * @param previousInstalledVersion
-	 *            : Latest version of MathDoku which was actually used.
+	 *            Latest version of MathDoku which was actually used.
 	 * @param currentVersion
 	 *            Current (new) revision number of MathDoku.
 	 */
 	public void upgradePhase2_UpdatePreferences(int previousInstalledVersion,
 			int currentVersion) {
+		// The game file converter process has been completed. Reset it in order
+		// to prevent restarting the game file conversion after a configuration
+		// change.
+		mGameFileConverter = null;
 
 		// Update preferences
 		mMathDokuPreferences.upgrade(previousInstalledVersion, currentVersion);
@@ -974,7 +978,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 				.toArray(new String[navigationDrawerItems.size()]);
 
 		// Set up the action bar for displaying the drawer icon and making the
-		// app icon clickable in order to display the drawer. 
+		// app icon clickable in order to display the drawer.
 		final ActionBar actionBar = getActionBar();
 		if (actionBar != null && mDrawerIconVisible) {
 			actionBar.setHomeButtonEnabled(true);
@@ -1032,7 +1036,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		// Set the list's click listener
 		mDrawerListView
 				.setOnItemClickListener(new NavigationDrawerItemClickListener());
-		
+
 		// Select the the play puzzle item as active item.
 		mDrawerListView.setItemChecked(0, true);
 
