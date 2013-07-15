@@ -20,6 +20,7 @@ import net.cactii.mathdoku.storage.database.GridDatabaseAdapter.StatusFilter;
 import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 import net.cactii.mathdoku.tip.TipDialog;
 import net.cactii.mathdoku.tip.TipStatistics;
+import net.cactii.mathdoku.util.SharedPuzzle;
 import net.cactii.mathdoku.util.UsageLog;
 import net.cactii.mathdoku.util.Util;
 import android.annotation.TargetApi;
@@ -250,6 +251,14 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 						(mPuzzleFragment != null && mPuzzleFragment.isActive() ? MenuItem.SHOW_AS_ACTION_NEVER
 								: MenuItem.SHOW_AS_ACTION_ALWAYS));
 
+		// Display the share button on the action bar dependent on the fragment
+		// being showed.
+		menu.findItem(R.id.action_share)
+				.setVisible(!drawerOpen)
+				.setShowAsAction(
+						(mArchiveFragment != null ? MenuItem.SHOW_AS_ACTION_IF_ROOM
+								: MenuItem.SHOW_AS_ACTION_NEVER));
+
 		// When running in development mode, an extra menu is available.
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			menu.findItem(R.id.menu_development_mode).setVisible(true);
@@ -297,6 +306,15 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		case R.id.action_clear_grid:
 			if (mPuzzleFragment != null) {
 				mPuzzleFragment.clearGrid();
+			}
+			return true;
+		case R.id.action_share:
+			if (mPuzzleFragment != null) {
+				new SharedPuzzle(this).share(mPuzzleFragment
+						.getSolvingAttemptId());
+			} else if (mArchiveFragment != null) {
+				new SharedPuzzle(this).share(mArchiveFragment
+						.getSolvingAttemptId());
 			}
 			return true;
 		case R.id.action_puzzle_settings:
@@ -608,6 +626,9 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		// Once the grid has been solved, the statistics fragment has to be
 		// displayed.
 		initializeArchiveFragment(solvingAttemptId, false);
+		
+		// Update the actions available in the action bar.
+		invalidateOptionsMenu();
 
 		// Enable the statistics as soon as the first game has been
 		// finished.

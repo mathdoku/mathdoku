@@ -750,4 +750,15 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			mTickerTape.show();
 		}
 	}
+	
+	/**
+	 * Get the solving attempt id which is being showed in this archive
+	 * fragment.
+	 * 
+	 * @return The solving attempt id which is being showed in this archive
+	 *         fragment.
+	 */
+	public int getSolvingAttemptId() {
+		return mGrid.getSolvingAttemptId();
+	}
 }
