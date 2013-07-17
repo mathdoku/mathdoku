@@ -379,6 +379,9 @@
     <string name="statistics_elapsed_time_historic_solved_average">Gemiddelde</string>
     <string name="statistics_elapsed_time_historic_solved_fastest">Snelste</string>
 
+    <!-- The lead in text at top of the help dialog. -->
+    <string name="statistics_help_dialog_general">De meeste statistieken zijn gebaseerd op all puzzels die je hebt gespeeld. De grafiek \'Speeltijd\' toont alleen de meest recente puzzels.\nDe statistieken zijn beschikbaar per niveau (d.w.z. de grootte van de puzzel) en voor het geheel. Veeg van links naar rechts om naar het vorige niveau te gaan. Veeg van rechts naar links om naar het volgende niveau te gaan.\n\nGebruik de settings om de statistieken weergave aan te passen.</string>
+
     <!-- STATISTICS  SETTINGS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 

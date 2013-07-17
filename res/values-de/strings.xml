@@ -404,6 +404,9 @@
     <string name="statistics_elapsed_time_historic_solved_average">Average</string>
     <string name="statistics_elapsed_time_historic_solved_fastest">Fastest</string>
 
+    <!-- The lead in text at top of the help dialog. -->
+    <string name="statistics_help_dialog_general">Most statistics are based on all games you have played. The chart \'Elapsed time\' only displays the most recent games.\nStatistics are available per level (i.e. the size of the puzzle) but also as a whole. Swipe from left to right to go to the previous level. Swipe from right to left to go to the next level.\n\nUse the settings to tweak display of the statistics.</string>
+
     <!-- STATISTICS  SETTINGS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- TODO: TRANSLATE ENTIRE SECTION -->
 

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="net.cactii.mathdoku"
     android:installLocation="auto"
-    android:versionCode="389"
-    android:versionName="2 (dev version)" xmlns:tools="http://schemas.android.com/tools">
+    android:versionCode="390"
+    android:versionName="2 (dev version)" >
 
     <uses-sdk
         android:minSdkVersion="11"

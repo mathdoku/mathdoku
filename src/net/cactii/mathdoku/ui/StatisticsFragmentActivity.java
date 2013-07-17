@@ -4,18 +4,22 @@ import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.util.FeedbackEmail;
 import net.cactii.mathdoku.util.UsageLog;
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 public class StatisticsFragmentActivity extends AppFragmentActivity implements
 		ActionBar.TabListener {
-	
+
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
 	 * fragments for each of the statistics fragments. A
@@ -44,7 +48,6 @@ public class StatisticsFragmentActivity extends AppFragmentActivity implements
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setTitle(getResources().getString(
 				R.string.statistics_actionbar_title));
-
 
 		// Set up the ViewPager, attaching the adapter and setting up a listener
 		// for when the user swipes between the statistics fragments.
@@ -96,7 +99,7 @@ public class StatisticsFragmentActivity extends AppFragmentActivity implements
 		getMenuInflater().inflate(R.menu.statistics_menu, menu);
 		return true;
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -110,8 +113,8 @@ public class StatisticsFragmentActivity extends AppFragmentActivity implements
 				// This activity is not part of the application's task, so
 				// create a new task with a synthesized back stack.
 				// If there are ancestor activities, they should be added here.
-				TaskStackBuilder.create(this)
-						.addNextIntent(upIntent).startActivities();
+				TaskStackBuilder.create(this).addNextIntent(upIntent)
+						.startActivities();
 				finish();
 			} else {
 				// This activity is part of the application's task, so simply
@@ -126,7 +129,35 @@ public class StatisticsFragmentActivity extends AppFragmentActivity implements
 		case R.id.action_send_feedback:
 			new FeedbackEmail(this).show();
 			return true;
+		case R.id.action_help:
+			openHelpDialog();
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	/**
+	 * Displays the Help Dialog.
+	 */
+	private void openHelpDialog() {
+		// Get view and put relevant information into the view.
+		LayoutInflater li = LayoutInflater.from(this);
+		View view = li.inflate(R.layout.statistics_help_dialog, null);
+
+		new AlertDialog.Builder(this)
+				.setTitle(
+						getResources().getString(R.string.action_statistics)
+								+ " "
+								+ getResources()
+										.getString(R.string.action_help))
+				.setIcon(R.drawable.icon)
+				.setView(view)
+				.setPositiveButton(R.string.dialog_general_button_close,
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+								// Do nothing
+							}
+						}).show();
 	}
 }
