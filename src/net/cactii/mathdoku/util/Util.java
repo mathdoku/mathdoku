@@ -9,6 +9,10 @@ import android.util.Log;
 public class Util {
 	public final static String TAG = "MathDoku.Util";
 
+	// Home directory url of promotion website. Most url's used in this app will
+	// be forwarded from the promotion website to code.google.com/p/mathdoku.
+	public final static String PROJECT_HOME = "http://mathdoku.net/";
+
 	private static boolean mInitialized = false;
 
 	private static int mPackageVersionNumber;

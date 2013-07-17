@@ -42,9 +42,14 @@
         android:title="@string/action_new_game"/>
     <item
         android:id="@+id/action_puzzle_settings"
-        android:orderInCategory="99"
+        android:orderInCategory="98"
         android:showAsAction="never"
         android:title="@string/settings"/>
+    <item
+        android:id="@+id/action_send_feedback"
+        android:orderInCategory="99"
+        android:showAsAction="never"
+        android:title="@string/action_feedback"/>
     <item
         android:id="@+id/action_puzzle_help"
         android:icon="@drawable/menu_help"

@@ -120,6 +120,9 @@
     <!-- The menu item that allows the player to share an archived game with another user via emai. -->
     <string name="action_share">Share</string>
 
+    <!-- The menu item that allows the player to send feedback via email. -->
+    <string name="action_feedback">Send feedback</string>
+
     <!-- ACTIONS IN SUB MENU CHEATS - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -247,6 +250,16 @@
     <string name="dialog_survey_user_name_hint">Your name</string>
     <string name="dialog_survey_user_email_hint">Your email address</string>
     <string name="dialog_survey_positive_button">Send log</string>
+
+    <!-- Dialog for sending feedback on MathDoku via email. -->
+    <string name="dialog_send_feedback_title">Send feedback</string>
+    <string name="dialog_send_feedback_text_1">Really great that you are willing to give feedback on MathDoku.\n\nPlease remember this is a free game without any advertisements. So we are not earning any money on this app. This game is just developed by enthousiastics in their spare time. We not are obliged in any way to build new feautures or solve bugs.\nPlease give constructive feedback without being offensive.\n\nWe prefer to receive feedback on issues or feature requests via the link below:</string>
+    <string name="dialog_send_feedback_text_2">\nBut you can also sent an email if that is more comfortable for you. Note, we can only address issues written in English.</string>
+    <string name="dialog_send_feedback_positive_button">Send email</string>
+
+    <!-- Default subject and message for feedback email. -->
+    <string name="feedback_email_subject">Feedback on MathDoku</string>
+    <string name="feedback_email_body">[Please remove this text and enter your feedback here. This email message contains a screendump of the screen just before you choose \'Send feedback\'. You can remove this screendump if it is not relevant for your feedback. The other attachment contains some basic details about the app and the size of your device and the value of the settings and preferences. This information can be helpful for us to understand your feedback but you\'re free to remove it.]</string>
 
     <!-- Title of dialog used to choose the appropriate action for sending the usage log. -->
     <string name="usage_log_choose_action_title">Send MathDoku Log</string>

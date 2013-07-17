@@ -19,7 +19,6 @@ import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.gridGenerating.GridGeneratingParameters;
-import net.cactii.mathdoku.ui.PuzzleFragmentActivity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -510,7 +509,7 @@ public class UsageLog {
 		View usagelogView = inflater.inflate(R.layout.usagelog_dialog, null);
 		TextView textView = (TextView) usagelogView
 				.findViewById(R.id.dialog_share_log_link);
-		textView.setText(PuzzleFragmentActivity.PROJECT_HOME + "usagelogging.php");
+		textView.setText(Util.PROJECT_HOME + "usagelogging.php");
 
 		// Build dialog
 		new AlertDialog.Builder(activity)

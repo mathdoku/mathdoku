@@ -20,6 +20,7 @@ import net.cactii.mathdoku.storage.database.GridDatabaseAdapter.StatusFilter;
 import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 import net.cactii.mathdoku.tip.TipDialog;
 import net.cactii.mathdoku.tip.TipStatistics;
+import net.cactii.mathdoku.util.FeedbackEmail;
 import net.cactii.mathdoku.util.SharedPuzzle;
 import net.cactii.mathdoku.util.UsageLog;
 import net.cactii.mathdoku.util.Util;
@@ -52,10 +53,6 @@ import android.widget.TextView;
 public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		PuzzleFragment.OnGridFinishedListener {
 	public final static String TAG = "MathDoku.PuzzleFragmentActivity";
-
-	// Home directory url of promotion website. Most url's used in this app will
-	// be forwarded from the promotion website to code.google.com/p/mathdoku.
-	public final static String PROJECT_HOME = "http://mathdoku.net/";
 
 	// Background tasks for generating a new puzzle and converting game files
 	public DialogPresentingGridGenerator mDialogPresentingGridGenerator;
@@ -321,6 +318,9 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 			UsageLog.getInstance().logFunction("Menu.ViewOptions");
 			startActivity(new Intent(this, PuzzlePreferenceActivity.class));
 			return true;
+		case R.id.action_send_feedback:
+			new FeedbackEmail(this).show();
+			return true;
 		case R.id.action_puzzle_help:
 			UsageLog.getInstance().logFunction("Menu.ViewHelp.Manual");
 			this.openHelpDialog();
@@ -427,7 +427,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 				+ Util.getPackageVersionNumber() + ")");
 
 		tv = (TextView) view.findViewById(R.id.help_project_home_link);
-		tv.setText(PROJECT_HOME);
+		tv.setText(Util.PROJECT_HOME);
 
 		final PuzzleFragmentActivity puzzleFragmentActivity = this;
 		new AlertDialog.Builder(puzzleFragmentActivity)
@@ -479,10 +479,10 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		}
 
 		textView = (TextView) view.findViewById(R.id.changelog_changes_link);
-		textView.setText(PROJECT_HOME + "changes.php");
+		textView.setText(Util.PROJECT_HOME + "changes.php");
 
 		textView = (TextView) view.findViewById(R.id.changelog_issues_link);
-		textView.setText(PROJECT_HOME + "issues.php");
+		textView.setText(Util.PROJECT_HOME + "issues.php");
 
 		new AlertDialog.Builder(this)
 				.setTitle(
@@ -626,7 +626,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		// Once the grid has been solved, the statistics fragment has to be
 		// displayed.
 		initializeArchiveFragment(solvingAttemptId, false);
-		
+
 		// Update the actions available in the action bar.
 		invalidateOptionsMenu();
 

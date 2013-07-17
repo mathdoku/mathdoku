@@ -7,6 +7,7 @@ import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter;
 import net.cactii.mathdoku.storage.database.GridRow;
+import net.cactii.mathdoku.util.FeedbackEmail;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.AlertDialog;
@@ -14,6 +15,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -65,6 +69,25 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 
 		// Load the grid into the grid view.
 		((GridView) findViewById(R.id.gridView)).loadNewGrid(mGrid);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.shared_puzzle_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem menuItem) {
+		int menuId = menuItem.getItemId();
+		switch (menuId) {
+		case R.id.action_send_feedback:
+			new FeedbackEmail(this).show();
+			return true;
+		default:
+			return super.onOptionsItemSelected(menuItem);
+		}
 	}
 
 	/**
@@ -138,14 +161,19 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 	 */
 	public void onClickPlayGame(View view) {
 		// First check if the puzzle already exists
-		GridRow gridRow = new GridDatabaseAdapter().getByGridDefinition(mGrid.toGridDefinitionString());
+		GridRow gridRow = new GridDatabaseAdapter().getByGridDefinition(mGrid
+				.toGridDefinitionString());
 		if (gridRow == null) {
 			startPuzzleFragment();
 		} else {
 			new AlertDialog.Builder(this)
 					.setTitle(R.string.shared_puzzle_exists_title)
-					.setMessage(getResources().getString(R.string.shared_puzzle_exists_message, gridRow.mId))
-					.setNegativeButton(R.string.shared_puzzle_exists_negative_button,
+					.setMessage(
+							getResources().getString(
+									R.string.shared_puzzle_exists_message,
+									gridRow.mId))
+					.setNegativeButton(
+							R.string.shared_puzzle_exists_negative_button,
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int whichButton) {
@@ -153,7 +181,8 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 									finish();
 								}
 							})
-					.setPositiveButton(R.string.shared_puzzle_exists_positive_button,
+					.setPositiveButton(
+							R.string.shared_puzzle_exists_positive_button,
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int whichButton) {
@@ -162,7 +191,7 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 							}).show();
 		}
 	}
-	
+
 	/**
 	 * Start the puzzle fragment for the grid which is displayed.
 	 */

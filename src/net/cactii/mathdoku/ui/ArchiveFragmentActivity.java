@@ -21,6 +21,7 @@ import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter.SizeFilter;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter.StatusFilter;
+import net.cactii.mathdoku.util.FeedbackEmail;
 import net.cactii.mathdoku.util.SharedPuzzle;
 import android.app.ActionBar;
 import android.app.AlertDialog;
@@ -218,6 +219,9 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 			return true;
 		case R.id.action_settings:
 			startActivity(new Intent(this, ArchivePreferenceActivity.class));
+			return true;
+		case R.id.action_send_feedback:
+			new FeedbackEmail(this).show();
 			return true;
 		case R.id.action_help:
 			openHelpDialog();

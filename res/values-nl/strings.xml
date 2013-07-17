@@ -23,6 +23,10 @@
     <!-- Name of settings menu. -->
     <string name="settings">Opties</string>
 
+    <!-- Labels for opening and closing the navigation drawer. -->
+    <string name="navigation_drawer_open">Open navigatie lade</string>
+    <string name="navigation_drawer_close">Sluit navigatie lade</string>
+
     <!-- DIALOG CONVERTING SAVED GAMES - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -115,6 +119,9 @@
 
     <!-- The menu item that allows the player to share an archived game with another user via emai. -->
     <string name="action_share">Delen</string>
+
+    <!-- The menu item that allows the player to send feedback via email. -->
+    <string name="action_feedback">Geef feedback</string>
 
     <!-- ACTIONS IN SUB MENU CHEATS - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -242,6 +249,16 @@
     <string name="dialog_survey_user_name_hint">Jouw naam</string>
     <string name="dialog_survey_user_email_hint">Jouw email adres</string>
     <string name="dialog_survey_positive_button">Verzend data</string>
+
+    <!-- Dialog for sending feedback on MathDoku via email. -->
+    <string name="dialog_send_feedback_title">Geef feedback</string>
+    <string name="dialog_send_feedback_text_1">Fantastisch dat je bereid bent om feedback te geven op MathDoku.\n\Herinner je aljeblieft dat dit een gratis spel zonder advertenties is. We verdienen dus geen geld met deze app. Deze app wordt ontwikkeld door enthousiastelingen in hun vrije tijd. We zijn op geen enkele manier verplicht om verzoeken in te bouwen of om fouten op te lossen.\nGeef alsjeblieft constructieve feedback zonder beledigend te zijn.\n\nWe geven er de voorkeur aan om feedback te ontvangen via de onderstaande link:</string>
+    <string name="dialog_send_feedback_text_2">\nMaar je kunt ook een email sturen als dat handiger is voor je. We nemen alleen verzoeken in behandeling die geschreven zijn in het engels.</string>
+    <string name="dialog_send_feedback_positive_button">Stuur email</string>
+
+    <!-- Default subject and message for feedback email. -->
+    <string name="feedback_email_subject">Feedback op MathDoku</string>
+    <string name="feedback_email_body">[Verwijderd alsjeblieft deze tekst en type hier je feedback. Deze email bevat een afdruk van het scherm vlak voordat je koos voor \'Geef feedback\'. Je kan deze schermafdruk verwijderen als het niet van belang is voor je feedback. De andere bijlage bevat enkele gegevens over de app, de afmetingen van je toestel en de waarden van je settings en voorkeuren. Deze informatie kan behulpzaam zijn bij het begrijpen van je feedback maar je bent vrij om deze te verwijderen.]</string>
 
     <!-- Title of dialog used to choose the appropriate action for sending the usage log. -->
     <string name="usage_log_choose_action_title">Verzend MathDoku data</string>
