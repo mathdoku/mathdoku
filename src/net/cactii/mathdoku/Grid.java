@@ -175,7 +175,7 @@ public class Grid {
 	}
 
 	/**
-	 * Clears all cells in the entire grid.
+	 * Clears all cells and cages in the entire grid.
 	 * 
 	 * @param replay
 	 *            True if clear is needed for replay of a finished grid. False
@@ -205,6 +205,13 @@ public class Grid {
 			if (updateGridClearCounter) {
 				mGridStatistics
 						.increaseCounter(StatisticsCounterType.GRID_CLEARED);
+			}
+		}
+		
+		// clear cages to remove the border related to bad cage maths.
+		if (mCages != null) {
+			for (GridCage cage : mCages) {
+				cage.checkCageMathsCorrect(false);
 			}
 		}
 	}
