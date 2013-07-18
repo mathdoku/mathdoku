@@ -19,12 +19,6 @@ import android.widget.TextView;
  * determine the preference, title, text and image to be used for this tip.
  */
 public class TipDialog extends AlertDialog {
-
-	// Category of tips
-	public enum TipCategory {
-		GAME_RULES, APP_USAGE_V1_9, APP_USAGE_V2
-	};
-
 	// Context in which the tip is created.
 	private Context mContext;
 
@@ -36,9 +30,6 @@ public class TipDialog extends AlertDialog {
 	private String mTip;
 	private boolean mDisplayAgain;
 
-	// The category the tip falls in.
-	private TipCategory mTipCategory;
-
 	// Show only one dialog per tip type
 	private static ArrayList<String> mDisplayedDialogs = null;
 
@@ -48,15 +39,13 @@ public class TipDialog extends AlertDialog {
 	 * @param context
 	 *            The activity in which context the tip is used.
 	 */
-	public TipDialog(Context context, String preference,
-			TipCategory tipCategory) {
+	public TipDialog(Context context, String preference) {
 		super(context);
 
 		// Store reference to activity and preferences
 		mContext = context;
 		mPreferences = Preferences.getInstance();
 		mTip = preference;
-		mTipCategory = tipCategory;
 
 		// Initializes the displayed dialogs list on first call
 		if (mDisplayedDialogs == null) {
@@ -178,7 +167,7 @@ public class TipDialog extends AlertDialog {
 	 * @return True in case the tip has to be shown. False otherwise.
 	 */
 	public boolean displayTip() {
-		return mPreferences.getDisplayTipAgain(mTip, mTipCategory);
+		return mPreferences.getDisplayTipAgain(mTip);
 	}
 
 }

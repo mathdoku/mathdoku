@@ -6,8 +6,7 @@ import android.content.Context;
 
 public class TipDuplicateValue extends TipDialog {
 
-	private static String TIP_NAME = "Tip.TipDuplicateValue.DisplayAgain";
-	private static TipCategory TIP_CATEGORY = TipCategory.GAME_RULES;
+	public static String TIP_NAME = "Tip.TipDuplicateValue.DisplayAgain";
 
 	/**
 	 * Creates a new tip dialog which explains that a duplicate value has been
@@ -17,7 +16,7 @@ public class TipDuplicateValue extends TipDialog {
 	 *            The activity in which this tip has to be shown.
 	 */
 	public TipDuplicateValue(Context context) {
-		super(context, TIP_NAME, TIP_CATEGORY);
+		super(context, TIP_NAME);
 
 		build(
 				context.getResources().getString(
@@ -37,7 +36,7 @@ public class TipDuplicateValue extends TipDialog {
 	 */
 	public static boolean toBeDisplayed(Preferences preferences) {
 		// Determine on basis of preferences whether the tip should be shown.
-		return preferences.getDisplayTipAgain(TIP_NAME, TIP_CATEGORY);
+		return preferences.getDisplayTipAgain(TIP_NAME);
 	}
 
 	/**

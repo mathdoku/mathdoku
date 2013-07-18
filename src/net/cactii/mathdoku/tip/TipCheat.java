@@ -5,11 +5,14 @@ import net.cactii.mathdoku.Preferences;
 import android.content.Context;
 
 public class TipCheat extends TipDialog {
-	
+
 	/*
-	 * Note: this class is used for multiple different cheats. 
+	 * Note: this class is used for multiple different cheats.
 	 */
-	private static TipCategory TIP_CATEGORY = TipCategory.APP_USAGE_V1_9;
+	public static final String TIP_NAME_CELL_REVEALED = "Tip.TipCheat.CellRevealed.DisplayAgain";
+	public static final String TIP_NAME_CHECK_PROGRESS_USED = "Tip.TipCheat.CheckProgress.DisplayAgain";
+	public static final String TIP_NAME_OPERATOR_REVEALED = "Tip.TipCheat.OperatorRevealed.DisplayAgain";
+	public static final String TIP_NAME_SOLUTION_REVEALED = "Tip.TipCheat.SolutionRevealed.DisplayAgain";
 
 	/**
 	 * Creates a new tip dialog which explains that cheating will increase the
@@ -19,7 +22,7 @@ public class TipCheat extends TipDialog {
 	 *            The activity in which this tip has to be shown.
 	 */
 	public TipCheat(Context context, Cheat cheat) {
-		super(context, getTipName(cheat), TIP_CATEGORY);
+		super(context, getTipName(cheat));
 
 		// Set the title
 		String mTitle = cheat.getTipTitle();
@@ -42,7 +45,7 @@ public class TipCheat extends TipDialog {
 	 */
 	public static boolean toBeDisplayed(Preferences preferences, Cheat cheat) {
 		// Determine on basis of preferences whether the tip should be shown.
-		return preferences.getDisplayTipAgain(getTipName(cheat), TIP_CATEGORY);
+		return preferences.getDisplayTipAgain(getTipName(cheat));
 	}
 
 	/**
@@ -54,6 +57,16 @@ public class TipCheat extends TipDialog {
 	 * @return
 	 */
 	public static String getTipName(Cheat cheat) {
-		return "Tip.TipCheat." + cheat.getName() + ".DisplayAgain";
+		switch (cheat.getType()) {
+		case CELL_REVEALED:
+			return TIP_NAME_CELL_REVEALED;
+		case CHECK_PROGRESS_USED:
+			return TIP_NAME_CHECK_PROGRESS_USED;
+		case OPERATOR_REVEALED:
+			return TIP_NAME_OPERATOR_REVEALED;
+		case SOLUTION_REVEALED:
+			return TIP_NAME_SOLUTION_REVEALED;
+		}
+		return null;
 	}
 }

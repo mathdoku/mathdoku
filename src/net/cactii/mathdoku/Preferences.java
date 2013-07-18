@@ -7,7 +7,6 @@ import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.painter.Painter.GridTheme;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter.SizeFilter;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter.StatusFilter;
-import net.cactii.mathdoku.tip.TipDialog.TipCategory;
 import net.cactii.mathdoku.util.SingletonInstanceNotInstantiated;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -118,12 +117,6 @@ public class Preferences {
 	public final static String THEME_NEWSPAPER = "newspaper";
 	public final static String THEME_NEWSPAPER_OLD = "newspaperold";
 	public final static String THEME_DEFAULT = THEME_NEWSPAPER;
-
-	private static String TIP_CATEGORY_FAMILIAR_WITH_APP = "Tip.Category.FamiliarWithApp";
-	private static boolean TIP_CATEGORY_FAMILIAR_WITH_APP_DEFAULT = false;
-
-	private static String TIP_CATEGORY_FAMILIAR_WITH_RULES = "Tip.Category.FamiliarWithRules";
-	private static boolean TIP_CATEGORY_FAMILIAR_WITH_RULES_DEFAULT = false;
 
 	public final static String USAGE_LOG_COUNT_GAMES_STARTED = "UsageLogCountGamesStarted";
 	public final static int USAGE_LOG_COUNT_GAMES_STARTED_DEFAULT = 0;
@@ -241,17 +234,6 @@ public class Preferences {
 			if (!mSharedPreferences.contains(USAGE_LOG_COUNT_GAMES_STARTED)) {
 				prefeditor.putInt(USAGE_LOG_COUNT_GAMES_STARTED,
 						USAGE_LOG_COUNT_GAMES_STARTED_DEFAULT);
-			}
-		}
-		if (previousInstalledVersion < 198 && currentVersion >= 198) {
-			// User who upgrade are assumed to be familiar with the app.
-			if (!mSharedPreferences.contains(TIP_CATEGORY_FAMILIAR_WITH_APP)) {
-				prefeditor.putBoolean(TIP_CATEGORY_FAMILIAR_WITH_APP,
-						previousInstalledVersion > 0);
-			}
-			if (!mSharedPreferences.contains(TIP_CATEGORY_FAMILIAR_WITH_RULES)) {
-				prefeditor.putBoolean(TIP_CATEGORY_FAMILIAR_WITH_RULES,
-						TIP_CATEGORY_FAMILIAR_WITH_RULES_DEFAULT);
 			}
 		}
 		if (previousInstalledVersion < 198 && currentVersion >= 198) {
@@ -384,6 +366,16 @@ public class Preferences {
 						SHOW_ARCHIVE_CHART_DESCRIPTION_DEFAULT);
 			}
 		}
+		if (previousInstalledVersion < 403 && currentVersion >= 403) {
+			// Remove obsolete preferences
+			if (mSharedPreferences.contains("Tip.Category.FamiliarWithApp")) {
+				prefeditor.remove("Tip.Category.FamiliarWithApp");
+			}
+			if (mSharedPreferences.contains("Tip.Category.FamiliarWithRules")) {
+				prefeditor.remove("Tip.Category.FamiliarWithRules");
+			}
+		}
+
 
 		prefeditor.putInt(CURRENT_VERSION, currentVersion);
 		prefeditor.commit();
@@ -488,32 +480,8 @@ public class Preferences {
 	 * 
 	 * @return True in case the tip has to be shown. False otherwise.
 	 */
-	public boolean getDisplayTipAgain(String preference, TipCategory tipCategory) {
-		// Tip will not be displayed in case its checkbox was checked before.
-		if (!mSharedPreferences.getBoolean(preference, true)) {
-			return false;
-		}
-
-		switch (tipCategory) {
-		case APP_USAGE_V1_9:
-			// Do not display this tip in case the user is already familiar
-			// with the app
-			return !mSharedPreferences.getBoolean(
-					TIP_CATEGORY_FAMILIAR_WITH_APP,
-					TIP_CATEGORY_FAMILIAR_WITH_APP_DEFAULT);
-		case APP_USAGE_V2:
-			// User can not be familiar with these functions as they are
-			// completely new.
-			return true;
-		case GAME_RULES:
-			// Do not display this tip in case the user is already familiar
-			// with the game rules
-			return !mSharedPreferences.getBoolean(
-					TIP_CATEGORY_FAMILIAR_WITH_RULES,
-					TIP_CATEGORY_FAMILIAR_WITH_RULES_DEFAULT);
-		}
-
-		return true;
+	public boolean getDisplayTipAgain(String preference) {
+		return mSharedPreferences.getBoolean(preference, true);
 	}
 
 	/**
@@ -525,20 +493,6 @@ public class Preferences {
 		prefeditor.commit();
 	}
 
-	/**
-	 * Initializes the preference "familiar with rules".
-	 * 
-	 * @param familiarWithRules
-	 *            The new value for this preference.
-	 */
-	public void setUserIsFamiliarWithRules(boolean familiarWithRules) {
-		Editor prefeditor = mSharedPreferences.edit();
-		if (!mSharedPreferences.contains(TIP_CATEGORY_FAMILIAR_WITH_RULES)) {
-			prefeditor.putBoolean(TIP_CATEGORY_FAMILIAR_WITH_RULES,
-					TIP_CATEGORY_FAMILIAR_WITH_RULES_DEFAULT);
-		}
-		prefeditor.commit();
-	}
 
 	/**
 	 * Checks if the usage log is disabled.

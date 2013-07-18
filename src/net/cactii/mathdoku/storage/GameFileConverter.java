@@ -5,7 +5,6 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 
 import net.cactii.mathdoku.Grid;
-import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
@@ -56,7 +55,6 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	// Conversion results
 	private ArrayList<String> mGridDefinitions;
 	private int mTotalGrids;
-	private int mTotalGridsSolved;
 	private int mTotalGridsNotConverted;
 
 	// Database adapter for the statistics
@@ -145,7 +143,6 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 		// Initialize conversion results.
 		mGridDefinitions = new ArrayList<String>();
 		mTotalGrids = 0;
-		mTotalGridsSolved = 0;
 		mTotalGridsNotConverted = 0;
 	}
 
@@ -185,9 +182,6 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 							// New definition found
 							mGridDefinitions.add(definition);
 						}
-						if (grid.checkIfSolved()) {
-							mTotalGridsSolved++;
-						}
 
 						// Save grid.
 						grid.saveOnUpgrade();
@@ -215,11 +209,6 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 		UsageLog.getInstance().logGameFileConversion(mCurrentVersion,
 				mNewVersion, mTotalGrids, mGridDefinitions.size(),
 				mTotalGridsNotConverted);
-
-		// We assume the user knows the rules as soon as two game have been
-		// solved.
-		Preferences.getInstance().setUserIsFamiliarWithRules(
-				mTotalGridsSolved > 1);
 
 		// Phase 1 of upgrade has been completed. Start next phase.
 		if (mActivity != null) {

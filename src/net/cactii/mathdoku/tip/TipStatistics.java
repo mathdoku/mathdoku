@@ -6,8 +6,7 @@ import android.content.Context;
 
 public class TipStatistics extends TipDialog {
 
-	private static String TIP_NAME = "Tip.TipStatistics.DisplayAgain";
-	private static TipCategory TIP_CATEGORY = TipCategory.APP_USAGE_V2;
+	public static String TIP_NAME = "Tip.TipStatistics.DisplayAgain";
 
 	/**
 	 * Creates a new tip dialog which explains that the statistics have been
@@ -17,7 +16,7 @@ public class TipStatistics extends TipDialog {
 	 *            The activity in which this tip has to be shown.
 	 */
 	public TipStatistics(Context context) {
-		super(context, TIP_NAME, TIP_CATEGORY);
+		super(context, TIP_NAME);
 
 		build(
 				context.getResources().getString(
@@ -39,7 +38,7 @@ public class TipStatistics extends TipDialog {
 	 */
 	public static boolean toBeDisplayed(Preferences preferences) {
 		// Determine on basis of preferences whether the tip should be shown.
-		return preferences.getDisplayTipAgain(TIP_NAME, TIP_CATEGORY);
+		return preferences.getDisplayTipAgain(TIP_NAME);
 	}
 
 	/**
