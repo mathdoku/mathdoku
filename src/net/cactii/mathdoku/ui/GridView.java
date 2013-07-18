@@ -11,6 +11,7 @@ import net.cactii.mathdoku.hint.TickerTape;
 import net.cactii.mathdoku.painter.GridPainter;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
+import net.cactii.mathdoku.tip.TipDuplicateValue;
 import net.cactii.mathdoku.tip.TipIncorrectValue;
 import net.cactii.mathdoku.tip.TipOrderOfValuesInCage;
 import android.content.Context;
@@ -345,6 +346,13 @@ public class GridView extends View implements OnTouchListener {
 							&& TipIncorrectValue.toBeDisplayed(mPreferences)) {
 						new TipIncorrectValue(mContext).show();
 					}
+					if (mGrid.markDuplicateValuesInRowAndColumn(selectedCell)) {
+						// The user value in the selected cell is also used in
+						// another cell on the same row or column.
+						if (TipDuplicateValue.toBeDisplayed(mPreferences)) {
+							new TipDuplicateValue(mContext).show();
+						}
+					}
 				}
 			}
 		}
@@ -377,7 +385,6 @@ public class GridView extends View implements OnTouchListener {
 			Painter.getInstance(mContext).setCellSize(mGridCellSize,
 					mDigitPositionGrid);
 			for (GridCell cell : mGrid.mCells) {
-				cell.checkWithOtherValuesInRowAndColumn();
 				cell.draw(canvas, gridBorderWidth, mInputMode);
 			}
 
@@ -421,7 +428,7 @@ public class GridView extends View implements OnTouchListener {
 
 		// Reset the swipe motion
 		mSwipeMotion = null;
-		
+
 		// Set default input mode to normal
 		mInputMode = InputMode.NORMAL;
 
@@ -485,7 +492,7 @@ public class GridView extends View implements OnTouchListener {
 			// Check all cells having a value and not (yet) marked as invalid.
 			if (cell.isUserValueSet() && !cell.hasInvalidUserValueHighlight()) {
 				if (cell.getUserValue() != cell.getCorrectValue()) {
-					cell.setInvalidHighlight(true);
+					cell.setInvalidHighlight();
 					mGrid.increaseCounter(StatisticsCounterType.CHECK_PROGRESS_INVALIDS_FOUND);
 					countNewInvalids++;
 				}
@@ -725,8 +732,8 @@ public class GridView extends View implements OnTouchListener {
 	 *            The minimum amount of milliseconds the ticker tape has to be
 	 *            displayed.
 	 */
-	private void setTickerTapeWithEraseConditions(String message, int minDisplayCycles,
-			int minDisplayTime) {
+	private void setTickerTapeWithEraseConditions(String message,
+			int minDisplayCycles, int minDisplayTime) {
 		// Cancel the previous ticker tape
 		if (mTickerTape != null) {
 			mTickerTape.cancel();
@@ -734,8 +741,8 @@ public class GridView extends View implements OnTouchListener {
 
 		// Create a new ticker tape
 		mTickerTape = new TickerTape(mContext);
-		mTickerTape.addItem(message).setEraseConditions(minDisplayCycles,
-				minDisplayTime).show();
+		mTickerTape.addItem(message)
+				.setEraseConditions(minDisplayCycles, minDisplayTime).show();
 
 		// Inform listeners about the new ticker tape.
 		mOnTickerTapeChangedListener.onTickerTapeChanged(mTickerTape);

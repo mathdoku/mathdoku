@@ -321,6 +321,10 @@
     <string name="dialog_tip_statistics_title">Statistics</string>
     <string name="dialog_tip_statistics_text">For each game you have played, some statistics are collected. You can use the statistics just to view your historic results. Also you can use the statistics to improve your solving techniques.\n\nYou can view the statistics from the navigation menu. The navigation menu can be opened by tapping the MathDoku icon.</string>
 
+    <!-- Title, and text for tip "Duplicate value" which gives explanation of the game rule which was violated. -->
+    <string name="dialog_tip_duplicate_value_title">Duplicate value</string>
+    <string name="dialog_tip_duplicate_value_text">You have entered a value which is already used in this column or this row. Each value should be used exactly once in each row and once in each column.</string>
+
     <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 

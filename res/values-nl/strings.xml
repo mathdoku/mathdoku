@@ -320,6 +320,10 @@
     <string name="dialog_tip_statistics_title">Statistieken</string>
     <string name="dialog_tip_statistics_text">Voor elke puzzel die je hebt gespeeld, worden statistieken bijgehouden. Je kunt de statistieken gebruiken om je historische resultaten te bekijken. Je kunt de statistieken ook gebruiken om je oplossingsstrategieën te verbeteren.</string>
 
+    <!-- Title, and text for tip "Duplicate value" which gives explanation of the game rule which was violated. -->
+    <string name="dialog_tip_duplicate_value_title">Duplicaat waarde</string>
+    <string name="dialog_tip_duplicate_value_text">Je hebt een waarde ingevoerd die al wordt gebruikt in een andere cell in deze rij of kolom. Elke waarde moet precies eenmaal worden gebruikt in elke rij en eenmaal in elke kolom.</string>
+
     <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 

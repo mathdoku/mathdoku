@@ -219,28 +219,6 @@ public class Grid {
 		return this.mCells.get(column + row * this.mGridSize);
 	}
 
-	// Return the number of times a given user value is in a row
-	public int getNumValueInRow(GridCell ocell) {
-		int count = 0;
-		for (GridCell cell : this.mCells) {
-			if (cell.getRow() == ocell.getRow()
-					&& cell.getUserValue() == ocell.getUserValue())
-				count++;
-		}
-		return count;
-	}
-
-	// Return the number of times a given user value is in a column
-	public int getNumValueInCol(GridCell ocell) {
-		int count = 0;
-		for (GridCell cell : this.mCells) {
-			if (cell.getColumn() == ocell.getColumn()
-					&& cell.getUserValue() == ocell.getUserValue())
-				count++;
-		}
-		return count;
-	}
-
 	// Solve the puzzle by setting the Uservalue to the actual value
 	public void solve() {
 		UsageLog.getInstance().logFunction("ContextMenu.ShowSolution");
@@ -896,7 +874,9 @@ public class Grid {
 					&& mGridStatistics.getReplayCount() > 0
 					&& mGridStatistics.isIncludedInStatistics() == false
 					&& saveDueToUpgrade == false) {
-				new StatisticsDatabaseAdapter().updateSolvingAttemptToBeIncludedInStatistics(mRowId, mSolvingAttemptId);
+				new StatisticsDatabaseAdapter()
+						.updateSolvingAttemptToBeIncludedInStatistics(mRowId,
+								mSolvingAttemptId);
 			}
 
 		} // End of synchronised block
@@ -1018,7 +998,7 @@ public class Grid {
 						.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
 					int cellNum = Integer.parseInt(cellId);
 					GridCell c = mCells.get(cellNum);
-					c.setInvalidHighlight(true);
+					c.setInvalidHighlight();
 				}
 
 				// Read next line
@@ -1081,6 +1061,11 @@ public class Grid {
 				throw new InvalidGridException(
 						"Unexpected line found while end of file was expected: "
 								+ line);
+			}
+			
+			// Mark cells with duplicate values
+			for (GridCell gridCell : mCells) {
+				markDuplicateValuesInRowAndColumn(gridCell);
 			}
 
 			// The solving attempt has been loaded succesfully into the grid
@@ -1288,5 +1273,44 @@ public class Grid {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Check whether the user value of the given cell is used in another cell on
+	 * the same row or column.
+	 * 
+	 * @param gridCell
+	 *            The grid cell for which it has to be checked whether its value
+	 *            is used in another cell on the same row or column.
+	 * @return True in case the user value of the given cell is used in another
+	 *         cell on the same row or column.
+	 */
+	public boolean markDuplicateValuesInRowAndColumn(GridCell gridCell) {
+		boolean duplicateValue = false;
+
+		if (gridCell.isUserValueSet()) {
+			int userValue = gridCell.getUserValue();
+			for (GridCell cell : mCells) {
+				// For each cell containing the user value it is checked whether
+				// the cell is in the same row or column as the given cell.
+				if (cell.getUserValue() == userValue) {
+					if ((cell.getColumn() == gridCell.getColumn() && cell
+							.getRow() != gridCell.getRow())
+							|| (cell.getColumn() != gridCell.getColumn() && cell
+									.getRow() == gridCell.getRow())) {
+						if (!duplicateValue) {
+							// When first cell in the same row or column with
+							// duplicate value is found, mark the given cell as
+							// duplicate.
+							gridCell.setDuplicateHighlight();
+							duplicateValue = true;
+						}
+						// Mark this cell as duplicate.
+						cell.setDuplicateHighlight();
+					}
+				}
+			}
+		}
+		return duplicateValue;
 	}
 }

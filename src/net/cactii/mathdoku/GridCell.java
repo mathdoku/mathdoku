@@ -49,8 +49,8 @@ public class GridCell {
 
 	private Grid mGrid;
 
-	// Whether to show warning background (duplicate value in row/col)
-	public boolean mShowWarning;
+	// Highlight in case a duplicate value is found in row or column
+	public boolean mDuplicateValueHighlight;
 	// Whether to show cell as selected
 	public boolean mSelected;
 	// Player cheated (revealed this cell)
@@ -86,7 +86,7 @@ public class GridCell {
 		mCageId = -1;
 		mCorrectValue = 0;
 		mUserValue = 0;
-		mShowWarning = false;
+		mDuplicateValueHighlight = false;
 		mCheated = false;
 		mInvalidUserValueHighlight = false;
 		mPossibles = new ArrayList<Integer>();
@@ -187,10 +187,17 @@ public class GridCell {
 		return mUserValue != 0;
 	}
 
+	/**
+	 * Set the user value of the cell to a new value.
+	 * 
+	 * @param digit
+	 *            The new value for the cell. Use 0 to clear the cell.
+	 */
 	public void setUserValue(int digit) {
-		this.mPossibles.clear();
-		this.mUserValue = digit;
+		mPossibles.clear();
+		mUserValue = digit;
 		mInvalidUserValueHighlight = false;
+		mDuplicateValueHighlight = false;
 
 		// Check cage maths
 		mGrid.mCages.get(mCageId).checkCageMathsCorrect(false);
@@ -217,7 +224,7 @@ public class GridCell {
 	 * Clear cheat and error flags.
 	 */
 	public void clearAllFlags() {
-		mShowWarning = false;
+		mDuplicateValueHighlight = false;
 		mCheated = false;
 		mInvalidUserValueHighlight = false;
 	}
@@ -231,8 +238,11 @@ public class GridCell {
 		return mCageId != -1;
 	}
 
-	public void setInvalidHighlight(boolean value) {
-		this.mInvalidUserValueHighlight = value;
+	/**
+	 * Mark the cell as a cell containing an invalid value.
+	 */
+	public void setInvalidHighlight() {
+		mInvalidUserValueHighlight = true;
 	}
 
 	/**
@@ -381,7 +391,8 @@ public class GridCell {
 		for (int i = 1; i <= 4; i++) {
 			switch (i) {
 			case 1:
-				borderPaint = ((mShowWarning && mGrid.hasPrefShowDupeDigits()) ? mCellPainter
+				borderPaint = ((mDuplicateValueHighlight && mGrid
+						.hasPrefShowDupeDigits()) ? mCellPainter
 						.getDuplicateBorderPaint() : null);
 				break;
 			case 2:
@@ -436,7 +447,7 @@ public class GridCell {
 			background = mCellPainter.getInvalidBackgroundPaint();
 		} else if (mCheated) {
 			background = mCellPainter.getCheatedBackgroundPaint();
-		} else if (mShowWarning && mGrid.hasPrefShowDupeDigits()) {
+		} else if (mDuplicateValueHighlight && mGrid.hasPrefShowDupeDigits()) {
 			background = mCellPainter.getWarningBackgroundPaint();
 		}
 		if (background != null) {
@@ -724,7 +735,7 @@ public class GridCell {
 		if (cellParts[0].equals(SAVE_GAME_CELL_LINE) == false) {
 			return false;
 		}
-		
+
 		// When upgrading to MathDoku v2 the history is not converted. As of
 		// revision 369 all logic for handling games stored with older versions
 		// is removed.
@@ -877,19 +888,6 @@ public class GridCell {
 	 */
 	public void setGridReference(Grid grid) {
 		mGrid = grid;
-	}
-
-	public void checkWithOtherValuesInRowAndColumn() {
-		if (isUserValueSet()) {
-			if (mGrid.getNumValueInCol(this) > 1
-					|| mGrid.getNumValueInRow(this) > 1) {
-				// Value has been used in another cell in the same row or
-				// column.
-				mShowWarning = true;
-				return;
-			}
-		}
-		mShowWarning = false;
 	}
 
 	/**
@@ -1084,5 +1082,12 @@ public class GridCell {
 		// float right = this.mPosX + cellSize;
 
 		return new float[] { left + (cellSize / 2), top + (cellSize / 2) };
+	}
+
+	/**
+	 * Mark the cell as a cell containing a duplicate value.
+	 */
+	public void setDuplicateHighlight() {
+		mDuplicateValueHighlight = true;
 	}
 }
