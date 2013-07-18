@@ -220,7 +220,7 @@ public class GridCage {
 
 	/**
 	 * Checks whether the cage arithmetic is correct using the values the user
-	 * has filled in.
+	 * has filled in. For single cell cages the math will never be incorrect.
 	 * 
 	 * @param forceBorderReset
 	 *            True if borders should always be reset. False in case borders
@@ -240,35 +240,28 @@ public class GridCage {
 			}
 		}
 
-		if (allCellsFilledIn) {
-			if (this.mCells.size() == 1) {
-				// A single cell cage is correct in case its user value is
-				// correct.
-				mUserMathCorrect = mCells.get(0).isUserValueCorrect();
-			} else {
-				if (this.mHideOperator) {
-					if (isAddMathsCorrect() || isMultiplyMathsCorrect()
-							|| isDivideMathsCorrect()
-							|| isSubtractMathsCorrect()) {
-						mUserMathCorrect = true;
-					} else {
-						mUserMathCorrect = false;
-					}
+		if (allCellsFilledIn && mCells.size() > 1) {
+			if (this.mHideOperator) {
+				if (isAddMathsCorrect() || isMultiplyMathsCorrect()
+						|| isDivideMathsCorrect() || isSubtractMathsCorrect()) {
+					mUserMathCorrect = true;
 				} else {
-					switch (this.mAction) {
-					case ACTION_ADD:
-						mUserMathCorrect = isAddMathsCorrect();
-						break;
-					case ACTION_MULTIPLY:
-						mUserMathCorrect = isMultiplyMathsCorrect();
-						break;
-					case ACTION_DIVIDE:
-						mUserMathCorrect = isDivideMathsCorrect();
-						break;
-					case ACTION_SUBTRACT:
-						mUserMathCorrect = isSubtractMathsCorrect();
-						break;
-					}
+					mUserMathCorrect = false;
+				}
+			} else {
+				switch (this.mAction) {
+				case ACTION_ADD:
+					mUserMathCorrect = isAddMathsCorrect();
+					break;
+				case ACTION_MULTIPLY:
+					mUserMathCorrect = isMultiplyMathsCorrect();
+					break;
+				case ACTION_DIVIDE:
+					mUserMathCorrect = isDivideMathsCorrect();
+					break;
+				case ACTION_SUBTRACT:
+					mUserMathCorrect = isSubtractMathsCorrect();
+					break;
 				}
 			}
 		}
