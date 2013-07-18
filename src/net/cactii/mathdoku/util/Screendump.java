@@ -36,7 +36,7 @@ public class Screendump extends Object {
 	 */
 	public boolean save(View view, String filename) {
 		// Check if the view dimensions allow to make a preview.
-		if (view.getWidth() == 0 || view.getHeight() == 0) {
+		if (view == null || view.getWidth() == 0 || view.getHeight() == 0) {
 			// Could not create a preview.
 			return false;
 		}

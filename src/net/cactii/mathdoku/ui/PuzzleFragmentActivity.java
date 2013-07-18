@@ -310,8 +310,12 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 				new SharedPuzzle(this).share(mPuzzleFragment
 						.getSolvingAttemptId());
 			} else if (mArchiveFragment != null) {
-				new SharedPuzzle(this).share(mArchiveFragment
-						.getSolvingAttemptId());
+				// Only the archive fragment possibly contains the statistics
+				// views which can be enclosed as attachments to the share
+				// email.
+				new SharedPuzzle(this).addStatisticsChartsAsAttachments(
+						this.getWindow().getDecorView()).share(
+						mArchiveFragment.getSolvingAttemptId());
 			}
 			return true;
 		case R.id.action_puzzle_settings:

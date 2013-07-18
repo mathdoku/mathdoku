@@ -108,14 +108,14 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 		// Set up the pager tab strip
 		final PagerTabStrip pagerTabStrip = (PagerTabStrip) findViewById(R.id.pager_tab_strip);
 		pagerTabStrip.setDrawFullUnderline(false);
-		
+
 		// Hide the tab indicator by setting color identical to backgroud color.
 		pagerTabStrip.setTabIndicatorColor(0xFF33b5e5);
 		pagerTabStrip.setBackgroundColor(0xFF33b5e5);
-		
+
 		// Non primary items are semi transparent.
 		pagerTabStrip.setNonPrimaryAlpha(0.75f);
-		
+
 		// In case a solving attempt has been specified in the bundle, this
 		// solving attempt will be showed as selected grid as long as it does
 		// meet the selection criteria of the filters.
@@ -215,7 +215,8 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 			}
 			return true;
 		case R.id.action_share:
-			new SharedPuzzle(this).share(getSolvingAttemptIdForCurrentSelectedGrid());
+			new SharedPuzzle(this).addStatisticsChartsAsAttachments(this.getWindow().getDecorView())
+					.share(getSolvingAttemptIdForCurrentSelectedGrid());
 			return true;
 		case R.id.action_settings:
 			startActivity(new Intent(this, ArchivePreferenceActivity.class));

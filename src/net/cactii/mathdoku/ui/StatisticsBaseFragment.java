@@ -50,7 +50,7 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	protected static final int chartRed3 = 0xFFB22400;
 	protected static final int chartRed4 = 0xFFFECCBF;
 	protected static final int chartRed5 = 0xFFFE9980;
-
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -93,6 +93,8 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	/**
 	 * Add a statistics section to the activity.
 	 * 
+	 * @param tag
+	 *            The tag which can be used to identify the view.
 	 * @param title
 	 *            The title of this section. Null in case no title has to be
 	 *            displayed.
@@ -109,11 +111,16 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	 *            An additional view which has to be displayed between chart and
 	 *            explanation.
 	 */
-	protected void addStatisticsSection(String title, GraphicalView chart,
-			View extraDataView, String explanation) {
+	protected void addStatisticsSection(String tag, String title,
+			GraphicalView chart, View extraDataView, String explanation) {
 		// Inflate a new view for this statistics section
 		View sectionView = mLayoutInflater.inflate(R.layout.statistics_section,
 				null);
+		
+		// Add the tag to the view.
+		if (tag != null) {
+			sectionView.setTag(tag);
+		}
 
 		// Set title. The chart title of achartengine is not used.
 		if (title != null && title.isEmpty() == false) {

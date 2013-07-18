@@ -27,6 +27,12 @@ public class FileProvider extends ContentProvider {
 	private static final int SCREENDUMP_ID = 2;
 	public static final String SCREENDUMP_FILE_NAME = "screendump.png";
 
+	private static final int AVOIDABLE_MOVES_CHART_ID = 3;
+	public static final String AVOIDABLE_MOVES_CHART_FILE_NAME = "avoidable_moves.png";
+
+	private static final int CHEATS_CHART_ID = 4;
+	public static final String CHEATS_CHART_FILE_NAME = "cheats.png";
+
 	private static final UriMatcher uriMatcher;
 	static {
 		uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -34,6 +40,10 @@ public class FileProvider extends ContentProvider {
 				FEEDBACK_LOG_ID);
 		uriMatcher.addURI(PROVIDER_NAME, SCREENDUMP_FILE_NAME,
 				SCREENDUMP_ID);
+		uriMatcher.addURI(PROVIDER_NAME, AVOIDABLE_MOVES_CHART_FILE_NAME,
+				AVOIDABLE_MOVES_CHART_ID);
+		uriMatcher.addURI(PROVIDER_NAME, CHEATS_CHART_FILE_NAME,
+				CHEATS_CHART_ID);
 	}
 
 	@Override
@@ -53,6 +63,10 @@ public class FileProvider extends ContentProvider {
 		case FEEDBACK_LOG_ID:
 			return "text/plain";
 		case SCREENDUMP_ID:
+			return "image/png";
+		case AVOIDABLE_MOVES_CHART_ID:
+			return "image/png";
+		case CHEATS_CHART_ID:
 			return "image/png";
 		default:
 			return "*/*";

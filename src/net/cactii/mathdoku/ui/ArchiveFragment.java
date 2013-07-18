@@ -44,6 +44,10 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 
 	private int mSolvingAttemptId;
 
+	// Tags to identify the statistics sections which are searched by tag.
+	public static final String AVOIDABLE_MOVES_CHART_TAG_ID = "FinishedPuzzleAvoidableMovesChart";
+	public static final String CHEATS_CHART_TAG_ID = "FinishedPuzzleCheatsCharts";
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -196,7 +200,7 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 				(double) mGridStatistics.mCellsUserValueEmtpty / totalCells);
 		renderer.addSeriesRenderer(createSimpleSeriesRenderer(chartGrey1));
 
-		addStatisticsSection(
+		addStatisticsSection(null,
 				getResources().getString(R.string.progress_chart_title),
 				ChartFactory.getPieChartView(getActivity(), categorySeries,
 						renderer), null,
@@ -308,8 +312,8 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 				.setBarWidth(getElementWidth(countCategories) / 2);
 
 		// Add new statistics section to the activity
-		addStatisticsSection(
-				getResources().getString(R.string.avoidable_moves_chart_title),
+		addStatisticsSection(AVOIDABLE_MOVES_CHART_TAG_ID, getResources()
+				.getString(R.string.avoidable_moves_chart_title),
 				ChartFactory.getBarChartView(getActivity(),
 						xyMultipleSeriesDataset, xyMultipleSeriesRenderer,
 						Type.DEFAULT), null,
@@ -442,6 +446,7 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 				.setBarWidth(getElementWidth(categoryIndex) / 2);
 
 		addStatisticsSection(
+				CHEATS_CHART_TAG_ID,
 				getResources().getString(R.string.statistics_cheats_used_title),
 				ChartFactory.getBarChartView(getActivity(),
 						xyMultipleSeriesDataset, xyMultipleSeriesRenderer,

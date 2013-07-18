@@ -444,45 +444,39 @@
 
     <!-- The lead in text at top of the help dialog. -->
     <string name="archive_help_dialog_general">The archive contains the history of all games you have played. Swipe from left to right to go to an older puzzle. Swipe from right to left to go to a newer puzzle.\n\nYou can use filters to view only puzzles having a specific status or size. Filters can be enabled and disabled via the settings menu. Note: a filter will only be shown in case it contains multiple values.</string>
-    <string name="archive_share_subject">Mathdoku puzzle</string>
-    <string name="archive_share_body">I want to share this MathDoku puzzle with you. Click the %1$s link and choose the MathDoku app to preview the puzzle. In case you haven\'t installed MathDoku for Android, please install an alpha version (revision 368 or above) from %2$s in which this feature is added.</string>
 
     <!-- SHARED PUZZLE  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+    <!-- Subject and body of share email. -->
+    <string name="share_puzzle_subject">Sharing MathDoku puzzle</string>
+    <string name="share_puzzle_link_description">MathDoku puzzle</string>
+    <string name="share_unfinished_puzzle_body">I want to share this %1$s with you. After clicking the link, please choose the MathDoku app to preview the puzzle.%2$sIn case you haven\'t yet installed version 2 of MathDoku for Android, please download it from %3$s before clicking the puzzle links.%4$sIn case the text above does not contains any links, please use links below:%5$s - Play the MathDoku puzzle: %6$s - Download MathDoku: %7$s</string>
+    <string name="share_finished_puzzle_body">I have solved this %1$s in %2$s. Can you finish it faster? After clicking the link, please choose the MathDoku app to preview the puzzle.%3$sIn case you haven\'t yet installed version 2 of MathDoku for Android, please download it from %4$s before clicking the puzzle links.%5$sIn case the text above does not contains any links, please use links below:%6$s - Play the MathDoku puzzle: %7$s - Download MathDoku: %8$s</string>
 
     <!-- Title for the shared puzzle fragment. -->
     <string name="shared_puzzle_action_bar_title">Preview Shared Puzzle</string>
-
     <!-- Introduction text at top of screen. -->
     <string name="shared_puzzle_introduction">This puzzle was sent to you via an email link. See email for more details if included by sender. In case you choose to play this puzzle right now, it will also be added to your own archive of played puzzles.</string>
-
     <!-- The label of the button below a puzzle. -->
     <string name="shared_puzzle_play_button">Play this puzzle</string>
-
     <!-- The title and message for the dialog in which the user is informed that the shared puzzle already exists in the archive. -->
     <string name="shared_puzzle_exists_title">Puzzle duplicate</string>
     <string name="shared_puzzle_exists_message">This puzzle already exists in your archive (see puzzle %1$d). Playing this puzzle will overwrite the previous solution and statistics.</string>
     <string name="shared_puzzle_exists_positive_button">Yes</string>
     <string name="shared_puzzle_exists_negative_button">No</string>
-
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
     <!-- The message that appears when the player has solved the puzzle. -->
     <string name="main_ui_solved_messsage">Solved!</string>
-
     <!-- The message that appears when the player reveals a cell. -->
     <string name="main_ui_cheat_messsage">Cheat! :P</string>
-
     <!-- The message shown when no errors found when checking progress. -->
     <string name="ProgressOK">All correct so far</string>
-
     <!-- The message shown when error(s) found when checking progress. -->
     <string name="ProgressBad">Error(s) - cells highlighted.</string>
-
     <!-- Alert to select a cell before a value is selected -->
     <string name="select_cell_before_value">Select a cell first.</string>
-
     <!-- Units for time. -->
     <string name="time_unit_seconds_singular">second</string>
     <string name="time_unit_seconds_plural">seconds</string>
@@ -492,13 +486,10 @@
     <string name="time_unit_hours_plural">hours</string>
     <string name="time_unit_days_singular">day</string>
     <string name="time_unit_days_plural">days</string>
-
     <!-- Connection word for the last two elements in a list. Example: "1 minute and 15 seconds" or "1, 2, 3 and 4)" -->
     <string name="connector_last_two_elements">and</string>
-
     <!-- The text for input mode "normal" which is used to enter a definitive value into the selected cell. -->
     <string name="input_mode_normal_short">normal</string>
-
     <!-- The text for input mode "maybe" which is used to insert/remove a possible value into/from the selected cell. -->
     <string name="input_mode_maybe_short">maybe</string>
 

@@ -187,7 +187,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		}
 
 		// Add section to activity
-		addStatisticsSection(
+		addStatisticsSection(null,
 				getResources().getString(R.string.solved_chart_title),
 				ChartFactory.getPieChartView(getActivity(), categorySeries,
 						renderer), null,
@@ -393,6 +393,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		// entirely colored based on status of game.
 		String[] types = typesList.toArray(new String[typesList.size()]);
 		addStatisticsSection(
+				null,
 				getResources().getString(
 						R.string.statistics_elapsed_time_historic_title),
 				ChartFactory.getCombinedXYChartView(getActivity(),

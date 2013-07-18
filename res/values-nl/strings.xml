@@ -443,11 +443,15 @@
 
     <!-- The lead in text at top of the help dialog. -->
     <string name="archive_help_dialog_general">The archive contains the history of all games you have played. Swipe from left to right to go to an older puzzle. Swipe from right to left to go to a newer puzzle.\n\nYou can use filters to view only puzzles having a specific status or size. Filters can be enabled and disabled via the settings menu. Note: a filter will only be shown in case it contains multiple values.</string>
-    <string name="archive_share_subject">Mathdoku puzzel</string>
-    <string name="archive_share_body">Ik wil een MathDoku puzzel met je delen. Klik op de %1$s link en kies de MathDoku app om de puzzel te bekijken. In het geval dat je MathDoku niet hebt geïnstalleerd, installeer dan de alpha versie (revision 368 of hoger) van %2$s waarin deze functie is toegevoegd.</string>
 
     <!-- SHARED PUZZLE  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+
+    <!-- Subject and body of share email. -->
+    <string name="share_puzzle_subject">MathDoku puzzel delen</string>
+    <string name="share_puzzle_link_description">MathDoku puzzel</string>
+    <string name="share_unfinished_puzzle_body">Ik wil deze %1$s met je delen. Kies, na het klikken op de link, voor de MathDoku app om de puzzel te bekijken.%2$sIn het geval dat je versie 2 van MathDoku for Android nog niet hebt geïnstalleerd, download het dan van %3$s voordat je op de puzzel link klikt.%4$sIn het geval dat bovenstaande tekst geen links bevat, gebruik dan alsjeblieft een van de onderstaande links:%5$s - Bekijken MathDoku puzzel: %6$s - Download MathDoku: %7$s</string>
+    <string name="share_finished_puzzle_body">Ik heb deze %1$s opgelost in %2$s. Kan jij het sneller? Kies, na het klikken op de link, voor de MathDoku app om de puzzel te bekijken.%3$sIn het geval dat je versie 2 van MathDoku for Android nog niet hebt geïnstalleerd, download het dan van %4$s voordat je op de puzzel link klikt.%5$sIn het geval dat bovenstaande tekst geen links bevat, gebruik dan alsjeblieft een van de onderstaande links:%6$s - Bekijken MathDoku puzzel: %7$s - Download MathDoku: %8$s</string>
 
     <!-- Title for the shared puzzle fragment. -->
     <string name="shared_puzzle_action_bar_title">Voorvertoning Gedeelde Puzzel</string>
