@@ -3,8 +3,8 @@
 
     <CheckBoxPreference
         android:key="ShowStatisticsDescription"
-        android:summary="@string/option_show_statistics_description_summary"
-        android:title="@string/option_show_statistics_description_title" />
+        android:summary="@string/statistics_setting_show_chart_description_summary"
+        android:title="@string/statistics_setting_show_chart_description_title" />
     
     <ListPreference
         android:key="elapsed_time_chart_maximum_games_displayed"

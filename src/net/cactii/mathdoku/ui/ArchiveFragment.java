@@ -4,6 +4,7 @@ import java.text.DateFormat;
 
 import net.cactii.mathdoku.DigitPositionGrid;
 import net.cactii.mathdoku.Grid;
+import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.statistics.GridStatistics;
 import net.cactii.mathdoku.util.Util;
@@ -16,6 +17,8 @@ import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.DefaultRenderer;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Color;
 import android.graphics.Paint.Align;
 import android.os.Bundle;
@@ -31,7 +34,8 @@ import android.widget.TextView;
 /**
  * An archive fragment representing a puzzle which is archived.
  */
-public class ArchiveFragment extends StatisticsBaseFragment {
+public class ArchiveFragment extends StatisticsBaseFragment implements
+OnSharedPreferenceChangeListener {
 
 	@SuppressWarnings("unused")
 	private static final String TAG = "ArchiveFragment";
@@ -43,10 +47,13 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 	private GridStatistics mGridStatistics;
 
 	private int mSolvingAttemptId;
+	private int mGridSize;
 
 	// Tags to identify the statistics sections which are searched by tag.
 	public static final String AVOIDABLE_MOVES_CHART_TAG_ID = "FinishedPuzzleAvoidableMovesChart";
 	public static final String CHEATS_CHART_TAG_ID = "FinishedPuzzleCheatsCharts";
+
+	private Preferences mPreferences;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,6 +64,12 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 		Bundle args = getArguments();
 		mSolvingAttemptId = args.getInt(BUNDLE_KEY_SOLVING_ATTEMPT_ID);
 
+		// Get preferences
+		mPreferences = Preferences.getInstance();
+		setDisplayChartDescription(mPreferences.showChartDescriptionInArchive());
+		mPreferences.mSharedPreferences
+				.registerOnSharedPreferenceChangeListener(this);
+
 		// Get fragment manager and start a transaction.
 		GridView mGridView;
 		mGridView = (GridView) rootView.findViewById(R.id.gridView);
@@ -64,6 +77,8 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 		// Load grid from database
 		Grid grid = new Grid();
 		if (grid.load(mSolvingAttemptId)) {
+			mGridSize = grid.getGridSize();
+			
 			// Load grid into grid view
 			mGridView.loadNewGrid(grid);
 
@@ -141,31 +156,57 @@ public class ArchiveFragment extends StatisticsBaseFragment {
 			// creating new statistics sections.
 			mChartsLayout = (LinearLayout) rootView
 					.findViewById(R.id.chartLayouts);
-			mChartsLayout.removeAllViewsInLayout();
-
-			// Build all charts for current game only
-			createProgressChart(grid.getGridSize());
-			createAvoidableMovesChart();
-			createUsedCheatsChart();
+			createAllCharts();
 		}
 
 		return rootView;
 	}
+	
+	@Override
+	public void onDestroy() {
+		mPreferences.mSharedPreferences
+				.unregisterOnSharedPreferenceChangeListener(this);
+		super.onDestroy();
+	}
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+			String key) {
+		if (key.equals(Preferences.SHOW_ARCHIVE_CHART_DESCRIPTION)) {
+			setDisplayChartDescription(Preferences.getInstance(
+					getActivity()).showChartDescriptionInArchive());
+		}
+
+		createAllCharts();
+	}
+
+	/**
+	 * Creates all charts.
+	 */
+	private void createAllCharts() {
+		mChartsLayout.removeAllViewsInLayout();
+
+		// Build all charts for current game only
+		createProgressChart();
+		createAvoidableMovesChart();
+		createUsedCheatsChart();
+	}
+
 
 	/**
 	 * Create a pie chart for the progress of solving.
 	 * 
 	 * @return True in case the chart has been created. False otherwise.
 	 */
-	private boolean createProgressChart(int gridSize) {
-		if (gridSize == 0 || mGridStatistics == null
+	private boolean createProgressChart() {
+		if (mGridSize == 0 || mGridStatistics == null
 				|| mGridStatistics.mSolvedManually) {
 			// No progress to report.
 			return false;
 		}
 
 		// Determine total number of cells in grid
-		float totalCells = gridSize * gridSize;
+		float totalCells = mGridSize * mGridSize;
 
 		// Display chart only if grid not completely filled and not completely
 		// empty.

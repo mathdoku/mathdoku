@@ -63,7 +63,9 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		mMinGridSize = bundle.getInt(ARG_GRID_SIZE_MIN);
 		mMaxGridSize = bundle.getInt(ARG_GRID_SIZE_MAX);
 
+		// Get preferences
 		mPreferences = Preferences.getInstance();
+		setDisplayChartDescription(mPreferences.showChartDescriptionInStatistics());
 		mPreferences.mSharedPreferences
 				.registerOnSharedPreferenceChangeListener(this);
 
@@ -90,14 +92,17 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-		if (key.equals(Preferences.SHOW_STATISTICS_DESCRIPTION)) {
-			mDisplayStatisticDescription = Preferences.getInstance(
-					getActivity()).showStatisticsDescription();
+		if (key.equals(Preferences.SHOW_STATISTICS_CHART_DESCRIPTION)) {
+			setDisplayChartDescription(Preferences.getInstance(
+					getActivity()).showChartDescriptionInStatistics());
 		}
 
 		createAllCharts();
 	}
 
+	/**
+	 * Creates all charts.
+	 */
 	private void createAllCharts() {
 		mChartsLayout.removeAllViewsInLayout();
 

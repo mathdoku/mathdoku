@@ -72,6 +72,9 @@ public class Preferences {
 	public final static String SHOW_ARCHIVE = "show_archive";
 	public final static boolean SHOW_ARCHIVE_DEFAULT = false;
 
+	public final static String SHOW_ARCHIVE_CHART_DESCRIPTION = "archive_show_chart_description";
+	public final static boolean SHOW_ARCHIVE_CHART_DESCRIPTION_DEFAULT = true;
+
 	public final static String SHOW_BAD_CAGE_MATHS = "badmaths";
 	public final static boolean SHOW_BAD_CAGE_MATHS_DEFAULT = true;
 
@@ -84,8 +87,8 @@ public class Preferences {
 	public final static String SHOW_STATISTICS = "show_statistics";
 	public final static boolean SHOW_STATISTICS_DEFAULT = false;
 
-	public final static String SHOW_STATISTICS_DESCRIPTION = "ShowStatisticsDescription";
-	public final static boolean SHOW_STATISTICS_DESCRIPTION_DEFAULT = true;
+	public final static String SHOW_STATISTICS_CHART_DESCRIPTION = "ShowStatisticsDescription";
+	public final static boolean SHOW_STATISTICS_CHART_DESCRIPTION_DEFAULT = true;
 
 	public final static String SHOW_STATUS_FILTER = "archive_show_filter_status";
 	public final static boolean SHOW_STATUS_FILTER_DEFAULT = true;
@@ -252,9 +255,9 @@ public class Preferences {
 			}
 		}
 		if (previousInstalledVersion < 198 && currentVersion >= 198) {
-			if (!mSharedPreferences.contains(SHOW_STATISTICS_DESCRIPTION)) {
-				prefeditor.putBoolean(SHOW_STATISTICS_DESCRIPTION,
-						SHOW_STATISTICS_DESCRIPTION_DEFAULT);
+			if (!mSharedPreferences.contains(SHOW_STATISTICS_CHART_DESCRIPTION)) {
+				prefeditor.putBoolean(SHOW_STATISTICS_CHART_DESCRIPTION,
+						SHOW_STATISTICS_CHART_DESCRIPTION_DEFAULT);
 			}
 		}
 		if (previousInstalledVersion < 282 && currentVersion >= 282) {
@@ -373,6 +376,12 @@ public class Preferences {
 		if (previousInstalledVersion <= 357 && currentVersion >= 357) {
 			if (!mSharedPreferences.contains(FULL_SCREEN)) {
 				prefeditor.putBoolean(FULL_SCREEN, FULL_SCREEN_DEFAULT);
+			}
+		}
+		if (previousInstalledVersion <= 392 && currentVersion >= 392) {
+			if (!mSharedPreferences.contains(SHOW_ARCHIVE_CHART_DESCRIPTION)) {
+				prefeditor.putBoolean(SHOW_ARCHIVE_CHART_DESCRIPTION,
+						SHOW_ARCHIVE_CHART_DESCRIPTION_DEFAULT);
 			}
 		}
 
@@ -605,14 +614,27 @@ public class Preferences {
 	}
 
 	/**
-	 * Checks whether a description has to be shown below a statistics chart.
+	 * Checks whether a description has to be shown below a chart in the
+	 * statistics activity.
 	 * 
-	 * @return True in case statistic descriptions have to be shown. False
+	 * @return True in case the charts descriptions have to be shown. False
 	 *         otherwise.
 	 */
-	public boolean showStatisticsDescription() {
-		return mSharedPreferences.getBoolean(SHOW_STATISTICS_DESCRIPTION,
-				SHOW_STATISTICS_DESCRIPTION_DEFAULT);
+	public boolean showChartDescriptionInStatistics() {
+		return mSharedPreferences.getBoolean(SHOW_STATISTICS_CHART_DESCRIPTION,
+				SHOW_STATISTICS_CHART_DESCRIPTION_DEFAULT);
+	}
+
+	/**
+	 * Checks whether a description has to be shown below a chart in the
+	 * archive activity.
+	 * 
+	 * @return True in case the charts descriptions have to be shown. False
+	 *         otherwise.
+	 */
+	public boolean showChartDescriptionInArchive() {
+		return mSharedPreferences.getBoolean(SHOW_ARCHIVE_CHART_DESCRIPTION,
+				SHOW_ARCHIVE_CHART_DESCRIPTION_DEFAULT);
 	}
 
 	/**
@@ -966,19 +988,23 @@ public class Preferences {
 	 * @return True in case the archive available hint has to be displayed.
 	 */
 	public boolean showArchiveAvailableHint() {
-		return decreaseCounterIfApplicable(HINT_ARCHIVE_AVAILABLE_SHOWED_COUNTDOWN, HINT_ARCHIVE_AVAILABLE_SHOWED_COUNTDOWN_DEFAULT);
+		return decreaseCounterIfApplicable(
+				HINT_ARCHIVE_AVAILABLE_SHOWED_COUNTDOWN,
+				HINT_ARCHIVE_AVAILABLE_SHOWED_COUNTDOWN_DEFAULT);
 	}
-	
+
 	/**
 	 * Decrease the current value of a preference counter with 1 occurrence if
 	 * not yet zero.
 	 * 
 	 * @param preferenceName
 	 *            The name of the preferences counter.
-	 *            @param The start value of the count down counter.
+	 * @param The
+	 *            start value of the count down counter.
 	 * @return True in case the counter is increased. False otherwise.
 	 */
-	private boolean decreaseCounterIfApplicable(String preferenceName, int startValue) {
+	private boolean decreaseCounterIfApplicable(String preferenceName,
+			int startValue) {
 		int counter = mSharedPreferences.getInt(preferenceName, startValue);
 		if (counter <= 0) {
 			return false;

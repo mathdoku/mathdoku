@@ -1,6 +1,5 @@
 package net.cactii.mathdoku.ui;
 
-import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.storage.database.StatisticsDatabaseAdapter;
 
@@ -32,7 +31,7 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	// The inflater for this activity.
 	protected LayoutInflater mLayoutInflater;
 
-	protected boolean mDisplayStatisticDescription;
+	private boolean mDisplayStatisticDescription;
 
 	// Green colors will be used at things which are positive
 	protected static final int chartGreen1 = 0xFF80FF00;
@@ -64,10 +63,8 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 		mDefaultTextSize = getResources().getDimensionPixelSize(
 				R.dimen.text_size_default);
 
-		// Determine if a description of the statistic has to be shown below
-		// each statistic
-		mDisplayStatisticDescription = Preferences.getInstance(getActivity())
-				.showStatisticsDescription();
+		// Chart description will be displayed by default.
+		mDisplayStatisticDescription = true;
 
 		// Get inflater and return view
 		mLayoutInflater = inflater;
@@ -206,5 +203,14 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 		}
 
 		return tableRow;
+	}
+	
+	/**
+	 * Sets whether the chart descriptions have to be displayed.
+	 * 
+	 * @param display True in case the chart descriptions have to be displayed. 
+	 */
+	protected void setDisplayChartDescription(boolean display) {
+		mDisplayStatisticDescription = display;
 	}
 }

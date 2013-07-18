@@ -9,5 +9,9 @@
         android:key="archive_show_filter_size"
         android:summary="@string/archive_settings_show_size_filter_enabled"
         android:title="@string/archive_settings_show_size_filter_title" />
+    <CheckBoxPreference
+        android:key="archive_show_chart_description"
+        android:summary="@string/archive_setting_show_chart_description_summary"
+        android:title="@string/archive_setting_show_chart_description_title" />
 
 </PreferenceScreen>

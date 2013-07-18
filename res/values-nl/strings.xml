@@ -388,13 +388,13 @@
     <!-- Title of statistics preferences activity. -->
     <string name="statistics_settings_actionbar_title">Statistieken settings</string>
 
-    <!-- The title and summary of the "Hide explanation" option. This option enables or disables displayin the explanations below the statistics charts. -->
-    <string name="option_show_statistics_description_title">Grafiek toelichting</string>
-    <string name="option_show_statistics_description_summary">Toon een toelichting onder elke grafiek.</string>
+    <!-- The title and summary of the "Chart description" option. This option enables or disables displaying the description below the charts in the statistics activity. -->
+    <string name="statistics_setting_show_chart_description_title">Grafiek toelichting</string>
+    <string name="statistics_setting_show_chart_description_summary">Toon een toelichting onder elke grafiek</string>
 
     <!-- The title and summary of the "Maximum games in elapsed time chart" option. This option restricts the number of games which will be displayed in an elapsed time chart. -->
     <string name="option_max_games_in_elapsed_time_chart_title">Aantal puzzels in grafiek speeltijd</string>
-    <string name="option_max_games_in_elapsed_time_chart_summary">Toon maximaal %1$d puzzels in de grafiek speeltijd.</string>
+    <string name="option_max_games_in_elapsed_time_chart_summary">Toon maximaal %1$d puzzels in de grafiek speeltijd</string>
 
     <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -440,6 +440,10 @@
     <string name="archive_settings_show_size_filter_title">Toon grootte filter</string>
     <string name="archive_settings_show_size_filter_enabled">Sta filtering op grootte van de puzzel toe</string>
     <string name="archive_settings_show_size_filter_disabled">Verberg het filter voor het selecteren op grootte</string>
+
+    <!-- The title and summary of the "Chart description" option. This option enables or disables displaying the description below the charts in the archive activity. -->
+    <string name="archive_setting_show_chart_description_title">Grafiek toelichting</string>
+    <string name="archive_setting_show_chart_description_summary">Toon een toelichting onder elke grafiek</string>
 
     <!-- The lead in text at top of the help dialog. -->
     <string name="archive_help_dialog_general">The archive contains the history of all games you have played. Swipe from left to right to go to an older puzzle. Swipe from right to left to go to a newer puzzle.\n\nYou can use filters to view only puzzles having a specific status or size. Filters can be enabled and disabled via the settings menu. Note: a filter will only be shown in case it contains multiple values.</string>

@@ -389,13 +389,13 @@
     <!-- Title of statistics preferences activity. -->
     <string name="statistics_settings_actionbar_title">Statistics settings</string>
 
-    <!-- The title and summary of the "Hide explanation" option. This option enables or disables displayin the explanations below the statistics charts. -->
-    <string name="option_show_statistics_description_title">Chart description</string>
-    <string name="option_show_statistics_description_summary">Display description below chart.</string>
+    <!-- The title and summary of the "Chart description" option. This option enables or disables displaying the description below the charts in the statistics activity. -->
+    <string name="statistics_setting_show_chart_description_title">Chart description</string>
+    <string name="statistics_setting_show_chart_description_summary">Display description below chart</string>
 
     <!-- The title and summary of the "Maximum games in elapsed time chart" option. This option restricts the number of games which will be displayed in an elapsed time chart. -->
     <string name="option_max_games_in_elapsed_time_chart_title">Number of games in elapsed time chart</string>
-    <string name="option_max_games_in_elapsed_time_chart_summary">Display no more than %1$d games in elapsed time chart.</string>
+    <string name="option_max_games_in_elapsed_time_chart_summary">Display no more than %1$d games in elapsed time chart</string>
 
     <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -442,12 +442,17 @@
     <string name="archive_settings_show_size_filter_enabled">Allows filtering on size of games</string>
     <string name="archive_settings_show_size_filter_disabled">Hides the filter for selecting on game size</string>
 
+    <!-- The title and summary of the "Chart description" option. This option enables or disables displaying the description below the charts in the archive activity. -->
+    <string name="archive_setting_show_chart_description_title">Chart description</string>
+    <string name="archive_setting_show_chart_description_summary">Display description below chart</string>
+
     <!-- The lead in text at top of the help dialog. -->
     <string name="archive_help_dialog_general">The archive contains the history of all games you have played. Swipe from left to right to go to an older puzzle. Swipe from right to left to go to a newer puzzle.\n\nYou can use filters to view only puzzles having a specific status or size. Filters can be enabled and disabled via the settings menu. Note: a filter will only be shown in case it contains multiple values.</string>
 
     <!-- SHARED PUZZLE  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-    <!-- Subject and body of share email. -->
+
+    <!-- Subject and body of share email. -->
     <string name="share_puzzle_subject">Sharing MathDoku puzzle</string>
     <string name="share_puzzle_link_description">MathDoku puzzle</string>
     <string name="share_unfinished_puzzle_body">I want to share this %1$s with you. After clicking the link, please choose the MathDoku app to preview the puzzle.%2$sIn case you haven\'t yet installed version 2 of MathDoku for Android, please download it from %3$s before clicking the puzzle links.%4$sIn case the text above does not contains any links, please use links below:%5$s - Play the MathDoku puzzle: %6$s - Download MathDoku: %7$s</string>
