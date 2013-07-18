@@ -329,7 +329,14 @@ public class DevelopmentHelper {
 		}
 	}
 
-	public static void checkDatabaseConsistency(
+	/**
+	 * Checks the consistency of the database when running in development mode.
+	 * 
+	 * @param puzzleFragmentActivity
+	 *            The activitity in which context the database is checked.
+	 * @return False in case the database is not consistent. True otherwise.
+	 */
+	public static boolean checkDatabaseConsistency(
 			final PuzzleFragmentActivity puzzleFragmentActivity) {
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			// While developping it regularly occurs that table definitions have
@@ -375,10 +382,13 @@ public class DevelopmentHelper {
 								});
 				AlertDialog dialog = builder.create();
 				dialog.show();
+				return false;
 			}
 		}
+
+		return true;
 	}
-	
+
 	/**
 	 * Make options Archive and Statistics visible in the main menu.
 	 */
@@ -386,8 +396,8 @@ public class DevelopmentHelper {
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			Editor prefeditor = Preferences.getInstance().mSharedPreferences
 					.edit();
-			prefeditor.putBoolean(Preferences.SHOW_ARCHIVE,true);
-			prefeditor.putBoolean(Preferences.SHOW_STATISTICS,true);
+			prefeditor.putBoolean(Preferences.SHOW_ARCHIVE, true);
+			prefeditor.putBoolean(Preferences.SHOW_STATISTICS, true);
 			prefeditor.commit();
 		}
 	}

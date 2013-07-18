@@ -356,7 +356,7 @@
     <!-- Labels for general game statistics. -->
     <string name="statistics_general_date_created">Created on</string>
     <string name="statistics_general_date_finished">Finished on</string>
-    <string name="statistics_general_status">Status</string>
+    <string name="statistics_general_replays">Replays</string>
     <string name="statistics_general_elapsed_time">Time played</string>
     <string name="statistics_general_cheat_penalty_time">Cheat penalty</string>
     <string name="statistics_general_replay">Replay game</string>

@@ -383,4 +383,38 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		return stringBetweenBackTicks(TABLE) + "."
 				+ stringBetweenBackTicks(column);
 	}
+	
+	/**
+	 * Count the number of solving attempt for the given grid id.
+	 * 
+	 * @param gridId
+	 *            The grid id for which the number of solving attempts has to be determined.
+	 * @return The number of solving attempt for the given grid id.
+	 */
+	public int countSolvingAttemptForGrid(int gridId) {
+		int count = 0;
+		Cursor cursor = null;
+		try {
+			cursor = mSqliteDatabase.query(true, TABLE, new String[] {"COUNT(1)"}, KEY_GRID_ID
+					+ "=" + gridId, null, null, null, null, null);
+
+			if (cursor == null || !cursor.moveToFirst()) {
+				// No record found for this grid.
+				return 0;
+			}
+
+			// Convert cursor record to a SolvingAttempt row
+			count = cursor.getInt(0);
+		} catch (SQLiteException e) {
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+				e.printStackTrace();
+			}
+			return 0;
+		} finally {
+			if (cursor != null) {
+				cursor.close();
+			}
+		}
+		return count;
+	}
 }

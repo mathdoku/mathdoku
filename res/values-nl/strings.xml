@@ -330,7 +330,7 @@
     <!-- Labels for general game statistics. -->
     <string name="statistics_general_date_created">Aangemaakt op</string>
     <string name="statistics_general_date_finished">Beëindigd op</string>
-    <string name="statistics_general_status">Status</string>
+    <string name="statistics_general_replays">Herspeeld</string>
     <string name="statistics_general_elapsed_time">Speeltijd</string>
     <string name="statistics_general_cheat_penalty_time">Boete vals spel</string>
     <string name="statistics_general_replay">Opnieuw spelen</string>

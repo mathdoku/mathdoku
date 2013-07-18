@@ -78,6 +78,24 @@
             </TableRow>
 
             <TableRow
+                android:id="@+id/statistics_general_replays_row"
+                android:visibility="gone" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:text="@string/statistics_general_replays"
+                    android:textSize="@dimen/text_size_default" />
+
+                <TextView
+                    android:id="@+id/statistics_general_replays"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_default" />
+            </TableRow>
+
+            <TableRow
                 android:id="@+id/statistics_general_elapsed_time_row"
                 android:visibility="gone" >
 
@@ -89,7 +107,7 @@
                     android:textSize="@dimen/text_size_default" />
 
                 <TextView
-                    android:id="@+id/timerText"
+                    android:id="@+id/statistics_general_elapsed_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_size_default" />

@@ -12,6 +12,10 @@ public class GridStatistics {
 	// Row id of the grid on which these statistics apply
 	public int mGridId;
 
+	// Identification of the replay of the game. 0 for first attempt. 1 for
+	// first replay, 2 for second replay, etc.
+	public int mReplayCount;
+
 	// Timestamp of first and last move
 	public java.sql.Timestamp mFirstMove;
 	public java.sql.Timestamp mLastMove;
@@ -214,6 +218,17 @@ public class GridStatistics {
 	 */
 	public int getGridId() {
 		return mGridId;
+	}
+
+	/**
+	 * If the grid is replayed, get the number of times the grid is replayed so
+	 * far.
+	 * 
+	 * @return 0 in case the grid is not replayed. 1 in case this grid is
+	 *         replayed once, 2 in case it is replayed twice, etc.
+	 */
+	public int getReplayCount() {
+		return mReplayCount;
 	}
 
 	/**

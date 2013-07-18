@@ -107,7 +107,11 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 
 		// Check if database is consistent.
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-			DevelopmentHelper.checkDatabaseConsistency(this);
+			if (DevelopmentHelper.checkDatabaseConsistency(this) == false) {
+				// Skip remainder of onCreate because further database access
+				// can result in a forced close.
+				return;
+			}
 		}
 
 		// Set up the action bar.

@@ -35,7 +35,7 @@ import android.widget.TextView;
  * An archive fragment representing a puzzle which is archived.
  */
 public class ArchiveFragment extends StatisticsBaseFragment implements
-OnSharedPreferenceChangeListener {
+		OnSharedPreferenceChangeListener {
 
 	@SuppressWarnings("unused")
 	private static final String TAG = "ArchiveFragment";
@@ -78,7 +78,7 @@ OnSharedPreferenceChangeListener {
 		Grid grid = new Grid();
 		if (grid.load(mSolvingAttemptId)) {
 			mGridSize = grid.getGridSize();
-			
+
 			// Load grid into grid view
 			mGridView.loadNewGrid(grid);
 
@@ -131,13 +131,25 @@ OnSharedPreferenceChangeListener {
 								mGridStatistics.mLastMove));
 			}
 
+			// Show the number of times the puzzle is replayed.
+			if (mGridStatistics != null && mGridStatistics.getReplayCount() > 0) {
+				((TableRow) rootView
+						.findViewById(R.id.statistics_general_replays_row))
+						.setVisibility(View.VISIBLE);
+				((TextView) rootView
+						.findViewById(R.id.statistics_general_replays))
+						.setText(Integer.toString(mGridStatistics.getReplayCount()));
+			}
+
 			// Show elapsed time for puzzles which are solved manually.
 			if (grid.isActive() == false && grid.isSolvedByCheating() == false) {
 				((TableRow) rootView
 						.findViewById(R.id.statistics_general_elapsed_time_row))
 						.setVisibility(View.VISIBLE);
-				((TextView) rootView.findViewById(R.id.timerText)).setText(Util
-						.durationTimeToString(grid.getElapsedTime()));
+				((TextView) rootView
+						.findViewById(R.id.statistics_general_elapsed_time))
+						.setText(Util.durationTimeToString(grid
+								.getElapsedTime()));
 			}
 
 			// Set cheat penalty time
@@ -161,7 +173,7 @@ OnSharedPreferenceChangeListener {
 
 		return rootView;
 	}
-	
+
 	@Override
 	public void onDestroy() {
 		mPreferences.mSharedPreferences
@@ -173,8 +185,8 @@ OnSharedPreferenceChangeListener {
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
 		if (key.equals(Preferences.SHOW_ARCHIVE_CHART_DESCRIPTION)) {
-			setDisplayChartDescription(Preferences.getInstance(
-					getActivity()).showChartDescriptionInArchive());
+			setDisplayChartDescription(Preferences.getInstance(getActivity())
+					.showChartDescriptionInArchive());
 		}
 
 		createAllCharts();
@@ -191,7 +203,6 @@ OnSharedPreferenceChangeListener {
 		createAvoidableMovesChart();
 		createUsedCheatsChart();
 	}
-
 
 	/**
 	 * Create a pie chart for the progress of solving.

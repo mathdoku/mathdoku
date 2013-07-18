@@ -32,6 +32,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	private static final String TABLE = "statistics";
 	private static final String KEY_ROWID = "_id";
 	private static final String KEY_GRID_ID = "grid_id";
+	private static final String KEY_REPLAY = "replay";
 	private static final String KEY_FIRST_MOVE = "first_move";
 	private static final String KEY_LAST_MOVE = "last_move";
 	public static final String KEY_ELAPSED_TIME = "elapsed_time";
@@ -53,7 +54,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	private static final String KEY_FINISHED = "finished";
 
 	private static final String[] allColumns = { KEY_ROWID, KEY_GRID_ID,
-			KEY_FIRST_MOVE, KEY_LAST_MOVE, KEY_ELAPSED_TIME,
+			KEY_REPLAY, KEY_FIRST_MOVE, KEY_LAST_MOVE, KEY_ELAPSED_TIME,
 			KEY_CHEAT_PENALTY_TIME, KEY_CELLS_USER_VALUE_FILLED,
 			KEY_CELLS_USER_VALUES_EMPTY, KEY_CELLS_USER_VALUES_REPLACED,
 			KEY_POSSIBLES, KEY_UNDOS, KEY_CELLS_CLEARED, KEY_CAGE_CLEARED,
@@ -79,6 +80,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				TABLE,
 				createColumn(KEY_ROWID, "integer", "primary key autoincrement"),
 				createColumn(KEY_GRID_ID, "integer", " not null"),
+				createColumn(KEY_REPLAY, "integer", " not null default 0"),
 				createColumn(KEY_FIRST_MOVE, "datetime", "not null"),
 				createColumn(KEY_LAST_MOVE, "datetime", "not null"),
 				createColumn(KEY_ELAPSED_TIME, "long", "not null default 0"),
@@ -153,7 +155,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 */
 	protected static void upgrade(SQLiteDatabase db, int oldVersion,
 			int newVersion) {
-		if (oldVersion < 265) {
+		if (oldVersion < 396 && newVersion >= 396) {
 			// In development revisions the table is simply dropped and
 			// recreated.
 			try {
@@ -169,10 +171,6 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 			}
 			create(db);
 		}
-		if (oldVersion >= 268 && oldVersion < 299 && newVersion >= 299) {
-			dropColumn(db, TABLE, new String[] { "filename_solving_attempt" },
-					buildCreateSQL());
-		}
 	}
 
 	/**
@@ -185,8 +183,16 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	public GridStatistics insert(Grid grid) {
 		java.sql.Timestamp now = new java.sql.Timestamp(
 				new java.util.Date().getTime());
+		// Determine the number of solving attempts (excluding the attempt
+		// currently loaded in the grid)which exist for this grid.
+		// Note: replay == 0 means it is the first attempt to solve this grid.
+		int countSolvingAttemptsForGrid = new SolvingAttemptDatabaseAdapter()
+				.countSolvingAttemptForGrid(grid.getRowId())
+				- (grid.getSolvingAttemptId() > 0 ? 1 : 0);
+
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(KEY_GRID_ID, grid.getRowId());
+		initialValues.put(KEY_REPLAY, countSolvingAttemptsForGrid);
 		initialValues.put(KEY_CELLS_USER_VALUES_EMPTY, grid.getGridSize()
 				* grid.getGridSize());
 		initialValues.put(KEY_FIRST_MOVE, now.toString());
@@ -286,6 +292,8 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				.getColumnIndexOrThrow(KEY_ROWID));
 		gridStatistics.mGridId = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_GRID_ID));
+		gridStatistics.mReplayCount = cursor.getInt(cursor
+				.getColumnIndexOrThrow(KEY_REPLAY));
 		gridStatistics.mFirstMove = toSQLTimestamp(cursor.getString(cursor
 				.getColumnIndexOrThrow(KEY_FIRST_MOVE)));
 		gridStatistics.mLastMove = toSQLTimestamp(cursor.getString(cursor
@@ -650,8 +658,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 * @return The cumulative statistics for the given grid size.
 	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	public HistoricStatistics getHistoricData(int minGridSize,
-			int maxGridSize) {
+	public HistoricStatistics getHistoricData(int minGridSize, int maxGridSize) {
 
 		// Build projection if not yet done. As this projection is only build
 		// once, it has to contain all base columns and all columns for which
@@ -730,8 +737,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		// projection, no data will be retrieved!
 		String[] columnsData = {
 				stringBetweenBackTicks(HistoricStatistics.DATA_COL_ID),
-				stringBetweenBackTicks(KEY_ELAPSED_TIME)
-				+ " AS "
+				stringBetweenBackTicks(KEY_ELAPSED_TIME) + " AS "
 						+ HistoricStatistics.DATA_COL_VALUE,
 				stringBetweenBackTicks(HistoricStatistics.DATA_COL_SERIES) };
 
