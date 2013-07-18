@@ -50,7 +50,8 @@
 
     <!-- The title and body describing how to play the game. -->
     <string name="puzzle_help_dialog_how_to_play__section_title">Hoe te spelen?</string>
-    <string name="puzzle_help_dialog_how_to_play_section_body">Raak een vlak aan in de puzzel om een getal te kiezen. Raak hetzelfde vlak nogmaals aan om \'mogelijken\' waarde vast te leggen.\n\nRaak een vlak lang aan voor meer opties.\n\nDe huidige puzzel wordt bewaard bij het verlaten van de app, of gebruik het menu om een onbeperkt aantal puzzles op te slaan of te laden.</string>
+    <string name="puzzle_help_dialog_how_to_play_section_body">Touch to select a cell in the grid, then swipe towards a digit to select it. By double tapping a cell you can switch between the \'normal\' and the '\maybe\' mode. In \'maybe\' mode you can mark multiple possibilities for the cell.\n\nPuzzles will be saved automatically.</string>
+    <string name="puzzle_help_dialog_how_to_play_section_body">Raak cel aan in de puzzel om de cel te selectere, en veeg daarna naar een een getal om het te kiezen. Door een cell dubbel aan te tikken kun je wisselen tussen de \'normale\' en de \'mogelijke\' toestand. In de \'mogelijke\' toestand kun je meerdere mogelijke getallen invoeren voor een cell.\n\nDe puzzels wordt automatisch opgeslagen.</string>
 
     <!-- The version title in the help screen. -->
     <string name="puzzle_help_dialog_version_section_title">Versie</string>
