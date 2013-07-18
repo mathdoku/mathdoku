@@ -65,7 +65,8 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 
 		// Get preferences
 		mPreferences = Preferences.getInstance();
-		setDisplayChartDescription(mPreferences.showChartDescriptionInStatistics());
+		setDisplayChartDescription(mPreferences
+				.showChartDescriptionInStatistics());
 		mPreferences.mSharedPreferences
 				.registerOnSharedPreferenceChangeListener(this);
 
@@ -93,8 +94,8 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
 		if (key.equals(Preferences.SHOW_STATISTICS_CHART_DESCRIPTION)) {
-			setDisplayChartDescription(Preferences.getInstance(
-					getActivity()).showChartDescriptionInStatistics());
+			setDisplayChartDescription(Preferences.getInstance(getActivity())
+					.showChartDescriptionInStatistics());
 		}
 
 		createAllCharts();
@@ -107,7 +108,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		mChartsLayout.removeAllViewsInLayout();
 
 		// Build all charts for all games at current level
-		boolean statisticsDisplayed = createSolvedUnSolvedChart(mCumulativeStatistics);
+		boolean statisticsDisplayed = createSolvedUnSolvedChart();
 
 		statisticsDisplayed = createElapsedTimeHistoryChart()
 				|| statisticsDisplayed;
@@ -131,16 +132,15 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 	 * 
 	 * @return True in case the chart has been created. False otherwise.
 	 */
-	private boolean createSolvedUnSolvedChart(
-			CumulativeStatistics cumulativeStatistics) {
-		if (cumulativeStatistics == null) {
+	private boolean createSolvedUnSolvedChart() {
+		if (mCumulativeStatistics == null) {
 			// No progress to report.
 			return false;
 		}
 
 		// Display chart only if at least 1 game have been started for this grid
 		// size
-		if (cumulativeStatistics.mCountStarted <= 0) {
+		if (mCumulativeStatistics.mCountStarted <= 0) {
 			return false;
 		}
 
@@ -157,37 +157,37 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		CategorySeries categorySeries = new CategorySeries("");
 
 		// Games solved manually
-		if (cumulativeStatistics.mCountSolvedManually > 0) {
+		if (mCumulativeStatistics.mCountSolvedManually > 0) {
 			categorySeries.add(
 					getResources().getString(R.string.chart_serie_solved)
-							+ " (" + cumulativeStatistics.mCountSolvedManually
+							+ " (" + mCumulativeStatistics.mCountSolvedManually
 							+ ")",
-					(double) cumulativeStatistics.mCountSolvedManually
-							/ cumulativeStatistics.mCountStarted);
+					(double) mCumulativeStatistics.mCountSolvedManually
+							/ mCumulativeStatistics.mCountStarted);
 			renderer.addSeriesRenderer(createSimpleSeriesRenderer(chartGreen1));
 		}
 
 		// Games for which the solution is revealed
-		if (cumulativeStatistics.mCountSolutionRevealed > 0) {
+		if (mCumulativeStatistics.mCountSolutionRevealed > 0) {
 			categorySeries
 					.add(getResources().getString(
 							R.string.chart_serie_solution_revealed)
 							+ " ("
-							+ cumulativeStatistics.mCountSolutionRevealed + ")",
-							(double) cumulativeStatistics.mCountSolutionRevealed
-									/ cumulativeStatistics.mCountStarted);
+							+ mCumulativeStatistics.mCountSolutionRevealed + ")",
+							(double) mCumulativeStatistics.mCountSolutionRevealed
+									/ mCumulativeStatistics.mCountStarted);
 			renderer.addSeriesRenderer(createSimpleSeriesRenderer(chartRed1));
 		}
 
 		// Games which have not yet been finished
-		int countUnfinished = cumulativeStatistics.mCountStarted
-				- cumulativeStatistics.mCountFinished;
+		int countUnfinished = mCumulativeStatistics.mCountStarted
+				- mCumulativeStatistics.mCountFinished;
 		if (countUnfinished > 0) {
 			categorySeries.add(
 					getResources().getString(R.string.chart_serie_unfinished)
 							+ " (" + countUnfinished + ")",
 					(double) countUnfinished
-							/ cumulativeStatistics.mCountStarted);
+							/ mCumulativeStatistics.mCountStarted);
 			renderer.addSeriesRenderer(createSimpleSeriesRenderer(chartGrey1));
 		}
 
@@ -301,8 +301,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		// Add series for solved games
 		if (historicStatistics.isXYSeriesUsed(Serie.SOLVED)) {
 			typesList.add(BarChart.TYPE);
-			xyMultipleSeriesDataset.addSeries(historicStatistics.getXYSeries(
-					Serie.SOLVED,
+			xyMultipleSeriesDataset.addSeries(historicStatistics.getXYSeries(Serie.SOLVED,
 					getResources().getString(R.string.chart_serie_solved),
 					yScale));
 			xyMultipleSeriesRenderer
@@ -362,19 +361,19 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 					TableLayout.LayoutParams.WRAP_CONTENT);
 			tableLayout.setLayoutParams(tableLayoutParams);
 
-			tableLayout
-					.addView(createDataTableRow(
-							tableLayoutParams,
-							getResources().getString(
-									R.string.chart_serie_solved), null));
+			tableLayout.addView(createDataTableRow(
+					tableLayoutParams,
+					getResources().getString(
+							R.string.chart_serie_solved) + 
+						String.format(" (%d)", mCumulativeStatistics.mCountSolvedManually), null));
 			tableLayout
 					.addView(createDataTableRow(
 							tableLayoutParams,
 							getResources()
 									.getString(
-											R.string.statistics_elapsed_time_historic_solved_slowest),
+											R.string.statistics_elapsed_time_historic_solved_fastest),
 							Util.durationTimeToString(historicStatistics
-									.getSolvedSlowest())));
+									.getSolvedFastest())));
 			tableLayout
 					.addView(createDataTableRow(
 							tableLayoutParams,
@@ -388,9 +387,9 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 							tableLayoutParams,
 							getResources()
 									.getString(
-											R.string.statistics_elapsed_time_historic_solved_fastest),
+											R.string.statistics_elapsed_time_historic_solved_slowest),
 							Util.durationTimeToString(historicStatistics
-									.getSolvedFastest())));
+									.getSolvedSlowest())));
 		}
 
 		// Display as stacked bar chart here. As the series are mutually
