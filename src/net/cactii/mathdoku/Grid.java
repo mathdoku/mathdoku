@@ -505,7 +505,8 @@ public class Grid {
 	 * @return A unique string representation of the grid.
 	 */
 	public String toGridDefinitionString() {
-		return toGridDefinitionString(mCells, mCages, mGridGeneratingParameters.mHideOperators);
+		return toGridDefinitionString(mCells, mCages,
+				mGridGeneratingParameters.mHideOperators);
 	}
 
 	/**
@@ -885,9 +886,19 @@ public class Grid {
 				return false;
 			}
 
-			// Update statistics. Do not abort in case statistics could not be
-			// saved.
+			// Update statistics.
 			saved = (mGridStatistics == null ? false : mGridStatistics.save());
+
+			// In case a replay of the grid is finished the statistics which
+			// have to included in the cumulative and the historic statistics
+			// should be changed to the current solving attempt.
+			if (saved && mActive == false
+					&& mGridStatistics.getReplayCount() > 0
+					&& mGridStatistics.isIncludedInStatistics() == false
+					&& saveDueToUpgrade == false) {
+				new StatisticsDatabaseAdapter().updateSolvingAttemptToBeIncludedInStatistics(mRowId, mSolvingAttemptId);
+			}
+
 		} // End of synchronised block
 
 		return saved;

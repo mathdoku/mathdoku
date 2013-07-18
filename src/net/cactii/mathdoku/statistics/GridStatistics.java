@@ -79,6 +79,9 @@ public class GridStatistics {
 
 	// Has the grid been finished (either solved or revealed solution)?
 	public boolean mFinished;
+	
+	// Are those statistics included in the cumulative and historic statistics for this grid?
+	public boolean mIncludedInStatistics;
 
 	// Counters available
 	public enum StatisticsCounterType {
@@ -293,5 +296,14 @@ public class GridStatistics {
 	 */
 	public boolean isFinished() {
 		return mFinished;
+	}
+
+	/**
+	 * Checks whether these statistics are included in the cumulative and historic statistics.
+	 * 
+	 * @return True in case included in the cumulative and historic statistics. False otherwise.
+	 */
+	public boolean isIncludedInStatistics() {
+		return mIncludedInStatistics;
 	}
 }

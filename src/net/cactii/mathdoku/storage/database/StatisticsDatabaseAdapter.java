@@ -53,6 +53,13 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	private static final String KEY_SOLVED_MANUALLY = "solved_manually";
 	private static final String KEY_FINISHED = "finished";
 
+	// For each grid only the latest completed solving attempt should be
+	// included in the statistics. Only in case no finished solving attempt
+	// exists for a grid, the latest unfinished solving attempt should be used.
+	// For ease and speed of retrieving it is stored whether this solving
+	// attempt should be included or exlcuded from the statistics.
+	private static final String KEY_INCLUDE_IN_STATISTICS = "include_in_statistics";
+
 	private static final String[] allColumns = { KEY_ROWID, KEY_GRID_ID,
 			KEY_REPLAY, KEY_FIRST_MOVE, KEY_LAST_MOVE, KEY_ELAPSED_TIME,
 			KEY_CHEAT_PENALTY_TIME, KEY_CELLS_USER_VALUE_FILLED,
@@ -60,7 +67,8 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 			KEY_POSSIBLES, KEY_UNDOS, KEY_CELLS_CLEARED, KEY_CAGE_CLEARED,
 			KEY_GRID_CLEARED, KEY_CELLS_REVEALED, KEY_OPERATORS_REVEALED,
 			KEY_CHECK_PROGRESS_USED, KEY_CHECK_PROGRESS_INVALIDS_FOUND,
-			KEY_SOLUTION_REVEALED, KEY_SOLVED_MANUALLY, KEY_FINISHED };
+			KEY_SOLUTION_REVEALED, KEY_SOLVED_MANUALLY, KEY_FINISHED,
+			KEY_INCLUDE_IN_STATISTICS };
 
 	// Projection for retrieve the cumulative and historic statistics
 	private static Projection mCumulativeStatisticsProjection = null;
@@ -111,6 +119,8 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				createColumn(KEY_SOLVED_MANUALLY, "string",
 						" not null default `false`"),
 				createColumn(KEY_FINISHED, "string",
+						" not null default `false`"),
+				createColumn(KEY_INCLUDE_IN_STATISTICS, "string",
 						" not null default `false`"),
 				createForeignKey(KEY_GRID_ID, GridDatabaseAdapter.TABLE,
 						GridDatabaseAdapter.KEY_ROWID));
@@ -197,6 +207,8 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				* grid.getGridSize());
 		initialValues.put(KEY_FIRST_MOVE, now.toString());
 		initialValues.put(KEY_LAST_MOVE, now.toString());
+		initialValues.put(KEY_INCLUDE_IN_STATISTICS, DatabaseAdapter
+				.toSQLiteBoolean(countSolvingAttemptsForGrid == 0));
 
 		long id = -1;
 		try {
@@ -333,6 +345,9 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				.getString(cursor.getColumnIndexOrThrow(KEY_SOLVED_MANUALLY)));
 		gridStatistics.mFinished = Boolean.valueOf(cursor.getString(cursor
 				.getColumnIndexOrThrow(KEY_FINISHED)));
+		gridStatistics.mIncludedInStatistics = Boolean.valueOf(cursor
+				.getString(cursor
+						.getColumnIndexOrThrow(KEY_INCLUDE_IN_STATISTICS)));
 
 		return gridStatistics;
 	}
@@ -376,6 +391,8 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		newValues.put(KEY_SOLVED_MANUALLY,
 				Boolean.toString(gridStatistics.mSolvedManually));
 		newValues.put(KEY_FINISHED, Boolean.toString(gridStatistics.mFinished));
+		newValues.put(KEY_INCLUDE_IN_STATISTICS,
+				Boolean.toString(gridStatistics.mIncludedInStatistics));
 
 		return (mSqliteDatabase.update(TABLE, newValues, KEY_ROWID + " = "
 				+ gridStatistics.mId, null) == 1);
@@ -482,34 +499,29 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				+ GridDatabaseAdapter
 						.getPrefixedColumnName(GridDatabaseAdapter.KEY_ROWID)
 				+ " = " + getPrefixedColumnName(KEY_GRID_ID));
+		String selection = GridDatabaseAdapter
+				.getPrefixedColumnName(GridDatabaseAdapter.KEY_GRID_SIZE)
+				+ " BETWEEN "
+				+ minGridSize
+				+ " AND "
+				+ maxGridSize
+				+ " AND "
+				+ KEY_INCLUDE_IN_STATISTICS + " = 'true'";
 
 		if (DEBUG_SQL) {
 			if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-				String sql = sqliteQueryBuilder
-						.buildQuery(
-								mCumulativeStatisticsProjection
-										.getAllColumnNames(),
-								GridDatabaseAdapter
-										.getPrefixedColumnName(GridDatabaseAdapter.KEY_GRID_SIZE)
-										+ " BETWEEN "
-										+ minGridSize
-										+ " AND "
-										+ maxGridSize, null, null, null, null);
+				String sql = sqliteQueryBuilder.buildQuery(
+						mCumulativeStatisticsProjection.getAllColumnNames(),
+						selection, null, null, null, null);
 				Log.i(TAG, sql);
 			}
 		}
 
 		Cursor cursor = null;
 		try {
-			cursor = sqliteQueryBuilder
-					.query(mSqliteDatabase,
-							mCumulativeStatisticsProjection.getAllColumnNames(),
-							GridDatabaseAdapter
-									.getPrefixedColumnName(GridDatabaseAdapter.KEY_GRID_SIZE)
-									+ " BETWEEN "
-									+ minGridSize
-									+ " AND "
-									+ maxGridSize, null, null, null, null);
+			cursor = sqliteQueryBuilder.query(mSqliteDatabase,
+					mCumulativeStatisticsProjection.getAllColumnNames(),
+					selection, null, null, null, null);
 		} catch (SQLiteException e) {
 			if (cursor != null) {
 				cursor.close();
@@ -741,32 +753,27 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 						+ HistoricStatistics.DATA_COL_VALUE,
 				stringBetweenBackTicks(HistoricStatistics.DATA_COL_SERIES) };
 
+		String selection = GridDatabaseAdapter
+				.getPrefixedColumnName(GridDatabaseAdapter.KEY_GRID_SIZE)
+				+ " BETWEEN "
+				+ minGridSize
+				+ " AND "
+				+ maxGridSize
+				+ " AND "
+				+ KEY_INCLUDE_IN_STATISTICS + " = 'true'";
+
 		if (DEBUG_SQL) {
 			if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-				String sql = sqliteQueryBuilder
-						.buildQuery(
-								columnsData,
-								GridDatabaseAdapter
-										.getPrefixedColumnName(GridDatabaseAdapter.KEY_GRID_SIZE)
-										+ " BETWEEN "
-										+ minGridSize
-										+ " AND "
-										+ maxGridSize, null, null, null, null);
+				String sql = sqliteQueryBuilder.buildQuery(columnsData,
+						selection, null, null, KEY_GRID_ID, null);
 				Log.i(TAG, sql);
 			}
 		}
 
 		Cursor cursor = null;
 		try {
-			cursor = sqliteQueryBuilder
-					.query(mSqliteDatabase,
-							columnsData,
-							GridDatabaseAdapter
-									.getPrefixedColumnName(GridDatabaseAdapter.KEY_GRID_SIZE)
-									+ " BETWEEN "
-									+ minGridSize
-									+ " AND "
-									+ maxGridSize, null, null, null, null);
+			cursor = sqliteQueryBuilder.query(mSqliteDatabase, columnsData,
+					selection, null, null, null, KEY_GRID_ID);
 		} catch (SQLiteException e) {
 			if (cursor != null) {
 				cursor.close();
@@ -795,5 +802,37 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 */
 	public static String getPrefixedColumnName(String column) {
 		return TABLE + "." + column;
+	}
+
+	/**
+	 * Set the new solving attempt which has to be included for a specific grid
+	 * in case the cumulative or historic statistics are retrieved.
+	 * 
+	 * @param gridId
+	 *            The grid id for which the solving attempts have to changed.
+	 * @param solvingAttemptId
+	 *            The solving attempt which has to be included for the grid when
+	 *            retrieving the cumulative or historic statistics are
+	 *            retrieved.
+	 */
+	public void updateSolvingAttemptToBeIncludedInStatistics(int gridId, int solvingAttemptId) {
+		String sql = "UPDATE " + TABLE + " SET " + KEY_INCLUDE_IN_STATISTICS + " = "
+				+ " CASE WHEN " + KEY_ROWID + " = " + solvingAttemptId
+				+ " THEN " + stringBetweenQuotes(toSQLiteBoolean(true))
+				+ " ELSE " + stringBetweenQuotes(toSQLiteBoolean(false)) + " END "
+				+ " WHERE " + KEY_GRID_ID + " = " + gridId + " AND ("
+				+ KEY_ROWID + " = " + solvingAttemptId + " OR "
+				+ KEY_INCLUDE_IN_STATISTICS + " = "
+				+ stringBetweenQuotes(toSQLiteBoolean(true)) + ")";
+		if (DEBUG_SQL) {
+			Log.i(TAG,sql);
+		}
+		try {
+			mSqliteDatabase.execSQL(sql);
+		} catch (SQLiteException e) {
+			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+				e.printStackTrace();
+			}
+		}
 	}
 }
