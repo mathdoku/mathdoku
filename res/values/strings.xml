@@ -50,7 +50,7 @@
 
     <!-- The title and body describing how to play the game. -->
     <string name="puzzle_help_dialog_how_to_play__section_title">How to play</string>
-    <string name="puzzle_help_dialog_how_to_play_section_body">Touch to select a cell in the grid, then swipe towards a digit to select it. By double tapping a cell you can switch between the \'normal\' and the '\maybe\' mode. In \'maybe\' mode you can mark multiple possibilities for the cell.\n\nPuzzles will be saved automatically.</string>
+    <string name="puzzle_help_dialog_how_to_play_section_body">Touch to select a cell in the grid, then swipe towards a digit to select it. By double tapping a cell you can switch between the \'normal\' and the \'maybe\' mode. In \'maybe\' mode you can mark multiple possibilities for the cell.\n\nPuzzles will be saved automatically.</string>
 
     <!-- The version title in the help screen. -->
     <string name="puzzle_help_dialog_version_section_title">Version</string>
