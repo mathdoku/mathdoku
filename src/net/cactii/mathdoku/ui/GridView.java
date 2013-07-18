@@ -11,6 +11,7 @@ import net.cactii.mathdoku.hint.TickerTape;
 import net.cactii.mathdoku.painter.GridPainter;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
+import net.cactii.mathdoku.tip.TipBadCageMath;
 import net.cactii.mathdoku.tip.TipDuplicateValue;
 import net.cactii.mathdoku.tip.TipIncorrectValue;
 import net.cactii.mathdoku.tip.TipOrderOfValuesInCage;
@@ -354,6 +355,13 @@ public class GridView extends View implements OnTouchListener {
 						}
 					}
 				}
+			}
+		}
+
+		// Check the cage math
+		if (selectedCell.getCage().checkCageMathsCorrect(false) == false) {
+			if (TipBadCageMath.toBeDisplayed(mPreferences)) {
+				new TipBadCageMath(mContext).show();
 			}
 		}
 	}

@@ -227,7 +227,7 @@ public class GridCage {
 	 *            only need to be reset in cage the status of the cage math has
 	 *            changed.
 	 */
-	public void checkCageMathsCorrect(boolean forceBorderReset) {
+	public boolean checkCageMathsCorrect(boolean forceBorderReset) {
 		boolean oldUserMathCorrect = mUserMathCorrect;
 
 		// If not all cells in the cage are filled, the maths are not wrong.
@@ -270,6 +270,8 @@ public class GridCage {
 			// Reset borders in all cells of this cage
 			setBorders();
 		}
+		
+		return mUserMathCorrect;
 	}
 
 	/**

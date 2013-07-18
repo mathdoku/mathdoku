@@ -199,9 +199,6 @@ public class GridCell {
 		mInvalidUserValueHighlight = false;
 		mDuplicateValueHighlight = false;
 
-		// Check cage maths
-		mGrid.mCages.get(mCageId).checkCageMathsCorrect(false);
-
 		// Set borders for this cells and adjacents cells
 		setBorders();
 
