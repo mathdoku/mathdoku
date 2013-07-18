@@ -414,15 +414,13 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		projection
 				.put(KEY_STATUS_FILTER,
 						"CASE WHEN "
-								+ SolvingAttemptDatabaseAdapter
-										.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_STATUS)
+								+ stringBetweenBackTicks(SolvingAttemptDatabaseAdapter.KEY_STATUS)
 								+ " = "
 								+ SolvingAttemptDatabaseAdapter.STATUS_FINISHED_CHEATED
 								+ " THEN "
 								+ StatusFilter.CHEATED.ordinal()
 								+ " WHEN "
-								+ SolvingAttemptDatabaseAdapter
-										.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_STATUS)
+								+ stringBetweenBackTicks(SolvingAttemptDatabaseAdapter.KEY_STATUS)
 								+ " = "
 								+ SolvingAttemptDatabaseAdapter.STATUS_FINISHED_SOLVED
 								+ " THEN " + StatusFilter.SOLVED.ordinal()
@@ -436,17 +434,33 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 				.setTables(TABLE
 						+ " INNER JOIN "
 						+ SolvingAttemptDatabaseAdapter.TABLE
-						+ " ON "
-						+ SolvingAttemptDatabaseAdapter
-								.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_GRID_ID)
+						+ " as sa1 "
+						+ " ON sa1."
+						+ stringBetweenBackTicks(SolvingAttemptDatabaseAdapter.KEY_GRID_ID)
 						+ " = " + getPrefixedColumnName(KEY_ROWID));
 
 		// Retrieve all data. Note: in case column is not added to the
 		// projection, no data will be retrieved!
 		String[] columnsData = { KEY_STATUS_FILTER };
 
-		// Build where clause
-		String selection = getSizeSelectionString(sizeFilter);
+		// Build where clause. Be sure only to retrieve the status of the last
+		// solving attempt of a grid as the archive will only display the last
+		// solving attempt.
+		String selection = getSizeSelectionString(sizeFilter)
+				+ " NOT EXISTS ( "
+				+ "SELECT 1 "
+				+ " FROM "
+				+ SolvingAttemptDatabaseAdapter.TABLE
+				+ " as sa2"
+				+ " WHERE sa2."
+				+ stringBetweenBackTicks(SolvingAttemptDatabaseAdapter.KEY_GRID_ID)
+				+ " = sa1."
+				+ stringBetweenBackTicks(SolvingAttemptDatabaseAdapter.KEY_GRID_ID)
+				+ " AND sa2."
+				+ stringBetweenBackTicks(SolvingAttemptDatabaseAdapter.KEY_ROWID)
+				+ " > sa1."
+				+ stringBetweenBackTicks(SolvingAttemptDatabaseAdapter.KEY_ROWID)
+				+ ")";
 
 		if (DEBUG_SQL) {
 			if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -681,10 +695,10 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		}
 		return count;
 	}
-	
-	public int countGrids(StatusFilter statusFilter,
-			SizeFilter sizeFilter) {
-		int gridIds[][] = getLatestSolvingAttemptsPerGrid(statusFilter, sizeFilter);
+
+	public int countGrids(StatusFilter statusFilter, SizeFilter sizeFilter) {
+		int gridIds[][] = getLatestSolvingAttemptsPerGrid(statusFilter,
+				sizeFilter);
 		return (gridIds == null ? 0 : gridIds.length);
 	}
 
