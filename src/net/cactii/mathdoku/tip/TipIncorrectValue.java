@@ -7,6 +7,7 @@ import android.content.Context;
 public class TipIncorrectValue extends TipDialog {
 
 	public static String TIP_NAME = "Tip.TipIncorrectValue.DisplayAgain";
+	private static TipPriority TIP_PRIORITY = TipPriority.HIGH;
 
 	/**
 	 * Creates a new tip dialog which explains that an incorrect value has been
@@ -16,7 +17,7 @@ public class TipIncorrectValue extends TipDialog {
 	 *            The activity in which this tip has to be shown.
 	 */
 	public TipIncorrectValue(Context context) {
-		super(context, TIP_NAME);
+		super(context, TIP_NAME, TIP_PRIORITY);
 
 		build(
 				context.getResources().getString(
@@ -36,7 +37,7 @@ public class TipIncorrectValue extends TipDialog {
 	 */
 	public static boolean toBeDisplayed(Preferences preferences) {
 		// Determine on basis of preferences whether the tip should be shown.
-		return preferences.getDisplayTipAgain(TIP_NAME);
+		return TipDialog.getDisplayTipAgain(preferences, TIP_NAME, TIP_PRIORITY);
 	}
 
 	/**

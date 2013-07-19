@@ -13,6 +13,7 @@ public class TipCheat extends TipDialog {
 	public static final String TIP_NAME_CHECK_PROGRESS_USED = "Tip.TipCheat.CheckProgress.DisplayAgain";
 	public static final String TIP_NAME_OPERATOR_REVEALED = "Tip.TipCheat.OperatorRevealed.DisplayAgain";
 	public static final String TIP_NAME_SOLUTION_REVEALED = "Tip.TipCheat.SolutionRevealed.DisplayAgain";
+	private static TipPriority TIP_PRIORITY = TipPriority.LOW;
 
 	/**
 	 * Creates a new tip dialog which explains that cheating will increase the
@@ -22,7 +23,7 @@ public class TipCheat extends TipDialog {
 	 *            The activity in which this tip has to be shown.
 	 */
 	public TipCheat(Context context, Cheat cheat) {
-		super(context, getTipName(cheat));
+		super(context, getTipName(cheat), TIP_PRIORITY);
 
 		// Set the title
 		String mTitle = cheat.getTipTitle();
@@ -45,7 +46,7 @@ public class TipCheat extends TipDialog {
 	 */
 	public static boolean toBeDisplayed(Preferences preferences, Cheat cheat) {
 		// Determine on basis of preferences whether the tip should be shown.
-		return preferences.getDisplayTipAgain(getTipName(cheat));
+		return TipDialog.getDisplayTipAgain(preferences, getTipName(cheat), TIP_PRIORITY);
 	}
 
 	/**

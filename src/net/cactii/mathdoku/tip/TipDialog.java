@@ -1,13 +1,16 @@
 package net.cactii.mathdoku.tip;
 
-import java.util.ArrayList;
+import java.util.Random;
 
 import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
+import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
+import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -19,6 +22,12 @@ import android.widget.TextView;
  * determine the preference, title, text and image to be used for this tip.
  */
 public class TipDialog extends AlertDialog {
+	public static String TAG = "Tip.TipDialog";
+
+	// Remove "&& false" in following line to show debug information about
+	// creating cages when running in development mode.
+	public static final boolean DEBUG_TIP_DIALOG = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
+
 	// Context in which the tip is created.
 	private Context mContext;
 
@@ -28,10 +37,16 @@ public class TipDialog extends AlertDialog {
 	// Name of the preference used to determine whether it should be shown again
 	// or not.
 	private String mTip;
+	private TipPriority mPriority;
+
+	public enum TipPriority {
+		LOW, MEDIUM, HIGH
+	};
+
 	private boolean mDisplayAgain;
 
-	// Show only one dialog per tip type
-	private static ArrayList<String> mDisplayedDialogs = null;
+	// No more than one tip dialog should be showed at the same time.
+	private static TipDialog mDisplayedDialog = null;
 
 	/**
 	 * Creates a new instance of {@link TipDialog}.
@@ -39,17 +54,26 @@ public class TipDialog extends AlertDialog {
 	 * @param context
 	 *            The activity in which context the tip is used.
 	 */
-	public TipDialog(Context context, String preference) {
+	public TipDialog(Context context, String preference, TipPriority priority) {
 		super(context);
 
 		// Store reference to activity and preferences
 		mContext = context;
 		mPreferences = Preferences.getInstance();
 		mTip = preference;
+		mPriority = priority;
 
-		// Initializes the displayed dialogs list on first call
-		if (mDisplayedDialogs == null) {
-			mDisplayedDialogs = new ArrayList<String>();
+		// In case the dialog is created, the previous dialog should be
+		// canceled. Priority checking should already be done before
+		// instantiating the dialog.
+		if (mDisplayedDialog != null) {
+			mDisplayedDialog.dismiss();
+		}
+
+		// Register this tip as the one and only displayed dialog
+		mDisplayedDialog = this;
+		if (DEBUG_TIP_DIALOG) {
+			Log.i(TAG, "Added dialog " + mTip);
 		}
 
 		// Check if this tip should be shown (again)
@@ -112,15 +136,16 @@ public class TipDialog extends AlertDialog {
 					}
 				});
 
-		// In case the dialog is shown, it will be added to a list of displayed
-		// tip dialogs. On dismissal of the dialog it has to be removed from
-		// this list.
+		// In case the dialog is shown, it is registered as the displayed
+		// tip dialog. On dismissal of the dialog it has to be unregistered.
 		setOnDismissListener(new OnDismissListener() {
 
 			@Override
 			public void onDismiss(DialogInterface dialog) {
-				// Remove the dialog from the list of displayed dialogs.
-				mDisplayedDialogs.remove(mTip);
+				if (DEBUG_TIP_DIALOG) {
+					Log.i(TAG, "Removed dialog " + mTip);
+				}
+				mDisplayedDialog = null;
 			}
 		});
 
@@ -131,8 +156,9 @@ public class TipDialog extends AlertDialog {
 	 * Resets the list of displayed dialogs.
 	 */
 	public static void resetDisplayedDialogs() {
-		if (mDisplayedDialogs != null) {
-			mDisplayedDialogs.clear();
+		if (mDisplayedDialog != null) {
+			mDisplayedDialog.dismiss();
+			mDisplayedDialog = null;
 		}
 	}
 
@@ -147,16 +173,6 @@ public class TipDialog extends AlertDialog {
 			return;
 		}
 
-		// Check if dialog is already shown
-		if (mDisplayedDialogs.contains(mTip)) {
-			// This tip is already be shown currently. This can happen in case
-			// the user very quickly triggers the same tip.
-			return;
-		}
-
-		// Add tip to list of displayed dialogs
-		mDisplayedDialogs.add(mTip);
-
 		// Display dialog
 		super.show();
 	}
@@ -170,4 +186,55 @@ public class TipDialog extends AlertDialog {
 		return mPreferences.getDisplayTipAgain(mTip);
 	}
 
+	/**
+	 * Check whether this tip will be shown.
+	 * 
+	 * @return True in case the tip has to be shown. False otherwise.
+	 */
+	public static boolean getDisplayTipAgain(Preferences preferences,
+			String tip, TipPriority priority) {
+		// Check do-not-show-again-preference for this tip first.
+		if (preferences.getDisplayTipAgain(tip) == false) {
+			if (DEBUG_TIP_DIALOG) {
+				Log.i(TAG, tip + ": do-not-show-again enabled");
+			}
+			return false;
+		}
+
+		// If already a dialog is showed, check whether it has to be replaced
+		// with a higher priority dialog.
+		if (mDisplayedDialog != null) {
+			if (DEBUG_TIP_DIALOG) {
+				Log.i(TAG, tip + ": priority (" + priority.ordinal()
+						+ ") compared with priority of "
+						+ mDisplayedDialog.mTip + "("
+						+ mDisplayedDialog.mPriority.ordinal() + ")");
+			}
+
+			// Do not display in case priority is lower than priority of already
+			// displayed dialog.
+			if (priority.ordinal() < mDisplayedDialog.mPriority.ordinal()) {
+				if (DEBUG_TIP_DIALOG) {
+					Log.i(TAG,
+							tip
+									+ ": do not replace as priority is lower than already displayed tip");
+				}
+				return false;
+			}
+
+			// In case of equals priority it is randomly decided which dialog is
+			// kept.
+			if (priority.ordinal() == mDisplayedDialog.mPriority.ordinal()
+					&& new Random().nextBoolean()) {
+				Log.i(TAG, tip
+						+ ": equal priorities. Randomly determined to replace");
+				return false;
+			}
+		}
+
+		if (DEBUG_TIP_DIALOG) {
+			Log.i(TAG, tip + ": to be showed");
+		}
+		return true;
+	}
 }
