@@ -12,14 +12,14 @@
 
     <!-- The possible values of the "themes" option. This option controls which theme is used for displaying. -->
     <string-array name="themeTexts">
-        <item>@string/theme_newspaper</item>
+        <item>@string/theme_light</item>
         <item>@string/theme_dark</item>
     </string-array>
 
     <!-- Identifiers associated with element themeTexts. This element may not be translated. -->
     <string-array name="themeValues">
-        <item>newspaper</item>
-        <item>inverted</item>
+        <item>theme_light</item>
+        <item>theme_dark</item>
     </string-array>
 
     <!-- USAGE LOG AND OPT-IN FOR SURVEY - - - - - - - - - - - - - - - - - - - - - - -->

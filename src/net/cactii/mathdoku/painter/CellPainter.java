@@ -65,7 +65,7 @@ public class CellPainter extends BorderPainter {
 	public void setTheme(GridTheme theme) {
 		// Set the unused border paint
 		switch (theme) {
-		case NEWSPAPER:
+		case LIGHT:
 			mUnusedBorderPaint.setColor(0x80000000);
 			break;
 		case DARK:
@@ -75,7 +75,7 @@ public class CellPainter extends BorderPainter {
 
 		// Set the invalid border paint
 		switch (theme) {
-		case NEWSPAPER:
+		case LIGHT:
 			mInvalidBorderPaint.setColor(0xFFF8A86B);
 			mInvalidBackgroundPaint.setColor(mInvalidBorderPaint.getColor());
 			mInvalidBackgroundPaint.setStyle(Paint.Style.FILL);
@@ -90,7 +90,7 @@ public class CellPainter extends BorderPainter {
 
 		// Set the duplicate value painter
 		switch (theme) {
-		case NEWSPAPER:
+		case LIGHT:
 			mDuplicateBorderPaint.setColor(0xFFFFA091);
 			mDuplicateBackgroundPaint.setColor(mDuplicateBorderPaint.getColor());
 			mDuplicateBackgroundPaint.setStyle(Paint.Style.FILL);
@@ -104,7 +104,7 @@ public class CellPainter extends BorderPainter {
 
 		// Set the cheated painter
 		switch (theme) {
-		case NEWSPAPER:
+		case LIGHT:
 			mCheatedBorderPaint.setColor(0x90ffcea0);
 			mCheatedBackgroundPaint.setColor(mCheatedBorderPaint.getColor());
 			mCheatedBackgroundPaint.setStyle(Paint.Style.FILL);
@@ -118,7 +118,7 @@ public class CellPainter extends BorderPainter {
 
 		// Set the selected cell painter
 		switch (theme) {
-		case NEWSPAPER:
+		case LIGHT:
 			mSelectedBorderPaint.setColor(0xFFE6E6E6);
 			mSelectedBackgroundPaint.setColor(mSelectedBorderPaint.getColor());
 			mSelectedBackgroundPaint.setStyle(Paint.Style.FILL);

@@ -22,7 +22,7 @@ public class Painter {
 
 	// Themes available
 	public enum GridTheme {
-		NEWSPAPER, DARK
+		LIGHT, DARK
 	};
 
 	// Theme installed in painter
@@ -65,7 +65,7 @@ public class Painter {
 		setBorderSizes(false);
 
 		// Apply default theme to the painters.
-		setTheme(GridTheme.NEWSPAPER);
+		setTheme(GridTheme.LIGHT);
 	}
 
 	/**
@@ -171,7 +171,7 @@ public class Painter {
 	 */
 	private void setTextColors(GridTheme gridTheme) {
 		switch (gridTheme) {
-		case NEWSPAPER:
+		case LIGHT:
 			mHighlightedTextColorNormalInputMode = 0xFF0C97FA;
 			mHighlightedTextColorMaybeInputMode = 0xFFFF8A00;
 			mDefaultTextColor = 0xFF212121;

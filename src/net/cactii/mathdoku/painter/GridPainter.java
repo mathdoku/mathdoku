@@ -31,7 +31,7 @@ public class GridPainter extends BorderPainter {
 	public void setTheme(GridTheme theme) {
 		// Set background color
 		switch (theme) {
-		case NEWSPAPER:
+		case LIGHT:
 			mBackgroundPaint.setColor(0xffffffff);
 			break;
 		case DARK:
@@ -41,7 +41,7 @@ public class GridPainter extends BorderPainter {
 
 		// Set border paint
 		switch (theme) {
-		case NEWSPAPER:
+		case LIGHT:
 			mBorderPaint.setAntiAlias(false);
 			mBorderPaint.setColor(0xFFAAAAAA);
 			break;

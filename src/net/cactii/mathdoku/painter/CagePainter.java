@@ -33,7 +33,7 @@ public class CagePainter extends BorderPainter {
 	public void setTheme(GridTheme theme) {
 		// Set text paint
 		switch (theme) {
-		case NEWSPAPER:
+		case LIGHT:
 			mTextPaint.setColor(0xFF212121);
 			mTextPaint.setTypeface(mPainter.getTypeface());
 			break;
@@ -46,7 +46,7 @@ public class CagePainter extends BorderPainter {
 		// Set border for a cage which is not selected and which does not have
 		// bad maths
 		switch (theme) {
-		case NEWSPAPER:
+		case LIGHT:
 			mBorderPaint.setColor(0xFF000000);
 			mBorderPaint.setAntiAlias(false);
 			break;
@@ -59,7 +59,7 @@ public class CagePainter extends BorderPainter {
 		// Set border for a cage which is not selected but which is having bad
 		// maths
 		switch (theme) {
-		case NEWSPAPER:
+		case LIGHT:
 			mBorderBadMathPaint.setColor(0xffff4444);
 			mBorderBadMathPaint.setAntiAlias(true);
 			break;
@@ -71,7 +71,7 @@ public class CagePainter extends BorderPainter {
 
 		// Set border for a cage which is selected
 		switch (theme) {
-		case NEWSPAPER:
+		case LIGHT:
 			mBorderSelectedPaint.setColor(0xFF000000);
 			mBorderSelectedPaint.setAntiAlias(false);
 			break;
@@ -83,7 +83,7 @@ public class CagePainter extends BorderPainter {
 
 		// Set border for a cages which is selected and is having bad maths
 		switch (theme) {
-		case NEWSPAPER:
+		case LIGHT:
 			mBorderSelectedBadMathPaint.setColor(0xFFff4444);
 			mBorderSelectedBadMathPaint.setAntiAlias(true);
 			break;

@@ -112,11 +112,9 @@ public class Preferences {
 	public final static int SWIPE_DIGIT_COUNTER_DEFAULT = 0;
 
 	public final static String THEME = "theme";
-	public final static String THEME_DARK = "inverted"; // TODO: Rename to dark
-	public final static String THEME_NEWSPAPER = "newspaper"; // TODO: rename to
-																// light
-	public final static String THEME_NEWSPAPER_OLD = "newspaperold"; // REMOVE
-	public final static String THEME_DEFAULT = THEME_NEWSPAPER;
+	public final static String THEME_DARK = "theme_dark";
+	public final static String THEME_LIGHT = "theme_light";
+	public final static String THEME_DEFAULT = THEME_LIGHT;
 
 	public final static String USAGE_LOG_COUNT_GAMES_STARTED = "UsageLogCountGamesStarted";
 	public final static int USAGE_LOG_COUNT_GAMES_STARTED_DEFAULT = 0;
@@ -383,6 +381,16 @@ public class Preferences {
 				prefeditor.putString(THEME, THEME_DEFAULT);
 			}
 		}
+		if (previousInstalledVersion < 408 && currentVersion >= 408) {
+			// Values of the themes have changed.
+			if (mSharedPreferences.getString(THEME, THEME_DEFAULT).equals(
+					"newspaper")) {
+				prefeditor.putString(THEME, THEME_LIGHT);
+			} else if (mSharedPreferences.getString(THEME, THEME_DEFAULT).equals(
+					"inverted")) {
+				prefeditor.putString(THEME, THEME_DARK);
+			}
+		}
 
 		prefeditor.putInt(CURRENT_VERSION, currentVersion);
 		prefeditor.commit();
@@ -408,7 +416,7 @@ public class Preferences {
 		if (theme.equals(THEME_DARK)) {
 			return GridTheme.DARK;
 		} else {
-			return GridTheme.NEWSPAPER;
+			return GridTheme.LIGHT;
 		}
 	}
 

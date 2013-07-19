@@ -215,7 +215,8 @@
 
 
     <!-- The possible values of the "themes" option. This option controls which theme is used for displaying. -->
-    <string name="theme_newspaper">Zeitung</string>
+    <!-- TODO: rename theme to light -->
+    <string name="theme_light">Zeitung</string>
     <string name="theme_dark">Dunkel</string>
 
     <!-- DIALOG REVEAL SOLUTION CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
