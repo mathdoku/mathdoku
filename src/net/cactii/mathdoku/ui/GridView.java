@@ -91,7 +91,7 @@ public class GridView extends View implements OnTouchListener {
 		mPreferences = Preferences.getInstance(mContext);
 
 		mGridViewSize = 0;
-		mGridPainter = Painter.getInstance(mContext).getGridPainter();
+		mGridPainter = Painter.getInstance().getGridPainter();
 		mGridBorderWidth = (mGridPainter == null ? 0 : mGridPainter
 				.getBorderPaint().getStrokeWidth());
 
@@ -390,7 +390,7 @@ public class GridView extends View implements OnTouchListener {
 					mGridPainter.getBorderPaint());
 
 			// Draw cells
-			Painter.getInstance(mContext).setCellSize(mGridCellSize,
+			Painter.getInstance().setCellSize(mGridCellSize,
 					mDigitPositionGrid);
 			for (GridCell cell : mGrid.mCells) {
 				cell.draw(canvas, gridBorderWidth, mInputMode);

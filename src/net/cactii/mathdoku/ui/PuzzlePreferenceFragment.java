@@ -50,11 +50,6 @@ public class PuzzlePreferenceFragment extends PreferenceFragment implements
 	 */
 	private void setThemeSummary() {
 		switch (Preferences.getInstance().getTheme()) {
-		case CARVED:
-			findPreference(Preferences.THEME).setSummary(
-					getResources().getString(
-							R.string.theme_carved));
-			break;
 		case NEWSPAPER:
 			findPreference(Preferences.THEME).setSummary(
 					getResources().getString(

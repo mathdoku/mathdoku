@@ -33,10 +33,6 @@ public class CagePainter extends BorderPainter {
 	public void setTheme(GridTheme theme) {
 		// Set text paint
 		switch (theme) {
-		case CARVED:
-			mTextPaint.setColor(0xFF0000A0);
-			mTextPaint.setTypeface(mPainter.getTypeface());
-			break;
 		case NEWSPAPER:
 			mTextPaint.setColor(0xFF212121);
 			mTextPaint.setTypeface(mPainter.getTypeface());
@@ -50,78 +46,50 @@ public class CagePainter extends BorderPainter {
 		// Set border for a cage which is not selected and which does not have
 		// bad maths
 		switch (theme) {
-		case CARVED:
-			mBorderPaint.setColor(0xFF000000);
-			mBorderPaint.setAntiAlias(true);
-			mBorderPaint.setPathEffect(mPainter.getPathEffect());
-			break;
 		case NEWSPAPER:
 			mBorderPaint.setColor(0xFF000000);
 			mBorderPaint.setAntiAlias(false);
-			mBorderPaint.setPathEffect(null);
 			break;
 		case DARK:
 			mBorderPaint.setColor(0xFFFFFFFF);
 			mBorderPaint.setAntiAlias(true);
-			mBorderPaint.setPathEffect(null);
 			break;
 		}
 
 		// Set border for a cage which is not selected but which is having bad
 		// maths
 		switch (theme) {
-		case CARVED:
-			mBorderBadMathPaint.setColor(0xFFBB0000);
-			mBorderBadMathPaint.setAntiAlias(true);
-			mBorderBadMathPaint.setPathEffect(mPainter.getPathEffect());
-			break;
 		case NEWSPAPER:
 			mBorderBadMathPaint.setColor(0xffff4444);
 			mBorderBadMathPaint.setAntiAlias(true);
-			mBorderBadMathPaint.setPathEffect(null);
 			break;
 		case DARK:
 			mBorderBadMathPaint.setColor(0xFFBB0000);
 			mBorderBadMathPaint.setAntiAlias(true);
-			mBorderBadMathPaint.setPathEffect(null);
 			break;
 		}
 
 		// Set border for a cage which is selected
 		switch (theme) {
-		case CARVED:
-			mBorderSelectedPaint.setColor(0xFF000000);
-			mBorderSelectedPaint.setAntiAlias(true);
-			mBorderSelectedPaint.setPathEffect(mPainter.getPathEffect());
-			break;
 		case NEWSPAPER:
 			mBorderSelectedPaint.setColor(0xFF000000);
 			mBorderSelectedPaint.setAntiAlias(false);
-			mBorderSelectedPaint.setPathEffect(null);
 			break;
 		case DARK:
 			mBorderSelectedPaint.setColor(0xFFA0A030);
 			mBorderSelectedPaint.setAntiAlias(true);
-			mBorderSelectedPaint.setPathEffect(null);
 			break;
 		}
 
 		// Set border for a cages which is selected and is having bad maths
 		switch (theme) {
-		case CARVED:
-			mBorderSelectedBadMathPaint.setColor(0xFFBB0000);
-			mBorderSelectedBadMathPaint.setAntiAlias(true);
-			mBorderSelectedBadMathPaint.setPathEffect(mPainter.getPathEffect());
-			break;
 		case NEWSPAPER:
 			mBorderSelectedBadMathPaint.setColor(0xFFff4444);
 			mBorderSelectedBadMathPaint.setAntiAlias(true);
-			mBorderSelectedBadMathPaint.setPathEffect(null);
 			break;
 		case DARK:
 			mBorderSelectedBadMathPaint.setColor(0xFFBB0000);
 			mBorderSelectedBadMathPaint.setAntiAlias(true);
-			mBorderSelectedBadMathPaint.setPathEffect(null);
 			break;
 		}
 	}

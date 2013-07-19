@@ -19,6 +19,7 @@ public class GridPainter extends BorderPainter {
 
 		mBorderPaint = new Paint();
 		mBorderPaint.setStyle(Paint.Style.STROKE);
+		mBorderPaint.setPathEffect(null);
 
 		mBackgroundPaint = new Paint();
 		mBackgroundPaint.setStyle(Paint.Style.STROKE);
@@ -30,9 +31,6 @@ public class GridPainter extends BorderPainter {
 	public void setTheme(GridTheme theme) {
 		// Set background color
 		switch (theme) {
-		case CARVED:
-			mBackgroundPaint.setColor(0x7ff0d090);
-			break;
 		case NEWSPAPER:
 			mBackgroundPaint.setColor(0xffffffff);
 			break;
@@ -43,19 +41,12 @@ public class GridPainter extends BorderPainter {
 
 		// Set border paint
 		switch (theme) {
-		case CARVED:
-			mBorderPaint.setAntiAlias(true);
-			mBorderPaint.setPathEffect(mPainter.getPathEffect());
-			mBorderPaint.setColor(0xff000000);
-			break;
 		case NEWSPAPER:
 			mBorderPaint.setAntiAlias(false);
-			mBorderPaint.setPathEffect(null);
 			mBorderPaint.setColor(0xFFAAAAAA);
 			break;
 		case DARK:
 			mBorderPaint.setAntiAlias(true);
-			mBorderPaint.setPathEffect(null);
 			mBorderPaint.setColor(0xFFAAAAAA);
 			break;
 		}

@@ -203,7 +203,6 @@
 
 
     <!-- The possible values of the "themes" option. This option controls which theme is used for displaying. -->
-    <string name="theme_carved">Hout</string>
     <string name="theme_newspaper">Krant</string>
     <string name="theme_dark">Donker</string>
 

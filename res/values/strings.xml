@@ -203,7 +203,6 @@
 
 
     <!-- The possible values of the "themes" option. This option controls which theme is used for displaying. -->
-    <string name="theme_carved">Carved</string>
     <string name="theme_newspaper">Newspaper</string>
     <string name="theme_dark">Dark</string>
 

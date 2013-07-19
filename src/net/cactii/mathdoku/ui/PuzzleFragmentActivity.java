@@ -11,7 +11,6 @@ import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.gridGenerating.DialogPresentingGridGenerator;
 import net.cactii.mathdoku.gridGenerating.GridGenerator.PuzzleComplexity;
 import net.cactii.mathdoku.hint.TickerTape;
-import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.storage.GameFileConverter;
 import net.cactii.mathdoku.storage.database.DatabaseHelper;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter;
@@ -101,7 +100,6 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 
 		// Initialize global objects (singleton instances)
 		DatabaseHelper.getInstance(this);
-		Painter.getInstance(this);
 		new Util(this);
 
 		// Check if database is consistent.

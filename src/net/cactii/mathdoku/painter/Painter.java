@@ -1,19 +1,13 @@
 package net.cactii.mathdoku.painter;
 
 import net.cactii.mathdoku.DigitPositionGrid;
-import net.cactii.mathdoku.util.SingletonInstanceNotInstantiated;
-import android.content.Context;
 import android.graphics.DashPathEffect;
-import android.graphics.DiscretePathEffect;
 import android.graphics.PathEffect;
 import android.graphics.Typeface;
 
 public class Painter {
 	// Singleton reference to the GridPainter object.
 	private static Painter mPainterSingletonInstance = null;
-
-	// The context in which the painter is created.
-	private Context mContext;
 
 	// Typeface to be used
 	private Typeface mTypefaceTheme;
@@ -28,7 +22,7 @@ public class Painter {
 
 	// Themes available
 	public enum GridTheme {
-		CARVED, NEWSPAPER, DARK
+		NEWSPAPER, DARK
 	};
 
 	// Theme installed in painter
@@ -49,13 +43,8 @@ public class Painter {
 	 * This object can not be instantiated directly. Use {@link #getInstance()}
 	 * to get the singleton reference to the GridPainter object.
 	 * 
-	 * @param context
-	 *            The context in which the GridPainter is created.
-	 * 
 	 */
-	private Painter(Context context) {
-		mContext = context;
-
+	private Painter() {
 		// Create the painters
 		mGridPainter = new GridPainter(this);
 		mCagePainter = new CagePainter(this);
@@ -64,6 +53,13 @@ public class Painter {
 		mMaybeGridPainter = new MaybeValuePainter(this);
 		mMaybeLinePainter = new MaybeValuePainter(this);
 		mSwipeBorderPainter = new SwipeBorderPainter(this);
+
+		// Set the typeface
+		mTypefaceTheme = Typeface.create(Typeface.SANS_SERIF,
+				Typeface.NORMAL);
+		
+		// Set the path effect
+		mPathEffectTheme = new DashPathEffect(new float[] { 2, 2 }, 0);
 
 		// Set the size of the borders.
 		setBorderSizes(false);
@@ -76,29 +72,13 @@ public class Painter {
 	 * Gets the singleton reference to the GridPainter object. If it does not
 	 * yet exist then it will be created.
 	 * 
-	 * @param context
-	 *            The context in which the GridPainter is created.
-	 * 
-	 * @return The singleton reference to the GridPainter object.
-	 */
-	public static Painter getInstance(Context context) {
-		if (mPainterSingletonInstance == null) {
-			// Only the first time this method is called, the object will be
-			// created.
-			mPainterSingletonInstance = new Painter(context);
-		}
-		return mPainterSingletonInstance;
-	}
-
-	/**
-	 * Gets the singleton reference to the GridPainter object. If it does not
-	 * yet exist an exception will be thrown.
-	 * 
 	 * @return The singleton reference to the GridPainter object.
 	 */
 	public static Painter getInstance() {
 		if (mPainterSingletonInstance == null) {
-			throw new SingletonInstanceNotInstantiated();
+			// Only the first time this method is called, the object will be
+			// created.
+			mPainterSingletonInstance = new Painter();
 		}
 		return mPainterSingletonInstance;
 	}
@@ -131,8 +111,6 @@ public class Painter {
 		mTheme = theme;
 
 		// Change default typeface and path effects
-		setTypeface(theme);
-		setPathEffects(theme);
 		setTextColors(theme);
 
 		// Propagate theme settings to children
@@ -168,42 +146,12 @@ public class Painter {
 	}
 
 	/**
-	 * Set the default typeface for this theme.
-	 * 
-	 * @param gridTheme
-	 *            The theme for which the typeface has to be set.
-	 */
-	private void setTypeface(GridTheme gridTheme) {
-		if (gridTheme == GridTheme.CARVED) {
-			mTypefaceTheme = Typeface.createFromAsset(mContext.getAssets(),
-					"fonts/font.ttf");
-		} else {
-			mTypefaceTheme = Typeface.create(Typeface.SANS_SERIF,
-					Typeface.NORMAL);
-		}
-	}
-
-	/**
 	 * Get the typeface to be used for all painters.
 	 * 
 	 * @return The typeface to be used for all painters.
 	 */
 	public Typeface getTypeface() {
 		return mTypefaceTheme;
-	}
-
-	/**
-	 * Set the default path effect for this theme.
-	 * 
-	 * @param gridTheme
-	 *            The theme for which the path effect has to be set.
-	 */
-	private void setPathEffects(GridTheme gridTheme) {
-		if (gridTheme == GridTheme.CARVED) {
-			mPathEffectTheme = new DiscretePathEffect(20, 1);
-		} else {
-			mPathEffectTheme = new DashPathEffect(new float[] { 2, 2 }, 0);
-		}
 	}
 
 	/**
@@ -223,11 +171,6 @@ public class Painter {
 	 */
 	private void setTextColors(GridTheme gridTheme) {
 		switch (gridTheme) {
-		case CARVED:
-			mHighlightedTextColorNormalInputMode = 0xFF2215DD;
-			mHighlightedTextColorMaybeInputMode = 0xFFE61EBE;
-			mDefaultTextColor = 0xFF000000;
-			break;
 		case NEWSPAPER:
 			mHighlightedTextColorNormalInputMode = 0xFF0C97FA;
 			mHighlightedTextColorMaybeInputMode = 0xFFFF8A00;

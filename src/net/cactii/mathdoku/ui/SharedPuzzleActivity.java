@@ -61,7 +61,7 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 		}
 
 		// Initialize the painter with the correct theme
-		Painter.getInstance(this).setTheme(mMathDokuPreferences.getTheme());
+		Painter.getInstance().setTheme(mMathDokuPreferences.getTheme());
 
 		// set color
 		((Button) findViewById(R.id.shared_puzzle_play_button))

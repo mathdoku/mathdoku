@@ -39,10 +39,13 @@ public class CellPainter extends BorderPainter {
 
 		// Border between two cell which belong to same cage.
 		mUnusedBorderPaint = new Paint();
+		mUnusedBorderPaint.setStyle(Style.STROKE);
+		mUnusedBorderPaint.setAntiAlias(true);
 
 		// Border and background for cells with an invalid user value. The
 		// background color depends on the theme.
 		mInvalidBorderPaint = new Paint();
+		mInvalidBorderPaint.setAntiAlias(true);
 		mInvalidBackgroundPaint = new Paint();
 
 		// Border and background for cells having a duplicate value
@@ -62,43 +65,23 @@ public class CellPainter extends BorderPainter {
 	public void setTheme(GridTheme theme) {
 		// Set the unused border paint
 		switch (theme) {
-		case CARVED:
-			mUnusedBorderPaint.setAntiAlias(true);
-			mUnusedBorderPaint.setPathEffect(mPainter.getPathEffect());
-			mUnusedBorderPaint.setStyle(Style.STROKE);
-			mUnusedBorderPaint.setColor(0xbf906050);
-			break;
 		case NEWSPAPER:
-			mUnusedBorderPaint.setAntiAlias(true);
-			mUnusedBorderPaint.setPathEffect(mPainter.getPathEffect());
-			mUnusedBorderPaint.setStyle(Style.STROKE);
 			mUnusedBorderPaint.setColor(0x80000000);
 			break;
 		case DARK:
-			mUnusedBorderPaint.setAntiAlias(true);
-			mUnusedBorderPaint.setPathEffect(mPainter.getPathEffect());
-			mUnusedBorderPaint.setStyle(Style.STROKE);
 			mUnusedBorderPaint.setColor(0xff7f7f7f);
 			break;
 		}
 
 		// Set the invalid border paint
 		switch (theme) {
-		case CARVED:
-			mInvalidBorderPaint.setColor(0xFFBB0000);
-			mInvalidBorderPaint.setAntiAlias(true);
-			mInvalidBackgroundPaint.setColor(mInvalidBorderPaint.getColor());
-			mInvalidBackgroundPaint.setStyle(Paint.Style.FILL);
-			break;
 		case NEWSPAPER:
 			mInvalidBorderPaint.setColor(0xFFF8A86B);
-			mInvalidBorderPaint.setAntiAlias(true);
 			mInvalidBackgroundPaint.setColor(mInvalidBorderPaint.getColor());
 			mInvalidBackgroundPaint.setStyle(Paint.Style.FILL);
 			break;
 		case DARK:
 			mInvalidBorderPaint.setColor(0xFFBB0000);
-			mInvalidBorderPaint.setAntiAlias(true);
 			// mInvalidBackgroundPaint.setColor(mInvalidBorderPaint.getColor());
 			// TODO: check if needed.
 			mInvalidBackgroundPaint.setStyle(Paint.Style.STROKE);
@@ -107,11 +90,6 @@ public class CellPainter extends BorderPainter {
 
 		// Set the duplicate value painter
 		switch (theme) {
-		case CARVED:
-			mDuplicateBorderPaint.setColor(0x50FF0000);
-			mDuplicateBackgroundPaint.setColor(mDuplicateBorderPaint.getColor());
-			mDuplicateBackgroundPaint.setStyle(Paint.Style.FILL);
-			break;
 		case NEWSPAPER:
 			mDuplicateBorderPaint.setColor(0xFFFFA091);
 			mDuplicateBackgroundPaint.setColor(mDuplicateBorderPaint.getColor());
@@ -126,11 +104,6 @@ public class CellPainter extends BorderPainter {
 
 		// Set the cheated painter
 		switch (theme) {
-		case CARVED:
-			mCheatedBorderPaint.setColor(0x90ffcea0);
-			mCheatedBackgroundPaint.setColor(mCheatedBorderPaint.getColor());
-			mCheatedBackgroundPaint.setStyle(Paint.Style.FILL);
-			break;
 		case NEWSPAPER:
 			mCheatedBorderPaint.setColor(0x90ffcea0);
 			mCheatedBackgroundPaint.setColor(mCheatedBorderPaint.getColor());
@@ -145,11 +118,6 @@ public class CellPainter extends BorderPainter {
 
 		// Set the selected cell painter
 		switch (theme) {
-		case CARVED:
-			mSelectedBorderPaint.setColor(0xD0F0D042);
-			mSelectedBackgroundPaint.setColor(mSelectedBorderPaint.getColor());
-			mSelectedBackgroundPaint.setStyle(Paint.Style.FILL);
-			break;
 		case NEWSPAPER:
 			mSelectedBorderPaint.setColor(0xFFE6E6E6);
 			mSelectedBackgroundPaint.setColor(mSelectedBorderPaint.getColor());

@@ -112,10 +112,10 @@ public class Preferences {
 	public final static int SWIPE_DIGIT_COUNTER_DEFAULT = 0;
 
 	public final static String THEME = "theme";
-	public final static String THEME_CARVED = "carved";
-	public final static String THEME_DARK = "inverted";
-	public final static String THEME_NEWSPAPER = "newspaper";
-	public final static String THEME_NEWSPAPER_OLD = "newspaperold";
+	public final static String THEME_DARK = "inverted"; // TODO: Rename to dark
+	public final static String THEME_NEWSPAPER = "newspaper"; // TODO: rename to
+																// light
+	public final static String THEME_NEWSPAPER_OLD = "newspaperold"; // REMOVE
 	public final static String THEME_DEFAULT = THEME_NEWSPAPER;
 
 	public final static String USAGE_LOG_COUNT_GAMES_STARTED = "UsageLogCountGamesStarted";
@@ -375,7 +375,14 @@ public class Preferences {
 				prefeditor.remove("Tip.Category.FamiliarWithRules");
 			}
 		}
-
+		if (previousInstalledVersion < 407 && currentVersion >= 407) {
+			// Theme carved has been removed. Change theme to default theme if
+			// it was set to carved.
+			if (mSharedPreferences.getString(THEME, THEME_DEFAULT).equals(
+					"carved")) {
+				prefeditor.putString(THEME, THEME_DEFAULT);
+			}
+		}
 
 		prefeditor.putInt(CURRENT_VERSION, currentVersion);
 		prefeditor.commit();
@@ -398,14 +405,11 @@ public class Preferences {
 	public Painter.GridTheme getTheme() {
 		String theme = mSharedPreferences.getString(THEME, THEME_DEFAULT);
 
-		if (theme.equals(THEME_NEWSPAPER)) {
-			return GridTheme.NEWSPAPER;
-		} else if (theme.equals(THEME_DARK)) {
+		if (theme.equals(THEME_DARK)) {
 			return GridTheme.DARK;
-		} else if (theme.equals(THEME_CARVED)) {
-			return GridTheme.CARVED;
+		} else {
+			return GridTheme.NEWSPAPER;
 		}
-		return null;
 	}
 
 	/**
@@ -493,7 +497,6 @@ public class Preferences {
 		prefeditor.commit();
 	}
 
-
 	/**
 	 * Checks if the usage log is disabled.
 	 * 
@@ -580,8 +583,8 @@ public class Preferences {
 	}
 
 	/**
-	 * Checks whether a description has to be shown below a chart in the
-	 * archive activity.
+	 * Checks whether a description has to be shown below a chart in the archive
+	 * activity.
 	 * 
 	 * @return True in case the charts descriptions have to be shown. False
 	 *         otherwise.
