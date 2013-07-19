@@ -22,7 +22,6 @@ import net.cactii.mathdoku.tip.TipDialog;
 import net.cactii.mathdoku.tip.TipStatistics;
 import net.cactii.mathdoku.util.FeedbackEmail;
 import net.cactii.mathdoku.util.SharedPuzzle;
-import net.cactii.mathdoku.util.UsageLog;
 import net.cactii.mathdoku.util.Util;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -102,8 +101,8 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 
 		// Initialize global objects (singleton instances)
 		DatabaseHelper.getInstance(this);
-		UsageLog.getInstance(this);
 		Painter.getInstance(this);
+		new Util(this);
 
 		// Check if database is consistent.
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
@@ -130,7 +129,6 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		Object object = this.getLastCustomNonConfigurationInstance();
 		if (object != null
 				&& object.getClass() == ConfigurationInstanceState.class) {
-			UsageLog.getInstance(this).logConfigurationChange(this);
 			ConfigurationInstanceState configurationInstanceState = (ConfigurationInstanceState) object;
 
 			// Restore background process if running.
@@ -154,15 +152,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		}
 	}
 
-	public void onPause() {
-		UsageLog.getInstance().close();
-
-		super.onPause();
-	}
-
 	public void onResume() {
-		UsageLog.getInstance(this);
-
 		if (mDialogPresentingGridGenerator != null) {
 			// In case the grid is created in the background and the dialog is
 			// closed, the activity will be moved to the background as well. In
@@ -323,14 +313,12 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 			}
 			return true;
 		case R.id.action_puzzle_settings:
-			UsageLog.getInstance().logFunction("Menu.ViewOptions");
 			startActivity(new Intent(this, PuzzlePreferenceActivity.class));
 			return true;
 		case R.id.action_send_feedback:
 			new FeedbackEmail(this).show();
 			return true;
 		case R.id.action_puzzle_help:
-			UsageLog.getInstance().logFunction("Menu.ViewHelp.Manual");
 			this.openHelpDialog();
 			return true;
 		default:
@@ -452,8 +440,6 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
-								UsageLog.getInstance().logFunction(
-										"ViewChanges.Manual");
 								puzzleFragmentActivity.openChangesDialog(false);
 							}
 						})
@@ -956,7 +942,6 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 				startActivityForResult(intentArchive, REQUEST_ARCHIVE);
 			} else if (mNavigationDrawerItems[position].equals(getResources()
 					.getString(R.string.action_statistics))) {
-				UsageLog.getInstance().logFunction("Menu.Statistics");
 				Intent intentStatistics = new Intent(
 						PuzzleFragmentActivity.this,
 						StatisticsFragmentActivity.class);

@@ -15,7 +15,6 @@ import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import net.cactii.mathdoku.tip.TipCheat;
 import net.cactii.mathdoku.tip.TipIncorrectValue;
-import net.cactii.mathdoku.util.UsageLog;
 import net.cactii.mathdoku.util.Util;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -181,8 +180,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	}
 
 	public void onPause() {
-		UsageLog.getInstance().close();
-
 		stopTimer();
 		if (mGrid != null) {
 			mGrid.save();
@@ -271,8 +268,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-								UsageLog.getInstance().logFunction(
-										"ContextMenu.ClearGrid");
 								PuzzleFragment.this.mGrid.clearCells(false);
 								PuzzleFragment.this.mGridView.invalidate();
 							}
@@ -430,13 +425,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-		if (sharedPreferences.contains(key)) {
-			UsageLog.getInstance().logPreference("Preference.Changed", key,
-					sharedPreferences.getAll().get(key));
-		} else {
-			UsageLog.getInstance().logPreference("Preference.Deleted", key,
-					null);
-		}
 		if (key.equals(Preferences.THEME)) {
 			setTheme();
 		}
@@ -466,8 +454,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		if (selectedCell == null) {
 			return;
 		}
-
-		UsageLog.getInstance().logFunction("ContextMenu.RevealCell");
 
 		// Reveal the user value
 		CellChange orginalUserMove = selectedCell.saveUndoInformation(null);
@@ -517,7 +503,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			return;
 		}
 
-		UsageLog.getInstance().logFunction("ContextMenu.RevealOperator");
 		selectedGridCage.revealOperator();
 
 		mGrid.increaseCounter(StatisticsCounterType.OPERATORS_REVEALED);
@@ -563,7 +548,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * Checks the progress of solving the current grid
 	 */
 	protected void checkProgress() {
-		UsageLog.getInstance().logFunction("Menu.CheckProgress");
 		if (mGrid == null || mGridView == null) {
 			return;
 		}

@@ -7,7 +7,6 @@ import net.cactii.mathdoku.gridGenerating.GridGenerator;
 import net.cactii.mathdoku.gridGenerating.GridGenerator.PuzzleComplexity;
 import net.cactii.mathdoku.storage.database.DatabaseHelper;
 import net.cactii.mathdoku.ui.PuzzleFragmentActivity;
-import net.cactii.mathdoku.util.UsageLog;
 import net.cactii.mathdoku.util.Util;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -81,20 +80,6 @@ public class DevelopmentHelper {
 				return true;
 			case R.id.development_mode_clear_data:
 				deleteGamesAndPreferences(puzzleFragmentActivity);
-				return true;
-			case R.id.development_mode_reset_log:
-				// Delete old log
-				UsageLog.getInstance().delete();
-
-				// Reset preferences
-				Preferences.getInstance().resetUsageLogDisabled();
-
-				// Re-enable usage log
-				UsageLog.getInstance(puzzleFragmentActivity);
-				return true;
-			case R.id.development_mode_send_log:
-				UsageLog.getInstance().askConsentForSendingLog(
-						puzzleFragmentActivity);
 				return true;
 			default:
 				return false;

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.srlee.DLX.MathDokuDLX;
-
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.gridGenerating.GridGeneratingParameters;
@@ -17,9 +15,10 @@ import net.cactii.mathdoku.storage.database.GridRow;
 import net.cactii.mathdoku.storage.database.SolvingAttemptData;
 import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 import net.cactii.mathdoku.storage.database.StatisticsDatabaseAdapter;
-import net.cactii.mathdoku.util.UsageLog;
 import net.cactii.mathdoku.util.Util;
 import android.util.Log;
+
+import com.srlee.DLX.MathDokuDLX;
 
 public class Grid {
 	private static final String TAG = "MathDoku.Grid";
@@ -228,7 +227,6 @@ public class Grid {
 
 	// Solve the puzzle by setting the Uservalue to the actual value
 	public void solve() {
-		UsageLog.getInstance().logFunction("ContextMenu.ShowSolution");
 		this.mCheated = true;
 		if (this.mMoves != null) {
 			this.mMoves.clear();

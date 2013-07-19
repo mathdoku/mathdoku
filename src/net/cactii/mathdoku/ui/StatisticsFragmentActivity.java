@@ -2,7 +2,6 @@ package net.cactii.mathdoku.ui;
 
 import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.util.FeedbackEmail;
-import net.cactii.mathdoku.util.UsageLog;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
@@ -123,7 +122,6 @@ public class StatisticsFragmentActivity extends AppFragmentActivity implements
 			}
 			return true;
 		case R.id.statistics_settings:
-			UsageLog.getInstance().logFunction("Menu.ViewStatisticsOptions");
 			startActivity(new Intent(this, StatisticsPreferenceActivity.class));
 			break;
 		case R.id.action_send_feedback:

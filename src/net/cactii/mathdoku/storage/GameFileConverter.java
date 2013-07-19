@@ -11,7 +11,6 @@ import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 import net.cactii.mathdoku.storage.database.StatisticsDatabaseAdapter;
 import net.cactii.mathdoku.ui.PuzzleFragmentActivity;
-import net.cactii.mathdoku.util.UsageLog;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
@@ -44,7 +43,13 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	private static final String FILENAME_SAVED_GAME_R111 = "saved_game_";
 	private static final String GAMEFILE_EXTENSION_R111 = ".mgf";
 	private static final String PREVIEW_EXTENSION_R111 = ".png";
-	private String[] mFilenamesToBeDeleted;
+	private String[] mGameFilesToBeDeleted;
+
+	// Usage logging (MathDoku v1.96) file prefix
+	@SuppressLint("SdCardPath")
+	private static final String PATH_USAGE_LOGS = "/data/data/net.cactii.mathdoku/files/";
+	private static final String USAGE_LOG_PREFIX = "usage_log_r";
+	private String[] mUsageLogFilesToBeDeleted;
 
 	// Solving attempts to be converted
 	ArrayList<Integer> solvingAttemptIds;
@@ -54,8 +59,6 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 
 	// Conversion results
 	private ArrayList<String> mGridDefinitions;
-	private int mTotalGrids;
-	private int mTotalGridsNotConverted;
 
 	// Database adapter for the statistics
 	StatisticsDatabaseAdapter mStatisticsDatabaseAdapter;
@@ -107,8 +110,12 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 
 		// Determine how much (old) game files and preview files have to be
 		// deleted.
-		mFilenamesToBeDeleted = getFilesToBeDeleted();
-		int maxProgressCounter = mFilenamesToBeDeleted.length;
+		mGameFilesToBeDeleted = getGameFilesToBeDeleted();
+		int maxProgressCounter = mGameFilesToBeDeleted.length;
+
+		// Determine how much usage log files have to be deleted.
+		mUsageLogFilesToBeDeleted = getUsageLogFilesToBeDeleted();
+		maxProgressCounter += mUsageLogFilesToBeDeleted.length;
 
 		// Determine how many solving attempts in the database have to be
 		// converted.
@@ -142,8 +149,6 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 
 		// Initialize conversion results.
 		mGridDefinitions = new ArrayList<String>();
-		mTotalGrids = 0;
-		mTotalGridsNotConverted = 0;
 	}
 
 	@Override
@@ -161,9 +166,15 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	protected Void doInBackground(Void... params) {
 		if (mCurrentVersion < mNewVersion) {
 			// Delete preview images
-			if (mCurrentVersion < 305 && mFilenamesToBeDeleted.length > 0) {
-				for (String filename : mFilenamesToBeDeleted) {
+			if (mCurrentVersion < 305 && mGameFilesToBeDeleted.length > 0) {
+				for (String filename : mGameFilesToBeDeleted) {
 					new File(PATH_R110 + filename).delete();
+					publishProgress();
+				}
+			}
+			if (mCurrentVersion < 405 && mUsageLogFilesToBeDeleted.length > 0) {
+				for (String filename : mUsageLogFilesToBeDeleted) {
+					new File(PATH_USAGE_LOGS + filename).delete();
 					publishProgress();
 				}
 			}
@@ -173,10 +184,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 				for (int solvingAttemptId : solvingAttemptIds) {
 					Grid grid = new Grid();
 					if (grid.load(solvingAttemptId)) {
-						mTotalGrids++;
-
 						// Get definition for the grid.
-						// REMOVE: stats for converted games.
 						String definition = grid.toGridDefinitionString();
 						if (!mGridDefinitions.contains(definition)) {
 							// New definition found
@@ -188,8 +196,6 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 
 						// Update progress
 						publishProgress();
-					} else {
-						mTotalGridsNotConverted++;
 					}
 				}
 			}
@@ -206,10 +212,6 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 
 	@Override
 	protected void onPostExecute(Void result) {
-		UsageLog.getInstance().logGameFileConversion(mCurrentVersion,
-				mNewVersion, mTotalGrids, mGridDefinitions.size(),
-				mTotalGridsNotConverted);
-
 		// Phase 1 of upgrade has been completed. Start next phase.
 		if (mActivity != null) {
 			mActivity.upgradePhase2_UpdatePreferences(mCurrentVersion,
@@ -247,12 +249,10 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	/**
 	 * Retrieve all game files and preview images which have to be deleted
 	 * 
-	 * @param path
-	 *            Path to a directory.
 	 * @return An array of filenames in the given directory which have to be
 	 *         deleted.
 	 */
-	private String[] getFilesToBeDeleted() {
+	private String[] getGameFilesToBeDeleted() {
 		String path = PATH_R110;
 		FilenameFilter filter = new FilenameFilter() {
 			public boolean accept(File dir, String name) {
@@ -262,6 +262,27 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 						|| name.endsWith(PREVIEW_EXTENSION_R111)) {
 					return name.startsWith(FILENAME_SAVED_GAME_R111)
 							|| name.startsWith(FILENAME_LAST_GAME_R111);
+				} else {
+					return false;
+				}
+			}
+		};
+		File dir = new File(path);
+		return (dir == null ? null : dir.list(filter));
+	}
+
+	/**
+	 * Retrieve all usage log files which have to be deleted
+	 * 
+	 * @return An array of filenames in the given directory which have to be
+	 *         deleted.
+	 */
+	private String[] getUsageLogFilesToBeDeleted() {
+		String path = PATH_USAGE_LOGS;
+		FilenameFilter filter = new FilenameFilter() {
+			public boolean accept(File dir, String name) {
+				if (name.startsWith(USAGE_LOG_PREFIX)) {
+					return true;
 				} else {
 					return false;
 				}

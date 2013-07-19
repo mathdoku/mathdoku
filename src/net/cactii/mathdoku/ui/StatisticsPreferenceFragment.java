@@ -2,7 +2,6 @@ package net.cactii.mathdoku.ui;
 
 import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
-import net.cactii.mathdoku.util.UsageLog;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
@@ -24,8 +23,6 @@ public class StatisticsPreferenceFragment extends PreferenceFragment implements
 
 	@Override
 	public void onStart() {
-		UsageLog.getInstance(getActivity());
-
 		mSharedPreferences = Preferences.getInstance(getActivity()).mSharedPreferences;
 		mSharedPreferences.registerOnSharedPreferenceChangeListener(this);
 		super.onStart();
