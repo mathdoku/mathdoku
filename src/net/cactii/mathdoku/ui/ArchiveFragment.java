@@ -142,7 +142,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 			}
 
 			// Show elapsed time for puzzles which are solved manually.
-			if (grid.isActive() == false && grid.isSolvedByCheating() == false) {
+			if (grid.isActive() == false) {
 				((TableRow) rootView
 						.findViewById(R.id.statistics_general_elapsed_time_row))
 						.setVisibility(View.VISIBLE);
