@@ -158,6 +158,14 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 			// onCreate isn't. So we have to check here as well.
 			mDialogPresentingGridGenerator.attachToActivity(this);
 		}
+
+		// Select the the play puzzle item as active item. This is especially
+		// needed when resuming after returning form another activity like the
+		// Archive or the Statistics.
+		if (mDrawerListView != null) {
+			mDrawerListView.setItemChecked(0, true);
+		}
+
 		super.onResume();
 	}
 
