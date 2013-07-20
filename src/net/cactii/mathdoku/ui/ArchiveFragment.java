@@ -293,7 +293,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 				R.string.avoidable_moves_yaxis_description));
 		xyMultipleSeriesRenderer.setXAxisMin(-1);
 		xyMultipleSeriesRenderer.setYLabelsAlign(Align.RIGHT);
-		xyMultipleSeriesRenderer.setMargins(new int[] { 0, 50, 40, 10 });
+		xyMultipleSeriesRenderer.setMargins(new int[] { 0, 75, 40, 10 });
 		xyMultipleSeriesRenderer.setZoomButtonsVisible(false);
 		xyMultipleSeriesRenderer.setZoomEnabled(false);
 		xyMultipleSeriesRenderer.setPanEnabled(false);
