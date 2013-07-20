@@ -108,14 +108,18 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 		// Remember the activity that started this task.
 		this.mActivity = activity;
 
+		int maxProgressCounter = 0;
+
 		// Determine how much (old) game files and preview files have to be
 		// deleted.
 		mGameFilesToBeDeleted = getGameFilesToBeDeleted();
-		int maxProgressCounter = mGameFilesToBeDeleted.length;
+		maxProgressCounter += (mGameFilesToBeDeleted == null ? 0
+				: mGameFilesToBeDeleted.length);
 
 		// Determine how much usage log files have to be deleted.
 		mUsageLogFilesToBeDeleted = getUsageLogFilesToBeDeleted();
-		maxProgressCounter += mUsageLogFilesToBeDeleted.length;
+		maxProgressCounter += (mUsageLogFilesToBeDeleted == null ? 0
+				: mUsageLogFilesToBeDeleted.length);
 
 		// Determine how many solving attempts in the database have to be
 		// converted.
@@ -166,13 +170,15 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	protected Void doInBackground(Void... params) {
 		if (mCurrentVersion < mNewVersion) {
 			// Delete preview images
-			if (mCurrentVersion < 305 && mGameFilesToBeDeleted.length > 0) {
+			if (mCurrentVersion < 305 && mGameFilesToBeDeleted != null
+					&& mGameFilesToBeDeleted.length > 0) {
 				for (String filename : mGameFilesToBeDeleted) {
 					new File(PATH_R110 + filename).delete();
 					publishProgress();
 				}
 			}
-			if (mCurrentVersion < 405 && mUsageLogFilesToBeDeleted.length > 0) {
+			if (mCurrentVersion < 405 && mUsageLogFilesToBeDeleted != null
+					&& mUsageLogFilesToBeDeleted.length > 0) {
 				for (String filename : mUsageLogFilesToBeDeleted) {
 					new File(PATH_USAGE_LOGS + filename).delete();
 					publishProgress();
