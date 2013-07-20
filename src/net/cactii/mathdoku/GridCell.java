@@ -1082,9 +1082,13 @@ public class GridCell {
 	}
 
 	/**
-	 * Mark the cell as a cell containing a duplicate value.
+	 * Set the duplicate highlight of the cell.
+	 * 
+	 * @param higlighted
+	 *            True in case the duplicate highlight is visble. False
+	 *            otherwise.
 	 */
-	public void setDuplicateHighlight() {
-		mDuplicateValueHighlight = true;
+	public void setDuplicateHighlight(boolean highlight) {
+		mDuplicateValueHighlight = highlight;
 	}
 }

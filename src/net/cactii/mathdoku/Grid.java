@@ -1303,19 +1303,14 @@ public class Grid {
 							.getRow() != gridCell.getRow())
 							|| (cell.getColumn() != gridCell.getColumn() && cell
 									.getRow() == gridCell.getRow())) {
-						if (!duplicateValue) {
-							// When first cell in the same row or column with
-							// duplicate value is found, mark the given cell as
-							// duplicate.
-							gridCell.setDuplicateHighlight();
-							duplicateValue = true;
-						}
 						// Mark this cell as duplicate.
-						cell.setDuplicateHighlight();
+						duplicateValue = true;
+						cell.setDuplicateHighlight(true);
 					}
 				}
 			}
 		}
+		gridCell.setDuplicateHighlight(duplicateValue);
 		return duplicateValue;
 	}
 }

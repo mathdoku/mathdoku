@@ -347,12 +347,21 @@ public class GridView extends View implements OnTouchListener {
 							&& TipIncorrectValue.toBeDisplayed(mPreferences)) {
 						new TipIncorrectValue(mContext).show();
 					}
-					if (mGrid.markDuplicateValuesInRowAndColumn(selectedCell)) {
-						// The user value in the selected cell is also used in
-						// another cell on the same row or column.
-						if (TipDuplicateValue.toBeDisplayed(mPreferences)) {
-							new TipDuplicateValue(mContext).show();
-						}
+				}
+			}
+		}
+
+		// Each cell in the same column or row as the given cell has to be
+		// checked for duplicate values.
+		int targetRow = selectedCell.getRow();
+		int targetColumn = selectedCell.getColumn();
+		for (GridCell checkedCell : mGrid.mCells) {
+			if (checkedCell.getRow() == targetRow
+					|| checkedCell.getColumn() == targetColumn) {
+				if (mGrid.markDuplicateValuesInRowAndColumn(checkedCell)) {
+					if (checkedCell == selectedCell
+							&& TipDuplicateValue.toBeDisplayed(mPreferences)) {
+						new TipDuplicateValue(mContext).show();
 					}
 				}
 			}
@@ -390,8 +399,8 @@ public class GridView extends View implements OnTouchListener {
 					mGridPainter.getBorderPaint());
 
 			// Draw cells
-			Painter.getInstance().setCellSize(mGridCellSize,
-					mDigitPositionGrid);
+			Painter.getInstance()
+					.setCellSize(mGridCellSize, mDigitPositionGrid);
 			for (GridCell cell : mGrid.mCells) {
 				cell.draw(canvas, gridBorderWidth, mInputMode);
 			}
