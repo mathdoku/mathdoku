@@ -36,8 +36,9 @@ public class Painter {
 	private MaybeValuePainter mMaybeGridPainter;
 	private MaybeValuePainter mMaybeLinePainter;
 	private SwipeBorderPainter mSwipeBorderPainter;
+	private TickerTapePainter mTickerTapePainter;
 
-	// Background color of buttons.
+	// Background color of buttons and ticker tape
 	private int mButtonBackgroundColor;
 
 	/**
@@ -48,6 +49,16 @@ public class Painter {
 	 * 
 	 */
 	private Painter() {
+		// Set the typeface
+		mTypefaceTheme = Typeface.create(Typeface.SANS_SERIF,
+				Typeface.NORMAL);
+		
+		// Set the path effect
+		mPathEffectTheme = new DashPathEffect(new float[] { 2, 2 }, 0);
+		
+		// Button background color
+		mButtonBackgroundColor = 0xFF33B5E5;
+
 		// Create the painters
 		mGridPainter = new GridPainter(this);
 		mCagePainter = new CagePainter(this);
@@ -56,15 +67,7 @@ public class Painter {
 		mMaybeGridPainter = new MaybeValuePainter(this);
 		mMaybeLinePainter = new MaybeValuePainter(this);
 		mSwipeBorderPainter = new SwipeBorderPainter(this);
-
-		// Set the typeface
-		mTypefaceTheme = Typeface.create(Typeface.SANS_SERIF,
-				Typeface.NORMAL);
-		
-		// Set the path effect
-		mPathEffectTheme = new DashPathEffect(new float[] { 2, 2 }, 0);
-		
-		mButtonBackgroundColor = 0xFF33B5E5;
+		mTickerTapePainter = new TickerTapePainter(this);
 
 		// Set the size of the borders.
 		setBorderSizes(false);
@@ -286,5 +289,14 @@ public class Painter {
 	 */
 	public int getButtonBackgroundColor() {
 		return mButtonBackgroundColor;
+	}
+
+	/**
+	 * Get the ticket tape painter.
+	 * 
+	 * @return The ticket tape painter.
+	 */
+	public TickerTapePainter getTickerTapePainter() {
+		return mTickerTapePainter;
 	}
 }

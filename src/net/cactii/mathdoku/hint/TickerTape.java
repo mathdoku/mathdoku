@@ -3,6 +3,7 @@ package net.cactii.mathdoku.hint;
 import java.util.ArrayList;
 
 import net.cactii.mathdoku.R;
+import net.cactii.mathdoku.painter.Painter;
 import android.content.Context;
 import android.os.Handler;
 import android.view.View;
@@ -75,7 +76,7 @@ public class TickerTape extends HorizontalScrollView {
 		setHorizontalScrollBarEnabled(false);
 
 		// set color
-		setBackgroundColor(0xFF33B5E5); // TODO: retrieve from painter
+		setBackgroundColor(Painter.getInstance().getTickerTapePainter().getBackgroundColor());
 
 		// Hide by default
 		setVisibility(View.INVISIBLE);
@@ -100,7 +101,7 @@ public class TickerTape extends HorizontalScrollView {
 		textView.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
 				LayoutParams.WRAP_CONTENT));
 		textView.setPadding(0, 0, 4 * mScrollStepSize, 0);
-		textView.setTextColor(0xFFFFFFFF);
+		textView.setTextColor(Painter.getInstance().getTickerTapePainter().getTextColor());
 
 		// Add the text view to the layout and the list of text views.
 		mTickerTapeLinearLayout.addView(textView);
