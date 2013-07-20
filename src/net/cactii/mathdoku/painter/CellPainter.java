@@ -46,19 +46,31 @@ public class CellPainter extends BorderPainter {
 		// background color depends on the theme.
 		mInvalidBorderPaint = new Paint();
 		mInvalidBorderPaint.setAntiAlias(true);
+		mInvalidBorderPaint.setColor(0xFFF8A86B);
 		mInvalidBackgroundPaint = new Paint();
+		mInvalidBackgroundPaint.setColor(mInvalidBorderPaint.getColor());
+
+		mInvalidBackgroundPaint.setStyle(Paint.Style.FILL);
 
 		// Border and background for cells having a duplicate value
 		mDuplicateBorderPaint = new Paint();
 		mDuplicateBackgroundPaint = new Paint();
+		mDuplicateBorderPaint.setColor(0xFFFFA091);
+		mDuplicateBackgroundPaint.setStyle(Paint.Style.FILL);
+		mDuplicateBackgroundPaint.setColor(mDuplicateBorderPaint.getColor());
+
 
 		// Border and background for cells on which is cheated
 		mCheatedBorderPaint = new Paint();
 		mCheatedBackgroundPaint = new Paint();
+		mCheatedBorderPaint.setColor(0x90ffcea0);
+		mCheatedBackgroundPaint.setStyle(Paint.Style.FILL);
+		mCheatedBackgroundPaint.setColor(mCheatedBorderPaint.getColor());
 
 		// Border and background for cells which are selected.
 		mSelectedBorderPaint = new Paint();
 		mSelectedBackgroundPaint = new Paint();
+		mSelectedBackgroundPaint.setStyle(Paint.Style.FILL);
 	}
 
 	@Override
@@ -73,60 +85,15 @@ public class CellPainter extends BorderPainter {
 			break;
 		}
 
-		// Set the invalid border paint
-		switch (theme) {
-		case LIGHT:
-			mInvalidBorderPaint.setColor(0xFFF8A86B);
-			mInvalidBackgroundPaint.setColor(mInvalidBorderPaint.getColor());
-			mInvalidBackgroundPaint.setStyle(Paint.Style.FILL);
-			break;
-		case DARK:
-			mInvalidBorderPaint.setColor(0xFFBB0000);
-			// mInvalidBackgroundPaint.setColor(mInvalidBorderPaint.getColor());
-			// TODO: check if needed.
-			mInvalidBackgroundPaint.setStyle(Paint.Style.STROKE);
-			break;
-		}
-
-		// Set the duplicate value painter
-		switch (theme) {
-		case LIGHT:
-			mDuplicateBorderPaint.setColor(0xFFFFA091);
-			mDuplicateBackgroundPaint.setColor(mDuplicateBorderPaint.getColor());
-			mDuplicateBackgroundPaint.setStyle(Paint.Style.FILL);
-			break;
-		case DARK:
-			mDuplicateBorderPaint.setColor(0x50FF0000);
-			mDuplicateBackgroundPaint.setColor(mDuplicateBorderPaint.getColor());
-			mDuplicateBackgroundPaint.setStyle(Paint.Style.STROKE);
-			break;
-		}
-
-		// Set the cheated painter
-		switch (theme) {
-		case LIGHT:
-			mCheatedBorderPaint.setColor(0x90ffcea0);
-			mCheatedBackgroundPaint.setColor(mCheatedBorderPaint.getColor());
-			mCheatedBackgroundPaint.setStyle(Paint.Style.FILL);
-			break;
-		case DARK:
-			mCheatedBorderPaint.setColor(0x90ffcea0);
-			mCheatedBackgroundPaint.setColor(mCheatedBorderPaint.getColor());
-			mCheatedBackgroundPaint.setStyle(Paint.Style.STROKE);
-			break;
-		}
-
 		// Set the selected cell painter
 		switch (theme) {
 		case LIGHT:
 			mSelectedBorderPaint.setColor(0xFFE6E6E6);
 			mSelectedBackgroundPaint.setColor(mSelectedBorderPaint.getColor());
-			mSelectedBackgroundPaint.setStyle(Paint.Style.FILL);
 			break;
 		case DARK:
-			mSelectedBorderPaint.setColor(0xD0F0D042);
+			mSelectedBorderPaint.setColor(0xFF545353);
 			mSelectedBackgroundPaint.setColor(mSelectedBorderPaint.getColor());
-			mSelectedBackgroundPaint.setStyle(Paint.Style.STROKE);
 			break;
 		}
 	}

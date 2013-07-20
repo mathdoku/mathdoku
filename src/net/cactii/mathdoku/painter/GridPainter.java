@@ -35,7 +35,7 @@ public class GridPainter extends BorderPainter {
 			mBackgroundPaint.setColor(0xffffffff);
 			break;
 		case DARK:
-			mBackgroundPaint.setColor(0xff000000);
+			mBackgroundPaint.setColor(0x00000000);
 			break;
 		}
 
