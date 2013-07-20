@@ -321,6 +321,21 @@ public class Grid {
 				mMoves.remove(undoPosition);
 				setSelectedCell(cell);
 				mGridStatistics.increaseCounter(StatisticsCounterType.UNDOS);
+				
+				// Each cell in the same column or row as the given cell has to be
+				// checked for duplicate values.
+				int targetRow = cell.getRow();
+				int targetColumn = cell.getColumn();
+				for (GridCell checkedCell : mCells) {
+					if (checkedCell.getRow() == targetRow
+							|| checkedCell.getColumn() == targetColumn) {
+						markDuplicateValuesInRowAndColumn(checkedCell);
+					}
+				}
+				
+				// Check the cage math
+				cell.getCage().checkCageMathsCorrect(false);
+
 				return true;
 			}
 		}

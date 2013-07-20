@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="net.cactii.mathdoku"
     android:installLocation="auto"
-    android:versionCode="414"
+    android:versionCode="415"
     android:versionName="2 (dev version)" >
 
     <uses-sdk
