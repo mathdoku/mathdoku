@@ -10,13 +10,13 @@ import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.gridGenerating.DialogPresentingGridGenerator;
 import net.cactii.mathdoku.gridGenerating.GridGenerator.PuzzleComplexity;
-import net.cactii.mathdoku.hint.TickerTape;
 import net.cactii.mathdoku.storage.GameFileConverter;
 import net.cactii.mathdoku.storage.database.DatabaseHelper;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter.SizeFilter;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter.StatusFilter;
 import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
+import net.cactii.mathdoku.tip.TipArchiveAvailable;
 import net.cactii.mathdoku.tip.TipDialog;
 import net.cactii.mathdoku.tip.TipStatistics;
 import net.cactii.mathdoku.util.FeedbackEmail;
@@ -390,46 +390,24 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		// grid. The new grid will always overwrite the current game without any
 		// warning.
 		initializePuzzleFragment(newGrid.getSolvingAttemptId(), true);
-
-		// Enable the archive after at least 5 games have been solved. The
-		// archive will then contain at least 5 solved games and zero or more
-		// unfinished or cheated games. Also most hints will then have been
-		// displayed.
-		if (mMathDokuPreferences.isArchiveAvailable() == false
-				&& new GridDatabaseAdapter().countGrids(StatusFilter.SOLVED,
-						SizeFilter.ALL) >= 5) {
-			mMathDokuPreferences.setArchiveVisible();
-			setNavigationDrawer();
-		}
-		// Display the hint if applicable (maximum 3 times)
-		if (mPuzzleFragment != null
-				&& mMathDokuPreferences.showArchiveAvailableHint()) {
-			TickerTape tickerTape = new TickerTape(this);
-			tickerTape
-					.addItem(
-							getResources().getString(
-									R.string.hint_archive_available))
-					.setEraseConditions(2, 0).show();
-			mPuzzleFragment.onTickerTapeChanged(tickerTape);
-		}
-
 	}
 
 	/**
 	 * Displays the Help Dialog.
 	 * 
-	 * @param displayLeadIn True to display the welcome message in the help.
+	 * @param displayLeadIn
+	 *            True to display the welcome message in the help.
 	 */
 	private void openHelpDialog(boolean displayLeadIn) {
 		// Get view and put relevant information into the view.
 		LayoutInflater li = LayoutInflater.from(this);
 		View view = li.inflate(R.layout.puzzle_help_dialog, null);
 
-		TextView tv = (TextView) view.findViewById(R.id.puzzle_help_dialog_leadin);
+		TextView tv = (TextView) view
+				.findViewById(R.id.puzzle_help_dialog_leadin);
 		tv.setVisibility(displayLeadIn ? View.VISIBLE : View.GONE);
-		
-		tv = (TextView) view
-				.findViewById(R.id.dialog_help_version_body);
+
+		tv = (TextView) view.findViewById(R.id.dialog_help_version_body);
 		tv.setText(Util.getPackageVersionName() + " (revision "
 				+ Util.getPackageVersionNumber() + ")");
 
@@ -643,6 +621,21 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		}
 		if (TipStatistics.toBeDisplayed(mMathDokuPreferences)) {
 			new TipStatistics(this).show();
+		}
+
+		// Enable the archive as soon as 5 games have been solved. Note: as the
+		// gird is actually not yet saved in the database at this moment the
+		// check on the number of completed games is lowered with 1.
+		if (mMathDokuPreferences.isArchiveAvailable() == false
+				&& new GridDatabaseAdapter().countGrids(StatusFilter.SOLVED,
+						SizeFilter.ALL) >= 4) {
+			mMathDokuPreferences.setArchiveVisible();
+			setNavigationDrawer();
+		}
+		if (TipArchiveAvailable.toBeDisplayed(mMathDokuPreferences)
+				&& new GridDatabaseAdapter().countGrids(StatusFilter.SOLVED,
+						SizeFilter.ALL) >= 4) {
+			new TipArchiveAvailable(this).show();
 		}
 	}
 
@@ -987,16 +980,18 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		if (mMathDokuPreferences.isArchiveAvailable()) {
 			String string = getResources().getString(R.string.action_archive);
 			navigationDrawerItems.add(string);
-			openDrawer = (mNavigationDrawerItems != null && Arrays.asList(
-					mNavigationDrawerItems).contains(string) == false);
+			if (openDrawer == false && mNavigationDrawerItems != null) {
+				openDrawer = (Arrays.asList(mNavigationDrawerItems).contains(string) == false);
+			}
 			mDrawerIconVisible = true;
 		}
 		if (mMathDokuPreferences.isStatisticsAvailable()) {
 			String string = getResources()
 					.getString(R.string.action_statistics);
 			navigationDrawerItems.add(string);
-			openDrawer = (mNavigationDrawerItems != null && Arrays.asList(
-					mNavigationDrawerItems).contains(string) == false);
+			if (openDrawer == false && mNavigationDrawerItems != null) {
+				openDrawer = (Arrays.asList(mNavigationDrawerItems).contains(string) == false);
+			}
 			mDrawerIconVisible = true;
 		}
 		mNavigationDrawerItems = navigationDrawerItems

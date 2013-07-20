@@ -282,9 +282,6 @@
     <!-- Hint to inform about change of Input mode -->
     <string name="hint_input_mode_changed">Je hebt zojuist de invoermethode gewijzigd van %1$s naar %2$s door een dubbeltik op een cel.</string>
 
-    <!-- Hint about the "Archive" function which has been made available as menu option. -->
-    <string name="hint_archive_available">De vorige puzzel is toegevoegd aan het archief. Het archief bevat alle puzzels die je hebt gestart. Het archief kan worden geopend via het menu.</string>
-
     <!-- TIP DIALOGS - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -317,7 +314,7 @@
 
     <!-- Title, and text for tip "Statistics" which explains about this new menu option. -->
     <string name="dialog_tip_statistics_title">Statistieken</string>
-    <string name="dialog_tip_statistics_text">Voor elke puzzel die je hebt gespeeld, worden statistieken bijgehouden. Je kunt de statistieken gebruiken om je historische resultaten te bekijken. Je kunt de statistieken ook gebruiken om je oplossingsstrategieën te verbeteren.</string>
+    <string name="dialog_tip_statistics_text">Voor elke puzzel die je hebt gespeeld, worden statistieken bijgehouden. Je kunt de statistieken gebruiken om je historische resultaten te bekijken. Je kunt de statistieken ook gebruiken om je oplossingsstrategieën te verbeteren.\n\nJe kan de statistieken openen vanuit het navigatie menu. Het navigatie menu kan worden geopend door het MathDoku aan te tikken.</string>
 
     <!-- Title, and text for tip "Duplicate value" which gives explanation of the game rule which was violated. -->
     <string name="dialog_tip_duplicate_value_title">Duplicaat waarde</string>
@@ -326,6 +323,10 @@
     <!-- Title, and text for tip "Bad cage math" which gives explanation of the game rule which was violated. -->
     <string name="dialog_tip_bad_cage_math_title">Fout in groep</string>
     <string name="dialog_tip_bad_cage_math_text">De waarden van de cellen in deze groep zijn niet correct. Het toepassen van de operator op alle cellen moet gelijk zijn aan de uitkomst van de groep.</string>
+
+    <!-- Title, and text for tip "ArchiveAvailable" which explains about this new navigation option. -->
+    <string name="dialog_tip_archive_available_title">Archief beschikbaar</string>
+    <string name="dialog_tip_archive_available_text">Elke puzzel die je hebt aangemaakt wordt bewaard in het \'Archief\'. Het \'Archief\' kan worden gebruikt om puzzels te bekijken die je eerder hebt gespeeld.\n\nJe kan het archief starten vanuit het navigatie menu. Het navigatie menu kan worden geopend door het MathDoku aan te tikken.</string>
 
     <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

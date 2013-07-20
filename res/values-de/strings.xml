@@ -301,10 +301,6 @@
     <!-- TODO: Check with english text which has been changed! -->
     <string name="hint_input_mode_changed">Sie haben gerade den Eingabemodus von %1$s auf %2$s durch mehrmaliges Drücken auf eine Zelle geändert. Berühren Sie die Zelle nochmals, um den vorigen Eingabemodus wieder zu aktivieren.</string>
 
-    <!-- Hint about the "Archive" function which has been made available as menu option. -->
-    <!-- TODO -->
-    <string name="hint_archive_available">The previous game has been added to the archive. The archive contains all games you have started. The archive can be opened via the menu.</string>
-
     <!-- TIP DIALOGS - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -343,7 +339,7 @@
     <!-- Title, and text for tip "Statistics" which explains about this new menu option. -->
     <!-- TODO -->
     <string name="dialog_tip_statistics_title">Statistics</string>
-    <string name="dialog_tip_statistics_text">For each game you have played, some statistics are collected. You can use the statistics just to view your historic results. Also you can use the statistics to improve your solving techniques.</string>
+    <string name="dialog_tip_statistics_text">For each game you have played, some statistics are collected. You can use the statistics just to view your historic results. Also you can use the statistics to improve your solving techniques.\n\nYou can view the statistics from the navigation menu. The navigation menu can be opened by tapping the MathDoku icon.</string>
 
     <!-- Title, and text for tip "Duplicate value" which gives explanation of the game rule which was violated. -->
     <!-- TODO -->
@@ -351,8 +347,14 @@
     <string name="dialog_tip_duplicate_value_text">You have entered a value which is already used in this column or this row. Each value should be used exactly once in each row and once in each column.</string>
 
     <!-- Title, and text for tip "Bad cage math" which gives explanation of the game rule which was violated. -->
+    <!-- TODO -->
     <string name="dialog_tip_bad_cage_math_title">Bad cage math</string>
     <string name="dialog_tip_bad_cage_math_text">The values entered for the cells in this cage are not correct. The result of applying the operator to the cell values must be equal to the value of the cage.</string>
+
+    <!-- Title, and text for tip "ArchiveAvailable" which explains about this new navigation option. -->
+    <!-- TODO -->
+    <string name="dialog_tip_archive_available_title">Archive available</string>
+    <string name="dialog_tip_archive_available_text">Each game you have created is stored in the \'Archive\'. The \'Archive\' can be used to review games which you have played before.\n\nYou can view the archive from the navigation menu. The navigation menu can be opened by tapping the MathDoku icon.</string>
 
     <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- TODO: TRANSLATE ENTIRE SECTION -->
