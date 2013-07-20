@@ -421,10 +421,10 @@ public class GridCell {
 						right, bottom - borderOffset, borderPaint);
 				canvas.drawLine(left + borderOffset, top + borderWidth, left
 						+ borderOffset, bottom, borderPaint);
-				top += borderWidth;
-				right -= borderWidth;
-				bottom -= borderWidth;
-				left += borderWidth;
+				top += borderWidth - 1;
+				right -= borderWidth - 1;
+				bottom -= borderWidth - 1;
+				left += borderWidth - 1;
 			}
 		}
 
