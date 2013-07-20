@@ -3,9 +3,13 @@ package net.cactii.mathdoku.ui;
 import net.cactii.mathdoku.Preferences;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
+import android.support.v4.app.TaskStackBuilder;
+import android.view.MenuItem;
 import android.view.WindowManager;
 
 public class AppActivity extends Activity implements
@@ -23,9 +27,16 @@ public class AppActivity extends Activity implements
 
 		mMathDokuPreferences.mSharedPreferences
 				.registerOnSharedPreferenceChangeListener(this);
-		
+
 		setFullScreenWindowFlag();
 		setKeepScreenOnWindowFlag();
+
+		// Set up the action bar.
+		final ActionBar actionBar = getActionBar();
+		if (actionBar != null) {
+			actionBar.setHomeButtonEnabled(true);
+			actionBar.setDisplayHomeAsUpEnabled(true);
+		}
 	};
 
 	@Override
@@ -39,6 +50,32 @@ public class AppActivity extends Activity implements
 		setFullScreenWindowFlag();
 		setKeepScreenOnWindowFlag();
 		super.onResume();
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem menuItem) {
+		switch (menuItem.getItemId()) {
+		case android.R.id.home:
+			// This is called when the Home (Up) button is pressed in the action
+			// bar. Create a simple intent that starts the hierarchical parent
+			// activity and use NavUtils in the Support Package to ensure proper
+			// handling of Up.
+			Intent upIntent = new Intent(this, PuzzleFragmentActivity.class);
+			if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
+				// This activity is not part of the application's task, so
+				// create a new task with a synthesized back stack.
+				// If there are ancestor activities, they should be added here.
+				TaskStackBuilder.create(this).addNextIntent(upIntent)
+						.startActivities();
+				finish();
+			} else {
+				// This activity is part of the application's task, so simply
+				// navigate up to the hierarchical parent activity.
+				NavUtils.navigateUpTo(this, upIntent);
+			}
+			return true;
+		}
+		return super.onOptionsItemSelected(menuItem);
 	}
 
 	@Override
@@ -79,7 +116,7 @@ public class AppActivity extends Activity implements
 					WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		}
 	}
-	
+
 	public void setTitle(int resId) {
 		ActionBar actionBar = getActionBar();
 		if (actionBar != null) {
