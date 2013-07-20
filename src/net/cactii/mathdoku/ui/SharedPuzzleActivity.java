@@ -65,7 +65,7 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 
 		// set color
 		((Button) findViewById(R.id.shared_puzzle_play_button))
-				.setBackgroundColor(0xFF33B5E5); // TODO: retrieve from painter
+				.setBackgroundColor(Painter.getInstance().getButtonBackgroundColor());
 
 		// Load the grid into the grid view.
 		((GridView) findViewById(R.id.gridView)).loadNewGrid(mGrid);

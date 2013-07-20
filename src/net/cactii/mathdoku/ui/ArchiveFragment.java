@@ -6,6 +6,7 @@ import net.cactii.mathdoku.DigitPositionGrid;
 import net.cactii.mathdoku.Grid;
 import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
+import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.statistics.GridStatistics;
 import net.cactii.mathdoku.util.Util;
 
@@ -81,6 +82,11 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 
 			// Load grid into grid view
 			mGridView.loadNewGrid(grid);
+			
+			// Set background color of button 
+			Button archiveReloadButton = (Button) rootView.findViewById(R.id.archiveReloadButton);
+			archiveReloadButton.setBackgroundColor(Painter.getInstance().getButtonBackgroundColor());
+
 
 			// In case the grid isn't finished, the digit position grid type
 			// has to be determined for positioning maybe values inside the
@@ -97,9 +103,8 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 				// values (dependent on preferences).
 				mGridView.setDigitPositionGrid(mDigitPositionGrid);
 
-				// Change text of button below grid
-				((Button) rootView.findViewById(R.id.archiveReloadButton))
-						.setText(R.string.archive_reload_unfinished_game);
+				// Change text of the reload button below grid
+				archiveReloadButton.setText(R.string.archive_reload_unfinished_game);
 
 				// Disable the grid as the user should not be able to click
 				// cells in the archive view

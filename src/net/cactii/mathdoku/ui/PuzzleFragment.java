@@ -118,7 +118,10 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		mTimerText = (TextView) mRootView.findViewById(R.id.timerText);
 
 		mClearButton = (Button) mRootView.findViewById(R.id.clearButton);
+		mClearButton.setBackgroundColor(mPainter.getButtonBackgroundColor());
+		
 		mUndoButton = (Button) mRootView.findViewById(R.id.undoButton);
+		mUndoButton.setBackgroundColor(mPainter.getButtonBackgroundColor());
 
 		mTickerTapeLayout = (RelativeLayout) mRootView
 				.findViewById(R.id.tickerTapeLayout);

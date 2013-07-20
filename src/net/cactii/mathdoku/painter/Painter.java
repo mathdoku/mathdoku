@@ -37,6 +37,9 @@ public class Painter {
 	private MaybeValuePainter mMaybeLinePainter;
 	private SwipeBorderPainter mSwipeBorderPainter;
 
+	// Background color of buttons.
+	private int mButtonBackgroundColor;
+
 	/**
 	 * Creates a new instance of {@link #GridPainter()}.
 	 * 
@@ -60,6 +63,8 @@ public class Painter {
 		
 		// Set the path effect
 		mPathEffectTheme = new DashPathEffect(new float[] { 2, 2 }, 0);
+		
+		mButtonBackgroundColor = 0xFF33B5E5;
 
 		// Set the size of the borders.
 		setBorderSizes(false);
@@ -272,5 +277,14 @@ public class Painter {
 	 */
 	public SwipeBorderPainter getSwipeBorderPainter() {
 		return mSwipeBorderPainter;
+	}
+
+	/**
+	 * Get the background color for a button.
+	 * 
+	 * @return The background color for a button.
+	 */
+	public int getButtonBackgroundColor() {
+		return mButtonBackgroundColor;
 	}
 }
