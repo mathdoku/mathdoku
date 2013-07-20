@@ -387,7 +387,7 @@
     <string name="avoidable_moves_chart_user_value_replaced">Cell value replaced</string>
     <string name="avoidable_moves_chart_maybe_value_used">Maybe values</string>
     <string name="avoidable_moves_chart_undo_button_used">Undo used</string>
-    <string name="avoidable_moves_chart_clear_used">Clear (cell, cage or grid) used</string>
+    <string name="avoidable_moves_chart_clear_used">Clear cell or clear grid used</string>
 
     <!-- Title and a body which explains the purpose of the chart "Cheats used". -->
     <string name="statistics_cheats_used_title">Cheats used</string>

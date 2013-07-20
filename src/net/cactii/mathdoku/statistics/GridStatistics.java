@@ -42,9 +42,6 @@ public class GridStatistics {
 	// The number of times the clear button is used to clear a single cell
 	public int mCellCleared;
 
-	// The number of times a cage was cleared
-	public int mCageCleared;
-
 	// The number of times the entire grid was cleared
 	public int mGridCleared;
 
@@ -85,7 +82,7 @@ public class GridStatistics {
 
 	// Counters available
 	public enum StatisticsCounterType {
-		CELLS_FILLED, CELLS_EMPTY, USER_VALUE_REPLACED, POSSIBLES, UNDOS, CELL_CLEARED, CAGE_CLEARED, GRID_CLEARED, CELLS_REVEALED, OPERATORS_REVEALED, CHECK_PROGRESS_USED, CHECK_PROGRESS_INVALIDS_FOUND
+		CELLS_FILLED, CELLS_EMPTY, USER_VALUE_REPLACED, POSSIBLES, UNDOS, CELL_CLEARED, GRID_CLEARED, CELLS_REVEALED, OPERATORS_REVEALED, CHECK_PROGRESS_USED, CHECK_PROGRESS_INVALIDS_FOUND
 	};
 
 	/**
@@ -134,9 +131,6 @@ public class GridStatistics {
 			break;
 		case CELL_CLEARED:
 			mCellCleared += occurrences;
-			break;
-		case CAGE_CLEARED:
-			mCageCleared += occurrences;
 			break;
 		case GRID_CLEARED:
 			mGridCleared += occurrences;

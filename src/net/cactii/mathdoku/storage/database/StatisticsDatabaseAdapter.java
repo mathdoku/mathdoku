@@ -43,7 +43,6 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	public static final String KEY_POSSIBLES = "possibles";
 	public static final String KEY_UNDOS = "undos";
 	public static final String KEY_CELLS_CLEARED = "cells_cleared";
-	public static final String KEY_CAGE_CLEARED = "cage_cleared";
 	public static final String KEY_GRID_CLEARED = "grid_cleared";
 	public static final String KEY_CELLS_REVEALED = "cells_revealed";
 	public static final String KEY_OPERATORS_REVEALED = "operators_revealed";
@@ -64,8 +63,8 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 			KEY_REPLAY, KEY_FIRST_MOVE, KEY_LAST_MOVE, KEY_ELAPSED_TIME,
 			KEY_CHEAT_PENALTY_TIME, KEY_CELLS_USER_VALUE_FILLED,
 			KEY_CELLS_USER_VALUES_EMPTY, KEY_CELLS_USER_VALUES_REPLACED,
-			KEY_POSSIBLES, KEY_UNDOS, KEY_CELLS_CLEARED, KEY_CAGE_CLEARED,
-			KEY_GRID_CLEARED, KEY_CELLS_REVEALED, KEY_OPERATORS_REVEALED,
+			KEY_POSSIBLES, KEY_UNDOS, KEY_CELLS_CLEARED, KEY_GRID_CLEARED,
+			KEY_CELLS_REVEALED, KEY_OPERATORS_REVEALED,
 			KEY_CHECK_PROGRESS_USED, KEY_CHECK_PROGRESS_INVALIDS_FOUND,
 			KEY_SOLUTION_REVEALED, KEY_SOLVED_MANUALLY, KEY_FINISHED,
 			KEY_INCLUDE_IN_STATISTICS };
@@ -104,7 +103,6 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				createColumn(KEY_UNDOS, "integer", " not null default 0"),
 				createColumn(KEY_CELLS_CLEARED, "integer",
 						" not null default 0"),
-				createColumn(KEY_CAGE_CLEARED, "integer", " not null default 0"),
 				createColumn(KEY_GRID_CLEARED, "integer", " not null default 0"),
 				createColumn(KEY_CELLS_REVEALED, "integer",
 						" not null default 0"),
@@ -165,7 +163,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 */
 	protected static void upgrade(SQLiteDatabase db, int oldVersion,
 			int newVersion) {
-		if (oldVersion < 396 && newVersion >= 396) {
+		if (oldVersion < 422 && newVersion >= 422) {
 			// In development revisions the table is simply dropped and
 			// recreated.
 			try {
@@ -326,8 +324,6 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				.getColumnIndexOrThrow(KEY_UNDOS));
 		gridStatistics.mCellCleared = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_CELLS_CLEARED));
-		gridStatistics.mCageCleared = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_CAGE_CLEARED));
 		gridStatistics.mGridCleared = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_GRID_CLEARED));
 		gridStatistics.mCellsRevealed = cursor.getInt(cursor
@@ -377,7 +373,6 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		newValues.put(KEY_POSSIBLES, gridStatistics.mMaybeValue);
 		newValues.put(KEY_UNDOS, gridStatistics.mUndoButton);
 		newValues.put(KEY_CELLS_CLEARED, gridStatistics.mCellCleared);
-		newValues.put(KEY_CAGE_CLEARED, gridStatistics.mCageCleared);
 		newValues.put(KEY_GRID_CLEARED, gridStatistics.mGridCleared);
 		newValues.put(KEY_CELLS_REVEALED, gridStatistics.mCellsRevealed);
 		newValues.put(KEY_OPERATORS_REVEALED,
@@ -462,8 +457,6 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 					KEY_UNDOS);
 			mCumulativeStatisticsProjection.put(Aggregation.SUM, TABLE,
 					KEY_CELLS_CLEARED);
-			mCumulativeStatisticsProjection.put(Aggregation.SUM, TABLE,
-					KEY_CAGE_CLEARED);
 			mCumulativeStatisticsProjection.put(Aggregation.SUM, TABLE,
 					KEY_GRID_CLEARED);
 
@@ -608,9 +601,6 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		cumulativeStatistics.mSumCellCleared = cursor.getInt(cursor
 				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
 						.getAggregatedKey(Aggregation.SUM, KEY_CELLS_CLEARED)));
-		cumulativeStatistics.mSumCageCleared = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
-						.getAggregatedKey(Aggregation.SUM, KEY_CAGE_CLEARED)));
 		cumulativeStatistics.mSumGridCleared = cursor.getInt(cursor
 				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
 						.getAggregatedKey(Aggregation.SUM, KEY_GRID_CLEARED)));
@@ -719,8 +709,6 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 			mHistoricStatisticsProjection.put(KEY_UNDOS, TABLE, KEY_UNDOS);
 			mHistoricStatisticsProjection.put(KEY_CELLS_CLEARED, TABLE,
 					KEY_CELLS_CLEARED);
-			mHistoricStatisticsProjection.put(KEY_CAGE_CLEARED, TABLE,
-					KEY_CAGE_CLEARED);
 			mHistoricStatisticsProjection.put(KEY_GRID_CLEARED, TABLE,
 					KEY_GRID_CLEARED);
 			mHistoricStatisticsProjection.put(KEY_CELLS_REVEALED, TABLE,
@@ -815,17 +803,18 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 *            retrieving the cumulative or historic statistics are
 	 *            retrieved.
 	 */
-	public void updateSolvingAttemptToBeIncludedInStatistics(int gridId, int solvingAttemptId) {
-		String sql = "UPDATE " + TABLE + " SET " + KEY_INCLUDE_IN_STATISTICS + " = "
-				+ " CASE WHEN " + KEY_ROWID + " = " + solvingAttemptId
+	public void updateSolvingAttemptToBeIncludedInStatistics(int gridId,
+			int solvingAttemptId) {
+		String sql = "UPDATE " + TABLE + " SET " + KEY_INCLUDE_IN_STATISTICS
+				+ " = " + " CASE WHEN " + KEY_ROWID + " = " + solvingAttemptId
 				+ " THEN " + stringBetweenQuotes(toSQLiteBoolean(true))
-				+ " ELSE " + stringBetweenQuotes(toSQLiteBoolean(false)) + " END "
-				+ " WHERE " + KEY_GRID_ID + " = " + gridId + " AND ("
+				+ " ELSE " + stringBetweenQuotes(toSQLiteBoolean(false))
+				+ " END " + " WHERE " + KEY_GRID_ID + " = " + gridId + " AND ("
 				+ KEY_ROWID + " = " + solvingAttemptId + " OR "
 				+ KEY_INCLUDE_IN_STATISTICS + " = "
 				+ stringBetweenQuotes(toSQLiteBoolean(true)) + ")";
 		if (DEBUG_SQL) {
-			Log.i(TAG,sql);
+			Log.i(TAG, sql);
 		}
 		try {
 			mSqliteDatabase.execSQL(sql);

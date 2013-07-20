@@ -358,7 +358,7 @@
     <string name="avoidable_moves_chart_user_value_replaced">Cel waarden gecorrigeerd</string>
     <string name="avoidable_moves_chart_maybe_value_used">Mogelijke waarden gebruikt</string>
     <string name="avoidable_moves_chart_undo_button_used">Terugzetten gebruikt</string>
-    <string name="avoidable_moves_chart_clear_used">Leegmaken (cel, groep of puzzel) gebruikt</string>
+    <string name="avoidable_moves_chart_clear_used">Leegmaken (cel of puzzel) gebruikt</string>
 
     <!-- Title and a body which explains the purpose of the chart "Cheats used". -->
     <string name="statistics_cheats_used_title">Vals spelen</string>

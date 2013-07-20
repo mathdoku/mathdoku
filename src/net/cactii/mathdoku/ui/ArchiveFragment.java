@@ -82,11 +82,12 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 
 			// Load grid into grid view
 			mGridView.loadNewGrid(grid);
-			
-			// Set background color of button 
-			Button archiveReloadButton = (Button) rootView.findViewById(R.id.archiveReloadButton);
-			archiveReloadButton.setBackgroundColor(Painter.getInstance().getButtonBackgroundColor());
 
+			// Set background color of button
+			Button archiveReloadButton = (Button) rootView
+					.findViewById(R.id.archiveReloadButton);
+			archiveReloadButton.setBackgroundColor(Painter.getInstance()
+					.getButtonBackgroundColor());
 
 			// In case the grid isn't finished, the digit position grid type
 			// has to be determined for positioning maybe values inside the
@@ -104,7 +105,8 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 				mGridView.setDigitPositionGrid(mDigitPositionGrid);
 
 				// Change text of the reload button below grid
-				archiveReloadButton.setText(R.string.archive_reload_unfinished_game);
+				archiveReloadButton
+						.setText(R.string.archive_reload_unfinished_game);
 
 				// Disable the grid as the user should not be able to click
 				// cells in the archive view
@@ -143,7 +145,8 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 						.setVisibility(View.VISIBLE);
 				((TextView) rootView
 						.findViewById(R.id.statistics_general_replays))
-						.setText(Integer.toString(mGridStatistics.getReplayCount()));
+						.setText(Integer.toString(mGridStatistics
+								.getReplayCount()));
 			}
 
 			// Show elapsed time for puzzles which are solved manually.
@@ -275,8 +278,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		// has been made.
 		int totalAvoidableMoves = mGridStatistics.mUserValueReplaced
 				+ mGridStatistics.mMaybeValue + mGridStatistics.mUndoButton
-				+ mGridStatistics.mCellCleared + mGridStatistics.mCageCleared
-				+ mGridStatistics.mGridCleared;
+				+ mGridStatistics.mCellCleared + mGridStatistics.mGridCleared;
 		if (totalAvoidableMoves == 0) {
 			return false;
 		}
@@ -344,10 +346,10 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 			maxYValue = Math.max(maxYValue, mGridStatistics.mUndoButton);
 		}
 
-		// Bar for number of times a user cleared a value in a cell, the cage or
+		// Bar for number of times a user cleared a value in a cell or
 		// the entire grid.
 		int totalClears = mGridStatistics.mCellCleared
-				+ mGridStatistics.mCageCleared + mGridStatistics.mGridCleared;
+				+ mGridStatistics.mGridCleared;
 		if (totalClears > 0) {
 			XYSeries xySeries = new XYSeries(getResources().getString(
 					R.string.avoidable_moves_chart_clear_used));

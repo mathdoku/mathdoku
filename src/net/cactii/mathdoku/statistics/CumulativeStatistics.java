@@ -37,9 +37,6 @@ public class CumulativeStatistics {
 	// The number of times the clear button is used to clear a single cell
 	public int mSumCellCleared;
 
-	// The number of times a cage was cleared
-	public int mSumCageCleared;
-
 	// The number of times the entire grid was cleared
 	public int mSumGridCleared;
 
