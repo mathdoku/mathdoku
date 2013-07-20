@@ -446,7 +446,9 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		// Build where clause. Be sure only to retrieve the status of the last
 		// solving attempt of a grid as the archive will only display the last
 		// solving attempt.
-		String selection = getSizeSelectionString(sizeFilter)
+		String sizeSelection = getSizeSelectionString(sizeFilter);
+		String selection = sizeSelection
+				+ (sizeSelection.isEmpty() ? "" : " AND ")
 				+ " NOT EXISTS ( "
 				+ "SELECT 1 "
 				+ " FROM "
