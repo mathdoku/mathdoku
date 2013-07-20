@@ -11,12 +11,14 @@
         android:padding="15dp" >
 
         <TextView
+            android:id="@+id/puzzle_help_dialog_leadin"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:text="@string/puzzle_help_dialog_leadin"
             android:textColor="#ffffff"
-            android:textSize="@dimen/dialog_text_size_body" />
+            android:textSize="@dimen/dialog_text_size_body"
+            android:visibility="gone" />
 
         <TextView
             android:layout_width="fill_parent"

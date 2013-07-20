@@ -325,7 +325,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 			new FeedbackEmail(this).show();
 			return true;
 		case R.id.action_puzzle_help:
-			this.openHelpDialog();
+			this.openHelpDialog(false);
 			return true;
 		default:
 			// When running in development mode it should be checked whether a
@@ -417,13 +417,18 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 
 	/**
 	 * Displays the Help Dialog.
+	 * 
+	 * @param displayLeadIn True to display the welcome message in the help.
 	 */
-	private void openHelpDialog() {
+	private void openHelpDialog(boolean displayLeadIn) {
 		// Get view and put relevant information into the view.
 		LayoutInflater li = LayoutInflater.from(this);
 		View view = li.inflate(R.layout.puzzle_help_dialog, null);
 
-		TextView tv = (TextView) view
+		TextView tv = (TextView) view.findViewById(R.id.puzzle_help_dialog_leadin);
+		tv.setVisibility(displayLeadIn ? View.VISIBLE : View.GONE);
+		
+		tv = (TextView) view
 				.findViewById(R.id.dialog_help_version_body);
 		tv.setText(Util.getPackageVersionName() + " (revision "
 				+ Util.getPackageVersionNumber() + ")");
@@ -562,7 +567,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 			// At clean install display the create-new-game-dialog and on top of
 			// it show the help-dialog.
 			showDialogNewGame(false);
-			this.openHelpDialog();
+			this.openHelpDialog(true);
 		} else if (previousInstalledVersion <= 286) {
 			// On upgrade from a MathDoku version 1.x revision to a MathDoku
 			// version 2.x revision the history and the last played game are
