@@ -13,7 +13,6 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/dialog_send_feedback_text_1"
-            android:textColor="#ffffff"
             android:textSize="@dimen/dialog_text_size_body" />
 
         <TextView
@@ -21,14 +20,12 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:autoLink="web"
-            android:textColorLink="#ffffe0"
             android:textSize="@dimen/dialog_text_size_body" />
 
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/dialog_send_feedback_text_2"
-            android:textColor="#ffffff"
             android:textSize="@dimen/dialog_text_size_body" />
     </LinearLayout>
 

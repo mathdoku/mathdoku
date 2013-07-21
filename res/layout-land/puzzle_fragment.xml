@@ -14,7 +14,6 @@
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
-        android:background="#00000000"
         android:visibility="gone" >
 
         <net.cactii.mathdoku.ui.GridView
@@ -27,9 +26,7 @@
             android:id="@+id/solvedText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#D0DECA1E"
             android:text="@string/main_ui_solved_messsage"
-            android:textColor="#FF000000"
             android:textSize="@dimen/text_size_giant"
             android:visibility="gone" />
     </RelativeLayout>
@@ -38,15 +35,14 @@
         android:id="@+id/tickerTapeLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignWithParentIfMissing="true"
-        android:layout_toRightOf="@+id/puzzleGrid"
-        android:layout_below="@+id/timerText" />
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/puzzleGrid" />
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@+id/tickerTapeLayout"
         android:layout_alignWithParentIfMissing="true"
+        android:layout_below="@+id/tickerTapeLayout"
         android:layout_margin="5dp"
         android:layout_toRightOf="@+id/puzzleGrid" >
 
@@ -72,6 +68,7 @@
                 android:id="@+id/clearButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
                 android:layout_weight="1"
                 android:text="@string/main_ui_clear"
                 android:textSize="@dimen/controls_text_size_default"

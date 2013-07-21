@@ -10,6 +10,7 @@ import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.gridGenerating.DialogPresentingGridGenerator;
 import net.cactii.mathdoku.gridGenerating.GridGenerator.PuzzleComplexity;
+import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.storage.GameFileConverter;
 import net.cactii.mathdoku.storage.database.DatabaseHelper;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter;
@@ -1048,6 +1049,8 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 
 		// Get list view for drawer
 		mDrawerListView = (ListView) findViewById(R.id.left_drawer);
+		
+		mDrawerListView.setBackgroundColor(Painter.getInstance().getNavigationDrawerPainter().getBackgroundColor());
 
 		// Set the adapter for the list view containing the navigation items
 		mDrawerListView.setAdapter(new ArrayAdapter<String>(this,

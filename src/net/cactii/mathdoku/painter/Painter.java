@@ -38,6 +38,8 @@ public class Painter {
 	private SwipeBorderPainter mSwipeBorderPainter;
 	private TickerTapePainter mTickerTapePainter;
 	private PagerTabStripPainter mPagerTabStripPainter;
+	private NavigationDrawerPainter mNavigationDrawerPainter;
+	private SolvedTextPainter mSolvedTextPainter;
 
 	// Background color of buttons and ticker tape
 	private int mButtonBackgroundColor;
@@ -51,12 +53,11 @@ public class Painter {
 	 */
 	private Painter() {
 		// Set the typeface
-		mTypefaceTheme = Typeface.create(Typeface.SANS_SERIF,
-				Typeface.NORMAL);
-		
+		mTypefaceTheme = Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL);
+
 		// Set the path effect
 		mPathEffectTheme = new DashPathEffect(new float[] { 2, 2 }, 0);
-		
+
 		// Button background color
 		mButtonBackgroundColor = 0xFF33B5E5;
 
@@ -70,6 +71,8 @@ public class Painter {
 		mSwipeBorderPainter = new SwipeBorderPainter(this);
 		mTickerTapePainter = new TickerTapePainter(this);
 		mPagerTabStripPainter = new PagerTabStripPainter(this);
+		mNavigationDrawerPainter = new NavigationDrawerPainter(this);
+		mSolvedTextPainter = new SolvedTextPainter(this);
 
 		// Set the size of the borders.
 		setBorderSizes(false);
@@ -274,7 +277,7 @@ public class Painter {
 	public MaybeValuePainter getMaybeLinePainter() {
 		return mMaybeLinePainter;
 	}
-	
+
 	/**
 	 * Get the swipe border painter.
 	 * 
@@ -309,5 +312,23 @@ public class Painter {
 	 */
 	public PagerTabStripPainter getPagerTabStripPainter() {
 		return mPagerTabStripPainter;
+	}
+
+	/**
+	 * Get the navigation drawer painter.
+	 * 
+	 * @return The navigation drawer painter.
+	 */
+	public NavigationDrawerPainter getNavigationDrawerPainter() {
+		return mNavigationDrawerPainter;
+	}
+
+	/**
+	 * Get the solved text painter.
+	 * 
+	 * @return The solved text painter.
+	 */
+	public SolvedTextPainter getSolvedTextPainter() {
+		return mSolvedTextPainter;
 	}
 }

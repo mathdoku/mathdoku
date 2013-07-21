@@ -101,8 +101,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		mRootView = inflater.inflate(R.layout.puzzle_fragment,
-				container, false);
+		mRootView = inflater
+				.inflate(R.layout.puzzle_fragment, container, false);
 
 		mContext = (Context) getActivity();
 
@@ -119,7 +119,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 		mClearButton = (Button) mRootView.findViewById(R.id.clearButton);
 		mClearButton.setBackgroundColor(mPainter.getButtonBackgroundColor());
-		
+
 		mUndoButton = (Button) mRootView.findViewById(R.id.undoButton);
 		mUndoButton.setBackgroundColor(mPainter.getButtonBackgroundColor());
 
@@ -302,7 +302,10 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 					final TextView textView = (TextView) mRootView
 							.findViewById(R.id.solvedText);
 					textView.setText(R.string.main_ui_solved_messsage);
-					textView.setTextColor(0xFF002F00);
+					textView.setTextColor(Painter.getInstance()
+							.getSolvedTextPainter().getTextColor());
+					textView.setBackgroundColor(Painter.getInstance()
+							.getSolvedTextPainter().getBackgroundColor());
 					textView.setTypeface(Painter.getInstance().getTypeface());
 					textView.setVisibility(View.VISIBLE);
 
@@ -737,7 +740,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			mTickerTape.show();
 		}
 	}
-	
+
 	/**
 	 * Get the solving attempt id which is being showed in this archive
 	 * fragment.

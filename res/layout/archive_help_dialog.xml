@@ -15,9 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:text="@string/archive_help_dialog_general"
-            android:textColor="#ffffff"
             android:textSize="@dimen/dialog_text_size_body" />
-
     </LinearLayout>
 
 </ScrollView>
