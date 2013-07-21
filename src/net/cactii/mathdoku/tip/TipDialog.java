@@ -119,7 +119,7 @@ public class TipDialog extends AlertDialog {
 		final CheckBox checkBoxView = (CheckBox) tipView
 				.findViewById(R.id.dialog_tip_do_not_show_again);
 
-		setIcon(R.drawable.about); // TODO: replace with tip icon
+		setIcon(R.drawable.help);
 		setTitle(tipTitle);
 		setView(tipView);
 		setCancelable(true);

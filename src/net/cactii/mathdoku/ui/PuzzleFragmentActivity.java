@@ -423,7 +423,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 										: " ")
 								+ getResources()
 										.getString(R.string.action_help))
-				.setIcon(R.drawable.about)
+				.setIcon(R.drawable.icon)
 				.setView(view)
 				.setNeutralButton(R.string.puzzle_help_dialog_neutral_button,
 						new DialogInterface.OnClickListener() {
@@ -475,7 +475,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 										: " ")
 								+ getResources().getString(
 										R.string.changelog_title))
-				.setIcon(R.drawable.about)
+				.setIcon(R.drawable.icon)
 				.setView(view)
 				.setNegativeButton(R.string.dialog_general_button_close,
 						new DialogInterface.OnClickListener() {
