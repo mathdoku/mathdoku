@@ -72,6 +72,11 @@ public class StatisticsFragmentActivity extends AppFragmentActivity implements
 					.setText(mStatisticsFragmentPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
+
+		/*
+		 * Styling of the pager tab strip is not possible from within code. See
+		 * values-v14/styles.xml for styling of the action bar tab.
+		 */
 	}
 
 	@Override

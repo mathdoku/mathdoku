@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="net.cactii.mathdoku"
     android:installLocation="auto"
-    android:versionCode="423"
+    android:versionCode="425"
     android:versionName="2 (dev version)" >
 
     <uses-sdk
@@ -20,7 +20,8 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/icon"
-        android:label="@string/application_name" android:theme="@style/AppBaseTheme">
+        android:label="@string/application_name"
+        android:theme="@style/AppBaseTheme" >
         <activity
             android:name="net.cactii.mathdoku.ui.PuzzleFragmentActivity"
             android:label="@string/application_name"

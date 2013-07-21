@@ -18,6 +18,8 @@ package net.cactii.mathdoku.ui;
 
 import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
+import net.cactii.mathdoku.painter.PagerTabStripPainter;
+import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter.SizeFilter;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter.StatusFilter;
@@ -109,9 +111,16 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 		final PagerTabStrip pagerTabStrip = (PagerTabStrip) findViewById(R.id.pager_tab_strip);
 		pagerTabStrip.setDrawFullUnderline(false);
 
-		// Hide the tab indicator by setting color identical to backgroud color.
-		pagerTabStrip.setTabIndicatorColor(0xFF33b5e5);
-		pagerTabStrip.setBackgroundColor(0xFF33b5e5);
+		// This pager contains a maximum of 3 visible items. The selected tab
+		// will always be displayed in the middle. Hide the tab indicator by
+		// setting color identical to background color.
+		PagerTabStripPainter pagerTabStripPainter = Painter.getInstance()
+				.getPagerTabStripPainter();
+		pagerTabStrip.setTabIndicatorColor(pagerTabStripPainter
+				.getBackgroundColor());
+		pagerTabStrip.setBackgroundColor(pagerTabStripPainter
+				.getBackgroundColor());
+		pagerTabStrip.setTextColor(pagerTabStripPainter.getTextColor());
 
 		// Non primary items are semi transparent.
 		pagerTabStrip.setNonPrimaryAlpha(0.75f);
@@ -215,8 +224,9 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 			}
 			return true;
 		case R.id.action_share:
-			new SharedPuzzle(this).addStatisticsChartsAsAttachments(this.getWindow().getDecorView())
-					.share(getSolvingAttemptIdForCurrentSelectedGrid());
+			new SharedPuzzle(this).addStatisticsChartsAsAttachments(
+					this.getWindow().getDecorView()).share(
+					getSolvingAttemptIdForCurrentSelectedGrid());
 			return true;
 		case R.id.action_settings:
 			startActivity(new Intent(this, ArchivePreferenceActivity.class));

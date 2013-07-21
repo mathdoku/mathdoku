@@ -37,6 +37,7 @@ public class Painter {
 	private MaybeValuePainter mMaybeLinePainter;
 	private SwipeBorderPainter mSwipeBorderPainter;
 	private TickerTapePainter mTickerTapePainter;
+	private PagerTabStripPainter mPagerTabStripPainter;
 
 	// Background color of buttons and ticker tape
 	private int mButtonBackgroundColor;
@@ -68,6 +69,7 @@ public class Painter {
 		mMaybeLinePainter = new MaybeValuePainter(this);
 		mSwipeBorderPainter = new SwipeBorderPainter(this);
 		mTickerTapePainter = new TickerTapePainter(this);
+		mPagerTabStripPainter = new PagerTabStripPainter(this);
 
 		// Set the size of the borders.
 		setBorderSizes(false);
@@ -292,11 +294,20 @@ public class Painter {
 	}
 
 	/**
-	 * Get the ticket tape painter.
+	 * Get the ticker tape painter.
 	 * 
-	 * @return The ticket tape painter.
+	 * @return The ticker tape painter.
 	 */
 	public TickerTapePainter getTickerTapePainter() {
 		return mTickerTapePainter;
+	}
+
+	/**
+	 * Get the pager tab strip painter.
+	 * 
+	 * @return The pager tab strip painter.
+	 */
+	public PagerTabStripPainter getPagerTabStripPainter() {
+		return mPagerTabStripPainter;
 	}
 }
