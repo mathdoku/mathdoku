@@ -113,6 +113,29 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 				grid.setActive(false);
 			}
 
+			// Display the difficulty rating.
+			final VerticalRatingBar puzzleParameterDifficultyRatingBar = (VerticalRatingBar) rootView
+					.findViewById(R.id.puzzleParameterDifficultyRatingBar);
+			puzzleParameterDifficultyRatingBar.setEnabled(false);
+			switch (grid.getPuzzleComplexity()) {
+			case VERY_EASY:
+				puzzleParameterDifficultyRatingBar.setNumStars(1);
+				break;
+			case EASY:
+				puzzleParameterDifficultyRatingBar.setNumStars(2);
+				break;
+			case NORMAL:
+				puzzleParameterDifficultyRatingBar.setNumStars(3);
+				break;
+			case DIFFICULT:
+				puzzleParameterDifficultyRatingBar.setNumStars(4);
+				break;
+			case VERY_DIFFICULT:
+				puzzleParameterDifficultyRatingBar.setNumStars(5);
+				break;
+			}
+
+
 			// Load grid statistics
 			mGridStatistics = grid.getGridStatistics();
 

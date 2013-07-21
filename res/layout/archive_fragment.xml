@@ -11,15 +11,31 @@
 
         <RelativeLayout
             android:id="@+id/puzzleGrid"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_margin="5dp" >
+
+            <!-- The rating bar will be programmatically rotated to a vertical position. -->
+            <!-- Number of starts will programmatically be set to correct number of stars. -->
+
+            <net.cactii.mathdoku.ui.VerticalRatingBar
+                android:id="@+id/puzzleParameterDifficultyRatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:max="5"
+                android:numStars="1"
+                android:rating="1"
+                android:stepSize="1" />
 
             <net.cactii.mathdoku.ui.GridView
                 android:id="@+id/gridView"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:layout_centerHorizontal="true" />
+                android:layout_alignTop="@+id/puzzleParameterDifficultyRatingBar"
+                android:layout_toLeftOf="@+id/puzzleParameterDifficultyRatingBar" />
         </RelativeLayout>
 
         <Button

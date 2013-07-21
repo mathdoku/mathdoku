@@ -34,7 +34,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		VERY_EASY, EASY, NORMAL, DIFFICULT, VERY_DIFFICULT
 	};
 
-	// The complexity of a puzzle will be determined by following factors. 
+	// The complexity of a puzzle will be determined by following factors.
+	private PuzzleComplexity mPuzzleComplexity;
 	private int mMaxCagePermutations;
 	private int mMaxCageSize;
 	private int mMaxCageResult;
@@ -127,7 +128,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			GridUser user) {
 		mGridSize = gridSize;
 		
-		switch (puzzleComplexity) {
+		mPuzzleComplexity = puzzleComplexity;
+		switch (mPuzzleComplexity) {
 		case VERY_EASY:
 			mMaxCageSize = 2;
 			mMaxCageResult = 99; // Not used effectively as the maximum will be 9 * 8 = 72
@@ -244,11 +246,12 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 					// Create the grid object
 					GridGeneratingParameters gridGeneratingParameters = new GridGeneratingParameters();
-					gridGeneratingParameters.mGameSeed = this.mGameSeed;
-					gridGeneratingParameters.mGeneratorRevisionNumber = this.mGeneratorRevisionNumber;
-					gridGeneratingParameters.mHideOperators = this.mHideOperators;
-					gridGeneratingParameters.mMaxCageResult = this.mMaxCageResult;
-					gridGeneratingParameters.mMaxCageSize = this.mMaxCageSize;
+					gridGeneratingParameters.mGameSeed = mGameSeed;
+					gridGeneratingParameters.mGeneratorRevisionNumber = mGeneratorRevisionNumber;
+					gridGeneratingParameters.mPuzzleComplexity = mPuzzleComplexity;
+					gridGeneratingParameters.mHideOperators = mHideOperators;
+					gridGeneratingParameters.mMaxCageResult = mMaxCageResult;
+					gridGeneratingParameters.mMaxCageSize = mMaxCageSize;
 					if (!mGrid.create(mGridSize, mCells, mCages, true,
 							gridGeneratingParameters)) {
 						Log.e(TAG, "Can not create grid.");
@@ -353,11 +356,12 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	protected void onPostExecute(Void result) {
 		// Create the grid object
 		GridGeneratingParameters gridGeneratingParameters = new GridGeneratingParameters();
-		gridGeneratingParameters.mGameSeed = this.mGameSeed;
-		gridGeneratingParameters.mGeneratorRevisionNumber = this.mGeneratorRevisionNumber;
-		gridGeneratingParameters.mHideOperators = this.mHideOperators;
-		gridGeneratingParameters.mMaxCageResult = this.mMaxCageResult;
-		gridGeneratingParameters.mMaxCageSize = this.mMaxCageSize;
+		gridGeneratingParameters.mGameSeed = mGameSeed;
+		gridGeneratingParameters.mGeneratorRevisionNumber = mGeneratorRevisionNumber;
+		gridGeneratingParameters.mPuzzleComplexity = mPuzzleComplexity;
+		gridGeneratingParameters.mHideOperators = mHideOperators;
+		gridGeneratingParameters.mMaxCageResult = mMaxCageResult;
+		gridGeneratingParameters.mMaxCageSize = mMaxCageSize;
 		if (mGrid.create(mGridSize, mCells, mCages, true,
 				gridGeneratingParameters)) {
 			mUser.useCreatedGrid(mGrid);

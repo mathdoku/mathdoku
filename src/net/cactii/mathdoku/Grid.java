@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.gridGenerating.GridGeneratingParameters;
+import net.cactii.mathdoku.gridGenerating.GridGenerator.PuzzleComplexity;
 import net.cactii.mathdoku.statistics.GridStatistics;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import net.cactii.mathdoku.storage.database.DatabaseHelper;
@@ -206,7 +207,7 @@ public class Grid {
 						.increaseCounter(StatisticsCounterType.GRID_CLEARED);
 			}
 		}
-		
+
 		// clear cages to remove the border related to bad cage maths.
 		if (mCages != null) {
 			for (GridCage cage : mCages) {
@@ -321,8 +322,9 @@ public class Grid {
 				mMoves.remove(undoPosition);
 				setSelectedCell(cell);
 				mGridStatistics.increaseCounter(StatisticsCounterType.UNDOS);
-				
-				// Each cell in the same column or row as the given cell has to be
+
+				// Each cell in the same column or row as the given cell has to
+				// be
 				// checked for duplicate values.
 				int targetRow = cell.getRow();
 				int targetColumn = cell.getColumn();
@@ -332,7 +334,7 @@ public class Grid {
 						markDuplicateValuesInRowAndColumn(checkedCell);
 					}
 				}
-				
+
 				// Check the cage math
 				cell.getCage().checkCageMathsCorrect(false);
 
@@ -905,7 +907,7 @@ public class Grid {
 	}
 
 	/**
-	 * Load a grid and corresponding solving attempt from the database.
+	 * Load a solving attempt and the corresponding grid from the database.
 	 * 
 	 * @param solvingAttemptId
 	 *            The unique id of the solving attempt which has to be loaded.
@@ -916,11 +918,17 @@ public class Grid {
 		SolvingAttemptData solvingAttemptData = new SolvingAttemptDatabaseAdapter()
 				.getData(solvingAttemptId);
 		if (load(solvingAttemptData)) {
-			// Load the statistics of the grid
-			return loadStatistics();
-		} else {
-			return false;
+			// Load the grid
+			GridRow gridRow = new GridDatabaseAdapter()
+					.get(solvingAttemptData.mGridId);
+			if (gridRow != null) {
+				mGridGeneratingParameters = gridRow.mGridGeneratingParameters;
+
+				// Load the statistics of the grid
+				return loadStatistics();
+			}
 		}
+		return false;
 	}
 
 	/**
@@ -1082,7 +1090,7 @@ public class Grid {
 						"Unexpected line found while end of file was expected: "
 								+ line);
 			}
-			
+
 			// Mark cells with duplicate values
 			for (GridCell gridCell : mCells) {
 				markDuplicateValuesInRowAndColumn(gridCell);
@@ -1327,5 +1335,14 @@ public class Grid {
 		}
 		gridCell.setDuplicateHighlight(duplicateValue);
 		return duplicateValue;
+	}
+
+	/**
+	 * Get the puzzle complexity which is used to generate this puzzle.
+	 * 
+	 * @return The puzzle complexity which is used to generate this puzzle.
+	 */
+	public PuzzleComplexity getPuzzleComplexity() {
+		return mGridGeneratingParameters.mPuzzleComplexity;
 	}
 }

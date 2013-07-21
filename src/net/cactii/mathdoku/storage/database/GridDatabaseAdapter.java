@@ -6,6 +6,7 @@ import net.cactii.mathdoku.Grid;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.gridGenerating.GridGeneratingParameters;
+import net.cactii.mathdoku.gridGenerating.GridGenerator.PuzzleComplexity;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -35,13 +36,14 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	protected static final String KEY_DATE_CREATED = "date_created";
 	protected static final String KEY_GAME_SEED = "game_seed";
 	protected static final String KEY_GENERATOR_REVISION_NUMBER = "generator_revision_number";
+	protected static final String KEY_PUZZLE_COMPLEXITY = "puzzle_complexity";
 	protected static final String KEY_HIDE_OPERATORS = "hide_operators";
 	protected static final String KEY_MAX_CAGE_RESULT = "max_cage_result";
 	protected static final String KEY_MAX_CAGE_SIZE = "max_cage_size";
 
 	private static final String[] allColumns = { KEY_ROWID, KEY_DEFINITION,
 			KEY_GRID_SIZE, KEY_DATE_CREATED, KEY_GAME_SEED,
-			KEY_GENERATOR_REVISION_NUMBER, KEY_HIDE_OPERATORS,
+			KEY_GENERATOR_REVISION_NUMBER, KEY_PUZZLE_COMPLEXITY, KEY_HIDE_OPERATORS,
 			KEY_MAX_CAGE_RESULT, KEY_MAX_CAGE_SIZE };
 
 	// Columns used in result of function getLatestSolvingAttemptsPerGrid
@@ -81,6 +83,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 				createColumn(KEY_GAME_SEED, "long", null),
 				// changes in tables
 				createColumn(KEY_GENERATOR_REVISION_NUMBER, "integer", null),
+				createColumn(KEY_PUZZLE_COMPLEXITY, "string", null),
 				createColumn(KEY_HIDE_OPERATORS, "string", null),
 				createColumn(KEY_MAX_CAGE_RESULT, "integer", null),
 				createColumn(KEY_MAX_CAGE_SIZE, "integer", null));
@@ -125,7 +128,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 */
 	protected static void upgrade(SQLiteDatabase db, int oldVersion,
 			int newVersion) {
-		if (oldVersion < 265) {
+		if (oldVersion < 432 && newVersion >= 432) {
 			// In development revisions the table is simply dropped and
 			// recreated.
 			try {
@@ -169,6 +172,8 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		initialValues.put(KEY_GAME_SEED, gridGeneratingParameters.mGameSeed);
 		initialValues.put(KEY_GENERATOR_REVISION_NUMBER,
 				gridGeneratingParameters.mGeneratorRevisionNumber);
+		initialValues.put(KEY_PUZZLE_COMPLEXITY,
+				gridGeneratingParameters.mPuzzleComplexity.toString());
 		initialValues.put(KEY_HIDE_OPERATORS,
 				gridGeneratingParameters.mHideOperators);
 		initialValues.put(KEY_MAX_CAGE_RESULT,
@@ -268,17 +273,19 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		gridRow.mDateCreated = valueOfSQLiteTimestamp(cursor.getString(cursor
 				.getColumnIndexOrThrow(KEY_DATE_CREATED)));
 
-		GridGeneratingParameters gridGeneratingParameters = new GridGeneratingParameters();
-		gridGeneratingParameters.mGameSeed = cursor.getLong(cursor
+		gridRow.mGridGeneratingParameters = new GridGeneratingParameters();
+		gridRow.mGridGeneratingParameters.mGameSeed = cursor.getLong(cursor
 				.getColumnIndexOrThrow(KEY_GAME_SEED));
-		gridGeneratingParameters.mGeneratorRevisionNumber = cursor
+		gridRow.mGridGeneratingParameters.mGeneratorRevisionNumber = cursor
 				.getInt(cursor
 						.getColumnIndexOrThrow(KEY_GENERATOR_REVISION_NUMBER));
-		gridGeneratingParameters.mHideOperators = valueOfSQLiteBoolean(cursor
+		gridRow.mGridGeneratingParameters.mPuzzleComplexity = PuzzleComplexity.valueOf(cursor
+				.getString(cursor.getColumnIndexOrThrow(KEY_PUZZLE_COMPLEXITY)));
+		gridRow.mGridGeneratingParameters.mHideOperators = valueOfSQLiteBoolean(cursor
 				.getString(cursor.getColumnIndexOrThrow(KEY_HIDE_OPERATORS)));
-		gridGeneratingParameters.mMaxCageResult = cursor.getInt(cursor
+		gridRow.mGridGeneratingParameters.mMaxCageResult = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_MAX_CAGE_RESULT));
-		gridGeneratingParameters.mMaxCageSize = cursor.getInt(cursor
+		gridRow.mGridGeneratingParameters.mMaxCageSize = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_MAX_CAGE_SIZE));
 
 		return gridRow;
