@@ -176,6 +176,10 @@
     <!-- The theme option -->
     <string name="general_settings_theme_title">Thema</string>
 
+    <!-- The title and summary of the "colored digits" option. This option controls whether maybe numbers and normal numbers are displayed in distinct colors or in one monochrome color. -->
+    <string name="general_settings_colored_digits_title">Gekleurde getallen</string>
+    <string name="general_settings_colored_digits_summary">Gebruik gekleurde getallen om onderscheid te maken tussen de mogelijke waarden en de normale getallen</string>
+
     <!-- The title and summary of the "maybe in grid" option. This option controls whether maybe numbers are displayed in 3x3 grid or straight line. -->
     <string name="general_settings_maybe_layout_title">Mogelijken in raster</string>
     <string name="general_settings_maybe_layout_summary">Toon mogelijke getallen in een raster</string>
