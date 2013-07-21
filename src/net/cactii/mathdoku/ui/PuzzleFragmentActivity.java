@@ -2,6 +2,8 @@ package net.cactii.mathdoku.ui;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 
 import net.cactii.mathdoku.Grid;
 import net.cactii.mathdoku.InvalidGridException;
@@ -153,6 +155,8 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 
 	@Override
 	public void onResume() {
+		checkBetaExpired();
+		
 		if (mDialogPresentingGridGenerator != null) {
 			// In case the grid is created in the background and the dialog is
 			// closed, the activity will be moved to the background as well. In
@@ -261,9 +265,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		// When running in development mode, an extra menu is available.
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			menu.findItem(R.id.menu_development_mode).setVisible(true);
-		} else {
-			menu.findItem(R.id.menu_development_mode).setVisible(false);
-		}
+		} 
 
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -550,18 +552,21 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 			// At clean install display the create-new-game-dialog and on top of
 			// it show the help-dialog.
 			showDialogNewGame(false);
-			this.openHelpDialog(true);
+			openHelpDialog(true);
+			openBetaDialog();
 		} else if (previousInstalledVersion <= 286) {
 			// On upgrade from a MathDoku version 1.x revision to a MathDoku
 			// version 2.x revision the history and the last played game are
 			// lost. Show the create-new-game-dialog and on top of it show a
 			// dialog to welcome.
 			showDialogNewGame(false);
-			this.openChangesDialog(true);
+			openChangesDialog(true);
+			openBetaDialog();
 		} else if (previousInstalledVersion < currentVersion) {
 			// Restart the last game and show the changes dialog on top of it.
 			restartLastGame();
-			this.openChangesDialog(false);
+			openChangesDialog(false);
+			openBetaDialog();
 		} else {
 			// No upgrade was needed. Restart the last game
 			restartLastGame();
@@ -753,6 +758,8 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	 *            True in case the dialog can be cancelled.
 	 */
 	private void showDialogNewGame(boolean cancelable) {
+		checkBetaExpired();
+		
 		// Get view and put relevant information into the view.
 		LayoutInflater layoutInflater = LayoutInflater.from(this);
 		View view = layoutInflater.inflate(R.layout.puzzle_parameter_dialog,
@@ -1077,5 +1084,84 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 			mDrawerLayout.openDrawer(mDrawerListView);
 		}
 		mDrawerLayout.invalidate();
+	}
+
+	/**
+	 * Displays the Beta Dialog.
+	 * 
+	 */
+	private void openBetaDialog() {
+		new AlertDialog.Builder(this)
+				.setTitle(
+						getResources().getString(R.string.application_name)
+								+ (DevelopmentHelper.mMode == Mode.DEVELOPMENT ? " r"
+										+ Util.getPackageVersionNumber() + " "
+										: " "))
+				.setIcon(R.drawable.icon)
+				.setMessage(
+						"Welcome to "
+								+ Util.getPackageVersionName()
+								+ " (revision "
+								+ Util.getPackageVersionNumber()
+								+ ") of MathDoku.\n"
+								+ "Thanks for trying this version! Help us to "
+								+ " test and improve this beta version before we "
+								+ "release it to Google Play.\n\nPlease send all "
+								+ "your feedback (including typo\'s) to us!\n\n"
+								+ "This BETA version will expire on 01/AUG/2014 "
+								+ "after which you have to install a new BETA "
+								+ "or the normal version from Google Play.")
+				.setNegativeButton(R.string.dialog_general_button_close,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+							}
+						}).show();
+	}
+
+	/**
+	 * Displays the Beta Dialog.
+	 * 
+	 */
+	private void openBetaEndedDialog() {
+		final PuzzleFragmentActivity puzzleFragmentActivity = this;
+		new AlertDialog.Builder(this)
+				.setTitle(
+						getResources().getString(R.string.application_name)
+								+ (DevelopmentHelper.mMode == Mode.DEVELOPMENT ? " r"
+										+ Util.getPackageVersionNumber() + " "
+										: " "))
+				.setIcon(R.drawable.icon)
+				.setCancelable(false)
+				.setMessage(
+						"Thanks for trying "
+								+ Util.getPackageVersionName()
+								+ " (revision "
+								+ Util.getPackageVersionNumber()
+								+ ") of MathDoku.\n"
+								+ "Please send all your feedback (including "
+								+ "typo\'s) to us!\n\n"
+								+ "This BETA version is expired and can no longer "
+								+ "be used. In case you are registered as BETA-user "
+								+ "we will notify you about new updates.")
+				.setNegativeButton(R.string.dialog_general_button_close,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+								puzzleFragmentActivity.finish();
+							}
+						}).show();
+	}
+	
+	private void checkBetaExpired() {
+        // Check if beta has expired
+        Date now = Calendar.getInstance().getTime();
+        Calendar endBeta = Calendar.getInstance();
+        endBeta.set(2013, Calendar.AUGUST, 01);
+        if (now.after(endBeta.getTime())) {
+        	openBetaEndedDialog();
+        }
 	}
 }
