@@ -2,7 +2,7 @@
 
     <item
         android:id="@+id/checkprogress"
-        android:icon="@drawable/menu_solve"
+        android:icon="@drawable/menu_check_progress"
         android:orderInCategory="1"
         android:showAsAction="always"
         android:title="@string/action_check_progress"/>
