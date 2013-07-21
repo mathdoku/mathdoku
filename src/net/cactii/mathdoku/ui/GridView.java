@@ -10,6 +10,7 @@ import net.cactii.mathdoku.hint.OnTickerTapeChangedListener;
 import net.cactii.mathdoku.hint.TickerTape;
 import net.cactii.mathdoku.painter.GridPainter;
 import net.cactii.mathdoku.painter.Painter;
+import net.cactii.mathdoku.painter.Painter.DigitPainterMode;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import net.cactii.mathdoku.tip.TipBadCageMath;
 import net.cactii.mathdoku.tip.TipDuplicateValue;
@@ -402,6 +403,7 @@ public class GridView extends View implements OnTouchListener {
 			// Draw cells
 			Painter.getInstance()
 					.setCellSize(mGridCellSize, mDigitPositionGrid);
+			Painter.getInstance().setColorMode(mPreferences.showColoredDigits() ? DigitPainterMode.INPUT_MODE_BASED : DigitPainterMode.MONOCHROME);
 			for (GridCell cell : mGrid.mCells) {
 				cell.draw(canvas, gridBorderWidth, mInputMode);
 			}

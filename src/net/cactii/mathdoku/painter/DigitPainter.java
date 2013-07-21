@@ -1,5 +1,6 @@
 package net.cactii.mathdoku.painter;
 
+import net.cactii.mathdoku.painter.Painter.DigitPainterMode;
 import android.graphics.Paint;
 
 abstract class DigitPainter extends BasePainter {
@@ -7,7 +8,9 @@ abstract class DigitPainter extends BasePainter {
 	// Painters for the different input modes
 	protected Paint mTextPaintNormalInputMode;
 	protected Paint mTextPaintMaybeInputMode;
-
+	
+	protected DigitPainterMode mDigitPainterMode; 
+	
 	// Offsets (bottom, left) of the region in which the value will be painted.
 	protected float mLeftOffset;
 	protected float mBottomOffset;
@@ -20,6 +23,7 @@ abstract class DigitPainter extends BasePainter {
 	 */
 	public DigitPainter(Painter painter) {
 		super(painter);
+		setColorMode(DigitPainterMode.INPUT_MODE_BASED);
 	}
 
 	/**
@@ -56,5 +60,16 @@ abstract class DigitPainter extends BasePainter {
 	 */
 	public float getBottomOffset() {
 		return mBottomOffset;
+	}
+
+	/**
+	 * Set the color mode of the digit painter.
+	 * 
+	 * @param distinctColors
+	 *            True in case distinct colors should be used dependent on the
+	 *            input mode. False in case a monochrome color should be used.
+	 */
+	public void setColorMode(DigitPainterMode digitPainterMode) {
+		mDigitPainterMode = digitPainterMode;
 	}
 }

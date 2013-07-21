@@ -27,6 +27,10 @@
             android:title="@string/general_settings_theme_title" />
 
         <CheckBoxPreference
+            android:key="colored_digits"
+            android:summary="@string/general_settings_colored_digits_summary"
+            android:title="@string/general_settings_colored_digits_title" />
+        <CheckBoxPreference
             android:key="maybe3x3"
             android:summary="@string/general_settings_maybe_layout_summary"
             android:title="@string/general_settings_maybe_layout_title" />
@@ -42,7 +46,7 @@
             android:key="wakelock"
             android:summary="@string/general_settings_wake_lock_summary"
             android:title="@string/general_settings_wake_lock_title" />
-        </PreferenceCategory>
+    </PreferenceCategory>
     <PreferenceCategory
         android:key="Sound"
         android:title="@string/general_settings_group_sound" >

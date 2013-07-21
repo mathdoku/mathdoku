@@ -42,6 +42,9 @@ public class Preferences {
 	public final static String ARCHIVE_GRID_SELECTED_LAST_VALUE = "archive_grid_selected_last_value";
 	public final static int ARCHIVE_GRID_SELECTED_LAST_VALUE_DEFAULT = -1;
 
+	public final static String COLORED_DIGITS = "colored_digits";
+	public final static boolean COLORED_DIGITS_DEFAULT = true;
+
 	public final static String ELAPSED_TIME_CHART_MAXIMUM_GAMES_DISPLAYED = "elapsed_time_chart_maximum_games_displayed";
 	public final static String ELAPSED_TIME_CHART_MAXIMUM_GAMES_DISPLAYED_DEFAULT = Integer
 			.toString(100);
@@ -389,6 +392,11 @@ public class Preferences {
 			} else if (mSharedPreferences.getString(THEME, THEME_DEFAULT)
 					.equals("inverted")) {
 				prefeditor.putString(THEME, THEME_DARK);
+			}
+		}
+		if (previousInstalledVersion < 435 && currentVersion >= 435) {
+			if (!mSharedPreferences.contains(COLORED_DIGITS)) {
+				prefeditor.putBoolean(COLORED_DIGITS, COLORED_DIGITS_DEFAULT);
 			}
 		}
 
@@ -979,5 +987,18 @@ public class Preferences {
 			prefeditor.commit();
 			return true;
 		}
+	}
+
+	/**
+	 * Checks whether maybes and definitive digits should be displayed in
+	 * distinct colors.
+	 * 
+	 * @return True in case distinct colors have to be used for displaying
+	 *         maybes and definitive digits. False in case the same color is
+	 *         used for both type of digits.
+	 */
+	public boolean showColoredDigits() {
+		return mSharedPreferences.getBoolean(COLORED_DIGITS,
+				COLORED_DIGITS_DEFAULT);
 	}
 }

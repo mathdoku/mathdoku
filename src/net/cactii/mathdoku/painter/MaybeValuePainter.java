@@ -1,6 +1,7 @@
 package net.cactii.mathdoku.painter;
 
 import net.cactii.mathdoku.DigitPositionGrid;
+import net.cactii.mathdoku.painter.Painter.DigitPainterMode;
 import net.cactii.mathdoku.painter.Painter.GridTheme;
 import android.graphics.Paint;
 
@@ -119,5 +120,10 @@ public class MaybeValuePainter extends DigitPainter {
 	 */
 	public DigitPositionGrid getDigitPositionGrid() {
 		return mDigitPositionGrid;
+	}
+	
+	@Override
+	public Paint getTextPaintMaybeInputMode() {
+		return (mDigitPainterMode == DigitPainterMode.INPUT_MODE_BASED ? mTextPaintMaybeInputMode : mTextPaintNormalInputMode);
 	}
 }

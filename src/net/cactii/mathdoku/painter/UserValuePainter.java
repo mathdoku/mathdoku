@@ -1,5 +1,6 @@
 package net.cactii.mathdoku.painter;
 
+import net.cactii.mathdoku.painter.Painter.DigitPainterMode;
 import net.cactii.mathdoku.painter.Painter.GridTheme;
 import android.graphics.Paint;
 
@@ -46,4 +47,8 @@ public class UserValuePainter extends DigitPainter {
 		mBottomOffset = size - bottomMargin;
 	}
 
+	@Override
+	public Paint getTextPaintNormalInputMode() {
+		return (mDigitPainterMode == DigitPainterMode.INPUT_MODE_BASED ? mTextPaintNormalInputMode : mTextPaintMaybeInputMode);
+	}
 }

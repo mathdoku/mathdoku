@@ -24,6 +24,7 @@ public class Painter {
 	public enum GridTheme {
 		LIGHT, DARK
 	};
+	public enum DigitPainterMode {INPUT_MODE_BASED, MONOCHROME};
 
 	// Theme installed in painter
 	private GridTheme mTheme;
@@ -330,5 +331,19 @@ public class Painter {
 	 */
 	public SolvedTextPainter getSolvedTextPainter() {
 		return mSolvedTextPainter;
+	}
+	
+	/**
+	 * Set the color mode of the digit painters.
+	 * 
+	 * @param distinctColors
+	 *            True in case distinct colors should be used dependent on the
+	 *            input mode. False in case a monochrome color should be used.
+	 */
+	public void setColorMode(DigitPainterMode digitPainterMode) {
+		mMaybeGridPainter.setColorMode(digitPainterMode);
+		mMaybeLinePainter.setColorMode(digitPainterMode);
+		mUserValuePainter.setColorMode(digitPainterMode);
+		
 	}
 }
