@@ -119,7 +119,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 */
 	protected static void upgrade(SQLiteDatabase db, int oldVersion,
 			int newVersion) {
-		if (oldVersion < 265) {
+		if (oldVersion < 433 && newVersion >= 433) {
 			// In development revisions the table is simply dropped and
 			// recreated.
 			try {
@@ -134,26 +134,6 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 				}
 			}
 			create(db);
-		}
-		if (oldVersion >= 276 && oldVersion < 298 && newVersion >= 298) {
-			dropColumn(db, TABLE, new String[] { "preview_image_filename" },
-					buildCreateSQL());
-		}
-		if (oldVersion < 301 && newVersion >= 301) {
-			try {
-				String sql = "ALTER TABLE " + stringBetweenBackTicks(TABLE)
-						+ " ADD COLUMN " + stringBetweenBackTicks(KEY_STATUS)
-						+ " INTEGER NOT NULL DEFAULT " + STATUS_UNDETERMINED
-						+ ";";
-				if (DEBUG_SQL) {
-					Log.i(TAG, sql);
-				}
-				db.execSQL(sql);
-			} catch (SQLiteException e) {
-				if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-					e.printStackTrace();
-				}
-			}
 		}
 	}
 

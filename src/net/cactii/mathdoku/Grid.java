@@ -454,23 +454,11 @@ public class Grid {
 		// First store data for the grid object itself.
 		stringBuffer.append(SAVE_GAME_GRID_LINE
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ mGridGeneratingParameters.mGameSeed
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ mGridGeneratingParameters.mGeneratorRevisionNumber
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ mGridSize
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ mActive
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ mCheated
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ mClearRedundantPossiblesInSameRowOrColumnCount
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ mGridGeneratingParameters.mHideOperators
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ mGridGeneratingParameters.mMaxCageResult
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ mGridGeneratingParameters.mMaxCageSize
 				+ SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
 
 		// Store information about the cells. Use one line per single
@@ -564,21 +552,10 @@ public class Grid {
 
 		// Process all parts
 		int index = 1;
-		mGridGeneratingParameters.mGameSeed = Long
-				.parseLong(viewParts[index++]);
-		mGridGeneratingParameters.mGeneratorRevisionNumber = Integer
-				.parseInt(viewParts[index++]);
-		mGridSize = Integer.parseInt(viewParts[index++]);
 		mActive = Boolean.parseBoolean(viewParts[index++]);
 
 		mCheated = Boolean.parseBoolean(viewParts[index++]);
 		mClearRedundantPossiblesInSameRowOrColumnCount = Integer
-				.parseInt(viewParts[index++]);
-		mGridGeneratingParameters.mHideOperators = Boolean
-				.parseBoolean(viewParts[index++]);
-		mGridGeneratingParameters.mMaxCageResult = Integer
-				.parseInt(viewParts[index++]);
-		mGridGeneratingParameters.mMaxCageSize = Integer
 				.parseInt(viewParts[index++]);
 
 		return true;
@@ -915,20 +892,29 @@ public class Grid {
 	 *         otherwise.
 	 */
 	public boolean load(int solvingAttemptId) throws InvalidGridException {
+		// First load the solving attempt to get the grid id.
 		SolvingAttemptData solvingAttemptData = new SolvingAttemptDatabaseAdapter()
 				.getData(solvingAttemptId);
-		if (load(solvingAttemptData)) {
-			// Load the grid
-			GridRow gridRow = new GridDatabaseAdapter()
-					.get(solvingAttemptData.mGridId);
-			if (gridRow != null) {
-				mGridGeneratingParameters = gridRow.mGridGeneratingParameters;
-
-				// Load the statistics of the grid
-				return loadStatistics();
-			}
+		if (solvingAttemptData == null) {
+			return false;
 		}
-		return false;
+
+		// Load the grid (i.e. get the gridsize) before processing the solving
+		// attempt data.
+		GridRow gridRow = new GridDatabaseAdapter()
+				.get(solvingAttemptData.mGridId);
+		if (gridRow != null) {
+			mGridSize = gridRow.mGridSize;
+			mGridGeneratingParameters = gridRow.mGridGeneratingParameters;
+		}
+
+		// Load the data from the solving attempt into the grid object.
+		if (load(solvingAttemptData)) {
+			// Load the statistics of the grid
+			return loadStatistics();
+		} else {
+			return false;
+		}
 	}
 
 	/**
