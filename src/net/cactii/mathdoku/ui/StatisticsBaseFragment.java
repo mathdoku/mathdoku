@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -49,7 +50,7 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	protected static final int chartRed3 = 0xFFB22400;
 	protected static final int chartRed4 = 0xFFFECCBF;
 	protected static final int chartRed5 = 0xFFFE9980;
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -113,7 +114,7 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 		// Inflate a new view for this statistics section
 		View sectionView = mLayoutInflater.inflate(R.layout.statistics_section,
 				null);
-		
+
 		// Add the tag to the view.
 		if (tag != null) {
 			sectionView.setTag(tag);
@@ -185,8 +186,7 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 
 		// Set layout parameters for fields in the row
 		TableRow.LayoutParams tableRowLayoutParams = new TableRow.LayoutParams(
-				TableRow.LayoutParams.WRAP_CONTENT,
-				TableRow.LayoutParams.WRAP_CONTENT);
+				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 
 		// Add label to row
 		TextView textViewLabel = new TextView(getActivity());
@@ -204,11 +204,12 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 
 		return tableRow;
 	}
-	
+
 	/**
 	 * Sets whether the chart descriptions have to be displayed.
 	 * 
-	 * @param display True in case the chart descriptions have to be displayed. 
+	 * @param display
+	 *            True in case the chart descriptions have to be displayed.
 	 */
 	protected void setDisplayChartDescription(boolean display) {
 		mDisplayStatisticDescription = display;

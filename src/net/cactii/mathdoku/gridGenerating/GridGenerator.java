@@ -127,17 +127,19 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			PuzzleComplexity puzzleComplexity, int packageVersionNumber,
 			GridUser user) {
 		mGridSize = gridSize;
-		
+
 		mPuzzleComplexity = puzzleComplexity;
 		switch (mPuzzleComplexity) {
 		case VERY_EASY:
 			mMaxCageSize = 2;
-			mMaxCageResult = 99; // Not used effectively as the maximum will be 9 * 8 = 72
+			mMaxCageResult = 99; // Not used effectively as the maximum will be
+									// 9 * 8 = 72
 			mMaxCagePermutations = 20;
 			break;
 		case EASY:
 			mMaxCageSize = 3;
-			mMaxCageResult = 999; // Not used effectively as the maximum will be 9 * 8 = 648
+			mMaxCageResult = 999; // Not used effectively as the maximum will be
+									// 9 * 8 = 648
 			mMaxCagePermutations = 20;
 			break;
 		case NORMAL:
@@ -152,11 +154,12 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			break;
 		case VERY_DIFFICULT:
 			mMaxCageSize = 6;
-			mMaxCageResult = 99999; // Real maximum = 9 * 9 * 9 * 8 * 8 * 8 = 373,248
+			mMaxCageResult = 99999; // Real maximum = 9 * 9 * 9 * 8 * 8 * 8 =
+									// 373,248
 			mMaxCagePermutations = 120;
 			break;
 		}
-		
+
 		mHideOperators = hideOperators;
 		mGeneratorRevisionNumber = packageVersionNumber;
 		mUser = user;
@@ -296,8 +299,9 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			}
 
 			// Determine whether grid has a unique solution.
-			hasUniqueSolution = new MathDokuDLX(mGridSize, mCages).hasUniqueSolution();
-			
+			hasUniqueSolution = new MathDokuDLX(mGridSize, mCages)
+					.hasUniqueSolution();
+
 			if (DEBUG_GRID_GENERATOR) {
 				Log.d(TAG, "This grid does not have a unique solution.");
 			}
@@ -319,6 +323,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	protected void handleNewAttemptStarted(int attemptCount) {
 	}
 
+	@Override
 	protected void onProgressUpdate(String... values) {
 		if (DEBUG_GRID_GENERATOR) {
 			long timeElapsed = System.currentTimeMillis() - mTimeStarted;
@@ -612,8 +617,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			}
 
 			if (cageIsValid) {
-				GridCage cage = createCage(cageTypeCoords,
-						mMaxCagePermutations);
+				GridCage cage = createCage(cageTypeCoords, mMaxCagePermutations);
 				if (cage == null) {
 					// No cage created due to too many permutations.
 					continue;

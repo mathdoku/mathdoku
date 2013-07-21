@@ -8,7 +8,6 @@ import android.os.AsyncTask;
  */
 public class GameTimer extends AsyncTask<Void, Long, Long> {
 
-
 	// Reference to activity that started the timer.
 	public PuzzleFragment mPuzzleFragment;
 
@@ -63,6 +62,7 @@ public class GameTimer extends AsyncTask<Void, Long, Long> {
 	 * 
 	 * @see android.os.AsyncTask#onProgressUpdate(Progress[])
 	 */
+	@Override
 	protected void onProgressUpdate(Long... time) {
 		if (!this.isCancelled() && time.length > 0 && mPuzzleFragment != null) {
 			mPuzzleFragment.setElapsedTime(time[0]);
@@ -87,8 +87,7 @@ public class GameTimer extends AsyncTask<Void, Long, Long> {
 	 * @param occurences
 	 *            The number of occurrences this penalty has to be added.
 	 */
-	public void addCheatPenaltyTime(Cheat cheat,
-			int occurrences) {
+	public void addCheatPenaltyTime(Cheat cheat, int occurrences) {
 		// Determine penalty time for just one occurrence
 		long cheatPenaltyTime = cheat.getPenaltyTimeMilis() * occurrences;
 

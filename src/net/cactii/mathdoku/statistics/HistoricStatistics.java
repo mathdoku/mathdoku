@@ -221,11 +221,9 @@ public class HistoricStatistics {
 
 		for (DataPoint dataPoint : dataPoints) {
 			if (index >= start) {
-				xySeries.add(
-						index,
-						(dataPoint.mSerie == serie ? ((double) dataPoint.mValue)
-								/ scaleFactor
-								: 0));
+				xySeries.add(index,
+						(dataPoint.mSerie == serie ? (dataPoint.mValue)
+								/ scaleFactor : 0));
 			}
 			index++;
 		}
@@ -295,7 +293,7 @@ public class HistoricStatistics {
 
 		for (DataPoint dataPoint : dataPoints) {
 			if (serie == null || dataPoint.mSerie == serie) {
-				totalValue += (double) dataPoint.mValue;
+				totalValue += dataPoint.mValue;
 				countValue++;
 			}
 			if (countValue > 0 && index >= start) {

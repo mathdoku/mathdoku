@@ -72,11 +72,12 @@ public class MaybeValuePainter extends DigitPainter {
 			int cols = mDigitPositionGrid.getVisibleDigitColumns();
 
 			// 1/3 of total height is used for cage result text. Also need to
-			// reserve a margin below the maybes grid for the selected cage border.
+			// reserve a margin below the maybes grid for the selected cage
+			// border.
 			int margin = 4;
 			float maxHeightForMaybes = (size * 2 / 3) - margin;
 
-			mMaybeDigitHeight = (float) maxHeightForMaybes / rows;
+			mMaybeDigitHeight = maxHeightForMaybes / rows;
 			mMaybeDigitWidth = Math.min((size - 2 * margin) / cols,
 					mMaybeDigitHeight);
 

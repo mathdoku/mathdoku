@@ -81,7 +81,7 @@ public class GridCell {
 		mGrid = grid;
 		mCellNumber = cell;
 		mColumn = cell % gridSize;
-		mRow = (int) (cell / gridSize);
+		mRow = cell / gridSize;
 		mCageText = "";
 		mCageId = -1;
 		mCorrectValue = 0;
@@ -108,6 +108,7 @@ public class GridCell {
 		mBorderTypeLeft = BorderType.NONE;
 	}
 
+	@Override
 	public String toString() {
 		String str = "<cell:" + this.mCellNumber + " col:" + this.mColumn
 				+ " row:" + this.mRow + " posX:" + this.mPosX + " posY:"

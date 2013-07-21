@@ -1,7 +1,7 @@
 package net.cactii.mathdoku.statistics;
 
 public class CumulativeStatistics {
-	// Minimum and maximum size of grids cumulated 
+	// Minimum and maximum size of grids cumulated
 	public int mMinGridSize;
 	public int mMaxGridSize;
 
@@ -63,14 +63,14 @@ public class CumulativeStatistics {
 	public int mCountSolvedManually;
 	public int mCountFinished;
 
-
 	// Cells filled and empty
 	public int mSumCellsUserValueFilled;
 	public int mSumCellsUserValueEmtpty;
-	
+
 	/**
 	 * Checks whether the statistics applies to grids of the same grid size.
-	 * @return True in case the statistics refer to one single level. 
+	 * 
+	 * @return True in case the statistics refer to one single level.
 	 */
 	public boolean isSingleLevelStatistics() {
 		return (mMinGridSize == mMaxGridSize);

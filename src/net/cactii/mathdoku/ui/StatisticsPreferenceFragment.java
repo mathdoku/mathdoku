@@ -48,8 +48,7 @@ public class StatisticsPreferenceFragment extends PreferenceFragment implements
 	 * current value of the option.
 	 */
 	public void setMaximumGamesElapsedTimeChart() {
-		findPreference(
-				Preferences.ELAPSED_TIME_CHART_MAXIMUM_GAMES_DISPLAYED)
+		findPreference(Preferences.ELAPSED_TIME_CHART_MAXIMUM_GAMES_DISPLAYED)
 				.setSummary(
 						getResources()
 								.getString(

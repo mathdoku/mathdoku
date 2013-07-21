@@ -42,8 +42,7 @@ public class TipOrderOfValuesInCage extends TipDialog {
 	 * @param cage
 	 * @return
 	 */
-	public static boolean toBeDisplayed(Preferences preferences,
-			GridCage cage) {
+	public static boolean toBeDisplayed(Preferences preferences, GridCage cage) {
 		// No tip to be displayed for non existing cages or single cell cages
 		if (cage == null || cage.mAction == GridCage.ACTION_NONE) {
 			return false;
@@ -57,6 +56,7 @@ public class TipOrderOfValuesInCage extends TipDialog {
 		}
 
 		// Determine on basis of preferences whether the tip should be shown.
-		return TipDialog.getDisplayTipAgain(preferences, TIP_NAME, TIP_PRIORITY);
+		return TipDialog
+				.getDisplayTipAgain(preferences, TIP_NAME, TIP_PRIORITY);
 	}
 }

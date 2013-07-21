@@ -12,14 +12,14 @@ public class SwipeBorderPainter extends BorderPainter {
 	// Background of swipe border
 	private Paint mUserValueBackgroundBorderPaint;
 	private Paint mMaybeValueBackgroundBorderPaint;
-	
+
 	// Painter for digits inside the swipe border
 	private Paint mNormalDigitPaint;
 	private Paint mHighlightedDigitPaint;
 
 	// Painter for the swipe line
 	private Paint mSwipeLinePaint;
-	
+
 	// Offset from bottom for text inside swipe border
 	private float mBottomOffset;
 
@@ -31,19 +31,19 @@ public class SwipeBorderPainter extends BorderPainter {
 	 */
 	public SwipeBorderPainter(Painter painter) {
 		super(painter);
-		
+
 		// Background painters of swipe border.
 		mUserValueBackgroundBorderPaint = new Paint();
 		mUserValueBackgroundBorderPaint.setStyle(Paint.Style.FILL);
 		mMaybeValueBackgroundBorderPaint = new Paint();
 		mMaybeValueBackgroundBorderPaint.setStyle(Paint.Style.FILL);
-		
+
 		// The digit painters
 		mNormalDigitPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		mNormalDigitPaint.setFakeBoldText(true);
 		mHighlightedDigitPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		mHighlightedDigitPaint.setFakeBoldText(true);
-		
+
 		mSwipeLinePaint = new Paint();
 		mSwipeLinePaint.setAntiAlias(true);
 		mSwipeLinePaint.setStrokeWidth(10);
@@ -53,17 +53,19 @@ public class SwipeBorderPainter extends BorderPainter {
 
 	@Override
 	public void setTheme(GridTheme theme) {
-		mUserValueBackgroundBorderPaint.setColor(mPainter.getHighlightedTextColorNormalInputMode());
+		mUserValueBackgroundBorderPaint.setColor(mPainter
+				.getHighlightedTextColorNormalInputMode());
 		mUserValueBackgroundBorderPaint.setAlpha(100);
-		
-		mMaybeValueBackgroundBorderPaint.setColor(mPainter.getHighlightedTextColorMaybeInputMode());
+
+		mMaybeValueBackgroundBorderPaint.setColor(mPainter
+				.getHighlightedTextColorMaybeInputMode());
 		mMaybeValueBackgroundBorderPaint.setAlpha(150);
 
 		mNormalDigitPaint.setTypeface(mPainter.getTypeface());
 		mNormalDigitPaint.setColor(0xFF7D7D7D);
 		mHighlightedDigitPaint.setTypeface(mPainter.getTypeface());
 		mHighlightedDigitPaint.setColor(0xFF000000);
-		
+
 		mSwipeLinePaint.setPathEffect(mPainter.getPathEffect());
 	}
 
@@ -74,7 +76,7 @@ public class SwipeBorderPainter extends BorderPainter {
 	@Override
 	protected void setCellSize(float cellSize) {
 		mBorderWidth = cellSize / 2;
-		
+
 		int textSize = (int) (mBorderWidth * 0.8f);
 		mNormalDigitPaint.setTextSize(textSize);
 		mHighlightedDigitPaint.setTextSize(textSize);
@@ -100,18 +102,22 @@ public class SwipeBorderPainter extends BorderPainter {
 	}
 
 	/**
-	 * Get the paint for the background of the swipe border which is used to enter a user value.
+	 * Get the paint for the background of the swipe border which is used to
+	 * enter a user value.
 	 * 
-	 * @return The paint for the background of the swipe border which is used to enter a user value.
+	 * @return The paint for the background of the swipe border which is used to
+	 *         enter a user value.
 	 */
 	public Paint getUserValueBackgroundBorderPaint() {
 		return mUserValueBackgroundBorderPaint;
 	}
 
 	/**
-	 * Get the paint for the background of the swipe border which is used to enter a maybe value.
+	 * Get the paint for the background of the swipe border which is used to
+	 * enter a maybe value.
 	 * 
-	 * @return The paint for the background of the swipe border which is used to enter a maybe value.
+	 * @return The paint for the background of the swipe border which is used to
+	 *         enter a maybe value.
 	 */
 	public Paint getMaybeValueBackgroundBorderPaint() {
 		return mMaybeValueBackgroundBorderPaint;

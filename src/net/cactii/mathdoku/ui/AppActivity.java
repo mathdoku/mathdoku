@@ -46,6 +46,7 @@ public class AppActivity extends Activity implements
 		super.onDestroy();
 	}
 
+	@Override
 	public void onResume() {
 		setFullScreenWindowFlag();
 		setKeepScreenOnWindowFlag();
@@ -117,6 +118,7 @@ public class AppActivity extends Activity implements
 		}
 	}
 
+	@Override
 	public void setTitle(int resId) {
 		ActionBar actionBar = getActionBar();
 		if (actionBar != null) {

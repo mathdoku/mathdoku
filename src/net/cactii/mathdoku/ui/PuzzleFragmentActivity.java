@@ -151,6 +151,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		}
 	}
 
+	@Override
 	public void onResume() {
 		if (mDialogPresentingGridGenerator != null) {
 			// In case the grid is created in the background and the dialog is
@@ -428,6 +429,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 				.setView(view)
 				.setNeutralButton(R.string.puzzle_help_dialog_neutral_button,
 						new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
 								puzzleFragmentActivity.openChangesDialog(false);
@@ -435,6 +437,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 						})
 				.setNegativeButton(R.string.dialog_general_button_close,
 						new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
 							}
@@ -480,6 +483,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 				.setView(view)
 				.setNegativeButton(R.string.dialog_general_button_close,
 						new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
 								//
@@ -804,6 +808,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 				.setNeutralButton(
 						R.string.dialog_puzzle_parameters_neutral_button,
 						new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
 								// Transform size spinner to grid size
@@ -982,7 +987,8 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 			String string = getResources().getString(R.string.action_archive);
 			navigationDrawerItems.add(string);
 			if (openDrawer == false && mNavigationDrawerItems != null) {
-				openDrawer = (Arrays.asList(mNavigationDrawerItems).contains(string) == false);
+				openDrawer = (Arrays.asList(mNavigationDrawerItems).contains(
+						string) == false);
 			}
 			mDrawerIconVisible = true;
 		}
@@ -991,7 +997,8 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 					.getString(R.string.action_statistics);
 			navigationDrawerItems.add(string);
 			if (openDrawer == false && mNavigationDrawerItems != null) {
-				openDrawer = (Arrays.asList(mNavigationDrawerItems).contains(string) == false);
+				openDrawer = (Arrays.asList(mNavigationDrawerItems).contains(
+						string) == false);
 			}
 			mDrawerIconVisible = true;
 		}
@@ -1019,6 +1026,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 			 * android.support.v4.app.ActionBarDrawerToggle#onDrawerClosed(android
 			 * .view.View)
 			 */
+			@Override
 			public void onDrawerClosed(View view) {
 				// Update the options menu with relevant options.
 				invalidateOptionsMenu();
@@ -1035,6 +1043,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 			 * android.support.v4.app.ActionBarDrawerToggle#onDrawerOpened(android
 			 * .view.View)
 			 */
+			@Override
 			public void onDrawerOpened(View drawerView) {
 				// Update the options menu with relevant options.
 				invalidateOptionsMenu();
@@ -1049,8 +1058,9 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 
 		// Get list view for drawer
 		mDrawerListView = (ListView) findViewById(R.id.left_drawer);
-		
-		mDrawerListView.setBackgroundColor(Painter.getInstance().getNavigationDrawerPainter().getBackgroundColor());
+
+		mDrawerListView.setBackgroundColor(Painter.getInstance()
+				.getNavigationDrawerPainter().getBackgroundColor());
 
 		// Set the adapter for the list view containing the navigation items
 		mDrawerListView.setAdapter(new ArrayAdapter<String>(this,

@@ -11,8 +11,9 @@ public class StatisticsPreferenceActivity extends AppActivity {
 
 		setTitle(R.string.statistics_settings_actionbar_title);
 
-		getFragmentManager().beginTransaction()
-				.replace(android.R.id.content, new StatisticsPreferenceFragment())
-				.commit();
+		getFragmentManager()
+				.beginTransaction()
+				.replace(android.R.id.content,
+						new StatisticsPreferenceFragment()).commit();
 	}
 }

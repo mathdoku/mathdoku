@@ -19,7 +19,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static DatabaseHelper mDatabaseHelperSingletonInstance = null;
 	private static Context currentRenamingDelegatingContext = null;
-	
+
 	/**
 	 * Constructor should be private to prevent direct instantiation. Call the
 	 * static factory method "getInstance()" instead.

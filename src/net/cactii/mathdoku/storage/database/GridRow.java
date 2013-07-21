@@ -4,7 +4,7 @@ import net.cactii.mathdoku.gridGenerating.GridGeneratingParameters;
 
 /**
  * Mapping for records in database table Grid
- *
+ * 
  */
 public class GridRow {
 

@@ -78,6 +78,7 @@ public class GridCage {
 		mCells = new ArrayList<GridCell>();
 	}
 
+	@Override
 	public String toString() {
 		String retStr = "";
 		retStr += "Cage id: " + this.mId + ", Size: "
@@ -270,7 +271,7 @@ public class GridCage {
 			// Reset borders in all cells of this cage
 			setBorders();
 		}
-		
+
 		return mUserMathCorrect;
 	}
 

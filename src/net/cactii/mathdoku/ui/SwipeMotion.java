@@ -9,7 +9,6 @@ import android.view.MotionEvent;
 
 // Definition of swipe motion
 class SwipeMotion {
-	@SuppressWarnings("unused")
 	private static final String TAG = "MathDoku.SwipeMotion";
 
 	// Remove "&& false" in following line to show debug information about

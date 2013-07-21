@@ -100,7 +100,7 @@ public class GridView extends View implements OnTouchListener {
 		updateWindowVisibleDisplayFrame();
 
 		// Set listeners
-		this.setOnTouchListener((OnTouchListener) this);
+		this.setOnTouchListener(this);
 		mOnTickerTapeChangedListener = null;
 	}
 
@@ -112,6 +112,7 @@ public class GridView extends View implements OnTouchListener {
 		public abstract void gridTouched(GridCell cell);
 	}
 
+	@Override
 	public boolean onTouch(View arg0, MotionEvent event) {
 		if (mGrid == null || !mGrid.isActive())
 			return false;
@@ -395,7 +396,7 @@ public class GridView extends View implements OnTouchListener {
 
 			// Draw grid background and border grid
 			canvas.drawColor(mGridPainter.getBackgroundPaint().getColor());
-			canvas.drawRect((float) 1, (float) 1, mGridViewSize, mGridViewSize,
+			canvas.drawRect(1, 1, mGridViewSize, mGridViewSize,
 					mGridPainter.getBorderPaint());
 
 			// Draw cells
@@ -475,18 +476,16 @@ public class GridView extends View implements OnTouchListener {
 
 		// Get the maximum space available for the grid. As it is a square we
 		// need the minimum of width and height.
-		int maxSize = (int) Math.min(measuredWidth, measuredHeight);
+		int maxSize = Math.min(measuredWidth, measuredHeight);
 
 		// Finally compute the exact size needed to display a grid in which the
 		// (integer) cell size is as big as possible but the grid still fits in
 		// the space available.
 		float gridBorderWidth = (mGridPainter == null ? 0 : mGridPainter
 				.getBorderPaint().getStrokeWidth());
-		mGridCellSize = (float) Math
-				.floor((float) (maxSize - 2 * gridBorderWidth)
-						/ (float) mGridSize);
-		mGridViewSize = (float) (2 * gridBorderWidth + mGridSize
-				* mGridCellSize);
+		mGridCellSize = (float) Math.floor((maxSize - 2 * gridBorderWidth)
+				/ mGridSize);
+		mGridViewSize = 2 * gridBorderWidth + mGridSize * mGridCellSize;
 
 		setMeasuredDimension((int) mGridViewSize, (int) mGridViewSize);
 	}
@@ -494,7 +493,7 @@ public class GridView extends View implements OnTouchListener {
 	private int measure(int measureSpec) {
 		int specSize = MeasureSpec.getSize(measureSpec);
 
-		return (int) (specSize);
+		return (specSize);
 	}
 
 	/**

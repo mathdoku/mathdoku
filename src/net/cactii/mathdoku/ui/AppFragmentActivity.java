@@ -22,7 +22,7 @@ public class AppFragmentActivity extends FragmentActivity implements
 
 		mMathDokuPreferences.mSharedPreferences
 				.registerOnSharedPreferenceChangeListener(this);
-		
+
 		setFullScreenWindowFlag();
 		setKeepScreenOnWindowFlag();
 	};
@@ -34,6 +34,7 @@ public class AppFragmentActivity extends FragmentActivity implements
 		super.onDestroy();
 	}
 
+	@Override
 	public void onResume() {
 		setFullScreenWindowFlag();
 		setKeepScreenOnWindowFlag();

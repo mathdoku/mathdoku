@@ -69,6 +69,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 	private boolean mShowStatusFilter;
 	private boolean mShowSizeFilter;
 
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.archive_activity_fragment);
@@ -431,6 +432,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 				.setView(view)
 				.setNegativeButton(R.string.dialog_general_button_close,
 						new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
 							}

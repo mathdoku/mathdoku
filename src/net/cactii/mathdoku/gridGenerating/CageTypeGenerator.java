@@ -209,7 +209,8 @@ public class CageTypeGenerator {
 	 */
 	public int size(int maxCageSize) {
 		int totalCageTypes = 0;
-		maxCageSize = (maxCageSize > MAX_CAGE_SIZE ? MAX_CAGE_SIZE : maxCageSize);
+		maxCageSize = (maxCageSize > MAX_CAGE_SIZE ? MAX_CAGE_SIZE
+				: maxCageSize);
 		for (int i = 0; i < maxCageSize; i++) {
 			totalCageTypes += mCageTypes[i].size();
 		}
@@ -295,7 +296,7 @@ public class CageTypeGenerator {
 		boolean newCageTypeMatrix[][] = cageType.getExtendedCageTypeMatrix();
 
 		// Determine which used cells can be extended.
-		int numberOfCellsPerRow = newCageTypeMatrix[0].length; 
+		int numberOfCellsPerRow = newCageTypeMatrix[0].length;
 		ArrayList<Integer> extendIndexes = new ArrayList<Integer>();
 		for (int row = 0; row < newCageTypeMatrix.length; row++) {
 			for (int col = 0; col < newCageTypeMatrix[row].length; col++) {
@@ -355,7 +356,7 @@ public class CageTypeGenerator {
 		int extendToCellnumber = extendIndexes.get(random.nextInt(extendIndexes
 				.size()));
 		int col = extendToCellnumber % numberOfCellsPerRow;
-		int row = (int) (extendToCellnumber / numberOfCellsPerRow);
+		int row = extendToCellnumber / numberOfCellsPerRow;
 		newCageTypeMatrix[row][col] = true;
 
 		GridCageType newCageType = new GridCageType();

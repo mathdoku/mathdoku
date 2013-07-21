@@ -15,7 +15,7 @@ import android.util.Log;
  */
 public final class DialogPresentingGridGenerator extends GridGenerator {
 	private static final String TAG = "MathDoku.DialogPresentingGridGenerator";
-	
+
 	/**
 	 * The activity used to display the dialog, and to forward the generated
 	 * grid to. Access level is not private, to prevent the an extra access
@@ -40,7 +40,8 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 				// The task is still attached to a activity. Inform activity
 				// about completing the new game generation. The activity will
 				// deal with showing the new grid directly.
-				mDialogPresentingGridGenerator.mPuzzleFragmentActivity.onNewGridReady(grid);
+				mDialogPresentingGridGenerator.mPuzzleFragmentActivity
+						.onNewGridReady(grid);
 			}
 		}
 	}
@@ -56,9 +57,10 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 	 *            True in case should be solvable without using operators.
 	 */
 	public DialogPresentingGridGenerator(PuzzleFragmentActivity activity,
-			int gridSize, boolean hideOperators, PuzzleComplexity puzzleComplexity, int packageVersionNumber) {
-		super(gridSize, hideOperators, puzzleComplexity,
-				packageVersionNumber, new GridForwarder());
+			int gridSize, boolean hideOperators,
+			PuzzleComplexity puzzleComplexity, int packageVersionNumber) {
+		super(gridSize, hideOperators, puzzleComplexity, packageVersionNumber,
+				new GridForwarder());
 		((GridForwarder) mUser).mDialogPresentingGridGenerator = this;
 
 		// Attach the task to the activity activity and show progress dialog if
@@ -74,8 +76,8 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 	 *            this task.
 	 */
 	public void attachToActivity(PuzzleFragmentActivity activity) {
-		if (activity.equals(this.mPuzzleFragmentActivity) && mProgressDialog != null
-				&& mProgressDialog.isShowing()) {
+		if (activity.equals(this.mPuzzleFragmentActivity)
+				&& mProgressDialog != null && mProgressDialog.isShowing()) {
 			// The activity is already attached to this task.
 			return;
 		}
@@ -97,8 +99,8 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 		// Build the dialog
 		mProgressDialog = new ProgressDialog(mPuzzleFragmentActivity);
 		mProgressDialog.setTitle(R.string.dialog_building_puzzle_title);
-		mProgressDialog.setMessage(mPuzzleFragmentActivity.getResources().getString(
-				R.string.dialog_building_puzzle_message));
+		mProgressDialog.setMessage(mPuzzleFragmentActivity.getResources()
+				.getString(R.string.dialog_building_puzzle_message));
 		mProgressDialog.setIcon(android.R.drawable.ic_dialog_info);
 		mProgressDialog.setIndeterminate(false);
 		mProgressDialog.setCancelable(false);

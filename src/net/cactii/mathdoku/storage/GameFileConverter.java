@@ -210,6 +210,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 		return null;
 	}
 
+	@Override
 	protected void onProgressUpdate(Void... values) {
 		if (!isCancelled() && mProgressDialog != null) {
 			mProgressDialog.incrementProgressBy(1);
@@ -261,6 +262,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	private String[] getGameFilesToBeDeleted() {
 		String path = PATH_R110;
 		FilenameFilter filter = new FilenameFilter() {
+			@Override
 			public boolean accept(File dir, String name) {
 				if (name.startsWith(GAMEFILE_PREFIX_R110)) {
 					return true;
@@ -286,6 +288,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	private String[] getUsageLogFilesToBeDeleted() {
 		String path = PATH_USAGE_LOGS;
 		FilenameFilter filter = new FilenameFilter() {
+			@Override
 			public boolean accept(File dir, String name) {
 				if (name.startsWith(USAGE_LOG_PREFIX)) {
 					return true;

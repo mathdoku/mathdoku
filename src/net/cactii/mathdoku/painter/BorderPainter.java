@@ -9,14 +9,15 @@ abstract class BorderPainter extends BasePainter {
 	protected final static int BORDER_STROKE_WIDTH_NORMAL = 2;
 	protected final static int BORDER_STROKE_WIDTH_MEDIUM = 3;
 	protected final static int BORDER_STROKE_WIDTH_THICK = 4;
-	
+
 	// Common properties for all derived painter classes
 	protected Paint mBorderPaint;
-	
+
 	/**
 	 * Creates a new instance of {@link BorderPainter}.
 	 * 
-	 * @param painter The global container for all painters.
+	 * @param painter
+	 *            The global container for all painters.
 	 */
 	public BorderPainter(Painter painter) {
 		super(painter);

@@ -20,7 +20,8 @@ import android.util.Log;
 public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	private static final String TAG = "MathDoku.SolvingAttemptDatabaseAdapter";
 
-	// Remove "&& false" in following line to show the SQL-statements in the debug information
+	// Remove "&& false" in following line to show the SQL-statements in the
+	// debug information
 	public static final boolean DEBUG_SQL = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
 
 	// Columns for table
@@ -56,6 +57,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 * 
 	 * @return The table name;
 	 */
+	@Override
 	protected String getTableName() {
 		return TABLE;
 	}
@@ -85,6 +87,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 * 
 	 * @see net.cactii.mathdoku.storage.database.DatabaseAdapter#getCreateSQL()
 	 */
+	@Override
 	protected String getCreateSQL() {
 		return buildCreateSQL();
 	}
@@ -363,20 +366,22 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		return stringBetweenBackTicks(TABLE) + "."
 				+ stringBetweenBackTicks(column);
 	}
-	
+
 	/**
 	 * Count the number of solving attempt for the given grid id.
 	 * 
 	 * @param gridId
-	 *            The grid id for which the number of solving attempts has to be determined.
+	 *            The grid id for which the number of solving attempts has to be
+	 *            determined.
 	 * @return The number of solving attempt for the given grid id.
 	 */
 	public int countSolvingAttemptForGrid(int gridId) {
 		int count = 0;
 		Cursor cursor = null;
 		try {
-			cursor = mSqliteDatabase.query(true, TABLE, new String[] {"COUNT(1)"}, KEY_GRID_ID
-					+ "=" + gridId, null, null, null, null, null);
+			cursor = mSqliteDatabase.query(true, TABLE,
+					new String[] { "COUNT(1)" }, KEY_GRID_ID + "=" + gridId,
+					null, null, null, null, null);
 
 			if (cursor == null || !cursor.moveToFirst()) {
 				// No record found for this grid.

@@ -3,7 +3,6 @@ package com.srlee.DLX;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
 import net.cactii.mathdoku.GridCage;
 import net.cactii.mathdoku.GridCell;
@@ -23,8 +22,8 @@ public class MathDokuDLX extends DLX {
 	private int mTotalMoves;
 
 	// The list of cages for which the solution has to be checked
-	private ArrayList<GridCage> mCages; 
-	
+	private ArrayList<GridCage> mCages;
+
 	// Additional data structure in case the solution has to be uncovered.
 	private class Move {
 		protected int mSolutionRow;
@@ -45,14 +44,15 @@ public class MathDokuDLX extends DLX {
 	/**
 	 * Creates a new instance of {@see MathDokuDLX}.
 	 * 
-	 * @param gridSize The size of the grid.
+	 * @param gridSize
+	 *            The size of the grid.
 	 * @param cages
 	 */
 	public MathDokuDLX(int gridSize, ArrayList<GridCage> cages) {
 		mGridSize = gridSize;
 		mCages = cages;
 	}
-	
+
 	private void initialize(boolean uncoverSolution) {
 		int gridSizeSquare = mGridSize * mGridSize;
 
@@ -80,8 +80,7 @@ public class MathDokuDLX extends DLX {
 		// solution. Cage should be ordered on increasing number of possible
 		// moves.
 		ArrayList<GridCage> sortedCages = new ArrayList<GridCage>(mCages);
-		Collections.sort((List<GridCage>) sortedCages,
-				new SortCagesOnNumberOfMoves());
+		Collections.sort(sortedCages, new SortCagesOnNumberOfMoves());
 		if (GridGenerator.DEBUG_GRID_GENERATOR) {
 			double complexityDouble = 1;
 			long complexityLong = 1;
@@ -126,14 +125,14 @@ public class MathDokuDLX extends DLX {
 					constraint_num = mGridSize * (onemove[i] - 1)
 							+ gridCell.getColumn() + 1;
 					AddNode(constraint_num, move_idx); // Column constraint
-					constraint_num = gridSizeSquare + mGridSize * (onemove[i] - 1)
-							+ gridCell.getRow() + 1;
+					constraint_num = gridSizeSquare + mGridSize
+							* (onemove[i] - 1) + gridCell.getRow() + 1;
 					AddNode(constraint_num, move_idx); // Row constraint
 
 					// Fill data structure for uncovering solution if needed
 					if (uncoverSolution) {
-						mMoves.add(new Move(move_idx, gridCell
-								.getRow(), gridCell.getColumn(), onemove[i]));
+						mMoves.add(new Move(move_idx, gridCell.getRow(),
+								gridCell.getColumn(), onemove[i]));
 					}
 					if (DEBUG_DLX) {
 						Log.i(TAG, "  Cell " + gridCell.getCellNumber()
@@ -153,6 +152,7 @@ public class MathDokuDLX extends DLX {
 	 * Comparator to sort cages based on the number of possible moves.
 	 */
 	public class SortCagesOnNumberOfMoves implements Comparator<GridCage> {
+		@Override
 		public int compare(GridCage gridCage1, GridCage gridCage2) {
 			return gridCage1.getPossibleNums().size()
 					- gridCage2.getPossibleNums().size();
@@ -166,7 +166,7 @@ public class MathDokuDLX extends DLX {
 	 */
 	public boolean hasUniqueSolution() {
 		initialize(false);
-		
+
 		// Search for multiple solutions (but stop as soon as the second
 		// solution has been found).
 		return (Solve(SolveType.MULTIPLE) == 1);
@@ -180,12 +180,12 @@ public class MathDokuDLX extends DLX {
 	 */
 	public int[][] getSolutionGrid() {
 		initialize(true);
-		
+
 		// Check if a single unique solution can be determined.
 		if (mMoves == null || Solve(SolveType.MULTIPLE) != 1) {
 			return null;
 		}
-		
+
 		// Determine which rows are included in the solution.
 		boolean[] rowInSolution = new boolean[mTotalMoves];
 		for (int i = 0; i < mTotalMoves; i++) {
@@ -202,7 +202,7 @@ public class MathDokuDLX extends DLX {
 				solutionGrid[move.mCellRow][move.mCellCol] = move.mCellValue;
 			}
 		}
-		
+
 		if (DEBUG_DLX) {
 			for (int row = 0; row < this.mGridSize; row++) {
 				String line = "";
@@ -212,7 +212,6 @@ public class MathDokuDLX extends DLX {
 				Log.i(TAG, line);
 			}
 		}
-		
 
 		return solutionGrid;
 	}

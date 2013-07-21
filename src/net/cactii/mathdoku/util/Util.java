@@ -158,7 +158,7 @@ public class Util {
 	public static String durationTimeToString(long elapsedTime) {
 		// Convert to whole seconds
 		int seconds = (int) Math.floor(elapsedTime / 1000) % 60;
-		int minutes = (int) Math.floor(elapsedTime/ (1000 * 60)) % 60;
+		int minutes = (int) Math.floor(elapsedTime / (1000 * 60)) % 60;
 		int hours = (int) Math.floor(elapsedTime / (1000 * 60 * 60));
 
 		// Build time string and ignore hours if not applicable.
@@ -166,9 +166,9 @@ public class Util {
 		if (hours > 0) {
 			duration = String.format("%dh%dm%02ds", hours, minutes, seconds);
 		} else {
-			duration = String.format("%dm%02ds", minutes, seconds);	
+			duration = String.format("%dm%02ds", minutes, seconds);
 		}
-		
+
 		return duration;
 	}
 }

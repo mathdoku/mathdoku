@@ -37,7 +37,8 @@ public class TipIncorrectValue extends TipDialog {
 	 */
 	public static boolean toBeDisplayed(Preferences preferences) {
 		// Determine on basis of preferences whether the tip should be shown.
-		return TipDialog.getDisplayTipAgain(preferences, TIP_NAME, TIP_PRIORITY);
+		return TipDialog
+				.getDisplayTipAgain(preferences, TIP_NAME, TIP_PRIORITY);
 	}
 
 	/**

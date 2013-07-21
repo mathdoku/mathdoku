@@ -100,11 +100,12 @@ public class CellChange {
 	 * 
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 		String str = "<cell:" + this.mGridCell.getCellNumber() + " col:"
-				+ this.mGridCell.getColumn() + " row:" + this.mGridCell.getRow()
-				+ " previous userval:" + this.mPreviousUserValue
-				+ " previous possible values:"
+				+ this.mGridCell.getColumn() + " row:"
+				+ this.mGridCell.getRow() + " previous userval:"
+				+ this.mPreviousUserValue + " previous possible values:"
 				+ mPreviousPossibleValues.toString() + ">";
 		return str;
 	}
@@ -174,7 +175,8 @@ public class CellChange {
 	 */
 	private String toStorageStringRecursive() {
 		String storageString = "[" + mGridCell.getCellNumber()
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + mPreviousUserValue
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ mPreviousUserValue
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1;
 		for (int previousPossibleValue : mPreviousPossibleValues) {
 			storageString += Integer.toString(previousPossibleValue)
@@ -203,10 +205,11 @@ public class CellChange {
 	 * @return True in case the given line contains cell information and is
 	 *         processed correctly. False otherwise.
 	 */
-	public boolean fromStorageString(String line, ArrayList<GridCell> cells, int savedWithRevisionNumber) {
-		final String CELL_CHANGE_LINE_REGEXP = "^"
-				+ SAVE_GAME_CELL_CHANGE_LINE 
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + "(.*)$";
+	public boolean fromStorageString(String line, ArrayList<GridCell> cells,
+			int savedWithRevisionNumber) {
+		final String CELL_CHANGE_LINE_REGEXP = "^" + SAVE_GAME_CELL_CHANGE_LINE
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ "(.*)$";
 		final int GROUP_CELL_CHANGE = 1;
 
 		Pattern pattern = Pattern.compile(CELL_CHANGE_LINE_REGEXP);
@@ -253,17 +256,19 @@ public class CellChange {
 	 * @return True in case the given line contains cell information and is
 	 *         processed correctly. False otherwise.
 	 */
-	private boolean fromStorageStringRecursive(
-			int revisionNumber, String line, int level,
-			ArrayList<GridCell> cells) {
+	private boolean fromStorageStringRecursive(int revisionNumber, String line,
+			int level, ArrayList<GridCell> cells) {
 		// Regexp and groups inside. Groups 4 - 6 are helper groups which are
 		// needed to ensure the validity of the cell information but are not
 		// used programmaticly.
 		final String CELL_CHANGE_REGEXP = "^\\[(\\d+)"
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + "(\\d*)"
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + "((\\d*)|((\\d*"
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ "(\\d*)"
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ "((\\d*)|((\\d*"
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2 + ")+))"
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + "(.*)\\]$";
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ "(.*)\\]$";
 		final int GROUP_CELL_NUMBER = 1;
 		final int GROUP_PREVIOUS_USER_VALUE = 2;
 		final int GROUP_PREVIOUS_POSSIBLE_VALUES = 3;
@@ -307,14 +312,14 @@ public class CellChange {
 							+ matcher.group(GROUP_RELATED_CELL_CHANGED));
 		}
 
-		this.mGridCell = cells
-				.get(Integer.valueOf(matcher.group(GROUP_CELL_NUMBER)));
+		this.mGridCell = cells.get(Integer.valueOf(matcher
+				.group(GROUP_CELL_NUMBER)));
 		mPreviousUserValue = Integer.valueOf(matcher
 				.group(GROUP_PREVIOUS_USER_VALUE));
 		if (!matcher.group(GROUP_PREVIOUS_POSSIBLE_VALUES).equals("")) {
 			for (String possible : matcher
-					.group(GROUP_PREVIOUS_POSSIBLE_VALUES).split(
-							SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
+					.group(GROUP_PREVIOUS_POSSIBLE_VALUES)
+					.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
 				mPreviousPossibleValues.add(Integer.valueOf(possible));
 			}
 		}
@@ -345,8 +350,7 @@ public class CellChange {
 								startPosGroup, index + 1);
 						CellChange relatedCellChange = new CellChange();
 						if (!relatedCellChange.fromStorageStringRecursive(
-								revisionNumber, group, level + 1,
-								cells)) {
+								revisionNumber, group, level + 1, cells)) {
 							return false;
 						}
 						addRelatedMove(relatedCellChange);
@@ -354,8 +358,9 @@ public class CellChange {
 					break;
 				default:
 					if (levelNestedGroup == 0
-							&& !Character.toString(c).equals(
-									SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
+							&& !Character
+									.toString(c)
+									.equals(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
 						Log.i(TAG, indent + "Unexpected character '" + c
 								+ "'at position " + index);
 						return false;

@@ -23,8 +23,8 @@ public class TipArchiveAvailable extends TipDialog {
 				context.getResources().getString(
 						R.string.dialog_tip_archive_available_title),
 				context.getResources().getString(
-						R.string.dialog_tip_archive_available_text), 
-						null).show(); 
+						R.string.dialog_tip_archive_available_text), null)
+				.show();
 	}
 
 	/**
@@ -38,7 +38,8 @@ public class TipArchiveAvailable extends TipDialog {
 	 */
 	public static boolean toBeDisplayed(Preferences preferences) {
 		// Determine on basis of preferences whether the tip should be shown.
-		return TipDialog.getDisplayTipAgain(preferences, TIP_NAME, TIP_PRIORITY);
+		return TipDialog
+				.getDisplayTipAgain(preferences, TIP_NAME, TIP_PRIORITY);
 	}
 
 	/**

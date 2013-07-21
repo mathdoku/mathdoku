@@ -106,6 +106,7 @@ public class DevelopmentHelper {
 									+ "information will be lost permanently.")
 					.setNegativeButton("Cancel",
 							new DialogInterface.OnClickListener() {
+								@Override
 								public void onClick(DialogInterface dialog,
 										int id) {
 									// Do nothing
@@ -113,6 +114,7 @@ public class DevelopmentHelper {
 							})
 					.setPositiveButton("Delete database",
 							new DialogInterface.OnClickListener() {
+								@Override
 								public void onClick(DialogInterface dialog,
 										int id) {
 									executeDeleteDatabase(puzzleFragmentActivity);
@@ -168,6 +170,7 @@ public class DevelopmentHelper {
 									+ "guaranteed that those puzzles have unique solutions.")
 					.setPositiveButton("OK",
 							new DialogInterface.OnClickListener() {
+								@Override
 								public void onClick(DialogInterface dialog,
 										int id) {
 									// Do nothing
@@ -197,6 +200,7 @@ public class DevelopmentHelper {
 									+ "initialized with default values.")
 					.setPositiveButton("OK",
 							new DialogInterface.OnClickListener() {
+								@Override
 								public void onClick(DialogInterface dialog,
 										int id) {
 									restartActivity(puzzleFragmentActivity);
@@ -226,6 +230,7 @@ public class DevelopmentHelper {
 							"All data and preferences for MathDoku will be deleted.")
 					.setNegativeButton("Cancel",
 							new DialogInterface.OnClickListener() {
+								@Override
 								public void onClick(DialogInterface dialog,
 										int id) {
 									// Do nothing
@@ -233,6 +238,7 @@ public class DevelopmentHelper {
 							})
 					.setPositiveButton("Delete all",
 							new DialogInterface.OnClickListener() {
+								@Override
 								public void onClick(DialogInterface dialog,
 										int id) {
 									executeDeleteAllPreferences();
@@ -306,6 +312,7 @@ public class DevelopmentHelper {
 									+ "activity yourself")
 					.setPositiveButton("OK",
 							new DialogInterface.OnClickListener() {
+								@Override
 								public void onClick(DialogInterface dialog,
 										int id) {
 									puzzleFragmentActivity.finish();
@@ -352,6 +359,7 @@ public class DevelopmentHelper {
 										+ "result in (unhandeld) exceptions.")
 						.setNegativeButton("Cancel",
 								new DialogInterface.OnClickListener() {
+									@Override
 									public void onClick(DialogInterface dialog,
 											int id) {
 										// Do nothing
@@ -359,6 +367,7 @@ public class DevelopmentHelper {
 								})
 						.setPositiveButton("Delete database",
 								new DialogInterface.OnClickListener() {
+									@Override
 									public void onClick(DialogInterface dialog,
 											int id) {
 										executeDeleteDatabase(puzzleFragmentActivity);

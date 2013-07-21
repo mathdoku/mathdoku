@@ -59,7 +59,6 @@ public class CellPainter extends BorderPainter {
 		mDuplicateBackgroundPaint.setStyle(Paint.Style.FILL);
 		mDuplicateBackgroundPaint.setColor(mDuplicateBorderPaint.getColor());
 
-
 		// Border and background for cells on which is cheated
 		mCheatedBorderPaint = new Paint();
 		mCheatedBackgroundPaint = new Paint();

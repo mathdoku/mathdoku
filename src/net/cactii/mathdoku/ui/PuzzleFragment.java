@@ -104,7 +104,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		mRootView = inflater
 				.inflate(R.layout.puzzle_fragment, container, false);
 
-		mContext = (Context) getActivity();
+		mContext = getActivity();
 
 		mPainter = Painter.getInstance();
 		mMathDokuPreferences = Preferences.getInstance();
@@ -139,6 +139,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		});
 		mGridView.setOnTickerTapeChangedListener(this);
 		mClearButton.setOnClickListener(new OnClickListener() {
+			@Override
 			public void onClick(View v) {
 				if (mGridView != null) {
 					mGridView.digitSelected(0);
@@ -149,6 +150,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			}
 		});
 		mUndoButton.setOnClickListener(new OnClickListener() {
+			@Override
 			public void onClick(View v) {
 				if (mGrid.undoLastMove()) {
 					// Successful undo
@@ -182,6 +184,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		return mRootView;
 	}
 
+	@Override
 	public void onPause() {
 		stopTimer();
 		if (mGrid != null) {
@@ -210,6 +213,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		super.onDestroy();
 	}
 
+	@Override
 	public void onResume() {
 		setTheme();
 
@@ -260,6 +264,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				.setNegativeButton(
 						R.string.dialog_clear_grid_confirmation_negative_button,
 						new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
 								//
@@ -313,6 +318,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 					Animation animation = AnimationUtils.loadAnimation(
 							mContext, R.anim.solved);
 					animation.setAnimationListener(new AnimationListener() {
+						@Override
 						public void onAnimationEnd(Animation animation) {
 							textView.setVisibility(View.GONE);
 							mOnGridFinishedListener
@@ -320,9 +326,11 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 											.getSolvingAttemptId());
 						}
 
+						@Override
 						public void onAnimationRepeat(Animation animation) {
 						}
 
+						@Override
 						public void onAnimationStart(Animation animation) {
 						}
 					});
@@ -658,6 +666,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				.setNegativeButton(
 						R.string.dialog_reveal_solution_confirmation_negative_button,
 						new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
 								// do nothing

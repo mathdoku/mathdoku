@@ -33,6 +33,7 @@ public class StatisticsFragmentActivity extends AppFragmentActivity implements
 	 */
 	ViewPager mViewPager;
 
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.statistics_activity_fragment);
@@ -157,6 +158,7 @@ public class StatisticsFragmentActivity extends AppFragmentActivity implements
 				.setView(view)
 				.setPositiveButton(R.string.dialog_general_button_close,
 						new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
 								// Do nothing

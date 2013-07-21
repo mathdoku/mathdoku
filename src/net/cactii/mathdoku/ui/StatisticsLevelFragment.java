@@ -169,13 +169,14 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 
 		// Games for which the solution is revealed
 		if (mCumulativeStatistics.mCountSolutionRevealed > 0) {
-			categorySeries
-					.add(getResources().getString(
+			categorySeries.add(
+					getResources().getString(
 							R.string.chart_serie_solution_revealed)
 							+ " ("
-							+ mCumulativeStatistics.mCountSolutionRevealed + ")",
-							(double) mCumulativeStatistics.mCountSolutionRevealed
-									/ mCumulativeStatistics.mCountStarted);
+							+ mCumulativeStatistics.mCountSolutionRevealed
+							+ ")",
+					(double) mCumulativeStatistics.mCountSolutionRevealed
+							/ mCumulativeStatistics.mCountStarted);
 			renderer.addSeriesRenderer(createSimpleSeriesRenderer(chartRed1));
 		}
 
@@ -301,7 +302,8 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		// Add series for solved games
 		if (historicStatistics.isXYSeriesUsed(Serie.SOLVED)) {
 			typesList.add(BarChart.TYPE);
-			xyMultipleSeriesDataset.addSeries(historicStatistics.getXYSeries(Serie.SOLVED,
+			xyMultipleSeriesDataset.addSeries(historicStatistics.getXYSeries(
+					Serie.SOLVED,
 					getResources().getString(R.string.chart_serie_solved),
 					yScale));
 			xyMultipleSeriesRenderer
@@ -357,15 +359,18 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		if (historicStatistics.isXYSeriesUsed(Serie.SOLVED)) {
 			tableLayout = new TableLayout(getActivity());
 			TableLayout.LayoutParams tableLayoutParams = new TableLayout.LayoutParams(
-					TableLayout.LayoutParams.WRAP_CONTENT,
-					TableLayout.LayoutParams.WRAP_CONTENT);
+					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 			tableLayout.setLayoutParams(tableLayoutParams);
 
-			tableLayout.addView(createDataTableRow(
-					tableLayoutParams,
-					getResources().getString(
-							R.string.chart_serie_solved) + 
-						String.format(" (%d)", mCumulativeStatistics.mCountSolvedManually), null));
+			tableLayout
+					.addView(createDataTableRow(
+							tableLayoutParams,
+							getResources().getString(
+									R.string.chart_serie_solved)
+									+ String.format(
+											" (%d)",
+											mCumulativeStatistics.mCountSolvedManually),
+							null));
 			tableLayout
 					.addView(createDataTableRow(
 							tableLayoutParams,

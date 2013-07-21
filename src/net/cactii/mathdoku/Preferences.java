@@ -386,8 +386,8 @@ public class Preferences {
 			if (mSharedPreferences.getString(THEME, THEME_DEFAULT).equals(
 					"newspaper")) {
 				prefeditor.putString(THEME, THEME_LIGHT);
-			} else if (mSharedPreferences.getString(THEME, THEME_DEFAULT).equals(
-					"inverted")) {
+			} else if (mSharedPreferences.getString(THEME, THEME_DEFAULT)
+					.equals("inverted")) {
 				prefeditor.putString(THEME, THEME_DARK);
 			}
 		}

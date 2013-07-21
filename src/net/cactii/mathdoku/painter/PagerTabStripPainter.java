@@ -25,7 +25,7 @@ public class PagerTabStripPainter extends BasePainter {
 	protected void setCellSize(float size) {
 		// Not needed for this painter.
 	}
-	
+
 	/**
 	 * Get the text color for the pager tab strip.
 	 * 

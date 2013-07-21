@@ -65,7 +65,8 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 
 		// set color
 		((Button) findViewById(R.id.shared_puzzle_play_button))
-				.setBackgroundColor(Painter.getInstance().getButtonBackgroundColor());
+				.setBackgroundColor(Painter.getInstance()
+						.getButtonBackgroundColor());
 
 		// Load the grid into the grid view.
 		((GridView) findViewById(R.id.gridView)).loadNewGrid(mGrid);
@@ -175,6 +176,7 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 					.setNegativeButton(
 							R.string.shared_puzzle_exists_negative_button,
 							new DialogInterface.OnClickListener() {
+								@Override
 								public void onClick(DialogInterface dialog,
 										int whichButton) {
 									// Finish the preview activity
@@ -184,6 +186,7 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 					.setPositiveButton(
 							R.string.shared_puzzle_exists_positive_button,
 							new DialogInterface.OnClickListener() {
+								@Override
 								public void onClick(DialogInterface dialog,
 										int whichButton) {
 									startPuzzleFragment();

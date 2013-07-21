@@ -62,21 +62,24 @@ public class TickerTape extends HorizontalScrollView {
 				.getDisplayMetrics().density) + 0.5f);
 
 		// Set layout parameters of the horizontal scroll view.
-		setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-				LayoutParams.WRAP_CONTENT));
+		setLayoutParams(new LayoutParams(
+				android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+				android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
 
 		// Add a linear layout to the scroll view which will hold all the text
 		// view for all items
 		mTickerTapeLinearLayout = new LinearLayout(mContext);
 		mTickerTapeLinearLayout.setLayoutParams(new LayoutParams(
-				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+				android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+				android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
 		addView(mTickerTapeLinearLayout);
 
 		// disable scroll bar
 		setHorizontalScrollBarEnabled(false);
 
 		// set color
-		setBackgroundColor(Painter.getInstance().getTickerTapePainter().getBackgroundColor());
+		setBackgroundColor(Painter.getInstance().getTickerTapePainter()
+				.getBackgroundColor());
 
 		// Hide by default
 		setVisibility(View.INVISIBLE);
@@ -98,10 +101,12 @@ public class TickerTape extends HorizontalScrollView {
 		textView.setText(string);
 		textView.setTextSize(mTextSize);
 		textView.setId(mTextViewList.size());
-		textView.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
-				LayoutParams.WRAP_CONTENT));
+		textView.setLayoutParams(new LayoutParams(
+				android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+				android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
 		textView.setPadding(0, 0, 4 * mScrollStepSize, 0);
-		textView.setTextColor(Painter.getInstance().getTickerTapePainter().getTextColor());
+		textView.setTextColor(Painter.getInstance().getTickerTapePainter()
+				.getTextColor());
 
 		// Add the text view to the layout and the list of text views.
 		mTickerTapeLinearLayout.addView(textView);
@@ -168,6 +173,7 @@ public class TickerTape extends HorizontalScrollView {
 		final Handler handler = new Handler();
 		Runnable runnable = new Runnable() {
 
+			@Override
 			public void run() {
 				if (!isCancelled()) {
 					if (!mStartedMoving) {

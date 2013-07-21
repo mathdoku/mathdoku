@@ -73,6 +73,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	private static Projection mCumulativeStatisticsProjection = null;
 	private static Projection mHistoricStatisticsProjection = null;
 
+	@Override
 	protected String getTableName() {
 		return TABLE;
 	}
@@ -129,6 +130,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 * 
 	 * @see net.cactii.mathdoku.storage.database.DatabaseAdapter#getCreateSQL()
 	 */
+	@Override
 	protected String getCreateSQL() {
 		return buildCreateSQL();
 	}

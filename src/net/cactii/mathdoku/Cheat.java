@@ -19,7 +19,6 @@ public class Cheat {
 	long MILIS_PER_MINUTE = 60 * 1000;
 	long MILIS_PER_SECOND = 1000;
 
-
 	// The type of cheat
 	private CheatType mCheatType;
 
@@ -142,7 +141,8 @@ public class Cheat {
 	 * @return The penalty time in mili seconds for this cheat.
 	 */
 	public long getPenaltyTimeMilis() {
-		return mPenaltyTimeMilisBase + (mConditionalOccurrences * mPenaltyTimeMilisPerOccurrence);
+		return mPenaltyTimeMilisBase
+				+ (mConditionalOccurrences * mPenaltyTimeMilisPerOccurrence);
 	}
 
 	/**
@@ -192,21 +192,17 @@ public class Cheat {
 	private String getPenaltyTimeText(long penaltyTime) {
 		String penaltyTimeText = "";
 		String and = " "
-				+ mResources
-						.getString(R.string.connector_last_two_elements)
+				+ mResources.getString(R.string.connector_last_two_elements)
 				+ " ";
 
 		// Determine number of days
 		long days = penaltyTime / MILIS_PER_DAY;
 		if (days > 1) {
-			penaltyTimeText = Long.toString(days)
-					+ " "
-					+ mResources
-							.getString(R.string.time_unit_days_plural);
+			penaltyTimeText = Long.toString(days) + " "
+					+ mResources.getString(R.string.time_unit_days_plural);
 		} else if (days == 1) {
 			penaltyTimeText = "1 "
-					+ mResources
-							.getString(R.string.time_unit_days_singular);
+					+ mResources.getString(R.string.time_unit_days_singular);
 		} else {
 			penaltyTimeText = "";
 		}
@@ -216,11 +212,8 @@ public class Cheat {
 			// Determine number of hours
 			long hours = penaltyTime / MILIS_PER_HOUR;
 			if (hours > 1) {
-				penaltyTimeText += (days > 0 ? and : "")
-						+ hours
-						+ " "
-						+ mResources
-								.getString(R.string.time_unit_hours_plural);
+				penaltyTimeText += (days > 0 ? and : "") + hours + " "
+						+ mResources.getString(R.string.time_unit_hours_plural);
 			} else if (hours == 1) {
 				penaltyTimeText += (days > 0 ? and : "")
 						+ "1 "

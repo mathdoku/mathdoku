@@ -1,6 +1,5 @@
 package net.cactii.mathdoku.gridGenerating;
 
-
 /**
  * All parameters which have influenced the grid generating process.
  * 

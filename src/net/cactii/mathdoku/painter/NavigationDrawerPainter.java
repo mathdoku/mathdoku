@@ -21,7 +21,7 @@ public class NavigationDrawerPainter extends BasePainter {
 	protected void setCellSize(float size) {
 		// Not needed for this painter.
 	}
-	
+
 	/**
 	 * Get the background color for the inactive item.
 	 * 

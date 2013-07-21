@@ -16,7 +16,8 @@ public class CagePainter extends BorderPainter {
 	/**
 	 * Creates a new instance of {@link CagePainter}.
 	 * 
-	 * @param painter The global container for all painters.
+	 * @param painter
+	 *            The global container for all painters.
 	 */
 	public CagePainter(Painter painter) {
 		super(painter);
@@ -97,7 +98,8 @@ public class CagePainter extends BorderPainter {
 	@Override
 	protected void setBorderSizes(boolean thin) {
 		if (thin) {
-			mBorderPaint.setStrokeWidth(BorderPainter.BORDER_STROKE_WIDTH_NORMAL);
+			mBorderPaint
+					.setStrokeWidth(BorderPainter.BORDER_STROKE_WIDTH_NORMAL);
 			mBorderSelectedPaint
 					.setStrokeWidth(BorderPainter.BORDER_STROKE_WIDTH_MEDIUM);
 			mBorderBadMathPaint
@@ -105,7 +107,8 @@ public class CagePainter extends BorderPainter {
 			mBorderSelectedBadMathPaint
 					.setStrokeWidth(BorderPainter.BORDER_STROKE_WIDTH_MEDIUM);
 		} else {
-			mBorderPaint.setStrokeWidth(BorderPainter.BORDER_STROKE_WIDTH_NORMAL);
+			mBorderPaint
+					.setStrokeWidth(BorderPainter.BORDER_STROKE_WIDTH_NORMAL);
 			mBorderSelectedPaint
 					.setStrokeWidth(BorderPainter.BORDER_STROKE_WIDTH_THICK);
 			mBorderBadMathPaint
@@ -119,12 +122,12 @@ public class CagePainter extends BorderPainter {
 	protected void setCellSize(float size) {
 		// Text size of cage text is 1/3 of cell size
 		int cageTextSize = (int) (size / 3);
-		
+
 		mTextPaint.setTextSize(cageTextSize);
 		mTextLeftOffset = 2;
-		mTextBottomOffset = cageTextSize;  
+		mTextBottomOffset = cageTextSize;
 	}
-	
+
 	/**
 	 * Gets the border paint for a selected cage.
 	 * 
@@ -137,7 +140,8 @@ public class CagePainter extends BorderPainter {
 	/**
 	 * Gets the border paint for cage which is not selected and has bas maths.
 	 * 
-	 * @return The border paint for cage which is not selected and has bas maths.
+	 * @return The border paint for cage which is not selected and has bas
+	 *         maths.
 	 */
 	public Paint getBorderBadMathPaint() {
 		return mBorderBadMathPaint;

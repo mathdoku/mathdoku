@@ -179,6 +179,7 @@ public class GridCageType {
 	 * 
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 		String result = "";
 		for (int row = 0; row < mRows; row++) {

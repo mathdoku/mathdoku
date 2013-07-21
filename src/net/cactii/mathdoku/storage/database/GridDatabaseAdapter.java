@@ -43,8 +43,8 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 
 	private static final String[] allColumns = { KEY_ROWID, KEY_DEFINITION,
 			KEY_GRID_SIZE, KEY_DATE_CREATED, KEY_GAME_SEED,
-			KEY_GENERATOR_REVISION_NUMBER, KEY_PUZZLE_COMPLEXITY, KEY_HIDE_OPERATORS,
-			KEY_MAX_CAGE_RESULT, KEY_MAX_CAGE_SIZE };
+			KEY_GENERATOR_REVISION_NUMBER, KEY_PUZZLE_COMPLEXITY,
+			KEY_HIDE_OPERATORS, KEY_MAX_CAGE_RESULT, KEY_MAX_CAGE_SIZE };
 
 	// Columns used in result of function getLatestSolvingAttemptsPerGrid
 	public static final int LATEST_SOLVING_ATTEMPT_PER_GRID__GRID_ID = 0;
@@ -60,6 +60,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		ALL, SIZE_4, SIZE_5, SIZE_6, SIZE_7, SIZE_8, SIZE_9
 	};
 
+	@Override
 	protected String getTableName() {
 		return TABLE;
 	}
@@ -94,6 +95,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 * 
 	 * @see net.cactii.mathdoku.storage.database.DatabaseAdapter#getCreateSQL()
 	 */
+	@Override
 	protected String getCreateSQL() {
 		return buildCreateSQL();
 	}
@@ -279,8 +281,9 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		gridRow.mGridGeneratingParameters.mGeneratorRevisionNumber = cursor
 				.getInt(cursor
 						.getColumnIndexOrThrow(KEY_GENERATOR_REVISION_NUMBER));
-		gridRow.mGridGeneratingParameters.mPuzzleComplexity = PuzzleComplexity.valueOf(cursor
-				.getString(cursor.getColumnIndexOrThrow(KEY_PUZZLE_COMPLEXITY)));
+		gridRow.mGridGeneratingParameters.mPuzzleComplexity = PuzzleComplexity
+				.valueOf(cursor.getString(cursor
+						.getColumnIndexOrThrow(KEY_PUZZLE_COMPLEXITY)));
 		gridRow.mGridGeneratingParameters.mHideOperators = valueOfSQLiteBoolean(cursor
 				.getString(cursor.getColumnIndexOrThrow(KEY_HIDE_OPERATORS)));
 		gridRow.mGridGeneratingParameters.mMaxCageResult = cursor.getInt(cursor

@@ -23,9 +23,7 @@ public class TipStatistics extends TipDialog {
 				context.getResources().getString(
 						R.string.dialog_tip_statistics_title),
 				context.getResources().getString(
-						R.string.dialog_tip_statistics_text), 
-						// TODO: Add image of statistics to tip
-						null).show(); 
+						R.string.dialog_tip_statistics_text), null).show();
 	}
 
 	/**
@@ -39,7 +37,8 @@ public class TipStatistics extends TipDialog {
 	 */
 	public static boolean toBeDisplayed(Preferences preferences) {
 		// Determine on basis of preferences whether the tip should be shown.
-		return TipDialog.getDisplayTipAgain(preferences, TIP_NAME, TIP_PRIORITY);
+		return TipDialog
+				.getDisplayTipAgain(preferences, TIP_NAME, TIP_PRIORITY);
 	}
 
 	/**

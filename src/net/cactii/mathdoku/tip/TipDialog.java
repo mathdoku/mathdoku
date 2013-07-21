@@ -127,6 +127,7 @@ public class TipDialog extends AlertDialog {
 		setButton(DialogInterface.BUTTON_POSITIVE, mContext.getResources()
 				.getString(R.string.dialog_general_button_close),
 				new DialogInterface.OnClickListener() {
+					@Override
 					public void onClick(DialogInterface dialog, int id) {
 						// Check if do not show again checkbox is
 						// checked

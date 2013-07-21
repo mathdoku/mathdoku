@@ -162,7 +162,7 @@ public class FeedbackEmail {
 			for (Map.Entry<String, ?> entry : preferences
 					.getAllSharedPreferences().entrySet()) {
 				if (entry != null) {
-					String key = (String) entry.getKey();
+					String key = entry.getKey();
 					if (key == null) {
 						continue;
 					}
@@ -188,8 +188,8 @@ public class FeedbackEmail {
 		// Get Map in Set interface to get key and value
 		for (Map.Entry<String, String> entry : map.entrySet()) {
 			// Get key and value
-			String key = (String) entry.getKey();
-			String value = (String) entry.getValue();
+			String key = entry.getKey();
+			String value = entry.getValue();
 
 			logLine += FIELD_DELIMITER_LEVEL1 + key + FIELD_DELIMITER_LEVEL2
 					+ (value == null ? "" : value.toString());
@@ -259,8 +259,7 @@ public class FeedbackEmail {
 
 		// Create a screen dump before showing the alert.
 		final Screendump screendump = new Screendump(mActivity);
-		screendump.save(mActivity
-				.getWindow().getDecorView(),
+		screendump.save(mActivity.getWindow().getDecorView(),
 				FileProvider.SCREENDUMP_FILE_NAME);
 
 		// Get view and put relevant information into the view.
@@ -278,6 +277,7 @@ public class FeedbackEmail {
 				.setView(view)
 				.setNegativeButton(R.string.dialog_general_button_close,
 						new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
 								// Do nothing
@@ -286,6 +286,7 @@ public class FeedbackEmail {
 				.setPositiveButton(
 						R.string.dialog_send_feedback_positive_button,
 						new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
 								// Send log file

@@ -135,7 +135,6 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 				break;
 			}
 
-
 			// Load grid statistics
 			mGridStatistics = grid.getGridStatistics();
 

@@ -40,12 +40,12 @@ public class Screendump extends Object {
 			// Could not create a preview.
 			return false;
 		}
-		
-         // Create bitmap and canvas and draw the view on this canvas.
-         Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),
- 				Bitmap.Config.ARGB_8888);
- 		Canvas canvas = new Canvas(bitmap);
- 		view.draw(canvas);
+
+		// Create bitmap and canvas and draw the view on this canvas.
+		Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),
+				Bitmap.Config.ARGB_8888);
+		Canvas canvas = new Canvas(bitmap);
+		view.draw(canvas);
 
 		// Create file
 		File file = new File(mContext.getFilesDir(), filename);

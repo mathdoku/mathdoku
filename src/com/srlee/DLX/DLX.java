@@ -60,7 +60,7 @@ public class DLX extends Object {
 	}
 
 	public int GetSolutionRow(int row) {
-		return (Integer) foundsolution.get(row - 1);
+		return foundsolution.get(row - 1);
 	}
 
 	private void CoverCol(DLXColumn coverCol) {
@@ -191,7 +191,9 @@ public class DLX extends Object {
 			NumSolns++;
 			foundsolution = new ArrayList<Integer>(trysolution);
 			if (MathDokuDLX.DEBUG_DLX) {
-				Log.i(TAG, "Solution " + NumSolns + " found which consists of following moves: " + trysolution.toString());
+				Log.i(TAG, "Solution " + NumSolns
+						+ " found which consists of following moves: "
+						+ trysolution.toString());
 			}
 			return;
 		}

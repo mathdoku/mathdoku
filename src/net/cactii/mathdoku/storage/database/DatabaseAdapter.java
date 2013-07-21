@@ -7,7 +7,6 @@ import java.util.List;
 
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
-
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -282,7 +281,8 @@ public abstract class DatabaseAdapter {
 			// Table exists. Check if definition matches with expected
 			// definition.
 			String sql = cursor
-					.getString(cursor.getColumnIndexOrThrow(KEY_SQL)).toUpperCase();
+					.getString(cursor.getColumnIndexOrThrow(KEY_SQL))
+					.toUpperCase();
 			tableDefinitionChanged = !sql.equals(getCreateSQL().toUpperCase());
 
 			if (tableDefinitionChanged) {
