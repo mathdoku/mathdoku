@@ -295,7 +295,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				// Notify the containing fragment activity about the finishing
 				// of the grid. In case the puzzle has been solved manually, a
 				// animation is played first.
-				if (!mGrid.isActive() || mGrid.isSolvedByCheating()
+				if (!mGrid.isActive() || mGrid.isSolutionRevealed()
 						|| mGrid.countMoves() == 0) {
 					mOnGridFinishedListener.onGridFinishedListener(mGrid
 							.getSolvingAttemptId());
@@ -469,18 +469,20 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			return;
 		}
 
-		// Reveal the user value
+		// Save old cell info
 		CellChange orginalUserMove = selectedCell.saveUndoInformation(null);
+		
+		// Reveal the user value
+		selectedCell.setRevealed();
 		selectedCell.setUserValue(selectedCell.getCorrectValue());
 		if (mMathDokuPreferences.isClearRedundantPossiblesEnabled()) {
 			// Update possible values for other cells in this row and
 			// column.
 			mGrid.clearRedundantPossiblesInSameRowOrColumn(orginalUserMove);
 		}
-		selectedCell.setCheated();
 		setClearAndUndoButtonVisibility(selectedCell);
 
-		mGrid.increaseCounter(StatisticsCounterType.CELLS_REVEALED);
+		mGrid.increaseCounter(StatisticsCounterType.ACTION_REVEAL_CELL);
 		registerAndProcessCheat(CheatType.CELL_REVEALED);
 
 		this.mGridView.invalidate();
@@ -519,7 +521,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 		selectedGridCage.revealOperator();
 
-		mGrid.increaseCounter(StatisticsCounterType.OPERATORS_REVEALED);
+		mGrid.increaseCounter(StatisticsCounterType.ACTION_REVEAL_OPERATOR);
 		registerAndProcessCheat(CheatType.OPERATOR_REVEALED);
 
 		mGridView.invalidate();
@@ -576,9 +578,9 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 		// Register cheat in statistics
 		mGrid.getGridStatistics().increaseCounter(
-				StatisticsCounterType.CHECK_PROGRESS_USED);
+				StatisticsCounterType.ACTION_CHECK_PROGRESS);
 		mGrid.getGridStatistics().increaseCounter(
-				StatisticsCounterType.CHECK_PROGRESS_INVALIDS_FOUND,
+				StatisticsCounterType.CHECK_PROGRESS_INVALIDS_CELLS_FOUND,
 				countNewInvalidChoices);
 
 		// Add penalty time
@@ -680,7 +682,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 									int which) {
 								mGrid.getGridStatistics().solutionRevealed();
 								registerAndProcessCheat(CheatType.SOLUTION_REVEALED);
-								mGrid.solve();
+								mGrid.revealSolution();
 							}
 						}).show();
 	}
@@ -710,7 +712,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		if (mPuzzleGridLayout != null) {
 			mPuzzleGridLayout.setVisibility(View.VISIBLE);
 		}
-		if (mGrid == null || (mGrid != null && mGrid.isSolvedByCheating())) {
+		if (mGrid == null || (mGrid != null && mGrid.isSolutionRevealed())) {
 			// Hide time in case the puzzle was solved by
 			// requesting to show the solution.
 			if (mTimerText != null) {

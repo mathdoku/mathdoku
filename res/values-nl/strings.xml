@@ -352,6 +352,7 @@
     <string name="progress_chart_body">Deze afbeelding toont de voortgang van het oplossen van deze puzzel. Voor ingevulde cellen wordt niet getoond of de ingevulde waarde (in)correct is. Een cel die mogelijke waarden bevat wordt geteld als een lege cel.</string>
     <!-- Dimensions displayed in chart "Progress". -->
     <string name="progress_chart_cells_filled">Cellen ingevuld</string>
+    <string name="progress_chart_cells_revealed">Cellen onthuld</string>
     <string name="progress_chart_cells_empty">Cellen leeg</string>
 
     <!-- Title and a body which explains the purpose of the chart "Avoidable moves". -->
@@ -379,9 +380,9 @@
     <string name="solved_chart_body">Deze grafiek toont het aantal puzzels dat opgelost is versus het aantal puzzels die nog niet zijn opgelost of waarvan de oplossing is onthuld.</string>
 
     <!-- Series used to split charts like "Unsolved games" and "Elapsed time historic". -->
-    <string name="chart_serie_solved">Opgeloste puzzels</string>
+    <string name="chart_serie_solved">Opgelost</string>
     <string name="chart_serie_solution_revealed">Oplossing onthuld</string>
-    <string name="chart_serie_unfinished">Onvoltooide puzzels</string>
+    <string name="chart_serie_unfinished">Onvoltooid</string>
 
     <!-- Title and a body which explains the purpose of the chart "Elapsed time historic". -->
     <string name="statistics_elapsed_time_historic_title">Speeltijd</string>
@@ -419,7 +420,7 @@
         <item>Alle</item>
         <item>Onafgerond</item>
         <item>Opgelost</item>
-        <item>Vals spel</item>
+        <item>Onthult</item>
     </string-array>
 
     <!-- The possible values of the archive filter on game size. -->

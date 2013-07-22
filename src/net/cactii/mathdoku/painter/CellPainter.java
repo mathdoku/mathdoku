@@ -17,8 +17,8 @@ public class CellPainter extends BorderPainter {
 	private Paint mInvalidBackgroundPaint;
 
 	// Border and background for a cell from which the value is revealed.
-	private Paint mCheatedBorderPaint;
-	private Paint mCheatedBackgroundPaint;
+	private Paint mRevealedBorderPaint;
+	private Paint mRevealedBackgroundPaint;
 
 	// Border and background for a cell containing a duplicate value
 	private Paint mDuplicateBorderPaint;
@@ -59,12 +59,12 @@ public class CellPainter extends BorderPainter {
 		mDuplicateBackgroundPaint.setStyle(Paint.Style.FILL);
 		mDuplicateBackgroundPaint.setColor(mDuplicateBorderPaint.getColor());
 
-		// Border and background for cells on which is cheated
-		mCheatedBorderPaint = new Paint();
-		mCheatedBackgroundPaint = new Paint();
-		mCheatedBorderPaint.setColor(0x90ffcea0);
-		mCheatedBackgroundPaint.setStyle(Paint.Style.FILL);
-		mCheatedBackgroundPaint.setColor(mCheatedBorderPaint.getColor());
+		// Border and background for cells on which is revealed
+		mRevealedBorderPaint = new Paint();
+		mRevealedBackgroundPaint = new Paint();
+		mRevealedBorderPaint.setColor(0x90ffcea0);
+		mRevealedBackgroundPaint.setStyle(Paint.Style.FILL);
+		mRevealedBackgroundPaint.setColor(mRevealedBorderPaint.getColor());
 
 		// Border and background for cells which are selected.
 		mSelectedBorderPaint = new Paint();
@@ -106,7 +106,7 @@ public class CellPainter extends BorderPainter {
 					.setStrokeWidth(BorderPainter.BORDER_STROKE_WIDTH_NORMAL);
 			mDuplicateBorderPaint
 					.setStrokeWidth(BorderPainter.BORDER_STROKE_WIDTH_NORMAL);
-			mCheatedBorderPaint
+			mRevealedBorderPaint
 					.setStrokeWidth(BorderPainter.BORDER_STROKE_WIDTH_NORMAL);
 			mSelectedBorderPaint
 					.setStrokeWidth(BorderPainter.BORDER_STROKE_WIDTH_NORMAL);
@@ -117,7 +117,7 @@ public class CellPainter extends BorderPainter {
 					.setStrokeWidth(BorderPainter.BORDER_STROKE_WIDTH_THICK);
 			mDuplicateBorderPaint
 					.setStrokeWidth(BorderPainter.BORDER_STROKE_WIDTH_THICK);
-			mCheatedBorderPaint
+			mRevealedBorderPaint
 					.setStrokeWidth(BorderPainter.BORDER_STROKE_WIDTH_THICK);
 			mSelectedBorderPaint
 					.setStrokeWidth(BorderPainter.BORDER_STROKE_WIDTH_THICK);
@@ -172,8 +172,8 @@ public class CellPainter extends BorderPainter {
 	 * 
 	 * @return The paint for a border of a cell which has been revealed.
 	 */
-	public Paint getCheatedBorderPaint() {
-		return mCheatedBorderPaint;
+	public Paint getRevealedBorderPaint() {
+		return mRevealedBorderPaint;
 	}
 
 	/**
@@ -181,8 +181,8 @@ public class CellPainter extends BorderPainter {
 	 * 
 	 * @return The paint for the background of a cell which has been revealed.
 	 */
-	public Paint getCheatedBackgroundPaint() {
-		return mCheatedBackgroundPaint;
+	public Paint getRevealedBackgroundPaint() {
+		return mRevealedBackgroundPaint;
 	}
 
 	/**

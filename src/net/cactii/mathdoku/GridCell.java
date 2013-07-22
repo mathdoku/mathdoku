@@ -10,6 +10,8 @@ import net.cactii.mathdoku.painter.MaybeValuePainter;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.painter.SwipeBorderPainter;
 import net.cactii.mathdoku.painter.UserValuePainter;
+import net.cactii.mathdoku.statistics.GridStatistics;
+import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 import net.cactii.mathdoku.ui.GridView.InputMode;
 import android.graphics.Canvas;
@@ -53,8 +55,8 @@ public class GridCell {
 	public boolean mDuplicateValueHighlight;
 	// Whether to show cell as selected
 	public boolean mSelected;
-	// Player cheated (revealed this cell)
-	private boolean mCheated;
+	// Player revealed this cell
+	private boolean mRevealed;
 	// Highlight user input isn't correct value
 	private boolean mInvalidUserValueHighlight;
 
@@ -87,7 +89,7 @@ public class GridCell {
 		mCorrectValue = 0;
 		mUserValue = 0;
 		mDuplicateValueHighlight = false;
-		mCheated = false;
+		mRevealed = false;
 		mInvalidUserValueHighlight = false;
 		mPossibles = new ArrayList<Integer>();
 		mPosX = 0;
@@ -195,10 +197,35 @@ public class GridCell {
 	 *            The new value for the cell. Use 0 to clear the cell.
 	 */
 	public void setUserValue(int digit) {
+		// Update statistics
+		if (mGrid != null) {
+			GridStatistics gridStatistics = mGrid.getGridStatistics();
+			if (digit != 0 && digit != mUserValue) {
+				gridStatistics
+						.increaseCounter(StatisticsCounterType.USER_VALUE_REPLACED);
+			}
+
+			// Cell counters are only update if the solution of the cell has
+			// not been revealed.
+			if (mRevealed == false) {
+				gridStatistics
+						.decreaseCounter(mUserValue == 0 ? StatisticsCounterType.CELLS_EMPTY
+								: StatisticsCounterType.CELLS_FILLED);
+				gridStatistics
+						.increaseCounter(digit == 0 ? StatisticsCounterType.CELLS_EMPTY
+								: StatisticsCounterType.CELLS_FILLED);
+			}
+		}
+
+		// Remove possibles
 		mPossibles.clear();
-		mUserValue = digit;
+
+		// Clear highlight except cheating
 		mInvalidUserValueHighlight = false;
 		mDuplicateValueHighlight = false;
+
+		// Set new value
+		mUserValue = digit;
 
 		// Set borders for this cells and adjacents cells
 		setBorders();
@@ -223,7 +250,7 @@ public class GridCell {
 	 */
 	public void clearAllFlags() {
 		mDuplicateValueHighlight = false;
-		mCheated = false;
+		mRevealed = false;
 		mInvalidUserValueHighlight = false;
 	}
 
@@ -378,12 +405,13 @@ public class GridCell {
 		left += leftOffset;
 
 		// ---------------------------------------------------------------------
-		// Next the inner borders are drawn for invalid, cheated and warnings.
+		// Next the inner borders are drawn for invalid, revealed, duplicate and
+		// selected cells.
 		// Theoretically multiple borders can be drawn. The less import signals
 		// will be drawn first so the most important signal is in the middle of
 		// the cell and adjacent to the corresponding background.
-		// Order of signals in increasing importance: warning, cheated, invalid,
-		// selected.
+		// Order of signals in increasing importance: duplicate, revealed,
+		// invalid, selected.
 		// ---------------------------------------------------------------------
 
 		for (int i = 1; i <= 4; i++) {
@@ -394,8 +422,8 @@ public class GridCell {
 						.getDuplicateBorderPaint() : null);
 				break;
 			case 2:
-				borderPaint = (mCheated ? mCellPainter.getCheatedBorderPaint()
-						: null);
+				borderPaint = (mRevealed ? mCellPainter
+						.getRevealedBorderPaint() : null);
 				break;
 			case 3:
 				borderPaint = (mInvalidUserValueHighlight ? mCellPainter
@@ -435,7 +463,8 @@ public class GridCell {
 		// important background. In the cell is not selected but we already have
 		// drawn a signal border, we will draw the background for the most
 		// import signal.
-		// Order of signals in increasing importance: warning, cheated, invalid.
+		// Order of signals in increasing importance: selected, invalid,
+		// revealed, duplicate.
 		// ---------------------------------------------------------------------
 
 		Paint background = null;
@@ -443,8 +472,8 @@ public class GridCell {
 			background = mCellPainter.getSelectedBackgroundPaint();
 		} else if (mInvalidUserValueHighlight) {
 			background = mCellPainter.getInvalidBackgroundPaint();
-		} else if (mCheated) {
-			background = mCellPainter.getCheatedBackgroundPaint();
+		} else if (mRevealed) {
+			background = mCellPainter.getRevealedBackgroundPaint();
 		} else if (mDuplicateValueHighlight && mGrid.hasPrefShowDupeDigits()) {
 			background = mCellPainter.getWarningBackgroundPaint();
 		}
@@ -708,7 +737,7 @@ public class GridCell {
 		storageString += SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ Boolean.toString(mInvalidUserValueHighlight)
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ Boolean.toString(mCheated)
+				+ Boolean.toString(mRevealed)
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ Boolean.toString(mSelected);
 
@@ -760,7 +789,7 @@ public class GridCell {
 		index++;
 
 		mInvalidUserValueHighlight = Boolean.parseBoolean(cellParts[index++]);
-		mCheated = Boolean.parseBoolean(cellParts[index++]);
+		mRevealed = Boolean.parseBoolean(cellParts[index++]);
 		mSelected = Boolean.parseBoolean(cellParts[index++]);
 
 		return true;
@@ -872,10 +901,20 @@ public class GridCell {
 	}
 
 	/**
-	 * Confirm that the user has cheated to reveal the content of cell.
+	 * Confirm that the user has revealed the content of the cell.
 	 */
-	public void setCheated() {
-		this.mCheated = true;
+	public void setRevealed() {
+		// Correct grid statistics
+		if (mRevealed == false && mGrid != null) {
+			GridStatistics gridStatistics = mGrid.getGridStatistics();
+			gridStatistics
+					.decreaseCounter(isUserValueSet() ? StatisticsCounterType.CELLS_FILLED
+							: StatisticsCounterType.CELLS_EMPTY);
+			gridStatistics
+					.increaseCounter(StatisticsCounterType.CELLS_REVEALED);
+		}
+
+		mRevealed = true;
 	}
 
 	/**
@@ -1091,5 +1130,14 @@ public class GridCell {
 	 */
 	public void setDuplicateHighlight(boolean highlight) {
 		mDuplicateValueHighlight = highlight;
+	}
+
+	/**
+	 * Checks is the user value of the cell was revealed.
+	 * 
+	 * @return True in case the cell has been revealed. False otherwise.
+	 */
+	public boolean isRevealed() {
+		return mRevealed;
 	}
 }

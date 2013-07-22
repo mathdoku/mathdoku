@@ -36,29 +36,30 @@ public class GridStatistics {
 	// The number of possible values used
 	public int mMaybeValue;
 
-	// The number of moves reversed via undo
-	public int mUndoButton;
+	// The number of times the undo button is used
+	public int mActionUndoMove;
 
 	// The number of times the clear button is used to clear a single cell
-	public int mCellCleared;
+	public int mActionClearCell;
 
-	// The number of times the entire grid was cleared
-	public int mGridCleared;
+	// The number of times the action clear grid is used
+	public int mActionClearGrid;
 
 	// *******
 	// Cheats
 	// *******
 
-	// The number of cells revealed (a cheat)
-	public int mCellsRevealed;
+	// The number of times the action reveal cell is used (a cheat)
+	public int mActionRevealCell;
 
-	// The number of cage operators revealed (a cheat)
-	public int mOperatorsRevevealed;
+	// The number of times the action operator is used (a cheat)
+	public int mActionRevealOperator;
 
-	// The number of times "check progress" was used and the total number of
-	// invalids values which have been found when using this option (a cheat)
-	public int mCheckProgressUsed;
-	public int mCheckProgressInvalidsFound;
+	// The number of times the action "check progress" was used and the total
+	// number of invalids values which have been found when using this option (a
+	// cheat)
+	public int mActionCheckProgress;
+	public int mCheckProgressInvalidCellsFound;
 
 	// Has the entire solution been revealed?
 	public boolean mSolutionRevealed;
@@ -67,9 +68,12 @@ public class GridStatistics {
 	// Status for entire grid
 	// ***********************
 
-	// Cells filled and empty
-	public int mCellsUserValueFilled;
-	public int mCellsUserValueEmtpty;
+	// Cells filled + revealed + empty == total cells in grid
+	public int mCellsFilled;
+	public int mCellsEmtpty;
+	public int mCellsRevealed; // Note: this value does not need to be identical
+								// to mActionRevealCell in case reveal solution
+								// is also used.
 
 	// Has the grid been solved manually (i.e. not revealed)?
 	public boolean mSolvedManually;
@@ -83,7 +87,7 @@ public class GridStatistics {
 
 	// Counters available
 	public enum StatisticsCounterType {
-		CELLS_FILLED, CELLS_EMPTY, USER_VALUE_REPLACED, POSSIBLES, UNDOS, CELL_CLEARED, GRID_CLEARED, CELLS_REVEALED, OPERATORS_REVEALED, CHECK_PROGRESS_USED, CHECK_PROGRESS_INVALIDS_FOUND
+		CELLS_FILLED, CELLS_EMPTY, CELLS_REVEALED, USER_VALUE_REPLACED, POSSIBLES, ACTION_UNDO_MOVE, ACTION_CLEAR_CELL, ACTION_CLEAR_GRID, ACTION_REVEAL_CELL, ACTION_REVEAL_OPERATOR, ACTION_CHECK_PROGRESS, CHECK_PROGRESS_INVALIDS_CELLS_FOUND
 	};
 
 	/**
@@ -116,10 +120,13 @@ public class GridStatistics {
 			int occurrences) {
 		switch (statisticsCounterType) {
 		case CELLS_FILLED:
-			mCellsUserValueFilled += occurrences;
+			mCellsFilled += occurrences;
 			break;
 		case CELLS_EMPTY:
-			mCellsUserValueEmtpty += occurrences;
+			mCellsEmtpty += occurrences;
+			break;
+		case CELLS_REVEALED:
+			mCellsRevealed += occurrences;
 			break;
 		case USER_VALUE_REPLACED:
 			mUserValueReplaced += occurrences;
@@ -127,26 +134,26 @@ public class GridStatistics {
 		case POSSIBLES:
 			mMaybeValue += occurrences;
 			break;
-		case UNDOS:
-			mUndoButton += occurrences;
+		case ACTION_UNDO_MOVE:
+			mActionUndoMove += occurrences;
 			break;
-		case CELL_CLEARED:
-			mCellCleared += occurrences;
+		case ACTION_CLEAR_CELL:
+			mActionClearCell += occurrences;
 			break;
-		case GRID_CLEARED:
-			mGridCleared += occurrences;
+		case ACTION_CLEAR_GRID:
+			mActionClearGrid += occurrences;
 			break;
-		case CELLS_REVEALED:
-			mCellsRevealed += occurrences;
+		case ACTION_REVEAL_CELL:
+			mActionRevealCell += occurrences;
 			break;
-		case OPERATORS_REVEALED:
-			mOperatorsRevevealed += occurrences;
+		case ACTION_REVEAL_OPERATOR:
+			mActionRevealOperator += occurrences;
 			break;
-		case CHECK_PROGRESS_USED:
-			mCheckProgressUsed += occurrences;
+		case ACTION_CHECK_PROGRESS:
+			mActionCheckProgress += occurrences;
 			break;
-		case CHECK_PROGRESS_INVALIDS_FOUND:
-			mCheckProgressInvalidsFound += occurrences;
+		case CHECK_PROGRESS_INVALIDS_CELLS_FOUND:
+			mCheckProgressInvalidCellsFound += occurrences;
 			break;
 		}
 		setLastMoveToCurrentTime();
@@ -161,10 +168,13 @@ public class GridStatistics {
 	public void decreaseCounter(StatisticsCounterType statisticsCounterType) {
 		switch (statisticsCounterType) {
 		case CELLS_FILLED:
-			mCellsUserValueFilled--;
+			mCellsFilled--;
 			break;
 		case CELLS_EMPTY:
-			mCellsUserValueEmtpty--;
+			mCellsEmtpty--;
+			break;
+		case CELLS_REVEALED:
+			mCellsRevealed--;
 			break;
 		default:
 			// Not available for other counters.

@@ -32,28 +32,28 @@ public class CumulativeStatistics {
 	public int mSumMaybeValue;
 
 	// The number of moves reversed via undo
-	public int mSumUndoButton;
+	public int mSumActionUndoMove;
 
 	// The number of times the clear button is used to clear a single cell
-	public int mSumCellCleared;
+	public int mSumActionClearCell;
 
 	// The number of times the entire grid was cleared
-	public int mSumGridCleared;
+	public int mSumActionClearGrid;
 
 	// *******
 	// Cheats
 	// *******
 
 	// The number of cells revealed (a cheat)
-	public int mSumCellsRevealed;
+	public int mSumActionRevealCell;
 
 	// The number of cage operators revealed (a cheat)
-	public int mSumOperatorsRevevealed;
+	public int mSumActionRevealOperator;
 
 	// The number of times "check progress" was used and the total number of
 	// invalids values which have been found when using this option (a cheat)
-	public int mSumCheckProgressUsed;
-	public int mSumcheckProgressInvalidsFound;
+	public int mSumActionCheckProgress;
+	public int mSumcheckProgressInvalidCellsFound;
 
 	// ***********************
 	// Total grids per status
@@ -63,10 +63,6 @@ public class CumulativeStatistics {
 	public int mCountSolvedManually;
 	public int mCountFinished;
 
-	// Cells filled and empty
-	public int mSumCellsUserValueFilled;
-	public int mSumCellsUserValueEmtpty;
-
 	/**
 	 * Checks whether the statistics applies to grids of the same grid size.
 	 * 
@@ -75,5 +71,4 @@ public class CumulativeStatistics {
 	public boolean isSingleLevelStatistics() {
 		return (mMinGridSize == mMaxGridSize);
 	}
-
 }

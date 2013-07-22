@@ -51,8 +51,8 @@ public class Grid {
 
 	private long mDateLastSaved;
 
-	// Has the solutiuon of the grid been revealed?
-	private boolean mCheated;
+	// Has the solution of the grid been revealed?
+	private boolean mRevealed;
 
 	// Puzzle is active as long as it has not been solved.
 	private boolean mActive;
@@ -188,13 +188,7 @@ public class Grid {
 		if (mCells != null) {
 			boolean updateGridClearCounter = false;
 			for (GridCell cell : this.mCells) {
-				if (cell.getUserValue() != 0) {
-					mGridStatistics
-							.increaseCounter(StatisticsCounterType.CELLS_EMPTY);
-					mGridStatistics
-							.decreaseCounter(StatisticsCounterType.CELLS_FILLED);
-					updateGridClearCounter = true;
-				} else if (cell.countPossibles() > 0) {
+				if (cell.getUserValue() != 0 || cell.countPossibles() > 0) {
 					updateGridClearCounter = true;
 				}
 				cell.clear();
@@ -204,7 +198,7 @@ public class Grid {
 			}
 			if (updateGridClearCounter) {
 				mGridStatistics
-						.increaseCounter(StatisticsCounterType.GRID_CLEARED);
+						.increaseCounter(StatisticsCounterType.ACTION_CLEAR_GRID);
 			}
 		}
 
@@ -226,15 +220,17 @@ public class Grid {
 		return this.mCells.get(column + row * this.mGridSize);
 	}
 
-	// Solve the puzzle by setting the Uservalue to the actual value
-	public void solve() {
-		this.mCheated = true;
+	/**
+	 * Reveal the solution by setting the user value to the actual value.
+	 */
+	public void revealSolution() {
+		this.mRevealed = true;
 		if (this.mMoves != null) {
 			this.mMoves.clear();
 		}
 		for (GridCell cell : this.mCells) {
 			if (!cell.isUserValueCorrect()) {
-				cell.setCheated();
+				cell.setRevealed();
 			}
 			cell.setUserValue(cell.getCorrectValue());
 		}
@@ -321,7 +317,8 @@ public class Grid {
 				GridCell cell = mMoves.get(undoPosition).restore();
 				mMoves.remove(undoPosition);
 				setSelectedCell(cell);
-				mGridStatistics.increaseCounter(StatisticsCounterType.UNDOS);
+				mGridStatistics
+						.increaseCounter(StatisticsCounterType.ACTION_UNDO_MOVE);
 
 				// Each cell in the same column or row as the given cell has to
 				// be
@@ -432,14 +429,13 @@ public class Grid {
 	}
 
 	/**
-	 * Check is user has cheated with solving this puzzle by requesting the
-	 * solution.
+	 * Check if user has revealed the solution of this puzzle.
 	 * 
 	 * @return True in case the user has solved the puzzle by requesting the
 	 *         solution. False otherwise.
 	 */
-	public boolean isSolvedByCheating() {
-		return this.mCheated;
+	public boolean isSolutionRevealed() {
+		return this.mRevealed;
 	}
 
 	/**
@@ -456,7 +452,7 @@ public class Grid {
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ mActive
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ mCheated
+				+ mRevealed
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ mClearRedundantPossiblesInSameRowOrColumnCount
 				+ SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
@@ -554,7 +550,7 @@ public class Grid {
 		int index = 1;
 		mActive = Boolean.parseBoolean(viewParts[index++]);
 
-		mCheated = Boolean.parseBoolean(viewParts[index++]);
+		mRevealed = Boolean.parseBoolean(viewParts[index++]);
 		mClearRedundantPossiblesInSameRowOrColumnCount = Integer
 				.parseInt(viewParts[index++]);
 
@@ -589,7 +585,7 @@ public class Grid {
 			this.mMoves.clear();
 		}
 		mSelectedCell = null;
-		mCheated = false;
+		mRevealed = false;
 		mSolvingAttemptId = -1;
 
 		// Set new data in grid
@@ -685,10 +681,6 @@ public class Grid {
 
 	public GridGeneratingParameters getGridGeneratingParameters() {
 		return mGridGeneratingParameters;
-	}
-
-	public boolean getCheated() {
-		return mCheated;
 	}
 
 	/**
@@ -791,6 +783,16 @@ public class Grid {
 	 */
 	public void increaseCounter(StatisticsCounterType statisticsCounterType) {
 		mGridStatistics.increaseCounter(statisticsCounterType);
+	}
+
+	/**
+	 * Decrease given counter with 1.
+	 * 
+	 * @param statisticsCounterType
+	 *            The counter which has to be decreased.
+	 */
+	public void decreaseCounter(StatisticsCounterType statisticsCounterType) {
+		mGridStatistics.decreaseCounter(statisticsCounterType);
 	}
 
 	/**
@@ -1155,8 +1157,8 @@ public class Grid {
 		// The solving attempt is not yet saved.
 		mDateLastSaved = 0;
 
-		// Forget it if we have cheated before.
-		mCheated = false;
+		// Forget it if the solution was revealed before.
+		mRevealed = false;
 
 		// Make the grid active again.
 		mActive = true;

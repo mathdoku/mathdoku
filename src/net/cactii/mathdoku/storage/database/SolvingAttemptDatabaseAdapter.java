@@ -39,7 +39,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	public static final int STATUS_NOT_STARTED = 0;
 	public static final int STATUS_UNFINISHED = 50;
 	public static final int STATUS_FINISHED_SOLVED = 100;
-	public static final int STATUS_FINISHED_CHEATED = 101;
+	public static final int STATUS_REVEALED_SOLUTION = 101;
 
 	private static final String[] dataColumns = { KEY_ROWID, KEY_GRID_ID,
 			KEY_DATE_CREATED, KEY_DATE_UPDATED, KEY_SAVED_WITH_REVISION,
@@ -337,8 +337,8 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 */
 	private int getDerivedStatus(Grid grid) {
 		// Check if the game was finished by revealing the solution
-		if (grid.isSolvedByCheating()) {
-			return STATUS_FINISHED_CHEATED;
+		if (grid.isSolutionRevealed()) {
+			return STATUS_REVEALED_SOLUTION;
 		}
 
 		// Check if the game has been solved manually

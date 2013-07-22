@@ -249,12 +249,9 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		// Determine total number of cells in grid
 		float totalCells = mGridSize * mGridSize;
 
-		// Display chart only if grid not completely filled and not completely
-		// empty.
-		if (mGridStatistics.mCellsUserValueFilled == 0
-				|| mGridStatistics.mCellsUserValueFilled == totalCells) {
-			return false;
-		}
+		// Count number of categories. Chart will only be displayed it minimal 2
+		// categories are shown.
+		int countCategories = 0;
 
 		// Define the renderer
 		DefaultRenderer renderer = new DefaultRenderer();
@@ -269,25 +266,48 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		CategorySeries categorySeries = new CategorySeries("");
 
 		// Cells filled
-		categorySeries.add(
-				getResources().getString(R.string.progress_chart_cells_filled)
-						+ " (" + mGridStatistics.mCellsUserValueFilled + ")",
-				(double) mGridStatistics.mCellsUserValueFilled / totalCells);
-		renderer.addSeriesRenderer(createSimpleSeriesRenderer(chartGreen1));
+		if (mGridStatistics.mCellsFilled > 0) {
+			categorySeries.add(
+					getResources().getString(
+							R.string.progress_chart_cells_filled)
+							+ " (" + mGridStatistics.mCellsFilled + ")",
+					(double) mGridStatistics.mCellsFilled / totalCells);
+			renderer.addSeriesRenderer(createSimpleSeriesRenderer(chartGreen1));
+			countCategories++;
+		}
+
+		// Cells revealed
+		if (mGridStatistics.mCellsRevealed > 0) {
+			categorySeries.add(
+					getResources().getString(
+							R.string.progress_chart_cells_revealed)
+							+ " (" + mGridStatistics.mCellsRevealed + ")",
+					(double) mGridStatistics.mCellsRevealed / totalCells);
+			renderer.addSeriesRenderer(createSimpleSeriesRenderer(chartRed1));
+			countCategories++;
+		}
 
 		// Cells empty
-		categorySeries.add(
-				getResources().getString(R.string.progress_chart_cells_empty)
-						+ " (" + mGridStatistics.mCellsUserValueEmtpty + ")",
-				(double) mGridStatistics.mCellsUserValueEmtpty / totalCells);
-		renderer.addSeriesRenderer(createSimpleSeriesRenderer(chartGrey1));
+		if (mGridStatistics.mCellsEmtpty > 0) {
+			categorySeries.add(
+					getResources().getString(
+							R.string.progress_chart_cells_empty)
+							+ " (" + mGridStatistics.mCellsEmtpty + ")",
+					(double) mGridStatistics.mCellsEmtpty / totalCells);
+			renderer.addSeriesRenderer(createSimpleSeriesRenderer(chartGrey1));
+			countCategories++;
+		}
 
-		addStatisticsSection(null,
-				getResources().getString(R.string.progress_chart_title),
-				ChartFactory.getPieChartView(getActivity(), categorySeries,
-						renderer), null,
-				getResources().getString(R.string.progress_chart_body));
-		return true;
+		if (countCategories > 1 || mGridStatistics.mCellsRevealed > 0) {
+			addStatisticsSection(null,
+					getResources().getString(R.string.progress_chart_title),
+					ChartFactory.getPieChartView(getActivity(), categorySeries,
+							renderer), null,
+					getResources().getString(R.string.progress_chart_body));
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -299,8 +319,9 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		// Build chart for analysis of moves only in case at least one move
 		// has been made.
 		int totalAvoidableMoves = mGridStatistics.mUserValueReplaced
-				+ mGridStatistics.mMaybeValue + mGridStatistics.mUndoButton
-				+ mGridStatistics.mCellCleared + mGridStatistics.mGridCleared;
+				+ mGridStatistics.mMaybeValue + mGridStatistics.mActionUndoMove
+				+ mGridStatistics.mActionClearCell
+				+ mGridStatistics.mActionClearGrid;
 		if (totalAvoidableMoves == 0) {
 			return false;
 		}
@@ -358,20 +379,20 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		}
 
 		// Bar for number of times the undo button was used
-		if (mGridStatistics.mUndoButton > 0) {
+		if (mGridStatistics.mActionUndoMove > 0) {
 			XYSeries xySeries = new XYSeries(getResources().getString(
 					R.string.avoidable_moves_chart_undo_button_used));
-			xySeries.add(++countCategories, mGridStatistics.mUndoButton);
+			xySeries.add(++countCategories, mGridStatistics.mActionUndoMove);
 			xyMultipleSeriesDataset.addSeries(xySeries);
 			xyMultipleSeriesRenderer
 					.addSeriesRenderer(createSimpleSeriesRenderer(chartSignal2));
-			maxYValue = Math.max(maxYValue, mGridStatistics.mUndoButton);
+			maxYValue = Math.max(maxYValue, mGridStatistics.mActionUndoMove);
 		}
 
 		// Bar for number of times a user cleared a value in a cell or
 		// the entire grid.
-		int totalClears = mGridStatistics.mCellCleared
-				+ mGridStatistics.mGridCleared;
+		int totalClears = mGridStatistics.mActionClearCell
+				+ mGridStatistics.mActionClearGrid;
 		if (totalClears > 0) {
 			XYSeries xySeries = new XYSeries(getResources().getString(
 					R.string.avoidable_moves_chart_clear_used));
@@ -411,24 +432,24 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 	private boolean createUsedCheatsChart() {
 		// Build chart for analysis of moves only in case at least one cheat
 		// has been used.
-		int totalCheats = mGridStatistics.mCheckProgressUsed
-				+ mGridStatistics.mCellsRevealed
-				+ mGridStatistics.mOperatorsRevevealed
+		int totalCheats = mGridStatistics.mActionCheckProgress
+				+ mGridStatistics.mActionRevealCell
+				+ mGridStatistics.mActionRevealOperator
 				+ (mGridStatistics.isSolutionRevealed() ? 1 : 0);
 		if (totalCheats == 0) {
 			return false;
 		}
 
 		// Determine number of cheat categories to show
-		int cheatCategories = (mGridStatistics.mCheckProgressUsed > 0 ? 1 : 0)
-				+ (mGridStatistics.mCellsRevealed > 0 ? 1 : 0)
-				+ (mGridStatistics.mOperatorsRevevealed > 0 ? 1 : 0)
+		int cheatCategories = (mGridStatistics.mActionCheckProgress > 0 ? 1 : 0)
+				+ (mGridStatistics.mActionRevealCell > 0 ? 1 : 0)
+				+ (mGridStatistics.mActionRevealOperator > 0 ? 1 : 0)
 				+ (mGridStatistics.isSolutionRevealed() ? 1 : 0);
 
 		// Determine the highest number of cheats for a single category
-		int maxCheats = Math.max(mGridStatistics.mCheckProgressUsed,
-				mGridStatistics.mCellsRevealed);
-		maxCheats = Math.max(maxCheats, mGridStatistics.mCheckProgressUsed);
+		int maxCheats = Math.max(mGridStatistics.mActionCheckProgress,
+				mGridStatistics.mActionRevealCell);
+		maxCheats = Math.max(maxCheats, mGridStatistics.mActionCheckProgress);
 		maxCheats = Math.max(maxCheats,
 				(mGridStatistics.isSolutionRevealed() ? 1 : 0));
 
@@ -466,40 +487,41 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		int maxYValue = 0;
 
 		// Check progress option used
-		if (mGridStatistics.mCheckProgressUsed > 0) {
+		if (mGridStatistics.mActionCheckProgress > 0) {
 			XYSeries xySeries = new XYSeries(getResources().getString(
 					R.string.statistics_cheats_check_progress));
-			xySeries.add(categoryIndex, mGridStatistics.mCheckProgressUsed);
+			xySeries.add(categoryIndex, mGridStatistics.mActionCheckProgress);
 			xyMultipleSeriesDataset.addSeries(xySeries);
 			xyMultipleSeriesRenderer
 					.addSeriesRenderer(createSimpleSeriesRenderer(chartRed1));
 			categoryIndex++;
-			maxYValue = Math.max(maxYValue, mGridStatistics.mCheckProgressUsed);
+			maxYValue = Math.max(maxYValue,
+					mGridStatistics.mActionCheckProgress);
 		}
 
 		// Cell revealed option used
-		if (mGridStatistics.mCellsRevealed > 0) {
+		if (mGridStatistics.mActionRevealCell > 0) {
 			XYSeries xySeries = new XYSeries(getResources().getString(
 					R.string.statistics_cheats_cells_revealed));
-			xySeries.add(categoryIndex, mGridStatistics.mCellsRevealed);
+			xySeries.add(categoryIndex, mGridStatistics.mActionRevealCell);
 			xyMultipleSeriesDataset.addSeries(xySeries);
 			xyMultipleSeriesRenderer
 					.addSeriesRenderer(createSimpleSeriesRenderer(chartRed2));
 			categoryIndex++;
-			maxYValue = Math.max(maxYValue, mGridStatistics.mCellsRevealed);
+			maxYValue = Math.max(maxYValue, mGridStatistics.mActionRevealCell);
 		}
 
 		// Cage operator revealed option used
-		if (mGridStatistics.mOperatorsRevevealed > 0) {
+		if (mGridStatistics.mActionRevealOperator > 0) {
 			XYSeries xySeries = new XYSeries(getResources().getString(
 					R.string.statistics_cheats_operators_revealed));
-			xySeries.add(categoryIndex, mGridStatistics.mOperatorsRevevealed);
+			xySeries.add(categoryIndex, mGridStatistics.mActionRevealOperator);
 			xyMultipleSeriesDataset.addSeries(xySeries);
 			xyMultipleSeriesRenderer
 					.addSeriesRenderer(createSimpleSeriesRenderer(chartRed3));
 			categoryIndex++;
 			maxYValue = Math.max(maxYValue,
-					mGridStatistics.mOperatorsRevevealed);
+					mGridStatistics.mActionRevealOperator);
 		}
 
 		// Solution revealed option used

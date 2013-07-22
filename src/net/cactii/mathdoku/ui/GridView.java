@@ -293,11 +293,7 @@ public class GridView extends View implements OnTouchListener {
 				selectedCell.clearPossibles();
 				selectedCell.setUserValue(0);
 				mGrid.getGridStatistics().increaseCounter(
-						StatisticsCounterType.CELL_CLEARED);
-				mGrid.getGridStatistics().increaseCounter(
-						StatisticsCounterType.CELLS_EMPTY);
-				mGrid.getGridStatistics().decreaseCounter(
-						StatisticsCounterType.CELLS_FILLED);
+						StatisticsCounterType.ACTION_CLEAR_CELL);
 
 				// In case the last user value has been cleared in the grid, the
 				// check progress should no longer be available.
@@ -326,18 +322,10 @@ public class GridView extends View implements OnTouchListener {
 					selectedCell.setUserValue(newValue);
 					selectedCell.clearPossibles();
 					if (oldValue == 0) {
-						mGrid.getGridStatistics().increaseCounter(
-								StatisticsCounterType.CELLS_FILLED);
-						mGrid.getGridStatistics().decreaseCounter(
-								StatisticsCounterType.CELLS_EMPTY);
-
 						// In case a user value has been entered, the
 						// check progress should be made available.
 						((PuzzleFragmentActivity) mContext)
 								.invalidateOptionsMenu();
-					} else {
-						mGrid.getGridStatistics().increaseCounter(
-								StatisticsCounterType.USER_VALUE_REPLACED);
 					}
 					if (mPreferences.isClearRedundantPossiblesEnabled()) {
 						// Update possible values for other cells in this row
@@ -511,7 +499,7 @@ public class GridView extends View implements OnTouchListener {
 			if (cell.isUserValueSet() && !cell.hasInvalidUserValueHighlight()) {
 				if (cell.getUserValue() != cell.getCorrectValue()) {
 					cell.setInvalidHighlight();
-					mGrid.increaseCounter(StatisticsCounterType.CHECK_PROGRESS_INVALIDS_FOUND);
+					mGrid.increaseCounter(StatisticsCounterType.CHECK_PROGRESS_INVALIDS_CELLS_FOUND);
 					countNewInvalids++;
 				}
 			}

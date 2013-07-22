@@ -382,6 +382,7 @@
     <string name="progress_chart_body">This chart displays the progress in solving the current game. For filled cells it is not shown whether the value is correct or not. A cell containing maybe values is counted as an empty cell.</string>
     <!-- Dimensions displayed in chart "Progress". -->
     <string name="progress_chart_cells_filled">Cells filled</string>
+    <string name="progress_chart_cells_revealed">Cells revealed</string>
     <string name="progress_chart_cells_empty">Cells empty</string>
 
     <!-- Title and a body which explains the purpose of the chart "Avoidable moves". -->
@@ -409,9 +410,9 @@
     <string name="solved_chart_body">This chart displays the number of games solved versus the number of games which have not been solved or in which the solution was revealed.</string>
 
     <!-- Series used to split charts like "Unsolved games" and "Elapsed time historic". -->
-    <string name="chart_serie_solved">Solved games</string>
-    <string name="chart_serie_solution_revealed">Cheated games</string>
-    <string name="chart_serie_unfinished">Unfinished games</string>
+    <string name="chart_serie_solved">Solved</string>
+    <string name="chart_serie_solution_revealed">Revealed solution</string>
+    <string name="chart_serie_unfinished">Unfinished</string>
 
     <!-- Title and a body which explains the purpose of the chart "Elapsed time historic". -->
     <string name="statistics_elapsed_time_historic_title">Elapsed time</string>
@@ -453,7 +454,7 @@
         <item>All</item>
         <item>Unfinished</item>
         <item>Solved</item>
-        <item>Cheated</item>
+        <item>Revealed</item>
     </string-array>
 
     <!-- The possible values of the archive filter on game size. -->

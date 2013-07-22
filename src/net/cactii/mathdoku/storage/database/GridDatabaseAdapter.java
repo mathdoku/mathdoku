@@ -52,7 +52,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 
 	// Allowed values for the status filter
 	public enum StatusFilter {
-		ALL, UNFINISHED, SOLVED, CHEATED
+		ALL, UNFINISHED, SOLVED, REVEALED
 	};
 
 	// Allowed values for the size filter
@@ -426,9 +426,9 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 						"CASE WHEN "
 								+ stringBetweenBackTicks(SolvingAttemptDatabaseAdapter.KEY_STATUS)
 								+ " = "
-								+ SolvingAttemptDatabaseAdapter.STATUS_FINISHED_CHEATED
+								+ SolvingAttemptDatabaseAdapter.STATUS_REVEALED_SOLUTION
 								+ " THEN "
-								+ StatusFilter.CHEATED.ordinal()
+								+ StatusFilter.REVEALED.ordinal()
 								+ " WHEN "
 								+ stringBetweenBackTicks(SolvingAttemptDatabaseAdapter.KEY_STATUS)
 								+ " = "
@@ -501,8 +501,8 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 						statuses[i++] = StatusFilter.UNFINISHED;
 					} else if (status == StatusFilter.SOLVED.ordinal()) {
 						statuses[i++] = StatusFilter.SOLVED;
-					} else if (status == StatusFilter.CHEATED.ordinal()) {
-						statuses[i++] = StatusFilter.CHEATED;
+					} else if (status == StatusFilter.REVEALED.ordinal()) {
+						statuses[i++] = StatusFilter.REVEALED;
 					}
 				} while (cursor.moveToNext());
 			}
@@ -624,11 +624,11 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		case ALL:
 			// no filter on status
 			return "";
-		case CHEATED:
+		case REVEALED:
 			return SolvingAttemptDatabaseAdapter
 					.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_STATUS)
 					+ " = "
-					+ SolvingAttemptDatabaseAdapter.STATUS_FINISHED_CHEATED;
+					+ SolvingAttemptDatabaseAdapter.STATUS_REVEALED_SOLUTION;
 		case SOLVED:
 			return SolvingAttemptDatabaseAdapter
 					.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_STATUS)

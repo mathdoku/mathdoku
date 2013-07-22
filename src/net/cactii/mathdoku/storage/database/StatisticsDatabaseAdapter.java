@@ -37,18 +37,19 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	private static final String KEY_LAST_MOVE = "last_move";
 	public static final String KEY_ELAPSED_TIME = "elapsed_time";
 	public static final String KEY_CHEAT_PENALTY_TIME = "cheat_penalty_time";
-	public static final String KEY_CELLS_USER_VALUE_FILLED = "cells_user_value_filled";
-	public static final String KEY_CELLS_USER_VALUES_EMPTY = "cells_user_value_empty";
-	public static final String KEY_CELLS_USER_VALUES_REPLACED = "cells_user_value_replaced";
-	public static final String KEY_POSSIBLES = "possibles";
-	public static final String KEY_UNDOS = "undos";
-	public static final String KEY_CELLS_CLEARED = "cells_cleared";
-	public static final String KEY_GRID_CLEARED = "grid_cleared";
+	public static final String KEY_CELLS_FILLED = "cells_filled";
+	public static final String KEY_CELLS_EMPTY = "cells_empty";
 	public static final String KEY_CELLS_REVEALED = "cells_revealed";
-	public static final String KEY_OPERATORS_REVEALED = "operators_revealed";
-	public static final String KEY_CHECK_PROGRESS_USED = "check_progress_used";
-	public static final String KEY_CHECK_PROGRESS_INVALIDS_FOUND = "check_progress_invalids_found";
-	private static final String KEY_SOLUTION_REVEALED = "solution_revealed";
+	public static final String KEY_USER_VALUES_REPLACED = "user_value_replaced";
+	public static final String KEY_POSSIBLES = "possibles";
+	public static final String KEY_ACTION_UNDOS = "action_undos";
+	public static final String KEY_ACTION_CLEAR_CELL = "action_clear_cells";
+	public static final String KEY_ACTION_CLEAR_GRID = "action_clear_grid";
+	public static final String KEY_ACTION_REVEAL_CELL = "action_reveal_cell";
+	public static final String KEY_ACTION_REVEAL_OPERATOR = "action_reveal_operators";
+	public static final String KEY_ACTION_CHECK_PROGRESS = "action_check_progress";
+	public static final String KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND = "check_progress_invalid_cells_found";
+	private static final String KEY_ACTION_REVEAL_SOLUTION = "action_reveal_solution";
 	private static final String KEY_SOLVED_MANUALLY = "solved_manually";
 	private static final String KEY_FINISHED = "finished";
 
@@ -61,12 +62,12 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 
 	private static final String[] allColumns = { KEY_ROWID, KEY_GRID_ID,
 			KEY_REPLAY, KEY_FIRST_MOVE, KEY_LAST_MOVE, KEY_ELAPSED_TIME,
-			KEY_CHEAT_PENALTY_TIME, KEY_CELLS_USER_VALUE_FILLED,
-			KEY_CELLS_USER_VALUES_EMPTY, KEY_CELLS_USER_VALUES_REPLACED,
-			KEY_POSSIBLES, KEY_UNDOS, KEY_CELLS_CLEARED, KEY_GRID_CLEARED,
-			KEY_CELLS_REVEALED, KEY_OPERATORS_REVEALED,
-			KEY_CHECK_PROGRESS_USED, KEY_CHECK_PROGRESS_INVALIDS_FOUND,
-			KEY_SOLUTION_REVEALED, KEY_SOLVED_MANUALLY, KEY_FINISHED,
+			KEY_CHEAT_PENALTY_TIME, KEY_CELLS_FILLED,
+			KEY_CELLS_EMPTY, KEY_CELLS_REVEALED, KEY_USER_VALUES_REPLACED,
+			KEY_POSSIBLES, KEY_ACTION_UNDOS, KEY_ACTION_CLEAR_CELL, KEY_ACTION_CLEAR_GRID,
+			KEY_ACTION_REVEAL_CELL, KEY_ACTION_REVEAL_OPERATOR,
+			KEY_ACTION_CHECK_PROGRESS, KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND,
+			KEY_ACTION_REVEAL_SOLUTION, KEY_SOLVED_MANUALLY, KEY_FINISHED,
 			KEY_INCLUDE_IN_STATISTICS };
 
 	// Projection for retrieve the cumulative and historic statistics
@@ -94,26 +95,28 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				createColumn(KEY_ELAPSED_TIME, "long", "not null default 0"),
 				createColumn(KEY_CHEAT_PENALTY_TIME, "long",
 						"not null default 0"),
-				createColumn(KEY_CELLS_USER_VALUE_FILLED, "integer",
+				createColumn(KEY_CELLS_FILLED, "integer",
 						" not null default 0"),
-				createColumn(KEY_CELLS_USER_VALUES_EMPTY, "integer",
+				createColumn(KEY_CELLS_EMPTY, "integer",
 						" not null default 0"),
-				createColumn(KEY_CELLS_USER_VALUES_REPLACED, "integer",
+						createColumn(KEY_CELLS_REVEALED, "integer",
+								" not null default 0"),
+				createColumn(KEY_USER_VALUES_REPLACED, "integer",
 						" not null default 0"),
 				createColumn(KEY_POSSIBLES, "integer", " not null default 0"),
-				createColumn(KEY_UNDOS, "integer", " not null default 0"),
-				createColumn(KEY_CELLS_CLEARED, "integer",
+				createColumn(KEY_ACTION_UNDOS, "integer", " not null default 0"),
+				createColumn(KEY_ACTION_CLEAR_CELL, "integer",
 						" not null default 0"),
-				createColumn(KEY_GRID_CLEARED, "integer", " not null default 0"),
-				createColumn(KEY_CELLS_REVEALED, "integer",
+				createColumn(KEY_ACTION_CLEAR_GRID, "integer", " not null default 0"),
+				createColumn(KEY_ACTION_REVEAL_CELL, "integer",
 						" not null default 0"),
-				createColumn(KEY_OPERATORS_REVEALED, "integer",
+				createColumn(KEY_ACTION_REVEAL_OPERATOR, "integer",
 						" not null default 0"),
-				createColumn(KEY_CHECK_PROGRESS_USED, "integer",
+				createColumn(KEY_ACTION_CHECK_PROGRESS, "integer",
 						" not null default 0"),
-				createColumn(KEY_CHECK_PROGRESS_INVALIDS_FOUND, "integer",
+				createColumn(KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND, "integer",
 						" not null default 0"),
-				createColumn(KEY_SOLUTION_REVEALED, "string",
+				createColumn(KEY_ACTION_REVEAL_SOLUTION, "string",
 						" not null default `false`"),
 				createColumn(KEY_SOLVED_MANUALLY, "string",
 						" not null default `false`"),
@@ -165,8 +168,8 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 */
 	protected static void upgrade(SQLiteDatabase db, int oldVersion,
 			int newVersion) {
-		if (oldVersion < 422 && newVersion >= 422) {
-			// In development revisions the table is simply dropped and
+		if (oldVersion < 438 && newVersion >= 438) {
+			// In development and beta revisions the table is simply dropped and
 			// recreated.
 			try {
 				String sql = "DROP TABLE " + TABLE;
@@ -203,7 +206,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(KEY_GRID_ID, grid.getRowId());
 		initialValues.put(KEY_REPLAY, countSolvingAttemptsForGrid);
-		initialValues.put(KEY_CELLS_USER_VALUES_EMPTY, grid.getGridSize()
+		initialValues.put(KEY_CELLS_EMPTY, grid.getGridSize()
 				* grid.getGridSize());
 		initialValues.put(KEY_FIRST_MOVE, now.toString());
 		initialValues.put(KEY_LAST_MOVE, now.toString());
@@ -314,31 +317,33 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				.getColumnIndexOrThrow(KEY_ELAPSED_TIME));
 		gridStatistics.mCheatPenaltyTime = cursor.getLong(cursor
 				.getColumnIndexOrThrow(KEY_CHEAT_PENALTY_TIME));
-		gridStatistics.mCellsUserValueFilled = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_CELLS_USER_VALUE_FILLED));
-		gridStatistics.mCellsUserValueEmtpty = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_CELLS_USER_VALUES_EMPTY));
-		gridStatistics.mUserValueReplaced = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_CELLS_USER_VALUES_REPLACED));
-		gridStatistics.mMaybeValue = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_POSSIBLES));
-		gridStatistics.mUndoButton = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_UNDOS));
-		gridStatistics.mCellCleared = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_CELLS_CLEARED));
-		gridStatistics.mGridCleared = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_GRID_CLEARED));
+		gridStatistics.mCellsFilled = cursor.getInt(cursor
+				.getColumnIndexOrThrow(KEY_CELLS_FILLED));
+		gridStatistics.mCellsEmtpty = cursor.getInt(cursor
+				.getColumnIndexOrThrow(KEY_CELLS_EMPTY));
 		gridStatistics.mCellsRevealed = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_CELLS_REVEALED));
-		gridStatistics.mOperatorsRevevealed = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_OPERATORS_REVEALED));
-		gridStatistics.mCheckProgressUsed = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_CHECK_PROGRESS_USED));
-		gridStatistics.mCheckProgressInvalidsFound = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_CHECK_PROGRESS_INVALIDS_FOUND));
+		gridStatistics.mUserValueReplaced = cursor.getInt(cursor
+				.getColumnIndexOrThrow(KEY_USER_VALUES_REPLACED));
+		gridStatistics.mMaybeValue = cursor.getInt(cursor
+				.getColumnIndexOrThrow(KEY_POSSIBLES));
+		gridStatistics.mActionUndoMove = cursor.getInt(cursor
+				.getColumnIndexOrThrow(KEY_ACTION_UNDOS));
+		gridStatistics.mActionClearCell = cursor.getInt(cursor
+				.getColumnIndexOrThrow(KEY_ACTION_CLEAR_CELL));
+		gridStatistics.mActionClearGrid = cursor.getInt(cursor
+				.getColumnIndexOrThrow(KEY_ACTION_CLEAR_GRID));
+		gridStatistics.mActionRevealCell = cursor.getInt(cursor
+				.getColumnIndexOrThrow(KEY_ACTION_REVEAL_CELL));
+		gridStatistics.mActionRevealOperator = cursor.getInt(cursor
+				.getColumnIndexOrThrow(KEY_ACTION_REVEAL_OPERATOR));
+		gridStatistics.mActionCheckProgress = cursor.getInt(cursor
+				.getColumnIndexOrThrow(KEY_ACTION_CHECK_PROGRESS));
+		gridStatistics.mCheckProgressInvalidCellsFound = cursor.getInt(cursor
+				.getColumnIndexOrThrow(KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND));
 		gridStatistics.mSolutionRevealed = Boolean
 				.valueOf(cursor.getString(cursor
-						.getColumnIndexOrThrow(KEY_SOLUTION_REVEALED)));
+						.getColumnIndexOrThrow(KEY_ACTION_REVEAL_SOLUTION)));
 		gridStatistics.mSolvedManually = Boolean.valueOf(cursor
 				.getString(cursor.getColumnIndexOrThrow(KEY_SOLVED_MANUALLY)));
 		gridStatistics.mFinished = Boolean.valueOf(cursor.getString(cursor
@@ -366,24 +371,26 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		newValues.put(KEY_LAST_MOVE, gridStatistics.mLastMove.toString());
 		newValues.put(KEY_ELAPSED_TIME, gridStatistics.mElapsedTime);
 		newValues.put(KEY_CHEAT_PENALTY_TIME, gridStatistics.mCheatPenaltyTime);
-		newValues.put(KEY_CELLS_USER_VALUE_FILLED,
-				gridStatistics.mCellsUserValueFilled);
-		newValues.put(KEY_CELLS_USER_VALUES_EMPTY,
-				gridStatistics.mCellsUserValueEmtpty);
-		newValues.put(KEY_CELLS_USER_VALUES_REPLACED,
+		newValues.put(KEY_CELLS_FILLED,
+				gridStatistics.mCellsFilled);
+		newValues.put(KEY_CELLS_EMPTY,
+				gridStatistics.mCellsEmtpty);
+		newValues.put(KEY_CELLS_REVEALED,
+				gridStatistics.mCellsRevealed);
+		newValues.put(KEY_USER_VALUES_REPLACED,
 				gridStatistics.mUserValueReplaced);
 		newValues.put(KEY_POSSIBLES, gridStatistics.mMaybeValue);
-		newValues.put(KEY_UNDOS, gridStatistics.mUndoButton);
-		newValues.put(KEY_CELLS_CLEARED, gridStatistics.mCellCleared);
-		newValues.put(KEY_GRID_CLEARED, gridStatistics.mGridCleared);
-		newValues.put(KEY_CELLS_REVEALED, gridStatistics.mCellsRevealed);
-		newValues.put(KEY_OPERATORS_REVEALED,
-				gridStatistics.mOperatorsRevevealed);
-		newValues.put(KEY_CHECK_PROGRESS_USED,
-				gridStatistics.mCheckProgressUsed);
-		newValues.put(KEY_CHECK_PROGRESS_INVALIDS_FOUND,
-				gridStatistics.mCheckProgressInvalidsFound);
-		newValues.put(KEY_SOLUTION_REVEALED,
+		newValues.put(KEY_ACTION_UNDOS, gridStatistics.mActionUndoMove);
+		newValues.put(KEY_ACTION_CLEAR_CELL, gridStatistics.mActionClearCell);
+		newValues.put(KEY_ACTION_CLEAR_GRID, gridStatistics.mActionClearGrid);
+		newValues.put(KEY_ACTION_REVEAL_CELL, gridStatistics.mActionRevealCell);
+		newValues.put(KEY_ACTION_REVEAL_OPERATOR,
+				gridStatistics.mActionRevealOperator);
+		newValues.put(KEY_ACTION_CHECK_PROGRESS,
+				gridStatistics.mActionCheckProgress);
+		newValues.put(KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND,
+				gridStatistics.mCheckProgressInvalidCellsFound);
+		newValues.put(KEY_ACTION_REVEAL_SOLUTION,
 				Boolean.toString(gridStatistics.mSolutionRevealed));
 		newValues.put(KEY_SOLVED_MANUALLY,
 				Boolean.toString(gridStatistics.mSolvedManually));
@@ -456,25 +463,25 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 			mCumulativeStatisticsProjection.put(Aggregation.SUM, TABLE,
 					KEY_POSSIBLES);
 			mCumulativeStatisticsProjection.put(Aggregation.SUM, TABLE,
-					KEY_UNDOS);
+					KEY_ACTION_UNDOS);
 			mCumulativeStatisticsProjection.put(Aggregation.SUM, TABLE,
-					KEY_CELLS_CLEARED);
+					KEY_ACTION_CLEAR_CELL);
 			mCumulativeStatisticsProjection.put(Aggregation.SUM, TABLE,
-					KEY_GRID_CLEARED);
+					KEY_ACTION_CLEAR_GRID);
 
 			// Totals per cheat
 			mCumulativeStatisticsProjection.put(Aggregation.SUM, TABLE,
-					KEY_CELLS_REVEALED);
+					KEY_ACTION_REVEAL_CELL);
 			mCumulativeStatisticsProjection.put(Aggregation.SUM, TABLE,
-					KEY_OPERATORS_REVEALED);
+					KEY_ACTION_REVEAL_OPERATOR);
 			mCumulativeStatisticsProjection.put(Aggregation.SUM, TABLE,
-					KEY_CHECK_PROGRESS_USED);
+					KEY_ACTION_CHECK_PROGRESS);
 			mCumulativeStatisticsProjection.put(Aggregation.SUM, TABLE,
-					KEY_CHECK_PROGRESS_INVALIDS_FOUND);
+					KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND);
 
 			// Totals per status of game'
 			mCumulativeStatisticsProjection.put(Aggregation.COUNTIF_TRUE,
-					TABLE, KEY_SOLUTION_REVEALED);
+					TABLE, KEY_ACTION_REVEAL_SOLUTION);
 			mCumulativeStatisticsProjection.put(Aggregation.COUNTIF_TRUE,
 					TABLE, KEY_SOLVED_MANUALLY);
 			mCumulativeStatisticsProjection.put(Aggregation.COUNTIF_TRUE,
@@ -597,41 +604,41 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		cumulativeStatistics.mSumMaybeValue = cursor.getInt(cursor
 				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
 						.getAggregatedKey(Aggregation.SUM, KEY_POSSIBLES)));
-		cumulativeStatistics.mSumUndoButton = cursor.getInt(cursor
+		cumulativeStatistics.mSumActionUndoMove = cursor.getInt(cursor
 				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
-						.getAggregatedKey(Aggregation.SUM, KEY_UNDOS)));
-		cumulativeStatistics.mSumCellCleared = cursor.getInt(cursor
+						.getAggregatedKey(Aggregation.SUM, KEY_ACTION_UNDOS)));
+		cumulativeStatistics.mSumActionClearCell = cursor.getInt(cursor
 				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
-						.getAggregatedKey(Aggregation.SUM, KEY_CELLS_CLEARED)));
-		cumulativeStatistics.mSumGridCleared = cursor.getInt(cursor
+						.getAggregatedKey(Aggregation.SUM, KEY_ACTION_CLEAR_CELL)));
+		cumulativeStatistics.mSumActionClearGrid = cursor.getInt(cursor
 				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
-						.getAggregatedKey(Aggregation.SUM, KEY_GRID_CLEARED)));
+						.getAggregatedKey(Aggregation.SUM, KEY_ACTION_CLEAR_GRID)));
 
 		// Totals per cheat
-		cumulativeStatistics.mSumCellsRevealed = cursor
+		cumulativeStatistics.mSumActionRevealCell = cursor
 				.getInt(cursor
 						.getColumnIndexOrThrow(mCumulativeStatisticsProjection
 								.getAggregatedKey(Aggregation.SUM,
-										KEY_CELLS_REVEALED)));
-		cumulativeStatistics.mSumOperatorsRevevealed = cursor.getInt(cursor
+										KEY_ACTION_REVEAL_CELL)));
+		cumulativeStatistics.mSumActionRevealOperator = cursor.getInt(cursor
 				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
 						.getAggregatedKey(Aggregation.SUM,
-								KEY_OPERATORS_REVEALED)));
-		cumulativeStatistics.mSumCheckProgressUsed = cursor.getInt(cursor
+								KEY_ACTION_REVEAL_OPERATOR)));
+		cumulativeStatistics.mSumActionCheckProgress = cursor.getInt(cursor
 				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
 						.getAggregatedKey(Aggregation.SUM,
-								KEY_CHECK_PROGRESS_USED)));
-		cumulativeStatistics.mSumcheckProgressInvalidsFound = cursor
+								KEY_ACTION_CHECK_PROGRESS)));
+		cumulativeStatistics.mSumcheckProgressInvalidCellsFound = cursor
 				.getInt(cursor
 						.getColumnIndexOrThrow(mCumulativeStatisticsProjection
 								.getAggregatedKey(Aggregation.SUM,
-										KEY_CHECK_PROGRESS_INVALIDS_FOUND)));
+										KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND)));
 
 		// Totals per status of game
 		cumulativeStatistics.mCountSolutionRevealed = cursor.getInt(cursor
 				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
 						.getAggregatedKey(Aggregation.COUNTIF_TRUE,
-								KEY_SOLUTION_REVEALED)));
+								KEY_ACTION_REVEAL_SOLUTION)));
 		cumulativeStatistics.mCountSolvedManually = cursor.getInt(cursor
 				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
 						.getAggregatedKey(Aggregation.COUNTIF_TRUE,
@@ -686,7 +693,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 							+ " THEN "
 							+ stringBetweenQuotes(Serie.UNFINISHED.toString())
 							+ " WHEN "
-							+ KEY_SOLUTION_REVEALED
+							+ KEY_ACTION_REVEAL_SOLUTION
 							+ " = "
 							+ stringBetweenQuotes("true")
 							+ " THEN "
@@ -700,28 +707,30 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 					KEY_ELAPSED_TIME);
 			mHistoricStatisticsProjection.put(KEY_CHEAT_PENALTY_TIME, TABLE,
 					KEY_CHEAT_PENALTY_TIME);
-			mHistoricStatisticsProjection.put(KEY_CELLS_USER_VALUE_FILLED,
-					TABLE, KEY_CELLS_USER_VALUE_FILLED);
-			mHistoricStatisticsProjection.put(KEY_CELLS_USER_VALUES_EMPTY,
-					TABLE, KEY_CELLS_USER_VALUES_EMPTY);
-			mHistoricStatisticsProjection.put(KEY_CELLS_USER_VALUES_REPLACED,
-					TABLE, KEY_CELLS_USER_VALUES_REPLACED);
+			mHistoricStatisticsProjection.put(KEY_CELLS_FILLED,
+					TABLE, KEY_CELLS_FILLED);
+			mHistoricStatisticsProjection.put(KEY_CELLS_EMPTY,
+					TABLE, KEY_CELLS_EMPTY);
+			mHistoricStatisticsProjection.put(KEY_CELLS_REVEALED,
+					TABLE, KEY_CELLS_REVEALED);
+			mHistoricStatisticsProjection.put(KEY_USER_VALUES_REPLACED,
+					TABLE, KEY_USER_VALUES_REPLACED);
 			mHistoricStatisticsProjection.put(KEY_POSSIBLES, TABLE,
 					KEY_POSSIBLES);
-			mHistoricStatisticsProjection.put(KEY_UNDOS, TABLE, KEY_UNDOS);
-			mHistoricStatisticsProjection.put(KEY_CELLS_CLEARED, TABLE,
-					KEY_CELLS_CLEARED);
-			mHistoricStatisticsProjection.put(KEY_GRID_CLEARED, TABLE,
-					KEY_GRID_CLEARED);
-			mHistoricStatisticsProjection.put(KEY_CELLS_REVEALED, TABLE,
-					KEY_CELLS_REVEALED);
-			mHistoricStatisticsProjection.put(KEY_OPERATORS_REVEALED, TABLE,
-					KEY_OPERATORS_REVEALED);
-			mHistoricStatisticsProjection.put(KEY_CHECK_PROGRESS_USED, TABLE,
-					KEY_CHECK_PROGRESS_USED);
+			mHistoricStatisticsProjection.put(KEY_ACTION_UNDOS, TABLE, KEY_ACTION_UNDOS);
+			mHistoricStatisticsProjection.put(KEY_ACTION_CLEAR_CELL, TABLE,
+					KEY_ACTION_CLEAR_CELL);
+			mHistoricStatisticsProjection.put(KEY_ACTION_CLEAR_GRID, TABLE,
+					KEY_ACTION_CLEAR_GRID);
+			mHistoricStatisticsProjection.put(KEY_ACTION_REVEAL_CELL, TABLE,
+					KEY_ACTION_REVEAL_CELL);
+			mHistoricStatisticsProjection.put(KEY_ACTION_REVEAL_OPERATOR, TABLE,
+					KEY_ACTION_REVEAL_OPERATOR);
+			mHistoricStatisticsProjection.put(KEY_ACTION_CHECK_PROGRESS, TABLE,
+					KEY_ACTION_CHECK_PROGRESS);
 			mHistoricStatisticsProjection.put(
-					KEY_CHECK_PROGRESS_INVALIDS_FOUND, TABLE,
-					KEY_CHECK_PROGRESS_INVALIDS_FOUND);
+					KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND, TABLE,
+					KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND);
 		}
 
 		// Build query
