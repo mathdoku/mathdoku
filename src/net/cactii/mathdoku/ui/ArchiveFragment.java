@@ -240,8 +240,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 	 * @return True in case the chart has been created. False otherwise.
 	 */
 	private boolean createProgressChart() {
-		if (mGridSize == 0 || mGridStatistics == null
-				|| mGridStatistics.mSolvedManually) {
+		if (mGridSize == 0 || mGridStatistics == null) {
 			// No progress to report.
 			return false;
 		}
