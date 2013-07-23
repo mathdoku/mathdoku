@@ -54,6 +54,10 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 	public static final String AVOIDABLE_MOVES_CHART_TAG_ID = "FinishedPuzzleAvoidableMovesChart";
 	public static final String CHEATS_CHART_TAG_ID = "FinishedPuzzleCheatsCharts";
 
+	// For all bar charts the same maximum number of bars is used. In this way
+	// it can be ensured that bars in all bar charts have the same width.
+	private static final int MAX_CATEGORIES_BAR_CHART = 5;
+
 	private Preferences mPreferences;
 
 	@Override
@@ -349,7 +353,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 
 		// While filling the categories the number of categories used and the
 		// maximum Y-value is determined.
-		int countCategories = 0;
+		int categoryIndex = 1;
 		int maxYValue = 0;
 
 		// Bar for number of times a user value in a cell was replace by another
@@ -357,10 +361,11 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		if (mGridStatistics.mUserValueReplaced > 0) {
 			XYSeries xySeries = new XYSeries(getResources().getString(
 					R.string.avoidable_moves_chart_user_value_replaced));
-			xySeries.add(++countCategories, mGridStatistics.mUserValueReplaced);
+			xySeries.add(categoryIndex, mGridStatistics.mUserValueReplaced);
 			xyMultipleSeriesDataset.addSeries(xySeries);
 			xyMultipleSeriesRenderer
 					.addSeriesRenderer(createSimpleSeriesRenderer(chartGreen1));
+			categoryIndex++;
 			maxYValue = Math.max(maxYValue, mGridStatistics.mUserValueReplaced);
 		}
 
@@ -370,10 +375,11 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		if (mGridStatistics.mMaybeValue > 0) {
 			XYSeries xySeries = new XYSeries(getResources().getString(
 					R.string.avoidable_moves_chart_maybe_value_used));
-			xySeries.add(++countCategories, mGridStatistics.mMaybeValue);
+			xySeries.add(categoryIndex, mGridStatistics.mMaybeValue);
 			xyMultipleSeriesDataset.addSeries(xySeries);
 			xyMultipleSeriesRenderer
 					.addSeriesRenderer(createSimpleSeriesRenderer(chartSignal1));
+			categoryIndex++;
 			maxYValue = Math.max(maxYValue, mGridStatistics.mMaybeValue);
 		}
 
@@ -381,10 +387,11 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		if (mGridStatistics.mActionUndoMove > 0) {
 			XYSeries xySeries = new XYSeries(getResources().getString(
 					R.string.avoidable_moves_chart_undo_button_used));
-			xySeries.add(++countCategories, mGridStatistics.mActionUndoMove);
+			xySeries.add(categoryIndex, mGridStatistics.mActionUndoMove);
 			xyMultipleSeriesDataset.addSeries(xySeries);
 			xyMultipleSeriesRenderer
 					.addSeriesRenderer(createSimpleSeriesRenderer(chartSignal2));
+			categoryIndex++;
 			maxYValue = Math.max(maxYValue, mGridStatistics.mActionUndoMove);
 		}
 
@@ -395,22 +402,23 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		if (totalClears > 0) {
 			XYSeries xySeries = new XYSeries(getResources().getString(
 					R.string.avoidable_moves_chart_clear_used));
-			xySeries.add(++countCategories, totalClears);
+			xySeries.add(categoryIndex, totalClears);
 			xyMultipleSeriesDataset.addSeries(xySeries);
 			xyMultipleSeriesRenderer
 					.addSeriesRenderer(createSimpleSeriesRenderer(chartSignal3));
+			categoryIndex++;
 			maxYValue = Math.max(maxYValue, totalClears);
 		}
 
 		// Fill dimensions of axis based on number of categories and maximum
 		// Y-value.
-		xyMultipleSeriesRenderer.setXAxisMax(countCategories + 2);
+		xyMultipleSeriesRenderer.setXAxisMax(MAX_CATEGORIES_BAR_CHART + 2);
 		xyMultipleSeriesRenderer.setXLabels(0);
 		xyMultipleSeriesRenderer.setYAxisMin(0);
 		xyMultipleSeriesRenderer.setYAxisMax(maxYValue + 1);
 		xyMultipleSeriesRenderer.setYLabels(Math.min(4, maxYValue + 1));
 		xyMultipleSeriesRenderer
-				.setBarWidth(getElementWidth(countCategories) / 2);
+				.setBarWidth(getElementWidth(MAX_CATEGORIES_BAR_CHART) / 2);
 
 		// Add new statistics section to the activity
 		addStatisticsSection(AVOIDABLE_MOVES_CHART_TAG_ID, getResources()
@@ -424,7 +432,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 	}
 
 	/**
-	 * Create the pie chart for the cheats which are used
+	 * Create bar chart for the cheats which are used
 	 * 
 	 * @return True in case the chart has been created. False otherwise.
 	 */
@@ -468,13 +476,11 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		xyMultipleSeriesRenderer.setYAxisMin(0);
 		xyMultipleSeriesRenderer.setYAxisMax(maxCheats + 1);
 		xyMultipleSeriesRenderer.setYLabelsAlign(Align.RIGHT);
-		xyMultipleSeriesRenderer.setMargins(new int[] { 0, 50, 40, 10 });
+		xyMultipleSeriesRenderer.setMargins(new int[] { 0, 75, 40, 10 });
 		xyMultipleSeriesRenderer.setZoomButtonsVisible(false);
 		xyMultipleSeriesRenderer.setZoomEnabled(false);
 		xyMultipleSeriesRenderer.setPanEnabled(false);
 		xyMultipleSeriesRenderer.setInScroll(true);
-		xyMultipleSeriesRenderer
-				.setBarWidth(getElementWidth(cheatCategories) / 2);
 		xyMultipleSeriesRenderer.setYLabelsPadding(5f);
 
 		// Create object for category series and the series renderer
@@ -539,13 +545,13 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 
 		// Fill dimensions of axis based on number of categories and maximum
 		// Y-value.
-		xyMultipleSeriesRenderer.setXAxisMax(categoryIndex + 2);
+		xyMultipleSeriesRenderer.setXAxisMax(MAX_CATEGORIES_BAR_CHART + 2);
 		xyMultipleSeriesRenderer.setXLabels(0);
 		xyMultipleSeriesRenderer.setYAxisMin(0);
 		xyMultipleSeriesRenderer.setYAxisMax(maxYValue + 1);
 		xyMultipleSeriesRenderer.setYLabels(Math.min(4, maxYValue + 1));
 		xyMultipleSeriesRenderer
-				.setBarWidth(getElementWidth(categoryIndex) / 2);
+				.setBarWidth(getElementWidth(MAX_CATEGORIES_BAR_CHART) / 2);
 
 		addStatisticsSection(
 				CHEATS_CHART_TAG_ID,
