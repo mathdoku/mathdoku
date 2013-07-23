@@ -210,8 +210,10 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 
 	@Override
 	public void onDestroy() {
-		mPreferences.mSharedPreferences
-				.unregisterOnSharedPreferenceChangeListener(this);
+		if (mPreferences != null && mPreferences.mSharedPreferences != null) {
+			mPreferences.mSharedPreferences
+					.unregisterOnSharedPreferenceChangeListener(this);
+		}
 		super.onDestroy();
 	}
 
