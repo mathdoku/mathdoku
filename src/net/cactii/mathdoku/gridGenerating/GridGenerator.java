@@ -26,7 +26,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
-	public static final boolean DEBUG_GRID_GENERATOR = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
+	public static final boolean DEBUG_GRID_GENERATOR = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && true;
 	public static final boolean DEBUG_GRID_GENERATOR_FULL = DEBUG_GRID_GENERATOR && false;
 
 	// Complexity of puzzle
@@ -39,6 +39,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	private int mMaxCagePermutations;
 	private int mMaxCageSize;
 	private int mMaxCageResult;
+	private int mMaximumSingleCellCages;
 
 	// The grid created by the generator
 	private Grid mGrid;
@@ -129,9 +130,16 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		mGridSize = gridSize;
 
 		mPuzzleComplexity = puzzleComplexity;
+		mMaximumSingleCellCages = mGridSize / 2;
 		switch (mPuzzleComplexity) {
 		case VERY_EASY:
 			mMaxCageSize = 2;
+			
+			// Overwrite the maximum number of single cell cages which are
+			// allowed for the smaller grid size. This setting is needed to
+			// avoid long generation times because cages do not fit.
+			mMaximumSingleCellCages = Math.min(4, mMaximumSingleCellCages);
+			
 			mMaxCageResult = 99; // Not used effectively as the maximum will be
 									// 9 * 8 = 72
 			mMaxCagePermutations = 20;
@@ -419,9 +427,10 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		this.mGridCageTypeGenerator = CageTypeGenerator.getInstance();
 
 		boolean restart;
-		int attempts = 1;
+		int attempts = 0;
 		do {
 			restart = false;
+			attempts++;
 			mCageMatrix = new int[this.mGridSize][this.mGridSize];
 			for (int row = 0; row < this.mGridSize; row++) {
 				for (int col = 0; col < this.mGridSize; col++) {
@@ -486,15 +495,17 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 				// Determine a random cage which will start at this cell.
 				GridCage cage = selectRandomCageType(cell);
+
 				if (cage.mCells.size() == 1) {
 					countSingles++;
-					if (countSingles > this.mGridSize / 2) {
+					if (countSingles > mMaximumSingleCellCages) {
 						if (DEBUG_GRID_GENERATOR) {
 							// Too many singles
 							publishProgress(
 									DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_MESSAGE,
-									"Too many single cells in attempt "
-											+ attempts);
+									"Found more single cell cages than allowed ("
+											+ mMaximumSingleCellCages
+											+ ") in attempt " + attempts);
 						}
 						clearAllCages();
 						restart = true;
