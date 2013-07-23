@@ -21,7 +21,7 @@
     <string name="dialog_general_button_close">Sluit</string>
 
     <!-- Name of settings menu. -->
-    <string name="settings">Opties</string>
+    <string name="settings">Instellingen</string>
 
     <!-- Labels for opening and closing the navigation drawer. -->
     <string name="navigation_drawer_open">Open navigatie lade</string>
@@ -50,7 +50,7 @@
 
     <!-- The title and body describing how to play the game. -->
     <string name="puzzle_help_dialog_how_to_play__section_title">Hoe te spelen?</string>
-    <string name="puzzle_help_dialog_how_to_play_section_body">Raak cel aan in de puzzel om de cel te selectere, en veeg daarna naar een een getal om het te kiezen. Door een cell dubbel aan te tikken kun je wisselen tussen de \'normale\' en de \'mogelijke\' toestand. In de \'mogelijke\' toestand kun je meerdere mogelijke getallen invoeren voor een cell.\n\nDe puzzels wordt automatisch opgeslagen.</string>
+    <string name="puzzle_help_dialog_how_to_play_section_body">Raak cel aan in de puzzel om de cel te selectere, en veeg daarna naar een een getal om het te kiezen. Door een cel dubbel aan te tikken kun je wisselen tussen de \'normale\' en de \'mogelijke\' toestand. In de \'mogelijke\' toestand kun je meerdere mogelijke getallen invoeren voor een cell.\n\nDe puzzels wordt automatisch opgeslagen.</string>
 
     <!-- The version title in the help screen. -->
     <string name="puzzle_help_dialog_version_section_title">Versie</string>
@@ -75,7 +75,7 @@
     <string name="changelog_title">Aanpassingen</string>
 
     <!-- Lead in to version 2 of MathDoku in the changes dialog. -->
-    <string name="changelog_lead_in_version_2">Welkom bij versie 2 van MathDoku. Gave nieuwe functies zoals statistieken, een archief en het delen van puzzels zijn toegevoegd. We hebben er voor gekozen om opgeslagen puzzels van versie 1 van MathDoku niet te converteren. Speel eerst een aantal eenvoudige puzzles om aan de nieuwe besturing te wennen. We hopen dat je deze nieuwe versie waardeert.</string>
+    <string name="changelog_lead_in_version_2">Welkom bij versie 2 van MathDoku. Gave nieuwe functies zoals statistieken, een archief en het delen van puzzels zijn toegevoegd. We hebben er voor gekozen om opgeslagen puzzels van versie 1 van MathDoku niet te converteren. Speel eerst een aantal eenvoudige puzzels om aan de nieuwe besturing te wennen. We hopen dat je deze nieuwe versie waardeert.</string>
 
     <!-- The heading of the section containg the version name and revision number. -->
     <string name="changelog_version_title">Versie</string>
@@ -83,12 +83,12 @@
     <!-- The heading and body of the section refering to the list of changes. -->
     <!-- Note for translators: Changes are only available in english. Please mention this in this field. -->
     <string name="changelog_changes_title">Wijzigingen</string>
-    <string name="changelog_changes_body">Ga voor een complete lijst van wijzigingen (alleen in het engels) naar onze website via de onderstaande link.</string>
+    <string name="changelog_changes_body">Ga voor een complete lijst van wijzigingen (alleen in het Engels) naar onze website via de onderstaande link.</string>
 
     <!-- The heading and body of the section referring to the list of issues. -->
     <!-- Note for translators: Only issues written in English will be deaLt with. Please mention this in field changelog_issues_body. -->
     <string name="changelog_issues_title">Fouten en verzoeken</string>
-    <string name="changelog_issues_body">Fouten en wijzingsverzoeken kun je doorgeven via onze website. Wij nemen alleen engelstalige verzoeken in behandeling.</string>
+    <string name="changelog_issues_body">Fouten en wijzigingsverzoeken kun je doorgeven via onze website. Wij nemen alleen Engelstalige verzoeken in behandeling.</string>
 
     <!-- ACTION BAR ITEMS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -102,7 +102,7 @@
     <!-- The menu item that allows the player to use some less frequently used cheats. -->
     <string name="action_cheats">Vals spelen</string>
 
-    <!-- The menu item that allows the user to clear the entire grid. Note this item is only available in case at least one cell in the entire puzzle contains a (maybe) value. -->
+    <!-- The menu item that allows the user to clear the entire grid. Note this item is only available in case at least one cel in the entire puzzle contains a (maybe) value. -->
     <string name="action_clear_grid">Leeg alle cellen</string>
 
     <!-- The menu item that allows the player to start a new game. -->
@@ -153,7 +153,7 @@
 
 
     <!-- The titles for the general puzzling settings. -->
-    <string name="general_settings_actionbar_title">General settings</string>
+    <string name="general_settings_actionbar_title">Algemene instellingen</string>
 
     <!-- The preferences category title for options to assist the user solve the puzzle. -->
     <string name="general_settings_group_assistance">Help</string>
@@ -181,7 +181,7 @@
     <string name="general_settings_colored_digits_summary">Gebruik gekleurde getallen om onderscheid te maken tussen de mogelijke waarden en de normale getallen</string>
 
     <!-- The title and summary of the "maybe in grid" option. This option controls whether maybe numbers are displayed in 3x3 grid or straight line. -->
-    <string name="general_settings_maybe_layout_title">Mogelijken in raster</string>
+    <string name="general_settings_maybe_layout_title">Mogelijke waarden in raster</string>
     <string name="general_settings_maybe_layout_summary">Toon mogelijke getallen in een raster</string>
 
     <!-- The title and summary of the "display timer" option. This option hides or shows the timer below the puzzle. -->
@@ -190,7 +190,7 @@
 
     <!-- The title and summary of the "full screen" option. This option hide the android notification bar. -->
     <string name="general_settings_full_screen_title">Volledig scherm</string>
-    <string name="general_settings_full_screen_summary">Gebruik het gehele scherm voor het spel door Androids notificatiebalk te verwijderen</string>
+    <string name="general_settings_full_screen_summary">Gebruik het gehele scherm voor het spel door Android\'s notificatiebalk te verwijderen</string>
 
     <!-- The title and summary of the "wake lock" option. This option highlights cells with digits already in the row or column. -->
     <string name="general_settings_wake_lock_title">Houd scherm aan</string>
@@ -242,26 +242,26 @@
 
     <!-- Dialog for consent on sending usage log -->
     <string name="dialog_usagelog_title">Help MathDoku ontwikkeling</string>
-    <string name="dialog_usagelog_body">Beste gebruiker,\n\nMathDoku wil gebruiksdata verzenden naar de ontwikkelaars. We ontvangen deze anonieme gebruiksdata graag om beter te begrijpen welke onderdelen het meest populair zijn. Dit helpt ons bij de verdere ontwikkeling van MathDoku. Bezoek onze website voor meer informatie (alleen in het engels):</string>
+    <string name="dialog_usagelog_body">Beste gebruiker,\n\nMathDoku wil gebruiksdata verzenden naar de ontwikkelaars. We ontvangen deze anonieme gebruiksdata graag om beter te begrijpen welke onderdelen het meest populair zijn. Dit helpt ons bij de verdere ontwikkeling van MathDoku. Bezoek onze website voor meer informatie (alleen in het Engels):</string>
     <string name="dialog_usagelog_negative_button">Annuleer</string>
     <string name="dialog_usagelog_positive_button">Gebruiksdata versturen</string>
 
     <!-- Dialog for opt-in on survey about future use of MathDoku. -->
-    <string name="dialog_survey_title">Enquete</string>
-    <string name="dialog_survey_body">Bedankt voor je toestemming om de data naar ons toe te sturen.\n\nWe zijn van plan om een (engelstalige) enquete te sturen naar gebruikers die geïnteresseerd zijn in de verdere ontwikkeling van MathDoku. Als je daarbij betrokken wil worden, laat dan onderstaand je naam en email-adres achter.</string>
+    <string name="dialog_survey_title">Enquête</string>
+    <string name="dialog_survey_body">Bedankt voor je toestemming om de data naar ons toe te sturen.\n\nWe zijn van plan om een (Engelstalige) enquête te sturen naar gebruikers die geïnteresseerd zijn in de verdere ontwikkeling van MathDoku. Als je daarbij betrokken wil worden, laat dan onderstaand je naam en email-adres achter.</string>
     <string name="dialog_survey_user_name_hint">Jouw naam</string>
     <string name="dialog_survey_user_email_hint">Jouw email adres</string>
     <string name="dialog_survey_positive_button">Verzend data</string>
 
     <!-- Dialog for sending feedback on MathDoku via email. -->
     <string name="dialog_send_feedback_title">Geef feedback</string>
-    <string name="dialog_send_feedback_text_1">Fantastisch dat je bereid bent om feedback te geven op MathDoku.\n\Herinner je aljeblieft dat dit een gratis spel zonder advertenties is. We verdienen dus geen geld met deze app. Deze app wordt ontwikkeld door enthousiastelingen in hun vrije tijd. We zijn op geen enkele manier verplicht om verzoeken in te bouwen of om fouten op te lossen.\nGeef alsjeblieft constructieve feedback zonder beledigend te zijn.\n\nWe geven er de voorkeur aan om feedback te ontvangen via de onderstaande link:</string>
-    <string name="dialog_send_feedback_text_2">\nMaar je kunt ook een email sturen als dat handiger is voor je. We nemen alleen verzoeken in behandeling die geschreven zijn in het engels.</string>
+    <string name="dialog_send_feedback_text_1">Fantastisch dat je bereid bent om feedback te geven op MathDoku.\n\Herinner je alsjeblieft dat dit een gratis spel zonder advertenties is. We verdienen dus geen geld met deze app. Deze app wordt ontwikkeld door enthousiastelingen in hun vrije tijd. We zijn op geen enkele manier verplicht om verzoeken in te bouwen of om fouten op te lossen.\nGeef alsjeblieft constructieve feedback zonder beledigend te zijn.\n\nWe geven er de voorkeur aan om feedback te ontvangen via de onderstaande link:</string>
+    <string name="dialog_send_feedback_text_2">\nMaar je kunt ook een email sturen als dat handiger is voor je. We nemen alleen verzoeken in behandeling die geschreven zijn in het Engels.</string>
     <string name="dialog_send_feedback_positive_button">Stuur email</string>
 
     <!-- Default subject and message for feedback email. -->
     <string name="feedback_email_subject">Feedback op MathDoku</string>
-    <string name="feedback_email_body">[Verwijderd alsjeblieft deze tekst en type hier je feedback. Deze email bevat een afdruk van het scherm vlak voordat je koos voor \'Geef feedback\'. Je kan deze schermafdruk verwijderen als het niet van belang is voor je feedback. De andere bijlage bevat enkele gegevens over de app, de afmetingen van je toestel en de waarden van je settings en voorkeuren. Deze informatie kan behulpzaam zijn bij het begrijpen van je feedback maar je bent vrij om deze te verwijderen.]</string>
+    <string name="feedback_email_body">[Verwijderd alsjeblieft deze tekst en type hier je feedback. Deze email bevat een afdruk van het scherm vlak voordat je koos voor \'Geef feedback\'. Je kan deze schermafdruk verwijderen als het niet van belang is voor je feedback. De andere bijlage bevat enkele gegevens over de app, de afmetingen van je toestel en de waarden van je instellingen. Deze informatie kan behulpzaam zijn bij het begrijpen van je feedback maar je bent vrij om deze te verwijderen.]</string>
 
     <!-- Title of dialog used to choose the appropriate action for sending the usage log. -->
     <string name="usage_log_choose_action_title">Verzend MathDoku data</string>
@@ -277,11 +277,11 @@
     <string name="hint_swipe_basic_cell_at_border">Ook indien het gewenste getal niet zichtbaar is, kun je nog steeds vegen in de goede richting. Raak een cel in het midden van de puzzel aan om bekend te worden met de posities van de getallen %1$s.</string>
 
     <!-- Hint to finish swiping to select a digit. -->
-    <string name="hint_swipe_rotate">Draai de veeglijn om een getal te selecteren. Beëindig de veegbeweging om het opgelichtte getal te selecteren.</string>
-    <string name="hint_swipe_release">Stop met vegen om het opgelichtte getal te selecteren, of draai de veeglijn om een ander getal te selecteren.</string>
+    <string name="hint_swipe_rotate">Draai de veeglijn om een getal te selecteren. Beëindig de veegbeweging om het opgelichte getal te selecteren.</string>
+    <string name="hint_swipe_release">Stop met vegen om het opgelichte getal te selecteren, of draai de veeglijn om een ander getal te selecteren.</string>
     <string name="hint_swipe_digit_5">Om een 5 te selecteren, veeg tot buiten de geselecteerde cel en stop de veegbeweging pas weer in de geselecteerde cel.</string>
     <string name="hint_swipe_valid_digit_completed">Je hebt de veegbeweging voor getal %1$s gemaakt.</string>
-    <string name="hint_swipe_invalid_digit_completed">Dze veegrichting onthult alleen een getal in een grotere puzzel.</string>
+    <string name="hint_swipe_invalid_digit_completed">Deze veegrichting onthult alleen een getal in een grotere puzzel.</string>
 
     <!-- Hint to inform about change of Input mode -->
     <string name="hint_input_mode_changed">Je hebt zojuist de invoermethode gewijzigd van %1$s naar %2$s door een dubbeltik op een cel.</string>
@@ -342,7 +342,7 @@
     <!-- Labels for general game statistics. -->
     <string name="statistics_general_date_created">Aangemaakt op</string>
     <string name="statistics_general_date_finished">Beëindigd op</string>
-    <string name="statistics_general_replays">Herspeeld</string>
+    <string name="statistics_general_replays">Keren gespeeld</string>
     <string name="statistics_general_elapsed_time">Speeltijd</string>
     <string name="statistics_general_cheat_penalty_time">Boete vals spel</string>
     <string name="statistics_general_replay">Opnieuw spelen</string>
@@ -372,7 +372,7 @@
     <!-- Dimensions displayed in chart "Cheats used". -->
     <string name="statistics_cheats_check_progress">Voortgang gecontroleerd</string>
     <string name="statistics_cheats_cells_revealed">Cellen onthuld</string>
-    <string name="statistics_cheats_operators_revealed">Operatatietekens onthuld</string>
+    <string name="statistics_cheats_operators_revealed">Operatie tekens onthuld</string>
     <string name="statistics_cheats_solution_revealed">Oplossing onthuld</string>
 
     <!-- Title and a body which explains the purpose of the chart "Solved games". -->
@@ -386,20 +386,20 @@
 
     <!-- Title and a body which explains the purpose of the chart "Elapsed time historic". -->
     <string name="statistics_elapsed_time_historic_title">Speeltijd</string>
-    <string name="statistics_elapsed_time_historic_body">Deze grafiek toon de verstreken speeltijd per puzzel en de gemiddelde speeltijd. Puzzels zijn gesorteerd in de volgorde waarin ze zijn aangeaamkt (dezelfde volgorde als in het Archief). Recente puzzels staan meer aan de rechterzijde van de grafiek. Als je meer ervaring hebt op dit niveau dan zal de gemiddelde speeltijd per puzzel afnemen. Tevens behoren er dan minder puzzels te zijn die niet zijn voltooid of waarvan de oplossing is onthuld.</string>
+    <string name="statistics_elapsed_time_historic_body">Deze grafiek toon de verstreken speeltijd per puzzel en de gemiddelde speeltijd. Puzzels zijn gesorteerd in de volgorde waarin ze zijn aangemaakt (dezelfde volgorde als in het Archief). Recente puzzels staan meer aan de rechterzijde van de grafiek. Als je meer ervaring hebt op dit niveau dan zal de gemiddelde speeltijd per puzzel afnemen. Tevens behoren er dan minder puzzels te zijn die niet zijn voltooid of waarvan de oplossing is onthuld.</string>
     <string name="statistics_elapsed_time_historic_solved_average_serie">Gemiddelde (alleen opgeloste puzzels)</string>
     <string name="statistics_elapsed_time_historic_solved_slowest">Langzaamste</string>
     <string name="statistics_elapsed_time_historic_solved_average">Gemiddelde</string>
     <string name="statistics_elapsed_time_historic_solved_fastest">Snelste</string>
 
     <!-- The lead in text at top of the help dialog. -->
-    <string name="statistics_help_dialog_general">De meeste statistieken zijn gebaseerd op all puzzels die je hebt gespeeld. De grafiek \'Speeltijd\' toont alleen de meest recente puzzels.\nDe statistieken zijn beschikbaar per niveau (d.w.z. de grootte van de puzzel) en voor het geheel. Veeg van links naar rechts om naar het vorige niveau te gaan. Veeg van rechts naar links om naar het volgende niveau te gaan.\n\nGebruik de settings om de statistieken weergave aan te passen.</string>
+    <string name="statistics_help_dialog_general">De meeste statistieken zijn gebaseerd op all puzzels die je hebt gespeeld. De grafiek \'Speeltijd\' toont alleen de meest recente puzzels.\nDe statistieken zijn beschikbaar per niveau (d.w.z. de grootte van de puzzel) en voor het geheel. Veeg van links naar rechts om naar het vorige niveau te gaan. Veeg van rechts naar links om naar het volgende niveau te gaan.\n\nGebruik de instellingen om de statistieken weergave aan te passen.</string>
 
     <!-- STATISTICS  SETTINGS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
     <!-- Title of statistics preferences activity. -->
-    <string name="statistics_settings_actionbar_title">Statistieken settings</string>
+    <string name="statistics_settings_actionbar_title">Statistieken instellingen</string>
 
     <!-- The title and summary of the "Chart description" option. This option enables or disables displaying the description below the charts in the statistics activity. -->
     <string name="statistics_setting_show_chart_description_title">Grafiek toelichting</string>
@@ -435,14 +435,14 @@
     </string-array>
 
     <!-- The label in the pager bar for the "puzzle number" -->
-    <string name="archive_puzzle_number">Puzzle nr.</string>
+    <string name="archive_puzzle_number">Puzzelnr.</string>
 
     <!-- The label of the button below a puzzle. -->
     <string name="archive_reload_unfinished_game">Verder gaan</string>
     <string name="archive_reload_finished_game">Opnieuw spelen</string>
 
     <!-- Title for the archive settings fragment. -->
-    <string name="archive_settings_action_bar_title">Archief settings</string>
+    <string name="archive_settings_action_bar_title">Archief instellingen</string>
 
     <!-- The title and summary of the "Show status filter" option. This option enables or disables showing of the status filter in the action bar of the archive. -->
     <string name="archive_settings_show_status_filter_title">Toon status filter</string>
@@ -459,7 +459,7 @@
     <string name="archive_setting_show_chart_description_summary">Toon een toelichting onder elke grafiek</string>
 
     <!-- The lead in text at top of the help dialog. -->
-    <string name="archive_help_dialog_general">The archive contains the history of all games you have played. Swipe from left to right to go to an older puzzle. Swipe from right to left to go to a newer puzzle.\n\nYou can use filters to view only puzzles having a specific status or size. Filters can be enabled and disabled via the settings menu. Note: a filter will only be shown in case it contains multiple values.</string>
+    <string name="archive_help_dialog_general">Het archief bevat de historie van alle puzzels die je hebt gespeeld. Veeg van links naar rechts om naar een oudere puzzel te gaan. Veeg van rechts naar links om naar een nieuwere puzzel te gaan.\n\nJe kan de filters gebruiken om alleen puzzels te bekijken die een bepaalde status of grootte hebben. Filters kunnen aan- en uitgezet worden in de instellingen. Let op: een filter wordt alleen getoond indien het meerdere waarden bevat.</string>
 
     <!-- SHARED PUZZLE  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -467,14 +467,14 @@
     <!-- Subject and body of share email. -->
     <string name="share_puzzle_subject">MathDoku puzzel delen</string>
     <string name="share_puzzle_link_description">MathDoku puzzel</string>
-    <string name="share_unfinished_puzzle_body">Ik wil deze %1$s met je delen. Kies, na het klikken op de link, voor de MathDoku app om de puzzel te bekijken.%2$sIn het geval dat je versie 2 van MathDoku for Android nog niet hebt geïnstalleerd, download het dan van %3$s voordat je op de puzzel link klikt.%4$sIn het geval dat bovenstaande tekst geen links bevat, gebruik dan alsjeblieft een van de onderstaande links:%5$s - Bekijken MathDoku puzzel: %6$s - Download MathDoku: %7$s</string>
-    <string name="share_finished_puzzle_body">Ik heb deze %1$s opgelost in %2$s. Kan jij het sneller? Kies, na het klikken op de link, voor de MathDoku app om de puzzel te bekijken.%3$sIn het geval dat je versie 2 van MathDoku for Android nog niet hebt geïnstalleerd, download het dan van %4$s voordat je op de puzzel link klikt.%5$sIn het geval dat bovenstaande tekst geen links bevat, gebruik dan alsjeblieft een van de onderstaande links:%6$s - Bekijken MathDoku puzzel: %7$s - Download MathDoku: %8$s</string>
+    <string name="share_unfinished_puzzle_body">Ik wil deze %1$s met je delen. Kies, na het klikken op de link, voor de MathDoku app om de puzzel te bekijken.%2$sIn het geval dat je versie 2 van MathDoku voor Android nog niet hebt geïnstalleerd, download het dan van %3$s voordat je op de puzzel link klikt.%4$sIn het geval dat bovenstaande tekst geen links bevat, gebruik dan alsjeblieft een van de onderstaande links:%5$s - Bekijken MathDoku puzzel: %6$s - Download MathDoku: %7$s</string>
+    <string name="share_finished_puzzle_body">Ik heb deze %1$s opgelost in %2$s. Kan jij het sneller? Kies, na het klikken op de link, voor de MathDoku app om de puzzel te bekijken.%3$sIn het geval dat je versie 2 van MathDoku voor Android nog niet hebt geïnstalleerd, download het dan van %4$s voordat je op de puzzel link klikt.%5$sIn het geval dat bovenstaande tekst geen links bevat, gebruik dan alsjeblieft een van de onderstaande links:%6$s - Bekijken MathDoku puzzel: %7$s - Download MathDoku: %8$s</string>
 
     <!-- Title for the shared puzzle fragment. -->
     <string name="shared_puzzle_action_bar_title">Voorvertoning Gedeelde Puzzel</string>
 
     <!-- Introduction text at top of screen. -->
-    <string name="shared_puzzle_introduction">Deze puzzel is door middel van een email link naar je verstuurd. Zie email for meer details indien toegevoegd door de verzender. In het geval dat je er voor kiest om deze puzzel te spelen, dan wordt deze ook aan je archief toegevoegd.</string>
+    <string name="shared_puzzle_introduction">Deze puzzel is door middel van een email link naar je verstuurd. Zie email voor meer details indien toegevoegd door de verzender. In het geval dat je er voor kiest om deze puzzel te spelen, dan wordt deze ook aan je archief toegevoegd.</string>
 
     <!-- The label of the button below a puzzle. -->
     <string name="shared_puzzle_play_button">Speel deze puzzel</string>
