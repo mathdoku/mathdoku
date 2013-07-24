@@ -128,9 +128,15 @@ public class GridCell {
 		case NOT_SELECTED__BAD_MATH:
 			return mCagePainter.getBorderBadMathPaint();
 		case SELECTED__GOOD_MATH:
-			return mCagePainter.getBorderSelectedPaint();
+			// In case the grid is deactivated (for example when an unfinished
+			// puzzle is displayed in the archive, display the border as if the
+			// cage was not selected
+			return (mGrid != null && mGrid.isActive() ? mCagePainter
+					.getBorderSelectedPaint() : mCagePainter.getBorderPaint());
 		case SELECTED__BAD_MATH:
-			return mCagePainter.getBorderSelectedBadMathPaint();
+			return (mGrid != null && mGrid.isActive() ? mCagePainter
+					.getBorderSelectedBadMathPaint() : mCagePainter
+					.getBorderBadMathPaint());
 		}
 		return null;
 	}
@@ -430,7 +436,7 @@ public class GridCell {
 						.getInvalidBorderPaint() : null);
 				break;
 			case 4:
-				borderPaint = (mSelected ? mCellPainter
+				borderPaint = (mSelected && mGrid != null && mGrid.isActive() ? mCellPainter
 						.getSelectedBorderPaint() : null);
 				break;
 			}
@@ -468,7 +474,7 @@ public class GridCell {
 		// ---------------------------------------------------------------------
 
 		Paint background = null;
-		if (mSelected) {
+		if (mSelected && mGrid != null && mGrid.isActive()) {
 			background = mCellPainter.getSelectedBackgroundPaint();
 		} else if (mInvalidUserValueHighlight) {
 			background = mCellPainter.getInvalidBackgroundPaint();
