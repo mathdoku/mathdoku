@@ -278,6 +278,9 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 									int which) {
 								PuzzleFragment.this.mGrid.clearCells(false);
 								PuzzleFragment.this.mGridView.invalidate();
+								// Invalidate the option menu to hide the check progress action if necessary
+								((FragmentActivity) mContext).invalidateOptionsMenu();
+								setClearAndUndoButtonVisibility(null);
 							}
 						}).show();
 	}
