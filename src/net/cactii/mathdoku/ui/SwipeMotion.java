@@ -70,6 +70,10 @@ class SwipeMotion {
 	static private long mDoubleTapTouchDownTime = 0;
 	private boolean mDoubleTapDetected;
 
+	// Event time at which the previous swipe position was advised to be updated
+	private long mPreviousSwipePositionEventTime = -1l;
+	private long mCurrentSwipePositionEventTime = -1l;
+
 	/**
 	 * Creates a new instance of the {@see SwipeMotion}.
 	 * 
@@ -268,6 +272,7 @@ class SwipeMotion {
 
 		mCurrentSwipePositionPixelCoordinates[X_POS] = motionEvent.getX();
 		mCurrentSwipePositionPixelCoordinates[Y_POS] = motionEvent.getY();
+		mCurrentSwipePositionEventTime = motionEvent.getEventTime();
 
 		// Determine coordinates of new current swipe position on the actual
 		// swipe position
@@ -318,20 +323,39 @@ class SwipeMotion {
 	}
 
 	/**
-	 * Checks whether the current swipe position has the same coordinates as the
-	 * previous swipe position.
+	 * Checks whether the current swipe position needs to be updated.
 	 * 
-	 * @return
+	 * @return True in case the current swipe position needs to be updated.
+	 *         False otherwise.
 	 */
-	protected boolean hasChangedCoordinatesCurrentSwipePosition() {
+	protected boolean needToUpdateCurrentSwipePosition() {
+		// Update at start of motion
 		if (mPreviousSwipePositionCellCoordinates == null
 				&& mCurrentSwipePositionCellCoordinates != null) {
+			mPreviousSwipePositionEventTime = mCurrentSwipePositionEventTime;
 			return true;
 		}
+
+		// Update when the motion has reached another cell
 		if (mPreviousSwipePositionCellCoordinates != null
 				&& mCurrentSwipePositionCellCoordinates != null) {
-			return (mPreviousSwipePositionCellCoordinates[X_POS] != mCurrentSwipePositionCellCoordinates[X_POS] || mPreviousSwipePositionCellCoordinates[Y_POS] != mCurrentSwipePositionCellCoordinates[Y_POS]);
+			if (mPreviousSwipePositionCellCoordinates[X_POS] != mCurrentSwipePositionCellCoordinates[X_POS]
+					|| mPreviousSwipePositionCellCoordinates[Y_POS] != mCurrentSwipePositionCellCoordinates[Y_POS]) {
+				mPreviousSwipePositionEventTime = mCurrentSwipePositionEventTime;
+				return true;
+			}
 		}
+
+		// Update if the last update was 100 milliseconds or longer ago
+		if (mPreviousSwipePositionEventTime > 0
+				&& mCurrentSwipePositionEventTime > 0
+				&& mCurrentSwipePositionEventTime
+						- mPreviousSwipePositionEventTime > 100) {
+			mPreviousSwipePositionEventTime = mCurrentSwipePositionEventTime;
+			return true;
+		}
+
+		// No update to save on performance
 		return false;
 	}
 

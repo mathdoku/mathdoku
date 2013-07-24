@@ -253,11 +253,10 @@ public class GridView extends View implements OnTouchListener {
 					// As the swipe digit has been changed, the grid view needs
 					// to be updated.
 					invalidate();
-				} else if (mSwipeMotion
-						.hasChangedCoordinatesCurrentSwipePosition()) {
-					// For performance reasons, the swipe position will only be
-					// updated in case the current swipe position has moved to
-					// another cell.
+				} else if (mSwipeMotion.needToUpdateCurrentSwipePosition()) {
+					// For performance reasons, the swipe position will not be
+					// update at each event but only if relevant as decided by
+					// the swipe motion.
 					invalidate();
 				}
 			}
@@ -391,7 +390,10 @@ public class GridView extends View implements OnTouchListener {
 			// Draw cells
 			Painter.getInstance()
 					.setCellSize(mGridCellSize, mDigitPositionGrid);
-			Painter.getInstance().setColorMode(mPreferences.showColoredDigits() ? DigitPainterMode.INPUT_MODE_BASED : DigitPainterMode.MONOCHROME);
+			Painter.getInstance()
+					.setColorMode(
+							mPreferences.showColoredDigits() ? DigitPainterMode.INPUT_MODE_BASED
+									: DigitPainterMode.MONOCHROME);
 			for (GridCell cell : mGrid.mCells) {
 				cell.draw(canvas, gridBorderWidth, mInputMode);
 			}
