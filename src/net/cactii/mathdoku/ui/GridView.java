@@ -17,9 +17,8 @@ import net.cactii.mathdoku.tip.TipDuplicateValue;
 import net.cactii.mathdoku.tip.TipIncorrectValue;
 import net.cactii.mathdoku.tip.TipOrderOfValuesInCage;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Canvas;
-import android.graphics.Rect;
+import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
@@ -54,9 +53,6 @@ public class GridView extends View implements OnTouchListener {
 
 	// The layout to be used for positioning the maybe digits in a grid.
 	private DigitPositionGrid mDigitPositionGrid;
-
-	// Visible window rectangle
-	private Rect mDisplayFrame;
 
 	// Reference to the last swipe motion which was started.
 	private SwipeMotion mSwipeMotion;
@@ -93,12 +89,6 @@ public class GridView extends View implements OnTouchListener {
 
 		mGridViewSize = 0;
 		mGridPainter = Painter.getInstance().getGridPainter();
-		mGridBorderWidth = (mGridPainter == null ? 0 : mGridPainter
-				.getBorderPaint().getStrokeWidth());
-
-		// Initialize the display frame for the grid view.
-		mDisplayFrame = new Rect();
-		updateWindowVisibleDisplayFrame();
 
 		// Set listeners
 		this.setOnTouchListener(this);
@@ -126,27 +116,35 @@ public class GridView extends View implements OnTouchListener {
 				mSwipeMotion = new SwipeMotion(mGrid, mGridBorderWidth,
 						mGridCellSize);
 			}
-			mSwipeMotion.setTouchDownEvent(event);
-			if (mSwipeMotion.isDoubleTap()) {
-				mInputMode = (mInputMode == InputMode.MAYBE ? InputMode.NORMAL
-						: InputMode.MAYBE);
-				mSwipeMotion.clearDoubleTap();
+			if (mSwipeMotion.setTouchDownEvent(event) == false) {
+				// A position inside the grid border has been touched. Normally
+				// this border is very small and will therefore not be hit.
+				// However in training mode this border is much thicker in order
+				// to display the entire swipe border and can easy be touched.
+				mSwipeMotion = null;
 			} else {
-				GridCell selectedCell = mSwipeMotion.getTouchDownCell();
+				if (mSwipeMotion.isDoubleTap()) {
+					mInputMode = (mInputMode == InputMode.MAYBE ? InputMode.NORMAL
+							: InputMode.MAYBE);
+					mSwipeMotion.clearDoubleTap();
+				} else {
+					GridCell selectedCell = mSwipeMotion.getTouchDownCell();
 
-				// Select new cell and inform listener of puzzle fragment of
-				// start of motion event.
-				mGrid.setSelectedCell(selectedCell);
-				mTouchedListener.gridTouched(selectedCell);
+					// Select new cell and inform listener of puzzle fragment of
+					// start of motion event.
+					mGrid.setSelectedCell(selectedCell);
+					mTouchedListener.gridTouched(selectedCell);
+				}
+
+				// Show the basic swipe hint. Replace this hint after a short
+				// pause.
+				if (mOnTickerTapeChangedListener != null
+						&& mPreferences.getSwipeValidMotionCounter() < 30) {
+					setTickerTapeOnCellDown();
+				}
+
+				invalidate();
 			}
-
-			// Show the basic swipe hint. Replace this hint after a short pause.
-			if (mOnTickerTapeChangedListener != null
-					&& mPreferences.getSwipeValidMotionCounter() < 30) {
-				setTickerTapeOnCellDown();
-			}
-
-			invalidate();
 
 			// Do not allow other view to respond to this action, for example by
 			// handling the long press, which would result in malfunction of the
@@ -379,13 +377,25 @@ public class GridView extends View implements OnTouchListener {
 			if (mGrid.mCages == null)
 				return;
 
-			float gridBorderWidth = mGridPainter.getBorderPaint()
-					.getStrokeWidth();
+			// Draw outer grid border. For support of transparent borders it has
+			// to be avoided that lines do overlap.
+			Paint borderPaint = mGridPainter.getBorderPaint();
+			canvas.drawRect(0, 0, mGridViewSize - mGridBorderWidth,
+					mGridBorderWidth, borderPaint);
+			canvas.drawRect(mGridViewSize - mGridBorderWidth, 0, mGridViewSize,
+					mGridViewSize - mGridBorderWidth, borderPaint);
+			canvas.drawRect(mGridBorderWidth, mGridViewSize - mGridBorderWidth,
+					mGridViewSize, mGridViewSize, borderPaint);
+			canvas.drawRect(0, mGridBorderWidth, 0 + mGridBorderWidth,
+					mGridViewSize, borderPaint);
 
-			// Draw grid background and border grid
-			canvas.drawColor(mGridPainter.getBackgroundPaint().getColor());
-			canvas.drawRect(1, 1, mGridViewSize, mGridViewSize,
-					mGridPainter.getBorderPaint());
+			// Draw background of the inner grid itself. This background is a
+			// bit extended outside the inner grid which gives a nice outline
+			// around the grid in the light theme.
+			canvas.drawRect(mGridBorderWidth - 2, mGridBorderWidth - 2,
+					mGridViewSize - mGridBorderWidth + 2, mGridViewSize
+							- mGridBorderWidth + 2,
+					mGridPainter.getBackgroundPaint());
 
 			// Draw cells
 			Painter.getInstance()
@@ -395,7 +405,7 @@ public class GridView extends View implements OnTouchListener {
 							mPreferences.showColoredDigits() ? DigitPainterMode.INPUT_MODE_BASED
 									: DigitPainterMode.MONOCHROME);
 			for (GridCell cell : mGrid.mCells) {
-				cell.draw(canvas, gridBorderWidth, mInputMode);
+				cell.draw(canvas, mGridBorderWidth, mInputMode);
 			}
 
 			// Draw the overlay for the swipe border around the selected cell
@@ -411,7 +421,7 @@ public class GridView extends View implements OnTouchListener {
 					// yet released.
 					GridCell gridCell = mGrid.getSelectedCell();
 					if (gridCell != null) {
-						gridCell.drawSwipeOverlay(canvas, gridBorderWidth,
+						gridCell.drawSwipeOverlay(canvas, mGridBorderWidth,
 								mInputMode,
 								mSwipeMotion.getCurrentSwipePositionX(),
 								mSwipeMotion.getCurrentSwipePositionY(),
@@ -462,22 +472,45 @@ public class GridView extends View implements OnTouchListener {
 		int measuredWidth = measure(widthMeasureSpec);
 		int measuredHeight = measure(heightMeasureSpec);
 
-		// Correct width/height for low aspect ratio screens.
-		measuredWidth = Math.min(measuredWidth, mDisplayFrame.width());
-		measuredHeight = Math.min(measuredHeight, mDisplayFrame.height());
-
 		// Get the maximum space available for the grid. As it is a square we
 		// need the minimum of width and height.
 		int maxSize = Math.min(measuredWidth, measuredHeight);
 
-		// Finally compute the exact size needed to display a grid in which the
+		// Compute the exact size needed to display a grid in which the
 		// (integer) cell size is as big as possible but the grid still fits in
 		// the space available.
-		float gridBorderWidth = (mGridPainter == null ? 0 : mGridPainter
-				.getBorderPaint().getStrokeWidth());
-		mGridCellSize = (float) Math.floor((maxSize - 2 * gridBorderWidth)
-				/ mGridSize);
-		mGridViewSize = 2 * gridBorderWidth + mGridSize * mGridCellSize;
+		if (mGrid != null && mGrid.isActive()) {
+			// The swipe border has to be entirely visible in case a cell at the
+			// outer edge of the grid is selected. As the width of the swipe
+			// border equals 50% of a normal cell, the entire width is dived by
+			// the grid size + 1.
+			mGridCellSize = (float) Math.floor(maxSize / (mGridSize + 1));
+
+			// The grid border needs to be at least 50% of a normal cell in
+			// order to display the swipe border entirely.
+			mGridBorderWidth = mGridCellSize / 2;
+
+		} else {
+			// Force to compute the cell size
+			mGridBorderWidth = -1;
+		}
+
+		// The grid view border has to be set to a minimal width which is big
+		// enough to catch a swipe motion event. This is needed to be able to
+		// end a swipe motion for cells at the outer edge of the grid. In case
+		// the border width was already compute to display the swipe border, but
+		// is less than the minimal width, both the border width as cell size
+		// has to be recomputed as well.
+		float minGridBorderWidth = mGridPainter.getBorderPaint()
+				.getStrokeWidth();
+		if (mGridBorderWidth < minGridBorderWidth) {
+			mGridBorderWidth = minGridBorderWidth;
+			mGridCellSize = (float) Math.floor((maxSize - 2 * mGridBorderWidth)
+					/ mGridSize);
+		}
+
+		// Finally compute the total size of the grid
+		mGridViewSize = 2 * mGridBorderWidth + mGridSize * mGridCellSize;
 
 		setMeasuredDimension((int) mGridViewSize, (int) mGridViewSize);
 	}
@@ -525,36 +558,6 @@ public class GridView extends View implements OnTouchListener {
 		mDigitPositionGrid = (mGrid == null
 				|| !mGrid.hasPrefShowMaybesAs3x3Grid() ? null
 				: digitPositionGrid);
-	}
-
-	/**
-	 * Determine the maximum display frame for the grid view.
-	 */
-	public void updateWindowVisibleDisplayFrame() {
-		// Update display frame to size on entire screen in current orientation.
-		getWindowVisibleDisplayFrame(mDisplayFrame);
-
-		// Determine whether adjustments are needed due to low aspect ratio
-		// height/width.
-		if (!mDisplayFrame.isEmpty()) {
-			// Get orientation
-			float newWidth = mDisplayFrame.width();
-			float newHeight = mDisplayFrame.height();
-			if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-				// In landscape mode the grid view should be resized in case
-				// its size is bigger than 67% of the total width. Optimal
-				// scaling factor has been determined based on a Nexus7
-				// display.
-				newWidth *= (float) 0.67;
-			} else {
-				// In portrait mode the grid view should be resized in case
-				// its size is bigger than 60% of the total height. Optimal
-				// scaling factor has been determined based on a Nexus7
-				// display.
-				newHeight *= (float) 0.6;
-			}
-			mDisplayFrame.set(0, 0, (int) newWidth, (int) newHeight);
-		}
 	}
 
 	/**

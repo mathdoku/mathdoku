@@ -17,14 +17,16 @@ public class GridPainter extends BorderPainter {
 	public GridPainter(Painter painter) {
 		super(painter);
 
+		// The grid border paint is only used as a (transparent) buffer zone
+		// around the actual grid. The buffer zone is needed to end swipe
+		// motions which move out of the inner grid. Also it is used to display
+		// (a part of) the swipe border around the cell at the outer edge of the
+		// grid.
 		mBorderPaint = new Paint();
-		mBorderPaint.setStyle(Paint.Style.STROKE);
-		mBorderPaint.setPathEffect(null);
+		mBorderPaint.setStrokeWidth(15);
 
 		mBackgroundPaint = new Paint();
-		mBackgroundPaint.setStyle(Paint.Style.STROKE);
-
-		mBorderPaint.setStrokeWidth(BorderPainter.BORDER_STROKE_WIDTH_THIN);
+		mBackgroundPaint.setStyle(Paint.Style.FILL);
 	}
 
 	@Override
@@ -32,22 +34,10 @@ public class GridPainter extends BorderPainter {
 		// Set background color
 		switch (theme) {
 		case LIGHT:
-			mBackgroundPaint.setColor(0xffffffff);
+			mBackgroundPaint.setColor(0xFFFFFFFF);
 			break;
 		case DARK:
 			mBackgroundPaint.setColor(0x00000000);
-			break;
-		}
-
-		// Set border paint
-		switch (theme) {
-		case LIGHT:
-			mBorderPaint.setAntiAlias(false);
-			mBorderPaint.setColor(0xFFAAAAAA);
-			break;
-		case DARK:
-			mBorderPaint.setAntiAlias(true);
-			mBorderPaint.setColor(0xFFAAAAAA);
 			break;
 		}
 	}
