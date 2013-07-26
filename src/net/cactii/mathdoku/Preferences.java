@@ -101,7 +101,7 @@ public class Preferences {
 	public final static String SHOW_TIMER = "timer";
 	public final static boolean SHOW_TIMER_DEFAULT = true;
 
-	public final static String SWIPE_DIGIT_INVALID_COUNTER = "swipe_digit_valid_counter";
+	public final static String SWIPE_DIGIT_INVALID_COUNTER = "swipe_digit_invalid_counter";
 	public final static String SWIPE_DIGIT_VALID_COUNTER = "swipe_digit_valid_counter";
 	public final static String SWIPE_DIGIT_1_COUNTER = "swipe_digit_1_counter";
 	public final static String SWIPE_DIGIT_2_COUNTER = "swipe_digit_2_counter";
@@ -272,10 +272,6 @@ public class Preferences {
 			}
 		}
 		if (previousInstalledVersion < 350 && currentVersion >= 350) {
-			if (!mSharedPreferences.contains(SWIPE_DIGIT_INVALID_COUNTER)) {
-				prefeditor.putInt(SWIPE_DIGIT_INVALID_COUNTER,
-						SWIPE_DIGIT_COUNTER_DEFAULT);
-			}
 			if (!mSharedPreferences.contains(SWIPE_DIGIT_VALID_COUNTER)) {
 				prefeditor.putInt(SWIPE_DIGIT_VALID_COUNTER,
 						SWIPE_DIGIT_COUNTER_DEFAULT);
@@ -397,6 +393,15 @@ public class Preferences {
 		if (previousInstalledVersion < 435 && currentVersion >= 435) {
 			if (!mSharedPreferences.contains(COLORED_DIGITS)) {
 				prefeditor.putBoolean(COLORED_DIGITS, COLORED_DIGITS_DEFAULT);
+			}
+		}
+		if (previousInstalledVersion < 448 && currentVersion >= 448) {
+			// Add this preference again as the value of the
+			// SWIPE_DIGIT_INVALID_COUNTER equalled SWIPE_DIGIT_VALID_COUNTER
+			// until this revision.
+			if (!mSharedPreferences.contains(SWIPE_DIGIT_INVALID_COUNTER)) {
+				prefeditor.putInt(SWIPE_DIGIT_INVALID_COUNTER,
+						SWIPE_DIGIT_COUNTER_DEFAULT);
 			}
 		}
 
