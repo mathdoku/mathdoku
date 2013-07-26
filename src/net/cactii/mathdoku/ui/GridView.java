@@ -392,7 +392,7 @@ public class GridView extends View implements OnTouchListener {
 			// Draw background of the inner grid itself. This background is a
 			// bit extended outside the inner grid which gives a nice outline
 			// around the grid in the light theme.
-			canvas.drawRect(mGridBorderWidth - 2, mGridBorderWidth - 2,
+			canvas.drawRect(mGridBorderWidth - 1, mGridBorderWidth - 1,
 					mGridViewSize - mGridBorderWidth + 2, mGridViewSize
 							- mGridBorderWidth + 2,
 					mGridPainter.getBackgroundPaint());
