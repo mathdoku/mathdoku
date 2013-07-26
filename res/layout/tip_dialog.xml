@@ -19,7 +19,8 @@
                 android:id="@+id/dialog_tip_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp" />
+                android:padding="10dp"
+                android:textSize="@dimen/dialog_text_size_body" />
 
             <ImageView
                 android:id="@+id/dialog_tip_image"

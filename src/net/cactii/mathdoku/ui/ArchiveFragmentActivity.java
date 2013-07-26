@@ -34,6 +34,7 @@ import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -122,6 +123,9 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 		pagerTabStrip.setBackgroundColor(pagerTabStripPainter
 				.getBackgroundColor());
 		pagerTabStrip.setTextColor(pagerTabStripPainter.getTextColor());
+		pagerTabStrip.setTextSize(TypedValue.COMPLEX_UNIT_SP, getResources().getDimension(
+				net.cactii.mathdoku.R.dimen.text_size_default) / getResources()
+				.getDisplayMetrics().density);
 
 		// Non primary items are semi transparent.
 		pagerTabStrip.setNonPrimaryAlpha(0.75f);

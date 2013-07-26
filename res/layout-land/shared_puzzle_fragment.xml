@@ -28,7 +28,8 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:text="@string/shared_puzzle_introduction" />
+            android:text="@string/shared_puzzle_introduction"
+            android:textSize="@dimen/text_size_default" />
 
         <Button
             android:id="@+id/shared_puzzle_play_button"
@@ -41,7 +42,9 @@
             android:layout_marginRight="5dp"
             android:lines="1"
             android:onClick="onClickPlayGame"
-            android:text="@string/shared_puzzle_play_button" />
+            android:text="@string/shared_puzzle_play_button"
+            android:textSize="@dimen/controls_text_size_default"
+            android:textStyle="bold" />
     </RelativeLayout>
 
 </LinearLayout>

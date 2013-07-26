@@ -14,8 +14,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:paddingTop="1dp"
-        android:textIsSelectable="false"
-        android:textSize="@dimen/controls_text_size_default" />
+        android:textIsSelectable="false" />
 
     <RelativeLayout
         android:id="@+id/puzzleGrid"
