@@ -14,9 +14,6 @@
     <!-- GENERAL - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
-    <!-- The message displayed on the "start" button. -->
-    <string name="start_button_message">Nieuw Spel</string>
-
     <!-- The label of the buttons that close dialogs. -->
     <string name="dialog_general_button_close">Sluit</string>
 
@@ -106,7 +103,7 @@
     <string name="action_clear_grid">Leeg alle cellen</string>
 
     <!-- The menu item that allows the player to start a new game. -->
-    <string name="action_new_game">Nieuw Spel</string>
+    <string name="action_new_game">Nieuw spel</string>
 
     <!-- The sub-menu item to check user entries against the solution. -->
     <string name="action_check_progress">Controleer Voortgang</string>
@@ -255,7 +252,7 @@
 
     <!-- Dialog for sending feedback on MathDoku via email. -->
     <string name="dialog_send_feedback_title">Geef feedback</string>
-    <string name="dialog_send_feedback_text_1">Fantastisch dat je bereid bent om feedback te geven op MathDoku.\n\Herinner je alsjeblieft dat dit een gratis spel zonder advertenties is. We verdienen dus geen geld met deze app. Deze app wordt ontwikkeld door enthousiastelingen in hun vrije tijd. We zijn op geen enkele manier verplicht om verzoeken in te bouwen of om fouten op te lossen.\nGeef alsjeblieft constructieve feedback zonder beledigend te zijn.\n\nWe geven er de voorkeur aan om feedback te ontvangen via de onderstaande link:</string>
+    <string name="dialog_send_feedback_text_1">Fantastisch dat je bereid bent om feedback te geven op MathDoku.\n\nHerinner je alsjeblieft dat dit een gratis spel zonder advertenties is. We verdienen dus geen geld met deze app. Deze app wordt ontwikkeld door enthousiastelingen in hun vrije tijd. We zijn op geen enkele manier verplicht om verzoeken in te bouwen of om fouten op te lossen.\nGeef alsjeblieft constructieve feedback zonder beledigend te zijn.\n\nWe geven er de voorkeur aan om feedback te ontvangen via de onderstaande link:</string>
     <string name="dialog_send_feedback_text_2">\nMaar je kunt ook een email sturen als dat handiger is voor je. We nemen alleen verzoeken in behandeling die geschreven zijn in het Engels.</string>
     <string name="dialog_send_feedback_positive_button">Stuur email</string>
 
