@@ -2,10 +2,10 @@ package net.cactii.mathdoku.hint;
 
 import java.util.ArrayList;
 
-import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.painter.Painter;
 import android.content.Context;
 import android.os.Handler;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
@@ -57,21 +57,21 @@ public class TickerTape extends HorizontalScrollView {
 		mContext = context;
 
 		// Determine text size to be used
-		mTextSize = (int) ((mContext.getResources().getDimension(
-				R.dimen.controls_text_size_default) / getResources()
-				.getDisplayMetrics().density) + 0.5f);
+		mTextSize = (int) (mContext.getResources().getDimension(
+				net.cactii.mathdoku.R.dimen.ticker_tape_text_size) / getResources()
+				.getDisplayMetrics().density);
 
 		// Set layout parameters of the horizontal scroll view.
 		setLayoutParams(new LayoutParams(
 				android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-				android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
+				android.view.ViewGroup.LayoutParams.MATCH_PARENT));
 
 		// Add a linear layout to the scroll view which will hold all the text
 		// view for all items
 		mTickerTapeLinearLayout = new LinearLayout(mContext);
 		mTickerTapeLinearLayout.setLayoutParams(new LayoutParams(
 				android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-				android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
+				android.view.ViewGroup.LayoutParams.MATCH_PARENT));
 		addView(mTickerTapeLinearLayout);
 
 		// disable scroll bar
@@ -99,11 +99,15 @@ public class TickerTape extends HorizontalScrollView {
 		// Create a new text view for this item
 		TextView textView = new TextView(mContext);
 		textView.setText(string);
-		textView.setTextSize(mTextSize);
+
+		// Use a DIP text size as the height of ticker tape layout has been set
+		// to a fixed height.
+		textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, mTextSize);
+
 		textView.setId(mTextViewList.size());
 		textView.setLayoutParams(new LayoutParams(
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
-				android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
+				android.view.ViewGroup.LayoutParams.MATCH_PARENT));
 		textView.setPadding(0, 0, 4 * mScrollStepSize, 0);
 		textView.setTextColor(Painter.getInstance().getTickerTapePainter()
 				.getTextColor());
@@ -297,5 +301,4 @@ public class TickerTape extends HorizontalScrollView {
 
 		return this;
 	}
-
 }
