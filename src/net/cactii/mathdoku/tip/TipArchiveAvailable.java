@@ -37,6 +37,11 @@ public class TipArchiveAvailable extends TipDialog {
 	 * @return
 	 */
 	public static boolean toBeDisplayed(Preferences preferences) {
+		// Do not display in case archive is not yet available.
+		if (preferences.isArchiveAvailable() == false) {
+			return false;
+		}
+
 		// Do not display in case it was displayed less than 12 hours ago
 		if (preferences.getTipLastDisplayTime(TIP_NAME) > System.currentTimeMillis() - (12 * 60 * 60 * 1000)) {
 			return false;

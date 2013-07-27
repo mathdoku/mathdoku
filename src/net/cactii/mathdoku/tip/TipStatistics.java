@@ -36,6 +36,11 @@ public class TipStatistics extends TipDialog {
 	 * @return
 	 */
 	public static boolean toBeDisplayed(Preferences preferences) {
+		// Do not display in case statistics are not yet available.
+		if (preferences.isStatisticsAvailable() == false) {
+			return false;
+		}
+		
 		// Do not display in case it was displayed less than 12 hours ago
 		if (preferences.getTipLastDisplayTime(TIP_NAME) > System.currentTimeMillis() - (12 * 60 * 60 * 1000)) {
 			return false;
