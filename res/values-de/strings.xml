@@ -510,7 +510,7 @@
     <string name="share_finished_puzzle_body">I have solved this %1$s in %2$s. Can you finish it faster? After clicking the link, please choose the MathDoku app to preview the puzzle.%3$sIn case you haven\'t yet installed version 2 of MathDoku for Android, please download it from %4$s before clicking the puzzle links.%5$sIn case the text above does not contains any links, please use links below:%6$s - Play the MathDoku puzzle: %7$s - Download MathDoku: %8$s</string>
 
     <!-- Title for the shared puzzle fragment. -->
-    <string name="shared_puzzle_action_bar_title">Preview Shared Puzzle</string>
+    <string name="shared_puzzle_action_bar_title">Preview shared puzzle</string>
 
     <!-- Introduction text at top of screen. -->
     <string name="shared_puzzle_introduction">This puzzle was sent to you via an email link. See email for more details if included by sender. In case you choose to play this puzzle right now, it will also be added to your own archive of played puzzles.</string>

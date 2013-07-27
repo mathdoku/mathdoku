@@ -472,7 +472,7 @@
     <string name="share_finished_puzzle_body">Ik heb deze %1$s opgelost in %2$s. Kan jij het sneller? Kies, na het klikken op de link, voor de MathDoku app om de puzzel te bekijken.%3$sIn het geval dat je versie 2 van MathDoku voor Android nog niet hebt geïnstalleerd, download het dan van %4$s voordat je op de puzzel link klikt.%5$sIn het geval dat bovenstaande tekst geen links bevat, gebruik dan alsjeblieft een van de onderstaande links:%6$s - Bekijken MathDoku puzzel: %7$s - Download MathDoku: %8$s</string>
 
     <!-- Title for the shared puzzle fragment. -->
-    <string name="shared_puzzle_action_bar_title">Voorvertoning Gedeelde Puzzel</string>
+    <string name="shared_puzzle_action_bar_title">Voorvertoning gedeelde puzzel</string>
 
     <!-- Introduction text at top of screen. -->
     <string name="shared_puzzle_introduction">Deze puzzel is door middel van een email link naar je verstuurd. Zie email voor meer details indien toegevoegd door de verzender. In het geval dat je er voor kiest om deze puzzel te spelen, dan wordt deze ook aan je archief toegevoegd.</string>
