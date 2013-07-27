@@ -24,7 +24,7 @@ public class SharedPuzzle {
 	private static final String SHARE_URI_SCHEME = "http";
 	private static final String SHARE_URI_HOST = "mathdoku.net";
 	private static final String SHARE_URI_PUZZLE = "puzzle";
-	private static final String SHARE_URI_VERSION = "1";
+	private static final String SHARE_URI_VERSION = "2";
 
 	/**
 	 * Creates new instance of {@see SharedPuzzle}.

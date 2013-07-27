@@ -263,6 +263,10 @@
     <!-- Title of dialog used to choose the appropriate action for sending the usage log. -->
     <string name="usage_log_choose_action_title">Verzend MathDoku data</string>
 
+    <!-- Dialog for invalid share url. -->
+    <string name="dialog_invalid_share_url_title">Ongeldige MathDoku link</string>
+    <string name="dialog_invalid_share_url_body">Sorry, deze link naar de MathDoku puzzel is niet geldig. Neem alsjeblieft contact op met de verzender van deze link en vraag om een nieuwe link te sturen.</string>
+
     <!-- PLAYING HINT - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 

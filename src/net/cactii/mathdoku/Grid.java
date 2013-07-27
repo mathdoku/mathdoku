@@ -489,8 +489,7 @@ public class Grid {
 	 * @return A unique string representation of the grid.
 	 */
 	public String toGridDefinitionString() {
-		return toGridDefinitionString(mCells, mCages,
-				mGridGeneratingParameters.mHideOperators);
+		return toGridDefinitionString(mCells, mCages, mGridGeneratingParameters);
 	}
 
 	/**
@@ -503,8 +502,33 @@ public class Grid {
 	 * @return A unique string representation of the grid.
 	 */
 	public static String toGridDefinitionString(ArrayList<GridCell> cells,
-			ArrayList<GridCage> cages, boolean hideOperators) {
+			ArrayList<GridCage> cages,
+			GridGeneratingParameters gridGeneratingParameters) {
 		StringBuilder definitionString = new StringBuilder();
+
+		// Convert puzzle complexity to an integer value. Do not use the ordinal
+		// of the enumeration as this value is not persistent.
+		int complexity = 0;
+		switch (gridGeneratingParameters.mPuzzleComplexity) {
+		case VERY_EASY:
+			complexity = 1;
+			break;
+		case EASY:
+			complexity = 2;
+			break;
+		case NORMAL:
+			complexity = 3;
+			break;
+		case DIFFICULT:
+			complexity = 4;
+			break;
+		case VERY_DIFFICULT:
+			complexity = 5;
+			break;
+		// NO DEFAULT here as we want to be notified at compile time in case a
+		// new enum value is added.
+		}
+		definitionString.append(Integer.toString(complexity) + ":");
 
 		// Get the cage number (represented as a value of two digits, if needed
 		// prefixed with a 0) for each cell. Note: with a maximum of 81 cells in
@@ -514,8 +538,14 @@ public class Grid {
 		}
 		// Followed by cages
 		for (GridCage cage : cages) {
-			definitionString.append(":" + cage.mId + "," + cage.mResult + ","
-					+ (hideOperators ? GridCage.ACTION_NONE : cage.mAction));
+			definitionString
+					.append(":"
+							+ cage.mId
+							+ ","
+							+ cage.mResult
+							+ ","
+							+ (gridGeneratingParameters.mHideOperators ? GridCage.ACTION_NONE
+									: cage.mAction));
 		}
 		return definitionString.toString();
 	}
@@ -1184,22 +1214,30 @@ public class Grid {
 		initialize();
 
 		// Example of a grid definition:
-		// 00010202000103040506030405060707:0,4,1:1,2,4:2,2,4:3,1,2:4,4,4:5,2,4:6,4,1:7,6,3
+		// 1:00010202000103040506030405060707:0,4,1:1,2,4:2,2,4:3,1,2:4,4,4:5,2,4:6,4,1:7,6,3
 
 		// Split the definition into parts.
 		String[] definitionParts = definition.split(":");
-
-		// The definition should contain at least two parts.
-		if (definitionParts == null || definitionParts.length < 2) {
+		if (definitionParts == null) {
 			return false;
 		}
 
-		// Create empty cages. Except the first part of the definition, each
-		// part represents a single cage.
-		for (int i = 1; i < definitionParts.length; i++) {
+		// The definition contains followings parts:
+		int ID_PART_COMPLEXITY = 0;
+		int ID_PART_CELLS = 1;
+		int ID_PART_FIRST_CAGE = 2;
+		int ID_PART_LAST_CAGE = definitionParts.length - 1;
+		if (ID_PART_LAST_CAGE < ID_PART_FIRST_CAGE) {
+			return false;
+		}
+
+		// Create an empty cage for each cage part. The cages needs to exists
+		// before the cell can be created.
+		int cageIndex = 0;
+		for (int i = ID_PART_FIRST_CAGE; i <= ID_PART_LAST_CAGE; i++) {
 			// Define new cage
 			GridCage gridCage = new GridCage(this);
-			gridCage.setCageId(i - 1);
+			gridCage.setCageId(cageIndex++);
 
 			// Add cage to cages list
 			if (mCages.add(gridCage) == false) {
@@ -1207,9 +1245,38 @@ public class Grid {
 			}
 		}
 
+		// Retrieve the complexity from the definition. Convert it back to the
+		// enumeration. Note that values are not consistent with the ordinal
+		// values of the enumeration.
+		// The complexity is not needed to rebuild the puzzle, but it is stored
+		// as it is a great communicator to the (receiving) user how difficult
+		// the puzzle is.
+		switch (Integer.parseInt(definitionParts[ID_PART_COMPLEXITY])) {
+		case 1:
+			mGridGeneratingParameters.mPuzzleComplexity = PuzzleComplexity.VERY_EASY;
+			break;
+		case 2:
+			mGridGeneratingParameters.mPuzzleComplexity = PuzzleComplexity.EASY;
+			break;
+		case 3:
+			mGridGeneratingParameters.mPuzzleComplexity = PuzzleComplexity.NORMAL;
+			break;
+		case 4:
+			mGridGeneratingParameters.mPuzzleComplexity = PuzzleComplexity.DIFFICULT;
+			break;
+		case 5:
+			mGridGeneratingParameters.mPuzzleComplexity = PuzzleComplexity.VERY_DIFFICULT;
+			break;
+		default:
+			// This value can not be specified in a share url created by the
+			// app. But in case it is manipulated by a user before sending to
+			// another user, the receiver should not get an exception.
+			return false;
+		}
+
 		// The first part of the definitions contains the cage number for each
 		// individual cell. The cage number always consists of two digits.
-		int cellCount = definitionParts[0].length() / 2;
+		int cellCount = definitionParts[ID_PART_CELLS].length() / 2;
 		switch (cellCount) {
 		case 16:
 			mGridSize = 4;
@@ -1234,7 +1301,7 @@ public class Grid {
 			return false;
 		}
 		Pattern pattern = Pattern.compile("\\d\\d");
-		Matcher matcher = pattern.matcher(definitionParts[0]);
+		Matcher matcher = pattern.matcher(definitionParts[ID_PART_CELLS]);
 		int cellNumber = 0;
 		while (matcher.find()) {
 			int cageId = Integer.valueOf(matcher.group());
@@ -1254,12 +1321,12 @@ public class Grid {
 
 		// Finalize the grid cages which only can be done after the cell have
 		// been attached to the cages.
-		for (int i = 1; i < definitionParts.length; i++) {
+		for (int i = ID_PART_FIRST_CAGE; i <= ID_PART_LAST_CAGE; i++) {
 			// Split the cage part into elements
 			String[] cageElements = definitionParts[i].split(",");
 
-			// Define new cage
-			GridCage gridCage = mCages.get(i - 1);
+			// Get the cage
+			GridCage gridCage = mCages.get(i - ID_PART_FIRST_CAGE);
 			if (gridCage == null) {
 				return false;
 			}

@@ -34,15 +34,28 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 	@TargetApi(14)
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.shared_puzzle_fragment);
 
+		// First check whether the intent can be processed.
 		if (isValidIntent(getIntent()) == false) {
-			// The intent does not contain a url in the required format.
-			finish();
+			new AlertDialog.Builder(this)
+					.setIcon(R.drawable.icon)
+					.setTitle(R.string.dialog_invalid_share_url_title)
+					.setMessage(R.string.dialog_invalid_share_url_body)
+					.setCancelable(false)
+					.setNeutralButton(R.string.dialog_general_button_close,
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int whichButton) {
+									finish();
+								}
+							}).show();
 			return;
 		}
 
-		// The format of the uri in the intent has the required format.
+		// The format of the uri in the intent has the required format. Load the
+		// view with all data.
+		setContentView(R.layout.shared_puzzle_fragment);
 
 		// Setup the action bar
 		ActionBar actionBar = getActionBar();
@@ -110,7 +123,7 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 		if (gridDefinition == null) {
 			return false;
 		}
-		
+
 		// Disable the grid as the user should not be able to click
 		// cells in the shared puzzle view
 		mGrid = new Grid();
