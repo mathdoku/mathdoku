@@ -6,7 +6,7 @@ import android.content.Context;
 
 public class TipArchiveAvailable extends TipDialog {
 
-	public static String TIP_NAME = "Tip.TipArchiveAvailable.DisplayAgain";
+	public static String TIP_NAME = "ArchiveAvailable";
 	private static TipPriority TIP_PRIORITY = TipPriority.LOW;
 
 	/**
@@ -37,6 +37,11 @@ public class TipArchiveAvailable extends TipDialog {
 	 * @return
 	 */
 	public static boolean toBeDisplayed(Preferences preferences) {
+		// Do not display in case it was displayed less than 12 hours ago
+		if (preferences.getTipLastDisplayTime(TIP_NAME) > System.currentTimeMillis() - (12 * 60 * 60 * 1000)) {
+			return false;
+		}
+
 		// Determine on basis of preferences whether the tip should be shown.
 		return TipDialog
 				.getDisplayTipAgain(preferences, TIP_NAME, TIP_PRIORITY);
@@ -47,6 +52,6 @@ public class TipArchiveAvailable extends TipDialog {
 	 */
 	public static void doNotDisplayAgain(Preferences preferences) {
 		// Determine on basis of preferences whether the tip should be shown.
-		preferences.doNotDisplayTipAgain(TIP_NAME);
+		preferences.setTipDoNotDisplayAgain(TIP_NAME);
 	}
 }

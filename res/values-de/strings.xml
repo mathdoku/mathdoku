@@ -358,6 +358,11 @@
     <string name="dialog_tip_archive_available_title">Archive available</string>
     <string name="dialog_tip_archive_available_text">Each game you have created is stored in the \'Archive\'. The \'Archive\' can be used to review games which you have played before.\n\nYou can view the archive from the navigation menu. The navigation menu can be opened by tapping the MathDoku icon.</string>
 
+    <!-- Title, and text for tip "Swipe digiti 5" which explains how to make the swipe motion for digit 5. -->
+    <!-- TODO -->
+    <string name="dialog_tip_swipe_digit_5_title">Swiping a 5</string>
+    <string name="dialog_tip_swipe_digit_5_text">Entering a five into a cell requires a different swipe movement compared to the other digits.\nStart a swipe movement from the cell in which you want to enter the five. Move outside this cell, still continue swiping. Finally move back to the selected cell and release the swipe motion.\nQuickest motion is to draw a straight line just outside the cell and straight back. Or, draw a circle starting and ending at the cell in which you want to enter the five.</string>
+
     <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- TODO: TRANSLATE ENTIRE SECTION -->
 

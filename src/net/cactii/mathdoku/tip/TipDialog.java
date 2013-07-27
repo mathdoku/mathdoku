@@ -32,17 +32,19 @@ public class TipDialog extends AlertDialog {
 	private Context mContext;
 
 	// Preferences defined for the current context.
-	Preferences mPreferences;
+	private Preferences mPreferences;
 
-	// Name of the preference used to determine whether it should be shown again
-	// or not.
+	// Name of the preference (filled with name of the subclass)
 	private String mTip;
+
+	// Priority of the tip relative to the other tip dialogs.
 	private TipPriority mPriority;
 
 	public enum TipPriority {
 		LOW, MEDIUM, HIGH
 	};
 
+	// Indicates whether this dialog should be displayed again.
 	private boolean mDisplayAgain;
 
 	// No more than one tip dialog should be showed at the same time.
@@ -53,18 +55,22 @@ public class TipDialog extends AlertDialog {
 	 * 
 	 * @param context
 	 *            The activity in which context the tip is used.
+	 * @param tip
+	 *            The name of the tip class.
+	 * @param priority
+	 *            The priority of this tip relative to other tip classes.
 	 */
-	public TipDialog(Context context, String preference, TipPriority priority) {
+	public TipDialog(Context context, String tip, TipPriority priority) {
 		super(context);
 
 		// Store reference to activity and preferences
 		mContext = context;
 		mPreferences = Preferences.getInstance();
-		mTip = preference;
+		mTip = tip;
 		mPriority = priority;
 
 		// In case the dialog is created, the previous dialog should be
-		// canceled. Priority checking should already be done before
+		// cancelled. Priority checking should already be done before
 		// instantiating the dialog.
 		if (mDisplayedDialog != null) {
 			mDisplayedDialog.dismiss();
@@ -132,7 +138,7 @@ public class TipDialog extends AlertDialog {
 						// Check if do not show again checkbox is
 						// checked
 						if (checkBoxView.isChecked()) {
-							mPreferences.setDoNotDisplayTipAgain(mTip);
+							mPreferences.setTipDoNotDisplayAgain(mTip);
 						}
 					}
 				});
@@ -173,6 +179,9 @@ public class TipDialog extends AlertDialog {
 		if (!mDisplayAgain) {
 			return;
 		}
+		
+		// Store time at which the tip was last displayed
+		mPreferences.setTipLastDisplayTime(mTip, System.currentTimeMillis());
 
 		// Display dialog
 		super.show();
@@ -184,7 +193,7 @@ public class TipDialog extends AlertDialog {
 	 * @return True in case the tip has to be shown. False otherwise.
 	 */
 	public boolean displayTip() {
-		return mPreferences.getDisplayTipAgain(mTip);
+		return mPreferences.getTipDisplayAgain(mTip);
 	}
 
 	/**
@@ -195,7 +204,7 @@ public class TipDialog extends AlertDialog {
 	public static boolean getDisplayTipAgain(Preferences preferences,
 			String tip, TipPriority priority) {
 		// Check do-not-show-again-preference for this tip first.
-		if (preferences.getDisplayTipAgain(tip) == false) {
+		if (preferences.getTipDisplayAgain(tip) == false) {
 			if (DEBUG_TIP_DIALOG) {
 				Log.i(TAG, tip + ": do-not-show-again enabled");
 			}
@@ -237,5 +246,42 @@ public class TipDialog extends AlertDialog {
 			Log.i(TAG, tip + ": to be showed");
 		}
 		return true;
+	}
+
+	/**
+	 * Checks whether the tip dialog is still available (i.e. not yet reserved
+	 * for a tip dialog).
+	 * 
+	 * @return True in case no other dialog is showed currently. False
+	 *         otherwise.
+	 */
+	public static boolean isAvailable() {
+		return (mDisplayedDialog == null);
+	}
+
+	/**
+	 * Gets the preference name which is used to store whether this tip has to
+	 * displayed again.
+	 * 
+	 * @param tip
+	 *            The name of the tip.
+	 * @return The preference name which is used to store whether this tip has
+	 *         to displayed again.
+	 */
+	public static String getPreferenceStringDisplayTipAgain(String tip) {
+		return "Tip." + tip + ".DisplayAgain";
+	}
+
+	/**
+	 * Gets the preference name which is used to store the timestamp at which
+	 * the was last displayed.
+	 * 
+	 * @param tip
+	 *            The name of the tip.
+	 * @return The preference name which is used to store the timestamp at which
+	 *         the was last displayed.
+	 */
+	public static String getPreferenceStringLastDisplayTime(String tip) {
+		return "Tip." + tip + ".LastDisplayTime";
 	}
 }

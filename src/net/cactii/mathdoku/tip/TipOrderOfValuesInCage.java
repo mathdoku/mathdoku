@@ -55,6 +55,11 @@ public class TipOrderOfValuesInCage extends TipDialog {
 			return false;
 		}
 
+		// Do not display in case it was displayed less than 2 minutes ago.
+		if (preferences.getTipLastDisplayTime(TIP_NAME) > System.currentTimeMillis() - (5 * 60 * 1000)) {
+			return false;
+		}
+
 		// Determine on basis of preferences whether the tip should be shown.
 		return TipDialog
 				.getDisplayTipAgain(preferences, TIP_NAME, TIP_PRIORITY);

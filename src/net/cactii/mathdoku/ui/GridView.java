@@ -16,6 +16,7 @@ import net.cactii.mathdoku.tip.TipBadCageMath;
 import net.cactii.mathdoku.tip.TipDuplicateValue;
 import net.cactii.mathdoku.tip.TipIncorrectValue;
 import net.cactii.mathdoku.tip.TipOrderOfValuesInCage;
+import net.cactii.mathdoku.tip.TipSwipeDigit5;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -335,6 +336,12 @@ public class GridView extends View implements OnTouchListener {
 						new TipIncorrectValue(mContext).show();
 					}
 				}
+			}
+			
+			
+			// Check whether the motion for swipe 5 should be explained in a tip.
+			if (TipSwipeDigit5.toBeDisplayed(mPreferences, mGrid)) {
+				new TipSwipeDigit5(mContext).show();
 			}
 		}
 

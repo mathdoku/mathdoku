@@ -9,10 +9,10 @@ public class TipCheat extends TipDialog {
 	/*
 	 * Note: this class is used for multiple different cheats.
 	 */
-	public static final String TIP_NAME_CELL_REVEALED = "Tip.TipCheat.CellRevealed.DisplayAgain";
-	public static final String TIP_NAME_CHECK_PROGRESS_USED = "Tip.TipCheat.CheckProgress.DisplayAgain";
-	public static final String TIP_NAME_OPERATOR_REVEALED = "Tip.TipCheat.OperatorRevealed.DisplayAgain";
-	public static final String TIP_NAME_SOLUTION_REVEALED = "Tip.TipCheat.SolutionRevealed.DisplayAgain";
+	public static final String TIP_NAME_CELL_REVEALED = "Cheat.CellRevealed";
+	public static final String TIP_NAME_CHECK_PROGRESS_USED = "Cheat.CheckProgress";
+	public static final String TIP_NAME_OPERATOR_REVEALED = "Cheat.OperatorRevealed";
+	public static final String TIP_NAME_SOLUTION_REVEALED = "Cheat.SolutionRevealed";
 	private static TipPriority TIP_PRIORITY = TipPriority.LOW;
 
 	/**
@@ -45,6 +45,11 @@ public class TipCheat extends TipDialog {
 	 * @return
 	 */
 	public static boolean toBeDisplayed(Preferences preferences, Cheat cheat) {
+		// Do not display in case it was displayed less than 12 hours ago
+		if (preferences.getTipLastDisplayTime(getTipName(cheat)) > System.currentTimeMillis() - (12 * 60 * 60 * 1000)) {
+			return false;
+		}
+
 		// Determine on basis of preferences whether the tip should be shown.
 		return TipDialog.getDisplayTipAgain(preferences, getTipName(cheat),
 				TIP_PRIORITY);

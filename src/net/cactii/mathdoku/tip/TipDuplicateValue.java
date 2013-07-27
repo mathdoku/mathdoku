@@ -36,6 +36,11 @@ public class TipDuplicateValue extends TipDialog {
 	 * @return
 	 */
 	public static boolean toBeDisplayed(Preferences preferences) {
+		// Do not display in case it was displayed less than 2 minutes ago.
+		if (preferences.getTipLastDisplayTime(TIP_NAME) > System.currentTimeMillis() - (2 * 60 * 1000)) {
+			return false;
+		}
+
 		// Determine on basis of preferences whether the tip should be shown.
 		return TipDialog
 				.getDisplayTipAgain(preferences, TIP_NAME, TIP_PRIORITY);
@@ -46,6 +51,6 @@ public class TipDuplicateValue extends TipDialog {
 	 */
 	public static void doNotDisplayAgain(Preferences preferences) {
 		// Determine on basis of preferences whether the tip should be shown.
-		preferences.doNotDisplayTipAgain(TIP_NAME);
+		preferences.setTipDoNotDisplayAgain(TIP_NAME);
 	}
 }

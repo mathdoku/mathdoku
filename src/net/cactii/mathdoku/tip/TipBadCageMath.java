@@ -6,7 +6,7 @@ import android.content.Context;
 
 public class TipBadCageMath extends TipDialog {
 
-	public static String TIP_NAME = "Tip.TipBadCageMath.DisplayAgain";
+	public static String TIP_NAME = "BadCageMath";
 	private static TipPriority TIP_PRIORITY = TipPriority.HIGH;
 
 	/**
@@ -36,6 +36,11 @@ public class TipBadCageMath extends TipDialog {
 	 * @return
 	 */
 	public static boolean toBeDisplayed(Preferences preferences) {
+		// Do not display in case it was displayed less than 5 minutes ago
+		if (preferences.getTipLastDisplayTime(TIP_NAME) > System.currentTimeMillis() - (5 * 60 * 1000)) {
+			return false;
+		}
+
 		// Determine on basis of preferences whether the tip should be shown.
 		return TipDialog
 				.getDisplayTipAgain(preferences, TIP_NAME, TIP_PRIORITY);
@@ -46,6 +51,6 @@ public class TipBadCageMath extends TipDialog {
 	 */
 	public static void doNotDisplayAgain(Preferences preferences) {
 		// Determine on basis of preferences whether the tip should be shown.
-		preferences.doNotDisplayTipAgain(TIP_NAME);
+		preferences.setTipDoNotDisplayAgain(TIP_NAME);
 	}
 }

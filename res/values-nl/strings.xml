@@ -329,6 +329,10 @@
     <string name="dialog_tip_archive_available_title">Archief beschikbaar</string>
     <string name="dialog_tip_archive_available_text">Elke puzzel die je hebt aangemaakt wordt bewaard in het \'Archief\'. Het \'Archief\' kan worden gebruikt om puzzels te bekijken die je eerder hebt gespeeld.\n\nJe kan het archief starten vanuit het navigatie menu. Het navigatie menu kan worden geopend door het MathDoku aan te tikken.</string>
 
+    <!-- Title, and text for tip "Swipe digiti 5" which explains how to make the swipe motion for digit 5. -->
+    <string name="dialog_tip_swipe_digit_5_title">Selecteren van de 5</string>
+    <string name="dialog_tip_swipe_digit_5_text">Het invoeren van een vijf in een cel vereist een andere veegbeweging dan voor de rest van de getalen.\nStart met vegen vanuit de cel waarin je de vijf wil vastleggen. Veeg to buiten de cel. Veeg tenslotte weer terug naar de geselecteerde cel en stop met vegen.\nDe snelste manier is om een rechte lijn te trekken to net buiten de cel en dan weer met een rechte lijn terug. Of, teken een circel die start en stop in de cel waarin je de 5 wil invoeren.</string>
+
     <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 

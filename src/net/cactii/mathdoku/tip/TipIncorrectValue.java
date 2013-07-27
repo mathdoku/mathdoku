@@ -36,6 +36,8 @@ public class TipIncorrectValue extends TipDialog {
 	 * @return
 	 */
 	public static boolean toBeDisplayed(Preferences preferences) {
+		// Note: No time restriction has been set on this tip. Display each time if applicable.
+
 		// Determine on basis of preferences whether the tip should be shown.
 		return TipDialog
 				.getDisplayTipAgain(preferences, TIP_NAME, TIP_PRIORITY);
@@ -46,6 +48,6 @@ public class TipIncorrectValue extends TipDialog {
 	 */
 	public static void doNotDisplayAgain(Preferences preferences) {
 		// Determine on basis of preferences whether the tip should be shown.
-		preferences.doNotDisplayTipAgain(TIP_NAME);
+		preferences.setTipDoNotDisplayAgain(TIP_NAME);
 	}
 }

@@ -7,6 +7,7 @@ import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.painter.Painter.GridTheme;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter.SizeFilter;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter.StatusFilter;
+import net.cactii.mathdoku.tip.TipDialog;
 import net.cactii.mathdoku.util.SingletonInstanceNotInstantiated;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -488,33 +489,54 @@ public class Preferences {
 	/**
 	 * Mark a tip so it will not be displayed again.
 	 * 
-	 * @param tipName
-	 *            The preference name of the tip to be marked.
+	 * @param tip
+	 *            The name of the tip.
 	 */
-	public void setDoNotDisplayTipAgain(String tipName) {
+	public void setTipDoNotDisplayAgain(String tip) {
 		Editor prefeditor = mSharedPreferences.edit();
-		prefeditor.putBoolean(tipName, false);
+		prefeditor.putBoolean(
+				TipDialog.getPreferenceStringDisplayTipAgain(tip), false);
 		prefeditor.commit();
 	}
 
 	/**
-	 * Check whether this tip will be shown. Tips which are checked frequently
-	 * should always call the static displayTip method of the corresponding
-	 * subclass before actually call method show as this always creates a dialog
-	 * while not knowing whether the tip has to be displayed.
+	 * Check whether this tip will be shown. This method should only be called
+	 * by the Tip-classes only. Use method toBeDisplayed of a specific Tip-class
+	 * to determine whether a tip should be shown.
 	 * 
+	 * @param tip
+	 *            The name of the tip.
 	 * @return True in case the tip has to be shown. False otherwise.
 	 */
-	public boolean getDisplayTipAgain(String preference) {
-		return mSharedPreferences.getBoolean(preference, true);
+	public boolean getTipDisplayAgain(String tip) {
+		return mSharedPreferences.getBoolean(
+				TipDialog.getPreferenceStringDisplayTipAgain(tip), true);
 	}
 
 	/**
-	 * Sets a tip to do-not-display-again.
+	 * Get the time at which the given tip was last displayed.
+	 * 
+	 * @param tip
+	 *            The name of the tip.
+	 * @return The time at which the tip was last displayed.
 	 */
-	public void doNotDisplayTipAgain(String preference) {
+	public long getTipLastDisplayTime(String tip) {
+		return mSharedPreferences.getLong(
+				TipDialog.getPreferenceStringLastDisplayTime(tip), 0L);
+	}
+
+	/**
+	 * Set the time at which the given tip was last displayed.
+	 * 
+	 * @param tip
+	 *            The name of the tip.
+	 * @param time
+	 *            The time at which the tip was last displayed.
+	 */
+	public void setTipLastDisplayTime(String tip, long time) {
 		Editor prefeditor = mSharedPreferences.edit();
-		prefeditor.putBoolean(preference, false);
+		prefeditor.putLong(TipDialog.getPreferenceStringLastDisplayTime(tip),
+				time);
 		prefeditor.commit();
 	}
 
