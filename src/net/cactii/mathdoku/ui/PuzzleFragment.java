@@ -551,12 +551,9 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			mTimerTask.addCheatPenaltyTime(cheat);
 		}
 
-		// Display tip or toast
+		// Display tip
 		if (TipCheat.toBeDisplayed(mMathDokuPreferences, cheat)) {
 			new TipCheat(mContext, cheat).show();
-		} else {
-			Toast.makeText(mContext, R.string.main_ui_cheat_messsage,
-					Toast.LENGTH_SHORT).show();
 		}
 	}
 

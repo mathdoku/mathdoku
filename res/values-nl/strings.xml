@@ -492,9 +492,6 @@
     <!-- The message that appears when the player has solved the puzzle. -->
     <string name="main_ui_solved_messsage">Opgelost!</string>
 
-    <!-- The message that appears when the player reveals a cell. -->
-    <string name="main_ui_cheat_messsage">Valsspeler! :P</string>
-
     <!-- The message shown when no errors found when checking progress. -->
     <string name="ProgressOK">Alles klopt tot nu toe</string>
 
