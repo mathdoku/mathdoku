@@ -1,13 +1,12 @@
 package net.cactii.mathdoku.ui;
 
-import java.util.List;
-
 import net.cactii.mathdoku.Grid;
 import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter;
 import net.cactii.mathdoku.storage.database.GridRow;
 import net.cactii.mathdoku.util.FeedbackEmail;
+import net.cactii.mathdoku.util.SharedPuzzle;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.AlertDialog;
@@ -27,12 +26,6 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 	private static final String TAG = "MathDoku.SharedPuzzleFragmentActivity";
 
 	public static final String RESTART_LAST_GAME_SHARED_PUZZLE = "RestartLastGame";
-
-	// Elements of the share url
-	private static final String SHARE_URI_SCHEME = "http";
-	private static final String SHARE_URI_HOST = "mathdoku.net";
-	private static final String SHARE_URI_PUZZLE = "puzzle";
-	private static final String SHARE_URI_VERSION = "1";
 
 	// The grid constructed from the share url
 	Grid mGrid;
@@ -92,24 +85,11 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 	}
 
 	/**
-	 * Get the share url for the given grid definition.
-	 * 
-	 * @param gridDefinition
-	 *            The grid definition for which the share url has to be made.
-	 * @return The share url for the given grid definition.
-	 */
-	public static String getShareUrl(String gridDefinition) {
-		return SHARE_URI_SCHEME + "://" + SHARE_URI_HOST + "/"
-				+ SHARE_URI_PUZZLE + "/" + SHARE_URI_VERSION + "/"
-				+ gridDefinition + "/" + gridDefinition.hashCode();
-	}
-
-	/**
 	 * Checks whether the specified intent is valid an can be processed by this
 	 * activity.
 	 * 
 	 * @param intent
-	 *            THe intent to be checked.
+	 *            The intent to be checked.
 	 * @return True in case the intent contains a valid grid which can be
 	 *         processed.
 	 */
@@ -125,27 +105,12 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 			return false;
 		}
 
-		// The data should contain exactly 4 segments
-		List<String> pathSegments = uri.getPathSegments();
-		if (pathSegments == null || pathSegments.size() != 4) {
+		// Get the grid definition form the uri.
+		String gridDefinition = SharedPuzzle.getGridDefinitionFromUrl(uri);
+		if (gridDefinition == null) {
 			return false;
 		}
-		if (pathSegments.get(0).equals(SHARE_URI_PUZZLE) == false) {
-			return false;
-		}
-		if (pathSegments.get(1).equals(SHARE_URI_VERSION) == false) {
-			return false;
-		}
-		// Check if grid definition (part 3) matches with the hashcode (part 4).
-		// This is a simple measure to check if the uri is complete and not
-		// manually changed by an ordinary user. It it still possible to
-		// manually manipulate the grid definition and the hashcode but this can
-		// do no harm as it is still checked whether a valid grid is specified.
-		String gridDefinition = pathSegments.get(2);
-		if (gridDefinition.hashCode() != Integer.valueOf(pathSegments.get(3))) {
-			return false;
-		}
-
+		
 		// Disable the grid as the user should not be able to click
 		// cells in the shared puzzle view
 		mGrid = new Grid();

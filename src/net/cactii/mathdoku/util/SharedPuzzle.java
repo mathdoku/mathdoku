@@ -1,11 +1,11 @@
 package net.cactii.mathdoku.util;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.cactii.mathdoku.Grid;
 import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.ui.ArchiveFragment;
-import net.cactii.mathdoku.ui.SharedPuzzleActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -19,6 +19,12 @@ public class SharedPuzzle {
 
 	// List of uri which have to be enclosed as attachments in the share email.
 	private ArrayList<Uri> mUris;
+
+	// Elements of the share url
+	private static final String SHARE_URI_SCHEME = "http";
+	private static final String SHARE_URI_HOST = "mathdoku.net";
+	private static final String SHARE_URI_PUZZLE = "puzzle";
+	private static final String SHARE_URI_VERSION = "1";
 
 	/**
 	 * Creates new instance of {@see SharedPuzzle}.
@@ -45,8 +51,7 @@ public class SharedPuzzle {
 					.getString(R.string.share_puzzle_subject));
 
 			// Get the share url for this grid.
-			String shareURL = SharedPuzzleActivity.getShareUrl(grid
-					.toGridDefinitionString());
+			String shareURL = getShareUrl(grid.toGridDefinitionString());
 
 			// Get the download url for MathDoku
 			// TODO: replace link before release to Google Play
@@ -151,5 +156,51 @@ public class SharedPuzzle {
 		}
 
 		return this;
+	}
+
+	/**
+	 * Get the share url for the given grid definition.
+	 * 
+	 * @param gridDefinition
+	 *            The grid definition for which the share url has to be made.
+	 * @return The share url for the given grid definition.
+	 */
+	private String getShareUrl(String gridDefinition) {
+		return SHARE_URI_SCHEME + "://" + SHARE_URI_HOST + "/"
+				+ SHARE_URI_PUZZLE + "/" + SHARE_URI_VERSION + "/"
+				+ gridDefinition + "/" + gridDefinition.hashCode();
+	}
+
+	/**
+	 * Get the grid definition from the given uri. 
+	 * 
+	 * @param uri
+	 *            The uri to be checked.
+	 * @return The grid definition as stored in the uri. Null in case the given uri is not a valid share url.
+	 */
+	public static String getGridDefinitionFromUrl(Uri uri) {
+		// The data should contain exactly 4 segments
+		List<String> pathSegments = uri.getPathSegments();
+		if (pathSegments == null || pathSegments.size() != 4) {
+			return null;
+		}
+		if (pathSegments.get(0).equals(SHARE_URI_PUZZLE) == false) {
+			return null;
+		}
+		if (pathSegments.get(1).equals(SHARE_URI_VERSION) == false) {
+			return null;
+		}
+		// Check if grid definition (part 3) matches with the hashcode (part 4).
+		// This is a simple measure to check if the uri is complete and not
+		// manually changed by an ordinary user. It it still possible to
+		// manually manipulate the grid definition and the hashcode but this can
+		// do no harm as it is still checked whether a valid grid is specified.
+		String gridDefinition = pathSegments.get(2);
+		if (gridDefinition.hashCode() != Integer.valueOf(pathSegments.get(3))) {
+			return null;
+		}
+
+		// The given uri is valid.
+		return gridDefinition;
 	}
 }
