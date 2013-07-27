@@ -4,7 +4,7 @@ import net.cactii.mathdoku.Cheat;
 import net.cactii.mathdoku.Preferences;
 import android.content.Context;
 
-public class TipCheat extends TipDialog {
+public class TipCheat extends TipDialog implements TipDialog.OnClickCloseListener {
 
 	/*
 	 * Note: this class is used for multiple different cheats.
@@ -75,5 +75,9 @@ public class TipCheat extends TipDialog {
 			return TIP_NAME_SOLUTION_REVEALED;
 		}
 		return null;
+	}
+
+	@Override
+	public void onTipDialogClose() {
 	}
 }

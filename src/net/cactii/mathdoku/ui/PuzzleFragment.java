@@ -14,6 +14,7 @@ import net.cactii.mathdoku.hint.TickerTape;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import net.cactii.mathdoku.tip.TipCheat;
+import net.cactii.mathdoku.tip.TipDialog;
 import net.cactii.mathdoku.tip.TipIncorrectValue;
 import net.cactii.mathdoku.tip.TipSwipeDigit5;
 import net.cactii.mathdoku.util.Util;
@@ -279,15 +280,25 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 									int which) {
 								PuzzleFragment.this.mGrid.clearCells(false);
 								PuzzleFragment.this.mGridView.invalidate();
-								// Invalidate the option menu to hide the check progress action if necessary
-								((FragmentActivity) mContext).invalidateOptionsMenu();
+								// Invalidate the option menu to hide the check
+								// progress action if necessary
+								((FragmentActivity) mContext)
+										.invalidateOptionsMenu();
 								setClearAndUndoButtonVisibility(null);
 							}
 						}).show();
 	}
 
+	/**
+	 * Sets the handler on the grid which will be called as soon as the grid has
+	 * been solved.
+	 */
 	public void setOnSolvedHandler() {
-		this.mGrid.setSolvedHandler(this.mGrid.new OnSolvedListener() {
+		if (mGrid == null) {
+			return;
+		}
+
+		mGrid.setSolvedHandler(mGrid.new OnSolvedListener() {
 			@Override
 			public void puzzleSolved() {
 				// Stop the time and unselect the current cell and cage. Finally
@@ -378,8 +389,9 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 				// Handler for solved game
 				setOnSolvedHandler();
-				
-				// Check whether the motion for swipe 5 should be explained in a tip.
+
+				// Check whether the motion for swipe 5 should be explained in a
+				// tip.
 				if (TipSwipeDigit5.toBeDisplayed(mMathDokuPreferences, mGrid)) {
 					new TipSwipeDigit5(mContext).show();
 				}
@@ -480,7 +492,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 		// Save old cell info
 		CellChange orginalUserMove = selectedCell.saveUndoInformation(null);
-		
+
 		// Reveal the user value
 		selectedCell.setRevealed();
 		selectedCell.setUserValue(selectedCell.getCorrectValue());
@@ -492,7 +504,12 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		setClearAndUndoButtonVisibility(selectedCell);
 
 		mGrid.increaseCounter(StatisticsCounterType.ACTION_REVEAL_CELL);
-		registerAndProcessCheat(CheatType.CELL_REVEALED);
+		Cheat cheat = registerAndProcessCheat(CheatType.CELL_REVEALED);
+
+		// Display tip
+		if (TipCheat.toBeDisplayed(mMathDokuPreferences, cheat)) {
+			new TipCheat(mContext, cheat).show();
+		}
 
 		this.mGridView.invalidate();
 	}
@@ -531,18 +548,23 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		selectedGridCage.revealOperator();
 
 		mGrid.increaseCounter(StatisticsCounterType.ACTION_REVEAL_OPERATOR);
-		registerAndProcessCheat(CheatType.OPERATOR_REVEALED);
+		Cheat cheat = registerAndProcessCheat(CheatType.OPERATOR_REVEALED);
+
+		// Display tip
+		if (TipCheat.toBeDisplayed(mMathDokuPreferences, cheat)) {
+			new TipCheat(mContext, cheat).show();
+		}
 
 		mGridView.invalidate();
 	}
 
 	/**
-	 * Registers and processes a cheat of the given type.
+	 * Create a cheat of the given type.
 	 * 
 	 * @param cheatType
 	 *            The type of cheat to be processed.
 	 */
-	private void registerAndProcessCheat(CheatType cheatType) {
+	private Cheat registerAndProcessCheat(CheatType cheatType) {
 		// Create new cheat
 		Cheat cheat = new Cheat(mContext, cheatType);
 
@@ -551,10 +573,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			mTimerTask.addCheatPenaltyTime(cheat);
 		}
 
-		// Display tip
-		if (TipCheat.toBeDisplayed(mMathDokuPreferences, cheat)) {
-			new TipCheat(mContext, cheat).show();
-		}
+		return cheat;
 	}
 
 	/**
@@ -686,9 +705,58 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-								mGrid.getGridStatistics().solutionRevealed();
-								registerAndProcessCheat(CheatType.SOLUTION_REVEALED);
+								// Disable the solved listener before revealing
+								// the solution.
+								mGrid.setSolvedHandler(null);
+
+								// Reveal the solution
 								mGrid.revealSolution();
+
+								// Stop the timer and unselect the current cell
+								// and cage. Finally save the grid.
+								stopTimer();
+								mGrid.setSelectedCell(null);
+								mGrid.save();
+
+								// Create the cheat.
+								Cheat cheat = registerAndProcessCheat(CheatType.SOLUTION_REVEALED);
+
+								if (cheat != null
+										&& TipCheat.toBeDisplayed(
+												mMathDokuPreferences, cheat)) {
+									new TipCheat(mContext, cheat)
+											.setOnClickCloseListener(
+													new TipDialog.OnClickCloseListener() {
+														public void onTipDialogClose() {
+															// Notify the
+															// containing
+															// fragment
+															// activity
+															// about the
+															// finishing
+															// of the grid.
+															// In case the
+															// puzzle has
+															// been solved
+															// manually, a
+															// animation is
+															// played first.
+															if (mGrid != null
+																	&& mOnGridFinishedListener != null) {
+																mOnGridFinishedListener
+																		.onGridFinishedListener(mGrid
+																				.getSolvingAttemptId());
+															}
+														};
+													}).show();
+								} else {
+									if (mGrid != null
+											&& mOnGridFinishedListener != null) {
+										mOnGridFinishedListener
+												.onGridFinishedListener(mGrid
+														.getSolvingAttemptId());
+									}
+								}
 							}
 						}).show();
 	}

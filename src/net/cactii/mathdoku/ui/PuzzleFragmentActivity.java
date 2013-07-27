@@ -643,9 +643,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 			mMathDokuPreferences.setArchiveVisible();
 			setNavigationDrawer();
 		}
-		if (TipArchiveAvailable.toBeDisplayed(mMathDokuPreferences)
-				&& new GridDatabaseAdapter().countGrids(StatusFilter.SOLVED,
-						SizeFilter.ALL) >= 4) {
+		if (TipArchiveAvailable.toBeDisplayed(mMathDokuPreferences)) {
 			new TipArchiveAvailable(this).show();
 		}
 	}

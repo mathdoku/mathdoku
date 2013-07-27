@@ -50,6 +50,13 @@ public class TipDialog extends AlertDialog {
 	// No more than one tip dialog should be showed at the same time.
 	private static TipDialog mDisplayedDialog = null;
 
+	// Handler to be called when closing the dialog
+	private OnClickCloseListener mOnClickCloseListener;
+
+	public interface OnClickCloseListener {
+		public void onTipDialogClose();
+	}
+
 	/**
 	 * Creates a new instance of {@link TipDialog}.
 	 * 
@@ -140,6 +147,25 @@ public class TipDialog extends AlertDialog {
 						if (checkBoxView.isChecked()) {
 							mPreferences.setTipDoNotDisplayAgain(mTip);
 						}
+
+						// After closing this dialog, a new TipDialog may be
+						// raised immediately.
+						if (DEBUG_TIP_DIALOG) {
+							Log.i(TAG,
+									"OnClose: removed dialog after click on close "
+											+ mTip);
+						}
+						mDisplayedDialog = null;
+
+						// Store time at which the tip was last displayed
+						mPreferences.setTipLastDisplayTime(mTip,
+								System.currentTimeMillis());
+
+						// If an additional close listener was set, it needs to
+						// be called.
+						if (mOnClickCloseListener != null) {
+							mOnClickCloseListener.onTipDialogClose();
+						}
 					}
 				});
 
@@ -150,7 +176,7 @@ public class TipDialog extends AlertDialog {
 			@Override
 			public void onDismiss(DialogInterface dialog) {
 				if (DEBUG_TIP_DIALOG) {
-					Log.i(TAG, "Removed dialog " + mTip);
+					Log.i(TAG, "OnDismiss: removed dialog in dismiss " + mTip);
 				}
 				mDisplayedDialog = null;
 			}
@@ -179,9 +205,6 @@ public class TipDialog extends AlertDialog {
 		if (!mDisplayAgain) {
 			return;
 		}
-		
-		// Store time at which the tip was last displayed
-		mPreferences.setTipLastDisplayTime(mTip, System.currentTimeMillis());
 
 		// Display dialog
 		super.show();
@@ -283,5 +306,19 @@ public class TipDialog extends AlertDialog {
 	 */
 	public static String getPreferenceStringLastDisplayTime(String tip) {
 		return "Tip." + tip + ".LastDisplayTime";
+	}
+
+	/**
+	 * Set the listener to be called upon closing the tip dialog.
+	 * 
+	 * @param onClickCloseListener
+	 *            The listener to be called upon closing the tip dialog.
+	 * @return The tip dialog itself so it can be used as a builder.
+	 */
+	public TipDialog setOnClickCloseListener(
+			OnClickCloseListener onClickCloseListener) {
+		mOnClickCloseListener = onClickCloseListener;
+
+		return this;
 	}
 }
