@@ -91,9 +91,9 @@ public class GameTimer extends AsyncTask<Void, Long, Long> {
 		// Determine penalty time for just one occurrence
 		long cheatPenaltyTime = cheat.getPenaltyTimeMilis() * occurrences;
 
-		// Change start time and total penalty time. Note: elapsed time will be
-		// updated by the background process.
+		// Change start time, elapsed and total penalty time. 
 		mStartTime -= cheatPenaltyTime;
+		mElapsedTime += cheatPenaltyTime;
 		mCheatPenaltyTime += cheatPenaltyTime;
 	}
 }

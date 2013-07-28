@@ -504,7 +504,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		setClearAndUndoButtonVisibility(selectedCell);
 
 		mGrid.increaseCounter(StatisticsCounterType.ACTION_REVEAL_CELL);
-		Cheat cheat = registerAndProcessCheat(CheatType.CELL_REVEALED);
+		Cheat cheat = getNewCheat(CheatType.CELL_REVEALED);
 
 		// Display tip
 		if (TipCheat.toBeDisplayed(mMathDokuPreferences, cheat)) {
@@ -548,7 +548,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		selectedGridCage.revealOperator();
 
 		mGrid.increaseCounter(StatisticsCounterType.ACTION_REVEAL_OPERATOR);
-		Cheat cheat = registerAndProcessCheat(CheatType.OPERATOR_REVEALED);
+		Cheat cheat = getNewCheat(CheatType.OPERATOR_REVEALED);
 
 		// Display tip
 		if (TipCheat.toBeDisplayed(mMathDokuPreferences, cheat)) {
@@ -564,7 +564,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * @param cheatType
 	 *            The type of cheat to be processed.
 	 */
-	private Cheat registerAndProcessCheat(CheatType cheatType) {
+	private Cheat getNewCheat(CheatType cheatType) {
 		// Create new cheat
 		Cheat cheat = new Cheat(mContext, cheatType);
 
@@ -712,15 +712,19 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 								// Reveal the solution
 								mGrid.revealSolution();
 
+								// Create the cheat. This also updates the cheat
+								// penalty in the timer.
+								Cheat cheat = getNewCheat(CheatType.SOLUTION_REVEALED);
+
 								// Stop the timer and unselect the current cell
 								// and cage. Finally save the grid.
 								stopTimer();
 								mGrid.setSelectedCell(null);
 								mGrid.save();
 
-								// Create the cheat.
-								Cheat cheat = registerAndProcessCheat(CheatType.SOLUTION_REVEALED);
-
+								// Check if tip has to be displayed before
+								// informing the listener about finishing the
+								// grid.
 								if (cheat != null
 										&& TipCheat.toBeDisplayed(
 												mMathDokuPreferences, cheat)) {
