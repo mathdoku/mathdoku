@@ -323,7 +323,7 @@
 
     <!-- Title, and text for tip "Duplicate value" which gives explanation of the game rule which was violated. -->
     <string name="dialog_tip_duplicate_value_title">Duplicaat waarde</string>
-    <string name="dialog_tip_duplicate_value_text">Je hebt een waarde ingevoerd die al wordt gebruikt in een andere cell in deze rij of kolom. Elke waarde moet precies eenmaal worden gebruikt in elke rij en eenmaal in elke kolom.</string>
+    <string name="dialog_tip_duplicate_value_text">Je hebt een waarde ingevoerd die al wordt gebruikt in een andere cel in deze rij of kolom. Elke waarde moet precies eenmaal worden gebruikt in elke rij en eenmaal in elke kolom.</string>
 
     <!-- Title, and text for tip "Bad cage math" which gives explanation of the game rule which was violated. -->
     <string name="dialog_tip_bad_cage_math_title">Fout in groep</string>
@@ -391,7 +391,7 @@
 
     <!-- Title and a body which explains the purpose of the chart "Elapsed time historic". -->
     <string name="statistics_elapsed_time_historic_title">Speeltijd</string>
-    <string name="statistics_elapsed_time_historic_body">Deze grafiek toon de verstreken speeltijd per puzzel en de gemiddelde speeltijd. Puzzels zijn gesorteerd in de volgorde waarin ze zijn aangemaakt (dezelfde volgorde als in het Archief). Recente puzzels staan meer aan de rechterzijde van de grafiek. Als je meer ervaring hebt op dit niveau dan zal de gemiddelde speeltijd per puzzel afnemen. Tevens behoren er dan minder puzzels te zijn die niet zijn voltooid of waarvan de oplossing is onthuld.</string>
+    <string name="statistics_elapsed_time_historic_body">Deze grafiek toont de verstreken speeltijd per puzzel en de gemiddelde speeltijd. Puzzels zijn gesorteerd in de volgorde waarin ze zijn aangemaakt (dezelfde volgorde als in het Archief). Recente puzzels staan meer aan de rechterzijde van de grafiek. Als je meer ervaring hebt op dit niveau dan zal de gemiddelde speeltijd per puzzel afnemen. Tevens behoren er dan minder puzzels te zijn die niet zijn voltooid of waarvan de oplossing is onthuld.</string>
     <string name="statistics_elapsed_time_historic_solved_average_serie">Gemiddelde (alleen opgeloste puzzels)</string>
     <string name="statistics_elapsed_time_historic_solved_slowest">Langzaamste</string>
     <string name="statistics_elapsed_time_historic_solved_average">Gemiddelde</string>
