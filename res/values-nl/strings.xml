@@ -443,7 +443,7 @@
     <string name="archive_puzzle_number">Puzzelnr.</string>
 
     <!-- The label of the button below a puzzle. -->
-    <string name="archive_reload_unfinished_game">Verder gaan</string>
+    <string name="archive_reload_unfinished_game">Verder gaan met puzzel</string>
     <string name="archive_reload_finished_game">Opnieuw spelen</string>
 
     <!-- Title for the archive settings fragment. -->
