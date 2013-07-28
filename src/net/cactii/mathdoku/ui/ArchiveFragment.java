@@ -260,8 +260,10 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 
 		// Define the renderer
 		DefaultRenderer renderer = new DefaultRenderer();
-		renderer.setLabelsTextSize(mDefaultTextSize);
+		renderer.setShowLabels(false);
+		renderer.setShowLegend(true);
 		renderer.setLegendTextSize(mDefaultTextSize);
+
 		renderer.setZoomButtonsVisible(false);
 		renderer.setZoomEnabled(false);
 		renderer.setPanEnabled(false);
