@@ -26,6 +26,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Color;
 import android.graphics.Paint.Align;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -121,6 +122,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 					ViewGroup.LayoutParams.WRAP_CONTENT));
 			textView.setText(getResources().getString(
 					R.string.statistics_not_available, mMinGridSize));
+			textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, mDefaultTextSizeInDIP);
 
 			mChartsLayout.addView(textView);
 		}

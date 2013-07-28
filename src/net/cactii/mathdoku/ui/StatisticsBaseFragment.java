@@ -7,6 +7,7 @@ import org.achartengine.GraphicalView;
 import org.achartengine.renderer.SimpleSeriesRenderer;
 
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 
 	// Text size for body text
 	protected int mDefaultTextSize;
+	protected int mDefaultTextSizeInDIP;
 
 	// The inflater for this activity.
 	protected LayoutInflater mLayoutInflater;
@@ -50,7 +52,7 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	protected static final int chartRed3 = 0xFFB22400;
 	protected static final int chartRed4 = 0xFFFECCBF;
 	protected static final int chartRed5 = 0xFFFE9980;
-
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -63,7 +65,10 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 		// Get default sizes for text
 		mDefaultTextSize = getResources().getDimensionPixelSize(
 				R.dimen.text_size_default);
-
+		mDefaultTextSizeInDIP = (int) (getResources().getDimension(
+				net.cactii.mathdoku.R.dimen.text_size_default) / getResources()
+				.getDisplayMetrics().density);
+		
 		// Chart description will be displayed by default.
 		mDisplayStatisticDescription = true;
 
@@ -192,6 +197,7 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 		TextView textViewLabel = new TextView(getActivity());
 		textViewLabel.setLayoutParams(tableRowLayoutParams);
 		textViewLabel.setText(label);
+		textViewLabel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, mDefaultTextSizeInDIP);
 		tableRow.addView(textViewLabel);
 
 		// Add value to row
@@ -199,6 +205,7 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 			TextView textViewValue = new TextView(getActivity());
 			textViewValue.setLayoutParams(tableRowLayoutParams);
 			textViewValue.setText(value);
+			textViewValue.setTextSize(TypedValue.COMPLEX_UNIT_DIP, mDefaultTextSizeInDIP);
 			tableRow.addView(textViewValue);
 		}
 
