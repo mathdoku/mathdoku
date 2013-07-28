@@ -17,6 +17,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true" />
+
+        <!-- The rating bar will be programmatically rotated to a vertical position. -->
+        <!-- Number of starts will programmatically be set to correct number of stars. -->
+
+        <net.cactii.mathdoku.ui.VerticalRatingBar
+            android:id="@+id/puzzleParameterDifficultyRatingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/gridView"
+            android:layout_toRightOf="@+id/gridView"
+            android:max="5"
+            android:numStars="1"
+            android:rating="1"
+            android:stepSize="1" />
     </RelativeLayout>
 
     <RelativeLayout
