@@ -53,7 +53,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:text="99h99m99s"
             android:textSize="@dimen/text_size_default"
             android:textStyle="bold"
             android:visibility="gone"
