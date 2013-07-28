@@ -206,7 +206,10 @@ public class GridCell {
 		// Update statistics
 		if (mGrid != null) {
 			GridStatistics gridStatistics = mGrid.getGridStatistics();
-			if (digit != 0 && digit != mUserValue) {
+
+			// Only count as replacement as both the original and the new value
+			// are not 0 as this is used to indicate an empty cell.
+			if (digit != 0 && mUserValue != 0 && digit != mUserValue) {
 				gridStatistics
 						.increaseCounter(StatisticsCounterType.USER_VALUE_REPLACED);
 			}
