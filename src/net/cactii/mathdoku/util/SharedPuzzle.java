@@ -15,7 +15,7 @@ import android.view.View;
 public class SharedPuzzle {
 
 	// Context in which the SharedPuzzle is created.
-	private Context mContext;
+	private final Context mContext;
 
 	// List of uri which have to be enclosed as attachments in the share email.
 	private ArrayList<Uri> mUris;
@@ -55,7 +55,8 @@ public class SharedPuzzle {
 
 			// Get the download url for MathDoku
 			// TODO: replace link before release to Google Play
-			String downloadUrl = "https://code.google.com/p/mathdoku/downloads/list";
+			String downloadUrl = "https://mathdoku.googlecode.com/files/MathDoku"
+					+ Util.getPackageVersionNumber() + ".apk";
 
 			// Put share and download url's in the email. Note: the url's are
 			// included as HTML-formatted-links and as plain-text-urls as the
@@ -172,11 +173,12 @@ public class SharedPuzzle {
 	}
 
 	/**
-	 * Get the grid definition from the given uri. 
+	 * Get the grid definition from the given uri.
 	 * 
 	 * @param uri
 	 *            The uri to be checked.
-	 * @return The grid definition as stored in the uri. Null in case the given uri is not a valid share url.
+	 * @return The grid definition as stored in the uri. Null in case the given
+	 *         uri is not a valid share url.
 	 */
 	public static String getGridDefinitionFromUrl(Uri uri) {
 		// The data should contain exactly 4 segments

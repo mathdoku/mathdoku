@@ -46,7 +46,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.Spinner;
@@ -73,8 +72,8 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	// Object to save data on a configuration change. Note: for the puzzle
 	// fragment the RetainInstance property is set to true.
 	private class ConfigurationInstanceState {
-		private DialogPresentingGridGenerator mDialogPresentingGridGenerator;
-		private GameFileConverter mGameFileConverter;
+		private final DialogPresentingGridGenerator mDialogPresentingGridGenerator;
+		private final GameFileConverter mGameFileConverter;
 
 		public ConfigurationInstanceState(
 				DialogPresentingGridGenerator gridGeneratorTask,
@@ -157,7 +156,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	@Override
 	public void onResume() {
 		checkBetaExpired();
-		
+
 		if (mDialogPresentingGridGenerator != null) {
 			// In case the grid is created in the background and the dialog is
 			// closed, the activity will be moved to the background as well. In
@@ -266,7 +265,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		// When running in development mode, an extra menu is available.
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			menu.findItem(R.id.menu_development_mode).setVisible(true);
-		} 
+		}
 
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -758,7 +757,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	 */
 	private void showDialogNewGame(boolean cancelable) {
 		checkBetaExpired();
-		
+
 		// Get view and put relevant information into the view.
 		LayoutInflater layoutInflater = LayoutInflater.from(this);
 		View view = layoutInflater.inflate(R.layout.puzzle_parameter_dialog,
@@ -1153,14 +1152,14 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 							}
 						}).show();
 	}
-	
+
 	private void checkBetaExpired() {
-        // Check if beta has expired
-        Date now = Calendar.getInstance().getTime();
-        Calendar endBeta = Calendar.getInstance();
-        endBeta.set(2013, Calendar.AUGUST, 01);
-        if (now.after(endBeta.getTime())) {
-        	openBetaEndedDialog();
-        }
+		// Check if beta has expired
+		Date now = Calendar.getInstance().getTime();
+		Calendar endBeta = Calendar.getInstance();
+		endBeta.set(2013, Calendar.AUGUST, 18);
+		if (now.after(endBeta.getTime())) {
+			openBetaEndedDialog();
+		}
 	}
 }
