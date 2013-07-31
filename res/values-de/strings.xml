@@ -249,24 +249,9 @@
     <!-- The text on the undo button in the main UI. -->
     <string name="main_ui_undo">Rückgängig</string>
 
-    <!-- USAGE LOG AND OPT-IN FOR SURVEY - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- DIALOG FEEDBACK - - - - - - - - - - - - - - - - - - - - - - -->
 
-
-    <!-- Dialog for consent on sending usage log -->
-    <string name="dialog_usagelog_title">MathDoku-Entwicklung unterstützen</string>
-    <string name="dialog_usagelog_body">Lieber MathDoku-Benutzer,\n\nMathDoku würde gerne Daten zur Verwendung von MathDoku an die Entwickler senden. Wir wären sehr dankbar, wenn sie uns diese anonymen Daten zukommen lassen würden, um die populärsten Eigenschaften herausfinden zu können und unsere zukünftigen Entwicklungen anpassen können. Für nähere Information besuchen Sie unsere Homepage:</string>
-    <string name="dialog_usagelog_negative_button">Daten nicht senden</string>
-    <string name="dialog_usagelog_positive_button">Daten senden</string>
-
-    <!-- Dialog for opt-in on survey about future use of MathDoku. -->
-    <string name="dialog_survey_title">Umfrage</string>
-    <!-- Note for translators: please mention that the survey will be sent in english only. -->
-    <string name="dialog_survey_body">Danke für die Zustimmung uns das Logfile zu senden.\n\nWir planen einen Fragebogen an Benutzer, die an zukünftigen Versionen von MathDoku interessiert sind, zu senden. Falls Sie daran teilnehmen möchten, hinterlassen Sie Ihre E-Mail im folgenden Formular.</string>
-    <string name="dialog_survey_user_name_hint">Ihr Name</string>
-    <string name="dialog_survey_user_email_hint">Ihre E-Mail</string>
-    <string name="dialog_survey_positive_button">Logfile senden</string>
-
-    <!-- Dialog for sending feedback on MathDoku via email. -->
+    <!-- Dialog for sending feedback on MathDoku via email. -->
     <!-- TODO -->
     <string name="dialog_send_feedback_title">Send feedback</string>
     <string name="dialog_send_feedback_text_1">Really great that you are willing to give feedback on MathDoku.\n\nPlease remember this is a free game without any advertisements. So we are not earning any money on this app. This game is just developed by enthousiastics in their spare time. We not are obliged in any way to build new feautures or solve bugs.\nPlease give constructive feedback without being offensive.\n\nWe prefer to receive feedback on issues or feature requests via the link below:</string>
@@ -279,7 +264,7 @@
     <string name="feedback_email_body">[Please remove this text and enter your feedback here. This email message contains a screendump of the screen just before you choose \'Send feedback\'. You can remove this screendump if it is not relevant for your feedback. The other attachment contains some basic details about the app and the size of your device and the value of the settings and preferences. This information can be helpfull for us to understand your feedback but you\'re free to remove it.]</string>
 
     <!-- Title of dialog used to choose the appropriate action for sending the usage log. -->
-    <string name="usage_log_choose_action_title">MathDoku Logfile senden</string>
+    <string name="feedback_choose_action_title">MathDoku Logfile senden</string>
 
     <!-- Dialog for invalid share url. -->
     <!-- TODO -->

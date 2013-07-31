@@ -120,12 +120,6 @@ public class Preferences {
 	public final static String THEME_LIGHT = "theme_light";
 	public final static String THEME_DEFAULT = THEME_LIGHT;
 
-	public final static String USAGE_LOG_COUNT_GAMES_STARTED = "UsageLogCountGamesStarted";
-	public final static int USAGE_LOG_COUNT_GAMES_STARTED_DEFAULT = 0;
-
-	public final static String USAGE_LOG_DISABLED = "UsageLogDisabled";
-	public final static boolean USAGE_LOG_DISABLED_DEFAULT = false;
-
 	public final static String WAKE_LOCK = "wakelock";
 	public final static boolean WAKE_LOCK_DEFAULT = true;
 
@@ -226,16 +220,6 @@ public class Preferences {
 			}
 			if (!mSharedPreferences.contains(WAKE_LOCK)) {
 				prefeditor.putBoolean(WAKE_LOCK, WAKE_LOCK_DEFAULT);
-			}
-		}
-		if (previousInstalledVersion < 175 && currentVersion >= 175) {
-			if (!mSharedPreferences.contains(USAGE_LOG_DISABLED)) {
-				prefeditor.putBoolean(USAGE_LOG_DISABLED,
-						USAGE_LOG_DISABLED_DEFAULT);
-			}
-			if (!mSharedPreferences.contains(USAGE_LOG_COUNT_GAMES_STARTED)) {
-				prefeditor.putInt(USAGE_LOG_COUNT_GAMES_STARTED,
-						USAGE_LOG_COUNT_GAMES_STARTED_DEFAULT);
 			}
 		}
 		if (previousInstalledVersion < 198 && currentVersion >= 198) {
@@ -405,6 +389,15 @@ public class Preferences {
 						SWIPE_DIGIT_COUNTER_DEFAULT);
 			}
 		}
+		if (previousInstalledVersion <= 482 && currentVersion > 482) {
+			// Remove obsolete preference
+			if (mSharedPreferences.contains("UsageLogCountGamesStarted")) {
+				prefeditor.remove("UsageLogCountGamesStarted");
+			}
+			if (mSharedPreferences.contains("UsageLogDisabled")) {
+				prefeditor.remove("UsageLogDisabled");
+			}
+		}
 
 		prefeditor.putInt(CURRENT_VERSION, currentVersion);
 		prefeditor.commit();
@@ -444,15 +437,6 @@ public class Preferences {
 	public boolean isClearRedundantPossiblesEnabled() {
 		return mSharedPreferences.getBoolean(CLEAR_REDUNDANT_POSSIBLES,
 				CLEAR_REDUNDANT_POSSIBLES_DEFAULT);
-	}
-
-	/**
-	 * Increase the number of games which have been started by the user.
-	 * 
-	 * @return The total number of games which have been started by the user.
-	 */
-	public int increaseGamesStarted() {
-		return increaseCounter(USAGE_LOG_COUNT_GAMES_STARTED);
 	}
 
 	/**
@@ -537,36 +521,6 @@ public class Preferences {
 		Editor prefeditor = mSharedPreferences.edit();
 		prefeditor.putLong(TipDialog.getPreferenceStringLastDisplayTime(tip),
 				time);
-		prefeditor.commit();
-	}
-
-	/**
-	 * Checks if the usage log is disabled.
-	 * 
-	 * @return True in case the usage log is disabled.
-	 */
-	public boolean isUsageLogDisabled() {
-		return mSharedPreferences.getBoolean(USAGE_LOG_DISABLED,
-				USAGE_LOG_DISABLED_DEFAULT);
-	}
-
-	/**
-	 * Disables the usage log.
-	 */
-	public void setUsageLogDisabled() {
-		Editor prefeditor = mSharedPreferences.edit();
-		prefeditor.putBoolean(USAGE_LOG_DISABLED, true);
-		prefeditor.commit();
-	}
-
-	/**
-	 * Resets the usage log preferences to the default values.
-	 */
-	public void resetUsageLogDisabled() {
-		Editor prefeditor = mSharedPreferences.edit();
-		prefeditor.putBoolean(USAGE_LOG_DISABLED, USAGE_LOG_DISABLED_DEFAULT);
-		prefeditor.putInt(USAGE_LOG_COUNT_GAMES_STARTED,
-				USAGE_LOG_COUNT_GAMES_STARTED_DEFAULT);
 		prefeditor.commit();
 	}
 

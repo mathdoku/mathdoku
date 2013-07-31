@@ -50,7 +50,7 @@ public class FeedbackEmail {
 	private String mLogFilePath;
 	private OutputStream mLogFile;
 
-	private Activity mActivity;
+	private final Activity mActivity;
 
 	/**
 	 * Creates a new instance of {@link #FeedbackEmail()}.

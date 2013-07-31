@@ -234,21 +234,8 @@
     <!-- The text on the undo button in the main UI. -->
     <string name="main_ui_undo">Zet terug</string>
 
-    <!-- USAGE LOG AND OPT-IN FOR SURVEY - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- DIALOG FEEDBACK - - - - - - - - - - - - - - - - - - - - - - -->
 
-
-    <!-- Dialog for consent on sending usage log -->
-    <string name="dialog_usagelog_title">Help MathDoku ontwikkeling</string>
-    <string name="dialog_usagelog_body">Beste gebruiker,\n\nMathDoku wil gebruiksdata verzenden naar de ontwikkelaars. We ontvangen deze anonieme gebruiksdata graag om beter te begrijpen welke onderdelen het meest populair zijn. Dit helpt ons bij de verdere ontwikkeling van MathDoku. Bezoek onze website voor meer informatie (alleen in het Engels):</string>
-    <string name="dialog_usagelog_negative_button">Annuleer</string>
-    <string name="dialog_usagelog_positive_button">Gebruiksdata versturen</string>
-
-    <!-- Dialog for opt-in on survey about future use of MathDoku. -->
-    <string name="dialog_survey_title">Enquête</string>
-    <string name="dialog_survey_body">Bedankt voor je toestemming om de data naar ons toe te sturen.\n\nWe zijn van plan om een (Engelstalige) enquête te sturen naar gebruikers die geïnteresseerd zijn in de verdere ontwikkeling van MathDoku. Als je daarbij betrokken wil worden, laat dan onderstaand je naam en email-adres achter.</string>
-    <string name="dialog_survey_user_name_hint">Jouw naam</string>
-    <string name="dialog_survey_user_email_hint">Jouw email adres</string>
-    <string name="dialog_survey_positive_button">Verzend data</string>
 
     <!-- Dialog for sending feedback on MathDoku via email. -->
     <string name="dialog_send_feedback_title">Geef feedback</string>
@@ -261,7 +248,7 @@
     <string name="feedback_email_body">[Verwijderd alsjeblieft deze tekst en type hier je feedback. Deze email bevat een afdruk van het scherm vlak voordat je koos voor \'Geef feedback\'. Je kan deze schermafdruk verwijderen als het niet van belang is voor je feedback. De andere bijlage bevat enkele gegevens over de app, de afmetingen van je toestel en de waarden van je instellingen. Deze informatie kan behulpzaam zijn bij het begrijpen van je feedback maar je bent vrij om deze te verwijderen.]</string>
 
     <!-- Title of dialog used to choose the appropriate action for sending the usage log. -->
-    <string name="usage_log_choose_action_title">Verzend MathDoku data</string>
+    <string name="feedback_choose_action_title">Verzend MathDoku data</string>
 
     <!-- Dialog for invalid share url. -->
     <string name="dialog_invalid_share_url_title">Ongeldige MathDoku link</string>

@@ -97,7 +97,7 @@ public class SharedPuzzle {
 				mContext.startActivity(Intent.createChooser(
 						intent,
 						mContext.getResources().getString(
-								R.string.usage_log_choose_action_title)));
+								R.string.feedback_choose_action_title)));
 			} catch (android.content.ActivityNotFoundException ex) {
 				// No clients installed which can handle this intent.
 			}

@@ -22,13 +22,6 @@
         <item>theme_dark</item>
     </string-array>
 
-    <!-- USAGE LOG AND OPT-IN FOR SURVEY - - - - - - - - - - - - - - - - - - - - - - -->
-
-
-    <!-- Default subject and message for the mail containing the usage log -->
-    <string name="usage_log_subject">I\'d love to help MathDoku - here is my log file</string>
-    <string name="usage_log_body">In case you want to share additional thoughts with us, please feel free to change this text. We can only deal with messages send in English.</string>
-
     <!-- The possible values of the "maxGamesElapsedTimeChart" preference. -->
     <string-array name="maxGamesElapsedTimeChartValues">
         <item>50</item>
