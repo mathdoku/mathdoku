@@ -122,7 +122,8 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 					ViewGroup.LayoutParams.WRAP_CONTENT));
 			textView.setText(getResources().getString(
 					R.string.statistics_not_available, mMinGridSize));
-			textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, mDefaultTextSizeInDIP);
+			textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP,
+					mDefaultTextSizeInDIP);
 
 			mChartsLayout.addView(textView);
 		}
@@ -148,7 +149,8 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 
 		// Define the renderer
 		DefaultRenderer renderer = new DefaultRenderer();
-		renderer.setLabelsTextSize(mDefaultTextSize);
+		renderer.setShowLabels(false);
+		renderer.setShowLegend(true);
 		renderer.setLegendTextSize(mDefaultTextSize);
 		renderer.setZoomButtonsVisible(false);
 		renderer.setZoomEnabled(false);

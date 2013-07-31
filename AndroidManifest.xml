@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="net.cactii.mathdoku"
     android:installLocation="auto"
-    android:versionCode="476"
-    android:versionName="Version 2 (BETA 2)" >
+    android:versionCode="482"
+    android:versionName="Version 2 (BETA 3)" >
 
     <uses-sdk
         android:minSdkVersion="11"
