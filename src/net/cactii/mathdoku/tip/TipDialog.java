@@ -29,23 +29,23 @@ public class TipDialog extends AlertDialog {
 	public static final boolean DEBUG_TIP_DIALOG = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
 
 	// Context in which the tip is created.
-	private Context mContext;
+	private final Context mContext;
 
 	// Preferences defined for the current context.
-	private Preferences mPreferences;
+	private final Preferences mPreferences;
 
 	// Name of the preference (filled with name of the subclass)
-	private String mTip;
+	private final String mTip;
 
 	// Priority of the tip relative to the other tip dialogs.
-	private TipPriority mPriority;
+	private final TipPriority mPriority;
 
 	public enum TipPriority {
 		LOW, MEDIUM, HIGH
 	};
 
 	// Indicates whether this dialog should be displayed again.
-	private boolean mDisplayAgain;
+	private final boolean mDisplayAgain;
 
 	// No more than one tip dialog should be showed at the same time.
 	private static TipDialog mDisplayedDialog = null;
@@ -135,7 +135,40 @@ public class TipDialog extends AlertDialog {
 		setIcon(R.drawable.help);
 		setTitle(tipTitle);
 		setView(tipView);
+
+		// Allow all possibilities for cancelling
 		setCancelable(true);
+		setCanceledOnTouchOutside(true);
+		setButton(DialogInterface.BUTTON_NEGATIVE, mContext.getResources()
+				.getString(R.string.dialog_general_button_cancel),
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int id) {
+						cancel();
+					}
+				});
+		setOnCancelListener(new OnCancelListener() {
+			@Override
+			public void onCancel(DialogInterface dialog) {
+				// After closing this dialog, a new TipDialog may be
+				// raised immediately.
+				if (DEBUG_TIP_DIALOG) {
+					Log.i(TAG, "OnClose: removed dialog after click on cancel "
+							+ mTip);
+				}
+				mDisplayedDialog = null;
+
+				// Store time at which the tip was last displayed
+				mPreferences.setTipLastDisplayTime(mTip,
+						System.currentTimeMillis());
+
+				// If an additional close listener was set, it needs to
+				// be called.
+				if (mOnClickCloseListener != null) {
+					mOnClickCloseListener.onTipDialogClose();
+				}
+			}
+		});
 
 		setButton(DialogInterface.BUTTON_POSITIVE, mContext.getResources()
 				.getString(R.string.dialog_general_button_close),

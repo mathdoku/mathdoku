@@ -16,6 +16,7 @@
 
     <!-- The label of the buttons that close dialogs. -->
     <string name="dialog_general_button_close">Sluit</string>
+    <string name="dialog_general_button_cancel">Annuleer</string>
 
     <!-- Name of settings menu. -->
     <string name="settings">Instellingen</string>

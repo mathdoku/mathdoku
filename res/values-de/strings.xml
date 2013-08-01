@@ -16,6 +16,8 @@
 
     <!-- The label of the buttons that close dialogs. -->
     <string name="dialog_general_button_close">Schließen</string>
+    <!-- TODO -->
+    <string name="dialog_general_button_cancel">Cancel</string>
 
     <!-- Name of settings menu. -->
     <!-- TODO -->
@@ -251,7 +253,8 @@
 
     <!-- DIALOG FEEDBACK - - - - - - - - - - - - - - - - - - - - - - -->
 
-    <!-- Dialog for sending feedback on MathDoku via email. -->
+
+    <!-- Dialog for sending feedback on MathDoku via email. -->
     <!-- TODO -->
     <string name="dialog_send_feedback_title">Send feedback</string>
     <string name="dialog_send_feedback_text_1">Really great that you are willing to give feedback on MathDoku.\n\nPlease remember this is a free game without any advertisements. So we are not earning any money on this app. This game is just developed by enthousiastics in their spare time. We not are obliged in any way to build new feautures or solve bugs.\nPlease give constructive feedback without being offensive.\n\nWe prefer to receive feedback on issues or feature requests via the link below:</string>
