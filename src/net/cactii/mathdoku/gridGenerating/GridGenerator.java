@@ -96,6 +96,11 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		 * @param grid
 		 */
 		public void useCreatedGrid(Grid grid);
+
+		/**
+		 * Inform the grid user about cancelation of the grid generation.
+		 */
+		public void onCancelGridGeneration();
 	}
 
 	/**
@@ -245,6 +250,12 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		mRandom = new Random(mGridGeneratingParameters.mGameSeed);
 
 		do {
+			// Check whether the generating process should be aborted due to
+			// cancellation of the grid dialog.
+			if (isCancelled()) {
+				return null;
+			}
+
 			num_attempts++;
 
 			mTimeStartedSolution = System.currentTimeMillis();
@@ -259,8 +270,20 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 			randomiseGrid();
 
+			// Check whether the generating process should be aborted due to
+			// cancellation of the grid dialog.
+			if (isCancelled()) {
+				return null;
+			}
+
 			this.mCages = new ArrayList<GridCage>();
 			createCages(mGridGeneratingParameters.mHideOperators);
+
+			// Check whether the generating process should be aborted due to
+			// cancellation of the grid dialog.
+			if (isCancelled()) {
+				return null;
+			}
 
 			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 				if (mGridGeneratorOptions.createFakeUserGameFiles) {
@@ -490,6 +513,12 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 				// Drop a first (bigger) cage type somewhere in the grid.
 				int remaingAttemptsToPlaceBigCageType = 10;
 				while (remaingAttemptsToPlaceBigCageType > 0) {
+					// Check whether the generating process should be aborted
+					// due to cancellation of the grid dialog.
+					if (isCancelled()) {
+						return;
+					}
+
 					GridCageType gridCageType = mGridCageTypeGenerator
 							.getRandomCageType(
 									mGridGeneratingParameters.mMaxCageSize,
@@ -615,6 +644,12 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		GridCageType selectedGridCageType;
 		boolean cageIsValid;
 		do {
+			// Check whether the generating process should be aborted
+			// due to cancellation of the grid dialog.
+			if (isCancelled()) {
+				return null;
+			}
+
 			cageIsValid = true;
 
 			// Randomly select any cage from the list of available cages. As
@@ -1149,5 +1184,13 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		return (gridDatabaseAdapter
 				.getByGridDefinition(Grid.toGridDefinitionString(cells, cages,
 						mGridGeneratingParameters)) != null);
+	}
+
+	@Override
+	protected void onCancelled(Void result) {
+		if (mUser != null) {
+			mUser.onCancelGridGeneration();
+		}
+		super.onCancelled(result);
 	}
 }

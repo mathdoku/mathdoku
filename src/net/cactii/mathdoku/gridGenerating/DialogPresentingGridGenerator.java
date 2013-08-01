@@ -6,6 +6,8 @@ import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.ui.PuzzleFragmentActivity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.util.Log;
 
 /**
@@ -42,6 +44,21 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 				// deal with showing the new grid directly.
 				mDialogPresentingGridGenerator.mPuzzleFragmentActivity
 						.onNewGridReady(grid);
+			}
+		}
+
+		@Override
+		public final void onCancelGridGeneration() {
+			if (mDialogPresentingGridGenerator.mPuzzleFragmentActivity != null) {
+				if (DEBUG_GRID_GENERATOR) {
+					Log.d(TAG,
+							"Inform activity about cancelation of the grid generation.");
+				}
+				// The task is still attached to a activity. Inform activity
+				// about completing the new game generation. The activity will
+				// deal with showing the new grid directly.
+				mDialogPresentingGridGenerator.mPuzzleFragmentActivity
+						.onCancelGridGeneration();
 			}
 		}
 	}
@@ -103,7 +120,19 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 				.getString(R.string.dialog_building_puzzle_message));
 		mProgressDialog.setIcon(android.R.drawable.ic_dialog_info);
 		mProgressDialog.setIndeterminate(false);
-		mProgressDialog.setCancelable(false);
+
+		// Allow canceling via back button but not by touching outside the
+		// dialog
+		mProgressDialog.setCancelable(true);
+		mProgressDialog.setCanceledOnTouchOutside(false);
+		mProgressDialog.setOnCancelListener(new OnCancelListener() {
+
+			@Override
+			public void onCancel(DialogInterface dialog) {
+				// Cancel the async task which generates the grid
+				cancel(true);
+			}
+		});
 
 		// Set style of dialog.
 		mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);

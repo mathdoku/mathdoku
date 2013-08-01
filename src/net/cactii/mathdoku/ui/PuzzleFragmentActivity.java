@@ -1162,4 +1162,13 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 			openBetaEndedDialog();
 		}
 	}
+
+	public void onCancelGridGeneration() {
+		// The background task for creating a new grid has been finished.
+		mDialogPresentingGridGenerator = null;
+
+		if (mPuzzleFragment != null) {
+			mPuzzleFragment.startTimer();
+		}
+	}
 }
