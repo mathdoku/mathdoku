@@ -139,14 +139,6 @@ public class TipDialog extends AlertDialog {
 		// Allow all possibilities for cancelling
 		setCancelable(true);
 		setCanceledOnTouchOutside(true);
-		setButton(DialogInterface.BUTTON_NEGATIVE, mContext.getResources()
-				.getString(R.string.dialog_general_button_cancel),
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int id) {
-						cancel();
-					}
-				});
 		setOnCancelListener(new OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface dialog) {
