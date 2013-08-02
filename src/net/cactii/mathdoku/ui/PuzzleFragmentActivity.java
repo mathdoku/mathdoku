@@ -755,7 +755,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	 * @param cancelable
 	 *            True in case the dialog can be cancelled.
 	 */
-	private void showDialogNewGame(boolean cancelable) {
+	private void showDialogNewGame(final boolean cancelable) {
 		checkBetaExpired();
 
 		// Get view and put relevant information into the view.
@@ -806,55 +806,62 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 			break;
 		}
 
-		new AlertDialog.Builder(this)
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this)
 				.setTitle(R.string.dialog_puzzle_parameters_title)
-				.setView(view)
-				.setCancelable(cancelable)
-				.setNeutralButton(
-						R.string.dialog_puzzle_parameters_neutral_button,
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int whichButton) {
-								// Transform size spinner to grid size
-								int gridSize = (int) puzzleParameterSizeSpinner
-										.getSelectedItemId()
-										+ OFFSET_INDEX_TO_GRID_SIZE;
+				.setView(view).setCancelable(cancelable);
+		if (cancelable) {
+			alertDialogBuilder.setNegativeButton(
+					R.string.dialog_general_button_cancel,
+					new DialogInterface.OnClickListener() {
 
-								// Transform rating to puzzle complexity.
-								int rating = Math
-										.round(puzzleParameterDifficultyRatingBar
-												.getRating());
-								PuzzleComplexity puzzleComplexity;
-								if (rating >= 5) {
-									puzzleComplexity = PuzzleComplexity.VERY_DIFFICULT;
-								} else if (rating >= 4) {
-									puzzleComplexity = PuzzleComplexity.DIFFICULT;
-								} else if (rating >= 3) {
-									puzzleComplexity = PuzzleComplexity.NORMAL;
-								} else if (rating >= 2) {
-									puzzleComplexity = PuzzleComplexity.EASY;
-								} else {
-									puzzleComplexity = PuzzleComplexity.VERY_EASY;
-								}
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							// do nothing
+						}
+					});
+		}
+		alertDialogBuilder.setNeutralButton(
+				R.string.dialog_puzzle_parameters_neutral_button,
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int whichButton) {
+						// Transform size spinner to grid size
+						int gridSize = (int) puzzleParameterSizeSpinner
+								.getSelectedItemId()
+								+ OFFSET_INDEX_TO_GRID_SIZE;
 
-								// Store current settings in the preferences
-								mMathDokuPreferences
-										.setPuzzleParameterSize(gridSize);
-								mMathDokuPreferences
-										.setPuzzleParameterOperatorsVisible(puzzleParameterDisplayOperatorsCheckBox
-												.isChecked());
-								mMathDokuPreferences
-										.setPuzzleParameterComplexity(puzzleComplexity);
+						// Transform rating to puzzle complexity.
+						int rating = Math
+								.round(puzzleParameterDifficultyRatingBar
+										.getRating());
+						PuzzleComplexity puzzleComplexity;
+						if (rating >= 5) {
+							puzzleComplexity = PuzzleComplexity.VERY_DIFFICULT;
+						} else if (rating >= 4) {
+							puzzleComplexity = PuzzleComplexity.DIFFICULT;
+						} else if (rating >= 3) {
+							puzzleComplexity = PuzzleComplexity.NORMAL;
+						} else if (rating >= 2) {
+							puzzleComplexity = PuzzleComplexity.EASY;
+						} else {
+							puzzleComplexity = PuzzleComplexity.VERY_EASY;
+						}
 
-								// Start a new game with specified parameters
-								startNewGame(
-										gridSize,
-										(puzzleParameterDisplayOperatorsCheckBox
-												.isChecked() == false),
-										puzzleComplexity);
-							}
-						}).show();
+						// Store current settings in the preferences
+						mMathDokuPreferences.setPuzzleParameterSize(gridSize);
+						mMathDokuPreferences
+								.setPuzzleParameterOperatorsVisible(puzzleParameterDisplayOperatorsCheckBox
+										.isChecked());
+						mMathDokuPreferences
+								.setPuzzleParameterComplexity(puzzleComplexity);
+
+						// Start a new game with specified parameters
+						startNewGame(gridSize,
+								(puzzleParameterDisplayOperatorsCheckBox
+										.isChecked() == false),
+								puzzleComplexity);
+					}
+				}).show();
 	}
 
 	@Override
