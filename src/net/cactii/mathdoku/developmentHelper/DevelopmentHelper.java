@@ -11,7 +11,6 @@ import net.cactii.mathdoku.util.Util;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences.Editor;
-import android.os.Build;
 
 /**
  * The Development Helper class is intended to support Development and Unit
@@ -203,7 +202,8 @@ public class DevelopmentHelper {
 								@Override
 								public void onClick(DialogInterface dialog,
 										int id) {
-									restartActivity(puzzleFragmentActivity);
+									// Restart the activity
+									puzzleFragmentActivity.recreate();
 								}
 							}).show();
 
@@ -243,7 +243,9 @@ public class DevelopmentHelper {
 										int id) {
 									executeDeleteAllPreferences();
 									executeDeleteDatabase(puzzleFragmentActivity);
-									restartActivity(puzzleFragmentActivity);
+
+									// Restart the activity
+									puzzleFragmentActivity.recreate();
 								}
 							});
 			AlertDialog dialog = builder.create();
@@ -280,44 +282,6 @@ public class DevelopmentHelper {
 
 			// Reopen the database helper.
 			DatabaseHelper.getInstance(puzzleFragmentActivity);
-		}
-	}
-
-	/**
-	 * Restart the activity automatically. If not possible due to OS version,
-	 * show a dialog and ask user to restat manually.
-	 * 
-	 * @param puzzleFragmentActivity
-	 *            The activity to be restarted.
-	 */
-	private static void restartActivity(
-			final PuzzleFragmentActivity puzzleFragmentActivity) {
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-			if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-				// The activity can be restarted automatically. No dialog
-				// needed. Note: we can not call puzzleFragmentActivity.recreate
-				// here as
-				// the app can't be run anymore on Android 1.6.
-				DevelopmentHelperHoneycombAndAbove
-						.restartActivity(puzzleFragmentActivity);
-				return;
-			}
-
-			// Can restart activity automatically on pre honeycomb. Show dialog
-			// an
-			// let user restart manually.
-			new AlertDialog.Builder(puzzleFragmentActivity)
-					.setMessage(
-							"Press OK to close the app and restart the "
-									+ "activity yourself")
-					.setPositiveButton("OK",
-							new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog,
-										int id) {
-									puzzleFragmentActivity.finish();
-								}
-							}).show();
 		}
 	}
 
@@ -371,7 +335,9 @@ public class DevelopmentHelper {
 									public void onClick(DialogInterface dialog,
 											int id) {
 										executeDeleteDatabase(puzzleFragmentActivity);
-										restartActivity(puzzleFragmentActivity);
+
+										// Restart the activity
+										puzzleFragmentActivity.recreate();
 									}
 								});
 				AlertDialog dialog = builder.create();

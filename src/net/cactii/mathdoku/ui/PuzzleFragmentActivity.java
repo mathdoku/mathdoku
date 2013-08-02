@@ -25,13 +25,11 @@ import net.cactii.mathdoku.tip.TipStatistics;
 import net.cactii.mathdoku.util.FeedbackEmail;
 import net.cactii.mathdoku.util.SharedPuzzle;
 import net.cactii.mathdoku.util.Util;
-import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentManager;
@@ -96,7 +94,6 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 
 	/** Called when the activity is first created. */
 	@Override
-	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.puzzle_activity_fragment);

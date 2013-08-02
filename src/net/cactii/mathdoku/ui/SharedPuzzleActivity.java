@@ -7,7 +7,6 @@ import net.cactii.mathdoku.storage.database.GridDatabaseAdapter;
 import net.cactii.mathdoku.storage.database.GridRow;
 import net.cactii.mathdoku.util.FeedbackEmail;
 import net.cactii.mathdoku.util.SharedPuzzle;
-import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -31,7 +30,6 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 	Grid mGrid;
 
 	@Override
-	@TargetApi(14)
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -76,7 +74,7 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 
 		// Load the grid into the grid view.
 		((GridView) findViewById(R.id.gridView)).loadNewGrid(mGrid);
-		
+
 		// Display the difficulty rating.
 		final VerticalRatingBar puzzleParameterDifficultyRatingBar = (VerticalRatingBar) findViewById(R.id.puzzleParameterDifficultyRatingBar);
 		puzzleParameterDifficultyRatingBar.setEnabled(false);

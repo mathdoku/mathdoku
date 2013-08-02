@@ -8,13 +8,11 @@ import net.cactii.mathdoku.statistics.GridStatistics;
 import net.cactii.mathdoku.statistics.HistoricStatistics;
 import net.cactii.mathdoku.statistics.HistoricStatistics.Serie;
 import net.cactii.mathdoku.storage.database.Projection.Aggregation;
-import android.annotation.TargetApi;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteQueryBuilder;
-import android.os.Build;
 import android.util.Log;
 
 /**
@@ -62,9 +60,9 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 
 	private static final String[] allColumns = { KEY_ROWID, KEY_GRID_ID,
 			KEY_REPLAY, KEY_FIRST_MOVE, KEY_LAST_MOVE, KEY_ELAPSED_TIME,
-			KEY_CHEAT_PENALTY_TIME, KEY_CELLS_FILLED,
-			KEY_CELLS_EMPTY, KEY_CELLS_REVEALED, KEY_USER_VALUES_REPLACED,
-			KEY_POSSIBLES, KEY_ACTION_UNDOS, KEY_ACTION_CLEAR_CELL, KEY_ACTION_CLEAR_GRID,
+			KEY_CHEAT_PENALTY_TIME, KEY_CELLS_FILLED, KEY_CELLS_EMPTY,
+			KEY_CELLS_REVEALED, KEY_USER_VALUES_REPLACED, KEY_POSSIBLES,
+			KEY_ACTION_UNDOS, KEY_ACTION_CLEAR_CELL, KEY_ACTION_CLEAR_GRID,
 			KEY_ACTION_REVEAL_CELL, KEY_ACTION_REVEAL_OPERATOR,
 			KEY_ACTION_CHECK_PROGRESS, KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND,
 			KEY_ACTION_REVEAL_SOLUTION, KEY_SOLVED_MANUALLY, KEY_FINISHED,
@@ -95,19 +93,18 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				createColumn(KEY_ELAPSED_TIME, "long", "not null default 0"),
 				createColumn(KEY_CHEAT_PENALTY_TIME, "long",
 						"not null default 0"),
-				createColumn(KEY_CELLS_FILLED, "integer",
+				createColumn(KEY_CELLS_FILLED, "integer", " not null default 0"),
+				createColumn(KEY_CELLS_EMPTY, "integer", " not null default 0"),
+				createColumn(KEY_CELLS_REVEALED, "integer",
 						" not null default 0"),
-				createColumn(KEY_CELLS_EMPTY, "integer",
-						" not null default 0"),
-						createColumn(KEY_CELLS_REVEALED, "integer",
-								" not null default 0"),
 				createColumn(KEY_USER_VALUES_REPLACED, "integer",
 						" not null default 0"),
 				createColumn(KEY_POSSIBLES, "integer", " not null default 0"),
 				createColumn(KEY_ACTION_UNDOS, "integer", " not null default 0"),
 				createColumn(KEY_ACTION_CLEAR_CELL, "integer",
 						" not null default 0"),
-				createColumn(KEY_ACTION_CLEAR_GRID, "integer", " not null default 0"),
+				createColumn(KEY_ACTION_CLEAR_GRID, "integer",
+						" not null default 0"),
 				createColumn(KEY_ACTION_REVEAL_CELL, "integer",
 						" not null default 0"),
 				createColumn(KEY_ACTION_REVEAL_OPERATOR, "integer",
@@ -206,8 +203,8 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(KEY_GRID_ID, grid.getRowId());
 		initialValues.put(KEY_REPLAY, countSolvingAttemptsForGrid);
-		initialValues.put(KEY_CELLS_EMPTY, grid.getGridSize()
-				* grid.getGridSize());
+		initialValues.put(KEY_CELLS_EMPTY,
+				grid.getGridSize() * grid.getGridSize());
 		initialValues.put(KEY_FIRST_MOVE, now.toString());
 		initialValues.put(KEY_LAST_MOVE, now.toString());
 		initialValues.put(KEY_INCLUDE_IN_STATISTICS, DatabaseAdapter
@@ -341,8 +338,8 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				.getColumnIndexOrThrow(KEY_ACTION_CHECK_PROGRESS));
 		gridStatistics.mCheckProgressInvalidCellsFound = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND));
-		gridStatistics.mSolutionRevealed = Boolean
-				.valueOf(cursor.getString(cursor
+		gridStatistics.mSolutionRevealed = Boolean.valueOf(cursor
+				.getString(cursor
 						.getColumnIndexOrThrow(KEY_ACTION_REVEAL_SOLUTION)));
 		gridStatistics.mSolvedManually = Boolean.valueOf(cursor
 				.getString(cursor.getColumnIndexOrThrow(KEY_SOLVED_MANUALLY)));
@@ -371,12 +368,9 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		newValues.put(KEY_LAST_MOVE, gridStatistics.mLastMove.toString());
 		newValues.put(KEY_ELAPSED_TIME, gridStatistics.mElapsedTime);
 		newValues.put(KEY_CHEAT_PENALTY_TIME, gridStatistics.mCheatPenaltyTime);
-		newValues.put(KEY_CELLS_FILLED,
-				gridStatistics.mCellsFilled);
-		newValues.put(KEY_CELLS_EMPTY,
-				gridStatistics.mCellsEmtpty);
-		newValues.put(KEY_CELLS_REVEALED,
-				gridStatistics.mCellsRevealed);
+		newValues.put(KEY_CELLS_FILLED, gridStatistics.mCellsFilled);
+		newValues.put(KEY_CELLS_EMPTY, gridStatistics.mCellsEmtpty);
+		newValues.put(KEY_CELLS_REVEALED, gridStatistics.mCellsRevealed);
 		newValues.put(KEY_USER_VALUES_REPLACED,
 				gridStatistics.mUserValueReplaced);
 		newValues.put(KEY_POSSIBLES, gridStatistics.mMaybeValue);
@@ -414,7 +408,6 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 *            grid size to retrieve statistics for 1 specific grid size.
 	 * @return The cumulative statistics for the given grid size.
 	 */
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public CumulativeStatistics getCumulativeStatistics(int minGridSize,
 			int maxGridSize) {
 		// Build projection if not yet done
@@ -511,12 +504,10 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				+ KEY_INCLUDE_IN_STATISTICS + " = 'true'";
 
 		if (DEBUG_SQL) {
-			if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-				String sql = sqliteQueryBuilder.buildQuery(
-						mCumulativeStatisticsProjection.getAllColumnNames(),
-						selection, null, null, null, null);
-				Log.i(TAG, sql);
-			}
+			String sql = sqliteQueryBuilder.buildQuery(
+					mCumulativeStatisticsProjection.getAllColumnNames(),
+					selection, null, null, null, null);
+			Log.i(TAG, sql);
 		}
 
 		Cursor cursor = null;
@@ -609,17 +600,18 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 						.getAggregatedKey(Aggregation.SUM, KEY_ACTION_UNDOS)));
 		cumulativeStatistics.mSumActionClearCell = cursor.getInt(cursor
 				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
-						.getAggregatedKey(Aggregation.SUM, KEY_ACTION_CLEAR_CELL)));
+						.getAggregatedKey(Aggregation.SUM,
+								KEY_ACTION_CLEAR_CELL)));
 		cumulativeStatistics.mSumActionClearGrid = cursor.getInt(cursor
 				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
-						.getAggregatedKey(Aggregation.SUM, KEY_ACTION_CLEAR_GRID)));
+						.getAggregatedKey(Aggregation.SUM,
+								KEY_ACTION_CLEAR_GRID)));
 
 		// Totals per cheat
-		cumulativeStatistics.mSumActionRevealCell = cursor
-				.getInt(cursor
-						.getColumnIndexOrThrow(mCumulativeStatisticsProjection
-								.getAggregatedKey(Aggregation.SUM,
-										KEY_ACTION_REVEAL_CELL)));
+		cumulativeStatistics.mSumActionRevealCell = cursor.getInt(cursor
+				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
+						.getAggregatedKey(Aggregation.SUM,
+								KEY_ACTION_REVEAL_CELL)));
 		cumulativeStatistics.mSumActionRevealOperator = cursor.getInt(cursor
 				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
 						.getAggregatedKey(Aggregation.SUM,
@@ -629,10 +621,9 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 						.getAggregatedKey(Aggregation.SUM,
 								KEY_ACTION_CHECK_PROGRESS)));
 		cumulativeStatistics.mSumcheckProgressInvalidCellsFound = cursor
-				.getInt(cursor
-						.getColumnIndexOrThrow(mCumulativeStatisticsProjection
-								.getAggregatedKey(Aggregation.SUM,
-										KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND)));
+				.getInt(cursor.getColumnIndexOrThrow(mCumulativeStatisticsProjection
+						.getAggregatedKey(Aggregation.SUM,
+								KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND)));
 
 		// Totals per status of game
 		cumulativeStatistics.mCountSolutionRevealed = cursor.getInt(cursor
@@ -668,7 +659,6 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 *            grid size to retireve statistics for 1 specific grid size.
 	 * @return The cumulative statistics for the given grid size.
 	 */
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public HistoricStatistics getHistoricData(int minGridSize, int maxGridSize) {
 
 		// Build projection if not yet done. As this projection is only build
@@ -707,25 +697,26 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 					KEY_ELAPSED_TIME);
 			mHistoricStatisticsProjection.put(KEY_CHEAT_PENALTY_TIME, TABLE,
 					KEY_CHEAT_PENALTY_TIME);
-			mHistoricStatisticsProjection.put(KEY_CELLS_FILLED,
-					TABLE, KEY_CELLS_FILLED);
-			mHistoricStatisticsProjection.put(KEY_CELLS_EMPTY,
-					TABLE, KEY_CELLS_EMPTY);
-			mHistoricStatisticsProjection.put(KEY_CELLS_REVEALED,
-					TABLE, KEY_CELLS_REVEALED);
-			mHistoricStatisticsProjection.put(KEY_USER_VALUES_REPLACED,
-					TABLE, KEY_USER_VALUES_REPLACED);
+			mHistoricStatisticsProjection.put(KEY_CELLS_FILLED, TABLE,
+					KEY_CELLS_FILLED);
+			mHistoricStatisticsProjection.put(KEY_CELLS_EMPTY, TABLE,
+					KEY_CELLS_EMPTY);
+			mHistoricStatisticsProjection.put(KEY_CELLS_REVEALED, TABLE,
+					KEY_CELLS_REVEALED);
+			mHistoricStatisticsProjection.put(KEY_USER_VALUES_REPLACED, TABLE,
+					KEY_USER_VALUES_REPLACED);
 			mHistoricStatisticsProjection.put(KEY_POSSIBLES, TABLE,
 					KEY_POSSIBLES);
-			mHistoricStatisticsProjection.put(KEY_ACTION_UNDOS, TABLE, KEY_ACTION_UNDOS);
+			mHistoricStatisticsProjection.put(KEY_ACTION_UNDOS, TABLE,
+					KEY_ACTION_UNDOS);
 			mHistoricStatisticsProjection.put(KEY_ACTION_CLEAR_CELL, TABLE,
 					KEY_ACTION_CLEAR_CELL);
 			mHistoricStatisticsProjection.put(KEY_ACTION_CLEAR_GRID, TABLE,
 					KEY_ACTION_CLEAR_GRID);
 			mHistoricStatisticsProjection.put(KEY_ACTION_REVEAL_CELL, TABLE,
 					KEY_ACTION_REVEAL_CELL);
-			mHistoricStatisticsProjection.put(KEY_ACTION_REVEAL_OPERATOR, TABLE,
-					KEY_ACTION_REVEAL_OPERATOR);
+			mHistoricStatisticsProjection.put(KEY_ACTION_REVEAL_OPERATOR,
+					TABLE, KEY_ACTION_REVEAL_OPERATOR);
 			mHistoricStatisticsProjection.put(KEY_ACTION_CHECK_PROGRESS, TABLE,
 					KEY_ACTION_CHECK_PROGRESS);
 			mHistoricStatisticsProjection.put(
@@ -762,11 +753,9 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				+ KEY_INCLUDE_IN_STATISTICS + " = 'true'";
 
 		if (DEBUG_SQL) {
-			if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-				String sql = sqliteQueryBuilder.buildQuery(columnsData,
-						selection, null, null, KEY_GRID_ID, null);
-				Log.i(TAG, sql);
-			}
+			String sql = sqliteQueryBuilder.buildQuery(columnsData, selection,
+					null, null, KEY_GRID_ID, null);
+			Log.i(TAG, sql);
 		}
 
 		Cursor cursor = null;

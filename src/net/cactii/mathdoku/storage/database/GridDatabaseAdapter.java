@@ -14,7 +14,6 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteQueryBuilder;
-import android.os.Build;
 import android.util.Log;
 
 /**
@@ -364,12 +363,10 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 						: "");
 
 		if (DEBUG_SQL) {
-			if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-				String sql = sqliteQueryBuilder.buildQuery(
-						projection.getAllColumnNames(), selection, KEY_ROWID,
-						null, null, null);
-				Log.i(TAG, sql);
-			}
+			String sql = sqliteQueryBuilder.buildQuery(
+					projection.getAllColumnNames(), selection, KEY_ROWID, null,
+					null, null);
+			Log.i(TAG, sql);
 		}
 
 		// Convert results in cursor to array of grid id's
@@ -475,12 +472,9 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 				+ ")";
 
 		if (DEBUG_SQL) {
-			if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-				String sql = sqliteQueryBuilder.buildQuery(columnsData,
-						selection, KEY_STATUS_FILTER, null, KEY_STATUS_FILTER,
-						null);
-				Log.i(TAG, sql);
-			}
+			String sql = sqliteQueryBuilder.buildQuery(columnsData, selection,
+					KEY_STATUS_FILTER, null, KEY_STATUS_FILTER, null);
+			Log.i(TAG, sql);
 		}
 
 		// Convert results in cursor to array of grid id's
@@ -554,11 +548,9 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		String selection = getStatusSelectionString(statusFilter);
 
 		if (DEBUG_SQL) {
-			if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-				String sql = sqliteQueryBuilder.buildQuery(columnsData,
-						selection, KEY_GRID_SIZE, null, KEY_GRID_SIZE, null);
-				Log.i(TAG, sql);
-			}
+			String sql = sqliteQueryBuilder.buildQuery(columnsData, selection,
+					KEY_GRID_SIZE, null, KEY_GRID_SIZE, null);
+			Log.i(TAG, sql);
 		}
 
 		// Convert results in cursor to array of grid id's
