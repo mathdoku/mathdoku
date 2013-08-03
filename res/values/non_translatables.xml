@@ -11,19 +11,19 @@
     <string name="application_name">MathDoku</string>
 
     <!-- The possible values of the "themes" option. This option controls which theme is used for displaying. -->
-    <string-array name="themeTexts">
+    <string-array name="puzzle_setting_theme_values_text">
         <item>@string/theme_light</item>
         <item>@string/theme_dark</item>
     </string-array>
 
     <!-- Identifiers associated with element themeTexts. This element may not be translated. -->
-    <string-array name="themeValues">
+    <string-array name="puzzle_setting_theme_values_code">
         <item>theme_light</item>
         <item>theme_dark</item>
     </string-array>
 
     <!-- The possible values of the "maxGamesElapsedTimeChart" preference. -->
-    <string-array name="maxGamesElapsedTimeChartValues">
+    <string-array name="statistics_setting_elapsed_time_chart_maximum_games_entries">
         <item>50</item>
         <item>100</item>
         <item>150</item>

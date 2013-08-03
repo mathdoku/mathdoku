@@ -1,59 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <PreferenceCategory
-        android:key="Assistance"
-        android:title="@string/general_settings_group_assistance" >
+    <PreferenceCategory android:title="@string/puzzle_setting_group_assistance" >
         <CheckBoxPreference
-            android:key="badmaths"
-            android:summary="@string/general_settings_mark_bad_maths_summary"
-            android:title="@string/general_settings_mark_bad_maths_title" />
+            android:key="puzzle_setting_bad_cage_math_visible"
+            android:summary="@string/puzzle_setting_bad_cage_math_visible_summary"
+            android:title="@string/puzzle_setting_bad_cage_math_visible_title" />
         <CheckBoxPreference
-            android:key="dupedigits"
-            android:summary="@string/general_settings_mark_duplicates_summary"
-            android:title="@string/general_settings_mark_duplicates_title" />
+            android:key="puzzle_setting_duplicate_digits_visible"
+            android:summary="@string/puzzle_setting_duplicate_digits_visible_summary"
+            android:title="@string/puzzle_setting_duplicate_digits_visible_title" />
         <CheckBoxPreference
-            android:key="redundantPossibles"
-            android:summary="@string/general_settings_clear_redundant_possibles_summary"
-            android:title="@string/general_settings_clear_redundant_possibles_title" />
+            android:key="puzzle_setting_clear_maybes"
+            android:summary="@string/puzzle_setting_clear_maybes_summary"
+            android:title="@string/puzzle_setting_clear_maybes_title" />
     </PreferenceCategory>
-    <PreferenceCategory
-        android:key="Display"
-        android:title="@string/general_settings_group_display" >
+    <PreferenceCategory android:title="@string/puzzle_setting_group_display" >
         <ListPreference
-            android:entries="@array/themeTexts"
-            android:entryValues="@array/themeValues"
-            android:key="theme"
+            android:entries="@array/puzzle_setting_theme_values_text"
+            android:entryValues="@array/puzzle_setting_theme_values_code"
+            android:key="puzzle_setting_theme"
             android:title="@string/general_settings_theme_title" />
 
         <CheckBoxPreference
-            android:key="colored_digits"
-            android:summary="@string/general_settings_colored_digits_summary"
-            android:title="@string/general_settings_colored_digits_title" />
+            android:key="puzzle_setting_colored_digits"
+            android:summary="@string/puzzle_setting_colored_digits_summary"
+            android:title="@string/puzzle_setting_colored_digits_title" />
         <CheckBoxPreference
-            android:key="maybe3x3"
-            android:summary="@string/general_settings_maybe_layout_summary"
-            android:title="@string/general_settings_maybe_layout_title" />
+            android:key="puzzle_setting_maybes_displayed_in_grid"
+            android:summary="@string/puzzle_setting_maybes_displayed_in_grid_summary"
+            android:title="@string/puzzle_setting_maybes_displayed_in_grid_title" />
         <CheckBoxPreference
-            android:key="timer"
-            android:summary="@string/general_settings_show_timer_summary"
-            android:title="@string/general_settings_show_timer_title" />
+            android:key="puzzle_setting_timer_visible"
+            android:summary="@string/puzzle_setting_timer_visible_summary"
+            android:title="@string/puzzle_setting_timer_visible_title" />
         <CheckBoxPreference
-            android:key="full_screen"
-            android:summary="@string/general_settings_full_screen_summary"
-            android:title="@string/general_settings_full_screen_title" />
+            android:key="puzzle_setting_full_screen"
+            android:summary="@string/puzzle_setting_full_screen_summary"
+            android:title="@string/puzzle_setting_full_screen_title" />
         <CheckBoxPreference
-            android:key="wakelock"
-            android:summary="@string/general_settings_wake_lock_summary"
-            android:title="@string/general_settings_wake_lock_title" />
+            android:key="puzzle_setting_wake_lock"
+            android:summary="@string/puzzle_setting_wake_lock_summary"
+            android:title="@string/puzzle_setting_wake_lock_title" />
     </PreferenceCategory>
     <PreferenceCategory
         android:key="Sound"
-        android:title="@string/general_settings_group_sound" >
+        android:title="@string/puzzle_setting_group_sound" >
         <CheckBoxPreference
-            android:key="soundeffects"
-            android:summary="@string/general_settings_sound_effects_summary"
-            android:title="@string/general_settings_sound_effects_title" />
+            android:key="puzzle_setting_sound_effects"
+            android:summary="@string/puzzle_setting_sound_effects_summary"
+            android:title="@string/puzzle_setting_sound_effects_title" />
     </PreferenceCategory>
 
 </PreferenceScreen>

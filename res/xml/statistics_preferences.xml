@@ -2,15 +2,15 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <CheckBoxPreference
-        android:key="ShowStatisticsDescription"
-        android:summary="@string/statistics_setting_show_chart_description_summary"
-        android:title="@string/statistics_setting_show_chart_description_title" />
-    
+        android:key="statistics_setting_chart_description_visible"
+        android:summary="@string/statistics_setting_chart_description_visible_summary"
+        android:title="@string/statistics_setting_chart_description_visible_title" />
+
     <ListPreference
-        android:key="elapsed_time_chart_maximum_games_displayed"
-        android:summary="@string/option_max_games_in_elapsed_time_chart_summary"
-        android:title="@string/option_max_games_in_elapsed_time_chart_title"
-        android:entries="@array/maxGamesElapsedTimeChartValues"
-        android:entryValues="@array/maxGamesElapsedTimeChartValues" />
+        android:entries="@array/statistics_setting_elapsed_time_chart_maximum_games_entries"
+        android:entryValues="@array/statistics_setting_elapsed_time_chart_maximum_games_entries"
+        android:key="statistics_setting_elapsed_time_chart_maximum_games"
+        android:summary="@string/statistics_setting_elapsed_time_chart_maximum_games_summary"
+        android:title="@string/statistics_setting_elapsed_time_chart_maximum_games_title" />
 
 </PreferenceScreen>

@@ -39,10 +39,10 @@ public class ArchivePreferenceFragment extends PreferenceFragment implements
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-		if (key.equals(Preferences.SHOW_STATUS_FILTER)) {
+		if (key.equals(Preferences.ARCHIVE_SETTING_STATUS_FILTER_VISIBLE)) {
 			setStatusFilterSummary();
 		}
-		if (key.equals(Preferences.SHOW_SIZE_FILTER)) {
+		if (key.equals(Preferences.ARCHIVE_SETTING_SIZE_FILTER_VISIBLE)) {
 			setSizeFilterSummary();
 		}
 	}
@@ -52,9 +52,9 @@ public class ArchivePreferenceFragment extends PreferenceFragment implements
 	 * option.
 	 */
 	private void setStatusFilterSummary() {
-		int summaryResId = Preferences.getInstance().showArchiveStatusFilter() ? R.string.archive_settings_show_status_filter_enabled
+		int summaryResId = Preferences.getInstance().isArchiveStatusFilterVisible() ? R.string.archive_settings_show_status_filter_enabled
 				: R.string.archive_settings_show_status_filter_disabled;
-		findPreference(Preferences.SHOW_STATUS_FILTER).setSummary(
+		findPreference(Preferences.ARCHIVE_SETTING_STATUS_FILTER_VISIBLE).setSummary(
 				getResources().getString(summaryResId));
 	}
 
@@ -63,9 +63,9 @@ public class ArchivePreferenceFragment extends PreferenceFragment implements
 	 * option.
 	 */
 	private void setSizeFilterSummary() {
-		int summaryResId = Preferences.getInstance().showArchiveSizeFilter() ? R.string.archive_settings_show_size_filter_enabled
+		int summaryResId = Preferences.getInstance().isArchiveSizeFilterVisible() ? R.string.archive_settings_show_size_filter_enabled
 				: R.string.archive_settings_show_size_filter_disabled;
-		findPreference(Preferences.SHOW_SIZE_FILTER).setSummary(
+		findPreference(Preferences.ARCHIVE_SETTING_SIZE_FILTER_VISIBLE).setSummary(
 				getResources().getString(summaryResId));
 	}
 }

@@ -356,8 +356,8 @@ public class DevelopmentHelper {
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			Editor prefeditor = Preferences.getInstance().mSharedPreferences
 					.edit();
-			prefeditor.putBoolean(Preferences.SHOW_ARCHIVE, true);
-			prefeditor.putBoolean(Preferences.SHOW_STATISTICS, true);
+			prefeditor.putBoolean(Preferences.ARCHIVE_AVAILABLE, true);
+			prefeditor.putBoolean(Preferences.STATISTICS_AVAILABLE, true);
 			prefeditor.commit();
 		}
 	}

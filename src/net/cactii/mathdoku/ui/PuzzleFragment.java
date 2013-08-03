@@ -460,7 +460,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-		if (key.equals(Preferences.THEME)) {
+		if (key.equals(Preferences.PUZZLE_SETTING_THEME)) {
 			setTheme();
 		}
 	}
@@ -496,7 +496,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		// Reveal the user value
 		selectedCell.setRevealed();
 		selectedCell.setUserValue(selectedCell.getCorrectValue());
-		if (mMathDokuPreferences.isClearRedundantPossiblesEnabled()) {
+		if (mMathDokuPreferences.isPuzzleSettingClearMaybesEnabled()) {
 			// Update possible values for other cells in this row and
 			// column.
 			mGrid.clearRedundantPossiblesInSameRowOrColumn(orginalUserMove);

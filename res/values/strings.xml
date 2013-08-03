@@ -154,51 +154,51 @@
     <string name="general_settings_actionbar_title">General settings</string>
 
     <!-- The preferences category title for options to assist the user solve the puzzle. -->
-    <string name="general_settings_group_assistance">Assistance</string>
+    <string name="puzzle_setting_group_assistance">Assistance</string>
 
     <!-- The title and summary of the "bad maths" option. This option highlights cages with incorrect maths. -->
-    <string name="general_settings_mark_bad_maths_title">Mark bad maths</string>
-    <string name="general_settings_mark_bad_maths_summary">Highlight cages with incorrect maths</string>
+    <string name="puzzle_setting_bad_cage_math_visible_title">Mark bad maths</string>
+    <string name="puzzle_setting_bad_cage_math_visible_summary">Highlight cages with incorrect maths</string>
 
     <!-- The title and summary of the "bad maths" option. This option highlights cells with digits already in the row or column. -->
-    <string name="general_settings_mark_duplicates_title">Mark duplicates</string>
-    <string name="general_settings_mark_duplicates_summary">Highlight duplicate digits in a row or column</string>
+    <string name="puzzle_setting_duplicate_digits_visible_title">Mark duplicates</string>
+    <string name="puzzle_setting_duplicate_digits_visible_summary">Highlight duplicate digits in a row or column</string>
 
     <!-- The title and summary of the "redundant possibles" option. This option clears possibles values from cells in the same row or columns as the selected cell after setting a user value. -->
-    <string name="general_settings_clear_redundant_possibles_title">Clear maybes</string>
-    <string name="general_settings_clear_redundant_possibles_summary">Clear maybes when used in another cell on the same row or column</string>
+    <string name="puzzle_setting_clear_maybes_title">Clear maybes</string>
+    <string name="puzzle_setting_clear_maybes_summary">Clear maybes when used in another cell on the same row or column</string>
 
     <!-- The preferences category title for options relating to how the puzzle is displayed. -->
-    <string name="general_settings_group_display">Display</string>
+    <string name="puzzle_setting_group_display">Display</string>
 
     <!-- The theme option -->
     <string name="general_settings_theme_title">Theme</string>
     <!-- The title and summary of the "colored digits" option. This option controls whether maybe numbers and normal numbers are displayed in distinct colors or in one monochrome color. -->
-    <string name="general_settings_colored_digits_title">Colored digits</string>
-    <string name="general_settings_colored_digits_summary">Use colored digits to distinct maybe numbers from normal numbers</string>
+    <string name="puzzle_setting_colored_digits_title">Colored digits</string>
+    <string name="puzzle_setting_colored_digits_summary">Use colored digits to distinct maybe numbers from normal numbers</string>
 
     <!-- The title and summary of the "maybe in grid" option. This option controls whether maybe numbers are displayed in 3x3 grid or straight line. -->
-    <string name="general_settings_maybe_layout_title">Maybes in grid</string>
-    <string name="general_settings_maybe_layout_summary">Display maybe numbers in a grid</string>
+    <string name="puzzle_setting_maybes_displayed_in_grid_title">Maybes in grid</string>
+    <string name="puzzle_setting_maybes_displayed_in_grid_summary">Display maybe numbers in a grid</string>
 
     <!-- The title and summary of the "display timer" option. This option hides or shows the timer below the puzzle. -->
-    <string name="general_settings_show_timer_title">Display timer</string>
-    <string name="general_settings_show_timer_summary">Display a timer while solving a puzzle</string>
+    <string name="puzzle_setting_timer_visible_title">Display timer</string>
+    <string name="puzzle_setting_timer_visible_summary">Display a timer while solving a puzzle</string>
 
     <!-- The title and summary of the "full screen" option. This option hide the android notification bar. -->
-    <string name="general_settings_full_screen_title">Full screen</string>
-    <string name="general_settings_full_screen_summary">Play in full screen mode by hiding Android\'s notification bar</string>
+    <string name="puzzle_setting_full_screen_title">Full screen</string>
+    <string name="puzzle_setting_full_screen_summary">Play in full screen mode by hiding Android\'s notification bar</string>
 
     <!-- The title and summary of the "wake lock" option. This option highlights cells with digits already in the row or column. -->
-    <string name="general_settings_wake_lock_title">Keep screen on</string>
-    <string name="general_settings_wake_lock_summary">Prevent the screen from going off while playing</string>
+    <string name="puzzle_setting_wake_lock_title">Keep screen on</string>
+    <string name="puzzle_setting_wake_lock_summary">Prevent the screen from going off while playing</string>
 
     <!-- The preferences category title for audio options. -->
-    <string name="general_settings_group_sound">Sound</string>
+    <string name="puzzle_setting_group_sound">Sound</string>
 
     <!-- The title and summary of the "Sounds effect" option. This option enables or disables soundeffects. -->
-    <string name="general_settings_sound_effects_title">Sound effects</string>
-    <string name="general_settings_sound_effects_summary">Enable the sound effects</string>
+    <string name="puzzle_setting_sound_effects_title">Sound effects</string>
+    <string name="puzzle_setting_sound_effects_summary">Enable the sound effects</string>
 
     <!-- DIALOG THEME - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -394,12 +394,12 @@
     <string name="statistics_settings_actionbar_title">Statistics settings</string>
 
     <!-- The title and summary of the "Chart description" option. This option enables or disables displaying the description below the charts in the statistics activity. -->
-    <string name="statistics_setting_show_chart_description_title">Chart description</string>
-    <string name="statistics_setting_show_chart_description_summary">Display description below chart</string>
+    <string name="statistics_setting_chart_description_visible_title">Chart description</string>
+    <string name="statistics_setting_chart_description_visible_summary">Display description below chart</string>
 
     <!-- The title and summary of the "Maximum games in elapsed time chart" option. This option restricts the number of games which will be displayed in an elapsed time chart. -->
-    <string name="option_max_games_in_elapsed_time_chart_title">Number of games in elapsed time chart</string>
-    <string name="option_max_games_in_elapsed_time_chart_summary">Display no more than %1$d games in elapsed time chart</string>
+    <string name="statistics_setting_elapsed_time_chart_maximum_games_title">Number of games in elapsed time chart</string>
+    <string name="statistics_setting_elapsed_time_chart_maximum_games_summary">Display no more than %1$d games in elapsed time chart</string>
 
     <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

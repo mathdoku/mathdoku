@@ -166,54 +166,54 @@
     <string name="general_settings_actionbar_title">General settings</string>
 
     <!-- The preferences category title for options to assist the user solve the puzzle. -->
-    <string name="general_settings_group_assistance">Hilfestellung</string>
+    <string name="puzzle_setting_group_assistance">Hilfestellung</string>
 
     <!-- The title and summary of the "bad maths" option. This option highlights cages with incorrect maths. -->
-    <string name="general_settings_mark_bad_maths_title">Falsche Rechnungen markieren</string>
-    <string name="general_settings_mark_bad_maths_summary">Boxen mit falschen Rechnungsergebnissen hervorheben.</string>
+    <string name="puzzle_setting_bad_cage_math_visible_title">Falsche Rechnungen markieren</string>
+    <string name="puzzle_setting_bad_cage_math_visible_summary">Boxen mit falschen Rechnungsergebnissen hervorheben.</string>
 
     <!-- The title and summary of the "bad maths" option. This option highlights cells with digits already in the row or column. -->
-    <string name="general_settings_mark_duplicates_title">Doppelte Zahlen markieren</string>
-    <string name="general_settings_mark_duplicates_summary">Doppelte Nummern in einer Zeile oder Spalte hervorheben.</string>
+    <string name="puzzle_setting_duplicate_digits_visible_title">Doppelte Zahlen markieren</string>
+    <string name="puzzle_setting_duplicate_digits_visible_summary">Doppelte Nummern in einer Zeile oder Spalte hervorheben.</string>
 
     <!-- The title and summary of the "redundant possibles" option. This option clears possibles values from cells in the same row or columns as the selected cell after setting a user value. -->
     <!-- TODO: check with updated english version. 2x -->
-    <string name="general_settings_clear_redundant_possibles_title">Überflüssige \"Vieleichtwerte\" löschen</string>
-    <string name="general_settings_clear_redundant_possibles_summary">Nachdem ein Wert in einer Zelle gesetzt wurde, wird dieser Wert in den Zellen derselben Zeile und Spalte aus den Möglichkeiten gelöscht.</string>
+    <string name="puzzle_setting_clear_maybes_title">Überflüssige \"Vieleichtwerte\" löschen</string>
+    <string name="puzzle_setting_clear_maybes_summary">Nachdem ein Wert in einer Zelle gesetzt wurde, wird dieser Wert in den Zellen derselben Zeile und Spalte aus den Möglichkeiten gelöscht.</string>
 
     <!-- The preferences category title for options relating to how the puzzle is displayed. -->
-    <string name="general_settings_group_display">Anzeige</string>
+    <string name="puzzle_setting_group_display">Anzeige</string>
 
     <!-- The theme option -->
     <string name="general_settings_theme_title">Thema</string>
 
     <!-- The title and summary of the "colored digits" option. This option controls whether maybe numbers and normal numbers are displayed in distinct colors or in one monochrome color. -->
     <!-- TODO -->
-    <string name="general_settings_colored_digits_title">Colored digits</string>
-    <string name="general_settings_colored_digits_summary">Use colored digits to distinct maybe numbers from normal numbers</string>
+    <string name="puzzle_setting_colored_digits_title">Colored digits</string>
+    <string name="puzzle_setting_colored_digits_summary">Use colored digits to distinct maybe numbers from normal numbers</string>
 
     <!-- The title and summary of the "maybe in grid" option. This option controls whether maybe numbers are displayed in 3x3 grid or straight line. -->
-    <string name="general_settings_maybe_layout_title">\"Vielleichtwerte\" im Raster</string>
-    <string name="general_settings_maybe_layout_summary">\"Vielleichtwerte\" werden im Raster angezeigt.</string>
+    <string name="puzzle_setting_maybes_displayed_in_grid_title">\"Vielleichtwerte\" im Raster</string>
+    <string name="puzzle_setting_maybes_displayed_in_grid_summary">\"Vielleichtwerte\" werden im Raster angezeigt.</string>
 
     <!-- The title and summary of the "display timer" option. This option hides or shows the timer below the puzzle. -->
-    <string name="general_settings_show_timer_title">Stoppuhr einblenden</string>
-    <string name="general_settings_show_timer_summary">Beim lösen des Rätsels wird eine Stoppuhr eingeblendet.</string>
+    <string name="puzzle_setting_timer_visible_title">Stoppuhr einblenden</string>
+    <string name="puzzle_setting_timer_visible_summary">Beim lösen des Rätsels wird eine Stoppuhr eingeblendet.</string>
 
     <!-- The title and summary of the "full screen" option. This option hide the android notification bar. -->
-    <string name="general_settings_full_screen_title">Full screen</string>
-    <string name="general_settings_full_screen_summary">Play in full screen mode by hiding Android\'s notification bar</string>
+    <string name="puzzle_setting_full_screen_title">Full screen</string>
+    <string name="puzzle_setting_full_screen_summary">Play in full screen mode by hiding Android\'s notification bar</string>
 
     <!-- The title and summary of the "wake lock" option. This option highlights cells with digits already in the row or column. -->
-    <string name="general_settings_wake_lock_title">Automatisches Abschalten</string>
-    <string name="general_settings_wake_lock_summary">Das Abschalten des Bildschirms während dem Spiel verhindern.</string>
+    <string name="puzzle_setting_wake_lock_title">Automatisches Abschalten</string>
+    <string name="puzzle_setting_wake_lock_summary">Das Abschalten des Bildschirms während dem Spiel verhindern.</string>
 
     <!-- The preferences category title for audio options. -->
-    <string name="general_settings_group_sound">Sound</string>
+    <string name="puzzle_setting_group_sound">Sound</string>
 
     <!-- The title and summary of the "Sounds effect" option. This option enables or disables soundeffects. -->
-    <string name="general_settings_sound_effects_title">Soundeffekte</string>
-    <string name="general_settings_sound_effects_summary">Soundeffekte einschalten.</string>
+    <string name="puzzle_setting_sound_effects_title">Soundeffekte</string>
+    <string name="puzzle_setting_sound_effects_summary">Soundeffekte einschalten.</string>
 
     <!-- DIALOG THEME - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -428,12 +428,12 @@
     <string name="statistics_settings_actionbar_title">Statistics settings</string>
 
     <!-- The title and summary of the "Chart description" option. This option enables or disables displaying the description below the charts in the statistics activity. -->
-    <string name="statistics_setting_show_chart_description_title">Chart description</string>
-    <string name="statistics_setting_show_chart_description_summary">Display description below chart</string>
+    <string name="statistics_setting_chart_description_visible_title">Chart description</string>
+    <string name="statistics_setting_chart_description_visible_summary">Display description below chart</string>
 
     <!-- The title and summary of the "Maximum games in elapsed time chart" option. This option restricts the number of games which will be displayed in an elapsed time chart. -->
-    <string name="option_max_games_in_elapsed_time_chart_title">Number of games in elapsed time chart</string>
-    <string name="option_max_games_in_elapsed_time_chart_summary">Display no more than %1$d games in elapsed time chart</string>
+    <string name="statistics_setting_elapsed_time_chart_maximum_games_title">Number of games in elapsed time chart</string>
+    <string name="statistics_setting_elapsed_time_chart_maximum_games_summary">Display no more than %1$d games in elapsed time chart</string>
 
     <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

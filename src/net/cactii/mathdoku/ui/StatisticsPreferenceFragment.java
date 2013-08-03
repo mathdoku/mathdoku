@@ -38,7 +38,7 @@ public class StatisticsPreferenceFragment extends PreferenceFragment implements
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-		if (key.equals(Preferences.ELAPSED_TIME_CHART_MAXIMUM_GAMES_DISPLAYED)) {
+		if (key.equals(Preferences.STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES)) {
 			setMaximumGamesElapsedTimeChart();
 		}
 	}
@@ -48,13 +48,14 @@ public class StatisticsPreferenceFragment extends PreferenceFragment implements
 	 * current value of the option.
 	 */
 	public void setMaximumGamesElapsedTimeChart() {
-		findPreference(Preferences.ELAPSED_TIME_CHART_MAXIMUM_GAMES_DISPLAYED)
+		findPreference(
+				Preferences.STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES)
 				.setSummary(
 						getResources()
 								.getString(
-										R.string.option_max_games_in_elapsed_time_chart_summary,
+										R.string.statistics_setting_elapsed_time_chart_maximum_games_summary,
 										Preferences
 												.getInstance()
-												.getMaximumGamesElapsedTimeChart()));
+												.getStatisticsSettingElapsedTimeChartMaximumGames()));
 	}
 }

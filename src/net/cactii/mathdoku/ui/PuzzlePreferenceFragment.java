@@ -39,7 +39,7 @@ public class PuzzlePreferenceFragment extends PreferenceFragment implements
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-		if (key.equals(Preferences.THEME)) {
+		if (key.equals(Preferences.PUZZLE_SETTING_THEME)) {
 			setThemeSummary();
 		}
 	}
@@ -50,11 +50,11 @@ public class PuzzlePreferenceFragment extends PreferenceFragment implements
 	private void setThemeSummary() {
 		switch (Preferences.getInstance().getTheme()) {
 		case LIGHT:
-			findPreference(Preferences.THEME).setSummary(
+			findPreference(Preferences.PUZZLE_SETTING_THEME).setSummary(
 					getResources().getString(R.string.theme_light));
 			break;
 		case DARK:
-			findPreference(Preferences.THEME).setSummary(
+			findPreference(Preferences.PUZZLE_SETTING_THEME).setSummary(
 					getResources().getString(R.string.theme_dark));
 			break;
 		}

@@ -325,7 +325,7 @@ public class GridView extends View implements OnTouchListener {
 						((PuzzleFragmentActivity) mContext)
 								.invalidateOptionsMenu();
 					}
-					if (mPreferences.isClearRedundantPossiblesEnabled()) {
+					if (mPreferences.isPuzzleSettingClearMaybesEnabled()) {
 						// Update possible values for other cells in this row
 						// and
 						// column.
@@ -409,7 +409,7 @@ public class GridView extends View implements OnTouchListener {
 					.setCellSize(mGridCellSize, mDigitPositionGrid);
 			Painter.getInstance()
 					.setColorMode(
-							mPreferences.showColoredDigits() ? DigitPainterMode.INPUT_MODE_BASED
+							mPreferences.isColoredDigitsVisible() ? DigitPainterMode.INPUT_MODE_BASED
 									: DigitPainterMode.MONOCHROME);
 			for (GridCell cell : mGrid.mCells) {
 				cell.draw(canvas, mGridBorderWidth, mInputMode);

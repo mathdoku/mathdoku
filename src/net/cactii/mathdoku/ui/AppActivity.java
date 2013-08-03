@@ -82,10 +82,10 @@ public class AppActivity extends Activity implements
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-		if (key.equals(Preferences.FULL_SCREEN)) {
+		if (key.equals(Preferences.PUZZLE_SETTING_FULL_SCREEN)) {
 			setFullScreenWindowFlag();
 		}
-		if (key.equals(Preferences.WAKE_LOCK)) {
+		if (key.equals(Preferences.PUZZLE_SETTING_WAKE_LOCK)) {
 			setKeepScreenOnWindowFlag();
 		}
 	}

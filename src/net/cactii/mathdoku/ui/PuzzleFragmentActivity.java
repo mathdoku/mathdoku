@@ -623,7 +623,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		// Enable the statistics as soon as the first game has been
 		// finished.
 		if (mMathDokuPreferences.isStatisticsAvailable() == false) {
-			mMathDokuPreferences.setStatisticsVisible();
+			mMathDokuPreferences.setStatisticsAvailable();
 			setNavigationDrawer();
 		}
 		if (TipStatistics.toBeDisplayed(mMathDokuPreferences)) {

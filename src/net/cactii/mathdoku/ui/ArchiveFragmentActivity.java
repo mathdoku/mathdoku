@@ -84,8 +84,8 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 
 		// Get preferences for displaying the filter.
 		Preferences preferences = Preferences.getInstance(this);
-		mShowStatusFilter = preferences.showArchiveStatusFilter();
-		mShowSizeFilter = preferences.showArchiveSizeFilter();
+		mShowStatusFilter = preferences.isArchiveStatusFilterVisible();
+		mShowSizeFilter = preferences.isArchiveSizeFilterVisible();
 		mArchiveFragmentStatePagerAdapter.setStatusFilter(preferences
 				.getArchiveStatusFilterLastValueUsed());
 		mArchiveFragmentStatePagerAdapter.setSizeFilter(preferences
@@ -143,7 +143,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 						&& mArchiveFragmentStatePagerAdapter
 								.getPositionOfGridId(solvingAttemptId) >= 0) {
 					preferences
-							.setArchiveSelectedGridIdLastValueUsed(solvingAttemptId);
+							.setArchiveGridIdLastShowed(solvingAttemptId);
 				}
 			}
 		}
@@ -155,14 +155,14 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 
 		// Check for changes in visibility of status spinner. Reset the filters
 		// for which the visibility changes.
-		boolean showStatusFilterNew = preferences.showArchiveStatusFilter();
+		boolean showStatusFilterNew = preferences.isArchiveStatusFilterVisible();
 		boolean setSpinners = false;
 		if (mShowStatusFilter != showStatusFilterNew) {
 			mShowStatusFilter = showStatusFilterNew;
 			mArchiveFragmentStatePagerAdapter.setStatusFilter(StatusFilter.ALL);
 			setSpinners = true;
 		}
-		boolean showSizeFilterNew = preferences.showArchiveSizeFilter();
+		boolean showSizeFilterNew = preferences.isArchiveSizeFilterVisible();
 		if (mShowSizeFilter != showSizeFilterNew) {
 			mShowSizeFilter = showSizeFilterNew;
 			mArchiveFragmentStatePagerAdapter.setSizeFilter(SizeFilter.ALL);
@@ -178,7 +178,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 
 		// Select the same grid which was selected before. If not possible,
 		// the last page will be shown.
-		selectGridId(preferences.getArchiveSelectedGridIdLastValueUsed());
+		selectGridId(preferences.getArchiveGridIdLastShowed());
 
 		super.onResumeFragments();
 	}
@@ -194,7 +194,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 				.setArchiveSizeFilterLastValueUsed(mArchiveFragmentStatePagerAdapter
 						.getSizeFilter());
 		preferences
-				.setArchiveSelectedGridIdLastValueUsed(getCurrentSelectedGridId());
+				.setArchiveGridIdLastShowed(getCurrentSelectedGridId());
 
 		super.onPause();
 	}

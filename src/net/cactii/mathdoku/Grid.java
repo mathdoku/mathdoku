@@ -142,9 +142,9 @@ public class Grid {
 	 */
 	public void setPreferences() {
 		Preferences preferences = Preferences.getInstance();
-		mPrefShowDupeDigits = preferences.showDuplicateDigits();
-		mPrefShowMaybesAs3x3Grid = preferences.showMaybesAsGrid();
-		mPrefShowBadCageMaths = preferences.showBadCageMaths();
+		mPrefShowDupeDigits = preferences.isDuplicateDigitHighlightVisible();
+		mPrefShowMaybesAs3x3Grid = preferences.isMaybesDisplayedInGrid();
+		mPrefShowBadCageMaths = preferences.isBadCageMathHighlightVisible();
 
 		// Reset borders of cells as they are affected by the preferences;
 		for (GridCell cell : mCells) {

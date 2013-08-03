@@ -71,7 +71,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 
 		// Get preferences
 		mPreferences = Preferences.getInstance();
-		setDisplayChartDescription(mPreferences.showChartDescriptionInArchive());
+		setDisplayChartDescription(mPreferences.isArchiveChartDescriptionVisible());
 		mPreferences.mSharedPreferences
 				.registerOnSharedPreferenceChangeListener(this);
 
@@ -220,9 +220,9 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-		if (key.equals(Preferences.SHOW_ARCHIVE_CHART_DESCRIPTION)) {
+		if (key.equals(Preferences.ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE)) {
 			setDisplayChartDescription(Preferences.getInstance(getActivity())
-					.showChartDescriptionInArchive());
+					.isArchiveChartDescriptionVisible());
 		}
 
 		createAllCharts();

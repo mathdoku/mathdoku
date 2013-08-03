@@ -154,52 +154,52 @@
     <string name="general_settings_actionbar_title">Algemene instellingen</string>
 
     <!-- The preferences category title for options to assist the user solve the puzzle. -->
-    <string name="general_settings_group_assistance">Help</string>
+    <string name="puzzle_setting_group_assistance">Help</string>
 
     <!-- The title and summary of the "bad maths" option. This option highlights cages with incorrect maths. -->
-    <string name="general_settings_mark_bad_maths_title">Markeer verkeerde berekeningen</string>
-    <string name="general_settings_mark_bad_maths_summary">Markeer groepen met niet kloppende berekeningen</string>
+    <string name="puzzle_setting_bad_cage_math_visible_title">Markeer verkeerde berekeningen</string>
+    <string name="puzzle_setting_bad_cage_math_visible_summary">Markeer groepen met niet kloppende berekeningen</string>
 
     <!-- The title and summary of the "bad maths" option. This option highlights cells with digits already in the row or column. -->
-    <string name="general_settings_mark_duplicates_title">Markeer duplicaten</string>
-    <string name="general_settings_mark_duplicates_summary">Markeer cellen met cijfers die al in de rij of in de kolom staan</string>
+    <string name="puzzle_setting_duplicate_digits_visible_title">Markeer duplicaten</string>
+    <string name="puzzle_setting_duplicate_digits_visible_summary">Markeer cellen met cijfers die al in de rij of in de kolom staan</string>
 
     <!-- The title and summary of the "redundant possibles" option. This option clears possibles values from cells in the same row or columns as the selected cell after setting a user value. -->
-    <string name="general_settings_clear_redundant_possibles_title">Verwijder mogelijke</string>
-    <string name="general_settings_clear_redundant_possibles_summary">Verwijder een mogelijke waarde indien deze is gebruikt in een andere cel in dezelfde rij of kolom</string>
+    <string name="puzzle_setting_clear_maybes_title">Verwijder mogelijke</string>
+    <string name="puzzle_setting_clear_maybes_summary">Verwijder een mogelijke waarde indien deze is gebruikt in een andere cel in dezelfde rij of kolom</string>
 
     <!-- The preferences category title for options relating to how the puzzle is displayed. -->
-    <string name="general_settings_group_display">Weergave</string>
+    <string name="puzzle_setting_group_display">Weergave</string>
 
     <!-- The theme option -->
     <string name="general_settings_theme_title">Thema</string>
 
     <!-- The title and summary of the "colored digits" option. This option controls whether maybe numbers and normal numbers are displayed in distinct colors or in one monochrome color. -->
-    <string name="general_settings_colored_digits_title">Gekleurde getallen</string>
-    <string name="general_settings_colored_digits_summary">Gebruik gekleurde getallen om onderscheid te maken tussen de mogelijke waarden en de normale getallen</string>
+    <string name="puzzle_setting_colored_digits_title">Gekleurde getallen</string>
+    <string name="puzzle_setting_colored_digits_summary">Gebruik gekleurde getallen om onderscheid te maken tussen de mogelijke waarden en de normale getallen</string>
 
     <!-- The title and summary of the "maybe in grid" option. This option controls whether maybe numbers are displayed in 3x3 grid or straight line. -->
-    <string name="general_settings_maybe_layout_title">Mogelijke waarden in raster</string>
-    <string name="general_settings_maybe_layout_summary">Toon mogelijke getallen in een raster</string>
+    <string name="puzzle_setting_maybes_displayed_in_grid_title">Mogelijke waarden in raster</string>
+    <string name="puzzle_setting_maybes_displayed_in_grid_summary">Toon mogelijke getallen in een raster</string>
 
     <!-- The title and summary of the "display timer" option. This option hides or shows the timer below the puzzle. -->
-    <string name="general_settings_show_timer_title">Toon speelduur</string>
-    <string name="general_settings_show_timer_summary">Toon de speelduur tijdens het spelen</string>
+    <string name="puzzle_setting_timer_visible_title">Toon speelduur</string>
+    <string name="puzzle_setting_timer_visible_summary">Toon de speelduur tijdens het spelen</string>
 
     <!-- The title and summary of the "full screen" option. This option hide the android notification bar. -->
-    <string name="general_settings_full_screen_title">Volledig scherm</string>
-    <string name="general_settings_full_screen_summary">Gebruik het gehele scherm voor het spel door Android\'s notificatiebalk te verwijderen</string>
+    <string name="puzzle_setting_full_screen_title">Volledig scherm</string>
+    <string name="puzzle_setting_full_screen_summary">Gebruik het gehele scherm voor het spel door Android\'s notificatiebalk te verwijderen</string>
 
     <!-- The title and summary of the "wake lock" option. This option highlights cells with digits already in the row or column. -->
-    <string name="general_settings_wake_lock_title">Houd scherm aan</string>
-    <string name="general_settings_wake_lock_summary">Voorkom dat het scherm uit gaat tijdens het spelen</string>
+    <string name="puzzle_setting_wake_lock_title">Houd scherm aan</string>
+    <string name="puzzle_setting_wake_lock_summary">Voorkom dat het scherm uit gaat tijdens het spelen</string>
 
     <!-- The preferences category title for audio options. -->
-    <string name="general_settings_group_sound">Geluid</string>
+    <string name="puzzle_setting_group_sound">Geluid</string>
 
     <!-- The title and summary of the "Sounds effect" option. This option enables or disables soundeffects. -->
-    <string name="general_settings_sound_effects_title">Geluidseffecten</string>
-    <string name="general_settings_sound_effects_summary">Zet de geluidseffecten aan</string>
+    <string name="puzzle_setting_sound_effects_title">Geluidseffecten</string>
+    <string name="puzzle_setting_sound_effects_summary">Zet de geluidseffecten aan</string>
 
     <!-- DIALOG THEME - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -395,12 +395,12 @@
     <string name="statistics_settings_actionbar_title">Statistieken instellingen</string>
 
     <!-- The title and summary of the "Chart description" option. This option enables or disables displaying the description below the charts in the statistics activity. -->
-    <string name="statistics_setting_show_chart_description_title">Grafiek toelichting</string>
-    <string name="statistics_setting_show_chart_description_summary">Toon een toelichting onder elke grafiek</string>
+    <string name="statistics_setting_chart_description_visible_title">Grafiek toelichting</string>
+    <string name="statistics_setting_chart_description_visible_summary">Toon een toelichting onder elke grafiek</string>
 
     <!-- The title and summary of the "Maximum games in elapsed time chart" option. This option restricts the number of games which will be displayed in an elapsed time chart. -->
-    <string name="option_max_games_in_elapsed_time_chart_title">Aantal puzzels in grafiek speeltijd</string>
-    <string name="option_max_games_in_elapsed_time_chart_summary">Toon maximaal %1$d puzzels in de grafiek speeltijd</string>
+    <string name="statistics_setting_elapsed_time_chart_maximum_games_title">Aantal puzzels in grafiek speeltijd</string>
+    <string name="statistics_setting_elapsed_time_chart_maximum_games_summary">Toon maximaal %1$d puzzels in de grafiek speeltijd</string>
 
     <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

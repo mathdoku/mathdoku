@@ -22,46 +22,39 @@ public class Preferences {
 	// Actual preferences
 	public SharedPreferences mSharedPreferences;
 
-	// Identifiers for preferences.
-	public final static String CHECK_PROGRESS_USED = "CheckProgressUsed";
-	public final static boolean CHECK_PROGRESS_USED_DEFAULT = false;
+	// Global APP preferences
+	public final static String APP_CURRENT_VERSION = "app_current_version";
+	public final static int APP_CURRENT_VERSION_DEFAULT = -1;
 
-	public final static String CLEAR_REDUNDANT_POSSIBLES = "redundantPossibles";
-	public final static boolean CLEAR_REDUNDANT_POSSIBLES_DEFAULT = true;
+	// Archive preferences
+	public final static String ARCHIVE_AVAILABLE = "archive_available";
+	public final static boolean ARCHIVE_AVAILABLE_DEFAULT = false;
 
-	public final static String CURRENT_VERSION = "currentversion";
-	public final static int CURRENT_VERSION_DEFAULT = -1;
+	public final static String ARCHIVE_GRID_LAST_SHOWED = "archive_grid_last_showed";
+	public final static int ARCHIVE_GRID_LAST_SHOWED_DEFAULT = -1;
 
-	public final static String ARCHIVE_SIZE_FILTER_LAST_VALUE = "archive_filter_size_last_value";
+	public final static String ARCHIVE_SIZE_FILTER_LAST_VALUE = "archive_size_filter_last_value";
 	public final static String ARCHIVE_SIZE_FILTER_LAST_VALUE_DEFAULT = SizeFilter.ALL
 			.toString();
 
-	public final static String ARCHIVE_STATUS_FILTER_LAST_VALUE = "archive_filter_status_last_value";
+	public final static String ARCHIVE_STATUS_FILTER_LAST_VALUE = "archive_status_filter_last_value";
 	public final static String ARCHIVE_STATUS_FILTER_LAST_VALUE_DEFAULT = StatusFilter.ALL
 			.toString();
 
-	public final static String ARCHIVE_GRID_SELECTED_LAST_VALUE = "archive_grid_selected_last_value";
-	public final static int ARCHIVE_GRID_SELECTED_LAST_VALUE_DEFAULT = -1;
+	public final static String ARCHIVE_SETTING_SIZE_FILTER_VISIBLE = "archive_setting_size_filter_size_visible";
+	public final static boolean ARCHIVE_SETTING_SIZE_FILTER_VISIBLE_DEFAULT = false;
 
-	public final static String COLORED_DIGITS = "colored_digits";
-	public final static boolean COLORED_DIGITS_DEFAULT = true;
+	public final static String ARCHIVE_SETTING_STATUS_FILTER_VISIBLE = "archive_setting_status_filter_visible";
+	public final static boolean ARCHIVE_SETTING_STATUS_FILTER_VISIBLE_DEFAULT = true;
 
-	public final static String ELAPSED_TIME_CHART_MAXIMUM_GAMES_DISPLAYED = "elapsed_time_chart_maximum_games_displayed";
-	public final static String ELAPSED_TIME_CHART_MAXIMUM_GAMES_DISPLAYED_DEFAULT = Integer
-			.toString(100);
+	public final static String ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE = "archive_setting_chart_description_visible";
+	public final static boolean ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT = true;
 
-	public final static String FULL_SCREEN = "full_screen";
-	public final static boolean FULL_SCREEN_DEFAULT = false;
+	// Hint counters
+	public final static String HINT_INPUT_MODE_CHANGED_DISPLAYED_COUNTER = "hint_input_mode_displayed_showed_counter";
+	public final static int HINT_INPUT_MODE_CHANGED_DISPLAYED_COUNTER_DEFAULT = 0;
 
-	public final static String HINT_ARCHIVE_AVAILABLE_SHOWED_COUNTDOWN = "hint_archive_available_showed_count_down";
-	public final static int HINT_ARCHIVE_AVAILABLE_SHOWED_COUNTDOWN_DEFAULT = 3;
-
-	public final static String HINT_INPUT_MODE_CHANGED_DISPLAYED = "hint_input_mode_displayed_showed";
-	public final static int HINT_INPUT_MODE_CHANGED_DISPLAYED_DEFAULT = 0;
-
-	public final static String PLAY_SOUND_EFFECTS = "soundeffects";
-	public final static boolean PLAY_SOUND_EFFECTS_DEFAULT = true;
-
+	// Puzzle parameters settings to be set as default values for next game
 	public final static String PUZZLE_PARAMETER_COMPLEXITY = "puzzle_parameter_complexity";
 	public final static String PUZZLE_PARAMETER_COMPLEXITY_DEFAULT = PuzzleComplexity.VERY_EASY
 			.toString();
@@ -72,38 +65,53 @@ public class Preferences {
 	public final static String PUZZLE_PARAMETER_SIZE = "puzzle_parameter_size";
 	public final static int PUZZLE_PARAMETER_SIZE_DEFAULT = 4;
 
-	public final static String SHOW_ARCHIVE = "show_archive";
-	public final static boolean SHOW_ARCHIVE_DEFAULT = false;
+	// Puzzle setting preferences
+	public final static String PUZZLE_SETTING_BAD_CAGE_MATHS_VISIBLE = "puzzle_setting_bad_cage_math_visible";
+	public final static boolean PUZZLE_SETTING_BAD_CAGE_MATHS_VISIBLE_DEFAULT = true;
 
-	public final static String SHOW_ARCHIVE_CHART_DESCRIPTION = "archive_show_chart_description";
-	public final static boolean SHOW_ARCHIVE_CHART_DESCRIPTION_DEFAULT = true;
+	public final static String PUZZLE_SETTING_CLEAR_MAYBES = "puzzle_setting_clear_maybes";
+	public final static boolean PUZZLE_SETTING_CLEAR_MAYBES_DEFAULT = true;
 
-	public final static String SHOW_BAD_CAGE_MATHS = "badmaths";
-	public final static boolean SHOW_BAD_CAGE_MATHS_DEFAULT = true;
+	public final static String PUZZLE_SETTING_COLORED_DIGITS = "puzzle_setting_colored_digits";
+	public final static boolean PUZZLE_SETTING_COLORED_DIGITS_DEFAULT = true;
 
-	public final static String SHOW_DUPE_DIGITS = "dupedigits";
-	public final static boolean SHOW_DUPE_DIGITS_DEFAULT = true;
+	public final static String PUZZLE_SETTING_DUPLICATE_DIGITS_VISIBLE = "puzzle_setting_duplicate_digits_visible";
+	public final static boolean PUZZLE_SETTING_DUPLICATE_DIGITS_VISIBLE_DEFAULT = true;
 
-	public final static String SHOW_MAYBES_AS_GRID = "maybe3x3";
-	public final static boolean SHOW_MAYBES_AS_GRID_DEFAULT = true;
+	public final static String PUZZLE_SETTING_FULL_SCREEN = "puzzle_setting_full_screen";
+	public final static boolean PUZZLE_SETTING_FULL_SCREEN_DEFAULT = false;
 
-	public final static String SHOW_STATISTICS = "show_statistics";
-	public final static boolean SHOW_STATISTICS_DEFAULT = false;
+	public final static String PUZZLE_SETTING_MAYBES_DISPLAYED_IN_GRID = "puzzle_setting_maybes_displayed_in_grid";
+	public final static boolean PUZZLE_SETTING_MAYBES_DISPLAYED_IN_GRID_DEFAULT = true;
 
-	public final static String SHOW_STATISTICS_CHART_DESCRIPTION = "ShowStatisticsDescription";
-	public final static boolean SHOW_STATISTICS_CHART_DESCRIPTION_DEFAULT = true;
+	public final static String PUZZLE_SETTING_PLAY_SOUND_EFFECTS = "puzzle_setting_sound_effects";
+	public final static boolean PUZZLE_SETTING_PLAY_SOUND_EFFECTS_DEFAULT = true;
 
-	public final static String SHOW_STATUS_FILTER = "archive_show_filter_status";
-	public final static boolean SHOW_STATUS_FILTER_DEFAULT = true;
+	public final static String PUZZLE_SETTING_THEME = "puzzle_setting_theme";
+	public final static String PUZZLE_SETTING_THEME_DARK = "theme_dark";
+	public final static String PUZZLE_SETTING_THEME_LIGHT = "theme_light";
+	public final static String PUZZLE_SETTING_THEME_DEFAULT = PUZZLE_SETTING_THEME_LIGHT;
 
-	public final static String SHOW_SIZE_FILTER = "archive_show_filter_size";
-	public final static boolean SHOW_SIZE_FILTER_DEFAULT = false;
+	public final static String PUZZLE_SETTING_TIMER_VISIBLE = "puzzle_setting_timer_visible";
+	public final static boolean PUZZLE_SETTING_TIMER_VISIBLE_DEFAULT = true;
 
-	public final static String SHOW_TIMER = "timer";
-	public final static boolean SHOW_TIMER_DEFAULT = true;
+	public final static String PUZZLE_SETTING_WAKE_LOCK = "puzzle_setting_wake_lock";
+	public final static boolean PUZZLE_SETTING_WAKE_LOCK_DEFAULT = true;
 
-	public final static String SWIPE_DIGIT_INVALID_COUNTER = "swipe_digit_invalid_counter";
-	public final static String SWIPE_DIGIT_VALID_COUNTER = "swipe_digit_valid_counter";
+	// Statistics setting preferences
+	public final static String STATISTICS_AVAILABLE = "statistics_available";
+	public final static boolean STATISTICS_AVAILABLE_DEFAULT = false;
+
+	public final static String STATISTICS_SETTING_CHART_DESCRIPTION_VISIBLE = "statistics_setting_chart_description_visible";
+	public final static boolean STATISTICS_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT = true;
+
+	public final static String STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES = "statistics_setting_elapsed_time_chart_maximum_games";
+	public final static String STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES_DEFAULT = Integer
+			.toString(100);
+
+	// Swipe counters
+	public final static String SWIPE_INVALID_MOTION_COUNTER = "swipe_invalid_motion_counter";
+	public final static String SWIPE_VALID_MOTION_COUNTER = "swipe_valid_motion_counter";
 	public final static String SWIPE_DIGIT_1_COUNTER = "swipe_digit_1_counter";
 	public final static String SWIPE_DIGIT_2_COUNTER = "swipe_digit_2_counter";
 	public final static String SWIPE_DIGIT_3_COUNTER = "swipe_digit_3_counter";
@@ -114,14 +122,6 @@ public class Preferences {
 	public final static String SWIPE_DIGIT_8_COUNTER = "swipe_digit_8_counter";
 	public final static String SWIPE_DIGIT_9_COUNTER = "swipe_digit_9_counter";
 	public final static int SWIPE_DIGIT_COUNTER_DEFAULT = 0;
-
-	public final static String THEME = "theme";
-	public final static String THEME_DARK = "theme_dark";
-	public final static String THEME_LIGHT = "theme_light";
-	public final static String THEME_DEFAULT = THEME_LIGHT;
-
-	public final static String WAKE_LOCK = "wakelock";
-	public final static boolean WAKE_LOCK_DEFAULT = true;
 
 	/**
 	 * Creates a new instance of {@link Preferences}.
@@ -182,224 +182,116 @@ public class Preferences {
 		// Update preferences
 		Editor prefeditor = mSharedPreferences.edit();
 
-		if (previousInstalledVersion < 121 && currentVersion >= 121) {
-			// Add missing preferences to the Shared Preferences.
-			if (!mSharedPreferences.contains(CLEAR_REDUNDANT_POSSIBLES)) {
-				prefeditor.putBoolean(CLEAR_REDUNDANT_POSSIBLES,
-						CLEAR_REDUNDANT_POSSIBLES_DEFAULT);
-			}
-		}
-		if (previousInstalledVersion < 123 && currentVersion >= 123) {
-			// Add missing preferences to the Shared Preferences. Note:
-			// those preferences have been introduced in revisions prior to
-			// revision 122. But as from revision 122 the default values
-			// have been removed from optionsview.xml to prevent conflicts
-			// in defaults values with default values defined in this
-			// activity.
-			if (!mSharedPreferences.contains(PLAY_SOUND_EFFECTS)) {
-				prefeditor.putBoolean(PLAY_SOUND_EFFECTS,
-						PLAY_SOUND_EFFECTS_DEFAULT);
-			}
-			if (!mSharedPreferences.contains(SHOW_BAD_CAGE_MATHS)) {
-				prefeditor.putBoolean(SHOW_BAD_CAGE_MATHS,
-						SHOW_BAD_CAGE_MATHS_DEFAULT);
-			}
-			if (!mSharedPreferences.contains(SHOW_DUPE_DIGITS)) {
-				prefeditor.putBoolean(SHOW_DUPE_DIGITS,
-						SHOW_DUPE_DIGITS_DEFAULT);
-			}
-			if (!mSharedPreferences.contains(SHOW_MAYBES_AS_GRID)) {
-				prefeditor.putBoolean(SHOW_MAYBES_AS_GRID,
-						SHOW_MAYBES_AS_GRID_DEFAULT);
-			}
-			if (!mSharedPreferences.contains(SHOW_TIMER)) {
-				prefeditor.putBoolean(SHOW_TIMER, SHOW_TIMER_DEFAULT);
-			}
-			if (!mSharedPreferences.contains(THEME)) {
-				prefeditor.putString(THEME, THEME_DEFAULT);
-			}
-			if (!mSharedPreferences.contains(WAKE_LOCK)) {
-				prefeditor.putBoolean(WAKE_LOCK, WAKE_LOCK_DEFAULT);
-			}
-		}
-		if (previousInstalledVersion < 198 && currentVersion >= 198) {
-			if (!mSharedPreferences.contains(SHOW_STATISTICS_CHART_DESCRIPTION)) {
-				prefeditor.putBoolean(SHOW_STATISTICS_CHART_DESCRIPTION,
-						SHOW_STATISTICS_CHART_DESCRIPTION_DEFAULT);
-			}
-		}
-		if (previousInstalledVersion < 282 && currentVersion >= 282) {
-			if (!mSharedPreferences.contains(CHECK_PROGRESS_USED)) {
-				prefeditor.putBoolean(CHECK_PROGRESS_USED,
-						CHECK_PROGRESS_USED_DEFAULT);
-			}
-		}
-		if (previousInstalledVersion <= 298 && currentVersion >= 298) {
-			// Remove obsolete preference
-			if (mSharedPreferences.contains("CreatePreviewImagesCompleted")) {
-				prefeditor.remove("CreatePreviewImagesCompleted");
-			}
-		}
-		if (previousInstalledVersion <= 301 && currentVersion >= 301) {
-			if (!mSharedPreferences.contains(SHOW_STATUS_FILTER)) {
-				prefeditor.putBoolean(SHOW_STATUS_FILTER,
-						SHOW_STATUS_FILTER_DEFAULT);
-			}
-			if (!mSharedPreferences.contains(SHOW_SIZE_FILTER)) {
-				prefeditor.putBoolean(SHOW_SIZE_FILTER,
-						SHOW_SIZE_FILTER_DEFAULT);
-			}
-		}
-		if (previousInstalledVersion <= 333 && currentVersion >= 333) {
-			// Remove obsolete preference
-			if (mSharedPreferences.contains("hideselector")) {
-				prefeditor.remove("hideselector");
-			}
-		}
-		if (previousInstalledVersion < 350 && currentVersion >= 350) {
-			if (!mSharedPreferences.contains(SWIPE_DIGIT_VALID_COUNTER)) {
-				prefeditor.putInt(SWIPE_DIGIT_VALID_COUNTER,
-						SWIPE_DIGIT_COUNTER_DEFAULT);
-			}
-			if (!mSharedPreferences.contains(SWIPE_DIGIT_1_COUNTER)) {
-				prefeditor.putInt(SWIPE_DIGIT_1_COUNTER,
-						SWIPE_DIGIT_COUNTER_DEFAULT);
-			}
-			if (!mSharedPreferences.contains(SWIPE_DIGIT_2_COUNTER)) {
-				prefeditor.putInt(SWIPE_DIGIT_2_COUNTER,
-						SWIPE_DIGIT_COUNTER_DEFAULT);
-			}
-			if (!mSharedPreferences.contains(SWIPE_DIGIT_3_COUNTER)) {
-				prefeditor.putInt(SWIPE_DIGIT_3_COUNTER,
-						SWIPE_DIGIT_COUNTER_DEFAULT);
-			}
-			if (!mSharedPreferences.contains(SWIPE_DIGIT_4_COUNTER)) {
-				prefeditor.putInt(SWIPE_DIGIT_4_COUNTER,
-						SWIPE_DIGIT_COUNTER_DEFAULT);
-			}
-			if (!mSharedPreferences.contains(SWIPE_DIGIT_5_COUNTER)) {
-				prefeditor.putInt(SWIPE_DIGIT_5_COUNTER,
-						SWIPE_DIGIT_COUNTER_DEFAULT);
-			}
-			if (!mSharedPreferences.contains(SWIPE_DIGIT_6_COUNTER)) {
-				prefeditor.putInt(SWIPE_DIGIT_6_COUNTER,
-						SWIPE_DIGIT_COUNTER_DEFAULT);
-			}
-			if (!mSharedPreferences.contains(SWIPE_DIGIT_7_COUNTER)) {
-				prefeditor.putInt(SWIPE_DIGIT_7_COUNTER,
-						SWIPE_DIGIT_COUNTER_DEFAULT);
-			}
-			if (!mSharedPreferences.contains(SWIPE_DIGIT_8_COUNTER)) {
-				prefeditor.putInt(SWIPE_DIGIT_8_COUNTER,
-						SWIPE_DIGIT_COUNTER_DEFAULT);
-			}
-			if (!mSharedPreferences.contains(SWIPE_DIGIT_9_COUNTER)) {
-				prefeditor.putInt(SWIPE_DIGIT_9_COUNTER,
-						SWIPE_DIGIT_COUNTER_DEFAULT);
-			}
-		}
-		if (previousInstalledVersion <= 354 && currentVersion >= 354) {
-			if (!mSharedPreferences
-					.contains(ELAPSED_TIME_CHART_MAXIMUM_GAMES_DISPLAYED)) {
-				prefeditor.putString(
-						ELAPSED_TIME_CHART_MAXIMUM_GAMES_DISPLAYED,
-						ELAPSED_TIME_CHART_MAXIMUM_GAMES_DISPLAYED_DEFAULT);
-			}
-		}
-		if (previousInstalledVersion <= 355 && currentVersion >= 355) {
-			if (!mSharedPreferences.contains(HINT_INPUT_MODE_CHANGED_DISPLAYED)) {
-				prefeditor.putInt(HINT_INPUT_MODE_CHANGED_DISPLAYED,
-						HINT_INPUT_MODE_CHANGED_DISPLAYED_DEFAULT);
-			}
-		}
-		if (previousInstalledVersion <= 356 && currentVersion >= 356) {
-			// Remove obsolete preference
-			if (mSharedPreferences.contains("AllowBigCages")) {
-				prefeditor.remove("AllowBigCages");
-			}
-			if (mSharedPreferences.contains("hideoperatorsigns")) {
-				prefeditor.remove("hideoperatorsigns");
-			}
+		if (previousInstalledVersion < 493 && currentVersion >= 493) {
+			// On upgrade to version 2 of MathDoku the preferences are cleaned
+			// up. Unnecessary preferences are deleted. Preferences which are
+			// kept are renamed in order to improve future maintenance.
 
-			// Add new preferences
-			if (!mSharedPreferences.contains(PUZZLE_PARAMETER_COMPLEXITY)) {
-				prefeditor.putString(PUZZLE_PARAMETER_COMPLEXITY,
-						PUZZLE_PARAMETER_COMPLEXITY_DEFAULT);
-			}
-			if (!mSharedPreferences
-					.contains(PUZZLE_PARAMETER_OPERATORS_VISIBLE)) {
+			// Collect values of preferences which have to converted. As
+			// preference names will be converted, the get function for the
+			// preferences cannot be used. So retrieve the values directly using
+			// the old names.
+			boolean prefOptionClearMaybes = mSharedPreferences.getBoolean(
+					"redundantPossibles", PUZZLE_SETTING_CLEAR_MAYBES_DEFAULT);
+			boolean prefOptionPlaySoundOptions = mSharedPreferences.getBoolean(
+					"soundeffects", PUZZLE_SETTING_PLAY_SOUND_EFFECTS_DEFAULT);
+			boolean prefOptionShowBadCageMath = mSharedPreferences.getBoolean(
+					"badmaths", PUZZLE_SETTING_BAD_CAGE_MATHS_VISIBLE_DEFAULT);
+			boolean prefOptionShowDupeDigits = mSharedPreferences.getBoolean(
+					"dupedigits",
+					PUZZLE_SETTING_DUPLICATE_DIGITS_VISIBLE_DEFAULT);
+			boolean prefOptionShowMaybesAsGrid = mSharedPreferences
+					.getBoolean("maybe3x3",
+							PUZZLE_SETTING_MAYBES_DISPLAYED_IN_GRID_DEFAULT);
+			boolean prefOptionShowTimer = mSharedPreferences.getBoolean(
+					"timer", PUZZLE_SETTING_TIMER_VISIBLE_DEFAULT);
+			String prefOptionTheme = (mSharedPreferences.getString("theme",
+					PUZZLE_SETTING_THEME_DEFAULT).equals("inverted") ? PUZZLE_SETTING_THEME_DARK
+					: PUZZLE_SETTING_THEME_LIGHT);
+			boolean prefWakeLock = mSharedPreferences.getBoolean("wakelock",
+					PUZZLE_SETTING_WAKE_LOCK_DEFAULT);
 
-				prefeditor.putBoolean(PUZZLE_PARAMETER_OPERATORS_VISIBLE,
-						PUZZLE_PARAMETER_OPERATORS_VISIBLE_DEFAULT);
-			}
-			if (!mSharedPreferences.contains(PUZZLE_PARAMETER_SIZE)) {
-				prefeditor.putInt(PUZZLE_PARAMETER_SIZE,
-						PUZZLE_PARAMETER_SIZE_DEFAULT);
-			}
-		}
-		if (previousInstalledVersion <= 357 && currentVersion >= 357) {
-			if (!mSharedPreferences.contains(FULL_SCREEN)) {
-				prefeditor.putBoolean(FULL_SCREEN, FULL_SCREEN_DEFAULT);
-			}
-		}
-		if (previousInstalledVersion <= 392 && currentVersion >= 392) {
-			if (!mSharedPreferences.contains(SHOW_ARCHIVE_CHART_DESCRIPTION)) {
-				prefeditor.putBoolean(SHOW_ARCHIVE_CHART_DESCRIPTION,
-						SHOW_ARCHIVE_CHART_DESCRIPTION_DEFAULT);
-			}
-		}
-		if (previousInstalledVersion < 403 && currentVersion >= 403) {
-			// Remove obsolete preferences
-			if (mSharedPreferences.contains("Tip.Category.FamiliarWithApp")) {
-				prefeditor.remove("Tip.Category.FamiliarWithApp");
-			}
-			if (mSharedPreferences.contains("Tip.Category.FamiliarWithRules")) {
-				prefeditor.remove("Tip.Category.FamiliarWithRules");
-			}
-		}
-		if (previousInstalledVersion < 407 && currentVersion >= 407) {
-			// Theme carved has been removed. Change theme to default theme if
-			// it was set to carved.
-			if (mSharedPreferences.getString(THEME, THEME_DEFAULT).equals(
-					"carved")) {
-				prefeditor.putString(THEME, THEME_DEFAULT);
-			}
-		}
-		if (previousInstalledVersion < 408 && currentVersion >= 408) {
-			// Values of the themes have changed.
-			if (mSharedPreferences.getString(THEME, THEME_DEFAULT).equals(
-					"newspaper")) {
-				prefeditor.putString(THEME, THEME_LIGHT);
-			} else if (mSharedPreferences.getString(THEME, THEME_DEFAULT)
-					.equals("inverted")) {
-				prefeditor.putString(THEME, THEME_DARK);
-			}
-		}
-		if (previousInstalledVersion < 435 && currentVersion >= 435) {
-			if (!mSharedPreferences.contains(COLORED_DIGITS)) {
-				prefeditor.putBoolean(COLORED_DIGITS, COLORED_DIGITS_DEFAULT);
-			}
-		}
-		if (previousInstalledVersion < 448 && currentVersion >= 448) {
-			// Add this preference again as the value of the
-			// SWIPE_DIGIT_INVALID_COUNTER equalled SWIPE_DIGIT_VALID_COUNTER
-			// until this revision.
-			if (!mSharedPreferences.contains(SWIPE_DIGIT_INVALID_COUNTER)) {
-				prefeditor.putInt(SWIPE_DIGIT_INVALID_COUNTER,
-						SWIPE_DIGIT_COUNTER_DEFAULT);
-			}
-		}
-		if (previousInstalledVersion <= 482 && currentVersion > 482) {
-			// Remove obsolete preference
-			if (mSharedPreferences.contains("UsageLogCountGamesStarted")) {
-				prefeditor.remove("UsageLogCountGamesStarted");
-			}
-			if (mSharedPreferences.contains("UsageLogDisabled")) {
-				prefeditor.remove("UsageLogDisabled");
-			}
+			// Delete all existing preferences to clean up historic values.
+			prefeditor.clear();
+
+			// Add all preferences which were converted from the old values.
+			prefeditor
+					.putBoolean(PUZZLE_SETTING_CLEAR_MAYBES,
+							prefOptionClearMaybes)
+					.putBoolean(PUZZLE_SETTING_PLAY_SOUND_EFFECTS,
+							prefOptionPlaySoundOptions)
+					.putBoolean(PUZZLE_SETTING_BAD_CAGE_MATHS_VISIBLE,
+							prefOptionShowBadCageMath)
+					.putBoolean(PUZZLE_SETTING_DUPLICATE_DIGITS_VISIBLE,
+							prefOptionShowDupeDigits)
+					.putBoolean(PUZZLE_SETTING_MAYBES_DISPLAYED_IN_GRID,
+							prefOptionShowMaybesAsGrid)
+					.putBoolean(PUZZLE_SETTING_TIMER_VISIBLE,
+							prefOptionShowTimer)
+					.putString(PUZZLE_SETTING_THEME, prefOptionTheme)
+					.putBoolean(PUZZLE_SETTING_WAKE_LOCK, prefWakeLock);
+
+			// Set value for new preferences
+			prefeditor.putString(ARCHIVE_SIZE_FILTER_LAST_VALUE,
+					ARCHIVE_SIZE_FILTER_LAST_VALUE_DEFAULT);
+			prefeditor.putString(ARCHIVE_STATUS_FILTER_LAST_VALUE,
+					ARCHIVE_STATUS_FILTER_LAST_VALUE_DEFAULT);
+			prefeditor.putInt(ARCHIVE_GRID_LAST_SHOWED,
+					ARCHIVE_GRID_LAST_SHOWED_DEFAULT);
+			prefeditor.putBoolean(PUZZLE_SETTING_COLORED_DIGITS,
+					PUZZLE_SETTING_COLORED_DIGITS_DEFAULT);
+			prefeditor
+					.putString(
+							STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES,
+							STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES_DEFAULT);
+			prefeditor.putBoolean(PUZZLE_SETTING_FULL_SCREEN,
+					PUZZLE_SETTING_FULL_SCREEN_DEFAULT);
+			prefeditor.putInt(HINT_INPUT_MODE_CHANGED_DISPLAYED_COUNTER,
+					HINT_INPUT_MODE_CHANGED_DISPLAYED_COUNTER_DEFAULT);
+			prefeditor.putString(PUZZLE_PARAMETER_COMPLEXITY,
+					PUZZLE_PARAMETER_COMPLEXITY_DEFAULT);
+			prefeditor.putBoolean(PUZZLE_PARAMETER_OPERATORS_VISIBLE,
+					PUZZLE_PARAMETER_OPERATORS_VISIBLE_DEFAULT);
+			prefeditor.putInt(PUZZLE_PARAMETER_SIZE,
+					PUZZLE_PARAMETER_SIZE_DEFAULT);
+			prefeditor.putBoolean(ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE,
+					ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT);
+			prefeditor.putBoolean(ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE,
+					ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT);
+			prefeditor.putBoolean(STATISTICS_SETTING_CHART_DESCRIPTION_VISIBLE,
+					STATISTICS_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT);
+			prefeditor.putBoolean(STATISTICS_SETTING_CHART_DESCRIPTION_VISIBLE,
+					STATISTICS_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT);
+			prefeditor.putBoolean(ARCHIVE_SETTING_STATUS_FILTER_VISIBLE,
+					ARCHIVE_SETTING_STATUS_FILTER_VISIBLE_DEFAULT);
+			prefeditor.putBoolean(ARCHIVE_SETTING_SIZE_FILTER_VISIBLE,
+					ARCHIVE_SETTING_SIZE_FILTER_VISIBLE_DEFAULT);
+			prefeditor.putInt(SWIPE_INVALID_MOTION_COUNTER,
+					SWIPE_DIGIT_COUNTER_DEFAULT);
+			prefeditor.putInt(SWIPE_VALID_MOTION_COUNTER,
+					SWIPE_DIGIT_COUNTER_DEFAULT);
+			prefeditor.putInt(SWIPE_DIGIT_1_COUNTER,
+					SWIPE_DIGIT_COUNTER_DEFAULT);
+			prefeditor.putInt(SWIPE_DIGIT_2_COUNTER,
+					SWIPE_DIGIT_COUNTER_DEFAULT);
+			prefeditor.putInt(SWIPE_DIGIT_3_COUNTER,
+					SWIPE_DIGIT_COUNTER_DEFAULT);
+			prefeditor.putInt(SWIPE_DIGIT_4_COUNTER,
+					SWIPE_DIGIT_COUNTER_DEFAULT);
+			prefeditor.putInt(SWIPE_DIGIT_5_COUNTER,
+					SWIPE_DIGIT_COUNTER_DEFAULT);
+			prefeditor.putInt(SWIPE_DIGIT_6_COUNTER,
+					SWIPE_DIGIT_COUNTER_DEFAULT);
+			prefeditor.putInt(SWIPE_DIGIT_7_COUNTER,
+					SWIPE_DIGIT_COUNTER_DEFAULT);
+			prefeditor.putInt(SWIPE_DIGIT_8_COUNTER,
+					SWIPE_DIGIT_COUNTER_DEFAULT);
+			prefeditor.putInt(SWIPE_DIGIT_9_COUNTER,
+					SWIPE_DIGIT_COUNTER_DEFAULT);
 		}
 
-		prefeditor.putInt(CURRENT_VERSION, currentVersion);
+		// Save
+		prefeditor.putInt(APP_CURRENT_VERSION, currentVersion);
 		prefeditor.commit();
 	}
 
@@ -409,7 +301,8 @@ public class Preferences {
 	 * @return True in case the timer should be displayed. False otherwise.
 	 */
 	public boolean isTimerVisible() {
-		return mSharedPreferences.getBoolean(SHOW_TIMER, SHOW_TIMER_DEFAULT);
+		return mSharedPreferences.getBoolean(PUZZLE_SETTING_TIMER_VISIBLE,
+				PUZZLE_SETTING_TIMER_VISIBLE_DEFAULT);
 	}
 
 	/**
@@ -418,9 +311,10 @@ public class Preferences {
 	 * @return The current theme.
 	 */
 	public Painter.GridTheme getTheme() {
-		String theme = mSharedPreferences.getString(THEME, THEME_DEFAULT);
+		String theme = mSharedPreferences.getString(PUZZLE_SETTING_THEME,
+				PUZZLE_SETTING_THEME_DEFAULT);
 
-		if (theme.equals(THEME_DARK)) {
+		if (theme.equals(PUZZLE_SETTING_THEME_DARK)) {
 			return GridTheme.DARK;
 		} else {
 			return GridTheme.LIGHT;
@@ -434,9 +328,9 @@ public class Preferences {
 	 * @return True in case redundant possible values in the same column or row
 	 *         should be removed automatically. False otherwise.
 	 */
-	public boolean isClearRedundantPossiblesEnabled() {
-		return mSharedPreferences.getBoolean(CLEAR_REDUNDANT_POSSIBLES,
-				CLEAR_REDUNDANT_POSSIBLES_DEFAULT);
+	public boolean isPuzzleSettingClearMaybesEnabled() {
+		return mSharedPreferences.getBoolean(PUZZLE_SETTING_CLEAR_MAYBES,
+				PUZZLE_SETTING_CLEAR_MAYBES_DEFAULT);
 	}
 
 	/**
@@ -445,8 +339,8 @@ public class Preferences {
 	 * @return The version number of the currently installed version of the app.
 	 */
 	public int getCurrentInstalledVersion() {
-		return mSharedPreferences.getInt(CURRENT_VERSION,
-				CURRENT_VERSION_DEFAULT);
+		return mSharedPreferences.getInt(APP_CURRENT_VERSION,
+				APP_CURRENT_VERSION_DEFAULT);
 	}
 
 	/**
@@ -457,7 +351,8 @@ public class Preferences {
 	 *         while playing.
 	 */
 	public boolean isWakeLockEnabled() {
-		return mSharedPreferences.getBoolean(WAKE_LOCK, WAKE_LOCK_DEFAULT);
+		return mSharedPreferences.getBoolean(PUZZLE_SETTING_WAKE_LOCK,
+				PUZZLE_SETTING_WAKE_LOCK_DEFAULT);
 	}
 
 	/**
@@ -466,8 +361,8 @@ public class Preferences {
 	 * @return True in the sounds effects are enabled. False otherwise.
 	 */
 	public boolean isPlaySoundEffectEnabled() {
-		return mSharedPreferences.getBoolean(PLAY_SOUND_EFFECTS,
-				PLAY_SOUND_EFFECTS_DEFAULT);
+		return mSharedPreferences.getBoolean(PUZZLE_SETTING_PLAY_SOUND_EFFECTS,
+				PUZZLE_SETTING_PLAY_SOUND_EFFECTS_DEFAULT);
 	}
 
 	/**
@@ -539,9 +434,10 @@ public class Preferences {
 	 * @return True in case duplicate digits should be shown in the grid. False
 	 *         otherwise.
 	 */
-	public boolean showDuplicateDigits() {
-		return mSharedPreferences.getBoolean(SHOW_DUPE_DIGITS,
-				SHOW_DUPE_DIGITS_DEFAULT);
+	public boolean isDuplicateDigitHighlightVisible() {
+		return mSharedPreferences.getBoolean(
+				PUZZLE_SETTING_DUPLICATE_DIGITS_VISIBLE,
+				PUZZLE_SETTING_DUPLICATE_DIGITS_VISIBLE_DEFAULT);
 	}
 
 	/**
@@ -551,9 +447,10 @@ public class Preferences {
 	 * @return True in case maybes should be shown in the same pattern as the
 	 *         digit buttons. False otherwise.
 	 */
-	public boolean showMaybesAsGrid() {
-		return mSharedPreferences.getBoolean(SHOW_MAYBES_AS_GRID,
-				SHOW_MAYBES_AS_GRID_DEFAULT);
+	public boolean isMaybesDisplayedInGrid() {
+		return mSharedPreferences.getBoolean(
+				PUZZLE_SETTING_MAYBES_DISPLAYED_IN_GRID,
+				PUZZLE_SETTING_MAYBES_DISPLAYED_IN_GRID_DEFAULT);
 	}
 
 	/**
@@ -562,9 +459,10 @@ public class Preferences {
 	 * @return True in case cages having bad math should be highlighted. False
 	 *         otherwise.
 	 */
-	public boolean showBadCageMaths() {
-		return mSharedPreferences.getBoolean(SHOW_BAD_CAGE_MATHS,
-				SHOW_BAD_CAGE_MATHS_DEFAULT);
+	public boolean isBadCageMathHighlightVisible() {
+		return mSharedPreferences.getBoolean(
+				PUZZLE_SETTING_BAD_CAGE_MATHS_VISIBLE,
+				PUZZLE_SETTING_BAD_CAGE_MATHS_VISIBLE_DEFAULT);
 	}
 
 	/**
@@ -574,9 +472,10 @@ public class Preferences {
 	 * @return True in case the charts descriptions have to be shown. False
 	 *         otherwise.
 	 */
-	public boolean showChartDescriptionInStatistics() {
-		return mSharedPreferences.getBoolean(SHOW_STATISTICS_CHART_DESCRIPTION,
-				SHOW_STATISTICS_CHART_DESCRIPTION_DEFAULT);
+	public boolean isStatisticsChartDescriptionVisible() {
+		return mSharedPreferences.getBoolean(
+				STATISTICS_SETTING_CHART_DESCRIPTION_VISIBLE,
+				STATISTICS_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT);
 	}
 
 	/**
@@ -586,9 +485,10 @@ public class Preferences {
 	 * @return True in case the charts descriptions have to be shown. False
 	 *         otherwise.
 	 */
-	public boolean showChartDescriptionInArchive() {
-		return mSharedPreferences.getBoolean(SHOW_ARCHIVE_CHART_DESCRIPTION,
-				SHOW_ARCHIVE_CHART_DESCRIPTION_DEFAULT);
+	public boolean isArchiveChartDescriptionVisible() {
+		return mSharedPreferences.getBoolean(
+				ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE,
+				ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT);
 	}
 
 	/**
@@ -598,9 +498,10 @@ public class Preferences {
 	 * @return True in case the filter status should be shown in the archive
 	 *         action bar. False otherwise.
 	 */
-	public boolean showArchiveStatusFilter() {
-		return mSharedPreferences.getBoolean(SHOW_STATUS_FILTER,
-				SHOW_STATUS_FILTER_DEFAULT);
+	public boolean isArchiveStatusFilterVisible() {
+		return mSharedPreferences.getBoolean(
+				ARCHIVE_SETTING_STATUS_FILTER_VISIBLE,
+				ARCHIVE_SETTING_STATUS_FILTER_VISIBLE_DEFAULT);
 	}
 
 	/**
@@ -609,9 +510,10 @@ public class Preferences {
 	 * @return True in case the size filter should be shown in the archive
 	 *         action bar. False otherwise.
 	 */
-	public boolean showArchiveSizeFilter() {
-		return mSharedPreferences.getBoolean(SHOW_SIZE_FILTER,
-				SHOW_SIZE_FILTER_DEFAULT);
+	public boolean isArchiveSizeFilterVisible() {
+		return mSharedPreferences.getBoolean(
+				ARCHIVE_SETTING_SIZE_FILTER_VISIBLE,
+				ARCHIVE_SETTING_SIZE_FILTER_VISIBLE_DEFAULT);
 	}
 
 	/**
@@ -620,8 +522,8 @@ public class Preferences {
 	 * @return True in case the archive is visible. False otherwise.
 	 */
 	public boolean isArchiveAvailable() {
-		return mSharedPreferences
-				.getBoolean(SHOW_ARCHIVE, SHOW_ARCHIVE_DEFAULT);
+		return mSharedPreferences.getBoolean(ARCHIVE_AVAILABLE,
+				ARCHIVE_AVAILABLE_DEFAULT);
 	}
 
 	/**
@@ -629,7 +531,7 @@ public class Preferences {
 	 */
 	public void setArchiveVisible() {
 		Editor prefeditor = mSharedPreferences.edit();
-		prefeditor.putBoolean(SHOW_ARCHIVE, true);
+		prefeditor.putBoolean(ARCHIVE_AVAILABLE, true);
 		prefeditor.commit();
 	}
 
@@ -639,16 +541,16 @@ public class Preferences {
 	 * @return True in case the statistics are visible. False otherwise.
 	 */
 	public boolean isStatisticsAvailable() {
-		return mSharedPreferences.getBoolean(SHOW_STATISTICS,
-				SHOW_STATISTICS_DEFAULT);
+		return mSharedPreferences.getBoolean(STATISTICS_AVAILABLE,
+				STATISTICS_AVAILABLE_DEFAULT);
 	}
 
 	/**
 	 * Enables the statistics.
 	 */
-	public void setStatisticsVisible() {
+	public void setStatisticsAvailable() {
 		Editor prefeditor = mSharedPreferences.edit();
-		prefeditor.putBoolean(SHOW_STATISTICS, true);
+		prefeditor.putBoolean(STATISTICS_AVAILABLE, true);
 		prefeditor.commit();
 	}
 
@@ -707,9 +609,9 @@ public class Preferences {
 	 * 
 	 * @return The id of the grid which was last shown in the archive.
 	 */
-	public int getArchiveSelectedGridIdLastValueUsed() {
-		return mSharedPreferences.getInt(ARCHIVE_GRID_SELECTED_LAST_VALUE,
-				ARCHIVE_GRID_SELECTED_LAST_VALUE_DEFAULT);
+	public int getArchiveGridIdLastShowed() {
+		return mSharedPreferences.getInt(ARCHIVE_GRID_LAST_SHOWED,
+				ARCHIVE_GRID_LAST_SHOWED_DEFAULT);
 	}
 
 	/**
@@ -718,9 +620,9 @@ public class Preferences {
 	 * 
 	 * @return The last value used for the size filter in the archive.
 	 */
-	public void setArchiveSelectedGridIdLastValueUsed(int gridId) {
+	public void setArchiveGridIdLastShowed(int gridId) {
 		Editor prefeditor = mSharedPreferences.edit();
-		prefeditor.putInt(ARCHIVE_GRID_SELECTED_LAST_VALUE, gridId);
+		prefeditor.putInt(ARCHIVE_GRID_LAST_SHOWED, gridId);
 		prefeditor.commit();
 	}
 
@@ -741,18 +643,6 @@ public class Preferences {
 	}
 
 	/**
-	 * Get the number of invalid swipe motions which have successfully been
-	 * completed.
-	 * 
-	 * @return The number of invalid swipe motions which have successfully been
-	 *         completed.
-	 */
-	public int getSwipeInvalidMotionCounter() {
-		return mSharedPreferences.getInt(SWIPE_DIGIT_INVALID_COUNTER,
-				SWIPE_DIGIT_COUNTER_DEFAULT);
-	}
-
-	/**
 	 * Get the number of valid swipe motions which have successfully been
 	 * completed.
 	 * 
@@ -760,7 +650,7 @@ public class Preferences {
 	 *         completed.
 	 */
 	public int getSwipeValidMotionCounter() {
-		return mSharedPreferences.getInt(SWIPE_DIGIT_VALID_COUNTER,
+		return mSharedPreferences.getInt(SWIPE_VALID_MOTION_COUNTER,
 				SWIPE_DIGIT_COUNTER_DEFAULT);
 	}
 
@@ -822,7 +712,7 @@ public class Preferences {
 	 *         has been successfully completed.
 	 */
 	public int increaseSwipeValidMotionCounter(int digit) {
-		increaseCounter(SWIPE_DIGIT_VALID_COUNTER);
+		increaseCounter(SWIPE_VALID_MOTION_COUNTER);
 		return increaseCounter(getSwipeDigitDiscoveredPreferenceName(digit));
 	}
 
@@ -833,7 +723,7 @@ public class Preferences {
 	 *         completed.
 	 */
 	public int increaseSwipeInvalidMotionCounter() {
-		return increaseCounter(SWIPE_DIGIT_INVALID_COUNTER);
+		return increaseCounter(SWIPE_INVALID_MOTION_COUNTER);
 	}
 
 	/**
@@ -843,10 +733,10 @@ public class Preferences {
 	 * @return The maximum number of games which should be shown in a
 	 *         elapsed-time-chart.
 	 */
-	public int getMaximumGamesElapsedTimeChart() {
+	public int getStatisticsSettingElapsedTimeChartMaximumGames() {
 		return Integer.parseInt(mSharedPreferences.getString(
-				ELAPSED_TIME_CHART_MAXIMUM_GAMES_DISPLAYED,
-				ELAPSED_TIME_CHART_MAXIMUM_GAMES_DISPLAYED_DEFAULT));
+				STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES,
+				STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES_DEFAULT));
 	}
 
 	/**
@@ -857,7 +747,7 @@ public class Preferences {
 	 *         been displayed.
 	 */
 	public int increaseHintInputModeShowedCounter() {
-		return increaseCounter(HINT_INPUT_MODE_CHANGED_DISPLAYED);
+		return increaseCounter(HINT_INPUT_MODE_CHANGED_DISPLAYED_COUNTER);
 	}
 
 	/**
@@ -933,41 +823,8 @@ public class Preferences {
 	 *         playing.
 	 */
 	public boolean isFullScreenEnabled() {
-		return mSharedPreferences.getBoolean(FULL_SCREEN, FULL_SCREEN_DEFAULT);
-	}
-
-	/**
-	 * Checks if the archive available hint should be displayed.
-	 * 
-	 * @return True in case the archive available hint has to be displayed.
-	 */
-	public boolean showArchiveAvailableHint() {
-		return decreaseCounterIfApplicable(
-				HINT_ARCHIVE_AVAILABLE_SHOWED_COUNTDOWN,
-				HINT_ARCHIVE_AVAILABLE_SHOWED_COUNTDOWN_DEFAULT);
-	}
-
-	/**
-	 * Decrease the current value of a preference counter with 1 occurrence if
-	 * not yet zero.
-	 * 
-	 * @param preferenceName
-	 *            The name of the preferences counter.
-	 * @param The
-	 *            start value of the count down counter.
-	 * @return True in case the counter is increased. False otherwise.
-	 */
-	private boolean decreaseCounterIfApplicable(String preferenceName,
-			int startValue) {
-		int counter = mSharedPreferences.getInt(preferenceName, startValue);
-		if (counter <= 0) {
-			return false;
-		} else {
-			Editor prefeditor = mSharedPreferences.edit();
-			prefeditor.putInt(preferenceName, counter - 1);
-			prefeditor.commit();
-			return true;
-		}
+		return mSharedPreferences.getBoolean(PUZZLE_SETTING_FULL_SCREEN,
+				PUZZLE_SETTING_FULL_SCREEN_DEFAULT);
 	}
 
 	/**
@@ -978,8 +835,8 @@ public class Preferences {
 	 *         maybes and definitive digits. False in case the same color is
 	 *         used for both type of digits.
 	 */
-	public boolean showColoredDigits() {
-		return mSharedPreferences.getBoolean(COLORED_DIGITS,
-				COLORED_DIGITS_DEFAULT);
+	public boolean isColoredDigitsVisible() {
+		return mSharedPreferences.getBoolean(PUZZLE_SETTING_COLORED_DIGITS,
+				PUZZLE_SETTING_COLORED_DIGITS_DEFAULT);
 	}
 }
