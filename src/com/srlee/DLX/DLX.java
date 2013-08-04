@@ -2,14 +2,16 @@ package com.srlee.DLX;
 
 import java.util.ArrayList;
 
-import net.cactii.mathdoku.GridGenerator;
+import android.util.Log;
 
 public class DLX extends Object {
+	private static final String TAG = "MathDoku.DLX";
+
 	public enum SolveType {
 		ONE, MULTIPLE, ALL
 	};
 
-	private DLXColumn root = new DLXColumn();
+	private final DLXColumn root = new DLXColumn();
 	private DLXColumn[] ColHdrs;
 	private DLXNode[] Nodes;
 	private DLXRow[] Rows;
@@ -21,9 +23,7 @@ public class DLX extends Object {
 	protected boolean isValid;
 	private int prev_rowidx = -1;
 	private SolveType solvetype;
-
-	// The grid generator to which progress updates will be sent.
-	private GridGenerator mGridGenerator;
+	protected int complexity;
 
 	public DLX() {
 		trysolution = new ArrayList<Integer>();
@@ -61,7 +61,7 @@ public class DLX extends Object {
 	}
 
 	public int GetSolutionRow(int row) {
-		return (Integer) foundsolution.get(row - 1);
+		return foundsolution.get(row - 1);
 	}
 
 	private void CoverCol(DLXColumn coverCol) {
@@ -138,30 +138,6 @@ public class DLX extends Object {
 		lastnodeadded = Nodes[numnodes];
 	}
 
-	public boolean GivenRow(int row) {
-		return Given(Rows[row].FirstNode);
-	}
-
-	public boolean Given(DLXNode node) {
-		DLXNode startNode = node;
-		DLXNode currNode = startNode;
-		do {
-			DLXColumn ColHdr = currNode.GetColumn();
-			// Check if this is still a valid column
-			if (ColHdr.GetLeft().GetRight() != ColHdr)
-				return false;
-			CoverCol(ColHdr);
-			currNode = (DLXNode) currNode.GetRight();
-		} while (currNode != startNode);
-		int i = currNode.GetRowIdx();
-		trysolution.add(i);
-		return true;
-	}
-
-	public boolean Given(int node) {
-		return Given(Nodes[node]);
-	}
-
 	/**
 	 * Determines the number of solutions that can be found for this grid.
 	 * 
@@ -174,14 +150,13 @@ public class DLX extends Object {
 	 * @return The number of solutions, given the solution type, that can be
 	 *         found for this grid.
 	 */
-	public int Solve(GridGenerator gridGenerator, SolveType solveType) {
-		mGridGenerator = gridGenerator;
-
+	protected int Solve(SolveType solveType) {
 		if (!isValid)
 			return -1;
 
 		solvetype = solveType;
 		NumSolns = 0;
+		complexity = 0;
 		search(trysolution.size());
 		return NumSolns;
 	}
@@ -190,14 +165,28 @@ public class DLX extends Object {
 		DLXColumn chosenCol;
 		LL2DNode r, j;
 
+		// A solution is found in case all columns are covered
 		if (root.GetRight() == root) {
-			foundsolution = new ArrayList<Integer>(trysolution);
 			NumSolns++;
-			mGridGenerator.publishProgressGridSolutionFound();
+			foundsolution = new ArrayList<Integer>(trysolution);
+			if (MathDokuDLX.DEBUG_DLX) {
+				Log.i(TAG, "Solution " + NumSolns
+						+ " found which consists of following moves: "
+						+ trysolution.toString());
+			}
 			return;
 		}
+
+		// In case no solution is yet found, select the next column to be
+		// covered. Now two things can happen. Either such a column can be
+		// found, and the puzzle solving will be taken one level deeper. Or such
+		// a column can not be found in which case a backtrack will be done. The
+		// more often a permutation is tried, the harder to solve the puzzle is.
+		complexity++;
+
 		chosenCol = ChooseMinCol();
 		if (chosenCol != null) {
+
 			CoverCol(chosenCol);
 			r = chosenCol.GetDown();
 

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <CheckBoxPreference
+        android:key="archive_setting_status_filter_visible"
+        android:summary="@string/archive_settings_show_status_filter_enabled"
+        android:title="@string/archive_settings_show_status_filter_title" />
+    <CheckBoxPreference
+        android:key="archive_setting_size_filter_size_visible"
+        android:summary="@string/archive_settings_show_size_filter_enabled"
+        android:title="@string/archive_settings_show_size_filter_title" />
+    <CheckBoxPreference
+        android:key="archive_setting_chart_description_visible"
+        android:summary="@string/archive_setting_show_chart_description_summary"
+        android:title="@string/archive_setting_show_chart_description_title" />
+
+</PreferenceScreen>

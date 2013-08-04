@@ -1,30 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- NON-TRANSLATABLE VALUES - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+
     <!-- This file should NOT be translated. MathDoku will probably not work correctly in case values are translated or overwritten. -->
+
 
     <!-- Name of application. This may NOT be translated. -->
     <string name="application_name">MathDoku</string>
 
-    <!-- Identifiers associated with element hideOpText. This element may not be translated. -->
-    <string-array name="hideOpValues">
-        <item>T</item>
-        <item>F</item>
-        <item>A</item>
+    <!-- The possible values of the "themes" option. This option controls which theme is used for displaying. -->
+    <string-array name="puzzle_setting_theme_values_text">
+        <item>@string/theme_light</item>
+        <item>@string/theme_dark</item>
     </string-array>
 
     <!-- Identifiers associated with element themeTexts. This element may not be translated. -->
-    <string-array name="themeValues">
-        <item>carved</item>
-        <item>newspaper</item>
-        <item>inverted</item>
+    <string-array name="puzzle_setting_theme_values_code">
+        <item>theme_light</item>
+        <item>theme_dark</item>
     </string-array>
-    
-    <!-- USAGE LOG AND OPT-IN FOR SURVEY - - - - - - - - - - - - - - - - - - - - - - -->
-    
-    <!-- Default subject and message for the mail containing the usage log -->
-    <string name="usage_log_subject">I\'d love to help MathDoku - here is my log file</string>
-    <string name="usage_log_body">In case you want to share additional thoughts with us, please feel free to change this text. We can only deal with messages send in English.</string>
-    
+
+    <!-- The possible values of the "maxGamesElapsedTimeChart" preference. -->
+    <string-array name="statistics_setting_elapsed_time_chart_maximum_games_entries">
+        <item>50</item>
+        <item>100</item>
+        <item>150</item>
+        <item>250</item>
+    </string-array>
+
 </resources>

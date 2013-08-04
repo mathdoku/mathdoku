@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dp" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp" >
+
+        <TextView
+            android:id="@+id/changelog_lead_in_version_2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/changelog_lead_in_version_2"
+            android:textSize="@dimen/dialog_text_size_body"
+            android:visibility="gone" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/changelog_version_title"
+            android:textSize="@dimen/dialog_text_size_heading1"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/changelog_version_body"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/dialog_text_size_body" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="15dp"
+            android:text="@string/changelog_changes_title"
+            android:textSize="@dimen/dialog_text_size_heading1"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/changelog_changes_body"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/changelog_changes_body"
+            android:textSize="@dimen/dialog_text_size_heading2" />
+
+        <TextView
+            android:id="@+id/changelog_changes_link"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:autoLink="web"
+            android:textSize="@dimen/dialog_text_size_body" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="15dp"
+            android:text="@string/changelog_issues_title"
+            android:textSize="@dimen/dialog_text_size_heading1"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/changelog_issues_body"
+            android:textSize="@dimen/dialog_text_size_body" />
+
+        <TextView
+            android:id="@+id/changelog_issues_link"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:autoLink="web"
+            android:paddingBottom="10dp"
+            android:textSize="@dimen/dialog_text_size_body" />
+    </LinearLayout>
+
+</ScrollView>

@@ -1,0 +1,64 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+
+    <RelativeLayout
+        android:id="@+id/puzzleGrid"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp" >
+
+        <net.cactii.mathdoku.ui.GridView
+            android:id="@+id/gridView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true" />
+
+        <!-- The rating bar will be programmatically rotated to a vertical position. -->
+        <!-- Number of starts will programmatically be set to correct number of stars. -->
+
+        <net.cactii.mathdoku.ui.VerticalRatingBar
+            android:id="@+id/puzzleParameterDifficultyRatingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/gridView"
+            android:layout_toRightOf="@+id/gridView"
+            android:max="5"
+            android:numStars="1"
+            android:rating="1"
+            android:stepSize="1" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_margin="5dp" >
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="@string/shared_puzzle_introduction"
+            android:textSize="@dimen/text_size_default" />
+
+        <Button
+            android:id="@+id/shared_puzzle_play_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:lines="1"
+            android:onClick="onClickPlayGame"
+            android:text="@string/shared_puzzle_play_button"
+            android:textSize="@dimen/controls_text_size_default"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+</LinearLayout>

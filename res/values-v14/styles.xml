@@ -1,0 +1,20 @@
+<resources>
+
+    <!-- Base application theme for API 14+. This theme completely replaces -->
+    <!-- AppBaseTheme from BOTH res/values/styles.xml and -->
+    <!-- res/values-v11/styles.xml on API 14+ devices. -->
+
+    <style name="AppBaseTheme" parent="android:Theme.Holo">
+
+        <!-- API 14 theme customizations can go here. -->
+
+
+        <!-- Reference for creating an changing action bar style -->
+        <!-- * Drawables created with: http://jgilfelt.github.io/android-actionbarstylegenerator/#name=action_bar&compat=holo&theme=dark&actionbarstyle=transparent&texture=0&hairline=0&backColor=000%2C100&secondaryColor=33b5e5%2C100&tabColor=fff%2C100&tertiaryColor=3F3F3F%2C100&accentColor=09c%2C100&cabBackColor=002E3E%2C100&cabHighlightColor=33B5E5%2C100 -->
+        <!-- * Applying styles: http://blog.stylingandroid.com/archives/1249 -->
+        <!--  -->
+        <item name="android:actionBarStyle">@style/ActionBar.SemiTransparent.Action_bar</item>
+        <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Action_bar</item>
+    </style>
+
+</resources>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     File created by the Android Action Bar Style Generator
+
+     Copyright (C) 2011 The Android Open Source Project
+     Copyright (C) 2012 readyState Software Ltd
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+  
+          http://www.apache.org/licenses/LICENSE-2.0
+  
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<resources>
+
+    <style name="ActionBar.SemiTransparent.Action_bar" parent="@android:style/Widget.Holo.ActionBar">
+
+        <!-- The semi transparent action bar has a top action bar which is transparent and a tab -->
+        <!-- view bar which is solid. The transparent top action bar is needed for the puzzle -->
+        <!-- fragment activity as it draws the thin blue line between action bar and content. The -->
+        <!-- solid tab bar is needed for the statistics fragment activity. -->
+        <item name="android:background">@drawable/ab_transparent_action_bar</item>
+        <item name="android:backgroundStacked">@drawable/ab_stacked_solid_action_bar</item>
+    </style>
+
+    <style name="ActionBarTabStyle.Action_bar" parent="@android:style/Widget.Holo.ActionBar.TabView">
+        <item name="android:background">@drawable/tab_indicator_ab_action_bar</item>
+    </style>
+
+</resources>

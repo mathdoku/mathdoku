@@ -1,0 +1,90 @@
+<!-- Background of the top layout has been set to black to solve an issue with -->
+<!-- subtle color differences between the relative and the linear layouts. -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/topLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000" >
+
+    <RelativeLayout
+        android:id="@+id/tickerTapeLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/ticker_tape_height"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:paddingTop="1dp"
+        android:textIsSelectable="false" />
+
+    <RelativeLayout
+        android:id="@+id/puzzleGrid"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/tickerTapeLayout"
+        android:paddingTop="1dp"
+        android:visibility="gone" >
+
+        <TextView
+            android:id="@+id/timerText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignRight="@+id/gridView"
+            android:lines="1"
+            android:paddingRight="10dp"
+            android:textSize="@dimen/text_size_default"
+            android:textStyle="bold" />
+
+        <net.cactii.mathdoku.ui.GridView
+            android:id="@+id/gridView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/timerText"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:id="@+id/solvedText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/main_ui_solved_messsage"
+            android:textSize="@dimen/text_size_giant"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/clearUndo"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/gridView"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp" >
+
+            <Button
+                android:id="@+id/clearButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:lines="1"
+                android:text="@string/main_ui_clear"
+                android:textSize="@dimen/controls_text_size_default"
+                android:textStyle="bold"
+                tools:ignore="ButtonStyle" />
+
+            <Button
+                android:id="@+id/undoButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:lines="1"
+                android:text="@string/main_ui_undo"
+                android:textSize="@dimen/controls_text_size_default"
+                android:textStyle="bold"
+                tools:ignore="ButtonStyle" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

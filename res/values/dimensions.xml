@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Default dimensions for layout. For small screen and tables, refer to specific files. -->
+    <!-- Default dimensions for layout. For tablets, see values-sw600dp. -->
     <string name="dimension">default</string>
 
     <!-- This file should NOT be translated or altered per language. -->
@@ -14,34 +14,37 @@
     <!-- The text size used for giant text (e.g. solved message). -->
     <dimen name="text_size_giant">48sp</dimen>
 
-    <!-- The text size used for default text. -->
-    <dimen name="text_size_default">17sp</dimen>
+    <!-- The text size used for heading text. -->
+    <dimen name="text_size_heading">20sp</dimen>
 
-    <!-- The text size used for tiny text (e.g. game seed). -->
-    <dimen name="text_size_tiny">9sp</dimen>
+    <!-- The text size used for default text. -->
+    <dimen name="text_size_default">16sp</dimen>
 
     <!-- CONTROLS AND SUB ELEMENTS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-    <!-- The text size used for text on non-digit buttons. -->
-    <dimen name="controls_text_size_default">14sp</dimen>
-    
-    <!-- The text size used for the digit buttons only. -->
-    <dimen name="controls_text_size_digits">18sp</dimen>
+
+    <!-- The text size used for text on buttons. -->
+    <dimen name="controls_text_size_default">20sp</dimen>
 
     <!-- DIALOGS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
     <!-- The text size used for title text at level 1. -->
-    <dimen name="dialog_text_size_heading1">18sp</dimen>
+    <dimen name="dialog_text_size_heading1">20sp</dimen>
 
     <!-- The text size used for title text at level 2. -->
-    <dimen name="dialog_text_size_heading2">16sp</dimen>
+    <dimen name="dialog_text_size_heading2">18sp</dimen>
 
     <!-- The text size used for body text. -->
-    <dimen name="dialog_text_size_body">15sp</dimen>
-    
-    <!-- GENERATING OPTIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    
-    <!-- The maxmimum value for the result of cage in order to let the cage value and operator to fit within a single cell. -->
-    <integer name="maximum_cage_value">99999</integer>
+    <dimen name="dialog_text_size_body">16sp</dimen>
+
+    <!-- TICKER TAPE  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The height of the ticker tape. -->
+    <dimen name="ticker_tape_height">24dp</dimen>
+
+    <!-- The text size to be used for text inside the ticker tape. Use dp as the height of the ticker tape is fixed. -->
+    <dimen name="ticker_tape_text_size">16dp</dimen>
+
 </resources>

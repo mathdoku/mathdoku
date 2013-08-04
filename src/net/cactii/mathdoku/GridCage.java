@@ -3,12 +3,13 @@ package net.cactii.mathdoku;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
+
 public class GridCage {
-	// Identifiers of different versions of cage information which is stored in
-	// saved game.
-	private static final String SAVE_GAME_CAGE_VERSION_01 = "CAGE";
-	private static final String SAVE_GAME_CAGE_VERSION_02 = "CAGE.v2";
-	private static final String SAVE_GAME_CAGE_VERSION_03 = "CAGE.v3";
+	// Each line in the GridFile which contains information about the cell
+	// starts with an identifier. This identifier consists of a generic part and
+	// the package revision number.
+	private static final String SAVE_GAME_CAGE_LINE = "CAGE";
 
 	public static final int ACTION_NONE = 0;
 	public static final int ACTION_ADD = 1;
@@ -21,7 +22,6 @@ public class GridCage {
 
 	// Number the action results in
 	public int mResult;
-	private String mOperator;
 	// Flag to indicate whether operator (+,-,x,/) is hidden.
 	private boolean mHideOperator;
 
@@ -78,6 +78,7 @@ public class GridCage {
 		mCells = new ArrayList<GridCell>();
 	}
 
+	@Override
 	public String toString() {
 		String retStr = "";
 		retStr += "Cage id: " + this.mId + ", Size: "
@@ -132,27 +133,28 @@ public class GridCage {
 		// Store results in cage object
 		mResult = resultValue;
 		mAction = action;
+		String operator = "";
 		switch (mAction) {
 		case ACTION_NONE:
-			mOperator = "";
+			operator = "";
 			break;
 		case ACTION_ADD:
-			mOperator = "+";
+			operator = "+";
 			break;
 		case ACTION_SUBTRACT:
-			mOperator = "-";
+			operator = "-";
 			break;
 		case ACTION_MULTIPLY:
-			mOperator = "x";
+			operator = "x";
 			break;
 		case ACTION_DIVIDE:
-			mOperator = "/";
+			operator = "/";
 			break;
 		}
 		mHideOperator = hideOperator;
 
 		// Store cage outcome in top left cell of cage
-		mCells.get(0).setCageText(mResult + (mHideOperator ? "" : mOperator));
+		mCells.get(0).setCageText(mResult + (mHideOperator ? "" : operator));
 	}
 
 	/**
@@ -219,14 +221,14 @@ public class GridCage {
 
 	/**
 	 * Checks whether the cage arithmetic is correct using the values the user
-	 * has filled in.
+	 * has filled in. For single cell cages the math will never be incorrect.
 	 * 
 	 * @param forceBorderReset
 	 *            True if borders should always be reset. False in case borders
 	 *            only need to be reset in cage the status of the cage math has
 	 *            changed.
 	 */
-	public void checkCageMathsCorrect(boolean forceBorderReset) {
+	public boolean checkCageMathsCorrect(boolean forceBorderReset) {
 		boolean oldUserMathCorrect = mUserMathCorrect;
 
 		// If not all cells in the cage are filled, the maths are not wrong.
@@ -239,35 +241,28 @@ public class GridCage {
 			}
 		}
 
-		if (allCellsFilledIn) {
-			if (this.mCells.size() == 1) {
-				// A single cell cage is correct in case its user value is
-				// correct.
-				mUserMathCorrect = mCells.get(0).isUserValueCorrect();
-			} else {
-				if (this.mHideOperator) {
-					if (isAddMathsCorrect() || isMultiplyMathsCorrect()
-							|| isDivideMathsCorrect()
-							|| isSubtractMathsCorrect()) {
-						mUserMathCorrect = true;
-					} else {
-						mUserMathCorrect = false;
-					}
+		if (allCellsFilledIn && mCells.size() > 1) {
+			if (this.mHideOperator) {
+				if (isAddMathsCorrect() || isMultiplyMathsCorrect()
+						|| isDivideMathsCorrect() || isSubtractMathsCorrect()) {
+					mUserMathCorrect = true;
 				} else {
-					switch (this.mAction) {
-					case ACTION_ADD:
-						mUserMathCorrect = isAddMathsCorrect();
-						break;
-					case ACTION_MULTIPLY:
-						mUserMathCorrect = isMultiplyMathsCorrect();
-						break;
-					case ACTION_DIVIDE:
-						mUserMathCorrect = isDivideMathsCorrect();
-						break;
-					case ACTION_SUBTRACT:
-						mUserMathCorrect = isSubtractMathsCorrect();
-						break;
-					}
+					mUserMathCorrect = false;
+				}
+			} else {
+				switch (this.mAction) {
+				case ACTION_ADD:
+					mUserMathCorrect = isAddMathsCorrect();
+					break;
+				case ACTION_MULTIPLY:
+					mUserMathCorrect = isMultiplyMathsCorrect();
+					break;
+				case ACTION_DIVIDE:
+					mUserMathCorrect = isDivideMathsCorrect();
+					break;
+				case ACTION_SUBTRACT:
+					mUserMathCorrect = isSubtractMathsCorrect();
+					break;
 				}
 			}
 		}
@@ -276,6 +271,8 @@ public class GridCage {
 			// Reset borders in all cells of this cage
 			setBorders();
 		}
+
+		return mUserMathCorrect;
 	}
 
 	/**
@@ -334,7 +331,7 @@ public class GridCage {
 
 	public ArrayList<int[]> getPossibleNums() {
 		if (mPossibles == null) {
-			if (mHideOperator)
+			if (mHideOperator || (mAction == ACTION_NONE && mCells.size() > 1))
 				mPossibles = setPossibleNumsNoOperator();
 			else
 				mPossibles = setPossibleNums();
@@ -342,20 +339,27 @@ public class GridCage {
 		return mPossibles;
 	}
 
+	/**
+	 * Get all permutations of cell values for this cage.
+	 * 
+	 * @return The list of all permutations of cell values which can be used for
+	 *         this cage.
+	 */
 	private ArrayList<int[]> setPossibleNumsNoOperator() {
 		ArrayList<int[]> AllResults = new ArrayList<int[]>();
 
-		if (this.mAction == ACTION_NONE) {
-			assert (mCells.size() == 1);
+		// Single cell cages can only contain the value of the single cell.
+		if (mCells.size() == 1) {
 			int number[] = { mResult };
 			AllResults.add(number);
 			return AllResults;
 		}
 
+		// Cages of size two can contain any operation
 		int gridSize = mGrid.getGridSize();
 		if (mCells.size() == 2) {
-			for (int i1 = 1; i1 <= gridSize; i1++)
-				for (int i2 = i1 + 1; i2 <= gridSize; i2++)
+			for (int i1 = 1; i1 <= gridSize; i1++) {
+				for (int i2 = i1 + 1; i2 <= gridSize; i2++) {
 					if (i2 - i1 == mResult || i1 - i2 == mResult
 							|| mResult * i1 == i2 || mResult * i2 == i1
 							|| i1 + i2 == mResult || i1 * i2 == mResult) {
@@ -364,13 +368,14 @@ public class GridCage {
 						numbers = new int[] { i2, i1 };
 						AllResults.add(numbers);
 					}
+				}
+			}
 			return AllResults;
 		}
 
-		// ACTION_ADD:
+		// Cages of size two and above can only contain an add or a multiply
+		// operation
 		AllResults = getAllAddCombos(gridSize, mResult, mCells.size());
-
-		// ACTION_MULTIPLY:
 		ArrayList<int[]> multResults = getAllMultiplyCombos(gridSize, mResult,
 				mCells.size());
 
@@ -383,8 +388,9 @@ public class GridCage {
 					break;
 				}
 			}
-			if (!foundset)
+			if (!foundset) {
 				AllResults.add(possibleset);
+			}
 		}
 
 		return AllResults;
@@ -468,7 +474,8 @@ public class GridCage {
 				if (n == target_sum) {
 					getAllCombos_Numbers[0] = n;
 					if (satisfiesConstraints(getAllCombos_Numbers))
-						getAllCombos_ResultSet.add(getAllCombos_Numbers.clone());
+						getAllCombos_ResultSet
+								.add(getAllCombos_Numbers.clone());
 				}
 			} else {
 				getAllCombos_Numbers[n_cells - 1] = n;
@@ -506,7 +513,8 @@ public class GridCage {
 				if (n == target_sum) {
 					getAllCombos_Numbers[0] = n;
 					if (satisfiesConstraints(getAllCombos_Numbers))
-						getAllCombos_ResultSet.add(getAllCombos_Numbers.clone());
+						getAllCombos_ResultSet
+								.add(getAllCombos_Numbers.clone());
 				}
 			} else {
 				getAllCombos_Numbers[n_cells - 1] = n;
@@ -553,17 +561,18 @@ public class GridCage {
 	 * @return A string representation of the grid cage.
 	 */
 	public String toStorageString() {
-		String storageString = SAVE_GAME_CAGE_VERSION_03
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mId
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mAction
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mResult
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mOperator
-				+ GameFile.FIELD_DELIMITER_LEVEL1;
+		String storageString = SAVE_GAME_CAGE_LINE
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + mId
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ mAction
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ mResult
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1;
 		for (GridCell cell : mCells) {
 			storageString += cell.getCellNumber()
-					+ GameFile.FIELD_DELIMITER_LEVEL2;
+					+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2;
 		}
-		storageString += GameFile.FIELD_DELIMITER_LEVEL1
+		storageString += SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ Boolean.toString(isOperatorHidden());
 
 		return storageString;
@@ -578,18 +587,20 @@ public class GridCage {
 	 * @return True in case the given line contains cage information and is
 	 *         processed correctly. False otherwise.
 	 */
-	public boolean fromStorageString(String line) {
-		String[] cageParts = line.split(GameFile.FIELD_DELIMITER_LEVEL1);
+	public boolean fromStorageString(String line, int savedWithRevisionNumber) {
+		String[] cageParts = line
+				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1);
 
-		// Check version of stored cage information
-		int cageInformationVersion = 0;
-		if (cageParts[0].equals(SAVE_GAME_CAGE_VERSION_01)) {
-			cageInformationVersion = 1;
-		} else if (cageParts[0].equals(SAVE_GAME_CAGE_VERSION_02)) {
-			cageInformationVersion = 2;
-		} else if (cageParts[0].equals(SAVE_GAME_CAGE_VERSION_03)) {
-			cageInformationVersion = 3;
-		} else {
+		// Only process the storage string if it starts with the correct
+		// identifier.
+		if (cageParts[0].equals(SAVE_GAME_CAGE_LINE) == false) {
+			return false;
+		}
+
+		// When upgrading to MathDoku v2 the history is not converted. As of
+		// revision 369 all logic for handling games stored with older versions
+		// is removed.
+		if (savedWithRevisionNumber <= 368) {
 			return false;
 		}
 
@@ -598,27 +609,13 @@ public class GridCage {
 		mId = Integer.parseInt(cageParts[index++]);
 		mAction = Integer.parseInt(cageParts[index++]);
 		mResult = Integer.parseInt(cageParts[index++]);
-		if (cageInformationVersion == 1) {
-			// Version 1 contained the cage type at this position but this field
-			// is not needed anymore to restore a cage. So skip this field.
-			index++;
-		}
-		if (cageInformationVersion >= 3) {
-			mOperator = cageParts[index++];
-		}
 		for (String cellId : cageParts[index++]
-				.split(GameFile.FIELD_DELIMITER_LEVEL2)) {
+				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
 			GridCell c = mGrid.mCells.get(Integer.parseInt(cellId));
 			c.setCageId(mId);
 			mCells.add(c);
 		}
-		if (cageInformationVersion == 1 && cageParts.length == 6) {
-			// Version 1 with 6 cage parts does not contain the mOperatorHidden
-			// part while the version with 7 parts does contain this field.
-			mHideOperator = false;
-		} else {
-			mHideOperator = Boolean.parseBoolean(cageParts[index++]);
-		}
+		mHideOperator = Boolean.parseBoolean(cageParts[index++]);
 
 		return true;
 	}

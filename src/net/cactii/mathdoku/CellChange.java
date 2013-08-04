@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.cactii.mathdoku.DevelopmentHelper.Mode;
-
+import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
+import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
+import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 import android.util.Log;
 
 /**
@@ -21,7 +22,7 @@ public class CellChange {
 	// Base identifier for different versions of cell information which is
 	// stored in
 	// saved game. The base should be extended with a integer value
-	private final String SAVE_GAME_CELL_CHANGE_VERSION_BASE = "CELL_CHANGE.v";
+	private final String SAVE_GAME_CELL_CHANGE_LINE = "CELL_CHANGE";
 
 	// The cell for which the undo information is stored.
 	private GridCell mGridCell;
@@ -99,11 +100,12 @@ public class CellChange {
 	 * 
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 		String str = "<cell:" + this.mGridCell.getCellNumber() + " col:"
-				+ this.mGridCell.getColumn() + " row:" + this.mGridCell.getRow()
-				+ " previous userval:" + this.mPreviousUserValue
-				+ " previous possible values:"
+				+ this.mGridCell.getColumn() + " row:"
+				+ this.mGridCell.getRow() + " previous userval:"
+				+ this.mPreviousUserValue + " previous possible values:"
 				+ mPreviousPossibleValues.toString() + ">";
 		return str;
 	}
@@ -160,8 +162,8 @@ public class CellChange {
 	 * @return A string representation of the grid cell.
 	 */
 	public String toStorageString() {
-		return SAVE_GAME_CELL_CHANGE_VERSION_BASE + "1"
-				+ GameFile.FIELD_DELIMITER_LEVEL1
+		return SAVE_GAME_CELL_CHANGE_LINE
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ this.toStorageStringRecursive();
 	}
 
@@ -173,17 +175,18 @@ public class CellChange {
 	 */
 	private String toStorageStringRecursive() {
 		String storageString = "[" + mGridCell.getCellNumber()
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mPreviousUserValue
-				+ GameFile.FIELD_DELIMITER_LEVEL1;
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ mPreviousUserValue
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1;
 		for (int previousPossibleValue : mPreviousPossibleValues) {
 			storageString += Integer.toString(previousPossibleValue)
-					+ GameFile.FIELD_DELIMITER_LEVEL2;
+					+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2;
 		}
-		storageString += GameFile.FIELD_DELIMITER_LEVEL1;
+		storageString += SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1;
 		if (mRelatedCellChanges != null) {
 			for (CellChange cellChange : mRelatedCellChanges) {
 				storageString += cellChange.toStorageStringRecursive()
-						+ GameFile.FIELD_DELIMITER_LEVEL2;
+						+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2;
 			}
 		}
 		storageString += "]";
@@ -202,12 +205,12 @@ public class CellChange {
 	 * @return True in case the given line contains cell information and is
 	 *         processed correctly. False otherwise.
 	 */
-	public boolean fromStorageString(String line, ArrayList<GridCell> cells) {
-		final String CELL_CHANGE_LINE_REGEXP = "^"
-				+ SAVE_GAME_CELL_CHANGE_VERSION_BASE + "(\\d+)"
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + "(.*)$";
-		final int GROUP_VERSION_NUMBER = 1;
-		final int GROUP_CELL_CHANGE = 2;
+	public boolean fromStorageString(String line, ArrayList<GridCell> cells,
+			int savedWithRevisionNumber) {
+		final String CELL_CHANGE_LINE_REGEXP = "^" + SAVE_GAME_CELL_CHANGE_LINE
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ "(.*)$";
+		final int GROUP_CELL_CHANGE = 1;
 
 		Pattern pattern = Pattern.compile(CELL_CHANGE_LINE_REGEXP);
 		Matcher matcher = pattern.matcher(line);
@@ -223,20 +226,18 @@ public class CellChange {
 			Log.i(TAG, "Line: " + line);
 			Log.i(TAG, "Start index: " + matcher.start() + " End index: "
 					+ matcher.end() + " #groups: " + matcher.groupCount());
-			Log.i(TAG,
-					"Cell change version: "
-							+ matcher.group(GROUP_VERSION_NUMBER));
 			Log.i(TAG, "Cell change: " + matcher.group(GROUP_CELL_CHANGE));
 		}
 
-		int cellChangeInformationVersion = Integer.valueOf(matcher
-				.group(GROUP_VERSION_NUMBER));
-		if (cellChangeInformationVersion != 1) {
+		// When upgrading to MathDoku v2 the history is not converted. As of
+		// revision 369 all logic for handling games stored with older versions
+		// is removed.
+		if (savedWithRevisionNumber <= 368) {
 			return false;
 		}
 
 		// Recursively process the content of the cell change
-		return fromStorageStringRecursive(cellChangeInformationVersion,
+		return fromStorageStringRecursive(savedWithRevisionNumber,
 				matcher.group(GROUP_CELL_CHANGE), 1, cells);
 	}
 
@@ -244,7 +245,7 @@ public class CellChange {
 	 * Read cell information from or a storage string which was created with @
 	 * GridCell#toStorageString()} before.
 	 * 
-	 * @param cellChangeInformationVersion
+	 * @param revisionNumber
 	 *            The version of the cell change information.
 	 * @param line
 	 *            The line containing the cell information.
@@ -255,17 +256,19 @@ public class CellChange {
 	 * @return True in case the given line contains cell information and is
 	 *         processed correctly. False otherwise.
 	 */
-	private boolean fromStorageStringRecursive(
-			int cellChangeInformationVersion, String line, int level,
-			ArrayList<GridCell> cells) {
+	private boolean fromStorageStringRecursive(int revisionNumber, String line,
+			int level, ArrayList<GridCell> cells) {
 		// Regexp and groups inside. Groups 4 - 6 are helper groups which are
 		// needed to ensure the validity of the cell information but are not
 		// used programmaticly.
 		final String CELL_CHANGE_REGEXP = "^\\[(\\d+)"
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + "(\\d*)"
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + "((\\d*)|((\\d*"
-				+ GameFile.FIELD_DELIMITER_LEVEL2 + ")+))"
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + "(.*)\\]$";
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ "(\\d*)"
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ "((\\d*)|((\\d*"
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2 + ")+))"
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ "(.*)\\]$";
 		final int GROUP_CELL_NUMBER = 1;
 		final int GROUP_PREVIOUS_USER_VALUE = 2;
 		final int GROUP_PREVIOUS_POSSIBLE_VALUES = 3;
@@ -309,14 +312,14 @@ public class CellChange {
 							+ matcher.group(GROUP_RELATED_CELL_CHANGED));
 		}
 
-		this.mGridCell = cells
-				.get(Integer.valueOf(matcher.group(GROUP_CELL_NUMBER)));
+		this.mGridCell = cells.get(Integer.valueOf(matcher
+				.group(GROUP_CELL_NUMBER)));
 		mPreviousUserValue = Integer.valueOf(matcher
 				.group(GROUP_PREVIOUS_USER_VALUE));
 		if (!matcher.group(GROUP_PREVIOUS_POSSIBLE_VALUES).equals("")) {
 			for (String possible : matcher
-					.group(GROUP_PREVIOUS_POSSIBLE_VALUES).split(
-							GameFile.FIELD_DELIMITER_LEVEL2)) {
+					.group(GROUP_PREVIOUS_POSSIBLE_VALUES)
+					.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
 				mPreviousPossibleValues.add(Integer.valueOf(possible));
 			}
 		}
@@ -347,8 +350,7 @@ public class CellChange {
 								startPosGroup, index + 1);
 						CellChange relatedCellChange = new CellChange();
 						if (!relatedCellChange.fromStorageStringRecursive(
-								cellChangeInformationVersion, group, level + 1,
-								cells)) {
+								revisionNumber, group, level + 1, cells)) {
 							return false;
 						}
 						addRelatedMove(relatedCellChange);
@@ -356,8 +358,9 @@ public class CellChange {
 					break;
 				default:
 					if (levelNestedGroup == 0
-							&& !Character.toString(c).equals(
-									GameFile.FIELD_DELIMITER_LEVEL2)) {
+							&& !Character
+									.toString(c)
+									.equals(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
 						Log.i(TAG, indent + "Unexpected character '" + c
 								+ "'at position " + index);
 						return false;

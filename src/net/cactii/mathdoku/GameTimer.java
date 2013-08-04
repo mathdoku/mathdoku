@@ -1,5 +1,6 @@
 package net.cactii.mathdoku;
 
+import net.cactii.mathdoku.ui.PuzzleFragment;
 import android.os.AsyncTask;
 
 /*
@@ -7,15 +8,28 @@ import android.os.AsyncTask;
  */
 public class GameTimer extends AsyncTask<Void, Long, Long> {
 
-	public MainActivity mActivity;
+	// Reference to activity that started the timer.
+	public PuzzleFragment mPuzzleFragment;
+
+	// Starting point of timer. Note this is not the real time at which the game
+	// started but the actual time at which the timer started minus the time
+	// elapsed until then.
 	public Long mStartTime;
+
+	// Time elapsed while (dis)playing the current grid.
 	public Long mElapsedTime = (long) 0;
 
-	public GameTimer(MainActivity mainActivity) {
-		mActivity = mainActivity;
+	// Time added to the real playing time because of using cheats. Effectively
+	// the starting time of the game is decreased.
+	public Long mCheatPenaltyTime = (long) 0;
+
+	public GameTimer(PuzzleFragment puzzleFragmentActivity) {
+		mPuzzleFragment = puzzleFragmentActivity;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see android.os.AsyncTask#doInBackground(Params[])
 	 */
 	@Override
@@ -43,12 +57,43 @@ public class GameTimer extends AsyncTask<Void, Long, Long> {
 		return mElapsedTime;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see android.os.AsyncTask#onProgressUpdate(Progress[])
 	 */
+	@Override
 	protected void onProgressUpdate(Long... time) {
-		if (!this.isCancelled() && time.length > 0 && mActivity != null) {
-			mActivity.setElapsedTime(time[0]);
+		if (!this.isCancelled() && time.length > 0 && mPuzzleFragment != null) {
+			mPuzzleFragment.setElapsedTime(time[0]);
 		}
+	}
+
+	/**
+	 * Add a penalty to the elapsed time because of using the given cheat.
+	 * 
+	 * @param cheatPenaltyType
+	 *            The cheat for which the elapsed time has to be increased.
+	 */
+	public void addCheatPenaltyTime(Cheat cheat) {
+		addCheatPenaltyTime(cheat, 1);
+	}
+
+	/**
+	 * Add a penalty to the elapsed time because of using the given cheat.
+	 * 
+	 * @param cheatPenaltyType
+	 *            The cheat for which the elapsed time has to be increased.
+	 * @param occurences
+	 *            The number of occurrences this penalty has to be added.
+	 */
+	public void addCheatPenaltyTime(Cheat cheat, int occurrences) {
+		// Determine penalty time for just one occurrence
+		long cheatPenaltyTime = cheat.getPenaltyTimeMilis() * occurrences;
+
+		// Change start time, elapsed and total penalty time. 
+		mStartTime -= cheatPenaltyTime;
+		mElapsedTime += cheatPenaltyTime;
+		mCheatPenaltyTime += cheatPenaltyTime;
 	}
 }

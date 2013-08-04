@@ -14,11 +14,19 @@
     <!-- GENERAL - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
-    <!-- The message displayed on the "start" button. -->
-    <string name="start_button_message">Neues Spiel</string>
-
     <!-- The label of the buttons that close dialogs. -->
     <string name="dialog_general_button_close">Schließen</string>
+    <!-- TODO -->
+    <string name="dialog_general_button_cancel">Cancel</string>
+
+    <!-- Name of settings menu. -->
+    <!-- TODO -->
+    <string name="settings">Optionen</string>
+
+    <!-- Labels for opening and closing the navigation drawer. -->
+    <!-- TODO -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <!-- DIALOG CONVERTING SAVED GAMES - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -26,42 +34,52 @@
     <!-- The title and message for the dialog displayed on the screen while upgrading to new version and saved games have to be converted. -->
     <string name="dialog_converting_saved_games_title">Upgrade auf neue Version wird durchgeführt.</string>
     <string name="dialog_converting_saved_games_message">Es werden für die neue Version von MathDoku die gespeicherten Spielstände konvertiert (einmalig).</string>
+    <!-- TODO -->
+    <string name="dialog_converting_cleanup_v1_message">Clean up data of version 1 of MathDoku (one time only).</string>
 
-    <!-- HELP DIALOG - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- PUZZLE HELP DIALOG - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
     <!-- The lead in text at top of the help dialog. -->
-    <string name="dialog_help_leadin">Danke, dass Sie MathDoku für Android installiert haben.</string>
+    <string name="puzzle_help_dialog_leadin">Danke, dass Sie MathDoku für Android installiert haben.</string>
 
     <!-- The title for the help section. -->
-    <string name="dialog_help_help_title">Hilfe</string>
+    <string name="puzzle_help_dialog_help_section_title">Hilfe</string>
 
     <!-- The title and body describing the goal of the game. -->
-    <string name="dialog_help_goal_title">Ziel des Spieles</string>
-    <string name="dialog_help_goal_body">Füllen Sie jede Zeile und Spalte des Rasters mit Nummern von 1 bis zur Größe des Rasters aus.\n\nDie Zahlen dürfen maximal einmal für jede Zeile und Spalte verwendet werden.\n\nDicke Linien zeigen \"Boxen\" an - jede Box hat ein mathematisches Rätsel, welches mit den Zahlen in der Box gelöst werden muss. Zum Beispiel: \"5+\" bedeutet, dass alle Zahlen in der Box addiert 5 ergeben. Die Reihenfolge in der die Zahlen in der Box angeordnet werden ist irrelevant.\n\nZahlen können pro Box mehrmals verwendet werden, solange sie pro Zeile und Spalte jeweils nur einmal vorkommen.</string>
+    <string name="puzzle_help_dialog_goal_section_title">Ziel des Spieles</string>
+    <string name="puzzle_help_dialog_goal_section_body">Füllen Sie jede Zeile und Spalte des Rasters mit Nummern von 1 bis zur Größe des Rasters aus.\n\nDie Zahlen dürfen maximal einmal für jede Zeile und Spalte verwendet werden.\n\nDicke Linien zeigen \"Boxen\" an - jede Box hat ein mathematisches Rätsel, welches mit den Zahlen in der Box gelöst werden muss. Zum Beispiel: \"5+\" bedeutet, dass alle Zahlen in der Box addiert 5 ergeben. Die Reihenfolge in der die Zahlen in der Box angeordnet werden ist irrelevant.\n\nZahlen können pro Box mehrmals verwendet werden, solange sie pro Zeile und Spalte jeweils nur einmal vorkommen.</string>
 
     <!-- The title and body describing how to play the game. -->
-    <string name="dialog_help_how_to_play_title">Spielweise</string>
-    <string name="dialog_help_how_to_play_body">Berühren Sie die Quadrate im Raster um eine Zelle auszuwählen. Das \'Vielleicht\' Auswahlfeld erlaubt es mehrere Möglichkeiten auszuwählen.\n\nFür mehr Optionen drücken Sie lange auf eine Zelle.\n\nSie können auch mit dem Trackball spielen.\n\nDer aktuelle Spielstand wird gespeichert, wenn sie das Spiel verlassen oder verwenden Sie das Speichern/Laden-Menü, um unlimitiert Spiele zu speichern.</string>
+    <string name="puzzle_help_dialog_how_to_play__section_title">Spielweise</string>
+    <!-- TODO: Check with updated english description -->
+    <string name="puzzle_help_dialog_how_to_play_section_body">Berühren Sie die Quadrate im Raster um eine Zelle auszuwählen. Das \'Vielleicht\' Auswahlfeld erlaubt es mehrere Möglichkeiten auszuwählen.\n\nFür mehr Optionen drücken Sie lange auf eine Zelle.\n\nDer aktuelle Spielstand wird gespeichert, wenn sie das Spiel verlassen oder verwenden Sie das Speichern/Laden-Menü, um unlimitiert Spiele zu speichern.</string>
 
     <!-- The version title in the help screen. -->
-    <string name="dialog_help_version_title">Version</string>
+    <string name="puzzle_help_dialog_version_section_title">Version</string>
 
     <!-- The license title in the help screen. -->
-    <string name="dialog_help_license_title">Lizenz</string>
+    <string name="puzzle_help_dialog_license_section_title">Lizenz</string>
 
     <!-- The project home title in the help screen. -->
-    <string name="dialog_help_project_home_title">Projekt</string>
+    <string name="puzzle_help_dialog_project_home_section_title">Projekt</string>
 
     <!-- The contributor title in the help screen. -->
-    <string name="dialog_help_contributors_title">Mitwirkende</string>
-    <string name="dialog_help_contributors_body">MathDoku wurde von Ben Buxton entwickelt. Weiterentwicklungen wurden von Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul, Christoph Steindl und Alexander Tesfamichael durchgeführt. Dank an alle, die Fehler des Programms oder Anstöße für Weiterentwicklungen gemeldet haben.</string>
+    <string name="puzzle_help_dialog_contributors_section_title">Mitwirkende</string>
+    <string name="puzzle_help_dialog_contributors_section_body">MathDoku wurde von Ben Buxton entwickelt. Weiterentwicklungen wurden von Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul, Christoph Steindl und Alexander Tesfamichael durchgeführt. Dank an alle, die Fehler des Programms oder Anstöße für Weiterentwicklungen gemeldet haben.</string>
+
+    <!-- The menu item that allows the player to navigate to the changelog screen -->
+    <string name="puzzle_help_dialog_neutral_button">Änderungen</string>
 
     <!-- CHANGES DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
     <!-- The title of the changelog screen. -->
     <string name="changelog_title">Änderungsprotokoll</string>
+
+    <!-- Lead in to version 2 of MathDoku in the changes dialog. -->
+    <!-- TODO -->
+    <string name="changelog_lead_in_version_2">Welcome to version 2 of MathDoku. New cool features like statistics, an archive and game sharing have been added. We have chosen not to convert games stored with version 1 of MathDoku. Please play a few simple games first to get accustomed to the new way of playing. We hope you will enjoy this new version.</string>
 
     <!-- The heading and body of the section referring to the list of changes (revision). -->
     <string name="changelog_version_title">Version</string>
@@ -76,163 +94,147 @@
     <string name="changelog_issues_title">Fehler und Weiterentwicklungen</string>
     <string name="changelog_issues_body">Bitte melden sie alle Fehler und Anfragen für Weiterenwicklungen mit dem folgenden Link. Nur Anfragen auf Englisch werden behandelt.</string>
 
-    <!-- MAIN MENU - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- ACTION BAR ITEMS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+
+    <!-- Subtitle for the puzzle fragment. -->
+    <!-- TODO -->
+    <string name="action_bar_subtitle_puzzle_fragment">Play a game</string>
+
+    <!-- The menu item that allows the player to display the archive of played games. -->
+    <!-- TODO -->
+    <string name="action_archive">Archive</string>
+
+    <!-- The menu item that allows the player to use some less frequently used cheats. -->
+    <!-- TODO -->
+    <string name="action_cheats">Cheats</string>
+
+    <!-- The context menu item that allows the user to clear the entire grid. Note this item is only available in case at least one cell in the entire puzzle contains a (maybe) value. -->
+    <string name="action_clear_grid">Gesamten Raster löschen</string>
 
     <!-- The menu item that allows the player to start a new game. -->
-    <string name="menu_newgame">Neues Spiel</string>
-
-    <!-- The menu item that allows the player to load and save the game states. -->
-    <string name="menu_saveload">Laden/Speichern</string>
+    <string name="action_new_game">Neues Spiel</string>
 
     <!-- The sub-menu item to check user entries against the solution. -->
-    <string name="menu_checkprogress">Fortschritt kontrollieren</string>
+    <string name="action_check_progress">Fortschritt kontrollieren</string>
 
-    <!-- The menu item that allows the player to navigate to the options screen. -->
-    <string name="menu_options">Optionen</string>
+    <!-- The sub-menu item to go to the statistics. -->
+    <!-- TODO -->
+    <string name="action_statistics">Statistics</string>
 
     <!-- The menu item that allows the player to navigate to the help screen. -->
-    <string name="menu_help">Hilfe</string>
+    <string name="action_help">Hilfe</string>
 
-    <!-- The menu item that allows the player to navigate to the changelog screen -->
-    <string name="menu_changes">Änderungen</string>
+    <!-- The menu item that allows the player to share an archived game with another user via emai. -->
+    <!-- TODO -->
+    <string name="action_share">Share</string>
+
+    <!-- The menu item that allows the player to send feedback via email. -->
+    <string name="action_feedback">Send feedback</string>
+
+    <!-- ACTIONS IN SUB MENU CHEATS - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The menu item that allows the user to reveal a cell. -->
+    <string name="action_reveal_cell">Zelle lösen</string>
+
+    <!-- The menu item that allows the user to reveal the hidden operator of a cage. This item is only available in case a puzzle with hidden operators is shown and the operator has not yet been revealed. Note that a single cell cage does not have an operator. -->
+    <string name="action_reveal_operator">Rechenoperator lösen</string>
+
+    <!-- The menu to show the completed grid. -->
+    <string name="action_show_solution">Rätsel lösen</string>
 
     <!-- DIALOGS FOR GENERATING NEW PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
-    <!-- The different grid sizes with their difficulties. -->
-    <string name="grid_size_4">4x4 (leicht)</string>
-    <string name="grid_size_5">5x5 (mittel)</string>
-    <string name="grid_size_6">6x6 (schwer)</string>
-    <string name="grid_size_7">7x7 (schwerer)</string>
-    <string name="grid_size_8">8x8 (am schwersten)</string>
-    <string name="grid_size_9">9x9 (ultimativ)</string>
-
-    <!-- The possible values of the "hide operator" option. This option controls whether the mathematical operation signs (+x/-) are shown. The last value, "ask", means the game asks whether the signs should be hidden or visible on every new game. -->
-    <string-array name="hideOpTexts">
-        <item>Immer</item>
-        <item>Niemals</item>
-        <item>Fragen</item>
-    </string-array>
-
-    <!-- The message and buttons of the dialog box asking whether to hide operator signs. THis dialog will only be shown in case option "Hide operators" has been set to "Always" or "Ask". -->
-    <string name="dialog_hide_operators_message">Rechenoperatoren verstecken?</string>
-    <string name="dialog_hide_operators_positive_button">Ja. Ich suche eine Herausforderung.</string>
-    <string name="dialog_hide_operators_negative_button">Nein. Ich mag es einfach.</string>
+    <!-- Titles and lables used in the dialog "Create new game". -->
+    <!-- TODO: Translate all strings for this new dialog. -->
+    <string name="dialog_puzzle_parameters_title">Create new game</string>
+    <string name="dialog_puzzle_parameters_puzzle_size">Puzzle size</string>
+    <string name="dialog_puzzle_parameters_operators_in_cage_visible">Operators in cage visible</string>
+    <string name="dialog_puzzle_parameters_difficulty">Difficulty</string>
+    <string name="dialog_puzzle_parameters_neutral_button">Generate</string>
 
     <!-- The title and message for the dialog displayed on the screen when building a new puzzle. -->
     <string name="dialog_building_puzzle_title">Rätsel erstellt</string>
     <string name="dialog_building_puzzle_message">Das Rätsel wurde erstellt und ist in ein paar Sekunden bereit.</string>
 
-    <!-- DIALOG LOAD / SAVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- GENERAL SETTINGS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
-    <!-- The button in the save game screen that allows the player to save the state of the game (s)he's currently playing. -->
-    <string name="save_game_screen_save_current_game">Aktuellen Spielstand speichern</string>
-
-    <!-- The button in the save game screen that allows the player to load a previously saved game state. -->
-    <string name="save_game_screen_load_game">Laden</string>
-
-    <!-- The button in the save game screen that allows the player to delete a previously saved game state. -->
-    <string name="save_game_screen_delete_game">Löschen</string>
-
-    <!-- The confirmation message that shows up when a delete button is pressed, plus the associated title and button labels. -->
-    <string name="game_file_list__delete_game_file_confirmation_message">Sind Sie sicher, dass Sie dieses Spiel löschen möchten?</string>
-    <string name="game_file_list__delete_game_file_confirmation_title">Gespeichertes Spiel löschen?</string>
-    <string name="game_file_list__delete_game_file_negative_button">Nein. Behalten.</string>
-    <string name="game_file_list__delete_game_file_positive_button">Ja. Löschen.</string>
-
-    <!-- OPTIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
+    <!-- The titles for the general puzzling settings. -->
+    <string name="general_settings_actionbar_title">General settings</string>
 
     <!-- The preferences category title for options to assist the user solve the puzzle. -->
-    <string name="options_group_assistance">Hilfestellung</string>
+    <string name="puzzle_setting_group_assistance">Hilfestellung</string>
 
     <!-- The title and summary of the "bad maths" option. This option highlights cages with incorrect maths. -->
-    <string name="option_mark_bad_maths_title">Falsche Rechnungen markieren</string>
-    <string name="option_mark_bad_maths_summary">Boxen mit falschen Rechnungsergebnissen hervorheben.</string>
+    <string name="puzzle_setting_bad_cage_math_visible_title">Falsche Rechnungen markieren</string>
+    <string name="puzzle_setting_bad_cage_math_visible_summary">Boxen mit falschen Rechnungsergebnissen hervorheben.</string>
 
     <!-- The title and summary of the "bad maths" option. This option highlights cells with digits already in the row or column. -->
-    <string name="option_mark_duplicates_title">Doppelte Zahlen markieren</string>
-    <string name="option_mark_duplicates_summary">Doppelte Nummern in einer Zeile oder Spalte hervorheben.</string>
+    <string name="puzzle_setting_duplicate_digits_visible_title">Doppelte Zahlen markieren</string>
+    <string name="puzzle_setting_duplicate_digits_visible_summary">Doppelte Nummern in einer Zeile oder Spalte hervorheben.</string>
 
     <!-- The title and summary of the "redundant possibles" option. This option clears possibles values from cells in the same row or columns as the selected cell after setting a user value. -->
-    <string name="option_clear_redundant_possibles_title">Überflüssige \"Vieleichtwerte\" löschen</string>
-    <string name="option_clear_redundant_possibles_summary">Nachdem ein Wert in einer Zelle gesetzt wurde, wird dieser Wert in den Zellen derselben Zeile und Spalte aus den Möglichkeiten gelöscht.</string>
-
-    <!-- The preferences category title for options related to puzzle generation. -->
-    <string name="options_group_puzzle">Rätselerstellung</string>
-
-    <!-- The title and summary of the "Allow big cages" option. This option controls whether puzzles can contain big cages (5 or 6 cells). -->
-    <string name="option_generate_big_cages_title">Große Boxen zulassn (beta)</string>
-    <string name="option_generate_big_cages_summary">Ein Rätsel mit Boxen, welche 5 oder 6 Zellen groß sind wird erstellt.</string>
-
-    <!-- The title and summary of the "hide operator" option. This option controls whether the mathematical operation signs (+x/-) are shown. -->
-    <string name="option_hide_operators_title">Rechenoperatoren verstecken</string>
-    <string name="option_hide_operators_summary">Verstecke Rechenoperatoren wie +, -, x und / beim Erstellen des Rätsels.</string>
+    <!-- TODO: check with updated english version. 2x -->
+    <string name="puzzle_setting_clear_maybes_title">Überflüssige \"Vieleichtwerte\" löschen</string>
+    <string name="puzzle_setting_clear_maybes_summary">Nachdem ein Wert in einer Zelle gesetzt wurde, wird dieser Wert in den Zellen derselben Zeile und Spalte aus den Möglichkeiten gelöscht.</string>
 
     <!-- The preferences category title for options relating to how the puzzle is displayed. -->
-    <string name="options_group_display">Anzeige</string>
+    <string name="puzzle_setting_group_display">Anzeige</string>
 
     <!-- The theme option -->
-    <string name="option_theme_title">Thema</string>
-    <string name="option_theme_summary">Anzeigethema auswählen.</string>
+    <string name="general_settings_theme_title">Thema</string>
+
+    <!-- The title and summary of the "colored digits" option. This option controls whether maybe numbers and normal numbers are displayed in distinct colors or in one monochrome color. -->
+    <!-- TODO -->
+    <string name="puzzle_setting_colored_digits_title">Colored digits</string>
+    <string name="puzzle_setting_colored_digits_summary">Use colored digits to distinct maybe numbers from normal numbers</string>
 
     <!-- The title and summary of the "maybe in grid" option. This option controls whether maybe numbers are displayed in 3x3 grid or straight line. -->
-    <string name="option_maybe_layout_title">\"Vielleichtwerte\" im Raster</string>
-    <string name="option_maybe_layout_summary">\"Vielleichtwerte\" werden im Raster angezeigt.</string>
-
-    <!-- The title and summary of the "hide selector" option. This option auto-shows the digit buttons when the player selects a cell, and auto-hides those buttons when the player deselects a cell. -->
-    <string name="option_hide_selector_title">Automatisches Ausblenden des Nummernblocks</string>
-    <string name="option_hide_selector_summary">Nummernblock wird nach dem Drücken ausgeblendet.</string>
-
-    <!-- The title and summary of the "wake lock" option. This option highlights cells with digits already in the row or column. -->
-    <string name="option_wake_lock_title">Automatisches Abschalten</string>
-    <string name="option_wake_lock_summary">Das Abschalten des Bildschirms während dem Spiel verhindern.</string>
+    <string name="puzzle_setting_maybes_displayed_in_grid_title">\"Vielleichtwerte\" im Raster</string>
+    <string name="puzzle_setting_maybes_displayed_in_grid_summary">\"Vielleichtwerte\" werden im Raster angezeigt.</string>
 
     <!-- The title and summary of the "display timer" option. This option hides or shows the timer below the puzzle. -->
-    <string name="option_show_timer_title">Stoppuhr einblenden</string>
-    <string name="option_show_timer_summary">Beim lösen des Rätsels wird eine Stoppuhr eingeblendet.</string>
+    <string name="puzzle_setting_timer_visible_title">Stoppuhr einblenden</string>
+    <string name="puzzle_setting_timer_visible_summary">Beim lösen des Rätsels wird eine Stoppuhr eingeblendet.</string>
+
+    <!-- The title and summary of the "full screen" option. This option hide the android notification bar. -->
+    <string name="puzzle_setting_full_screen_title">Full screen</string>
+    <string name="puzzle_setting_full_screen_summary">Play in full screen mode by hiding Android\'s notification bar</string>
+
+    <!-- The title and summary of the "wake lock" option. This option highlights cells with digits already in the row or column. -->
+    <string name="puzzle_setting_wake_lock_title">Automatisches Abschalten</string>
+    <string name="puzzle_setting_wake_lock_summary">Das Abschalten des Bildschirms während dem Spiel verhindern.</string>
 
     <!-- The preferences category title for audio options. -->
-    <string name="options_group_sound">Sound</string>
-    <!-- The title and summary of the "sound effects" option. -->
-
+    <string name="puzzle_setting_group_sound">Sound</string>
 
     <!-- The title and summary of the "Sounds effect" option. This option enables or disables soundeffects. -->
-    <string name="option_sound_effects_title">Soundeffekte</string>
-    <string name="option_sound_effects_summary">Soundeffekte einschalten.</string>
+    <string name="puzzle_setting_sound_effects_title">Soundeffekte</string>
+    <string name="puzzle_setting_sound_effects_summary">Soundeffekte einschalten.</string>
 
     <!-- DIALOG THEME - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
     <!-- The possible values of the "themes" option. This option controls which theme is used for displaying. -->
-    <string-array name="themeTexts">
-        <item>Geschnitzt</item>
-        <item>Zeitung</item>
-        <item>Dunkel</item>
-    </string-array>
+    <!-- TODO: rename theme to light -->
+    <string name="theme_light">Zeitung</string>
+    <string name="theme_dark">Dunkel</string>
 
-    <!-- CONTEXT MENU IN PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- DIALOG REVEAL SOLUTION CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
-    <!-- The context menu item that allows the user to reveal a cell. -->
-    <string name="context_menu_reveal_cell">Zelle lösen</string>
+    <!-- The title, message and buttons confirmation message that shows up when the "reveal solution" menu item is selected, plus the associated title and button labels. -->
+    <!-- TODO: Translate entire section -->
+    <string name="dialog_reveal_solution_confirmation_title">Reveal solution?</string>
+    <string name="dialog_reveal_solution_confirmation_message">Are you sure you want to reveal the solution of this puzzle?</string>
+    <string name="dialog_reveal_solution_confirmation_negative_button">No, I\'ll solve it myself</string>
+    <string name="dialog_reveal_solution_confirmation_positive_button">Yes, I give up</string>
 
-    <!-- The context menu item that allows the user to reveal the hidden operator of a cage. This item is only available in case a puzzle with hidden operators is shown and the operator has not yet been revealed. Note that a single cell cage does not have an operator. -->
-    <string name="context_menu_reveal_operator">Rechenoperator lösen</string>
+    <!-- DIALOG CLEAR GRID CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-    <!-- The context menu item that allows the user to fill in the "Maybe"s in the cage. Note this item is only visible in case a maybe value has been entered in any cell in the selected cage. -->
-    <string name="context_menu_use_cage_maybes">Verwende \"Vielleichtwerte\"</string>
-
-    <!-- The context menu item that allows the user to clear all of the cells in the cage. Note this item is only visible in case at least one cell in the selected cage contains a (maybe) value. -->
-    <string name="context_menu_clear_cage_cells">Zellen der Box löschen</string>
-
-    <!-- The context menu item that allows the user to clear the entire grid. Note this item is only available in case at least one cell in the entire puzzle contains a (maybe) value. -->
-    <string name="context_menu_clear_grid">Gesamten Raster löschen</string>
-
-    <!-- The context menu to show the completed grid. -->
-    <string name="context_menu_show_solution">Rätsel lösen</string>
 
     <!-- The title, message and buttons confirmation message that shows up when the clear grid context menu item is selected, plus the associated title and button labels. -->
     <string name="dialog_clear_grid_confirmation_title">Gesamten Raster löschen?</string>
@@ -243,39 +245,56 @@
     <!-- CONTROLS FOR PUZZLE SOLVING  - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
-    <!-- The text for input mode "normal" which is used to enter a definitive value into the selected cell. -->
-    <string name="input_mode_normal_short">Definitiv</string>
-    <string name="input_mode_normal_long">Definitive Werte</string>
-
-    <!-- The text for input mode "maybe" which is used to insert/remove a possible value into/from the selected cell. -->
-    <string name="input_mode_maybe_short">Vielleicht</string>
-    <string name="input_mode_maybe_long">Vielleichtwerte</string>
-
     <!-- The text on the clear button in the main UI. -->
     <string name="main_ui_clear">Löschen</string>
 
     <!-- The text on the undo button in the main UI. -->
     <string name="main_ui_undo">Rückgängig</string>
 
-    <!-- USAGE LOG AND OPT-IN FOR SURVEY - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- DIALOG FEEDBACK - - - - - - - - - - - - - - - - - - - - - - -->
 
 
-    <!-- Dialog for consent on sending usage log -->
-    <string name="dialog_usagelog_title">MathDoku-Entwicklung unterstützen</string>
-    <string name="dialog_usagelog_body">Lieber MathDoku-Benutzer,\n\nMathDoku würde gerne Daten zur Verwendung von MathDoku an die Entwickler senden. Wir wären sehr dankbar, wenn sie uns diese anonymen Daten zukommen lassen würden, um die populärsten Eigenschaften herausfinden zu können und unsere zukünftigen Entwicklungen anpassen können. Für nähere Information besuchen Sie unsere Homepage:</string>
-    <string name="dialog_usagelog_negative_button">Daten nicht senden</string>
-    <string name="dialog_usagelog_positive_button">Daten senden</string>
+    <!-- Dialog for sending feedback on MathDoku via email. -->
+    <!-- TODO -->
+    <string name="dialog_send_feedback_title">Send feedback</string>
+    <string name="dialog_send_feedback_text_1">Really great that you are willing to give feedback on MathDoku.\n\nPlease remember this is a free game without any advertisements. So we are not earning any money on this app. This game is just developed by enthousiastics in their spare time. We not are obliged in any way to build new feautures or solve bugs.\nPlease give constructive feedback without being offensive.\n\nWe prefer to receive feedback on issues or feature requests via the link below:</string>
+    <string name="dialog_send_feedback_text_2">\nBut you can also sent an email if that is more comfortable for you. Note, we can only address issues written in English.</string>
+    <string name="dialog_send_feedback_positive_button">Send email</string>
 
-    <!-- Dialog for opt-in on survey about future use of MathDoku. -->
-    <string name="dialog_survey_title">Umfrage</string>
-    <!-- Note for translators: please mention that the survey will be sent in english only. -->
-    <string name="dialog_survey_body">Danke für die Zustimmung uns das Logfile zu senden.\n\nWir planen einen Fragebogen an Benutzer, die an zukünftigen Versionen von MathDoku interessiert sind, zu senden. Falls Sie daran teilnehmen möchten, hinterlassen Sie Ihre E-Mail im folgenden Formular.</string>
-    <string name="dialog_survey_user_name_hint">Ihr Name</string>
-    <string name="dialog_survey_user_email_hint">Ihre E-Mail</string>
-    <string name="dialog_survey_positive_button">Logfile senden</string>
+    <!-- Default subject and message for feedback email. -->
+    <!-- TODO -->
+    <string name="feedback_email_subject">Feedback on MathDoku</string>
+    <string name="feedback_email_body">[Please remove this text and enter your feedback here. This email message contains a screendump of the screen just before you choose \'Send feedback\'. You can remove this screendump if it is not relevant for your feedback. The other attachment contains some basic details about the app and the size of your device and the value of the settings and preferences. This information can be helpfull for us to understand your feedback but you\'re free to remove it.]</string>
 
     <!-- Title of dialog used to choose the appropriate action for sending the usage log. -->
-    <string name="usage_log_choose_action_title">MathDoku Logfile senden</string>
+    <string name="feedback_choose_action_title">MathDoku Logfile senden</string>
+
+    <!-- Dialog for invalid share url. -->
+    <!-- TODO -->
+    <string name="dialog_invalid_share_url_title">Invalid MathDoku link</string>
+    <string name="dialog_invalid_share_url_body">Sorry, this link to the MathDoku puzzle is not valid. Please contact the sender of the link and request a new link to be sent.</string>
+
+    <!-- PLAYING HINT - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- TODO: TRANSLATE ENTIRE SECTION -->
+
+
+    <!-- Hint to start swiping to select a digit. Will be displayed as no swipe movement has begun yet. -->
+    <string name="hint_swipe_basic">Touch and hold the cell for which you want to enter a digit.</string>
+
+    <!-- Hint to stretch the swipe outside the current cell. The swipe movement has begun but has not yet left the cell. -->
+    <string name="hint_swipe_outside_cell">Now swipe towards the appropriate digit until it is highlighted.</string>
+    <string name="hint_swipe_basic_cell_at_border">Even if the appropriate digit is not visible, you can still swipe in the appropriate direction. Touch a cell near the middle of the grid to become familiar with position of digit(s) %1$s.</string>
+
+    <!-- Hint to finish swiping to select a digit. -->
+    <string name="hint_swipe_rotate">Rotate the swipe line to select a digit. End the swipe when the appropriate digit is highlighted.</string>
+    <string name="hint_swipe_release">Stop swiping to select the highlighted digit or rotate the swipe line to select another digit.</string>
+    <string name="hint_swipe_digit_5">To select a 5, swipe outside the selected cell and end this swipe in the cell where you started this swipe.</string>
+    <string name="hint_swipe_valid_digit_completed">You have just completed a swipe for digit %1$s.</string>
+    <string name="hint_swipe_invalid_digit_completed">Swiping in this direction will reveal a digit when playing a bigger puzzle.</string>
+
+    <!-- Title and text for tip "Input mode changed" -->
+    <!-- TODO: Check with english text which has been changed! -->
+    <string name="hint_input_mode_changed">Sie haben gerade den Eingabemodus von %1$s auf %2$s durch mehrmaliges Drücken auf eine Zelle geändert. Berühren Sie die Zelle nochmals, um den vorigen Eingabemodus wieder zu aktivieren.</string>
 
     <!-- TIP DIALOGS - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -283,26 +302,227 @@
     <!-- Label for check box "Do not show again" in the tip dialog. -->
     <string name="dialog_tip_do_not_show_again">Nicht nochmal anzeigen</string>
 
-    <!-- Title, text, drawable for tip "Input mode changed" -->
-    <string name="dialog_tip_input_mode_changed_title">Eingabemodus geändert</string>
-    <string name="dialog_tip_input_mode_changed_text">Sie haben gerade den Eingabemodus von %1$s auf %2$s durch mehrmaliges Drücken auf eine Zelle geändert. Berühren Sie die Zelle nochmals, um den vorigen Eingabemodus wieder zu aktivieren.</string>
-
-    <!-- Title, text, drawable for tip "Order of values in cage" -->
+    <!-- Title, and text for tip "Order of values in cage" -->
     <string name="dialog_tip_order_of_values_in_cage_title">Werte einer Zelle</string>
     <string name="dialog_tip_order_of_values_in_cage_text">Die Reihenfolge in der die Werte in den Zellen einer Box angeordnet sind, ist für das MathDoku-Rätsel nicht relevant. Die Ergebnisse von den Boxen \"2 &#8212; 3\"  und \"3 &#8212; 2\" sind beide Male gleich 1. Der nachfolgende Raster ist demnach gültig.</string>
+
+    <!-- Title, and text for tip "Cheat which reveals the value of a cell". Note "%1$s" in the text will be replaced with an amount and units (e.d. "20 seconds" or "5 minutes"). -->
+    <!-- TODO -->
+    <string name="dialog_tip_cheat_reveal_value_title">Cheat: reveal value</string>
+    <string name="dialog_tip_cheat_reveal_value_text">You have revealed the value of a cell. Revealing the value of a cell is not needed to solve the puzzle as each puzzle has one unqiue solution which can be found without using cheats.\nEach time you will use this cheat, the elapsed time will be increased with %1$s.</string>
+
+    <!-- Title, and text for tip "Cheat which reveals the operator of a cell". Note "%1$s" in the text will be replaced with an amount and units (e.d. "20 seconds" or "5 minutes"). -->
+    <!-- TODO -->
+    <string name="dialog_tip_cheat_reveal_operator_title">Cheat: reveal operator</string>
+    <string name="dialog_tip_cheat_reveal_operator_text">You have revealed the operator of a cage. Revealing the operator of a cage is not needed to solve the puzzle as each puzzle has one unqiue solution which can be found without using cheats.\nEach time you will use this cheat, the elapsed time will be increased with %1$s.</string>
+
+    <!-- Title, and text for tip "Cheat which reveals the solutions of a puzzle". Note "%1$s" in the text will be replaced with an amount and units (e.d. "20 seconds" or "5 minutes"). -->
+    <!-- TODO -->
+    <string name="dialog_tip_cheat_reveal_solution_title">Cheat: reveal solution</string>
+    <string name="dialog_tip_cheat_reveal_solution_text">You have revealed the solution of the puzzle. When you use this cheat, the elapsed time will be increased with %1$s.</string>
+
+    <!-- Title, and text for tip "Cheat progress checking". Note "%1$s" and "%2$s" in the text will be replaced with an amount and units (e.d. "20 seconds" or "5 minutes"). -->
+    <!-- TODO -->
+    <string name="dialog_tip_cheat_check_progress_title">Cheat: check progress</string>
+    <string name="dialog_tip_cheat_check_progress_text">You have checked the progress of your solution. Invalid cells have been highlighted.\nEach time you use this cheat, the elapsed time will be increased with %1$s plus %2$s for each new invalid value which has been found.</string>
+
+    <!-- Title, and text for tip "Incorrect value" which refers to menu option "Check Progress". -->
+    <!-- TODO -->
+    <string name="dialog_tip_incorrect_value_title">Incorrect value</string>
+    <string name="dialog_tip_incorrect_value_text">You have entered an incorrect value. You will not be able to solve this puzzle in case you do not correct it. You can use menu option \'Check Progress\' to mark all cells having an incorrect value. Be aware: using \'Check Progress\' will raise the time elapsed with a penalty to discourage you from using it.</string>
+
+    <!-- Title, and text for tip "Statistics" which explains about this new menu option. -->
+    <!-- TODO -->
+    <string name="dialog_tip_statistics_title">Statistics</string>
+    <string name="dialog_tip_statistics_text">For each game you have played, some statistics are collected. You can use the statistics just to view your historic results. Also you can use the statistics to improve your solving techniques.\n\nYou can view the statistics from the navigation menu. The navigation menu can be opened by tapping the MathDoku icon.</string>
+
+    <!-- Title, and text for tip "Duplicate value" which gives explanation of the game rule which was violated. -->
+    <!-- TODO -->
+    <string name="dialog_tip_duplicate_value_title">Duplicate value</string>
+    <string name="dialog_tip_duplicate_value_text">You have entered a value which is already used in this column or this row. Each value should be used exactly once in each row and once in each column.</string>
+
+    <!-- Title, and text for tip "Bad cage math" which gives explanation of the game rule which was violated. -->
+    <!-- TODO -->
+    <string name="dialog_tip_bad_cage_math_title">Bad cage math</string>
+    <string name="dialog_tip_bad_cage_math_text">The values entered for the cells in this cage are not correct. The result of applying the operator to the cell values must be equal to the value of the cage.</string>
+
+    <!-- Title, and text for tip "ArchiveAvailable" which explains about this new navigation option. -->
+    <!-- TODO -->
+    <string name="dialog_tip_archive_available_title">Archive available</string>
+    <string name="dialog_tip_archive_available_text">Each game you have created is stored in the \'Archive\'. The \'Archive\' can be used to review games which you have played before.\n\nYou can view the archive from the navigation menu. The navigation menu can be opened by tapping the MathDoku icon.</string>
+
+    <!-- Title, and text for tip "Swipe digiti 5" which explains how to make the swipe motion for digit 5. -->
+    <!-- TODO -->
+    <string name="dialog_tip_swipe_digit_5_title">Swiping a 5</string>
+    <string name="dialog_tip_swipe_digit_5_text">Entering a five into a cell requires a different swipe movement compared to the other digits.\nStart a swipe movement from the cell in which you want to enter the five. Move outside this cell, still continue swiping. Finally move back to the selected cell and release the swipe motion.\nQuickest motion is to draw a straight line just outside the cell and straight back. Or, draw a circle starting and ending at the cell in which you want to enter the five.</string>
+
+    <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- TODO: TRANSLATE ENTIRE SECTION -->
+
+
+    <!-- Title of statistics activity. -->
+    <string name="statistics_actionbar_title">Statistics</string>
+    <string name="statistics_not_available">Statistics are not yet available for this level as no games of size %1$d have been played yet.</string>
+
+    <!-- Labels for general game statistics. -->
+    <string name="statistics_general_date_created">Created on</string>
+    <string name="statistics_general_date_finished">Finished on</string>
+    <string name="statistics_general_replays">Replays</string>
+    <string name="statistics_general_elapsed_time">Time played</string>
+    <string name="statistics_general_cheat_penalty_time">Cheat penalty</string>
+    <string name="statistics_general_replay">Replay game</string>
+
+    <!-- Title and a body which explains the purpose of the chart "Progress". -->
+    <string name="progress_chart_title">Progress</string>
+    <string name="progress_chart_body">This chart displays the progress in solving the current game. For filled cells it is not shown whether the value is correct or not. A cell containing maybe values is counted as an empty cell.</string>
+    <!-- Dimensions displayed in chart "Progress". -->
+    <string name="progress_chart_cells_filled">Cells filled</string>
+    <string name="progress_chart_cells_revealed">Cells revealed</string>
+    <string name="progress_chart_cells_empty">Cells empty</string>
+
+    <!-- Title and a body which explains the purpose of the chart "Avoidable moves". -->
+    <string name="avoidable_moves_chart_title">Avoidable moves</string>
+    <string name="avoidable_moves_yaxis_description">Number of moves</string>
+    <string name="avoidable_moves_chart_body">Less experienced players make more avoidable moves than experienced players. An avoidable move is a move which is not necessary to solve a game. Correcting or clearing values in cell, using \"maybe values\" or undo moved are moves which should be avoided in order to become a better player.</string>
+    <!-- Dimensions displayed in chart "Avoidable moves". -->
+    <string name="avoidable_moves_chart_user_value_replaced">Cell value replaced</string>
+    <string name="avoidable_moves_chart_maybe_value_used">Maybe values</string>
+    <string name="avoidable_moves_chart_undo_button_used">Undo used</string>
+    <string name="avoidable_moves_chart_clear_used">Clear cell or clear grid used</string>
+
+    <!-- Title and a body which explains the purpose of the chart "Cheats used". -->
+    <string name="statistics_cheats_used_title">Cheats used</string>
+    <string name="statistics_cheats_yaxis_description">Number of times occurred</string>
+    <string name="statistics_cheats_used_body">You have used at least one cheat while playing this game. Cheats are more often used by inexperienced players. Each puzzle has a unique solution which can be found without using cheats.</string>
+    <!-- Dimensions displayed in chart "Cheats used". -->
+    <string name="statistics_cheats_check_progress">Checked progress</string>
+    <string name="statistics_cheats_cells_revealed">Cells revealed</string>
+    <string name="statistics_cheats_operators_revealed">Operators revealed</string>
+    <string name="statistics_cheats_solution_revealed">Solution revealed</string>
+
+    <!-- Title and a body which explains the purpose of the chart "Solved games". -->
+    <string name="solved_chart_title">Solved games</string>
+    <string name="solved_chart_body">This chart displays the number of games solved versus the number of games which have not been solved or in which the solution was revealed.</string>
+
+    <!-- Series used to split charts like "Unsolved games" and "Elapsed time historic". -->
+    <string name="chart_serie_solved">Solved</string>
+    <string name="chart_serie_solution_revealed">Revealed solution</string>
+    <string name="chart_serie_unfinished">Unfinished</string>
+
+    <!-- Title and a body which explains the purpose of the chart "Elapsed time historic". -->
+    <string name="statistics_elapsed_time_historic_title">Elapsed time</string>
+    <string name="statistics_elapsed_time_historic_body">This chart shows the time elapsed per game and the average elapsed time. Games are sorted in order of creating (same order as in Archive). More recent games will be on the right of this chart. As you got more experienced at this level the elapsed time per game should diminish. Also there should be less games unfinished or for which the solution was revealed.</string>
+    <string name="statistics_elapsed_time_historic_solved_average_serie">Average (solved games only)</string>
+    <string name="statistics_elapsed_time_historic_solved_slowest">Slowest</string>
+    <string name="statistics_elapsed_time_historic_solved_average">Average</string>
+    <string name="statistics_elapsed_time_historic_solved_fastest">Fastest</string>
+
+    <!-- The lead in text at top of the help dialog. -->
+    <string name="statistics_help_dialog_general">Most statistics are based on all games you have played. The chart \'Elapsed time\' only displays the most recent games.\nStatistics are available per level (i.e. the size of the puzzle) but also as a whole. Swipe from left to right to go to the previous level. Swipe from right to left to go to the next level.\n\nUse the settings to tweak display of the statistics.</string>
+
+    <!-- STATISTICS  SETTINGS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- TODO: TRANSLATE ENTIRE SECTION -->
+
+
+    <!-- Title of statistics preferences activity. -->
+    <string name="statistics_settings_actionbar_title">Statistics settings</string>
+
+    <!-- The title and summary of the "Chart description" option. This option enables or disables displaying the description below the charts in the statistics activity. -->
+    <string name="statistics_setting_chart_description_visible_title">Chart description</string>
+    <string name="statistics_setting_chart_description_visible_summary">Display description below chart</string>
+
+    <!-- The title and summary of the "Maximum games in elapsed time chart" option. This option restricts the number of games which will be displayed in an elapsed time chart. -->
+    <string name="statistics_setting_elapsed_time_chart_maximum_games_title">Number of games in elapsed time chart</string>
+    <string name="statistics_setting_elapsed_time_chart_maximum_games_summary">Display no more than %1$d games in elapsed time chart</string>
+
+    <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- TODO: TRANSLATE ENTIRE SECTION -->
+
+
+    <!-- Title for the archive fragment. -->
+    <string name="archive_action_bar_title">Archive</string>
+
+    <!-- The possible values of the archive filter on the game status. -->
+    <string-array name="archive_status_filter">
+        <item>All</item>
+        <item>Unfinished</item>
+        <item>Solved</item>
+        <item>Revealed</item>
+    </string-array>
+
+    <!-- The possible values of the archive filter on game size. -->
+    <string-array name="archive_size_filter">
+        <item>All</item>
+        <item>4x4</item>
+        <item>5x5</item>
+        <item>6x6</item>
+        <item>7x7</item>
+        <item>8x8</item>
+        <item>9x9</item>
+    </string-array>
+
+    <!-- The label in the pager bar for the "puzzle number" -->
+    <string name="archive_puzzle_number">Puzzle no.</string>
+
+    <!-- The label of the button below a puzzle. -->
+    <string name="archive_reload_unfinished_game">Continue this puzzle</string>
+    <string name="archive_reload_finished_game">Replay this puzzle</string>
+
+    <!-- Title for the archive settings fragment. -->
+    <string name="archive_settings_action_bar_title">Archive settings</string>
+
+    <!-- The title and summary of the "Show status filter" option. This option enables or disables showing of the status filter in the action bar of the archive. -->
+    <string name="archive_settings_show_status_filter_title">Show status filter</string>
+    <string name="archive_settings_show_status_filter_enabled">Allows filtering on status of games</string>
+    <string name="archive_settings_show_status_filter_disabled">Hides the filter for selecting on status</string>
+
+    <!-- The title and summary of the "Show size filter" option. This option enables or disables showing of the size filter in the action bar of the archive. -->
+    <string name="archive_settings_show_size_filter_title">Show size filter</string>
+    <string name="archive_settings_show_size_filter_enabled">Allows filtering on size of games</string>
+    <string name="archive_settings_show_size_filter_disabled">Hides the filter for selecting on game size</string>
+
+    <!-- The title and summary of the "Chart description" option. This option enables or disables displaying the description below the charts in the archive activity. -->
+    <string name="archive_setting_show_chart_description_title">Chart description</string>
+    <string name="archive_setting_show_chart_description_summary">Display description below chart</string>
+
+    <!-- The lead in text at top of the help dialog. -->
+    <string name="archive_help_dialog_general">The archive contains the history of all games you have played. Swipe from left to right to go to an older puzzle. Swipe from right to left to go to a newer puzzle.\n\nYou can use filters to view only puzzles having a specific status or size. Filters can be enabled and disabled via the settings menu. Note: a filter will only be shown in case it contains multiple values.</string>
+
+    <!-- SHARED PUZZLE  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- TODO: TRANSLATE ENTIRE SECTION -->
+
+
+    <!-- Subject and body of share email. -->
+    <string name="share_puzzle_subject">Sharing MathDoku puzzle</string>
+    <string name="share_puzzle_link_description">MathDoku puzzle</string>
+    <string name="share_unfinished_puzzle_body">I want to share this %1$s with you. After clicking the link, please choose the MathDoku app to preview the puzzle.%2$sIn case you haven\'t yet installed version 2 of MathDoku for Android, please download it from %3$s before clicking the puzzle links.%4$sIn case the text above does not contains any links, please use links below:%5$s - Play the MathDoku puzzle: %6$s - Download MathDoku: %7$s</string>
+    <string name="share_finished_puzzle_body">I have solved this %1$s in %2$s. Can you finish it faster? After clicking the link, please choose the MathDoku app to preview the puzzle.%3$sIn case you haven\'t yet installed version 2 of MathDoku for Android, please download it from %4$s before clicking the puzzle links.%5$sIn case the text above does not contains any links, please use links below:%6$s - Play the MathDoku puzzle: %7$s - Download MathDoku: %8$s</string>
+
+    <!-- Title for the shared puzzle fragment. -->
+    <string name="shared_puzzle_action_bar_title">Preview shared puzzle</string>
+
+    <!-- Introduction text at top of screen. -->
+    <string name="shared_puzzle_introduction">This puzzle was sent to you via an email link. See email for more details if included by sender. In case you choose to play this puzzle right now, it will also be added to your own archive of played puzzles.</string>
+
+    <!-- The label of the button below a puzzle. -->
+    <string name="shared_puzzle_play_button">Play this puzzle</string>
+
+    <!-- The title and message for the dialog in which the user is informed that the shared puzzle already exists in the archive. -->
+    <string name="shared_puzzle_exists_title">Puzzle duplicate</string>
+    <string name="shared_puzzle_exists_message">This puzzle already exists in your archive (see puzzle %1$d). Playing this puzzle will overwrite the previous solution and statistics.</string>
+    <string name="shared_puzzle_exists_positive_button">Yes</string>
+    <string name="shared_puzzle_exists_negative_button">No</string>
 
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
-    <!-- The title and message for the dialog displayed on the screen when generating preview images, along with the associated title. -->
-    <string name="main_ui_creating_previews_title">Vorschaubilder erstellen</string>
-    <string name="main_ui_creating_previews_message">Bitte warten sie während Vorschaubilder für alle gespeicherten Spiele generiert werden.</string>
-
     <!-- The message that appears when the player has solved the puzzle. -->
     <string name="main_ui_solved_messsage">Gelöst!</string>
 
-    <!-- The message that appears when the player reveals a cell. -->
-    <string name="main_ui_cheat_messsage">Cheat! :P</string>
     <!-- The message shown when no errors found when checking progress. -->
     <string name="ProgressOK">Bis jetzt alles richtig.</string>
 
@@ -312,8 +532,24 @@
     <!-- Alert to select a cell before a value is selected -->
     <string name="select_cell_before_value">Zuerst eine Zelle auswählen</string>
 
-    <!-- Text to display in case the preview image of a saved game is not yet available. -->
-    <string name="game_file_preview_not_available">Derzeit nicht verfügbar</string>
-    <string name="game_seed">"Spiel platzieren: "</string>
+    <!-- Units for time. -->
+    <!-- TODO -->
+    <string name="time_unit_seconds_singular">second</string>
+    <string name="time_unit_seconds_plural">seconds</string>
+    <string name="time_unit_minutes_singular">minute</string>
+    <string name="time_unit_minutes_plural">minutes</string>
+    <string name="time_unit_hours_singular">hour</string>
+    <string name="time_unit_hours_plural">hours</string>
+    <string name="time_unit_days_singular">day</string>
+    <string name="time_unit_days_plural">days</string>
+
+    <!-- Connection word for the last two elements in a list. Example: "1 minute and 15 seconds" or "1, 2, 3 and 4)" -->
+    <string name="connector_last_two_elements">und</string>
+
+    <!-- The text for input mode "normal" which is used to enter a definitive value into the selected cell. -->
+    <string name="input_mode_normal_short">Definitiv</string>
+
+    <!-- The text for input mode "maybe" which is used to insert/remove a possible value into/from the selected cell. -->
+    <string name="input_mode_maybe_short">Vielleicht</string>
 
 </resources>

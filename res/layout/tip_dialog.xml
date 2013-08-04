@@ -1,25 +1,31 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="10dp"
+    android:paddingTop="10dp" >
 
     <ScrollView
+        android:id="@+id/scollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/dialog_tip_do_not_show_again"
-        android:layout_alignParentTop="true" >
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:paddingBottom="10dp" >
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="10dp" >
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" >
 
             <TextView
                 android:id="@+id/dialog_tip_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp" />
+                android:paddingBottom="10dp"
+                android:textSize="@dimen/dialog_text_size_body" />
 
             <ImageView
                 android:id="@+id/dialog_tip_image"
@@ -33,12 +39,11 @@
     <CheckBox
         android:id="@+id/dialog_tip_do_not_show_again"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:ems="10"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:text="@string/dialog_tip_do_not_show_again" >
 
         <requestFocus />
     </CheckBox>
 
-</RelativeLayout>
+</LinearLayout>

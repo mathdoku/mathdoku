@@ -62,7 +62,7 @@
 	var localizationElements = getElementsByClassName("localizable");
 	// Show all of the elements for the preferred locale. Hide all others.
 	var localeClassName = "locale-" + locale;
-	iterate.call(localizationElements, "classList" in localizationElements[0] && false ? function(localizationElement) {
+	iterate.call(localizationElements, "classList" in localizationElements[0] ? function(localizationElement) {
 		localizationElement.style.display = localizationElement.classList.contains(localeClassName) ? "" : "none";
 	// Use an alternatie implementation if the engine does not support classList.
 	} : (function() {

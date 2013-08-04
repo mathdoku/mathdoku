@@ -4,11 +4,16 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import net.cactii.mathdoku.MainActivity.InputMode;
-import net.cactii.mathdoku.Painter.CagePainter;
-import net.cactii.mathdoku.Painter.CellPainter;
-import net.cactii.mathdoku.Painter.MaybePainter;
-import net.cactii.mathdoku.Painter.UserValuePainter;
+import net.cactii.mathdoku.painter.CagePainter;
+import net.cactii.mathdoku.painter.CellPainter;
+import net.cactii.mathdoku.painter.MaybeValuePainter;
+import net.cactii.mathdoku.painter.Painter;
+import net.cactii.mathdoku.painter.SwipeBorderPainter;
+import net.cactii.mathdoku.painter.UserValuePainter;
+import net.cactii.mathdoku.statistics.GridStatistics;
+import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
+import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
+import net.cactii.mathdoku.ui.GridView.InputMode;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -17,10 +22,10 @@ public class GridCell {
 	@SuppressWarnings("unused")
 	private static final String TAG = "MathDoku.GridCell";
 
-	// Identifiers of different versions of cell information which is stored in
-	// saved game.
-	private final String SAVE_GAME_CELL_VERSION_01 = "CELL";
-	private final String SAVE_GAME_CELL_VERSION_02 = "CELL.v2";
+	// Each line in the GridFile which contains information about the cell
+	// starts with an identifier. This identifier consists of a generic part and
+	// the package revision number.
+	private static final String SAVE_GAME_CELL_LINE = "CELL";
 
 	// Index of the cell (left to right, top to bottom, zero-indexed)
 	private int mCellNumber;
@@ -46,14 +51,14 @@ public class GridCell {
 
 	private Grid mGrid;
 
-	// Whether to show warning background (duplicate value in row/col)
-	public boolean mShowWarning;
+	// Highlight in case a duplicate value is found in row or column
+	public boolean mDuplicateValueHighlight;
 	// Whether to show cell as selected
 	public boolean mSelected;
-	// Player cheated (revealed this cell)
-	private boolean mCheated;
+	// Player revealed this cell
+	private boolean mRevealed;
 	// Highlight user input isn't correct value
-	private boolean mInvalidHighlight;
+	private boolean mInvalidUserValueHighlight;
 
 	public static enum BorderType {
 		NONE, SELECTED__BAD_MATH, SELECTED__GOOD_MATH, NOT_SELECTED__BAD_MATH, NOT_SELECTED__GOOD_MATH
@@ -68,36 +73,36 @@ public class GridCell {
 	// References to the global painter objects.
 	private CellPainter mCellPainter;
 	private UserValuePainter mUserValuePainter;
-	private MaybePainter mMaybe3x3Painter;
-	private MaybePainter mMaybe2x5Painter;
-	private MaybePainter mMaybe1x9Painter;
+	private MaybeValuePainter mMaybeGridPainter;
+	private MaybeValuePainter mMaybeLinePainter;
 	private CagePainter mCagePainter;
+	private SwipeBorderPainter mSwipeBorderPainter;
 
 	public GridCell(Grid grid, int cell) {
 		int gridSize = grid.getGridSize();
-		this.mGrid = grid;
-		this.mCellNumber = cell;
-		this.mColumn = cell % gridSize;
-		this.mRow = (int) (cell / gridSize);
-		this.mCageText = "";
-		this.mCageId = -1;
-		this.mCorrectValue = 0;
-		this.mUserValue = 0;
-		this.mShowWarning = false;
-		this.mCheated = false;
-		this.mInvalidHighlight = false;
-		this.mPossibles = new ArrayList<Integer>();
-		this.mPosX = 0;
-		this.mPosY = 0;
+		mGrid = grid;
+		mCellNumber = cell;
+		mColumn = cell % gridSize;
+		mRow = cell / gridSize;
+		mCageText = "";
+		mCageId = -1;
+		mCorrectValue = 0;
+		mUserValue = 0;
+		mDuplicateValueHighlight = false;
+		mRevealed = false;
+		mInvalidUserValueHighlight = false;
+		mPossibles = new ArrayList<Integer>();
+		mPosX = 0;
+		mPosY = 0;
 
 		// Retrieve all painters
 		Painter painter = Painter.getInstance();
-		this.mCellPainter = painter.mCellPainter;
-		this.mUserValuePainter = painter.mUserValuePainter;
-		this.mMaybe3x3Painter = painter.mMaybe3x3Painter;
-		this.mMaybe2x5Painter = painter.mMaybe2x5Painter;
-		this.mMaybe1x9Painter = painter.mMaybe1x9Painter;
-		this.mCagePainter = painter.mCagePainter;
+		mCellPainter = painter.getCellPainter();
+		mUserValuePainter = painter.getUserValuePainter();
+		mMaybeGridPainter = painter.getMaybeGridPainter();
+		mMaybeLinePainter = painter.getMaybeLinePainter();
+		mCagePainter = painter.getCagePainter();
+		mSwipeBorderPainter = painter.getSwipeBorderPainter();
 
 		mBorderTypeTop = BorderType.NONE;
 		mBorderTypeRight = BorderType.NONE;
@@ -105,6 +110,7 @@ public class GridCell {
 		mBorderTypeLeft = BorderType.NONE;
 	}
 
+	@Override
 	public String toString() {
 		String str = "<cell:" + this.mCellNumber + " col:" + this.mColumn
 				+ " row:" + this.mRow + " posX:" + this.mPosX + " posY:"
@@ -118,13 +124,19 @@ public class GridCell {
 		case NONE:
 			return null;
 		case NOT_SELECTED__GOOD_MATH:
-			return mCagePainter.mBorderPaint;
+			return mCagePainter.getBorderPaint();
 		case NOT_SELECTED__BAD_MATH:
-			return mCagePainter.mBorderBadMathPaint;
+			return mCagePainter.getBorderBadMathPaint();
 		case SELECTED__GOOD_MATH:
-			return mCagePainter.mBorderSelectedPaint;
+			// In case the grid is deactivated (for example when an unfinished
+			// puzzle is displayed in the archive, display the border as if the
+			// cage was not selected
+			return (mGrid != null && mGrid.isActive() ? mCagePainter
+					.getBorderSelectedPaint() : mCagePainter.getBorderPaint());
 		case SELECTED__BAD_MATH:
-			return mCagePainter.mBorderSelectedBadMathPaint;
+			return (mGrid != null && mGrid.isActive() ? mCagePainter
+					.getBorderSelectedBadMathPaint() : mCagePainter
+					.getBorderBadMathPaint());
 		}
 		return null;
 	}
@@ -141,12 +153,39 @@ public class GridCell {
 		return this.mPossibles.get(0);
 	}
 
-	public void togglePossible(int digit) {
-		if (this.mPossibles.indexOf(Integer.valueOf(digit)) == -1)
+	/**
+	 * Adds the given digit to the possible values if not yet added before.
+	 * 
+	 * @param digit
+	 *            The digit which has to be added.
+	 * @return True in case the digit has been added. False otherwise or in case
+	 *         the digit was added before.
+	 */
+	public boolean addPossible(int digit) {
+		if (!hasPossible(digit)) {
 			this.mPossibles.add(digit);
-		else
+			Collections.sort(mPossibles);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Removes the given digit from the possible values if it was added before.
+	 * 
+	 * @param digit
+	 *            The digit which has to be removed.
+	 * @return True in case the digit has been removed. False otherwise or in
+	 *         case the digit was not added before.
+	 */
+	public boolean removePossible(int digit) {
+		if (hasPossible(digit)) {
 			this.mPossibles.remove(Integer.valueOf(digit));
-		Collections.sort(mPossibles);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public int getUserValue() {
@@ -157,13 +196,45 @@ public class GridCell {
 		return mUserValue != 0;
 	}
 
+	/**
+	 * Set the user value of the cell to a new value.
+	 * 
+	 * @param digit
+	 *            The new value for the cell. Use 0 to clear the cell.
+	 */
 	public void setUserValue(int digit) {
-		this.mPossibles.clear();
-		this.mUserValue = digit;
-		mInvalidHighlight = false;
+		// Update statistics
+		if (mGrid != null) {
+			GridStatistics gridStatistics = mGrid.getGridStatistics();
 
-		// Check cage maths
-		mGrid.mCages.get(mCageId).checkCageMathsCorrect(false);
+			// Only count as replacement as both the original and the new value
+			// are not 0 as this is used to indicate an empty cell.
+			if (digit != 0 && mUserValue != 0 && digit != mUserValue) {
+				gridStatistics
+						.increaseCounter(StatisticsCounterType.USER_VALUE_REPLACED);
+			}
+
+			// Cell counters are only update if the solution of the cell has
+			// not been revealed.
+			if (mRevealed == false) {
+				gridStatistics
+						.decreaseCounter(mUserValue == 0 ? StatisticsCounterType.CELLS_EMPTY
+								: StatisticsCounterType.CELLS_FILLED);
+				gridStatistics
+						.increaseCounter(digit == 0 ? StatisticsCounterType.CELLS_EMPTY
+								: StatisticsCounterType.CELLS_FILLED);
+			}
+		}
+
+		// Remove possibles
+		mPossibles.clear();
+
+		// Clear highlight except cheating
+		mInvalidUserValueHighlight = false;
+		mDuplicateValueHighlight = false;
+
+		// Set new value
+		mUserValue = digit;
 
 		// Set borders for this cells and adjacents cells
 		setBorders();
@@ -174,8 +245,22 @@ public class GridCell {
 		}
 	}
 
-	public void clearUserValue() {
+	/**
+	 * Clear the user value and/or possible values in a cell.
+	 */
+	public void clear() {
+		// Note: setting the userValue to 0 clear the cell but also the possible
+		// values!
 		setUserValue(0);
+	}
+
+	/**
+	 * Clear cheat and error flags.
+	 */
+	public void clearAllFlags() {
+		mDuplicateValueHighlight = false;
+		mRevealed = false;
+		mInvalidUserValueHighlight = false;
 	}
 
 	public boolean isUserValueCorrect() {
@@ -187,29 +272,40 @@ public class GridCell {
 		return mCageId != -1;
 	}
 
-	public void setInvalidHighlight(boolean value) {
-		this.mInvalidHighlight = value;
+	/**
+	 * Mark the cell as a cell containing an invalid value.
+	 */
+	public void setInvalidHighlight() {
+		mInvalidUserValueHighlight = true;
 	}
 
-	public boolean getInvalidHighlight() {
-		return this.mInvalidHighlight;
+	/**
+	 * Checks whether the cell is higlighted as invalid. Note: a cell can
+	 * contain an invalid value without being marked as invalid. A cell will
+	 * only be marked as invalid after using the option "Check Progress".
+	 * 
+	 * @return True in case the cell has been marked as invalid. False
+	 *         otherwise.
+	 */
+	public boolean hasInvalidUserValueHighlight() {
+		return this.mInvalidUserValueHighlight;
 	}
 
 	/**
 	 * Draw the cell inclusive borders, background and text.
 	 */
-	public void draw(Canvas canvas, float gridBorderWidth,
-			MainActivity.InputMode inputMode, DigitPositionGrid digitPositionGrid) {
+	public void draw(Canvas canvas, float gridBorderWidth, InputMode inputMode) {
+		// Get cell size
+		int cellSize = (int) this.mCellPainter.getCellSize();
+
 		// Calculate x and y for the cell origin (topleft). Use an offset to
 		// prevent overlapping of cells and border for entire grid.
-		this.mPosX = Math.round(gridBorderWidth + this.mCellPainter.mCellSize
-				* this.mColumn);
-		this.mPosY = Math.round(gridBorderWidth + this.mCellPainter.mCellSize
-				* this.mRow);
+		this.mPosX = Math.round(gridBorderWidth + cellSize * this.mColumn);
+		this.mPosY = Math.round(gridBorderWidth + cellSize * this.mRow);
 		float top = this.mPosY;
-		float bottom = this.mPosY + this.mCellPainter.mCellSize;
+		float bottom = this.mPosY + cellSize;
 		float left = this.mPosX;
-		float right = this.mPosX + this.mCellPainter.mCellSize;
+		float right = this.mPosX + cellSize;
 
 		// ---------------------------------------------------------------------
 		// Draw cage borders first. In case a cell border is part of the cage
@@ -318,31 +414,33 @@ public class GridCell {
 		left += leftOffset;
 
 		// ---------------------------------------------------------------------
-		// Next the inner borders are drawn for invalid, cheated and warnings.
+		// Next the inner borders are drawn for invalid, revealed, duplicate and
+		// selected cells.
 		// Theoretically multiple borders can be drawn. The less import signals
 		// will be drawn first so the most important signal is in the middle of
 		// the cell and adjacent to the corresponding background.
-		// Order of signals in increasing importance: warning, cheated, invalid,
-		// selected.
+		// Order of signals in increasing importance: duplicate, revealed,
+		// invalid, selected.
 		// ---------------------------------------------------------------------
 
 		for (int i = 1; i <= 4; i++) {
 			switch (i) {
 			case 1:
-				borderPaint = ((mShowWarning && mGrid.hasPrefShowDupeDigits()) ? mCellPainter.mWarning.mBorderPaint
-						: null);
+				borderPaint = ((mDuplicateValueHighlight && mGrid
+						.hasPrefShowDupeDigits()) ? mCellPainter
+						.getDuplicateBorderPaint() : null);
 				break;
 			case 2:
-				borderPaint = (mCheated ? mCellPainter.mCheated.mBorderPaint
-						: null);
+				borderPaint = (mRevealed ? mCellPainter
+						.getRevealedBorderPaint() : null);
 				break;
 			case 3:
-				borderPaint = (mInvalidHighlight ? mCellPainter.mInvalid.mBorderPaint
-						: null);
+				borderPaint = (mInvalidUserValueHighlight ? mCellPainter
+						.getInvalidBorderPaint() : null);
 				break;
 			case 4:
-				borderPaint = (mSelected ? mCellPainter.mSelected.mBorderPaint
-						: null);
+				borderPaint = (mSelected && mGrid != null && mGrid.isActive() ? mCellPainter
+						.getSelectedBorderPaint() : null);
 				break;
 			}
 			if (borderPaint != null) {
@@ -361,10 +459,10 @@ public class GridCell {
 						right, bottom - borderOffset, borderPaint);
 				canvas.drawLine(left + borderOffset, top + borderWidth, left
 						+ borderOffset, bottom, borderPaint);
-				top += borderWidth;
-				right -= borderWidth;
-				bottom -= borderWidth;
-				left += borderWidth;
+				top += borderWidth - 1;
+				right -= borderWidth - 1;
+				bottom -= borderWidth - 1;
+				left += borderWidth - 1;
 			}
 		}
 
@@ -374,18 +472,19 @@ public class GridCell {
 		// important background. In the cell is not selected but we already have
 		// drawn a signal border, we will draw the background for the most
 		// import signal.
-		// Order of signals in increasing importance: warning, cheated, invalid.
+		// Order of signals in increasing importance: selected, invalid,
+		// revealed, duplicate.
 		// ---------------------------------------------------------------------
 
 		Paint background = null;
-		if (mSelected) {
-			background = mCellPainter.mSelected.mBackgroundPaint;
-		} else if (mInvalidHighlight) {
-			background = mCellPainter.mInvalid.mBackgroundPaint;
-		} else if (mCheated) {
-			background = mCellPainter.mCheated.mBackgroundPaint;
-		} else if (mShowWarning && mGrid.hasPrefShowDupeDigits()) {
-			background = mCellPainter.mWarning.mBackgroundPaint;
+		if (mSelected && mGrid != null && mGrid.isActive()) {
+			background = mCellPainter.getSelectedBackgroundPaint();
+		} else if (mInvalidUserValueHighlight) {
+			background = mCellPainter.getInvalidBackgroundPaint();
+		} else if (mRevealed) {
+			background = mCellPainter.getRevealedBackgroundPaint();
+		} else if (mDuplicateValueHighlight && mGrid.hasPrefShowDupeDigits()) {
+			background = mCellPainter.getWarningBackgroundPaint();
 		}
 		if (background != null) {
 			canvas.drawRect(left, top, right, bottom, background);
@@ -393,51 +492,61 @@ public class GridCell {
 
 		// Cell value
 		if (this.isUserValueSet()) {
-			Paint paint = (inputMode == InputMode.NORMAL ? mUserValuePainter.mTextPaintNormalInputMode
-					: mUserValuePainter.mTextPaintMaybeInputMode);
-			canvas.drawText("" + mUserValue, mPosX
-					+ mUserValuePainter.mLeftOffset, mPosY
-					+ mUserValuePainter.mTopOffset, paint);
+			Paint paint = (inputMode == InputMode.NORMAL ? mUserValuePainter
+					.getTextPaintNormalInputMode() : mUserValuePainter
+					.getTextPaintMaybeInputMode());
+
+			// Calculate left offset to get the use value centered horizontally.
+			int centerOffset = (int) ((cellSize - paint.measureText(Integer
+					.toString(mUserValue))) / 2);
+
+			canvas.drawText("" + mUserValue, mPosX + centerOffset, mPosY
+					+ mUserValuePainter.getBottomOffset(), paint);
 		}
 		// Cage text
 		if (!this.mCageText.equals("")) {
 			// Clone the text painter and decrease text size until the cage text
 			// fits within the cell.
-			Paint textPaint = new Paint(mCagePainter.mTextPaint);
-			float scaleFactor = (mCellPainter.mCellSize - 4)
+			Paint textPaint = new Paint(mCagePainter.getTextPaint());
+			float scaleFactor = (cellSize - 4)
 					/ textPaint.measureText(mCageText);
 			if (scaleFactor < 1) {
-				textPaint.setTextSize(mCagePainter.mTextPaint.getTextSize()
-						* scaleFactor);
+				textPaint.setTextSize(textPaint.getTextSize() * scaleFactor);
 			}
 
-			canvas.drawText(mCageText, this.mPosX + 2, this.mPosY
-					+ mCagePainter.mTextPaint.getTextSize(), textPaint);
+			canvas.drawText(mCageText,
+					this.mPosX + mCagePainter.getTextLeftOffset(), this.mPosY
+							+ mCagePainter.getTextBottomOffset(), textPaint);
 		}
 
 		// Draw pencilled in digits.
 		if (mPossibles.size() > 0) {
 			if (mGrid.hasPrefShowMaybesAs3x3Grid()) {
+				// Get the digit positioner to be used
+				DigitPositionGrid digitPositionGrid = mMaybeGridPainter
+						.getDigitPositionGrid();
+
 				// Determine which painter to use
-				MaybePainter maybePainter = (digitPositionGrid.isGrid2x5() ? mMaybe2x5Painter : mMaybe3x3Painter);
-				Paint paint = (inputMode == InputMode.NORMAL ? maybePainter.mTextPaintNormalInputMode
-						: maybePainter.mTextPaintMaybeInputMode);
+				Paint paint = (inputMode == InputMode.NORMAL ? mMaybeGridPainter
+						.getTextPaintNormalInputMode() : mMaybeGridPainter
+						.getTextPaintMaybeInputMode());
 
 				// Draw all possible which are currently set for this cell.
 				for (int i = 0; i < mPossibles.size(); i++) {
-					// Get the possible and the specific position in the digit position grid
+					// Get the possible and the specific position in the digit
+					// position grid
 					int possible = mPossibles.get(i);
 					int row = digitPositionGrid.getRow(possible);
 					int col = digitPositionGrid.getCol(possible);
-					
-					float xPos = mPosX + maybePainter.mLeftOffset
-							+ col * maybePainter.mMaybeDigitWidth;
-					float yPos = mPosY + maybePainter.mTopOffset
-							+ row * maybePainter.mMaybeDigitHeight;
+
+					float xPos = mPosX + mMaybeGridPainter.getLeftOffset()
+							+ col * mMaybeGridPainter.getMaybeDigitWidth();
+					float yPos = mPosY + mMaybeGridPainter.getBottomOffset()
+							+ row * mMaybeGridPainter.getMaybeDigitHeight();
 					canvas.drawText(Integer.toString(possible), xPos, yPos,
 							paint);
 				}
-				
+
 			} else {
 				// Build string of possible values
 				String possiblesText = "";
@@ -448,20 +557,166 @@ public class GridCell {
 				// Clone the text painter and decrease text size until the
 				// possible values string fit within the cell.
 				Paint textPaint = new Paint(
-						inputMode == InputMode.NORMAL ? mMaybe1x9Painter.mTextPaintNormalInputMode
-								: mMaybe1x9Painter.mTextPaintMaybeInputMode);
-				float scaleFactor = (mCellPainter.mCellSize - 6)
+						inputMode == InputMode.NORMAL ? mMaybeLinePainter
+								.getTextPaintNormalInputMode()
+								: mMaybeLinePainter
+										.getTextPaintMaybeInputMode());
+				float scaleFactor = (cellSize - 2 * mMaybeLinePainter
+						.getLeftOffset())
 						/ textPaint.measureText(possiblesText);
 				if (scaleFactor < 1) {
-					textPaint.setTextSize(textPaint.getTextSize()
-							* scaleFactor);
+					textPaint
+							.setTextSize(textPaint.getTextSize() * scaleFactor);
 				}
 
-				canvas.drawText(possiblesText,
-						mPosX + mMaybe1x9Painter.mLeftOffset, mPosY
-								+ mMaybe1x9Painter.mTopOffset, textPaint);
+				// Calculate addition left offset to get the maybe values
+				// centrered horizontally.
+				int centerOffset = (int) ((cellSize - textPaint
+						.measureText(possiblesText)) / 2);
+
+				canvas.drawText(possiblesText, mPosX + centerOffset, mPosY
+						+ mMaybeLinePainter.getBottomOffset(), textPaint);
 			}
 		}
+	}
+
+	/**
+	 * Draw the overlay for the selected cell.
+	 */
+	public void drawSwipeOverlay(Canvas canvas, float gridBorderWidth,
+			InputMode inputMode, float mXPosSwipe, float mYPosSwipe,
+			int swipeDigit) {
+		if (mGrid.getSelectedCell() != this) {
+			// This cell is not the selected cell.
+			return;
+		}
+
+		// Get cell size
+		int cellSize = (int) this.mCellPainter.getCellSize();
+
+		// Calculate x and y for the cell origin (topleft). Use an offset to
+		// prevent overlapping of cells and border for entire grid.
+		this.mPosX = Math.round(gridBorderWidth + cellSize * this.mColumn);
+		this.mPosY = Math.round(gridBorderWidth + cellSize * this.mRow);
+		float top = this.mPosY;
+		float bottom = this.mPosY + cellSize;
+		float left = this.mPosX;
+		float right = this.mPosX + cellSize;
+
+		// Get the painter for the overlay border
+		// Determine which painter to use
+		Paint borderPaint = (inputMode == InputMode.NORMAL ? mSwipeBorderPainter
+				.getUserValueBackgroundBorderPaint() : mSwipeBorderPainter
+				.getMaybeValueBackgroundBorderPaint());
+		float borderOverlayWidth = mSwipeBorderPainter.getBorderWidth();
+
+		// Top border
+		if (borderPaint != null) {
+			// Calculate offset and draw top border
+			canvas.drawRect(left - borderOverlayWidth,
+					top - borderOverlayWidth, right, top, borderPaint);
+			canvas.drawRect(right, top - borderOverlayWidth, right
+					+ borderOverlayWidth, bottom, borderPaint);
+			canvas.drawRect(left, bottom, right + borderOverlayWidth, bottom
+					+ borderOverlayWidth, borderPaint);
+			canvas.drawRect(left - borderOverlayWidth, top, left, bottom
+					+ borderOverlayWidth, borderPaint);
+		}
+
+		// Draw pencilled in digits.
+		int gridSize = mGrid.getGridSize();
+		int horizontalOffset = 0;
+		int verticalOffset = 0;
+		Paint textNormalPaint = mSwipeBorderPainter.getNormalDigitPaint();
+		Paint textHighlightedPaint = mSwipeBorderPainter
+				.getHighlightedDigitPaint();
+
+		// Draw digit 1
+		horizontalOffset = (int) ((borderOverlayWidth - textNormalPaint
+				.measureText("1")) / 2);
+		canvas.drawText("1", left - borderOverlayWidth + horizontalOffset, top
+				- mSwipeBorderPainter.getBottomOffset(),
+				(swipeDigit == 1 ? textHighlightedPaint : textNormalPaint));
+
+		// Draw digit 2
+		horizontalOffset = (int) ((right - left - textNormalPaint
+				.measureText("2")) / 2);
+		canvas.drawText("2", left + horizontalOffset,
+				top - mSwipeBorderPainter.getBottomOffset(),
+				(swipeDigit == 2 ? textHighlightedPaint : textNormalPaint));
+
+		// Draw digit 3
+		horizontalOffset = (int) ((borderOverlayWidth - textNormalPaint
+				.measureText("3")) / 2);
+		canvas.drawText("3", right + horizontalOffset, top
+				- mSwipeBorderPainter.getBottomOffset(),
+				(swipeDigit == 3 ? textHighlightedPaint : textNormalPaint));
+
+		// Draw digit 4
+		horizontalOffset = (int) ((borderOverlayWidth - textNormalPaint
+				.measureText("4")) / 2);
+		verticalOffset = (int) ((bottom - top - textNormalPaint.getTextSize()) / 2);
+		canvas.drawText("4", left - borderOverlayWidth + horizontalOffset, top
+				+ verticalOffset + textNormalPaint.getTextSize()
+				- mSwipeBorderPainter.getBottomOffset(),
+				(swipeDigit == 4 ? textHighlightedPaint : textNormalPaint));
+
+		// Note: Digit 5 can not be drawn as it should be placed in the middle
+		// of the cell which could be confusing.
+
+		if (gridSize >= 6) {
+			// Draw digit 6
+			horizontalOffset = (int) ((borderOverlayWidth - textNormalPaint
+					.measureText("6")) / 2);
+			verticalOffset = (int) ((bottom - top - textNormalPaint
+					.getTextSize()) / 2);
+			canvas.drawText("6", right + horizontalOffset,
+					top + verticalOffset + textNormalPaint.getTextSize()
+							- mSwipeBorderPainter.getBottomOffset(),
+					(swipeDigit == 6 ? textHighlightedPaint : textNormalPaint));
+
+			if (gridSize >= 7) {
+				// Draw digit 7
+				horizontalOffset = (int) ((borderOverlayWidth - textNormalPaint
+						.measureText("7")) / 2);
+				canvas.drawText("7", left - borderOverlayWidth
+						+ horizontalOffset, bottom + borderOverlayWidth
+						- mSwipeBorderPainter.getBottomOffset(),
+						(swipeDigit == 7 ? textHighlightedPaint
+								: textNormalPaint));
+
+				if (gridSize >= 8) {
+					// Draw digit 8
+					horizontalOffset = (int) ((right - left - textNormalPaint
+							.measureText("8")) / 2);
+					canvas.drawText(
+							"8",
+							left + horizontalOffset,
+							bottom + borderOverlayWidth
+									- mSwipeBorderPainter.getBottomOffset(),
+							(swipeDigit == 8 ? textHighlightedPaint
+									: textNormalPaint));
+
+					if (gridSize >= 9) {
+						// Draw digit 9
+						horizontalOffset = (int) ((borderOverlayWidth - textNormalPaint
+								.measureText("9")) / 2);
+						canvas.drawText(
+								"9",
+								right + horizontalOffset,
+								bottom + borderOverlayWidth
+										- mSwipeBorderPainter.getBottomOffset(),
+								(swipeDigit == 9 ? textHighlightedPaint
+										: textNormalPaint));
+					}
+				}
+			}
+		}
+
+		// Draw a line from the middle of the selected cell to the current swipe
+		// position to indicate which digit will be selected on release.
+		canvas.drawLine(left + (cellSize / 2), top + (cellSize / 2),
+				mXPosSwipe, mYPosSwipe, mSwipeBorderPainter.getSwipeLinePaint());
 	}
 
 	/**
@@ -471,21 +726,29 @@ public class GridCell {
 	 * @return A string representation of the grid cell.
 	 */
 	public String toStorageString() {
-		String storageString = SAVE_GAME_CELL_VERSION_02
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mCellNumber
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mRow
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mColumn
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mCageText
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mCorrectValue
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + mUserValue
-				+ GameFile.FIELD_DELIMITER_LEVEL1;
+		String storageString = SAVE_GAME_CELL_LINE
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ mCellNumber
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + mRow
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ mColumn
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ mCageText
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ mCorrectValue
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ mUserValue
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1;
 		for (int possible : mPossibles) {
-			storageString += possible + GameFile.FIELD_DELIMITER_LEVEL2;
+			storageString += possible
+					+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2;
 		}
-		storageString += GameFile.FIELD_DELIMITER_LEVEL1
-				+ Boolean.toString(mInvalidHighlight)
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + Boolean.toString(mCheated)
-				+ GameFile.FIELD_DELIMITER_LEVEL1 + Boolean.toString(mSelected);
+		storageString += SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ Boolean.toString(mInvalidUserValueHighlight)
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ Boolean.toString(mRevealed)
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ Boolean.toString(mSelected);
 
 		return storageString;
 	}
@@ -499,15 +762,20 @@ public class GridCell {
 	 * @return True in case the given line contains cell information and is
 	 *         processed correctly. False otherwise.
 	 */
-	public boolean fromStorageString(String line) {
-		String[] cellParts = line.split(GameFile.FIELD_DELIMITER_LEVEL1);
+	public boolean fromStorageString(String line, int savedWithRevisionNumber) {
+		String[] cellParts = line
+				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1);
 
-		int cellInformationVersion = 0;
-		if (cellParts[0].equals(SAVE_GAME_CELL_VERSION_01)) {
-			cellInformationVersion = 1;
-		} else if (cellParts[0].equals(SAVE_GAME_CELL_VERSION_02)) {
-			cellInformationVersion = 2;
-		} else {
+		// Only process the storage string if it starts with the correct
+		// identifier.
+		if (cellParts[0].equals(SAVE_GAME_CELL_LINE) == false) {
+			return false;
+		}
+
+		// When upgrading to MathDoku v2 the history is not converted. As of
+		// revision 369 all logic for handling games stored with older versions
+		// is removed.
+		if (savedWithRevisionNumber <= 368) {
 			return false;
 		}
 
@@ -519,21 +787,20 @@ public class GridCell {
 		mCageText = cellParts[index++];
 		mCorrectValue = Integer.parseInt(cellParts[index++]);
 		mUserValue = Integer.parseInt(cellParts[index++]);
-		if ((cellInformationVersion == 1 && index < cellParts.length)
-				|| cellInformationVersion > 1) {
-			if (!cellParts[index].equals("")) {
-				for (String possible : cellParts[index]
-						.split(GameFile.FIELD_DELIMITER_LEVEL2)) {
-					togglePossible(Integer.parseInt(possible));
-				}
+
+		// Get possible values
+		if (!cellParts[index].equals("")) {
+			for (String possible : cellParts[index]
+					.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
+				addPossible(Integer.parseInt(possible));
 			}
-			index++;
 		}
-		if (cellInformationVersion > 1) {
-			mInvalidHighlight = Boolean.parseBoolean(cellParts[index++]);
-			mCheated = Boolean.parseBoolean(cellParts[index++]);
-			mSelected = Boolean.parseBoolean(cellParts[index++]);
-		}
+		index++;
+
+		mInvalidUserValueHighlight = Boolean.parseBoolean(cellParts[index++]);
+		mRevealed = Boolean.parseBoolean(cellParts[index++]);
+		mSelected = Boolean.parseBoolean(cellParts[index++]);
+
 		return true;
 	}
 
@@ -541,10 +808,20 @@ public class GridCell {
 		return mCellNumber;
 	}
 
+	/**
+	 * The column number (zero based) of the cell.
+	 * 
+	 * @return
+	 */
 	public int getColumn() {
 		return mColumn;
 	}
 
+	/**
+	 * The row number (zero based) of the cell.
+	 * 
+	 * @return
+	 */
 	public int getRow() {
 		return mRow;
 	}
@@ -633,10 +910,20 @@ public class GridCell {
 	}
 
 	/**
-	 * Confirm that the user has cheated to reveal the content of cell.
+	 * Confirm that the user has revealed the content of the cell.
 	 */
-	public void setCheated() {
-		this.mCheated = true;
+	public void setRevealed() {
+		// Correct grid statistics
+		if (mRevealed == false && mGrid != null) {
+			GridStatistics gridStatistics = mGrid.getGridStatistics();
+			gridStatistics
+					.decreaseCounter(isUserValueSet() ? StatisticsCounterType.CELLS_FILLED
+							: StatisticsCounterType.CELLS_EMPTY);
+			gridStatistics
+					.increaseCounter(StatisticsCounterType.CELLS_REVEALED);
+		}
+
+		mRevealed = true;
 	}
 
 	/**
@@ -647,19 +934,6 @@ public class GridCell {
 	 */
 	public void setGridReference(Grid grid) {
 		mGrid = grid;
-	}
-
-	public void checkWithOtherValuesInRowAndColumn() {
-		if (isUserValueSet()) {
-			if (mGrid.getNumValueInCol(this) > 1
-					|| mGrid.getNumValueInRow(this) > 1) {
-				// Value has been used in another cell in the same row or
-				// column.
-				mShowWarning = true;
-				return;
-			}
-		}
-		mShowWarning = false;
 	}
 
 	/**
@@ -717,7 +991,7 @@ public class GridCell {
 		Path path = new Path();
 		path.moveTo(left, top);
 		path.lineTo(right, bottom);
-		canvas.drawPath(path, mCellPainter.mUnusedBorderPaint);
+		canvas.drawPath(path, mCellPainter.getUnusedBorderPaint());
 	}
 
 	public GridCell getCellAbove() {
@@ -825,5 +1099,54 @@ public class GridCell {
 		} else {
 			return BorderType.NOT_SELECTED__GOOD_MATH;
 		}
+	}
+
+	/**
+	 * Checks if this cell is emtpy, i.e. it does not contain a user value nor
+	 * possible values.
+	 * 
+	 * @return True in case the cell is empty. False otherwise.
+	 */
+	public boolean isEmpty() {
+		return (mUserValue == 0 && mPossibles.size() == 0);
+	}
+
+	/**
+	 * Get the coordinates of the center of the cell.
+	 * 
+	 * @param gridBorderWidth
+	 *            The width of the border for which has to be corrected.
+	 * @return The (x,y) coordinated of the center of the cell.
+	 */
+	public float[] getCellCentreCoordinates(float gridBorderWidth) {
+		// Get cell size
+		int cellSize = (int) this.mCellPainter.getCellSize();
+
+		float top = Math.round(gridBorderWidth + cellSize * this.mRow);
+		// float bottom = this.mPosY + cellSize;
+		float left = Math.round(gridBorderWidth + cellSize * this.mColumn);
+		// float right = this.mPosX + cellSize;
+
+		return new float[] { left + (cellSize / 2), top + (cellSize / 2) };
+	}
+
+	/**
+	 * Set the duplicate highlight of the cell.
+	 * 
+	 * @param higlighted
+	 *            True in case the duplicate highlight is visble. False
+	 *            otherwise.
+	 */
+	public void setDuplicateHighlight(boolean highlight) {
+		mDuplicateValueHighlight = highlight;
+	}
+
+	/**
+	 * Checks is the user value of the cell was revealed.
+	 * 
+	 * @return True in case the cell has been revealed. False otherwise.
+	 */
+	public boolean isRevealed() {
+		return mRevealed;
 	}
 }

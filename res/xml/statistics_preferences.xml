@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <CheckBoxPreference
+        android:key="statistics_setting_chart_description_visible"
+        android:summary="@string/statistics_setting_chart_description_visible_summary"
+        android:title="@string/statistics_setting_chart_description_visible_title" />
+
+    <ListPreference
+        android:entries="@array/statistics_setting_elapsed_time_chart_maximum_games_entries"
+        android:entryValues="@array/statistics_setting_elapsed_time_chart_maximum_games_entries"
+        android:key="statistics_setting_elapsed_time_chart_maximum_games"
+        android:summary="@string/statistics_setting_elapsed_time_chart_maximum_games_summary"
+        android:title="@string/statistics_setting_elapsed_time_chart_maximum_games_title" />
+
+</PreferenceScreen>
