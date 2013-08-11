@@ -38,7 +38,6 @@ public class SwipeBorderPainter extends BorderPainter {
 
 		mMaybeValueBackgroundBorderPaint = new Paint();
 		mMaybeValueBackgroundBorderPaint.setStyle(Paint.Style.STROKE);
-		mMaybeValueBackgroundBorderPaint.setAlpha(150);
 
 		// The digit painters
 		mNormalDigitPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -64,6 +63,7 @@ public class SwipeBorderPainter extends BorderPainter {
 
 		mMaybeValueBackgroundBorderPaint.setColor(mPainter
 				.getHighlightedTextColorMaybeInputMode());
+		mMaybeValueBackgroundBorderPaint.setAlpha(200);
 
 		mNormalDigitPaint.setTypeface(mPainter.getTypeface());
 
