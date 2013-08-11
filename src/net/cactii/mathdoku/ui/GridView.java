@@ -40,6 +40,11 @@ public class GridView extends View implements OnTouchListener {
 	// Listeners
 	public OnGridTouchListener mTouchedListener;
 	private OnTickerTapeChangedListener mOnTickerTapeChangedListener;
+	private OnInputModeChangedListener mOnInputModeChangedListener;
+
+	public interface OnInputModeChangedListener {
+		public abstract void onInputModeChanged(InputMode inputMode);
+	}
 
 	// Size (in cells and pixels) of the grid view and size (in pixel) of cells
 	// in grid
@@ -63,7 +68,7 @@ public class GridView extends View implements OnTouchListener {
 		MAYBE, // Digits entered are handled to toggle the possible value on/of
 	};
 
-	InputMode mInputMode;
+	private InputMode mInputMode;
 
 	// Reference to the last ticker tape started by the grid view.
 	TickerTape mTickerTape;
@@ -93,6 +98,7 @@ public class GridView extends View implements OnTouchListener {
 		// Set listeners
 		this.setOnTouchListener(this);
 		mOnTickerTapeChangedListener = null;
+		mOnInputModeChangedListener = null;
 	}
 
 	public void setOnGridTouchListener(OnGridTouchListener listener) {
@@ -124,8 +130,8 @@ public class GridView extends View implements OnTouchListener {
 				mSwipeMotion = null;
 			} else {
 				if (mSwipeMotion.isDoubleTap()) {
-					mInputMode = (mInputMode == InputMode.MAYBE ? InputMode.NORMAL
-							: InputMode.MAYBE);
+					setInputMode((mInputMode == InputMode.MAYBE ? InputMode.NORMAL
+							: InputMode.MAYBE));
 					mSwipeMotion.clearDoubleTap();
 				} else {
 					GridCell selectedCell = mSwipeMotion.getTouchDownCell();
@@ -180,7 +186,7 @@ public class GridView extends View implements OnTouchListener {
 						}
 					}
 				} else if (mSwipeMotion.isDoubleTap()) {
-					mInputMode = (mInputMode == InputMode.MAYBE ? InputMode.NORMAL
+					setInputMode(mInputMode == InputMode.MAYBE ? InputMode.NORMAL
 							: InputMode.MAYBE);
 					mSwipeMotion.clearDoubleTap();
 
@@ -450,7 +456,7 @@ public class GridView extends View implements OnTouchListener {
 		mSwipeMotion = null;
 
 		// Set default input mode to normal
-		mInputMode = InputMode.NORMAL;
+		setInputMode(InputMode.NORMAL);
 
 		if (mOnTickerTapeChangedListener != null
 				&& mPreferences.getSwipeValidMotionCounter() < 30) {
@@ -747,5 +753,42 @@ public class GridView extends View implements OnTouchListener {
 
 		// Inform listeners about the new ticker tape.
 		mOnTickerTapeChangedListener.onTickerTapeChanged(mTickerTape);
+	}
+
+	/**
+	 * Get the input mode in which the grid view is displayed.
+	 * 
+	 * @return The input mode in which the grid view is displayed.
+	 */
+	public InputMode getInputMode() {
+		return mInputMode;
+	}
+
+	/**
+	 * Set the input mode of the grid view to the given value.
+	 * 
+	 * @param inputMode
+	 *            The input mode to be set.
+	 */
+	public void setInputMode(InputMode inputMode) {
+		mInputMode = inputMode;
+		invalidate();
+
+		// Inform listeners about change in input mode
+		if (mOnInputModeChangedListener != null) {
+			mOnInputModeChangedListener.onInputModeChanged(mInputMode);
+		}
+	}
+
+	/**
+	 * Register the listener to call in case the ticker tape for the hints has
+	 * to be set.
+	 * 
+	 * @param onHintChangedListener
+	 *            The listener to call in case a hint has to be set.
+	 */
+	public void setOnInputModeChangedListener(
+			OnInputModeChangedListener onInputChangedModeListener) {
+		mOnInputModeChangedListener = onInputChangedModeListener;
 	}
 }

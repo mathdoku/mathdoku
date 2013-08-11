@@ -25,11 +25,13 @@ import net.cactii.mathdoku.tip.TipStatistics;
 import net.cactii.mathdoku.util.FeedbackEmail;
 import net.cactii.mathdoku.util.SharedPuzzle;
 import net.cactii.mathdoku.util.Util;
+import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentManager;
@@ -985,6 +987,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	 * the left side of the screen before the archive or statistics are unlocked
 	 * it will be less confusing.
 	 */
+	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	private void setNavigationDrawer() {
 		// Determine the item which have to be shown in the drawer.
 		boolean openDrawer = false;
@@ -1018,7 +1021,9 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		// app icon clickable in order to display the drawer.
 		final ActionBar actionBar = getActionBar();
 		if (actionBar != null && mDrawerIconVisible) {
-			actionBar.setHomeButtonEnabled(true);
+			if (android.os.Build.VERSION.SDK_INT >= 14) {
+				actionBar.setHomeButtonEnabled(true);
+			}
 			actionBar.setDisplayHomeAsUpEnabled(true);
 		}
 

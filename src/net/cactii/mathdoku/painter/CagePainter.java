@@ -5,11 +5,11 @@ import android.graphics.Paint;
 
 public class CagePainter extends BorderPainter {
 
-	private Paint mBorderSelectedPaint;
-	private Paint mBorderBadMathPaint;
-	private Paint mBorderSelectedBadMathPaint;
+	private final Paint mBorderSelectedPaint;
+	private final Paint mBorderBadMathPaint;
+	private final Paint mBorderSelectedBadMathPaint;
 
-	private Paint mTextPaint;
+	private final Paint mTextPaint;
 	private float mTextLeftOffset;
 	private float mTextBottomOffset;
 

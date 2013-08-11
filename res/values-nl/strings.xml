@@ -401,6 +401,13 @@
     <string name="statistics_setting_elapsed_time_chart_maximum_games_title">Aantal puzzels in grafiek speeltijd</string>
     <string name="statistics_setting_elapsed_time_chart_maximum_games_summary">Toon maximaal %1$d puzzels in de grafiek speeltijd</string>
 
+    <!-- PUZZLE FRAGMENT - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The text which is shown on a long press on the switch input mode image. -->
+    <string name="input_mode_changed_to_normal">Gewisseld naar invoer van normale waarden.\nDubbel tik op een cel om te wisselen naar invoer van mogelijke waarden.</string>
+    <string name="input_mode_changed_to_maybe">Gewisseld naar invoer van mogelijke waarden.\nDubbel tik op een cel om te wisselen naar invoer van normale waarden.</string>
+
     <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 

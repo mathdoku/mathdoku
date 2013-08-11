@@ -16,6 +16,7 @@ import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import net.cactii.mathdoku.tip.TipCheat;
 import net.cactii.mathdoku.tip.TipDialog;
 import net.cactii.mathdoku.tip.TipIncorrectValue;
+import net.cactii.mathdoku.ui.GridView.InputMode;
 import net.cactii.mathdoku.util.Util;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -25,23 +26,26 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnCreateContextMenuListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		OnSharedPreferenceChangeListener, OnCreateContextMenuListener,
-		OnTickerTapeChangedListener {
+		OnTickerTapeChangedListener, GridView.OnInputModeChangedListener {
 	public final static String TAG = "MathDoku.PuzzleFragment";
 
 	public static final String BUNDLE_KEY_SOLVING_ATTEMPT_ID = "PuzzleFragment.solvingAttemptId";
@@ -53,18 +57,19 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	// A global painter object to paint the grid in different themes.
 	public Painter mPainter;
 
-	GameTimer mTimerTask;
+	private GameTimer mTimerTask;
 
-	RelativeLayout mTopLayout;
-	RelativeLayout mPuzzleGridLayout;
-	TextView mTimerText;
+	private RelativeLayout mPuzzleGridLayout;
+	private TextView mTimerText;
+	private ImageView mInputModeImage;
+	private TextView mInputModeText;
 
-	RelativeLayout mTickerTapeLayout;
-	TickerTape mTickerTape;
+	private RelativeLayout mTickerTapeLayout;
+	private TickerTape mTickerTape;
 
-	Button mClearButton;
-	Button mUndoButton;
-	View[] mSoundEffectViews;
+	private Button mClearButton;
+	private Button mUndoButton;
+	private View[] mSoundEffectViews;
 
 	public Preferences mMathDokuPreferences;
 
@@ -72,9 +77,9 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 	private View mRootView;
 
-	OnGridFinishedListener mOnGridFinishedListener;
+	private OnGridFinishedListener mOnGridFinishedListener;
 
-	// Container Activity must implement this interface
+	// Container Activity must implement these interfaces
 	public interface OnGridFinishedListener {
 		public void onGridFinishedListener(int solvingAttemptId);
 	}
@@ -112,7 +117,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		mMathDokuPreferences.mSharedPreferences
 				.registerOnSharedPreferenceChangeListener(this);
 
-		mTopLayout = (RelativeLayout) mRootView.findViewById(R.id.topLayout);
 		mPuzzleGridLayout = (RelativeLayout) mRootView
 				.findViewById(R.id.puzzleGrid);
 		mGridView = (GridView) mRootView.findViewById(R.id.gridView);
@@ -167,6 +171,62 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 		mGridView.setFocusable(true);
 		mGridView.setFocusableInTouchMode(true);
+
+		// Input Mode Image.
+		mInputModeImage = (ImageView) mRootView
+				.findViewById(R.id.input_mode_image);
+		mInputModeText = (TextView) mRootView
+				.findViewById(R.id.input_mode_text);
+		// On click directly toggle the input mode.
+		mInputModeImage.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (mGridView != null && mGrid != null) {
+					// Toggle input mode
+					mGridView
+							.setInputMode(mGridView.getInputMode() == InputMode.NORMAL ? InputMode.MAYBE
+									: InputMode.NORMAL);
+				}
+			}
+		});
+		// On a long press, toggle the input mode and show a message that mode
+		// can also be change with double tap.
+		mInputModeImage.setOnLongClickListener(new OnLongClickListener() {
+
+			@Override
+			public boolean onLongClick(View v) {
+				if (mGridView != null && mGrid != null) {
+					// Toggle input mode
+					mGridView
+							.setInputMode(mGridView.getInputMode() == InputMode.NORMAL ? InputMode.MAYBE
+									: InputMode.NORMAL);
+
+					// Display message
+					mInputModeText.setVisibility(View.VISIBLE);
+					mInputModeText
+							.setText(mGridView.getInputMode() == InputMode.NORMAL ? R.string.input_mode_changed_to_normal
+									: R.string.input_mode_changed_to_maybe);
+					mInputModeText.invalidate();
+
+					// Hide the message after 3000 milliseconds.
+					final Handler handler = new Handler();
+					handler.postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							if (mInputModeText != null) {
+								mInputModeText.setVisibility(View.GONE);
+							}
+						}
+					}, 3000);
+
+					return true;
+				}
+				return false;
+			}
+		});
+
+		mGridView.setOnInputModeChangedListener(this);
 
 		registerForContextMenu(mGridView);
 
@@ -833,5 +893,48 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 */
 	public int getSolvingAttemptId() {
 		return mGrid.getSolvingAttemptId();
+	}
+
+	/**
+	 * Checks whether the normal input mode menu item is visible.
+	 * 
+	 * @return
+	 */
+	protected boolean showInputModeNormal() {
+		return (mGrid != null && mGrid.isActive() && mGridView != null && mGridView
+				.getInputMode() == InputMode.MAYBE);
+	}
+
+	/**
+	 * Checks whether the maybe input mode menu item is visible.
+	 * 
+	 * @return
+	 */
+	protected boolean showInputModeMaybe() {
+		return (mGrid != null && mGrid.isActive() && mGridView != null && mGridView
+				.getInputMode() == InputMode.NORMAL);
+	}
+
+	/**
+	 * Set the input mode of the grid view for this puzzle fragment.
+	 * 
+	 * @param inputMode
+	 *            The input mode to be set.
+	 */
+	protected void setInputMode(InputMode inputMode) {
+		if (mGridView != null) {
+			mGridView.setInputMode(inputMode);
+		}
+	}
+
+	@Override
+	public void onInputModeChanged(InputMode inputMode) {
+		// Set the input mode image to the new value of the input mode
+		if (mInputModeImage != null) {
+			mInputModeImage
+					.setImageResource((inputMode == InputMode.NORMAL ? R.drawable.input_mode_normal
+							: R.drawable.input_mode_maybe));
+		}
+
 	}
 }

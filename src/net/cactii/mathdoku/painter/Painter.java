@@ -10,10 +10,10 @@ public class Painter {
 	private static Painter mPainterSingletonInstance = null;
 
 	// Typeface to be used
-	private Typeface mTypefaceTheme;
+	private final Typeface mTypefaceTheme;
 
 	// Path effect to be used (theme specific)
-	private PathEffect mPathEffectTheme;
+	private final PathEffect mPathEffectTheme;
 
 	// Text colors (dependent on theme) per input mode
 	private int mHighlightedTextColorNormalInputMode;
@@ -24,26 +24,29 @@ public class Painter {
 	public enum GridTheme {
 		LIGHT, DARK
 	};
-	public enum DigitPainterMode {INPUT_MODE_BASED, MONOCHROME};
+
+	public enum DigitPainterMode {
+		INPUT_MODE_BASED, MONOCHROME
+	};
 
 	// Theme installed in painter
 	private GridTheme mTheme;
 
 	// Reference to all sub painters
-	private GridPainter mGridPainter;
-	private CagePainter mCagePainter;
-	private CellPainter mCellPainter;
-	private UserValuePainter mUserValuePainter;
-	private MaybeValuePainter mMaybeGridPainter;
-	private MaybeValuePainter mMaybeLinePainter;
-	private SwipeBorderPainter mSwipeBorderPainter;
-	private TickerTapePainter mTickerTapePainter;
-	private PagerTabStripPainter mPagerTabStripPainter;
-	private NavigationDrawerPainter mNavigationDrawerPainter;
-	private SolvedTextPainter mSolvedTextPainter;
+	private final GridPainter mGridPainter;
+	private final CagePainter mCagePainter;
+	private final CellPainter mCellPainter;
+	private final UserValuePainter mUserValuePainter;
+	private final MaybeValuePainter mMaybeGridPainter;
+	private final MaybeValuePainter mMaybeLinePainter;
+	private final SwipeBorderPainter mSwipeBorderPainter;
+	private final TickerTapePainter mTickerTapePainter;
+	private final PagerTabStripPainter mPagerTabStripPainter;
+	private final NavigationDrawerPainter mNavigationDrawerPainter;
+	private final SolvedTextPainter mSolvedTextPainter;
 
 	// Background color of buttons and ticker tape
-	private int mButtonBackgroundColor;
+	private final int mButtonBackgroundColor;
 
 	/**
 	 * Creates a new instance of {@link #GridPainter()}.
@@ -184,15 +187,18 @@ public class Painter {
 	 *            The theme for which the path effect has to be set.
 	 */
 	private void setTextColors(GridTheme gridTheme) {
+		// Colors of highlighted digits (also use as base for the swipe border
+		// colors) should be equal for all themes as the input_mode-images are
+		// currently only available in this color set.
+		mHighlightedTextColorNormalInputMode = 0xFF0C97FA;
+		mHighlightedTextColorMaybeInputMode = 0xFFFF8A00;
+
+		// The default color will of course be set relevant to the theme.
 		switch (gridTheme) {
 		case LIGHT:
-			mHighlightedTextColorNormalInputMode = 0xFF0C97FA;
-			mHighlightedTextColorMaybeInputMode = 0xFFFF8A00;
 			mDefaultTextColor = 0xFF212121;
 			break;
 		case DARK:
-			mHighlightedTextColorNormalInputMode = 0xFF9080ED;
-			mHighlightedTextColorMaybeInputMode = 0xFFE61EBE;
 			mDefaultTextColor = 0xFFFFFFFF;
 			break;
 		}
@@ -332,7 +338,7 @@ public class Painter {
 	public SolvedTextPainter getSolvedTextPainter() {
 		return mSolvedTextPainter;
 	}
-	
+
 	/**
 	 * Set the color mode of the digit painters.
 	 * 
@@ -344,6 +350,6 @@ public class Painter {
 		mMaybeGridPainter.setColorMode(digitPainterMode);
 		mMaybeLinePainter.setColorMode(digitPainterMode);
 		mUserValuePainter.setColorMode(digitPainterMode);
-		
+
 	}
 }

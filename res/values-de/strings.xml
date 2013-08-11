@@ -434,6 +434,16 @@
     <string name="statistics_setting_elapsed_time_chart_maximum_games_title">Number of games in elapsed time chart</string>
     <string name="statistics_setting_elapsed_time_chart_maximum_games_summary">Display no more than %1$d games in elapsed time chart</string>
 
+    <!-- PUZZLE FRAGMENT - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- TODO: TRANSLATE ENTIRE SECTION -->
+
+
+    <!-- The text which is shown on a long press on the switch input mode image. -->
+    <string name="input_mode_changed_to_normal">Switched to normal input mode\nDouble tap a cell to switch to maybe mode.</string>
+    <string name="input_mode_changed_to_maybe">Switched to maybe input mode\nDouble tap a cell to switch to normal mode.</string>
+
     <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
