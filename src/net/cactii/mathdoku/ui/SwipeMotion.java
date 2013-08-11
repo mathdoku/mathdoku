@@ -8,12 +8,12 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 // Definition of swipe motion
-class SwipeMotion {
+public class SwipeMotion {
 	private static final String TAG = "MathDoku.SwipeMotion";
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
-	public static final boolean DEBUG_SWIPE_MOTION = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
+	public static final boolean DEBUG_SWIPE_MOTION = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && true;
 
 	// Indexes for coordinates arrays
 	private static final int X_POS = 0;
@@ -31,12 +31,12 @@ class SwipeMotion {
 	protected static final int DIGIT_UNDETERMINDED = -1;
 
 	// The grid and its size for which a swipe motion is made.
-	private Grid mGrid;
-	private int mGridSize;
+	private final Grid mGrid;
+	private final int mGridSize;
 
 	// Size of the border and cells in pixels
-	private float mGridViewBorderWidth;
-	private float mGridCellSize;
+	private final float mGridViewBorderWidth;
+	private final float mGridCellSize;
 
 	// Coordinates of the cell in the grid for which the touch down was
 	// registered. Will be kept statically so it can be compared with the
@@ -54,7 +54,7 @@ class SwipeMotion {
 	private int[] mCurrentSwipePositionCellCoordinates = { -1, -1 };
 
 	// Coordinates of the current coordinates (pixels) of the swipe.
-	private float[] mCurrentSwipePositionPixelCoordinates = { -1f, -1f };
+	private final float[] mCurrentSwipePositionPixelCoordinates = { -1f, -1f };
 
 	// The resulting digit based on the previous and the current swipe position
 	private int mPreviousSwipePositionDigit;
@@ -73,6 +73,14 @@ class SwipeMotion {
 	// Event time at which the previous swipe position was advised to be updated
 	private long mPreviousSwipePositionEventTime = -1l;
 	private long mCurrentSwipePositionEventTime = -1l;
+
+	// The swipe circle has to display a maximum of 9 digits. So the circle has
+	// to be divided in 9 segments of each 40 degrees width. The digits will be
+	// arranged clockwise.
+	// The swipe angle offset is used for the segment boundary between digits 9
+	// and 1.
+	public final static int SWIPE_ANGLE_OFFSET_91 = -170;
+	public final static int SWIPE_SEGMENT_ANGLE = 360 / 9;
 
 	/**
 	 * Creates a new instance of the {@see SwipeMotion}.
@@ -435,15 +443,16 @@ class SwipeMotion {
 		float[] startCoordinates = getTouchDownCell().getCellCentreCoordinates(
 				mGridViewBorderWidth);
 
-		// Compute current swipe position relative to start position of swipe.
-		// Note the delta's are computed in such a way that we can compute the
-		// angle between a horizontal line which crosses the start coordinates
-		// and the swipe line.
-		float deltaX = startCoordinates[X_POS]
-				- mCurrentSwipePositionPixelCoordinates[X_POS];
-		float deltaY = startCoordinates[Y_POS]
-				- mCurrentSwipePositionPixelCoordinates[Y_POS];
-		double angle = Math.toDegrees(Math.atan2(deltaY, deltaX));
+		// Compute current swipe position by measuring the angle of the current
+		// swipe position with respect to the start position.
+		//
+		float deltaX = mCurrentSwipePositionPixelCoordinates[X_POS]
+				- startCoordinates[X_POS];
+		float deltaY = mCurrentSwipePositionPixelCoordinates[Y_POS]
+				- startCoordinates[Y_POS];
+		double angle = Math.toDegrees(Math.atan2(deltaY, deltaX))
+				+ (-1 * SWIPE_ANGLE_OFFSET_91);
+		int digit = (angle < 0 ? 9 : (int) (angle / SWIPE_SEGMENT_ANGLE) + 1);
 
 		if (DEBUG_SWIPE_MOTION) {
 			Log.i(TAG, "getDigit");
@@ -454,39 +463,10 @@ class SwipeMotion {
 					+ mCurrentSwipePositionPixelCoordinates[Y_POS] + ")");
 			Log.i(TAG, " - deltaX = " + deltaX + " - deltaY = " + deltaY);
 			Log.i(TAG, " - angle = " + angle);
+			Log.i(TAG, " - digit = " + digit);
 		}
 
-		// Starting from the horizontal line which crosses the start coordinate
-		// we will divide the circle in 16 segments of each 22.5 degrees. Each
-		// digit (1 - 4 and 6 to 9) will be associated with two segments. Note
-		// that for segments below the x-asis the segments are order
-		// counter-clockwise.
-		if (angle >= 0) {
-			if (angle <= 22.5) {
-				return 4;
-			} else if (angle <= 22.5 + 45) {
-				return 1;
-			} else if (angle <= 22.5 + 90) {
-				return 2;
-			} else if (angle <= 22.5 + 135) {
-				return 3;
-			} else {
-				return 6;
-			}
-		} else {
-			angle *= -1;
-			if (angle <= 22.5) {
-				return 4;
-			} else if (angle <= 22.5 + 45) {
-				return 7;
-			} else if (angle <= 22.5 + 90) {
-				return 8;
-			} else if (angle <= 22.5 + 135) {
-				return 9;
-			} else {
-				return 6;
-			}
-		}
+		return digit;
 	}
 
 	/**
@@ -530,5 +510,20 @@ class SwipeMotion {
 	 */
 	public void clearDoubleTap() {
 		mDoubleTapDetected = false;
+	}
+
+	/**
+	 * Get the angle to the middle of the segment which is used to select the
+	 * given digit.
+	 * 
+	 * @param digit
+	 *            The digit for which the middle of the swipe segment has to be
+	 *            determined.
+	 * @return The angle to the middle of the segment which is used to select
+	 *         the given digit.
+	 */
+	public static int getAngleCenterSwipeSegment(int digit) {
+		return ((digit - 1) * SWIPE_SEGMENT_ANGLE) + SWIPE_ANGLE_OFFSET_91
+				+ (SWIPE_SEGMENT_ANGLE / 2);
 	}
 }

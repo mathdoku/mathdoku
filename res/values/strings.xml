@@ -267,7 +267,6 @@
     <!-- Hint to finish swiping to select a digit. -->
     <string name="hint_swipe_rotate">Rotate the swipe line to select a digit. End the swipe when the appropriate digit is highlighted.</string>
     <string name="hint_swipe_release">Stop swiping to select the highlighted digit or rotate the swipe line to select another digit.</string>
-    <string name="hint_swipe_digit_5">To select a 5, swipe outside the selected cell and end this swipe in the cell where you started this swipe.</string>
     <string name="hint_swipe_valid_digit_completed">You have just completed a swipe for digit %1$s.</string>
     <string name="hint_swipe_invalid_digit_completed">Swiping in this direction will reveal a digit when playing a bigger puzzle.</string>
 
@@ -319,10 +318,6 @@
     <!-- Title, and text for tip "ArchiveAvailable" which explains about this new navigation option. -->
     <string name="dialog_tip_archive_available_title">Archive available</string>
     <string name="dialog_tip_archive_available_text">Each game you have created is stored in the \'Archive\'. The \'Archive\' can be used to review games which you have played before.\n\nYou can view the archive from the navigation menu. The navigation menu can be opened by tapping the MathDoku icon.</string>
-
-    <!-- Title, and text for tip "Swipe digiti 5" which explains how to make the swipe motion for digit 5. -->
-    <string name="dialog_tip_swipe_digit_5_title">Swiping a 5</string>
-    <string name="dialog_tip_swipe_digit_5_text">Entering a five into a cell requires a different swipe movement compared to the other digits.\nStart a swipe movement from the cell in which you want to enter the five. Move outside this cell, still continue swiping. Finally move back to the selected cell and release the swipe motion.\nQuickest motion is to draw a straight line just outside the cell and straight back. Or, draw a circle starting and ending at the cell in which you want to enter the five.</string>
 
     <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

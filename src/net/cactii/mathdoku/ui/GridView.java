@@ -16,7 +16,6 @@ import net.cactii.mathdoku.tip.TipBadCageMath;
 import net.cactii.mathdoku.tip.TipDuplicateValue;
 import net.cactii.mathdoku.tip.TipIncorrectValue;
 import net.cactii.mathdoku.tip.TipOrderOfValuesInCage;
-import net.cactii.mathdoku.tip.TipSwipeDigit5;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -337,12 +336,6 @@ public class GridView extends View implements OnTouchListener {
 					}
 				}
 			}
-			
-			
-			// Check whether the motion for swipe 5 should be explained in a tip.
-			if (TipSwipeDigit5.toBeDisplayed(mPreferences, mGrid)) {
-				new TipSwipeDigit5(mContext).show();
-			}
 		}
 
 		// Each cell in the same column or row as the given cell has to be
@@ -412,7 +405,7 @@ public class GridView extends View implements OnTouchListener {
 							mPreferences.isColoredDigitsVisible() ? DigitPainterMode.INPUT_MODE_BASED
 									: DigitPainterMode.MONOCHROME);
 			for (GridCell cell : mGrid.mCells) {
-				cell.draw(canvas, mGridBorderWidth, mInputMode);
+				cell.draw(canvas, mGridBorderWidth, mInputMode, 0);
 			}
 
 			// Draw the overlay for the swipe border around the selected cell
@@ -721,16 +714,6 @@ public class GridView extends View implements OnTouchListener {
 			mTickerTape.addItem(getResources().getString(
 					(selectableDigit ? R.string.hint_swipe_release
 							: R.string.hint_swipe_rotate)));
-		}
-
-		// Add hint for digit 5
-		if (mGrid.getGridSize() >= 5
-				&& mPreferences.getSwipeMotionCounter(5) < 6) {
-			if (mTickerTape == null) {
-				mTickerTape = new TickerTape(mContext);
-			}
-			mTickerTape.addItem(getResources().getString(
-					R.string.hint_swipe_digit_5));
 		}
 
 		// Inform listeners about change

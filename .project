@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>PuzzleFragmentActivity</name>
+	<name>mathdoku</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -30,4 +30,42 @@
 		<nature>com.android.ide.eclipse.adt.AndroidNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<filteredResources>
+		<filter>
+			<id>1376222374366</id>
+			<name></name>
+			<type>30</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-location-matches-false-false-bin</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1376222374369</id>
+			<name></name>
+			<type>30</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-location-matches-false-false-gen</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1376222374372</id>
+			<name></name>
+			<type>30</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-location-matches-false-false-homepage</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1376222374374</id>
+			<name></name>
+			<type>30</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-.svn</arguments>
+			</matcher>
+		</filter>
+	</filteredResources>
 </projectDescription>

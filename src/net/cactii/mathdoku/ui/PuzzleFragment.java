@@ -16,7 +16,6 @@ import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import net.cactii.mathdoku.tip.TipCheat;
 import net.cactii.mathdoku.tip.TipDialog;
 import net.cactii.mathdoku.tip.TipIncorrectValue;
-import net.cactii.mathdoku.tip.TipSwipeDigit5;
 import net.cactii.mathdoku.util.Util;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -389,12 +388,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 				// Handler for solved game
 				setOnSolvedHandler();
-
-				// Check whether the motion for swipe 5 should be explained in a
-				// tip.
-				if (TipSwipeDigit5.toBeDisplayed(mMathDokuPreferences, mGrid)) {
-					new TipSwipeDigit5(mContext).show();
-				}
 			} else {
 				setInactiveGridLoaded();
 				stopTimer();
@@ -731,6 +724,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 									new TipCheat(mContext, cheat)
 											.setOnClickCloseListener(
 													new TipDialog.OnClickCloseListener() {
+														@Override
 														public void onTipDialogClose() {
 															// Notify the
 															// containing

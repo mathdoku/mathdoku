@@ -268,7 +268,6 @@
     <!-- Hint to finish swiping to select a digit. -->
     <string name="hint_swipe_rotate">Draai de veeglijn om een getal te selecteren. Beëindig de veegbeweging om het opgelichte getal te selecteren.</string>
     <string name="hint_swipe_release">Stop met vegen om het opgelichte getal te selecteren, of draai de veeglijn om een ander getal te selecteren.</string>
-    <string name="hint_swipe_digit_5">Om een 5 te selecteren, veeg tot buiten de geselecteerde cel en stop de veegbeweging pas weer in de geselecteerde cel.</string>
     <string name="hint_swipe_valid_digit_completed">Je hebt de veegbeweging voor getal %1$s gemaakt.</string>
     <string name="hint_swipe_invalid_digit_completed">Deze veegrichting onthult alleen een getal in een grotere puzzel.</string>
 
