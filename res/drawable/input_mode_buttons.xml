@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+The input mode buttons have been generated using i-tools.org.
+ 
+This file is solely intended to document how the buttons are generated
+in case future modifications need to be made.
+-->
+
+<br />
+
+<!--
+mdpi	input_mode_normal_light.png	http://i-tools.org/gradient/exec?submit=1&type=radial&size=24&colors=40ADFB+40DCFB&reverse=0&rotate=0&format=apng&alphacolor=%23000000
+mdpi	input_mode_maybe_light.png	http://i-tools.org/gradient/exec?submit=1&type=radial&size=24&colors=FFA337+FFC137&reverse=0&rotate=0&format=apng&alphacolor=%23000000
+
+mdpi	input_mode_normal_dark.png	http://i-tools.org/gradient/exec?submit=1&type=radial&size=24&colors=0976C4+0994C4&reverse=0&rotate=0&format=apng&alphacolor=%23000000
+mdpi	input_mode_maybe_dark.png	http://i-tools.org/gradient/exec?submit=1&type=radial&size=24&colors=C86C00+C88A00&reverse=0&rotate=0&format=apng&alphacolor=%23000000
+
+hdpi	input_mode_normal_light.png	http://i-tools.org/gradient/exec?submit=1&type=radial&size=36&colors=40ADFB+40DCFB&reverse=0&rotate=0&format=apng&alphacolor=%23000000
+hdpi	input_mode_maybe_light.png	http://i-tools.org/gradient/exec?submit=1&type=radial&size=36&colors=FFA337+FFC137&reverse=0&rotate=0&format=apng&alphacolor=%23000000
+
+hdpi	input_mode_normal_dark.png	http://i-tools.org/gradient/exec?submit=1&type=radial&size=36&colors=0976C4+0994C4&reverse=0&rotate=0&format=apng&alphacolor=%23000000
+hdpi	input_mode_maybe_dark.png	http://i-tools.org/gradient/exec?submit=1&type=radial&size=36&colors=C86C00+C88A00&reverse=0&rotate=0&format=apng&alphacolor=%23000000
+
+xhdpi	input_mode_normal_light.png	http://i-tools.org/gradient/exec?submit=1&type=radial&size=48&colors=40ADFB+40DCFB&reverse=0&rotate=0&format=apng&alphacolor=%23000000
+xhdpi	input_mode_maybe_light.png	http://i-tools.org/gradient/exec?submit=1&type=radial&size=48&colors=FFA337+FFC137&reverse=0&rotate=0&format=apng&alphacolor=%23000000
+
+xhdpi	input_mode_normal_dark.png	http://i-tools.org/gradient/exec?submit=1&type=radial&size=48&colors=0976C4+0994C4&reverse=0&rotate=0&format=apng&alphacolor=%23000000
+xhdpi	input_mode_maybe_dark.png	http://i-tools.org/gradient/exec?submit=1&type=radial&size=48&colors=C86C00+C88A00&reverse=0&rotate=0&format=apng&alphacolor=%23000000
+
+xxhdpi	input_mode_normal_light.png	http://i-tools.org/gradient/exec?submit=1&type=radial&size=72&colors=40ADFB+40DCFB&reverse=0&rotate=0&format=apng&alphacolor=%23000000
+xxhdpi	input_mode_maybe_light.png	http://i-tools.org/gradient/exec?submit=1&type=radial&size=72&colors=FFA337+FFC137&reverse=0&rotate=0&format=apng&alphacolor=%23000000
+
+xxhdpi	input_mode_normal_dark.png	http://i-tools.org/gradient/exec?submit=1&type=radial&size=72&colors=0976C4+0994C4&reverse=0&rotate=0&format=apng&alphacolor=%23000000
+xxhdpi	input_mode_maybe_dark.png	http://i-tools.org/gradient/exec?submit=1&type=radial&size=72&colors=C86C00+C88A00&reverse=0&rotate=0&format=apng&alphacolor=%23000000
+-->

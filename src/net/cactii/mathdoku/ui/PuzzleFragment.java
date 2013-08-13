@@ -43,6 +43,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * @author Paul
+ * 
+ */
 public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		OnSharedPreferenceChangeListener, OnCreateContextMenuListener,
 		OnTickerTapeChangedListener, GridView.OnInputModeChangedListener {
@@ -261,9 +265,14 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	public void setTheme() {
 		mPainter.setTheme(mMathDokuPreferences.getTheme());
 
-		// Invalidate the grid view in order to used the new theme setting
+		// Invalidate the grid view and the input mode button in order to used
+		// the new theme setting
 		if (mGridView != null) {
 			mGridView.invalidate();
+			if (mInputModeImage != null) {
+				setInputModeImage(mGridView.getInputMode());
+				mInputModeImage.invalidate();
+			}
 		}
 	}
 
@@ -929,12 +938,22 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 	@Override
 	public void onInputModeChanged(InputMode inputMode) {
-		// Set the input mode image to the new value of the input mode
-		if (mInputModeImage != null) {
-			mInputModeImage
-					.setImageResource((inputMode == InputMode.NORMAL ? R.drawable.input_mode_normal
-							: R.drawable.input_mode_maybe));
-		}
+		setInputModeImage(inputMode);
+	}
 
+	/**
+	 * Set the input mode image for the given input mode.
+	 * 
+	 * @param inputMode
+	 *            The input mode for which the input mode button has to be set.
+	 */
+	private void setInputModeImage(InputMode inputMode) {
+		// Set the input mode image to the new value of the input mode
+		if (mInputModeImage != null && mPainter != null) {
+			mInputModeImage
+					.setImageResource((inputMode == InputMode.NORMAL ? mPainter
+							.getNormalInputModeButton() : mPainter
+							.getMaybeInputModeButton()));
+		}
 	}
 }

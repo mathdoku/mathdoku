@@ -31,7 +31,6 @@
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/gridView"
             android:layout_alignParentTop="true"
-            android:src="@drawable/input_mode_normal"
             tools:ignore="ContentDescription" />
 
         <TextView

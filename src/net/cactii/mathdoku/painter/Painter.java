@@ -1,6 +1,7 @@
 package net.cactii.mathdoku.painter;
 
 import net.cactii.mathdoku.DigitPositionGrid;
+import net.cactii.mathdoku.R;
 import android.graphics.DashPathEffect;
 import android.graphics.PathEffect;
 import android.graphics.Typeface;
@@ -18,6 +19,8 @@ public class Painter {
 	// Text colors (dependent on theme) per input mode
 	private int mHighlightedTextColorNormalInputMode;
 	private int mHighlightedTextColorMaybeInputMode;
+	private int mNormalInputModeButtonResId;
+	private int mMaybeInputModeButtonResId;
 	private int mDefaultTextColor;
 
 	// Themes available
@@ -128,7 +131,7 @@ public class Painter {
 		mTheme = theme;
 
 		// Change default typeface and path effects
-		setTextColors(theme);
+		setInputModeColors(theme);
 
 		// Propagate theme settings to children
 		mGridPainter.setTheme(theme);
@@ -186,7 +189,7 @@ public class Painter {
 	 * @param gridTheme
 	 *            The theme for which the path effect has to be set.
 	 */
-	private void setTextColors(GridTheme gridTheme) {
+	private void setInputModeColors(GridTheme gridTheme) {
 		// Colors of highlighted digits (also use as base for the swipe border
 		// colors) should be equal for all themes as the input_mode-images are
 		// currently only available in this color set.
@@ -196,9 +199,13 @@ public class Painter {
 		// The default color will of course be set relevant to the theme.
 		switch (gridTheme) {
 		case LIGHT:
+			mMaybeInputModeButtonResId = R.drawable.input_mode_maybe_light;
+			mNormalInputModeButtonResId = R.drawable.input_mode_normal_light;
 			mDefaultTextColor = 0xFF212121;
 			break;
 		case DARK:
+			mMaybeInputModeButtonResId = R.drawable.input_mode_maybe_dark;
+			mNormalInputModeButtonResId = R.drawable.input_mode_normal_dark;
 			mDefaultTextColor = 0xFFFFFFFF;
 			break;
 		}
@@ -351,5 +358,23 @@ public class Painter {
 		mMaybeLinePainter.setColorMode(digitPainterMode);
 		mUserValuePainter.setColorMode(digitPainterMode);
 
+	}
+
+	/**
+	 * Get the normal input mode button.
+	 * 
+	 * @return The normal input mode button.
+	 */
+	public int getNormalInputModeButton() {
+		return mNormalInputModeButtonResId;
+	}
+
+	/**
+	 * Get the maybe input mode button.
+	 * 
+	 * @return The maybe input mode button.
+	 */
+	public int getMaybeInputModeButton() {
+		return mMaybeInputModeButtonResId;
 	}
 }
