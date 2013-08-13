@@ -233,11 +233,6 @@ public class GridView extends View implements OnTouchListener {
 			return true;
 		case MotionEvent.ACTION_MOVE:
 			if (mSwipeMotion != null) {
-				// Check whether the touch down cell was already left once
-				// before this event.
-				boolean hasLeftTouchDownCellBefore = mSwipeMotion
-						.hasLeftTouchDownCell();
-
 				// Update current swipe position
 				mSwipeMotion.update(event);
 
@@ -245,14 +240,6 @@ public class GridView extends View implements OnTouchListener {
 				int swipeDigit = mSwipeMotion.getFocussedDigit();
 				if (swipeDigit >= 1 && swipeDigit <= 9
 						&& mSwipeMotion.hasChangedDigit()) {
-
-					if (hasLeftTouchDownCellBefore == false
-							&& mSwipeMotion.hasLeftTouchDownCell()) {
-						// When the cell is left for the first time, reset the
-						// hints in the ticker tape.
-						setTickerTapeOnLeavingSelectedCell((swipeDigit >= 1 && swipeDigit <= mGrid
-								.getGridSize()));
-					}
 
 					// As the swipe digit has been changed, the grid view needs
 					// to be updated.
@@ -689,41 +676,6 @@ public class GridView extends View implements OnTouchListener {
 
 		// Inform listeners about change
 		if (mOnTickerTapeChangedListener != null) {
-			mOnTickerTapeChangedListener.onTickerTapeChanged(mTickerTape);
-		}
-	}
-
-	/**
-	 * Set the ticker tape for situation in which a swipe motions has just left
-	 * the selected cell for the first time.
-	 * 
-	 * @param The
-	 *            digit
-	 */
-	private void setTickerTapeOnLeavingSelectedCell(boolean selectableDigit) {
-		// Hint can not be determined if grid is empty. Neither will hint be
-		// showed for inactive grids.
-		if (mGrid == null || mGrid.isActive() == false) {
-			return;
-		}
-
-		// Create the ticker tape.
-		if (mTickerTape != null) {
-			mTickerTape.cancel();
-		}
-		mTickerTape = null;
-		if (mPreferences.getSwipeValidMotionCounter() <= 10) {
-			if (mTickerTape == null) {
-				mTickerTape = new TickerTape(mContext);
-			}
-
-			mTickerTape.addItem(getResources().getString(
-					(selectableDigit ? R.string.hint_swipe_release
-							: R.string.hint_swipe_rotate)));
-		}
-
-		// Inform listeners about change
-		if (mTickerTape != null && mOnTickerTapeChangedListener != null) {
 			mOnTickerTapeChangedListener.onTickerTapeChanged(mTickerTape);
 		}
 	}

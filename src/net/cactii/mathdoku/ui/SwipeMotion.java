@@ -60,10 +60,6 @@ public class SwipeMotion {
 	private int mPreviousSwipePositionDigit;
 	private int mCurrentSwipePositionDigit;
 
-	// Status if the swipe motion has left the touch down cell at any
-	// moment.
-	private boolean mHasLeftTouchDownCell;
-
 	// Registration of event time to detect a double tap on the same touch down
 	// cell. It is kept statically in order to compare with the previous swipe
 	// motion.
@@ -111,12 +107,6 @@ public class SwipeMotion {
 		// Store coordinates of previous touch down cell
 		int[] previousTouchDownCellCoordinates = mTouchDownCellCoordinates
 				.clone();
-
-		// While moving the swipe position, a line is drawn from the middle
-		// of the initially touched cell to the middle of the cell which is
-		// hovered by the swipe position. This variable will be set as soon
-		// as the swipe motion leave this cell.
-		mHasLeftTouchDownCell = false;
 
 		// Set the resulting digit for previous to unknown
 		mPreviousSwipePositionDigit = DIGIT_UNDETERMINDED;
@@ -314,23 +304,6 @@ public class SwipeMotion {
 
 		// Determine the digit for the current swipe position
 		mCurrentSwipePositionDigit = getDigit();
-
-		// Check if the touch down cell has been left for the first time.
-		if (mHasLeftTouchDownCell == false
-				&& equalsCoordinatesTouchDownCell(mCurrentSwipePositionCellCoordinates) == false) {
-			mHasLeftTouchDownCell = true;
-		}
-	}
-
-	/**
-	 * Checks whether the swipe motions has left the touch down cell at any
-	 * time.
-	 * 
-	 * @return True in case the swipe motions has left the touch down cell at
-	 *         any time. False otherwise.
-	 */
-	protected boolean hasLeftTouchDownCell() {
-		return mHasLeftTouchDownCell;
 	}
 
 	/**
@@ -430,10 +403,7 @@ public class SwipeMotion {
 	 */
 	private int getDigit() {
 		if (equalsCoordinatesTouchDownCell(mCurrentSwipePositionCellCoordinates)) {
-			// As long as the swipe position has not left the cell, the swipe
-			// digit is undetermined. As the cell has been left at least once,
-			// return to the cell will result in choosing digit 5.
-			return (mHasLeftTouchDownCell ? 5 : DIGIT_UNDETERMINDED);
+			return DIGIT_UNDETERMINDED;
 		}
 
 		// In case the swipe position is not inside the originally selected
