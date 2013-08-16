@@ -29,7 +29,7 @@
             android:id="@+id/input_mode_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/gridView"
+            android:layout_alignLeft="@+id/grid_player_view"
             android:layout_alignParentTop="true"
             tools:ignore="ContentDescription" />
 
@@ -60,7 +60,7 @@
             android:visibility="gone" />
 
         <net.cactii.mathdoku.grid.ui.GridPlayerView
-            android:id="@+id/gridView"
+            android:id="@+id/grid_player_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/input_mode_image"
@@ -79,7 +79,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_below="@+id/gridView"
+            android:layout_below="@+id/grid_player_view"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:paddingTop="10dp" >

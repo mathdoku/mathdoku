@@ -2,7 +2,7 @@ package net.cactii.mathdoku.ui;
 
 import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.grid.Grid;
-import net.cactii.mathdoku.grid.ui.GridPlayerView;
+import net.cactii.mathdoku.grid.ui.GridViewerView;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter;
 import net.cactii.mathdoku.storage.database.GridRow;
@@ -74,7 +74,8 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 						.getButtonBackgroundColor());
 
 		// Load the grid into the grid view.
-		((GridPlayerView) findViewById(R.id.gridView)).loadNewGrid(mGrid);
+		((GridViewerView) findViewById(R.id.grid_viewer_view))
+				.loadNewGrid(mGrid);
 
 		// Display the difficulty rating.
 		final VerticalRatingBar puzzleParameterDifficultyRatingBar = (VerticalRatingBar) findViewById(R.id.puzzleParameterDifficultyRatingBar);

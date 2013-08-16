@@ -12,8 +12,8 @@
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp" >
 
-        <net.cactii.mathdoku.grid.ui.GridPlayerView
-            android:id="@+id/gridView"
+        <net.cactii.mathdoku.grid.ui.GridViewerView
+            android:id="@+id/grid_viewer_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true" />
@@ -25,8 +25,8 @@
             android:id="@+id/puzzleParameterDifficultyRatingBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/gridView"
-            android:layout_toRightOf="@+id/gridView"
+            android:layout_alignTop="@+id/grid_viewer_view"
+            android:layout_toRightOf="@+id/grid_viewer_view"
             android:max="5"
             android:numStars="1"
             android:rating="1"

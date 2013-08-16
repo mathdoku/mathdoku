@@ -6,7 +6,7 @@ import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.grid.DigitPositionGrid;
 import net.cactii.mathdoku.grid.Grid;
-import net.cactii.mathdoku.grid.ui.GridPlayerView;
+import net.cactii.mathdoku.grid.ui.GridViewerView;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.statistics.GridStatistics;
 import net.cactii.mathdoku.util.Util;
@@ -72,13 +72,15 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 
 		// Get preferences
 		mPreferences = Preferences.getInstance();
-		setDisplayChartDescription(mPreferences.isArchiveChartDescriptionVisible());
+		setDisplayChartDescription(mPreferences
+				.isArchiveChartDescriptionVisible());
 		mPreferences.mSharedPreferences
 				.registerOnSharedPreferenceChangeListener(this);
 
 		// Get fragment manager and start a transaction.
-		GridPlayerView mGridPlayerView;
-		mGridPlayerView = (GridPlayerView) rootView.findViewById(R.id.gridView);
+		GridViewerView mGridViewerView;
+		mGridViewerView = (GridViewerView) rootView
+				.findViewById(R.id.grid_viewer_view);
 
 		// Load grid from database
 		Grid grid = new Grid();
@@ -86,7 +88,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 			mGridSize = grid.getGridSize();
 
 			// Load grid into grid view
-			mGridPlayerView.loadNewGrid(grid);
+			mGridViewerView.loadNewGrid(grid);
 
 			// Set background color of button
 			Button archiveReloadButton = (Button) rootView
@@ -107,7 +109,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 
 				// Propagate setting to the grid view for displaying maybe
 				// values (dependent on preferences).
-				mGridPlayerView.setDigitPositionGrid(mDigitPositionGrid);
+				mGridViewerView.setDigitPositionGrid(mDigitPositionGrid);
 
 				// Change text of the reload button below grid
 				archiveReloadButton

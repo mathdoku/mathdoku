@@ -43,8 +43,8 @@
             android:rating="1"
             android:stepSize="1" />
 
-        <net.cactii.mathdoku.grid.ui.GridPlayerView
-            android:id="@+id/gridView"
+        <net.cactii.mathdoku.grid.ui.GridViewerView
+            android:id="@+id/grid_viewer_view"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_alignTop="@+id/puzzleParameterDifficultyRatingBar"

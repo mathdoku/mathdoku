@@ -9,8 +9,8 @@ import net.cactii.mathdoku.grid.CellChange;
 import net.cactii.mathdoku.grid.Grid;
 import net.cactii.mathdoku.grid.GridCage;
 import net.cactii.mathdoku.grid.GridCell;
+import net.cactii.mathdoku.grid.ui.GridInputMode;
 import net.cactii.mathdoku.grid.ui.GridPlayerView;
-import net.cactii.mathdoku.grid.ui.GridPlayerView.InputMode;
 import net.cactii.mathdoku.hint.OnTickerTapeChangedListener;
 import net.cactii.mathdoku.hint.TickerTape;
 import net.cactii.mathdoku.painter.Painter;
@@ -124,7 +124,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 		mPuzzleGridLayout = (RelativeLayout) mRootView
 				.findViewById(R.id.puzzleGrid);
-		mGridPlayerView = (GridPlayerView) mRootView.findViewById(R.id.gridView);
+		mGridPlayerView = (GridPlayerView) mRootView
+				.findViewById(R.id.grid_player_view);
 		mTimerText = (TextView) mRootView.findViewById(R.id.timerText);
 
 		mClearButton = (Button) mRootView.findViewById(R.id.clearButton);
@@ -136,17 +137,19 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		mTickerTapeLayout = (RelativeLayout) mRootView
 				.findViewById(R.id.tickerTapeLayout);
 
-		mSoundEffectViews = new View[] { mGridPlayerView, mClearButton, mUndoButton };
+		mSoundEffectViews = new View[] { mGridPlayerView, mClearButton,
+				mUndoButton };
 
 		// Hide all controls until sure a grid view can be displayed.
 		setNoGridLoaded();
 
-		mGridPlayerView.setOnGridTouchListener(mGridPlayerView.new OnGridTouchListener() {
-			@Override
-			public void gridTouched(GridCell cell) {
-				setClearAndUndoButtonVisibility(cell);
-			}
-		});
+		mGridPlayerView
+				.setOnGridTouchListener(mGridPlayerView.new OnGridTouchListener() {
+					@Override
+					public void gridTouched(GridCell cell) {
+						setClearAndUndoButtonVisibility(cell);
+					}
+				});
 		mGridPlayerView.setOnTickerTapeChangedListener(this);
 		mClearButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -189,9 +192,9 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			public void onClick(View v) {
 				if (mGridPlayerView != null && mGrid != null) {
 					// Toggle input mode
-					mGridPlayerView
-							.setInputMode(mGridPlayerView.getInputMode() == InputMode.NORMAL ? InputMode.MAYBE
-									: InputMode.NORMAL);
+					mGridPlayerView.setInputMode(mGridPlayerView
+							.getGridInputMode() == GridInputMode.NORMAL ? GridInputMode.MAYBE
+							: GridInputMode.NORMAL);
 				}
 			}
 		});
@@ -203,14 +206,14 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			public boolean onLongClick(View v) {
 				if (mGridPlayerView != null && mGrid != null) {
 					// Toggle input mode
-					mGridPlayerView
-							.setInputMode(mGridPlayerView.getInputMode() == InputMode.NORMAL ? InputMode.MAYBE
-									: InputMode.NORMAL);
+					mGridPlayerView.setInputMode(mGridPlayerView
+							.getGridInputMode() == GridInputMode.NORMAL ? GridInputMode.MAYBE
+							: GridInputMode.NORMAL);
 
 					// Display message
 					mInputModeText.setVisibility(View.VISIBLE);
 					mInputModeText
-							.setText(mGridPlayerView.getInputMode() == InputMode.NORMAL ? R.string.input_mode_changed_to_normal
+							.setText(mGridPlayerView.getGridInputMode() == GridInputMode.NORMAL ? R.string.input_mode_changed_to_normal
 									: R.string.input_mode_changed_to_maybe);
 					mInputModeText.invalidate();
 
@@ -271,7 +274,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		if (mGridPlayerView != null) {
 			mGridPlayerView.invalidate();
 			if (mInputModeImage != null) {
-				setInputModeImage(mGridPlayerView.getInputMode());
+				setInputModeImage(mGridPlayerView.getGridInputMode());
 				mInputModeImage.invalidate();
 			}
 		}
@@ -348,7 +351,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 							public void onClick(DialogInterface dialog,
 									int which) {
 								PuzzleFragment.this.mGrid.clearCells(false);
-								PuzzleFragment.this.mGridPlayerView.invalidate();
+								PuzzleFragment.this.mGridPlayerView
+										.invalidate();
 								// Invalidate the option menu to hide the check
 								// progress action if necessary
 								((FragmentActivity) mContext)
@@ -912,7 +916,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 */
 	protected boolean showInputModeNormal() {
 		return (mGrid != null && mGrid.isActive() && mGridPlayerView != null && mGridPlayerView
-				.getInputMode() == InputMode.MAYBE);
+				.getGridInputMode() == GridInputMode.MAYBE);
 	}
 
 	/**
@@ -922,7 +926,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 */
 	protected boolean showInputModeMaybe() {
 		return (mGrid != null && mGrid.isActive() && mGridPlayerView != null && mGridPlayerView
-				.getInputMode() == InputMode.NORMAL);
+				.getGridInputMode() == GridInputMode.NORMAL);
 	}
 
 	/**
@@ -931,14 +935,14 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * @param inputMode
 	 *            The input mode to be set.
 	 */
-	protected void setInputMode(InputMode inputMode) {
+	protected void setInputMode(GridInputMode inputMode) {
 		if (mGridPlayerView != null) {
 			mGridPlayerView.setInputMode(inputMode);
 		}
 	}
 
 	@Override
-	public void onInputModeChanged(InputMode inputMode) {
+	public void onInputModeChanged(GridInputMode inputMode) {
 		setInputModeImage(inputMode);
 	}
 
@@ -948,11 +952,11 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * @param inputMode
 	 *            The input mode for which the input mode button has to be set.
 	 */
-	private void setInputModeImage(InputMode inputMode) {
+	private void setInputModeImage(GridInputMode inputMode) {
 		// Set the input mode image to the new value of the input mode
 		if (mInputModeImage != null && mPainter != null) {
 			mInputModeImage
-					.setImageResource((inputMode == InputMode.NORMAL ? mPainter
+					.setImageResource((inputMode == GridInputMode.NORMAL ? mPainter
 							.getNormalInputModeButton() : mPainter
 							.getMaybeInputModeButton()));
 		}

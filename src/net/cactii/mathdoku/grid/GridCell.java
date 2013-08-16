@@ -4,8 +4,8 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import net.cactii.mathdoku.grid.ui.GridInputMode;
 import net.cactii.mathdoku.grid.ui.SwipeMotion;
-import net.cactii.mathdoku.grid.ui.GridPlayerView.InputMode;
 import net.cactii.mathdoku.painter.CagePainter;
 import net.cactii.mathdoku.painter.CellPainter;
 import net.cactii.mathdoku.painter.MaybeValuePainter;
@@ -296,8 +296,8 @@ public class GridCell {
 	/**
 	 * Draw the cell inclusive borders, background and text.
 	 */
-	public void draw(Canvas canvas, float gridBorderWidth, InputMode inputMode,
-			int swipeDigit) {
+	public void draw(Canvas canvas, float gridBorderWidth,
+			GridInputMode inputMode, int swipeDigit) {
 		// Get cell size
 		int cellSize = (int) this.mCellPainter.getCellSize();
 
@@ -499,13 +499,14 @@ public class GridCell {
 		// this case the original user value may not be drawn as it will be
 		// replace with another definitive value or with a maybe value.
 		if ((this.isUserValueSet() && swipeDigit == 0)
-				|| (inputMode == InputMode.NORMAL && swipeDigit != 0)) {
+				|| (inputMode == GridInputMode.NORMAL && swipeDigit != 0)) {
 			// Get the value which will be shown as user value in case the swipe
 			// motion will be release at this moment.
-			String userValue = Integer.toString(inputMode == InputMode.NORMAL
-					&& swipeDigit != 0 ? swipeDigit : mUserValue);
+			String userValue = Integer
+					.toString(inputMode == GridInputMode.NORMAL
+							&& swipeDigit != 0 ? swipeDigit : mUserValue);
 
-			Paint paint = (inputMode == InputMode.NORMAL ? mUserValuePainter
+			Paint paint = (inputMode == GridInputMode.NORMAL ? mUserValuePainter
 					.getTextPaintNormalInputMode() : mUserValuePainter
 					.getTextPaintMaybeInputMode());
 
@@ -538,8 +539,8 @@ public class GridCell {
 		// removed (if already present) from the possible values of this cell.
 		// Note that the original possible values may not be shown in case the
 		// content of the cell have to replaced with a new user value.
-		if ((mPossibles.size() > 0 && !(inputMode == InputMode.NORMAL && swipeDigit != 0))
-				|| (inputMode == InputMode.MAYBE && swipeDigit != 0)) {
+		if ((mPossibles.size() > 0 && !(inputMode == GridInputMode.NORMAL && swipeDigit != 0))
+				|| (inputMode == GridInputMode.MAYBE && swipeDigit != 0)) {
 			// Temporary alter the possible values in case a swipe digit is
 			// selected.
 			if (swipeDigit != 0) {
@@ -557,7 +558,7 @@ public class GridCell {
 						.getDigitPositionGrid();
 
 				// Determine which painter to use
-				Paint paint = (inputMode == InputMode.NORMAL ? mMaybeGridPainter
+				Paint paint = (inputMode == GridInputMode.NORMAL ? mMaybeGridPainter
 						.getTextPaintNormalInputMode() : mMaybeGridPainter
 						.getTextPaintMaybeInputMode());
 
@@ -587,7 +588,7 @@ public class GridCell {
 				// Clone the text painter and decrease text size until the
 				// possible values string fit within the cell.
 				Paint textPaint = new Paint(
-						inputMode == InputMode.NORMAL ? mMaybeLinePainter
+						inputMode == GridInputMode.NORMAL ? mMaybeLinePainter
 								.getTextPaintNormalInputMode()
 								: mMaybeLinePainter
 										.getTextPaintMaybeInputMode());
@@ -623,7 +624,7 @@ public class GridCell {
 	 * Draw the overlay for the selected cell.
 	 */
 	public void drawSwipeOverlay(Canvas canvas, float gridBorderWidth,
-			InputMode inputMode, float mXPosSwipe, float mYPosSwipe,
+			GridInputMode inputMode, float mXPosSwipe, float mYPosSwipe,
 			int swipeDigit) {
 		if (mGrid.getSelectedCell() != this) {
 			// This cell is not the selected cell.
@@ -642,7 +643,7 @@ public class GridCell {
 
 		// Get the painter for the overlay border
 		// Determine which painter to use
-		Paint borderPaint = (inputMode == InputMode.NORMAL ? mSwipeBorderPainter
+		Paint borderPaint = (inputMode == GridInputMode.NORMAL ? mSwipeBorderPainter
 				.getUserValueBackgroundBorderPaint() : mSwipeBorderPainter
 				.getMaybeValueBackgroundBorderPaint());
 		float borderOverlayWidth = borderPaint.getStrokeWidth();

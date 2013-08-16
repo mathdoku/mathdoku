@@ -18,7 +18,7 @@
         android:visibility="gone" >
 
         <net.cactii.mathdoku.grid.ui.GridPlayerView
-            android:id="@+id/gridView"
+            android:id="@+id/grid_player_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true" />
