@@ -5,11 +5,11 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
-import net.cactii.mathdoku.Grid;
-import net.cactii.mathdoku.InvalidGridException;
 import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
+import net.cactii.mathdoku.grid.Grid;
+import net.cactii.mathdoku.grid.InvalidGridException;
 import net.cactii.mathdoku.gridGenerating.DialogPresentingGridGenerator;
 import net.cactii.mathdoku.gridGenerating.GridGenerator.PuzzleComplexity;
 import net.cactii.mathdoku.painter.Painter;

@@ -1,9 +1,11 @@
-package net.cactii.mathdoku;
+package net.cactii.mathdoku.grid;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import net.cactii.mathdoku.grid.ui.SwipeMotion;
+import net.cactii.mathdoku.grid.ui.GridPlayerView.InputMode;
 import net.cactii.mathdoku.painter.CagePainter;
 import net.cactii.mathdoku.painter.CellPainter;
 import net.cactii.mathdoku.painter.MaybeValuePainter;
@@ -13,8 +15,6 @@ import net.cactii.mathdoku.painter.UserValuePainter;
 import net.cactii.mathdoku.statistics.GridStatistics;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
-import net.cactii.mathdoku.ui.GridView.InputMode;
-import net.cactii.mathdoku.ui.SwipeMotion;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;

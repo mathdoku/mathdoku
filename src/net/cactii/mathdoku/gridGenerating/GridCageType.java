@@ -1,6 +1,6 @@
 package net.cactii.mathdoku.gridGenerating;
 
-import net.cactii.mathdoku.GridCell;
+import net.cactii.mathdoku.grid.GridCell;
 
 public class GridCageType {
 	public static final String TAG = "MathDoku.GridCageType";

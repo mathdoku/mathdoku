@@ -1,9 +1,10 @@
-package net.cactii.mathdoku;
+package net.cactii.mathdoku.grid;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.gridGenerating.GridGeneratingParameters;

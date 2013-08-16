@@ -1,14 +1,16 @@
 package net.cactii.mathdoku.ui;
 
-import net.cactii.mathdoku.CellChange;
 import net.cactii.mathdoku.Cheat;
 import net.cactii.mathdoku.Cheat.CheatType;
 import net.cactii.mathdoku.GameTimer;
-import net.cactii.mathdoku.Grid;
-import net.cactii.mathdoku.GridCage;
-import net.cactii.mathdoku.GridCell;
 import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
+import net.cactii.mathdoku.grid.CellChange;
+import net.cactii.mathdoku.grid.Grid;
+import net.cactii.mathdoku.grid.GridCage;
+import net.cactii.mathdoku.grid.GridCell;
+import net.cactii.mathdoku.grid.ui.GridPlayerView;
+import net.cactii.mathdoku.grid.ui.GridPlayerView.InputMode;
 import net.cactii.mathdoku.hint.OnTickerTapeChangedListener;
 import net.cactii.mathdoku.hint.TickerTape;
 import net.cactii.mathdoku.painter.Painter;
@@ -16,7 +18,6 @@ import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import net.cactii.mathdoku.tip.TipCheat;
 import net.cactii.mathdoku.tip.TipDialog;
 import net.cactii.mathdoku.tip.TipIncorrectValue;
-import net.cactii.mathdoku.ui.GridView.InputMode;
 import net.cactii.mathdoku.util.Util;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -49,14 +50,14 @@ import android.widget.Toast;
  */
 public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		OnSharedPreferenceChangeListener, OnCreateContextMenuListener,
-		OnTickerTapeChangedListener, GridView.OnInputModeChangedListener {
+		OnTickerTapeChangedListener, GridPlayerView.OnInputModeChangedListener {
 	public final static String TAG = "MathDoku.PuzzleFragment";
 
 	public static final String BUNDLE_KEY_SOLVING_ATTEMPT_ID = "PuzzleFragment.solvingAttemptId";
 
 	// The grid and the view which will display the grid.
 	public Grid mGrid;
-	public GridView mGridView;
+	public GridPlayerView mGridPlayerView;
 
 	// A global painter object to paint the grid in different themes.
 	public Painter mPainter;
@@ -123,7 +124,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 		mPuzzleGridLayout = (RelativeLayout) mRootView
 				.findViewById(R.id.puzzleGrid);
-		mGridView = (GridView) mRootView.findViewById(R.id.gridView);
+		mGridPlayerView = (GridPlayerView) mRootView.findViewById(R.id.gridView);
 		mTimerText = (TextView) mRootView.findViewById(R.id.timerText);
 
 		mClearButton = (Button) mRootView.findViewById(R.id.clearButton);
@@ -135,26 +136,26 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		mTickerTapeLayout = (RelativeLayout) mRootView
 				.findViewById(R.id.tickerTapeLayout);
 
-		mSoundEffectViews = new View[] { mGridView, mClearButton, mUndoButton };
+		mSoundEffectViews = new View[] { mGridPlayerView, mClearButton, mUndoButton };
 
 		// Hide all controls until sure a grid view can be displayed.
 		setNoGridLoaded();
 
-		mGridView.setOnGridTouchListener(mGridView.new OnGridTouchListener() {
+		mGridPlayerView.setOnGridTouchListener(mGridPlayerView.new OnGridTouchListener() {
 			@Override
 			public void gridTouched(GridCell cell) {
 				setClearAndUndoButtonVisibility(cell);
 			}
 		});
-		mGridView.setOnTickerTapeChangedListener(this);
+		mGridPlayerView.setOnTickerTapeChangedListener(this);
 		mClearButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (mGridView != null) {
-					mGridView.digitSelected(0);
+				if (mGridPlayerView != null) {
+					mGridPlayerView.digitSelected(0);
 
 					setClearAndUndoButtonVisibility(mGrid.getSelectedCell());
-					mGridView.invalidate();
+					mGridPlayerView.invalidate();
 				}
 			}
 		});
@@ -164,7 +165,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				if (mGrid.undoLastMove()) {
 					// Successful undo
 					setClearAndUndoButtonVisibility(mGrid.getSelectedCell());
-					mGridView.invalidate();
+					mGridPlayerView.invalidate();
 
 					// Undo can toggle the visibility of the check progress
 					// button in the action bar
@@ -173,8 +174,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			}
 		});
 
-		mGridView.setFocusable(true);
-		mGridView.setFocusableInTouchMode(true);
+		mGridPlayerView.setFocusable(true);
+		mGridPlayerView.setFocusableInTouchMode(true);
 
 		// Input Mode Image.
 		mInputModeImage = (ImageView) mRootView
@@ -186,10 +187,10 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 			@Override
 			public void onClick(View v) {
-				if (mGridView != null && mGrid != null) {
+				if (mGridPlayerView != null && mGrid != null) {
 					// Toggle input mode
-					mGridView
-							.setInputMode(mGridView.getInputMode() == InputMode.NORMAL ? InputMode.MAYBE
+					mGridPlayerView
+							.setInputMode(mGridPlayerView.getInputMode() == InputMode.NORMAL ? InputMode.MAYBE
 									: InputMode.NORMAL);
 				}
 			}
@@ -200,16 +201,16 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 			@Override
 			public boolean onLongClick(View v) {
-				if (mGridView != null && mGrid != null) {
+				if (mGridPlayerView != null && mGrid != null) {
 					// Toggle input mode
-					mGridView
-							.setInputMode(mGridView.getInputMode() == InputMode.NORMAL ? InputMode.MAYBE
+					mGridPlayerView
+							.setInputMode(mGridPlayerView.getInputMode() == InputMode.NORMAL ? InputMode.MAYBE
 									: InputMode.NORMAL);
 
 					// Display message
 					mInputModeText.setVisibility(View.VISIBLE);
 					mInputModeText
-							.setText(mGridView.getInputMode() == InputMode.NORMAL ? R.string.input_mode_changed_to_normal
+							.setText(mGridPlayerView.getInputMode() == InputMode.NORMAL ? R.string.input_mode_changed_to_normal
 									: R.string.input_mode_changed_to_maybe);
 					mInputModeText.invalidate();
 
@@ -230,9 +231,9 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			}
 		});
 
-		mGridView.setOnInputModeChangedListener(this);
+		mGridPlayerView.setOnInputModeChangedListener(this);
 
-		registerForContextMenu(mGridView);
+		registerForContextMenu(mGridPlayerView);
 
 		// In case a solving attempt id has been passed, this attempt has to be
 		// loaded.
@@ -267,10 +268,10 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 		// Invalidate the grid view and the input mode button in order to used
 		// the new theme setting
-		if (mGridView != null) {
-			mGridView.invalidate();
+		if (mGridPlayerView != null) {
+			mGridPlayerView.invalidate();
 			if (mInputModeImage != null) {
-				setInputModeImage(mGridView.getInputMode());
+				setInputModeImage(mGridPlayerView.getInputMode());
 				mInputModeImage.invalidate();
 			}
 		}
@@ -347,7 +348,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 							public void onClick(DialogInterface dialog,
 									int which) {
 								PuzzleFragment.this.mGrid.clearCells(false);
-								PuzzleFragment.this.mGridView.invalidate();
+								PuzzleFragment.this.mGridPlayerView.invalidate();
 								// Invalidate the option menu to hide the check
 								// progress action if necessary
 								((FragmentActivity) mContext)
@@ -435,7 +436,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	public void setNewGrid(Grid grid) {
 		if (grid != null) {
 			mGrid = grid;
-			mGridView.loadNewGrid(grid);
+			mGridPlayerView.loadNewGrid(grid);
 
 			// Show the grid of the loaded puzzle.
 			if (mGrid.isActive()) {
@@ -573,7 +574,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			new TipCheat(mContext, cheat).show();
 		}
 
-		this.mGridView.invalidate();
+		this.mGridPlayerView.invalidate();
 	}
 
 	/**
@@ -617,7 +618,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			new TipCheat(mContext, cheat).show();
 		}
 
-		mGridView.invalidate();
+		mGridPlayerView.invalidate();
 	}
 
 	/**
@@ -651,12 +652,12 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * Checks the progress of solving the current grid
 	 */
 	protected void checkProgress() {
-		if (mGrid == null || mGridView == null) {
+		if (mGrid == null || mGridPlayerView == null) {
 			return;
 		}
 
 		boolean allUserValuesValid = mGrid.isSolutionValidSoFar();
-		int countNewInvalidChoices = (allUserValuesValid ? 0 : mGridView
+		int countNewInvalidChoices = (allUserValuesValid ? 0 : mGridPlayerView
 				.markInvalidChoices());
 
 		// Create new cheat
@@ -910,7 +911,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * @return
 	 */
 	protected boolean showInputModeNormal() {
-		return (mGrid != null && mGrid.isActive() && mGridView != null && mGridView
+		return (mGrid != null && mGrid.isActive() && mGridPlayerView != null && mGridPlayerView
 				.getInputMode() == InputMode.MAYBE);
 	}
 
@@ -920,7 +921,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * @return
 	 */
 	protected boolean showInputModeMaybe() {
-		return (mGrid != null && mGrid.isActive() && mGridView != null && mGridView
+		return (mGrid != null && mGrid.isActive() && mGridPlayerView != null && mGridPlayerView
 				.getInputMode() == InputMode.NORMAL);
 	}
 
@@ -931,8 +932,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 *            The input mode to be set.
 	 */
 	protected void setInputMode(InputMode inputMode) {
-		if (mGridView != null) {
-			mGridView.setInputMode(inputMode);
+		if (mGridPlayerView != null) {
+			mGridPlayerView.setInputMode(inputMode);
 		}
 	}
 

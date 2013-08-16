@@ -59,7 +59,7 @@
             android:textSize="@dimen/text_size_default"
             android:visibility="gone" />
 
-        <net.cactii.mathdoku.ui.GridView
+        <net.cactii.mathdoku.grid.ui.GridPlayerView
             android:id="@+id/gridView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

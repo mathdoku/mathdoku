@@ -43,7 +43,7 @@
             android:rating="1"
             android:stepSize="1" />
 
-        <net.cactii.mathdoku.ui.GridView
+        <net.cactii.mathdoku.grid.ui.GridPlayerView
             android:id="@+id/gridView"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"

@@ -4,10 +4,10 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 
-import net.cactii.mathdoku.Grid;
 import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
+import net.cactii.mathdoku.grid.Grid;
 import net.cactii.mathdoku.storage.database.SolvingAttemptDatabaseAdapter;
 import net.cactii.mathdoku.storage.database.StatisticsDatabaseAdapter;
 import net.cactii.mathdoku.ui.PuzzleFragmentActivity;

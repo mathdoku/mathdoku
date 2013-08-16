@@ -1,7 +1,7 @@
 package net.cactii.mathdoku.painter;
 
-import net.cactii.mathdoku.DigitPositionGrid;
 import net.cactii.mathdoku.R;
+import net.cactii.mathdoku.grid.DigitPositionGrid;
 import android.graphics.DashPathEffect;
 import android.graphics.PathEffect;
 import android.graphics.Typeface;

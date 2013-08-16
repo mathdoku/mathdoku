@@ -1,11 +1,11 @@
-package net.cactii.mathdoku.ui;
+package net.cactii.mathdoku.grid.ui;
 
-import net.cactii.mathdoku.CellChange;
-import net.cactii.mathdoku.DigitPositionGrid;
-import net.cactii.mathdoku.Grid;
-import net.cactii.mathdoku.GridCell;
 import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
+import net.cactii.mathdoku.grid.CellChange;
+import net.cactii.mathdoku.grid.DigitPositionGrid;
+import net.cactii.mathdoku.grid.Grid;
+import net.cactii.mathdoku.grid.GridCell;
 import net.cactii.mathdoku.hint.OnTickerTapeChangedListener;
 import net.cactii.mathdoku.hint.TickerTape;
 import net.cactii.mathdoku.painter.GridPainter;
@@ -16,6 +16,7 @@ import net.cactii.mathdoku.tip.TipBadCageMath;
 import net.cactii.mathdoku.tip.TipDuplicateValue;
 import net.cactii.mathdoku.tip.TipIncorrectValue;
 import net.cactii.mathdoku.tip.TipOrderOfValuesInCage;
+import net.cactii.mathdoku.ui.PuzzleFragmentActivity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -26,7 +27,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Toast;
 
-public class GridView extends View implements OnTouchListener {
+public class GridPlayerView extends View implements OnTouchListener {
 	@SuppressWarnings("unused")
 	private static final String TAG = "MathDoku.GridView";
 
@@ -49,7 +50,7 @@ public class GridView extends View implements OnTouchListener {
 	// Size (in cells and pixels) of the grid view and size (in pixel) of cells
 	// in grid
 	private int mGridSize;
-	public float mGridViewSize;
+	public float mGridPlayerViewSize;
 	private float mGridBorderWidth;
 	private float mGridCellSize;
 
@@ -73,17 +74,17 @@ public class GridView extends View implements OnTouchListener {
 	// Reference to the last ticker tape started by the grid view.
 	TickerTape mTickerTape;
 
-	public GridView(Context context) {
+	public GridPlayerView(Context context) {
 		super(context);
 		initGridView(context);
 	}
 
-	public GridView(Context context, AttributeSet attrs) {
+	public GridPlayerView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		initGridView(context);
 	}
 
-	public GridView(Context context, AttributeSet attrs, int defStyle) {
+	public GridPlayerView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		initGridView(context);
 	}
@@ -92,7 +93,7 @@ public class GridView extends View implements OnTouchListener {
 		mContext = context;
 		mPreferences = Preferences.getInstance(mContext);
 
-		mGridViewSize = 0;
+		mGridPlayerViewSize = 0;
 		mGridPainter = Painter.getInstance().getGridPainter();
 
 		// Set listeners
@@ -373,20 +374,20 @@ public class GridView extends View implements OnTouchListener {
 			// Draw outer grid border. For support of transparent borders it has
 			// to be avoided that lines do overlap.
 			Paint borderPaint = mGridPainter.getBorderPaint();
-			canvas.drawRect(0, 0, mGridViewSize - mGridBorderWidth,
+			canvas.drawRect(0, 0, mGridPlayerViewSize - mGridBorderWidth,
 					mGridBorderWidth, borderPaint);
-			canvas.drawRect(mGridViewSize - mGridBorderWidth, 0, mGridViewSize,
-					mGridViewSize - mGridBorderWidth, borderPaint);
-			canvas.drawRect(mGridBorderWidth, mGridViewSize - mGridBorderWidth,
-					mGridViewSize, mGridViewSize, borderPaint);
+			canvas.drawRect(mGridPlayerViewSize - mGridBorderWidth, 0, mGridPlayerViewSize,
+					mGridPlayerViewSize - mGridBorderWidth, borderPaint);
+			canvas.drawRect(mGridBorderWidth, mGridPlayerViewSize - mGridBorderWidth,
+					mGridPlayerViewSize, mGridPlayerViewSize, borderPaint);
 			canvas.drawRect(0, mGridBorderWidth, 0 + mGridBorderWidth,
-					mGridViewSize, borderPaint);
+					mGridPlayerViewSize, borderPaint);
 
 			// Draw background of the inner grid itself. This background is a
 			// bit extended outside the inner grid which gives a nice outline
 			// around the grid in the light theme.
 			canvas.drawRect(mGridBorderWidth - 1, mGridBorderWidth - 1,
-					mGridViewSize - mGridBorderWidth + 2, mGridViewSize
+					mGridPlayerViewSize - mGridBorderWidth + 2, mGridPlayerViewSize
 							- mGridBorderWidth + 2,
 					mGridPainter.getBackgroundPaint());
 
@@ -503,9 +504,9 @@ public class GridView extends View implements OnTouchListener {
 		}
 
 		// Finally compute the total size of the grid
-		mGridViewSize = 2 * mGridBorderWidth + mGridSize * mGridCellSize;
+		mGridPlayerViewSize = 2 * mGridBorderWidth + mGridSize * mGridCellSize;
 
-		setMeasuredDimension((int) mGridViewSize, (int) mGridViewSize);
+		setMeasuredDimension((int) mGridPlayerViewSize, (int) mGridPlayerViewSize);
 	}
 
 	private int measure(int measureSpec) {

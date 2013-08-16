@@ -3,8 +3,8 @@ package net.cactii.mathdoku.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.cactii.mathdoku.Grid;
 import net.cactii.mathdoku.R;
+import net.cactii.mathdoku.grid.Grid;
 import net.cactii.mathdoku.ui.ArchiveFragment;
 import android.content.Context;
 import android.content.Intent;

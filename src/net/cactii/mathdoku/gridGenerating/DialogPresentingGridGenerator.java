@@ -1,9 +1,9 @@
 package net.cactii.mathdoku.gridGenerating;
 
-import net.cactii.mathdoku.Grid;
 import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
+import net.cactii.mathdoku.grid.Grid;
 import net.cactii.mathdoku.ui.PuzzleFragmentActivity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;

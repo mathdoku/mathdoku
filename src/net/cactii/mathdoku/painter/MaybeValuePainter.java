@@ -1,6 +1,6 @@
 package net.cactii.mathdoku.painter;
 
-import net.cactii.mathdoku.DigitPositionGrid;
+import net.cactii.mathdoku.grid.DigitPositionGrid;
 import net.cactii.mathdoku.painter.Painter.DigitPainterMode;
 import net.cactii.mathdoku.painter.Painter.GridTheme;
 import android.graphics.Paint;

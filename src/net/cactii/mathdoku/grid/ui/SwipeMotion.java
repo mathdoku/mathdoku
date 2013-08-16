@@ -1,9 +1,9 @@
-package net.cactii.mathdoku.ui;
+package net.cactii.mathdoku.grid.ui;
 
-import net.cactii.mathdoku.Grid;
-import net.cactii.mathdoku.GridCell;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
+import net.cactii.mathdoku.grid.Grid;
+import net.cactii.mathdoku.grid.GridCell;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -35,7 +35,7 @@ public class SwipeMotion {
 	private final int mGridSize;
 
 	// Size of the border and cells in pixels
-	private final float mGridViewBorderWidth;
+	private final float mGridPlayerViewBorderWidth;
 	private final float mGridCellSize;
 
 	// Coordinates of the cell in the grid for which the touch down was
@@ -89,7 +89,7 @@ public class SwipeMotion {
 		mGrid = grid;
 		mGridSize = (mGrid == null ? 1 : mGrid.getGridSize());
 
-		mGridViewBorderWidth = gridViewBorderWidth;
+		mGridPlayerViewBorderWidth = gridViewBorderWidth;
 		mGridCellSize = gridCellSize;
 
 		mStatus = Status.INIT;
@@ -369,7 +369,7 @@ public class SwipeMotion {
 
 		// Convert x-position to a column number. -1 means left of grid,
 		// mGridSize means right of grid.
-		xPos = (xPos - mGridViewBorderWidth) / mGridCellSize;
+		xPos = (xPos - mGridPlayerViewBorderWidth) / mGridCellSize;
 		if (xPos > mGridSize) {
 			coordinates[X_POS] = mGridSize;
 		} else if (xPos < 0) {
@@ -380,7 +380,7 @@ public class SwipeMotion {
 
 		// Convert y-position to a column number. -1 means above grid, mGridSize
 		// means below grid.
-		yPos = (yPos - mGridViewBorderWidth) / mGridCellSize;
+		yPos = (yPos - mGridPlayerViewBorderWidth) / mGridCellSize;
 		if (yPos > mGridSize) {
 			coordinates[Y_POS] = mGridSize;
 		} else if (yPos < 0) {
@@ -411,7 +411,7 @@ public class SwipeMotion {
 
 		// Get the start position of the swipe line.
 		float[] startCoordinates = getTouchDownCell().getCellCentreCoordinates(
-				mGridViewBorderWidth);
+				mGridPlayerViewBorderWidth);
 
 		// Compute current swipe position by measuring the angle of the current
 		// swipe position with respect to the start position.

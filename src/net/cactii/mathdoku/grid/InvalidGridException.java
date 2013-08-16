@@ -1,4 +1,4 @@
-package net.cactii.mathdoku;
+package net.cactii.mathdoku.grid;
 
 public class InvalidGridException extends ExceptionInInitializerError {
 

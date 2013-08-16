@@ -2,9 +2,9 @@ package net.cactii.mathdoku.storage.database;
 
 import java.security.InvalidParameterException;
 
-import net.cactii.mathdoku.Grid;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
+import net.cactii.mathdoku.grid.Grid;
 import net.cactii.mathdoku.gridGenerating.GridGeneratingParameters;
 import net.cactii.mathdoku.gridGenerating.GridGenerator.PuzzleComplexity;
 import android.content.ContentValues;

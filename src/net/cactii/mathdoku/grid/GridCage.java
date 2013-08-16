@@ -1,4 +1,4 @@
-package net.cactii.mathdoku;
+package net.cactii.mathdoku.grid;
 
 import java.util.ArrayList;
 import java.util.Arrays;

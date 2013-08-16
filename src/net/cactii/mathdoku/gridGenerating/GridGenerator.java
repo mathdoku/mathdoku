@@ -3,12 +3,12 @@ package net.cactii.mathdoku.gridGenerating;
 import java.util.ArrayList;
 import java.util.Random;
 
-import net.cactii.mathdoku.Grid;
-import net.cactii.mathdoku.GridCage;
-import net.cactii.mathdoku.GridCell;
 import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
+import net.cactii.mathdoku.grid.Grid;
+import net.cactii.mathdoku.grid.GridCage;
+import net.cactii.mathdoku.grid.GridCell;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.storage.database.DatabaseHelper;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter;
