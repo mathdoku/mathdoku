@@ -1,7 +1,6 @@
 package net.cactii.mathdoku.painter;
 
 import net.cactii.mathdoku.R;
-import net.cactii.mathdoku.grid.DigitPositionGrid;
 import android.graphics.DashPathEffect;
 import android.graphics.PathEffect;
 import android.graphics.Typeface;
@@ -152,7 +151,7 @@ public class Painter {
 	 *            The digit position grid used to display maybe values into a
 	 *            grid.
 	 */
-	public void setCellSize(float size, DigitPositionGrid digitPositionGrid) {
+	public void setCellSize(float size) {
 		// Set width of borders dependent on new size of cells.
 		setBorderSizes(size <= 80);
 
@@ -160,8 +159,8 @@ public class Painter {
 		mCagePainter.setCellSize(size);
 		mCellPainter.setCellSize(size);
 		mUserValuePainter.setCellSize(size);
-		mMaybeGridPainter.setCellSize(size, digitPositionGrid);
-		mMaybeLinePainter.setCellSize(size, null);
+		mMaybeGridPainter.setCellSize(size);
+		mMaybeLinePainter.setCellSize(size);
 		mSwipeBorderPainter.setCellSize(size);
 	}
 

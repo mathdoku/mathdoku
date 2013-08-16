@@ -96,31 +96,28 @@ public class GridViewerView extends View {
 		// Draw outer grid border. For support of transparent borders it has
 		// to be avoided that lines do overlap.
 		Paint borderPaint = mGridPainter.getBorderPaint();
-		canvas.drawRect(0, 0, mViewSize - mBorderWidth,
-				mBorderWidth, borderPaint);
-		canvas.drawRect(mViewSize - mBorderWidth, 0,
-				mViewSize, mViewSize - mBorderWidth,
+		canvas.drawRect(0, 0, mViewSize - mBorderWidth, mBorderWidth,
 				borderPaint);
-		canvas.drawRect(mBorderWidth, mViewSize
-				- mBorderWidth, mViewSize, mViewSize,
-				borderPaint);
-		canvas.drawRect(0, mBorderWidth, 0 + mBorderWidth,
+		canvas.drawRect(mViewSize - mBorderWidth, 0, mViewSize, mViewSize
+				- mBorderWidth, borderPaint);
+		canvas.drawRect(mBorderWidth, mViewSize - mBorderWidth, mViewSize,
 				mViewSize, borderPaint);
+		canvas.drawRect(0, mBorderWidth, 0 + mBorderWidth, mViewSize,
+				borderPaint);
 
 		// Draw background of the inner grid itself. This background is a
 		// bit extended outside the inner grid which gives a nice outline
 		// around the grid in the light theme.
-		canvas.drawRect(mBorderWidth - 1, mBorderWidth - 1,
-				mViewSize - mBorderWidth + 2, mViewSize
-						- mBorderWidth + 2,
+		canvas.drawRect(mBorderWidth - 1, mBorderWidth - 1, mViewSize
+				- mBorderWidth + 2, mViewSize - mBorderWidth + 2,
 				mGridPainter.getBackgroundPaint());
 
 		// Draw cells
-		Painter.getInstance().setCellSize(mGridCellSize, mDigitPositionGrid);
-		Painter.getInstance()
-				.setColorMode(
-						mPreferences.isColoredDigitsVisible() ? DigitPainterMode.INPUT_MODE_BASED
-								: DigitPainterMode.MONOCHROME);
+		Painter painter = Painter.getInstance();
+		painter.setCellSize(mGridCellSize);
+		painter.getMaybeGridPainter().setDigitPositionGrid(mDigitPositionGrid);
+		painter.setColorMode(mPreferences.isColoredDigitsVisible() ? DigitPainterMode.INPUT_MODE_BASED
+				: DigitPainterMode.MONOCHROME);
 
 		GridInputMode gridInputMode = getGridInputMode();
 		for (GridCell cell : mGrid.mCells) {
@@ -196,11 +193,12 @@ public class GridViewerView extends View {
 					/ mGridSize);
 		}
 
+		Painter.getInstance().setCellSize(mGridCellSize);
+
 		// Finally compute the total size of the grid
 		mViewSize = 2 * mBorderWidth + mGridSize * mGridCellSize;
 
-		setMeasuredDimension((int) mViewSize,
-				(int) mViewSize);
+		setMeasuredDimension((int) mViewSize, (int) mViewSize);
 	}
 
 	private int measure(int measureSpec) {

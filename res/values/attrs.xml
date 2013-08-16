@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Custom attributes for the grid player layout -->
+    <declare-styleable name="GridPlayerViewLayoutAlign">
+        <attr name="layout_alignGridPlayerViewLeft" format="enum">
+            <enum name="visible_grid" value="0" />
+            <enum name="entire_grid" value="1" />
+        </attr>
+        <attr name="layout_alignGridPlayerViewTop" format="enum">
+            <enum name="visible_grid" value="0" />
+            <enum name="entire_grid" value="1" />
+        </attr>
+        <attr name="layout_alignGridPlayerViewRight" format="enum">
+            <enum name="visible_grid" value="0" />
+            <enum name="entire_grid" value="1" />
+        </attr>
+        <attr name="layout_alignGridPlayerViewBottom" format="enum">
+            <enum name="visible_grid" value="0" />
+            <enum name="entire_grid" value="1" />
+        </attr>
+    </declare-styleable>
+
+</resources>

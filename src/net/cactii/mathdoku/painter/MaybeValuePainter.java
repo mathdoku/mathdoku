@@ -10,6 +10,9 @@ public class MaybeValuePainter extends DigitPainter {
 	// Size of grid of maybe values within the cell
 	private DigitPositionGrid mDigitPositionGrid;
 
+	// Last cell size used
+	private float mCellSize;
+
 	// Size of regions to draw maybe digit
 	protected float mMaybeDigitWidth;
 	protected float mMaybeDigitHeight;
@@ -41,20 +44,9 @@ public class MaybeValuePainter extends DigitPainter {
 				.getHighlightedTextColorMaybeInputMode());
 	}
 
-	/**
-	 * Do not use this method for this object. Use
-	 * {@link #setCellSize(float, DigitPositionGrid)} instead.
-	 */
 	@Override
 	protected void setCellSize(float size) {
-		throw new RuntimeException("Method should not be called for object "
-				+ this.getClass().getSimpleName()
-				+ ". Call setCellSize(float, DigitPositionGrid) instead,");
-	}
-
-	protected void setCellSize(float size, DigitPositionGrid digitPositionGrid) {
-		mDigitPositionGrid = digitPositionGrid;
-
+		mCellSize = size;
 		if (mDigitPositionGrid == null) {
 			// All maybe values are printed on a single line
 
@@ -93,6 +85,15 @@ public class MaybeValuePainter extends DigitPainter {
 		}
 	}
 
+	public void setDigitPositionGrid(DigitPositionGrid digitPositionGrid) {
+		// On change of the digit position grid, recalculate the size of the
+		// value painter.
+		if (mDigitPositionGrid != digitPositionGrid) {
+			mDigitPositionGrid = digitPositionGrid;
+			setCellSize(mCellSize);
+		}
+	}
+
 	/**
 	 * Gets the width of a single position to display a maybe value.
 	 * 
@@ -121,9 +122,10 @@ public class MaybeValuePainter extends DigitPainter {
 	public DigitPositionGrid getDigitPositionGrid() {
 		return mDigitPositionGrid;
 	}
-	
+
 	@Override
 	public Paint getTextPaintMaybeInputMode() {
-		return (mDigitPainterMode == DigitPainterMode.INPUT_MODE_BASED ? mTextPaintMaybeInputMode : mTextPaintNormalInputMode);
+		return (mDigitPainterMode == DigitPainterMode.INPUT_MODE_BASED ? mTextPaintMaybeInputMode
+				: mTextPaintNormalInputMode);
 	}
 }

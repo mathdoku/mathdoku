@@ -66,7 +66,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 	private RelativeLayout mPuzzleGridLayout;
 	private TextView mTimerText;
-	private ImageView mInputModeImage;
+	private ImageView mInputModeImageView;
 	private TextView mInputModeText;
 
 	private RelativeLayout mTickerTapeLayout;
@@ -181,12 +181,12 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		mGridPlayerView.setFocusableInTouchMode(true);
 
 		// Input Mode Image.
-		mInputModeImage = (ImageView) mRootView
+		mInputModeImageView = (ImageView) mRootView
 				.findViewById(R.id.input_mode_image);
 		mInputModeText = (TextView) mRootView
 				.findViewById(R.id.input_mode_text);
 		// On click directly toggle the input mode.
-		mInputModeImage.setOnClickListener(new OnClickListener() {
+		mInputModeImageView.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -200,7 +200,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		});
 		// On a long press, toggle the input mode and show a message that mode
 		// can also be change with double tap.
-		mInputModeImage.setOnLongClickListener(new OnLongClickListener() {
+		mInputModeImageView.setOnLongClickListener(new OnLongClickListener() {
 
 			@Override
 			public boolean onLongClick(View v) {
@@ -273,9 +273,9 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		// the new theme setting
 		if (mGridPlayerView != null) {
 			mGridPlayerView.invalidate();
-			if (mInputModeImage != null) {
+			if (mInputModeImageView != null) {
 				setInputModeImage(mGridPlayerView.getGridInputMode());
-				mInputModeImage.invalidate();
+				mInputModeImageView.invalidate();
 			}
 		}
 	}
@@ -954,8 +954,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 */
 	private void setInputModeImage(GridInputMode inputMode) {
 		// Set the input mode image to the new value of the input mode
-		if (mInputModeImage != null && mPainter != null) {
-			mInputModeImage
+		if (mInputModeImageView != null && mPainter != null) {
+			mInputModeImageView
 					.setImageResource((inputMode == GridInputMode.NORMAL ? mPainter
 							.getNormalInputModeButton() : mPainter
 							.getMaybeInputModeButton()));
