@@ -271,9 +271,6 @@
     <string name="hint_swipe_valid_digit_completed">Je hebt de veegbeweging voor getal %1$s gemaakt.</string>
     <string name="hint_swipe_invalid_digit_completed">Deze veegrichting onthult alleen een getal in een grotere puzzel.</string>
 
-    <!-- Hint to inform about change of Input mode -->
-    <string name="hint_input_mode_changed">Je hebt zojuist de invoermethode gewijzigd van %1$s naar %2$s door een dubbeltik op een cel.</string>
-
     <!-- TIP DIALOGS - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -511,11 +508,5 @@
 
     <!-- Connection word for the last two elements in a list. Example: "1 minute and 15 seconds" or "1, 2, 3 and 4)" -->
     <string name="connector_last_two_elements">en</string>
-
-    <!-- The text for input mode "normal" which is used to enter a definitive value into the selected cell. -->
-    <string name="input_mode_normal_short">Normaal</string>
-
-    <!-- The text for input mode "maybe" which is used to insert/remove a possible value into/from the selected cell. -->
-    <string name="input_mode_maybe_short">Mogelijk</string>
 
 </resources>

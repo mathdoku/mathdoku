@@ -33,7 +33,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnCreateContextMenuListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -180,60 +179,21 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		mGridPlayerView.setFocusable(true);
 		mGridPlayerView.setFocusableInTouchMode(true);
 
-		// Input Mode Image.
+		// Initialize the input mode
 		mInputModeImageView = (ImageView) mRootView
 				.findViewById(R.id.input_mode_image);
 		mInputModeText = (TextView) mRootView
 				.findViewById(R.id.input_mode_text);
-		// On click directly toggle the input mode.
+		setInputModeTextVisibility();
 		mInputModeImageView.setOnClickListener(new OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
 				if (mGridPlayerView != null && mGrid != null) {
 					// Toggle input mode
-					mGridPlayerView.setInputMode(mGridPlayerView
-							.getGridInputMode() == GridInputMode.NORMAL ? GridInputMode.MAYBE
-							: GridInputMode.NORMAL);
+					mGridPlayerView.toggleInputMode();
 				}
 			}
 		});
-		// On a long press, toggle the input mode and show a message that mode
-		// can also be change with double tap.
-		mInputModeImageView.setOnLongClickListener(new OnLongClickListener() {
-
-			@Override
-			public boolean onLongClick(View v) {
-				if (mGridPlayerView != null && mGrid != null) {
-					// Toggle input mode
-					mGridPlayerView.setInputMode(mGridPlayerView
-							.getGridInputMode() == GridInputMode.NORMAL ? GridInputMode.MAYBE
-							: GridInputMode.NORMAL);
-
-					// Display message
-					mInputModeText.setVisibility(View.VISIBLE);
-					mInputModeText
-							.setText(mGridPlayerView.getGridInputMode() == GridInputMode.NORMAL ? R.string.input_mode_changed_to_normal
-									: R.string.input_mode_changed_to_maybe);
-					mInputModeText.invalidate();
-
-					// Hide the message after 3000 milliseconds.
-					final Handler handler = new Handler();
-					handler.postDelayed(new Runnable() {
-						@Override
-						public void run() {
-							if (mInputModeText != null) {
-								mInputModeText.setVisibility(View.GONE);
-							}
-						}
-					}, 3000);
-
-					return true;
-				}
-				return false;
-			}
-		});
-
 		mGridPlayerView.setOnInputModeChangedListener(this);
 
 		registerForContextMenu(mGridPlayerView);
@@ -929,21 +889,42 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				.getGridInputMode() == GridInputMode.NORMAL);
 	}
 
-	/**
-	 * Set the input mode of the grid view for this puzzle fragment.
-	 * 
-	 * @param inputMode
-	 *            The input mode to be set.
-	 */
-	protected void setInputMode(GridInputMode inputMode) {
-		if (mGridPlayerView != null) {
-			mGridPlayerView.setInputMode(inputMode);
-		}
-	}
-
 	@Override
 	public void onInputModeChanged(GridInputMode inputMode) {
 		setInputModeImage(inputMode);
+
+		if (mMathDokuPreferences.increaseInputModeChangedCounter() < 4) {
+			// Display message
+			mInputModeText.setVisibility(View.VISIBLE);
+			mInputModeText
+					.setText(inputMode == GridInputMode.NORMAL ? R.string.input_mode_changed_to_normal
+							: R.string.input_mode_changed_to_maybe);
+			mInputModeText.invalidate();
+
+			// Hide the message after 5000 milliseconds.
+			final Handler handler = new Handler();
+			handler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					setInputModeTextVisibility();
+				}
+			}, 5000);
+		}
+	}
+
+	/**
+	 * Set the visibility of the input mode text to invisible or gone.
+	 */
+	private void setInputModeTextVisibility() {
+		if (mInputModeText != null) {
+			// After the input mode changed message has been displayed three
+			// times, it will never be displayed again. The visibility of the
+			// text view should then be set to gone as this discreases the
+			// height of the relative layout in which the field is encapsulated.
+			mInputModeText.setVisibility(mMathDokuPreferences
+					.getInputModeChangedCounter() < 4 ? View.INVISIBLE
+					: View.GONE);
+		}
 	}
 
 	/**

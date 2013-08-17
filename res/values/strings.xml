@@ -270,9 +270,6 @@
     <string name="hint_swipe_valid_digit_completed">You have just completed a swipe for digit %1$s.</string>
     <string name="hint_swipe_invalid_digit_completed">Swiping in this direction will reveal a digit when playing a bigger puzzle.</string>
 
-    <!-- Hint to inform about change of Input mode -->
-    <string name="hint_input_mode_changed">You have just changed the input mode from %1$s to %2$s by double tapping the selected cell.</string>
-
     <!-- TIP DIALOGS - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -398,7 +395,8 @@
 
     <!-- PUZZLE FRAGMENT - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-    <!-- The text which is shown on a long press on the switch input mode image. -->
+
+    <!-- The text which is shown on a long press on the switch input mode image. -->
     <string name="input_mode_changed_to_normal">Switched to normal input mode\nDouble tap a cell to switch to maybe mode.</string>
     <string name="input_mode_changed_to_maybe">Switched to maybe input mode\nDouble tap a cell to switch to normal mode.</string>
 
@@ -496,9 +494,5 @@
     <string name="time_unit_days_plural">days</string>
     <!-- Connection word for the last two elements in a list. Example: "1 minute and 15 seconds" or "1, 2, 3 and 4)" -->
     <string name="connector_last_two_elements">and</string>
-    <!-- The text for input mode "normal" which is used to enter a definitive value into the selected cell. -->
-    <string name="input_mode_normal_short">normal</string>
-    <!-- The text for input mode "maybe" which is used to insert/remove a possible value into/from the selected cell. -->
-    <string name="input_mode_maybe_short">maybe</string>
 
 </resources>

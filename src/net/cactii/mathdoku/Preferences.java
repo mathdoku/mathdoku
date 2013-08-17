@@ -50,9 +50,8 @@ public class Preferences {
 	public final static String ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE = "archive_setting_chart_description_visible";
 	public final static boolean ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT = true;
 
-	// Hint counters
-	public final static String HINT_INPUT_MODE_CHANGED_DISPLAYED_COUNTER = "hint_input_mode_displayed_showed_counter";
-	public final static int HINT_INPUT_MODE_CHANGED_DISPLAYED_COUNTER_DEFAULT = 0;
+	public final static String PUZZLE_INPUT_MODE_CHANGED_COUNTER = "puzzle_input_mode_changed_counter";
+	public final static int PUZZLE_INPUT_MODE_CHANGED_COUNTER_DEFAULT = 0;
 
 	// Puzzle parameters settings to be set as default values for next game
 	public final static String PUZZLE_PARAMETER_COMPLEXITY = "puzzle_parameter_complexity";
@@ -182,7 +181,7 @@ public class Preferences {
 		// Update preferences
 		Editor prefeditor = mSharedPreferences.edit();
 
-		if (previousInstalledVersion < 493 && currentVersion >= 493) {
+		if (previousInstalledVersion < 493 && currentVersion >= 510) {
 			// On upgrade to version 2 of MathDoku the preferences are cleaned
 			// up. Unnecessary preferences are deleted. Preferences which are
 			// kept are renamed in order to improve future maintenance.
@@ -246,8 +245,8 @@ public class Preferences {
 							STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES_DEFAULT);
 			prefeditor.putBoolean(PUZZLE_SETTING_FULL_SCREEN,
 					PUZZLE_SETTING_FULL_SCREEN_DEFAULT);
-			prefeditor.putInt(HINT_INPUT_MODE_CHANGED_DISPLAYED_COUNTER,
-					HINT_INPUT_MODE_CHANGED_DISPLAYED_COUNTER_DEFAULT);
+			prefeditor.putInt(PUZZLE_INPUT_MODE_CHANGED_COUNTER,
+					PUZZLE_INPUT_MODE_CHANGED_COUNTER_DEFAULT);
 			prefeditor.putString(PUZZLE_PARAMETER_COMPLEXITY,
 					PUZZLE_PARAMETER_COMPLEXITY_DEFAULT);
 			prefeditor.putBoolean(PUZZLE_PARAMETER_OPERATORS_VISIBLE,
@@ -740,14 +739,22 @@ public class Preferences {
 	}
 
 	/**
-	 * Increase the number of times the input mode changed hint has been
-	 * displayed.
+	 * Increase the number of times the input mode has been changed.
 	 * 
-	 * @return The (updated) number of times the input mode changed hint has
-	 *         been displayed.
+	 * @return The (updated) number of times the input mode has been changed.
 	 */
-	public int increaseHintInputModeShowedCounter() {
-		return increaseCounter(HINT_INPUT_MODE_CHANGED_DISPLAYED_COUNTER);
+	public int increaseInputModeChangedCounter() {
+		return increaseCounter(PUZZLE_INPUT_MODE_CHANGED_COUNTER);
+	}
+
+	/**
+	 * Gets the number of times the input mode has been changed.
+	 * 
+	 * @return The number of times the input mode has been changed.
+	 */
+	public int getInputModeChangedCounter() {
+		return mSharedPreferences.getInt(PUZZLE_INPUT_MODE_CHANGED_COUNTER,
+				PUZZLE_INPUT_MODE_CHANGED_COUNTER_DEFAULT);
 	}
 
 	/**

@@ -93,8 +93,7 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 				mSwipeMotion = null;
 			} else {
 				if (mSwipeMotion.isDoubleTap()) {
-					setInputMode((mInputMode == GridInputMode.MAYBE ? GridInputMode.NORMAL
-							: GridInputMode.MAYBE));
+					toggleInputMode();
 					mSwipeMotion.clearDoubleTap();
 				} else {
 					GridCell selectedCell = mSwipeMotion.getTouchDownCell();
@@ -149,30 +148,8 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 						}
 					}
 				} else if (mSwipeMotion.isDoubleTap()) {
-					setInputMode(mInputMode == GridInputMode.MAYBE ? GridInputMode.NORMAL
-							: GridInputMode.MAYBE);
+					toggleInputMode();
 					mSwipeMotion.clearDoubleTap();
-
-					if (mPreferences.increaseHintInputModeShowedCounter() < 4) {
-
-						// Determine old and new input mode (short) description.
-						String mOldInputModeText = (mInputMode == GridInputMode.MAYBE ? mContext
-								.getResources().getString(
-										R.string.input_mode_normal_short)
-								: mContext.getResources().getString(
-										R.string.input_mode_maybe_short));
-						String mNewInputModeText = (mInputMode == GridInputMode.NORMAL ? mContext
-								.getResources().getString(
-										R.string.input_mode_normal_short)
-								: mContext.getResources().getString(
-										R.string.input_mode_maybe_short));
-
-						setTickerTapeWithEraseConditions(
-								getResources().getString(
-										R.string.hint_input_mode_changed,
-										mOldInputModeText, mNewInputModeText),
-								2, 3000);
-					}
 				} else if (swipeDigit > mGridSize
 						&& mOnTickerTapeChangedListener != null
 						&& mPreferences.increaseSwipeInvalidMotionCounter() <= 6) {
@@ -372,7 +349,7 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 		mSwipeMotion = null;
 
 		// Set default input mode to normal
-		setInputMode(GridInputMode.NORMAL);
+		mInputMode = GridInputMode.NORMAL;
 
 		if (mOnTickerTapeChangedListener != null
 				&& mPreferences.getSwipeValidMotionCounter() < 30) {
@@ -569,13 +546,11 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 	}
 
 	/**
-	 * Set the input mode of the grid view to the given value.
-	 * 
-	 * @param inputMode
-	 *            The input mode to be set.
+	 * Toggle the input mode to the other mode
 	 */
-	public void setInputMode(GridInputMode inputMode) {
-		mInputMode = inputMode;
+	public void toggleInputMode() {
+		mInputMode = (mInputMode == GridInputMode.NORMAL ? GridInputMode.MAYBE
+				: GridInputMode.NORMAL);
 		invalidate();
 
 		// Inform listeners about change in input mode

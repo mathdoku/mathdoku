@@ -36,12 +36,17 @@
             mathdoku:layout_alignGridPlayerViewLeft="visible_grid"
             mathdoku:layout_alignGridPlayerViewRight="visible_grid" >
 
+            <!-- Be careful with changing alignments in this layout. Always test with clean install as well. -->
+            <!-- The input mode text will be displayed at a bigger height until the message is displayed -->
+            <!-- a number of times. After that the visibility is changed programmatically to gone which -->
+            <!-- decreases the size of this relative layout. -->
+
             <ImageView
                 android:id="@+id/input_mode_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/input_mode_text"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
                 tools:ignore="ContentDescription" />
 
             <TextView
@@ -54,20 +59,21 @@
                 android:textSize="@dimen/text_size_default"
                 android:textStyle="bold" />
 
-            <!-- Input mode text should be positioned below timer because of z-layering. In case it is displayed it should cover the timer text. -->
+            <!-- Input mode text should be positioned below timer because of z-layering. In case it is -->
+            <!-- displayed it covers the timer text. -->
 
             <TextView
                 android:id="@+id/input_mode_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/input_mode_image"
+                android:layout_alignParentTop="true"
                 android:layout_toRightOf="@+id/input_mode_image"
                 android:background="#000"
                 android:lines="3"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:textSize="@dimen/text_size_default"
-                android:visibility="gone" />
+                android:visibility="invisible" />
         </net.cactii.mathdoku.grid.ui.GridPlayerRelativeLayout>
 
         <net.cactii.mathdoku.grid.ui.GridPlayerView
