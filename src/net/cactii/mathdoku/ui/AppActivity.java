@@ -1,11 +1,13 @@
 package net.cactii.mathdoku.ui;
 
 import net.cactii.mathdoku.Preferences;
+import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
@@ -18,6 +20,7 @@ public class AppActivity extends Activity implements
 	// Preferences
 	public Preferences mMathDokuPreferences;
 
+	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -34,7 +37,9 @@ public class AppActivity extends Activity implements
 		// Set up the action bar.
 		final ActionBar actionBar = getActionBar();
 		if (actionBar != null) {
-			actionBar.setHomeButtonEnabled(true);
+			if (android.os.Build.VERSION.SDK_INT >= 14) {
+				actionBar.setHomeButtonEnabled(true);
+			}
 			actionBar.setDisplayHomeAsUpEnabled(true);
 		}
 	};
