@@ -15,6 +15,11 @@
         <!--  -->
         <item name="android:actionBarStyle">@style/ActionBar.SemiTransparent.Action_bar</item>
         <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Action_bar</item>
+
+        <!-- For API-14 and above the default implementation of the navigation drawer menu is used. Below APU-14 a custom implementation is used. -->
+        <item name="mathdoku_listPreferredItemHeightSmall">?android:attr/listPreferredItemHeightSmall</item>
+        <item name="mathdoku_textAppearanceListItemSmall">?android:attr/textAppearanceListItemSmall</item>
+        <item name="mathdoku_activatedBackgroundIndicator">?android:attr/activatedBackgroundIndicator</item>
     </style>
 
 </resources>

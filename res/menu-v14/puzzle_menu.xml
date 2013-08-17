@@ -7,14 +7,22 @@
         android:showAsAction="always"
         android:title="@string/action_check_progress"/>
     <item
-        android:id="@+id/action_reveal_cell"
-        android:title="@string/action_reveal_cell"/>
-    <item
-        android:id="@+id/action_reveal_operator"
-        android:title="@string/action_reveal_operator"/>
-    <item
-        android:id="@+id/action_show_solution"
-        android:title="@string/action_show_solution"/>
+        android:id="@+id/action_cheat"
+        android:orderInCategory="10"
+        android:showAsAction="never"
+        android:title="@string/action_cheats">
+        <menu>
+            <item
+                android:id="@+id/action_reveal_cell"
+                android:title="@string/action_reveal_cell"/>
+            <item
+                android:id="@+id/action_reveal_operator"
+                android:title="@string/action_reveal_operator"/>
+            <item
+                android:id="@+id/action_show_solution"
+                android:title="@string/action_show_solution"/>
+        </menu>
+    </item>
     <item
         android:id="@+id/action_clear_grid"
         android:orderInCategory="20"

@@ -19,6 +19,21 @@
             <enum name="visible_grid" value="0" />
             <enum name="entire_grid" value="1" />
         </attr>
-    </declare-styleable>
+    </declare-styleable><declare-styleable name="Theme">
 
+        <!-- Attributes below are needed to support the navigation drawer on Android 3.x. -->
+        <!-- For API-11 those attributes will be mapped to a Mathdoku specific -->
+        <!-- implementation. For API-14 the attributes will be mapped to default -->
+        <!-- Android values. -->
+
+
+        <!-- A smaller, sleeker list item height. -->
+        <attr name="mathdoku_listPreferredItemHeightSmall" format="dimension" />
+
+        <!-- Drawable used as a background for activated items. -->
+        <attr name="mathdoku_activatedBackgroundIndicator" format="reference" />
+
+        <!-- The preferred TextAppearance for the primary text of small list items. -->
+        <attr name="mathdoku_textAppearanceListItemSmall" format="reference" />
+    </declare-styleable>
 </resources>

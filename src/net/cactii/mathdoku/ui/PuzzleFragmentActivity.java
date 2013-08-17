@@ -237,9 +237,13 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 			menu.findItem(R.id.action_show_solution).setVisible(false);
 		}
 
-		// The cheats menu is only visible in case at lease one submenu item is
-		// visible.
-		menu.findItem(R.id.action_cheat).setVisible(!drawerOpen && showCheats);
+		// The cheats menu is only visible in case at least one sub menu item is
+		// visible. Note: the item does not exist when running on Android 3 as
+		// that version does not allow sub menu's.
+		MenuItem menuItem = menu.findItem(R.id.action_cheat);
+		if (menuItem != null) {
+			menuItem.setVisible(!drawerOpen && showCheats);
+		}
 
 		// Set visibility for menu option to clear the grid
 		menu.findItem(R.id.action_clear_grid).setVisible(

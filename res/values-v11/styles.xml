@@ -1,11 +1,29 @@
 <resources>
 
-    <!--
-        Base application theme for API 11+. This theme completely replaces
-        AppBaseTheme from res/values/styles.xml on API 11+ devices.
-    -->
-    <style name="AppBaseTheme" parent="android:Theme.Holo.Light">
+    <!-- Base application theme for API 11+. This theme completely replaces -->
+    <!-- AppBaseTheme from res/values/styles.xml on API 11+ devices. -->
+    <style name="AppBaseTheme" parent="android:Theme.Holo">
+
         <!-- API 11 theme customizations can go here. -->
+
+
+        <!-- Reference for creating an changing action bar style -->
+        <!-- * Drawables created with: http://jgilfelt.github.io/android-actionbarstylegenerator/#name=action_bar&compat=holo&theme=dark&actionbarstyle=transparent&texture=0&hairline=0&backColor=000%2C100&secondaryColor=33b5e5%2C100&tabColor=fff%2C100&tertiaryColor=3F3F3F%2C100&accentColor=09c%2C100&cabBackColor=002E3E%2C100&cabHighlightColor=33B5E5%2C100 -->
+        <!-- * Applying styles: http://blog.stylingandroid.com/archives/1249 -->
+        <!--  -->
+        <item name="android:actionBarStyle">@style/ActionBar.SemiTransparent.Action_bar</item>
+        <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Action_bar</item>
+
+        <!-- Implementation of attributes needed for the navigation drawer as the default implementation is based on API-14. -->
+        <item name="mathdoku_listPreferredItemHeightSmall">48dip</item>
+        <item name="mathdoku_textAppearanceListItemSmall">@style/MathdokuDrawerMenu</item>
+        <item name="mathdoku_activatedBackgroundIndicator">@drawable/ab_transparent_action_bar</item>
+    </style>
+
+    <style name="MathdokuDrawerMenu">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">?android:attr/actionMenuTextColor</item>
     </style>
 
 </resources>

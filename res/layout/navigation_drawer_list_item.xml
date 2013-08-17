@@ -13,9 +13,9 @@
     android:id="@android:id/text1"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/activatedBackgroundIndicator"
+    android:background="?attr/mathdoku_activatedBackgroundIndicator"
     android:gravity="center_vertical"
-    android:minHeight="?android:attr/listPreferredItemHeightSmall"
+    android:minHeight="?attr/mathdoku_listPreferredItemHeightSmall"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+    android:textAppearance="?attr/mathdoku_textAppearanceListItemSmall" />
