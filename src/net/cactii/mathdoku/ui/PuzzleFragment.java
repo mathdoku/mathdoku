@@ -833,6 +833,10 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				setElapsedTime(mGrid.getElapsedTime());
 			}
 		}
+		if (mInputModeImageView != null) {
+			mInputModeImageView.setVisibility(View.INVISIBLE);
+			mInputModeImageView.invalidate();
+		}
 		if (mClearButton != null) {
 			mClearButton.setVisibility(View.GONE);
 			mClearButton.invalidate();
