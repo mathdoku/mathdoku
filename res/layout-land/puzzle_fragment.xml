@@ -3,6 +3,7 @@
 <!-- subtle color differences between the relative and the linear layouts. -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:mathdoku="http://schemas.android.com/apk/res/net.cactii.mathdoku"
     android:id="@+id/topLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -32,45 +33,50 @@
             android:visibility="gone" />
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/tickerTapeLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/ticker_tape_height"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/puzzleGrid" />
-
-    <RelativeLayout
+    <net.cactii.mathdoku.grid.ui.GridPlayerRelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_alignWithParentIfMissing="true"
-        android:layout_below="@+id/tickerTapeLayout"
-        android:layout_margin="5dp"
-        android:layout_toRightOf="@+id/puzzleGrid" >
-
-        <TextView
-            android:id="@+id/timerText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:textSize="@dimen/text_size_default"
-            android:textStyle="bold"
-            android:visibility="gone" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/puzzleGrid"
+        mathdoku:layout_alignGridPlayerViewBottom="visible_grid"
+        mathdoku:layout_alignGridPlayerViewTop="visible_grid" >
 
         <ImageView
             android:id="@+id/input_mode_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/timerText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/input_mode_image"
+            android:layout_toRightOf="@+id/input_mode_image"
+            android:paddingLeft="10dp"
+            android:textSize="@dimen/text_size_default"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <RelativeLayout
+            android:id="@+id/tickerTapeLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/ticker_tape_height"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/input_mode_image"
+            android:paddingTop="5dp" />
+
+        <!-- Input mode text should be positioned below timer because of z-layering. In case it is displayed it should cover the timer text and the ticker tape. -->
 
         <TextView
             android:id="@+id/input_mode_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/input_mode_image"
+            android:layout_alignTop="@+id/input_mode_image"
+            android:layout_toRightOf="@+id/input_mode_image"
             android:background="#000"
             android:lines="3"
             android:paddingLeft="10dp"
@@ -106,6 +112,6 @@
                 android:textStyle="bold"
                 tools:ignore="ButtonStyle" />
         </LinearLayout>
-    </RelativeLayout>
+    </net.cactii.mathdoku.grid.ui.GridPlayerRelativeLayout>
 
 </RelativeLayout>
