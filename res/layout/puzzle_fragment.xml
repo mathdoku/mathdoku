@@ -14,6 +14,7 @@
         android:layout_height="@dimen/ticker_tape_height"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:paddingBottom="5dp"
         android:paddingTop="1dp"
         android:textIsSelectable="false" />
 
