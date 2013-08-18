@@ -266,6 +266,9 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		renderer.setShowLabels(false);
 		renderer.setShowLegend(true);
 		renderer.setLegendTextSize(mDefaultTextSize);
+		renderer.setFitLegend(true);
+		renderer.setMargins(new int[] { 0, mDefaultTextSize, mDefaultTextSize,
+				mDefaultTextSize });
 
 		renderer.setZoomButtonsVisible(false);
 		renderer.setZoomEnabled(false);
@@ -344,11 +347,14 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 
 		xyMultipleSeriesRenderer.setLabelsTextSize(mDefaultTextSize);
 		xyMultipleSeriesRenderer.setLegendTextSize(mDefaultTextSize);
+		xyMultipleSeriesRenderer.setFitLegend(true);
+		xyMultipleSeriesRenderer.setMargins(new int[] { 0,
+				2 * mDefaultTextSize, mDefaultTextSize, mDefaultTextSize });
+
 		xyMultipleSeriesRenderer.setYTitle(getResources().getString(
 				R.string.avoidable_moves_yaxis_description));
 		xyMultipleSeriesRenderer.setXAxisMin(-1);
 		xyMultipleSeriesRenderer.setYLabelsAlign(Align.RIGHT);
-		xyMultipleSeriesRenderer.setMargins(new int[] { 0, 75, 40, 10 });
 		xyMultipleSeriesRenderer.setZoomButtonsVisible(false);
 		xyMultipleSeriesRenderer.setZoomEnabled(false);
 		xyMultipleSeriesRenderer.setPanEnabled(false);
@@ -475,6 +481,10 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 
 		xyMultipleSeriesRenderer.setLabelsTextSize(mDefaultTextSize);
 		xyMultipleSeriesRenderer.setLegendTextSize(mDefaultTextSize);
+		xyMultipleSeriesRenderer.setFitLegend(true);
+		xyMultipleSeriesRenderer.setMargins(new int[] { 0,
+				2 * mDefaultTextSize, mDefaultTextSize, mDefaultTextSize });
+
 		xyMultipleSeriesRenderer.setYTitle(getResources().getString(
 				R.string.statistics_cheats_yaxis_description));
 		xyMultipleSeriesRenderer.setXAxisMin(-1);
@@ -483,7 +493,6 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		xyMultipleSeriesRenderer.setYAxisMin(0);
 		xyMultipleSeriesRenderer.setYAxisMax(maxCheats + 1);
 		xyMultipleSeriesRenderer.setYLabelsAlign(Align.RIGHT);
-		xyMultipleSeriesRenderer.setMargins(new int[] { 0, 75, 40, 10 });
 		xyMultipleSeriesRenderer.setZoomButtonsVisible(false);
 		xyMultipleSeriesRenderer.setZoomEnabled(false);
 		xyMultipleSeriesRenderer.setPanEnabled(false);

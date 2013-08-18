@@ -151,6 +151,10 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		DefaultRenderer renderer = new DefaultRenderer();
 		renderer.setShowLabels(false);
 		renderer.setShowLegend(true);
+		renderer.setFitLegend(true);
+		renderer.setMargins(new int[] { 0, mDefaultTextSize, mDefaultTextSize,
+				mDefaultTextSize });
+
 		renderer.setLegendTextSize(mDefaultTextSize);
 		renderer.setZoomButtonsVisible(false);
 		renderer.setZoomEnabled(false);
@@ -241,11 +245,13 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		xyMultipleSeriesRenderer.setXLabels((int) Math.min(
 				historicStatistics.getIndexLastEntry() + 1, 4));
 		xyMultipleSeriesRenderer.setYAxisMin(0);
-		xyMultipleSeriesRenderer.setMargins(new int[] { 0, 80, 50, 40 });
+		xyMultipleSeriesRenderer.setMargins(new int[] { 0,
+				2 * mDefaultTextSize, 2 * mDefaultTextSize, mDefaultTextSize });
 		xyMultipleSeriesRenderer.setZoomButtonsVisible(false);
 		xyMultipleSeriesRenderer.setZoomEnabled(false);
 		xyMultipleSeriesRenderer.setPanEnabled(false);
 		xyMultipleSeriesRenderer.setInScroll(true);
+		xyMultipleSeriesRenderer.setFitLegend(true);
 
 		// Y-axis
 		Scale yScale = Scale.DAYS;
