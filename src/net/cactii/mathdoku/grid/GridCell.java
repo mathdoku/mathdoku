@@ -641,57 +641,82 @@ public class GridCell {
 		float top = this.mPosY;
 		float left = this.mPosX;
 
-		// Get the painter for the overlay border
+		// Get the painters for the overlay border
 		// Determine which painter to use
 		Paint borderPaint = (inputMode == GridInputMode.NORMAL ? mSwipeBorderPainter
 				.getUserValueBackgroundBorderPaint() : mSwipeBorderPainter
 				.getMaybeValueBackgroundBorderPaint());
 		float borderOverlayWidth = borderPaint.getStrokeWidth();
-
-		// Draw the swipe border background
-		int centerX = (int) (left + cellSize / 2);
-		int centerY = (int) (top + (cellSize / 2));
-		float radius = cellSize;
-		if (borderPaint != null) {
-			canvas.drawCircle(centerX, centerY, radius
-					- (borderOverlayWidth / 2) - 2, borderPaint);
-		}
-
-		// Draw penciled in digits.
+		Paint segmentSeparatorPaint = mSwipeBorderPainter
+				.getSwipeSegmentDivider();
 		Paint textNormalPaint = mSwipeBorderPainter.getNormalDigitPaint();
 		Paint textHighlightedPaint = mSwipeBorderPainter
 				.getHighlightedDigitPaint();
 
-		// Plot all applicable digits clockwise in the swipe circle.
+		// Get the size of the grid as all digits up to grid size have to be
+		// drawn in the swipe circle.
 		int gridSize = mGrid.getGridSize();
+
+		// Draw the swipe border background
+		int centerX = (int) (left + cellSize / 2);
+		int centerY = (int) (top + (cellSize / 2));
+
+		// Define helper variables outside loop
 		Rect bounds = new Rect();
 		double radiusOffset;
 		int angle;
 		float offsetX;
 		float offsetY;
-		for (int i = 1; i <= gridSize; i++) {
-			// Determine the minimal space needed to draw the digit.
-			textNormalPaint.getTextBounds(Integer.toString(i), 0, 1, bounds);
 
-			// Determine the offset for which the radius has to be correct to
-			// get to the center of the space needed to draw the digit.
-			radiusOffset = Math.sqrt((bounds.height() * bounds.height())
-					+ (bounds.width() * bounds.width())) / 2;
+		// Draw the swipe circles
+		for (int circle = 1; circle <= 2; circle++) {
+			float radius = cellSize * circle;
+			if (borderPaint != null) {
+				canvas.drawCircle(centerX, centerY, radius
+						- (borderOverlayWidth / 2) - 2, borderPaint);
+			}
 
-			// Determine the point at which the center of the digit has to
-			// placed.
-			angle = SwipeMotion.getAngleCenterSwipeSegment(i);
-			offsetX = (int) (Math.cos(Math.toRadians(angle)) * (radius - radiusOffset));
-			offsetY = (int) (Math.sin(Math.toRadians(angle)) * (radius - radiusOffset));
+			// Plot all applicable digits clockwise in the swipe circle.
+			for (int i = 1; i <= gridSize; i++) {
+				// Determine the minimal space needed to draw the digit.
+				textNormalPaint
+						.getTextBounds(Integer.toString(i), 0, 1, bounds);
 
-			// Find the lower left corner of the space in which the digit has to
-			// be drawn.
-			offsetX += centerX - (bounds.width() / 2);
-			offsetY += centerY + (bounds.height() / 2);
+				// Determine the offset for which the radius has to be correct
+				// to get to the center of the space needed to draw the digit.
+				radiusOffset = Math.sqrt((bounds.height() * bounds.height())
+						+ (bounds.width() * bounds.width())) / 2;
 
-			// Draw the text at the lower left corner
-			canvas.drawText(Integer.toString(i), offsetX, offsetY,
-					(i == swipeDigit ? textHighlightedPaint : textNormalPaint));
+				// Determine the point at which the center of the digit has to
+				// placed.
+				angle = SwipeMotion.getAngleCenterSwipeSegment(i);
+				offsetX = (int) (Math.cos(Math.toRadians(angle)) * (radius - radiusOffset));
+				offsetY = (int) (Math.sin(Math.toRadians(angle)) * (radius - radiusOffset));
+
+				// Find the lower left corner of the space in which the digit
+				// has to
+				// be drawn.
+				offsetX += centerX - (bounds.width() / 2);
+				offsetY += centerY + (bounds.height() / 2);
+
+				// Draw the text at the lower left corner
+				canvas.drawText(Integer.toString(i), offsetX, offsetY,
+						(i == swipeDigit ? textHighlightedPaint
+								: textNormalPaint));
+
+				// Draw separator lines between the segments of the swipe circle
+				angle = SwipeMotion.getAngleToNextSwipeSegment(i);
+				canvas.drawLine(
+						centerX
+								+ (int) (Math.cos(Math.toRadians(angle)) * radius),
+						centerY
+								+ (int) (Math.sin(Math.toRadians(angle)) * radius),
+						centerX
+								+ (int) (Math.cos(Math.toRadians(angle)) * (radius - borderOverlayWidth)),
+						centerY
+								+ (int) (Math.sin(Math.toRadians(angle)) * (radius - borderOverlayWidth)),
+						segmentSeparatorPaint);
+			}
 		}
 
 		// Redraw the cell including the content which results as the swipe

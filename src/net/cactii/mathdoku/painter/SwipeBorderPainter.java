@@ -17,6 +17,9 @@ public class SwipeBorderPainter extends BorderPainter {
 	private final Paint mNormalDigitPaint;
 	private final Paint mHighlightedDigitPaint;
 
+	// Painter for the line dividing the segments in the swipe circle
+	private final Paint mSwipeSegmentDividerPaint;
+
 	// Painter for the swipe line
 	private final Paint mSwipeLinePaint;
 
@@ -42,11 +45,16 @@ public class SwipeBorderPainter extends BorderPainter {
 		// The digit painters
 		mNormalDigitPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		mNormalDigitPaint.setFakeBoldText(true);
-		mNormalDigitPaint.setColor(0xFF7D7D7D);
+		mNormalDigitPaint.setColor(0xFFFFFFFF);
 
 		mHighlightedDigitPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		mHighlightedDigitPaint.setFakeBoldText(true);
 		mHighlightedDigitPaint.setColor(0xFF000000);
+
+		mSwipeSegmentDividerPaint = new Paint();
+		mSwipeSegmentDividerPaint.setStrokeWidth(2);
+		mSwipeSegmentDividerPaint.setColor(0xFF000000);
+		mSwipeSegmentDividerPaint.setStyle(Paint.Style.STROKE);
 
 		mSwipeLinePaint = new Paint();
 		mSwipeLinePaint.setAntiAlias(true);
@@ -145,6 +153,15 @@ public class SwipeBorderPainter extends BorderPainter {
 	 */
 	public Paint getHighlightedDigitPaint() {
 		return mHighlightedDigitPaint;
+	}
+
+	/**
+	 * Get the paint for the swipe segment divider.
+	 * 
+	 * @return The paint for the swipe segment divider
+	 */
+	public Paint getSwipeSegmentDivider() {
+		return mSwipeSegmentDividerPaint;
 	}
 
 	/**

@@ -493,7 +493,21 @@ public class SwipeMotion {
 	 *         the given digit.
 	 */
 	public static int getAngleCenterSwipeSegment(int digit) {
-		return ((digit - 1) * SWIPE_SEGMENT_ANGLE) + SWIPE_ANGLE_OFFSET_91
+		return SWIPE_ANGLE_OFFSET_91 + ((digit - 1) * SWIPE_SEGMENT_ANGLE)
 				+ (SWIPE_SEGMENT_ANGLE / 2);
+	}
+
+	/**
+	 * Get the angle which separates the segment of the given digit with the
+	 * next (clock wise) digit.
+	 * 
+	 * @param digit
+	 *            The digit of the segment for which the angle has to be
+	 *            determined which separates this segment from the next segment.
+	 * @return The angle to which separates the segment of the given digit with
+	 *         the next (clock wise) digit.
+	 */
+	public static int getAngleToNextSwipeSegment(int digit) {
+		return SWIPE_ANGLE_OFFSET_91 + (digit * SWIPE_SEGMENT_ANGLE);
 	}
 }
