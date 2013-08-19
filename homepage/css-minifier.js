@@ -2,10 +2,24 @@
 
 const fileSystem = require("fs");
 // Load the CSS file.
-const originalCSS = fileSystem.readFileSync("page/unprocessed-style.css", "utf-8");
-// Minify the CSS clean-css. Write the result to the target CSS file.
-(function() {
-	const minify = require("clean-css").process;
-	const minifiedCSS = minify(originalCSS);
-	fileSystem.writeFileSync("page/style.css", minifiedCSS, "utf-8");
-})();
+require("async").waterfall([fileSystem.readFile.bind(fileSystem, "page/unprocessed-style.css", {"encoding": "utf8"}),
+// Minify the CSS.
+function minify(original, callback) {
+	var minified;
+	try {
+		minified = require("clean-css").process(original);
+	} catch (error) {
+		callback(error);
+		return;
+	}
+	callback(null, minified);
+},
+// Write the result to the target CSS file.
+function writeResult(minified, callback) {
+	fileSystem.writeFile("page/style.css", minified, {"encoding": "utf8"}, callback);
+}],
+function complete(error) {
+	if (null !== error) {
+		process.stderr.write(error + "\n");
+	}
+});

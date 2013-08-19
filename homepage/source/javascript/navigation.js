@@ -5,7 +5,7 @@
 	 * @const
 	 * @type {RegExp}
 	 */
-	var hashExtractor = /^#\/android\/(\w+)\.html$/;
+	var hashExtractor = /^#\/android\/([\w-]+)\.html$/;
 	/**
 	 * Called when the hash does not match the expected pattern.
 	 */

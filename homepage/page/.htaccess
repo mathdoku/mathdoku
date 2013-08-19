@@ -1,3 +1,16 @@
-RewriteEngine On
-#Look for puzzle pages which are not openened with the MathDoku app but a browser instead.
-RewriteRule  ^puzzle/[\d]*/.*$   /puzzle.html [NC,L]
+RewriteEngine  On
+# Look for puzzle pages which are not openened with the MathDoku app but a browser instead.
+RewriteRule  ^puzzle/\d+  /#/link-land.html  [redirect=307,noescape,last]
+
+# 
+# Expire headers
+# ==============
+<IfModule mod_expires.c>
+	ExpiresActive  on
+	# Skeleton.
+	ExpiresByType  text/html  "access plus 10 days"
+	ExpiresByType  text/css  "access plus 10 days"
+	ExpiresByType  application/javascript  "access plus 10 days"
+	# Media.
+	ExpiresByType  image/png  "access plus 28 days"
+</IfModule>
