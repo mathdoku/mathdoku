@@ -108,6 +108,9 @@ public class Preferences {
 	public final static String STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES_DEFAULT = Integer
 			.toString(100);
 
+	public final static String STATISTICS_TAB_LAST_SHOWED = "statistics_tab_last_showed";
+	public final static int STATISTICS_TAB_LAST_SHOWED_DEFAULT = -1;
+
 	// Swipe counters
 	public final static String SWIPE_INVALID_MOTION_COUNTER = "swipe_invalid_motion_counter";
 	public final static String SWIPE_VALID_MOTION_COUNTER = "swipe_valid_motion_counter";
@@ -181,7 +184,7 @@ public class Preferences {
 		// Update preferences
 		Editor prefeditor = mSharedPreferences.edit();
 
-		if (previousInstalledVersion < 493 && currentVersion >= 510) {
+		if (previousInstalledVersion < 493 && currentVersion >= 519) {
 			// On upgrade to version 2 of MathDoku the preferences are cleaned
 			// up. Unnecessary preferences are deleted. Preferences which are
 			// kept are renamed in order to improve future maintenance.
@@ -287,6 +290,8 @@ public class Preferences {
 					SWIPE_DIGIT_COUNTER_DEFAULT);
 			prefeditor.putInt(SWIPE_DIGIT_9_COUNTER,
 					SWIPE_DIGIT_COUNTER_DEFAULT);
+			prefeditor.putInt(STATISTICS_TAB_LAST_SHOWED,
+					STATISTICS_TAB_LAST_SHOWED_DEFAULT);
 		}
 
 		// Save
@@ -845,5 +850,25 @@ public class Preferences {
 	public boolean isColoredDigitsVisible() {
 		return mSharedPreferences.getBoolean(PUZZLE_SETTING_COLORED_DIGITS,
 				PUZZLE_SETTING_COLORED_DIGITS_DEFAULT);
+	}
+
+	/**
+	 * Get the tab which was displayed last time the statistics were displayed.
+	 * 
+	 * @return The tab which was displayed last time the statistics were
+	 *         displayed.
+	 */
+	public int getStatisticsTabLastDisplayed() {
+		return mSharedPreferences.getInt(STATISTICS_TAB_LAST_SHOWED,
+				STATISTICS_TAB_LAST_SHOWED_DEFAULT);
+	}
+
+	/**
+	 * Set the size of the puzzle which was last generated. closed.
+	 */
+	public void setStatisticsTabLastDisplayed(int tab) {
+		Editor prefeditor = mSharedPreferences.edit();
+		prefeditor.putInt(STATISTICS_TAB_LAST_SHOWED, tab);
+		prefeditor.commit();
 	}
 }

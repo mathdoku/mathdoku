@@ -1,5 +1,6 @@
 package net.cactii.mathdoku.ui;
 
+import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.util.FeedbackEmail;
 import android.app.ActionBar;
@@ -74,10 +75,24 @@ public class StatisticsFragmentActivity extends AppFragmentActivity implements
 					.setTabListener(this));
 		}
 
+		// Show the same page as last time (or the last tab if statistics were
+		// not displayed before.
+		int tab = Preferences.getInstance(this).getStatisticsTabLastDisplayed();
+		mViewPager.setCurrentItem(tab >= 0 ? tab
+				: mStatisticsFragmentPagerAdapter.getCount() - 1);
+
 		/*
 		 * Styling of the pager tab strip is not possible from within code. See
 		 * values-v14/styles.xml for styling of the action bar tab.
 		 */
+	}
+
+	@Override
+	protected void onPause() {
+		// Store tab which is currently displayed.
+		Preferences.getInstance(this).setStatisticsTabLastDisplayed(
+				mViewPager.getCurrentItem());
+		super.onPause();
 	}
 
 	@Override
