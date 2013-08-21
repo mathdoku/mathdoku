@@ -27,17 +27,19 @@ public class HistoricStatistics {
 
 	// Columns in the DATA cursor
 	public final static String DATA_COL_ID = "id";
-	public final static String DATA_COL_VALUE = "value";
+	public final static String DATA_COL_ELAPSED_TIME_EXCLUDING_CHEAT_PENALTY = "elapsed_time_excluding_cheat_penalty";
+	public final static String DATA_COL_CHEAT_PENALTY = "cheat_penalty";
 	public final static String DATA_COL_SERIES = "serie";
 
 	// Internal structure to store data points retrieved from database
 	private class DataPoint {
-		public long mValue;
+		public long mElapsedTimeExcludingCheatPenalty;
+		public long mCheatPenalty;
 		public Serie mSerie;
 	}
 
 	// Storage for data points retrieved from database
-	private ArrayList<DataPoint> dataPoints;
+	private final ArrayList<DataPoint> dataPoints;
 
 	// Internal data structure to store data per serie
 	private class SeriesSummary {
@@ -61,10 +63,12 @@ public class HistoricStatistics {
 		 * @param value
 		 *            The value which has to be included in the summary.
 		 */
-		public void addValue(long value) {
-			mMinValue = (value < mMinValue ? value : mMinValue);
-			mMaxValue = (value > mMaxValue ? value : mMaxValue);
-			mSumValue += value;
+		public void addValue(DataPoint dataPoint) {
+			long totalValue = dataPoint.mElapsedTimeExcludingCheatPenalty
+					+ dataPoint.mCheatPenalty;
+			mMinValue = (totalValue < mMinValue ? totalValue : mMinValue);
+			mMaxValue = (totalValue > mMaxValue ? totalValue : mMaxValue);
+			mSumValue += totalValue;
 			mCount++;
 		}
 
@@ -110,10 +114,10 @@ public class HistoricStatistics {
 	}
 
 	// Storage of the series.
-	private SeriesSummary mAllSeriesSummary;
-	private SeriesSummary mSolvedSeriesSummary;
-	private SeriesSummary mSolutionRevealedSeriesSummary;
-	private SeriesSummary mUnfinishedSeriesSummary;
+	private final SeriesSummary mAllSeriesSummary;
+	private final SeriesSummary mSolvedSeriesSummary;
+	private final SeriesSummary mSolutionRevealedSeriesSummary;
+	private final SeriesSummary mUnfinishedSeriesSummary;
 
 	// Limit on XYSeries
 	public final static int XYSERIES_NOT_LIMITED = -1;
@@ -138,22 +142,25 @@ public class HistoricStatistics {
 			do {
 				// Fill new datapoint
 				DataPoint dataPoint = new DataPoint();
-				dataPoint.mValue = data.getLong(data
-						.getColumnIndexOrThrow(DATA_COL_VALUE));
+				dataPoint.mElapsedTimeExcludingCheatPenalty = data
+						.getLong(data
+								.getColumnIndexOrThrow(DATA_COL_ELAPSED_TIME_EXCLUDING_CHEAT_PENALTY));
+				dataPoint.mCheatPenalty = data.getLong(data
+						.getColumnIndexOrThrow(DATA_COL_CHEAT_PENALTY));
 				dataPoint.mSerie = Serie.valueOf(data.getString(data
 						.getColumnIndexOrThrow(DATA_COL_SERIES)));
 
 				// Update summary for the series
-				mAllSeriesSummary.addValue(dataPoint.mValue);
+				mAllSeriesSummary.addValue(dataPoint);
 				switch (dataPoint.mSerie) {
 				case UNFINISHED:
-					mUnfinishedSeriesSummary.addValue(dataPoint.mValue);
+					mUnfinishedSeriesSummary.addValue(dataPoint);
 					break;
 				case SOLUTION_REVEALED:
-					mSolutionRevealedSeriesSummary.addValue(dataPoint.mValue);
+					mSolutionRevealedSeriesSummary.addValue(dataPoint);
 					break;
 				case SOLVED:
-					mSolvedSeriesSummary.addValue(dataPoint.mValue);
+					mSolvedSeriesSummary.addValue(dataPoint);
 					break;
 				}
 
@@ -170,22 +177,38 @@ public class HistoricStatistics {
 	 * point.
 	 * 
 	 * @param serie
-	 *            The serie to be checked.
-	 * @return True in case the serie contains at least one data point.
+	 *            The serie to be converted. Use null in case it needs to be
+	 *            checked if at least one data point exists for any of the
+	 *            series.
+	 * @param includeElapsedTime
+	 *            True in case the elapsed time should be included in the values
+	 *            of the return series.
+	 * @param includeCheatTime
+	 *            True in case the cheat time should be included in the values
+	 *            of the return series.
+	 * 
+	 * 
+	 * @return A XYSerie object which can be processed by AChartEngine
 	 */
-	public boolean isXYSeriesUsed(Serie serie) {
-		if (serie == null) {
-			return (mAllSeriesSummary.getCount() > 0);
+	public boolean isXYSeriesUsed(Serie serie, boolean includeElapsedTime,
+			boolean includeCheatTime) {
+		// In case a limit is specified, only the last <limit> number of
+		// data points are converted to the series.
+		int start = getIndexFirstEntry();
+		int index = 1;
+
+		for (DataPoint dataPoint : dataPoints) {
+			if (index >= start) {
+				if (dataPoint.mSerie == serie || serie == null) {
+					if ((includeElapsedTime && dataPoint.mElapsedTimeExcludingCheatPenalty > 0)
+							|| (includeCheatTime && dataPoint.mCheatPenalty > 0)) {
+						return true;
+					}
+				}
+			}
+			index++;
 		}
 
-		switch (serie) {
-		case UNFINISHED:
-			return (mUnfinishedSeriesSummary.getCount() > 0);
-		case SOLUTION_REVEALED:
-			return (mSolutionRevealedSeriesSummary.getCount() > 0);
-		case SOLVED:
-			return (mSolvedSeriesSummary.getCount() > 0);
-		}
 		return false;
 	}
 
@@ -200,10 +223,18 @@ public class HistoricStatistics {
 	 * @param scale
 	 *            The scaling factor which has to be applied when converting
 	 *            values.
+	 * @param includeElapsedTime
+	 *            True in case the elapsed time should be included in the values
+	 *            of the return series.
+	 * @param includeCheatTime
+	 *            True in case the cheat time should be included in the values
+	 *            of the return series.
+	 * 
 	 * 
 	 * @return A XYSerie object which can be processed by AChartEngine
 	 */
-	public XYSeries getXYSeries(Serie serie, String title, Scale scale) {
+	public XYSeries getXYSeries(Serie serie, String title, Scale scale,
+			boolean includeElapsedTime, boolean includeCheatTime) {
 		if (serie == Serie.SOLUTION_REVEALED) {
 			throw new RuntimeException(
 					"Method getXYSeries should not be used for the solution "
@@ -215,15 +246,23 @@ public class HistoricStatistics {
 		double scaleFactor = getScaleFactor(scale);
 
 		// In case a limit is specified, only the last <limit> number of
-		// datapoints are converted to the series.
+		// data points are converted to the series.
 		int start = getIndexFirstEntry();
 		int index = 1;
 
 		for (DataPoint dataPoint : dataPoints) {
 			if (index >= start) {
-				xySeries.add(index,
-						(dataPoint.mSerie == serie ? (dataPoint.mValue)
-								/ scaleFactor : 0));
+				double value = 0;
+				if (dataPoint.mSerie == serie) {
+					// Get unscaled value
+					value = (includeElapsedTime ? dataPoint.mElapsedTimeExcludingCheatPenalty
+							: 0)
+							+ (includeCheatTime ? dataPoint.mCheatPenalty : 0);
+
+					// Scale value
+					value /= scaleFactor;
+				}
+				xySeries.add(index, value);
 			}
 			index++;
 		}
@@ -243,11 +282,12 @@ public class HistoricStatistics {
 	 * 
 	 * @return A XYSerie object which can be processed by AChartEngine
 	 */
-	public XYSeries getXYSeriesSolutionRevealed(String title, double maxY) {
+	public XYSeries getXYSeriesSolutionRevealed(String title, double maxY,
+			boolean includeElapsedTime, boolean includeCheatTime) {
 		XYSeries xySeries = new XYSeries(title);
 
 		// In case a limit is specified, only the last <limit> number of
-		// datapoints are converted to the series.
+		// data points are converted to the series.
 		int start = getIndexFirstEntry();
 		int index = 1;
 
@@ -255,9 +295,21 @@ public class HistoricStatistics {
 		// games will always be equals to the maximum Y-value.
 		for (DataPoint dataPoint : dataPoints) {
 			if (index >= start) {
-				xySeries.add(
-						index,
-						(dataPoint.mSerie == Serie.SOLUTION_REVEALED ? maxY : 0));
+				double value = 0;
+				if (dataPoint.mSerie == Serie.SOLUTION_REVEALED) {
+					if (includeElapsedTime && includeCheatTime) {
+						value = maxY;
+					} else if (includeElapsedTime && includeCheatTime == false) {
+						value = Math.min(
+								dataPoint.mElapsedTimeExcludingCheatPenalty,
+								maxY);
+					} else if (includeElapsedTime == false && includeCheatTime) {
+						value = Math.max(Math.min(maxY
+								- dataPoint.mElapsedTimeExcludingCheatPenalty,
+								dataPoint.mCheatPenalty), 0);
+					}
+				}
+				xySeries.add(index, value);
 			}
 			index++;
 		}
@@ -293,7 +345,7 @@ public class HistoricStatistics {
 
 		for (DataPoint dataPoint : dataPoints) {
 			if (serie == null || dataPoint.mSerie == serie) {
-				totalValue += dataPoint.mValue;
+				totalValue += dataPoint.mElapsedTimeExcludingCheatPenalty;
 				countValue++;
 			}
 			if (countValue > 0 && index >= start) {

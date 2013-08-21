@@ -369,8 +369,12 @@
     <string name="chart_serie_unfinished">Unfinished</string>
 
     <!-- Title and a body which explains the purpose of the chart "Elapsed time historic". -->
+    <!-- Series used to split charts like "Unsolved games" and "Elapsed time historic". -->
     <string name="statistics_elapsed_time_historic_title">Elapsed time</string>
     <string name="statistics_elapsed_time_historic_body">This chart shows the time elapsed per game and the average elapsed time. Games are sorted in order of creating (same order as in Archive). More recent games will be on the right of this chart. As you got more experienced at this level the elapsed time per game should diminish. Also there should be less games unfinished or for which the solution was revealed.</string>
+    <string name="statistics_elapsed_time_historic_elapsed_time_solved">Elapsed time in solved games</string>
+    <string name="statistics_elapsed_time_historic_elapsed_time_unfinished">Elapsed time in unfinished games</string>
+    <string name="statistics_elapsed_time_historic_cheat_time">Cheat penalty</string>
     <string name="statistics_elapsed_time_historic_solved_average_serie">Average (solved games only)</string>
     <string name="statistics_elapsed_time_historic_solved_slowest">Slowest</string>
     <string name="statistics_elapsed_time_historic_solved_average">Average</string>

@@ -18,6 +18,7 @@ import org.achartengine.model.CategorySeries;
 import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.DefaultRenderer;
+import org.achartengine.renderer.SimpleSeriesRenderer;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
 
@@ -220,15 +221,15 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		HistoricStatistics historicStatistics = mStatisticsDatabaseAdapter
 				.getHistoricData(mMinGridSize, mMaxGridSize);
 
-		// Check if at least one serie will contain data.
-		if (!historicStatistics.isXYSeriesUsed(null)) {
-			return false;
-		}
-
 		// The number of entries to be displayed is restricted to the maximum
 		// set in the preferences.
 		historicStatistics.setLimit(Preferences.getInstance()
 				.getStatisticsSettingElapsedTimeChartMaximumGames());
+
+		// Check if at least one serie will contain data in the limited range.
+		if (!historicStatistics.isXYSeriesUsed(null, true, true)) {
+			return false;
+		}
 
 		// Define the renderer
 		XYMultipleSeriesRenderer xyMultipleSeriesRenderer = new XYMultipleSeriesRenderer();
@@ -309,44 +310,112 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 
 		ArrayList<String> typesList = new ArrayList<String>();
 
-		// Add series for solved games
-		if (historicStatistics.isXYSeriesUsed(Serie.SOLVED)) {
+		// Add series for elapsed time (including cheat time) of solved games
+		if (historicStatistics.isXYSeriesUsed(Serie.SOLVED, true, true)) {
 			typesList.add(BarChart.TYPE);
-			xyMultipleSeriesDataset.addSeries(historicStatistics.getXYSeries(
-					Serie.SOLVED,
-					getResources().getString(R.string.chart_serie_solved),
-					yScale));
+			xyMultipleSeriesDataset
+					.addSeries(historicStatistics
+							.getXYSeries(
+									Serie.SOLVED,
+									getResources()
+											.getString(
+													R.string.statistics_elapsed_time_historic_elapsed_time_solved),
+									yScale, true, true));
 			xyMultipleSeriesRenderer
 					.addSeriesRenderer(createSimpleSeriesRenderer(chartGreen1));
 		}
 
-		// Add series for games in which the solution was revealed
-		if (historicStatistics.isXYSeriesUsed(Serie.SOLUTION_REVEALED)) {
+		// Add series for cheat time of solved games
+		boolean cheatLegendDisplayed = false;
+		if (historicStatistics.isXYSeriesUsed(Serie.SOLVED, false, true)) {
 			typesList.add(BarChart.TYPE);
-			xyMultipleSeriesDataset.addSeries(historicStatistics
-					.getXYSeriesSolutionRevealed(
-							getResources().getString(
-									R.string.chart_serie_solution_revealed),
-							maxY));
-			xyMultipleSeriesRenderer
-					.addSeriesRenderer(createSimpleSeriesRenderer(chartRed1));
+			xyMultipleSeriesDataset
+					.addSeries(historicStatistics
+							.getXYSeries(
+									Serie.SOLVED,
+									getResources()
+											.getString(
+													R.string.statistics_elapsed_time_historic_cheat_time),
+									yScale, false, true));
+
+			SimpleSeriesRenderer simpleSeriesRenderer = createSimpleSeriesRenderer(chartRed1);
+
+			// Cheat legend should only be displayed once
+			if (cheatLegendDisplayed) {
+				simpleSeriesRenderer.setShowLegendItem(false);
+			}
+			cheatLegendDisplayed = true;
+
+			xyMultipleSeriesRenderer.addSeriesRenderer(simpleSeriesRenderer);
 		}
 
-		// Add series for unfinished games
-		if (historicStatistics.isXYSeriesUsed(Serie.UNFINISHED)) {
+		// Add series for elapsed time (including cheat time) of unfinished
+		// games
+		if (historicStatistics.isXYSeriesUsed(Serie.UNFINISHED, true, true)) {
+			// Elapsed time so far including cheats
 			typesList.add(BarChart.TYPE);
-			xyMultipleSeriesDataset.addSeries(historicStatistics.getXYSeries(
-					Serie.UNFINISHED,
-					getResources().getString(R.string.chart_serie_unfinished),
-					yScale));
+			xyMultipleSeriesDataset
+					.addSeries(historicStatistics
+							.getXYSeries(
+									Serie.UNFINISHED,
+									getResources()
+											.getString(
+													R.string.statistics_elapsed_time_historic_elapsed_time_unfinished),
+									yScale, true, true));
 			xyMultipleSeriesRenderer
 					.addSeriesRenderer(createSimpleSeriesRenderer(chartGrey1));
 		}
 
+		// Add series for cheat time of solved games
+		if (historicStatistics.isXYSeriesUsed(Serie.UNFINISHED, false, true)) {
+			typesList.add(BarChart.TYPE);
+			xyMultipleSeriesDataset
+					.addSeries(historicStatistics
+							.getXYSeries(
+									Serie.UNFINISHED,
+									getResources()
+											.getString(
+													R.string.statistics_elapsed_time_historic_cheat_time),
+									yScale, false, true));
+			SimpleSeriesRenderer simpleSeriesRenderer = createSimpleSeriesRenderer(chartRed1);
+
+			// Cheat legend should only be displayed once
+			if (cheatLegendDisplayed) {
+				simpleSeriesRenderer.setShowLegendItem(false);
+			}
+			cheatLegendDisplayed = true;
+
+			xyMultipleSeriesRenderer.addSeriesRenderer(simpleSeriesRenderer);
+		}
+
+		// Add series for games in which the solution was revealed
+		if (historicStatistics.isXYSeriesUsed(Serie.SOLUTION_REVEALED, true,
+				true)) {
+			typesList.add(BarChart.TYPE);
+
+			xyMultipleSeriesDataset
+					.addSeries(historicStatistics
+							.getXYSeriesSolutionRevealed(
+									getResources()
+											.getString(
+													R.string.statistics_elapsed_time_historic_cheat_time),
+									maxY, true, true));
+
+			SimpleSeriesRenderer simpleSeriesRenderer = createSimpleSeriesRenderer(chartRed1);
+
+			// Cheat legend should only be displayed once
+			if (cheatLegendDisplayed) {
+				simpleSeriesRenderer.setShowLegendItem(false);
+			}
+			cheatLegendDisplayed = true;
+
+			xyMultipleSeriesRenderer.addSeriesRenderer(simpleSeriesRenderer);
+		}
+
 		// Add series for the historic average of solved games. As this series
 		// is displayed as a line chart, it can only be shown if at least two
-		// datapoints in the series are available.
-		if (historicStatistics.isXYSeriesUsed(Serie.SOLVED)) {
+		// data points in the series are available.
+		if (historicStatistics.isXYSeriesUsed(Serie.SOLVED, true, true)) {
 			XYSeries xySeries = historicStatistics
 					.getXYSeriesHistoricAverage(
 							Serie.SOLVED,
@@ -366,7 +435,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 
 		// Create a table with extra data for fastest, average and slowest time.
 		TableLayout tableLayout = null;
-		if (historicStatistics.isXYSeriesUsed(Serie.SOLVED)) {
+		if (historicStatistics.isXYSeriesUsed(Serie.SOLVED, true, true)) {
 			tableLayout = new TableLayout(getActivity());
 			TableLayout.LayoutParams tableLayoutParams = new TableLayout.LayoutParams(
 					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);

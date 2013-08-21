@@ -738,9 +738,21 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		// Retrieve all data. Note: in case column is not added to the
 		// projection, no data will be retrieved!
 		String[] columnsData = {
+				// Statistics id
 				stringBetweenBackTicks(HistoricStatistics.DATA_COL_ID),
-				stringBetweenBackTicks(KEY_ELAPSED_TIME) + " AS "
-						+ HistoricStatistics.DATA_COL_VALUE,
+
+				// Elapsed time excluding the cheat penalty
+				stringBetweenBackTicks(KEY_ELAPSED_TIME)
+						+ " - "
+						+ stringBetweenBackTicks(KEY_CHEAT_PENALTY_TIME)
+						+ " AS "
+						+ HistoricStatistics.DATA_COL_ELAPSED_TIME_EXCLUDING_CHEAT_PENALTY,
+
+				// Cheat penalty
+				stringBetweenBackTicks(KEY_CHEAT_PENALTY_TIME) + " AS "
+						+ HistoricStatistics.DATA_COL_CHEAT_PENALTY,
+
+				// Series
 				stringBetweenBackTicks(HistoricStatistics.DATA_COL_SERIES) };
 
 		String selection = GridDatabaseAdapter
