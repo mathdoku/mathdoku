@@ -165,14 +165,13 @@ public class SwipeMotion {
 			mDoubleTapTouchDownTime = event.getDownTime();
 		} else {
 			// The same cell is selected again. The touch down time may not be
-			// reseted as for the double tap it is required that tow
+			// reseted as for the double tap it is required that two
 			// consecutive swipe motion haven been completed entire within the
 			// double tap time duration.
 			if (event.getEventTime() - mDoubleTapTouchDownTime < 300) {
 				// A double tap is only allowed in case the total time
-				// between
-				// touch down of the first swipe motion until release of the
-				// second swipe motion took less than 300 milliseconds.
+				// between touch down of the first swipe motion until release of
+				// the second swipe motion took less than 300 milliseconds.
 				mDoubleTapDetected = true;
 			} else {
 				// Too slow for being recognized as double tap. Use touch
@@ -226,7 +225,13 @@ public class SwipeMotion {
 					"Swipe Motion status can not be changed from "
 							+ mStatus.toString() + " to " + Status.RELEASED);
 		}
-		update(event);
+		if (update(event)) {
+			// A digit was determined upon release the swipe motion. This motion
+			// may therefore not be used to detect a double tap. This prevents
+			// false detection of double taps due to rapid entering of maybe
+			// digits.
+			clearDoubleTap();
+		}
 	}
 
 	/**
@@ -313,8 +318,9 @@ public class SwipeMotion {
 	 * 
 	 * @param event
 	 *            The event which holding the current swipe position.
+	 * @return True in case a digit has been determined. False otherwise.
 	 */
-	protected void update(MotionEvent motionEvent) {
+	protected boolean update(MotionEvent motionEvent) {
 		if (mStatus == Status.TOUCH_DOWN) {
 			mStatus = Status.MOVING;
 		}
@@ -336,7 +342,7 @@ public class SwipeMotion {
 				// Normally the swipe digit will only be updated in case the
 				// swipe position is outside the touch down cell.
 				mCurrentSwipePositionDigit = DIGIT_UNDETERMINDED;
-				return;
+				return false;
 			} else {
 				// The swipe motion for a higher size grid, is released in an
 				// outer cell of the grid or just outside the grid. In this case
@@ -434,7 +440,10 @@ public class SwipeMotion {
 		}
 		if (acceptDigit) {
 			mCurrentSwipePositionDigit = digit;
+			return true;
 		}
+
+		return false;
 	}
 
 	/**
@@ -563,6 +572,7 @@ public class SwipeMotion {
 	 * 
 	 */
 	public void clearDoubleTap() {
+		mDoubleTapTouchDownTime = 0;
 		mDoubleTapDetected = false;
 	}
 
