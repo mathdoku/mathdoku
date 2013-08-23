@@ -82,7 +82,7 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
 			if (mSwipeMotion == null) {
-				mSwipeMotion = new SwipeMotion(mGrid, mBorderWidth,
+				mSwipeMotion = new SwipeMotion(this, mBorderWidth,
 						mGridCellSize);
 			}
 			if (mSwipeMotion.setTouchDownEvent(event) == false) {
@@ -96,11 +96,12 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 					toggleInputMode();
 					mSwipeMotion.clearDoubleTap();
 				} else {
-					GridCell selectedCell = mSwipeMotion.getTouchDownCell();
+					// Select the touch down cell.
+					GridCell selectedCell = mGrid.setSelectedCell(mSwipeMotion
+							.getTouchDownCellCoordinates());
 
-					// Select new cell and inform listener of puzzle fragment of
-					// start of motion event.
-					mGrid.setSelectedCell(selectedCell);
+					// Inform listener of puzzle fragment of start of motion
+					// event.
 					mTouchedListener.gridTouched(selectedCell);
 				}
 

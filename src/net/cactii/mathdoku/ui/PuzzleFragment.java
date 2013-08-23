@@ -337,7 +337,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				// Stop the time and unselect the current cell and cage. Finally
 				// save the grid.
 				stopTimer();
-				mGrid.setSelectedCell(null);
+				mGrid.deselectSelectedCell();
 				mGrid.save();
 
 				// Notify the containing fragment activity about the finishing
@@ -746,7 +746,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 								// Stop the timer and unselect the current cell
 								// and cage. Finally save the grid.
 								stopTimer();
-								mGrid.setSelectedCell(null);
+								mGrid.deselectSelectedCell();
 								mGrid.save();
 
 								// Check if tip has to be displayed before

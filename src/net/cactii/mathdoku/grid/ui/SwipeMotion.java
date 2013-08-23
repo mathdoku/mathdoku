@@ -4,6 +4,7 @@ import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.grid.Grid;
 import net.cactii.mathdoku.grid.GridCell;
+import android.content.res.Configuration;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -31,17 +32,24 @@ public class SwipeMotion {
 	protected static final int DIGIT_UNDETERMINDED = -1;
 
 	// The grid and its size for which a swipe motion is made.
-	private final Grid mGrid;
+	private final GridPlayerView mGridPlayerView;
 	private final int mGridSize;
 
 	// Size of the border and cells in pixels
 	private final float mGridPlayerViewBorderWidth;
 	private final float mGridCellSize;
 
-	// Coordinates of the cell in the grid for which the touch down was
+	// The cell coordinates of the cell in the grid for which the touch down was
 	// registered. Will be kept statically so it can be compared with the
 	// previous touch down event.
 	static private int[] mTouchDownCellCoordinates = { -1, -1 };
+
+	// The pixel coordinates of the touch down position.
+	private float[] mTouchDownPixelCoordinates;
+
+	// The pixel coordinates of the center of the touch down cell which will be
+	// used as start of the swipe line.
+	private float[] mTouchDownCellCenterPixelCoordinates;
 
 	// In case two consecutive touch downs on the same cell have been completed
 	// within a small amount of time, this motion event might
@@ -84,10 +92,11 @@ public class SwipeMotion {
 	 * @param grid
 	 *            The grid for which a swipe motion is made.
 	 */
-	protected SwipeMotion(Grid grid, float gridViewBorderWidth,
-			float gridCellSize) {
-		mGrid = grid;
-		mGridSize = (mGrid == null ? 1 : mGrid.getGridSize());
+	protected SwipeMotion(GridPlayerView gridPlayerView,
+			float gridViewBorderWidth, float gridCellSize) {
+		mGridPlayerView = gridPlayerView;
+		Grid grid = mGridPlayerView.getGrid();
+		mGridSize = (grid == null ? 1 : grid.getGridSize());
 
 		mGridPlayerViewBorderWidth = gridViewBorderWidth;
 		mGridCellSize = gridCellSize;
@@ -124,10 +133,27 @@ public class SwipeMotion {
 			return false;
 		}
 
-		// Store the cell coordinates for the swipe position of this touch down
-		// event
+		// Store the pixel and cell coordinates for the swipe position of this
+		// touch down event.
+		mTouchDownPixelCoordinates = mCurrentSwipePositionPixelCoordinates
+				.clone();
 		mTouchDownCellCoordinates = mCurrentSwipePositionCellCoordinates
 				.clone();
+
+		// Determine the pixel coordinates of the center of the cell as the
+		// swipe line will start at the center of the cell regardless of the
+		// actual touch down position.
+		GridCell gridCell = null;
+		if (mGridPlayerView != null) {
+			Grid grid = mGridPlayerView.getGrid();
+			if (grid != null) {
+				gridCell = grid.getCellAt(mTouchDownCellCoordinates[Y_POS],
+						mTouchDownCellCoordinates[X_POS]);
+			}
+		}
+		mTouchDownCellCenterPixelCoordinates = (gridCell == null ? mTouchDownPixelCoordinates
+				.clone() : gridCell
+				.getCellCentreCoordinates(mGridPlayerViewBorderWidth));
 
 		// Determine whether a new double tap motion is started
 		mDoubleTapDetected = false;
@@ -163,14 +189,13 @@ public class SwipeMotion {
 	}
 
 	/**
-	 * Get the cell for which the touch down event was registered.
+	 * Get the cell coordinates for which the touch down event was registered.
 	 * 
-	 * @return The cell for which the touch down event was registered.
+	 * @return The cell coordinates for which the touch down event was
+	 *         registered.
 	 */
-	protected GridCell getTouchDownCell() {
-		return (mGrid == null ? null : mGrid.getCellAt(
-				mTouchDownCellCoordinates[Y_POS],
-				mTouchDownCellCoordinates[X_POS]));
+	protected int[] getTouchDownCellCoordinates() {
+		return mTouchDownCellCoordinates;
 	}
 
 	/**
@@ -194,7 +219,6 @@ public class SwipeMotion {
 	 * Registers the swipe motion as released.
 	 */
 	protected void release(MotionEvent event) {
-		update(event);
 		if (mStatus == Status.TOUCH_DOWN || mStatus == Status.MOVING) {
 			mStatus = Status.RELEASED;
 		} else if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
@@ -202,6 +226,7 @@ public class SwipeMotion {
 					"Swipe Motion status can not be changed from "
 							+ mStatus.toString() + " to " + Status.RELEASED);
 		}
+		update(event);
 	}
 
 	/**
@@ -271,6 +296,7 @@ public class SwipeMotion {
 		mPreviousSwipePositionCellCoordinates = mCurrentSwipePositionCellCoordinates;
 		mPreviousSwipePositionDigit = mCurrentSwipePositionDigit;
 
+		// Determine the swipe position pixel coordinates
 		mCurrentSwipePositionPixelCoordinates[X_POS] = motionEvent.getX();
 		mCurrentSwipePositionPixelCoordinates[Y_POS] = motionEvent.getY();
 		mCurrentSwipePositionEventTime = motionEvent.getEventTime();
@@ -291,19 +317,124 @@ public class SwipeMotion {
 	protected void update(MotionEvent motionEvent) {
 		if (mStatus == Status.TOUCH_DOWN) {
 			mStatus = Status.MOVING;
-		} else if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
-			if (mStatus != Status.MOVING) {
-				throw new RuntimeException(
-						"Swipe Motion status can not be changed from "
-								+ mStatus.toString() + " to " + Status.MOVING);
-			}
 		}
 
 		// Update the coordinates of the current swipe position
 		setCurrentSwipeCoordinates(motionEvent);
 
-		// Determine the digit for the current swipe position
-		mCurrentSwipePositionDigit = getDigit();
+		// Check whether current swipe position is inside or outside the touch
+		// down cell.
+		boolean inTouchDownCell = equalsCoordinatesTouchDownCell(mCurrentSwipePositionCellCoordinates);
+
+		// Determine the digit for the current swipe position.
+		if (inTouchDownCell) {
+			if (mStatus != Status.RELEASED
+					|| mGridSize < 7
+					|| (mCurrentSwipePositionCellCoordinates[X_POS] > 0
+							&& mCurrentSwipePositionCellCoordinates[X_POS] < mGridSize - 1
+							&& mCurrentSwipePositionCellCoordinates[Y_POS] > 0 && mCurrentSwipePositionCellCoordinates[Y_POS] < mGridSize - 1)) {
+				// Normally the swipe digit will only be updated in case the
+				// swipe position is outside the touch down cell.
+				mCurrentSwipePositionDigit = DIGIT_UNDETERMINDED;
+				return;
+			} else {
+				// The swipe motion for a higher size grid, is released in an
+				// outer cell of the grid or just outside the grid. In this case
+				// it is not checked whether the touch down cell has been left
+				// as it is sometimes more difficult to select the digit due to
+				// a smaller border around the grid (especially when using a
+				// bumper case to protect the device).
+			}
+		}
+
+		// Compute the current swipe digit by measuring the angle of the swipe
+		// line. In case the current swipe position is inside the touch down
+		// cell the angle of the swipe line will be computed related to the
+		// *real* touch down position. In case the current swipe position is
+		// outside the touch down cell than the angle is computed relative to
+		// the center of the touch down cell.
+		float deltaX = mCurrentSwipePositionPixelCoordinates[X_POS]
+				- (inTouchDownCell ? mTouchDownPixelCoordinates[X_POS]
+						: mTouchDownCellCenterPixelCoordinates[X_POS]);
+		float deltaY = mCurrentSwipePositionPixelCoordinates[Y_POS]
+				- (inTouchDownCell ? mTouchDownPixelCoordinates[Y_POS]
+						: mTouchDownCellCenterPixelCoordinates[Y_POS]);
+		double angle = Math.toDegrees(Math.atan2(deltaY, deltaX))
+				+ (-1 * SWIPE_ANGLE_OFFSET_91);
+		int digit = (angle < 0 ? 9 : (int) (angle / SWIPE_SEGMENT_ANGLE) + 1);
+
+		if (DEBUG_SWIPE_MOTION) {
+			Log.i(TAG, "getDigit");
+			if (inTouchDownCell) {
+				Log.i(TAG,
+						"Current swipe position inside touch down cell. Angle computed to real touch down position");
+				Log.i(TAG, " - start = (" + mTouchDownPixelCoordinates[X_POS]
+						+ ", " + mTouchDownPixelCoordinates[Y_POS] + ")");
+			} else {
+				Log.i(TAG,
+						"Current swipe position outside touch down cell. Angle computed to center of touch down cell");
+				Log.i(TAG, " - start = ("
+						+ mTouchDownCellCenterPixelCoordinates[X_POS] + ", "
+						+ mTouchDownCellCenterPixelCoordinates[Y_POS] + ")");
+			}
+			Log.i(TAG, " - current = ("
+					+ mCurrentSwipePositionPixelCoordinates[X_POS] + ", "
+					+ mCurrentSwipePositionPixelCoordinates[Y_POS] + ")");
+			Log.i(TAG, " - deltaX = " + deltaX + " - deltaY = " + deltaY);
+			Log.i(TAG, " - angle = " + angle);
+			Log.i(TAG, " - digit = " + digit);
+		}
+
+		// Determine whether the digit should be accepted.
+		boolean acceptDigit = (inTouchDownCell ? false : true);
+		if (acceptDigit == false) {
+			// Normally the digit is not accepted in case the swipe motion is
+			// inside the touch down cell. In case a swipe motion is started and
+			// ended in a cell on the outer edge of the grid, the digit will be
+			// accepted in case the swipe motion was heading outside the grid.
+			//
+			// In portrait mode the swipe motions to the left and to the right
+			// of the grid view needs to be examined. Swipe motions to the top
+			// can be neglected as the action bar is displayed above the grid.
+			// Swipe motions to the bottom can be neglected as the clear and
+			// undo buttons are shown below the grid view.
+			//
+			// In portrait mode the swipe motions to the left and to the bottom
+			// of the grid view needs to be examined. Swipe motions to the top
+			// can be neglected as the action bar is displayed above the grid.
+			// Swipe motions to the right can be neglected as the clear and undo
+			// buttons are shown to the right of the grid view.
+			switch (digit) {
+			case 1:
+				acceptDigit = (mCurrentSwipePositionCellCoordinates[X_POS] == 0);
+				break;
+			case 2:
+				break;
+			case 3:
+				break;
+			case 4: // fall through
+			case 5:
+				acceptDigit = (mGridPlayerView.getOrientation() == Configuration.ORIENTATION_PORTRAIT && mCurrentSwipePositionCellCoordinates[X_POS] == mGridSize - 1);
+				break;
+			case 6:
+				acceptDigit = (mGridPlayerView.getOrientation() == Configuration.ORIENTATION_PORTRAIT && mCurrentSwipePositionCellCoordinates[X_POS] == mGridSize - 1)
+						|| (mGridPlayerView.getOrientation() == Configuration.ORIENTATION_LANDSCAPE && mCurrentSwipePositionCellCoordinates[Y_POS] == mGridSize - 1);
+				break;
+			case 7:
+				acceptDigit = (mGridPlayerView.getOrientation() == Configuration.ORIENTATION_LANDSCAPE && mCurrentSwipePositionCellCoordinates[Y_POS] == mGridSize - 1);
+				break;
+			case 8:
+				acceptDigit = (mCurrentSwipePositionCellCoordinates[X_POS] == 0)
+						|| (mGridPlayerView.getOrientation() == Configuration.ORIENTATION_LANDSCAPE && mCurrentSwipePositionCellCoordinates[Y_POS] == mGridSize - 1);
+				break;
+			case 9:
+				acceptDigit = (mCurrentSwipePositionCellCoordinates[X_POS] == 0);
+				break;
+			}
+		}
+		if (acceptDigit) {
+			mCurrentSwipePositionDigit = digit;
+		}
 	}
 
 	/**
@@ -390,53 +521,6 @@ public class SwipeMotion {
 		}
 
 		return coordinates;
-	}
-
-	/**
-	 * Determine the digit which corresponds with the angle of the current swipe
-	 * line.
-	 * 
-	 * @param event
-	 *            The event holding the current swipe position.
-	 * @return The digit which corresponds with the angle of the current swipe
-	 *         line.
-	 */
-	private int getDigit() {
-		if (equalsCoordinatesTouchDownCell(mCurrentSwipePositionCellCoordinates)) {
-			return DIGIT_UNDETERMINDED;
-		}
-
-		// In case the swipe position is not inside the originally selected
-		// cell, the digit is determined based on the angle of the swipe line.
-
-		// Get the start position of the swipe line.
-		float[] startCoordinates = getTouchDownCell().getCellCentreCoordinates(
-				mGridPlayerViewBorderWidth);
-
-		// Compute current swipe position by measuring the angle of the current
-		// swipe position with respect to the start position.
-		//
-		float deltaX = mCurrentSwipePositionPixelCoordinates[X_POS]
-				- startCoordinates[X_POS];
-		float deltaY = mCurrentSwipePositionPixelCoordinates[Y_POS]
-				- startCoordinates[Y_POS];
-		double angle = Math.toDegrees(Math.atan2(deltaY, deltaX))
-				+ (-1 * SWIPE_ANGLE_OFFSET_91);
-		int digit = (angle < 0 ? 9 : (int) (angle / SWIPE_SEGMENT_ANGLE) + 1);
-
-		if (DEBUG_SWIPE_MOTION) {
-			Log.i(TAG, "getDigit");
-			Log.i(TAG, " - start = (" + startCoordinates[X_POS] + ", "
-					+ startCoordinates[Y_POS] + ")");
-			Log.i(TAG, " - current = ("
-					+ mCurrentSwipePositionPixelCoordinates[X_POS] + ", "
-					+ mCurrentSwipePositionPixelCoordinates[Y_POS] + ")");
-			Log.i(TAG, " - deltaX = " + deltaX + " - deltaY = " + deltaY);
-			Log.i(TAG, " - angle = " + angle);
-			Log.i(TAG, " - digit = " + digit);
-		}
-
-		return digit;
 	}
 
 	/**

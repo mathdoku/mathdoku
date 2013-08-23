@@ -343,13 +343,21 @@ public class Grid {
 	}
 
 	/**
+	 * Deselect the selected cell.
+	 */
+	public void deselectSelectedCell() {
+		setSelectedCell((GridCell) null);
+	}
+
+	/**
 	 * Selects the given cell.
 	 * 
 	 * @param cell
 	 *            The cell to be selected. If null, then the current selected
 	 *            cell will be unselected.
+	 * @return The selected cell.
 	 */
-	public void setSelectedCell(GridCell cell) {
+	public GridCell setSelectedCell(GridCell cell) {
 		// Unselect current cage
 		GridCage oldSelectedCage = getCageForSelectedCell();
 		if (oldSelectedCage != null) {
@@ -389,6 +397,19 @@ public class Grid {
 				newSelectedCage.setBorders();
 			}
 		}
+
+		return mSelectedCell;
+	}
+
+	/**
+	 * Set the cell at the given (x,y) coordinates as the selected cell.
+	 * 
+	 * @param coordinates
+	 *            The (x,y) coordinates of the cell.
+	 * @return The selected cell.
+	 */
+	public GridCell setSelectedCell(int coordinates[]) {
+		return setSelectedCell(getCellAt(coordinates[1], coordinates[0]));
 	}
 
 	/**
@@ -1183,7 +1204,7 @@ public class Grid {
 		mClearRedundantPossiblesInSameRowOrColumnCount = 0;
 
 		// No cell may be selected.
-		setSelectedCell(null);
+		deselectSelectedCell();
 
 		// The solving attempt is not yet saved.
 		mDateLastSaved = 0;

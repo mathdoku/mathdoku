@@ -34,6 +34,9 @@ public class GridViewerView extends View {
 	// Reference to the global grid painter object
 	private GridPainter mGridPainter;
 
+	// Current orientation of the device
+	private int mOrientation;
+
 	// The layout to be used for positioning the maybe digits in a grid.
 	private DigitPositionGrid mDigitPositionGrid;
 
@@ -58,6 +61,8 @@ public class GridViewerView extends View {
 
 		mViewSize = 0;
 		mGridPainter = Painter.getInstance().getGridPainter();
+
+		mOrientation = getResources().getConfiguration().orientation;
 	}
 
 	@Override
@@ -218,5 +223,21 @@ public class GridViewerView extends View {
 		mDigitPositionGrid = (mGrid == null
 				|| !mGrid.hasPrefShowMaybesAs3x3Grid() ? null
 				: digitPositionGrid);
+	}
+
+	/**
+	 * Get the orientation of the device.
+	 */
+	protected int getOrientation() {
+		return mOrientation;
+	}
+
+	/**
+	 * Get the grid which is displayed in the grid viewer view.
+	 * 
+	 * @return The grid which is displayed in the grid viewer view.
+	 */
+	protected Grid getGrid() {
+		return mGrid;
 	}
 }
