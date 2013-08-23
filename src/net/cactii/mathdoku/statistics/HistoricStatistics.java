@@ -357,13 +357,12 @@ public class HistoricStatistics {
 	}
 
 	/**
-	 * Gets the maximum X value (e.g. the number of games to be displayed).
+	 * Gets the number of index entries with respect to the limit set.
 	 * 
-	 * @return The maximum X value to be used for displaying the historic
-	 *         statistics.
+	 * @return The number of index entries with respect to the limit set.
 	 */
-	public double getIndexLastEntry() {
-		return dataPoints.size();
+	public double getCountIndexEntries() {
+		return Math.min(dataPoints.size(), mLimit);
 	}
 
 	/**
