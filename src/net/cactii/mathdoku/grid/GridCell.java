@@ -703,8 +703,10 @@ public class GridCell {
 				canvas.drawText(Integer.toString(i), offsetX, offsetY,
 						(i == swipeDigit ? textHighlightedPaint
 								: textNormalPaint));
+			}
 
-				// Draw separator lines between the segments of the swipe circle
+			// Draw separator lines between the segments of the swipe circle
+			for (int i = 0; i <= gridSize; i++) {
 				angle = SwipeMotion.getAngleToNextSwipeSegment(i);
 				canvas.drawLine(
 						centerX
