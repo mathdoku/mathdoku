@@ -321,10 +321,11 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 					GridCell gridCell = mGrid.getSelectedCell();
 					if (gridCell != null) {
 						gridCell.drawSwipeOverlay(canvas, mBorderWidth,
-								mInputMode,
-								mSwipeMotion.getCurrentSwipePositionX(),
+								mInputMode, mSwipeMotion
+										.getCurrentSwipePositionX(),
 								mSwipeMotion.getCurrentSwipePositionY(),
-								mSwipeMotion.getFocussedDigit());
+								mSwipeMotion.getFocussedDigit(), mPreferences
+										.isOuterSwipeCircleVisible(mGridSize));
 					}
 
 				}

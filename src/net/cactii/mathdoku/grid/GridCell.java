@@ -625,7 +625,7 @@ public class GridCell {
 	 */
 	public void drawSwipeOverlay(Canvas canvas, float gridBorderWidth,
 			GridInputMode inputMode, float mXPosSwipe, float mYPosSwipe,
-			int swipeDigit) {
+			int swipeDigit, boolean outerSwipeCircleVisible) {
 		if (mGrid.getSelectedCell() != this) {
 			// This cell is not the selected cell.
 			return;
@@ -669,7 +669,7 @@ public class GridCell {
 		float offsetY;
 
 		// Draw the swipe circles
-		for (int circle = 1; circle <= 2; circle++) {
+		for (int circle = 1; circle <= (outerSwipeCircleVisible ? 2 : 1); circle++) {
 			float radius = cellSize * circle;
 			if (borderPaint != null) {
 				canvas.drawCircle(centerX, centerY, radius

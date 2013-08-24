@@ -173,6 +173,13 @@
 
     <!-- The theme option -->
     <string name="general_settings_theme_title">Theme</string>
+
+    <!-- The title and summary of the "outer swipe circle" option. This option controls the smallest grid size for which the outer swipe circle is visible. -->
+    <string name="puzzle_setting_outer_swipe_circle_title">Double swipe circle</string>
+    <string name="puzzle_setting_outer_swipe_circle_visible_from_grid_size_short">Size %1$d and above</string>
+    <string name="puzzle_setting_outer_swipe_circle_visible_from_grid_size_long">Display a second swipe circle for puzzles of size %1$d and above</string>
+    <string name="puzzle_setting_outer_swipe_circle_visible_never">Never display a second swipe circle</string>
+
     <!-- The title and summary of the "colored digits" option. This option controls whether maybe numbers and normal numbers are displayed in distinct colors or in one monochrome color. -->
     <string name="puzzle_setting_colored_digits_title">Colored digits</string>
     <string name="puzzle_setting_colored_digits_summary">Use colored digits to distinct maybe numbers from normal numbers</string>

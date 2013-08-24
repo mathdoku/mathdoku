@@ -21,6 +21,10 @@
             android:entryValues="@array/puzzle_setting_theme_values_code"
             android:key="puzzle_setting_theme"
             android:title="@string/general_settings_theme_title" />
+        <!-- Entries, entry values and summary for preference puzzle_setting_outer_swipe_circle will be set programmatically. -->
+        <ListPreference
+            android:key="puzzle_setting_outer_swipe_circle"
+            android:title="@string/puzzle_setting_outer_swipe_circle_title" />
 
         <CheckBoxPreference
             android:key="puzzle_setting_colored_digits"

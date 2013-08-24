@@ -83,6 +83,11 @@ public class Preferences {
 	public final static String PUZZLE_SETTING_MAYBES_DISPLAYED_IN_GRID = "puzzle_setting_maybes_displayed_in_grid";
 	public final static boolean PUZZLE_SETTING_MAYBES_DISPLAYED_IN_GRID_DEFAULT = true;
 
+	public final static String PUZZLE_SETTING_OUTER_SWIPE_CIRCLE = "puzzle_setting_outer_swipe_circle";
+	public final static String PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_DEFAULT = "4";
+	public final static String PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_NEVER_VISIBLE = Integer
+			.toString(Integer.MAX_VALUE);
+
 	public final static String PUZZLE_SETTING_PLAY_SOUND_EFFECTS = "puzzle_setting_sound_effects";
 	public final static boolean PUZZLE_SETTING_PLAY_SOUND_EFFECTS_DEFAULT = true;
 
@@ -184,7 +189,7 @@ public class Preferences {
 		// Update preferences
 		Editor prefeditor = mSharedPreferences.edit();
 
-		if (previousInstalledVersion < 493 && currentVersion >= 519) {
+		if (previousInstalledVersion < 493 && currentVersion >= 524) {
 			// On upgrade to version 2 of MathDoku the preferences are cleaned
 			// up. Unnecessary preferences are deleted. Preferences which are
 			// kept are renamed in order to improve future maintenance.
@@ -292,6 +297,8 @@ public class Preferences {
 					SWIPE_DIGIT_COUNTER_DEFAULT);
 			prefeditor.putInt(STATISTICS_TAB_LAST_SHOWED,
 					STATISTICS_TAB_LAST_SHOWED_DEFAULT);
+			prefeditor.putString(PUZZLE_SETTING_OUTER_SWIPE_CIRCLE,
+					PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_DEFAULT);
 		}
 
 		// Save
@@ -870,5 +877,47 @@ public class Preferences {
 		Editor prefeditor = mSharedPreferences.edit();
 		prefeditor.putInt(STATISTICS_TAB_LAST_SHOWED, tab);
 		prefeditor.commit();
+	}
+
+	/**
+	 * Checks whether the outer swipe circle is visible for the given grid size.
+	 * 
+	 * @param gridSize
+	 *            The grid size for which it has to be checked whether the outer
+	 *            swipe circle should be shown.
+	 * @return True in case the outer swipe circle should be displayed. False
+	 *         otherwise.
+	 */
+	public boolean isOuterSwipeCircleVisible(int gridSize) {
+		String puzzleSettingOuterSwipeCircle = mSharedPreferences.getString(
+				PUZZLE_SETTING_OUTER_SWIPE_CIRCLE,
+				PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_DEFAULT);
+		int minGridSize = (puzzleSettingOuterSwipeCircle
+				.equals(PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_NEVER_VISIBLE) ? Integer.MAX_VALUE
+				: Integer.valueOf(puzzleSettingOuterSwipeCircle));
+
+		return (gridSize >= minGridSize);
+	}
+
+	/**
+	 * Checks whether the outer swipe circle is never visible.
+	 * 
+	 * @return True in case the outer swipe circle is never visible. False
+	 *         otherwise.
+	 */
+	public boolean isOuterSwipeCircleNeverVisible() {
+		return mSharedPreferences.getString(PUZZLE_SETTING_OUTER_SWIPE_CIRCLE,
+				PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_DEFAULT).equals(
+				PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_NEVER_VISIBLE);
+	}
+
+	/**
+	 * Gets (string) value of option outer swipe circle.
+	 * 
+	 * @return The (string) value of option outer swipe circle.
+	 */
+	public String getOuterSwipeCircleVisibility() {
+		return mSharedPreferences.getString(PUZZLE_SETTING_OUTER_SWIPE_CIRCLE,
+				PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_DEFAULT);
 	}
 }
