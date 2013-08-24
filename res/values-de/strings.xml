@@ -109,7 +109,7 @@
     <!-- TODO -->
     <string name="action_cheats">Cheats</string>
 
-    <!-- The context menu item that allows the user to clear the entire grid. Note this item is only available in case at least one cell in the entire puzzle contains a (maybe) value. -->
+    <!-- The menu item that allows the user to clear the entire grid. Note this item is only available in case at least one cell in the entire puzzle contains a (maybe) value. -->
     <string name="action_clear_grid">Gesamten Raster löschen</string>
 
     <!-- The menu item that allows the player to start a new game. -->
@@ -185,7 +185,7 @@
     <string name="puzzle_setting_group_display">Anzeige</string>
 
     <!-- The theme option -->
-    <string name="general_settings_theme_title">Thema</string>
+    <string name="puzzle_setting_theme_title">Thema</string>
 
     <!-- The title and summary of the "outer swipe circle" option. This option controls the smallest grid size for which the outer swipe circle is visible. -->
     <!-- TODO -->
@@ -333,7 +333,7 @@
     <string name="dialog_tip_incorrect_value_title">Incorrect value</string>
     <string name="dialog_tip_incorrect_value_text">You have entered an incorrect value. You will not be able to solve this puzzle in case you do not correct it. You can use menu option \'Check Progress\' to mark all cells having an incorrect value. Be aware: using \'Check Progress\' will raise the time elapsed with a penalty to discourage you from using it.</string>
 
-    <!-- Title, and text for tip "Statistics" which explains about this new menu option. -->
+    <!-- Title, and text for tip "Statistics" which explains about this new navigation option. -->
     <!-- TODO -->
     <string name="dialog_tip_statistics_title">Statistics</string>
     <string name="dialog_tip_statistics_text">For each game you have played, some statistics are collected. You can use the statistics just to view your historic results. Also you can use the statistics to improve your solving techniques.\n\nYou can view the statistics from the navigation menu. The navigation menu can be opened by tapping the MathDoku icon.</string>
@@ -352,11 +352,6 @@
     <!-- TODO -->
     <string name="dialog_tip_archive_available_title">Archive available</string>
     <string name="dialog_tip_archive_available_text">Each game you have created is stored in the \'Archive\'. The \'Archive\' can be used to review games which you have played before.\n\nYou can view the archive from the navigation menu. The navigation menu can be opened by tapping the MathDoku icon.</string>
-
-    <!-- Title, and text for tip "Swipe digiti 5" which explains how to make the swipe motion for digit 5. -->
-    <!-- TODO -->
-    <string name="dialog_tip_swipe_digit_5_title">Swiping a 5</string>
-    <string name="dialog_tip_swipe_digit_5_text">Entering a five into a cell requires a different swipe movement compared to the other digits.\nStart a swipe movement from the cell in which you want to enter the five. Move outside this cell, still continue swiping. Finally move back to the selected cell and release the swipe motion.\nQuickest motion is to draw a straight line just outside the cell and straight back. Or, draw a circle starting and ending at the cell in which you want to enter the five.</string>
 
     <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- TODO: TRANSLATE ENTIRE SECTION -->
@@ -412,6 +407,7 @@
     <string name="chart_serie_unfinished">Unfinished</string>
 
     <!-- Title and a body which explains the purpose of the chart "Elapsed time historic". -->
+    <!-- Series used to split charts like "Unsolved games" and "Elapsed time historic". -->
     <string name="statistics_elapsed_time_historic_title">Elapsed time</string>
     <string name="statistics_elapsed_time_historic_body">This chart shows the time elapsed per game and the average elapsed time. Games are sorted in order of creating (same order as in Archive). More recent games will be on the right of this chart. As you got more experienced at this level the elapsed time per game should diminish. Also there should be less games unfinished or for which the solution was revealed.</string>
     <string name="statistics_elapsed_time_historic_elapsed_time_solved">Elapsed time in solved games</string>
@@ -519,10 +515,10 @@
 
     <!-- Title for the shared puzzle fragment. -->
     <string name="shared_puzzle_action_bar_title">Preview shared puzzle</string>
-
+    
     <!-- Introduction text at top of screen. -->
     <string name="shared_puzzle_introduction">This puzzle was sent to you via an email link. See email for more details if included by sender. In case you choose to play this puzzle right now, it will also be added to your own archive of played puzzles.</string>
-
+    
     <!-- The label of the button below a puzzle. -->
     <string name="shared_puzzle_play_button">Play this puzzle</string>
 

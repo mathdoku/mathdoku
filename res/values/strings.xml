@@ -172,7 +172,7 @@
     <string name="puzzle_setting_group_display">Display</string>
 
     <!-- The theme option -->
-    <string name="general_settings_theme_title">Theme</string>
+    <string name="puzzle_setting_theme_title">Theme</string>
 
     <!-- The title and summary of the "outer swipe circle" option. This option controls the smallest grid size for which the outer swipe circle is visible. -->
     <string name="puzzle_setting_outer_swipe_circle_title">Double swipe circle</string>
@@ -474,26 +474,34 @@
 
     <!-- Title for the shared puzzle fragment. -->
     <string name="shared_puzzle_action_bar_title">Preview shared puzzle</string>
+
     <!-- Introduction text at top of screen. -->
     <string name="shared_puzzle_introduction">This puzzle was sent to you via an email link. See email for more details if included by sender. In case you choose to play this puzzle right now, it will also be added to your own archive of played puzzles.</string>
+
     <!-- The label of the button below a puzzle. -->
     <string name="shared_puzzle_play_button">Play this puzzle</string>
+
     <!-- The title and message for the dialog in which the user is informed that the shared puzzle already exists in the archive. -->
     <string name="shared_puzzle_exists_title">Puzzle duplicate</string>
     <string name="shared_puzzle_exists_message">This puzzle already exists in your archive (see puzzle %1$d). Playing this puzzle will overwrite the previous solution and statistics.</string>
     <string name="shared_puzzle_exists_positive_button">Yes</string>
     <string name="shared_puzzle_exists_negative_button">No</string>
+
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
     <!-- The message that appears when the player has solved the puzzle. -->
     <string name="main_ui_solved_messsage">Solved!</string>
+
     <!-- The message shown when no errors found when checking progress. -->
     <string name="ProgressOK">All correct so far</string>
+
     <!-- The message shown when error(s) found when checking progress. -->
     <string name="ProgressBad">Error(s) - cells highlighted.</string>
+
     <!-- Alert to select a cell before a value is selected -->
     <string name="select_cell_before_value">Select a cell first.</string>
+
     <!-- Units for time. -->
     <string name="time_unit_seconds_singular">second</string>
     <string name="time_unit_seconds_plural">seconds</string>
@@ -503,6 +511,7 @@
     <string name="time_unit_hours_plural">hours</string>
     <string name="time_unit_days_singular">day</string>
     <string name="time_unit_days_plural">days</string>
+
     <!-- Connection word for the last two elements in a list. Example: "1 minute and 15 seconds" or "1, 2, 3 and 4)" -->
     <string name="connector_last_two_elements">and</string>
 

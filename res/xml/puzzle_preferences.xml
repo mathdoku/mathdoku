@@ -20,7 +20,7 @@
             android:entries="@array/puzzle_setting_theme_values_text"
             android:entryValues="@array/puzzle_setting_theme_values_code"
             android:key="puzzle_setting_theme"
-            android:title="@string/general_settings_theme_title" />
+            android:title="@string/puzzle_setting_theme_title" />
         <!-- Entries, entry values and summary for preference puzzle_setting_outer_swipe_circle will be set programmatically. -->
         <ListPreference
             android:key="puzzle_setting_outer_swipe_circle"
