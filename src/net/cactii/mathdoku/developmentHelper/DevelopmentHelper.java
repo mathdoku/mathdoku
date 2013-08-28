@@ -40,7 +40,7 @@ public class DevelopmentHelper {
 		DEVELOPMENT, UNIT_TESTING, PRODUCTION
 	};
 
-	public static final Mode mMode = Mode.DEVELOPMENT;
+	public static final Mode mMode = Mode.PRODUCTION;
 
 	// In development mode the grid generator will show a modified progress
 	// dialog. Following types of progress updates are supported. Actual values

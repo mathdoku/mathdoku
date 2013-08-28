@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="net.cactii.mathdoku"
     android:installLocation="auto"
-    android:versionCode="525"
+    android:versionCode="526"
     android:versionName="Version 2 (BETA 4)" >
 
     <!-- Cannot yet upgrade to target SDK-version 18 due to a bug in the archive. The grid view -->
@@ -11,6 +11,9 @@
     <uses-sdk
         android:minSdkVersion="11"
         android:targetSdkVersion="17" />
+
+    <!-- Temporarily request internet permissions in order to track down forced close errors in test version -->
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <supports-screens
         android:anyDensity="true"

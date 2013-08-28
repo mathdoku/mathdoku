@@ -51,6 +51,8 @@ import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.bugsense.trace.BugSenseHandler;
+
 public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		PuzzleFragment.OnGridFinishedListener {
 	public final static String TAG = "MathDoku.PuzzleFragmentActivity";
@@ -98,6 +100,10 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		// Temporarily add Bugsense to track down forced close error
+		BugSenseHandler.initAndStartSession(this, "4fda0366");
+
 		setContentView(R.layout.puzzle_activity_fragment);
 
 		// Initialize global objects (singleton instances)
@@ -122,7 +128,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		}
 
 		// Set up the navigation drawer.
-		setNavigationDrawer();
+		// setNavigationDrawer();
 
 		// Restore the last configuration instance which was saved before the
 		// configuration change.

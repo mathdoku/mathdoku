@@ -20,6 +20,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.bugsense.trace.BugSenseHandler;
+
 public class SharedPuzzleActivity extends AppFragmentActivity {
 
 	@SuppressWarnings("unused")
@@ -33,6 +35,9 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		// Temporarily add Bugsense to track down forced close error
+		BugSenseHandler.initAndStartSession(this, "4fda0366");
 
 		// First check whether the intent can be processed.
 		if (isValidIntent(getIntent()) == false) {
