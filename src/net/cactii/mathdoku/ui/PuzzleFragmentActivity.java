@@ -128,7 +128,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		}
 
 		// Set up the navigation drawer.
-		// setNavigationDrawer();
+		setNavigationDrawer();
 
 		// Restore the last configuration instance which was saved before the
 		// configuration change.
