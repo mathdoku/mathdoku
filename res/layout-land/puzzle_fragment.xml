@@ -43,6 +43,9 @@
         mathdoku:layout_alignGridPlayerViewTop="visible_grid"
         android:paddingRight="10dp" >
 
+        <!-- The bottom of the input mode button is aligned with the timer text for handling -->
+        <!-- situation in which Android's default text size is set to large or huge. -->
+
         <ImageView
             android:id="@+id/input_mode_image"
             android:layout_width="wrap_content"
