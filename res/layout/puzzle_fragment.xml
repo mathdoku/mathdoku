@@ -27,8 +27,14 @@
         android:paddingTop="1dp"
         android:visibility="gone" >
 
+        <!-- The margins of the next layout will be programmatically changed in such a way that the -->
+        <!-- inner area (i.e. everything except margins/padding) of the layout has the same width as -->
+        <!-- visible part of the grid player. -->
+        <!-- The layout will only be filled with the timer. But note that we put another layout on -->
+        <!-- top of this layout for displaying the input mode image and text. -->
+
         <net.cactii.mathdoku.grid.ui.GridPlayerRelativeLayout
-            android:id="@+id/input_mode_and_timer_layout"
+            android:id="@+id/grid_player_relative_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/grid_player_view"
@@ -36,18 +42,8 @@
             mathdoku:layout_alignGridPlayerViewLeft="visible_grid"
             mathdoku:layout_alignGridPlayerViewRight="visible_grid" >
 
-            <!-- Be careful with changing alignments in this layout. Always test with clean install as well. -->
-            <!-- The input mode text will be displayed at a bigger height until the message is displayed -->
-            <!-- a number of times. After that the visibility is changed programmatically to gone which -->
-            <!-- decreases the size of this relative layout. -->
-
-            <ImageView
-                android:id="@+id/input_mode_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/input_mode_text"
-                android:layout_alignParentLeft="true"
-                tools:ignore="ContentDescription" />
+            <!-- Be sure not to set the timerText to visibility="invisble" as this can result in -->
+            <!-- displaying the input mode image border on top of the swipe circle. -->
 
             <TextView
                 android:id="@+id/timerText"
@@ -58,9 +54,36 @@
                 android:lines="1"
                 android:textSize="@dimen/text_size_default"
                 android:textStyle="bold" />
+        </net.cactii.mathdoku.grid.ui.GridPlayerRelativeLayout>
 
-            <!-- Input mode text should be positioned below timer because of z-layering. In case it is -->
-            <!-- displayed it covers the timer text. -->
+        <net.cactii.mathdoku.grid.ui.GridPlayerView
+            android:id="@+id/grid_player_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/grid_player_relative_layout"
+            android:layout_centerHorizontal="true" />
+
+        <!-- The input mode button and text are positioned on top of the grid_player_relative_layout. -->
+        <!-- However note that the height of this layout is not restricted to the height of the -->
+        <!-- grid_player_relative_layout. As a result, the content of this layout can be displayed -->
+        <!-- on top of the swipe circle and the gridplayerview as well. It however depends strongly -->
+        <!-- on Android's default text size whether this will happen. -->
+
+        <RelativeLayout
+            android:id="@+id/input_mode_and_timer_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/grid_player_relative_layout"
+            android:layout_alignRight="@+id/grid_player_relative_layout"
+            android:layout_alignTop="@+id/grid_player_relative_layout" >
+
+            <ImageView
+                android:id="@+id/input_mode_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                tools:ignore="ContentDescription" />
 
             <TextView
                 android:id="@+id/input_mode_text"
@@ -69,19 +92,11 @@
                 android:layout_alignParentTop="true"
                 android:layout_toRightOf="@+id/input_mode_image"
                 android:background="#000"
-                android:lines="3"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:textSize="@dimen/text_size_default"
                 android:visibility="invisible" />
-        </net.cactii.mathdoku.grid.ui.GridPlayerRelativeLayout>
-
-        <net.cactii.mathdoku.grid.ui.GridPlayerView
-            android:id="@+id/grid_player_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/input_mode_and_timer_layout"
-            android:layout_centerHorizontal="true" />
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/solvedText"

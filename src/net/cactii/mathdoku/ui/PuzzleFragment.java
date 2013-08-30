@@ -451,7 +451,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			if (mMathDokuPreferences.isTimerVisible()) {
 				mTimerText.setVisibility(View.VISIBLE);
 			} else {
-				mTimerText.setVisibility(View.GONE);
+				mTimerText.setVisibility(View.INVISIBLE);
 			}
 			mTimerTask.execute();
 		}

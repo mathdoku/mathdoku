@@ -78,7 +78,6 @@
             android:layout_alignTop="@+id/input_mode_image"
             android:layout_toRightOf="@+id/input_mode_image"
             android:background="#000"
-            android:lines="3"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:textSize="@dimen/text_size_default"
