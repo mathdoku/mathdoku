@@ -397,12 +397,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	public void onNewGridReady(final Grid newGrid) {
 		// The background task for creating a new grid has been finished.
 		mDialogPresentingGridGenerator = null;
-
-		// Create a new puzzle fragment. Make sure that the transformation
-		// transaction is completed before loading the fragment with the new
-		// grid. The new grid will always overwrite the current game without any
-		// warning.
-		initializePuzzleFragment(newGrid.getSolvingAttemptId(), true);
+		initializePuzzleFragment(newGrid.getSolvingAttemptId());
 	}
 
 	/**
@@ -625,9 +620,9 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 
 	@Override
 	public void onGridFinishedListener(int solvingAttemptId) {
-		// Once the grid has been solved, the statistics fragment has to be
+		// Once the grid has been solved, the archive fragment has to be
 		// displayed.
-		initializeArchiveFragment(solvingAttemptId, false);
+		initializeArchiveFragment(solvingAttemptId);
 
 		// Update the actions available in the action bar.
 		invalidateOptionsMenu();
@@ -658,14 +653,8 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 
 	/**
 	 * Initializes the puzzle fragment. The archive fragment will be disabled.
-	 * 
-	 * @param forceFragmentTransaction
-	 *            Force the execution of the fragment transition which is needed
-	 *            in case the content of the fragment needs to be accessed right
-	 *            away.
 	 */
-	private void initializePuzzleFragment(int solvingAttemptId,
-			boolean forceFragmentTransaction) {
+	private void initializePuzzleFragment(int solvingAttemptId) {
 		// Set the puzzle fragment
 		mPuzzleFragment = new PuzzleFragment();
 		if (solvingAttemptId >= 0) {
@@ -679,15 +668,8 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		FragmentTransaction fragmentTransaction = fragmentManager
 				.beginTransaction();
 		fragmentTransaction.replace(R.id.content_frame, mPuzzleFragment);
-
-		// Commit with allowing state loss. Using normal commit results in a
-		// forced close when reloading a finished puzzle from the archive. I am
-		// not sure why commitAllowingStateLoss solves this problem.
-		fragmentTransaction.commitAllowingStateLoss();
-
-		if (forceFragmentTransaction) {
-			fragmentManager.executePendingTransactions();
-		}
+		fragmentTransaction.commit();
+		fragmentManager.executePendingTransactions();
 
 		// Disable the archive fragment
 		mArchiveFragment = null;
@@ -695,14 +677,8 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 
 	/**
 	 * Initializes the archive fragment. The puzzle fragment will be disabled.
-	 * 
-	 * @param forceFragmentTransaction
-	 *            Force the execution of the fragment transition which is needed
-	 *            in case the content of the fragment needs to be accessed right
-	 *            away.
 	 */
-	private void initializeArchiveFragment(int solvingAttemptId,
-			boolean forceFragmentTransaction) {
+	private void initializeArchiveFragment(int solvingAttemptId) {
 		// Set the archive fragment
 		mArchiveFragment = new ArchiveFragment();
 		Bundle args = new Bundle();
@@ -714,9 +690,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 				.beginTransaction();
 		fragmentTransaction.replace(R.id.content_frame, mArchiveFragment)
 				.commit();
-		if (forceFragmentTransaction) {
-			fragmentManager.executePendingTransactions();
-		}
+		fragmentManager.executePendingTransactions();
 
 		// Disable the archive fragment
 		mPuzzleFragment = null;
@@ -737,13 +711,9 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 				newGrid.load(solvingAttemptId);
 
 				if (newGrid.isActive()) {
-					// Create a new puzzle fragment. Make sure that the
-					// transformation transaction is completed before loading
-					// the fragment with the new grid. The new grid will always
-					// overwrite the current game without any warning.
-					initializePuzzleFragment(solvingAttemptId, true);
+					initializePuzzleFragment(solvingAttemptId);
 				} else {
-					initializeArchiveFragment(solvingAttemptId, true);
+					initializeArchiveFragment(solvingAttemptId);
 				}
 			} catch (InvalidGridException e) {
 				if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
@@ -937,10 +907,10 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 			if (mPuzzleFragment != null) {
 				mPuzzleFragment.setNewGrid(grid);
 			} else {
-				// In case a finished grid is replayed a new
-				// solving attempt has been be created for the
-				// grid.
-				initializePuzzleFragment(grid.getSolvingAttemptId(), true);
+				// In case the archive fragment was displayed and the user
+				// choose to replay or continue the puzzle a new puzzle fragment
+				// has to be created.
+				initializePuzzleFragment(grid.getSolvingAttemptId());
 			}
 			return true;
 		} else {
