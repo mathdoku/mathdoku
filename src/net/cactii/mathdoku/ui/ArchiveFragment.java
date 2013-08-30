@@ -351,15 +351,19 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		xyMultipleSeriesRenderer.setMargins(new int[] { 0,
 				2 * mDefaultTextSize, mDefaultTextSize, mDefaultTextSize });
 
-		xyMultipleSeriesRenderer.setYTitle(getResources().getString(
-				R.string.avoidable_moves_yaxis_description));
 		xyMultipleSeriesRenderer.setXAxisMin(-1);
-		xyMultipleSeriesRenderer.setYLabelsAlign(Align.RIGHT);
 		xyMultipleSeriesRenderer.setZoomButtonsVisible(false);
 		xyMultipleSeriesRenderer.setZoomEnabled(false);
 		xyMultipleSeriesRenderer.setPanEnabled(false);
 		xyMultipleSeriesRenderer.setInScroll(true);
+
+		// Setup Y-axis and labels.
+		xyMultipleSeriesRenderer.setYTitle(getResources().getString(
+				R.string.avoidable_moves_yaxis_description));
+		xyMultipleSeriesRenderer.setYLabelsAlign(Align.RIGHT);
 		xyMultipleSeriesRenderer.setYLabelsPadding(5f);
+		xyMultipleSeriesRenderer.setYLabelsVerticalPadding(-1
+				* mDefaultTextSize);
 
 		// Create object for category series and the series renderer
 		XYMultipleSeriesDataset xyMultipleSeriesDataset = new XYMultipleSeriesDataset();
@@ -485,19 +489,23 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		xyMultipleSeriesRenderer.setMargins(new int[] { 0,
 				2 * mDefaultTextSize, mDefaultTextSize, mDefaultTextSize });
 
-		xyMultipleSeriesRenderer.setYTitle(getResources().getString(
-				R.string.statistics_cheats_yaxis_description));
 		xyMultipleSeriesRenderer.setXAxisMin(-1);
 		xyMultipleSeriesRenderer.setXAxisMax(cheatCategories + 2);
 		xyMultipleSeriesRenderer.setXLabels(cheatCategories);
-		xyMultipleSeriesRenderer.setYAxisMin(0);
 		xyMultipleSeriesRenderer.setYAxisMax(maxCheats + 1);
-		xyMultipleSeriesRenderer.setYLabelsAlign(Align.RIGHT);
 		xyMultipleSeriesRenderer.setZoomButtonsVisible(false);
 		xyMultipleSeriesRenderer.setZoomEnabled(false);
 		xyMultipleSeriesRenderer.setPanEnabled(false);
 		xyMultipleSeriesRenderer.setInScroll(true);
+
+		// Setup Y-axis and labels.
+		xyMultipleSeriesRenderer.setYTitle(getResources().getString(
+				R.string.statistics_cheats_yaxis_description));
+		xyMultipleSeriesRenderer.setYAxisMin(0);
+		xyMultipleSeriesRenderer.setYLabelsAlign(Align.RIGHT);
 		xyMultipleSeriesRenderer.setYLabelsPadding(5f);
+		xyMultipleSeriesRenderer.setYLabelsVerticalPadding(-1
+				* mDefaultTextSize);
 
 		// Create object for category series and the series renderer
 		XYMultipleSeriesDataset xyMultipleSeriesDataset = new XYMultipleSeriesDataset();

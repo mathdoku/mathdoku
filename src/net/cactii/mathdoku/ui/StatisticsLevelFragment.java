@@ -245,7 +245,6 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 				.getCountIndexEntries() + 1);
 		xyMultipleSeriesRenderer.setXLabels((int) Math.min(
 				historicStatistics.getCountIndexEntries() + 1, 4));
-		xyMultipleSeriesRenderer.setYAxisMin(0);
 		xyMultipleSeriesRenderer.setMargins(new int[] { 0,
 				2 * mDefaultTextSize, 2 * mDefaultTextSize, mDefaultTextSize });
 		xyMultipleSeriesRenderer.setZoomButtonsVisible(false);
@@ -257,7 +256,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		// Use 20% of bar width as space between bars
 		xyMultipleSeriesRenderer.setBarSpacing(0.2);
 
-		// Y-axis
+		// Determine scale en max value for Y-axis
 		Scale yScale = Scale.DAYS;
 		double maxY = historicStatistics.getMaxY(yScale) * 1.1;
 		if (maxY < 1) {
@@ -272,6 +271,9 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 				}
 			}
 		}
+
+		// Setup Y-axis
+		xyMultipleSeriesRenderer.setYAxisMin(0);
 		xyMultipleSeriesRenderer.setYAxisMax(maxY);
 		switch (yScale) {
 		case DAYS:
@@ -307,6 +309,8 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		}
 		xyMultipleSeriesRenderer.setYLabelsAlign(Align.RIGHT);
 		xyMultipleSeriesRenderer.setYLabelsPadding(5f);
+		xyMultipleSeriesRenderer.setYLabelsVerticalPadding(-1
+				* mDefaultTextSize);
 
 		// Create object for category series and the series renderer
 		XYMultipleSeriesDataset xyMultipleSeriesDataset = new XYMultipleSeriesDataset();
