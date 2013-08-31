@@ -101,8 +101,15 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// Temporarily add Bugsense to track down forced close error
-		BugSenseHandler.initAndStartSession(this, "4fda0366");
+		// In BugSense mode the bug sense handler is initiated and started. In
+		// case an exception occurs in this mode, it will be reported via the
+		// BugSense web site. In this way exceptions which occurs while testing
+		// the app can be monitored more closely. Note: the internet permission
+		// needs to activated for this.
+		if (DevelopmentHelper.mBugSenseEnabled) {
+			BugSenseHandler.initAndStartSession(this,
+					DevelopmentHelper.BUG_SENSE_API_KEY);
+		}
 
 		setContentView(R.layout.puzzle_activity_fragment);
 
