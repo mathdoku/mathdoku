@@ -1,0 +1,164 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:paddingTop="10dp" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:id="@+id/puzzleGrid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_margin="5dp" >
+
+            <!-- The rating bar will be programmatically rotated to a vertical position. -->
+            <!-- Number of starts will programmatically be set to correct number of stars. -->
+
+            <net.cactii.mathdoku.ui.VerticalRatingBar
+                android:id="@+id/puzzleParameterDifficultyRatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/grid_viewer_view"
+                android:max="5"
+                android:numStars="1"
+                android:rating="1"
+                android:stepSize="1" />
+
+            <net.cactii.mathdoku.grid.ui.GridViewerView
+                android:id="@+id/grid_viewer_view"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true" />
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/archiveReloadButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:lines="1"
+            android:onClick="onClickReloadGame"
+            android:text="@string/archive_reload_finished_game"
+            android:textSize="@dimen/controls_text_size_default"
+            android:textStyle="bold" />
+
+        <TableLayout
+            android:id="@+id/puzzleStatistics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp" >
+
+            <TableRow
+                android:id="@+id/statistics_general_date_created_row"
+                android:visibility="gone" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:text="@string/statistics_general_date_created"
+                    android:textSize="@dimen/text_size_default" />
+
+                <TextView
+                    android:id="@+id/statistics_general_date_created"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_default" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/statistics_general_date_finished_row"
+                android:visibility="gone" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:text="@string/statistics_general_date_finished"
+                    android:textSize="@dimen/text_size_default" />
+
+                <TextView
+                    android:id="@+id/statistics_general_date_finished"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_default" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/statistics_general_replays_row"
+                android:visibility="gone" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:text="@string/statistics_general_replays"
+                    android:textSize="@dimen/text_size_default" />
+
+                <TextView
+                    android:id="@+id/statistics_general_replays"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_default" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/statistics_general_elapsed_time_row"
+                android:visibility="gone" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:text="@string/statistics_general_elapsed_time"
+                    android:textSize="@dimen/text_size_default" />
+
+                <TextView
+                    android:id="@+id/statistics_general_elapsed_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_default" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/statistics_general_cheat_penalty_time_row"
+                android:visibility="gone" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:text="@string/statistics_general_cheat_penalty_time"
+                    android:textSize="@dimen/text_size_default" />
+
+                <TextView
+                    android:id="@+id/statistics_general_cheat_penalty_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_default" />
+            </TableRow>
+        </TableLayout>
+
+        <LinearLayout
+            android:id="@+id/chartLayouts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:orientation="vertical" >
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

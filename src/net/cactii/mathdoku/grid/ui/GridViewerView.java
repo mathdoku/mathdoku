@@ -8,6 +8,7 @@ import net.cactii.mathdoku.painter.GridPainter;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.painter.Painter.DigitPainterMode;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
@@ -37,6 +38,13 @@ public class GridViewerView extends View {
 	// Current orientation of the device
 	private int mOrientation;
 
+	// In case the grid viewer view is displayed in a scroll view and the device
+	// is in landscape mode, it is necessary to restrict the size of the grid
+	// viewer view explicitly. In all other case it can be correctly determined
+	// based on the width and height of the device.
+	private boolean mInScrollView;
+	private float mMaxViewSize;
+
 	// The layout to be used for positioning the maybe digits in a grid.
 	private DigitPositionGrid mDigitPositionGrid;
 
@@ -63,6 +71,8 @@ public class GridViewerView extends View {
 		mGridPainter = Painter.getInstance().getGridPainter();
 
 		mOrientation = getResources().getConfiguration().orientation;
+		mInScrollView = false;
+		mMaxViewSize = Float.MAX_VALUE;
 	}
 
 	@Override
@@ -203,6 +213,13 @@ public class GridViewerView extends View {
 		// Finally compute the total size of the grid
 		mViewSize = 2 * mBorderWidth + mGridSize * mGridCellSize;
 
+		// Last but not least restrict the size of the grid to the given
+		// maximum in case the view is displayed inside a scroll view.
+		if (mInScrollView
+				&& mOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+			mViewSize = Math.min(mViewSize, mMaxViewSize);
+		}
+
 		setMeasuredDimension((int) mViewSize, (int) mViewSize);
 	}
 
@@ -239,5 +256,30 @@ public class GridViewerView extends View {
 	 */
 	protected Grid getGrid() {
 		return mGrid;
+	}
+
+	/**
+	 * Set the maximum size of the grid viewer view. Should only be called in
+	 * case the the grid viewer view is displayed in a scroll view while the
+	 * device is in landscape mode.
+	 * 
+	 * @param maxSize
+	 *            The maximum size (width and height) to be used for the grid
+	 *            view.
+	 */
+	public void setMaximumWidth(float maxSize) {
+		mMaxViewSize = maxSize;
+	}
+
+	/**
+	 * Indicates whether this grid viewer view is displayed inside a scroll
+	 * view.
+	 * 
+	 * @param inScrollView
+	 *            True in case the grid viewer view is displayed inside a scroll
+	 *            view. False otherwise.
+	 */
+	public void setInScrollView(boolean inScrollView) {
+		mInScrollView = inScrollView;
 	}
 }

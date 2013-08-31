@@ -142,6 +142,11 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 				break;
 			}
 
+			// Restrict the width of the grid viewer view when displayed in
+			// landscape mode to the maximum height of the available area.
+			mGridViewerView.setInScrollView(true);
+			mGridViewerView.setMaximumWidth(getMaxContentHeight(0, 20));
+
 			// Load grid statistics
 			mGridStatistics = grid.getGridStatistics();
 
