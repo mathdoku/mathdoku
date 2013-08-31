@@ -515,10 +515,10 @@
 
     <!-- Title for the shared puzzle fragment. -->
     <string name="shared_puzzle_action_bar_title">Preview shared puzzle</string>
-    
+
     <!-- Introduction text at top of screen. -->
     <string name="shared_puzzle_introduction">This puzzle was sent to you via an email link. See email for more details if included by sender. In case you choose to play this puzzle right now, it will also be added to your own archive of played puzzles.</string>
-    
+
     <!-- The label of the button below a puzzle. -->
     <string name="shared_puzzle_play_button">Play this puzzle</string>
 
@@ -539,9 +539,6 @@
 
     <!-- The message shown when error(s) found when checking progress. -->
     <string name="ProgressBad">Fehler - Zellen hervorgehoben.</string>
-
-    <!-- Alert to select a cell before a value is selected -->
-    <string name="select_cell_before_value">Zuerst eine Zelle auswählen</string>
 
     <!-- Units for time. -->
     <!-- TODO -->

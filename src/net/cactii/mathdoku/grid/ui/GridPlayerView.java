@@ -19,7 +19,6 @@ import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import android.widget.Toast;
 
 public class GridPlayerView extends GridViewerView implements OnTouchListener {
 	@SuppressWarnings("unused")
@@ -205,11 +204,10 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 	}
 
 	public void digitSelected(int newValue) {
-		// Display a message in case no cell is selected.
 		GridCell selectedCell = mGrid.getSelectedCell();
 		if (selectedCell == null) {
-			Toast.makeText(mContext, R.string.select_cell_before_value,
-					Toast.LENGTH_SHORT).show();
+			// It should not be possible to select a digit without having
+			// selected a cell first. But better safe then sorry.
 			return;
 		}
 

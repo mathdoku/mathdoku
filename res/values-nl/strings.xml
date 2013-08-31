@@ -499,9 +499,6 @@
     <!-- The message shown when error(s) found when checking progress. -->
     <string name="ProgressBad">Je hebt een fout gemaakt</string>
 
-    <!-- Alert to select a cell before a value is selected -->
-    <string name="select_cell_before_value">Selecteer eerst een cel.</string>
-
     <!-- Units for time. -->
     <string name="time_unit_seconds_singular">seconde</string>
     <string name="time_unit_seconds_plural">seconden</string>
