@@ -14,7 +14,7 @@ public class SwipeMotion {
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
-	public static final boolean DEBUG_SWIPE_MOTION = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
+	public static final boolean DEBUG_SWIPE_MOTION = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && true;
 
 	// Indexes for coordinates arrays
 	private static final int X_POS = 0;
@@ -353,18 +353,30 @@ public class SwipeMotion {
 			}
 		}
 
-		// Compute the current swipe digit by measuring the angle of the swipe
-		// line. In case the current swipe position is inside the touch down
-		// cell the angle of the swipe line will be computed related to the
-		// *real* touch down position. In case the current swipe position is
-		// outside the touch down cell than the angle is computed relative to
-		// the center of the touch down cell.
+		// Compute the length of the swipe line. In case the current swipe
+		// position is inside the touch down cell the distance is measured
+		// between the *real* touch down position and the current position.
+		// In case the current swipe position is outside the touch down cell
+		// than the distance is measured between the center of the touch down
+		// cell and the current position.
 		float deltaX = mCurrentSwipePositionPixelCoordinates[X_POS]
 				- (inTouchDownCell ? mTouchDownPixelCoordinates[X_POS]
 						: mTouchDownCellCenterPixelCoordinates[X_POS]);
 		float deltaY = mCurrentSwipePositionPixelCoordinates[Y_POS]
 				- (inTouchDownCell ? mTouchDownPixelCoordinates[Y_POS]
 						: mTouchDownCellCenterPixelCoordinates[Y_POS]);
+		if (Math.sqrt(deltaX * deltaX + deltaY * deltaY) < 10) {
+			// The distance is too small to be accepted.
+			Log.i(TAG, " - deltaX = " + deltaX + " - deltaY = " + deltaY);
+			return false;
+		}
+
+		// Compute the current swipe digit by measuring the angle of the swipe
+		// line. In case the current swipe position is inside the touch down
+		// cell the angle of the swipe line will be computed related to the
+		// *real* touch down position. In case the current swipe position is
+		// outside the touch down cell than the angle is computed relative to
+		// the center of the touch down cell.
 		double angle = Math.toDegrees(Math.atan2(deltaY, deltaX))
 				+ (-1 * SWIPE_ANGLE_OFFSET_91);
 		int digit = (angle < 0 ? 9 : (int) (angle / SWIPE_SEGMENT_ANGLE) + 1);
