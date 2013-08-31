@@ -6,7 +6,9 @@ import net.cactii.mathdoku.storage.database.StatisticsDatabaseAdapter;
 import org.achartengine.GraphicalView;
 import org.achartengine.renderer.SimpleSeriesRenderer;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +23,7 @@ import android.widget.TextView;
  * A base fragment representing the statistics for a game or a grid size.
  */
 public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
+	public final static String TAG = "MathDoku.StatisticsBaseFragment";
 
 	protected LinearLayout mChartsLayout;
 
@@ -52,7 +55,7 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	protected static final int chartRed3 = 0xFFB22400;
 	protected static final int chartRed4 = 0xFFFECCBF;
 	protected static final int chartRed5 = 0xFFFE9980;
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -68,7 +71,7 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 		mDefaultTextSizeInDIP = (int) (getResources().getDimension(
 				net.cactii.mathdoku.R.dimen.text_size_default) / getResources()
 				.getDisplayMetrics().density);
-		
+
 		// Chart description will be displayed by default.
 		mDisplayStatisticDescription = true;
 
@@ -126,10 +129,14 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 		}
 
 		// Set title. The chart title of achartengine is not used.
+		int titleHeightDIP = 0;
 		if (title != null && title.isEmpty() == false) {
 			TextView textView = (TextView) sectionView
 					.findViewById(R.id.statistics_section_title);
 			if (textView != null) {
+				titleHeightDIP = textView.getPaddingTop()
+						+ (int) textView.getTextSize()
+						+ textView.getPaddingBottom();
 				textView.setText(title);
 				textView.setVisibility(View.VISIBLE);
 			}
@@ -140,6 +147,15 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 			LinearLayout linearLayout = (LinearLayout) sectionView
 					.findViewById(R.id.statistics_section_chart);
 			if (linearLayout != null) {
+				int paddingChartDIP = linearLayout.getPaddingTop()
+						+ linearLayout.getPaddingBottom();
+
+				// The height of the achartengine view has to be set explicitly
+				// else it won't be displayed.
+				chart.setLayoutParams(new LayoutParams(
+						LayoutParams.MATCH_PARENT, getMaxChartHeight(
+								titleHeightDIP, paddingChartDIP)));
+
 				linearLayout.addView(chart);
 				linearLayout.setVisibility(View.VISIBLE);
 			}
@@ -197,7 +213,8 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 		TextView textViewLabel = new TextView(getActivity());
 		textViewLabel.setLayoutParams(tableRowLayoutParams);
 		textViewLabel.setText(label);
-		textViewLabel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, mDefaultTextSizeInDIP);
+		textViewLabel.setTextSize(TypedValue.COMPLEX_UNIT_DIP,
+				mDefaultTextSizeInDIP);
 		tableRow.addView(textViewLabel);
 
 		// Add value to row
@@ -205,7 +222,8 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 			TextView textViewValue = new TextView(getActivity());
 			textViewValue.setLayoutParams(tableRowLayoutParams);
 			textViewValue.setText(value);
-			textViewValue.setTextSize(TypedValue.COMPLEX_UNIT_DIP, mDefaultTextSizeInDIP);
+			textViewValue.setTextSize(TypedValue.COMPLEX_UNIT_DIP,
+					mDefaultTextSizeInDIP);
 			tableRow.addView(textViewValue);
 		}
 
@@ -220,5 +238,77 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	 */
 	protected void setDisplayChartDescription(boolean display) {
 		mDisplayStatisticDescription = display;
+	}
+
+	/**
+	 * Determine the height to be used for the charts. The title and the chart
+	 * should be entirely visible without scrolling.
+	 * 
+	 * @param titleHeightPixels
+	 *            The height needed to display the title inclusive top and
+	 *            bottom padding.
+	 * @param paddingChartPixels
+	 *            The height of the top and bottom padding set on the layout to
+	 *            which the chart is added.
+	 * @return The height to be set on the chart.
+	 */
+	protected int getMaxContentHeight(int titleHeightPixels,
+			int paddingChartPixels) {
+		// Get size of display
+		DisplayMetrics displayMetrics = getActivity().getResources()
+				.getDisplayMetrics();
+		int maxContentHeight = displayMetrics.heightPixels;
+
+		// Get height of the notification bar
+		int resourceId = getResources().getIdentifier("status_bar_height",
+				"dimen", "android");
+		if (resourceId > 0) {
+			maxContentHeight -= getResources()
+					.getDimensionPixelSize(resourceId);
+		}
+
+		// Calculate ActionBar height
+		TypedValue typedValue = new TypedValue();
+		if (getActivity().getTheme().resolveAttribute(
+				android.R.attr.actionBarSize, typedValue, true)) {
+			maxContentHeight -= TypedValue.complexToDimensionPixelSize(
+					typedValue.data, displayMetrics);
+		}
+
+		// Subtract height (inclusive padding) of chart title and padding of the
+		// chart itself
+		maxContentHeight -= (titleHeightPixels + paddingChartPixels);
+
+		return maxContentHeight;
+	}
+
+	/**
+	 * Determine the height to be used for the charts. The title and the chart
+	 * should be entirely visible without scrolling.
+	 * 
+	 * @param titleHeightPixels
+	 *            The height needed to display the title inclusive top and
+	 *            bottom padding.
+	 * @param paddingChartPixels
+	 *            The height of the top and bottom padding set on the layout to
+	 *            which the chart is added.
+	 * @return The height to be set on the chart.
+	 */
+	protected int getMaxChartHeight(int titleHeightPixels,
+			int paddingChartPixels) {
+		// Determine an acceptable height / width ratio for the chart dependent
+		// on the orientation of the device
+		Configuration configuration = getActivity().getResources()
+				.getConfiguration();
+		float ratio = (configuration.orientation == Configuration.ORIENTATION_PORTRAIT ? (2f / 3f)
+				: (1f / 2f));
+
+		// The actual height of the chart is preferrably equal to the ratio of
+		// the width but it may never exceeds the maximum content height as the
+		// title and chart must be viewable without scrolling.
+		return Math
+				.min((int) (getActivity().getResources().getDisplayMetrics().widthPixels * ratio),
+						getMaxContentHeight(titleHeightPixels,
+								paddingChartPixels));
 	}
 }

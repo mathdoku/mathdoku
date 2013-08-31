@@ -608,4 +608,20 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 	public int getSolvingAttemptId() {
 		return mSolvingAttemptId;
 	}
+
+	@Override
+	protected int getMaxContentHeight(int titleHeightPixels,
+			int paddingChartPixels) {
+		int maxContentHeight = super.getMaxContentHeight(titleHeightPixels,
+				paddingChartPixels);
+
+		// The archive has an additional pager which is shown below the action
+		// bar. The height of this pager is approximately two time the size of
+		// the text displayed inside as the top and bottom padding are 50% of
+		// the text size.
+		maxContentHeight -= getResources().getDimensionPixelSize(
+				R.dimen.text_size_default) * 2;
+
+		return maxContentHeight;
+	}
 }

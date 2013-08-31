@@ -35,6 +35,7 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -123,9 +124,10 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 		pagerTabStrip.setBackgroundColor(pagerTabStripPainter
 				.getBackgroundColor());
 		pagerTabStrip.setTextColor(pagerTabStripPainter.getTextColor());
-		pagerTabStrip.setTextSize(TypedValue.COMPLEX_UNIT_SP, getResources().getDimension(
-				net.cactii.mathdoku.R.dimen.text_size_default) / getResources()
-				.getDisplayMetrics().density);
+		pagerTabStrip.setTextSize(TypedValue.COMPLEX_UNIT_SP, getResources()
+				.getDimension(net.cactii.mathdoku.R.dimen.text_size_default)
+				/ getResources().getDisplayMetrics().density);
+		pagerTabStrip.setGravity(Gravity.BOTTOM);
 
 		// Non primary items are semi transparent.
 		pagerTabStrip.setNonPrimaryAlpha(0.75f);
@@ -142,8 +144,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 				if (solvingAttemptId >= 0
 						&& mArchiveFragmentStatePagerAdapter
 								.getPositionOfGridId(solvingAttemptId) >= 0) {
-					preferences
-							.setArchiveGridIdLastShowed(solvingAttemptId);
+					preferences.setArchiveGridIdLastShowed(solvingAttemptId);
 				}
 			}
 		}
@@ -155,7 +156,8 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 
 		// Check for changes in visibility of status spinner. Reset the filters
 		// for which the visibility changes.
-		boolean showStatusFilterNew = preferences.isArchiveStatusFilterVisible();
+		boolean showStatusFilterNew = preferences
+				.isArchiveStatusFilterVisible();
 		boolean setSpinners = false;
 		if (mShowStatusFilter != showStatusFilterNew) {
 			mShowStatusFilter = showStatusFilterNew;
@@ -193,8 +195,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 		preferences
 				.setArchiveSizeFilterLastValueUsed(mArchiveFragmentStatePagerAdapter
 						.getSizeFilter());
-		preferences
-				.setArchiveGridIdLastShowed(getCurrentSelectedGridId());
+		preferences.setArchiveGridIdLastShowed(getCurrentSelectedGridId());
 
 		super.onPause();
 	}
