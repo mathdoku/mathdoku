@@ -239,8 +239,11 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 	@Override
 	public void onDestroy() {
-		mMathDokuPreferences.mSharedPreferences
-				.unregisterOnSharedPreferenceChangeListener(this);
+		if (mMathDokuPreferences != null
+				&& mMathDokuPreferences.mSharedPreferences != null) {
+			mMathDokuPreferences.mSharedPreferences
+					.unregisterOnSharedPreferenceChangeListener(this);
+		}
 		super.onDestroy();
 	}
 

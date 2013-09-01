@@ -29,8 +29,11 @@ public class AppFragmentActivity extends FragmentActivity implements
 
 	@Override
 	protected void onDestroy() {
-		mMathDokuPreferences.mSharedPreferences
-				.unregisterOnSharedPreferenceChangeListener(this);
+		if (mMathDokuPreferences != null
+				&& mMathDokuPreferences.mSharedPreferences != null) {
+			mMathDokuPreferences.mSharedPreferences
+					.unregisterOnSharedPreferenceChangeListener(this);
+		}
 		super.onDestroy();
 	}
 

@@ -46,8 +46,11 @@ public class AppActivity extends Activity implements
 
 	@Override
 	protected void onDestroy() {
-		mMathDokuPreferences.mSharedPreferences
-				.unregisterOnSharedPreferenceChangeListener(this);
+		if (mMathDokuPreferences != null
+				&& mMathDokuPreferences.mSharedPreferences != null) {
+			mMathDokuPreferences.mSharedPreferences
+					.unregisterOnSharedPreferenceChangeListener(this);
+		}
 		super.onDestroy();
 	}
 
