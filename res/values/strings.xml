@@ -406,7 +406,6 @@
 
     <!-- PUZZLE FRAGMENT - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-
     <!-- The text which is shown on a long press on the switch input mode image. -->
     <string name="input_mode_changed_to_normal">Switched to normal input mode\nDouble tap a cell to switch to maybe mode.</string>
     <string name="input_mode_changed_to_maybe">Switched to maybe input mode\nDouble tap a cell to switch to normal mode.</string>
