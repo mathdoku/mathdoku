@@ -253,7 +253,7 @@
     <string name="feedback_email_body">[Bitte entfernen Sie den Text und schreiben Sie ihr Feedback hier. Diese E-Mail beinhaltet ein Bildschirmfoto zu dem Zeitpunkt kurz bevor Sie \"Feedback geben\" auswählen. Sie können dieses Bildschirmfoto auch entfernen, falls es nicht relevant für Ihr Feedback ist. Der übrige Anhang beinhaltet Informationen über die App, die Größe Ihres Android-Geräts und Daten zu den Einstellungen. Diese Information kann sehr hilfreich für uns sein, um das Feedback zu verstehen. Sie können diese Informationen auch von der E-Mail löschen.]</string>
 
     <!-- Title of dialog used to choose the appropriate action for sending the usage log. -->
-    <string name="feedback_choose_action_title">MathDoku Logfile senden</string>
+    <string name="feedback_choose_action_title">MathDoku-link senden</string>
 
     <!-- Dialog for invalid share url. -->
     <string name="dialog_invalid_share_url_title">Ungültiger MathDoku-Link</string>
@@ -408,7 +408,8 @@
     <!-- PUZZLE FRAGMENT - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- TODO -->
 
-    <!-- The text which is shown on a long press on the switch input mode image. -->
+
+    <!-- The text which is shown on a long press on the switch input mode image. -->
     <string name="input_mode_changed_to_normal">Switched to normal input mode\nDouble tap a cell to switch to maybe mode.</string>
     <string name="input_mode_changed_to_maybe">Switched to maybe input mode\nDouble tap a cell to switch to normal mode.</string>
 

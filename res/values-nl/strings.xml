@@ -255,7 +255,7 @@
     <string name="feedback_email_body">[Verwijderd alsjeblieft deze tekst en type hier je feedback. Deze email bevat een afdruk van het scherm vlak voordat je koos voor \'Geef feedback\'. Je kan deze schermafdruk verwijderen als het niet van belang is voor je feedback. De andere bijlage bevat enkele gegevens over de app, de afmetingen van je toestel en de waarden van je instellingen. Deze informatie kan behulpzaam zijn bij het begrijpen van je feedback maar je bent vrij om deze te verwijderen.]</string>
 
     <!-- Title of dialog used to choose the appropriate action for sending the usage log. -->
-    <string name="feedback_choose_action_title">Verzend MathDoku data</string>
+    <string name="feedback_choose_action_title">MathDoku puzzel delen</string>
 
     <!-- Dialog for invalid share url. -->
     <string name="dialog_invalid_share_url_title">Ongeldige MathDoku link</string>

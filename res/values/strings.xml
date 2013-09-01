@@ -255,7 +255,7 @@
     <string name="feedback_email_body">[Please remove this text and enter your feedback here. This email message contains a screendump of the screen just before you chose \'Send feedback\'. You can remove this screendump if it is not relevant for your feedback. The other attachment contains some basic details about the app and the size of your device and the value of the settings and preferences. This information can be helpful for us to understand your feedback but you\'re free to remove it.]</string>
 
     <!-- Title of dialog used to choose the appropriate action for sending the usage log. -->
-    <string name="feedback_choose_action_title">Send MathDoku Log</string>
+    <string name="feedback_choose_action_title">Share a MathDoku game</string>
 
     <!-- Dialog for invalid share url. -->
     <string name="dialog_invalid_share_url_title">Invalid MathDoku link</string>
