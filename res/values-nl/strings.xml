@@ -5,16 +5,16 @@
     <!-- Thank you for your help in translating MathDoku. Please follow guidelines below when -->
     <!-- translating this file. -->
     <!-- 1. Do not alter the order in which strings are sorted. We try to keep the same order in all languages -->
-    <!-- 2. Do not remove comments as the might be usefull for future maintenance. -->
-    <!-- 3. In case a string contact text like "%1$d" this means that a value will be substituted later. -->
+    <!-- 2. Do not remove comments as they might be useful for future maintenance. -->
+    <!-- 3. If a string contains text like "%1$d" this means that a value will be substituted later. -->
     <!-- 4. Do not translate the comments itself. -->
-    <!-- 5. Please read and follow the aditional instructions where applicable. -->
+    <!-- 5. Please read and follow the additional instructions where applicable. -->
 
 
     <!-- GENERAL - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
-    <!-- The label of the buttons that close dialogs. -->
+    <!-- The labels of the buttons that close dialogs. -->
     <string name="dialog_general_button_close">Sluit</string>
     <string name="dialog_general_button_cancel">Annuleer</string>
 
@@ -75,16 +75,16 @@
     <!-- Lead in to version 2 of MathDoku in the changes dialog. -->
     <string name="changelog_lead_in_version_2">Welkom bij versie 2 van MathDoku. Gave nieuwe functies zoals statistieken, een archief en het delen van puzzels zijn toegevoegd. We hebben er voor gekozen om opgeslagen puzzels van versie 1 van MathDoku niet te converteren. Speel eerst een aantal eenvoudige puzzels om aan de nieuwe besturing te wennen. We hopen dat je deze nieuwe versie waardeert.</string>
 
-    <!-- The heading of the section containg the version name and revision number. -->
+    <!-- The heading and body of the section referring to the list of changes (revision). -->
     <string name="changelog_version_title">Versie</string>
 
     <!-- The heading and body of the section refering to the list of changes. -->
-    <!-- Note for translators: Changes are only available in english. Please mention this in this field. -->
+    <!-- Note for translators: Changes are only available in English. Please mention this in this field. -->
     <string name="changelog_changes_title">Wijzigingen</string>
     <string name="changelog_changes_body">Ga voor een complete lijst van wijzigingen (alleen in het Engels) naar onze website via de onderstaande link.</string>
 
     <!-- The heading and body of the section referring to the list of issues. -->
-    <!-- Note for translators: Only issues written in English will be deaLt with. Please mention this in field changelog_issues_body. -->
+    <!-- Note for translators: Only issues written in English will be dealt with. Please mention this in field changelog_issues_body. -->
     <string name="changelog_issues_title">Fouten en verzoeken</string>
     <string name="changelog_issues_body">Fouten en wijzigingsverzoeken kun je doorgeven via onze website. Wij nemen alleen Engelstalige verzoeken in behandeling.</string>
 
@@ -100,7 +100,7 @@
     <!-- The menu item that allows the player to use some less frequently used cheats. -->
     <string name="action_cheats">Vals spelen</string>
 
-    <!-- The menu item that allows the user to clear the entire grid. Note this item is only available in case at least one cel in the entire puzzle contains a (maybe) value. -->
+    <!-- The menu item that allows the user to clear the entire grid. Note this item is only available if at least one cell in the entire puzzle contains a (maybe) value. -->
     <string name="action_clear_grid">Leeg alle cellen</string>
 
     <!-- The menu item that allows the player to start a new game. -->
@@ -115,7 +115,7 @@
     <!-- The menu item that allows the player to navigate to the help screen. -->
     <string name="action_help">Help</string>
 
-    <!-- The menu item that allows the player to share an archived game with another user via emai. -->
+    <!-- The menu item that allows the player to share an archived game with another user via email. -->
     <string name="action_share">Delen</string>
 
     <!-- The menu item that allows the player to send feedback via email. -->
@@ -127,7 +127,7 @@
     <!-- The menu item that allows the user to reveal a cell. -->
     <string name="action_reveal_cell">Onthul deze cel</string>
 
-    <!-- The menu item that allows the user to reveal the hidden operator of a cage. This item is only available in case a puzzle with hidden operators is shown and the operator has not yet been revealed. Note that a single cell cage does not have an operator. -->
+    <!-- The menu item that allows the user to reveal the hidden operator of a cage. This item is only available if a puzzle with hidden operators is shown and the operator has not yet been revealed. Note that a single cell cage does not have an operator. -->
     <string name="action_reveal_operator">Toon groep teken</string>
 
     <!-- The menu to show the completed grid. -->
@@ -164,7 +164,7 @@
     <string name="puzzle_setting_duplicate_digits_visible_title">Markeer duplicaten</string>
     <string name="puzzle_setting_duplicate_digits_visible_summary">Markeer cellen met cijfers die al in de rij of in de kolom staan</string>
 
-    <!-- The title and summary of the "redundant possibles" option. This option clears possibles values from cells in the same row or columns as the selected cell after setting a user value. -->
+    <!-- The title and summary of the "redundant possibles" option. This option clears possible values from cells in the same row or columns as the selected cell after setting a user value. -->
     <string name="puzzle_setting_clear_maybes_title">Verwijder mogelijke</string>
     <string name="puzzle_setting_clear_maybes_summary">Verwijder een mogelijke waarde indien deze is gebruikt in een andere cel in dezelfde rij of kolom</string>
 

@@ -5,16 +5,16 @@
     <!-- Thank you for your help in translating MathDoku. Please follow guidelines below when -->
     <!-- translating this file. -->
     <!-- 1. Do not alter the order in which strings are sorted. We try to keep the same order in all languages -->
-    <!-- 2. Do not remove comments as the might be usefull for future maintenance. -->
-    <!-- 3. In case a string contact text like "%1$d" this means that a value will be substituted later. -->
+    <!-- 2. Do not remove comments as they might be useful for future maintenance. -->
+    <!-- 3. If a string contains text like "%1$d" this means that a value will be substituted later. -->
     <!-- 4. Do not translate the comments itself. -->
-    <!-- 5. Please read and follow the aditional instructions where applicable. -->
+    <!-- 5. Please read and follow the additional instructions where applicable. -->
 
 
     <!-- GENERAL - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
-    <!-- The label of the buttons that close dialogs. -->
+    <!-- The labels of the buttons that close dialogs. -->
     <string name="dialog_general_button_close">Close</string>
     <string name="dialog_general_button_cancel">Cancel</string>
 
@@ -44,7 +44,7 @@
 
     <!-- The title and body describing the goal of the game. -->
     <string name="puzzle_help_dialog_goal_section_title">Your goal</string>
-    <string name="puzzle_help_dialog_goal_section_body">Fill in each row and column with digits from 1 to grid size.\n\nDigits can and must be used only once per row and column.\n\nThick lines indicate \'cages\' - each cage has an arithmetic puzzle, which must be solved by the digits in the cage. Eg \'5+\' means all digits in that cage add to 5. The order in which the digits are used in the cage is not relevant.\n\nDigits can be used more than once per cage, so long as there is only one of a digit per row or column.</string>
+    <string name="puzzle_help_dialog_goal_section_body">Fill in each row and column with digits from 1 to grid size.\n\nDigits can and must be used only once per row and column.\n\nThick lines indicate \'cages\' - each cage has an arithmetic puzzle, which must be solved by the digits in the cage, e.g. \'5+\' means all digits in that cage add to 5. The order in which the digits are used in the cage is not relevant.\n\nDigits can be used more than once per cage, so long as there is only one of a digit per row or column.</string>
 
     <!-- The title and body describing how to play the game. -->
     <string name="puzzle_help_dialog_how_to_play__section_title">How to play</string>
@@ -79,12 +79,12 @@
     <string name="changelog_version_title">Version</string>
 
     <!-- The heading and body of the section refering to the list of changes. -->
-    <!-- Note for translators: Changes are only available in english. Please mention this in this field. -->
+    <!-- Note for translators: Changes are only available in English. Please mention this in this field. -->
     <string name="changelog_changes_title">Changes</string>
     <string name="changelog_changes_body">For a full list of changes please go to our website using the link below.</string>
 
     <!-- The heading and body of the section referring to the list of issues. -->
-    <!-- Note for translators: Only issues written in English will be deaLt with. Please mention this in field changelog_issues_body. -->
+    <!-- Note for translators: Only issues written in English will be dealt with. Please mention this in field changelog_issues_body. -->
     <string name="changelog_issues_title">Bugs and features</string>
     <string name="changelog_issues_body">Please report any issues or feature requests via the link below. Only issues written in English will be dealt with.</string>
 
@@ -100,7 +100,7 @@
     <!-- The menu item that allows the player to use some less frequently used cheats. -->
     <string name="action_cheats">Cheats</string>
 
-    <!-- The menu item that allows the user to clear the entire grid. Note this item is only available in case at least one cell in the entire puzzle contains a (maybe) value. -->
+    <!-- The menu item that allows the user to clear the entire grid. Note this item is only available if at least one cell in the entire puzzle contains a (maybe) value. -->
     <string name="action_clear_grid">Clear grid</string>
 
     <!-- The menu item that allows the player to start a new game. -->
@@ -115,7 +115,7 @@
     <!-- The menu item that allows the player to navigate to the help screen. -->
     <string name="action_help">Help</string>
 
-    <!-- The menu item that allows the player to share an archived game with another user via emai. -->
+    <!-- The menu item that allows the player to share an archived game with another user via email. -->
     <string name="action_share">Share</string>
 
     <!-- The menu item that allows the player to send feedback via email. -->
@@ -127,7 +127,7 @@
     <!-- The menu item that allows the user to reveal a cell. -->
     <string name="action_reveal_cell">Reveal cell</string>
 
-    <!-- The menu item that allows the user to reveal the hidden operator of a cage. This item is only available in case a puzzle with hidden operators is shown and the operator has not yet been revealed. Note that a single cell cage does not have an operator. -->
+    <!-- The menu item that allows the user to reveal the hidden operator of a cage. This item is only available if a puzzle with hidden operators is shown and the operator has not yet been revealed. Note that a single cell cage does not have an operator. -->
     <string name="action_reveal_operator">Reveal operator</string>
 
     <!-- The menu to show the completed grid. -->
@@ -164,7 +164,7 @@
     <string name="puzzle_setting_duplicate_digits_visible_title">Mark duplicates</string>
     <string name="puzzle_setting_duplicate_digits_visible_summary">Highlight duplicate digits in a row or column</string>
 
-    <!-- The title and summary of the "redundant possibles" option. This option clears possibles values from cells in the same row or columns as the selected cell after setting a user value. -->
+    <!-- The title and summary of the "redundant possibles" option. This option clears possible values from cells in the same row or columns as the selected cell after setting a user value. -->
     <string name="puzzle_setting_clear_maybes_title">Clear maybes</string>
     <string name="puzzle_setting_clear_maybes_summary">Clear maybes when used in another cell on the same row or column</string>
 
@@ -182,7 +182,7 @@
 
     <!-- The title and summary of the "colored digits" option. This option controls whether maybe numbers and normal numbers are displayed in distinct colors or in one monochrome color. -->
     <string name="puzzle_setting_colored_digits_title">Colored digits</string>
-    <string name="puzzle_setting_colored_digits_summary">Use colored digits to distinct maybe numbers from normal numbers</string>
+    <string name="puzzle_setting_colored_digits_summary">Use colored digits to distinguish maybe numbers from normal numbers</string>
 
     <!-- The title and summary of the "maybe in grid" option. This option controls whether maybe numbers are displayed in 3x3 grid or straight line. -->
     <string name="puzzle_setting_maybes_displayed_in_grid_title">Maybes in grid</string>
@@ -192,7 +192,7 @@
     <string name="puzzle_setting_timer_visible_title">Display timer</string>
     <string name="puzzle_setting_timer_visible_summary">Display a timer while solving a puzzle</string>
 
-    <!-- The title and summary of the "full screen" option. This option hide the android notification bar. -->
+    <!-- The title and summary of the "full screen" option. This option hides the Android notification bar. -->
     <string name="puzzle_setting_full_screen_title">Full screen</string>
     <string name="puzzle_setting_full_screen_summary">Play in full screen mode by hiding Android\'s notification bar</string>
 
@@ -246,13 +246,13 @@
 
     <!-- Dialog for sending feedback on MathDoku via email. -->
     <string name="dialog_send_feedback_title">Send feedback</string>
-    <string name="dialog_send_feedback_text_1">Really great that you are willing to give feedback on MathDoku.\n\nPlease remember this is a free game without any advertisements. So we are not earning any money on this app. This game is just developed by enthousiastics in their spare time. We not are obliged in any way to build new feautures or solve bugs.\nPlease give constructive feedback without being offensive.\n\nWe prefer to receive feedback on issues or feature requests via the link below:</string>
+    <string name="dialog_send_feedback_text_1">Really great that you are willing to give feedback on MathDoku.\n\nPlease remember this is a free game without any advertisements. So we are not earning any money on this app. This game is just developed by enthusiasts in their spare time. We not are obliged in any way to build new features or solve bugs.\nPlease give constructive feedback without being offensive.\n\nWe prefer to receive feedback on issues or feature requests via the link below:</string>
     <string name="dialog_send_feedback_text_2">\nBut you can also sent an email if that is more comfortable for you. Note, we can only address issues written in English.</string>
     <string name="dialog_send_feedback_positive_button">Send email</string>
 
     <!-- Default subject and message for feedback email. -->
     <string name="feedback_email_subject">Feedback on MathDoku</string>
-    <string name="feedback_email_body">[Please remove this text and enter your feedback here. This email message contains a screendump of the screen just before you choose \'Send feedback\'. You can remove this screendump if it is not relevant for your feedback. The other attachment contains some basic details about the app and the size of your device and the value of the settings and preferences. This information can be helpful for us to understand your feedback but you\'re free to remove it.]</string>
+    <string name="feedback_email_body">[Please remove this text and enter your feedback here. This email message contains a screendump of the screen just before you chose \'Send feedback\'. You can remove this screendump if it is not relevant for your feedback. The other attachment contains some basic details about the app and the size of your device and the value of the settings and preferences. This information can be helpful for us to understand your feedback but you\'re free to remove it.]</string>
 
     <!-- Title of dialog used to choose the appropriate action for sending the usage log. -->
     <string name="feedback_choose_action_title">Send MathDoku Log</string>
@@ -285,31 +285,31 @@
 
     <!-- Title, and text for tip "Order of values in cage" -->
     <string name="dialog_tip_order_of_values_in_cage_title">Cell values</string>
-    <string name="dialog_tip_order_of_values_in_cage_text">The order of values in the cells of the cage is not relevant in a MathDoku puzzle. The results of cages \"2 &#8212; 3\"  and \"3 &#8212; 2\" both equals 1. The entire grid below is therefore valid.</string>
+    <string name="dialog_tip_order_of_values_in_cage_text">The order of values in the cells of the cage is not relevant in a MathDoku puzzle. The results of cages \"2 &#8212; 3\"  and \"3 &#8212; 2\" both equal 1. The entire grid below is therefore valid.</string>
 
     <!-- Title, and text for tip "Cheat which reveals the value of a cell". Note "%1$s" in the text will be replaced with an amount and units (e.d. "20 seconds" or "5 minutes"). -->
     <string name="dialog_tip_cheat_reveal_value_title">Cheat: reveal value</string>
-    <string name="dialog_tip_cheat_reveal_value_text">You have revealed the value of a cell. Revealing the value of a cell is not needed to solve the puzzle as each puzzle has one unqiue solution which can be found without using cheats.\nEach time you will use this cheat, the elapsed time will be increased with %1$s.</string>
+    <string name="dialog_tip_cheat_reveal_value_text">You have revealed the value of a cell. Revealing the value of a cell is not needed to solve the puzzle as each puzzle has one unique solution which can be found without using cheats.\nEach time you will use this cheat, the elapsed time will be increased by %1$s.</string>
 
     <!-- Title, and text for tip "Cheat which reveals the operator of a cell". Note "%1$s" in the text will be replaced with an amount and units (e.d. "20 seconds" or "5 minutes"). -->
     <string name="dialog_tip_cheat_reveal_operator_title">Cheat: reveal operator</string>
-    <string name="dialog_tip_cheat_reveal_operator_text">You have revealed the operator of a cage. Revealing the operator of a cage is not needed to solve the puzzle as each puzzle has one unqiue solution which can be found without using cheats.\nEach time you will use this cheat, the elapsed time will be increased with %1$s.</string>
+    <string name="dialog_tip_cheat_reveal_operator_text">You have revealed the operator of a cage. Revealing the operator of a cage is not needed to solve the puzzle as each puzzle has one unique solution which can be found without using cheats.\nEach time you will use this cheat, the elapsed time will be increased by %1$s.</string>
 
     <!-- Title, and text for tip "Cheat which reveals the solutions of a puzzle". Note "%1$s" in the text will be replaced with an amount and units (e.d. "20 seconds" or "5 minutes"). -->
     <string name="dialog_tip_cheat_reveal_solution_title">Cheat: reveal solution</string>
-    <string name="dialog_tip_cheat_reveal_solution_text">You have revealed the solution of the puzzle. When you use this cheat, the elapsed time will be increased with %1$s.</string>
+    <string name="dialog_tip_cheat_reveal_solution_text">You have revealed the solution of the puzzle. When you use this cheat, the elapsed time will be increased by %1$s.</string>
 
     <!-- Title, and text for tip "Cheat progress checking". Note "%1$s" and "%2$s" in the text will be replaced with an amount and units (e.d. "20 seconds" or "5 minutes"). -->
     <string name="dialog_tip_cheat_check_progress_title">Cheat: check progress</string>
-    <string name="dialog_tip_cheat_check_progress_text">You have checked the progress of your solution. Invalid cells have been highlighted.\nEach time you use this cheat, the elapsed time will be increased with %1$s plus %2$s for each new invalid value which has been found.</string>
+    <string name="dialog_tip_cheat_check_progress_text">You have checked the progress of your solution. Invalid cells have been highlighted.\nEach time you use this cheat, the elapsed time will be increased by %1$s plus %2$s for each new invalid value which has been found.</string>
 
     <!-- Title, and text for tip "Incorrect value" which refers to menu option "Check Progress". -->
     <string name="dialog_tip_incorrect_value_title">Incorrect value</string>
-    <string name="dialog_tip_incorrect_value_text">You have entered an incorrect value. You will not be able to solve this puzzle in case you do not correct it. You can use menu option \'Check Progress\' to mark all cells having an incorrect value. Be aware: using \'Check Progress\' will raise the time elapsed with a penalty to discourage you from using it.</string>
+    <string name="dialog_tip_incorrect_value_text">You have entered an incorrect value. You will not be able to solve this puzzle if you do not correct it. You can use menu option \'Check Progress\' to mark all cells having an incorrect value. Be aware: using \'Check Progress\' will raise the time elapsed with a penalty to discourage you from using it.</string>
 
     <!-- Title, and text for tip "Statistics" which explains about this new navigation option. -->
     <string name="dialog_tip_statistics_title">Statistics</string>
-    <string name="dialog_tip_statistics_text">For each game you have played, some statistics are collected. You can use the statistics just to view your historic results. Also you can use the statistics to improve your solving techniques.\n\nYou can view the statistics from the navigation menu. The navigation menu can be opened by tapping the MathDoku icon.</string>
+    <string name="dialog_tip_statistics_text">For each game you play, some statistics are collected. You can use the statistics just to view your historic results and you can use the statistics to improve your solving techniques.\n\nYou can view the statistics from the navigation menu. The navigation menu can be opened by tapping the MathDoku icon.</string>
 
     <!-- Title, and text for tip "Duplicate value" which gives explanation of the game rule which was violated. -->
     <string name="dialog_tip_duplicate_value_title">Duplicate value</string>
@@ -349,7 +349,7 @@
     <!-- Title and a body which explains the purpose of the chart "Avoidable moves". -->
     <string name="avoidable_moves_chart_title">Avoidable moves</string>
     <string name="avoidable_moves_yaxis_description">Number of moves</string>
-    <string name="avoidable_moves_chart_body">Less experienced players make more avoidable moves than experienced players. An avoidable move is a move which is not necessary to solve a game. Correcting or clearing values in cell, using \"maybe values\" or undo moved are moves which should be avoided in order to become a better player.</string>
+    <string name="avoidable_moves_chart_body">Less experienced players make more avoidable moves than experienced players. An avoidable move is a move which is not necessary to solve a game. Correcting or clearing values in cells, using \"maybe values\" or \"undo\", are actions which should be avoided in order to become a better player.</string>
     <!-- Dimensions displayed in chart "Avoidable moves". -->
     <string name="avoidable_moves_chart_user_value_replaced">Cell value replaced</string>
     <string name="avoidable_moves_chart_maybe_value_used">Maybe values</string>
@@ -378,7 +378,7 @@
     <!-- Title and a body which explains the purpose of the chart "Elapsed time historic". -->
     <!-- Series used to split charts like "Unsolved games" and "Elapsed time historic". -->
     <string name="statistics_elapsed_time_historic_title">Elapsed time</string>
-    <string name="statistics_elapsed_time_historic_body">This chart shows the time elapsed per game and the average elapsed time. Games are sorted in order of creating (same order as in Archive). More recent games will be on the right of this chart. As you got more experienced at this level the elapsed time per game should diminish. Also there should be fewer games unfinished or for which the solution was revealed.</string>
+    <string name="statistics_elapsed_time_historic_body">This chart shows the elapsed time per game and the average elapsed time. Games are sorted in order of creation (same order as in Archive). More recent games will be on the right of this chart. As you got more experienced at this level the elapsed time per game should diminish. Also there should be fewer games unfinished or for which the solution was revealed.</string>
     <string name="statistics_elapsed_time_historic_elapsed_time_solved">Elapsed time in solved games</string>
     <string name="statistics_elapsed_time_historic_elapsed_time_unfinished">Elapsed time in unfinished games</string>
     <string name="statistics_elapsed_time_historic_cheat_time">Cheat penalty</string>
@@ -405,6 +405,7 @@
     <string name="statistics_setting_elapsed_time_chart_maximum_games_summary">Display no more than %1$d games in elapsed time chart</string>
 
     <!-- PUZZLE FRAGMENT - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
 
     <!-- The text which is shown on a long press on the switch input mode image. -->
     <string name="input_mode_changed_to_normal">Switched to normal input mode\nDouble tap a cell to switch to maybe mode.</string>
@@ -447,20 +448,20 @@
 
     <!-- The title and summary of the "Show status filter" option. This option enables or disables showing of the status filter in the action bar of the archive. -->
     <string name="archive_settings_show_status_filter_title">Show status filter</string>
-    <string name="archive_settings_show_status_filter_enabled">Allows filtering on status of games</string>
-    <string name="archive_settings_show_status_filter_disabled">Hides the filter for selecting on status</string>
+    <string name="archive_settings_show_status_filter_enabled">Allows filtering by status of games</string>
+    <string name="archive_settings_show_status_filter_disabled">Hides the filter for selecting by status</string>
 
     <!-- The title and summary of the "Show size filter" option. This option enables or disables showing of the size filter in the action bar of the archive. -->
     <string name="archive_settings_show_size_filter_title">Show size filter</string>
-    <string name="archive_settings_show_size_filter_enabled">Allows filtering on size of games</string>
-    <string name="archive_settings_show_size_filter_disabled">Hides the filter for selecting on game size</string>
+    <string name="archive_settings_show_size_filter_enabled">Allows filtering by size of games</string>
+    <string name="archive_settings_show_size_filter_disabled">Hides the filter for selecting by game size</string>
 
     <!-- The title and summary of the "Chart description" option. This option enables or disables displaying the description below the charts in the archive activity. -->
     <string name="archive_setting_show_chart_description_title">Chart description</string>
     <string name="archive_setting_show_chart_description_summary">Display description below chart</string>
 
     <!-- The lead in text at top of the help dialog. -->
-    <string name="archive_help_dialog_general">The archive contains the history of all games you have played. Swipe from left to right to go to an older puzzle. Swipe from right to left to go to a newer puzzle.\n\nYou can use filters to view only puzzles having a specific status or size. Filters can be enabled and disabled via the settings menu. Note: a filter will only be shown in case it contains multiple values.</string>
+    <string name="archive_help_dialog_general">The archive contains the history of all games you have played. Swipe from left to right to go to an older puzzle. Swipe from right to left to go to a newer puzzle.\n\nYou can use filters to view only puzzles having a specific status or size. Filters can be enabled and disabled via the settings menu. Note: a filter will only be shown if it contains multiple values.</string>
 
     <!-- SHARED PUZZLE  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -468,14 +469,14 @@
     <!-- Subject and body of share email. -->
     <string name="share_puzzle_subject">Sharing MathDoku puzzle</string>
     <string name="share_puzzle_link_description">MathDoku puzzle</string>
-    <string name="share_unfinished_puzzle_body">I want to share this %1$s with you. After clicking the link, please choose the MathDoku app to preview the puzzle.%2$sIn case you haven\'t yet installed version 2 of MathDoku for Android, please download it from %3$s before clicking the puzzle links.%4$sIn case the text above does not contains any links, please use links below:%5$s - Play the MathDoku puzzle: %6$s - Download MathDoku: %7$s</string>
-    <string name="share_finished_puzzle_body">I have solved this %1$s in %2$s. Can you finish it faster? After clicking the link, please choose the MathDoku app to preview the puzzle.%3$sIn case you haven\'t yet installed version 2 of MathDoku for Android, please download it from %4$s before clicking the puzzle links.%5$sIn case the text above does not contains any links, please use links below:%6$s - Play the MathDoku puzzle: %7$s - Download MathDoku: %8$s</string>
+    <string name="share_unfinished_puzzle_body">I want to share this %1$s with you. After clicking the link, please choose the MathDoku app to preview the puzzle.%2$sIf you haven\'t yet installed version 2 of MathDoku for Android, please download it from %3$s before clicking the puzzle links.%4$sIf the text above does not contains any links, please use links below:%5$s - Play the MathDoku puzzle: %6$s - Download MathDoku: %7$s</string>
+    <string name="share_finished_puzzle_body">I have solved this %1$s in %2$s. Can you finish it faster? After clicking the link, please choose the MathDoku app to preview the puzzle.%3$sIf you haven\'t yet installed version 2 of MathDoku for Android, please download it from %4$s before clicking the puzzle links.%5$sIf the text above does not contains any links, please use links below:%6$s - Play the MathDoku puzzle: %7$s - Download MathDoku: %8$s</string>
 
     <!-- Title for the shared puzzle fragment. -->
     <string name="shared_puzzle_action_bar_title">Preview shared puzzle</string>
 
     <!-- Introduction text at top of screen. -->
-    <string name="shared_puzzle_introduction">This puzzle was sent to you via an email link. See email for more details if included by sender. In case you choose to play this puzzle right now, it will also be added to your own archive of played puzzles.</string>
+    <string name="shared_puzzle_introduction">This puzzle was sent to you via an email link. See email for more details if included by sender. If you choose to play this puzzle right now, it will also be added to your own archive of played puzzles.</string>
 
     <!-- The label of the button below a puzzle. -->
     <string name="shared_puzzle_play_button">Play this puzzle</string>
