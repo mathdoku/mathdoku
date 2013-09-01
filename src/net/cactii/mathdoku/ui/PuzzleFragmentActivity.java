@@ -1102,7 +1102,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 								+ " test and improve this beta version before we "
 								+ "release it to Google Play.\n\nPlease send all "
 								+ "your feedback (including typo\'s) to us!\n\n"
-								+ "This BETA version will expire on 01/SEP/2013 "
+								+ "This BETA version will expire on 15/SEP/2013 "
 								+ "after which you have to install a new BETA "
 								+ "or the normal version from Google Play.")
 				.setNegativeButton(R.string.dialog_general_button_close,
@@ -1153,7 +1153,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		// Check if beta has expired
 		Date now = Calendar.getInstance().getTime();
 		Calendar endBeta = Calendar.getInstance();
-		endBeta.set(2013, Calendar.SEPTEMBER, 1);
+		endBeta.set(2013, Calendar.SEPTEMBER, 15);
 		if (now.after(endBeta.getTime())) {
 			openBetaEndedDialog();
 		}
