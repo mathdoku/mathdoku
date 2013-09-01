@@ -54,9 +54,7 @@ public class SharedPuzzle {
 			String shareURL = getShareUrl(grid.toGridDefinitionString());
 
 			// Get the download url for MathDoku
-			// TODO: replace link before release to Google Play
-			String downloadUrl = "https://mathdoku.googlecode.com/files/MathDoku"
-					+ Util.getPackageVersionNumber() + ".apk";
+			String downloadUrl = "https://play.google.com/store/apps/details?id=net.cactii.mathdoku";
 
 			// Put share and download url's in the email. Note: the url's are
 			// included as HTML-formatted-links and as plain-text-urls as the
@@ -68,20 +66,15 @@ public class SharedPuzzle {
 			if (grid.isActive()) {
 				bodyText = mContext.getResources().getString(
 						R.string.share_unfinished_puzzle_body,
-						toHtmlLink(shareURL, mathDokuPuzzle),
-						"<br/>",
-						toHtmlLink(downloadUrl,
-								"MathDoku Project Download Page"),
-						"<br/><br/>", "<br/><br/>", shareURL + "<br/><br/>",
-						downloadUrl);
+						toHtmlLink(shareURL, mathDokuPuzzle), "<br/>",
+						toHtmlLink(downloadUrl, "Google Play"), "<br/><br/>",
+						"<br/><br/>", shareURL + "<br/><br/>", downloadUrl);
 			} else {
 				bodyText = mContext.getResources().getString(
 						R.string.share_finished_puzzle_body,
 						toHtmlLink(shareURL, mathDokuPuzzle),
 						Util.durationTimeToString(grid.getElapsedTime()),
-						"<br/>",
-						toHtmlLink(downloadUrl,
-								"MathDoku Project Download Page"),
+						"<br/>", toHtmlLink(downloadUrl, "Google Play"),
 						"<br/><br/>", "<br/><br/>", shareURL + "<br/><br/>",
 						downloadUrl);
 			}
