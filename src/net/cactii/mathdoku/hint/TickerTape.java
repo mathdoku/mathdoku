@@ -2,9 +2,11 @@ package net.cactii.mathdoku.hint;
 
 import java.util.ArrayList;
 
+import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.painter.Painter;
 import android.content.Context;
 import android.os.Handler;
+import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.HorizontalScrollView;
@@ -14,16 +16,20 @@ import android.widget.TextView;
 public class TickerTape extends HorizontalScrollView {
 	public final static String TAG = "MathDoku.TickerTape";
 
-	private LinearLayout mTickerTapeLinearLayout;
+	private final LinearLayout mTickerTapeLinearLayout;
 
 	// Context in which the ticker tape is created.
-	private Context mContext;
+	private final Context mContext;
 
 	// Size of text within the ticker tape.
-	private int mTextSize;
+	private final int mTextSizeInDIP;
+
+	// Margins of text within the ticker tape.
+	private final int mTextTopMargin;
+	private final int mTextBottomMargin;
 
 	// Speed of horizontal scrolling
-	private int mScrollStepSize = 100;
+	private final int mScrollStepSize = 100;
 
 	// Flag whether ticker tape has been cancelled and should stop moving.
 	private boolean mCancelled;
@@ -42,7 +48,7 @@ public class TickerTape extends HorizontalScrollView {
 	private int mMinDisplayItems;
 	private long mMinDisplayTime;
 
-	private ArrayList<TextView> mTextViewList = new ArrayList<TextView>();
+	private final ArrayList<TextView> mTextViewList = new ArrayList<TextView>();
 
 	/**
 	 * Creates a new instance of {@see TickerTape}.
@@ -50,28 +56,32 @@ public class TickerTape extends HorizontalScrollView {
 	 * @param mContext
 	 *            The context in which the ticker tape is created.
 	 */
-	public TickerTape(Context context) {
-		super(context);
+	public TickerTape(Context context, AttributeSet attrs) {
+		super(context, attrs);
 
 		// Save the context for later use
 		mContext = context;
 
-		// Determine text size to be used
-		mTextSize = (int) (mContext.getResources().getDimension(
-				net.cactii.mathdoku.R.dimen.ticker_tape_text_size) / getResources()
-				.getDisplayMetrics().density);
+		// Determine text size
+		int textSizeInPixels = getResources().getDimensionPixelSize(
+				R.dimen.text_size_default);
+		mTextSizeInDIP = (int) (getResources().getDimension(
+				R.dimen.text_size_default) / getResources().getDisplayMetrics().density);
+
+		// Determine margins for text (25% of text height)
+		mTextBottomMargin = mTextTopMargin = textSizeInPixels / 4;
 
 		// Set layout parameters of the horizontal scroll view.
 		setLayoutParams(new LayoutParams(
 				android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-				android.view.ViewGroup.LayoutParams.MATCH_PARENT));
+				mTextTopMargin + textSizeInPixels + mTextBottomMargin));
 
 		// Add a linear layout to the scroll view which will hold all the text
-		// view for all items
+		// view for all items.
 		mTickerTapeLinearLayout = new LinearLayout(mContext);
 		mTickerTapeLinearLayout.setLayoutParams(new LayoutParams(
 				android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-				android.view.ViewGroup.LayoutParams.MATCH_PARENT));
+				mTextTopMargin + textSizeInPixels + mTextBottomMargin));
 		addView(mTickerTapeLinearLayout);
 
 		// disable scroll bar
@@ -102,7 +112,7 @@ public class TickerTape extends HorizontalScrollView {
 
 		// Use a DIP text size as the height of ticker tape layout has been set
 		// to a fixed height.
-		textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, mTextSize);
+		textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, mTextSizeInDIP);
 
 		textView.setId(mTextViewList.size());
 		textView.setLayoutParams(new LayoutParams(
@@ -115,6 +125,8 @@ public class TickerTape extends HorizontalScrollView {
 		// Add the text view to the layout and the list of text views.
 		mTickerTapeLinearLayout.addView(textView);
 		mTextViewList.add(textView);
+
+		invalidate();
 
 		return this;
 	}
@@ -156,7 +168,7 @@ public class TickerTape extends HorizontalScrollView {
 	 * 
 	 * @return The ticker tape object itself so it can be used as a builder.
 	 */
-	private TickerTape startMoving() {
+	public TickerTape startMoving() {
 		mCancelled = false;
 
 		// Determine how many items have to be displayed at least.
@@ -298,6 +310,28 @@ public class TickerTape extends HorizontalScrollView {
 		mEraseConditionSet = true;
 		mMinDisplayCycles = minDisplayCycles;
 		mMinDisplayTime = minDisplayTime;
+
+		return this;
+	}
+
+	/**
+	 * Resets the ticker tape. All messages will be cleared and the ticker tape
+	 * is hidden.
+	 * 
+	 * @return The ticker tape object itself so it can be used as a builder.
+	 */
+	public TickerTape reset() {
+		// Hide the ticker tape and Cancel updating
+		hide();
+
+		// Clear the list
+		while (mTextViewList.size() > 0) {
+
+			// Remove the item which currently is at front of the list.
+			TextView textView = mTextViewList.get(0);
+			mTickerTapeLinearLayout.removeView(textView);
+			mTextViewList.remove(0);
+		}
 
 		return this;
 	}

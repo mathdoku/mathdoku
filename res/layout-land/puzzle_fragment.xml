@@ -66,13 +66,13 @@
             android:textStyle="bold"
             android:visibility="gone" />
 
-        <RelativeLayout
-            android:id="@+id/tickerTapeLayout"
+        <net.cactii.mathdoku.hint.TickerTape
+            android:id="@+id/tickerTape"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/ticker_tape_height"
+            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/input_mode_image"
-            android:paddingTop="10dp" />
+            android:layout_marginTop="10dp" />
 
         <!-- Input mode text should be positioned below timer because of z-layering. In case it is displayed it should cover the timer text and the ticker tape. -->
 

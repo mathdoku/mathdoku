@@ -8,14 +8,14 @@
     android:layout_height="match_parent"
     android:background="#000" >
 
-    <RelativeLayout
-        android:id="@+id/tickerTapeLayout"
+    <net.cactii.mathdoku.hint.TickerTape
+        android:id="@+id/tickerTape"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/ticker_tape_height"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:paddingBottom="5dp"
-        android:paddingTop="1dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="1dp"
         android:textIsSelectable="false" />
 
     <RelativeLayout
@@ -23,7 +23,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/tickerTapeLayout"
+        android:layout_below="@+id/tickerTape"
         android:paddingTop="1dp"
         android:visibility="gone" >
 

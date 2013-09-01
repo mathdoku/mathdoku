@@ -38,13 +38,4 @@
     <!-- The text size used for body text. -->
     <dimen name="dialog_text_size_body">16sp</dimen>
 
-    <!-- TICKER TAPE  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
-
-    <!-- The height of the ticker tape. -->
-    <dimen name="ticker_tape_height">36dp</dimen>
-
-    <!-- The text size to be used for text inside the ticker tape. Use dp as the height of the ticker tape is fixed. -->
-    <dimen name="ticker_tape_text_size">24dp</dimen>
-
 </resources>

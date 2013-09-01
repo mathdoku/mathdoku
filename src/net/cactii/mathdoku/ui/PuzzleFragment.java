@@ -11,7 +11,6 @@ import net.cactii.mathdoku.grid.GridCage;
 import net.cactii.mathdoku.grid.GridCell;
 import net.cactii.mathdoku.grid.ui.GridInputMode;
 import net.cactii.mathdoku.grid.ui.GridPlayerView;
-import net.cactii.mathdoku.hint.OnTickerTapeChangedListener;
 import net.cactii.mathdoku.hint.TickerTape;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
@@ -49,7 +48,7 @@ import android.widget.Toast;
  */
 public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		OnSharedPreferenceChangeListener, OnCreateContextMenuListener,
-		OnTickerTapeChangedListener, GridPlayerView.OnInputModeChangedListener {
+		GridPlayerView.OnInputModeChangedListener {
 	public final static String TAG = "MathDoku.PuzzleFragment";
 
 	public static final String BUNDLE_KEY_SOLVING_ATTEMPT_ID = "PuzzleFragment.solvingAttemptId";
@@ -68,7 +67,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	private ImageView mInputModeImageView;
 	private TextView mInputModeText;
 
-	private RelativeLayout mTickerTapeLayout;
 	private TickerTape mTickerTape;
 
 	private Button mClearButton;
@@ -133,8 +131,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		mUndoButton = (Button) mRootView.findViewById(R.id.undoButton);
 		mUndoButton.setBackgroundColor(mPainter.getButtonBackgroundColor());
 
-		mTickerTapeLayout = (RelativeLayout) mRootView
-				.findViewById(R.id.tickerTapeLayout);
+		mTickerTape = (TickerTape) mRootView.findViewById(R.id.tickerTape);
+		mGridPlayerView.setTickerTape(mTickerTape);
 
 		mSoundEffectViews = new View[] { mGridPlayerView, mClearButton,
 				mUndoButton };
@@ -149,7 +147,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 						setClearAndUndoButtonVisibility(cell);
 					}
 				});
-		mGridPlayerView.setOnTickerTapeChangedListener(this);
 		mClearButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -844,21 +841,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		if (mUndoButton != null) {
 			mUndoButton.setVisibility(View.GONE);
 			mUndoButton.invalidate();
-		}
-	}
-
-	@Override
-	public void onTickerTapeChanged(TickerTape tickerTape) {
-		// First cancel the old ticker tape
-		if (mTickerTape != null) {
-			mTickerTape.cancel();
-		}
-		mTickerTapeLayout.removeAllViews();
-
-		mTickerTape = tickerTape;
-		if (mTickerTape != null) {
-			mTickerTapeLayout.addView(mTickerTape);
-			mTickerTape.show();
 		}
 	}
 
