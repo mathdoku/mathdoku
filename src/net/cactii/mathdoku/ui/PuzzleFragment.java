@@ -19,12 +19,17 @@ import net.cactii.mathdoku.tip.TipDialog;
 import net.cactii.mathdoku.tip.TipIncorrectValue;
 import net.cactii.mathdoku.util.Util;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
@@ -80,6 +85,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	private View mRootView;
 
 	private OnGridFinishedListener mOnGridFinishedListener;
+
+	private BroadcastReceiver mDreamingBroadcastReceiver;
 
 	// Container Activity must implement these interfaces
 	public interface OnGridFinishedListener {
@@ -212,13 +219,12 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 	@Override
 	public void onPause() {
-		stopTimer();
-		if (mGrid != null) {
-			mGrid.save();
+		// Unregister the receiver of the day dreaming intent.
+		if (mContext != null && mDreamingBroadcastReceiver != null) {
+			mContext.unregisterReceiver(mDreamingBroadcastReceiver);
 		}
-		if (mTickerTape != null) {
-			mTickerTape.cancel();
-		}
+
+		pause();
 
 		super.onPause();
 	}
@@ -247,28 +253,44 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		super.onDestroy();
 	}
 
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 	@Override
 	public void onResume() {
-		setTheme();
+		// Register a broadcast receiver on the intents related to day dreaming.
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+			// Create broad cast receiver
+			if (mDreamingBroadcastReceiver == null) {
+				mDreamingBroadcastReceiver = new BroadcastReceiver() {
+					@Override
+					public void onReceive(Context context, Intent intent) {
+						if (intent.getAction().equals(
+								Intent.ACTION_DREAMING_STARTED)) {
+							// Pause the fragment on start of dreaming
+							pause();
+						} else if (intent.getAction().equals(
+								Intent.ACTION_DREAMING_STOPPED)) {
+							// Resume the fragment as soon as the dreaming has
+							// stopped
+							resume();
+						}
+					}
+				};
+			}
 
-		// Propagate current preferences to the grid.
-		if (mGrid != null) {
-			mGrid.setPreferences();
+			// Create intent filter for day dreaming
+			IntentFilter intentFilter = new IntentFilter();
+			intentFilter.addAction(Intent.ACTION_DREAMING_STARTED);
+			intentFilter.addAction(Intent.ACTION_DREAMING_STOPPED);
+
+			// Register receiver
+			mContext.registerReceiver(mDreamingBroadcastReceiver, intentFilter,
+					null, null);
 		}
 
-		this.setSoundEffectsEnabled(mMathDokuPreferences
-				.isPlaySoundEffectEnabled());
+		// Resume the fragment
+		resume();
 
 		super.onResume();
-
-		if (mTimerTask == null
-				|| (mTimerTask != null && mTimerTask.isCancelled())) {
-			startTimer();
-		}
-
-		if (mTickerTape != null && mTickerTape.isCancelled()) {
-			mTickerTape.show();
-		}
 	}
 
 	public void setSoundEffectsEnabled(boolean enabled) {
@@ -929,6 +951,43 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 					.setImageResource((inputMode == GridInputMode.NORMAL ? mPainter
 							.getNormalInputModeButton() : mPainter
 							.getMaybeInputModeButton()));
+		}
+	}
+
+	/**
+	 * Resumes the fragment.
+	 */
+	private void resume() {
+		setTheme();
+
+		// Propagate current preferences to the grid.
+		if (mGrid != null) {
+			mGrid.setPreferences();
+		}
+
+		this.setSoundEffectsEnabled(mMathDokuPreferences
+				.isPlaySoundEffectEnabled());
+
+		if (mTimerTask == null
+				|| (mTimerTask != null && mTimerTask.isCancelled())) {
+			startTimer();
+		}
+
+		if (mTickerTape != null && mTickerTape.isCancelled()) {
+			mTickerTape.show();
+		}
+	}
+
+	/**
+	 * Paused the fragment.
+	 */
+	private void pause() {
+		stopTimer();
+		if (mGrid != null) {
+			mGrid.save();
+		}
+		if (mTickerTape != null) {
+			mTickerTape.cancel();
 		}
 	}
 }
