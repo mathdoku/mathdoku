@@ -23,7 +23,7 @@ import android.content.SharedPreferences.Editor;
  * the block evaluates to false. Example of intended usage:
  * 
  * <pre class="prettyprint">
- * if (DevelopmentHelper.mode = Mode.UNIT_TESTING) {
+ * if (DevelopmentHelper.mode == Mode.UNIT_TESTING) {
  * 	// code which should only be included in case the app is used for unit
  * 	// testing
  * }
@@ -43,11 +43,8 @@ public class DevelopmentHelper {
 	public static final Mode mMode = Mode.BUG_SENSE;
 
 	// BugSense can be used to track down exceptions which occur while testing
-	// the app. In case a tester needs both the development menu and the bug
-	// sense reporting then set mBugSenseEnabled to
-	// mBugSenseEnabled = (Mode.DEVELOPMENT != Mode.PRODUCTION);
+	// the app with development BUG_SENSE
 	public static String BUG_SENSE_API_KEY = "4fda0366";
-	public static final boolean mBugSenseEnabled = (Mode.DEVELOPMENT == Mode.BUG_SENSE);
 
 	// In development mode the grid generator will show a modified progress
 	// dialog. Following types of progress updates are supported. Actual values

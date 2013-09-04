@@ -2,6 +2,7 @@ package net.cactii.mathdoku.ui;
 
 import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
+import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
 import net.cactii.mathdoku.grid.Grid;
 import net.cactii.mathdoku.grid.ui.GridViewerView;
 import net.cactii.mathdoku.painter.Painter;
@@ -42,7 +43,7 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 		// BugSense web site. In this way exceptions which occurs while testing
 		// the app can be monitored more closely. Note: the internet permission
 		// needs to activated for this.
-		if (DevelopmentHelper.mBugSenseEnabled) {
+		if (DevelopmentHelper.mMode == Mode.BUG_SENSE) {
 			BugSenseHandler.initAndStartSession(this,
 					DevelopmentHelper.BUG_SENSE_API_KEY);
 		}
