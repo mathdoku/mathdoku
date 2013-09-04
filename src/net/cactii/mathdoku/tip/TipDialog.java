@@ -284,8 +284,11 @@ public class TipDialog extends AlertDialog {
 			// kept.
 			if (priority.ordinal() == mDisplayedDialog.mPriority.ordinal()
 					&& new Random().nextBoolean()) {
-				Log.i(TAG, tip
-						+ ": equal priorities. Randomly determined to replace");
+				if (DEBUG_TIP_DIALOG) {
+					Log.i(TAG,
+							tip
+									+ ": equal priorities. Randomly determined to replace");
+				}
 				return false;
 			}
 		}
