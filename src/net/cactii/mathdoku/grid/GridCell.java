@@ -293,6 +293,11 @@ public class GridCell {
 		return this.mInvalidUserValueHighlight;
 	}
 
+	// The next variable could also be declared as local variable in method
+	// draw. But is created quite frequently. By reusing it the memory footprint
+	// is reduced.
+	Paint draw_textPaint = new Paint();
+
 	/**
 	 * Draw the cell inclusive borders, background and text.
 	 */
@@ -520,16 +525,18 @@ public class GridCell {
 		if (!this.mCageText.equals("")) {
 			// Clone the text painter and decrease text size until the cage text
 			// fits within the cell.
-			Paint textPaint = new Paint(mCagePainter.getTextPaint());
+			draw_textPaint.set(mCagePainter.getTextPaint());
 			float scaleFactor = (cellSize - 4)
-					/ textPaint.measureText(mCageText);
+					/ draw_textPaint.measureText(mCageText);
 			if (scaleFactor < 1) {
-				textPaint.setTextSize(textPaint.getTextSize() * scaleFactor);
+				draw_textPaint.setTextSize(draw_textPaint.getTextSize()
+						* scaleFactor);
 			}
 
 			canvas.drawText(mCageText,
 					this.mPosX + mCagePainter.getTextLeftOffset(), this.mPosY
-							+ mCagePainter.getTextBottomOffset(), textPaint);
+							+ mCagePainter.getTextBottomOffset(),
+					draw_textPaint);
 		}
 
 		// Draw penciled in digits.
@@ -587,26 +594,26 @@ public class GridCell {
 
 				// Clone the text painter and decrease text size until the
 				// possible values string fit within the cell.
-				Paint textPaint = new Paint(
-						inputMode == GridInputMode.NORMAL ? mMaybeLinePainter
+				draw_textPaint
+						.set(inputMode == GridInputMode.NORMAL ? mMaybeLinePainter
 								.getTextPaintNormalInputMode()
 								: mMaybeLinePainter
 										.getTextPaintMaybeInputMode());
 				float scaleFactor = (cellSize - 2 * mMaybeLinePainter
 						.getLeftOffset())
-						/ textPaint.measureText(possiblesText);
+						/ draw_textPaint.measureText(possiblesText);
 				if (scaleFactor < 1) {
-					textPaint
-							.setTextSize(textPaint.getTextSize() * scaleFactor);
+					draw_textPaint.setTextSize(draw_textPaint.getTextSize()
+							* scaleFactor);
 				}
 
 				// Calculate addition left offset to get the maybe values
 				// centered horizontally.
-				int centerOffset = (int) ((cellSize - textPaint
+				int centerOffset = (int) ((cellSize - draw_textPaint
 						.measureText(possiblesText)) / 2);
 
 				canvas.drawText(possiblesText, mPosX + centerOffset, mPosY
-						+ mMaybeLinePainter.getBottomOffset(), textPaint);
+						+ mMaybeLinePainter.getBottomOffset(), draw_textPaint);
 			}
 
 			// Undo the temporary change to the possible values
@@ -619,6 +626,11 @@ public class GridCell {
 			}
 		}
 	}
+
+	// The next variable could also be declared as local variable in method
+	// drawSwipeOverlay. But is created quite frequently. By reusing it the
+	// memory footprint is reduced.
+	static Rect drawSwipeOverlay_bounds = new Rect();
 
 	/**
 	 * Draw the overlay for the selected cell.
@@ -662,7 +674,6 @@ public class GridCell {
 		int centerY = (int) (top + (cellSize / 2));
 
 		// Define helper variables outside loop
-		Rect bounds = new Rect();
 		double radiusOffset;
 		int angle;
 		float offsetX;
@@ -679,13 +690,16 @@ public class GridCell {
 			// Plot all applicable digits clockwise in the swipe circle.
 			for (int i = 1; i <= gridSize; i++) {
 				// Determine the minimal space needed to draw the digit.
-				textNormalPaint
-						.getTextBounds(Integer.toString(i), 0, 1, bounds);
+				textNormalPaint.getTextBounds(Integer.toString(i), 0, 1,
+						drawSwipeOverlay_bounds);
 
 				// Determine the offset for which the radius has to be correct
 				// to get to the center of the space needed to draw the digit.
-				radiusOffset = Math.sqrt((bounds.height() * bounds.height())
-						+ (bounds.width() * bounds.width())) / 2;
+				radiusOffset = Math
+						.sqrt((drawSwipeOverlay_bounds.height() * drawSwipeOverlay_bounds
+								.height())
+								+ (drawSwipeOverlay_bounds.width() * drawSwipeOverlay_bounds
+										.width())) / 2;
 
 				// Determine the point at which the center of the digit has to
 				// placed.
@@ -696,8 +710,8 @@ public class GridCell {
 				// Find the lower left corner of the space in which the digit
 				// has to
 				// be drawn.
-				offsetX += centerX - (bounds.width() / 2);
-				offsetY += centerY + (bounds.height() / 2);
+				offsetX += centerX - (drawSwipeOverlay_bounds.width() / 2);
+				offsetY += centerY + (drawSwipeOverlay_bounds.height() / 2);
 
 				// Draw the text at the lower left corner
 				canvas.drawText(Integer.toString(i), offsetX, offsetY,
@@ -982,6 +996,11 @@ public class GridCell {
 		return false;
 	}
 
+	// The next variable could also be declared as local variable in method
+	// drawDashedLine. But is created quite frequently. By reusing it the
+	// memory footprint is reduced.
+	Path drawDashedLine_path = new Path();
+
 	/**
 	 * Draws a dashed line.
 	 * 
@@ -1001,10 +1020,9 @@ public class GridCell {
 	 */
 	private void drawDashedLine(Canvas canvas, float left, float top,
 			float right, float bottom) {
-		Path path = new Path();
-		path.moveTo(left, top);
-		path.lineTo(right, bottom);
-		canvas.drawPath(path, mCellPainter.getUnusedBorderPaint());
+		drawDashedLine_path.moveTo(left, top);
+		drawDashedLine_path.lineTo(right, bottom);
+		canvas.drawPath(drawDashedLine_path, mCellPainter.getUnusedBorderPaint());
 	}
 
 	public GridCell getCellAbove() {
