@@ -5,16 +5,16 @@
     <!-- Thank you for your help in translating MathDoku. Please follow guidelines below when -->
     <!-- translating this file. -->
     <!-- 1. Do not alter the order in which strings are sorted. We try to keep the same order in all languages -->
-    <!-- 2. Do not remove comments as the might be usefull for future maintenance. -->
-    <!-- 3. In case a string contact text like "%1$d" this means that a value will be substituted later. -->
+    <!-- 2. Do not remove comments as they might be useful for future maintenance. -->
+    <!-- 3. If a string contains text like "%1$d" this means that a value will be substituted later. -->
     <!-- 4. Do not translate the comments itself. -->
-    <!-- 5. Please read and follow the aditional instructions where applicable. -->
+    <!-- 5. Please read and follow the additional instructions where applicable. -->
 
 
     <!-- GENERAL - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
-    <!-- The label of the buttons that close dialogs. -->
+    <!-- The labels of the buttons that close dialogs. -->
     <string name="dialog_general_button_close">Schließen</string>
     <string name="dialog_general_button_cancel">Abbrechen</string>
 
@@ -100,7 +100,7 @@
     <!-- The menu item that allows the player to use some less frequently used cheats. -->
     <string name="action_cheats">Cheats</string>
 
-    <!-- The context menu item that allows the user to clear the entire grid. Note this item is only available in case at least one cell in the entire puzzle contains a (maybe) value. -->
+    <!-- The menu item that allows the user to clear the entire grid. Note this item is only available if at least one cell in the entire puzzle contains a (maybe) value. -->
     <string name="action_clear_grid">Gesamten Raster löschen</string>
 
     <!-- The menu item that allows the player to start a new game. -->
@@ -115,7 +115,7 @@
     <!-- The menu item that allows the player to navigate to the help screen. -->
     <string name="action_help">Hilfe</string>
 
-    <!-- The menu item that allows the player to share an archived game with another user via emai. -->
+    <!-- The menu item that allows the player to share an archived game with another user via email. -->
     <string name="action_share">Teilen</string>
 
     <!-- The menu item that allows the player to send feedback via email. -->
@@ -127,7 +127,7 @@
     <!-- The menu item that allows the user to reveal a cell. -->
     <string name="action_reveal_cell">Zelle lösen</string>
 
-    <!-- The menu item that allows the user to reveal the hidden operator of a cage. This item is only available in case a puzzle with hidden operators is shown and the operator has not yet been revealed. Note that a single cell cage does not have an operator. -->
+    <!-- The menu item that allows the user to reveal the hidden operator of a cage. This item is only available if a puzzle with hidden operators is shown and the operator has not yet been revealed. Note that a single cell cage does not have an operator. -->
     <string name="action_reveal_operator">Rechenoperator lösen</string>
 
     <!-- The menu to show the completed grid. -->
@@ -164,19 +164,21 @@
     <string name="puzzle_setting_duplicate_digits_visible_title">Doppelte Zahlen markieren</string>
     <string name="puzzle_setting_duplicate_digits_visible_summary">Doppelte Nummern in einer Zeile oder Spalte hervorheben.</string>
 
-    <!-- The title and summary of the "redundant possibles" option. This option clears possibles values from cells in the same row or columns as the selected cell after setting a user value. -->
+    <!-- The title and summary of the "redundant possibles" option. This option clears possible values from cells in the same row or columns as the selected cell after setting a user value. -->
     <string name="puzzle_setting_clear_maybes_title">Überflüssige \"Vieleichtwerte\" löschen</string>
     <string name="puzzle_setting_clear_maybes_summary">Nachdem ein Wert in einer Zelle gesetzt wurde, wird dieser Wert in den Zellen derselben Zeile und Spalte aus den Möglichkeiten gelöscht.</string>
 
     <!-- The preferences category title for options relating to how the puzzle is displayed. -->
     <string name="puzzle_setting_group_display">Anzeige</string>
 
+    <!-- The theme option -->
+    <string name="puzzle_setting_theme_title">Thema</string>
+
     <!-- The title and summary of the "outer swipe circle" option. This option controls the smallest grid size for which the outer swipe circle is visible. -->
-    <!-- TODO -->
-    <string name="puzzle_setting_outer_swipe_circle_title">Double swipe circle</string>
-    <string name="puzzle_setting_outer_swipe_circle_visible_from_grid_size_short">Size %1$d and above</string>
-    <string name="puzzle_setting_outer_swipe_circle_visible_from_grid_size_long">Display a second swipe circle for puzzles of size %1$d and above</string>
-    <string name="puzzle_setting_outer_swipe_circle_visible_never">Never display a second swipe circle</string>
+    <string name="puzzle_setting_outer_swipe_circle_title">Doppelter gewischter Kreis</string>
+    <string name="puzzle_setting_outer_swipe_circle_visible_from_grid_size_short">Größe %1$d und größer</string>
+    <string name="puzzle_setting_outer_swipe_circle_visible_from_grid_size_long">Ein doppelt gewischter Kreis wird für alle Rätsel der Größe %1$d und größer angezeigt.</string>
+    <string name="puzzle_setting_outer_swipe_circle_visible_never">Es wird nie ein doppelt gewischter Kreis angezeigt.</string>
 
     <!-- The title and summary of the "colored digits" option. This option controls whether maybe numbers and normal numbers are displayed in distinct colors or in one monochrome color. -->
     <string name="puzzle_setting_colored_digits_title">Farbige Ziffern</string>
@@ -190,7 +192,7 @@
     <string name="puzzle_setting_timer_visible_title">Stoppuhr einblenden</string>
     <string name="puzzle_setting_timer_visible_summary">Beim lösen des Rätsels wird eine Stoppuhr eingeblendet.</string>
 
-    <!-- The title and summary of the "full screen" option. This option hide the android notification bar. -->
+    <!-- The title and summary of the "full screen" option. This option hides the Android notification bar. -->
     <string name="puzzle_setting_full_screen_title">Vollbild</string>
     <string name="puzzle_setting_full_screen_summary">Spielen Sie MathDoku im Vollbildmodus. Die Ereignisleiste von Android wird dabei ausgeblendet.</string>
 
@@ -305,7 +307,7 @@
     <string name="dialog_tip_incorrect_value_title">Falscher Wert</string>
     <string name="dialog_tip_incorrect_value_text">Sie haben einen falschen Wert eingegeben. Sie können das Rätsel nicht lösen, falls der Wert nicht korrigiert wird. Sie können im Menü die Option \"Werte kontrollieren\" verwenden, um alle Zellen zu markieren, die einen falschen Wert enthalten. Achtung: \"Werte kontrollieren\" erhöht zur Bestrafung die verstrichene Zeit des Rätsels, um Sie zu ermutigen, dass Sie diese Funktion selten zu verwenden.</string>
 
-    <!-- Title, and text for tip "Statistics" which explains about this new menu option. -->
+    <!-- Title, and text for tip "Statistics" which explains about this new navigation option. -->
     <string name="dialog_tip_statistics_title">Statistik</string>
     <string name="dialog_tip_statistics_text">Für jedes Rätsel, dass Sie gespielt haben wurden statistische Daten gesammelt. Sie können die Statistik nur zum Betrachten vergangener Resultate verwenden oder um ihre Technik zur Lösung eines Rätsels zu verbessern.\n\nSie können die Statistik aus dem Navigationsmenü herus öffnen. Das Navigationsmenü wird durch Berühren des MathDoku Logos geöffnet.</string>
 
@@ -378,12 +380,9 @@
     <string name="statistics_elapsed_time_historic_title">Verstrichene Zeit</string>
     <string name="statistics_elapsed_time_historic_body">Diese Grafik zeigt die Zeit, die für ein Rätsel gebraucht wird, und den Durchschnitt der Zeiten. Die Rätsel sind nach ihrem Erstellungsdatum (wie im Archiv) geordnet. Neuere Rätsel sind auf der rechten Seite der Grafik. Wenn Sie Erfahrung beim Spielen sammeln, sollte die verstrichene Zeit kleiner werden. Weiters sollten weniger Rätsel ungelöst bleiben oder mit Hilfe von Cheats gelöst werden.</string>
     <string name="statistics_elapsed_time_historic_elapsed_time_solved">Durchschnitt (nur gelöste Rätsel)</string>
-    <!-- TODO -->
-    <string name="statistics_elapsed_time_historic_elapsed_time_unfinished">Elapsed time in unfinished games</string>
-    <!-- TODO -->
-    <string name="statistics_elapsed_time_historic_cheat_time">Cheat penalty</string>
-    <!-- TODO -->
-    <string name="statistics_elapsed_time_historic_solved_average_serie">Average (solved games only)</string>
+    <string name="statistics_elapsed_time_historic_elapsed_time_unfinished">Verstrichene Zeit in nicht beendeten Spielen</string>
+    <string name="statistics_elapsed_time_historic_cheat_time">Strafe für Cheat</string>
+    <string name="statistics_elapsed_time_historic_solved_average_serie">Durchschnitt (gelöste Rätsel)</string>
     <string name="statistics_elapsed_time_historic_solved_slowest">Langsamste Zeit</string>
     <string name="statistics_elapsed_time_historic_solved_average">Durchschnitt</string>
     <string name="statistics_elapsed_time_historic_solved_fastest">Schnellste Zeit</string>
@@ -402,16 +401,15 @@
     <string name="statistics_setting_chart_description_visible_summary">Beschreibung unterhalb der Grafik einblenden</string>
 
     <!-- The title and summary of the "Maximum games in elapsed time chart" option. This option restricts the number of games which will be displayed in an elapsed time chart. -->
-    <string name="statistics_setting_elapsed_time_chart_maximum_games_title">Number of games in elapsed time chart</string>
-    <string name="statistics_setting_elapsed_time_chart_maximum_games_summary">Display no more than %1$d games in elapsed time chart</string>
+    <string name="statistics_setting_elapsed_time_chart_maximum_games_title">Anzahl der Rätsel in der Grafik \"Verstrichene Zeit\"</string>
+    <string name="statistics_setting_elapsed_time_chart_maximum_games_summary">Nicht mehr als %1$d Rätsel in der Grafik \"Verstrichene Zeit\" anzeigen.</string>
 
     <!-- PUZZLE FRAGMENT - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    <!-- TODO -->
 
 
     <!-- The text which is shown on a long press on the switch input mode image. -->
-    <string name="input_mode_changed_to_normal">Switched to normal input mode\nDouble tap a cell to switch to maybe mode.</string>
-    <string name="input_mode_changed_to_maybe">Switched to maybe input mode\nDouble tap a cell to switch to normal mode.</string>
+    <string name="input_mode_changed_to_normal">Normaler Eingabemodus ausgewählt. Doppelt drücken für \"Vielleichtwerte\".</string>
+    <string name="input_mode_changed_to_maybe">\"Vielleichtwerte\" Eingabemodus ausgewählt. Doppelt drücken für normalen Eingabemodus.</string>
 
     <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
