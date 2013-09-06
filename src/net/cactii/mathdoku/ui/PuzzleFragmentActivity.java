@@ -166,11 +166,6 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	}
 
 	@Override
-	protected void onPause() {
-		super.onPause();
-	}
-
-	@Override
 	public void onResume() {
 		checkBetaExpired();
 

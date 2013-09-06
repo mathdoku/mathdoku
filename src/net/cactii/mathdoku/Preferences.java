@@ -15,6 +15,8 @@ import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
 public class Preferences {
+	@SuppressWarnings("unused")
+	private static final String TAG = "MathDoku.Preferences";
 
 	// Singleton reference to the preferences object
 	private static Preferences mPreferencesSingletonInstance = null;
@@ -129,6 +131,23 @@ public class Preferences {
 	public final static String SWIPE_DIGIT_8_COUNTER = "swipe_digit_8_counter";
 	public final static String SWIPE_DIGIT_9_COUNTER = "swipe_digit_9_counter";
 	public final static int SWIPE_DIGIT_COUNTER_DEFAULT = 0;
+
+	// Dependent on the speed of playing, the counter preferences are often
+	// updated. For this reason they are kept in memory and only committed to
+	// memory on call to commitCounters.
+	private final static int PUZZLE_INPUT_MODE_CHANGED_COUNTER_ID = 0;
+	private final static int SWIPE_DIGIT_1_COUNTER_ID = 1;
+	private final static int SWIPE_DIGIT_2_COUNTER_ID = 2;
+	private final static int SWIPE_DIGIT_3_COUNTER_ID = 3;
+	private final static int SWIPE_DIGIT_4_COUNTER_ID = 4;
+	private final static int SWIPE_DIGIT_5_COUNTER_ID = 5;
+	private final static int SWIPE_DIGIT_6_COUNTER_ID = 6;
+	private final static int SWIPE_DIGIT_7_COUNTER_ID = 7;
+	private final static int SWIPE_DIGIT_8_COUNTER_ID = 8;
+	private final static int SWIPE_DIGIT_9_COUNTER_ID = 9;
+	private final static int SWIPE_VALID_MOTION_COUNTER_ID = 10;
+	private final static int SWIPE_INVALID_MOTION_COUNTER_ID = 11;
+	private int[] counters = null;
 
 	/**
 	 * Creates a new instance of {@link Preferences}.
@@ -386,7 +405,7 @@ public class Preferences {
 		Editor prefeditor = mSharedPreferences.edit();
 		prefeditor.putBoolean(
 				TipDialog.getPreferenceStringDisplayTipAgain(tip), false);
-		prefeditor.commit();
+		prefeditor.apply();
 	}
 
 	/**
@@ -427,7 +446,7 @@ public class Preferences {
 		Editor prefeditor = mSharedPreferences.edit();
 		prefeditor.putLong(TipDialog.getPreferenceStringLastDisplayTime(tip),
 				time);
-		prefeditor.commit();
+		prefeditor.apply();
 	}
 
 	/**
@@ -543,7 +562,7 @@ public class Preferences {
 	public void setArchiveVisible() {
 		Editor prefeditor = mSharedPreferences.edit();
 		prefeditor.putBoolean(ARCHIVE_AVAILABLE, true);
-		prefeditor.commit();
+		prefeditor.apply();
 	}
 
 	/**
@@ -562,7 +581,7 @@ public class Preferences {
 	public void setStatisticsAvailable() {
 		Editor prefeditor = mSharedPreferences.edit();
 		prefeditor.putBoolean(STATISTICS_AVAILABLE, true);
-		prefeditor.commit();
+		prefeditor.apply();
 	}
 
 	/**
@@ -587,7 +606,7 @@ public class Preferences {
 		Editor prefeditor = mSharedPreferences.edit();
 		prefeditor.putString(ARCHIVE_STATUS_FILTER_LAST_VALUE,
 				statusFilter.toString());
-		prefeditor.commit();
+		prefeditor.apply();
 	}
 
 	/**
@@ -612,7 +631,7 @@ public class Preferences {
 		Editor prefeditor = mSharedPreferences.edit();
 		prefeditor.putString(ARCHIVE_SIZE_FILTER_LAST_VALUE,
 				sizeFilter.toString());
-		prefeditor.commit();
+		prefeditor.apply();
 	}
 
 	/**
@@ -634,23 +653,62 @@ public class Preferences {
 	public void setArchiveGridIdLastShowed(int gridId) {
 		Editor prefeditor = mSharedPreferences.edit();
 		prefeditor.putInt(ARCHIVE_GRID_LAST_SHOWED, gridId);
-		prefeditor.commit();
+		prefeditor.apply();
+	}
+
+	/**
+	 * Initializes the counters with current values as stored in the
+	 * preferences.
+	 */
+	private void initializeCounters() {
+		if (counters == null) {
+			counters = new int[12];
+			counters[PUZZLE_INPUT_MODE_CHANGED_COUNTER_ID] = mSharedPreferences
+					.getInt(PUZZLE_INPUT_MODE_CHANGED_COUNTER,
+							PUZZLE_INPUT_MODE_CHANGED_COUNTER_DEFAULT);
+			counters[SWIPE_DIGIT_1_COUNTER_ID] = mSharedPreferences.getInt(
+					SWIPE_DIGIT_1_COUNTER, SWIPE_DIGIT_COUNTER_DEFAULT);
+			counters[SWIPE_DIGIT_2_COUNTER_ID] = mSharedPreferences.getInt(
+					SWIPE_DIGIT_2_COUNTER, SWIPE_DIGIT_COUNTER_DEFAULT);
+			counters[SWIPE_DIGIT_3_COUNTER_ID] = mSharedPreferences.getInt(
+					SWIPE_DIGIT_3_COUNTER, SWIPE_DIGIT_COUNTER_DEFAULT);
+			counters[SWIPE_DIGIT_4_COUNTER_ID] = mSharedPreferences.getInt(
+					SWIPE_DIGIT_4_COUNTER, SWIPE_DIGIT_COUNTER_DEFAULT);
+			counters[SWIPE_DIGIT_5_COUNTER_ID] = mSharedPreferences.getInt(
+					SWIPE_DIGIT_5_COUNTER, SWIPE_DIGIT_COUNTER_DEFAULT);
+			counters[SWIPE_DIGIT_6_COUNTER_ID] = mSharedPreferences.getInt(
+					SWIPE_DIGIT_6_COUNTER, SWIPE_DIGIT_COUNTER_DEFAULT);
+			counters[SWIPE_DIGIT_7_COUNTER_ID] = mSharedPreferences.getInt(
+					SWIPE_DIGIT_7_COUNTER, SWIPE_DIGIT_COUNTER_DEFAULT);
+			counters[SWIPE_DIGIT_8_COUNTER_ID] = mSharedPreferences.getInt(
+					SWIPE_DIGIT_8_COUNTER, SWIPE_DIGIT_COUNTER_DEFAULT);
+			counters[SWIPE_DIGIT_9_COUNTER_ID] = mSharedPreferences.getInt(
+					SWIPE_DIGIT_9_COUNTER, SWIPE_DIGIT_COUNTER_DEFAULT);
+			counters[SWIPE_VALID_MOTION_COUNTER_ID] = mSharedPreferences
+					.getInt(SWIPE_VALID_MOTION_COUNTER,
+							SWIPE_DIGIT_COUNTER_DEFAULT);
+			counters[SWIPE_INVALID_MOTION_COUNTER_ID] = mSharedPreferences
+					.getInt(SWIPE_INVALID_MOTION_COUNTER,
+							SWIPE_DIGIT_COUNTER_DEFAULT);
+		}
 	}
 
 	/**
 	 * Increase the current value of a preference counter with 1 occurrence.
 	 * 
+	 * <b>Note:</b> For performance reasons the counter preferences are not
+	 * updated on calling this method. Call commitCounters() to commit counters
+	 * to storage.
+	 * 
 	 * @param preferenceName
 	 *            The name of the preferences counter.
 	 * @return The number of occurrence for this counter (after being updated).
 	 */
-	private int increaseCounter(String preferenceName) {
-		int counter = mSharedPreferences.getInt(preferenceName, 0) + 1;
-		Editor prefeditor = mSharedPreferences.edit();
-		prefeditor.putInt(preferenceName, counter);
-		prefeditor.commit();
-
-		return counter;
+	private int increaseCounter(int counter_id) {
+		if (counters == null) {
+			initializeCounters();
+		}
+		return counters[counter_id]++;
 	}
 
 	/**
@@ -673,28 +731,28 @@ public class Preferences {
 	 * @return The preference name associated with the discovery of the given
 	 *         digit.
 	 */
-	private String getSwipeDigitDiscoveredPreferenceName(int digit) {
+	private int getSwipeDigitDiscoveredPreferenceName(int digit) {
 		switch (digit) {
 		case 1:
-			return SWIPE_DIGIT_1_COUNTER;
+			return SWIPE_DIGIT_1_COUNTER_ID;
 		case 2:
-			return SWIPE_DIGIT_2_COUNTER;
+			return SWIPE_DIGIT_2_COUNTER_ID;
 		case 3:
-			return SWIPE_DIGIT_3_COUNTER;
+			return SWIPE_DIGIT_3_COUNTER_ID;
 		case 4:
-			return SWIPE_DIGIT_4_COUNTER;
+			return SWIPE_DIGIT_4_COUNTER_ID;
 		case 5:
-			return SWIPE_DIGIT_5_COUNTER;
+			return SWIPE_DIGIT_5_COUNTER_ID;
 		case 6:
-			return SWIPE_DIGIT_6_COUNTER;
+			return SWIPE_DIGIT_6_COUNTER_ID;
 		case 7:
-			return SWIPE_DIGIT_7_COUNTER;
+			return SWIPE_DIGIT_7_COUNTER_ID;
 		case 8:
-			return SWIPE_DIGIT_8_COUNTER;
+			return SWIPE_DIGIT_8_COUNTER_ID;
 		case 9:
-			return SWIPE_DIGIT_9_COUNTER;
+			return SWIPE_DIGIT_9_COUNTER_ID;
 		}
-		return null;
+		return -1;
 	}
 
 	/**
@@ -707,9 +765,10 @@ public class Preferences {
 	 *         successfully completed.
 	 */
 	public int getSwipeMotionCounter(int digit) {
-		return mSharedPreferences.getInt(
-				getSwipeDigitDiscoveredPreferenceName(digit),
-				SWIPE_DIGIT_COUNTER_DEFAULT);
+		if (counters == null) {
+			initializeCounters();
+		}
+		return counters[getSwipeDigitDiscoveredPreferenceName(digit)];
 	}
 
 	/**
@@ -723,7 +782,7 @@ public class Preferences {
 	 *         has been successfully completed.
 	 */
 	public int increaseSwipeValidMotionCounter(int digit) {
-		increaseCounter(SWIPE_VALID_MOTION_COUNTER);
+		increaseCounter(SWIPE_VALID_MOTION_COUNTER_ID);
 		return increaseCounter(getSwipeDigitDiscoveredPreferenceName(digit));
 	}
 
@@ -734,7 +793,7 @@ public class Preferences {
 	 *         completed.
 	 */
 	public int increaseSwipeInvalidMotionCounter() {
-		return increaseCounter(SWIPE_INVALID_MOTION_COUNTER);
+		return increaseCounter(SWIPE_INVALID_MOTION_COUNTER_ID);
 	}
 
 	/**
@@ -756,7 +815,41 @@ public class Preferences {
 	 * @return The (updated) number of times the input mode has been changed.
 	 */
 	public int increaseInputModeChangedCounter() {
-		return increaseCounter(PUZZLE_INPUT_MODE_CHANGED_COUNTER);
+		return increaseCounter(PUZZLE_INPUT_MODE_CHANGED_COUNTER_ID);
+	}
+
+	/**
+	 * Commit all counter values to the preferences.
+	 */
+	public void commitCounters() {
+		if (counters != null) {
+			Editor prefeditor = mSharedPreferences.edit();
+			prefeditor.putInt(PUZZLE_INPUT_MODE_CHANGED_COUNTER,
+					counters[PUZZLE_INPUT_MODE_CHANGED_COUNTER_ID]);
+			prefeditor.putInt(SWIPE_DIGIT_1_COUNTER,
+					counters[SWIPE_DIGIT_1_COUNTER_ID]);
+			prefeditor.putInt(SWIPE_DIGIT_2_COUNTER,
+					counters[SWIPE_DIGIT_2_COUNTER_ID]);
+			prefeditor.putInt(SWIPE_DIGIT_3_COUNTER,
+					counters[SWIPE_DIGIT_3_COUNTER_ID]);
+			prefeditor.putInt(SWIPE_DIGIT_4_COUNTER,
+					counters[SWIPE_DIGIT_4_COUNTER_ID]);
+			prefeditor.putInt(SWIPE_DIGIT_5_COUNTER,
+					counters[SWIPE_DIGIT_5_COUNTER_ID]);
+			prefeditor.putInt(SWIPE_DIGIT_6_COUNTER,
+					counters[SWIPE_DIGIT_6_COUNTER_ID]);
+			prefeditor.putInt(SWIPE_DIGIT_7_COUNTER,
+					counters[SWIPE_DIGIT_7_COUNTER_ID]);
+			prefeditor.putInt(SWIPE_DIGIT_8_COUNTER,
+					counters[SWIPE_DIGIT_8_COUNTER_ID]);
+			prefeditor.putInt(SWIPE_DIGIT_9_COUNTER,
+					counters[SWIPE_DIGIT_9_COUNTER_ID]);
+			prefeditor.putInt(SWIPE_VALID_MOTION_COUNTER,
+					counters[SWIPE_VALID_MOTION_COUNTER_ID]);
+			prefeditor.putInt(SWIPE_INVALID_MOTION_COUNTER,
+					counters[SWIPE_INVALID_MOTION_COUNTER_ID]);
+			prefeditor.commit();
+		}
 	}
 
 	/**
@@ -790,7 +883,7 @@ public class Preferences {
 		Editor prefeditor = mSharedPreferences.edit();
 		prefeditor.putString(PUZZLE_PARAMETER_COMPLEXITY,
 				puzzleComplexity.toString());
-		prefeditor.commit();
+		prefeditor.apply();
 	}
 
 	/**
@@ -813,7 +906,7 @@ public class Preferences {
 	public void setPuzzleParameterOperatorsVisible(boolean visible) {
 		Editor prefeditor = mSharedPreferences.edit();
 		prefeditor.putBoolean(PUZZLE_PARAMETER_OPERATORS_VISIBLE, visible);
-		prefeditor.commit();
+		prefeditor.apply();
 	}
 
 	/**
@@ -832,7 +925,7 @@ public class Preferences {
 	public void setPuzzleParameterSize(int gridSize) {
 		Editor prefeditor = mSharedPreferences.edit();
 		prefeditor.putInt(PUZZLE_PARAMETER_SIZE, gridSize);
-		prefeditor.commit();
+		prefeditor.apply();
 	}
 
 	/**
@@ -876,7 +969,7 @@ public class Preferences {
 	public void setStatisticsTabLastDisplayed(int tab) {
 		Editor prefeditor = mSharedPreferences.edit();
 		prefeditor.putInt(STATISTICS_TAB_LAST_SHOWED, tab);
-		prefeditor.commit();
+		prefeditor.apply();
 	}
 
 	/**

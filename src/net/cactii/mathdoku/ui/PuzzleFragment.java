@@ -219,6 +219,12 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 	@Override
 	public void onPause() {
+		// Store preference counters as they are kept in internal memory for
+		// performance reasons.
+		if (mMathDokuPreferences != null) {
+			mMathDokuPreferences.commitCounters();
+		}
+
 		// Unregister the receiver of the day dreaming intent.
 		if (mContext != null && mDreamingBroadcastReceiver != null) {
 			mContext.unregisterReceiver(mDreamingBroadcastReceiver);
