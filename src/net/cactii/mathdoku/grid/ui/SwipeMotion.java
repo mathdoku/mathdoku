@@ -59,7 +59,7 @@ public class SwipeMotion {
 	// * -1 is to left of or above the grid
 	// * gridSize is to right of or below the grid.
 	private int[] mPreviousSwipePositionCellCoordinates = { -1, -1 };
-	private final int[] mCurrentSwipePositionCellCoordinates = { -1, -1 };
+	private int[] mCurrentSwipePositionCellCoordinates = { -1, -1 };
 
 	// Coordinates of the current coordinates (pixels) of the swipe.
 	private final float[] mCurrentSwipePositionPixelCoordinates = { -1f, -1f };
@@ -290,12 +290,6 @@ public class SwipeMotion {
 		return mCurrentSwipePositionPixelCoordinates[Y_POS];
 	}
 
-	// The next variables could also be declared as local variable in method
-	// setCurrentSwipeCoordinates. But they are created quite frequently. By
-	// reusing them the memory footprint is reduced.
-	static float setCurrentSwipeCoordinates_xPos;
-	static float setCurrentSwipeCoordinates_yPos;
-
 	/**
 	 * Set the coordinates of the current swipe position.
 	 * 
@@ -312,30 +306,11 @@ public class SwipeMotion {
 		mCurrentSwipePositionPixelCoordinates[Y_POS] = motionEvent.getY();
 		mCurrentSwipePositionEventTime = motionEvent.getEventTime();
 
-		// Convert x-position to a column number. -1 means left of grid,
-		// mGridSize means right of grid.
-		setCurrentSwipeCoordinates_xPos = (mCurrentSwipePositionPixelCoordinates[X_POS] - mGridPlayerViewBorderWidth)
-				/ mGridCellSize;
-		if (setCurrentSwipeCoordinates_xPos > mGridSize) {
-			mCurrentSwipePositionCellCoordinates[X_POS] = mGridSize;
-		} else if (setCurrentSwipeCoordinates_xPos < 0) {
-			mCurrentSwipePositionCellCoordinates[X_POS] = -1;
-		} else {
-			mCurrentSwipePositionCellCoordinates[X_POS] = (int) setCurrentSwipeCoordinates_xPos;
-		}
-
-		// Convert y-position to a column number. -1 means above grid, mGridSize
-		// means below grid.
-		setCurrentSwipeCoordinates_yPos = (mCurrentSwipePositionPixelCoordinates[Y_POS] - mGridPlayerViewBorderWidth)
-				/ mGridCellSize;
-		if (setCurrentSwipeCoordinates_yPos > mGridSize) {
-			mCurrentSwipePositionCellCoordinates[Y_POS] = mGridSize;
-		} else if (setCurrentSwipeCoordinates_yPos < 0) {
-			mCurrentSwipePositionCellCoordinates[Y_POS] = -1;
-		} else {
-			mCurrentSwipePositionCellCoordinates[Y_POS] = (int) setCurrentSwipeCoordinates_yPos;
-		}
-
+		// Determine coordinates of new current swipe position on the actual
+		// swipe position
+		mCurrentSwipePositionCellCoordinates = getCoordinatesSwipePosition(
+				mCurrentSwipePositionPixelCoordinates[X_POS],
+				mCurrentSwipePositionPixelCoordinates[Y_POS]);
 	}
 
 	/**
@@ -392,9 +367,7 @@ public class SwipeMotion {
 						: mTouchDownCellCenterPixelCoordinates[Y_POS]);
 		if (Math.sqrt(deltaX * deltaX + deltaY * deltaY) < 10) {
 			// The distance is too small to be accepted.
-			if (DEBUG_SWIPE_MOTION) {
-				Log.i(TAG, " - deltaX = " + deltaX + " - deltaY = " + deltaY);
-			}
+			Log.i(TAG, " - deltaX = " + deltaX + " - deltaY = " + deltaY);
 			return false;
 		}
 
@@ -530,6 +503,45 @@ public class SwipeMotion {
 	 */
 	protected boolean hasChangedDigit() {
 		return (mPreviousSwipePositionDigit != mCurrentSwipePositionDigit);
+	}
+
+	/**
+	 * Converts a given position (pixels) to coordinates relative to the grid.
+	 * 
+	 * @param xPos
+	 *            The absolute x-position on the display
+	 * @param yPos
+	 *            The absolute y-position on the display
+	 * @return The (x,y)-position relative to the grid. For x-position -1 means
+	 *         left of grid, mGridSize means right of grid. For y-position -1
+	 *         means above grid, mGridSize means below grid.
+	 */
+	private int[] getCoordinatesSwipePosition(float xPos, float yPos) {
+		int[] coordinates = { -1, -1 };
+
+		// Convert x-position to a column number. -1 means left of grid,
+		// mGridSize means right of grid.
+		xPos = (xPos - mGridPlayerViewBorderWidth) / mGridCellSize;
+		if (xPos > mGridSize) {
+			coordinates[X_POS] = mGridSize;
+		} else if (xPos < 0) {
+			coordinates[X_POS] = -1;
+		} else {
+			coordinates[X_POS] = (int) xPos;
+		}
+
+		// Convert y-position to a column number. -1 means above grid, mGridSize
+		// means below grid.
+		yPos = (yPos - mGridPlayerViewBorderWidth) / mGridCellSize;
+		if (yPos > mGridSize) {
+			coordinates[Y_POS] = mGridSize;
+		} else if (yPos < 0) {
+			coordinates[Y_POS] = -1;
+		} else {
+			coordinates[Y_POS] = (int) yPos;
+		}
+
+		return coordinates;
 	}
 
 	/**

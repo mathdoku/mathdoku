@@ -1020,9 +1020,11 @@ public class GridCell {
 	 */
 	private void drawDashedLine(Canvas canvas, float left, float top,
 			float right, float bottom) {
+		drawDashedLine_path.reset();
 		drawDashedLine_path.moveTo(left, top);
 		drawDashedLine_path.lineTo(right, bottom);
-		canvas.drawPath(drawDashedLine_path, mCellPainter.getUnusedBorderPaint());
+		canvas.drawPath(drawDashedLine_path,
+				mCellPainter.getUnusedBorderPaint());
 	}
 
 	public GridCell getCellAbove() {
