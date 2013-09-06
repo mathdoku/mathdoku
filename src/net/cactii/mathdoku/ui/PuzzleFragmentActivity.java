@@ -96,6 +96,13 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	// Request code
 	private final static int REQUEST_ARCHIVE = 1;
 
+	// When using the support package, onActivityResult is called before
+	// onResume. As a result fragment can not be manipulated in the
+	// onActivityResult. If following variable contains a value >=0 the solving
+	// attempt with this specific number should be replayed in the onResume
+	// call.
+	private int mOnResumeReplaySolvingAttempt;
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -163,6 +170,9 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		if (isUpgradeRunning() == false) {
 			restartLastGame();
 		}
+
+		// At this point there will never be a need to replay a solving attempt.
+		mOnResumeReplaySolvingAttempt = -1;
 	}
 
 	@Override
@@ -182,6 +192,15 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		// Archive or the Statistics.
 		if (mDrawerListView != null) {
 			mDrawerListView.setItemChecked(0, true);
+		}
+
+		// In case onActivityResult is called and a solving attempt has to be
+		// replayed then the actual replaying of the solving attempt is
+		// postponed till this moment as fragments can not be manipulated in
+		// onActivityResult.
+		if (mOnResumeReplaySolvingAttempt >= 0) {
+			replayPuzzle(mOnResumeReplaySolvingAttempt);
+			mOnResumeReplaySolvingAttempt = -1;
 		}
 
 		super.onResume();
@@ -863,9 +882,12 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 					int solvingAttemptId = bundle
 							.getInt(ArchiveFragmentActivity.BUNDLE_KEY_SOLVING_ATTEMPT_ID);
 					if (solvingAttemptId >= 0) {
-						if (replayPuzzle(solvingAttemptId)) {
-							return;
-						}
+						// In onActivityResult fragments can not be manipulated
+						// as this results in IllegalStateException [Can not
+						// perform this action after onSaveInstanceState].
+						// Therefore the actual replaying is postponed till
+						// onResume is called.
+						mOnResumeReplaySolvingAttempt = solvingAttemptId;
 					}
 				}
 			}
@@ -902,23 +924,15 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	 * @return
 	 */
 	private boolean replayPuzzle(int solvingAttemptId) {
-		// Load the grid for the returned solving attempt id.
+		// Load the grid for the returned solving attempt id and reset the grid
+		// so it can be replayed.
 		Grid grid = new Grid();
 		if (grid.load(solvingAttemptId)) {
 			if (grid.isActive() == false) {
 				grid.replay();
 			}
 
-			// Either load the grid in the existing puzzle
-			// fragment or transform the fragment.
-			if (mPuzzleFragment != null) {
-				mPuzzleFragment.setNewGrid(grid);
-			} else {
-				// In case the archive fragment was displayed and the user
-				// choose to replay or continue the puzzle a new puzzle fragment
-				// has to be created.
-				initializePuzzleFragment(grid.getSolvingAttemptId());
-			}
+			initializePuzzleFragment(grid.getSolvingAttemptId());
 			return true;
 		} else {
 			return false;
