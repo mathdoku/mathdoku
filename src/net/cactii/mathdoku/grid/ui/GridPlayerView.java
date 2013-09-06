@@ -13,6 +13,7 @@ import net.cactii.mathdoku.tip.TipOrderOfValuesInCage;
 import net.cactii.mathdoku.ui.PuzzleFragmentActivity;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
@@ -110,7 +111,17 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 					setTickerTapeOnCellDown();
 				}
 
-				invalidate();
+				// Prevent displaying the swipe circle in case the user make a
+				// very fast swipe motion by delaying the invalidate.
+				new Handler().postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						if (mSwipeMotion != null) {
+							mSwipeMotion.setVisible(true);
+						}
+						invalidate();
+					}
+				}, 100);
 			}
 
 			// Do not allow other view to respond to this action, for example by
@@ -177,7 +188,8 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 					// As the swipe digit has been changed, the grid view needs
 					// to be updated.
 					invalidate();
-				} else if (mSwipeMotion.needToUpdateCurrentSwipePosition()) {
+				} else if (mSwipeMotion.isVisible()
+						&& mSwipeMotion.needToUpdateCurrentSwipePosition()) {
 					// For performance reasons, the swipe position will not be
 					// update at each event but only if relevant as decided by
 					// the swipe motion.
@@ -300,13 +312,16 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 
 			// Draw the overlay for the swipe border around the selected cell
 			// plus the swipe line.
-			if (mSwipeMotion != null && mSwipeMotion.isVisible()) {
-				if (mSwipeMotion.isReleased()) {
+			if (mSwipeMotion != null) {
+				if (mSwipeMotion.isFinished()) {
+					// do nothing.
+				} else if (mSwipeMotion.isReleased()) {
 					// The swipe motion was released. Now it can be set to
 					// completed as it is confirmed that the overlay border has
 					// been removed by not drawing it.
+					mSwipeMotion.setVisible(false);
 					mSwipeMotion.finish();
-				} else {
+				} else if (mSwipeMotion.isVisible()) {
 					// The overlay needs to be draw as the swipe motion is not
 					// yet released.
 					GridCell gridCell = mGrid.getSelectedCell();
@@ -317,8 +332,8 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 								mSwipeMotion.getCurrentSwipePositionY(),
 								mSwipeMotion.getFocussedDigit(), mPreferences
 										.isOuterSwipeCircleVisible(mGridSize));
+						mSwipeMotion.setVisible(true);
 					}
-
 				}
 			}
 		}

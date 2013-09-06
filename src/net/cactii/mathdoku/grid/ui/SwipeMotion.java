@@ -28,6 +28,9 @@ public class SwipeMotion {
 	// Status of the swipe motion
 	private Status mStatus;
 
+	// Status of visibility of the swipe motion
+	private boolean mVisible;
+
 	// Constant for an undetermined result of the swipe motion
 	protected static final int DIGIT_UNDETERMINDED = -1;
 
@@ -102,6 +105,7 @@ public class SwipeMotion {
 		mGridCellSize = gridCellSize;
 
 		mStatus = Status.INIT;
+		mVisible = false;
 	}
 
 	/**
@@ -183,6 +187,7 @@ public class SwipeMotion {
 
 		// Touch down has been fully completed.
 		mStatus = Status.TOUCH_DOWN;
+		mVisible = false;
 
 		return true;
 	}
@@ -235,18 +240,22 @@ public class SwipeMotion {
 	}
 
 	/**
-	 * Checks if this swipe motion is visible.
+	 * Checks if this swipe motion should be made visible (e.g. drawed).
 	 * 
 	 * @return True in case the motion is visible. False otherwise.
 	 */
 	protected boolean isVisible() {
-		switch (mStatus) {
-		case TOUCH_DOWN: // fall through
-		case MOVING: // fall through
-			return true;
-		default:
-			return false;
-		}
+		return mVisible;
+	}
+
+	/**
+	 * Sets the visibility status of the swipe motion.
+	 * 
+	 * @param visible
+	 *            True in case the swipe motion has been drawn. False otherwise.
+	 */
+	protected void setVisible(boolean visible) {
+		mVisible = visible;
 	}
 
 	/**
@@ -257,6 +266,15 @@ public class SwipeMotion {
 	 */
 	protected boolean isReleased() {
 		return (mStatus == Status.RELEASED);
+	}
+
+	/**
+	 * Checks if this swipe motion has been finished completely.
+	 * 
+	 * @return True in case the motion has finished completely. False otherwise.
+	 */
+	protected boolean isFinished() {
+		return (mStatus == Status.FINISHED);
 	}
 
 	/**
@@ -367,7 +385,9 @@ public class SwipeMotion {
 						: mTouchDownCellCenterPixelCoordinates[Y_POS]);
 		if (Math.sqrt(deltaX * deltaX + deltaY * deltaY) < 10) {
 			// The distance is too small to be accepted.
-			Log.i(TAG, " - deltaX = " + deltaX + " - deltaY = " + deltaY);
+			if (DEBUG_SWIPE_MOTION) {
+				Log.i(TAG, " - deltaX = " + deltaX + " - deltaY = " + deltaY);
+			}
 			return false;
 		}
 
