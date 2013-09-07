@@ -26,7 +26,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
-	public static final boolean DEBUG_GRID_GENERATOR = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
+	public static final boolean DEBUG_GRID_GENERATOR = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && true;
 	public static final boolean DEBUG_GRID_GENERATOR_FULL = DEBUG_GRID_GENERATOR && false;
 
 	// The parameters use to generate a grid
@@ -276,8 +276,14 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 				return null;
 			}
 
+			// Create the cages.
 			this.mCages = new ArrayList<GridCage>();
-			createCages(mGridGeneratingParameters.mHideOperators);
+			if (createCages(mGridGeneratingParameters.mHideOperators) == false
+					&& isCancelled() == false) {
+				// For some reason the creation of the cages was not successful.
+				// Start over again.
+				continue;
+			}
 
 			// Check whether the generating process should be aborted due to
 			// cancellation of the grid dialog.
@@ -493,8 +499,9 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	 * @param hideOperators
 	 *            True in case cages should hide the operator. False in
 	 *            operators should be visible.
+	 * @return True in case the cages have been created successfully.
 	 */
-	private void createCages(boolean hideOperators) {
+	private boolean createCages(boolean hideOperators) {
 		this.mGridCageTypeGenerator = CageTypeGenerator.getInstance();
 
 		boolean restart;
@@ -516,7 +523,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 					// Check whether the generating process should be aborted
 					// due to cancellation of the grid dialog.
 					if (isCancelled()) {
-						return;
+						return false;
 					}
 
 					GridCageType gridCageType = mGridCageTypeGenerator
@@ -612,11 +619,18 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 					continue;
 				}
 			}
+
+			// If not succeeded in 20 attempts then stop and try all over again.
+			if (attempts >= 20) {
+				return false;
+			}
 		} while (restart);
 
 		if (DEBUG_GRID_GENERATOR) {
 			printCageCreationDebugInformation(null);
 		}
+
+		return true;
 	}
 
 	/**
