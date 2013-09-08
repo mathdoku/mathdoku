@@ -1,6 +1,7 @@
 package net.cactii.mathdoku.painter;
 
 import net.cactii.mathdoku.painter.Painter.GridTheme;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 
@@ -10,23 +11,23 @@ public class CellPainter extends BorderPainter {
 	private float mCellSize;
 
 	// Borders between two cell which belong to same cage.
-	private Paint mUnusedBorderPaint;
+	private final Paint mUnusedBorderPaint;
 
 	// Border and background for a cell containing an invalid value.
-	private Paint mInvalidBorderPaint;
-	private Paint mInvalidBackgroundPaint;
+	private final Paint mInvalidBorderPaint;
+	private final Paint mInvalidBackgroundPaint;
 
 	// Border and background for a cell from which the value is revealed.
-	private Paint mRevealedBorderPaint;
-	private Paint mRevealedBackgroundPaint;
+	private final Paint mRevealedBorderPaint;
+	private final Paint mRevealedBackgroundPaint;
 
 	// Border and background for a cell containing a duplicate value
-	private Paint mDuplicateBorderPaint;
-	private Paint mDuplicateBackgroundPaint;
+	private final Paint mDuplicateBorderPaint;
+	private final Paint mDuplicateBackgroundPaint;
 
 	// Border and background for the selected cell
-	private Paint mSelectedBorderPaint;
-	private Paint mSelectedBackgroundPaint;
+	private final Paint mSelectedBorderPaint;
+	private final Paint mSelectedBackgroundPaint;
 
 	/**
 	 * Creates a new instance of {@link CellPainter}.
@@ -41,6 +42,8 @@ public class CellPainter extends BorderPainter {
 		mUnusedBorderPaint = new Paint();
 		mUnusedBorderPaint.setStyle(Style.STROKE);
 		mUnusedBorderPaint.setAntiAlias(true);
+		mUnusedBorderPaint.setPathEffect(new DashPathEffect(
+				new float[] { 2, 2 }, 0));
 
 		// Border and background for cells with an invalid user value. The
 		// background color depends on the theme.
