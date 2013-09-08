@@ -26,7 +26,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
-	public static final boolean DEBUG_GRID_GENERATOR = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && true;
+	public static final boolean DEBUG_GRID_GENERATOR = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
 	public static final boolean DEBUG_GRID_GENERATOR_FULL = DEBUG_GRID_GENERATOR && false;
 
 	// The parameters use to generate a grid
