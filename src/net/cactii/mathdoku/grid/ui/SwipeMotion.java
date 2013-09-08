@@ -225,12 +225,15 @@ public class SwipeMotion {
 	protected void release(MotionEvent event) {
 		if (mStatus == Status.TOUCH_DOWN || mStatus == Status.MOVING) {
 			mStatus = Status.RELEASED;
+		} else if (mStatus == Status.RELEASED || mStatus == Status.FINISHED) {
+			// Already released. Nothing to do here.
+			return;
 		} else if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			throw new RuntimeException(
 					"Swipe Motion status can not be changed from "
 							+ mStatus.toString() + " to " + Status.RELEASED);
 		}
-		if (update(event)) {
+		if (event != null && update(event)) {
 			// A digit was determined upon release the swipe motion. This motion
 			// may therefore not be used to detect a double tap. This prevents
 			// false detection of double taps due to rapid entering of maybe
@@ -283,6 +286,8 @@ public class SwipeMotion {
 	protected void finish() {
 		if (mStatus == Status.RELEASED) {
 			mStatus = Status.FINISHED;
+		} else if (mStatus == Status.FINISHED) {
+			// Already finished. Nothing to do here.
 		} else if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
 			throw new RuntimeException(
 					"Swipe Motion status can not be changed from "

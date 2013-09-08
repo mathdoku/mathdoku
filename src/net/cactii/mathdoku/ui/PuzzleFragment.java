@@ -188,7 +188,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				.findViewById(R.id.input_mode_image);
 		mInputModeText = (TextView) mRootView
 				.findViewById(R.id.input_mode_text);
-		setInputModeTextVisibility();
+		setInputModeTextVisibility(mGridPlayerView.getGridInputMode());
 		mInputModeImageView.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -886,36 +886,54 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		return mGrid.getSolvingAttemptId();
 	}
 
-	/**
-	 * Checks whether the normal input mode menu item is visible.
-	 * 
-	 * @return
-	 */
-	protected boolean showInputModeNormal() {
-		return (mGrid != null && mGrid.isActive() && mGridPlayerView != null && mGridPlayerView
-				.getGridInputMode() == GridInputMode.MAYBE);
-	}
-
-	/**
-	 * Checks whether the maybe input mode menu item is visible.
-	 * 
-	 * @return
-	 */
-	protected boolean showInputModeMaybe() {
-		return (mGrid != null && mGrid.isActive() && mGridPlayerView != null && mGridPlayerView
-				.getGridInputMode() == GridInputMode.NORMAL);
-	}
-
 	@Override
-	public void onInputModeChanged(GridInputMode inputMode) {
+	public void onInputModeChanged(final GridInputMode inputMode) {
 		setInputModeImage(inputMode);
 
-		if (mMathDokuPreferences.increaseInputModeChangedCounter() < 4) {
+		boolean showInputModeText = false;
+		int inputModeTextResId = 0;
+		switch (inputMode) {
+		case NORMAL: {
+			int counter = mMathDokuPreferences
+					.increaseInputModeChangedCounter();
+			if (counter < 4) {
+				inputModeTextResId = R.string.input_mode_normal_long_description;
+				showInputModeText = true;
+			} else if (counter < 20) {
+				inputModeTextResId = R.string.input_mode_normal_short_description;
+				showInputModeText = true;
+			}
+			break;
+		}
+		case MAYBE: {
+			int counter = mMathDokuPreferences
+					.increaseInputModeChangedCounter();
+			if (counter < 4) {
+				inputModeTextResId = R.string.input_mode_maybe_long_description;
+				showInputModeText = true;
+			} else if (counter < 20) {
+				inputModeTextResId = R.string.input_mode_maybe_short_description;
+				showInputModeText = true;
+			}
+			break;
+		}
+		case COPY: {
+			int counter = mMathDokuPreferences.increaseInputModeCopyCounter();
+			if (counter < 4) {
+				inputModeTextResId = R.string.input_mode_copy_long_description;
+				showInputModeText = true;
+			} else if (counter < 20) {
+				inputModeTextResId = R.string.input_mode_copy_short_description;
+				showInputModeText = true;
+			}
+			break;
+		}
+
+		}
+		if (showInputModeText) {
 			// Display message
 			mInputModeText.setVisibility(View.VISIBLE);
-			mInputModeText
-					.setText(inputMode == GridInputMode.NORMAL ? R.string.input_mode_changed_to_normal
-							: R.string.input_mode_changed_to_maybe);
+			mInputModeText.setText(inputModeTextResId);
 			mInputModeText.invalidate();
 
 			// Hide the message after 5000 milliseconds.
@@ -923,7 +941,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			handler.postDelayed(new Runnable() {
 				@Override
 				public void run() {
-					setInputModeTextVisibility();
+					setInputModeTextVisibility(inputMode);
 				}
 			}, 5000);
 		}
@@ -932,15 +950,22 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	/**
 	 * Set the visibility of the input mode text to invisible or gone.
 	 */
-	private void setInputModeTextVisibility() {
+	private void setInputModeTextVisibility(GridInputMode inputMode) {
 		if (mInputModeText != null) {
 			// After the input mode changed message has been displayed three
 			// times, it will never be displayed again. The visibility of the
-			// text view should then be set to gone as this discreases the
+			// text view should then be set to gone as this decreases the
 			// height of the relative layout in which the field is encapsulated.
-			mInputModeText.setVisibility(mMathDokuPreferences
-					.getInputModeChangedCounter() < 4 ? View.INVISIBLE
-					: View.GONE);
+			if (inputMode == GridInputMode.NORMAL
+					|| inputMode == GridInputMode.MAYBE) {
+				mInputModeText.setVisibility(mMathDokuPreferences
+						.getInputModeChangedCounter() < 4 ? View.INVISIBLE
+						: View.GONE);
+			} else {
+				mInputModeText.setVisibility(mMathDokuPreferences
+						.getInputModeCopyCounter() < 4 ? View.INVISIBLE
+						: View.GONE);
+			}
 		}
 	}
 
@@ -953,10 +978,21 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	private void setInputModeImage(GridInputMode inputMode) {
 		// Set the input mode image to the new value of the input mode
 		if (mInputModeImageView != null && mPainter != null) {
-			mInputModeImageView
-					.setImageResource((inputMode == GridInputMode.NORMAL ? mPainter
-							.getNormalInputModeButton() : mPainter
-							.getMaybeInputModeButton()));
+			switch (inputMode) {
+			case NORMAL:
+				mInputModeImageView.setImageResource(mPainter
+						.getNormalInputModeButton());
+				break;
+			case MAYBE:
+				mInputModeImageView.setImageResource(mPainter
+						.getMaybeInputModeButton());
+				break;
+			case COPY:
+				mInputModeImageView.setImageResource(mPainter
+						.getCopyInputModeButton());
+				break;
+			}
+			mInputModeImageView.invalidate();
 		}
 	}
 

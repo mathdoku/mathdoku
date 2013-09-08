@@ -48,7 +48,7 @@
 
     <!-- The title and body describing how to play the game. -->
     <string name="puzzle_help_dialog_how_to_play__section_title">Hoe te spelen?</string>
-    <string name="puzzle_help_dialog_how_to_play_section_body">Raak cel aan in de puzzel om de cel te selectere, en veeg daarna naar een een getal om het te kiezen. Door een cel dubbel aan te tikken kun je wisselen tussen de \'normale\' en de \'mogelijke\' toestand. In de \'mogelijke\' toestand kun je meerdere mogelijke getallen invoeren voor een cell.\n\nDe puzzels wordt automatisch opgeslagen.</string>
+    <string name="puzzle_help_dialog_how_to_play_section_body">Raak een cel aan in de puzzel om de cel te selecteren, en veeg daarna naar een een getal om het te kiezen. Door een cel dubbel aan te tikken kun je wisselen tussen de \'normale\' en de \'mogelijke\' toestand. In de \'mogelijke\' toestand kun je meerdere mogelijke getallen invoeren voor een cell.\n\nRaak een cel lang aan om de \'kopie\' toestand te activeren. De waarden van de geselecteerde cel worden gekopieerd naar elke cel die je aanraakt zolang de \'kopie\' toestand is geactiveerd. Tik dubbel op een cel om de \'kopie\' toestand te beëindigen.\n\nDe puzzels wordt automatisch opgeslagen.</string>
 
     <!-- The version title in the help screen. -->
     <string name="puzzle_help_dialog_version_section_title">Versie</string>
@@ -323,6 +323,10 @@
     <string name="dialog_tip_archive_available_title">Archief beschikbaar</string>
     <string name="dialog_tip_archive_available_text">Elke puzzel die je hebt aangemaakt wordt bewaard in het \'Archief\'. Het \'Archief\' kan worden gebruikt om puzzels te bekijken die je eerder hebt gespeeld.\n\nJe kan het archief starten vanuit het navigatie menu. Het navigatie menu kan worden geopend door het MathDoku aan te tikken.</string>
 
+    <!-- Title, and text for tip "Copy cell values" -->
+    <string name="dialog_tip_copy_cell_values_title">Kopieer cel waarden</string>
+    <string name="dialog_tip_copy_cell_values_text">Wist je al dat je waardes van de ene cel naar een andere cel kan kopiëren? Dit is vooral nutting in het geval dat je meerdere \'mogelijke\' waarden in een cel hebt ingevoerd en deze combinatie bijvoorbeeld wil hergebruiken for andere cellen in dezelfde groep.\n\nJe kan de \'kopieer\' toestand starten door de cel die je wil kopiëren lang aan te raken. Raak vervolgens elke cel aan waarheen je de waarden wil kopiëren. Beëindig de \'kopieer\' toestand door een cell dubbel aan te tikken.</string>
+
     <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -408,8 +412,12 @@
 
 
     <!-- The text which is shown on a long press on the switch input mode image. -->
-    <string name="input_mode_changed_to_normal">Gewisseld naar invoer van normale waarden.\nDubbel tik op een cel om te wisselen naar invoer van mogelijke waarden.</string>
-    <string name="input_mode_changed_to_maybe">Gewisseld naar invoer van mogelijke waarden.\nDubbel tik op een cel om te wisselen naar invoer van normale waarden.</string>
+    <string name="input_mode_normal_short_description">Normale waarden</string>
+    <string name="input_mode_normal_long_description">Gewisseld naar invoer van normale waarden.\nDubbel tik op een cel om te wisselen naar invoer van mogelijke waarden.</string>
+    <string name="input_mode_maybe_short_description">Mogelijke waarden</string>
+    <string name="input_mode_maybe_long_description">Gewisseld naar invoer van mogelijke waarden.\nDubbel tik op een cel om te wisselen naar invoer van normale waarden.</string>
+    <string name="input_mode_copy_short_description">Kopieer waarden</string>
+    <string name="input_mode_copy_long_description">Gewisseld naar kopieer-waarden-toestand. Waarde van de geselecteerde cel worden gekopieerd naar elke cel die je aanraakt zolang deze toestand actief is. Dubbel tik op een cel om deze toestand te beëindigen.</string>
 
     <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

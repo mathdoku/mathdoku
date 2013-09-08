@@ -20,6 +20,7 @@ public class Painter {
 	private int mHighlightedTextColorMaybeInputMode;
 	private int mNormalInputModeButtonResId;
 	private int mMaybeInputModeButtonResId;
+	private int mCopyInputModeButtonResId;
 	private int mDefaultTextColor;
 
 	// Themes available
@@ -41,7 +42,7 @@ public class Painter {
 	private final UserValuePainter mUserValuePainter;
 	private final MaybeValuePainter mMaybeGridPainter;
 	private final MaybeValuePainter mMaybeLinePainter;
-	private final SwipeBorderPainter mSwipeBorderPainter;
+	private final InputModeBorderPainter mInputModeBorderPainter;
 	private final TickerTapePainter mTickerTapePainter;
 	private final PagerTabStripPainter mPagerTabStripPainter;
 	private final NavigationDrawerPainter mNavigationDrawerPainter;
@@ -74,7 +75,7 @@ public class Painter {
 		mUserValuePainter = new UserValuePainter(this);
 		mMaybeGridPainter = new MaybeValuePainter(this);
 		mMaybeLinePainter = new MaybeValuePainter(this);
-		mSwipeBorderPainter = new SwipeBorderPainter(this);
+		mInputModeBorderPainter = new InputModeBorderPainter(this);
 		mTickerTapePainter = new TickerTapePainter(this);
 		mPagerTabStripPainter = new PagerTabStripPainter(this);
 		mNavigationDrawerPainter = new NavigationDrawerPainter(this);
@@ -113,7 +114,7 @@ public class Painter {
 		mGridPainter.setBorderSizes(thin);
 		mCagePainter.setBorderSizes(thin);
 		mCellPainter.setBorderSizes(thin);
-		mSwipeBorderPainter.setBorderSizes(thin);
+		mInputModeBorderPainter.setBorderSizes(thin);
 	}
 
 	/**
@@ -139,7 +140,7 @@ public class Painter {
 		mUserValuePainter.setTheme(theme);
 		mMaybeGridPainter.setTheme(theme);
 		mMaybeLinePainter.setTheme(theme);
-		mSwipeBorderPainter.setTheme(theme);
+		mInputModeBorderPainter.setTheme(theme);
 	}
 
 	/**
@@ -161,7 +162,7 @@ public class Painter {
 		mUserValuePainter.setCellSize(size);
 		mMaybeGridPainter.setCellSize(size);
 		mMaybeLinePainter.setCellSize(size);
-		mSwipeBorderPainter.setCellSize(size);
+		mInputModeBorderPainter.setCellSize(size);
 	}
 
 	/**
@@ -198,13 +199,15 @@ public class Painter {
 		// The default color will of course be set relevant to the theme.
 		switch (gridTheme) {
 		case LIGHT:
-			mMaybeInputModeButtonResId = R.drawable.input_mode_maybe_light;
 			mNormalInputModeButtonResId = R.drawable.input_mode_normal_light;
+			mMaybeInputModeButtonResId = R.drawable.input_mode_maybe_light;
+			mCopyInputModeButtonResId = R.drawable.input_mode_copy_light;
 			mDefaultTextColor = 0xFF212121;
 			break;
 		case DARK:
-			mMaybeInputModeButtonResId = R.drawable.input_mode_maybe_dark;
 			mNormalInputModeButtonResId = R.drawable.input_mode_normal_dark;
+			mMaybeInputModeButtonResId = R.drawable.input_mode_maybe_dark;
+			mCopyInputModeButtonResId = R.drawable.input_mode_copy_dark;
 			mDefaultTextColor = 0xFFFFFFFF;
 			break;
 		}
@@ -296,8 +299,8 @@ public class Painter {
 	 * 
 	 * @return The swipe border painter.
 	 */
-	public SwipeBorderPainter getSwipeBorderPainter() {
-		return mSwipeBorderPainter;
+	public InputModeBorderPainter getInputModeBorderPainter() {
+		return mInputModeBorderPainter;
 	}
 
 	/**
@@ -375,5 +378,14 @@ public class Painter {
 	 */
 	public int getMaybeInputModeButton() {
 		return mMaybeInputModeButtonResId;
+	}
+
+	/**
+	 * Get the copy input mode button.
+	 * 
+	 * @return The copy input mode button.
+	 */
+	public int getCopyInputModeButton() {
+		return mCopyInputModeButtonResId;
 	}
 }

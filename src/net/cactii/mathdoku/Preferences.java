@@ -55,6 +55,9 @@ public class Preferences {
 	public final static String PUZZLE_INPUT_MODE_CHANGED_COUNTER = "puzzle_input_mode_changed_counter";
 	public final static int PUZZLE_INPUT_MODE_CHANGED_COUNTER_DEFAULT = 0;
 
+	public final static String PUZZLE_INPUT_MODE_COPY_COUNTER = "puzzle_input_mode_copy_counter";
+	public final static int PUZZLE_INPUT_MODE_COPY_COUNTER_DEFAULT = 0;
+
 	// Puzzle parameters settings to be set as default values for next game
 	public final static String PUZZLE_PARAMETER_COMPLEXITY = "puzzle_parameter_complexity";
 	public final static String PUZZLE_PARAMETER_COMPLEXITY_DEFAULT = PuzzleComplexity.VERY_EASY
@@ -147,6 +150,7 @@ public class Preferences {
 	private final static int SWIPE_DIGIT_9_COUNTER_ID = 9;
 	private final static int SWIPE_VALID_MOTION_COUNTER_ID = 10;
 	private final static int SWIPE_INVALID_MOTION_COUNTER_ID = 11;
+	private final static int PUZZLE_INPUT_MODE_COPY_COUNTER_ID = 12;
 	private int[] counters = null;
 
 	/**
@@ -208,7 +212,7 @@ public class Preferences {
 		// Update preferences
 		Editor prefeditor = mSharedPreferences.edit();
 
-		if (previousInstalledVersion < 493 && currentVersion >= 524) {
+		if (previousInstalledVersion <= 562 && currentVersion > 562) {
 			// On upgrade to version 2 of MathDoku the preferences are cleaned
 			// up. Unnecessary preferences are deleted. Preferences which are
 			// kept are renamed in order to improve future maintenance.
@@ -318,6 +322,10 @@ public class Preferences {
 					STATISTICS_TAB_LAST_SHOWED_DEFAULT);
 			prefeditor.putString(PUZZLE_SETTING_OUTER_SWIPE_CIRCLE,
 					PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_DEFAULT);
+		}
+		if (previousInstalledVersion < 569 && currentVersion >= 569) {
+			prefeditor.putInt(PUZZLE_INPUT_MODE_COPY_COUNTER,
+					PUZZLE_INPUT_MODE_COPY_COUNTER_DEFAULT);
 		}
 
 		// Save
@@ -662,9 +670,12 @@ public class Preferences {
 	 */
 	private void initializeCounters() {
 		if (counters == null) {
-			counters = new int[12];
+			counters = new int[13];
 			counters[PUZZLE_INPUT_MODE_CHANGED_COUNTER_ID] = mSharedPreferences
 					.getInt(PUZZLE_INPUT_MODE_CHANGED_COUNTER,
+							PUZZLE_INPUT_MODE_CHANGED_COUNTER_DEFAULT);
+			counters[PUZZLE_INPUT_MODE_COPY_COUNTER_ID] = mSharedPreferences
+					.getInt(PUZZLE_INPUT_MODE_COPY_COUNTER,
 							PUZZLE_INPUT_MODE_CHANGED_COUNTER_DEFAULT);
 			counters[SWIPE_DIGIT_1_COUNTER_ID] = mSharedPreferences.getInt(
 					SWIPE_DIGIT_1_COUNTER, SWIPE_DIGIT_COUNTER_DEFAULT);
@@ -810,12 +821,24 @@ public class Preferences {
 	}
 
 	/**
-	 * Increase the number of times the input mode has been changed.
+	 * Increase the number of times the input mode has been changed from normal
+	 * to maybe or vice versa.
 	 * 
-	 * @return The (updated) number of times the input mode has been changed.
+	 * @return The (updated) number of times the input mode has been changed
+	 *         from normal to maybe or vice versa.
 	 */
 	public int increaseInputModeChangedCounter() {
 		return increaseCounter(PUZZLE_INPUT_MODE_CHANGED_COUNTER_ID);
+	}
+
+	/**
+	 * Increase the number of times the input mode has set to copy mode.
+	 * 
+	 * @return The (updated) number of times the input mode has been set to copy
+	 *         mode.
+	 */
+	public int increaseInputModeCopyCounter() {
+		return increaseCounter(PUZZLE_INPUT_MODE_COPY_COUNTER_ID);
 	}
 
 	/**
@@ -826,6 +849,8 @@ public class Preferences {
 			Editor prefeditor = mSharedPreferences.edit();
 			prefeditor.putInt(PUZZLE_INPUT_MODE_CHANGED_COUNTER,
 					counters[PUZZLE_INPUT_MODE_CHANGED_COUNTER_ID]);
+			prefeditor.putInt(PUZZLE_INPUT_MODE_COPY_COUNTER,
+					counters[PUZZLE_INPUT_MODE_COPY_COUNTER_ID]);
 			prefeditor.putInt(SWIPE_DIGIT_1_COUNTER,
 					counters[SWIPE_DIGIT_1_COUNTER_ID]);
 			prefeditor.putInt(SWIPE_DIGIT_2_COUNTER,
@@ -860,6 +885,16 @@ public class Preferences {
 	public int getInputModeChangedCounter() {
 		return mSharedPreferences.getInt(PUZZLE_INPUT_MODE_CHANGED_COUNTER,
 				PUZZLE_INPUT_MODE_CHANGED_COUNTER_DEFAULT);
+	}
+
+	/**
+	 * Gets the number of times the input mode has set to copy mode.
+	 * 
+	 * @return The number of times the input mode has been set top copy mode.
+	 */
+	public int getInputModeCopyCounter() {
+		return mSharedPreferences.getInt(PUZZLE_INPUT_MODE_COPY_COUNTER,
+				PUZZLE_INPUT_MODE_COPY_COUNTER_DEFAULT);
 	}
 
 	/**

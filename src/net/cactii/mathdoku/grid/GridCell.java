@@ -8,9 +8,9 @@ import net.cactii.mathdoku.grid.ui.GridInputMode;
 import net.cactii.mathdoku.grid.ui.SwipeMotion;
 import net.cactii.mathdoku.painter.CagePainter;
 import net.cactii.mathdoku.painter.CellPainter;
+import net.cactii.mathdoku.painter.InputModeBorderPainter;
 import net.cactii.mathdoku.painter.MaybeValuePainter;
 import net.cactii.mathdoku.painter.Painter;
-import net.cactii.mathdoku.painter.SwipeBorderPainter;
 import net.cactii.mathdoku.painter.UserValuePainter;
 import net.cactii.mathdoku.statistics.GridStatistics;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
@@ -78,7 +78,7 @@ public class GridCell {
 	private final MaybeValuePainter mMaybeGridPainter;
 	private final MaybeValuePainter mMaybeLinePainter;
 	private final CagePainter mCagePainter;
-	private final SwipeBorderPainter mSwipeBorderPainter;
+	private final InputModeBorderPainter mInputModeBorderPainter;
 
 	public GridCell(Grid grid, int cell) {
 		int gridSize = grid.getGridSize();
@@ -104,7 +104,7 @@ public class GridCell {
 		mMaybeGridPainter = painter.getMaybeGridPainter();
 		mMaybeLinePainter = painter.getMaybeLinePainter();
 		mCagePainter = painter.getCagePainter();
-		mSwipeBorderPainter = painter.getSwipeBorderPainter();
+		mInputModeBorderPainter = painter.getInputModeBorderPainter();
 
 		mBorderTypeTop = BorderType.NONE;
 		mBorderTypeRight = BorderType.NONE;
@@ -164,9 +164,34 @@ public class GridCell {
 	 *         the digit was added before.
 	 */
 	public boolean addPossible(int digit) {
+		return addPossible(digit, true);
+	}
+
+	/**
+	 * Adds the given digit to the possible values if not yet added before.
+	 * 
+	 * @param digit
+	 *            The digit which has to be added.
+	 * @param updateStatistics
+	 *            True in case the statistics have to be updated when adding a
+	 *            new maybe value. False otherwise.
+	 * @return True in case the digit has been added. False otherwise or in case
+	 *         the digit was added before.
+	 */
+	public boolean addPossible(int digit, boolean updateStatistics) {
 		if (!hasPossible(digit)) {
+			// Add possible value and sort the list of possible values.
 			this.mPossibles.add(digit);
 			Collections.sort(mPossibles);
+
+			// Update statistics
+			if (updateStatistics && mGrid != null) {
+				GridStatistics gridStatistics = mGrid.getGridStatistics();
+				if (gridStatistics != null) {
+					gridStatistics
+							.increaseCounter(StatisticsCounterType.POSSIBLES);
+				}
+			}
 			return true;
 		} else {
 			return false;
@@ -506,7 +531,7 @@ public class GridCell {
 		if ((this.isUserValueSet() && swipeDigit == 0)
 				|| (inputMode == GridInputMode.NORMAL && swipeDigit != 0)) {
 			// Get the value which will be shown as user value in case the swipe
-			// motion will be release at this moment.
+			// motion will be released at this moment.
 			String userValue = Integer
 					.toString(inputMode == GridInputMode.NORMAL
 							&& swipeDigit != 0 ? swipeDigit : mUserValue);
@@ -515,7 +540,8 @@ public class GridCell {
 					.getTextPaintNormalInputMode() : mUserValuePainter
 					.getTextPaintMaybeInputMode());
 
-			// Calculate left offset to get the use value centered horizontally.
+			// Calculate left offset to get the user value centered
+			// horizontally.
 			int centerOffset = (int) ((cellSize - paint.measureText(userValue)) / 2);
 
 			canvas.drawText(userValue, mPosX + centerOffset, mPosY
@@ -554,7 +580,7 @@ public class GridCell {
 				if (hasPossible(swipeDigit)) {
 					removePossible(swipeDigit);
 				} else {
-					addPossible(swipeDigit);
+					addPossible(swipeDigit, false);
 				}
 			}
 
@@ -621,7 +647,7 @@ public class GridCell {
 				if (hasPossible(swipeDigit)) {
 					removePossible(swipeDigit);
 				} else {
-					addPossible(swipeDigit);
+					addPossible(swipeDigit, false);
 				}
 			}
 		}
@@ -633,11 +659,12 @@ public class GridCell {
 	static Rect drawSwipeOverlay_bounds = new Rect();
 
 	/**
-	 * Draw the overlay for the selected cell.
+	 * Draw the swipe overlay for the selected cell.
 	 */
 	public void drawSwipeOverlay(Canvas canvas, float gridBorderWidth,
 			GridInputMode inputMode, float mXPosSwipe, float mYPosSwipe,
 			int swipeDigit, boolean outerSwipeCircleVisible) {
+		assert (inputMode == GridInputMode.NORMAL || inputMode == GridInputMode.MAYBE);
 		if (mGrid.getSelectedCell() != this) {
 			// This cell is not the selected cell.
 			return;
@@ -655,15 +682,15 @@ public class GridCell {
 
 		// Get the painters for the overlay border
 		// Determine which painter to use
-		Paint borderPaint = (inputMode == GridInputMode.NORMAL ? mSwipeBorderPainter
-				.getUserValueBackgroundBorderPaint() : mSwipeBorderPainter
-				.getMaybeValueBackgroundBorderPaint());
+		Paint borderPaint = (inputMode == GridInputMode.NORMAL ? mInputModeBorderPainter
+				.getNormalInputModeBorderPaint() : mInputModeBorderPainter
+				.getMaybeInputModeBorderPaint());
 		float borderOverlayWidth = borderPaint.getStrokeWidth();
-		Paint segmentSeparatorPaint = mSwipeBorderPainter
-				.getSwipeSegmentDivider();
-		Paint textNormalPaint = mSwipeBorderPainter.getNormalDigitPaint();
-		Paint textHighlightedPaint = mSwipeBorderPainter
-				.getHighlightedDigitPaint();
+		Paint segmentSeparatorPaint = mInputModeBorderPainter
+				.getSegmentDivider();
+		Paint textNormalPaint = mInputModeBorderPainter.getNormalTextPaint();
+		Paint textHighlightedPaint = mInputModeBorderPainter
+				.getHighlightedTextPaint();
 
 		// Get the size of the grid as all digits up to grid size have to be
 		// drawn in the swipe circle.
@@ -743,7 +770,69 @@ public class GridCell {
 		// Draw a line from the middle of the selected cell to the current swipe
 		// position to indicate which digit will be selected on release.
 		canvas.drawLine(left + (cellSize / 2), top + (cellSize / 2),
-				mXPosSwipe, mYPosSwipe, mSwipeBorderPainter.getSwipeLinePaint());
+				mXPosSwipe, mYPosSwipe,
+				mInputModeBorderPainter.getSwipeLinePaint());
+	}
+
+	/**
+	 * Draw the copy overlay for the selected cell.
+	 * 
+	 * @param canvas
+	 * @param gridBorderWidth
+	 * @param inputMode
+	 *            The input mode of the entire grid.
+	 * @param inputModeSelectedCell
+	 *            The input mode to be used for drawing the content of the
+	 *            selected cell.
+	 * @param mXPosSwipe
+	 * @param mYPosSwipe
+	 */
+	public void drawCopyOverlay(Canvas canvas, float gridBorderWidth,
+			GridInputMode inputMode, GridInputMode inputModeSelectedCell,
+			float mXPosSwipe, float mYPosSwipe) {
+		assert (inputMode == GridInputMode.COPY);
+		if (mGrid.getSelectedCell() != this) {
+			// This cell is not the selected cell.
+			return;
+		}
+
+		// Get cell size
+		int cellSize = (int) this.mCellPainter.getCellSize();
+
+		// Calculate x and y for the cell origin (top left). Use an offset to
+		// prevent overlapping of cells and border for entire grid.
+		this.mPosX = Math.round(gridBorderWidth + cellSize * this.mColumn);
+		this.mPosY = Math.round(gridBorderWidth + cellSize * this.mRow);
+		float top = this.mPosY;
+		float left = this.mPosX;
+
+		// Get the painters for the overlay border
+		// Determine which painter to use
+		Paint borderPaint = mInputModeBorderPainter
+				.getCopyBackgroundBorderPaint();
+		float borderOverlayWidth = borderPaint.getStrokeWidth();
+		Paint textNormalPaint = mInputModeBorderPainter.getNormalTextPaint();
+
+		// Get the size of the grid as all digits up to grid size have to be
+		// drawn in the swipe circle.
+		int gridSize = mGrid.getGridSize();
+
+		// Draw the swipe border background
+		int centerX = (int) (left + cellSize / 2);
+		int centerY = (int) (top + (cellSize / 2));
+
+		// Draw the border
+		float radius = cellSize;
+		if (borderPaint != null) {
+			canvas.drawCircle(centerX, centerY, radius
+					- (borderOverlayWidth / 2) - 2, borderPaint);
+		}
+
+		// TODO Plot help text clockwise in the circle
+
+		// Redraw the cell including the content which results as the cell is
+		// tapped in copy mode.
+		draw(canvas, gridBorderWidth, inputModeSelectedCell, 0);
 	}
 
 	/**
@@ -819,7 +908,7 @@ public class GridCell {
 		if (!cellParts[index].equals("")) {
 			for (String possible : cellParts[index]
 					.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
-				addPossible(Integer.parseInt(possible));
+				addPossible(Integer.parseInt(possible), false);
 			}
 		}
 		index++;

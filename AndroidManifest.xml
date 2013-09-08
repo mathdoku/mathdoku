@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="net.cactii.mathdoku"
     android:installLocation="auto"
-    android:versionCode="563"
-    android:versionName="Version 2.0.0" >
+    android:versionCode="570"
+    android:versionName="Version 2.1.0 Beta-1" >
 
     <!-- Cannot yet upgrade to target SDK-version 18 due to a bug in the archive. The grid view -->
     <!-- in the archive won't be shown in case a chart is shown. -->

@@ -48,7 +48,8 @@
 
     <!-- The title and body describing how to play the game. -->
     <string name="puzzle_help_dialog_how_to_play__section_title">Spielweise</string>
-    <string name="puzzle_help_dialog_how_to_play_section_body">Berühren Sie die Quadrate im Raster um eine Zelle auszuwählen. Das \'Vielleicht\' Auswahlfeld erlaubt es mehrere Möglichkeiten auszuwählen.\n\nFür mehr Optionen drücken Sie lange auf eine Zelle.\n\nDer aktuelle Spielstand wird gespeichert, wenn sie das Spiel verlassen oder verwenden Sie das Speichern/Laden-Menü, um unlimitiert Spiele zu speichern.</string>
+    <!-- TODO: Added new paragraph (in english) -->
+    <string name="puzzle_help_dialog_how_to_play_section_body">Berühren Sie die Quadrate im Raster um eine Zelle auszuwählen. Das \'Vielleicht\' Auswahlfeld erlaubt es mehrere Möglichkeiten auszuwählen.\n\nLong press a cell to enter \'copy\' mode. The values of the highlighted cell will be copied to each cell that you tap while \'copy\' mode is active. Double tap to exit \'copy\' mode.\n\nFür mehr Optionen drücken Sie lange auf eine Zelle.\n\nDer aktuelle Spielstand wird gespeichert, wenn sie das Spiel verlassen oder verwenden Sie das Speichern/Laden-Menü, um unlimitiert Spiele zu speichern.</string>
 
     <!-- The version title in the help screen. -->
     <string name="puzzle_help_dialog_version_section_title">Version</string>
@@ -323,6 +324,11 @@
     <string name="dialog_tip_archive_available_title">Archiv verfügbar</string>
     <string name="dialog_tip_archive_available_text">Jedes Spiel, dass Sie generiert haben, wird im \"Archiv\" abgespeichert. Das \"Archiv\" kann dazu benutzt werden, um die alten Rätsel anzusehen.\n\nSie können die Statistik aus dem Navigationsmenü herus öffnen. Das Navigationsmenü wird durch Berühren des MathDoku Logos geöffnet.</string>
 
+    <!-- Title, and text for tip "Copy cell values" -->
+    <!-- TODO -->
+    <string name="dialog_tip_copy_cell_values_title">Copy cell values</string>
+    <string name="dialog_tip_copy_cell_values_text">Did you know that you can copy cell values from one cell to another cell? This is especially usefull in case you have entered multiple maybe values into a cell and for example want to reuse the same combination for other cells in the same cage.\n\nYou can enter the \'copy\' mode by long pressing the cell from which you want to copy the values. Next tap each cell to which you want to copy the values. Finally exit the \'copy\' mode by double tapping any cell.</string>
+
     <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -408,8 +414,16 @@
 
 
     <!-- The text which is shown on a long press on the switch input mode image. -->
-    <string name="input_mode_changed_to_normal">Normaler Eingabemodus ausgewählt. Doppelt drücken für \"Vielleichtwerte\".</string>
-    <string name="input_mode_changed_to_maybe">\"Vielleichtwerte\" Eingabemodus ausgewählt. Doppelt drücken für normalen Eingabemodus.</string>
+    <!-- TODO -->
+    <string name="input_mode_normal_short_description">Normal numbers</string>
+    <string name="input_mode_normal_long_description">Normaler Eingabemodus ausgewählt. Doppelt drücken für \"Vielleichtwerte\".</string>
+    <!-- TODO -->
+    <string name="input_mode_maybe_short_description">Maybe values</string>
+    <string name="input_mode_maybe_long_description">\"Vielleichtwerte\" Eingabemodus ausgewählt. Doppelt drücken für normalen Eingabemodus.</string>
+    <!-- TODO -->
+    <string name="input_mode_copy_short_description">Copy cells</string>
+    <!-- TODO -->
+    <string name="input_mode_copy_long_description">Switched to \'copy\' mode. Values of the selected cell will be copied to each cell you tap. Double tap a cell to end \'copy\' mode.</string>
 
     <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

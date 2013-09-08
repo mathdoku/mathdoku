@@ -134,7 +134,7 @@ public class GridViewerView extends View {
 		painter.setColorMode(mPreferences.isColoredDigitsVisible() ? DigitPainterMode.INPUT_MODE_BASED
 				: DigitPainterMode.MONOCHROME);
 
-		GridInputMode gridInputMode = getGridInputMode();
+		GridInputMode gridInputMode = getRestrictedGridInputMode();
 		for (GridCell cell : mGrid.mCells) {
 			cell.draw(canvas, mBorderWidth, gridInputMode, 0);
 		}
@@ -145,7 +145,7 @@ public class GridViewerView extends View {
 	 * 
 	 * @return The current grid input mode.
 	 */
-	protected GridInputMode getGridInputMode() {
+	protected GridInputMode getRestrictedGridInputMode() {
 		return GridInputMode.NORMAL;
 	}
 

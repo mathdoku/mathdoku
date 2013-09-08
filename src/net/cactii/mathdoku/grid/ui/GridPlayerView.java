@@ -7,6 +7,7 @@ import net.cactii.mathdoku.grid.GridCell;
 import net.cactii.mathdoku.hint.TickerTape;
 import net.cactii.mathdoku.statistics.GridStatistics.StatisticsCounterType;
 import net.cactii.mathdoku.tip.TipBadCageMath;
+import net.cactii.mathdoku.tip.TipCopyCellValues;
 import net.cactii.mathdoku.tip.TipDuplicateValue;
 import net.cactii.mathdoku.tip.TipIncorrectValue;
 import net.cactii.mathdoku.tip.TipOrderOfValuesInCage;
@@ -35,10 +36,30 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 	// Reference to the last swipe motion which was started.
 	private SwipeMotion mSwipeMotion;
 
+	// Current input mode of the grid.
 	private GridInputMode mInputMode;
+
+	// In case the copy input mode is activated some additional information
+	// needs to be stored.
+	private class CopyInputModeState {
+		// The input mode which was active before entering the copy input mode
+		private GridInputMode mPreviousInputMode;
+
+		// The cell which was long pressed
+		private GridCell mCopyFromCell;
+	}
+
+	private CopyInputModeState mCopyInputModeState;
+
+	// Handler and runnable for touch actions which need a delay
+	private Handler mTouchHandler;
+	private SwipeBorderDelayRunnable mSwipeBorderDelayRunnable;
+	private LongPressRunnable mLongPressRunnable;
 
 	// Reference to the last ticker tape started by the grid view player.
 	TickerTape mTickerTape;
+
+	private static final int LONG_PRESS_MILlIS = 1000;
 
 	public GridPlayerView(Context context) {
 		super(context);
@@ -57,6 +78,14 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 
 	private void initGridView(Context context) {
 		mTickerTape = null;
+		mInputMode = GridInputMode.NORMAL;
+
+		// Initialize the handler use to process the on touch events
+		mTouchHandler = new Handler();
+
+		// Initialize the runnables used to delay touch handling
+		mSwipeBorderDelayRunnable = new SwipeBorderDelayRunnable();
+		mLongPressRunnable = new LongPressRunnable();
 
 		// Set listeners
 		this.setOnTouchListener(this);
@@ -111,17 +140,16 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 					setTickerTapeOnCellDown();
 				}
 
-				// Prevent displaying the swipe circle in case the user make a
-				// very fast swipe motion by delaying the invalidate.
-				new Handler().postDelayed(new Runnable() {
-					@Override
-					public void run() {
-						if (mSwipeMotion != null) {
-							mSwipeMotion.setVisible(true);
-						}
-						invalidate();
-					}
-				}, 100);
+				// Prevent displaying the swipe circle in case the user makes a
+				// very fast swipe motion by delaying the invalidate. Do not
+				// cancel this runnable as it is needed to finish the swipe
+				// motion.
+				mTouchHandler.postDelayed(mSwipeBorderDelayRunnable, 100);
+
+				// Post a runnable to detect a long press. This runnable is
+				// canceled on any motion or the up-event.
+				mTouchHandler
+						.postDelayed(mLongPressRunnable, LONG_PRESS_MILlIS);
 			}
 
 			// Do not allow other view to respond to this action, for example by
@@ -129,7 +157,20 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 			// swipe motion.
 			return true;
 		case MotionEvent.ACTION_UP:
-			if (this.mTouchedListener != null && mSwipeMotion != null) {
+			if (mTouchHandler != null) {
+				mTouchHandler.removeCallbacks(mLongPressRunnable);
+			}
+			if (mInputMode == GridInputMode.COPY) {
+				// Copy the content of the origin cell to the selected cell in
+				// case the cell was not long pressed.
+				if (event.getEventTime() - event.getDownTime() < LONG_PRESS_MILlIS
+						&& mCopyInputModeState != null) {
+					playSoundEffect(SoundEffectConstants.CLICK);
+					GridCell selectedCell = mGrid.getSelectedCell();
+					copyCell(mCopyInputModeState.mCopyFromCell, selectedCell);
+					mCopyInputModeState.mCopyFromCell = selectedCell;
+				}
+			} else if (this.mTouchedListener != null && mSwipeMotion != null) {
 				this.playSoundEffect(SoundEffectConstants.CLICK);
 
 				mSwipeMotion.release(event);
@@ -185,11 +226,17 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 				if (swipeDigit >= 1 && swipeDigit <= 9
 						&& mSwipeMotion.hasChangedDigit()) {
 
+					if (mTouchHandler != null) {
+						mTouchHandler.removeCallbacks(mLongPressRunnable);
+					}
 					// As the swipe digit has been changed, the grid view needs
 					// to be updated.
 					invalidate();
 				} else if (mSwipeMotion.isVisible()
 						&& mSwipeMotion.needToUpdateCurrentSwipePosition()) {
+					if (mTouchHandler != null) {
+						mTouchHandler.removeCallbacks(mLongPressRunnable);
+					}
 					// For performance reasons, the swipe position will not be
 					// update at each event but only if relevant as decided by
 					// the swipe motion.
@@ -204,11 +251,83 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 		return false;
 	}
 
+	/**
+	 * Class definition of the runnable which implements swipe border delay.
+	 */
+	private class SwipeBorderDelayRunnable implements Runnable {
+		@Override
+		public void run() {
+			// Make the swipe border and motion visible at next draw of the grid
+			// player view.
+			if (mSwipeMotion != null) {
+				mSwipeMotion.setVisible(true);
+			}
+			invalidate();
+		}
+	}
+
+	/**
+	 * Class definition of the runnable which implements a long press on a cell.
+	 */
+	private class LongPressRunnable implements Runnable {
+		@Override
+		public void run() {
+			// Check if grid exists
+			if (mGrid == null) {
+				return;
+			}
+
+			// Check if a cell is selected
+			GridCell selectedCell = mGrid.getSelectedCell();
+			if (selectedCell == null) {
+				return;
+			}
+
+			// Store state
+			if (mCopyInputModeState == null) {
+				mCopyInputModeState = new CopyInputModeState();
+				mCopyInputModeState.mPreviousInputMode = GridInputMode.NORMAL;
+			}
+
+			// Store the cell which was long pressed as the origin cell from
+			// which will be copied.
+			mCopyInputModeState.mCopyFromCell = selectedCell;
+
+			// Switch to copy mode if necessary. Do not alter the previous input
+			// mode if already in copy mode while it is possible that the user
+			// long presses a cell while already in copy mode.
+			if (mInputMode == GridInputMode.NORMAL
+					|| mInputMode == GridInputMode.MAYBE) {
+				// Store current input mode so it can be restored when ending
+				// the copy mode.
+				mCopyInputModeState.mPreviousInputMode = mInputMode;
+			}
+
+			// Switch to copy mode.
+			mInputMode = GridInputMode.COPY;
+
+			// Remove all messages from ticker tape as they do not apply to copy
+			// mode.
+			clearTickerTape();
+
+			// Update the swipe border
+			invalidate();
+
+			// Inform listeners about change in input mode
+			if (mOnInputModeChangedListener != null) {
+				mOnInputModeChangedListener.onInputModeChanged(mInputMode);
+			}
+		}
+	}
+
 	public GridCell getSelectedCell() {
 		return mGrid.getSelectedCell();
 	}
 
 	public void digitSelected(int newValue) {
+		assert (mInputMode == GridInputMode.NORMAL
+				|| mInputMode == GridInputMode.MAYBE || (mInputMode == GridInputMode.COPY && newValue == 0));
+
 		GridCell selectedCell = mGrid.getSelectedCell();
 		if (selectedCell == null) {
 			// It should not be possible to select a digit without having
@@ -248,7 +367,10 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 					selectedCell.removePossible(newValue);
 				} else {
 					selectedCell.addPossible(newValue);
-					mGrid.increaseCounter(StatisticsCounterType.POSSIBLES);
+					if (TipCopyCellValues.toBeDisplayed(mPreferences,
+							selectedCell)) {
+						new TipCopyCellValues(mContext).show();
+					}
 				}
 			} else {
 				if (newValue != oldValue) {
@@ -263,8 +385,7 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 					}
 					if (mPreferences.isPuzzleSettingClearMaybesEnabled()) {
 						// Update possible values for other cells in this row
-						// and
-						// column.
+						// and column.
 						mGrid.clearRedundantPossiblesInSameRowOrColumn(orginalUserMove);
 					}
 					if (newValue != selectedCell.getCorrectValue()
@@ -275,6 +396,17 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 			}
 		}
 
+		checkGridValidity(selectedCell);
+	}
+
+	/**
+	 * Check the validity of the grid after a user value has been set for the
+	 * given grid cell.
+	 * 
+	 * @param selectedCell
+	 *            The grid cell for which a user value was set.
+	 */
+	private void checkGridValidity(GridCell selectedCell) {
 		// Each cell in the same column or row as the given cell has to be
 		// checked for duplicate values.
 		int targetRow = selectedCell.getRow();
@@ -310,23 +442,35 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 		synchronized (mGrid.mLock) {
 			onDrawLocked(canvas);
 
-			// Draw the overlay for the swipe border around the selected cell
-			// plus the swipe line.
+			GridCell selectedCell = mGrid.getSelectedCell();
+			if (selectedCell == null) {
+				// As long a no cell is selected, the input mode border can not
+				// be drawn.
+			}
+
+			// Draw the overlay for the swipe border around the selected
+			// cell plus the swipe line.
 			if (mSwipeMotion != null) {
 				if (mSwipeMotion.isFinished()) {
 					// do nothing.
 				} else if (mSwipeMotion.isReleased()) {
 					// The swipe motion was released. Now it can be set to
-					// completed as it is confirmed that the overlay border has
-					// been removed by not drawing it.
+					// completed as it is confirmed that the overlay border
+					// has been removed by not drawing it.
 					mSwipeMotion.setVisible(false);
 					mSwipeMotion.finish();
 				} else if (mSwipeMotion.isVisible()) {
-					// The overlay needs to be draw as the swipe motion is not
-					// yet released.
-					GridCell gridCell = mGrid.getSelectedCell();
-					if (gridCell != null) {
-						gridCell.drawSwipeOverlay(canvas, mBorderWidth,
+					if (mInputMode == GridInputMode.COPY) {
+						selectedCell.drawCopyOverlay(canvas, mBorderWidth,
+								mInputMode,
+								mCopyInputModeState.mPreviousInputMode,
+								mSwipeMotion.getCurrentSwipePositionX(),
+								mSwipeMotion.getCurrentSwipePositionY());
+					} else if (mInputMode == GridInputMode.NORMAL
+							|| mInputMode == GridInputMode.MAYBE) {
+						// The overlay needs to be draw as the swipe motion is
+						// not yet released.
+						selectedCell.drawSwipeOverlay(canvas, mBorderWidth,
 								mInputMode, mSwipeMotion
 										.getCurrentSwipePositionX(),
 								mSwipeMotion.getCurrentSwipePositionY(),
@@ -340,11 +484,21 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 	}
 
 	/**
+	 * Get the grid input mode but restrict its value to normal either maybe.
+	 * 
+	 * @return The current input mode but restricted to normal either maybe.
+	 */
+	@Override
+	protected GridInputMode getRestrictedGridInputMode() {
+		return (mInputMode == GridInputMode.COPY && mCopyInputModeState != null ? mCopyInputModeState.mPreviousInputMode
+				: mInputMode);
+	}
+
+	/**
 	 * Get the current grid input mode.
 	 * 
 	 * @return The current grid input mode.
 	 */
-	@Override
 	public GridInputMode getGridInputMode() {
 		return mInputMode;
 	}
@@ -501,11 +655,31 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 	}
 
 	/**
-	 * Toggle the input mode to the other mode
+	 * Toggle the input mode between normal and maybe. Or if currently in
+	 * another input mode than return to either normal or maybe mode dependent
+	 * on which of these modes was used last.
 	 */
 	public void toggleInputMode() {
-		mInputMode = (mInputMode == GridInputMode.NORMAL ? GridInputMode.MAYBE
-				: GridInputMode.NORMAL);
+		switch (mInputMode) {
+		case NORMAL:
+			mInputMode = GridInputMode.MAYBE;
+			break;
+		case MAYBE:
+			mInputMode = GridInputMode.NORMAL;
+			break;
+		case COPY:
+			if (mSwipeMotion != null && mSwipeMotion.isReleased() == false
+					&& mSwipeMotion.isFinished() == false) {
+				mSwipeMotion.release(null);
+			}
+
+			// Restore input mode to the last know value before the copy mode
+			// was entered.
+			if (mCopyInputModeState != null) {
+				mInputMode = mCopyInputModeState.mPreviousInputMode;
+			}
+			break;
+		}
 		invalidate();
 
 		// Inform listeners about change in input mode
@@ -543,6 +717,80 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 		// Reset the ticker tape
 		if (mTickerTape != null) {
 			mTickerTape.reset();
+		}
+	}
+
+	/**
+	 * Copies the user value or the possible values from one cell to another
+	 * cell.
+	 * 
+	 * @param fromGridCell
+	 *            The cell from which the values have to be copied.
+	 * @param toGridCell
+	 *            The cell to which the values are copied.
+	 */
+	private void copyCell(GridCell fromGridCell, GridCell toGridCell) {
+		if (fromGridCell != null && toGridCell != null
+				&& fromGridCell.equals(toGridCell) == false) {
+
+			if (fromGridCell.countPossibles() > 0) {
+				// For the origin cell at least one maybe value has been set.
+				// Maybe values will only be copied to the to-cell in case at
+				// least one maybe value differs between the two cells.
+				boolean updatePossibleValues = false;
+				boolean isMaybeDigitInFromCell;
+				boolean isMaybeDigitInToCell;
+				for (int digit = 1; digit <= mGridSize; digit++) {
+					isMaybeDigitInFromCell = fromGridCell.hasPossible(digit);
+					isMaybeDigitInToCell = toGridCell.hasPossible(digit);
+					if (isMaybeDigitInFromCell != isMaybeDigitInToCell) {
+						if (updatePossibleValues == false) {
+							updatePossibleValues = true;
+
+							// Save undo information
+							toGridCell.saveUndoInformation(null);
+
+							// Clear the to-cell in case it contains a user
+							// value which will now be overwritten with maybe
+							// values.
+							if (toGridCell.isUserValueSet()) {
+								toGridCell.clear();
+							}
+						}
+
+						if (isMaybeDigitInFromCell == true
+								&& isMaybeDigitInToCell == false) {
+							toGridCell.addPossible(digit);
+						} else if (isMaybeDigitInFromCell == false
+								&& isMaybeDigitInToCell == true) {
+							toGridCell.removePossible(digit);
+						}
+					}
+				}
+			} else {
+				// The from cell does not contain a maybe value. So the cell is
+				// either empty or is filled with a user value.
+				if (fromGridCell.getUserValue() != toGridCell.getUserValue()) {
+					// Save undo information
+					CellChange orginalUserMove = toGridCell
+							.saveUndoInformation(null);
+
+					if (fromGridCell.isUserValueSet()) {
+						toGridCell.setUserValue(fromGridCell.getUserValue());
+						toGridCell.clearPossibles();
+					} else {
+						toGridCell.clear();
+					}
+
+					if (mPreferences.isPuzzleSettingClearMaybesEnabled()) {
+						// Update possible values for other cells in this row
+						// and column.
+						mGrid.clearRedundantPossiblesInSameRowOrColumn(orginalUserMove);
+					}
+
+					checkGridValidity(toGridCell);
+				}
+			}
 		}
 	}
 }
