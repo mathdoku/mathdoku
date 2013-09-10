@@ -25,7 +25,10 @@
         <ListPreference
             android:key="puzzle_setting_outer_swipe_circle"
             android:title="@string/puzzle_setting_outer_swipe_circle_title" />
-
+		<CheckBoxPreference
+		    android:key="puzzle_setting_digit_buttons"
+		    android:summary="@string/puzzle_setting_digit_buttons_summary"
+		    android:title="@string/puzzle_setting_digit_buttons_title"/>
         <CheckBoxPreference
             android:key="puzzle_setting_colored_digits"
             android:summary="@string/puzzle_setting_colored_digits_summary"

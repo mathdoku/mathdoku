@@ -180,6 +180,10 @@
     <string name="puzzle_setting_outer_swipe_circle_visible_from_grid_size_long">Display a second swipe circle for puzzles of size %1$d and above</string>
     <string name="puzzle_setting_outer_swipe_circle_visible_never">Never display a second swipe circle</string>
 
+    <!--  The title and summary of the "digit buttons" option. Controls whether digit buttons are used instead of swipe circle. -->
+    <string name="puzzle_setting_digit_buttons_title">Use digit buttons</string>
+    <string name="puzzle_setting_digit_buttons_summary">Use digit buttons instead of swipe circle</string>
+    
     <!-- The title and summary of the "colored digits" option. This option controls whether maybe numbers and normal numbers are displayed in distinct colors or in one monochrome color. -->
     <string name="puzzle_setting_colored_digits_title">Colored digits</string>
     <string name="puzzle_setting_colored_digits_summary">Use colored digits to distinguish maybe numbers from normal numbers</string>
@@ -240,6 +244,17 @@
 
     <!-- The text on the undo button in the main UI. -->
     <string name="main_ui_undo">Undo</string>
+    
+    <!--  The values of the numbers on the digit buttons. -->
+    <string name="main_ui_button1">1</string>
+    <string name="main_ui_button2">2</string>
+    <string name="main_ui_button3">3</string>
+    <string name="main_ui_button4">4</string>
+    <string name="main_ui_button5">5</string>
+    <string name="main_ui_button6">6</string>
+    <string name="main_ui_button7">7</string>
+    <string name="main_ui_button8">8</string>
+    <string name="main_ui_button9">9</string>
 
     <!-- DIALOG FEEDBACK - - - - - - - - - - - - - - - - - - - - - - -->
 

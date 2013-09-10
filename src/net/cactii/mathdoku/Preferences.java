@@ -118,6 +118,9 @@ public class Preferences {
 	public final static String STATISTICS_TAB_LAST_SHOWED = "statistics_tab_last_showed";
 	public final static int STATISTICS_TAB_LAST_SHOWED_DEFAULT = -1;
 
+	public final static String DIGIT_BUTTONS_VISIBLE = "puzzle_setting_digit_buttons";
+	public final static boolean DIGIT_BUTTONS_VISIBLE_DEFAULT = true;
+	
 	// Swipe counters
 	public final static String SWIPE_INVALID_MOTION_COUNTER = "swipe_invalid_motion_counter";
 	public final static String SWIPE_VALID_MOTION_COUNTER = "swipe_valid_motion_counter";
@@ -383,6 +386,14 @@ public class Preferences {
 	public boolean isWakeLockEnabled() {
 		return mSharedPreferences.getBoolean(PUZZLE_SETTING_WAKE_LOCK,
 				PUZZLE_SETTING_WAKE_LOCK_DEFAULT);
+	}
+	
+	/**
+	 * Whether digit buttons are used.
+	 */
+	public boolean isDigitButtonsVisible() {
+		return mSharedPreferences.getBoolean(DIGIT_BUTTONS_VISIBLE,
+				DIGIT_BUTTONS_VISIBLE_DEFAULT);
 	}
 
 	/**
