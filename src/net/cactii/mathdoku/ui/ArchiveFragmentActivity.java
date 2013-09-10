@@ -16,7 +16,6 @@
 
 package net.cactii.mathdoku.ui;
 
-import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.painter.PagerTabStripPainter;
 import net.cactii.mathdoku.painter.Painter;
@@ -84,12 +83,11 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 				getSupportFragmentManager(), this);
 
 		// Get preferences for displaying the filter.
-		Preferences preferences = Preferences.getInstance(this);
-		mShowStatusFilter = preferences.isArchiveStatusFilterVisible();
-		mShowSizeFilter = preferences.isArchiveSizeFilterVisible();
-		mArchiveFragmentStatePagerAdapter.setStatusFilter(preferences
+		mShowStatusFilter = mMathDokuPreferences.isArchiveStatusFilterVisible();
+		mShowSizeFilter = mMathDokuPreferences.isArchiveSizeFilterVisible();
+		mArchiveFragmentStatePagerAdapter.setStatusFilter(mMathDokuPreferences
 				.getArchiveStatusFilterLastValueUsed());
-		mArchiveFragmentStatePagerAdapter.setSizeFilter(preferences
+		mArchiveFragmentStatePagerAdapter.setSizeFilter(mMathDokuPreferences
 				.getArchiveSizeFilterLastValueUsed());
 
 		mActionBar = getActionBar();
@@ -144,7 +142,8 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 				if (solvingAttemptId >= 0
 						&& mArchiveFragmentStatePagerAdapter
 								.getPositionOfGridId(solvingAttemptId) >= 0) {
-					preferences.setArchiveGridIdLastShowed(solvingAttemptId);
+					mMathDokuPreferences
+							.setArchiveGridIdLastShowed(solvingAttemptId);
 				}
 			}
 		}
@@ -152,11 +151,9 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 
 	@Override
 	protected void onResumeFragments() {
-		Preferences preferences = Preferences.getInstance(this);
-
 		// Check for changes in visibility of status spinner. Reset the filters
 		// for which the visibility changes.
-		boolean showStatusFilterNew = preferences
+		boolean showStatusFilterNew = mMathDokuPreferences
 				.isArchiveStatusFilterVisible();
 		boolean setSpinners = false;
 		if (mShowStatusFilter != showStatusFilterNew) {
@@ -164,7 +161,8 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 			mArchiveFragmentStatePagerAdapter.setStatusFilter(StatusFilter.ALL);
 			setSpinners = true;
 		}
-		boolean showSizeFilterNew = preferences.isArchiveSizeFilterVisible();
+		boolean showSizeFilterNew = mMathDokuPreferences
+				.isArchiveSizeFilterVisible();
 		if (mShowSizeFilter != showSizeFilterNew) {
 			mShowSizeFilter = showSizeFilterNew;
 			mArchiveFragmentStatePagerAdapter.setSizeFilter(SizeFilter.ALL);
@@ -180,7 +178,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 
 		// Select the same grid which was selected before. If not possible,
 		// the last page will be shown.
-		selectGridId(preferences.getArchiveGridIdLastShowed());
+		selectGridId(mMathDokuPreferences.getArchiveGridIdLastShowed());
 
 		super.onResumeFragments();
 	}
@@ -188,14 +186,14 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 	@Override
 	protected void onPause() {
 		// Save preferences
-		Preferences preferences = Preferences.getInstance(this);
-		preferences
+		mMathDokuPreferences
 				.setArchiveStatusFilterLastValueUsed(mArchiveFragmentStatePagerAdapter
 						.getStatusFilter());
-		preferences
+		mMathDokuPreferences
 				.setArchiveSizeFilterLastValueUsed(mArchiveFragmentStatePagerAdapter
 						.getSizeFilter());
-		preferences.setArchiveGridIdLastShowed(getCurrentSelectedGridId());
+		mMathDokuPreferences
+				.setArchiveGridIdLastShowed(getCurrentSelectedGridId());
 
 		super.onPause();
 	}

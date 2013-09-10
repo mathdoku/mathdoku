@@ -1,6 +1,10 @@
 package net.cactii.mathdoku.ui;
 
 import net.cactii.mathdoku.Preferences;
+import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
+import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
+import net.cactii.mathdoku.storage.database.DatabaseHelper;
+import net.cactii.mathdoku.util.Util;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -14,6 +18,8 @@ import android.support.v4.app.TaskStackBuilder;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
+import com.bugsense.trace.BugSenseHandler;
+
 public class AppActivity extends Activity implements
 		OnSharedPreferenceChangeListener {
 
@@ -25,9 +31,22 @@ public class AppActivity extends Activity implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		// In BugSense mode the bug sense handler is initiated and started. In
+		// case an exception occurs in this mode, it will be reported via the
+		// BugSense web site. In this way exceptions which occurs while testing
+		// the app can be monitored more closely. Note: the internet permission
+		// needs to activated for this.
+		if (DevelopmentHelper.mMode == Mode.BUG_SENSE) {
+			BugSenseHandler.initAndStartSession(this,
+					DevelopmentHelper.BUG_SENSE_API_KEY);
+		}
+
 		// Initialize global objects (singleton instances)
 		mMathDokuPreferences = Preferences.getInstance(this);
+		DatabaseHelper.getInstance(this);
+		new Util(this);
 
+		// Register listener for changes of the share preferences.
 		mMathDokuPreferences.mSharedPreferences
 				.registerOnSharedPreferenceChangeListener(this);
 

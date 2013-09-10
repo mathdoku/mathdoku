@@ -12,7 +12,6 @@ import net.cactii.mathdoku.gridGenerating.DialogPresentingGridGenerator;
 import net.cactii.mathdoku.gridGenerating.GridGenerator.PuzzleComplexity;
 import net.cactii.mathdoku.painter.Painter;
 import net.cactii.mathdoku.storage.GameFileConverter;
-import net.cactii.mathdoku.storage.database.DatabaseHelper;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter.SizeFilter;
 import net.cactii.mathdoku.storage.database.GridDatabaseAdapter.StatusFilter;
@@ -48,8 +47,6 @@ import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-
-import com.bugsense.trace.BugSenseHandler;
 
 public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		PuzzleFragment.OnGridFinishedListener {
@@ -105,22 +102,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		// In BugSense mode the bug sense handler is initiated and started. In
-		// case an exception occurs in this mode, it will be reported via the
-		// BugSense web site. In this way exceptions which occurs while testing
-		// the app can be monitored more closely. Note: the internet permission
-		// needs to activated for this.
-		if (DevelopmentHelper.mMode == Mode.BUG_SENSE) {
-			BugSenseHandler.initAndStartSession(this,
-					DevelopmentHelper.BUG_SENSE_API_KEY);
-		}
-
 		setContentView(R.layout.puzzle_activity_fragment);
-
-		// Initialize global objects (singleton instances)
-		DatabaseHelper.getInstance(this);
-		new Util(this);
 
 		// Check if database is consistent.
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
