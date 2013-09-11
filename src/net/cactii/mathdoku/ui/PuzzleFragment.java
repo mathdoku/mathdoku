@@ -308,6 +308,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			}
 		});
 		mGridPlayerView.setOnInputModeChangedListener(this);
+		// Force display of normal mode text.
+		this.onInputModeChanged(GridInputMode.NORMAL);
 
 		registerForContextMenu(mGridPlayerView);
 
