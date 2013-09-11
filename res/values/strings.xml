@@ -48,7 +48,7 @@
 
     <!-- The title and body describing how to play the game. -->
     <string name="puzzle_help_dialog_how_to_play__section_title">How to play</string>
-    <string name="puzzle_help_dialog_how_to_play_section_body">Touch to select a cell in the grid, then swipe towards a digit to select it. By double tapping a cell you can switch between the \'normal\' and the \'maybe\' mode. In \'maybe\' mode you can mark multiple possibilities for the cell.\n\nPuzzles will be saved automatically.</string>
+    <string name="puzzle_help_dialog_how_to_play_section_body">Touch to select a cell in the grid, then either swipe towards a digit to select it, or touch the button with the number you\'d like to insert. By double tapping a cell you can switch between the \'normal\' and the \'maybe\' (or \'pencil\') mode. In \'maybe\' mode you can mark multiple possibilities for the cell.\n\nPuzzles will be saved automatically.</string>
 
     <!-- The version title in the help screen. -->
     <string name="puzzle_help_dialog_version_section_title">Version</string>
@@ -98,7 +98,7 @@
     <string name="action_archive">Archive</string>
 
     <!-- The menu item that allows the player to use some less frequently used cheats. -->
-    <string name="action_cheats">Cheats</string>
+    <string name="action_cheats">Cheats...</string>
 
     <!-- The menu item that allows the user to clear the entire grid. Note this item is only available if at least one cell in the entire puzzle contains a (maybe) value. -->
     <string name="action_clear_grid">Clear grid</string>
@@ -255,6 +255,7 @@
     <string name="main_ui_button7">7</string>
     <string name="main_ui_button8">8</string>
     <string name="main_ui_button9">9</string>
+    <string name="main_ui_buttonC">C</string>
 
     <!-- DIALOG FEEDBACK - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -425,6 +426,8 @@
     <!-- The text which is shown on a long press on the switch input mode image. -->
     <string name="input_mode_changed_to_normal">Switched to normal input mode\nDouble tap a cell to switch to maybe mode.</string>
     <string name="input_mode_changed_to_maybe">Switched to maybe input mode\nDouble tap a cell to switch to normal mode.</string>
+    <string name="input_mode_normal">Normal mode</string>
+    <string name="input_mode_maybe">\'Maybe\' mode</string>
 
     <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

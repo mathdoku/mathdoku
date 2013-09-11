@@ -191,8 +191,17 @@
 		            android:textStyle="bold"
 		            android:layout_margin="5dp"
 		            tools:ignore="ButtonStyle" />
+		        <Button
+		            android:layout_weight="1"
+		            android:id="@+id/digitC"
+                	android:text="@string/main_ui_buttonC"
+		            android:textSize="@dimen/controls_text_size_default"
+		            android:textStyle="bold"
+		            android:layout_margin="5dp"
+		            tools:ignore="ButtonStyle" />
+
 		    </TableRow>
-		</TableLayout>
+  		</TableLayout>
 		
         		
         <LinearLayout

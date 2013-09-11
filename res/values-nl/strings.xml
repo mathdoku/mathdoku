@@ -98,7 +98,7 @@
     <string name="action_archive">Archief</string>
 
     <!-- The menu item that allows the player to use some less frequently used cheats. -->
-    <string name="action_cheats">Vals spelen</string>
+    <string name="action_cheats">Vals spelen...</string>
 
     <!-- The menu item that allows the user to clear the entire grid. Note this item is only available if at least one cell in the entire puzzle contains a (maybe) value. -->
     <string name="action_clear_grid">Leeg alle cellen</string>

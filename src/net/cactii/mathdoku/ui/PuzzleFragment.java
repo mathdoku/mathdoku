@@ -85,7 +85,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	private Button mDigit7;
 	private Button mDigit8;
 	private Button mDigit9;
-	
+	private Button mDigitC;
 	
 	private Button mClearButton;
 	private Button mUndoButton;
@@ -164,6 +164,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		mDigit8.setBackgroundColor(mPainter.getButtonBackgroundColor());
 		mDigit9 = (Button)mRootView.findViewById(R.id.digit9);
 		mDigit9.setBackgroundColor(mPainter.getButtonBackgroundColor());
+		mDigitC = (Button)mRootView.findViewById(R.id.digitC);
+		mDigitC.setBackgroundColor(mPainter.getButtonBackgroundColor());
 		
 		mClearButton = (Button) mRootView.findViewById(R.id.clearButton);
 		mClearButton.setBackgroundColor(mPainter.getButtonBackgroundColor());
@@ -267,6 +269,15 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				setDigitSelected(9);
 			}
 		});
+		mDigitC.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (mGridPlayerView != null) {
+					mGridPlayerView.digitSelected(0);
+					mGridPlayerView.invalidate();
+				}
+			}
+		});
 
 		mGridPlayerView.setFocusable(true);
 		mGridPlayerView.setFocusableInTouchMode(true);
@@ -277,6 +288,16 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		mInputModeText = (TextView) mRootView
 				.findViewById(R.id.input_mode_text);
 		setInputModeTextVisibility();
+		mInputModeText.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (mGridPlayerView != null && mGrid != null) {
+					// Toggle input mode
+					mGridPlayerView.toggleInputMode();
+				}
+			}
+		});
+		
 		mInputModeImageView.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -560,15 +581,12 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 */
 	private void setDigitButtons() {
 		if (mMathDokuPreferences.isDigitButtonsVisible()) {
-			mDigit1.setVisibility(View.INVISIBLE);
-			mDigit2.setVisibility(View.INVISIBLE);
-			mDigit3.setVisibility(View.INVISIBLE);
-			mDigit4.setVisibility(View.INVISIBLE);
 			mDigit5.setVisibility(View.INVISIBLE);
 			mDigit6.setVisibility(View.INVISIBLE);
 			mDigit7.setVisibility(View.INVISIBLE);
 			mDigit8.setVisibility(View.INVISIBLE);
 			mDigit9.setVisibility(View.INVISIBLE);
+
 			switch (mGrid.getGridSize()) {
 			case 9:
 				mDigit9.setVisibility(View.VISIBLE);
@@ -579,17 +597,11 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			case 6:
 				mDigit6.setVisibility(View.VISIBLE);
 			case 5:
-				mDigit5.setVisibility(View.VISIBLE);
-			case 4:
-				mDigit4.setVisibility(View.VISIBLE);
-			case 3:
-				mDigit3.setVisibility(View.VISIBLE);
-			case 2:
-				mDigit2.setVisibility(View.VISIBLE);
-			case 1:
-				mDigit1.setVisibility(View.VISIBLE);				
+				mDigit5.setVisibility(View.VISIBLE);				
 			}
+			setDigitButtonsMode();
 			mButtonsTableLayout.setVisibility(View.VISIBLE);
+			mTickerTape.setDisabled(true);
 			mDigit1.invalidate();
 			mDigit2.invalidate();
 			mDigit3.invalidate();
@@ -599,9 +611,38 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			mDigit7.invalidate();
 			mDigit8.invalidate();
 			mDigit9.invalidate();
+			mDigitC.invalidate();
 			mButtonsTableLayout.invalidate();
 		} else {
 			mButtonsTableLayout.setVisibility(View.GONE);
+			mTickerTape.setDisabled(false);
+		}
+	}
+	
+	/**
+	 * Set the digit buttons colours base on input mode.
+	 */
+	private void setDigitButtonsMode() {
+		if (mGridPlayerView.getGridInputMode() == GridInputMode.NORMAL) {
+			mDigit1.setTextColor(mPainter.getDigitFgColor());
+			mDigit2.setTextColor(mPainter.getDigitFgColor());
+			mDigit3.setTextColor(mPainter.getDigitFgColor());
+			mDigit4.setTextColor(mPainter.getDigitFgColor());
+			mDigit5.setTextColor(mPainter.getDigitFgColor());
+			mDigit6.setTextColor(mPainter.getDigitFgColor());
+			mDigit7.setTextColor(mPainter.getDigitFgColor());
+			mDigit8.setTextColor(mPainter.getDigitFgColor());
+			mDigit9.setTextColor(mPainter.getDigitFgColor());
+		} else {
+			mDigit1.setTextColor(mPainter.getDigitFgMaybeColor());
+			mDigit2.setTextColor(mPainter.getDigitFgMaybeColor());
+			mDigit3.setTextColor(mPainter.getDigitFgMaybeColor());
+			mDigit4.setTextColor(mPainter.getDigitFgMaybeColor());
+			mDigit5.setTextColor(mPainter.getDigitFgMaybeColor());
+			mDigit6.setTextColor(mPainter.getDigitFgMaybeColor());
+			mDigit7.setTextColor(mPainter.getDigitFgMaybeColor());
+			mDigit8.setTextColor(mPainter.getDigitFgMaybeColor());
+			mDigit9.setTextColor(mPainter.getDigitFgMaybeColor());
 		}
 	}
 
@@ -1059,24 +1100,21 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	@Override
 	public void onInputModeChanged(GridInputMode inputMode) {
 		setInputModeImage(inputMode);
-
+		setDigitButtonsMode();
+		// Display message
+		mInputModeText.setVisibility(View.VISIBLE);
+		
 		if (mMathDokuPreferences.increaseInputModeChangedCounter() < 4) {
-			// Display message
-			mInputModeText.setVisibility(View.VISIBLE);
 			mInputModeText
-					.setText(inputMode == GridInputMode.NORMAL ? R.string.input_mode_changed_to_normal
-							: R.string.input_mode_changed_to_maybe);
-			mInputModeText.invalidate();
-
-			// Hide the message after 5000 milliseconds.
-			final Handler handler = new Handler();
-			handler.postDelayed(new Runnable() {
-				@Override
-				public void run() {
-					setInputModeTextVisibility();
-				}
-			}, 5000);
+			.setText(inputMode == GridInputMode.NORMAL ? R.string.input_mode_changed_to_normal
+					: R.string.input_mode_changed_to_maybe);
+		} else {
+			mInputModeText
+			.setText(inputMode == GridInputMode.NORMAL ? R.string.input_mode_normal
+					: R.string.input_mode_maybe);
 		}
+		mInputModeText.invalidate();
+
 	}
 
 	/**
@@ -1084,13 +1122,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 */
 	private void setInputModeTextVisibility() {
 		if (mInputModeText != null) {
-			// After the input mode changed message has been displayed three
-			// times, it will never be displayed again. The visibility of the
-			// text view should then be set to gone as this discreases the
-			// height of the relative layout in which the field is encapsulated.
-			mInputModeText.setVisibility(mMathDokuPreferences
-					.getInputModeChangedCounter() < 4 ? View.INVISIBLE
-					: View.GONE);
+			mInputModeText.setVisibility(View.VISIBLE);
 		}
 	}
 
@@ -1136,9 +1168,10 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				|| (mTimerTask != null && mTimerTask.isCancelled())) {
 			startTimer();
 		}
-
-		if (mTickerTape != null && mTickerTape.isCancelled()) {
-			mTickerTape.show();
+		if (!mMathDokuPreferences.isDigitButtonsVisible()) {
+			if (mTickerTape != null && mTickerTape.isCancelled()) {
+				mTickerTape.show();
+			}
 		}
 	}
 

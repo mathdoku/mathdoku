@@ -49,6 +49,10 @@ public class Painter {
 
 	// Background color of buttons and ticker tape
 	private final int mButtonBackgroundColor;
+	
+	// Foreground colour of maybe button mode.
+	private final int mDigitFgColor;
+	private final int mDigitFgMaybeColor;
 
 	/**
 	 * Creates a new instance of {@link #GridPainter()}.
@@ -66,6 +70,9 @@ public class Painter {
 
 		// Button background color
 		mButtonBackgroundColor = 0xFF33B5E5;
+		
+		mDigitFgColor = 0xFFFFFFFF;
+		mDigitFgMaybeColor = 0xFFFFFF00;
 
 		// Create the painters
 		mGridPainter = new GridPainter(this);
@@ -307,6 +314,23 @@ public class Painter {
 	 */
 	public int getButtonBackgroundColor() {
 		return mButtonBackgroundColor;
+	}
+	
+	/**
+	 * Get the foreground colour of the digit buttons.
+	 *  
+	 * @return the colour for the button.
+	 */
+	public int getDigitFgColor() {
+		return mDigitFgColor;
+	}
+	/**
+	 * Get the foreground colour of the digit buttons in maybe mode.
+	 *  
+	 * @return the colour for the button.
+	 */
+	public int getDigitFgMaybeColor() {
+		return mDigitFgMaybeColor;
 	}
 
 	/**

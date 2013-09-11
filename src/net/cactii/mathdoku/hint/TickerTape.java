@@ -47,6 +47,9 @@ public class TickerTape extends HorizontalScrollView {
 	private int mMinDisplayCycles;
 	private int mMinDisplayItems;
 	private long mMinDisplayTime;
+	
+	// Ticker tape is disabled;
+	private boolean mDisabled;
 
 	private final ArrayList<TextView> mTextViewList = new ArrayList<TextView>();
 
@@ -91,6 +94,7 @@ public class TickerTape extends HorizontalScrollView {
 		setBackgroundColor(Painter.getInstance().getTickerTapePainter()
 				.getBackgroundColor());
 
+		mDisabled = false;
 		// Hide by default
 		setVisibility(View.INVISIBLE);
 
@@ -146,19 +150,36 @@ public class TickerTape extends HorizontalScrollView {
 
 		return this;
 	}
+	
+	/**
+	 * Sets whether the ticker tape is completely disabled.
+	 * @param disabled
+	 */
+	public void setDisabled(boolean disabled) {
+		mDisabled = disabled;
+		if (mDisabled) {
+			hide();
+		}
+	}
 
 	/**
 	 * Show the ticker tape and start moving the items in the ticker tape.
 	 */
 	public void show() {
-		startMoving();
+		if (!mDisabled) {
+			startMoving();
+		}
 	}
 
 	/**
 	 * Hides the ticker tape and stop moving the items in the ticker tape.
 	 */
 	public void hide() {
-		setVisibility(View.INVISIBLE);
+	    if (mDisabled) {
+	  		setVisibility(View.GONE);
+	    } else {
+	  		setVisibility(View.INVISIBLE);
+	    }
 		cancel();
 		invalidate();
 	}
@@ -169,6 +190,10 @@ public class TickerTape extends HorizontalScrollView {
 	 * @return The ticker tape object itself so it can be used as a builder.
 	 */
 	public TickerTape startMoving() {
+		
+		if (mDisabled) {
+			return this;
+		}
 		mCancelled = false;
 
 		// Determine how many items have to be displayed at least.

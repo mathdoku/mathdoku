@@ -321,6 +321,8 @@ public class Preferences {
 					STATISTICS_TAB_LAST_SHOWED_DEFAULT);
 			prefeditor.putString(PUZZLE_SETTING_OUTER_SWIPE_CIRCLE,
 					PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_DEFAULT);
+			prefeditor.putBoolean(DIGIT_BUTTONS_VISIBLE,
+					DIGIT_BUTTONS_VISIBLE_DEFAULT);
 		}
 
 		// Save
