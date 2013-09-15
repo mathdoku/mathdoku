@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="net.cactii.mathdoku"
+    package="net.mathdoku.battle"
     android:installLocation="auto"
-    android:versionCode="577"
+    android:versionCode="578"
     android:versionName="Version 2.1.0 Beta-1" >
 
     <!-- Cannot yet upgrade to target SDK-version 18 due to a bug in the archive. The grid view -->
@@ -25,7 +25,7 @@
         android:label="@string/application_name"
         android:theme="@style/AppBaseTheme" >
         <activity
-            android:name="net.cactii.mathdoku.ui.PuzzleFragmentActivity"
+            android:name="net.mathdoku.battle.ui.PuzzleFragmentActivity"
             android:label="@string/application_name"
             android:launchMode="singleTop" >
             <intent-filter>
@@ -34,7 +34,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="net.cactii.mathdoku.ui.SharedPuzzleActivity" >
+        <activity android:name="net.mathdoku.battle.ui.SharedPuzzleActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -49,16 +49,16 @@
         </activity>
 
         <provider
-            android:name="net.cactii.mathdoku.util.FileProvider"
-            android:authorities="net.cactii.mathdoku.util.FileProvider"
+            android:name="net.mathdoku.battle.util.FileProvider"
+            android:authorities="net.mathdoku.battle.util.FileProvider"
             android:exported="true"
             tools:ignore="ExportedContentProvider" />
 
-        <activity android:name="net.cactii.mathdoku.ui.PuzzlePreferenceActivity" />
-        <activity android:name="net.cactii.mathdoku.ui.ArchiveFragmentActivity" />
-        <activity android:name="net.cactii.mathdoku.ui.ArchivePreferenceActivity" />
-        <activity android:name="net.cactii.mathdoku.ui.StatisticsFragmentActivity" />
-        <activity android:name="net.cactii.mathdoku.ui.StatisticsPreferenceActivity" />
+        <activity android:name="net.mathdoku.battle.ui.PuzzlePreferenceActivity" />
+        <activity android:name="net.mathdoku.battle.ui.ArchiveFragmentActivity" />
+        <activity android:name="net.mathdoku.battle.ui.ArchivePreferenceActivity" />
+        <activity android:name="net.mathdoku.battle.ui.StatisticsFragmentActivity" />
+        <activity android:name="net.mathdoku.battle.ui.StatisticsPreferenceActivity" />
     </application>
 
 </manifest>

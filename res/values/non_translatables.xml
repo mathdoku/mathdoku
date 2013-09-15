@@ -8,7 +8,7 @@
 
 
     <!-- Name of application. This may NOT be translated. -->
-    <string name="application_name">MathDoku</string>
+    <string name="application_name">MathDoku Battle</string>
 
     <!-- The possible values of the "themes" option. This option controls which theme is used for displaying. -->
     <string-array name="puzzle_setting_theme_values_text">

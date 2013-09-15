@@ -32,39 +32,39 @@
 	</natures>
 	<filteredResources>
 		<filter>
-			<id>1376222374366</id>
+			<id>1379256455450</id>
 			<name></name>
 			<type>30</type>
 			<matcher>
 				<id>org.eclipse.ui.ide.multiFilter</id>
-				<arguments>1.0-location-matches-false-false-bin</arguments>
+				<arguments>1.0-name-matches-false-false-homepage</arguments>
 			</matcher>
 		</filter>
 		<filter>
-			<id>1376222374369</id>
+			<id>1379256455451</id>
 			<name></name>
 			<type>30</type>
 			<matcher>
 				<id>org.eclipse.ui.ide.multiFilter</id>
-				<arguments>1.0-location-matches-false-false-gen</arguments>
+				<arguments>1.0-name-matches-false-false-.settings</arguments>
 			</matcher>
 		</filter>
 		<filter>
-			<id>1376222374372</id>
+			<id>1379256455453</id>
 			<name></name>
 			<type>30</type>
 			<matcher>
 				<id>org.eclipse.ui.ide.multiFilter</id>
-				<arguments>1.0-location-matches-false-false-homepage</arguments>
+				<arguments>1.0-name-matches-false-false-.git</arguments>
 			</matcher>
 		</filter>
 		<filter>
-			<id>1376222374374</id>
+			<id>1379256455454</id>
 			<name></name>
 			<type>30</type>
 			<matcher>
 				<id>org.eclipse.ui.ide.multiFilter</id>
-				<arguments>1.0-name-matches-false-false-.svn</arguments>
+				<arguments>1.0-name-matches-false-false-doc</arguments>
 			</matcher>
 		</filter>
 	</filteredResources>

@@ -2,13 +2,13 @@
 <!-- subtle color differences between the relative and the linear layouts. -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:mathdoku="http://schemas.android.com/apk/res/net.cactii.mathdoku"
+    xmlns:mathdoku="http://schemas.android.com/apk/res/net.mathdoku.battle"
     android:id="@+id/topLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000" >
 
-    <net.cactii.mathdoku.hint.TickerTape
+    <net.mathdoku.battle.hint.TickerTape
         android:id="@+id/tickerTape"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
         <!-- The layout will only be filled with the timer. But note that we put another layout on -->
         <!-- top of this layout for displaying the input mode image and text. -->
 
-        <net.cactii.mathdoku.grid.ui.GridPlayerRelativeLayout
+        <net.mathdoku.battle.grid.ui.GridPlayerRelativeLayout
             android:id="@+id/grid_player_relative_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -54,9 +54,9 @@
                 android:lines="1"
                 android:textSize="@dimen/text_size_default"
                 android:textStyle="bold" />
-        </net.cactii.mathdoku.grid.ui.GridPlayerRelativeLayout>
+        </net.mathdoku.battle.grid.ui.GridPlayerRelativeLayout>
 
-        <net.cactii.mathdoku.grid.ui.GridPlayerView
+        <net.mathdoku.battle.grid.ui.GridPlayerView
             android:id="@+id/grid_player_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

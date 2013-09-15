@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import net.cactii.mathdoku.developmentHelper.DevelopmentHelper;
-import net.cactii.mathdoku.developmentHelper.DevelopmentHelper.Mode;
-import net.cactii.mathdoku.grid.GridCage;
-import net.cactii.mathdoku.grid.GridCell;
+import net.mathdoku.battle.developmentHelper.DevelopmentHelper;
+import net.mathdoku.battle.developmentHelper.DevelopmentHelper.Mode;
+import net.mathdoku.battle.grid.GridCage;
+import net.mathdoku.battle.grid.GridCell;
 import android.util.Log;
 
 public class MathDokuDLX extends DLX {
