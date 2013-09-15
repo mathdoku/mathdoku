@@ -1,6 +1,5 @@
 package net.cactii.mathdoku.ui;
 
-import net.cactii.mathdoku.Preferences;
 import net.cactii.mathdoku.R;
 import net.cactii.mathdoku.util.FeedbackEmail;
 import android.app.ActionBar;
@@ -77,7 +76,7 @@ public class StatisticsFragmentActivity extends AppFragmentActivity implements
 
 		// Show the same page as last time (or the last tab if statistics were
 		// not displayed before.
-		int tab = Preferences.getInstance(this).getStatisticsTabLastDisplayed();
+		int tab = mMathDokuPreferences.getStatisticsTabLastDisplayed();
 		mViewPager.setCurrentItem(tab >= 0 ? tab
 				: mStatisticsFragmentPagerAdapter.getCount() - 1);
 
@@ -90,8 +89,8 @@ public class StatisticsFragmentActivity extends AppFragmentActivity implements
 	@Override
 	protected void onPause() {
 		// Store tab which is currently displayed.
-		Preferences.getInstance(this).setStatisticsTabLastDisplayed(
-				mViewPager.getCurrentItem());
+		mMathDokuPreferences.setStatisticsTabLastDisplayed(mViewPager
+				.getCurrentItem());
 		super.onPause();
 	}
 

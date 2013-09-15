@@ -44,6 +44,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -74,6 +75,18 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 	private TickerTape mTickerTape;
 
+	private TableLayout mButtonsTableLayout;
+	private Button mDigit1;
+	private Button mDigit2;
+	private Button mDigit3;
+	private Button mDigit4;
+	private Button mDigit5;
+	private Button mDigit6;
+	private Button mDigit7;
+	private Button mDigit8;
+	private Button mDigit9;
+	private Button mDigitC;
+	
 	private Button mClearButton;
 	private Button mUndoButton;
 	private View[] mSoundEffectViews;
@@ -132,6 +145,28 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				.findViewById(R.id.grid_player_view);
 		mTimerText = (TextView) mRootView.findViewById(R.id.timerText);
 
+		mButtonsTableLayout = (TableLayout)mRootView.findViewById(R.id.digitButtons);
+		mDigit1 = (Button)mRootView.findViewById(R.id.digit1);
+		mDigit1.setBackgroundColor(mPainter.getButtonBackgroundColor());
+		mDigit2 = (Button)mRootView.findViewById(R.id.digit2);
+		mDigit2.setBackgroundColor(mPainter.getButtonBackgroundColor());
+		mDigit3 = (Button)mRootView.findViewById(R.id.digit3);
+		mDigit3.setBackgroundColor(mPainter.getButtonBackgroundColor());
+		mDigit4 = (Button)mRootView.findViewById(R.id.digit4);
+		mDigit4.setBackgroundColor(mPainter.getButtonBackgroundColor());
+		mDigit5 = (Button)mRootView.findViewById(R.id.digit5);
+		mDigit5.setBackgroundColor(mPainter.getButtonBackgroundColor());
+		mDigit6 = (Button)mRootView.findViewById(R.id.digit6);
+		mDigit6.setBackgroundColor(mPainter.getButtonBackgroundColor());
+		mDigit7 = (Button)mRootView.findViewById(R.id.digit7);
+		mDigit7.setBackgroundColor(mPainter.getButtonBackgroundColor());
+		mDigit8 = (Button)mRootView.findViewById(R.id.digit8);
+		mDigit8.setBackgroundColor(mPainter.getButtonBackgroundColor());
+		mDigit9 = (Button)mRootView.findViewById(R.id.digit9);
+		mDigit9.setBackgroundColor(mPainter.getButtonBackgroundColor());
+		mDigitC = (Button)mRootView.findViewById(R.id.digitC);
+		mDigitC.setBackgroundColor(mPainter.getButtonBackgroundColor());
+		
 		mClearButton = (Button) mRootView.findViewById(R.id.clearButton);
 		mClearButton.setBackgroundColor(mPainter.getButtonBackgroundColor());
 
@@ -179,6 +214,70 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				}
 			}
 		});
+		
+		mDigit1.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				setDigitSelected(1);
+			}
+		});
+		mDigit2.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				setDigitSelected(2);
+			}
+		});
+		mDigit3.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				setDigitSelected(3);
+			}
+		});
+		mDigit4.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				setDigitSelected(4);
+			}
+		});
+		mDigit5.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				setDigitSelected(5);
+			}
+		});
+		mDigit6.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				setDigitSelected(6);
+			}
+		});
+		mDigit7.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				setDigitSelected(7);
+			}
+		});
+		mDigit8.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				setDigitSelected(8);
+			}
+		});
+		mDigit9.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				setDigitSelected(9);
+			}
+		});
+		mDigitC.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (mGridPlayerView != null) {
+					mGridPlayerView.digitSelected(0);
+					mGridPlayerView.invalidate();
+				}
+			}
+		});
 
 		mGridPlayerView.setFocusable(true);
 		mGridPlayerView.setFocusableInTouchMode(true);
@@ -189,6 +288,16 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		mInputModeText = (TextView) mRootView
 				.findViewById(R.id.input_mode_text);
 		setInputModeTextVisibility(mGridPlayerView.getGridInputMode());
+		mInputModeText.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (mGridPlayerView != null && mGrid != null) {
+					// Toggle input mode
+					mGridPlayerView.toggleInputMode();
+				}
+			}
+		});
+		
 		mInputModeImageView.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -199,6 +308,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			}
 		});
 		mGridPlayerView.setOnInputModeChangedListener(this);
+		// Force display of normal mode text.
+		this.onInputModeChanged(GridInputMode.NORMAL);
 
 		registerForContextMenu(mGridPlayerView);
 
@@ -447,6 +558,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 				setClearAndUndoButtonVisibility((mGrid == null ? null : mGrid
 						.getSelectedCell()));
+				
+				setDigitButtons();
 
 				// Handler for solved game
 				setOnSolvedHandler();
@@ -462,6 +575,76 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		} else {
 			// No grid available.
 			setNoGridLoaded();
+		}
+	}
+	
+	/**
+	 * Set the correct visibility of the digit select buttons.
+	 */
+	private void setDigitButtons() {
+		if (mMathDokuPreferences.isDigitButtonsVisible()) {
+			mDigit5.setVisibility(View.INVISIBLE);
+			mDigit6.setVisibility(View.INVISIBLE);
+			mDigit7.setVisibility(View.INVISIBLE);
+			mDigit8.setVisibility(View.INVISIBLE);
+			mDigit9.setVisibility(View.INVISIBLE);
+
+			switch (mGrid.getGridSize()) {
+			case 9:
+				mDigit9.setVisibility(View.VISIBLE);
+			case 8:
+				mDigit8.setVisibility(View.VISIBLE);
+			case 7:
+				mDigit7.setVisibility(View.VISIBLE);
+			case 6:
+				mDigit6.setVisibility(View.VISIBLE);
+			case 5:
+				mDigit5.setVisibility(View.VISIBLE);				
+			}
+			setDigitButtonsMode();
+			mButtonsTableLayout.setVisibility(View.VISIBLE);
+			mTickerTape.setDisabled(true);
+			mDigit1.invalidate();
+			mDigit2.invalidate();
+			mDigit3.invalidate();
+			mDigit4.invalidate();
+			mDigit5.invalidate();
+			mDigit6.invalidate();
+			mDigit7.invalidate();
+			mDigit8.invalidate();
+			mDigit9.invalidate();
+			mDigitC.invalidate();
+			mButtonsTableLayout.invalidate();
+		} else {
+			mButtonsTableLayout.setVisibility(View.GONE);
+			mTickerTape.setDisabled(false);
+		}
+	}
+	
+	/**
+	 * Set the digit buttons colours base on input mode.
+	 */
+	private void setDigitButtonsMode() {
+		if (mGridPlayerView.getGridInputMode() == GridInputMode.NORMAL) {
+			mDigit1.setTextColor(mPainter.getDigitFgColor());
+			mDigit2.setTextColor(mPainter.getDigitFgColor());
+			mDigit3.setTextColor(mPainter.getDigitFgColor());
+			mDigit4.setTextColor(mPainter.getDigitFgColor());
+			mDigit5.setTextColor(mPainter.getDigitFgColor());
+			mDigit6.setTextColor(mPainter.getDigitFgColor());
+			mDigit7.setTextColor(mPainter.getDigitFgColor());
+			mDigit8.setTextColor(mPainter.getDigitFgColor());
+			mDigit9.setTextColor(mPainter.getDigitFgColor());
+		} else {
+			mDigit1.setTextColor(mPainter.getDigitFgMaybeColor());
+			mDigit2.setTextColor(mPainter.getDigitFgMaybeColor());
+			mDigit3.setTextColor(mPainter.getDigitFgMaybeColor());
+			mDigit4.setTextColor(mPainter.getDigitFgMaybeColor());
+			mDigit5.setTextColor(mPainter.getDigitFgMaybeColor());
+			mDigit6.setTextColor(mPainter.getDigitFgMaybeColor());
+			mDigit7.setTextColor(mPainter.getDigitFgMaybeColor());
+			mDigit8.setTextColor(mPainter.getDigitFgMaybeColor());
+			mDigit9.setTextColor(mPainter.getDigitFgMaybeColor());
 		}
 	}
 
@@ -517,6 +700,9 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			String key) {
 		if (key.equals(Preferences.PUZZLE_SETTING_THEME)) {
 			setTheme();
+		}
+		if (key.equals(Preferences.DIGIT_BUTTONS_VISIBLE)) {
+			setDigitButtons();
 		}
 	}
 
@@ -837,6 +1023,9 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		if (mUndoButton != null) {
 			mUndoButton.setVisibility(View.GONE);
 		}
+		if (mButtonsTableLayout != null) {
+			mButtonsTableLayout.setVisibility(View.GONE);
+		}
 	}
 
 	/**
@@ -873,6 +1062,10 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			mUndoButton.setVisibility(View.GONE);
 			mUndoButton.invalidate();
 		}
+		if (mButtonsTableLayout != null) {
+			mButtonsTableLayout.setVisibility(View.GONE);
+			mButtonsTableLayout.invalidate();
+		}
 	}
 
 	/**
@@ -889,7 +1082,10 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	@Override
 	public void onInputModeChanged(final GridInputMode inputMode) {
 		setInputModeImage(inputMode);
-
+		setDigitButtonsMode();
+		// Display message
+		mInputModeText.setVisibility(View.VISIBLE);
+		
 		boolean showInputModeText = false;
 		int inputModeTextResId = 0;
 		switch (inputMode) {
@@ -931,8 +1127,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 		}
 		if (showInputModeText) {
-			// Display message
-			mInputModeText.setVisibility(View.VISIBLE);
 			mInputModeText.setText(inputModeTextResId);
 			mInputModeText.invalidate();
 
@@ -995,6 +1189,14 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			mInputModeImageView.invalidate();
 		}
 	}
+	
+	/**
+	 * Called when the selected digit button has been pressed.
+	 */
+	private void setDigitSelected(int digit) {
+		mGridPlayerView.digitSelected(digit);
+		mGridPlayerView.invalidate();
+	}
 
 	/**
 	 * Resumes the fragment.
@@ -1014,9 +1216,10 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				|| (mTimerTask != null && mTimerTask.isCancelled())) {
 			startTimer();
 		}
-
-		if (mTickerTape != null && mTickerTape.isCancelled()) {
-			mTickerTape.show();
+		if (!mMathDokuPreferences.isDigitButtonsVisible()) {
+			if (mTickerTape != null && mTickerTape.isCancelled()) {
+				mTickerTape.show();
+			}
 		}
 	}
 

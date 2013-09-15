@@ -60,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/input_mode_image"
+            android:layout_alignParentRight="true"
             android:paddingLeft="10dp"
             android:textSize="@dimen/text_size_default"
             android:textStyle="bold"
@@ -76,6 +76,104 @@
 
         <!-- Input mode text should be positioned below timer because of z-layering. In case it is displayed it should cover the timer text and the ticker tape. -->
 
+		<TableLayout
+		    android:id="@+id/digitButtons"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_below="@id/tickerTape"
+		    android:paddingTop="10dp"
+		    android:layout_centerHorizontal="true"
+		    android:layout_centerInParent="true"
+		    android:layout_centerVertical="true" >
+
+		    <TableRow>
+		        <Button android:text="@string/main_ui_button1"
+		            android:id="@+id/digit1"
+		            android:textSize="@dimen/controls_text_size_default"
+                	android:textStyle="bold"
+                	android:layout_weight="1"
+                	android:layout_margin="5dp"
+                	tools:ignore="ButtonStyle" />
+		        <Button android:text="@string/main_ui_button2"
+		            android:id="@+id/digit2"
+		       		android:textSize="@dimen/controls_text_size_default"
+                	android:textStyle="bold"
+                	android:layout_weight="1"
+                	android:layout_margin="5dp"
+                	tools:ignore="ButtonStyle"     
+		            />
+
+		        <Button android:text="@string/main_ui_button3"
+		            android:id="@+id/digit3"
+		          	android:textSize="@dimen/controls_text_size_default"
+                	android:textStyle="bold"
+                	android:layout_weight="1"
+                	android:layout_margin="5dp"
+                	tools:ignore="ButtonStyle"  
+		            />
+
+		        <Button android:text="@string/main_ui_button4"
+		            android:id="@+id/digit4"
+		            android:textSize="@dimen/controls_text_size_default"
+                	android:textStyle="bold"
+                	android:layout_weight="1"
+                	android:layout_margin="5dp"
+                	tools:ignore="ButtonStyle"
+		            />
+		        <Button android:text="@string/main_ui_button5"
+		            android:id="@+id/digit5"
+		            android:textSize="@dimen/controls_text_size_default"
+                	android:textStyle="bold"
+                	android:layout_weight="1"
+                	android:layout_margin="5dp"
+                	tools:ignore="ButtonStyle"
+		            />
+		        
+		    </TableRow>
+		    <TableRow>
+		        <Button
+		            android:id="@+id/digit6"
+		            android:layout_weight="1"
+		            android:text="@string/main_ui_button6"
+		            android:textSize="@dimen/controls_text_size_default"
+		            android:textStyle="bold"
+		            android:layout_margin="5dp"
+		            tools:ignore="ButtonStyle" />
+		        <Button android:text="@string/main_ui_button7"
+		            android:id="@+id/digit7"
+		            android:textSize="@dimen/controls_text_size_default"
+                	android:textStyle="bold"
+                	android:layout_weight="1"
+                	android:layout_margin="5dp"
+                	tools:ignore="ButtonStyle"
+		            />
+		        <Button android:text="@string/main_ui_button8"
+		            android:id="@+id/digit8"
+		            android:textSize="@dimen/controls_text_size_default"
+                	android:textStyle="bold"
+                	android:layout_weight="1"
+                	android:layout_margin="5dp"
+                	tools:ignore="ButtonStyle"
+		            />
+		        <Button
+		            android:layout_weight="1"
+		            android:id="@+id/digit9"
+		            android:text="@string/main_ui_button9"
+		            android:textSize="@dimen/controls_text_size_default"
+		            android:textStyle="bold"
+		            android:layout_margin="5dp"
+		            tools:ignore="ButtonStyle" />
+		        <Button
+		            android:layout_weight="1"
+		            android:id="@+id/digitC"
+                	android:text="@string/main_ui_buttonC"
+		            android:textSize="@dimen/controls_text_size_default"
+		            android:textStyle="bold"
+		            android:layout_margin="5dp"
+		            tools:ignore="ButtonStyle" />
+
+          </TableRow>
+		    </TableLayout>
         <TextView
             android:id="@+id/input_mode_text"
             android:layout_width="wrap_content"

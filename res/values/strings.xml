@@ -48,7 +48,7 @@
 
     <!-- The title and body describing how to play the game. -->
     <string name="puzzle_help_dialog_how_to_play__section_title">How to play</string>
-    <string name="puzzle_help_dialog_how_to_play_section_body">Touch to select a cell in the grid, then swipe towards a digit to select it. By double tapping a cell you can switch between the \'normal\' and the \'maybe\' mode. In \'maybe\' mode you can mark multiple possibilities for the cell.\n\nLong press a cell to enter \'copy\' mode. The values of the highlighted cell will be copied to each cell that you tap while \'copy\' mode is active. Double tap to exit \'copy\' mode.\n\nPuzzles will be saved automatically.</string>
+    <string name="puzzle_help_dialog_how_to_play_section_body">Touch to select a cell in the grid, then either swipe towards a digit to select it, or touch the button with the number you\'d like to insert. By double tapping a cell you can switch between the \'normal\' and the \'maybe\' mode. In \'maybe\' mode you can mark multiple possibilities for the cell.\n\nLong press a cell to enter \'copy\' mode. The values of the highlighted cell will be copied to each cell that you tap while \'copy\' mode is active. Double tap to exit \'copy\' mode.\n\nPuzzles will be saved automatically.</string>
 
     <!-- The version title in the help screen. -->
     <string name="puzzle_help_dialog_version_section_title">Version</string>
@@ -98,7 +98,7 @@
     <string name="action_archive">Archive</string>
 
     <!-- The menu item that allows the player to use some less frequently used cheats. -->
-    <string name="action_cheats">Cheats</string>
+    <string name="action_cheats">Cheats...</string>
 
     <!-- The menu item that allows the user to clear the entire grid. Note this item is only available if at least one cell in the entire puzzle contains a (maybe) value. -->
     <string name="action_clear_grid">Clear grid</string>
@@ -180,6 +180,10 @@
     <string name="puzzle_setting_outer_swipe_circle_visible_from_grid_size_long">Display a second swipe circle for puzzles of size %1$d and above</string>
     <string name="puzzle_setting_outer_swipe_circle_visible_never">Never display a second swipe circle</string>
 
+    <!--  The title and summary of the "digit buttons" option. Controls whether digit buttons are used instead of swipe circle. -->
+    <string name="puzzle_setting_digit_buttons_title">Use digit buttons</string>
+    <string name="puzzle_setting_digit_buttons_summary">Use digit buttons instead of swipe circle</string>
+    
     <!-- The title and summary of the "colored digits" option. This option controls whether maybe numbers and normal numbers are displayed in distinct colors or in one monochrome color. -->
     <string name="puzzle_setting_colored_digits_title">Colored digits</string>
     <string name="puzzle_setting_colored_digits_summary">Use colored digits to distinguish maybe numbers from normal numbers</string>
@@ -240,6 +244,18 @@
 
     <!-- The text on the undo button in the main UI. -->
     <string name="main_ui_undo">Undo</string>
+    
+    <!--  The values of the numbers on the digit buttons. -->
+    <string name="main_ui_button1">1</string>
+    <string name="main_ui_button2">2</string>
+    <string name="main_ui_button3">3</string>
+    <string name="main_ui_button4">4</string>
+    <string name="main_ui_button5">5</string>
+    <string name="main_ui_button6">6</string>
+    <string name="main_ui_button7">7</string>
+    <string name="main_ui_button8">8</string>
+    <string name="main_ui_button9">9</string>
+    <string name="main_ui_buttonC">C</string>
 
     <!-- DIALOG FEEDBACK - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -418,6 +434,8 @@
     <string name="input_mode_maybe_long_description">Switched to maybe input mode\nDouble tap a cell to switch to normal mode.</string>
     <string name="input_mode_copy_short_description">Copy cells</string>
     <string name="input_mode_copy_long_description">Switched to \'copy\' mode. Values of the selected cell will be copied to each cell you tap. Double tap a cell to end \'copy\' mode.</string>
+    <string name="input_mode_normal">Normal mode</string>
+    <string name="input_mode_maybe">\'Maybe\' mode</string>
 
     <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
