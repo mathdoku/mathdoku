@@ -176,7 +176,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		initialValues.put(KEY_PUZZLE_COMPLEXITY,
 				gridGeneratingParameters.mPuzzleComplexity.toString());
 		initialValues.put(KEY_HIDE_OPERATORS,
-				gridGeneratingParameters.mHideOperators);
+				toSQLiteBoolean(gridGeneratingParameters.mHideOperators));
 		initialValues.put(KEY_MAX_CAGE_RESULT,
 				gridGeneratingParameters.mMaxCageResult);
 		initialValues.put(KEY_MAX_CAGE_SIZE,

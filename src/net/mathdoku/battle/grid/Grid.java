@@ -639,6 +639,10 @@ public class Grid {
 		mSelectedCell = null;
 		mRevealed = false;
 		mSolvingAttemptId = -1;
+		mRowId = -1;
+		mClearRedundantPossiblesInSameRowOrColumnCount = 0;
+		mSolvedListener = null;
+		mGridStatistics = new GridStatistics();
 
 		// Set new data in grid
 		mGridGeneratingParameters = gridGeneratingParameters;
