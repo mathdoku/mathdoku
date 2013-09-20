@@ -6,6 +6,7 @@ import net.mathdoku.battle.GameTimer;
 import net.mathdoku.battle.Preferences;
 import net.mathdoku.battle.R;
 import net.mathdoku.battle.grid.CellChange;
+import net.mathdoku.battle.grid.DigitPositionGrid;
 import net.mathdoku.battle.grid.Grid;
 import net.mathdoku.battle.grid.GridCage;
 import net.mathdoku.battle.grid.GridCell;
@@ -43,15 +44,13 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-/**
- * @author Paul
- * 
- */
 public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		OnSharedPreferenceChangeListener, OnCreateContextMenuListener,
 		GridPlayerView.OnInputModeChangedListener {
@@ -75,20 +74,22 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 	private TickerTape mTickerTape;
 
-	private TableLayout mButtonsTableLayout;
-	private Button mDigit1;
-	private Button mDigit2;
-	private Button mDigit3;
-	private Button mDigit4;
-	private Button mDigit5;
-	private Button mDigit6;
-	private Button mDigit7;
-	private Button mDigit8;
-	private Button mDigit9;
-	private Button mDigitC;
-	
+	// The digit positions are the places in the table layout on which the digit
+	// buttons will be placed.
+	private LinearLayout mControlsSwipeOnlyLinearLayout;
+	private TableLayout mControlsPadBigTableLayout;
+	private TableRow mCcontrolsPadBigTableRow3;
+	private final Button mDigitPosition[] = new Button[9];
+	private DigitPositionGrid mDigitPositionGrid;
+
+	// Clear buttons
 	private Button mClearButton;
+	private Button mClearButtonSwipeOnly;
+
+	// Undo buttons
 	private Button mUndoButton;
+	private Button mUndoButtonSwipeOnly;
+
 	private View[] mSoundEffectViews;
 
 	public Preferences mMathDokuPreferences;
@@ -145,39 +146,48 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				.findViewById(R.id.grid_player_view);
 		mTimerText = (TextView) mRootView.findViewById(R.id.timerText);
 
-		mButtonsTableLayout = (TableLayout)mRootView.findViewById(R.id.digitButtons);
-		mDigit1 = (Button)mRootView.findViewById(R.id.digit1);
-		mDigit1.setBackgroundColor(mPainter.getButtonBackgroundColor());
-		mDigit2 = (Button)mRootView.findViewById(R.id.digit2);
-		mDigit2.setBackgroundColor(mPainter.getButtonBackgroundColor());
-		mDigit3 = (Button)mRootView.findViewById(R.id.digit3);
-		mDigit3.setBackgroundColor(mPainter.getButtonBackgroundColor());
-		mDigit4 = (Button)mRootView.findViewById(R.id.digit4);
-		mDigit4.setBackgroundColor(mPainter.getButtonBackgroundColor());
-		mDigit5 = (Button)mRootView.findViewById(R.id.digit5);
-		mDigit5.setBackgroundColor(mPainter.getButtonBackgroundColor());
-		mDigit6 = (Button)mRootView.findViewById(R.id.digit6);
-		mDigit6.setBackgroundColor(mPainter.getButtonBackgroundColor());
-		mDigit7 = (Button)mRootView.findViewById(R.id.digit7);
-		mDigit7.setBackgroundColor(mPainter.getButtonBackgroundColor());
-		mDigit8 = (Button)mRootView.findViewById(R.id.digit8);
-		mDigit8.setBackgroundColor(mPainter.getButtonBackgroundColor());
-		mDigit9 = (Button)mRootView.findViewById(R.id.digit9);
-		mDigit9.setBackgroundColor(mPainter.getButtonBackgroundColor());
-		mDigitC = (Button)mRootView.findViewById(R.id.digitC);
-		mDigitC.setBackgroundColor(mPainter.getButtonBackgroundColor());
-		
+		// Get button references from layout
+		mControlsSwipeOnlyLinearLayout = (LinearLayout) mRootView
+				.findViewById(R.id.controlsSwipeOnly);
+		mControlsPadBigTableLayout = (TableLayout) mRootView
+				.findViewById(R.id.controlsPadBigTableLayout);
+		mCcontrolsPadBigTableRow3 = (TableRow) mRootView
+				.findViewById(R.id.controlsButtonRow3);
+		mDigitPosition[0] = (Button) mRootView
+				.findViewById(R.id.digitPosition1);
+		mDigitPosition[1] = (Button) mRootView
+				.findViewById(R.id.digitPosition2);
+		mDigitPosition[2] = (Button) mRootView
+				.findViewById(R.id.digitPosition3);
+		mDigitPosition[3] = (Button) mRootView
+				.findViewById(R.id.digitPosition4);
+		mDigitPosition[4] = (Button) mRootView
+				.findViewById(R.id.digitPosition5);
+		mDigitPosition[5] = (Button) mRootView
+				.findViewById(R.id.digitPosition6);
+		mDigitPosition[6] = (Button) mRootView
+				.findViewById(R.id.digitPosition7);
+		mDigitPosition[7] = (Button) mRootView
+				.findViewById(R.id.digitPosition8);
+		mDigitPosition[8] = (Button) mRootView
+				.findViewById(R.id.digitPosition9);
+
 		mClearButton = (Button) mRootView.findViewById(R.id.clearButton);
-		mClearButton.setBackgroundColor(mPainter.getButtonBackgroundColor());
+		mClearButtonSwipeOnly = (Button) mRootView
+				.findViewById(R.id.clearButtonSwipeOnly);
 
 		mUndoButton = (Button) mRootView.findViewById(R.id.undoButton);
-		mUndoButton.setBackgroundColor(mPainter.getButtonBackgroundColor());
+		mUndoButtonSwipeOnly = (Button) mRootView
+				.findViewById(R.id.undoButtonSwipeOnly);
 
 		mTickerTape = (TickerTape) mRootView.findViewById(R.id.tickerTape);
 		mGridPlayerView.setTickerTape(mTickerTape);
 
 		mSoundEffectViews = new View[] { mGridPlayerView, mClearButton,
-				mUndoButton };
+				mClearButtonSwipeOnly, mUndoButton, mUndoButtonSwipeOnly,
+				mDigitPosition[0], mDigitPosition[1], mDigitPosition[2],
+				mDigitPosition[3], mDigitPosition[4], mDigitPosition[5],
+				mDigitPosition[6], mDigitPosition[7], mDigitPosition[8] };
 
 		// Hide all controls until sure a grid view can be displayed.
 		setNoGridLoaded();
@@ -189,7 +199,28 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 						setClearAndUndoButtonVisibility(cell);
 					}
 				});
-		mClearButton.setOnClickListener(new OnClickListener() {
+
+		for (int i = 0; i < mDigitPosition.length; i++) {
+			if (mDigitPosition[i] != null) {
+				mDigitPosition[i].setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						// Convert text of button (number) to Integer
+						int d = Integer.parseInt(((Button) v).getText()
+								.toString());
+
+						mGridPlayerView.digitSelected(d);
+
+						setClearAndUndoButtonVisibility(mGrid.getSelectedCell());
+						mGridPlayerView.requestFocus();
+						mGridPlayerView.invalidate();
+					}
+				});
+			}
+		}
+
+		// Set same onClickListener for both clear buttons
+		OnClickListener onClickListener = new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if (mGridPlayerView != null) {
@@ -199,8 +230,12 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 					mGridPlayerView.invalidate();
 				}
 			}
-		});
-		mUndoButton.setOnClickListener(new OnClickListener() {
+		};
+		mClearButton.setOnClickListener(onClickListener);
+		mClearButtonSwipeOnly.setOnClickListener(onClickListener);
+
+		// Set same onClickListener for both undo buttons
+		onClickListener = new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if (mGrid.undoLastMove()) {
@@ -213,71 +248,9 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 					((FragmentActivity) mContext).invalidateOptionsMenu();
 				}
 			}
-		});
-		
-		mDigit1.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				setDigitSelected(1);
-			}
-		});
-		mDigit2.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				setDigitSelected(2);
-			}
-		});
-		mDigit3.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				setDigitSelected(3);
-			}
-		});
-		mDigit4.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				setDigitSelected(4);
-			}
-		});
-		mDigit5.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				setDigitSelected(5);
-			}
-		});
-		mDigit6.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				setDigitSelected(6);
-			}
-		});
-		mDigit7.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				setDigitSelected(7);
-			}
-		});
-		mDigit8.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				setDigitSelected(8);
-			}
-		});
-		mDigit9.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				setDigitSelected(9);
-			}
-		});
-		mDigitC.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if (mGridPlayerView != null) {
-					mGridPlayerView.digitSelected(0);
-					mGridPlayerView.invalidate();
-				}
-			}
-		});
+		};
+		mUndoButton.setOnClickListener(onClickListener);
+		mUndoButtonSwipeOnly.setOnClickListener(onClickListener);
 
 		mGridPlayerView.setFocusable(true);
 		mGridPlayerView.setFocusableInTouchMode(true);
@@ -297,7 +270,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				}
 			}
 		});
-		
+
 		mInputModeImageView.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -549,6 +522,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 					mPuzzleGridLayout.invalidate();
 				}
 
+				setButtonLayout();
+
 				// Set timer
 				if (mMathDokuPreferences.isTimerVisible() && mTimerText != null) {
 					mTimerText.setVisibility(View.VISIBLE);
@@ -558,8 +533,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 				setClearAndUndoButtonVisibility((mGrid == null ? null : mGrid
 						.getSelectedCell()));
-				
-				setDigitButtons();
+				setDigitPositionGrid();
 
 				// Handler for solved game
 				setOnSolvedHandler();
@@ -575,76 +549,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		} else {
 			// No grid available.
 			setNoGridLoaded();
-		}
-	}
-	
-	/**
-	 * Set the correct visibility of the digit select buttons.
-	 */
-	private void setDigitButtons() {
-		if (mMathDokuPreferences.isDigitButtonsVisible()) {
-			mDigit5.setVisibility(View.INVISIBLE);
-			mDigit6.setVisibility(View.INVISIBLE);
-			mDigit7.setVisibility(View.INVISIBLE);
-			mDigit8.setVisibility(View.INVISIBLE);
-			mDigit9.setVisibility(View.INVISIBLE);
-
-			switch (mGrid.getGridSize()) {
-			case 9:
-				mDigit9.setVisibility(View.VISIBLE);
-			case 8:
-				mDigit8.setVisibility(View.VISIBLE);
-			case 7:
-				mDigit7.setVisibility(View.VISIBLE);
-			case 6:
-				mDigit6.setVisibility(View.VISIBLE);
-			case 5:
-				mDigit5.setVisibility(View.VISIBLE);				
-			}
-			setDigitButtonsMode();
-			mButtonsTableLayout.setVisibility(View.VISIBLE);
-			mTickerTape.setDisabled(true);
-			mDigit1.invalidate();
-			mDigit2.invalidate();
-			mDigit3.invalidate();
-			mDigit4.invalidate();
-			mDigit5.invalidate();
-			mDigit6.invalidate();
-			mDigit7.invalidate();
-			mDigit8.invalidate();
-			mDigit9.invalidate();
-			mDigitC.invalidate();
-			mButtonsTableLayout.invalidate();
-		} else {
-			mButtonsTableLayout.setVisibility(View.GONE);
-			mTickerTape.setDisabled(false);
-		}
-	}
-	
-	/**
-	 * Set the digit buttons colours base on input mode.
-	 */
-	private void setDigitButtonsMode() {
-		if (mGridPlayerView.getGridInputMode() == GridInputMode.NORMAL) {
-			mDigit1.setTextColor(mPainter.getDigitFgColor());
-			mDigit2.setTextColor(mPainter.getDigitFgColor());
-			mDigit3.setTextColor(mPainter.getDigitFgColor());
-			mDigit4.setTextColor(mPainter.getDigitFgColor());
-			mDigit5.setTextColor(mPainter.getDigitFgColor());
-			mDigit6.setTextColor(mPainter.getDigitFgColor());
-			mDigit7.setTextColor(mPainter.getDigitFgColor());
-			mDigit8.setTextColor(mPainter.getDigitFgColor());
-			mDigit9.setTextColor(mPainter.getDigitFgColor());
-		} else {
-			mDigit1.setTextColor(mPainter.getDigitFgMaybeColor());
-			mDigit2.setTextColor(mPainter.getDigitFgMaybeColor());
-			mDigit3.setTextColor(mPainter.getDigitFgMaybeColor());
-			mDigit4.setTextColor(mPainter.getDigitFgMaybeColor());
-			mDigit5.setTextColor(mPainter.getDigitFgMaybeColor());
-			mDigit6.setTextColor(mPainter.getDigitFgMaybeColor());
-			mDigit7.setTextColor(mPainter.getDigitFgMaybeColor());
-			mDigit8.setTextColor(mPainter.getDigitFgMaybeColor());
-			mDigit9.setTextColor(mPainter.getDigitFgMaybeColor());
 		}
 	}
 
@@ -701,8 +605,12 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		if (key.equals(Preferences.PUZZLE_SETTING_THEME)) {
 			setTheme();
 		}
-		if (key.equals(Preferences.DIGIT_BUTTONS_VISIBLE)) {
-			setDigitButtons();
+
+		// Determine which input mode(s) to use
+		if (key.equals(Preferences.PUZZLE_SETTING_DIGIT_BUTTONS_VISIBLE)) {
+			setButtonLayout();
+		} else if (key.equals(Preferences.PUZZLE_SETTING_COLORED_DIGITS)) {
+			setColorDigitButtons();
 		}
 	}
 
@@ -879,18 +787,25 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 *            should be visible. Use null in case no cell is selected.
 	 */
 	private void setClearAndUndoButtonVisibility(GridCell cell) {
-		if (mClearButton != null) {
-			mClearButton
+		// Set the clear button of the visible controls layout
+		Button clearButton = (mControlsPadBigTableLayout.getVisibility() == View.VISIBLE ? mClearButton
+				: mClearButtonSwipeOnly);
+		if (clearButton != null) {
+			clearButton
 					.setVisibility((cell == null || cell.isEmpty()) ? View.INVISIBLE
 							: View.VISIBLE);
-			mClearButton.invalidate();
+			clearButton.invalidate();
 		}
-		if (mUndoButton != null) {
-			mUndoButton
+
+		// Set the undo button of the visible controls layout
+		Button undoButton = (mControlsPadBigTableLayout.getVisibility() == View.VISIBLE ? mUndoButton
+				: mUndoButtonSwipeOnly);
+		if (undoButton != null) {
+			undoButton
 					.setVisibility((mGrid == null || mGrid.countMoves() == 0 || mGrid
 							.isActive() == false) ? View.INVISIBLE
 							: View.VISIBLE);
-			mUndoButton.invalidate();
+			undoButton.invalidate();
 		}
 	}
 
@@ -1023,8 +938,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		if (mUndoButton != null) {
 			mUndoButton.setVisibility(View.GONE);
 		}
-		if (mButtonsTableLayout != null) {
-			mButtonsTableLayout.setVisibility(View.GONE);
+		if (mControlsPadBigTableLayout != null) {
+			mControlsPadBigTableLayout.setVisibility(View.GONE);
 		}
 	}
 
@@ -1062,9 +977,9 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			mUndoButton.setVisibility(View.GONE);
 			mUndoButton.invalidate();
 		}
-		if (mButtonsTableLayout != null) {
-			mButtonsTableLayout.setVisibility(View.GONE);
-			mButtonsTableLayout.invalidate();
+		if (mControlsPadBigTableLayout != null) {
+			mControlsPadBigTableLayout.setVisibility(View.GONE);
+			mControlsPadBigTableLayout.invalidate();
 		}
 	}
 
@@ -1082,10 +997,10 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	@Override
 	public void onInputModeChanged(final GridInputMode inputMode) {
 		setInputModeImage(inputMode);
-		setDigitButtonsMode();
+
 		// Display message
 		mInputModeText.setVisibility(View.VISIBLE);
-		
+
 		boolean showInputModeText = false;
 		int inputModeTextResId = 0;
 		switch (inputMode) {
@@ -1139,6 +1054,9 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				}
 			}, 5000);
 		}
+
+		// Change color of digit buttons
+		setColorDigitButtons();
 	}
 
 	/**
@@ -1189,14 +1107,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			mInputModeImageView.invalidate();
 		}
 	}
-	
-	/**
-	 * Called when the selected digit button has been pressed.
-	 */
-	private void setDigitSelected(int digit) {
-		mGridPlayerView.digitSelected(digit);
-		mGridPlayerView.invalidate();
-	}
 
 	/**
 	 * Resumes the fragment.
@@ -1209,14 +1119,17 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			mGrid.setPreferences();
 		}
 
-		this.setSoundEffectsEnabled(mMathDokuPreferences
-				.isPlaySoundEffectEnabled());
+		// Set sound effects if applicable
+		setSoundEffectsEnabled(mMathDokuPreferences.isPlaySoundEffectEnabled());
 
+		// Resume the timer
 		if (mTimerTask == null
 				|| (mTimerTask != null && mTimerTask.isCancelled())) {
 			startTimer();
 		}
-		if (!mMathDokuPreferences.isDigitButtonsVisible()) {
+
+		// Resume the ticker tape if visible
+		if (mTickerTape.getVisibility() == View.VISIBLE) {
 			if (mTickerTape != null && mTickerTape.isCancelled()) {
 				mTickerTape.show();
 			}
@@ -1233,6 +1146,98 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		}
 		if (mTickerTape != null) {
 			mTickerTape.cancel();
+		}
+	}
+
+	/**
+	 * Set the digit position grid for layout the digit buttons and maybe
+	 * values.
+	 * 
+	 */
+	private void setDigitPositionGrid() {
+		// Get grid size
+		assert (mGrid != null);
+		int gridSize = mGrid.getGridSize();
+
+		// Only create the digit position grid if needed
+		if (mDigitPositionGrid == null
+				|| !mDigitPositionGrid.isReusable(gridSize)) {
+			// Create the mapping for mDigitPosition on the correct button
+			// grid layout.
+			mDigitPositionGrid = new DigitPositionGrid(gridSize);
+
+			// Propagate setting to the grid view as well for displaying maybe
+			// values (dependent on preferences).
+			mGridPlayerView.setDigitPositionGrid(mDigitPositionGrid);
+		}
+
+		// Use the created mapping to fill all digit positions.
+		for (int i = 0; i < mDigitPosition.length; i++) {
+			int value = mDigitPositionGrid.getValue(i);
+			mDigitPosition[i].setText(value > 0 ? Integer.toString(value) : "");
+			mDigitPosition[i]
+					.setVisibility(mDigitPositionGrid.getVisibility(i));
+		}
+
+		// Visibility of third row of digits buttons
+		if (mCcontrolsPadBigTableRow3 != null) {
+			mCcontrolsPadBigTableRow3
+					.setVisibility(gridSize >= 7 ? View.VISIBLE : View.GONE);
+		}
+	}
+
+	/**
+	 * Set the button layout which has to be shown. Note that the
+	 * mControlsPadBigTableLayout and the mControlsSwipeOnlyLinearLayout both
+	 * contain a clear and an undo buttons due to different layout restrictions.
+	 * So only one of those layouts should be displayed.
+	 */
+	private void setButtonLayout() {
+		// In case the digit buttons are hidden, entering digit can only be done
+		// using swiping.
+		boolean swipeOnly = (mMathDokuPreferences.isDigitButtonsVisible() == false);
+
+		if (mControlsPadBigTableLayout != null) {
+			mControlsPadBigTableLayout.setVisibility(swipeOnly ? View.GONE
+					: View.VISIBLE);
+			mControlsPadBigTableLayout.invalidate();
+		}
+		if (mControlsSwipeOnlyLinearLayout != null) {
+			mControlsSwipeOnlyLinearLayout
+					.setVisibility(swipeOnly ? View.VISIBLE : View.GONE);
+			mControlsSwipeOnlyLinearLayout.invalidate();
+		}
+
+		// Reset the visibility of the clear and undo button for the selected
+		// cell.
+		if (mGrid != null) {
+			setClearAndUndoButtonVisibility(mGrid.getSelectedCell());
+		}
+
+		setColorDigitButtons();
+	}
+
+	/**
+	 * Set the text color for all digit buttons.
+	 */
+	private void setColorDigitButtons() {
+		if (mControlsPadBigTableLayout.getVisibility() == View.VISIBLE) {
+			// Determine color to use for the digit buttons.
+			int color = 0xFFFFFFFF;
+			if (mPainter != null && mGridPlayerView != null) {
+				if (mMathDokuPreferences.isColoredDigitsVisible()) {
+					color = (mGridPlayerView.getGridInputMode() == GridInputMode.NORMAL ? mPainter
+							.getHighlightedTextColorNormalInputMode()
+							: mPainter.getHighlightedTextColorMaybeInputMode());
+				}
+			}
+
+			// Change the buttons.
+			for (int i = 0; i < mDigitPosition.length; i++) {
+				if (mDigitPosition[i] != null) {
+					mDigitPosition[i].setTextColor(color);
+				}
+			}
 		}
 	}
 }
