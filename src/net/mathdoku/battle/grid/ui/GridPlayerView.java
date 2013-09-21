@@ -113,25 +113,19 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 				mSwipeMotion = new SwipeMotion(this, mBorderWidth,
 						mGridCellSize);
 			}
-			if (mSwipeMotion.setTouchDownEvent(event) == false) {
-				// A position inside the grid border has been touched. Normally
-				// this border is very small and will therefore not be hit.
-				// However in training mode this border is much thicker in order
-				// to display the entire swipe border and can easy be touched.
-				mSwipeMotion = null;
-			} else {
-				if (mSwipeMotion.isDoubleTap()) {
-					toggleInputMode();
-					mSwipeMotion.clearDoubleTap();
-				} else {
-					// Select the touch down cell.
-					GridCell selectedCell = mGrid.setSelectedCell(mSwipeMotion
-							.getTouchDownCellCoordinates());
 
-					// Inform listener of puzzle fragment of start of motion
-					// event.
-					mTouchedListener.gridTouched(selectedCell);
-				}
+			mSwipeMotion.setTouchDownEvent(event);
+			if (mSwipeMotion.isDoubleTap()) {
+				toggleInputMode();
+				mSwipeMotion.clearDoubleTap();
+			} else if (mSwipeMotion.isTouchDownInsideGrid()) {
+				// Select the touch down cell.
+				GridCell selectedCell = mGrid.setSelectedCell(mSwipeMotion
+						.getTouchDownCellCoordinates());
+
+				// Inform listener of puzzle fragment of start of motion
+				// event.
+				mTouchedListener.gridTouched(selectedCell);
 
 				// Show the basic swipe hint. Replace this hint after a short
 				// pause.
@@ -145,14 +139,14 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 				// cancel this runnable as it is needed to finish the swipe
 				// motion.
 				mTouchHandler.postDelayed(mSwipeBorderDelayRunnable, 100);
-
-				// Post a runnable to detect a long press. This runnable is
-				// canceled on any motion or the up-event.
-				mTouchHandler
-						.postDelayed(mLongPressRunnable, LONG_PRESS_MILlIS);
 			}
 
-			// Do not allow other view to respond to this action, for example by
+			// Post a runnable to detect a long press. This runnable is
+			// canceled on any motion or the up-event.
+			mTouchHandler.postDelayed(mLongPressRunnable, LONG_PRESS_MILlIS);
+
+			// Do not allow other views to respond to this action, for example
+			// by
 			// handling the long press, which would result in malfunction of the
 			// swipe motion.
 			return true;
@@ -171,8 +165,7 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 					mCopyInputModeState.mCopyFromCell = selectedCell;
 				}
 			} else if (this.mTouchedListener != null && mSwipeMotion != null) {
-				this.playSoundEffect(SoundEffectConstants.CLICK);
-
+				playSoundEffect(SoundEffectConstants.CLICK);
 				mSwipeMotion.release(event);
 				int swipeDigit = mSwipeMotion.getFocussedDigit();
 				if (swipeDigit >= 1 && swipeDigit <= mGridSize) {
@@ -193,9 +186,6 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 														swipeDigit))
 								.setEraseConditions(2, 3000).show();
 					}
-				} else if (mSwipeMotion.isDoubleTap()) {
-					toggleInputMode();
-					mSwipeMotion.clearDoubleTap();
 				} else {
 					clearTickerTape();
 					if (swipeDigit > mGridSize
@@ -259,7 +249,7 @@ public class GridPlayerView extends GridViewerView implements OnTouchListener {
 		public void run() {
 			// Make the swipe border and motion visible at next draw of the grid
 			// player view.
-			if (mSwipeMotion != null) {
+			if (mSwipeMotion != null && mSwipeMotion.isTouchDownInsideGrid()) {
 				mSwipeMotion.setVisible(true);
 			}
 			invalidate();

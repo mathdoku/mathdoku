@@ -9,7 +9,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 // Definition of swipe motion
-public class SwipeMotion {
+public class SwipeMotion extends Motion {
 	private static final String TAG = "MathDoku.SwipeMotion";
 
 	// Remove "&& false" in following line to show debug information about
@@ -71,12 +71,6 @@ public class SwipeMotion {
 	private int mPreviousSwipePositionDigit;
 	private int mCurrentSwipePositionDigit;
 
-	// Registration of event time to detect a double tap on the same touch down
-	// cell. It is kept statically in order to compare with the previous swipe
-	// motion.
-	static private long mDoubleTapTouchDownTime = 0;
-	private boolean mDoubleTapDetected;
-
 	// Event time at which the previous swipe position was advised to be updated
 	private long mPreviousSwipePositionEventTime = -1l;
 	private long mCurrentSwipePositionEventTime = -1l;
@@ -116,7 +110,10 @@ public class SwipeMotion {
 	 *            swipe motion.
 	 * @return True in case a grid cell has been touched. False otherwise.
 	 */
-	protected boolean setTouchDownEvent(MotionEvent event) {
+	@Override
+	protected void setTouchDownEvent(MotionEvent event) {
+		super.setTouchDownEvent(event);
+
 		// Store coordinates of previous touch down cell
 		int[] previousTouchDownCellCoordinates = mTouchDownCellCoordinates
 				.clone();
@@ -127,15 +124,6 @@ public class SwipeMotion {
 
 		// Update swipe position.
 		setCurrentSwipeCoordinates(event);
-		if (mCurrentSwipePositionCellCoordinates[X_POS] > mGridSize - 1
-				|| mCurrentSwipePositionCellCoordinates[X_POS] < 0
-				|| mCurrentSwipePositionCellCoordinates[Y_POS] > mGridSize - 1
-				|| mCurrentSwipePositionCellCoordinates[Y_POS] < 0) {
-			// A position inside the grid border (i.e. not inside a grid cell
-			// has been selected. Such touch down position have to be ignored as
-			// start of a swipe motion.
-			return false;
-		}
 
 		// Store the pixel and cell coordinates for the swipe position of this
 		// touch down event.
@@ -143,6 +131,12 @@ public class SwipeMotion {
 				.clone();
 		mTouchDownCellCoordinates = mCurrentSwipePositionCellCoordinates
 				.clone();
+
+		if (isTouchDownInsideGrid() == false) {
+			mStatus = Status.INIT;
+			mVisible = false;
+			return;
+		}
 
 		// Determine the pixel coordinates of the center of the cell as the
 		// swipe line will start at the center of the cell regardless of the
@@ -160,36 +154,16 @@ public class SwipeMotion {
 				.getCellCentreCoordinates(mGridPlayerViewBorderWidth));
 
 		// Determine whether a new double tap motion is started
-		mDoubleTapDetected = false;
 		if (mTouchDownCellCoordinates[X_POS] != previousTouchDownCellCoordinates[X_POS]
 				|| mTouchDownCellCoordinates[Y_POS] != previousTouchDownCellCoordinates[Y_POS]) {
-			// Another cell is selected. Checking for double tap is not needed
-			// as this is not the second (or more) consecutive swipe motion on
-			// the same selected cell.
-			mDoubleTapTouchDownTime = event.getDownTime();
-		} else {
-			// The same cell is selected again. The touch down time may not be
-			// reseted as for the double tap it is required that two
-			// consecutive swipe motion haven been completed entire within the
-			// double tap time duration.
-			if (event.getEventTime() - mDoubleTapTouchDownTime < 300) {
-				// A double tap is only allowed in case the total time
-				// between touch down of the first swipe motion until release of
-				// the second swipe motion took less than 300 milliseconds.
-				mDoubleTapDetected = true;
-			} else {
-				// Too slow for being recognized as double tap. Use touch
-				// down time of this swipe motion as new start time of the
-				// double tap event.
-				mDoubleTapTouchDownTime = event.getDownTime();
-			}
+			// Another cell is selected. This touchdown event should never be
+			// recognized as double tap.
+			setDoubleTap(false);
 		}
 
 		// Touch down has been fully completed.
 		mStatus = Status.TOUCH_DOWN;
 		mVisible = false;
-
-		return true;
 	}
 
 	/**
@@ -223,7 +197,11 @@ public class SwipeMotion {
 	 * Registers the swipe motion as released.
 	 */
 	protected void release(MotionEvent event) {
-		if (mStatus == Status.TOUCH_DOWN || mStatus == Status.MOVING) {
+		if (mStatus == Status.INIT) {
+			// Swipe motion is not yet started from inside of grid cell. Nothing
+			// to do here.
+			return;
+		} else if (mStatus == Status.TOUCH_DOWN || mStatus == Status.MOVING) {
 			mStatus = Status.RELEASED;
 		} else if (mStatus == Status.RELEASED || mStatus == Status.FINISHED) {
 			// Already released. Nothing to do here.
@@ -344,6 +322,11 @@ public class SwipeMotion {
 	 * @return True in case a digit has been determined. False otherwise.
 	 */
 	protected boolean update(MotionEvent motionEvent) {
+		if (mStatus == Status.INIT) {
+			// Movement has not yet started inside a grid cell.
+			mCurrentSwipePositionDigit = DIGIT_UNDETERMINDED;
+			return false;
+		}
 		if (mStatus == Status.TOUCH_DOWN) {
 			mStatus = Status.MOVING;
 		}
@@ -490,6 +473,12 @@ public class SwipeMotion {
 	 *         False otherwise.
 	 */
 	protected boolean needToUpdateCurrentSwipePosition() {
+		if (mStatus == Status.INIT) {
+			// Swipe motion has not started inside grid cell. Nothing to do
+			// here.
+			return false;
+		}
+
 		// Update at start of motion
 		if (mPreviousSwipePositionCellCoordinates == null
 				&& mCurrentSwipePositionCellCoordinates != null) {
@@ -594,26 +583,6 @@ public class SwipeMotion {
 	}
 
 	/**
-	 * Checks whether this swipe motion completes a double tap on the touch down
-	 * cell.
-	 * 
-	 * @return True in case this swipe motion results in a double tap detection.
-	 *         False otherwise.
-	 */
-	public boolean isDoubleTap() {
-		return mDoubleTapDetected;
-	}
-
-	/**
-	 * Clear the double tap detection.
-	 * 
-	 */
-	public void clearDoubleTap() {
-		mDoubleTapTouchDownTime = 0;
-		mDoubleTapDetected = false;
-	}
-
-	/**
 	 * Get the angle to the middle of the segment which is used to select the
 	 * given digit.
 	 * 
@@ -640,5 +609,24 @@ public class SwipeMotion {
 	 */
 	public static int getAngleToNextSwipeSegment(int digit) {
 		return SWIPE_ANGLE_OFFSET_91 + (digit * SWIPE_SEGMENT_ANGLE);
+	}
+
+	/**
+	 * Checks whether the last known touch down position was inside or outside
+	 * the grid.
+	 * 
+	 * @return True in case a position inside the grid was touched. False
+	 *         otherwise.
+	 */
+	public boolean isTouchDownInsideGrid() {
+		if (mTouchDownCellCoordinates[X_POS] > mGridSize - 1
+				|| mTouchDownCellCoordinates[X_POS] < 0
+				|| mTouchDownCellCoordinates[Y_POS] > mGridSize - 1
+				|| mTouchDownCellCoordinates[Y_POS] < 0) {
+			// A position outside the actueal grid was touched.
+			return false;
+		}
+
+		return true;
 	}
 }
