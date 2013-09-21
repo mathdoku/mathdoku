@@ -121,12 +121,12 @@ public class GridBasePlayerView extends GridViewerView implements
 			if (mTouchHandler != null) {
 				mTouchHandler.removeCallbacks(mLongPressRunnable);
 			}
+			playSoundEffect(SoundEffectConstants.CLICK);
 			if (mInputMode == GridInputMode.COPY) {
 				// Copy the content of the origin cell to the selected cell in
 				// case the cell was not long pressed.
 				if (event.getEventTime() - event.getDownTime() < LONG_PRESS_MILlIS
 						&& mCopyInputModeState != null) {
-					playSoundEffect(SoundEffectConstants.CLICK);
 					GridCell selectedCell = mGrid.getSelectedCell();
 					copyCell(mCopyInputModeState.mCopyFromCell, selectedCell);
 					mCopyInputModeState.mCopyFromCell = selectedCell;

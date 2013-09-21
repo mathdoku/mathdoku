@@ -8,7 +8,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.SoundEffectConstants;
 import android.view.View;
 
 public class GridPlayerView extends GridBasePlayerView {
@@ -95,7 +94,6 @@ public class GridPlayerView extends GridBasePlayerView {
 		case MotionEvent.ACTION_UP:
 			if (super.onTouch(arg0, event) == false) {
 				if (this.mTouchedListener != null && mSwipeMotion != null) {
-					playSoundEffect(SoundEffectConstants.CLICK);
 					mSwipeMotion.release(event);
 					int swipeDigit = mSwipeMotion.getFocussedDigit();
 					if (swipeDigit >= 1 && swipeDigit <= mGridSize) {
