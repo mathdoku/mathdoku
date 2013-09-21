@@ -788,9 +788,7 @@ public class GridCell {
 	 * @param mYPosSwipe
 	 */
 	public void drawCopyOverlay(Canvas canvas, float gridBorderWidth,
-			GridInputMode inputMode, GridInputMode inputModeSelectedCell,
-			float mXPosSwipe, float mYPosSwipe) {
-		assert (inputMode == GridInputMode.COPY);
+			GridInputMode inputModeSelectedCell) {
 		if (mGrid.getSelectedCell() != this) {
 			// This cell is not the selected cell.
 			return;
@@ -822,8 +820,6 @@ public class GridCell {
 			canvas.drawCircle(centerX, centerY, radius
 					- (borderOverlayWidth / 2) - 2, borderPaint);
 		}
-
-		// TODO Plot help text clockwise in the circle
 
 		// Redraw the cell including the content which results as the cell is
 		// tapped in copy mode.

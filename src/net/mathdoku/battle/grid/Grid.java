@@ -1426,4 +1426,28 @@ public class Grid {
 	public PuzzleComplexity getPuzzleComplexity() {
 		return mGridGeneratingParameters.mPuzzleComplexity;
 	}
+
+	/**
+	 * Highlight those cells where the user has made a mistake.
+	 * 
+	 * @return The number of cells which have been marked as invalid. Cells
+	 *         which were already marked as invalid will not be counted again.
+	 */
+	public int markInvalidChoices() {
+		int countNewInvalids = 0;
+
+		increaseCounter(StatisticsCounterType.ACTION_CHECK_PROGRESS);
+		for (GridCell cell : mCells) {
+			// Check all cells having a value and not (yet) marked as invalid.
+			if (cell.isUserValueSet() && !cell.hasInvalidUserValueHighlight()) {
+				if (cell.getUserValue() != cell.getCorrectValue()) {
+					cell.setInvalidHighlight();
+					increaseCounter(StatisticsCounterType.CHECK_PROGRESS_INVALIDS_CELLS_FOUND);
+					countNewInvalids++;
+				}
+			}
+		}
+
+		return countNewInvalids;
+	}
 }

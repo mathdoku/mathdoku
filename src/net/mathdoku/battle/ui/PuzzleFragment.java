@@ -743,19 +743,17 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		}
 
 		boolean allUserValuesValid = mGrid.isSolutionValidSoFar();
-		int countNewInvalidChoices = (allUserValuesValid ? 0 : mGridPlayerView
+		int countNewInvalidChoices = (allUserValuesValid ? 0 : mGrid
 				.markInvalidChoices());
 
-		// Create new cheat
+		if (countNewInvalidChoices > 0) {
+			mGridPlayerView.invalidate();
+		}
+
+		// Always create a new cheat as the usage of the function (even in case
+		// all cells are valid) will result in a cheat penalty being counted.
 		Cheat cheat = new Cheat(this.getActivity(),
 				CheatType.CHECK_PROGRESS_USED, countNewInvalidChoices);
-
-		// Register cheat in statistics
-		mGrid.getGridStatistics().increaseCounter(
-				StatisticsCounterType.ACTION_CHECK_PROGRESS);
-		mGrid.getGridStatistics().increaseCounter(
-				StatisticsCounterType.CHECK_PROGRESS_INVALIDS_CELLS_FOUND,
-				countNewInvalidChoices);
 
 		// Add penalty time
 		if (mTimerTask != null) {
