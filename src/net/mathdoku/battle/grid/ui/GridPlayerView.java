@@ -68,7 +68,6 @@ public class GridPlayerView extends GridBasePlayerView {
 
 			mSwipeMotion.setTouchDownEvent(event);
 			if (mSwipeMotion.isDoubleTap()) {
-				toggleInputMode();
 				mSwipeMotion.clearDoubleTap();
 			} else if (mSwipeMotion.isTouchDownInsideGrid()) {
 				// Select the touch down cell.

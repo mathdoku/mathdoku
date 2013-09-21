@@ -40,6 +40,9 @@ public class GridBasePlayerView extends GridViewerView implements
 	// Current input mode of the grid.
 	private GridInputMode mInputMode;
 
+	// Reference to the last motion which was started.
+	private Motion mMotion;
+
 	// Handler and runnable for touch actions which need a delay
 	protected Handler mTouchHandler;
 	private LongPressRunnable mLongPressRunnable;
@@ -96,6 +99,15 @@ public class GridBasePlayerView extends GridViewerView implements
 
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
+			if (mMotion == null) {
+				mMotion = new Motion();
+			}
+			mMotion.setTouchDownEvent(event);
+			if (mMotion.isDoubleTap()) {
+				toggleInputMode();
+				mMotion.clearDoubleTap();
+			}
+
 			// Post a runnable to detect a long press. This runnable is
 			// canceled on any motion or the up-event.
 			mTouchHandler.postDelayed(mLongPressRunnable, LONG_PRESS_MILlIS);
@@ -467,5 +479,15 @@ public class GridBasePlayerView extends GridViewerView implements
 	public void setOnInputModeChangedListener(
 			OnInputModeChangedListener onInputChangedModeListener) {
 		mOnInputModeChangedListener = onInputChangedModeListener;
+	}
+
+	/**
+	 * Clear the double tap on the motion. Only to be called in case the double
+	 * tap has been handled otherwise.
+	 */
+	protected void clearDoubleTap() {
+		if (mMotion != null) {
+			mMotion.clearDoubleTap();
+		}
 	}
 }

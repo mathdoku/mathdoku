@@ -3,11 +3,12 @@ package net.mathdoku.battle.grid.ui;
 import android.view.MotionEvent;
 
 public class Motion {
-	// Registration of event time to detect a double tap on the same touch down
-	// cell. It is kept statically in order to compare with the previous swipe
-	// motion.
-	static private long mDoubleTapTouchDownTime = 0;
+	private long mDoubleTapTouchDownTime;
 	protected boolean mDoubleTapDetected;
+
+	public Motion() {
+		mDoubleTapTouchDownTime = 0;
+	}
 
 	/**
 	 * Register the touch down event.
@@ -18,16 +19,21 @@ public class Motion {
 	 * @return True in case a grid cell has been touched. False otherwise.
 	 */
 	protected void setTouchDownEvent(MotionEvent event) {
-		if (event.getEventTime() - mDoubleTapTouchDownTime < 300) {
+		long timeSincePreviousEvent = event.getEventTime()
+				- mDoubleTapTouchDownTime;
+		if (timeSincePreviousEvent > 0 && timeSincePreviousEvent < 300) {
 			// A double tap is only allowed in case the total time
 			// between touch down of the first swipe motion until release of
 			// the second swipe motion took less than 300 milliseconds.
 			mDoubleTapDetected = true;
+			mDoubleTapTouchDownTime = 0;
 		} else {
 			// Too slow for being recognized as double tap. Use touch
 			// down time of this swipe motion as new start time of the
 			// double tap event.
-			mDoubleTapTouchDownTime = event.getDownTime();
+			if (timeSincePreviousEvent > 0) {
+				mDoubleTapTouchDownTime = event.getDownTime();
+			}
 			mDoubleTapDetected = false;
 		}
 	}
