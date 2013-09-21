@@ -383,9 +383,16 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		super.onResume();
 	}
 
-	public void setSoundEffectsEnabled(boolean enabled) {
-		for (View v : this.mSoundEffectViews)
-			v.setSoundEffectsEnabled(enabled);
+	/**
+	 * Enables/disables playing a sound effect on touch motions.
+	 * 
+	 * @param soundEffectEnabled
+	 *            True in case sounds are enabled. False otherwise.
+	 */
+	public void setSoundEffectsEnabled(boolean soundEffectEnabled) {
+		for (View view : mSoundEffectViews) {
+			view.setSoundEffectsEnabled(soundEffectEnabled);
+		}
 	}
 
 	/**
