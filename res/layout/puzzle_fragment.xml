@@ -8,54 +8,40 @@
     android:layout_height="match_parent"
     android:background="#000" >
 
-    <net.mathdoku.battle.hint.TickerTape
-        android:id="@+id/tickerTape"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="1dp"
-        android:textIsSelectable="false" />
+    <RelativeLayout
+        android:id="@+id/timer_ticker_tape_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/timerText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:lines="1"
+            android:textSize="@dimen/text_size_default"
+            android:textStyle="bold" />
+
+        <net.mathdoku.battle.hint.TickerTape
+            android:id="@+id/tickerTape"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="1dp"
+            android:textIsSelectable="false" />
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/puzzleGrid"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_above="@+id/controlsPadBigTableLayout"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/tickerTape"
+        android:layout_below="@+id/timer_ticker_tape_layout"
         android:paddingTop="1dp"
         android:visibility="gone" >
-
-        <!-- The margins of the next layout will be programmatically changed in such a way that the -->
-        <!-- inner area (i.e. everything except margins/padding) of the layout has the same width as -->
-        <!-- visible part of the grid player. -->
-        <!-- The layout will only be filled with the timer. But note that we put another layout on -->
-        <!-- top of this layout for displaying the input mode image and text. -->
-
-        <net.mathdoku.battle.grid.ui.GridPlayerRelativeLayout
-            android:id="@+id/grid_player_relative_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/grid_player_view"
-            android:layout_alignRight="@+id/grid_player_view"
-            mathdoku:layout_alignGridPlayerViewLeft="visible_grid"
-            mathdoku:layout_alignGridPlayerViewRight="visible_grid" >
-
-            <!-- Be sure not to set the timerText to visibility="invisble" as this can result in -->
-            <!-- displaying the input mode image border on top of the swipe circle. -->
-
-            <TextView
-                android:id="@+id/timerText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/input_mode_image"
-                android:layout_alignParentRight="true"
-                android:lines="1"
-                android:textSize="@dimen/text_size_default"
-                android:textStyle="bold" />
-        </net.mathdoku.battle.grid.ui.GridPlayerRelativeLayout>
 
         <net.mathdoku.battle.grid.ui.GridPlayerRelativeLayout
             android:layout_width="wrap_content"
@@ -67,7 +53,7 @@
             mathdoku:layout_alignGridPlayerViewRight="visible_grid" >
 
             <LinearLayout
-             android:id="@+id/controlsSwipeOnly"
+                android:id="@+id/controlsSwipeOnly"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
@@ -104,7 +90,6 @@
             android:id="@+id/grid_player_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/grid_player_relative_layout"
             android:layout_centerHorizontal="true" />
 
         <!-- The input mode button and text are positioned on top of the grid_player_relative_layout. -->
