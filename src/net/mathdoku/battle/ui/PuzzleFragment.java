@@ -192,6 +192,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		// Hide all controls until sure a grid view can be displayed.
 		setNoGridLoaded();
 
+		// Listener for swipe motions on the grid player view.
 		mGridPlayerView
 				.setOnGridTouchListener(mGridPlayerView.new OnGridTouchListener() {
 					@Override
