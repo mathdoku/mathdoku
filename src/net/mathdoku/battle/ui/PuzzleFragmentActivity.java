@@ -227,6 +227,11 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 									.getActionCurrentInputModeTitleResId());
 		}
 
+		// Set visibility for menu option copy cell values
+		menu.findItem(R.id.action_copy_cell_values).setVisible(
+				!drawerOpen && mPuzzleFragment != null
+						&& mPuzzleFragment.showCopyCellValues());
+
 		// Set visibility for menu option check progress
 		menu.findItem(R.id.checkprogress).setVisible(
 				!drawerOpen && mPuzzleFragment != null
@@ -312,6 +317,11 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		case R.id.action_input_mode:
 			if (mPuzzleFragment != null) {
 				mPuzzleFragment.toggleInputMode();
+			}
+			return true;
+		case R.id.action_copy_cell_values:
+			if (mPuzzleFragment != null) {
+				mPuzzleFragment.copyCellValues();
 			}
 			return true;
 		case R.id.checkprogress:

@@ -19,6 +19,7 @@ import net.mathdoku.battle.statistics.GridStatistics.StatisticsCounterType;
 import net.mathdoku.battle.tip.TipCheat;
 import net.mathdoku.battle.tip.TipDialog;
 import net.mathdoku.battle.tip.TipIncorrectValue;
+import net.mathdoku.battle.util.FeedbackEmail;
 import net.mathdoku.battle.util.Util;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -34,7 +35,11 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnCreateContextMenuListener;
@@ -98,6 +103,9 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	private OnGridFinishedListener mOnGridFinishedListener;
 
 	private BroadcastReceiver mDreamingBroadcastReceiver;
+
+	// Contextual action bar for the copy cell values inpuyt mode
+	private ActionMode mActionMode;
 
 	// Container Activity must implement these interfaces
 	public interface OnGridFinishedListener {
@@ -195,6 +203,10 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 					@Override
 					public void gridTouched(GridCell cell) {
 						setClearAndUndoButtonVisibility(cell);
+
+						// Invalidate the option menu as the copy cell value
+						// action item may need a change.
+						((FragmentActivity) mContext).invalidateOptionsMenu();
 					}
 				});
 
@@ -210,6 +222,11 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 						mGridPlayerView.digitSelected(d);
 
 						setClearAndUndoButtonVisibility(mGrid.getSelectedCell());
+
+						// Invalidate the option menu as the copy cell value
+						// action item may need a change.
+						((FragmentActivity) mContext).invalidateOptionsMenu();
+
 						mGridPlayerView.requestFocus();
 						mGridPlayerView.invalidate();
 					}
@@ -225,6 +242,11 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 					mGridPlayerView.digitSelected(0);
 
 					setClearAndUndoButtonVisibility(mGrid.getSelectedCell());
+
+					// Invalidate the option menu as the copy cell value action
+					// item may need a change.
+					((FragmentActivity) mContext).invalidateOptionsMenu();
+
 					mGridPlayerView.invalidate();
 				}
 			}
@@ -257,6 +279,10 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		mGridPlayerView.setOnInputModeChangedListener(this);
 
 		registerForContextMenu(mGridPlayerView);
+
+		// The contextual action bar will not be defined before the copy mode is
+		// entered.
+		mActionMode = null;
 
 		// In case a solving attempt id has been passed, this attempt has to be
 		// loaded.
@@ -1190,6 +1216,113 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		if (mGridPlayerView != null) {
 			// Toggle input mode
 			mGridPlayerView.toggleInputMode();
+		}
+	}
+
+	/**
+	 * Checks whether the copy cell values menu item is available.
+	 * 
+	 * @return True in case the copy cell values menu item is available. False
+	 *         otherwise.
+	 */
+	protected boolean showCopyCellValues() {
+		if (mGrid == null || mGrid.isActive() == false
+				|| mGridPlayerView.getGridInputMode() == GridInputMode.COPY) {
+			return false;
+		}
+
+		GridCell selectedCell = mGrid.getSelectedCell();
+		if (selectedCell == null || selectedCell.isEmpty()) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Checks the progress of solving the current grid
+	 */
+	protected void copyCellValues() {
+		if (mGrid == null || mGridPlayerView == null) {
+			return;
+		}
+
+		// TODO: enter a visual different activity.
+		// -- other action bar
+		// -- no digit buttons
+		// -- no clear button
+		// -- undo should still work
+
+		// Start the context action bar. Note: this contextual action bar does
+		// not contain any action items. It merely serves as a visual indicator
+		// that copy mode is enabled until the done button is clicked which
+		// closes the copy mode.
+		if (mActionMode == null) {
+			mActionMode = getActivity().startActionMode(
+					new ActionMode.Callback() {
+						/**
+						 * Start the contextual action bar when the copy mode is
+						 * enabled.
+						 */
+						@Override
+						public boolean onCreateActionMode(ActionMode mode,
+								Menu menu) {
+							// Set grid player view into copy mode.
+							mGridPlayerView.setCopyModeEnabled(true);
+
+							// Hide all buttons except undo
+							for (int i = 0; i < mDigitPosition.length; i++) {
+								if (mDigitPosition[i] != null) {
+									mDigitPosition[i]
+											.setVisibility(View.INVISIBLE);
+								}
+							}
+							if (mClearButton != null) {
+								mClearButton.setVisibility(View.INVISIBLE);
+							}
+
+							// Inflate a menu resource providing context menu
+							// items
+							MenuInflater inflater = mode.getMenuInflater();
+							inflater.inflate(
+									R.menu.copy_cell_context_action_menu, menu);
+							mode.setTitle(R.string.tap_to_copy_cell_values);
+							return true;
+						}
+
+						@Override
+						public boolean onPrepareActionMode(ActionMode mode,
+								Menu menu) {
+							return false; // Return false if nothing is done
+						}
+
+						// Called when the user selects a contextual menu item
+						@Override
+						public boolean onActionItemClicked(ActionMode mode,
+								MenuItem item) {
+							switch (item.getItemId()) {
+							case R.id.action_send_feedback:
+								new FeedbackEmail(getActivity()).show();
+								return true;
+							default:
+								return false;
+							}
+						}
+
+						// Called when the user exits the action mode
+						@Override
+						public void onDestroyActionMode(ActionMode mode) {
+							mActionMode = null;
+
+							// Restore grid player to previous input mode.
+							mGridPlayerView.setCopyModeEnabled(false);
+
+							// Restore buttons
+							setDigitPositionGrid();
+							setClearAndUndoButtonVisibility(mGrid
+									.getSelectedCell());
+						}
+					});
 		}
 	}
 }

@@ -48,7 +48,7 @@
 
     <!-- The title and body describing how to play the game. -->
     <string name="puzzle_help_dialog_how_to_play__section_title">How to play</string>
-    <string name="puzzle_help_dialog_how_to_play_section_body">Touch to select a cell in the grid, then either swipe towards a digit to select it, or touch the button with the number you\'d like to insert. By double tapping a cell you can switch between the \'normal\' and the \'maybe\' mode. In \'maybe\' mode you can mark multiple possibilities for the cell.\n\nLong press a cell to enter \'copy\' mode. The values of the highlighted cell will be copied to each cell that you tap while \'copy\' mode is active. Double tap to exit \'copy\' mode.\n\nPuzzles will be saved automatically.</string>
+    <string name="puzzle_help_dialog_how_to_play_section_body">Touch to select a cell in the grid, then either swipe towards a digit to select it, or touch the button with the number you\'d like to insert. By double tapping a cell you can switch between the \'normal\' and the \'maybe\' mode. In \'maybe\' mode you can mark multiple possibilities for the cell.\n\nPuzzles will be saved automatically.</string>
 
     <!-- The version title in the help screen. -->
     <string name="puzzle_help_dialog_version_section_title">Version</string>
@@ -334,7 +334,7 @@
 
     <!-- Title, and text for tip "Copy cell values" -->
     <string name="dialog_tip_copy_cell_values_title">Copy cell values</string>
-    <string name="dialog_tip_copy_cell_values_text">Did you know that you can copy cell values from one cell to another cell? This is especially useful in case you have entered multiple maybe values into a cell and for example want to reuse the same combination for other cells in the same cage.\n\nYou can enter the \'copy\' mode by long pressing the cell from which you want to copy the values. Next tap each cell to which you want to copy the values. Finally exit the \'copy\' mode by double tapping any cell.</string>
+    <string name="dialog_tip_copy_cell_values_text">Did you know that you can copy cell values from one cell to another cell? This is especially useful in case you have entered multiple maybe values into a cell and for example want to reuse the same combination for other cells in the same cage.\n\nYou can enter the \'copy\' mode by selecting the copy icon in the action bar on top of the app. The values of the selected cell will be copied to each cell to tap until you exit the \'copy\' mode.</string>
 
     <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -428,7 +428,7 @@
 
     <!-- The text which is shown to enable/disable copy mode. -->
     <string name="input_mode_copy_short_description">Copy cells</string>
-    <string name="input_mode_copy_long_description">Switched to \'copy\' mode. Values of the selected cell will be copied to each cell you tap. Double tap a cell to end \'copy\' mode.</string>
+    <string name="action_copy_cell_values_long_description">Copy values of the selected cell to other cells.</string>
 
     <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -530,5 +530,9 @@
 
     <!-- Connection word for the last two elements in a list. Example: "1 minute and 15 seconds" or "1, 2, 3 and 4)" -->
     <string name="connector_last_two_elements">and</string>
+
+    <!-- The text for the "done" button on the contextual actiobar -->
+    <string name="action_done">Done</string>
+    <string name="tap_to_copy_cell_values">Tap cell to copy value</string>
 
 </resources>

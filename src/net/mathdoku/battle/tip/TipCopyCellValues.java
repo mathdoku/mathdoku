@@ -28,9 +28,8 @@ public class TipCopyCellValues extends TipDialog {
 				context.getResources().getString(
 						R.string.dialog_tip_copy_cell_values_title),
 				context.getResources().getString(
-						R.string.dialog_tip_copy_cell_values_text),
-				context.getResources().getDrawable(
-						R.drawable.tip_copy_cell_values)).show();
+						R.string.dialog_tip_copy_cell_values_text), null)
+				.show();
 	}
 
 	/**

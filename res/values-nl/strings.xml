@@ -48,7 +48,7 @@
 
     <!-- The title and body describing how to play the game. -->
     <string name="puzzle_help_dialog_how_to_play__section_title">Hoe te spelen?</string>
-    <string name="puzzle_help_dialog_how_to_play_section_body">Raak een cel aan in de puzzel om de cel te selecteren, en veeg daarna naar een een getal om het te kiezen. Door een cel dubbel aan te tikken kun je wisselen tussen de \'normale\' en de \'mogelijke\' toestand. In de \'mogelijke\' toestand kun je meerdere mogelijke getallen invoeren voor een cell.\n\nRaak een cel lang aan om de \'kopie\' toestand te activeren. De waarden van de geselecteerde cel worden gekopieerd naar elke cel die je aanraakt zolang de \'kopie\' toestand is geactiveerd. Tik dubbel op een cel om de \'kopie\' toestand te beëindigen.\n\nDe puzzels wordt automatisch opgeslagen.</string>
+    <string name="puzzle_help_dialog_how_to_play_section_body">Raak een cel aan in de puzzel om de cel te selecteren, en veeg daarna naar een een getal om het te kiezen. Door een cel dubbel aan te tikken kun je wisselen tussen de \'normale\' en de \'mogelijke\' toestand. In de \'mogelijke\' toestand kun je meerdere mogelijke getallen invoeren voor een cell.\n\nDe puzzels wordt automatisch opgeslagen.</string>
 
     <!-- The version title in the help screen. -->
     <string name="puzzle_help_dialog_version_section_title">Versie</string>
@@ -334,7 +334,7 @@
 
     <!-- Title, and text for tip "Copy cell values" -->
     <string name="dialog_tip_copy_cell_values_title">Kopieer cel waarden</string>
-    <string name="dialog_tip_copy_cell_values_text">Wist je al dat je waardes van de ene cel naar een andere cel kan kopiëren? Dit is vooral nutting in het geval dat je meerdere \'mogelijke\' waarden in een cel hebt ingevoerd en deze combinatie bijvoorbeeld wil hergebruiken for andere cellen in dezelfde groep.\n\nJe kan de \'kopieer\' toestand starten door de cel die je wil kopiëren lang aan te raken. Raak vervolgens elke cel aan waarheen je de waarden wil kopiëren. Beëindig de \'kopieer\' toestand door een cell dubbel aan te tikken.</string>
+    <string name="dialog_tip_copy_cell_values_text">Wist je al dat je waardes van de ene cel naar een andere cel kan kopiëren? Dit is vooral nutting in het geval dat je meerdere \'mogelijke\' waarden in een cel hebt ingevoerd en deze combinatie bijvoorbeeld wil hergebruiken for andere cellen in dezelfde groep.\n\nJe kan de \'kopieer\' toestand starten door het kopieer icoon in de actiebar aan de bovenzijde van de app aan te raken. De waarde(n) van de geselecteerde cell worden gekopieerd naar elke cell die he aanraakt totdat je de \'kopieer\' toestand verlaat.</string>
 
     <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -428,7 +428,7 @@
 
     <!-- The text which is shown to enable/disable copy mode. -->
     <string name="input_mode_copy_short_description">Kopieer waarden</string>
-    <string name="input_mode_copy_long_description">Gewisseld naar kopieer-waarden-toestand. Waarde van de geselecteerde cel worden gekopieerd naar elke cel die je aanraakt zolang deze toestand actief is. Dubbel tik op een cel om deze toestand te beëindigen.</string>
+    <string name="action_copy_cell_values_long_description">Kopieer waarden van de geslecteerde cel naar een andere cel.</string>
 
     <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -530,5 +530,9 @@
 
     <!-- Connection word for the last two elements in a list. Example: "1 minute and 15 seconds" or "1, 2, 3 and 4)" -->
     <string name="connector_last_two_elements">en</string>
+
+    <!-- The text for the "done" button on the contextual actiobar -->
+    <string name="action_done">Gereed</string>
+    <string name="tap_to_copy_cell_values">Tik cel aan om te kopiëren</string>
 
 </resources>

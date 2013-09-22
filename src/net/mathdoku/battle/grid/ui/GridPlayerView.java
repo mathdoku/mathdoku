@@ -67,9 +67,10 @@ public class GridPlayerView extends GridBasePlayerView {
 
 	@Override
 	public boolean onTouch(View arg0, MotionEvent event) {
-		// In case the input method does not allow swiping, only the super class
-		// is called.
-		if (mSwipeInputMethodEnabled == false) {
+		// In case the input method does not allow swiping or in case the copy
+		// mode has been enabled, only the super class is called.
+		if (mSwipeInputMethodEnabled == false
+				|| getGridInputMode() == GridInputMode.COPY) {
 			return super.onTouch(arg0, event);
 		}
 
@@ -229,10 +230,7 @@ public class GridPlayerView extends GridBasePlayerView {
 					mSwipeMotion.finish();
 				} else if (mSwipeMotion.isVisible()) {
 					GridInputMode gridInputMode = getGridInputMode();
-					if (gridInputMode == GridInputMode.COPY) {
-						selectedCell.drawCopyOverlay(canvas, mBorderWidth,
-								getRestrictedGridInputMode());
-					} else if (gridInputMode == GridInputMode.NORMAL
+					if (gridInputMode == GridInputMode.NORMAL
 							|| gridInputMode == GridInputMode.MAYBE) {
 						// The overlay needs to be draw as the swipe motion is
 						// not yet released.

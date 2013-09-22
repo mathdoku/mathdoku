@@ -775,58 +775,6 @@ public class GridCell {
 	}
 
 	/**
-	 * Draw the copy overlay for the selected cell.
-	 * 
-	 * @param canvas
-	 * @param gridBorderWidth
-	 * @param inputMode
-	 *            The input mode of the entire grid.
-	 * @param inputModeSelectedCell
-	 *            The input mode to be used for drawing the content of the
-	 *            selected cell.
-	 * @param mXPosSwipe
-	 * @param mYPosSwipe
-	 */
-	public void drawCopyOverlay(Canvas canvas, float gridBorderWidth,
-			GridInputMode inputModeSelectedCell) {
-		if (mGrid.getSelectedCell() != this) {
-			// This cell is not the selected cell.
-			return;
-		}
-
-		// Get cell size
-		int cellSize = (int) this.mCellPainter.getCellSize();
-
-		// Calculate x and y for the cell origin (top left). Use an offset to
-		// prevent overlapping of cells and border for entire grid.
-		this.mPosX = Math.round(gridBorderWidth + cellSize * this.mColumn);
-		this.mPosY = Math.round(gridBorderWidth + cellSize * this.mRow);
-		float top = this.mPosY;
-		float left = this.mPosX;
-
-		// Get the painters for the overlay border
-		// Determine which painter to use
-		Paint borderPaint = mInputModeBorderPainter
-				.getCopyBackgroundBorderPaint();
-		float borderOverlayWidth = borderPaint.getStrokeWidth();
-
-		// Draw the swipe border background
-		int centerX = (int) (left + cellSize / 2);
-		int centerY = (int) (top + (cellSize / 2));
-
-		// Draw the border
-		float radius = cellSize;
-		if (borderPaint != null) {
-			canvas.drawCircle(centerX, centerY, radius
-					- (borderOverlayWidth / 2) - 2, borderPaint);
-		}
-
-		// Redraw the cell including the content which results as the cell is
-		// tapped in copy mode.
-		draw(canvas, gridBorderWidth, inputModeSelectedCell, 0);
-	}
-
-	/**
 	 * Create a string representation of the Grid Cell which can be used to
 	 * store a grid cell in a saved game.
 	 * 

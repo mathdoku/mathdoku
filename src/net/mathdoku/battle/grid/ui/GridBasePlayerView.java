@@ -44,8 +44,6 @@ public class GridBasePlayerView extends GridViewerView implements
 
 	// Handler and runnable for touch actions which need a delay
 	protected Handler mTouchHandler;
-	private LongPressRunnable mLongPressRunnable;
-	private static final int LONG_PRESS_MILlIS = 1000;
 
 	// Listeners
 	public abstract class OnGridTouchListener {
@@ -87,9 +85,6 @@ public class GridBasePlayerView extends GridViewerView implements
 		// Initialize the handler use to process the on touch events
 		mTouchHandler = new Handler();
 
-		// Initialize the runnables used to delay touch handling
-		mLongPressRunnable = new LongPressRunnable();
-
 		// Set listeners
 		setOnTouchListener(this);
 		mOnInputModeChangedListener = null;
@@ -117,27 +112,26 @@ public class GridBasePlayerView extends GridViewerView implements
 				invalidate();
 			}
 
-			// Post a runnable to detect a long press. This runnable is
-			// canceled on any motion or the up-event.
-			mTouchHandler.postDelayed(mLongPressRunnable, LONG_PRESS_MILlIS);
-
 			// Do not allow other views to respond to this action, for example
 			// by
 			// handling the long press, which would result in malfunction of the
 			// swipe motion.
 			return true;
 		case MotionEvent.ACTION_UP:
-			if (mTouchHandler != null) {
-				mTouchHandler.removeCallbacks(mLongPressRunnable);
-			}
 			playSoundEffect(SoundEffectConstants.CLICK);
 			if (mInputMode == GridInputMode.COPY) {
-				// Copy the content of the origin cell to the selected cell in
-				// case the cell was not long pressed.
-				if (event.getEventTime() - event.getDownTime() < LONG_PRESS_MILlIS
-						&& mCopyInputModeState != null) {
+				// While in copy mode, the content of the previously selected
+				// cell will be copied to the cell which is currently selected.
+				if (mCopyInputModeState != null) {
+					// Get the currently selected cell.
 					GridCell selectedCell = mGrid.getSelectedCell();
+
+					// Copy values of the origin cell to the currently selected
+					// cell.
 					copyCell(mCopyInputModeState.mCopyFromCell, selectedCell);
+
+					// Use the currently selected cell as new origin for the
+					// next copy.
 					mCopyInputModeState.mCopyFromCell = selectedCell;
 
 					// No further processing allowed.
@@ -145,66 +139,11 @@ public class GridBasePlayerView extends GridViewerView implements
 				}
 			}
 			return false;
-		case MotionEvent.ACTION_MOVE:
-			if (mTouchHandler != null) {
-				mTouchHandler.removeCallbacks(mLongPressRunnable);
-			}
-			return false;
 		default:
 			break;
 		}
 
 		return false;
-	}
-
-	/**
-	 * Class definition of the runnable which implements a long press on a cell.
-	 */
-	private class LongPressRunnable implements Runnable {
-		@Override
-		public void run() {
-			// Check if grid exists
-			if (mGrid == null) {
-				return;
-			}
-
-			// Check if a cell is selected
-			GridCell selectedCell = mGrid.getSelectedCell();
-			if (selectedCell == null) {
-				return;
-			}
-
-			// Store state
-			if (mCopyInputModeState == null) {
-				mCopyInputModeState = new CopyInputModeState();
-				mCopyInputModeState.mPreviousInputMode = GridInputMode.NORMAL;
-			}
-
-			// Store the cell which was long pressed as the origin cell from
-			// which will be copied.
-			mCopyInputModeState.mCopyFromCell = selectedCell;
-
-			// Switch to copy mode if necessary. Do not alter the previous input
-			// mode if already in copy mode while it is possible that the user
-			// long presses a cell while already in copy mode.
-			if (mInputMode == GridInputMode.NORMAL
-					|| mInputMode == GridInputMode.MAYBE) {
-				// Store current input mode so it can be restored when ending
-				// the copy mode.
-				mCopyInputModeState.mPreviousInputMode = mInputMode;
-			}
-
-			// Switch to copy mode.
-			mInputMode = GridInputMode.COPY;
-
-			// Update the swipe border
-			invalidate();
-
-			// Inform listeners about change in input mode
-			if (mOnInputModeChangedListener != null) {
-				mOnInputModeChangedListener.onInputModeChanged(mInputMode);
-			}
-		}
 	}
 
 	/**
@@ -360,6 +299,7 @@ public class GridBasePlayerView extends GridViewerView implements
 					checkGridValidity(toGridCell);
 				}
 			}
+			invalidate();
 		}
 	}
 
@@ -397,26 +337,7 @@ public class GridBasePlayerView extends GridViewerView implements
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		if (mGrid == null) {
-			// As long as no grid has been attached to the grid view, it can not
-			// be drawn.
-			return;
-		}
-
-		synchronized (mGrid.mLock) {
-			onDrawLocked(canvas);
-
-			GridCell selectedCell = mGrid.getSelectedCell();
-			if (selectedCell == null) {
-				// As long a no cell is selected, the input mode border can not
-				// be drawn.
-			}
-
-			if (mInputMode == GridInputMode.COPY) {
-				selectedCell.drawCopyOverlay(canvas, mBorderWidth,
-						mCopyInputModeState.mPreviousInputMode);
-			}
-		}
+		super.onDraw(canvas);
 	}
 
 	/**
@@ -437,6 +358,65 @@ public class GridBasePlayerView extends GridViewerView implements
 	 */
 	public GridInputMode getGridInputMode() {
 		return mInputMode;
+	}
+
+	/**
+	 * Enables/disabled the copy mode.
+	 * 
+	 * @param enableCopyMode
+	 *            True in case the copy mode should be enabled. False otherwise.
+	 */
+	public void setCopyModeEnabled(boolean enableCopyMode) {
+		// Check if grid exists
+		if (mGrid == null) {
+			return;
+		}
+
+		if (enableCopyMode) {
+			// Check if a cell is selected
+			GridCell selectedCell = mGrid.getSelectedCell();
+			if (selectedCell == null) {
+				return;
+			}
+
+			// Store state
+			if (mCopyInputModeState == null) {
+				mCopyInputModeState = new CopyInputModeState();
+				mCopyInputModeState.mPreviousInputMode = GridInputMode.NORMAL;
+			}
+
+			// Store the cell which is currently selected as the origin cell
+			// from which values will be copied.
+			mCopyInputModeState.mCopyFromCell = selectedCell;
+
+			// Switch to copy mode if necessary. Do not alter the previous
+			// input mode if already in copy mode.
+			if (mInputMode == GridInputMode.NORMAL
+					|| mInputMode == GridInputMode.MAYBE) {
+				// Store current input mode so it can be restored when
+				// ending the copy mode.
+				mCopyInputModeState.mPreviousInputMode = mInputMode;
+			}
+
+			// Switch to copy mode.
+			mInputMode = GridInputMode.COPY;
+
+			// Inform listeners about change in input mode
+			if (mOnInputModeChangedListener != null) {
+				mOnInputModeChangedListener.onInputModeChanged(mInputMode);
+			}
+		} else {
+			// Restore input mode to the last know value before the copy mode
+			// was entered.
+			if (mCopyInputModeState != null) {
+				mInputMode = mCopyInputModeState.mPreviousInputMode;
+
+				// Inform listeners about change in input mode
+				if (mOnInputModeChangedListener != null) {
+					mOnInputModeChangedListener.onInputModeChanged(mInputMode);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -462,13 +442,9 @@ public class GridBasePlayerView extends GridViewerView implements
 		case MAYBE:
 			mInputMode = GridInputMode.NORMAL;
 			break;
-		case COPY:
-			// Restore input mode to the last know value before the copy mode
-			// was entered.
-			if (mCopyInputModeState != null) {
-				mInputMode = mCopyInputModeState.mPreviousInputMode;
-			}
-			break;
+		default:
+			// Cannot toggle this mode.
+			return;
 		}
 		invalidate();
 
