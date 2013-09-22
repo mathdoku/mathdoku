@@ -45,12 +45,7 @@ public class GridPlayerView extends GridBasePlayerView {
 		mSwipeBorderDelayRunnable = new SwipeBorderDelayRunnable();
 	}
 
-	public void setOnGridTouchListener(OnGridTouchListener listener) {
-		this.mTouchedListener = listener;
-	}
 
-	public abstract class OnGridTouchListener {
-		public abstract void gridTouched(GridCell cell);
 	}
 
 	@Override
@@ -69,14 +64,6 @@ public class GridPlayerView extends GridBasePlayerView {
 			if (mSwipeMotion.isDoubleTap()) {
 				mSwipeMotion.clearDoubleTap();
 			} else if (mSwipeMotion.isTouchDownInsideGrid()) {
-				// Select the touch down cell.
-				GridCell selectedCell = mGrid.setSelectedCell(mSwipeMotion
-						.getTouchDownCellCoordinates());
-
-				// Inform listener of puzzle fragment of start of motion
-				// event.
-				mTouchedListener.gridTouched(selectedCell);
-
 				// Show the basic swipe hint. Replace this hint after a short
 				// pause.
 				clearTickerTape();

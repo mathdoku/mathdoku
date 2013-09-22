@@ -3,7 +3,6 @@ package net.mathdoku.battle.grid.ui;
 import net.mathdoku.battle.grid.CellChange;
 import net.mathdoku.battle.grid.Grid;
 import net.mathdoku.battle.grid.GridCell;
-import net.mathdoku.battle.grid.ui.GridPlayerView.OnGridTouchListener;
 import net.mathdoku.battle.statistics.GridStatistics.StatisticsCounterType;
 import net.mathdoku.battle.tip.TipBadCageMath;
 import net.mathdoku.battle.tip.TipCopyCellValues;
@@ -49,6 +48,10 @@ public class GridBasePlayerView extends GridViewerView implements
 	private static final int LONG_PRESS_MILlIS = 1000;
 
 	// Listeners
+	public abstract class OnGridTouchListener {
+		public abstract void gridTouched(GridCell cell);
+	}
+
 	public OnGridTouchListener mTouchedListener;
 
 	// In case the copy input mode is activated some additional information
@@ -100,12 +103,18 @@ public class GridBasePlayerView extends GridViewerView implements
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
 			if (mMotion == null) {
-				mMotion = new Motion();
+				mMotion = new Motion(this, mBorderWidth, mGridCellSize);
 			}
 			mMotion.setTouchDownEvent(event);
 			if (mMotion.isDoubleTap()) {
 				toggleInputMode();
 				mMotion.clearDoubleTap();
+			} else if (mMotion.isTouchDownInsideGrid()
+					&& mTouchedListener != null) {
+				// Inform listener about the cell which was tapped.
+				mTouchedListener.gridTouched(mGrid.setSelectedCell(mMotion
+						.getTouchDownCellCoordinates()));
+				invalidate();
 			}
 
 			// Post a runnable to detect a long press. This runnable is
@@ -489,5 +498,16 @@ public class GridBasePlayerView extends GridViewerView implements
 		if (mMotion != null) {
 			mMotion.clearDoubleTap();
 		}
+	}
+
+	/**
+	 * Registers the on grid touch listener.
+	 * 
+	 * @param listener
+	 *            The listener which is to be called in case the gird has been
+	 *            touched.
+	 */
+	public void setOnGridTouchListener(OnGridTouchListener listener) {
+		this.mTouchedListener = listener;
 	}
 }

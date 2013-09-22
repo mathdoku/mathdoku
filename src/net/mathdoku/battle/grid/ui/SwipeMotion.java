@@ -16,10 +16,6 @@ public class SwipeMotion extends Motion {
 	// creating cages when running in development mode.
 	public static final boolean DEBUG_SWIPE_MOTION = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
 
-	// Indexes for coordinates arrays
-	private static final int X_POS = 0;
-	private static final int Y_POS = 1;
-
 	// Possible statuses of the swipe motion
 	private enum Status {
 		INIT, TOUCH_DOWN, MOVING, RELEASED, FINISHED
@@ -34,21 +30,8 @@ public class SwipeMotion extends Motion {
 	// Constant for an undetermined result of the swipe motion
 	protected static final int DIGIT_UNDETERMINDED = -1;
 
-	// The grid and its size for which a swipe motion is made.
+	// The grid player view for which a swipe motion is made.
 	private final GridPlayerView mGridPlayerView;
-	private final int mGridSize;
-
-	// Size of the border and cells in pixels
-	private final float mGridPlayerViewBorderWidth;
-	private final float mGridCellSize;
-
-	// The cell coordinates of the cell in the grid for which the touch down was
-	// registered. Will be kept statically so it can be compared with the
-	// previous touch down event.
-	static private int[] mTouchDownCellCoordinates = { -1, -1 };
-
-	// The pixel coordinates of the touch down position.
-	private float[] mTouchDownPixelCoordinates;
 
 	// The pixel coordinates of the center of the touch down cell which will be
 	// used as start of the swipe line.
@@ -91,12 +74,9 @@ public class SwipeMotion extends Motion {
 	 */
 	protected SwipeMotion(GridPlayerView gridPlayerView,
 			float gridViewBorderWidth, float gridCellSize) {
-		mGridPlayerView = gridPlayerView;
-		Grid grid = mGridPlayerView.getGrid();
-		mGridSize = (grid == null ? 1 : grid.getGridSize());
+		super(gridPlayerView, gridViewBorderWidth, gridCellSize);
 
-		mGridPlayerViewBorderWidth = gridViewBorderWidth;
-		mGridCellSize = gridCellSize;
+		mGridPlayerView = gridPlayerView;
 
 		mStatus = Status.INIT;
 		mVisible = false;
@@ -112,11 +92,16 @@ public class SwipeMotion extends Motion {
 	 */
 	@Override
 	protected void setTouchDownEvent(MotionEvent event) {
+		// Store coordinates of previous touch down cell
+		int[] previousTouchDownCellCoordinates = getTouchDownCellCoordinates()
+				.clone();
+
+		// Register touch down event at superclass (including updating the
+		// current mTouchDownCellCoordinates)
 		super.setTouchDownEvent(event);
 
-		// Store coordinates of previous touch down cell
-		int[] previousTouchDownCellCoordinates = mTouchDownCellCoordinates
-				.clone();
+		// Get the cell coordinates of the new touch down position.
+		int touchDownCellCoordinates[] = getTouchDownCellCoordinates();
 
 		// Set the resulting digit for previous to unknown
 		mPreviousSwipePositionDigit = DIGIT_UNDETERMINDED;
@@ -124,13 +109,6 @@ public class SwipeMotion extends Motion {
 
 		// Update swipe position.
 		setCurrentSwipeCoordinates(event);
-
-		// Store the pixel and cell coordinates for the swipe position of this
-		// touch down event.
-		mTouchDownPixelCoordinates = mCurrentSwipePositionPixelCoordinates
-				.clone();
-		mTouchDownCellCoordinates = mCurrentSwipePositionCellCoordinates
-				.clone();
 
 		if (isTouchDownInsideGrid() == false) {
 			mStatus = Status.INIT;
@@ -145,17 +123,17 @@ public class SwipeMotion extends Motion {
 		if (mGridPlayerView != null) {
 			Grid grid = mGridPlayerView.getGrid();
 			if (grid != null) {
-				gridCell = grid.getCellAt(mTouchDownCellCoordinates[Y_POS],
-						mTouchDownCellCoordinates[X_POS]);
+				gridCell = grid.getCellAt(touchDownCellCoordinates[Y_POS],
+						touchDownCellCoordinates[X_POS]);
 			}
 		}
-		mTouchDownCellCenterPixelCoordinates = (gridCell == null ? mTouchDownPixelCoordinates
+		mTouchDownCellCenterPixelCoordinates = (gridCell == null ? getTouchDownPixelCoordinates()
 				.clone() : gridCell
 				.getCellCentreCoordinates(mGridPlayerViewBorderWidth));
 
 		// Determine whether a new double tap motion is started
-		if (mTouchDownCellCoordinates[X_POS] != previousTouchDownCellCoordinates[X_POS]
-				|| mTouchDownCellCoordinates[Y_POS] != previousTouchDownCellCoordinates[Y_POS]) {
+		if (touchDownCellCoordinates[X_POS] != previousTouchDownCellCoordinates[X_POS]
+				|| touchDownCellCoordinates[Y_POS] != previousTouchDownCellCoordinates[Y_POS]) {
 			// Another cell is selected. This touchdown event should never be
 			// recognized as double tap.
 			setDoubleTap(false);
@@ -164,33 +142,6 @@ public class SwipeMotion extends Motion {
 		// Touch down has been fully completed.
 		mStatus = Status.TOUCH_DOWN;
 		mVisible = false;
-	}
-
-	/**
-	 * Get the cell coordinates for which the touch down event was registered.
-	 * 
-	 * @return The cell coordinates for which the touch down event was
-	 *         registered.
-	 */
-	protected int[] getTouchDownCellCoordinates() {
-		return mTouchDownCellCoordinates;
-	}
-
-	/**
-	 * Checks if given coordinates match with coordinates of the cell for the
-	 * touch down event was registered.
-	 * 
-	 * @param coordinates
-	 *            The (x,y) coordinates which have to be compared with the
-	 *            coordinates of the cell for the touch down event was
-	 *            registered.
-	 * @return True in case the coordinates match. False otherwise.
-	 */
-	protected boolean equalsCoordinatesTouchDownCell(int[] coordinates) {
-		return (coordinates != null && mTouchDownCellCoordinates != null
-				&& coordinates.length == 2
-				&& mTouchDownCellCoordinates.length == 2
-				&& coordinates[X_POS] == mTouchDownCellCoordinates[X_POS] && coordinates[Y_POS] == mTouchDownCellCoordinates[Y_POS]);
 	}
 
 	/**
@@ -309,7 +260,7 @@ public class SwipeMotion extends Motion {
 
 		// Determine coordinates of new current swipe position on the actual
 		// swipe position
-		mCurrentSwipePositionCellCoordinates = getCoordinatesSwipePosition(
+		mCurrentSwipePositionCellCoordinates = toGridCoordinates(
 				mCurrentSwipePositionPixelCoordinates[X_POS],
 				mCurrentSwipePositionPixelCoordinates[Y_POS]);
 	}
@@ -366,10 +317,10 @@ public class SwipeMotion extends Motion {
 		// than the distance is measured between the center of the touch down
 		// cell and the current position.
 		float deltaX = mCurrentSwipePositionPixelCoordinates[X_POS]
-				- (inTouchDownCell ? mTouchDownPixelCoordinates[X_POS]
+				- (inTouchDownCell ? getTouchDownPixelCoordinate(X_POS)
 						: mTouchDownCellCenterPixelCoordinates[X_POS]);
 		float deltaY = mCurrentSwipePositionPixelCoordinates[Y_POS]
-				- (inTouchDownCell ? mTouchDownPixelCoordinates[Y_POS]
+				- (inTouchDownCell ? getTouchDownPixelCoordinate(Y_POS)
 						: mTouchDownCellCenterPixelCoordinates[Y_POS]);
 		if (Math.sqrt(deltaX * deltaX + deltaY * deltaY) < 10) {
 			// The distance is too small to be accepted.
@@ -394,8 +345,8 @@ public class SwipeMotion extends Motion {
 			if (inTouchDownCell) {
 				Log.i(TAG,
 						"Current swipe position inside touch down cell. Angle computed to real touch down position");
-				Log.i(TAG, " - start = (" + mTouchDownPixelCoordinates[X_POS]
-						+ ", " + mTouchDownPixelCoordinates[Y_POS] + ")");
+				Log.i(TAG, " - start = (" + getTouchDownPixelCoordinate(X_POS)
+						+ ", " + getTouchDownPixelCoordinate(Y_POS) + ")");
 			} else {
 				Log.i(TAG,
 						"Current swipe position outside touch down cell. Angle computed to center of touch down cell");
@@ -520,45 +471,6 @@ public class SwipeMotion extends Motion {
 	}
 
 	/**
-	 * Converts a given position (pixels) to coordinates relative to the grid.
-	 * 
-	 * @param xPos
-	 *            The absolute x-position on the display
-	 * @param yPos
-	 *            The absolute y-position on the display
-	 * @return The (x,y)-position relative to the grid. For x-position -1 means
-	 *         left of grid, mGridSize means right of grid. For y-position -1
-	 *         means above grid, mGridSize means below grid.
-	 */
-	private int[] getCoordinatesSwipePosition(float xPos, float yPos) {
-		int[] coordinates = { -1, -1 };
-
-		// Convert x-position to a column number. -1 means left of grid,
-		// mGridSize means right of grid.
-		xPos = (xPos - mGridPlayerViewBorderWidth) / mGridCellSize;
-		if (xPos > mGridSize) {
-			coordinates[X_POS] = mGridSize;
-		} else if (xPos < 0) {
-			coordinates[X_POS] = -1;
-		} else {
-			coordinates[X_POS] = (int) xPos;
-		}
-
-		// Convert y-position to a column number. -1 means above grid, mGridSize
-		// means below grid.
-		yPos = (yPos - mGridPlayerViewBorderWidth) / mGridCellSize;
-		if (yPos > mGridSize) {
-			coordinates[Y_POS] = mGridSize;
-		} else if (yPos < 0) {
-			coordinates[Y_POS] = -1;
-		} else {
-			coordinates[Y_POS] = (int) yPos;
-		}
-
-		return coordinates;
-	}
-
-	/**
 	 * Checks whether the current swipe position results in a digit in the given
 	 * range.
 	 * 
@@ -609,24 +521,5 @@ public class SwipeMotion extends Motion {
 	 */
 	public static int getAngleToNextSwipeSegment(int digit) {
 		return SWIPE_ANGLE_OFFSET_91 + (digit * SWIPE_SEGMENT_ANGLE);
-	}
-
-	/**
-	 * Checks whether the last known touch down position was inside or outside
-	 * the grid.
-	 * 
-	 * @return True in case a position inside the grid was touched. False
-	 *         otherwise.
-	 */
-	public boolean isTouchDownInsideGrid() {
-		if (mTouchDownCellCoordinates[X_POS] > mGridSize - 1
-				|| mTouchDownCellCoordinates[X_POS] < 0
-				|| mTouchDownCellCoordinates[Y_POS] > mGridSize - 1
-				|| mTouchDownCellCoordinates[Y_POS] < 0) {
-			// A position outside the actueal grid was touched.
-			return false;
-		}
-
-		return true;
 	}
 }
