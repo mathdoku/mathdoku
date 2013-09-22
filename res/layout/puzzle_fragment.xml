@@ -154,12 +154,11 @@
     <TableLayout
         android:id="@+id/controlsPadBigTableLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="5dp"
-        android:weightSum="4" >
+        android:weightSum="3" >
 
         <TableRow
             android:id="@+id/controlsButtonRow1"
@@ -168,7 +167,7 @@
             <Button
                 android:id="@+id/digitPosition1"
                 android:layout_width="0dp"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/button"
                 android:textSize="@dimen/text_size_default"
@@ -178,7 +177,7 @@
             <Button
                 android:id="@+id/digitPosition2"
                 android:layout_width="0dp"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/button"
                 android:textSize="@dimen/text_size_default"
@@ -188,7 +187,7 @@
             <Button
                 android:id="@+id/digitPosition3"
                 android:layout_width="0dp"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/button"
                 android:textSize="@dimen/text_size_default"
@@ -198,7 +197,7 @@
             <Button
                 android:id="@+id/clearButton"
                 android:layout_width="0dp"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1.5"
                 android:background="@drawable/button"
@@ -216,7 +215,7 @@
             <Button
                 android:id="@+id/digitPosition4"
                 android:layout_width="0dp"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/button"
                 android:textSize="@dimen/text_size_default"
@@ -226,7 +225,7 @@
             <Button
                 android:id="@+id/digitPosition5"
                 android:layout_width="0dp"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/button"
                 android:textSize="@dimen/text_size_default"
@@ -236,7 +235,7 @@
             <Button
                 android:id="@+id/digitPosition6"
                 android:layout_width="0dp"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/button"
                 android:textSize="@dimen/text_size_default"
@@ -246,7 +245,7 @@
             <Button
                 android:id="@+id/undoButton"
                 android:layout_width="0dp"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1.5"
                 android:background="@drawable/button"
@@ -269,7 +268,7 @@
             <Button
                 android:id="@+id/digitPosition7"
                 android:layout_width="0dp"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/button"
                 android:textSize="@dimen/text_size_default"
@@ -279,7 +278,7 @@
             <Button
                 android:id="@+id/digitPosition8"
                 android:layout_width="0dp"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/button"
                 android:textSize="@dimen/text_size_default"
@@ -289,7 +288,7 @@
             <Button
                 android:id="@+id/digitPosition9"
                 android:layout_width="0dp"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/button"
                 android:textSize="@dimen/text_size_default"
@@ -302,7 +301,7 @@
 
             <TextView
                 android:layout_width="0dp"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1.5"
                 android:lines="1"
