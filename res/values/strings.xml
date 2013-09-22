@@ -420,11 +420,13 @@
     <!-- PUZZLE FRAGMENT - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
-    <!-- The text which is shown on a long press on the switch input mode image. -->
+    <!-- The text which is shown to toggle between the normal and maybe mode. -->
     <string name="input_mode_normal_short_description">Normal numbers</string>
-    <string name="input_mode_normal_long_description">Switched to normal input mode\nDouble tap a cell to switch to maybe mode.</string>
+    <string name="input_mode_normal_long_description">Toggles from the normal number input to possible values input.\nYou can also double tap the puzzle to toggle the input mode.</string>
     <string name="input_mode_maybe_short_description">Maybe values</string>
-    <string name="input_mode_maybe_long_description">Switched to maybe input mode\nDouble tap a cell to switch to normal mode.</string>
+    <string name="input_mode_maybe_long_description">Toggles from the possible values input to normal numbers input.\nYou can also double tap the puzzle to toggle the input mode.</string>
+
+    <!-- The text which is shown to enable/disable copy mode. -->
     <string name="input_mode_copy_short_description">Copy cells</string>
     <string name="input_mode_copy_long_description">Switched to \'copy\' mode. Values of the selected cell will be copied to each cell you tap. Double tap a cell to end \'copy\' mode.</string>
 

@@ -1,9 +1,16 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" >
 
+    <!-- Title and icon for action_input_mode will be set programmatically. -->
+    <item
+        android:id="@+id/action_input_mode"
+        android:orderInCategory="1"
+        android:showAsAction="always"
+        tools:ignore="MenuTitle"/>
     <item
         android:id="@+id/checkprogress"
         android:icon="@drawable/menu_check_progress"
-        android:orderInCategory="1"
+        android:orderInCategory="3"
         android:showAsAction="always"
         android:title="@string/action_check_progress"/>
     <item

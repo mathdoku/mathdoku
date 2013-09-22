@@ -420,11 +420,13 @@
     <!-- PUZZLE FRAGMENT - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
-    <!-- The text which is shown on a long press on the switch input mode image. -->
+    <!-- The text which is shown to toggle between the normal and maybe mode. -->
     <string name="input_mode_normal_short_description">Normale waarden</string>
-    <string name="input_mode_normal_long_description">Gewisseld naar invoer van normale waarden.\nDubbel tik op een cel om te wisselen naar invoer van mogelijke waarden.</string>
+    <string name="input_mode_normal_long_description">Wissel van invoer van normale waarden naar mogelijke waarden invoer.\nJe kunt ook dubbel tikken op een cel om te wisselen van invoertoestand.</string>
     <string name="input_mode_maybe_short_description">Mogelijke waarden</string>
-    <string name="input_mode_maybe_long_description">Gewisseld naar invoer van mogelijke waarden.\nDubbel tik op een cel om te wisselen naar invoer van normale waarden.</string>
+    <string name="input_mode_maybe_long_description">Wissel van invoer van mogelijke waarden naar normale waarden invoer.\nJe kunt ook dubbel tikken op een cel om te wisselen van invoertoestand.</string>
+
+    <!-- The text which is shown to enable/disable copy mode. -->
     <string name="input_mode_copy_short_description">Kopieer waarden</string>
     <string name="input_mode_copy_long_description">Gewisseld naar kopieer-waarden-toestand. Waarde van de geselecteerde cel worden gekopieerd naar elke cel die je aanraakt zolang deze toestand actief is. Dubbel tik op een cel om deze toestand te beëindigen.</string>
 

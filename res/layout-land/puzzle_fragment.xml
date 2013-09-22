@@ -43,23 +43,11 @@
         mathdoku:layout_alignGridPlayerViewTop="visible_grid"
         android:paddingRight="10dp" >
 
-        <!-- The bottom of the input mode button is aligned with the timer text for handling -->
-        <!-- situation in which Android's default text size is set to large or huge. -->
-
-        <ImageView
-            android:id="@+id/input_mode_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/timerText"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            tools:ignore="ContentDescription" />
-
         <TextView
             android:id="@+id/timerText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:paddingLeft="10dp"
             android:textSize="@dimen/text_size_default"
@@ -71,7 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_below="@+id/input_mode_image"
+            android:layout_below="@+id/timerText"
             android:layout_marginTop="10dp" />
 
         <TableLayout
@@ -225,20 +213,6 @@
                     tools:ignore="ButtonStyle" />
             </TableRow>
         </TableLayout>
-
-        <!-- Input mode text should be positioned below timer because of z-layering. In case it is displayed it should cover the timer text and the ticker tape. -->
-
-        <TextView
-            android:id="@+id/input_mode_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/input_mode_image"
-            android:layout_toRightOf="@+id/input_mode_image"
-            android:background="#000"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:textSize="@dimen/text_size_default"
-            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/controlsSwipeOnly"

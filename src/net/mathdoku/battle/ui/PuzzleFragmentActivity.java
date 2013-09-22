@@ -215,6 +215,18 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 
 		boolean showCheats = false;
 
+		// Set visibility for menu option input mode
+		MenuItem inputModeItem = menu.findItem(R.id.action_input_mode);
+		inputModeItem.setVisible(!drawerOpen && mPuzzleFragment != null
+				&& mPuzzleFragment.isActive());
+		if (inputModeItem.isVisible()) {
+			inputModeItem.setIcon(
+					mPuzzleFragment.getActionCurrentInputModeIconResId())
+					.setTitle(
+							mPuzzleFragment
+									.getActionCurrentInputModeTitleResId());
+		}
+
 		// Set visibility for menu option check progress
 		menu.findItem(R.id.checkprogress).setVisible(
 				!drawerOpen && mPuzzleFragment != null
@@ -296,6 +308,11 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		switch (menuId) {
 		case R.id.action_new_game:
 			showDialogNewGame(true);
+			return true;
+		case R.id.action_input_mode:
+			if (mPuzzleFragment != null) {
+				mPuzzleFragment.toggleInputMode();
+			}
 			return true;
 		case R.id.checkprogress:
 			if (mPuzzleFragment != null) {

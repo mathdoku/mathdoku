@@ -14,6 +14,7 @@ import net.mathdoku.battle.grid.ui.GridInputMode;
 import net.mathdoku.battle.grid.ui.GridPlayerView;
 import net.mathdoku.battle.hint.TickerTape;
 import net.mathdoku.battle.painter.Painter;
+import net.mathdoku.battle.painter.Painter.GridTheme;
 import net.mathdoku.battle.statistics.GridStatistics.StatisticsCounterType;
 import net.mathdoku.battle.tip.TipCheat;
 import net.mathdoku.battle.tip.TipDialog;
@@ -32,7 +33,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,7 +43,6 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
@@ -69,8 +68,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 	private RelativeLayout mPuzzleGridLayout;
 	private TextView mTimerText;
-	private ImageView mInputModeImageView;
-	private TextView mInputModeText;
 
 	private TickerTape mTickerTape;
 
@@ -256,34 +253,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		mGridPlayerView.setFocusable(true);
 		mGridPlayerView.setFocusableInTouchMode(true);
 
-		// Initialize the input mode
-		mInputModeImageView = (ImageView) mRootView
-				.findViewById(R.id.input_mode_image);
-		mInputModeText = (TextView) mRootView
-				.findViewById(R.id.input_mode_text);
-		setInputModeTextVisibility(mGridPlayerView.getGridInputMode());
-		mInputModeText.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if (mGridPlayerView != null && mGrid != null) {
-					// Toggle input mode
-					mGridPlayerView.toggleInputMode();
-				}
-			}
-		});
-
-		mInputModeImageView.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if (mGridPlayerView != null && mGrid != null) {
-					// Toggle input mode
-					mGridPlayerView.toggleInputMode();
-				}
-			}
-		});
+		// Register listener for changes of input mode
 		mGridPlayerView.setOnInputModeChangedListener(this);
-		// Force display of normal mode text.
-		this.onInputModeChanged(GridInputMode.NORMAL);
 
 		registerForContextMenu(mGridPlayerView);
 
@@ -327,10 +298,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		// the new theme setting
 		if (mGridPlayerView != null) {
 			mGridPlayerView.invalidate();
-			if (mInputModeImageView != null) {
-				setInputModeImage(mGridPlayerView.getGridInputMode());
-				mInputModeImageView.invalidate();
-			}
 		}
 	}
 
@@ -612,6 +579,10 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			String key) {
 		if (key.equals(Preferences.PUZZLE_SETTING_THEME)) {
 			setTheme();
+
+			// Invalidate the option menu as the input mode action icon needs to
+			// be updated
+			((FragmentActivity) mContext).invalidateOptionsMenu();
 		}
 
 		if (key.equals(Preferences.PUZZLE_SETTING_INPUT_METHOD)) {
@@ -628,6 +599,10 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 		if (key.equals(Preferences.PUZZLE_SETTING_COLORED_DIGITS)) {
 			setColorDigitButtons();
+
+			// Invalidate the option menu as the input mode action icon needs to
+			// be updated
+			((FragmentActivity) mContext).invalidateOptionsMenu();
 		}
 	}
 
@@ -980,10 +955,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				setElapsedTime(mGrid.getElapsedTime());
 			}
 		}
-		if (mInputModeImageView != null) {
-			mInputModeImageView.setVisibility(View.INVISIBLE);
-			mInputModeImageView.invalidate();
-		}
 		if (mClearButton != null) {
 			mClearButton.setVisibility(View.GONE);
 			mClearButton.invalidate();
@@ -1011,116 +982,11 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 	@Override
 	public void onInputModeChanged(final GridInputMode inputMode) {
-		setInputModeImage(inputMode);
-
-		// Display message
-		mInputModeText.setVisibility(View.VISIBLE);
-
-		boolean showInputModeText = false;
-		int inputModeTextResId = 0;
-		switch (inputMode) {
-		case NORMAL: {
-			int counter = mMathDokuPreferences
-					.increaseInputModeChangedCounter();
-			if (counter < 4) {
-				inputModeTextResId = R.string.input_mode_normal_long_description;
-				showInputModeText = true;
-			} else if (counter < 20) {
-				inputModeTextResId = R.string.input_mode_normal_short_description;
-				showInputModeText = true;
-			}
-			break;
-		}
-		case MAYBE: {
-			int counter = mMathDokuPreferences
-					.increaseInputModeChangedCounter();
-			if (counter < 4) {
-				inputModeTextResId = R.string.input_mode_maybe_long_description;
-				showInputModeText = true;
-			} else if (counter < 20) {
-				inputModeTextResId = R.string.input_mode_maybe_short_description;
-				showInputModeText = true;
-			}
-			break;
-		}
-		case COPY: {
-			int counter = mMathDokuPreferences.increaseInputModeCopyCounter();
-			if (counter < 4) {
-				inputModeTextResId = R.string.input_mode_copy_long_description;
-				showInputModeText = true;
-			} else if (counter < 20) {
-				inputModeTextResId = R.string.input_mode_copy_short_description;
-				showInputModeText = true;
-			}
-			break;
-		}
-
-		}
-		if (showInputModeText) {
-			mInputModeText.setText(inputModeTextResId);
-			mInputModeText.invalidate();
-
-			// Hide the message after 5000 milliseconds.
-			final Handler handler = new Handler();
-			handler.postDelayed(new Runnable() {
-				@Override
-				public void run() {
-					setInputModeTextVisibility(inputMode);
-				}
-			}, 5000);
-		}
-
 		// Change color of digit buttons
 		setColorDigitButtons();
-	}
 
-	/**
-	 * Set the visibility of the input mode text to invisible or gone.
-	 */
-	private void setInputModeTextVisibility(GridInputMode inputMode) {
-		if (mInputModeText != null) {
-			// After the input mode changed message has been displayed three
-			// times, it will never be displayed again. The visibility of the
-			// text view should then be set to gone as this decreases the
-			// height of the relative layout in which the field is encapsulated.
-			if (inputMode == GridInputMode.NORMAL
-					|| inputMode == GridInputMode.MAYBE) {
-				mInputModeText.setVisibility(mMathDokuPreferences
-						.getInputModeChangedCounter() < 4 ? View.INVISIBLE
-						: View.GONE);
-			} else {
-				mInputModeText.setVisibility(mMathDokuPreferences
-						.getInputModeCopyCounter() < 4 ? View.INVISIBLE
-						: View.GONE);
-			}
-		}
-	}
-
-	/**
-	 * Set the input mode image for the given input mode.
-	 * 
-	 * @param inputMode
-	 *            The input mode for which the input mode button has to be set.
-	 */
-	private void setInputModeImage(GridInputMode inputMode) {
-		// Set the input mode image to the new value of the input mode
-		if (mInputModeImageView != null && mPainter != null) {
-			switch (inputMode) {
-			case NORMAL:
-				mInputModeImageView.setImageResource(mPainter
-						.getNormalInputModeButton());
-				break;
-			case MAYBE:
-				mInputModeImageView.setImageResource(mPainter
-						.getMaybeInputModeButton());
-				break;
-			case COPY:
-				mInputModeImageView.setImageResource(mPainter
-						.getCopyInputModeButton());
-				break;
-			}
-			mInputModeImageView.invalidate();
-		}
+		// Invalidate the option menu to toggle the input mode menu action
+		((FragmentActivity) mContext).invalidateOptionsMenu();
 	}
 
 	/**
@@ -1262,6 +1128,68 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 					mDigitPosition[i].setTextColor(color);
 				}
 			}
+		}
+	}
+
+	/**
+	 * Gets the resource id for the icon which matches the current input mode.
+	 * 
+	 * @return The resource id for the icon which matches the current input
+	 *         mode.
+	 */
+	public int getActionCurrentInputModeIconResId() {
+		if (mGridPlayerView == null) {
+			return R.drawable.normal_input_mode_colored;
+		}
+
+		// Determine which button should be displayed.
+		int index = (mGridPlayerView.getGridInputMode() == GridInputMode.NORMAL ? 0
+				: 4)
+				+ (mMathDokuPreferences.isColoredDigitsVisible() ? 0 : 2)
+				+ (mMathDokuPreferences.getTheme() == GridTheme.LIGHT ? 0 : 1);
+		;
+		switch (index) {
+		case 0:
+		case 1:
+			return R.drawable.normal_input_mode_colored;
+		case 2:
+			return R.drawable.normal_input_mode_monochrome_light;
+		case 3:
+			return R.drawable.normal_input_mode_monochrome_dark;
+		case 4:
+		case 5:
+			return R.drawable.maybe_input_mode_colored;
+		case 6:
+			return R.drawable.maybe_input_mode_monochrome_light;
+		case 7:
+			return R.drawable.maybe_input_mode_monochrome_dark;
+		}
+
+		// Impossible
+		return -1;
+	}
+
+	/**
+	 * Gets the resource id of the title of the current input mode.
+	 * 
+	 * @return The resource id of the title of the current input mode.
+	 */
+	public int getActionCurrentInputModeTitleResId() {
+		if (mGridPlayerView == null) {
+			return R.string.input_mode_normal_long_description;
+		}
+
+		return (mGridPlayerView.getGridInputMode() == GridInputMode.NORMAL ? R.string.input_mode_normal_long_description
+				: R.string.input_mode_maybe_long_description);
+	}
+
+	/**
+	 * Toggles the input mode from normal to maybe and vice versa.
+	 */
+	public void toggleInputMode() {
+		if (mGridPlayerView != null) {
+			// Toggle input mode
+			mGridPlayerView.toggleInputMode();
 		}
 	}
 }

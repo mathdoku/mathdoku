@@ -1,6 +1,5 @@
 package net.mathdoku.battle.painter;
 
-import net.mathdoku.battle.R;
 import android.graphics.DashPathEffect;
 import android.graphics.PathEffect;
 import android.graphics.Typeface;
@@ -18,9 +17,6 @@ public class Painter {
 	// Text colors (dependent on theme) per input mode
 	private int mHighlightedTextColorNormalInputMode;
 	private int mHighlightedTextColorMaybeInputMode;
-	private int mNormalInputModeButtonResId;
-	private int mMaybeInputModeButtonResId;
-	private int mCopyInputModeButtonResId;
 	private int mDefaultTextColor;
 
 	// Themes available
@@ -199,15 +195,9 @@ public class Painter {
 		// The default color will of course be set relevant to the theme.
 		switch (gridTheme) {
 		case LIGHT:
-			mNormalInputModeButtonResId = R.drawable.input_mode_normal_light;
-			mMaybeInputModeButtonResId = R.drawable.input_mode_maybe_light;
-			mCopyInputModeButtonResId = R.drawable.input_mode_copy_light;
 			mDefaultTextColor = 0xFF212121;
 			break;
 		case DARK:
-			mNormalInputModeButtonResId = R.drawable.input_mode_normal_dark;
-			mMaybeInputModeButtonResId = R.drawable.input_mode_maybe_dark;
-			mCopyInputModeButtonResId = R.drawable.input_mode_copy_dark;
 			mDefaultTextColor = 0xFFFFFFFF;
 			break;
 		}
@@ -360,32 +350,5 @@ public class Painter {
 		mMaybeLinePainter.setColorMode(digitPainterMode);
 		mUserValuePainter.setColorMode(digitPainterMode);
 
-	}
-
-	/**
-	 * Get the normal input mode button.
-	 * 
-	 * @return The normal input mode button.
-	 */
-	public int getNormalInputModeButton() {
-		return mNormalInputModeButtonResId;
-	}
-
-	/**
-	 * Get the maybe input mode button.
-	 * 
-	 * @return The maybe input mode button.
-	 */
-	public int getMaybeInputModeButton() {
-		return mMaybeInputModeButtonResId;
-	}
-
-	/**
-	 * Get the copy input mode button.
-	 * 
-	 * @return The copy input mode button.
-	 */
-	public int getCopyInputModeButton() {
-		return mCopyInputModeButtonResId;
 	}
 }
