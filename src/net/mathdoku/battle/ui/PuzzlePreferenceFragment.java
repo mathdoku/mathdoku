@@ -23,7 +23,9 @@ public class PuzzlePreferenceFragment extends PreferenceFragment implements
 
 		setThemeSummary();
 
-		// Build list preference
+		setInputMethodSummary();
+
+		// Build list for the outer swipe circle preference
 		ListPreference listPreference = (ListPreference) findPreference(Preferences.PUZZLE_SETTING_OUTER_SWIPE_CIRCLE);
 		String[] entries = new String[7];
 		String[] entryValues = new String[7];
@@ -66,6 +68,11 @@ public class PuzzlePreferenceFragment extends PreferenceFragment implements
 		if (key.equals(Preferences.PUZZLE_SETTING_THEME)) {
 			setThemeSummary();
 		}
+
+		if (key.equals(Preferences.PUZZLE_SETTING_INPUT_METHOD)) {
+			setInputMethodSummary();
+		}
+
 		if (key.equals(Preferences.PUZZLE_SETTING_OUTER_SWIPE_CIRCLE)) {
 			setOuterSwipeCircleSummary();
 		}
@@ -84,6 +91,28 @@ public class PuzzlePreferenceFragment extends PreferenceFragment implements
 			findPreference(Preferences.PUZZLE_SETTING_THEME).setSummary(
 					getResources().getString(R.string.theme_dark));
 			break;
+		}
+	}
+
+	/**
+	 * Set summary for option "input method" to the current value of the option.
+	 */
+	private void setInputMethodSummary() {
+		String digitInputMethod = mPreferences.getDigitInputMethod();
+		if (digitInputMethod
+				.equals(Preferences.PUZZLE_SETTING_INPUT_METHOD_SWIPE_ONLY)) {
+			findPreference(Preferences.PUZZLE_SETTING_INPUT_METHOD).setSummary(
+					getResources().getString(R.string.input_method_swipe_only));
+		} else if (digitInputMethod
+				.equals(Preferences.PUZZLE_SETTING_INPUT_METHOD_SWIPE_AND_BUTTONS)) {
+			findPreference(Preferences.PUZZLE_SETTING_INPUT_METHOD).setSummary(
+					getResources().getString(
+							R.string.input_method_swipe_and_buttons));
+		} else if (digitInputMethod
+				.equals(Preferences.PUZZLE_SETTING_INPUT_METHOD_BUTTONS_ONLY)) {
+			findPreference(Preferences.PUZZLE_SETTING_INPUT_METHOD).setSummary(
+					getResources()
+							.getString(R.string.input_method_buttons_only));
 		}
 	}
 

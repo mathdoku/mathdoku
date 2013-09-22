@@ -22,6 +22,20 @@
         <item>theme_dark</item>
     </string-array>
 
+    <!-- The possible values of the "input methods" option. This option controls which input methods can be used. -->
+    <string-array name="puzzle_setting_input_methods_values_text">
+        <item>@string/input_method_swipe_only</item>
+        <item>@string/input_method_swipe_and_buttons</item>
+        <item>@string/input_method_buttons_only</item>
+    </string-array>
+
+    <!-- Identifiers associated with element themeTexts. This element may not be translated. -->
+    <string-array name="puzzle_setting_input_methods_values_code">
+        <item>swipe_only</item>
+        <item>swipe_and_buttons</item>
+        <item>buttons_only</item>
+    </string-array>
+
     <!-- The possible values of the "maxGamesElapsedTimeChart" preference. -->
     <string-array name="statistics_setting_elapsed_time_chart_maximum_games_entries">
         <item>50</item>

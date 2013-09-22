@@ -1,5 +1,6 @@
 package net.mathdoku.battle.grid.ui;
 
+import net.mathdoku.battle.Preferences;
 import net.mathdoku.battle.R;
 import net.mathdoku.battle.grid.Grid;
 import net.mathdoku.battle.grid.GridCell;
@@ -10,6 +11,15 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+/**
+ * This class implements the swiping functionality on top of the grid base
+ * player view. Note the XML layout documents always include this class even in
+ * case the user has already chosen to use the buttons input method only. For
+ * this reason the input method is checked and if necessary the swipe specific
+ * code in this class is skipped and only the super class is called. Most likely
+ * this is not the best Java approach but currently I do not know to solve it
+ * otherwise except for programmatically build the entire layouts.
+ */
 public class GridPlayerView extends GridBasePlayerView {
 	@SuppressWarnings("unused")
 	private static final String TAG = "MathDoku.GridPlayerView";
@@ -22,6 +32,10 @@ public class GridPlayerView extends GridBasePlayerView {
 
 	// Reference to the last ticker tape started by the grid view player.
 	TickerTape mTickerTape;
+
+	// The input method(s) to be used. Note that in case the buttons only input
+	// method is used, the class is still called but most code will be skipped.
+	private boolean mSwipeInputMethodEnabled;
 
 	public GridPlayerView(Context context) {
 		super(context);
@@ -43,13 +57,22 @@ public class GridPlayerView extends GridBasePlayerView {
 
 		// Initialize the runnables used to delay touch handling
 		mSwipeBorderDelayRunnable = new SwipeBorderDelayRunnable();
-	}
 
+		// Determine whether swiping is enabled.
+		mSwipeInputMethodEnabled = mPreferences.getDigitInputMethod().equals(
+				Preferences.PUZZLE_SETTING_INPUT_METHOD_BUTTONS_ONLY);
 
+		setSwipeBorder(mSwipeInputMethodEnabled);
 	}
 
 	@Override
 	public boolean onTouch(View arg0, MotionEvent event) {
+		// In case the input method does not allow swiping, only the super class
+		// is called.
+		if (mSwipeInputMethodEnabled == false) {
+			return super.onTouch(arg0, event);
+		}
+
 		if (mGrid == null || !mGrid.isActive())
 			return false;
 
@@ -171,6 +194,13 @@ public class GridPlayerView extends GridBasePlayerView {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
+		// In case the input method does not allow swiping, only the super class
+		// is called.
+		if (mSwipeInputMethodEnabled == false) {
+			super.onDraw(canvas);
+			return;
+		}
+
 		if (mGrid == null) {
 			// As long as no grid has been attached to the grid view, it can not
 			// be drawn.
@@ -377,5 +407,17 @@ public class GridPlayerView extends GridBasePlayerView {
 		if (mTickerTape != null) {
 			mTickerTape.reset();
 		}
+	}
+
+	/**
+	 * Enables or disables the swipe input method.
+	 * 
+	 * @param swipeInputMethodEnabled
+	 *            True in case the swipe input method is enabled. False
+	 *            otherwise.
+	 */
+	public void setSwipeInputMethodEnabled(boolean swipeInputMethodEnabled) {
+		mSwipeInputMethodEnabled = swipeInputMethodEnabled;
+		setSwipeBorder(mSwipeInputMethodEnabled);
 	}
 }

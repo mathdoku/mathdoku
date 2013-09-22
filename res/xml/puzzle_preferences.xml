@@ -21,14 +21,7 @@
             android:entryValues="@array/puzzle_setting_theme_values_code"
             android:key="puzzle_setting_theme"
             android:title="@string/puzzle_setting_theme_title" />
-        <!-- Entries, entry values and summary for preference puzzle_setting_outer_swipe_circle will be set programmatically. -->
-        <ListPreference
-            android:key="puzzle_setting_outer_swipe_circle"
-            android:title="@string/puzzle_setting_outer_swipe_circle_title" />
-		<CheckBoxPreference
-		    android:key="puzzle_setting_digit_buttons"
-		    android:summary="@string/puzzle_setting_digit_buttons_summary"
-		    android:title="@string/puzzle_setting_digit_buttons_title"/>
+
         <CheckBoxPreference
             android:key="puzzle_setting_colored_digits"
             android:summary="@string/puzzle_setting_colored_digits_summary"
@@ -49,6 +42,17 @@
             android:key="puzzle_setting_wake_lock"
             android:summary="@string/puzzle_setting_wake_lock_summary"
             android:title="@string/puzzle_setting_wake_lock_title" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/puzzle_setting_group_input" >
+        <ListPreference
+            android:entries="@array/puzzle_setting_input_methods_values_text"
+            android:entryValues="@array/puzzle_setting_input_methods_values_code"
+            android:key="puzzle_setting_input_method"
+            android:title="@string/puzzle_setting_input_method" />
+        <!-- Entries, entry values and summary for preference puzzle_setting_outer_swipe_circle will be set programmatically. -->
+        <ListPreference
+            android:key="puzzle_setting_outer_swipe_circle"
+            android:title="@string/puzzle_setting_outer_swipe_circle_title" />
     </PreferenceCategory>
     <PreferenceCategory
         android:key="Sound"

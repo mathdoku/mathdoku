@@ -175,12 +175,6 @@
     <!-- The theme option -->
     <string name="puzzle_setting_theme_title">Thema</string>
 
-    <!-- The title and summary of the "outer swipe circle" option. This option controls the smallest grid size for which the outer swipe circle is visible. -->
-    <string name="puzzle_setting_outer_swipe_circle_title">Doppelter gewischter Kreis</string>
-    <string name="puzzle_setting_outer_swipe_circle_visible_from_grid_size_short">Größe %1$d und größer</string>
-    <string name="puzzle_setting_outer_swipe_circle_visible_from_grid_size_long">Ein doppelt gewischter Kreis wird für alle Rätsel der Größe %1$d und größer angezeigt.</string>
-    <string name="puzzle_setting_outer_swipe_circle_visible_never">Es wird nie ein doppelt gewischter Kreis angezeigt.</string>
-
     <!-- The title and summary of the "colored digits" option. This option controls whether maybe numbers and normal numbers are displayed in distinct colors or in one monochrome color. -->
     <string name="puzzle_setting_colored_digits_title">Farbige Ziffern</string>
     <string name="puzzle_setting_colored_digits_summary">Verwenden Sie farbige Ziffern, um \"Vielleichtwerte\" von normalen Werten zu unterscheiden.</string>
@@ -200,6 +194,23 @@
     <!-- The title and summary of the "wake lock" option. This option highlights cells with digits already in the row or column. -->
     <string name="puzzle_setting_wake_lock_title">Automatisches Abschalten</string>
     <string name="puzzle_setting_wake_lock_summary">Das Abschalten des Bildschirms während dem Spiel verhindern.</string>
+
+    <!-- The preferences category title for options relating to how digits are entered. -->
+    <!-- TODO -->
+    <string name="puzzle_setting_group_input">Entering digits</string>
+
+    <!-- The input method option -->
+    <!-- TODO -->
+    <string name="puzzle_setting_input_method">Input method</string>
+    <string name="input_method_swipe_only">Swipe only</string>
+    <string name="input_method_swipe_and_buttons">Swipe and buttons</string>
+    <string name="input_method_buttons_only">Buttons only</string>
+
+    <!-- The title and summary of the "outer swipe circle" option. This option controls the smallest grid size for which the outer swipe circle is visible. -->
+    <string name="puzzle_setting_outer_swipe_circle_title">Doppelter gewischter Kreis</string>
+    <string name="puzzle_setting_outer_swipe_circle_visible_from_grid_size_short">Größe %1$d und größer</string>
+    <string name="puzzle_setting_outer_swipe_circle_visible_from_grid_size_long">Ein doppelt gewischter Kreis wird für alle Rätsel der Größe %1$d und größer angezeigt.</string>
+    <string name="puzzle_setting_outer_swipe_circle_visible_never">Es wird nie ein doppelt gewischter Kreis angezeigt.</string>
 
     <!-- The preferences category title for audio options. -->
     <string name="puzzle_setting_group_sound">Audio</string>

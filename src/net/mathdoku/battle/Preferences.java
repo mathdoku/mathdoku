@@ -79,14 +79,17 @@ public class Preferences {
 	public final static String PUZZLE_SETTING_COLORED_DIGITS = "puzzle_setting_colored_digits";
 	public final static boolean PUZZLE_SETTING_COLORED_DIGITS_DEFAULT = true;
 
-	public final static String PUZZLE_SETTING_DIGIT_BUTTONS_VISIBLE = "puzzle_setting_digit_buttons";
-	public final static boolean PUZZLE_SETTING_DIGIT_BUTTONS_VISIBLE_DEFAULT = true;
-
 	public final static String PUZZLE_SETTING_DUPLICATE_DIGITS_VISIBLE = "puzzle_setting_duplicate_digits_visible";
 	public final static boolean PUZZLE_SETTING_DUPLICATE_DIGITS_VISIBLE_DEFAULT = true;
 
 	public final static String PUZZLE_SETTING_FULL_SCREEN = "puzzle_setting_full_screen";
 	public final static boolean PUZZLE_SETTING_FULL_SCREEN_DEFAULT = false;
+
+	public final static String PUZZLE_SETTING_INPUT_METHOD = "puzzle_setting_input_method";
+	public final static String PUZZLE_SETTING_INPUT_METHOD_SWIPE_ONLY = "swipe_only";
+	public final static String PUZZLE_SETTING_INPUT_METHOD_SWIPE_AND_BUTTONS = "swipe_and_buttons";
+	public final static String PUZZLE_SETTING_INPUT_METHOD_BUTTONS_ONLY = "buttons_only";
+	public final static String PUZZLE_SETTING_INPUT_METHOD_DEFAULT = PUZZLE_SETTING_INPUT_METHOD_SWIPE_ONLY;
 
 	public final static String PUZZLE_SETTING_MAYBES_DISPLAYED_IN_GRID = "puzzle_setting_maybes_displayed_in_grid";
 	public final static boolean PUZZLE_SETTING_MAYBES_DISPLAYED_IN_GRID_DEFAULT = true;
@@ -325,12 +328,14 @@ public class Preferences {
 					STATISTICS_TAB_LAST_SHOWED_DEFAULT);
 			prefeditor.putString(PUZZLE_SETTING_OUTER_SWIPE_CIRCLE,
 					PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_DEFAULT);
-			prefeditor.putBoolean(PUZZLE_SETTING_DIGIT_BUTTONS_VISIBLE,
-					PUZZLE_SETTING_DIGIT_BUTTONS_VISIBLE_DEFAULT);
 		}
 		if (previousInstalledVersion < 569 && currentVersion >= 569) {
 			prefeditor.putInt(PUZZLE_INPUT_MODE_COPY_COUNTER,
 					PUZZLE_INPUT_MODE_COPY_COUNTER_DEFAULT);
+		}
+		if (previousInstalledVersion < 579 && currentVersion >= 579) {
+			prefeditor.putString(PUZZLE_SETTING_INPUT_METHOD,
+					PUZZLE_SETTING_INPUT_METHOD_DEFAULT);
 		}
 
 		// Save
@@ -396,15 +401,6 @@ public class Preferences {
 	public boolean isWakeLockEnabled() {
 		return mSharedPreferences.getBoolean(PUZZLE_SETTING_WAKE_LOCK,
 				PUZZLE_SETTING_WAKE_LOCK_DEFAULT);
-	}
-
-	/**
-	 * Whether digit buttons are used.
-	 */
-	public boolean isDigitButtonsVisible() {
-		return mSharedPreferences.getBoolean(
-				PUZZLE_SETTING_DIGIT_BUTTONS_VISIBLE,
-				PUZZLE_SETTING_DIGIT_BUTTONS_VISIBLE_DEFAULT);
 	}
 
 	/**
@@ -1061,5 +1057,13 @@ public class Preferences {
 	public String getOuterSwipeCircleVisibility() {
 		return mSharedPreferences.getString(PUZZLE_SETTING_OUTER_SWIPE_CIRCLE,
 				PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_DEFAULT);
+	}
+
+	/**
+	 * Gets the input method.
+	 */
+	public String getDigitInputMethod() {
+		return mSharedPreferences.getString(PUZZLE_SETTING_INPUT_METHOD,
+				PUZZLE_SETTING_INPUT_METHOD_DEFAULT);
 	}
 }

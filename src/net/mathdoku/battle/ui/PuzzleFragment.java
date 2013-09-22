@@ -613,10 +613,19 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			setTheme();
 		}
 
-		// Determine which input mode(s) to use
-		if (key.equals(Preferences.PUZZLE_SETTING_DIGIT_BUTTONS_VISIBLE)) {
+		if (key.equals(Preferences.PUZZLE_SETTING_INPUT_METHOD)) {
 			setButtonLayout();
-		} else if (key.equals(Preferences.PUZZLE_SETTING_COLORED_DIGITS)) {
+
+			// Inform the GridPlayerView about the change of input method.
+			if (mGridPlayerView != null) {
+				mGridPlayerView
+						.setSwipeInputMethodEnabled((mMathDokuPreferences
+								.getDigitInputMethod()
+								.equals(Preferences.PUZZLE_SETTING_INPUT_METHOD_BUTTONS_ONLY) == false));
+			}
+		}
+
+		if (key.equals(Preferences.PUZZLE_SETTING_COLORED_DIGITS)) {
 			setColorDigitButtons();
 		}
 	}
@@ -1124,6 +1133,14 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			mGrid.setPreferences();
 		}
 
+		// Inform the GridPlayerView about the input method.
+		if (mGridPlayerView != null) {
+			mGridPlayerView
+					.setSwipeInputMethodEnabled((mMathDokuPreferences
+							.getDigitInputMethod()
+							.equals(Preferences.PUZZLE_SETTING_INPUT_METHOD_BUTTONS_ONLY) == false));
+		}
+
 		// Set sound effects if applicable
 		setSoundEffectsEnabled(mMathDokuPreferences.isPlaySoundEffectEnabled());
 
@@ -1200,7 +1217,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	private void setButtonLayout() {
 		// In case the digit buttons are hidden, entering digit can only be done
 		// using swiping.
-		boolean swipeOnly = (mMathDokuPreferences.isDigitButtonsVisible() == false);
+		boolean swipeOnly = mMathDokuPreferences.getDigitInputMethod().equals(
+				Preferences.PUZZLE_SETTING_INPUT_METHOD_SWIPE_ONLY);
 
 		if (mControlsPadBigTableLayout != null) {
 			mControlsPadBigTableLayout.setVisibility(swipeOnly ? View.GONE

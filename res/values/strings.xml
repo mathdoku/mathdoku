@@ -174,16 +174,6 @@
     <!-- The theme option -->
     <string name="puzzle_setting_theme_title">Theme</string>
 
-    <!-- The title and summary of the "outer swipe circle" option. This option controls the smallest grid size for which the outer swipe circle is visible. -->
-    <string name="puzzle_setting_outer_swipe_circle_title">Double swipe circle</string>
-    <string name="puzzle_setting_outer_swipe_circle_visible_from_grid_size_short">Size %1$d and above</string>
-    <string name="puzzle_setting_outer_swipe_circle_visible_from_grid_size_long">Display a second swipe circle for puzzles of size %1$d and above</string>
-    <string name="puzzle_setting_outer_swipe_circle_visible_never">Never display a second swipe circle</string>
-
-    <!--  The title and summary of the "digit buttons" option. Controls whether digit buttons are used instead of swipe circle. -->
-    <string name="puzzle_setting_digit_buttons_title">Use digit buttons</string>
-    <string name="puzzle_setting_digit_buttons_summary">Use digit buttons instead of swipe circle</string>
-    
     <!-- The title and summary of the "colored digits" option. This option controls whether maybe numbers and normal numbers are displayed in distinct colors or in one monochrome color. -->
     <string name="puzzle_setting_colored_digits_title">Colored digits</string>
     <string name="puzzle_setting_colored_digits_summary">Use colored digits to distinguish maybe numbers from normal numbers</string>
@@ -203,6 +193,21 @@
     <!-- The title and summary of the "wake lock" option. This option highlights cells with digits already in the row or column. -->
     <string name="puzzle_setting_wake_lock_title">Keep screen on</string>
     <string name="puzzle_setting_wake_lock_summary">Prevent the screen from going off while playing</string>
+
+    <!-- The preferences category title for options relating to how digits are entered. -->
+    <string name="puzzle_setting_group_input">Entering digits</string>
+
+    <!-- The input method option -->
+    <string name="puzzle_setting_input_method">Input method</string>
+    <string name="input_method_swipe_only">Swipe only</string>
+    <string name="input_method_swipe_and_buttons">Swipe and buttons</string>
+    <string name="input_method_buttons_only">Buttons only</string>
+
+    <!-- The title and summary of the "outer swipe circle" option. This option controls the smallest grid size for which the outer swipe circle is visible. -->
+    <string name="puzzle_setting_outer_swipe_circle_title">Double swipe circle</string>
+    <string name="puzzle_setting_outer_swipe_circle_visible_from_grid_size_short">Size %1$d and above</string>
+    <string name="puzzle_setting_outer_swipe_circle_visible_from_grid_size_long">Display a second swipe circle for puzzles of size %1$d and above</string>
+    <string name="puzzle_setting_outer_swipe_circle_visible_never">Never display a second swipe circle</string>
 
     <!-- The preferences category title for audio options. -->
     <string name="puzzle_setting_group_sound">Sound</string>
@@ -244,18 +249,6 @@
 
     <!-- The text on the undo button in the main UI. -->
     <string name="main_ui_undo">Undo</string>
-    
-    <!--  The values of the numbers on the digit buttons. -->
-    <string name="main_ui_button1">1</string>
-    <string name="main_ui_button2">2</string>
-    <string name="main_ui_button3">3</string>
-    <string name="main_ui_button4">4</string>
-    <string name="main_ui_button5">5</string>
-    <string name="main_ui_button6">6</string>
-    <string name="main_ui_button7">7</string>
-    <string name="main_ui_button8">8</string>
-    <string name="main_ui_button9">9</string>
-    <string name="main_ui_buttonC">C</string>
 
     <!-- DIALOG FEEDBACK - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -341,7 +334,7 @@
 
     <!-- Title, and text for tip "Copy cell values" -->
     <string name="dialog_tip_copy_cell_values_title">Copy cell values</string>
-    <string name="dialog_tip_copy_cell_values_text">Did you know that you can copy cell values from one cell to another cell? This is especially usefull in case you have entered multiple maybe values into a cell and for example want to reuse the same combination for other cells in the same cage.\n\nYou can enter the \'copy\' mode by long pressing the cell from which you want to copy the values. Next tap each cell to which you want to copy the values. Finally exit the \'copy\' mode by double tapping any cell.</string>
+    <string name="dialog_tip_copy_cell_values_text">Did you know that you can copy cell values from one cell to another cell? This is especially useful in case you have entered multiple maybe values into a cell and for example want to reuse the same combination for other cells in the same cage.\n\nYou can enter the \'copy\' mode by long pressing the cell from which you want to copy the values. Next tap each cell to which you want to copy the values. Finally exit the \'copy\' mode by double tapping any cell.</string>
 
     <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -434,8 +427,6 @@
     <string name="input_mode_maybe_long_description">Switched to maybe input mode\nDouble tap a cell to switch to normal mode.</string>
     <string name="input_mode_copy_short_description">Copy cells</string>
     <string name="input_mode_copy_long_description">Switched to \'copy\' mode. Values of the selected cell will be copied to each cell you tap. Double tap a cell to end \'copy\' mode.</string>
-    <string name="input_mode_normal">Normal mode</string>
-    <string name="input_mode_maybe">\'Maybe\' mode</string>
 
     <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

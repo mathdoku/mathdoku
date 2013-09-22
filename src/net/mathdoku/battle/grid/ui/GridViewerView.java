@@ -48,6 +48,10 @@ public class GridViewerView extends View {
 	// The layout to be used for positioning the maybe digits in a grid.
 	private DigitPositionGrid mDigitPositionGrid;
 
+	// Flag which determine whether a swipe border should be reserved around the
+	// visible grid.
+	private boolean mSwipeBorder;
+
 	public GridViewerView(Context context) {
 		super(context);
 		initGridView(context);
@@ -73,6 +77,8 @@ public class GridViewerView extends View {
 		mOrientation = getResources().getConfiguration().orientation;
 		mInScrollView = false;
 		mMaxViewSize = Float.MAX_VALUE;
+
+		mSwipeBorder = false;
 	}
 
 	@Override
@@ -175,22 +181,21 @@ public class GridViewerView extends View {
 		// need the minimum of width and height.
 		int maxSize = Math.min(measuredWidth, measuredHeight);
 
-		// Compute the exact size needed to display a grid in which the
-		// (integer) cell size is as big as possible but the grid still fits in
-		// the space available.
-		if (mGrid != null && mGrid.isActive()) {
-			// The swipe border has to be entirely visible in case a cell at the
-			// outer edge of the grid is selected. As the width of the swipe
-			// border equals 50% of a normal cell, the entire width is dived by
-			// the grid size + 1.
+		// In case a swipe border has to be measured, all cells in the visible
+		// grid will be reduced in size so that the swipe border can be drawn
+		// around the grid.
+		if (mSwipeBorder) {
+			// As the size of the swipe border is 50% of a normal cell and the
+			// border is displayed at all sides of the grid the cell size is
+			// calculated as if a grid with size (size + 1) would be drawn
+			// without a swipe border.
 			mGridCellSize = (float) Math.floor(maxSize / (mGridSize + 1));
 
-			// The grid border needs to be at least 50% of a normal cell in
-			// order to display the swipe border entirely.
+			// The grid border width equals 50% of a normal cell
 			mBorderWidth = mGridCellSize / 2;
-
 		} else {
-			// Force to compute the cell size
+			// Force to compute the cell size based on the maximum width
+			// available for the entire grid without a swipe border.
 			mBorderWidth = -1;
 		}
 
@@ -281,5 +286,17 @@ public class GridViewerView extends View {
 	 */
 	public void setInScrollView(boolean inScrollView) {
 		mInScrollView = inScrollView;
+	}
+
+	/**
+	 * Enables/disables an additional border around the visible grid which can
+	 * be use for handling the swipe events.
+	 * 
+	 * @param swipeBorderVisible
+	 *            True in case an additional swipe border has to be measured by
+	 *            the viewer. False otherwise.
+	 */
+	public void setSwipeBorder(boolean swipeBorder) {
+		mSwipeBorder = swipeBorder;
 	}
 }
