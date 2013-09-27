@@ -8,6 +8,7 @@ import net.mathdoku.battle.developmentHelper.DevelopmentHelper;
 import net.mathdoku.battle.developmentHelper.DevelopmentHelper.Mode;
 import net.mathdoku.battle.grid.Grid;
 import net.mathdoku.battle.grid.InvalidGridException;
+import net.mathdoku.battle.grid.ui.GridInputMode;
 import net.mathdoku.battle.gridGenerating.DialogPresentingGridGenerator;
 import net.mathdoku.battle.gridGenerating.GridGenerator.PuzzleComplexity;
 import net.mathdoku.battle.painter.Painter;
@@ -428,6 +429,11 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	public void onNewGridReady(final Grid newGrid) {
 		// The background task for creating a new grid has been finished.
 		mDialogPresentingGridGenerator = null;
+
+		// Reset preferences regarding the input mode of the puzzle
+		mMathDokuPreferences.setGridInputMode(false, GridInputMode.NORMAL);
+
+		// Initializes a new puzzle fragment
 		initializePuzzleFragment(newGrid.getSolvingAttemptId());
 	}
 

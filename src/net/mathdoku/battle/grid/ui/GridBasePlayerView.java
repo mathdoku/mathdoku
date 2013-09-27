@@ -1,7 +1,6 @@
 package net.mathdoku.battle.grid.ui;
 
 import net.mathdoku.battle.grid.CellChange;
-import net.mathdoku.battle.grid.Grid;
 import net.mathdoku.battle.grid.GridCell;
 import net.mathdoku.battle.statistics.GridStatistics.StatisticsCounterType;
 import net.mathdoku.battle.tip.TipBadCageMath;
@@ -31,7 +30,8 @@ public class GridBasePlayerView extends GridViewerView implements
 
 	// Input mode changed listener
 	public interface OnInputModeChangedListener {
-		public abstract void onInputModeChanged(GridInputMode inputMode);
+		public abstract void onInputModeChanged(GridInputMode inputMode,
+				boolean enableCopyMode);
 	}
 
 	private OnInputModeChangedListener mOnInputModeChangedListener;
@@ -346,7 +346,7 @@ public class GridBasePlayerView extends GridViewerView implements
 	 * @return The current input mode but restricted to normal either maybe.
 	 */
 	@Override
-	protected GridInputMode getRestrictedGridInputMode() {
+	public GridInputMode getRestrictedGridInputMode() {
 		return (mInputMode == GridInputMode.COPY && mCopyInputModeState != null ? mCopyInputModeState.mPreviousInputMode
 				: mInputMode);
 	}
@@ -403,7 +403,8 @@ public class GridBasePlayerView extends GridViewerView implements
 
 			// Inform listeners about change in input mode
 			if (mOnInputModeChangedListener != null) {
-				mOnInputModeChangedListener.onInputModeChanged(mInputMode);
+				mOnInputModeChangedListener.onInputModeChanged(
+						mCopyInputModeState.mPreviousInputMode, true);
 			}
 		} else {
 			// Restore input mode to the last know value before the copy mode
@@ -413,20 +414,11 @@ public class GridBasePlayerView extends GridViewerView implements
 
 				// Inform listeners about change in input mode
 				if (mOnInputModeChangedListener != null) {
-					mOnInputModeChangedListener.onInputModeChanged(mInputMode);
+					mOnInputModeChangedListener.onInputModeChanged(
+							mCopyInputModeState.mPreviousInputMode, false);
 				}
 			}
 		}
-	}
-
-	@Override
-	public void loadNewGrid(Grid grid) {
-		super.loadNewGrid(grid);
-
-		// Set default input mode to normal
-		mInputMode = GridInputMode.NORMAL;
-
-		invalidate();
 	}
 
 	/**
@@ -437,20 +429,32 @@ public class GridBasePlayerView extends GridViewerView implements
 	public void toggleInputMode() {
 		switch (mInputMode) {
 		case NORMAL:
-			mInputMode = GridInputMode.MAYBE;
+			setGridInputMode(GridInputMode.MAYBE, false);
 			break;
 		case MAYBE:
-			mInputMode = GridInputMode.NORMAL;
+			setGridInputMode(GridInputMode.NORMAL, false);
 			break;
 		default:
 			// Cannot toggle this mode.
 			return;
 		}
+	}
+
+	/**
+	 * Set the input mode to the given mode.
+	 * 
+	 * @param gridInputMode
+	 *            The new grid input mode.
+	 */
+	public void setGridInputMode(GridInputMode gridInputMode,
+			boolean enableCopyMode) {
+		mInputMode = gridInputMode;
 		invalidate();
 
 		// Inform listeners about change in input mode
 		if (mOnInputModeChangedListener != null) {
-			mOnInputModeChangedListener.onInputModeChanged(mInputMode);
+			mOnInputModeChangedListener.onInputModeChanged(mInputMode,
+					enableCopyMode);
 		}
 	}
 

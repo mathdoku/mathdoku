@@ -517,6 +517,9 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 			// Show the grid of the loaded puzzle.
 			if (mGrid.isActive()) {
+				// Get the input mode which was last used (possibly in another
+				// game).
+
 				// Set visibility of grid layout
 				if (mPuzzleGridLayout != null) {
 					mPuzzleGridLayout.setVisibility(View.VISIBLE);
@@ -538,6 +541,15 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 				// Handler for solved game
 				setOnSolvedHandler();
+
+				// Restore the input mode which was used in the last puzzle.
+				boolean copyModeEnabled = mMathDokuPreferences
+						.isGridInputModeCopyEnabled();
+				mGridPlayerView.setGridInputMode(
+						mMathDokuPreferences.getGridInputMode(), false);
+				if (copyModeEnabled) {
+					copyCellValues();
+				}
 			} else {
 				setInactiveGridLoaded();
 				stopTimer();
@@ -1007,7 +1019,11 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	}
 
 	@Override
-	public void onInputModeChanged(final GridInputMode inputMode) {
+	public void onInputModeChanged(final GridInputMode inputMode,
+			boolean enableCopyMode) {
+		// Store the current input mode in the preferences.
+		mMathDokuPreferences.setGridInputMode(enableCopyMode, inputMode);
+
 		// Change color of digit buttons
 		setColorDigitButtons();
 

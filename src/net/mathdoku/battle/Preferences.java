@@ -2,6 +2,7 @@ package net.mathdoku.battle;
 
 import java.util.Map;
 
+import net.mathdoku.battle.grid.ui.GridInputMode;
 import net.mathdoku.battle.gridGenerating.GridGenerator.PuzzleComplexity;
 import net.mathdoku.battle.painter.Painter;
 import net.mathdoku.battle.painter.Painter.GridTheme;
@@ -57,6 +58,13 @@ public class Preferences {
 
 	public final static String PUZZLE_INPUT_MODE_COPY_COUNTER = "puzzle_input_mode_copy_counter";
 	public final static int PUZZLE_INPUT_MODE_COPY_COUNTER_DEFAULT = 0;
+
+	public final static String PUZZLE_INPUT_MODE_LAST_USED = "puzzle_input_mode_last_used";
+	public final static String PUZZLE_INPUT_MODE_LAST_USED_DEFAULT = GridInputMode.NORMAL
+			.toString();
+
+	public final static String PUZZLE_INPUT_MODE_COPY_ENABLED = "puzzle_input_mode_copy_enabled";
+	public final static boolean PUZZLE_INPUT_MODE_COPY_ENABLED_DEFAULT = false;
 
 	// Puzzle parameters settings to be set as default values for next game
 	public final static String PUZZLE_PARAMETER_COMPLEXITY = "puzzle_parameter_complexity";
@@ -336,6 +344,12 @@ public class Preferences {
 		if (previousInstalledVersion < 579 && currentVersion >= 579) {
 			prefeditor.putString(PUZZLE_SETTING_INPUT_METHOD,
 					PUZZLE_SETTING_INPUT_METHOD_DEFAULT);
+		}
+		if (previousInstalledVersion < 580 && currentVersion >= 580) {
+			prefeditor.putString(PUZZLE_INPUT_MODE_LAST_USED,
+					PUZZLE_INPUT_MODE_LAST_USED_DEFAULT);
+			prefeditor.putBoolean(PUZZLE_INPUT_MODE_COPY_ENABLED,
+					PUZZLE_INPUT_MODE_COPY_ENABLED_DEFAULT);
 		}
 
 		// Save
@@ -1065,5 +1079,44 @@ public class Preferences {
 	public String getDigitInputMethod() {
 		return mSharedPreferences.getString(PUZZLE_SETTING_INPUT_METHOD,
 				PUZZLE_SETTING_INPUT_METHOD_DEFAULT);
+	}
+
+	/**
+	 * Sets the current grid input mode.
+	 * 
+	 * @param copyModeEnabled
+	 *            True in case the copy mode is enabled.
+	 * @param gridInputMode
+	 *            The current input mode if copy mode is disabled. The previous
+	 *            input mode before copy mode in case copy mode is enabled.
+	 */
+	public void setGridInputMode(boolean copyModeEnabled,
+			GridInputMode gridInputMode) {
+		Editor prefeditor = mSharedPreferences.edit();
+		prefeditor.putString(PUZZLE_INPUT_MODE_LAST_USED,
+				gridInputMode.toString());
+		prefeditor.putBoolean(PUZZLE_INPUT_MODE_COPY_ENABLED, copyModeEnabled);
+		prefeditor.apply();
+	}
+
+	/**
+	 * Get the last used grid input mode.
+	 * 
+	 * @return The last used grid input mode.
+	 */
+	public GridInputMode getGridInputMode() {
+		return GridInputMode.valueOf(mSharedPreferences.getString(
+				PUZZLE_INPUT_MODE_LAST_USED,
+				PUZZLE_INPUT_MODE_LAST_USED_DEFAULT));
+	}
+
+	/**
+	 * Checks whether the copy mode was enabled.
+	 * 
+	 * @return True in case the copy mode was enabled.
+	 */
+	public boolean isGridInputModeCopyEnabled() {
+		return mSharedPreferences.getBoolean(PUZZLE_INPUT_MODE_COPY_ENABLED,
+				PUZZLE_INPUT_MODE_COPY_ENABLED_DEFAULT);
 	}
 }
