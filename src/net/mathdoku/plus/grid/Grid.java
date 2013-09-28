@@ -240,7 +240,7 @@ public class Grid {
 
 	// Returns whether the puzzle is solved.
 	public boolean checkIfSolved() {
-		// Check if alls cell contain correct value.
+		// Check if all cells contain correct value.
 		for (GridCell cell : this.mCells) {
 			if (!cell.isUserValueCorrect()) {
 				return false;
@@ -252,7 +252,7 @@ public class Grid {
 			this.mSolvedListener.puzzleSolved();
 		}
 
-		// Deslect cell (and cage)
+		// Deselect cell (and cage)
 		if (mSelectedCell != null) {
 			mSelectedCell.mSelected = false;
 		}
