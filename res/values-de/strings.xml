@@ -104,7 +104,7 @@
     <string name="action_archive">Archive</string>
 
     <!-- The menu item that allows the player to use some less frequently used cheats. -->
-    <string name="action_cheats">Cheats...</string>
+    <string name="action_cheats">Cheats</string>
 
     <!-- The menu item that allows the user to clear the entire grid. Note this item is only available if at least one cell in the entire puzzle contains a (maybe) value. -->
     <string name="action_clear_grid">Gesamten Raster löschen</string>
@@ -540,7 +540,8 @@
 
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-    <!-- The message that appears when the player has solved the puzzle. -->
+
+    <!-- The message that appears when the player has solved the puzzle. -->
     <string name="main_ui_solved_messsage">Gelöst!</string>
 
     <!-- The message shown when no errors found when checking progress. -->
