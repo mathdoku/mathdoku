@@ -177,7 +177,7 @@ public abstract class GooglePlayServiceFragmentActivity extends
 	}
 
 	protected void enableDebugLog(boolean enabled, String tag) {
-		mDebugLog = true;
+		mDebugLog = enabled;
 		mDebugTag = tag;
 		if (mHelper != null) {
 			mHelper.enableDebugLog(enabled, tag);
