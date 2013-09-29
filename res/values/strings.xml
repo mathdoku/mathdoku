@@ -61,7 +61,10 @@
 
     <!-- The contributor title in the help screen. -->
     <string name="puzzle_help_dialog_contributors_section_title">Contributors</string>
-    <string name="puzzle_help_dialog_contributors_section_body">MathDoku was initially developed by Ben Buxton. Contributions have been made by: Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul, Christoph Steindl and Alexander Tesfamichael. Also we would like to thank all users who have submitted bugs and feature requests.</string>
+    <string name="puzzle_help_dialog_contributors_mathdoku_plus_section_title">Contributors Mathdoku+</string>
+    <string name="puzzle_help_dialog_contributors_mathdoku_plus_section_body">MathDoku+ is a fork of Mathdoku version 2.0.1. This fork is maintained by Paul Dingemans who was the main developer for the Mathdoku versions 1.96 (released in May 2013) and 2.0.0 (released in September 2013). Mathdoku+ has an own separate development track.</string>
+    <string name="puzzle_help_dialog_contributors_mathdoku_section_title">Contributors Mathdoku (original)</string>
+    <string name="puzzle_help_dialog_contributors_mathdoku_section_body">MathDoku was initially developed by Ben Buxton. Contributions have been made by: Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul, Christoph Steindl and Alexander Tesfamichael. Also we would like to thank all users who have submitted bugs and feature requests.</string>
 
     <!-- The menu item that allows the player to navigate to the changelog screen -->
     <string name="puzzle_help_dialog_neutral_button">Changes</string>
@@ -524,6 +527,7 @@
     <string name="google_play_services_leaderboard">View leaderboard</string>
 
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
 
     <!-- The message that appears when the player has solved the puzzle. -->
     <string name="main_ui_solved_messsage">Solved!</string>

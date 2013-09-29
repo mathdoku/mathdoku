@@ -40,7 +40,7 @@ public class DevelopmentHelper {
 		DEVELOPMENT, BUG_SENSE, PRODUCTION
 	};
 
-	public static final Mode mMode = Mode.DEVELOPMENT;
+	public static final Mode mMode = Mode.PRODUCTION;
 
 	// BugSense can be used to track down exceptions which occur while testing
 	// the app with development BUG_SENSE

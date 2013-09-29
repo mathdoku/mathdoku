@@ -61,7 +61,13 @@
 
     <!-- The contributor title in the help screen. -->
     <string name="puzzle_help_dialog_contributors_section_title">Mitwirkende</string>
-    <string name="puzzle_help_dialog_contributors_section_body">MathDoku wurde von Ben Buxton entwickelt. Weiterentwicklungen wurden von Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul, Christoph Steindl und Alexander Tesfamichael durchgeführt. Dank an alle, die Fehler des Programms oder Anstöße für Weiterentwicklungen gemeldet haben.</string>
+    <!-- TODO -->
+    <string name="puzzle_help_dialog_contributors_mathdoku_plus_section_title">Contributors Mathdoku+</string>
+    <!-- TODO -->
+    <string name="puzzle_help_dialog_contributors_mathdoku_plus_section_body">MathDoku+ is a fork of Mathdoku version 2.0.1. This fork is maintained by Paul Dingemans who was the main developer for the Mathdoku versions 1.96 (released in May 2013) and 2.0.0 (released in September 2013). Mathdoku+ has an own separate development track.</string>
+    <!-- TODO -->
+    <string name="puzzle_help_dialog_contributors_mathdoku_section_title">Contributors Mathdoku (original)</string>
+    <string name="puzzle_help_dialog_contributors_mathdoku_section_body">MathDoku wurde von Ben Buxton entwickelt. Weiterentwicklungen wurden von Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul, Christoph Steindl und Alexander Tesfamichael durchgeführt. Dank an alle, die Fehler des Programms oder Anstöße für Weiterentwicklungen gemeldet haben.</string>
 
     <!-- The menu item that allows the player to navigate to the changelog screen -->
     <string name="puzzle_help_dialog_neutral_button">Änderungen</string>
@@ -534,7 +540,7 @@
 
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-    <!-- The message that appears when the player has solved the puzzle. -->
+    <!-- The message that appears when the player has solved the puzzle. -->
     <string name="main_ui_solved_messsage">Gelöst!</string>
 
     <!-- The message shown when no errors found when checking progress. -->

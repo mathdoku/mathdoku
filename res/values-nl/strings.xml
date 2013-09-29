@@ -61,7 +61,10 @@
 
     <!-- The contributor title in the help screen. -->
     <string name="puzzle_help_dialog_contributors_section_title">Ontwikkelaars</string>
-    <string name="puzzle_help_dialog_contributors_section_body">MathDoku is initieel ontwikkeld door Ben Buxton. Bijdragen zijn gemaakt door: Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul, Christoph Steindl en Alexander Tesfamichael. Tevens willen we iedereen bedanken die fouten en verbeteringen heeft gemeld.</string>
+    <string name="puzzle_help_dialog_contributors_mathdoku_plus_section_title">Ontwikkelaars Mathdoku+</string>
+    <string name="puzzle_help_dialog_contributors_mathdoku_plus_section_body">MathDoku+ is een afsplitsing van Mathdoku versie 2.0.1. Deze afsplitsing wordt onderhouden door Paul Dingemans die tevens de hoofdontwikkelaar was van de Mathdoku versies 1.96 (gepubliceerd in mei 2013) en 2.0.0 (gepubliceerd in september 2013). Mathdoku+ heeft een eigen ontwikkelingsplan.</string>
+    <string name="puzzle_help_dialog_contributors_mathdoku_section_title">Ontwikkelaars Mathdoku (origineel)</string>
+    <string name="puzzle_help_dialog_contributors_mathdoku_section_body">MathDoku is initieel ontwikkeld door Ben Buxton. Bijdragen zijn gemaakt door: Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul, Christoph Steindl en Alexander Tesfamichael. Tevens willen we iedereen bedanken die fouten en verbeteringen heeft gemeld.</string>
 
     <!-- The menu item that allows the player to navigate to the changelog screen -->
     <string name="puzzle_help_dialog_neutral_button">Aanpassingen</string>

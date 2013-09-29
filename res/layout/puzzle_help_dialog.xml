@@ -120,8 +120,30 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:paddingTop="15dp"
+            android:text="@string/puzzle_help_dialog_contributors_mathdoku_plus_section_title"
+            android:textSize="@dimen/dialog_text_size_heading2"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/puzzle_help_dialog_contributors_mathdoku_plus_section_body"
+            android:textSize="@dimen/dialog_text_size_body" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="15dp"
+            android:text="@string/puzzle_help_dialog_contributors_mathdoku_section_title"
+            android:textSize="@dimen/dialog_text_size_heading2"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
             android:paddingBottom="15dp"
-            android:text="@string/puzzle_help_dialog_contributors_section_body"
+            android:text="@string/puzzle_help_dialog_contributors_mathdoku_section_body"
             android:textSize="@dimen/dialog_text_size_body" />
     </LinearLayout>
 
