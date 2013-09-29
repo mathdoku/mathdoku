@@ -104,9 +104,6 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 			archiveReloadButton.setBackgroundColor(Painter.getInstance()
 					.getButtonBackgroundColor());
 
-			// Set listener on buttons
-			rootView.findViewById(R.id.sign_in_button).setOnClickListener(this);
-
 			// In case the grid isn't finished, the digit position grid type
 			// has to be determined for positioning maybe values inside the
 			// cells.

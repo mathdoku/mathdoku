@@ -20,6 +20,7 @@ import net.mathdoku.plus.storage.database.GridDatabaseAdapter.StatusFilter;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.tip.TipArchiveAvailable;
 import net.mathdoku.plus.tip.TipDialog;
+import net.mathdoku.plus.tip.TipLeaderboardAvailable;
 import net.mathdoku.plus.tip.TipStatistics;
 import net.mathdoku.plus.ui.base.GooglePlayServiceFragmentActivity;
 import net.mathdoku.plus.util.FeedbackEmail;
@@ -51,23 +52,38 @@ import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class PuzzleFragmentActivity extends AppFragmentActivity implements
-		PuzzleFragment.OnGridFinishedListener {
+import com.google.android.gms.games.GamesClient;
+
+public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
+		implements PuzzleFragment.PuzzleFragmentListener,
+		SignInFragment.Listener, ArchiveFragment.Listener {
 	public final static String TAG = "MathDoku.PuzzleFragmentActivity";
 
 	// Background tasks for generating a new puzzle and converting game files
 	public DialogPresentingGridGenerator mDialogPresentingGridGenerator;
 	public GameFileConverter mGameFileConverter;
 
+	// Different types of fragments supported by this activity.
+	public enum FragmentType {
+		NO_FRAGMENT, PUZZLE_FRAGMENT, ARCHIVE_FRAGMENT, SIGN_IN_FRAGMENT
+	};
+
+	// Current type of fragment being active
+	private FragmentType mActiveFragmentType;
+
 	// Reference to fragments which can be displayed in this activity.
 	private PuzzleFragment mPuzzleFragment;
 	private ArchiveFragment mArchiveFragment;
+	private SignInFragment mSignInFragment;
 
 	// References to the navigation drawer
 	private DrawerLayout mDrawerLayout;
 	private ActionBarDrawerToggle mActionBarDrawerToggle;
 	private ListView mDrawerListView;
 	private String[] mNavigationDrawerItems;
+
+	// Reference to the leaderboard
+	private Leaderboard mLeaderboard;
 
 	// Object to save data on a configuration change. Note: for the puzzle
 	// fragment the RetainInstance property is set to true.
@@ -104,6 +120,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		enableDebugLog(Leaderboard.DEBUG, TAG);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.puzzle_activity_fragment);
 
@@ -216,12 +233,14 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		boolean drawerOpen = (mDrawerLayout == null || mDrawerListView == null ? false
 				: mDrawerLayout.isDrawerOpen(mDrawerListView));
 
+		// Determine which fragment is active
 		boolean showCheats = false;
 
 		// Set visibility for menu option input mode
 		MenuItem inputModeItem = menu.findItem(R.id.action_input_mode);
-		inputModeItem.setVisible(!drawerOpen && mPuzzleFragment != null
-				&& mPuzzleFragment.isActive());
+		inputModeItem.setVisible(!drawerOpen
+				&& mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT
+				&& mPuzzleFragment != null && mPuzzleFragment.isActive());
 		if (inputModeItem.isVisible()) {
 			inputModeItem.setIcon(
 					mPuzzleFragment.getActionCurrentInputModeIconResId())
@@ -232,17 +251,21 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 
 		// Set visibility for menu option copy cell values
 		menu.findItem(R.id.action_copy_cell_values).setVisible(
-				!drawerOpen && mPuzzleFragment != null
+				!drawerOpen
+						&& mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT
+						&& mPuzzleFragment != null
 						&& mPuzzleFragment.showCopyCellValues());
 
 		// Set visibility for menu option check progress
 		menu.findItem(R.id.checkprogress).setVisible(
-				!drawerOpen && mPuzzleFragment != null
+				!drawerOpen
+						&& mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT
+						&& mPuzzleFragment != null
 						&& mPuzzleFragment.showCheckProgress());
 
 		// Set visibility for menu option to reveal a cell
-		if (!drawerOpen && mPuzzleFragment != null
-				&& mPuzzleFragment.showRevealCell()) {
+		if (!drawerOpen && mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT
+				&& mPuzzleFragment != null && mPuzzleFragment.showRevealCell()) {
 			menu.findItem(R.id.action_reveal_cell).setVisible(true);
 			showCheats = true;
 		} else {
@@ -250,7 +273,8 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		}
 
 		// Set visibility for menu option to reveal a operator
-		if (!drawerOpen && mPuzzleFragment != null
+		if (!drawerOpen && mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT
+				&& mPuzzleFragment != null
 				&& mPuzzleFragment.showRevealOperator()) {
 			menu.findItem(R.id.action_reveal_operator).setVisible(true);
 			showCheats = true;
@@ -259,7 +283,8 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		}
 
 		// Set visibility for menu option to reveal the solution
-		if (!drawerOpen && mPuzzleFragment != null
+		if (!drawerOpen && mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT
+				&& mPuzzleFragment != null
 				&& mPuzzleFragment.showRevealSolution()) {
 			menu.findItem(R.id.action_show_solution).setVisible(true);
 			showCheats = true;
@@ -277,12 +302,16 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 
 		// Set visibility for menu option to clear the grid
 		menu.findItem(R.id.action_clear_grid).setVisible(
-				!drawerOpen && mPuzzleFragment != null
+				!drawerOpen
+						&& mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT
+						&& mPuzzleFragment != null
 						&& mPuzzleFragment.showClearGrid());
 
 		// Determine position of new game button
 		menu.findItem(R.id.action_new_game)
-				.setVisible(!drawerOpen)
+				.setVisible(
+						!drawerOpen
+								&& mActiveFragmentType != FragmentType.SIGN_IN_FRAGMENT)
 				.setShowAsAction(
 						(mPuzzleFragment != null && mPuzzleFragment.isActive() ? MenuItem.SHOW_AS_ACTION_NEVER
 								: MenuItem.SHOW_AS_ACTION_ALWAYS));
@@ -290,10 +319,16 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		// Display the share button on the action bar dependent on the fragment
 		// being showed.
 		menu.findItem(R.id.action_share)
-				.setVisible(!drawerOpen)
+				.setVisible(
+						!drawerOpen
+								&& mActiveFragmentType != FragmentType.SIGN_IN_FRAGMENT)
 				.setShowAsAction(
 						(mArchiveFragment != null ? MenuItem.SHOW_AS_ACTION_IF_ROOM
 								: MenuItem.SHOW_AS_ACTION_NEVER));
+
+		// Determine visibility of sign out button
+		menu.findItem(R.id.action_sign_out_google_play_services).setVisible(
+				mLeaderboard != null && mLeaderboard.isSignedIn());
 
 		// When running in development mode, an extra menu is available.
 		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
@@ -364,6 +399,10 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 						this.getWindow().getDecorView()).share(
 						mArchiveFragment.getSolvingAttemptId());
 			}
+			return true;
+		case R.id.action_sign_out_google_play_services:
+			signOutGooglePlayServices();
+			removeSignInFragment(true);
 			return true;
 		case R.id.action_puzzle_settings:
 			startActivity(new Intent(this, PuzzlePreferenceActivity.class));
@@ -655,7 +694,7 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	}
 
 	@Override
-	public void onGridFinishedListener(int solvingAttemptId) {
+	public void onPuzzleFinishedListener(int solvingAttemptId) {
 		// Once the grid has been solved, the archive fragment has to be
 		// displayed.
 		initializeArchiveFragment(solvingAttemptId);
@@ -707,6 +746,8 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		fragmentTransaction.commit();
 		fragmentManager.executePendingTransactions();
 
+		mActiveFragmentType = FragmentType.PUZZLE_FRAGMENT;
+
 		// Disable the archive fragment
 		mArchiveFragment = null;
 	}
@@ -717,6 +758,8 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 	private void initializeArchiveFragment(int solvingAttemptId) {
 		// Set the archive fragment
 		mArchiveFragment = new ArchiveFragment();
+		mArchiveFragment.setListener(this);
+
 		Bundle args = new Bundle();
 		args.putInt(ArchiveFragment.BUNDLE_KEY_SOLVING_ATTEMPT_ID,
 				solvingAttemptId);
@@ -727,6 +770,8 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		fragmentTransaction.replace(R.id.content_frame, mArchiveFragment)
 				.commit();
 		fragmentManager.executePendingTransactions();
+
+		mActiveFragmentType = FragmentType.ARCHIVE_FRAGMENT;
 
 		// Disable the archive fragment
 		mPuzzleFragment = null;
@@ -976,34 +1021,74 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 						PuzzleFragmentActivity.this,
 						StatisticsFragmentActivity.class);
 				startActivity(intentStatistics);
+			} else if (mNavigationDrawerItems[position].equals(getResources()
+					.getString(R.string.action_leaderboards))) {
+				// Either start the leaderboards activity or display the sign in
+				// fragment.
+				if (mLeaderboard != null && mLeaderboard.isSignedIn()) {
+					Intent intent = mLeaderboard.getLeaderboardsIntent();
+					if (intent != null) {
+						// OnActivityResult is handled by super class
+						// GooglePlayServiceFragmentActivity. There return code
+						// of that
+						// class should be used here.
+						startActivityForResult(intent,
+								GooglePlayServiceFragmentActivity.RC_UNUSED);
+					}
+				} else if (mSignInFragment == null) {
+					// Display the sign in fragment.
+					mSignInFragment = new SignInFragment();
+					mSignInFragment.setListener(PuzzleFragmentActivity.this);
+
+					FragmentManager fragmentManager = getSupportFragmentManager();
+					FragmentTransaction fragmentTransaction = fragmentManager
+							.beginTransaction();
+					fragmentTransaction.replace(R.id.content_frame,
+							mSignInFragment);
+					fragmentTransaction
+							.addToBackStack("SignInOnGooglePlayServices");
+					fragmentTransaction.commit();
+					fragmentManager.executePendingTransactions();
+
+					mActiveFragmentType = FragmentType.SIGN_IN_FRAGMENT;
+
+					mSignInFragment.setSignedOut();
+				}
 			}
 			mDrawerLayout.closeDrawer(mDrawerListView);
 		}
 	}
 
 	/**
-	 * Set the navigation drawer. The drawer can be open in following ways: -
-	 * tapping the drawer or the app icon - tapping the left side of the screen.
+	 * Set the navigation drawer. The drawer can be open in following ways:<br>
+	 * - tapping the drawer or the app icon<br>
+	 * - tapping the left side of the screen.
 	 * 
-	 * The drawer icon will only be visible as soon as the archive or the
-	 * statistics are unlocked. From that moment it will be possible to open the
-	 * drawer by tapping the drawer or the app icon.
+	 * The drawer icon will only be visible as soon as at least one item is
+	 * available for display in the drawer. As of that moment it will be
+	 * possible to open the drawer by tapping the drawer or the app icon.
 	 * 
-	 * It is not possible to disable the navigation drawer entirely in case the
-	 * archive and statistics are not yet unlocked. To prevent showing an empty
-	 * drawer, the puzzle activity itself will always be displayed as a
-	 * navigation item. In case the user opens the drawer accidently by tapping
-	 * the left side of the screen before the archive or statistics are unlocked
-	 * it will be less confusing.
 	 */
 	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	private void setNavigationDrawer() {
-		// Determine the item which have to be shown in the drawer.
+		// The drawer will be opened automatically in case a new item has been
+		// added to the drawer.
 		boolean openDrawer = false;
+
+		// Determine the items which have to be shown in the drawer.
 		boolean mDrawerIconVisible = false;
 		ArrayList<String> navigationDrawerItems = new ArrayList<String>();
+
+		// It is not possible to disable the navigation drawer entirely in case
+		// the archive and statistics are not yet unlocked. To prevent showing
+		// an empty drawer, the puzzle activity itself will always be displayed
+		// as a navigation item. In case the user opens the drawer accidently by
+		// tapping the left side of the screen before the archive or statistics
+		// are unlocked it will be less confusing.
 		navigationDrawerItems.add(getResources().getString(
 				R.string.action_bar_subtitle_puzzle_fragment));
+
+		// Add archive if unlocked
 		if (mMathDokuPreferences.isArchiveAvailable()) {
 			String string = getResources().getString(R.string.action_archive);
 			navigationDrawerItems.add(string);
@@ -1013,6 +1098,8 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 			}
 			mDrawerIconVisible = true;
 		}
+
+		// Add statistics if unlocked
 		if (mMathDokuPreferences.isStatisticsAvailable()) {
 			String string = getResources()
 					.getString(R.string.action_statistics);
@@ -1023,6 +1110,19 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 			}
 			mDrawerIconVisible = true;
 		}
+
+		// Add leaderboards if unlocked
+		if (mMathDokuPreferences.isLeaderboardAvailable()) {
+			String string = getResources().getString(
+					R.string.action_leaderboards);
+			navigationDrawerItems.add(string);
+			if (openDrawer == false && mNavigationDrawerItems != null) {
+				openDrawer = (Arrays.asList(mNavigationDrawerItems).contains(
+						string) == false);
+			}
+			mDrawerIconVisible = true;
+		}
+
 		mNavigationDrawerItems = navigationDrawerItems
 				.toArray(new String[navigationDrawerItems.size()]);
 
@@ -1109,5 +1209,126 @@ public class PuzzleFragmentActivity extends AppFragmentActivity implements
 		if (mPuzzleFragment != null) {
 			mPuzzleFragment.startTimer();
 		}
+	}
+
+	@Override
+	public void onSignInFailed() {
+		// Sign-in on google play services has failed.
+
+		if (mLeaderboard == null) {
+			mLeaderboard = new Leaderboard(this.getResources());
+		}
+		mLeaderboard.signInFailed();
+
+		if (mSignInFragment != null) {
+			mSignInFragment.setSignedOut();
+		}
+	}
+
+	@Override
+	public void onSignInSucceeded() {
+		// Sign-in on google play services has succeeded.
+
+		if (mLeaderboard == null) {
+			mLeaderboard = new Leaderboard(this.getResources());
+		}
+		GamesClient gamesClient = getGamesClient();
+		gamesClient.setViewForPopups(findViewById(android.R.id.content));
+		mLeaderboard.signedIn(gamesClient);
+		if (mSignInFragment != null) {
+			mSignInFragment.setSignedIn(mLeaderboard);
+		}
+	}
+
+	@Override
+	public void onSignInButtonClicked() {
+		// Start the sign-in flow on Google Play Services
+		beginUserInitiatedSignIn();
+	}
+
+	@Override
+	public void onSignOutButtonClicked() {
+		signOutGooglePlayServices();
+	}
+
+	protected void signOutGooglePlayServices() {
+		if (mLeaderboard != null) {
+			if (mSignInFragment != null) {
+				mSignInFragment.setSignedOut();
+			}
+			mLeaderboard = null;
+		}
+		super.signOut();
+	}
+
+	@Override
+	public void onPuzzleSolvedWithoutCheats(int gridSize,
+			PuzzleComplexity puzzleComplexity, boolean hideOperators,
+			long timePlayed) {
+		// Unlock the leaderboard as soon as the first game is completed without
+		// using any cheats.
+		if (mMathDokuPreferences.isLeaderboardAvailable() == false) {
+			mMathDokuPreferences.setLeaderboardAvailable();
+			setNavigationDrawer();
+		}
+		if (TipLeaderboardAvailable.toBeDisplayed(mMathDokuPreferences)) {
+			new TipLeaderboardAvailable(this).show();
+		}
+
+		if (mLeaderboard != null) {
+			mLeaderboard.onPuzzleSolvedWithoutCheats(gridSize,
+					puzzleComplexity, hideOperators, timePlayed);
+		}
+	}
+
+	@Override
+	public void onShowLeaderboardButtonClicked() {
+		if (mLeaderboard != null) {
+			Intent intent = mLeaderboard.getLeaderboardsIntent();
+			if (intent != null) {
+				// OnActivityResult is handled by super class
+				// GooglePlayServiceFragmentActivity. There return code of that
+				// class should be used here.
+				startActivityForResult(intent,
+						GooglePlayServiceFragmentActivity.RC_UNUSED);
+			}
+		}
+		removeSignInFragment(true);
+	}
+
+	@Override
+	public void onBackPressed() {
+		if (mActiveFragmentType == FragmentType.SIGN_IN_FRAGMENT
+				&& mSignInFragment != null) {
+			removeSignInFragment(false);
+		}
+		super.onBackPressed();
+	}
+
+	/**
+	 * Determine new active fragment one the sign in fragement was popped of the
+	 * back stack.
+	 */
+	private void removeSignInFragment(boolean removeFromBackStack) {
+		if (removeFromBackStack && mSignInFragment != null
+				&& (mPuzzleFragment != null || mArchiveFragment != null)) {
+			FragmentManager fragmentManager = getSupportFragmentManager();
+			FragmentTransaction fragmentTransaction = fragmentManager
+					.beginTransaction();
+			fragmentTransaction.remove(mSignInFragment);
+			fragmentTransaction.commit();
+			fragmentManager.executePendingTransactions();
+			fragmentManager.popBackStack();
+		}
+		mSignInFragment = null;
+
+		// Determine which fragment will become active when the sign in fragment
+		// has been popped of the back stack.
+		mActiveFragmentType = (mPuzzleFragment != null ? FragmentType.PUZZLE_FRAGMENT
+				: FragmentType.ARCHIVE_FRAGMENT);
+
+		// The action bar and options menu needs to be updated when the sign in
+		// fragment is no longer showed.
+		invalidateOptionsMenu();
 	}
 }

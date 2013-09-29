@@ -112,6 +112,10 @@
     <!-- The sub-menu item to go to the statistics. -->
     <string name="action_statistics">Statistik</string>
 
+    <!-- The sub-menu item to go to the leaderboards. -->
+    <!-- TODO -->
+    <string name="action_leaderboards">Leaderboards</string>
+
     <!-- The menu item that allows the player to navigate to the help screen. -->
     <string name="action_help">Hilfe</string>
 
@@ -120,6 +124,10 @@
 
     <!-- The menu item that allows the player to send feedback via email. -->
     <string name="action_feedback">Feedback geben</string>
+
+    <!-- The menu item that allows the player sign out of google play services. -->
+    <!-- TODO -->
+    <string name="action_sign_out_google_play_services">Sign out Google+</string>
 
     <!-- ACTIONS IN SUB MENU CHEATS - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -334,6 +342,11 @@
     <string name="dialog_tip_archive_available_title">Archiv verfügbar</string>
     <string name="dialog_tip_archive_available_text">Jedes Spiel, dass Sie generiert haben, wird im \"Archiv\" abgespeichert. Das \"Archiv\" kann dazu benutzt werden, um die alten Rätsel anzusehen.\n\nSie können die Statistik aus dem Navigationsmenü herus öffnen. Das Navigationsmenü wird durch Berühren des MathDoku Logos geöffnet.</string>
 
+    <!-- Title, and text for tip "ArchiveAvailable" which explains about this new navigation option. -->
+    <!-- TODO -->
+    <string name="dialog_tip_leaderboard_available_title">Leaderboards available</string>
+    <string name="dialog_tip_leaderboard_available_text">Playing Mathdoku is great fun. But even better then playing alone, is to compete for the fastest Mathdoku+ game with others arounds the globe or just with a group of friends.\n\nIf you want to rank your fastest games or to view the current leaderboards you have to sign in with Google+ one time only. You can sign out via the actions menu in case you no longer want to submit your highscores.\n\nNote: only games in which no cheats have been used, will be submitted to the leaderboards.</string>
+
     <!-- Title, and text for tip "Copy cell values" -->
     <!-- TODO -->
     <string name="dialog_tip_copy_cell_values_title">Copy cell values</string>
@@ -511,8 +524,15 @@
     <string name="shared_puzzle_exists_positive_button">Ja</string>
     <string name="shared_puzzle_exists_negative_button">Nein</string>
 
-    <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- LEADERBOARD - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- TODO -->
+    <string name="leaderboard_button_text">Show leaderboards</string>
+    <string name="google_play_services_signin_explanation">Sign in with Google to share your Mathdoku+ scores with your friends.</string>
+    <string name="google_play_services_signed_in">You are signed in with Google as %1$s.</string>
+    <string name="google_play_services_sign_out">Sign out</string>
+    <string name="google_play_services_leaderboard">View leaderboard</string>
 
+    <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <!-- The message that appears when the player has solved the puzzle. -->
     <string name="main_ui_solved_messsage">Gelöst!</string>

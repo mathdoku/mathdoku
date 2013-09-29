@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Identifiers for usage of Google Play Service -->
+<!-- Note: the game services definition on Google Play also includes definitions for archievements. -->
+<!-- These definition are not used in the app. They have been defined as this was mandatory in -->
+<!-- order to create the game services. -->
+<resources>
+
+    <!-- Development id's -->
+    <string name="app_id">282401107486</string>
+    <string name="leaderboard_fastest_4x4_visibile_operators">CgkIntyrg5wIEAIQBw</string>
+    <string name="leaderboard_fastest_5x5_visibile_operators">CgkIntyrg5wIEAIQCA</string>
+    <string name="leaderboard_fastest_6x6_visibile_operators">CgkIntyrg5wIEAIQCQ</string>
+    <string name="leaderboard_fastest_7x7_visibile_operators">CgkIntyrg5wIEAIQCg</string>
+    <string name="leaderboard_fastest_8x8_visibile_operators">CgkIntyrg5wIEAIQCw</string>
+    <string name="leaderboard_fastest_9x9_visibile_operators">CgkIntyrg5wIEAIQDA</string>
+    <string name="leaderboard_fastest_4x4_hidden_operators">CgkIntyrg5wIEAIQDQ</string>
+    <string name="leaderboard_fastest_5x5_hidden_operators">CgkIntyrg5wIEAIQDg</string>
+    <string name="leaderboard_fastest_6x6_hidden_operators">CgkIntyrg5wIEAIQDw</string>
+    <string name="leaderboard_fastest_7x7_hidden_operators">CgkIntyrg5wIEAIQEA</string>
+    <string name="leaderboard_fastest_8x8_hidden_operators">CgkIntyrg5wIEAIQEQ</string>
+    <string name="leaderboard_fastest_9x9_hidden_operators">CgkIntyrg5wIEAIQEg</string>
+
+</resources>

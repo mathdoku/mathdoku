@@ -112,6 +112,9 @@
     <!-- The sub-menu item to go to the statistics. -->
     <string name="action_statistics">Statistieken</string>
 
+    <!-- The sub-menu item to go to the leaderboards. -->
+    <string name="action_leaderboards">Klassementen</string>
+
     <!-- The menu item that allows the player to navigate to the help screen. -->
     <string name="action_help">Help</string>
 
@@ -120,6 +123,9 @@
 
     <!-- The menu item that allows the player to send feedback via email. -->
     <string name="action_feedback">Geef feedback</string>
+
+    <!-- The menu item that allows the player sign out of google play services. -->
+    <string name="action_sign_out_google_play_services">Log uit Google+</string>
 
     <!-- ACTIONS IN SUB MENU CHEATS - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -332,6 +338,10 @@
     <string name="dialog_tip_archive_available_title">Archief beschikbaar</string>
     <string name="dialog_tip_archive_available_text">Elke puzzel die je hebt aangemaakt wordt bewaard in het \'Archief\'. Het \'Archief\' kan worden gebruikt om puzzels te bekijken die je eerder hebt gespeeld.\n\nJe kan het archief starten vanuit het navigatie menu. Het navigatie menu kan worden geopend door het MathDoku aan te tikken.</string>
 
+    <!-- Title, and text for tip "ArchiveAvailable" which explains about this new navigation option. -->
+    <string name="dialog_tip_leaderboard_available_title">Klassementen beschikbaar</string>
+    <string name="dialog_tip_leaderboard_available_text">Mathdoku spelen is erg leuk. Maar het is nog leuker om te stijden om het klassement van de snelste Mathdoku+ puzzel met andere spelers in de wereld of met een groep vrienden.\n\nAls je je snelste puzzels in wil sturen voor het klassement of om de klassementen te bekijen dan moet je eenmalig inloggen met Google+. Je kan uitloggen via het actiemenu in het geval dat je niet langer meer je topscore wil insturen.\n\nlet op: alleen puzzels waarin je niet hebt vals gespeeld, worden ingestuurd voor het klassement.</string>
+
     <!-- Title, and text for tip "Copy cell values" -->
     <string name="dialog_tip_copy_cell_values_title">Kopieer cel waarden</string>
     <string name="dialog_tip_copy_cell_values_text">Wist je al dat je waardes van de ene cel naar een andere cel kan kopiëren? Dit is vooral nutting in het geval dat je meerdere \'mogelijke\' waarden in een cel hebt ingevoerd en deze combinatie bijvoorbeeld wil hergebruiken for andere cellen in dezelfde groep.\n\nJe kan de \'kopieer\' toestand starten door het kopieer icoon in de actiebar aan de bovenzijde van de app aan te raken. De waarde(n) van de geselecteerde cell worden gekopieerd naar elke cell die he aanraakt totdat je de \'kopieer\' toestand verlaat.</string>
@@ -505,6 +515,13 @@
     <string name="shared_puzzle_exists_message">Deze puzzel bestaat al in jouw archief (zie puzzel %1$d). Als je deze puzzel speelt dan worden de oplossing en statistieken van de vorige oplossing overschreven.</string>
     <string name="shared_puzzle_exists_positive_button">Ja</string>
     <string name="shared_puzzle_exists_negative_button">Nee</string>
+
+    <!-- LEADERBOARD - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <string name="leaderboard_button_text">Bekijk de klassementen</string>
+    <string name="google_play_services_signin_explanation">Log in met Google om je Mathdoku+ score te delen met je vrienden.</string>
+    <string name="google_play_services_signed_in">Je bent ingelogd moet Google als %1$s.</string>
+    <string name="google_play_services_sign_out">Log uit</string>
+    <string name="google_play_services_leaderboard">Bekijk klassementen</string>
 
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

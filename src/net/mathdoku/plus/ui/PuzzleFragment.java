@@ -12,6 +12,8 @@ import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.grid.GridCell;
 import net.mathdoku.plus.grid.ui.GridInputMode;
 import net.mathdoku.plus.grid.ui.GridPlayerView;
+import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
+import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
 import net.mathdoku.plus.hint.TickerTape;
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.painter.Painter.GridTheme;
@@ -100,16 +102,20 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 	private View mRootView;
 
-	private OnGridFinishedListener mOnGridFinishedListener;
-
 	private BroadcastReceiver mDreamingBroadcastReceiver;
 
 	// Contextual action bar for the copy cell values inpuyt mode
 	private ActionMode mActionMode;
 
 	// Container Activity must implement these interfaces
-	public interface OnGridFinishedListener {
-		public void onGridFinishedListener(int solvingAttemptId);
+	private PuzzleFragmentListener mPuzzleFragmentListener;
+
+	public interface PuzzleFragmentListener {
+		public void onPuzzleFinishedListener(int solvingAttemptId);
+
+		public void onPuzzleSolvedWithoutCheats(int gridSize,
+				PuzzleComplexity puzzleComplexity, boolean hideOperators,
+				long timePlayed);
 	}
 
 	@Override
@@ -119,10 +125,10 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		// This makes sure that the container activity has implemented
 		// the callback interface. If not, it throws an exception
 		try {
-			mOnGridFinishedListener = (OnGridFinishedListener) activity;
+			mPuzzleFragmentListener = (PuzzleFragmentListener) activity;
 		} catch (ClassCastException e) {
 			throw new ClassCastException(activity.toString()
-					+ " must implement OnGridFinishedListener");
+					+ " must implement PuzzleFragmentListener");
 		}
 	}
 
@@ -447,7 +453,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		mGrid.setSolvedHandler(mGrid.new OnSolvedListener() {
 			@Override
 			public void puzzleSolved() {
-				// Stop the time and unselect the current cell and cage. Finally
+				// Stop the time and deselect the current cell and cage. Finally
 				// save the grid.
 				stopTimer();
 				mGrid.deselectSelectedCell();
@@ -458,9 +464,21 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				// animation is played first.
 				if (!mGrid.isActive() || mGrid.isSolutionRevealed()
 						|| mGrid.countMoves() == 0) {
-					mOnGridFinishedListener.onGridFinishedListener(mGrid
+					mPuzzleFragmentListener.onPuzzleFinishedListener(mGrid
 							.getSolvingAttemptId());
 				} else {
+					// Inform listener in case a puzzle has been solved without
+					// using cheats.
+					if (mGrid.getCheatPenaltyTime() == 0) {
+						GridGeneratingParameters gridGeneratingParameters = mGrid
+								.getGridGeneratingParameters();
+						mPuzzleFragmentListener.onPuzzleSolvedWithoutCheats(
+								mGrid.getGridSize(),
+								gridGeneratingParameters.mPuzzleComplexity,
+								gridGeneratingParameters.mHideOperators,
+								mGrid.getElapsedTime());
+					}
+
 					// Hide controls while showing the animation.
 					setInactiveGridLoaded();
 
@@ -482,8 +500,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 						@Override
 						public void onAnimationEnd(Animation animation) {
 							textView.setVisibility(View.GONE);
-							mOnGridFinishedListener
-									.onGridFinishedListener(mGrid
+							mPuzzleFragmentListener
+									.onPuzzleFinishedListener(mGrid
 											.getSolvingAttemptId());
 						}
 
@@ -931,18 +949,18 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 															// animation is
 															// played first.
 															if (mGrid != null
-																	&& mOnGridFinishedListener != null) {
-																mOnGridFinishedListener
-																		.onGridFinishedListener(mGrid
+																	&& mPuzzleFragmentListener != null) {
+																mPuzzleFragmentListener
+																		.onPuzzleFinishedListener(mGrid
 																				.getSolvingAttemptId());
 															}
 														};
 													}).show();
 								} else {
 									if (mGrid != null
-											&& mOnGridFinishedListener != null) {
-										mOnGridFinishedListener
-												.onGridFinishedListener(mGrid
+											&& mPuzzleFragmentListener != null) {
+										mPuzzleFragmentListener
+												.onPuzzleFinishedListener(mGrid
 														.getSolvingAttemptId());
 									}
 								}

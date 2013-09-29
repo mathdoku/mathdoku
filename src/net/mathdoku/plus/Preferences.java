@@ -53,6 +53,11 @@ public class Preferences {
 	public final static String ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE = "archive_setting_chart_description_visible";
 	public final static boolean ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT = true;
 
+	// Statistics setting preferences
+	public final static String LEADERBOARD_AVAILABLE = "leaderboard_available";
+	public final static boolean LEADERBOARD_AVAILABLE_DEFAULT = false;
+
+	// Puzzle input mode settings
 	public final static String PUZZLE_INPUT_MODE_CHANGED_COUNTER = "puzzle_input_mode_changed_counter";
 	public final static int PUZZLE_INPUT_MODE_CHANGED_COUNTER_DEFAULT = 0;
 
@@ -225,132 +230,6 @@ public class Preferences {
 
 		// Update preferences
 		Editor prefeditor = mSharedPreferences.edit();
-
-		if (previousInstalledVersion <= 562 && currentVersion > 562) {
-			// On upgrade to version 2 of MathDoku the preferences are cleaned
-			// up. Unnecessary preferences are deleted. Preferences which are
-			// kept are renamed in order to improve future maintenance.
-
-			// Collect values of preferences which have to converted. As
-			// preference names will be converted, the get function for the
-			// preferences cannot be used. So retrieve the values directly using
-			// the old names.
-			boolean prefOptionClearMaybes = mSharedPreferences.getBoolean(
-					"redundantPossibles", PUZZLE_SETTING_CLEAR_MAYBES_DEFAULT);
-			boolean prefOptionPlaySoundOptions = mSharedPreferences.getBoolean(
-					"soundeffects", PUZZLE_SETTING_PLAY_SOUND_EFFECTS_DEFAULT);
-			boolean prefOptionShowBadCageMath = mSharedPreferences.getBoolean(
-					"badmaths", PUZZLE_SETTING_BAD_CAGE_MATHS_VISIBLE_DEFAULT);
-			boolean prefOptionShowDupeDigits = mSharedPreferences.getBoolean(
-					"dupedigits",
-					PUZZLE_SETTING_DUPLICATE_DIGITS_VISIBLE_DEFAULT);
-			boolean prefOptionShowMaybesAsGrid = mSharedPreferences
-					.getBoolean("maybe3x3",
-							PUZZLE_SETTING_MAYBES_DISPLAYED_IN_GRID_DEFAULT);
-			boolean prefOptionShowTimer = mSharedPreferences.getBoolean(
-					"timer", PUZZLE_SETTING_TIMER_VISIBLE_DEFAULT);
-			String prefOptionTheme = (mSharedPreferences.getString("theme",
-					PUZZLE_SETTING_THEME_DEFAULT).equals("inverted") ? PUZZLE_SETTING_THEME_DARK
-					: PUZZLE_SETTING_THEME_LIGHT);
-			boolean prefWakeLock = mSharedPreferences.getBoolean("wakelock",
-					PUZZLE_SETTING_WAKE_LOCK_DEFAULT);
-
-			// Delete all existing preferences to clean up historic values.
-			prefeditor.clear();
-
-			// Add all preferences which were converted from the old values.
-			prefeditor
-					.putBoolean(PUZZLE_SETTING_CLEAR_MAYBES,
-							prefOptionClearMaybes)
-					.putBoolean(PUZZLE_SETTING_PLAY_SOUND_EFFECTS,
-							prefOptionPlaySoundOptions)
-					.putBoolean(PUZZLE_SETTING_BAD_CAGE_MATHS_VISIBLE,
-							prefOptionShowBadCageMath)
-					.putBoolean(PUZZLE_SETTING_DUPLICATE_DIGITS_VISIBLE,
-							prefOptionShowDupeDigits)
-					.putBoolean(PUZZLE_SETTING_MAYBES_DISPLAYED_IN_GRID,
-							prefOptionShowMaybesAsGrid)
-					.putBoolean(PUZZLE_SETTING_TIMER_VISIBLE,
-							prefOptionShowTimer)
-					.putString(PUZZLE_SETTING_THEME, prefOptionTheme)
-					.putBoolean(PUZZLE_SETTING_WAKE_LOCK, prefWakeLock);
-
-			// Set value for new preferences
-			prefeditor.putString(ARCHIVE_SIZE_FILTER_LAST_VALUE,
-					ARCHIVE_SIZE_FILTER_LAST_VALUE_DEFAULT);
-			prefeditor.putString(ARCHIVE_STATUS_FILTER_LAST_VALUE,
-					ARCHIVE_STATUS_FILTER_LAST_VALUE_DEFAULT);
-			prefeditor.putInt(ARCHIVE_GRID_LAST_SHOWED,
-					ARCHIVE_GRID_LAST_SHOWED_DEFAULT);
-			prefeditor.putBoolean(PUZZLE_SETTING_COLORED_DIGITS,
-					PUZZLE_SETTING_COLORED_DIGITS_DEFAULT);
-			prefeditor
-					.putString(
-							STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES,
-							STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES_DEFAULT);
-			prefeditor.putBoolean(PUZZLE_SETTING_FULL_SCREEN,
-					PUZZLE_SETTING_FULL_SCREEN_DEFAULT);
-			prefeditor.putInt(PUZZLE_INPUT_MODE_CHANGED_COUNTER,
-					PUZZLE_INPUT_MODE_CHANGED_COUNTER_DEFAULT);
-			prefeditor.putString(PUZZLE_PARAMETER_COMPLEXITY,
-					PUZZLE_PARAMETER_COMPLEXITY_DEFAULT);
-			prefeditor.putBoolean(PUZZLE_PARAMETER_OPERATORS_VISIBLE,
-					PUZZLE_PARAMETER_OPERATORS_VISIBLE_DEFAULT);
-			prefeditor.putInt(PUZZLE_PARAMETER_SIZE,
-					PUZZLE_PARAMETER_SIZE_DEFAULT);
-			prefeditor.putBoolean(ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE,
-					ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT);
-			prefeditor.putBoolean(ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE,
-					ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT);
-			prefeditor.putBoolean(STATISTICS_SETTING_CHART_DESCRIPTION_VISIBLE,
-					STATISTICS_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT);
-			prefeditor.putBoolean(STATISTICS_SETTING_CHART_DESCRIPTION_VISIBLE,
-					STATISTICS_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT);
-			prefeditor.putBoolean(ARCHIVE_SETTING_STATUS_FILTER_VISIBLE,
-					ARCHIVE_SETTING_STATUS_FILTER_VISIBLE_DEFAULT);
-			prefeditor.putBoolean(ARCHIVE_SETTING_SIZE_FILTER_VISIBLE,
-					ARCHIVE_SETTING_SIZE_FILTER_VISIBLE_DEFAULT);
-			prefeditor.putInt(SWIPE_INVALID_MOTION_COUNTER,
-					SWIPE_DIGIT_COUNTER_DEFAULT);
-			prefeditor.putInt(SWIPE_VALID_MOTION_COUNTER,
-					SWIPE_DIGIT_COUNTER_DEFAULT);
-			prefeditor.putInt(SWIPE_DIGIT_1_COUNTER,
-					SWIPE_DIGIT_COUNTER_DEFAULT);
-			prefeditor.putInt(SWIPE_DIGIT_2_COUNTER,
-					SWIPE_DIGIT_COUNTER_DEFAULT);
-			prefeditor.putInt(SWIPE_DIGIT_3_COUNTER,
-					SWIPE_DIGIT_COUNTER_DEFAULT);
-			prefeditor.putInt(SWIPE_DIGIT_4_COUNTER,
-					SWIPE_DIGIT_COUNTER_DEFAULT);
-			prefeditor.putInt(SWIPE_DIGIT_5_COUNTER,
-					SWIPE_DIGIT_COUNTER_DEFAULT);
-			prefeditor.putInt(SWIPE_DIGIT_6_COUNTER,
-					SWIPE_DIGIT_COUNTER_DEFAULT);
-			prefeditor.putInt(SWIPE_DIGIT_7_COUNTER,
-					SWIPE_DIGIT_COUNTER_DEFAULT);
-			prefeditor.putInt(SWIPE_DIGIT_8_COUNTER,
-					SWIPE_DIGIT_COUNTER_DEFAULT);
-			prefeditor.putInt(SWIPE_DIGIT_9_COUNTER,
-					SWIPE_DIGIT_COUNTER_DEFAULT);
-			prefeditor.putInt(STATISTICS_TAB_LAST_SHOWED,
-					STATISTICS_TAB_LAST_SHOWED_DEFAULT);
-			prefeditor.putString(PUZZLE_SETTING_OUTER_SWIPE_CIRCLE,
-					PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_DEFAULT);
-		}
-		if (previousInstalledVersion < 569 && currentVersion >= 569) {
-			prefeditor.putInt(PUZZLE_INPUT_MODE_COPY_COUNTER,
-					PUZZLE_INPUT_MODE_COPY_COUNTER_DEFAULT);
-		}
-		if (previousInstalledVersion < 579 && currentVersion >= 579) {
-			prefeditor.putString(PUZZLE_SETTING_INPUT_METHOD,
-					PUZZLE_SETTING_INPUT_METHOD_DEFAULT);
-		}
-		if (previousInstalledVersion < 580 && currentVersion >= 580) {
-			prefeditor.putString(PUZZLE_INPUT_MODE_LAST_USED,
-					PUZZLE_INPUT_MODE_LAST_USED_DEFAULT);
-			prefeditor.putBoolean(PUZZLE_INPUT_MODE_COPY_ENABLED,
-					PUZZLE_INPUT_MODE_COPY_ENABLED_DEFAULT);
-		}
 
 		// Save
 		prefeditor.putInt(APP_CURRENT_VERSION, currentVersion);
@@ -1118,5 +997,24 @@ public class Preferences {
 	public boolean isGridInputModeCopyEnabled() {
 		return mSharedPreferences.getBoolean(PUZZLE_INPUT_MODE_COPY_ENABLED,
 				PUZZLE_INPUT_MODE_COPY_ENABLED_DEFAULT);
+	}
+
+	/**
+	 * Checks whether the leaderboards are visible.
+	 * 
+	 * @return True in case the leaderboards are visible. False otherwise.
+	 */
+	public boolean isLeaderboardAvailable() {
+		return mSharedPreferences.getBoolean(LEADERBOARD_AVAILABLE,
+				LEADERBOARD_AVAILABLE_DEFAULT);
+	}
+
+	/**
+	 * Enables the leaderboards.
+	 */
+	public void setLeaderboardAvailable() {
+		Editor prefeditor = mSharedPreferences.edit();
+		prefeditor.putBoolean(LEADERBOARD_AVAILABLE, true);
+		prefeditor.apply();
 	}
 }

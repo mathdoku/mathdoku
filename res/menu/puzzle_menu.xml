@@ -47,6 +47,11 @@
         android:showAsAction="ifRoom"
         android:title="@string/action_new_game"/>
     <item
+        android:id="@+id/action_sign_out_google_play_services"
+        android:orderInCategory="97"
+        android:showAsAction="never"
+        android:title="@string/action_sign_out_google_play_services"/>
+    <item
         android:id="@+id/action_puzzle_settings"
         android:orderInCategory="98"
         android:showAsAction="never"
