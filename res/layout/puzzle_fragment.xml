@@ -104,10 +104,12 @@
     <TableLayout
         android:id="@+id/controlsPadBigTableLayout"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
+        android:minHeight="100dp"
+        android:paddingTop="3dp"
         android:weightSum="3" >
 
         <TableRow

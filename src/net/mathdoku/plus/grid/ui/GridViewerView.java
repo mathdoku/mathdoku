@@ -202,11 +202,11 @@ public class GridViewerView extends View {
 		// The grid view border has to be set to a minimal width which is big
 		// enough to catch a swipe motion event. This is needed to be able to
 		// end a swipe motion for cells at the outer edge of the grid. In case
-		// the border width was already compute to display the swipe border, but
-		// is less than the minimal width, both the border width as cell size
-		// has to be recomputed as well.
-		float minGridBorderWidth = mGridPainter.getBorderPaint()
-				.getStrokeWidth();
+		// the border width was already computed to display the swipe border,
+		// but is less than the minimal width, both the border width as cell
+		// size has to be recomputed as well.
+		float minGridBorderWidth = Math.max(mGridPainter.getBorderPaint()
+				.getStrokeWidth(), (mSwipeBorder ? 15 : 0));
 		if (mBorderWidth < minGridBorderWidth) {
 			mBorderWidth = minGridBorderWidth;
 			mGridCellSize = (float) Math.floor((maxSize - 2 * mBorderWidth)
