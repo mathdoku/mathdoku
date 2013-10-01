@@ -60,7 +60,7 @@ public class GridPlayerView extends GridBasePlayerView {
 
 		// Determine whether swiping is enabled.
 		mSwipeInputMethodEnabled = mPreferences.getDigitInputMethod().equals(
-				Preferences.PUZZLE_SETTING_INPUT_METHOD_BUTTONS_ONLY);
+				Preferences.PUZZLE_SETTING_INPUT_METHOD_BUTTONS_ONLY) == false;
 
 		setSwipeBorder(mSwipeInputMethodEnabled);
 	}
@@ -254,10 +254,13 @@ public class GridPlayerView extends GridBasePlayerView {
 		// Reset the swipe motion
 		mSwipeMotion = null;
 
-		clearTickerTape();
-		if (mPreferences.getSwipeValidMotionCounter() < 30) {
-			mTickerTape.addItem(
-					getResources().getString(R.string.hint_swipe_basic)).show();
+		if (mSwipeInputMethodEnabled) {
+			clearTickerTape();
+			if (mPreferences.getSwipeValidMotionCounter() < 30) {
+				mTickerTape.addItem(
+						getResources().getString(R.string.hint_swipe_basic))
+						.show();
+			}
 		}
 
 		invalidate();
