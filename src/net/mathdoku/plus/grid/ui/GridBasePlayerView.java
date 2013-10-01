@@ -459,8 +459,7 @@ public class GridBasePlayerView extends GridViewerView implements
 	}
 
 	/**
-	 * Register the listener to call in case the ticker tape for the hints has
-	 * to be set.
+	 * Register the listener to call in case the input mode has changed.
 	 * 
 	 * @param onHintChangedListener
 	 *            The listener to call in case a hint has to be set.
