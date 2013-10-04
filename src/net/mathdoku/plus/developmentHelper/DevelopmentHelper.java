@@ -38,10 +38,6 @@ import android.content.SharedPreferences.Editor;
 public class DevelopmentHelper {
 	public static String TAG_LOG = "MathDoku.DevelopmentHelper";
 
-	// BugSense can be used to track down exceptions which occur while testing
-	// the app with development BUG_SENSE
-	public static String BUG_SENSE_API_KEY = "4fda0366";
-
 	// In development mode the grid generator will show a modified progress
 	// dialog. Following types of progress updates are supported. Actual values
 	// do not matter as long they are unique strings.

@@ -25,7 +25,7 @@ public class Config {
 	public static String TAG_LOG = "MathDoku.Config";
 
 	public enum AppMode {
-		DEVELOPMENT, BUG_SENSE, PRODUCTION
+		DEVELOPMENT, PRODUCTION
 	};
 
 	public static final AppMode mAppMode = @CONFIG.APP_MODE@;
