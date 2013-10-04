@@ -2,8 +2,8 @@ package net.mathdoku.plus.hint;
 
 import java.util.ArrayList;
 
-import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.R;
+import net.mathdoku.plus.painter.Painter;
 import android.content.Context;
 import android.os.Handler;
 import android.util.AttributeSet;

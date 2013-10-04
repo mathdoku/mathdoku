@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import net.mathdoku.plus.Preferences;
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.developmentHelper.DevelopmentHelper;
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper.Mode;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.grid.GridCell;
@@ -26,7 +27,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
-	public static final boolean DEBUG_GRID_GENERATOR = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
+	public static final boolean DEBUG_GRID_GENERATOR = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 	public static final boolean DEBUG_GRID_GENERATOR_FULL = DEBUG_GRID_GENERATOR && false;
 
 	// The parameters use to generate a grid
@@ -216,7 +217,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		}
 
 		// Use specified options only if running in development mode.
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			this.mGridGeneratorOptions = gridGeneratorOptions;
 		}
 	}
@@ -291,7 +292,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 				return null;
 			}
 
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				if (mGridGeneratorOptions.createFakeUserGameFiles) {
 					// The faked user games files do not require a unique
 					// solution which results in much faster generation time.
@@ -351,7 +352,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 				Log.d(TAG, "This grid does not have a unique solution.");
 			}
 
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				// Sometime grid generation takes too long. Until I have a game
 				// seed which reproduces this problem I can not fix it. If sucg
 				// a game is found in development, an exception will be thrown
@@ -443,7 +444,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	 */
 	@Override
 	protected void onPostExecute(Void result) {
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			// catch null pointer exception created in background proces
 			if (mGrid == null) {
 				throw new RuntimeException(

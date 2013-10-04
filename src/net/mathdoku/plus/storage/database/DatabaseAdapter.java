@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper;
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper.Mode;
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
 import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -321,7 +321,7 @@ public abstract class DatabaseAdapter {
 			String tableName, String[] columnsToDropped, String createSQL) {
 		// Check if columns to be dropped has beeen specified.
 		if (columnsToDropped == null || columnsToDropped.length == 0) {
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				throw new RuntimeException(TAG
 						+ ".dropColumn has invalid parameter '"
 						+ columnsToDropped.toString() + "'.");
@@ -338,7 +338,7 @@ public abstract class DatabaseAdapter {
 				|| newColumnList.isEmpty()
 				|| newColumnList.equals(currentColumnList)) {
 			// Can not delete.
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				throw new RuntimeException(TAG
 						+ ".dropColumn can not drop columns '"
 						+ columnsToDropped.toString() + "'.");

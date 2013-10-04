@@ -1,11 +1,11 @@
 package net.mathdoku.plus.ui;
 
+import net.mathdoku.plus.R;
 import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
 
 import org.achartengine.GraphicalView;
 import org.achartengine.renderer.SimpleSeriesRenderer;
 
-import net.mathdoku.plus.R;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.DisplayMetrics;

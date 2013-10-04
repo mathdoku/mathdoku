@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper;
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper.Mode;
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.grid.GridCell;
 import android.util.Log;
@@ -15,7 +15,7 @@ public class MathDokuDLX extends DLX {
 
 	// Remove "&& false" in following line to show debug information about
 	// filling the DLX data structure when running in development mode.
-	public static final boolean DEBUG_DLX = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
+	public static final boolean DEBUG_DLX = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 
 	private final int mGridSize;
 	private int mTotalMoves;
@@ -189,7 +189,7 @@ public class MathDokuDLX extends DLX {
 	 * @return True in case exactly one solution exists for this grid.
 	 */
 	public boolean hasUniqueSolution() {
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT && DEBUG_DLX) {
+		if (Config.mAppMode == AppMode.DEVELOPMENT && DEBUG_DLX) {
 			initialize(true); // Needed to compute complexity in development
 								// mode
 
@@ -260,7 +260,7 @@ public class MathDokuDLX extends DLX {
 	 * @return The complexity of a grid.
 	 */
 	private int getPuzzleComplexity() {
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT && DEBUG_DLX) {
+		if (Config.mAppMode == AppMode.DEVELOPMENT && DEBUG_DLX) {
 			// ///////////////////////////////////////////////////////////////////////
 			// NOT READY FOR PRODUCTION MODE YET.
 			//

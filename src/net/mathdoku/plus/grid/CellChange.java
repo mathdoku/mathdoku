@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper;
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper.Mode;
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import android.util.Log;
 
@@ -17,7 +17,7 @@ public class CellChange {
 
 	// Remove "&& false" in following line to show debug information about
 	// reading information from a storage string
-	public static final boolean DEBUG_STORAGE_STRING = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
+	public static final boolean DEBUG_STORAGE_STRING = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 
 	// Base identifier for different versions of cell information which is
 	// stored in

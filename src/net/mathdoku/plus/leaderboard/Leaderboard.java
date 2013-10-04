@@ -1,8 +1,8 @@
 package net.mathdoku.plus.leaderboard;
 
 import net.mathdoku.plus.R;
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper;
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper.Mode;
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -15,7 +15,7 @@ public class Leaderboard {
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
-	public static final boolean DEBUG = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
+	public static final boolean DEBUG = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 
 	// Reference to the games client of google play services.
 	GamesClient mGamesClient;

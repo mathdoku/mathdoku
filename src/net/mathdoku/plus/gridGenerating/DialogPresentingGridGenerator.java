@@ -1,8 +1,9 @@
 package net.mathdoku.plus.gridGenerating;
 
 import net.mathdoku.plus.R;
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.developmentHelper.DevelopmentHelper;
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper.Mode;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 import android.app.ProgressDialog;
@@ -136,7 +137,7 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 
 		// Set style of dialog.
 		mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			if (mGridGeneratorOptions.numberOfGamesToGenerate > 1) {
 				mProgressDialog
 						.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -188,7 +189,7 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 
 	@Override
 	protected void onPostExecute(Void result) {
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			if (mGridGeneratorOptions.createFakeUserGameFiles) {
 				mPuzzleFragmentActivity.mDialogPresentingGridGenerator = null;
 				// Grids are already saved.
@@ -222,7 +223,7 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 				}
 			}
 		}
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			if (values.length > 0
 					&& values[0] != null
 					&& values[0]
@@ -239,8 +240,7 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 		super.setGridGeneratorOptions(gridGeneratorOptions);
 
 		// Rebuild the dialog using the grid generator options.
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT
-				&& mProgressDialog != null) {
+		if (Config.mAppMode == AppMode.DEVELOPMENT && mProgressDialog != null) {
 			mProgressDialog.dismiss();
 			buildDialog();
 		}

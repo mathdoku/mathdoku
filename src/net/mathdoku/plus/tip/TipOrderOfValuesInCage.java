@@ -1,8 +1,8 @@
 package net.mathdoku.plus.tip;
 
 import net.mathdoku.plus.Preferences;
-import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.R;
+import net.mathdoku.plus.grid.GridCage;
 import android.content.Context;
 
 public class TipOrderOfValuesInCage extends TipDialog {

@@ -1,8 +1,8 @@
 package net.mathdoku.plus.ui;
 
+import net.mathdoku.plus.R;
 import net.mathdoku.plus.ui.base.AppFragmentActivity;
 import net.mathdoku.plus.util.FeedbackEmail;
-import net.mathdoku.plus.R;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;

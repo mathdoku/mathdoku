@@ -1,7 +1,7 @@
 package net.mathdoku.plus.ui;
 
-import net.mathdoku.plus.ui.base.AppActivity;
 import net.mathdoku.plus.R;
+import net.mathdoku.plus.ui.base.AppActivity;
 import android.os.Bundle;
 
 public class StatisticsPreferenceActivity extends AppActivity {

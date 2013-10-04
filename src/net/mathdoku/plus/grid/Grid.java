@@ -5,8 +5,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.mathdoku.plus.Preferences;
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper;
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper.Mode;
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
 import net.mathdoku.plus.statistics.GridStatistics;
@@ -131,7 +131,7 @@ public class Grid {
 			mGridSize = gridSize;
 		} else if (gridSize != mGridSize) {
 			// Ignore changes to grid size.
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				throw new RuntimeException(
 						"GridSize can not be changed after it has been set.");
 			}
@@ -756,7 +756,7 @@ public class Grid {
 				// Insert grid into database.
 				mRowId = gridDatabaseAdapter.insert(this);
 				if (mRowId < 0) {
-					if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+					if (Config.mAppMode == AppMode.DEVELOPMENT) {
 						throw new RuntimeException(
 								"Error while inserting a new grid into database.");
 					} else {
@@ -774,7 +774,7 @@ public class Grid {
 		mSolvingAttemptId = solvingAttemptDatabaseAdapter.insert(this,
 				Util.getPackageVersionNumber());
 		if (mSolvingAttemptId < 0) {
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				throw new RuntimeException(
 						"Error while inserting a new grid into database.");
 			} else {
@@ -787,7 +787,7 @@ public class Grid {
 		StatisticsDatabaseAdapter statisticsDatabaseAdapter = new StatisticsDatabaseAdapter();
 		mGridStatistics = statisticsDatabaseAdapter.insert(this);
 		if (mGridStatistics == null) {
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				throw new RuntimeException(
 						"Error while inserting a new grid into database.");
 			} else {
@@ -1146,7 +1146,7 @@ public class Grid {
 			mRowId = solvingAttemptData.mGridId;
 		} catch (InvalidGridException e) {
 			loaded = false;
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				Log.d(TAG,
 						"Invalid file format error when  restoring solving attempt with id '"
 								+ solvingAttemptData.mId + "'\n"
@@ -1155,7 +1155,7 @@ public class Grid {
 			initialize();
 		} catch (NumberFormatException e) {
 			loaded = false;
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				Log.d(TAG,
 						"Number format error when  restoring solving attempt with id '"
 								+ solvingAttemptData.mId + "'\n"
@@ -1164,7 +1164,7 @@ public class Grid {
 			initialize();
 		} catch (IndexOutOfBoundsException e) {
 			loaded = false;
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				Log.d(TAG,
 						"Index out of bound error when  restoring solving attempt with id '"
 								+ solvingAttemptData.mId + "'\n"

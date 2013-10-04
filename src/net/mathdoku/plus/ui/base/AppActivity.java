@@ -1,8 +1,9 @@
 package net.mathdoku.plus.ui.base;
 
 import net.mathdoku.plus.Preferences;
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.developmentHelper.DevelopmentHelper;
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper.Mode;
 import net.mathdoku.plus.storage.database.DatabaseHelper;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 import net.mathdoku.plus.util.Util;
@@ -37,7 +38,7 @@ public class AppActivity extends Activity implements
 		// BugSense web site. In this way exceptions which occurs while testing
 		// the app can be monitored more closely. Note: the internet permission
 		// needs to activated for this.
-		if (DevelopmentHelper.mMode == Mode.BUG_SENSE) {
+		if (Config.mAppMode == AppMode.BUG_SENSE) {
 			BugSenseHandler.initAndStartSession(this,
 					DevelopmentHelper.BUG_SENSE_API_KEY);
 		}

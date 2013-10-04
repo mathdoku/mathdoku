@@ -1,7 +1,7 @@
 package net.mathdoku.plus.grid.ui;
 
-import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.R;
+import net.mathdoku.plus.painter.Painter;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;

@@ -1,7 +1,7 @@
 package net.mathdoku.plus.grid.ui;
 
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper;
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper.Mode;
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.GridCell;
 import android.content.res.Configuration;
@@ -14,7 +14,7 @@ public class SwipeMotion extends Motion {
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
-	public static final boolean DEBUG_SWIPE_MOTION = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
+	public static final boolean DEBUG_SWIPE_MOTION = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 
 	// Possible statuses of the swipe motion
 	private enum Status {
@@ -157,7 +157,7 @@ public class SwipeMotion extends Motion {
 		} else if (mStatus == Status.RELEASED || mStatus == Status.FINISHED) {
 			// Already released. Nothing to do here.
 			return;
-		} else if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+		} else if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			throw new RuntimeException(
 					"Swipe Motion status can not be changed from "
 							+ mStatus.toString() + " to " + Status.RELEASED);
@@ -217,7 +217,7 @@ public class SwipeMotion extends Motion {
 			mStatus = Status.FINISHED;
 		} else if (mStatus == Status.FINISHED) {
 			// Already finished. Nothing to do here.
-		} else if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+		} else if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			throw new RuntimeException(
 					"Swipe Motion status can not be changed from "
 							+ mStatus.toString() + " to " + Status.FINISHED);

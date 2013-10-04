@@ -1,7 +1,7 @@
 package net.mathdoku.plus.storage.database;
 
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper;
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper.Mode;
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.statistics.CumulativeStatistics;
 import net.mathdoku.plus.statistics.GridStatistics;
@@ -24,7 +24,7 @@ import android.util.Log;
 public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	private static final String TAG = "MathDoku.StatisticsDatabaseAdapter";
 
-	public static final boolean DEBUG_SQL = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
+	public static final boolean DEBUG_SQL = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 
 	// Columns for table statistics
 	private static final String TABLE = "statistics";
@@ -128,9 +128,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * net.mathdoku.plus.storage.database.DatabaseAdapter#getCreateSQL
-	 * ()
+	 * @see net.mathdoku.plus.storage.database.DatabaseAdapter#getCreateSQL ()
 	 */
 	@Override
 	protected String getCreateSQL() {
@@ -145,7 +143,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 */
 	protected static void create(SQLiteDatabase db) {
 		String sql = buildCreateSQL();
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			Log.i(TAG, sql);
 		}
 
@@ -177,7 +175,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				}
 				db.execSQL(sql);
 			} catch (SQLiteException e) {
-				if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+				if (Config.mAppMode == AppMode.DEVELOPMENT) {
 					e.printStackTrace();
 				}
 			}
@@ -216,7 +214,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		try {
 			id = mSqliteDatabase.insertOrThrow(TABLE, null, initialValues);
 		} catch (SQLiteException e) {
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				e.printStackTrace();
 			}
 			return null;
@@ -245,7 +243,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 					+ "=" + id, null, null, null, null, null);
 			gridStatistics = toGridStatistics(cursor);
 		} catch (SQLiteException e) {
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				e.printStackTrace();
 			}
 			return null;
@@ -273,7 +271,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 					+ "=" + gridId, null, null, null, KEY_ROWID + " DESC", "1");
 			gridStatistics = toGridStatistics(cursor);
 		} catch (SQLiteException e) {
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				e.printStackTrace();
 			}
 			return null;
@@ -521,7 +519,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 			if (cursor != null) {
 				cursor.close();
 			}
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				e.printStackTrace();
 			}
 			return null;
@@ -780,7 +778,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 			if (cursor != null) {
 				cursor.close();
 			}
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				e.printStackTrace();
 			}
 			return null;
@@ -833,7 +831,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		try {
 			mSqliteDatabase.execSQL(sql);
 		} catch (SQLiteException e) {
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				e.printStackTrace();
 			}
 		}

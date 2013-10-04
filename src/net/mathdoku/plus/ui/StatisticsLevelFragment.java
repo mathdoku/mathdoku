@@ -3,6 +3,7 @@ package net.mathdoku.plus.ui;
 import java.util.ArrayList;
 
 import net.mathdoku.plus.Preferences;
+import net.mathdoku.plus.R;
 import net.mathdoku.plus.statistics.CumulativeStatistics;
 import net.mathdoku.plus.statistics.HistoricStatistics;
 import net.mathdoku.plus.statistics.HistoricStatistics.Scale;
@@ -21,7 +22,6 @@ import org.achartengine.renderer.SimpleSeriesRenderer;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
 
-import net.mathdoku.plus.R;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Color;

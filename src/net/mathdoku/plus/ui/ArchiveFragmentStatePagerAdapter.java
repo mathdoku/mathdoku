@@ -1,8 +1,8 @@
 package net.mathdoku.plus.ui;
 
 import net.mathdoku.plus.R;
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper;
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper.Mode;
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter.SizeFilter;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter.StatusFilter;
@@ -17,7 +17,7 @@ public class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter 
 
 	// Remove "&& false" in following line to show the solving attempt id in the
 	// pager title of the archive.
-	public static final boolean DEBUG_SHOW_SOLVING_ATTEMPT_ID = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
+	public static final boolean DEBUG_SHOW_SOLVING_ATTEMPT_ID = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 
 	public static final int UNKNOWN_GRID_ID = -1;
 	public static final int INVALID_POSITION_ID = -2;

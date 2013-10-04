@@ -1,7 +1,9 @@
 package net.mathdoku.plus.ui;
 
+import net.mathdoku.plus.R;
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.developmentHelper.DevelopmentHelper;
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper.Mode;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.ui.GridViewerView;
 import net.mathdoku.plus.painter.Painter;
@@ -10,7 +12,6 @@ import net.mathdoku.plus.storage.database.GridRow;
 import net.mathdoku.plus.ui.base.AppFragmentActivity;
 import net.mathdoku.plus.util.FeedbackEmail;
 import net.mathdoku.plus.util.SharedPuzzle;
-import net.mathdoku.plus.R;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -44,7 +45,7 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 		// BugSense web site. In this way exceptions which occurs while testing
 		// the app can be monitored more closely. Note: the internet permission
 		// needs to activated for this.
-		if (DevelopmentHelper.mMode == Mode.BUG_SENSE) {
+		if (Config.mAppMode == AppMode.BUG_SENSE) {
 			BugSenseHandler.initAndStartSession(this,
 					DevelopmentHelper.BUG_SENSE_API_KEY);
 		}

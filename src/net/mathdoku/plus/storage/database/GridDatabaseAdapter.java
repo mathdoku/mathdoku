@@ -2,8 +2,8 @@ package net.mathdoku.plus.storage.database;
 
 import java.security.InvalidParameterException;
 
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper;
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper.Mode;
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
@@ -25,7 +25,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 
 	// Remove "&& false" in following line to show the SQL-statements in the
 	// debug information
-	public static final boolean DEBUG_SQL = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
+	public static final boolean DEBUG_SQL = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 
 	// Columns for table statistics
 	protected static final String TABLE = "grid";
@@ -92,9 +92,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * net.mathdoku.plus.storage.database.DatabaseAdapter#getCreateSQL
-	 * ()
+	 * @see net.mathdoku.plus.storage.database.DatabaseAdapter#getCreateSQL ()
 	 */
 	@Override
 	protected String getCreateSQL() {
@@ -109,7 +107,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 */
 	protected static void create(SQLiteDatabase db) {
 		String sql = buildCreateSQL();
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			Log.i(TAG, sql);
 		}
 
@@ -211,7 +209,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 					+ "=" + id, null, null, null, null, null);
 			gridRow = toGridRow(cursor);
 		} catch (SQLiteException e) {
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				e.printStackTrace();
 			}
 			return null;
@@ -239,7 +237,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 					null, null, null, null, null);
 			gridRow = toGridRow(cursor);
 		} catch (SQLiteException e) {
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				e.printStackTrace();
 			}
 			return null;
@@ -394,7 +392,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 				} while (cursor.moveToNext());
 			}
 		} catch (SQLiteException e) {
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				e.printStackTrace();
 			}
 			return null;
@@ -503,7 +501,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 				} while (cursor.moveToNext());
 			}
 		} catch (SQLiteException e) {
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				e.printStackTrace();
 			}
 			return null;
@@ -591,7 +589,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 				} while (cursor.moveToNext());
 			}
 		} catch (SQLiteException e) {
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				e.printStackTrace();
 			}
 			return null;
@@ -690,7 +688,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 			// Convert cursor record to a count of grids
 			count = cursor.getInt(0);
 		} catch (SQLiteException e) {
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				e.printStackTrace();
 			}
 			return 0;

@@ -2,6 +2,8 @@ package net.mathdoku.plus.developmentHelper;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.gridGenerating.DialogPresentingGridGenerator;
 import net.mathdoku.plus.gridGenerating.GridGenerator;
 import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
@@ -15,15 +17,15 @@ import android.content.SharedPreferences.Editor;
 /**
  * The Development Helper class is intended to support Development and Unit
  * Testing of this application. Variables and methods should not be used in
- * production code with exception of static variable {@link #mMode}.
+ * production code.
  * 
- * Checks on variable {@link #mMode} should always be made in such a way that
+ * Checks on variable {@link #mAppMode} should always be made in such a way that
  * the result can be determined at compile time. In this way the enclosed block
  * will not be included in the compiled case when the condition for executing
  * the block evaluates to false. Example of intended usage:
  * 
  * <pre class="prettyprint">
- * if (DevelopmentHelper.mode == Mode.UNIT_TESTING) {
+ * if (DevelopmentHelper.mode == AppMode.UNIT_TESTING) {
  * 	// code which should only be included in case the app is used for unit
  * 	// testing
  * }
@@ -35,12 +37,6 @@ import android.content.SharedPreferences.Editor;
  */
 public class DevelopmentHelper {
 	public static String TAG_LOG = "MathDoku.DevelopmentHelper";
-
-	public enum Mode {
-		DEVELOPMENT, BUG_SENSE, PRODUCTION
-	};
-
-	public static final Mode mMode = Mode.PRODUCTION;
 
 	// BugSense can be used to track down exceptions which occur while testing
 	// the app with development BUG_SENSE
@@ -66,7 +62,7 @@ public class DevelopmentHelper {
 	 */
 	public static boolean onDevelopmentHelperOption(
 			PuzzleFragmentActivity puzzleFragmentActivity, int menuId) {
-		if (mMode == Mode.DEVELOPMENT) {
+		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			switch (menuId) {
 			case R.id.development_mode_delete_database:
 				executeDeleteDatabase(puzzleFragmentActivity);
@@ -100,7 +96,7 @@ public class DevelopmentHelper {
 	 */
 	public static void deleteDatabase(
 			final PuzzleFragmentActivity puzzleFragmentActivity) {
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(
 					puzzleFragmentActivity);
 			builder.setTitle("Delete database?")
@@ -141,7 +137,7 @@ public class DevelopmentHelper {
 		puzzleFragmentActivity.mDialogPresentingGridGenerator = new DialogPresentingGridGenerator(
 				puzzleFragmentActivity, 6, false, PuzzleComplexity.NORMAL,
 				Util.getPackageVersionNumber());
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			// Set the options for the grid generator
 			GridGenerator.GridGeneratorOptions gridGeneratorOptions = puzzleFragmentActivity.mDialogPresentingGridGenerator.new GridGeneratorOptions();
 			gridGeneratorOptions.createFakeUserGameFiles = true;
@@ -164,7 +160,7 @@ public class DevelopmentHelper {
 	public static void generateGamesReady(
 			final PuzzleFragmentActivity puzzleFragmentActivity,
 			int numberOfGamesGenerated) {
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			new AlertDialog.Builder(puzzleFragmentActivity)
 					.setTitle("Games generated")
 					.setMessage(
@@ -192,7 +188,7 @@ public class DevelopmentHelper {
 	 */
 	public static boolean resetPreferences(
 			final PuzzleFragmentActivity puzzleFragmentActivity) {
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			executeDeleteAllPreferences();
 
 			// Show dialog
@@ -226,7 +222,7 @@ public class DevelopmentHelper {
 	 */
 	public static void deleteGamesAndPreferences(
 			final PuzzleFragmentActivity puzzleFragmentActivity) {
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(
 					puzzleFragmentActivity);
 			builder.setTitle("Delete all data and preferences?")
@@ -261,7 +257,7 @@ public class DevelopmentHelper {
 	 * Deletes all preferences.
 	 */
 	private static void executeDeleteAllPreferences() {
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			Editor prefeditor = Preferences.getInstance().mSharedPreferences
 					.edit();
 			prefeditor.clear();
@@ -277,7 +273,7 @@ public class DevelopmentHelper {
 	 */
 	private static void executeDeleteDatabase(
 			PuzzleFragmentActivity puzzleFragmentActivity) {
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			// Close database helper (this will also close the open databases).
 			DatabaseHelper.getInstance().close();
 
@@ -298,7 +294,7 @@ public class DevelopmentHelper {
 	 */
 	public static boolean checkDatabaseConsistency(
 			final PuzzleFragmentActivity puzzleFragmentActivity) {
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			// While developping it regularly occurs that table definitions have
 			// been altered without creating separate database versions. As the
 			// database are accessed when the last game is restarted this
@@ -357,7 +353,7 @@ public class DevelopmentHelper {
 	 * Make options Archive and Statistics visible in the main menu.
 	 */
 	private static void unlockArchiveAndStatistics() {
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			Editor prefeditor = Preferences.getInstance().mSharedPreferences
 					.edit();
 			prefeditor.putBoolean(Preferences.ARCHIVE_AVAILABLE, true);

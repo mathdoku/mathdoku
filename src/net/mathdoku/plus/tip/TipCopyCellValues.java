@@ -1,9 +1,9 @@
 package net.mathdoku.plus.tip;
 
 import net.mathdoku.plus.Preferences;
+import net.mathdoku.plus.R;
 import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.grid.GridCell;
-import net.mathdoku.plus.R;
 import android.content.Context;
 
 public class TipCopyCellValues extends TipDialog {

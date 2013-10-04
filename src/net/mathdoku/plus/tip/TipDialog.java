@@ -3,9 +3,9 @@ package net.mathdoku.plus.tip;
 import java.util.Random;
 
 import net.mathdoku.plus.Preferences;
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper;
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper.Mode;
 import net.mathdoku.plus.R;
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -26,7 +26,7 @@ public class TipDialog extends AlertDialog {
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
-	public static final boolean DEBUG_TIP_DIALOG = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
+	public static final boolean DEBUG_TIP_DIALOG = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 
 	// Context in which the tip is created.
 	private final Context mContext;

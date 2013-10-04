@@ -1,7 +1,7 @@
 package net.mathdoku.plus;
 
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper;
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper.Mode;
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
 import android.content.Context;
 import android.content.res.Resources;
 
@@ -86,7 +86,7 @@ public class Cheat {
 			mPenaltyTimeMilisBase = 0;
 			mTipTitle = "";
 			mTipText = "";
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				throw new RuntimeException(
 						"Invalid value for parameter cheatType used in call to method Cheat(Context, CheatType).");
 			}
@@ -127,7 +127,7 @@ public class Cheat {
 			mPenaltyTimeMilisBase = 0;
 			mPenaltyTimeMilisPerOccurrence = 0;
 			mConditionalOccurrences = 0;
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				throw new RuntimeException(
 						"Invalid value for parameter cheatType used in call to method Cheat(Context, CheatType).");
 			}

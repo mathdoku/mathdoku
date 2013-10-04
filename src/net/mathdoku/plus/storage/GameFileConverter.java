@@ -5,8 +5,8 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 
 import net.mathdoku.plus.R;
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper;
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper.Mode;
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
@@ -24,7 +24,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 
 	// Remove "&& false" in following line to show debug information about
 	// converting game files when running in development mode.
-	private static final boolean DEBUG_GRID_GAME_FILE_CONVERTER = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
+	private static final boolean DEBUG_GRID_GAME_FILE_CONVERTER = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 
 	// The activity which started this task
 	private PuzzleFragmentActivity mActivity;

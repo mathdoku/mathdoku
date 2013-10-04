@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import net.mathdoku.plus.R;
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.developmentHelper.DevelopmentHelper;
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper.Mode;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.InvalidGridException;
 import net.mathdoku.plus.grid.ui.GridInputMode;
@@ -125,7 +126,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		setContentView(R.layout.puzzle_activity_fragment);
 
 		// Check if database is consistent.
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			if (DevelopmentHelper.checkDatabaseConsistency(this) == false) {
 				// Skip remainder of onCreate because further database access
 				// can result in a forced close.
@@ -220,7 +221,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.puzzle_menu, menu);
 
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			inflater.inflate(R.menu.development_mode_menu, menu);
 		}
 		return true;
@@ -331,7 +332,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 				mLeaderboard != null && mLeaderboard.isSignedIn());
 
 		// When running in development mode, an extra menu is available.
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			menu.findItem(R.id.menu_development_mode).setVisible(true);
 		}
 
@@ -416,7 +417,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		default:
 			// When running in development mode it should be checked whether a
 			// development menu item was selected.
-			if (DevelopmentHelper.mMode != Mode.DEVELOPMENT) {
+			if (Config.mAppMode != AppMode.DEVELOPMENT) {
 				return super.onOptionsItemSelected(menuItem);
 			} else {
 				if (mPuzzleFragment != null) {
@@ -504,7 +505,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		new AlertDialog.Builder(puzzleFragmentActivity)
 				.setTitle(
 						getResources().getString(R.string.application_name)
-								+ (DevelopmentHelper.mMode == Mode.DEVELOPMENT ? " r"
+								+ (Config.mAppMode == AppMode.DEVELOPMENT ? " r"
 										+ Util.getPackageVersionNumber() + " "
 										: " ")
 								+ getResources()
@@ -558,7 +559,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		new AlertDialog.Builder(this)
 				.setTitle(
 						getResources().getString(R.string.application_name)
-								+ (DevelopmentHelper.mMode == Mode.DEVELOPMENT ? " r"
+								+ (Config.mAppMode == AppMode.DEVELOPMENT ? " r"
 										+ Util.getPackageVersionNumber() + " "
 										: " ")
 								+ getResources().getString(
@@ -797,7 +798,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 					initializeArchiveFragment(solvingAttemptId);
 				}
 			} catch (InvalidGridException e) {
-				if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+				if (Config.mAppMode == AppMode.DEVELOPMENT) {
 					Log.e(TAG,
 							"PuzzleFragmentActivity.restartLastGame can not load solvingAttempt with id '"
 									+ solvingAttemptId + "'.");

@@ -2,8 +2,8 @@ package net.mathdoku.plus.storage.database;
 
 import java.util.ArrayList;
 
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper;
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper.Mode;
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.grid.Grid;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -22,7 +22,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 
 	// Remove "&& false" in following line to show the SQL-statements in the
 	// debug information
-	public static final boolean DEBUG_SQL = (DevelopmentHelper.mMode == Mode.DEVELOPMENT) && false;
+	public static final boolean DEBUG_SQL = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 
 	// Columns for table
 	protected static final String TABLE = "solving_attempt";
@@ -85,9 +85,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * net.mathdoku.plus.storage.database.DatabaseAdapter#getCreateSQL
-	 * ()
+	 * @see net.mathdoku.plus.storage.database.DatabaseAdapter#getCreateSQL ()
 	 */
 	@Override
 	protected String getCreateSQL() {
@@ -102,7 +100,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 */
 	protected static void create(SQLiteDatabase db) {
 		String sql = buildCreateSQL();
-		if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			Log.i(TAG, sql);
 		}
 
@@ -134,7 +132,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 				}
 				db.execSQL(sql);
 			} catch (SQLiteException e) {
-				if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+				if (Config.mAppMode == AppMode.DEVELOPMENT) {
 					e.printStackTrace();
 				}
 			}
@@ -170,7 +168,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		try {
 			id = mSqliteDatabase.insertOrThrow(TABLE, null, initialValues);
 		} catch (SQLiteException e) {
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				e.printStackTrace();
 			}
 		}
@@ -212,7 +210,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 			solvingAttemptData.setData(cursor.getString(cursor
 					.getColumnIndexOrThrow(KEY_DATA)));
 		} catch (SQLiteException e) {
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				e.printStackTrace();
 			}
 			return null;
@@ -246,7 +244,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 			// Convert cursor record to a SolvingAttempt row
 			id = cursor.getInt(cursor.getColumnIndexOrThrow(KEY_ROWID));
 		} catch (SQLiteException e) {
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				e.printStackTrace();
 			}
 			return -1;
@@ -317,7 +315,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 						.getColumnIndexOrThrow(KEY_ROWID)));
 			} while (cursor.moveToNext());
 		} catch (SQLiteException e) {
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				e.printStackTrace();
 			}
 			return null;
@@ -393,7 +391,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 			// Convert cursor record to a SolvingAttempt row
 			count = cursor.getInt(0);
 		} catch (SQLiteException e) {
-			if (DevelopmentHelper.mMode == Mode.DEVELOPMENT) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				e.printStackTrace();
 			}
 			return 0;
