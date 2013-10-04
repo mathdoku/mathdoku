@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- See $root/config/../google_play_services for the ANT template of this file. -->
+<!-- When building the project with ant this template will be copied from the -->
+<!-- appropriate template directory to the source directory. -->
+<!--  -->
+<!-- DO NOT ALTER THE SOURCE FILE DIRECTLTY IN CASE YOU WANT TO PERSIST YOUR -->
+<!-- CHANGES. PERSISTENT CHANGES SHOULD ALWAYS BE MADE TO THE TEMPLATE FILE IN -->
+<!-- THE TEMPLATE FILE ONLY. -->
+<resources>
+
+    <!-- Identifiers for usage of Google Play Service as used for ALPHA TESTING -->
+
+
+    <!-- Note: the game services definition on Google Play also includes definitions for archievements. -->
+    <!-- These definition are not used in the app. They have been defined as this was mandatory in -->
+    <!-- order to create the game services. -->
+
+
+    <!-- Google Play Games Services id's when app is build in RELEASE mode. -->
+    <string name="app_id">282401107486</string>
+    <string name="achievement_solve_a_4x4_puzzle">CgkIntyrg5wIEAIQAQ</string>
+    <string name="achievement_solve_a_5x5_puzzle">CgkIntyrg5wIEAIQAg</string>
+    <string name="achievement_solve_a_6x6_puzzle">CgkIntyrg5wIEAIQAw</string>
+    <string name="achievement_solve_a_7x7_puzzle">CgkIntyrg5wIEAIQBA</string>
+    <string name="achievement_solve_a_8x8_puzzle">CgkIntyrg5wIEAIQBQ</string>
+    <string name="achievement_solve_a_9x9_puzzle">CgkIntyrg5wIEAIQBg</string>
+    <string name="leaderboard_fastest_4x4_visibile_operators">CgkIntyrg5wIEAIQBw</string>
+    <string name="leaderboard_fastest_5x5_visibile_operators">CgkIntyrg5wIEAIQCA</string>
+    <string name="leaderboard_fastest_6x6_visibile_operators">CgkIntyrg5wIEAIQCQ</string>
+    <string name="leaderboard_fastest_7x7_visibile_operators">CgkIntyrg5wIEAIQCg</string>
+    <string name="leaderboard_fastest_8x8_visibile_operators">CgkIntyrg5wIEAIQCw</string>
+    <string name="leaderboard_fastest_9x9_visibile_operators">CgkIntyrg5wIEAIQDA</string>
+    <string name="leaderboard_fastest_4x4_hidden_operators">CgkIntyrg5wIEAIQDQ</string>
+    <string name="leaderboard_fastest_5x5_hidden_operators">CgkIntyrg5wIEAIQDg</string>
+    <string name="leaderboard_fastest_6x6_hidden_operators">CgkIntyrg5wIEAIQDw</string>
+    <string name="leaderboard_fastest_7x7_hidden_operators">CgkIntyrg5wIEAIQEA</string>
+    <string name="leaderboard_fastest_8x8_hidden_operators">CgkIntyrg5wIEAIQEQ</string>
+    <string name="leaderboard_fastest_9x9_hidden_operators">CgkIntyrg5wIEAIQEg</string>
+
+</resources>

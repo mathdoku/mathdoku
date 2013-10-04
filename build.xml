@@ -104,16 +104,25 @@
 
     <target name="-pre-compile" >
 
-        <!-- Copy the template of the config.java class to the source directory. An existing file -->
-        <!-- is overwritten even in case it date/time is newer than the template. -->
+        <!-- Copy all files from the ant-templates folder dependent on which build command is runned. -->
 
         <copy
-            file="config/Config.java"
             overwrite="true"
-            todir="${source.dir}/net/mathdoku/plus/config" >
+            todir="." >
+
+            <fileset dir="./ANT-templates/${build.target}" />
         </copy>
 
-        <!-- Replace the tokens in the copied template file. -->
+        <!-- Copy all files from the ant-templates folder regardless of which build command is runned. -->
+
+        <copy
+            overwrite="true"
+            todir="." >
+
+            <fileset dir="./ANT-templates/all" />
+        </copy>
+
+        <!-- Replace tokens in specificx template files. -->
 
         <replace
             file="${source.dir}/net/mathdoku/plus/config/Config.java"
