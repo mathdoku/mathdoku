@@ -94,6 +94,13 @@
     <string name="changelog_issues_title">Fehler und Weiterentwicklungen</string>
     <string name="changelog_issues_body">Bitte melden sie alle Fehler und Anfragen für Weiterenwicklungen mit dem folgenden Link. Nur Anfragen auf Englisch werden behandelt.</string>
 
+    <!-- GOOGLE+ LOG IN DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- Title and message for the "Sign in to Google+" dialog which explains the reasons why the use should sign in to Google+. -->
+    <string name="google_plus_login_dialog_title">Sign in with Google+</string>
+    <string name="google_plus_login_dialog_message">Playing Mathdoku is great fun. But even better then playing alone, is to compete for the fastest Mathdoku+ game with others arounds the globe or just with a group of friends.\n\nIf you want to rank your fastest games or to view the current leaderboards you have to sign in with Google+ one time only. You can sign out via the actions menu in case you no longer want to submit your highscores.\n\nNote: only games in which no cheats have been used, will be submitted to the leaderboards.</string>
+
     <!-- ACTION BAR ITEMS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -347,11 +354,6 @@
     <!-- Title, and text for tip "ArchiveAvailable" which explains about this new navigation option. -->
     <string name="dialog_tip_archive_available_title">Archiv verfügbar</string>
     <string name="dialog_tip_archive_available_text">Jedes Spiel, dass Sie generiert haben, wird im \"Archiv\" abgespeichert. Das \"Archiv\" kann dazu benutzt werden, um die alten Rätsel anzusehen.\n\nSie können die Statistik aus dem Navigationsmenü herus öffnen. Das Navigationsmenü wird durch Berühren des MathDoku Logos geöffnet.</string>
-
-    <!-- Title, and text for tip "ArchiveAvailable" which explains about this new navigation option. -->
-    <!-- TODO -->
-    <string name="dialog_tip_leaderboard_available_title">Leaderboards available</string>
-    <string name="dialog_tip_leaderboard_available_text">Playing Mathdoku is great fun. But even better then playing alone, is to compete for the fastest Mathdoku+ game with others arounds the globe or just with a group of friends.\n\nIf you want to rank your fastest games or to view the current leaderboards you have to sign in with Google+ one time only. You can sign out via the actions menu in case you no longer want to submit your highscores.\n\nNote: only games in which no cheats have been used, will be submitted to the leaderboards.</string>
 
     <!-- Title, and text for tip "Copy cell values" -->
     <!-- TODO -->

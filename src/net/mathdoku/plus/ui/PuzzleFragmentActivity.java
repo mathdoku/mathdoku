@@ -21,7 +21,6 @@ import net.mathdoku.plus.storage.database.GridDatabaseAdapter.StatusFilter;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.tip.TipArchiveAvailable;
 import net.mathdoku.plus.tip.TipDialog;
-import net.mathdoku.plus.tip.TipLeaderboardAvailable;
 import net.mathdoku.plus.tip.TipStatistics;
 import net.mathdoku.plus.ui.base.GooglePlayServiceFragmentActivity;
 import net.mathdoku.plus.util.FeedbackEmail;
@@ -56,8 +55,7 @@ import android.widget.TextView;
 import com.google.android.gms.games.GamesClient;
 
 public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
-		implements PuzzleFragment.PuzzleFragmentListener,
-		SignInFragment.Listener, ArchiveFragment.Listener {
+		implements PuzzleFragment.PuzzleFragmentListener {
 	public final static String TAG = "MathDoku.PuzzleFragmentActivity";
 
 	// Background tasks for generating a new puzzle and converting game files
@@ -66,7 +64,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 	// Different types of fragments supported by this activity.
 	public enum FragmentType {
-		NO_FRAGMENT, PUZZLE_FRAGMENT, ARCHIVE_FRAGMENT, SIGN_IN_FRAGMENT
+		NO_FRAGMENT, PUZZLE_FRAGMENT, ARCHIVE_FRAGMENT
 	};
 
 	// Current type of fragment being active
@@ -75,7 +73,6 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	// Reference to fragments which can be displayed in this activity.
 	private PuzzleFragment mPuzzleFragment;
 	private ArchiveFragment mArchiveFragment;
-	private SignInFragment mSignInFragment;
 
 	// References to the navigation drawer
 	private DrawerLayout mDrawerLayout;
@@ -310,9 +307,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 		// Determine position of new game button
 		menu.findItem(R.id.action_new_game)
-				.setVisible(
-						!drawerOpen
-								&& mActiveFragmentType != FragmentType.SIGN_IN_FRAGMENT)
+				.setVisible(!drawerOpen)
 				.setShowAsAction(
 						(mPuzzleFragment != null && mPuzzleFragment.isActive() ? MenuItem.SHOW_AS_ACTION_NEVER
 								: MenuItem.SHOW_AS_ACTION_ALWAYS));
@@ -320,9 +315,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		// Display the share button on the action bar dependent on the fragment
 		// being showed.
 		menu.findItem(R.id.action_share)
-				.setVisible(
-						!drawerOpen
-								&& mActiveFragmentType != FragmentType.SIGN_IN_FRAGMENT)
+				.setVisible(!drawerOpen)
 				.setShowAsAction(
 						(mArchiveFragment != null ? MenuItem.SHOW_AS_ACTION_IF_ROOM
 								: MenuItem.SHOW_AS_ACTION_NEVER));
@@ -402,8 +395,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			}
 			return true;
 		case R.id.action_sign_out_google_play_services:
-			signOutGooglePlayServices();
-			removeSignInFragment(true);
+			signOut();
 			return true;
 		case R.id.action_puzzle_settings:
 			startActivity(new Intent(this, PuzzlePreferenceActivity.class));
@@ -751,15 +743,6 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			// Inform fragment about the solving attempt which has to be loaded
 			// as soon as the view of the fragment are created.
 			mPuzzleFragment.setSolvingAttemptId(solvingAttemptId);
-		} else if (mSignInFragment != null
-				&& mActiveFragmentType != FragmentType.SIGN_IN_FRAGMENT) {
-
-			getSupportFragmentManager().popBackStack();
-
-			// In case of a new fragment the loading of the solving attempt has
-			// to be postponed until the views of the fragment have been
-			// created.
-			mPuzzleFragment.setSolvingAttemptId(solvingAttemptId);
 		} else {
 			// Re-use the current puzzle fragment. The solving attempt should
 			// directly be loaded as the view of this fragment already exists.
@@ -780,7 +763,6 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 		// Disable the other fragments
 		mArchiveFragment = null;
-		mSignInFragment = null;
 	}
 
 	/**
@@ -789,7 +771,6 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	private void initializeArchiveFragment(int solvingAttemptId) {
 		// Set the archive fragment
 		mArchiveFragment = new ArchiveFragment();
-		mArchiveFragment.setListener(this);
 
 		Bundle args = new Bundle();
 		args.putInt(ArchiveFragment.BUNDLE_KEY_SOLVING_ATTEMPT_ID,
@@ -1055,35 +1036,22 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			} else if (mNavigationDrawerItems[position].equals(getResources()
 					.getString(R.string.action_leaderboards))) {
 				// Either start the leaderboards activity or display the sign in
-				// fragment.
+				// dialog.
+				boolean leaderboardStarted = false;
 				if (mLeaderboard != null && mLeaderboard.isSignedIn()) {
 					Intent intent = mLeaderboard.getLeaderboardsIntent();
 					if (intent != null) {
-						// OnActivityResult is handled by super class
-						// GooglePlayServiceFragmentActivity. There return code
-						// of that
-						// class should be used here.
+						// The OnActivityResult is handled by super class
+						// GooglePlayServiceFragmentActivity. Therefore the
+						// return code of that class is used here.
 						startActivityForResult(intent,
 								GooglePlayServiceFragmentActivity.RC_UNUSED);
+						leaderboardStarted = true;
 					}
-				} else if (mSignInFragment == null) {
-					// Display the sign in fragment.
-					mSignInFragment = new SignInFragment();
-					mSignInFragment.setListener(PuzzleFragmentActivity.this);
-
-					FragmentManager fragmentManager = getSupportFragmentManager();
-					FragmentTransaction fragmentTransaction = fragmentManager
-							.beginTransaction();
-					fragmentTransaction.replace(R.id.content_frame,
-							mSignInFragment);
-					fragmentTransaction
-							.addToBackStack("SignInOnGooglePlayServices");
-					fragmentTransaction.commit();
-					fragmentManager.executePendingTransactions();
-
-					mActiveFragmentType = FragmentType.SIGN_IN_FRAGMENT;
-
-					mSignInFragment.setSignedOut();
+				}
+				if (leaderboardStarted == false) {
+					new GooglePlusSignInDialog(PuzzleFragmentActivity.this)
+							.show();
 				}
 			}
 			mDrawerLayout.closeDrawer(mDrawerListView);
@@ -1142,17 +1110,14 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			mDrawerIconVisible = true;
 		}
 
-		// Add leaderboards if unlocked
-		if (mMathDokuPreferences.isLeaderboardAvailable()) {
-			String string = getResources().getString(
-					R.string.action_leaderboards);
-			navigationDrawerItems.add(string);
-			if (openDrawer == false && mNavigationDrawerItems != null) {
-				openDrawer = (Arrays.asList(mNavigationDrawerItems).contains(
-						string) == false);
-			}
-			mDrawerIconVisible = true;
+		// Leaderboards are always available
+		String string = getResources().getString(R.string.action_leaderboards);
+		navigationDrawerItems.add(string);
+		if (openDrawer == false && mNavigationDrawerItems != null) {
+			openDrawer = (Arrays.asList(mNavigationDrawerItems)
+					.contains(string) == false);
 		}
+		mDrawerIconVisible = true;
 
 		mNavigationDrawerItems = navigationDrawerItems
 				.toArray(new String[navigationDrawerItems.size()]);
@@ -1242,6 +1207,13 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		}
 	}
 
+	/**
+	 * Sign in with google plus.
+	 */
+	public void signInGooglePlus() {
+		beginUserInitiatedSignIn();
+	}
+
 	@Override
 	public void onSignInFailed() {
 		// Sign-in on google play services has failed.
@@ -1250,10 +1222,6 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			mLeaderboard = new Leaderboard(this.getResources());
 		}
 		mLeaderboard.signInFailed();
-
-		if (mSignInFragment != null) {
-			mSignInFragment.setSignedOut();
-		}
 	}
 
 	@Override
@@ -1266,112 +1234,19 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		GamesClient gamesClient = getGamesClient();
 		gamesClient.setViewForPopups(findViewById(android.R.id.content));
 		mLeaderboard.signedIn(gamesClient);
-		if (mSignInFragment != null) {
-			mSignInFragment.setSignedIn(mLeaderboard);
-		}
-	}
-
-	@Override
-	public void onSignInButtonClicked() {
-		// Start the sign-in flow on Google Play Services
-		beginUserInitiatedSignIn();
-	}
-
-	@Override
-	public void onSignOutButtonClicked() {
-		signOutGooglePlayServices();
-	}
-
-	protected void signOutGooglePlayServices() {
-		if (mLeaderboard != null) {
-			if (mSignInFragment != null) {
-				mSignInFragment.setSignedOut();
-			}
-			mLeaderboard = null;
-		}
-		super.signOut();
 	}
 
 	@Override
 	public void onPuzzleSolvedWithoutCheats(int gridSize,
 			PuzzleComplexity puzzleComplexity, boolean hideOperators,
 			long timePlayed) {
-		// Unlock the leaderboard as soon as the first game is completed without
-		// using any cheats.
-		if (mMathDokuPreferences.isLeaderboardAvailable() == false) {
-			mMathDokuPreferences.setLeaderboardAvailable();
-			setNavigationDrawer();
-		}
-		if (TipLeaderboardAvailable.toBeDisplayed(mMathDokuPreferences)) {
-			new TipLeaderboardAvailable(this).show();
-		}
-
-		if (mLeaderboard != null) {
+		// Submit score to Google+ in case the puzzle was solved without using
+		// cheats.
+		if (mLeaderboard == null) {
+			new GooglePlusSignInDialog(this).show();
+		} else {
 			mLeaderboard.onPuzzleSolvedWithoutCheats(gridSize,
 					puzzleComplexity, hideOperators, timePlayed);
 		}
-	}
-
-	@Override
-	public void onShowLeaderboardButtonClicked() {
-		if (mLeaderboard != null) {
-			Intent intent = mLeaderboard.getLeaderboardsIntent();
-			if (intent != null) {
-				// OnActivityResult is handled by super class
-				// GooglePlayServiceFragmentActivity. There return code of that
-				// class should be used here.
-				startActivityForResult(intent,
-						GooglePlayServiceFragmentActivity.RC_UNUSED);
-			}
-		}
-		removeSignInFragment(true);
-	}
-
-	@Override
-	public void onBackPressed() {
-		if (mActiveFragmentType == FragmentType.SIGN_IN_FRAGMENT
-				&& mSignInFragment != null) {
-			mSignInFragment = null;
-
-			if (mPuzzleFragment != null) {
-				mPuzzleFragment.setSolvingAttemptId(mPuzzleFragment
-						.getSolvingAttemptId());
-				mActiveFragmentType = FragmentType.PUZZLE_FRAGMENT;
-			} else if (mArchiveFragment != null) {
-				mActiveFragmentType = FragmentType.ARCHIVE_FRAGMENT;
-			}
-
-			// The action bar and options menu needs to be updated when the sign
-			// in fragment is no longer showed.
-			invalidateOptionsMenu();
-		}
-		super.onBackPressed();
-	}
-
-	/**
-	 * Determine new active fragment one the sign in fragment was popped of the
-	 * back stack.
-	 */
-	private void removeSignInFragment(boolean removeFromBackStack) {
-		if (removeFromBackStack && mSignInFragment != null
-				&& (mPuzzleFragment != null || mArchiveFragment != null)) {
-			FragmentManager fragmentManager = getSupportFragmentManager();
-			FragmentTransaction fragmentTransaction = fragmentManager
-					.beginTransaction();
-			fragmentTransaction.remove(mSignInFragment);
-			fragmentTransaction.commit();
-			fragmentManager.executePendingTransactions();
-			fragmentManager.popBackStack();
-		}
-		mSignInFragment = null;
-
-		// Determine which fragment will become active when the sign in fragment
-		// has been popped of the back stack.
-		mActiveFragmentType = (mPuzzleFragment != null ? FragmentType.PUZZLE_FRAGMENT
-				: FragmentType.ARCHIVE_FRAGMENT);
-
-		// The action bar and options menu needs to be updated when the sign in
-		// fragment is no longer showed.
-		invalidateOptionsMenu();
 	}
 }

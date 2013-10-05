@@ -27,7 +27,6 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -38,7 +37,7 @@ import android.widget.TextView;
  * An archive fragment representing a puzzle which is archived.
  */
 public class ArchiveFragment extends StatisticsBaseFragment implements
-		OnSharedPreferenceChangeListener, OnClickListener {
+		OnSharedPreferenceChangeListener {
 
 	@SuppressWarnings("unused")
 	private static final String TAG = "ArchiveFragment";
@@ -61,13 +60,6 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 	private static final int MAX_CATEGORIES_BAR_CHART = 5;
 
 	private Preferences mPreferences;
-
-	// Interface for listener
-	public interface Listener {
-		public void onSignInButtonClicked();
-	}
-
-	Listener mListener = null;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -637,18 +629,4 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 
 		return maxContentHeight;
 	}
-
-	public void setListener(Listener listener) {
-		mListener = listener;
-	}
-
-	@Override
-	public void onClick(View view) {
-		switch (view.getId()) {
-		case R.id.sign_in_button:
-			mListener.onSignInButtonClicked();
-			break;
-		}
-	}
-
 }

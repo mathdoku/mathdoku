@@ -53,10 +53,6 @@ public class Preferences {
 	public final static String ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE = "archive_setting_chart_description_visible";
 	public final static boolean ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT = true;
 
-	// Statistics setting preferences
-	public final static String LEADERBOARD_AVAILABLE = "leaderboard_available";
-	public final static boolean LEADERBOARD_AVAILABLE_DEFAULT = false;
-
 	// Puzzle input mode settings
 	public final static String PUZZLE_INPUT_MODE_CHANGED_COUNTER = "puzzle_input_mode_changed_counter";
 	public final static int PUZZLE_INPUT_MODE_CHANGED_COUNTER_DEFAULT = 0;
@@ -1080,24 +1076,5 @@ public class Preferences {
 	public boolean isGridInputModeCopyEnabled() {
 		return mSharedPreferences.getBoolean(PUZZLE_INPUT_MODE_COPY_ENABLED,
 				PUZZLE_INPUT_MODE_COPY_ENABLED_DEFAULT);
-	}
-
-	/**
-	 * Checks whether the leaderboards are visible.
-	 * 
-	 * @return True in case the leaderboards are visible. False otherwise.
-	 */
-	public boolean isLeaderboardAvailable() {
-		return mSharedPreferences.getBoolean(LEADERBOARD_AVAILABLE,
-				LEADERBOARD_AVAILABLE_DEFAULT);
-	}
-
-	/**
-	 * Enables the leaderboards.
-	 */
-	public void setLeaderboardAvailable() {
-		Editor prefeditor = mSharedPreferences.edit();
-		prefeditor.putBoolean(LEADERBOARD_AVAILABLE, true);
-		prefeditor.apply();
 	}
 }

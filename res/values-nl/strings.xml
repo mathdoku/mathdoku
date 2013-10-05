@@ -91,6 +91,13 @@
     <string name="changelog_issues_title">Fouten en verzoeken</string>
     <string name="changelog_issues_body">Fouten en wijzigingsverzoeken kun je doorgeven via onze website. Wij nemen alleen Engelstalige verzoeken in behandeling.</string>
 
+    <!-- GOOGLE+ LOG IN DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- Title and message for the "Sign in to Google+" dialog which explains the reasons why the use should sign in to Google+. -->
+    <string name="google_plus_login_dialog_title">Log in met Google+</string>
+    <string name="google_plus_login_dialog_message">Mathdoku spelen is erg leuk. Maar het is nog leuker om te stijden om het klassement van de snelste Mathdoku+ puzzel met andere spelers in de wereld of met een groep vrienden.\n\nAls je je snelste puzzels in wil sturen voor het klassement of om de klassementen te bekijen dan moet je eenmalig inloggen met Google+. Je kan uitloggen via het actiemenu in het geval dat je niet langer meer je topscore wil insturen.\n\nlet op: alleen puzzels waarin je niet hebt vals gespeeld, worden ingestuurd voor het klassement.</string>
+
     <!-- ACTION BAR ITEMS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -340,10 +347,6 @@
     <!-- Title, and text for tip "ArchiveAvailable" which explains about this new navigation option. -->
     <string name="dialog_tip_archive_available_title">Archief beschikbaar</string>
     <string name="dialog_tip_archive_available_text">Elke puzzel die je hebt aangemaakt wordt bewaard in het \'Archief\'. Het \'Archief\' kan worden gebruikt om puzzels te bekijken die je eerder hebt gespeeld.\n\nJe kan het archief starten vanuit het navigatie menu. Het navigatie menu kan worden geopend door het MathDoku aan te tikken.</string>
-
-    <!-- Title, and text for tip "ArchiveAvailable" which explains about this new navigation option. -->
-    <string name="dialog_tip_leaderboard_available_title">Klassementen beschikbaar</string>
-    <string name="dialog_tip_leaderboard_available_text">Mathdoku spelen is erg leuk. Maar het is nog leuker om te stijden om het klassement van de snelste Mathdoku+ puzzel met andere spelers in de wereld of met een groep vrienden.\n\nAls je je snelste puzzels in wil sturen voor het klassement of om de klassementen te bekijen dan moet je eenmalig inloggen met Google+. Je kan uitloggen via het actiemenu in het geval dat je niet langer meer je topscore wil insturen.\n\nlet op: alleen puzzels waarin je niet hebt vals gespeeld, worden ingestuurd voor het klassement.</string>
 
     <!-- Title, and text for tip "Copy cell values" -->
     <string name="dialog_tip_copy_cell_values_title">Kopieer cel waarden</string>
