@@ -141,7 +141,8 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 		}
 
 		// Get the grid definition form the uri.
-		String gridDefinition = SharedPuzzle.getGridDefinitionFromUrl(uri);
+		String gridDefinition = new SharedPuzzle(this)
+				.getGridDefinitionFromUrl(uri);
 		if (gridDefinition == null) {
 			return false;
 		}

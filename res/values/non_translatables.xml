@@ -44,6 +44,19 @@
         <item>250</item>
     </string-array>
 
+    <!-- PUZZLE SHARING - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- References for Mathdoku+ -->
+    <string name="shared_puzzle_scheme_mathdoku_plus">http</string>
+    <string name="shared_puzzle_host_mathdoku_plus">mathdoku.net</string>
+    <string name="shared_puzzle_path_prefix_mathdoku_plus">/plus</string>
+
+    <!-- References for the original mathdoku -->
+    <string name="shared_puzzle_scheme_mathdoku_original">http</string>
+    <string name="shared_puzzle_host_mathdoku_original">mathdoku.net</string>
+    <string name="shared_puzzle_path_prefix_mathdoku_original">/puzzle</string>
+
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <string name="gamehelper_sign_in_failed">Failed to sign in. Please check your network connection and try again.</string>

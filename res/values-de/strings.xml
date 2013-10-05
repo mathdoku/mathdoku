@@ -510,10 +510,10 @@
 
 
     <!-- Subject and body of share email. -->
-    <string name="share_puzzle_subject">MathDoku Rätsel teilen</string>
-    <string name="share_puzzle_link_description">MathDoku Rätsel</string>
-    <string name="share_unfinished_puzzle_body">Ich will dieses %1$s mit dir teilen. Nach dem Klick auf den Link, wähle bitte die MathDoku App für eine Vorschau des MathDoku Rätsels.%2$sFalls du noch nicht die Version 2 von MathDoku für Android installiert hast, lade sie bitte von %3$s herunter, bevor du auf den Link für das Rätsel klickst.%4$sFalls der Text oben keinen Link enthält, verwende bitte den nachfolgenden Link:%5$s - Spiele das MathDoku Rätsel: %6$s - MathDoku Herunterladen: %7$s</string>
-    <string name="share_finished_puzzle_body">Ich habe dieses %1$s in %2$s gelöst. Kannst du es schneller lösen? Nach dem Klick auf den Link, wähle bitte die MathDoku App für eine Vorschau des MathDoku Rätsels.%3$sFalls du noch nicht die Version 2 von MathDoku für Android installiert hast, lade sie bitte von %4$s herunter, bevor du auf den Link für das Rätsel klickst.%5$sFalls der Text oben keinen Link enthält, verwende bitte den nachfolgenden Link:%6$s - Spiele das MathDoku Rätsel: %7$s - MathDoku Herunterladen: %8$s</string>
+    <string name="share_puzzle_subject">MathDoku+ Rätsel teilen</string>
+    <string name="share_puzzle_link_description">MathDoku+ Rätsel</string>
+    <string name="share_unfinished_puzzle_body">Ich will dieses %1$s mit dir teilen. Nach dem Klick auf den Link, wähle bitte die MathDoku+ App für eine Vorschau des MathDoku+ Rätsels.%2$sFalls du noch nicht MathDoku+ für Android installiert hast, lade sie bitte von %3$s herunter, bevor du auf den Link für das Rätsel klickst.%4$sFalls der Text oben keinen Link enthält, verwende bitte den nachfolgenden Link:%5$s - Spiele das MathDoku+ Rätsel: %6$s - MathDoku+ Herunterladen: %7$s</string>
+    <string name="share_finished_puzzle_body">Ich habe dieses %1$s in %2$s gelöst. Kannst du es schneller lösen? Nach dem Klick auf den Link, wähle bitte die MathDoku+ App für eine Vorschau des MathDoku+ Rätsels.%3$sFalls du noch nicht MathDoku+ für Android installiert hast, lade sie bitte von %4$s herunter, bevor du auf den Link für das Rätsel klickst.%5$sFalls der Text oben keinen Link enthält, verwende bitte den nachfolgenden Link:%6$s - Spiele das MathDoku+ Rätsel: %7$s - MathDoku+ Herunterladen: %8$s</string>
 
     <!-- Title for the shared puzzle fragment. -->
     <string name="shared_puzzle_action_bar_title">Vorschau eines geteilten Rätsels</string>

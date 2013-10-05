@@ -499,10 +499,10 @@
 
 
     <!-- Subject and body of share email. -->
-    <string name="share_puzzle_subject">Sharing MathDoku puzzle</string>
-    <string name="share_puzzle_link_description">MathDoku puzzle</string>
-    <string name="share_unfinished_puzzle_body">I want to share this %1$s with you. After clicking the link, please choose the MathDoku app to preview the puzzle.%2$sIf you haven\'t yet installed version 2 of MathDoku for Android, please download it from %3$s before clicking the puzzle links.%4$sIf the text above does not contains any links, please use links below:%5$s - Play the MathDoku puzzle: %6$s - Download MathDoku: %7$s</string>
-    <string name="share_finished_puzzle_body">I have solved this %1$s in %2$s. Can you finish it faster? After clicking the link, please choose the MathDoku app to preview the puzzle.%3$sIf you haven\'t yet installed version 2 of MathDoku for Android, please download it from %4$s before clicking the puzzle links.%5$sIf the text above does not contains any links, please use links below:%6$s - Play the MathDoku puzzle: %7$s - Download MathDoku: %8$s</string>
+    <string name="share_puzzle_subject">Sharing MathDoku+ puzzle</string>
+    <string name="share_puzzle_link_description">MathDoku+ puzzle</string>
+    <string name="share_unfinished_puzzle_body">I want to share this %1$s with you. After clicking the link, please choose the MathDoku+ app to preview the puzzle.%2$sIf you haven\'t yet installed MathDoku+ for Android, please download it from %3$s before clicking the puzzle links.%4$sIf the text above does not contains any links, please use links below:%5$s - Play the MathDoku+ puzzle: %6$s - Download MathDoku+: %7$s</string>
+    <string name="share_finished_puzzle_body">I have solved this %1$s in %2$s. Can you finish it faster? After clicking the link, please choose the MathDoku+ app to preview the puzzle.%3$sIf you haven\'t yet installed MathDoku+ for Android, please download it from %4$s before clicking the puzzle links.%5$sIf the text above does not contains any links, please use links below:%6$s - Play the MathDoku+ puzzle: %7$s - Download MathDoku+: %8$s</string>
 
     <!-- Title for the shared puzzle fragment. -->
     <string name="shared_puzzle_action_bar_title">Preview shared puzzle</string>

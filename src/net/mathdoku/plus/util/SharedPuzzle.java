@@ -20,11 +20,17 @@ public class SharedPuzzle {
 	// List of uri which have to be enclosed as attachments in the share email.
 	private ArrayList<Uri> mUris;
 
-	// Elements of the share url
-	private static final String SHARE_URI_SCHEME = "http";
-	private static final String SHARE_URI_HOST = "mathdoku.net";
-	private static final String SHARE_URI_PUZZLE = "puzzle";
-	private static final String SHARE_URI_VERSION = "2";
+	// Elements of the share url for Mathdoku Plus
+	private final String mSharedPuzzleSchemeMathdokuPlus;
+	private final String mSharedPuzzleHostMathdokuPlus;
+	private String mSharedPuzzlePathPrefixMathdokuPlus;
+	private final String SHARE_URI_VERSION_MATHDOKU_PLUS = "2";
+
+	// Elements of the share url for Mathdoku Original
+	private final String mSharedPuzzleSchemeMathdokuOriginal;
+	private final String mSharedPuzzleHostMathdokuOriginal;
+	private String mSharedPuzzlePathPrefixMathdokuOriginal;
+	private final String SHARE_URI_VERSION_MATHDOKU_ORIGINAL = "2";
 
 	/**
 	 * Creates new instance of {@see SharedPuzzle}.
@@ -35,6 +41,35 @@ public class SharedPuzzle {
 	public SharedPuzzle(Context context) {
 		mContext = context;
 		mUris = null;
+
+		// Mathdoku Plus elements of share url
+		mSharedPuzzleSchemeMathdokuPlus = mContext.getResources().getString(
+				R.string.shared_puzzle_scheme_mathdoku_plus);
+		mSharedPuzzleHostMathdokuPlus = mContext.getResources().getString(
+				R.string.shared_puzzle_host_mathdoku_plus);
+		mSharedPuzzlePathPrefixMathdokuPlus = mContext.getResources()
+				.getString(R.string.shared_puzzle_path_prefix_mathdoku_plus);
+
+		// Strip slash of start of prefix
+		if (mSharedPuzzlePathPrefixMathdokuPlus.charAt(0) == '/') {
+			mSharedPuzzlePathPrefixMathdokuPlus = mSharedPuzzlePathPrefixMathdokuPlus
+					.substring(1);
+		}
+
+		// Mathdoku Original elements of share url
+		mSharedPuzzleSchemeMathdokuOriginal = mContext.getResources()
+				.getString(R.string.shared_puzzle_scheme_mathdoku_original);
+		mSharedPuzzleHostMathdokuOriginal = mContext.getResources().getString(
+				R.string.shared_puzzle_host_mathdoku_original);
+		mSharedPuzzlePathPrefixMathdokuOriginal = mContext
+				.getResources()
+				.getString(R.string.shared_puzzle_path_prefix_mathdoku_original);
+
+		// Strip slash of start of prefix
+		if (mSharedPuzzlePathPrefixMathdokuOriginal.charAt(0) == '/') {
+			mSharedPuzzlePathPrefixMathdokuOriginal = mSharedPuzzlePathPrefixMathdokuOriginal
+					.substring(1);
+		}
 	}
 
 	/**
@@ -160,9 +195,11 @@ public class SharedPuzzle {
 	 * @return The share url for the given grid definition.
 	 */
 	private String getShareUrl(String gridDefinition) {
-		return SHARE_URI_SCHEME + "://" + SHARE_URI_HOST + "/"
-				+ SHARE_URI_PUZZLE + "/" + SHARE_URI_VERSION + "/"
-				+ gridDefinition + "/" + gridDefinition.hashCode();
+		return mSharedPuzzleSchemeMathdokuPlus + "://"
+				+ mSharedPuzzleHostMathdokuPlus + "/"
+				+ mSharedPuzzlePathPrefixMathdokuPlus + "/"
+				+ SHARE_URI_VERSION_MATHDOKU_PLUS + "/" + gridDefinition + "/"
+				+ gridDefinition.hashCode();
 	}
 
 	/**
@@ -173,16 +210,90 @@ public class SharedPuzzle {
 	 * @return The grid definition as stored in the uri. Null in case the given
 	 *         uri is not a valid share url.
 	 */
-	public static String getGridDefinitionFromUrl(Uri uri) {
+	public String getGridDefinitionFromUrl(Uri uri) {
+		// Check if a Mathdoku Plus uri was specified.
+		if (uri.getScheme().equals(mSharedPuzzleSchemeMathdokuPlus)
+				&& uri.getHost().equals(mSharedPuzzleHostMathdokuPlus)) {
+			String gridDefinition = getGridDefinitionFromMathdokuPlusUrl(uri);
+			if (gridDefinition != null) {
+				return gridDefinition;
+			}
+		}
+
+		// Check if a Mathdoku Original uri was specified.
+		if (uri.getScheme().equals(mSharedPuzzleSchemeMathdokuOriginal)
+				&& uri.getHost().equals(mSharedPuzzleHostMathdokuOriginal)) {
+			return getGridDefinitionFromMathdokuOriginalUrl(uri);
+		}
+
+		// Unknown scheme or host or something else went wrong.
+		return null;
+	}
+
+	/**
+	 * Get the grid definition from the given uri.
+	 * 
+	 * @param uri
+	 *            The uri to be checked.
+	 * @return The grid definition as stored in the uri. Null in case the given
+	 *         uri is not a valid share url.
+	 */
+	private String getGridDefinitionFromMathdokuPlusUrl(Uri uri) {
+		// Only process when valid scheme and host are specified.
+		if (uri.getScheme().equals(mSharedPuzzleSchemeMathdokuPlus) == false
+				|| uri.getHost().equals(mSharedPuzzleHostMathdokuPlus) == false) {
+			return null;
+		}
+
 		// The data should contain exactly 4 segments
 		List<String> pathSegments = uri.getPathSegments();
 		if (pathSegments == null || pathSegments.size() != 4) {
 			return null;
 		}
-		if (pathSegments.get(0).equals(SHARE_URI_PUZZLE) == false) {
+		if (pathSegments.get(0).equals(mSharedPuzzlePathPrefixMathdokuPlus) == false) {
 			return null;
 		}
-		if (pathSegments.get(1).equals(SHARE_URI_VERSION) == false) {
+		if (pathSegments.get(1).equals(SHARE_URI_VERSION_MATHDOKU_PLUS) == false) {
+			return null;
+		}
+		// Check if grid definition (part 3) matches with the hashcode (part 4).
+		// This is a simple measure to check if the uri is complete and not
+		// manually changed by an ordinary user. It it still possible to
+		// manually manipulate the grid definition and the hashcode but this can
+		// do no harm as it is still checked whether a valid grid is specified.
+		String gridDefinition = pathSegments.get(2);
+		if (gridDefinition.hashCode() != Integer.valueOf(pathSegments.get(3))) {
+			return null;
+		}
+
+		// The given uri is valid.
+		return gridDefinition;
+	}
+
+	/**
+	 * Get the grid definition from the given uri.
+	 * 
+	 * @param uri
+	 *            The uri to be checked.
+	 * @return The grid definition as stored in the uri. Null in case the given
+	 *         uri is not a valid share url.
+	 */
+	private String getGridDefinitionFromMathdokuOriginalUrl(Uri uri) {
+		// Only process when valid scheme and host are specified.
+		if (uri.getScheme().equals(mSharedPuzzleSchemeMathdokuOriginal) == false
+				|| uri.getHost().equals(mSharedPuzzleHostMathdokuOriginal) == false) {
+			return null;
+		}
+
+		// The data should contain exactly 4 segments
+		List<String> pathSegments = uri.getPathSegments();
+		if (pathSegments == null || pathSegments.size() != 4) {
+			return null;
+		}
+		if (pathSegments.get(0).equals(mSharedPuzzlePathPrefixMathdokuOriginal) == false) {
+			return null;
+		}
+		if (pathSegments.get(1).equals(SHARE_URI_VERSION_MATHDOKU_ORIGINAL) == false) {
 			return null;
 		}
 		// Check if grid definition (part 3) matches with the hashcode (part 4).

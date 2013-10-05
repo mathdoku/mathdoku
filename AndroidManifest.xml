@@ -41,6 +41,8 @@
             </intent-filter>
         </activity>
         <activity android:name="net.mathdoku.plus.ui.SharedPuzzleActivity" >
+
+            <!-- Catch Mathdoku plus urls -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -48,23 +50,35 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="mathdoku.net"
-                    android:pathPrefix="/puzzle"
-                    android:scheme="http" />
+                    android:host="@string/shared_puzzle_host_mathdoku_plus"
+                    android:pathPrefix="@string/shared_puzzle_path_prefix_mathdoku_plus"
+                    android:scheme="@string/shared_puzzle_scheme_mathdoku_plus" />
+            </intent-filter>
+
+            <!-- Catch Mathdoku original urls -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/shared_puzzle_host_mathdoku_original"
+                    android:pathPrefix="@string/shared_puzzle_path_prefix_mathdoku_original"
+                    android:scheme="@string/shared_puzzle_scheme_mathdoku_original" />
             </intent-filter>
         </activity>
+        <activity android:name="net.mathdoku.plus.ui.PuzzlePreferenceActivity" />
+        <activity android:name="net.mathdoku.plus.ui.ArchiveFragmentActivity" />
+        <activity android:name="net.mathdoku.plus.ui.ArchivePreferenceActivity" />
+        <activity android:name="net.mathdoku.plus.ui.StatisticsFragmentActivity" />
+        <activity android:name="net.mathdoku.plus.ui.StatisticsPreferenceActivity" />
 
         <provider
             android:name="net.mathdoku.plus.util.FileProvider"
             android:authorities="net.mathdoku.plus.util.FileProvider"
             android:exported="true"
             tools:ignore="ExportedContentProvider" />
-
-        <activity android:name="net.mathdoku.plus.ui.PuzzlePreferenceActivity" />
-        <activity android:name="net.mathdoku.plus.ui.ArchiveFragmentActivity" />
-        <activity android:name="net.mathdoku.plus.ui.ArchivePreferenceActivity" />
-        <activity android:name="net.mathdoku.plus.ui.StatisticsFragmentActivity" />
-        <activity android:name="net.mathdoku.plus.ui.StatisticsPreferenceActivity" />
     </application>
 
 </manifest>
