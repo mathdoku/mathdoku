@@ -727,30 +727,60 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		}
 	}
 
-	/**
-	 * Initializes the puzzle fragment. The archive fragment will be disabled.
-	 */
-	private void initializePuzzleFragment(int solvingAttemptId) {
-		// Set the puzzle fragment
-		mPuzzleFragment = new PuzzleFragment();
-		if (solvingAttemptId >= 0) {
-			Bundle args = new Bundle();
-			args.putInt(PuzzleFragment.BUNDLE_KEY_SOLVING_ATTEMPT_ID,
-					solvingAttemptId);
-			mPuzzleFragment.setArguments(args);
-		}
-
+	private void replaceFragment(android.support.v4.app.Fragment fragment) {
+		// Replace current fragment with the new puzzle fragment.
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager
 				.beginTransaction();
 		fragmentTransaction.replace(R.id.content_frame, mPuzzleFragment);
 		fragmentTransaction.commit();
 		fragmentManager.executePendingTransactions();
+	}
+
+	/**
+	 * Initializes the puzzle fragment. The archive fragment will be disabled.
+	 */
+	private void initializePuzzleFragment(int solvingAttemptId) {
+		boolean newFragment = (mPuzzleFragment == null);
+
+		// Create a new puzzle fragment
+		if (mPuzzleFragment == null) {
+			mPuzzleFragment = new PuzzleFragment();
+			replaceFragment(mPuzzleFragment);
+
+			// Inform fragment about the solving attempt which has to be loaded
+			// as soon as the view of the fragment are created.
+			mPuzzleFragment.setSolvingAttemptId(solvingAttemptId);
+		} else if (mSignInFragment != null
+				&& mActiveFragmentType != FragmentType.SIGN_IN_FRAGMENT) {
+
+			getSupportFragmentManager().popBackStack();
+
+			// In case of a new fragment the loading of the solving attempt has
+			// to be postponed until the views of the fragment have been
+			// created.
+			mPuzzleFragment.setSolvingAttemptId(solvingAttemptId);
+		} else {
+			// Re-use the current puzzle fragment. The solving attempt should
+			// directly be loaded as the view of this fragment already exists.
+			//
+			// This path can be tested as follows:
+			// 1. Display an active puzzle fragment
+			// 2. Open a shared puzzle from an email
+			// 3. Choose to play this shared puzzle
+			// or
+			// 1. Log out of google+
+			// 2. Display an active puzzle fragment
+			// 3. Open the leader board sign in fragment
+			// 4. Go back to the puzzle
+			mPuzzleFragment.loadSolvingAttempt(solvingAttemptId);
+		}
 
 		mActiveFragmentType = FragmentType.PUZZLE_FRAGMENT;
 
-		// Disable the archive fragment
+		// Disable the other fragments
 		mArchiveFragment = null;
+		mSignInFragment = null;
 	}
 
 	/**
@@ -1301,13 +1331,25 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	public void onBackPressed() {
 		if (mActiveFragmentType == FragmentType.SIGN_IN_FRAGMENT
 				&& mSignInFragment != null) {
-			removeSignInFragment(false);
+			mSignInFragment = null;
+
+			if (mPuzzleFragment != null) {
+				mPuzzleFragment.setSolvingAttemptId(mPuzzleFragment
+						.getSolvingAttemptId());
+				mActiveFragmentType = FragmentType.PUZZLE_FRAGMENT;
+			} else if (mArchiveFragment != null) {
+				mActiveFragmentType = FragmentType.ARCHIVE_FRAGMENT;
+			}
+
+			// The action bar and options menu needs to be updated when the sign
+			// in fragment is no longer showed.
+			invalidateOptionsMenu();
 		}
 		super.onBackPressed();
 	}
 
 	/**
-	 * Determine new active fragment one the sign in fragement was popped of the
+	 * Determine new active fragment one the sign in fragment was popped of the
 	 * back stack.
 	 */
 	private void removeSignInFragment(boolean removeFromBackStack) {

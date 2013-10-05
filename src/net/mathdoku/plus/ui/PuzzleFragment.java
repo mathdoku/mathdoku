@@ -65,6 +65,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	public static final String BUNDLE_KEY_SOLVING_ATTEMPT_ID = "PuzzleFragment.solvingAttemptId";
 
 	// The grid and the view which will display the grid.
+	private int mSolvingAttemptIdToBeLoadedOnCreateViews;
 	public Grid mGrid;
 	public GridPlayerView mGridPlayerView;
 
@@ -136,6 +137,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	public void onCreate(Bundle savedInstanceState) {
 		setRetainInstance(true);
 		super.onCreate(savedInstanceState);
+		mSolvingAttemptIdToBeLoadedOnCreateViews = -1;
 	}
 
 	@Override
@@ -290,16 +292,10 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		// entered.
 		mActionMode = null;
 
-		// In case a solving attempt id has been passed, this attempt has to be
-		// loaded.
-		Bundle args = getArguments();
-		if (args != null) {
-			int solvingAttemptId = args.getInt(BUNDLE_KEY_SOLVING_ATTEMPT_ID);
-
-			mGrid = new Grid();
-			if (mGrid.load(solvingAttemptId)) {
-				setNewGrid(mGrid);
-			}
+		// Load the solving attempt which was set as to be loaded as soon as the
+		// fragment views are created.
+		if (mSolvingAttemptIdToBeLoadedOnCreateViews >= 0) {
+			loadSolvingAttempt(mSolvingAttemptIdToBeLoadedOnCreateViews);
 		}
 
 		return mRootView;
@@ -520,6 +516,33 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 			}
 		});
+	}
+
+	/**
+	 * Sets the solving attempt which has to be loaded as soon as the fragment
+	 * views have been created.
+	 * 
+	 * @param solvingAttemptId
+	 *            The solvingAttemptId which has to be loaded as soon as the
+	 *            fragment views have been created.
+	 */
+	public void setSolvingAttemptId(int solvingAttemptId) {
+		mSolvingAttemptIdToBeLoadedOnCreateViews = solvingAttemptId;
+	}
+
+	/**
+	 * Loads a solving attempt into the fragment. Can only be called if the
+	 * fragment view were already created.
+	 * 
+	 * @param solvingAttemptId
+	 *            The solvingAttemptId which has to be loaded.
+	 */
+	public void loadSolvingAttempt(int solvingAttemptId) {
+		Grid grid = new Grid();
+		if (grid.load(solvingAttemptId)) {
+			setNewGrid(grid);
+		}
+		mSolvingAttemptIdToBeLoadedOnCreateViews = -1;
 	}
 
 	/**
