@@ -724,7 +724,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager
 				.beginTransaction();
-		fragmentTransaction.replace(R.id.content_frame, mPuzzleFragment);
+		fragmentTransaction.replace(R.id.content_frame, fragment);
 		fragmentTransaction.commit();
 		fragmentManager.executePendingTransactions();
 	}
@@ -733,16 +733,18 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	 * Initializes the puzzle fragment. The archive fragment will be disabled.
 	 */
 	private void initializePuzzleFragment(int solvingAttemptId) {
-		boolean newFragment = (mPuzzleFragment == null);
-
 		// Create a new puzzle fragment
 		if (mPuzzleFragment == null) {
 			mPuzzleFragment = new PuzzleFragment();
-			replaceFragment(mPuzzleFragment);
 
-			// Inform fragment about the solving attempt which has to be loaded
-			// as soon as the view of the fragment are created.
-			mPuzzleFragment.setSolvingAttemptId(solvingAttemptId);
+			if (solvingAttemptId >= 0) {
+				Bundle args = new Bundle();
+				args.putInt(PuzzleFragment.BUNDLE_KEY_SOLVING_ATTEMPT_ID,
+						solvingAttemptId);
+				mPuzzleFragment.setArguments(args);
+			}
+
+			replaceFragment(mPuzzleFragment);
 		} else {
 			// Re-use the current puzzle fragment. The solving attempt should
 			// directly be loaded as the view of this fragment already exists.
@@ -751,11 +753,6 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			// 1. Display an active puzzle fragment
 			// 2. Open a shared puzzle from an email
 			// 3. Choose to play this shared puzzle
-			// or
-			// 1. Log out of google+
-			// 2. Display an active puzzle fragment
-			// 3. Open the leader board sign in fragment
-			// 4. Go back to the puzzle
 			mPuzzleFragment.loadSolvingAttempt(solvingAttemptId);
 		}
 
