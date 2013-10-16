@@ -1,7 +1,5 @@
 package net.mathdoku.plus.storage;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 
 import net.mathdoku.plus.R;
@@ -11,7 +9,6 @@ import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -34,22 +31,6 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 
 	// New revision number
 	private final int mNewVersion;
-
-	// Path and file prefix for revision 111 and prior
-	@SuppressLint("SdCardPath")
-	private static final String PATH_R110 = "/data/data/net.mathdoku.plus/";
-	private static final String GAMEFILE_PREFIX_R110 = "savedgame";
-	private static final String FILENAME_LAST_GAME_R111 = "last_game";
-	private static final String FILENAME_SAVED_GAME_R111 = "saved_game_";
-	private static final String GAMEFILE_EXTENSION_R111 = ".mgf";
-	private static final String PREVIEW_EXTENSION_R111 = ".png";
-	private String[] mGameFilesToBeDeleted;
-
-	// Usage logging (MathDoku v1.96) file prefix
-	@SuppressLint("SdCardPath")
-	private static final String PATH_USAGE_LOGS = "/data/data/net.mathdoku.plus/files/";
-	private static final String USAGE_LOG_PREFIX = "usage_log_r";
-	private String[] mUsageLogFilesToBeDeleted;
 
 	// Solving attempts to be converted
 	ArrayList<Integer> solvingAttemptIds;
@@ -108,21 +89,9 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 		// Remember the activity that started this task.
 		this.mActivity = activity;
 
-		int maxProgressCounter = 0;
-
-		// Determine how much (old) game files and preview files have to be
-		// deleted.
-		mGameFilesToBeDeleted = getGameFilesToBeDeleted();
-		maxProgressCounter += (mGameFilesToBeDeleted == null ? 0
-				: mGameFilesToBeDeleted.length);
-
-		// Determine how much usage log files have to be deleted.
-		mUsageLogFilesToBeDeleted = getUsageLogFilesToBeDeleted();
-		maxProgressCounter += (mUsageLogFilesToBeDeleted == null ? 0
-				: mUsageLogFilesToBeDeleted.length);
-
 		// Determine how many solving attempts in the database have to be
 		// converted.
+		int maxProgressCounter = 0;
 		if ((solvingAttemptIds = new SolvingAttemptDatabaseAdapter()
 				.getAllToBeConverted()) != null) {
 			maxProgressCounter += solvingAttemptIds.size();
@@ -133,12 +102,8 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 			mProgressDialog = new ProgressDialog(mActivity);
 			mProgressDialog
 					.setTitle(R.string.dialog_converting_saved_games_title);
-			mProgressDialog
-					.setMessage(mActivity
-							.getResources()
-							.getString(
-									(mCurrentVersion < 369 ? R.string.dialog_converting_cleanup_v1_message
-											: R.string.dialog_converting_saved_games_message)));
+			mProgressDialog.setMessage(mActivity.getResources().getString(
+					R.string.dialog_converting_saved_games_message));
 			mProgressDialog.setIcon(android.R.drawable.ic_dialog_info);
 			mProgressDialog.setIndeterminate(false);
 			mProgressDialog.setCancelable(false);
@@ -169,22 +134,6 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	@Override
 	protected Void doInBackground(Void... params) {
 		if (mCurrentVersion < mNewVersion) {
-			// Delete preview images
-			if (mCurrentVersion < 305 && mGameFilesToBeDeleted != null
-					&& mGameFilesToBeDeleted.length > 0) {
-				for (String filename : mGameFilesToBeDeleted) {
-					new File(PATH_R110 + filename).delete();
-					publishProgress();
-				}
-			}
-			if (mCurrentVersion < 405 && mUsageLogFilesToBeDeleted != null
-					&& mUsageLogFilesToBeDeleted.length > 0) {
-				for (String filename : mUsageLogFilesToBeDeleted) {
-					new File(PATH_USAGE_LOGS + filename).delete();
-					publishProgress();
-				}
-			}
-
 			// Convert data in SolvingAttempt to newest structure.
 			if (solvingAttemptIds != null) {
 				for (int solvingAttemptId : solvingAttemptIds) {
@@ -251,53 +200,5 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 			mProgressDialog.dismiss();
 			mProgressDialog = null;
 		}
-	}
-
-	/**
-	 * Retrieve all game files and preview images which have to be deleted
-	 * 
-	 * @return An array of filenames in the given directory which have to be
-	 *         deleted.
-	 */
-	private String[] getGameFilesToBeDeleted() {
-		String path = PATH_R110;
-		FilenameFilter filter = new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				if (name.startsWith(GAMEFILE_PREFIX_R110)) {
-					return true;
-				} else if (name.endsWith(GAMEFILE_EXTENSION_R111)
-						|| name.endsWith(PREVIEW_EXTENSION_R111)) {
-					return name.startsWith(FILENAME_SAVED_GAME_R111)
-							|| name.startsWith(FILENAME_LAST_GAME_R111);
-				} else {
-					return false;
-				}
-			}
-		};
-		File dir = new File(path);
-		return (dir == null ? null : dir.list(filter));
-	}
-
-	/**
-	 * Retrieve all usage log files which have to be deleted
-	 * 
-	 * @return An array of filenames in the given directory which have to be
-	 *         deleted.
-	 */
-	private String[] getUsageLogFilesToBeDeleted() {
-		String path = PATH_USAGE_LOGS;
-		FilenameFilter filter = new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				if (name.startsWith(USAGE_LOG_PREFIX)) {
-					return true;
-				} else {
-					return false;
-				}
-			}
-		};
-		File dir = new File(path);
-		return (dir == null ? null : dir.list(filter));
 	}
 }

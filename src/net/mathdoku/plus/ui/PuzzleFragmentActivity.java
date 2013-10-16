@@ -530,7 +530,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	 * no longer described in this dialog. Instead a reference to the web site
 	 * is shown.
 	 */
-	private void openChangesDialog(boolean showLeadInVersion2) {
+	private void openChangesDialog(boolean showLeadIn) {
 		// Get view and put relevant information into the view.
 		LayoutInflater li = LayoutInflater.from(this);
 		View view = li.inflate(R.layout.changelog_dialog, null);
@@ -540,9 +540,9 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		textView.setText(Util.getPackageVersionName() + " (revision "
 				+ Util.getPackageVersionNumber() + ")");
 
-		if (showLeadInVersion2) {
+		if (showLeadIn) {
 			textView = (TextView) view
-					.findViewById(R.id.changelog_lead_in_version_2);
+					.findViewById(R.id.changelog_lead_in);
 			textView.setVisibility(View.VISIBLE);
 		}
 

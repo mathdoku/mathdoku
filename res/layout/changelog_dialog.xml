@@ -12,10 +12,10 @@
         android:paddingRight="10dp" >
 
         <TextView
-            android:id="@+id/changelog_lead_in_version_2"
+            android:id="@+id/changelog_lead_in"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/changelog_lead_in_version_2"
+            android:text="@string/changelog_lead_in"
             android:textSize="@dimen/dialog_text_size_body"
             android:visibility="gone" />
 

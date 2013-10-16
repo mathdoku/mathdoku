@@ -30,8 +30,7 @@
 
     <!-- The title and message for the dialog displayed on the screen while upgrading to new version and saved games have to be converted. -->
     <string name="dialog_converting_saved_games_title">Upgrade auf neue Version wird durchgeführt.</string>
-    <string name="dialog_converting_saved_games_message">Es werden für die neue Version von MathDoku die gespeicherten Spielstände konvertiert (einmalig).</string>
-    <string name="dialog_converting_cleanup_v1_message">Daten von der MathDoku-Version 1 werden aufgeräumt (einmalig).</string>
+    <string name="dialog_converting_saved_games_message">Es werden für die neue Version von MathDoku+ die gespeicherten Spielstände konvertiert (einmalig).</string>
 
     <!-- PUZZLE HELP DIALOG - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -78,8 +77,8 @@
     <!-- The title of the changelog screen. -->
     <string name="changelog_title">Änderungsprotokoll</string>
 
-    <!-- Lead in to version 2 of MathDoku+ in the changes dialog. -->
-    <string name="changelog_lead_in_version_2">xxxxxx</string>
+    <!-- Lead in to version 2 of MathDoku in the changes dialog. -->
+    <string name="changelog_lead_in">In this version the registration of leaderboard scores has been improved.</string>
 
     <!-- The heading and body of the section referring to the list of changes (revision). -->
     <string name="changelog_version_title">Version</string>
