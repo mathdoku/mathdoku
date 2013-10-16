@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Notes for translators: -->
-    <!-- Thank you for your help in translating MathDoku. Please follow guidelines below when -->
+    <!-- Thank you for your help in translating MathDoku+. Please follow guidelines below when -->
     <!-- translating this file. -->
     <!-- 1. Do not alter the order in which strings are sorted. We try to keep the same order in all languages -->
     <!-- 2. Do not remove comments as they might be useful for future maintenance. -->
@@ -37,7 +37,7 @@
 
 
     <!-- The lead in text at top of the help dialog. -->
-    <string name="puzzle_help_dialog_leadin">Danke, dass Sie MathDoku für Android installiert haben.</string>
+    <string name="puzzle_help_dialog_leadin">Danke, dass Sie MathDoku+ für Android installiert haben.</string>
 
     <!-- The title for the help section. -->
     <string name="puzzle_help_dialog_help_section_title">Hilfe</string>
@@ -78,8 +78,8 @@
     <!-- The title of the changelog screen. -->
     <string name="changelog_title">Änderungsprotokoll</string>
 
-    <!-- Lead in to version 2 of MathDoku in the changes dialog. -->
-    <string name="changelog_lead_in_version_2">Wilkommen zur Version 2 von MathDoku. Neue Funktionen wie das Erstellen von Statistiken, ein Archiv und die Möglichkeit ein Spiel mit Freunden zu teilen wurden hinzugefügt. Spielstände der Version 1 von MathDoku werden nicht konvertiert. Spielen Sie ein paar einfache Spiele, um sich an die neue Benutzeroberfläche zu gewöhnen. Wir hoffen, dass Sie an der neuen Version von MathDoku Gefallen finden werden.</string>
+    <!-- Lead in to version 2 of MathDoku+ in the changes dialog. -->
+    <string name="changelog_lead_in_version_2">xxxxxx</string>
 
     <!-- The heading and body of the section referring to the list of changes (revision). -->
     <string name="changelog_version_title">Version</string>
@@ -100,7 +100,7 @@
     <!-- Title and message for the "Sign in to Google+" dialog which explains the reasons why the use should sign in to Google+. -->
     <!-- TODO -->
     <string name="google_plus_login_dialog_title">Sign in with Google+</string>
-    <string name="google_plus_login_dialog_message">Playing Mathdoku is great fun. But even better then playing alone, is to compete for the fastest Mathdoku+ game with others arounds the globe or just with a group of friends.\n\nIf you want to rank your fastest games or to view the current leaderboards you have to sign in with Google+ one time only. You can sign out via the actions menu in case you no longer want to submit your top scores.\n\nNote: only games in which no cheats have been used, will be submitted to the leaderboards.</string>
+    <string name="google_plus_login_dialog_message">Playing MathDoku+ is great fun. But even better then playing alone, is to compete for the fastest Mathdoku+ game with others arounds the globe or just with a group of friends.\n\nIf you want to rank your fastest games or to view the current leaderboards you have to sign in with Google+ one time only. You can sign out via the actions menu in case you no longer want to submit your top scores.\n\nNote: only games in which no cheats have been used, will be submitted to the leaderboards.</string>
     <string name="google_plus_login_hide_till_next_top_score_achieved">Do not show again till a new top score is achieved</string>
 
     <!-- ACTION BAR ITEMS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -211,7 +211,7 @@
 
     <!-- The title and summary of the "full screen" option. This option hides the Android notification bar. -->
     <string name="puzzle_setting_full_screen_title">Vollbild</string>
-    <string name="puzzle_setting_full_screen_summary">Spielen Sie MathDoku im Vollbildmodus. Die Ereignisleiste von Android wird dabei ausgeblendet.</string>
+    <string name="puzzle_setting_full_screen_summary">Spielen Sie MathDoku+ im Vollbildmodus. Die Ereignisleiste von Android wird dabei ausgeblendet.</string>
 
     <!-- The title and summary of the "wake lock" option. This option highlights cells with digits already in the row or column. -->
     <string name="puzzle_setting_wake_lock_title">Automatisches Abschalten</string>
@@ -278,22 +278,22 @@
     <!-- DIALOG FEEDBACK - - - - - - - - - - - - - - - - - - - - - - -->
 
 
-    <!-- Dialog for sending feedback on MathDoku via email. -->
+    <!-- Dialog for sending feedback on MathDoku+ via email. -->
     <string name="dialog_send_feedback_title">Feedback geben</string>
     <string name="dialog_send_feedback_text_1">Danke, dass Sie sich bereit erklärt haben uns Feedback zu geben.\n\nBitte beachten Sie, dass diese App gratis und ohne Werbung ist. Daher verdienen wir kein Geld mit dieser App. Diese App wird von ein paar Enthusiasten in deren Freizeit entwickelt. Wir sind also nicht verpflichtet neue Funktionalitäten hinzuzufügen und Fehler zu entfernen.\nBitte geben Sie uns konstruktives Feedback.\n\nWir bevorzugen es Feedback zu Problemen oder Anfragen bezüglich neuer Funktionen über den folgenden Link zu erhalten:</string>
     <string name="dialog_send_feedback_text_2">Alternativ können Sie auch eine E-Mail an uns senden, wenn Sie dies bevorzugen. Beachten Sie bitte, dass nur Anfragen auf englisch bearbeitet werden können.</string>
     <string name="dialog_send_feedback_positive_button">E-Mail senden</string>
 
     <!-- Default subject and message for feedback email. -->
-    <string name="feedback_email_subject">Feedback zu MathDoku</string>
+    <string name="feedback_email_subject">Feedback zu MathDoku+</string>
     <string name="feedback_email_body">[Bitte entfernen Sie den Text und schreiben Sie ihr Feedback hier. Diese E-Mail beinhaltet ein Bildschirmfoto zu dem Zeitpunkt kurz bevor Sie \"Feedback geben\" auswählen. Sie können dieses Bildschirmfoto auch entfernen, falls es nicht relevant für Ihr Feedback ist. Der übrige Anhang beinhaltet Informationen über die App, die Größe Ihres Android-Geräts und Daten zu den Einstellungen. Diese Information kann sehr hilfreich für uns sein, um das Feedback zu verstehen. Sie können diese Informationen auch von der E-Mail löschen.]</string>
 
     <!-- Title of dialog used to choose the appropriate action for sending the usage log. -->
-    <string name="feedback_choose_action_title">MathDoku-link senden</string>
+    <string name="feedback_choose_action_title">MathDoku+ link senden</string>
 
     <!-- Dialog for invalid share url. -->
-    <string name="dialog_invalid_share_url_title">Ungültiger MathDoku-Link</string>
-    <string name="dialog_invalid_share_url_body">Leider ist dieser Link zu dem MathDoku-Spiel nicht gültig. Bitte kontaktieren Sie den Absender des Links und fordern Sie einen neuen Link von ihm an.</string>
+    <string name="dialog_invalid_share_url_title">Ungültiger MathDoku+ Link</string>
+    <string name="dialog_invalid_share_url_body">Leider ist dieser Link zu dem MathDoku+ Spiel nicht gültig. Bitte kontaktieren Sie den Absender des Links und fordern Sie einen neuen Link von ihm an.</string>
 
     <!-- PLAYING HINT - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -319,7 +319,7 @@
 
     <!-- Title, and text for tip "Order of values in cage" -->
     <string name="dialog_tip_order_of_values_in_cage_title">Werte einer Zelle</string>
-    <string name="dialog_tip_order_of_values_in_cage_text">Die Reihenfolge in der die Werte in den Zellen einer Box angeordnet sind, ist für das MathDoku-Rätsel nicht relevant. Die Ergebnisse von den Boxen \"2 &#8212; 3\"  und \"3 &#8212; 2\" sind beide Male gleich 1. Der nachfolgende Raster ist demnach gültig.</string>
+    <string name="dialog_tip_order_of_values_in_cage_text">Die Reihenfolge in der die Werte in den Zellen einer Box angeordnet sind, ist für das MathDoku++ Rätsel nicht relevant. Die Ergebnisse von den Boxen \"2 &#8212; 3\"  und \"3 &#8212; 2\" sind beide Male gleich 1. Der nachfolgende Raster ist demnach gültig.</string>
 
     <!-- Title, and text for tip "Cheat which reveals the value of a cell". Note "%1$s" in the text will be replaced with an amount and units (e.d. "20 seconds" or "5 minutes"). -->
     <string name="dialog_tip_cheat_reveal_value_title">Cheat: Wert verraten</string>
@@ -343,7 +343,7 @@
 
     <!-- Title, and text for tip "Statistics" which explains about this new navigation option. -->
     <string name="dialog_tip_statistics_title">Statistik</string>
-    <string name="dialog_tip_statistics_text">Für jedes Rätsel, dass Sie gespielt haben wurden statistische Daten gesammelt. Sie können die Statistik nur zum Betrachten vergangener Resultate verwenden oder um ihre Technik zur Lösung eines Rätsels zu verbessern.\n\nSie können die Statistik aus dem Navigationsmenü herus öffnen. Das Navigationsmenü wird durch Berühren des MathDoku Logos geöffnet.</string>
+    <string name="dialog_tip_statistics_text">Für jedes Rätsel, dass Sie gespielt haben wurden statistische Daten gesammelt. Sie können die Statistik nur zum Betrachten vergangener Resultate verwenden oder um ihre Technik zur Lösung eines Rätsels zu verbessern.\n\nSie können die Statistik aus dem Navigationsmenü herus öffnen. Das Navigationsmenü wird durch Berühren des MathDoku+ Logos geöffnet.</string>
 
     <!-- Title, and text for tip "Duplicate value" which gives explanation of the game rule which was violated. -->
     <string name="dialog_tip_duplicate_value_title">Doppelter Wert</string>
@@ -355,7 +355,7 @@
 
     <!-- Title, and text for tip "ArchiveAvailable" which explains about this new navigation option. -->
     <string name="dialog_tip_archive_available_title">Archiv verfügbar</string>
-    <string name="dialog_tip_archive_available_text">Jedes Spiel, dass Sie generiert haben, wird im \"Archiv\" abgespeichert. Das \"Archiv\" kann dazu benutzt werden, um die alten Rätsel anzusehen.\n\nSie können die Statistik aus dem Navigationsmenü herus öffnen. Das Navigationsmenü wird durch Berühren des MathDoku Logos geöffnet.</string>
+    <string name="dialog_tip_archive_available_text">Jedes Spiel, dass Sie generiert haben, wird im \"Archiv\" abgespeichert. Das \"Archiv\" kann dazu benutzt werden, um die alten Rätsel anzusehen.\n\nSie können die Statistik aus dem Navigationsmenü herus öffnen. Das Navigationsmenü wird durch Berühren des MathDoku+ Logos geöffnet.</string>
 
     <!-- Title, and text for tip "Copy cell values" -->
     <!-- TODO -->

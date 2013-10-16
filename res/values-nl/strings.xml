@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Notes for translators: -->
-    <!-- Thank you for your help in translating MathDoku. Please follow guidelines below when -->
+    <!-- Thank you for your help in translating MathDoku+. Please follow guidelines below when -->
     <!-- translating this file. -->
     <!-- 1. Do not alter the order in which strings are sorted. We try to keep the same order in all languages -->
     <!-- 2. Do not remove comments as they might be useful for future maintenance. -->
@@ -37,7 +37,7 @@
 
 
     <!-- The lead in text at top of the help dialog. -->
-    <string name="puzzle_help_dialog_leadin">Bedankt voor het installeren van MathDoku voor Android.</string>
+    <string name="puzzle_help_dialog_leadin">Bedankt voor het installeren van MathDoku+ voor Android.</string>
 
     <!-- The title for the help section. -->
     <string name="puzzle_help_dialog_help_section_title">Help</string>
@@ -62,7 +62,7 @@
     <!-- The contributor title in the help screen. -->
     <string name="puzzle_help_dialog_contributors_section_title">Ontwikkelaars</string>
     <string name="puzzle_help_dialog_contributors_mathdoku_plus_section_title">Ontwikkelaars Mathdoku+</string>
-    <string name="puzzle_help_dialog_contributors_mathdoku_plus_section_body">MathDoku+ is een afsplitsing van Mathdoku versie 2.0.1. Deze afsplitsing wordt onderhouden door Paul Dingemans die tevens de hoofdontwikkelaar was van de Mathdoku versies 1.96 (gepubliceerd in mei 2013) en 2.0.0 (gepubliceerd in september 2013). Mathdoku+ heeft een eigen ontwikkelingsplan.</string>
+    <string name="puzzle_help_dialog_contributors_MathDoku_plus_section_body">MathDoku+ is een afsplitsing van Mathdoku versie 2.0.1. Deze afsplitsing wordt onderhouden door Paul Dingemans die tevens de hoofdontwikkelaar was van de Mathdoku versies 1.96 (gepubliceerd in mei 2013) en 2.0.0 (gepubliceerd in september 2013). Mathdoku+ heeft een eigen ontwikkelingsplan.</string>
     <string name="puzzle_help_dialog_contributors_mathdoku_section_title">Ontwikkelaars Mathdoku (origineel)</string>
     <string name="puzzle_help_dialog_contributors_mathdoku_section_body">MathDoku is initieel ontwikkeld door Ben Buxton. Bijdragen zijn gemaakt door: Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul, Christoph Steindl en Alexander Tesfamichael. Tevens willen we iedereen bedanken die fouten en verbeteringen heeft gemeld.</string>
 
@@ -76,7 +76,7 @@
     <string name="changelog_title">Aanpassingen</string>
 
     <!-- Lead in to version 2 of MathDoku in the changes dialog. -->
-    <string name="changelog_lead_in_version_2">Welkom bij versie 2 van MathDoku. Gave nieuwe functies zoals statistieken, een archief en het delen van puzzels zijn toegevoegd. We hebben er voor gekozen om opgeslagen puzzels van versie 1 van MathDoku niet te converteren. Speel eerst een aantal eenvoudige puzzels om aan de nieuwe besturing te wennen. We hopen dat je deze nieuwe versie waardeert.</string>
+    <string name="changelog_lead_in_version_2">xxxxxx</string>
 
     <!-- The heading and body of the section referring to the list of changes (revision). -->
     <string name="changelog_version_title">Versie</string>
@@ -96,7 +96,7 @@
 
     <!-- Title and message for the "Sign in to Google+" dialog which explains the reasons why the use should sign in to Google+. -->
     <string name="google_plus_login_dialog_title">Log in met Google+</string>
-    <string name="google_plus_login_dialog_message">Mathdoku spelen is erg leuk. Maar het is nog leuker om te stijden om het klassement van de snelste Mathdoku+ puzzel met andere spelers in de wereld of met een groep vrienden.\n\nAls je je snelste puzzels in wil sturen voor het klassement of om de klassementen te bekijen dan moet je eenmalig inloggen met Google+. Je kan uitloggen via het actiemenu in het geval dat je niet langer meer je topscore wil insturen.\n\nlet op: alleen puzzels waarin je niet hebt vals gespeeld, worden ingestuurd voor het klassement.</string>
+    <string name="google_plus_login_dialog_message">MathDoku+ spelen is erg leuk. Maar het is nog leuker om te stijden om het klassement van de snelste Mathdoku+ puzzel met andere spelers in de wereld of met een groep vrienden.\n\nAls je je snelste puzzels in wil sturen voor het klassement of om de klassementen te bekijen dan moet je eenmalig inloggen met Google+. Je kan uitloggen via het actiemenu in het geval dat je niet langer meer je topscore wil insturen.\n\nlet op: alleen puzzels waarin je niet hebt vals gespeeld, worden ingestuurd voor het klassement.</string>
     <string name="google_plus_login_hide_till_next_top_score_achieved">Niet meer tonen totdat een nieuw top score is behaald.</string>
 
     <!-- ACTION BAR ITEMS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -270,22 +270,22 @@
     <!-- DIALOG FEEDBACK - - - - - - - - - - - - - - - - - - - - - - -->
 
 
-    <!-- Dialog for sending feedback on MathDoku via email. -->
+    <!-- Dialog for sending feedback on MathDoku+ via email. -->
     <string name="dialog_send_feedback_title">Geef feedback</string>
-    <string name="dialog_send_feedback_text_1">Fantastisch dat je bereid bent om feedback te geven op MathDoku.\n\nHerinner je alsjeblieft dat dit een gratis spel zonder advertenties is. We verdienen dus geen geld met deze app. Deze app wordt ontwikkeld door enthousiastelingen in hun vrije tijd. We zijn op geen enkele manier verplicht om verzoeken in te bouwen of om fouten op te lossen.\nGeef alsjeblieft constructieve feedback zonder beledigend te zijn.\n\nWe geven er de voorkeur aan om feedback te ontvangen via de onderstaande link:</string>
+    <string name="dialog_send_feedback_text_1">Fantastisch dat je bereid bent om feedback te geven op MathDoku+.\n\nHerinner je alsjeblieft dat dit een gratis spel zonder advertenties is. We verdienen dus geen geld met deze app. Deze app wordt ontwikkeld door enthousiastelingen in hun vrije tijd. We zijn op geen enkele manier verplicht om verzoeken in te bouwen of om fouten op te lossen.\nGeef alsjeblieft constructieve feedback zonder beledigend te zijn.\n\nWe geven er de voorkeur aan om feedback te ontvangen via de onderstaande link:</string>
     <string name="dialog_send_feedback_text_2">\nMaar je kunt ook een email sturen als dat handiger is voor je. We nemen alleen verzoeken in behandeling die geschreven zijn in het Engels.</string>
     <string name="dialog_send_feedback_positive_button">Stuur email</string>
 
     <!-- Default subject and message for feedback email. -->
-    <string name="feedback_email_subject">Feedback op MathDoku</string>
+    <string name="feedback_email_subject">Feedback op MathDoku+</string>
     <string name="feedback_email_body">[Verwijderd alsjeblieft deze tekst en type hier je feedback. Deze email bevat een afdruk van het scherm vlak voordat je koos voor \'Geef feedback\'. Je kan deze schermafdruk verwijderen als het niet van belang is voor je feedback. De andere bijlage bevat enkele gegevens over de app, de afmetingen van je toestel en de waarden van je instellingen. Deze informatie kan behulpzaam zijn bij het begrijpen van je feedback maar je bent vrij om deze te verwijderen.]</string>
 
     <!-- Title of dialog used to choose the appropriate action for sending the usage log. -->
-    <string name="feedback_choose_action_title">MathDoku puzzel delen</string>
+    <string name="feedback_choose_action_title">MathDoku+ puzzel delen</string>
 
     <!-- Dialog for invalid share url. -->
-    <string name="dialog_invalid_share_url_title">Ongeldige MathDoku link</string>
-    <string name="dialog_invalid_share_url_body">Sorry, deze link naar de MathDoku puzzel is niet geldig. Neem alsjeblieft contact op met de verzender van deze link en vraag om een nieuwe link te sturen.</string>
+    <string name="dialog_invalid_share_url_title">Ongeldige MathDoku+ link</string>
+    <string name="dialog_invalid_share_url_body">Sorry, deze link naar de MathDoku+ puzzel is niet geldig. Neem alsjeblieft contact op met de verzender van deze link en vraag om een nieuwe link te sturen.</string>
 
     <!-- PLAYING HINT - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -311,7 +311,7 @@
 
     <!-- Title, text, drawable for tip "Order of values in cage" -->
     <string name="dialog_tip_order_of_values_in_cage_title">Cel waarden</string>
-    <string name="dialog_tip_order_of_values_in_cage_text">De volgorde van de getallen in de cellen is niet belangrijk in een MathDoku puzzel. De resultaten van de berekeningen \"2 &#8212; 3\"  en \"3 &#8212; 2\" zijn beide gelijk aan 1. De waarden in de onderstaande afbeelding zijn dus correct.</string>
+    <string name="dialog_tip_order_of_values_in_cage_text">De volgorde van de getallen in de cellen is niet belangrijk in een MathDoku+ puzzel. De resultaten van de berekeningen \"2 &#8212; 3\"  en \"3 &#8212; 2\" zijn beide gelijk aan 1. De waarden in de onderstaande afbeelding zijn dus correct.</string>
 
     <!-- Title, and text for tip "Cheat which reveals the value of a cell". Note "%1$s" in the text will be replaced with an amount and units (e.d. "20 seconds" or "5 minutes"). -->
     <string name="dialog_tip_cheat_reveal_value_title">Vals spel: waarde onthuld</string>
@@ -335,7 +335,7 @@
 
     <!-- Title, and text for tip "Statistics" which explains about this new menu option. -->
     <string name="dialog_tip_statistics_title">Statistieken</string>
-    <string name="dialog_tip_statistics_text">Voor elke puzzel die je hebt gespeeld, worden statistieken bijgehouden. Je kunt de statistieken gebruiken om je historische resultaten te bekijken. Je kunt de statistieken ook gebruiken om je oplossingsstrategieën te verbeteren.\n\nJe kan de statistieken openen vanuit het navigatie menu. Het navigatie menu kan worden geopend door het MathDoku aan te tikken.</string>
+    <string name="dialog_tip_statistics_text">Voor elke puzzel die je hebt gespeeld, worden statistieken bijgehouden. Je kunt de statistieken gebruiken om je historische resultaten te bekijken. Je kunt de statistieken ook gebruiken om je oplossingsstrategieën te verbeteren.\n\nJe kan de statistieken openen vanuit het navigatie menu. Het navigatie menu kan worden geopend door het MathDoku+ aan te tikken.</string>
 
     <!-- Title, and text for tip "Duplicate value" which gives explanation of the game rule which was violated. -->
     <string name="dialog_tip_duplicate_value_title">Duplicaat waarde</string>
@@ -347,7 +347,7 @@
 
     <!-- Title, and text for tip "ArchiveAvailable" which explains about this new navigation option. -->
     <string name="dialog_tip_archive_available_title">Archief beschikbaar</string>
-    <string name="dialog_tip_archive_available_text">Elke puzzel die je hebt aangemaakt wordt bewaard in het \'Archief\'. Het \'Archief\' kan worden gebruikt om puzzels te bekijken die je eerder hebt gespeeld.\n\nJe kan het archief starten vanuit het navigatie menu. Het navigatie menu kan worden geopend door het MathDoku aan te tikken.</string>
+    <string name="dialog_tip_archive_available_text">Elke puzzel die je hebt aangemaakt wordt bewaard in het \'Archief\'. Het \'Archief\' kan worden gebruikt om puzzels te bekijken die je eerder hebt gespeeld.\n\nJe kan het archief starten vanuit het navigatie menu. Het navigatie menu kan worden geopend door het MathDoku+ aan te tikken.</string>
 
     <!-- Title, and text for tip "Copy cell values" -->
     <string name="dialog_tip_copy_cell_values_title">Kopieer cel waarden</string>

@@ -223,7 +223,7 @@ public class DevelopmentHelper {
 					puzzleFragmentActivity);
 			builder.setTitle("Delete all data and preferences?")
 					.setMessage(
-							"All data and preferences for MathDoku will be deleted.")
+							"All data and preferences for MathDoku+ will be deleted.")
 					.setNegativeButton("Cancel",
 							new DialogInterface.OnClickListener() {
 								@Override

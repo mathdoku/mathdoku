@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Notes for translators: -->
-    <!-- Thank you for your help in translating MathDoku. Please follow guidelines below when -->
+    <!-- Thank you for your help in translating MathDoku+. Please follow guidelines below when -->
     <!-- translating this file. -->
     <!-- 1. Do not alter the order in which strings are sorted. We try to keep the same order in all languages -->
     <!-- 2. Do not remove comments as they might be useful for future maintenance. -->
@@ -37,7 +37,7 @@
 
 
     <!-- The lead in text at top of the help dialog. -->
-    <string name="puzzle_help_dialog_leadin">Thanks for installing MathDoku for Android.</string>
+    <string name="puzzle_help_dialog_leadin">Thanks for installing MathDoku+ for Android.</string>
 
     <!-- The title for the help section. -->
     <string name="puzzle_help_dialog_help_section_title">Help</string>
@@ -76,7 +76,7 @@
     <string name="changelog_title">Changelog</string>
 
     <!-- Lead in to version 2 of MathDoku in the changes dialog. -->
-    <string name="changelog_lead_in_version_2">Welcome to version 2 of MathDoku. New cool features like statistics, an archive and game sharing have been added. We have chosen not to convert games stored with version 1 of MathDoku. Please play a few simple games first to get accustomed to the new way of playing. We hope you will enjoy this new version.</string>
+    <string name="changelog_lead_in_version_2">xxxxxx</string>
 
     <!-- The heading and body of the section referring to the list of changes (revision). -->
     <string name="changelog_version_title">Version</string>
@@ -96,7 +96,7 @@
 
     <!-- Title and message for the "Sign in to Google+" dialog which explains the reasons why the use should sign in to Google+. -->
     <string name="google_plus_login_dialog_title">Sign in with Google+</string>
-    <string name="google_plus_login_dialog_message">Playing Mathdoku is great fun. But even better then playing alone, is to compete for the fastest Mathdoku+ game with others arounds the globe or just with a group of friends.\n\nIf you want to rank your fastest games or to view the current leaderboards you have to sign in with Google+ one time only. You can sign out via the actions menu in case you no longer want to submit your top scores.\n\nNote: only games in which no cheats have been used, will be submitted to the leaderboards.</string>
+    <string name="google_plus_login_dialog_message">Playing MathDoku+ is great fun. But even better then playing alone, is to compete for the fastest Mathdoku+ game with others arounds the globe or just with a group of friends.\n\nIf you want to rank your fastest games or to view the current leaderboards you have to sign in with Google+ one time only. You can sign out via the actions menu in case you no longer want to submit your top scores.\n\nNote: only games in which no cheats have been used, will be submitted to the leaderboards.</string>
     <string name="google_plus_login_hide_till_next_top_score_achieved">Do not show again till a new top score is achieved</string>
 
     <!-- ACTION BAR ITEMS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -270,22 +270,22 @@
     <!-- DIALOG FEEDBACK - - - - - - - - - - - - - - - - - - - - - - -->
 
 
-    <!-- Dialog for sending feedback on MathDoku via email. -->
+    <!-- Dialog for sending feedback on MathDoku+ via email. -->
     <string name="dialog_send_feedback_title">Send feedback</string>
-    <string name="dialog_send_feedback_text_1">Really great that you are willing to give feedback on MathDoku.\n\nPlease remember this is a free game without any advertisements. So we are not earning any money on this app. This game is just developed by enthusiasts in their spare time. We not are obliged in any way to build new features or solve bugs.\nPlease give constructive feedback without being offensive.\n\nWe prefer to receive feedback on issues or feature requests via the link below:</string>
+    <string name="dialog_send_feedback_text_1">Really great that you are willing to give feedback on MathDoku+.\n\nPlease remember this is a free game without any advertisements. So we are not earning any money on this app. This game is just developed by enthusiasts in their spare time. We not are obliged in any way to build new features or solve bugs.\nPlease give constructive feedback without being offensive.\n\nWe prefer to receive feedback on issues or feature requests via the link below:</string>
     <string name="dialog_send_feedback_text_2">\nBut you can also sent an email if that is more comfortable for you. Note, we can only address issues written in English.</string>
     <string name="dialog_send_feedback_positive_button">Send email</string>
 
     <!-- Default subject and message for feedback email. -->
-    <string name="feedback_email_subject">Feedback on MathDoku</string>
+    <string name="feedback_email_subject">Feedback on MathDoku+</string>
     <string name="feedback_email_body">[Please remove this text and enter your feedback here. This email message contains a screendump of the screen just before you chose \'Send feedback\'. You can remove this screendump if it is not relevant for your feedback. The other attachment contains some basic details about the app and the size of your device and the value of the settings and preferences. This information can be helpful for us to understand your feedback but you\'re free to remove it.]</string>
 
     <!-- Title of dialog used to choose the appropriate action for sending the usage log. -->
-    <string name="feedback_choose_action_title">Share a MathDoku game</string>
+    <string name="feedback_choose_action_title">Share a MathDoku+ game</string>
 
     <!-- Dialog for invalid share url. -->
-    <string name="dialog_invalid_share_url_title">Invalid MathDoku link</string>
-    <string name="dialog_invalid_share_url_body">Sorry, this link to the MathDoku puzzle is not valid. Please contact the sender of the link and request a new link to be sent.</string>
+    <string name="dialog_invalid_share_url_title">Invalid MathDoku+ link</string>
+    <string name="dialog_invalid_share_url_body">Sorry, this link to the MathDoku+ puzzle is not valid. Please contact the sender of the link and request a new link to be sent.</string>
 
     <!-- PLAYING HINT - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -311,7 +311,7 @@
 
     <!-- Title, and text for tip "Order of values in cage" -->
     <string name="dialog_tip_order_of_values_in_cage_title">Cell values</string>
-    <string name="dialog_tip_order_of_values_in_cage_text">The order of values in the cells of the cage is not relevant in a MathDoku puzzle. The results of cages \"2 &#8212; 3\"  and \"3 &#8212; 2\" both equal 1. The entire grid below is therefore valid.</string>
+    <string name="dialog_tip_order_of_values_in_cage_text">The order of values in the cells of the cage is not relevant in a MathDoku+ puzzle. The results of cages \"2 &#8212; 3\"  and \"3 &#8212; 2\" both equal 1. The entire grid below is therefore valid.</string>
 
     <!-- Title, and text for tip "Cheat which reveals the value of a cell". Note "%1$s" in the text will be replaced with an amount and units (e.d. "20 seconds" or "5 minutes"). -->
     <string name="dialog_tip_cheat_reveal_value_title">Cheat: reveal value</string>
@@ -335,7 +335,7 @@
 
     <!-- Title, and text for tip "Statistics" which explains about this new navigation option. -->
     <string name="dialog_tip_statistics_title">Statistics</string>
-    <string name="dialog_tip_statistics_text">For each game you play, some statistics are collected. You can use the statistics just to view your historic results and you can use the statistics to improve your solving techniques.\n\nYou can view the statistics from the navigation menu. The navigation menu can be opened by tapping the MathDoku icon.</string>
+    <string name="dialog_tip_statistics_text">For each game you play, some statistics are collected. You can use the statistics just to view your historic results and you can use the statistics to improve your solving techniques.\n\nYou can view the statistics from the navigation menu. The navigation menu can be opened by tapping the MathDoku+ icon.</string>
 
     <!-- Title, and text for tip "Duplicate value" which gives explanation of the game rule which was violated. -->
     <string name="dialog_tip_duplicate_value_title">Duplicate value</string>
@@ -347,7 +347,7 @@
 
     <!-- Title, and text for tip "ArchiveAvailable" which explains about this new navigation option. -->
     <string name="dialog_tip_archive_available_title">Archive available</string>
-    <string name="dialog_tip_archive_available_text">Each game you have created is stored in the \'Archive\'. The \'Archive\' can be used to review games which you have played before.\n\nYou can view the archive from the navigation menu. The navigation menu can be opened by tapping the MathDoku icon.</string>
+    <string name="dialog_tip_archive_available_text">Each game you have created is stored in the \'Archive\'. The \'Archive\' can be used to review games which you have played before.\n\nYou can view the archive from the navigation menu. The navigation menu can be opened by tapping the MathDoku+ icon.</string>
 
     <!-- Title, and text for tip "Copy cell values" -->
     <string name="dialog_tip_copy_cell_values_title">Copy cell values</string>
