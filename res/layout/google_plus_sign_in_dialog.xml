@@ -1,52 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="10dp"
     android:paddingTop="10dp" >
 
-    <RelativeLayout
+    <ScrollView
+        android:id="@+id/scollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp" >
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:paddingBottom="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp" >
 
         <TextView
             android:id="@+id/dialog_tip_leaderboard_available_text"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:paddingBottom="10dp"
             android:text="@string/google_plus_login_dialog_message"
             android:textSize="@dimen/text_size_default" />
+    </ScrollView>
 
-        <LinearLayout
-            android:layout_width="fill_parent"
+    <CheckBox
+        android:id="@+id/hide_till_next_top_score_achieved_checkbox"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="@string/google_plus_login_hide_till_next_top_score_achieved" >
+
+        <requestFocus />
+    </CheckBox>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:weightSum="2" >
+
+        <!-- NestedWeights are ignored as this layout is rarely displayed. -->
+        <Button
+            android:id="@+id/sign_in_cancel_button"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/dialog_tip_leaderboard_available_text"
-            android:orientation="horizontal"
-            android:weightSum="2" >
+            android:layout_weight="1"
+            android:lines="1"
+            android:paddingLeft="5dp"
+            android:text="@string/dialog_general_button_cancel"
+            android:textSize="@dimen/text_size_default"
+            android:textStyle="bold"
+            tools:ignore="ButtonStyle,NestedWeights" />
 
-            <Button
-                android:id="@+id/sign_in_cancel_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:lines="1"
-                android:paddingLeft="5dp"
-                android:text="@string/dialog_general_button_cancel"
-                android:textSize="@dimen/text_size_default"
-                android:textStyle="bold"
-                tools:ignore="ButtonStyle" />
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/sign_in_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingRight="5dp" />
+    </LinearLayout>
 
-            <com.google.android.gms.common.SignInButton
-                android:id="@+id/sign_in_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingRight="5dp" />
-        </LinearLayout>
-    </RelativeLayout>
-
-</ScrollView>
+</LinearLayout>

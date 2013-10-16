@@ -3,6 +3,8 @@ package net.mathdoku.plus.storage.database;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.grid.Grid;
+import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
+import net.mathdoku.plus.leaderboard.LeaderboardType;
 import net.mathdoku.plus.statistics.CumulativeStatistics;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.statistics.HistoricStatistics;
@@ -71,6 +73,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	// Projection for retrieve the cumulative and historic statistics
 	private static Projection mCumulativeStatisticsProjection = null;
 	private static Projection mHistoricStatisticsProjection = null;
+	private static Projection mTopScoresProjection = null;
 
 	@Override
 	protected String getTableName() {
@@ -835,5 +838,127 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	/**
+	 * Get the top scores for this user per leaderboard.<br>
+	 * Only solving attempts which meet following conditions are taken into
+	 * account:<br>
+	 * - It is the first attempt for a puzzle (replay = 0).<br>
+	 * - No cheats were used to complete the game.<br>
+	 * - The puzzle has been finished.
+	 * 
+	 * @return The number of submit-able scores and the best score per
+	 *         leaderboard type. Null in case of an error.
+	 */
+	public long[][] getTopScores() {
+		// Build projection if not yet done
+		if (mTopScoresProjection == null) {
+			mTopScoresProjection = new Projection();
+
+			// GridSize
+			mTopScoresProjection.put(GridDatabaseAdapter.KEY_GRID_SIZE,
+					GridDatabaseAdapter.TABLE,
+					GridDatabaseAdapter.KEY_GRID_SIZE);
+
+			// Hide operators
+			mTopScoresProjection.put(GridDatabaseAdapter.KEY_HIDE_OPERATORS,
+					GridDatabaseAdapter.TABLE,
+					GridDatabaseAdapter.KEY_HIDE_OPERATORS);
+
+			// Puzzle complexity
+			mTopScoresProjection.put(GridDatabaseAdapter.KEY_PUZZLE_COMPLEXITY,
+					GridDatabaseAdapter.TABLE,
+					GridDatabaseAdapter.KEY_PUZZLE_COMPLEXITY);
+
+			// Number of grids with a score which can be submitted
+			mTopScoresProjection.put(Aggregation.COUNT, TABLE, null);
+
+			// Minimum elapsed time
+			mTopScoresProjection.put(Aggregation.MIN, TABLE, KEY_ELAPSED_TIME);
+		}
+
+		SQLiteQueryBuilder sqliteQueryBuilder = new SQLiteQueryBuilder();
+		sqliteQueryBuilder.setProjectionMap(mTopScoresProjection);
+		sqliteQueryBuilder.setTables(GridDatabaseAdapter.TABLE
+				+ " INNER JOIN "
+				+ TABLE
+				+ " ON "
+				+ GridDatabaseAdapter
+						.getPrefixedColumnName(GridDatabaseAdapter.KEY_ROWID)
+				+ " = " + getPrefixedColumnName(KEY_GRID_ID));
+		String selection = KEY_SOLVED_MANUALLY + " = "
+				+ stringBetweenQuotes(toSQLiteBoolean(true)) + " " + " AND "
+				+ KEY_REPLAY + " = 0 " + " AND " + KEY_CHEAT_PENALTY_TIME
+				+ " = 0 ";
+		String groupBy = GridDatabaseAdapter.KEY_GRID_SIZE + ", "
+				+ GridDatabaseAdapter.KEY_HIDE_OPERATORS + ", "
+				+ GridDatabaseAdapter.KEY_PUZZLE_COMPLEXITY;
+
+		if (DEBUG_SQL) {
+			String sql = sqliteQueryBuilder.buildQuery(
+					mTopScoresProjection.getAllColumnNames(), selection,
+					groupBy, null, null, null);
+			Log.i(TAG, sql);
+		}
+
+		Cursor cursor = null;
+		try {
+			cursor = sqliteQueryBuilder.query(mSqliteDatabase,
+					mTopScoresProjection.getAllColumnNames(), selection, null,
+					groupBy, null, null);
+		} catch (SQLiteException e) {
+			if (cursor != null) {
+				cursor.close();
+			}
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		if (cursor == null || !cursor.moveToFirst()) {
+			// Record can not be processed.
+			return null;
+		}
+
+		// Init top scores
+		long[][] topScores = new long[LeaderboardType.MAX_LEADERBOARDS][2];
+		for (int i = 0; i < topScores.length; i++) {
+			// Number of grids having a score which are (or have been)
+			// submit-able for leaderboard type i
+			topScores[i][0] = 0;
+
+			// The best score for the leaderboard type i
+			topScores[i][1] = Long.MAX_VALUE;
+		}
+		int gridSize;
+		boolean hideOperators;
+		PuzzleComplexity puzzleComplexity;
+		int index;
+		do {
+			gridSize = cursor.getInt(cursor
+					.getColumnIndexOrThrow(GridDatabaseAdapter.KEY_GRID_SIZE));
+			hideOperators = valueOfSQLiteBoolean(cursor
+					.getString(cursor
+							.getColumnIndexOrThrow(GridDatabaseAdapter.KEY_HIDE_OPERATORS)));
+			puzzleComplexity = PuzzleComplexity
+					.valueOf(cursor.getString(cursor
+							.getColumnIndexOrThrow(GridDatabaseAdapter.KEY_PUZZLE_COMPLEXITY)));
+			index = LeaderboardType.getIndex(gridSize, puzzleComplexity,
+					hideOperators);
+			if (index >= 0 && index < topScores.length) {
+				topScores[index][0] = cursor.getLong(cursor
+						.getColumnIndexOrThrow(mTopScoresProjection
+								.getAggregatedKey(Aggregation.COUNT, null)));
+				topScores[index][1] = cursor.getLong(cursor
+						.getColumnIndexOrThrow(mTopScoresProjection
+								.getAggregatedKey(Aggregation.MIN,
+										KEY_ELAPSED_TIME)));
+			}
+		} while (cursor.moveToNext());
+		cursor.close();
+
+		return topScores;
 	}
 }

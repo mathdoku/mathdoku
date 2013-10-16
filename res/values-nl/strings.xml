@@ -97,6 +97,7 @@
     <!-- Title and message for the "Sign in to Google+" dialog which explains the reasons why the use should sign in to Google+. -->
     <string name="google_plus_login_dialog_title">Log in met Google+</string>
     <string name="google_plus_login_dialog_message">Mathdoku spelen is erg leuk. Maar het is nog leuker om te stijden om het klassement van de snelste Mathdoku+ puzzel met andere spelers in de wereld of met een groep vrienden.\n\nAls je je snelste puzzels in wil sturen voor het klassement of om de klassementen te bekijen dan moet je eenmalig inloggen met Google+. Je kan uitloggen via het actiemenu in het geval dat je niet langer meer je topscore wil insturen.\n\nlet op: alleen puzzels waarin je niet hebt vals gespeeld, worden ingestuurd voor het klassement.</string>
+    <string name="google_plus_login_hide_till_next_top_score_achieved">Niet meer tonen totdat een nieuw top score is behaald.</string>
 
     <!-- ACTION BAR ITEMS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

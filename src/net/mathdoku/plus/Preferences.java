@@ -53,6 +53,9 @@ public class Preferences {
 	public final static String ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE = "archive_setting_chart_description_visible";
 	public final static boolean ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT = true;
 
+	public final static String PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE = "puzzle_hide_goole_plus_sign_in_till_next_top_score";
+	public final static boolean PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE_DEFAULT = false;
+
 	// Puzzle input mode settings
 	public final static String PUZZLE_INPUT_MODE_CHANGED_COUNTER = "puzzle_input_mode_changed_counter";
 	public final static int PUZZLE_INPUT_MODE_CHANGED_COUNTER_DEFAULT = 0;
@@ -308,6 +311,13 @@ public class Preferences {
 							PUZZLE_INPUT_MODE_LAST_USED_DEFAULT)
 					.putBoolean(PUZZLE_INPUT_MODE_COPY_ENABLED,
 							PUZZLE_INPUT_MODE_COPY_ENABLED_DEFAULT);
+		}
+		if (previousInstalledVersion < 586 && currentVersion >= 586) {
+			prefeditor
+					.putBoolean(
+							PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE,
+							PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE_DEFAULT);
+
 		}
 
 		// Save
@@ -1076,5 +1086,32 @@ public class Preferences {
 	public boolean isGridInputModeCopyEnabled() {
 		return mSharedPreferences.getBoolean(PUZZLE_INPUT_MODE_COPY_ENABLED,
 				PUZZLE_INPUT_MODE_COPY_ENABLED_DEFAULT);
+	}
+
+	/**
+	 * Checks whether the checkbox "Hide till next top score is achieved"
+	 * checked by default.
+	 * 
+	 * @return True in case checkbox is enabled by default. False otherwise.
+	 */
+	public boolean isHideTillNextTopScoreAchievedChecked() {
+		return mSharedPreferences.getBoolean(
+				PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE,
+				PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE_DEFAULT);
+	}
+
+	/**
+	 * Set whether the checkbox "Hide till next top score is achieved" should be
+	 * checked by default.
+	 * 
+	 * @param checked
+	 *            True in case it is checked by default. False otherwise.
+	 */
+	public void setHideTillNextTopScoreAchievedChecked(boolean checked) {
+		mSharedPreferences
+				.edit()
+				.putBoolean(
+						PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE,
+						checked).apply();
 	}
 }

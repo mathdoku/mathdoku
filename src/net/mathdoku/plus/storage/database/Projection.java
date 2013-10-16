@@ -116,7 +116,7 @@ public class Projection extends HashMap<String, String> {
 	 *            The aggregation to be used.
 	 * @param sourceColumn
 	 *            Name of column on which the aggregation function will be
-	 *            applied.
+	 *            applied. Can be null for aggregation COUNT.
 	 * @return The aggregated key for a given aggregation function and a source
 	 *         column.
 	 */

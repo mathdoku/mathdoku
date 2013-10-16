@@ -12,7 +12,7 @@ import net.mathdoku.plus.grid.InvalidGridException;
 import net.mathdoku.plus.grid.ui.GridInputMode;
 import net.mathdoku.plus.gridGenerating.DialogPresentingGridGenerator;
 import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
-import net.mathdoku.plus.leaderboard.Leaderboard;
+import net.mathdoku.plus.leaderboard.LeaderboardConnector;
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.storage.GameFileConverter;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
@@ -81,7 +81,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	private String[] mNavigationDrawerItems;
 
 	// Reference to the leaderboard
-	private Leaderboard mLeaderboard;
+	private LeaderboardConnector mLeaderboard;
 
 	// Object to save data on a configuration change. Note: for the puzzle
 	// fragment the RetainInstance property is set to true.
@@ -118,7 +118,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		enableDebugLog(Leaderboard.DEBUG, TAG);
+		enableDebugLog(LeaderboardConnector.DEBUG, TAG);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.puzzle_activity_fragment);
 
@@ -395,7 +395,11 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			}
 			return true;
 		case R.id.action_sign_out_google_play_services:
+			// Sign out of Google Play Services
 			signOut();
+
+			// Clear the leaderboard.
+			mLeaderboard = null;
 			return true;
 		case R.id.action_puzzle_settings:
 			startActivity(new Intent(this, PuzzlePreferenceActivity.class));
@@ -1047,7 +1051,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 					}
 				}
 				if (leaderboardStarted == false) {
-					new GooglePlusSignInDialog(PuzzleFragmentActivity.this)
+					new GooglePlusSignInDialog(PuzzleFragmentActivity.this,
+							PuzzleFragmentActivity.this.mMathDokuPreferences)
 							.show();
 				}
 			}
@@ -1213,37 +1218,46 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 	@Override
 	public void onSignInFailed() {
-		// Sign-in on google play services has failed.
-
-		if (mLeaderboard == null) {
-			mLeaderboard = new Leaderboard(this.getResources());
-		}
-		mLeaderboard.signInFailed();
+		// Can not sign in to Google Play Services. For now, nothing is done.
 	}
 
 	@Override
 	public void onSignInSucceeded() {
-		// Sign-in on google play services has succeeded.
+		// Sign-in on Google Play Services has succeeded.
 
-		if (mLeaderboard == null) {
-			mLeaderboard = new Leaderboard(this.getResources());
-		}
+		// Get the game client an attach the content view of the activity.
 		GamesClient gamesClient = getGamesClient();
 		gamesClient.setViewForPopups(findViewById(android.R.id.content));
-		mLeaderboard.signedIn(gamesClient);
+
+		// Set up leaderboard
+		mLeaderboard = new LeaderboardConnector(this, gamesClient);
 	}
 
 	@Override
 	public void onPuzzleSolvedWithoutCheats(int gridSize,
 			PuzzleComplexity puzzleComplexity, boolean hideOperators,
 			long timePlayed) {
+		// Puzzle can not be a replay
+
+		// Check if a new top score is achieved.
+		boolean newTopScore = (mLeaderboard != null && mLeaderboard.isTopScore(
+				gridSize, puzzleComplexity, hideOperators, timePlayed));
+
 		// Submit score to Google+ in case the puzzle was solved without using
 		// cheats.
-		if (mLeaderboard == null) {
-			new GooglePlusSignInDialog(this).show();
+		if (mLeaderboard == null || mLeaderboard.isSignedIn() == false) {
+			// The user is not logged in to Google Plus. Check whether the sign
+			// in dialog should be shown.
+			boolean hideTillNextTopScore = mMathDokuPreferences
+					.isHideTillNextTopScoreAchievedChecked();
+			if (hideTillNextTopScore == false || newTopScore == true) {
+				new GooglePlusSignInDialog(this, mMathDokuPreferences)
+						.displayCheckboxHideTillNextTopScoreAchieved(
+								hideTillNextTopScore).show();
+			}
 		} else {
-			mLeaderboard.onPuzzleSolvedWithoutCheats(gridSize,
-					puzzleComplexity, hideOperators, timePlayed);
+			mLeaderboard.submitScore(gridSize, puzzleComplexity, hideOperators,
+					timePlayed);
 		}
 	}
 }

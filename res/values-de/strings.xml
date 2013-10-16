@@ -98,8 +98,10 @@
 
 
     <!-- Title and message for the "Sign in to Google+" dialog which explains the reasons why the use should sign in to Google+. -->
+    <!-- TODO -->
     <string name="google_plus_login_dialog_title">Sign in with Google+</string>
-    <string name="google_plus_login_dialog_message">Playing Mathdoku is great fun. But even better then playing alone, is to compete for the fastest Mathdoku+ game with others arounds the globe or just with a group of friends.\n\nIf you want to rank your fastest games or to view the current leaderboards you have to sign in with Google+ one time only. You can sign out via the actions menu in case you no longer want to submit your highscores.\n\nNote: only games in which no cheats have been used, will be submitted to the leaderboards.</string>
+    <string name="google_plus_login_dialog_message">Playing Mathdoku is great fun. But even better then playing alone, is to compete for the fastest Mathdoku+ game with others arounds the globe or just with a group of friends.\n\nIf you want to rank your fastest games or to view the current leaderboards you have to sign in with Google+ one time only. You can sign out via the actions menu in case you no longer want to submit your top scores.\n\nNote: only games in which no cheats have been used, will be submitted to the leaderboards.</string>
+    <string name="google_plus_login_hide_till_next_top_score_achieved">Do not show again till a new top score is achieved</string>
 
     <!-- ACTION BAR ITEMS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
