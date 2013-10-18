@@ -1024,6 +1024,11 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
 			if (mNavigationDrawerItems[position].equals(getResources()
+					.getString(R.string.action_bar_subtitle_puzzle_fragment))) {
+				if (mArchiveFragment != null) {
+					showDialogNewGame(true);
+				}
+			} else if (mNavigationDrawerItems[position].equals(getResources()
 					.getString(R.string.action_archive))) {
 				Intent intentArchive = new Intent(PuzzleFragmentActivity.this,
 						ArchiveFragmentActivity.class);
