@@ -1,5 +1,6 @@
 package net.mathdoku.plus;
 
+import java.util.Locale;
 import java.util.Map;
 
 import net.mathdoku.plus.grid.ui.GridInputMode;
@@ -97,11 +98,13 @@ public class Preferences {
 	public final static String PUZZLE_SETTING_FULL_SCREEN = "puzzle_setting_full_screen";
 	public final static boolean PUZZLE_SETTING_FULL_SCREEN_DEFAULT = false;
 
+	public enum PuzzleSettingInputMethod {
+		SWIPE_ONLY, SWIPE_AND_BUTTONS, BUTTONS_ONLY
+	};
+
 	public final static String PUZZLE_SETTING_INPUT_METHOD = "puzzle_setting_input_method";
-	public final static String PUZZLE_SETTING_INPUT_METHOD_SWIPE_ONLY = "swipe_only";
-	public final static String PUZZLE_SETTING_INPUT_METHOD_SWIPE_AND_BUTTONS = "swipe_and_buttons";
-	public final static String PUZZLE_SETTING_INPUT_METHOD_BUTTONS_ONLY = "buttons_only";
-	public final static String PUZZLE_SETTING_INPUT_METHOD_DEFAULT = PUZZLE_SETTING_INPUT_METHOD_SWIPE_ONLY;
+	public final static String PUZZLE_SETTING_INPUT_METHOD_DEFAULT = PuzzleSettingInputMethod.SWIPE_ONLY
+			.toString();
 
 	public final static String PUZZLE_SETTING_MAYBES_DISPLAYED_IN_GRID = "puzzle_setting_maybes_displayed_in_grid";
 	public final static boolean PUZZLE_SETTING_MAYBES_DISPLAYED_IN_GRID_DEFAULT = true;
@@ -317,7 +320,6 @@ public class Preferences {
 					.putBoolean(
 							PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE,
 							PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE_DEFAULT);
-
 		}
 
 		// Save
@@ -1044,9 +1046,29 @@ public class Preferences {
 	/**
 	 * Gets the input method.
 	 */
-	public String getDigitInputMethod() {
-		return mSharedPreferences.getString(PUZZLE_SETTING_INPUT_METHOD,
-				PUZZLE_SETTING_INPUT_METHOD_DEFAULT);
+	public PuzzleSettingInputMethod getDigitInputMethod() {
+		return PuzzleSettingInputMethod.valueOf(mSharedPreferences.getString(
+				PUZZLE_SETTING_INPUT_METHOD,
+				PUZZLE_SETTING_INPUT_METHOD_DEFAULT).toUpperCase(
+				Locale.getDefault()));
+	}
+
+	/**
+	 * Sets the input method.
+	 */
+	public void setDigitInputMethod(boolean enableSwipe, boolean enableButtons) {
+		Editor prefeditor = mSharedPreferences.edit();
+		if (enableSwipe == true && enableButtons == false) {
+			prefeditor.putString(PUZZLE_SETTING_INPUT_METHOD,
+					PuzzleSettingInputMethod.SWIPE_ONLY.toString());
+		} else if (enableSwipe == false && enableButtons == true) {
+			prefeditor.putString(PUZZLE_SETTING_INPUT_METHOD,
+					PuzzleSettingInputMethod.BUTTONS_ONLY.toString());
+		} else {
+			prefeditor.putString(PUZZLE_SETTING_INPUT_METHOD,
+					PuzzleSettingInputMethod.SWIPE_AND_BUTTONS.toString());
+		}
+		prefeditor.apply();
 	}
 
 	/**

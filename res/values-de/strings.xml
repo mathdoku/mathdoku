@@ -93,6 +93,24 @@
     <string name="changelog_issues_title">Fehler und Weiterentwicklungen</string>
     <string name="changelog_issues_body">Bitte melden sie alle Fehler und Anfragen für Weiterenwicklungen mit dem folgenden Link. Nur Anfragen auf Englisch werden behandelt.</string>
 
+    <!-- INPUT METHOD DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- TODO: entire section -->
+
+
+    <!-- The title of the choose input method dialog. -->
+    <string name="choose_input_method_title">Choose input method</string>
+
+    <!-- Lead in to the input method dialog. -->
+    <string name="input_method_lead_in_body">Mathdoku+ supports two different methods of input. Please choose your input method now or try them both at the same time. You can change the input method via the settings menu.</string>
+
+    <!-- Title and body for the swipe only input method. -->
+    <string name="input_method_swipe_explanation_title">Swipe</string>
+    <string name="input_method_swipe_explanation_body">The modern way to select digits using swipe. Touch a cell and swipe towards a digit in the displayed circle to select it. This method allows you to better concentrate on the puzzle as you do not have to look at another part of the screen to select a digit.</string>
+
+    <!-- Title and body for the swipe only input method. -->
+    <string name="input_method_buttons_explanation_title">Buttons</string>
+    <string name="input_method_buttons_explanation_body">The traditional way to select digits by tapping buttons below or on the right side of the puzzle. This method is easier to use when not familiar with swiping and does allow for two handed playing. As of this it is preferred by players who strive for the fastest time to solve a puzzle.</string>
+
     <!-- GOOGLE+ LOG IN DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 

@@ -4,6 +4,7 @@ import net.mathdoku.plus.Cheat;
 import net.mathdoku.plus.Cheat.CheatType;
 import net.mathdoku.plus.GameTimer;
 import net.mathdoku.plus.Preferences;
+import net.mathdoku.plus.Preferences.PuzzleSettingInputMethod;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.grid.CellChange;
 import net.mathdoku.plus.grid.DigitPositionGrid;
@@ -662,8 +663,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			if (mGridPlayerView != null) {
 				mGridPlayerView
 						.setSwipeInputMethodEnabled((mMathDokuPreferences
-								.getDigitInputMethod()
-								.equals(Preferences.PUZZLE_SETTING_INPUT_METHOD_BUTTONS_ONLY) == false));
+								.getDigitInputMethod() != PuzzleSettingInputMethod.BUTTONS_ONLY));
 			}
 		}
 
@@ -1078,8 +1078,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		if (mGridPlayerView != null) {
 			mGridPlayerView
 					.setSwipeInputMethodEnabled((mMathDokuPreferences
-							.getDigitInputMethod()
-							.equals(Preferences.PUZZLE_SETTING_INPUT_METHOD_BUTTONS_ONLY) == false));
+							.getDigitInputMethod() != PuzzleSettingInputMethod.BUTTONS_ONLY));
 		}
 
 		// Set sound effects if applicable
@@ -1158,8 +1157,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	private void setButtonLayout() {
 		// In case the digit buttons are hidden, entering digit can only be done
 		// using swiping.
-		boolean swipeOnly = mMathDokuPreferences.getDigitInputMethod().equals(
-				Preferences.PUZZLE_SETTING_INPUT_METHOD_SWIPE_ONLY);
+		boolean swipeOnly = (mMathDokuPreferences.getDigitInputMethod() == PuzzleSettingInputMethod.SWIPE_ONLY);
 
 		if (mControlsPadBigTableLayout != null) {
 			mControlsPadBigTableLayout.setVisibility(swipeOnly ? View.GONE

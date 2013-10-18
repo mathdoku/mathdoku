@@ -90,6 +90,23 @@
     <string name="changelog_issues_title">Fouten en verzoeken</string>
     <string name="changelog_issues_body">Fouten en wijzigingsverzoeken kun je doorgeven via onze website. Wij nemen alleen Engelstalige verzoeken in behandeling.</string>
 
+    <!-- INPUT METHOD DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The title of the choose input method dialog. -->
+    <string name="choose_input_method_title">Kies invoermethode</string>
+
+    <!-- Lead in to the input method dialog. -->
+    <string name="input_method_lead_in_body">Mathdoku+ ondersteunt twee verschillende methoden voor invoer. Kies alsjeblieft jouw invoermethode nu of probeer ze beide tegelijkertijd. Je kan de invoermethode wijzigen via het menu instellingen.</string>
+
+    <!-- Title and body for the swipe only input method. -->
+    <string name="input_method_swipe_explanation_title">Swipe</string>
+    <string name="input_method_swipe_explanation_body">De moderne manier om getallen te selecteren. Raal een cel aan en veeg in de richting van het getal in de getoonde circel om het te selecteren. Deze methode laat je toe om je te concetreren op de puzzel omdat je niet naar een ander deel van het scherm hoeft te kijken om een getal te selecteren.</string>
+
+    <!-- Title and body for the swipe only input method. -->
+    <string name="input_method_buttons_explanation_title">Knoppen</string>
+    <string name="input_method_buttons_explanation_body">De traditionele manier om getallen te selecteren door knoppen onder of aan de rechterzijde van de puzzel aan te raken. Deze nethode is eenvoudiger in gebruik wanneer je nog niet bent gewend aan swipen en maakt het mogelijk om tweehandig te spelen. Dit is de favoriete manier van selecteren voor spelers die streven naar de snelste oplostijd van een puzzel.</string>
+
     <!-- GOOGLE+ LOG IN DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 

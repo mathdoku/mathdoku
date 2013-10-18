@@ -29,11 +29,12 @@
         <item>@string/input_method_buttons_only</item>
     </string-array>
 
-    <!-- Identifiers associated with element themeTexts. This element may not be translated. -->
+    <!-- Identifiers associated with element themeTexts. This element may not be translated. Values must correspond -->
+    <!-- with values (in uppercases) of enum Preferences.PuzzleSettingInputMethod. -->
     <string-array name="puzzle_setting_input_methods_values_code">
-        <item>swipe_only</item>
-        <item>swipe_and_buttons</item>
-        <item>buttons_only</item>
+        <item>SWIPE_ONLY</item>
+        <item>SWIPE_AND_BUTTONS</item>
+        <item>BUTTONS_ONLY</item>
     </string-array>
 
     <!-- The possible values of the "maxGamesElapsedTimeChart" preference. -->

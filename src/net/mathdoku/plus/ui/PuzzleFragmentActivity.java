@@ -478,17 +478,18 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	/**
 	 * Displays the Help Dialog.
 	 * 
-	 * @param displayLeadIn
-	 *            True to display the welcome message in the help.
+	 * @param cleanInstall
+	 *            True in case the help dialog is displayed after a clean
+	 *            install. False in case of an upgrade.
 	 */
-	private void openHelpDialog(boolean displayLeadIn) {
+	private void openHelpDialog(boolean cleanInstall) {
 		// Get view and put relevant information into the view.
 		LayoutInflater li = LayoutInflater.from(this);
 		View view = li.inflate(R.layout.puzzle_help_dialog, null);
 
 		TextView tv = (TextView) view
 				.findViewById(R.id.puzzle_help_dialog_leadin);
-		tv.setVisibility(displayLeadIn ? View.VISIBLE : View.GONE);
+		tv.setVisibility(cleanInstall ? View.VISIBLE : View.GONE);
 
 		tv = (TextView) view.findViewById(R.id.dialog_help_version_body);
 		tv.setText(Util.getPackageVersionName() + " (revision "
@@ -498,7 +499,9 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		tv.setText(Util.PROJECT_HOME);
 
 		final PuzzleFragmentActivity puzzleFragmentActivity = this;
-		new AlertDialog.Builder(puzzleFragmentActivity)
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+				puzzleFragmentActivity);
+		alertDialogBuilder
 				.setTitle(
 						getResources().getString(R.string.application_name)
 								+ (Config.mAppMode == AppMode.DEVELOPMENT ? " r"
@@ -508,21 +511,25 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 										.getString(R.string.action_help))
 				.setIcon(R.drawable.icon)
 				.setView(view)
-				.setNeutralButton(R.string.puzzle_help_dialog_neutral_button,
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int whichButton) {
-								puzzleFragmentActivity.openChangesDialog(false);
-							}
-						})
 				.setNegativeButton(R.string.dialog_general_button_close,
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
 							}
-						}).show();
+						});
+		if (cleanInstall == false) {
+			alertDialogBuilder.setNeutralButton(
+					R.string.puzzle_help_dialog_neutral_button,
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog,
+								int whichButton) {
+							puzzleFragmentActivity.openChangesDialog(false);
+						}
+					});
+		}
+		alertDialogBuilder.show();
 	}
 
 	/**
@@ -541,8 +548,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 				+ Util.getPackageVersionNumber() + ")");
 
 		if (showLeadIn) {
-			textView = (TextView) view
-					.findViewById(R.id.changelog_lead_in);
+			textView = (TextView) view.findViewById(R.id.changelog_lead_in);
 			textView.setVisibility(View.VISIBLE);
 		}
 
@@ -631,18 +637,12 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			// At clean install display the create-new-game-dialog and on top of
 			// it show the help-dialog.
 			showDialogNewGame(false);
+			openInputMethodDialog();
 			openHelpDialog(true);
-		} else if (previousInstalledVersion <= 286) {
-			// On upgrade from a MathDoku version 1.x revision to a MathDoku
-			// version 2.x revision the history and the last played game are
-			// lost. Show the create-new-game-dialog and on top of it show a
-			// dialog to welcome.
-			showDialogNewGame(false);
-			openChangesDialog(true);
 		} else if (previousInstalledVersion < currentVersion) {
 			// Restart the last game and show the changes dialog on top of it.
 			restartLastGame();
-			openChangesDialog(false);
+			openChangesDialog(true);
 		} else {
 			// No upgrade was needed. Restart the last game
 			restartLastGame();
@@ -1259,5 +1259,48 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			mLeaderboard.submitScore(gridSize, puzzleComplexity, hideOperators,
 					timePlayed);
 		}
+	}
+
+	/**
+	 * Displays the choose input method dialog.
+	 */
+	private void openInputMethodDialog() {
+		// Get view and put relevant information into the view.
+		LayoutInflater li = LayoutInflater.from(this);
+		View view = li.inflate(R.layout.input_method_dialog, null);
+
+		new AlertDialog.Builder(this)
+				.setTitle(
+						getResources().getString(
+								R.string.choose_input_method_title))
+				.setIcon(R.drawable.icon)
+				.setView(view)
+				.setNegativeButton(R.string.input_method_swipe_only,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+								mMathDokuPreferences.setDigitInputMethod(true,
+										false);
+							}
+						})
+				.setNeutralButton(R.string.input_method_swipe_and_buttons,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+								mMathDokuPreferences.setDigitInputMethod(true,
+										true);
+							}
+						})
+				.setPositiveButton(R.string.input_method_buttons_only,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+								mMathDokuPreferences.setDigitInputMethod(false,
+										true);
+							}
+						}).show();
 	}
 }

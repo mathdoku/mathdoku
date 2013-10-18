@@ -98,21 +98,21 @@ public class PuzzlePreferenceFragment extends PreferenceFragment implements
 	 * Set summary for option "input method" to the current value of the option.
 	 */
 	private void setInputMethodSummary() {
-		String digitInputMethod = mPreferences.getDigitInputMethod();
-		if (digitInputMethod
-				.equals(Preferences.PUZZLE_SETTING_INPUT_METHOD_SWIPE_ONLY)) {
+		switch (mPreferences.getDigitInputMethod()) {
+		case SWIPE_ONLY:
 			findPreference(Preferences.PUZZLE_SETTING_INPUT_METHOD).setSummary(
 					getResources().getString(R.string.input_method_swipe_only));
-		} else if (digitInputMethod
-				.equals(Preferences.PUZZLE_SETTING_INPUT_METHOD_SWIPE_AND_BUTTONS)) {
+			break;
+		case SWIPE_AND_BUTTONS:
 			findPreference(Preferences.PUZZLE_SETTING_INPUT_METHOD).setSummary(
 					getResources().getString(
 							R.string.input_method_swipe_and_buttons));
-		} else if (digitInputMethod
-				.equals(Preferences.PUZZLE_SETTING_INPUT_METHOD_BUTTONS_ONLY)) {
+			break;
+		case BUTTONS_ONLY:
 			findPreference(Preferences.PUZZLE_SETTING_INPUT_METHOD).setSummary(
 					getResources()
 							.getString(R.string.input_method_buttons_only));
+			break;
 		}
 	}
 

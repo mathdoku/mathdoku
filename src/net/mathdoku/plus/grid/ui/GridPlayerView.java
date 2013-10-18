@@ -1,6 +1,6 @@
 package net.mathdoku.plus.grid.ui;
 
-import net.mathdoku.plus.Preferences;
+import net.mathdoku.plus.Preferences.PuzzleSettingInputMethod;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.GridCell;
@@ -59,8 +59,7 @@ public class GridPlayerView extends GridBasePlayerView {
 		mSwipeBorderDelayRunnable = new SwipeBorderDelayRunnable();
 
 		// Determine whether swiping is enabled.
-		mSwipeInputMethodEnabled = mPreferences.getDigitInputMethod().equals(
-				Preferences.PUZZLE_SETTING_INPUT_METHOD_BUTTONS_ONLY) == false;
+		mSwipeInputMethodEnabled = (mPreferences.getDigitInputMethod() != PuzzleSettingInputMethod.BUTTONS_ONLY);
 
 		setSwipeBorder(mSwipeInputMethodEnabled);
 	}
@@ -422,5 +421,8 @@ public class GridPlayerView extends GridBasePlayerView {
 	public void setSwipeInputMethodEnabled(boolean swipeInputMethodEnabled) {
 		mSwipeInputMethodEnabled = swipeInputMethodEnabled;
 		setSwipeBorder(mSwipeInputMethodEnabled);
+		if (mTickerTape != null) {
+			mTickerTape.setDisabled((mSwipeInputMethodEnabled == false));
+		}
 	}
 }
