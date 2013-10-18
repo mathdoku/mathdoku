@@ -847,17 +847,19 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 *            should be visible. Use null in case no cell is selected.
 	 */
 	private void setClearAndUndoButtonVisibility(GridCell cell) {
-		// Set the clear button of the visible controls layout
+		// Set the clear button of the visible controls layout. The clear
+		// buttons is always visible but is disabled in case the cell is emtpy.
 		Button clearButton = (mControlsPadBigTableLayout.getVisibility() == View.VISIBLE ? mClearButton
 				: mClearButtonSwipeOnly);
 		if (clearButton != null) {
-			clearButton
-					.setVisibility((cell == null || cell.isEmpty()) ? View.INVISIBLE
-							: View.VISIBLE);
+			clearButton.setVisibility(View.VISIBLE);
+			clearButton.setEnabled((cell != null && cell.isEmpty() == false));
 			clearButton.invalidate();
 		}
 
-		// Set the undo button of the visible controls layout
+		// Set the undo button of the visible controls layout. The button is
+		// only visible when appropriate (e.g. as long as the user has not made
+		// any moves or did not undo all moves).
 		Button undoButton = (mControlsPadBigTableLayout.getVisibility() == View.VISIBLE ? mUndoButton
 				: mUndoButtonSwipeOnly);
 		if (undoButton != null) {
