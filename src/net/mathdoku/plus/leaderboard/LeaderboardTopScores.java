@@ -247,41 +247,66 @@ public class LeaderboardTopScores {
 	 * @param leaderboard
 	 */
 	public void loadPlayerGlobalTopScore(final GamesClient gamesClient) {
-		new LeaderboardRank(gamesClient, new LeaderboardRank.Listener() {
+		new LeaderboardRankPlayer(gamesClient,
+				new LeaderboardRankPlayer.Listener() {
 
-			@Override
-			public void onLeaderboardRankLoaded(Leaderboard leaderboard,
-					LeaderboardScore leaderboardScore) {
-				// Check if this score can be processed.
-				if (leaderboard == null || leaderboardScore == null) {
-					return;
-				}
-				if (DEBUG) {
-					Log.i(TAG,
-							"Received the players best score for leaderboard "
-									+ leaderboard.getDisplayName());
-				}
+					@Override
+					public void onLeaderboardRankLoaded(
+							Leaderboard leaderboard,
+							LeaderboardScore leaderboardScore) {
+						// Check if this score can be processed.
+						if (leaderboard == null || leaderboardScore == null) {
+							return;
+						}
+						if (DEBUG) {
+							Log.i(TAG,
+									"Received the players best score for leaderboard "
+											+ leaderboard.getDisplayName());
+						}
 
-				// Set the best score for the player.
-				setPlayerGlobalTopScore(leaderboardScore.getTimestampMillis(),
-						leaderboardScore.getRawScore());
+						// Set the best score for the player.
+						setPlayerGlobalTopScore(
+								leaderboardScore.getTimestampMillis(),
+								leaderboardScore.getRawScore());
 
-				// Submit the local score to Google Play in case it is better
-				// than
-				// the known global score for the player.
-				if (mLocalTopScore != null
-						&& isBetterThanTopScore(mLocalTopScore.mScore,
-								mPlayerGlobalTopScore)) {
-					gamesClient.submitScore(leaderboard.getLeaderboardId(),
-							mLocalTopScore.mScore);
-					if (DEBUG) {
-						Log.i(TAG, "Submit the local top score "
-								+ mLocalTopScore.mScore + " for leaderboard "
-								+ leaderboard.getDisplayName());
+						// Submit the local score to Google Play in case it is
+						// better than the known global score for the player.
+						if (mLocalTopScore != null
+								&& isBetterThanTopScore(mLocalTopScore.mScore,
+										mPlayerGlobalTopScore)) {
+							submitLocalTopScore(leaderboard);
+						}
 					}
-				}
-			}
-		}).loadCurrentPlayerRank(mLeaderboardId);
+
+					@Override
+					public void onNoRankFound(Leaderboard leaderboard) {
+						// Submit the local score if available
+						if (mLocalTopScore != null) {
+							submitLocalTopScore(leaderboard);
+							setPlayerGlobalTopScore(0, mLocalTopScore.mScore);
+
+						}
+					}
+
+					/**
+					 * Submits the local top score to Google Play Services.
+					 * 
+					 * @param leaderboard
+					 *            The leaderboard to which the score has to be
+					 *            submitted.
+					 */
+					private void submitLocalTopScore(Leaderboard leaderboard) {
+						gamesClient.submitScore(leaderboard.getLeaderboardId(),
+								mLocalTopScore.mScore);
+						if (DEBUG) {
+							Log.i(TAG,
+									"Submit the local top score "
+											+ mLocalTopScore.mScore
+											+ " for leaderboard "
+											+ leaderboard.getDisplayName());
+						}
+					}
+				}).loadCurrentPlayerRank(mLeaderboardId);
 	}
 
 	/**
@@ -292,27 +317,30 @@ public class LeaderboardTopScores {
 	 * @param leaderboard
 	 */
 	public void loadFirstRankGlobalTopScore(final GamesClient gamesClient) {
-		new LeaderboardRank(gamesClient, new LeaderboardRank.Listener() {
+		new LeaderboardRankFirst(gamesClient,
+				new LeaderboardRankFirst.Listener() {
 
-			@Override
-			public void onLeaderboardRankLoaded(Leaderboard leaderboard,
-					LeaderboardScore leaderboardScore) {
-				// Check if this score can be processed.
-				if (leaderboard == null || leaderboardScore == null) {
-					return;
-				}
-				if (DEBUG) {
-					Log.i(TAG, "Received the first rank score for leaderboard "
-							+ leaderboard.getDisplayName());
-				}
+					@Override
+					public void onLeaderboardRankLoaded(
+							Leaderboard leaderboard,
+							LeaderboardScore leaderboardScore) {
+						// Check if this score can be processed.
+						if (leaderboard == null || leaderboardScore == null) {
+							return;
+						}
+						if (DEBUG) {
+							Log.i(TAG,
+									"Received the first rank score for leaderboard "
+											+ leaderboard.getDisplayName());
+						}
 
-				// Store the display name of the leaderboard
-				mLeaderboardDisplayName = leaderboard.getDisplayName();
+						// Store the display name of the leaderboard
+						mLeaderboardDisplayName = leaderboard.getDisplayName();
 
-				// Set the score for the first rank.
-				setFirstRankGlobalTopScore(leaderboardScore);
-			}
-		}).loadFirstRank(mLeaderboardId);
+						// Set the score for the first rank.
+						setFirstRankGlobalTopScore(leaderboardScore);
+					}
+				}).loadFirstRank(mLeaderboardId);
 
 	}
 

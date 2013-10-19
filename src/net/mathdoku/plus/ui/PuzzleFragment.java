@@ -468,18 +468,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 					mPuzzleFragmentListener.onPuzzleFinishedListener(mGrid
 							.getSolvingAttemptId());
 				} else {
-					// Inform listener in case a puzzle has been solved without
-					// using cheats.
-					if (mGrid.getCheatPenaltyTime() == 0) {
-						GridGeneratingParameters gridGeneratingParameters = mGrid
-								.getGridGeneratingParameters();
-						mPuzzleFragmentListener.onPuzzleSolvedWithoutCheats(
-								mGrid.getGridSize(),
-								gridGeneratingParameters.mPuzzleComplexity,
-								gridGeneratingParameters.mHideOperators,
-								mGrid.getElapsedTime());
-					}
-
 					// Hide controls while showing the animation.
 					setInactiveGridLoaded();
 
@@ -504,6 +492,19 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 							mPuzzleFragmentListener
 									.onPuzzleFinishedListener(mGrid
 											.getSolvingAttemptId());
+
+							// Inform listener in case a puzzle has been solved
+							// without
+							// using cheats.
+							if (mGrid.getCheatPenaltyTime() == 0) {
+								GridGeneratingParameters gridGeneratingParameters = mGrid
+										.getGridGeneratingParameters();
+								mPuzzleFragmentListener.onPuzzleSolvedWithoutCheats(
+										mGrid.getGridSize(),
+										gridGeneratingParameters.mPuzzleComplexity,
+										gridGeneratingParameters.mHideOperators,
+										mGrid.getElapsedTime());
+							}
 						}
 
 						@Override

@@ -42,7 +42,7 @@ public class LeaderboardConnector {
 		mContext = context;
 
 		// Create leaderboard info array. This array will be filled via
-		// different listeners which are call asynchronously.
+		// different listeners which are called asynchronously.
 		mTopScoreInfos = new LeaderboardTopScores[LeaderboardType.MAX_LEADERBOARDS];
 		for (int i = 0; i < mTopScoreInfos.length; i++) {
 			mTopScoreInfos[i] = new LeaderboardTopScores(
@@ -172,9 +172,9 @@ public class LeaderboardConnector {
 						}
 
 						// Retrieve the current rank of the player
-						new LeaderboardRank(
+						new LeaderboardRankPlayer(
 								LeaderboardConnector.this.mGamesClient,
-								new LeaderboardRank.Listener() {
+								new LeaderboardRankPlayer.Listener() {
 
 									@Override
 									public void onLeaderboardRankLoaded(
@@ -182,6 +182,15 @@ public class LeaderboardConnector {
 											LeaderboardScore leaderboardScore) {
 										onSubmitScoreCurrentPlayerRankReceived(
 												leaderboard, leaderboardScore);
+									}
+
+									@Override
+									public void onNoRankFound(
+											Leaderboard leaderboard) {
+										// Nothing to do here. It should not be
+										// possible that the player rank is not
+										// found after it was just successfully
+										// submitted and received.
 									}
 								}).loadCurrentPlayerRank(submitScoreResult
 								.getLeaderboardId());
