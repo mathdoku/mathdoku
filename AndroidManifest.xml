@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="net.mathdoku.plus"
     android:installLocation="auto"
-    android:versionCode="586"
-    android:versionName="Version 2.1.0 Alpha-4" >
+    android:versionCode="587"
+    android:versionName="Version 2.1.0 Alpha-5" >
 
     <!-- Cannot yet upgrade to target SDK-version 18 due to a bug in the archive. The grid view -->
     <!-- in the archive won't be shown in case a chart is shown. -->

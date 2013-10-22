@@ -1,6 +1,7 @@
 package net.mathdoku.plus.grid.ui;
 
 import net.mathdoku.plus.grid.CellChange;
+import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.GridCell;
 import net.mathdoku.plus.statistics.GridStatistics.StatisticsCounterType;
 import net.mathdoku.plus.tip.TipBadCageMath;
@@ -92,8 +93,9 @@ public class GridBasePlayerView extends GridViewerView implements
 
 	@Override
 	public boolean onTouch(View arg0, MotionEvent event) {
-		if (mGrid == null || !mGrid.isActive())
+		if (mGrid == null || !mGrid.isActive()) {
 			return false;
+		}
 
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
@@ -488,5 +490,13 @@ public class GridBasePlayerView extends GridViewerView implements
 	 */
 	public void setOnGridTouchListener(OnGridTouchListener listener) {
 		this.mTouchedListener = listener;
+	}
+
+	@Override
+	public void loadNewGrid(Grid grid) {
+		super.loadNewGrid(grid);
+
+		// Reset motion for the newly loaded grid.
+		mMotion = null;
 	}
 }
