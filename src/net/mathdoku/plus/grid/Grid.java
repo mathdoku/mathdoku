@@ -1450,4 +1450,15 @@ public class Grid {
 
 		return countNewInvalids;
 	}
+
+	/**
+	 * Checks whether the current grid is being replayed.
+	 * 
+	 * @return True in case of a replay. False otherwise.
+	 */
+	public boolean isReplay() {
+		return (mGridStatistics == null ? false : (mGridStatistics
+				.getReplayCount() > 0));
+
+	}
 }

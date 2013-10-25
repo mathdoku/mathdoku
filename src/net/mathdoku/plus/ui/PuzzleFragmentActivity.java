@@ -11,6 +11,7 @@ import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.InvalidGridException;
 import net.mathdoku.plus.grid.ui.GridInputMode;
 import net.mathdoku.plus.gridGenerating.DialogPresentingGridGenerator;
+import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
 import net.mathdoku.plus.leaderboard.LeaderboardConnector;
 import net.mathdoku.plus.painter.Painter;
@@ -703,10 +704,10 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	}
 
 	@Override
-	public void onPuzzleFinishedListener(int solvingAttemptId) {
+	public void onPuzzleFinishedListener(Grid grid) {
 		// Once the grid has been solved, the archive fragment has to be
 		// displayed.
-		initializeArchiveFragment(solvingAttemptId);
+		initializeArchiveFragment(grid.getSolvingAttemptId());
 
 		// Update the actions available in the action bar.
 		invalidateOptionsMenu();
@@ -732,6 +733,43 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		}
 		if (TipArchiveAvailable.toBeDisplayed(mMathDokuPreferences)) {
 			new TipArchiveAvailable(this).show();
+		}
+
+		// Check whether the grid meets the criteria for submitting to the
+		// leaderboards.
+		if (grid.getCheatPenaltyTime() == 0 && grid.isReplay() == false
+				&& grid.isActive() == false
+				&& grid.isSolutionRevealed() == false) {
+			GridGeneratingParameters gridGeneratingParameters = grid
+					.getGridGeneratingParameters();
+
+			// Check if a new top score is achieved.
+			boolean newTopScore = (mLeaderboard != null && mLeaderboard
+					.isTopScore(grid.getGridSize(),
+							gridGeneratingParameters.mPuzzleComplexity,
+							gridGeneratingParameters.mHideOperators,
+							grid.getElapsedTime()));
+
+			// Submit score to Google+ in case the puzzle was solved without
+			// using
+			// cheats.
+			if (mLeaderboard == null || mLeaderboard.isSignedIn() == false) {
+				// The user is not logged in to Google Plus. Check whether the
+				// sign
+				// in dialog should be shown.
+				boolean hideTillNextTopScore = mMathDokuPreferences
+						.isHideTillNextTopScoreAchievedChecked();
+				if (hideTillNextTopScore == false || newTopScore == true) {
+					new GooglePlusSignInDialog(this, mMathDokuPreferences)
+							.displayCheckboxHideTillNextTopScoreAchieved(
+									hideTillNextTopScore).show();
+				}
+			} else {
+				mLeaderboard.submitScore(grid.getGridSize(),
+						gridGeneratingParameters.mPuzzleComplexity,
+						gridGeneratingParameters.mHideOperators,
+						grid.getElapsedTime());
+			}
 		}
 	}
 
@@ -1237,34 +1275,6 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 		// Set up leaderboard
 		mLeaderboard = new LeaderboardConnector(this, gamesClient);
-	}
-
-	@Override
-	public void onPuzzleSolvedWithoutCheats(int gridSize,
-			PuzzleComplexity puzzleComplexity, boolean hideOperators,
-			long timePlayed) {
-		// TODO: Puzzle can not be a replay
-
-		// Check if a new top score is achieved.
-		boolean newTopScore = (mLeaderboard != null && mLeaderboard.isTopScore(
-				gridSize, puzzleComplexity, hideOperators, timePlayed));
-
-		// Submit score to Google+ in case the puzzle was solved without using
-		// cheats.
-		if (mLeaderboard == null || mLeaderboard.isSignedIn() == false) {
-			// The user is not logged in to Google Plus. Check whether the sign
-			// in dialog should be shown.
-			boolean hideTillNextTopScore = mMathDokuPreferences
-					.isHideTillNextTopScoreAchievedChecked();
-			if (hideTillNextTopScore == false || newTopScore == true) {
-				new GooglePlusSignInDialog(this, mMathDokuPreferences)
-						.displayCheckboxHideTillNextTopScoreAchieved(
-								hideTillNextTopScore).show();
-			}
-		} else {
-			mLeaderboard.submitScore(gridSize, puzzleComplexity, hideOperators,
-					timePlayed);
-		}
 	}
 
 	/**

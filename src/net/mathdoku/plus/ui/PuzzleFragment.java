@@ -13,8 +13,6 @@ import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.grid.GridCell;
 import net.mathdoku.plus.grid.ui.GridInputMode;
 import net.mathdoku.plus.grid.ui.GridPlayerView;
-import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
-import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
 import net.mathdoku.plus.hint.TickerTape;
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.painter.Painter.GridTheme;
@@ -112,11 +110,13 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	private PuzzleFragmentListener mPuzzleFragmentListener;
 
 	public interface PuzzleFragmentListener {
-		public void onPuzzleFinishedListener(int solvingAttemptId);
-
-		public void onPuzzleSolvedWithoutCheats(int gridSize,
-				PuzzleComplexity puzzleComplexity, boolean hideOperators,
-				long timePlayed);
+		/**
+		 * Callback to inform listener when the puzzle is finished.
+		 * 
+		 * @param grid
+		 *            The grid which has been finished.
+		 */
+		public void onPuzzleFinishedListener(Grid mGrid);
 	}
 
 	@Override
@@ -465,8 +465,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				// animation is played first.
 				if (!mGrid.isActive() || mGrid.isSolutionRevealed()
 						|| mGrid.countMoves() == 0) {
-					mPuzzleFragmentListener.onPuzzleFinishedListener(mGrid
-							.getSolvingAttemptId());
+					mPuzzleFragmentListener.onPuzzleFinishedListener(mGrid);
 				} else {
 					// Hide controls while showing the animation.
 					setInactiveGridLoaded();
@@ -490,21 +489,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 						public void onAnimationEnd(Animation animation) {
 							textView.setVisibility(View.GONE);
 							mPuzzleFragmentListener
-									.onPuzzleFinishedListener(mGrid
-											.getSolvingAttemptId());
-
-							// Inform listener in case a puzzle has been solved
-							// without
-							// using cheats.
-							if (mGrid.getCheatPenaltyTime() == 0) {
-								GridGeneratingParameters gridGeneratingParameters = mGrid
-										.getGridGeneratingParameters();
-								mPuzzleFragmentListener.onPuzzleSolvedWithoutCheats(
-										mGrid.getGridSize(),
-										gridGeneratingParameters.mPuzzleComplexity,
-										gridGeneratingParameters.mHideOperators,
-										mGrid.getElapsedTime());
-							}
+									.onPuzzleFinishedListener(mGrid);
 						}
 
 						@Override
@@ -968,8 +953,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 															if (mGrid != null
 																	&& mPuzzleFragmentListener != null) {
 																mPuzzleFragmentListener
-																		.onPuzzleFinishedListener(mGrid
-																				.getSolvingAttemptId());
+																		.onPuzzleFinishedListener(mGrid);
 															}
 														};
 													}).show();
@@ -977,8 +961,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 									if (mGrid != null
 											&& mPuzzleFragmentListener != null) {
 										mPuzzleFragmentListener
-												.onPuzzleFinishedListener(mGrid
-														.getSolvingAttemptId());
+												.onPuzzleFinishedListener(mGrid);
 									}
 								}
 							}
