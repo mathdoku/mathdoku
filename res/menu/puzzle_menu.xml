@@ -45,7 +45,7 @@
         android:icon="@drawable/content_new"
         android:orderInCategory="90"
         android:showAsAction="ifRoom"
-        android:title="@string/action_new_game"/>
+        android:title="@string/action_new_puzzle"/>
     <item
         android:id="@+id/action_sign_out_google_play_services"
         android:orderInCategory="97"

@@ -136,7 +136,7 @@
     <string name="action_clear_grid">Gesamten Raster löschen</string>
 
     <!-- The menu item that allows the player to start a new game. -->
-    <string name="action_new_game">Neues Spiel</string>
+    <string name="action_new_puzzle">Neues Spiel</string>
 
     <!-- The sub-menu item to check user entries against the solution. -->
     <string name="action_check_progress">Fortschritt kontrollieren</string>
@@ -457,8 +457,8 @@
     <string name="statistics_setting_chart_description_visible_summary">Beschreibung unterhalb der Grafik einblenden</string>
 
     <!-- The title and summary of the "Maximum games in elapsed time chart" option. This option restricts the number of games which will be displayed in an elapsed time chart. -->
-    <string name="statistics_setting_elapsed_time_chart_maximum_games_title">Anzahl der Rätsel in der Grafik \"Verstrichene Zeit\"</string>
-    <string name="statistics_setting_elapsed_time_chart_maximum_games_summary">Nicht mehr als %1$d Rätsel in der Grafik \"Verstrichene Zeit\" anzeigen.</string>
+    <string name="statistics_setting_elapsed_time_chart_maximum_puzzles_title">Anzahl der Rätsel in der Grafik \"Verstrichene Zeit\"</string>
+    <string name="statistics_setting_elapsed_time_chart_maximum_puzzles_summary">Nicht mehr als %1$d Rätsel in der Grafik \"Verstrichene Zeit\" anzeigen.</string>
 
     <!-- PUZZLE FRAGMENT - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -504,8 +504,8 @@
     <string name="archive_puzzle_number">Rätsel Nummer</string>
 
     <!-- The label of the button below a puzzle. -->
-    <string name="archive_reload_unfinished_game">Dieses Rätsel fortseetzen</string>
-    <string name="archive_reload_finished_game">Dieses Rätsel neu starten</string>
+    <string name="archive_continue_unfinished_puzzle">Dieses Rätsel fortseetzen</string>
+    <string name="archive_play_similar_puzzle">Dieses Rätsel neu starten</string>
 
     <!-- Title for the archive settings fragment. -->
     <string name="archive_settings_action_bar_title">Archiv Einstellungen</string>

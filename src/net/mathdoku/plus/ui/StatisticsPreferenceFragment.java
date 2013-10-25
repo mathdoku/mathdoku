@@ -53,7 +53,7 @@ public class StatisticsPreferenceFragment extends PreferenceFragment implements
 				.setSummary(
 						getResources()
 								.getString(
-										R.string.statistics_setting_elapsed_time_chart_maximum_games_summary,
+										R.string.statistics_setting_elapsed_time_chart_maximum_puzzles_summary,
 										Preferences
 												.getInstance()
 												.getStatisticsSettingElapsedTimeChartMaximumGames()));

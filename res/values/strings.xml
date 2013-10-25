@@ -30,7 +30,7 @@
 
     <!-- The title and message for the dialog displayed on the screen while upgrading to new version and saved games have to be converted. -->
     <string name="dialog_converting_saved_games_title">Upgrading new version</string>
-    <string name="dialog_converting_saved_games_message">For this new version of MathDoku+, your saved games are now being converted (one time only).</string>
+    <string name="dialog_converting_saved_games_message">For this new version of MathDoku+, your saved puzzles are now being converted (one time only).</string>
 
     <!-- PUZZLE HELP DIALOG - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -112,16 +112,16 @@
 
     <!-- Title and message for the "Sign in to Google+" dialog which explains the reasons why the use should sign in to Google+. -->
     <string name="google_plus_login_dialog_title">Sign in with Google+</string>
-    <string name="google_plus_login_dialog_message">Playing MathDoku+ is great fun. But even better then playing alone, is to compete for the fastest Mathdoku+ game with others arounds the globe or just with a group of friends.\n\nIf you want to rank your fastest games or to view the current leaderboards you have to sign in with Google+ one time only. You can sign out via the actions menu in case you no longer want to submit your top scores.\n\nNote: only games in which no cheats have been used, will be submitted to the leaderboards.</string>
+    <string name="google_plus_login_dialog_message">Playing MathDoku+ is great fun. But even better then playing alone, is to compete for the fastest Mathdoku+ puzzle with others arounds the globe or just with a group of friends.\n\nIf you want to rank your fastest puzzles or to view the current leaderboards you have to sign in with Google+ one time only. You can sign out via the actions menu in case you no longer want to submit your top scores.\n\nNote: only puzzles in which no cheats have been used, will be submitted to the leaderboards.</string>
     <string name="google_plus_login_hide_till_next_top_score_achieved">Do not show again till a new top score is achieved</string>
 
     <!-- ACTION BAR ITEMS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
     <!-- Subtitle for the puzzle fragment. -->
-    <string name="action_bar_subtitle_puzzle_fragment">Play a game</string>
+    <string name="action_bar_subtitle_puzzle_fragment">Play a puzzle</string>
 
-    <!-- The menu item that allows the player to display the archive of played games. -->
+    <!-- The menu item that allows the player to display the archive of played puzzles. -->
     <string name="action_archive">Archive</string>
 
     <!-- The menu item that allows the player to use some less frequently used cheats. -->
@@ -130,11 +130,14 @@
     <!-- The menu item that allows the user to clear the entire grid. Note this item is only available if at least one cell in the entire puzzle contains a (maybe) value. -->
     <string name="action_clear_grid">Clear grid</string>
 
-    <!-- The menu item that allows the player to start a new game. -->
-    <string name="action_new_game">New Game</string>
+    <!-- The menu item that allows the player to replay the puzzle. Note: this action will only be displayed in case the puzzle is finished. -->
+    <string name="action_replay">Replay this puzzle</string>
+
+    <!-- The menu item that allows the player to start a new puzzle. -->
+    <string name="action_new_puzzle">New puzzle</string>
 
     <!-- The sub-menu item to check user entries against the solution. -->
-    <string name="action_check_progress">Check Progress</string>
+    <string name="action_check_progress">Check progress</string>
 
     <!-- The sub-menu item to go to the statistics. -->
     <string name="action_statistics">Statistics</string>
@@ -145,7 +148,7 @@
     <!-- The menu item that allows the player to navigate to the help screen. -->
     <string name="action_help">Help</string>
 
-    <!-- The menu item that allows the player to share an archived game with another user via email. -->
+    <!-- The menu item that allows the player to share an archived puzzle with another user via email. -->
     <string name="action_share">Share</string>
 
     <!-- The menu item that allows the player to send feedback via email. -->
@@ -169,8 +172,8 @@
     <!-- DIALOGS FOR GENERATING NEW PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
-    <!-- Titles and lables used in the dialog "Create new game". -->
-    <string name="dialog_puzzle_parameters_title">Create new game</string>
+    <!-- Titles and lables used in the dialog "Create new puzzle". -->
+    <string name="dialog_puzzle_parameters_title">Create new puzzle</string>
     <string name="dialog_puzzle_parameters_puzzle_size">Puzzle size</string>
     <string name="dialog_puzzle_parameters_operators_in_cage_visible">Operators in cage visible</string>
     <string name="dialog_puzzle_parameters_difficulty">Difficulty</string>
@@ -297,7 +300,7 @@
     <string name="feedback_email_body">[Please remove this text and enter your feedback here. This email message contains a screendump of the screen just before you chose \'Send feedback\'. You can remove this screendump if it is not relevant for your feedback. The other attachment contains some basic details about the app and the size of your device and the value of the settings and preferences. This information can be helpful for us to understand your feedback but you\'re free to remove it.]</string>
 
     <!-- Title of dialog used to choose the appropriate action for sending the usage log. -->
-    <string name="feedback_choose_action_title">Share a MathDoku+ game</string>
+    <string name="feedback_choose_action_title">Share a MathDoku+ puzzle</string>
 
     <!-- Dialog for invalid share url. -->
     <string name="dialog_invalid_share_url_title">Invalid MathDoku+ link</string>
@@ -351,19 +354,19 @@
 
     <!-- Title, and text for tip "Statistics" which explains about this new navigation option. -->
     <string name="dialog_tip_statistics_title">Statistics</string>
-    <string name="dialog_tip_statistics_text">For each game you play, some statistics are collected. You can use the statistics just to view your historic results and you can use the statistics to improve your solving techniques.\n\nYou can view the statistics from the navigation menu. The navigation menu can be opened by tapping the MathDoku+ icon.</string>
+    <string name="dialog_tip_statistics_text">For each puzzle you play, some statistics are collected. You can use the statistics just to view your historic results and you can use the statistics to improve your solving techniques.\n\nYou can view the statistics from the navigation menu. The navigation menu can be opened by tapping the MathDoku+ icon.</string>
 
-    <!-- Title, and text for tip "Duplicate value" which gives explanation of the game rule which was violated. -->
+    <!-- Title, and text for tip "Duplicate value" which gives explanation of the puzzle rule which was violated. -->
     <string name="dialog_tip_duplicate_value_title">Duplicate value</string>
     <string name="dialog_tip_duplicate_value_text">You have entered a value which is already used in this column or this row. Each value should be used exactly once in each row and once in each column.</string>
 
-    <!-- Title, and text for tip "Bad cage math" which gives explanation of the game rule which was violated. -->
+    <!-- Title, and text for tip "Bad cage math" which gives explanation of the puzzle rule which was violated. -->
     <string name="dialog_tip_bad_cage_math_title">Bad cage math</string>
     <string name="dialog_tip_bad_cage_math_text">The values entered for the cells in this cage are not correct. The result of applying the operator to the cell values must be equal to the value of the cage.</string>
 
     <!-- Title, and text for tip "ArchiveAvailable" which explains about this new navigation option. -->
     <string name="dialog_tip_archive_available_title">Archive available</string>
-    <string name="dialog_tip_archive_available_text">Each game you have created is stored in the \'Archive\'. The \'Archive\' can be used to review games which you have played before.\n\nYou can view the archive from the navigation menu. The navigation menu can be opened by tapping the MathDoku+ icon.</string>
+    <string name="dialog_tip_archive_available_text">Each puzzle you have created is stored in the \'Archive\'. The \'Archive\' can be used to review puzzles which you have played before.\n\nYou can view the archive from the navigation menu. The navigation menu can be opened by tapping the MathDoku+ icon.</string>
 
     <!-- Title, and text for tip "Copy cell values" -->
     <string name="dialog_tip_copy_cell_values_title">Copy cell values</string>
@@ -374,19 +377,19 @@
 
     <!-- Title of statistics activity. -->
     <string name="statistics_actionbar_title">Statistics</string>
-    <string name="statistics_not_available">Statistics are not yet available for this level as no games of size %1$d have been played yet.</string>
+    <string name="statistics_not_available">Statistics are not yet available for this level as no puzzles of size %1$d have been played yet.</string>
 
-    <!-- Labels for general game statistics. -->
+    <!-- Labels for general puzzle statistics. -->
     <string name="statistics_general_date_created">Created on</string>
     <string name="statistics_general_date_finished">Finished on</string>
     <string name="statistics_general_replays">Replays</string>
     <string name="statistics_general_elapsed_time">Time played</string>
     <string name="statistics_general_cheat_penalty_time">Cheat penalty</string>
-    <string name="statistics_general_replay">Replay game</string>
+    <string name="statistics_general_replay">Replay puzzle</string>
 
     <!-- Title and a body which explains the purpose of the chart "Progress". -->
     <string name="progress_chart_title">Progress</string>
-    <string name="progress_chart_body">This chart displays the progress in solving the current game. For filled cells it is not shown whether the value is correct or not. A cell containing maybe values is counted as an empty cell.</string>
+    <string name="progress_chart_body">This chart displays the progress in solving the current puzzle. For filled cells it is not shown whether the value is correct or not. A cell containing maybe values is counted as an empty cell.</string>
     <!-- Dimensions displayed in chart "Progress". -->
     <string name="progress_chart_cells_filled">Cells filled</string>
     <string name="progress_chart_cells_revealed">Cells revealed</string>
@@ -395,7 +398,7 @@
     <!-- Title and a body which explains the purpose of the chart "Avoidable moves". -->
     <string name="avoidable_moves_chart_title">Avoidable moves</string>
     <string name="avoidable_moves_yaxis_description">Number of moves</string>
-    <string name="avoidable_moves_chart_body">Less experienced players make more avoidable moves than experienced players. An avoidable move is a move which is not necessary to solve a game. Correcting or clearing values in cells, using \"maybe values\" or \"undo\", are actions which should be avoided in order to become a better player.</string>
+    <string name="avoidable_moves_chart_body">Less experienced players make more avoidable moves than experienced players. An avoidable move is a move which is not necessary to solve a puzzle. Correcting or clearing values in cells, using \"maybe values\" or \"undo\", are actions which should be avoided in order to become a better player.</string>
     <!-- Dimensions displayed in chart "Avoidable moves". -->
     <string name="avoidable_moves_chart_user_value_replaced">Cell value replaced</string>
     <string name="avoidable_moves_chart_maybe_value_used">Maybe values</string>
@@ -405,36 +408,36 @@
     <!-- Title and a body which explains the purpose of the chart "Cheats used". -->
     <string name="statistics_cheats_used_title">Cheats used</string>
     <string name="statistics_cheats_yaxis_description">Number of times occurred</string>
-    <string name="statistics_cheats_used_body">You have used at least one cheat while playing this game. Cheats are more often used by inexperienced players. Each puzzle has a unique solution which can be found without using cheats.</string>
+    <string name="statistics_cheats_used_body">You have used at least one cheat while playing this puzzle. Cheats are more often used by inexperienced players. Each puzzle has a unique solution which can be found without using cheats.</string>
     <!-- Dimensions displayed in chart "Cheats used". -->
     <string name="statistics_cheats_check_progress">Checked progress</string>
     <string name="statistics_cheats_cells_revealed">Cells revealed</string>
     <string name="statistics_cheats_operators_revealed">Operators revealed</string>
     <string name="statistics_cheats_solution_revealed">Solution revealed</string>
 
-    <!-- Title and a body which explains the purpose of the chart "Solved games". -->
-    <string name="solved_chart_title">Solved games</string>
-    <string name="solved_chart_body">This chart displays the number of games solved versus the number of games which have not been solved or in which the solution was revealed.</string>
+    <!-- Title and a body which explains the purpose of the chart "Solved puzzles". -->
+    <string name="solved_chart_title">Solved puzzles</string>
+    <string name="solved_chart_body">This chart displays the number of puzzles solved versus the number of puzzles which have not been solved or in which the solution was revealed.</string>
 
-    <!-- Series used to split charts like "Unsolved games" and "Elapsed time historic". -->
+    <!-- Series used to split charts like "Unsolved puzzles" and "Elapsed time historic". -->
     <string name="chart_serie_solved">Solved</string>
     <string name="chart_serie_solution_revealed">Revealed solution</string>
     <string name="chart_serie_unfinished">Unfinished</string>
 
     <!-- Title and a body which explains the purpose of the chart "Elapsed time historic". -->
-    <!-- Series used to split charts like "Unsolved games" and "Elapsed time historic". -->
+    <!-- Series used to split charts like "Unsolved puzzles" and "Elapsed time historic". -->
     <string name="statistics_elapsed_time_historic_title">Elapsed time</string>
-    <string name="statistics_elapsed_time_historic_body">This chart shows the elapsed time per game and the average elapsed time. Games are sorted in order of creation (same order as in Archive). More recent games will be on the right of this chart. As you got more experienced at this level the elapsed time per game should diminish. Also there should be fewer games unfinished or for which the solution was revealed.</string>
-    <string name="statistics_elapsed_time_historic_elapsed_time_solved">Elapsed time in solved games</string>
-    <string name="statistics_elapsed_time_historic_elapsed_time_unfinished">Elapsed time in unfinished games</string>
+    <string name="statistics_elapsed_time_historic_body">This chart shows the elapsed time per puzzle and the average elapsed time. Puzzles are sorted in order of creation (same order as in Archive). More recent puzzles will be on the right of this chart. As you got more experienced at this level the elapsed time per puzzle should diminish. Also there should be fewer puzzles unfinished or for which the solution was revealed.</string>
+    <string name="statistics_elapsed_time_historic_elapsed_time_solved">Elapsed time in solved puzzles</string>
+    <string name="statistics_elapsed_time_historic_elapsed_time_unfinished">Elapsed time in unfinished puzzles</string>
     <string name="statistics_elapsed_time_historic_cheat_time">Cheat penalty</string>
-    <string name="statistics_elapsed_time_historic_solved_average_serie">Average (solved games only)</string>
+    <string name="statistics_elapsed_time_historic_solved_average_serie">Average (solved puzzles only)</string>
     <string name="statistics_elapsed_time_historic_solved_slowest">Slowest</string>
     <string name="statistics_elapsed_time_historic_solved_average">Average</string>
     <string name="statistics_elapsed_time_historic_solved_fastest">Fastest</string>
 
     <!-- The lead in text at top of the help dialog. -->
-    <string name="statistics_help_dialog_general">Most statistics are based on all games you have played. The chart \'Elapsed time\' only displays the most recent games.\nStatistics are available per level (i.e. the size of the puzzle) but also as a whole. Swipe from left to right to go to the previous level. Swipe from right to left to go to the next level.\n\nUse the settings to tweak display of the statistics.</string>
+    <string name="statistics_help_dialog_general">Most statistics are based on all puzzles you have played. The chart \'Elapsed time\' only displays the most recent puzzles.\nStatistics are available per level (i.e. the size of the puzzle) but also as a whole. Swipe from left to right to go to the previous level. Swipe from right to left to go to the next level.\n\nUse the settings to tweak display of the statistics.</string>
 
     <!-- STATISTICS  SETTINGS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -446,9 +449,9 @@
     <string name="statistics_setting_chart_description_visible_title">Chart description</string>
     <string name="statistics_setting_chart_description_visible_summary">Display description below chart</string>
 
-    <!-- The title and summary of the "Maximum games in elapsed time chart" option. This option restricts the number of games which will be displayed in an elapsed time chart. -->
-    <string name="statistics_setting_elapsed_time_chart_maximum_games_title">Number of games in elapsed time chart</string>
-    <string name="statistics_setting_elapsed_time_chart_maximum_games_summary">Display no more than %1$d games in elapsed time chart</string>
+    <!-- The title and summary of the "Maximum puzzles in elapsed time chart" option. This option restricts the number of puzzles which will be displayed in an elapsed time chart. -->
+    <string name="statistics_setting_elapsed_time_chart_maximum_puzzles_title">Number of puzzles in elapsed time chart</string>
+    <string name="statistics_setting_elapsed_time_chart_maximum_puzzles_summary">Display no more than %1$d puzzles in elapsed time chart</string>
 
     <!-- PUZZLE FRAGMENT - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -469,7 +472,7 @@
     <!-- Title for the archive fragment. -->
     <string name="archive_action_bar_title">Archive</string>
 
-    <!-- The possible values of the archive filter on the game status. -->
+    <!-- The possible values of the archive filter on the puzzle status. -->
     <string-array name="archive_status_filter">
         <item>All</item>
         <item>Unfinished</item>
@@ -477,7 +480,7 @@
         <item>Revealed</item>
     </string-array>
 
-    <!-- The possible values of the archive filter on game size. -->
+    <!-- The possible values of the archive filter on puzzle size. -->
     <string-array name="archive_size_filter">
         <item>All</item>
         <item>4x4</item>
@@ -492,28 +495,28 @@
     <string name="archive_puzzle_number">Puzzle no.</string>
 
     <!-- The label of the button below a puzzle. -->
-    <string name="archive_reload_unfinished_game">Continue this puzzle</string>
-    <string name="archive_reload_finished_game">Replay this puzzle</string>
+    <string name="archive_continue_unfinished_puzzle">Continue this puzzle</string>
+    <string name="archive_play_similar_puzzle">Play a similar puzzle</string>
 
     <!-- Title for the archive settings fragment. -->
     <string name="archive_settings_action_bar_title">Archive settings</string>
 
     <!-- The title and summary of the "Show status filter" option. This option enables or disables showing of the status filter in the action bar of the archive. -->
     <string name="archive_settings_show_status_filter_title">Show status filter</string>
-    <string name="archive_settings_show_status_filter_enabled">Allows filtering by status of games</string>
+    <string name="archive_settings_show_status_filter_enabled">Allows filtering by status</string>
     <string name="archive_settings_show_status_filter_disabled">Hides the filter for selecting by status</string>
 
     <!-- The title and summary of the "Show size filter" option. This option enables or disables showing of the size filter in the action bar of the archive. -->
     <string name="archive_settings_show_size_filter_title">Show size filter</string>
-    <string name="archive_settings_show_size_filter_enabled">Allows filtering by size of games</string>
-    <string name="archive_settings_show_size_filter_disabled">Hides the filter for selecting by game size</string>
+    <string name="archive_settings_show_size_filter_enabled">Allows filtering by size</string>
+    <string name="archive_settings_show_size_filter_disabled">Hides the filter for selecting by size</string>
 
     <!-- The title and summary of the "Chart description" option. This option enables or disables displaying the description below the charts in the archive activity. -->
     <string name="archive_setting_show_chart_description_title">Chart description</string>
     <string name="archive_setting_show_chart_description_summary">Display description below chart</string>
 
     <!-- The lead in text at top of the help dialog. -->
-    <string name="archive_help_dialog_general">The archive contains the history of all games you have played. Swipe from left to right to go to an older puzzle. Swipe from right to left to go to a newer puzzle.\n\nYou can use filters to view only puzzles having a specific status or size. Filters can be enabled and disabled via the settings menu. Note: a filter will only be shown if it contains multiple values.</string>
+    <string name="archive_help_dialog_general">The archive contains the history of all puzzles you have played. Swipe from left to right to go to an older puzzle. Swipe from right to left to go to a newer puzzle.\n\nYou can use filters to view only puzzles having a specific status or size. Filters can be enabled and disabled via the settings menu. Note: a filter will only be shown if it contains multiple values.</string>
 
     <!-- SHARED PUZZLE  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

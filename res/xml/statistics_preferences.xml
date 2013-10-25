@@ -10,7 +10,7 @@
         android:entries="@array/statistics_setting_elapsed_time_chart_maximum_games_entries"
         android:entryValues="@array/statistics_setting_elapsed_time_chart_maximum_games_entries"
         android:key="statistics_setting_elapsed_time_chart_maximum_games"
-        android:summary="@string/statistics_setting_elapsed_time_chart_maximum_games_summary"
-        android:title="@string/statistics_setting_elapsed_time_chart_maximum_games_title" />
+        android:summary="@string/statistics_setting_elapsed_time_chart_maximum_puzzles_summary"
+        android:title="@string/statistics_setting_elapsed_time_chart_maximum_puzzles_title" />
 
 </PreferenceScreen>
