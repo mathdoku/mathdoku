@@ -320,6 +320,13 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 						(mArchiveFragment != null ? MenuItem.SHOW_AS_ACTION_IF_ROOM
 								: MenuItem.SHOW_AS_ACTION_NEVER));
 
+		// The replay button on the action bar is only visible in case the
+		// archive fragment is shown. This action is never visible in case the
+		// puzzle fragment is display as it would duplicate the clear grid
+		// option.
+		menu.findItem(R.id.action_replay).setVisible(
+				!drawerOpen && mArchiveFragment != null);
+
 		// Determine visibility of sign out button
 		menu.findItem(R.id.action_sign_out_google_play_services).setVisible(
 				mLeaderboard != null && mLeaderboard.isSignedIn());
@@ -376,9 +383,14 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 				mPuzzleFragment.revealSolution();
 			}
 			return true;
+		case R.id.action_replay:
+			if (mArchiveFragment != null) {
+				openReplayDialog(mArchiveFragment.getSolvingAttemptId());
+			}
+			return true;
 		case R.id.action_clear_grid:
 			if (mPuzzleFragment != null) {
-				mPuzzleFragment.clearGrid();
+				mPuzzleFragment.openClearGridDialog();
 			}
 			return true;
 		case R.id.action_share:
@@ -1006,17 +1018,6 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 	}
 
-	/**
-	 * Reload the finished game currently displayed.
-	 * 
-	 * @param view
-	 */
-	public void onClickReloadGame(View view) {
-		if (mArchiveFragment != null) {
-			replayPuzzle(mArchiveFragment.getSolvingAttemptId());
-		}
-	}
-
 	/* The click listener for the list view in the navigation drawer */
 	private class NavigationDrawerItemClickListener implements
 			ListView.OnItemClickListener {
@@ -1242,7 +1243,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	public void onPuzzleSolvedWithoutCheats(int gridSize,
 			PuzzleComplexity puzzleComplexity, boolean hideOperators,
 			long timePlayed) {
-		// Puzzle can not be a replay
+		// TODO: Puzzle can not be a replay
 
 		// Check if a new top score is achieved.
 		boolean newTopScore = (mLeaderboard != null && mLeaderboard.isTopScore(
@@ -1305,6 +1306,35 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 									int whichButton) {
 								mMathDokuPreferences.setDigitInputMethod(false,
 										true);
+							}
+						}).show();
+	}
+
+	/**
+	 * Displays the dialog in which the user is asked whether the puzzle should
+	 * be replayed.
+	 */
+	private void openReplayDialog(final int solvingAttemptId) {
+		new AlertDialog.Builder(this)
+				.setTitle(R.string.dialog_replay_puzzle_confirmation_title)
+				.setMessage(R.string.dialog_replay_puzzle_confirmation_message)
+				.setIcon(android.R.drawable.ic_dialog_alert)
+				.setNegativeButton(
+						R.string.dialog_replay_puzzle_confirmation_negative_button,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+								//
+							}
+						})
+				.setPositiveButton(
+						R.string.dialog_replay_puzzle_confirmation_positive_button,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								replayPuzzle(solvingAttemptId);
 							}
 						}).show();
 	}

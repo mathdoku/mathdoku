@@ -1,6 +1,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" >
 
+    <!-- Don't forget to update menu-v14/puzzle_menu.xml as well. -->
+    <!-- Don't forget to update menu-v14/puzzle_menu.xml as well. -->
+    <!-- Don't forget to update menu-v14/puzzle_menu.xml as well. -->
+
     <item
         android:id="@+id/action_copy_cell_values"
         android:icon="@drawable/copy_cell_values"
@@ -40,6 +44,14 @@
         android:orderInCategory="80"
         android:showAsAction="never"
         android:title="@string/action_share"/>
+
+    <!-- Replay will only be displayed in case the archive fragment is displayed by the puzzle fragment. -->
+    <item
+        android:id="@+id/action_replay"
+        android:icon="@drawable/replay"
+        android:orderInCategory="89"
+        android:showAsAction="ifRoom"
+        android:title="@string/action_replay"/>
     <item
         android:id="@+id/action_new_game"
         android:icon="@drawable/content_new"

@@ -19,6 +19,8 @@ import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.DefaultRenderer;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Color;
@@ -27,6 +29,7 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -91,10 +94,56 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 			mGridViewerView.loadNewGrid(grid);
 
 			// Set background color of button
-			Button archiveReloadButton = (Button) rootView
-					.findViewById(R.id.archiveReloadButton);
-			archiveReloadButton.setBackgroundColor(Painter.getInstance()
+			Button archiveActionButton = (Button) rootView
+					.findViewById(R.id.archiveActionButton);
+			archiveActionButton.setBackgroundColor(Painter.getInstance()
 					.getButtonBackgroundColor());
+			if (getActivity() instanceof PuzzleFragmentActivity) {
+				final PuzzleFragmentActivity puzzleFragmentActivity = (PuzzleFragmentActivity) getActivity();
+
+				// In case the fragment was called by the puzzle fragment
+				// activity the play button will create a similar game.
+				archiveActionButton
+						.setText(R.string.archive_play_similar_puzzle);
+
+				archiveActionButton.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						// Start a game with the same puzzle parameter settings
+						// as were used for creating the last game.
+						puzzleFragmentActivity.startNewGame(
+								mPreferences.getPuzzleParameterSize(),
+								(mPreferences
+										.getPuzzleParameterOperatorsVisible() == false),
+								mPreferences.getPuzzleParameterComplexity());
+					}
+				});
+
+			} else if (getActivity() instanceof ArchiveFragmentActivity
+					&& grid.isActive()) {
+				// The fragment is started by the archive fragment activity. In
+				// case the puzzle isn't finished the action button reloads the
+				// puzzle so it can be continued.
+				archiveActionButton
+						.setText(R.string.archive_continue_unfinished_puzzle);
+
+				archiveActionButton.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						Intent intent = new Intent();
+						intent.putExtra(BUNDLE_KEY_SOLVING_ATTEMPT_ID,
+								getSolvingAttemptId());
+						getActivity().setResult(Activity.RESULT_OK, intent);
+
+						// Finish the archive activity
+						getActivity().finish();
+					}
+				});
+			} else {
+				archiveActionButton.setVisibility(View.GONE);
+			}
 
 			// In case the grid isn't finished, the digit position grid type
 			// has to be determined for positioning maybe values inside the
@@ -110,10 +159,6 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 				// Propagate setting to the grid view for displaying maybe
 				// values (dependent on preferences).
 				mGridViewerView.setDigitPositionGrid(mDigitPositionGrid);
-
-				// Change text of the reload button below grid
-				archiveReloadButton
-						.setText(R.string.archive_reload_unfinished_game);
 
 				// Disable the grid as the user should not be able to click
 				// cells in the archive view

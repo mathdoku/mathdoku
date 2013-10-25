@@ -407,10 +407,10 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	}
 
 	/**
-	 * Handles clearing of the entire grid. The grid will only be cleared after
-	 * the user has confirmed clearing.
+	 * Displays the dialog which ask confirmation whether the current grid
+	 * should be cleared.
 	 */
-	protected void clearGrid() {
+	protected void openClearGridDialog() {
 		new AlertDialog.Builder(this.getActivity())
 				.setTitle(R.string.dialog_clear_grid_confirmation_title)
 				.setMessage(R.string.dialog_clear_grid_confirmation_message)

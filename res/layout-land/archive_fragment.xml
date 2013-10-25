@@ -40,7 +40,7 @@
         </RelativeLayout>
 
         <Button
-            android:id="@+id/archiveReloadButton"
+            android:id="@+id/archiveActionButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
@@ -48,7 +48,7 @@
             android:layout_marginRight="5dp"
             android:lines="1"
             android:onClick="onClickReloadGame"
-            android:text="@string/archive_reload_finished_game"
+            android:text="@string/archive_play_similar_puzzle"
             android:textSize="@dimen/controls_text_size_default"
             android:textStyle="bold" />
 

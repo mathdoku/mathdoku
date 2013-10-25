@@ -39,19 +39,6 @@
                 android:layout_toLeftOf="@+id/puzzleParameterDifficultyRatingBar" />
         </RelativeLayout>
 
-        <Button
-            android:id="@+id/archiveReloadButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:lines="1"
-            android:onClick="onClickReloadGame"
-            android:text="@string/archive_reload_finished_game"
-            android:textSize="@dimen/controls_text_size_default"
-            android:textStyle="bold" />
-
         <TableLayout
             android:id="@+id/puzzleStatistics"
             android:layout_width="match_parent"
@@ -150,6 +137,18 @@
                     android:textSize="@dimen/text_size_default" />
             </TableRow>
         </TableLayout>
+
+        <!-- Behavior of the archive_play_button depends on context and will be set programmatically -->
+        <!-- in the archive fragment -->
+
+        <Button
+            android:id="@+id/archiveActionButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:lines="1"
+            android:textSize="@dimen/controls_text_size_default"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:id="@+id/chartLayouts"

@@ -7,6 +7,12 @@
         android:showAsAction="ifRoom"
         android:title="@string/action_share"/>
     <item
+        android:id="@+id/action_replay"
+        android:icon="@drawable/replay"
+        android:orderInCategory="89"
+        android:showAsAction="ifRoom"
+        android:title="@string/action_replay"/>
+    <item
         android:id="@+id/action_settings"
         android:orderInCategory="98"
         android:showAsAction="never"

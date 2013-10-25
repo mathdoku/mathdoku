@@ -277,6 +277,15 @@
     <string name="dialog_clear_grid_confirmation_negative_button">No, leave it</string>
     <string name="dialog_clear_grid_confirmation_positive_button">Yes, start over</string>
 
+    <!-- DIALOG REPLAY PUZZLE CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The title, message and buttons confirmation message that shows up when the user chooses to replay a puzzle. -->
+    <string name="dialog_replay_puzzle_confirmation_title">Replay puzzle?</string>
+    <string name="dialog_replay_puzzle_confirmation_message">You can replay a puzzle as often as you want. As soon as you start replaying this puzzle you will not be able to view the current statistics for this puzzle. The overall statistics will only be updated after you have completed this puzzle again.\nThe score of a replayed puzzle will never be used to update the leaderboards.\n\nAre you sure you want to replay this puzzle? </string>
+    <string name="dialog_replay_puzzle_confirmation_negative_button">Cancel</string>
+    <string name="dialog_replay_puzzle_confirmation_positive_button">Replay</string>
+
     <!-- CONTROLS FOR PUZZLE SOLVING  - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 

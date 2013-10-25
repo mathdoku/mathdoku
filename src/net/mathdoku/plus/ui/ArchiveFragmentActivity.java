@@ -26,6 +26,7 @@ import net.mathdoku.plus.ui.base.AppFragmentActivity;
 import net.mathdoku.plus.util.FeedbackEmail;
 import net.mathdoku.plus.util.SharedPuzzle;
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -232,6 +233,9 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 			new SharedPuzzle(this).addStatisticsChartsAsAttachments(
 					this.getWindow().getDecorView()).share(
 					getSolvingAttemptIdForCurrentSelectedGrid());
+			return true;
+		case R.id.action_replay:
+			openReplayDialog();
 			return true;
 		case R.id.action_settings:
 			startActivity(new Intent(this, ArchivePreferenceActivity.class));
@@ -500,22 +504,44 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 		}
 	}
 
-	/**
-	 * Reload the game currently displayed in the archive.
-	 * 
-	 * @param view
-	 */
-	public void onClickReloadGame(View view) {
-		Intent intent = new Intent();
-		intent.putExtra(BUNDLE_KEY_SOLVING_ATTEMPT_ID,
-				getSolvingAttemptIdForCurrentSelectedGrid());
-		setResult(RESULT_OK, intent);
-
-		// Finish the archive activity
-		finish();
-	}
-
 	public int getViewPagerCurrentPosition() {
 		return (mViewPager == null ? -1 : mViewPager.getCurrentItem());
+	}
+
+	/**
+	 * Displays the dialog in which the user is asked whether the puzzle should
+	 * be replayed.
+	 */
+	private void openReplayDialog() {
+		new AlertDialog.Builder(this)
+				.setTitle(R.string.dialog_replay_puzzle_confirmation_title)
+				.setMessage(R.string.dialog_replay_puzzle_confirmation_message)
+				.setIcon(android.R.drawable.ic_dialog_alert)
+				.setNegativeButton(
+						R.string.dialog_replay_puzzle_confirmation_negative_button,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+								//
+							}
+						})
+				.setPositiveButton(
+						R.string.dialog_replay_puzzle_confirmation_positive_button,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								Intent intent = new Intent();
+								intent.putExtra(
+										BUNDLE_KEY_SOLVING_ATTEMPT_ID,
+										getSolvingAttemptIdForCurrentSelectedGrid());
+								setResult(Activity.RESULT_OK, intent);
+
+								// Finish the archive activity
+								finish();
+
+							}
+						}).show();
 	}
 }
