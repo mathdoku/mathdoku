@@ -170,6 +170,10 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 					.findViewById(R.id.puzzleParameterDifficultyRatingBar);
 			puzzleParameterDifficultyRatingBar.setEnabled(false);
 			switch (grid.getPuzzleComplexity()) {
+			case RANDOM:
+				// Note: puzzles will never be stored with this complexity.
+				puzzleParameterDifficultyRatingBar.setNumStars(0);
+				break;
 			case VERY_EASY:
 				puzzleParameterDifficultyRatingBar.setNumStars(1);
 				break;

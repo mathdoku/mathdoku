@@ -35,7 +35,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 	// Complexity of puzzle
 	public enum PuzzleComplexity {
-		VERY_EASY, EASY, NORMAL, DIFFICULT, VERY_DIFFICULT
+		RANDOM, VERY_EASY, EASY, NORMAL, DIFFICULT, VERY_DIFFICULT
 	};
 
 	// The complexity of a puzzle will be determined by following factors.
@@ -135,11 +135,29 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		mGridGeneratingParameters = new GridGeneratingParameters();
 		mGridGeneratingParameters.mGameSeed = (new Random()).nextLong();
 		mGridGeneratingParameters.mGeneratorRevisionNumber = packageVersionNumber;
-		mGridGeneratingParameters.mPuzzleComplexity = puzzleComplexity;
+		if (puzzleComplexity == PuzzleComplexity.RANDOM) {
+			// Determine a random complexity to be used for this specific
+			// puzzle. Note that the random complexity itself has to be
+			// excluded.
+			int index = new Random()
+					.nextInt(PuzzleComplexity.values().length - 1) + 1;
+			mGridGeneratingParameters.mPuzzleComplexity = PuzzleComplexity
+					.values()[index];
+		} else {
+			mGridGeneratingParameters.mPuzzleComplexity = puzzleComplexity;
+		}
 		mGridGeneratingParameters.mHideOperators = hideOperators;
 
 		mMaximumSingleCellCages = mGridSize / 2;
 		switch (mGridGeneratingParameters.mPuzzleComplexity) {
+		case RANDOM:
+			// This value has already been transformed to another complexity
+			// value but is required by the compiler.
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
+				throw new RuntimeException(
+						"GridGenerator: complexity RANDOM was not transformed.");
+			}
+			break;
 		case VERY_EASY:
 			mGridGeneratingParameters.mMaxCageSize = 2;
 

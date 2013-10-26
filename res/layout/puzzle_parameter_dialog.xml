@@ -65,15 +65,34 @@
         android:text="@string/dialog_puzzle_parameters_difficulty"
         android:textSize="@dimen/dialog_text_size_body" />
 
-    <RatingBar
-        android:id="@+id/puzzleParameterDifficultyRatingBar"
+    <RelativeLayout
+        android:id="@+id/puzzleParameterDifficultyRelativeLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
         android:layout_below="@+id/puzzleParameterDifficultyTextView"
-        android:layout_centerHorizontal="true"
-        android:max="5"
-        android:numStars="5"
-        android:rating="1"
-        android:stepSize="1" />
+        android:layout_marginTop="5dp" >
+
+        <RatingBar
+            android:id="@+id/puzzleParameterDifficultyRatingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:max="5"
+            android:numStars="5"
+            android:rating="1"
+            android:stepSize="1" />
+
+        <net.mathdoku.plus.ui.CheckableImageView
+            android:id="@+id/puzzleParameterDifficultyRandom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/puzzleParameterDifficultyRatingBar"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:src="@drawable/random_complexity" />
+    </RelativeLayout>
 
 </RelativeLayout>

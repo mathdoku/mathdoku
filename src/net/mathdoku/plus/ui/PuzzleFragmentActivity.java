@@ -44,12 +44,15 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.RatingBar;
+import android.widget.RatingBar.OnRatingBarChangeListener;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -878,6 +881,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	 * @param cancelable
 	 *            True in case the dialog can be cancelled.
 	 */
+	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	private void showDialogNewGame(final boolean cancelable) {
 		// Get view and put relevant information into the view.
 		LayoutInflater layoutInflater = LayoutInflater.from(this);
@@ -891,6 +895,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 				.findViewById(R.id.puzzleParameterDisplayOperatorsCheckBox);
 		final RatingBar puzzleParameterDifficultyRatingBar = (RatingBar) view
 				.findViewById(R.id.puzzleParameterDifficultyRatingBar);
+		final CheckableImageView puzzleParameterDifficultyRandom = (CheckableImageView) view
+				.findViewById(R.id.puzzleParameterDifficultyRandom);
 
 		// Create the list of available puzzle sizes.
 		String[] puzzleSizes = { "4x4", "5x5", "6x6", "7x7", "8x8", "9x9" };
@@ -910,22 +916,61 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		puzzleParameterDisplayOperatorsCheckBox.setChecked(mMathDokuPreferences
 				.getPuzzleParameterOperatorsVisible());
 		switch (mMathDokuPreferences.getPuzzleParameterComplexity()) {
+		case RANDOM:
+			puzzleParameterDifficultyRandom.setChecked(true);
+			puzzleParameterDifficultyRatingBar.setRating(0);
+			break;
 		case VERY_EASY:
+			puzzleParameterDifficultyRandom.setChecked(false);
 			puzzleParameterDifficultyRatingBar.setRating(1);
 			break;
 		case EASY:
+			puzzleParameterDifficultyRandom.setChecked(false);
 			puzzleParameterDifficultyRatingBar.setRating(2);
 			break;
 		case NORMAL:
+			puzzleParameterDifficultyRandom.setChecked(false);
 			puzzleParameterDifficultyRatingBar.setRating(3);
 			break;
 		case DIFFICULT:
+			puzzleParameterDifficultyRandom.setChecked(false);
 			puzzleParameterDifficultyRatingBar.setRating(4);
 			break;
 		case VERY_DIFFICULT:
+			puzzleParameterDifficultyRandom.setChecked(false);
 			puzzleParameterDifficultyRatingBar.setRating(5);
 			break;
 		}
+		puzzleParameterDifficultyRatingBar
+				.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
+
+					@Override
+					public void onRatingChanged(RatingBar ratingBar,
+							float rating, boolean fromUser) {
+						if (fromUser) {
+							puzzleParameterDifficultyRandom
+									.setChecked(rating < 0.5f);
+							puzzleParameterDifficultyRandom.invalidate();
+						}
+					}
+				});
+		puzzleParameterDifficultyRandom
+				.setOnTouchListener(new OnTouchListener() {
+
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {
+						if (event.getAction() == MotionEvent.ACTION_DOWN) {
+							puzzleParameterDifficultyRandom.toggle();
+							if (puzzleParameterDifficultyRandom.isChecked()) {
+								puzzleParameterDifficultyRatingBar.setRating(0);
+								puzzleParameterDifficultyRatingBar.invalidate();
+							} else {
+								puzzleParameterDifficultyRatingBar.setRating(3);
+							}
+						}
+						return true;
+					}
+				});
 
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this)
 				.setTitle(R.string.dialog_puzzle_parameters_title)
@@ -964,8 +1009,10 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 							puzzleComplexity = PuzzleComplexity.NORMAL;
 						} else if (rating >= 2) {
 							puzzleComplexity = PuzzleComplexity.EASY;
-						} else {
+						} else if (rating >= 1) {
 							puzzleComplexity = PuzzleComplexity.VERY_EASY;
+						} else {
+							puzzleComplexity = PuzzleComplexity.RANDOM;
 						}
 
 						// Store current settings in the preferences

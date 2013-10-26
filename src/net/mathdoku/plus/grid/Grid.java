@@ -532,6 +532,10 @@ public class Grid {
 		// of the enumeration as this value is not persistent.
 		int complexity = 0;
 		switch (gridGeneratingParameters.mPuzzleComplexity) {
+		case RANDOM:
+			// Note: puzzles will never be stored with this complexity.
+			complexity = 0;
+			break;
 		case VERY_EASY:
 			complexity = 1;
 			break;

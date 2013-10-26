@@ -82,6 +82,9 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 		final VerticalRatingBar puzzleParameterDifficultyRatingBar = (VerticalRatingBar) findViewById(R.id.puzzleParameterDifficultyRatingBar);
 		puzzleParameterDifficultyRatingBar.setEnabled(false);
 		switch (mGrid.getPuzzleComplexity()) {
+		case RANDOM:
+			// Note: puzzles will never be created with this complexity.
+			break;
 		case VERY_EASY:
 			puzzleParameterDifficultyRatingBar.setNumStars(1);
 			break;
