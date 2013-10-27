@@ -540,11 +540,13 @@
     <string name="shared_puzzle_exists_negative_button">Nee</string>
 
     <!-- LEADERBOARD - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    <string name="leaderboard_button_text">Bekijk de klassementen</string>
-    <string name="google_play_services_signin_explanation">Log in met Google om je Mathdoku+ score te delen met je vrienden.</string>
-    <string name="google_play_services_signed_in">Je bent ingelogd moet Google als %1$s.</string>
-    <string name="google_play_services_sign_out">Log uit</string>
-    <string name="google_play_services_leaderboard">Bekijk klassementen</string>
+
+
+    <!-- Title of leaderboard activity. -->
+    <string name="leaderboard_actionbar_title">Klassementen</string>
+
+    <!-- The text of the help dialog. -->
+    <string name="leaderboard_help_dialog_general">Als je inlogt met Google+ dan wordt de beste score voor ieder type puzzel bijgewerkt in de klassementen. De klassementen zijn gegroepeerd op grootte van de puzzel. Je kunt aanvullende filters instellen om het aantal getoonde klassementen te verminderen. Veeg van rechts naar links om de klassementen van grotere puzzels te bekijken. Veeg van links naar rechts om de klassementen van kleinere puzzels te bekijken.</string>
 
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

@@ -47,7 +47,7 @@ public class LeaderboardConnector {
 		for (int i = 0; i < mTopScoreInfos.length; i++) {
 			mTopScoreInfos[i] = new LeaderboardTopScores(
 					LeaderboardType.getGridSize(i),
-					LeaderboardType.getHideOperator(i), getLeaderboardId(i));
+					LeaderboardType.hasHiddenOperator(i), getLeaderboardId(i));
 		}
 
 		// Asynchronously get the top scores from database and Google Play
@@ -106,7 +106,7 @@ public class LeaderboardConnector {
 
 		// Get index of leaderboard
 		int leaderboardIndex = LeaderboardType.getIndex(gridSize,
-				puzzleComplexity, hideOperators);
+				hideOperators, puzzleComplexity);
 		if (leaderboardIndex < 0) {
 			// Invalid index
 			return false;
@@ -143,7 +143,7 @@ public class LeaderboardConnector {
 
 		// Submit score to leaderboard if it is a new top score for the player.
 		int leaderboardIndex = LeaderboardType.getIndex(gridSize,
-				puzzleComplexity, hideOperators);
+				hideOperators, puzzleComplexity);
 		if (leaderboardIndex >= 0
 				&& mTopScoreInfos != null
 				&& mTopScoreInfos[leaderboardIndex]
@@ -259,10 +259,10 @@ public class LeaderboardConnector {
 	 * @return The (string) id associated with the leaderboard. Null in case of
 	 *         an error.
 	 */
-	public String getLeaderboardId(int gridSize,
-			PuzzleComplexity puzzleComplexity, boolean hideOperators) {
-		int resId = LeaderboardType.getResId(gridSize, puzzleComplexity,
-				hideOperators);
+	public String getLeaderboardIdxx(int gridSize, boolean hideOperators,
+			PuzzleComplexity puzzleComplexity) {
+		int resId = LeaderboardType.getResId(gridSize, hideOperators,
+				puzzleComplexity);
 		if (resId >= 0) {
 			return mContext.getResources().getString(resId);
 		}

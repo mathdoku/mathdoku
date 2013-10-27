@@ -1,0 +1,1 @@
+For source files see folde "512x512 (game service definition)". All other folders contain derived files in lower quality.

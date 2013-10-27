@@ -17,6 +17,8 @@
 
 
     <!-- Google Play Games Services id's when app is build in DEBUG mode. -->
+    <!-- NOTE IN DEBUG MODE IS NO DISTINCTION MADE BASED ON COMPLEXITY LEVEL. ALL LEADERBOARDS FOR THE -->
+    <!-- SAME COMBINATION OF GRID SIZE AND OPERATOR VISIBILITY REFER TO THE SAME LEADERBOARD. -->
     <string name="app_id">282401107486</string>
     <string name="achievement_solve_a_4x4_puzzle">CgkIntyrg5wIEAIQAQ</string>
     <string name="achievement_solve_a_5x5_puzzle">CgkIntyrg5wIEAIQAg</string>
@@ -24,17 +26,65 @@
     <string name="achievement_solve_a_7x7_puzzle">CgkIntyrg5wIEAIQBA</string>
     <string name="achievement_solve_a_8x8_puzzle">CgkIntyrg5wIEAIQBQ</string>
     <string name="achievement_solve_a_9x9_puzzle">CgkIntyrg5wIEAIQBg</string>
-    <string name="leaderboard_fastest_4x4_visibile_operators">CgkIntyrg5wIEAIQBw</string>
-    <string name="leaderboard_fastest_5x5_visibile_operators">CgkIntyrg5wIEAIQCA</string>
-    <string name="leaderboard_fastest_6x6_visibile_operators">CgkIntyrg5wIEAIQCQ</string>
-    <string name="leaderboard_fastest_7x7_visibile_operators">CgkIntyrg5wIEAIQCg</string>
-    <string name="leaderboard_fastest_8x8_visibile_operators">CgkIntyrg5wIEAIQCw</string>
-    <string name="leaderboard_fastest_9x9_visibile_operators">CgkIntyrg5wIEAIQDA</string>
-    <string name="leaderboard_fastest_4x4_hidden_operators">CgkIntyrg5wIEAIQDQ</string>
-    <string name="leaderboard_fastest_5x5_hidden_operators">CgkIntyrg5wIEAIQDg</string>
-    <string name="leaderboard_fastest_6x6_hidden_operators">CgkIntyrg5wIEAIQDw</string>
-    <string name="leaderboard_fastest_7x7_hidden_operators">CgkIntyrg5wIEAIQEA</string>
-    <string name="leaderboard_fastest_8x8_hidden_operators">CgkIntyrg5wIEAIQEQ</string>
-    <string name="leaderboard_fastest_9x9_hidden_operators">CgkIntyrg5wIEAIQEg</string>
+    <string name="leaderboard_4x4__hidden_operators__1_star">CgkIntyrg5wIEAIQDQ</string>
+    <string name="leaderboard_4x4__hidden_operators__2_stars">CgkIntyrg5wIEAIQDQ</string>
+    <string name="leaderboard_4x4__hidden_operators__3_stars">CgkIntyrg5wIEAIQDQ</string>
+    <string name="leaderboard_4x4__hidden_operators__4_stars">CgkIntyrg5wIEAIQDQ</string>
+    <string name="leaderboard_4x4__hidden_operators__5_stars">CgkIntyrg5wIEAIQDQ</string>
+    <string name="leaderboard_4x4__visable_operators__1_star">CgkIntyrg5wIEAIQBw</string>
+    <string name="leaderboard_4x4__visable_operators__2_stars">CgkIntyrg5wIEAIQBw</string>
+    <string name="leaderboard_4x4__visable_operators__3_stars">CgkIntyrg5wIEAIQBw</string>
+    <string name="leaderboard_4x4__visable_operators__4_stars">CgkIntyrg5wIEAIQBw</string>
+    <string name="leaderboard_4x4__visable_operators__5_stars">CgkIntyrg5wIEAIQBw</string>
+    <string name="leaderboard_5x5__hidden_operators__1_star">CgkIntyrg5wIEAIQDg</string>
+    <string name="leaderboard_5x5__hidden_operators__2_stars">CgkIntyrg5wIEAIQDg</string>
+    <string name="leaderboard_5x5__hidden_operators__3_stars">CgkIntyrg5wIEAIQDg</string>
+    <string name="leaderboard_5x5__hidden_operators__4_stars">CgkIntyrg5wIEAIQDg</string>
+    <string name="leaderboard_5x5__hidden_operators__5_stars">CgkIntyrg5wIEAIQDg</string>
+    <string name="leaderboard_5x5__visable_operators__1_star">CgkIntyrg5wIEAIQCA</string>
+    <string name="leaderboard_5x5__visable_operators__2_stars">CgkIntyrg5wIEAIQCA</string>
+    <string name="leaderboard_5x5__visable_operators__3_stars">CgkIntyrg5wIEAIQCA</string>
+    <string name="leaderboard_5x5__visable_operators__4_stars">CgkIntyrg5wIEAIQCA</string>
+    <string name="leaderboard_5x5__visable_operators__5_stars">CgkIntyrg5wIEAIQCA</string>
+    <string name="leaderboard_6x6__hidden_operators__1_star">CgkIntyrg5wIEAIQDw</string>
+    <string name="leaderboard_6x6__hidden_operators__2_stars">CgkIntyrg5wIEAIQDw</string>
+    <string name="leaderboard_6x6__hidden_operators__3_stars">CgkIntyrg5wIEAIQDw</string>
+    <string name="leaderboard_6x6__hidden_operators__4_stars">CgkIntyrg5wIEAIQDw</string>
+    <string name="leaderboard_6x6__hidden_operators__5_stars">CgkIntyrg5wIEAIQDw</string>
+    <string name="leaderboard_6x6__visable_operators__1_star">CgkIntyrg5wIEAIQCQ</string>
+    <string name="leaderboard_6x6__visable_operators__2_stars">CgkIntyrg5wIEAIQCQ</string>
+    <string name="leaderboard_6x6__visable_operators__3_stars">CgkIntyrg5wIEAIQCQ</string>
+    <string name="leaderboard_6x6__visable_operators__4_stars">CgkIntyrg5wIEAIQCQ</string>
+    <string name="leaderboard_6x6__visable_operators__5_stars">CgkIntyrg5wIEAIQCQ</string>
+    <string name="leaderboard_7x7__hidden_operators__1_star">CgkIntyrg5wIEAIQEA</string>
+    <string name="leaderboard_7x7__hidden_operators__2_stars">CgkIntyrg5wIEAIQEA</string>
+    <string name="leaderboard_7x7__hidden_operators__3_stars">CgkIntyrg5wIEAIQEA</string>
+    <string name="leaderboard_7x7__hidden_operators__4_stars">CgkIntyrg5wIEAIQEA</string>
+    <string name="leaderboard_7x7__hidden_operators__5_stars">CgkIntyrg5wIEAIQEA</string>
+    <string name="leaderboard_7x7__visable_operators__1_star">CgkIntyrg5wIEAIQCg</string>
+    <string name="leaderboard_7x7__visable_operators__2_stars">CgkIntyrg5wIEAIQCg</string>
+    <string name="leaderboard_7x7__visable_operators__3_stars">CgkIntyrg5wIEAIQCg</string>
+    <string name="leaderboard_7x7__visable_operators__4_stars">CgkIntyrg5wIEAIQCg</string>
+    <string name="leaderboard_7x7__visable_operators__5_stars">CgkIntyrg5wIEAIQCg</string>
+    <string name="leaderboard_8x8__hidden_operators__1_star">CgkIntyrg5wIEAIQEQ</string>
+    <string name="leaderboard_8x8__hidden_operators__2_stars">CgkIntyrg5wIEAIQEQ</string>
+    <string name="leaderboard_8x8__hidden_operators__3_stars">CgkIntyrg5wIEAIQEQ</string>
+    <string name="leaderboard_8x8__hidden_operators__4_stars">CgkIntyrg5wIEAIQEQ</string>
+    <string name="leaderboard_8x8__hidden_operators__5_stars">CgkIntyrg5wIEAIQEQ</string>
+    <string name="leaderboard_8x8__visable_operators__1_star">CgkIntyrg5wIEAIQCw</string>
+    <string name="leaderboard_8x8__visable_operators__2_stars">CgkIntyrg5wIEAIQCw</string>
+    <string name="leaderboard_8x8__visable_operators__3_stars">CgkIntyrg5wIEAIQCw</string>
+    <string name="leaderboard_8x8__visable_operators__4_stars">CgkIntyrg5wIEAIQCw</string>
+    <string name="leaderboard_8x8__visable_operators__5_stars">CgkIntyrg5wIEAIQCw</string>
+    <string name="leaderboard_9x9__hidden_operators__1_star">CgkIntyrg5wIEAIQEg</string>
+    <string name="leaderboard_9x9__hidden_operators__2_stars">CgkIntyrg5wIEAIQEg</string>
+    <string name="leaderboard_9x9__hidden_operators__3_stars">CgkIntyrg5wIEAIQEg</string>
+    <string name="leaderboard_9x9__hidden_operators__4_stars">CgkIntyrg5wIEAIQEg</string>
+    <string name="leaderboard_9x9__hidden_operators__5_stars">CgkIntyrg5wIEAIQEg</string>
+    <string name="leaderboard_9x9__visable_operators__1_star">CgkIntyrg5wIEAIQDA</string>
+    <string name="leaderboard_9x9__visable_operators__2_stars">CgkIntyrg5wIEAIQDA</string>
+    <string name="leaderboard_9x9__visable_operators__3_stars">CgkIntyrg5wIEAIQDA</string>
+    <string name="leaderboard_9x9__visable_operators__4_stars">CgkIntyrg5wIEAIQDA</string>
+    <string name="leaderboard_9x9__visable_operators__5_stars">CgkIntyrg5wIEAIQDA</string>
 
 </resources>

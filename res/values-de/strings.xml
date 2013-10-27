@@ -553,11 +553,13 @@
 
     <!-- LEADERBOARD - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- TODO -->
-    <string name="leaderboard_button_text">Show leaderboards</string>
-    <string name="google_play_services_signin_explanation">Sign in with Google to share your Mathdoku+ scores with your friends.</string>
-    <string name="google_play_services_signed_in">You are signed in with Google as %1$s.</string>
-    <string name="google_play_services_sign_out">Sign out</string>
-    <string name="google_play_services_leaderboard">View leaderboard</string>
+
+
+    <!-- Title of leaderboard activity. -->
+    <string name="leaderboard_actionbar_title">Leaderboards</string>
+
+    <!-- The text of the help dialog. -->
+    <string name="leaderboard_help_dialog_general">In case you sign in to Google+ your best score for each type of puzzle is updated in the leaderboards. The leaderboards are grouped per size of the puzzle. You can choose additional filters to reduce the number of filters shown. Swipe from right to left to view the leaderboards of biggers puzzles. Swipe from left to right to view the leaderboard from smaller puzzles.</string>
 
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

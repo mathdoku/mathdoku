@@ -54,6 +54,10 @@ public class Preferences {
 	public final static String ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE = "archive_setting_chart_description_visible";
 	public final static boolean ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT = true;
 
+	// Leaderboard settings
+	public final static String LEADERBOARD_TAB_LAST_SHOWED = "leaderboard_tab_last_showed";
+	public final static int LEADERBOARD_TAB_LAST_SHOWED_DEFAULT = 0;
+
 	public final static String PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE = "puzzle_hide_goole_plus_sign_in_till_next_top_score";
 	public final static boolean PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE_DEFAULT = false;
 
@@ -320,6 +324,10 @@ public class Preferences {
 					.putBoolean(
 							PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE,
 							PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE_DEFAULT);
+		}
+		if (previousInstalledVersion < 587 && currentVersion >= 587) {
+			prefeditor.putInt(LEADERBOARD_TAB_LAST_SHOWED,
+					LEADERBOARD_TAB_LAST_SHOWED_DEFAULT);
 		}
 
 		// Save
@@ -993,7 +1001,7 @@ public class Preferences {
 	}
 
 	/**
-	 * Set the size of the puzzle which was last generated. closed.
+	 * Set the tab which was displayed last time the statistics were viewed.
 	 */
 	public void setStatisticsTabLastDisplayed(int tab) {
 		Editor prefeditor = mSharedPreferences.edit();
@@ -1135,5 +1143,26 @@ public class Preferences {
 				.putBoolean(
 						PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE,
 						checked).apply();
+	}
+
+	/**
+	 * Get the tab which was displayed last time the leaderboards were
+	 * displayed.
+	 * 
+	 * @return The tab which was displayed last time the leaderboards were
+	 *         displayed.
+	 */
+	public int getLeaderboardsTabLastDisplayed() {
+		return mSharedPreferences.getInt(LEADERBOARD_TAB_LAST_SHOWED,
+				LEADERBOARD_TAB_LAST_SHOWED_DEFAULT);
+	}
+
+	/**
+	 * Set the tab which was displayed last time the leaderboards were viewed.
+	 */
+	public void setLeaderboardsTabLastDisplayed(int tab) {
+		Editor prefeditor = mSharedPreferences.edit();
+		prefeditor.putInt(LEADERBOARD_TAB_LAST_SHOWED, tab);
+		prefeditor.apply();
 	}
 }

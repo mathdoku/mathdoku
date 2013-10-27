@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <lint>
+    <issue id="ContentDescription">
+        <ignore path="res/layout/leaderboard_listview_item.xml" />
+    </issue>
     <issue id="SelectableText">
-        <ignore path="res\layout\archive_fragment.xml" />
-        <ignore path="res\layout\changelog_dialog.xml" />
-        <ignore path="res\layout\puzzle_help_dialog.xml" />
-        <ignore path="res\layout\statistics_game_fragment.xml" />
+        <ignore path="res/layout/archive_fragment.xml" />
+        <ignore path="res/layout/changelog_dialog.xml" />
+        <ignore path="res/layout/puzzle_help_dialog.xml" />
+        <ignore path="res/layout/statistics_game_fragment.xml" />
     </issue>
     <issue id="TypographyEllipsis" severity="ignore" />
 </lint>

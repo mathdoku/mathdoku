@@ -14,6 +14,7 @@ import net.mathdoku.plus.gridGenerating.DialogPresentingGridGenerator;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
 import net.mathdoku.plus.leaderboard.LeaderboardConnector;
+import net.mathdoku.plus.leaderboard.ui.LeaderboardFragmentActivity;
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.storage.GameFileConverter;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
@@ -1129,19 +1130,12 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 					.getString(R.string.action_leaderboards))) {
 				// Either start the leaderboards activity or display the sign in
 				// dialog.
-				boolean leaderboardStarted = false;
 				if (mLeaderboard != null && mLeaderboard.isSignedIn()) {
-					Intent intent = mLeaderboard.getLeaderboardsIntent();
-					if (intent != null) {
-						// The OnActivityResult is handled by super class
-						// GooglePlayServiceFragmentActivity. Therefore the
-						// return code of that class is used here.
-						startActivityForResult(intent,
-								GooglePlayServiceFragmentActivity.RC_UNUSED);
-						leaderboardStarted = true;
-					}
-				}
-				if (leaderboardStarted == false) {
+					Intent intentLeaderboards = new Intent(
+							PuzzleFragmentActivity.this,
+							LeaderboardFragmentActivity.class);
+					startActivity(intentLeaderboards);
+				} else {
 					new GooglePlusSignInDialog(PuzzleFragmentActivity.this,
 							PuzzleFragmentActivity.this.mMathDokuPreferences)
 							.show();

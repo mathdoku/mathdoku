@@ -945,8 +945,8 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 			puzzleComplexity = PuzzleComplexity
 					.valueOf(cursor.getString(cursor
 							.getColumnIndexOrThrow(GridDatabaseAdapter.KEY_PUZZLE_COMPLEXITY)));
-			index = LeaderboardType.getIndex(gridSize, puzzleComplexity,
-					hideOperators);
+			index = LeaderboardType.getIndex(gridSize, hideOperators,
+					puzzleComplexity);
 			if (index >= 0 && index < topScores.length) {
 				topScores[index][0] = cursor.getLong(cursor
 						.getColumnIndexOrThrow(mTopScoresProjection
