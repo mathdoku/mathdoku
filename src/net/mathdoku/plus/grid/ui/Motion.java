@@ -4,6 +4,8 @@ import net.mathdoku.plus.grid.Grid;
 import android.view.MotionEvent;
 
 public class Motion {
+	private static final String TAG = "MathDoku.Motion";
+
 	// The cell coordinates of the cell in the grid for which the touch down was
 	// registered. Will be kept statically so it can be compared with the
 	// previous touch down event.
@@ -48,22 +50,29 @@ public class Motion {
 	 * @return True in case a grid cell has been touched. False otherwise.
 	 */
 	protected void setTouchDownEvent(MotionEvent motionEvent) {
+		// Store coordinates of previous touch down cell
+		int[] previousTouchDownCellCoordinates = mTouchDownCellCoordinates
+				.clone();
+
 		// Determine the swipe position pixel coordinates
 		mTouchDownPixelCoordinates[X_POS] = motionEvent.getX();
 		mTouchDownPixelCoordinates[Y_POS] = motionEvent.getY();
 
-		// Determine coordinates of new current swipe position on the actual
-		// swipe position
+		// Determine coordinates of new position
 		mTouchDownCellCoordinates = toGridCoordinates(
 				mTouchDownPixelCoordinates[X_POS],
 				mTouchDownPixelCoordinates[Y_POS]);
 
+		// Determine whether a new double tap motion is started
 		long timeSincePreviousEvent = motionEvent.getEventTime()
 				- mDoubleTapTouchDownTime;
-		if (timeSincePreviousEvent > 0 && timeSincePreviousEvent < 300) {
-			// A double tap is only allowed in case the total time
-			// between touch down of the first swipe motion until release of
-			// the second swipe motion took less than 300 milliseconds.
+		if (mTouchDownCellCoordinates[X_POS] == previousTouchDownCellCoordinates[X_POS]
+				&& mTouchDownCellCoordinates[Y_POS] == previousTouchDownCellCoordinates[Y_POS]
+				&& timeSincePreviousEvent > 0 && timeSincePreviousEvent < 300) {
+			// A double tap is only allowed in case the the second touch down
+			// event was on the same cell and the total time between touch down
+			// of the first motion until release of the second motion took less
+			// than 300 milliseconds.
 			mDoubleTapDetected = true;
 			mDoubleTapTouchDownTime = 0;
 		} else {

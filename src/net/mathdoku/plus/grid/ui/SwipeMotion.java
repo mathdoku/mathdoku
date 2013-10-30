@@ -92,10 +92,6 @@ public class SwipeMotion extends Motion {
 	 */
 	@Override
 	protected void setTouchDownEvent(MotionEvent event) {
-		// Store coordinates of previous touch down cell
-		int[] previousTouchDownCellCoordinates = getTouchDownCellCoordinates()
-				.clone();
-
 		// Register touch down event at superclass (including updating the
 		// current mTouchDownCellCoordinates)
 		super.setTouchDownEvent(event);
@@ -130,14 +126,6 @@ public class SwipeMotion extends Motion {
 		mTouchDownCellCenterPixelCoordinates = (gridCell == null ? getTouchDownPixelCoordinates()
 				.clone() : gridCell
 				.getCellCentreCoordinates(mGridPlayerViewBorderWidth));
-
-		// Determine whether a new double tap motion is started
-		if (touchDownCellCoordinates[X_POS] != previousTouchDownCellCoordinates[X_POS]
-				|| touchDownCellCoordinates[Y_POS] != previousTouchDownCellCoordinates[Y_POS]) {
-			// Another cell is selected. This touchdown event should never be
-			// recognized as double tap.
-			setDoubleTap(false);
-		}
 
 		// Touch down has been fully completed.
 		mStatus = Status.TOUCH_DOWN;

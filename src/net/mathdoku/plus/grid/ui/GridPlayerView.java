@@ -78,15 +78,14 @@ public class GridPlayerView extends GridBasePlayerView {
 
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
+			super.onTouch(arg0, event);
 			if (mSwipeMotion == null) {
 				mSwipeMotion = new SwipeMotion(this, mBorderWidth,
 						mGridCellSize);
 			}
 
 			mSwipeMotion.setTouchDownEvent(event);
-			if (mSwipeMotion.isDoubleTap()) {
-				mSwipeMotion.clearDoubleTap();
-			} else if (mSwipeMotion.isTouchDownInsideGrid()) {
+			if (mSwipeMotion.isTouchDownInsideGrid()) {
 				// Show the basic swipe hint. Replace this hint after a short
 				// pause.
 				clearTickerTape();
@@ -100,7 +99,7 @@ public class GridPlayerView extends GridBasePlayerView {
 				// motion.
 				mTouchHandler.postDelayed(mSwipeBorderDelayRunnable, 100);
 			}
-			return super.onTouch(arg0, event);
+			return true;
 		case MotionEvent.ACTION_UP:
 			if (super.onTouch(arg0, event) == false) {
 				if (this.mTouchedListener != null && mSwipeMotion != null) {
