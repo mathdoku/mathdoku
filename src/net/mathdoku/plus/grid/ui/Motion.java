@@ -4,6 +4,7 @@ import net.mathdoku.plus.grid.Grid;
 import android.view.MotionEvent;
 
 public class Motion {
+	@SuppressWarnings("unused")
 	private static final String TAG = "MathDoku.Motion";
 
 	// The cell coordinates of the cell in the grid for which the touch down was
