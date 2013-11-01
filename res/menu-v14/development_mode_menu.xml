@@ -31,6 +31,16 @@
                 android:id="@+id/development_mode_clear_data"
                 android:title="Clear all"
                 tools:ignore="HardcodedText"/>
+            <item
+                android:title="Leaderboard"
+                tools:ignore="HardcodedText">
+                <menu>
+                    <item
+                        android:id="@+id/submit_manual_score"
+                        android:title="Submit score"
+                        tools:ignore="HardcodedText"/>
+                </menu>
+            </item>
         </menu>
     </item>
 

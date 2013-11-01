@@ -336,4 +336,20 @@ public class LeaderboardType {
 
 		return -1;
 	}
+
+	/**
+	 * Get a description of the leaderboard for logging purposes.
+	 * 
+	 * @param leaderboardIndex
+	 *            The index of the leaderboard icon which has to be returned.
+	 * @return The description of the leaderboard for logging purposes.
+	 */
+	public static String getLeaderboardNameForLogging(int leaderboardIndex) {
+		return "[size "
+				+ getGridSize(leaderboardIndex)
+				+ ", "
+				+ (hasHiddenOperator(leaderboardIndex) ? "hidden operators"
+						: "visible operators") + ", "
+				+ getPuzzleComplexity(leaderboardIndex).toString() + "]";
+	}
 }

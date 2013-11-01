@@ -238,6 +238,20 @@ public class Grid {
 		mGridStatistics.solutionRevealed();
 	}
 
+	/**
+	 * Unreveal the solution by setting the user value to the actual value. Only
+	 * available in DEVELOPMENT mode.
+	 */
+	public void unrevealSolution() {
+		if (Config.mAppMode == AppMode.DEVELOPMENT) {
+			mRevealed = false;
+			if (mGridStatistics != null) {
+				mGridStatistics.mSolutionRevealed = false;
+				mGridStatistics.mSolvedManually = true;
+			}
+		}
+	}
+
 	// Returns whether the puzzle is solved.
 	public boolean checkIfSolved() {
 		// Check if all cells contain correct value.

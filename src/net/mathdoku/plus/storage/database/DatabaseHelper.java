@@ -170,6 +170,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		GridDatabaseAdapter.create(db);
 		SolvingAttemptDatabaseAdapter.create(db);
 		StatisticsDatabaseAdapter.create(db);
+		LeaderboardRankDatabaseAdapter.create(db);
 
 		// Enable foreign key constraints
 		db.execSQL("PRAGMA foreign_keys=ON;");
@@ -180,12 +181,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		GridDatabaseAdapter.upgrade(db, oldVersion, newVersion);
 		SolvingAttemptDatabaseAdapter.upgrade(db, oldVersion, newVersion);
 		StatisticsDatabaseAdapter.upgrade(db, oldVersion, newVersion);
+		LeaderboardRankDatabaseAdapter.upgrade(db, oldVersion, newVersion);
 	}
 
 	public static boolean hasChangedTableDefinitions() {
 		return new GridDatabaseAdapter().isTableDefinitionChanged()
 				|| new StatisticsDatabaseAdapter().isTableDefinitionChanged()
 				|| new SolvingAttemptDatabaseAdapter()
+						.isTableDefinitionChanged()
+				|| new LeaderboardRankDatabaseAdapter()
 						.isTableDefinitionChanged();
 	}
 

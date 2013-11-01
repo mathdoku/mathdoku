@@ -14,7 +14,7 @@ import com.google.android.gms.games.leaderboard.OnLeaderboardScoresLoadedListene
 
 /**
  * This class is used to retrieve the rank for the current player from Google
- * Play Services.
+ * Play Services for a specific leaderboard.
  * 
  */
 public class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener {
@@ -25,7 +25,7 @@ public class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener 
 	public static final boolean DEBUG = (Config.mAppMode == AppMode.DEVELOPMENT) && true;
 
 	// The games client which is connected to Google Play Services
-	private final GamesClient mGamesClient;
+	private final LeaderboardConnector mLeaderboardConnector;
 
 	// Listener methods which will be called by this class
 	public interface Listener {
@@ -52,11 +52,20 @@ public class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener 
 		public void onNoRankFound(Leaderboard leaderboard);
 	};
 
+	// The listener to be called when events have been completed.
 	private final Listener mListener;
 
-	public LeaderboardRankPlayer(GamesClient gamesClient,
+	/**
+	 * Create a new instance of the {@link LeaderboardRankPlayer}.
+	 * 
+	 * @param leaderboardConnector
+	 *            The leaderboard connector which creates the new instance.
+	 * @param listener
+	 *            The listener to be called when applicable.
+	 */
+	public LeaderboardRankPlayer(LeaderboardConnector leaderboardConnector,
 			final LeaderboardRankPlayer.Listener listener) {
-		mGamesClient = gamesClient;
+		mLeaderboardConnector = leaderboardConnector;
 		mListener = listener;
 	}
 
@@ -69,18 +78,23 @@ public class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener 
 	 *            has to be loaded.
 	 */
 	public void loadCurrentPlayerRank(String leaderboardId) {
-		if (mGamesClient != null) {
-			if (DEBUG) {
-				Log.i(TAG,
-						"Send request for loading the current player rank score for leaderboard "
-								+ leaderboardId);
-			}
+		if (mLeaderboardConnector != null) {
+			GamesClient gamesClient = mLeaderboardConnector.getGamesClient();
 
-			// The scores centered around the current player will be
-			// asynchronously loaded and submitted to the listener.
-			mGamesClient.loadPlayerCenteredScores(this, leaderboardId,
-					LeaderboardVariant.TIME_SPAN_ALL_TIME,
-					LeaderboardVariant.COLLECTION_PUBLIC, 1, false);
+			if (gamesClient != null) {
+				if (DEBUG) {
+					Log.i(TAG,
+							"Request the current player rank score for leaderboard "
+									+ mLeaderboardConnector
+											.getLeaderboardNameForLogging(leaderboardId));
+				}
+
+				// The scores centered around the current player will be
+				// asynchronously loaded and submitted to the listener.
+				gamesClient.loadPlayerCenteredScores(this, leaderboardId,
+						LeaderboardVariant.TIME_SPAN_ALL_TIME,
+						LeaderboardVariant.COLLECTION_PUBLIC, 1, false);
+			}
 		}
 	}
 
@@ -88,16 +102,23 @@ public class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener 
 	public void onLeaderboardScoresLoaded(int statusCode,
 			LeaderboardBuffer leaderboardBuffer,
 			LeaderboardScoreBuffer leaderboardScoresBuffer) {
+		// Determine description for the leaderboard which is used for logging
+		// only
+		String leaderboardName = "Unknown";
+		if (DEBUG) {
+			if (mLeaderboardConnector != null && leaderboardBuffer != null
+					&& leaderboardBuffer.getCount() > 0) {
+				leaderboardName = mLeaderboardConnector
+						.getLeaderboardNameForLogging(leaderboardBuffer.get(0)
+								.getLeaderboardId());
+			}
+		}
+
 		// First check if results can be processed.
 		if (statusCode != GamesClient.STATUS_OK || leaderboardBuffer == null
 				|| leaderboardBuffer.getCount() == 0
 				|| leaderboardScoresBuffer == null || mListener == null) {
 			if (DEBUG) {
-				String leaderboardName = "Unknown";
-				if (leaderboardBuffer != null
-						&& leaderboardBuffer.getCount() > 0) {
-					leaderboardName = leaderboardBuffer.get(0).getDisplayName();
-				}
 				Log.i(TAG,
 						"Invalid response when loading the first rank for leaderboard "
 								+ leaderboardName + ":\n" + "   statusCode: "
@@ -117,15 +138,20 @@ public class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener 
 			return;
 		}
 
+		assert (mLeaderboardConnector != null);
+
+		GamesClient gamesClient = mLeaderboardConnector.getGamesClient();
+		assert (gamesClient != null);
+
 		if (leaderboardScoresBuffer.getCount() > 0
-				&& mGamesClient.getCurrentPlayerId().equals(
+				&& gamesClient.getCurrentPlayerId().equals(
 						leaderboardScoresBuffer.get(0).getScoreHolder()
 								.getPlayerId())) {
 			// A leaderboard score for the current player is found.
 			if (DEBUG) {
 				Log.i(TAG,
 						"Rank has been loaded for current player on leaderboard "
-								+ leaderboardBuffer.get(0).getDisplayName());
+								+ leaderboardName);
 			}
 
 			mListener.onLeaderboardRankLoaded(leaderboardBuffer.get(0),
@@ -138,7 +164,7 @@ public class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener 
 			if (DEBUG) {
 				Log.i(TAG,
 						"No rank was found for current player on leaderboard "
-								+ leaderboardBuffer.get(0).getDisplayName());
+								+ leaderboardName);
 			}
 
 			mListener.onNoRankFound(leaderboardBuffer.get(0));

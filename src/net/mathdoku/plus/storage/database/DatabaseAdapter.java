@@ -240,10 +240,11 @@ public abstract class DatabaseAdapter {
 	 * 
 	 * @param value
 	 *            The string value to be converted.
-	 * @return The long value representing the given string value.
+	 * @return The long value representing the given string value. 0 in case a
+	 *         null value was passed.
 	 */
 	public static long valueOfSQLiteTimestamp(String value) {
-		return java.sql.Timestamp.valueOf(value).getTime();
+		return (value == null ? 0 : java.sql.Timestamp.valueOf(value).getTime());
 	}
 
 	/**

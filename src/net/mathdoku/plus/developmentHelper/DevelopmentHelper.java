@@ -4,15 +4,20 @@ import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
+import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.gridGenerating.DialogPresentingGridGenerator;
 import net.mathdoku.plus.gridGenerating.GridGenerator;
 import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
+import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.storage.database.DatabaseHelper;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 import net.mathdoku.plus.util.Util;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences.Editor;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 
 /**
  * The Development Helper class is intended to support Development and Unit
@@ -355,6 +360,59 @@ public class DevelopmentHelper {
 			prefeditor.putBoolean(Preferences.ARCHIVE_AVAILABLE, true);
 			prefeditor.putBoolean(Preferences.STATISTICS_AVAILABLE, true);
 			prefeditor.commit();
+		}
+	}
+
+	/**
+	 * Ask the user to enter a score manually for the given puzzle. This dialog
+	 * is intended for testing the leaderboards.
+	 * 
+	 * @param puzzleFragmentActivity
+	 * @param grid
+	 */
+	public static void submitManualScore(
+			final PuzzleFragmentActivity puzzleFragmentActivity, final Grid grid) {
+		if (Config.mAppMode == AppMode.DEVELOPMENT
+				&& puzzleFragmentActivity.getResources()
+						.getString(R.string.app_id).equals("282401107486")) {
+			LayoutInflater li = LayoutInflater.from(puzzleFragmentActivity);
+			View view = li.inflate(R.layout.leaderboard_score, null);
+
+			final TextView manualLeaderboardScore = (TextView) view
+					.findViewById(R.id.manual_leaderboard_score);
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(
+					puzzleFragmentActivity);
+			builder.setTitle("Manually submit a score to the leaderboard")
+					.setView(view)
+					.setPositiveButton("Submit",
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int id) {
+									// Change real score of puzzle with manually
+									// entered score
+									long score = Long
+											.valueOf(manualLeaderboardScore
+													.getText().toString());
+									if (score > 0) {
+										// Manipulate grid and statistics so it
+										// can be re-submitted again.
+										if (grid.isSolutionRevealed()) {
+											grid.unrevealSolution();
+										}
+										GridStatistics gridStatistics = grid
+												.getGridStatistics();
+										gridStatistics.mElapsedTime = score;
+										gridStatistics.mCheatPenaltyTime = 0;
+										gridStatistics.mReplayCount = 0;
+										puzzleFragmentActivity
+												.onPuzzleFinishedListener(grid);
+									}
+								}
+							});
+			AlertDialog dialog = builder.create();
+			dialog.show();
 		}
 	}
 }

@@ -28,6 +28,7 @@ import android.graphics.Paint.Align;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -49,10 +50,8 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 
 	private static DigitPositionGrid mDigitPositionGrid = null;
 
+	private Grid mGrid;
 	private GridStatistics mGridStatistics;
-
-	private int mSolvingAttemptId;
-	private int mGridSize;
 
 	// Tags to identify the statistics sections which are searched by tag.
 	public static final String AVOIDABLE_MOVES_CHART_TAG_ID = "FinishedPuzzleAvoidableMovesChart";
@@ -71,7 +70,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 				container, savedInstanceState);
 
 		Bundle args = getArguments();
-		mSolvingAttemptId = args.getInt(BUNDLE_KEY_SOLVING_ATTEMPT_ID);
+		int solvingAttemptId = args.getInt(BUNDLE_KEY_SOLVING_ATTEMPT_ID);
 
 		// Get preferences
 		mPreferences = Preferences.getInstance();
@@ -86,12 +85,10 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 				.findViewById(R.id.grid_viewer_view);
 
 		// Load grid from database
-		Grid grid = new Grid();
-		if (grid.load(mSolvingAttemptId)) {
-			mGridSize = grid.getGridSize();
-
+		mGrid = new Grid();
+		if (mGrid.load(solvingAttemptId)) {
 			// Load grid into grid view
-			mGridViewerView.loadNewGrid(grid);
+			mGridViewerView.loadNewGrid(mGrid);
 
 			// Set background color of button
 			Button archiveActionButton = (Button) rootView
@@ -121,7 +118,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 				});
 
 			} else if (getActivity() instanceof ArchiveFragmentActivity
-					&& grid.isActive()) {
+					&& mGrid.isActive()) {
 				// The fragment is started by the archive fragment activity. In
 				// case the puzzle isn't finished the action button reloads the
 				// puzzle so it can be continued.
@@ -148,12 +145,12 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 			// In case the grid isn't finished, the digit position grid type
 			// has to be determined for positioning maybe values inside the
 			// cells.
-			if (grid.isActive()) {
+			if (mGrid.isActive()) {
 				// Only create the digit position grid if needed
 				if (mDigitPositionGrid == null
-						|| !mDigitPositionGrid.isReusable(grid.getGridSize())) {
+						|| !mDigitPositionGrid.isReusable(mGrid.getGridSize())) {
 					mDigitPositionGrid = new DigitPositionGrid(
-							grid.getGridSize());
+							mGrid.getGridSize());
 				}
 
 				// Propagate setting to the grid view for displaying maybe
@@ -162,14 +159,14 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 
 				// Disable the grid as the user should not be able to click
 				// cells in the archive view
-				grid.setActive(false);
+				mGrid.setActive(false);
 			}
 
 			// Display the difficulty rating.
 			final VerticalRatingBar puzzleParameterDifficultyRatingBar = (VerticalRatingBar) rootView
 					.findViewById(R.id.puzzleParameterDifficultyRatingBar);
 			puzzleParameterDifficultyRatingBar.setEnabled(false);
-			switch (grid.getPuzzleComplexity()) {
+			switch (mGrid.getPuzzleComplexity()) {
 			case RANDOM:
 				// Note: puzzles will never be stored with this complexity.
 				puzzleParameterDifficultyRatingBar.setNumStars(0);
@@ -197,17 +194,17 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 			mGridViewerView.setMaximumWidth(getMaxContentHeight(0, 20));
 
 			// Load grid statistics
-			mGridStatistics = grid.getGridStatistics();
+			mGridStatistics = mGrid.getGridStatistics();
 
 			// Set date created
-			if (grid.getDateCreated() > 0) {
+			if (mGrid.getDateCreated() > 0) {
 				((TableRow) rootView
 						.findViewById(R.id.statistics_general_date_created_row))
 						.setVisibility(View.VISIBLE);
 				((TextView) rootView
 						.findViewById(R.id.statistics_general_date_created))
 						.setText(DateFormat.getDateTimeInstance().format(
-								grid.getDateCreated()));
+								mGrid.getDateCreated()));
 			}
 
 			// Set date finished
@@ -233,13 +230,13 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 			}
 
 			// Show elapsed time for puzzles which are solved manually.
-			if (grid.isActive() == false) {
+			if (mGrid.isActive() == false) {
 				((TableRow) rootView
 						.findViewById(R.id.statistics_general_elapsed_time_row))
 						.setVisibility(View.VISIBLE);
 				((TextView) rootView
 						.findViewById(R.id.statistics_general_elapsed_time))
-						.setText(Util.durationTimeToString(grid
+						.setText(Util.durationTimeToString(mGrid
 								.getElapsedTime()));
 			}
 
@@ -303,13 +300,14 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 	 * @return True in case the chart has been created. False otherwise.
 	 */
 	private boolean createProgressChart() {
-		if (mGridSize == 0 || mGridStatistics == null) {
+		if (mGrid == null || mGrid.getGridSize() == 0
+				|| mGridStatistics == null) {
 			// No progress to report.
 			return false;
 		}
 
 		// Determine total number of cells in grid
-		float totalCells = mGridSize * mGridSize;
+		float totalCells = mGrid.getGridSize() * mGrid.getGridSize();
 
 		// Count number of categories. Chart will only be displayed it minimal 2
 		// categories are shown.
@@ -660,7 +658,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 	 *         fragment.
 	 */
 	public int getSolvingAttemptId() {
-		return mSolvingAttemptId;
+		return mGrid.getSolvingAttemptId();
 	}
 
 	@Override
@@ -677,5 +675,24 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 				R.dimen.text_size_default) * 2;
 
 		return maxContentHeight;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem menuItem) {
+		int menuId = menuItem.getItemId();
+		switch (menuId) {
+		default:
+			// Chosen menu item is not processed.
+			return false;
+		}
+	}
+
+	/**
+	 * Get the grid which is displayed in the archive fragment.
+	 * 
+	 * @return The grid which is displayed in the archive fragment.
+	 */
+	public Grid getGrid() {
+		return mGrid;
 	}
 }

@@ -14,12 +14,16 @@ import net.mathdoku.plus.gridGenerating.DialogPresentingGridGenerator;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
 import net.mathdoku.plus.leaderboard.LeaderboardConnector;
+import net.mathdoku.plus.leaderboard.LeaderboardType;
 import net.mathdoku.plus.leaderboard.ui.LeaderboardFragmentActivity;
 import net.mathdoku.plus.painter.Painter;
+import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.storage.GameFileConverter;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter.SizeFilter;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter.StatusFilter;
+import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter;
+import net.mathdoku.plus.storage.database.LeaderboardRankRow;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.tip.TipArchiveAvailable;
 import net.mathdoku.plus.tip.TipDialog;
@@ -86,7 +90,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	private String[] mNavigationDrawerItems;
 
 	// Reference to the leaderboard
-	private LeaderboardConnector mLeaderboard;
+	private LeaderboardConnector mLeaderboardConnector;
 
 	// Object to save data on a configuration change. Note: for the puzzle
 	// fragment the RetainInstance property is set to true.
@@ -334,7 +338,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 		// Determine visibility of sign out button
 		menu.findItem(R.id.action_sign_out_google_play_services).setVisible(
-				mLeaderboard != null && mLeaderboard.isSignedIn());
+				mLeaderboardConnector != null
+						&& mLeaderboardConnector.isSignedIn());
 
 		// When running in development mode, an extra menu is available.
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
@@ -416,7 +421,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			signOut();
 
 			// Clear the leaderboard.
-			mLeaderboard = null;
+			mLeaderboardConnector = null;
 			return true;
 		case R.id.action_puzzle_settings:
 			startActivity(new Intent(this, PuzzlePreferenceActivity.class));
@@ -428,6 +433,11 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			this.openHelpDialog(false);
 			return true;
 		default:
+			if (mArchiveFragment != null
+					&& mArchiveFragment.onOptionsItemSelected(menuItem)) {
+				return true;
+			}
+
 			// When running in development mode it should be checked whether a
 			// development menu item was selected.
 			if (Config.mAppMode != AppMode.DEVELOPMENT) {
@@ -438,6 +448,11 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 					mPuzzleFragment.stopTimer();
 				}
 
+				if (menuId == R.id.submit_manual_score
+						&& mArchiveFragment != null) {
+					DevelopmentHelper.submitManualScore(this,
+							mArchiveFragment.getGrid());
+				}
 				if (DevelopmentHelper.onDevelopmentHelperOption(this, menuId)) {
 					// A development helper menu option was processed
 					// succesfully.
@@ -747,32 +762,50 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			GridGeneratingParameters gridGeneratingParameters = grid
 					.getGridGeneratingParameters();
 
-			// Check if a new top score is achieved.
-			boolean newTopScore = (mLeaderboard != null && mLeaderboard
-					.isTopScore(grid.getGridSize(),
-							gridGeneratingParameters.mPuzzleComplexity,
-							gridGeneratingParameters.mHideOperators,
-							grid.getElapsedTime()));
+			// Determine the leaderboard for this puzzle
+			int leaderboardResId = LeaderboardType.getResId(grid.getGridSize(),
+					gridGeneratingParameters.mHideOperators,
+					gridGeneratingParameters.mPuzzleComplexity);
+			String leaderboardId = getResources().getString(leaderboardResId);
 
-			// Submit score to Google+ in case the puzzle was solved without
-			// using
-			// cheats.
-			if (mLeaderboard == null || mLeaderboard.isSignedIn() == false) {
+			// Retrieve the best score for this leaderboard
+			LeaderboardRankRow leaderboardRankRow = new LeaderboardRankDatabaseAdapter()
+					.get(leaderboardId);
+
+			// Check if a new top score is achieved.
+			boolean newTopScore = (leaderboardRankRow == null || grid
+					.getElapsedTime() < leaderboardRankRow.mRawScore);
+
+			// Store the top score in the leaderboard table.
+			if (newTopScore) {
+				new LeaderboardRankDatabaseAdapter().updateOrInsert(
+						leaderboardId, grid.getGridStatistics().mId,
+						grid.getElapsedTime());
+			}
+
+			// Submit score to Google+ in case already signed in.
+			if (mLeaderboardConnector == null
+					|| mLeaderboardConnector.isSignedIn() == false) {
 				// The user is not logged in to Google Plus. Check whether the
-				// sign
-				// in dialog should be shown.
+				// sign in dialog should be shown.
 				boolean hideTillNextTopScore = mMathDokuPreferences
 						.isHideTillNextTopScoreAchievedChecked();
 				if (hideTillNextTopScore == false || newTopScore == true) {
+					// In case the google sign dialog is shown, the score will
+					// be processed after the sign in has succeeded.
 					new GooglePlusSignInDialog(this, mMathDokuPreferences)
 							.displayCheckboxHideTillNextTopScoreAchieved(
 									hideTillNextTopScore).show();
 				}
-			} else {
-				mLeaderboard.submitScore(grid.getGridSize(),
-						gridGeneratingParameters.mPuzzleComplexity,
-						gridGeneratingParameters.mHideOperators,
-						grid.getElapsedTime());
+			} else if (newTopScore) {
+				GridStatistics gridStatistics = grid.getGridStatistics();
+				if (gridStatistics != null) {
+					mLeaderboardConnector.submitScore(gridStatistics.mId,
+							grid.getGridSize(),
+							gridGeneratingParameters.mPuzzleComplexity,
+							gridGeneratingParameters.mHideOperators,
+							grid.getElapsedTime());
+				}
 			}
 		}
 	}
@@ -1130,7 +1163,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 					.getString(R.string.action_leaderboards))) {
 				// Either start the leaderboards activity or display the sign in
 				// dialog.
-				if (mLeaderboard != null && mLeaderboard.isSignedIn()) {
+				if (mLeaderboardConnector != null
+						&& mLeaderboardConnector.isSignedIn()) {
 					Intent intentLeaderboards = new Intent(
 							PuzzleFragmentActivity.this,
 							LeaderboardFragmentActivity.class);
@@ -1315,7 +1349,15 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		gamesClient.setViewForPopups(findViewById(android.R.id.content));
 
 		// Set up leaderboard
-		mLeaderboard = new LeaderboardConnector(this, gamesClient);
+		mLeaderboardConnector = new LeaderboardConnector(this, gamesClient);
+
+		// Submit or re-submit leaderboard scores for which the rank information
+		// is missing.
+		mLeaderboardConnector.updateLeaderboardsWithMissingRankInformation();
+
+		// Check for leaderboard scores for which the leaderboard rank
+		// information is outdated.
+		// mLeaderboardConnector.updateRankingDetails();
 	}
 
 	/**
