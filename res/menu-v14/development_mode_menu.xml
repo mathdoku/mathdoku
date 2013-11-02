@@ -28,11 +28,12 @@
                 android:title="Delete database + prefs"
                 tools:ignore="HardcodedText"/>
             <item
+                android:id="@+id/development_mode_leaderboard_menu"
                 android:title="Leaderboard"
                 tools:ignore="HardcodedText">
                 <menu>
                     <item
-                        android:id="@+id/submit_manual_score"
+                        android:id="@+id/development_mode_submit_manual_score"
                         android:title="Submit score"
                         tools:ignore="HardcodedText"/>
                 </menu>

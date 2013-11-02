@@ -345,6 +345,10 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		// When running in development mode, an extra menu is available.
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			menu.findItem(R.id.menu_development_mode).setVisible(true);
+			menu.findItem(R.id.development_mode_leaderboard_menu).setVisible(
+					mArchiveFragment != null);
+			menu.findItem(R.id.development_mode_submit_manual_score)
+					.setVisible(mArchiveFragment != null);
 		}
 
 		return super.onPrepareOptionsMenu(menu);
@@ -449,7 +453,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 					mPuzzleFragment.stopTimer();
 				}
 
-				if (menuId == R.id.submit_manual_score
+				if (menuId == R.id.development_mode_submit_manual_score
 						&& mArchiveFragment != null) {
 					DevelopmentHelper.submitManualScore(this,
 							mArchiveFragment.getGrid());
