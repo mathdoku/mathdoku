@@ -1,5 +1,8 @@
 package net.mathdoku.plus.storage.database;
 
+import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter.RankStatus;
+import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter.ScoreOrigin;
+
 /**
  * Mapping for records in database table Grid
  * 
@@ -7,6 +10,9 @@ package net.mathdoku.plus.storage.database;
 public class LeaderboardRankRow {
 	// Leaderboard id
 	public String mLeaderboardId;
+
+	// Origin of the score
+	public ScoreOrigin mScoreOrigin;
 
 	// The unique row id of the statistics row which is the best rank for the
 	// player
@@ -24,6 +30,7 @@ public class LeaderboardRankRow {
 	// same raw score can be raised as other players score better than this
 	// score. In case the player improves his best score the rank will stay the
 	// same or be decreased.
+	public RankStatus mRankStatus;
 	public long mRank;
 	public String mRankDisplay;
 

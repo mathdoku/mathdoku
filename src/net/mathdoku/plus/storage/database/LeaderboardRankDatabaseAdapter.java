@@ -23,19 +23,46 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	// debug information
 	public static final boolean DEBUG_SQL = (Config.mAppMode == AppMode.DEVELOPMENT) && true;
 
-	// Columns for table statistics
+	// Score origins statuses:
+	// LOCAL_DATABASE: the score is based on a solving attempt which is stored
+	// in the local database.
+	// EXTERNAL: the score is based on Google Play Services. This
+	// score was achieved by the current player on another device or on this
+	// device before reinstalling the app or clearing the database.
+	// NONE: the leaderboard has never been played by this user. No score exists
+	// in the local database neither is ranked score available on Google Play
+	// Services.
+	public enum ScoreOrigin {
+		LOCAL_DATABASE, EXTERNAL, NONE
+	}
+
+	// The ranking information statuses:
+	// TO_BE_UPDATED: ranking information is not yet available or needs to be
+	// updated.
+	// TOP_RANK_UPDATED: ranking information is updated with the top rank for
+	// the player as registered on Google Play Services.
+	// TOP_RANK_NOT_AVAILABLE: ranking information has been retrieved but was
+	// not found for the current player.
+	public enum RankStatus {
+		TO_BE_UPDATED, TOP_RANK_UPDATED, TOP_RANK_NOT_AVAILABLE
+	}
+
+	// Columns for table statistics.
 	protected static final String TABLE = "leaderboard_rank";
 	protected static final String KEY_ROWID = "_id";
 	protected static final String KEY_LEADERBOARD_ID = "leaderboard_id";
-	protected static final String KEY_STATISTICS_ID = "statistics_id";
-	protected static final String KEY_RAW_SCORE = "raw_score";
-	protected static final String KEY_DATE_SUBMITTED = "date_submitted";
+	protected static final String KEY_SCORE_ORIGIN = "score_origin";
+	protected static final String KEY_SCORE_STATISTICS_ID = "score_statistics_id";
+	protected static final String KEY_SCORE_RAW_SCORE = "score_raw_score";
+	protected static final String KEY_SCORE_DATE_SUBMITTED = "score_date_submitted";
+	protected static final String KEY_RANK_STATUS = "rank_status";
 	protected static final String KEY_RANK = "rank";
 	protected static final String KEY_RANK_DISPLAY = "rank_display";
-	protected static final String KEY_RANK_DATE_LAST_UPDATED = "date_last_updated";
+	protected static final String KEY_RANK_DATE_LAST_UPDATED = "rank_date_last_updated";
 
 	private static final String[] allColumns = { KEY_ROWID, KEY_LEADERBOARD_ID,
-			KEY_STATISTICS_ID, KEY_RAW_SCORE, KEY_DATE_SUBMITTED, KEY_RANK,
+			KEY_SCORE_ORIGIN, KEY_SCORE_STATISTICS_ID, KEY_SCORE_RAW_SCORE,
+			KEY_SCORE_DATE_SUBMITTED, KEY_RANK_STATUS, KEY_RANK,
 			KEY_RANK_DISPLAY, KEY_RANK_DATE_LAST_UPDATED };
 
 	@Override
@@ -53,9 +80,11 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 				TABLE,
 				createColumn(KEY_ROWID, "integer", "primary key autoincrement"),
 				createColumn(KEY_LEADERBOARD_ID, "text", "not null unique"),
-				createColumn(KEY_STATISTICS_ID, "integer", null),
-				createColumn(KEY_RAW_SCORE, "long", " not null"),
-				createColumn(KEY_DATE_SUBMITTED, "datetime", " not null"),
+				createColumn(KEY_SCORE_ORIGIN, "text", " not null"),
+				createColumn(KEY_SCORE_STATISTICS_ID, "integer", null),
+				createColumn(KEY_SCORE_RAW_SCORE, "long", null),
+				createColumn(KEY_SCORE_DATE_SUBMITTED, "datetime", null),
+				createColumn(KEY_RANK_STATUS, "text", " not null"),
 				createColumn(KEY_RANK, "long", null),
 				createColumn(KEY_RANK_DISPLAY, "text", null),
 				createColumn(KEY_RANK_DATE_LAST_UPDATED, "datetime", null));
@@ -114,56 +143,45 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	}
 
 	/**
-	 * Updates the raw score of a leaderboard. In case no leaderboard record yet
-	 * exists, it will be created.
+	 * Insert a new initialized leaderboard.
 	 * 
 	 * @param leaderboardId
 	 *            The leaderboard is as used by Google Play Services.
-	 * @param statisticsId
-	 *            The statistics id of the game in which the score was achieved.
-	 *            Should be 0 in case the score was achieved on another device
-	 *            or before the most recent re-install of the app.
-	 * @param rawScore
-	 *            The raw score (milliseconds).
-	 * @return The rowid of the leaderboard created. -1 in case of an error.
+	 * @return The unique rowid of the leaderboard rank created. -1 in case of
+	 *         an error.
 	 * @throws InvalidParameterException
 	 *             In case the leaderboard id is empty or null.
 	 * @throws SQLException
 	 *             In case the leaderboard id is not unique.
 	 */
-	public int updateOrInsert(String leaderboardId, int statisticsId,
-			long rawScore) throws InvalidParameterException, SQLException {
+	public int insertInitializedLeaderboard(String leaderboardId)
+			throws InvalidParameterException, SQLException {
 		int id = -1;
 
 		if (leaderboardId == null || leaderboardId.trim().equals("")) {
 			throw new InvalidParameterException(
 					"Parameter LeaderboardId is not specified.");
 		}
-		if (statisticsId < 0) {
-			throw new InvalidParameterException(
-					"Parameter statisticsId is invalid.");
-		}
-		if (rawScore <= 0) {
-			throw new InvalidParameterException(
-					"Parameter rawScore Id is invalid.");
-		}
 
 		ContentValues contentValues = new ContentValues();
 		contentValues.put(KEY_LEADERBOARD_ID, leaderboardId);
-		contentValues.put(KEY_STATISTICS_ID, statisticsId);
-		contentValues.put(KEY_RAW_SCORE, rawScore);
-		contentValues.put(KEY_DATE_SUBMITTED,
-				toSQLiteTimestamp(new java.util.Date().getTime()));
+
+		contentValues.put(KEY_SCORE_ORIGIN, ScoreOrigin.NONE.toString());
+		contentValues.put(KEY_SCORE_STATISTICS_ID, (Integer) null);
+		contentValues.put(KEY_SCORE_RAW_SCORE, (Long) null);
+		contentValues.put(KEY_SCORE_DATE_SUBMITTED, (String) null);
 
 		// Rank information is cleared explicitly as the rank information does
 		// not correspond with the score in case an existing leaderboard is
 		// updated.
+		contentValues.put(KEY_RANK_STATUS, RankStatus.TO_BE_UPDATED.toString());
 		contentValues.put(KEY_RANK, (String) null);
 		contentValues.put(KEY_RANK_DISPLAY, (String) null);
 		contentValues.put(KEY_RANK_DATE_LAST_UPDATED, (String) null);
 
 		try {
-			id = (int) mSqliteDatabase.replace(TABLE, null, contentValues);
+			id = (int) mSqliteDatabase
+					.insertOrThrow(TABLE, null, contentValues);
 		} catch (SQLiteConstraintException e) {
 			InvalidParameterException ipe = new InvalidParameterException(
 					e.getLocalizedMessage());
@@ -174,13 +192,123 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	}
 
 	/**
+	 * Updates the leaderboard with a score which is related to a solving
+	 * attempt which is stored in the local database.
+	 * 
+	 * @param leaderboardId
+	 *            The leaderboard is as used by Google Play Services.
+	 * @param statisticsId
+	 *            The statistics id of the game in which the score was achieved.
+	 * @param rawScore
+	 *            The raw score (milliseconds).
+	 * @return True in case successfully updated. False otherwise.
+	 * @throws InvalidParameterException
+	 *             In case the leaderboard id is empty or null.
+	 * @throws SQLException
+	 *             In case the leaderboard id is not unique.
+	 */
+	public boolean updateWithLocalScore(String leaderboardId, int statisticsId,
+			long rawScore) throws InvalidParameterException, SQLException {
+		if (leaderboardId == null || leaderboardId.trim().equals("")) {
+			throw new InvalidParameterException(
+					"Parameter LeaderboardId is not specified.");
+		}
+		if (statisticsId <= 0) {
+			throw new InvalidParameterException(
+					"Parameter statisticsId is invalid.");
+		}
+		if (rawScore <= 0) {
+			throw new InvalidParameterException(
+					"Parameter rawScore Id is invalid.");
+		}
+
+		ContentValues contentValues = new ContentValues();
+		contentValues.put(KEY_LEADERBOARD_ID, leaderboardId);
+
+		contentValues.put(KEY_SCORE_ORIGIN,
+				ScoreOrigin.LOCAL_DATABASE.toString());
+		contentValues.put(KEY_SCORE_STATISTICS_ID, statisticsId);
+		contentValues.put(KEY_SCORE_RAW_SCORE, rawScore);
+		contentValues.put(KEY_SCORE_DATE_SUBMITTED,
+				toSQLiteTimestamp(new java.util.Date().getTime()));
+
+		// Rank information is cleared explicitly as the rank information does
+		// not correspond with the score in case an existing leaderboard is
+		// updated.
+		contentValues.put(KEY_RANK_STATUS, RankStatus.TO_BE_UPDATED.toString());
+		contentValues.put(KEY_RANK, (String) null);
+		contentValues.put(KEY_RANK_DISPLAY, (String) null);
+		contentValues.put(KEY_RANK_DATE_LAST_UPDATED, (String) null);
+
+		return (mSqliteDatabase.update(TABLE, contentValues, KEY_LEADERBOARD_ID
+				+ " = " + stringBetweenQuotes(leaderboardId), null) == 1);
+	}
+
+	/**
+	 * Updates the leaderboard with a score which is retrieved from Google Play
+	 * Services. The score is not related to a solving attempt which is stored
+	 * in the local database. This could be a score which was achieved on
+	 * another device by or possible on the current device in case the app has
+	 * been re-installed or the database was manually removed.
+	 * 
+	 * @param leaderboardId
+	 *            The leaderboard is as used by Google Play Services.
+	 * @param rawScore
+	 *            The raw score (milliseconds).
+	 * @param rank
+	 *            The rank for the leaderboard on Google Play Service
+	 * @param rankDisplay
+	 *            The rank for the leaderboard as displayed on Google Play
+	 *            Service
+	 * @return True in case successfully updated. False otherwise.
+	 * @throws InvalidParameterException
+	 *             In case the leaderboard id is empty or null.
+	 * @throws SQLException
+	 *             In case the leaderboard id is not unique.
+	 */
+	public boolean updateWithGooglePlayScore(String leaderboardId,
+			long rawScore, long rank, String rankDisplay)
+			throws InvalidParameterException, SQLException {
+		if (leaderboardId == null || leaderboardId.trim().equals("")) {
+			throw new InvalidParameterException(
+					"Parameter LeaderboardId is not specified.");
+		}
+		if (rawScore <= 0) {
+			throw new InvalidParameterException(
+					"Parameter rawScore Id is invalid.");
+		}
+
+		String timestamp = toSQLiteTimestamp(new java.util.Date().getTime());
+
+		ContentValues contentValues = new ContentValues();
+		contentValues.put(KEY_LEADERBOARD_ID, leaderboardId);
+
+		contentValues.put(KEY_SCORE_ORIGIN, ScoreOrigin.EXTERNAL.toString());
+		contentValues.put(KEY_SCORE_STATISTICS_ID, 0);
+		contentValues.put(KEY_SCORE_RAW_SCORE, rawScore);
+		contentValues.put(KEY_SCORE_DATE_SUBMITTED, timestamp);
+
+		// Rank information is cleared explicitly as the rank information does
+		// not correspond with the score in case an existing leaderboard is
+		// updated.
+		contentValues.put(KEY_RANK_STATUS,
+				RankStatus.TOP_RANK_UPDATED.toString());
+		contentValues.put(KEY_RANK, rank);
+		contentValues.put(KEY_RANK_DISPLAY, rankDisplay);
+		contentValues.put(KEY_RANK_DATE_LAST_UPDATED, timestamp);
+
+		return (mSqliteDatabase.update(TABLE, contentValues, KEY_LEADERBOARD_ID
+				+ " = " + stringBetweenQuotes(leaderboardId), null) == 1);
+	}
+
+	/**
 	 * Updates the ranking information for a leaderboard.
 	 * 
-	 * @return The rowid of the leaderboard created. -1 in case of an error.
+	 * @return True in case successfully updated. False otherwise.
 	 * @throws InvalidParameterException
 	 *             In case the leaderboard id is empty or null.
 	 */
-	public boolean updateRank(String leaderboardId, long rank,
+	public boolean updateWithGooglePlayRank(String leaderboardId, long rank,
 			String rankDisplay) throws InvalidParameterException, SQLException {
 		if (leaderboardId == null || leaderboardId.trim().equals("")) {
 			throw new InvalidParameterException(
@@ -189,6 +317,35 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 
 		// Update the ranking fields.
 		ContentValues contentValues = new ContentValues();
+		contentValues.put(KEY_RANK_STATUS,
+				RankStatus.TOP_RANK_UPDATED.toString());
+		contentValues.put(KEY_RANK, rank);
+		contentValues.put(KEY_RANK_DISPLAY, rankDisplay);
+		contentValues.put(KEY_RANK_DATE_LAST_UPDATED,
+				toSQLiteTimestamp(new java.util.Date().getTime()));
+
+		return (mSqliteDatabase.update(TABLE, contentValues, KEY_LEADERBOARD_ID
+				+ " = " + stringBetweenQuotes(leaderboardId), null) == 1);
+	}
+
+	/**
+	 * Updates the ranking information for a leaderboard.
+	 * 
+	 * @return True in case successfully updated. False otherwise.
+	 * @throws InvalidParameterException
+	 *             In case the leaderboard id is empty or null.
+	 */
+	public boolean updateWithGooglePlayRankNotAvailable(String leaderboardId)
+			throws InvalidParameterException, SQLException {
+		if (leaderboardId == null || leaderboardId.trim().equals("")) {
+			throw new InvalidParameterException(
+					"LeaderboardId is not specified.");
+		}
+
+		// Update the ranking fields.
+		ContentValues contentValues = new ContentValues();
+		contentValues.put(KEY_RANK_STATUS,
+				RankStatus.TOP_RANK_NOT_AVAILABLE.toString());
 		contentValues.put(KEY_RANK, (String) null);
 		contentValues.put(KEY_RANK_DISPLAY, (String) null);
 		contentValues.put(KEY_RANK_DATE_LAST_UPDATED,
@@ -247,12 +404,15 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		LeaderboardRankRow leaderboardRankRow = new LeaderboardRankRow();
 		leaderboardRankRow.mLeaderboardId = cursor.getString(cursor
 				.getColumnIndexOrThrow(KEY_LEADERBOARD_ID));
+		leaderboardRankRow.mScoreOrigin = ScoreOrigin.valueOf(cursor
+				.getString(cursor.getColumnIndexOrThrow(KEY_SCORE_ORIGIN)));
 		leaderboardRankRow.mStatisticsId = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_STATISTICS_ID));
+				.getColumnIndexOrThrow(KEY_SCORE_STATISTICS_ID));
 		leaderboardRankRow.mRawScore = cursor.getLong(cursor
-				.getColumnIndexOrThrow(KEY_RAW_SCORE));
+				.getColumnIndexOrThrow(KEY_SCORE_RAW_SCORE));
 		leaderboardRankRow.mDateSubmitted = valueOfSQLiteTimestamp(cursor
-				.getString(cursor.getColumnIndexOrThrow(KEY_DATE_SUBMITTED)));
+				.getString(cursor
+						.getColumnIndexOrThrow(KEY_SCORE_DATE_SUBMITTED)));
 		leaderboardRankRow.mRank = cursor.getLong(cursor
 				.getColumnIndexOrThrow(KEY_RANK));
 		leaderboardRankRow.mRankDisplay = cursor.getString(cursor
@@ -260,6 +420,8 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		leaderboardRankRow.mDateLastUpdated = valueOfSQLiteTimestamp(cursor
 				.getString(cursor
 						.getColumnIndexOrThrow(KEY_RANK_DATE_LAST_UPDATED)));
+		leaderboardRankRow.mRankStatus = RankStatus.valueOf(cursor
+				.getString(cursor.getColumnIndexOrThrow(KEY_RANK_STATUS)));
 
 		return leaderboardRankRow;
 	}
@@ -277,18 +439,23 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	}
 
 	/**
-	 * Get the leaderboard for which the score has been submitted the longest
-	 * ago but for which no ranking information has been registered.
+	 * Get the most outdated leaderboard for which the ranking information needs
+	 * to be updated.
 	 * 
 	 * @return The leaderboard which needs to be submitted again.
 	 */
-	public LeaderboardRankRow getOldestLeaderboardWithoutRank() {
+	public LeaderboardRankRow getMostOutdatedLeaderboardRank() {
 		LeaderboardRankRow leaderboardRankRow = null;
 		Cursor cursor = null;
 		try {
-			cursor = mSqliteDatabase.query(true, TABLE, allColumns,
-					KEY_RANK_DATE_LAST_UPDATED + " is null", null, null, null,
-					KEY_DATE_SUBMITTED + " ASC", "1");
+			// Build selection and order by clauses
+			String selection = KEY_RANK_STATUS + " = "
+					+ stringBetweenQuotes(RankStatus.TO_BE_UPDATED.toString());
+			String orderBy = "IFNULL(" + KEY_RANK_DATE_LAST_UPDATED + ","
+					+ KEY_SCORE_DATE_SUBMITTED + ") ASC";
+
+			cursor = mSqliteDatabase.query(true, TABLE, allColumns, selection,
+					null, null, null, orderBy, "1");
 			leaderboardRankRow = toLeaderboardRankRow(cursor);
 		} catch (SQLiteException e) {
 			if (Config.mAppMode == AppMode.DEVELOPMENT) {

@@ -55,6 +55,9 @@ public class Preferences {
 	public final static boolean ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT = true;
 
 	// Leaderboard settings
+	public final static String LEADERBOARD_ALL_INITIALIZED = "leaderboard_all_initialized";
+	public final static boolean LEADERBOARD_ALL_INITIALIZED_DEFAULT = false;
+
 	public final static String LEADERBOARD_TAB_LAST_SHOWED = "leaderboard_tab_last_showed";
 	public final static int LEADERBOARD_TAB_LAST_SHOWED_DEFAULT = 0;
 
@@ -328,6 +331,8 @@ public class Preferences {
 		if (previousInstalledVersion < 587 && currentVersion >= 587) {
 			prefeditor.putInt(LEADERBOARD_TAB_LAST_SHOWED,
 					LEADERBOARD_TAB_LAST_SHOWED_DEFAULT);
+			prefeditor.putBoolean(LEADERBOARD_ALL_INITIALIZED,
+					LEADERBOARD_ALL_INITIALIZED_DEFAULT);
 		}
 
 		// Save
@@ -1163,6 +1168,26 @@ public class Preferences {
 	public void setLeaderboardsTabLastDisplayed(int tab) {
 		Editor prefeditor = mSharedPreferences.edit();
 		prefeditor.putInt(LEADERBOARD_TAB_LAST_SHOWED, tab);
+		prefeditor.apply();
+	}
+
+	/**
+	 * Checks whether all leaderboards have been initialized.
+	 * 
+	 * @return True in case all leaderboards have been initialized. False
+	 *         otherwise.
+	 */
+	public boolean isLeaderboardsInitialized() {
+		return mSharedPreferences.getBoolean(LEADERBOARD_ALL_INITIALIZED,
+				LEADERBOARD_ALL_INITIALIZED_DEFAULT);
+	}
+
+	/**
+	 * Set leaderboard initialization to initialized.
+	 */
+	public void setLeaderboardsInitialized() {
+		Editor prefeditor = mSharedPreferences.edit();
+		prefeditor.putBoolean(LEADERBOARD_ALL_INITIALIZED, true);
 		prefeditor.apply();
 	}
 }

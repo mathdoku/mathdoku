@@ -7,8 +7,9 @@ import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
 import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter;
+import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter.ScoreOrigin;
 import net.mathdoku.plus.storage.database.LeaderboardRankRow;
-import android.content.Context;
+import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 import android.content.res.Resources;
 import android.util.Log;
 import android.widget.Toast;
@@ -29,8 +30,8 @@ public class LeaderboardConnector {
 	// Reference to the games client of google play services.
 	private final GamesClient mGamesClient;
 
-	// Reference to the resources of an the app.
-	private final Context mContext;
+	// Reference to the context
+	private final PuzzleFragmentActivity mPuzzleFragmentActivity;
 
 	// Reference to translate leaderboard id's back to leaderboard indexes
 	private static ArrayList<String> mLeaderboardIds;
@@ -40,15 +41,16 @@ public class LeaderboardConnector {
 	 * 
 	 * @param resources
 	 */
-	public LeaderboardConnector(Context context, final GamesClient gamesClient) {
+	public LeaderboardConnector(PuzzleFragmentActivity puzzleFragmentActivity,
+			final GamesClient gamesClient) {
 		mGamesClient = gamesClient;
-		mContext = context;
+		mPuzzleFragmentActivity = puzzleFragmentActivity;
 
 		// Store all leaderboards id's and its corresponding leaderboard type
 		// index so the leaderboard index can be retrieved by searching on the
 		// leaderboard id.
 		mLeaderboardIds = new ArrayList<String>();
-		Resources resources = context.getResources();
+		Resources resources = mPuzzleFragmentActivity.getResources();
 		for (int i = 0; i < LeaderboardType.MAX_LEADERBOARDS; i++) {
 			mLeaderboardIds.add(i,
 					resources.getString(LeaderboardType.getResId(i)));
@@ -93,9 +95,10 @@ public class LeaderboardConnector {
 		}
 
 		// Determine the leaderboardId to which the score has to be submitted.
-		String leaderboardId = mContext.getResources().getString(
-				LeaderboardType.getResId(LeaderboardType.getIndex(gridSize,
-						hideOperators, puzzleComplexity)));
+		String leaderboardId = mPuzzleFragmentActivity.getResources()
+				.getString(
+						LeaderboardType.getResId(LeaderboardType.getIndex(
+								gridSize, hideOperators, puzzleComplexity)));
 
 		if (DEBUG) {
 			Log.i(TAG, "Submit new score " + timePlayed + " for leaderboard"
@@ -135,7 +138,7 @@ public class LeaderboardConnector {
 									// The leaderboard rank for the current
 									// player has been received.
 									onRankCurrentPlayerReceived(leaderboard,
-											leaderboardScore, false);
+											leaderboardScore, true);
 								}
 
 								@Override
@@ -160,7 +163,7 @@ public class LeaderboardConnector {
 	 * @param leaderboardScore
 	 */
 	private void onRankCurrentPlayerReceived(Leaderboard leaderboard,
-			LeaderboardScore leaderboardScore, boolean checkingAllLeaderboards) {
+			LeaderboardScore leaderboardScore, boolean displayToast) {
 		if (leaderboard == null || leaderboardScore == null) {
 			return;
 		}
@@ -173,50 +176,59 @@ public class LeaderboardConnector {
 					+ getLeaderboardNameForLogging(leaderboardId));
 		}
 
-		// Determine whether a toast should be displayed in case a the top score
-		// has been improved.
-		boolean displayToast = (checkingAllLeaderboards == false);
-
 		LeaderboardRankDatabaseAdapter leaderboardRankDatabaseAdapter = new LeaderboardRankDatabaseAdapter();
 
-		// Get the current score registered for the leaderboard. In case the use
-		// has re-installed the app or plays on different devices it can happen
-		// that the best score as registered on Google Play Services is better
-		// than the local top score. In such case the leaderboard toast should
-		// not be displayed.
+		// Get the current score registered for the leaderboard.
 		LeaderboardRankRow leaderboardRankRow = leaderboardRankDatabaseAdapter
 				.get(leaderboardId);
-		if (leaderboardRankRow == null
+		if (leaderboardRankRow.mScoreOrigin == ScoreOrigin.NONE
 				|| leaderboardRankRow.mRawScore > leaderboardScore
 						.getRawScore()) {
+			// The score which was registered on Google Play Services is better
+			// than the local top score. This can only happen in case the user
+			// has achieved that score using another device or in case the app
+			// is re-installed or the database was removed manually.
 			if (DEBUG) {
-				Log.i(TAG,
-						"The local top score ("
-								+ leaderboardRankRow.mRawScore
-								+ ") is not as good as the top score as registered on Google Play Services ("
-								+ leaderboardScore.getRawScore()
-								+ ") for leaderboard"
-								+ getLeaderboardNameForLogging(leaderboardId)
-								+ ". The local top score will be updated to this score.");
+				if (leaderboardRankRow.mScoreOrigin == ScoreOrigin.NONE) {
+					Log.i(TAG,
+							"No local score does yet exist for leaderboard "
+									+ getLeaderboardNameForLogging(leaderboardId)
+									+ ". The top score as registered on Google Play Services ("
+									+ leaderboardScore.getRawScore()
+									+ ") will be set as the best score for this leaderboard.");
+				} else {
+					Log.i(TAG,
+							"The local top score ("
+									+ leaderboardRankRow.mRawScore
+									+ ") is not as good as the top score as registered on Google Play Services ("
+									+ leaderboardScore.getRawScore()
+									+ ") for leaderboard"
+									+ getLeaderboardNameForLogging(leaderboardId)
+									+ ". The local top score will be updated to this score.");
+				}
 			}
 
-			// Update the locally store top score for this leaderboard.
-			leaderboardRankDatabaseAdapter.updateOrInsert(leaderboardId, 0,
-					leaderboardScore.getRawScore());
+			// Update both the score and ranking information for this
+			// leaderboard.
+			leaderboardRankDatabaseAdapter.updateWithGooglePlayScore(
+					leaderboardId, leaderboardScore.getRawScore(),
+					leaderboardScore.getRank(),
+					leaderboardScore.getDisplayRank());
 
 			// No toast may be displayed as the top score on Google Play
 			// Services was not improved.
 			displayToast = false;
+		} else {
+			// Update the leaderboard ranking information only
+			new LeaderboardRankDatabaseAdapter().updateWithGooglePlayRank(
+					leaderboardId, leaderboardScore.getRank(),
+					leaderboardScore.getDisplayRank());
 		}
-
-		// Update the leaderboard ranking information
-		new LeaderboardRankDatabaseAdapter().updateRank(leaderboardId,
-				leaderboardScore.getRank(), leaderboardScore.getDisplayRank());
 
 		// Display a toast containing the ranking information for the score.
 		if (displayToast) {
 			Toast.makeText(
-					mContext,
+					mPuzzleFragmentActivity,
 					"Leaderboard: " + leaderboard.getDisplayName() + "\n"
 							+ "Your rank: " + leaderboardScore.getDisplayRank()
 							+ "\n" + "Your time: "
@@ -230,12 +242,6 @@ public class LeaderboardConnector {
 								+ "Your time: "
 								+ leaderboardScore.getDisplayScore());
 			}
-		}
-
-		if (checkingAllLeaderboards) {
-			// XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxx
-			// TODO: replace this UGLY hack to process remaining leaderboard.
-			updateLeaderboardsWithMissingRankInformation();
 		}
 		return;
 	}
@@ -262,13 +268,41 @@ public class LeaderboardConnector {
 
 			@Override
 			public void run() {
-				// Get a leaderboard which needs processing
-				LeaderboardRankRow leaderboardRankRow = new LeaderboardRankDatabaseAdapter()
-						.getOldestLeaderboardWithoutRank();
+				// Initialize the leaderboards if needed.
+				if (mPuzzleFragmentActivity.mMathDokuPreferences
+						.isLeaderboardsInitialized() == false) {
+					LeaderboardRankDatabaseAdapter leaderboardRankDatabaseAdapter = new LeaderboardRankDatabaseAdapter();
+					for (String leaderboardId : mLeaderboardIds) {
+						// Create a leaderboard record if currently does not yet
+						// exist.
+						if (leaderboardRankDatabaseAdapter.get(leaderboardId) == null) {
+							leaderboardRankDatabaseAdapter
+									.insertInitializedLeaderboard(leaderboardId);
+						}
+					}
+					mPuzzleFragmentActivity.mMathDokuPreferences
+							.setLeaderboardsInitialized();
+					if (DEBUG) {
+						Log.i(TAG,
+								"All leaderboards have been initialized in the database.");
+					}
+				}
 
-				if (leaderboardRankRow != null) {
-					// Submit the score immediate and on confirmation update the
-					// rank information.
+				// Get a leaderboard which needs to be updated
+				LeaderboardRankRow leaderboardRankRow = new LeaderboardRankDatabaseAdapter()
+						.getMostOutdatedLeaderboardRank();
+				if (leaderboardRankRow == null) {
+					// No leadeboards to be updated.
+					if (DEBUG) {
+						Log.i(TAG, "All leaderboards are up to date.");
+					}
+					return;
+				}
+
+				if (leaderboardRankRow.mScoreOrigin == ScoreOrigin.LOCAL_DATABASE
+						&& leaderboardRankRow.mRawScore > 0) {
+					// A local top score was already registered for this
+					// leaderboard. This score is submitted.
 
 					if (DEBUG) {
 						Log.i(TAG,
@@ -313,20 +347,23 @@ public class LeaderboardConnector {
 														onRankCurrentPlayerReceived(
 																leaderboard,
 																leaderboardScore,
-																true);
+																false);
+														// Start process again
+														// for the next
+														// leaderboard.
+														updateLeaderboardsWithMissingRankInformation();
 													}
 
 													@Override
 													public void onNoRankFound(
 															Leaderboard leaderboard) {
 														// Nothing to do here.
-														// It should not be
-														// possible that the
-														// player rank is not
-														// found after it was
-														// just successfully
-														// submitted and
-														// received.
+														if (DEBUG) {
+															Log.i(TAG,
+																	"ERROR: it should not possible that a player rank "
+																			+ "is not found after it has just been "
+																			+ "successfully submitted and received.");
+														}
 													}
 												})
 												.loadCurrentPlayerRank(submitScoreResult
@@ -335,6 +372,48 @@ public class LeaderboardConnector {
 								}
 							}, leaderboardRankRow.mLeaderboardId,
 							leaderboardRankRow.mRawScore);
+				} else {
+					// Only the ranking information needs to be updated.
+					new LeaderboardRankPlayer(LeaderboardConnector.this,
+							new LeaderboardRankPlayer.Listener() {
+
+								@Override
+								public void onLeaderboardRankLoaded(
+										Leaderboard leaderboard,
+										LeaderboardScore leaderboardScore) {
+									onRankCurrentPlayerReceived(leaderboard,
+											leaderboardScore, false);
+									// Start process again
+									// for the next
+									// leaderboard.
+									updateLeaderboardsWithMissingRankInformation();
+								}
+
+								@Override
+								public void onNoRankFound(
+										Leaderboard leaderboard) {
+									// The current player has never played this
+									// leaderboard as no rank for this player
+									// was found on Google Play Services.
+									if (DEBUG) {
+										Log.i(TAG,
+												"No local top score and no ranking information "
+														+ "was found for the current user for leaderboard "
+														+ getLeaderboardNameForLogging(leaderboard
+																.getLeaderboardId())
+														+ ".");
+									}
+
+									new LeaderboardRankDatabaseAdapter()
+											.updateWithGooglePlayRankNotAvailable(leaderboard
+													.getLeaderboardId());
+
+									// Start process again for the next
+									// leaderboard.
+									updateLeaderboardsWithMissingRankInformation();
+								}
+							})
+							.loadCurrentPlayerRank(leaderboardRankRow.mLeaderboardId);
 				}
 			}
 		}).start();

@@ -778,7 +778,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 			// Store the top score in the leaderboard table.
 			if (newTopScore) {
-				new LeaderboardRankDatabaseAdapter().updateOrInsert(
+				new LeaderboardRankDatabaseAdapter().updateWithLocalScore(
 						leaderboardId, grid.getGridStatistics().mId,
 						grid.getElapsedTime());
 			}
@@ -1354,10 +1354,6 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		// Submit or re-submit leaderboard scores for which the rank information
 		// is missing.
 		mLeaderboardConnector.updateLeaderboardsWithMissingRankInformation();
-
-		// Check for leaderboard scores for which the leaderboard rank
-		// information is outdated.
-		// mLeaderboardConnector.updateRankingDetails();
 	}
 
 	/**
