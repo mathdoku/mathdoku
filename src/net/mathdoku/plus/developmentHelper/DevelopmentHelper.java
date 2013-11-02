@@ -65,9 +65,6 @@ public class DevelopmentHelper {
 			PuzzleFragmentActivity puzzleFragmentActivity, int menuId) {
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			switch (menuId) {
-			case R.id.development_mode_delete_database:
-				executeDeleteDatabase(puzzleFragmentActivity);
-				break;
 			case R.id.development_mode_generate_games:
 				// Generate games
 				generateGames(puzzleFragmentActivity);
@@ -78,8 +75,8 @@ public class DevelopmentHelper {
 			case R.id.development_mode_unlock_archive:
 				unlockArchiveAndStatistics();
 				return true;
-			case R.id.development_mode_clear_data:
-				deleteGamesAndPreferences(puzzleFragmentActivity);
+			case R.id.development_mode_delete_database_and_preferences:
+				deleteDatabaseAndPrefences(puzzleFragmentActivity);
 				return true;
 			default:
 				return false;
@@ -221,7 +218,7 @@ public class DevelopmentHelper {
 	 * @param puzzleFragmentActivity
 	 *            The activity in which context the preferences are reseted.
 	 */
-	public static void deleteGamesAndPreferences(
+	public static void deleteDatabaseAndPrefences(
 			final PuzzleFragmentActivity puzzleFragmentActivity) {
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -280,6 +277,10 @@ public class DevelopmentHelper {
 
 			// Delete the database.
 			puzzleFragmentActivity.deleteDatabase(DatabaseHelper.DATABASE_NAME);
+
+			// Also delete all preferences as some preferences relate to content
+			// in database.
+			executeDeleteAllPreferences();
 
 			// Reopen the database helper.
 			DatabaseHelper.getInstance(puzzleFragmentActivity);
