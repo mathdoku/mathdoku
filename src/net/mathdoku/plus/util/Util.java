@@ -164,7 +164,7 @@ public class Util {
 		// Build time string and ignore hours if not applicable.
 		String duration = "";
 		if (hours > 0) {
-			duration = String.format("%dh%dm%02ds", hours, minutes, seconds);
+			duration = String.format("%dh%02dm%02ds", hours, minutes, seconds);
 		} else {
 			duration = String.format("%dm%02ds", minutes, seconds);
 		}
