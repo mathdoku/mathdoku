@@ -561,6 +561,12 @@
     <!-- The text of the help dialog. -->
     <string name="leaderboard_help_dialog_general">In case you sign in to Google+ your best score for each type of puzzle is updated in the leaderboards. The leaderboards are grouped per size of the puzzle. You can choose additional filters to reduce the number of filters shown. Swipe from right to left to view the leaderboards of biggers puzzles. Swipe from left to right to view the leaderboard from smaller puzzles.</string>
 
+    <!-- The text in the leaderboards overview in case the user has not played this leaderboard. -->
+    <string name="leaderboard_not_played">You have not yet played this leaderboard.</string>
+
+    <!-- The text in the leaderboards overview in case the user has played this leaderboard. -->
+    <string name="leaderboard_score_label">Your best score</string>
+
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 

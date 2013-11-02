@@ -548,33 +548,25 @@
     <!-- The text of the help dialog. -->
     <string name="leaderboard_help_dialog_general">Als je inlogt met Google+ dan wordt de beste score voor ieder type puzzel bijgewerkt in de klassementen. De klassementen zijn gegroepeerd op grootte van de puzzel. Je kunt aanvullende filters instellen om het aantal getoonde klassementen te verminderen. Veeg van rechts naar links om de klassementen van grotere puzzels te bekijken. Veeg van links naar rechts om de klassementen van kleinere puzzels te bekijken.</string>
 
-    <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- The text in the leaderboards overview in case the user has not played this leaderboard. -->
+    <string name="leaderboard_not_played">Je hebt dit klassement nog niet gespeeld.</string>
+
+    <!-- The text in the leaderboards overview in case the user has played this leaderboard. -->
+    <string name="leaderboard_score_label">Jouw beste score/string>
+        <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
-    <!-- The message that appears when the player has solved the puzzle. -->
-    <string name="main_ui_solved_messsage">Opgelost!</string>
-
-    <!-- The message shown when no errors found when checking progress. -->
-    <string name="ProgressOK">Alles klopt tot nu toe</string>
-
-    <!-- The message shown when error(s) found when checking progress. -->
-    <string name="ProgressBad">Je hebt een fout gemaakt</string>
-
-    <!-- Units for time. -->
-    <string name="time_unit_seconds_singular">seconde</string>
-    <string name="time_unit_seconds_plural">seconden</string>
-    <string name="time_unit_minutes_singular">minuut</string>
-    <string name="time_unit_minutes_plural">minuten</string>
-    <string name="time_unit_hours_singular">uur</string>
-    <string name="time_unit_hours_plural">uren</string>
-    <string name="time_unit_days_singular">dag</string>
-    <string name="time_unit_days_plural">dagen</string>
-
-    <!-- Connection word for the last two elements in a list. Example: "1 minute and 15 seconds" or "1, 2, 3 and 4)" -->
-    <string name="connector_last_two_elements">en</string>
-
-    <!-- The text for the "done" button on the contextual actiobar -->
-    <string name="action_done">Gereed</string>
-    <string name="tap_to_copy_cell_values">Tik cel aan om te kopiëren</string>
+        <!-- The message that appears when the player has solved the puzzle. -->
+<string name="main_ui_solved_messsage">Opgelost!</string>
+        <!-- The message shown when no errors found when checking progress. -->
+<string name="ProgressOK">Alles klopt tot nu toe</string>
+        <!-- The message shown when error(s) found when checking progress. -->
+<string name="ProgressBad">Je hebt een fout gemaakt</string>
+        <!-- Units for time. -->
+<string name="time_unit_seconds_singular">seconde</string><string name="time_unit_seconds_plural">seconden</string><string name="time_unit_minutes_singular">minuut</string><string name="time_unit_minutes_plural">minuten</string><string name="time_unit_hours_singular">uur</string><string name="time_unit_hours_plural">uren</string><string name="time_unit_days_singular">dag</string><string name="time_unit_days_plural">dagen</string>
+        <!-- Connection word for the last two elements in a list. Example: "1 minute and 15 seconds" or "1, 2, 3 and 4)" -->
+<string name="connector_last_two_elements">en</string>
+        <!-- The text for the "done" button on the contextual actiobar -->
+<string name="action_done">Gereed</string><string name="tap_to_copy_cell_values">Tik cel aan om te kopiëren</string></string>
 
 </resources>
