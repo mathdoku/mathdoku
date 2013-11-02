@@ -23,6 +23,7 @@ import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter.SizeFilter;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter.StatusFilter;
 import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter;
+import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter.ScoreOrigin;
 import net.mathdoku.plus.storage.database.LeaderboardRankRow;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.tip.TipArchiveAvailable;
@@ -773,7 +774,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 					.get(leaderboardId);
 
 			// Check if a new top score is achieved.
-			boolean newTopScore = (leaderboardRankRow == null || grid
+			boolean newTopScore = (leaderboardRankRow == null
+					|| leaderboardRankRow.mScoreOrigin == ScoreOrigin.NONE || grid
 					.getElapsedTime() < leaderboardRankRow.mRawScore);
 
 			// Store the top score in the leaderboard table.
