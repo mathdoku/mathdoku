@@ -125,7 +125,17 @@ public class LeaderboardFragmentActivity extends
 	}
 
 	@Override
+	protected void onResumeFragments() {
+		setFilterSpinner(mMathDokuPreferences
+				.getLeaderboardFilterLastValueUsed());
+		super.onResumeFragments();
+	}
+
+	@Override
 	protected void onPause() {
+		mMathDokuPreferences
+				.setLeaderboardFilterLastValueUsed(getLeaderboardFilter());
+
 		// Store tab which is currently displayed.
 		mMathDokuPreferences.setLeaderboardsTabLastDisplayed(mViewPager
 				.getCurrentItem());
@@ -250,6 +260,7 @@ public class LeaderboardFragmentActivity extends
 		spinner.setAdapter(adapterStatus);
 
 		mLeaderboardFilter = leaderboardFilter;
+		spinner.setSelection(mLeaderboardFilter.ordinal());
 
 		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override

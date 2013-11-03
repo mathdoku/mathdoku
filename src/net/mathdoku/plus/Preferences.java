@@ -5,6 +5,7 @@ import java.util.Map;
 
 import net.mathdoku.plus.grid.ui.GridInputMode;
 import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
+import net.mathdoku.plus.leaderboard.ui.LeaderboardFragmentActivity.LeaderboardFilter;
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.painter.Painter.GridTheme;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter.SizeFilter;
@@ -57,6 +58,10 @@ public class Preferences {
 	// Leaderboard settings
 	public final static String LEADERBOARD_ALL_INITIALIZED = "leaderboard_all_initialized";
 	public final static boolean LEADERBOARD_ALL_INITIALIZED_DEFAULT = false;
+
+	public final static String LEADERBOARD_FILTER_LAST_VALUE = "leaderboard_filter_last_value";
+	public final static String LEADERBOARD_FILTER_LAST_VALUE_DEFAULT = LeaderboardFilter.ALL_LEADERBOARDS
+			.toString();
 
 	public final static String LEADERBOARD_TAB_LAST_SHOWED = "leaderboard_tab_last_showed";
 	public final static int LEADERBOARD_TAB_LAST_SHOWED_DEFAULT = 0;
@@ -333,6 +338,8 @@ public class Preferences {
 					LEADERBOARD_TAB_LAST_SHOWED_DEFAULT);
 			prefeditor.putBoolean(LEADERBOARD_ALL_INITIALIZED,
 					LEADERBOARD_ALL_INITIALIZED_DEFAULT);
+			prefeditor.putString(LEADERBOARD_FILTER_LAST_VALUE,
+					LEADERBOARD_FILTER_LAST_VALUE_DEFAULT.toString());
 		}
 
 		// Save
@@ -1188,6 +1195,34 @@ public class Preferences {
 	public void setLeaderboardsInitialized() {
 		Editor prefeditor = mSharedPreferences.edit();
 		prefeditor.putBoolean(LEADERBOARD_ALL_INITIALIZED, true);
+		prefeditor.apply();
+	}
+
+	/**
+	 * Get the last value used for the leaderboard filter in the leaderboards
+	 * overview.
+	 * 
+	 * @return The last value used for the leaderboard filter in the
+	 *         leaderboards overview.
+	 */
+	public LeaderboardFilter getLeaderboardFilterLastValueUsed() {
+		return LeaderboardFilter.valueOf(mSharedPreferences.getString(
+				LEADERBOARD_FILTER_LAST_VALUE,
+				LEADERBOARD_FILTER_LAST_VALUE_DEFAULT));
+	}
+
+	/**
+	 * Set the last value used for the leaderboard filter in the leaderboards
+	 * overview.
+	 * 
+	 * @param leaderboardFilter
+	 *            The leaderboard filter which was last used.
+	 */
+	public void setLeaderboardFilterLastValueUsed(
+			LeaderboardFilter leaderboardFilter) {
+		Editor prefeditor = mSharedPreferences.edit();
+		prefeditor.putString(LEADERBOARD_FILTER_LAST_VALUE,
+				leaderboardFilter.toString());
 		prefeditor.apply();
 	}
 }
