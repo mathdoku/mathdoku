@@ -551,6 +551,9 @@
     <!-- The text in the leaderboards overview in case the user has not played this leaderboard. -->
     <string name="leaderboard_not_played">Je hebt dit klassement nog niet gespeeld.</string>
 
+    <!-- The text in the leaderboards overview in case the user has played any leaderboards and the leaderboard filter is set to "my leaderboards only". -->
+    <string name="leaderboard_none_played">Je hebt nog geen enkele puzzle van grootte %1$d gespeeld. Wijzig het bovenstaande filter om de klassementen te bekijken van andere spelers.</string>
+
     <!-- The text in the leaderboards overview in case the user has played this leaderboard. -->
     <string name="leaderboard_score_label">Jouw beste score</string>
 

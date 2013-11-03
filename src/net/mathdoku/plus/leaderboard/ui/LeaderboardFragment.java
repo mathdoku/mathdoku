@@ -13,10 +13,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -47,7 +49,7 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 		Resources resources = getActivity().getResources();
 
 		// Create the fixes list of available leaderboards.
-		mLeaderboardSection = new LeaderboardSection[10];
+		mLeaderboardSection = new LeaderboardSection[11];
 		mLeaderboardSection[0] = new LeaderboardSection(resources, inflater,
 				gridSize, false, PuzzleComplexity.VERY_EASY);
 		mLeaderboardSection[1] = new LeaderboardSection(resources, inflater,
@@ -68,6 +70,8 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 				gridSize, true, PuzzleComplexity.DIFFICULT);
 		mLeaderboardSection[9] = new LeaderboardSection(resources, inflater,
 				gridSize, true, PuzzleComplexity.VERY_DIFFICULT);
+		mLeaderboardSection[10] = new LeaderboardSection(resources, inflater,
+				gridSize);
 
 		// Append all views to the fragment
 		LinearLayout linearLayout = (LinearLayout) rootView
@@ -93,10 +97,22 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 	public void setLeaderboardFilter(LeaderboardFilter leaderboardFilter) {
 		mLeaderboardFilter = leaderboardFilter;
 		if (mLeaderboardSection != null) {
+			int countVisibleLeaderboards = 0;
 			for (LeaderboardSection leaderboardSection : mLeaderboardSection) {
-				leaderboardSection.mView.setVisibility(leaderboardSection
-						.isValidForFilter(mLeaderboardFilter) ? View.VISIBLE
-						: View.GONE);
+				if (leaderboardSection.mDummyLeaderboard) {
+					leaderboardSection.mView
+							.setVisibility(countVisibleLeaderboards == 0 ? View.VISIBLE
+									: View.GONE);
+				} else {
+					boolean visible = leaderboardSection
+							.isValidForFilter(mLeaderboardFilter);
+					if (visible) {
+						countVisibleLeaderboards++;
+						leaderboardSection.mView.setVisibility(View.VISIBLE);
+					} else {
+						leaderboardSection.mView.setVisibility(View.GONE);
+					}
+				}
 			}
 		}
 	}
@@ -106,15 +122,17 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 	 * displayed in the listview.
 	 */
 	public class LeaderboardSection {
+		public final boolean mDummyLeaderboard;
 		private final int mGridSize;
-		private final boolean mHideOperators;
-		private final PuzzleComplexity mPuzzleComplexity;
-		private final String mLeaderboardId;
-		private final boolean mHasScore;
+		private boolean mHideOperators;
+		private PuzzleComplexity mPuzzleComplexity;
+		private String mLeaderboardId;
+		private boolean mHasScore;
 		public final View mView;
 
 		/**
-		 * Creates a new instance of {@link LeaderboardSection}.
+		 * Creates a new instance of a {@link LeaderboardSection} for a
+		 * leaderboard.
 		 * 
 		 * @param gridSize
 		 *            The size of the grid.
@@ -126,7 +144,7 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 		public LeaderboardSection(Resources resources, LayoutInflater inflater,
 				int gridSize, boolean hideOperators,
 				PuzzleComplexity puzzleComplexity) {
-			super();
+			mDummyLeaderboard = false;
 			mGridSize = gridSize;
 			mHideOperators = hideOperators;
 			mPuzzleComplexity = puzzleComplexity;
@@ -210,6 +228,32 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 		}
 
 		/**
+		 * Creates a new instance of a {@link LeaderboardSection} for the dummy
+		 * leaderboard which is shown in case the use has not played any
+		 * leaderboard for this gridsize and has enabled filter
+		 * "My leaderboards only".
+		 */
+		public LeaderboardSection(Resources resources, LayoutInflater inflater,
+				int gridSize) {
+			mDummyLeaderboard = true;
+			mGridSize = gridSize;
+
+			TextView textView = new TextView(getActivity());
+			textView.setLayoutParams(new LayoutParams(
+					ViewGroup.LayoutParams.WRAP_CONTENT,
+					ViewGroup.LayoutParams.WRAP_CONTENT));
+			textView.setText(getResources().getString(
+					R.string.leaderboard_none_played, mGridSize));
+			textView.setTextSize(
+					TypedValue.COMPLEX_UNIT_DIP,
+					(int) (getResources().getDimension(
+							net.mathdoku.plus.R.dimen.text_size_default) / getResources()
+							.getDisplayMetrics().density));
+
+			mView = textView;
+		}
+
+		/**
 		 * Checks if the leaderboard section is valid for the given leaderboard
 		 * filter.
 		 * 
@@ -219,6 +263,10 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 		 *         otherwise.
 		 */
 		public boolean isValidForFilter(LeaderboardFilter leaderboardFilter) {
+			if (mDummyLeaderboard
+					&& leaderboardFilter != LeaderboardFilter.MY_LEADERBOARDS) {
+				return false;
+			}
 			if (leaderboardFilter == LeaderboardFilter.MY_LEADERBOARDS
 					&& mHasScore == false) {
 				return false;
