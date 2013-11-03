@@ -17,6 +17,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.google.android.gms.games.GamesClient;
 
@@ -35,7 +39,15 @@ public class LeaderboardFragmentActivity extends
 	 * The {@link ViewPager} that will display the leaderboard fragments , one
 	 * at a time.
 	 */
-	ViewPager mViewPager;
+	private ViewPager mViewPager;
+
+	private ActionBar mActionBar;
+
+	public enum LeaderboardFilter {
+		ALL_LEADERBOARDS, MY_LEADERBOARDS, HIDDEN_OPERATORS, VISBLE_OPERATORS
+	};
+
+	private LeaderboardFilter mLeaderboardFilter;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -44,14 +56,21 @@ public class LeaderboardFragmentActivity extends
 
 		// Create the adapter that will return the leaderboard fragments.
 		mLeaderboardFragmentPagerAdapter = new LeaderboardFragmentPagerAdapter(
-				getSupportFragmentManager());
+				this, getSupportFragmentManager());
 
 		// Set up the action bar.
-		final ActionBar actionBar = getActionBar();
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-		actionBar.setDisplayHomeAsUpEnabled(true);
-		actionBar.setTitle(getResources().getString(
-				R.string.leaderboard_actionbar_title));
+		mActionBar = getActionBar();
+		if (mActionBar != null) {
+			mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+			mActionBar.setDisplayHomeAsUpEnabled(true);
+
+			// Do not display a title as the leaderboard filter will act as
+			// title.
+			mActionBar.setDisplayShowTitleEnabled(false);
+
+			mActionBar.setDisplayShowCustomEnabled(true);
+			mActionBar.setCustomView(R.layout.leaderboard_action_bar_custom);
+		}
 
 		// Set up the ViewPager, attaching the adapter and setting up a listener
 		// for when the user swipes between the leaderboard fragments.
@@ -61,9 +80,22 @@ public class LeaderboardFragmentActivity extends
 				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 					@Override
 					public void onPageSelected(int position) {
+						// Get the fragment on the selected position
+						LeaderboardFragment leaderboardFragment = mLeaderboardFragmentPagerAdapter
+								.getFragment(mViewPager, position,
+										getSupportFragmentManager());
+
+						// Inform the fragment about the current filter as it
+						// may be changed since in case the fragment was
+						// displayed before.
+						if (leaderboardFragment != null) {
+							leaderboardFragment
+									.setLeaderboardFilter(getLeaderboardFilter());
+						}
+
 						// When swiping between different leaderboard fragments,
 						// select the corresponding tab.
-						actionBar.setSelectedNavigationItem(position);
+						mActionBar.setSelectedNavigationItem(position);
 					}
 				});
 
@@ -73,7 +105,7 @@ public class LeaderboardFragmentActivity extends
 			// the adapter. Also specify this Activity object, which implements
 			// the TabListener interface, as the listener for when this tab is
 			// selected.
-			actionBar.addTab(actionBar.newTab()
+			mActionBar.addTab(mActionBar.newTab()
 					.setText(mLeaderboardFragmentPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
@@ -83,6 +115,8 @@ public class LeaderboardFragmentActivity extends
 		int tab = mMathDokuPreferences.getLeaderboardsTabLastDisplayed();
 		mViewPager.setCurrentItem(tab >= 0 ? tab
 				: mLeaderboardFragmentPagerAdapter.getCount() - 1);
+
+		setFilterSpinner(LeaderboardFilter.ALL_LEADERBOARDS);
 
 		/*
 		 * Styling of the pager tab strip is not possible from within code. See
@@ -195,5 +229,60 @@ public class LeaderboardFragmentActivity extends
 	@Override
 	protected GamesClient getGamesClient() {
 		return super.getGamesClient();
+	}
+
+	/**
+	 * Initializes/refreshes the filter spinner.
+	 * 
+	 * Returns: True in case the filter spinner should be shown. False
+	 * otherwise.
+	 */
+	protected void setFilterSpinner(LeaderboardFilter leaderboardFilter) {
+		Spinner spinner = (Spinner) mActionBar.getCustomView().findViewById(
+				R.id.leaderboard_filter_spinner);
+		ArrayAdapter<String> adapterStatus = new ArrayAdapter<String>(this,
+				android.R.layout.simple_spinner_item, getResources()
+						.getStringArray(R.array.leaderboard_filter));
+		adapterStatus
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+		// Build the spinner
+		spinner.setAdapter(adapterStatus);
+
+		mLeaderboardFilter = leaderboardFilter;
+
+		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {
+				mLeaderboardFilter = LeaderboardFilter.values()[(int) id];
+
+				// Get the fragment which is currently displayed
+				LeaderboardFragment leaderboardFragment = mLeaderboardFragmentPagerAdapter
+						.getFragment(mViewPager, mViewPager.getCurrentItem(),
+								getSupportFragmentManager());
+
+				// Inform the fragment about the change of filter.
+				if (leaderboardFragment != null) {
+					leaderboardFragment
+							.setLeaderboardFilter(mLeaderboardFilter);
+				}
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+	}
+
+	/**
+	 * Get the currently selected value of the leaderboard filter.
+	 * 
+	 * @return The currently selected value of the leaderboard filter.
+	 */
+	public LeaderboardFilter getLeaderboardFilter() {
+		return mLeaderboardFilter;
 	}
 }

@@ -1,13 +1,16 @@
 package net.mathdoku.plus.leaderboard.ui;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 
 /**
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one
  * of leaderboard pages.
  */
 public class LeaderboardFragmentPagerAdapter extends FragmentPagerAdapter {
+	public final static String TAG = "MathDoku.LeaderboardFragmentPagerAdapter";
 
 	private static final int FRAGMENT_ID_GRID_SIZE_4 = 0;
 	private static final int FRAGMENT_ID_GRID_SIZE_5 = 1;
@@ -20,9 +23,14 @@ public class LeaderboardFragmentPagerAdapter extends FragmentPagerAdapter {
 			FRAGMENT_ID_GRID_SIZE_7, FRAGMENT_ID_GRID_SIZE_8,
 			FRAGMENT_ID_GRID_SIZE_9 };
 
+	// Context
+	LeaderboardFragmentActivity mLeaderboardFragmentActivity;
+
 	public LeaderboardFragmentPagerAdapter(
+			LeaderboardFragmentActivity leaderboardFragmentActivity,
 			android.support.v4.app.FragmentManager fragmentManager) {
 		super(fragmentManager);
+		mLeaderboardFragmentActivity = leaderboardFragmentActivity;
 	}
 
 	@Override
@@ -57,7 +65,10 @@ public class LeaderboardFragmentPagerAdapter extends FragmentPagerAdapter {
 
 		Bundle args = new Bundle();
 		args.putInt(LeaderboardFragment.ARG_GRID_SIZE, gridSize);
+		args.putInt(LeaderboardFragment.ARG_FILTER,
+				mLeaderboardFragmentActivity.getLeaderboardFilter().ordinal());
 		fragment.setArguments(args);
+
 		return fragment;
 	}
 
@@ -84,5 +95,31 @@ public class LeaderboardFragmentPagerAdapter extends FragmentPagerAdapter {
 		default:
 			return null;
 		}
+	}
+
+	/**
+	 * Gets the fragment for the given position in the adapater.
+	 * 
+	 * @param container
+	 * @param position
+	 * @param fm
+	 * @return
+	 */
+	public LeaderboardFragment getFragment(ViewPager container, int position,
+			FragmentManager fm) {
+		String name = makeFragmentName(container.getId(), position);
+		return (LeaderboardFragment) (fm.findFragmentByTag(name));
+	}
+
+	/**
+	 * Gets the fragment name as constructed by Android to identify the
+	 * fragment.
+	 * 
+	 * @param viewId
+	 * @param index
+	 * @return
+	 */
+	private String makeFragmentName(int viewId, int index) {
+		return "android:switcher:" + viewId + ":" + index;
 	}
 }

@@ -567,6 +567,14 @@
     <!-- The text in the leaderboards overview in case the user has played this leaderboard. -->
     <string name="leaderboard_score_label">Your best score</string>
 
+    <!-- The possible values of the filters on the leaderboard overview. Do not alter the order of this list. -->
+    <string-array name="leaderboard_filter">
+        <item>All leaderboards</item>
+        <item>My leaderboards only</item>
+        <item>Hidden operators only</item>
+        <item>Visible operators only</item>
+    </string-array>
+
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
