@@ -156,17 +156,20 @@ public class Util {
 	 */
 	@SuppressLint("DefaultLocale")
 	public static String durationTimeToString(long elapsedTime) {
-		// Convert to whole seconds
-		int seconds = (int) Math.floor(elapsedTime / 1000) % 60;
-		int minutes = (int) Math.floor(elapsedTime / (1000 * 60)) % 60;
-		int hours = (int) Math.floor(elapsedTime / (1000 * 60 * 60));
+		// Convert to whole seconds (rounded)
+		long roundedElapsedTime = Math.round((float) elapsedTime / 1000);
+		int seconds = (int) roundedElapsedTime % 60;
+		int minutes = (int) Math.floor(roundedElapsedTime / 60) % 60;
+		int hours = (int) Math.floor(roundedElapsedTime / (60 * 60));
 
 		// Build time string and ignore hours if not applicable.
 		String duration = "";
 		if (hours > 0) {
 			duration = String.format("%dh%02dm%02ds", hours, minutes, seconds);
-		} else {
+		} else if (minutes > 0) {
 			duration = String.format("%dm%02ds", minutes, seconds);
+		} else {
+			duration = String.format("%ds", seconds);
 		}
 
 		return duration;
