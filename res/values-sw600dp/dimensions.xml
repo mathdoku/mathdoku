@@ -38,4 +38,10 @@
     <!-- The text size used for body text. -->
     <dimen name="dialog_text_size_body">16sp</dimen>
 
+    <!-- LEADERBOARD - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The text size used for the score on the leaderboard overview -->
+    <dimen name="text_size_leaderboard_big">40sp</dimen>
+
 </resources>
