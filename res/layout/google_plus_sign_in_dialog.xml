@@ -1,48 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="10dp"
-    android:paddingTop="10dp" >
+    android:padding="10dp" >
 
-    <ScrollView
-        android:id="@+id/scollView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3"
-        android:paddingBottom="10dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp" >
-
-        <TextView
-            android:id="@+id/dialog_tip_leaderboard_available_text"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/google_plus_login_dialog_message"
-            android:textSize="@dimen/text_size_default" />
-    </ScrollView>
-
-    <CheckBox
-        android:id="@+id/hide_till_next_top_score_achieved_checkbox"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="@string/google_plus_login_hide_till_next_top_score_achieved" >
-
-        <requestFocus />
-    </CheckBox>
+    <!-- Elements are defined bottom up so to prevent the scrollview from using space which is needed -->
+    <!-- needed for the buttons and the checkbox. -->
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:id="@+id/button_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="horizontal"
-        android:weightSum="2" >
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true" >
 
-        <!-- NestedWeights are ignored as this layout is rarely displayed. -->
-        <Button
+        <Button
             android:id="@+id/sign_in_cancel_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -62,4 +37,34 @@
             android:paddingRight="5dp" />
     </LinearLayout>
 
-</LinearLayout>
+    <CheckBox
+        android:id="@+id/hide_till_next_top_score_achieved_checkbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button_layout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:paddingBottom="10dp"
+        android:text="@string/google_plus_login_hide_till_next_top_score_achieved" >
+
+        <requestFocus />
+    </CheckBox>
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/hide_till_next_top_score_achieved_checkbox"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:paddingBottom="10dp" >
+
+        <TextView
+            android:id="@+id/dialog_tip_leaderboard_available_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/google_plus_login_dialog_message"
+            android:textSize="@dimen/text_size_default" />
+    </ScrollView>
+
+</RelativeLayout>
