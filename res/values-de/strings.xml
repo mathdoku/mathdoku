@@ -505,7 +505,8 @@
 
     <!-- The label of the button below a puzzle. -->
     <string name="archive_continue_unfinished_puzzle">Dieses Rätsel fortseetzen</string>
-    <string name="archive_play_similar_puzzle">Dieses Rätsel neu starten</string>
+    <!-- TODO -->
+    <string name="archive_play_similar_puzzle">Play a similar puzzle</string>
 
     <!-- Title for the archive settings fragment. -->
     <string name="archive_settings_action_bar_title">Archiv Einstellungen</string>

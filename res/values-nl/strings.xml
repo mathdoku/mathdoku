@@ -493,7 +493,7 @@
 
     <!-- The label of the button below a puzzle. -->
     <string name="archive_continue_unfinished_puzzle">Verder gaan met puzzel</string>
-    <string name="archive_play_similar_puzzle">Opnieuw spelen</string>
+    <string name="archive_play_similar_puzzle">Speel een vergelijkbaar spel</string>
 
     <!-- Title for the archive settings fragment. -->
     <string name="archive_settings_action_bar_title">Archief instellingen</string>
