@@ -84,12 +84,12 @@
     <string name="changelog_version_title">Version</string>
 
     <!-- The heading and body of the section refering to the list of changes. -->
-    <!-- Note for translators: Changes are only available in english. Please mention this in this field. -->
+    <!-- Note for translators: Changes are only available in English. Please mention this in this field. -->
     <string name="changelog_changes_title">Änderungen</string>
     <string name="changelog_changes_body">Für eine komplette Liste der Änderungen besuchen Sie bitte unsere Webseite mit dem folgenden Link.</string>
 
     <!-- The heading and body of the section referring to the list of issues. -->
-    <!-- Note for translators: Only issues written in English will be deaLt with. Please mention this in field changelog_issues_body. -->
+    <!-- Note for translators: Only issues written in English will be dealt with. Please mention this in field changelog_issues_body. -->
     <string name="changelog_issues_title">Fehler und Weiterentwicklungen</string>
     <string name="changelog_issues_body">Bitte melden sie alle Fehler und Anfragen für Weiterenwicklungen mit dem folgenden Link. Nur Anfragen auf Englisch werden behandelt.</string>
 
@@ -135,6 +135,9 @@
     <!-- The menu item that allows the user to clear the entire grid. Note this item is only available if at least one cell in the entire puzzle contains a (maybe) value. -->
     <string name="action_clear_grid">Gesamten Raster löschen</string>
 
+    <!-- The menu item that allows the player to replay the puzzle. Note: this action will only be displayed in case the puzzle is finished. -->
+    <string name="action_replay">Replay this puzzle</string>
+
     <!-- The menu item that allows the player to start a new game. -->
     <string name="action_new_puzzle">Neues Spiel</string>
 
@@ -151,7 +154,7 @@
     <!-- The menu item that allows the player to navigate to the help screen. -->
     <string name="action_help">Hilfe</string>
 
-    <!-- The menu item that allows the player to share an archived game with another user via email. -->
+    <!-- The menu item that allows the player to share an archived puzzle with another user via email. -->
     <string name="action_share">Teilen</string>
 
     <!-- The menu item that allows the player to send feedback via email. -->
@@ -282,6 +285,15 @@
     <string name="dialog_clear_grid_confirmation_message">Sind Sie sicher, dass Sie alle Werte des Rätsels löschen wollen?</string>
     <string name="dialog_clear_grid_confirmation_negative_button">Nein. Werte behalten.</string>
     <string name="dialog_clear_grid_confirmation_positive_button">Ja. Werte löschen.</string>
+
+    <!-- DIALOG REPLAY PUZZLE CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- TODO: entire section -->
+
+    <!-- The title, message and buttons confirmation message that shows up when the user chooses to replay a puzzle. -->
+    <string name="dialog_replay_puzzle_confirmation_title">Replay puzzle?</string>
+    <string name="dialog_replay_puzzle_confirmation_message">You can replay a puzzle as often as you want. As soon as you start replaying this puzzle you will not be able to view the current statistics for this puzzle. The overall statistics will only be updated after you have completed this puzzle again.\nThe score of a replayed puzzle will never be used to update the leaderboards.\n\nAre you sure you want to replay this puzzle? </string>
+    <string name="dialog_replay_puzzle_confirmation_negative_button">Cancel</string>
+    <string name="dialog_replay_puzzle_confirmation_positive_button">Replay</string>
 
     <!-- CONTROLS FOR PUZZLE SOLVING  - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

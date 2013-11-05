@@ -112,8 +112,8 @@
 
     <!-- Title and message for the "Sign in to Google+" dialog which explains the reasons why the use should sign in to Google+. -->
     <string name="google_plus_login_dialog_title">Log in met Google+</string>
-    <string name="google_plus_login_dialog_message">MathDoku+ spelen is erg leuk. Maar het is nog leuker om te stijden om het klassement van de snelste Mathdoku+ puzzel met andere spelers in de wereld of met een groep vrienden.\n\nAls je je snelste puzzels in wil sturen voor het klassement of om de klassementen te bekijen dan moet je eenmalig inloggen met Google+. Je kan uitloggen via het actiemenu in het geval dat je niet langer meer je topscore wil insturen.\n\nlet op: alleen puzzels waarin je niet hebt vals gespeeld, worden ingestuurd voor het klassement.</string>
-    <string name="google_plus_login_hide_till_next_top_score_achieved">Niet meer tonen totdat een nieuw top score is behaald.</string>
+    <string name="google_plus_login_dialog_message">MathDoku+ spelen is erg leuk. Maar het is nog leuker om te strijden om het klassement van de snelste Mathdoku+ puzzel met andere spelers in de wereld of met een groep vrienden.\n\nAls je je snelste puzzels in wil sturen voor het klassement of om de klassementen te bekijken dan moet je eenmalig inloggen met Google+. Je kan uitloggen via het actiemenu in het geval dat je niet langer meer je topscore wil insturen.\n\nLet op: alleen puzzels waarin je niet hebt vals gespeeld, worden ingestuurd voor het klassement.</string>
+    <string name="google_plus_login_hide_till_next_top_score_achieved">Niet meer tonen totdat een nieuwe topscore is behaald.</string>
 
     <!-- ACTION BAR ITEMS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -121,7 +121,7 @@
     <!-- Subtitle for the puzzle fragment. -->
     <string name="action_bar_subtitle_puzzle_fragment">Speel een spel</string>
 
-    <!-- The menu item that allows the player to display the archive of played games. -->
+    <!-- The menu item that allows the player to display the archive of played puzzles. -->
     <string name="action_archive">Archief</string>
 
     <!-- The menu item that allows the player to use some less frequently used cheats. -->
@@ -130,7 +130,10 @@
     <!-- The menu item that allows the user to clear the entire grid. Note this item is only available if at least one cell in the entire puzzle contains a (maybe) value. -->
     <string name="action_clear_grid">Leeg alle cellen</string>
 
-    <!-- The menu item that allows the player to start a new game. -->
+    <!-- The menu item that allows the player to replay the puzzle. Note: this action will only be displayed in case the puzzle is finished. -->
+    <string name="action_replay">Opnieuw spelen</string>
+
+    <!-- The menu item that allows the player to start a new puzzle. -->
     <string name="action_new_puzzle">Nieuw spel</string>
 
     <!-- The sub-menu item to check user entries against the solution. -->
@@ -145,7 +148,7 @@
     <!-- The menu item that allows the player to navigate to the help screen. -->
     <string name="action_help">Help</string>
 
-    <!-- The menu item that allows the player to share an archived game with another user via email. -->
+    <!-- The menu item that allows the player to share an archived puzzle with another user via email. -->
     <string name="action_share">Delen</string>
 
     <!-- The menu item that allows the player to send feedback via email. -->
@@ -169,7 +172,7 @@
     <!-- DIALOGS FOR GENERATING NEW PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
-    <!-- Titles and lables used in the dialog "Create new game". -->
+    <!-- Titles and lables used in the dialog "Create new puzzle". -->
     <string name="dialog_puzzle_parameters_title">Genereer nieuwe puzzel</string>
     <string name="dialog_puzzle_parameters_puzzle_size">Puzzel grootte</string>
     <string name="dialog_puzzle_parameters_operators_in_cage_visible">Groep tekens zichtbaar</string>
@@ -273,6 +276,15 @@
     <string name="dialog_clear_grid_confirmation_message">Weet je zeker dat je alle cellen wilt legen?</string>
     <string name="dialog_clear_grid_confirmation_negative_button">Nee, laat maar</string>
     <string name="dialog_clear_grid_confirmation_positive_button">Ja, begin opnieuw</string>
+
+    <!-- DIALOG REPLAY PUZZLE CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The title, message and buttons confirmation message that shows up when the user chooses to replay a puzzle. -->
+    <string name="dialog_replay_puzzle_confirmation_title">Puzzel opnieuw spelen?</string>
+    <string name="dialog_replay_puzzle_confirmation_message">Je kan een puzzel zo vaak opnieuw spelen als je wil. Zodra je start met het opnieuw spelen van een puzzel dan kun je de huidige statistieken van deze puzzel niet meer bekijken. De algemene statistieken worden bijgewerkt zodra je puzzel opnieuw hebt voltooid.\nDe score van een puzzel die je opnieuw hebt gespeeld worden nooit ingestuurd voor het klassement.\n\nWeet je zeker dat je deze puzzel opnieuw wil spelen? </string>
+    <string name="dialog_replay_puzzle_confirmation_negative_button">Annuleer</string>
+    <string name="dialog_replay_puzzle_confirmation_positive_button">Herspeel</string>
 
     <!-- CONTROLS FOR PUZZLE SOLVING  - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
