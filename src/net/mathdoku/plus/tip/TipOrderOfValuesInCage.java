@@ -24,6 +24,7 @@ public class TipOrderOfValuesInCage extends TipDialog {
 		super(context, TIP_NAME, TIP_PRIORITY);
 
 		build(
+				R.drawable.lightbulb,
 				context.getResources().getString(
 						R.string.dialog_tip_order_of_values_in_cage_title),
 				context.getResources().getString(

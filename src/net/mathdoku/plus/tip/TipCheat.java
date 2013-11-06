@@ -2,6 +2,7 @@ package net.mathdoku.plus.tip;
 
 import net.mathdoku.plus.Cheat;
 import net.mathdoku.plus.Preferences;
+import net.mathdoku.plus.R;
 import android.content.Context;
 
 public class TipCheat extends TipDialog implements
@@ -32,7 +33,7 @@ public class TipCheat extends TipDialog implements
 		// Determine body text
 		String mText = cheat.getTipText();
 
-		build(mTitle, mText, null);
+		build(R.drawable.alert, mTitle, mText, null);
 	}
 
 	/**

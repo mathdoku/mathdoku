@@ -96,6 +96,8 @@ public class TipDialog extends AlertDialog {
 	/**
 	 * Build the dialog.
 	 * 
+	 * @param tipIconResId
+	 *            The resource id of the icon top be used in the tip title.
 	 * @param tipTitle
 	 *            The title of the dialog.
 	 * @param tipText
@@ -106,7 +108,8 @@ public class TipDialog extends AlertDialog {
 	 *            an image use value null.
 	 * @return
 	 */
-	protected TipDialog build(String tipTitle, String tipText, Drawable tipImage) {
+	protected TipDialog build(int tipIconResId, String tipTitle,
+			String tipText, Drawable tipImage) {
 		// Check if dialog should be built.
 		if (!mDisplayAgain) {
 			return this;
@@ -132,7 +135,7 @@ public class TipDialog extends AlertDialog {
 		final CheckBox checkBoxView = (CheckBox) tipView
 				.findViewById(R.id.dialog_tip_do_not_show_again);
 
-		setIcon(R.drawable.help);
+		setIcon(tipIconResId);
 		setTitle(tipTitle);
 		setView(tipView);
 
