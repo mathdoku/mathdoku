@@ -505,11 +505,11 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		// The background task for creating a new grid has been finished.
 		mDialogPresentingGridGenerator = null;
 
-		// Reset preferences regarding the input mode of the puzzle
-		mMathDokuPreferences.setGridInputMode(false, GridInputMode.NORMAL);
-
 		// Initializes a new puzzle fragment
 		initializePuzzleFragment(newGrid.getSolvingAttemptId());
+
+		// Reset preferences regarding the input mode of the puzzle
+		mMathDokuPreferences.setGridInputMode(false, GridInputMode.NORMAL);
 	}
 
 	/**
@@ -830,7 +830,12 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	 * Initializes the puzzle fragment. The archive fragment will be disabled.
 	 */
 	private void initializePuzzleFragment(int solvingAttemptId) {
-		// Create a new puzzle fragment
+		// Disable the archive fragment.
+		mArchiveFragment = null;
+
+		// Create a new puzzle fragment if needed, else re-use the existing
+		// fragment.
+		mActiveFragmentType = FragmentType.PUZZLE_FRAGMENT;
 		if (mPuzzleFragment == null) {
 			mPuzzleFragment = new PuzzleFragment();
 
@@ -852,18 +857,17 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			// 3. Choose to play this shared puzzle
 			mPuzzleFragment.loadSolvingAttempt(solvingAttemptId);
 		}
-
-		mActiveFragmentType = FragmentType.PUZZLE_FRAGMENT;
-
-		// Disable the other fragments
-		mArchiveFragment = null;
 	}
 
 	/**
 	 * Initializes the archive fragment. The puzzle fragment will be disabled.
 	 */
 	private void initializeArchiveFragment(int solvingAttemptId) {
-		// Set the archive fragment
+		// Disable the puzzle fragment
+		mPuzzleFragment = null;
+
+		// Create a new archive fragment
+		mActiveFragmentType = FragmentType.ARCHIVE_FRAGMENT;
 		mArchiveFragment = new ArchiveFragment();
 
 		Bundle args = new Bundle();
@@ -876,12 +880,6 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		fragmentTransaction.replace(R.id.content_frame, mArchiveFragment)
 				.commit();
 		fragmentManager.executePendingTransactions();
-
-		mActiveFragmentType = FragmentType.ARCHIVE_FRAGMENT;
-
-		// Disable the archive fragment
-		mPuzzleFragment = null;
-
 	}
 
 	/**
