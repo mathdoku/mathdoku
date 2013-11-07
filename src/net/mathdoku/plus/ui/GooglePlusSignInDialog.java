@@ -15,11 +15,23 @@ public class GooglePlusSignInDialog extends Dialog implements
 	private CheckBox mHideTillNextTopScoreAchievedCheckbox;
 	private boolean mCheckboxIsVisible;
 	private boolean mCheckboxisChecked;
+	private final int mRequestCode;
 
+	/**
+	 * Creates a new instance of {@link GooglePlusSignInDialog}.
+	 * 
+	 * @param activity
+	 *            The activity which has started this sign in dialog.
+	 * @param requestCode
+	 *            The request code to be returned as the user log in.
+	 * @param preferences
+	 *            The app preferences.
+	 */
 	public GooglePlusSignInDialog(PuzzleFragmentActivity activity,
-			Preferences preferences) {
+			int requestCode, Preferences preferences) {
 		super(activity);
 		mActivity = activity;
+		mRequestCode = requestCode;
 		mPreferences = preferences;
 		mCheckboxIsVisible = false;
 		mCheckboxisChecked = false;
@@ -52,7 +64,7 @@ public class GooglePlusSignInDialog extends Dialog implements
 
 		switch (v.getId()) {
 		case R.id.sign_in_button:
-			mActivity.signInGooglePlus();
+			mActivity.signInGooglePlus(mRequestCode);
 			break;
 		case R.id.sign_in_cancel_button:
 			dismiss();

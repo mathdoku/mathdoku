@@ -72,6 +72,9 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	public DialogPresentingGridGenerator mDialogPresentingGridGenerator;
 	public GameFileConverter mGameFileConverter;
 
+	// Request codes for action when (manual) sign in to Google+ has succeed
+	private final static int RC_GOOGLE_PLUS_SIGN_IN_SHOW_LEADERBOARD = 1;
+
 	// Different types of fragments supported by this activity.
 	public enum FragmentType {
 		NO_FRAGMENT, PUZZLE_FRAGMENT, ARCHIVE_FRAGMENT
@@ -799,7 +802,9 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 				if (hideTillNextTopScore == false || newTopScore == true) {
 					// In case the google sign dialog is shown, the score will
 					// be processed after the sign in has succeeded.
-					new GooglePlusSignInDialog(this, mMathDokuPreferences)
+					new GooglePlusSignInDialog(this,
+							RC_GOOGLE_PLUS_SIGN_IN_SHOW_LEADERBOARD,
+							mMathDokuPreferences)
 							.displayCheckboxHideTillNextTopScoreAchieved(
 									hideTillNextTopScore).show();
 				}
@@ -1175,6 +1180,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 					startActivity(intentLeaderboards);
 				} else {
 					new GooglePlusSignInDialog(PuzzleFragmentActivity.this,
+							RC_GOOGLE_PLUS_SIGN_IN_SHOW_LEADERBOARD,
 							PuzzleFragmentActivity.this.mMathDokuPreferences)
 							.show();
 				}
@@ -1334,9 +1340,14 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 	/**
 	 * Sign in with google plus.
+	 * 
+	 * @param requestCode
+	 *            If >= 0 this code is returned when the sign in on Google Plus
+	 *            has succeeded. The code can be used to determine which action
+	 *            to trigger after sign in has succeeded.
 	 */
-	public void signInGooglePlus() {
-		beginUserInitiatedSignIn();
+	public void signInGooglePlus(int requestCode) {
+		beginUserInitiatedSignIn(requestCode);
 	}
 
 	@Override
@@ -1344,10 +1355,10 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		// Can not sign in to Google Play Services. For now, nothing is done.
 	}
 
-	@Override
-	public void onSignInSucceeded() {
-		// Sign-in on Google Play Services has succeeded.
-
+	/**
+	 * Sign in on Google Play Services has succeeded.
+	 */
+	private void onSignSucceeded() {
 		// Get the game client an attach the content view of the activity.
 		GamesClient gamesClient = getGamesClient();
 		gamesClient.setViewForPopups(findViewById(android.R.id.content));
@@ -1358,6 +1369,26 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		// Submit or re-submit leaderboard scores for which the rank information
 		// is missing.
 		mLeaderboardConnector.updateLeaderboardsWithMissingRankInformation();
+	}
+
+	@Override
+	public void onAutoSignInSucceeded() {
+		onSignSucceeded();
+	}
+
+	@Override
+	public void onUserInitiatedSignInSucceeded(int requestCode) {
+		onSignSucceeded();
+		switch (requestCode) {
+		case RC_GOOGLE_PLUS_SIGN_IN_SHOW_LEADERBOARD:
+			Intent intentLeaderboards = new Intent(PuzzleFragmentActivity.this,
+					LeaderboardFragmentActivity.class);
+			startActivity(intentLeaderboards);
+			break;
+		default:
+			// Do nothing
+			break;
+		}
 	}
 
 	/**

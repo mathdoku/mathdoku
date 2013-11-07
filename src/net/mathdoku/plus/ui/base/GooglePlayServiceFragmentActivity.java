@@ -160,8 +160,16 @@ public abstract class GooglePlayServiceFragmentActivity extends
 		return mHelper.isSignedIn();
 	}
 
-	protected void beginUserInitiatedSignIn() {
-		mHelper.beginUserInitiatedSignIn();
+	/**
+	 * Sign in with google plus.
+	 * 
+	 * @param requestCode
+	 *            If >= 0 this code is returned when the sign in on Google Plus
+	 *            has succeeded. The code can be used to determine which action
+	 *            to trigger after sign in has succeeded.
+	 */
+	protected void beginUserInitiatedSignIn(int requestCode) {
+		mHelper.beginUserInitiatedSignIn(requestCode);
 	}
 
 	protected void signOut() {
@@ -206,5 +214,9 @@ public abstract class GooglePlayServiceFragmentActivity extends
 
 	protected GameHelper.SignInFailureReason getSignInError() {
 		return mHelper.getSignInError();
+	}
+
+	protected boolean isUserInitiatedSignIn() {
+		return mHelper.isUserInitiatedSignIn();
 	}
 }

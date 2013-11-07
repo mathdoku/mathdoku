@@ -72,8 +72,20 @@ public class GameHelper implements
 		 */
 		void onSignInFailed();
 
-		/** Called when sign-in succeeds. */
-		void onSignInSucceeded();
+		/**
+		 * Called when the auto sign in has completed.
+		 */
+		void onAutoSignInSucceeded();
+
+		/**
+		 * Called when the use initiated sign in has completed.
+		 * 
+		 * @param requestCode
+		 *            The request code which was passed when starting the user
+		 *            initiated sign in. It will be returned unchanged upon
+		 *            completing the sign in.
+		 */
+		void onUserInitiatedSignInSucceeded(int requestCode);
 	}
 
 	// States we can be in
@@ -141,6 +153,11 @@ public class GameHelper implements
 	 * already clicked a "Sign-In" button or something similar
 	 */
 	boolean mUserInitiatedSignIn = false;
+
+	/*
+	 * The request code to be returned after sign in has succeeded.
+	 */
+	int mRequestCodeUserInitiatedSignInSucceeded = -1;
 
 	// The connection result we got from our last attempt to sign-in.
 	ConnectionResult mConnectionResult = null;
@@ -631,7 +648,12 @@ public class GameHelper implements
 								: "FAILURE (no error)"));
 		if (mListener != null) {
 			if (success) {
-				mListener.onSignInSucceeded();
+				if (mUserInitiatedSignIn) {
+					mListener
+							.onUserInitiatedSignInSucceeded(mRequestCodeUserInitiatedSignInSucceeded);
+				} else {
+					mListener.onAutoSignInSucceeded();
+				}
 			} else {
 				mListener.onSignInFailed();
 			}
@@ -643,8 +665,15 @@ public class GameHelper implements
 	 * clicks on a "Sign In" button. As a result, authentication/consent dialogs
 	 * may show up. At the end of the process, the GameHelperListener's
 	 * onSignInSucceeded() or onSignInFailed() methods will be called.
+	 * 
+	 * @param requestCode
+	 *            If >= 0 this code is returned when the sign in on Google Plus
+	 *            has succeeded. The code can be used to determine which action
+	 *            to trigger after sign in has succeeded.
 	 */
-	public void beginUserInitiatedSignIn() {
+
+	public void beginUserInitiatedSignIn(int requestCode) {
+		mRequestCodeUserInitiatedSignInSucceeded = requestCode;
 		if (mState == STATE_CONNECTED) {
 			// nothing to do
 			logWarn("beginUserInitiatedSignIn() called when already connected. "
@@ -887,8 +916,8 @@ public class GameHelper implements
 		setState(STATE_CONNECTED);
 		mSignInFailureReason = null;
 		mAutoSignIn = true;
-		mUserInitiatedSignIn = false;
 		notifyListener(true);
+		mUserInitiatedSignIn = false;
 	}
 
 	/** Handles a connection failure reported by a client. */
@@ -1218,4 +1247,7 @@ public class GameHelper implements
 		sb.append("0123456789ABCDEF".substring(lo, lo + 1));
 	}
 
+	protected boolean isUserInitiatedSignIn() {
+		return mUserInitiatedSignIn;
+	}
 }

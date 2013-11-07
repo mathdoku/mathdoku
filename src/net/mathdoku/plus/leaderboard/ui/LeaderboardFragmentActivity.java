@@ -232,8 +232,13 @@ public class LeaderboardFragmentActivity extends
 	}
 
 	@Override
-	public void onSignInSucceeded() {
-		// Sign-in on Google Play Services has succeeded.
+	public void onAutoSignInSucceeded() {
+		// Automatic sign-in on Google Play Services has succeeded.
+	}
+
+	@Override
+	public void onUserInitiatedSignInSucceeded(int requestCode) {
+		// User initiated sign to Google Play Services has succeeded.
 	}
 
 	@Override
