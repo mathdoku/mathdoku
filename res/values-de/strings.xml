@@ -289,7 +289,7 @@
     <!-- DIALOG REPLAY PUZZLE CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- TODO: entire section -->
 
-    <!-- The title, message and buttons confirmation message that shows up when the user chooses to replay a puzzle. -->
+    <!-- The title, message and buttons confirmation message that shows up when the user chooses to replay a puzzle. -->
     <string name="dialog_replay_puzzle_confirmation_title">Replay puzzle?</string>
     <string name="dialog_replay_puzzle_confirmation_message">You can replay a puzzle as often as you want. As soon as you start replaying this puzzle you will not be able to view the current statistics for this puzzle. The overall statistics will only be updated after you have completed this puzzle again.\nThe score of a replayed puzzle will never be used to update the leaderboards.\n\nAre you sure you want to replay this puzzle? </string>
     <string name="dialog_replay_puzzle_confirmation_negative_button">Cancel</string>
@@ -309,8 +309,7 @@
 
     <!-- Dialog for sending feedback on MathDoku+ via email. -->
     <string name="dialog_send_feedback_title">Feedback geben</string>
-    <string name="dialog_send_feedback_text_1">Danke, dass Sie sich bereit erklärt haben uns Feedback zu geben.\n\nBitte beachten Sie, dass diese App gratis und ohne Werbung ist. Daher verdienen wir kein Geld mit dieser App. Diese App wird von ein paar Enthusiasten in deren Freizeit entwickelt. Wir sind also nicht verpflichtet neue Funktionalitäten hinzuzufügen und Fehler zu entfernen.\nBitte geben Sie uns konstruktives Feedback.\n\nWir bevorzugen es Feedback zu Problemen oder Anfragen bezüglich neuer Funktionen über den folgenden Link zu erhalten:</string>
-    <string name="dialog_send_feedback_text_2">Alternativ können Sie auch eine E-Mail an uns senden, wenn Sie dies bevorzugen. Beachten Sie bitte, dass nur Anfragen auf englisch bearbeitet werden können.</string>
+    <string name="dialog_send_feedback_text">Danke, dass Sie sich bereit erklärt haben uns Feedback zu geben.\n\nBitte beachten Sie, dass diese App gratis und ohne Werbung ist. Daher verdienen wir kein Geld mit dieser App. Diese App wird von ein paar Enthusiasten in deren Freizeit entwickelt. Wir sind also nicht verpflichtet neue Funktionalitäten hinzuzufügen und Fehler zu entfernen.\n\nBeachten Sie bitte, dass nur Anfragen auf englisch bearbeitet werden können.</string>
     <string name="dialog_send_feedback_positive_button">E-Mail senden</string>
 
     <!-- Default subject and message for feedback email. -->

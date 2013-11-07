@@ -26,9 +26,6 @@ import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.TextView;
 
 public class FeedbackEmail {
 	public final static String TAG = "MathDoku.FeedbackEmail";
@@ -256,19 +253,13 @@ public class FeedbackEmail {
 		screendump.save(mActivity.getWindow().getDecorView(),
 				FileProvider.SCREENDUMP_FILE_NAME);
 
-		// Get view and put relevant information into the view.
-		LayoutInflater li = LayoutInflater.from(mActivity);
-		View view = li.inflate(R.layout.send_feedback_dialog, null);
-
-		TextView textView = (TextView) view
-				.findViewById(R.id.dialog_send_feedback_issues_link);
-		textView.setText(Util.PROJECT_HOME + "issues.php");
-
 		new AlertDialog.Builder(mActivity)
 				.setTitle(
 						mActivity.getResources().getString(
 								R.string.dialog_send_feedback_title))
-				.setView(view)
+				.setMessage(
+						mActivity.getResources().getString(
+								R.string.dialog_send_feedback_text))
 				.setNegativeButton(R.string.dialog_general_button_close,
 						new DialogInterface.OnClickListener() {
 							@Override
