@@ -289,7 +289,8 @@
     <!-- DIALOG REPLAY PUZZLE CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- TODO: entire section -->
 
-    <!-- The title, message and buttons confirmation message that shows up when the user chooses to replay a puzzle. -->
+
+    <!-- The title, message and buttons confirmation message that shows up when the user chooses to replay a puzzle. -->
     <string name="dialog_replay_puzzle_confirmation_title">Replay puzzle?</string>
     <string name="dialog_replay_puzzle_confirmation_message">You can replay a puzzle as often as you want. As soon as you start replaying this puzzle you will not be able to view the current statistics for this puzzle. The overall statistics will only be updated after you have completed this puzzle again.\nThe score of a replayed puzzle will never be used to update the leaderboards.\n\nAre you sure you want to replay this puzzle? </string>
     <string name="dialog_replay_puzzle_confirmation_negative_button">Cancel</string>
@@ -589,6 +590,10 @@
         <item>Hidden operators only</item>
         <item>Visible operators only</item>
     </string-array>
+
+    <!-- The title and message for the dialog which shows the progress in updating the leaderboards. -->
+    <string name="dialog_leaderboard_rank_update_title">Updating the leaderboards</string>
+    <string name="dialog_leaderboard_rank_update_message">All leaderboards are now updated with Google+. In case you can cancel this dialog the leaderboard overview might temporarily display inaccurate information.</string>
 
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

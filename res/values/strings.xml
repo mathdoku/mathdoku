@@ -576,6 +576,10 @@
         <item>Visible operators only</item>
     </string-array>
 
+    <!-- The title and message for the dialog which shows the progress in updating the leaderboards. -->
+    <string name="dialog_leaderboard_rank_update_title">Updating the leaderboards</string>
+    <string name="dialog_leaderboard_rank_update_message">All leaderboards are now updated with Google+. In case you can cancel this dialog the leaderboard overview might temporarily display inaccurate information.</string>
+
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 

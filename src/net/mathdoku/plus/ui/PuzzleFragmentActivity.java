@@ -14,6 +14,8 @@ import net.mathdoku.plus.gridGenerating.DialogPresentingGridGenerator;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
 import net.mathdoku.plus.leaderboard.LeaderboardConnector;
+import net.mathdoku.plus.leaderboard.LeaderboardRankUpdater;
+import net.mathdoku.plus.leaderboard.LeaderboardRankUpdaterProgressDialog;
 import net.mathdoku.plus.leaderboard.LeaderboardType;
 import net.mathdoku.plus.leaderboard.ui.LeaderboardFragmentActivity;
 import net.mathdoku.plus.painter.Painter;
@@ -37,6 +39,7 @@ import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -128,6 +131,9 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	// call.
 	private int mOnResumeReplaySolvingAttempt;
 
+	// Reference to dialog for updating the leaderboards
+	private LeaderboardRankUpdaterProgressDialog mLeaderboardRankUpdaterProgressDialog;
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -213,6 +219,14 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		}
 
 		super.onResume();
+	}
+
+	@Override
+	protected void onStop() {
+		if (mLeaderboardRankUpdaterProgressDialog != null) {
+			mLeaderboardRankUpdaterProgressDialog.dismiss();
+		}
+		super.onStop();
 	}
 
 	@Override
@@ -1365,15 +1379,15 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 		// Set up leaderboard
 		mLeaderboardConnector = new LeaderboardConnector(this, gamesClient);
-
-		// Submit or re-submit leaderboard scores for which the rank information
-		// is missing.
-		mLeaderboardConnector.updateLeaderboardsWithMissingRankInformation();
 	}
 
 	@Override
 	public void onAutoSignInSucceeded() {
 		onSignSucceeded();
+
+		// Submit or re-submit leaderboard scores for which the rank information
+		// is missing. Do not show a progress dialog as this is an auto sign in.
+		new LeaderboardRankUpdater(mLeaderboardConnector).update();
 	}
 
 	@Override
@@ -1381,9 +1395,18 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		onSignSucceeded();
 		switch (requestCode) {
 		case RC_GOOGLE_PLUS_SIGN_IN_SHOW_LEADERBOARD:
-			Intent intentLeaderboards = new Intent(PuzzleFragmentActivity.this,
-					LeaderboardFragmentActivity.class);
-			startActivity(intentLeaderboards);
+			// Show a progress dialog while the leaderboards are updated. After
+			// update has completed, start the leaderboards overview.
+			mLeaderboardRankUpdaterProgressDialog = new LeaderboardRankUpdaterProgressDialog(
+					this, mLeaderboardConnector);
+			mLeaderboardRankUpdaterProgressDialog.show();
+			mLeaderboardRankUpdaterProgressDialog
+					.setOnDismissListener(new OnDismissListener() {
+						@Override
+						public void onDismiss(DialogInterface dialog) {
+							mLeaderboardRankUpdaterProgressDialog = null;
+						}
+					});
 			break;
 		default:
 			// Do nothing

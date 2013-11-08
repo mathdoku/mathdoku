@@ -1,6 +1,8 @@
 package net.mathdoku.plus.leaderboard.ui;
 
 import net.mathdoku.plus.R;
+import net.mathdoku.plus.leaderboard.LeaderboardConnector;
+import net.mathdoku.plus.leaderboard.LeaderboardRankUpdater;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 import net.mathdoku.plus.ui.base.GooglePlayServiceFragmentActivity;
 import net.mathdoku.plus.util.FeedbackEmail;
@@ -233,7 +235,10 @@ public class LeaderboardFragmentActivity extends
 
 	@Override
 	public void onAutoSignInSucceeded() {
-		// Automatic sign-in on Google Play Services has succeeded.
+		// Automatic sign-in on Google Play Services has succeeded. Update
+		// leaderboards which are outdated.
+		new LeaderboardRankUpdater(new LeaderboardConnector(this,
+				getGamesClient())).update();
 	}
 
 	@Override

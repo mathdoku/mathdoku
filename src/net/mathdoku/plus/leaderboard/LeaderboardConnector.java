@@ -1,6 +1,5 @@
 package net.mathdoku.plus.leaderboard;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 
 import net.mathdoku.plus.config.Config;
@@ -9,7 +8,7 @@ import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
 import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter;
 import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter.ScoreOrigin;
 import net.mathdoku.plus.storage.database.LeaderboardRankRow;
-import net.mathdoku.plus.ui.PuzzleFragmentActivity;
+import net.mathdoku.plus.ui.base.AppFragmentActivity;
 import android.content.res.Resources;
 import android.util.Log;
 import android.widget.Toast;
@@ -31,7 +30,7 @@ public class LeaderboardConnector {
 	private final GamesClient mGamesClient;
 
 	// Reference to the context
-	private final PuzzleFragmentActivity mPuzzleFragmentActivity;
+	private final AppFragmentActivity mAppFragmentActivity;
 
 	// Reference to translate leaderboard id's back to leaderboard indexes
 	private static ArrayList<String> mLeaderboardIds;
@@ -41,16 +40,16 @@ public class LeaderboardConnector {
 	 * 
 	 * @param resources
 	 */
-	public LeaderboardConnector(PuzzleFragmentActivity puzzleFragmentActivity,
+	public LeaderboardConnector(AppFragmentActivity appFragmentActivity,
 			final GamesClient gamesClient) {
 		mGamesClient = gamesClient;
-		mPuzzleFragmentActivity = puzzleFragmentActivity;
+		mAppFragmentActivity = appFragmentActivity;
 
 		// Store all leaderboards id's and its corresponding leaderboard type
 		// index so the leaderboard index can be retrieved by searching on the
 		// leaderboard id.
 		mLeaderboardIds = new ArrayList<String>();
-		Resources resources = mPuzzleFragmentActivity.getResources();
+		Resources resources = mAppFragmentActivity.getResources();
 		for (int i = 0; i < LeaderboardType.MAX_LEADERBOARDS; i++) {
 			mLeaderboardIds.add(i,
 					resources.getString(LeaderboardType.getResId(i)));
@@ -95,10 +94,9 @@ public class LeaderboardConnector {
 		}
 
 		// Determine the leaderboardId to which the score has to be submitted.
-		String leaderboardId = mPuzzleFragmentActivity.getResources()
-				.getString(
-						LeaderboardType.getResId(LeaderboardType.getIndex(
-								gridSize, hideOperators, puzzleComplexity)));
+		String leaderboardId = mAppFragmentActivity.getResources().getString(
+				LeaderboardType.getResId(LeaderboardType.getIndex(gridSize,
+						hideOperators, puzzleComplexity)));
 
 		if (DEBUG) {
 			Log.i(TAG, "Submit new score " + timePlayed + " for leaderboard"
@@ -162,7 +160,7 @@ public class LeaderboardConnector {
 	 * @param leaderboard
 	 * @param leaderboardScore
 	 */
-	private void onRankCurrentPlayerReceived(Leaderboard leaderboard,
+	protected void onRankCurrentPlayerReceived(Leaderboard leaderboard,
 			LeaderboardScore leaderboardScore, boolean displayToast) {
 		if (leaderboard == null || leaderboardScore == null) {
 			return;
@@ -228,7 +226,7 @@ public class LeaderboardConnector {
 		// Display a toast containing the ranking information for the score.
 		if (displayToast) {
 			Toast.makeText(
-					mPuzzleFragmentActivity,
+					mAppFragmentActivity,
 					"Leaderboard: " + leaderboard.getDisplayName() + "\n"
 							+ "Your rank: " + leaderboardScore.getDisplayRank()
 							+ "\n" + "Your time: "
@@ -244,179 +242,6 @@ public class LeaderboardConnector {
 			}
 		}
 		return;
-	}
-
-	/**
-	 * Update all leaderboards with ranking information from Google Play
-	 * Services. This is useful after a clean install or in case a top score was
-	 * achieved while no connection with Google Play Services was available.
-	 * 
-	 * Each time this method is called the leaderboard which has not been
-	 * updated for the longest time will be updated first. Upon completion of
-	 * update that leaderboard the methode is called again for processing the
-	 * next leaderboard.
-	 */
-	public void updateLeaderboardsWithMissingRankInformation() {
-		// Check if already signed in
-		if (isSignedIn() == false) {
-			return;
-		}
-
-		// Asynchronously process all leaderboards for which the score was
-		// submitted before but which was not processed completely.
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				// Initialize the leaderboards if needed.
-				if (mPuzzleFragmentActivity.mMathDokuPreferences
-						.isLeaderboardsInitialized() == false) {
-					LeaderboardRankDatabaseAdapter leaderboardRankDatabaseAdapter = new LeaderboardRankDatabaseAdapter();
-					for (String leaderboardId : mLeaderboardIds) {
-						// Create a leaderboard record if currently does not yet
-						// exist.
-						if (leaderboardRankDatabaseAdapter.get(leaderboardId) == null) {
-							leaderboardRankDatabaseAdapter
-									.insertInitializedLeaderboard(leaderboardId);
-						}
-					}
-					mPuzzleFragmentActivity.mMathDokuPreferences
-							.setLeaderboardsInitialized();
-					if (DEBUG) {
-						Log.i(TAG,
-								"All leaderboards have been initialized in the database.");
-					}
-				}
-
-				// Get a leaderboard which needs to be updated
-				LeaderboardRankRow leaderboardRankRow = new LeaderboardRankDatabaseAdapter()
-						.getMostOutdatedLeaderboardRank();
-				if (leaderboardRankRow == null) {
-					// No leadeboards to be updated.
-					if (DEBUG) {
-						Log.i(TAG, "All leaderboards are up to date.");
-					}
-					return;
-				}
-
-				if (leaderboardRankRow.mScoreOrigin == ScoreOrigin.LOCAL_DATABASE
-						&& leaderboardRankRow.mRawScore > 0) {
-					// A local top score was already registered for this
-					// leaderboard. This score is submitted.
-
-					if (DEBUG) {
-						Log.i(TAG,
-								"Submit score ("
-										+ leaderboardRankRow.mRawScore
-										+ ") for existing leaderboard"
-										+ getLeaderboardNameForLogging(leaderboardRankRow.mLeaderboardId)
-										+ " which was last submitted on "
-										+ DateFormat
-												.getDateTimeInstance()
-												.format(leaderboardRankRow.mDateSubmitted)
-										+ " with callback listener");
-					}
-					mGamesClient.submitScoreImmediate(
-							new OnScoreSubmittedListener() {
-
-								@Override
-								public void onScoreSubmitted(int statusCode,
-										SubmitScoreResult submitScoreResult) {
-									if (statusCode == GamesClient.STATUS_OK
-											&& submitScoreResult != null) {
-										// The score was submitted and processed
-										// by Google Play Services.
-										if (DEBUG) {
-											Log.i(TAG,
-													"Score for leaderboard"
-															+ getLeaderboardNameForLogging(submitScoreResult
-																	.getLeaderboardId())
-															+ " has been processed by Google Play Services.");
-										}
-
-										// Retrieve the current rank of the
-										// player
-										new LeaderboardRankPlayer(
-												LeaderboardConnector.this,
-												new LeaderboardRankPlayer.Listener() {
-
-													@Override
-													public void onLeaderboardRankLoaded(
-															Leaderboard leaderboard,
-															LeaderboardScore leaderboardScore) {
-														onRankCurrentPlayerReceived(
-																leaderboard,
-																leaderboardScore,
-																false);
-														// Start process again
-														// for the next
-														// leaderboard.
-														updateLeaderboardsWithMissingRankInformation();
-													}
-
-													@Override
-													public void onNoRankFound(
-															Leaderboard leaderboard) {
-														// Nothing to do here.
-														if (DEBUG) {
-															Log.i(TAG,
-																	"ERROR: it should not possible that a player rank "
-																			+ "is not found after it has just been "
-																			+ "successfully submitted and received.");
-														}
-													}
-												})
-												.loadCurrentPlayerRank(submitScoreResult
-														.getLeaderboardId());
-									}
-								}
-							}, leaderboardRankRow.mLeaderboardId,
-							leaderboardRankRow.mRawScore);
-				} else {
-					// Only the ranking information needs to be updated.
-					new LeaderboardRankPlayer(LeaderboardConnector.this,
-							new LeaderboardRankPlayer.Listener() {
-
-								@Override
-								public void onLeaderboardRankLoaded(
-										Leaderboard leaderboard,
-										LeaderboardScore leaderboardScore) {
-									onRankCurrentPlayerReceived(leaderboard,
-											leaderboardScore, false);
-									// Start process again
-									// for the next
-									// leaderboard.
-									updateLeaderboardsWithMissingRankInformation();
-								}
-
-								@Override
-								public void onNoRankFound(
-										Leaderboard leaderboard) {
-									// The current player has never played this
-									// leaderboard as no rank for this player
-									// was found on Google Play Services.
-									if (DEBUG) {
-										Log.i(TAG,
-												"No local top score and no ranking information "
-														+ "was found for the current user for leaderboard "
-														+ getLeaderboardNameForLogging(leaderboard
-																.getLeaderboardId())
-														+ ".");
-									}
-
-									new LeaderboardRankDatabaseAdapter()
-											.updateWithGooglePlayRankNotAvailable(leaderboard
-													.getLeaderboardId());
-
-									// Start process again for the next
-									// leaderboard.
-									updateLeaderboardsWithMissingRankInformation();
-								}
-							})
-							.loadCurrentPlayerRank(leaderboardRankRow.mLeaderboardId);
-				}
-			}
-		}).start();
 	}
 
 	/**
@@ -452,5 +277,15 @@ public class LeaderboardConnector {
 	 */
 	protected GamesClient getGamesClient() {
 		return mGamesClient;
+	}
+
+	/**
+	 * Get the list of leaderboardIds.
+	 * 
+	 * @return The list of leaderboardIds.
+	 */
+	@SuppressWarnings("unchecked")
+	public ArrayList<String> getLeaderboardIds() {
+		return (ArrayList<String>) mLeaderboardIds.clone();
 	}
 }

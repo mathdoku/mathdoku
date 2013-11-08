@@ -570,11 +570,15 @@
 
     <!-- The possible values of the filters on the leaderboard overview. Do not alter the order of this list. -->
     <string-array name="leaderboard_filter">
-        <item>Alle klassemennten</item>
+        <item>Alle klassementen</item>
         <item>Mijn klassementen alleen</item>
         <item>Verborgen operatie tekens alleen</item>
         <item>Zichtbare operatie tekens alleen</item>
     </string-array>
+
+    <!-- The title and message for the dialog which shows the progress in updating the leaderboards. -->
+    <string name="dialog_leaderboard_rank_update_title">Bijwerken klassementen</string>
+    <string name="dialog_leaderboard_rank_update_message">Alle klassementen worden nu bijgewerkt Google+. Als je deze boodschap annuleert dan kan in het klassementen overzicht tijdelijk niet actuele informatie worden getoond.</string>
 
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

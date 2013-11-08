@@ -442,7 +442,8 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	 * Get the most outdated leaderboard for which the ranking information needs
 	 * to be updated.
 	 * 
-	 * @return The leaderboard which needs to be submitted again.
+	 * @return The (first/next) leaderboard for which the ranking information
+	 *         needs to be updated.
 	 */
 	public LeaderboardRankRow getMostOutdatedLeaderboardRank() {
 		LeaderboardRankRow leaderboardRankRow = null;
@@ -468,5 +469,43 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 			}
 		}
 		return leaderboardRankRow;
+	}
+
+	/**
+	 * Get the number of leaderboards for which the ranking information needs to
+	 * be updated.
+	 * 
+	 * @return The number of leaderboards for which the leaderboards needs to be
+	 *         updated again.
+	 */
+	public int getCountOutdatedLeaderboardRanks() {
+		int count = 0;
+		Cursor cursor = null;
+		try {
+			// Build selection and order by clauses
+			String[] columns = new String[] { "COUNT(1)" };
+			String selection = KEY_RANK_STATUS + " = "
+					+ stringBetweenQuotes(RankStatus.TO_BE_UPDATED.toString());
+			cursor = mSqliteDatabase.query(true, TABLE, columns, selection,
+					null, null, null, null, null);
+
+			if (cursor == null || !cursor.moveToFirst()) {
+				// No record found
+				return 0;
+			}
+
+			// Convert cursor record to a count of grids
+			count = cursor.getInt(0);
+		} catch (SQLiteException e) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
+				e.printStackTrace();
+			}
+			return 0;
+		} finally {
+			if (cursor != null) {
+				cursor.close();
+			}
+		}
+		return count;
 	}
 }
