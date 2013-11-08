@@ -1,7 +1,5 @@
 package net.mathdoku.plus.leaderboard;
 
-import java.util.ArrayList;
-
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
@@ -32,8 +30,10 @@ public class LeaderboardConnector {
 	// Reference to the context
 	private final AppFragmentActivity mAppFragmentActivity;
 
-	// Reference to translate leaderboard id's back to leaderboard indexes
-	private static ArrayList<String> mLeaderboardIds;
+	// The Google+ leaderboard id's. The items in this array are kept in sync
+	// with array mLeaderboardResId. The array is only initialized in DEBUG
+	// mode.
+	private static String[] mLeaderboardId = null;
 
 	/**
 	 * Create a new instance of the leaderboard.
@@ -45,14 +45,16 @@ public class LeaderboardConnector {
 		mGamesClient = gamesClient;
 		mAppFragmentActivity = appFragmentActivity;
 
-		// Store all leaderboards id's and its corresponding leaderboard type
-		// index so the leaderboard index can be retrieved by searching on the
-		// leaderboard id.
-		mLeaderboardIds = new ArrayList<String>();
-		Resources resources = mAppFragmentActivity.getResources();
-		for (int i = 0; i < LeaderboardType.MAX_LEADERBOARDS; i++) {
-			mLeaderboardIds.add(i,
-					resources.getString(LeaderboardType.getResId(i)));
+		if (DEBUG) {
+			// Fill the array of Google+ leaderboard id's based on the resource
+			// id's. This facilitates searching for a resource id based on the
+			// Google+ leaderboard id.
+			Resources resources = appFragmentActivity.getResources();
+			mLeaderboardId = new String[LeaderboardType.MAX_LEADERBOARDS];
+			for (int i = 0; i < mLeaderboardId.length; i++) {
+				mLeaderboardId[i] = new String(
+						resources.getString(LeaderboardType.getResId(i)));
+			}
 		}
 	}
 
@@ -246,28 +248,38 @@ public class LeaderboardConnector {
 
 	/**
 	 * Get the name for a leaderboard based on the leaderboard id as used by
-	 * Google Play Services.
+	 * Google Play Services. Should only be used in DEBUG mode.
 	 * 
 	 * @param leaderboardId
 	 *            The leaderboard id as used by Google Play Services.
-	 * @return The description of the leaderboard name.
+	 * @return The description of the leaderboard name. Null if not in DEBUG
+	 *         mode.
 	 */
 	protected String getLeaderboardNameForLogging(String leaderboardId) {
-		// Check if reference list of leaderboard id is initialized.
-		if (mLeaderboardIds == null) {
-			return "<<mLeaderboardId is not initialized>>";
-		}
+		if (DEBUG) {
+			// Check if reference list of leaderboard id is initialized.
+			if (mLeaderboardId == null) {
+				return "<<mLeaderboardId is not initialized>>";
+			}
 
-		// Check if the given id does exists in the list.
-		int leaderboardIndex = mLeaderboardIds.indexOf(leaderboardId);
-		if (leaderboardIndex < 0) {
+			// Search for the leaderboard id
+			for (int i = 0; i < mLeaderboardId.length; i++) {
+				if (mLeaderboardId[i].equals(leaderboardId)) {
+					return "[size "
+							+ LeaderboardType.getGridSize(i)
+							+ ", "
+							+ (LeaderboardType.hasHiddenOperator(i) ? "hidden operators"
+									: "visible operators") + ", "
+							+ LeaderboardType.getPuzzleComplexity(i).toString()
+							+ "]";
+				}
+			}
+
+			// The leaderboard type was not found
 			return "<<leaderboardId " + leaderboardId + " is invalid>>";
+		} else {
+			return null;
 		}
-
-		// The leaderboard id is found in the list. As the index in this list
-		// matches the leaderboard indexes used by the leaderboard type the
-		// description can be retrieved.
-		return LeaderboardType.getLeaderboardNameForLogging(leaderboardIndex);
 	}
 
 	/**
@@ -277,15 +289,5 @@ public class LeaderboardConnector {
 	 */
 	protected GamesClient getGamesClient() {
 		return mGamesClient;
-	}
-
-	/**
-	 * Get the list of leaderboardIds.
-	 * 
-	 * @return The list of leaderboardIds.
-	 */
-	@SuppressWarnings("unchecked")
-	public ArrayList<String> getLeaderboardIds() {
-		return (ArrayList<String>) mLeaderboardIds.clone();
 	}
 }
