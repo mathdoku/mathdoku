@@ -3,8 +3,6 @@ package net.mathdoku.plus.leaderboard.ui;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.leaderboard.LeaderboardConnector;
 import net.mathdoku.plus.leaderboard.LeaderboardRankUpdater;
-import net.mathdoku.plus.leaderboard.LeaderboardRankUpdater.Listener;
-import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter;
 import net.mathdoku.plus.ui.base.AppFragmentActivity;
 import android.app.ProgressDialog;
 
@@ -32,16 +30,13 @@ public class LeaderboardRankUpdaterProgressDialog extends ProgressDialog
 	 *            The activity which started this
 	 *            {@link LeaderboardRankUpdaterProgressDialog}.
 	 */
-	public LeaderboardRankUpdaterProgressDialog(AppFragmentActivity appFragmentActivity,
+	public LeaderboardRankUpdaterProgressDialog(
+			AppFragmentActivity appFragmentActivity,
 			LeaderboardConnector leaderboardConnector) {
 		super(appFragmentActivity);
 
 		mAppFragmentActivity = appFragmentActivity;
 		mLeaderboardConnector = leaderboardConnector;
-
-		// Initialize new leaderboards (only after an update to a new app
-		// version or after a clean install).
-		initializeNewLeaderboards();
 
 		// Initialize the leaderboard rank updater
 		mLeaderboardRankUpdater = new LeaderboardRankUpdater(this,
@@ -67,25 +62,6 @@ public class LeaderboardRankUpdaterProgressDialog extends ProgressDialog
 
 			// Start updating the leaderboards.
 			mLeaderboardRankUpdater.update();
-		}
-	}
-
-	private void initializeNewLeaderboards() {
-		// Initialize the leaderboards if needed.
-		if (mAppFragmentActivity.mMathDokuPreferences
-				.isLeaderboardsInitialized() == false) {
-			LeaderboardRankDatabaseAdapter leaderboardRankDatabaseAdapter = new LeaderboardRankDatabaseAdapter();
-			for (String leaderboardId : mLeaderboardConnector
-					.getLeaderboardIds()) {
-				// Create a leaderboard record if currently does not yet
-				// exist.
-				if (leaderboardRankDatabaseAdapter.get(leaderboardId) == null) {
-					leaderboardRankDatabaseAdapter
-							.insertInitializedLeaderboard(leaderboardId);
-				}
-			}
-			mAppFragmentActivity.mMathDokuPreferences
-					.setLeaderboardsInitialized();
 		}
 	}
 

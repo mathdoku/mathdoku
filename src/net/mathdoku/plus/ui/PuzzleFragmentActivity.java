@@ -40,6 +40,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -659,7 +660,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	 * @param currentVersion
 	 *            Current (new) revision number of MathDoku.
 	 */
-	public void upgradePhase2_UpdatePreferences(int previousInstalledVersion,
+	public void upgradePhase2(int previousInstalledVersion,
 			int currentVersion) {
 		// The game file converter process has been completed. Reset it in order
 		// to prevent restarting the game file conversion after a configuration
@@ -668,6 +669,25 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 		// Update preferences
 		mMathDokuPreferences.upgrade(previousInstalledVersion, currentVersion);
+
+		// Initialize new leaderboards
+		if (mMathDokuPreferences.isLeaderboardsInitialized() == false) {
+			Resources resources = getResources();
+			String leaderboardId;
+			LeaderboardRankDatabaseAdapter leaderboardRankDatabaseAdapter = new LeaderboardRankDatabaseAdapter();
+			for (int i = 0; i < LeaderboardType.MAX_LEADERBOARDS; i++) {
+				// Get the Google+ leaderboard id
+				leaderboardId = resources
+						.getString(LeaderboardType.getResId(i));
+
+				// Create a leaderboard record if currently does not yet exist.
+				if (leaderboardRankDatabaseAdapter.get(leaderboardId) == null) {
+					leaderboardRankDatabaseAdapter
+							.insertInitializedLeaderboard(leaderboardId);
+				}
+			}
+			mMathDokuPreferences.setLeaderboardsInitialized();
+		}
 
 		// Show help dialog after new/fresh install or changes dialog
 		// otherwise.
