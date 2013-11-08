@@ -449,14 +449,12 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		LeaderboardRankRow leaderboardRankRow = null;
 		Cursor cursor = null;
 		try {
-			// Build selection and order by clauses
-			String selection = KEY_RANK_STATUS + " = "
-					+ stringBetweenQuotes(RankStatus.TO_BE_UPDATED.toString());
 			String orderBy = "IFNULL(" + KEY_RANK_DATE_LAST_UPDATED + ","
 					+ KEY_SCORE_DATE_SUBMITTED + ") ASC";
 
-			cursor = mSqliteDatabase.query(true, TABLE, allColumns, selection,
-					null, null, null, orderBy, "1");
+			cursor = mSqliteDatabase.query(true, TABLE, allColumns,
+					getSelectionOutdatedLeaderboardRanks(), null, null, null,
+					orderBy, "1");
 			leaderboardRankRow = toLeaderboardRankRow(cursor);
 		} catch (SQLiteException e) {
 			if (Config.mAppMode == AppMode.DEVELOPMENT) {
@@ -484,10 +482,9 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		try {
 			// Build selection and order by clauses
 			String[] columns = new String[] { "COUNT(1)" };
-			String selection = KEY_RANK_STATUS + " = "
-					+ stringBetweenQuotes(RankStatus.TO_BE_UPDATED.toString());
-			cursor = mSqliteDatabase.query(true, TABLE, columns, selection,
-					null, null, null, null, null);
+			cursor = mSqliteDatabase.query(true, TABLE, columns,
+					getSelectionOutdatedLeaderboardRanks(), null, null, null,
+					null, null);
 
 			if (cursor == null || !cursor.moveToFirst()) {
 				// No record found
@@ -507,5 +504,60 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 			}
 		}
 		return count;
+	}
+
+	/**
+	 * Get the selection clause for the queries retrieving the outdated
+	 * leaderboard ranks.
+	 * 
+	 * @return The selection clause for the queries retrieving the outdated
+	 *         leaderboard ranks.
+	 */
+	private String getSelectionOutdatedLeaderboardRanks() {
+		StringBuffer selection = new StringBuffer();
+		long currentTimeMinus15Minutes = new java.util.Date().getTime()
+				- (15 * 60 * 1000);
+		long currentTimeMinus24Hours = new java.util.Date().getTime()
+				- (24 * 60 * 60 * 1000);
+
+		// Include all leaderboards for which the rank status equals
+		// TO_BE_UPDATED
+		selection.append(KEY_RANK_STATUS + " = "
+				+ stringBetweenQuotes(RankStatus.TO_BE_UPDATED.toString()));
+
+		// Include all leaderboards having a score and an updated rank which
+		// have not been updated in the last 15 minutes. These are included
+		// as the ranking position may have changed as other players
+		// achieved a better score than the top score of the current player
+		// in the last 15 minutes.
+		selection
+				.append(" OR ("
+						+ KEY_RANK_STATUS
+						+ " = "
+						+ stringBetweenQuotes(RankStatus.TOP_RANK_UPDATED
+								.toString())
+						+ " AND "
+						+ KEY_RANK_DATE_LAST_UPDATED
+						+ " < "
+						+ stringBetweenQuotes(toSQLiteTimestamp(currentTimeMinus15Minutes))
+						+ ")");
+
+		// Include all leaderboards having no rank and no score which have
+		// not been updated in the last 24 hours. These are include as the
+		// current as the current player may have played this leaderboard on
+		// another device in this interval.
+		selection
+				.append(" OR ("
+						+ KEY_RANK_STATUS
+						+ " = "
+						+ stringBetweenQuotes(RankStatus.TOP_RANK_NOT_AVAILABLE
+								.toString())
+						+ " AND "
+						+ KEY_RANK_DATE_LAST_UPDATED
+						+ " < "
+						+ stringBetweenQuotes(toSQLiteTimestamp(currentTimeMinus24Hours))
+						+ ")");
+
+		return selection.toString();
 	}
 }
