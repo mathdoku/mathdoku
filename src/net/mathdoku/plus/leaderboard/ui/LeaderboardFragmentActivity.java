@@ -2,7 +2,7 @@ package net.mathdoku.plus.leaderboard.ui;
 
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.leaderboard.LeaderboardConnector;
-import net.mathdoku.plus.leaderboard.LeaderboardRankUpdater;
+import net.mathdoku.plus.ui.GooglePlusSignInDialog;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 import net.mathdoku.plus.ui.base.GooglePlayServiceFragmentActivity;
 import net.mathdoku.plus.util.FeedbackEmail;
@@ -10,6 +10,7 @@ import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -50,6 +51,9 @@ public class LeaderboardFragmentActivity extends
 	};
 
 	private LeaderboardFilter mLeaderboardFilter;
+
+	// Reference to dialog for updating the leaderboards
+	private LeaderboardRankUpdaterProgressDialog mLeaderboardRankUpdaterProgressDialog;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -145,6 +149,14 @@ public class LeaderboardFragmentActivity extends
 	}
 
 	@Override
+	protected void onStop() {
+		if (mLeaderboardRankUpdaterProgressDialog != null) {
+			mLeaderboardRankUpdaterProgressDialog.dismiss();
+		}
+		super.onStop();
+	}
+
+	@Override
 	public void onTabUnselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
 	}
@@ -230,20 +242,52 @@ public class LeaderboardFragmentActivity extends
 
 	@Override
 	public void onSignInFailed() {
-		// Can not sign in to Google Play Services. For now, nothing is done.
+		// Can not sign in to Google Play Services. Show sign in dialog.
+		GooglePlusSignInDialog googlePlusSignInDialog = new GooglePlusSignInDialog(
+				this, new GooglePlusSignInDialog.Listener() {
+					@Override
+					public void onGooglePlusSignInStart() {
+						beginUserInitiatedSignIn();
+					}
+
+					@Override
+					public void onGooglePlusSignInCancelled() {
+						// Leaderboards can not be viewed when not signed in.
+						finish();
+					}
+				})
+				.setMessage(R.string.google_plus_login_dialog_on_show_leaderboards);
+		googlePlusSignInDialog.setCancelable(false);
+		googlePlusSignInDialog.show();
+	}
+
+	/**
+	 * After a successful sign in to Google+ the leaderboard are updated if
+	 * needed. If so, a progress dialog is shown.
+	 */
+	private void onSignInSucceeded() {
+		mLeaderboardRankUpdaterProgressDialog = new LeaderboardRankUpdaterProgressDialog(
+				this, new LeaderboardConnector(this, getGamesClient()));
+		mLeaderboardRankUpdaterProgressDialog.show();
+		mLeaderboardRankUpdaterProgressDialog
+				.setOnDismissListener(new OnDismissListener() {
+					@Override
+					public void onDismiss(DialogInterface dialog) {
+						mLeaderboardRankUpdaterProgressDialog = null;
+					}
+				});
 	}
 
 	@Override
 	public void onAutoSignInSucceeded() {
-		// Automatic sign-in on Google Play Services has succeeded. Update
-		// leaderboards which are outdated.
-		new LeaderboardRankUpdater(new LeaderboardConnector(this,
-				getGamesClient())).update();
+		// Automatic sign-in on Google Play Services has succeeded.
+		onSignInSucceeded();
 	}
 
 	@Override
-	public void onUserInitiatedSignInSucceeded(int requestCode) {
+	public void onUserInitiatedSignInSucceeded() {
 		// User initiated sign to Google Play Services has succeeded.
+		onSignInSucceeded();
 	}
 
 	@Override

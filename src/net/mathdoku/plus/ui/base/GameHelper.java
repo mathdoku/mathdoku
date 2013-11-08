@@ -79,13 +79,8 @@ public class GameHelper implements
 
 		/**
 		 * Called when the use initiated sign in has completed.
-		 * 
-		 * @param requestCode
-		 *            The request code which was passed when starting the user
-		 *            initiated sign in. It will be returned unchanged upon
-		 *            completing the sign in.
 		 */
-		void onUserInitiatedSignInSucceeded(int requestCode);
+		void onUserInitiatedSignInSucceeded();
 	}
 
 	// States we can be in
@@ -153,11 +148,6 @@ public class GameHelper implements
 	 * already clicked a "Sign-In" button or something similar
 	 */
 	boolean mUserInitiatedSignIn = false;
-
-	/*
-	 * The request code to be returned after sign in has succeeded.
-	 */
-	int mRequestCodeUserInitiatedSignInSucceeded = -1;
 
 	// The connection result we got from our last attempt to sign-in.
 	ConnectionResult mConnectionResult = null;
@@ -649,8 +639,7 @@ public class GameHelper implements
 		if (mListener != null) {
 			if (success) {
 				if (mUserInitiatedSignIn) {
-					mListener
-							.onUserInitiatedSignInSucceeded(mRequestCodeUserInitiatedSignInSucceeded);
+					mListener.onUserInitiatedSignInSucceeded();
 				} else {
 					mListener.onAutoSignInSucceeded();
 				}
@@ -665,15 +654,9 @@ public class GameHelper implements
 	 * clicks on a "Sign In" button. As a result, authentication/consent dialogs
 	 * may show up. At the end of the process, the GameHelperListener's
 	 * onSignInSucceeded() or onSignInFailed() methods will be called.
-	 * 
-	 * @param requestCode
-	 *            If >= 0 this code is returned when the sign in on Google Plus
-	 *            has succeeded. The code can be used to determine which action
-	 *            to trigger after sign in has succeeded.
 	 */
 
-	public void beginUserInitiatedSignIn(int requestCode) {
-		mRequestCodeUserInitiatedSignInSucceeded = requestCode;
+	public void beginUserInitiatedSignIn() {
 		if (mState == STATE_CONNECTED) {
 			// nothing to do
 			logWarn("beginUserInitiatedSignIn() called when already connected. "

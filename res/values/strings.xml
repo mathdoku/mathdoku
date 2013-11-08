@@ -110,10 +110,15 @@
     <!-- GOOGLE+ LOG IN DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
-    <!-- Title and message for the "Sign in to Google+" dialog which explains the reasons why the use should sign in to Google+. -->
+    <!-- Title for the "Sign in to Google+" dialog. -->
     <string name="google_plus_login_dialog_title">Sign in with Google+</string>
-    <string name="google_plus_login_dialog_message">Playing MathDoku+ is great fun. But even better then playing alone, is to compete for the fastest Mathdoku+ puzzle with others arounds the globe or just with a group of friends.\n\nIf you want to rank your fastest puzzles or to view the current leaderboards you have to sign in with Google+ one time only. You can sign out via the actions menu in case you no longer want to submit your top scores.\n\nNote: only puzzles in which no cheats have been used, will be submitted to the leaderboards.</string>
+
+    <!-- The message for the "Sign in to Google+" after as puzzle is finished which is eligble for submitting to Google+. -->
+    <string name="google_plus_login_dialog_on_game_completion">You have just finished a puzzle without using any cheats. If you want, you can submit your score to the Google+ leaderboards. This will give you the opportunity to compare your score with scores of other players. Isn\'t that great?\n\nTo submit a score to Google+, you have to sign in with your Google+ account (no password is asked) one time only. After signing in for the first time, Google+ will guide for further configurations.\n\nYou can sign out anytime via the actions menu in case you no longer want stay logged in.</string>
     <string name="google_plus_login_hide_till_next_top_score_achieved">Do not show again till a new top score is achieved</string>
+
+    <!-- The message for the "Sign in to Google+" when viewing the leaderboards while not signed in. -->
+    <string name="google_plus_login_dialog_on_show_leaderboards">To view the leaderboards, you have to sign in with Google+ (no password is asked). The leaderboards overview shows your best score and your ranking position for each type of puzzle.\n\nAfter signing in for the first time, Google+ will guide for further configurations. For each type of puzzle, the puzzle with the best score is submitted to Google+. Puzzles for which one or more cheats have been used will be ignored.\n\nYou can sign out anytime via the actions menu in case you no longer want stay logged in.</string>
 
     <!-- ACTION BAR ITEMS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

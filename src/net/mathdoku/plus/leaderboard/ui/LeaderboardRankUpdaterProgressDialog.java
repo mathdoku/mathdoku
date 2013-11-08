@@ -1,11 +1,12 @@
-package net.mathdoku.plus.leaderboard;
+package net.mathdoku.plus.leaderboard.ui;
 
 import net.mathdoku.plus.R;
-import net.mathdoku.plus.leaderboard.ui.LeaderboardFragmentActivity;
+import net.mathdoku.plus.leaderboard.LeaderboardConnector;
+import net.mathdoku.plus.leaderboard.LeaderboardRankUpdater;
+import net.mathdoku.plus.leaderboard.LeaderboardRankUpdater.Listener;
 import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter;
-import net.mathdoku.plus.ui.PuzzleFragmentActivity;
+import net.mathdoku.plus.ui.base.AppFragmentActivity;
 import android.app.ProgressDialog;
-import android.content.Intent;
 
 /**
  * Displays a progress dialog while updating all leaderboards.
@@ -16,7 +17,7 @@ public class LeaderboardRankUpdaterProgressDialog extends ProgressDialog
 	private static final String TAG = "MathDoku.LeaderboardRankUpdaterProgressDialog";
 
 	// The activity which started this task
-	private final PuzzleFragmentActivity mActivity;
+	private final AppFragmentActivity mAppFragmentActivity;
 
 	// The leaderboard connector
 	private final LeaderboardConnector mLeaderboardConnector;
@@ -27,21 +28,20 @@ public class LeaderboardRankUpdaterProgressDialog extends ProgressDialog
 	/**
 	 * Creates a new instance of {@link LeaderboardRankUpdaterProgressDialog}.
 	 * 
-	 * @param activity
+	 * @param appFragmentActivity
 	 *            The activity which started this
 	 *            {@link LeaderboardRankUpdaterProgressDialog}.
 	 */
-	public LeaderboardRankUpdaterProgressDialog(
-			PuzzleFragmentActivity activity,
+	public LeaderboardRankUpdaterProgressDialog(AppFragmentActivity appFragmentActivity,
 			LeaderboardConnector leaderboardConnector) {
-		super(activity);
+		super(appFragmentActivity);
 
-		mActivity = activity;
+		mAppFragmentActivity = appFragmentActivity;
 		mLeaderboardConnector = leaderboardConnector;
 
 		// Initialize new leaderboards (only after an update to a new app
 		// version or after a clean install).
-		initializeNewLeaderboards(activity);
+		initializeNewLeaderboards();
 
 		// Initialize the leaderboard rank updater
 		mLeaderboardRankUpdater = new LeaderboardRankUpdater(this,
@@ -49,7 +49,7 @@ public class LeaderboardRankUpdaterProgressDialog extends ProgressDialog
 
 		// Build the dialog
 		setTitle(R.string.dialog_leaderboard_rank_update_title);
-		setMessage(mActivity.getResources().getString(
+		setMessage(mAppFragmentActivity.getResources().getString(
 				R.string.dialog_leaderboard_rank_update_message));
 		setIcon(android.R.drawable.ic_dialog_info);
 		setIndeterminate(false);
@@ -70,10 +70,9 @@ public class LeaderboardRankUpdaterProgressDialog extends ProgressDialog
 		}
 	}
 
-	private void initializeNewLeaderboards(
-			PuzzleFragmentActivity mPuzzleFragmentActivity) {
+	private void initializeNewLeaderboards() {
 		// Initialize the leaderboards if needed.
-		if (mPuzzleFragmentActivity.mMathDokuPreferences
+		if (mAppFragmentActivity.mMathDokuPreferences
 				.isLeaderboardsInitialized() == false) {
 			LeaderboardRankDatabaseAdapter leaderboardRankDatabaseAdapter = new LeaderboardRankDatabaseAdapter();
 			for (String leaderboardId : mLeaderboardConnector
@@ -85,7 +84,7 @@ public class LeaderboardRankUpdaterProgressDialog extends ProgressDialog
 							.insertInitializedLeaderboard(leaderboardId);
 				}
 			}
-			mPuzzleFragmentActivity.mMathDokuPreferences
+			mAppFragmentActivity.mMathDokuPreferences
 					.setLeaderboardsInitialized();
 		}
 	}
@@ -100,10 +99,5 @@ public class LeaderboardRankUpdaterProgressDialog extends ProgressDialog
 	public void onLeaderboardRankUpdateFinished() {
 		// All leaderboards have been updated. Dismiss the dialog.
 		dismiss();
-
-		// Start the leaderboards overview
-		Intent intentLeaderboards = new Intent(mActivity,
-				LeaderboardFragmentActivity.class);
-		mActivity.startActivity(intentLeaderboards);
 	}
 }

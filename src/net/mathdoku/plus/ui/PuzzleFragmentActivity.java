@@ -15,7 +15,6 @@ import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
 import net.mathdoku.plus.leaderboard.LeaderboardConnector;
 import net.mathdoku.plus.leaderboard.LeaderboardRankUpdater;
-import net.mathdoku.plus.leaderboard.LeaderboardRankUpdaterProgressDialog;
 import net.mathdoku.plus.leaderboard.LeaderboardType;
 import net.mathdoku.plus.leaderboard.ui.LeaderboardFragmentActivity;
 import net.mathdoku.plus.painter.Painter;
@@ -39,7 +38,6 @@ import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -74,9 +72,6 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	// Background tasks for generating a new puzzle and converting game files
 	public DialogPresentingGridGenerator mDialogPresentingGridGenerator;
 	public GameFileConverter mGameFileConverter;
-
-	// Request codes for action when (manual) sign in to Google+ has succeed
-	private final static int RC_GOOGLE_PLUS_SIGN_IN_SHOW_LEADERBOARD = 1;
 
 	// Different types of fragments supported by this activity.
 	public enum FragmentType {
@@ -130,9 +125,6 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	// attempt with this specific number should be replayed in the onResume
 	// call.
 	private int mOnResumeReplaySolvingAttempt;
-
-	// Reference to dialog for updating the leaderboards
-	private LeaderboardRankUpdaterProgressDialog mLeaderboardRankUpdaterProgressDialog;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -219,14 +211,6 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		}
 
 		super.onResume();
-	}
-
-	@Override
-	protected void onStop() {
-		if (mLeaderboardRankUpdaterProgressDialog != null) {
-			mLeaderboardRankUpdaterProgressDialog.dismiss();
-		}
-		super.onStop();
 	}
 
 	@Override
@@ -817,8 +801,19 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 					// In case the google sign dialog is shown, the score will
 					// be processed after the sign in has succeeded.
 					new GooglePlusSignInDialog(this,
-							RC_GOOGLE_PLUS_SIGN_IN_SHOW_LEADERBOARD,
-							mMathDokuPreferences)
+							new GooglePlusSignInDialog.Listener() {
+								@Override
+								public void onGooglePlusSignInStart() {
+									beginUserInitiatedSignIn();
+								}
+
+								@Override
+								public void onGooglePlusSignInCancelled() {
+									// Nothing to do here.
+								}
+							})
+							.setMessage(
+									R.string.google_plus_login_dialog_on_game_completion)
 							.displayCheckboxHideTillNextTopScoreAchieved(
 									hideTillNextTopScore).show();
 				}
@@ -1184,20 +1179,10 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 				startActivity(intentStatistics);
 			} else if (mNavigationDrawerItems[position].equals(getResources()
 					.getString(R.string.action_leaderboards))) {
-				// Either start the leaderboards activity or display the sign in
-				// dialog.
-				if (mLeaderboardConnector != null
-						&& mLeaderboardConnector.isSignedIn()) {
-					Intent intentLeaderboards = new Intent(
-							PuzzleFragmentActivity.this,
-							LeaderboardFragmentActivity.class);
-					startActivity(intentLeaderboards);
-				} else {
-					new GooglePlusSignInDialog(PuzzleFragmentActivity.this,
-							RC_GOOGLE_PLUS_SIGN_IN_SHOW_LEADERBOARD,
-							PuzzleFragmentActivity.this.mMathDokuPreferences)
-							.show();
-				}
+				Intent intentLeaderboards = new Intent(
+						PuzzleFragmentActivity.this,
+						LeaderboardFragmentActivity.class);
+				startActivity(intentLeaderboards);
 			}
 			mDrawerLayout.closeDrawer(mDrawerListView);
 		}
@@ -1352,18 +1337,6 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		}
 	}
 
-	/**
-	 * Sign in with google plus.
-	 * 
-	 * @param requestCode
-	 *            If >= 0 this code is returned when the sign in on Google Plus
-	 *            has succeeded. The code can be used to determine which action
-	 *            to trigger after sign in has succeeded.
-	 */
-	public void signInGooglePlus(int requestCode) {
-		beginUserInitiatedSignIn(requestCode);
-	}
-
 	@Override
 	public void onSignInFailed() {
 		// Can not sign in to Google Play Services. For now, nothing is done.
@@ -1391,27 +1364,14 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	}
 
 	@Override
-	public void onUserInitiatedSignInSucceeded(int requestCode) {
+	public void onUserInitiatedSignInSucceeded() {
 		onSignSucceeded();
-		switch (requestCode) {
-		case RC_GOOGLE_PLUS_SIGN_IN_SHOW_LEADERBOARD:
-			// Show a progress dialog while the leaderboards are updated. After
-			// update has completed, start the leaderboards overview.
-			mLeaderboardRankUpdaterProgressDialog = new LeaderboardRankUpdaterProgressDialog(
-					this, mLeaderboardConnector);
-			mLeaderboardRankUpdaterProgressDialog.show();
-			mLeaderboardRankUpdaterProgressDialog
-					.setOnDismissListener(new OnDismissListener() {
-						@Override
-						public void onDismiss(DialogInterface dialog) {
-							mLeaderboardRankUpdaterProgressDialog = null;
-						}
-					});
-			break;
-		default:
-			// Do nothing
-			break;
-		}
+
+		// After the user has successfully signed to Google+, the leaderboards
+		// view is automatically started.
+		Intent intentLeaderboards = new Intent(this,
+				LeaderboardFragmentActivity.class);
+		startActivity(intentLeaderboards);
 	}
 
 	/**

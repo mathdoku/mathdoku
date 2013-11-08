@@ -110,10 +110,15 @@
     <!-- GOOGLE+ LOG IN DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
-    <!-- Title and message for the "Sign in to Google+" dialog which explains the reasons why the use should sign in to Google+. -->
+    <!-- Title for the "Sign in to Google+" dialog. -->
     <string name="google_plus_login_dialog_title">Log in met Google+</string>
-    <string name="google_plus_login_dialog_message">MathDoku+ spelen is erg leuk. Maar het is nog leuker om te strijden om het klassement van de snelste Mathdoku+ puzzel met andere spelers in de wereld of met een groep vrienden.\n\nAls je je snelste puzzels in wil sturen voor het klassement of om de klassementen te bekijken dan moet je eenmalig inloggen met Google+. Je kan uitloggen via het actiemenu in het geval dat je niet langer meer je topscore wil insturen.\n\nLet op: alleen puzzels waarin je niet hebt vals gespeeld, worden ingestuurd voor het klassement.</string>
+
+    <!-- The message for the "Sign in to Google+" after as puzzle is finished which is eligble for submitting to Google+. -->
+    <string name="google_plus_login_dialog_on_game_completion">Je hebt zojuist een puzzel opgelost zonder vals te spelen. Als je dat wil dan kan je jouw score versturen naar de Google+ klassementen. Dit geeft je de mogelijkheid om je score te vergelijken met de scores van andere spelers. Is dat niet geweldig?\n\nOm een score te versturen naar Google+ moet je eenmalig inloggen met je Google+ account (geen password nodig). Nadat je voor de eerste keer inlogt, begeleidt Google+ je met de verdere instellingen.\n\nJe kan op elk moment uitloggen via het actie menu indien je niet langer meer ingelogd wil zijn.</string>
     <string name="google_plus_login_hide_till_next_top_score_achieved">Niet meer tonen totdat een nieuwe topscore is behaald.</string>
+
+    <!-- The message for the "Sign in to Google+" when viewing the leaderboards while not signed in. -->
+    <string name="google_plus_login_dialog_on_show_leaderboards">Om de klassementen te bekijken moet je inloggen met Google+ (geen wachtwoord nodig). Het klassementenoverzicht toont jouw beste score en je positie in het klassement voor elk type of puzzel.\n\nNadat je voor de eerste keer inlogt, begeleidt Google+ je met de verdere instellingen. Voor elke type puzzel, wordt de beste score verstuurd naar Google+. Puzzels waarin een of meerdere keren is vals gespeeld worden genegeerd.\n\nJe kan op elk moment uitloggen via het actie menu indien je niet langer meer ingelogd wil zijn.</string>
 
     <!-- ACTION BAR ITEMS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
