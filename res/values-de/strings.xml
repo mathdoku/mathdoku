@@ -68,31 +68,6 @@
     <string name="puzzle_help_dialog_contributors_mathdoku_section_title">Contributors Mathdoku (original)</string>
     <string name="puzzle_help_dialog_contributors_mathdoku_section_body">MathDoku wurde von Ben Buxton entwickelt. Weiterentwicklungen wurden von Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul, Christoph Steindl und Alexander Tesfamichael durchgeführt. Dank an alle, die Fehler des Programms oder Anstöße für Weiterentwicklungen gemeldet haben.</string>
 
-    <!-- The menu item that allows the player to navigate to the changelog screen -->
-    <string name="puzzle_help_dialog_neutral_button">Änderungen</string>
-
-    <!-- CHANGES DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
-
-    <!-- The title of the changelog screen. -->
-    <string name="changelog_title">Änderungsprotokoll</string>
-
-    <!-- Lead in to version 2 of MathDoku in the changes dialog. -->
-    <string name="changelog_lead_in">In this version the registration of leaderboard scores has been improved.</string>
-
-    <!-- The heading and body of the section referring to the list of changes (revision). -->
-    <string name="changelog_version_title">Version</string>
-
-    <!-- The heading and body of the section refering to the list of changes. -->
-    <!-- Note for translators: Changes are only available in English. Please mention this in this field. -->
-    <string name="changelog_changes_title">Änderungen</string>
-    <string name="changelog_changes_body">Für eine komplette Liste der Änderungen besuchen Sie bitte unsere Webseite mit dem folgenden Link.</string>
-
-    <!-- The heading and body of the section referring to the list of issues. -->
-    <!-- Note for translators: Only issues written in English will be dealt with. Please mention this in field changelog_issues_body. -->
-    <string name="changelog_issues_title">Fehler und Weiterentwicklungen</string>
-    <string name="changelog_issues_body">Bitte melden sie alle Fehler und Anfragen für Weiterenwicklungen mit dem folgenden Link. Nur Anfragen auf Englisch werden behandelt.</string>
-
     <!-- INPUT METHOD DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- TODO: entire section -->
 
@@ -117,7 +92,8 @@
     <!-- Title and message for the "Sign in to Google+" dialog which explains the reasons why the use should sign in to Google+. -->
     <!-- TODO -->
 
-    <!-- Title for the "Sign in to Google+" dialog. -->
+
+    <!-- Title for the "Sign in to Google+" dialog. -->
     <string name="google_plus_login_dialog_title">Sign in with Google+</string>
 
     <!-- The message for the "Sign in to Google+" after as puzzle is finished which is eligble for submitting to Google+. -->

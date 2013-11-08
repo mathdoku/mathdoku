@@ -557,64 +557,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 									int whichButton) {
 							}
 						});
-		if (cleanInstall == false) {
-			alertDialogBuilder.setNeutralButton(
-					R.string.puzzle_help_dialog_neutral_button,
-					new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog,
-								int whichButton) {
-							puzzleFragmentActivity.openChangesDialog(false);
-						}
-					});
-		}
 		alertDialogBuilder.show();
-	}
-
-	/**
-	 * Displays the changes dialog. As from version 1.96 the changes itself are
-	 * no longer described in this dialog. Instead a reference to the web site
-	 * is shown.
-	 */
-	private void openChangesDialog(boolean showLeadIn) {
-		// Get view and put relevant information into the view.
-		LayoutInflater li = LayoutInflater.from(this);
-		View view = li.inflate(R.layout.changelog_dialog, null);
-
-		TextView textView = (TextView) view
-				.findViewById(R.id.changelog_version_body);
-		textView.setText(Util.getPackageVersionName() + " (revision "
-				+ Util.getPackageVersionNumber() + ")");
-
-		if (showLeadIn) {
-			textView = (TextView) view.findViewById(R.id.changelog_lead_in);
-			textView.setVisibility(View.VISIBLE);
-		}
-
-		textView = (TextView) view.findViewById(R.id.changelog_changes_link);
-		textView.setText(Util.PROJECT_HOME + "changes.php");
-
-		textView = (TextView) view.findViewById(R.id.changelog_issues_link);
-		textView.setText(Util.PROJECT_HOME + "issues.php");
-
-		new AlertDialog.Builder(this)
-				.setTitle(
-						getResources().getString(R.string.application_name)
-								+ (Config.mAppMode == AppMode.DEVELOPMENT ? " r"
-										+ Util.getPackageVersionNumber() + " "
-										: " ")
-								+ getResources().getString(
-										R.string.changelog_title))
-				.setIcon(R.drawable.icon)
-				.setView(view)
-				.setNegativeButton(R.string.dialog_general_button_close,
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int whichButton) {
-								//
-							}
-						}).show();
 	}
 
 	/**
@@ -660,8 +603,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	 * @param currentVersion
 	 *            Current (new) revision number of MathDoku.
 	 */
-	public void upgradePhase2(int previousInstalledVersion,
-			int currentVersion) {
+	public void upgradePhase2(int previousInstalledVersion, int currentVersion) {
 		// The game file converter process has been completed. Reset it in order
 		// to prevent restarting the game file conversion after a configuration
 		// change.
@@ -700,7 +642,6 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		} else if (previousInstalledVersion < currentVersion) {
 			// Restart the last game and show the changes dialog on top of it.
 			restartLastGame();
-			openChangesDialog(true);
 		} else {
 			// No upgrade was needed. Restart the last game
 			restartLastGame();

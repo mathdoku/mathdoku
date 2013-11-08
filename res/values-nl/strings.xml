@@ -65,31 +65,6 @@
     <string name="puzzle_help_dialog_contributors_mathdoku_section_title">Ontwikkelaars Mathdoku (origineel)</string>
     <string name="puzzle_help_dialog_contributors_mathdoku_section_body">MathDoku is initieel ontwikkeld door Ben Buxton. Bijdragen zijn gemaakt door: Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul, Christoph Steindl en Alexander Tesfamichael. Tevens willen we iedereen bedanken die fouten en verbeteringen heeft gemeld.</string>
 
-    <!-- The menu item that allows the player to navigate to the changelog screen -->
-    <string name="puzzle_help_dialog_neutral_button">Aanpassingen</string>
-
-    <!-- CHANGES DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
-
-    <!-- The title of the changelog screen. -->
-    <string name="changelog_title">Aanpassingen</string>
-
-    <!-- Lead in to version 2 of MathDoku in the changes dialog. -->
-    <string name="changelog_lead_in">In this version the registration of leaderboard scores has been improved.</string>
-
-    <!-- The heading and body of the section referring to the list of changes (revision). -->
-    <string name="changelog_version_title">Versie</string>
-
-    <!-- The heading and body of the section refering to the list of changes. -->
-    <!-- Note for translators: Changes are only available in English. Please mention this in this field. -->
-    <string name="changelog_changes_title">Wijzigingen</string>
-    <string name="changelog_changes_body">Ga voor een complete lijst van wijzigingen (alleen in het Engels) naar onze website via de onderstaande link.</string>
-
-    <!-- The heading and body of the section referring to the list of issues. -->
-    <!-- Note for translators: Only issues written in English will be dealt with. Please mention this in field changelog_issues_body. -->
-    <string name="changelog_issues_title">Fouten en verzoeken</string>
-    <string name="changelog_issues_body">Fouten en wijzigingsverzoeken kun je doorgeven via onze website. Wij nemen alleen Engelstalige verzoeken in behandeling.</string>
-
     <!-- INPUT METHOD DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
