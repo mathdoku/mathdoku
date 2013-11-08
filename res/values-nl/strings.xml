@@ -47,7 +47,7 @@
 
     <!-- The title and body describing how to play the game. -->
     <string name="puzzle_help_dialog_how_to_play__section_title">Hoe te spelen?</string>
-    <string name="puzzle_help_dialog_how_to_play_section_body">Raak een cel aan in de puzzel om de cel te selecteren, en veeg daarna naar een een getal om het te kiezen. Door een cel dubbel aan te tikken kun je wisselen tussen de \'normale\' en de \'mogelijke\' toestand. In de \'mogelijke\' toestand kun je meerdere mogelijke getallen invoeren voor een cell.\n\nDe puzzels wordt automatisch opgeslagen.</string>
+    <string name="puzzle_help_dialog_how_to_play_section_body">Raak een cel aan in de puzzel om de cel te selecteren, en veeg daarna naar een een getal om het te kiezen. Door een cel dubbel aan te tikken kun je wisselen tussen de \'normale\' en de \'mogelijke\' toestand. In de \'mogelijke\' toestand kun je meerdere mogelijke getallen invoeren voor een cel.\n\nDe puzzels wordt automatisch opgeslagen.</string>
 
     <!-- The version title in the help screen. -->
     <string name="puzzle_help_dialog_version_section_title">Versie</string>
@@ -101,11 +101,11 @@
 
     <!-- Title and body for the swipe only input method. -->
     <string name="input_method_swipe_explanation_title">Swipe</string>
-    <string name="input_method_swipe_explanation_body">De moderne manier om getallen te selecteren. Raal een cel aan en veeg in de richting van het getal in de getoonde circel om het te selecteren. Deze methode laat je toe om je te concetreren op de puzzel omdat je niet naar een ander deel van het scherm hoeft te kijken om een getal te selecteren.</string>
+    <string name="input_method_swipe_explanation_body">De moderne manier om getallen te selecteren. Raak een cel aan en veeg in de richting van het getal in de getoonde cirkel om het te selecteren. Deze methode laat je toe om je te concentreren op de puzzel omdat je niet naar een ander deel van het scherm hoeft te kijken om een getal te selecteren.</string>
 
     <!-- Title and body for the swipe only input method. -->
     <string name="input_method_buttons_explanation_title">Knoppen</string>
-    <string name="input_method_buttons_explanation_body">De traditionele manier om getallen te selecteren door knoppen onder of aan de rechterzijde van de puzzel aan te raken. Deze nethode is eenvoudiger in gebruik wanneer je nog niet bent gewend aan swipen en maakt het mogelijk om tweehandig te spelen. Dit is de favoriete manier van selecteren voor spelers die streven naar de snelste oplostijd van een puzzel.</string>
+    <string name="input_method_buttons_explanation_body">De traditionele manier om getallen te selecteren door knoppen onder of aan de rechterzijde van de puzzel aan te raken. Deze methode is eenvoudiger in gebruik wanneer je nog niet bent gewend aan swipen en maakt het mogelijk om tweehandig te spelen. Dit is de favoriete manier van selecteren voor spelers die streven naar de snelste oplostijd van een puzzel.</string>
 
     <!-- GOOGLE+ LOG IN DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -245,10 +245,10 @@
     <string name="input_method_buttons_only">Knoppen</string>
 
     <!-- The title and summary of the "outer swipe circle" option. This option controls the smallest grid size for which the outer swipe circle is visible. -->
-    <string name="puzzle_setting_outer_swipe_circle_title">Dubbele getallen circel</string>
+    <string name="puzzle_setting_outer_swipe_circle_title">Dubbele getallen cirkel</string>
     <string name="puzzle_setting_outer_swipe_circle_visible_from_grid_size_short">Grootte %1$d en hoger</string>
-    <string name="puzzle_setting_outer_swipe_circle_visible_from_grid_size_long">Toon een tweede getallen circel voor puzzels van grootte %1$d en hoger</string>
-    <string name="puzzle_setting_outer_swipe_circle_visible_never">Toon nooit een tweede getallen circel</string>
+    <string name="puzzle_setting_outer_swipe_circle_visible_from_grid_size_long">Toon een tweede getallen cirkel voor puzzels van grootte %1$d en hoger</string>
+    <string name="puzzle_setting_outer_swipe_circle_visible_never">Toon nooit een tweede getallen cirkel</string>
 
     <!-- The preferences category title for audio options. -->
     <string name="puzzle_setting_group_sound">Geluid</string>
@@ -383,7 +383,7 @@
 
     <!-- Title, and text for tip "Copy cell values" -->
     <string name="dialog_tip_copy_cell_values_title">Kopieer cel waarden</string>
-    <string name="dialog_tip_copy_cell_values_text">Wist je al dat je waardes van de ene cel naar een andere cel kan kopiëren? Dit is vooral nutting in het geval dat je meerdere \'mogelijke\' waarden in een cel hebt ingevoerd en deze combinatie bijvoorbeeld wil hergebruiken for andere cellen in dezelfde groep.\n\nJe kan de \'kopieer\' toestand starten door het kopieer icoon in de actiebar aan de bovenzijde van de app aan te raken. De waarde(n) van de geselecteerde cell worden gekopieerd naar elke cell die he aanraakt totdat je de \'kopieer\' toestand verlaat.</string>
+    <string name="dialog_tip_copy_cell_values_text">Wist je al dat je waardes van de ene cel naar een andere cel kan kopiëren? Dit is vooral nuttig in het geval dat je meerdere \'mogelijke\' waarden in een cel hebt ingevoerd en deze combinatie bijvoorbeeld wil hergebruiken voor andere cellen in dezelfde groep.\n\nJe kan de \'kopieer\' toestand starten door het kopieer icoon in de actiebar aan de bovenzijde van de app aan te raken. De waarde(n) van de geselecteerde cel worden gekopieerd naar elke cel die je aanraakt totdat je de \'kopieer\' toestand verlaat.</string>
 
     <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -411,7 +411,7 @@
     <!-- Title and a body which explains the purpose of the chart "Avoidable moves". -->
     <string name="avoidable_moves_chart_title">Vermijdbare zetten</string>
     <string name="avoidable_moves_yaxis_description">Aantal zetten</string>
-    <string name="avoidable_moves_chart_body">Minder ervaren spelers maken meer vermijdbare zetten dan ervaren spelers. Een vermijdbare zet is een zet die niet noodzakelijk is om de puzzel op te lossen. Corrigeren of leegmaken van waarden in een cell, het gebruiken van \"mogelijke waarden\" of terugzetten van waarden zijn zetten die voorkomen moeten worden om een betere speler te worden.</string>
+    <string name="avoidable_moves_chart_body">Minder ervaren spelers maken meer vermijdbare zetten dan ervaren spelers. Een vermijdbare zet is een zet die niet noodzakelijk is om de puzzel op te lossen. Corrigeren of leegmaken van waarden in een cel, het gebruiken van \"mogelijke waarden\" of terugzetten van waarden zijn zetten die voorkomen moeten worden om een betere speler te worden.</string>
     <!-- Dimensions displayed in chart "Avoidable moves". -->
     <string name="avoidable_moves_chart_user_value_replaced">Cel waarden gecorrigeerd</string>
     <string name="avoidable_moves_chart_maybe_value_used">Mogelijke waarden gebruikt</string>
@@ -477,7 +477,7 @@
 
     <!-- The text which is shown to enable/disable copy mode. -->
     <string name="input_mode_copy_short_description">Kopieer waarden</string>
-    <string name="action_copy_cell_values_long_description">Kopieer waarden van de geslecteerde cel naar een andere cel.</string>
+    <string name="action_copy_cell_values_long_description">Kopieer waarden van de geselecteerde cel naar een andere cel.</string>
 
     <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -568,7 +568,7 @@
     <string name="leaderboard_not_played">Je hebt dit klassement nog niet gespeeld.</string>
 
     <!-- The text in the leaderboards overview in case the user has played any leaderboards and the leaderboard filter is set to "my leaderboards only". -->
-    <string name="leaderboard_none_played">Je hebt nog geen enkele puzzle van grootte %1$d gespeeld. Wijzig het bovenstaande filter om de klassementen te bekijken van andere spelers.</string>
+    <string name="leaderboard_none_played">Je hebt nog geen enkele puzzel van grootte %1$d gespeeld. Wijzig het bovenstaande filter om de klassementen te bekijken van andere spelers.</string>
 
     <!-- The text in the leaderboards overview in case the user has played this leaderboard. -->
     <string name="leaderboard_score_label">Jouw beste score</string>
