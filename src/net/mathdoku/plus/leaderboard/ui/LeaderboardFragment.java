@@ -31,60 +31,83 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 	public final static String ARG_GRID_SIZE = "Leaderboard.arg_grid_size";
 	public final static String ARG_FILTER = "Leaderboard.arg_filter";
 
-	private LeaderboardSection[] mLeaderboardSection;
+	// The view holding all data of this fragment.
+	private View mRootView;
+
+	// The inflater used for the fragment
+	private LayoutInflater mLayoutInflater;
+
+	// Grid size of leaderboards displayed in the fragment
+	private int mGridSize;
+
+	// The filter which is applied to the leaderboard list
 	private LeaderboardFilter mLeaderboardFilter;
+
+	// The data of all (unfiltered) leaderboard available for this fragment.
+	private LeaderboardSection[] mLeaderboardSection;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.leaderboard_fragment,
-				container, false);
+		mLayoutInflater = inflater;
+		mRootView = inflater.inflate(R.layout.leaderboard_fragment, container,
+				false);
 
 		// Get arguments from bundle
 		Bundle bundle = getArguments();
-		int gridSize = bundle.getInt(ARG_GRID_SIZE);
-		LeaderboardFilter leaderboardFilter = LeaderboardFilter.values()[bundle
+		mGridSize = bundle.getInt(ARG_GRID_SIZE);
+		mLeaderboardFilter = LeaderboardFilter.values()[bundle
 				.getInt(ARG_FILTER)];
 
+		refresh();
+
+		return mRootView;
+	}
+
+	/**
+	 * Fill the rootview with the list of leaderboards.
+	 * 
+	 * @param gridSize
+	 * @param leaderboardFilter
+	 */
+	public void refresh() {
 		Resources resources = getActivity().getResources();
 
 		// Create the fixes list of available leaderboards.
 		mLeaderboardSection = new LeaderboardSection[11];
-		mLeaderboardSection[0] = new LeaderboardSection(resources, inflater,
-				gridSize, false, PuzzleComplexity.VERY_EASY);
-		mLeaderboardSection[1] = new LeaderboardSection(resources, inflater,
-				gridSize, false, PuzzleComplexity.EASY);
-		mLeaderboardSection[2] = new LeaderboardSection(resources, inflater,
-				gridSize, false, PuzzleComplexity.NORMAL);
-		mLeaderboardSection[3] = new LeaderboardSection(resources, inflater,
-				gridSize, false, PuzzleComplexity.DIFFICULT);
-		mLeaderboardSection[4] = new LeaderboardSection(resources, inflater,
-				gridSize, false, PuzzleComplexity.VERY_DIFFICULT);
-		mLeaderboardSection[5] = new LeaderboardSection(resources, inflater,
-				gridSize, true, PuzzleComplexity.VERY_EASY);
-		mLeaderboardSection[6] = new LeaderboardSection(resources, inflater,
-				gridSize, true, PuzzleComplexity.EASY);
-		mLeaderboardSection[7] = new LeaderboardSection(resources, inflater,
-				gridSize, true, PuzzleComplexity.NORMAL);
-		mLeaderboardSection[8] = new LeaderboardSection(resources, inflater,
-				gridSize, true, PuzzleComplexity.DIFFICULT);
-		mLeaderboardSection[9] = new LeaderboardSection(resources, inflater,
-				gridSize, true, PuzzleComplexity.VERY_DIFFICULT);
-		mLeaderboardSection[10] = new LeaderboardSection(resources, inflater,
-				gridSize);
+		mLeaderboardSection[0] = new LeaderboardSection(resources, mGridSize,
+				false, PuzzleComplexity.VERY_EASY);
+		mLeaderboardSection[1] = new LeaderboardSection(resources, mGridSize,
+				false, PuzzleComplexity.EASY);
+		mLeaderboardSection[2] = new LeaderboardSection(resources, mGridSize,
+				false, PuzzleComplexity.NORMAL);
+		mLeaderboardSection[3] = new LeaderboardSection(resources, mGridSize,
+				false, PuzzleComplexity.DIFFICULT);
+		mLeaderboardSection[4] = new LeaderboardSection(resources, mGridSize,
+				false, PuzzleComplexity.VERY_DIFFICULT);
+		mLeaderboardSection[5] = new LeaderboardSection(resources, mGridSize,
+				true, PuzzleComplexity.VERY_EASY);
+		mLeaderboardSection[6] = new LeaderboardSection(resources, mGridSize,
+				true, PuzzleComplexity.EASY);
+		mLeaderboardSection[7] = new LeaderboardSection(resources, mGridSize,
+				true, PuzzleComplexity.NORMAL);
+		mLeaderboardSection[8] = new LeaderboardSection(resources, mGridSize,
+				true, PuzzleComplexity.DIFFICULT);
+		mLeaderboardSection[9] = new LeaderboardSection(resources, mGridSize,
+				true, PuzzleComplexity.VERY_DIFFICULT);
+		mLeaderboardSection[10] = new LeaderboardSection(resources, mGridSize);
 
 		// Append all views to the fragment
-		LinearLayout linearLayout = (LinearLayout) rootView
+		LinearLayout linearLayout = (LinearLayout) mRootView
 				.findViewById(R.id.leaderboard_list);
+		linearLayout.removeAllViews();
 		for (int i = 0; i < mLeaderboardSection.length; i++) {
 			linearLayout.addView(mLeaderboardSection[i].mView);
 		}
 
 		// Apply the leaderboard filter so the view is initially displayed with
 		// correct filter.
-		setLeaderboardFilter(leaderboardFilter);
-
-		return rootView;
+		setLeaderboardFilter(mLeaderboardFilter);
 	}
 
 	/**
@@ -141,16 +164,15 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 		 * @param puzzleComplexity
 		 *            The complexity level of the puzzle.
 		 */
-		public LeaderboardSection(Resources resources, LayoutInflater inflater,
-				int gridSize, boolean hideOperators,
-				PuzzleComplexity puzzleComplexity) {
+		public LeaderboardSection(Resources resources, int gridSize,
+				boolean hideOperators, PuzzleComplexity puzzleComplexity) {
 			mDummyLeaderboard = false;
 			mGridSize = gridSize;
 			mHideOperators = hideOperators;
 			mPuzzleComplexity = puzzleComplexity;
 
 			// Get the view and the layout to store the leaderboard section
-			mView = inflater.inflate(R.layout.leaderboard_section, null);
+			mView = mLayoutInflater.inflate(R.layout.leaderboard_section, null);
 			LinearLayout linearLayout = (LinearLayout) mView
 					.findViewById(R.id.leaderboard_section_layout);
 			ImageView mLeaderboardIcon = (ImageView) mView
@@ -233,8 +255,7 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 		 * leaderboard for this gridsize and has enabled filter
 		 * "My leaderboards only".
 		 */
-		public LeaderboardSection(Resources resources, LayoutInflater inflater,
-				int gridSize) {
+		public LeaderboardSection(Resources resources, int gridSize) {
 			mDummyLeaderboard = true;
 			mGridSize = gridSize;
 

@@ -2,6 +2,7 @@ package net.mathdoku.plus.leaderboard.ui;
 
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.leaderboard.LeaderboardConnector;
+import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter;
 import net.mathdoku.plus.ui.GooglePlusSignInDialog;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 import net.mathdoku.plus.ui.base.GooglePlayServiceFragmentActivity;
@@ -203,6 +204,9 @@ public class LeaderboardFragmentActivity extends
 				NavUtils.navigateUpTo(this, upIntent);
 			}
 			return true;
+		case R.id.action_refresh_leaderboards:
+			refreshAllLeaderboards();
+			return true;
 		case R.id.action_send_feedback:
 			new FeedbackEmail(this).show();
 			return true;
@@ -268,6 +272,11 @@ public class LeaderboardFragmentActivity extends
 	private void onSignInSucceeded() {
 		mLeaderboardRankUpdaterProgressDialog = new LeaderboardRankUpdaterProgressDialog(
 				this, new LeaderboardConnector(this, getGamesClient()));
+		mLeaderboardRankUpdaterProgressDialog
+				.setMessage(getResources()
+						.getString(
+								R.string.dialog_leaderboard_rank_update_selected_leaderboards_message));
+		mLeaderboardRankUpdaterProgressDialog.setCancelable(true);
 		mLeaderboardRankUpdaterProgressDialog.show();
 		mLeaderboardRankUpdaterProgressDialog
 				.setOnDismissListener(new OnDismissListener() {
@@ -349,5 +358,55 @@ public class LeaderboardFragmentActivity extends
 	 */
 	public LeaderboardFilter getLeaderboardFilter() {
 		return mLeaderboardFilter;
+	}
+
+	/**
+	 * Refreshes all leaderboard data.
+	 */
+	private void refreshAllLeaderboards() {
+		// Force update of all leaderboards
+		new LeaderboardRankDatabaseAdapter().setAllRanksToBeUpdated();
+
+		// Start the leaderboard updater
+		mLeaderboardRankUpdaterProgressDialog = new LeaderboardRankUpdaterProgressDialog(
+				this, new LeaderboardConnector(this, getGamesClient()));
+		mLeaderboardRankUpdaterProgressDialog
+				.setMessage(getResources()
+						.getString(
+								R.string.dialog_leaderboard_rank_update_all_leaderboards_message));
+		mLeaderboardRankUpdaterProgressDialog.setCancelable(false);
+		mLeaderboardRankUpdaterProgressDialog
+				.setOnDismissListener(new OnDismissListener() {
+					@Override
+					public void onDismiss(DialogInterface dialog) {
+						mLeaderboardRankUpdaterProgressDialog = null;
+
+						// Get the first and last position of the fragments
+						// which are currently loaded by the view pager.
+						int minPosition = Math.max(
+								0,
+								mViewPager.getCurrentItem()
+										- mViewPager.getOffscreenPageLimit());
+						int maxPosition = Math.min(
+								mLeaderboardFragmentPagerAdapter.getCount(),
+								mViewPager.getCurrentItem()
+										+ mViewPager.getOffscreenPageLimit());
+
+						for (int i = minPosition; i <= maxPosition; i++) {
+							// Get the fragment on the selected position
+							LeaderboardFragment leaderboardFragment = mLeaderboardFragmentPagerAdapter
+									.getFragment(mViewPager, i,
+											getSupportFragmentManager());
+
+							// Refresh content of the fragment as the
+							// leaderboard data may be changed since in case the
+							// fragment created.
+							if (leaderboardFragment != null) {
+								leaderboardFragment.refresh();
+							}
+						}
+					}
+				});
+		mLeaderboardRankUpdaterProgressDialog.show();
 	}
 }

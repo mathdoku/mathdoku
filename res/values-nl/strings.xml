@@ -149,6 +149,12 @@
     <!-- The menu to show the completed grid. -->
     <string name="action_show_solution">Toon oplossing</string>
 
+    <!-- ACTIONS IN MENU LEADERBOARDS - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The menu item that allows the user to refresh the leaderboards. -->
+    <string name="action_refresh_leaderboards">Verversen</string>
+
     <!-- DIALOGS FOR GENERATING NEW PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -558,7 +564,8 @@
 
     <!-- The title and message for the dialog which shows the progress in updating the leaderboards. -->
     <string name="dialog_leaderboard_rank_update_title">Bijwerken klassementen</string>
-    <string name="dialog_leaderboard_rank_update_message">Alle klassementen worden nu bijgewerkt Google+. Als je deze boodschap annuleert dan kan in het klassementen overzicht tijdelijk niet actuele informatie worden getoond.</string>
+    <string name="dialog_leaderboard_rank_update_selected_leaderboards_message">De klassementen worden nu bijgewerkt met gegevens van Google+. In het geval dat je met dit Google+ account ook MathDoku+ hebt gespeeld op een ander toestel dan is het wellicht nodig on de klassementen handmatig te verversen indien niet alle klassementen worden getoond.\n\nAls je deze boodschap annuleert dan bevat het klassementenoverzicht mogelijk informatie die niet actueel is.</string>
+    <string name="dialog_leaderboard_rank_update_all_leaderboards_message">Alle klassementen worden nu bijgewerkt met gegevens van Google+.</string>
 
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

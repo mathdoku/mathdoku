@@ -159,6 +159,13 @@
     <!-- The menu to show the completed grid. -->
     <string name="action_show_solution">Rätsel lösen</string>
 
+    <!-- ACTIONS IN MENU LEADERBOARDS - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The menu item that allows the user to refresh the leaderboards. -->
+    <!-- TODO -->
+    <string name="action_refresh_leaderboards">Refresh</string>
+
     <!-- DIALOGS FOR GENERATING NEW PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -576,7 +583,8 @@
 
     <!-- The title and message for the dialog which shows the progress in updating the leaderboards. -->
     <string name="dialog_leaderboard_rank_update_title">Updating the leaderboards</string>
-    <string name="dialog_leaderboard_rank_update_message">All leaderboards are now updated with Google+. In case you can cancel this dialog the leaderboard overview might temporarily display inaccurate information.</string>
+    <string name="dialog_leaderboard_rank_update_selected_leaderboards_message">The leaderboard data is now updated with data from Google+. In case you have played with this Google+ account on another device you might need to refresh the leaderboards manually when not all leaderboards are displayed.\n\nIn case you cancel this dialog the leaderboard might display inaccurate information.</string>
+    <string name="dialog_leaderboard_rank_update_all_leaderboards_message">All leaderboard data is now updated with data from Google+.</string>
 
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

@@ -1,6 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
+        android:id="@+id/action_refresh_leaderboards"
+        android:orderInCategory="10"
+        android:showAsAction="never"
+        android:title="@string/action_refresh_leaderboards"/>
+    <item
         android:id="@+id/action_send_feedback"
         android:orderInCategory="99"
         android:showAsAction="never"

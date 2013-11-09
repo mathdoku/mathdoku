@@ -44,11 +44,8 @@ public class LeaderboardRankUpdaterProgressDialog extends ProgressDialog
 
 		// Build the dialog
 		setTitle(R.string.dialog_leaderboard_rank_update_title);
-		setMessage(mAppFragmentActivity.getResources().getString(
-				R.string.dialog_leaderboard_rank_update_message));
 		setIcon(android.R.drawable.ic_dialog_info);
 		setIndeterminate(false);
-		setCancelable(true);
 		setMax(mLeaderboardRankUpdater.getCount());
 		setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 	}

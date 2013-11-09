@@ -560,4 +560,25 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 
 		return selection.toString();
 	}
+
+	/**
+	 * Clear ranking information for all leaderboards do they will get updated.
+	 */
+	public void setAllRanksToBeUpdated() {
+		try {
+			StringBuffer query = new StringBuffer();
+			query.append("UPDATE " + TABLE + " ");
+			query.append("SET " + KEY_RANK_STATUS + " = "
+					+ stringBetweenQuotes(RankStatus.TO_BE_UPDATED.toString()));
+			query.append(",  " + KEY_RANK + " = null");
+			query.append(",  " + KEY_RANK_DISPLAY + " = null");
+			query.append(",  " + KEY_RANK_DATE_LAST_UPDATED + " = null");
+
+			mSqliteDatabase.execSQL(query.toString());
+		} catch (SQLiteException e) {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
+				e.printStackTrace();
+			}
+		}
+	}
 }
