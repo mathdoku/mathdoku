@@ -4,6 +4,7 @@ import java.security.InvalidParameterException;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
+import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -51,6 +52,9 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	protected static final String TABLE = "leaderboard_rank";
 	protected static final String KEY_ROWID = "_id";
 	protected static final String KEY_LEADERBOARD_ID = "leaderboard_id";
+	protected static final String KEY_GRID_SIZE = "grid_size";
+	protected static final String KEY_HIDDEN_OPERATORS = "hidden_operators";
+	protected static final String KEY_PUZZLE_COMPLEXITY = "puzzle_complexity";
 	protected static final String KEY_SCORE_ORIGIN = "score_origin";
 	protected static final String KEY_SCORE_STATISTICS_ID = "score_statistics_id";
 	protected static final String KEY_SCORE_RAW_SCORE = "score_raw_score";
@@ -61,6 +65,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	protected static final String KEY_RANK_DATE_LAST_UPDATED = "rank_date_last_updated";
 
 	private static final String[] allColumns = { KEY_ROWID, KEY_LEADERBOARD_ID,
+			KEY_GRID_SIZE, KEY_HIDDEN_OPERATORS, KEY_PUZZLE_COMPLEXITY,
 			KEY_SCORE_ORIGIN, KEY_SCORE_STATISTICS_ID, KEY_SCORE_RAW_SCORE,
 			KEY_SCORE_DATE_SUBMITTED, KEY_RANK_STATUS, KEY_RANK,
 			KEY_RANK_DISPLAY, KEY_RANK_DATE_LAST_UPDATED };
@@ -80,6 +85,9 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 				TABLE,
 				createColumn(KEY_ROWID, "integer", "primary key autoincrement"),
 				createColumn(KEY_LEADERBOARD_ID, "text", "not null unique"),
+				createColumn(KEY_GRID_SIZE, "integer", "not null"),
+				createColumn(KEY_HIDDEN_OPERATORS, "text", "not null"),
+				createColumn(KEY_PUZZLE_COMPLEXITY, "text", "not null"),
 				createColumn(KEY_SCORE_ORIGIN, "text", " not null"),
 				createColumn(KEY_SCORE_STATISTICS_ID, "integer", null),
 				createColumn(KEY_SCORE_RAW_SCORE, "long", null),
@@ -154,7 +162,8 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	 * @throws SQLException
 	 *             In case the leaderboard id is not unique.
 	 */
-	public int insertInitializedLeaderboard(String leaderboardId)
+	public int insertInitializedLeaderboard(String leaderboardId, int gridSize,
+			boolean operatorsVisible, PuzzleComplexity puzzleComplexity)
 			throws InvalidParameterException, SQLException {
 		int id = -1;
 
@@ -165,6 +174,10 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 
 		ContentValues contentValues = new ContentValues();
 		contentValues.put(KEY_LEADERBOARD_ID, leaderboardId);
+		contentValues.put(KEY_GRID_SIZE, gridSize);
+		contentValues.put(KEY_HIDDEN_OPERATORS,
+				toSQLiteBoolean(operatorsVisible));
+		contentValues.put(KEY_PUZZLE_COMPLEXITY, puzzleComplexity.toString());
 
 		contentValues.put(KEY_SCORE_ORIGIN, ScoreOrigin.NONE.toString());
 		contentValues.put(KEY_SCORE_STATISTICS_ID, (Integer) null);
@@ -404,6 +417,13 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		LeaderboardRankRow leaderboardRankRow = new LeaderboardRankRow();
 		leaderboardRankRow.mLeaderboardId = cursor.getString(cursor
 				.getColumnIndexOrThrow(KEY_LEADERBOARD_ID));
+		leaderboardRankRow.mGridSize = cursor.getInt(cursor
+				.getColumnIndexOrThrow(KEY_GRID_SIZE));
+		leaderboardRankRow.mOperatorsHidden = valueOfSQLiteBoolean(cursor
+				.getString(cursor.getColumnIndexOrThrow(KEY_HIDDEN_OPERATORS)));
+		leaderboardRankRow.mPuzzleComplexity = PuzzleComplexity
+				.valueOf(cursor.getString(cursor
+						.getColumnIndexOrThrow(KEY_PUZZLE_COMPLEXITY)));
 		leaderboardRankRow.mScoreOrigin = ScoreOrigin.valueOf(cursor
 				.getString(cursor.getColumnIndexOrThrow(KEY_SCORE_ORIGIN)));
 		leaderboardRankRow.mStatisticsId = cursor.getInt(cursor

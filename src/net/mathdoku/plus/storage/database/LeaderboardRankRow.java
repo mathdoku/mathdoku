@@ -1,5 +1,6 @@
 package net.mathdoku.plus.storage.database;
 
+import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
 import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter.RankStatus;
 import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter.ScoreOrigin;
 
@@ -10,6 +11,15 @@ import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter.ScoreOr
 public class LeaderboardRankRow {
 	// Leaderboard id
 	public String mLeaderboardId;
+
+	// Size of the grid
+	public int mGridSize;
+
+	// Visibility of the operators
+	public boolean mOperatorsHidden;
+
+	// Complexity of the puzzle
+	public PuzzleComplexity mPuzzleComplexity;
 
 	// Origin of the score
 	public ScoreOrigin mScoreOrigin;

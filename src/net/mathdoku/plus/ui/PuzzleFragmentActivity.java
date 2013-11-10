@@ -625,7 +625,10 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 				// Create a leaderboard record if currently does not yet exist.
 				if (leaderboardRankDatabaseAdapter.get(leaderboardId) == null) {
 					leaderboardRankDatabaseAdapter
-							.insertInitializedLeaderboard(leaderboardId);
+							.insertInitializedLeaderboard(leaderboardId,
+									LeaderboardType.getGridSize(i),
+									LeaderboardType.hasHiddenOperator(i),
+									LeaderboardType.getPuzzleComplexity(i));
 				}
 			}
 			mMathDokuPreferences.setLeaderboardsInitialized();
