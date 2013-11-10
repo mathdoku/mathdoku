@@ -23,6 +23,12 @@
     <!-- CONTROLS AND SUB ELEMENTS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
+    <!-- Minimum height of buttons used for digit, clear and undo. -->
+    <dimen name="controls_pad_min_height_buttons">33dp</dimen>
+
+    <!-- Minimum height of buttons used for digit, clear and undo. -->
+    <dimen name="controls_pad_margin_buttons">1dp</dimen>
+
     <!-- The text size used for text on buttons. -->
     <dimen name="controls_text_size_default">20sp</dimen>
 
