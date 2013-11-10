@@ -586,6 +586,12 @@
     <string name="dialog_leaderboard_rank_update_selected_leaderboards_message">The leaderboard data is now updated with data from Google+. In case you have played with this Google+ account on another device you might need to refresh the leaderboards manually when not all leaderboards are displayed.\n\nIn case you cancel this dialog the leaderboard might display inaccurate information.</string>
     <string name="dialog_leaderboard_rank_update_all_leaderboards_message">All leaderboard data is now updated with data from Google+.</string>
 
+    <!-- The label above the score in the top score dialog. -->
+    <string name="dialog_top_score_label">New top score!</string>
+
+    <!-- The label below the score containing the position in the ranking. %1$s wil be filled with "1st" in case the user achieves the first rank. -->
+    <string name="dialog_top_score_rank">%1$s rank</string>
+
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 

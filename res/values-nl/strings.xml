@@ -567,6 +567,12 @@
     <string name="dialog_leaderboard_rank_update_selected_leaderboards_message">De klassementen worden nu bijgewerkt met gegevens van Google+. In het geval dat je met dit Google+ account ook MathDoku+ hebt gespeeld op een ander toestel dan is het wellicht nodig on de klassementen handmatig te verversen indien niet alle klassementen worden getoond.\n\nAls je deze boodschap annuleert dan bevat het klassementenoverzicht mogelijk informatie die niet actueel is.</string>
     <string name="dialog_leaderboard_rank_update_all_leaderboards_message">Alle klassementen worden nu bijgewerkt met gegevens van Google+.</string>
 
+    <!-- The label above the score in the top score dialog. -->
+    <string name="dialog_top_score_label">Nieuwe topscore!</string>
+
+    <!-- The label below the score containing the position in the ranking. %1$s wil be filled with "1st" in case the user achieves the first rank. -->
+    <string name="dialog_top_score_rank">%1$s plaats</string>
+
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 

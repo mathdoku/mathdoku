@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dialog_top_score_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="10dp" >
+
+    <!-- The linear layout is not useless as it will help to align the dialog -->
+    <!-- to the right side of the screen. -->
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="20dp"
+        android:background="#33B5E5"
+        android:orientation="vertical"
+        android:padding="10dp"
+        tools:ignore="UselessParent" >
+
+        <ImageView
+            android:id="@+id/dialog_top_score_leaderboard_icon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:lines="1"
+            android:text="@string/dialog_top_score_label"
+            android:textColor="#000000"
+            android:textSize="@dimen/dialog_text_size_heading1" />
+
+        <TextView
+            android:id="@+id/dialog_top_score_score"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:lines="1"
+            android:textColor="#000000"
+            android:textSize="60sp" />
+
+        <TextView
+            android:id="@+id/dialog_top_score_rank"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:lines="1"
+            android:textColor="#000000"
+            android:textSize="@dimen/dialog_text_size_heading1" />
+    </LinearLayout>
+
+</RelativeLayout>

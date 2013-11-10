@@ -1,0 +1,42 @@
+<!-- Animation for the leaderboard icon in the top score dialog. -->
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shareInterpolator="false" >
+
+    <!-- Start with a fast rotating image -->
+    <rotate
+        android:duration="500"
+        android:fromDegrees="0"
+        android:interpolator="@android:anim/linear_interpolator"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:startOffset="0"
+        android:toDegrees="360" />
+
+    <!-- Continue with a decelerating rotation. Note: offset should be equal -->
+    <!-- to duration of first animation. -->
+    <rotate
+        android:duration="1500"
+        android:fromDegrees="1"
+        android:interpolator="@android:anim/decelerate_interpolator"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:startOffset="500"
+        android:toDegrees="360" />
+
+    <!-- While rotating also scale the image. As scaling has to start together -->
+    <!-- with first rotation do not apply an offset. Also the entire duration -->
+    <!-- must be longer than the total rotation duration. In case still rotation -->
+    <!-- already scale to 100% the corners of the square might fall outside the -->
+    <!-- image view boundaries and as a result get cut off. -->
+    <scale
+        android:duration="2100"
+        android:fromXScale="10%"
+        android:fromYScale="10%"
+        android:interpolator="@android:anim/linear_interpolator"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:startOffset="0"
+        android:toXScale="100%"
+        android:toYScale="100%" />
+
+</set>

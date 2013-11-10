@@ -3,13 +3,14 @@ package net.mathdoku.plus.leaderboard;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
+import net.mathdoku.plus.leaderboard.ui.TopScoreDialog;
 import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter;
 import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter.ScoreOrigin;
 import net.mathdoku.plus.storage.database.LeaderboardRankRow;
 import net.mathdoku.plus.ui.base.AppFragmentActivity;
+import net.mathdoku.plus.util.Util;
 import android.content.res.Resources;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.games.GamesClient;
 import com.google.android.gms.games.leaderboard.Leaderboard;
@@ -227,20 +228,17 @@ public class LeaderboardConnector {
 
 		// Display a toast containing the ranking information for the score.
 		if (displayToast) {
-			Toast.makeText(
-					mAppFragmentActivity,
-					"Leaderboard: " + leaderboard.getDisplayName() + "\n"
-							+ "Your rank: " + leaderboardScore.getDisplayRank()
-							+ "\n" + "Your time: "
-							+ leaderboardScore.getDisplayScore(),
-					Toast.LENGTH_LONG).show();
+			new TopScoreDialog(mAppFragmentActivity,
+					LeaderboardType.getIconResId(LeaderboardType.getIndex(
+							leaderboardRankRow.mGridSize,
+							leaderboardRankRow.mOperatorsHidden,
+							leaderboardRankRow.mPuzzleComplexity)),
+					Util.durationTimeToString(leaderboardScore.getRawScore()),
+					leaderboardScore.getDisplayRank()).show();
 			if (DEBUG) {
-				Log.i(TAG,
-						"Leaderboard: " + leaderboard.getDisplayName() + "\n"
-								+ "Your rank: "
-								+ leaderboardScore.getDisplayRank() + "\n"
-								+ "Your time: "
-								+ leaderboardScore.getDisplayScore());
+				Log.i(TAG, "Leaderboard: " + leaderboard.getDisplayName()
+						+ "\n" + "Score: " + leaderboardScore.getDisplayScore()
+						+ "\n" + "Rank: " + leaderboardScore.getDisplayRank());
 			}
 		}
 		return;
