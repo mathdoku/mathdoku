@@ -22,7 +22,7 @@ public class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener 
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
-	public static final boolean DEBUG = (Config.mAppMode == AppMode.DEVELOPMENT) && true;
+	public static final boolean DEBUG = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 
 	// The games client which is connected to Google Play Services
 	private final LeaderboardConnector mLeaderboardConnector;

@@ -23,7 +23,7 @@ public class LeaderboardConnector {
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
-	public static final boolean DEBUG = (Config.mAppMode == AppMode.DEVELOPMENT) && true;
+	public static final boolean DEBUG = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 
 	// Reference to the games client of google play services.
 	private final GamesClient mGamesClient;

@@ -22,7 +22,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 
 	// Remove "&& false" in following line to show the SQL-statements in the
 	// debug information
-	public static final boolean DEBUG_SQL = (Config.mAppMode == AppMode.DEVELOPMENT) && true;
+	public static final boolean DEBUG_SQL = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 
 	// Score origins statuses:
 	// LOCAL_DATABASE: the score is based on a solving attempt which is stored
