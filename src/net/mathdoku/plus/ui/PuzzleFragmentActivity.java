@@ -1352,6 +1352,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 								R.string.choose_input_method_title))
 				.setIcon(R.drawable.icon)
 				.setView(view)
+				.setCancelable(false)
 				.setNegativeButton(R.string.input_method_swipe_only,
 						new DialogInterface.OnClickListener() {
 							@Override
