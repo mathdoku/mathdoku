@@ -10,6 +10,9 @@
     <!-- Name of application. This may NOT be translated. -->
     <string name="application_name">MathDoku+</string>
 
+    <!-- URL to Mathdoku+ community on Google+ -->
+    <string name="google_plus_community_url">https://plus.google.com/u/0/communities/111283678692924318436</string>
+
     <!-- The possible values of the "themes" option. This option controls which theme is used for displaying. -->
     <string-array name="puzzle_setting_theme_values_text">
         <item>@string/theme_light</item>

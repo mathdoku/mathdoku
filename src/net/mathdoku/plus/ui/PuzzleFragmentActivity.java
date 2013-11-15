@@ -41,6 +41,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -429,6 +430,12 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 			// Clear the leaderboard.
 			mLeaderboardConnector = null;
+			return true;
+		case R.id.action_google_plus_community:
+			startActivity(new Intent(android.content.Intent.ACTION_VIEW,
+					Uri.parse(getResources().getString(
+							R.string.google_plus_community_url))));
+
 			return true;
 		case R.id.action_puzzle_settings:
 			startActivity(new Intent(this, PuzzlePreferenceActivity.class));

@@ -64,6 +64,11 @@
         android:showAsAction="never"
         android:title="@string/action_sign_out_google_play_services"/>
     <item
+        android:id="@+id/action_google_plus_community"
+        android:orderInCategory="97"
+        android:showAsAction="never"
+        android:title="@string/action_google_plus_community"/>
+    <item
         android:id="@+id/action_puzzle_settings"
         android:orderInCategory="98"
         android:showAsAction="never"
