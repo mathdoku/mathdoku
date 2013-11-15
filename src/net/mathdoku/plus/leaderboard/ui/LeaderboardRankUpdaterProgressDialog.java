@@ -69,4 +69,16 @@ public class LeaderboardRankUpdaterProgressDialog extends ProgressDialog
 		// All leaderboards have been updated. Dismiss the dialog.
 		dismiss();
 	}
+
+	/**
+	 * Checks whether at least one leaderboard has been updated with the best
+	 * score of a user.
+	 * 
+	 * @return True in case no leaderboards have been updated (e.d. the user
+	 *         does not have a score registered on Google Play Services).
+	 */
+	public boolean hasNoLeaderboardUpdated() {
+		return (mLeaderboardRankUpdater
+				.getCountUpdatedLeaderboardWithScoreCurrentPlayer() == 0);
+	}
 }

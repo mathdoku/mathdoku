@@ -42,6 +42,9 @@ public class LeaderboardRankUpdater {
 	// Status whether update has already started
 	private boolean mIsUpdateStarted;
 
+	// Counters for the number of leaderboards which have been updated.
+	private int mCountLeaderboardsUpdatedWithScoreForPlayer;
+
 	public interface Listener {
 		// Called as soon as a leaderboard rank has been processed.
 		void onLeaderboardRankUpdated();
@@ -169,6 +172,7 @@ public class LeaderboardRankUpdater {
 															leaderboard,
 															leaderboardScore,
 															false);
+											mCountLeaderboardsUpdatedWithScoreForPlayer++;
 											setUpdateFinished();
 										}
 
@@ -184,6 +188,9 @@ public class LeaderboardRankUpdater {
 											}
 											// Although not possible, still wrap
 											// up just in case...
+											new LeaderboardRankDatabaseAdapter()
+													.updateWithGooglePlayRankNotAvailable(leaderboard
+															.getLeaderboardId());
 											setUpdateFinished();
 										}
 									}).loadCurrentPlayerRank(submitScoreResult
@@ -207,6 +214,7 @@ public class LeaderboardRankUpdater {
 							LeaderboardScore leaderboardScore) {
 						mLeaderboardConnector.onRankCurrentPlayerReceived(
 								leaderboard, leaderboardScore, false);
+						mCountLeaderboardsUpdatedWithScoreForPlayer++;
 						setUpdateFinished();
 					}
 
@@ -259,5 +267,17 @@ public class LeaderboardRankUpdater {
 
 		// Start update of the next the leaderboard rank.
 		update();
+	}
+
+	/**
+	 * Get the number of leaderboards which have been updated with the best
+	 * score of the current player as known by Google Play Services.
+	 * 
+	 * @return Get the number of leaderboards which have been updated with the
+	 *         best score of the current player as known by Google Play
+	 *         Services.
+	 */
+	public int getCountUpdatedLeaderboardWithScoreCurrentPlayer() {
+		return mCountLeaderboardsUpdatedWithScoreForPlayer;
 	}
 }
