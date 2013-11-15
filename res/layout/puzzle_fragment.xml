@@ -69,7 +69,7 @@
                     android:background="@drawable/button"
                     android:minHeight="@dimen/controls_pad_min_height_buttons"
                     android:text="@string/main_ui_clear"
-                    android:textSize="@dimen/text_size_default"
+                    android:textSize="@dimen/controls_text_size_default"
                     android:textStyle="bold"
                     tools:ignore="ButtonStyle" />
 
@@ -82,7 +82,7 @@
                     android:background="@drawable/button"
                     android:minHeight="@dimen/controls_pad_min_height_buttons"
                     android:text="@string/main_ui_undo"
-                    android:textSize="@dimen/text_size_default"
+                    android:textSize="@dimen/controls_text_size_default"
                     android:textStyle="bold"
                     tools:ignore="ButtonStyle" />
             </LinearLayout>
@@ -125,7 +125,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/button"
                 android:minHeight="@dimen/controls_pad_min_height_buttons"
-                android:textSize="@dimen/text_size_default"
+                android:textSize="@dimen/controls_text_size_default"
                 android:textStyle="bold"
                 tools:ignore="ButtonStyle" />
 
@@ -137,7 +137,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/button"
                 android:minHeight="@dimen/controls_pad_min_height_buttons"
-                android:textSize="@dimen/text_size_default"
+                android:textSize="@dimen/controls_text_size_default"
                 android:textStyle="bold"
                 tools:ignore="ButtonStyle" />
 
@@ -149,7 +149,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/button"
                 android:minHeight="@dimen/controls_pad_min_height_buttons"
-                android:textSize="@dimen/text_size_default"
+                android:textSize="@dimen/controls_text_size_default"
                 android:textStyle="bold"
                 tools:ignore="ButtonStyle" />
 
@@ -163,7 +163,7 @@
                 android:lines="1"
                 android:minHeight="@dimen/controls_pad_min_height_buttons"
                 android:text="@string/main_ui_clear"
-                android:textSize="@dimen/text_size_default"
+                android:textSize="@dimen/controls_text_size_default"
                 android:textStyle="bold"
                 tools:ignore="ButtonStyle" />
         </TableRow>
@@ -180,7 +180,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/button"
                 android:minHeight="@dimen/controls_pad_min_height_buttons"
-                android:textSize="@dimen/text_size_default"
+                android:textSize="@dimen/controls_text_size_default"
                 android:textStyle="bold"
                 tools:ignore="ButtonStyle" />
 
@@ -192,7 +192,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/button"
                 android:minHeight="@dimen/controls_pad_min_height_buttons"
-                android:textSize="@dimen/text_size_default"
+                android:textSize="@dimen/controls_text_size_default"
                 android:textStyle="bold"
                 tools:ignore="ButtonStyle" />
 
@@ -204,7 +204,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/button"
                 android:minHeight="@dimen/controls_pad_min_height_buttons"
-                android:textSize="@dimen/text_size_default"
+                android:textSize="@dimen/controls_text_size_default"
                 android:textStyle="bold"
                 tools:ignore="ButtonStyle" />
 
@@ -218,7 +218,7 @@
                 android:lines="1"
                 android:minHeight="@dimen/controls_pad_min_height_buttons"
                 android:text="@string/main_ui_undo"
-                android:textSize="@dimen/text_size_default"
+                android:textSize="@dimen/controls_text_size_default"
                 android:textStyle="bold"
                 tools:ignore="ButtonStyle" />
         </TableRow>
@@ -240,7 +240,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/button"
                 android:minHeight="@dimen/controls_pad_min_height_buttons"
-                android:textSize="@dimen/text_size_default"
+                android:textSize="@dimen/controls_text_size_default"
                 android:textStyle="bold"
                 tools:ignore="ButtonStyle" />
 
@@ -252,7 +252,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/button"
                 android:minHeight="@dimen/controls_pad_min_height_buttons"
-                android:textSize="@dimen/text_size_default"
+                android:textSize="@dimen/controls_text_size_default"
                 android:textStyle="bold"
                 tools:ignore="ButtonStyle" />
 
@@ -264,7 +264,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/button"
                 android:minHeight="@dimen/controls_pad_min_height_buttons"
-                android:textSize="@dimen/text_size_default"
+                android:textSize="@dimen/controls_text_size_default"
                 android:textStyle="bold"
                 tools:ignore="ButtonStyle" />
 
@@ -278,7 +278,7 @@
                 android:layout_margin="@dimen/controls_pad_margin_buttons"
                 android:layout_weight="1.5"
                 android:lines="1"
-                android:textSize="@dimen/text_size_default" />
+                android:textSize="@dimen/controls_text_size_default" />
         </TableRow>
     </TableLayout>
 

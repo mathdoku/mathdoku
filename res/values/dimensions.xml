@@ -23,14 +23,19 @@
     <!-- CONTROLS AND SUB ELEMENTS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
-    <!-- Minimum height of buttons used for digit, clear and undo. -->
-    <dimen name="controls_pad_min_height_buttons">33dp</dimen>
+    <!-- The text size used for text on buttons. This size is also the base size for the other -->
+    <!-- dimension used for the controls. -->
+    <dimen name="controls_text_size_default">23sp</dimen>
 
     <!-- Minimum height of buttons used for digit, clear and undo. -->
+    <!-- controls_pad_min_height_buttons = controls_text_size_default * 3 / 2. This meets the android -->
+    <!-- in which 1/6 of height is reserved for top marging, 4/6 used for content and 1/6 for -->
+    <!-- the bottom margin. -->
+    <dimen name="controls_pad_min_height_buttons">34dp</dimen>
+
+    <!-- Margin between buttons -->
+    <!-- controls_pad_margin_buttons = controls_text_size_default / 20 -->
     <dimen name="controls_pad_margin_buttons">1dp</dimen>
-
-    <!-- The text size used for text on buttons. -->
-    <dimen name="controls_text_size_default">20sp</dimen>
 
     <!-- DIALOGS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
