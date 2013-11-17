@@ -47,7 +47,6 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:lines="1"
-            android:onClick="onClickReloadGame"
             android:text="@string/archive_play_similar_puzzle"
             android:textSize="@dimen/controls_text_size_default"
             android:textStyle="bold" />

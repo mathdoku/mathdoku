@@ -2,11 +2,12 @@
 <!-- subtle color differences between the relative and the linear layouts. -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:mathdoku="http://schemas.android.com/apk/res/net.mathdoku.plus"
+    xmlns:mathdoku="http://schemas.android.com/apk/res-auto"
     android:id="@+id/topLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000" >
+    android:background="#000"
+    tools:ignore="Overdraw">
 
     <RelativeLayout
         android:id="@+id/timer_ticker_tape_layout"

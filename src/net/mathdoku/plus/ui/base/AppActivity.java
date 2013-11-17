@@ -4,6 +4,8 @@ import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.storage.database.DatabaseHelper;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 import net.mathdoku.plus.util.Util;
+
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -17,6 +19,7 @@ import android.support.v4.app.TaskStackBuilder;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
+@SuppressLint("Registered")
 public class AppActivity extends Activity implements
 		OnSharedPreferenceChangeListener {
 

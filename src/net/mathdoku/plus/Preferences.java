@@ -725,8 +725,8 @@ public class Preferences {
 	 * updated on calling this method. Call commitCounters() to commit counters
 	 * to storage.
 	 * 
-	 * @param preferenceName
-	 *            The name of the preferences counter.
+	 * @param counter_id
+	 *            The id of the preferences counter.
 	 * @return The number of occurrence for this counter (after being updated).
 	 */
 	private int increaseCounter(int counter_id) {

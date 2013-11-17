@@ -16,7 +16,7 @@ public class SingletonInstanceNotInstantiated extends RuntimeException {
 	/**
 	 * Creates a new instance of {@link SingletonInstanceNotInstantiated}.
 	 * 
-	 * @param errorMessage
+	 * @param errorMessage The message to be displayed in case this error is thrown.
 	 */
 	public SingletonInstanceNotInstantiated(String errorMessage) {
 		super(errorMessage);
