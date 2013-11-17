@@ -1,3 +1,10 @@
+# Ignore the to do list
+src/net/mathdoku/plus/todo.java
+
+# Ignore files which are replaced by ANT-build scripts
+src/net/mathdoku/plus/config/Config.java
+res/values/google_play_services.xml
+
 # built application files
 *.apk
 *.ap_
@@ -33,9 +40,6 @@ proguard/
  
 # folders related to builds
 .gradle/
-*/build/
+build/
 
-# Ignore files which are replaced by ANT-build scripts
-src/net/mathdoku/plus/config/Config.java
-res/values/google_play_services.xml
 
