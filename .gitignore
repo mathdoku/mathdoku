@@ -1,5 +1,6 @@
 # Ignore the to do list
 src/net/mathdoku/plus/todo.java
+todo.txt
 
 # Ignore files which are replaced by ANT-build scripts
 src/net/mathdoku/plus/config/Config.java
