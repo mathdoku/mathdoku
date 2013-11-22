@@ -390,7 +390,6 @@
     <string name="statistics_general_replays">Replays</string>
     <string name="statistics_general_elapsed_time">Time played</string>
     <string name="statistics_general_cheat_penalty_time">Cheat penalty</string>
-    <string name="statistics_general_replay">Replay puzzle</string>
 
     <!-- Title and a body which explains the purpose of the chart "Progress". -->
     <string name="progress_chart_title">Progress</string>
@@ -468,8 +467,10 @@
     <string name="input_mode_maybe_long_description">Toggles from the possible values input to normal numbers input.\nYou can also double tap the puzzle to toggle the input mode.</string>
 
     <!-- The text which is shown to enable/disable copy mode. -->
-    <string name="input_mode_copy_short_description">Copy cells</string>
     <string name="action_copy_cell_values_long_description">Copy values of the selected cell to other cells.</string>
+
+    <!-- The text for contextual action bar use top copy cell values -->
+    <string name="tap_to_copy_cell_values">Tap cell to copy value</string>
 
     <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -608,9 +609,4 @@
 
     <!-- Connection word for the last two elements in a list. Example: "1 minute and 15 seconds" or "1, 2, 3 and 4)" -->
     <string name="connector_last_two_elements">and</string>
-
-    <!-- The text for the "done" button on the contextual actiobar -->
-    <string name="action_done">Done</string>
-    <string name="tap_to_copy_cell_values">Tap cell to copy value</string>
-
 </resources>

@@ -379,7 +379,6 @@
     <string name="statistics_general_replays">Keren gespeeld</string>
     <string name="statistics_general_elapsed_time">Speeltijd</string>
     <string name="statistics_general_cheat_penalty_time">Boete vals spel</string>
-    <string name="statistics_general_replay">Opnieuw spelen</string>
 
     <!-- Title and a body which explains the purpose of the chart "Progress". -->
     <string name="progress_chart_title">Voortgang</string>
@@ -457,8 +456,10 @@
     <string name="input_mode_maybe_long_description">Wissel van invoer van mogelijke waarden naar normale waarden invoer.\nJe kunt ook dubbel tikken op een cel om te wisselen van invoertoestand.</string>
 
     <!-- The text which is shown to enable/disable copy mode. -->
-    <string name="input_mode_copy_short_description">Kopieer waarden</string>
     <string name="action_copy_cell_values_long_description">Kopieer waarden van de geselecteerde cel naar een andere cel.</string>
+
+    <!-- The text for contextual action bar use top copy cell values -->
+    <string name="tap_to_copy_cell_values">Tik cel aan om te kopiëren</string>
 
     <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -596,9 +597,4 @@
 
     <!-- Connection word for the last two elements in a list. Example: "1 minute and 15 seconds" or "1, 2, 3 and 4)" -->
     <string name="connector_last_two_elements">en</string>
-
-    <!-- The text for the "done" button on the contextual actiobar -->
-    <string name="action_done">Gereed</string>
-    <string name="tap_to_copy_cell_values">Tik cel aan om te kopiëren</string>
-
 </resources>
