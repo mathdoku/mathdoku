@@ -466,9 +466,7 @@
 
     <!-- The text which is shown to toggle between the normal and maybe mode. -->
     <!-- TODO -->
-    <string name="input_mode_normal_short_description">Normal numbers</string>
     <string name="input_mode_normal_long_description">Toggles from the normal number input to possible values input.\nYou can also double tap the puzzle to toggle the input mode.</string>
-    <string name="input_mode_maybe_short_description">Maybe values</string>
     <string name="input_mode_maybe_long_description">Toggles from the possible values input to normal numbers input.\nYou can also double tap the puzzle to toggle the input mode.</string>
 
     <!-- The text which is shown to enable/disable copy mode. -->

@@ -450,9 +450,7 @@
 
 
     <!-- The text which is shown to toggle between the normal and maybe mode. -->
-    <string name="input_mode_normal_short_description">Normale waarden</string>
     <string name="input_mode_normal_long_description">Wissel van invoer van normale waarden naar mogelijke waarden invoer.\nJe kunt ook dubbel tikken op een cel om te wisselen van invoertoestand.</string>
-    <string name="input_mode_maybe_short_description">Mogelijke waarden</string>
     <string name="input_mode_maybe_long_description">Wissel van invoer van mogelijke waarden naar normale waarden invoer.\nJe kunt ook dubbel tikken op een cel om te wisselen van invoertoestand.</string>
 
     <!-- The text which is shown to enable/disable copy mode. -->
