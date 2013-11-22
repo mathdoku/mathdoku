@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="dimension">w360dp-h615dp-xhdpi</string>
+    <string name="dimension">w360dp-h615dp</string>
 
     <!-- CONTROLS AND SUB ELEMENTS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
-    <!-- Remember: each size below is multiplied with a factor 2 because of density xhdpi. So total -->
-    <!-- height of control pad is 558 pixels = (3 rows) * (90 + 3) = 279 dp * density 2. -->
+    <!-- Remember: each size below is multiplied with a factor 3 because of density xxhdpi. So total -->
+    <!-- height of control pad is (3 rows) * (60 + 2) = 186 dp -->
 
 
     <!-- The text size used for text on buttons. This size is also the base size for the other -->
     <!-- dimension used for the controls. -->
-    <dimen name="controls_text_size_default">60sp</dimen>
+    <dimen name="controls_text_size_default">40sp</dimen>
 
     <!-- Minimum height of buttons used for digit, clear and undo. -->
     <!-- controls_pad_min_height_buttons = controls_text_size_default * 3 / 2. This meets the android -->
     <!-- in which 1/6 of height is reserved for top marging, 4/6 used for content and 1/6 for -->
     <!-- the bottom margin. -->
-    <dimen name="controls_pad_min_height_buttons">90dp</dimen>
+    <dimen name="controls_pad_min_height_buttons">60dp</dimen>
 
     <!-- Margin between buttons -->
     <!-- controls_pad_margin_buttons = controls_text_size_default / 20 -->
-    <dimen name="controls_pad_margin_buttons">3dp</dimen>
+    <dimen name="controls_pad_margin_buttons">2dp</dimen>
 
 </resources>
