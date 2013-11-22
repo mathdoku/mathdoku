@@ -9,20 +9,20 @@
         android:id="@+id/action_copy_cell_values"
         android:icon="@drawable/copy_cell_values"
         android:orderInCategory="1"
-        android:showAsAction="always"
+        android:showAsAction="ifRoom"
         android:title="@string/action_copy_cell_values_long_description"/>
 
     <!-- Title and icon for action_input_mode will be set programmatically. -->
     <item
         android:id="@+id/action_input_mode"
         android:orderInCategory="2"
-        android:showAsAction="always"
+        android:showAsAction="ifRoom"
         tools:ignore="MenuTitle"/>
     <item
         android:id="@+id/checkprogress"
         android:icon="@drawable/menu_check_progress"
         android:orderInCategory="3"
-        android:showAsAction="always"
+        android:showAsAction="ifRoom"
         android:title="@string/action_check_progress"/>
     <item
         android:id="@+id/action_reveal_cell"
