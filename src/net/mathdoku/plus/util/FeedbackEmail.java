@@ -181,7 +181,7 @@ public class FeedbackEmail {
 			String value = entry.getValue();
 
 			logLine += FIELD_DELIMITER_LEVEL1 + key + FIELD_DELIMITER_LEVEL2
-					+ (value == null ? "" : value.toString());
+					+ (value == null ? "" : value);
 		}
 		writeLine(logLine + EOL_DELIMITER);
 	}
