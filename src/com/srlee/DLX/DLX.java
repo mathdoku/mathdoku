@@ -14,8 +14,6 @@ public class DLX {
 	private final DLXColumn root = new DLXColumn();
 	private DLXColumn[] ColHdrs;
 	private DLXNode[] Nodes;
-	private DLXRow[] Rows;
-	private int numrows;
 	private int numnodes;
 	private DLXNode lastnodeadded;
 	private ArrayList<Integer> trysolution;
@@ -31,20 +29,13 @@ public class DLX {
 		isValid = true;
 	}
 
-	public DLX(int nc, int nr, int nn) {
-		Init(nc, nr, nn);
-	}
-
-	void Init(int numCols, int numRows, int numNodes) {
+	void Init(int numCols, int numNodes) {
 		ColHdrs = new DLXColumn[numCols + 1];
 		for (int c = 1; c <= numCols; c++)
 			ColHdrs[c] = new DLXColumn();
 
 		Nodes = new DLXNode[numNodes + 1];
 		numnodes = 0; // None allocated
-
-		Rows = new DLXRow[numRows + 1];
-		numrows = 0; // None allocated
 
 		DLXColumn prev = root;
 		for (int i = 1; i <= numCols; i++) {
@@ -131,7 +122,6 @@ public class DLX {
 			Nodes[numnodes].GetRight().SetLeft(Nodes[numnodes]);
 		} else {
 			prev_rowidx = rowidx;
-			Rows[++numrows] = new DLXRow(Nodes[numnodes]);
 			Nodes[numnodes].SetLeft(Nodes[numnodes]);
 			Nodes[numnodes].SetRight(Nodes[numnodes]);
 		}

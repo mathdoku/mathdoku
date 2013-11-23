@@ -78,7 +78,7 @@ public class MathDokuDLX extends DLX {
 			total_nodes += possibleMovesInCage
 					* (2 * gridCage.mCells.size() + 1);
 		}
-		Init(totalCages + 2 * gridSizeSquare, mTotalMoves, total_nodes);
+		Init(totalCages + 2 * gridSizeSquare, total_nodes);
 
 		// Reorder cages based on the number of possible moves for the cage
 		// because this has a major impact on the time it will take to find a
