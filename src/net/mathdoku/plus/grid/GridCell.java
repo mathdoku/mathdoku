@@ -325,7 +325,7 @@ public class GridCell {
 	// The next variable could also be declared as local variable in method
 	// draw. But is created quite frequently. By reusing it the memory footprint
 	// is reduced.
-	private Paint draw_textPaint = new Paint();
+	private final Paint draw_textPaint = new Paint();
 
 	/**
 	 * Draw the cell inclusive borders, background and text.
@@ -660,7 +660,7 @@ public class GridCell {
 	// The next variable could also be declared as local variable in method
 	// drawSwipeOverlay. But is created quite frequently. By reusing it the
 	// memory footprint is reduced.
-	private static Rect drawSwipeOverlay_bounds = new Rect();
+	private static final Rect drawSwipeOverlay_bounds = new Rect();
 
 	/**
 	 * Draw the swipe overlay for the selected cell.
@@ -1029,7 +1029,7 @@ public class GridCell {
 	// The next variable could also be declared as local variable in method
 	// drawDashedLine. But is created quite frequently. By reusing it the
 	// memory footprint is reduced.
-	private Path drawDashedLine_path = new Path();
+	private final Path drawDashedLine_path = new Path();
 
 	/**
 	 * Draws a dashed line.

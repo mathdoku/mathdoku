@@ -4,9 +4,9 @@ import net.mathdoku.plus.painter.Painter.GridTheme;
 
 public class PagerTabStripPainter extends BasePainter {
 
-	private int mTextColor;
-	private int mBackgroundColor;
-	private int mTabIndicatorColor;
+	private final int mTextColor;
+	private final int mBackgroundColor;
+	private final int mTabIndicatorColor;
 
 	public PagerTabStripPainter(Painter painter) {
 		super(painter);

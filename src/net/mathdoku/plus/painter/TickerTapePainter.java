@@ -4,8 +4,8 @@ import net.mathdoku.plus.painter.Painter.GridTheme;
 
 public class TickerTapePainter extends BasePainter {
 
-	private int mTextColor;
-	private int mBackgroundColor;
+	private final int mTextColor;
+	private final int mBackgroundColor;
 
 	public TickerTapePainter(Painter painter) {
 		super(painter);

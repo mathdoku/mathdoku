@@ -15,7 +15,7 @@ public class TipCheat extends TipDialog implements
 	private static final String TIP_NAME_CHECK_PROGRESS_USED = "Cheat.CheckProgress";
 	private static final String TIP_NAME_OPERATOR_REVEALED = "Cheat.OperatorRevealed";
 	private static final String TIP_NAME_SOLUTION_REVEALED = "Cheat.SolutionRevealed";
-	private static TipPriority TIP_PRIORITY = TipPriority.LOW;
+	private static final TipPriority TIP_PRIORITY = TipPriority.LOW;
 
 	/**
 	 * Creates a new tip dialog which explains that cheating will increase the

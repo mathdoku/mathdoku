@@ -25,7 +25,7 @@ public class Preferences {
 	private static Preferences mPreferencesSingletonInstance = null;
 
 	// Actual preferences
-	public SharedPreferences mSharedPreferences;
+	public final SharedPreferences mSharedPreferences;
 
 	// Global APP preferences
 	private final static String APP_CURRENT_VERSION = "app_current_version";

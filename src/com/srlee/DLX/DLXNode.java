@@ -19,6 +19,6 @@ class DLXNode extends LL2DNode {
 		return RowIdx;
 	}
 
-	private DLXColumn C; // Pointer to Column Header
-	private int RowIdx; // Index to row
+	private final DLXColumn C; // Pointer to Column Header
+	private final int RowIdx; // Index to row
 }

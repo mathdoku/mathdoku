@@ -3,7 +3,7 @@ package net.mathdoku.plus.storage;
 public class InvalidStatisticsException extends Exception {
 	private static final long serialVersionUID = 2131519517740911182L;
 
-	private String mErrorMessage;
+	private final String mErrorMessage;
 
 	/**
 	 * Creates a new instance of {@link InvalidStatisticsException}.

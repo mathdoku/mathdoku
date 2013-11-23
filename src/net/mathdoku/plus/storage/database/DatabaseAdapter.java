@@ -27,7 +27,7 @@ abstract class DatabaseAdapter {
 	private static final String SQLITE_TRUE = "true";
 	private static final String SQLITE_FALSE = "false";
 
-	SQLiteDatabase mSqliteDatabase;
+	final SQLiteDatabase mSqliteDatabase;
 
 	/**
 	 * Creates a new instance of {@link DatabaseAdapter}.

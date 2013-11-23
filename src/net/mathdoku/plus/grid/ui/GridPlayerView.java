@@ -40,7 +40,7 @@ public class GridPlayerView extends GridBasePlayerView {
 
 	// Minimum number of valid swipe motion to be made before the ticker tape is
 	// disabled
-	private int MIN_VALID_SWIPE_MOTIONS = 15;
+	private final int MIN_VALID_SWIPE_MOTIONS = 15;
 
 	public GridPlayerView(Context context) {
 		super(context);

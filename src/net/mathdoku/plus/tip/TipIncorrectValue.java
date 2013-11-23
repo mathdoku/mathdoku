@@ -6,8 +6,8 @@ import android.content.Context;
 
 public class TipIncorrectValue extends TipDialog {
 
-	private static String TIP_NAME = "Tip.TipIncorrectValue.DisplayAgain";
-	private static TipPriority TIP_PRIORITY = TipPriority.HIGH;
+	private static final String TIP_NAME = "Tip.TipIncorrectValue.DisplayAgain";
+	private static final TipPriority TIP_PRIORITY = TipPriority.HIGH;
 
 	/**
 	 * Creates a new tip dialog which explains that an incorrect value has been

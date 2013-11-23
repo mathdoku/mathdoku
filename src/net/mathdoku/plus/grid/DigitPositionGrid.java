@@ -11,19 +11,19 @@ public class DigitPositionGrid {
 
 	// Matrices holding information about the visibility and the content of the
 	// button positions available.
-	private int[][] mVisibility;
-	private int[][] mValue;
+	private final int[][] mVisibility;
+	private final int[][] mValue;
 
 	// Dimension of matrices
-	private int mMaxRows;
-	private int mMaxCols;
+	private final int mMaxRows;
+	private final int mMaxCols;
 
 	// The number of rows and columns actually used
-	private int mRowsUsed;
-	private int mColsUsed;
+	private final int mRowsUsed;
+	private final int mColsUsed;
 
 	// The number of positions used in the grid
-	private int mPositionsUsed;
+	private final int mPositionsUsed;
 
 	/**
 	 * Creates a new instance of {@link DigitPositionGrid}.

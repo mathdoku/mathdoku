@@ -16,7 +16,7 @@ class StatisticsFragmentPagerAdapter extends FragmentPagerAdapter {
 	private static final int FRAGMENT_ID_GRID_SIZE_STATS_8 = 4;
 	private static final int FRAGMENT_ID_GRID_SIZE_STATS_9 = 5;
 	private static final int FRAGMENT_ID_GRID_SIZE_STATS_ALL = 6;
-	private static int[] fragment_ids = new int[] {
+	private static final int[] fragment_ids = new int[] {
 			FRAGMENT_ID_GRID_SIZE_STATS_ALL, FRAGMENT_ID_GRID_SIZE_STATS_4,
 			FRAGMENT_ID_GRID_SIZE_STATS_5, FRAGMENT_ID_GRID_SIZE_STATS_6,
 			FRAGMENT_ID_GRID_SIZE_STATS_7, FRAGMENT_ID_GRID_SIZE_STATS_8,

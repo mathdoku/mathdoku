@@ -8,8 +8,8 @@ import android.content.Context;
 
 public class TipCopyCellValues extends TipDialog {
 
-	private static String TIP_NAME = "Tip.CopyCellValues.DisplayAgain";
-	private static TipPriority TIP_PRIORITY = TipPriority.LOW;
+	private static final String TIP_NAME = "Tip.CopyCellValues.DisplayAgain";
+	private static final TipPriority TIP_PRIORITY = TipPriority.LOW;
 
 	/**
 	 * Creates a new tip dialog which explains that cell values can be copied

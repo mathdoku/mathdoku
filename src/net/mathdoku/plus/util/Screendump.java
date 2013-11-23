@@ -15,7 +15,7 @@ public class Screendump {
 
 	private boolean mSaved;
 	private String mFilePath;
-	private Context mContext;
+	private final Context mContext;
 
 	/**
 	 * Creates a new instance of {@link Screendump}.

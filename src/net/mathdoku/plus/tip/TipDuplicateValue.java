@@ -6,8 +6,8 @@ import android.content.Context;
 
 public class TipDuplicateValue extends TipDialog {
 
-	private static String TIP_NAME = "Tip.TipDuplicateValue.DisplayAgain";
-	private static TipPriority TIP_PRIORITY = TipPriority.MEDIUM;
+	private static final String TIP_NAME = "Tip.TipDuplicateValue.DisplayAgain";
+	private static final TipPriority TIP_PRIORITY = TipPriority.MEDIUM;
 
 	/**
 	 * Creates a new tip dialog which explains that a duplicate value has been

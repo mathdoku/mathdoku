@@ -26,11 +26,11 @@ public class MathDokuDLX extends DLX {
 
 	// Additional data structure in case the solution has to be uncovered.
 	private class Move {
-		int mCageId;
-		int mSolutionRow;
-		int mCellRow;
-		int mCellCol;
-		int mCellValue;
+		final int mCageId;
+		final int mSolutionRow;
+		final int mCellRow;
+		final int mCellCol;
+		final int mCellValue;
 
 		public Move(int cageId, int solutionRow, int cellRow, int cellCol,
 				int cellValue) {

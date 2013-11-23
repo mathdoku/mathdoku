@@ -33,7 +33,7 @@ public class CageTypeGenerator {
 
 	// All available cage types.
 	private GridCageType mSingleCellCageType;
-	private ArrayList<GridCageType>[] mCageTypes;
+	private final ArrayList<GridCageType>[] mCageTypes;
 
 	/**
 	 * Get an instance to the singleton instance of the cage type generator.

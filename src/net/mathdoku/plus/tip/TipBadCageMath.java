@@ -6,8 +6,8 @@ import android.content.Context;
 
 public class TipBadCageMath extends TipDialog {
 
-	private static String TIP_NAME = "BadCageMath";
-	private static TipPriority TIP_PRIORITY = TipPriority.HIGH;
+	private static final String TIP_NAME = "BadCageMath";
+	private static final TipPriority TIP_PRIORITY = TipPriority.HIGH;
 
 	/**
 	 * Creates a new tip dialog which explains that a duplicate value has been

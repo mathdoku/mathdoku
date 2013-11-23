@@ -39,7 +39,7 @@ public class FeedbackEmail {
 	private static final String FIELD_DELIMITER_LEVEL2 = "="; // Separate values
 
 	// Date format for log file
-	private DateFormat mDateFormat = new SimpleDateFormat(
+	private final DateFormat mDateFormat = new SimpleDateFormat(
 			"yyyy-MM-dd HH:mm:ss", Locale.US);
 
 	// Reference to log file

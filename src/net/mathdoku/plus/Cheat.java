@@ -14,10 +14,10 @@ public class Cheat {
 	private final Resources mResources;
 
 	// Constants to convert milisecond to calendar units
-	private long MILIS_PER_DAY = 24 * 60 * 60 * 1000;
-	private long MILIS_PER_HOUR = 60 * 60 * 1000;
-	private long MILIS_PER_MINUTE = 60 * 1000;
-	private long MILIS_PER_SECOND = 1000;
+	private final long MILIS_PER_DAY = 24 * 60 * 60 * 1000;
+	private final long MILIS_PER_HOUR = 60 * 60 * 1000;
+	private final long MILIS_PER_MINUTE = 60 * 1000;
+	private final long MILIS_PER_SECOND = 1000;
 
 	// The type of cheat
 	private final CheatType mCheatType;
@@ -29,11 +29,11 @@ public class Cheat {
 
 	// The penalty consists of a base penalty and an optionally a penalty per
 	// occurrence of a certain condition relevant for the cheat.
-	private int mConditionalOccurrences;
+	private final int mConditionalOccurrences;
 
 	// Penalty time in mili seconds
-	private long mPenaltyTimeMilisBase;
-	private long mPenaltyTimeMilisPerOccurrence;
+	private final long mPenaltyTimeMilisBase;
+	private final long mPenaltyTimeMilisPerOccurrence;
 
 	// Title and text to be used in tip dialogs.
 	private String mTipTitle;

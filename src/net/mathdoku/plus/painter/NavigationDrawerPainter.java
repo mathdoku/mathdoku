@@ -4,7 +4,7 @@ import net.mathdoku.plus.painter.Painter.GridTheme;
 
 public class NavigationDrawerPainter extends BasePainter {
 
-	private int mBackgroundColor;
+	private final int mBackgroundColor;
 
 	public NavigationDrawerPainter(Painter painter) {
 		super(painter);

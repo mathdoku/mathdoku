@@ -18,13 +18,13 @@ class LeaderboardFragmentPagerAdapter extends FragmentPagerAdapter {
 	private static final int FRAGMENT_ID_GRID_SIZE_7 = 3;
 	private static final int FRAGMENT_ID_GRID_SIZE_8 = 4;
 	private static final int FRAGMENT_ID_GRID_SIZE_9 = 5;
-	private static int[] fragment_ids = new int[] { FRAGMENT_ID_GRID_SIZE_4,
-			FRAGMENT_ID_GRID_SIZE_5, FRAGMENT_ID_GRID_SIZE_6,
-			FRAGMENT_ID_GRID_SIZE_7, FRAGMENT_ID_GRID_SIZE_8,
-			FRAGMENT_ID_GRID_SIZE_9 };
+	private static final int[] fragment_ids = new int[] {
+			FRAGMENT_ID_GRID_SIZE_4, FRAGMENT_ID_GRID_SIZE_5,
+			FRAGMENT_ID_GRID_SIZE_6, FRAGMENT_ID_GRID_SIZE_7,
+			FRAGMENT_ID_GRID_SIZE_8, FRAGMENT_ID_GRID_SIZE_9 };
 
 	// Context
-	private LeaderboardFragmentActivity mLeaderboardFragmentActivity;
+	private final LeaderboardFragmentActivity mLeaderboardFragmentActivity;
 
 	public LeaderboardFragmentPagerAdapter(
 			LeaderboardFragmentActivity leaderboardFragmentActivity,

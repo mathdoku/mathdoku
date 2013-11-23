@@ -22,7 +22,7 @@ import android.widget.TextView;
  * determine the preference, title, text and image to be used for this tip.
  */
 public class TipDialog extends AlertDialog {
-	private static String TAG = "Tip.TipDialog";
+	private static final String TAG = "Tip.TipDialog";
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.

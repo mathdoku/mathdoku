@@ -9,7 +9,7 @@ import android.os.AsyncTask;
 public class GameTimer extends AsyncTask<Void, Long, Long> {
 
 	// Reference to activity that started the timer.
-	private PuzzleFragment mPuzzleFragment;
+	private final PuzzleFragment mPuzzleFragment;
 
 	// Starting point of timer. Note this is not the real time at which the game
 	// started but the actual time at which the timer started minus the time

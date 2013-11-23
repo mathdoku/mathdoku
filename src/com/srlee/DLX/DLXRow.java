@@ -5,5 +5,5 @@ class DLXRow {
 		FirstNode = first;
 	}
 
-	private DLXNode FirstNode;
+	private final DLXNode FirstNode;
 }

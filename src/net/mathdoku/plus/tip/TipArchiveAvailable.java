@@ -6,8 +6,8 @@ import android.content.Context;
 
 public class TipArchiveAvailable extends TipDialog {
 
-	private static String TIP_NAME = "ArchiveAvailable";
-	private static TipPriority TIP_PRIORITY = TipPriority.LOW;
+	private static final String TIP_NAME = "ArchiveAvailable";
+	private static final TipPriority TIP_PRIORITY = TipPriority.LOW;
 
 	/**
 	 * Creates a new tip dialog which explains that the statistics have been

@@ -4,8 +4,8 @@ import net.mathdoku.plus.painter.Painter.GridTheme;
 
 public class SolvedTextPainter extends BasePainter {
 
-	private int mTextColor;
-	private int mBackgroundColor;
+	private final int mTextColor;
+	private final int mBackgroundColor;
 
 	public SolvedTextPainter(Painter painter) {
 		super(painter);
