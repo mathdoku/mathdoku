@@ -296,6 +296,7 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 					&& mHideOperators == false) {
 				return false;
 			}
+			// noinspection RedundantIfStatement
 			if (leaderboardFilter == LeaderboardFilter.VISBLE_OPERATORS
 					&& mHideOperators == true) {
 				return false;
