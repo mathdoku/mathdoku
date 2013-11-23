@@ -86,43 +86,6 @@ public class DevelopmentHelper {
 	}
 
 	/**
-	 * Delete database.
-	 * 
-	 * @param context
-	 *            The activity in which context the confirmation dialog will be
-	 *            shown.
-	 */
-	public static void deleteDatabase(
-			final PuzzleFragmentActivity puzzleFragmentActivity) {
-		if (Config.mAppMode == AppMode.DEVELOPMENT) {
-			AlertDialog.Builder builder = new AlertDialog.Builder(
-					puzzleFragmentActivity);
-			builder.setTitle("Delete database?")
-					.setMessage(
-							"The database will be deleted. All statistic "
-									+ "information will be lost permanently.")
-					.setNegativeButton("Cancel",
-							new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog,
-										int id) {
-									// Do nothing
-								}
-							})
-					.setPositiveButton("Delete database",
-							new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog,
-										int id) {
-									executeDeleteDatabase(puzzleFragmentActivity);
-								}
-							});
-			AlertDialog dialog = builder.create();
-			dialog.show();
-		}
-	}
-
-	/**
 	 * Generate dummy games. A dummy game is not a real game which can be played
 	 * as it is not checked on having a unique solution.
 	 * 
