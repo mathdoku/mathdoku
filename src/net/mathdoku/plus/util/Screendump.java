@@ -9,7 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.view.View;
 
-public class Screendump extends Object {
+public class Screendump {
 	@SuppressWarnings("unused")
 	private static final String TAG = "MathDoku.Screendump";
 

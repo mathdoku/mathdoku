@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import android.util.Log;
 
-public class DLX extends Object {
+public class DLX {
 	private static final String TAG = "MathDoku.DLX";
 
 	public enum SolveType {

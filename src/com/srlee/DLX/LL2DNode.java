@@ -1,6 +1,6 @@
 package com.srlee.DLX;
 
-public class LL2DNode extends Object {
+public class LL2DNode {
 	public void SetLeft(LL2DNode left) {
 		L = left;
 	}
