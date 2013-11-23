@@ -15,8 +15,8 @@ public class DLX {
 	private DLXColumn[] ColHdrs;
 	private DLXNode[] Nodes;
 	private DLXRow[] Rows;
-    private int numrows;
-    private int numnodes;
+	private int numrows;
+	private int numnodes;
 	private DLXNode lastnodeadded;
 	private ArrayList<Integer> trysolution;
 	private ArrayList<Integer> foundsolution;
@@ -36,7 +36,7 @@ public class DLX {
 	}
 
 	protected void Init(int nc, int nr, int nn) {
-        int numcols = nc;
+		int numcols = nc;
 		ColHdrs = new DLXColumn[numcols + 1];
 		for (int c = 1; c <= numcols; c++)
 			ColHdrs[c] = new DLXColumn();

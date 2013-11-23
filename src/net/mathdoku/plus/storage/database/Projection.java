@@ -10,7 +10,7 @@ public class Projection extends HashMap<String, String> {
 		MIN, MAX, AVG, SUM, COUNT, COUNTIF_TRUE
 	}
 
-    public Projection() {
+	public Projection() {
 		super();
 	}
 

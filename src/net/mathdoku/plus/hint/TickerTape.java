@@ -24,7 +24,7 @@ public class TickerTape extends HorizontalScrollView {
 	// Size of text within the ticker tape.
 	private final int mTextSizeInDIP;
 
-    // Speed of horizontal scrolling
+	// Speed of horizontal scrolling
 	private final int mScrollStepSize = 100;
 
 	// Conditions which need to be satisfied for automatic removal of ticker
@@ -123,8 +123,8 @@ public class TickerTape extends HorizontalScrollView {
 				R.dimen.text_size_default) / getResources().getDisplayMetrics().density);
 
 		// Determine margins for text (25% of text height)
-        int mTextTopMargin;
-        int mTextBottomMargin = mTextTopMargin = textSizeInPixels / 4;
+		int mTextTopMargin;
+		int mTextBottomMargin = mTextTopMargin = textSizeInPixels / 4;
 
 		// Set layout parameters of the horizontal scroll view.
 		setLayoutParams(new LayoutParams(

@@ -114,7 +114,7 @@ public class Preferences {
 		SWIPE_ONLY, SWIPE_AND_BUTTONS, BUTTONS_ONLY
 	}
 
-    public final static String PUZZLE_SETTING_INPUT_METHOD = "puzzle_setting_input_method";
+	public final static String PUZZLE_SETTING_INPUT_METHOD = "puzzle_setting_input_method";
 	public final static String PUZZLE_SETTING_INPUT_METHOD_DEFAULT = PuzzleSettingInputMethod.SWIPE_ONLY
 			.toString();
 

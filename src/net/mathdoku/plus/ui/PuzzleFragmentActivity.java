@@ -80,7 +80,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		NO_FRAGMENT, PUZZLE_FRAGMENT, ARCHIVE_FRAGMENT
 	}
 
-    // Current type of fragment being active
+	// Current type of fragment being active
 	private FragmentType mActiveFragmentType;
 
 	// Reference to fragments which can be displayed in this activity.

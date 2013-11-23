@@ -35,7 +35,7 @@ public class AppFragmentActivity extends FragmentActivity implements
 		setKeepScreenOnWindowFlag();
 	}
 
-    @Override
+	@Override
 	protected void onDestroy() {
 		if (mMathDokuPreferences != null
 				&& mMathDokuPreferences.mSharedPreferences != null) {

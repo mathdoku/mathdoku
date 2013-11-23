@@ -8,9 +8,9 @@ abstract class DigitPainter extends BasePainter {
 	// Painters for the different input modes
 	protected Paint mTextPaintNormalInputMode;
 	protected Paint mTextPaintMaybeInputMode;
-	
-	protected DigitPainterMode mDigitPainterMode; 
-	
+
+	protected DigitPainterMode mDigitPainterMode;
+
 	// Offsets (bottom, left) of the region in which the value will be painted.
 	protected float mLeftOffset;
 	protected float mBottomOffset;

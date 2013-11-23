@@ -55,7 +55,7 @@ public class LeaderboardFragmentActivity extends
 		ALL_LEADERBOARDS, MY_LEADERBOARDS, HIDDEN_OPERATORS, VISBLE_OPERATORS
 	}
 
-    private LeaderboardFilter mLeaderboardFilter;
+	private LeaderboardFilter mLeaderboardFilter;
 
 	// Reference to dialog for updating the leaderboards
 	private LeaderboardRankUpdaterProgressDialog mLeaderboardRankUpdaterProgressDialog;

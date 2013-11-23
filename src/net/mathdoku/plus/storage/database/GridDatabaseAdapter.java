@@ -54,12 +54,12 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		ALL, UNFINISHED, SOLVED, REVEALED
 	}
 
-    // Allowed values for the size filter
+	// Allowed values for the size filter
 	public enum SizeFilter {
 		ALL, SIZE_4, SIZE_5, SIZE_6, SIZE_7, SIZE_8, SIZE_9
 	}
 
-    @Override
+	@Override
 	protected String getTableName() {
 		return TABLE;
 	}

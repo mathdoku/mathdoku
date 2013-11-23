@@ -53,7 +53,7 @@ public class AppActivity extends Activity implements
 		}
 	}
 
-    @Override
+	@Override
 	protected void onDestroy() {
 		if (mMathDokuPreferences != null
 				&& mMathDokuPreferences.mSharedPreferences != null) {

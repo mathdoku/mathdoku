@@ -956,7 +956,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 																		.onPuzzleFinishedListener(mGrid);
 															}
 														}
-                                                    }).show();
+													}).show();
 								} else {
 									if (mGrid != null
 											&& mPuzzleFragmentListener != null) {
@@ -1198,7 +1198,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				: 4)
 				+ (mMathDokuPreferences.isColoredDigitsVisible() ? 0 : 2)
 				+ (mMathDokuPreferences.getTheme() == GridTheme.LIGHT ? 0 : 1);
-        switch (index) {
+		switch (index) {
 		case 0:
 		case 1:
 			return R.drawable.normal_input_mode_colored;

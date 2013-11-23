@@ -170,8 +170,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	protected void onPostExecute(Void result) {
 		// Phase 1 of upgrade has been completed. Start next phase.
 		if (mActivity != null) {
-			mActivity.upgradePhase2(mCurrentVersion,
-					mNewVersion);
+			mActivity.upgradePhase2(mCurrentVersion, mNewVersion);
 		}
 		detachFromActivity();
 		super.onPostExecute(result);
