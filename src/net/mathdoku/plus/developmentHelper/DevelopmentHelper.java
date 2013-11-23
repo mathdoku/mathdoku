@@ -142,12 +142,12 @@ public class DevelopmentHelper {
 	/**
 	 * Removes all preferences. After restart of the app the preferences will be
 	 * initalised with default values. Saved games will not be deleted!
-	 *
-     * @param puzzleFragmentActivity
-     *            The activity in which context the preferences are resetted.
-     */
+	 * 
+	 * @param puzzleFragmentActivity
+	 *            The activity in which context the preferences are resetted.
+	 */
 	private static void resetPreferences(
-            final PuzzleFragmentActivity puzzleFragmentActivity) {
+			final PuzzleFragmentActivity puzzleFragmentActivity) {
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			executeDeleteAllPreferences();
 
@@ -167,7 +167,7 @@ public class DevelopmentHelper {
 								}
 							}).show();
 		}
-    }
+	}
 
 	/**
 	 * Delete all data (games, database and preferences). It is provided as an

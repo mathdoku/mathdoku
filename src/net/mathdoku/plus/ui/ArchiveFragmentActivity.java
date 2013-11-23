@@ -480,11 +480,11 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 	/**
 	 * Select the page with the given grid id. In case the specified grid id was
 	 * not found, the last page is selected.
-	 *
-     * @param gridId
-     *            The grid id for which the corresponding page in the archive
-     *            has to be selected.
-     */
+	 * 
+	 * @param gridId
+	 *            The grid id for which the corresponding page in the archive
+	 *            has to be selected.
+	 */
 	private void selectGridId(int gridId) {
 		// Get the position of the grid in the adapter.
 		int position = mArchiveFragmentStatePagerAdapter

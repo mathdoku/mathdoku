@@ -244,9 +244,9 @@ public class Grid {
 		}
 	}
 
-    /**
-     * Checks whether the puzzle is solved.
-     */
+	/**
+	 * Checks whether the puzzle is solved.
+	 */
 	public void checkIfSolved() {
 		// Check if all cells contain correct value.
 		for (GridCell cell : this.mCells) {
@@ -856,7 +856,7 @@ public class Grid {
 	 * @return True in case everything has been saved. False otherwise.
 	 */
 	@SuppressWarnings("UnusedReturnValue")
-    public boolean saveOnUpgrade() {
+	public boolean saveOnUpgrade() {
 		return save(true);
 	}
 

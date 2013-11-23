@@ -302,7 +302,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		if (mGrid == null || mGrid.getGridSize() == 0
 				|| mGridStatistics == null) {
 			// No progress to report.
-            return;
+			return;
 		}
 
 		// Determine total number of cells in grid
@@ -382,7 +382,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 				+ mGridStatistics.mActionClearCell
 				+ mGridStatistics.mActionClearGrid;
 		if (totalAvoidableMoves == 0) {
-            return;
+			return;
 		}
 
 		// Define the renderer
@@ -490,7 +490,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 						Type.DEFAULT), null,
 				getResources().getString(R.string.avoidable_moves_chart_body));
 
-    }
+	}
 
 	/**
 	 * Create bar chart for the cheats which are used
@@ -503,7 +503,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 				+ mGridStatistics.mActionRevealOperator
 				+ (mGridStatistics.isSolutionRevealed() ? 1 : 0);
 		if (totalCheats == 0) {
-            return;
+			return;
 		}
 
 		// Determine number of cheat categories to show
@@ -625,7 +625,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 						xyMultipleSeriesDataset, xyMultipleSeriesRenderer,
 						Type.DEFAULT), null,
 				getResources().getString(R.string.statistics_cheats_used_body));
-    }
+	}
 
 	/**
 	 * Get the width to be used for a bar in bar chart given a maximum number of

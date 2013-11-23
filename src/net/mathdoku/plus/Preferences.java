@@ -827,6 +827,7 @@ public class Preferences {
 	 * @return The (updated) number of times the input mode has been changed
 	 *         from normal to maybe or vice versa.
 	 */
+	@SuppressWarnings("UnusedReturnValue")
 	public int increaseInputModeChangedCounter() {
 		return increaseCounter(PUZZLE_INPUT_MODE_CHANGED_COUNTER_ID);
 	}
@@ -837,6 +838,7 @@ public class Preferences {
 	 * @return The (updated) number of times the input mode has been set to copy
 	 *         mode.
 	 */
+	@SuppressWarnings("UnusedReturnValue")
 	public int increaseInputModeCopyCounter() {
 		return increaseCounter(PUZZLE_INPUT_MODE_COPY_COUNTER_ID);
 	}

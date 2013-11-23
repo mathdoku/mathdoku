@@ -147,7 +147,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		if (sqliteDatabase != null) {
 			sqliteDatabase.setTransactionSuccessful();
 		}
-    }
+	}
 
 	@Override
 	public synchronized void close() {

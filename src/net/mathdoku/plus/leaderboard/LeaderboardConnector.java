@@ -82,9 +82,8 @@ public class LeaderboardConnector {
 	 * @param timePlayed
 	 *            The elapsed time for the grid.
 	 */
-	public void submitScore(int gridSize,
-			PuzzleComplexity puzzleComplexity, boolean hideOperators,
-			long timePlayed) {
+	public void submitScore(int gridSize, PuzzleComplexity puzzleComplexity,
+			boolean hideOperators, long timePlayed) {
 		// Check boundaries of time played
 		if (timePlayed <= 0 || timePlayed == Long.MAX_VALUE) {
 			return;

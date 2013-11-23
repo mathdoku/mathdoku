@@ -45,10 +45,10 @@ public class TipCopyCellValues extends TipDialog {
 	 */
 	public static boolean toBeDisplayed(Preferences preferences,
 			GridCell gridCell) {
-        // Do not display in case the copy function has been used
-        if (preferences.getInputModeCopyCounter() > 0) {
-            return false;
-        }
+		// Do not display in case the copy function has been used
+		if (preferences.getInputModeCopyCounter() > 0) {
+			return false;
+		}
 
 		// No tip to be displayed for non existing cell
 		if (gridCell == null) {

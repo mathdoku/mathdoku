@@ -1101,9 +1101,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	 * 
 	 * @param solvingAttemptId
 	 *            The solving attempt for which the grid has to be replayed.
-	 * @return
 	 */
-	private boolean replayPuzzle(int solvingAttemptId) {
+	private void replayPuzzle(int solvingAttemptId) {
 		// Load the grid for the returned solving attempt id and reset the grid
 		// so it can be replayed.
 		Grid grid = new Grid();
@@ -1113,11 +1112,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			}
 
 			initializePuzzleFragment(grid.getSolvingAttemptId());
-			return true;
-		} else {
-			return false;
 		}
-
 	}
 
 	/* The click listener for the list view in the navigation drawer */

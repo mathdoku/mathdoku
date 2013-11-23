@@ -51,7 +51,7 @@ public class Projection extends HashMap<String, String> {
 	 *            applied to determine the value of the target column.
 	 */
 	@SuppressWarnings("UnusedReturnValue")
-    public String put(String targetColumn, String sourceTable,
+	public String put(String targetColumn, String sourceTable,
 			String sourceColumn) {
 		String target = DatabaseAdapter.stringBetweenBackTicks(targetColumn);
 		String source = DatabaseAdapter.stringBetweenBackTicks(sourceTable)

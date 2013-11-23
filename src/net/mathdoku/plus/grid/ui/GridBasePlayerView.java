@@ -397,7 +397,7 @@ public class GridBasePlayerView extends GridViewerView implements
 
 			// Switch to copy mode.
 			mInputMode = GridInputMode.COPY;
-            mPreferences.increaseInputModeCopyCounter();
+			mPreferences.increaseInputModeCopyCounter();
 
 			// Inform listeners about change in input mode
 			if (mOnInputModeChangedListener != null) {
@@ -427,11 +427,11 @@ public class GridBasePlayerView extends GridViewerView implements
 	void toggleInputMode() {
 		switch (mInputMode) {
 		case NORMAL:
-            mPreferences.increaseInputModeChangedCounter();
+			mPreferences.increaseInputModeChangedCounter();
 			setGridInputMode(GridInputMode.MAYBE, false);
 			break;
 		case MAYBE:
-            mPreferences.increaseInputModeChangedCounter();
+			mPreferences.increaseInputModeChangedCounter();
 			setGridInputMode(GridInputMode.NORMAL, false);
 			break;
 		default:
