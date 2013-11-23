@@ -592,6 +592,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	/**
 	 * Clear ranking information for all leaderboards do they will get updated.
 	 */
+	@SuppressWarnings("StringBufferReplaceableByString")
 	public void setAllRanksToBeUpdated() {
 		try {
 			StringBuilder query = new StringBuilder();
