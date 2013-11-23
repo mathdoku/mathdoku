@@ -589,8 +589,7 @@ public class GameHelper implements
 	 * onActivityResult callback. If the activity result pertains to the sign-in
 	 * process, processes it appropriately.
 	 */
-	public void onActivityResult(int requestCode, int responseCode,
-			Intent intent) {
+	public void onActivityResult(int requestCode, int responseCode) {
 		debugLog("onActivityResult: req="
 				+ (requestCode == RC_RESOLVE ? "RC_RESOLVE" : String
 						.valueOf(requestCode)) + ", resp="

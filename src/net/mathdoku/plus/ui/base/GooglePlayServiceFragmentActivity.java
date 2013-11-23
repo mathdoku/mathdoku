@@ -142,7 +142,7 @@ public abstract class GooglePlayServiceFragmentActivity extends
 	@Override
 	protected void onActivityResult(int request, int response, Intent data) {
 		super.onActivityResult(request, response, data);
-		mGameHelper.onActivityResult(request, response, data);
+		mGameHelper.onActivityResult(request, response);
 	}
 
 	protected GamesClient getGamesClient() {

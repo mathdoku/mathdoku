@@ -30,9 +30,6 @@ import android.util.DisplayMetrics;
 public class FeedbackEmail {
 	public final static String TAG = "MathDoku.FeedbackEmail";
 
-	// Path and file for log information
-	private final static String LOG_FILE_NAME = "device_info_and_settings.txt";
-
 	// Delimiters used in files to separate objects, fields and value
 	private static final String EOL_DELIMITER = "\n"; // Separate objects
 	private static final String FIELD_DELIMITER_LEVEL1 = "|"; // Separate fields
@@ -68,7 +65,7 @@ public class FeedbackEmail {
 	 */
 	@SuppressWarnings("SameParameterValue")
 	private boolean createLogFile(String filename) {
-		File file = new File(mActivity.getFilesDir(), LOG_FILE_NAME);
+		File file = new File(mActivity.getFilesDir(), filename);
 		if (!file.exists()) {
 			try {
 				file.createNewFile();

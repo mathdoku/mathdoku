@@ -95,7 +95,7 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 				true, PuzzleComplexity.DIFFICULT);
 		mLeaderboardSection[9] = new LeaderboardSection(resources, mGridSize,
 				true, PuzzleComplexity.VERY_DIFFICULT);
-		mLeaderboardSection[10] = new LeaderboardSection(resources, mGridSize);
+		mLeaderboardSection[10] = new LeaderboardSection(mGridSize);
 
 		// Append all views to the fragment
 		LinearLayout linearLayout = (LinearLayout) mRootView
@@ -255,7 +255,7 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 		 * leaderboard for this gridsize and has enabled filter
 		 * "My leaderboards only".
 		 */
-		public LeaderboardSection(Resources resources, int gridSize) {
+		public LeaderboardSection(int gridSize) {
 			mDummyLeaderboard = true;
 			mGridSize = gridSize;
 

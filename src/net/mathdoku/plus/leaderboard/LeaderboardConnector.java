@@ -72,8 +72,6 @@ public class LeaderboardConnector {
 	/**
 	 * Submits a score to a leaderboard.
 	 * 
-	 * @param statisticsId
-	 *            The statistics id in which the score is stored.
 	 * @param gridSize
 	 *            The size of the grid to which the score applies.
 	 * @param puzzleComplexity
@@ -84,7 +82,7 @@ public class LeaderboardConnector {
 	 * @param timePlayed
 	 *            The elapsed time for the grid.
 	 */
-	public void submitScore(final int statisticsId, int gridSize,
+	public void submitScore(int gridSize,
 			PuzzleComplexity puzzleComplexity, boolean hideOperators,
 			long timePlayed) {
 		// Check boundaries of time played

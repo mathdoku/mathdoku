@@ -64,7 +64,7 @@ class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	}
 
 	View onCreateView(LayoutInflater inflater, int layout, ViewGroup container,
-			Bundle savedInstanceState) {
+			@SuppressWarnings("UnusedParameters") Bundle savedInstanceState) {
 		// Get default sizes for text
 		mDefaultTextSize = getResources().getDimensionPixelSize(
 				R.dimen.text_size_default);

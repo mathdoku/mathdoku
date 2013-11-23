@@ -791,8 +791,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			} else if (newTopScore) {
 				GridStatistics gridStatistics = grid.getGridStatistics();
 				if (gridStatistics != null) {
-					mLeaderboardConnector.submitScore(gridStatistics.mId,
-							grid.getGridSize(),
+					mLeaderboardConnector.submitScore(grid.getGridSize(),
 							gridGeneratingParameters.mPuzzleComplexity,
 							gridGeneratingParameters.mHideOperators,
 							grid.getElapsedTime());

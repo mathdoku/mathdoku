@@ -67,20 +67,20 @@ public class GridBasePlayerView extends GridViewerView implements
 
 	GridBasePlayerView(Context context) {
 		super(context);
-		initGridView(context);
+		initGridView();
 	}
 
 	GridBasePlayerView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		initGridView(context);
+		initGridView();
 	}
 
 	GridBasePlayerView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		initGridView(context);
+		initGridView();
 	}
 
-	private void initGridView(Context context) {
+	private void initGridView() {
 		mInputMode = GridInputMode.NORMAL;
 
 		// Initialize the handler use to process the on touch events

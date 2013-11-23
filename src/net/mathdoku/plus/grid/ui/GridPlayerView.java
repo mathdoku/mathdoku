@@ -44,20 +44,20 @@ public class GridPlayerView extends GridBasePlayerView {
 
 	public GridPlayerView(Context context) {
 		super(context);
-		initGridView(context);
+		initGridView();
 	}
 
 	public GridPlayerView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		initGridView(context);
+		initGridView();
 	}
 
 	public GridPlayerView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		initGridView(context);
+		initGridView();
 	}
 
-	private void initGridView(Context context) {
+	private void initGridView() {
 		mTickerTape = null;
 
 		// Initialize the runnable used to delay touch handling

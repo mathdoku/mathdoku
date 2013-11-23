@@ -164,7 +164,7 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 	/**
 	 * Load the shared puzzle as the active puzzle in MathDoku.
 	 */
-	public void onClickPlayGame(View view) {
+	public void onClickPlayGame(@SuppressWarnings("UnusedParameters") View view) {
 		// First check if the puzzle already exists
 		GridRow gridRow = new GridDatabaseAdapter().getByGridDefinition(mGrid
 				.toGridDefinitionString());
