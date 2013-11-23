@@ -122,7 +122,7 @@ public abstract class GooglePlayServiceFragmentActivity extends
 		super.onCreate(b);
 		mGameHelper = new GameHelper(this);
 		if (mDebugLog) {
-			mGameHelper.enableDebugLog(mDebugLog, mDebugTag);
+			mGameHelper.enableDebugLog(mDebugTag);
 		}
 		mGameHelper.setup(this, mRequestedClients, mAdditionalScopes);
 	}
@@ -182,7 +182,7 @@ public abstract class GooglePlayServiceFragmentActivity extends
 		mDebugLog = enabled;
 		mDebugTag = tag;
 		if (mGameHelper != null) {
-			mGameHelper.enableDebugLog(enabled, tag);
+			mGameHelper.enableDebugLog(tag);
 		}
 	}
 

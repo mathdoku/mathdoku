@@ -470,12 +470,10 @@ public class GameHelper implements
 	}
 
 	/** Enables debug logging */
-	public void enableDebugLog(boolean enabled, String tag) {
-		mDebugLog = enabled;
+	public void enableDebugLog(String tag) {
+		mDebugLog = true;
 		mDebugTag = tag;
-		if (enabled) {
-			debugLog("Debug log enabled, tag: " + tag);
-		}
+		debugLog("Debug log enabled, tag: " + tag);
 	}
 
 	/**
