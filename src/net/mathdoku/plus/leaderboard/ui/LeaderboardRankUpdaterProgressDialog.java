@@ -14,9 +14,6 @@ public class LeaderboardRankUpdaterProgressDialog extends ProgressDialog
 	@SuppressWarnings("unused")
 	private static final String TAG = "MathDoku.LeaderboardRankUpdaterProgressDialog";
 
-	// The leaderboard connector
-	private final LeaderboardConnector mLeaderboardConnector;
-
 	// The updater for the leaderboard rank rows
 	private final LeaderboardRankUpdater mLeaderboardRankUpdater;
 
@@ -32,11 +29,9 @@ public class LeaderboardRankUpdaterProgressDialog extends ProgressDialog
 			LeaderboardConnector leaderboardConnector) {
 		super(appFragmentActivity);
 
-		mLeaderboardConnector = leaderboardConnector;
-
 		// Initialize the leaderboard rank updater
 		mLeaderboardRankUpdater = new LeaderboardRankUpdater(this,
-				mLeaderboardConnector);
+				leaderboardConnector);
 
 		// Build the dialog
 		setTitle(R.string.dialog_leaderboard_rank_update_title);
