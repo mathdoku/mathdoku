@@ -448,6 +448,7 @@ public class GridBasePlayerView extends GridViewerView implements
 	 * @param gridInputMode
 	 *            The new grid input mode.
 	 */
+	@SuppressWarnings("SameParameterValue")
 	public void setGridInputMode(GridInputMode gridInputMode,
 			boolean enableCopyMode) {
 		mInputMode = gridInputMode;

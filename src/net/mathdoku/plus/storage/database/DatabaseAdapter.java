@@ -87,6 +87,7 @@ public abstract class DatabaseAdapter {
 	 *            foreign key maps.
 	 * @return A SQLite foreign key constraint
 	 */
+	@SuppressWarnings("SameParameterValue")
 	public static String createForeignKey(String column, String refersToTable,
 			String refersToColumn) throws InvalidParameterException {
 

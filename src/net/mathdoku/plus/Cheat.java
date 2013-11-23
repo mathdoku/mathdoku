@@ -105,6 +105,7 @@ public class Cheat {
 	 * @param cheatType
 	 *            The type of cheat to be created.
 	 */
+	@SuppressWarnings("SameParameterValue")
 	public Cheat(Context context, CheatType cheatType,
 			int occurrencesConditionalPenalty) {
 		mResources = context.getResources();

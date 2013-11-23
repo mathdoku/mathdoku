@@ -804,6 +804,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 * 
 	 * @return The prefixed column name.
 	 */
+	@SuppressWarnings("SameParameterValue")
 	public static String getPrefixedColumnName(String column) {
 		return TABLE + "." + column;
 	}

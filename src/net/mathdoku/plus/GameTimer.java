@@ -87,6 +87,7 @@ public class GameTimer extends AsyncTask<Void, Long, Long> {
 	 * @param occurences
 	 *            The number of occurrences this penalty has to be added.
 	 */
+	@SuppressWarnings("SameParameterValue")
 	public void addCheatPenaltyTime(Cheat cheat, int occurrences) {
 		// Determine penalty time for just one occurrence
 		long cheatPenaltyTime = cheat.getPenaltyTimeMilis() * occurrences;

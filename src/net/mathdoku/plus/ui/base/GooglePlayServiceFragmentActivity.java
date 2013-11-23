@@ -176,6 +176,7 @@ public abstract class GooglePlayServiceFragmentActivity extends
 		mHelper.showAlert(message);
 	}
 
+	@SuppressWarnings("SameParameterValue")
 	protected void enableDebugLog(boolean enabled, String tag) {
 		mDebugLog = enabled;
 		mDebugTag = tag;

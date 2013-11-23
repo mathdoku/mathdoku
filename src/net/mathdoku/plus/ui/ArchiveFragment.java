@@ -487,8 +487,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		xyMultipleSeriesRenderer.setYAxisMin(0);
 		xyMultipleSeriesRenderer.setYAxisMax(maxYValue + 1);
 		xyMultipleSeriesRenderer.setYLabels(Math.min(4, maxYValue + 1));
-		xyMultipleSeriesRenderer
-				.setBarWidth(getElementWidth(MAX_CATEGORIES_BAR_CHART) / 2);
+		xyMultipleSeriesRenderer.setBarWidth(getBarWidth());
 
 		// Add new statistics section to the activity
 		addStatisticsSection(AVOIDABLE_MOVES_CHART_TAG_ID, getResources()
@@ -627,8 +626,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		xyMultipleSeriesRenderer.setYAxisMin(0);
 		xyMultipleSeriesRenderer.setYAxisMax(maxYValue + 1);
 		xyMultipleSeriesRenderer.setYLabels(Math.min(4, maxYValue + 1));
-		xyMultipleSeriesRenderer
-				.setBarWidth(getElementWidth(MAX_CATEGORIES_BAR_CHART) / 2);
+		xyMultipleSeriesRenderer.setBarWidth(getBarWidth());
 
 		addStatisticsSection(
 				CHEATS_CHART_TAG_ID,
@@ -641,14 +639,20 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		return true;
 	}
 
-	private int getElementWidth(int elements) {
+	/**
+	 * Get the width to be used for a bar in bar chart given a maximum number of
+	 * bars.
+	 * 
+	 * @return The width for a bar.
+	 */
+	private int getBarWidth() {
 		// Get screen width
 		DisplayMetrics displayMetrics = new Util(getActivity())
 				.getDisplayMetrics();
 
 		// Assume 90% of screen width is actually available to display all
 		// elements
-		return (int) ((float) 0.90 * displayMetrics.widthPixels / elements);
+		return (int) (((float) 0.90 * displayMetrics.widthPixels / MAX_CATEGORIES_BAR_CHART) / 2);
 	}
 
 	/**

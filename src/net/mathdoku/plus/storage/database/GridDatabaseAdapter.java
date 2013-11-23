@@ -701,6 +701,16 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		return count;
 	}
 
+	/**
+	 * Counts the number of grids having a specific status and or size.
+	 * 
+	 * @param statusFilter
+	 *            The status to be matched.
+	 * @param sizeFilter
+	 *            The size to be matched.
+	 * @return The number of grids having a specific status and or size.
+	 */
+	@SuppressWarnings("SameParameterValue")
 	public int countGrids(StatusFilter statusFilter, SizeFilter sizeFilter) {
 		int gridIds[][] = getLatestSolvingAttemptsPerGrid(statusFilter,
 				sizeFilter);

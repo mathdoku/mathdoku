@@ -141,15 +141,13 @@ public class DLX {
 	/**
 	 * Determines the number of solutions that can be found for this grid.
 	 * 
-	 * @param gridGenerator
-	 *            The GridGenerator start started this process and to which the
-	 *            progress updates will be sent.
 	 * @param solveType
 	 *            The solve type to be used to determine the number of
 	 *            solutions.
 	 * @return The number of solutions, given the solution type, that can be
 	 *         found for this grid.
 	 */
+	@SuppressWarnings("SameParameterValue")
 	protected int Solve(SolveType solveType) {
 		if (!isValid)
 			return -1;

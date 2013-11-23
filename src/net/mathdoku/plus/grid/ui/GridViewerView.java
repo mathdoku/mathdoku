@@ -282,6 +282,7 @@ public class GridViewerView extends View {
 	 *            True in case the grid viewer view is displayed inside a scroll
 	 *            view. False otherwise.
 	 */
+	@SuppressWarnings("SameParameterValue")
 	public void setInScrollView(boolean inScrollView) {
 		mInScrollView = inScrollView;
 	}

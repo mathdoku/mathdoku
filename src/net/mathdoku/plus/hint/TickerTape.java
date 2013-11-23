@@ -346,6 +346,7 @@ public class TickerTape extends HorizontalScrollView {
 	 *            displayed.
 	 * @return The ticker tape object itself so it can be used as a builder.
 	 */
+	@SuppressWarnings("SameParameterValue")
 	public TickerTape setEraseConditions(int minDisplayCycles,
 			long minDisplayTime) {
 		mEraseConditionSet = true;

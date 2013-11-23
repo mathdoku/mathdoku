@@ -187,6 +187,7 @@ public class HistoricStatistics {
 	 * 
 	 * @return A XYSerie object which can be processed by AChartEngine
 	 */
+	@SuppressWarnings("SameParameterValue")
 	public boolean isXYSeriesUsed(Serie serie, boolean includeElapsedTime,
 			boolean includeCheatTime) {
 		// In case a limit is specified, only the last <limit> number of
@@ -230,6 +231,7 @@ public class HistoricStatistics {
 	 * 
 	 * @return A XYSerie object which can be processed by AChartEngine
 	 */
+	@SuppressWarnings("SameParameterValue")
 	public XYSeries getXYSeries(Serie serie, String title, Scale scale,
 			boolean includeElapsedTime, boolean includeCheatTime) {
 		if (serie == Serie.SOLUTION_REVEALED) {
@@ -279,6 +281,7 @@ public class HistoricStatistics {
 	 * 
 	 * @return A XYSerie object which can be processed by AChartEngine
 	 */
+	@SuppressWarnings("SameParameterValue")
 	public XYSeries getXYSeriesSolutionRevealed(String title, double maxY,
 			boolean includeElapsedTime, boolean includeCheatTime) {
 		XYSeries xySeries = new XYSeries(title);
@@ -327,6 +330,7 @@ public class HistoricStatistics {
 	 * 
 	 * @return A XYSerie object which can be processed by AChartEngine
 	 */
+	@SuppressWarnings("SameParameterValue")
 	public XYSeries getXYSeriesHistoricAverage(Serie serie, String title,
 			Scale scale) {
 		XYSeries xySeries = new XYSeries(title);

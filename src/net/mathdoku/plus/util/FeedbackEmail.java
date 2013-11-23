@@ -66,6 +66,7 @@ public class FeedbackEmail {
 	 *            The name of the log file to be created.
 	 * @return True in case the file has been created. False otherwise.
 	 */
+	@SuppressWarnings("SameParameterValue")
 	private boolean createLogFile(String filename) {
 		File file = new File(mActivity.getFilesDir(), LOG_FILE_NAME);
 		if (!file.exists()) {
