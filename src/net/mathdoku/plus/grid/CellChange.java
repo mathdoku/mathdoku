@@ -103,12 +103,11 @@ public class CellChange {
 	 */
 	@Override
 	public String toString() {
-		String str = "<cell:" + this.mGridCell.getCellNumber() + " col:"
+		return "<cell:" + this.mGridCell.getCellNumber() + " col:"
 				+ this.mGridCell.getColumn() + " row:"
 				+ this.mGridCell.getRow() + " previous userval:"
 				+ this.mPreviousUserValue + " previous possible values:"
 				+ mPreviousPossibleValues.toString() + ">";
-		return str;
 	}
 
 	/*

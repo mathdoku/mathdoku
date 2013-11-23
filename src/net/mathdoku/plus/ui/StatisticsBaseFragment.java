@@ -77,9 +77,7 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 
 		// Get inflater and return view
 		mLayoutInflater = inflater;
-		View rootView = inflater.inflate(layout, container, false);
-
-		return rootView;
+		return inflater.inflate(layout, container, false);
 	}
 
 	/**

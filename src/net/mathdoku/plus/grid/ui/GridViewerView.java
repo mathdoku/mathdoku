@@ -229,9 +229,7 @@ public class GridViewerView extends View {
 	}
 
 	private int measure(int measureSpec) {
-		int specSize = MeasureSpec.getSize(measureSpec);
-
-		return (specSize);
+		return MeasureSpec.getSize(measureSpec);
 	}
 
 	/**

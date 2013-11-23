@@ -11,7 +11,7 @@ public class DLX {
 		ONE, MULTIPLE, ALL
 	}
 
-    private final DLXColumn root = new DLXColumn();
+	private final DLXColumn root = new DLXColumn();
 	private DLXColumn[] ColHdrs;
 	private DLXNode[] Nodes;
 	private DLXRow[] Rows;
@@ -35,26 +35,25 @@ public class DLX {
 		Init(nc, nr, nn);
 	}
 
-	protected void Init(int nc, int nr, int nn) {
-		int numcols = nc;
-		ColHdrs = new DLXColumn[numcols + 1];
-		for (int c = 1; c <= numcols; c++)
+	protected void Init(int numCols, int numRows, int numNodes) {
+		ColHdrs = new DLXColumn[numCols + 1];
+		for (int c = 1; c <= numCols; c++)
 			ColHdrs[c] = new DLXColumn();
 
-		Nodes = new DLXNode[nn + 1];
+		Nodes = new DLXNode[numNodes + 1];
 		numnodes = 0; // None allocated
 
-		Rows = new DLXRow[nr + 1];
+		Rows = new DLXRow[numRows + 1];
 		numrows = 0; // None allocated
 
 		DLXColumn prev = root;
-		for (int i = 1; i <= numcols; i++) {
+		for (int i = 1; i <= numCols; i++) {
 			prev.SetRight(ColHdrs[i]);
 			ColHdrs[i].SetLeft(prev);
 			prev = ColHdrs[i];
 		}
-		root.SetLeft(ColHdrs[numcols]);
-		ColHdrs[numcols].SetRight(root);
+		root.SetLeft(ColHdrs[numCols]);
+		ColHdrs[numCols].SetRight(root);
 	}
 
 	public int GetRowsInSolution() {
