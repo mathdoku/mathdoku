@@ -9,9 +9,9 @@ public class Cheat {
 
 	public enum CheatType {
 		CELL_REVEALED, OPERATOR_REVEALED, SOLUTION_REVEALED, CHECK_PROGRESS_USED
-	};
+	}
 
-	private final Resources mResources;
+    private final Resources mResources;
 
 	// Constants to convert milisecond to calendar units
 	long MILIS_PER_DAY = 24 * 60 * 60 * 1000;

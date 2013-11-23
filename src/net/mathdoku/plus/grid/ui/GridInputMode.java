@@ -5,4 +5,4 @@ public enum GridInputMode {
 	NORMAL, // Digits entered are handled as a new cell value
 	MAYBE, // Digits entered are handled to toggle the possible value on/of
 	COPY, // Digits are copied from another cell
-};
+}

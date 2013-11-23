@@ -36,9 +36,9 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	// Complexity of puzzle
 	public enum PuzzleComplexity {
 		RANDOM, VERY_EASY, EASY, NORMAL, DIFFICULT, VERY_DIFFICULT
-	};
+	}
 
-	// The complexity of a puzzle will be determined by following factors.
+    // The complexity of a puzzle will be determined by following factors.
 	private int mMaxCagePermutations;
 	private int mMaximumSingleCellCages;
 

@@ -51,9 +51,9 @@ public class AppActivity extends Activity implements
 			}
 			actionBar.setDisplayHomeAsUpEnabled(true);
 		}
-	};
+	}
 
-	@Override
+    @Override
 	protected void onDestroy() {
 		if (mMathDokuPreferences != null
 				&& mMathDokuPreferences.mSharedPreferences != null) {

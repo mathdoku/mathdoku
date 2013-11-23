@@ -42,9 +42,9 @@ public class TipDialog extends AlertDialog {
 
 	public enum TipPriority {
 		LOW, MEDIUM, HIGH
-	};
+	}
 
-	// Indicates whether this dialog should be displayed again.
+    // Indicates whether this dialog should be displayed again.
 	private final boolean mDisplayAgain;
 
 	// No more than one tip dialog should be showed at the same time.

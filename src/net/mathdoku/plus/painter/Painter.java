@@ -22,13 +22,13 @@ public class Painter {
 	// Themes available
 	public enum GridTheme {
 		LIGHT, DARK
-	};
+	}
 
-	public enum DigitPainterMode {
+    public enum DigitPainterMode {
 		INPUT_MODE_BASED, MONOCHROME
-	};
+	}
 
-	// Theme installed in painter
+    // Theme installed in painter
 	private GridTheme mTheme;
 
 	// Reference to all sub painters

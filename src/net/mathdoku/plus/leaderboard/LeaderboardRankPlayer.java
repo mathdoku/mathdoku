@@ -50,9 +50,9 @@ public class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener 
 		 *            was found.
 		 */
 		public void onNoRankFound(Leaderboard leaderboard);
-	};
+	}
 
-	// The listener to be called when events have been completed.
+    // The listener to be called when events have been completed.
 	private final Listener mListener;
 
 	/**

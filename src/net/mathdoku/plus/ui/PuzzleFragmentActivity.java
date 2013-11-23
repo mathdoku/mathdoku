@@ -78,9 +78,9 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	// Different types of fragments supported by this activity.
 	public enum FragmentType {
 		NO_FRAGMENT, PUZZLE_FRAGMENT, ARCHIVE_FRAGMENT
-	};
+	}
 
-	// Current type of fragment being active
+    // Current type of fragment being active
 	private FragmentType mActiveFragmentType;
 
 	// Reference to fragments which can be displayed in this activity.

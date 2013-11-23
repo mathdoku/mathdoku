@@ -18,14 +18,14 @@ public class HistoricStatistics {
 	// Historic statistics will be splitted per serie.
 	public enum Serie {
 		UNFINISHED, SOLUTION_REVEALED, SOLVED
-	};
+	}
 
-	// Scales which can be applied on the values
+    // Scales which can be applied on the values
 	public enum Scale {
 		NO_SCALE, SECONDS, MINUTES, HOURS, DAYS
-	};
+	}
 
-	// Columns in the DATA cursor
+    // Columns in the DATA cursor
 	public final static String DATA_COL_ID = "id";
 	public final static String DATA_COL_ELAPSED_TIME_EXCLUDING_CHEAT_PENALTY = "elapsed_time_excluding_cheat_penalty";
 	public final static String DATA_COL_CHEAT_PENALTY = "cheat_penalty";

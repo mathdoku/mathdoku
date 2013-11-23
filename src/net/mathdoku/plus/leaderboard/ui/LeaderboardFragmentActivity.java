@@ -53,9 +53,9 @@ public class LeaderboardFragmentActivity extends
 
 	public enum LeaderboardFilter {
 		ALL_LEADERBOARDS, MY_LEADERBOARDS, HIDDEN_OPERATORS, VISBLE_OPERATORS
-	};
+	}
 
-	private LeaderboardFilter mLeaderboardFilter;
+    private LeaderboardFilter mLeaderboardFilter;
 
 	// Reference to dialog for updating the leaderboards
 	private LeaderboardRankUpdaterProgressDialog mLeaderboardRankUpdaterProgressDialog;

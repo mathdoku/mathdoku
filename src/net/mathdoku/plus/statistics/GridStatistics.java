@@ -88,9 +88,9 @@ public class GridStatistics {
 	// Counters available
 	public enum StatisticsCounterType {
 		CELLS_FILLED, CELLS_EMPTY, CELLS_REVEALED, USER_VALUE_REPLACED, POSSIBLES, ACTION_UNDO_MOVE, ACTION_CLEAR_CELL, ACTION_CLEAR_GRID, ACTION_REVEAL_CELL, ACTION_REVEAL_OPERATOR, ACTION_CHECK_PROGRESS, CHECK_PROGRESS_INVALIDS_CELLS_FOUND
-	};
+	}
 
-	/**
+    /**
 	 * Save the statistics to the database.
 	 * 
 	 * @return True in case the statistics have been saved. False otherwise.

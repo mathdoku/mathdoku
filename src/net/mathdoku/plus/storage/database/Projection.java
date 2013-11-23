@@ -8,9 +8,9 @@ public class Projection extends HashMap<String, String> {
 
 	public enum Aggregation {
 		MIN, MAX, AVG, SUM, COUNT, COUNTIF_TRUE
-	};
+	}
 
-	public Projection() {
+    public Projection() {
 		super();
 	}
 
