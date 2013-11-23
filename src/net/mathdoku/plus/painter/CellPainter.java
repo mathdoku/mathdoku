@@ -80,7 +80,7 @@ public class CellPainter extends BorderPainter {
 		// Set the unused border paint
 		switch (theme) {
 		case LIGHT:
-			mUnusedBorderPaint.setColor(0x80000000);
+			mUnusedBorderPaint.setColor(0x79000000);
 			break;
 		case DARK:
 			mUnusedBorderPaint.setColor(0xff7f7f7f);
