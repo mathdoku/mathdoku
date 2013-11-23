@@ -142,13 +142,12 @@ public class DevelopmentHelper {
 	/**
 	 * Removes all preferences. After restart of the app the preferences will be
 	 * initalised with default values. Saved games will not be deleted!
-	 * 
-	 * @param puzzleFragmentActivity
-	 *            The activity in which context the preferences are resetted.
-	 * @return
-	 */
-	private static boolean resetPreferences(
-			final PuzzleFragmentActivity puzzleFragmentActivity) {
+	 *
+     * @param puzzleFragmentActivity
+     *            The activity in which context the preferences are resetted.
+     */
+	private static void resetPreferences(
+            final PuzzleFragmentActivity puzzleFragmentActivity) {
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			executeDeleteAllPreferences();
 
@@ -167,11 +166,8 @@ public class DevelopmentHelper {
 									puzzleFragmentActivity.recreate();
 								}
 							}).show();
-
-			return true;
 		}
-		return false;
-	}
+    }
 
 	/**
 	 * Delete all data (games, database and preferences). It is provided as an
@@ -246,7 +242,7 @@ public class DevelopmentHelper {
 			executeDeleteAllPreferences();
 
 			// Reopen the database helper.
-			DatabaseHelper.getInstance(puzzleFragmentActivity);
+			DatabaseHelper.instantiate(puzzleFragmentActivity);
 		}
 	}
 

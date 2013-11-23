@@ -260,7 +260,8 @@ public class MathDokuDLX extends DLX {
 	 * 
 	 * @return The complexity of a grid.
 	 */
-	private int getPuzzleComplexity() {
+	@SuppressWarnings("UnusedReturnValue")
+    private int getPuzzleComplexity() {
 		if (Config.mAppMode == AppMode.DEVELOPMENT && DEBUG_DLX) {
 			// ///////////////////////////////////////////////////////////////////////
 			// NOT READY FOR PRODUCTION MODE YET.

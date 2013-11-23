@@ -32,18 +32,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	/**
-	 * Gets a (singular) instance of this SQLite database. The entire
-	 * application context will use the same database helper in order to avoid
-	 * locking problems.
+	 * Instantiates the (singular) instance of the SQLite database.
 	 * 
 	 * @param context
 	 *            The context in which the database helper is needed. It is not
 	 *            necessarily needed to pass the application context itself.
-	 * @return The (singular) instance to the SQLite database.
 	 */
-	public static DatabaseHelper getInstance(Context context) {
-		// Use the application context, which will ensure that you
-		// don't accidentally leak an Activity's context.
+	public static void instantiate(Context context) {
+		// The application context is used to instantiate the SQLite database in
+		// order to avoid locking problems and leaking an Activity's context.
 		if (mDatabaseHelperSingletonInstance == null) {
 			mDatabaseHelperSingletonInstance = new DatabaseHelper(
 					context.getApplicationContext());
@@ -67,8 +64,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				currentRenamingDelegatingContext = context;
 			}
 		}
-
-		return mDatabaseHelperSingletonInstance;
 	}
 
 	/**
@@ -142,10 +137,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * DatabaseHelper.getInstance().getWriteableDatabase
 	 * ().setTransactionSuccessful() you have to be sure that the DatabaseHelper
 	 * has been instantiated before.
-	 * 
-	 * @return The SQLiteDatabase. Null in case of an error.
 	 */
-	public static boolean setTransactionSuccessful() {
+	public static void setTransactionSuccessful() {
 		if (mDatabaseHelperSingletonInstance == null) {
 			throw new SingletonInstanceNotInstantiated();
 		}
@@ -153,11 +146,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				.getWritableDatabase();
 		if (sqliteDatabase != null) {
 			sqliteDatabase.setTransactionSuccessful();
-			return true;
 		}
-
-		return false;
-	}
+    }
 
 	@Override
 	public synchronized void close() {

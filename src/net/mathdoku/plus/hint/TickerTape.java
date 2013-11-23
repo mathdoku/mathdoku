@@ -223,13 +223,10 @@ public class TickerTape extends HorizontalScrollView {
 
 	/**
 	 * Starts moving the ticker tape.
-	 * 
-	 * @return The ticker tape object itself so it can be used as a builder.
 	 */
-	TickerTape startMoving() {
-
+	void startMoving() {
 		if (mDisabled) {
-			return this;
+			return;
 		}
 
 		// Determine how many items have to be displayed at least.
@@ -254,8 +251,6 @@ public class TickerTape extends HorizontalScrollView {
 
 		// Start moving the ticker tape after an initial delay
 		mTickerTapeUpdaterHandler.postDelayed(mTickerTapeUpdaterRunnable, 300);
-
-		return this;
 	}
 
 	/**

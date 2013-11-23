@@ -162,7 +162,8 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	 * @throws SQLException
 	 *             In case the leaderboard id is not unique.
 	 */
-	public int insertInitializedLeaderboard(String leaderboardId, int gridSize,
+	@SuppressWarnings("UnusedReturnValue")
+    public int insertInitializedLeaderboard(String leaderboardId, int gridSize,
 			boolean operatorsVisible, PuzzleComplexity puzzleComplexity)
 			throws InvalidParameterException, SQLException {
 		int id = -1;
@@ -279,7 +280,8 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	 * @throws SQLException
 	 *             In case the leaderboard id is not unique.
 	 */
-	public boolean updateWithGooglePlayScore(String leaderboardId,
+	@SuppressWarnings("UnusedReturnValue")
+    public boolean updateWithGooglePlayScore(String leaderboardId,
 			long rawScore, long rank, String rankDisplay)
 			throws InvalidParameterException, SQLException {
 		if (leaderboardId == null || leaderboardId.trim().equals("")) {
@@ -321,7 +323,8 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	 * @throws InvalidParameterException
 	 *             In case the leaderboard id is empty or null.
 	 */
-	public boolean updateWithGooglePlayRank(String leaderboardId, long rank,
+	@SuppressWarnings("UnusedReturnValue")
+    public boolean updateWithGooglePlayRank(String leaderboardId, long rank,
 			String rankDisplay) throws InvalidParameterException, SQLException {
 		if (leaderboardId == null || leaderboardId.trim().equals("")) {
 			throw new InvalidParameterException(
@@ -348,7 +351,8 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	 * @throws InvalidParameterException
 	 *             In case the leaderboard id is empty or null.
 	 */
-	public boolean updateWithGooglePlayRankNotAvailable(String leaderboardId)
+	@SuppressWarnings("UnusedReturnValue")
+    public boolean updateWithGooglePlayRankNotAvailable(String leaderboardId)
 			throws InvalidParameterException, SQLException {
 		if (leaderboardId == null || leaderboardId.trim().equals("")) {
 			throw new InvalidParameterException(

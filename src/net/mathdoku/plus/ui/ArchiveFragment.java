@@ -297,14 +297,12 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 
 	/**
 	 * Create a pie chart for the progress of solving.
-	 * 
-	 * @return True in case the chart has been created. False otherwise.
 	 */
-	private boolean createProgressChart() {
+	private void createProgressChart() {
 		if (mGrid == null || mGrid.getGridSize() == 0
 				|| mGridStatistics == null) {
 			// No progress to report.
-			return false;
+            return;
 		}
 
 		// Determine total number of cells in grid
@@ -370,18 +368,13 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 					ChartFactory.getPieChartView(getActivity(), categorySeries,
 							renderer), null,
 					getResources().getString(R.string.progress_chart_body));
-			return true;
-		} else {
-			return false;
 		}
 	}
 
 	/**
 	 * Create the chart for the avoidable moves.
-	 * 
-	 * @return True in case the chart has been created. False otherwise.
 	 */
-	private boolean createAvoidableMovesChart() {
+	private void createAvoidableMovesChart() {
 		// Build chart for analysis of moves only in case at least one move
 		// has been made.
 		int totalAvoidableMoves = mGridStatistics.mUserValueReplaced
@@ -389,7 +382,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 				+ mGridStatistics.mActionClearCell
 				+ mGridStatistics.mActionClearGrid;
 		if (totalAvoidableMoves == 0) {
-			return false;
+            return;
 		}
 
 		// Define the renderer
@@ -497,15 +490,12 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 						Type.DEFAULT), null,
 				getResources().getString(R.string.avoidable_moves_chart_body));
 
-		return true;
-	}
+    }
 
 	/**
 	 * Create bar chart for the cheats which are used
-	 * 
-	 * @return True in case the chart has been created. False otherwise.
 	 */
-	private boolean createUsedCheatsChart() {
+	private void createUsedCheatsChart() {
 		// Build chart for analysis of moves only in case at least one cheat
 		// has been used.
 		int totalCheats = mGridStatistics.mActionCheckProgress
@@ -513,7 +503,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 				+ mGridStatistics.mActionRevealOperator
 				+ (mGridStatistics.isSolutionRevealed() ? 1 : 0);
 		if (totalCheats == 0) {
-			return false;
+            return;
 		}
 
 		// Determine number of cheat categories to show
@@ -635,9 +625,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 						xyMultipleSeriesDataset, xyMultipleSeriesRenderer,
 						Type.DEFAULT), null,
 				getResources().getString(R.string.statistics_cheats_used_body));
-
-		return true;
-	}
+    }
 
 	/**
 	 * Get the width to be used for a bar in bar chart given a maximum number of

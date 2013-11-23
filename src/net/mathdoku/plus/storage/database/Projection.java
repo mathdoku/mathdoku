@@ -50,7 +50,8 @@ public class Projection extends HashMap<String, String> {
 	 *            Name of column on which the aggregation function will be
 	 *            applied to determine the value of the target column.
 	 */
-	public String put(String targetColumn, String sourceTable,
+	@SuppressWarnings("UnusedReturnValue")
+    public String put(String targetColumn, String sourceTable,
 			String sourceColumn) {
 		String target = DatabaseAdapter.stringBetweenBackTicks(targetColumn);
 		String source = DatabaseAdapter.stringBetweenBackTicks(sourceTable)

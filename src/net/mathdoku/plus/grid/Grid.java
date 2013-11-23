@@ -244,12 +244,14 @@ public class Grid {
 		}
 	}
 
-	// Returns whether the puzzle is solved.
-	public boolean checkIfSolved() {
+    /**
+     * Checks whether the puzzle is solved.
+     */
+	public void checkIfSolved() {
 		// Check if all cells contain correct value.
 		for (GridCell cell : this.mCells) {
 			if (cell.isUserValueIncorrect()) {
-				return false;
+				return;
 			}
 		}
 
@@ -267,8 +269,6 @@ public class Grid {
 		mActive = false;
 
 		mGridStatistics.solved();
-
-		return true;
 	}
 
 	// Checks whether the user has made any mistakes
@@ -855,7 +855,8 @@ public class Grid {
 	 * 
 	 * @return True in case everything has been saved. False otherwise.
 	 */
-	public boolean saveOnUpgrade() {
+	@SuppressWarnings("UnusedReturnValue")
+    public boolean saveOnUpgrade() {
 		return save(true);
 	}
 

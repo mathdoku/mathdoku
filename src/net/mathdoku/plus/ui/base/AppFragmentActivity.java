@@ -24,7 +24,7 @@ public class AppFragmentActivity extends FragmentActivity implements
 
 		// Initialize global objects (singleton instances)
 		mMathDokuPreferences = Preferences.getInstance(this);
-		DatabaseHelper.getInstance(this);
+		DatabaseHelper.instantiate(this);
 		new Util(this);
 
 		// Register listener for changes of the share preferences.

@@ -155,11 +155,9 @@ public class GridCell {
 	 * 
 	 * @param digit
 	 *            The digit which has to be added.
-	 * @return True in case the digit has been added. False otherwise or in case
-	 *         the digit was added before.
 	 */
-	public boolean addPossible(int digit) {
-		return addPossible(digit, true);
+	public void addPossible(int digit) {
+		addPossible(digit, true);
 	}
 
 	/**
@@ -170,10 +168,8 @@ public class GridCell {
 	 * @param updateStatistics
 	 *            True in case the statistics have to be updated when adding a
 	 *            new maybe value. False otherwise.
-	 * @return True in case the digit has been added. False otherwise or in case
-	 *         the digit was added before.
 	 */
-	boolean addPossible(int digit, boolean updateStatistics) {
+	void addPossible(int digit, boolean updateStatistics) {
 		if (!hasPossible(digit)) {
 			// Add possible value and sort the list of possible values.
 			this.mPossibles.add(digit);
@@ -187,9 +183,6 @@ public class GridCell {
 							.increaseCounter(StatisticsCounterType.POSSIBLES);
 				}
 			}
-			return true;
-		} else {
-			return false;
 		}
 	}
 
@@ -198,15 +191,10 @@ public class GridCell {
 	 * 
 	 * @param digit
 	 *            The digit which has to be removed.
-	 * @return True in case the digit has been removed. False otherwise or in
-	 *         case the digit was not added before.
 	 */
-	public boolean removePossible(int digit) {
+	public void removePossible(int digit) {
 		if (hasPossible(digit)) {
-			this.mPossibles.remove(Integer.valueOf(digit));
-			return true;
-		} else {
-			return false;
+			mPossibles.remove(Integer.valueOf(digit));
 		}
 	}
 
