@@ -940,7 +940,7 @@ public class Grid {
 			}
 
 			// Update statistics.
-			saved = (mGridStatistics == null ? false : mGridStatistics.save());
+			saved = (mGridStatistics != null && mGridStatistics.save());
 
 			// In case a replay of the grid is finished the statistics which
 			// have to included in the cumulative and the historic statistics
@@ -1475,8 +1475,7 @@ public class Grid {
 	 * @return True in case of a replay. False otherwise.
 	 */
 	public boolean isReplay() {
-		return (mGridStatistics == null ? false : (mGridStatistics
-				.getReplayCount() > 0));
+		return (mGridStatistics != null && (mGridStatistics.getReplayCount() > 0));
 
 	}
 }
