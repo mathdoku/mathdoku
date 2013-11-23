@@ -617,10 +617,12 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 				}
 			}
 
-			// If a valid grid is generated check if it was not generated
+			// Create a new grid in case the exact same grid has been generated
 			// before.
 			if (!restart) {
-				if (isGeneratedBefore(mCells, mCages, hideOperators)) {
+				if (new GridDatabaseAdapter().getByGridDefinition(Grid
+						.toGridDefinitionString(mCells, mCages,
+								mGridGeneratingParameters)) != null) {
 					clearAllCages();
 					restart = true;
 					if (DEBUG_GRID_GENERATOR) {
@@ -1191,25 +1193,6 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			return null;
 
 		return mCells.get(column + row * mGridSize);
-	}
-
-	/**
-	 * Checks if a grid with same definition has been generated before.
-	 * 
-	 * @param cells
-	 *            The cells included in the grid.
-	 * @param cages
-	 *            The cages included in the grid.
-	 * @return True in case no grid exists with this definition. False
-	 *         otherwise.
-	 */
-	boolean isGeneratedBefore(ArrayList<GridCell> cells,
-			ArrayList<GridCage> cages, boolean hideOperators) {
-		// Check if this grid definition is unique
-		GridDatabaseAdapter gridDatabaseAdapter = new GridDatabaseAdapter();
-		return (gridDatabaseAdapter
-				.getByGridDefinition(Grid.toGridDefinitionString(cells, cages,
-						mGridGeneratingParameters)) != null);
 	}
 
 	@Override
