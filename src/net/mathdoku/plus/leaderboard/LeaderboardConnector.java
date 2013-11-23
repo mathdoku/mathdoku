@@ -242,7 +242,6 @@ public class LeaderboardConnector {
 						+ "\n" + "Rank: " + leaderboardScore.getDisplayRank());
 			}
 		}
-		return;
 	}
 
 	/**

@@ -438,7 +438,7 @@ public class GridBasePlayerView extends GridViewerView implements
 			break;
 		default:
 			// Cannot toggle this mode.
-			return;
+			break;
 		}
 	}
 

@@ -219,6 +219,5 @@ public class DLX {
 			}
 			UncoverCol(chosenCol);
 		}
-		return;
 	}
 }
