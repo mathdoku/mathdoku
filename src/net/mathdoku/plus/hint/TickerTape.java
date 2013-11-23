@@ -31,9 +31,6 @@ public class TickerTape extends HorizontalScrollView {
 	// Speed of horizontal scrolling
 	private final int mScrollStepSize = 100;
 
-	// Flag whether ticker tape has been cancelled and should stop moving.
-	private boolean mCancelled;
-
 	// Conditions which need to be satisfied for automatic removal of ticker
 	// tape
 	private boolean mEraseConditionSet;
@@ -253,7 +250,6 @@ public class TickerTape extends HorizontalScrollView {
 		if (mDisabled) {
 			return this;
 		}
-		mCancelled = false;
 
 		// Determine how many items have to be displayed at least.
 		mMinDisplayItems = mMinDisplayCycles * mTextViewList.size();
