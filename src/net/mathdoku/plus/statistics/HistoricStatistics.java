@@ -114,7 +114,6 @@ public class HistoricStatistics {
 	}
 
 	// Storage of the series.
-	private final SeriesSummary mAllSeriesSummary;
 	private final SeriesSummary mSolvedSeriesSummary;
 	private final SeriesSummary mSolutionRevealedSeriesSummary;
 	private final SeriesSummary mUnfinishedSeriesSummary;
@@ -132,7 +131,6 @@ public class HistoricStatistics {
 	 */
 	public HistoricStatistics(Cursor data) {
 		dataPoints = new ArrayList<DataPoint>();
-		mAllSeriesSummary = new SeriesSummary();
 		mSolvedSeriesSummary = new SeriesSummary();
 		mSolutionRevealedSeriesSummary = new SeriesSummary();
 		mUnfinishedSeriesSummary = new SeriesSummary();
@@ -151,7 +149,6 @@ public class HistoricStatistics {
 						.getColumnIndexOrThrow(DATA_COL_SERIES)));
 
 				// Update summary for the series
-				mAllSeriesSummary.addValue(dataPoint);
 				switch (dataPoint.mSerie) {
 				case UNFINISHED:
 					mUnfinishedSeriesSummary.addValue(dataPoint);
