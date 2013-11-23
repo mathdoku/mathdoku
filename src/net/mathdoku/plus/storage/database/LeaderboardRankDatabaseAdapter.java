@@ -539,7 +539,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	 *         leaderboard ranks.
 	 */
 	private String getSelectionOutdatedLeaderboardRanks() {
-		StringBuffer selection = new StringBuffer();
+		StringBuilder stringBuilder = new StringBuilder();
 		long currentTimeMinus15Minutes = new java.util.Date().getTime()
 				- (15 * 60 * 1000);
 		long currentTimeMinus24Hours = new java.util.Date().getTime()
@@ -547,43 +547,43 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 
 		// Include all leaderboards for which the rank status equals
 		// TO_BE_UPDATED
-		selection.append(KEY_RANK_STATUS + " = "
-				+ stringBetweenQuotes(RankStatus.TO_BE_UPDATED.toString()));
+		stringBuilder.append(KEY_RANK_STATUS + " = "
+                + stringBetweenQuotes(RankStatus.TO_BE_UPDATED.toString()));
 
 		// Include all leaderboards having a score and an updated rank which
 		// have not been updated in the last 15 minutes. These are included
 		// as the ranking position may have changed as other players
 		// achieved a better score than the top score of the current player
 		// in the last 15 minutes.
-		selection
+		stringBuilder
 				.append(" OR ("
-						+ KEY_RANK_STATUS
-						+ " = "
-						+ stringBetweenQuotes(RankStatus.TOP_RANK_UPDATED
-								.toString())
-						+ " AND "
-						+ KEY_RANK_DATE_LAST_UPDATED
-						+ " < "
-						+ stringBetweenQuotes(toSQLiteTimestamp(currentTimeMinus15Minutes))
-						+ ")");
+                        + KEY_RANK_STATUS
+                        + " = "
+                        + stringBetweenQuotes(RankStatus.TOP_RANK_UPDATED
+                        .toString())
+                        + " AND "
+                        + KEY_RANK_DATE_LAST_UPDATED
+                        + " < "
+                        + stringBetweenQuotes(toSQLiteTimestamp(currentTimeMinus15Minutes))
+                        + ")");
 
 		// Include all leaderboards having no rank and no score which have
 		// not been updated in the last 24 hours. These are include as the
 		// current as the current player may have played this leaderboard on
 		// another device in this interval.
-		selection
+		stringBuilder
 				.append(" OR ("
-						+ KEY_RANK_STATUS
-						+ " = "
-						+ stringBetweenQuotes(RankStatus.TOP_RANK_NOT_AVAILABLE
-								.toString())
-						+ " AND "
-						+ KEY_RANK_DATE_LAST_UPDATED
-						+ " < "
-						+ stringBetweenQuotes(toSQLiteTimestamp(currentTimeMinus24Hours))
-						+ ")");
+                        + KEY_RANK_STATUS
+                        + " = "
+                        + stringBetweenQuotes(RankStatus.TOP_RANK_NOT_AVAILABLE
+                        .toString())
+                        + " AND "
+                        + KEY_RANK_DATE_LAST_UPDATED
+                        + " < "
+                        + stringBetweenQuotes(toSQLiteTimestamp(currentTimeMinus24Hours))
+                        + ")");
 
-		return selection.toString();
+		return stringBuilder.toString();
 	}
 
 	/**
@@ -591,7 +591,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	 */
 	public void setAllRanksToBeUpdated() {
 		try {
-			StringBuffer query = new StringBuffer();
+			StringBuilder query = new StringBuilder();
 			query.append("UPDATE " + TABLE + " ");
 			query.append("SET " + KEY_RANK_STATUS + " = "
 					+ stringBetweenQuotes(RankStatus.TO_BE_UPDATED.toString()));

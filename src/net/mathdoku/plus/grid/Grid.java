@@ -446,41 +446,41 @@ public class Grid {
 	 * @return A string representation of the grid.
 	 */
 	public String toStorageString() {
-		StringBuffer stringBuffer = new StringBuffer(256);
+		StringBuilder stringBuilder = new StringBuilder(256);
 
 		// First store data for the grid object itself.
-		stringBuffer.append(SAVE_GAME_GRID_LINE
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ mActive
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ mRevealed
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ mClearRedundantPossiblesInSameRowOrColumnCount
-				+ SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+		stringBuilder.append(SAVE_GAME_GRID_LINE
+                + SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+                + mActive
+                + SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+                + mRevealed
+                + SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+                + mClearRedundantPossiblesInSameRowOrColumnCount
+                + SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
 
 		// Store information about the cells. Use one line per single
 		// cell.
 		for (GridCell cell : mCells) {
-			stringBuffer.append(cell.toStorageString()
-					+ SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+			stringBuilder.append(cell.toStorageString()
+                    + SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
 		}
 
 		// Store information about the cages. Use one line per single
 		// cage.
 		for (GridCage cage : mCages) {
-			stringBuffer.append(cage.toStorageString()
-					+ SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+			stringBuilder.append(cage.toStorageString()
+                    + SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
 		}
 
 		// Store information about the cell changes. Use one line per single
 		// cell change. Note: watch for lengthy line due to recursive cell
 		// changes.
 		for (CellChange cellChange : mMoves) {
-			stringBuffer.append(cellChange.toStorageString()
-					+ SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+			stringBuilder.append(cellChange.toStorageString()
+                    + SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
 		}
 
-		return stringBuffer.toString();
+		return stringBuilder.toString();
 	}
 
 	/**
