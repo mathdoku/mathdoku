@@ -243,12 +243,9 @@ public class GridCage {
 
 		if (allCellsFilledIn && mCells.size() > 1) {
 			if (this.mHideOperator) {
-				if (isAddMathsCorrect() || isMultiplyMathsCorrect()
-						|| isDivideMathsCorrect() || isSubtractMathsCorrect()) {
-					mUserMathCorrect = true;
-				} else {
-					mUserMathCorrect = false;
-				}
+				mUserMathCorrect = isAddMathsCorrect()
+						|| isMultiplyMathsCorrect() || isDivideMathsCorrect()
+						|| isSubtractMathsCorrect();
 			} else {
 				switch (this.mAction) {
 				case ACTION_ADD:
@@ -303,16 +300,8 @@ public class GridCage {
 		}
 
 		if (this.mHideOperator) {
-			if (isAddMathsCorrect() || isMultiplyMathsCorrect()
-					|| isDivideMathsCorrect() || isSubtractMathsCorrect()) {
-				// At least one of the operators has a correct result with
-				// current cell values
-				return false;
-			} else {
-				// None of the operators has a correct result with current cell
-				// values
-				return true;
-			}
+			return !(isAddMathsCorrect() || isMultiplyMathsCorrect()
+					|| isDivideMathsCorrect() || isSubtractMathsCorrect());
 		} else {
 			switch (this.mAction) {
 			case ACTION_ADD:

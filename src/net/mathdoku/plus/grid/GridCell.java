@@ -1018,10 +1018,7 @@ public class GridCell {
 	 */
 	public boolean isInSameCageAsCell(int row, int column) {
 		GridCell cell = this.mGrid.getCellAt(row, column);
-		if (cell != null && cell.getCageId() == this.mCageId) {
-			return true;
-		}
-		return false;
+		return (cell != null && cell.getCageId() == this.mCageId);
 	}
 
 	// The next variable could also be declared as local variable in method

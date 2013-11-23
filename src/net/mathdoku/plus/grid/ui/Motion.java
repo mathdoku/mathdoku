@@ -231,14 +231,9 @@ public class Motion {
 	 *         otherwise.
 	 */
 	public boolean isTouchDownInsideGrid() {
-		if (mTouchDownCellCoordinates[X_POS] > mGridSize - 1
+		return !(mTouchDownCellCoordinates[X_POS] > mGridSize - 1
 				|| mTouchDownCellCoordinates[X_POS] < 0
-				|| mTouchDownCellCoordinates[Y_POS] > mGridSize - 1
-				|| mTouchDownCellCoordinates[Y_POS] < 0) {
-			// A position outside the actueal grid was touched.
-			return false;
-		}
+				|| mTouchDownCellCoordinates[Y_POS] > mGridSize - 1 || mTouchDownCellCoordinates[Y_POS] < 0);
 
-		return true;
 	}
 }

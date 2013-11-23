@@ -241,7 +241,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		// If the navigation drawer is open, hide action items related to the
 		// content view
-		boolean drawerOpen = (!(mDrawerLayout == null || mDrawerListView == null) && mDrawerLayout.isDrawerOpen(mDrawerListView));
+		boolean drawerOpen = (!(mDrawerLayout == null || mDrawerListView == null) && mDrawerLayout
+				.isDrawerOpen(mDrawerListView));
 
 		// Determine which fragment is active
 		boolean showCheats = false;

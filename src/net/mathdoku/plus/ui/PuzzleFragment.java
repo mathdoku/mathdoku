@@ -1256,11 +1256,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		}
 
 		GridCell selectedCell = mGrid.getSelectedCell();
-		if (selectedCell == null || selectedCell.isEmpty()) {
-			return false;
-		}
+		return !(selectedCell == null || selectedCell.isEmpty());
 
-		return true;
 	}
 
 	/**
