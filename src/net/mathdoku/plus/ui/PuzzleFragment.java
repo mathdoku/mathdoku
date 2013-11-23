@@ -1102,7 +1102,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 		// Only create the digit position grid if needed
 		if (mDigitPositionGrid == null
-				|| !mDigitPositionGrid.isReusable(gridSize)) {
+				|| mDigitPositionGrid.isNotReusable(gridSize)) {
 			// Create the mapping for mDigitPosition on the correct button
 			// grid layout.
 			mDigitPositionGrid = new DigitPositionGrid(gridSize);

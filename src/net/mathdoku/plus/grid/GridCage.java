@@ -296,7 +296,7 @@ public class GridCage {
 			}
 
 		if (this.mCells.size() == 1) {
-			return !this.mCells.get(0).isUserValueCorrect();
+			return this.mCells.get(0).isUserValueIncorrect();
 		}
 
 		if (this.mHideOperator) {

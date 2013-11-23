@@ -290,8 +290,13 @@ public class GridCell {
 		mInvalidUserValueHighlight = false;
 	}
 
-	public boolean isUserValueCorrect() {
-		return mUserValue == mCorrectValue;
+	/**
+	 * Checks whether the user value is correct.
+	 * 
+	 * @return True in case the user value is wrong. False otherwise.
+	 */
+	public boolean isUserValueIncorrect() {
+		return mUserValue != mCorrectValue;
 	}
 
 	/* Returns whether the cell is a member of any cage */
@@ -817,6 +822,7 @@ public class GridCell {
 	 * @return True in case the given line contains cell information and is
 	 *         processed correctly. False otherwise.
 	 */
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public boolean fromStorageString(String line, int savedWithRevisionNumber) {
 		String[] cellParts = line
 				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1);

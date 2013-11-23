@@ -230,7 +230,7 @@ public class Grid {
 			this.mMoves.clear();
 		}
 		for (GridCell cell : this.mCells) {
-			if (!cell.isUserValueCorrect()) {
+			if (cell.isUserValueIncorrect()) {
 				cell.setRevealed();
 			}
 			cell.setUserValue(cell.getCorrectValue());
@@ -256,7 +256,7 @@ public class Grid {
 	public boolean checkIfSolved() {
 		// Check if all cells contain correct value.
 		for (GridCell cell : this.mCells) {
-			if (!cell.isUserValueCorrect()) {
+			if (cell.isUserValueIncorrect()) {
 				return false;
 			}
 		}
@@ -599,6 +599,7 @@ public class Grid {
 	 * @return True in case the given line contains view information and is
 	 *         processed correctly. False otherwise.
 	 */
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public boolean fromStorageString(String line, int savedWithRevisionNumber) {
 		String[] viewParts = line
 				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1);

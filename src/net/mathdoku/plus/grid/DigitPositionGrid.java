@@ -80,9 +80,11 @@ public class DigitPositionGrid {
 	 * 
 	 * @param maxDigit
 	 *            The number of digit buttons to put in the grid.
+	 * @return True in case the digit position grid cannot be reused for a grid
+	 *         of the given size.
 	 */
-	public boolean isReusable(int maxDigit) {
-		return (mPositionsUsed == maxDigit);
+	public boolean isNotReusable(int maxDigit) {
+		return (mPositionsUsed != maxDigit);
 	}
 
 	/**

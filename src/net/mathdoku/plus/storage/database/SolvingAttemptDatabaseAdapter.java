@@ -272,6 +272,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 * 
 	 * @return True in case the statistics have been updated. False otherwise.
 	 */
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public boolean update(int id, Grid grid, boolean saveDueToUpgrade) {
 		ContentValues newValues = new ContentValues();
 		if (!saveDueToUpgrade) {

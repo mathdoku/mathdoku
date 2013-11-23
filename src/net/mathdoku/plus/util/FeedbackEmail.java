@@ -242,7 +242,7 @@ public class FeedbackEmail {
 	 *            created.
 	 */
 	public void show() {
-		if (!isEmailIntentAvailable(mActivity)) {
+		if (isNoEmailIntentAvailable(mActivity)) {
 			// No email client available anymore.
 			return;
 		}
@@ -320,15 +320,15 @@ public class FeedbackEmail {
 	 * 
 	 * @param activity
 	 *            The activity which started this usage logger.
-	 * @return True in case an email client is installed. False otherwise.
+	 * @return True in case no email client is installed. False otherwise.
 	 */
-	public static boolean isEmailIntentAvailable(Activity activity) {
+	public static boolean isNoEmailIntentAvailable(Activity activity) {
 		final PackageManager packageManager = activity.getPackageManager();
 		final Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("message/rfc822");
 		List<ResolveInfo> list = packageManager.queryIntentActivities(intent,
 				PackageManager.MATCH_DEFAULT_ONLY);
 
-		return list.size() > 0;
+		return list.size() <= 0;
 	}
 }

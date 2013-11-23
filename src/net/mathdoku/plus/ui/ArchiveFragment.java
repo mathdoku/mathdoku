@@ -148,7 +148,8 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 			if (mGrid.isActive()) {
 				// Only create the digit position grid if needed
 				if (mDigitPositionGrid == null
-						|| !mDigitPositionGrid.isReusable(mGrid.getGridSize())) {
+						|| mDigitPositionGrid
+								.isNotReusable(mGrid.getGridSize())) {
 					mDigitPositionGrid = new DigitPositionGrid(
 							mGrid.getGridSize());
 				}
