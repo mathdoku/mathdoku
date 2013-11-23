@@ -1466,6 +1466,11 @@ public class Grid {
 				}
 			}
 		}
+		if (countNewInvalids > 0) {
+			mGridStatistics.increaseCounter(
+					StatisticsCounterType.CHECK_PROGRESS_INVALIDS_CELLS_FOUND,
+					countNewInvalids);
+		}
 
 		return countNewInvalids;
 	}
