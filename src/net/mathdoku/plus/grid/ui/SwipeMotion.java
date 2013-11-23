@@ -66,6 +66,21 @@ public class SwipeMotion extends Motion {
 	public final static int SWIPE_ANGLE_OFFSET_91 = -170;
 	public final static int SWIPE_SEGMENT_ANGLE = 360 / 9;
 
+	// Listener
+	public interface Listener {
+		// Called as releasing the swipe motion at the current swipe position
+		// will result in
+		// selecting a digit.
+		public void onSelectableDigit();
+
+		// Called as releasing the swipe motion at the current swipe position
+		// will not result in
+		// selecting a digit.
+		public void onNoSelectableDigit();
+	}
+
+	public Listener mListener;
+
 	/**
 	 * Creates a new instance of the {@see SwipeMotion}.
 	 * 
@@ -256,7 +271,7 @@ public class SwipeMotion extends Motion {
 	/**
 	 * Update the the swipe motion with data from a new motion event.
 	 * 
-	 * @param event
+	 * @param motionEvent
 	 *            The event which holding the current swipe position.
 	 * @return True in case a digit has been determined. False otherwise.
 	 */
@@ -284,6 +299,12 @@ public class SwipeMotion extends Motion {
 					|| (mCurrentSwipePositionCellCoordinates[X_POS] > 0
 							&& mCurrentSwipePositionCellCoordinates[X_POS] < mGridSize - 1
 							&& mCurrentSwipePositionCellCoordinates[Y_POS] > 0 && mCurrentSwipePositionCellCoordinates[Y_POS] < mGridSize - 1)) {
+				// Call listener only in case previously a digit was selectable.
+				if (mListener != null
+						&& mCurrentSwipePositionDigit != DIGIT_UNDETERMINDED) {
+					mListener.onNoSelectableDigit();
+				}
+
 				// Normally the swipe digit will only be updated in case the
 				// swipe position is outside the touch down cell.
 				mCurrentSwipePositionDigit = DIGIT_UNDETERMINDED;
@@ -350,58 +371,88 @@ public class SwipeMotion extends Motion {
 			Log.i(TAG, " - digit = " + digit);
 		}
 
-		// Determine whether the digit should be accepted.
-		boolean acceptDigit = (inTouchDownCell ? false : true);
-		if (acceptDigit == false) {
-			// Normally the digit is not accepted in case the swipe motion is
-			// inside the touch down cell. In case a swipe motion is started and
-			// ended in a cell on the outer edge of the grid, the digit will be
-			// accepted in case the swipe motion was heading outside the grid.
-			//
-			// In portrait mode the swipe motions to the left and to the right
-			// of the grid view needs to be examined. Swipe motions to the top
-			// can be neglected as the action bar is displayed above the grid.
-			// Swipe motions to the bottom can be neglected as the clear and
-			// undo buttons are shown below the grid view.
-			//
-			// In portrait mode the swipe motions to the left and to the bottom
-			// of the grid view needs to be examined. Swipe motions to the top
-			// can be neglected as the action bar is displayed above the grid.
-			// Swipe motions to the right can be neglected as the clear and undo
-			// buttons are shown to the right of the grid view.
-			switch (digit) {
-			case 1:
-				acceptDigit = (mCurrentSwipePositionCellCoordinates[X_POS] == 0);
-				break;
-			case 2:
-				break;
-			case 3:
-				break;
-			case 4: // fall through
-			case 5:
-				acceptDigit = (mGridPlayerView.getOrientation() == Configuration.ORIENTATION_PORTRAIT && mCurrentSwipePositionCellCoordinates[X_POS] == mGridSize - 1);
-				break;
-			case 6:
-				acceptDigit = (mGridPlayerView.getOrientation() == Configuration.ORIENTATION_PORTRAIT && mCurrentSwipePositionCellCoordinates[X_POS] == mGridSize - 1)
-						|| (mGridPlayerView.getOrientation() == Configuration.ORIENTATION_LANDSCAPE && mCurrentSwipePositionCellCoordinates[Y_POS] == mGridSize - 1);
-				break;
-			case 7:
-				acceptDigit = (mGridPlayerView.getOrientation() == Configuration.ORIENTATION_LANDSCAPE && mCurrentSwipePositionCellCoordinates[Y_POS] == mGridSize - 1);
-				break;
-			case 8:
-				acceptDigit = (mCurrentSwipePositionCellCoordinates[X_POS] == 0)
-						|| (mGridPlayerView.getOrientation() == Configuration.ORIENTATION_LANDSCAPE && mCurrentSwipePositionCellCoordinates[Y_POS] == mGridSize - 1);
-				break;
-			case 9:
-				acceptDigit = (mCurrentSwipePositionCellCoordinates[X_POS] == 0);
-				break;
+		if (digit <= mGridSize) {
+			// Determine whether the digit should be accepted based on the
+			// current swipe position.
+			boolean acceptDigit = (inTouchDownCell ? false : true);
+			if (acceptDigit == false) {
+				// Normally the digit is not accepted in case the swipe motion
+				// is inside the touch down cell. In case a swipe motion is
+				// started and ended in a cell on the outer edge of the grid,
+				// the digit will be accepted in case the swipe motion was
+				// heading outside the grid.
+				//
+				// In portrait mode the swipe motions to the left and to the
+				// right of the grid view needs to be examined. Swipe motions to
+				// the top can be neglected as the action bar is displayed above
+				// the grid. Swipe motions to the bottom can be neglected as the
+				// clear and undo buttons are shown below the grid view.
+				//
+				// In portrait mode the swipe motions to the left and to the
+				// bottom of the grid view needs to be examined. Swipe motions
+				// to the top can be neglected as the action bar is displayed
+				// above the grid. Swipe motions to the right can be neglected
+				// as the clear and undo buttons are shown to the right of the
+				// grid view.
+				switch (digit) {
+				case 1:
+					acceptDigit = (mCurrentSwipePositionCellCoordinates[X_POS] == 0);
+					break;
+				case 2:
+					break;
+				case 3:
+					break;
+				case 4: // fall through
+				case 5:
+					acceptDigit = (mGridPlayerView.getOrientation() == Configuration.ORIENTATION_PORTRAIT && mCurrentSwipePositionCellCoordinates[X_POS] == mGridSize - 1);
+					break;
+				case 6:
+					acceptDigit = (mGridPlayerView.getOrientation() == Configuration.ORIENTATION_PORTRAIT && mCurrentSwipePositionCellCoordinates[X_POS] == mGridSize - 1)
+							|| (mGridPlayerView.getOrientation() == Configuration.ORIENTATION_LANDSCAPE && mCurrentSwipePositionCellCoordinates[Y_POS] == mGridSize - 1);
+					break;
+				case 7:
+					acceptDigit = (mGridPlayerView.getOrientation() == Configuration.ORIENTATION_LANDSCAPE && mCurrentSwipePositionCellCoordinates[Y_POS] == mGridSize - 1);
+					break;
+				case 8:
+					acceptDigit = (mCurrentSwipePositionCellCoordinates[X_POS] == 0)
+							|| (mGridPlayerView.getOrientation() == Configuration.ORIENTATION_LANDSCAPE && mCurrentSwipePositionCellCoordinates[Y_POS] == mGridSize - 1);
+					break;
+				case 9:
+					acceptDigit = (mCurrentSwipePositionCellCoordinates[X_POS] == 0);
+					break;
+				}
+			}
+
+			if (acceptDigit) {
+				// Call listener only in case previously no digit was
+				// selectable.
+				if (mListener != null
+						&& mCurrentSwipePositionDigit == DIGIT_UNDETERMINDED) {
+					mListener.onSelectableDigit();
+				}
+
+				// Set the digit for the current swipe position.
+				mCurrentSwipePositionDigit = digit;
+				return true;
 			}
 		}
-		if (acceptDigit) {
-			mCurrentSwipePositionDigit = digit;
-			return true;
+
+		// The current swipe position does not correspond with a selectable
+		// digit for this grid
+		// size.
+		if (DEBUG_SWIPE_MOTION) {
+			Log.i(TAG,
+					"Current swipe position does not correspond with a selectable digit.");
 		}
 
+		// Call listener only in case previously a digit was selectable.
+		if (mListener != null
+				&& mCurrentSwipePositionDigit != DIGIT_UNDETERMINDED) {
+			mListener.onNoSelectableDigit();
+		}
+
+		// Set the digit for the current swipe position.
+		mCurrentSwipePositionDigit = DIGIT_UNDETERMINDED;
 		return false;
 	}
 
@@ -509,5 +560,15 @@ public class SwipeMotion extends Motion {
 	 */
 	public static int getAngleToNextSwipeSegment(int digit) {
 		return SWIPE_ANGLE_OFFSET_91 + (digit * SWIPE_SEGMENT_ANGLE);
+	}
+
+	/**
+	 * Sets the listener for the swipe motion.
+	 * 
+	 * @param listener
+	 *            The listener to be used.
+	 */
+	public void setOnUpdateListener(Listener listener) {
+		mListener = listener;
 	}
 }

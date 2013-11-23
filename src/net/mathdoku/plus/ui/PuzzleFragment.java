@@ -1075,13 +1075,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				|| (mTimerTask != null && mTimerTask.isCancelled())) {
 			startTimer();
 		}
-
-		// Resume the ticker tape if visible
-		if (mTickerTape.getVisibility() == View.VISIBLE) {
-			if (mTickerTape != null && mTickerTape.isCancelled()) {
-				mTickerTape.show();
-			}
-		}
 	}
 
 	/**

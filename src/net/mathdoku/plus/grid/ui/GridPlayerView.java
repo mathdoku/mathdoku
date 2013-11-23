@@ -5,6 +5,7 @@ import net.mathdoku.plus.R;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.GridCell;
 import net.mathdoku.plus.hint.TickerTape;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
@@ -31,11 +32,15 @@ public class GridPlayerView extends GridBasePlayerView {
 	private SwipeBorderDelayRunnable mSwipeBorderDelayRunnable;
 
 	// Reference to the last ticker tape started by the grid view player.
-	TickerTape mTickerTape;
+	private TickerTape mTickerTape;
 
 	// The input method(s) to be used. Note that in case the buttons only input
 	// method is used, the class is still called but most code will be skipped.
 	private boolean mSwipeInputMethodEnabled;
+
+	// Minimum number of valid swipe motion to be made before the ticker tape is
+	// disabled
+	private int MIN_VALID_SWIPE_MOTIONS = 15;
 
 	public GridPlayerView(Context context) {
 		super(context);
@@ -55,7 +60,7 @@ public class GridPlayerView extends GridBasePlayerView {
 	private void initGridView(Context context) {
 		mTickerTape = null;
 
-		// Initialize the runnables used to delay touch handling
+		// Initialize the runnable used to delay touch handling
 		mSwipeBorderDelayRunnable = new SwipeBorderDelayRunnable();
 
 		// Determine whether swiping is enabled.
@@ -73,8 +78,9 @@ public class GridPlayerView extends GridBasePlayerView {
 			return super.onTouch(arg0, event);
 		}
 
-		if (mGrid == null || !mGrid.isActive())
+		if (mGrid == null || !mGrid.isActive()) {
 			return false;
+		}
 
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
@@ -82,17 +88,40 @@ public class GridPlayerView extends GridBasePlayerView {
 			if (mSwipeMotion == null) {
 				mSwipeMotion = new SwipeMotion(this, mBorderWidth,
 						mGridCellSize);
+
+				// Set an update listener on the swipe motion until the user has
+				// completed some
+				// swipe motions successfully.
+				if (mPreferences.getSwipeValidMotionCounter() <= MIN_VALID_SWIPE_MOTIONS) {
+					mSwipeMotion
+							.setOnUpdateListener(new SwipeMotion.Listener() {
+								@Override
+								public void onSelectableDigit() {
+									mTickerTape
+											.reset()
+											.addItem(
+													getResources()
+															.getString(
+																	R.string.hint_swipe_release))
+											.setEraseConditions(2, 3000).show();
+								}
+
+								@Override
+								public void onNoSelectableDigit() {
+									mTickerTape
+											.reset()
+											.addItem(
+													getResources()
+															.getString(
+																	R.string.hint_swipe_rotate))
+											.setEraseConditions(2, 3000).show();
+								}
+							});
+				}
 			}
 
 			mSwipeMotion.setTouchDownEvent(event);
 			if (mSwipeMotion.isTouchDownInsideGrid()) {
-				// Show the basic swipe hint. Replace this hint after a short
-				// pause.
-				clearTickerTape();
-				if (mPreferences.getSwipeValidMotionCounter() < 30) {
-					setTickerTapeOnCellDown();
-				}
-
 				// Prevent displaying the swipe circle in case the user makes a
 				// very fast swipe motion by delaying the invalidate. Do not
 				// cancel this runnable as it is needed to finish the swipe
@@ -113,23 +142,31 @@ public class GridPlayerView extends GridBasePlayerView {
 						// was initially touched.
 						digitSelected(swipeDigit);
 
-						clearTickerTape();
 						if (mPreferences
 								.increaseSwipeValidMotionCounter(swipeDigit) <= 6) {
 							mTickerTape
+									.reset()
 									.addItem(
 											getResources()
 													.getString(
 															R.string.hint_swipe_valid_digit_completed,
 															swipeDigit))
 									.setEraseConditions(2, 3000).show();
+
+							// Disable listener and ticker tape as soon as
+							// enough valid swipe
+							// motions have been completed.
+							if (mPreferences.getSwipeValidMotionCounter() >= MIN_VALID_SWIPE_MOTIONS) {
+								mSwipeMotion.setOnUpdateListener(null);
+								mTickerTape.setDisabled(true);
+							}
 						}
 					} else {
-						clearTickerTape();
 						if (swipeDigit > mGridSize
 								&& mPreferences
 										.increaseSwipeInvalidMotionCounter() <= 6) {
 							mTickerTape
+									.reset()
 									.addItem(
 											getResources()
 													.getString(
@@ -182,6 +219,11 @@ public class GridPlayerView extends GridBasePlayerView {
 	private class SwipeBorderDelayRunnable implements Runnable {
 		@Override
 		public void run() {
+			// Show the basic swipe hint. Replace this hint after a short pause.
+			if (mPreferences.getSwipeValidMotionCounter() < MIN_VALID_SWIPE_MOTIONS) {
+				setTickerTapeOnCellDown();
+			}
+
 			// Make the swipe border and motion visible at next draw of the grid
 			// player view.
 			if (mSwipeMotion != null && mSwipeMotion.isTouchDownInsideGrid()) {
@@ -253,11 +295,12 @@ public class GridPlayerView extends GridBasePlayerView {
 		mSwipeMotion = null;
 
 		if (mSwipeInputMethodEnabled) {
-			clearTickerTape();
-			if (mPreferences.getSwipeValidMotionCounter() < 30) {
-				mTickerTape.addItem(
-						getResources().getString(R.string.hint_swipe_basic))
-						.show();
+			if (mPreferences.getSwipeValidMotionCounter() < MIN_VALID_SWIPE_MOTIONS) {
+				mTickerTape
+						.reset()
+						.addItem(
+								getResources().getString(
+										R.string.hint_swipe_basic)).show();
 			}
 		}
 
@@ -358,18 +401,28 @@ public class GridPlayerView extends GridBasePlayerView {
 						}
 					}
 				}
-				mTickerTape.addItem(getResources().getString(
-						R.string.hint_swipe_basic_cell_at_border, digits));
+				mTickerTape
+						.reset()
+						.addItem(
+								getResources()
+										.getString(
+												R.string.hint_swipe_basic_cell_at_border,
+												digits)).show();
 			} else {
-				mTickerTape.addItem(getResources().getString(
-						R.string.hint_swipe_outside_cell));
+				mTickerTape
+						.reset()
+						.addItem(
+								getResources().getString(
+										R.string.hint_swipe_outside_cell))
+						.show();
 			}
 		} else {
-			mTickerTape.addItem(getResources().getString(
-					R.string.hint_swipe_outside_cell));
+			mTickerTape
+					.reset()
+					.addItem(
+							getResources().getString(
+									R.string.hint_swipe_outside_cell)).show();
 		}
-
-		mTickerTape.show();
 	}
 
 	/**
@@ -398,16 +451,6 @@ public class GridPlayerView extends GridBasePlayerView {
 	 */
 	public void setTickerTape(TickerTape tickerTape) {
 		mTickerTape = tickerTape;
-	}
-
-	/**
-	 * Clear the ticker tape.
-	 */
-	private void clearTickerTape() {
-		// Reset the ticker tape
-		if (mTickerTape != null) {
-			mTickerTape.reset();
-		}
 	}
 
 	/**

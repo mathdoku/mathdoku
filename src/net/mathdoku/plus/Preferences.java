@@ -744,8 +744,10 @@ public class Preferences {
 	 *         completed.
 	 */
 	public int getSwipeValidMotionCounter() {
-		return mSharedPreferences.getInt(SWIPE_VALID_MOTION_COUNTER,
-				SWIPE_DIGIT_COUNTER_DEFAULT);
+		if (counters == null) {
+			initializeCounters();
+		}
+		return counters[SWIPE_VALID_MOTION_COUNTER_ID];
 	}
 
 	/**
