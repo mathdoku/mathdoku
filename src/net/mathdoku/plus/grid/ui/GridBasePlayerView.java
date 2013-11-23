@@ -11,7 +11,6 @@ import net.mathdoku.plus.tip.TipIncorrectValue;
 import net.mathdoku.plus.tip.TipOrderOfValuesInCage;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 import android.content.Context;
-import android.graphics.Canvas;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
