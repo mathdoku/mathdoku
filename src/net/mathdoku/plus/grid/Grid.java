@@ -633,21 +633,17 @@ public class Grid {
 	 * successfully inserted into the database (true), or an error occurred in
 	 * the process (false).
 	 * 
-	 * @param gameSeed
-	 *            The game seed used to generate this grid.
-	 * @param generatorRevisionNumber
-	 *            The revision number of the generator used to create the grid.
 	 * @param gridSize
 	 *            The size of grid.
 	 * @param cells
 	 *            The list of cell used in the grid.
 	 * @param cages
 	 *            The list of cages used in the grid.
-	 * @param active
-	 *            The status of the grid.
+	 * @param gridGeneratingParameters
+	 *            The parameters used to create the grid.
 	 */
 	public boolean create(int gridSize, ArrayList<GridCell> cells,
-			ArrayList<GridCage> cages, boolean active,
+			ArrayList<GridCage> cages,
 			GridGeneratingParameters gridGeneratingParameters) {
 
 		// In case an existing grid object is reused, we have to clean up old
@@ -669,7 +665,7 @@ public class Grid {
 		mGridSize = gridSize;
 		mCells = cells;
 		mCages = cages;
-		mActive = active;
+		mActive = true;
 
 		// Cages keep a reference to the grid view to which they belong.
 		for (GridCage cage : cages) {

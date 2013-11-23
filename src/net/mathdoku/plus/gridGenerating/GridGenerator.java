@@ -318,7 +318,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 					// solution which results in much faster generation time.
 
 					// Create the grid object
-					if (!mGrid.create(mGridSize, mCells, mCages, true,
+					if (!mGrid.create(mGridSize, mCells, mCages,
 							mGridGeneratingParameters)) {
 						Log.e(TAG, "Can not create grid.");
 						continue;
@@ -473,8 +473,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		}
 
 		// Create the grid object
-		if (mGrid.create(mGridSize, mCells, mCages, true,
-				mGridGeneratingParameters)) {
+		if (mGrid.create(mGridSize, mCells, mCages, mGridGeneratingParameters)) {
 			mUser.useCreatedGrid(mGrid);
 		}
 	}
