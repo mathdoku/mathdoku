@@ -584,27 +584,25 @@ public class GridCell {
 						.getTextPaintMaybeInputMode());
 
 				// Draw all possible which are currently set for this cell.
-				for (int i = 0; i < mPossibles.size(); i++) {
-					// Get the possible and the specific position in the digit
-					// position grid
-					int possible = mPossibles.get(i);
-					int row = digitPositionGrid.getRow(possible);
-					int col = digitPositionGrid.getCol(possible);
+                for (Integer possible : mPossibles) {
+                    // Get the possible and the specific position in the digit
+                    // position grid
+                    int row = digitPositionGrid.getRow(possible);
+                    int col = digitPositionGrid.getCol(possible);
 
-					float xPos = mPosX + mMaybeGridPainter.getLeftOffset()
-							+ col * mMaybeGridPainter.getMaybeDigitWidth();
-					float yPos = mPosY + mMaybeGridPainter.getBottomOffset()
-							+ row * mMaybeGridPainter.getMaybeDigitHeight();
-					canvas.drawText(Integer.toString(possible), xPos, yPos,
-							paint);
-				}
-
+                    float xPos = mPosX + mMaybeGridPainter.getLeftOffset()
+                            + col * mMaybeGridPainter.getMaybeDigitWidth();
+                    float yPos = mPosY + mMaybeGridPainter.getBottomOffset()
+                            + row * mMaybeGridPainter.getMaybeDigitHeight();
+                    canvas.drawText(Integer.toString(possible), xPos, yPos,
+                            paint);
+                }
 			} else {
 				// Build string of possible values
 				String possiblesText = "";
-				for (int i = 0; i < mPossibles.size(); i++) {
-					possiblesText += Integer.toString(mPossibles.get(i));
-				}
+                for (Integer possible : mPossibles) {
+                    possiblesText += Integer.toString(possible);
+                }
 
 				// Clone the text painter and decrease text size until the
 				// possible values string fit within the cell.

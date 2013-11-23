@@ -185,18 +185,18 @@ public class CageTypeGenerator {
 	 */
 	public GridCageType getCageType(int cageTypeIndex) {
 		// Find cage type array in which the cage type is defined.
-		for (int i = 0; i < mCageTypes.length; i++) {
-			if (mCageTypes[i] != null) {
-				// This cage type array does contain elements. Check if it
-				// contains enough elements to find the given index.
-				if (cageTypeIndex < mCageTypes[i].size()) {
-					return mCageTypes[i].get(cageTypeIndex);
-				}
+        for (ArrayList<GridCageType> mCageType : mCageTypes) {
+            if (mCageType != null) {
+                // This cage type array does contain elements. Check if it
+                // contains enough elements to find the given index.
+                if (cageTypeIndex < mCageType.size()) {
+                    return mCageType.get(cageTypeIndex);
+                }
 
-				// Descrease index for search in next array.
-				cageTypeIndex -= mCageTypes[i].size();
-			}
-		}
+                // Decrease index for search in next array.
+                cageTypeIndex -= mCageType.size();
+            }
+        }
 
 		// Index not found
 		return null;

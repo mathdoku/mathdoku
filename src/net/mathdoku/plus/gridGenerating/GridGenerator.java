@@ -698,27 +698,27 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			boolean[][] maskNewCage = new boolean[this.mGridSize][this.mGridSize];
 			int[] maskNewCageRowCount = new int[this.mGridSize];
 			int[] maskNewCageColCount = new int[this.mGridSize];
-			for (int coord_num = 0; coord_num < cageTypeCoords.length; coord_num++) {
-				int row = cageTypeCoords[coord_num][0];
-				int col = cageTypeCoords[coord_num][1];
+            for (int[] cageTypeCoord : cageTypeCoords) {
+                int row = cageTypeCoord[0];
+                int col = cageTypeCoord[1];
 
-				if (row < 0 || row >= this.mGridSize || col < 0
-						|| col >= this.mGridSize) {
-					// Coordinates of this cell in cage falls outside the
-					// grid.
-					cageIsValid = false;
-					break;
-				} else if (mCageMatrix[row][col] >= 0) {
-					// Cell is already used in another cage
-					cageIsValid = false;
-					break;
-				} else {
-					// Cell can be used for this new cage.
-					maskNewCage[row][col] = true;
-					maskNewCageRowCount[row]++;
-					maskNewCageColCount[col]++;
-				}
-			}
+                if (row < 0 || row >= this.mGridSize || col < 0
+                        || col >= this.mGridSize) {
+                    // Coordinates of this cell in cage falls outside the
+                    // grid.
+                    cageIsValid = false;
+                    break;
+                } else if (mCageMatrix[row][col] >= 0) {
+                    // Cell is already used in another cage
+                    cageIsValid = false;
+                    break;
+                } else {
+                    // Cell can be used for this new cage.
+                    maskNewCage[row][col] = true;
+                    maskNewCageRowCount[row]++;
+                    maskNewCageColCount[col]++;
+                }
+            }
 			if (!cageIsValid) {
 				continue;
 			}
@@ -785,11 +785,11 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		GridCage cage = new GridCage(mGrid,
 				mGridGeneratingParameters.mHideOperators);
 		int newCageId = this.mCages.size();
-		for (int coord_num = 0; coord_num < cageTypeCoords.length; coord_num++) {
-			int row = cageTypeCoords[coord_num][0];
-			int col = cageTypeCoords[coord_num][1];
-			cage.mCells.add(getCellAt(row, col));
-		}
+        for (int[] cageTypeCoord : cageTypeCoords) {
+            int row = cageTypeCoord[0];
+            int col = cageTypeCoord[1];
+            cage.mCells.add(getCellAt(row, col));
+        }
 		setArithmetic(cage);
 		if (maxPermutations > 0
 				&& cage.getPossibleNums().size() > maxPermutations) {

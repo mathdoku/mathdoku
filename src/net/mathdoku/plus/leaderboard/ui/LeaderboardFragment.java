@@ -101,9 +101,9 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 		LinearLayout linearLayout = (LinearLayout) mRootView
 				.findViewById(R.id.leaderboard_list);
 		linearLayout.removeAllViews();
-		for (int i = 0; i < mLeaderboardSection.length; i++) {
-			linearLayout.addView(mLeaderboardSection[i].mView);
-		}
+        for (LeaderboardSection leaderboardSection : mLeaderboardSection) {
+            linearLayout.addView(leaderboardSection.mView);
+        }
 
 		// Apply the leaderboard filter so the view is initially displayed with
 		// correct filter.

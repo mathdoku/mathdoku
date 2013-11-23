@@ -217,29 +217,29 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 					}
 				});
 
-		for (int i = 0; i < mDigitPosition.length; i++) {
-			if (mDigitPosition[i] != null) {
-				mDigitPosition[i].setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						// Convert text of button (number) to Integer
-						int d = Integer.parseInt(((Button) v).getText()
-								.toString());
+        for (Button digitPosition : mDigitPosition) {
+            if (digitPosition != null) {
+                digitPosition.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // Convert text of button (number) to Integer
+                        int d = Integer.parseInt(((Button) v).getText()
+                                .toString());
 
-						mGridPlayerView.digitSelected(d);
+                        mGridPlayerView.digitSelected(d);
 
-						setClearAndUndoButtonVisibility(mGrid.getSelectedCell());
+                        setClearAndUndoButtonVisibility(mGrid.getSelectedCell());
 
-						// Invalidate the option menu as the copy cell value
-						// action item may need a change.
-						((FragmentActivity) mContext).invalidateOptionsMenu();
+                        // Invalidate the option menu as the copy cell value
+                        // action item may need a change.
+                        ((FragmentActivity) mContext).invalidateOptionsMenu();
 
-						mGridPlayerView.requestFocus();
-						mGridPlayerView.invalidate();
-					}
-				});
-			}
-		}
+                        mGridPlayerView.requestFocus();
+                        mGridPlayerView.invalidate();
+                    }
+                });
+            }
+        }
 
 		// Set same onClickListener for both clear buttons
 		OnClickListener onClickListener = new OnClickListener() {
@@ -1174,11 +1174,11 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			}
 
 			// Change the buttons.
-			for (int i = 0; i < mDigitPosition.length; i++) {
-				if (mDigitPosition[i] != null) {
-					mDigitPosition[i].setTextColor(color);
-				}
-			}
+            for (Button digitPosition : mDigitPosition) {
+                if (digitPosition != null) {
+                    digitPosition.setTextColor(color);
+                }
+            }
 		}
 	}
 
@@ -1292,12 +1292,12 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 							mGridPlayerView.setCopyModeEnabled(true);
 
 							// Hide all buttons except undo
-							for (int i = 0; i < mDigitPosition.length; i++) {
-								if (mDigitPosition[i] != null) {
-									mDigitPosition[i]
-											.setVisibility(View.INVISIBLE);
-								}
-							}
+                            for (Button digitPosition : mDigitPosition) {
+                                if (digitPosition != null) {
+                                    digitPosition
+                                            .setVisibility(View.INVISIBLE);
+                                }
+                            }
 							if (mClearButton != null) {
 								mClearButton.setVisibility(View.INVISIBLE);
 							}
