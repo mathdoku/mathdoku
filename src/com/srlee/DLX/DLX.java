@@ -9,9 +9,9 @@ public class DLX {
 
 	public enum SolveType {
 		ONE, MULTIPLE, ALL
-	};
+	}
 
-	private final DLXColumn root = new DLXColumn();
+    private final DLXColumn root = new DLXColumn();
 	private DLXColumn[] ColHdrs;
 	private DLXNode[] Nodes;
 	private DLXRow[] Rows;
