@@ -34,8 +34,6 @@ public class GridCage {
 
 	// User math is correct
 	public boolean mUserMathCorrect;
-	// Cage (or a cell within) is selected
-	public boolean mSelected;
 
 	// Cached list of numbers which satisfy the cage's arithmetic
 	private ArrayList<int[]> mPossibles;
@@ -74,7 +72,6 @@ public class GridCage {
 		this.mGrid = grid;
 		mPossibles = null;
 		mUserMathCorrect = true;
-		mSelected = false;
 		mCells = new ArrayList<GridCell>();
 	}
 

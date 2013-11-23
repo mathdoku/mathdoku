@@ -372,11 +372,8 @@ public class Grid {
 	 * @return The selected cell.
 	 */
 	public GridCell setSelectedCell(GridCell cell) {
-		// Unselect current cage
+		// Determine currently selected cage
 		GridCage oldSelectedCage = getCageForSelectedCell();
-		if (oldSelectedCage != null) {
-			oldSelectedCage.mSelected = false;
-		}
 
 		// Unselect current cell
 		if (mSelectedCell != null) {
@@ -402,14 +399,9 @@ public class Grid {
 			}
 		}
 
-		// Select new cage
-		if (newSelectedCage != null) {
-			newSelectedCage.mSelected = true;
-
-			// Add border for new cage if needed
-			if (!newSelectedCage.equals(oldSelectedCage)) {
-				newSelectedCage.setBorders();
-			}
+		// Select new cage and set borders.
+		if (newSelectedCage != null && !newSelectedCage.equals(oldSelectedCage)) {
+			newSelectedCage.setBorders();
 		}
 
 		return mSelectedCell;
