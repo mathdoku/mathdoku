@@ -52,17 +52,20 @@ public class GridViewerView extends View {
 	// visible grid.
 	private boolean mSwipeBorder;
 
-	GridViewerView(Context context) {
+	@SuppressWarnings("WeakerAccess")
+	public GridViewerView(Context context) {
 		super(context);
 		initGridView(context);
 	}
 
-	GridViewerView(Context context, AttributeSet attrs) {
+	@SuppressWarnings("WeakerAccess")
+	public GridViewerView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		initGridView(context);
 	}
 
-	GridViewerView(Context context, AttributeSet attrs, int defStyle) {
+	@SuppressWarnings("WeakerAccess")
+	public GridViewerView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		initGridView(context);
 	}
