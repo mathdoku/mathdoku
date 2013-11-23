@@ -323,12 +323,12 @@ abstract class DatabaseAdapter {
 	 */
 	protected static boolean dropColumn(SQLiteDatabase sqliteDatabase,
 			String tableName, String[] columnsToDropped, String createSQL) {
-		// Check if columns to be dropped has beeen specified.
+		// Check if columns to be dropped has been specified.
 		if (columnsToDropped == null || columnsToDropped.length == 0) {
 			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				throw new RuntimeException(TAG
 						+ ".dropColumn has invalid parameter '"
-						+ columnsToDropped.toString() + "'.");
+						+ Arrays.toString(columnsToDropped) + "'.");
 			} else {
 				return false;
 			}
@@ -345,7 +345,7 @@ abstract class DatabaseAdapter {
 			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				throw new RuntimeException(TAG
 						+ ".dropColumn can not drop columns '"
-						+ columnsToDropped.toString() + "'.");
+						+ Arrays.toString(columnsToDropped) + "'.");
 			} else {
 				return false;
 			}
