@@ -22,11 +22,6 @@ public class Cheat {
 	// The type of cheat
 	private final CheatType mCheatType;
 
-	// The name of the cheat. This is used to build the name of the
-	// tip-preference associated with this cheat. Do not alter without
-	// converting the preferences as well.
-	private String mName;
-
 	// The penalty consists of a base penalty and an optionally a penalty per
 	// occurrence of a certain condition relevant for the cheat.
 	private final int mConditionalOccurrences;
@@ -55,7 +50,6 @@ public class Cheat {
 		mConditionalOccurrences = 0;
 		switch (mCheatType) {
 		case CELL_REVEALED:
-			mName = "CellRevealed";
 			mPenaltyTimeMilisBase = 60 * MILIS_PER_SECOND;
 			mTipTitle = mResources
 					.getString(R.string.dialog_tip_cheat_reveal_value_title);
@@ -64,7 +58,6 @@ public class Cheat {
 					getPenaltyTimeText(mPenaltyTimeMilisBase));
 			break;
 		case OPERATOR_REVEALED:
-			mName = "OperatorRevealed";
 			mPenaltyTimeMilisBase = 30 * MILIS_PER_SECOND;
 			mTipTitle = mResources
 					.getString(R.string.dialog_tip_cheat_reveal_operator_title);
@@ -73,7 +66,6 @@ public class Cheat {
 					getPenaltyTimeText(mPenaltyTimeMilisBase));
 			break;
 		case SOLUTION_REVEALED:
-			mName = "SolutionRevealed";
 			mPenaltyTimeMilisBase = MILIS_PER_DAY;
 			mTipTitle = mResources
 					.getString(R.string.dialog_tip_cheat_reveal_solution_title);
@@ -82,7 +74,6 @@ public class Cheat {
 					getPenaltyTimeText(mPenaltyTimeMilisBase));
 			break;
 		default:
-			mName = "";
 			mPenaltyTimeMilisBase = 0;
 			mTipTitle = "";
 			mTipText = "";
@@ -113,7 +104,6 @@ public class Cheat {
 
 		switch (mCheatType) {
 		case CHECK_PROGRESS_USED:
-			mName = "CheckProgress";
 			mPenaltyTimeMilisBase = 20 * MILIS_PER_SECOND;
 			mPenaltyTimeMilisPerOccurrence = 15 * MILIS_PER_SECOND;
 			mConditionalOccurrences = occurrencesConditionalPenalty;
@@ -146,16 +136,7 @@ public class Cheat {
 				+ (mConditionalOccurrences * mPenaltyTimeMilisPerOccurrence);
 	}
 
-	/**
-	 * Get the name of this cheat.
-	 * 
-	 * @return The name for this cheat.
-	 */
-	public String getName() {
-		return mName;
-	}
-
-	/**
+    /**
 	 * Get the title to be displayed in the tip cheat dialog.
 	 * 
 	 * @return The title to be displayed in the tip cheat dialog.
