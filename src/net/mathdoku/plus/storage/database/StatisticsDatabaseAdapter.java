@@ -26,6 +26,7 @@ import android.util.Log;
 public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	private static final String TAG = "MathDoku.StatisticsDatabaseAdapter";
 
+	@SuppressWarnings("PointlessBooleanExpression")
 	public static final boolean DEBUG_SQL = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 
 	// Columns for table statistics

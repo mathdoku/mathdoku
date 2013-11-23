@@ -22,6 +22,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 
 	// Remove "&& false" in following line to show the SQL-statements in the
 	// debug information
+	@SuppressWarnings("PointlessBooleanExpression")
 	public static final boolean DEBUG_SQL = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 
 	// Score origins statuses:

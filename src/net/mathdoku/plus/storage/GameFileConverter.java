@@ -21,6 +21,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 
 	// Remove "&& false" in following line to show debug information about
 	// converting game files when running in development mode.
+	@SuppressWarnings("PointlessBooleanExpression")
 	private static final boolean DEBUG_GRID_GAME_FILE_CONVERTER = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 
 	// The activity which started this task

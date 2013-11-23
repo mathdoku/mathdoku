@@ -15,6 +15,7 @@ public class MathDokuDLX extends DLX {
 
 	// Remove "&& false" in following line to show debug information about
 	// filling the DLX data structure when running in development mode.
+	@SuppressWarnings("PointlessBooleanExpression")
 	public static final boolean DEBUG_DLX = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 
 	private final int mGridSize;

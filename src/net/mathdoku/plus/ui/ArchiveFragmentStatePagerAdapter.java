@@ -17,6 +17,7 @@ public class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter 
 
 	// Remove "&& false" in following line to show the solving attempt id in the
 	// pager title of the archive.
+	@SuppressWarnings("PointlessBooleanExpression")
 	public static final boolean DEBUG_SHOW_SOLVING_ATTEMPT_ID = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 
 	public static final int UNKNOWN_GRID_ID = -1;

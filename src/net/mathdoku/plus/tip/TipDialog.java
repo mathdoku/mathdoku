@@ -26,6 +26,7 @@ public class TipDialog extends AlertDialog {
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
+	@SuppressWarnings("PointlessBooleanExpression")
 	public static final boolean DEBUG_TIP_DIALOG = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 
 	// Context in which the tip is created.

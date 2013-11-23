@@ -14,6 +14,7 @@ public class SwipeMotion extends Motion {
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
+	@SuppressWarnings("PointlessBooleanExpression")
 	public static final boolean DEBUG_SWIPE_MOTION = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 
 	// Possible statuses of the swipe motion
