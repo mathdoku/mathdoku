@@ -34,29 +34,87 @@ public class TickerTape extends HorizontalScrollView {
 	// Flag whether ticker tape has been cancelled and should stop moving.
 	private boolean mCancelled;
 
-	// The number of items which have been displayed completely.
-	private int mCountDisplayedItems;
-
-	// The time at which the ticker tape can be erased.
-	private boolean mStartedMoving;
-	private long mStartTime;
-
 	// Conditions which need to be satisfied for automatic removal of ticker
 	// tape
 	private boolean mEraseConditionSet;
 	private int mMinDisplayCycles;
 	private int mMinDisplayItems;
 	private long mMinDisplayTime;
-	
+
 	// Ticker tape is disabled;
 	private boolean mDisabled;
+
+	// The runnable which will update the ticker tape at regular intervals
+	private class TickerTapeUpdaterRunnable implements Runnable {
+		// The time at which this runnable was started
+		private boolean mStartedMoving = false;
+		private long mStartTime;
+
+		// Flag whether this runnable should be cancelled.
+		private boolean mIsCancelled = false;
+
+		// The number of items which have been displayed completely.
+		private int mCountDisplayedItems;
+
+		@Override
+		public void run() {
+			if (!mIsCancelled) {
+				if (!mStartedMoving) {
+					// First display the message and do not move yet.
+					mStartedMoving = true;
+					mStartTime = System.currentTimeMillis();
+					mCountDisplayedItems = 0;
+					setVisibility(View.VISIBLE);
+				} else {
+					// Update the scroll view
+					mCountDisplayedItems += moveToNextPosition();
+
+					// Repeat after a short while unless canceled and the
+					// erase conditions have not yet been met.
+					if (mEraseConditionSet
+							&& mCountDisplayedItems >= mMinDisplayItems
+							&& System.currentTimeMillis() >= mStartTime
+									+ mMinDisplayTime) {
+						hide();
+						return;
+					}
+				}
+
+				// Repeat unless cancelled in between.
+				if (!mIsCancelled && mTickerTapeUpdaterHandler != null) {
+					mTickerTapeUpdaterHandler.postDelayed(this, 400);
+				}
+			}
+		}
+
+		/**
+		 * Inform the runnable that it should be cancelled as soon as possible.
+		 */
+		public void cancel() {
+			mIsCancelled = true;
+		}
+
+		/**
+		 * Checks whether the runnable will be cancelled on the next occasion.
+		 * 
+		 * @return True in case the runnable will be cancelled on the next
+		 *         occasion. False otherwise.
+		 */
+		public boolean isCancelled() {
+			return mIsCancelled;
+		}
+	}
+
+	// The handler and runnable which takes care of updating the ticker tape
+	private Handler mTickerTapeUpdaterHandler;
+	private TickerTapeUpdaterRunnable mTickerTapeUpdaterRunnable;
 
 	private final ArrayList<TextView> mTextViewList = new ArrayList<TextView>();
 
 	/**
 	 * Creates a new instance of {@see TickerTape}.
 	 * 
-	 * @param mContext
+	 * @param context
 	 *            The context in which the ticker tape is created.
 	 */
 	public TickerTape(Context context, AttributeSet attrs) {
@@ -150,9 +208,10 @@ public class TickerTape extends HorizontalScrollView {
 
 		return this;
 	}
-	
+
 	/**
 	 * Sets whether the ticker tape is completely disabled.
+	 * 
 	 * @param disabled
 	 */
 	public void setDisabled(boolean disabled) {
@@ -175,11 +234,11 @@ public class TickerTape extends HorizontalScrollView {
 	 * Hides the ticker tape and stop moving the items in the ticker tape.
 	 */
 	public void hide() {
-	    if (mDisabled) {
-	  		setVisibility(View.GONE);
-	    } else {
-	  		setVisibility(View.INVISIBLE);
-	    }
+		if (mDisabled) {
+			setVisibility(View.GONE);
+		} else {
+			setVisibility(View.INVISIBLE);
+		}
 		cancel();
 		invalidate();
 	}
@@ -190,7 +249,7 @@ public class TickerTape extends HorizontalScrollView {
 	 * @return The ticker tape object itself so it can be used as a builder.
 	 */
 	public TickerTape startMoving() {
-		
+
 		if (mDisabled) {
 			return this;
 		}
@@ -206,57 +265,31 @@ public class TickerTape extends HorizontalScrollView {
 			addItem(mTextViewList.get(0).getText().toString());
 		}
 
-		// The ticker tape will start moving with a small delay.
-		mStartedMoving = false;
-
 		// Define handler and runnable for repeatable updating of the ticker
 		// tape.
-		final Handler handler = new Handler();
-		Runnable runnable = new Runnable() {
-
-			@Override
-			public void run() {
-				if (!isCancelled()) {
-					if (!mStartedMoving) {
-						// First display the message and do not move yet.
-						mStartedMoving = true;
-						mStartTime = System.currentTimeMillis();
-						mCountDisplayedItems = 0;
-						setVisibility(View.VISIBLE);
-					} else {
-						// Update the scroll view
-						moveToNextPosition();
-
-						// Repeat after a short while unless canceled and the
-						// erase conditions have not yet been met.
-						if (mEraseConditionSet
-								&& mCountDisplayedItems >= mMinDisplayItems
-								&& System.currentTimeMillis() >= mStartTime
-										+ mMinDisplayTime) {
-							hide();
-							return;
-						}
-					}
-
-					// Repeat unless cancelled in between.
-					if (!mCancelled) {
-						handler.postDelayed(this, 400);
-					}
-				}
-
-			}
-		};
+		if (mTickerTapeUpdaterHandler == null) {
+			mTickerTapeUpdaterHandler = new Handler();
+		}
+		if (mTickerTapeUpdaterRunnable == null
+				|| mTickerTapeUpdaterRunnable.isCancelled()) {
+			mTickerTapeUpdaterRunnable = new TickerTapeUpdaterRunnable();
+		}
 
 		// Start moving the ticker tape after an initial delay
-		handler.postDelayed(runnable, 300);
+		mTickerTapeUpdaterHandler.postDelayed(mTickerTapeUpdaterRunnable, 300);
 
 		return this;
 	}
 
 	/**
 	 * Update the scroll position to the next position.
+	 * 
+	 * @return 1 in case the next item is displayed. 0 in case the current item
+	 *         is moved.
 	 */
-	private boolean moveToNextPosition() {
+	private int moveToNextPosition() {
+		boolean displayNextItem = false;
+
 		// Only move the scroll position in case the total width of the
 		// containing text views is greater than the available width.
 		if (computeHorizontalScrollRange() > getWidth()) {
@@ -289,30 +322,23 @@ public class TickerTape extends HorizontalScrollView {
 					mTickerTapeLinearLayout.addView(textView);
 					mTextViewList.add(textView);
 				}
-				mCountDisplayedItems++;
+				displayNextItem = true;
 
 				// Reset scroll position to beginning of the first item.
 				scrollTo(0, 0);
 			}
 		}
 
-		return true;
+		return (displayNextItem ? 1 : 0);
 	}
 
 	/**
 	 * Cancel updates of the ticker tape.
 	 */
 	public void cancel() {
-		mCancelled = true;
-	}
-
-	/**
-	 * Checks whether the ticker tape has been cancelled.
-	 * 
-	 * @return True is the ticker tape was cancelled. False otherwise.
-	 */
-	public boolean isCancelled() {
-		return mCancelled;
+		if (mTickerTapeUpdaterRunnable != null) {
+			mTickerTapeUpdaterRunnable.cancel();
+		}
 	}
 
 	/**
@@ -326,9 +352,6 @@ public class TickerTape extends HorizontalScrollView {
 	 *            The minimum amount of milliseconds the ticker tape has to be
 	 *            displayed.
 	 * @return The ticker tape object itself so it can be used as a builder.
-	 */
-	/**
-	 * @return
 	 */
 	public TickerTape setEraseConditions(int minDisplayCycles,
 			long minDisplayTime) {
