@@ -1082,11 +1082,6 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	}
 
 	@Override
-	protected void onResumeFragments() {
-		super.onResumeFragments();
-	}
-
-	@Override
 	protected void onNewIntent(Intent intent) {
 		if (intent != null) {
 			Bundle bundle = intent.getExtras();

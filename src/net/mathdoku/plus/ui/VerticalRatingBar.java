@@ -9,11 +9,6 @@ import android.widget.RatingBar;
 public class VerticalRatingBar extends RatingBar {
 	private int x, y, z, w;
 
-	@Override
-	protected void drawableStateChanged() {
-		super.drawableStateChanged();
-	}
-
 	public VerticalRatingBar(Context context) {
 		super(context);
 	}

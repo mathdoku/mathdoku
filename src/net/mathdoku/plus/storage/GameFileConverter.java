@@ -121,12 +121,6 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 		mGridDefinitions = new ArrayList<String>();
 	}
 
-	@Override
-	protected void onPreExecute() {
-		// Open database adapter
-		super.onPreExecute();
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 

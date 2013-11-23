@@ -337,11 +337,6 @@ public class GridBasePlayerView extends GridViewerView implements
 		}
 	}
 
-	@Override
-	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
-	}
-
 	/**
 	 * Get the grid input mode but restrict its value to normal either maybe.
 	 * 
