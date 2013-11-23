@@ -144,6 +144,7 @@ abstract class DatabaseAdapter {
 			throw new InvalidParameterException();
 		}
 
+		// noinspection StringConcatenationInsideStringBufferAppend
 		query.append("CREATE TABLE " + stringBetweenBackTicks(table) + " (");
 		for (int i = 0; i < elements.length; i++) {
 			if (elements[i] == null || elements[i].trim().equals("")) {
@@ -151,6 +152,7 @@ abstract class DatabaseAdapter {
 						+ i + "]' with value '" + elements[i] + "'.");
 				throw new InvalidParameterException();
 			}
+			// noinspection StringConcatenationInsideStringBufferAppend
 			query.append(elements[i] + (i < elements.length - 1 ? ", " : ")"));
 		}
 
