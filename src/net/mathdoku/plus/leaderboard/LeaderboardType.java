@@ -295,7 +295,7 @@ public class LeaderboardType {
 		// Test whether a valid remainder has been computed.
 		assert (remainder == 0 || remainder == 1);
 
-		return (remainder == 0 ? true : false);
+		return (remainder == 0);
 	}
 
 	/**

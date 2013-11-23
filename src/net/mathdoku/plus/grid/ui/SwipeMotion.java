@@ -375,7 +375,7 @@ public class SwipeMotion extends Motion {
 		if (digit <= mGridSize) {
 			// Determine whether the digit should be accepted based on the
 			// current swipe position.
-			boolean acceptDigit = (inTouchDownCell ? false : true);
+			boolean acceptDigit = (!inTouchDownCell);
 			if (acceptDigit == false) {
 				// Normally the digit is not accepted in case the swipe motion
 				// is inside the touch down cell. In case a swipe motion is
