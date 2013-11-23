@@ -54,8 +54,8 @@ public class LeaderboardConnector {
 			Resources resources = appFragmentActivity.getResources();
 			mLeaderboardId = new String[LeaderboardType.MAX_LEADERBOARDS];
 			for (int i = 0; i < mLeaderboardId.length; i++) {
-				mLeaderboardId[i] = new String(
-						resources.getString(LeaderboardType.getResId(i)));
+				mLeaderboardId[i] = resources.getString(LeaderboardType
+						.getResId(i));
 			}
 		}
 	}
