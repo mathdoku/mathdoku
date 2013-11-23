@@ -18,6 +18,7 @@ package net.mathdoku.plus.ui.base;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
 import java.util.Vector;
 
 import net.mathdoku.plus.R;
@@ -279,9 +280,7 @@ public class GameHelper implements
 		}
 
 		if (null != additionalScopes) {
-			for (String scope : additionalScopes) {
-				scopesVector.add(scope);
-			}
+			Collections.addAll(scopesVector, additionalScopes);
 		}
 
 		mScopes = new String[scopesVector.size()];
