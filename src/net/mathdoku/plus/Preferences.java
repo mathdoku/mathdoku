@@ -783,22 +783,6 @@ public class Preferences {
 	}
 
 	/**
-	 * Get the number of times a swipe motion for the given digit has been
-	 * successfully completed.
-	 * 
-	 * @param digit
-	 *            The digit for which the counter has to be determined.
-	 * @return The number of times a swipe motion for the given digit has been
-	 *         successfully completed.
-	 */
-	public int getSwipeMotionCounter(int digit) {
-		if (counters == null) {
-			initializeCounters();
-		}
-		return counters[getSwipeDigitDiscoveredPreferenceName(digit)];
-	}
-
-	/**
 	 * Increase the number of times a swipe motion for the given digit has been
 	 * succesfully completed. Also the total number of completed swipe motions
 	 * is increased.

@@ -12,7 +12,6 @@ public class InputModeBorderPainter extends BorderPainter {
 	// Background of border
 	private final Paint mNormalInputModeBorderPaint;
 	private final Paint mMaybeInputModeBorderPaint;
-	private final Paint mCopyInputModeBorderPaint;
 
 	// Painter for text inside the border
 	private final Paint mNormalTextPaint;
@@ -39,11 +38,6 @@ public class InputModeBorderPainter extends BorderPainter {
 
 		mMaybeInputModeBorderPaint = new Paint();
 		mMaybeInputModeBorderPaint.setStyle(Paint.Style.STROKE);
-
-		mCopyInputModeBorderPaint = new Paint();
-		mCopyInputModeBorderPaint.setStyle(Paint.Style.STROKE);
-		mCopyInputModeBorderPaint.setColor(0xFFFF37EE);
-		mCopyInputModeBorderPaint.setAlpha(200);
 
 		// The digit painters
 		mNormalTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -93,20 +87,10 @@ public class InputModeBorderPainter extends BorderPainter {
 
 		mNormalInputModeBorderPaint.setStrokeWidth(mBorderWidth);
 		mMaybeInputModeBorderPaint.setStrokeWidth(mBorderWidth);
-		mCopyInputModeBorderPaint.setStrokeWidth(mBorderWidth);
 
 		int textSize = (int) (mBorderWidth * 0.8f);
 		mNormalTextPaint.setTextSize(textSize);
 		mHighlightedTextPaint.setTextSize(textSize);
-	}
-
-	/**
-	 * Get the size of the border.
-	 * 
-	 * @return The size of the border.
-	 */
-	public float getBorderWidth() {
-		return mBorderWidth;
 	}
 
 	/**
@@ -125,15 +109,6 @@ public class InputModeBorderPainter extends BorderPainter {
 	 */
 	public Paint getMaybeInputModeBorderPaint() {
 		return mMaybeInputModeBorderPaint;
-	}
-
-	/**
-	 * Get the paint paint for the border in the copy input mode.
-	 * 
-	 * @return The paint paint for the border in the copy input mode.
-	 */
-	public Paint getCopyBackgroundBorderPaint() {
-		return mCopyInputModeBorderPaint;
 	}
 
 	/**

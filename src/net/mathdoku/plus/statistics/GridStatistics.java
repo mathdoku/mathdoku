@@ -211,24 +211,6 @@ public class GridStatistics {
 	}
 
 	/**
-	 * Get the id for these statistics.
-	 * 
-	 * @return The id for these statistics.
-	 */
-	public int getId() {
-		return mId;
-	}
-
-	/**
-	 * Get the grid id for these statistics.
-	 * 
-	 * @return The grid id for these statistics.
-	 */
-	public int getGridId() {
-		return mGridId;
-	}
-
-	/**
 	 * If the grid is replayed, get the number of times the grid is replayed so
 	 * far.
 	 * 
@@ -237,33 +219,6 @@ public class GridStatistics {
 	 */
 	public int getReplayCount() {
 		return mReplayCount;
-	}
-
-	/**
-	 * Get the timestamp of the first move.
-	 * 
-	 * @return The timestamp of the first move.
-	 */
-	public java.sql.Timestamp getFirstMove() {
-		return mFirstMove;
-	}
-
-	/**
-	 * Get the timestamp of the last move.
-	 * 
-	 * @return The timestamp of the first move.
-	 */
-	public java.sql.Timestamp getLastMove() {
-		return mLastMove;
-	}
-
-	/**
-	 * Get the elapsed time (including penalty time).
-	 * 
-	 * @return The elapsed time (including penalty time).
-	 */
-	public long getElapsedTime() {
-		return mElapsedTime;
 	}
 
 	/**
@@ -282,15 +237,6 @@ public class GridStatistics {
 	 */
 	public boolean isSolutionRevealed() {
 		return mSolutionRevealed;
-	}
-
-	/**
-	 * Check whether the grid was solved manually.
-	 * 
-	 * @return True in case the solution was solved manually. False otherwise.
-	 */
-	public boolean isSolvedManually() {
-		return mSolvedManually;
 	}
 
 	/**

@@ -14,7 +14,6 @@ public class Screendump {
 	private static final String TAG = "MathDoku.Screendump";
 
 	private boolean mSaved;
-	private String mFilePath;
 	private final Context mContext;
 
 	/**
@@ -72,19 +71,8 @@ public class Screendump {
 			return false;
 		}
 
-		mFilePath = file.getAbsolutePath();
 		mSaved = true;
 
 		return mSaved;
-	}
-
-	/**
-	 * Get the qualified path of the screendump.
-	 * 
-	 * @return The qualified path if the screendump was saved succesfully. Null
-	 *         otherwise.
-	 */
-	public String getFilePath() {
-		return (mSaved ? mFilePath : null);
 	}
 }

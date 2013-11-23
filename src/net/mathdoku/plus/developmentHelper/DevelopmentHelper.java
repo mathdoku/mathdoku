@@ -41,7 +41,7 @@ import android.widget.TextView;
  * development mode is turned off.
  */
 public class DevelopmentHelper {
-	public static String TAG_LOG = "MathDoku.DevelopmentHelper";
+	private static String TAG_LOG = "MathDoku.DevelopmentHelper";
 
 	// In development mode the grid generator will show a modified progress
 	// dialog. Following types of progress updates are supported. Actual values

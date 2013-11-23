@@ -511,21 +511,6 @@ public class SwipeMotion extends Motion {
 	}
 
 	/**
-	 * Checks whether the current swipe position results in a digit in the given
-	 * range.
-	 * 
-	 * @param minimum
-	 *            The minimum value (should be 1)
-	 * @param maximum
-	 *            The maximum value (value from 1 to 9)
-	 * @return True in case the current swipe position results in a digit in the
-	 *         given range. False otherwise.
-	 */
-	public boolean isResultDigitInRange(int minimum, int maximum) {
-		return (mCurrentSwipePositionDigit >= minimum && mCurrentSwipePositionDigit <= maximum);
-	}
-
-	/**
 	 * Return the digit which is associated with the current swipe position.
 	 * 
 	 * @return The digit which is associated with the current swipe position.

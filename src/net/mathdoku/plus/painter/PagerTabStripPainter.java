@@ -6,13 +6,11 @@ public class PagerTabStripPainter extends BasePainter {
 
 	private final int mTextColor;
 	private final int mBackgroundColor;
-	private final int mTabIndicatorColor;
 
 	public PagerTabStripPainter(Painter painter) {
 		super(painter);
 
 		mTextColor = 0xFFFFFFFF;
-		mTabIndicatorColor = mTextColor;
 		mBackgroundColor = mPainter.getButtonBackgroundColor();
 	}
 
@@ -42,14 +40,5 @@ public class PagerTabStripPainter extends BasePainter {
 	 */
 	public int getBackgroundColor() {
 		return mBackgroundColor;
-	}
-
-	/**
-	 * Get the background color for the pager tab strip.
-	 * 
-	 * @return The background color the pager tab strip.
-	 */
-	public int getTabIndicatorColor() {
-		return mTabIndicatorColor;
 	}
 }

@@ -88,17 +88,6 @@ public class Motion {
 	}
 
 	/**
-	 * Set the double tap detected flag.
-	 * 
-	 * @param doubleTapDetected
-	 *            : True in case the double tap detected flag has to be set.
-	 *            False otherwise.
-	 */
-	protected void setDoubleTap(boolean doubleTapDetected) {
-		mDoubleTapDetected = doubleTapDetected;
-	}
-
-	/**
 	 * Checks whether this swipe motion completes a double tap on the touch down
 	 * cell.
 	 * 
@@ -166,20 +155,6 @@ public class Motion {
 	 */
 	public int[] getTouchDownCellCoordinates() {
 		return mTouchDownCellCoordinates;
-	}
-
-	/**
-	 * Get the cell coordinate of the touch down cell, for the given dimension
-	 * only.
-	 * 
-	 * @param dimension
-	 *            The dimension of the coordinates which has to be returned.
-	 * @return The cell coordinate of the touch down cell, for the given
-	 *         dimension only. -1 in case of an error.
-	 */
-	public int getTouchDownCellCoordinate(int dimension) {
-		return (dimension == X_POS || dimension == Y_POS ? mTouchDownCellCoordinates[dimension]
-				: -1);
 	}
 
 	/**

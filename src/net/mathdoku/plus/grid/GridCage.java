@@ -278,43 +278,6 @@ public class GridCage {
 		}
 	}
 
-	// Returns whether the user values in the cage match the cage text
-	public boolean showBadCageMath(boolean mPrefShowBadCageMaths) {
-		if (!mPrefShowBadCageMaths) {
-			// Bad cage math should not be shown.
-			return false;
-		}
-
-		// Warning will not be shown if not all cells in cage are filled
-		for (GridCell cell : this.mCells)
-			if (!cell.isUserValueSet()) {
-				// This cell has no value
-				return false;
-			}
-
-		if (this.mCells.size() == 1) {
-			return this.mCells.get(0).isUserValueIncorrect();
-		}
-
-		if (this.mHideOperator) {
-			return !(isAddMathsCorrect() || isMultiplyMathsCorrect()
-					|| isDivideMathsCorrect() || isSubtractMathsCorrect());
-		} else {
-			switch (this.mAction) {
-			case ACTION_ADD:
-				return !isAddMathsCorrect();
-			case ACTION_MULTIPLY:
-				return !isMultiplyMathsCorrect();
-			case ACTION_DIVIDE:
-				return !isDivideMathsCorrect();
-			case ACTION_SUBTRACT:
-				return !isSubtractMathsCorrect();
-			}
-		}
-		throw new RuntimeException("isSolved() got to an unreachable point "
-				+ this.mAction + ": " + this.toString());
-	}
-
 	public ArrayList<int[]> getPossibleNums() {
 		if (mPossibles == null) {
 			if (mHideOperator || (mAction == ACTION_NONE && mCells.size() > 1))

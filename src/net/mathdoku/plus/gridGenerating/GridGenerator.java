@@ -449,13 +449,6 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		}
 	}
 
-	/**
-	 * Callback for the DLX algorithm in case a solution is found for a puzzle.
-	 */
-	public void publishProgressGridSolutionFound() {
-		publishProgress(DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_MESSAGE);
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 

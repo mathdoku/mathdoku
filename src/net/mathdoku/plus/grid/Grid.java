@@ -153,14 +153,6 @@ public class Grid {
 		}
 	}
 
-	// Returns cage id of cell at row, column
-	// Returns -1 if not a valid cell or cage
-	public int cageIdAt(int row, int column) {
-		if (row < 0 || row >= mGridSize || column < 0 || column >= mGridSize)
-			return -1;
-		return this.mCells.get(column + row * this.mGridSize).getCageId();
-	}
-
 	/**
 	 * Get the cage of the cell which is currently selected.
 	 * 
@@ -287,16 +279,6 @@ public class Grid {
 					return false;
 
 		return true;
-	}
-
-	// Return the list of cells that are highlighted as invalid
-	public ArrayList<GridCell> invalidsHighlighted() {
-		ArrayList<GridCell> invalids = new ArrayList<GridCell>();
-		for (GridCell cell : this.mCells)
-			if (cell.hasInvalidUserValueHighlight())
-				invalids.add(cell);
-
-		return invalids;
 	}
 
 	public void addMove(CellChange move) {
@@ -445,15 +427,6 @@ public class Grid {
 				}
 			}
 		}
-	}
-
-	/**
-	 * Get the seed which is used to generate this puzzle.
-	 * 
-	 * @return The seed which can be used to generate this puzzle.
-	 */
-	public long getGameSeed() {
-		return mGridGeneratingParameters.mGameSeed;
 	}
 
 	/**
@@ -718,10 +691,6 @@ public class Grid {
 		return mDateCreated;
 	}
 
-	public void setDateCreated(long dateCreated) {
-		mDateCreated = dateCreated;
-	}
-
 	public long getDateSaved() {
 		return mDateLastSaved;
 	}
@@ -736,10 +705,6 @@ public class Grid {
 
 	public boolean hasPrefShowMaybesAs3x3Grid() {
 		return mPrefShowMaybesAs3x3Grid;
-	}
-
-	public int getClearRedundantPossiblesInSameRowOrColumnCount() {
-		return mClearRedundantPossiblesInSameRowOrColumnCount;
 	}
 
 	public GridGeneratingParameters getGridGeneratingParameters() {
@@ -846,16 +811,6 @@ public class Grid {
 	 */
 	public void increaseCounter(StatisticsCounterType statisticsCounterType) {
 		mGridStatistics.increaseCounter(statisticsCounterType);
-	}
-
-	/**
-	 * Decrease given counter with 1.
-	 * 
-	 * @param statisticsCounterType
-	 *            The counter which has to be decreased.
-	 */
-	public void decreaseCounter(StatisticsCounterType statisticsCounterType) {
-		mGridStatistics.decreaseCounter(statisticsCounterType);
 	}
 
 	/**

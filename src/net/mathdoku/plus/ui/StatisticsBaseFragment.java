@@ -41,7 +41,7 @@ class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 
 	// Green colors will be used at things which are positive
 	static final int chartGreen1 = 0xFF80FF00;
-	protected static final int chartGreen2 = 0xFF59B200;
+	static final int chartGreen2 = 0xFF59B200;
 
 	// Grey colors will be used at things which are neutral
 	static final int chartGrey1 = 0xFFD4D4D4;
@@ -54,7 +54,7 @@ class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	static final int chartRed2 = 0xFFFF3300;
 	static final int chartRed3 = 0xFFB22400;
 	static final int chartRed4 = 0xFFFECCBF;
-	protected static final int chartRed5 = 0xFFFE9980;
+	static final int chartRed5 = 0xFFFE9980;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,

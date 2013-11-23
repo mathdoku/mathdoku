@@ -304,17 +304,6 @@ public class TipDialog extends AlertDialog {
 	}
 
 	/**
-	 * Checks whether the tip dialog is still available (i.e. not yet reserved
-	 * for a tip dialog).
-	 * 
-	 * @return True in case no other dialog is showed currently. False
-	 *         otherwise.
-	 */
-	public static boolean isAvailable() {
-		return (mDisplayedDialog == null);
-	}
-
-	/**
 	 * Gets the preference name which is used to store whether this tip has to
 	 * displayed again.
 	 * 

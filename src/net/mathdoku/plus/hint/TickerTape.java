@@ -188,22 +188,6 @@ public class TickerTape extends HorizontalScrollView {
 	}
 
 	/**
-	 * Adds multiple strings to the end of the ticker tape.
-	 * 
-	 * @param string
-	 *            The strings to be added.
-	 * @return The ticker tape object itself so it can be used as a builder.
-	 */
-	public TickerTape addItems(String[] string) {
-		// Add a text view to the linear layout for each item
-		for (int i = 0; i < string.length; i++) {
-			addItem(string[i]);
-		}
-
-		return this;
-	}
-
-	/**
 	 * Sets whether the ticker tape is completely disabled.
 	 * 
 	 * @param disabled

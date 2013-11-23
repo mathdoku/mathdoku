@@ -462,22 +462,12 @@ public class GridBasePlayerView extends GridViewerView implements
 	/**
 	 * Register the listener to call in case the input mode has changed.
 	 * 
-	 * @param onHintChangedListener
+	 * @param onInputChangedModeListener
 	 *            The listener to call in case a hint has to be set.
 	 */
 	public void setOnInputModeChangedListener(
 			OnInputModeChangedListener onInputChangedModeListener) {
 		mOnInputModeChangedListener = onInputChangedModeListener;
-	}
-
-	/**
-	 * Clear the double tap on the motion. Only to be called in case the double
-	 * tap has been handled otherwise.
-	 */
-	protected void clearDoubleTap() {
-		if (mMotion != null) {
-			mMotion.clearDoubleTap();
-		}
 	}
 
 	/**

@@ -47,12 +47,4 @@ public class TipDuplicateValue extends TipDialog {
 		return TipDialog
 				.getDisplayTipAgain(preferences, TIP_NAME, TIP_PRIORITY);
 	}
-
-	/**
-	 * Ensure that this tip will not be displayed (again).
-	 */
-	public static void doNotDisplayAgain(Preferences preferences) {
-		// Determine on basis of preferences whether the tip should be shown.
-		preferences.setTipDoNotDisplayAgain(TIP_NAME);
-	}
 }

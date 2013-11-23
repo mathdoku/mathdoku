@@ -150,10 +150,6 @@ public class GridCell {
 		this.mPossibles.clear();
 	}
 
-	public int getFirstPossible() {
-		return this.mPossibles.get(0);
-	}
-
 	/**
 	 * Adds the given digit to the possible values if not yet added before.
 	 * 
@@ -911,10 +907,6 @@ public class GridCell {
 		mCageText = "";
 	}
 
-	public String getCageText() {
-		return mCageText;
-	}
-
 	public void setCageText(String newCageText) {
 		mCageText = newCageText;
 	}
@@ -951,10 +943,6 @@ public class GridCell {
 			}
 			Collections.sort(mPossibles);
 		}
-	}
-
-	public void select() {
-		mGrid.setSelectedCell(this);
 	}
 
 	/**
@@ -1196,20 +1184,12 @@ public class GridCell {
 	/**
 	 * Set the duplicate highlight of the cell.
 	 * 
-	 * @param higlighted
-	 *            True in case the duplicate highlight is visble. False
+	 * @param highlight
+	 *            True in case the duplicate highlight is visible. False
 	 *            otherwise.
 	 */
 	public void setDuplicateHighlight(boolean highlight) {
 		mDuplicateValueHighlight = highlight;
 	}
 
-	/**
-	 * Checks is the user value of the cell was revealed.
-	 * 
-	 * @return True in case the cell has been revealed. False otherwise.
-	 */
-	public boolean isRevealed() {
-		return mRevealed;
-	}
 }

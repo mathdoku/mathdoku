@@ -668,39 +668,6 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	}
 
 	/**
-	 * Get the number of grids available.
-	 * 
-	 * @return The number of grids available.
-	 */
-	public int countGrids() {
-		int count = 0;
-		Cursor cursor = null;
-		try {
-			cursor = mSqliteDatabase.query(true, TABLE,
-					new String[] { "COUNT(1)" }, null, null, null, null, null,
-					null);
-
-			if (cursor == null || !cursor.moveToFirst()) {
-				// No record found
-				return 0;
-			}
-
-			// Convert cursor record to a count of grids
-			count = cursor.getInt(0);
-		} catch (SQLiteException e) {
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				e.printStackTrace();
-			}
-			return 0;
-		} finally {
-			if (cursor != null) {
-				cursor.close();
-			}
-		}
-		return count;
-	}
-
-	/**
 	 * Counts the number of grids having a specific status and or size.
 	 * 
 	 * @param statusFilter

@@ -42,9 +42,6 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	// Conversion results
 	private ArrayList<String> mGridDefinitions;
 
-	// Database adapter for the statistics
-	StatisticsDatabaseAdapter mStatisticsDatabaseAdapter;
-
 	/**
 	 * Creates a new instance of {@link GameFileConverter}.
 	 * 

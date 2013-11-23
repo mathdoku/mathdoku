@@ -136,7 +136,7 @@ public class Cheat {
 				+ (mConditionalOccurrences * mPenaltyTimeMilisPerOccurrence);
 	}
 
-    /**
+	/**
 	 * Get the title to be displayed in the tip cheat dialog.
 	 * 
 	 * @return The title to be displayed in the tip cheat dialog.

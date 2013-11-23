@@ -7,7 +7,7 @@ import android.view.View;
  * position in a grid of positions.
  */
 public class DigitPositionGrid {
-	public final static String TAG = "MathDoku.DigitPositionGrid";
+	private final static String TAG = "MathDoku.DigitPositionGrid";
 
 	// Matrices holding information about the visibility and the content of the
 	// button positions available.

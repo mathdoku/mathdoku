@@ -62,13 +62,4 @@ public class CumulativeStatistics {
 	public int mCountSolutionRevealed;
 	public int mCountSolvedManually;
 	public int mCountFinished;
-
-	/**
-	 * Checks whether the statistics applies to grids of the same grid size.
-	 * 
-	 * @return True in case the statistics refer to one single level.
-	 */
-	public boolean isSingleLevelStatistics() {
-		return (mMinGridSize == mMaxGridSize);
-	}
 }
