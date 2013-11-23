@@ -18,12 +18,6 @@
 
     <!-- Google Play Games Services id's when app is build in DEBUG mode. -->
     <string name="app_id">282401107486</string>
-    <string name="achievement_x__solve_a_4x4_puzzle">CgkIntyrg5wIEAIQAQ</string>
-    <string name="achievement_x__solve_a_5x5_puzzle">CgkIntyrg5wIEAIQAg</string>
-    <string name="achievement_x__solve_a_6x6_puzzle">CgkIntyrg5wIEAIQAw</string>
-    <string name="achievement_x__solve_a_7x7_puzzle">CgkIntyrg5wIEAIQBA</string>
-    <string name="achievement_x__solve_a_8x8_puzzle">CgkIntyrg5wIEAIQBQ</string>
-    <string name="achievement_x__solve_a_9x9_puzzle">CgkIntyrg5wIEAIQBg</string>
     <string name="leaderboard_4x4__hidden_operators__1_star">CgkIntyrg5wIEAIQEw</string>
     <string name="leaderboard_4x4__hidden_operators__2_stars">CgkIntyrg5wIEAIQFA</string>
     <string name="leaderboard_4x4__hidden_operators__3_stars">CgkIntyrg5wIEAIQFQ</string>
@@ -84,4 +78,5 @@
     <string name="leaderboard_9x9__visible_operators__3_stars">CgkIntyrg5wIEAIQUQ</string>
     <string name="leaderboard_9x9__visible_operators__4_stars">CgkIntyrg5wIEAIQUg</string>
     <string name="leaderboard_9x9__visible_operators__5_stars">CgkIntyrg5wIEAIQUw</string>
-</resources>
+
+</resources>
