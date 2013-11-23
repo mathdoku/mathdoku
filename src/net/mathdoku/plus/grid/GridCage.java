@@ -30,7 +30,7 @@ public class GridCage {
 	// Id of the cage
 	public int mId;
 	// Enclosing context
-	public Grid mGrid;
+	private Grid mGrid;
 
 	// User math is correct
 	public boolean mUserMathCorrect;
@@ -177,7 +177,7 @@ public class GridCage {
 			cell.setCageId(this.mId);
 	}
 
-	public boolean isAddMathsCorrect() {
+	boolean isAddMathsCorrect() {
 		int total = 0;
 		for (GridCell cell : this.mCells) {
 			total += cell.getUserValue();
@@ -185,7 +185,7 @@ public class GridCage {
 		return (total == this.mResult);
 	}
 
-	public boolean isMultiplyMathsCorrect() {
+	boolean isMultiplyMathsCorrect() {
 		int total = 1;
 		for (GridCell cell : this.mCells) {
 			total *= cell.getUserValue();
@@ -193,7 +193,7 @@ public class GridCage {
 		return (total == this.mResult);
 	}
 
-	public boolean isDivideMathsCorrect() {
+	boolean isDivideMathsCorrect() {
 		if (this.mCells.size() != 2)
 			return false;
 
@@ -206,7 +206,7 @@ public class GridCage {
 					.getUserValue() * this.mResult);
 	}
 
-	public boolean isSubtractMathsCorrect() {
+	boolean isSubtractMathsCorrect() {
 		if (this.mCells.size() != 2)
 			return false;
 

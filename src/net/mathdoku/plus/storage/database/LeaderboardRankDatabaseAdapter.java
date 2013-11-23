@@ -50,20 +50,20 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	}
 
 	// Columns for table statistics.
-	protected static final String TABLE = "leaderboard_rank";
-	protected static final String KEY_ROWID = "_id";
-	protected static final String KEY_LEADERBOARD_ID = "leaderboard_id";
-	protected static final String KEY_GRID_SIZE = "grid_size";
-	protected static final String KEY_HIDDEN_OPERATORS = "hidden_operators";
-	protected static final String KEY_PUZZLE_COMPLEXITY = "puzzle_complexity";
-	protected static final String KEY_SCORE_ORIGIN = "score_origin";
-	protected static final String KEY_SCORE_STATISTICS_ID = "score_statistics_id";
-	protected static final String KEY_SCORE_RAW_SCORE = "score_raw_score";
-	protected static final String KEY_SCORE_DATE_SUBMITTED = "score_date_submitted";
-	protected static final String KEY_RANK_STATUS = "rank_status";
-	protected static final String KEY_RANK = "rank";
-	protected static final String KEY_RANK_DISPLAY = "rank_display";
-	protected static final String KEY_RANK_DATE_LAST_UPDATED = "rank_date_last_updated";
+	private static final String TABLE = "leaderboard_rank";
+	private static final String KEY_ROWID = "_id";
+	private static final String KEY_LEADERBOARD_ID = "leaderboard_id";
+	private static final String KEY_GRID_SIZE = "grid_size";
+	private static final String KEY_HIDDEN_OPERATORS = "hidden_operators";
+	private static final String KEY_PUZZLE_COMPLEXITY = "puzzle_complexity";
+	private static final String KEY_SCORE_ORIGIN = "score_origin";
+	private static final String KEY_SCORE_STATISTICS_ID = "score_statistics_id";
+	private static final String KEY_SCORE_RAW_SCORE = "score_raw_score";
+	private static final String KEY_SCORE_DATE_SUBMITTED = "score_date_submitted";
+	private static final String KEY_RANK_STATUS = "rank_status";
+	private static final String KEY_RANK = "rank";
+	private static final String KEY_RANK_DISPLAY = "rank_display";
+	private static final String KEY_RANK_DATE_LAST_UPDATED = "rank_date_last_updated";
 
 	private static final String[] allColumns = { KEY_ROWID, KEY_LEADERBOARD_ID,
 			KEY_GRID_SIZE, KEY_HIDDEN_OPERATORS, KEY_PUZZLE_COMPLEXITY,
@@ -81,7 +81,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	 * 
 	 * @return The SQL create statement for this table.
 	 */
-	protected static String buildCreateSQL() {
+	private static String buildCreateSQL() {
 		return createTable(
 				TABLE,
 				createColumn(KEY_ROWID, "integer", "primary key autoincrement"),
@@ -115,7 +115,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	 * @param db
 	 *            The database in which the table has to be created.
 	 */
-	protected static void create(SQLiteDatabase db) {
+	static void create(SQLiteDatabase db) {
 		String sql = buildCreateSQL();
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			Log.i(TAG, sql);
@@ -137,8 +137,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	 *            The new version of the database. Use the app revision number
 	 *            to identify the database version.
 	 */
-	protected static void upgrade(SQLiteDatabase db, int oldVersion,
-			int newVersion) {
+	static void upgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		if (oldVersion < 587 && newVersion >= 587) {
 			// In development revisions the table is simply dropped and
 			// recreated.

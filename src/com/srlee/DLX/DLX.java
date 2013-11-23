@@ -21,12 +21,12 @@ public class DLX {
 	private ArrayList<Integer> trysolution;
 	private ArrayList<Integer> foundsolution;
 	private int NumSolns;
-	protected boolean isValid;
+	private boolean isValid;
 	private int prev_rowidx = -1;
 	private SolveType solvetype;
-	protected int complexity;
+	int complexity;
 
-	public DLX() {
+	DLX() {
 		trysolution = new ArrayList<Integer>();
 		isValid = true;
 	}
@@ -35,7 +35,7 @@ public class DLX {
 		Init(nc, nr, nn);
 	}
 
-	protected void Init(int numCols, int numRows, int numNodes) {
+	void Init(int numCols, int numRows, int numNodes) {
 		ColHdrs = new DLXColumn[numCols + 1];
 		for (int c = 1; c <= numCols; c++)
 			ColHdrs[c] = new DLXColumn();
@@ -56,11 +56,11 @@ public class DLX {
 		ColHdrs[numCols].SetRight(root);
 	}
 
-	public int GetRowsInSolution() {
+	int GetRowsInSolution() {
 		return foundsolution.size();
 	}
 
-	public int GetSolutionRow(int row) {
+	int GetSolutionRow(int row) {
 		return foundsolution.get(row - 1);
 	}
 
@@ -122,7 +122,7 @@ public class DLX {
 			return mincol;
 	}
 
-	public void AddNode(int colidx, int rowidx) {
+	void AddNode(int colidx, int rowidx) {
 		Nodes[++numnodes] = new DLXNode(ColHdrs[colidx], rowidx);
 		if (prev_rowidx == rowidx) {
 			Nodes[numnodes].SetLeft(lastnodeadded);
@@ -148,7 +148,7 @@ public class DLX {
 	 *         found for this grid.
 	 */
 	@SuppressWarnings("SameParameterValue")
-	protected int Solve(SolveType solveType) {
+	int Solve(SolveType solveType) {
 		if (!isValid)
 			return -1;
 

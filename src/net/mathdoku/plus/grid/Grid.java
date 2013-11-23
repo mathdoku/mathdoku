@@ -28,7 +28,7 @@ public class Grid {
 	// Each line in the GridFile which contains information about the grid
 	// starts with an identifier. This identifier consists of a generic part and
 	// the package revision number.
-	public static final String SAVE_GAME_GRID_LINE = "GRID";
+	private static final String SAVE_GAME_GRID_LINE = "GRID";
 
 	// ************************************************************************
 	// Grid variables which are determined when generating the grid and which do
@@ -63,7 +63,7 @@ public class Grid {
 	private GridCell mSelectedCell;
 
 	// Statistics for this grid
-	GridStatistics mGridStatistics;
+	private GridStatistics mGridStatistics;
 
 	// ************************************************************************
 	// References to other elements of which the grid is constructed.
@@ -76,7 +76,7 @@ public class Grid {
 	public ArrayList<GridCell> mCells;
 
 	// Keep track of all moves as soon as grid is built or restored.
-	public ArrayList<CellChange> mMoves;
+	private ArrayList<CellChange> mMoves;
 
 	// ************************************************************************
 	// Miscellaneous
@@ -600,7 +600,7 @@ public class Grid {
 	 *         processed correctly. False otherwise.
 	 */
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
-	public boolean fromStorageString(String line, int savedWithRevisionNumber) {
+	boolean fromStorageString(String line, int savedWithRevisionNumber) {
 		String[] viewParts = line
 				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1);
 
@@ -821,7 +821,7 @@ public class Grid {
 	/**
 	 * Load the current statistics for this grid.
 	 */
-	public boolean loadStatistics() {
+	boolean loadStatistics() {
 		// Determine definition
 		String definition = toGridDefinitionString();
 

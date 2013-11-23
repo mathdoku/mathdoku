@@ -39,8 +39,8 @@ public class FeedbackEmail {
 	private static final String FIELD_DELIMITER_LEVEL2 = "="; // Separate values
 
 	// Date format for log file
-	DateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
-			Locale.US);
+	private DateFormat mDateFormat = new SimpleDateFormat(
+			"yyyy-MM-dd HH:mm:ss", Locale.US);
 
 	// Reference to log file
 	private String mLogFilePath;
@@ -101,7 +101,7 @@ public class FeedbackEmail {
 	 * @param activity
 	 *            The activity used to get device info.
 	 */
-	public void logDevice() {
+	void logDevice() {
 		SortedMap<String, String> sortedMap = new TreeMap<String, String>();
 
 		sortedMap.put("Android.Version", android.os.Build.VERSION.CODENAME);
@@ -124,7 +124,7 @@ public class FeedbackEmail {
 	/**
 	 * Logs information about a configuration.
 	 */
-	public void logConfiguration() {
+	void logConfiguration() {
 		SortedMap<String, String> sortedMap = new TreeMap<String, String>();
 
 		Configuration configuration = mActivity.getResources()
@@ -144,7 +144,7 @@ public class FeedbackEmail {
 	 * @param preferences
 	 *            The preferences to be logged.
 	 */
-	public void logPreferences() {
+	void logPreferences() {
 		// Get preferences and check whether it is allowed to gather new data.
 		Preferences preferences = Preferences.getInstance();
 
@@ -210,7 +210,7 @@ public class FeedbackEmail {
 	/**
 	 * Close the log file.
 	 */
-	public void close() {
+	void close() {
 		if (mLogFile != null) {
 			try {
 				mLogFile.flush();
@@ -323,7 +323,7 @@ public class FeedbackEmail {
 	 *            The activity which started this usage logger.
 	 * @return True in case no email client is installed. False otherwise.
 	 */
-	public static boolean isNoEmailIntentAvailable(Activity activity) {
+	private static boolean isNoEmailIntentAvailable(Activity activity) {
 		final PackageManager packageManager = activity.getPackageManager();
 		final Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("message/rfc822");

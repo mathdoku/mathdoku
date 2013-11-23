@@ -11,10 +11,10 @@ public class TipCheat extends TipDialog implements
 	/*
 	 * Note: this class is used for multiple different cheats.
 	 */
-	public static final String TIP_NAME_CELL_REVEALED = "Cheat.CellRevealed";
-	public static final String TIP_NAME_CHECK_PROGRESS_USED = "Cheat.CheckProgress";
-	public static final String TIP_NAME_OPERATOR_REVEALED = "Cheat.OperatorRevealed";
-	public static final String TIP_NAME_SOLUTION_REVEALED = "Cheat.SolutionRevealed";
+	private static final String TIP_NAME_CELL_REVEALED = "Cheat.CellRevealed";
+	private static final String TIP_NAME_CHECK_PROGRESS_USED = "Cheat.CheckProgress";
+	private static final String TIP_NAME_OPERATOR_REVEALED = "Cheat.OperatorRevealed";
+	private static final String TIP_NAME_SOLUTION_REVEALED = "Cheat.SolutionRevealed";
 	private static TipPriority TIP_PRIORITY = TipPriority.LOW;
 
 	/**
@@ -66,7 +66,7 @@ public class TipCheat extends TipDialog implements
 	 *            The cheat for which the tip has to be displayed.
 	 * @return
 	 */
-	public static String getTipName(Cheat cheat) {
+	private static String getTipName(Cheat cheat) {
 		switch (cheat.getType()) {
 		case CELL_REVEALED:
 			return TIP_NAME_CELL_REVEALED;

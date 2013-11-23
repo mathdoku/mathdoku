@@ -18,21 +18,21 @@ import android.util.Log;
  * Basic database adapter. All other database adapters should be extend from
  * this base class.
  */
-public abstract class DatabaseAdapter {
-	static final String TAG = "MathDoku.DatabaseAdapter";
+abstract class DatabaseAdapter {
+	private static final String TAG = "MathDoku.DatabaseAdapter";
 
-	static final char BACK_TICK = '`';
-	static final char QUOTE = '\'';
+	private static final char BACK_TICK = '`';
+	private static final char QUOTE = '\'';
 
-	static final String SQLITE_TRUE = "true";
-	static final String SQLITE_FALSE = "false";
+	private static final String SQLITE_TRUE = "true";
+	private static final String SQLITE_FALSE = "false";
 
-	public SQLiteDatabase mSqliteDatabase;
+	SQLiteDatabase mSqliteDatabase;
 
 	/**
 	 * Creates a new instance of {@link DatabaseAdapter}.
 	 */
-	public DatabaseAdapter() {
+	DatabaseAdapter() {
 		mSqliteDatabase = DatabaseHelper.getInstance().getWritableDatabase();
 	}
 
@@ -51,8 +51,8 @@ public abstract class DatabaseAdapter {
 	 *            "not null" or "primary key autoincrement".
 	 * @return The definition for one column in a SQLite table.
 	 */
-	public static String createColumn(String column, String datatype,
-			String constraint) throws InvalidParameterException {
+	static String createColumn(String column, String datatype, String constraint)
+			throws InvalidParameterException {
 
 		if (column == null || column.trim().equals("")) {
 			Log.e(TAG,
@@ -88,7 +88,7 @@ public abstract class DatabaseAdapter {
 	 * @return A SQLite foreign key constraint
 	 */
 	@SuppressWarnings("SameParameterValue")
-	public static String createForeignKey(String column, String refersToTable,
+	static String createForeignKey(String column, String refersToTable,
 			String refersToColumn) throws InvalidParameterException {
 
 		if (column == null || column.trim().equals("")) {
@@ -129,7 +129,7 @@ public abstract class DatabaseAdapter {
 	 * @return Definition for a SQLite table.
 	 * @throws InvalidParameterException
 	 */
-	public static String createTable(String table, String... elements)
+	static String createTable(String table, String... elements)
 			throws InvalidParameterException {
 		StringBuilder query = new StringBuilder();
 
@@ -181,7 +181,7 @@ public abstract class DatabaseAdapter {
 	 * 
 	 * @return The string properly enclosed with quotes.
 	 */
-	public static String stringBetweenQuotes(String string) {
+	static String stringBetweenQuotes(String string) {
 		return QUOTE + string + QUOTE;
 	}
 
@@ -193,7 +193,7 @@ public abstract class DatabaseAdapter {
 	 * @return The string representation of the boolean value as it is stored in
 	 *         SQLite.
 	 */
-	public static String toSQLiteBoolean(boolean value) {
+	static String toSQLiteBoolean(boolean value) {
 		return (value ? SQLITE_TRUE : SQLITE_FALSE);
 	}
 
@@ -204,7 +204,7 @@ public abstract class DatabaseAdapter {
 	 *            The boolean string value to be converted.
 	 * @return The boolean value corresponding with the SQLite string value.
 	 */
-	public static boolean valueOfSQLiteBoolean(String value) {
+	static boolean valueOfSQLiteBoolean(String value) {
 		return value.equals(SQLITE_TRUE);
 	}
 
@@ -216,7 +216,7 @@ public abstract class DatabaseAdapter {
 	 * @return The string representation of the long value as it is stored in
 	 *         SQLite.
 	 */
-	public static String toSQLiteTimestamp(long value) {
+	static String toSQLiteTimestamp(long value) {
 		return new java.sql.Timestamp(value).toString();
 	}
 
@@ -228,7 +228,7 @@ public abstract class DatabaseAdapter {
 	 *            The string value to be converted.
 	 * @return The SQL timestamp representation of the string value.
 	 */
-	public static java.sql.Timestamp toSQLTimestamp(String value) {
+	static java.sql.Timestamp toSQLTimestamp(String value) {
 		if (value == null) {
 			return new java.sql.Timestamp(0);
 		} else {
@@ -244,7 +244,7 @@ public abstract class DatabaseAdapter {
 	 * @return The long value representing the given string value. 0 in case a
 	 *         null value was passed.
 	 */
-	public static long valueOfSQLiteTimestamp(String value) {
+	static long valueOfSQLiteTimestamp(String value) {
 		return (value == null ? 0 : java.sql.Timestamp.valueOf(value).getTime());
 	}
 
@@ -394,7 +394,7 @@ public abstract class DatabaseAdapter {
 	 *            The table for which the actual columns have to be determined.
 	 * @return The list of columns in the given table.
 	 */
-	public static List<String> getTableColumns(SQLiteDatabase sqliteDatabase,
+	private static List<String> getTableColumns(SQLiteDatabase sqliteDatabase,
 			String tableName) {
 		// Retrieve columns
 		String cmd = "pragma table_info(" + tableName + ");";

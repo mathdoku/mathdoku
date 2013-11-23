@@ -6,14 +6,14 @@ import android.graphics.Paint;
 abstract class DigitPainter extends BasePainter {
 
 	// Painters for the different input modes
-	protected Paint mTextPaintNormalInputMode;
-	protected Paint mTextPaintMaybeInputMode;
+	Paint mTextPaintNormalInputMode;
+	Paint mTextPaintMaybeInputMode;
 
-	protected DigitPainterMode mDigitPainterMode;
+	DigitPainterMode mDigitPainterMode;
 
 	// Offsets (bottom, left) of the region in which the value will be painted.
-	protected float mLeftOffset;
-	protected float mBottomOffset;
+	float mLeftOffset;
+	float mBottomOffset;
 
 	/**
 	 * Creates a new instance of {@link DigitPainter}.
@@ -21,7 +21,7 @@ abstract class DigitPainter extends BasePainter {
 	 * @param painter
 	 *            The global container for all painters.
 	 */
-	public DigitPainter(Painter painter) {
+	DigitPainter(Painter painter) {
 		super(painter);
 		setColorMode(DigitPainterMode.INPUT_MODE_BASED);
 	}

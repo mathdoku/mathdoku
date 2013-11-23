@@ -26,11 +26,11 @@ public class MathDokuDLX extends DLX {
 
 	// Additional data structure in case the solution has to be uncovered.
 	private class Move {
-		protected int mCageId;
-		protected int mSolutionRow;
-		protected int mCellRow;
-		protected int mCellCol;
-		protected int mCellValue;
+		int mCageId;
+		int mSolutionRow;
+		int mCellRow;
+		int mCellCol;
+		int mCellValue;
 
 		public Move(int cageId, int solutionRow, int cellRow, int cellCol,
 				int cellValue) {
@@ -165,7 +165,7 @@ public class MathDokuDLX extends DLX {
 	 * number of cells in the cage and/or the cage id. This order of the cages
 	 * determine how efficient the puzzle solving will be.
 	 */
-	public class SortCagesOnNumberOfMoves implements Comparator<GridCage> {
+	private class SortCagesOnNumberOfMoves implements Comparator<GridCage> {
 		@Override
 		public int compare(GridCage gridCage1, GridCage gridCage2) {
 			int difference = gridCage1.getPossibleNums().size()

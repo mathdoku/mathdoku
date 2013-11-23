@@ -23,20 +23,20 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	// Remove "&& false" in following line to show the SQL-statements in the
 	// debug information
 	@SuppressWarnings("PointlessBooleanExpression")
-	public static final boolean DEBUG_SQL = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
+	private static final boolean DEBUG_SQL = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 
 	// Columns for table
-	protected static final String TABLE = "solving_attempt";
-	protected static final String KEY_ROWID = "_id";
-	protected static final String KEY_GRID_ID = "grid_id";
-	protected static final String KEY_DATE_CREATED = "date_created";
-	protected static final String KEY_DATE_UPDATED = "date_updated";
-	protected static final String KEY_SAVED_WITH_REVISION = "revision";
-	protected static final String KEY_DATA = "data";
-	protected static final String KEY_STATUS = "status";
+	static final String TABLE = "solving_attempt";
+	static final String KEY_ROWID = "_id";
+	static final String KEY_GRID_ID = "grid_id";
+	private static final String KEY_DATE_CREATED = "date_created";
+	private static final String KEY_DATE_UPDATED = "date_updated";
+	private static final String KEY_SAVED_WITH_REVISION = "revision";
+	private static final String KEY_DATA = "data";
+	static final String KEY_STATUS = "status";
 
 	// Status of solving attempt
-	public static final int STATUS_UNDETERMINED = -1;
+	private static final int STATUS_UNDETERMINED = -1;
 	public static final int STATUS_NOT_STARTED = 0;
 	public static final int STATUS_UNFINISHED = 50;
 	public static final int STATUS_FINISHED_SOLVED = 100;
@@ -68,7 +68,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 * 
 	 * @return The SQL create statement for this table.
 	 */
-	protected static String buildCreateSQL() {
+	private static String buildCreateSQL() {
 		return createTable(
 				TABLE,
 				createColumn(KEY_ROWID, "integer", "primary key autoincrement"),
@@ -99,7 +99,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 * @param db
 	 *            The database in which the table has to be created.
 	 */
-	protected static void create(SQLiteDatabase db) {
+	static void create(SQLiteDatabase db) {
 		String sql = buildCreateSQL();
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			Log.i(TAG, sql);
@@ -121,8 +121,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 *            The new version of the database. Use the app revision number
 	 *            to identify the database version.
 	 */
-	protected static void upgrade(SQLiteDatabase db, int oldVersion,
-			int newVersion) {
+	static void upgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		if (oldVersion < 433 && newVersion >= 433) {
 			// In development revisions the table is simply dropped and
 			// recreated.

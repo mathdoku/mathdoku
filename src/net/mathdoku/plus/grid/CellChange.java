@@ -18,7 +18,7 @@ public class CellChange {
 	// Remove "&& false" in following line to show debug information about
 	// reading information from a storage string
 	@SuppressWarnings("PointlessBooleanExpression")
-	public static final boolean DEBUG_STORAGE_STRING = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
+	private static final boolean DEBUG_STORAGE_STRING = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 
 	// Base identifier for different versions of cell information which is
 	// stored in

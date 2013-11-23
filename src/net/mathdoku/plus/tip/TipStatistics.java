@@ -6,7 +6,7 @@ import android.content.Context;
 
 public class TipStatistics extends TipDialog {
 
-	public static String TIP_NAME = "Tip.TipStatistics.DisplayAgain";
+	private static String TIP_NAME = "Tip.TipStatistics.DisplayAgain";
 	private static TipPriority TIP_PRIORITY = TipPriority.LOW;
 
 	/**

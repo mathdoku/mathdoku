@@ -47,7 +47,7 @@ public abstract class GooglePlayServiceFragmentActivity extends
 
 	// The game helper object. This class is mainly a wrapper around this
 	// object.
-	protected GameHelper mHelper;
+	private GameHelper mGameHelper;
 
 	// Request code to be used when invoking other Activities to complete the
 	// sign-in flow.
@@ -59,19 +59,21 @@ public abstract class GooglePlayServiceFragmentActivity extends
 
 	// We expose these constants here because we don't want users of this class
 	// to have to know about GameHelper at all.
-	public static final int CLIENT_GAMES = GameHelper.CLIENT_GAMES;
+	@SuppressWarnings("WeakerAccess")
+	private static final int CLIENT_GAMES = GameHelper.CLIENT_GAMES;
 	public static final int CLIENT_APPSTATE = GameHelper.CLIENT_APPSTATE;
 	public static final int CLIENT_PLUS = GameHelper.CLIENT_PLUS;
 	public static final int CLIENT_ALL = GameHelper.CLIENT_ALL;
 
 	// Requested clients. By default, that's just the games client.
-	protected int mRequestedClients = CLIENT_GAMES;
+	@SuppressWarnings("WeakerAccess")
+	private int mRequestedClients = CLIENT_GAMES;
 
 	// stores any additional scopes.
 	private String[] mAdditionalScopes;
 
-	protected String mDebugTag = "GooglePlayServiceFragmentActivity";
-	protected boolean mDebugLog = false;
+	private String mDebugTag = "GooglePlayServiceFragmentActivity";
+	private boolean mDebugLog = false;
 
 	/**
 	 * Constructs a GooglePlayServiceFragmentActivity with default client
@@ -79,7 +81,7 @@ public abstract class GooglePlayServiceFragmentActivity extends
 	 */
 	protected GooglePlayServiceFragmentActivity() {
 		super();
-		mHelper = new GameHelper(this);
+		mGameHelper = new GameHelper(this);
 	}
 
 	/**
@@ -110,8 +112,7 @@ public abstract class GooglePlayServiceFragmentActivity extends
 	 *            . Scopes that should also be requested when the auth request
 	 *            is made.
 	 */
-	protected void setRequestedClients(int requestedClients,
-			String... additionalScopes) {
+	void setRequestedClients(int requestedClients, String... additionalScopes) {
 		mRequestedClients = requestedClients;
 		mAdditionalScopes = additionalScopes;
 	}
@@ -119,93 +120,93 @@ public abstract class GooglePlayServiceFragmentActivity extends
 	@Override
 	public void onCreate(Bundle b) {
 		super.onCreate(b);
-		mHelper = new GameHelper(this);
+		mGameHelper = new GameHelper(this);
 		if (mDebugLog) {
-			mHelper.enableDebugLog(mDebugLog, mDebugTag);
+			mGameHelper.enableDebugLog(mDebugLog, mDebugTag);
 		}
-		mHelper.setup(this, mRequestedClients, mAdditionalScopes);
+		mGameHelper.setup(this, mRequestedClients, mAdditionalScopes);
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-		mHelper.onStart(this);
+		mGameHelper.onStart(this);
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
-		mHelper.onStop();
+		mGameHelper.onStop();
 	}
 
 	@Override
 	protected void onActivityResult(int request, int response, Intent data) {
 		super.onActivityResult(request, response, data);
-		mHelper.onActivityResult(request, response, data);
+		mGameHelper.onActivityResult(request, response, data);
 	}
 
 	protected GamesClient getGamesClient() {
-		return mHelper.getGamesClient();
+		return mGameHelper.getGamesClient();
 	}
 
 	protected AppStateClient getAppStateClient() {
-		return mHelper.getAppStateClient();
+		return mGameHelper.getAppStateClient();
 	}
 
 	protected PlusClient getPlusClient() {
-		return mHelper.getPlusClient();
+		return mGameHelper.getPlusClient();
 	}
 
 	protected boolean isSignedIn() {
-		return mHelper.isSignedIn();
+		return mGameHelper.isSignedIn();
 	}
 
 	protected void beginUserInitiatedSignIn() {
-		mHelper.beginUserInitiatedSignIn();
+		mGameHelper.beginUserInitiatedSignIn();
 	}
 
 	protected void signOut() {
-		mHelper.signOut();
+		mGameHelper.signOut();
 	}
 
 	protected void showAlert(String title, String message) {
-		mHelper.showAlert(title, message);
+		mGameHelper.showAlert(title, message);
 	}
 
 	protected void showAlert(String message) {
-		mHelper.showAlert(message);
+		mGameHelper.showAlert(message);
 	}
 
 	@SuppressWarnings("SameParameterValue")
 	protected void enableDebugLog(boolean enabled, String tag) {
 		mDebugLog = enabled;
 		mDebugTag = tag;
-		if (mHelper != null) {
-			mHelper.enableDebugLog(enabled, tag);
+		if (mGameHelper != null) {
+			mGameHelper.enableDebugLog(enabled, tag);
 		}
 	}
 
 	protected String getInvitationId() {
-		return mHelper.getInvitationId();
+		return mGameHelper.getInvitationId();
 	}
 
 	protected void reconnectClients(int whichClients) {
-		mHelper.reconnectClients(whichClients);
+		mGameHelper.reconnectClients(whichClients);
 	}
 
 	protected String getScopes() {
-		return mHelper.getScopes();
+		return mGameHelper.getScopes();
 	}
 
 	protected String[] getScopesArray() {
-		return mHelper.getScopesArray();
+		return mGameHelper.getScopesArray();
 	}
 
 	protected boolean hasSignInError() {
-		return mHelper.hasSignInError();
+		return mGameHelper.hasSignInError();
 	}
 
 	protected GameHelper.SignInFailureReason getSignInError() {
-		return mHelper.getSignInError();
+		return mGameHelper.getSignInError();
 	}
 }

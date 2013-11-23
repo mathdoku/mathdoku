@@ -8,7 +8,7 @@ import android.content.Context;
 
 public class TipCopyCellValues extends TipDialog {
 
-	public static String TIP_NAME = "Tip.CopyCellValues.DisplayAgain";
+	private static String TIP_NAME = "Tip.CopyCellValues.DisplayAgain";
 	private static TipPriority TIP_PRIORITY = TipPriority.LOW;
 
 	/**

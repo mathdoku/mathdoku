@@ -59,14 +59,14 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 	 * memory and is a best practice when allowing navigation between objects in
 	 * a potentially large collection.
 	 */
-	ArchiveFragmentStatePagerAdapter mArchiveFragmentStatePagerAdapter;
+	private ArchiveFragmentStatePagerAdapter mArchiveFragmentStatePagerAdapter;
 
 	/**
 	 * The {@link android.support.v4.view.ViewPager} that will display the
 	 * object collection.
 	 */
-	ViewPager mViewPager;
-	ActionBar mActionBar;
+	private ViewPager mViewPager;
+	private ActionBar mActionBar;
 
 	// Should filters be shown?
 	private boolean mShowStatusFilter;
@@ -256,7 +256,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 	 * Returns: True in case the status spinner should be shown. False
 	 * otherwise.
 	 */
-	protected void setStatusSpinner() {
+	void setStatusSpinner() {
 		Spinner spinner = (Spinner) mActionBar.getCustomView().findViewById(
 				R.id.spinner_status);
 		if (!mShowStatusFilter
@@ -342,7 +342,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 	 * 
 	 * Returns: True in case the sizes spinner should be shown. False otherwise.
 	 */
-	protected void setSizeSpinner() {
+	void setSizeSpinner() {
 		Spinner spinner = (Spinner) mActionBar.getCustomView().findViewById(
 				R.id.spinner_size);
 		if (!mShowSizeFilter

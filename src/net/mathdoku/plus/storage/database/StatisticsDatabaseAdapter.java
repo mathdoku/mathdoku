@@ -27,7 +27,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	private static final String TAG = "MathDoku.StatisticsDatabaseAdapter";
 
 	@SuppressWarnings("PointlessBooleanExpression")
-	public static final boolean DEBUG_SQL = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
+	private static final boolean DEBUG_SQL = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 
 	// Columns for table statistics
 	private static final String TABLE = "statistics";
@@ -36,20 +36,20 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	private static final String KEY_REPLAY = "replay";
 	private static final String KEY_FIRST_MOVE = "first_move";
 	private static final String KEY_LAST_MOVE = "last_move";
-	public static final String KEY_ELAPSED_TIME = "elapsed_time";
-	public static final String KEY_CHEAT_PENALTY_TIME = "cheat_penalty_time";
-	public static final String KEY_CELLS_FILLED = "cells_filled";
-	public static final String KEY_CELLS_EMPTY = "cells_empty";
-	public static final String KEY_CELLS_REVEALED = "cells_revealed";
-	public static final String KEY_USER_VALUES_REPLACED = "user_value_replaced";
-	public static final String KEY_POSSIBLES = "possibles";
-	public static final String KEY_ACTION_UNDOS = "action_undos";
-	public static final String KEY_ACTION_CLEAR_CELL = "action_clear_cells";
-	public static final String KEY_ACTION_CLEAR_GRID = "action_clear_grid";
-	public static final String KEY_ACTION_REVEAL_CELL = "action_reveal_cell";
-	public static final String KEY_ACTION_REVEAL_OPERATOR = "action_reveal_operators";
-	public static final String KEY_ACTION_CHECK_PROGRESS = "action_check_progress";
-	public static final String KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND = "check_progress_invalid_cells_found";
+	private static final String KEY_ELAPSED_TIME = "elapsed_time";
+	private static final String KEY_CHEAT_PENALTY_TIME = "cheat_penalty_time";
+	private static final String KEY_CELLS_FILLED = "cells_filled";
+	private static final String KEY_CELLS_EMPTY = "cells_empty";
+	private static final String KEY_CELLS_REVEALED = "cells_revealed";
+	private static final String KEY_USER_VALUES_REPLACED = "user_value_replaced";
+	private static final String KEY_POSSIBLES = "possibles";
+	private static final String KEY_ACTION_UNDOS = "action_undos";
+	private static final String KEY_ACTION_CLEAR_CELL = "action_clear_cells";
+	private static final String KEY_ACTION_CLEAR_GRID = "action_clear_grid";
+	private static final String KEY_ACTION_REVEAL_CELL = "action_reveal_cell";
+	private static final String KEY_ACTION_REVEAL_OPERATOR = "action_reveal_operators";
+	private static final String KEY_ACTION_CHECK_PROGRESS = "action_check_progress";
+	private static final String KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND = "check_progress_invalid_cells_found";
 	private static final String KEY_ACTION_REVEAL_SOLUTION = "action_reveal_solution";
 	private static final String KEY_SOLVED_MANUALLY = "solved_manually";
 	private static final String KEY_FINISHED = "finished";
@@ -86,7 +86,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 * 
 	 * @return The SQL create statement for this table.
 	 */
-	protected static String buildCreateSQL() {
+	private static String buildCreateSQL() {
 		return createTable(
 				TABLE,
 				createColumn(KEY_ROWID, "integer", "primary key autoincrement"),
@@ -145,7 +145,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 * @param db
 	 *            The database in which the table has to be created.
 	 */
-	protected static void create(SQLiteDatabase db) {
+	static void create(SQLiteDatabase db) {
 		String sql = buildCreateSQL();
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			Log.i(TAG, sql);
@@ -167,8 +167,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 *            The new version of the database. Use the app revision number
 	 *            to identify the database version.
 	 */
-	protected static void upgrade(SQLiteDatabase db, int oldVersion,
-			int newVersion) {
+	static void upgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		if (oldVersion < 438 && newVersion >= 438) {
 			// In development and beta revisions the table is simply dropped and
 			// recreated.
@@ -239,7 +238,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 *            The unique row id of the statistics to be found.
 	 * @return The grid statistics for the given id. Null in case of an error.
 	 */
-	public GridStatistics get(int id) {
+	GridStatistics get(int id) {
 		GridStatistics gridStatistics = null;
 		Cursor cursor = null;
 		try {
@@ -805,7 +804,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 * @return The prefixed column name.
 	 */
 	@SuppressWarnings("SameParameterValue")
-	public static String getPrefixedColumnName(String column) {
+	private static String getPrefixedColumnName(String column) {
 		return TABLE + "." + column;
 	}
 

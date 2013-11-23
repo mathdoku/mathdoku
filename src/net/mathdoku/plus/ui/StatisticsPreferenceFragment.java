@@ -7,10 +7,10 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 
-public class StatisticsPreferenceFragment extends PreferenceFragment implements
+class StatisticsPreferenceFragment extends PreferenceFragment implements
 		OnSharedPreferenceChangeListener {
 
-	SharedPreferences mSharedPreferences;
+	private SharedPreferences mSharedPreferences;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -47,7 +47,7 @@ public class StatisticsPreferenceFragment extends PreferenceFragment implements
 	 * Set summary for option "maximum games elapsed time chart" based on
 	 * current value of the option.
 	 */
-	public void setMaximumGamesElapsedTimeChart() {
+	void setMaximumGamesElapsedTimeChart() {
 		findPreference(
 				Preferences.STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES)
 				.setSummary(

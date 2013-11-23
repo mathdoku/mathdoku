@@ -84,30 +84,35 @@ public class GameHelper implements
 	}
 
 	// States we can be in
+	@SuppressWarnings("WeakerAccess")
 	public static final int STATE_UNCONFIGURED = 0;
+	@SuppressWarnings("WeakerAccess")
 	public static final int STATE_DISCONNECTED = 1;
+	@SuppressWarnings("WeakerAccess")
 	public static final int STATE_CONNECTING = 2;
+	@SuppressWarnings("WeakerAccess")
 	public static final int STATE_CONNECTED = 3;
 
 	// State names (for debug logging, etc)
+	@SuppressWarnings("WeakerAccess")
 	public static final String[] STATE_NAMES = { "UNCONFIGURED",
 			"DISCONNECTED", "CONNECTING", "CONNECTED" };
 
 	// State we are in right now
-	int mState = STATE_UNCONFIGURED;
+	private int mState = STATE_UNCONFIGURED;
 
 	// Are we expecting the result of a resolution flow?
-	boolean mExpectingResolution = false;
+	private boolean mExpectingResolution = false;
 
 	/**
 	 * The Activity we are bound to. We need to keep a reference to the Activity
 	 * because some games methods require an Activity (a Context won't do). We
 	 * are careful not to leak these references: we release them on onStop().
 	 */
-	Activity mActivity = null;
+	private Activity mActivity = null;
 
 	// OAuth scopes required for the clients. Initialized in setup().
-	String mScopes[];
+	private String[] mScopes;
 
 	// Request code we use when invoking other Activities to complete the
 	// sign-in flow.
@@ -117,11 +122,12 @@ public class GameHelper implements
 	final static int RC_UNUSED = 9002;
 
 	// Client objects we manage. If a given client is not enabled, it is null.
-	GamesClient mGamesClient = null;
-	PlusClient mPlusClient = null;
-	AppStateClient mAppStateClient = null;
+	private GamesClient mGamesClient = null;
+	private PlusClient mPlusClient = null;
+	private AppStateClient mAppStateClient = null;
 
 	// What clients we manage (OR-able values, can be combined as flags)
+	@SuppressWarnings("WeakerAccess")
 	public final static int CLIENT_NONE = 0x00;
 	public final static int CLIENT_GAMES = 0x01;
 	public final static int CLIENT_PLUS = 0x02;
@@ -130,16 +136,16 @@ public class GameHelper implements
 			| CLIENT_APPSTATE;
 
 	// What clients were requested? (bit flags)
-	int mRequestedClients = CLIENT_NONE;
+	private int mRequestedClients = CLIENT_NONE;
 
 	// What clients are currently connected? (bit flags)
-	int mConnectedClients = CLIENT_NONE;
+	private int mConnectedClients = CLIENT_NONE;
 
 	// What client are we currently connecting?
-	int mClientCurrentlyConnecting = CLIENT_NONE;
+	private int mClientCurrentlyConnecting = CLIENT_NONE;
 
 	// Whether to automatically try to sign in on onStart().
-	boolean mAutoSignIn = true;
+	private boolean mAutoSignIn = true;
 
 	/*
 	 * Whether user has specifically requested that the sign-in process begin.
@@ -147,26 +153,26 @@ public class GameHelper implements
 	 * that we try once the Activity is started -- if true, then the user has
 	 * already clicked a "Sign-In" button or something similar
 	 */
-	boolean mUserInitiatedSignIn = false;
+	private boolean mUserInitiatedSignIn = false;
 
 	// The connection result we got from our last attempt to sign-in.
-	ConnectionResult mConnectionResult = null;
+	private ConnectionResult mConnectionResult = null;
 
 	// The error that happened during sign-in.
-	SignInFailureReason mSignInFailureReason = null;
+	private SignInFailureReason mSignInFailureReason = null;
 
 	// Print debug logs?
-	boolean mDebugLog = false;
-	String mDebugTag = "GameHelper";
+	private boolean mDebugLog = false;
+	private String mDebugTag = "GameHelper";
 
 	/*
 	 * If we got an invitation id when we connected to the games client, it's
 	 * here. Otherwise, it's null.
 	 */
-	String mInvitationId;
+	private String mInvitationId;
 
 	// Listener
-	GameHelperListener mListener = null;
+	private GameHelperListener mListener = null;
 
 	/**
 	 * Construct a GameHelper object, initially tied to the given Activity.
@@ -557,7 +563,7 @@ public class GameHelper implements
 		setState(STATE_DISCONNECTED);
 	}
 
-	static String activityResponseCodeToString(int respCode) {
+	private static String activityResponseCodeToString(int respCode) {
 		switch (respCode) {
 		case Activity.RESULT_OK:
 			return "RESULT_OK";
@@ -1084,7 +1090,7 @@ public class GameHelper implements
 		Log.e(mDebugTag, "*** GameHelper ERROR: " + message);
 	}
 
-	static String errorCodeToString(int errorCode) {
+	private static String errorCodeToString(int errorCode) {
 		switch (errorCode) {
 		case ConnectionResult.DEVELOPER_ERROR:
 			return "DEVELOPER_ERROR(" + errorCode + ")";

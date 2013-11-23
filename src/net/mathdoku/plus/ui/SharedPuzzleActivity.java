@@ -29,7 +29,7 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 	public static final String RESTART_LAST_GAME_SHARED_PUZZLE = "RestartLastGame";
 
 	// The grid constructed from the share url
-	Grid mGrid;
+	private Grid mGrid;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

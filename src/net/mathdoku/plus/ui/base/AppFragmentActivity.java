@@ -16,7 +16,7 @@ public class AppFragmentActivity extends FragmentActivity implements
 		OnSharedPreferenceChangeListener {
 
 	// Preferences
-	public Preferences mMathDokuPreferences;
+	protected Preferences mMathDokuPreferences;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

@@ -13,15 +13,15 @@ import android.support.v4.app.FragmentStatePagerAdapter;
  * A {@link android.support.v4.app.FragmentStatePagerAdapter} that returns a
  * fragment representing an object in the collection.
  */
-public class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
+class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 
 	// Remove "&& false" in following line to show the solving attempt id in the
 	// pager title of the archive.
 	@SuppressWarnings("PointlessBooleanExpression")
-	public static final boolean DEBUG_SHOW_SOLVING_ATTEMPT_ID = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
+	private static final boolean DEBUG_SHOW_SOLVING_ATTEMPT_ID = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 
-	public static final int UNKNOWN_GRID_ID = -1;
-	public static final int INVALID_POSITION_ID = -2;
+	private static final int UNKNOWN_GRID_ID = -1;
+	private static final int INVALID_POSITION_ID = -2;
 
 	private final ArchiveFragmentActivity mArchiveFragmentActivity;
 

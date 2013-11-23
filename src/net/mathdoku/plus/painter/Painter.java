@@ -226,7 +226,7 @@ public class Painter {
 	 * 
 	 * @return The color for default text.
 	 */
-	protected int getDefaultTextColor() {
+	int getDefaultTextColor() {
 		return mDefaultTextColor;
 	}
 

@@ -19,18 +19,18 @@ public class GridViewerView extends View {
 	private static final String TAG = "MathDoku.GridViewerView";
 
 	// Context and preferences in context
-	protected Context mContext;
-	protected Preferences mPreferences;
+	Context mContext;
+	Preferences mPreferences;
 
 	// Actual content of the puzzle in this grid view
-	protected Grid mGrid;
+	Grid mGrid;
 
 	// Size (in cells and pixels) of the grid view and size (in pixel) of cells
 	// in grid
-	protected int mGridSize;
-	protected float mViewSize;
-	protected float mBorderWidth;
-	protected float mGridCellSize;
+	int mGridSize;
+	private float mViewSize;
+	float mBorderWidth;
+	float mGridCellSize;
 
 	// Reference to the global grid painter object
 	private GridPainter mGridPainter;
@@ -52,17 +52,17 @@ public class GridViewerView extends View {
 	// visible grid.
 	private boolean mSwipeBorder;
 
-	public GridViewerView(Context context) {
+	GridViewerView(Context context) {
 		super(context);
 		initGridView(context);
 	}
 
-	public GridViewerView(Context context, AttributeSet attrs) {
+	GridViewerView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		initGridView(context);
 	}
 
-	public GridViewerView(Context context, AttributeSet attrs, int defStyle) {
+	GridViewerView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		initGridView(context);
 	}
@@ -106,7 +106,7 @@ public class GridViewerView extends View {
 	 * @param canvas
 	 *            The canvas on which should be drawn.
 	 */
-	protected void onDrawLocked(Canvas canvas) {
+	void onDrawLocked(Canvas canvas) {
 		// Avoid redrawing at the same time as
 		// creating
 		if (mGridSize < 3)
@@ -151,7 +151,7 @@ public class GridViewerView extends View {
 	 * 
 	 * @return The current grid input mode.
 	 */
-	protected GridInputMode getRestrictedGridInputMode() {
+	GridInputMode getRestrictedGridInputMode() {
 		return GridInputMode.NORMAL;
 	}
 
@@ -248,7 +248,7 @@ public class GridViewerView extends View {
 	/**
 	 * Get the orientation of the device.
 	 */
-	protected int getOrientation() {
+	int getOrientation() {
 		return mOrientation;
 	}
 
@@ -257,7 +257,7 @@ public class GridViewerView extends View {
 	 * 
 	 * @return The grid which is displayed in the grid viewer view.
 	 */
-	protected Grid getGrid() {
+	Grid getGrid() {
 		return mGrid;
 	}
 
@@ -295,7 +295,7 @@ public class GridViewerView extends View {
 	 *            True in case an additional swipe border has to be measured by
 	 *            the viewer. False otherwise.
 	 */
-	public void setSwipeBorder(boolean swipeBorder) {
+	void setSwipeBorder(boolean swipeBorder) {
 		mSwipeBorder = swipeBorder;
 	}
 }

@@ -41,7 +41,7 @@ public class LeaderboardFragmentActivity extends
 	 * {@link android.support.v4.app.FragmentPagerAdapter} derivative is used,
 	 * which will keep every loaded fragment in memory.
 	 */
-	LeaderboardFragmentPagerAdapter mLeaderboardFragmentPagerAdapter;
+	private LeaderboardFragmentPagerAdapter mLeaderboardFragmentPagerAdapter;
 
 	/**
 	 * The {@link ViewPager} that will display the leaderboard fragments , one
@@ -318,7 +318,7 @@ public class LeaderboardFragmentActivity extends
 	 * Returns: True in case the filter spinner should be shown. False
 	 * otherwise.
 	 */
-	protected void setFilterSpinner(LeaderboardFilter leaderboardFilter) {
+	void setFilterSpinner(LeaderboardFilter leaderboardFilter) {
 		Spinner spinner = (Spinner) mActionBar.getCustomView().findViewById(
 				R.id.leaderboard_filter_spinner);
 		ArrayAdapter<String> adapterStatus = new ArrayAdapter<String>(this,

@@ -7,7 +7,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 
 public class Util {
-	public final static String TAG = "MathDoku.Util";
+	private final static String TAG = "MathDoku.Util";
 
 	// Home directory url of promotion website. Most url's used in this app will
 	// be forwarded from the promotion website to code.google.com/p/mathdoku.

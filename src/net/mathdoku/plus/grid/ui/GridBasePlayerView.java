@@ -44,14 +44,14 @@ public class GridBasePlayerView extends GridViewerView implements
 	private Motion mMotion;
 
 	// Handler and runnable for touch actions which need a delay
-	protected Handler mTouchHandler;
+	Handler mTouchHandler;
 
 	// Listeners
 	public abstract class OnGridTouchListener {
 		public abstract void gridTouched(GridCell cell);
 	}
 
-	public OnGridTouchListener mTouchedListener;
+	OnGridTouchListener mTouchedListener;
 
 	// In case the copy input mode is activated some additional information
 	// needs to be stored.
@@ -65,17 +65,17 @@ public class GridBasePlayerView extends GridViewerView implements
 
 	private CopyInputModeState mCopyInputModeState;
 
-	public GridBasePlayerView(Context context) {
+	GridBasePlayerView(Context context) {
 		super(context);
 		initGridView(context);
 	}
 
-	public GridBasePlayerView(Context context, AttributeSet attrs) {
+	GridBasePlayerView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		initGridView(context);
 	}
 
-	public GridBasePlayerView(Context context, AttributeSet attrs, int defStyle) {
+	GridBasePlayerView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		initGridView(context);
 	}
@@ -428,7 +428,7 @@ public class GridBasePlayerView extends GridViewerView implements
 	 * another input mode than return to either normal or maybe mode dependent
 	 * on which of these modes was used last.
 	 */
-	public void toggleInputMode() {
+	void toggleInputMode() {
 		switch (mInputMode) {
 		case NORMAL:
 			setGridInputMode(GridInputMode.MAYBE, false);

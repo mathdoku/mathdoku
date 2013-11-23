@@ -9,12 +9,12 @@ import android.os.AsyncTask;
 public class GameTimer extends AsyncTask<Void, Long, Long> {
 
 	// Reference to activity that started the timer.
-	public PuzzleFragment mPuzzleFragment;
+	private PuzzleFragment mPuzzleFragment;
 
 	// Starting point of timer. Note this is not the real time at which the game
 	// started but the actual time at which the timer started minus the time
 	// elapsed until then.
-	public Long mStartTime;
+	private Long mStartTime;
 
 	// Time elapsed while (dis)playing the current grid.
 	public Long mElapsedTime = (long) 0;
@@ -72,7 +72,7 @@ public class GameTimer extends AsyncTask<Void, Long, Long> {
 	/**
 	 * Add a penalty to the elapsed time because of using the given cheat.
 	 * 
-	 * @param cheatPenaltyType
+	 * @param cheat
 	 *            The cheat for which the elapsed time has to be increased.
 	 */
 	public void addCheatPenaltyTime(Cheat cheat) {
@@ -82,13 +82,13 @@ public class GameTimer extends AsyncTask<Void, Long, Long> {
 	/**
 	 * Add a penalty to the elapsed time because of using the given cheat.
 	 * 
-	 * @param cheatPenaltyType
+	 * @param cheat
 	 *            The cheat for which the elapsed time has to be increased.
-	 * @param occurences
+	 * @param occurrences
 	 *            The number of occurrences this penalty has to be added.
 	 */
 	@SuppressWarnings("SameParameterValue")
-	public void addCheatPenaltyTime(Cheat cheat, int occurrences) {
+	void addCheatPenaltyTime(Cheat cheat, int occurrences) {
 		// Determine penalty time for just one occurrence
 		long cheatPenaltyTime = cheat.getPenaltyTimeMilis() * occurrences;
 

@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one
  * of statistics pages.
  */
-public class StatisticsFragmentPagerAdapter extends FragmentPagerAdapter {
+class StatisticsFragmentPagerAdapter extends FragmentPagerAdapter {
 
 	private static final int FRAGMENT_ID_GRID_SIZE_STATS_4 = 0;
 	private static final int FRAGMENT_ID_GRID_SIZE_STATS_5 = 1;

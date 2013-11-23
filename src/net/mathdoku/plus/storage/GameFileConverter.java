@@ -34,7 +34,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	private final int mNewVersion;
 
 	// Solving attempts to be converted
-	ArrayList<Integer> solvingAttemptIds;
+	private ArrayList<Integer> solvingAttemptIds;
 
 	// The dialog for this task
 	private ProgressDialog mProgressDialog;
@@ -195,7 +195,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	 * Dismisses the progress dialog which was shown on start of this ASync
 	 * task. The ASync task however still keeps running until finished.
 	 */
-	public void dismissProgressDialog() {
+	void dismissProgressDialog() {
 		if (mProgressDialog != null) {
 			mProgressDialog.dismiss();
 			mProgressDialog = null;

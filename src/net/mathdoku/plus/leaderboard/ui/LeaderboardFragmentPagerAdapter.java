@@ -9,7 +9,7 @@ import android.support.v4.view.ViewPager;
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one
  * of leaderboard pages.
  */
-public class LeaderboardFragmentPagerAdapter extends FragmentPagerAdapter {
+class LeaderboardFragmentPagerAdapter extends FragmentPagerAdapter {
 	public final static String TAG = "MathDoku.LeaderboardFragmentPagerAdapter";
 
 	private static final int FRAGMENT_ID_GRID_SIZE_4 = 0;
@@ -24,7 +24,7 @@ public class LeaderboardFragmentPagerAdapter extends FragmentPagerAdapter {
 			FRAGMENT_ID_GRID_SIZE_9 };
 
 	// Context
-	LeaderboardFragmentActivity mLeaderboardFragmentActivity;
+	private LeaderboardFragmentActivity mLeaderboardFragmentActivity;
 
 	public LeaderboardFragmentPagerAdapter(
 			LeaderboardFragmentActivity leaderboardFragmentActivity,

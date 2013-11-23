@@ -13,7 +13,7 @@ import android.util.Log;
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-	static final String TAG = "MathDoku.DatabaseHelper";
+	private static final String TAG = "MathDoku.DatabaseHelper";
 
 	public static final String DATABASE_NAME = "MathDoku.sqlite";
 

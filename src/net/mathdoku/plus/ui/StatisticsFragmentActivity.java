@@ -26,13 +26,13 @@ public class StatisticsFragmentActivity extends AppFragmentActivity implements
 	 * {@link android.support.v4.app.FragmentPagerAdapter} derivative is used,
 	 * which will keep every loaded fragment in memory.
 	 */
-	StatisticsFragmentPagerAdapter mStatisticsFragmentPagerAdapter;
+	private StatisticsFragmentPagerAdapter mStatisticsFragmentPagerAdapter;
 
 	/**
 	 * The {@link ViewPager} that will display the statistics fragments , one at
 	 * a time.
 	 */
-	ViewPager mViewPager;
+	private ViewPager mViewPager;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

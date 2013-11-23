@@ -15,7 +15,7 @@ public class SwipeMotion extends Motion {
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
 	@SuppressWarnings("PointlessBooleanExpression")
-	public static final boolean DEBUG_SWIPE_MOTION = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
+	private static final boolean DEBUG_SWIPE_MOTION = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 
 	// Possible statuses of the swipe motion
 	private enum Status {
@@ -29,7 +29,7 @@ public class SwipeMotion extends Motion {
 	private boolean mVisible;
 
 	// Constant for an undetermined result of the swipe motion
-	protected static final int DIGIT_UNDETERMINDED = -1;
+	private static final int DIGIT_UNDETERMINDED = -1;
 
 	// The grid player view for which a swipe motion is made.
 	private final GridPlayerView mGridPlayerView;
@@ -64,8 +64,8 @@ public class SwipeMotion extends Motion {
 	// arranged clockwise.
 	// The swipe angle offset is used for the segment boundary between digits 9
 	// and 1.
-	public final static int SWIPE_ANGLE_OFFSET_91 = -170;
-	public final static int SWIPE_SEGMENT_ANGLE = 360 / 9;
+	private final static int SWIPE_ANGLE_OFFSET_91 = -170;
+	private final static int SWIPE_SEGMENT_ANGLE = 360 / 9;
 
 	// Listener
 	public interface Listener {
@@ -80,7 +80,7 @@ public class SwipeMotion extends Motion {
 		public void onNoSelectableDigit();
 	}
 
-	public Listener mListener;
+	private Listener mListener;
 
 	/**
 	 * Creates a new instance of the {@see SwipeMotion}.
@@ -88,8 +88,8 @@ public class SwipeMotion extends Motion {
 	 * @param grid
 	 *            The grid for which a swipe motion is made.
 	 */
-	protected SwipeMotion(GridPlayerView gridPlayerView,
-			float gridViewBorderWidth, float gridCellSize) {
+	SwipeMotion(GridPlayerView gridPlayerView, float gridViewBorderWidth,
+			float gridCellSize) {
 		super(gridPlayerView, gridViewBorderWidth, gridCellSize);
 
 		mGridPlayerView = gridPlayerView;
@@ -107,7 +107,7 @@ public class SwipeMotion extends Motion {
 	 * @return True in case a grid cell has been touched. False otherwise.
 	 */
 	@Override
-	protected void setTouchDownEvent(MotionEvent event) {
+	void setTouchDownEvent(MotionEvent event) {
 		// Register touch down event at superclass (including updating the
 		// current mTouchDownCellCoordinates)
 		super.setTouchDownEvent(event);
@@ -151,7 +151,7 @@ public class SwipeMotion extends Motion {
 	/**
 	 * Registers the swipe motion as released.
 	 */
-	protected void release(MotionEvent event) {
+	void release(MotionEvent event) {
 		if (mStatus == Status.INIT) {
 			// Swipe motion is not yet started from inside of grid cell. Nothing
 			// to do here.
@@ -180,7 +180,7 @@ public class SwipeMotion extends Motion {
 	 * 
 	 * @return True in case the motion is visible. False otherwise.
 	 */
-	protected boolean isVisible() {
+	boolean isVisible() {
 		return mVisible;
 	}
 
@@ -190,7 +190,7 @@ public class SwipeMotion extends Motion {
 	 * @param visible
 	 *            True in case the swipe motion has been drawn. False otherwise.
 	 */
-	protected void setVisible(boolean visible) {
+	void setVisible(boolean visible) {
 		mVisible = visible;
 	}
 
@@ -200,7 +200,7 @@ public class SwipeMotion extends Motion {
 	 * @return True in case the motion has been released but not yet completed.
 	 *         False otherwise.
 	 */
-	protected boolean isReleased() {
+	boolean isReleased() {
 		return (mStatus == Status.RELEASED);
 	}
 
@@ -209,14 +209,14 @@ public class SwipeMotion extends Motion {
 	 * 
 	 * @return True in case the motion has finished completely. False otherwise.
 	 */
-	protected boolean isFinished() {
+	boolean isFinished() {
 		return (mStatus == Status.FINISHED);
 	}
 
 	/**
 	 * Set the swipe motion as completed.
 	 */
-	protected void finish() {
+	void finish() {
 		if (mStatus == Status.RELEASED) {
 			mStatus = Status.FINISHED;
 		} else if (mStatus == Status.FINISHED) {
@@ -233,7 +233,7 @@ public class SwipeMotion extends Motion {
 	 * 
 	 * @return The x-coordinate of the current swipe position.
 	 */
-	protected float getCurrentSwipePositionX() {
+	float getCurrentSwipePositionX() {
 		return mCurrentSwipePositionPixelCoordinates[X_POS];
 	}
 
@@ -242,7 +242,7 @@ public class SwipeMotion extends Motion {
 	 * 
 	 * @return The y-coordinate of the current swipe position.
 	 */
-	protected float getCurrentSwipePositionY() {
+	float getCurrentSwipePositionY() {
 		return mCurrentSwipePositionPixelCoordinates[Y_POS];
 	}
 
@@ -276,7 +276,7 @@ public class SwipeMotion extends Motion {
 	 *            The event which holding the current swipe position.
 	 * @return True in case a digit has been determined. False otherwise.
 	 */
-	protected boolean update(MotionEvent motionEvent) {
+	boolean update(MotionEvent motionEvent) {
 		if (mStatus == Status.INIT) {
 			// Movement has not yet started inside a grid cell.
 			mCurrentSwipePositionDigit = DIGIT_UNDETERMINDED;
@@ -463,7 +463,7 @@ public class SwipeMotion extends Motion {
 	 * @return True in case the current swipe position needs to be updated.
 	 *         False otherwise.
 	 */
-	protected boolean needToUpdateCurrentSwipePosition() {
+	boolean needToUpdateCurrentSwipePosition() {
 		if (mStatus == Status.INIT) {
 			// Swipe motion has not started inside grid cell. Nothing to do
 			// here.
@@ -506,7 +506,7 @@ public class SwipeMotion extends Motion {
 	 * 
 	 * @return
 	 */
-	protected boolean hasChangedDigit() {
+	boolean hasChangedDigit() {
 		return (mPreviousSwipePositionDigit != mCurrentSwipePositionDigit);
 	}
 

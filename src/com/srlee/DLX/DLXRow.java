@@ -1,9 +1,9 @@
 package com.srlee.DLX;
 
-public class DLXRow {
+class DLXRow {
 	public DLXRow(DLXNode first) {
 		FirstNode = first;
 	}
 
-	public DLXNode FirstNode;
+	private DLXNode FirstNode;
 }

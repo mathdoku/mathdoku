@@ -6,7 +6,7 @@ import java.util.Random;
 import android.util.Log;
 
 public class CageTypeGenerator {
-	public static final String TAG = "MathDoku.CageTypeGenerator";
+	private static final String TAG = "MathDoku.CageTypeGenerator";
 
 	/**
 	 * Size of largest cages to be generated. Be careful with adjusting this

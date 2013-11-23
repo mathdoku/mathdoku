@@ -14,8 +14,8 @@ public class MaybeValuePainter extends DigitPainter {
 	private float mCellSize;
 
 	// Size of regions to draw maybe digit
-	protected float mMaybeDigitWidth;
-	protected float mMaybeDigitHeight;
+	private float mMaybeDigitWidth;
+	private float mMaybeDigitHeight;
 
 	/**
 	 * Creates a new instance of {@link GridPainter}.

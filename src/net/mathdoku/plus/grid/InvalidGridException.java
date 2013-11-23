@@ -4,7 +4,7 @@ public class InvalidGridException extends ExceptionInInitializerError {
 
 	private static final long serialVersionUID = -1502716956881113470L;
 
-	String mErrorMessage;
+	private String mErrorMessage;
 
 	/**
 	 * Creates a new instance of {@link InvalidGridException}.

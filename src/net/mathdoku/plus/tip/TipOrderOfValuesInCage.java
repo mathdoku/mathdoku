@@ -7,7 +7,7 @@ import android.content.Context;
 
 public class TipOrderOfValuesInCage extends TipDialog {
 
-	public static String TIP_NAME = "Tip.OrderOfValuesInCage.DisplayAgain";
+	private static String TIP_NAME = "Tip.OrderOfValuesInCage.DisplayAgain";
 	private static TipPriority TIP_PRIORITY = TipPriority.LOW;
 
 	/**

@@ -17,18 +17,18 @@ public class Motion {
 
 	// Flag and timestamp for double tap detection
 	private long mDoubleTapTouchDownTime;
-	protected boolean mDoubleTapDetected;
+	private boolean mDoubleTapDetected;
 
 	// Size of the border and cells in pixels
-	protected final float mGridPlayerViewBorderWidth;
-	protected final float mGridCellSize;
+	final float mGridPlayerViewBorderWidth;
+	private final float mGridCellSize;
 
 	// The size of the grid
-	protected final int mGridSize;
+	final int mGridSize;
 
 	// Indexes for coordinates arrays
-	protected static final int X_POS = 0;
-	protected static final int Y_POS = 1;
+	static final int X_POS = 0;
+	static final int Y_POS = 1;
 
 	public Motion(GridBasePlayerView gridBasePlayerView,
 			float gridViewBorderWidth, float gridCellSize) {
@@ -50,7 +50,7 @@ public class Motion {
 	 *            swipe motion.
 	 * @return True in case a grid cell has been touched. False otherwise.
 	 */
-	protected void setTouchDownEvent(MotionEvent motionEvent) {
+	void setTouchDownEvent(MotionEvent motionEvent) {
 		// Store coordinates of previous touch down cell
 		int[] previousTouchDownCellCoordinates = mTouchDownCellCoordinates
 				.clone();
@@ -130,7 +130,7 @@ public class Motion {
 	 *         left of grid, mGridSize means right of grid. For y-position -1
 	 *         means above grid, mGridSize means below grid.
 	 */
-	protected int[] toGridCoordinates(float xPos, float yPos) {
+	int[] toGridCoordinates(float xPos, float yPos) {
 		int[] coordinates = { -1, -1 };
 
 		// Convert x-position to a column number. -1 means left of grid,
@@ -188,7 +188,7 @@ public class Motion {
 	 * @return The pixel coordinates for which the touch down event was
 	 *         registered.
 	 */
-	public float[] getTouchDownPixelCoordinates() {
+	float[] getTouchDownPixelCoordinates() {
 		return mTouchDownPixelCoordinates;
 	}
 
@@ -201,7 +201,7 @@ public class Motion {
 	 * @return The pixel coordinate for which the touch down event was
 	 *         registered.
 	 */
-	public float getTouchDownPixelCoordinate(int dimension) {
+	float getTouchDownPixelCoordinate(int dimension) {
 		return (dimension == X_POS || dimension == Y_POS ? mTouchDownPixelCoordinates[dimension]
 				: -1f);
 	}
@@ -216,7 +216,7 @@ public class Motion {
 	 *            registered.
 	 * @return True in case the coordinates match. False otherwise.
 	 */
-	protected boolean equalsCoordinatesTouchDownCell(int[] coordinates) {
+	boolean equalsCoordinatesTouchDownCell(int[] coordinates) {
 		return (coordinates != null && mTouchDownCellCoordinates != null
 				&& coordinates.length == 2
 				&& mTouchDownCellCoordinates.length == 2

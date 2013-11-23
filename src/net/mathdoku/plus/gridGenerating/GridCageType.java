@@ -19,7 +19,7 @@ public class GridCageType {
 
 	// Matrix to store the cage type. True in case the cell is part of the cage
 	// type. False in case the cell is unused.
-	public boolean[][] mUsedCells;
+	private boolean[][] mUsedCells;
 
 	/**
 	 * Creates a new instance of {@link CageType}.

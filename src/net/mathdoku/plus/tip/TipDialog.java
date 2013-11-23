@@ -22,12 +22,12 @@ import android.widget.TextView;
  * determine the preference, title, text and image to be used for this tip.
  */
 public class TipDialog extends AlertDialog {
-	public static String TAG = "Tip.TipDialog";
+	private static String TAG = "Tip.TipDialog";
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
 	@SuppressWarnings("PointlessBooleanExpression")
-	public static final boolean DEBUG_TIP_DIALOG = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
+	private static final boolean DEBUG_TIP_DIALOG = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 
 	// Context in which the tip is created.
 	private final Context mContext;
@@ -68,7 +68,7 @@ public class TipDialog extends AlertDialog {
 	 * @param priority
 	 *            The priority of this tip relative to other tip classes.
 	 */
-	public TipDialog(Context context, String tip, TipPriority priority) {
+	TipDialog(Context context, String tip, TipPriority priority) {
 		super(context);
 
 		// Store reference to activity and preferences
@@ -109,8 +109,8 @@ public class TipDialog extends AlertDialog {
 	 *            an image use value null.
 	 * @return
 	 */
-	protected TipDialog build(int tipIconResId, String tipTitle,
-			String tipText, Drawable tipImage) {
+	TipDialog build(int tipIconResId, String tipTitle, String tipText,
+			Drawable tipImage) {
 		// Check if dialog should be built.
 		if (!mDisplayAgain) {
 			return this;
@@ -244,7 +244,7 @@ public class TipDialog extends AlertDialog {
 	 * 
 	 * @return True in case the tip has to be shown. False otherwise.
 	 */
-	public boolean displayTip() {
+	boolean displayTip() {
 		return mPreferences.getTipDisplayAgain(mTip);
 	}
 
@@ -253,8 +253,8 @@ public class TipDialog extends AlertDialog {
 	 * 
 	 * @return True in case the tip has to be shown. False otherwise.
 	 */
-	public static boolean getDisplayTipAgain(Preferences preferences,
-			String tip, TipPriority priority) {
+	static boolean getDisplayTipAgain(Preferences preferences, String tip,
+			TipPriority priority) {
 		// Check do-not-show-again-preference for this tip first.
 		if (preferences.getTipDisplayAgain(tip) == false) {
 			if (DEBUG_TIP_DIALOG) {

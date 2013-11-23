@@ -6,7 +6,7 @@ import android.content.Context;
 
 public class TipBadCageMath extends TipDialog {
 
-	public static String TIP_NAME = "BadCageMath";
+	private static String TIP_NAME = "BadCageMath";
 	private static TipPriority TIP_PRIORITY = TipPriority.HIGH;
 
 	/**

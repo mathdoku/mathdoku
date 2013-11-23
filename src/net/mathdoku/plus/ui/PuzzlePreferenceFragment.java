@@ -8,10 +8,10 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
 
-public class PuzzlePreferenceFragment extends PreferenceFragment implements
+class PuzzlePreferenceFragment extends PreferenceFragment implements
 		OnSharedPreferenceChangeListener {
 
-	Preferences mPreferences;
+	private Preferences mPreferences;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

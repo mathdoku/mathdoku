@@ -3,7 +3,7 @@ package net.mathdoku.plus.util;
 public class SingletonInstanceNotInstantiated extends RuntimeException {
 	private static final long serialVersionUID = -236646178154899930L;
 
-	String mErrorMessage;
+	private String mErrorMessage;
 
 	/**
 	 * Creates a new instance of {@link SingletonInstanceNotInstantiated}.

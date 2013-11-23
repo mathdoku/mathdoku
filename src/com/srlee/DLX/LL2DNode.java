@@ -33,7 +33,7 @@ public class LL2DNode {
 		return D;
 	}
 
-	public LL2DNode() {
+	LL2DNode() {
 		L = R = U = D = null;
 	}
 

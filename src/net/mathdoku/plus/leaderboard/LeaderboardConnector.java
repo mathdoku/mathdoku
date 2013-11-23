@@ -19,7 +19,7 @@ import com.google.android.gms.games.leaderboard.OnScoreSubmittedListener;
 import com.google.android.gms.games.leaderboard.SubmitScoreResult;
 
 public class LeaderboardConnector {
-	public final static String TAG = "MathDoku.Leaderboard";
+	private final static String TAG = "MathDoku.Leaderboard";
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
@@ -164,7 +164,7 @@ public class LeaderboardConnector {
 	 * @param leaderboard
 	 * @param leaderboardScore
 	 */
-	protected void onRankCurrentPlayerReceived(Leaderboard leaderboard,
+	void onRankCurrentPlayerReceived(Leaderboard leaderboard,
 			LeaderboardScore leaderboardScore, boolean displayToast) {
 		if (leaderboard == null || leaderboardScore == null) {
 			return;
@@ -253,7 +253,7 @@ public class LeaderboardConnector {
 	 * @return The description of the leaderboard name. Null if not in DEBUG
 	 *         mode.
 	 */
-	protected String getLeaderboardNameForLogging(String leaderboardId) {
+	String getLeaderboardNameForLogging(String leaderboardId) {
 		if (DEBUG) {
 			// Check if reference list of leaderboard id is initialized.
 			if (mLeaderboardId == null) {
@@ -285,7 +285,7 @@ public class LeaderboardConnector {
 	 * 
 	 * @return The games client used by the leaderboard connector.
 	 */
-	protected GamesClient getGamesClient() {
+	GamesClient getGamesClient() {
 		return mGamesClient;
 	}
 }

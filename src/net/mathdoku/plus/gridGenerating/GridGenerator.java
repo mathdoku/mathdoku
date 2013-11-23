@@ -28,7 +28,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
 	@SuppressWarnings("PointlessBooleanExpression")
-	public static final boolean DEBUG_GRID_GENERATOR = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
+	static final boolean DEBUG_GRID_GENERATOR = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 	@SuppressWarnings("PointlessBooleanExpression")
 	public static final boolean DEBUG_GRID_GENERATOR_FULL = DEBUG_GRID_GENERATOR && false;
 
@@ -48,29 +48,29 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	private Grid mGrid;
 
 	// The user that'll use the generated grid.
-	protected final GridUser mUser;
+	final GridUser mUser;
 
 	// Random generator
-	public Random mRandom;
+	private Random mRandom;
 
 	// Size of the grid
-	public int mGridSize;
+	private int mGridSize;
 
 	// Cell and solution
-	public ArrayList<GridCell> mCells;
+	private ArrayList<GridCell> mCells;
 	private int[][] mSolutionMatrix;
 
 	// Cages
 	private CageTypeGenerator mGridCageTypeGenerator;
-	public ArrayList<GridCage> mCages;
+	private ArrayList<GridCage> mCages;
 	private int[][] mCageMatrix;
 
 	// Additional option for generating the grid
-	protected GridGeneratorOptions mGridGeneratorOptions;
+	GridGeneratorOptions mGridGeneratorOptions;
 
 	// Timestamp for logging purposes
-	long mTimeStarted;
-	long mTimeStartedSolution;
+	private long mTimeStarted;
+	private long mTimeStartedSolution;
 
 	// The grid generator options are used in development mode only to generate
 	// fake games.
@@ -128,7 +128,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	 *            who will receive the callback as soon as the grid is
 	 *            generated.
 	 */
-	public GridGenerator(int gridSize, boolean hideOperators,
+	GridGenerator(int gridSize, boolean hideOperators,
 			PuzzleComplexity puzzleComplexity, int packageVersionNumber,
 			GridUser user) {
 		mGridSize = gridSize;
@@ -224,8 +224,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	 * @param gridGeneratorOptions
 	 *            The additional options to be set.
 	 */
-	public void setGridGeneratorOptions(
-			GridGeneratorOptions gridGeneratorOptions) {
+	void setGridGeneratorOptions(GridGeneratorOptions gridGeneratorOptions) {
 		if (gridGeneratorOptions == null) {
 			// Use default values if options are not specified
 			this.mGridGeneratorOptions = new GridGeneratorOptions();
@@ -425,7 +424,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	 * @param attemptCount
 	 *            The number of the attempt already completed plus 1.
 	 */
-	protected void handleNewAttemptStarted(int attemptCount) {
+	void handleNewAttemptStarted(int attemptCount) {
 	}
 
 	@Override
@@ -1211,7 +1210,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	 * @return True in case no grid exists with this definition. False
 	 *         otherwise.
 	 */
-	public boolean isGeneratedBefore(ArrayList<GridCell> cells,
+	boolean isGeneratedBefore(ArrayList<GridCell> cells,
 			ArrayList<GridCage> cages, boolean hideOperators) {
 		// Check if this grid definition is unique
 		GridDatabaseAdapter gridDatabaseAdapter = new GridDatabaseAdapter();

@@ -6,7 +6,7 @@ import android.content.Context;
 
 public class TipArchiveAvailable extends TipDialog {
 
-	public static String TIP_NAME = "ArchiveAvailable";
+	private static String TIP_NAME = "ArchiveAvailable";
 	private static TipPriority TIP_PRIORITY = TipPriority.LOW;
 
 	/**

@@ -28,145 +28,145 @@ public class Preferences {
 	public SharedPreferences mSharedPreferences;
 
 	// Global APP preferences
-	public final static String APP_CURRENT_VERSION = "app_current_version";
-	public final static int APP_CURRENT_VERSION_DEFAULT = -1;
+	private final static String APP_CURRENT_VERSION = "app_current_version";
+	private final static int APP_CURRENT_VERSION_DEFAULT = -1;
 
 	// Archive preferences
 	public final static String ARCHIVE_AVAILABLE = "archive_available";
-	public final static boolean ARCHIVE_AVAILABLE_DEFAULT = false;
+	private final static boolean ARCHIVE_AVAILABLE_DEFAULT = false;
 
-	public final static String ARCHIVE_GRID_LAST_SHOWED = "archive_grid_last_showed";
-	public final static int ARCHIVE_GRID_LAST_SHOWED_DEFAULT = -1;
+	private final static String ARCHIVE_GRID_LAST_SHOWED = "archive_grid_last_showed";
+	private final static int ARCHIVE_GRID_LAST_SHOWED_DEFAULT = -1;
 
-	public final static String ARCHIVE_SIZE_FILTER_LAST_VALUE = "archive_size_filter_last_value";
-	public final static String ARCHIVE_SIZE_FILTER_LAST_VALUE_DEFAULT = SizeFilter.ALL
+	private final static String ARCHIVE_SIZE_FILTER_LAST_VALUE = "archive_size_filter_last_value";
+	private final static String ARCHIVE_SIZE_FILTER_LAST_VALUE_DEFAULT = SizeFilter.ALL
 			.toString();
 
-	public final static String ARCHIVE_STATUS_FILTER_LAST_VALUE = "archive_status_filter_last_value";
-	public final static String ARCHIVE_STATUS_FILTER_LAST_VALUE_DEFAULT = StatusFilter.ALL
+	private final static String ARCHIVE_STATUS_FILTER_LAST_VALUE = "archive_status_filter_last_value";
+	private final static String ARCHIVE_STATUS_FILTER_LAST_VALUE_DEFAULT = StatusFilter.ALL
 			.toString();
 
 	public final static String ARCHIVE_SETTING_SIZE_FILTER_VISIBLE = "archive_setting_size_filter_size_visible";
-	public final static boolean ARCHIVE_SETTING_SIZE_FILTER_VISIBLE_DEFAULT = false;
+	private final static boolean ARCHIVE_SETTING_SIZE_FILTER_VISIBLE_DEFAULT = false;
 
 	public final static String ARCHIVE_SETTING_STATUS_FILTER_VISIBLE = "archive_setting_status_filter_visible";
-	public final static boolean ARCHIVE_SETTING_STATUS_FILTER_VISIBLE_DEFAULT = true;
+	private final static boolean ARCHIVE_SETTING_STATUS_FILTER_VISIBLE_DEFAULT = true;
 
 	public final static String ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE = "archive_setting_chart_description_visible";
-	public final static boolean ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT = true;
+	private final static boolean ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT = true;
 
 	// Leaderboard settings
-	public final static String LEADERBOARD_ALL_INITIALIZED = "leaderboard_all_initialized";
-	public final static boolean LEADERBOARD_ALL_INITIALIZED_DEFAULT = false;
+	private final static String LEADERBOARD_ALL_INITIALIZED = "leaderboard_all_initialized";
+	private final static boolean LEADERBOARD_ALL_INITIALIZED_DEFAULT = false;
 
-	public final static String LEADERBOARD_FILTER_LAST_VALUE = "leaderboard_filter_last_value";
-	public final static String LEADERBOARD_FILTER_LAST_VALUE_DEFAULT = LeaderboardFilter.ALL_LEADERBOARDS
+	private final static String LEADERBOARD_FILTER_LAST_VALUE = "leaderboard_filter_last_value";
+	private final static String LEADERBOARD_FILTER_LAST_VALUE_DEFAULT = LeaderboardFilter.ALL_LEADERBOARDS
 			.toString();
 
-	public final static String LEADERBOARD_TAB_LAST_SHOWED = "leaderboard_tab_last_showed";
-	public final static int LEADERBOARD_TAB_LAST_SHOWED_DEFAULT = 0;
+	private final static String LEADERBOARD_TAB_LAST_SHOWED = "leaderboard_tab_last_showed";
+	private final static int LEADERBOARD_TAB_LAST_SHOWED_DEFAULT = 0;
 
-	public final static String PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE = "puzzle_hide_goole_plus_sign_in_till_next_top_score";
-	public final static boolean PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE_DEFAULT = false;
+	private final static String PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE = "puzzle_hide_goole_plus_sign_in_till_next_top_score";
+	private final static boolean PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE_DEFAULT = false;
 
 	// Puzzle input mode settings
-	public final static String PUZZLE_INPUT_MODE_CHANGED_COUNTER = "puzzle_input_mode_changed_counter";
-	public final static int PUZZLE_INPUT_MODE_CHANGED_COUNTER_DEFAULT = 0;
+	private final static String PUZZLE_INPUT_MODE_CHANGED_COUNTER = "puzzle_input_mode_changed_counter";
+	private final static int PUZZLE_INPUT_MODE_CHANGED_COUNTER_DEFAULT = 0;
 
-	public final static String PUZZLE_INPUT_MODE_COPY_COUNTER = "puzzle_input_mode_copy_counter";
-	public final static int PUZZLE_INPUT_MODE_COPY_COUNTER_DEFAULT = 0;
+	private final static String PUZZLE_INPUT_MODE_COPY_COUNTER = "puzzle_input_mode_copy_counter";
+	private final static int PUZZLE_INPUT_MODE_COPY_COUNTER_DEFAULT = 0;
 
-	public final static String PUZZLE_INPUT_MODE_LAST_USED = "puzzle_input_mode_last_used";
-	public final static String PUZZLE_INPUT_MODE_LAST_USED_DEFAULT = GridInputMode.NORMAL
+	private final static String PUZZLE_INPUT_MODE_LAST_USED = "puzzle_input_mode_last_used";
+	private final static String PUZZLE_INPUT_MODE_LAST_USED_DEFAULT = GridInputMode.NORMAL
 			.toString();
 
-	public final static String PUZZLE_INPUT_MODE_COPY_ENABLED = "puzzle_input_mode_copy_enabled";
-	public final static boolean PUZZLE_INPUT_MODE_COPY_ENABLED_DEFAULT = false;
+	private final static String PUZZLE_INPUT_MODE_COPY_ENABLED = "puzzle_input_mode_copy_enabled";
+	private final static boolean PUZZLE_INPUT_MODE_COPY_ENABLED_DEFAULT = false;
 
 	// Puzzle parameters settings to be set as default values for next game
-	public final static String PUZZLE_PARAMETER_COMPLEXITY = "puzzle_parameter_complexity";
-	public final static String PUZZLE_PARAMETER_COMPLEXITY_DEFAULT = PuzzleComplexity.VERY_EASY
+	private final static String PUZZLE_PARAMETER_COMPLEXITY = "puzzle_parameter_complexity";
+	private final static String PUZZLE_PARAMETER_COMPLEXITY_DEFAULT = PuzzleComplexity.VERY_EASY
 			.toString();
 
-	public final static String PUZZLE_PARAMETER_OPERATORS_VISIBLE = "puzzle_parameter_operators_visible";
-	public final static boolean PUZZLE_PARAMETER_OPERATORS_VISIBLE_DEFAULT = true;
+	private final static String PUZZLE_PARAMETER_OPERATORS_VISIBLE = "puzzle_parameter_operators_visible";
+	private final static boolean PUZZLE_PARAMETER_OPERATORS_VISIBLE_DEFAULT = true;
 
-	public final static String PUZZLE_PARAMETER_SIZE = "puzzle_parameter_size";
-	public final static int PUZZLE_PARAMETER_SIZE_DEFAULT = 4;
+	private final static String PUZZLE_PARAMETER_SIZE = "puzzle_parameter_size";
+	private final static int PUZZLE_PARAMETER_SIZE_DEFAULT = 4;
 
 	// Puzzle setting preferences
-	public final static String PUZZLE_SETTING_BAD_CAGE_MATHS_VISIBLE = "puzzle_setting_bad_cage_math_visible";
-	public final static boolean PUZZLE_SETTING_BAD_CAGE_MATHS_VISIBLE_DEFAULT = true;
+	private final static String PUZZLE_SETTING_BAD_CAGE_MATHS_VISIBLE = "puzzle_setting_bad_cage_math_visible";
+	private final static boolean PUZZLE_SETTING_BAD_CAGE_MATHS_VISIBLE_DEFAULT = true;
 
-	public final static String PUZZLE_SETTING_CLEAR_MAYBES = "puzzle_setting_clear_maybes";
-	public final static boolean PUZZLE_SETTING_CLEAR_MAYBES_DEFAULT = true;
+	private final static String PUZZLE_SETTING_CLEAR_MAYBES = "puzzle_setting_clear_maybes";
+	private final static boolean PUZZLE_SETTING_CLEAR_MAYBES_DEFAULT = true;
 
 	public final static String PUZZLE_SETTING_COLORED_DIGITS = "puzzle_setting_colored_digits";
-	public final static boolean PUZZLE_SETTING_COLORED_DIGITS_DEFAULT = true;
+	private final static boolean PUZZLE_SETTING_COLORED_DIGITS_DEFAULT = true;
 
-	public final static String PUZZLE_SETTING_DUPLICATE_DIGITS_VISIBLE = "puzzle_setting_duplicate_digits_visible";
-	public final static boolean PUZZLE_SETTING_DUPLICATE_DIGITS_VISIBLE_DEFAULT = true;
+	private final static String PUZZLE_SETTING_DUPLICATE_DIGITS_VISIBLE = "puzzle_setting_duplicate_digits_visible";
+	private final static boolean PUZZLE_SETTING_DUPLICATE_DIGITS_VISIBLE_DEFAULT = true;
 
 	public final static String PUZZLE_SETTING_FULL_SCREEN = "puzzle_setting_full_screen";
-	public final static boolean PUZZLE_SETTING_FULL_SCREEN_DEFAULT = false;
+	private final static boolean PUZZLE_SETTING_FULL_SCREEN_DEFAULT = false;
 
 	public enum PuzzleSettingInputMethod {
 		SWIPE_ONLY, SWIPE_AND_BUTTONS, BUTTONS_ONLY
 	}
 
 	public final static String PUZZLE_SETTING_INPUT_METHOD = "puzzle_setting_input_method";
-	public final static String PUZZLE_SETTING_INPUT_METHOD_DEFAULT = PuzzleSettingInputMethod.SWIPE_ONLY
+	private final static String PUZZLE_SETTING_INPUT_METHOD_DEFAULT = PuzzleSettingInputMethod.SWIPE_ONLY
 			.toString();
 
-	public final static String PUZZLE_SETTING_MAYBES_DISPLAYED_IN_GRID = "puzzle_setting_maybes_displayed_in_grid";
-	public final static boolean PUZZLE_SETTING_MAYBES_DISPLAYED_IN_GRID_DEFAULT = true;
+	private final static String PUZZLE_SETTING_MAYBES_DISPLAYED_IN_GRID = "puzzle_setting_maybes_displayed_in_grid";
+	private final static boolean PUZZLE_SETTING_MAYBES_DISPLAYED_IN_GRID_DEFAULT = true;
 
 	public final static String PUZZLE_SETTING_OUTER_SWIPE_CIRCLE = "puzzle_setting_outer_swipe_circle";
-	public final static String PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_DEFAULT = "4";
-	public final static String PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_NEVER_VISIBLE = Integer
+	private final static String PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_DEFAULT = "4";
+	private final static String PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_NEVER_VISIBLE = Integer
 			.toString(Integer.MAX_VALUE);
 
-	public final static String PUZZLE_SETTING_PLAY_SOUND_EFFECTS = "puzzle_setting_sound_effects";
-	public final static boolean PUZZLE_SETTING_PLAY_SOUND_EFFECTS_DEFAULT = true;
+	private final static String PUZZLE_SETTING_PLAY_SOUND_EFFECTS = "puzzle_setting_sound_effects";
+	private final static boolean PUZZLE_SETTING_PLAY_SOUND_EFFECTS_DEFAULT = true;
 
 	public final static String PUZZLE_SETTING_THEME = "puzzle_setting_theme";
-	public final static String PUZZLE_SETTING_THEME_DARK = "theme_dark";
-	public final static String PUZZLE_SETTING_THEME_LIGHT = "theme_light";
-	public final static String PUZZLE_SETTING_THEME_DEFAULT = PUZZLE_SETTING_THEME_LIGHT;
+	private final static String PUZZLE_SETTING_THEME_DARK = "theme_dark";
+	private final static String PUZZLE_SETTING_THEME_LIGHT = "theme_light";
+	private final static String PUZZLE_SETTING_THEME_DEFAULT = PUZZLE_SETTING_THEME_LIGHT;
 
-	public final static String PUZZLE_SETTING_TIMER_VISIBLE = "puzzle_setting_timer_visible";
-	public final static boolean PUZZLE_SETTING_TIMER_VISIBLE_DEFAULT = true;
+	private final static String PUZZLE_SETTING_TIMER_VISIBLE = "puzzle_setting_timer_visible";
+	private final static boolean PUZZLE_SETTING_TIMER_VISIBLE_DEFAULT = true;
 
 	public final static String PUZZLE_SETTING_WAKE_LOCK = "puzzle_setting_wake_lock";
-	public final static boolean PUZZLE_SETTING_WAKE_LOCK_DEFAULT = true;
+	private final static boolean PUZZLE_SETTING_WAKE_LOCK_DEFAULT = true;
 
 	// Statistics setting preferences
 	public final static String STATISTICS_AVAILABLE = "statistics_available";
-	public final static boolean STATISTICS_AVAILABLE_DEFAULT = false;
+	private final static boolean STATISTICS_AVAILABLE_DEFAULT = false;
 
 	public final static String STATISTICS_SETTING_CHART_DESCRIPTION_VISIBLE = "statistics_setting_chart_description_visible";
-	public final static boolean STATISTICS_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT = true;
+	private final static boolean STATISTICS_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT = true;
 
 	public final static String STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES = "statistics_setting_elapsed_time_chart_maximum_games";
-	public final static String STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES_DEFAULT = Integer
+	private final static String STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES_DEFAULT = Integer
 			.toString(100);
 
-	public final static String STATISTICS_TAB_LAST_SHOWED = "statistics_tab_last_showed";
-	public final static int STATISTICS_TAB_LAST_SHOWED_DEFAULT = -1;
+	private final static String STATISTICS_TAB_LAST_SHOWED = "statistics_tab_last_showed";
+	private final static int STATISTICS_TAB_LAST_SHOWED_DEFAULT = -1;
 
 	// Swipe counters
-	public final static String SWIPE_INVALID_MOTION_COUNTER = "swipe_invalid_motion_counter";
-	public final static String SWIPE_VALID_MOTION_COUNTER = "swipe_valid_motion_counter";
-	public final static String SWIPE_DIGIT_1_COUNTER = "swipe_digit_1_counter";
-	public final static String SWIPE_DIGIT_2_COUNTER = "swipe_digit_2_counter";
-	public final static String SWIPE_DIGIT_3_COUNTER = "swipe_digit_3_counter";
-	public final static String SWIPE_DIGIT_4_COUNTER = "swipe_digit_4_counter";
-	public final static String SWIPE_DIGIT_5_COUNTER = "swipe_digit_5_counter";
-	public final static String SWIPE_DIGIT_6_COUNTER = "swipe_digit_6_counter";
-	public final static String SWIPE_DIGIT_7_COUNTER = "swipe_digit_7_counter";
-	public final static String SWIPE_DIGIT_8_COUNTER = "swipe_digit_8_counter";
-	public final static String SWIPE_DIGIT_9_COUNTER = "swipe_digit_9_counter";
-	public final static int SWIPE_DIGIT_COUNTER_DEFAULT = 0;
+	private final static String SWIPE_INVALID_MOTION_COUNTER = "swipe_invalid_motion_counter";
+	private final static String SWIPE_VALID_MOTION_COUNTER = "swipe_valid_motion_counter";
+	private final static String SWIPE_DIGIT_1_COUNTER = "swipe_digit_1_counter";
+	private final static String SWIPE_DIGIT_2_COUNTER = "swipe_digit_2_counter";
+	private final static String SWIPE_DIGIT_3_COUNTER = "swipe_digit_3_counter";
+	private final static String SWIPE_DIGIT_4_COUNTER = "swipe_digit_4_counter";
+	private final static String SWIPE_DIGIT_5_COUNTER = "swipe_digit_5_counter";
+	private final static String SWIPE_DIGIT_6_COUNTER = "swipe_digit_6_counter";
+	private final static String SWIPE_DIGIT_7_COUNTER = "swipe_digit_7_counter";
+	private final static String SWIPE_DIGIT_8_COUNTER = "swipe_digit_8_counter";
+	private final static String SWIPE_DIGIT_9_COUNTER = "swipe_digit_9_counter";
+	private final static int SWIPE_DIGIT_COUNTER_DEFAULT = 0;
 
 	// Dependent on the speed of playing, the counter preferences are often
 	// updated. For this reason they are kept in memory and only committed to

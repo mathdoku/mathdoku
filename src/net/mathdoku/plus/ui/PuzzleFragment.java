@@ -64,11 +64,11 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	public static final String BUNDLE_KEY_SOLVING_ATTEMPT_ID = "PuzzleFragment.solvingAttemptId";
 
 	// The grid and the view which will display the grid.
-	public Grid mGrid;
-	public GridPlayerView mGridPlayerView;
+	private Grid mGrid;
+	private GridPlayerView mGridPlayerView;
 
 	// A global painter object to paint the grid in different themes.
-	public Painter mPainter;
+	private Painter mPainter;
 
 	private GameTimer mTimerTask;
 
@@ -81,7 +81,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	// buttons will be placed.
 	private LinearLayout mControlsSwipeOnlyLinearLayout;
 	private TableLayout mControlsPadBigTableLayout;
-	private TableRow mCcontrolsPadBigTableRow3;
+	private TableRow mControlsPadBigTableRow3;
 	private final Button mDigitPosition[] = new Button[9];
 	private DigitPositionGrid mDigitPositionGrid;
 
@@ -95,7 +95,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 	private View[] mSoundEffectViews;
 
-	public Preferences mMathDokuPreferences;
+	private Preferences mMathDokuPreferences;
 
 	private Context mContext;
 
@@ -163,7 +163,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				.findViewById(R.id.controlsSwipeOnly);
 		mControlsPadBigTableLayout = (TableLayout) mRootView
 				.findViewById(R.id.controlsPadBigTableLayout);
-		mCcontrolsPadBigTableRow3 = (TableRow) mRootView
+		mControlsPadBigTableRow3 = (TableRow) mRootView
 				.findViewById(R.id.controlsButtonRow3);
 		mDigitPosition[0] = (Button) mRootView
 				.findViewById(R.id.digitPosition1);
@@ -324,7 +324,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		super.onPause();
 	}
 
-	public void setTheme() {
+	void setTheme() {
 		mPainter.setTheme(mMathDokuPreferences.getTheme());
 
 		// Invalidate the grid view and the input mode button in order to used
@@ -390,7 +390,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * @param soundEffectEnabled
 	 *            True in case sounds are enabled. False otherwise.
 	 */
-	public void setSoundEffectsEnabled(boolean soundEffectEnabled) {
+	void setSoundEffectsEnabled(boolean soundEffectEnabled) {
 		for (View view : mSoundEffectViews) {
 			view.setSoundEffectsEnabled(soundEffectEnabled);
 		}
@@ -402,7 +402,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * @return True in case the clear grid menu item is available. False
 	 *         otherwise.
 	 */
-	protected boolean showClearGrid() {
+	boolean showClearGrid() {
 		return (mGrid != null && mGrid.isActive() && mGrid.isEmpty(true) == false);
 	}
 
@@ -410,7 +410,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * Displays the dialog which ask confirmation whether the current grid
 	 * should be cleared.
 	 */
-	protected void openClearGridDialog() {
+	void openClearGridDialog() {
 		new AlertDialog.Builder(this.getActivity())
 				.setTitle(R.string.dialog_clear_grid_confirmation_title)
 				.setMessage(R.string.dialog_clear_grid_confirmation_message)
@@ -446,7 +446,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * Sets the handler on the grid which will be called as soon as the grid has
 	 * been solved.
 	 */
-	public void setOnSolvedHandler() {
+	void setOnSolvedHandler() {
 		if (mGrid == null) {
 			return;
 		}
@@ -529,7 +529,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * @param grid
 	 *            The grid to display.
 	 */
-	public void setNewGrid(Grid grid) {
+	void setNewGrid(Grid grid) {
 		if (grid != null) {
 			mGrid = grid;
 			mGridPlayerView.loadNewGrid(grid);
@@ -587,7 +587,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	/**
 	 * Start a new timer (only in case the grid is active).
 	 */
-	protected void startTimer() {
+	void startTimer() {
 		// Stop old timer
 		stopTimer();
 
@@ -667,7 +667,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * 
 	 * @return
 	 */
-	protected boolean showRevealCell() {
+	boolean showRevealCell() {
 		return (mGrid != null && mGrid.isActive() && mGrid.getSelectedCell() != null);
 	}
 
@@ -677,7 +677,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * @param selectedCell
 	 *            The cell for which the user value has to be revealed.
 	 */
-	protected void revealCell() {
+	void revealCell() {
 		if (mGrid == null) {
 			return;
 		}
@@ -717,7 +717,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * @return True in case the reveal operator menu item is available. False
 	 *         otherwise.
 	 */
-	protected boolean showRevealOperator() {
+	boolean showRevealOperator() {
 		if (mGrid == null || mGrid.isActive() == false) {
 			return false;
 		}
@@ -730,7 +730,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	/**
 	 * Handles revealing of the operator of the given cage.
 	 */
-	protected void revealOperator() {
+	void revealOperator() {
 		if (mGrid == null || mGrid.isActive() == false) {
 			return;
 		}
@@ -778,14 +778,14 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * 
 	 * @return
 	 */
-	protected boolean showCheckProgress() {
+	boolean showCheckProgress() {
 		return (mGrid != null && mGrid.isActive() && !mGrid.isEmpty(false));
 	}
 
 	/**
 	 * Checks the progress of solving the current grid
 	 */
-	protected void checkProgress() {
+	void checkProgress() {
 		if (mGrid == null || mGridPlayerView == null) {
 			return;
 		}
@@ -877,14 +877,14 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * @return True in case the reveal solution menu item is available. False
 	 *         otherwise.
 	 */
-	protected boolean showRevealSolution() {
+	boolean showRevealSolution() {
 		return (mGrid != null && mGrid.isActive());
 	}
 
 	/**
 	 * Handles revealing of the solution of the grid.
 	 */
-	protected void revealSolution() {
+	void revealSolution() {
 		if (mGrid == null) {
 			return;
 		}
@@ -1121,9 +1121,9 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		}
 
 		// Visibility of third row of digits buttons
-		if (mCcontrolsPadBigTableRow3 != null) {
-			mCcontrolsPadBigTableRow3
-					.setVisibility(gridSize >= 7 ? View.VISIBLE : View.GONE);
+		if (mControlsPadBigTableRow3 != null) {
+			mControlsPadBigTableRow3.setVisibility(gridSize >= 7 ? View.VISIBLE
+					: View.GONE);
 		}
 	}
 
@@ -1249,7 +1249,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * @return True in case the copy cell values menu item is available. False
 	 *         otherwise.
 	 */
-	protected boolean showCopyCellValues() {
+	boolean showCopyCellValues() {
 		if (mGrid == null || mGrid.isActive() == false
 				|| mGridPlayerView.getGridInputMode() == GridInputMode.COPY) {
 			return false;
@@ -1263,7 +1263,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	/**
 	 * Checks the progress of solving the current grid
 	 */
-	protected void copyCellValues() {
+	void copyCellValues() {
 		if (mGrid == null || mGridPlayerView == null) {
 			return;
 		}

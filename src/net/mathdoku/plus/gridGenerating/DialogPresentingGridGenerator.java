@@ -26,7 +26,9 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 	 * http://developer.android.com/training/articles/perf-tips.html#
 	 * PackageInner).
 	 */
-	/* package */PuzzleFragmentActivity mPuzzleFragmentActivity;
+	/* package */
+	@SuppressWarnings("WeakerAccess")
+	PuzzleFragmentActivity mPuzzleFragmentActivity;
 
 	// The dialog for this task
 	private ProgressDialog mProgressDialog;
@@ -168,7 +170,7 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 	 * Dismisses the progress dialog which was shown on start of this ASync
 	 * task. The ASync task however still keeps running until finished.
 	 */
-	public void dismissProgressDialog() {
+	void dismissProgressDialog() {
 		if (mProgressDialog != null) {
 			mProgressDialog.dismiss();
 			mProgressDialog = null;

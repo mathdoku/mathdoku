@@ -26,20 +26,20 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	// Remove "&& false" in following line to show the SQL-statements in the
 	// debug information
 	@SuppressWarnings("PointlessBooleanExpression")
-	public static final boolean DEBUG_SQL = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
+	private static final boolean DEBUG_SQL = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 
 	// Columns for table statistics
-	protected static final String TABLE = "grid";
-	protected static final String KEY_ROWID = "_id";
-	protected static final String KEY_DEFINITION = "definition";
-	protected static final String KEY_GRID_SIZE = "grid_size";
-	protected static final String KEY_DATE_CREATED = "date_created";
-	protected static final String KEY_GAME_SEED = "game_seed";
-	protected static final String KEY_GENERATOR_REVISION_NUMBER = "generator_revision_number";
-	protected static final String KEY_PUZZLE_COMPLEXITY = "puzzle_complexity";
-	protected static final String KEY_HIDE_OPERATORS = "hide_operators";
-	protected static final String KEY_MAX_CAGE_RESULT = "max_cage_result";
-	protected static final String KEY_MAX_CAGE_SIZE = "max_cage_size";
+	static final String TABLE = "grid";
+	static final String KEY_ROWID = "_id";
+	private static final String KEY_DEFINITION = "definition";
+	static final String KEY_GRID_SIZE = "grid_size";
+	private static final String KEY_DATE_CREATED = "date_created";
+	private static final String KEY_GAME_SEED = "game_seed";
+	private static final String KEY_GENERATOR_REVISION_NUMBER = "generator_revision_number";
+	static final String KEY_PUZZLE_COMPLEXITY = "puzzle_complexity";
+	static final String KEY_HIDE_OPERATORS = "hide_operators";
+	private static final String KEY_MAX_CAGE_RESULT = "max_cage_result";
+	private static final String KEY_MAX_CAGE_SIZE = "max_cage_size";
 
 	private static final String[] allColumns = { KEY_ROWID, KEY_DEFINITION,
 			KEY_GRID_SIZE, KEY_DATE_CREATED, KEY_GAME_SEED,
@@ -70,7 +70,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 * 
 	 * @return The SQL create statement for this table.
 	 */
-	protected static String buildCreateSQL() {
+	private static String buildCreateSQL() {
 		return createTable(
 				TABLE,
 				createColumn(KEY_ROWID, "integer", "primary key autoincrement"),
@@ -106,7 +106,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 * @param db
 	 *            The database in which the table has to be created.
 	 */
-	protected static void create(SQLiteDatabase db) {
+	static void create(SQLiteDatabase db) {
 		String sql = buildCreateSQL();
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			Log.i(TAG, sql);
@@ -128,8 +128,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 *            The new version of the database. Use the app revision number
 	 *            to identify the database version.
 	 */
-	protected static void upgrade(SQLiteDatabase db, int oldVersion,
-			int newVersion) {
+	static void upgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		if (oldVersion < 432 && newVersion >= 432) {
 			// In development revisions the table is simply dropped and
 			// recreated.

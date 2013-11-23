@@ -69,11 +69,11 @@ import com.google.android.gms.games.GamesClient;
 
 public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		implements PuzzleFragment.PuzzleFragmentListener {
-	public final static String TAG = "MathDoku.PuzzleFragmentActivity";
+	private final static String TAG = "MathDoku.PuzzleFragmentActivity";
 
 	// Background tasks for generating a new puzzle and converting game files
 	public DialogPresentingGridGenerator mDialogPresentingGridGenerator;
-	public GameFileConverter mGameFileConverter;
+	private GameFileConverter mGameFileConverter;
 
 	// Different types of fragments supported by this activity.
 	public enum FragmentType {
@@ -870,7 +870,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	/**
 	 * Restart the last game which was played.
 	 */
-	protected void restartLastGame() {
+	void restartLastGame() {
 		// Determine if and which grid was last played
 		int solvingAttemptId = new SolvingAttemptDatabaseAdapter()
 				.getMostRecentPlayedId();

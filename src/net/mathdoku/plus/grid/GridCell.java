@@ -47,14 +47,14 @@ public class GridCell {
 	private final ArrayList<Integer> mPossibles;
 
 	// X pixel position
-	public float mPosX;
+	private float mPosX;
 	// Y pixel position
-	public float mPosY;
+	private float mPosY;
 
 	private Grid mGrid;
 
 	// Highlight in case a duplicate value is found in row or column
-	public boolean mDuplicateValueHighlight;
+	private boolean mDuplicateValueHighlight;
 	// Whether to show cell as selected
 	public boolean mSelected;
 	// Player revealed this cell
@@ -67,10 +67,10 @@ public class GridCell {
 	}
 
 	// Borders of the cell
-	public BorderType mBorderTypeTop;
-	public BorderType mBorderTypeBottom;
-	public BorderType mBorderTypeLeft;
-	public BorderType mBorderTypeRight;
+	private BorderType mBorderTypeTop;
+	private BorderType mBorderTypeBottom;
+	private BorderType mBorderTypeLeft;
+	private BorderType mBorderTypeRight;
 
 	// References to the global painter objects.
 	private final CellPainter mCellPainter;
@@ -177,7 +177,7 @@ public class GridCell {
 	 * @return True in case the digit has been added. False otherwise or in case
 	 *         the digit was added before.
 	 */
-	public boolean addPossible(int digit, boolean updateStatistics) {
+	boolean addPossible(int digit, boolean updateStatistics) {
 		if (!hasPossible(digit)) {
 			// Add possible value and sort the list of possible values.
 			this.mPossibles.add(digit);
@@ -325,7 +325,7 @@ public class GridCell {
 	// The next variable could also be declared as local variable in method
 	// draw. But is created quite frequently. By reusing it the memory footprint
 	// is reduced.
-	Paint draw_textPaint = new Paint();
+	private Paint draw_textPaint = new Paint();
 
 	/**
 	 * Draw the cell inclusive borders, background and text.
@@ -660,7 +660,7 @@ public class GridCell {
 	// The next variable could also be declared as local variable in method
 	// drawSwipeOverlay. But is created quite frequently. By reusing it the
 	// memory footprint is reduced.
-	static Rect drawSwipeOverlay_bounds = new Rect();
+	private static Rect drawSwipeOverlay_bounds = new Rect();
 
 	/**
 	 * Draw the swipe overlay for the selected cell.
@@ -1002,7 +1002,7 @@ public class GridCell {
 	 * @return True in case this cell is part of the currently selected cage.
 	 *         False otherwise.
 	 */
-	public boolean isCellInSelectedCage() {
+	boolean isCellInSelectedCage() {
 		if (mGrid.getSelectedCell() == null) {
 			// When no cell is selected, a cage isn't selected as well.
 			return false;
@@ -1021,7 +1021,7 @@ public class GridCell {
 	 *            Column number (zero based) of cell to compare with.
 	 * @return True in case cells are part of same cage. False otherwise.
 	 */
-	public boolean isInSameCageAsCell(int row, int column) {
+	boolean isInSameCageAsCell(int row, int column) {
 		GridCell cell = this.mGrid.getCellAt(row, column);
 		return (cell != null && cell.getCageId() == this.mCageId);
 	}
@@ -1029,7 +1029,7 @@ public class GridCell {
 	// The next variable could also be declared as local variable in method
 	// drawDashedLine. But is created quite frequently. By reusing it the
 	// memory footprint is reduced.
-	Path drawDashedLine_path = new Path();
+	private Path drawDashedLine_path = new Path();
 
 	/**
 	 * Draws a dashed line.
@@ -1057,19 +1057,19 @@ public class GridCell {
 				mCellPainter.getUnusedBorderPaint());
 	}
 
-	public GridCell getCellAbove() {
+	GridCell getCellAbove() {
 		return mGrid.getCellAt(mRow - 1, mColumn);
 	}
 
-	public GridCell getCellOnRight() {
+	GridCell getCellOnRight() {
 		return mGrid.getCellAt(mRow, mColumn + 1);
 	}
 
-	public GridCell getCellBelow() {
+	GridCell getCellBelow() {
 		return mGrid.getCellAt(mRow + 1, mColumn);
 	}
 
-	public GridCell getCellOnLeft() {
+	GridCell getCellOnLeft() {
 		return mGrid.getCellAt(mRow, mColumn - 1);
 	}
 

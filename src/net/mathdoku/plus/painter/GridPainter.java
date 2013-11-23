@@ -6,7 +6,7 @@ import android.graphics.Paint;
 public class GridPainter extends BorderPainter {
 
 	// The background for the grid.
-	protected Paint mBackgroundPaint;
+	private Paint mBackgroundPaint;
 
 	/**
 	 * Creates a new instance of {@link GridPainter}.

@@ -1,6 +1,6 @@
 package com.srlee.DLX;
 
-public class DLXNode extends LL2DNode {
+class DLXNode extends LL2DNode {
 	public DLXNode(DLXColumn col, int ri) {
 		RowIdx = ri;
 		C = col;

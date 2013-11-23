@@ -5,7 +5,7 @@ import net.mathdoku.plus.painter.Painter.GridTheme;
 abstract class BasePainter {
 
 	// Reference to the global painter object.
-	protected Painter mPainter;
+	Painter mPainter;
 
 	/**
 	 * Creates a new instance of {@link BasePainter}.
@@ -13,7 +13,7 @@ abstract class BasePainter {
 	 * @param painter
 	 *            The global container for all painters.
 	 */
-	public BasePainter(Painter painter) {
+	BasePainter(Painter painter) {
 		mPainter = painter;
 	}
 

@@ -17,13 +17,13 @@ import com.google.android.gms.games.leaderboard.OnLeaderboardScoresLoadedListene
  * Play Services for a specific leaderboard.
  * 
  */
-public class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener {
-	public final static String TAG = "MathDoku.LeaderboardRankPlayer";
+class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener {
+	private final static String TAG = "MathDoku.LeaderboardRankPlayer";
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
 	@SuppressWarnings("PointlessBooleanExpression")
-	public static final boolean DEBUG = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
+	private static final boolean DEBUG = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
 
 	// The games client which is connected to Google Play Services
 	private final LeaderboardConnector mLeaderboardConnector;

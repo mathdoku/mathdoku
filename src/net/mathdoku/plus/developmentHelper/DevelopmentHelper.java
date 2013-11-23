@@ -130,7 +130,7 @@ public class DevelopmentHelper {
 	 *            The activity in which context the confirmation dialog will be
 	 *            shown.
 	 */
-	public static void generateGames(
+	private static void generateGames(
 			final PuzzleFragmentActivity puzzleFragmentActivity) {
 		puzzleFragmentActivity.mDialogPresentingGridGenerator = new DialogPresentingGridGenerator(
 				puzzleFragmentActivity, 6, false, PuzzleComplexity.NORMAL,
@@ -184,7 +184,7 @@ public class DevelopmentHelper {
 	 *            The activity in which context the preferences are resetted.
 	 * @return
 	 */
-	public static boolean resetPreferences(
+	private static boolean resetPreferences(
 			final PuzzleFragmentActivity puzzleFragmentActivity) {
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			executeDeleteAllPreferences();
@@ -218,7 +218,7 @@ public class DevelopmentHelper {
 	 * @param puzzleFragmentActivity
 	 *            The activity in which context the preferences are reseted.
 	 */
-	public static void deleteDatabaseAndPrefences(
+	private static void deleteDatabaseAndPrefences(
 			final PuzzleFragmentActivity puzzleFragmentActivity) {
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(

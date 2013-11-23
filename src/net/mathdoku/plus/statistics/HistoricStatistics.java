@@ -119,7 +119,7 @@ public class HistoricStatistics {
 	private final SeriesSummary mUnfinishedSeriesSummary;
 
 	// Limit on XYSeries
-	public final static int XYSERIES_NOT_LIMITED = -1;
+	private final static int XYSERIES_NOT_LIMITED = -1;
 	private int mLimit;
 
 	/**

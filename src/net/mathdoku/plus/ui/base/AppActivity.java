@@ -24,7 +24,7 @@ public class AppActivity extends Activity implements
 		OnSharedPreferenceChangeListener {
 
 	// Preferences
-	public Preferences mMathDokuPreferences;
+	private Preferences mMathDokuPreferences;
 
 	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	@Override

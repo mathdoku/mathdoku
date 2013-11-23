@@ -6,7 +6,7 @@ import android.content.Context;
 
 public class TipDuplicateValue extends TipDialog {
 
-	public static String TIP_NAME = "Tip.TipDuplicateValue.DisplayAgain";
+	private static String TIP_NAME = "Tip.TipDuplicateValue.DisplayAgain";
 	private static TipPriority TIP_PRIORITY = TipPriority.MEDIUM;
 
 	/**

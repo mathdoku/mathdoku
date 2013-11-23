@@ -7,10 +7,10 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 
-public class ArchivePreferenceFragment extends PreferenceFragment implements
+class ArchivePreferenceFragment extends PreferenceFragment implements
 		OnSharedPreferenceChangeListener {
 
-	SharedPreferences mSharedPreferences;
+	private SharedPreferences mSharedPreferences;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

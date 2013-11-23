@@ -22,38 +22,38 @@ import android.widget.TextView;
 /**
  * A base fragment representing the statistics for a game or a grid size.
  */
-public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
+class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	public final static String TAG = "MathDoku.StatisticsBaseFragment";
 
-	protected LinearLayout mChartsLayout;
+	LinearLayout mChartsLayout;
 
 	// Database adapter for the statistics data
 	StatisticsDatabaseAdapter mStatisticsDatabaseAdapter;
 
 	// Text size for body text
-	protected int mDefaultTextSize;
-	protected int mDefaultTextSizeInDIP;
+	int mDefaultTextSize;
+	int mDefaultTextSizeInDIP;
 
 	// The inflater for this activity.
-	protected LayoutInflater mLayoutInflater;
+	private LayoutInflater mLayoutInflater;
 
 	private boolean mDisplayStatisticDescription;
 
 	// Green colors will be used at things which are positive
-	protected static final int chartGreen1 = 0xFF80FF00;
+	static final int chartGreen1 = 0xFF80FF00;
 	protected static final int chartGreen2 = 0xFF59B200;
 
 	// Grey colors will be used at things which are neutral
-	protected static final int chartGrey1 = 0xFFD4D4D4;
-	protected static final int chartSignal1 = 0xFFFF00FF;
-	protected static final int chartSignal2 = 0xFF8000FF;
-	protected static final int chartSignal3 = 0xFF0000FF;
+	static final int chartGrey1 = 0xFFD4D4D4;
+	static final int chartSignal1 = 0xFFFF00FF;
+	static final int chartSignal2 = 0xFF8000FF;
+	static final int chartSignal3 = 0xFF0000FF;
 
 	// Green colors will be used at things which are negative
-	protected static final int chartRed1 = 0xFFFF0000;
-	protected static final int chartRed2 = 0xFFFF3300;
-	protected static final int chartRed3 = 0xFFB22400;
-	protected static final int chartRed4 = 0xFFFECCBF;
+	static final int chartRed1 = 0xFFFF0000;
+	static final int chartRed2 = 0xFFFF3300;
+	static final int chartRed3 = 0xFFB22400;
+	static final int chartRed4 = 0xFFFECCBF;
 	protected static final int chartRed5 = 0xFFFE9980;
 
 	@Override
@@ -63,8 +63,8 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 				savedInstanceState);
 	}
 
-	public View onCreateView(LayoutInflater inflater, int layout,
-			ViewGroup container, Bundle savedInstanceState) {
+	View onCreateView(LayoutInflater inflater, int layout, ViewGroup container,
+			Bundle savedInstanceState) {
 		// Get default sizes for text
 		mDefaultTextSize = getResources().getDimensionPixelSize(
 				R.dimen.text_size_default);
@@ -87,7 +87,7 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	 *            The color for the new simple series renderer.
 	 * @return
 	 */
-	protected SimpleSeriesRenderer createSimpleSeriesRenderer(int color) {
+	SimpleSeriesRenderer createSimpleSeriesRenderer(int color) {
 		SimpleSeriesRenderer simpleSeriesRenderer = new SimpleSeriesRenderer();
 		simpleSeriesRenderer.setColor(color);
 
@@ -115,8 +115,8 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	 *            An additional view which has to be displayed between chart and
 	 *            explanation.
 	 */
-	protected void addStatisticsSection(String tag, String title,
-			GraphicalView chart, View extraDataView, String explanation) {
+	void addStatisticsSection(String tag, String title, GraphicalView chart,
+			View extraDataView, String explanation) {
 		// Inflate a new view for this statistics section
 		View sectionView = mLayoutInflater.inflate(R.layout.statistics_section,
 				null);
@@ -196,9 +196,8 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	 *            The value (optional) for the row
 	 * @return The table row with fields for label and optionally the value.
 	 */
-	protected TableRow createDataTableRow(
-			TableLayout.LayoutParams tableLayoutParams, String label,
-			String value) {
+	TableRow createDataTableRow(TableLayout.LayoutParams tableLayoutParams,
+			String label, String value) {
 		// Create new TableRow
 		TableRow tableRow = new TableRow(getActivity());
 		tableRow.setLayoutParams(tableLayoutParams);
@@ -234,7 +233,7 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	 * @param display
 	 *            True in case the chart descriptions have to be displayed.
 	 */
-	protected void setDisplayChartDescription(boolean display) {
+	void setDisplayChartDescription(boolean display) {
 		mDisplayStatisticDescription = display;
 	}
 
@@ -250,8 +249,7 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	 *            which the chart is added.
 	 * @return The height to be set on the chart.
 	 */
-	protected int getMaxContentHeight(int titleHeightPixels,
-			int paddingChartPixels) {
+	int getMaxContentHeight(int titleHeightPixels, int paddingChartPixels) {
 		// Get size of display
 		DisplayMetrics displayMetrics = getActivity().getResources()
 				.getDisplayMetrics();
@@ -292,8 +290,7 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	 *            which the chart is added.
 	 * @return The height to be set on the chart.
 	 */
-	protected int getMaxChartHeight(int titleHeightPixels,
-			int paddingChartPixels) {
+	int getMaxChartHeight(int titleHeightPixels, int paddingChartPixels) {
 		// Determine an acceptable height / width ratio for the chart dependent
 		// on the orientation of the device
 		Configuration configuration = getActivity().getResources()
