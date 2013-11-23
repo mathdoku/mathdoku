@@ -68,9 +68,8 @@ public class GridCageType {
 
 		// Shift cage type one row down and 1 column to the right.
 		for (int row = 0; row < mRows; row++) {
-			for (int col = 0; col < mCols; col++) {
-				extendedUsedCells[row + 1][col + 1] = mUsedCells[row][col];
-			}
+			System.arraycopy(mUsedCells[row], 0, extendedUsedCells[row + 1], 1,
+					mCols);
 		}
 
 		return extendedUsedCells;
