@@ -35,6 +35,8 @@ public class VerticalRatingBar extends RatingBar {
 	@Override
 	protected synchronized void onMeasure(int widthMeasureSpec,
 			int heightMeasureSpec) {
+		// Because of rotation of the rating bar, the parameter are swapped when
+		// passing to super.
 		super.onMeasure(heightMeasureSpec, widthMeasureSpec);
 		setMeasuredDimension(getMeasuredHeight(), getMeasuredWidth());
 	}
