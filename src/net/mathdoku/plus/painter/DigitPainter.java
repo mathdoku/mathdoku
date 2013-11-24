@@ -1,6 +1,7 @@
 package net.mathdoku.plus.painter;
 
 import net.mathdoku.plus.painter.Painter.DigitPainterMode;
+
 import android.graphics.Paint;
 
 abstract class DigitPainter extends BasePainter {

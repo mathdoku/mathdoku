@@ -2,7 +2,6 @@ package net.mathdoku.plus.gridGenerating;
 
 /**
  * All parameters which have influenced the grid generating process.
- * 
  */
 public class GridGeneratingParameters {
 	public int mGeneratorRevisionNumber;

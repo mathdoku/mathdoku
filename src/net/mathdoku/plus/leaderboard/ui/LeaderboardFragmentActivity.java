@@ -9,6 +9,7 @@ import net.mathdoku.plus.ui.GooglePlusSignInDialog;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 import net.mathdoku.plus.ui.base.GooglePlayServiceFragmentActivity;
 import net.mathdoku.plus.util.FeedbackEmail;
+
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
@@ -314,7 +315,7 @@ public class LeaderboardFragmentActivity extends
 
 	/**
 	 * Initializes/refreshes the filter spinner.
-	 * 
+	 * <p/>
 	 * Returns: True in case the filter spinner should be shown. False
 	 * otherwise.
 	 */

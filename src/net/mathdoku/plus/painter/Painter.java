@@ -49,10 +49,9 @@ public class Painter {
 
 	/**
 	 * Creates a new instance of {@link #GridPainter()}.
-	 * 
+	 * <p/>
 	 * This object can not be instantiated directly. Use {@link #getInstance()}
 	 * to get the singleton reference to the GridPainter object.
-	 * 
 	 */
 	private Painter() {
 		// Set the typeface

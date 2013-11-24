@@ -1,6 +1,7 @@
 package net.mathdoku.plus.grid.ui;
 
 import net.mathdoku.plus.grid.Grid;
+
 import android.view.MotionEvent;
 
 public class Motion {
@@ -101,7 +102,6 @@ public class Motion {
 	/**
 	 * Clear the double tap detection. Wait till next touch down to start double
 	 * tap detection again.
-	 * 
 	 */
 	public void clearDoubleTap() {
 		mDoubleTapTouchDownTime = 0;

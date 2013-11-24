@@ -55,7 +55,6 @@ public class Util {
 	 * Get the package version number.
 	 * 
 	 * @return The package version number.
-	 * 
 	 */
 	public static int getPackageVersionNumber() {
 		if (!mInitialized) {
@@ -68,7 +67,6 @@ public class Util {
 	 * Get the package version name.
 	 * 
 	 * @return The package version name.
-	 * 
 	 */
 	public static String getPackageVersionName() {
 		if (!mInitialized) {
@@ -81,7 +79,6 @@ public class Util {
 	 * Get the package version number.
 	 * 
 	 * @return The package version number.
-	 * 
 	 */
 	// Static call not implemented as the value changes at each configuration
 	// change

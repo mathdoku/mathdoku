@@ -14,6 +14,7 @@ import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.storage.database.DatabaseHelper;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
+
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -168,42 +169,48 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			// avoid long generation times because cages do not fit.
 			mMaximumSingleCellCages = Math.min(4, mMaximumSingleCellCages);
 
-			mGridGeneratingParameters.mMaxCageResult = 99; // Not used
-															// effectively as
-															// the maximum will
-															// be
-			// 9 * 8 = 72
+			mGridGeneratingParameters.mMaxCageResult = 99; /*
+															 * Not used
+															 * effectively as
+															 * the maximum will
+															 * be9 * 8 = 72
+															 */
 			mMaxCagePermutations = 20;
 			break;
 		case EASY:
 			mGridGeneratingParameters.mMaxCageSize = 3;
-			mGridGeneratingParameters.mMaxCageResult = 999; // Not used
-															// effectively as
-															// the maximum will
-															// be
-			// 9 * 8 = 648
+			mGridGeneratingParameters.mMaxCageResult = 999; /*
+															 * Not used
+															 * effectively as
+															 * the maximum will
+															 * be 9 * 8 = 648
+															 */
 			mMaxCagePermutations = 20;
 			break;
 		case NORMAL:
 			mGridGeneratingParameters.mMaxCageSize = 4;
-			mGridGeneratingParameters.mMaxCageResult = 2500; // Real maximum = 9
-																// * 9 * 8 * 8 =
-																// 5,184
+			mGridGeneratingParameters.mMaxCageResult = 2500; /*
+															 * Real maximum = 9
+															 * 9 * 8 * 8 = 5,184
+															 */
 			mMaxCagePermutations = 40;
 			break;
 		case DIFFICULT:
 			mGridGeneratingParameters.mMaxCageSize = 5;
-			mGridGeneratingParameters.mMaxCageResult = 9999; // Real maximum = 9
-																// * 9 * 9 * 8 *
-																// 8 = 46,656
+			mGridGeneratingParameters.mMaxCageResult = 9999; /*
+															 * Real maximum = 9
+															 * 9 * 9 * 8 * 8 =
+															 * 46,656
+															 */
 			mMaxCagePermutations = 80;
 			break;
 		case VERY_DIFFICULT:
 			mGridGeneratingParameters.mMaxCageSize = 6;
-			mGridGeneratingParameters.mMaxCageResult = 99999; // Real maximum =
-																// 9 * 9 * 9 * 8
-																// * 8 * 8 =
-			// 373,248
+			mGridGeneratingParameters.mMaxCageResult = 99999; /*
+															 * Real maximum = 9
+															 * * 9 * 9 * 8 8 * 8
+															 * = 373,248
+															 */
 			mMaxCagePermutations = 120;
 			break;
 		}

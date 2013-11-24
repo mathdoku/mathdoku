@@ -17,6 +17,7 @@ import java.util.TreeMap;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;

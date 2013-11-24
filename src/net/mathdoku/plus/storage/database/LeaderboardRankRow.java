@@ -6,7 +6,6 @@ import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter.ScoreOr
 
 /**
  * Mapping for records in database table Grid
- * 
  */
 public class LeaderboardRankRow {
 	// Leaderboard id

@@ -8,6 +8,7 @@ import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.grid.GridCell;
+
 import android.util.Log;
 
 public class MathDokuDLX extends DLX {
@@ -192,7 +193,7 @@ public class MathDokuDLX extends DLX {
 	public boolean hasUniqueSolution() {
 		if (Config.mAppMode == AppMode.DEVELOPMENT && DEBUG_DLX) {
 			initialize(true); // Needed to compute complexity in development
-								// mode
+			// mode
 
 			// Search for multiple solutions (but stop as soon as the second
 			// solution has been found).

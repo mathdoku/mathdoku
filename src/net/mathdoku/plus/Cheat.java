@@ -2,6 +2,7 @@ package net.mathdoku.plus;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
+
 import android.content.Context;
 import android.content.res.Resources;
 

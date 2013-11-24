@@ -3,7 +3,6 @@ package net.mathdoku.plus.storage.database;
 /**
  * Mapping for records in database table SolvingAttempt. Note: it depends on the
  * specific query which was executed whether a field is filled.
- * 
  */
 public class SolvingAttempt {
 

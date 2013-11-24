@@ -34,6 +34,7 @@ import net.mathdoku.plus.ui.base.GooglePlayServiceFragmentActivity;
 import net.mathdoku.plus.util.FeedbackEmail;
 import net.mathdoku.plus.util.SharedPuzzle;
 import net.mathdoku.plus.util.Util;
+
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.AlertDialog;

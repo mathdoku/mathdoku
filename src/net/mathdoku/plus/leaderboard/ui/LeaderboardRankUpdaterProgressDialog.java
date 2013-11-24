@@ -4,6 +4,7 @@ import net.mathdoku.plus.R;
 import net.mathdoku.plus.leaderboard.LeaderboardConnector;
 import net.mathdoku.plus.leaderboard.LeaderboardRankUpdater;
 import net.mathdoku.plus.ui.base.AppFragmentActivity;
+
 import android.app.ProgressDialog;
 
 /**

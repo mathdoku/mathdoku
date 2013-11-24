@@ -8,7 +8,6 @@ import android.database.Cursor;
 
 /**
  * This class holds time related statistics for one property.
- * 
  */
 public class HistoricStatistics {
 
@@ -183,8 +182,6 @@ public class HistoricStatistics {
 	 * @param includeCheatTime
 	 *            True in case the cheat time should be included in the values
 	 *            of the return series.
-	 * 
-	 * 
 	 * @return A XYSerie object which can be processed by AChartEngine
 	 */
 	@SuppressWarnings("SameParameterValue")
@@ -227,8 +224,6 @@ public class HistoricStatistics {
 	 * @param includeCheatTime
 	 *            True in case the cheat time should be included in the values
 	 *            of the return series.
-	 * 
-	 * 
 	 * @return A XYSerie object which can be processed by AChartEngine
 	 */
 	@SuppressWarnings("SameParameterValue")
@@ -278,7 +273,6 @@ public class HistoricStatistics {
 	 * @param maxY
 	 *            The maximum Y value to be used for each game in which the
 	 *            solution was revealed.
-	 * 
 	 * @return A XYSerie object which can be processed by AChartEngine
 	 */
 	@SuppressWarnings("SameParameterValue")
@@ -327,7 +321,6 @@ public class HistoricStatistics {
 	 * @param scale
 	 *            The scaling factor which has to be applied when converting
 	 *            values.
-	 * 
 	 * @return A XYSerie object which can be processed by AChartEngine
 	 */
 	@SuppressWarnings("SameParameterValue")

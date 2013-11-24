@@ -8,6 +8,7 @@ import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
+
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.util.Log;

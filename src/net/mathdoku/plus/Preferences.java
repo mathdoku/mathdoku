@@ -12,6 +12,7 @@ import net.mathdoku.plus.storage.database.GridDatabaseAdapter.SizeFilter;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter.StatusFilter;
 import net.mathdoku.plus.tip.TipDialog;
 import net.mathdoku.plus.util.SingletonInstanceNotInstantiated;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -188,13 +189,12 @@ public class Preferences {
 
 	/**
 	 * Creates a new instance of {@link Preferences}.
-	 * 
+	 * <p/>
 	 * This object can not be instantiated directly. Use {@link #getInstance()}
 	 * to get the singleton reference to the Preference object.
 	 * 
 	 * @param context
 	 *            The context for which the preferences have to be determined.
-	 * 
 	 */
 	private Preferences(Context context) {
 		mSharedPreferences = PreferenceManager
@@ -207,7 +207,6 @@ public class Preferences {
 	 * 
 	 * @param context
 	 *            The context in which the GridPainter is created.
-	 * 
 	 * @return The context for which the preferences have to be determined.
 	 */
 	public static Preferences getInstance(Context context) {
@@ -720,7 +719,7 @@ public class Preferences {
 
 	/**
 	 * Increase the current value of a preference counter with 1 occurrence.
-	 * 
+	 * <p/>
 	 * <b>Note:</b> For performance reasons the counter preferences are not
 	 * updated on calling this method. Call commitCounters() to commit counters
 	 * to storage.

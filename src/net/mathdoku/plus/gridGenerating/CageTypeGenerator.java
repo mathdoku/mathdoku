@@ -12,11 +12,12 @@ public class CageTypeGenerator {
 	 * Size of largest cages to be generated. Be careful with adjusting this
 	 * value as the number of cage types growth exponentially. Generating ALL
 	 * cage types for a given size can take long.
+	 * <p/>
 	 * 
 	 * <pre>
 	 * 	MaxSize    #cage_types     #cumulative
 	 *        1              1               1
-	 *        2              2               3 
+	 *        2              2               3
 	 *        3              6               6
 	 *        4             19              29
 	 *        5             63              92
@@ -37,7 +38,7 @@ public class CageTypeGenerator {
 
 	/**
 	 * Get an instance to the singleton instance of the cage type generator.
-	 * 
+	 * <p/>
 	 * The {@link CageTypeGenerator} containing cage types having minimum 1 and
 	 * maximum {{@value #MAX_CAGE_SIZE} cells. Cages of bigger size have to
 	 * generated with { {@link #getRandomCageType(int, Random)}.
@@ -180,7 +181,6 @@ public class CageTypeGenerator {
 	 * 
 	 * @param cageTypeIndex
 	 *            The index of the cage type to be retrieved.
-	 * 
 	 * @return The cage type which was requested. Null in case of an error.
 	 */
 	public GridCageType getCageType(int cageTypeIndex) {

@@ -71,9 +71,10 @@ public class GridStatistics {
 	// Cells filled + revealed + empty == total cells in grid
 	public int mCellsFilled;
 	public int mCellsEmtpty;
-	public int mCellsRevealed; // Note: this value does not need to be identical
-								// to mActionRevealCell in case reveal solution
-								// is also used.
+
+	// Cells revealed. This value does not need to be identical to
+	// mActionRevealCell in case reveal solution is also used.
+	public int mCellsRevealed;
 
 	// Has the grid been solved manually (i.e. not revealed)?
 	public boolean mSolvedManually;

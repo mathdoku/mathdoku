@@ -3,6 +3,7 @@ package net.mathdoku.plus.tip;
 import net.mathdoku.plus.Cheat;
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
+
 import android.content.Context;
 
 public class TipCheat extends TipDialog implements

@@ -34,6 +34,7 @@ public class FileProvider extends ContentProvider {
 	public static final String CHEATS_CHART_FILE_NAME = "cheats.png";
 
 	private static final UriMatcher uriMatcher;
+
 	static {
 		uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 		uriMatcher.addURI(PROVIDER_NAME, FEEDBACK_LOG_FILE_NAME,

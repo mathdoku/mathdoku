@@ -7,6 +7,7 @@ import net.mathdoku.plus.grid.GridCell;
 import net.mathdoku.plus.painter.GridPainter;
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.painter.Painter.DigitPainterMode;
+
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
@@ -98,13 +99,13 @@ public class GridViewerView extends View {
 	}
 
 	/**
-	 * Actually draw the locked. This method should always be encapsulaped
-	 * within a synchronize block <code>
+	 * Actually draw the locked. This method should always be encapsulated
+	 * within a synchronize block</p> <code>
 	 * synchronized (mGrid.mLock) {
 	 *     onDrawLocked(canvas);
 	 *     // other stuff
-	 *  }
-	 *  </code>
+	 * }
+	 * </code>
 	 * 
 	 * @param canvas
 	 *            The canvas on which should be drawn.

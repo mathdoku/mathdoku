@@ -2,6 +2,7 @@ package net.mathdoku.plus.painter;
 
 import net.mathdoku.plus.painter.Painter.DigitPainterMode;
 import net.mathdoku.plus.painter.Painter.GridTheme;
+
 import android.graphics.Paint;
 
 public class UserValuePainter extends DigitPainter {

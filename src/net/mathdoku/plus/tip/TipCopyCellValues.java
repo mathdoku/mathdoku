@@ -4,6 +4,7 @@ import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.grid.GridCell;
+
 import android.content.Context;
 
 public class TipCopyCellValues extends TipDialog {
@@ -14,7 +15,7 @@ public class TipCopyCellValues extends TipDialog {
 	/**
 	 * Creates a new tip dialog which explains that cell values can be copied
 	 * from one cell to another cell.</br>
-	 * 
+	 * <p/>
 	 * For performance reasons this method should only be called in case the
 	 * static call to method {@link #toBeDisplayed} returned true.
 	 * 

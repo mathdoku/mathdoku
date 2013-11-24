@@ -8,6 +8,7 @@ import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.statistics.HistoricStatistics;
 import net.mathdoku.plus.statistics.HistoricStatistics.Serie;
 import net.mathdoku.plus.storage.database.Projection.Aggregation;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -288,7 +289,6 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 * 
 	 * @param cursor
 	 *            The cursor to be converted.
-	 * 
 	 * @return A GridStatistics object for the first statistics record stored in
 	 *         the given cursor. Null in case of an error.
 	 */
@@ -358,7 +358,6 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 * 
 	 * @param gridStatistics
 	 *            The statistics to be updated.
-	 * 
 	 * @return True in case the statistics have been updated. False otherwise.
 	 */
 	public boolean update(GridStatistics gridStatistics) {
@@ -671,11 +670,14 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 			mHistoricStatisticsProjection.put(HistoricStatistics.DATA_COL_ID,
 					TABLE, KEY_ROWID);
 			mHistoricStatisticsProjection.put(
-					stringBetweenBackTicks(HistoricStatistics.DATA_COL_SERIES), // Explicit
-																				// back
-																				// ticks
-																				// needed
-																				// here!
+					stringBetweenBackTicks(HistoricStatistics.DATA_COL_SERIES), /*
+																				 * Explicit
+																				 * back
+																				 * ticks
+																				 * needed
+																				 * here
+																				 * !
+																				 */
 					"CASE WHEN "
 							+ stringBetweenBackTicks(KEY_FINISHED)
 							+ " <> "
@@ -797,7 +799,6 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 * 
 	 * @param column
 	 *            The column name which has to be prefixed.
-	 * 
 	 * @return The prefixed column name.
 	 */
 	@SuppressWarnings("SameParameterValue")

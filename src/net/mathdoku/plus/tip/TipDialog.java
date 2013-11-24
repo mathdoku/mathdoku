@@ -6,6 +6,7 @@ import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;

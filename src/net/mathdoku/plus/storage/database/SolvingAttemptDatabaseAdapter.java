@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.grid.Grid;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -51,7 +52,8 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	public static final String EOL_DELIMITER = "\n"; // Separate objects
 	public static final String FIELD_DELIMITER_LEVEL1 = ":"; // Separate fields
 	public static final String FIELD_DELIMITER_LEVEL2 = ","; // Separate values
-																// in fields
+
+	// in fields
 
 	/**
 	 * Get the table name.
@@ -268,7 +270,6 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 *            False (default) in case of normal save. True in case saving is
 	 *            done while upgrading the grid to the current version of the
 	 *            app.
-	 * 
 	 * @return True in case the statistics have been updated. False otherwise.
 	 */
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
@@ -333,7 +334,6 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 * 
 	 * @param grid
 	 *            The grid to which the solving attempt applies.
-	 * 
 	 * @return The status of the solving attempt.
 	 */
 	private int getDerivedStatus(Grid grid) {
@@ -360,7 +360,6 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 * 
 	 * @param column
 	 *            The column name which has to be prefixed.
-	 * 
 	 * @return The prefixed column name.
 	 */
 	public static String getPrefixedColumnName(String column) {

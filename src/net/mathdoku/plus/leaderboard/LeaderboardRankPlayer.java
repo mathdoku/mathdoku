@@ -2,6 +2,7 @@ package net.mathdoku.plus.leaderboard;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
+
 import android.util.Log;
 
 import com.google.android.gms.games.GamesClient;
@@ -15,7 +16,6 @@ import com.google.android.gms.games.leaderboard.OnLeaderboardScoresLoadedListene
 /**
  * This class is used to retrieve the rank for the current player from Google
  * Play Services for a specific leaderboard.
- * 
  */
 class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener {
 	private final static String TAG = "MathDoku.LeaderboardRankPlayer";

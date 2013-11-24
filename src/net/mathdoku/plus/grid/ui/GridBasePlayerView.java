@@ -10,6 +10,7 @@ import net.mathdoku.plus.tip.TipDuplicateValue;
 import net.mathdoku.plus.tip.TipIncorrectValue;
 import net.mathdoku.plus.tip.TipOrderOfValuesInCage;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
+
 import android.content.Context;
 import android.os.Handler;
 import android.util.AttributeSet;
@@ -21,7 +22,6 @@ import android.view.View.OnTouchListener;
 /**
  * The grid base player view allows to play a grid with a digit button interface
  * only.
- * 
  */
 public class GridBasePlayerView extends GridViewerView implements
 		OnTouchListener {

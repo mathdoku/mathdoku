@@ -22,6 +22,7 @@ import net.mathdoku.plus.tip.TipDialog;
 import net.mathdoku.plus.tip.TipIncorrectValue;
 import net.mathdoku.plus.util.FeedbackEmail;
 import net.mathdoku.plus.util.Util;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;

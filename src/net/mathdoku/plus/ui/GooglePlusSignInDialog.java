@@ -3,6 +3,7 @@ package net.mathdoku.plus.ui;
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.ui.base.AppFragmentActivity;
+
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.View;

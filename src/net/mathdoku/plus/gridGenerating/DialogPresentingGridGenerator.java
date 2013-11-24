@@ -6,6 +6,7 @@ import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.developmentHelper.DevelopmentHelper;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
+
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;

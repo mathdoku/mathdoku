@@ -15,6 +15,7 @@ import net.mathdoku.plus.painter.UserValuePainter;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.statistics.GridStatistics.StatisticsCounterType;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
+
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -1007,7 +1008,7 @@ public class GridCell {
 
 	/**
 	 * Draws a dashed line.
-	 * 
+	 * <p/>
 	 * Due to a bug (https://code.google.com/p/android/issues/detail?id=29944),
 	 * a dashed line can not be drawn with drawLine at API-level 11 or above.
 	 * 

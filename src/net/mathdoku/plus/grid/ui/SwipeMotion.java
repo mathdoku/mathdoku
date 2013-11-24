@@ -4,6 +4,7 @@ import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.GridCell;
+
 import android.content.res.Configuration;
 import android.util.Log;
 import android.view.MotionEvent;

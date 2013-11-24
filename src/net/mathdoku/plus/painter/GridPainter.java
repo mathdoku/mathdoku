@@ -1,6 +1,7 @@
 package net.mathdoku.plus.painter;
 
 import net.mathdoku.plus.painter.Painter.GridTheme;
+
 import android.graphics.Paint;
 
 public class GridPainter extends BorderPainter {

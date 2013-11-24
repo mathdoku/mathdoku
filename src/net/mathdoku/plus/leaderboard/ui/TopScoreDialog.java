@@ -2,6 +2,7 @@ package net.mathdoku.plus.leaderboard.ui;
 
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.ui.base.AppFragmentActivity;
+
 import android.app.AlertDialog;
 import android.content.res.Configuration;
 import android.os.Bundle;

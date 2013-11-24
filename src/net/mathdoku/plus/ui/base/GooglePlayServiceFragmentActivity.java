@@ -37,10 +37,9 @@ import com.google.android.gms.plus.PlusClient;
  * available clients, use GooglePlayServiceFragmentActivity(CLIENT_ALL).
  * Alternatively, you can also specify the requested clients via
  * 
+ * @author Bruno Oliveira (Google)
  * @link{#setRequestedClients , but you must do so before @link{#onCreate} gets
  *                            called, otherwise the call will have no effect.
- * 
- * @author Bruno Oliveira (Google)
  */
 public abstract class GooglePlayServiceFragmentActivity extends
 		AppFragmentActivity implements GameHelper.GameHelperListener {

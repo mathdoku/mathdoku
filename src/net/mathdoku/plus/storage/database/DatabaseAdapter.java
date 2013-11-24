@@ -7,6 +7,7 @@ import java.util.List;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
+
 import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -166,7 +167,6 @@ abstract class DatabaseAdapter {
 	 * @param string
 	 *            The string which needs to be prefixed and suffixed with back
 	 *            ticks.
-	 * 
 	 * @return The string properly enclosed with back ticks.
 	 */
 	public static String stringBetweenBackTicks(String string) {
@@ -180,7 +180,6 @@ abstract class DatabaseAdapter {
 	 * @param string
 	 *            The string which needs to be prefixed and suffixed with
 	 *            quotes.
-	 * 
 	 * @return The string properly enclosed with quotes.
 	 */
 	static String stringBetweenQuotes(String string) {

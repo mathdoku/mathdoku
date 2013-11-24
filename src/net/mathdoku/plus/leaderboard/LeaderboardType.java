@@ -7,7 +7,6 @@ import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
  * This class is used to translate puzzle characteristics (grid size, visibility
  * of operators and puzzle complexity) to Google Play Service leaderboard id's
  * and vice versa.
- * 
  */
 public class LeaderboardType {
 	// All leaderboards as defined in the game service on Google Play. The order

@@ -18,6 +18,7 @@ import net.mathdoku.plus.storage.database.SolvingAttemptData;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
+
 import android.util.Log;
 
 import com.srlee.DLX.MathDokuDLX;
@@ -867,14 +868,13 @@ public class Grid {
 	 *            False (default) in case of normal save. True in case saving is
 	 *            done while upgrading the grid to the current version of the
 	 *            app.
-	 * 
 	 * @return True in case everything has been saved. False otherwise.
 	 */
 	private boolean save(boolean saveDueToUpgrade) {
 		boolean saved = true;
 
 		synchronized (mLock) { // Avoid saving game at the same time as
-								// creating puzzle
+			// creating puzzle
 
 			// The solving attempt was already created as soon as the grid was
 			// created first. So only an update is needed.

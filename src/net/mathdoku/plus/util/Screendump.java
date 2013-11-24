@@ -61,10 +61,12 @@ public class Screendump {
 		try {
 
 			FileOutputStream out = new FileOutputStream(file);
-			bitmap.compress(Bitmap.CompressFormat.PNG, 1, out); // Compress
-																// factor is not
-																// used
-			// not used with PNG
+			bitmap.compress(Bitmap.CompressFormat.PNG, 1, out); /*
+																 * Compress
+																 * factor is not
+																 * used not used
+																 * with PNG
+																 */
 			out.close();
 		} catch (Exception e) {
 			e.printStackTrace();

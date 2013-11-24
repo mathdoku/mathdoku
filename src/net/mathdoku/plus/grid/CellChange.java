@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
+
 import android.util.Log;
 
 /**

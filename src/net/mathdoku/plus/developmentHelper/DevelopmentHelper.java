@@ -12,6 +12,7 @@ import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.storage.database.DatabaseHelper;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 import net.mathdoku.plus.util.Util;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences.Editor;
@@ -23,11 +24,12 @@ import android.widget.TextView;
  * The Development Helper class is intended to support Development and Unit
  * Testing of this application. Variables and methods should not be used in
  * production code.
- * 
+ * <p/>
  * Checks on variable {@link #mAppMode} should always be made in such a way that
  * the result can be determined at compile time. In this way the enclosed block
  * will not be included in the compiled case when the condition for executing
  * the block evaluates to false. Example of intended usage:
+ * <p/>
  * 
  * <pre class="prettyprint">
  * if (DevelopmentHelper.mode == AppMode.UNIT_TESTING) {
@@ -35,7 +37,7 @@ import android.widget.TextView;
  * 	// testing
  * }
  * </pre>
- * 
+ * <p/>
  * IMPORTANT: Use block above also in all helper function in this class. In this
  * way all development code will not be compiled into the APK as long as the
  * development mode is turned off.

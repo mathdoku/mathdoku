@@ -3,6 +3,7 @@ package net.mathdoku.plus.tip;
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.grid.GridCage;
+
 import android.content.Context;
 
 public class TipOrderOfValuesInCage extends TipDialog {
@@ -13,7 +14,7 @@ public class TipOrderOfValuesInCage extends TipDialog {
 	/**
 	 * Creates a new tip dialog which explains that the order of values in the
 	 * cell of the cage is not relevant for solving the cage arithmetic. </br>
-	 * 
+	 * <p/>
 	 * For performance reasons this method should only be called in case the
 	 * static call to method {@link #toBeDisplayed} returned true.
 	 * 

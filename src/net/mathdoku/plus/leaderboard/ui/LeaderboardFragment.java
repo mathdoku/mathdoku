@@ -9,6 +9,7 @@ import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter.ScoreOr
 import net.mathdoku.plus.storage.database.LeaderboardRankRow;
 import net.mathdoku.plus.ui.base.GooglePlayServiceFragmentActivity;
 import net.mathdoku.plus.util.Util;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -173,6 +174,7 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 
 			// Get the view and the layout to store the leaderboard section
 			mView = mLayoutInflater.inflate(R.layout.leaderboard_section, null);
+
 			LinearLayout linearLayout = (LinearLayout) mView
 					.findViewById(R.id.leaderboard_section_layout);
 			ImageView mLeaderboardIcon = (ImageView) mView

@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Vector;
 
 import net.mathdoku.plus.R;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -48,7 +49,9 @@ public class GameHelper implements
 		GooglePlayServicesClient.ConnectionCallbacks,
 		GooglePlayServicesClient.OnConnectionFailedListener {
 
-	/** Listener for sign-in success or failure events. */
+	/**
+	 * Listener for sign-in success or failure events.
+	 */
 	public interface GameHelperListener {
 		/**
 		 * Called when sign-in fails. As a result, a "Sign-In" button can be
@@ -359,7 +362,9 @@ public class GameHelper implements
 		return mPlusClient;
 	}
 
-	/** Returns whether or not the user is signed in. */
+	/**
+	 * Returns whether or not the user is signed in.
+	 */
 	public boolean isSignedIn() {
 		return mState == STATE_CONNECTED;
 	}
@@ -380,7 +385,9 @@ public class GameHelper implements
 		return mSignInFailureReason;
 	}
 
-	/** Call this method from your Activity's onStart(). */
+	/**
+	 * Call this method from your Activity's onStart().
+	 */
 	public void onStart(Activity act) {
 		mActivity = act;
 
@@ -413,7 +420,9 @@ public class GameHelper implements
 		}
 	}
 
-	/** Call this method from your Activity's onStop(). */
+	/**
+	 * Call this method from your Activity's onStop().
+	 */
 	public void onStop() {
 		debugLog("onStop, state = " + STATE_NAMES[mState]);
 		assertConfigured("onStop");
@@ -437,14 +446,18 @@ public class GameHelper implements
 		mActivity = null;
 	}
 
-	/** Convenience method to show an alert dialog. */
+	/**
+	 * Convenience method to show an alert dialog.
+	 */
 	public void showAlert(String title, String message) {
 		(new AlertDialog.Builder(getContext())).setTitle(title)
 				.setMessage(message)
 				.setNeutralButton(android.R.string.ok, null).create().show();
 	}
 
-	/** Convenience method to show an alert dialog. */
+	/**
+	 * Convenience method to show an alert dialog.
+	 */
 	public void showAlert(String message) {
 		(new AlertDialog.Builder(getContext())).setMessage(message)
 				.setNeutralButton(android.R.string.ok, null).create().show();
@@ -454,10 +467,10 @@ public class GameHelper implements
 	 * Returns the invitation ID received through an invitation notification.
 	 * This should be called from your GameHelperListener's
 	 * 
+	 * @return The id of the invitation, or null if none was received.
 	 * @link{GameHelperListener#onSignInSucceeded method, to check if there's an
 	 *                                            invitation available. In that
 	 *                                            case, accept the invitation.
-	 * @return The id of the invitation, or null if none was received.
 	 */
 	public String getInvitationId() {
 		if (!checkState(TYPE_DEVELOPER_ERROR, "getInvitationId",
@@ -469,7 +482,9 @@ public class GameHelper implements
 		return mInvitationId;
 	}
 
-	/** Enables debug logging */
+	/**
+	 * Enables debug logging
+	 */
 	public void enableDebugLog(String tag) {
 		mDebugLog = true;
 		mDebugTag = tag;
@@ -502,7 +517,9 @@ public class GameHelper implements
 		return mScopes;
 	}
 
-	/** Sign out and disconnect from the APIs. */
+	/**
+	 * Sign out and disconnect from the APIs.
+	 */
 	public void signOut() {
 		if (mState == STATE_DISCONNECTED) {
 			// nothing to do
@@ -861,7 +878,9 @@ public class GameHelper implements
 		}
 	}
 
-	/** Called when we successfully obtain a connection to a client. */
+	/**
+	 * Called when we successfully obtain a connection to a client.
+	 */
 	@Override
 	public void onConnected(Bundle connectionHint) {
 		debugLog("onConnected: connected! client=" + mClientCurrentlyConnecting);
@@ -904,7 +923,9 @@ public class GameHelper implements
 		mUserInitiatedSignIn = false;
 	}
 
-	/** Handles a connection failure reported by a client. */
+	/**
+	 * Handles a connection failure reported by a client.
+	 */
 	@Override
 	public void onConnectionFailed(ConnectionResult result) {
 		// save connection result for later reference
@@ -999,7 +1020,9 @@ public class GameHelper implements
 		notifyListener(false);
 	}
 
-	/** Called when we are disconnected from a client. */
+	/**
+	 * Called when we are disconnected from a client.
+	 */
 	@Override
 	public void onDisconnected() {
 		debugLog("onDisconnected.");
@@ -1021,7 +1044,9 @@ public class GameHelper implements
 		notifyListener(false);
 	}
 
-	/** Shows an error dialog that's appropriate for the failure reason. */
+	/**
+	 * Shows an error dialog that's appropriate for the failure reason.
+	 */
 	void showFailureDialog() {
 		Context ctx = getContext();
 		if (ctx == null) {

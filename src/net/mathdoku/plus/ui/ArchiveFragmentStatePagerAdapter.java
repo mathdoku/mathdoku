@@ -6,6 +6,7 @@ import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter.SizeFilter;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter.StatusFilter;
+
 import android.os.Bundle;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
@@ -188,7 +189,6 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	 * 
 	 * @param position
 	 *            Position in adapter for which the grid id has to be returned.
-	 * 
 	 * @return The grid id at the given position.
 	 */
 	public int getGridId(int position) {
@@ -205,7 +205,6 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	 * @param position
 	 *            Position in adapter for which the solving attempt of the grid
 	 *            has to be returned.
-	 * 
 	 * @return The grid id at the given position.
 	 */
 	public int getSolvingAttemptId(int position) {

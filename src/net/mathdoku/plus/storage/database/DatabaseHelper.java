@@ -1,6 +1,7 @@
 package net.mathdoku.plus.storage.database;
 
 import net.mathdoku.plus.util.SingletonInstanceNotInstantiated;
+
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.database.sqlite.SQLiteDatabase;

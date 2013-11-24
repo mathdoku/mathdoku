@@ -9,6 +9,7 @@ import net.mathdoku.plus.storage.database.GridRow;
 import net.mathdoku.plus.ui.base.AppFragmentActivity;
 import net.mathdoku.plus.util.FeedbackEmail;
 import net.mathdoku.plus.util.SharedPuzzle;
+
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;

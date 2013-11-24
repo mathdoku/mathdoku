@@ -9,6 +9,7 @@ import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter.ScoreOr
 import net.mathdoku.plus.storage.database.LeaderboardRankRow;
 import net.mathdoku.plus.ui.base.AppFragmentActivity;
 import net.mathdoku.plus.util.Util;
+
 import android.content.res.Resources;
 import android.util.Log;
 

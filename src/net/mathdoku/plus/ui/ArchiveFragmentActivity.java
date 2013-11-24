@@ -25,6 +25,7 @@ import net.mathdoku.plus.storage.database.GridDatabaseAdapter.StatusFilter;
 import net.mathdoku.plus.ui.base.AppFragmentActivity;
 import net.mathdoku.plus.util.FeedbackEmail;
 import net.mathdoku.plus.util.SharedPuzzle;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -252,7 +253,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 
 	/**
 	 * Initializes/refreshes the status spinner.
-	 * 
+	 * <p/>
 	 * Returns: True in case the status spinner should be shown. False
 	 * otherwise.
 	 */
@@ -339,7 +340,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 
 	/**
 	 * Initializes/refreshes the sizes spinner.
-	 * 
+	 * <p/>
 	 * Returns: True in case the sizes spinner should be shown. False otherwise.
 	 */
 	void setSizeSpinner() {
