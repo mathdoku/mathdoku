@@ -20,7 +20,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
 public class SharedPuzzleActivity extends AppFragmentActivity {
 
