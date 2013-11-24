@@ -303,7 +303,8 @@ public class GridCell {
 	 * @return True in case the cell has been marked as invalid. False
 	 *         otherwise.
 	 */
-	public boolean hasInvalidUserValueHighlight() {
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public boolean hasInvalidUserValueHighlight() {
 		return this.mInvalidUserValueHighlight;
 	}
 
