@@ -220,9 +220,8 @@ public class SwipeMotion extends Motion {
 	void finish() {
 		if (mStatus == Status.RELEASED) {
 			mStatus = Status.FINISHED;
-		} else if (mStatus == Status.FINISHED) {
-			// Already finished. Nothing to do here.
-		} else if (Config.mAppMode == AppMode.DEVELOPMENT) {
+		} else if (Config.mAppMode == AppMode.DEVELOPMENT
+				&& mStatus != Status.FINISHED) {
 			throw new RuntimeException(
 					"Swipe Motion status can not be changed from "
 							+ mStatus.toString() + " to " + Status.FINISHED);
@@ -311,14 +310,14 @@ public class SwipeMotion extends Motion {
 				// swipe position is outside the touch down cell.
 				mCurrentSwipePositionDigit = DIGIT_UNDETERMINDED;
 				return false;
-			} else {
-				// The swipe motion for a higher size grid, is released in an
-				// outer cell of the grid or just outside the grid. In this case
-				// it is not checked whether the touch down cell has been left
-				// as it is sometimes more difficult to select the digit due to
-				// a smaller border around the grid (especially when using a
-				// bumper case to protect the device).
 			}
+
+			// The swipe motion for a higher size grid, is released in an outer
+			// cell of the grid or just outside the grid. In this case it is not
+			// checked whether the touch down cell has been left as it is
+			// sometimes more difficult to select the digit due to a smaller
+			// border around the grid (especially when using a bumper case to
+			// protect the device).
 		}
 
 		// Compute the length of the swipe line. In case the current swipe

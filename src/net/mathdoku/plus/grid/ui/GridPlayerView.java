@@ -264,10 +264,8 @@ public class GridPlayerView extends GridBasePlayerView {
 
 			// Draw the overlay for the swipe border around the selected
 			// cell plus the swipe line.
-			if (mSwipeMotion != null) {
-				if (mSwipeMotion.isFinished()) {
-					// do nothing.
-				} else if (mSwipeMotion.isReleased()) {
+			if (mSwipeMotion != null && mSwipeMotion.isFinished() == false) {
+				if (mSwipeMotion.isReleased()) {
 					// The swipe motion was released. Now it can be set to
 					// completed as it is confirmed that the overlay border
 					// has been removed by not drawing it.
