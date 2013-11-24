@@ -7,9 +7,6 @@ import android.graphics.Paint.Style;
 
 public class InputModeBorderPainter extends BorderPainter {
 
-	// Width of the border
-	private float mBorderWidth;
-
 	// Background of border
 	private final Paint mNormalInputModeBorderPaint;
 	private final Paint mMaybeInputModeBorderPaint;
@@ -84,7 +81,7 @@ public class InputModeBorderPainter extends BorderPainter {
 
 	@Override
 	protected void setCellSize(float cellSize) {
-		mBorderWidth = cellSize / 2;
+		float mBorderWidth = cellSize / 2;
 
 		mNormalInputModeBorderPaint.setStrokeWidth(mBorderWidth);
 		mMaybeInputModeBorderPaint.setStrokeWidth(mBorderWidth);
