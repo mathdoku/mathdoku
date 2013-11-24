@@ -167,8 +167,6 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	public int insertInitializedLeaderboard(String leaderboardId, int gridSize,
 			boolean operatorsVisible, PuzzleComplexity puzzleComplexity)
 			throws InvalidParameterException, SQLException {
-		int id = -1;
-
 		if (leaderboardId == null || leaderboardId.trim().equals("")) {
 			throw new InvalidParameterException(
 					"Parameter LeaderboardId is not specified.");
@@ -194,6 +192,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		contentValues.put(KEY_RANK_DISPLAY, (String) null);
 		contentValues.put(KEY_RANK_DATE_LAST_UPDATED, (String) null);
 
+		int id;
 		try {
 			id = (int) mSqliteDatabase
 					.insertOrThrow(TABLE, null, contentValues);

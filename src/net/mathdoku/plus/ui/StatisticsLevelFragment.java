@@ -419,6 +419,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 			if (cheatLegendDisplayed) {
 				simpleSeriesRenderer.setShowLegendItem(false);
 			}
+			// noinspection UnusedAssignment
 			cheatLegendDisplayed = true;
 
 			xyMultipleSeriesRenderer.addSeriesRenderer(simpleSeriesRenderer);

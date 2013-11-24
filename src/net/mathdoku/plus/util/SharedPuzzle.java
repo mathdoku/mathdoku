@@ -98,7 +98,7 @@ public class SharedPuzzle {
 			// links.
 			String mathDokuPuzzle = mContext.getResources().getString(
 					R.string.share_puzzle_link_description);
-			String bodyText = null;
+			String bodyText;
 			if (grid.isActive()) {
 				bodyText = mContext.getResources().getString(
 						R.string.share_unfinished_puzzle_body,

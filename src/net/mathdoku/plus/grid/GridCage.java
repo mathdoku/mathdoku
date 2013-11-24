@@ -564,6 +564,7 @@ public class GridCage {
 			c.setCageId(mId);
 			mCells.add(c);
 		}
+		// noinspection UnusedAssignment
 		mHideOperator = Boolean.parseBoolean(cageParts[index++]);
 
 		return true;

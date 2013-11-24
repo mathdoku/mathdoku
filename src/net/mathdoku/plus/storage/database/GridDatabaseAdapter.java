@@ -155,8 +155,6 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 *             In case the definition is not unique.
 	 */
 	public int insert(Grid grid) throws InvalidParameterException, SQLException {
-		int id = -1;
-
 		String gridDefinition = grid.toGridDefinitionString();
 		if (gridDefinition == null || gridDefinition.trim().equals("")) {
 			// TODO: better handling of situation in which a grid definition was
@@ -183,6 +181,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		initialValues.put(KEY_MAX_CAGE_SIZE,
 				gridGeneratingParameters.mMaxCageSize);
 
+		int id;
 		try {
 			id = (int) mSqliteDatabase
 					.insertOrThrow(TABLE, null, initialValues);

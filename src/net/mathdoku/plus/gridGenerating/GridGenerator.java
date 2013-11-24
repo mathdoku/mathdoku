@@ -677,15 +677,12 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		}
 
 		GridCageType selectedGridCageType;
-		boolean cageIsValid;
 		do {
 			// Check whether the generating process should be aborted
 			// due to cancellation of the grid dialog.
 			if (isCancelled()) {
 				return null;
 			}
-
-			cageIsValid = true;
 
 			// Randomly select any cage from the list of available cages. As
 			// soon as a cage type is selected, it is removed from the list of
@@ -705,6 +702,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			boolean[][] maskNewCage = new boolean[this.mGridSize][this.mGridSize];
 			int[] maskNewCageRowCount = new int[this.mGridSize];
 			int[] maskNewCageColCount = new int[this.mGridSize];
+			boolean cageIsValid = true;
 			for (int[] cageTypeCoord : cageTypeCoords) {
 				int row = cageTypeCoord[0];
 				int col = cageTypeCoord[1];
@@ -735,15 +733,17 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 				printCageCreationDebugInformation(maskNewCage);
 			}
 
+			// Check next cage in case an overlapping subset is found in the
+			// columns
 			if (hasOverlappingSubsetOfValuesInColumns(maskNewCage,
 					maskNewCageColCount)) {
-				cageIsValid = false;
 				continue;
 			}
 
+			// Check next cage in case an overlapping subset is found in the
+			// rows
 			if (hasOverlappingSubsetOfValuesInRows(maskNewCage,
 					maskNewCageRowCount)) {
-				cageIsValid = false;
 				continue;
 			}
 
@@ -755,10 +755,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 				return cage;
 			}
 
-			// No cage created due to too many permutations.
-			cageIsValid = false;
-
-			// Check next cage
+			// No cage created due to too many permutations. Check next cage.
 		} while (availableCages.size() > 0);
 
 		// No cage, other than a single cell, does fit on this position in the

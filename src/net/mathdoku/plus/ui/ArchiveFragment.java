@@ -469,6 +469,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 			xyMultipleSeriesDataset.addSeries(xySeries);
 			xyMultipleSeriesRenderer
 					.addSeriesRenderer(createSimpleSeriesRenderer(chartSignal3));
+			// noinspection UnusedAssignment
 			categoryIndex++;
 			maxYValue = Math.max(maxYValue, totalClears);
 		}
@@ -604,6 +605,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 			xyMultipleSeriesDataset.addSeries(xySeries);
 			xyMultipleSeriesRenderer
 					.addSeriesRenderer(createSimpleSeriesRenderer(chartRed4));
+			// noinspection UnusedAssignment
 			categoryIndex++;
 			maxYValue = Math.max(maxYValue,
 					(mGridStatistics.isSolutionRevealed() ? 1 : 0));

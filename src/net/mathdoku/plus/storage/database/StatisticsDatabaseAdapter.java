@@ -211,7 +211,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		initialValues.put(KEY_INCLUDE_IN_STATISTICS, DatabaseAdapter
 				.toSQLiteBoolean(countSolvingAttemptsForGrid == 0));
 
-		long id = -1;
+		long id;
 		try {
 			id = mSqliteDatabase.insertOrThrow(TABLE, null, initialValues);
 		} catch (SQLiteException e) {
@@ -509,7 +509,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 			Log.i(TAG, sql);
 		}
 
-		Cursor cursor = null;
+		Cursor cursor;
 		try {
 			cursor = sqliteQueryBuilder.query(mSqliteDatabase,
 					mCumulativeStatisticsProjection.getAllColumnNames(),
@@ -769,7 +769,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 			Log.i(TAG, sql);
 		}
 
-		Cursor cursor = null;
+		Cursor cursor;
 		try {
 			cursor = sqliteQueryBuilder.query(mSqliteDatabase, columnsData,
 					selection, null, null, null, KEY_GRID_ID);

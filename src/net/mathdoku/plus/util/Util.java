@@ -104,7 +104,7 @@ public class Util {
 		int hours = (int) Math.floor(roundedElapsedTime / (60 * 60));
 
 		// Build time string and ignore hours if not applicable.
-		String duration = "";
+		String duration;
 		if (hours > 0) {
 			duration = String.format("%dh%02dm%02ds", hours, minutes, seconds);
 		} else if (minutes > 0) {

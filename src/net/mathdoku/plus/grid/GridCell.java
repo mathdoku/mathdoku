@@ -842,6 +842,7 @@ public class GridCell {
 
 		mInvalidUserValueHighlight = Boolean.parseBoolean(cellParts[index++]);
 		mRevealed = Boolean.parseBoolean(cellParts[index++]);
+		// noinspection UnusedAssignment
 		mSelected = Boolean.parseBoolean(cellParts[index++]);
 
 		return true;

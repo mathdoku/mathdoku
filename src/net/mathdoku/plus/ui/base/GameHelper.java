@@ -1054,7 +1054,7 @@ public class GameHelper implements
 			return;
 		}
 		debugLog("Making error dialog for failure: " + mSignInFailureReason);
-		Dialog errorDialog = null;
+		Dialog errorDialog;
 		int errorCode = mSignInFailureReason.getServiceErrorCode();
 		int actResp = mSignInFailureReason.getActivityResultCode();
 

@@ -307,8 +307,7 @@ public class LeaderboardType {
 	 */
 	public static PuzzleComplexity getPuzzleComplexity(int index) {
 		// Strip bigger factors from the index.
-		int remainder = index % GRID_SIZE_INDEX_FACTOR;
-		remainder = index % HIDE_OPERATOR_INDEX_FACTOR;
+		int remainder = index % HIDE_OPERATOR_INDEX_FACTOR;
 
 		// Get puzzle complexity
 		remainder /= PUZZLE_COMPLEXITY_INDEX_FACTOR;

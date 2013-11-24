@@ -35,39 +35,37 @@ class LeaderboardFragmentPagerAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public android.support.v4.app.Fragment getItem(int i) {
-		android.support.v4.app.Fragment fragment = null;
-		fragment = new LeaderboardFragment();
-
-		int gridSize = 0;
+		// Create bundle
+		Bundle bundle = new Bundle();
 		switch (i) {
 		case FRAGMENT_ID_GRID_SIZE_4:
-			gridSize = 4;
+			bundle.putInt(LeaderboardFragment.ARG_GRID_SIZE, 4);
 			break;
 		case FRAGMENT_ID_GRID_SIZE_5:
-			gridSize = 5;
+			bundle.putInt(LeaderboardFragment.ARG_GRID_SIZE, 5);
 			break;
 		case FRAGMENT_ID_GRID_SIZE_6:
-			gridSize = 6;
+			bundle.putInt(LeaderboardFragment.ARG_GRID_SIZE, 6);
 			break;
 		case FRAGMENT_ID_GRID_SIZE_7:
-			gridSize = 7;
+			bundle.putInt(LeaderboardFragment.ARG_GRID_SIZE, 7);
 			break;
 		case FRAGMENT_ID_GRID_SIZE_8:
-			gridSize = 8;
+			bundle.putInt(LeaderboardFragment.ARG_GRID_SIZE, 8);
 			break;
 		case FRAGMENT_ID_GRID_SIZE_9:
-			gridSize = 9;
+			bundle.putInt(LeaderboardFragment.ARG_GRID_SIZE, 9);
 			break;
 		default:
-			gridSize = 4;
+			bundle.putInt(LeaderboardFragment.ARG_GRID_SIZE, 4);
 			break;
 		}
-
-		Bundle args = new Bundle();
-		args.putInt(LeaderboardFragment.ARG_GRID_SIZE, gridSize);
-		args.putInt(LeaderboardFragment.ARG_FILTER,
+		bundle.putInt(LeaderboardFragment.ARG_FILTER,
 				mLeaderboardFragmentActivity.getLeaderboardFilter().ordinal());
-		fragment.setArguments(args);
+
+		// Create fragment and pass the bundle
+		android.support.v4.app.Fragment fragment = new LeaderboardFragment();
+		fragment.setArguments(bundle);
 
 		return fragment;
 	}

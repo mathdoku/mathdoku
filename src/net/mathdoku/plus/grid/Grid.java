@@ -588,6 +588,7 @@ public class Grid {
 		mActive = Boolean.parseBoolean(viewParts[index++]);
 
 		mRevealed = Boolean.parseBoolean(viewParts[index++]);
+		// noinspection UnusedAssignment
 		mClearRedundantPossiblesInSameRowOrColumnCount = Integer
 				.parseInt(viewParts[index++]);
 
@@ -871,7 +872,7 @@ public class Grid {
 	 * @return True in case everything has been saved. False otherwise.
 	 */
 	private boolean save(boolean saveDueToUpgrade) {
-		boolean saved = true;
+		boolean saved;
 
 		synchronized (mLock) { // Avoid saving game at the same time as
 			// creating puzzle

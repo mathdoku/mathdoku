@@ -173,7 +173,7 @@ public class Cheat {
 	 * @return A formatted text.
 	 */
 	private String getPenaltyTimeText(long penaltyTime) {
-		String penaltyTimeText = "";
+		String penaltyTimeText;
 		String and = " "
 				+ mResources.getString(R.string.connector_last_two_elements)
 				+ " ";
