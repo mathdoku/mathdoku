@@ -2,7 +2,9 @@ package net.mathdoku.plus.grid.ui;
 
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.painter.Painter;
+
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
@@ -31,32 +33,33 @@ public class GridPlayerRelativeLayout extends RelativeLayout {
 	public GridPlayerRelativeLayout(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
-		TypedArray typedArray = context.getTheme().obtainStyledAttributes(
+        //noinspection ConstantConditions
+        TypedArray typedArray = context.getTheme().obtainStyledAttributes(
 				attrs, R.styleable.GridPlayerViewLayoutAlign, 0, 0);
+		if (typedArray != null) {
+			try {
+				mLeftMarginAdjustment = (typedArray
+						.getInt(R.styleable.GridPlayerViewLayoutAlign_layout_alignGridPlayerViewLeft,
+								1) == 0);
+				mTopMarginAdjustment = (typedArray
+						.getInt(R.styleable.GridPlayerViewLayoutAlign_layout_alignGridPlayerViewTop,
+								1) == 0);
+				mRightMarginAdjustment = (typedArray
+						.getInt(R.styleable.GridPlayerViewLayoutAlign_layout_alignGridPlayerViewRight,
+								1) == 0);
+				mBottomMarginAdjustment = (typedArray
+						.getInt(R.styleable.GridPlayerViewLayoutAlign_layout_alignGridPlayerViewBottom,
+								1) == 0);
+			} finally {
+				typedArray.recycle();
+			}
+			mMarginAdjustment = (mLeftMarginAdjustment || mTopMarginAdjustment
+					|| mRightMarginAdjustment || mBottomMarginAdjustment);
 
-		try {
-			mLeftMarginAdjustment = (typedArray
-					.getInt(R.styleable.GridPlayerViewLayoutAlign_layout_alignGridPlayerViewLeft,
-							1) == 0);
-			mTopMarginAdjustment = (typedArray
-					.getInt(R.styleable.GridPlayerViewLayoutAlign_layout_alignGridPlayerViewTop,
-							1) == 0);
-			mRightMarginAdjustment = (typedArray
-					.getInt(R.styleable.GridPlayerViewLayoutAlign_layout_alignGridPlayerViewRight,
-							1) == 0);
-			mBottomMarginAdjustment = (typedArray
-					.getInt(R.styleable.GridPlayerViewLayoutAlign_layout_alignGridPlayerViewBottom,
-							1) == 0);
-		} finally {
-			typedArray.recycle();
+			// Additional margins will be determined in first pass of onMeasure,
+			// except no margins needs to be adjusted at all.
+			mMarginsInitialised = (mMarginAdjustment == false);
 		}
-
-		mMarginAdjustment = (mLeftMarginAdjustment || mTopMarginAdjustment
-				|| mRightMarginAdjustment || mBottomMarginAdjustment);
-
-		// Additional margins will be determined in first pass of onMeasure,
-		// except no margins needs to be adjusted at all.
-		mMarginsInitialised = (mMarginAdjustment == false);
 	}
 
 	@Override
@@ -89,9 +92,11 @@ public class GridPlayerRelativeLayout extends RelativeLayout {
 
 			// Adjust the margins
 			RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) getLayoutParams();
-			layoutParams.setMargins(mLeftMargin, mTopMargin, mRightMargin,
-					mBottomMargin);
-			setLayoutParams(layoutParams);
+			if (layoutParams != null) {
+				layoutParams.setMargins(mLeftMargin, mTopMargin, mRightMargin,
+						mBottomMargin);
+				setLayoutParams(layoutParams);
+			}
 		}
 
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);

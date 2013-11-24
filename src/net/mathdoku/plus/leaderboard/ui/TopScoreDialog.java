@@ -84,7 +84,8 @@ public class TopScoreDialog extends AlertDialog {
 		super.show();
 
 		// Build and start the animation on the leaderboard icon
-		((ImageView) findViewById(R.id.dialog_top_score_leaderboard_icon))
+        //noinspection ConstantConditions
+        ((ImageView) findViewById(R.id.dialog_top_score_leaderboard_icon))
 				.startAnimation(AnimationUtils.loadAnimation(getContext(),
 						R.anim.top_score));
 	}

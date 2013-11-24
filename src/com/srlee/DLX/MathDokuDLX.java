@@ -193,7 +193,7 @@ public class MathDokuDLX extends DLX {
 	public boolean hasUniqueSolution() {
 		if (Config.mAppMode == AppMode.DEVELOPMENT && DEBUG_DLX) {
 			initialize(true); // Needed to compute complexity in development
-			// mode
+								// mode
 
 			// Search for multiple solutions (but stop as soon as the second
 			// solution has been found).

@@ -190,6 +190,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * @param context
 	 *            Context from which the version has to eb determined.
 	 */
+	@SuppressWarnings("ConstantConditions")
 	private static int getVersion(Context context) {
 		int version = -1;
 		try {

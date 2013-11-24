@@ -46,34 +46,48 @@ public class StatisticsFragmentActivity extends AppFragmentActivity implements
 
 		// Set up the action bar.
 		final ActionBar actionBar = getActionBar();
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-		actionBar.setDisplayHomeAsUpEnabled(true);
-		actionBar.setTitle(getResources().getString(
-				R.string.statistics_actionbar_title));
+		if (actionBar != null) {
+			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+			actionBar.setDisplayHomeAsUpEnabled(true);
+			actionBar.setTitle(getResources().getString(
+					R.string.statistics_actionbar_title));
+		}
 
 		// Set up the ViewPager, attaching the adapter and setting up a listener
 		// for when the user swipes between the statistics fragments.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mStatisticsFragmentPagerAdapter);
-		mViewPager
-				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-					@Override
-					public void onPageSelected(int position) {
-						// When swiping between different statistics fragments,
-						// select the corresponding tab.
-						actionBar.setSelectedNavigationItem(position);
-					}
-				});
 
 		// For each of the statistics fragments, add a tab to the action bar.
-		for (int i = 0; i < mStatisticsFragmentPagerAdapter.getCount(); i++) {
-			// Create a tab with text corresponding to the page title defined by
-			// the adapter. Also specify this Activity object, which implements
-			// the TabListener interface, as the listener for when this tab is
-			// selected.
-			actionBar.addTab(actionBar.newTab()
-					.setText(mStatisticsFragmentPagerAdapter.getPageTitle(i))
-					.setTabListener(this));
+		if (actionBar != null) {
+			for (int i = 0; i < mStatisticsFragmentPagerAdapter.getCount(); i++) {
+				// Create a tab with text corresponding to the page title
+				// defined by the adapter. Also specify this Activity object,
+				// which implements the TabListener interface, as the listener
+				// for when this tab is selected.
+				actionBar
+						.addTab(actionBar
+								.newTab()
+								.setText(
+										mStatisticsFragmentPagerAdapter
+												.getPageTitle(i))
+								.setTabListener(this));
+			}
+		}
+
+		// Set a page change listener so the correct tab can be selected when
+		// the page is swiped.
+		if (actionBar != null) {
+			mViewPager
+					.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+						@Override
+						public void onPageSelected(int position) {
+							// When swiping between different statistics
+							// fragments,
+							// select the corresponding tab.
+							actionBar.setSelectedNavigationItem(position);
+						}
+					});
 		}
 
 		// Show the same page as last time (or the last tab if statistics were

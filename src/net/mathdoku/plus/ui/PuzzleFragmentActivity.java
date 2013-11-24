@@ -129,7 +129,9 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	// call.
 	private int mOnResumeReplaySolvingAttempt;
 
-	/** Called when the activity is first created. */
+	/**
+	 * Called when the activity is first created.
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		enableDebugLog(LeaderboardConnector.DEBUG, TAG);
@@ -249,110 +251,129 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		boolean showCheats = false;
 
 		// Set visibility for menu option input mode
-		MenuItem inputModeItem = menu.findItem(R.id.action_input_mode);
-		inputModeItem.setVisible(!drawerOpen
-				&& mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT
-				&& mPuzzleFragment != null && mPuzzleFragment.isActive());
-		if (inputModeItem.isVisible()) {
-			inputModeItem.setIcon(
-					mPuzzleFragment.getActionCurrentInputModeIconResId())
-					.setTitle(
-							mPuzzleFragment
-									.getActionCurrentInputModeTitleResId());
+		MenuItem menuItem = menu.findItem(R.id.action_input_mode);
+		if (menuItem != null) {
+			menuItem.setVisible(!drawerOpen
+					&& mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT
+					&& mPuzzleFragment != null && mPuzzleFragment.isActive());
+			if (menuItem.isVisible()) {
+				menuItem.setIcon(
+						mPuzzleFragment.getActionCurrentInputModeIconResId())
+						.setTitle(
+								mPuzzleFragment
+										.getActionCurrentInputModeTitleResId());
+			}
 		}
 
 		// Set visibility for menu option copy cell values
-		menu.findItem(R.id.action_copy_cell_values).setVisible(
-				!drawerOpen
-						&& mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT
-						&& mPuzzleFragment != null
-						&& mPuzzleFragment.showCopyCellValues());
+		if ((menuItem = menu.findItem(R.id.action_copy_cell_values)) != null) {
+			menuItem.setVisible(!drawerOpen
+					&& mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT
+					&& mPuzzleFragment != null
+					&& mPuzzleFragment.showCopyCellValues());
+		}
 
 		// Set visibility for menu option check progress
-		menu.findItem(R.id.checkprogress).setVisible(
-				!drawerOpen
-						&& mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT
-						&& mPuzzleFragment != null
-						&& mPuzzleFragment.showCheckProgress());
+		if ((menuItem = menu.findItem(R.id.checkprogress)) != null) {
+			menuItem.setVisible(!drawerOpen
+					&& mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT
+					&& mPuzzleFragment != null
+					&& mPuzzleFragment.showCheckProgress());
+		}
 
 		// Set visibility for menu option to reveal a cell
-		if (!drawerOpen && mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT
-				&& mPuzzleFragment != null && mPuzzleFragment.showRevealCell()) {
-			menu.findItem(R.id.action_reveal_cell).setVisible(true);
-			showCheats = true;
-		} else {
-			menu.findItem(R.id.action_reveal_cell).setVisible(false);
+		if ((menuItem = menu.findItem(R.id.action_reveal_cell)) != null) {
+			menuItem.setVisible(!drawerOpen
+					&& mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT
+					&& mPuzzleFragment != null
+					&& mPuzzleFragment.showRevealCell());
+			if (menuItem.isVisible()) {
+				showCheats = true;
+			}
 		}
 
 		// Set visibility for menu option to reveal a operator
-		if (!drawerOpen && mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT
-				&& mPuzzleFragment != null
-				&& mPuzzleFragment.showRevealOperator()) {
-			menu.findItem(R.id.action_reveal_operator).setVisible(true);
-			showCheats = true;
-		} else {
-			menu.findItem(R.id.action_reveal_operator).setVisible(false);
+		if ((menuItem = menu.findItem(R.id.action_reveal_operator)) != null) {
+			menuItem.setVisible(!drawerOpen
+					&& mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT
+					&& mPuzzleFragment != null
+					&& mPuzzleFragment.showRevealOperator());
+			if (menuItem.isVisible()) {
+				showCheats = true;
+			}
 		}
 
 		// Set visibility for menu option to reveal the solution
-		if (!drawerOpen && mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT
-				&& mPuzzleFragment != null
-				&& mPuzzleFragment.showRevealSolution()) {
-			menu.findItem(R.id.action_show_solution).setVisible(true);
-			showCheats = true;
-		} else {
-			menu.findItem(R.id.action_show_solution).setVisible(false);
+		if ((menuItem = menu.findItem(R.id.action_show_solution)) != null) {
+			menuItem.setVisible(!drawerOpen
+					&& mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT
+					&& mPuzzleFragment != null
+					&& mPuzzleFragment.showRevealSolution());
+			if (menuItem.isVisible()) {
+				showCheats = true;
+			}
 		}
 
 		// The cheats menu is only visible in case at least one sub menu item is
 		// visible. Note: the item does not exist when running on Android 3 as
 		// that version does not allow sub menu's.
-		MenuItem menuItem = menu.findItem(R.id.action_cheat);
-		if (menuItem != null) {
+		if ((menuItem = menu.findItem(R.id.action_cheat)) != null) {
 			menuItem.setVisible(!drawerOpen && showCheats);
 		}
 
 		// Set visibility for menu option to clear the grid
-		menu.findItem(R.id.action_clear_grid).setVisible(
-				!drawerOpen
-						&& mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT
-						&& mPuzzleFragment != null
-						&& mPuzzleFragment.showClearGrid());
+		if ((menuItem = menu.findItem(R.id.action_clear_grid)) != null) {
+			menuItem.setVisible(!drawerOpen
+					&& mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT
+					&& mPuzzleFragment != null
+					&& mPuzzleFragment.showClearGrid());
+		}
 
 		// Determine position of new game button
-		menu.findItem(R.id.action_new_game)
-				.setVisible(!drawerOpen)
-				.setShowAsAction(
-						(mPuzzleFragment != null && mPuzzleFragment.isActive() ? MenuItem.SHOW_AS_ACTION_NEVER
-								: MenuItem.SHOW_AS_ACTION_ALWAYS));
+		if ((menuItem = menu.findItem(R.id.action_new_game)) != null) {
+			menuItem.setVisible(!drawerOpen)
+					.setShowAsAction(
+							(mPuzzleFragment != null
+									&& mPuzzleFragment.isActive() ? MenuItem.SHOW_AS_ACTION_NEVER
+									: MenuItem.SHOW_AS_ACTION_ALWAYS));
+		}
 
 		// Display the share button on the action bar dependent on the fragment
 		// being showed.
-		menu.findItem(R.id.action_share)
-				.setVisible(!drawerOpen)
-				.setShowAsAction(
-						(mArchiveFragment != null ? MenuItem.SHOW_AS_ACTION_IF_ROOM
-								: MenuItem.SHOW_AS_ACTION_NEVER));
+		if ((menuItem = menu.findItem(R.id.action_share)) != null) {
+			menuItem.setVisible(!drawerOpen).setShowAsAction(
+					(mArchiveFragment != null ? MenuItem.SHOW_AS_ACTION_IF_ROOM
+							: MenuItem.SHOW_AS_ACTION_NEVER));
+		}
 
 		// The replay button on the action bar is only visible in case the
 		// archive fragment is shown. This action is never visible in case the
 		// puzzle fragment is display as it would duplicate the clear grid
 		// option.
-		menu.findItem(R.id.action_replay).setVisible(
-				!drawerOpen && mArchiveFragment != null);
+		if ((menuItem = menu.findItem(R.id.action_replay)) != null) {
+			menuItem.setVisible(!drawerOpen && mArchiveFragment != null);
+		}
 
 		// Determine visibility of sign out button
-		menu.findItem(R.id.action_sign_out_google_play_services).setVisible(
-				mLeaderboardConnector != null
-						&& mLeaderboardConnector.isSignedIn());
+		if ((menuItem = menu
+				.findItem(R.id.action_sign_out_google_play_services)) != null) {
+			menuItem.setVisible(mLeaderboardConnector != null
+					&& mLeaderboardConnector.isSignedIn());
+		}
 
 		// When running in development mode, an extra menu is available.
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
-			menu.findItem(R.id.menu_development_mode).setVisible(true);
-			menu.findItem(R.id.development_mode_leaderboard_menu).setVisible(
-					mArchiveFragment != null);
-			menu.findItem(R.id.development_mode_submit_manual_score)
-					.setVisible(mArchiveFragment != null);
+			if ((menuItem = menu.findItem(R.id.menu_development_mode)) != null) {
+				menuItem.setVisible(true);
+			}
+			if ((menuItem = menu
+					.findItem(R.id.development_mode_leaderboard_menu)) != null) {
+				menuItem.setVisible(mArchiveFragment != null);
+			}
+			if ((menuItem = menu
+					.findItem(R.id.development_mode_submit_manual_score)) != null) {
+				menuItem.setVisible(mArchiveFragment != null);
+			}
 		}
 
 		return super.onPrepareOptionsMenu(menu);
@@ -533,17 +554,23 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		// Get view and put relevant information into the view.
 		LayoutInflater li = LayoutInflater.from(this);
 		View view = li.inflate(R.layout.puzzle_help_dialog, null);
+		if (view == null) {
+			return;
+		}
 
-		TextView tv = (TextView) view
-				.findViewById(R.id.puzzle_help_dialog_leadin);
-		tv.setVisibility(cleanInstall ? View.VISIBLE : View.GONE);
+		TextView tv;
+		if ((tv = (TextView) view.findViewById(R.id.puzzle_help_dialog_leadin)) != null) {
+			tv.setVisibility(cleanInstall ? View.VISIBLE : View.GONE);
+		}
 
-		tv = (TextView) view.findViewById(R.id.dialog_help_version_body);
-		tv.setText(Util.getPackageVersionName() + " (revision "
-				+ Util.getPackageVersionNumber() + ")");
+		if ((tv = (TextView) view.findViewById(R.id.dialog_help_version_body)) != null) {
+			tv.setText(Util.getPackageVersionName() + " (revision "
+					+ Util.getPackageVersionNumber() + ")");
+		}
 
-		tv = (TextView) view.findViewById(R.id.help_project_home_link);
-		tv.setText(Util.PROJECT_HOME);
+		if ((tv = (TextView) view.findViewById(R.id.help_project_home_link)) != null) {
+			tv.setText(Util.PROJECT_HOME);
+		}
 
 		final PuzzleFragmentActivity puzzleFragmentActivity = this;
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
@@ -910,6 +937,9 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		LayoutInflater layoutInflater = LayoutInflater.from(this);
 		View view = layoutInflater.inflate(R.layout.puzzle_parameter_dialog,
 				null);
+		if (view == null) {
+			return;
+		}
 
 		// Get views for the puzzle generating parameters
 		final Spinner puzzleParameterSizeSpinner = (Spinner) view
@@ -1153,11 +1183,10 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	 * Set the navigation drawer. The drawer can be open in following ways:<br>
 	 * - tapping the drawer or the app icon<br>
 	 * - tapping the left side of the screen.
-	 * 
+	 * <p/>
 	 * The drawer icon will only be visible as soon as at least one item is
 	 * available for display in the drawer. As of that moment it will be
 	 * possible to open the drawer by tapping the drawer or the app icon.
-	 * 
 	 */
 	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	private void setNavigationDrawer() {
@@ -1242,8 +1271,10 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 				invalidateOptionsMenu();
 
 				// Reset the subtitle
-				actionBar.setSubtitle(getResources().getString(
-						R.string.action_bar_subtitle_puzzle_fragment));
+				if (actionBar != null) {
+					actionBar.setSubtitle(getResources().getString(
+							R.string.action_bar_subtitle_puzzle_fragment));
+				}
 			}
 
 			/*
@@ -1259,7 +1290,9 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 				invalidateOptionsMenu();
 
 				// Remove the subtitle
-				actionBar.setSubtitle(null);
+				if (actionBar != null) {
+					actionBar.setSubtitle(null);
+				}
 			}
 		};
 

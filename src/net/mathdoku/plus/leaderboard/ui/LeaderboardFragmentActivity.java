@@ -421,12 +421,16 @@ public class LeaderboardFragmentActivity extends
 
 	private void showBecomeABetaLeaderboardTesterDialog() {
 		final PackageManager packageManager = getPackageManager();
+		if (packageManager == null) {
+			return;
+		}
+
 		final Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("message/rfc822");
 		List<ResolveInfo> list = packageManager.queryIntentActivities(intent,
 				PackageManager.MATCH_DEFAULT_ONLY);
 
-		if (list.size() == 0) {
+		if (list == null || list.size() == 0) {
 			// No email client available.
 			return;
 		}

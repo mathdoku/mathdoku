@@ -2,9 +2,11 @@ package net.mathdoku.plus.ui;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
+
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
 
 class StatisticsPreferenceFragment extends PreferenceFragment implements
@@ -48,14 +50,15 @@ class StatisticsPreferenceFragment extends PreferenceFragment implements
 	 * current value of the option.
 	 */
 	void setMaximumGamesElapsedTimeChart() {
-		findPreference(
-				Preferences.STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES)
-				.setSummary(
-						getResources()
-								.getString(
-										R.string.statistics_setting_elapsed_time_chart_maximum_puzzles_summary,
-										Preferences
-												.getInstance()
-												.getStatisticsSettingElapsedTimeChartMaximumGames()));
+		Preference preference = findPreference(Preferences.STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES);
+		if (preference != null) {
+			preference
+					.setSummary(getResources()
+							.getString(
+									R.string.statistics_setting_elapsed_time_chart_maximum_puzzles_summary,
+									Preferences
+											.getInstance()
+											.getStatisticsSettingElapsedTimeChartMaximumGames()));
+		}
 	}
 }

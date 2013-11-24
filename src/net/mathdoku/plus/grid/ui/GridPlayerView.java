@@ -97,6 +97,7 @@ public class GridPlayerView extends GridBasePlayerView {
 							.setOnUpdateListener(new SwipeMotion.Listener() {
 								@Override
 								public void onSelectableDigit() {
+									// noinspection ConstantConditions
 									mTickerTape
 											.reset()
 											.addItem(
@@ -108,6 +109,7 @@ public class GridPlayerView extends GridBasePlayerView {
 
 								@Override
 								public void onNoSelectableDigit() {
+									// noinspection ConstantConditions
 									mTickerTape
 											.reset()
 											.addItem(
@@ -144,6 +146,7 @@ public class GridPlayerView extends GridBasePlayerView {
 
 						if (mPreferences
 								.increaseSwipeValidMotionCounter(swipeDigit) <= 6) {
+							// noinspection ConstantConditions
 							mTickerTape
 									.reset()
 									.addItem(
@@ -165,6 +168,7 @@ public class GridPlayerView extends GridBasePlayerView {
 						if (swipeDigit > mGridSize
 								&& mPreferences
 										.increaseSwipeInvalidMotionCounter() <= 6) {
+							// noinspection ConstantConditions
 							mTickerTape
 									.reset()
 									.addItem(
@@ -255,6 +259,7 @@ public class GridPlayerView extends GridBasePlayerView {
 			if (selectedCell == null) {
 				// As long a no cell is selected, the input mode border can not
 				// be drawn.
+				return;
 			}
 
 			// Draw the overlay for the swipe border around the selected
@@ -296,6 +301,7 @@ public class GridPlayerView extends GridBasePlayerView {
 
 		if (mSwipeInputMethodEnabled) {
 			if (mPreferences.getSwipeValidMotionCounter() < MIN_VALID_SWIPE_MOTIONS) {
+				// noinspection ConstantConditions,ConstantConditions
 				mTickerTape
 						.reset()
 						.addItem(

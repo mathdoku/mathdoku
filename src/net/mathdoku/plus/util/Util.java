@@ -27,6 +27,7 @@ public class Util {
 		mPackageVersionNumber = -1;
 		mPackageVersionName = "";
 		try {
+			// noinspection ConstantConditions
 			PackageInfo packageInfo = activity.getPackageManager()
 					.getPackageInfo(activity.getPackageName(), 0);
 			mPackageVersionNumber = packageInfo.versionCode;
@@ -41,8 +42,9 @@ public class Util {
 				.getMetrics(mDisplayMetrics);
 
 		// Set path for files. Ensure that it ends with "/".
+		// noinspection ConstantConditions
 		mBasePath = activity.getApplicationInfo().dataDir;
-		if (!mBasePath.endsWith("/")) {
+		if (mBasePath != null && !mBasePath.endsWith("/")) {
 			mBasePath += "/";
 		}
 

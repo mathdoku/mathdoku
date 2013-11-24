@@ -2,9 +2,11 @@ package net.mathdoku.plus.ui;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
+
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
 
 class ArchivePreferenceFragment extends PreferenceFragment implements
@@ -52,11 +54,13 @@ class ArchivePreferenceFragment extends PreferenceFragment implements
 	 * option.
 	 */
 	private void setStatusFilterSummary() {
-		int summaryResId = Preferences.getInstance()
-				.isArchiveStatusFilterVisible() ? R.string.archive_settings_show_status_filter_enabled
-				: R.string.archive_settings_show_status_filter_disabled;
-		findPreference(Preferences.ARCHIVE_SETTING_STATUS_FILTER_VISIBLE)
-				.setSummary(getResources().getString(summaryResId));
+		Preference preference;
+		if ((preference = findPreference(Preferences.ARCHIVE_SETTING_STATUS_FILTER_VISIBLE)) != null) {
+			int summaryResId = Preferences.getInstance()
+					.isArchiveStatusFilterVisible() ? R.string.archive_settings_show_status_filter_enabled
+					: R.string.archive_settings_show_status_filter_disabled;
+			preference.setSummary(getResources().getString(summaryResId));
+		}
 	}
 
 	/**
@@ -64,10 +68,12 @@ class ArchivePreferenceFragment extends PreferenceFragment implements
 	 * option.
 	 */
 	private void setSizeFilterSummary() {
-		int summaryResId = Preferences.getInstance()
-				.isArchiveSizeFilterVisible() ? R.string.archive_settings_show_size_filter_enabled
-				: R.string.archive_settings_show_size_filter_disabled;
-		findPreference(Preferences.ARCHIVE_SETTING_SIZE_FILTER_VISIBLE)
-				.setSummary(getResources().getString(summaryResId));
+		Preference preference;
+		if ((preference = findPreference(Preferences.ARCHIVE_SETTING_SIZE_FILTER_VISIBLE)) != null) {
+			int summaryResId = Preferences.getInstance()
+					.isArchiveSizeFilterVisible() ? R.string.archive_settings_show_size_filter_enabled
+					: R.string.archive_settings_show_size_filter_disabled;
+			preference.setSummary(getResources().getString(summaryResId));
+		}
 	}
 }

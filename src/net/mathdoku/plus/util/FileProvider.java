@@ -86,7 +86,7 @@ public class FileProvider extends ContentProvider {
 	@Override
 	public Cursor query(Uri uri, String[] arg1, String arg2, String[] arg3,
 			String arg4) {
-		if (uriMatcher.match(uri) == UriMatcher.NO_MATCH) {
+		if (uri == null || uriMatcher.match(uri) == UriMatcher.NO_MATCH) {
 			throw new IllegalArgumentException("Unsupported URI: " + uri);
 		}
 
@@ -94,8 +94,14 @@ public class FileProvider extends ContentProvider {
 		// and size of the file is returned,
 		MatrixCursor cursor = null;
 
-		File file = new File(getContext().getFilesDir(),
-				uri.getLastPathSegment());
+		// Check if dir exists
+		// noinspection ConstantConditions
+		File dir = getContext().getFilesDir();
+		if (dir == null || dir.exists() == false) {
+			return null;
+		}
+
+		File file = new File(dir, uri.getLastPathSegment());
 		if (file.exists()) {
 			cursor = new MatrixCursor(new String[] {
 					OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE });
@@ -114,14 +120,20 @@ public class FileProvider extends ContentProvider {
 	@Override
 	public ParcelFileDescriptor openFile(Uri uri, String mode)
 			throws FileNotFoundException {
-		if (uriMatcher.match(uri) == UriMatcher.NO_MATCH) {
+		if (uri == null || uriMatcher.match(uri) == UriMatcher.NO_MATCH) {
 			throw new IllegalArgumentException("Unsupported URI: " + uri);
+		}
+
+		// Check if dir exists
+		// noinspection ConstantConditions
+		File dir = getContext().getFilesDir();
+		if (dir == null || dir.exists() == false) {
+			return null;
 		}
 
 		// For a URI which matched an allowed URI, the file is provided as
 		// read only.
-		File file = new File(getContext().getFilesDir(),
-				uri.getLastPathSegment());
+		File file = new File(dir, uri.getLastPathSegment());
 		if (file.exists()) {
 			return (ParcelFileDescriptor.open(file,
 					ParcelFileDescriptor.MODE_READ_ONLY));

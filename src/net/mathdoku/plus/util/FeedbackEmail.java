@@ -127,7 +127,8 @@ public class FeedbackEmail {
 
 		Configuration configuration = mActivity.getResources()
 				.getConfiguration();
-		sortedMap.put("locale", configuration.locale.toString());
+        //noinspection ConstantConditions
+        sortedMap.put("locale", configuration.locale.toString());
 		sortedMap.put("orientation",
 				Integer.toString(configuration.orientation));
 
@@ -253,65 +254,65 @@ public class FeedbackEmail {
 
 		new AlertDialog.Builder(mActivity)
 				.setTitle(
-						mActivity.getResources().getString(
-								R.string.dialog_send_feedback_title))
+                        mActivity.getResources().getString(
+                                R.string.dialog_send_feedback_title))
 				.setMessage(
-						mActivity.getResources().getString(
-								R.string.dialog_send_feedback_text))
+                        mActivity.getResources().getString(
+                                R.string.dialog_send_feedback_text))
 				.setNegativeButton(R.string.dialog_general_button_close,
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int whichButton) {
-								// Do nothing
-							}
-						})
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                                int whichButton) {
+                                // Do nothing
+                            }
+                        })
 				.setPositiveButton(
-						R.string.dialog_send_feedback_positive_button,
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int whichButton) {
-								// Send log file
-								Intent i = new Intent(
-										Intent.ACTION_SEND_MULTIPLE);
-								i.setType("message/rfc822");
-								i.putExtra(Intent.EXTRA_EMAIL,
-										new String[] { "info@mathdoku.net" });
-								i.putExtra(
-										Intent.EXTRA_SUBJECT,
-										mActivity
-												.getResources()
-												.getString(
-														R.string.feedback_email_subject));
-								i.putExtra(
-										Intent.EXTRA_TEXT,
-										mActivity.getResources().getString(
-												R.string.feedback_email_body));
+                        R.string.dialog_send_feedback_positive_button,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                                int whichButton) {
+                                // Send log file
+                                Intent i = new Intent(
+                                        Intent.ACTION_SEND_MULTIPLE);
+                                i.setType("message/rfc822");
+                                i.putExtra(Intent.EXTRA_EMAIL,
+                                        new String[]{"info@mathdoku.net"});
+                                i.putExtra(
+                                        Intent.EXTRA_SUBJECT,
+                                        mActivity
+                                                .getResources()
+                                                .getString(
+                                                        R.string.feedback_email_subject));
+                                i.putExtra(
+                                        Intent.EXTRA_TEXT,
+                                        mActivity.getResources().getString(
+                                                R.string.feedback_email_body));
 
-								if (createLogFile(FileProvider.FEEDBACK_LOG_FILE_NAME)) {
-									ArrayList<Uri> uris = new ArrayList<Uri>();
-									uris.add(FileProvider
-											.getUri(FileProvider.FEEDBACK_LOG_FILE_NAME));
-									uris.add(FileProvider
-											.getUri(FileProvider.SCREENDUMP_FILE_NAME));
-									i.putParcelableArrayListExtra(
-											Intent.EXTRA_STREAM, uris);
-								}
-								try {
-									mActivity.startActivity(Intent
-											.createChooser(
-													i,
-													mActivity
-															.getResources()
-															.getString(
-																	R.string.dialog_send_feedback_title)));
-								} catch (android.content.ActivityNotFoundException ex) {
-									// No clients installed which can handle
-									// this intent.
-								}
-							}
-						}).show();
+                                if (createLogFile(FileProvider.FEEDBACK_LOG_FILE_NAME)) {
+                                    ArrayList<Uri> uris = new ArrayList<Uri>();
+                                    uris.add(FileProvider
+                                            .getUri(FileProvider.FEEDBACK_LOG_FILE_NAME));
+                                    uris.add(FileProvider
+                                            .getUri(FileProvider.SCREENDUMP_FILE_NAME));
+                                    i.putParcelableArrayListExtra(
+                                            Intent.EXTRA_STREAM, uris);
+                                }
+                                try {
+                                    mActivity.startActivity(Intent
+                                            .createChooser(
+                                                    i,
+                                                    mActivity
+                                                            .getResources()
+                                                            .getString(
+                                                                    R.string.dialog_send_feedback_title)));
+                                } catch (android.content.ActivityNotFoundException ex) {
+                                    // No clients installed which can handle
+                                    // this intent.
+                                }
+                            }
+                        }).show();
 	}
 
 	/**
@@ -323,6 +324,10 @@ public class FeedbackEmail {
 	 */
 	private static boolean isNoEmailIntentAvailable(Activity activity) {
 		final PackageManager packageManager = activity.getPackageManager();
+		if (packageManager == null) {
+			return false;
+		}
+
 		final Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("message/rfc822");
 		List<ResolveInfo> list = packageManager.queryIntentActivities(intent,

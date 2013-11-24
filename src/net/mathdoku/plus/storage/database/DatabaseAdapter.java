@@ -282,27 +282,30 @@ abstract class DatabaseAdapter {
 				"name = " + stringBetweenQuotes(getTableName())
 						+ " AND type = " + stringBetweenQuotes("table"), null,
 				null, null, null, null);
-		if (cursor != null && cursor.moveToFirst()) {
-			// Table exists. Check if definition matches with expected
-			// definition.
-			String sql = cursor
-					.getString(cursor.getColumnIndexOrThrow(KEY_SQL))
-					.toUpperCase();
-			tableDefinitionChanged = !sql.equals(getCreateSQL().toUpperCase());
+		if (cursor != null) {
+			if (cursor.moveToFirst()) {
+				// Table exists. Check if definition matches with expected
+				// definition.
+				// noinspection ConstantConditions
+				String sql = cursor.getString(
+						cursor.getColumnIndexOrThrow(KEY_SQL)).toUpperCase();
+				tableDefinitionChanged = !sql.equals(getCreateSQL()
+						.toUpperCase());
 
-			if (tableDefinitionChanged) {
-				Log.e(TAG, "Change in table '" + getTableName()
-						+ "' detected. Table has not yet been upgraded.");
-				Log.e(TAG, "Database-version: " + sql);
-				Log.e(TAG, "Expected version: " + getCreateSQL());
+				if (tableDefinitionChanged) {
+					Log.e(TAG, "Change in table '" + getTableName()
+							+ "' detected. Table has not yet been upgraded.");
+					Log.e(TAG, "Database-version: " + sql);
+					Log.e(TAG, "Expected version: " + getCreateSQL());
+				}
 			}
+			cursor.close();
 		} else {
 			// Table does not exist.
 			Log.e(TAG, "Table '" + getTableName() + "' not found in database.");
 			Log.e(TAG, "Expected version: " + getCreateSQL());
 			tableDefinitionChanged = true;
 		}
-		cursor.close();
 
 		return tableDefinitionChanged;
 	}
@@ -326,8 +329,7 @@ abstract class DatabaseAdapter {
 		if (columnsToDropped == null || columnsToDropped.length == 0) {
 			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				throw new RuntimeException(TAG
-						+ ".dropColumn has invalid parameter '"
-						+ Arrays.toString(columnsToDropped) + "'.");
+						+ ".dropColumn has invalid parameter.'");
 			} else {
 				return false;
 			}

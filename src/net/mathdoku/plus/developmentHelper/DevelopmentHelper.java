@@ -339,9 +339,11 @@ public class DevelopmentHelper {
 						.getString(R.string.app_id).equals("282401107486")) {
 			LayoutInflater li = LayoutInflater.from(puzzleFragmentActivity);
 			View view = li.inflate(R.layout.leaderboard_score, null);
+			assert view != null;
 
 			final TextView manualLeaderboardScore = (TextView) view
 					.findViewById(R.id.manual_leaderboard_score);
+			assert manualLeaderboardScore != null;
 
 			AlertDialog.Builder builder = new AlertDialog.Builder(
 					puzzleFragmentActivity);
@@ -354,7 +356,8 @@ public class DevelopmentHelper {
 										int id) {
 									// Change real score of puzzle with manually
 									// entered score
-									long score = Long
+                                    //noinspection ConstantConditions
+                                    long score = Long
 											.valueOf(manualLeaderboardScore
 													.getText().toString());
 									if (score > 0) {

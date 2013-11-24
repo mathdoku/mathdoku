@@ -1220,10 +1220,11 @@ public class GameHelper implements
 
 	String getSHA1CertFingerprint() {
 		try {
+			// noinspection ConstantConditions
 			Signature[] sigs = getContext().getPackageManager().getPackageInfo(
 					getContext().getPackageName(),
 					PackageManager.GET_SIGNATURES).signatures;
-			if (sigs.length == 0) {
+			if (sigs == null || sigs.length == 0) {
 				return "ERROR: NO SIGNATURE.";
 			} else if (sigs.length > 1) {
 				return "ERROR: MULTIPLE SIGNATURES";

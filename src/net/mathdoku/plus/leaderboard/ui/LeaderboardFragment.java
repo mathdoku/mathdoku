@@ -175,7 +175,8 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 			// Get the view and the layout to store the leaderboard section
 			mView = mLayoutInflater.inflate(R.layout.leaderboard_section, null);
 
-			LinearLayout linearLayout = (LinearLayout) mView
+            //noinspection ConstantConditions
+            LinearLayout linearLayout = (LinearLayout) mView
 					.findViewById(R.id.leaderboard_section_layout);
 			ImageView mLeaderboardIcon = (ImageView) mView
 					.findViewById(R.id.leaderboard_icon);

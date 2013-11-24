@@ -118,6 +118,7 @@ public class TickerTape extends HorizontalScrollView {
 		mContext = context;
 
 		// Determine text size
+		// noinspection ConstantConditions,ConstantConditions
 		int textSizeInPixels = getResources().getDimensionPixelSize(
 				R.dimen.text_size_default);
 		mTextSizeInDIP = (int) (getResources().getDimension(
@@ -233,10 +234,11 @@ public class TickerTape extends HorizontalScrollView {
 		// Determine how many items have to be displayed at least.
 		mMinDisplayItems = mMinDisplayCycles * mTextViewList.size();
 
-		// In case the only one item has been added, this item is duplicated. In
-		// this way the the message nicely scrolls away on the left while the
+		// In case only one item has been added, this item is duplicated. In
+		// this way the message nicely scrolls away on the left while the
 		// duplicate message flows in from the right.
 		if (mTextViewList.size() == 1) {
+			// noinspection ConstantConditions
 			addItem(mTextViewList.get(0).getText().toString());
 		}
 

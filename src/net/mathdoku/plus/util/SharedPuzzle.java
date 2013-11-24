@@ -212,9 +212,23 @@ public class SharedPuzzle {
 	 *         uri is not a valid share url.
 	 */
 	public String getGridDefinitionFromUrl(Uri uri) {
+		if (uri == null) {
+			return null;
+		}
+
+		// Get scheme and host used in uri
+		String scheme = uri.getScheme();
+		if (scheme == null) {
+			return null;
+		}
+		String host = uri.getHost();
+		if (host == null) {
+			return null;
+		}
+
 		// Check if a Mathdoku Plus uri was specified.
-		if (uri.getScheme().equals(mSharedPuzzleSchemeMathdokuPlus)
-				&& uri.getHost().equals(mSharedPuzzleHostMathdokuPlus)) {
+		if (scheme.equals(mSharedPuzzleSchemeMathdokuPlus)
+				&& host.equals(mSharedPuzzleHostMathdokuPlus)) {
 			String gridDefinition = getGridDefinitionFromMathdokuPlusUrl(uri);
 			if (gridDefinition != null) {
 				return gridDefinition;
@@ -222,8 +236,8 @@ public class SharedPuzzle {
 		}
 
 		// Check if a Mathdoku Original uri was specified.
-		if (uri.getScheme().equals(mSharedPuzzleSchemeMathdokuOriginal)
-				&& uri.getHost().equals(mSharedPuzzleHostMathdokuOriginal)) {
+		if (scheme.equals(mSharedPuzzleSchemeMathdokuOriginal)
+				&& host.equals(mSharedPuzzleHostMathdokuOriginal)) {
 			return getGridDefinitionFromMathdokuOriginalUrl(uri);
 		}
 
@@ -240,9 +254,23 @@ public class SharedPuzzle {
 	 *         uri is not a valid share url.
 	 */
 	private String getGridDefinitionFromMathdokuPlusUrl(Uri uri) {
+		if (uri == null) {
+			return null;
+		}
+
+		// Get scheme and host used in uri
+		String scheme = uri.getScheme();
+		if (scheme == null) {
+			return null;
+		}
+		String host = uri.getHost();
+		if (host == null) {
+			return null;
+		}
+
 		// Only process when valid scheme and host are specified.
-		if (uri.getScheme().equals(mSharedPuzzleSchemeMathdokuPlus) == false
-				|| uri.getHost().equals(mSharedPuzzleHostMathdokuPlus) == false) {
+		if (scheme.equals(mSharedPuzzleSchemeMathdokuPlus) == false
+				|| host.equals(mSharedPuzzleHostMathdokuPlus) == false) {
 			return null;
 		}
 
@@ -280,9 +308,23 @@ public class SharedPuzzle {
 	 *         uri is not a valid share url.
 	 */
 	private String getGridDefinitionFromMathdokuOriginalUrl(Uri uri) {
+		if (uri == null) {
+			return null;
+		}
+
+		// Get scheme and host used in uri
+		String scheme = uri.getScheme();
+		if (scheme == null) {
+			return null;
+		}
+		String host = uri.getHost();
+		if (host == null) {
+			return null;
+		}
+
 		// Only process when valid scheme and host are specified.
-		if (uri.getScheme().equals(mSharedPuzzleSchemeMathdokuOriginal) == false
-				|| uri.getHost().equals(mSharedPuzzleHostMathdokuOriginal) == false) {
+		if (scheme.equals(mSharedPuzzleSchemeMathdokuOriginal) == false
+				|| host.equals(mSharedPuzzleHostMathdokuOriginal) == false) {
 			return null;
 		}
 

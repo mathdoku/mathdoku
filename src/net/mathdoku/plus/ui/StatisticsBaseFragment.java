@@ -7,6 +7,7 @@ import org.achartengine.GraphicalView;
 import org.achartengine.renderer.SimpleSeriesRenderer;
 
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -77,7 +78,7 @@ class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 
 		// Get inflater and return view
 		mLayoutInflater = inflater;
-		return inflater.inflate(layout, container, false);
+		return mLayoutInflater.inflate(layout, container, false);
 	}
 
 	/**
@@ -120,6 +121,9 @@ class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 		// Inflate a new view for this statistics section
 		View sectionView = mLayoutInflater.inflate(R.layout.statistics_section,
 				null);
+		if (sectionView == null) {
+			return;
+		}
 
 		// Add the tag to the view.
 		if (tag != null) {
@@ -265,8 +269,10 @@ class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 
 		// Calculate ActionBar height
 		TypedValue typedValue = new TypedValue();
-		if (getActivity().getTheme().resolveAttribute(
-				android.R.attr.actionBarSize, typedValue, true)) {
+		Resources.Theme theme = getActivity().getTheme();
+		if (theme != null
+				&& theme.resolveAttribute(android.R.attr.actionBarSize,
+						typedValue, true)) {
 			maxContentHeight -= TypedValue.complexToDimensionPixelSize(
 					typedValue.data, displayMetrics);
 		}

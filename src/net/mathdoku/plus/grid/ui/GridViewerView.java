@@ -78,6 +78,7 @@ public class GridViewerView extends View {
 		mViewSize = 0;
 		mGridPainter = Painter.getInstance().getGridPainter();
 
+		// noinspection ConstantConditions,ConstantConditions
 		mOrientation = getResources().getConfiguration().orientation;
 		mInScrollView = false;
 		mMaxViewSize = Float.MAX_VALUE;

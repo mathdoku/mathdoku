@@ -224,6 +224,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 					@Override
 					public void onClick(View v) {
 						// Convert text of button (number) to Integer
+						@SuppressWarnings("ConstantConditions")
 						int d = Integer.parseInt(((Button) v).getText()
 								.toString());
 
@@ -355,15 +356,17 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				mDreamingBroadcastReceiver = new BroadcastReceiver() {
 					@Override
 					public void onReceive(Context context, Intent intent) {
-						if (intent.getAction().equals(
-								Intent.ACTION_DREAMING_STARTED)) {
-							// Pause the fragment on start of dreaming
-							pause();
-						} else if (intent.getAction().equals(
-								Intent.ACTION_DREAMING_STOPPED)) {
-							// Resume the fragment as soon as the dreaming has
-							// stopped
-							resume();
+						String action = intent.getAction();
+						if (action != null) {
+							if (action.equals(Intent.ACTION_DREAMING_STARTED)) {
+								// Pause the fragment on start of dreaming
+								pause();
+							} else if (action
+									.equals(Intent.ACTION_DREAMING_STOPPED)) {
+								// Resume the fragment as soon as the dreaming
+								// has stopped
+								resume();
+							}
 						}
 					}
 				};
@@ -485,25 +488,27 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 					// Build the animation
 					Animation animation = AnimationUtils.loadAnimation(
 							mContext, R.anim.solved);
-					animation.setAnimationListener(new AnimationListener() {
-						@Override
-						public void onAnimationEnd(Animation animation) {
-							textView.setVisibility(View.GONE);
-							mPuzzleFragmentListener
-									.onPuzzleFinishedListener(mGrid);
-						}
+					if (animation != null) {
+						animation.setAnimationListener(new AnimationListener() {
+							@Override
+							public void onAnimationEnd(Animation animation) {
+								textView.setVisibility(View.GONE);
+								mPuzzleFragmentListener
+										.onPuzzleFinishedListener(mGrid);
+							}
 
-						@Override
-						public void onAnimationRepeat(Animation animation) {
-						}
+							@Override
+							public void onAnimationRepeat(Animation animation) {
+							}
 
-						@Override
-						public void onAnimationStart(Animation animation) {
-						}
-					});
+							@Override
+							public void onAnimationStart(Animation animation) {
+							}
+						});
 
-					// Start animation of the text view.
-					textView.startAnimation(animation);
+						// Start animation of the text view.
+						textView.startAnimation(animation);
+					}
 				}
 
 			}
@@ -1094,7 +1099,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	/**
 	 * Set the digit position grid for layout the digit buttons and maybe
 	 * values.
-	 * 
 	 */
 	private void setDigitPositionGrid() {
 		// Get grid size
@@ -1304,10 +1308,13 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 							// Inflate a menu resource providing context menu
 							// items
-							MenuInflater inflater = mode.getMenuInflater();
-							inflater.inflate(
-									R.menu.copy_cell_context_action_menu, menu);
 							mode.setTitle(R.string.tap_to_copy_cell_values);
+							MenuInflater inflater = mode.getMenuInflater();
+							if (inflater != null) {
+								inflater.inflate(
+										R.menu.copy_cell_context_action_menu,
+										menu);
+							}
 							return true;
 						}
 

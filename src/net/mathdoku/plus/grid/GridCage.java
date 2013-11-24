@@ -100,8 +100,10 @@ public class GridCage {
 		}
 		retStr += ", Result: " + this.mResult;
 		retStr += ", cells: ";
-		for (GridCell cell : this.mCells)
-			retStr += cell.getCellNumber() + ", ";
+		if (mCells != null) {
+			for (GridCell cell : mCells)
+				retStr += cell.getCellNumber() + ", ";
+		}
 		return retStr;
 	}
 
