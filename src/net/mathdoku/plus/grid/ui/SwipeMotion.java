@@ -86,8 +86,14 @@ public class SwipeMotion extends Motion {
 	/**
 	 * Creates a new instance of the {@see SwipeMotion}.
 	 * 
-	 * @param grid
-	 *            The grid for which a swipe motion is made.
+	 * @param gridPlayerView
+	 *            The grid player view in which the swipe motion is created.
+	 * @param gridViewBorderWidth
+	 *            The border width in the grid view in which the swipe motion is
+	 *            created.
+	 * @param gridCellSize
+	 *            The size of the cells in the grid view in which the swipe
+	 *            motion is created.
 	 */
 	SwipeMotion(GridPlayerView gridPlayerView, float gridViewBorderWidth,
 			float gridCellSize) {
@@ -105,7 +111,6 @@ public class SwipeMotion extends Motion {
 	 * @param event
 	 *            The event which is registered as the touch down event of the
 	 *            swipe motion.
-	 * @return True in case a grid cell has been touched. False otherwise.
 	 */
 	@Override
 	void setTouchDownEvent(MotionEvent event) {
@@ -249,8 +254,8 @@ public class SwipeMotion extends Motion {
 	/**
 	 * Set the coordinates of the current swipe position.
 	 * 
-	 * @param event
-	 *            The event which holding the current swipe position.
+	 * @param motionEvent
+	 *            The motion event which holding the current swipe position.
 	 */
 	private void setCurrentSwipeCoordinates(MotionEvent motionEvent) {
 		// Save the old values of the current swipe position and digit
@@ -501,10 +506,12 @@ public class SwipeMotion extends Motion {
 	}
 
 	/**
-	 * Checks whether the current swipe position results in the same digit as
-	 * the previous swipe position.
+	 * Checks whether the current swipe position results in another digit
+	 * compared to the previous swipe position.
 	 * 
-	 * @return
+	 * @return True in case the swipe motion will result in another digit being
+	 *         selected compared to the previous swipe position. False if still
+	 *         the same digit will be selected.
 	 */
 	boolean hasChangedDigit() {
 		return (mPreviousSwipePositionDigit != mCurrentSwipePositionDigit);

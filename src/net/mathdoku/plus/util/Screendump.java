@@ -18,8 +18,8 @@ public class Screendump {
 	/**
 	 * Creates a new instance of {@link Screendump}.
 	 * 
-	 * @param solvingAttemptId
-	 *            The if of the solving attempt on which this preview applies.
+	 * @param context
+	 *            The context in which a screendump has to be created.
 	 */
 	public Screendump(Context context) {
 		mContext = context;

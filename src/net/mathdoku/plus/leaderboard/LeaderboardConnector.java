@@ -41,7 +41,12 @@ public class LeaderboardConnector {
 	/**
 	 * Create a new instance of the leaderboard.
 	 * 
-	 * @param resources
+	 * @param appFragmentActivity
+	 *            The app fragment activity in which context the leaderboard
+	 *            connector is created.
+	 * @param gamesClient
+	 *            The games client which has to be used by the leaderboard
+	 *            connector.
 	 */
 	public LeaderboardConnector(AppFragmentActivity appFragmentActivity,
 			final GamesClient gamesClient) {
@@ -62,9 +67,10 @@ public class LeaderboardConnector {
 	}
 
 	/**
-	 * Checks if the sign in on Google has succeeded.
+	 * Checks if the user is signed in on Google Play Services.
 	 * 
-	 * @return
+	 * @return True if the user is signed in on Google Play Services. False
+	 *         otherwise.
 	 */
 	public boolean isSignedIn() {
 		return (mGamesClient != null && mGamesClient.isConnected());
@@ -160,7 +166,11 @@ public class LeaderboardConnector {
 	 * Updates the leaderboard rank information based on score received.
 	 * 
 	 * @param leaderboard
+	 *            The leaderboard for which a leaderboard score is received.
 	 * @param leaderboardScore
+	 *            The leaderboard score containing the rank for the current
+	 *            player or if such rank does not exists, the rank of the first
+	 *            player. Null in case no player has played this leaderboard.
 	 */
 	void onRankCurrentPlayerReceived(Leaderboard leaderboard,
 			LeaderboardScore leaderboardScore, boolean displayToast) {

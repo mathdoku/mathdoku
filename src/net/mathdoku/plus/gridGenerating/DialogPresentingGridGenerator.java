@@ -34,11 +34,11 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 	// The dialog for this task
 	private ProgressDialog mProgressDialog;
 
-	private static final class GridForwarder implements GridUser {
+	private static final class GridForwarder implements Listener {
 		public DialogPresentingGridGenerator mDialogPresentingGridGenerator;
 
 		@Override
-		public final void useCreatedGrid(Grid grid) {
+		public final void onFinishGridGenerating(Grid grid) {
 			if (mDialogPresentingGridGenerator.mPuzzleFragmentActivity != null) {
 				if (DEBUG_GRID_GENERATOR) {
 					Log.d(TAG, "Send results to activity.");
@@ -52,7 +52,7 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 		}
 
 		@Override
-		public final void onCancelGridGeneration() {
+		public final void onCancelGridGenerating() {
 			if (mDialogPresentingGridGenerator.mPuzzleFragmentActivity != null) {
 				if (DEBUG_GRID_GENERATOR) {
 					Log.d(TAG,
@@ -82,7 +82,7 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 			PuzzleComplexity puzzleComplexity, int packageVersionNumber) {
 		super(gridSize, hideOperators, puzzleComplexity, packageVersionNumber,
 				new GridForwarder());
-		((GridForwarder) mUser).mDialogPresentingGridGenerator = this;
+		((GridForwarder) mListener).mDialogPresentingGridGenerator = this;
 
 		// Attach the task to the activity activity and show progress dialog if
 		// needed.

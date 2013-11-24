@@ -74,7 +74,7 @@ class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener {
 	 * Loads the best rank score for the current player of the given
 	 * leaderboard.
 	 * 
-	 * @param leaderboard
+	 * @param leaderboardId
 	 *            The leaderboard for which the best rank of the current player
 	 *            has to be loaded.
 	 */

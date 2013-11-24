@@ -148,8 +148,8 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 * @param grid
 	 *            The grid for which a new solving attempt record has to be
 	 *            inserted.
-	 * @param data
-	 *            The data for the solving attempt.
+	 * @param revision
+	 *            The app revision used to store the data.
 	 * @return The row id of the row created. -1 in case of an error.
 	 */
 	public int insert(Grid grid, int revision) {
@@ -264,8 +264,8 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 * 
 	 * @param id
 	 *            The id of the solving attempt to be updated.
-	 * @param data
-	 *            The data string to be stored for this solving attempt.
+	 * @param grid
+	 *            The grid to be stored in the solving attempt.
 	 * @param saveDueToUpgrade
 	 *            False (default) in case of normal save. True in case saving is
 	 *            done while upgrading the grid to the current version of the

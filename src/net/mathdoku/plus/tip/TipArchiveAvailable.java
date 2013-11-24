@@ -36,7 +36,7 @@ public class TipArchiveAvailable extends TipDialog {
 	 * @param preferences
 	 *            Preferences of the activity for which has to be checked
 	 *            whether this tip should be shown.
-	 * @return
+	 * @return True in case the tip might be displayed. False otherwise.
 	 */
 	public static boolean toBeDisplayed(Preferences preferences) {
 		// Do not display in case archive is not yet available.

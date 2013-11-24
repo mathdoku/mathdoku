@@ -108,7 +108,7 @@ public class TipDialog extends AlertDialog {
 	 *            The image to be shown with this tip. It is preferred to have
 	 *            an image in each tip. In case the tip can no be clarified with
 	 *            an image use value null.
-	 * @return
+	 * @return The tip dialog so the method can be chained.
 	 */
 	TipDialog build(int tipIconResId, String tipTitle, String tipText,
 			Drawable tipImage) {

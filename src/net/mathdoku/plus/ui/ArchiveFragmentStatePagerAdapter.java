@@ -132,7 +132,7 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	/**
 	 * Set the size filter to the given value.
 	 * 
-	 * @param statusFilter
+	 * @param sizeFilter
 	 *            The new value of the size filter.
 	 */
 	public void setSizeFilter(SizeFilter sizeFilter) {
@@ -167,9 +167,9 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	 * 
 	 * @param gridId
 	 *            The grid id to be found.
-	 * @returns The position in the adapter at which the given grid is placed.
-	 *          {@value #UNKNOWN_GRID_ID} in case the grid id is not known to
-	 *          this adapter.
+	 * @return The position in the adapter at which the given grid is placed.
+	 *         {@value #UNKNOWN_GRID_ID} in case the grid id is not known to
+	 *         this adapter.
 	 */
 	public int getPositionOfGridId(int gridId) {
 		if (mGridIds != null) {

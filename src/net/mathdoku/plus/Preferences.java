@@ -665,7 +665,8 @@ public class Preferences {
 	 * Set the id of the grid which is currently is shown when the archive is
 	 * closed.
 	 * 
-	 * @return The last value used for the size filter in the archive.
+	 * @param gridId
+	 *            The id of the grid which is currently is shown.
 	 */
 	public void setArchiveGridIdLastShowed(int gridId) {
 		Editor editor = mSharedPreferences.edit();

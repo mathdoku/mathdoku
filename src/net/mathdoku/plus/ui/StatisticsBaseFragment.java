@@ -86,7 +86,7 @@ class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	 * 
 	 * @param color
 	 *            The color for the new simple series renderer.
-	 * @return
+	 * @return A new simple series renderer for the given color.
 	 */
 	SimpleSeriesRenderer createSimpleSeriesRenderer(int color) {
 		SimpleSeriesRenderer simpleSeriesRenderer = new SimpleSeriesRenderer();
@@ -103,18 +103,15 @@ class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	 * @param title
 	 *            The title of this section. Null in case no title has to be
 	 *            displayed.
-	 * @param subTitle
-	 *            The subtitle of this section. Null in case no subtitle has to
-	 *            be displayed.
-	 * @param explanation
-	 *            The explanatory text of this section which will be displayed
-	 *            with respect to settings. Null in case explanation is never
-	 *            available.
 	 * @param chart
 	 *            The chart view. Null in case no chart has to be displayed.
 	 * @param extraDataView
 	 *            An additional view which has to be displayed between chart and
 	 *            explanation.
+	 * @param explanation
+	 *            The explanatory text of this section which will be displayed
+	 *            with respect to settings. Null in case explanation is never
+	 *            available.
 	 */
 	void addStatisticsSection(String tag, String title, GraphicalView chart,
 			View extraDataView, String explanation) {

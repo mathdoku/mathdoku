@@ -48,7 +48,7 @@ public class Painter {
 	private final int mButtonBackgroundColor;
 
 	/**
-	 * Creates a new instance of {@link #GridPainter()}.
+	 * Creates a new instance of {@link net.mathdoku.plus.painter.Painter}.
 	 * <p/>
 	 * This object can not be instantiated directly. Use {@link #getInstance()}
 	 * to get the singleton reference to the GridPainter object.
@@ -143,9 +143,6 @@ public class Painter {
 	 * 
 	 * @param size
 	 *            The size of cells.
-	 * @param digitPositionGrid
-	 *            The digit position grid used to display maybe values into a
-	 *            grid.
 	 */
 	public void setCellSize(float size) {
 		// Set width of borders dependent on new size of cells.
@@ -340,9 +337,9 @@ public class Painter {
 	/**
 	 * Set the color mode of the digit painters.
 	 * 
-	 * @param distinctColors
-	 *            True in case distinct colors should be used dependent on the
-	 *            input mode. False in case a monochrome color should be used.
+	 * @param digitPainterMode
+	 *            The digit painter mode (colored digits or monochrome) which
+	 *            has to be used.
 	 */
 	public void setColorMode(DigitPainterMode digitPainterMode) {
 		mMaybeGridPainter.setColorMode(digitPainterMode);

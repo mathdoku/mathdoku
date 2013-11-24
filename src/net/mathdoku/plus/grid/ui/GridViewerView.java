@@ -238,8 +238,8 @@ public class GridViewerView extends View {
 	}
 
 	/**
-	 * Sets the {@link DigitPositionGridType} used to position the digit buttons
-	 * for reuse when drawing the maybe values.
+	 * Sets the {@link net.mathdoku.plus.grid.DigitPositionGrid} used to
+	 * position the digit buttons for reuse when drawing the maybe values.
 	 * 
 	 * @param digitPositionGrid
 	 *            The digit position grid type to be set.
@@ -296,7 +296,7 @@ public class GridViewerView extends View {
 	 * Enables/disables an additional border around the visible grid which can
 	 * be use for handling the swipe events.
 	 * 
-	 * @param swipeBorderVisible
+	 * @param swipeBorder
 	 *            True in case an additional swipe border has to be measured by
 	 *            the viewer. False otherwise.
 	 */

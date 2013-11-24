@@ -36,10 +36,10 @@ import com.google.android.gms.plus.PlusClient;
  * GooglePlayServiceFragmentActivity(CLIENT_GAMES | CLIENT_PLUS). To request all
  * available clients, use GooglePlayServiceFragmentActivity(CLIENT_ALL).
  * Alternatively, you can also specify the requested clients via
+ * {@link #setRequestedClients}, but you must do so before {@link #onCreate}
+ * gets called, otherwise the call will have no effect.
  * 
  * @author Bruno Oliveira (Google)
- * @link{#setRequestedClients , but you must do so before @link{#onCreate} gets
- *                            called, otherwise the call will have no effect.
  */
 @SuppressWarnings("WeakerAccess")
 public abstract class GooglePlayServiceFragmentActivity extends

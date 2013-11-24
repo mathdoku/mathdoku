@@ -35,7 +35,7 @@ public class TipIncorrectValue extends TipDialog {
 	 * @param preferences
 	 *            Preferences of the activity for which has to be checked
 	 *            whether this tip should be shown.
-	 * @return
+	 * @return True in case the tip might be displayed. False otherwise.
 	 */
 	public static boolean toBeDisplayed(Preferences preferences) {
 		// Note: No time restriction has been set on this tip. Display each time

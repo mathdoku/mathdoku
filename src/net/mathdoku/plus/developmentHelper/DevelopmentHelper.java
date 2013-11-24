@@ -25,10 +25,11 @@ import android.widget.TextView;
  * Testing of this application. Variables and methods should not be used in
  * production code.
  * <p/>
- * Checks on variable {@link #mAppMode} should always be made in such a way that
- * the result can be determined at compile time. In this way the enclosed block
- * will not be included in the compiled case when the condition for executing
- * the block evaluates to false. Example of intended usage:
+ * Checks on variable {@link net.mathdoku.plus.config.Config#mAppMode} should
+ * always be made in such a way that the result can be determined at compile
+ * time. In this way the enclosed block will not be included in the compiled
+ * case when the condition for executing the block evaluates to false. Example
+ * of intended usage:
  * <p/>
  * 
  * <code>
@@ -91,7 +92,7 @@ public class DevelopmentHelper {
 	 * Generate dummy games. A dummy game is not a real game which can be played
 	 * as it is not checked on having a unique solution.
 	 * 
-	 * @param context
+	 * @param puzzleFragmentActivity
 	 *            The activity in which context the confirmation dialog will be
 	 *            shown.
 	 */
@@ -330,7 +331,10 @@ public class DevelopmentHelper {
 	 * is intended for testing the leaderboards.
 	 * 
 	 * @param puzzleFragmentActivity
+	 *            The puzzle fragment activity which is use to submit a score
+	 *            manually.
 	 * @param grid
+	 *            The grid for which a score is submitted.
 	 */
 	public static void submitManualScore(
 			final PuzzleFragmentActivity puzzleFragmentActivity, final Grid grid) {

@@ -17,6 +17,7 @@ public class InvalidStatisticsException extends Exception {
 	 * Creates a new instance of {@link InvalidStatisticsException}.
 	 * 
 	 * @param errorMessage
+	 *            The error message for the exception.
 	 */
 	public InvalidStatisticsException(String errorMessage) {
 		super(errorMessage); // call super class constructor

@@ -42,7 +42,9 @@ public class TipOrderOfValuesInCage extends TipDialog {
 	 *            Preferences of the activity for which has to be checked
 	 *            whether this tip should be shown.
 	 * @param cage
-	 * @return
+	 *            The cage for which it will be checked if it is appropriate to
+	 *            show this tip.
+	 * @return True in case the tip might be displayed. False otherwise.
 	 */
 	public static boolean toBeDisplayed(Preferences preferences, GridCage cage) {
 		// No tip to be displayed for non existing cages or single cell cages

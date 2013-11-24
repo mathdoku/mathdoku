@@ -41,8 +41,10 @@ public class TipCopyCellValues extends TipDialog {
 	 * @param preferences
 	 *            Preferences of the activity for which has to be checked
 	 *            whether this tip should be shown.
-	 * @param cage
-	 * @return
+	 * @param gridCell
+	 *            The grid cell which will be used to check if now is the
+	 *            appropriate time to display the tip.
+	 * @return True in case the tip might be displayed. False otherwise.
 	 */
 	public static boolean toBeDisplayed(Preferences preferences,
 			GridCell gridCell) {

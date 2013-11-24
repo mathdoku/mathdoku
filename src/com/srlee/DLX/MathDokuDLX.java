@@ -51,6 +51,7 @@ public class MathDokuDLX extends DLX {
 	 * @param gridSize
 	 *            The size of the grid.
 	 * @param cages
+	 *            The cages defined for the grid.
 	 */
 	public MathDokuDLX(int gridSize, ArrayList<GridCage> cages) {
 		mGridSize = gridSize;

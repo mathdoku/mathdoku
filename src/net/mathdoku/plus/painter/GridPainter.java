@@ -51,7 +51,7 @@ public class GridPainter extends BorderPainter {
 	/**
 	 * Gets the paint for the background of the grid.
 	 * 
-	 * @return
+	 * @return The paint for the background of the grid.
 	 */
 	public Paint getBackgroundPaint() {
 		return mBackgroundPaint;

@@ -46,7 +46,7 @@ public class FeedbackEmail {
 	private final Activity mActivity;
 
 	/**
-	 * Creates a new instance of {@link #FeedbackEmail()}.
+	 * Creates a new instance of {@link net.mathdoku.plus.util.FeedbackEmail}.
 	 * 
 	 * @param activity
 	 *            The activity context in which the UsageLogging is created.
@@ -95,9 +95,6 @@ public class FeedbackEmail {
 
 	/**
 	 * Logs info about device.
-	 * 
-	 * @param activity
-	 *            The activity used to get device info.
 	 */
 	private void logDevice() {
 		SortedMap<String, String> sortedMap = new TreeMap<String, String>();
@@ -137,11 +134,6 @@ public class FeedbackEmail {
 
 	/**
 	 * Logs all preferences.
-	 * 
-	 * @param identifier
-	 *            Identifier for this log item.
-	 * @param preferences
-	 *            The preferences to be logged.
 	 */
 	private void logPreferences() {
 		// Get preferences and check whether it is allowed to gather new data.
@@ -222,10 +214,6 @@ public class FeedbackEmail {
 
 	/**
 	 * Ask consent of user to send log via email.
-	 * 
-	 * @param activity
-	 *            The main activity context in which the UsageLogging is
-	 *            created.
 	 */
 	public void show() {
 		if (isNoEmailIntentAvailable(mActivity)) {

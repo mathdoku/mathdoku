@@ -58,21 +58,12 @@ public class GameHelper implements
 		 * Called when sign-in fails. As a result, a "Sign-In" button can be
 		 * shown to the user; when that button is clicked, call
 		 * 
-		 * @link{GamesHelper#beginUserInitiatedSignIn . Note that not all calls
-		 *                                            to this method mean an
-		 *                                            error; it may be a result
-		 *                                            of the fact that automatic
-		 *                                            sign-in could not proceed
-		 *                                            because user interaction
-		 *                                            was required (consent
-		 *                                            dialogs). So
-		 *                                            implementations of this
-		 *                                            method should NOT display
-		 *                                            an error message unless a
-		 *                                            call to @link{GamesHelper#
-		 *                                            hasSignInError} indicates
-		 *                                            that an error indeed
-		 *                                            occurred.
+		 * {@link GameHelper#beginUserInitiatedSignIn}. Note that not all calls
+		 * to this method mean an error; it may be a result of the fact that
+		 * automatic sign-in could not proceed because user interaction was
+		 * required (consent dialogs). So implementations of this method should
+		 * NOT display an error message unless a call to @link{GamesHelper#
+		 * hasSignInError} indicates that an error indeed occurred.
 		 */
 		void onSignInFailed();
 
@@ -469,9 +460,9 @@ public class GameHelper implements
 	 * This should be called from your GameHelperListener's
 	 * 
 	 * @return The id of the invitation, or null if none was received.
-	 * @link{GameHelperListener#onSignInSucceeded method, to check if there's an
-	 *                                            invitation available. In that
-	 *                                            case, accept the invitation.
+	 *         {@link net.mathdoku.plus.ui.base.GameHelper.GameHelperListener#onAutoSignInSucceeded()}
+	 *         method, to check if there's an invitation available. In that
+	 *         case, accept the invitation.
 	 */
 	public String getInvitationId() {
 		if (!checkState(TYPE_DEVELOPER_ERROR, "getInvitationId",

@@ -34,10 +34,8 @@ public class GooglePlusSignInDialog extends Dialog implements
 	 * 
 	 * @param appFragmentActivity
 	 *            The activity which has started this sign in dialog.
-	 * @param requestCode
-	 *            The request code to be returned as the user log in.
-	 * @param preferences
-	 *            The app preferences.
+	 * @param listener
+	 *            The listener which has to be called.
 	 */
 	public GooglePlusSignInDialog(AppFragmentActivity appFragmentActivity,
 			Listener listener) {
@@ -106,8 +104,8 @@ public class GooglePlusSignInDialog extends Dialog implements
 	/**
 	 * Displays the checkbox 'Hide till next high score achieved'.
 	 * 
-	 * @param True
-	 *            in case the checkbox is visible. False otherwise.
+	 * @param checked
+	 *            True in case the checkbox is visible. False otherwise.
 	 * @return The GooglePlusSignInDialog so the method can be chained.
 	 */
 	public GooglePlusSignInDialog displayCheckboxHideTillNextTopScoreAchieved(

@@ -174,7 +174,7 @@ public class LeaderboardType {
 	// factors.
 	private final static int PUZZLE_COMPLEXITY_INDEX_FACTOR = 1;
 	@SuppressWarnings("PointlessArithmeticExpression")
-    private final static int HIDE_OPERATOR_INDEX_FACTOR = (1 * MAX_ELEMENTS_INDEX_FACTOR_PUZZLE_COMPLEXITY);
+	private final static int HIDE_OPERATOR_INDEX_FACTOR = (1 * MAX_ELEMENTS_INDEX_FACTOR_PUZZLE_COMPLEXITY);
 	private final static int GRID_SIZE_INDEX_FACTOR = (HIDE_OPERATOR_INDEX_FACTOR * MAX_ELEMENTS_INDEX_FACTOR_OPERATORS);
 
 	/**

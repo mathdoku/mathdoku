@@ -117,7 +117,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		 * @param grid
 		 *            The grid which has been finished.
 		 */
-		public void onPuzzleFinishedListener(Grid mGrid);
+		public void onPuzzleFinishedListener(Grid grid);
 	}
 
 	@Override
@@ -671,17 +671,14 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	/**
 	 * Checks whether the reveal cell menu item is available.
 	 * 
-	 * @return
+	 * @return True in case the selected cell can be revealed. False otherwise.
 	 */
 	boolean showRevealCell() {
 		return (mGrid != null && mGrid.isActive() && mGrid.getSelectedCell() != null);
 	}
 
 	/**
-	 * Handles revealing of user value in the given cell.
-	 * 
-	 * @param selectedCell
-	 *            The cell for which the user value has to be revealed.
+	 * Reveals the values in the selected cell.
 	 */
 	void revealCell() {
 		if (mGrid == null) {
@@ -782,7 +779,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	/**
 	 * Checks whether the check progress menu item is available.
 	 * 
-	 * @return
+	 * @return True if check progress can be used on the grid. False otherwise.
 	 */
 	boolean showCheckProgress() {
 		return (mGrid != null && mGrid.isActive() && !mGrid.isEmpty(false));

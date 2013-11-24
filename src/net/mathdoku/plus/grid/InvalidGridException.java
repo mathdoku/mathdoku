@@ -18,6 +18,7 @@ public class InvalidGridException extends ExceptionInInitializerError {
 	 * Creates a new instance of {@link InvalidGridException}.
 	 * 
 	 * @param errorMessage
+	 *            The error message for the exception.
 	 */
 	public InvalidGridException(String errorMessage) {
 		super(errorMessage); // call super class constructor

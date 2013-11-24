@@ -49,7 +49,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	private Grid mGrid;
 
 	// The user that will use the generated grid.
-	final GridUser mUser;
+	final Listener mListener;
 
 	// Random generator
 	private Random mRandom;
@@ -92,19 +92,20 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	}
 
 	// The user that will use the grid once this task finished generating it.
-	public interface GridUser {
+	public interface Listener {
 		/**
-		 * Uses the newly created grid. This method will run in the UI thread,
-		 * as it is called from onPostExecute.
+		 * Informs the listener(s) when grid generating has successfully
+		 * finished. The created grid is passed as parameter.
 		 * 
 		 * @param grid
+		 *            The newly generated grid.
 		 */
-		public void useCreatedGrid(Grid grid);
+		public void onFinishGridGenerating(Grid grid);
 
 		/**
-		 * Inform the grid user about cancellation of the grid generation.
+		 * Inform(s) the listener about cancellation of grid generating.
 		 */
-		public void onCancelGridGeneration();
+		public void onCancelGridGenerating();
 	}
 
 	/**
@@ -115,23 +116,21 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	 * used.
 	 * 
 	 * @param gridSize
-	 *            The size of the gird to be created.
-	 * @param maxCageSize
-	 *            The maximum number of cells in a single cage.
-	 * @param maxCageResult
-	 *            The maximum value for the cage result.
+	 *            The size of the grid to be created.
 	 * @param hideOperators
 	 *            True in case should be solvable without using operators.
+	 * @param puzzleComplexity
+	 *            The complexity of the grid to be created.
 	 * @param packageVersionNumber
 	 *            The version number of the app used to generate the grid.
-	 * @param user
+	 * @param listener
 	 *            The user (either the Main UI or the Development Tools menu)
 	 *            who will receive the callback as soon as the grid is
 	 *            generated.
 	 */
 	GridGenerator(int gridSize, boolean hideOperators,
 			PuzzleComplexity puzzleComplexity, int packageVersionNumber,
-			GridUser user) {
+			Listener listener) {
 		mGridSize = gridSize;
 
 		// Set all grid generating parameters. GameSeed will be set later.
@@ -219,7 +218,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			Log.i(TAG, "Game seed: " + mGridGeneratingParameters.mGameSeed);
 		}
 
-		mUser = user;
+		mListener = listener;
 
 		setGridGeneratorOptions(null);
 	}
@@ -473,7 +472,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 		// Create the grid object
 		if (mGrid.create(mGridSize, mCells, mCages, mGridGeneratingParameters)) {
-			mUser.useCreatedGrid(mGrid);
+			mListener.onFinishGridGenerating(mGrid);
 		}
 	}
 
@@ -863,7 +862,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	}
 
 	/**
-	 * Determine whether the given new cage contains a subset of values in its
+	 * Determines whether the given new cage contains a subset of values in its
 	 * columns which is also used in the columns of another cage.
 	 * 
 	 * @param maskNewCage
@@ -871,7 +870,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	 *            have value 1. Cells not used have a value -1.
 	 * @param maskNewCageColCount
 	 *            The number of rows per column in use by this new cage.
-	 * @return
+	 * @return True in case an overlapping subset of values is found. False
+	 *         otherwise.
 	 */
 	private boolean hasOverlappingSubsetOfValuesInColumns(
 			boolean[][] maskNewCage, int[] maskNewCageColCount) {
@@ -959,7 +959,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	}
 
 	/**
-	 * Determine whether the given new cage contains a subset of values in its
+	 * Determines whether the given new cage contains a subset of values in its
 	 * rows which is also used in the rows of another cage.
 	 * 
 	 * @param maskNewCage
@@ -967,7 +967,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	 *            have value 1. Cells not used have a value -1.
 	 * @param maskNewCageRowCount
 	 *            The number of columns per row in use by this new cage.
-	 * @return
+	 * @return True in case an overlapping subset of values is found. False
+	 *         otherwise.
 	 */
 	private boolean hasOverlappingSubsetOfValuesInRows(boolean[][] maskNewCage,
 			int[] maskNewCageRowCount) {
@@ -1201,8 +1202,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 	@Override
 	protected void onCancelled(Void result) {
-		if (mUser != null) {
-			mUser.onCancelGridGeneration();
+		if (mListener != null) {
+			mListener.onCancelGridGenerating();
 		}
 		super.onCancelled(result);
 	}

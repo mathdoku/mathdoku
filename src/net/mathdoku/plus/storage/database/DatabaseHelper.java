@@ -99,8 +99,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * object. As it is a shortcut for
 	 * DatabaseHelper.getInstance().getWriteableDatabase().beginTransaction()
 	 * you have to be sure that the DatabaseHelper has been instantiated before.
-	 * 
-	 * @return The SQLiteDatabase. Null in case of an error.
 	 */
 	public static void beginTransaction() {
 		if (mDatabaseHelperSingletonInstance == null) {
@@ -118,8 +116,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * object. As it is a shortcut for
 	 * DatabaseHelper.getInstance().getWriteableDatabase().endTransaction() you
 	 * have to be sure that the DatabaseHelper has been instantiated before.
-	 * 
-	 * @return The SQLiteDatabase. Null in case of an error.
 	 */
 	public static void endTransaction() {
 		if (mDatabaseHelperSingletonInstance == null) {

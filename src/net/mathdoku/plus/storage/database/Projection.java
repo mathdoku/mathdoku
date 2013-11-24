@@ -17,7 +17,7 @@ public class Projection extends HashMap<String, String> {
 	/**
 	 * Add a column to the projection. Preferred usage is
 	 * {@link #put(String, String, String)} or
-	 * {@link #put(String, Aggregation, String, String)}.
+	 * {@link #put(net.mathdoku.plus.storage.database.Projection.Aggregation, String, String)}.
 	 * <p>
 	 * Note: In contradiction to other put functions, the target and source
 	 * columns are not back ticked. If appropriate this should have been done in
@@ -29,9 +29,7 @@ public class Projection extends HashMap<String, String> {
 	 * @param sourceColumn
 	 *            Name of column on which the aggregation function will be
 	 *            applied to determine the value of the target column.
-	 */
-	/**
-	 * @return
+	 * @return Concatenation of "[sourceColumn] AS [ targetColumn]".
 	 */
 	@Override
 	public String put(String targetColumn, String sourceColumn) {

@@ -22,7 +22,8 @@ public class GridCageType {
 	private boolean[][] mUsedCells;
 
 	/**
-	 * Creates a new instance of {@link CageType}.
+	 * Creates a new instance of
+	 * {@link net.mathdoku.plus.gridGenerating.GridCageType}.
 	 */
 	public GridCageType() {
 	}

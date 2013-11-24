@@ -30,7 +30,7 @@ abstract class DigitPainter extends BasePainter {
 	/**
 	 * Gets the paint for the text in normal input mode.
 	 * 
-	 * @return
+	 * @return The paint for the text in normal input mode.
 	 */
 	public Paint getTextPaintNormalInputMode() {
 		return mTextPaintNormalInputMode;
@@ -39,7 +39,7 @@ abstract class DigitPainter extends BasePainter {
 	/**
 	 * Gets the paint for the text in maybe input mode.
 	 * 
-	 * @return
+	 * @return The paint for the text in maybe input mode.
 	 */
 	public Paint getTextPaintMaybeInputMode() {
 		return mTextPaintMaybeInputMode;
@@ -48,7 +48,7 @@ abstract class DigitPainter extends BasePainter {
 	/**
 	 * Gets the horizontal (left) offset for the text inside the cell.
 	 * 
-	 * @return
+	 * @return The horizontal (left) offset for the text inside the cell.
 	 */
 	public float getLeftOffset() {
 		return mLeftOffset;
@@ -57,7 +57,7 @@ abstract class DigitPainter extends BasePainter {
 	/**
 	 * Gets the vertical (top) offset for the text inside the cell.
 	 * 
-	 * @return
+	 * @return The vertical (top) offset for the text inside the cell.
 	 */
 	public float getBottomOffset() {
 		return mBottomOffset;
@@ -66,9 +66,9 @@ abstract class DigitPainter extends BasePainter {
 	/**
 	 * Set the color mode of the digit painter.
 	 * 
-	 * @param distinctColors
-	 *            True in case distinct colors should be used dependent on the
-	 *            input mode. False in case a monochrome color should be used.
+	 * @param digitPainterMode
+	 *            The digit painter mode (colored digits versus monochrome) to
+	 *            be used.
 	 */
 	public void setColorMode(DigitPainterMode digitPainterMode) {
 		mDigitPainterMode = digitPainterMode;

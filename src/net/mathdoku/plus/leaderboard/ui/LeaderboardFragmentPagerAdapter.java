@@ -98,26 +98,34 @@ class LeaderboardFragmentPagerAdapter extends FragmentPagerAdapter {
 	/**
 	 * Gets the fragment for the given position in the adapter.
 	 * 
-	 * @param container
+	 * @param viewPager
+	 *            The view pager which contains the fragment.
 	 * @param position
-	 * @param fm
-	 * @return
+	 *            The position of the fragment to be found.
+	 * @param fragmentManager
+	 *            The fragment manager from which the fragment has to be
+	 *            retrieved.
+	 * @return The fragment corresponding with the given position in the adapter
+	 *         of the view pager.
 	 */
-	public LeaderboardFragment getFragment(ViewPager container, int position,
-			FragmentManager fm) {
-		String name = makeFragmentName(container.getId(), position);
-		return (LeaderboardFragment) (fm.findFragmentByTag(name));
+	public LeaderboardFragment getFragment(ViewPager viewPager, int position,
+			FragmentManager fragmentManager) {
+		String name = makeFragmentName(viewPager.getId(), position);
+		return (LeaderboardFragment) (fragmentManager.findFragmentByTag(name));
 	}
 
 	/**
 	 * Gets the fragment name as constructed by Android to identify the
 	 * fragment.
 	 * 
-	 * @param viewId
+	 * @param viewPagerId
+	 *            The id of the view pager.
 	 * @param index
-	 * @return
+	 *            The index in the view pager.
+	 * @return The fragment name as constructed by Android to identify the
+	 *         fragment.
 	 */
-	private String makeFragmentName(int viewId, int index) {
-		return "android:switcher:" + viewId + ":" + index;
+	private String makeFragmentName(int viewPagerId, int index) {
+		return "android:switcher:" + viewPagerId + ":" + index;
 	}
 }

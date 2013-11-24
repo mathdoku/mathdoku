@@ -49,7 +49,6 @@ public class Motion {
 	 * @param motionEvent
 	 *            The event which is registered as the touch down event of the
 	 *            swipe motion.
-	 * @return True in case a grid cell has been touched. False otherwise.
 	 */
 	void setTouchDownEvent(MotionEvent motionEvent) {
 		// Store coordinates of previous touch down cell

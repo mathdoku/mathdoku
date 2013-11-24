@@ -40,8 +40,9 @@ public class CageTypeGenerator {
 	 * Get an instance to the singleton instance of the cage type generator.
 	 * <p/>
 	 * The {@link CageTypeGenerator} containing cage types having minimum 1 and
-	 * maximum {{@value #MAX_CAGE_SIZE} cells. Cages of bigger size have to
-	 * generated with { {@link #getRandomCageType(int, Random)}.
+	 * maximum {@value #MAX_CAGE_SIZE} cells. Cages of bigger size have to
+	 * generated with
+	 * {@link #getRandomCageType(int, int, int, java.util.Random)}.
 	 * 
 	 * @return The singleton instance for the cage type generator.
 	 */
@@ -54,9 +55,9 @@ public class CageTypeGenerator {
 
 	/**
 	 * Creates a new instance of {@link CageTypeGenerator} containing cage types
-	 * having minimum 1 and maximum {{@value #MAX_CAGE_SIZE} cells. Cages of
-	 * bigger size have to generated with {
-	 * {@link #getRandomCageType(int, Random)}.
+	 * having minimum 1 and maximum {@value #MAX_CAGE_SIZE} cells. Cages of
+	 * bigger size have to generated with
+	 * {@link #getRandomCageType(int, int, int, java.util.Random)}.
 	 */
 	private CageTypeGenerator() {
 		// Initialize all cage type array lists

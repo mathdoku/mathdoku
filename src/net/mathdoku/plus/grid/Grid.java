@@ -486,7 +486,9 @@ public class Grid {
 
 	/**
 	 * Converts the definition of this grid to a string. This is a shortcut for
-	 * calling {@link #toGridDefinitionString(ArrayList, ArrayList)}.
+	 * calling
+	 * {@link #toGridDefinitionString(java.util.ArrayList, java.util.ArrayList, net.mathdoku.plus.gridGenerating.GridGeneratingParameters)}
+	 * .
 	 * 
 	 * @return A unique string representation of the grid.
 	 */

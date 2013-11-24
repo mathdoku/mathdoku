@@ -57,10 +57,10 @@ public class HistoricStatistics {
 		}
 
 		/**
-		 * Update the summary with a new value which is added.
+		 * Adds a data point to the series.
 		 * 
-		 * @param value
-		 *            The value which has to be included in the summary.
+		 * @param dataPoint
+		 *            The data point which has to be included in the series.
 		 */
 		public void addValue(DataPoint dataPoint) {
 			long totalValue = dataPoint.mElapsedTimeExcludingCheatPenalty
@@ -125,26 +125,30 @@ public class HistoricStatistics {
 	 * Creates a new instance of {@link HistoricStatistics}. Note that order of
 	 * columns in cursors is defined.
 	 * 
-	 * @param data
+	 * @param dataPointsCursor
+	 *            The database cursor holding the data to be transformed into
+	 *            the historic statistics series.
 	 */
-	public HistoricStatistics(Cursor data) {
+	public HistoricStatistics(Cursor dataPointsCursor) {
 		dataPoints = new ArrayList<DataPoint>();
 		mSolvedSeriesSummary = new SeriesSummary();
 		mSolutionRevealedSeriesSummary = new SeriesSummary();
 		mUnfinishedSeriesSummary = new SeriesSummary();
 
 		// Get historic data from cursor
-		if (data != null && data.moveToFirst()) {
+		if (dataPointsCursor != null && dataPointsCursor.moveToFirst()) {
 			do {
 				// Fill new data point
 				DataPoint dataPoint = new DataPoint();
-				dataPoint.mElapsedTimeExcludingCheatPenalty = data
-						.getLong(data
+				dataPoint.mElapsedTimeExcludingCheatPenalty = dataPointsCursor
+						.getLong(dataPointsCursor
 								.getColumnIndexOrThrow(DATA_COL_ELAPSED_TIME_EXCLUDING_CHEAT_PENALTY));
-				dataPoint.mCheatPenalty = data.getLong(data
-						.getColumnIndexOrThrow(DATA_COL_CHEAT_PENALTY));
-				dataPoint.mSeries = Series.valueOf(data.getString(data
-						.getColumnIndexOrThrow(DATA_COL_SERIES)));
+				dataPoint.mCheatPenalty = dataPointsCursor
+						.getLong(dataPointsCursor
+								.getColumnIndexOrThrow(DATA_COL_CHEAT_PENALTY));
+				dataPoint.mSeries = Series.valueOf(dataPointsCursor
+						.getString(dataPointsCursor
+								.getColumnIndexOrThrow(DATA_COL_SERIES)));
 
 				// Update summary for the series
 				switch (dataPoint.mSeries) {
@@ -161,7 +165,7 @@ public class HistoricStatistics {
 
 				// Add data point to the list
 				dataPoints.add(dataPoint);
-			} while (data.moveToNext());
+			} while (dataPointsCursor.moveToNext());
 
 			mLimit = XY_SERIES_NOT_LIMITED;
 		}

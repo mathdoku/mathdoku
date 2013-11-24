@@ -854,18 +854,18 @@ public class GridCell {
 	}
 
 	/**
-	 * The column number (zero based) of the cell.
+	 * Get the column number (zero based) of the cell.
 	 * 
-	 * @return
+	 * @return The column number (zero based) of the cell.
 	 */
 	public int getColumn() {
 		return mColumn;
 	}
 
 	/**
-	 * The row number (zero based) of the cell.
+	 * Gets the row number (zero based) of the cell.
 	 * 
-	 * @return
+	 * @return The row number (zero based) of the cell.
 	 */
 	public int getRow() {
 		return mRow;

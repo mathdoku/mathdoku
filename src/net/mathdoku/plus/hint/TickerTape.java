@@ -193,6 +193,7 @@ public class TickerTape extends HorizontalScrollView {
 	 * Sets whether the ticker tape is completely disabled.
 	 * 
 	 * @param disabled
+	 *            True in case the ticker tape has to be disabled completely.
 	 */
 	public void setDisabled(boolean disabled) {
 		mDisabled = disabled;

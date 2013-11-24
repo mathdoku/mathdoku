@@ -44,8 +44,10 @@ public class TipCheat extends TipDialog implements
 	 * @param preferences
 	 *            Preferences of the activity for which has to be checked
 	 *            whether this tip should be shown.
-	 * @param cage
-	 * @return
+	 * @param cheat
+	 *            The cheat for which has to be checked if it might be
+	 *            displayed.
+	 * @return True in case the tip might be displayed. False otherwise.
 	 */
 	public static boolean toBeDisplayed(Preferences preferences, Cheat cheat) {
 		// Do not display in case it was displayed less than 12 hours ago
@@ -65,7 +67,7 @@ public class TipCheat extends TipDialog implements
 	 * 
 	 * @param cheat
 	 *            The cheat for which the tip has to be displayed.
-	 * @return
+	 * @return The preference name associated with the cheat.
 	 */
 	private static String getTipName(Cheat cheat) {
 		switch (cheat.getType()) {
