@@ -199,8 +199,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 
 			// Set date created
 			if (mGrid.getDateCreated() > 0) {
-				((TableRow) rootView
-						.findViewById(R.id.statistics_general_date_created_row))
+				rootView.findViewById(R.id.statistics_general_date_created_row)
 						.setVisibility(View.VISIBLE);
 				((TextView) rootView
 						.findViewById(R.id.statistics_general_date_created))
@@ -210,8 +209,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 
 			// Set date finished
 			if (mGridStatistics != null && mGridStatistics.isFinished()) {
-				((TableRow) rootView
-						.findViewById(R.id.statistics_general_date_finished_row))
+				rootView.findViewById(R.id.statistics_general_date_finished_row)
 						.setVisibility(View.VISIBLE);
 				((TextView) rootView
 						.findViewById(R.id.statistics_general_date_finished))
@@ -221,8 +219,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 
 			// Show the number of times the puzzle is replayed.
 			if (mGridStatistics != null && mGridStatistics.getReplayCount() > 0) {
-				((TableRow) rootView
-						.findViewById(R.id.statistics_general_replays_row))
+				rootView.findViewById(R.id.statistics_general_replays_row)
 						.setVisibility(View.VISIBLE);
 				((TextView) rootView
 						.findViewById(R.id.statistics_general_replays))
@@ -232,8 +229,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 
 			// Show elapsed time for puzzles which are solved manually.
 			if (mGrid.isActive() == false) {
-				((TableRow) rootView
-						.findViewById(R.id.statistics_general_elapsed_time_row))
+				rootView.findViewById(R.id.statistics_general_elapsed_time_row)
 						.setVisibility(View.VISIBLE);
 				((TextView) rootView
 						.findViewById(R.id.statistics_general_elapsed_time))
@@ -244,8 +240,8 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 			// Set cheat penalty time
 			if (mGridStatistics != null
 					&& mGridStatistics.getCheatPenaltyTime() > 0) {
-				((TableRow) rootView
-						.findViewById(R.id.statistics_general_cheat_penalty_time_row))
+				rootView.findViewById(
+						R.id.statistics_general_cheat_penalty_time_row)
 						.setVisibility(View.VISIBLE);
 				((TextView) rootView
 						.findViewById(R.id.statistics_general_cheat_penalty_time))
