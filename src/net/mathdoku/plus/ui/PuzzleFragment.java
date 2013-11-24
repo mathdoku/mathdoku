@@ -1120,6 +1120,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		for (int i = 0; i < mDigitPosition.length; i++) {
 			int value = mDigitPositionGrid.getValue(i);
 			mDigitPosition[i].setText(value > 0 ? Integer.toString(value) : "");
+			// noinspection MagicConstant
 			mDigitPosition[i]
 					.setVisibility(mDigitPositionGrid.getVisibility(i));
 		}
