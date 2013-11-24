@@ -120,7 +120,7 @@ public class LeaderboardConnector {
 					if (DEBUG) {
 						Log.i(TAG,
 								"The onScoreSubmitted listener for method submitScore has "
-										+ "been called succesfully for leaderboard "
+										+ "been called successfully for leaderboard "
 										+ getLeaderboardNameForLogging(submitScoreResult
 												.getLeaderboardId()));
 					}

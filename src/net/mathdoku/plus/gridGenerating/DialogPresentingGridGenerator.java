@@ -56,7 +56,7 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 			if (mDialogPresentingGridGenerator.mPuzzleFragmentActivity != null) {
 				if (DEBUG_GRID_GENERATOR) {
 					Log.d(TAG,
-							"Inform activity about cancelation of the grid generation.");
+							"Inform activity about cancellation of the grid generation.");
 				}
 				// The task is still attached to a activity. Inform activity
 				// about completing the new game generation. The activity will

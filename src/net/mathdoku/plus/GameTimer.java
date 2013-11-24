@@ -91,7 +91,8 @@ public class GameTimer extends AsyncTask<Void, Long, Long> {
 	@SuppressWarnings("SameParameterValue")
 	void addCheatPenaltyTime(Cheat cheat, int occurrences) {
 		// Determine penalty time for just one occurrence
-		long cheatPenaltyTime = cheat.getPenaltyTimeMilis() * occurrences;
+		long cheatPenaltyTime = cheat.getPenaltyTimeMilliseconds()
+				* occurrences;
 
 		// Change start time, elapsed and total penalty time.
 		mStartTime -= cheatPenaltyTime;

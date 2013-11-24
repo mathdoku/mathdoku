@@ -352,12 +352,12 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		}
 
 		// Cells empty
-		if (mGridStatistics.mCellsEmtpty > 0) {
+		if (mGridStatistics.mCellsEmpty > 0) {
 			categorySeries.add(
 					getResources().getString(
 							R.string.progress_chart_cells_empty)
-							+ " (" + mGridStatistics.mCellsEmtpty + ")",
-					(double) mGridStatistics.mCellsEmtpty / totalCells);
+							+ " (" + mGridStatistics.mCellsEmpty + ")",
+					(double) mGridStatistics.mCellsEmpty / totalCells);
 			renderer.addSeriesRenderer(createSimpleSeriesRenderer(chartGrey1));
 			countCategories++;
 		}

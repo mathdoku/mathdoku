@@ -96,7 +96,7 @@ class LeaderboardFragmentPagerAdapter extends FragmentPagerAdapter {
 	}
 
 	/**
-	 * Gets the fragment for the given position in the adapater.
+	 * Gets the fragment for the given position in the adapter.
 	 * 
 	 * @param container
 	 * @param position

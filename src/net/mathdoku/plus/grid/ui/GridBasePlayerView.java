@@ -166,7 +166,7 @@ public class GridBasePlayerView extends GridViewerView implements
 		}
 
 		// Save undo information
-		CellChange orginalUserMove = selectedCell.saveUndoInformation(null);
+		CellChange originalUserMove = selectedCell.saveUndoInformation(null);
 
 		// Get old value of selected cell
 		int oldValue = selectedCell.getUserValue();
@@ -216,7 +216,7 @@ public class GridBasePlayerView extends GridViewerView implements
 					if (mPreferences.isPuzzleSettingClearMaybesEnabled()) {
 						// Update possible values for other cells in this row
 						// and column.
-						mGrid.clearRedundantPossiblesInSameRowOrColumn(orginalUserMove);
+						mGrid.clearRedundantPossiblesInSameRowOrColumn(originalUserMove);
 					}
 					if (newValue != selectedCell.getCorrectValue()
 							&& TipIncorrectValue.toBeDisplayed(mPreferences)) {
@@ -283,7 +283,7 @@ public class GridBasePlayerView extends GridViewerView implements
 				// either empty or is filled with a user value.
 				if (fromGridCell.getUserValue() != toGridCell.getUserValue()) {
 					// Save undo information
-					CellChange orginalUserMove = toGridCell
+					CellChange originalUserMove = toGridCell
 							.saveUndoInformation(null);
 
 					if (fromGridCell.isUserValueSet()) {
@@ -296,7 +296,7 @@ public class GridBasePlayerView extends GridViewerView implements
 					if (mPreferences.isPuzzleSettingClearMaybesEnabled()) {
 						// Update possible values for other cells in this row
 						// and column.
-						mGrid.clearRedundantPossiblesInSameRowOrColumn(orginalUserMove);
+						mGrid.clearRedundantPossiblesInSameRowOrColumn(originalUserMove);
 					}
 
 					checkGridValidity(toGridCell);

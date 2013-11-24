@@ -7,7 +7,7 @@ import net.mathdoku.plus.R;
 import net.mathdoku.plus.statistics.CumulativeStatistics;
 import net.mathdoku.plus.statistics.HistoricStatistics;
 import net.mathdoku.plus.statistics.HistoricStatistics.Scale;
-import net.mathdoku.plus.statistics.HistoricStatistics.Serie;
+import net.mathdoku.plus.statistics.HistoricStatistics.Series;
 import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
 
@@ -228,7 +228,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		historicStatistics.setLimit(Preferences.getInstance()
 				.getStatisticsSettingElapsedTimeChartMaximumGames());
 
-		// Check if at least one serie will contain data in the limited range.
+		// Check if at least one series will contain data in the limited range.
 		if (!historicStatistics.isXYSeriesUsed(null, true, true)) {
 			return false;
 		}
@@ -320,12 +320,12 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		ArrayList<String> typesList = new ArrayList<String>();
 
 		// Add series for elapsed time (including cheat time) of solved games
-		if (historicStatistics.isXYSeriesUsed(Serie.SOLVED, true, true)) {
+		if (historicStatistics.isXYSeriesUsed(Series.SOLVED, true, true)) {
 			typesList.add(BarChart.TYPE);
 			xyMultipleSeriesDataset
 					.addSeries(historicStatistics
 							.getXYSeries(
-									Serie.SOLVED,
+									Series.SOLVED,
 									getResources()
 											.getString(
 													R.string.statistics_elapsed_time_historic_elapsed_time_solved),
@@ -338,12 +338,13 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		boolean cheatLegendDisplayed = false;
 
 		// Add series for cheat time of solved games
-		if (historicStatistics.isXYSeriesUsed(Serie.SOLVED, false, true)) {
+		if (historicStatistics.isXYSeriesUsed(HistoricStatistics.Series.SOLVED,
+				false, true)) {
 			typesList.add(BarChart.TYPE);
 			xyMultipleSeriesDataset
 					.addSeries(historicStatistics
 							.getXYSeries(
-									Serie.SOLVED,
+									Series.SOLVED,
 									getResources()
 											.getString(
 													R.string.statistics_elapsed_time_historic_cheat_time),
@@ -363,13 +364,13 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 
 		// Add series for elapsed time (including cheat time) of unfinished
 		// games
-		if (historicStatistics.isXYSeriesUsed(Serie.UNFINISHED, true, true)) {
+		if (historicStatistics.isXYSeriesUsed(Series.UNFINISHED, true, true)) {
 			// Elapsed time so far including cheats
 			typesList.add(BarChart.TYPE);
 			xyMultipleSeriesDataset
 					.addSeries(historicStatistics
 							.getXYSeries(
-									Serie.UNFINISHED,
+									HistoricStatistics.Series.UNFINISHED,
 									getResources()
 											.getString(
 													R.string.statistics_elapsed_time_historic_elapsed_time_unfinished),
@@ -379,12 +380,12 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		}
 
 		// Add series for cheat time of solved games
-		if (historicStatistics.isXYSeriesUsed(Serie.UNFINISHED, false, true)) {
+		if (historicStatistics.isXYSeriesUsed(Series.UNFINISHED, false, true)) {
 			typesList.add(BarChart.TYPE);
 			xyMultipleSeriesDataset
 					.addSeries(historicStatistics
 							.getXYSeries(
-									Serie.UNFINISHED,
+									HistoricStatistics.Series.UNFINISHED,
 									getResources()
 											.getString(
 													R.string.statistics_elapsed_time_historic_cheat_time),
@@ -401,7 +402,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		}
 
 		// Add series for games in which the solution was revealed
-		if (historicStatistics.isXYSeriesUsed(Serie.SOLUTION_REVEALED, true,
+		if (historicStatistics.isXYSeriesUsed(Series.SOLUTION_REVEALED, true,
 				true)) {
 			typesList.add(BarChart.TYPE);
 
@@ -428,10 +429,10 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		// Add series for the historic average of solved games. As this series
 		// is displayed as a line chart, it can only be shown if at least two
 		// data points in the series are available.
-		if (historicStatistics.isXYSeriesUsed(Serie.SOLVED, true, true)) {
+		if (historicStatistics.isXYSeriesUsed(Series.SOLVED, true, true)) {
 			XYSeries xySeries = historicStatistics
 					.getXYSeriesHistoricAverage(
-							Serie.SOLVED,
+							HistoricStatistics.Series.SOLVED,
 							getResources()
 									.getString(
 											R.string.statistics_elapsed_time_historic_solved_average_serie),
@@ -448,7 +449,8 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 
 		// Create a table with extra data for fastest, average and slowest time.
 		TableLayout tableLayout = null;
-		if (historicStatistics.isXYSeriesUsed(Serie.SOLVED, true, true)) {
+		if (historicStatistics.isXYSeriesUsed(HistoricStatistics.Series.SOLVED,
+				true, true)) {
 			tableLayout = new TableLayout(getActivity());
 			TableLayout.LayoutParams tableLayoutParams = new TableLayout.LayoutParams(
 					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);

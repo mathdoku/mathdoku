@@ -117,7 +117,7 @@ public class LeaderboardRankUpdater {
 				// - The user might have re-installed the app or manually
 				// deleted all app data.
 				// - Another user has achieved a score which is better than the
-				// users local top score which results in antoher ranking
+				// users local top score which results in another ranking
 				// position of the current player. NOT IMPLEMENTED YET.
 				updateRankingInformation();
 			}

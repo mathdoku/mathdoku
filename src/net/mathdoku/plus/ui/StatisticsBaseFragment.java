@@ -304,7 +304,7 @@ class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 		float ratio = (configuration.orientation == Configuration.ORIENTATION_PORTRAIT ? (2f / 3f)
 				: (1f / 2f));
 
-		// The actual height of the chart is preferrably equal to the ratio of
+		// The actual height of the chart is preferably equal to the ratio of
 		// the width but it may never exceeds the maximum content height as the
 		// title and chart must be viewable without scrolling.
 		return Math

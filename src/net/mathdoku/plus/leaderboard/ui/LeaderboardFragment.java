@@ -66,10 +66,7 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 	}
 
 	/**
-	 * Fill the rootview with the list of leaderboards.
-	 * 
-	 * @param gridSize
-	 * @param leaderboardFilter
+	 * Fill the root view with the list of leaderboards.
 	 */
 	public void refresh() {
 		Resources resources = getActivity().getResources();
@@ -143,7 +140,7 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 
 	/**
 	 * Storage for leaderboard details of leaderboards which have to be
-	 * displayed in the listview.
+	 * displayed in the list view.
 	 */
 	public class LeaderboardSection {
 		public final boolean mDummyLeaderboard;
@@ -221,13 +218,13 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 				mLeaderboardRankDisplay.setVisibility(View.VISIBLE);
 			}
 
-			// Set a listeneren on the leaderboard linear layout to navigate to
+			// Set a listener on the leaderboard linear layout to navigate to
 			// the detail page of the leaderboard on Google Play Services.
 			linearLayout.setClickable(true);
 			linearLayout.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					// Connect to the gamesclient of the activity to start
+					// Connect to the games client of the activity to start
 					// the Google Play Services leaderboard intent.
 					Activity activity = getActivity();
 					if (activity instanceof LeaderboardFragmentActivity) {
@@ -255,7 +252,7 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 		/**
 		 * Creates a new instance of a {@link LeaderboardSection} for the dummy
 		 * leaderboard which is shown in case the use has not played any
-		 * leaderboard for this gridsize and has enabled filter
+		 * leaderboard for this grid size and has enabled filter
 		 * "My leaderboards only".
 		 */
 		public LeaderboardSection(int gridSize) {
@@ -300,7 +297,7 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 				return false;
 			}
 			// noinspection RedundantIfStatement
-			if (leaderboardFilter == LeaderboardFilter.VISBLE_OPERATORS
+			if (leaderboardFilter == LeaderboardFilter.VISIBLE_OPERATORS
 					&& mHideOperators == true) {
 				return false;
 			}

@@ -285,10 +285,12 @@ public class SharedPuzzle {
 		if (pathSegments.get(1).equals(SHARE_URI_VERSION_MATHDOKU_PLUS) == false) {
 			return null;
 		}
-		// Check if grid definition (part 3) matches with the hashcode (part 4).
+		// Check if grid definition (part 3) matches with the hash code (part
+		// 4).
 		// This is a simple measure to check if the uri is complete and not
 		// manually changed by an ordinary user. It it still possible to
-		// manually manipulate the grid definition and the hashcode but this can
+		// manually manipulate the grid definition and the hash code but this
+		// can
 		// do no harm as it is still checked whether a valid grid is specified.
 		String gridDefinition = pathSegments.get(2);
 		if (gridDefinition.hashCode() != Integer.valueOf(pathSegments.get(3))) {
@@ -339,10 +341,12 @@ public class SharedPuzzle {
 		if (pathSegments.get(1).equals(SHARE_URI_VERSION_MATHDOKU_ORIGINAL) == false) {
 			return null;
 		}
-		// Check if grid definition (part 3) matches with the hashcode (part 4).
+		// Check if grid definition (part 3) matches with the hash code (part
+		// 4).
 		// This is a simple measure to check if the uri is complete and not
 		// manually changed by an ordinary user. It it still possible to
-		// manually manipulate the grid definition and the hashcode but this can
+		// manually manipulate the grid definition and the hash code but this
+		// can
 		// do no harm as it is still checked whether a valid grid is specified.
 		String gridDefinition = pathSegments.get(2);
 		if (gridDefinition.hashCode() != Integer.valueOf(pathSegments.get(3))) {

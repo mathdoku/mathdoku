@@ -90,7 +90,7 @@ public class CageTypeGenerator {
 							// type.
 
 							// Because the ExtendedCageType has a free
-							// border of emtpy cells around the cage there
+							// border of empty cells around the cage there
 							// is no need to check indexes.
 
 							// Check above current occupied cell
@@ -309,19 +309,19 @@ public class CageTypeGenerator {
 					if (cageType.getHeight() < maxHeight) {
 						// Check above
 						if (!newCageTypeMatrix[row - 1][col]) {
-							int cellnumber = ((row - 1) * numberOfCellsPerRow)
+							int cellNumber = ((row - 1) * numberOfCellsPerRow)
 									+ col;
-							if (!extendIndexes.contains(cellnumber)) {
-								extendIndexes.add(cellnumber);
+							if (!extendIndexes.contains(cellNumber)) {
+								extendIndexes.add(cellNumber);
 							}
 						}
 						// Check below
 						if (cageType.getHeight() < maxHeight
 								&& !newCageTypeMatrix[row + 1][col]) {
-							int cellnumber = ((row + 1) * numberOfCellsPerRow)
+							int cellNumber = ((row + 1) * numberOfCellsPerRow)
 									+ col;
-							if (!extendIndexes.contains(cellnumber)) {
-								extendIndexes.add(cellnumber);
+							if (!extendIndexes.contains(cellNumber)) {
+								extendIndexes.add(cellNumber);
 							}
 						}
 					}
@@ -331,19 +331,19 @@ public class CageTypeGenerator {
 					if (cageType.getWidth() < maxWidth) {
 						// Check to right
 						if (!newCageTypeMatrix[row][col + 1]) {
-							int cellnumber = (row * numberOfCellsPerRow)
+							int cellNumber = (row * numberOfCellsPerRow)
 									+ (col + 1);
-							if (!extendIndexes.contains(cellnumber)) {
-								extendIndexes.add(cellnumber);
+							if (!extendIndexes.contains(cellNumber)) {
+								extendIndexes.add(cellNumber);
 							}
 						}
 
 						// Check to left
 						if (!newCageTypeMatrix[row][col - 1]) {
-							int cellnumber = (row * numberOfCellsPerRow)
+							int cellNumber = (row * numberOfCellsPerRow)
 									+ (col - 1);
-							if (!extendIndexes.contains(cellnumber)) {
-								extendIndexes.add(cellnumber);
+							if (!extendIndexes.contains(cellNumber)) {
+								extendIndexes.add(cellNumber);
 							}
 						}
 					}
@@ -353,10 +353,10 @@ public class CageTypeGenerator {
 
 		// Select one of the cell index numbers to which the given cage type can
 		// be extended
-		int extendToCellnumber = extendIndexes.get(random.nextInt(extendIndexes
+		int extendToCellNumber = extendIndexes.get(random.nextInt(extendIndexes
 				.size()));
-		int col = extendToCellnumber % numberOfCellsPerRow;
-		int row = extendToCellnumber / numberOfCellsPerRow;
+		int col = extendToCellNumber % numberOfCellsPerRow;
+		int row = extendToCellNumber / numberOfCellsPerRow;
 		newCageTypeMatrix[row][col] = true;
 
 		GridCageType newCageType = new GridCageType();

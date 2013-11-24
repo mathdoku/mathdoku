@@ -106,7 +106,7 @@ public class CellChange {
 	public String toString() {
 		return "<cell:" + this.mGridCell.getCellNumber() + " col:"
 				+ this.mGridCell.getColumn() + " row:"
-				+ this.mGridCell.getRow() + " previous userval:"
+				+ this.mGridCell.getRow() + " previous user value:"
 				+ this.mPreviousUserValue + " previous possible values:"
 				+ mPreviousPossibleValues.toString() + ">";
 	}
@@ -261,7 +261,7 @@ public class CellChange {
 			int level, ArrayList<GridCell> cells) {
 		// Regexp and groups inside. Groups 4 - 6 are helper groups which are
 		// needed to ensure the validity of the cell information but are not
-		// used programmaticly.
+		// used programmatic.
 		final String CELL_CHANGE_REGEXP = "^\\[(\\d+)"
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ "(\\d*)"
@@ -303,7 +303,7 @@ public class CellChange {
 			Log.i(TAG,
 					indent + "Cell number: " + matcher.group(GROUP_CELL_NUMBER));
 			Log.i(TAG,
-					indent + "Previuous user value: "
+					indent + "Previous user value: "
 							+ matcher.group(GROUP_PREVIOUS_USER_VALUE));
 			Log.i(TAG,
 					indent + "Previous possible values: "
@@ -336,7 +336,7 @@ public class CellChange {
 			int index = 0;
 			for (char c : charArray) {
 				switch (c) {
-				case '[': // Start of new groupd
+				case '[': // Start of new group
 					if (levelNestedGroup == 0) {
 						// Remember starting position of outer group only
 						startPosGroup = index;

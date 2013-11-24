@@ -62,7 +62,7 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 		Bundle args = new Bundle();
 		args.putInt(
 				ArchiveFragment.BUNDLE_KEY_SOLVING_ATTEMPT_ID,
-				mGridIds[i][GridDatabaseAdapter.LATEST_SOLVING_ATTEMPT_PER_GRID__SOLVING_ATTEMP_ID]);
+				mGridIds[i][GridDatabaseAdapter.LATEST_SOLVING_ATTEMPT_PER_GRID__SOLVING_ATTEMPT_ID]);
 		fragment.setArguments(args);
 		return fragment;
 	}
@@ -85,7 +85,7 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 						+ " "
 						+ mGridIds[position][GridDatabaseAdapter.LATEST_SOLVING_ATTEMPT_PER_GRID__GRID_ID]
 						+ "("
-						+ mGridIds[position][GridDatabaseAdapter.LATEST_SOLVING_ATTEMPT_PER_GRID__SOLVING_ATTEMP_ID]
+						+ mGridIds[position][GridDatabaseAdapter.LATEST_SOLVING_ATTEMPT_PER_GRID__SOLVING_ATTEMPT_ID]
 						+ ")";
 			} else {
 				int currentPosition = mArchiveFragmentActivity
@@ -209,7 +209,7 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	 */
 	public int getSolvingAttemptId(int position) {
 		if (mGridIds != null && position >= 0 && position < mGridIds.length) {
-			return mGridIds[position][GridDatabaseAdapter.LATEST_SOLVING_ATTEMPT_PER_GRID__SOLVING_ATTEMP_ID];
+			return mGridIds[position][GridDatabaseAdapter.LATEST_SOLVING_ATTEMPT_PER_GRID__SOLVING_ATTEMPT_ID];
 		} else {
 			return INVALID_POSITION_ID;
 		}

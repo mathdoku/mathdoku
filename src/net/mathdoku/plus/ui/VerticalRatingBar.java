@@ -9,7 +9,7 @@ import android.widget.RatingBar;
 import org.jetbrains.annotations.NotNull;
 
 public class VerticalRatingBar extends RatingBar {
-	private int x, y, z, w;
+	private int mWidth, mHeight, mOldWidth, mOldHeight;
 
 	public VerticalRatingBar(Context context) {
 		super(context);
@@ -24,12 +24,13 @@ public class VerticalRatingBar extends RatingBar {
 	}
 
 	@Override
-	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-		super.onSizeChanged(h, w, oldh, oldw);
-		this.x = w;
-		this.y = h;
-		this.z = oldw;
-		this.w = oldh;
+	protected void onSizeChanged(int width, int height, int oldWidth,
+			int oldHeight) {
+		super.onSizeChanged(height, width, oldHeight, oldWidth);
+		mWidth = width;
+		mHeight = height;
+		mOldWidth = oldWidth;
+		mOldHeight = oldHeight;
 	}
 
 	@Override
@@ -84,7 +85,7 @@ public class VerticalRatingBar extends RatingBar {
 
 		else
 			super.setProgress(0);
-		onSizeChanged(x, y, z, w);
+		onSizeChanged(mWidth, mHeight, mOldWidth, mOldHeight);
 
 	}
 }

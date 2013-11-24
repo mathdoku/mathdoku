@@ -12,47 +12,47 @@ public class DLX {
 	}
 
 	private final DLXColumn root = new DLXColumn();
-	private DLXColumn[] ColHdrs;
-	private DLXNode[] Nodes;
-	private int numnodes;
-	private DLXNode lastnodeadded;
-	private ArrayList<Integer> trysolution;
-	private ArrayList<Integer> foundsolution;
-	private int NumSolns;
+	private DLXColumn[] colHeaders;
+	private DLXNode[] nodes;
+	private int numNodes;
+	private DLXNode lastNodeAdded;
+	private ArrayList<Integer> trySolution;
+	private ArrayList<Integer> foundSolution;
+	private int countSolutions;
 	private boolean isValid;
-	private int prev_rowidx = -1;
-	private SolveType solvetype;
+	private int previousRowIndex = -1;
+	private SolveType solveType;
 	int complexity;
 
 	DLX() {
-		trysolution = new ArrayList<Integer>();
+		trySolution = new ArrayList<Integer>();
 		isValid = true;
 	}
 
 	void Init(int numCols, int numNodes) {
-		ColHdrs = new DLXColumn[numCols + 1];
+		colHeaders = new DLXColumn[numCols + 1];
 		for (int c = 1; c <= numCols; c++)
-			ColHdrs[c] = new DLXColumn();
+			colHeaders[c] = new DLXColumn();
 
-		Nodes = new DLXNode[numNodes + 1];
-		numnodes = 0; // None allocated
+		nodes = new DLXNode[numNodes + 1];
+		this.numNodes = 0; // None allocated
 
 		DLXColumn prev = root;
 		for (int i = 1; i <= numCols; i++) {
-			prev.SetRight(ColHdrs[i]);
-			ColHdrs[i].SetLeft(prev);
-			prev = ColHdrs[i];
+			prev.SetRight(colHeaders[i]);
+			colHeaders[i].SetLeft(prev);
+			prev = colHeaders[i];
 		}
-		root.SetLeft(ColHdrs[numCols]);
-		ColHdrs[numCols].SetRight(root);
+		root.SetLeft(colHeaders[numCols]);
+		colHeaders[numCols].SetRight(root);
 	}
 
 	int GetRowsInSolution() {
-		return foundsolution.size();
+		return foundSolution.size();
 	}
 
 	int GetSolutionRow(int row) {
-		return foundsolution.get(row - 1);
+		return foundSolution.get(row - 1);
 	}
 
 	private void CoverCol(DLXColumn coverCol) {
@@ -92,40 +92,40 @@ public class DLX {
 	}
 
 	private DLXColumn ChooseMinCol() {
-		int minsize = Integer.MAX_VALUE;
-		DLXColumn search, mincol;
+		int minSize = Integer.MAX_VALUE;
+		DLXColumn search, minColumn;
 
-		mincol = search = (DLXColumn) root.GetRight();
+		minColumn = search = (DLXColumn) root.GetRight();
 
 		while (search != root) {
-			if (search.GetSize() < minsize) {
-				mincol = search;
-				minsize = mincol.GetSize();
-				if (minsize == 0) {
+			if (search.GetSize() < minSize) {
+				minColumn = search;
+				minSize = minColumn.GetSize();
+				if (minSize == 0) {
 					break;
 				}
 			}
 			search = (DLXColumn) search.GetRight();
 		}
-		if (minsize == 0)
+		if (minSize == 0)
 			return null;
 		else
-			return mincol;
+			return minColumn;
 	}
 
-	void AddNode(int colidx, int rowidx) {
-		Nodes[++numnodes] = new DLXNode(ColHdrs[colidx], rowidx);
-		if (prev_rowidx == rowidx) {
-			Nodes[numnodes].SetLeft(lastnodeadded);
-			Nodes[numnodes].SetRight(lastnodeadded.GetRight());
-			lastnodeadded.SetRight(Nodes[numnodes]);
-			Nodes[numnodes].GetRight().SetLeft(Nodes[numnodes]);
+	void AddNode(int columnIndex, int rowIndex) {
+		nodes[++numNodes] = new DLXNode(colHeaders[columnIndex], rowIndex);
+		if (previousRowIndex == rowIndex) {
+			nodes[numNodes].SetLeft(lastNodeAdded);
+			nodes[numNodes].SetRight(lastNodeAdded.GetRight());
+			lastNodeAdded.SetRight(nodes[numNodes]);
+			nodes[numNodes].GetRight().SetLeft(nodes[numNodes]);
 		} else {
-			prev_rowidx = rowidx;
-			Nodes[numnodes].SetLeft(Nodes[numnodes]);
-			Nodes[numnodes].SetRight(Nodes[numnodes]);
+			previousRowIndex = rowIndex;
+			nodes[numNodes].SetLeft(nodes[numNodes]);
+			nodes[numNodes].SetRight(nodes[numNodes]);
 		}
-		lastnodeadded = Nodes[numnodes];
+		lastNodeAdded = nodes[numNodes];
 	}
 
 	/**
@@ -142,11 +142,11 @@ public class DLX {
 		if (!isValid)
 			return -1;
 
-		solvetype = solveType;
-		NumSolns = 0;
+		this.solveType = solveType;
+		countSolutions = 0;
 		complexity = 0;
-		search(trysolution.size());
-		return NumSolns;
+		search(trySolution.size());
+		return countSolutions;
 	}
 
 	private void search(int k) {
@@ -155,12 +155,12 @@ public class DLX {
 
 		// A solution is found in case all columns are covered
 		if (root.GetRight() == root) {
-			NumSolns++;
-			foundsolution = new ArrayList<Integer>(trysolution);
+			countSolutions++;
+			foundSolution = new ArrayList<Integer>(trySolution);
 			if (MathDokuDLX.DEBUG_DLX) {
-				Log.i(TAG, "Solution " + NumSolns
+				Log.i(TAG, "Solution " + countSolutions
 						+ " found which consists of following moves: "
-						+ trysolution.toString());
+						+ trySolution.toString());
 			}
 			return;
 		}
@@ -179,21 +179,21 @@ public class DLX {
 			r = chosenCol.GetDown();
 
 			while (r != chosenCol) {
-				if (k >= trysolution.size())
-					trysolution.add(((DLXNode) r).GetRowIdx());
+				if (k >= trySolution.size())
+					trySolution.add(((DLXNode) r).GetRowIdx());
 				else
-					trysolution.set(k, ((DLXNode) r).GetRowIdx());
+					trySolution.set(k, ((DLXNode) r).GetRowIdx());
 				j = r.GetRight();
 				while (j != r) {
 					CoverCol(((DLXNode) j).GetColumn());
 					j = j.GetRight();
 				}
 				search(k + 1);
-				if (solvetype == SolveType.ONE && NumSolns > 0) {
+				if (solveType == SolveType.ONE && countSolutions > 0) {
 					// Stop as soon as we find 1 solution
 					return;
 				}
-				if (solvetype == SolveType.MULTIPLE && NumSolns > 1) {
+				if (solveType == SolveType.MULTIPLE && countSolutions > 1) {
 					// Stop as soon as we find multiple solutions
 					return;
 				}

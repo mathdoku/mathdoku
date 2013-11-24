@@ -280,12 +280,13 @@ public class GridCage {
 		}
 	}
 
-	public ArrayList<int[]> getPossibleNums() {
+	public ArrayList<int[]> getPossibleCombos() {
 		if (mPossibles == null) {
-			if (mHideOperator || (mAction == ACTION_NONE && mCells.size() > 1))
-				mPossibles = setPossibleNumsNoOperator();
-			else
-				mPossibles = setPossibleNums();
+			if (mHideOperator || (mAction == ACTION_NONE && mCells.size() > 1)) {
+				mPossibles = setPossibleCombosHiddenOperator();
+			} else {
+				mPossibles = setPossibleCombosVisibleOperator();
+			}
 		}
 		return mPossibles;
 	}
@@ -296,14 +297,14 @@ public class GridCage {
 	 * @return The list of all permutations of cell values which can be used for
 	 *         this cage.
 	 */
-	private ArrayList<int[]> setPossibleNumsNoOperator() {
-		ArrayList<int[]> AllResults = new ArrayList<int[]>();
+	private ArrayList<int[]> setPossibleCombosHiddenOperator() {
+		ArrayList<int[]> resultCombos = new ArrayList<int[]>();
 
 		// Single cell cages can only contain the value of the single cell.
 		if (mCells.size() == 1) {
 			int number[] = { mResult };
-			AllResults.add(number);
-			return AllResults;
+			resultCombos.add(number);
+			return resultCombos;
 		}
 
 		// Cages of size two can contain any operation
@@ -315,36 +316,36 @@ public class GridCage {
 							|| mResult * i1 == i2 || mResult * i2 == i1
 							|| i1 + i2 == mResult || i1 * i2 == mResult) {
 						int numbers[] = { i1, i2 };
-						AllResults.add(numbers);
+						resultCombos.add(numbers);
 						numbers = new int[] { i2, i1 };
-						AllResults.add(numbers);
+						resultCombos.add(numbers);
 					}
 				}
 			}
-			return AllResults;
+			return resultCombos;
 		}
 
 		// Cages of size two and above can only contain an add or a multiply
 		// operation
-		AllResults = getAllAddCombos(gridSize, mResult, mCells.size());
-		ArrayList<int[]> multResults = getAllMultiplyCombos(gridSize, mResult,
-				mCells.size());
+		resultCombos = getAllAddCombos(gridSize, mResult, mCells.size());
+		ArrayList<int[]> multiplyCombos = getAllMultiplyCombos(gridSize,
+				mResult, mCells.size());
 
 		// Combine Add & Multiply result sets
-		for (int[] possibleset : multResults) {
-			boolean foundset = false;
-			for (int[] currentset : AllResults) {
-				if (Arrays.equals(possibleset, currentset)) {
-					foundset = true;
+		for (int[] multiplyCombo : multiplyCombos) {
+			boolean newCombo = true;
+			for (int[] resultCombo : resultCombos) {
+				if (Arrays.equals(multiplyCombo, resultCombo)) {
+					newCombo = false;
 					break;
 				}
 			}
-			if (!foundset) {
-				AllResults.add(possibleset);
+			if (newCombo) {
+				resultCombos.add(multiplyCombo);
 			}
 		}
 
-		return AllResults;
+		return resultCombos;
 	}
 
 	/*
@@ -352,7 +353,7 @@ public class GridCage {
 	 * and MathDoku constraints i.e. a digit can only appear once in a
 	 * column/row
 	 */
-	private ArrayList<int[]> setPossibleNums() {
+	private ArrayList<int[]> setPossibleCombosVisibleOperator() {
 		ArrayList<int[]> AllResults = new ArrayList<int[]>();
 
 		int gridSize = mGrid.getGridSize();
@@ -480,21 +481,21 @@ public class GridCage {
 	 * contain each digit) mGridSize * mGridSize -> 2*(mGridSize * mGridSize)-1
 	 * = row constraints (each row must contain each digit)
 	 */
-	private boolean satisfiesConstraints(int[] test_nums) {
+	private boolean satisfiesConstraints(int[] possibles) {
 
 		int gridSize = mGrid.getGridSize();
 
 		boolean constraints[] = new boolean[gridSize * gridSize * 2];
 		int constraint_num;
 		for (int i = 0; i < this.mCells.size(); i++) {
-			constraint_num = gridSize * (test_nums[i] - 1)
+			constraint_num = gridSize * (possibles[i] - 1)
 					+ mCells.get(i).getColumn();
 			if (constraints[constraint_num])
 				return false;
 			else
 				constraints[constraint_num] = true;
 			constraint_num = gridSize * gridSize + gridSize
-					* (test_nums[i] - 1) + mCells.get(i).getRow();
+					* (possibles[i] - 1) + mCells.get(i).getRow();
 			if (constraints[constraint_num])
 				return false;
 			else

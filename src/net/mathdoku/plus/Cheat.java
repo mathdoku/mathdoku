@@ -14,11 +14,11 @@ public class Cheat {
 
 	private final Resources mResources;
 
-	// Constants to convert milisecond to calendar units
-	private final long MILIS_PER_DAY = 24 * 60 * 60 * 1000;
-	private final long MILIS_PER_HOUR = 60 * 60 * 1000;
-	private final long MILIS_PER_MINUTE = 60 * 1000;
-	private final long MILIS_PER_SECOND = 1000;
+	// Constants to convert millisecond to calendar units
+	private final long MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
+	private final long MILLISECONDS_PER_HOUR = 60 * 60 * 1000;
+	private final long MILLISECONDS_PER_MINUTE = 60 * 1000;
+	private final long MILLISECONDS_PER_SECOND = 1000;
 
 	// The type of cheat
 	private final CheatType mCheatType;
@@ -27,9 +27,9 @@ public class Cheat {
 	// occurrence of a certain condition relevant for the cheat.
 	private final int mConditionalOccurrences;
 
-	// Penalty time in mili seconds
-	private final long mPenaltyTimeMilisBase;
-	private final long mPenaltyTimeMilisPerOccurrence;
+	// Penalty time in milliseconds
+	private final long mPenaltyTimeMillisecondsBase;
+	private final long mPenaltyTimeMillisecondsPerOccurrence;
 
 	// Title and text to be used in tip dialogs.
 	private String mTipTitle;
@@ -47,35 +47,35 @@ public class Cheat {
 	public Cheat(Context context, CheatType cheatType) {
 		mResources = context.getResources();
 		mCheatType = cheatType;
-		mPenaltyTimeMilisPerOccurrence = 0;
+		mPenaltyTimeMillisecondsPerOccurrence = 0;
 		mConditionalOccurrences = 0;
 		switch (mCheatType) {
 		case CELL_REVEALED:
-			mPenaltyTimeMilisBase = 60 * MILIS_PER_SECOND;
+			mPenaltyTimeMillisecondsBase = 60 * MILLISECONDS_PER_SECOND;
 			mTipTitle = mResources
 					.getString(R.string.dialog_tip_cheat_reveal_value_title);
 			mTipText = mResources.getString(
 					R.string.dialog_tip_cheat_reveal_value_text,
-					getPenaltyTimeText(mPenaltyTimeMilisBase));
+					getPenaltyTimeText(mPenaltyTimeMillisecondsBase));
 			break;
 		case OPERATOR_REVEALED:
-			mPenaltyTimeMilisBase = 30 * MILIS_PER_SECOND;
+			mPenaltyTimeMillisecondsBase = 30 * MILLISECONDS_PER_SECOND;
 			mTipTitle = mResources
 					.getString(R.string.dialog_tip_cheat_reveal_operator_title);
 			mTipText = mResources.getString(
 					R.string.dialog_tip_cheat_reveal_operator_text,
-					getPenaltyTimeText(mPenaltyTimeMilisBase));
+					getPenaltyTimeText(mPenaltyTimeMillisecondsBase));
 			break;
 		case SOLUTION_REVEALED:
-			mPenaltyTimeMilisBase = MILIS_PER_DAY;
+			mPenaltyTimeMillisecondsBase = MILLISECONDS_PER_DAY;
 			mTipTitle = mResources
 					.getString(R.string.dialog_tip_cheat_reveal_solution_title);
 			mTipText = mResources.getString(
 					R.string.dialog_tip_cheat_reveal_solution_text,
-					getPenaltyTimeText(mPenaltyTimeMilisBase));
+					getPenaltyTimeText(mPenaltyTimeMillisecondsBase));
 			break;
 		default:
-			mPenaltyTimeMilisBase = 0;
+			mPenaltyTimeMillisecondsBase = 0;
 			mTipTitle = "";
 			mTipText = "";
 			if (Config.mAppMode == AppMode.DEVELOPMENT) {
@@ -105,19 +105,19 @@ public class Cheat {
 
 		switch (mCheatType) {
 		case CHECK_PROGRESS_USED:
-			mPenaltyTimeMilisBase = 20 * MILIS_PER_SECOND;
-			mPenaltyTimeMilisPerOccurrence = 15 * MILIS_PER_SECOND;
+			mPenaltyTimeMillisecondsBase = 20 * MILLISECONDS_PER_SECOND;
+			mPenaltyTimeMillisecondsPerOccurrence = 15 * MILLISECONDS_PER_SECOND;
 			mConditionalOccurrences = occurrencesConditionalPenalty;
 			mTipTitle = mResources
 					.getString(R.string.dialog_tip_cheat_check_progress_title);
 			mTipText = mResources.getString(
 					R.string.dialog_tip_cheat_check_progress_text,
-					getPenaltyTimeText(mPenaltyTimeMilisBase),
-					getPenaltyTimeText(mPenaltyTimeMilisPerOccurrence));
+					getPenaltyTimeText(mPenaltyTimeMillisecondsBase),
+					getPenaltyTimeText(mPenaltyTimeMillisecondsPerOccurrence));
 			break;
 		default:
-			mPenaltyTimeMilisBase = 0;
-			mPenaltyTimeMilisPerOccurrence = 0;
+			mPenaltyTimeMillisecondsBase = 0;
+			mPenaltyTimeMillisecondsPerOccurrence = 0;
 			mConditionalOccurrences = 0;
 			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				throw new RuntimeException(
@@ -130,11 +130,11 @@ public class Cheat {
 	/**
 	 * Get the penalty time for this cheat.
 	 * 
-	 * @return The penalty time in mili seconds for this cheat.
+	 * @return The penalty time in milliseconds for this cheat.
 	 */
-	public long getPenaltyTimeMilis() {
-		return mPenaltyTimeMilisBase
-				+ (mConditionalOccurrences * mPenaltyTimeMilisPerOccurrence);
+	public long getPenaltyTimeMilliseconds() {
+		return mPenaltyTimeMillisecondsBase
+				+ (mConditionalOccurrences * mPenaltyTimeMillisecondsPerOccurrence);
 	}
 
 	/**
@@ -165,11 +165,11 @@ public class Cheat {
 	}
 
 	/**
-	 * Converts a given penalty time from mili seconds to a formatted text
+	 * Converts a given penalty time from milliseconds to a formatted text
 	 * string.
 	 * 
 	 * @param penaltyTime
-	 *            The penalty time in mili seconds.
+	 *            The penalty time in milliseconds.
 	 * @return A formatted text.
 	 */
 	private String getPenaltyTimeText(long penaltyTime) {
@@ -179,7 +179,7 @@ public class Cheat {
 				+ " ";
 
 		// Determine number of days
-		long days = penaltyTime / MILIS_PER_DAY;
+		long days = penaltyTime / MILLISECONDS_PER_DAY;
 		if (days > 1) {
 			penaltyTimeText = Long.toString(days) + " "
 					+ mResources.getString(R.string.time_unit_days_plural);
@@ -189,11 +189,11 @@ public class Cheat {
 		} else {
 			penaltyTimeText = "";
 		}
-		penaltyTime -= (days * MILIS_PER_DAY);
+		penaltyTime -= (days * MILLISECONDS_PER_DAY);
 
 		if (penaltyTime > 0) {
 			// Determine number of hours
-			long hours = penaltyTime / MILIS_PER_HOUR;
+			long hours = penaltyTime / MILLISECONDS_PER_HOUR;
 			if (hours > 1) {
 				penaltyTimeText += (days > 0 ? and : "") + hours + " "
 						+ mResources.getString(R.string.time_unit_hours_plural);
@@ -205,11 +205,11 @@ public class Cheat {
 			} else {
 				penaltyTimeText += "";
 			}
-			penaltyTime -= (hours * MILIS_PER_HOUR);
+			penaltyTime -= (hours * MILLISECONDS_PER_HOUR);
 
 			// Determine number of minutes
 			if (penaltyTime > 0) {
-				long minutes = penaltyTime / MILIS_PER_MINUTE;
+				long minutes = penaltyTime / MILLISECONDS_PER_MINUTE;
 				if (minutes > 1) {
 					penaltyTimeText += ((days + hours) > 0 ? and : "")
 							+ minutes
@@ -224,11 +224,11 @@ public class Cheat {
 				} else {
 					penaltyTimeText += "";
 				}
-				penaltyTime -= (minutes * MILIS_PER_MINUTE);
+				penaltyTime -= (minutes * MILLISECONDS_PER_MINUTE);
 
 				// Determine number of seconds
 				if (penaltyTime > 0) {
-					long seconds = penaltyTime / MILIS_PER_SECOND;
+					long seconds = penaltyTime / MILLISECONDS_PER_SECOND;
 					if (seconds > 1) {
 						penaltyTimeText += ((days + hours + minutes) > 0 ? and
 								: "")

@@ -117,7 +117,7 @@ public class GridCell {
 	public String toString() {
 		return "<cell:" + this.mCellNumber + " col:" + this.mColumn + " row:"
 				+ this.mRow + " posX:" + this.mPosX + " posY:" + this.mPosY
-				+ " val:" + this.mCorrectValue + ", userval: "
+				+ " val:" + this.mCorrectValue + ", user value: "
 				+ this.mUserValue + ">";
 	}
 
@@ -247,7 +247,7 @@ public class GridCell {
 		// Set new value
 		mUserValue = digit;
 
-		// Set borders for this cells and adjacents cells
+		// Set borders for this cell and the adjacent cells
 		setBorders();
 
 		// Check if grid is solved.
@@ -296,7 +296,7 @@ public class GridCell {
 	}
 
 	/**
-	 * Checks whether the cell is higlighted as invalid. Note: a cell can
+	 * Checks whether the cell is highlighted as invalid. Note: a cell can
 	 * contain an invalid value without being marked as invalid. A cell will
 	 * only be marked as invalid after using the option "Check Progress".
 	 * 
@@ -320,7 +320,7 @@ public class GridCell {
 		// Get cell size
 		int cellSize = (int) this.mCellPainter.getCellSize();
 
-		// Calculate x and y for the cell origin (topleft). Use an offset to
+		// Calculate x and y for the cell origin (top left). Use an offset to
 		// prevent overlapping of cells and border for entire grid.
 		this.mPosX = Math.round(gridBorderWidth + cellSize * this.mColumn);
 		this.mPosY = Math.round(gridBorderWidth + cellSize * this.mRow);
@@ -575,7 +575,7 @@ public class GridCell {
 
 			// Draw the possible values
 			if (mGrid.hasPrefShowMaybesAs3x3Grid()) {
-				// Get the digit positioner to be used
+				// Get the digit position grid to be used
 				DigitPositionGrid digitPositionGrid = mMaybeGridPainter
 						.getDigitPositionGrid();
 
@@ -934,7 +934,7 @@ public class GridCell {
 	}
 
 	/**
-	 * Check if the given digit is registered as a posibble value for this cell.
+	 * Check if the given digit is registered as a possible value for this cell.
 	 * 
 	 * @param digit
 	 *            The digit which is to be checked.
@@ -1014,7 +1014,7 @@ public class GridCell {
 	 * a dashed line can not be drawn with drawLine at API-level 11 or above.
 	 * 
 	 * @param canvas
-	 *            The canvas on which will be drawed.
+	 *            The canvas on which will be drawn.
 	 * @param left
 	 *            Starting X position.
 	 * @param top
@@ -1141,7 +1141,7 @@ public class GridCell {
 	}
 
 	/**
-	 * Checks if this cell is emtpy, i.e. it does not contain a user value nor
+	 * Checks if this cell is empty, i.e. it does not contain a user value nor
 	 * possible values.
 	 * 
 	 * @return True in case the cell is empty. False otherwise.

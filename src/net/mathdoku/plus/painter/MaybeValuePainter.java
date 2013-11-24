@@ -75,7 +75,7 @@ public class MaybeValuePainter extends DigitPainter {
 			mMaybeDigitWidth = Math.min((size - 2 * margin) / cols,
 					mMaybeDigitHeight);
 
-			// Maximize the textsize within the available space for each row
+			// Maximize the text size within the available space for each row
 			mTextPaintNormalInputMode.setTextSize(mMaybeDigitHeight);
 			mTextPaintMaybeInputMode.setTextSize(mMaybeDigitHeight);
 

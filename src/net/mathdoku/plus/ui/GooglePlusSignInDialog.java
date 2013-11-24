@@ -16,7 +16,7 @@ public class GooglePlusSignInDialog extends Dialog implements
 	private final AppFragmentActivity mAppFragmentActivity;
 	private CheckBox mHideTillNextTopScoreAchievedCheckbox;
 	private boolean mCheckboxIsVisible;
-	private boolean mCheckboxisChecked;
+	private boolean mCheckboxIsChecked;
 	private int mMessageResID;
 
 	public interface Listener {
@@ -45,7 +45,7 @@ public class GooglePlusSignInDialog extends Dialog implements
 		mAppFragmentActivity = appFragmentActivity;
 		mListener = listener;
 		mCheckboxIsVisible = false;
-		mCheckboxisChecked = false;
+		mCheckboxIsChecked = false;
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class GooglePlusSignInDialog extends Dialog implements
 		mHideTillNextTopScoreAchievedCheckbox = (CheckBox) findViewById(R.id.hide_till_next_top_score_achieved_checkbox);
 		mHideTillNextTopScoreAchievedCheckbox
 				.setVisibility(mCheckboxIsVisible ? View.VISIBLE : View.GONE);
-		mHideTillNextTopScoreAchievedCheckbox.setChecked(mCheckboxisChecked);
+		mHideTillNextTopScoreAchievedCheckbox.setChecked(mCheckboxIsChecked);
 	}
 
 	/**
@@ -113,7 +113,7 @@ public class GooglePlusSignInDialog extends Dialog implements
 	public GooglePlusSignInDialog displayCheckboxHideTillNextTopScoreAchieved(
 			boolean checked) {
 		mCheckboxIsVisible = true;
-		mCheckboxisChecked = checked;
+		mCheckboxIsChecked = checked;
 		return this;
 	}
 }

@@ -49,7 +49,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 
 	// Columns used in result of function getLatestSolvingAttemptsPerGrid
 	public static final int LATEST_SOLVING_ATTEMPT_PER_GRID__GRID_ID = 0;
-	public static final int LATEST_SOLVING_ATTEMPT_PER_GRID__SOLVING_ATTEMP_ID = 1;
+	public static final int LATEST_SOLVING_ATTEMPT_PER_GRID__SOLVING_ATTEMPT_ID = 1;
 
 	// Allowed values for the status filter
 	public enum StatusFilter {
@@ -148,7 +148,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 * 
 	 * @param grid
 	 *            The grid which has to be inserted into the database.
-	 * @return The unique rowid of the grid created. -1 in case of an error.
+	 * @return The unique row id of the grid created. -1 in case of an error.
 	 * @throws InvalidParameterException
 	 *             In case the definition is empty or null.
 	 * @throws SQLException
@@ -383,7 +383,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 				do {
 					gridIds[i][LATEST_SOLVING_ATTEMPT_PER_GRID__GRID_ID] = cursor
 							.getInt(gridIdColumnIndex);
-					gridIds[i][LATEST_SOLVING_ATTEMPT_PER_GRID__SOLVING_ATTEMP_ID] = cursor
+					gridIds[i][LATEST_SOLVING_ATTEMPT_PER_GRID__SOLVING_ATTEMPT_ID] = cursor
 							.getInt(maxSolvingAttemptColumnIndex);
 
 					i++;

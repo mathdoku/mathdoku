@@ -18,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
- * This class display a dialog containing a new topscore. This dialog has no
+ * This class display a dialog containing a new top score. This dialog has no
  * title or buttons and therefore looks like a toast. But unlike a toast it has
  * to dismissed by the user by tapping on or outside the dialog.
  */

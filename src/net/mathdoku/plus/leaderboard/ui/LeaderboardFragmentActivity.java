@@ -53,7 +53,7 @@ public class LeaderboardFragmentActivity extends
 	private ActionBar mActionBar;
 
 	public enum LeaderboardFilter {
-		ALL_LEADERBOARDS, MY_LEADERBOARDS, HIDDEN_OPERATORS, VISBLE_OPERATORS
+		ALL_LEADERBOARDS, MY_LEADERBOARDS, HIDDEN_OPERATORS, VISIBLE_OPERATORS
 	}
 
 	private LeaderboardFilter mLeaderboardFilter;

@@ -6,8 +6,6 @@ import org.achartengine.model.XYSeries;
 
 import android.database.Cursor;
 
-import com.google.android.gms.internal.fa;
-
 /**
  * This class holds time related statistics for one property.
  */
@@ -16,8 +14,8 @@ public class HistoricStatistics {
 	@SuppressWarnings("unused")
 	private static final String TAG = "MathDoku.HistoricStatistics";
 
-	// Historic statistics will be splitted per serie.
-	public enum Serie {
+	// Historic statistics will be split in distinct series.
+	public enum Series {
 		UNFINISHED, SOLUTION_REVEALED, SOLVED
 	}
 
@@ -30,19 +28,19 @@ public class HistoricStatistics {
 	public final static String DATA_COL_ID = "id";
 	public final static String DATA_COL_ELAPSED_TIME_EXCLUDING_CHEAT_PENALTY = "elapsed_time_excluding_cheat_penalty";
 	public final static String DATA_COL_CHEAT_PENALTY = "cheat_penalty";
-	public final static String DATA_COL_SERIES = "serie";
+	public final static String DATA_COL_SERIES = "series";
 
 	// Internal structure to store data points retrieved from database
 	private class DataPoint {
 		public long mElapsedTimeExcludingCheatPenalty;
 		public long mCheatPenalty;
-		public Serie mSerie;
+		public Series mSeries;
 	}
 
 	// Storage for data points retrieved from database
 	private final ArrayList<DataPoint> dataPoints;
 
-	// Internal data structure to store data per serie
+	// Internal data structure to store data per series
 	private class SeriesSummary {
 		private long mMinValue;
 		private long mMaxValue;
@@ -74,27 +72,27 @@ public class HistoricStatistics {
 		}
 
 		/**
-		 * Gets the minimum value found for this serie.
+		 * Gets the minimum value found for this series.
 		 * 
-		 * @return The minimum value found for this serie.
+		 * @return The minimum value found for this series.
 		 */
 		public long getMinimum() {
 			return mMinValue;
 		}
 
 		/**
-		 * Gets the maximum value found for this serie.
+		 * Gets the maximum value found for this series.
 		 * 
-		 * @return The maximum value found for this serie.
+		 * @return The maximum value found for this series.
 		 */
 		public long getMaximum() {
 			return mMaxValue;
 		}
 
 		/**
-		 * Gets the average value for this serie.
+		 * Gets the average value for this series.
 		 * 
-		 * @return The average value for this serie.
+		 * @return The average value for this series.
 		 */
 		public long getAverage() {
 			if (mCount == 0) {
@@ -105,9 +103,9 @@ public class HistoricStatistics {
 		}
 
 		/**
-		 * Gets the number of values used in this serie.
+		 * Gets the number of values used in this series.
 		 * 
-		 * @return The number of values used in this serie.
+		 * @return The number of values used in this series.
 		 */
 		public long getCount() {
 			return mCount;
@@ -120,7 +118,7 @@ public class HistoricStatistics {
 	private final SeriesSummary mUnfinishedSeriesSummary;
 
 	// Limit on XYSeries
-	private final static int XYSERIES_NOT_LIMITED = -1;
+	private final static int XY_SERIES_NOT_LIMITED = -1;
 	private int mLimit;
 
 	/**
@@ -128,7 +126,6 @@ public class HistoricStatistics {
 	 * columns in cursors is defined.
 	 * 
 	 * @param data
-	 * @param summary
 	 */
 	public HistoricStatistics(Cursor data) {
 		dataPoints = new ArrayList<DataPoint>();
@@ -139,18 +136,18 @@ public class HistoricStatistics {
 		// Get historic data from cursor
 		if (data != null && data.moveToFirst()) {
 			do {
-				// Fill new datapoint
+				// Fill new data point
 				DataPoint dataPoint = new DataPoint();
 				dataPoint.mElapsedTimeExcludingCheatPenalty = data
 						.getLong(data
 								.getColumnIndexOrThrow(DATA_COL_ELAPSED_TIME_EXCLUDING_CHEAT_PENALTY));
 				dataPoint.mCheatPenalty = data.getLong(data
 						.getColumnIndexOrThrow(DATA_COL_CHEAT_PENALTY));
-				dataPoint.mSerie = Serie.valueOf(data.getString(data
+				dataPoint.mSeries = Series.valueOf(data.getString(data
 						.getColumnIndexOrThrow(DATA_COL_SERIES)));
 
 				// Update summary for the series
-				switch (dataPoint.mSerie) {
+				switch (dataPoint.mSeries) {
 				case UNFINISHED:
 					mUnfinishedSeriesSummary.addValue(dataPoint);
 					break;
@@ -166,16 +163,16 @@ public class HistoricStatistics {
 				dataPoints.add(dataPoint);
 			} while (data.moveToNext());
 
-			mLimit = XYSERIES_NOT_LIMITED;
+			mLimit = XY_SERIES_NOT_LIMITED;
 		}
 	}
 
 	/**
-	 * Checks whether the given serie has been filled with at least one data
+	 * Checks whether the given series has been filled with at least one data
 	 * point.
 	 * 
-	 * @param serie
-	 *            The serie to be converted. Use null in case it needs to be
+	 * @param series
+	 *            The series to be converted. Use null in case it needs to be
 	 *            checked if at least one data point exists for any of the
 	 *            series.
 	 * @param includeElapsedTime
@@ -184,10 +181,10 @@ public class HistoricStatistics {
 	 * @param includeCheatTime
 	 *            True in case the cheat time should be included in the values
 	 *            of the return series.
-	 * @return A XYSerie object which can be processed by AChartEngine
+	 * @return True in case the series contain at least one data point.
 	 */
 	@SuppressWarnings("SameParameterValue")
-	public boolean isXYSeriesUsed(Serie serie, boolean includeElapsedTime,
+	public boolean isXYSeriesUsed(Series series, boolean includeElapsedTime,
 			boolean includeCheatTime) {
 		// In case a limit is specified, only the last <limit> number of
 		// data points are converted to the series.
@@ -196,7 +193,7 @@ public class HistoricStatistics {
 
 		for (DataPoint dataPoint : dataPoints) {
 			if (index >= start) {
-				if (dataPoint.mSerie == serie || serie == null) {
+				if (dataPoint.mSeries == series || series == null) {
 					if ((includeElapsedTime && dataPoint.mElapsedTimeExcludingCheatPenalty > 0)
 							|| (includeCheatTime && dataPoint.mCheatPenalty > 0)) {
 						return true;
@@ -210,11 +207,11 @@ public class HistoricStatistics {
 	}
 
 	/**
-	 * Converts the given serie to a XYSerie object which can be processed by
+	 * Converts the given series to a XYSeries object which can be processed by
 	 * AChartEngine.
 	 * 
-	 * @param serie
-	 *            The serie to be converted.
+	 * @param series
+	 *            The series to be converted.
 	 * @param title
 	 *            The title to be used in the XYSeries.
 	 * @param scale
@@ -226,15 +223,15 @@ public class HistoricStatistics {
 	 * @param includeCheatTime
 	 *            True in case the cheat time should be included in the values
 	 *            of the return series.
-	 * @return A XYSerie object which can be processed by AChartEngine
+	 * @return A XYSeries object which can be processed by AChartEngine
 	 */
 	@SuppressWarnings("SameParameterValue")
-	public XYSeries getXYSeries(Serie serie, String title, Scale scale,
+	public XYSeries getXYSeries(Series series, String title, Scale scale,
 			boolean includeElapsedTime, boolean includeCheatTime) {
-		if (serie == Serie.SOLUTION_REVEALED) {
+		if (series == Series.SOLUTION_REVEALED) {
 			throw new RuntimeException(
 					"Method getXYSeries should not be used for the solution "
-							+ "revealed series. Use getXYSeriesSolutionsRevelead "
+							+ "revealed series. Use getXYSeriesSolutionsRevealed "
 							+ "instead.");
 		}
 		XYSeries xySeries = new XYSeries(title);
@@ -249,7 +246,7 @@ public class HistoricStatistics {
 		for (DataPoint dataPoint : dataPoints) {
 			if (index >= start) {
 				double value = 0;
-				if (dataPoint.mSerie == serie) {
+				if (dataPoint.mSeries == series) {
 					// Get unscaled value
 					value = (includeElapsedTime ? dataPoint.mElapsedTimeExcludingCheatPenalty
 							: 0)
@@ -267,7 +264,7 @@ public class HistoricStatistics {
 	}
 
 	/**
-	 * Converts the solution revealed series to a XYSerie object which can be
+	 * Converts the solution revealed series to a XYSeries object which can be
 	 * processed by AChartEngine.
 	 * 
 	 * @param title
@@ -275,7 +272,7 @@ public class HistoricStatistics {
 	 * @param maxY
 	 *            The maximum Y value to be used for each game in which the
 	 *            solution was revealed.
-	 * @return A XYSerie object which can be processed by AChartEngine
+	 * @return A XYSeries object which can be processed by AChartEngine
 	 */
 	@SuppressWarnings("SameParameterValue")
 	public XYSeries getXYSeriesSolutionRevealed(String title, double maxY,
@@ -296,7 +293,7 @@ public class HistoricStatistics {
 		for (DataPoint dataPoint : dataPoints) {
 			if (index >= start) {
 				double value = 0;
-				if (dataPoint.mSerie == Serie.SOLUTION_REVEALED) {
+				if (dataPoint.mSeries == Series.SOLUTION_REVEALED) {
 					if (includeElapsedTime) {
 						value = (includeCheatTime ? maxY : Math.min(
 								dataPoint.mElapsedTimeExcludingCheatPenalty,
@@ -316,19 +313,19 @@ public class HistoricStatistics {
 	}
 
 	/**
-	 * Gets a XYSerie object for the historic average of the given serie.
+	 * Gets a XYSeries object for the historic average of the given series.
 	 * 
-	 * @param serie
-	 *            The serie to be converted.
+	 * @param series
+	 *            The series to be converted.
 	 * @param title
 	 *            The title to be used in the XYSeries.
 	 * @param scale
 	 *            The scaling factor which has to be applied when converting
 	 *            values.
-	 * @return A XYSerie object which can be processed by AChartEngine
+	 * @return A XYSeries object which can be processed by AChartEngine
 	 */
 	@SuppressWarnings("SameParameterValue")
-	public XYSeries getXYSeriesHistoricAverage(Serie serie, String title,
+	public XYSeries getXYSeriesHistoricAverage(Series series, String title,
 			Scale scale) {
 		XYSeries xySeries = new XYSeries(title);
 
@@ -337,12 +334,12 @@ public class HistoricStatistics {
 		double scaleFactor = getScaleFactor(scale);
 
 		// In case a limit is specified, only the last <limit> number of
-		// datapoints are converted to the series.
+		// data points are converted to the series.
 		int start = getIndexFirstEntry();
 		int index = 1;
 
 		for (DataPoint dataPoint : dataPoints) {
-			if (serie == null || dataPoint.mSerie == serie) {
+			if (series == null || dataPoint.mSeries == series) {
 				totalValue += dataPoint.mElapsedTimeExcludingCheatPenalty;
 				countValue++;
 			}

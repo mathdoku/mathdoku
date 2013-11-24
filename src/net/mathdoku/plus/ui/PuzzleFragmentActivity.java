@@ -491,7 +491,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 				}
 				if (DevelopmentHelper.onDevelopmentHelperOption(this, menuId)) {
 					// A development helper menu option was processed
-					// succesfully.
+					// successfully.
 					if (mPuzzleFragment != null) {
 						mPuzzleFragment.startTimer();
 					}
@@ -1200,9 +1200,9 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		// It is not possible to disable the navigation drawer entirely in case
 		// the archive and statistics are not yet unlocked. To prevent showing
 		// an empty drawer, the puzzle activity itself will always be displayed
-		// as a navigation item. In case the user opens the drawer accidently by
-		// tapping the left side of the screen before the archive or statistics
-		// are unlocked it will be less confusing.
+		// as a navigation item. In case the user opens the drawer accidentally
+		// by tapping the left side of the screen before the archive or
+		// statistics are unlocked it will be less confusing.
 		navigationDrawerItems.add(getResources().getString(
 				R.string.action_bar_subtitle_puzzle_fragment));
 

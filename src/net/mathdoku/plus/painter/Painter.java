@@ -241,7 +241,7 @@ public class Painter {
 	/**
 	 * Get the cage painter.
 	 * 
-	 * @return The cagepainter.
+	 * @return The cage painter.
 	 */
 	public CagePainter getCagePainter() {
 		return mCagePainter;

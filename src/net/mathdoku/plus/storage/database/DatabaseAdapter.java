@@ -43,16 +43,16 @@ abstract class DatabaseAdapter {
 	 * 
 	 * @param column
 	 *            Name of column.
-	 * @param datatype
-	 *            Datatype of new column. Must be a valid SQLite datatype: blob,
-	 *            bool, char, datetime, double, float, integer, numeric, real,
-	 *            text or varchar.
+	 * @param dataType
+	 *            Data type of new column. Must be a valid SQLite data type:
+	 *            blob, bool, char, datetime, double, float, integer, numeric,
+	 *            real, text or varchar.
 	 * @param constraint
 	 *            Optional constraint or modifiers for column. For example:
 	 *            "not null" or "primary key autoincrement".
 	 * @return The definition for one column in a SQLite table.
 	 */
-	static String createColumn(String column, String datatype, String constraint)
+	static String createColumn(String column, String dataType, String constraint)
 			throws InvalidParameterException {
 
 		if (column == null || column.trim().equals("")) {
@@ -61,16 +61,16 @@ abstract class DatabaseAdapter {
 							+ column + "'.");
 			throw new InvalidParameterException();
 		}
-		if (datatype == null || datatype.trim().equals("")) {
+		if (dataType == null || dataType.trim().equals("")) {
 			Log.e(TAG,
-					"Method createColumn has invalid parameter 'datatype' with value '"
-							+ datatype + "'.");
+					"Method createColumn has invalid parameter 'data type' with value '"
+							+ dataType + "'.");
 			throw new InvalidParameterException();
 		}
 
 		return stringBetweenBackTicks(column)
 				+ " "
-				+ datatype
+				+ dataType
 				+ ((constraint != null && !constraint.equals("")) ? " "
 						+ constraint.trim() : "");
 	}

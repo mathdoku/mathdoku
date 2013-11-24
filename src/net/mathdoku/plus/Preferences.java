@@ -67,7 +67,7 @@ public class Preferences {
 	private final static String LEADERBOARD_TAB_LAST_SHOWED = "leaderboard_tab_last_showed";
 	private final static int LEADERBOARD_TAB_LAST_SHOWED_DEFAULT = 0;
 
-	private final static String PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE = "puzzle_hide_goole_plus_sign_in_till_next_top_score";
+	private final static String PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE = "puzzle_hide_google_plus_sign_in_till_next_top_score";
 	private final static boolean PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE_DEFAULT = false;
 
 	// Puzzle input mode settings
@@ -242,7 +242,7 @@ public class Preferences {
 	public void upgrade(int previousInstalledVersion, int currentVersion) {
 
 		// Update preferences
-		Editor prefeditor = mSharedPreferences.edit();
+		Editor editor = mSharedPreferences.edit();
 
 		// Each new setting which is displayed via the settings menu has to be
 		// set to the default value when installing/upgrading the app. If this
@@ -250,9 +250,8 @@ public class Preferences {
 		// value.
 
 		if (previousInstalledVersion < 583 && currentVersion >= 583) {
-			prefeditor
-					.putBoolean(PUZZLE_SETTING_CLEAR_MAYBES,
-							PUZZLE_SETTING_CLEAR_MAYBES_DEFAULT)
+			editor.putBoolean(PUZZLE_SETTING_CLEAR_MAYBES,
+					PUZZLE_SETTING_CLEAR_MAYBES_DEFAULT)
 					.putBoolean(PUZZLE_SETTING_PLAY_SOUND_EFFECTS,
 							PUZZLE_SETTING_PLAY_SOUND_EFFECTS_DEFAULT)
 					.putBoolean(PUZZLE_SETTING_BAD_CAGE_MATHS_VISIBLE,
@@ -327,23 +326,22 @@ public class Preferences {
 							PUZZLE_INPUT_MODE_COPY_ENABLED_DEFAULT);
 		}
 		if (previousInstalledVersion < 586 && currentVersion >= 586) {
-			prefeditor
-					.putBoolean(
-							PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE,
-							PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE_DEFAULT);
+			editor.putBoolean(
+					PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE,
+					PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE_DEFAULT);
 		}
 		if (previousInstalledVersion < 587 && currentVersion >= 587) {
-			prefeditor.putInt(LEADERBOARD_TAB_LAST_SHOWED,
+			editor.putInt(LEADERBOARD_TAB_LAST_SHOWED,
 					LEADERBOARD_TAB_LAST_SHOWED_DEFAULT);
-			prefeditor.putBoolean(LEADERBOARD_ALL_INITIALIZED,
+			editor.putBoolean(LEADERBOARD_ALL_INITIALIZED,
 					LEADERBOARD_ALL_INITIALIZED_DEFAULT);
-			prefeditor.putString(LEADERBOARD_FILTER_LAST_VALUE,
+			editor.putString(LEADERBOARD_FILTER_LAST_VALUE,
 					LEADERBOARD_FILTER_LAST_VALUE_DEFAULT);
 		}
 
 		// Save
-		prefeditor.putInt(APP_CURRENT_VERSION, currentVersion);
-		prefeditor.commit();
+		editor.putInt(APP_CURRENT_VERSION, currentVersion);
+		editor.commit();
 	}
 
 	/**
@@ -423,10 +421,10 @@ public class Preferences {
 	 *            The name of the tip.
 	 */
 	public void setTipDoNotDisplayAgain(String tip) {
-		Editor prefeditor = mSharedPreferences.edit();
-		prefeditor.putBoolean(
-				TipDialog.getPreferenceStringDisplayTipAgain(tip), false);
-		prefeditor.apply();
+		Editor editor = mSharedPreferences.edit();
+		editor.putBoolean(TipDialog.getPreferenceStringDisplayTipAgain(tip),
+				false);
+		editor.apply();
 	}
 
 	/**
@@ -464,16 +462,15 @@ public class Preferences {
 	 *            The time at which the tip was last displayed.
 	 */
 	public void setTipLastDisplayTime(String tip, long time) {
-		Editor prefeditor = mSharedPreferences.edit();
-		prefeditor.putLong(TipDialog.getPreferenceStringLastDisplayTime(tip),
-				time);
-		prefeditor.apply();
+		Editor editor = mSharedPreferences.edit();
+		editor.putLong(TipDialog.getPreferenceStringLastDisplayTime(tip), time);
+		editor.apply();
 	}
 
 	/**
 	 * Gets all shared preferences. Should not be used if possible.
 	 * 
-	 * @return A mapset of all shared preferences.
+	 * @return A map set of all shared preferences.
 	 */
 	public Map<String, ?> getAllSharedPreferences() {
 		return mSharedPreferences.getAll();
@@ -581,9 +578,9 @@ public class Preferences {
 	 * Enables the archive.
 	 */
 	public void setArchiveVisible() {
-		Editor prefeditor = mSharedPreferences.edit();
-		prefeditor.putBoolean(ARCHIVE_AVAILABLE, true);
-		prefeditor.apply();
+		Editor editor = mSharedPreferences.edit();
+		editor.putBoolean(ARCHIVE_AVAILABLE, true);
+		editor.apply();
 	}
 
 	/**
@@ -600,9 +597,9 @@ public class Preferences {
 	 * Enables the statistics.
 	 */
 	public void setStatisticsAvailable() {
-		Editor prefeditor = mSharedPreferences.edit();
-		prefeditor.putBoolean(STATISTICS_AVAILABLE, true);
-		prefeditor.apply();
+		Editor editor = mSharedPreferences.edit();
+		editor.putBoolean(STATISTICS_AVAILABLE, true);
+		editor.apply();
 	}
 
 	/**
@@ -624,10 +621,10 @@ public class Preferences {
 	 *            the archive.
 	 */
 	public void setArchiveStatusFilterLastValueUsed(StatusFilter statusFilter) {
-		Editor prefeditor = mSharedPreferences.edit();
-		prefeditor.putString(ARCHIVE_STATUS_FILTER_LAST_VALUE,
+		Editor editor = mSharedPreferences.edit();
+		editor.putString(ARCHIVE_STATUS_FILTER_LAST_VALUE,
 				statusFilter.toString());
-		prefeditor.apply();
+		editor.apply();
 	}
 
 	/**
@@ -649,10 +646,9 @@ public class Preferences {
 	 *            archive.
 	 */
 	public void setArchiveSizeFilterLastValueUsed(SizeFilter sizeFilter) {
-		Editor prefeditor = mSharedPreferences.edit();
-		prefeditor.putString(ARCHIVE_SIZE_FILTER_LAST_VALUE,
-				sizeFilter.toString());
-		prefeditor.apply();
+		Editor editor = mSharedPreferences.edit();
+		editor.putString(ARCHIVE_SIZE_FILTER_LAST_VALUE, sizeFilter.toString());
+		editor.apply();
 	}
 
 	/**
@@ -672,9 +668,9 @@ public class Preferences {
 	 * @return The last value used for the size filter in the archive.
 	 */
 	public void setArchiveGridIdLastShowed(int gridId) {
-		Editor prefeditor = mSharedPreferences.edit();
-		prefeditor.putInt(ARCHIVE_GRID_LAST_SHOWED, gridId);
-		prefeditor.apply();
+		Editor editor = mSharedPreferences.edit();
+		editor.putInt(ARCHIVE_GRID_LAST_SHOWED, gridId);
+		editor.apply();
 	}
 
 	/**
@@ -783,7 +779,7 @@ public class Preferences {
 
 	/**
 	 * Increase the number of times a swipe motion for the given digit has been
-	 * succesfully completed. Also the total number of completed swipe motions
+	 * successfully completed. Also the total number of completed swipe motions
 	 * is increased.
 	 * 
 	 * @param digit
@@ -847,34 +843,34 @@ public class Preferences {
 	 */
 	public void commitCounters() {
 		if (counters != null) {
-			Editor prefeditor = mSharedPreferences.edit();
-			prefeditor.putInt(PUZZLE_INPUT_MODE_CHANGED_COUNTER,
+			Editor editor = mSharedPreferences.edit();
+			editor.putInt(PUZZLE_INPUT_MODE_CHANGED_COUNTER,
 					counters[PUZZLE_INPUT_MODE_CHANGED_COUNTER_ID]);
-			prefeditor.putInt(PUZZLE_INPUT_MODE_COPY_COUNTER,
+			editor.putInt(PUZZLE_INPUT_MODE_COPY_COUNTER,
 					counters[PUZZLE_INPUT_MODE_COPY_COUNTER_ID]);
-			prefeditor.putInt(SWIPE_DIGIT_1_COUNTER,
+			editor.putInt(SWIPE_DIGIT_1_COUNTER,
 					counters[SWIPE_DIGIT_1_COUNTER_ID]);
-			prefeditor.putInt(SWIPE_DIGIT_2_COUNTER,
+			editor.putInt(SWIPE_DIGIT_2_COUNTER,
 					counters[SWIPE_DIGIT_2_COUNTER_ID]);
-			prefeditor.putInt(SWIPE_DIGIT_3_COUNTER,
+			editor.putInt(SWIPE_DIGIT_3_COUNTER,
 					counters[SWIPE_DIGIT_3_COUNTER_ID]);
-			prefeditor.putInt(SWIPE_DIGIT_4_COUNTER,
+			editor.putInt(SWIPE_DIGIT_4_COUNTER,
 					counters[SWIPE_DIGIT_4_COUNTER_ID]);
-			prefeditor.putInt(SWIPE_DIGIT_5_COUNTER,
+			editor.putInt(SWIPE_DIGIT_5_COUNTER,
 					counters[SWIPE_DIGIT_5_COUNTER_ID]);
-			prefeditor.putInt(SWIPE_DIGIT_6_COUNTER,
+			editor.putInt(SWIPE_DIGIT_6_COUNTER,
 					counters[SWIPE_DIGIT_6_COUNTER_ID]);
-			prefeditor.putInt(SWIPE_DIGIT_7_COUNTER,
+			editor.putInt(SWIPE_DIGIT_7_COUNTER,
 					counters[SWIPE_DIGIT_7_COUNTER_ID]);
-			prefeditor.putInt(SWIPE_DIGIT_8_COUNTER,
+			editor.putInt(SWIPE_DIGIT_8_COUNTER,
 					counters[SWIPE_DIGIT_8_COUNTER_ID]);
-			prefeditor.putInt(SWIPE_DIGIT_9_COUNTER,
+			editor.putInt(SWIPE_DIGIT_9_COUNTER,
 					counters[SWIPE_DIGIT_9_COUNTER_ID]);
-			prefeditor.putInt(SWIPE_VALID_MOTION_COUNTER,
+			editor.putInt(SWIPE_VALID_MOTION_COUNTER,
 					counters[SWIPE_VALID_MOTION_COUNTER_ID]);
-			prefeditor.putInt(SWIPE_INVALID_MOTION_COUNTER,
+			editor.putInt(SWIPE_INVALID_MOTION_COUNTER,
 					counters[SWIPE_INVALID_MOTION_COUNTER_ID]);
-			prefeditor.commit();
+			editor.commit();
 		}
 	}
 
@@ -916,10 +912,10 @@ public class Preferences {
 	 *            The complexity of the puzzle.
 	 */
 	public void setPuzzleParameterComplexity(PuzzleComplexity puzzleComplexity) {
-		Editor prefeditor = mSharedPreferences.edit();
-		prefeditor.putString(PUZZLE_PARAMETER_COMPLEXITY,
+		Editor editor = mSharedPreferences.edit();
+		editor.putString(PUZZLE_PARAMETER_COMPLEXITY,
 				puzzleComplexity.toString());
-		prefeditor.apply();
+		editor.apply();
 	}
 
 	/**
@@ -940,9 +936,9 @@ public class Preferences {
 	 * was last generated.
 	 */
 	public void setPuzzleParameterOperatorsVisible(boolean visible) {
-		Editor prefeditor = mSharedPreferences.edit();
-		prefeditor.putBoolean(PUZZLE_PARAMETER_OPERATORS_VISIBLE, visible);
-		prefeditor.apply();
+		Editor editor = mSharedPreferences.edit();
+		editor.putBoolean(PUZZLE_PARAMETER_OPERATORS_VISIBLE, visible);
+		editor.apply();
 	}
 
 	/**
@@ -959,9 +955,9 @@ public class Preferences {
 	 * Set the size of the puzzle which was last generated. closed.
 	 */
 	public void setPuzzleParameterSize(int gridSize) {
-		Editor prefeditor = mSharedPreferences.edit();
-		prefeditor.putInt(PUZZLE_PARAMETER_SIZE, gridSize);
-		prefeditor.apply();
+		Editor editor = mSharedPreferences.edit();
+		editor.putInt(PUZZLE_PARAMETER_SIZE, gridSize);
+		editor.apply();
 	}
 
 	/**
@@ -1003,9 +999,9 @@ public class Preferences {
 	 * Set the tab which was displayed last time the statistics were viewed.
 	 */
 	public void setStatisticsTabLastDisplayed(int tab) {
-		Editor prefeditor = mSharedPreferences.edit();
-		prefeditor.putInt(STATISTICS_TAB_LAST_SHOWED, tab);
-		prefeditor.apply();
+		Editor editor = mSharedPreferences.edit();
+		editor.putInt(STATISTICS_TAB_LAST_SHOWED, tab);
+		editor.apply();
 	}
 
 	/**
@@ -1064,18 +1060,18 @@ public class Preferences {
 	 * Sets the input method.
 	 */
 	public void setDigitInputMethod(boolean enableSwipe, boolean enableButtons) {
-		Editor prefeditor = mSharedPreferences.edit();
+		Editor editor = mSharedPreferences.edit();
 		if (enableSwipe == true && enableButtons == false) {
-			prefeditor.putString(PUZZLE_SETTING_INPUT_METHOD,
+			editor.putString(PUZZLE_SETTING_INPUT_METHOD,
 					PuzzleSettingInputMethod.SWIPE_ONLY.toString());
 		} else if (enableSwipe == false && enableButtons == true) {
-			prefeditor.putString(PUZZLE_SETTING_INPUT_METHOD,
+			editor.putString(PUZZLE_SETTING_INPUT_METHOD,
 					PuzzleSettingInputMethod.BUTTONS_ONLY.toString());
 		} else {
-			prefeditor.putString(PUZZLE_SETTING_INPUT_METHOD,
+			editor.putString(PUZZLE_SETTING_INPUT_METHOD,
 					PuzzleSettingInputMethod.SWIPE_AND_BUTTONS.toString());
 		}
-		prefeditor.apply();
+		editor.apply();
 	}
 
 	/**
@@ -1089,11 +1085,10 @@ public class Preferences {
 	 */
 	public void setGridInputMode(boolean copyModeEnabled,
 			GridInputMode gridInputMode) {
-		Editor prefeditor = mSharedPreferences.edit();
-		prefeditor.putString(PUZZLE_INPUT_MODE_LAST_USED,
-				gridInputMode.toString());
-		prefeditor.putBoolean(PUZZLE_INPUT_MODE_COPY_ENABLED, copyModeEnabled);
-		prefeditor.apply();
+		Editor editor = mSharedPreferences.edit();
+		editor.putString(PUZZLE_INPUT_MODE_LAST_USED, gridInputMode.toString());
+		editor.putBoolean(PUZZLE_INPUT_MODE_COPY_ENABLED, copyModeEnabled);
+		editor.apply();
 	}
 
 	/**
@@ -1160,9 +1155,9 @@ public class Preferences {
 	 * Set the tab which was displayed last time the leaderboards were viewed.
 	 */
 	public void setLeaderboardsTabLastDisplayed(int tab) {
-		Editor prefeditor = mSharedPreferences.edit();
-		prefeditor.putInt(LEADERBOARD_TAB_LAST_SHOWED, tab);
-		prefeditor.apply();
+		Editor editor = mSharedPreferences.edit();
+		editor.putInt(LEADERBOARD_TAB_LAST_SHOWED, tab);
+		editor.apply();
 	}
 
 	/**
@@ -1180,9 +1175,9 @@ public class Preferences {
 	 * Set leaderboard initialization to initialized.
 	 */
 	public void setLeaderboardsInitialized() {
-		Editor prefeditor = mSharedPreferences.edit();
-		prefeditor.putBoolean(LEADERBOARD_ALL_INITIALIZED, true);
-		prefeditor.apply();
+		Editor editor = mSharedPreferences.edit();
+		editor.putBoolean(LEADERBOARD_ALL_INITIALIZED, true);
+		editor.apply();
 	}
 
 	/**
@@ -1207,9 +1202,9 @@ public class Preferences {
 	 */
 	public void setLeaderboardFilterLastValueUsed(
 			LeaderboardFilter leaderboardFilter) {
-		Editor prefeditor = mSharedPreferences.edit();
-		prefeditor.putString(LEADERBOARD_FILTER_LAST_VALUE,
+		Editor editor = mSharedPreferences.edit();
+		editor.putString(LEADERBOARD_FILTER_LAST_VALUE,
 				leaderboardFilter.toString());
-		prefeditor.apply();
+		editor.apply();
 	}
 }

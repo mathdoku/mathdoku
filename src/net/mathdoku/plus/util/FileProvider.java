@@ -148,7 +148,7 @@ public class FileProvider extends ContentProvider {
 	 * @param filename
 	 *            The filename for which the uri has to be determined.
 	 * @return A uri in case the filename can be provided by this provider. Null
-	 *         otherwiser.
+	 *         otherwise.
 	 */
 	public static Uri getUri(String filename) {
 		Uri uri = Uri.parse("content://" + PROVIDER_NAME + "/" + filename);

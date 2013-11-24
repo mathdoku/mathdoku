@@ -6,7 +6,7 @@ import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.statistics.CumulativeStatistics;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.statistics.HistoricStatistics;
-import net.mathdoku.plus.statistics.HistoricStatistics.Serie;
+import net.mathdoku.plus.statistics.HistoricStatistics.Series;
 import net.mathdoku.plus.storage.database.Projection.Aggregation;
 
 import android.content.ContentValues;
@@ -57,7 +57,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	// included in the statistics. Only in case no finished solving attempt
 	// exists for a grid, the latest unfinished solving attempt should be used.
 	// For ease and speed of retrieving it is stored whether this solving
-	// attempt should be included or exlcuded from the statistics.
+	// attempt should be included or excluded from the statistics.
 	private static final String KEY_INCLUDE_IN_STATISTICS = "include_in_statistics";
 
 	private static final String[] allColumns = { KEY_ROWID, KEY_GRID_ID,
@@ -316,7 +316,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				.getColumnIndexOrThrow(KEY_CHEAT_PENALTY_TIME));
 		gridStatistics.mCellsFilled = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_CELLS_FILLED));
-		gridStatistics.mCellsEmtpty = cursor.getInt(cursor
+		gridStatistics.mCellsEmpty = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_CELLS_EMPTY));
 		gridStatistics.mCellsRevealed = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_CELLS_REVEALED));
@@ -368,7 +368,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		newValues.put(KEY_ELAPSED_TIME, gridStatistics.mElapsedTime);
 		newValues.put(KEY_CHEAT_PENALTY_TIME, gridStatistics.mCheatPenaltyTime);
 		newValues.put(KEY_CELLS_FILLED, gridStatistics.mCellsFilled);
-		newValues.put(KEY_CELLS_EMPTY, gridStatistics.mCellsEmtpty);
+		newValues.put(KEY_CELLS_EMPTY, gridStatistics.mCellsEmpty);
 		newValues.put(KEY_CELLS_REVEALED, gridStatistics.mCellsRevealed);
 		newValues.put(KEY_USER_VALUES_REPLACED,
 				gridStatistics.mUserValueReplaced);
@@ -616,7 +616,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
 						.getAggregatedKey(Aggregation.SUM,
 								KEY_ACTION_CHECK_PROGRESS)));
-		cumulativeStatistics.mSumcheckProgressInvalidCellsFound = cursor
+		cumulativeStatistics.mSumCheckProgressInvalidCellsFound = cursor
 				.getInt(cursor.getColumnIndexOrThrow(mCumulativeStatisticsProjection
 						.getAggregatedKey(Aggregation.SUM,
 								KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND)));
@@ -652,7 +652,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 * @param maxGridSize
 	 *            The maximum size of the grid for which the cumulative
 	 *            statistics have to be determined. Use same value as minimum
-	 *            grid size to retireve statistics for 1 specific grid size.
+	 *            grid size to retrieve statistics for 1 specific grid size.
 	 * @return The cumulative statistics for the given grid size.
 	 */
 	public HistoricStatistics getHistoricData(int minGridSize, int maxGridSize) {
@@ -680,15 +680,15 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 							+ " <> "
 							+ stringBetweenQuotes("true")
 							+ " THEN "
-							+ stringBetweenQuotes(Serie.UNFINISHED.toString())
+							+ stringBetweenQuotes(Series.UNFINISHED.toString())
 							+ " WHEN "
 							+ KEY_ACTION_REVEAL_SOLUTION
 							+ " = "
 							+ stringBetweenQuotes("true")
 							+ " THEN "
-							+ stringBetweenQuotes(Serie.SOLUTION_REVEALED
+							+ stringBetweenQuotes(Series.SOLUTION_REVEALED
 									.toString()) + " ELSE "
-							+ stringBetweenQuotes(Serie.SOLVED.toString())
+							+ stringBetweenQuotes(Series.SOLVED.toString())
 							+ " END");
 
 			// Add data columns to the projection.

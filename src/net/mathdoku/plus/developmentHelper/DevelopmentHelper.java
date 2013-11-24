@@ -31,12 +31,12 @@ import android.widget.TextView;
  * the block evaluates to false. Example of intended usage:
  * <p/>
  * 
- * <pre class="prettyprint">
- * if (DevelopmentHelper.mode == AppMode.UNIT_TESTING) {
- * 	// code which should only be included in case the app is used for unit
- * 	// testing
- * }
- * </pre>
+ * <code>
+ *     if (DevelopmentHelper.mode == AppMode.UNIT_TESTING) {
+ * 	       // code which should only be included in case the app is used for unit
+ * 	       // testing
+ *     }
+ * </code>
  * <p/>
  * IMPORTANT: Use block above also in all helper function in this class. In this
  * way all development code will not be compiled into the APK as long as the
@@ -78,7 +78,7 @@ public class DevelopmentHelper {
 				unlockArchiveAndStatistics();
 				return true;
 			case R.id.development_mode_delete_database_and_preferences:
-				deleteDatabaseAndPrefences(puzzleFragmentActivity);
+				deleteDatabaseAndPreferences(puzzleFragmentActivity);
 				return true;
 			default:
 				return false;
@@ -143,10 +143,11 @@ public class DevelopmentHelper {
 
 	/**
 	 * Removes all preferences. After restart of the app the preferences will be
-	 * initalised with default values. Saved games will not be deleted!
+	 * initialized with default values. Saved games will not be deleted!
 	 * 
 	 * @param puzzleFragmentActivity
-	 *            The activity in which context the preferences are resetted.
+	 *            The activity in which context the preferences are have to be
+	 *            reset.
 	 */
 	private static void resetPreferences(
 			final PuzzleFragmentActivity puzzleFragmentActivity) {
@@ -177,9 +178,10 @@ public class DevelopmentHelper {
 	 * involves opening the application manager.
 	 * 
 	 * @param puzzleFragmentActivity
-	 *            The activity in which context the preferences are reseted.
+	 *            The activity in which context the database and preferences are
+	 *            deleted.
 	 */
-	private static void deleteDatabaseAndPrefences(
+	private static void deleteDatabaseAndPreferences(
 			final PuzzleFragmentActivity puzzleFragmentActivity) {
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -217,10 +219,9 @@ public class DevelopmentHelper {
 	 */
 	private static void executeDeleteAllPreferences() {
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
-			Editor prefeditor = Preferences.getInstance().mSharedPreferences
-					.edit();
-			prefeditor.clear();
-			prefeditor.commit();
+			Editor editor = Preferences.getInstance().mSharedPreferences.edit();
+			editor.clear();
+			editor.commit();
 		}
 	}
 
@@ -252,13 +253,13 @@ public class DevelopmentHelper {
 	 * Checks the consistency of the database when running in development mode.
 	 * 
 	 * @param puzzleFragmentActivity
-	 *            The activitity in which context the database is checked.
+	 *            The activity in which context the database is checked.
 	 * @return False in case the database is not consistent. True otherwise.
 	 */
 	public static boolean checkDatabaseConsistency(
 			final PuzzleFragmentActivity puzzleFragmentActivity) {
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
-			// While developping it regularly occurs that table definitions have
+			// While developing it regularly occurs that table definitions have
 			// been altered without creating separate database versions. As the
 			// database are accessed when the last game is restarted this
 			// results in a force close without having the ability to delete the
@@ -277,13 +278,13 @@ public class DevelopmentHelper {
 				builder.setTitle("Database is inconsistent?")
 						.setMessage(
 								"The database is not consistent. This is probably due "
-										+ "to a table alteration (see logmessages) "
+										+ "to a table alteration (see log messages) "
 										+ "without changing the revision number in "
 										+ "the manifest. Either update the revision "
 										+ "number in the manifest or delete the "
 										+ "database.\n"
 										+ "If you continue to use this this might "
-										+ "result in (unhandeld) exceptions.")
+										+ "result in (unhandled) exceptions.")
 						.setNegativeButton("Cancel",
 								new DialogInterface.OnClickListener() {
 									@Override
@@ -317,11 +318,10 @@ public class DevelopmentHelper {
 	 */
 	private static void unlockArchiveAndStatistics() {
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
-			Editor prefeditor = Preferences.getInstance().mSharedPreferences
-					.edit();
-			prefeditor.putBoolean(Preferences.ARCHIVE_AVAILABLE, true);
-			prefeditor.putBoolean(Preferences.STATISTICS_AVAILABLE, true);
-			prefeditor.commit();
+			Editor editor = Preferences.getInstance().mSharedPreferences.edit();
+			editor.putBoolean(Preferences.ARCHIVE_AVAILABLE, true);
+			editor.putBoolean(Preferences.STATISTICS_AVAILABLE, true);
+			editor.commit();
 		}
 	}
 

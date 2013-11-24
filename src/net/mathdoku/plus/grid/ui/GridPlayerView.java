@@ -135,7 +135,7 @@ public class GridPlayerView extends GridBasePlayerView {
 			if (super.onTouch(arg0, event) == false) {
 				if (this.mTouchedListener != null && mSwipeMotion != null) {
 					mSwipeMotion.release(event);
-					int swipeDigit = mSwipeMotion.getFocussedDigit();
+					int swipeDigit = mSwipeMotion.getFocusedDigit();
 					if (swipeDigit >= 1 && swipeDigit <= mGridSize) {
 						// A swipe motion for a valid digit was completed.
 
@@ -195,7 +195,7 @@ public class GridPlayerView extends GridBasePlayerView {
 				mSwipeMotion.update(event);
 
 				// Check if the grid view has to be invalidated
-				int swipeDigit = mSwipeMotion.getFocussedDigit();
+				int swipeDigit = mSwipeMotion.getFocusedDigit();
 				if (swipeDigit >= 1 && swipeDigit <= 9
 						&& mSwipeMotion.hasChangedDigit()) {
 					// As the swipe digit has been changed, the grid view needs
@@ -281,7 +281,7 @@ public class GridPlayerView extends GridBasePlayerView {
 								gridInputMode, mSwipeMotion
 										.getCurrentSwipePositionX(),
 								mSwipeMotion.getCurrentSwipePositionY(),
-								mSwipeMotion.getFocussedDigit(), mPreferences
+								mSwipeMotion.getFocusedDigit(), mPreferences
 										.isOuterSwipeCircleVisible(mGridSize));
 						mSwipeMotion.setVisible(true);
 					}

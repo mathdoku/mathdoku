@@ -33,7 +33,7 @@ public class UserValuePainter extends DigitPainter {
 
 	@Override
 	protected void setCellSize(float size) {
-		// 1/3 of cell is used for the cage results. Remainig space can be sued
+		// 1/3 of cell is used for the cage results. Remaining space can be sued
 		// to display the user value.
 		int bottomMargin = (int) (size * 0.1);
 		int userValueTextSize = (int) (size * 2 / 3);

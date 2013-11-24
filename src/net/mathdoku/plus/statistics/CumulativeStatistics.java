@@ -1,7 +1,7 @@
 package net.mathdoku.plus.statistics;
 
 public class CumulativeStatistics {
-	// Minimum and maximum size of grids cumulated
+	// Minimum and maximum size of grids grouped in these statistics
 	public int mMinGridSize;
 	public int mMaxGridSize;
 
@@ -53,7 +53,7 @@ public class CumulativeStatistics {
 	// The number of times "check progress" was used and the total number of
 	// invalids values which have been found when using this option (a cheat)
 	public int mSumActionCheckProgress;
-	public int mSumcheckProgressInvalidCellsFound;
+	public int mSumCheckProgressInvalidCellsFound;
 
 	// ***********************
 	// Total grids per status

@@ -97,7 +97,7 @@ public class Grid {
 	// Solved listener
 	private OnSolvedListener mSolvedListener;
 
-	// UsagaeLog counters
+	// Counters
 	private int mClearRedundantPossiblesInSameRowOrColumnCount;
 
 	public Grid() {
@@ -921,8 +921,7 @@ public class Grid {
 			return false;
 		}
 
-		// Load the grid (i.e. get the gridsize) before processing the solving
-		// attempt data.
+		// Load the grid before processing the solving attempt data.
 		GridRow gridRow = new GridDatabaseAdapter()
 				.get(solvingAttemptData.mGridId);
 		if (gridRow != null) {
@@ -956,7 +955,7 @@ public class Grid {
 		// Get date created and date last saved from the solving attempt record.
 		// When converting from game file to database the fields will be 0. They
 		// will be overwritten with dates stored in the VIEW-line of the
-		// solvingAttempData.
+		// solvingAttemptData.
 		mDateCreated = solvingAttemptData.mDateCreated;
 		mDateLastSaved = solvingAttemptData.mDateUpdated;
 
@@ -1028,9 +1027,9 @@ public class Grid {
 				// Do not remove as long as backward compatibility with old save
 				// file should be remained. In new save files this information
 				// is stored as part of the cell information.
-				String invalidlist = line
+				String invalidList = line
 						.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1)[1];
-				for (String cellId : invalidlist
+				for (String cellId : invalidList
 						.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
 					int cellNum = Integer.parseInt(cellId);
 					GridCell c = mCells.get(cellNum);
@@ -1104,7 +1103,7 @@ public class Grid {
 				markDuplicateValuesInRowAndColumn(gridCell);
 			}
 
-			// The solving attempt has been loaded succesfully into the grid
+			// The solving attempt has been loaded successfully into the grid
 			// object
 			mSolvingAttemptId = solvingAttemptData.mId;
 			mRowId = solvingAttemptData.mGridId;

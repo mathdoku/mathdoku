@@ -104,7 +104,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 	private BroadcastReceiver mDreamingBroadcastReceiver;
 
-	// Contextual action bar for the copy cell values inpuyt mode
+	// Contextual action bar for the copy cell values input mode
 	private ActionMode mActionMode;
 
 	// Container Activity must implement these interfaces
@@ -628,7 +628,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * Sets the timer text with the actual elapsed time.
 	 * 
 	 * @param elapsedTime
-	 *            The elapsed time (in mili seconds) while playing the game.
+	 *            The elapsed time (in milliseconds) while playing the game.
 	 */
 	@SuppressLint("DefaultLocale")
 	public void setElapsedTime(long elapsedTime) {
@@ -694,7 +694,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		}
 
 		// Save old cell info
-		CellChange orginalUserMove = selectedCell.saveUndoInformation(null);
+		CellChange originalUserMove = selectedCell.saveUndoInformation(null);
 
 		// Reveal the user value
 		selectedCell.setRevealed();
@@ -702,7 +702,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		if (mMathDokuPreferences.isPuzzleSettingClearMaybesEnabled()) {
 			// Update possible values for other cells in this row and
 			// column.
-			mGrid.clearRedundantPossiblesInSameRowOrColumn(orginalUserMove);
+			mGrid.clearRedundantPossiblesInSameRowOrColumn(originalUserMove);
 		}
 		setClearAndUndoButtonVisibility(selectedCell);
 
@@ -840,7 +840,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 */
 	private void setClearAndUndoButtonVisibility(GridCell cell) {
 		// Set the clear button of the visible controls layout. The clear
-		// buttons is always visible but is disabled in case the cell is emtpy.
+		// buttons is always visible but is disabled in case the cell is empty.
 		Button clearButton = (mControlsPadBigTableLayout.getVisibility() == View.VISIBLE ? mClearButton
 				: mClearButtonSwipeOnly);
 		if (clearButton != null) {

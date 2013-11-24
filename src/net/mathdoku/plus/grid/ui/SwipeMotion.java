@@ -30,7 +30,7 @@ public class SwipeMotion extends Motion {
 	private boolean mVisible;
 
 	// Constant for an undetermined result of the swipe motion
-	private static final int DIGIT_UNDETERMINDED = -1;
+	private static final int DIGIT_UNDETERMINED = -1;
 
 	// The grid player view for which a swipe motion is made.
 	private final GridPlayerView mGridPlayerView;
@@ -117,8 +117,8 @@ public class SwipeMotion extends Motion {
 		int touchDownCellCoordinates[] = getTouchDownCellCoordinates();
 
 		// Set the resulting digit for previous to unknown
-		mPreviousSwipePositionDigit = DIGIT_UNDETERMINDED;
-		mCurrentSwipePositionDigit = DIGIT_UNDETERMINDED;
+		mPreviousSwipePositionDigit = DIGIT_UNDETERMINED;
+		mCurrentSwipePositionDigit = DIGIT_UNDETERMINED;
 
 		// Update swipe position.
 		setCurrentSwipeCoordinates(event);
@@ -177,7 +177,7 @@ public class SwipeMotion extends Motion {
 	}
 
 	/**
-	 * Checks if this swipe motion should be made visible (e.g. drawed).
+	 * Checks if this swipe motion should be made visible (e.g. drawn).
 	 * 
 	 * @return True in case the motion is visible. False otherwise.
 	 */
@@ -279,7 +279,7 @@ public class SwipeMotion extends Motion {
 	boolean update(MotionEvent motionEvent) {
 		if (mStatus == Status.INIT) {
 			// Movement has not yet started inside a grid cell.
-			mCurrentSwipePositionDigit = DIGIT_UNDETERMINDED;
+			mCurrentSwipePositionDigit = DIGIT_UNDETERMINED;
 			return false;
 		}
 		if (mStatus == Status.TOUCH_DOWN) {
@@ -302,13 +302,13 @@ public class SwipeMotion extends Motion {
 							&& mCurrentSwipePositionCellCoordinates[Y_POS] > 0 && mCurrentSwipePositionCellCoordinates[Y_POS] < mGridSize - 1)) {
 				// Call listener only in case previously a digit was selectable.
 				if (mListener != null
-						&& mCurrentSwipePositionDigit != DIGIT_UNDETERMINDED) {
+						&& mCurrentSwipePositionDigit != DIGIT_UNDETERMINED) {
 					mListener.onNoSelectableDigit();
 				}
 
 				// Normally the swipe digit will only be updated in case the
 				// swipe position is outside the touch down cell.
-				mCurrentSwipePositionDigit = DIGIT_UNDETERMINDED;
+				mCurrentSwipePositionDigit = DIGIT_UNDETERMINED;
 				return false;
 			}
 
@@ -428,7 +428,7 @@ public class SwipeMotion extends Motion {
 				// Call listener only in case previously no digit was
 				// selectable.
 				if (mListener != null
-						&& mCurrentSwipePositionDigit == DIGIT_UNDETERMINDED) {
+						&& mCurrentSwipePositionDigit == DIGIT_UNDETERMINED) {
 					mListener.onSelectableDigit();
 				}
 
@@ -448,12 +448,12 @@ public class SwipeMotion extends Motion {
 
 		// Call listener only in case previously a digit was selectable.
 		if (mListener != null
-				&& mCurrentSwipePositionDigit != DIGIT_UNDETERMINDED) {
+				&& mCurrentSwipePositionDigit != DIGIT_UNDETERMINED) {
 			mListener.onNoSelectableDigit();
 		}
 
 		// Set the digit for the current swipe position.
-		mCurrentSwipePositionDigit = DIGIT_UNDETERMINDED;
+		mCurrentSwipePositionDigit = DIGIT_UNDETERMINED;
 		return false;
 	}
 
@@ -515,7 +515,7 @@ public class SwipeMotion extends Motion {
 	 * 
 	 * @return The digit which is associated with the current swipe position.
 	 */
-	public int getFocussedDigit() {
+	public int getFocusedDigit() {
 		return mCurrentSwipePositionDigit;
 	}
 

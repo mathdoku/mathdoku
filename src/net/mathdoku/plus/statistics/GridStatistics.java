@@ -70,7 +70,7 @@ public class GridStatistics {
 
 	// Cells filled + revealed + empty == total cells in grid
 	public int mCellsFilled;
-	public int mCellsEmtpty;
+	public int mCellsEmpty;
 
 	// Cells revealed. This value does not need to be identical to
 	// mActionRevealCell in case reveal solution is also used.
@@ -124,7 +124,7 @@ public class GridStatistics {
 			mCellsFilled += occurrences;
 			break;
 		case CELLS_EMPTY:
-			mCellsEmtpty += occurrences;
+			mCellsEmpty += occurrences;
 			break;
 		case CELLS_REVEALED:
 			mCellsRevealed += occurrences;
@@ -172,7 +172,7 @@ public class GridStatistics {
 			mCellsFilled--;
 			break;
 		case CELLS_EMPTY:
-			mCellsEmtpty--;
+			mCellsEmpty--;
 			break;
 		case CELLS_REVEALED:
 			mCellsRevealed--;
@@ -242,7 +242,7 @@ public class GridStatistics {
 
 	/**
 	 * Check whether the grid is finished (either solved manually or solution
-	 * revelead).
+	 * revealed).
 	 * 
 	 * @return True in case the grid is finished. False otherwise.
 	 */

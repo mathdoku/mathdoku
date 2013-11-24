@@ -74,7 +74,7 @@ public class MathDokuDLX extends DLX {
 		mTotalMoves = 0;
 		int total_nodes = 0;
 		for (GridCage gridCage : mCages) {
-			int possibleMovesInCage = gridCage.getPossibleNums().size();
+			int possibleMovesInCage = gridCage.getPossibleCombos().size();
 			mTotalMoves += possibleMovesInCage;
 			total_nodes += possibleMovesInCage
 					* (2 * gridCage.mCells.size() + 1);
@@ -90,7 +90,7 @@ public class MathDokuDLX extends DLX {
 		if (DEBUG_DLX) {
 			for (GridCage gridCage : sortedCages) {
 				Log.i(TAG, "Cage " + gridCage.mId + " has "
-						+ gridCage.getPossibleNums().size()
+						+ gridCage.getPossibleCombos().size()
 						+ " permutations with " + gridCage.mCells.size()
 						+ " cells");
 			}
@@ -105,59 +105,62 @@ public class MathDokuDLX extends DLX {
 			mMoves = null;
 		}
 
-		int constraint_num;
-		int move_idx = 0;
-		int cage_count = 0;
+		int constraintNumber;
+		int comboIndex = 0;
+		int cageCount = 0;
 		for (GridCage gridCage : sortedCages) {
-			ArrayList<int[]> allmoves = gridCage.getPossibleNums();
-			for (int[] onemove : allmoves) {
+			ArrayList<int[]> possibleCombos = gridCage.getPossibleCombos();
+			for (int[] possibleCombo : possibleCombos) {
 				if (DEBUG_DLX) {
-					Log.i(TAG, "Move " + move_idx + " - Cage " + gridCage.mId
-							+ " with " + gridCage.mCells.size() + " cells");
+					Log.i(TAG, "Combo " + comboIndex + " - Cage "
+							+ gridCage.mId + " with " + gridCage.mCells.size()
+							+ " cells");
 				}
 
-				// Is this permutation used for cage "cage_count"? The cage
+				// Is this permutation used for cage "cageCount"? The cage
 				// constraint is put upfront. As the cage have been sorted on
 				// the number of possible permutations this has a positive
 				// influence on the solving time.
-				constraint_num = cage_count + 1;
-				AddNode(constraint_num, move_idx); // Cage constraint
+				constraintNumber = cageCount + 1;
+				AddNode(constraintNumber, comboIndex); // Cage constraint
 
-				// Apply the permutation of "onemove" to the cells in the cages
+				// Apply the permutation of "possibleCombo" to the cells in the
+				// cages
 				for (int i = 0; i < gridCage.mCells.size(); i++) {
 					GridCell gridCell = gridCage.mCells.get(i);
 
 					// Fill data structure for DLX algorithm
 
-					// Is digit "onemove[i]" used in column getColumn()?
-					constraint_num = totalCages + mGridSize * (onemove[i] - 1)
-							+ gridCell.getColumn() + 1;
-					AddNode(constraint_num, move_idx); // Column constraint
+					// Is digit "possibleCombo[i]" used in column getColumn()?
+					constraintNumber = totalCages + mGridSize
+							* (possibleCombo[i] - 1) + gridCell.getColumn() + 1;
+					AddNode(constraintNumber, comboIndex); // Column constraint
 
-					// Is digit "onemove[i]" used in row getRow()?
-					constraint_num = totalCages + gridSizeSquare + mGridSize
-							* (onemove[i] - 1) + gridCell.getRow() + 1;
-					AddNode(constraint_num, move_idx); // Row constraint
+					// Is digit "possibleCombo[i]" used in row getRow()?
+					constraintNumber = totalCages + gridSizeSquare + mGridSize
+							* (possibleCombo[i] - 1) + gridCell.getRow() + 1;
+					AddNode(constraintNumber, comboIndex); // Row constraint
 
 					// Fill data structure for uncovering solution if needed
 					if (uncoverSolution) {
-						mMoves.add(new Move(gridCage.mId, move_idx, gridCell
-								.getRow(), gridCell.getColumn(), onemove[i]));
+						mMoves.add(new Move(gridCage.mId, comboIndex, gridCell
+								.getRow(), gridCell.getColumn(),
+								possibleCombo[i]));
 					}
 					if (DEBUG_DLX) {
 						Log.i(TAG, "  Cell " + gridCell.getCellNumber()
 								+ " row =" + gridCell.getRow() + " col = "
 								+ gridCell.getColumn() + " value = "
-								+ onemove[i]);
+								+ possibleCombo[i]);
 					}
 				}
 
 				// Proceed with next permutation for this or for the next cage
-				move_idx++;
+				comboIndex++;
 			}
 
 			// Proceed with the permutation(s) of the next cage
-			cage_count++;
+			cageCount++;
 		}
 	}
 
@@ -169,8 +172,8 @@ public class MathDokuDLX extends DLX {
 	private class SortCagesOnNumberOfMoves implements Comparator<GridCage> {
 		@Override
 		public int compare(GridCage gridCage1, GridCage gridCage2) {
-			int difference = gridCage1.getPossibleNums().size()
-					- gridCage2.getPossibleNums().size();
+			int difference = gridCage1.getPossibleCombos().size()
+					- gridCage2.getPossibleCombos().size();
 			if (difference == 0) {
 				// Both cages have the same number of possible permutation. Next
 				// compare the number of cells in the cage.
@@ -275,7 +278,7 @@ public class MathDokuDLX extends DLX {
 			// ///////////////////////////////////////////////////////////////////////
 
 			if (DEBUG_DLX) {
-				Log.i(TAG, "Determine puzzle complexitiy");
+				Log.i(TAG, "Determine puzzle complexity");
 			}
 			int[][] solutionGrid = new int[mGridSize][mGridSize];
 			int moveCount = 1;
@@ -301,7 +304,7 @@ public class MathDokuDLX extends DLX {
 							// still possible with the partially filled grid.
 							GridCage gridCage = mCages.get(move.mCageId);
 							ArrayList<int[]> cageMoves = gridCage
-									.getPossibleNums();
+									.getPossibleCombos();
 							int possiblePermutations = 0;
 							for (int[] cageMove : cageMoves) {
 								boolean validMove = true;

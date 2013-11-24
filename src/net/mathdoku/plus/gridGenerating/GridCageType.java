@@ -123,7 +123,7 @@ public class GridCageType {
 	 * given matrix.
 	 * 
 	 * @param newCageTypeMatrix
-	 *            The matric defining the cage type. Used cells have value true.
+	 *            The matrix defining the cage type. Used cells have value true.
 	 *            Unused cells have value false.
 	 */
 	public void setMatrix(boolean[][] newCageTypeMatrix) {
@@ -221,7 +221,7 @@ public class GridCageType {
 			return false;
 		}
 
-		// Return false in case content of shape matrixes are not the same.
+		// Return false in case content of shape matrices are not the same.
 		for (int row = 0; row < mRows; row++) {
 			for (int col = 0; col < mCols; col++) {
 				if (mUsedCells[row][col] != lhs.mUsedCells[row][col]) {
