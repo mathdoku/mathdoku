@@ -41,7 +41,6 @@ public class FeedbackEmail {
 			"yyyy-MM-dd HH:mm:ss", Locale.US);
 
 	// Reference to log file
-	private String mLogFilePath;
 	private OutputStream mLogFile;
 
 	private final Activity mActivity;
@@ -77,7 +76,6 @@ public class FeedbackEmail {
 				return false;
 			}
 		}
-		mLogFilePath = file.getAbsolutePath();
 
 		try {
 			mLogFile = new FileOutputStream(file);
