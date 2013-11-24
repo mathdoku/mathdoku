@@ -22,14 +22,6 @@ public class StatisticsFragmentActivity extends AppFragmentActivity implements
 		ActionBar.TabListener {
 
 	/**
-	 * The {@link android.support.v4.view.PagerAdapter} that will provide
-	 * fragments for each of the statistics fragments. A
-	 * {@link android.support.v4.app.FragmentPagerAdapter} derivative is used,
-	 * which will keep every loaded fragment in memory.
-	 */
-	private StatisticsFragmentPagerAdapter mStatisticsFragmentPagerAdapter;
-
-	/**
 	 * The {@link ViewPager} that will display the statistics fragments , one at
 	 * a time.
 	 */
@@ -40,8 +32,10 @@ public class StatisticsFragmentActivity extends AppFragmentActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.statistics_activity_fragment);
 
-		// Create the adapter that will return the statistics fragments.
-		mStatisticsFragmentPagerAdapter = new StatisticsFragmentPagerAdapter(
+		// Create the adapter that will return the statistics fragments. A
+		// {@link android.support.v4.app.FragmentPagerAdapter} derivative is
+		// used, which will keep every loaded fragment in memory.
+		StatisticsFragmentPagerAdapter statisticsFragmentPagerAdapter = new StatisticsFragmentPagerAdapter(
 				getSupportFragmentManager());
 
 		// Set up the action bar.
@@ -56,11 +50,11 @@ public class StatisticsFragmentActivity extends AppFragmentActivity implements
 		// Set up the ViewPager, attaching the adapter and setting up a listener
 		// for when the user swipes between the statistics fragments.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
-		mViewPager.setAdapter(mStatisticsFragmentPagerAdapter);
+		mViewPager.setAdapter(statisticsFragmentPagerAdapter);
 
 		// For each of the statistics fragments, add a tab to the action bar.
 		if (actionBar != null) {
-			for (int i = 0; i < mStatisticsFragmentPagerAdapter.getCount(); i++) {
+			for (int i = 0; i < statisticsFragmentPagerAdapter.getCount(); i++) {
 				// Create a tab with text corresponding to the page title
 				// defined by the adapter. Also specify this Activity object,
 				// which implements the TabListener interface, as the listener
@@ -69,7 +63,7 @@ public class StatisticsFragmentActivity extends AppFragmentActivity implements
 						.addTab(actionBar
 								.newTab()
 								.setText(
-										mStatisticsFragmentPagerAdapter
+										statisticsFragmentPagerAdapter
 												.getPageTitle(i))
 								.setTabListener(this));
 			}
@@ -94,7 +88,7 @@ public class StatisticsFragmentActivity extends AppFragmentActivity implements
 		// not displayed before.
 		int tab = mMathDokuPreferences.getStatisticsTabLastDisplayed();
 		mViewPager.setCurrentItem(tab >= 0 ? tab
-				: mStatisticsFragmentPagerAdapter.getCount() - 1);
+				: statisticsFragmentPagerAdapter.getCount() - 1);
 
 		/*
 		 * Styling of the pager tab strip is not possible from within code. See
