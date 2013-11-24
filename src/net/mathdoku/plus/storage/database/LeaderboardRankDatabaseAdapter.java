@@ -537,7 +537,8 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	 *         leaderboard ranks.
 	 */
 	private String getSelectionOutdatedLeaderboardRanks() {
-		StringBuilder stringBuilder = new StringBuilder();
+        //noinspection StringBufferReplaceableByString
+        StringBuilder stringBuilder = new StringBuilder();
 		long currentTimeMinus15Minutes = new java.util.Date().getTime()
 				- (15 * 60 * 1000);
 		long currentTimeMinus24Hours = new java.util.Date().getTime()
