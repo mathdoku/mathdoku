@@ -356,8 +356,8 @@ public class DevelopmentHelper {
 										int id) {
 									// Change real score of puzzle with manually
 									// entered score
-                                    //noinspection ConstantConditions
-                                    long score = Long
+									// noinspection ConstantConditions
+									long score = Long
 											.valueOf(manualLeaderboardScore
 													.getText().toString());
 									if (score > 0) {

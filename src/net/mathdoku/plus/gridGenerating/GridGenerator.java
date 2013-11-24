@@ -747,17 +747,16 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 				continue;
 			}
 
-			if (cageIsValid) {
-				GridCage cage = createCage(cageTypeCoords, mMaxCagePermutations);
-				if (cage == null) {
-					// No cage created due to too many permutations.
-					continue;
-				}
-
+			// So far the cage is still valid
+			GridCage cage = createCage(cageTypeCoords, mMaxCagePermutations);
+			if (cage != null) {
 				// As we randomly check available cages, we can stop as soon as
 				// a valid cage is found which does fit on this position.
 				return cage;
 			}
+
+			// No cage created due to too many permutations.
+			cageIsValid = false;
 
 			// Check next cage
 		} while (availableCages.size() > 0);

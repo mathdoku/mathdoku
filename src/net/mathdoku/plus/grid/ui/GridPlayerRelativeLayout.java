@@ -33,8 +33,8 @@ public class GridPlayerRelativeLayout extends RelativeLayout {
 	public GridPlayerRelativeLayout(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
-        //noinspection ConstantConditions
-        TypedArray typedArray = context.getTheme().obtainStyledAttributes(
+		// noinspection ConstantConditions
+		TypedArray typedArray = context.getTheme().obtainStyledAttributes(
 				attrs, R.styleable.GridPlayerViewLayoutAlign, 0, 0);
 		if (typedArray != null) {
 			try {

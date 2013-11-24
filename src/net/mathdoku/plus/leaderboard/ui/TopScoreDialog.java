@@ -67,15 +67,12 @@ public class TopScoreDialog extends AlertDialog {
 		Window window = getWindow();
 		if (window != null) {
 			WindowManager.LayoutParams layoutParams = window.getAttributes();
-			if (layoutParams != null) {
-				if (mOrientation == Configuration.ORIENTATION_LANDSCAPE) {
-
-					layoutParams.width = LayoutParams.MATCH_PARENT;
-				} else {
-					layoutParams.gravity = Gravity.BOTTOM;
-				}
-				window.setAttributes(layoutParams);
+			if (mOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+				layoutParams.width = LayoutParams.MATCH_PARENT;
+			} else {
+				layoutParams.gravity = Gravity.BOTTOM;
 			}
+			window.setAttributes(layoutParams);
 		}
 	}
 
@@ -84,8 +81,8 @@ public class TopScoreDialog extends AlertDialog {
 		super.show();
 
 		// Build and start the animation on the leaderboard icon
-        //noinspection ConstantConditions
-        ((ImageView) findViewById(R.id.dialog_top_score_leaderboard_icon))
+		// noinspection ConstantConditions
+		((ImageView) findViewById(R.id.dialog_top_score_leaderboard_icon))
 				.startAnimation(AnimationUtils.loadAnimation(getContext(),
 						R.anim.top_score));
 	}

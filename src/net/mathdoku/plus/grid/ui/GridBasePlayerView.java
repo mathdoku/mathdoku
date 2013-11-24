@@ -267,10 +267,12 @@ public class GridBasePlayerView extends GridViewerView implements
 							}
 						}
 
+						// noinspection ConstantConditions
 						if (isMaybeDigitInFromCell == true
 								&& isMaybeDigitInToCell == false) {
 							toGridCell.addPossible(digit);
-						} else if (isMaybeDigitInFromCell == false
+						} else // noinspection ConstantConditions
+						if (isMaybeDigitInFromCell == false
 								&& isMaybeDigitInToCell == true) {
 							toGridCell.removePossible(digit);
 						}

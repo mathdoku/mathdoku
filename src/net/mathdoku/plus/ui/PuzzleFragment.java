@@ -1002,7 +1002,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		if (mPuzzleGridLayout != null) {
 			mPuzzleGridLayout.setVisibility(View.VISIBLE);
 		}
-		if (mGrid == null || (mGrid != null && mGrid.isSolutionRevealed())) {
+		if (mGrid == null || mGrid.isSolutionRevealed()) {
 			// Hide time in case the puzzle was solved by
 			// requesting to show the solution.
 			if (mTimerText != null) {
@@ -1077,8 +1077,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		setSoundEffectsEnabled(mMathDokuPreferences.isPlaySoundEffectEnabled());
 
 		// Resume the timer
-		if (mTimerTask == null
-				|| (mTimerTask != null && mTimerTask.isCancelled())) {
+		if (mTimerTask == null || mTimerTask.isCancelled()) {
 			startTimer();
 		}
 	}

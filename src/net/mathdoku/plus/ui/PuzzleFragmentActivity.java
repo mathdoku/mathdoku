@@ -1195,7 +1195,6 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		boolean openDrawer = false;
 
 		// Determine the items which have to be shown in the drawer.
-		boolean mDrawerIconVisible = false;
 		ArrayList<String> navigationDrawerItems = new ArrayList<String>();
 
 		// It is not possible to disable the navigation drawer entirely in case
@@ -1211,11 +1210,11 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		if (mMathDokuPreferences.isArchiveAvailable()) {
 			String string = getResources().getString(R.string.action_archive);
 			navigationDrawerItems.add(string);
+			// noinspection ConstantConditions
 			if (openDrawer == false && mNavigationDrawerItems != null) {
 				openDrawer = (Arrays.asList(mNavigationDrawerItems).contains(
 						string) == false);
 			}
-			mDrawerIconVisible = true;
 		}
 
 		// Add statistics if unlocked
@@ -1227,7 +1226,6 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 				openDrawer = (Arrays.asList(mNavigationDrawerItems).contains(
 						string) == false);
 			}
-			mDrawerIconVisible = true;
 		}
 
 		// Leaderboards are always available
@@ -1237,7 +1235,6 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			openDrawer = (Arrays.asList(mNavigationDrawerItems)
 					.contains(string) == false);
 		}
-		mDrawerIconVisible = true;
 
 		mNavigationDrawerItems = navigationDrawerItems
 				.toArray(new String[navigationDrawerItems.size()]);
@@ -1245,7 +1242,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		// Set up the action bar for displaying the drawer icon and making the
 		// app icon clickable in order to display the drawer.
 		final ActionBar actionBar = getActionBar();
-		if (actionBar != null && mDrawerIconVisible) {
+		if (actionBar != null) {
 			if (android.os.Build.VERSION.SDK_INT >= 14) {
 				actionBar.setHomeButtonEnabled(true);
 			}

@@ -13,7 +13,6 @@ public class Screendump {
 	@SuppressWarnings("unused")
 	private static final String TAG = "MathDoku.Screendump";
 
-	private boolean mSaved;
 	private final Context mContext;
 
 	/**
@@ -24,7 +23,6 @@ public class Screendump {
 	 */
 	public Screendump(Context context) {
 		mContext = context;
-		mSaved = false;
 	}
 
 	/**
@@ -73,8 +71,6 @@ public class Screendump {
 			return false;
 		}
 
-		mSaved = true;
-
-		return mSaved;
+		return true;
 	}
 }

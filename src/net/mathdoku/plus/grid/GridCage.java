@@ -113,7 +113,7 @@ public class GridCage {
 
 	public void revealOperator() {
 		mHideOperator = false;
-		setCageResults(mResult, mAction, mHideOperator);
+		setCageResults(mResult, mAction, false);
 	}
 
 	/**

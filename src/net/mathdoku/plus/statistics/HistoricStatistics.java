@@ -6,6 +6,8 @@ import org.achartengine.model.XYSeries;
 
 import android.database.Cursor;
 
+import com.google.android.gms.internal.fa;
+
 /**
  * This class holds time related statistics for one property.
  */
@@ -279,6 +281,10 @@ public class HistoricStatistics {
 	public XYSeries getXYSeriesSolutionRevealed(String title, double maxY,
 			boolean includeElapsedTime, boolean includeCheatTime) {
 		XYSeries xySeries = new XYSeries(title);
+		if (includeElapsedTime == false && includeCheatTime == false) {
+			// No data points will be included in series.
+			return xySeries;
+		}
 
 		// In case a limit is specified, only the last <limit> number of
 		// data points are converted to the series.
@@ -291,13 +297,11 @@ public class HistoricStatistics {
 			if (index >= start) {
 				double value = 0;
 				if (dataPoint.mSerie == Serie.SOLUTION_REVEALED) {
-					if (includeElapsedTime && includeCheatTime) {
-						value = maxY;
-					} else if (includeElapsedTime && includeCheatTime == false) {
-						value = Math.min(
+					if (includeElapsedTime) {
+						value = (includeCheatTime ? maxY : Math.min(
 								dataPoint.mElapsedTimeExcludingCheatPenalty,
-								maxY);
-					} else if (includeElapsedTime == false && includeCheatTime) {
+								maxY));
+					} else {
 						value = Math.max(Math.min(maxY
 								- dataPoint.mElapsedTimeExcludingCheatPenalty,
 								dataPoint.mCheatPenalty), 0);

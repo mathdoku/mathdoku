@@ -263,7 +263,7 @@ public class MathDokuDLX extends DLX {
 	 */
 	@SuppressWarnings("UnusedReturnValue")
 	private int getPuzzleComplexity() {
-		if (Config.mAppMode == AppMode.DEVELOPMENT && DEBUG_DLX) {
+		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			// ///////////////////////////////////////////////////////////////////////
 			// NOT READY FOR PRODUCTION MODE YET.
 			//

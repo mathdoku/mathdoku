@@ -334,8 +334,10 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 					.addSeriesRenderer(createSimpleSeriesRenderer(chartGreen1));
 		}
 
-		// Add series for cheat time of solved games
+		// Cheat legend should only be displayed once
 		boolean cheatLegendDisplayed = false;
+
+		// Add series for cheat time of solved games
 		if (historicStatistics.isXYSeriesUsed(Serie.SOLVED, false, true)) {
 			typesList.add(BarChart.TYPE);
 			xyMultipleSeriesDataset
@@ -350,6 +352,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 			SimpleSeriesRenderer simpleSeriesRenderer = createSimpleSeriesRenderer(chartRed1);
 
 			// Cheat legend should only be displayed once
+			// noinspection ConstantConditions
 			if (cheatLegendDisplayed) {
 				simpleSeriesRenderer.setShowLegendItem(false);
 			}

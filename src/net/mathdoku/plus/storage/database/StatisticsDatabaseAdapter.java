@@ -515,9 +515,6 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 					mCumulativeStatisticsProjection.getAllColumnNames(),
 					selection, null, null, null, null);
 		} catch (SQLiteException e) {
-			if (cursor != null) {
-				cursor.close();
-			}
 			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				e.printStackTrace();
 			}
@@ -777,9 +774,6 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 			cursor = sqliteQueryBuilder.query(mSqliteDatabase, columnsData,
 					selection, null, null, null, KEY_GRID_ID);
 		} catch (SQLiteException e) {
-			if (cursor != null) {
-				cursor.close();
-			}
 			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				e.printStackTrace();
 			}
