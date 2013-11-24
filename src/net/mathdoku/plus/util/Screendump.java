@@ -48,7 +48,9 @@ public class Screendump {
 		File file = new File(mContext.getFilesDir(), filename);
 		if (!file.exists()) {
 			try {
-				file.createNewFile();
+				if (!file.createNewFile()) {
+					return false;
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 				return false;

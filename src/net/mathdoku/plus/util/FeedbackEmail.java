@@ -69,7 +69,9 @@ public class FeedbackEmail {
 		File file = new File(mActivity.getFilesDir(), filename);
 		if (!file.exists()) {
 			try {
-				file.createNewFile();
+				if (!file.createNewFile()) {
+					return false;
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 				return false;
@@ -217,20 +219,6 @@ public class FeedbackEmail {
 			} catch (IOException e) {
 				// Do nothing.
 			}
-		}
-	}
-
-	/**
-	 * Delete the log file.
-	 */
-	public void delete() {
-		// Close the log file
-		close();
-
-		// Delete the log file
-		File file = new File(mLogFilePath);
-		if (file.exists()) {
-			file.delete();
 		}
 	}
 
