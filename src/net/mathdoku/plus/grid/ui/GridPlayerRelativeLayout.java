@@ -53,13 +53,19 @@ public class GridPlayerRelativeLayout extends RelativeLayout {
 			} finally {
 				typedArray.recycle();
 			}
-			mMarginAdjustment = (mLeftMarginAdjustment || mTopMarginAdjustment
-					|| mRightMarginAdjustment || mBottomMarginAdjustment);
-
-			// Additional margins will be determined in first pass of onMeasure,
-			// except no margins needs to be adjusted at all.
-			mMarginsInitialised = (mMarginAdjustment == false);
+		} else {
+			mLeftMarginAdjustment = false;
+			mTopMarginAdjustment = false;
+			mRightMarginAdjustment = false;
+			mBottomMarginAdjustment = false;
 		}
+
+		mMarginAdjustment = (mLeftMarginAdjustment || mTopMarginAdjustment
+				|| mRightMarginAdjustment || mBottomMarginAdjustment);
+
+		// Additional margins will be determined in first pass of onMeasure,
+		// except no margins needs to be adjusted at all.
+		mMarginsInitialised = (mMarginAdjustment == false);
 	}
 
 	@Override

@@ -120,26 +120,27 @@ public class TipDialog extends AlertDialog {
 		// Fill the fields for this dialog
 		LayoutInflater inflater = LayoutInflater.from(mContext);
 		View tipView = inflater.inflate(R.layout.tip_dialog, null);
-		if (tipView != null) {
-
-			TextView textView = (TextView) tipView
-					.findViewById(R.id.dialog_tip_text);
-			textView.setText(tipText);
-
-			ImageView imageView = (ImageView) tipView
-					.findViewById(R.id.dialog_tip_image);
-			if (tipImage != null) {
-				imageView.setImageDrawable(tipImage);
-				imageView.requestLayout();
-			} else {
-				imageView.setVisibility(View.GONE);
-			}
-
-			final CheckBox checkBoxView = (CheckBox) tipView
-					.findViewById(R.id.dialog_tip_do_not_show_again);
-
-			setView(tipView);
+		if (tipView == null) {
+			return this;
 		}
+
+		TextView textView = (TextView) tipView
+				.findViewById(R.id.dialog_tip_text);
+		textView.setText(tipText);
+
+		ImageView imageView = (ImageView) tipView
+				.findViewById(R.id.dialog_tip_image);
+		if (tipImage != null) {
+			imageView.setImageDrawable(tipImage);
+			imageView.requestLayout();
+		} else {
+			imageView.setVisibility(View.GONE);
+		}
+
+		final CheckBox checkBoxView = (CheckBox) tipView
+				.findViewById(R.id.dialog_tip_do_not_show_again);
+
+		setView(tipView);
 
 		setIcon(tipIconResId);
 		setTitle(tipTitle);
