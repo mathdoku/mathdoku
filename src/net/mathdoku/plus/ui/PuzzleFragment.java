@@ -326,7 +326,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		super.onPause();
 	}
 
-	void setTheme() {
+	private void setTheme() {
 		mPainter.setTheme(mMathDokuPreferences.getTheme());
 
 		// Invalidate the grid view and the input mode button in order to used
@@ -394,7 +394,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * @param soundEffectEnabled
 	 *            True in case sounds are enabled. False otherwise.
 	 */
-	void setSoundEffectsEnabled(boolean soundEffectEnabled) {
+	private void setSoundEffectsEnabled(boolean soundEffectEnabled) {
 		for (View view : mSoundEffectViews) {
 			view.setSoundEffectsEnabled(soundEffectEnabled);
 		}
@@ -450,7 +450,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * Sets the handler on the grid which will be called as soon as the grid has
 	 * been solved.
 	 */
-	void setOnSolvedHandler() {
+	private void setOnSolvedHandler() {
 		if (mGrid == null) {
 			return;
 		}
@@ -535,7 +535,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * @param grid
 	 *            The grid to display.
 	 */
-	void setNewGrid(Grid grid) {
+	private void setNewGrid(Grid grid) {
 		if (grid != null) {
 			mGrid = grid;
 			mGridPlayerView.loadNewGrid(grid);

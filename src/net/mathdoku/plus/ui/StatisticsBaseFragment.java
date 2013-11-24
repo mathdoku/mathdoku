@@ -296,7 +296,7 @@ class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	 *            which the chart is added.
 	 * @return The height to be set on the chart.
 	 */
-	int getMaxChartHeight(int titleHeightPixels, int paddingChartPixels) {
+	private int getMaxChartHeight(int titleHeightPixels, int paddingChartPixels) {
 		// Determine an acceptable height / width ratio for the chart dependent
 		// on the orientation of the device
 		Configuration configuration = getActivity().getResources()

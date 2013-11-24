@@ -116,7 +116,7 @@ public class DigitPositionGrid {
 	 *            The index for which the row has to be retrieved.
 	 * @return The row corresponding with the index.
 	 */
-	int indexToRow(int index) {
+	private int indexToRow(int index) {
 		return (index / mMaxCols);
 	}
 
@@ -127,7 +127,7 @@ public class DigitPositionGrid {
 	 *            The index for which the column has to be retrieved.
 	 * @return The column corresponding with the index.
 	 */
-	int indexToCol(int index) {
+	private int indexToCol(int index) {
 		return (index - (indexToRow(index) * mMaxCols));
 	}
 

@@ -37,8 +37,8 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	private static final String KEY_DATE_CREATED = "date_created";
 	private static final String KEY_GAME_SEED = "game_seed";
 	private static final String KEY_GENERATOR_REVISION_NUMBER = "generator_revision_number";
-	static final String KEY_PUZZLE_COMPLEXITY = "puzzle_complexity";
-	static final String KEY_HIDE_OPERATORS = "hide_operators";
+	private static final String KEY_PUZZLE_COMPLEXITY = "puzzle_complexity";
+	private static final String KEY_HIDE_OPERATORS = "hide_operators";
 	private static final String KEY_MAX_CAGE_RESULT = "max_cage_result";
 	private static final String KEY_MAX_CAGE_SIZE = "max_cage_size";
 

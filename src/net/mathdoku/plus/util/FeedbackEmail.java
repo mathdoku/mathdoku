@@ -99,7 +99,7 @@ public class FeedbackEmail {
 	 * @param activity
 	 *            The activity used to get device info.
 	 */
-	void logDevice() {
+	private void logDevice() {
 		SortedMap<String, String> sortedMap = new TreeMap<String, String>();
 
 		sortedMap.put("Android.Version", android.os.Build.VERSION.CODENAME);
@@ -122,7 +122,7 @@ public class FeedbackEmail {
 	/**
 	 * Logs information about a configuration.
 	 */
-	void logConfiguration() {
+	private void logConfiguration() {
 		SortedMap<String, String> sortedMap = new TreeMap<String, String>();
 
 		Configuration configuration = mActivity.getResources()
@@ -143,7 +143,7 @@ public class FeedbackEmail {
 	 * @param preferences
 	 *            The preferences to be logged.
 	 */
-	void logPreferences() {
+	private void logPreferences() {
 		// Get preferences and check whether it is allowed to gather new data.
 		Preferences preferences = Preferences.getInstance();
 
@@ -209,7 +209,7 @@ public class FeedbackEmail {
 	/**
 	 * Close the log file.
 	 */
-	void close() {
+	private void close() {
 		if (mLogFile != null) {
 			try {
 				mLogFile.flush();

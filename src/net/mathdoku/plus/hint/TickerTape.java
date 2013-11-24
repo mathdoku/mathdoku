@@ -213,7 +213,7 @@ public class TickerTape extends HorizontalScrollView {
 	/**
 	 * Hides the ticker tape and stop moving the items in the ticker tape.
 	 */
-	void hide() {
+	private void hide() {
 		if (mDisabled) {
 			setVisibility(View.GONE);
 		} else {
@@ -226,7 +226,7 @@ public class TickerTape extends HorizontalScrollView {
 	/**
 	 * Starts moving the ticker tape.
 	 */
-	void startMoving() {
+	private void startMoving() {
 		if (mDisabled) {
 			return;
 		}

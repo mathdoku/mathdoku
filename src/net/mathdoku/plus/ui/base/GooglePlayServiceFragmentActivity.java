@@ -41,6 +41,7 @@ import com.google.android.gms.plus.PlusClient;
  * @link{#setRequestedClients , but you must do so before @link{#onCreate} gets
  *                            called, otherwise the call will have no effect.
  */
+@SuppressWarnings("WeakerAccess")
 public abstract class GooglePlayServiceFragmentActivity extends
 		AppFragmentActivity implements GameHelper.GameHelperListener {
 

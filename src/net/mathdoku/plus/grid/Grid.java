@@ -354,7 +354,7 @@ public class Grid {
 	 *            cell will be unselected.
 	 * @return The selected cell.
 	 */
-	public GridCell setSelectedCell(GridCell cell) {
+	GridCell setSelectedCell(GridCell cell) {
 		// Determine currently selected cage
 		GridCage oldSelectedCage = getCageForSelectedCell();
 

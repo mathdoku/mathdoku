@@ -897,7 +897,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	/**
 	 * Restart the last game which was played.
 	 */
-	void restartLastGame() {
+	private void restartLastGame() {
 		// Determine if and which grid was last played
 		int solvingAttemptId = new SolvingAttemptDatabaseAdapter()
 				.getMostRecentPlayedId();

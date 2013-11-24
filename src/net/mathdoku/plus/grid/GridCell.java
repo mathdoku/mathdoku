@@ -304,7 +304,7 @@ public class GridCell {
 	 *         otherwise.
 	 */
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public boolean hasInvalidUserValueHighlight() {
+	public boolean hasInvalidUserValueHighlight() {
 		return this.mInvalidUserValueHighlight;
 	}
 
