@@ -20,8 +20,6 @@ public class Util {
 
 	private static DisplayMetrics mDisplayMetrics;
 
-	private static String mBasePath;
-
 	public Util(Activity activity) {
 		// Get package name and version
 		mPackageVersionNumber = -1;
@@ -40,13 +38,6 @@ public class Util {
 		mDisplayMetrics = new DisplayMetrics();
 		activity.getWindowManager().getDefaultDisplay()
 				.getMetrics(mDisplayMetrics);
-
-		// Set path for files. Ensure that it ends with "/".
-		// noinspection ConstantConditions
-		mBasePath = activity.getApplicationInfo().dataDir;
-		if (mBasePath != null && !mBasePath.endsWith("/")) {
-			mBasePath += "/";
-		}
 
 		// Set flag to indicate that it is now save to call the static
 		// functions.
