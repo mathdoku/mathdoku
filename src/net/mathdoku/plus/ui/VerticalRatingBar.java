@@ -6,6 +6,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.RatingBar;
 
+import org.jetbrains.annotations.NotNull;
+
 public class VerticalRatingBar extends RatingBar {
 	private int x, y, z, w;
 
@@ -38,14 +40,14 @@ public class VerticalRatingBar extends RatingBar {
 	}
 
 	@Override
-	protected void onDraw(Canvas c) {
+	protected void onDraw(@NotNull Canvas c) {
 		c.rotate(-90);
 		c.translate(-getHeight(), 0);
 		super.onDraw(c);
 	}
 
 	@Override
-	public boolean onTouchEvent(MotionEvent event) {
+	public boolean onTouchEvent(@NotNull MotionEvent event) {
 		if (!isEnabled()) {
 			return false;
 		}

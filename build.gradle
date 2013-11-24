@@ -1,8 +1,10 @@
 apply plugin: 'android'
 
 dependencies {
-    compile fileTree(dir: 'libs', include: '*.jar')
     compile project(':google-play-services_lib')
+    compile files('libs/android-support-v4.jar')
+    compile files('libs/achartengine-1.1.0.jar')
+    compile files('libs/annotations.jar')
 }
 
 android {
