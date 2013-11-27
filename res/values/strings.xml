@@ -98,14 +98,6 @@
     <!-- The message for the "Sign in to Google+" when viewing the leaderboards while not signed in. -->
     <string name="action_google_plus_community">MathDoku+ community</string>
 
-    <!-- Title and message for the dialog to invite the user to become a tester for the leaderboards while the app is still a BETA version. -->
-    <string name="dialog_google_plus_leaderboard_beta_tester_title">Leaderboards in BETA version</string>
-    <string name="dialog_google_plus_leaderboard_beta_tester_message">No public visible scores have been found for MathDoku+.\n\nThe usage of Google+ leaderboards is limited by Google as long as the app is not publicly available. Please send an email (use the email address which is attached to your Google+ account) to me with the button below. I will add you to the list of testers within 24 hours.</string>
-
-    <!-- Subject and message for the email to become a leaderboard tester of the BETA-version. -->
-    <string name="email_google_plus_leaderboard_beta_tester_subject">Leaderboard testing MathDoku+</string>
-    <string name="email_google_plus_leaderboard_beta_tester_body">Please add this email address to the list of testers who are allowed to use the Google+ leaderboards of MathDoku+ with the BETA-version of MathDoku+.</string>
-
     <!-- ACTION BAR ITEMS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
