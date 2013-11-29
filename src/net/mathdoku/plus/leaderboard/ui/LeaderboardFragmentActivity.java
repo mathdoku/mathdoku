@@ -1,7 +1,5 @@
 package net.mathdoku.plus.leaderboard.ui;
 
-import java.util.List;
-
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.leaderboard.LeaderboardConnector;
 import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter;
@@ -16,8 +14,6 @@ import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
@@ -271,7 +267,7 @@ public class LeaderboardFragmentActivity extends
 	}
 
 	/**
-	 * After a successful sign in to Google+ the leaderboard are updated if
+	 * After a successful sign in to Google+ the leaderboards are updated if
 	 * needed. If so, a progress dialog is shown.
 	 */
 	private void onSignInSucceeded() {
@@ -287,10 +283,6 @@ public class LeaderboardFragmentActivity extends
 				.setOnDismissListener(new OnDismissListener() {
 					@Override
 					public void onDismiss(DialogInterface dialog) {
-						if (mLeaderboardRankUpdaterProgressDialog
-								.hasNoLeaderboardUpdated()) {
-							showBecomeABetaLeaderboardTesterDialog();
-						}
 						mLeaderboardRankUpdaterProgressDialog = null;
 					}
 				});
@@ -315,7 +307,6 @@ public class LeaderboardFragmentActivity extends
 
 	/**
 	 * Initializes/refreshes the filter spinner.
-	 * <p/>
 	 * Returns: True in case the filter spinner should be shown. False
 	 * otherwise.
 	 */
@@ -417,74 +408,5 @@ public class LeaderboardFragmentActivity extends
 					}
 				});
 		mLeaderboardRankUpdaterProgressDialog.show();
-	}
-
-	private void showBecomeABetaLeaderboardTesterDialog() {
-		final PackageManager packageManager = getPackageManager();
-		if (packageManager == null) {
-			return;
-		}
-
-		final Intent intent = new Intent(Intent.ACTION_SEND);
-		intent.setType("message/rfc822");
-		List<ResolveInfo> list = packageManager.queryIntentActivities(intent,
-				PackageManager.MATCH_DEFAULT_ONLY);
-
-		if (list == null || list.size() == 0) {
-			// No email client available.
-			return;
-		}
-
-		new AlertDialog.Builder(this)
-				.setTitle(
-						R.string.dialog_google_plus_leaderboard_beta_tester_title)
-				.setMessage(
-						getResources()
-								.getString(
-										R.string.dialog_google_plus_leaderboard_beta_tester_message))
-				.setNegativeButton(R.string.dialog_general_button_close,
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int whichButton) {
-								// Do nothing
-							}
-						})
-				.setPositiveButton(
-						R.string.dialog_send_feedback_positive_button,
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int whichButton) {
-								// Send log file
-								Intent i = new Intent(
-										Intent.ACTION_SEND_MULTIPLE);
-								i.setType("message/rfc822");
-								i.putExtra(Intent.EXTRA_EMAIL,
-										new String[] { "info@mathdoku.net" });
-								i.putExtra(
-										Intent.EXTRA_SUBJECT,
-										getResources()
-												.getString(
-														R.string.email_google_plus_leaderboard_beta_tester_subject));
-								i.putExtra(
-										Intent.EXTRA_TEXT,
-										getResources()
-												.getString(
-														R.string.email_google_plus_leaderboard_beta_tester_body));
-
-								try {
-									startActivity(Intent
-											.createChooser(
-													i,
-													getResources()
-															.getString(
-																	R.string.dialog_google_plus_leaderboard_beta_tester_title)));
-								} catch (android.content.ActivityNotFoundException ex) {
-									// No clients installed which can handle
-									// this intent.
-								}
-							}
-						}).show();
 	}
 }

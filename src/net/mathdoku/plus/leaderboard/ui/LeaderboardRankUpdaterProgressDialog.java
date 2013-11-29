@@ -51,6 +51,9 @@ public class LeaderboardRankUpdaterProgressDialog extends ProgressDialog
 
 			// Start updating the leaderboards.
 			mLeaderboardRankUpdater.update();
+		} else {
+			// No leaderboards have to be updated.
+			dismiss();
 		}
 	}
 
