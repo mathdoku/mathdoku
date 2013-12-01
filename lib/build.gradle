@@ -1,0 +1,27 @@
+// standard java plugin
+apply plugin: 'java'
+
+dependencies
+{
+    // dependancies for testing (junit, hamcrest, etc)
+    testCompile group: 'junit', name: 'junit', version: '4.+'
+}
+
+// java settings
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
+// define the file locations
+sourceSets 
+{
+    main
+    {
+        java.srcDirs = ['src/main/java']
+        resources.srcDirs = ['src/main/resources']
+    }
+    test
+    {
+        java.srcDirs = ['src/test/java']
+        resources.srcDirs = ['src/test/resources']
+    }
+}

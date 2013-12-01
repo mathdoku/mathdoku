@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp" >
+
+    <!-- Elements are defined bottom up so to prevent the scrollview from using space which is needed -->
+    <!-- needed for the buttons and the checkbox. -->
+
+    <LinearLayout
+        android:id="@+id/button_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true" >
+
+        <Button
+            android:id="@+id/sign_in_cancel_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:lines="1"
+            android:paddingLeft="5dp"
+            android:text="@string/dialog_general_button_cancel"
+            android:textSize="@dimen/text_size_default"
+            android:textStyle="bold"
+            tools:ignore="ButtonStyle,NestedWeights" />
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/sign_in_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingRight="5dp" />
+    </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/hide_till_next_top_score_achieved_checkbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button_layout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:paddingBottom="10dp"
+        android:text="@string/google_plus_login_hide_till_next_top_score_achieved" >
+
+        <requestFocus />
+    </CheckBox>
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/hide_till_next_top_score_achieved_checkbox"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:paddingBottom="10dp" >
+
+        <TextView
+            android:id="@+id/google_plus_login_dialog_message"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_default" />
+    </ScrollView>
+
+</RelativeLayout>

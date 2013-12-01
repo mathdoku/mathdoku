@@ -1,0 +1,8 @@
+// android app project
+include ':app'
+
+// java library project
+include ':lib'
+
+// Google Play Services library project
+include ':google-play-services_lib'

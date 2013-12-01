@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="net.mathdoku.plus"
+    android:installLocation="auto"
+    android:versionCode="594"
+    android:versionName="Version 2.1.0" >
+
+    <!-- Cannot yet upgrade to target SDK-version 18 due to a bug in the archive. The grid view -->
+    <!-- in the archive won't be shown in case a chart is shown. -->
+    <uses-sdk
+        android:minSdkVersion="11"
+        android:targetSdkVersion="17" />
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:xlargeScreens="true" >
+    </supports-screens>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/icon"
+        android:label="@string/application_name"
+        android:theme="@style/AppBaseTheme" >
+
+        <!-- Google Play Services is used for global leaderboards -->
+        <meta-data
+            android:name="com.google.android.gms.games.APP_ID"
+            android:value="@string/app_id" />
+
+        <activity
+            android:name="net.mathdoku.plus.ui.PuzzleFragmentActivity"
+            android:label="@string/application_name"
+            android:launchMode="singleTop" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="net.mathdoku.plus.ui.SharedPuzzleActivity" >
+
+            <!-- Catch Mathdoku plus urls -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/shared_puzzle_host_mathdoku_plus"
+                    android:pathPrefix="@string/shared_puzzle_path_prefix_mathdoku_plus"
+                    android:scheme="@string/shared_puzzle_scheme_mathdoku_plus" />
+            </intent-filter>
+
+            <!-- Catch Mathdoku original urls -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/shared_puzzle_host_mathdoku_original"
+                    android:pathPrefix="@string/shared_puzzle_path_prefix_mathdoku_original"
+                    android:scheme="@string/shared_puzzle_scheme_mathdoku_original" />
+            </intent-filter>
+        </activity>
+        <activity android:name="net.mathdoku.plus.ui.PuzzlePreferenceActivity" />
+        <activity android:name="net.mathdoku.plus.ui.ArchiveFragmentActivity" />
+        <activity android:name="net.mathdoku.plus.ui.ArchivePreferenceActivity" />
+        <activity android:name="net.mathdoku.plus.ui.StatisticsFragmentActivity" />
+        <activity android:name="net.mathdoku.plus.ui.StatisticsPreferenceActivity" />
+        <activity android:name="net.mathdoku.plus.leaderboard.ui.LeaderboardFragmentActivity" />
+
+        <provider
+            android:name="net.mathdoku.plus.util.FileProvider"
+            android:authorities="net.mathdoku.plus.util.FileProvider"
+            android:exported="true"
+            tools:ignore="ExportedContentProvider" />
+    </application>
+
+</manifest>

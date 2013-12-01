@@ -1,37 +1,88 @@
-apply plugin: 'android'
+// Top-level build file where you can 
+// add configuration options common 
+// to all sub-projects/modules.
 
-dependencies {
-    compile project(':google-play-services_lib')
-    compile files('libs/android-support-v4.jar')
-    compile files('libs/achartengine-1.1.0.jar')
-    compile files('libs/annotations.jar')
+buildscript {
+
+    repositories {
+        // maven central and local maven repo
+        mavenLocal()
+        mavenCentral()
+    }
+
+    dependencies {
+        // gradle android tools
+        classpath 'com.android.tools.build:gradle:0.6.1+'
+
+        // Gradle Android Unit Testing Plugin (not yet used)
+        // Working Progress https://github.com/JakeWharton/gradle-android-test-plugin
+        classpath 'com.squareup.gradle:gradle-android-test-plugin:0.9.+'
+    }
+
 }
 
-android {
-    compileSdkVersion 17
-    buildToolsVersion "18.0.1"
+// These are the common version numbers, etc for the rest of the gradle files
+configure(allprojects) {
+    ext.androidVersion              = '4.4'
+    ext.androidSDKVersion           = '19'
+    ext.androidBuildToolsVersion    = '19'
+    ext.androidSupportVersion       = '18.0.1'
+    ext.androidCompileSdkVersion    = 19
+	ext.androidMinSdkVersion        = 8
+	ext.androidTargetSdkVersion     = 17
+	ext.androidAnnotationsVersion   = '2.7.1'
+	ext.robotiumVersion             = '4.3'
+	ext.dexmakerVersion             = '1.0'
+	ext.dexmakerMockitoVersion      = '1.0'
+    ext.mockitoVersion              = '1.9.5'
+}
 
-    sourceSets {
-        main {
-            manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src']
-            resources.srcDirs = ['src']
-            aidl.srcDirs = ['src']
-            renderscript.srcDirs = ['src']
-            res.srcDirs = ['res']
-            assets.srcDirs = ['assets']
-        }
+// inject these settings in all of the sub projects
+configure(subprojects) { subproject ->
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+}
 
-        // Move the tests to tests/java, tests/res, etc...
-        instrumentTest.setRoot('tests')
+// Base Config for a local sonar installation
+// To use: gradle sonarRunner
+apply plugin: 'sonar-runner'
+sonarRunner 
+{
+    sonarProperties 
+    {
+        // Project Name
+        // This can be anything, whatever describes your project
+        property 'sonar.projectName', 'MathDoku Plus'
 
-        // Move the build types to build-types/<type>
-        // For instance, build-types/debug/java, build-types/debug/AndroidManifest.xml, ...
-        // This moves them out of them default location under src/<type>/... which would
-        // conflict with src/ being used by the main source set.
-        // Adding new build types or product flavors should be accompanied
-        // by a similar customization.
-        debug.setRoot('build-types/debug')
-        release.setRoot('build-types/release')
+        // Project Key
+        // this should be unique, so the namespace of the app is a good option
+        property 'sonar.projectKey', 'net.mathdoku.plus'
+        
+        // Comma separated list of sub projects
+        // This will often match the values in the settings.gradle
+        property 'sonar.modules', 'app,lib'
+        
+        // Mapping list for modules to their actual directories
+        property 'app.sonar.projectBaseDir', './app/'
+        property 'lib.sonar.projectBaseDir', './lib/'
+        
+        // Project Version
+        property 'sonar.projectVersion', '1.0'
+        
+        // java version
+        property 'sonar.java.target', '1.6'
+        
+        // sonar connection parameters
+        property 'sonar.host.url', 'http://localhost:9000'
+        property 'sonar.jdbc.url', 'jdbc:mysql://localhost:3306/sonar?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true'
+        property 'sonar.jdbc.driverClassName', 'com.mysql.jdbc.Driver'
+        property 'sonar.jdbc.username', 'sonar'
+        property 'sonar.jdbc.password', 'sonar'
+        
+        // so far incomplete attempts to get code coverage to work
+        property 'sonar.dynamicAnalysis', 'reuseReports'
+        property 'sonar.surefire.reportsPath', 'build/instrumentTest-results/connected/'
     }
 }

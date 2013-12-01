@@ -1,5 +1,4 @@
 # Ignore the to do list
-src/net/mathdoku/plus/todo.java
 todo.txt
 
 # Ignore files which are replaced by ANT-build scripts
@@ -9,6 +8,9 @@ res/values/google_play_services.xml
 # built application files
 *.apk
 *.ap_
+
+# Android Annotations
+*.apt_generated
  
 # files for the dex VM
 *.dex
@@ -19,6 +21,7 @@ res/values/google_play_services.xml
 # generated files
 bin/
 gen/
+build/
  
 # Local configuration file (sdk path, etc)
 local.properties
@@ -39,8 +42,9 @@ proguard/
 # Mac related files
 .DS_Store
  
-# folders related to builds
+# Gradle files
 .gradle/
-build/
-
+gradle/
+gradlew
+gradlew.bat
 

@@ -1,0 +1,598 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Notes for translators: -->
+    <!-- Thank you for your help in translating MathDoku+. Please follow guidelines below when -->
+    <!-- translating this file. -->
+    <!-- 1. Do not alter the order in which strings are sorted. We try to keep the same order in all languages -->
+    <!-- 2. Do not remove comments as they might be useful for future maintenance. -->
+    <!-- 3. If a string contains text like "%1$d" this means that a value will be substituted later. -->
+    <!-- 4. Do not translate the comments itself. -->
+    <!-- 5. Please read and follow the additional instructions where applicable. -->
+
+
+    <!-- GENERAL - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The labels of the buttons that close dialogs. -->
+    <string name="dialog_general_button_close">Sluit</string>
+    <string name="dialog_general_button_cancel">Annuleer</string>
+
+    <!-- Name of settings menu. -->
+    <string name="settings">Instellingen</string>
+
+    <!-- Labels for opening and closing the navigation drawer. -->
+    <string name="navigation_drawer_open">Open navigatie lade</string>
+    <string name="navigation_drawer_close">Sluit navigatie lade</string>
+
+    <!-- DIALOG CONVERTING SAVED GAMES - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The title and message for the dialog displayed on the screen while upgrading to new version and saved games have to be converted. -->
+    <string name="dialog_converting_saved_games_title">Bijwerken nieuwe versie</string>
+    <string name="dialog_converting_saved_games_message">Voor deze nieuwe versie van MathDoku+ worden de opgeslagen spelen eenmalig omgezet. Een ogenblik geduld a.u.b.</string>
+
+    <!-- PUZZLE HELP DIALOG - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The lead in text at top of the help dialog. -->
+    <string name="puzzle_help_dialog_leadin">Bedankt voor het installeren van MathDoku+ voor Android.</string>
+
+    <!-- The title for the help section. -->
+    <string name="puzzle_help_dialog_help_section_title">Help</string>
+
+    <!-- The title and body describing the goal of the game. -->
+    <string name="puzzle_help_dialog_goal_section_title">Doel</string>
+    <string name="puzzle_help_dialog_goal_section_body">Vul in elke rij en in elke kolom de getallen 1 tot en met de puzzelgrootte in.\n\nElk getal wordt precies eenmaal gebruikt in elke rij en kolom.\n\nDe dikke lijnen geven de \'groepen\' weer. Elke groep bevat een rekenkundige puzzel die opgelost moet worden met de getallen in de groep. Bijv. \'5+\' betekent dat alle getallen in de groep optellen tot 5. De volgorde waarin de getallen worden gebruikt is niet relevant.\n\nEen getal kan meerdere keren binnen een groep worden gebruikt zolang het getal nog steeds maar eenmaal voor komt in elke rij of kolom.</string>
+
+    <!-- The title and body describing how to play the game. -->
+    <string name="puzzle_help_dialog_how_to_play__section_title">Hoe te spelen?</string>
+    <string name="puzzle_help_dialog_how_to_play_section_body">Raak een cel aan in de puzzel om de cel te selecteren, en veeg daarna naar een een getal om het te kiezen. Door een cel dubbel aan te tikken kun je wisselen tussen de \'normale\' en de \'mogelijke\' toestand. In de \'mogelijke\' toestand kun je meerdere mogelijke getallen invoeren voor een cel.\n\nDe puzzels wordt automatisch opgeslagen.</string>
+
+    <!-- The version title in the help screen. -->
+    <string name="puzzle_help_dialog_version_section_title">Versie</string>
+
+    <!-- The license title in the help screen. -->
+    <string name="puzzle_help_dialog_license_section_title">Licentie</string>
+
+    <!-- The project home title in the help screen. -->
+    <string name="puzzle_help_dialog_project_home_section_title">Project pagina</string>
+
+    <!-- The contributor title in the help screen. -->
+    <string name="puzzle_help_dialog_contributors_section_title">Ontwikkelaars</string>
+    <string name="puzzle_help_dialog_contributors_mathdoku_plus_section_title">Ontwikkelaars Mathdoku+</string>
+    <string name="puzzle_help_dialog_contributors_mathdoku_plus_section_body">MathDoku+ is een afsplitsing van Mathdoku versie 2.0.1. Deze afsplitsing wordt onderhouden door Paul Dingemans die tevens de hoofdontwikkelaar was van de Mathdoku versies 1.96 (gepubliceerd in mei 2013) en 2.0.0 (gepubliceerd in september 2013). Mathdoku+ heeft een eigen ontwikkelingsplan.</string>
+    <string name="puzzle_help_dialog_contributors_mathdoku_section_title">Ontwikkelaars Mathdoku (origineel)</string>
+    <string name="puzzle_help_dialog_contributors_mathdoku_section_body">MathDoku is initieel ontwikkeld door Ben Buxton. Bijdragen zijn gemaakt door: Stephen Lee, Pimm Hogeling, Paul Dingemans, Anthony Paul, Christoph Steindl en Alexander Tesfamichael. Tevens willen we iedereen bedanken die fouten en verbeteringen heeft gemeld.</string>
+
+    <!-- INPUT METHOD DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The title of the choose input method dialog. -->
+    <string name="choose_input_method_title">Kies invoermethode</string>
+
+    <!-- Lead in to the input method dialog. -->
+    <string name="input_method_lead_in_body">Mathdoku+ ondersteunt twee verschillende methoden voor invoer. Kies alsjeblieft jouw invoermethode nu of probeer ze beide tegelijkertijd. Je kan de invoermethode wijzigen via het menu instellingen.</string>
+
+    <!-- Title and body for the swipe only input method. -->
+    <string name="input_method_swipe_explanation_title">Swipe</string>
+    <string name="input_method_swipe_explanation_body">De moderne manier om getallen te selecteren. Raak een cel aan en veeg in de richting van het getal in de getoonde cirkel om het te selecteren. Deze methode laat je toe om je te concentreren op de puzzel omdat je niet naar een ander deel van het scherm hoeft te kijken om een getal te selecteren.</string>
+
+    <!-- Title and body for the swipe only input method. -->
+    <string name="input_method_buttons_explanation_title">Knoppen</string>
+    <string name="input_method_buttons_explanation_body">De traditionele manier om getallen te selecteren door knoppen onder of aan de rechterzijde van de puzzel aan te raken. Deze methode is eenvoudiger in gebruik wanneer je nog niet bent gewend aan swipen en maakt het mogelijk om tweehandig te spelen. Dit is de favoriete manier van selecteren voor spelers die streven naar de snelste oplostijd van een puzzel.</string>
+
+    <!-- GOOGLE+ LOG IN DIALOG - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- Title for the "Sign in to Google+" dialog. -->
+    <string name="google_plus_login_dialog_title">Log in met Google+</string>
+
+    <!-- The message for the "Sign in to Google+" after as puzzle is finished which is eligble for submitting to Google+. -->
+    <string name="google_plus_login_dialog_on_game_completion">Je hebt zojuist een puzzel opgelost zonder vals te spelen. Als je dat wil dan kan je jouw score versturen naar de Google+ klassementen. Dit geeft je de mogelijkheid om je score te vergelijken met de scores van andere spelers. Is dat niet geweldig?\n\nOm een score te versturen naar Google+ moet je eenmalig inloggen met je Google+ account (geen password nodig). Nadat je voor de eerste keer inlogt, begeleidt Google+ je met de verdere instellingen.\n\nJe kan op elk moment uitloggen via het actie menu indien je niet langer meer ingelogd wil zijn.</string>
+    <string name="google_plus_login_hide_till_next_top_score_achieved">Niet meer tonen totdat een nieuwe topscore is behaald.</string>
+
+    <!-- The message for the "Sign in to Google+" when viewing the leaderboards while not signed in. -->
+    <string name="google_plus_login_dialog_on_show_leaderboards">Om de klassementen te bekijken moet je inloggen met Google+ (geen wachtwoord nodig). Het klassementenoverzicht toont jouw beste score en je positie in het klassement voor elk type of puzzel.\n\nNadat je voor de eerste keer inlogt, begeleidt Google+ je met de verdere instellingen. Voor elke type puzzel, wordt de beste score verstuurd naar Google+. Puzzels waarin een of meerdere keren is vals gespeeld worden genegeerd.\n\nJe kan op elk moment uitloggen via het actie menu indien je niet langer meer ingelogd wil zijn.</string>
+
+    <!-- ACTION BAR ITEMS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- Subtitle for the puzzle fragment. -->
+    <string name="action_bar_subtitle_puzzle_fragment">Speel een spel</string>
+
+    <!-- The menu item that allows the player to display the archive of played puzzles. -->
+    <string name="action_archive">Archief</string>
+
+    <!-- The menu item that allows the player to use some less frequently used cheats. -->
+    <string name="action_cheats">Vals spelen</string>
+
+    <!-- The menu item that allows the user to clear the entire grid. Note this item is only available if at least one cell in the entire puzzle contains a (maybe) value. -->
+    <string name="action_clear_grid">Leeg alle cellen</string>
+
+    <!-- The menu item that allows the player to replay the puzzle. Note: this action will only be displayed in case the puzzle is finished. -->
+    <string name="action_replay">Opnieuw spelen</string>
+
+    <!-- The menu item that allows the player to start a new puzzle. -->
+    <string name="action_new_puzzle">Nieuw spel</string>
+
+    <!-- The sub-menu item to check user entries against the solution. -->
+    <string name="action_check_progress">Controleer Voortgang</string>
+
+    <!-- The sub-menu item to go to the statistics. -->
+    <string name="action_statistics">Statistieken</string>
+
+    <!-- The sub-menu item to go to the leaderboards. -->
+    <string name="action_leaderboards">Klassementen</string>
+
+    <!-- The menu item that allows the player to navigate to the help screen. -->
+    <string name="action_help">Help</string>
+
+    <!-- The menu item that allows the player to share an archived puzzle with another user via email. -->
+    <string name="action_share">Delen</string>
+
+    <!-- The menu item that allows the player to send feedback via email. -->
+    <string name="action_feedback">Geef feedback</string>
+
+    <!-- The menu item that allows the player sign out of google play services. -->
+    <string name="action_sign_out_google_play_services">Log uit Google+</string>
+
+    <!-- ACTIONS IN SUB MENU CHEATS - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The menu item that allows the user to reveal a cell. -->
+    <string name="action_reveal_cell">Onthul deze cel</string>
+
+    <!-- The menu item that allows the user to reveal the hidden operator of a cage. This item is only available if a puzzle with hidden operators is shown and the operator has not yet been revealed. Note that a single cell cage does not have an operator. -->
+    <string name="action_reveal_operator">Toon groep teken</string>
+
+    <!-- The menu to show the completed grid. -->
+    <string name="action_show_solution">Toon oplossing</string>
+
+    <!-- ACTIONS IN MENU LEADERBOARDS - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The menu item that allows the user to refresh the leaderboards. -->
+    <string name="action_refresh_leaderboards">Verversen</string>
+
+    <!-- DIALOGS FOR GENERATING NEW PUZZLE - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- Titles and lables used in the dialog "Create new puzzle". -->
+    <string name="dialog_puzzle_parameters_title">Genereer nieuwe puzzel</string>
+    <string name="dialog_puzzle_parameters_puzzle_size">Puzzel grootte</string>
+    <string name="dialog_puzzle_parameters_operators_in_cage_visible">Groep tekens zichtbaar</string>
+    <string name="dialog_puzzle_parameters_difficulty">Moeilijkheid</string>
+    <string name="dialog_puzzle_parameters_neutral_button">Genereer</string>
+
+    <!-- The title and message for the dialog displayed on the screen when building a new puzzle. -->
+    <string name="dialog_building_puzzle_title">Genereren nieuwe puzzel</string>
+    <string name="dialog_building_puzzle_message">Een ogenblik geduld a.u.b.</string>
+
+    <!-- GENERAL SETTINGS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The titles for the general puzzling settings. -->
+    <string name="general_settings_actionbar_title">Algemene instellingen</string>
+
+    <!-- The preferences category title for options to assist the user solve the puzzle. -->
+    <string name="puzzle_setting_group_assistance">Help</string>
+
+    <!-- The title and summary of the "bad maths" option. This option highlights cages with incorrect maths. -->
+    <string name="puzzle_setting_bad_cage_math_visible_title">Markeer verkeerde berekeningen</string>
+    <string name="puzzle_setting_bad_cage_math_visible_summary">Markeer groepen met niet kloppende berekeningen</string>
+
+    <!-- The title and summary of the "bad maths" option. This option highlights cells with digits already in the row or column. -->
+    <string name="puzzle_setting_duplicate_digits_visible_title">Markeer duplicaten</string>
+    <string name="puzzle_setting_duplicate_digits_visible_summary">Markeer cellen met cijfers die al in de rij of in de kolom staan</string>
+
+    <!-- The title and summary of the "redundant possibles" option. This option clears possible values from cells in the same row or columns as the selected cell after setting a user value. -->
+    <string name="puzzle_setting_clear_maybes_title">Verwijder mogelijke</string>
+    <string name="puzzle_setting_clear_maybes_summary">Verwijder een mogelijke waarde indien deze is gebruikt in een andere cel in dezelfde rij of kolom</string>
+
+    <!-- The preferences category title for options relating to how the puzzle is displayed. -->
+    <string name="puzzle_setting_group_display">Weergave</string>
+
+    <!-- The theme option -->
+    <string name="puzzle_setting_theme_title">Thema</string>
+
+    <!-- The title and summary of the "colored digits" option. This option controls whether maybe numbers and normal numbers are displayed in distinct colors or in one monochrome color. -->
+    <string name="puzzle_setting_colored_digits_title">Gekleurde getallen</string>
+    <string name="puzzle_setting_colored_digits_summary">Gebruik gekleurde getallen om onderscheid te maken tussen de mogelijke waarden en de normale getallen</string>
+
+    <!-- The title and summary of the "maybe in grid" option. This option controls whether maybe numbers are displayed in 3x3 grid or straight line. -->
+    <string name="puzzle_setting_maybes_displayed_in_grid_title">Mogelijke waarden in raster</string>
+    <string name="puzzle_setting_maybes_displayed_in_grid_summary">Toon mogelijke getallen in een raster</string>
+
+    <!-- The title and summary of the "display timer" option. This option hides or shows the timer below the puzzle. -->
+    <string name="puzzle_setting_timer_visible_title">Toon speelduur</string>
+    <string name="puzzle_setting_timer_visible_summary">Toon de speelduur tijdens het spelen</string>
+
+    <!-- The title and summary of the "full screen" option. This option hide the android notification bar. -->
+    <string name="puzzle_setting_full_screen_title">Volledig scherm</string>
+    <string name="puzzle_setting_full_screen_summary">Gebruik het gehele scherm voor het spel door Android\'s notificatiebalk te verwijderen</string>
+
+    <!-- The title and summary of the "wake lock" option. This option highlights cells with digits already in the row or column. -->
+    <string name="puzzle_setting_wake_lock_title">Houd scherm aan</string>
+    <string name="puzzle_setting_wake_lock_summary">Voorkom dat het scherm uit gaat tijdens het spelen</string>
+
+    <!-- The preferences category title for options relating to how digits are entered. -->
+    <string name="puzzle_setting_group_input">Invoer getallen</string>
+
+    <!-- The input method option -->
+    <string name="puzzle_setting_input_method">Invoer methode</string>
+    <string name="input_method_swipe_only">Swipe</string>
+    <string name="input_method_swipe_and_buttons">Swipe en knoppen</string>
+    <string name="input_method_buttons_only">Knoppen</string>
+
+    <!-- The title and summary of the "outer swipe circle" option. This option controls the smallest grid size for which the outer swipe circle is visible. -->
+    <string name="puzzle_setting_outer_swipe_circle_title">Dubbele getallen cirkel</string>
+    <string name="puzzle_setting_outer_swipe_circle_visible_from_grid_size_short">Grootte %1$d en hoger</string>
+    <string name="puzzle_setting_outer_swipe_circle_visible_from_grid_size_long">Toon een tweede getallen cirkel voor puzzels van grootte %1$d en hoger</string>
+    <string name="puzzle_setting_outer_swipe_circle_visible_never">Toon nooit een tweede getallen cirkel</string>
+
+    <!-- The preferences category title for audio options. -->
+    <string name="puzzle_setting_group_sound">Geluid</string>
+
+    <!-- The title and summary of the "Sounds effect" option. This option enables or disables soundeffects. -->
+    <string name="puzzle_setting_sound_effects_title">Geluidseffecten</string>
+    <string name="puzzle_setting_sound_effects_summary">Zet de geluidseffecten aan</string>
+
+    <!-- DIALOG THEME - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The possible values of the "themes" option. This option controls which theme is used for displaying. -->
+    <string name="theme_light">Licht</string>
+    <string name="theme_dark">Donker</string>
+
+    <!-- DIALOG REVEAL SOLUTION CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The title, message and buttons confirmation message that shows up when the "reveal solution" menu item is selected, plus the associated title and button labels. -->
+    <string name="dialog_reveal_solution_confirmation_title">Onthul oplossing?</string>
+    <string name="dialog_reveal_solution_confirmation_message">Weet je zeker dat je de oplossing van deze puzzel wil onthullen?</string>
+    <string name="dialog_reveal_solution_confirmation_negative_button">Nee, ik los het zelf op</string>
+    <string name="dialog_reveal_solution_confirmation_positive_button">Ja, ik geef op</string>
+
+    <!-- DIALOG CLEAR GRID CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The title, message and buttons confirmation message that shows up when the clear grid context menu item is selected, plus the associated title and button labels. -->
+    <string name="dialog_clear_grid_confirmation_title">Leeg alle cellen?</string>
+    <string name="dialog_clear_grid_confirmation_message">Weet je zeker dat je alle cellen wilt legen?</string>
+    <string name="dialog_clear_grid_confirmation_negative_button">Nee, laat maar</string>
+    <string name="dialog_clear_grid_confirmation_positive_button">Ja, begin opnieuw</string>
+
+    <!-- DIALOG REPLAY PUZZLE CONFIRMATION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The title, message and buttons confirmation message that shows up when the user chooses to replay a puzzle. -->
+    <string name="dialog_replay_puzzle_confirmation_title">Puzzel opnieuw spelen?</string>
+    <string name="dialog_replay_puzzle_confirmation_message">Je kan een puzzel zo vaak opnieuw spelen als je wil. Zodra je start met het opnieuw spelen van een puzzel dan kun je de huidige statistieken van deze puzzel niet meer bekijken. De algemene statistieken worden bijgewerkt zodra je puzzel opnieuw hebt voltooid.\nDe score van een puzzel die je opnieuw hebt gespeeld worden nooit ingestuurd voor het klassement.\n\nWeet je zeker dat je deze puzzel opnieuw wil spelen? </string>
+    <string name="dialog_replay_puzzle_confirmation_negative_button">Annuleer</string>
+    <string name="dialog_replay_puzzle_confirmation_positive_button">Herspeel</string>
+
+    <!-- CONTROLS FOR PUZZLE SOLVING  - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The text on the clear button in the main UI. -->
+    <string name="main_ui_clear">Leeg</string>
+
+    <!-- The text on the undo button in the main UI. -->
+    <string name="main_ui_undo">Zet terug</string>
+
+    <!-- DIALOG FEEDBACK - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- Dialog for sending feedback on MathDoku+ via email. -->
+    <string name="dialog_send_feedback_title">Geef feedback</string>
+    <string name="dialog_send_feedback_text">Fantastisch dat je bereid bent om feedback te geven op MathDoku+.\n\nHerinner je alsjeblieft dat dit een gratis spel zonder advertenties is. We verdienen dus geen geld met deze app. Deze app wordt ontwikkeld door enthousiastelingen in hun vrije tijd. We zijn op geen enkele manier verplicht om verzoeken in te bouwen of om fouten op te lossen.\n\nWe nemen alleen verzoeken in behandeling die geschreven zijn in het Engels.</string>
+    <string name="dialog_send_feedback_positive_button">Stuur email</string>
+
+    <!-- Default subject and message for feedback email. -->
+    <string name="feedback_email_subject">Feedback op MathDoku+</string>
+    <string name="feedback_email_body">[Verwijderd alsjeblieft deze tekst en type hier je feedback. Deze email bevat een afdruk van het scherm vlak voordat je koos voor \'Geef feedback\'. Je kan deze schermafdruk verwijderen als het niet van belang is voor je feedback. De andere bijlage bevat enkele gegevens over de app, de afmetingen van je toestel en de waarden van je instellingen. Deze informatie kan behulpzaam zijn bij het begrijpen van je feedback maar je bent vrij om deze te verwijderen.]</string>
+
+    <!-- Title of dialog used to choose the appropriate action for sending the usage log. -->
+    <string name="feedback_choose_action_title">MathDoku+ puzzel delen</string>
+
+    <!-- Dialog for invalid share url. -->
+    <string name="dialog_invalid_share_url_title">Ongeldige MathDoku+ link</string>
+    <string name="dialog_invalid_share_url_body">Sorry, deze link naar de MathDoku+ puzzel is niet geldig. Neem alsjeblieft contact op met de verzender van deze link en vraag om een nieuwe link te sturen.</string>
+
+    <!-- PLAYING HINT - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- Hint to start swiping to select a digit. Will be displayed as no swipe movement has begun yet. -->
+    <string name="hint_swipe_basic">Raak de cel waarvan je de waarde wil wijzigen lang aan.</string>
+
+    <!-- Hint to stretch the swipe outside the current cell. The swipe movement has begun but has not yet left the cell. -->
+    <string name="hint_swipe_outside_cell">Veeg nu naar het gewenste getal totdat het oplicht.</string>
+    <string name="hint_swipe_basic_cell_at_border">Ook indien het gewenste getal niet zichtbaar is, kun je nog steeds vegen in de goede richting. Raak een cel in het midden van de puzzel aan om bekend te worden met de posities van de getallen %1$s.</string>
+
+    <!-- Hint to finish swiping to select a digit. -->
+    <string name="hint_swipe_rotate">Draai de veeglijn om een getal te selecteren. Beëindig de veegbeweging om het opgelichte getal te selecteren.</string>
+    <string name="hint_swipe_release">Stop met vegen om het opgelichte getal te selecteren, of draai de veeglijn om een ander getal te selecteren.</string>
+    <string name="hint_swipe_valid_digit_completed">Je hebt de veegbeweging voor getal %1$s gemaakt.</string>
+    <string name="hint_swipe_invalid_digit_completed">Deze veegrichting onthult alleen een getal in een grotere puzzel.</string>
+
+    <!-- TIP DIALOGS - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- Label for check box "Do not show again" in the tip dialog. -->
+    <string name="dialog_tip_do_not_show_again">Niet meer tonen</string>
+
+    <!-- Title, text, drawable for tip "Order of values in cage" -->
+    <string name="dialog_tip_order_of_values_in_cage_title">Cel waarden</string>
+    <string name="dialog_tip_order_of_values_in_cage_text">De volgorde van de getallen in de cellen is niet belangrijk in een MathDoku+ puzzel. De resultaten van de berekeningen \"2 &#8212; 3\"  en \"3 &#8212; 2\" zijn beide gelijk aan 1. De waarden in de onderstaande afbeelding zijn dus correct.</string>
+
+    <!-- Title, and text for tip "Cheat which reveals the value of a cell". Note "%1$s" in the text will be replaced with an amount and units (e.d. "20 seconds" or "5 minutes"). -->
+    <string name="dialog_tip_cheat_reveal_value_title">Vals spel: waarde onthuld</string>
+    <string name="dialog_tip_cheat_reveal_value_text">Je hebt de waarde van een cel onthuld. Het onthullen van de waarde van een cel is niet nodig om een puzzel op te kunnen lossen omdat elke puzzel een unieke oplossing heeft die gevonden kan worden zonder vals te spelen. \nElke keer als je een waarde onthuld dan wordt de speeltijd verhoogd met %1$s.</string>
+
+    <!-- Title, and text for tip "Cheat which reveals the operator of a cell". Note "%1$s" in the text will be replaced with an amount and units (e.d. "20 seconds" or "5 minutes"). -->
+    <string name="dialog_tip_cheat_reveal_operator_title">Vals spel: operatie teken onthuld</string>
+    <string name="dialog_tip_cheat_reveal_operator_text">Je hebt het operatie teken van een groep onthuld. Het onthullen van een operatie teken van een groep is niet nodig om een puzzel op te kunnen lossen omdat elke puzzel een unieke oplossing heeft die gevonden kan worden zonder vals te spelen. \nElke keer als je een operatie teken van een groep onthuld dan wordt de speeltijd verhoogd met %1$s.</string>
+
+    <!-- Title, and text for tip "Cheat which reveals the solutions of a puzzle". Note "%1$s" in the text will be replaced with an amount and units (e.d. "20 seconds" or "5 minutes"). -->
+    <string name="dialog_tip_cheat_reveal_solution_title">Vals spel: oplossing onthuld</string>
+    <string name="dialog_tip_cheat_reveal_solution_text">Je hebt de oplossing van de puzzel onthuld. De speeltijd is verhoogd met %1$s.</string>
+
+    <!-- Title, and text for tip "Cheat progress checking". Note "%1$s" and "%2$s" in the text will be replaced with an amount and units (e.d. "20 seconds" or "5 minutes"). -->
+    <string name="dialog_tip_cheat_check_progress_title">Vals spel: voortgang gecontroleerd</string>
+    <string name="dialog_tip_cheat_check_progress_text">Je hebt de voortgang van je oplossing gecontroleerd. Cellen met een ongeldige waarde zijn gemarkeerd.\nElke keer als je de voortgang controleert dan wordt de speeltijd verhoogd met %1$s en nog eens met %2$s voor elke nieuwe onjuiste waarde die is gevonden.</string>
+
+    <!-- Title, and text for tip "Incorrect value" which refers to menu option "Check Progress". -->
+    <string name="dialog_tip_incorrect_value_title">Foute waarde</string>
+    <string name="dialog_tip_incorrect_value_text">Je hebt een foute waarde ingevoerd. Je kan deze puzzel niet oplossen zonder deze fout te verbeteren. Gebruik de menu optie \'Controleer voortgang\' om alle cellen met een een foutieve waarde te markeren. Pas op: het gebruiken van \'Controleer voortgang\' leidt tot het verhogen van de speeltijd met een boete om het gebruik van deze functie te ontmoedigen.</string>
+
+    <!-- Title, and text for tip "Statistics" which explains about this new menu option. -->
+    <string name="dialog_tip_statistics_title">Statistieken</string>
+    <string name="dialog_tip_statistics_text">Voor elke puzzel die je hebt gespeeld, worden statistieken bijgehouden. Je kunt de statistieken gebruiken om je historische resultaten te bekijken. Je kunt de statistieken ook gebruiken om je oplossingsstrategieën te verbeteren.\n\nJe kan de statistieken openen vanuit het navigatie menu. Het navigatie menu kan worden geopend door het MathDoku+ aan te tikken.</string>
+
+    <!-- Title, and text for tip "Duplicate value" which gives explanation of the game rule which was violated. -->
+    <string name="dialog_tip_duplicate_value_title">Duplicaat waarde</string>
+    <string name="dialog_tip_duplicate_value_text">Je hebt een waarde ingevoerd die al wordt gebruikt in een andere cel in deze rij of kolom. Elke waarde moet precies eenmaal worden gebruikt in elke rij en eenmaal in elke kolom.</string>
+
+    <!-- Title, and text for tip "Bad cage math" which gives explanation of the game rule which was violated. -->
+    <string name="dialog_tip_bad_cage_math_title">Fout in groep</string>
+    <string name="dialog_tip_bad_cage_math_text">De waarden van de cellen in deze groep zijn niet correct. Het toepassen van de operator op alle cellen moet gelijk zijn aan de uitkomst van de groep.</string>
+
+    <!-- Title, and text for tip "ArchiveAvailable" which explains about this new navigation option. -->
+    <string name="dialog_tip_archive_available_title">Archief beschikbaar</string>
+    <string name="dialog_tip_archive_available_text">Elke puzzel die je hebt aangemaakt wordt bewaard in het \'Archief\'. Het \'Archief\' kan worden gebruikt om puzzels te bekijken die je eerder hebt gespeeld.\n\nJe kan het archief starten vanuit het navigatie menu. Het navigatie menu kan worden geopend door het MathDoku+ aan te tikken.</string>
+
+    <!-- Title, and text for tip "Copy cell values" -->
+    <string name="dialog_tip_copy_cell_values_title">Kopieer cel waarden</string>
+    <string name="dialog_tip_copy_cell_values_text">Wist je al dat je waardes van de ene cel naar een andere cel kan kopiëren? Dit is vooral nuttig in het geval dat je meerdere \'mogelijke\' waarden in een cel hebt ingevoerd en deze combinatie bijvoorbeeld wil hergebruiken voor andere cellen in dezelfde groep.\n\nJe kan de \'kopieer\' toestand starten door het kopieer icoon in de actiebar aan de bovenzijde van de app aan te raken. De waarde(n) van de geselecteerde cel worden gekopieerd naar elke cel die je aanraakt totdat je de \'kopieer\' toestand verlaat.</string>
+
+    <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- Title of statistics activity. -->
+    <string name="statistics_actionbar_title">Statistieken</string>
+    <string name="statistics_not_available">Voor dit niveau zijn nog geen statistieken beschikbaar omdat nog geen puzzels met grootte %1$d zijn gespeeld.</string>
+
+    <!-- Labels for general game statistics. -->
+    <string name="statistics_general_date_created">Aangemaakt op</string>
+    <string name="statistics_general_date_finished">Beëindigd op</string>
+    <string name="statistics_general_replays">Keren gespeeld</string>
+    <string name="statistics_general_elapsed_time">Speeltijd</string>
+    <string name="statistics_general_cheat_penalty_time">Boete vals spel</string>
+
+    <!-- Title and a body which explains the purpose of the chart "Progress". -->
+    <string name="progress_chart_title">Voortgang</string>
+    <string name="progress_chart_body">Deze afbeelding toont de voortgang van het oplossen van deze puzzel. Voor ingevulde cellen wordt niet getoond of de ingevulde waarde (in)correct is. Een cel die mogelijke waarden bevat wordt geteld als een lege cel.</string>
+    <!-- Dimensions displayed in chart "Progress". -->
+    <string name="progress_chart_cells_filled">Cellen ingevuld</string>
+    <string name="progress_chart_cells_revealed">Cellen onthuld</string>
+    <string name="progress_chart_cells_empty">Cellen leeg</string>
+
+    <!-- Title and a body which explains the purpose of the chart "Avoidable moves". -->
+    <string name="avoidable_moves_chart_title">Vermijdbare zetten</string>
+    <string name="avoidable_moves_yaxis_description">Aantal zetten</string>
+    <string name="avoidable_moves_chart_body">Minder ervaren spelers maken meer vermijdbare zetten dan ervaren spelers. Een vermijdbare zet is een zet die niet noodzakelijk is om de puzzel op te lossen. Corrigeren of leegmaken van waarden in een cel, het gebruiken van \"mogelijke waarden\" of terugzetten van waarden zijn zetten die voorkomen moeten worden om een betere speler te worden.</string>
+    <!-- Dimensions displayed in chart "Avoidable moves". -->
+    <string name="avoidable_moves_chart_user_value_replaced">Cel waarden gecorrigeerd</string>
+    <string name="avoidable_moves_chart_maybe_value_used">Mogelijke waarden gebruikt</string>
+    <string name="avoidable_moves_chart_undo_button_used">Terugzetten gebruikt</string>
+    <string name="avoidable_moves_chart_clear_used">Leegmaken (cel of puzzel) gebruikt</string>
+
+    <!-- Title and a body which explains the purpose of the chart "Cheats used". -->
+    <string name="statistics_cheats_used_title">Vals spelen</string>
+    <string name="statistics_cheats_yaxis_description">Aantal keer gebruikt</string>
+    <string name="statistics_cheats_used_body">Je hebt minimaal eenmaal vals gespeeld in dit spel. Onervaren spelers spelen vaker vals dan meer ervaren spelers. Elke puzzel heeft één unieke oplossing die gevonden kan worden zonder vals te spelen.</string>
+    <!-- Dimensions displayed in chart "Cheats used". -->
+    <string name="statistics_cheats_check_progress">Voortgang gecontroleerd</string>
+    <string name="statistics_cheats_cells_revealed">Cellen onthuld</string>
+    <string name="statistics_cheats_operators_revealed">Operatie tekens onthuld</string>
+    <string name="statistics_cheats_solution_revealed">Oplossing onthuld</string>
+
+    <!-- Title and a body which explains the purpose of the chart "Solved games". -->
+    <string name="solved_chart_title">Opgeloste puzzels</string>
+    <string name="solved_chart_body">Deze grafiek toont het aantal puzzels dat opgelost is versus het aantal puzzels die nog niet zijn opgelost of waarvan de oplossing is onthuld.</string>
+
+    <!-- Series used to split charts like "Unsolved games" and "Elapsed time historic". -->
+    <string name="chart_serie_solved">Opgelost</string>
+    <string name="chart_serie_solution_revealed">Oplossing onthuld</string>
+    <string name="chart_serie_unfinished">Onvoltooid</string>
+
+    <!-- Title and a body which explains the purpose of the chart "Elapsed time historic". -->
+    <!-- Series used to split charts like "Unsolved games" and "Elapsed time historic". -->
+    <string name="statistics_elapsed_time_historic_title">Speeltijd</string>
+    <string name="statistics_elapsed_time_historic_body">Deze grafiek toont de verstreken speeltijd per puzzel en de gemiddelde speeltijd. Puzzels zijn gesorteerd in de volgorde waarin ze zijn aangemaakt (dezelfde volgorde als in het Archief). Recente puzzels staan meer aan de rechterzijde van de grafiek. Als je meer ervaring hebt op dit niveau dan zal de gemiddelde speeltijd per puzzel afnemen. Tevens behoren er dan minder puzzels te zijn die niet zijn voltooid of waarvan de oplossing is onthuld.</string>
+    <string name="statistics_elapsed_time_historic_elapsed_time_solved">Speeltijd in opgeloste puzzels</string>
+    <string name="statistics_elapsed_time_historic_elapsed_time_unfinished">Speeltijd in onvoltooide puzzels</string>
+    <string name="statistics_elapsed_time_historic_cheat_time">Vals spel boete</string>
+    <string name="statistics_elapsed_time_historic_solved_average_serie">Gemiddelde (alleen opgeloste puzzels)</string>
+    <string name="statistics_elapsed_time_historic_solved_slowest">Langzaamste</string>
+    <string name="statistics_elapsed_time_historic_solved_average">Gemiddelde</string>
+    <string name="statistics_elapsed_time_historic_solved_fastest">Snelste</string>
+
+    <!-- The lead in text at top of the help dialog. -->
+    <string name="statistics_help_dialog_general">De meeste statistieken zijn gebaseerd op all puzzels die je hebt gespeeld. De grafiek \'Speeltijd\' toont alleen de meest recente puzzels.\nDe statistieken zijn beschikbaar per niveau (d.w.z. de grootte van de puzzel) en voor het geheel. Veeg van links naar rechts om naar het vorige niveau te gaan. Veeg van rechts naar links om naar het volgende niveau te gaan.\n\nGebruik de instellingen om de statistieken weergave aan te passen.</string>
+
+    <!-- STATISTICS  SETTINGS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- Title of statistics preferences activity. -->
+    <string name="statistics_settings_actionbar_title">Statistieken instellingen</string>
+
+    <!-- The title and summary of the "Chart description" option. This option enables or disables displaying the description below the charts in the statistics activity. -->
+    <string name="statistics_setting_chart_description_visible_title">Grafiek toelichting</string>
+    <string name="statistics_setting_chart_description_visible_summary">Toon een toelichting onder elke grafiek</string>
+
+    <!-- The title and summary of the "Maximum games in elapsed time chart" option. This option restricts the number of games which will be displayed in an elapsed time chart. -->
+    <string name="statistics_setting_elapsed_time_chart_maximum_puzzles_title">Aantal puzzels in grafiek speeltijd</string>
+    <string name="statistics_setting_elapsed_time_chart_maximum_puzzles_summary">Toon maximaal %1$d puzzels in de grafiek speeltijd</string>
+
+    <!-- PUZZLE FRAGMENT - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The text which is shown to toggle between the normal and maybe mode. -->
+    <string name="input_mode_normal_long_description">Wissel van invoer van normale waarden naar mogelijke waarden invoer.\nJe kunt ook dubbel tikken op een cel om te wisselen van invoertoestand.</string>
+    <string name="input_mode_maybe_long_description">Wissel van invoer van mogelijke waarden naar normale waarden invoer.\nJe kunt ook dubbel tikken op een cel om te wisselen van invoertoestand.</string>
+
+    <!-- The text which is shown to enable/disable copy mode. -->
+    <string name="action_copy_cell_values_long_description">Kopieer waarden van de geselecteerde cel naar een andere cel.</string>
+
+    <!-- The text for contextual action bar use top copy cell values -->
+    <string name="tap_to_copy_cell_values">Tik cel aan om te kopiëren</string>
+
+    <!-- ARCHIVE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- Title for the archive fragment. -->
+    <string name="archive_action_bar_title">Archief</string>
+
+    <!-- The possible values of the archive filter on the game status. -->
+    <string-array name="archive_status_filter">
+        <item>Alle</item>
+        <item>Onafgerond</item>
+        <item>Opgelost</item>
+        <item>Onthult</item>
+    </string-array>
+
+    <!-- The possible values of the archive filter on game size. -->
+    <string-array name="archive_size_filter">
+        <item>Alle</item>
+        <item>4x4</item>
+        <item>5x5</item>
+        <item>6x6</item>
+        <item>7x7</item>
+        <item>8x8</item>
+        <item>9x9</item>
+    </string-array>
+
+    <!-- The label in the pager bar for the "puzzle number" -->
+    <string name="archive_puzzle_number">Puzzelnr.</string>
+
+    <!-- The label of the button below a puzzle. -->
+    <string name="archive_continue_unfinished_puzzle">Verder gaan met puzzel</string>
+    <string name="archive_play_similar_puzzle">Speel een vergelijkbaar spel</string>
+
+    <!-- Title for the archive settings fragment. -->
+    <string name="archive_settings_action_bar_title">Archief instellingen</string>
+
+    <!-- The title and summary of the "Show status filter" option. This option enables or disables showing of the status filter in the action bar of the archive. -->
+    <string name="archive_settings_show_status_filter_title">Toon status filter</string>
+    <string name="archive_settings_show_status_filter_enabled">Sta filtering op status van de puzzel toe</string>
+    <string name="archive_settings_show_status_filter_disabled">Verberg het filter voor het selecteren op status</string>
+
+    <!-- The title and summary of the "Show size filter" option. This option enables or disables showing of the size filter in the action bar of the archive. -->
+    <string name="archive_settings_show_size_filter_title">Toon grootte filter</string>
+    <string name="archive_settings_show_size_filter_enabled">Sta filtering op grootte van de puzzel toe</string>
+    <string name="archive_settings_show_size_filter_disabled">Verberg het filter voor het selecteren op grootte</string>
+
+    <!-- The title and summary of the "Chart description" option. This option enables or disables displaying the description below the charts in the archive activity. -->
+    <string name="archive_setting_show_chart_description_title">Grafiek toelichting</string>
+    <string name="archive_setting_show_chart_description_summary">Toon een toelichting onder elke grafiek</string>
+
+    <!-- The lead in text at top of the help dialog. -->
+    <string name="archive_help_dialog_general">Het archief bevat de historie van alle puzzels die je hebt gespeeld. Veeg van links naar rechts om naar een oudere puzzel te gaan. Veeg van rechts naar links om naar een nieuwere puzzel te gaan.\n\nJe kan de filters gebruiken om alleen puzzels te bekijken die een bepaalde status of grootte hebben. Filters kunnen aan- en uitgezet worden in de instellingen. Let op: een filter wordt alleen getoond indien het meerdere waarden bevat.</string>
+
+    <!-- SHARED PUZZLE  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- Subject and body of share email. -->
+    <string name="share_puzzle_subject">MathDoku+ puzzel delen</string>
+    <string name="share_puzzle_link_description">MathDoku+ puzzel</string>
+    <string name="share_unfinished_puzzle_body">Ik wil deze %1$s met je delen. Kies, na het klikken op de link, voor de MathDoku+ app om de puzzel te bekijken.%2$sIn het geval dat je MathDoku+ voor Android nog niet hebt geïnstalleerd, download het dan van %3$s voordat je op de puzzel link klikt.%4$sIn het geval dat bovenstaande tekst geen links bevat, gebruik dan alsjeblieft een van de onderstaande links:%5$s - Bekijken MathDoku+ puzzel: %6$s - Download MathDoku+: %7$s</string>
+    <string name="share_finished_puzzle_body">Ik heb deze %1$s opgelost in %2$s. Kan jij het sneller? Kies, na het klikken op de link, voor de MathDoku+ app om de puzzel te bekijken.%3$sIn het geval dat je MathDoku+ voor Android nog niet hebt geïnstalleerd, download het dan van %4$s voordat je op de puzzel link klikt.%5$sIn het geval dat bovenstaande tekst geen links bevat, gebruik dan alsjeblieft een van de onderstaande links:%6$s - Bekijken MathDoku+ puzzel: %7$s - Download MathDoku+: %8$s</string>
+
+    <!-- Title for the shared puzzle fragment. -->
+    <string name="shared_puzzle_action_bar_title">Voorvertoning gedeelde puzzel</string>
+
+    <!-- Introduction text at top of screen. -->
+    <string name="shared_puzzle_introduction">Deze puzzel is door middel van een email link naar je verstuurd. Zie email voor meer details indien toegevoegd door de verzender. In het geval dat je er voor kiest om deze puzzel te spelen, dan wordt deze ook aan je archief toegevoegd.</string>
+
+    <!-- The label of the button below a puzzle. -->
+    <string name="shared_puzzle_play_button">Speel deze puzzel</string>
+
+    <!-- The title and message for the dialog in which the user is informed that the shared puzzle already exists in the archive. -->
+    <string name="shared_puzzle_exists_title">Puzzel duplicaat</string>
+    <string name="shared_puzzle_exists_message">Deze puzzel bestaat al in jouw archief (zie puzzel %1$d). Als je deze puzzel speelt dan worden de oplossing en statistieken van de vorige oplossing overschreven.</string>
+    <string name="shared_puzzle_exists_positive_button">Ja</string>
+    <string name="shared_puzzle_exists_negative_button">Nee</string>
+
+    <!-- LEADERBOARD - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- Title of leaderboard activity. -->
+    <string name="leaderboard_actionbar_title">Klassementen</string>
+
+    <!-- The text of the help dialog. -->
+    <string name="leaderboard_help_dialog_general">Als je inlogt met Google+ dan wordt de beste score voor ieder type puzzel bijgewerkt in de klassementen.\nVoor elk klassement wordt je beste score en positie in het klassement getoond mits beschikbaar. Let op dat je positie wijzigt zelfs indien je niet meer speelt in het klassement doordat andere spelers een betere score halen. Raak een klassement aan om aanvullende details te bekijken.\n\nDe klassementen zijn gegroepeerd op grootte van de puzzel. Veeg van rechts naar links om de klassementen van grotere puzzels te bekijken. Veeg van links naar rechts om de klassementen van kleinere puzzels te bekijken.\n\nJe kunt een filter selecteren om het aantal getoonde klassementen te verminderen.</string>
+
+    <!-- The text in the leaderboards overview in case the user has not played this leaderboard. -->
+    <string name="leaderboard_not_played">Je hebt dit klassement nog niet gespeeld.</string>
+
+    <!-- The text in the leaderboards overview in case the user has played any leaderboards and the leaderboard filter is set to "my leaderboards only". -->
+    <string name="leaderboard_none_played">Je hebt nog geen enkele puzzel van grootte %1$d gespeeld. Wijzig het bovenstaande filter om de klassementen te bekijken van andere spelers.</string>
+
+    <!-- The text in the leaderboards overview in case the user has played this leaderboard. -->
+    <string name="leaderboard_score_label">Jouw beste score</string>
+
+    <!-- The possible values of the filters on the leaderboard overview. Do not alter the order of this list. -->
+    <string-array name="leaderboard_filter">
+        <item>Alle klassementen</item>
+        <item>Mijn klassementen alleen</item>
+        <item>Verborgen operatie tekens alleen</item>
+        <item>Zichtbare operatie tekens alleen</item>
+    </string-array>
+
+    <!-- The title and message for the dialog which shows the progress in updating the leaderboards. -->
+    <string name="dialog_leaderboard_rank_update_title">Bijwerken klassementen</string>
+    <string name="dialog_leaderboard_rank_update_selected_leaderboards_message">De klassementen worden nu bijgewerkt met gegevens van Google+. In het geval dat je met dit Google+ account ook MathDoku+ hebt gespeeld op een ander toestel dan is het wellicht nodig on de klassementen handmatig te verversen indien niet alle klassementen worden getoond.\n\nAls je deze boodschap annuleert dan bevat het klassementenoverzicht mogelijk informatie die niet actueel is.</string>
+    <string name="dialog_leaderboard_rank_update_all_leaderboards_message">Alle klassementen worden nu bijgewerkt met gegevens van Google+.</string>
+
+    <!-- The label above the score in the top score dialog. -->
+    <string name="dialog_top_score_label">Nieuwe topscore!</string>
+
+    <!-- The label below the score containing the position in the ranking. %1$s wil be filled with "1st" in case the user achieves the first rank. -->
+    <string name="dialog_top_score_rank">%1$s plaats</string>
+
+    <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+    <!-- The message that appears when the player has solved the puzzle. -->
+    <string name="main_ui_solved_messsage">Opgelost!</string>
+
+    <!-- The message shown when no errors found when checking progress. -->
+    <string name="ProgressOK">Alles klopt tot nu toe</string>
+    <!-- The message shown when error(s) found when checking progress. -->
+    <string name="ProgressBad">Je hebt een fout gemaakt</string>
+
+    <!-- Units for time. -->
+    <string name="time_unit_seconds_singular">seconde</string>
+    <string name="time_unit_seconds_plural">seconden</string>
+    <string name="time_unit_minutes_singular">minuut</string>
+    <string name="time_unit_minutes_plural">minuten</string>
+    <string name="time_unit_hours_singular">uur</string>
+    <string name="time_unit_hours_plural">uren</string>
+    <string name="time_unit_days_singular">dag</string>
+    <string name="time_unit_days_plural">dagen</string>
+
+    <!-- Connection word for the last two elements in a list. Example: "1 minute and 15 seconds" or "1, 2, 3 and 4)" -->
+    <string name="connector_last_two_elements">en</string>
+</resources>

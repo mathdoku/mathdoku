@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- See $project/app/src-templates/debug/res/values/google_play_services for the -->
+<!-- template of this file. When building the project with Gradle this template -->
+<!-- will be copied from the template source folder to the source folder. -->
+<!--  -->
+<!-- DO NOT ALTER THE SOURCE FILE DIRECTLTY IN CASE YOU WANT TO PERSIST YOUR -->
+<!-- CHANGES. PERSISTENT CHANGES SHOULD ALWAYS BE MADE IN THE TEMPLATE FILE -->
+<!-- ONLY. -->
+<resources>
+    <!-- Identifiers for Google Play Service as used for DEVELOPMENT (DBUG) TESTING -->
+
+    <!-- Note: the game services definition on Google Play also includes definitions -->
+	<!-- for archievements as this is required in order to release the Play Services. -->
+	<!-- The achievement definitions are not used in the app and therefore have not -->
+	<!-- been added to the list below.  -->
+
+    <!-- Google Play Games Services id's when app is build in DEBUG mode. -->
+    <string name="app_id">282401107486</string>
+    <string name="leaderboard_4x4__hidden_operators__1_star">CgkIntyrg5wIEAIQEw</string>
+    <string name="leaderboard_4x4__hidden_operators__2_stars">CgkIntyrg5wIEAIQFA</string>
+    <string name="leaderboard_4x4__hidden_operators__3_stars">CgkIntyrg5wIEAIQFQ</string>
+    <string name="leaderboard_4x4__hidden_operators__4_stars">CgkIntyrg5wIEAIQFg</string>
+    <string name="leaderboard_4x4__hidden_operators__5_stars">CgkIntyrg5wIEAIQFw</string>
+    <string name="leaderboard_4x4__visible_operators__1_star">CgkIntyrg5wIEAIQGA</string>
+    <string name="leaderboard_4x4__visible_operators__2_stars">CgkIntyrg5wIEAIQGQ</string>
+    <string name="leaderboard_4x4__visible_operators__3_stars">CgkIntyrg5wIEAIQGg</string>
+    <string name="leaderboard_4x4__visible_operators__4_stars">CgkIntyrg5wIEAIQGw</string>
+    <string name="leaderboard_4x4__visible_operators__5_stars">CgkIntyrg5wIEAIQHA</string>
+    <string name="leaderboard_5x5__hidden_operators__1_star">CgkIntyrg5wIEAIQHQ</string>
+    <string name="leaderboard_5x5__hidden_operators__2_stars">CgkIntyrg5wIEAIQHg</string>
+    <string name="leaderboard_5x5__hidden_operators__3_stars">CgkIntyrg5wIEAIQHw</string>
+    <string name="leaderboard_5x5__hidden_operators__4_stars">CgkIntyrg5wIEAIQIA</string>
+    <string name="leaderboard_5x5__hidden_operators__5_stars">CgkIntyrg5wIEAIQIQ</string>
+    <string name="leaderboard_5x5__visible_operators__1_star">CgkIntyrg5wIEAIQIg</string>
+    <string name="leaderboard_5x5__visible_operators__2_stars">CgkIntyrg5wIEAIQIw</string>
+    <string name="leaderboard_5x5__visible_operators__3_stars">CgkIntyrg5wIEAIQJA</string>
+    <string name="leaderboard_5x5__visible_operators__4_stars">CgkIntyrg5wIEAIQJQ</string>
+    <string name="leaderboard_5x5__visible_operators__5_stars">CgkIntyrg5wIEAIQKw</string>
+    <string name="leaderboard_6x6__hidden_operators__1_star">CgkIntyrg5wIEAIQLA</string>
+    <string name="leaderboard_6x6__hidden_operators__2_stars">CgkIntyrg5wIEAIQLQ</string>
+    <string name="leaderboard_6x6__hidden_operators__3_stars">CgkIntyrg5wIEAIQLg</string>
+    <string name="leaderboard_6x6__hidden_operators__4_stars">CgkIntyrg5wIEAIQLw</string>
+    <string name="leaderboard_6x6__hidden_operators__5_stars">CgkIntyrg5wIEAIQMA</string>
+    <string name="leaderboard_6x6__visible_operators__1_star">CgkIntyrg5wIEAIQMQ</string>
+    <string name="leaderboard_6x6__visible_operators__2_stars">CgkIntyrg5wIEAIQMg</string>
+    <string name="leaderboard_6x6__visible_operators__3_stars">CgkIntyrg5wIEAIQMw</string>
+    <string name="leaderboard_6x6__visible_operators__4_stars">CgkIntyrg5wIEAIQNA</string>
+    <string name="leaderboard_6x6__visible_operators__5_stars">CgkIntyrg5wIEAIQNQ</string>
+    <string name="leaderboard_7x7__hidden_operators__1_star">CgkIntyrg5wIEAIQNg</string>
+    <string name="leaderboard_7x7__hidden_operators__2_stars">CgkIntyrg5wIEAIQNw</string>
+    <string name="leaderboard_7x7__hidden_operators__3_stars">CgkIntyrg5wIEAIQOA</string>
+    <string name="leaderboard_7x7__hidden_operators__4_stars">CgkIntyrg5wIEAIQOQ</string>
+    <string name="leaderboard_7x7__hidden_operators__5_stars">CgkIntyrg5wIEAIQOg</string>
+    <string name="leaderboard_7x7__visible_operators__1_star">CgkIntyrg5wIEAIQOw</string>
+    <string name="leaderboard_7x7__visible_operators__2_stars">CgkIntyrg5wIEAIQPA</string>
+    <string name="leaderboard_7x7__visible_operators__3_stars">CgkIntyrg5wIEAIQPQ</string>
+    <string name="leaderboard_7x7__visible_operators__4_stars">CgkIntyrg5wIEAIQPg</string>
+    <string name="leaderboard_7x7__visible_operators__5_stars">CgkIntyrg5wIEAIQPw</string>
+    <string name="leaderboard_8x8__hidden_operators__1_star">CgkIntyrg5wIEAIQQA</string>
+    <string name="leaderboard_8x8__hidden_operators__2_stars">CgkIntyrg5wIEAIQQQ</string>
+    <string name="leaderboard_8x8__hidden_operators__3_stars">CgkIntyrg5wIEAIQQg</string>
+    <string name="leaderboard_8x8__hidden_operators__4_stars">CgkIntyrg5wIEAIQQw</string>
+    <string name="leaderboard_8x8__hidden_operators__5_stars">CgkIntyrg5wIEAIQRA</string>
+    <string name="leaderboard_8x8__visible_operators__1_star">CgkIntyrg5wIEAIQRQ</string>
+    <string name="leaderboard_8x8__visible_operators__2_stars">CgkIntyrg5wIEAIQRg</string>
+    <string name="leaderboard_8x8__visible_operators__3_stars">CgkIntyrg5wIEAIQRw</string>
+    <string name="leaderboard_8x8__visible_operators__4_stars">CgkIntyrg5wIEAIQSA</string>
+    <string name="leaderboard_8x8__visible_operators__5_stars">CgkIntyrg5wIEAIQSQ</string>
+    <string name="leaderboard_9x9__hidden_operators__1_star">CgkIntyrg5wIEAIQSg</string>
+    <string name="leaderboard_9x9__hidden_operators__2_stars">CgkIntyrg5wIEAIQSw</string>
+    <string name="leaderboard_9x9__hidden_operators__3_stars">CgkIntyrg5wIEAIQTA</string>
+    <string name="leaderboard_9x9__hidden_operators__4_stars">CgkIntyrg5wIEAIQTQ</string>
+    <string name="leaderboard_9x9__hidden_operators__5_stars">CgkIntyrg5wIEAIQTg</string>
+    <string name="leaderboard_9x9__visible_operators__1_star">CgkIntyrg5wIEAIQTw</string>
+    <string name="leaderboard_9x9__visible_operators__2_stars">CgkIntyrg5wIEAIQUA</string>
+    <string name="leaderboard_9x9__visible_operators__3_stars">CgkIntyrg5wIEAIQUQ</string>
+    <string name="leaderboard_9x9__visible_operators__4_stars">CgkIntyrg5wIEAIQUg</string>
+    <string name="leaderboard_9x9__visible_operators__5_stars">CgkIntyrg5wIEAIQUw</string>
+
+</resources>
