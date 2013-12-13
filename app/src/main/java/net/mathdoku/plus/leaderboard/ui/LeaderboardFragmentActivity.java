@@ -3,6 +3,8 @@ package net.mathdoku.plus.leaderboard.ui;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.leaderboard.LeaderboardConnector;
 import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter;
+import net.mathdoku.plus.tip.TipLeaderboardCreateGame;
+import net.mathdoku.plus.tip.TipLeaderboardViewDetails;
 import net.mathdoku.plus.ui.GooglePlusSignInDialog;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 import net.mathdoku.plus.ui.base.GooglePlayServiceFragmentActivity;
@@ -278,14 +280,33 @@ public class LeaderboardFragmentActivity extends
 						.getString(
 								R.string.dialog_leaderboard_rank_update_selected_leaderboards_message));
 		mLeaderboardRankUpdaterProgressDialog.setCancelable(true);
-		mLeaderboardRankUpdaterProgressDialog.show();
 		mLeaderboardRankUpdaterProgressDialog
 				.setOnDismissListener(new OnDismissListener() {
 					@Override
 					public void onDismiss(DialogInterface dialog) {
 						mLeaderboardRankUpdaterProgressDialog = null;
+						if (TipLeaderboardViewDetails
+								.toBeDisplayed(mMathDokuPreferences)) {
+							new TipLeaderboardViewDetails(
+									LeaderboardFragmentActivity.this);
+						}
+						if (TipLeaderboardCreateGame
+								.toBeDisplayed(mMathDokuPreferences)) {
+							new TipLeaderboardCreateGame(
+									LeaderboardFragmentActivity.this);
+						}
 					}
 				});
+		mLeaderboardRankUpdaterProgressDialog.show();
+		if (mLeaderboardRankUpdaterProgressDialog.hasNoLeaderboardUpdated()) {
+			// No dialog was shown and the onDismissListener is not called.
+			if (TipLeaderboardViewDetails.toBeDisplayed(mMathDokuPreferences)) {
+				new TipLeaderboardViewDetails(LeaderboardFragmentActivity.this);
+			}
+			if (TipLeaderboardCreateGame.toBeDisplayed(mMathDokuPreferences)) {
+				new TipLeaderboardCreateGame(LeaderboardFragmentActivity.this);
+			}
+		}
 	}
 
 	@Override
@@ -306,9 +327,8 @@ public class LeaderboardFragmentActivity extends
 	}
 
 	/**
-	 * Initializes/refreshes the filter spinner.
-	 * Returns: True in case the filter spinner should be shown. False
-	 * otherwise.
+	 * Initializes/refreshes the filter spinner. Returns: True in case the
+	 * filter spinner should be shown. False otherwise.
 	 */
 	void setFilterSpinner(LeaderboardFilter leaderboardFilter) {
 		Spinner spinner = (Spinner) mActionBar.getCustomView().findViewById(

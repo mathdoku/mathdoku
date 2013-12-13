@@ -67,6 +67,15 @@ public class Preferences {
 	private final static String LEADERBOARD_TAB_LAST_SHOWED = "leaderboard_tab_last_showed";
 	private final static int LEADERBOARD_TAB_LAST_SHOWED_DEFAULT = 0;
 
+	private final static String LEADERBOARD_DETAILS_VIEWED_COUNTER = "leaderboard_details_viewed_counter";
+	private final static int LEADERBOARD_DETAILS_VIEWED_COUNTER_DEFAULT = 0;
+
+	private final static String LEADERBOARD_GAMES_CREATED_COUNTER = "leaderboard_games_created_counter";
+	private final static int LEADERBOARD_GAMES_CREATED_COUNTER_DEFAULT = 0;
+
+	private final static String LEADERBOARD_OVERVIEW_VIEWED_COUNTER = "leaderboard_overview_viewed";
+	private final static int LEADERBOARD_OVERVIEW_VIEWED_COUNTER_DEFAULT = 0;
+
 	private final static String PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE = "puzzle_hide_google_plus_sign_in_till_next_top_score";
 	private final static boolean PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE_DEFAULT = false;
 
@@ -337,6 +346,14 @@ public class Preferences {
 					LEADERBOARD_ALL_INITIALIZED_DEFAULT);
 			editor.putString(LEADERBOARD_FILTER_LAST_VALUE,
 					LEADERBOARD_FILTER_LAST_VALUE_DEFAULT);
+		}
+		if (previousInstalledVersion < 595 && currentVersion >= 595) {
+			editor.putInt(LEADERBOARD_DETAILS_VIEWED_COUNTER,
+					LEADERBOARD_DETAILS_VIEWED_COUNTER_DEFAULT);
+			editor.putInt(LEADERBOARD_GAMES_CREATED_COUNTER,
+					LEADERBOARD_GAMES_CREATED_COUNTER_DEFAULT);
+			editor.putInt(LEADERBOARD_OVERVIEW_VIEWED_COUNTER,
+					LEADERBOARD_OVERVIEW_VIEWED_COUNTER_DEFAULT);
 		}
 
 		// Save
@@ -1207,5 +1224,70 @@ public class Preferences {
 		editor.putString(LEADERBOARD_FILTER_LAST_VALUE,
 				leaderboardFilter.toString());
 		editor.apply();
+	}
+
+	/**
+	 * Get the number of times the details of a leaderboard are viewed.
+	 * 
+	 * @return The number of times the details of a leaderboard are viewed.
+	 */
+	public int getLeaderboardsDetailsViewed() {
+		return mSharedPreferences.getInt(LEADERBOARD_DETAILS_VIEWED_COUNTER,
+				LEADERBOARD_DETAILS_VIEWED_COUNTER_DEFAULT);
+	}
+
+	/**
+	 * Increase the number of times the details of a leaderboard are viewed.
+	 */
+	public void increaseLeaderboardsDetailsViewed() {
+		Editor editor = mSharedPreferences.edit();
+		editor.putInt(LEADERBOARD_DETAILS_VIEWED_COUNTER,
+				getLeaderboardsDetailsViewed() + 1);
+		editor.apply();
+
+	}
+
+	/**
+	 * Get the number of times a game for a leaderboard is created.
+	 * 
+	 * @return The number of times a game for a leaderboard is created.
+	 */
+	public int getLeaderboardsGamesCreated() {
+		return mSharedPreferences.getInt(LEADERBOARD_GAMES_CREATED_COUNTER,
+				LEADERBOARD_GAMES_CREATED_COUNTER_DEFAULT);
+	}
+
+	/**
+	 * Increase the number of times a game for a leaderboard is created.
+	 */
+	public void increaseLeaderboardsGamesCreated() {
+		Editor editor = mSharedPreferences.edit();
+		editor.putInt(LEADERBOARD_GAMES_CREATED_COUNTER,
+				getLeaderboardsGamesCreated() + 1);
+		editor.apply();
+
+	}
+
+	/**
+	 * Get the number of times the leaderboards overview is started to be
+	 * viewed.
+	 * 
+	 * @return The number of times the leaderboards overview is started to be
+	 *         viewed.
+	 */
+	public int getLeaderboardsOverviewViewed() {
+		return mSharedPreferences.getInt(LEADERBOARD_OVERVIEW_VIEWED_COUNTER,
+				LEADERBOARD_OVERVIEW_VIEWED_COUNTER_DEFAULT);
+	}
+
+	/**
+	 * Increase the number of times the leaderboards have been viewed.
+	 */
+	public void increaseLeaderboardsOverviewViewed() {
+		Editor editor = mSharedPreferences.edit();
+		editor.putInt(LEADERBOARD_OVERVIEW_VIEWED_COUNTER,
+				getLeaderboardsOverviewViewed() + 1);
+		editor.apply();
+
 	}
 }

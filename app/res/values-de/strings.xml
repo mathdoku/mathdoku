@@ -381,6 +381,16 @@
     <string name="dialog_tip_copy_cell_values_title">Copy cell values</string>
     <string name="dialog_tip_copy_cell_values_text">Did you know that you can copy cell values from one cell to another cell? This is especially useful in case you have entered multiple maybe values into a cell and for example want to reuse the same combination for other cells in the same cage.\n\nYou can enter the \'copy\' mode by selecting the copy icon in the action bar on top of the app. The values of the selected cell will be copied to each cell to tap until you exit the \'copy\' mode.</string>
 
+    <!-- Title, and text for tip "Leaderboard details" -->
+    <!-- TODO -->
+    <string name="dialog_tip_leaderboard_view_details_title">Leaderboard details</string>
+    <string name="dialog_tip_leaderboard_view_details_text">Tap a leaderboard to view more details about the leaderboard. You can view the scores and the ranking of other Mathdoku+ players in your own circles or the entire world!</string>
+
+    <!-- Title, and text for tip "Leaderboard new game" -->
+    <!-- TODO -->
+    <string name="dialog_tip_leaderboard_create_game_details_title">Play leaderboard</string>
+    <string name="dialog_tip_leaderboard_create_game_text">Do you know that a long tap on a leaderboard will create a new game for the leaderboard?</string>
+
     <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -563,7 +573,7 @@
     <string name="leaderboard_actionbar_title">Leaderboards</string>
 
     <!-- The text of the help dialog. -->
-    <string name="leaderboard_help_dialog_general">In case you sign in to Google+ your best score for each type of puzzle is updated in the leaderboards.\nFor each leaderboard your best score and current ranking are displayed if available. Note that your rank changes even in case you don\'t play on this leaderboard any more as other player achieve a better score. Tap a leaderboard to view additional details.\n\nThe leaderboards are grouped per size of puzzle. Swipe from right to left to view the leaderboards of biggers puzzles. Swipe from left to right to view the leaderboard from smaller puzzles.\n\nYou can select a filter to reduce the number of leaderboards shown. </string>
+    <string name="leaderboard_help_dialog_general">In case you sign in to Google+ your best score for each type of puzzle is updated in the leaderboards.\nFor each leaderboard your best score and current ranking are displayed if available. Note that your rank changes even in case you don\'t play on this leaderboard any more as other player achieve a better score. Tap a leaderboard to view additional details. Long tap to start a new game for the leaderboard.\n\nThe leaderboards are grouped per size of puzzle. Swipe from right to left to view the leaderboards of biggers puzzles. Swipe from left to right to view the leaderboard from smaller puzzles.\n\nYou can select a filter to reduce the number of leaderboards shown. </string>
 
     <!-- The text in the leaderboards overview in case the user has not played this leaderboard. -->
     <string name="leaderboard_not_played">You have not yet played this leaderboard.</string>

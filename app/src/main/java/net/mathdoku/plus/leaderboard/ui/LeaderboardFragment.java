@@ -1,5 +1,6 @@
 package net.mathdoku.plus.leaderboard.ui;
 
+import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
 import net.mathdoku.plus.leaderboard.LeaderboardType;
@@ -7,6 +8,7 @@ import net.mathdoku.plus.leaderboard.ui.LeaderboardFragmentActivity.LeaderboardF
 import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter;
 import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter.ScoreOrigin;
 import net.mathdoku.plus.storage.database.LeaderboardRankRow;
+import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 import net.mathdoku.plus.ui.base.GooglePlayServiceFragmentActivity;
 import net.mathdoku.plus.util.Util;
 
@@ -31,6 +33,12 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 
 	public final static String ARG_GRID_SIZE = "Leaderboard.arg_grid_size";
 	public final static String ARG_FILTER = "Leaderboard.arg_filter";
+
+	// Intent parameters for creating a new game of specified type
+	public static final String NEW_PUZZLE_FOR_LEADERBOARD = "CreateNewGameForLeaderboard";
+	public static final String NEW_PUZZLE_FOR_LEADERBOARD_SIZE = "CreateNewGameForLeaderboard_Size";
+	public static final String NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS = "CreateNewGameForLeaderboard_HideOperators";
+	public static final String NEW_PUZZLE_FOR_LEADERBOARD_PUZZLE_COMPLEXITY = "CreateNewGameForLeaderboard_PuzzleComplexity";
 
 	// The view holding all data of this fragment.
 	private View mRootView;
@@ -235,18 +243,56 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 									.getLeaderboardIntent(mLeaderboardId);
 							if (intent != null) {
 								// The OnActivityResult is handled by super
-								// class
-								// GooglePlayServiceFragmentActivity.
-								// Therefore the
-								// return code of that class is used here.
+								// class GooglePlayServiceFragmentActivity.
+								// Therefore the return code of that class is
+								// used here.
 								startActivityForResult(
 										intent,
 										GooglePlayServiceFragmentActivity.RC_UNUSED);
+
+								Preferences.getInstance()
+										.increaseLeaderboardsDetailsViewed();
 							}
 						}
 					}
 				}
 			});
+
+			// Attach a long click listener to start a new game for the selected
+			// leaderboard
+			mView.setOnLongClickListener(new View.OnLongClickListener() {
+				@Override
+				public boolean onLongClick(View v) {
+					Activity activity = getActivity();
+
+					// Finish the leaderboard activity.
+					activity.finish();
+
+					// Restart the main activity of MathDoku
+					Intent intent = new Intent(activity,
+							PuzzleFragmentActivity.class)
+							.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+									+ Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					if (intent != null) {
+						intent.putExtra(NEW_PUZZLE_FOR_LEADERBOARD, true);
+						intent.putExtra(NEW_PUZZLE_FOR_LEADERBOARD_SIZE,
+								mGridSize);
+						intent.putExtra(
+								NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS,
+								mHideOperators);
+						intent.putExtra(
+								NEW_PUZZLE_FOR_LEADERBOARD_PUZZLE_COMPLEXITY,
+								mPuzzleComplexity.toString());
+						startActivity(intent);
+
+						Preferences.getInstance()
+								.increaseLeaderboardsGamesCreated();
+					}
+
+					return true;
+				}
+			});
+
 		}
 
 		/**

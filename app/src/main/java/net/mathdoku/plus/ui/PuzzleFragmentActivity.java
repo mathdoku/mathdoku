@@ -16,6 +16,7 @@ import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
 import net.mathdoku.plus.leaderboard.LeaderboardConnector;
 import net.mathdoku.plus.leaderboard.LeaderboardRankUpdater;
 import net.mathdoku.plus.leaderboard.LeaderboardType;
+import net.mathdoku.plus.leaderboard.ui.LeaderboardFragment;
 import net.mathdoku.plus.leaderboard.ui.LeaderboardFragmentActivity;
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.statistics.GridStatistics;
@@ -926,13 +927,37 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 	/**
 	 * Shows the dialog in which the parameters have to specified which will be
-	 * used to create the new game.
+	 * used to create the new game. The parameters will be defaulted to the
+	 * values used to create the last puzzle (as stored in the preferences).
 	 * 
 	 * @param cancelable
 	 *            True in case the dialog can be cancelled.
 	 */
 	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	private void showDialogNewGame(final boolean cancelable) {
+		showDialogNewGame(cancelable,
+				mMathDokuPreferences.getPuzzleParameterSize(),
+				mMathDokuPreferences.getPuzzleParameterOperatorsVisible(),
+				mMathDokuPreferences.getPuzzleParameterComplexity());
+	}
+
+	/**
+	 * Shows the dialog in which the parameters have to specified which will be
+	 * used to create the new game. The parameters will be defaulted to the
+	 * given values.
+	 * 
+	 * @param cancelable
+	 *            True in case the dialog can be cancelled.
+	 * @param gridSize
+	 *            The grid size of the new puzzle.
+	 * @param hideOperators
+	 *            True in case operators should be hidden in the new puzzle.
+	 * @param puzzleComplexity
+	 *            Complexity of the puzzle new puzzle.
+	 */
+	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+	private void showDialogNewGame(final boolean cancelable, int gridSize,
+			boolean hideOperators, PuzzleComplexity puzzleComplexity) {
 		// Get view and put relevant information into the view.
 		LayoutInflater layoutInflater = LayoutInflater.from(this);
 		View view = layoutInflater.inflate(R.layout.puzzle_parameter_dialog,
@@ -963,12 +988,12 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		puzzleParameterSizeSpinner.setAdapter(adapterStatus);
 
-		// Restore value which were used when generating the previous game
-		puzzleParameterSizeSpinner.setSelection(mMathDokuPreferences
-				.getPuzzleParameterSize() - OFFSET_INDEX_TO_GRID_SIZE);
-		puzzleParameterDisplayOperatorsCheckBox.setChecked(mMathDokuPreferences
-				.getPuzzleParameterOperatorsVisible());
-		switch (mMathDokuPreferences.getPuzzleParameterComplexity()) {
+		// Initialize the parameters to the given values
+		puzzleParameterSizeSpinner.setSelection(gridSize
+				- OFFSET_INDEX_TO_GRID_SIZE);
+		puzzleParameterDisplayOperatorsCheckBox
+				.setChecked(hideOperators == false);
+		switch (puzzleComplexity) {
 		case RANDOM:
 			puzzleParameterDifficultyRandom.setChecked(true);
 			puzzleParameterDifficultyRatingBar.setRating(0);
@@ -1118,8 +1143,30 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 			if (bundle != null) {
 				if (bundle
-						.getBoolean(SharedPuzzleActivity.RESTART_LAST_GAME_SHARED_PUZZLE)) {
+						.containsKey(SharedPuzzleActivity.RESTART_LAST_GAME_SHARED_PUZZLE)
+						&& bundle
+								.getBoolean(SharedPuzzleActivity.RESTART_LAST_GAME_SHARED_PUZZLE)) {
 					restartLastGame();
+				}
+				if (bundle
+						.containsKey(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD)
+						&& bundle
+								.getBoolean(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD)
+						&& bundle
+								.containsKey(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_SIZE)
+						&& bundle
+								.containsKey(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS)
+						&& bundle
+								.containsKey(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_PUZZLE_COMPLEXITY)) {
+					int gridSize = bundle
+							.getInt(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_SIZE);
+					boolean hideOperators = bundle
+							.getBoolean(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS);
+					PuzzleComplexity puzzleComplexity = PuzzleComplexity
+							.valueOf(bundle
+									.getString(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_PUZZLE_COMPLEXITY));
+					showDialogNewGame(true, gridSize, hideOperators,
+							puzzleComplexity);
 				}
 			}
 		}
@@ -1170,10 +1217,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 				startActivity(intentStatistics);
 			} else if (mNavigationDrawerItems[position].equals(getResources()
 					.getString(R.string.action_leaderboards))) {
-				Intent intentLeaderboards = new Intent(
-						PuzzleFragmentActivity.this,
-						LeaderboardFragmentActivity.class);
-				startActivity(intentLeaderboards);
+				startLeaderboardsOverview();
 			}
 			mDrawerLayout.closeDrawer(mDrawerListView);
 		}
@@ -1360,9 +1404,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 		// After the user has successfully signed to Google+, the leaderboards
 		// view is automatically started.
-		Intent intentLeaderboards = new Intent(this,
-				LeaderboardFragmentActivity.class);
-		startActivity(intentLeaderboards);
+		startLeaderboardsOverview();
 	}
 
 	/**
@@ -1436,5 +1478,15 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 								replayPuzzle(solvingAttemptId);
 							}
 						}).show();
+	}
+
+	/**
+	 * Start the leaderboards overview activity.
+	 */
+	private void startLeaderboardsOverview() {
+		Intent intentLeaderboards = new Intent(this,
+				LeaderboardFragmentActivity.class);
+		startActivity(intentLeaderboards);
+		mMathDokuPreferences.increaseLeaderboardsOverviewViewed();
 	}
 }

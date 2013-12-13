@@ -366,6 +366,14 @@
     <string name="dialog_tip_copy_cell_values_title">Kopieer cel waarden</string>
     <string name="dialog_tip_copy_cell_values_text">Wist je al dat je waardes van de ene cel naar een andere cel kan kopiëren? Dit is vooral nuttig in het geval dat je meerdere \'mogelijke\' waarden in een cel hebt ingevoerd en deze combinatie bijvoorbeeld wil hergebruiken voor andere cellen in dezelfde groep.\n\nJe kan de \'kopieer\' toestand starten door het kopieer icoon in de actiebar aan de bovenzijde van de app aan te raken. De waarde(n) van de geselecteerde cel worden gekopieerd naar elke cel die je aanraakt totdat je de \'kopieer\' toestand verlaat.</string>
 
+    <!-- Title, and text for tip "Leaderboard details" -->
+    <string name="dialog_tip_leaderboard_view_details_title">Klassement details</string>
+    <string name="dialog_tip_leaderboard_view_details_text">Raak een klassement aan om meer details van het klassement te bekijken. Je kan de scores en positie in het klassement bekijken van andere Mathdoku+ spelers in je eigen cirkels of van de hele wereld!</string>
+
+    <!-- Title, and text for tip "Leaderboard new game" -->
+    <string name="dialog_tip_leaderboard_create_game_details_title">Speel klassement</string>
+    <string name="dialog_tip_leaderboard_create_game_text">Wist je dat je een nieuwe puzzel voor een klassement kan maken door het klassement lang aan te raken?</string>
+
     <!-- STATISTICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
@@ -542,7 +550,7 @@
     <string name="leaderboard_actionbar_title">Klassementen</string>
 
     <!-- The text of the help dialog. -->
-    <string name="leaderboard_help_dialog_general">Als je inlogt met Google+ dan wordt de beste score voor ieder type puzzel bijgewerkt in de klassementen.\nVoor elk klassement wordt je beste score en positie in het klassement getoond mits beschikbaar. Let op dat je positie wijzigt zelfs indien je niet meer speelt in het klassement doordat andere spelers een betere score halen. Raak een klassement aan om aanvullende details te bekijken.\n\nDe klassementen zijn gegroepeerd op grootte van de puzzel. Veeg van rechts naar links om de klassementen van grotere puzzels te bekijken. Veeg van links naar rechts om de klassementen van kleinere puzzels te bekijken.\n\nJe kunt een filter selecteren om het aantal getoonde klassementen te verminderen.</string>
+    <string name="leaderboard_help_dialog_general">Als je inlogt met Google+ dan wordt de beste score voor ieder type puzzel bijgewerkt in de klassementen.\nVoor elk klassement wordt je beste score en positie in het klassement getoond mits beschikbaar. Let op dat je positie wijzigt zelfs indien je niet meer speelt in het klassement doordat andere spelers een betere score halen. Raak een klassement aan om aanvullende details te bekijken. Raak een klassement lang aan om een nieuwe puzzel te starten voor het klassement.\n\nDe klassementen zijn gegroepeerd op grootte van de puzzel. Veeg van rechts naar links om de klassementen van grotere puzzels te bekijken. Veeg van links naar rechts om de klassementen van kleinere puzzels te bekijken.\n\nJe kunt een filter selecteren om het aantal getoonde klassementen te verminderen.</string>
 
     <!-- The text in the leaderboards overview in case the user has not played this leaderboard. -->
     <string name="leaderboard_not_played">Je hebt dit klassement nog niet gespeeld.</string>
