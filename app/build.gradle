@@ -1,29 +1,30 @@
-apply plugin: 'android'
+// This gradle build file relieas on extra properties which are defined in the gradle build file for the overall project.
 
-dependencies {
-    compile project(':google-play-services_lib')
-    compile files('libs/android-support-v4.jar')
-    compile files('libs/achartengine-1.1.0.jar')
-    compile files('libs/annotations.jar')
-}
+apply plugin: 'android'
+apply plugin: 'android-test'
 
 android {
-    compileSdkVersion 17
-    buildToolsVersion "18.0.1"
+    compileSdkVersion androidCompileSdkVersion
+    buildToolsVersion androidBuildToolsVersion
 
+	defaultConfig {
+        minSdkVersion androidMinSdkVersion
+        targetSdkVersion androidTargetSdkVersion
+    }
+	
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src']
-            resources.srcDirs = ['src']
-            aidl.srcDirs = ['src']
-            renderscript.srcDirs = ['src']
+            java.srcDirs = ['src/main/java']
+            resources.srcDirs = ['src/main/java']
+            aidl.srcDirs = ['src/main/java']
+            renderscript.srcDirs = ['src/main/java']
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
         }
 
-        // Move the tests to tests/java, tests/res, etc...
-        instrumentTest.setRoot('tests')
+		// The instrument test is used as base dir for the unit test
+        instrumentTest.setRoot('src/test')
 
         // Move the build types to build-types/<type>
         // For instance, build-types/debug/java, build-types/debug/AndroidManifest.xml, ...
@@ -67,4 +68,34 @@ android {
 			}
 		}
 	}
+}
+
+dependencies {
+	// In case of unexpected errors please check whether ../local.properties
+	// and ANDROID_HOME are consistent. AS 0.3.2 seems to generator a
+	// local properties files upon openining the project which is not 
+	// consistent with the ANDROID_HOME. This should haven been solved in
+	// AS 0.3.7 but is not yet verified.
+
+	compile project(':google-play-services_lib')
+
+	// Do not use following line to compile support library
+	//    compile files('libs/android-support-v4.jar')
+	// as this result in an error in :app:dexDebug on building 
+	// a clean build.
+	compile 'com.android.support:support-v4:18.0.0'
+
+	compile files('libs/achartengine-1.1.0.jar')
+	compile files('libs/annotations.jar')
+	
+	
+	compile 'com.android.support:appcompat-v7:+'
+
+	testCompile 'junit:junit:4.10'
+	testCompile 'org.robolectric:robolectric:2.3-SNAPSHOT'
+	testCompile 'com.squareup:fest-android:1.0.+'
+
+	instrumentTestCompile 'junit:junit:4.10'
+	instrumentTestCompile 'org.robolectric:robolectric:2.3-SNAPSHOT'
+	instrumentTestCompile 'com.squareup:fest-android:1.0.+'
 }

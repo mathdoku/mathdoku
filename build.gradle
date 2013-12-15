@@ -1,35 +1,41 @@
-// Top-level build file where you can 
-// add configuration options common 
+// Top-level build file where you can add configuration options common 
 // to all sub-projects/modules.
 
 buildscript {
-
-    repositories {
-        // maven central and local maven repo
-        mavenLocal()
-        mavenCentral()
-    }
+	repositories {
+		mavenCentral()
+		mavenLocal()
+		
+		// Temporarily add repository for snapshot of gradle-android-test-plugin 
+		maven {
+			url 'https://oss.sonatype.org/content/repositories/snapshots/'
+		}
+	}
 
     dependencies {
         // gradle android tools
-        classpath 'com.android.tools.build:gradle:0.6.1+'
+        classpath 'com.android.tools.build:gradle:0.6.+'
 
-        // Gradle Android Unit Testing Plugin (not yet used)
-        // Working Progress https://github.com/JakeWharton/gradle-android-test-plugin
-        classpath 'com.squareup.gradle:gradle-android-test-plugin:0.9.+'
+        // Gradle Android Unit Testing Plugin:
+		// https://github.com/JakeWharton/gradle-android-test-plugin
+		// Get snapshot in order to get the fix provided in pull request 26.
+		classpath 'com.squareup.gradle:gradle-android-test-plugin:0.9.1-SNAPSHOT'
     }
-
 }
 
 // These are the common version numbers, etc for the rest of the gradle files
 configure(allprojects) {
+    ext.androidBuildToolsVersion    = '18.1.0'
+
     ext.androidVersion              = '4.4'
     ext.androidSDKVersion           = '19'
-    ext.androidBuildToolsVersion    = '19'
-    ext.androidSupportVersion       = '18.0.1'
-    ext.androidCompileSdkVersion    = 19
 	ext.androidMinSdkVersion        = 8
 	ext.androidTargetSdkVersion     = 17
+    ext.androidCompileSdkVersion    = 18
+
+    ext.androidSupportVersion       = '18.0.1'
+
+	// Not sure whether following is used.
 	ext.androidAnnotationsVersion   = '2.7.1'
 	ext.robotiumVersion             = '4.3'
 	ext.dexmakerVersion             = '1.0'
@@ -41,48 +47,59 @@ configure(allprojects) {
 configure(subprojects) { subproject ->
     repositories {
         mavenCentral()
-        mavenLocal()
+		mavenLocal()
+		
+		// Temporarily add repository for snapshot of gradle-android-test-plugin 
+		maven {
+			url 'https://oss.sonatype.org/content/repositories/snapshots/'
+		}
     }
 }
 
 // Base Config for a local sonar installation
 // To use: gradle sonarRunner
-apply plugin: 'sonar-runner'
-sonarRunner 
-{
-    sonarProperties 
-    {
-        // Project Name
-        // This can be anything, whatever describes your project
-        property 'sonar.projectName', 'MathDoku Plus'
+//
+// Sonar runner is not yet used
+//
+// apply plugin: 'sonar-runner'
+// sonarRunner 
+// {
+// 	sonarProperties {
+// 		// Project Name
+// 		// This can be anything, whatever describes your project
+// 		property 'sonar.projectName', 'MathDoku Plus'
+// 
+// 		// Project Key
+// 		// this should be unique, so the namespace of the app is a good option
+// 		property 'sonar.projectKey', 'net.mathdoku.plus'
+// 
+// 		// Comma separated list of sub projects
+// 		// This will often match the values in the settings.gradle
+// 		property 'sonar.modules', 'app,lib'
+// 
+// 		// Mapping list for modules to their actual directories
+// 		property 'app.sonar.projectBaseDir', './app/'
+// 		property 'lib.sonar.projectBaseDir', './lib/'
+// 
+// 		// Project Version
+// 		property 'sonar.projectVersion', '1.0'
+// 
+// 		// java version
+// 		property 'sonar.java.target', '1.6'
+// 
+// 		// sonar connection parameters
+// 		property 'sonar.host.url', 'http://localhost:9000'
+// 		property 'sonar.jdbc.url', 'jdbc:mysql://localhost:3306/sonar?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true'
+// 		property 'sonar.jdbc.driverClassName', 'com.mysql.jdbc.Driver'
+// 		property 'sonar.jdbc.username', 'sonar'
+// 		property 'sonar.jdbc.password', 'sonar'
+// 
+// 		// so far incomplete attempts to get code coverage to work
+// 		property 'sonar.dynamicAnalysis', 'reuseReports'
+// 		property 'sonar.surefire.reportsPath', 'build/instrumentTest-results/connected/'
+// 	}
+// }
 
-        // Project Key
-        // this should be unique, so the namespace of the app is a good option
-        property 'sonar.projectKey', 'net.mathdoku.plus'
-        
-        // Comma separated list of sub projects
-        // This will often match the values in the settings.gradle
-        property 'sonar.modules', 'app,lib'
-        
-        // Mapping list for modules to their actual directories
-        property 'app.sonar.projectBaseDir', './app/'
-        property 'lib.sonar.projectBaseDir', './lib/'
-        
-        // Project Version
-        property 'sonar.projectVersion', '1.0'
-        
-        // java version
-        property 'sonar.java.target', '1.6'
-        
-        // sonar connection parameters
-        property 'sonar.host.url', 'http://localhost:9000'
-        property 'sonar.jdbc.url', 'jdbc:mysql://localhost:3306/sonar?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true'
-        property 'sonar.jdbc.driverClassName', 'com.mysql.jdbc.Driver'
-        property 'sonar.jdbc.username', 'sonar'
-        property 'sonar.jdbc.password', 'sonar'
-        
-        // so far incomplete attempts to get code coverage to work
-        property 'sonar.dynamicAnalysis', 'reuseReports'
-        property 'sonar.surefire.reportsPath', 'build/instrumentTest-results/connected/'
-    }
+task wrapper(type: Wrapper) {
+	gradleVersion = '1.8'
 }
