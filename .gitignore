@@ -2,8 +2,8 @@
 todo.txt
 
 # Ignore files which are replaced by ANT-build scripts
-src/net/mathdoku/plus/config/Config.java
-res/values/google_play_services.xml
+app/src/main/java/net/mathdoku/plus/config/Config.java
+app/res/values/google_play_services.xml
 
 # built application files
 *.apk
