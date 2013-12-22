@@ -91,11 +91,11 @@ dependencies {
 	
 	compile 'com.android.support:appcompat-v7:+'
 
-	testCompile 'junit:junit:4.10'
+	testCompile 'junit:junit:4.10', 'org.mockito:mockito-core:1.9.5+'
 	testCompile 'org.robolectric:robolectric:2.3-SNAPSHOT'
 	testCompile 'com.squareup:fest-android:1.0.+'
 
-	instrumentTestCompile 'junit:junit:4.10'
+	instrumentTestCompile 'junit:junit:4.10', 'org.mockito:mockito-core:1.9.5+'
 	instrumentTestCompile 'org.robolectric:robolectric:2.3-SNAPSHOT'
 	instrumentTestCompile 'com.squareup:fest-android:1.0.+'
 }
