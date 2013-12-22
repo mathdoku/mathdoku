@@ -1,14 +1,7 @@
 package net.mathdoku.plus.grid;
 
-import android.app.Activity;
-import android.content.Context;
-
-import net.mathdoku.plus.Preferences;
-
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 
@@ -23,14 +16,6 @@ import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 public class CellChangeTest {
-	@Before
-	public void setup() {
-		MockitoAnnotations.initMocks(this);
-		
-		Context context = new Activity();
-		Preferences.getInstance(context);
-	}
-
 	@Test
 	public void restore_CellWithUserValue_UndoForGridCellIsCalledWithCorrectParameters() {
 		int expectedUserValue = 123;
