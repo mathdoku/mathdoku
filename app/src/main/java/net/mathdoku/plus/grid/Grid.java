@@ -1,8 +1,8 @@
 package net.mathdoku.plus.grid;
 
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import android.util.Log;
+
+import com.srlee.DLX.MathDokuDLX;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.config.Config;
@@ -19,9 +19,9 @@ import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
 
-import android.util.Log;
-
-import com.srlee.DLX.MathDokuDLX;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Grid {
 	private static final String TAG = "MathDoku.Grid";
@@ -201,11 +201,7 @@ public class Grid {
 		}
 
 		// clear cages to remove the border related to bad cage maths.
-		if (mCages != null) {
-			for (GridCage cage : mCages) {
-				cage.checkCageMathsCorrect(false);
-			}
-		}
+		setBordersForCagesWithIncorrectMaths();
 	}
 
 	/* Fetch the cell at the given row, column */
@@ -1072,9 +1068,7 @@ public class Grid {
 							solvingAttemptData.mSavedWithRevision));
 
 			// Check cage maths after all cages have been read.
-			for (GridCage cage2 : mCages) {
-				cage2.checkCageMathsCorrect(true);
-			}
+			setBordersForCagesWithIncorrectMaths();
 
 			// Set the selected cell (and indirectly the selected cage).
 			if (selectedCell != null) {
@@ -1346,9 +1340,7 @@ public class Grid {
 		}
 
 		// Finally set all cage borders by checking their math
-		for (GridCage gridCage : mCages) {
-			gridCage.checkCageMathsCorrect(true);
-		}
+		setBordersForCagesWithIncorrectMaths();
 
 		return true;
 	}
@@ -1433,5 +1425,18 @@ public class Grid {
 	public boolean isReplay() {
 		return (mGridStatistics != null && (mGridStatistics.getReplayCount() > 0));
 
+	}
+
+	/**
+	 * Set borders of all cages having incorrect maths.
+	 */
+	private void setBordersForCagesWithIncorrectMaths() {
+		if (mCages != null) {
+			for (GridCage cage : mCages) {
+				if (cage.isMathsCorrect()) {
+					cage.setBorders();
+				}
+			}
+		}
 	}
 }

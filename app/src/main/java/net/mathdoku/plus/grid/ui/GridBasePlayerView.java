@@ -1,7 +1,16 @@
 package net.mathdoku.plus.grid.ui;
 
+import android.content.Context;
+import android.os.Handler;
+import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.SoundEffectConstants;
+import android.view.View;
+import android.view.View.OnTouchListener;
+
 import net.mathdoku.plus.grid.CellChange;
 import net.mathdoku.plus.grid.Grid;
+import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.grid.GridCell;
 import net.mathdoku.plus.statistics.GridStatistics.StatisticsCounterType;
 import net.mathdoku.plus.tip.TipBadCageMath;
@@ -10,14 +19,6 @@ import net.mathdoku.plus.tip.TipDuplicateValue;
 import net.mathdoku.plus.tip.TipIncorrectValue;
 import net.mathdoku.plus.tip.TipOrderOfValuesInCage;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
-
-import android.content.Context;
-import android.os.Handler;
-import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.SoundEffectConstants;
-import android.view.View;
-import android.view.View.OnTouchListener;
 
 /**
  * The grid base player view allows to play a grid with a digit button interface
@@ -331,7 +332,8 @@ public class GridBasePlayerView extends GridViewerView implements
 		}
 
 		// Check the cage math
-		if (selectedCell.getCage().checkCageMathsCorrect(false) == false) {
+		GridCage gridCage = selectedCell.getCage();
+		if (gridCage != null && gridCage.isMathsCorrect() == false) {
 			if (TipBadCageMath.toBeDisplayed(mPreferences)) {
 				new TipBadCageMath(mContext).show();
 			}

@@ -1,9 +1,9 @@
 package net.mathdoku.plus.grid;
 
+import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 
 public class GridCage {
 	// Each line in the GridFile which contains information about the cell
@@ -222,50 +222,45 @@ public class GridCage {
 	 * Checks whether the cage arithmetic is correct using the values the user
 	 * has filled in. For single cell cages the math will never be incorrect.
 	 * 
-	 * @param forceBorderReset
-	 *            True if borders should always be reset. False in case borders
-	 *            only need to be reset in cage the status of the cage math has
-	 *            changed.
+	 * Note: in case the user maths for a cage are not correct it might be
+	 * necessary to redraw the borders of the cage.
 	 */
-	public boolean checkCageMathsCorrect(boolean forceBorderReset) {
+	public boolean isMathsCorrect() {
 		boolean oldUserMathCorrect = mUserMathCorrect;
 
+		// If cage has no cells, the maths are not wrong
+		if (mCells == null || mCells.size() == 0) {
+			return true;
+		}
+
 		// If not all cells in the cage are filled, the maths are not wrong.
-		boolean allCellsFilledIn = true;
 		for (GridCell cell : this.mCells) {
 			if (!cell.isUserValueSet()) {
 				mUserMathCorrect = true;
-				allCellsFilledIn = false;
+				return true;
+			}
+		}
+
+		// All cells for this cage have been filled in. Now check if the maths
+		// are correct.
+		if (this.mHideOperator) {
+			mUserMathCorrect = isAddMathsCorrect() || isMultiplyMathsCorrect()
+					|| isDivideMathsCorrect() || isSubtractMathsCorrect();
+		} else {
+			switch (this.mAction) {
+			case ACTION_ADD:
+				mUserMathCorrect = isAddMathsCorrect();
+				break;
+			case ACTION_MULTIPLY:
+				mUserMathCorrect = isMultiplyMathsCorrect();
+				break;
+			case ACTION_DIVIDE:
+				mUserMathCorrect = isDivideMathsCorrect();
+				break;
+			case ACTION_SUBTRACT:
+				mUserMathCorrect = isSubtractMathsCorrect();
 				break;
 			}
-		}
-
-		if (allCellsFilledIn && mCells.size() > 1) {
-			if (this.mHideOperator) {
-				mUserMathCorrect = isAddMathsCorrect()
-						|| isMultiplyMathsCorrect() || isDivideMathsCorrect()
-						|| isSubtractMathsCorrect();
-			} else {
-				switch (this.mAction) {
-				case ACTION_ADD:
-					mUserMathCorrect = isAddMathsCorrect();
-					break;
-				case ACTION_MULTIPLY:
-					mUserMathCorrect = isMultiplyMathsCorrect();
-					break;
-				case ACTION_DIVIDE:
-					mUserMathCorrect = isDivideMathsCorrect();
-					break;
-				case ACTION_SUBTRACT:
-					mUserMathCorrect = isSubtractMathsCorrect();
-					break;
-				}
-			}
-		}
-
-		if (oldUserMathCorrect != mUserMathCorrect || forceBorderReset) {
-			// Reset borders in all cells of this cage
-			setBorders();
 		}
 
 		return mUserMathCorrect;
