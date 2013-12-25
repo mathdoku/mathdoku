@@ -387,7 +387,12 @@ public class Grid {
 		return true;
 	}
 
-	public void addMove(CellChange move) {
+	/**
+	 * Adds a cell change to the list of moves played for this grid.
+	 *
+	 * @param cellChange The cell change to be added to the list of moves.
+	 */
+	public void addMove(CellChange cellChange) {
 		if (mMoves == null) {
 			mMoves = new ArrayList<CellChange>();
 		}
@@ -396,10 +401,10 @@ public class Grid {
 		int indexLastMove = mMoves.size() - 1;
 		if (indexLastMove >= 0) {
 			CellChange lastMove = mMoves.get(indexLastMove);
-			identicalToLastMove = lastMove.equals(move);
+			identicalToLastMove = lastMove.equals(cellChange);
 		}
 		if (!identicalToLastMove) {
-			mMoves.add(move);
+			mMoves.add(cellChange);
 		}
 	}
 
