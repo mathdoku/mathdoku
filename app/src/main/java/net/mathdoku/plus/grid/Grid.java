@@ -102,36 +102,70 @@ public class Grid {
 
 	// The GridInitializer is used by the unit test to initialize the grid with
 	// mock objects if needed.
-	public interface GridInitializer {
+	public static class GridInitializer {
 		/**
 		 * Creates a new {@link GridCell} object.
 		 */
-		public GridCell createGridCell(Grid grid, int cell);
+		public GridCell createGridCell(Grid grid, int cell) {
+			return new GridCell(grid, cell);
+		}
 
 		/**
 		 * Creates a new {@link CellChange} object.
 		 */
-		public CellChange createCellChange();
+		public CellChange createCellChange() {
+			return new CellChange();
+		}
 
 		/**
 		 * Creates a new {@link GridCage} object.
 		 */
-		public GridCage createGridCage(Grid grid);
+		public GridCage createGridCage(Grid grid) {
+			return new GridCage(grid);
+		}
 
 		/**
 		 * Creates a new {@link GridStatistics} object.
  		 */
-		public GridStatistics createGridStatistics();
+		public GridStatistics createGridStatistics() {
+			return new GridStatistics();
+		}
 
 		/**
 		 * Creates a new {@link GridGeneratingParameters} object.
 		 */
-		public GridGeneratingParameters createGridGeneratingParameters();
+		public GridGeneratingParameters createGridGeneratingParameters() {
+			return new GridGeneratingParameters();
+		}
 
 		/**
 		 * Creates a new {@link MathDokuDLX} object.
 		 */
-		public MathDokuDLX createMathDokuDLX(int gridSize, ArrayList<GridCage> cages);
+		public MathDokuDLX createMathDokuDLX(int gridSize, ArrayList<GridCage> cages) {
+			return new MathDokuDLX(gridSize, cages);
+		}
+
+		/**
+		 * Creates a new {@link java.util.ArrayList<net.mathdoku.plus.grid.GridCell>} object.
+		 */
+		public ArrayList<GridCell> createArrayListOfGridCells() {
+			return new ArrayList<GridCell>();
+		}
+
+		/**
+		 * Creates a new {@link java.util.ArrayList<net.mathdoku.plus.grid.GridCage>} object.
+		 */
+		public ArrayList<GridCage> createArrayListOfGridCages() {
+			return new ArrayList<GridCage>();
+		}
+
+		/**
+		 * Creates a new {@link java.util.ArrayList<net.mathdoku.plus.grid.CellChange>} object.
+		 */
+		public ArrayList<CellChange> createArrayListOfCellChanges() {
+			return new ArrayList<CellChange>();
+		}
+
 	}
 
 	private final GridInitializer mGridInitializer;
@@ -140,7 +174,7 @@ public class Grid {
 	 * Creates new instance of {@link net.mathdoku.plus.grid.Grid}.
 	 */
 	public Grid() {
-		mGridInitializer = createGridInitializer();
+		mGridInitializer = new GridInitializer();
 		initialize();
 	}
 
@@ -153,47 +187,8 @@ public class Grid {
 	 *            The initializer to be used for this grid.
 	 */
 	public Grid(GridInitializer gridInitializer) {
-		mGridInitializer = (gridInitializer != null ? gridInitializer : createGridInitializer());
+		mGridInitializer = (gridInitializer != null ? gridInitializer : new GridInitializer());
 		initialize();
-	}
-
-	/**
-	 * Creates the Grid Initializer.
-	 *
-	 * @return The Grid Initializer.
-	 */
-	private GridInitializer createGridInitializer() {
-		return new GridInitializer() {
-			@Override
-			public GridCell createGridCell(Grid grid, int cell) {
-				return new GridCell(grid, cell);
-			}
-
-			@Override
-			public CellChange createCellChange() {
-				return new CellChange();
-			}
-
-			@Override
-			public GridCage createGridCage(Grid grid) {
-				return new GridCage(grid);
-			}
-
-			@Override
-			public GridStatistics createGridStatistics() {
-				return new GridStatistics();
-			}
-
-			@Override
-			public GridGeneratingParameters createGridGeneratingParameters() {
-				return new GridGeneratingParameters();
-			}
-
-			@Override
-			public MathDokuDLX createMathDokuDLX(int gridSize, ArrayList<GridCage> cages) {
-				return new MathDokuDLX(gridSize, cages);
-			}
-		};
 	}
 
 	/**
@@ -204,9 +199,9 @@ public class Grid {
 		mRowId = -1;
 		mSolvingAttemptId = -1;
 		mGridSize = 0;
-		mCells = new ArrayList<GridCell>();
-		mCages = new ArrayList<GridCage>();
-		mMoves = new ArrayList<CellChange>();
+		mCells = mGridInitializer.createArrayListOfGridCells();
+		mCages = mGridInitializer.createArrayListOfGridCages();
+		mMoves = mGridInitializer.createArrayListOfCellChanges();
 		mClearRedundantPossiblesInSameRowOrColumnCount = 0;
 		mSolvedListener = null;
 		mGridGeneratingParameters = mGridInitializer.createGridGeneratingParameters();
@@ -394,7 +389,7 @@ public class Grid {
 	 */
 	public void addMove(CellChange cellChange) {
 		if (mMoves == null) {
-			mMoves = new ArrayList<CellChange>();
+			mMoves = mGridInitializer.createArrayListOfCellChanges();
 		}
 
 		boolean identicalToLastMove = false;
