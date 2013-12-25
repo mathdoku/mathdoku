@@ -100,12 +100,105 @@ public class Grid {
 	// Counters
 	private int mClearRedundantPossiblesInSameRowOrColumnCount;
 
+	// The GridInitializer is used by the unit test to initialize the grid with
+	// mock objects if needed.
+	public interface GridInitializer {
+		/**
+		 * Creates a new {@link GridCell} object.
+		 */
+		public GridCell createGridCell(Grid grid, int cell);
+
+		/**
+		 * Creates a new {@link CellChange} object.
+		 */
+		public CellChange createCellChange();
+
+		/**
+		 * Creates a new {@link GridCage} object.
+		 */
+		public GridCage createGridCage(Grid grid);
+
+		/**
+		 * Creates a new {@link GridStatistics} object.
+ 		 */
+		public GridStatistics createGridStatistics();
+
+		/**
+		 * Creates a new {@link GridGeneratingParameters} object.
+		 */
+		public GridGeneratingParameters createGridGeneratingParameters();
+
+		/**
+		 * Creates a new {@link MathDokuDLX} object.
+		 */
+		public MathDokuDLX createMathDokuDLX(int gridSize, ArrayList<GridCage> cages);
+	}
+
+	private final GridInitializer mGridInitializer;
+
+	/**
+	 * Creates new instance of {@link net.mathdoku.plus.grid.Grid}.
+	 */
 	public Grid() {
+		mGridInitializer = createGridInitializer();
 		initialize();
 	}
 
 	/**
+	 * Creates new instance of {@link net.mathdoku.plus.grid.Grid}.
+	 * 
+	 * This method is intended for custom initialization by unit tests.
+	 * 
+	 * @param gridInitializer
+	 *            The initializer to be used for this grid.
+	 */
+	public Grid(GridInitializer gridInitializer) {
+		mGridInitializer = (gridInitializer != null ? gridInitializer : createGridInitializer());
+		initialize();
+	}
+
+	/**
+	 * Creates the Grid Initializer.
+	 *
+	 * @return The Grid Initializer.
+	 */
+	private GridInitializer createGridInitializer() {
+		return new GridInitializer() {
+			@Override
+			public GridCell createGridCell(Grid grid, int cell) {
+				return new GridCell(grid, cell);
+			}
+
+			@Override
+			public CellChange createCellChange() {
+				return new CellChange();
+			}
+
+			@Override
+			public GridCage createGridCage(Grid grid) {
+				return new GridCage(grid);
+			}
+
+			@Override
+			public GridStatistics createGridStatistics() {
+				return new GridStatistics();
+			}
+
+			@Override
+			public GridGeneratingParameters createGridGeneratingParameters() {
+				return new GridGeneratingParameters();
+			}
+
+			@Override
+			public MathDokuDLX createMathDokuDLX(int gridSize, ArrayList<GridCage> cages) {
+				return new MathDokuDLX(gridSize, cages);
+			}
+		};
+	}
+
+	/**
 	 * Initializes a new grid object.
+	 * 
 	 */
 	private void initialize() {
 		mRowId = -1;
@@ -116,8 +209,8 @@ public class Grid {
 		mMoves = new ArrayList<CellChange>();
 		mClearRedundantPossiblesInSameRowOrColumnCount = 0;
 		mSolvedListener = null;
-		mGridGeneratingParameters = new GridGeneratingParameters();
-		mGridStatistics = new GridStatistics();
+		mGridGeneratingParameters = mGridInitializer.createGridGeneratingParameters();
+		mGridStatistics = mGridInitializer.createGridStatistics();
 		setPreferences();
 	}
 
@@ -169,7 +262,8 @@ public class Grid {
 		int cageIdSelectedCell = mSelectedCell.getCageId();
 
 		// Return cage if cage id exists
-		return (cageIdSelectedCell >= 0 && cageIdSelectedCell < mCages.size() ? mCages.get(cageIdSelectedCell) : null);
+		return (cageIdSelectedCell >= 0 && cageIdSelectedCell < mCages.size() ? mCages
+				.get(cageIdSelectedCell) : null);
 	}
 
 	/**
@@ -630,7 +724,7 @@ public class Grid {
 		mRowId = -1;
 		mClearRedundantPossiblesInSameRowOrColumnCount = 0;
 		mSolvedListener = null;
-		mGridStatistics = new GridStatistics();
+		mGridStatistics = mGridInitializer.createGridStatistics();
 
 		// Set new data in grid
 		mGridGeneratingParameters = gridGeneratingParameters;
@@ -988,7 +1082,7 @@ public class Grid {
 			int countCellsToRead = mGridSize * mGridSize;
 			GridCell selectedCell = null;
 			while (countCellsToRead > 0) {
-				GridCell cell = new GridCell(this, 0);
+				GridCell cell = mGridInitializer.createGridCell(this, 0);
 				if (!cell.fromStorageString(line,
 						solvingAttemptData.mSavedWithRevision)) {
 					throw new InvalidGridException(
@@ -1050,7 +1144,7 @@ public class Grid {
 			}
 
 			// Cages (at least one expected)
-			GridCage cage = new GridCage(this);
+			GridCage cage = mGridInitializer.createGridCage(this);
 			if (!cage.fromStorageString(line,
 					solvingAttemptData.mSavedWithRevision)) {
 				throw new InvalidGridException(
@@ -1066,7 +1160,7 @@ public class Grid {
 				line = solvingAttemptData.getNextLine();
 
 				// Create a new empty cage
-				cage = new GridCage(this);
+				cage = mGridInitializer.createGridCage(this);
 			} while (line != null
 					&& cage.fromStorageString(line,
 							solvingAttemptData.mSavedWithRevision));
@@ -1080,7 +1174,7 @@ public class Grid {
 			}
 
 			// Remaining lines contain cell changes (zero or more expected)
-			CellChange cellChange = new CellChange();
+			CellChange cellChange = mGridInitializer.createCellChange();
 			while (line != null
 					&& cellChange.fromStorageString(line, mCells,
 							solvingAttemptData.mSavedWithRevision)) {
@@ -1092,7 +1186,7 @@ public class Grid {
 				line = solvingAttemptData.getNextLine();
 
 				// Create a new empty cell change
-				cellChange = new CellChange();
+				cellChange = mGridInitializer.createCellChange();
 			}
 
 			// Check if end of file is reached an no information was unread yet.
@@ -1229,7 +1323,7 @@ public class Grid {
 		int cageIndex = 0;
 		for (int i = ID_PART_FIRST_CAGE; i <= ID_PART_LAST_CAGE; i++) {
 			// Define new cage
-			GridCage gridCage = new GridCage(this);
+			GridCage gridCage = mGridInitializer.createGridCage(this);
 			gridCage.setCageId(cageIndex++);
 
 			// Add cage to cages list
@@ -1300,7 +1394,7 @@ public class Grid {
 			int cageId = Integer.valueOf(matcher.group());
 
 			// Create new cell and add it to the cells list.
-			GridCell gridCell = new GridCell(this, cellNumber++);
+			GridCell gridCell = mGridInitializer.createGridCell(this, cellNumber++);
 			gridCell.setCageId(cageId);
 			mCells.add(gridCell);
 
@@ -1328,7 +1422,7 @@ public class Grid {
 		}
 
 		// Check whether a single solution can be found.
-		int[][] solution = new MathDokuDLX(mGridSize, mCages).getSolutionGrid();
+		int[][] solution = mGridInitializer.createMathDokuDLX(mGridSize, mCages).getSolutionGrid();
 		if (solution == null) {
 			// Either no or multiple solutions can be found. In both case this
 			// would mean that the grid definition string was manipulated by the
