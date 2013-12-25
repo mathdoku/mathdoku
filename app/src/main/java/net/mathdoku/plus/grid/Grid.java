@@ -219,9 +219,6 @@ public class Grid {
 	 */
 	public void revealSolution() {
 		this.mRevealed = true;
-		if (this.mMoves != null) {
-			this.mMoves.clear();
-		}
 		for (GridCell cell : this.mCells) {
 			if (cell.isUserValueIncorrect()) {
 				cell.setRevealed();
