@@ -219,13 +219,17 @@ public class Grid {
 	 */
 	public void revealSolution() {
 		this.mRevealed = true;
-		for (GridCell cell : this.mCells) {
-			if (cell.isUserValueIncorrect()) {
-				cell.setRevealed();
-				cell.setUserValue(cell.getCorrectValue());
+		if (mCells != null) {
+			for (GridCell cell : this.mCells) {
+				if (cell.isUserValueIncorrect()) {
+					cell.setRevealed();
+					cell.setUserValue(cell.getCorrectValue());
+				}
 			}
 		}
-		mGridStatistics.solutionRevealed();
+		if (mGridStatistics != null) {
+			mGridStatistics.solutionRevealed();
+		}
 	}
 
 	/**
