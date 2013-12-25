@@ -226,8 +226,8 @@ public class Grid {
 		for (GridCell cell : this.mCells) {
 			if (cell.isUserValueIncorrect()) {
 				cell.setRevealed();
+				cell.setUserValue(cell.getCorrectValue());
 			}
-			cell.setUserValue(cell.getCorrectValue());
 		}
 		mGridStatistics.solutionRevealed();
 	}
