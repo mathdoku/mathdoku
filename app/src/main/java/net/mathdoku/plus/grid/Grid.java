@@ -331,8 +331,11 @@ public class Grid {
 					}
 				}
 
-				// Check the cage math
-				cell.getCage().checkCageMathsCorrect(false);
+				// Check the cage math. Set border in case math is incorrect.
+				GridCage gridCage = cell.getCage();
+				if (gridCage != null && gridCage.isMathsCorrect()) {
+					gridCage.setBorders();
+				}
 
 				return true;
 			}
