@@ -165,7 +165,11 @@ public class Grid {
 			return null;
 		}
 
-		return mCages.get(mSelectedCell.getCageId());
+		// Get the cage id of the selected cell and check whether it exists
+		int cageIdSelectedCell = mSelectedCell.getCageId();
+
+		// Return cage if cage id exists
+		return (cageIdSelectedCell >= 0 && cageIdSelectedCell < mCages.size() ? mCages.get(cageIdSelectedCell) : null);
 	}
 
 	/**
