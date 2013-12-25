@@ -343,36 +343,46 @@ public class Grid {
 	/**
 	 * Checks whether the puzzle is solved.
 	 */
-	public void checkIfSolved() {
-		// Check if all cells contain correct value.
+	public boolean isSolved() {
+		// Check if all cells are filled and do contain the correct value.
 		for (GridCell cell : this.mCells) {
 			if (cell.isUserValueIncorrect()) {
-				return;
+				return false;
 			}
 		}
 
-		// All values are correct. Puzzle is solved.
-		if (this.mSolvedListener != null) {
-			this.mSolvedListener.puzzleSolved();
-		}
+		return true;
+	}
 
-		// Deselect cell (and cage)
-		if (mSelectedCell != null) {
-			mSelectedCell.mSelected = false;
-		}
-
-		// Deactivate grid
-		mActive = false;
-
+	/**
+	 * Set the puzzle as solved.
+	 */
+	public void setSolved() {
+		// Update the grid statistics
 		mGridStatistics.solved();
+
+		// Inform listeners when puzzle is solved.
+		if (mSolvedListener != null) {
+			mSolvedListener.puzzleSolved();
+		}
 	}
 
 	// Checks whether the user has made any mistakes
+
+	/**
+	 * Checks whether all cells which are filled with a user value are filled with the correct value.
+	 *
+	 * @return True in case the user has made no mistakes so far.
+	 */
 	public boolean isSolutionValidSoFar() {
-		for (GridCell cell : this.mCells)
-			if (cell.isUserValueSet())
-				if (cell.getUserValue() != cell.getCorrectValue())
+		for (GridCell cell : this.mCells) {
+			if (cell.isUserValueSet()) {
+				// Only check the cells which are filled with a user value.
+				if (cell.isUserValueIncorrect()) {
 					return false;
+				}
+			}
+		}
 
 		return true;
 	}

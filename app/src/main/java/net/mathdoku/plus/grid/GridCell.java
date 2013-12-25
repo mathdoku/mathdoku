@@ -1,8 +1,9 @@
 package net.mathdoku.plus.grid;
 
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Collections;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.Rect;
 
 import net.mathdoku.plus.grid.ui.GridInputMode;
 import net.mathdoku.plus.grid.ui.SwipeMotion;
@@ -16,10 +17,9 @@ import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.statistics.GridStatistics.StatisticsCounterType;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Rect;
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class GridCell {
 	@SuppressWarnings("unused")
@@ -252,7 +252,9 @@ public class GridCell {
 
 		// Check if grid is solved.
 		if (mGrid != null) {
-			mGrid.checkIfSolved();
+			if (mGrid.isSolved()) {
+				mGrid.setSolved();
+			}
 		}
 	}
 
