@@ -1,14 +1,14 @@
 package net.mathdoku.plus.grid;
 
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import android.util.Log;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 
-import android.util.Log;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * The CellChange holds undo information for a GridCell.
@@ -67,11 +67,10 @@ public class CellChange {
 	}
 
 	/**
-	 * Restores a GridCell using the undo information.
-	 * 
-	 * @return The grid cell for which a change was made undone.
+	 * Restores the user value and maybe values of a GridCell using the undo
+	 * information.
 	 */
-	public GridCell restore() {
+	public void restore() {
 		if (this.mRelatedCellChanges != null) {
 			// First Undo all related moves.
 			for (CellChange relatedMove : this.mRelatedCellChanges) {
@@ -79,8 +78,6 @@ public class CellChange {
 			}
 		}
 		mGridCell.undo(this.mPreviousUserValue, this.mPreviousPossibleValues);
-
-		return mGridCell;
 	}
 
 	/**
@@ -372,5 +369,9 @@ public class CellChange {
 		}
 
 		return true;
+	}
+
+	public GridCell getGridCell() {
+		return mGridCell;
 	}
 }

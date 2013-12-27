@@ -397,32 +397,37 @@ public class Grid {
 			return false;
 		}
 
-		// Restore the last cell change in the list of moves
+		// Get the last move
 		int undoPosition = mMoves.size() - 1;
-		GridCell restoredGridCell = mMoves.get(undoPosition).restore();
-		if (restoredGridCell == null) {
-			// Restore of cell failed.
-			return false;
-		}
+		CellChange cellChange = mMoves.get(undoPosition);
+
+		// Remember current situation before restoring the last move
+		GridCell cellChangeGridCell = cellChange.getGridCell();
+		int userValueBeforeUndo = cellChangeGridCell.getUserValue();
+
+		// Restore the last cell change in the list of moves
+		cellChange.restore();
 
 		mMoves.remove(undoPosition);
 
 		mGridStatistics.increaseCounter(StatisticsCounterType.ACTION_UNDO_MOVE);
 
 		// Set the cell to which the cell change applies as selected cell.
-		setSelectedCell(restoredGridCell);
+		setSelectedCell(cellChangeGridCell);
 
-		// Each cell in the same column or row as the restored cell, has to be
-		// checked for duplicate values.
-		GridCellSelectorInRowOrColumn gridCellSelectorInRowOrColumn = mGridInitializer
-				.createGridCellSelectorInRowOrColumn(mCells,
-						restoredGridCell.getRow(), restoredGridCell.getColumn());
-		ArrayList<GridCell> gridCellsInSameRowOrColumn = gridCellSelectorInRowOrColumn
-				.find();
-		if (gridCellsInSameRowOrColumn != null) {
-			for (GridCell gridCellInSameRowOrColumn : gridCellsInSameRowOrColumn) {
-				gridCellInSameRowOrColumn
-						.markDuplicateValuesInSameRowAndColumn();
+		if (userValueBeforeUndo != cellChangeGridCell.getUserValue()) {
+			// Each cell in the same column or row as the restored cell, has to
+			// be checked for duplicate values.
+			GridCellSelectorInRowOrColumn gridCellSelectorInRowOrColumn = mGridInitializer
+					.createGridCellSelectorInRowOrColumn(mCells, cellChangeGridCell.getRow(),
+														 cellChangeGridCell.getColumn());
+			ArrayList<GridCell> gridCellsInSameRowOrColumn = gridCellSelectorInRowOrColumn
+					.find();
+			if (gridCellsInSameRowOrColumn != null) {
+				for (GridCell gridCellInSameRowOrColumn : gridCellsInSameRowOrColumn) {
+					gridCellInSameRowOrColumn
+							.markDuplicateValuesInSameRowAndColumn();
+				}
 			}
 
 			// Check the cage math
