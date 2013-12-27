@@ -173,6 +173,7 @@ public class Grid {
 	 * 
 	 */
 	private void initialize() {
+		mActive = false;
 		mRowId = -1;
 		mSolvingAttemptId = -1;
 		mGridSize = 0;
