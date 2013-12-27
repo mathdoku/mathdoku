@@ -339,7 +339,7 @@ public class GridBasePlayerView extends GridViewerView implements
 
 		// Check the cage math
 		GridCage gridCage = selectedCell.getCage();
-		if (gridCage != null && gridCage.isMathsCorrect() == false) {
+		if (gridCage != null && gridCage.checkUserMath() == false) {
 			if (TipBadCageMath.toBeDisplayed(mPreferences)) {
 				new TipBadCageMath(mContext).show();
 			}

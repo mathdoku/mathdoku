@@ -220,47 +220,48 @@ public class GridCage {
 
 	/**
 	 * Checks whether the cage arithmetic is correct using the values the user
-	 * has filled in. For single cell cages the math will never be incorrect.
+	 * has filled in. If needed the border of the cage will be updated to
+	 * reflect a change of state. For single cell cages the math will never be
+	 * incorrect.
 	 * 
-	 * Note: in case the user maths for a cage are not correct it might be
-	 * necessary to redraw the borders of the cage.
+	 * @return True in case the user math does not contain an error or in case
+	 *         not all cells in the cage have been filled in.
 	 */
-	public boolean isMathsCorrect() {
-		boolean oldUserMathCorrect = mUserMathCorrect;
-
+	public boolean checkUserMath() {
 		// If cage has no cells, the maths are not wrong
 		if (mCells == null || mCells.size() == 0) {
 			return true;
 		}
 
-		// If not all cells in the cage are filled, the maths are not wrong.
-		for (GridCell cell : this.mCells) {
-			if (!cell.isUserValueSet()) {
-				mUserMathCorrect = true;
-				return true;
+		boolean oldUserMathCorrect = mUserMathCorrect;
+		if (allCellsFilledWithUserValue()) {
+			if (this.mHideOperator) {
+				mUserMathCorrect = isAddMathsCorrect()
+						|| isMultiplyMathsCorrect() || isDivideMathsCorrect()
+						|| isSubtractMathsCorrect();
+			} else {
+				switch (this.mAction) {
+				case ACTION_ADD:
+					mUserMathCorrect = isAddMathsCorrect();
+					break;
+				case ACTION_MULTIPLY:
+					mUserMathCorrect = isMultiplyMathsCorrect();
+					break;
+				case ACTION_DIVIDE:
+					mUserMathCorrect = isDivideMathsCorrect();
+					break;
+				case ACTION_SUBTRACT:
+					mUserMathCorrect = isSubtractMathsCorrect();
+					break;
+				}
 			}
+		} else {
+			// At least one cell has no user value. So math is not incorrect.
+			mUserMathCorrect = true;
 		}
 
-		// All cells for this cage have been filled in. Now check if the maths
-		// are correct.
-		if (this.mHideOperator) {
-			mUserMathCorrect = isAddMathsCorrect() || isMultiplyMathsCorrect()
-					|| isDivideMathsCorrect() || isSubtractMathsCorrect();
-		} else {
-			switch (this.mAction) {
-			case ACTION_ADD:
-				mUserMathCorrect = isAddMathsCorrect();
-				break;
-			case ACTION_MULTIPLY:
-				mUserMathCorrect = isMultiplyMathsCorrect();
-				break;
-			case ACTION_DIVIDE:
-				mUserMathCorrect = isDivideMathsCorrect();
-				break;
-			case ACTION_SUBTRACT:
-				mUserMathCorrect = isSubtractMathsCorrect();
-				break;
-			}
+		if (oldUserMathCorrect != mUserMathCorrect) {
+			setBorders();
 		}
 
 		return mUserMathCorrect;
@@ -574,5 +575,16 @@ public class GridCage {
 	 */
 	public void setGridReference(Grid grid) {
 		mGrid = grid;
+	}
+
+	private boolean allCellsFilledWithUserValue() {
+		if (mCells != null) {
+			for (GridCell gridCell : mCells) {
+				if (!gridCell.isUserValueSet()) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 }

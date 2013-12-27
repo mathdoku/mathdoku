@@ -266,7 +266,7 @@ public class Grid {
 		}
 
 		// clear cages to remove the border related to bad cage maths.
-		setBordersForCagesWithIncorrectMaths();
+		checkUserMathForAllCages();
 	}
 
 	/* Fetch the cell at the given row, column */
@@ -424,12 +424,12 @@ public class Grid {
 				gridCellInSameRowOrColumn
 						.markDuplicateValuesInSameRowAndColumn();
 			}
-		}
 
-		// Check the cage math. Set border in case math is incorrect.
-		GridCage gridCage = restoredGridCell.getCage();
-		if (gridCage != null && gridCage.isMathsCorrect()) {
-			gridCage.setBorders();
+			// Check the cage math
+			GridCage gridCage = cellChangeGridCell.getCage();
+			if (gridCage != null) {
+				gridCage.checkUserMath();
+			}
 		}
 
 		// Undo successful completed.
@@ -1171,7 +1171,7 @@ public class Grid {
 							solvingAttemptData.mSavedWithRevision));
 
 			// Check cage maths after all cages have been read.
-			setBordersForCagesWithIncorrectMaths();
+			checkUserMathForAllCages();
 
 			// Set the selected cell (and indirectly the selected cage).
 			if (selectedCell != null) {
@@ -1445,7 +1445,7 @@ public class Grid {
 		}
 
 		// Finally set all cage borders by checking their math
-		setBordersForCagesWithIncorrectMaths();
+		checkUserMathForAllCages();
 
 		return true;
 	}
@@ -1501,12 +1501,10 @@ public class Grid {
 	/**
 	 * Set borders of all cages having incorrect maths.
 	 */
-	private void setBordersForCagesWithIncorrectMaths() {
+	private void checkUserMathForAllCages() {
 		if (mCages != null) {
 			for (GridCage cage : mCages) {
-				if (cage.isMathsCorrect()) {
-					cage.setBorders();
-				}
+				cage.checkUserMath();
 			}
 		}
 	}
