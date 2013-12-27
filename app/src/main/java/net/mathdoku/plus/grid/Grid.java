@@ -97,9 +97,6 @@ public class Grid {
 	// Solved listener
 	private OnSolvedListener mSolvedListener;
 
-	// Counters
-	private int mClearRedundantPossiblesInSameRowOrColumnCount;
-
 	// The GridInitializer is used by the unit test to initialize the grid with
 	// mock objects if needed.
 	public static class GridInitializer {
@@ -182,7 +179,6 @@ public class Grid {
 		mCells = mGridInitializer.createArrayListOfGridCells();
 		mCages = mGridInitializer.createArrayListOfGridCages();
 		mMoves = mGridInitializer.createArrayListOfCellChanges();
-		mClearRedundantPossiblesInSameRowOrColumnCount = 0;
 		mSolvedListener = null;
 		mGridGeneratingParameters = mGridInitializer
 				.createGridGeneratingParameters();
@@ -520,7 +516,6 @@ public class Grid {
 	public void clearRedundantPossiblesInSameRowOrColumn(
 			CellChange originalCellChange) {
 		if (mSelectedCell != null) {
-			mClearRedundantPossiblesInSameRowOrColumnCount++;
 			int rowSelectedCell = this.mSelectedCell.getRow();
 			int columnSelectedCell = this.mSelectedCell.getColumn();
 			int valueSelectedCell = this.mSelectedCell.getUserValue();
@@ -563,8 +558,6 @@ public class Grid {
 				.append(mActive)
 				.append(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1)
 				.append(mRevealed)
-				.append(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1)
-				.append(mClearRedundantPossiblesInSameRowOrColumnCount)
 				.append(SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
 
 		// Store information about the cells. Use one line per single
@@ -698,9 +691,11 @@ public class Grid {
 		mActive = Boolean.parseBoolean(viewParts[index++]);
 
 		mRevealed = Boolean.parseBoolean(viewParts[index++]);
-		// noinspection UnusedAssignment
-		mClearRedundantPossiblesInSameRowOrColumnCount = Integer
-				.parseInt(viewParts[index++]);
+
+		if (savedWithRevisionNumber <= 595) {
+			// This field is not use starting from version 596.
+			index++;
+		}
 
 		return true;
 	}
@@ -732,7 +727,6 @@ public class Grid {
 		mRevealed = false;
 		mSolvingAttemptId = -1;
 		mRowId = -1;
-		mClearRedundantPossiblesInSameRowOrColumnCount = 0;
 		mSolvedListener = null;
 		mGridStatistics = mGridInitializer.createGridStatistics();
 
@@ -1276,7 +1270,6 @@ public class Grid {
 	public void replay() {
 		// Clear the cells and the moves list.
 		clearCells(true);
-		mClearRedundantPossiblesInSameRowOrColumnCount = 0;
 
 		// No cell may be selected.
 		deselectSelectedCell();

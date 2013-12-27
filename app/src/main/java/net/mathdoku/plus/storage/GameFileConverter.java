@@ -1,6 +1,8 @@
 package net.mathdoku.plus.storage;
 
-import java.util.ArrayList;
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
+import android.util.Log;
 
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
@@ -9,9 +11,7 @@ import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 
-import android.app.ProgressDialog;
-import android.os.AsyncTask;
-import android.util.Log;
+import java.util.ArrayList;
 
 /**
  * Converts all game files to the latest version.
@@ -74,8 +74,12 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	 *            this task.
 	 */
 	public void attachToActivity(PuzzleFragmentActivity activity) {
-		if (activity.equals(this.mActivity) && mProgressDialog != null
+		if ((((Object) activity).equals(mActivity)) && mProgressDialog != null
 				&& mProgressDialog.isShowing()) {
+			// Casting to Object is needed due to bug in Android Studio and/or
+			// IntelliJ IDEA Community edition:
+			// http://youtrack.jetbrains.com/issue/IDEA-79680
+			//
 			// The activity is already attached to this task.
 			return;
 		}
