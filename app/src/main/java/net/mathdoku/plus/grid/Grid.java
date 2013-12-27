@@ -470,9 +470,11 @@ public class Grid {
 			return null;
 		}
 
-		// Determine cage which is currently selected.
-		GridCage oldSelectedCage = (mSelectedCell == null ? null : mSelectedCell.getCage());
-
+		GridCage oldSelectedCage = null;
+		if (mSelectedCell != null) {
+			oldSelectedCage = mSelectedCell.getCage();
+			mSelectedCell.deselect();
+		}
 		// Determine new cage
 		GridCage newSelectedCage = cell.getCage();
 
