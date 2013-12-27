@@ -57,7 +57,7 @@ public class GridCell {
 	// Highlight in case a duplicate value is found in row or column
 	private boolean mDuplicateValueHighlight;
 	// Whether to show cell as selected
-	public boolean mSelected;
+	private boolean mSelected;
 	// Player revealed this cell
 	private boolean mRevealed;
 	// Highlight user input isn't correct value
@@ -1218,5 +1218,28 @@ public class GridCell {
 		setDuplicateHighlight(duplicateValue);
 
 		return duplicateValue;
+	}
+
+	/**
+	 * Checks whether the cell is the selected cell.
+	 *
+	 * @return True if the cell is the selected cell. False otherwise.
+	 */
+	public boolean isSelected() {
+		return mSelected;
+	}
+
+	/**
+	 * Mark this cell as the selected cell.
+	 */
+	public void select() {
+		mSelected = true;
+	}
+
+	/**
+	 * Unmark this cell as the selected cell.
+	 */
+	public void deselect() {
+		mSelected = false;
 	}
 }

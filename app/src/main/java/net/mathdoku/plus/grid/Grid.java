@@ -456,26 +456,26 @@ public class Grid {
 	 *            cell will be unselected.
 	 * @return The selected cell.
 	 */
-	GridCell setSelectedCell(GridCell cell) {
+	public GridCell setSelectedCell(GridCell cell) {
 		// Determine currently selected cage
 		GridCage oldSelectedCage = getCageForSelectedCell();
 
 		// Unselect current cell
 		if (mSelectedCell != null) {
-			mSelectedCell.mSelected = false;
+			mSelectedCell.deselect();
 		}
 
 		// Select the new cell
 		mSelectedCell = cell;
 		if (mSelectedCell != null) {
 			// A new cell was selected
-			mSelectedCell.mSelected = true;
+			mSelectedCell.select();
 		}
 
 		// Determine new cage (will return null in case no cell is selected)
 		GridCage newSelectedCage = getCageForSelectedCell();
 
-		// Remove borders form old cage if needed
+		// Remove borders from old cage if needed
 		if ((newSelectedCage == null && oldSelectedCage != null)
 				|| (newSelectedCage != null && !newSelectedCage
 						.equals(oldSelectedCage))) {
@@ -1094,7 +1094,7 @@ public class Grid {
 									+ line);
 				}
 				mCells.add(cell);
-				if (cell.mSelected && selectedCell == null) {
+				if (selectedCell == null && cell.isSelected()) {
 					// Remember first cell which is marked as selected. Note the
 					// cell can not be selected until the cages are loaded as
 					// well.
