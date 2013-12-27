@@ -6,6 +6,8 @@ import android.content.pm.PackageInfo;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 public class Util {
 	private final static String TAG = "MathDoku.Util";
 
@@ -105,5 +107,9 @@ public class Util {
 		}
 
 		return duration;
+	}
+
+	public static <T> boolean isArrayListNullOrEmpty(ArrayList<T> arrayList) {
+		return (arrayList == null || arrayList.size() == 0);
 	}
 }

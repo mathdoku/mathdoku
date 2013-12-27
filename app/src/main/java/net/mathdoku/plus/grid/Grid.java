@@ -19,6 +19,7 @@ import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -611,6 +612,16 @@ public class Grid {
 			ArrayList<GridCage> cages,
 			GridGeneratingParameters gridGeneratingParameters) {
 		StringBuilder definitionString = new StringBuilder();
+
+		if (Util.isArrayListNullOrEmpty(cells)) {
+			throw new InvalidParameterException("Parameter cells cannot be null or empty list.");
+		}
+		if (Util.isArrayListNullOrEmpty(cages)) {
+			throw new InvalidParameterException("Parameter cages cannot be null or empty list.");
+		}
+		if (gridGeneratingParameters == null) {
+			throw new InvalidParameterException("Parameter gridGeneratingParameters cannot be null.");
+		}
 
 		// Convert puzzle complexity to an integer value. Do not use the ordinal
 		// of the enumeration as this value is not persistent.
