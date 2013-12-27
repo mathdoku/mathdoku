@@ -1183,4 +1183,40 @@ public class GridCell {
 		mDuplicateValueHighlight = highlight;
 	}
 
+	/**
+	 * Check whether the user value of this cell is used in another cell on the
+	 * same row or column.
+	 * 
+	 * @return True in case the user value of this cell is used in another cell
+	 *         on the same row or column.
+	 */
+	public boolean markDuplicateValuesInSameRowAndColumn() {
+		if (mGrid == null || mGrid.mCells == null) {
+			// Cannot look for other GridCells in same row or column as the cell
+			// is not used in a grid.
+			return false;
+		}
+
+		boolean duplicateValue = false;
+		if (isUserValueSet()) {
+			for (GridCell gridCell : mGrid.mCells) {
+				if (gridCell.equals(this) == false
+						&& gridCell.getUserValue() == mUserValue) {
+					if (gridCell.getColumn() == mColumn
+							|| gridCell.getRow() == mRow) {
+						// Found another cell in the same row or column
+						// containing the same user value. Mark this other cell
+						// as duplicate.
+						duplicateValue = true;
+						gridCell.setDuplicateHighlight(true);
+					}
+				}
+			}
+		}
+		// Always update this cell as the duplicate highlight must be removed if
+		// not applicable anymore.
+		setDuplicateHighlight(duplicateValue);
+
+		return duplicateValue;
+	}
 }

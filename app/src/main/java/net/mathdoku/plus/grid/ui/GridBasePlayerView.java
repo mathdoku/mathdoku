@@ -12,6 +12,7 @@ import net.mathdoku.plus.grid.CellChange;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.grid.GridCell;
+import net.mathdoku.plus.grid.GridCellSelectorInRowOrColumn;
 import net.mathdoku.plus.statistics.GridStatistics.StatisticsCounterType;
 import net.mathdoku.plus.tip.TipBadCageMath;
 import net.mathdoku.plus.tip.TipCopyCellValues;
@@ -19,6 +20,8 @@ import net.mathdoku.plus.tip.TipDuplicateValue;
 import net.mathdoku.plus.tip.TipIncorrectValue;
 import net.mathdoku.plus.tip.TipOrderOfValuesInCage;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
+
+import java.util.ArrayList;
 
 /**
  * The grid base player view allows to play a grid with a digit button interface
@@ -315,20 +318,23 @@ public class GridBasePlayerView extends GridViewerView implements
 	 *            The grid cell for which a user value was set.
 	 */
 	private void checkGridValidity(GridCell selectedCell) {
-		// Each cell in the same column or row as the given cell has to be
-		// checked for duplicate values.
-		int targetRow = selectedCell.getRow();
-		int targetColumn = selectedCell.getColumn();
-		for (GridCell checkedCell : mGrid.mCells) {
-			if (checkedCell.getRow() == targetRow
-					|| checkedCell.getColumn() == targetColumn) {
-				if (mGrid.markDuplicateValuesInRowAndColumn(checkedCell)) {
-					if (checkedCell == selectedCell
-							&& TipDuplicateValue.toBeDisplayed(mPreferences)) {
-						new TipDuplicateValue(mContext).show();
-					}
-				}
-			}
+		// Get a list of cells in the same row or column as the selected cell.
+		GridCellSelectorInRowOrColumn gridCellSelectorInRowOrColumn = new GridCellSelectorInRowOrColumn(
+				mGrid.mCells, selectedCell.getRow(), selectedCell.getColumn());
+		ArrayList<GridCell> gridCellsInSameRowOrColumn = gridCellSelectorInRowOrColumn
+				.find();
+
+		// Check for each cell if it has duplicate values in the same column or
+		// row.
+		boolean foundDuplicateValue = false;
+		for (GridCell gridCell : gridCellsInSameRowOrColumn) {
+			foundDuplicateValue = gridCell
+					.markDuplicateValuesInSameRowAndColumn()
+					|| foundDuplicateValue;
+		}
+		if (foundDuplicateValue
+				&& TipDuplicateValue.toBeDisplayed(mPreferences)) {
+			new TipDuplicateValue(mContext).show();
 		}
 
 		// Check the cage math

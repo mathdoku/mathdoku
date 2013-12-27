@@ -103,67 +103,46 @@ public class Grid {
 	// The GridInitializer is used by the unit test to initialize the grid with
 	// mock objects if needed.
 	public static class GridInitializer {
-		/**
-		 * Creates a new {@link GridCell} object.
-		 */
 		public GridCell createGridCell(Grid grid, int cell) {
 			return new GridCell(grid, cell);
 		}
 
-		/**
-		 * Creates a new {@link CellChange} object.
-		 */
 		public CellChange createCellChange() {
 			return new CellChange();
 		}
 
-		/**
-		 * Creates a new {@link GridCage} object.
-		 */
 		public GridCage createGridCage(Grid grid) {
 			return new GridCage(grid);
 		}
 
-		/**
-		 * Creates a new {@link GridStatistics} object.
- 		 */
 		public GridStatistics createGridStatistics() {
 			return new GridStatistics();
 		}
 
-		/**
-		 * Creates a new {@link GridGeneratingParameters} object.
-		 */
 		public GridGeneratingParameters createGridGeneratingParameters() {
 			return new GridGeneratingParameters();
 		}
 
-		/**
-		 * Creates a new {@link MathDokuDLX} object.
-		 */
-		public MathDokuDLX createMathDokuDLX(int gridSize, ArrayList<GridCage> cages) {
+		public MathDokuDLX createMathDokuDLX(int gridSize,
+				ArrayList<GridCage> cages) {
 			return new MathDokuDLX(gridSize, cages);
 		}
 
-		/**
-		 * Creates a new {@link java.util.ArrayList<net.mathdoku.plus.grid.GridCell>} object.
-		 */
 		public ArrayList<GridCell> createArrayListOfGridCells() {
 			return new ArrayList<GridCell>();
 		}
 
-		/**
-		 * Creates a new {@link java.util.ArrayList<net.mathdoku.plus.grid.GridCage>} object.
-		 */
 		public ArrayList<GridCage> createArrayListOfGridCages() {
 			return new ArrayList<GridCage>();
 		}
 
-		/**
-		 * Creates a new {@link java.util.ArrayList<net.mathdoku.plus.grid.CellChange>} object.
-		 */
 		public ArrayList<CellChange> createArrayListOfCellChanges() {
 			return new ArrayList<CellChange>();
+		}
+
+		public GridCellSelectorInRowOrColumn createGridCellSelectorInRowOrColumn(
+				ArrayList<GridCell> cells, int row, int column) {
+			return new GridCellSelectorInRowOrColumn(cells, row, column);
 		}
 
 	}
@@ -187,7 +166,8 @@ public class Grid {
 	 *            The initializer to be used for this grid.
 	 */
 	public Grid(GridInitializer gridInitializer) {
-		mGridInitializer = (gridInitializer != null ? gridInitializer : new GridInitializer());
+		mGridInitializer = (gridInitializer != null ? gridInitializer
+				: new GridInitializer());
 		initialize();
 	}
 
@@ -204,7 +184,8 @@ public class Grid {
 		mMoves = mGridInitializer.createArrayListOfCellChanges();
 		mClearRedundantPossiblesInSameRowOrColumnCount = 0;
 		mSolvedListener = null;
-		mGridGeneratingParameters = mGridInitializer.createGridGeneratingParameters();
+		mGridGeneratingParameters = mGridInitializer
+				.createGridGeneratingParameters();
 		mGridStatistics = mGridInitializer.createGridStatistics();
 		setPreferences();
 	}
@@ -365,8 +346,9 @@ public class Grid {
 	// Checks whether the user has made any mistakes
 
 	/**
-	 * Checks whether all cells which are filled with a user value are filled with the correct value.
-	 *
+	 * Checks whether all cells which are filled with a user value are filled
+	 * with the correct value.
+	 * 
 	 * @return True in case the user has made no mistakes so far.
 	 */
 	public boolean isSolutionValidSoFar() {
@@ -384,8 +366,9 @@ public class Grid {
 
 	/**
 	 * Adds a cell change to the list of moves played for this grid.
-	 *
-	 * @param cellChange The cell change to be added to the list of moves.
+	 * 
+	 * @param cellChange
+	 *            The cell change to be added to the list of moves.
 	 */
 	public void addMove(CellChange cellChange) {
 		if (mMoves == null) {
@@ -413,38 +396,49 @@ public class Grid {
 	}
 
 	public boolean undoLastMove() {
-		if (mMoves != null) {
-			int undoPosition = mMoves.size() - 1;
+		// Check if list contains at least one move
+		if (mMoves == null || mMoves.size() == 0) {
+			// Cannot undo on non existing list.
+			return false;
+		}
 
-			if (undoPosition >= 0) {
-				GridCell cell = mMoves.get(undoPosition).restore();
-				mMoves.remove(undoPosition);
-				setSelectedCell(cell);
-				mGridStatistics
-						.increaseCounter(StatisticsCounterType.ACTION_UNDO_MOVE);
+		// Restore the last cell change in the list of moves
+		int undoPosition = mMoves.size() - 1;
+		GridCell restoredGridCell = mMoves.get(undoPosition).restore();
+		if (restoredGridCell == null) {
+			// Restore of cell failed.
+			return false;
+		}
 
-				// Each cell in the same column or row as the given cell has to
-				// be
-				// checked for duplicate values.
-				int targetRow = cell.getRow();
-				int targetColumn = cell.getColumn();
-				for (GridCell checkedCell : mCells) {
-					if (checkedCell.getRow() == targetRow
-							|| checkedCell.getColumn() == targetColumn) {
-						markDuplicateValuesInRowAndColumn(checkedCell);
-					}
-				}
+		mMoves.remove(undoPosition);
 
-				// Check the cage math. Set border in case math is incorrect.
-				GridCage gridCage = cell.getCage();
-				if (gridCage != null && gridCage.isMathsCorrect()) {
-					gridCage.setBorders();
-				}
+		mGridStatistics.increaseCounter(StatisticsCounterType.ACTION_UNDO_MOVE);
 
-				return true;
+		// Set the cell to which the cell change applies as selected cell.
+		setSelectedCell(restoredGridCell);
+
+		// Each cell in the same column or row as the restored cell, has to be
+		// checked for duplicate values.
+		GridCellSelectorInRowOrColumn gridCellSelectorInRowOrColumn = mGridInitializer
+				.createGridCellSelectorInRowOrColumn(mCells,
+						restoredGridCell.getRow(), restoredGridCell.getColumn());
+		ArrayList<GridCell> gridCellsInSameRowOrColumn = gridCellSelectorInRowOrColumn
+				.find();
+		if (gridCellsInSameRowOrColumn != null) {
+			for (GridCell gridCellInSameRowOrColumn : gridCellsInSameRowOrColumn) {
+				gridCellInSameRowOrColumn
+						.markDuplicateValuesInSameRowAndColumn();
 			}
 		}
-		return false;
+
+		// Check the cage math. Set border in case math is incorrect.
+		GridCage gridCage = restoredGridCell.getCage();
+		if (gridCage != null && gridCage.isMathsCorrect()) {
+			gridCage.setBorders();
+		}
+
+		// Undo successful completed.
+		return true;
 	}
 
 	/**
@@ -1208,7 +1202,7 @@ public class Grid {
 
 			// Mark cells with duplicate values
 			for (GridCell gridCell : mCells) {
-				markDuplicateValuesInRowAndColumn(gridCell);
+				gridCell.markDuplicateValuesInSameRowAndColumn();
 			}
 
 			// The solving attempt has been loaded successfully into the grid
@@ -1404,7 +1398,8 @@ public class Grid {
 			int cageId = Integer.valueOf(matcher.group());
 
 			// Create new cell and add it to the cells list.
-			GridCell gridCell = mGridInitializer.createGridCell(this, cellNumber++);
+			GridCell gridCell = mGridInitializer.createGridCell(this,
+					cellNumber++);
 			gridCell.setCageId(cageId);
 			mCells.add(gridCell);
 
@@ -1432,7 +1427,8 @@ public class Grid {
 		}
 
 		// Check whether a single solution can be found.
-		int[][] solution = mGridInitializer.createMathDokuDLX(mGridSize, mCages).getSolutionGrid();
+		int[][] solution = mGridInitializer
+				.createMathDokuDLX(mGridSize, mCages).getSolutionGrid();
 		if (solution == null) {
 			// Either no or multiple solutions can be found. In both case this
 			// would mean that the grid definition string was manipulated by the
@@ -1451,40 +1447,6 @@ public class Grid {
 		setBordersForCagesWithIncorrectMaths();
 
 		return true;
-	}
-
-	/**
-	 * Check whether the user value of the given cell is used in another cell on
-	 * the same row or column.
-	 * 
-	 * @param gridCell
-	 *            The grid cell for which it has to be checked whether its value
-	 *            is used in another cell on the same row or column.
-	 * @return True in case the user value of the given cell is used in another
-	 *         cell on the same row or column.
-	 */
-	public boolean markDuplicateValuesInRowAndColumn(GridCell gridCell) {
-		boolean duplicateValue = false;
-
-		if (gridCell.isUserValueSet()) {
-			int userValue = gridCell.getUserValue();
-			for (GridCell cell : mCells) {
-				// For each cell containing the user value it is checked whether
-				// the cell is in the same row or column as the given cell.
-				if (cell.getUserValue() == userValue) {
-					if ((cell.getColumn() == gridCell.getColumn() && cell
-							.getRow() != gridCell.getRow())
-							|| (cell.getColumn() != gridCell.getColumn() && cell
-									.getRow() == gridCell.getRow())) {
-						// Mark this cell as duplicate.
-						duplicateValue = true;
-						cell.setDuplicateHighlight(true);
-					}
-				}
-			}
-		}
-		gridCell.setDuplicateHighlight(duplicateValue);
-		return duplicateValue;
 	}
 
 	/**
