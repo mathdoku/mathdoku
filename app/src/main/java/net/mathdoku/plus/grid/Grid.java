@@ -229,17 +229,12 @@ public class Grid {
 	 * @return The cage to which the currently selected cell belongs. Null in
 	 *         case no cell is selected or no cage exists.
 	 */
-	public GridCage getCageForSelectedCell() {
-		if (mCages == null || mSelectedCell == null) {
+	public GridCage getSelectedCage() {
+		if (mSelectedCell == null) {
 			return null;
 		}
 
-		// Get the cage id of the selected cell and check whether it exists
-		int cageIdSelectedCell = mSelectedCell.getCageId();
-
-		// Return cage if cage id exists
-		return (cageIdSelectedCell >= 0 && cageIdSelectedCell < mCages.size() ? mCages
-				.get(cageIdSelectedCell) : null);
+		return mSelectedCell.getCage();
 	}
 
 	/**
@@ -445,7 +440,20 @@ public class Grid {
 	 * Deselect the selected cell.
 	 */
 	public void deselectSelectedCell() {
-		setSelectedCell((GridCell) null);
+		if (mSelectedCell == null) {
+			// Nothing to do in case no cell is selected.
+			return;
+		}
+
+		// Remember cage which is currently selected.
+		GridCage oldSelectedCage = mSelectedCell.getCage();
+
+		// Deselect the cell itself
+		mSelectedCell.deselect();
+		mSelectedCell = null;
+
+		// Update borders of cage which was selected before.
+		oldSelectedCage.setBorders();
 	}
 
 	/**
@@ -457,35 +465,26 @@ public class Grid {
 	 * @return The selected cell.
 	 */
 	public GridCell setSelectedCell(GridCell cell) {
-		// Determine currently selected cage
-		GridCage oldSelectedCage = getCageForSelectedCell();
-
-		// Unselect current cell
-		if (mSelectedCell != null) {
-			mSelectedCell.deselect();
+		if (cell == null) {
+			deselectSelectedCell();
+			return null;
 		}
+
+		// Determine cage which is currently selected.
+		GridCage oldSelectedCage = (mSelectedCell == null ? null : mSelectedCell.getCage());
+
+		// Determine new cage
+		GridCage newSelectedCage = cell.getCage();
 
 		// Select the new cell
+		cell.select();
 		mSelectedCell = cell;
-		if (mSelectedCell != null) {
-			// A new cell was selected
-			mSelectedCell.select();
-		}
 
-		// Determine new cage (will return null in case no cell is selected)
-		GridCage newSelectedCage = getCageForSelectedCell();
-
-		// Remove borders from old cage if needed
-		if ((newSelectedCage == null && oldSelectedCage != null)
-				|| (newSelectedCage != null && !newSelectedCage
-						.equals(oldSelectedCage))) {
+		// Set borders if another cage is selected.
+		if (newSelectedCage.equals(oldSelectedCage) == false) {
 			if (oldSelectedCage != null) {
 				oldSelectedCage.setBorders();
 			}
-		}
-
-		// Select new cage and set borders.
-		if (newSelectedCage != null && !newSelectedCage.equals(oldSelectedCage)) {
 			newSelectedCage.setBorders();
 		}
 

@@ -727,7 +727,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		}
 
 		// Determine current selected cage.
-		GridCage selectedGridCage = mGrid.getCageForSelectedCell();
+		GridCage selectedGridCage = mGrid.getSelectedCage();
 		return (selectedGridCage != null && selectedGridCage.isOperatorHidden());
 	}
 
@@ -740,7 +740,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		}
 
 		// Determine current selected cage.
-		GridCage selectedGridCage = mGrid.getCageForSelectedCell();
+		GridCage selectedGridCage = mGrid.getSelectedCage();
 
 		if (selectedGridCage == null) {
 			return;

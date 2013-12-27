@@ -982,12 +982,15 @@ public class GridCell {
 	 *         False otherwise.
 	 */
 	boolean isCellInSelectedCage() {
-		if (mGrid.getSelectedCell() == null) {
+		GridCell selectedCellInGrid = mGrid.getSelectedCell();
+		if (selectedCellInGrid == null) {
 			// When no cell is selected, a cage isn't selected as well.
 			return false;
 		}
 
-		return (mGrid.getCageForSelectedCell().mId == mCageId);
+		GridCage selectedCageInGrid = selectedCellInGrid.getCage();
+
+		return (selectedCageInGrid.mId == mCageId);
 	}
 
 	/**
