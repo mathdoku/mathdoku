@@ -739,10 +739,20 @@ public class Grid {
 			ArrayList<GridCage> cages,
 			GridGeneratingParameters gridGeneratingParameters) {
 
+		if (Util.isArrayListNullOrEmpty(cells)) {
+			throw new InvalidParameterException("Parameter cells cannot be null or empty.");
+		}
+		if (Util.isArrayListNullOrEmpty(cages)) {
+			throw new InvalidParameterException("Parameter cages cannot be null or empty.");
+		}
+		if (gridGeneratingParameters == null) {
+			throw new InvalidParameterException("Parameter gridGeneratingParameters cannot be null.");
+		}
+
 		// In case an existing grid object is reused, we have to clean up old
 		// data
-		if (this.mMoves != null) {
-			this.mMoves.clear();
+		if (mMoves != null) {
+			mMoves.clear();
 		}
 		mSelectedCell = null;
 		mRevealed = false;

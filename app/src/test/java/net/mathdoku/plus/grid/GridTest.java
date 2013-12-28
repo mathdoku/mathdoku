@@ -24,6 +24,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doNothing;
@@ -865,8 +866,7 @@ public class GridTest {
 			@Override
 			public GridCellSelectorInRowOrColumn createGridCellSelectorInRowOrColumn(
 					ArrayList<GridCell> cells, int row, int column) {
-				ArrayList<GridCell> gridCellArrayList = new ArrayList<GridCell>();
-				gridCellArrayList.add(gridCellMock);
+				ArrayList<GridCell> gridCellArrayList = createArrayListOfGridCellsWithGridCells(gridCellMock);
 				return super.createGridCellSelectorInRowOrColumn(
 						gridCellArrayList, row, column);
 			}
@@ -908,8 +908,7 @@ public class GridTest {
 			@Override
 			public GridCellSelectorInRowOrColumn createGridCellSelectorInRowOrColumn(
 					ArrayList<GridCell> cells, int row, int column) {
-				ArrayList<GridCell> gridCellArrayList = new ArrayList<GridCell>();
-				gridCellArrayList.add(gridCellStub);
+				ArrayList<GridCell> gridCellArrayList = createArrayListOfGridCellsWithGridCells(gridCellStub);
 				return super.createGridCellSelectorInRowOrColumn(
 						gridCellArrayList, row, column);
 			}
@@ -952,8 +951,7 @@ public class GridTest {
 			@Override
 			public GridCellSelectorInRowOrColumn createGridCellSelectorInRowOrColumn(
 					ArrayList<GridCell> cells, int row, int column) {
-				ArrayList<GridCell> gridCellArrayList = new ArrayList<GridCell>();
-				gridCellArrayList.add(gridCellMock);
+				ArrayList<GridCell> gridCellArrayList = createArrayListOfGridCellsWithGridCells(gridCellMock);
 				return super.createGridCellSelectorInRowOrColumn(
 						gridCellArrayList, row, column);
 			}
@@ -1377,34 +1375,29 @@ public class GridTest {
 	@Test
 	public void toGridDefinitionString_WithValidParameters_GridDefinitionCreated()
 			throws Exception {
-		ArrayList<GridCell> gridCells = new ArrayList<GridCell>();
 
 		GridCell gridCellStub = mock(GridCell.class);
 		when(gridCellStub.getCageId()).thenReturn(0, 1, 2, 1);
-		gridCells.add(gridCellStub);
-		gridCells.add(gridCellStub);
-		gridCells.add(gridCellStub);
-		gridCells.add(gridCellStub);
-
-		ArrayList<GridCage> gridCages = new ArrayList<GridCage>();
+		ArrayList<GridCell> gridCells = createArrayListOfGridCellsWithGridCells(
+				gridCellStub, gridCellStub, gridCellStub, gridCellStub);
 
 		GridCage gridCageStub1 = mock(GridCage.class);
 		gridCageStub1.mId = 0;
 		gridCageStub1.mResult = 1;
 		gridCageStub1.mAction = GridCage.ACTION_NONE;
-		gridCages.add(gridCageStub1);
 
 		GridCage gridCageStub2 = mock(GridCage.class);
 		gridCageStub2.mId = 1;
 		gridCageStub2.mResult = 3;
 		gridCageStub2.mAction = GridCage.ACTION_ADD;
-		gridCages.add(gridCageStub2);
 
 		GridCage gridCageStub3 = mock(GridCage.class);
 		gridCageStub3.mId = 2;
 		gridCageStub3.mResult = 2;
 		gridCageStub3.mAction = GridCage.ACTION_NONE;
-		gridCages.add(gridCageStub3);
+
+		ArrayList<GridCage> gridCages = createArrayListOfGridCagesWithGridCages(
+				gridCageStub1, gridCageStub2, gridCageStub3);
 
 		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
 		gridGeneratingParameters.mPuzzleComplexity = GridGenerator.PuzzleComplexity.NORMAL;
@@ -1514,9 +1507,151 @@ public class GridTest {
 		assertTrue("Grid solution is revealed", grid.isSolutionRevealed());
 	}
 
-	@Test
-	public void create() throws Exception {
+	@Test(expected = InvalidParameterException.class)
+	public void create_GridCellsListIsNull_InvalidParameterException()
+			throws Exception {
+		int gridSize = 4;
+		ArrayList<GridCell> gridCells = null;
+		ArrayList<GridCage> gridCages = mock(ArrayList.class);
+		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
 
+		Grid grid = new Grid();
+		grid.create(gridSize, gridCells, gridCages, gridGeneratingParameters);
+	}
+
+	@Test(expected = InvalidParameterException.class)
+	public void create_GridCellsListIsEmpty_InvalidParameterException()
+			throws Exception {
+		int gridSize = 4;
+		ArrayList<GridCell> gridCells = new ArrayList<GridCell>();
+		ArrayList<GridCage> gridCages = mock(ArrayList.class);
+		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
+
+		Grid grid = new Grid();
+		grid.create(gridSize, gridCells, gridCages, gridGeneratingParameters);
+	}
+
+	@Test(expected = InvalidParameterException.class)
+	public void create_GridCagesListIsNull_InvalidParameterException()
+			throws Exception {
+		int gridSize = 4;
+		ArrayList<GridCell> gridCells = createArrayListOfGridCellsWithOneGridCellStub();
+		ArrayList<GridCage> gridCages = null;
+		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
+
+		Grid grid = new Grid();
+		grid.create(gridSize, gridCells, gridCages, gridGeneratingParameters);
+	}
+
+	@Test(expected = InvalidParameterException.class)
+	public void create_GridCagesListIsEmpty_InvalidParameterException()
+			throws Exception {
+		int gridSize = 4;
+		ArrayList<GridCell> gridCells = createArrayListOfGridCellsWithOneGridCellStub();
+		ArrayList<GridCage> gridCages = new ArrayList<GridCage>();
+		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
+
+		Grid grid = new Grid();
+		grid.create(gridSize, gridCells, gridCages, gridGeneratingParameters);
+	}
+
+	@Test(expected = InvalidParameterException.class)
+	public void create_GridGeneratingParametersIsNull_InvalidParameterException()
+			throws Exception {
+		int gridSize = 4;
+		ArrayList<GridCell> gridCells = createArrayListOfGridCellsWithOneGridCellStub();
+		ArrayList<GridCage> gridCages = createArrayListOfGridCagesWithOneGridCagestub();
+		GridGeneratingParameters gridGeneratingParameters = null;
+
+		Grid grid = new Grid();
+		grid.create(gridSize, gridCells, gridCages, gridGeneratingParameters);
+	}
+
+	@Test
+	public void create_ValidParameters_MovesCleared() throws Exception {
+		int gridSize = 4;
+
+		GridCell gridCellMock = mock(GridCell.class);
+		ArrayList<GridCell> gridCells = createArrayListOfGridCellsWithGridCells(
+				gridCellMock, gridCellMock);
+
+		GridCage gridCageMock = mock(GridCage.class);
+		ArrayList<GridCage> gridCages = createArrayListOfGridCagesWithGridCages(gridCageMock);
+
+		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
+
+		final ArrayList<CellChange> cellChangeArrayListMock = mock(ArrayList.class);
+		final GridStatistics gridStatisticsStub = mock(GridStatistics.class);
+		Grid grid = new Grid(new Grid.GridInitializer() {
+			@Override
+			public ArrayList<CellChange> createArrayListOfCellChanges() {
+				return cellChangeArrayListMock;
+			}
+
+			@Override
+			public GridStatistics createGridStatistics() {
+				return gridStatisticsStub;
+			}
+		}) {
+			@Override
+			public boolean insertInDatabase() {
+				// Method will be tested in another unit test.
+				return true;
+			}
+		};
+
+		long timeBeforeCreate = System.currentTimeMillis();
+		boolean resultCreate = grid.create(gridSize, gridCells, gridCages,
+				gridGeneratingParameters);
+		assertTrue("Creating grid", resultCreate);
+
+		verify(cellChangeArrayListMock).clear();
+
+		GridCell resultGridCell = grid.getSelectedCell();
+		assertNull("Selected grid cell", resultGridCell);
+
+		boolean resultIsSolutionRevealed = grid.isSolutionRevealed();
+		assertFalse("Solution revealed", resultIsSolutionRevealed);
+
+		int resultSolvingAttemptId = grid.getSolvingAttemptId();
+		int expectedSolvingAttemptId = -1;
+		assertEquals("Solving attempt id", expectedSolvingAttemptId,
+				resultSolvingAttemptId);
+
+		int resultRowId = grid.getRowId();
+		int expectedRowId = -1;
+		assertEquals("Row id", expectedRowId, resultRowId);
+
+		GridStatistics resultGridStatistics = grid.getGridStatistics();
+		GridStatistics expectedGridStatistics = gridStatisticsStub;
+		assertEquals("Grid statistics", expectedGridStatistics,
+				resultGridStatistics);
+
+		boolean dateCreateFilledWithCurrentTime = (grid.getDateCreated() >= timeBeforeCreate);
+		assertTrue("Date created filled with system time",
+				dateCreateFilledWithCurrentTime);
+
+		int resultGridSize = grid.getGridSize();
+		int expectedGridSize = gridSize;
+		assertEquals("Grid size", expectedGridSize, resultGridSize);
+
+		ArrayList<GridCell> resultArrayListGridCells = grid.mCells;
+		ArrayList<GridCell> expectedArrayListGridCells = gridCells;
+		assertEquals("Cells", expectedArrayListGridCells,
+				resultArrayListGridCells);
+
+		ArrayList<GridCage> resultArrayListGridCages = grid.mCages;
+		ArrayList<GridCage> expectedArrayListGridCages = gridCages;
+		assertEquals("Cells", expectedArrayListGridCages,
+				resultArrayListGridCages);
+
+		boolean resultIsActive = grid.isActive();
+		assertTrue("Is active", resultIsActive);
+
+		verify(gridCageMock).setGridReference(any(Grid.class));
+		verify(gridCellMock, times(gridCells.size())).setGridReference(
+				any(Grid.class));
+		verify(gridCellMock, times(gridCells.size())).setBorders();
 	}
 
 	@Test
@@ -1721,5 +1856,57 @@ public class GridTest {
 	@Test
 	public void isReplay() throws Exception {
 
+	}
+
+	/**
+	 * Creates a new array list and add one Grid Cell stub as list entry.
+	 */
+	private ArrayList<GridCell> createArrayListOfGridCellsWithOneGridCellStub() {
+		ArrayList<GridCell> gridCells = new ArrayList<GridCell>();
+		GridCell gridCellMock = mock(GridCell.class);
+		gridCells.add(gridCellMock);
+
+		return gridCells;
+	}
+
+	/**
+	 * Creates a new array list and adds all given grid cells (possibly fakes)
+	 * as list entries.
+	 */
+	private ArrayList<GridCell> createArrayListOfGridCellsWithGridCells(
+			GridCell... gridCell) {
+		ArrayList<GridCell> gridCells = new ArrayList<GridCell>();
+
+		for (int i = 0; i < gridCell.length; i++) {
+			gridCells.add(gridCell[i]);
+		}
+
+		return gridCells;
+	}
+
+	/**
+	 * Creates a new array list and add one Grid Cage stub as list entry.
+	 */
+	private ArrayList<GridCage> createArrayListOfGridCagesWithOneGridCagestub() {
+		ArrayList<GridCage> gridCages = new ArrayList<GridCage>();
+		GridCage gridCageMock = mock(GridCage.class);
+		gridCages.add(gridCageMock);
+
+		return gridCages;
+	}
+
+	/**
+	 * Creates a new array list and adds all given grid cages (possibly fakes)
+	 * as list entries.
+	 */
+	private ArrayList<GridCage> createArrayListOfGridCagesWithGridCages(
+			GridCage... gridCage) {
+		ArrayList<GridCage> gridCages = new ArrayList<GridCage>();
+
+		for (int i = 0; i < gridCage.length; i++) {
+			gridCages.add(gridCage[i]);
+		}
+
+		return gridCages;
 	}
 }
