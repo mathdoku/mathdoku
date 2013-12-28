@@ -682,8 +682,17 @@ public class Grid {
 	 */
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	boolean fromStorageString(String line, int savedWithRevisionNumber) {
+		if (line == null) {
+			throw new NullPointerException("Parameter line cannot be null");
+		}
+
 		String[] viewParts = line
 				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1);
+
+		int expectedNumberOfElements = (savedWithRevisionNumber <= 595 ? 4 : 3);
+		if (viewParts.length != expectedNumberOfElements){
+			throw new InvalidParameterException("Wrong number of elements in storage string");
+		}
 
 		// Only process the storage string if it starts with the correct
 		// identifier.

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import robolectric.RobolectricGradleTestRunner;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
@@ -1310,49 +1311,58 @@ public class GridTest {
 	}
 
 	@Test(expected = InvalidParameterException.class)
-	public void toGridDefinitionString_ArrayListGridCellsIsNull_ThrowsInvalidParameterException() throws Exception {
+	public void toGridDefinitionString_ArrayListGridCellsIsNull_ThrowsInvalidParameterException()
+			throws Exception {
 		ArrayList<GridCell> gridCells = null;
 		ArrayList<GridCage> gridCages = mock(ArrayList.class);
 		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
 
 		Grid grid = new Grid();
-		grid.toGridDefinitionString(gridCells, gridCages, gridGeneratingParameters);
+		grid.toGridDefinitionString(gridCells, gridCages,
+				gridGeneratingParameters);
 	}
 
 	@Test(expected = InvalidParameterException.class)
-	public void toGridDefinitionString_ArrayListGridCellsIsEmpty_ThrowsInvalidParameterException() throws Exception {
+	public void toGridDefinitionString_ArrayListGridCellsIsEmpty_ThrowsInvalidParameterException()
+			throws Exception {
 		ArrayList<GridCell> gridCells = new ArrayList<GridCell>();
 		ArrayList<GridCage> gridCages = mock(ArrayList.class);
 		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
 
 		Grid grid = new Grid();
-		grid.toGridDefinitionString(gridCells, gridCages, gridGeneratingParameters);
+		grid.toGridDefinitionString(gridCells, gridCages,
+				gridGeneratingParameters);
 	}
 
 	@Test(expected = InvalidParameterException.class)
-	public void toGridDefinitionString_ArrayListGridCagesIsNull_ThrowsInvalidParameterException() throws Exception {
+	public void toGridDefinitionString_ArrayListGridCagesIsNull_ThrowsInvalidParameterException()
+			throws Exception {
 		ArrayList<GridCell> gridCells = mock(ArrayList.class);
 		when(gridCells.size()).thenReturn(1);
 		ArrayList<GridCage> gridCages = null;
 		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
 
 		Grid grid = new Grid();
-		grid.toGridDefinitionString(gridCells, gridCages, gridGeneratingParameters);
+		grid.toGridDefinitionString(gridCells, gridCages,
+				gridGeneratingParameters);
 	}
 
 	@Test(expected = InvalidParameterException.class)
-	public void toGridDefinitionString_ArrayListGridCagesIsEmpty_ThrowsInvalidParameterException() throws Exception {
+	public void toGridDefinitionString_ArrayListGridCagesIsEmpty_ThrowsInvalidParameterException()
+			throws Exception {
 		ArrayList<GridCell> gridCells = mock(ArrayList.class);
 		when(gridCells.size()).thenReturn(1);
 		ArrayList<GridCage> gridCages = new ArrayList<GridCage>();
 		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
 
 		Grid grid = new Grid();
-		grid.toGridDefinitionString(gridCells, gridCages, gridGeneratingParameters);
+		grid.toGridDefinitionString(gridCells, gridCages,
+				gridGeneratingParameters);
 	}
 
 	@Test(expected = InvalidParameterException.class)
-	public void toGridDefinitionString_GridGeneratingParametersIsNull_ThrowsInvalidParameterException() throws Exception {
+	public void toGridDefinitionString_GridGeneratingParametersIsNull_ThrowsInvalidParameterException()
+			throws Exception {
 		ArrayList<GridCell> gridCells = mock(ArrayList.class);
 		when(gridCells.size()).thenReturn(1);
 		ArrayList<GridCage> gridCages = mock(ArrayList.class);
@@ -1360,11 +1370,13 @@ public class GridTest {
 		GridGeneratingParameters gridGeneratingParameters = null;
 
 		Grid grid = new Grid();
-		grid.toGridDefinitionString(gridCells, gridCages, gridGeneratingParameters);
+		grid.toGridDefinitionString(gridCells, gridCages,
+				gridGeneratingParameters);
 	}
 
 	@Test
-	public void toGridDefinitionString_WithValidParameters_GridDefinitionCreated() throws Exception {
+	public void toGridDefinitionString_WithValidParameters_GridDefinitionCreated()
+			throws Exception {
 		ArrayList<GridCell> gridCells = new ArrayList<GridCell>();
 
 		GridCell gridCellStub = mock(GridCell.class);
@@ -1399,14 +1411,107 @@ public class GridTest {
 		gridGeneratingParameters.mHideOperators = false;
 
 		Grid grid = new Grid();
-		String resultGridDefinition = grid.toGridDefinitionString(gridCells, gridCages, gridGeneratingParameters);
+		String resultGridDefinition = grid.toGridDefinitionString(gridCells,
+				gridCages, gridGeneratingParameters);
 		String expectedGridDefinition = "3:00010201:0,1,0:1,3,1:2,2,0";
-		assertEquals("Grid definition", expectedGridDefinition, resultGridDefinition);
+		assertEquals("Grid definition", expectedGridDefinition,
+				resultGridDefinition);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void fromStorageString_StorageStringIsNull_NullPointerException()
+			throws Exception {
+		String storageString = null;
+		int revisionNumber = 596;
+
+		Grid grid = new Grid();
+		grid.fromStorageString(storageString, revisionNumber);
+	}
+
+	@Test(expected = InvalidParameterException.class)
+	public void fromStorageString_StorageStringIsEmpty_InvalidParameterException()
+			throws Exception {
+		String storageString = "";
+		int revisionNumber = 596;
+
+		Grid grid = new Grid();
+		grid.fromStorageString(storageString, revisionNumber);
+	}
+
+	@Test(expected = InvalidParameterException.class)
+	public void fromStorageString_StorageStringHasIncorrectNumberOfElementsForRevisionLessOrEqualTo595_InvalidParameterException()
+			throws Exception {
+		String storageString = "GRID:too little arguments";
+		int revisionNumber = 595;
+
+		Grid grid = new Grid();
+		grid.fromStorageString(storageString, revisionNumber);
+	}
+
+	@Test(expected = InvalidParameterException.class)
+	public void fromStorageString_StorageStringHasIncorrectNumberOfElementsForRevisionGreaterOrEqualTo596_InvalidParameterException()
+			throws Exception {
+		String storageString = "GRID:too:many:arguments";
+		int revisionNumber = 596;
+
+		Grid grid = new Grid();
+		grid.fromStorageString(storageString, revisionNumber);
 	}
 
 	@Test
-	public void fromStorageString() throws Exception {
+	public void fromStorageString_InvalidLineId_False() throws Exception {
+		String storageString = "WRONG:true:true";
+		int revisionNumber = 596;
 
+		Grid grid = new Grid();
+		boolean resultFromStorageString = grid.fromStorageString(storageString,
+				revisionNumber);
+
+		assertFalse(resultFromStorageString);
+	}
+
+	@Test
+	public void fromStorageString_RevisionIdTooLow_False() throws Exception {
+		String storageString = "GRID:true:true:1";
+		int revisionNumber = 368;
+
+		Grid grid = new Grid();
+		boolean resultFromStorageString = grid.fromStorageString(storageString,
+				revisionNumber);
+
+		assertFalse(resultFromStorageString);
+	}
+
+	@Test
+	public void fromStorageString_ValidStorageStringRevision595_True()
+			throws Exception {
+		String storageString = "GRID:true:false:1";
+		int revisionNumber = 595;
+
+		Grid grid = new Grid();
+		boolean resultFromStorageString = grid.fromStorageString(storageString,
+				revisionNumber);
+
+		assertTrue("ResultFromStorageString", resultFromStorageString);
+		assertTrue("Grid is active", grid.isActive());
+		assertFalse("Grid solution is revealed", grid.isSolutionRevealed());
+		// The last element "1" of the storage string is no longer processed by
+		// the method and can therefore not be verified.
+	}
+
+	@Test
+	public void fromStorageString_ValidStorageStringRevision596_True()
+			throws Exception {
+		String storageString = "GRID:false:true";
+		int revisionNumber = 596;
+
+		Grid grid = new Grid();
+		boolean resultFromStorageString = grid.fromStorageString(storageString,
+				revisionNumber);
+
+		assertTrue("ResultFromStorageString", resultFromStorageString);
+		assertFalse("Grid is active", grid.isActive());
+		assertTrue("Grid solution is revealed", grid.isSolutionRevealed());
 	}
 
 	@Test
