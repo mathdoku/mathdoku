@@ -98,9 +98,10 @@ public class Grid {
 	// Solved listener
 	private OnSolvedListener mSolvedListener;
 
-	// The GridInitializer is used by the unit test to initialize the grid with
-	// mock objects if needed.
-	public static class GridInitializer {
+	// The Objects Creator is responsible for creating all new objects needed by
+	// this class. For unit testing purposes the default create methods can be
+	// overridden if needed.
+	public static class ObjectsCreator {
 		public GridCell createGridCell(Grid grid, int cell) {
 			return new GridCell(grid, cell);
 		}
@@ -142,30 +143,31 @@ public class Grid {
 				ArrayList<GridCell> cells, int row, int column) {
 			return new GridCellSelectorInRowOrColumn(cells, row, column);
 		}
-
 	}
 
-	private final GridInitializer mGridInitializer;
+	private final ObjectsCreator mObjectsCreator;
 
 	/**
 	 * Creates new instance of {@link net.mathdoku.plus.grid.Grid}.
 	 */
 	public Grid() {
-		mGridInitializer = new GridInitializer();
+		mObjectsCreator = new ObjectsCreator();
 		initialize();
 	}
 
 	/**
-	 * Creates new instance of {@link net.mathdoku.plus.grid.Grid}.
+	 * Creates new instance of {@link net.mathdoku.plus.grid.Grid}. All objects
+	 * in this class will be created with the given ObjectsCreator. This method
+	 * is intended for unit testing.
 	 * 
-	 * This method is intended for custom initialization by unit tests.
-	 * 
-	 * @param gridInitializer
-	 *            The initializer to be used for this grid.
+	 * @param objectsCreator
+	 *            The ObjectsCreator to be used by this class. Only create
+	 *            methods for which the default implementation does not suffice,
+	 *            should be overridden.
 	 */
-	public Grid(GridInitializer gridInitializer) {
-		mGridInitializer = (gridInitializer != null ? gridInitializer
-				: new GridInitializer());
+	public Grid(ObjectsCreator objectsCreator) {
+		mObjectsCreator = (objectsCreator != null ? objectsCreator
+				: new ObjectsCreator());
 		initialize();
 	}
 
@@ -178,13 +180,13 @@ public class Grid {
 		mRowId = -1;
 		mSolvingAttemptId = -1;
 		mGridSize = 0;
-		mCells = mGridInitializer.createArrayListOfGridCells();
-		mCages = mGridInitializer.createArrayListOfGridCages();
-		mMoves = mGridInitializer.createArrayListOfCellChanges();
+		mCells = mObjectsCreator.createArrayListOfGridCells();
+		mCages = mObjectsCreator.createArrayListOfGridCages();
+		mMoves = mObjectsCreator.createArrayListOfCellChanges();
 		mSolvedListener = null;
-		mGridGeneratingParameters = mGridInitializer
+		mGridGeneratingParameters = mObjectsCreator
 				.createGridGeneratingParameters();
-		mGridStatistics = mGridInitializer.createGridStatistics();
+		mGridStatistics = mObjectsCreator.createGridStatistics();
 		setPreferences();
 	}
 
@@ -365,7 +367,7 @@ public class Grid {
 	 */
 	public void addMove(CellChange cellChange) {
 		if (mMoves == null) {
-			mMoves = mGridInitializer.createArrayListOfCellChanges();
+			mMoves = mObjectsCreator.createArrayListOfCellChanges();
 		}
 
 		boolean identicalToLastMove = false;
@@ -416,9 +418,10 @@ public class Grid {
 		if (userValueBeforeUndo != cellChangeGridCell.getUserValue()) {
 			// Each cell in the same column or row as the restored cell, has to
 			// be checked for duplicate values.
-			GridCellSelectorInRowOrColumn gridCellSelectorInRowOrColumn = mGridInitializer
-					.createGridCellSelectorInRowOrColumn(mCells, cellChangeGridCell.getRow(),
-														 cellChangeGridCell.getColumn());
+			GridCellSelectorInRowOrColumn gridCellSelectorInRowOrColumn = mObjectsCreator
+					.createGridCellSelectorInRowOrColumn(mCells,
+							cellChangeGridCell.getRow(),
+							cellChangeGridCell.getColumn());
 			ArrayList<GridCell> gridCellsInSameRowOrColumn = gridCellSelectorInRowOrColumn
 					.find();
 			if (gridCellsInSameRowOrColumn != null) {
@@ -614,13 +617,16 @@ public class Grid {
 		StringBuilder definitionString = new StringBuilder();
 
 		if (Util.isArrayListNullOrEmpty(cells)) {
-			throw new InvalidParameterException("Parameter cells cannot be null or empty list.");
+			throw new InvalidParameterException(
+					"Parameter cells cannot be null or empty list.");
 		}
 		if (Util.isArrayListNullOrEmpty(cages)) {
-			throw new InvalidParameterException("Parameter cages cannot be null or empty list.");
+			throw new InvalidParameterException(
+					"Parameter cages cannot be null or empty list.");
 		}
 		if (gridGeneratingParameters == null) {
-			throw new InvalidParameterException("Parameter gridGeneratingParameters cannot be null.");
+			throw new InvalidParameterException(
+					"Parameter gridGeneratingParameters cannot be null.");
 		}
 
 		// Convert puzzle complexity to an integer value. Do not use the ordinal
@@ -690,8 +696,9 @@ public class Grid {
 				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1);
 
 		int expectedNumberOfElements = (savedWithRevisionNumber <= 595 ? 4 : 3);
-		if (viewParts.length != expectedNumberOfElements){
-			throw new InvalidParameterException("Wrong number of elements in storage string");
+		if (viewParts.length != expectedNumberOfElements) {
+			throw new InvalidParameterException(
+					"Wrong number of elements in storage string");
 		}
 
 		// Only process the storage string if it starts with the correct
@@ -740,13 +747,16 @@ public class Grid {
 			GridGeneratingParameters gridGeneratingParameters) {
 
 		if (Util.isArrayListNullOrEmpty(cells)) {
-			throw new InvalidParameterException("Parameter cells cannot be null or empty.");
+			throw new InvalidParameterException(
+					"Parameter cells cannot be null or empty.");
 		}
 		if (Util.isArrayListNullOrEmpty(cages)) {
-			throw new InvalidParameterException("Parameter cages cannot be null or empty.");
+			throw new InvalidParameterException(
+					"Parameter cages cannot be null or empty.");
 		}
 		if (gridGeneratingParameters == null) {
-			throw new InvalidParameterException("Parameter gridGeneratingParameters cannot be null.");
+			throw new InvalidParameterException(
+					"Parameter gridGeneratingParameters cannot be null.");
 		}
 
 		// In case an existing grid object is reused, we have to clean up old
@@ -759,7 +769,7 @@ public class Grid {
 		mSolvingAttemptId = -1;
 		mRowId = -1;
 		mSolvedListener = null;
-		mGridStatistics = mGridInitializer.createGridStatistics();
+		mGridStatistics = mObjectsCreator.createGridStatistics();
 
 		// Set new data in grid
 		mGridGeneratingParameters = gridGeneratingParameters;
@@ -1117,7 +1127,7 @@ public class Grid {
 			int countCellsToRead = mGridSize * mGridSize;
 			GridCell selectedCell = null;
 			while (countCellsToRead > 0) {
-				GridCell cell = mGridInitializer.createGridCell(this, 0);
+				GridCell cell = mObjectsCreator.createGridCell(this, 0);
 				if (!cell.fromStorageString(line,
 						solvingAttemptData.mSavedWithRevision)) {
 					throw new InvalidGridException(
@@ -1179,7 +1189,7 @@ public class Grid {
 			}
 
 			// Cages (at least one expected)
-			GridCage cage = mGridInitializer.createGridCage(this);
+			GridCage cage = mObjectsCreator.createGridCage(this);
 			if (!cage.fromStorageString(line,
 					solvingAttemptData.mSavedWithRevision)) {
 				throw new InvalidGridException(
@@ -1195,7 +1205,7 @@ public class Grid {
 				line = solvingAttemptData.getNextLine();
 
 				// Create a new empty cage
-				cage = mGridInitializer.createGridCage(this);
+				cage = mObjectsCreator.createGridCage(this);
 			} while (line != null
 					&& cage.fromStorageString(line,
 							solvingAttemptData.mSavedWithRevision));
@@ -1209,7 +1219,7 @@ public class Grid {
 			}
 
 			// Remaining lines contain cell changes (zero or more expected)
-			CellChange cellChange = mGridInitializer.createCellChange();
+			CellChange cellChange = mObjectsCreator.createCellChange();
 			while (line != null
 					&& cellChange.fromStorageString(line, mCells,
 							solvingAttemptData.mSavedWithRevision)) {
@@ -1221,7 +1231,7 @@ public class Grid {
 				line = solvingAttemptData.getNextLine();
 
 				// Create a new empty cell change
-				cellChange = mGridInitializer.createCellChange();
+				cellChange = mObjectsCreator.createCellChange();
 			}
 
 			// Check if end of file is reached an no information was unread yet.
@@ -1357,7 +1367,7 @@ public class Grid {
 		int cageIndex = 0;
 		for (int i = ID_PART_FIRST_CAGE; i <= ID_PART_LAST_CAGE; i++) {
 			// Define new cage
-			GridCage gridCage = mGridInitializer.createGridCage(this);
+			GridCage gridCage = mObjectsCreator.createGridCage(this);
 			gridCage.setCageId(cageIndex++);
 
 			// Add cage to cages list
@@ -1428,7 +1438,7 @@ public class Grid {
 			int cageId = Integer.valueOf(matcher.group());
 
 			// Create new cell and add it to the cells list.
-			GridCell gridCell = mGridInitializer.createGridCell(this,
+			GridCell gridCell = mObjectsCreator.createGridCell(this,
 					cellNumber++);
 			gridCell.setCageId(cageId);
 			mCells.add(gridCell);
@@ -1457,8 +1467,8 @@ public class Grid {
 		}
 
 		// Check whether a single solution can be found.
-		int[][] solution = mGridInitializer
-				.createMathDokuDLX(mGridSize, mCages).getSolutionGrid();
+		int[][] solution = mObjectsCreator.createMathDokuDLX(mGridSize, mCages)
+				.getSolutionGrid();
 		if (solution == null) {
 			// Either no or multiple solutions can be found. In both case this
 			// would mean that the grid definition string was manipulated by the

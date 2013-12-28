@@ -1,6 +1,7 @@
 package net.mathdoku.plus.grid;
 
 import android.app.Activity;
+import android.content.Context;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.config.Config;
@@ -12,7 +13,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.security.InvalidParameterException;
@@ -35,26 +35,22 @@ import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 public class GridTest {
-	@Mock
 	Preferences preferences;
-
-	// Singleton Creator which refers to a mocked Preferences object
-	static class PreferencesSingletonCreator implements
-			Preferences.SingletonCreator {
-		@Override
-		public Preferences create() {
-			return mock(Preferences.class);
-		}
-	}
 
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 
+		Preferences.ObjectsCreator preferencesObjectsCreator = new Preferences.ObjectsCreator() {
+			@Override
+			public Preferences createPreferencesSingletonInstance(Context context) {
+				return mock(Preferences.class);
+			}
+		};
+
 		// Create the Preference Instance with the Singleton Creator which uses
 		// a mocked Preferences object
-		preferences = Preferences.getInstanceForUnitTesting(new Activity(),
-				new PreferencesSingletonCreator());
+		preferences = Preferences.getInstance(new Activity(), preferencesObjectsCreator);
 	}
 
 	@Test(expected = RuntimeException.class)
@@ -251,7 +247,7 @@ public class GridTest {
 		final GridStatistics gridStatisticsMock = mock(GridStatistics.class);
 
 		// Create a grid with an initializer which return the GridStatisticsMock
-		Grid grid = new Grid(new Grid.GridInitializer() {
+		Grid grid = new Grid(new Grid.ObjectsCreator() {
 			@Override
 			public GridStatistics createGridStatistics() {
 				return gridStatisticsMock;
@@ -425,7 +421,7 @@ public class GridTest {
 		final GridStatistics gridStatisticsMock = mock(GridStatistics.class);
 
 		// Create a grid with an initializer which return the GridStatisticsMock
-		Grid grid = new Grid(new Grid.GridInitializer() {
+		Grid grid = new Grid(new Grid.ObjectsCreator() {
 			@Override
 			public GridStatistics createGridStatistics() {
 				return gridStatisticsMock;
@@ -485,7 +481,7 @@ public class GridTest {
 		final GridStatistics gridStatisticsMock = mock(GridStatistics.class);
 
 		// Create a grid with an initializer which return the GridStatisticsMock
-		Grid grid = new Grid(new Grid.GridInitializer() {
+		Grid grid = new Grid(new Grid.ObjectsCreator() {
 			@Override
 			public GridStatistics createGridStatistics() {
 				return gridStatisticsMock;
@@ -598,14 +594,14 @@ public class GridTest {
 	}
 
 	private Grid createGridWithInitialMovesListIsNull() {
-		// The default GridInitializer always starts with an empty moves list
+		// The default ObjectsCreator always starts with an empty moves list
 		// which is not null.
 		// The returned grid is created with an initialized which returns a null
 		// value for the moves list when it is called for the first time. As the
 		// first create call for the moves list is initiated by the
 		// Grid-constructor this results in a Grid for which the moves list is
 		// null.
-		return new Grid(new Grid.GridInitializer() {
+		return new Grid(new Grid.ObjectsCreator() {
 			boolean mReturnNullOnNextCall = true;
 
 			@Override
@@ -726,7 +722,7 @@ public class GridTest {
 		when(arrayListOfCellChangesStub.size()).thenReturn(1);
 		when(arrayListOfCellChangesStub.get(0)).thenReturn(cellChangeMock);
 
-		Grid grid = new Grid(new Grid.GridInitializer() {
+		Grid grid = new Grid(new Grid.ObjectsCreator() {
 			@Override
 			public ArrayList<CellChange> createArrayListOfCellChanges() {
 				return arrayListOfCellChangesStub;
@@ -755,7 +751,7 @@ public class GridTest {
 		when(arrayListOfCellChangesMock.size()).thenReturn(1);
 		when(arrayListOfCellChangesMock.get(0)).thenReturn(cellChangeStub);
 
-		Grid grid = new Grid(new Grid.GridInitializer() {
+		Grid grid = new Grid(new Grid.ObjectsCreator() {
 			@Override
 			public ArrayList<CellChange> createArrayListOfCellChanges() {
 				return arrayListOfCellChangesMock;
@@ -786,7 +782,7 @@ public class GridTest {
 
 		final GridStatistics gridStatisticsMock = mock(GridStatistics.class);
 
-		Grid grid = new Grid(new Grid.GridInitializer() {
+		Grid grid = new Grid(new Grid.ObjectsCreator() {
 			@Override
 			public GridStatistics createGridStatistics() {
 				return gridStatisticsMock;
@@ -821,7 +817,7 @@ public class GridTest {
 		when(arrayListOfCellChangesStub.size()).thenReturn(1);
 		when(arrayListOfCellChangesStub.get(0)).thenReturn(cellChangeStub);
 
-		Grid grid = new Grid(new Grid.GridInitializer() {
+		Grid grid = new Grid(new Grid.ObjectsCreator() {
 			@Override
 			public ArrayList<CellChange> createArrayListOfCellChanges() {
 				return arrayListOfCellChangesStub;
@@ -857,7 +853,7 @@ public class GridTest {
 		when(arrayListOfCellChangesStub.size()).thenReturn(1);
 		when(arrayListOfCellChangesStub.get(0)).thenReturn(cellChangeStub);
 
-		Grid grid = new Grid(new Grid.GridInitializer() {
+		Grid grid = new Grid(new Grid.ObjectsCreator() {
 			@Override
 			public ArrayList<CellChange> createArrayListOfCellChanges() {
 				return arrayListOfCellChangesStub;
@@ -899,7 +895,7 @@ public class GridTest {
 		when(arrayListOfCellChangesStub.size()).thenReturn(1);
 		when(arrayListOfCellChangesStub.get(0)).thenReturn(cellChangeStub);
 
-		Grid grid = new Grid(new Grid.GridInitializer() {
+		Grid grid = new Grid(new Grid.ObjectsCreator() {
 			@Override
 			public ArrayList<CellChange> createArrayListOfCellChanges() {
 				return arrayListOfCellChangesStub;
@@ -942,7 +938,7 @@ public class GridTest {
 		when(arrayListOfCellChangesStub.size()).thenReturn(1);
 		when(arrayListOfCellChangesStub.get(0)).thenReturn(cellChangeStub);
 
-		Grid grid = new Grid(new Grid.GridInitializer() {
+		Grid grid = new Grid(new Grid.ObjectsCreator() {
 			@Override
 			public ArrayList<CellChange> createArrayListOfCellChanges() {
 				return arrayListOfCellChangesStub;
@@ -984,7 +980,7 @@ public class GridTest {
 		when(arrayListOfCellChangesStub.size()).thenReturn(1);
 		when(arrayListOfCellChangesStub.get(0)).thenReturn(cellChangeStub);
 
-		Grid grid = new Grid(new Grid.GridInitializer() {
+		Grid grid = new Grid(new Grid.ObjectsCreator() {
 			@Override
 			public ArrayList<CellChange> createArrayListOfCellChanges() {
 				return arrayListOfCellChangesStub;
@@ -1582,7 +1578,7 @@ public class GridTest {
 
 		final ArrayList<CellChange> cellChangeArrayListMock = mock(ArrayList.class);
 		final GridStatistics gridStatisticsStub = mock(GridStatistics.class);
-		Grid grid = new Grid(new Grid.GridInitializer() {
+		Grid grid = new Grid(new Grid.ObjectsCreator() {
 			@Override
 			public ArrayList<CellChange> createArrayListOfCellChanges() {
 				return cellChangeArrayListMock;

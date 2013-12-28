@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
-import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.grid.ui.GridInputMode;
 import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
 import net.mathdoku.plus.leaderboard.ui.LeaderboardFragmentActivity.LeaderboardFilter;
@@ -26,9 +25,13 @@ public class Preferences {
 	// Singleton reference to the preferences object
 	private static Preferences mPreferencesSingletonInstance = null;
 
-	// Singleton creator. Only to be used for Unit Testing
-	public static interface SingletonCreator {
-		public Preferences create();
+	// The Objects Creator is responsible for creating all new objects needed by
+	// this class. For unit testing purposes the default create methods can be
+	// overridden if needed.
+	public static class ObjectsCreator {
+		public Preferences createPreferencesSingletonInstance(Context context) {
+			return new Preferences(context);
+		}
 	}
 
 	// Actual preferences
@@ -204,9 +207,10 @@ public class Preferences {
 
 	/**
 	 * Creates a new instance of {@link Preferences}.
-	 * <p/>
+	 * 
 	 * This object can not be instantiated directly. Use {@link #getInstance()}
-	 * to get the singleton reference to the Preference object.
+	 * or {@link #getInstance(android.content.Context)} to get the singleton
+	 * reference to the Preference object.
 	 * 
 	 * @param context
 	 *            The context for which the preferences have to be determined.
@@ -228,30 +232,30 @@ public class Preferences {
 		if (mPreferencesSingletonInstance == null) {
 			// Only the first time this method is called, the object will be
 			// created.
-			mPreferencesSingletonInstance = new Preferences(context);
+			mPreferencesSingletonInstance = new ObjectsCreator()
+					.createPreferencesSingletonInstance(context);
 		}
 		return mPreferencesSingletonInstance;
 	}
 
 	/**
-	 * Gets the singleton reference to the Preference object. This method should
-	 * be used for Unit Testing only as it creates a new Singleton Instance even
-	 * in case it was already instantiated.
+	 * Creates new instance of {@link net.mathdoku.plus.Preferences}. All
+	 * objects in this class will be created with the given ObjectsCreator. This
+	 * method is intended for unit testing.
 	 * 
 	 * @param context
 	 *            The context in which the Preference object is created.
-	 * @param singletonCreator
-	 *            The SingletonCreator which has to be used for creating the
-	 *            preferences instance. If not null, a new singleton will be
-	 *            created.
-	 * @return The context for which the preferences have to be determined.
+	 * @param objectsCreator
+	 *            The ObjectsCreator to be used by this class. Only create
+	 *            methods for which the default implementation does not suffice,
+	 *            should be overridden.
+	 * @return The singleton instance for the Preferences.
 	 */
-	public static Preferences getInstanceForUnitTesting(Context context,
-			SingletonCreator singletonCreator) {
-		if (Config.mAppMode == Config.AppMode.DEVELOPMENT) {
-			if (singletonCreator != null) {
-				mPreferencesSingletonInstance = singletonCreator.create();
-			}
+	public static Preferences getInstance(Context context,
+			ObjectsCreator objectsCreator) {
+		if (objectsCreator != null) {
+			mPreferencesSingletonInstance = objectsCreator
+					.createPreferencesSingletonInstance(context);
 		}
 		return getInstance(context);
 	}
