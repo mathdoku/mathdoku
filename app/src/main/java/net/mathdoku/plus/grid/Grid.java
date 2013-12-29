@@ -913,19 +913,15 @@ public class Grid {
 	/**
 	 * Load the current statistics for this grid.
 	 */
-	boolean loadStatistics() {
+	private boolean loadStatistics() {
 		// Determine definition
 		String definition = toGridDefinitionString();
 
-		// First load grid.
+		// First load grid. Create a new grid if it does not exist.
 		GridDatabaseAdapter gridDatabaseAdapter = new GridDatabaseAdapter();
 		GridRow gridRow = gridDatabaseAdapter.getByGridDefinition(definition);
-		if (gridRow == null) {
-			// Insert grid into database.
-			mRowId = gridDatabaseAdapter.insert(this);
-		} else {
-			mRowId = gridRow.mId;
-		}
+		mRowId = (gridRow == null ? gridDatabaseAdapter.insert(this)
+				: gridRow.mId);
 
 		// Load most recent statistics for this grid
 		StatisticsDatabaseAdapter statisticsDatabaseAdapter = new StatisticsDatabaseAdapter();

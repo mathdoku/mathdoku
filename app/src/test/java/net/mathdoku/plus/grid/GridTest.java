@@ -1788,11 +1788,6 @@ public class GridTest {
 	}
 
 	@Test
-	public void loadStatistics() throws Exception {
-
-	}
-
-	@Test
 	public void increaseCounter() throws Exception {
 
 	}
