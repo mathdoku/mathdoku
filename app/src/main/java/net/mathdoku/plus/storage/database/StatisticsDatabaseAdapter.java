@@ -1,5 +1,12 @@
 package net.mathdoku.plus.storage.database;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+import android.database.sqlite.SQLiteQueryBuilder;
+import android.util.Log;
+
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.grid.Grid;
@@ -8,13 +15,6 @@ import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.statistics.HistoricStatistics;
 import net.mathdoku.plus.statistics.HistoricStatistics.Series;
 import net.mathdoku.plus.storage.database.Projection.Aggregation;
-
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.database.sqlite.SQLiteQueryBuilder;
-import android.util.Log;
 
 /**
  * The database adapter for the statistics table. For each grid zero or more
@@ -222,7 +222,8 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		}
 
 		if (id < 0) {
-			return null;
+			throw new DatabaseException(
+					"Insert of new puzzle failed when inserting the statistics into the database.");
 		}
 
 		// Retrieve the record created.

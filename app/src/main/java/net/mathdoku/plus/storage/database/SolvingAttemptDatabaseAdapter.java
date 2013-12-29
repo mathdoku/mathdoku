@@ -1,16 +1,16 @@
 package net.mathdoku.plus.storage.database;
 
-import java.util.ArrayList;
-
-import net.mathdoku.plus.config.Config;
-import net.mathdoku.plus.config.Config.AppMode;
-import net.mathdoku.plus.grid.Grid;
-
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
+
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
+import net.mathdoku.plus.grid.Grid;
+
+import java.util.ArrayList;
 
 /**
  * The database adapter for the solving attempt table. For each grid one or more
@@ -173,6 +173,11 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				e.printStackTrace();
 			}
+		}
+
+		if (id < 0) {
+			throw new DatabaseException(
+					"Insert of new puzzle failed when inserting the solving attempt into the database.");
 		}
 
 		return (int) id;

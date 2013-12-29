@@ -1,13 +1,5 @@
 package net.mathdoku.plus.storage.database;
 
-import java.security.InvalidParameterException;
-
-import net.mathdoku.plus.config.Config;
-import net.mathdoku.plus.config.Config.AppMode;
-import net.mathdoku.plus.grid.Grid;
-import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
-import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
-
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -16,6 +8,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.util.Log;
+
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
+import net.mathdoku.plus.grid.Grid;
+import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
+import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
+
+import java.security.InvalidParameterException;
 
 /**
  * The database adapter for the grid table.
@@ -191,6 +191,12 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 			ipe.initCause(e);
 			throw ipe;
 		}
+
+		if (id < 0) {
+			throw new DatabaseException(
+					"Insert of new puzzle failed when inserting the grid into the database.");
+		}
+
 		return id;
 	}
 

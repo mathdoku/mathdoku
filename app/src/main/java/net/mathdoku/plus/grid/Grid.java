@@ -889,21 +889,7 @@ public class Grid {
 					.createGridDatabaseAdapter();
 			GridRow gridRow = gridDatabaseAdapter
 					.getByGridDefinition(toGridDefinitionString());
-			if (gridRow == null) {
-				// Insert grid into database.
-				mRowId = gridDatabaseAdapter.insert(this);
-				if (mRowId < 0) {
-					if (Config.mAppMode == AppMode.DEVELOPMENT) {
-						throw new RuntimeException(
-								"Error while inserting a new grid into database.");
-					} else {
-						databaseHelper.endTransaction();
-						return false;
-					}
-				}
-			} else {
-				mRowId = gridRow.mId;
-			}
+			mRowId = (gridRow == null ? gridDatabaseAdapter.insert(this) : gridRow.mId);
 		}
 
 		// Insert new solving attempt.
@@ -911,29 +897,11 @@ public class Grid {
 				.createSolvingAttemptDatabaseAdapter();
 		mSolvingAttemptId = solvingAttemptDatabaseAdapter.insert(this,
 				Util.getPackageVersionNumber());
-		if (mSolvingAttemptId < 0) {
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				throw new RuntimeException(
-						"Error while inserting a new grid into database.");
-			} else {
-				databaseHelper.endTransaction();
-				return false;
-			}
-		}
 
 		// Insert new statistics.
 		StatisticsDatabaseAdapter statisticsDatabaseAdapter = mObjectsCreator
 				.createStatisticsDatabaseAdapter();
 		mGridStatistics = statisticsDatabaseAdapter.insert(this);
-		if (mGridStatistics == null) {
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				throw new RuntimeException(
-						"Error while inserting a new grid into database.");
-			} else {
-				databaseHelper.endTransaction();
-				return false;
-			}
-		}
 
 		// Commit and close transaction
 		databaseHelper.setTransactionSuccessful();
