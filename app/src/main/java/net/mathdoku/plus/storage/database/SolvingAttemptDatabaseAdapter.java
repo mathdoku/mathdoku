@@ -264,34 +264,61 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	}
 
 	/**
-	 * Update the data of a solving attempt with given data. It is required that
-	 * the record already exists. The id should never be changed.
+	 * Update the data of a solving attempt with given data. Also the last
+	 * update timestamp is set. It is required that the record already exists.
+	 * The id should never be changed.
 	 * 
 	 * @param id
 	 *            The id of the solving attempt to be updated.
 	 * @param grid
 	 *            The grid to be stored in the solving attempt.
-	 * @param saveDueToUpgrade
-	 *            False (default) in case of normal save. True in case saving is
-	 *            done while upgrading the grid to the current version of the
-	 *            app.
 	 * @return True in case the statistics have been updated. False otherwise.
 	 */
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
-	public boolean update(int id, Grid grid, boolean saveDueToUpgrade) {
+	public boolean update(int id, Grid grid) {
 		ContentValues newValues = new ContentValues();
-		if (!saveDueToUpgrade) {
-			newValues.put(KEY_DATE_UPDATED,
+		newValues.put(KEY_DATE_UPDATED,
 					toSQLiteTimestamp(new java.util.Date().getTime()));
-		}
-		newValues.put(KEY_DATA, grid.toStorageString());
+		return update(id, grid, newValues);
+	}
+
+	/**
+	 * Update the data of a solving attempt with given data. The last update
+	 * timestamp is not updated. It is required that the record already exists.
+	 * The id should never be changed.
+	 * 
+	 * @param id
+	 *            The id of the solving attempt to be updated.
+	 * @param grid
+	 *            The grid to be stored in the solving attempt.
+	 * @return True in case the statistics have been updated. False otherwise.
+	 */
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
+	public boolean updateOnAppUpgrade(int id, Grid grid) {
+		return update(id, grid, new ContentValues());
+	}
+
+	/**
+	 * Update the solving attempt. The given content values will be updated with
+	 * information from the grid.
+	 * 
+	 * @param id
+	 *            The id of the solving attempt to be updated.
+	 * @param grid
+	 *            The grid to be stored in the solving attempt.
+	 * @param contentValues
+	 *            The content values to be use as base for updating.
+	 * @return True in case the statistics have been updated. False otherwise.
+	 */
+	private boolean update(int id, Grid grid, ContentValues contentValues) {
+		contentValues.put(KEY_DATA, grid.toStorageString());
 
 		// Status is derived from grid. It is stored as derived data for easy
 		// filtering on solving attempts for the archive
-		newValues.put(KEY_STATUS, getDerivedStatus(grid));
+		contentValues.put(KEY_STATUS, getDerivedStatus(grid));
 
-		return (mSqliteDatabase.update(TABLE, newValues,
-				KEY_ROWID + " = " + id, null) == 1);
+		return (mSqliteDatabase.update(TABLE, contentValues, KEY_ROWID + " = "
+				+ id, null) == 1);
 	}
 
 	/**

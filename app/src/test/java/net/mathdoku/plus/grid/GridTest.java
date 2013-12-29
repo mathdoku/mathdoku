@@ -30,6 +30,8 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
@@ -189,8 +191,9 @@ public class GridTest {
 		grid.clearCells(replay);
 		int expectedNumberOfCellChangesAfterClear = 0;
 		int resultNumberOfCellChangesAfterClear = grid.countMoves();
-		assertEquals("Number of moves for grid after clear", expectedNumberOfCellChangesAfterClear,
-					 resultNumberOfCellChangesAfterClear);
+		assertEquals("Number of moves for grid after clear",
+				expectedNumberOfCellChangesAfterClear,
+				resultNumberOfCellChangesAfterClear);
 	}
 
 	@Test
@@ -983,7 +986,7 @@ public class GridTest {
 		final GridCell gridCellMock = mock(GridCell.class);
 		when(gridCellMock.getCage()).thenReturn(gridCageMock);
 		when(gridCellMock.getUserValue()).thenReturn(actualUserValueBeforeUndo,
-													 expectedUserValueAfterUndo);
+				expectedUserValueAfterUndo);
 
 		final CellChange cellChangeStub = mock(CellChange.class);
 		when(cellChangeStub.getGridCell()).thenReturn(gridCellMock);
@@ -1162,7 +1165,8 @@ public class GridTest {
 
 		GridCell gridCellStub = mock(GridCell.class);
 		String gridCellStubStorageString = "** A CELL STORAGE STRING **";
-		when(gridCellStub.toStorageString()).thenReturn(gridCellStubStorageString);
+		when(gridCellStub.toStorageString()).thenReturn(
+				gridCellStubStorageString);
 		grid.mCells.add(gridCellStub);
 
 		String resultStorageString = grid.toStorageString();
@@ -1203,7 +1207,8 @@ public class GridTest {
 
 		GridCage gridCageStub = mock(GridCage.class);
 		String gridCageStubStorageString = "** A CAGE STORAGE STRING **";
-		when(gridCageStub.toStorageString()).thenReturn(gridCageStubStorageString);
+		when(gridCageStub.toStorageString()).thenReturn(
+				gridCageStubStorageString);
 		grid.mCages.add(gridCageStub);
 
 		String resultStorageString = grid.toStorageString();
@@ -1505,7 +1510,8 @@ public class GridTest {
 		int revisionNumber = 596;
 
 		Grid grid = new Grid();
-		boolean resultFromStorageString = grid.fromStorageString(storageString, revisionNumber);
+		boolean resultFromStorageString = grid.fromStorageString(storageString,
+				revisionNumber);
 
 		assertTrue("ResultFromStorageString", resultFromStorageString);
 		assertFalse("Grid is active", grid.isActive());
@@ -1784,13 +1790,255 @@ public class GridTest {
 	}
 
 	@Test
-	public void save() throws Exception {
+	public void save_SaveSolvingAttemptFails_False() throws Exception {
+		final SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapterStub = mock(SolvingAttemptDatabaseAdapter.class);
+		when(
+				solvingAttemptDatabaseAdapterStub.update(anyInt(),
+						any(Grid.class))).thenReturn(false);
 
+		Grid grid = new Grid(new Grid.ObjectsCreator() {
+			@Override
+			public SolvingAttemptDatabaseAdapter createSolvingAttemptDatabaseAdapter() {
+				return solvingAttemptDatabaseAdapterStub;
+			}
+		});
+
+		boolean resultSave = grid.save();
+		assertFalse("Grid save", resultSave);
 	}
 
 	@Test
-	public void saveOnUpgrade() throws Exception {
+	public void save_GridStatisticsIsNull_GridIsSaved() throws Exception {
+		final SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapterStub = mock(SolvingAttemptDatabaseAdapter.class);
+		when(
+				solvingAttemptDatabaseAdapterStub.update(anyInt(),
+						any(Grid.class))).thenReturn(true);
 
+		final GridStatistics gridStatisticsMock = null;
+
+		Grid grid = new Grid(new Grid.ObjectsCreator() {
+			@Override
+			public SolvingAttemptDatabaseAdapter createSolvingAttemptDatabaseAdapter() {
+				return solvingAttemptDatabaseAdapterStub;
+			}
+
+			@Override
+			public GridStatistics createGridStatistics() {
+				return gridStatisticsMock;
+			}
+		});
+
+		grid.setActive(true);
+
+		assertThat(grid.save(), is(true));
+	}
+
+	@Test
+	public void save_SaveGridStatisticsFails_False() throws Exception {
+		final SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapterStub = mock(SolvingAttemptDatabaseAdapter.class);
+		when(
+				solvingAttemptDatabaseAdapterStub.update(anyInt(),
+						any(Grid.class))).thenReturn(true);
+
+		final GridStatistics gridStatisticsMock = mock(GridStatistics.class);
+		when(gridStatisticsMock.save()).thenReturn(false);
+
+		Grid grid = new Grid(new Grid.ObjectsCreator() {
+			@Override
+			public SolvingAttemptDatabaseAdapter createSolvingAttemptDatabaseAdapter() {
+				return solvingAttemptDatabaseAdapterStub;
+			}
+
+			@Override
+			public GridStatistics createGridStatistics() {
+				return gridStatisticsMock;
+			}
+		});
+
+		boolean resultSave = grid.save();
+		verify(gridStatisticsMock).save();
+		assertFalse("Grid save", resultSave);
+	}
+
+	private void assertThatGridIsSaved(
+			boolean grid_IsActive,
+			int gridStatistics_ReplayCount,
+			boolean gridStatistics_IsIncludedInStatistics,
+			int expectedNumberOfCallsToUpdateSolvingAttemptToBeIncludedInStatistics) {
+		final SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapterStub = mock(SolvingAttemptDatabaseAdapter.class);
+		when(
+				solvingAttemptDatabaseAdapterStub.update(anyInt(),
+						any(Grid.class))).thenReturn(true);
+
+		final GridStatistics gridStatisticsMock = mock(GridStatistics.class);
+		when(gridStatisticsMock.save()).thenReturn(true);
+		when(gridStatisticsMock.getReplayCount()).thenReturn(
+				gridStatistics_ReplayCount);
+		when(gridStatisticsMock.isIncludedInStatistics()).thenReturn(
+				gridStatistics_IsIncludedInStatistics);
+
+		final StatisticsDatabaseAdapter statisticsDatabaseAdapterMock = mock(StatisticsDatabaseAdapter.class);
+		when(statisticsDatabaseAdapterMock.update(any(GridStatistics.class)))
+				.thenReturn(true);
+
+		Grid grid = new Grid(new Grid.ObjectsCreator() {
+			@Override
+			public SolvingAttemptDatabaseAdapter createSolvingAttemptDatabaseAdapter() {
+				return solvingAttemptDatabaseAdapterStub;
+			}
+
+			@Override
+			public GridStatistics createGridStatistics() {
+				return gridStatisticsMock;
+			}
+
+			@Override
+			public StatisticsDatabaseAdapter createStatisticsDatabaseAdapter() {
+				return statisticsDatabaseAdapterMock;
+			}
+		});
+
+		grid.setActive(grid_IsActive);
+
+		assertThat(grid.save(), is(true));
+
+		verify(gridStatisticsMock).save();
+		verify(
+				statisticsDatabaseAdapterMock,
+				times(expectedNumberOfCallsToUpdateSolvingAttemptToBeIncludedInStatistics))
+				.updateSolvingAttemptToBeIncludedInStatistics(anyInt(),
+						anyInt());
+	}
+
+	@Test
+	public void save_GridIsActive_GridSavedButSolvingAttemptsNotUpdated()
+			throws Exception {
+		boolean grid_IsActive = true;
+		int gridStatistics_ReplayCount = 1;
+		boolean gridStatistics_IsIncludedInStatistics = false;
+		int expectedNumberOfCallsToUpdateSolvingAttemptToBeIncludedInStatistics = 0;
+		assertThatGridIsSaved(grid_IsActive, gridStatistics_ReplayCount,
+				gridStatistics_IsIncludedInStatistics,
+				expectedNumberOfCallsToUpdateSolvingAttemptToBeIncludedInStatistics);
+	}
+
+	@Test
+	public void save_GridIsNotReplayed_GridSavedButSolvingAttemptsNotUpdated()
+			throws Exception {
+		boolean grid_IsActive = false;
+		int gridStatistics_ReplayCount = 0;
+		boolean gridStatistics_IsIncludedInStatistics = false;
+		int expectedNumberOfCallsToUpdateSolvingAttemptToBeIncludedInStatistics = 0;
+		assertThatGridIsSaved(grid_IsActive, gridStatistics_ReplayCount,
+				gridStatistics_IsIncludedInStatistics,
+				expectedNumberOfCallsToUpdateSolvingAttemptToBeIncludedInStatistics);
+	}
+
+	@Test
+	public void save_GridIsNotIncludedInStatistics_GridSavedButSolvingAttemptsNotUpdated()
+			throws Exception {
+		boolean grid_IsActive = false;
+		int gridStatistics_ReplayCount = 1;
+		boolean gridStatistics_IsIncludedInStatistics = true;
+		int expectedNumberOfCallsToUpdateSolvingAttemptToBeIncludedInStatistics = 0;
+		assertThatGridIsSaved(grid_IsActive, gridStatistics_ReplayCount,
+				gridStatistics_IsIncludedInStatistics,
+				expectedNumberOfCallsToUpdateSolvingAttemptToBeIncludedInStatistics);
+	}
+
+	@Test
+	public void save_Grid_GridSavedAndSolvingAttemptsNotUpdated()
+			throws Exception {
+		boolean grid_IsActive = false;
+		int gridStatistics_ReplayCount = 1;
+		boolean gridStatistics_IsIncludedInStatistics = false;
+		int expectedNumberOfCallsToUpdateSolvingAttemptToBeIncludedInStatistics = 1;
+		assertThatGridIsSaved(grid_IsActive, gridStatistics_ReplayCount,
+				gridStatistics_IsIncludedInStatistics,
+				expectedNumberOfCallsToUpdateSolvingAttemptToBeIncludedInStatistics);
+	}
+
+	@Test
+	public void saveOnUpgrade_SaveSolvingAttemptFails_GridNotSaved()
+			throws Exception {
+		final SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapterStub = mock(SolvingAttemptDatabaseAdapter.class);
+		when(
+				solvingAttemptDatabaseAdapterStub.updateOnAppUpgrade(anyInt(),
+						any(Grid.class))).thenReturn(false);
+
+		Grid grid = new Grid(new Grid.ObjectsCreator() {
+			@Override
+			public SolvingAttemptDatabaseAdapter createSolvingAttemptDatabaseAdapter() {
+				return solvingAttemptDatabaseAdapterStub;
+			}
+		});
+
+		assertThat(grid.saveOnAppUpgrade(), is(false));
+	}
+
+	@Test
+	public void saveOnUpgrade_GridStatisticsIsNull_GridIsSaved()
+			throws Exception {
+		final SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapterStub = mock(SolvingAttemptDatabaseAdapter.class);
+		when(
+				solvingAttemptDatabaseAdapterStub.updateOnAppUpgrade(anyInt(),
+						any(Grid.class))).thenReturn(true);
+
+		final GridStatistics gridStatisticsStub = null;
+
+		Grid grid = new Grid(new Grid.ObjectsCreator() {
+			@Override
+			public SolvingAttemptDatabaseAdapter createSolvingAttemptDatabaseAdapter() {
+				return solvingAttemptDatabaseAdapterStub;
+			}
+
+			@Override
+			public GridStatistics createGridStatistics() {
+				return gridStatisticsStub;
+			}
+		});
+
+		assertThat(grid.saveOnAppUpgrade(), is(true));
+	}
+
+	private void assertThatSaveOnUpgrade(boolean resultSaveGridStatistics,
+			org.hamcrest.Matcher expectedResultSaveOnUpgrade) {
+		final SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapterStub = mock(SolvingAttemptDatabaseAdapter.class);
+		when(
+				solvingAttemptDatabaseAdapterStub.updateOnAppUpgrade(anyInt(),
+						any(Grid.class))).thenReturn(true);
+
+		final GridStatistics gridStatisticsStub = mock(GridStatistics.class);
+		when(gridStatisticsStub.save()).thenReturn(resultSaveGridStatistics);
+
+		Grid grid = new Grid(new Grid.ObjectsCreator() {
+			@Override
+			public SolvingAttemptDatabaseAdapter createSolvingAttemptDatabaseAdapter() {
+				return solvingAttemptDatabaseAdapterStub;
+			}
+
+			@Override
+			public GridStatistics createGridStatistics() {
+				return gridStatisticsStub;
+			}
+		});
+
+		assertThat(grid.saveOnAppUpgrade(), expectedResultSaveOnUpgrade);
+		verify(gridStatisticsStub).save();
+	}
+
+	@Test
+	public void saveOnUpgrade_SaveGridStatisticsFails_GridNotSaved()
+			throws Exception {
+		boolean resultSaveGridStatistics = false;
+		assertThatSaveOnUpgrade(resultSaveGridStatistics, is(false));
+	}
+
+	@Test
+	public void saveOnUpgrade_SaveSolvingAttemptAndGridStatisticsSucceeds_GridIsSaved()
+			throws Exception {
+		boolean resultSaveGridStatistics = true;
+		assertThatSaveOnUpgrade(resultSaveGridStatistics, is(true));
 	}
 
 	@Test

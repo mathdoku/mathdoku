@@ -143,7 +143,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 						}
 
 						// Save grid.
-						grid.saveOnUpgrade();
+						grid.saveOnAppUpgrade();
 
 						// Update progress
 						publishProgress();

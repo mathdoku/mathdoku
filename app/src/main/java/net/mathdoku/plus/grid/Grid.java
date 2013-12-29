@@ -968,7 +968,34 @@ public class Grid {
 	 * @return True in case everything has been saved. False otherwise.
 	 */
 	public boolean save() {
-		return save(false);
+		synchronized (mLock) {
+			// The solving attempt was already created as soon as the grid was
+			// created first. So only an update is needed.
+			SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = mObjectsCreator
+					.createSolvingAttemptDatabaseAdapter();
+			if (solvingAttemptDatabaseAdapter.update(mSolvingAttemptId, this) == false) {
+				return false;
+			}
+
+			if (mGridStatistics != null && mGridStatistics.save() == false) {
+				return false;
+			}
+
+			// In case a replay of the grid is finished the statistics which
+			// have to included in the cumulative and the historic statistics
+			// should be changed to the current solving attempt.
+			if (mActive == false && mGridStatistics.getReplayCount() > 0
+					&& mGridStatistics.isIncludedInStatistics() == false) {
+				// Note: do not return false in case following fails as it is
+				// not relevant to the user.
+				StatisticsDatabaseAdapter statisticsDatabaseAdapter = mObjectsCreator
+						.createStatisticsDatabaseAdapter();
+				statisticsDatabaseAdapter
+						.updateSolvingAttemptToBeIncludedInStatistics(mRowId, mSolvingAttemptId);
+			}
+		}
+
+		return true;
 	}
 
 	/**
@@ -978,51 +1005,24 @@ public class Grid {
 	 * @return True in case everything has been saved. False otherwise.
 	 */
 	@SuppressWarnings("UnusedReturnValue")
-	public boolean saveOnUpgrade() {
-		return save(true);
-	}
-
-	/**
-	 * Save this grid (solving attempt and statistics).
-	 * 
-	 * @param saveDueToUpgrade
-	 *            False (default) in case of normal save. True in case saving is
-	 *            done while upgrading the grid to the current version of the
-	 *            app.
-	 * @return True in case everything has been saved. False otherwise.
-	 */
-	private boolean save(boolean saveDueToUpgrade) {
-		boolean saved;
-
-		synchronized (mLock) { // Avoid saving game at the same time as
-			// creating puzzle
-
+	public boolean saveOnAppUpgrade() {
+		synchronized (mLock) {
 			// The solving attempt was already created as soon as the grid was
 			// created first. So only an update is needed.
-			SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = new SolvingAttemptDatabaseAdapter();
-			if (!solvingAttemptDatabaseAdapter.update(mSolvingAttemptId, this,
-					saveDueToUpgrade)) {
+			SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = mObjectsCreator
+					.createSolvingAttemptDatabaseAdapter();
+			if (solvingAttemptDatabaseAdapter.updateOnAppUpgrade(
+					mSolvingAttemptId, this) == false) {
 				return false;
 			}
 
-			// Update statistics.
-			saved = (mGridStatistics != null && mGridStatistics.save());
-
-			// In case a replay of the grid is finished the statistics which
-			// have to included in the cumulative and the historic statistics
-			// should be changed to the current solving attempt.
-			if (saved && mActive == false
-					&& mGridStatistics.getReplayCount() > 0
-					&& mGridStatistics.isIncludedInStatistics() == false
-					&& saveDueToUpgrade == false) {
-				new StatisticsDatabaseAdapter()
-						.updateSolvingAttemptToBeIncludedInStatistics(mRowId,
-								mSolvingAttemptId);
+			if (mGridStatistics != null && mGridStatistics.save() == false) {
+				return false;
 			}
 
-		} // End of synchronised block
+		}
 
-		return saved;
+		return true;
 	}
 
 	/**
