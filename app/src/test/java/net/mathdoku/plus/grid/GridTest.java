@@ -189,9 +189,8 @@ public class GridTest {
 		grid.clearCells(replay);
 		int expectedNumberOfCellChangesAfterClear = 0;
 		int resultNumberOfCellChangesAfterClear = grid.countMoves();
-		assertEquals("Number of moves for grid after clear",
-				expectedNumberOfCellChangesAfterClear,
-				resultNumberOfCellChangesAfterClear);
+		assertEquals("Number of moves for grid after clear", expectedNumberOfCellChangesAfterClear,
+					 resultNumberOfCellChangesAfterClear);
 	}
 
 	@Test
@@ -984,7 +983,7 @@ public class GridTest {
 		final GridCell gridCellMock = mock(GridCell.class);
 		when(gridCellMock.getCage()).thenReturn(gridCageMock);
 		when(gridCellMock.getUserValue()).thenReturn(actualUserValueBeforeUndo,
-				expectedUserValueAfterUndo);
+													 expectedUserValueAfterUndo);
 
 		final CellChange cellChangeStub = mock(CellChange.class);
 		when(cellChangeStub.getGridCell()).thenReturn(gridCellMock);
@@ -1163,8 +1162,7 @@ public class GridTest {
 
 		GridCell gridCellStub = mock(GridCell.class);
 		String gridCellStubStorageString = "** A CELL STORAGE STRING **";
-		when(gridCellStub.toStorageString()).thenReturn(
-				gridCellStubStorageString);
+		when(gridCellStub.toStorageString()).thenReturn(gridCellStubStorageString);
 		grid.mCells.add(gridCellStub);
 
 		String resultStorageString = grid.toStorageString();
@@ -1205,8 +1203,7 @@ public class GridTest {
 
 		GridCage gridCageStub = mock(GridCage.class);
 		String gridCageStubStorageString = "** A CAGE STORAGE STRING **";
-		when(gridCageStub.toStorageString()).thenReturn(
-				gridCageStubStorageString);
+		when(gridCageStub.toStorageString()).thenReturn(gridCageStubStorageString);
 		grid.mCages.add(gridCageStub);
 
 		String resultStorageString = grid.toStorageString();
@@ -1508,8 +1505,7 @@ public class GridTest {
 		int revisionNumber = 596;
 
 		Grid grid = new Grid();
-		boolean resultFromStorageString = grid.fromStorageString(storageString,
-				revisionNumber);
+		boolean resultFromStorageString = grid.fromStorageString(storageString, revisionNumber);
 
 		assertTrue("ResultFromStorageString", resultFromStorageString);
 		assertFalse("Grid is active", grid.isActive());
