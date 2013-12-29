@@ -10,6 +10,7 @@ import net.mathdoku.plus.gridGenerating.GridGenerator;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.storage.database.DatabaseHelper;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
+import net.mathdoku.plus.storage.database.GridRow;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
@@ -35,6 +36,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -1662,7 +1664,8 @@ public class GridTest {
 	}
 
 	@Test
-	public void insertInDatabase_GridWithUniqueGridDefinition_GridIsInserted() throws Exception {
+	public void insertInDatabase_GridWithUniqueGridDefinition_GridAndSolvingAttemptAndStatisticsAreInserted()
+			throws Exception {
 		// Call the Util class once to instantiate the statics which are used by
 		// the insertInDatabase method.
 		new Util(mActivity);
@@ -1718,7 +1721,70 @@ public class GridTest {
 		verify(databaseHelper).setTransactionSuccessful();
 		verify(databaseHelper).endTransaction();
 
-		assertTrue("Grid inserted in database", resultInsertInDatabase);
+		assertTrue("Inserted in database", resultInsertInDatabase);
+	}
+
+	@Test
+	public void insertInDatabase_GridWithExistingGridDefinition_SolvingAttemptAndStatisticsAreInserted()
+			throws Exception {
+		// Call the Util class once to instantiate the statics which are used by
+		// the insertInDatabase method.
+		new Util(mActivity);
+
+		final DatabaseHelper databaseHelper = mock(DatabaseHelper.class);
+
+		final GridRow gridRow = mock(GridRow.class);
+		gridRow.mId = 123;
+
+		final GridDatabaseAdapter gridDatabaseAdapter = mock(GridDatabaseAdapter.class);
+		when(gridDatabaseAdapter.getByGridDefinition(anyString())).thenReturn(
+				gridRow);
+
+		final SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = mock(SolvingAttemptDatabaseAdapter.class);
+		when(solvingAttemptDatabaseAdapter.insert(any(Grid.class), anyInt()))
+				.thenReturn(1);
+
+		final StatisticsDatabaseAdapter statisticsDatabaseAdapter = mock(StatisticsDatabaseAdapter.class);
+		when(statisticsDatabaseAdapter.insert(any(Grid.class))).thenReturn(
+				mock(GridStatistics.class));
+
+		Grid grid = new Grid(new Grid.ObjectsCreator() {
+			@Override
+			public DatabaseHelper createDatabaseHelper() {
+				return databaseHelper;
+			}
+
+			@Override
+			public GridDatabaseAdapter createGridDatabaseAdapter() {
+				return gridDatabaseAdapter;
+			}
+
+			@Override
+			public SolvingAttemptDatabaseAdapter createSolvingAttemptDatabaseAdapter() {
+				return solvingAttemptDatabaseAdapter;
+			}
+
+			@Override
+			public StatisticsDatabaseAdapter createStatisticsDatabaseAdapter() {
+				return statisticsDatabaseAdapter;
+			}
+		}) {
+			@Override
+			public String toGridDefinitionString() {
+				return "** A Grid definition string **";
+			}
+		};
+
+		boolean resultInsertInDatabase = grid.insertInDatabase();
+
+		verify(databaseHelper).beginTransaction();
+		verify(gridDatabaseAdapter, never()).insert(any(Grid.class));
+		verify(solvingAttemptDatabaseAdapter).insert(any(Grid.class), anyInt());
+		verify(statisticsDatabaseAdapter).insert(any(Grid.class));
+		verify(databaseHelper).setTransactionSuccessful();
+		verify(databaseHelper).endTransaction();
+
+		assertTrue("Inserted in database", resultInsertInDatabase);
 	}
 
 	@Test
