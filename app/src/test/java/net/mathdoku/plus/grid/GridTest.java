@@ -8,6 +8,11 @@ import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridGenerating.GridGenerator;
 import net.mathdoku.plus.statistics.GridStatistics;
+import net.mathdoku.plus.storage.database.DatabaseHelper;
+import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
+import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
+import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
+import net.mathdoku.plus.util.Util;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,6 +31,7 @@ import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -35,22 +41,27 @@ import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 public class GridTest {
+	Activity mActivity;
 	Preferences preferences;
 
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 
+		mActivity = new Activity();
+
 		Preferences.ObjectsCreator preferencesObjectsCreator = new Preferences.ObjectsCreator() {
 			@Override
-			public Preferences createPreferencesSingletonInstance(Context context) {
+			public Preferences createPreferencesSingletonInstance(
+					Context context) {
 				return mock(Preferences.class);
 			}
 		};
 
 		// Create the Preference Instance with the Singleton Creator which uses
 		// a mocked Preferences object
-		preferences = Preferences.getInstance(new Activity(), preferencesObjectsCreator);
+		preferences = Preferences.getInstance(mActivity,
+				preferencesObjectsCreator);
 	}
 
 	@Test(expected = RuntimeException.class)
@@ -1651,8 +1662,63 @@ public class GridTest {
 	}
 
 	@Test
-	public void insertInDatabase() throws Exception {
+	public void insertInDatabase_GridWithUniqueGridDefinition_GridIsInserted() throws Exception {
+		// Call the Util class once to instantiate the statics which are used by
+		// the insertInDatabase method.
+		new Util(mActivity);
 
+		final DatabaseHelper databaseHelper = mock(DatabaseHelper.class);
+
+		final GridDatabaseAdapter gridDatabaseAdapter = mock(GridDatabaseAdapter.class);
+		when(gridDatabaseAdapter.getByGridDefinition(anyString())).thenReturn(
+				null);
+		when(gridDatabaseAdapter.insert(any(Grid.class))).thenReturn(1);
+
+		final SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = mock(SolvingAttemptDatabaseAdapter.class);
+		when(solvingAttemptDatabaseAdapter.insert(any(Grid.class), anyInt()))
+				.thenReturn(1);
+
+		final StatisticsDatabaseAdapter statisticsDatabaseAdapter = mock(StatisticsDatabaseAdapter.class);
+		when(statisticsDatabaseAdapter.insert(any(Grid.class))).thenReturn(
+				mock(GridStatistics.class));
+
+		Grid grid = new Grid(new Grid.ObjectsCreator() {
+			@Override
+			public DatabaseHelper createDatabaseHelper() {
+				return databaseHelper;
+			}
+
+			@Override
+			public GridDatabaseAdapter createGridDatabaseAdapter() {
+				return gridDatabaseAdapter;
+			}
+
+			@Override
+			public SolvingAttemptDatabaseAdapter createSolvingAttemptDatabaseAdapter() {
+				return solvingAttemptDatabaseAdapter;
+			}
+
+			@Override
+			public StatisticsDatabaseAdapter createStatisticsDatabaseAdapter() {
+				return statisticsDatabaseAdapter;
+			}
+		}) {
+			@Override
+			public String toGridDefinitionString() {
+				return "** A Grid definition string **";
+			}
+		};
+
+		boolean resultInsertInDatabase = grid.insertInDatabase();
+
+		verify(databaseHelper).beginTransaction();
+		verify(gridDatabaseAdapter).insert(any(Grid.class));
+		verify(solvingAttemptDatabaseAdapter).insert(any(Grid.class), anyInt());
+		verify(statisticsDatabaseAdapter).insert(any(Grid.class));
+		verify(databaseHelper).setTransactionSuccessful();
+		verify(databaseHelper).endTransaction();
+
+		assertTrue("Grid inserted in database", resultInsertInDatabase);
 	}
 
 	@Test

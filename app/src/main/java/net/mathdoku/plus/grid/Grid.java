@@ -143,6 +143,22 @@ public class Grid {
 				ArrayList<GridCell> cells, int row, int column) {
 			return new GridCellSelectorInRowOrColumn(cells, row, column);
 		}
+
+		public DatabaseHelper createDatabaseHelper() {
+			return DatabaseHelper.getInstance();
+		}
+
+		public GridDatabaseAdapter createGridDatabaseAdapter() {
+			return new GridDatabaseAdapter();
+		}
+
+		public SolvingAttemptDatabaseAdapter createSolvingAttemptDatabaseAdapter() {
+			return new SolvingAttemptDatabaseAdapter();
+		}
+
+		public StatisticsDatabaseAdapter createStatisticsDatabaseAdapter() {
+			return new StatisticsDatabaseAdapter();
+		}
 	}
 
 	private final ObjectsCreator mObjectsCreator;
@@ -864,12 +880,13 @@ public class Grid {
 	 * @return True in case the gird has been inserted. False otherwise.
 	 */
 	public boolean insertInDatabase() {
-		DatabaseHelper databaseHelper = DatabaseHelper.getInstance();
+		DatabaseHelper databaseHelper = mObjectsCreator.createDatabaseHelper();
 		databaseHelper.beginTransaction();
 
 		// Insert grid record if it does not yet exists.
 		if (mRowId < 0) {
-			GridDatabaseAdapter gridDatabaseAdapter = new GridDatabaseAdapter();
+			GridDatabaseAdapter gridDatabaseAdapter = mObjectsCreator
+					.createGridDatabaseAdapter();
 			GridRow gridRow = gridDatabaseAdapter
 					.getByGridDefinition(toGridDefinitionString());
 			if (gridRow == null) {
@@ -890,7 +907,8 @@ public class Grid {
 		}
 
 		// Insert new solving attempt.
-		SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = new SolvingAttemptDatabaseAdapter();
+		SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = mObjectsCreator
+				.createSolvingAttemptDatabaseAdapter();
 		mSolvingAttemptId = solvingAttemptDatabaseAdapter.insert(this,
 				Util.getPackageVersionNumber());
 		if (mSolvingAttemptId < 0) {
@@ -904,7 +922,8 @@ public class Grid {
 		}
 
 		// Insert new statistics.
-		StatisticsDatabaseAdapter statisticsDatabaseAdapter = new StatisticsDatabaseAdapter();
+		StatisticsDatabaseAdapter statisticsDatabaseAdapter = mObjectsCreator
+				.createStatisticsDatabaseAdapter();
 		mGridStatistics = statisticsDatabaseAdapter.insert(this);
 		if (mGridStatistics == null) {
 			if (Config.mAppMode == AppMode.DEVELOPMENT) {
