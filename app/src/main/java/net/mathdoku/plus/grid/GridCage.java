@@ -71,8 +71,11 @@ public class GridCage {
 	private void initGridCage(Grid grid) {
 		this.mGrid = grid;
 		mPossibles = null;
-		mUserMathCorrect = true;
 		mCells = new ArrayList<GridCell>();
+
+		// Defaulting mUserMathCorrect to false result in setting all borders
+		// when checking the cage math for the first time.
+		mUserMathCorrect = false;
 	}
 
 	@Override
