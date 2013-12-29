@@ -1,5 +1,18 @@
 package net.mathdoku.plus.util;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.content.res.Configuration;
+import android.net.Uri;
+import android.util.DisplayMetrics;
+
+import net.mathdoku.plus.Preferences;
+import net.mathdoku.plus.R;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -14,19 +27,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
-
-import net.mathdoku.plus.Preferences;
-import net.mathdoku.plus.R;
-
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.content.res.Configuration;
-import android.net.Uri;
-import android.util.DisplayMetrics;
 
 public class FeedbackEmail {
 	public final static String TAG = "MathDoku.FeedbackEmail";
@@ -106,12 +106,15 @@ public class FeedbackEmail {
 		sortedMap.put("Dimension",
 				mActivity.getResources().getString(R.string.dimension));
 
-		DisplayMetrics metrics = new Util(mActivity).getDisplayMetrics();
-		sortedMap.put("Display.Density", Float.toString(metrics.density));
-		sortedMap.put("Display.Width", Float.toString(metrics.widthPixels));
-		sortedMap.put("Display.Height", Float.toString(metrics.heightPixels));
-		sortedMap.put("Display.xdpi", Float.toString(metrics.xdpi));
-		sortedMap.put("Display.ydpi", Float.toString(metrics.ydpi));
+		DisplayMetrics mDisplayMetrics = new DisplayMetrics();
+		mActivity.getWindowManager().getDefaultDisplay()
+				.getMetrics(mDisplayMetrics);
+
+		sortedMap.put("Display.Density", Float.toString(mDisplayMetrics.density));
+		sortedMap.put("Display.Width", Float.toString(mDisplayMetrics.widthPixels));
+		sortedMap.put("Display.Height", Float.toString(mDisplayMetrics.heightPixels));
+		sortedMap.put("Display.xdpi", Float.toString(mDisplayMetrics.xdpi));
+		sortedMap.put("Display.ydpi", Float.toString(mDisplayMetrics.ydpi));
 
 		logSortedMap("Device", sortedMap);
 	}

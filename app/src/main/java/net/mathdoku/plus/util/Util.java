@@ -3,7 +3,6 @@ package net.mathdoku.plus.util;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.pm.PackageInfo;
-import android.util.DisplayMetrics;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -20,8 +19,6 @@ public class Util {
 	private static int mPackageVersionNumber;
 	private static String mPackageVersionName;
 
-	private static DisplayMetrics mDisplayMetrics;
-
 	public Util(Activity activity) {
 		// Get package name and version
 		mPackageVersionNumber = -1;
@@ -35,11 +32,6 @@ public class Util {
 		} catch (Exception e) {
 			Log.e(TAG, "Package not found", e);
 		}
-
-		// Set the display metrics
-		mDisplayMetrics = new DisplayMetrics();
-		activity.getWindowManager().getDefaultDisplay()
-				.getMetrics(mDisplayMetrics);
 
 		// Set flag to indicate that it is now save to call the static
 		// functions.
@@ -68,17 +60,6 @@ public class Util {
 			throw new SingletonInstanceNotInstantiated();
 		}
 		return mPackageVersionName;
-	}
-
-	/**
-	 * Get the package version number.
-	 * 
-	 * @return The package version number.
-	 */
-	// Static call not implemented as the value changes at each configuration
-	// change
-	public DisplayMetrics getDisplayMetrics() {
-		return mDisplayMetrics;
 	}
 
 	/**

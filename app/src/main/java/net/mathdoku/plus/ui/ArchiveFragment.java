@@ -1,6 +1,21 @@
 package net.mathdoku.plus.ui;
 
-import java.text.DateFormat;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.graphics.Color;
+import android.graphics.Paint.Align;
+import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
@@ -19,22 +34,7 @@ import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.DefaultRenderer;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.graphics.Color;
-import android.graphics.Paint.Align;
-import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import java.text.DateFormat;
 
 /**
  * An archive fragment representing a puzzle which is archived.
@@ -632,12 +632,13 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 	 */
 	private int getBarWidth() {
 		// Get screen width
-		DisplayMetrics displayMetrics = new Util(getActivity())
-				.getDisplayMetrics();
+		DisplayMetrics mDisplayMetrics = new DisplayMetrics();
+		getActivity().getWindowManager().getDefaultDisplay()
+				.getMetrics(mDisplayMetrics);
 
 		// Assume 90% of screen width is actually available to display all
 		// elements
-		return (int) (((float) 0.90 * displayMetrics.widthPixels / MAX_CATEGORIES_BAR_CHART) / 2);
+		return (int) (((float) 0.90 * mDisplayMetrics.widthPixels / MAX_CATEGORIES_BAR_CHART) / 2);
 	}
 
 	/**
