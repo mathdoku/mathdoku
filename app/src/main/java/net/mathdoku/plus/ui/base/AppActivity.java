@@ -1,10 +1,5 @@
 package net.mathdoku.plus.ui.base;
 
-import net.mathdoku.plus.Preferences;
-import net.mathdoku.plus.storage.database.DatabaseHelper;
-import net.mathdoku.plus.ui.PuzzleFragmentActivity;
-import net.mathdoku.plus.util.Util;
-
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -18,6 +13,11 @@ import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
 import android.view.MenuItem;
 import android.view.WindowManager;
+
+import net.mathdoku.plus.Preferences;
+import net.mathdoku.plus.storage.database.DatabaseHelper;
+import net.mathdoku.plus.ui.PuzzleFragmentActivity;
+import net.mathdoku.plus.util.Util;
 
 @SuppressLint("Registered")
 public class AppActivity extends Activity implements
@@ -33,7 +33,7 @@ public class AppActivity extends Activity implements
 
 		// Initialize global objects (singleton instances)
 		mMathDokuPreferences = Preferences.getInstance(this);
-		DatabaseHelper.instantiate(this);
+		DatabaseHelper.getInstance(this);
 		new Util(this);
 
 		// Register listener for changes of the share preferences.

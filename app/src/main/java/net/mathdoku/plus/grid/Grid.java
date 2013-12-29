@@ -864,7 +864,8 @@ public class Grid {
 	 * @return True in case the gird has been inserted. False otherwise.
 	 */
 	public boolean insertInDatabase() {
-		DatabaseHelper.beginTransaction();
+		DatabaseHelper databaseHelper = DatabaseHelper.getInstance();
+		databaseHelper.beginTransaction();
 
 		// Insert grid record if it does not yet exists.
 		if (mRowId < 0) {
@@ -879,7 +880,7 @@ public class Grid {
 						throw new RuntimeException(
 								"Error while inserting a new grid into database.");
 					} else {
-						DatabaseHelper.endTransaction();
+						databaseHelper.endTransaction();
 						return false;
 					}
 				}
@@ -897,7 +898,7 @@ public class Grid {
 				throw new RuntimeException(
 						"Error while inserting a new grid into database.");
 			} else {
-				DatabaseHelper.endTransaction();
+				databaseHelper.endTransaction();
 				return false;
 			}
 		}
@@ -910,14 +911,14 @@ public class Grid {
 				throw new RuntimeException(
 						"Error while inserting a new grid into database.");
 			} else {
-				DatabaseHelper.endTransaction();
+				databaseHelper.endTransaction();
 				return false;
 			}
 		}
 
 		// Commit and close transaction
-		DatabaseHelper.setTransactionSuccessful();
-		DatabaseHelper.endTransaction();
+		databaseHelper.setTransactionSuccessful();
+		databaseHelper.endTransaction();
 
 		return true;
 	}

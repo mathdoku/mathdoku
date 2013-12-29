@@ -1,5 +1,12 @@
 package net.mathdoku.plus.developmentHelper;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.SharedPreferences.Editor;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
+
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
@@ -12,13 +19,6 @@ import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.storage.database.DatabaseHelper;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 import net.mathdoku.plus.util.Util;
-
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.SharedPreferences.Editor;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.TextView;
 
 /**
  * The Development Helper class is intended to support Development and Unit
@@ -246,7 +246,7 @@ public class DevelopmentHelper {
 			executeDeleteAllPreferences();
 
 			// Reopen the database helper.
-			DatabaseHelper.instantiate(puzzleFragmentActivity);
+			DatabaseHelper.getInstance(puzzleFragmentActivity);
 		}
 	}
 

@@ -1,12 +1,12 @@
 package net.mathdoku.plus.storage.database;
 
-import net.mathdoku.plus.util.SingletonInstanceNotInstantiated;
-
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import net.mathdoku.plus.util.SingletonInstanceNotInstantiated;
 
 /**
  * The DatabaseHelper is a generic access point for this application to
@@ -21,6 +21,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private static DatabaseHelper mDatabaseHelperSingletonInstance = null;
 	private static Context currentRenamingDelegatingContext = null;
 
+	// The Objects Creator is responsible for creating all new objects needed by
+	// this class. For unit testing purposes the default create methods can be
+	// overridden if needed.
+	public static class ObjectsCreator {
+		public DatabaseHelper createDatabaseHelperSingletonInstance(
+				Context context) {
+			return new DatabaseHelper(context);
+		}
+	}
+
 	/**
 	 * Constructor should be private to prevent direct instantiation. Call the
 	 * static factory method "getInstance()" instead.
@@ -33,38 +43,52 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	/**
-	 * Instantiates the (singular) instance of the SQLite database.
+	 * Gets the singleton reference of
+	 * {@link net.mathdoku.plus.storage.database.DatabaseHelper}. If it does not
+	 * yet exist then it will be created.
 	 * 
 	 * @param context
-	 *            The context in which the database helper is needed. It is not
-	 *            necessarily needed to pass the application context itself.
+	 *            The context in which the GridPainter is created.
+	 * @return The context for which the preferences have to be determined.
 	 */
-	public static void instantiate(Context context) {
-		// The application context is used to instantiate the SQLite database in
-		// order to avoid locking problems and leaking an Activity's context.
+	public static DatabaseHelper getInstance(Context context) {
 		if (mDatabaseHelperSingletonInstance == null) {
-			mDatabaseHelperSingletonInstance = new DatabaseHelper(
-					context.getApplicationContext());
+			// Only the first time this method is called, the object will be
+			// created.
+			//
+			// The application context is used to instantiate the SQLite
+			// database in
+			// order to avoid locking problems and leaking an Activity's
+			// context.
+			mDatabaseHelperSingletonInstance = new ObjectsCreator()
+					.createDatabaseHelperSingletonInstance(context
+							.getApplicationContext());
 		}
+		return mDatabaseHelperSingletonInstance;
+	}
 
-		if (context.getClass().getSimpleName()
-				.equals("RenamingDelegatingContext")) {
-			// While running as JUnit test we don't want to return the
-			// application context of the JUnit test in case a
-			// RenamingDelegatingContext is used as parameter for the
-			// DatabaseHelper. We can however not test with
-			// "context instanceof RenamingDelegatingContext" as this results in
-			// an error when not running as JUnit test because this class does
-			// not exist in normal running mode.
-			if (mDatabaseHelperSingletonInstance == null
-					|| context != currentRenamingDelegatingContext) {
-				// When switching from RenamingDelegatingContext, i.e. a
-				// new JUnit test-case is started, return a new Database
-				// Helper.
-				mDatabaseHelperSingletonInstance = new DatabaseHelper(context);
-				currentRenamingDelegatingContext = context;
-			}
+	/**
+	 * Creates new instance of
+	 * {@link net.mathdoku.plus.storage.database.DatabaseHelper}. All objects in
+	 * this class will be created with the given ObjectsCreator. This method is
+	 * intended for unit testing.
+	 * 
+	 * @param context
+	 *            The context in which the Preference object is created.
+	 * @param objectsCreator
+	 *            The ObjectsCreator to be used by this class. Only create
+	 *            methods for which the default implementation does not suffice,
+	 *            should be overridden.
+	 * @return The singleton instance for the Preferences.
+	 */
+	public static DatabaseHelper getInstance(Context context,
+			ObjectsCreator objectsCreator) {
+		if (objectsCreator != null) {
+			mDatabaseHelperSingletonInstance = objectsCreator
+					.createDatabaseHelperSingletonInstance(context
+							.getApplicationContext());
 		}
+		return getInstance(context);
 	}
 
 	/**
@@ -100,7 +124,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * DatabaseHelper.getInstance().getWriteableDatabase().beginTransaction()
 	 * you have to be sure that the DatabaseHelper has been instantiated before.
 	 */
-	public static void beginTransaction() {
+	public void beginTransaction() {
 		if (mDatabaseHelperSingletonInstance == null) {
 			throw new SingletonInstanceNotInstantiated();
 		}
@@ -117,7 +141,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * DatabaseHelper.getInstance().getWriteableDatabase().endTransaction() you
 	 * have to be sure that the DatabaseHelper has been instantiated before.
 	 */
-	public static void endTransaction() {
+	public void endTransaction() {
 		if (mDatabaseHelperSingletonInstance == null) {
 			throw new SingletonInstanceNotInstantiated();
 		}
@@ -135,7 +159,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * ().setTransactionSuccessful() you have to be sure that the DatabaseHelper
 	 * has been instantiated before.
 	 */
-	public static void setTransactionSuccessful() {
+	public void setTransactionSuccessful() {
 		if (mDatabaseHelperSingletonInstance == null) {
 			throw new SingletonInstanceNotInstantiated();
 		}

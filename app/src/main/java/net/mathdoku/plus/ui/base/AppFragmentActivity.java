@@ -1,15 +1,15 @@
 package net.mathdoku.plus.ui.base;
 
-import net.mathdoku.plus.Preferences;
-import net.mathdoku.plus.storage.database.DatabaseHelper;
-import net.mathdoku.plus.util.Util;
-
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.WindowManager;
+
+import net.mathdoku.plus.Preferences;
+import net.mathdoku.plus.storage.database.DatabaseHelper;
+import net.mathdoku.plus.util.Util;
 
 @SuppressLint("Registered")
 public class AppFragmentActivity extends FragmentActivity implements
@@ -24,7 +24,7 @@ public class AppFragmentActivity extends FragmentActivity implements
 
 		// Initialize global objects (singleton instances)
 		mMathDokuPreferences = Preferences.getInstance(this);
-		DatabaseHelper.instantiate(this);
+		DatabaseHelper.getInstance(this);
 		new Util(this);
 
 		// Register listener for changes of the share preferences.
