@@ -40,7 +40,6 @@ import net.mathdoku.plus.GameTimer;
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.Preferences.PuzzleSettingInputMethod;
 import net.mathdoku.plus.R;
-import net.mathdoku.plus.grid.CellChange;
 import net.mathdoku.plus.grid.DigitPositionGrid;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.GridCage;
@@ -50,7 +49,6 @@ import net.mathdoku.plus.grid.ui.GridPlayerView;
 import net.mathdoku.plus.hint.TickerTape;
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.painter.Painter.GridTheme;
-import net.mathdoku.plus.statistics.GridStatistics.StatisticsCounterType;
 import net.mathdoku.plus.tip.TipCheat;
 import net.mathdoku.plus.tip.TipDialog;
 import net.mathdoku.plus.tip.TipIncorrectValue;
@@ -682,37 +680,18 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * Reveals the values in the selected cell.
 	 */
 	void revealCell() {
-		if (mGrid == null) {
-			return;
+		if (mGrid != null && mGrid.revealSelectedCell()) {
+			GridCell selectedCell = mGrid.getSelectedCell();
+			setClearAndUndoButtonVisibility(selectedCell);
+
+			Cheat cheat = registerNewCheat(CheatType.CELL_REVEALED);
+
+			if (TipCheat.toBeDisplayed(mMathDokuPreferences, cheat)) {
+				new TipCheat(mContext, cheat).show();
+			}
+
+			mGridPlayerView.invalidate();
 		}
-
-		GridCell selectedCell = mGrid.getSelectedCell();
-		if (selectedCell == null) {
-			return;
-		}
-
-		// Save old cell info
-		CellChange originalUserMove = selectedCell.saveUndoInformation(null);
-
-		// Reveal the user value
-		selectedCell.setRevealed();
-		selectedCell.setUserValue(selectedCell.getCorrectValue());
-		if (mMathDokuPreferences.isPuzzleSettingClearMaybesEnabled()) {
-			// Update possible values for other cells in this row and
-			// column.
-			mGrid.clearRedundantPossiblesInSameRowOrColumn(originalUserMove);
-		}
-		setClearAndUndoButtonVisibility(selectedCell);
-
-		mGrid.increaseCounter(StatisticsCounterType.ACTION_REVEAL_CELL);
-		Cheat cheat = getNewCheat(CheatType.CELL_REVEALED);
-
-		// Display tip
-		if (TipCheat.toBeDisplayed(mMathDokuPreferences, cheat)) {
-			new TipCheat(mContext, cheat).show();
-		}
-
-		this.mGridPlayerView.invalidate();
 	}
 
 	/**
@@ -735,37 +714,26 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * Handles revealing of the operator of the given cage.
 	 */
 	void revealOperator() {
-		if (mGrid == null || mGrid.isActive() == false) {
-			return;
+		if (mGrid != null && mGrid.revealOperatorSelectedCage()) {
+			Cheat cheat = registerNewCheat(CheatType.OPERATOR_REVEALED);
+
+			// Display tip
+			if (TipCheat.toBeDisplayed(mMathDokuPreferences, cheat)) {
+				new TipCheat(mContext, cheat).show();
+			}
+
+			mGridPlayerView.invalidate();
 		}
-
-		// Determine current selected cage.
-		GridCage selectedGridCage = mGrid.getSelectedCage();
-
-		if (selectedGridCage == null) {
-			return;
-		}
-
-		selectedGridCage.revealOperator();
-
-		mGrid.increaseCounter(StatisticsCounterType.ACTION_REVEAL_OPERATOR);
-		Cheat cheat = getNewCheat(CheatType.OPERATOR_REVEALED);
-
-		// Display tip
-		if (TipCheat.toBeDisplayed(mMathDokuPreferences, cheat)) {
-			new TipCheat(mContext, cheat).show();
-		}
-
-		mGridPlayerView.invalidate();
 	}
 
 	/**
-	 * Create a cheat of the given type.
+	 * Register a new cheat of the given type. The penalty time of the cheat is
+	 * added to the timer.
 	 * 
 	 * @param cheatType
 	 *            The type of cheat to be processed.
 	 */
-	private Cheat getNewCheat(CheatType cheatType) {
+	private Cheat registerNewCheat(CheatType cheatType) {
 		// Create new cheat
 		Cheat cheat = new Cheat(mContext, cheatType);
 
@@ -922,7 +890,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 								// Create the cheat. This also updates the cheat
 								// penalty in the timer.
-								Cheat cheat = getNewCheat(CheatType.SOLUTION_REVEALED);
+								Cheat cheat = registerNewCheat(CheatType.SOLUTION_REVEALED);
 
 								// Stop the timer and unselect the current cell
 								// and cage. Finally save the grid.

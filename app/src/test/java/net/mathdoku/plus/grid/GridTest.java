@@ -1784,11 +1784,6 @@ public class GridTest {
 	}
 
 	@Test
-	public void increaseCounter() throws Exception {
-
-	}
-
-	@Test
 	public void save() throws Exception {
 
 	}

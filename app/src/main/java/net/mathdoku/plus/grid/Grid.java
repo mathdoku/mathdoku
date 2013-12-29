@@ -889,7 +889,8 @@ public class Grid {
 					.createGridDatabaseAdapter();
 			GridRow gridRow = gridDatabaseAdapter
 					.getByGridDefinition(toGridDefinitionString());
-			mRowId = (gridRow == null ? gridDatabaseAdapter.insert(this) : gridRow.mId);
+			mRowId = (gridRow == null ? gridDatabaseAdapter.insert(this)
+					: gridRow.mId);
 		}
 
 		// Insert new solving attempt.
@@ -932,16 +933,6 @@ public class Grid {
 		}
 
 		return (mGridStatistics != null);
-	}
-
-	/**
-	 * Increase given counter with 1.
-	 * 
-	 * @param statisticsCounterType
-	 *            The counter which has to be increased.
-	 */
-	public void increaseCounter(StatisticsCounterType statisticsCounterType) {
-		mGridStatistics.increaseCounter(statisticsCounterType);
 	}
 
 	/**
@@ -1491,13 +1482,15 @@ public class Grid {
 	public int markInvalidChoices() {
 		int countNewInvalids = 0;
 
-		increaseCounter(StatisticsCounterType.ACTION_CHECK_PROGRESS);
+		mGridStatistics
+				.increaseCounter(StatisticsCounterType.ACTION_CHECK_PROGRESS);
 		for (GridCell cell : mCells) {
 			// Check all cells having a value and not (yet) marked as invalid.
 			if (cell.isUserValueSet() && !cell.hasInvalidUserValueHighlight()) {
 				if (cell.getUserValue() != cell.getCorrectValue()) {
 					cell.setInvalidHighlight();
-					increaseCounter(StatisticsCounterType.CHECK_PROGRESS_INVALIDS_CELLS_FOUND);
+					mGridStatistics
+							.increaseCounter(StatisticsCounterType.CHECK_PROGRESS_INVALIDS_CELLS_FOUND);
 					countNewInvalids++;
 				}
 			}
@@ -1530,5 +1523,55 @@ public class Grid {
 				cage.checkUserMath();
 			}
 		}
+	}
+
+	/**
+	 * Reveals the user value of the selected cell.
+	 * 
+	 * @return True if the user value is revealed. False otherwise.
+	 */
+	public boolean revealSelectedCell() {
+		GridCell selectedCell = getSelectedCell();
+		if (selectedCell == null) {
+			return false;
+		}
+
+		// Save old cell info
+		CellChange originalUserMove = selectedCell.saveUndoInformation(null);
+
+		// Reveal the user value
+		selectedCell.setRevealed();
+		selectedCell.setUserValue(selectedCell.getCorrectValue());
+
+		if (Preferences.getInstance().isPuzzleSettingClearMaybesEnabled()) {
+			// Update possible values for other cells in this row and
+			// column.
+			clearRedundantPossiblesInSameRowOrColumn(originalUserMove);
+		}
+
+		mGridStatistics
+				.increaseCounter(StatisticsCounterType.ACTION_REVEAL_CELL);
+
+		return true;
+	}
+
+	/**
+	 * Reveals the operator of cage for the selected cell.
+	 * 
+	 * @return True in case the operator of the cage is revealed. False
+	 *         otherwise.
+	 */
+	public boolean revealOperatorSelectedCage() {
+		GridCage selectedGridCage = getSelectedCage();
+		if (selectedGridCage == null) {
+			return false;
+		}
+
+		selectedGridCage.revealOperator();
+
+		mGridStatistics
+				.increaseCounter(StatisticsCounterType.ACTION_REVEAL_OPERATOR);
+
+		return true;
 	}
 }
