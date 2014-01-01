@@ -1125,44 +1125,6 @@ public class Grid {
 				}
 			}
 
-			if (line.startsWith("SELECTED:")) {
-				// Do not remove as long as backward compatibility with old save
-				// file should be remained. In new save files this information
-				// is stored as part of the cell information.
-				if (selectedCell == null) {
-					// No cell is selected yet.
-					int selected = Integer
-							.parseInt(line
-									.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1)[1]);
-					selectedCell = mCells.get(selected);
-				}
-
-				// Read next line
-				if ((line = solvingAttemptData.getNextLine()) == null) {
-					throw new InvalidGridException(
-							"Unexpected end of solving attempt after processing SELECTED line.");
-				}
-			}
-			if (line.startsWith("INVALID:")) {
-				// Do not remove as long as backward compatibility with old save
-				// file should be remained. In new save files this information
-				// is stored as part of the cell information.
-				String invalidList = line
-						.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1)[1];
-				for (String cellId : invalidList
-						.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
-					int cellNum = Integer.parseInt(cellId);
-					GridCell c = mCells.get(cellNum);
-					c.setInvalidHighlight();
-				}
-
-				// Read next line
-				if ((line = solvingAttemptData.getNextLine()) == null) {
-					throw new InvalidGridException(
-							"Unexpected end of solving attempt after processing INVALID line.");
-				}
-			}
-
 			// Cages (at least one expected)
 			GridCage cage = mObjectsCreator.createGridCage(this);
 			if (!cage.fromStorageString(line,
