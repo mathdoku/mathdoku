@@ -1,7 +1,37 @@
 package net.mathdoku.plus.ui;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import android.annotation.TargetApi;
+import android.app.ActionBar;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.ListView;
+import android.widget.RatingBar;
+import android.widget.RatingBar.OnRatingBarChangeListener;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+import com.google.android.gms.games.GamesClient;
 
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
@@ -36,38 +66,8 @@ import net.mathdoku.plus.util.FeedbackEmail;
 import net.mathdoku.plus.util.SharedPuzzle;
 import net.mathdoku.plus.util.Util;
 
-import android.annotation.TargetApi;
-import android.app.ActionBar;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.OnTouchListener;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.ListView;
-import android.widget.RatingBar;
-import android.widget.RatingBar.OnRatingBarChangeListener;
-import android.widget.Spinner;
-import android.widget.TextView;
-
-import com.google.android.gms.games.GamesClient;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		implements PuzzleFragment.PuzzleFragmentListener {
@@ -950,14 +950,14 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	 *            True in case the dialog can be cancelled.
 	 * @param gridSize
 	 *            The grid size of the new puzzle.
-	 * @param hideOperators
+	 * @param visibleOperators
 	 *            True in case operators should be hidden in the new puzzle.
 	 * @param puzzleComplexity
 	 *            Complexity of the puzzle new puzzle.
 	 */
 	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	private void showDialogNewGame(final boolean cancelable, int gridSize,
-			boolean hideOperators, PuzzleComplexity puzzleComplexity) {
+			boolean visibleOperators, PuzzleComplexity puzzleComplexity) {
 		// Get view and put relevant information into the view.
 		LayoutInflater layoutInflater = LayoutInflater.from(this);
 		View view = layoutInflater.inflate(R.layout.puzzle_parameter_dialog,
@@ -992,7 +992,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		puzzleParameterSizeSpinner.setSelection(gridSize
 				- OFFSET_INDEX_TO_GRID_SIZE);
 		puzzleParameterDisplayOperatorsCheckBox
-				.setChecked(hideOperators == false);
+				.setChecked(visibleOperators);
 		switch (puzzleComplexity) {
 		case RANDOM:
 			puzzleParameterDifficultyRandom.setChecked(true);
@@ -1160,12 +1160,12 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 								.containsKey(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_PUZZLE_COMPLEXITY)) {
 					int gridSize = bundle
 							.getInt(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_SIZE);
-					boolean hideOperators = bundle
-							.getBoolean(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS);
+					boolean visibleOperators = (bundle
+							.getBoolean(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS) == false);
 					PuzzleComplexity puzzleComplexity = PuzzleComplexity
 							.valueOf(bundle
 									.getString(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_PUZZLE_COMPLEXITY));
-					showDialogNewGame(true, gridSize, hideOperators,
+					showDialogNewGame(true, gridSize, visibleOperators,
 							puzzleComplexity);
 				}
 			}
