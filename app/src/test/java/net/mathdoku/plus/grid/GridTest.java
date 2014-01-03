@@ -68,9 +68,18 @@ public class GridTest {
 	private GridObjectsCreator mGridObjectsCreator;
 
 	private class GridObjectsCreator extends Grid.ObjectsCreator {
-		// Array lists will not be initialized until the grid is actually
-		// created with this GridObjectsCreator.
+		// Array list for Grid Cells to be used when the Grid Cell list is
+		// created.
 		private ArrayList<GridCell> mArrayListOfGridCells = null;
+
+		// Array lists for Cell Changes to be used when the Cell Change list is
+		// created. By default an empty array list is returned.
+		private boolean mArrayListOfCellChangesMockReturnsMockOnNextCall = false;
+		private boolean mArrayListOfCellChangesMockReturnsNullOnFirstCall = false;
+		private ArrayList<CellChange> mArrayListOfCellChangesInitial = null;
+
+		// Unreveal the array list of cell changes as it is hidden in the Grid
+		// Object.
 		public ArrayList<CellChange> mArrayListOfCellChanges = null;
 
 		@Override
@@ -137,16 +146,33 @@ public class GridTest {
 				throw new RuntimeException(
 						"Cannot replace Array List of Cell Changes with Mock after Grid has been initialized.");
 			}
-			mArrayListOfCellChanges = mock(ArrayList.class);
+			mArrayListOfCellChangesInitial = mock(ArrayList.class);
+
+			return this;
+		}
+
+		public GridObjectsCreator replaceArrayListOfCellChangesWithNullWhenCreatingGrid() {
+			if (mArrayListOfCellChanges != null) {
+				throw new RuntimeException(
+						"Cannot replace Array List of Cell Changes with Mock after Grid has been initialized.");
+			}
+			mArrayListOfCellChangesMockReturnsNullOnFirstCall = true;
 
 			return this;
 		}
 
 		@Override
 		public ArrayList<CellChange> createArrayListOfCellChanges() {
-			if (mArrayListOfCellChanges == null) {
-				mArrayListOfCellChanges = super.createArrayListOfCellChanges();
+			// As the array list of cell changes is not accessible via the Grid,
+			// it is unrevealed via the GridObjectCreator.
+			if (mArrayListOfCellChangesMockReturnsNullOnFirstCall) {
+				mArrayListOfCellChangesMockReturnsNullOnFirstCall = false;
+				mArrayListOfCellChanges = null;
+			} else {
+				mArrayListOfCellChanges = (mArrayListOfCellChangesInitial != null ? mArrayListOfCellChangesInitial
+						: super.createArrayListOfCellChanges());
 			}
+
 			return mArrayListOfCellChanges;
 		}
 
@@ -271,32 +297,23 @@ public class GridTest {
 	@Test
 	public void clearCells_GridWithMultipleMovesCleared_AllMovesCleared()
 			throws Exception {
-		// Create stubs for each cell change and add those stubs to the list of
-		// cells. Note: the same cell change cannot be added more than once as
-		// method Grid.addMove only will add a move when it is not identical to
-		// the last move which was added.
-		mGrid.addMove(mock(CellChange.class));
-		mGrid.addMove(mock(CellChange.class));
-		mGrid.addMove(mock(CellChange.class));
-		mGrid.addMove(mock(CellChange.class));
-
-		// Verify the number of cell changes added before clearing the list
 		int expectedNumberOfCellChangesBeforeClear = 4;
-		int resultNumberOfCellChangesBeforeClear = mGrid.countMoves();
-		assertEquals("Number of moves for grid before clear",
-				expectedNumberOfCellChangesBeforeClear,
-				resultNumberOfCellChangesBeforeClear);
+		assertThatExpectedNumberOfMovesIsAddedToGrid(
+				expectedNumberOfCellChangesBeforeClear, mock(CellChange.class),
+				mock(CellChange.class), mock(CellChange.class),
+				mock(CellChange.class));
 
 		// Clear the cells. Value of variable replace is not relevant for this
 		// unit test.
 		boolean replay = false;
 		mGrid.clearCells(replay);
 
+		int resultNumberOfCellChangesAfterClear = mGridObjectsCreator.mArrayListOfCellChanges
+				.size();
 		int expectedNumberOfCellChangesAfterClear = 0;
-		int resultNumberOfCellChangesAfterClear = mGrid.countMoves();
-		assertEquals("Number of moves for grid after clear",
+		assertThat("Number of moves for grid after clear",
 				expectedNumberOfCellChangesAfterClear,
-				resultNumberOfCellChangesAfterClear);
+				is(resultNumberOfCellChangesAfterClear));
 	}
 
 	@Test
@@ -612,82 +629,82 @@ public class GridTest {
 				resultedIsSolutionValidSoFar);
 	}
 
-	private Grid createGridWithInitialMovesListIsNull() {
-		// The default ObjectsCreator always starts with an empty moves list
-		// which is not null.
-		// The returned grid is created with an initialized which returns a null
-		// value for the moves list when it is called for the first time. As the
-		// first create call for the moves list is initiated by the
-		// Grid-constructor this results in a Grid for which the moves list is
-		// null.
-		return new Grid(new Grid.ObjectsCreator() {
-			boolean mReturnNullOnNextCall = true;
+	private void assertThatExpectedNumberOfMovesIsAddedToGrid(
+			int expectedNumberOfCellChangesAddedToList,
+			CellChange... cellChanges) {
+		for (int i = 0; i < cellChanges.length; i++) {
+			mGrid.addMove(cellChanges[i]);
+		}
 
-			@Override
-			public ArrayList<CellChange> createArrayListOfCellChanges() {
-				ArrayList<CellChange> arrayListOfCellChanges = (mReturnNullOnNextCall ? null
-						: super.createArrayListOfCellChanges());
-				mReturnNullOnNextCall = false;
-				return arrayListOfCellChanges;
-			}
-		});
+		assertThat("Number of cell changes",
+				expectedNumberOfCellChangesAddedToList,
+				is(mGridObjectsCreator.mArrayListOfCellChanges.size()));
 	}
 
 	@Test
 	public void addMove_FirstMoveAddedToNullList_True() throws Exception {
-		mGrid = createGridWithInitialMovesListIsNull();
-		mGrid.addMove(mCellChangeMock);
-
-		int expectedNumberOfMoves = 1;
-		int resultNumberOfMoves = mGrid.countMoves();
-		assertEquals("Number of moves", expectedNumberOfMoves,
-				resultNumberOfMoves);
+		mGridObjectsCreator = new GridObjectsCreator()
+				.replaceArrayListOfCellChangesWithNullWhenCreatingGrid();
+		mGrid = new Grid(mGridObjectsCreator);
+		assertThatExpectedNumberOfMovesIsAddedToGrid(1, mCellChangeMock);
 	}
 
 	@Test
 	public void addMove_FirstMoveAddedToEmptyList_True() throws Exception {
-		mGrid.addMove(mCellChangeMock);
-
-		int expectedNumberOfMoves = 1;
-		int resultNumberOfMoves = mGrid.countMoves();
-		assertEquals("Number of moves", expectedNumberOfMoves,
-				resultNumberOfMoves);
+		assertThatExpectedNumberOfMovesIsAddedToGrid(1, mCellChangeMock);
 	}
 
 	@Test
 	public void addMove_AddMultipleDifferentMoves_True() throws Exception {
-		// Add stubbed cell changes. Separate stubs are needed per move as a
-		// move which is identical to the last move is ignored.
-		mGrid.addMove(mock(CellChange.class));
-		mGrid.addMove(mock(CellChange.class));
-
-		int expectedNumberOfMoves = 2;
-		int resultNumberOfMoves = mGrid.countMoves();
-		assertEquals("Number of moves", expectedNumberOfMoves,
-				resultNumberOfMoves);
+		CellChange otherCellChangeMock = mock(CellChange.class);
+		assertThatExpectedNumberOfMovesIsAddedToGrid(2, mCellChangeMock,
+				otherCellChangeMock);
 	}
 
 	@Test
 	public void addMove_AddMultipleIdenticalMoves_True() throws Exception {
-		// Add the same stub multiple times to simulate identical moves
-		mGrid.addMove(mCellChangeMock);
-		mGrid.addMove(mCellChangeMock);
-		mGrid.addMove(mCellChangeMock);
-
-		int expectedNumberOfMoves = 1;
-		int resultNumberOfMoves = mGrid.countMoves();
-		assertEquals("Number of moves", expectedNumberOfMoves,
-				resultNumberOfMoves);
+		assertThatExpectedNumberOfMovesIsAddedToGrid(1, mCellChangeMock,
+				mCellChangeMock);
 	}
 
 	@Test
-	public void countMoves() throws Exception {
-		// See tests for addMove
+	public void countMoves_MovesListIsNull_ZeroMoves() throws Exception {
+		mGridObjectsCreator = new GridObjectsCreator()
+				.replaceArrayListOfCellChangesWithNullWhenCreatingGrid();
+		mGrid = new Grid(mGridObjectsCreator);
+
+		int actualNumberOfCellChanges = mGrid.countMoves();
+		assertThat("Number of moves in a Grid with an empty moves list",
+				actualNumberOfCellChanges, is(0));
+	}
+
+	@Test
+	public void countMoves_MovesListIsNotEmpty_MovesCountedCorrectly()
+			throws Exception {
+		mGridObjectsCreator = new GridObjectsCreator()
+				.replaceArrayListOfCellChangesWithMock();
+		mGrid = new Grid(mGridObjectsCreator);
+		int expectedNumberOfCellChanges = 99;
+		when(mGridObjectsCreator.mArrayListOfCellChanges.size()).thenReturn(
+				expectedNumberOfCellChanges);
+
+		int actualNumberOfCellChanges = mGrid.countMoves();
+		assertThat("Number of moves in a Grid with an empty moves list",
+				actualNumberOfCellChanges, is(expectedNumberOfCellChanges));
+	}
+
+	@Test
+	public void countMoves_MovesListIsEmpty_ZeroMoves() throws Exception {
+		int actualNumberOfCellChanges = mGrid.countMoves();
+		assertThat("Number of moves in a Grid with an empty moves list",
+				actualNumberOfCellChanges, is(0));
 	}
 
 	@Test
 	public void undoLastMove_NullMovesList_False() throws Exception {
-		mGrid = createGridWithInitialMovesListIsNull();
+		mGridObjectsCreator = new GridObjectsCreator()
+				.replaceArrayListOfCellChangesWithNullWhenCreatingGrid();
+		mGrid = new Grid(mGridObjectsCreator);
 
 		boolean resultUndoLastMove = mGrid.undoLastMove();
 
@@ -848,10 +865,10 @@ public class GridTest {
 
 		when(mCellChangeMock.getGridCell()).thenReturn(mGridCellMock);
 
-		ArrayList<GridCell> mArrayListOfGridCells = new ArrayList<GridCell>();
-		mArrayListOfGridCells.add(mGridCellMock);
+		ArrayList<GridCell> arrayListOfGridCells = new ArrayList<GridCell>();
+		arrayListOfGridCells.add(mGridCellMock);
 		when(mGridCellSelectorInRowOrColumn.find()).thenReturn(
-				mArrayListOfGridCells);
+				arrayListOfGridCells);
 
 		mGrid.addMove(mCellChangeMock);
 
@@ -1097,7 +1114,7 @@ public class GridTest {
 	}
 
 	@Test
-	public void toStorageString_SaveNewGridWithMultipleCellchange_StorageStringCreated()
+	public void toStorageString_SaveNewGridWithMultipleCellChange_StorageStringCreated()
 			throws Exception {
 		CellChange cellChangeStub1 = mock(CellChange.class);
 		String cellChangeStubStorageString1 = "** FIRST CELL CHANGE STORAGE STRING **";
