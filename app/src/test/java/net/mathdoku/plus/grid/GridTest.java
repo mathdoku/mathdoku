@@ -273,19 +273,32 @@ public class GridTest {
 	@Test
 	public void clearCells_GridWithMultipleMovesCleared_AllMovesCleared()
 			throws Exception {
-		mGridObjectsCreator = new GridObjectsCreator().replaceArrayListOfCellChangesWithMock();
-		mGrid = new Grid(mGridObjectsCreator);
+		// Create stubs for each cell change and add those stubs to the list of
+		// cells. Note: the same cell change cannot be added more than once as
+		// method Grid.addMove only will add a move when it is not identical to
+		// the last move which was added.
+		mGrid.addMove(mock(CellChange.class));
+		mGrid.addMove(mock(CellChange.class));
+		mGrid.addMove(mock(CellChange.class));
+		mGrid.addMove(mock(CellChange.class));
 
-		
+		// Verify the number of cell changes added before clearing the list
+		int expectedNumberOfCellChangesBeforeClear = 4;
+		int resultNumberOfCellChangesBeforeClear = mGrid.countMoves();
+		assertEquals("Number of moves for grid before clear",
+					 expectedNumberOfCellChangesBeforeClear,
+					 resultNumberOfCellChangesBeforeClear);
+
 		// Clear the cells. Value of variable replace is not relevant for this
 		// unit test.
 		boolean replay = false;
 		mGrid.clearCells(replay);
+
 		int expectedNumberOfCellChangesAfterClear = 0;
 		int resultNumberOfCellChangesAfterClear = mGrid.countMoves();
 		assertEquals("Number of moves for grid after clear",
-				expectedNumberOfCellChangesAfterClear,
-				resultNumberOfCellChangesAfterClear);
+					 expectedNumberOfCellChangesAfterClear,
+					 resultNumberOfCellChangesAfterClear);
 	}
 
 	@Test
@@ -653,10 +666,7 @@ public class GridTest {
 	@Test
 	public void addMove_FirstMoveAddedToNullList_True() throws Exception {
 		mGrid = createGridWithInitialMovesListIsNull();
-
-		// Create stub for move to be added.
-		CellChange cellChangeStub = mock(CellChange.class);
-		mGrid.addMove(cellChangeStub);
+		mGrid.addMove(mGridObjectsCreator.mCellChangeMock);
 
 		int expectedNumberOfMoves = 1;
 		int resultNumberOfMoves = mGrid.countMoves();
@@ -666,11 +676,7 @@ public class GridTest {
 
 	@Test
 	public void addMove_FirstMoveAddedToEmptyList_True() throws Exception {
-		// Create stub to be added to list of moves
-		CellChange cellChangeStub = mock(CellChange.class);
-
-		// Simulate two moves
-		mGrid.addMove(cellChangeStub);
+		mGrid.addMove(mGridObjectsCreator.mCellChangeMock);
 
 		int expectedNumberOfMoves = 1;
 		int resultNumberOfMoves = mGrid.countMoves();
@@ -680,15 +686,9 @@ public class GridTest {
 
 	@Test
 	public void addMove_AddMultipleDifferentMoves_True() throws Exception {
-		// Create stub for first move to be added. Separate stubs are needed per
-		// move as a move which is identical to the last move is ignored.
-		CellChange cellChangeStub1 = mock(CellChange.class);
-		mGrid.addMove(cellChangeStub1);
-
-		// Create stub for first move to be added. Separate stubs are needed per
-		// move as a move which is identical to the last move is ignored.
-		CellChange cellChangeStub2 = mock(CellChange.class);
-		mGrid.addMove(cellChangeStub2);
+		// Add stubbed cell changes. Separate stubs are needed per move as a move which is identical to the last move is ignored.
+		mGrid.addMove(mock(CellChange.class));
+		mGrid.addMove(mock(CellChange.class));
 
 		int expectedNumberOfMoves = 2;
 		int resultNumberOfMoves = mGrid.countMoves();
@@ -698,13 +698,10 @@ public class GridTest {
 
 	@Test
 	public void addMove_AddMultipleIdenticalMoves_True() throws Exception {
-		// Create stub for moves to be added.
-		CellChange cellChangeStub = mock(CellChange.class);
-
 		// Add the same stub multiple times to simulate identical moves
-		mGrid.addMove(cellChangeStub);
-		mGrid.addMove(cellChangeStub);
-		mGrid.addMove(cellChangeStub);
+		mGrid.addMove(mGridObjectsCreator.mCellChangeMock);
+		mGrid.addMove(mGridObjectsCreator.mCellChangeMock);
+		mGrid.addMove(mGridObjectsCreator.mCellChangeMock);
 
 		int expectedNumberOfMoves = 1;
 		int resultNumberOfMoves = mGrid.countMoves();
@@ -739,15 +736,12 @@ public class GridTest {
 	public void undoLastMove_MovesListWithOneEntry_MoveIsRestored()
 			throws Exception {
 		when(mGridObjectsCreator.mGridCellMock.getCage()).thenReturn(mGridObjectsCreator.mGridCageMock);
-
-		final CellChange cellChangeMock = mock(CellChange.class);
-		when(cellChangeMock.getGridCell()).thenReturn(mGridObjectsCreator.mGridCellMock);
-
-		mGrid.addMove(cellChangeMock);
+		when(mGridObjectsCreator.mCellChangeMock.getGridCell()).thenReturn(mGridObjectsCreator.mGridCellMock);
+		mGrid.addMove(mGridObjectsCreator.mCellChangeMock);
 
 		mGrid.undoLastMove();
 
-		verify(cellChangeMock).restore();
+		verify(mGridObjectsCreator.mCellChangeMock).restore();
 	}
 
 	@Test
@@ -759,14 +753,13 @@ public class GridTest {
 
 		when(mGridObjectsCreator.mGridCellMock.getCage()).thenReturn(mGridObjectsCreator.mGridCageMock);
 
-		final CellChange cellChangeStub = mock(CellChange.class);
-		when(cellChangeStub.getGridCell()).thenReturn(mGridObjectsCreator.mGridCellMock);
+		when(mGridObjectsCreator.mCellChangeMock.getGridCell()).thenReturn(mGridObjectsCreator.mGridCellMock);
 
 		when(mGridObjectsCreator.mArrayListOfCellChanges.size()).thenReturn(1);
 		when(mGridObjectsCreator.mArrayListOfCellChanges.get(0)).thenReturn(
-				cellChangeStub);
+				mGridObjectsCreator.mCellChangeMock);
 
-		mGrid.addMove(cellChangeStub);
+		mGrid.addMove(mGridObjectsCreator.mCellChangeMock);
 
 		mGrid.undoLastMove();
 
@@ -782,14 +775,13 @@ public class GridTest {
 
 		when(mGridObjectsCreator.mGridCellMock.getCage()).thenReturn(mGridObjectsCreator.mGridCageMock);
 
-		final CellChange cellChangeStub = mock(CellChange.class);
-		when(cellChangeStub.getGridCell()).thenReturn(mGridObjectsCreator.mGridCellMock);
+		when(mGridObjectsCreator.mCellChangeMock.getGridCell()).thenReturn(mGridObjectsCreator.mGridCellMock);
 
 		when(mGridObjectsCreator.mArrayListOfCellChanges.size()).thenReturn(1);
 		when(mGridObjectsCreator.mArrayListOfCellChanges.get(0)).thenReturn(
-				cellChangeStub);
+				mGridObjectsCreator.mCellChangeMock);
 
-		mGrid.addMove(cellChangeStub);
+		mGrid.addMove(mGridObjectsCreator.mCellChangeMock);
 
 		mGrid.undoLastMove();
 
@@ -806,14 +798,13 @@ public class GridTest {
 
 		when(mGridObjectsCreator.mGridCellMock.getCage()).thenReturn(mGridObjectsCreator.mGridCageMock);
 
-		final CellChange cellChangeStub = mock(CellChange.class);
-		when(cellChangeStub.getGridCell()).thenReturn(mGridObjectsCreator.mGridCellMock);
+		when(mGridObjectsCreator.mCellChangeMock.getGridCell()).thenReturn(mGridObjectsCreator.mGridCellMock);
 
 		when(mGridObjectsCreator.mArrayListOfCellChanges.size()).thenReturn(1);
 		when(mGridObjectsCreator.mArrayListOfCellChanges.get(0)).thenReturn(
-				cellChangeStub);
+				mGridObjectsCreator.mCellChangeMock);
 
-		mGrid.addMove(cellChangeStub);
+		mGrid.addMove(mGridObjectsCreator.mCellChangeMock);
 
 		mGrid.undoLastMove();
 
@@ -825,6 +816,11 @@ public class GridTest {
 	@Test
 	public void undoLastMove_MovesListWithOneEntryChangeInPossibleValuesOnly_NoDuplicateValuesInSameRowAndColumnMarked()
 			throws Exception {
+		mGridObjectsCreator = new GridObjectsCreator()
+				.initializeArrayListOfGridCells(mGridObjectsCreator.mGridCellMock)
+				.replaceArrayListOfCellChangesWithMock();
+		mGrid = new Grid(mGridObjectsCreator);
+
 		int actualUserValueBeforeUndo = 0; // Cell is empty or has maybe values
 											// only.
 		int expectedUserValueAfterUndo = actualUserValueBeforeUndo;
@@ -832,19 +828,13 @@ public class GridTest {
 		when(mGridObjectsCreator.mGridCellMock.getUserValue()).thenReturn(actualUserValueBeforeUndo,
 													 expectedUserValueAfterUndo);
 
-		final CellChange cellChangeStub = mock(CellChange.class);
-		when(cellChangeStub.getGridCell()).thenReturn(mGridObjectsCreator.mGridCellMock);
-
-		mGridObjectsCreator = new GridObjectsCreator()
-				.initializeArrayListOfGridCells(mGridObjectsCreator.mGridCellMock)
-				.replaceArrayListOfCellChangesWithMock();
-		mGrid = new Grid(mGridObjectsCreator);
+		when(mGridObjectsCreator.mCellChangeMock.getGridCell()).thenReturn(mGridObjectsCreator.mGridCellMock);
 
 		when(mGridObjectsCreator.mArrayListOfCellChanges.size()).thenReturn(1);
 		when(mGridObjectsCreator.mArrayListOfCellChanges.get(0)).thenReturn(
-				cellChangeStub);
+				mGridObjectsCreator.mCellChangeMock);
 
-		mGrid.addMove(cellChangeStub);
+		mGrid.addMove(mGridObjectsCreator.mCellChangeMock);
 
 		mGrid.undoLastMove();
 
@@ -861,12 +851,11 @@ public class GridTest {
 		when(mGridObjectsCreator.mGridCellMock.getUserValue()).thenReturn(actualUserValueBeforeUndo,
 													 expectedUserValueAfterUndo);
 
-		final CellChange cellChangeStub = mock(CellChange.class);
-		when(cellChangeStub.getGridCell()).thenReturn(mGridObjectsCreator.mGridCellMock);
+		when(mGridObjectsCreator.mCellChangeMock.getGridCell()).thenReturn(mGridObjectsCreator.mGridCellMock);
 
 		mGrid.mCells.add(mGridObjectsCreator.mGridCellMock);
 
-		mGrid.addMove(cellChangeStub);
+		mGrid.addMove(mGridObjectsCreator.mCellChangeMock);
 
 		mGrid.undoLastMove();
 
@@ -886,15 +875,14 @@ public class GridTest {
 		when(mGridObjectsCreator.mGridCellMock.getUserValue()).thenReturn(actualUserValueBeforeUndo,
 													 expectedUserValueAfterUndo);
 
-		final CellChange cellChangeStub = mock(CellChange.class);
-		when(cellChangeStub.getGridCell()).thenReturn(mGridObjectsCreator.mGridCellMock);
+		when(mGridObjectsCreator.mCellChangeMock.getGridCell()).thenReturn(mGridObjectsCreator.mGridCellMock);
 
 		ArrayList<GridCell> mArrayListOfGridCells = new ArrayList<GridCell>();
 		mArrayListOfGridCells.add(mGridObjectsCreator.mGridCellMock);
 		when(mGridObjectsCreator.mGridCellSelectorInRowOrColumn.find())
 				.thenReturn(mArrayListOfGridCells);
 
-		mGrid.addMove(cellChangeStub);
+		mGrid.addMove(mGridObjectsCreator.mCellChangeMock);
 
 		mGrid.undoLastMove();
 
@@ -915,14 +903,13 @@ public class GridTest {
 		when(mGridObjectsCreator.mGridCellMock.getUserValue()).thenReturn(actualUserValueBeforeUndo,
 													 expectedUserValueAfterUndo);
 
-		final CellChange cellChangeStub = mock(CellChange.class);
-		when(cellChangeStub.getGridCell()).thenReturn(mGridObjectsCreator.mGridCellMock);
+		when(mGridObjectsCreator.mCellChangeMock.getGridCell()).thenReturn(mGridObjectsCreator.mGridCellMock);
 
 		when(mGridObjectsCreator.mArrayListOfCellChanges.size()).thenReturn(1);
 		when(mGridObjectsCreator.mArrayListOfCellChanges.get(0)).thenReturn(
-				cellChangeStub);
+				mGridObjectsCreator.mCellChangeMock);
 
-		mGrid.addMove(cellChangeStub);
+		mGrid.addMove(mGridObjectsCreator.mCellChangeMock);
 
 		mGrid.undoLastMove();
 
@@ -1123,16 +1110,14 @@ public class GridTest {
 	@Test
 	public void toStorageString_SaveNewGridWithOneCellChange_StorageStringCreated()
 			throws Exception {
-		CellChange cellChangeStub = mock(CellChange.class);
-		String cellChangeStubStorageString = "** A CELL CHANGE STORAGE STRING **";
-		when(cellChangeStub.toStorageString()).thenReturn(
-				cellChangeStubStorageString);
-		mGrid.addMove(cellChangeStub);
+		String mCellChangeStubStorageString = "** A CELL CHANGE STORAGE STRING **";
+		when(mGridObjectsCreator.mCellChangeMock.toStorageString()).thenReturn(mCellChangeStubStorageString);
+		mGrid.addMove(mGridObjectsCreator.mCellChangeMock);
 
 		String resultStorageString = mGrid.toStorageString();
 
 		String expectedStorageString = "GRID:false:false" + "\n"
-				+ cellChangeStubStorageString + "\n";
+				+ mCellChangeStubStorageString + "\n";
 		Assert.assertEquals("Storage string", expectedStorageString,
 				resultStorageString);
 	}
@@ -1172,17 +1157,15 @@ public class GridTest {
 		when(mGridObjectsCreator.mGridCageMock.toStorageString()).thenReturn(gridCageStubStorageString);
 		mGrid.mCages.add(mGridObjectsCreator.mGridCageMock);
 
-		CellChange cellChangeStub = mock(CellChange.class);
-		String cellChangeStubStorageString = "** A CELL CHANGE STORAGE STRING **";
-		when(cellChangeStub.toStorageString()).thenReturn(
-				cellChangeStubStorageString);
-		mGrid.addMove(cellChangeStub);
+		String mCellChangeStubStorageString = "** A CELL CHANGE STORAGE STRING **";
+		when(mGridObjectsCreator.mCellChangeMock.toStorageString()).thenReturn(mCellChangeStubStorageString);
+		mGrid.addMove(mGridObjectsCreator.mCellChangeMock);
 
 		String resultStorageString = mGrid.toStorageString();
 
 		String expectedStorageString = "GRID:false:false" + "\n"
 				+ gridCellStubStorageString + "\n" + gridCageStubStorageString
-				+ "\n" + cellChangeStubStorageString + "\n";
+				+ "\n" + mCellChangeStubStorageString + "\n";
 		Assert.assertEquals("Storage string", expectedStorageString,
 				resultStorageString);
 	}
