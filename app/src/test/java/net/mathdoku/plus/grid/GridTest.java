@@ -57,6 +57,8 @@ public class GridTest {
 	private class GridObjectsCreator extends Grid.ObjectsCreator {
 		// Init mockable objects
 		public GridCell mGridCellMock = mock(GridCell.class);
+		public GridCage mGridCageMock = mock(GridCage.class);
+		public CellChange mCellChangeMock = mock(CellChange.class);
 		public GridStatistics mGridStatisticsMock = mock(GridStatistics.class);
 		public GridDatabaseAdapter mGridDatabaseAdapterMock = mock(GridDatabaseAdapter.class);
 		public DatabaseHelper mDatabaseHelperMock = mock(DatabaseHelper.class);
@@ -76,12 +78,12 @@ public class GridTest {
 
 		@Override
 		public CellChange createCellChange() {
-			return mock(CellChange.class);
+			return mCellChangeMock;
 		}
 
 		@Override
 		public GridCage createGridCage(Grid grid) {
-			return mock(GridCage.class);
+			return mGridCageMock;
 		}
 
 		@Override
@@ -253,17 +255,14 @@ public class GridTest {
 	public void getSelectedCage_SelectedCellIsNotNull_CageSelected() {
 		// Create stubs for grid cages.
 		GridCage gridCageStub1 = mock(GridCage.class);
-		mGrid.mCages.add(gridCageStub1);
-
-		// Stub the cage for the cell which is selected
 		GridCage gridCageStub2 = mock(GridCage.class);
-		when(mGridObjectsCreator.mGridCellMock.getCage()).thenReturn(
-				gridCageStub2);
-		mGrid.mCages.add(gridCageStub2);
-		mGrid.setSelectedCell(mGridObjectsCreator.mGridCellMock);
-
 		GridCage gridCageStub3 = mock(GridCage.class);
-		mGrid.mCages.add(gridCageStub3);
+		mGrid.mCages = createArrayListOfGridCagesWithGridCages(gridCageStub1, gridCageStub2,
+															   gridCageStub3);
+
+		// Select a cell in Grid Cage stub 2.
+		when(mGridObjectsCreator.mGridCellMock.getCage()).thenReturn(gridCageStub2);
+		mGrid.setSelectedCell(mGridObjectsCreator.mGridCellMock);
 
 		// Get the actual result
 		GridCage expectedGridCage = gridCageStub2;
@@ -274,29 +273,10 @@ public class GridTest {
 	@Test
 	public void clearCells_GridWithMultipleMovesCleared_AllMovesCleared()
 			throws Exception {
-		// Create stubs for each cell change and add those stubs to the list of
-		// cells. Note: the same cell change cannot be added more than once as
-		// method Grid.addMove only will add a move when it is not identical to
-		// the last move which was added.
-		CellChange cellChangeStub1 = mock(CellChange.class);
-		mGrid.addMove(cellChangeStub1);
+		mGridObjectsCreator = new GridObjectsCreator().replaceArrayListOfCellChangesWithMock();
+		mGrid = new Grid(mGridObjectsCreator);
 
-		CellChange cellChangeStub2 = mock(CellChange.class);
-		mGrid.addMove(cellChangeStub2);
-
-		CellChange cellChangeStub3 = mock(CellChange.class);
-		mGrid.addMove(cellChangeStub3);
-
-		CellChange cellChangeStub4 = mock(CellChange.class);
-		mGrid.addMove(cellChangeStub4);
-
-		// Verify the number of cell changes added
-		int expectedNumberOfCellChangesBeforeClear = 4;
-		int resultNumberOfCellChangesBeforeClear = mGrid.countMoves();
-		assertEquals("Number of moves for grid before clear",
-				expectedNumberOfCellChangesBeforeClear,
-				resultNumberOfCellChangesBeforeClear);
-
+		
 		// Clear the cells. Value of variable replace is not relevant for this
 		// unit test.
 		boolean replay = false;
@@ -758,9 +738,7 @@ public class GridTest {
 	@Test
 	public void undoLastMove_MovesListWithOneEntry_MoveIsRestored()
 			throws Exception {
-		final GridCage gridCageStub = mock(GridCage.class);
-
-		when(mGridObjectsCreator.mGridCellMock.getCage()).thenReturn(gridCageStub);
+		when(mGridObjectsCreator.mGridCellMock.getCage()).thenReturn(mGridObjectsCreator.mGridCageMock);
 
 		final CellChange cellChangeMock = mock(CellChange.class);
 		when(cellChangeMock.getGridCell()).thenReturn(mGridObjectsCreator.mGridCellMock);
@@ -779,9 +757,7 @@ public class GridTest {
 				.replaceArrayListOfCellChangesWithMock();
 		mGrid = new Grid(mGridObjectsCreator);
 
-		final GridCage gridCageStub = mock(GridCage.class);
-
-		when(mGridObjectsCreator.mGridCellMock.getCage()).thenReturn(gridCageStub);
+		when(mGridObjectsCreator.mGridCellMock.getCage()).thenReturn(mGridObjectsCreator.mGridCageMock);
 
 		final CellChange cellChangeStub = mock(CellChange.class);
 		when(cellChangeStub.getGridCell()).thenReturn(mGridObjectsCreator.mGridCellMock);
@@ -804,9 +780,7 @@ public class GridTest {
 				.replaceArrayListOfCellChangesWithMock();
 		mGrid = new Grid(mGridObjectsCreator);
 
-		final GridCage gridCageStub = mock(GridCage.class);
-
-		when(mGridObjectsCreator.mGridCellMock.getCage()).thenReturn(gridCageStub);
+		when(mGridObjectsCreator.mGridCellMock.getCage()).thenReturn(mGridObjectsCreator.mGridCageMock);
 
 		final CellChange cellChangeStub = mock(CellChange.class);
 		when(cellChangeStub.getGridCell()).thenReturn(mGridObjectsCreator.mGridCellMock);
@@ -830,9 +804,7 @@ public class GridTest {
 				.replaceArrayListOfCellChangesWithMock();
 		mGrid = new Grid(mGridObjectsCreator);
 
-		final GridCage gridCageStub = mock(GridCage.class);
-
-		when(mGridObjectsCreator.mGridCellMock.getCage()).thenReturn(gridCageStub);
+		when(mGridObjectsCreator.mGridCellMock.getCage()).thenReturn(mGridObjectsCreator.mGridCageMock);
 
 		final CellChange cellChangeStub = mock(CellChange.class);
 		when(cellChangeStub.getGridCell()).thenReturn(mGridObjectsCreator.mGridCellMock);
@@ -853,12 +825,10 @@ public class GridTest {
 	@Test
 	public void undoLastMove_MovesListWithOneEntryChangeInPossibleValuesOnly_NoDuplicateValuesInSameRowAndColumnMarked()
 			throws Exception {
-		final GridCage gridCageStub = mock(GridCage.class);
-
 		int actualUserValueBeforeUndo = 0; // Cell is empty or has maybe values
 											// only.
 		int expectedUserValueAfterUndo = actualUserValueBeforeUndo;
-		when(mGridObjectsCreator.mGridCellMock.getCage()).thenReturn(gridCageStub);
+		when(mGridObjectsCreator.mGridCellMock.getCage()).thenReturn(mGridObjectsCreator.mGridCageMock);
 		when(mGridObjectsCreator.mGridCellMock.getUserValue()).thenReturn(actualUserValueBeforeUndo,
 													 expectedUserValueAfterUndo);
 
@@ -884,41 +854,35 @@ public class GridTest {
 	@Test
 	public void undoLastMove_MovesListWithOneEntryChangeInPossibleValuesOnly_NoCageBordersSet()
 			throws Exception {
-		final GridCage gridCageMock = mock(GridCage.class);
-
 		int actualUserValueBeforeUndo = 0; // Cell is empty or has maybe values
 											// only.
 		int expectedUserValueAfterUndo = actualUserValueBeforeUndo;
-		when(mGridObjectsCreator.mGridCellMock.getCage()).thenReturn(gridCageMock);
+		when(mGridObjectsCreator.mGridCellMock.getCage()).thenReturn(mGridObjectsCreator.mGridCageMock);
 		when(mGridObjectsCreator.mGridCellMock.getUserValue()).thenReturn(actualUserValueBeforeUndo,
 													 expectedUserValueAfterUndo);
 
 		final CellChange cellChangeStub = mock(CellChange.class);
 		when(cellChangeStub.getGridCell()).thenReturn(mGridObjectsCreator.mGridCellMock);
 
-		mGridObjectsCreator = new GridObjectsCreator()
-				.initializeArrayListOfGridCells(mGridObjectsCreator.mGridCellMock);
-		mGrid = new Grid(mGridObjectsCreator);
+		mGrid.mCells.add(mGridObjectsCreator.mGridCellMock);
 
 		mGrid.addMove(cellChangeStub);
 
 		mGrid.undoLastMove();
 
 		// Note: the borders are set once as a result of selecting the cell.
-		verify(gridCageMock, times(1)).setBorders();
+		verify(mGridObjectsCreator.mGridCageMock, times(1)).setBorders();
 	}
 
 	@Test
 	public void undoLastMove_ChangePossibleValueToUserValue_DuplicateValuesInSameRowAndColumnMarked()
 			throws Exception {
-		final GridCage gridCageStub = mock(GridCage.class);
-
 		int actualUserValueBeforeUndo = 0; // Cell is empty or has maybe values
 											// only.
 		int expectedUserValueAfterUndo = 1;
 		int row = 1;
 		int column = 2;
-		when(mGridObjectsCreator.mGridCellMock.getCage()).thenReturn(gridCageStub);
+		when(mGridObjectsCreator.mGridCellMock.getCage()).thenReturn(mGridObjectsCreator.mGridCageMock);
 		when(mGridObjectsCreator.mGridCellMock.getUserValue()).thenReturn(actualUserValueBeforeUndo,
 													 expectedUserValueAfterUndo);
 
@@ -940,21 +904,19 @@ public class GridTest {
 	@Test
 	public void undoLastMove_ChangePossibleValueToUserValue_CheckUserMath()
 			throws Exception {
-		final GridCage gridCageMock = mock(GridCage.class);
+		mGridObjectsCreator = new GridObjectsCreator()
+				.replaceArrayListOfCellChangesWithMock();
+		mGrid = new Grid(mGridObjectsCreator);
 
 		int actualUserValueBeforeUndo = 0; // Cell is empty or has maybe values
 											// only.
 		int expectedUserValueAfterUndo = 1;
-		when(mGridObjectsCreator.mGridCellMock.getCage()).thenReturn(gridCageMock);
+		when(mGridObjectsCreator.mGridCellMock.getCage()).thenReturn(mGridObjectsCreator.mGridCageMock);
 		when(mGridObjectsCreator.mGridCellMock.getUserValue()).thenReturn(actualUserValueBeforeUndo,
 													 expectedUserValueAfterUndo);
 
 		final CellChange cellChangeStub = mock(CellChange.class);
 		when(cellChangeStub.getGridCell()).thenReturn(mGridObjectsCreator.mGridCellMock);
-
-		mGridObjectsCreator = new GridObjectsCreator()
-				.replaceArrayListOfCellChangesWithMock();
-		mGrid = new Grid(mGridObjectsCreator);
 
 		when(mGridObjectsCreator.mArrayListOfCellChanges.size()).thenReturn(1);
 		when(mGridObjectsCreator.mArrayListOfCellChanges.get(0)).thenReturn(
@@ -964,23 +926,22 @@ public class GridTest {
 
 		mGrid.undoLastMove();
 
-		verify(gridCageMock).checkUserMath();
+		verify(mGridObjectsCreator.mGridCageMock).checkUserMath();
 	}
 
 	@Test
 	public void deselectSelectedCell_CellIsSelected_CellIsDeselected()
 			throws Exception {
 		// Select a cell
-		GridCage gridCageMock = mock(GridCage.class);
-		when(mGridObjectsCreator.mGridCellMock.getCage()).thenReturn(gridCageMock);
+		when(mGridObjectsCreator.mGridCellMock.getCage()).thenReturn(mGridObjectsCreator.mGridCageMock);
 		mGrid.setSelectedCell(mGridObjectsCreator.mGridCellMock);
-		verify(gridCageMock).setBorders();
+		verify(mGridObjectsCreator.mGridCageMock).setBorders();
 
 		// Deselect this cell
 		mGrid.deselectSelectedCell();
 
 		verify(mGridObjectsCreator.mGridCellMock).deselect();
-		verify(gridCageMock, times(2)).setBorders();
+		verify(mGridObjectsCreator.mGridCageMock, times(2)).setBorders();
 
 		GridCell expectedSelectedCell = null;
 		GridCell resultSelectedCell = mGrid.getSelectedCell();
@@ -996,28 +957,24 @@ public class GridTest {
 	@Test
 	public void setSelectedCell_NoCellCurrentlySelectedInGrid_BordersOfNewCageSetAndSelectedCellReturned()
 			throws Exception {
-		GridCage gridCageMock = mock(GridCage.class);
-
-		when(mGridObjectsCreator.mGridCellMock.getCage()).thenReturn(gridCageMock);
+		when(mGridObjectsCreator.mGridCellMock.getCage()).thenReturn(mGridObjectsCreator.mGridCageMock);
 		mGrid.setSelectedCell(mGridObjectsCreator.mGridCellMock);
 
 		GridCell expectedGridCell = mGridObjectsCreator.mGridCellMock;
 		GridCell resultGridCell = mGrid.setSelectedCell(mGridObjectsCreator.mGridCellMock);
 		assertEquals("Selected cell", expectedGridCell, resultGridCell);
 
-		verify(gridCageMock).setBorders();
+		verify(mGridObjectsCreator.mGridCageMock).setBorders();
 	}
 
 	@Test
 	public void setSelectedCell_SelectAnotherCellInTheCurrentlySelectedCage_OldSelectedCellIsDeselected()
 			throws Exception {
-		GridCage gridCageStub = mock(GridCage.class);
-
 		GridCell gridCellStub1 = mock(GridCell.class);
-		when(gridCellStub1.getCage()).thenReturn(gridCageStub);
+		when(gridCellStub1.getCage()).thenReturn(mGridObjectsCreator.mGridCageMock);
 
 		GridCell gridCellStub2 = mock(GridCell.class);
-		when(gridCellStub2.getCage()).thenReturn(gridCageStub);
+		when(gridCellStub2.getCage()).thenReturn(mGridObjectsCreator.mGridCageMock);
 
 		// Select the cells in given order
 		mGrid.setSelectedCell(gridCellStub1);
@@ -1029,38 +986,34 @@ public class GridTest {
 	@Test
 	public void setSelectedCell_CurrentlySelectedCellInGridIsSelectedAgain_NoBordersReset()
 			throws Exception {
-		GridCage gridCageMock = mock(GridCage.class);
-
-		when(mGridObjectsCreator.mGridCellMock.getCage()).thenReturn(gridCageMock);
+		when(mGridObjectsCreator.mGridCellMock.getCage()).thenReturn(mGridObjectsCreator.mGridCageMock);
 
 		// Select the grid cell
 		mGrid.setSelectedCell(mGridObjectsCreator.mGridCellMock);
-		verify(gridCageMock, times(1)).setBorders();
+		verify(mGridObjectsCreator.mGridCageMock, times(1)).setBorders();
 
 		// Select the same cell one more. The borders may not be reset again.
 		mGrid.setSelectedCell(mGridObjectsCreator.mGridCellMock);
-		verify(gridCageMock, times(1)).setBorders();
+		verify(mGridObjectsCreator.mGridCageMock, times(1)).setBorders();
 	}
 
 	@Test
 	public void setSelectedCell_SelectAnotherCellInTheCurrentlySelectedCage_NoBordersReset()
 			throws Exception {
-		GridCage gridCageMock = mock(GridCage.class);
-
 		GridCell gridCellStub1 = mock(GridCell.class);
-		when(gridCellStub1.getCage()).thenReturn(gridCageMock);
+		when(gridCellStub1.getCage()).thenReturn(mGridObjectsCreator.mGridCageMock);
 
 		GridCell gridCellStub2 = mock(GridCell.class);
-		when(gridCellStub2.getCage()).thenReturn(gridCageMock);
+		when(gridCellStub2.getCage()).thenReturn(mGridObjectsCreator.mGridCageMock);
 
 		// Select grid cell stub 1
 		mGrid.setSelectedCell(gridCellStub1);
-		verify(gridCageMock, times(1)).setBorders();
+		verify(mGridObjectsCreator.mGridCageMock, times(1)).setBorders();
 
 		// Select the other cell in the same cage. The borders may not be reset
 		// again.
 		mGrid.setSelectedCell(gridCellStub2);
-		verify(gridCageMock, times(1)).setBorders();
+		verify(mGridObjectsCreator.mGridCageMock, times(1)).setBorders();
 	}
 
 	@Test
@@ -1135,11 +1088,9 @@ public class GridTest {
 	@Test
 	public void toStorageString_SaveNewGridWithOneCage_StorageStringCreated()
 			throws Exception {
-		GridCage gridCageStub = mock(GridCage.class);
 		String gridCageStubStorageString = "** A CAGE STORAGE STRING **";
-		when(gridCageStub.toStorageString()).thenReturn(
-				gridCageStubStorageString);
-		mGrid.mCages.add(gridCageStub);
+		when(mGridObjectsCreator.mGridCageMock.toStorageString()).thenReturn(gridCageStubStorageString);
+		mGrid.mCages.add(mGridObjectsCreator.mGridCageMock);
 
 		String resultStorageString = mGrid.toStorageString();
 
@@ -1152,14 +1103,13 @@ public class GridTest {
 	@Test
 	public void toStorageString_SaveNewGridWithMultipleCage_StorageStringCreated()
 			throws Exception {
-		GridCage gridCageStub1 = mock(GridCage.class);
 		String gridCageStubStorageString1[] = {
 				"** FIRST CAGE STORAGE STRING **",
 				"** SECOND CAGE STORAGE STRING **" };
-		when(gridCageStub1.toStorageString()).thenReturn(
-				gridCageStubStorageString1[0], gridCageStubStorageString1[1]);
-		mGrid.mCages.add(gridCageStub1);
-		mGrid.mCages.add(gridCageStub1);
+		when(mGridObjectsCreator.mGridCageMock.toStorageString()).thenReturn(gridCageStubStorageString1[0],
+														 gridCageStubStorageString1[1]);
+		mGrid.mCages.add(mGridObjectsCreator.mGridCageMock);
+		mGrid.mCages.add(mGridObjectsCreator.mGridCageMock);
 
 		String resultStorageString = mGrid.toStorageString();
 
@@ -1218,11 +1168,9 @@ public class GridTest {
 		when(mGridObjectsCreator.mGridCellMock.toStorageString()).thenReturn(gridCellStubStorageString);
 		mGrid.mCells.add(mGridObjectsCreator.mGridCellMock);
 
-		GridCage gridCageStub = mock(GridCage.class);
 		String gridCageStubStorageString = "** A CAGE STORAGE STRING **";
-		when(gridCageStub.toStorageString()).thenReturn(
-				gridCageStubStorageString);
-		mGrid.mCages.add(gridCageStub);
+		when(mGridObjectsCreator.mGridCageMock.toStorageString()).thenReturn(gridCageStubStorageString);
+		mGrid.mCages.add(mGridObjectsCreator.mGridCageMock);
 
 		CellChange cellChangeStub = mock(CellChange.class);
 		String cellChangeStubStorageString = "** A CELL CHANGE STORAGE STRING **";
@@ -1495,8 +1443,7 @@ public class GridTest {
 		ArrayList<GridCell> gridCells = createArrayListOfGridCellsWithGridCells(
 				mGridObjectsCreator.mGridCellMock, mGridObjectsCreator.mGridCellMock);
 
-		GridCage gridCageMock = mock(GridCage.class);
-		ArrayList<GridCage> gridCages = createArrayListOfGridCagesWithGridCages(gridCageMock);
+		ArrayList<GridCage> gridCages = createArrayListOfGridCagesWithGridCages(mGridObjectsCreator.mGridCageMock);
 
 		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
 
@@ -1548,7 +1495,7 @@ public class GridTest {
 		boolean resultIsActive = mGrid.isActive();
 		assertTrue("Is active", resultIsActive);
 
-		verify(gridCageMock).setGridReference(any(Grid.class));
+		verify(mGridObjectsCreator.mGridCageMock).setGridReference(any(Grid.class));
 		verify(mGridObjectsCreator.mGridCellMock, times(gridCells.size())).setGridReference(
 				any(Grid.class));
 		verify(mGridObjectsCreator.mGridCellMock, times(gridCells.size())).setBorders();
