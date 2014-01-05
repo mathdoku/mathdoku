@@ -1,6 +1,7 @@
 package net.mathdoku.plus.grid;
 
 import net.mathdoku.plus.statistics.GridStatistics;
+import net.mathdoku.plus.storage.database.SolvingAttempt;
 import net.mathdoku.plus.storage.database.SolvingAttemptData;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
@@ -58,7 +59,7 @@ public class GridLoaderTest {
 		}
 	}
 
-	private class SolvingAttemptDataCreator extends SolvingAttemptData {
+	private class SolvingAttemptStub extends SolvingAttempt {
 		private boolean mIncludeGridInformation = false;
 		private boolean mIncludeInvalidLineBetweenGridInformationAndCell = false;
 		private int mNumberOfCells = 0;
@@ -68,69 +69,68 @@ public class GridLoaderTest {
 		private int mNumberOfCellChanges = 0;
 		private boolean mIncludeInvalidLineAfterCellChanges = false;
 
-		public SolvingAttemptDataCreator() {
+		public SolvingAttemptStub() {
 			mSavedWithRevision = 596;
-			buildData();
+			setData();
 		}
 
-		public SolvingAttemptDataCreator setHasInvalidLineBetweenGridInformationAndCell() {
+		public SolvingAttemptStub setHasInvalidLineBetweenGridInformationAndCell() {
 			mIncludeInvalidLineBetweenGridInformationAndCell = true;
-			buildData();
+			setData();
 
 			return this;
 		}
 
-		public SolvingAttemptDataCreator setHasGeneralGridInformation() {
+		public SolvingAttemptStub setHasGeneralGridInformation() {
 			mIncludeGridInformation = true;
-			buildData();
+			setData();
 
 			return this;
 		}
 
-		public SolvingAttemptDataCreator setNumberOfCells(int numberOfCells) {
+		public SolvingAttemptStub setNumberOfCells(int numberOfCells) {
 			mNumberOfCells = numberOfCells;
-			buildData();
+			setData();
 
 			return this;
 		}
 
-		public SolvingAttemptDataCreator setHasInvalidLineBetweenCellAndCages() {
+		public SolvingAttemptStub setHasInvalidLineBetweenCellAndCages() {
 			mIncludeInvalidLineBetweenCellAndCages = true;
-			buildData();
+			setData();
 
 			return this;
 		}
 
-		public SolvingAttemptDataCreator setNumberOfCages(int numberOfCages) {
+		public SolvingAttemptStub setNumberOfCages(int numberOfCages) {
 			mNumberOfCages = numberOfCages;
-			buildData();
+			setData();
 
 			return this;
 		}
 
-		public SolvingAttemptDataCreator setHasInvalidLineBetweenCagesAndCellChanges() {
+		public SolvingAttemptStub setHasInvalidLineBetweenCagesAndCellChanges() {
 			mIncludeInvalidLineBetweenCagesAndCellChanges = true;
-			buildData();
+			setData();
 
 			return this;
 		}
 
-		public SolvingAttemptDataCreator setNumberOfCellChanges(
-				int numberOfCellChanges) {
+		public SolvingAttemptStub setNumberOfCellChanges(int numberOfCellChanges) {
 			mNumberOfCellChanges = numberOfCellChanges;
-			buildData();
+			setData();
 
 			return this;
 		}
 
-		public SolvingAttemptDataCreator setHasInvalidLineAfterCellChanges() {
+		public SolvingAttemptStub setHasInvalidLineAfterCellChanges() {
 			mIncludeInvalidLineAfterCellChanges = true;
-			buildData();
+			setData();
 
 			return this;
 		}
 
-		private void buildData() {
+		private void setData() {
 			StringBuilder stringBuilder = new StringBuilder();
 
 			if (mIncludeGridInformation) {
@@ -177,7 +177,11 @@ public class GridLoaderTest {
 						.append(SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
 			}
 
-			setData(stringBuilder.toString());
+			mData = new SolvingAttemptData(stringBuilder.toString());
+		}
+
+		public void setNullData() {
+			mData = null;
 		}
 	}
 
@@ -190,154 +194,143 @@ public class GridLoaderTest {
 		// instead of mock.
 		mGridMock.mCells = new ArrayList<GridCell>();
 		mGridMock.mCages = new ArrayList<GridCage>();
-
 	}
 
-	public void load_SolvingAttemptDataNull_NotLoaded() throws Exception {
-		SolvingAttemptData solvingAttemptData = null;
-		assertThat("Grid load", mGridLoader.load(solvingAttemptData), is(false));
+	public void load_SolvingAttemptNull_NotLoaded() throws Exception {
+		SolvingAttempt solvingAttempt = null;
+		assertThat("Grid load", mGridLoader.load(solvingAttempt), is(false));
 	}
 
 	public void load_SolvingAttemptWithInvalidGridSize_NotLoaded()
 			throws Exception {
 		gridMockSetGridSize(0);
-		SolvingAttemptData solvingAttemptData = mock(SolvingAttemptData.class);
-		assertThat("Grid load", mGridLoader.load(solvingAttemptData), is(false));
+		SolvingAttempt solvingAttempt = mock(SolvingAttempt.class);
+		assertThat("Grid load", mGridLoader.load(solvingAttempt), is(false));
+	}
+
+	@Test
+	public void load_SolvingAttemptWithNullData_ThrowsInvalidGridException()
+			throws Exception {
+		gridMockSetGridSize(2);
+		SolvingAttemptStub solvingAttemptStub = new SolvingAttemptStub();
+		solvingAttemptStub.setNullData();
+
+		assertThat("Grid load", mGridLoader.load(solvingAttemptStub), is(false));
 	}
 
 	@Test(expected = InvalidGridException.class)
-	public void load_SolvingAttemptDataWithNullData_ThrowsInvalidGridException()
+	public void load_SolvingAttemptWithWithInvalidGridData_ThrowsInvalidGridException()
 			throws Exception {
 		gridMockSetGridSize(2);
-		SolvingAttemptData solvingAttemptData = new SolvingAttemptData();
-		solvingAttemptData.setData(null);
-
-		mGridLoader.load(solvingAttemptData);
-	}
-
-	@Test(expected = InvalidGridException.class)
-	public void load_SolvingAttemptDataIsEmpty_ThrowsInvalidGridException()
-			throws Exception {
-		gridMockSetGridSize(2);
-		SolvingAttemptData mSolvingAttemptDataMock = mock(SolvingAttemptData.class);
-		when(mSolvingAttemptDataMock.getFirstLine()).thenReturn(null);
-
-		mGridLoader.load(mSolvingAttemptDataMock);
-	}
-
-	@Test(expected = InvalidGridException.class)
-	public void load_SolvingAttemptDataWithWithInvalidGridData_ThrowsInvalidGridException()
-			throws Exception {
-		gridMockSetGridSize(2);
-		SolvingAttemptDataCreator solvingAttemptData = new SolvingAttemptDataCreator()
+		SolvingAttemptStub SolvingAttempt = new SolvingAttemptStub()
 				.setHasInvalidLineBetweenGridInformationAndCell();
 		when(mGridMock.fromStorageString(anyString(), anyInt())).thenReturn(
 				false);
 
-		mGridLoader.load(solvingAttemptData);
+		mGridLoader.load(SolvingAttempt);
 	}
 
 	@Test(expected = InvalidGridException.class)
-	public void load_SolvingAttemptDataMissingGridCellData_ThrowsInvalidGridException()
+	public void load_SolvingAttemptMissingGridCellData_ThrowsInvalidGridException()
 			throws Exception {
 		gridMockSetGridSize(2);
-		SolvingAttemptDataCreator solvingAttemptData = new SolvingAttemptDataCreator()
+		SolvingAttemptStub solvingAttemptStub = new SolvingAttemptStub()
 				.setHasGeneralGridInformation();
 		gridMockCanReadFromStorageString();
 
-		mGridLoader.load(solvingAttemptData);
+		mGridLoader.load(solvingAttemptStub);
 	}
 
 	@Test(expected = InvalidGridException.class)
-	public void load_SolvingAttemptDataCellDataWithNumberErrorInGridCellData_ThrowsInvalidGridException()
+	public void load_SolvingAttemptCellDataWithNumberErrorInGridCellData_ThrowsInvalidGridException()
 			throws Exception {
 		gridMockSetGridSize(2);
-		SolvingAttemptDataCreator solvingAttemptData = new SolvingAttemptDataCreator()
+		SolvingAttemptStub solvingAttemptStub = new SolvingAttemptStub()
 				.setHasGeneralGridInformation() //
 				.setHasInvalidLineBetweenGridInformationAndCell();
 		gridMockCanReadFromStorageString();
 		when(mGridCellMock.fromStorageString(anyString(), anyInt())).thenThrow(
 				new NumberFormatException("** INVALID NUMBER IN CELL DATA **"));
 
-		mGridLoader.load(solvingAttemptData);
+		mGridLoader.load(solvingAttemptStub);
 	}
 
 	@Test(expected = InvalidGridException.class)
-	public void load_SolvingAttemptDataGridCellLoadFailedDueToTooLittleCells_ThrowsInvalidGridException()
+	public void load_SolvingAttemptGridCellLoadFailedDueToTooLittleCells_ThrowsInvalidGridException()
 			throws Exception {
 		gridMockSetGridSize(2);
 		gridMockCanReadFromStorageString();
 		int tooLittleCells = mGridMockExpectedNumberOfCells - 1;
 		gridCellMockCanReadGridCellsFromStorageString(tooLittleCells);
-		SolvingAttemptDataCreator solvingAttemptData = new SolvingAttemptDataCreator()
+		SolvingAttemptStub solvingAttemptStub = new SolvingAttemptStub()
 				.setHasGeneralGridInformation() //
 				.setNumberOfCells(tooLittleCells);
 
-		mGridLoader.load(solvingAttemptData);
+		mGridLoader.load(solvingAttemptStub);
 	}
 
 	@Test(expected = InvalidGridException.class)
-	public void load_SolvingAttemptDataGridCellLoadFailedDueToTooManyCells_ThrowsInvalidGridException()
+	public void load_SolvingAttemptGridCellLoadFailedDueToTooManyCells_ThrowsInvalidGridException()
 			throws Exception {
 		gridMockSetGridSize(2);
 		gridMockCanReadFromStorageString();
 		int tooManyCells = mGridMockExpectedNumberOfCells + 1;
 		gridCellMockCanReadGridCellsFromStorageString(tooManyCells);
-		SolvingAttemptDataCreator solvingAttemptData = new SolvingAttemptDataCreator()
+		SolvingAttemptStub solvingAttemptStub = new SolvingAttemptStub()
 				.setHasGeneralGridInformation() //
 				.setNumberOfCells(tooManyCells);
 
-		mGridLoader.load(solvingAttemptData);
+		mGridLoader.load(solvingAttemptStub);
 	}
 
 	@Test(expected = InvalidGridException.class)
-	public void load_SolvingAttemptDataGridCellsNotSucceededWithAnyOtherData_ThrowsInvalidGridException()
+	public void load_SolvingAttemptGridCellsNotSucceededWithAnyOtherData_ThrowsInvalidGridException()
 			throws Exception {
 		gridMockSetGridSize(2);
 		gridMockCanReadFromStorageString();
 		gridCellMockCanReadGridCellsFromStorageString(mGridMockExpectedNumberOfCells);
-		SolvingAttemptDataCreator solvingAttemptData = new SolvingAttemptDataCreator()
+		SolvingAttemptStub solvingAttemptStub = new SolvingAttemptStub()
 				.setHasGeneralGridInformation() //
 				.setNumberOfCells(mGridMockExpectedNumberOfCells);
 
-		mGridLoader.load(solvingAttemptData);
+		mGridLoader.load(solvingAttemptStub);
 	}
 
 	@Test(expected = InvalidGridException.class)
-	public void load_SolvingAttemptDataGridCellsSucceededWithUnexpectedData_ThrowsInvalidGridException()
+	public void load_SolvingAttemptGridCellsSucceededWithUnexpectedData_ThrowsInvalidGridException()
 			throws Exception {
 		gridMockSetGridSize(2);
 		gridMockCanReadFromStorageString();
 		gridCellMockCanReadGridCellsFromStorageString(mGridMockExpectedNumberOfCells);
-		SolvingAttemptDataCreator solvingAttemptData = new SolvingAttemptDataCreator()
+		SolvingAttemptStub solvingAttemptStub = new SolvingAttemptStub()
 				.setHasGeneralGridInformation() //
 				.setNumberOfCells(mGridMockExpectedNumberOfCells) //
 				.setHasInvalidLineBetweenCagesAndCellChanges();
 
-		mGridLoader.load(solvingAttemptData);
+		mGridLoader.load(solvingAttemptStub);
 	}
 
 	@Test
-	public void load_SolvingAttemptDataDoesNotContainCellChanges_GridLoaded()
+	public void load_SolvingAttemptDoesNotContainCellChanges_GridLoaded()
 			throws Exception {
 		gridMockSetGridSize(2);
 		gridMockCanReadFromStorageString();
 		gridCellMockCanReadGridCellsFromStorageString(mGridMockExpectedNumberOfCells);
 		mGridMockExpectedNumberOfCages = 1;
 		gridCageMockCanReadGridCageFromStorageString(mGridMockExpectedNumberOfCages);
-		SolvingAttemptDataCreator solvingAttemptData = new SolvingAttemptDataCreator()
+		SolvingAttemptStub solvingAttemptStub = new SolvingAttemptStub()
 				.setHasGeneralGridInformation() //
 				.setNumberOfCells(mGridMockExpectedNumberOfCells) //
 				.setNumberOfCages(mGridMockExpectedNumberOfCages);
 		statisticsDatabaseAdapterCanLoadStatistics(true);
 
-		assertThat("Grid loaded", mGridLoader.load(solvingAttemptData),
+		assertThat("Grid loaded", mGridLoader.load(solvingAttemptStub),
 				is(true));
 		verifyGridLoaded();
 	}
 
 	@Test
-	public void load_SolvingAttemptDataDoesContainCellChanges_GridLoaded()
+	public void load_SolvingAttemptDoesContainCellChanges_GridLoaded()
 			throws Exception {
 		gridMockSetGridSize(2);
 		gridMockCanReadFromStorageString();
@@ -353,13 +346,13 @@ public class GridLoaderTest {
 				true, // At least 1 times
 				false // Do NOT remove
 				);
-		SolvingAttemptDataCreator solvingAttemptData = new SolvingAttemptDataCreator()
+		SolvingAttemptStub solvingAttemptStub = new SolvingAttemptStub()
 				.setHasGeneralGridInformation() //
 				.setNumberOfCells(mGridMockExpectedNumberOfCells) //
 				.setNumberOfCages(mGridMockExpectedNumberOfCages);
 		statisticsDatabaseAdapterCanLoadStatistics(true);
 
-		assertThat("Grid loaded", mGridLoader.load(solvingAttemptData),
+		assertThat("Grid loaded", mGridLoader.load(solvingAttemptStub),
 				is(true));
 		verifyGridLoaded();
 	}
@@ -385,14 +378,14 @@ public class GridLoaderTest {
 		gridCellMockCanReadGridCellsFromStorageString(mGridMockExpectedNumberOfCells);
 		mGridMockExpectedNumberOfCages = 1;
 		gridCageMockCanReadGridCageFromStorageString(mGridMockExpectedNumberOfCages);
-		SolvingAttemptDataCreator solvingAttemptData = new SolvingAttemptDataCreator()
+		SolvingAttemptStub solvingAttemptStub = new SolvingAttemptStub()
 				.setHasGeneralGridInformation() //
 				.setNumberOfCells(mGridMockExpectedNumberOfCells) //
 				.setNumberOfCages(mGridMockExpectedNumberOfCages);
 		statisticsDatabaseAdapterCanLoadStatistics(false);
 		statisticsDatabaseAdapterCanInsertStatistics(true);
 
-		assertThat("Grid loaded", mGridLoader.load(solvingAttemptData),
+		assertThat("Grid loaded", mGridLoader.load(solvingAttemptStub),
 				is(true));
 	}
 
@@ -404,14 +397,14 @@ public class GridLoaderTest {
 		gridCellMockCanReadGridCellsFromStorageString(mGridMockExpectedNumberOfCells);
 		mGridMockExpectedNumberOfCages = 1;
 		gridCageMockCanReadGridCageFromStorageString(mGridMockExpectedNumberOfCages);
-		SolvingAttemptDataCreator solvingAttemptData = new SolvingAttemptDataCreator()
+		SolvingAttemptStub solvingAttemptStub = new SolvingAttemptStub()
 				.setHasGeneralGridInformation() //
 				.setNumberOfCells(mGridMockExpectedNumberOfCells) //
 				.setNumberOfCages(mGridMockExpectedNumberOfCages);
 		statisticsDatabaseAdapterCanLoadStatistics(false);
 		statisticsDatabaseAdapterCanInsertStatistics(false);
 
-		assertThat("Grid loaded", mGridLoader.load(solvingAttemptData),
+		assertThat("Grid loaded", mGridLoader.load(solvingAttemptStub),
 				is(false));
 	}
 

@@ -1,6 +1,9 @@
 package net.mathdoku.plus.grid;
 
-import com.srlee.DLX.MathDokuDLX;
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.config.Config;
@@ -12,15 +15,12 @@ import net.mathdoku.plus.statistics.GridStatistics.StatisticsCounterType;
 import net.mathdoku.plus.storage.database.DatabaseHelper;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.database.GridRow;
-import net.mathdoku.plus.storage.database.SolvingAttemptData;
+import net.mathdoku.plus.storage.database.SolvingAttempt;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
 
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.srlee.DLX.MathDokuDLX;
 
 public class Grid {
 	private static final String TAG = "MathDoku.Grid";
@@ -1015,16 +1015,16 @@ public class Grid {
 	 */
 	public boolean load(int solvingAttemptId) throws InvalidGridException {
 		// First load the solving attempt to get the grid id.
-		SolvingAttemptData solvingAttemptData = mObjectsCreator
+		SolvingAttempt solvingAttempt = mObjectsCreator
 				.createSolvingAttemptDatabaseAdapter()
 				.getData(solvingAttemptId);
-		if (solvingAttemptData == null) {
+		if (solvingAttempt == null) {
 			return false;
 		}
 
 		// Load the grid before processing the solving attempt data.
 		GridRow gridRow = mObjectsCreator.createGridDatabaseAdapter().get(
-				solvingAttemptData.mGridId);
+				solvingAttempt.mGridId);
 		if (gridRow == null) {
 			return false;
 		}
@@ -1033,7 +1033,7 @@ public class Grid {
 
 		// Load the data from the solving attempt into the grid object.
 		final GridLoader gridLoader = mObjectsCreator.createGridLoader(this);
-		return gridLoader.load(solvingAttemptData);
+		return gridLoader.load(solvingAttempt);
 	}
 
 	/**

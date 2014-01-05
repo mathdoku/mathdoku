@@ -2,7 +2,7 @@ package net.mathdoku.plus.grid;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.statistics.GridStatistics;
-import net.mathdoku.plus.storage.database.SolvingAttemptData;
+import net.mathdoku.plus.storage.database.SolvingAttempt;
 import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
 
 public class GridLoader {
@@ -74,8 +74,12 @@ public class GridLoader {
 	 * @return True in case the mGrid has been loaded successfully. False
 	 *         otherwise.
 	 */
-	public boolean load(SolvingAttemptData solvingAttemptData) {
-		if (solvingAttemptData == null) {
+	public boolean load(SolvingAttempt solvingAttempt) {
+		if (solvingAttempt == null) {
+			// Could not retrieve this solving attempt.
+			return false;
+		}
+		if (solvingAttempt.mData == null) {
 			// Could not retrieve this solving attempt.
 			return false;
 		}
@@ -84,11 +88,11 @@ public class GridLoader {
 			return false;
 		}
 
-		mSavedWithRevision = solvingAttemptData.mSavedWithRevision;
+		mSavedWithRevision = solvingAttempt.mSavedWithRevision;
 		String line;
 		try {
 			// Read first line
-			if ((line = solvingAttemptData.getFirstLine()) == null) {
+			if ((line = solvingAttempt.mData.getFirstLine()) == null) {
 				throw new InvalidGridException(
 						"Unexpected end of solving attempt at first line");
 			}
@@ -99,14 +103,14 @@ public class GridLoader {
 								+ line);
 			}
 
-			if ((line = solvingAttemptData.getNextLine()) == null) {
+			if ((line = solvingAttempt.mData.getNextLine()) == null) {
 				throw new InvalidGridException(
 						"Unexpected end of solving attempt after processing view information.");
 			}
 
 			// Read cells
 			while (loadCell(line)) {
-				line = solvingAttemptData.getNextLine();
+				line = solvingAttempt.mData.getNextLine();
 			}
 			// Check if expected number of cells is read.
 			if (mGrid.mCells.size() != mGrid.getGridSize()
@@ -119,7 +123,7 @@ public class GridLoader {
 
 			// Read cages
 			while (loadCage(line)) {
-				line = solvingAttemptData.getNextLine();
+				line = solvingAttempt.mData.getNextLine();
 			}
 			// At least one expected is expected, so throw error in case no
 			// cages have been loaded.
@@ -131,7 +135,7 @@ public class GridLoader {
 
 			// Remaining lines contain cell changes (zero or more expected)
 			while (loadCellChange(line)) {
-				line = solvingAttemptData.getNextLine();
+				line = solvingAttempt.mData.getNextLine();
 			}
 
 			// Check if end of file is reached an not all information was read
@@ -145,32 +149,29 @@ public class GridLoader {
 			if (Config.mAppMode == Config.AppMode.DEVELOPMENT) {
 				throw new InvalidGridException(
 						"Invalid format error when restoring solving attempt with id '"
-								+ solvingAttemptData.mId + "'\n"
-								+ e.getMessage());
+								+ solvingAttempt.mId + "'\n" + e.getMessage());
 			}
 			return false;
 		} catch (NumberFormatException e) {
 			if (Config.mAppMode == Config.AppMode.DEVELOPMENT) {
 				throw new InvalidGridException(
 						"Invalid Number format error when restoring solving attempt with id '"
-								+ solvingAttemptData.mId + "'\n"
-								+ e.getMessage());
+								+ solvingAttempt.mId + "'\n" + e.getMessage());
 			}
 			return false;
 		} catch (IndexOutOfBoundsException e) {
 			if (Config.mAppMode == Config.AppMode.DEVELOPMENT) {
 				throw new InvalidGridException(
 						"Index out of bound error when restoring solving attempt with id '"
-								+ solvingAttemptData.mId + "'\n"
-								+ e.getMessage());
+								+ solvingAttempt.mId + "'\n" + e.getMessage());
 			}
 			return false;
 		}
 
 		// All data was read from the solving attempt into the grid. Complete
 		// loading of grid by.
-		mGrid.setDateCreated(solvingAttemptData.mDateCreated);
-		mGrid.setDateLastSaved(solvingAttemptData.mDateUpdated);
+		mGrid.setDateCreated(solvingAttempt.mDateCreated);
+		mGrid.setDateLastSaved(solvingAttempt.mDateUpdated);
 		mGrid.checkUserMathForAllCages();
 		for (GridCell gridCell : mGrid.mCells) {
 			if (gridCell.isSelected()) {
@@ -183,10 +184,10 @@ public class GridLoader {
 		for (GridCell gridCell : mGrid.mCells) {
 			gridCell.markDuplicateValuesInSameRowAndColumn();
 		}
-		mGrid.setSolvingAttemptId(solvingAttemptData.mId);
-		mGrid.setRowId(solvingAttemptData.mGridId);
+		mGrid.setSolvingAttemptId(solvingAttempt.mId);
+		mGrid.setRowId(solvingAttempt.mGridId);
 
-		GridStatistics gridStatistics = loadStatistics(solvingAttemptData.mGridId);
+		GridStatistics gridStatistics = loadStatistics(solvingAttempt.mGridId);
 		mGrid.setGridStatistics(gridStatistics);
 
 		return (gridStatistics != null);

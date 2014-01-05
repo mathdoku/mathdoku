@@ -184,14 +184,14 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	}
 
 	/**
-	 * Get the data for the given solving attempt id.
+	 * Gets the solving attempt for the given solving attempt id.
 	 * 
 	 * @param solvingAttemptId
 	 *            The solving attempt id for which the data has to be retrieved.
 	 * @return The data of the solving attempt.
 	 */
-	public SolvingAttemptData getData(int solvingAttemptId) {
-		SolvingAttemptData solvingAttemptData = null;
+	public SolvingAttempt getData(int solvingAttemptId) {
+		SolvingAttempt solvingAttempt = null;
 		Cursor cursor = null;
 		try {
 			cursor = mSqliteDatabase.query(true, TABLE, dataColumns, KEY_ROWID
@@ -203,19 +203,19 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 			}
 
 			// Convert cursor record to a SolvingAttempt row
-			solvingAttemptData = new SolvingAttemptData();
-			solvingAttemptData.mId = cursor.getInt(cursor
+			solvingAttempt = new SolvingAttempt();
+			solvingAttempt.mId = cursor.getInt(cursor
 					.getColumnIndexOrThrow(KEY_ROWID));
-			solvingAttemptData.mGridId = cursor.getInt(cursor
+			solvingAttempt.mGridId = cursor.getInt(cursor
 					.getColumnIndexOrThrow(KEY_GRID_ID));
-			solvingAttemptData.mDateCreated = valueOfSQLiteTimestamp(cursor
+			solvingAttempt.mDateCreated = valueOfSQLiteTimestamp(cursor
 					.getString(cursor.getColumnIndexOrThrow(KEY_DATE_CREATED)));
-			solvingAttemptData.mDateUpdated = valueOfSQLiteTimestamp(cursor
+			solvingAttempt.mDateUpdated = valueOfSQLiteTimestamp(cursor
 					.getString(cursor.getColumnIndexOrThrow(KEY_DATE_UPDATED)));
-			solvingAttemptData.mSavedWithRevision = cursor.getInt(cursor
+			solvingAttempt.mSavedWithRevision = cursor.getInt(cursor
 					.getColumnIndexOrThrow(KEY_SAVED_WITH_REVISION));
-			solvingAttemptData.setData(cursor.getString(cursor
-					.getColumnIndexOrThrow(KEY_DATA)));
+			solvingAttempt.mData = new SolvingAttemptData(
+					cursor.getString(cursor.getColumnIndexOrThrow(KEY_DATA)));
 		} catch (SQLiteException e) {
 			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				e.printStackTrace();
@@ -226,7 +226,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 				cursor.close();
 			}
 		}
-		return solvingAttemptData;
+		return solvingAttempt;
 	}
 
 	/**
@@ -278,7 +278,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	public boolean update(int id, Grid grid) {
 		ContentValues newValues = new ContentValues();
 		newValues.put(KEY_DATE_UPDATED,
-					toSQLiteTimestamp(new java.util.Date().getTime()));
+				toSQLiteTimestamp(new java.util.Date().getTime()));
 		return update(id, grid, newValues);
 	}
 

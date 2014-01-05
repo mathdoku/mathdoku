@@ -21,4 +21,7 @@ public class SolvingAttempt {
 
 	// The revision of the app used to save the data.
 	public int mSavedWithRevision;
+
+	// The compound storage string
+	public SolvingAttemptData mData;
 }

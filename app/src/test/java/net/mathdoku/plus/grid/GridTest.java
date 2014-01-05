@@ -13,7 +13,7 @@ import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.storage.database.DatabaseHelper;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.database.GridRow;
-import net.mathdoku.plus.storage.database.SolvingAttemptData;
+import net.mathdoku.plus.storage.database.SolvingAttempt;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
@@ -1537,9 +1537,9 @@ public class GridTest {
 	public void load_ViaSolvingAttemptButGridDoesNotExist_GridNotLoaded()
 			throws Exception {
 		int solvingAttemptId = 12;
-		SolvingAttemptData solvingAttemptData = mock(SolvingAttemptData.class);
+		SolvingAttempt solvingAttempt = mock(SolvingAttempt.class);
 		when(mSolvingAttemptDatabaseAdapterMock.getData(anyInt())).thenReturn(
-				solvingAttemptData);
+				solvingAttempt);
 		when(mGridDatabaseAdapterMock.get(anyInt())).thenReturn(null);
 
 		assertThat("Loading solving attempt", mGrid.load(solvingAttemptId),
@@ -1551,35 +1551,33 @@ public class GridTest {
 	public void load_ViaSolvingAttemptButLoadSolvingAttemptDataFailed_GridNotLoaded()
 			throws Exception {
 		int solvingAttemptId = 12;
-		SolvingAttemptData solvingAttemptData = mock(SolvingAttemptData.class);
+		SolvingAttempt solvingAttempt = mock(SolvingAttempt.class);
 		when(mSolvingAttemptDatabaseAdapterMock.getData(anyInt())).thenReturn(
-				solvingAttemptData);
+				solvingAttempt);
 		when(mGridDatabaseAdapterMock.get(anyInt())).thenReturn(
 				mock(GridRow.class));
-		when(mGridLoaderMock.load(any(SolvingAttemptData.class))).thenReturn(
-				false);
+		when(mGridLoaderMock.load(any(SolvingAttempt.class))).thenReturn(false);
 
 		assertThat("Loading solving attempt", mGrid.load(solvingAttemptId),
 				is(false));
 		verify(mGridDatabaseAdapterMock).get(anyInt());
-		verify(mGridLoaderMock).load(any(SolvingAttemptData.class));
+		verify(mGridLoaderMock).load(any(SolvingAttempt.class));
 	}
 
 	@Test
 	public void load_ViaSolvingAttempt_GridLoaded() throws Exception {
 		int solvingAttemptId = 12;
-		SolvingAttemptData solvingAttemptData = mock(SolvingAttemptData.class);
+		SolvingAttempt solvingAttempt = mock(SolvingAttempt.class);
 		when(mSolvingAttemptDatabaseAdapterMock.getData(anyInt())).thenReturn(
-				solvingAttemptData);
+				solvingAttempt);
 		when(mGridDatabaseAdapterMock.get(anyInt())).thenReturn(
 				mock(GridRow.class));
-		when(mGridLoaderMock.load(any(SolvingAttemptData.class))).thenReturn(
-				true);
+		when(mGridLoaderMock.load(any(SolvingAttempt.class))).thenReturn(true);
 
 		assertThat("Loading solving attempt", mGrid.load(solvingAttemptId),
 				is(true));
 		verify(mGridDatabaseAdapterMock).get(anyInt());
-		verify(mGridLoaderMock).load(any(SolvingAttemptData.class));
+		verify(mGridLoaderMock).load(any(SolvingAttempt.class));
 	}
 
 	@Test

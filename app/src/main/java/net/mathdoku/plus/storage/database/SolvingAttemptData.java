@@ -3,17 +3,18 @@ package net.mathdoku.plus.storage.database;
 /**
  * The data for the grid in a compound string of storage strings.
  */
-public class SolvingAttemptData extends SolvingAttempt {
+public class SolvingAttemptData {
 	private String[] mData;
 	private int mDataIndex = -1;
 
 	/**
-	 * Set the data of the solving attempt.
+	 * Creates a new
+	 * {@link net.mathdoku.plus.storage.database.SolvingAttemptData} instance.
 	 * 
 	 * @param data
 	 *            The data string to be set.
 	 */
-	public void setData(String data) {
+	public SolvingAttemptData(String data) {
 		mData = (data == null ? null : data
 				.split(SolvingAttemptDatabaseAdapter.EOL_DELIMITER));
 		mDataIndex = -1;
