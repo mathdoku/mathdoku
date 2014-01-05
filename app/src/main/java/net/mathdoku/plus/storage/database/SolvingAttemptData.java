@@ -1,10 +1,9 @@
 package net.mathdoku.plus.storage.database;
 
+/**
+ * The data for the grid in a compound string of storage strings.
+ */
 public class SolvingAttemptData extends SolvingAttempt {
-	// Revision used to save the data
-	public int mSavedWithRevision;
-
-	// Data
 	private String[] mData;
 	private int mDataIndex = -1;
 
