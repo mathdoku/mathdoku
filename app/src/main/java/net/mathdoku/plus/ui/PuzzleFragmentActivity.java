@@ -991,8 +991,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		// Initialize the parameters to the given values
 		puzzleParameterSizeSpinner.setSelection(gridSize
 				- OFFSET_INDEX_TO_GRID_SIZE);
-		puzzleParameterDisplayOperatorsCheckBox
-				.setChecked(visibleOperators);
+		puzzleParameterDisplayOperatorsCheckBox.setChecked(visibleOperators);
 		switch (puzzleComplexity) {
 		case RANDOM:
 			puzzleParameterDifficultyRandom.setChecked(true);

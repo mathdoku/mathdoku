@@ -30,7 +30,8 @@ public class GridCellSelectorTest {
 	public void find_CreateGridSelectorWithEmptyList_NoCellsFound() {
 		ArrayList<GridCell> gridCellArrayList = new ArrayList<GridCell>();
 
-		GridCellSelector gridCellSelector = new GridCellSelector(gridCellArrayList) {
+		GridCellSelector gridCellSelector = new GridCellSelector(
+				gridCellArrayList) {
 
 			@Override
 			public boolean select(GridCell gridCell) {
@@ -41,14 +42,16 @@ public class GridCellSelectorTest {
 		ArrayList<GridCell> resultGridCellList = gridCellSelector.find();
 		ArrayList<GridCell> expectedGridCellList = new ArrayList<GridCell>();
 
-		assertEquals("Selected gridCell list", expectedGridCellList, resultGridCellList);
+		assertEquals("Selected gridCell list", expectedGridCellList,
+				resultGridCellList);
 	}
 
 	@Test
 	public void find_CreateGridSelectorWithEmptyList_CellsFound() {
 		final int duplicatedUserValue = 3;
 
-		// Stubs for the grid Cells. Note that stub 2 and 4 contain the same user value
+		// Stubs for the grid Cells. Note that stub 2 and 4 contain the same
+		// user value
 		GridCell gridCellStub1 = mock(GridCell.class);
 		when(gridCellStub1.getUserValue()).thenReturn(duplicatedUserValue - 1);
 
@@ -69,7 +72,8 @@ public class GridCellSelectorTest {
 		gridCellArrayList.add(gridCellStub4);
 
 		// Create the grid cell selector
-		GridCellSelector gridCellSelector = new GridCellSelector(gridCellArrayList) {
+		GridCellSelector gridCellSelector = new GridCellSelector(
+				gridCellArrayList) {
 			@Override
 			public boolean select(GridCell gridCell) {
 				return (gridCell.getUserValue() == duplicatedUserValue);
@@ -82,6 +86,7 @@ public class GridCellSelectorTest {
 
 		ArrayList<GridCell> resultGridCellList = gridCellSelector.find();
 
-		assertEquals("Selected gridCell list", expectedGridCellList, resultGridCellList);
+		assertEquals("Selected gridCell list", expectedGridCellList,
+				resultGridCellList);
 	}
 }

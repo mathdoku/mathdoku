@@ -4,7 +4,8 @@ public class DatabaseException extends RuntimeException {
 	private final String mErrorMessage;
 
 	/**
-	 * Creates a new instance of {@link net.mathdoku.plus.storage.database.DatabaseException}.
+	 * Creates a new instance of
+	 * {@link net.mathdoku.plus.storage.database.DatabaseException}.
 	 */
 	public DatabaseException() {
 		super();
@@ -12,8 +13,9 @@ public class DatabaseException extends RuntimeException {
 	}
 
 	/**
-	 * Creates a new instance of {@link net.mathdoku.plus.storage.database.DatabaseException}.
-	 *
+	 * Creates a new instance of
+	 * {@link net.mathdoku.plus.storage.database.DatabaseException}.
+	 * 
 	 * @param errorMessage
 	 *            The error message for the exception.
 	 */

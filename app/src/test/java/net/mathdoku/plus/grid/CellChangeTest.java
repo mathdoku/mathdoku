@@ -25,12 +25,14 @@ public class CellChangeTest {
 		GridCell gridCellMock = mock(GridCell.class);
 
 		// Store current value of cell in a cell change
-		CellChange cellChange = new CellChange(gridCellMock, expectedUserValue, expectedMaybeValues);
+		CellChange cellChange = new CellChange(gridCellMock, expectedUserValue,
+				expectedMaybeValues);
 
 		// Restore the cell change which ...
 		cellChange.restore();
 
-		// ... results in undoing the change to the user value or the maybe values for the cell
+		// ... results in undoing the change to the user value or the maybe
+		// values for the cell
 		verify(gridCellMock).undo(expectedUserValue, expectedMaybeValues);
 	}
 
@@ -46,12 +48,14 @@ public class CellChangeTest {
 		GridCell gridCellMock = mock(GridCell.class);
 
 		// Store current value of cell in a cell change
-		CellChange cellChange = new CellChange(gridCellMock, expectedUserValue, expectedMaybeValues);
+		CellChange cellChange = new CellChange(gridCellMock, expectedUserValue,
+				expectedMaybeValues);
 
 		// Restore the cell change which ...
 		cellChange.restore();
 
-		// ... results in undoing the change to the user value or the maybe values for the cell
+		// ... results in undoing the change to the user value or the maybe
+		// values for the cell
 		verify(gridCellMock).undo(expectedUserValue, expectedMaybeValues);
 	}
 
@@ -72,7 +76,8 @@ public class CellChangeTest {
 		String expectedStorageString = "CELL_CHANGE:[5:2::]";
 
 		// Create actual cell change and resulting storage string
-		CellChange cellChange = new CellChange(gridCell, expectedUserValue, expectedMaybeValues);
+		CellChange cellChange = new CellChange(gridCell, expectedUserValue,
+				expectedMaybeValues);
 		String resultStorageString = cellChange.toStorageString();
 
 		assertEquals("Storage string", expectedStorageString,
@@ -97,7 +102,8 @@ public class CellChangeTest {
 		String expectedStorageString = "CELL_CHANGE:[5:0:3,:]";
 
 		// Create actual cell change and resulting storage string
-		CellChange cellChange = new CellChange(gridCell, expectedUserValue, expectedMaybeValues);
+		CellChange cellChange = new CellChange(gridCell, expectedUserValue,
+				expectedMaybeValues);
 		String resultStorageString = cellChange.toStorageString();
 
 		assertEquals("Storage string", expectedStorageString,
@@ -124,7 +130,8 @@ public class CellChangeTest {
 		String expectedStorageString = "CELL_CHANGE:[5:0:3,4,5,:]";
 
 		// Create actual cell change and resulting storage string
-		CellChange cellChange = new CellChange(gridCell, expectedUserValue, expectedMaybeValues);
+		CellChange cellChange = new CellChange(gridCell, expectedUserValue,
+				expectedMaybeValues);
 		String resultStorageString = cellChange.toStorageString();
 
 		assertEquals("Storage string", expectedStorageString,
@@ -146,7 +153,6 @@ public class CellChangeTest {
 		int expectedUserValue4 = 1;
 		ArrayList<Integer> expectedMaybeValues4 = new ArrayList<Integer>();
 
-
 		// Init the GridCell mocks
 		GridCell gridCell2 = mock(GridCell.class);
 		when(gridCell2.getCellNumber()).thenReturn(expectedCellNumber2);
@@ -162,8 +168,10 @@ public class CellChangeTest {
 		String expectedStorageString = "CELL_CHANGE:[4:1::[2:0:3,:],]";
 
 		// Create actual cell change and resulting storage string
-		CellChange cellChange2 = new CellChange(gridCell2, expectedUserValue2, expectedMaybeValues2);
-		CellChange cellChange4 = new CellChange(gridCell4, expectedUserValue4, expectedMaybeValues4);
+		CellChange cellChange2 = new CellChange(gridCell2, expectedUserValue2,
+				expectedMaybeValues2);
+		CellChange cellChange4 = new CellChange(gridCell4, expectedUserValue4,
+				expectedMaybeValues4);
 		cellChange4.addRelatedMove(cellChange2);
 		String resultStorageString = cellChange4.toStorageString();
 
@@ -212,9 +220,12 @@ public class CellChangeTest {
 		String expectedStorageString = "CELL_CHANGE:[4:1::[2:0:3,:],[16:0:2,3,4,:],]";
 
 		// Create actual cell change and resulting storage string
-		CellChange cellChange2 = new CellChange(gridCell2, expectedUserValue2, expectedMaybeValues2);
-		CellChange cellChange4 = new CellChange(gridCell4, expectedUserValue4, expectedMaybeValues4);
-		CellChange cellChange16 = new CellChange(gridCell16, expectedUserValue16, expectedMaybeValues16);
+		CellChange cellChange2 = new CellChange(gridCell2, expectedUserValue2,
+				expectedMaybeValues2);
+		CellChange cellChange4 = new CellChange(gridCell4, expectedUserValue4,
+				expectedMaybeValues4);
+		CellChange cellChange16 = new CellChange(gridCell16,
+				expectedUserValue16, expectedMaybeValues16);
 		cellChange4.addRelatedMove(cellChange2);
 		cellChange4.addRelatedMove(cellChange16);
 		String resultStorageString = cellChange4.toStorageString();

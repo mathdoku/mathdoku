@@ -1225,7 +1225,7 @@ public class GridCell {
 
 	/**
 	 * Checks whether the cell is the selected cell.
-	 *
+	 * 
 	 * @return True if the cell is the selected cell. False otherwise.
 	 */
 	public boolean isSelected() {

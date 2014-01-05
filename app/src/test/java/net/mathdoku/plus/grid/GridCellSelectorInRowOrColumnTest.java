@@ -1,15 +1,15 @@
 package net.mathdoku.plus.grid;
 
-		import org.junit.Test;
-		import org.junit.runner.RunWith;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-		import java.util.ArrayList;
+import java.util.ArrayList;
 
-		import robolectric.RobolectricGradleTestRunner;
+import robolectric.RobolectricGradleTestRunner;
 
-		import static junit.framework.Assert.assertEquals;
-		import static org.mockito.Mockito.mock;
-		import static org.mockito.Mockito.when;
+import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(value = RobolectricGradleTestRunner.class)
 public class GridCellSelectorInRowOrColumnTest {

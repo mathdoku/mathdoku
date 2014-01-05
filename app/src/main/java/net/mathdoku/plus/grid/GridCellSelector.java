@@ -8,16 +8,20 @@ public abstract class GridCellSelector {
 
 	public GridCellSelector(ArrayList<GridCell> cells) {
 		if (cells == null) {
-			throw new InvalidParameterException("GridSelector cannot be instantiated without list of GridCell.");
+			throw new InvalidParameterException(
+					"GridSelector cannot be instantiated without list of GridCell.");
 		}
 
 		mCells = cells;
 	}
 
 	/**
-	 * Determines whether a grid cell should be returned by the selector upon calling find().
-	 *
-	 * @param gridCell The grid cell for which it has to be determined whether it has to be selected.
+	 * Determines whether a grid cell should be returned by the selector upon
+	 * calling find().
+	 * 
+	 * @param gridCell
+	 *            The grid cell for which it has to be determined whether it has
+	 *            to be selected.
 	 * @return True if the gridCell has to be selected. False otherwise.
 	 */
 	abstract public boolean select(GridCell gridCell);

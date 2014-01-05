@@ -110,9 +110,12 @@ public class FeedbackEmail {
 		mActivity.getWindowManager().getDefaultDisplay()
 				.getMetrics(mDisplayMetrics);
 
-		sortedMap.put("Display.Density", Float.toString(mDisplayMetrics.density));
-		sortedMap.put("Display.Width", Float.toString(mDisplayMetrics.widthPixels));
-		sortedMap.put("Display.Height", Float.toString(mDisplayMetrics.heightPixels));
+		sortedMap.put("Display.Density",
+				Float.toString(mDisplayMetrics.density));
+		sortedMap.put("Display.Width",
+				Float.toString(mDisplayMetrics.widthPixels));
+		sortedMap.put("Display.Height",
+				Float.toString(mDisplayMetrics.heightPixels));
 		sortedMap.put("Display.xdpi", Float.toString(mDisplayMetrics.xdpi));
 		sortedMap.put("Display.ydpi", Float.toString(mDisplayMetrics.ydpi));
 

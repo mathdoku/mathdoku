@@ -8,7 +8,8 @@ import net.mathdoku.plus.grid.GridCell;
  * Helper class for unit testing. This class returns initialized grids.
  */
 public class TestData {
-	private static GridCell createGridCell(Grid grid, int cellNumber, int cellValue) {
+	private static GridCell createGridCell(Grid grid, int cellNumber,
+			int cellValue) {
 		GridCell gridCell = new GridCell(grid, cellNumber);
 		gridCell.setCorrectValue(cellValue);
 		return gridCell;
@@ -24,31 +25,52 @@ public class TestData {
 		int cellNumber = 0;
 
 		// Row 1
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 1));
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 2));
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 3));
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 4));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 1));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 2));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 3));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 4));
 
 		// Row 2
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 2));
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 4));
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 1));
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 3));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 2));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 4));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 1));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 3));
 
-		//Row 3
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 4));
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 3));
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 2));
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 1));
+		// Row 3
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 4));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 3));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 2));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 1));
 
 		// Row 4
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 3));
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 1));
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 4));
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 2));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 3));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 1));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 4));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 2));
 
 		// Create the cages
-		boolean VISIBLE_OPERATORS = false; // Actual parameter for calls is hiddenOperator. For ease of reading the parameter VISIBLE_OPERATORS is used. So false really results in visible operators!
+		boolean VISIBLE_OPERATORS = false; // Actual parameter for calls is
+											// hiddenOperator. For ease of
+											// reading the parameter
+											// VISIBLE_OPERATORS is used. So
+											// false really results in visible
+											// operators!
 		int cageId = 0; // Cage id's are 0-based
 
 		// Cage 0
@@ -116,31 +138,52 @@ public class TestData {
 		int cellNumber = 0;
 
 		// Row 1
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 2));
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 1));
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 4));
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 3));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 2));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 1));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 4));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 3));
 
 		// Row 2
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 3));
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 2));
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 1));
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 4));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 3));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 2));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 1));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 4));
 
 		// Row 3
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 1));
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 4));
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 3));
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 2));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 1));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 4));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 3));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 2));
 
 		// Row 4
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 4));
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 3));
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 2));
-		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid, cellNumber, 1));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 4));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 3));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 2));
+		grid.mCells.add(gridCell[cellNumber++] = createGridCell(grid,
+				cellNumber, 1));
 
 		// Create the cages
-		boolean VISIBLE_OPERATORS = false; // Actual parameter for calls is hiddenOperator. For ease of reading the parameter VISIBLE_OPERATORS is used. So false really results in visible operators!
+		boolean VISIBLE_OPERATORS = false; // Actual parameter for calls is
+											// hiddenOperator. For ease of
+											// reading the parameter
+											// VISIBLE_OPERATORS is used. So
+											// false really results in visible
+											// operators!
 		int cageId = 0; // Cage id's are 0-based
 
 		// Cage 0
