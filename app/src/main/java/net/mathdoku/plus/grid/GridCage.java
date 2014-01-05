@@ -1,9 +1,9 @@
 package net.mathdoku.plus.grid;
 
+import net.mathdoku.plus.gridGenerating.ComboGenerator;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class GridCage {
 	// Each line in the GridFile which contains information about the cell
@@ -35,8 +35,9 @@ public class GridCage {
 	// User math is correct
 	public boolean mUserMathCorrect;
 
-	// Cached list of numbers which satisfy the cage's arithmetic
-	private ArrayList<int[]> mPossibles;
+	// Cached list of possible combo's which can be used in this cage if other
+	// cages in the grid were not relevant.
+	private ArrayList<int[]> mPossibleCombos;
 
 	/**
 	 * Creates a new instance of {@link GridCage}.
@@ -70,7 +71,7 @@ public class GridCage {
 	 */
 	private void initGridCage(Grid grid) {
 		this.mGrid = grid;
-		mPossibles = null;
+		mPossibleCombos = null;
 		mCells = new ArrayList<GridCell>();
 
 		// Defaulting mUserMathCorrect to false result in setting all borders
@@ -279,230 +280,6 @@ public class GridCage {
 		}
 	}
 
-	public ArrayList<int[]> getPossibleCombos() {
-		if (mPossibles == null) {
-			if (mHideOperator || (mAction == ACTION_NONE && mCells.size() > 1)) {
-				mPossibles = setPossibleCombosHiddenOperator();
-			} else {
-				mPossibles = setPossibleCombosVisibleOperator();
-			}
-		}
-		return mPossibles;
-	}
-
-	/**
-	 * Get all permutations of cell values for this cage.
-	 * 
-	 * @return The list of all permutations of cell values which can be used for
-	 *         this cage.
-	 */
-	private ArrayList<int[]> setPossibleCombosHiddenOperator() {
-		ArrayList<int[]> resultCombos = new ArrayList<int[]>();
-
-		// Single cell cages can only contain the value of the single cell.
-		if (mCells.size() == 1) {
-			int number[] = { mResult };
-			resultCombos.add(number);
-			return resultCombos;
-		}
-
-		// Cages of size two can contain any operation
-		int gridSize = mGrid.getGridSize();
-		if (mCells.size() == 2) {
-			for (int i1 = 1; i1 <= gridSize; i1++) {
-				for (int i2 = i1 + 1; i2 <= gridSize; i2++) {
-					if (i2 - i1 == mResult || i1 - i2 == mResult
-							|| mResult * i1 == i2 || mResult * i2 == i1
-							|| i1 + i2 == mResult || i1 * i2 == mResult) {
-						int numbers[] = { i1, i2 };
-						resultCombos.add(numbers);
-						numbers = new int[] { i2, i1 };
-						resultCombos.add(numbers);
-					}
-				}
-			}
-			return resultCombos;
-		}
-
-		// Cages of size two and above can only contain an add or a multiply
-		// operation
-		resultCombos = getAllAddCombos(gridSize, mResult, mCells.size());
-		ArrayList<int[]> multiplyCombos = getAllMultiplyCombos(gridSize,
-				mResult, mCells.size());
-
-		// Combine Add & Multiply result sets
-		for (int[] multiplyCombo : multiplyCombos) {
-			boolean newCombo = true;
-			for (int[] resultCombo : resultCombos) {
-				if (Arrays.equals(multiplyCombo, resultCombo)) {
-					newCombo = false;
-					break;
-				}
-			}
-			if (newCombo) {
-				resultCombos.add(multiplyCombo);
-			}
-		}
-
-		return resultCombos;
-	}
-
-	/*
-	 * Generates all combinations of numbers which satisfy the cage's arithmetic
-	 * and MathDoku constraints i.e. a digit can only appear once in a
-	 * column/row
-	 */
-	private ArrayList<int[]> setPossibleCombosVisibleOperator() {
-		ArrayList<int[]> AllResults = new ArrayList<int[]>();
-
-		int gridSize = mGrid.getGridSize();
-
-		switch (this.mAction) {
-		case ACTION_NONE:
-			assert (mCells.size() == 1);
-			int number[] = { mResult };
-			AllResults.add(number);
-			break;
-		case ACTION_SUBTRACT:
-			assert (mCells.size() == 2);
-			for (int i1 = 1; i1 <= gridSize; i1++)
-				for (int i2 = i1 + 1; i2 <= gridSize; i2++)
-					if (i2 - i1 == mResult || i1 - i2 == mResult) {
-						int numbers[] = { i1, i2 };
-						AllResults.add(numbers);
-						numbers = new int[] { i2, i1 };
-						AllResults.add(numbers);
-					}
-			break;
-		case ACTION_DIVIDE:
-			assert (mCells.size() == 2);
-			for (int i1 = 1; i1 <= gridSize; i1++)
-				for (int i2 = i1 + 1; i2 <= gridSize; i2++)
-					if (mResult * i1 == i2 || mResult * i2 == i1) {
-						int numbers[] = { i1, i2 };
-						AllResults.add(numbers);
-						numbers = new int[] { i2, i1 };
-						AllResults.add(numbers);
-					}
-			break;
-		case ACTION_ADD:
-			AllResults = getAllAddCombos(gridSize, mResult, mCells.size());
-			break;
-		case ACTION_MULTIPLY:
-			AllResults = getAllMultiplyCombos(gridSize, mResult, mCells.size());
-			break;
-		}
-		return AllResults;
-	}
-
-	// The following two variables are required by the recursive methods below.
-	// They could be passed as parameters of the recursive methods, but this
-	// reduces performance.
-	private int[] getAllCombos_Numbers;
-	private ArrayList<int[]> getAllCombos_ResultSet;
-
-	private ArrayList<int[]> getAllAddCombos(int max_val, int target_sum,
-			int n_cells) {
-		getAllCombos_Numbers = new int[n_cells];
-		getAllCombos_ResultSet = new ArrayList<int[]>();
-		getAddCombos(max_val, target_sum, n_cells);
-		return getAllCombos_ResultSet;
-	}
-
-	/*
-	 * Recursive method to calculate all combinations of digits which add up to
-	 * target
-	 * 
-	 * @param max_val maximum permitted value of digit (= dimension of grid)
-	 * 
-	 * @param target_sum the value which all the digits should add up to
-	 * 
-	 * @param n_cells number of digits still to select
-	 */
-	private void getAddCombos(int max_val, int target_sum, int n_cells) {
-		for (int n = 1; n <= max_val; n++) {
-			if (n_cells == 1) {
-				if (n == target_sum) {
-					getAllCombos_Numbers[0] = n;
-					if (satisfiesConstraints(getAllCombos_Numbers))
-						getAllCombos_ResultSet
-								.add(getAllCombos_Numbers.clone());
-				}
-			} else {
-				getAllCombos_Numbers[n_cells - 1] = n;
-				getAddCombos(max_val, target_sum - n, n_cells - 1);
-			}
-		}
-	}
-
-	private ArrayList<int[]> getAllMultiplyCombos(int max_val, int target_sum,
-			int n_cells) {
-		getAllCombos_Numbers = new int[n_cells];
-		getAllCombos_ResultSet = new ArrayList<int[]>();
-		getMultiplyCombos(max_val, target_sum, n_cells);
-
-		return getAllCombos_ResultSet;
-	}
-
-	/*
-	 * Recursive method to calculate all combinations of digits which multiply
-	 * up to target
-	 * 
-	 * @param max_val maximum permitted value of digit (= dimension of grid)
-	 * 
-	 * @param target_sum the value which all the digits should multiply up to
-	 * 
-	 * @param n_cells number of digits still to select
-	 */
-	private void getMultiplyCombos(int max_val, int target_sum, int n_cells) {
-		for (int n = 1; n <= max_val; n++) {
-			if (target_sum % n != 0)
-				continue;
-
-			if (n_cells == 1) {
-				if (n == target_sum) {
-					getAllCombos_Numbers[0] = n;
-					if (satisfiesConstraints(getAllCombos_Numbers))
-						getAllCombos_ResultSet
-								.add(getAllCombos_Numbers.clone());
-				}
-			} else {
-				getAllCombos_Numbers[n_cells - 1] = n;
-				getMultiplyCombos(max_val, target_sum / n, n_cells - 1);
-			}
-		}
-	}
-
-	/*
-	 * Check whether the set of numbers satisfies all constraints Looking for
-	 * cases where a digit appears more than once in a column/row Constraints: 0
-	 * -> (mGridSize * mGridSize)-1 = column constraints (each column must
-	 * contain each digit) mGridSize * mGridSize -> 2*(mGridSize * mGridSize)-1
-	 * = row constraints (each row must contain each digit)
-	 */
-	private boolean satisfiesConstraints(int[] possibles) {
-
-		int gridSize = mGrid.getGridSize();
-
-		boolean constraints[] = new boolean[gridSize * gridSize * 2];
-		int constraint_num;
-		for (int i = 0; i < this.mCells.size(); i++) {
-			constraint_num = gridSize * (possibles[i] - 1)
-					+ mCells.get(i).getColumn();
-			if (constraints[constraint_num])
-				return false;
-			else
-				constraints[constraint_num] = true;
-			constraint_num = gridSize * gridSize + gridSize
-					* (possibles[i] - 1) + mCells.get(i).getRow();
-			if (constraints[constraint_num])
-				return false;
-			else
-				constraints[constraint_num] = true;
-		}
-		return true;
-	}
-
 	/**
 	 * Create a string representation of the Grid Cage which can be used to
 	 * store a grid cage in a saved game.
@@ -589,5 +366,43 @@ public class GridCage {
 			}
 		}
 		return true;
+	}
+
+	public int calculatePossibleCombos() {
+		if (mPossibleCombos == null) {
+			setPossibleCombos();
+		}
+		return mPossibleCombos.size();
+	}
+
+	private void setPossibleCombos() {
+		ComboGenerator.Operator operator;
+		switch (mAction) {
+			case ACTION_NONE:
+				operator = ComboGenerator.Operator.NONE;
+				break;
+			case ACTION_ADD:
+				operator = ComboGenerator.Operator.ADD;
+				break;
+			case ACTION_SUBTRACT:
+				operator = ComboGenerator.Operator.SUBTRACT;
+				break;
+			case ACTION_MULTIPLY:
+				operator = ComboGenerator.Operator.MULTIPLY;
+				break;
+			case ACTION_DIVIDE:
+				operator = ComboGenerator.Operator.DIVIDE;
+				break;
+		}
+		ComboGenerator comboGenerator = new ComboGenerator(mResult, mAction,
+														   mHideOperator, mCells, mGrid.getGridSize());
+		mPossibleCombos = comboGenerator.getPossibleCombos();
+	}
+
+	public ArrayList<int []> getPossibleCombos() {
+		if (mPossibleCombos == null) {
+			setPossibleCombos();
+		}
+		return mPossibleCombos;
 	}
 }
