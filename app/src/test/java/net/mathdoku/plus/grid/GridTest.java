@@ -83,7 +83,7 @@ public class GridTest {
 		public ArrayList<CellChange> mArrayListOfCellChanges = null;
 
 		@Override
-		public GridCell createGridCell(Grid grid, int cell) {
+		public GridCell createGridCell(int id, int gridSize) {
 			return mGridCellMock;
 		}
 

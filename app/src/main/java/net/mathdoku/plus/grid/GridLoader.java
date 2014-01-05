@@ -18,8 +18,8 @@ public class GridLoader {
 	public static class ObjectsCreator {
 		private Grid.ObjectsCreator mGridObjectsCreator;
 
-		public GridCell createGridCell(Grid grid, int cell) {
-			return mGridObjectsCreator.createGridCell(grid, cell);
+		public GridCell createGridCell(int id, int gridSize) {
+			return mGridObjectsCreator.createGridCell(id, gridSize);
 		}
 
 		public CellChange createCellChange() {
@@ -172,6 +172,10 @@ public class GridLoader {
 		// loading of grid by.
 		mGrid.setDateCreated(solvingAttempt.mDateCreated);
 		mGrid.setDateLastSaved(solvingAttempt.mDateUpdated);
+
+		for (GridCell gridCell : mGrid.mCells) {
+			gridCell.setGridReference(mGrid);
+		}
 		mGrid.checkUserMathForAllCages();
 		for (GridCell gridCell : mGrid.mCells) {
 			if (gridCell.isSelected()) {
@@ -198,7 +202,7 @@ public class GridLoader {
 			return false;
 		}
 
-		GridCell cell = mObjectsCreator.createGridCell(mGrid, 0);
+		GridCell cell = mObjectsCreator.createGridCell(0, mGrid.getGridSize());
 		if (!cell.fromStorageString(line, mSavedWithRevision)) {
 			return false;
 		}

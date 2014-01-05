@@ -69,7 +69,7 @@ public class CellChangeTest {
 
 		// Init the GridCell mock
 		GridCell gridCell = mock(GridCell.class);
-		when(gridCell.getCellNumber()).thenReturn(expectedCellNumber);
+		when(gridCell.getCellId()).thenReturn(expectedCellNumber);
 
 		// In case this cell is going to be changed, the current situation of
 		// the cell if stored before actually changing it.
@@ -95,7 +95,7 @@ public class CellChangeTest {
 
 		// Init the GridCell mock
 		GridCell gridCell = mock(GridCell.class);
-		when(gridCell.getCellNumber()).thenReturn(expectedCellNumber);
+		when(gridCell.getCellId()).thenReturn(expectedCellNumber);
 
 		// In case this cell is going to be changed, the current situation of
 		// the cell if stored before actually changing it.
@@ -123,7 +123,7 @@ public class CellChangeTest {
 
 		// Init the GridCell mock
 		GridCell gridCell = mock(GridCell.class);
-		when(gridCell.getCellNumber()).thenReturn(expectedCellNumber);
+		when(gridCell.getCellId()).thenReturn(expectedCellNumber);
 
 		// In case this cell is going to be changed, the current situation of
 		// the cell if stored before actually changing it.
@@ -155,9 +155,9 @@ public class CellChangeTest {
 
 		// Init the GridCell mocks
 		GridCell gridCell2 = mock(GridCell.class);
-		when(gridCell2.getCellNumber()).thenReturn(expectedCellNumber2);
+		when(gridCell2.getCellId()).thenReturn(expectedCellNumber2);
 		GridCell gridCell4 = mock(GridCell.class);
-		when(gridCell4.getCellNumber()).thenReturn(expectedCellNumber4);
+		when(gridCell4.getCellId()).thenReturn(expectedCellNumber4);
 
 		// In case the cell at row 1, col 4 is changed (for example by setting
 		// the user value to 3), the cell change would store the old user value
@@ -205,11 +205,11 @@ public class CellChangeTest {
 
 		// Init the GridCell mocks
 		GridCell gridCell2 = mock(GridCell.class);
-		when(gridCell2.getCellNumber()).thenReturn(expectedCellNumber2);
+		when(gridCell2.getCellId()).thenReturn(expectedCellNumber2);
 		GridCell gridCell4 = mock(GridCell.class);
-		when(gridCell4.getCellNumber()).thenReturn(expectedCellNumber4);
+		when(gridCell4.getCellId()).thenReturn(expectedCellNumber4);
 		GridCell gridCell16 = mock(GridCell.class);
-		when(gridCell16.getCellNumber()).thenReturn(expectedCellNumber16);
+		when(gridCell16.getCellId()).thenReturn(expectedCellNumber16);
 
 		// In case the cell at row 1, col 4 is changed (for example by setting
 		// the user value to 3), the cell change would store the old user value

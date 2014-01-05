@@ -105,7 +105,7 @@ public class GridCage {
 		retStr += ", cells: ";
 		if (mCells != null) {
 			for (GridCell cell : mCells)
-				retStr += cell.getCellNumber() + ", ";
+				retStr += cell.getCellId() + ", ";
 		}
 		return retStr;
 	}
@@ -518,7 +518,7 @@ public class GridCage {
 				+ mResult
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1;
 		for (GridCell cell : mCells) {
-			storageString += cell.getCellNumber()
+			storageString += cell.getCellId()
 					+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2;
 		}
 		storageString += SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1

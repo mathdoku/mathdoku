@@ -101,7 +101,7 @@ public class CellChange {
 	 */
 	@Override
 	public String toString() {
-		return "<cell:" + this.mGridCell.getCellNumber() + " col:"
+		return "<cell:" + this.mGridCell.getCellId() + " col:"
 				+ this.mGridCell.getColumn() + " row:"
 				+ this.mGridCell.getRow() + " previous user value:"
 				+ this.mPreviousUserValue + " previous possible values:"
@@ -172,7 +172,7 @@ public class CellChange {
 	 * @return A string representation of the grid cell.
 	 */
 	private String toStorageStringRecursive() {
-		String storageString = "[" + mGridCell.getCellNumber()
+		String storageString = "[" + mGridCell.getCellId()
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ mPreviousUserValue
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1;

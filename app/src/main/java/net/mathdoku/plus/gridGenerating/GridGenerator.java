@@ -1,7 +1,9 @@
 package net.mathdoku.plus.gridGenerating;
 
-import java.util.ArrayList;
-import java.util.Random;
+import android.os.AsyncTask;
+import android.util.Log;
+
+import com.srlee.DLX.MathDokuDLX;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.config.Config;
@@ -15,10 +17,8 @@ import net.mathdoku.plus.storage.database.DatabaseHelper;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
 
-import android.os.AsyncTask;
-import android.util.Log;
-
-import com.srlee.DLX.MathDokuDLX;
+import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * An asynchronous task that generates a grid.
@@ -291,7 +291,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			mCells = new ArrayList<GridCell>();
 			int cellNumber = 0;
 			for (int i = 0; i < mGridSize * mGridSize; i++) {
-				mCells.add(new GridCell(mGrid, cellNumber++));
+				mCells.add(new GridCell(cellNumber++, mGridSize));
 			}
 
 			randomiseGrid();

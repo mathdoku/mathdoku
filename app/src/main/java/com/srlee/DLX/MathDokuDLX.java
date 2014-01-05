@@ -149,7 +149,7 @@ public class MathDokuDLX extends DLX {
 								possibleCombo[i]));
 					}
 					if (DEBUG_DLX) {
-						Log.i(TAG, "  Cell " + gridCell.getCellNumber()
+						Log.i(TAG, "  Cell " + gridCell.getCellId()
 								+ " row =" + gridCell.getRow() + " col = "
 								+ gridCell.getColumn() + " value = "
 								+ possibleCombo[i]);

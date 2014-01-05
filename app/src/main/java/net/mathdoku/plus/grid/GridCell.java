@@ -31,7 +31,7 @@ public class GridCell {
 	private static final String SAVE_GAME_CELL_LINE = "CELL";
 
 	// Index of the cell (left to right, top to bottom, zero-indexed)
-	private int mCellNumber;
+	private int mId;
 	// X grid position, zero indexed
 	private int mColumn;
 	// Y grid position, zero indexed
@@ -81,12 +81,10 @@ public class GridCell {
 	private final CagePainter mCagePainter;
 	private final InputModeBorderPainter mInputModeBorderPainter;
 
-	public GridCell(Grid grid, int cell) {
-		int gridSize = grid.getGridSize();
-		mGrid = grid;
-		mCellNumber = cell;
-		mColumn = cell % gridSize;
-		mRow = cell / gridSize;
+	public GridCell(int id, int gridSize) {
+		mId = id;
+		mColumn = id % gridSize;
+		mRow = id / gridSize;
 		mCageText = "";
 		mCageId = -1;
 		mCorrectValue = 0;
@@ -115,7 +113,7 @@ public class GridCell {
 
 	@Override
 	public String toString() {
-		return "<cell:" + this.mCellNumber + " col:" + this.mColumn + " row:"
+		return "<cell:" + this.mId + " col:" + this.mColumn + " row:"
 				+ this.mRow + " posX:" + this.mPosX + " posY:" + this.mPosY
 				+ " val:" + this.mCorrectValue + ", user value: "
 				+ this.mUserValue + ">";
@@ -773,7 +771,7 @@ public class GridCell {
 	public String toStorageString() {
 		String storageString = SAVE_GAME_CELL_LINE
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ mCellNumber
+				+ mId
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + mRow
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ mColumn
@@ -827,7 +825,7 @@ public class GridCell {
 
 		// Process all parts
 		int index = 1;
-		mCellNumber = Integer.parseInt(cellParts[index++]);
+		mId = Integer.parseInt(cellParts[index++]);
 		mRow = Integer.parseInt(cellParts[index++]);
 		mColumn = Integer.parseInt(cellParts[index++]);
 		mCageText = cellParts[index++];
@@ -851,8 +849,8 @@ public class GridCell {
 		return true;
 	}
 
-	public int getCellNumber() {
-		return mCellNumber;
+	public int getCellId() {
+		return mId;
 	}
 
 	/**

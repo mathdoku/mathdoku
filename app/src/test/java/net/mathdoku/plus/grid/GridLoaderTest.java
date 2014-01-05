@@ -44,7 +44,7 @@ public class GridLoaderTest {
 
 	private class GridLoaderObjectsCreator extends GridLoader.ObjectsCreator {
 		@Override
-		public GridCell createGridCell(Grid grid, int cell) {
+		public GridCell createGridCell(int id, int gridSize) {
 			return mGridCellMock;
 		}
 

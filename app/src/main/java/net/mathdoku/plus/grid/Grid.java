@@ -1,9 +1,6 @@
 package net.mathdoku.plus.grid;
 
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.srlee.DLX.MathDokuDLX;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.config.Config;
@@ -20,7 +17,10 @@ import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
 
-import com.srlee.DLX.MathDokuDLX;
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Grid {
 	private static final String TAG = "MathDoku.Grid";
@@ -100,8 +100,8 @@ public class Grid {
 	// this class. For unit testing purposes the default create methods can be
 	// overridden if needed.
 	public static class ObjectsCreator {
-		public GridCell createGridCell(Grid grid, int cell) {
-			return new GridCell(grid, cell);
+		public GridCell createGridCell(int id, int gridSize) {
+			return new GridCell(id, gridSize);
 		}
 
 		public CellChange createCellChange() {
@@ -1193,8 +1193,7 @@ public class Grid {
 			int cageId = Integer.valueOf(matcher.group());
 
 			// Create new cell and add it to the cells list.
-			GridCell gridCell = mObjectsCreator.createGridCell(this,
-					cellNumber++);
+			GridCell gridCell = mObjectsCreator.createGridCell(cellNumber++, mGridSize);
 			gridCell.setCageId(cageId);
 			mCells.add(gridCell);
 
