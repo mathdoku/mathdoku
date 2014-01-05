@@ -26,8 +26,8 @@ public class GridLoader {
 			return mGridObjectsCreator.createCellChange();
 		}
 
-		public GridCage createGridCage(Grid grid) {
-			return mGridObjectsCreator.createGridCage(grid);
+		public GridCage createGridCage() {
+			return mGridObjectsCreator.createGridCage();
 		}
 
 		public StatisticsDatabaseAdapter createStatisticsDatabaseAdapter() {
@@ -173,6 +173,9 @@ public class GridLoader {
 		mGrid.setDateCreated(solvingAttempt.mDateCreated);
 		mGrid.setDateLastSaved(solvingAttempt.mDateUpdated);
 
+		for (GridCage gridCage : mGrid.mCages) {
+			gridCage.setGridReference(mGrid);
+		}
 		for (GridCell gridCell : mGrid.mCells) {
 			gridCell.setGridReference(mGrid);
 		}
@@ -216,8 +219,8 @@ public class GridLoader {
 			return false;
 		}
 
-		GridCage cage = mObjectsCreator.createGridCage(mGrid);
-		if (!cage.fromStorageString(line, mSavedWithRevision)) {
+		GridCage cage = mObjectsCreator.createGridCage();
+		if (!cage.fromStorageString(line, mSavedWithRevision, mGrid.mCells)) {
 			return false;
 		}
 		mGrid.mCages.add(cage);

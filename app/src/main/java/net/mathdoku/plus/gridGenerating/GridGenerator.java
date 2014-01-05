@@ -785,8 +785,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	 *         many permutations.
 	 */
 	private GridCage createCage(int[][] cageTypeCoordinates, int maxPermutations) {
-		GridCage cage = new GridCage(mGrid,
-				mGridGeneratingParameters.mHideOperators);
+		GridCage cage = new GridCage(mGridGeneratingParameters.mHideOperators);
 		int newCageId = this.mCages.size();
 		for (int[] cageTypeCoordinate : cageTypeCoordinates) {
 			int row = cageTypeCoordinate[0];
@@ -794,7 +793,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			cage.mCells.add(getCellAt(row, col));
 		}
 		setArithmetic(cage);
-		if (maxPermutations > 0 && cage.calculatePossibleCombos() > maxPermutations) {
+		cage.setPossibleCombos(mGridSize);
+		if (maxPermutations > 0 && cage.getPossibleCombos().size() > maxPermutations) {
 			// This cage has too many permutations which fulfill the
 			// cage requirements. As this reduces the chance to find a
 			// solution for the puzzle too much, the cage type will not

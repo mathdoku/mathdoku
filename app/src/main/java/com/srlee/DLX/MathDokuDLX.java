@@ -1,15 +1,15 @@
 package com.srlee.DLX;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import android.util.Log;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.grid.GridCell;
 
-import android.util.Log;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class MathDokuDLX extends DLX {
 	private static final String TAG = "MathDoku.MathDokuDLX";
@@ -75,6 +75,9 @@ public class MathDokuDLX extends DLX {
 		mTotalMoves = 0;
 		int total_nodes = 0;
 		for (GridCage gridCage : mCages) {
+			if (gridCage.getPossibleCombos() == null) {
+				gridCage.setPossibleCombos(mGridSize);
+			}
 			int possibleMovesInCage = gridCage.getPossibleCombos().size();
 			mTotalMoves += possibleMovesInCage;
 			total_nodes += possibleMovesInCage

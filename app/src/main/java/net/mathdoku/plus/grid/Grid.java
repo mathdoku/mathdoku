@@ -108,8 +108,8 @@ public class Grid {
 			return new CellChange();
 		}
 
-		public GridCage createGridCage(Grid grid) {
-			return new GridCage(grid);
+		public GridCage createGridCage() {
+			return new GridCage();
 		}
 
 		public GridStatistics createGridStatistics() {
@@ -1122,7 +1122,7 @@ public class Grid {
 		int cageIndex = 0;
 		for (int i = ID_PART_FIRST_CAGE; i <= ID_PART_LAST_CAGE; i++) {
 			// Define new cage
-			GridCage gridCage = mObjectsCreator.createGridCage(this);
+			GridCage gridCage = mObjectsCreator.createGridCage();
 			gridCage.setCageId(cageIndex++);
 
 			// Add cage to cages list

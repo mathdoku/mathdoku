@@ -41,36 +41,27 @@ public class GridCage {
 
 	/**
 	 * Creates a new instance of {@link GridCage}.
-	 * 
-	 * @param grid
-	 *            The grid in which this cage is defined.
 	 */
-	public GridCage(Grid grid) {
-		initGridCage(grid);
+	public GridCage() {
+		initGridCage();
 	}
 
 	/**
 	 * Creates a new instance of {@link GridCage}.
 	 * 
-	 * @param grid
-	 *            The grid in which the cage is defined.
 	 * @param hideOperator
 	 *            True in case the grid can be solved without using the
 	 *            operators. False otherwise.
 	 */
-	public GridCage(Grid grid, boolean hideOperator) {
-		initGridCage(grid);
+	public GridCage(boolean hideOperator) {
+		initGridCage();
 		mHideOperator = hideOperator;
 	}
 
 	/**
 	 * Initializes the cage variables.
-	 * 
-	 * @param grid
-	 *            The grid in which this cage is defined.
 	 */
-	private void initGridCage(Grid grid) {
-		this.mGrid = grid;
+	private void initGridCage() {
 		mPossibleCombos = null;
 		mCells = new ArrayList<GridCell>();
 
@@ -313,7 +304,7 @@ public class GridCage {
 	 * @return True in case the given line contains cage information and is
 	 *         processed correctly. False otherwise.
 	 */
-	public boolean fromStorageString(String line, int savedWithRevisionNumber) {
+	public boolean fromStorageString(String line, int savedWithRevisionNumber, ArrayList<GridCell> gridCells) {
 		String[] cageParts = line
 				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1);
 
@@ -337,9 +328,9 @@ public class GridCage {
 		mResult = Integer.parseInt(cageParts[index++]);
 		for (String cellId : cageParts[index++]
 				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
-			GridCell c = mGrid.mCells.get(Integer.parseInt(cellId));
-			c.setCageId(mId);
-			mCells.add(c);
+			GridCell gridCell = gridCells.get(Integer.parseInt(cellId));
+			gridCell.setCageId(mId);
+			mCells.add(gridCell);
 		}
 		// noinspection UnusedAssignment
 		mHideOperator = Boolean.parseBoolean(cageParts[index++]);
@@ -368,14 +359,7 @@ public class GridCage {
 		return true;
 	}
 
-	public int calculatePossibleCombos() {
-		if (mPossibleCombos == null) {
-			setPossibleCombos();
-		}
-		return mPossibleCombos.size();
-	}
-
-	private void setPossibleCombos() {
+	public ArrayList<int []>  setPossibleCombos(int gridSize) {
 		ComboGenerator.Operator operator;
 		switch (mAction) {
 			case ACTION_NONE:
@@ -395,14 +379,13 @@ public class GridCage {
 				break;
 		}
 		ComboGenerator comboGenerator = new ComboGenerator(mResult, mAction,
-														   mHideOperator, mCells, mGrid.getGridSize());
+														   mHideOperator, mCells, gridSize);
 		mPossibleCombos = comboGenerator.getPossibleCombos();
+
+		return mPossibleCombos;
 	}
 
 	public ArrayList<int []> getPossibleCombos() {
-		if (mPossibleCombos == null) {
-			setPossibleCombos();
-		}
 		return mPossibleCombos;
 	}
 }

@@ -93,7 +93,7 @@ public class GridTest {
 		}
 
 		@Override
-		public GridCage createGridCage(Grid grid) {
+		public GridCage createGridCage() {
 			return mGridCageMock;
 		}
 

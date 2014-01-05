@@ -58,7 +58,7 @@ public class TestData {
 		int cageId = 0; // Cage id's are 0-based
 
 		// Cage 0
-		GridCage gridCage = new GridCage(grid, VISIBLE_OPERATORS);
+		GridCage gridCage = new GridCage(VISIBLE_OPERATORS);
 		gridCage.mCells.add(gridCell[0]);
 		gridCage.mCells.add(gridCell[1]);
 		gridCage.mCells.add(gridCell[5]);
@@ -68,7 +68,7 @@ public class TestData {
 		grid.mCages.add(gridCage);
 
 		// Cage 1
-		gridCage = new GridCage(grid, VISIBLE_OPERATORS);
+		gridCage = new GridCage(VISIBLE_OPERATORS);
 		gridCage.mCells.add(gridCell[2]);
 		gridCage.mCells.add(gridCell[6]);
 		gridCage.setCageId(cageId++);
@@ -76,7 +76,7 @@ public class TestData {
 		grid.mCages.add(gridCage);
 
 		// Cage 2
-		gridCage = new GridCage(grid, VISIBLE_OPERATORS);
+		gridCage = new GridCage(VISIBLE_OPERATORS);
 		gridCage.mCells.add(gridCell[3]);
 		gridCage.mCells.add(gridCell[7]);
 		gridCage.setCageId(cageId++);
@@ -84,7 +84,7 @@ public class TestData {
 		grid.mCages.add(gridCage);
 
 		// Cage 3
-		gridCage = new GridCage(grid, VISIBLE_OPERATORS);
+		gridCage = new GridCage(VISIBLE_OPERATORS);
 		gridCage.mCells.add(gridCell[4]);
 		gridCage.mCells.add(gridCell[8]);
 		gridCage.mCells.add(gridCell[12]);
@@ -94,7 +94,7 @@ public class TestData {
 		grid.mCages.add(gridCage);
 
 		// Cage 4
-		gridCage = new GridCage(grid, VISIBLE_OPERATORS);
+		gridCage = new GridCage(VISIBLE_OPERATORS);
 		gridCage.mCells.add(gridCell[10]);
 		gridCage.mCells.add(gridCell[11]);
 		gridCage.mCells.add(gridCell[15]);
@@ -103,7 +103,7 @@ public class TestData {
 		grid.mCages.add(gridCage);
 
 		// Cage 5
-		gridCage = new GridCage(grid, VISIBLE_OPERATORS);
+		gridCage = new GridCage(VISIBLE_OPERATORS);
 		gridCage.mCells.add(gridCell[14]);
 		gridCage.setCageId(cageId++);
 		gridCage.setCageResults(4, GridCage.ACTION_NONE, VISIBLE_OPERATORS);
@@ -156,7 +156,7 @@ public class TestData {
 		int cageId = 0; // Cage id's are 0-based
 
 		// Cage 0
-		GridCage gridCage = new GridCage(grid, VISIBLE_OPERATORS);
+		GridCage gridCage = new GridCage(VISIBLE_OPERATORS);
 		gridCage.mCells.add(gridCell[0]);
 		gridCage.mCells.add(gridCell[1]);
 		gridCage.mCells.add(gridCell[5]);
@@ -166,7 +166,7 @@ public class TestData {
 		grid.mCages.add(gridCage);
 
 		// Cage 1
-		gridCage = new GridCage(grid, VISIBLE_OPERATORS);
+		gridCage = new GridCage(VISIBLE_OPERATORS);
 		gridCage.mCells.add(gridCell[2]);
 		gridCage.mCells.add(gridCell[3]);
 		gridCage.setCageId(cageId++);
@@ -174,7 +174,7 @@ public class TestData {
 		grid.mCages.add(gridCage);
 
 		// Cage 2
-		gridCage = new GridCage(grid, VISIBLE_OPERATORS);
+		gridCage = new GridCage(VISIBLE_OPERATORS);
 		gridCage.mCells.add(gridCell[4]);
 		gridCage.mCells.add(gridCell[8]);
 		gridCage.setCageId(cageId++);
@@ -182,7 +182,7 @@ public class TestData {
 		grid.mCages.add(gridCage);
 
 		// Cage 3
-		gridCage = new GridCage(grid, VISIBLE_OPERATORS);
+		gridCage = new GridCage(VISIBLE_OPERATORS);
 		gridCage.mCells.add(gridCell[6]);
 		gridCage.mCells.add(gridCell[7]);
 		gridCage.setCageId(cageId++);
@@ -190,7 +190,7 @@ public class TestData {
 		grid.mCages.add(gridCage);
 
 		// Cage 4
-		gridCage = new GridCage(grid, VISIBLE_OPERATORS);
+		gridCage = new GridCage(VISIBLE_OPERATORS);
 		gridCage.mCells.add(gridCell[10]);
 		gridCage.mCells.add(gridCell[14]);
 		gridCage.mCells.add(gridCell[15]);
@@ -199,14 +199,14 @@ public class TestData {
 		grid.mCages.add(gridCage);
 
 		// Cage 5
-		gridCage = new GridCage(grid, VISIBLE_OPERATORS);
+		gridCage = new GridCage(VISIBLE_OPERATORS);
 		gridCage.mCells.add(gridCell[11]);
 		gridCage.setCageId(cageId++);
 		gridCage.setCageResults(2, GridCage.ACTION_NONE, VISIBLE_OPERATORS);
 		grid.mCages.add(gridCage);
 
 		// Cage 6
-		gridCage = new GridCage(grid, VISIBLE_OPERATORS);
+		gridCage = new GridCage(VISIBLE_OPERATORS);
 		gridCage.mCells.add(gridCell[12]);
 		gridCage.mCells.add(gridCell[13]);
 		gridCage.setCageId(cageId++);

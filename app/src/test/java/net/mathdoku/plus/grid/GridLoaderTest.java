@@ -49,7 +49,7 @@ public class GridLoaderTest {
 		}
 
 		@Override
-		public GridCage createGridCage(Grid grid) {
+		public GridCage createGridCage() {
 			return mGridCageMock;
 		}
 
@@ -470,14 +470,14 @@ public class GridLoaderTest {
 		// from entering an endless loop.
 		switch (numberOfCages) {
 		case 1:
-			when(mGridCageMock.fromStorageString(anyString(), anyInt()))
+			when(mGridCageMock.fromStorageString(anyString(), anyInt(), any(ArrayList.class)))
 					.thenReturn( //
 							true, // read 1 cage
 							false // Do NOT remove
 					);
 			break;
 		case 2:
-			when(mGridCageMock.fromStorageString(anyString(), anyInt()))
+			when(mGridCageMock.fromStorageString(anyString(), anyInt(), any(ArrayList.class)))
 					.thenReturn( //
 							true, true, // Read 2 cages
 							false // Do NOT remove
