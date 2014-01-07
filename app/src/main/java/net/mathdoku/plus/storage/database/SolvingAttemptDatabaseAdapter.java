@@ -9,6 +9,7 @@ import android.util.Log;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.grid.Grid;
+import net.mathdoku.plus.storage.GridStorage;
 
 import java.util.ArrayList;
 
@@ -160,7 +161,9 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		initialValues.put(KEY_DATE_UPDATED,
 				toSQLiteTimestamp(grid.getDateSaved()));
 		initialValues.put(KEY_SAVED_WITH_REVISION, revision);
-		initialValues.put(KEY_DATA, grid.toStorageString());
+
+		GridStorage gridStorage = new GridStorage();
+		initialValues.put(KEY_DATA, gridStorage.toStorageString(grid));
 
 		// Status is derived from grid. It is stored as derived data for easy
 		// filtering on solving attempts for the archive
@@ -311,7 +314,8 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 * @return True in case the statistics have been updated. False otherwise.
 	 */
 	private boolean update(int id, Grid grid, ContentValues contentValues) {
-		contentValues.put(KEY_DATA, grid.toStorageString());
+		GridStorage gridStorage = new GridStorage();
+		contentValues.put(KEY_DATA, gridStorage.toStorageString(grid));
 
 		// Status is derived from grid. It is stored as derived data for easy
 		// filtering on solving attempts for the archive

@@ -25,11 +25,6 @@ import java.util.regex.Pattern;
 public class Grid {
 	private static final String TAG = "MathDoku.Grid";
 
-	// Each line in the GridFile which contains information about the grid
-	// starts with an identifier. This identifier consists of a generic part and
-	// the package revision number.
-	public static final String SAVE_GAME_GRID_LINE = "GRID";
-
 	// ************************************************************************
 	// Grid variables which are determined when generating the grid and which do
 	// not alter anymore.
@@ -564,48 +559,6 @@ public class Grid {
 	 */
 	public boolean isSolutionRevealed() {
 		return this.mRevealed;
-	}
-
-	/**
-	 * Create a string representation of the Grid which can be used to store a
-	 * grid.
-	 * 
-	 * @return A string representation of the grid.
-	 */
-	public String toStorageString() {
-		StringBuilder stringBuilder = new StringBuilder(256);
-
-		// First store data for the grid object itself.
-		stringBuilder.append(SAVE_GAME_GRID_LINE)
-				.append(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1)
-				.append(mActive)
-				.append(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1)
-				.append(mRevealed)
-				.append(SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
-
-		// Store information about the cells. Use one line per single
-		// cell.
-		for (GridCell cell : mCells) {
-			stringBuilder.append(cell.toStorageString()).append(
-					SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
-		}
-
-		// Store information about the cages. Use one line per single
-		// cage.
-		for (GridCage cage : mCages) {
-			stringBuilder.append(cage.toStorageString()).append(
-					SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
-		}
-
-		// Store information about the cell changes. Use one line per single
-		// cell change. Note: watch for lengthy line due to recursive cell
-		// changes.
-		for (CellChange cellChange : mMoves) {
-			stringBuilder.append(cellChange.toStorageString()).append(
-					SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
-		}
-
-		return stringBuilder.toString();
 	}
 
 	/**
@@ -1329,5 +1282,11 @@ public class Grid {
 
 	/* package private */void setRevealed(boolean revealed) {
 		mRevealed = revealed;
+	}
+
+	public ArrayList<CellChange> getCellChanges() {
+		// Copy the entire ArrayList to a new instance. The ObjectsCreator
+		// should not be used.
+		return new ArrayList(mMoves);
 	}
 }
