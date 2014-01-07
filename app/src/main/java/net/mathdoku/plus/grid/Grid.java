@@ -28,7 +28,7 @@ public class Grid {
 	// Each line in the GridFile which contains information about the grid
 	// starts with an identifier. This identifier consists of a generic part and
 	// the package revision number.
-	private static final String SAVE_GAME_GRID_LINE = "GRID";
+	public static final String SAVE_GAME_GRID_LINE = "GRID";
 
 	// ************************************************************************
 	// Grid variables which are determined when generating the grid and which do
@@ -696,58 +696,6 @@ public class Grid {
 	}
 
 	/**
-	 * Read view information from or a storage string which was created with @
-	 * GridView#toStorageString()} before.
-	 * 
-	 * @param line
-	 *            The line containing the view information.
-	 * @return True in case the given line contains view information and is
-	 *         processed correctly. False otherwise.
-	 */
-	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
-	/* package private */boolean fromStorageString(String line,
-			int savedWithRevisionNumber) {
-		if (line == null) {
-			throw new NullPointerException("Parameter line cannot be null");
-		}
-
-		String[] viewParts = line
-				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1);
-
-		int expectedNumberOfElements = (savedWithRevisionNumber <= 595 ? 4 : 3);
-		if (viewParts.length != expectedNumberOfElements) {
-			throw new InvalidParameterException(
-					"Wrong number of elements in storage string");
-		}
-
-		// Only process the storage string if it starts with the correct
-		// identifier.
-		if (viewParts[0].equals(SAVE_GAME_GRID_LINE) == false) {
-			return false;
-		}
-
-		// When upgrading to MathDoku v2 the history is not converted. As of
-		// revision 369 all logic for handling games stored with older versions
-		// is removed.
-		if (savedWithRevisionNumber <= 368) {
-			return false;
-		}
-
-		// Process all parts
-		int index = 1;
-		mActive = Boolean.parseBoolean(viewParts[index++]);
-
-		mRevealed = Boolean.parseBoolean(viewParts[index++]);
-
-		if (savedWithRevisionNumber <= 595) {
-			// This field is not use starting from version 596.
-			index++;
-		}
-
-		return true;
-	}
-
-	/**
 	 * Creates the grid with given information. Returns whether the grid was
 	 * successfully inserted into the database (true), or an error occurred in
 	 * the process (false).
@@ -1193,7 +1141,8 @@ public class Grid {
 			int cageId = Integer.valueOf(matcher.group());
 
 			// Create new cell and add it to the cells list.
-			GridCell gridCell = mObjectsCreator.createGridCell(cellNumber++, mGridSize);
+			GridCell gridCell = mObjectsCreator.createGridCell(cellNumber++,
+					mGridSize);
 			gridCell.setCageId(cageId);
 			mCells.add(gridCell);
 
@@ -1378,4 +1327,7 @@ public class Grid {
 		return mObjectsCreator;
 	}
 
+	/* package private */void setRevealed(boolean revealed) {
+		mRevealed = revealed;
+	}
 }

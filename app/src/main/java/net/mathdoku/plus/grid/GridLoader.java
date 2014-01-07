@@ -2,6 +2,7 @@ package net.mathdoku.plus.grid;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.statistics.GridStatistics;
+import net.mathdoku.plus.storage.GridStorage;
 import net.mathdoku.plus.storage.database.SolvingAttempt;
 import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
 
@@ -32,6 +33,10 @@ public class GridLoader {
 
 		public StatisticsDatabaseAdapter createStatisticsDatabaseAdapter() {
 			return new StatisticsDatabaseAdapter();
+		}
+
+		public GridStorage createGridStorage() {
+			return new GridStorage();
 		}
 	}
 
@@ -97,11 +102,14 @@ public class GridLoader {
 						"Unexpected end of solving attempt at first line");
 			}
 
-			if (!mGrid.fromStorageString(line, mSavedWithRevision)) {
+			GridStorage gridStorage = mObjectsCreator.createGridStorage();
+			if (gridStorage.fromStorageString(line, mSavedWithRevision) == false) {
 				throw new InvalidGridException(
 						"Line does not contain general grid information while this was expected:"
 								+ line);
 			}
+			mGrid.setActive(gridStorage.isActive());
+			mGrid.setRevealed(gridStorage.isRevealed());
 
 			if ((line = solvingAttempt.mData.getNextLine()) == null) {
 				throw new InvalidGridException(

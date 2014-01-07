@@ -1,6 +1,7 @@
 package net.mathdoku.plus.grid;
 
 import net.mathdoku.plus.statistics.GridStatistics;
+import net.mathdoku.plus.storage.GridStorage;
 import net.mathdoku.plus.storage.database.SolvingAttempt;
 import net.mathdoku.plus.storage.database.SolvingAttemptData;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
@@ -41,6 +42,7 @@ public class GridLoaderTest {
 	private GridCage mGridCageMock = mock(GridCage.class);
 	private CellChange mCellChangeMock = mock(CellChange.class);
 	private StatisticsDatabaseAdapter mStatisticsDatabaseAdapterMock = mock(StatisticsDatabaseAdapter.class);
+	private GridStorage mGridStorageMock = mock(GridStorage.class);
 
 	private class GridLoaderObjectsCreator extends GridLoader.ObjectsCreator {
 		@Override
@@ -56,6 +58,11 @@ public class GridLoaderTest {
 		@Override
 		public StatisticsDatabaseAdapter createStatisticsDatabaseAdapter() {
 			return mStatisticsDatabaseAdapterMock;
+		}
+
+		@Override
+		public GridStorage createGridStorage() {
+			return mGridStorageMock;
 		}
 	}
 
@@ -224,8 +231,8 @@ public class GridLoaderTest {
 		gridMockSetGridSize(2);
 		SolvingAttemptStub SolvingAttempt = new SolvingAttemptStub()
 				.setHasInvalidLineBetweenGridInformationAndCell();
-		when(mGridMock.fromStorageString(anyString(), anyInt())).thenReturn(
-				false);
+		when(mGridStorageMock.fromStorageString(anyString(), anyInt()))
+				.thenReturn(false);
 
 		mGridLoader.load(SolvingAttempt);
 	}
@@ -421,8 +428,8 @@ public class GridLoaderTest {
 	}
 
 	private void gridMockCanReadFromStorageString() {
-		when(mGridMock.fromStorageString(anyString(), anyInt())).thenReturn(
-				true);
+		when(mGridStorageMock.fromStorageString(anyString(), anyInt()))
+				.thenReturn(true);
 	}
 
 	private void gridCellMockCanReadGridCellsFromStorageString(int numberOfCells) {
@@ -470,17 +477,19 @@ public class GridLoaderTest {
 		// from entering an endless loop.
 		switch (numberOfCages) {
 		case 1:
-			when(mGridCageMock.fromStorageString(anyString(), anyInt(), any(ArrayList.class)))
-					.thenReturn( //
-							true, // read 1 cage
-							false // Do NOT remove
+			when(
+					mGridCageMock.fromStorageString(anyString(), anyInt(),
+							any(ArrayList.class))).thenReturn( //
+					true, // read 1 cage
+					false // Do NOT remove
 					);
 			break;
 		case 2:
-			when(mGridCageMock.fromStorageString(anyString(), anyInt(), any(ArrayList.class)))
-					.thenReturn( //
-							true, true, // Read 2 cages
-							false // Do NOT remove
+			when(
+					mGridCageMock.fromStorageString(anyString(), anyInt(),
+							any(ArrayList.class))).thenReturn( //
+					true, true, // Read 2 cages
+					false // Do NOT remove
 					);
 			break;
 		default:
