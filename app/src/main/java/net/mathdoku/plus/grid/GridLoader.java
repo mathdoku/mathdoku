@@ -2,9 +2,12 @@ package net.mathdoku.plus.grid;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.statistics.GridStatistics;
+import net.mathdoku.plus.storage.GridCageStorage;
 import net.mathdoku.plus.storage.GridStorage;
 import net.mathdoku.plus.storage.database.SolvingAttempt;
 import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
+
+import java.util.ArrayList;
 
 public class GridLoader {
 	private static final String TAG = "MathDoku.GridLoader";
@@ -12,6 +15,8 @@ public class GridLoader {
 	private final Grid mGrid;
 
 	private int mSavedWithRevision;
+	private GridStorage mGridStorage;
+	private GridCageStorage mGridCageStorage;
 
 	// The Objects Creator is responsible for creating all new objects needed by
 	// this class. For unit testing purposes the default create methods can be
@@ -27,8 +32,9 @@ public class GridLoader {
 			return mGridObjectsCreator.createCellChange();
 		}
 
-		public GridCage createGridCage() {
-			return mGridObjectsCreator.createGridCage();
+		public GridCage createGridCage(int id, boolean hideOperator,
+				int result, int action, ArrayList<GridCell> cells) {
+			return new GridCage(id, hideOperator, result, action, cells);
 		}
 
 		public StatisticsDatabaseAdapter createStatisticsDatabaseAdapter() {
@@ -37,6 +43,10 @@ public class GridLoader {
 
 		public GridStorage createGridStorage() {
 			return new GridStorage();
+		}
+
+		public GridCageStorage createGridCageStorage() {
+			return new GridCageStorage();
 		}
 	}
 
@@ -102,14 +112,14 @@ public class GridLoader {
 						"Unexpected end of solving attempt at first line");
 			}
 
-			GridStorage gridStorage = mObjectsCreator.createGridStorage();
-			if (gridStorage.fromStorageString(line, mSavedWithRevision) == false) {
+			mGridStorage = mObjectsCreator.createGridStorage();
+			if (mGridStorage.fromStorageString(line, mSavedWithRevision) == false) {
 				throw new InvalidGridException(
 						"Line does not contain general grid information while this was expected:"
 								+ line);
 			}
-			mGrid.setActive(gridStorage.isActive());
-			mGrid.setRevealed(gridStorage.isRevealed());
+			mGrid.setActive(mGridStorage.isActive());
+			mGrid.setRevealed(mGridStorage.isRevealed());
 
 			if ((line = solvingAttempt.mData.getNextLine()) == null) {
 				throw new InvalidGridException(
@@ -227,10 +237,17 @@ public class GridLoader {
 			return false;
 		}
 
-		GridCage cage = mObjectsCreator.createGridCage();
-		if (!cage.fromStorageString(line, mSavedWithRevision, mGrid.mCells)) {
+		if (mGridCageStorage == null) {
+			mGridCageStorage = mObjectsCreator.createGridCageStorage();
+		}
+		if (!mGridCageStorage.fromStorageString(line, mSavedWithRevision,
+				mGrid.mCells)) {
 			return false;
 		}
+		GridCage cage = mObjectsCreator.createGridCage(
+				mGridCageStorage.getId(), mGridCageStorage.isHideOperator(),
+				mGridCageStorage.getResult(), mGridCageStorage.getAction(),
+				mGridCageStorage.getCells());
 		mGrid.mCages.add(cage);
 
 		return true;

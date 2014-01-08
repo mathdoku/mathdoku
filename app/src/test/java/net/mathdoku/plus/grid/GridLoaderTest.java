@@ -1,6 +1,7 @@
 package net.mathdoku.plus.grid;
 
 import net.mathdoku.plus.statistics.GridStatistics;
+import net.mathdoku.plus.storage.GridCageStorage;
 import net.mathdoku.plus.storage.GridStorage;
 import net.mathdoku.plus.storage.database.SolvingAttempt;
 import net.mathdoku.plus.storage.database.SolvingAttemptData;
@@ -43,6 +44,7 @@ public class GridLoaderTest {
 	private CellChange mCellChangeMock = mock(CellChange.class);
 	private StatisticsDatabaseAdapter mStatisticsDatabaseAdapterMock = mock(StatisticsDatabaseAdapter.class);
 	private GridStorage mGridStorageMock = mock(GridStorage.class);
+	private GridCageStorage mGridCageStorageMock = mock(GridCageStorage.class);
 
 	private class GridLoaderObjectsCreator extends GridLoader.ObjectsCreator {
 		@Override
@@ -51,7 +53,8 @@ public class GridLoaderTest {
 		}
 
 		@Override
-		public GridCage createGridCage() {
+		public GridCage createGridCage(int id, boolean hideOperator,
+				int result, int action, ArrayList<GridCell> cells) {
 			return mGridCageMock;
 		}
 
@@ -63,6 +66,11 @@ public class GridLoaderTest {
 		@Override
 		public GridStorage createGridStorage() {
 			return mGridStorageMock;
+		}
+
+		@Override
+		public GridCageStorage createGridCageStorage() {
+			return mGridCageStorageMock;
 		}
 	}
 
@@ -324,7 +332,7 @@ public class GridLoaderTest {
 		gridMockCanReadFromStorageString();
 		gridCellMockCanReadGridCellsFromStorageString(mGridMockExpectedNumberOfCells);
 		mGridMockExpectedNumberOfCages = 1;
-		gridCageMockCanReadGridCageFromStorageString(mGridMockExpectedNumberOfCages);
+		gridCageMockLoadsStorageStringIntoGridStorageForGivenNumberOfCages(mGridMockExpectedNumberOfCages);
 		SolvingAttemptStub solvingAttemptStub = new SolvingAttemptStub()
 				.setHasGeneralGridInformation() //
 				.setNumberOfCells(mGridMockExpectedNumberOfCells) //
@@ -343,7 +351,7 @@ public class GridLoaderTest {
 		gridMockCanReadFromStorageString();
 		gridCellMockCanReadGridCellsFromStorageString(mGridMockExpectedNumberOfCells);
 		mGridMockExpectedNumberOfCages = 1;
-		gridCageMockCanReadGridCageFromStorageString(mGridMockExpectedNumberOfCages);
+		gridCageMockLoadsStorageStringIntoGridStorageForGivenNumberOfCages(mGridMockExpectedNumberOfCages);
 		// Add a trailing element with value false to indicate a storage sting
 		// which can not be loaded into a cell. This prevents the grid loader
 		// from entering an endless loop.
@@ -384,7 +392,7 @@ public class GridLoaderTest {
 		gridMockCanReadFromStorageString();
 		gridCellMockCanReadGridCellsFromStorageString(mGridMockExpectedNumberOfCells);
 		mGridMockExpectedNumberOfCages = 1;
-		gridCageMockCanReadGridCageFromStorageString(mGridMockExpectedNumberOfCages);
+		gridCageMockLoadsStorageStringIntoGridStorageForGivenNumberOfCages(mGridMockExpectedNumberOfCages);
 		SolvingAttemptStub solvingAttemptStub = new SolvingAttemptStub()
 				.setHasGeneralGridInformation() //
 				.setNumberOfCells(mGridMockExpectedNumberOfCells) //
@@ -403,7 +411,7 @@ public class GridLoaderTest {
 		gridMockCanReadFromStorageString();
 		gridCellMockCanReadGridCellsFromStorageString(mGridMockExpectedNumberOfCells);
 		mGridMockExpectedNumberOfCages = 1;
-		gridCageMockCanReadGridCageFromStorageString(mGridMockExpectedNumberOfCages);
+		gridCageMockLoadsStorageStringIntoGridStorageForGivenNumberOfCages(mGridMockExpectedNumberOfCages);
 		SolvingAttemptStub solvingAttemptStub = new SolvingAttemptStub()
 				.setHasGeneralGridInformation() //
 				.setNumberOfCells(mGridMockExpectedNumberOfCells) //
@@ -471,23 +479,24 @@ public class GridLoaderTest {
 		}
 	}
 
-	private void gridCageMockCanReadGridCageFromStorageString(int numberOfCages) {
+	private void gridCageMockLoadsStorageStringIntoGridStorageForGivenNumberOfCages(
+			int numberOfCages) {
 		// Add a trailing element with value false to indicate a storage sting
 		// which can not be loaded into a cage. This prevents the grid loader
 		// from entering an endless loop.
 		switch (numberOfCages) {
 		case 1:
 			when(
-					mGridCageMock.fromStorageString(anyString(), anyInt(),
-							any(ArrayList.class))).thenReturn( //
+					mGridCageStorageMock.fromStorageString(anyString(),
+							anyInt(), any(ArrayList.class))).thenReturn( //
 					true, // read 1 cage
 					false // Do NOT remove
 					);
 			break;
 		case 2:
 			when(
-					mGridCageMock.fromStorageString(anyString(), anyInt(),
-							any(ArrayList.class))).thenReturn( //
+					mGridCageStorageMock.fromStorageString(anyString(),
+							anyInt(), any(ArrayList.class))).thenReturn( //
 					true, true, // Read 2 cages
 					false // Do NOT remove
 					);
@@ -496,7 +505,7 @@ public class GridLoaderTest {
 			throw new InvalidParameterException(
 					"Invalid value '"
 							+ numberOfCages
-							+ "' for helper method gridCageMockCanReadGridCageFromStorageString");
+							+ "' for helper method gridCageMockLoadsStorageStringIntoGridStorageForGivenNumberOfCages");
 		}
 
 	}

@@ -19,6 +19,39 @@ public class GridStorage {
 
 	private boolean mActive;
 	private boolean mRevealed;
+	private ArrayList<GridCell> mCells;
+	private ArrayList<GridCage> mCages;
+	private ArrayList<CellChange> mCellChanges;
+
+	// The Objects Creator is responsible for creating all new objects needed by
+	// this class. For unit testing purposes the default create methods can be
+	// overridden if needed.
+	public static class ObjectsCreator {
+		public GridCageStorage createGridCageStorage() {
+			return new GridCageStorage();
+		}
+	}
+
+	private final ObjectsCreator mObjectsCreator;
+
+	public GridStorage() {
+		mObjectsCreator = new ObjectsCreator();
+	}
+
+	/**
+	 * Creates new instance of {@link net.mathdoku.plus.storage.GridStorage}.
+	 * All objects in this class will be created with the given ObjectsCreator.
+	 * This method is intended for unit testing.
+	 * 
+	 * @param objectsCreator
+	 *            The ObjectsCreator to be used by this class. Only create
+	 *            methods for which the default implementation does not suffice,
+	 *            should be overridden.
+	 */
+	public GridStorage(ObjectsCreator objectsCreator) {
+		mObjectsCreator = (objectsCreator != null ? objectsCreator
+				: new ObjectsCreator());
+	}
 
 	/**
 	 * Read view information from or a storage string which was created with @
@@ -66,6 +99,10 @@ public class GridStorage {
 			index++;
 		}
 
+		mCells = null;
+		mCages = null;
+		mCellChanges = null;
+
 		return true;
 	}
 
@@ -76,35 +113,44 @@ public class GridStorage {
 	 * @return A string representation of the grid.
 	 */
 	public String toStorageString(Grid grid) {
+		mActive = grid.isActive();
+		mRevealed = grid.isSolutionRevealed();
+		mCells = grid.mCells;
+		mCages = grid.mCages;
+		mCellChanges = grid.getCellChanges();
+
 		StringBuilder stringBuilder = new StringBuilder(256);
 
 		// First store data for the grid object itself.
 		stringBuilder.append(SAVE_GAME_GRID_LINE)
 				.append(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1)
-				.append(grid.isActive())
+				.append(mActive)
 				.append(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1)
-				.append(grid.isSolutionRevealed())
+				.append(mRevealed)
 				.append(SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
 
 		// Store information about the cells. Use one line per single
 		// cell.
-		for (GridCell cell : grid.mCells) {
+		for (GridCell cell : mCells) {
 			stringBuilder.append(cell.toStorageString()).append(
 					SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
 		}
 
 		// Store information about the cages. Use one line per single
 		// cage.
-		for (GridCage cage : grid.mCages) {
-			stringBuilder.append(cage.toStorageString()).append(
-					SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+		if (mCages != null) {
+			GridCageStorage gridCageStorage = mObjectsCreator
+					.createGridCageStorage();
+			for (GridCage cage : mCages) {
+				stringBuilder.append(gridCageStorage.toStorageString(cage))
+						.append(SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+			}
 		}
 
 		// Store information about the cell changes. Use one line per single
 		// cell change. Note: watch for lengthy line due to recursive cell
 		// changes.
-		ArrayList<CellChange> cellChanges = grid.getCellChanges();
-		for (CellChange cellChange : cellChanges) {
+		for (CellChange cellChange : mCellChanges) {
 			stringBuilder.append(cellChange.toStorageString()).append(
 					SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
 		}

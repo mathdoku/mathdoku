@@ -1,34 +1,22 @@
 package net.mathdoku.plus.grid;
 
 import net.mathdoku.plus.gridGenerating.ComboGenerator;
-import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 
 import java.util.ArrayList;
 
 public class GridCage {
-	// Each line in the GridFile which contains information about the cell
-	// starts with an identifier. This identifier consists of a generic part and
-	// the package revision number.
-	private static final String SAVE_GAME_CAGE_LINE = "CAGE";
-
 	public static final int ACTION_NONE = 0;
 	public static final int ACTION_ADD = 1;
 	public static final int ACTION_SUBTRACT = 2;
 	public static final int ACTION_MULTIPLY = 3;
 	public static final int ACTION_DIVIDE = 4;
 
-	// Action for the cage
-	public int mAction;
-
-	// Number the action results in
-	public int mResult;
-	// Flag to indicate whether operator (+,-,x,/) is hidden.
-	private boolean mHideOperator;
-
-	// List of cage's cells
-	public ArrayList<GridCell> mCells;
-	// Id of the cage
 	public int mId;
+	public int mAction;
+	public int mResult;
+	private boolean mHideOperator;
+	public ArrayList<GridCell> mCells;
+
 	// Enclosing context
 	private Grid mGrid;
 
@@ -44,6 +32,9 @@ public class GridCage {
 	 */
 	public GridCage() {
 		initGridCage();
+		if (mCells == null) {
+			mCells = new ArrayList<GridCell>();
+		}
 	}
 
 	/**
@@ -56,6 +47,22 @@ public class GridCage {
 	public GridCage(boolean hideOperator) {
 		initGridCage();
 		mHideOperator = hideOperator;
+		if (mCells == null) {
+			mCells = new ArrayList<GridCell>();
+		}
+	}
+
+	/**
+	 * Creates a new instance of {@link GridCage}.
+	 */
+	public GridCage(int id, boolean hideOperator, int result, int action,
+			ArrayList<GridCell> cells) {
+		initGridCage();
+		mId = id;
+		mResult = result;
+		mAction = action;
+		mHideOperator = hideOperator;
+		mCells = cells;
 	}
 
 	/**
@@ -63,7 +70,6 @@ public class GridCage {
 	 */
 	private void initGridCage() {
 		mPossibleCombos = null;
-		mCells = new ArrayList<GridCell>();
 
 		// Defaulting mUserMathCorrect to false result in setting all borders
 		// when checking the cage math for the first time.
@@ -272,73 +278,6 @@ public class GridCage {
 	}
 
 	/**
-	 * Create a string representation of the Grid Cage which can be used to
-	 * store a grid cage in a saved game.
-	 * 
-	 * @return A string representation of the grid cage.
-	 */
-	public String toStorageString() {
-		String storageString = SAVE_GAME_CAGE_LINE
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + mId
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ mAction
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ mResult
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1;
-		for (GridCell cell : mCells) {
-			storageString += cell.getCellId()
-					+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2;
-		}
-		storageString += SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ Boolean.toString(isOperatorHidden());
-
-		return storageString;
-	}
-
-	/**
-	 * Read cage information from or a storage string which was created with @
-	 * GridCage#toStorageString()} before.
-	 * 
-	 * @param line
-	 *            The line containing the cage information.
-	 * @return True in case the given line contains cage information and is
-	 *         processed correctly. False otherwise.
-	 */
-	public boolean fromStorageString(String line, int savedWithRevisionNumber, ArrayList<GridCell> gridCells) {
-		String[] cageParts = line
-				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1);
-
-		// Only process the storage string if it starts with the correct
-		// identifier.
-		if (cageParts[0].equals(SAVE_GAME_CAGE_LINE) == false) {
-			return false;
-		}
-
-		// When upgrading to MathDoku v2 the history is not converted. As of
-		// revision 369 all logic for handling games stored with older versions
-		// is removed.
-		if (savedWithRevisionNumber <= 368) {
-			return false;
-		}
-
-		// Process all parts
-		int index = 1;
-		mId = Integer.parseInt(cageParts[index++]);
-		mAction = Integer.parseInt(cageParts[index++]);
-		mResult = Integer.parseInt(cageParts[index++]);
-		for (String cellId : cageParts[index++]
-				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
-			GridCell gridCell = gridCells.get(Integer.parseInt(cellId));
-			gridCell.setCageId(mId);
-			mCells.add(gridCell);
-		}
-		// noinspection UnusedAssignment
-		mHideOperator = Boolean.parseBoolean(cageParts[index++]);
-
-		return true;
-	}
-
-	/**
 	 * Sets the reference to the grid to which this cage belongs.
 	 * 
 	 * @param grid
@@ -359,33 +298,33 @@ public class GridCage {
 		return true;
 	}
 
-	public ArrayList<int []>  setPossibleCombos(int gridSize) {
+	public ArrayList<int[]> setPossibleCombos(int gridSize) {
 		ComboGenerator.Operator operator;
 		switch (mAction) {
-			case ACTION_NONE:
-				operator = ComboGenerator.Operator.NONE;
-				break;
-			case ACTION_ADD:
-				operator = ComboGenerator.Operator.ADD;
-				break;
-			case ACTION_SUBTRACT:
-				operator = ComboGenerator.Operator.SUBTRACT;
-				break;
-			case ACTION_MULTIPLY:
-				operator = ComboGenerator.Operator.MULTIPLY;
-				break;
-			case ACTION_DIVIDE:
-				operator = ComboGenerator.Operator.DIVIDE;
-				break;
+		case ACTION_NONE:
+			operator = ComboGenerator.Operator.NONE;
+			break;
+		case ACTION_ADD:
+			operator = ComboGenerator.Operator.ADD;
+			break;
+		case ACTION_SUBTRACT:
+			operator = ComboGenerator.Operator.SUBTRACT;
+			break;
+		case ACTION_MULTIPLY:
+			operator = ComboGenerator.Operator.MULTIPLY;
+			break;
+		case ACTION_DIVIDE:
+			operator = ComboGenerator.Operator.DIVIDE;
+			break;
 		}
 		ComboGenerator comboGenerator = new ComboGenerator(mResult, mAction,
-														   mHideOperator, mCells, gridSize);
+				mHideOperator, mCells, gridSize);
 		mPossibleCombos = comboGenerator.getPossibleCombos();
 
 		return mPossibleCombos;
 	}
 
-	public ArrayList<int []> getPossibleCombos() {
+	public ArrayList<int[]> getPossibleCombos() {
 		return mPossibleCombos;
 	}
 }

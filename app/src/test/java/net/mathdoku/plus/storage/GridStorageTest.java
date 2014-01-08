@@ -17,6 +17,7 @@ import robolectric.RobolectricGradleTestRunner;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -29,6 +30,7 @@ public class GridStorageTest {
 	private GridCell mGridCellMock = mock(GridCell.class);
 	private GridCage mGridCageMock = mock(GridCage.class);
 	private CellChange mCellChangeMock = mock(CellChange.class);
+	private GridCageStorage mGridCageStorageMock = mock(GridCageStorage.class);
 
 	@Before
 	public void setup() {
@@ -39,7 +41,14 @@ public class GridStorageTest {
 		mGridMockMoves = new ArrayList<CellChange>();
 		when(mGridMock.getCellChanges()).thenReturn(mGridMockMoves);
 
-		gridStorage = new GridStorage();
+
+		GridStorage.ObjectsCreator gridStorageObjectsCreator = new GridStorage.ObjectsCreator() {
+			@Override
+			public GridCageStorage createGridCageStorage() {
+				return mGridCageStorageMock;
+			}
+		};
+		gridStorage = new GridStorage(gridStorageObjectsCreator);
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -175,7 +184,7 @@ public class GridStorageTest {
 		when(mGridMock.isActive()).thenReturn(true);
 		when(mGridMock.isSolutionRevealed()).thenReturn(false);
 		String gridCageStubStorageString = "** A CAGE STORAGE STRING **";
-		when(mGridCageMock.toStorageString()).thenReturn(
+		when(mGridCageStorageMock.toStorageString(any(GridCage.class))).thenReturn(
 				gridCageStubStorageString);
 		mGridMock.mCages.add(mGridCageMock);
 
@@ -192,7 +201,7 @@ public class GridStorageTest {
 		String gridCageStubStorageString1[] = {
 				"** FIRST CAGE STORAGE STRING **",
 				"** SECOND CAGE STORAGE STRING **" };
-		when(mGridCageMock.toStorageString()).thenReturn(
+		when(mGridCageStorageMock.toStorageString(any(GridCage.class))).thenReturn(
 				gridCageStubStorageString1[0], gridCageStubStorageString1[1]);
 		mGridMock.mCages.add(mGridCageMock);
 		mGridMock.mCages.add(mGridCageMock);
@@ -252,7 +261,7 @@ public class GridStorageTest {
 		mGridMock.mCells.add(mGridCellMock);
 
 		String gridCageStubStorageString = "** A CAGE STORAGE STRING **";
-		when(mGridCageMock.toStorageString()).thenReturn(
+		when(mGridCageStorageMock.toStorageString(any(GridCage.class))).thenReturn(
 				gridCageStubStorageString);
 		mGridMock.mCages.add(mGridCageMock);
 
