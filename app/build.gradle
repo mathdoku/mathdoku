@@ -11,6 +11,11 @@ android {
         minSdkVersion androidMinSdkVersion
         targetSdkVersion androidTargetSdkVersion
     }
+
+	// Temporary disable aborting build process when Lint detetcs errors.
+	lintOptions {
+		abortOnError false
+	}
 	
     sourceSets {
         main {
@@ -37,46 +42,13 @@ android {
     }
 	
 	applicationVariants.all { variant ->
-		variant.mergeResources.doLast {
-			println 'Merge templates to source dir for buidling ' + variant.name + ' variant. '
-			
-			// Copy general (non variant specific) templates, but replace variant specific values
-			def configAppMode = 'AppMode.PRODUCTION'
-			if (variant.name == 'Debug') {
-				configAppMode = 'AppMode.DEVELOPMENT'
-			}
-			copy {
-				from('./src-templates/all') {
-					include '**/*'
-					filter {
-						line -> line.replaceAll(/@CONFIG.APP_MODE@/,configAppMode)
-					}
-				}
-				into '.'
-			}
-			
-			// Copy variant specific templates
-			def variantDir = 'release'
-			if (variant.name == 'Debug') {
-				variantDir = 'debug'
-			}
-			copy {
-				from('./src-templates/' + variantDir) {
-					include '**/*'
-				}
-				into '.'
-			}
+		variant.mergeResources.dependsOn {
+			overrideConfig(variant)
 		}
 	}
 }
 
 dependencies {
-	// In case of unexpected errors please check whether ../local.properties
-	// and ANDROID_HOME are consistent. AS 0.3.2 seems to generator a
-	// local properties files upon openining the project which is not 
-	// consistent with the ANDROID_HOME. This should haven been solved in
-	// AS 0.3.7 but is not yet verified.
-
 	compile project(':google-play-services_lib')
 
 	// Do not use following line to compile support library
@@ -98,4 +70,27 @@ dependencies {
 	instrumentTestCompile 'junit:junit:4.10', 'org.mockito:mockito-core:1.9.5+'
 	instrumentTestCompile 'org.robolectric:robolectric:2.3-SNAPSHOT'
 	instrumentTestCompile 'com.squareup:fest-android:1.0.+'
+}
+
+def overrideConfig(variant) {
+	println 'Merge templates to source dir for buidling ' + variant.name + ' variant. '
+	
+	// Copy general (non variant specific) templates, but replace variant specific values
+	if (variant.name.toUpperCase() == 'DEBUG') {
+		copyDebugTemplates
+	} else {
+		copyReleaseTemplates
+	}
+}
+
+task copyDebugTemplates(type: Copy) {
+	from './src-templates/debug'
+	into '.'
+	include '**/*'
+}
+
+task copyReleaseTemplates(type: Copy) {
+	from './src-templates/release'
+	into '.'
+	include '**/*'
 }

@@ -14,8 +14,8 @@ buildscript {
 
     dependencies {
         // gradle android tools
-        classpath 'com.android.tools.build:gradle:0.6.+'
-
+        classpath 'com.android.tools.build:gradle:0.7.+'
+		
         // Gradle Android Unit Testing Plugin:
 		// https://github.com/JakeWharton/gradle-android-test-plugin
 		// Get snapshot in order to get the fix provided in pull request 26.
@@ -25,7 +25,7 @@ buildscript {
 
 // These are the common version numbers, etc for the rest of the gradle files
 configure(allprojects) {
-    ext.androidBuildToolsVersion    = '18.1.0'
+    ext.androidBuildToolsVersion    = '19.0.1'
 
     ext.androidVersion              = '4.4'
     ext.androidSDKVersion           = '19'
@@ -101,5 +101,5 @@ configure(subprojects) { subproject ->
 // }
 
 task wrapper(type: Wrapper) {
-	gradleVersion = '1.8'
+	gradleVersion = '1.9'
 }

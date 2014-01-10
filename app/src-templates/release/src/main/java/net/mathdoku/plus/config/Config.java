@@ -29,5 +29,5 @@ public class Config {
 		DEVELOPMENT, PRODUCTION
 	};
 
-	public static final AppMode mAppMode = @CONFIG.APP_MODE@;
+	public static final AppMode mAppMode = AppMode.PRODUCTION;
 }
