@@ -1,11 +1,5 @@
 package net.mathdoku.plus.ui;
 
-import net.mathdoku.plus.R;
-import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
-
-import org.achartengine.GraphicalView;
-import org.achartengine.renderer.SimpleSeriesRenderer;
-
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -20,10 +14,16 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import net.mathdoku.plus.R;
+import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
+
+import org.achartengine.GraphicalView;
+import org.achartengine.renderer.SimpleSeriesRenderer;
+
 /**
  * A base fragment representing the statistics for a game or a grid size.
  */
-class StatisticsBaseFragment extends android.support.v4.app.Fragment {
+public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	public final static String TAG = "MathDoku.StatisticsBaseFragment";
 
 	LinearLayout mChartsLayout;
