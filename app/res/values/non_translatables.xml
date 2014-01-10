@@ -8,10 +8,10 @@
 
 
     <!-- Name of application. This may NOT be translated. -->
-    <string name="application_name">MathDoku+</string>
+    <string name="application_name" translatable="false">MathDoku+</string>
 
     <!-- URL to Mathdoku+ community on Google+ -->
-    <string name="google_plus_community_url">https://plus.google.com/u/0/communities/111283678692924318436</string>
+    <string name="google_plus_community_url" translatable="false">https://plus.google.com/u/0/communities/111283678692924318436</string>
 
     <!-- The possible values of the "themes" option. This option controls which theme is used for displaying. -->
     <string-array name="puzzle_setting_theme_values_text">
@@ -20,13 +20,13 @@
     </string-array>
 
     <!-- Identifiers associated with element themeTexts. This element may not be translated. -->
-    <string-array name="puzzle_setting_theme_values_code">
+    <string-array name="puzzle_setting_theme_values_code" translatable="false">
         <item>theme_light</item>
         <item>theme_dark</item>
     </string-array>
 
     <!-- The possible values of the "input methods" option. This option controls which input methods can be used. -->
-    <string-array name="puzzle_setting_input_methods_values_text">
+    <string-array name="puzzle_setting_input_methods_values_text" translatable="false">
         <item>@string/input_method_swipe_only</item>
         <item>@string/input_method_swipe_and_buttons</item>
         <item>@string/input_method_buttons_only</item>
@@ -34,14 +34,14 @@
 
     <!-- Identifiers associated with element themeTexts. This element may not be translated. Values must correspond -->
     <!-- with values (in uppercases) of enum Preferences.PuzzleSettingInputMethod. -->
-    <string-array name="puzzle_setting_input_methods_values_code">
+    <string-array name="puzzle_setting_input_methods_values_code" translatable="false">
         <item>SWIPE_ONLY</item>
         <item>SWIPE_AND_BUTTONS</item>
         <item>BUTTONS_ONLY</item>
     </string-array>
 
     <!-- The possible values of the "maxGamesElapsedTimeChart" preference. -->
-    <string-array name="statistics_setting_elapsed_time_chart_maximum_games_entries">
+    <string-array name="statistics_setting_elapsed_time_chart_maximum_games_entries" translatable="false">
         <item>50</item>
         <item>100</item>
         <item>150</item>
@@ -52,20 +52,20 @@
 
 
     <!-- References for Mathdoku+ -->
-    <string name="shared_puzzle_scheme_mathdoku_plus">http</string>
-    <string name="shared_puzzle_host_mathdoku_plus">mathdoku.net</string>
-    <string name="shared_puzzle_path_prefix_mathdoku_plus">/plus</string>
+    <string name="shared_puzzle_scheme_mathdoku_plus" translatable="false">http</string>
+    <string name="shared_puzzle_host_mathdoku_plus" translatable="false">mathdoku.net</string>
+    <string name="shared_puzzle_path_prefix_mathdoku_plus" translatable="false">/plus</string>
 
     <!-- References for the original mathdoku -->
-    <string name="shared_puzzle_scheme_mathdoku_original">http</string>
-    <string name="shared_puzzle_host_mathdoku_original">mathdoku.net</string>
-    <string name="shared_puzzle_path_prefix_mathdoku_original">/puzzle</string>
+    <string name="shared_puzzle_scheme_mathdoku_original" translatable="false">http</string>
+    <string name="shared_puzzle_host_mathdoku_original" translatable="false">mathdoku.net</string>
+    <string name="shared_puzzle_path_prefix_mathdoku_original" translatable="false">/puzzle</string>
 
     <!-- MISCELLANEOUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-    <string name="gamehelper_sign_in_failed">Failed to sign in. Please check your network connection and try again.</string>
-    <string name="gamehelper_app_misconfigured">The application is incorrectly configured. Check that the package name and signing certificate match the client ID created in Developer Console. Also, if the application is not yet published, check that the account you are trying to sign in with is listed as a tester account. See logs for more information.</string>
-    <string name="gamehelper_license_failed">License check failed.</string>
-    <string name="gamehelper_unknown_error">Unknown error.</string>
+    <string name="gamehelper_sign_in_failed" translatable="false">Failed to sign in. Please check your network connection and try again.</string>
+    <string name="gamehelper_app_misconfigured" translatable="false">The application is incorrectly configured. Check that the package name and signing certificate match the client ID created in Developer Console. Also, if the application is not yet published, check that the account you are trying to sign in with is listed as a tester account. See logs for more information.</string>
+    <string name="gamehelper_license_failed" translatable="false">License check failed.</string>
+    <string name="gamehelper_unknown_error" translatable="false">Unknown error.</string>
 
 </resources>

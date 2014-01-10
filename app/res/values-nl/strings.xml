@@ -95,6 +95,9 @@
     <!-- The message for the "Sign in to Google+" when viewing the leaderboards while not signed in. -->
     <string name="google_plus_login_dialog_on_show_leaderboards">Om de klassementen te bekijken moet je inloggen met Google+ (geen wachtwoord nodig). Het klassementenoverzicht toont jouw beste score en je positie in het klassement voor elk type of puzzel.\n\nNadat je voor de eerste keer inlogt, begeleidt Google+ je met de verdere instellingen. Voor elke type puzzel, wordt de beste score verstuurd naar Google+. Puzzels waarin een of meerdere keren is vals gespeeld worden genegeerd.\n\nJe kan op elk moment uitloggen via het actie menu indien je niet langer meer ingelogd wil zijn.</string>
 
+    <!-- The message for the "Sign in to Google+" when viewing the leaderboards while not signed in. -->
+    <string name="action_google_plus_community">MathDoku+ community</string>
+
     <!-- ACTION BAR ITEMS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 

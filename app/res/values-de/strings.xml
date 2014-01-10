@@ -103,6 +103,9 @@
     <!-- The message for the "Sign in to Google+" when viewing the leaderboards while not signed in. -->
     <string name="google_plus_login_dialog_on_show_leaderboards">To view the leaderboards, you have to sign in with Google+ (no password is asked). The leaderboards overview shows your best score and your ranking position for each type of puzzle.\n\nAfter signing in for the first time, Google+ will guide for further configurations. For each type of puzzle, the puzzle with the best score is submitted to Google+. Puzzles for which one or more cheats have been used will be ignored.\n\nYou can sign out anytime via the actions menu in case you no longer want stay logged in.</string>
 
+    <!-- The message for the "Sign in to Google+" when viewing the leaderboards while not signed in. -->
+    <string name="action_google_plus_community">MathDoku+ community</string>
+
     <!-- ACTION BAR ITEMS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 

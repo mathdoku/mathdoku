@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Default dimensions for layout. For tablets, see values-sw600dp. -->
-    <string name="dimension">default</string>
+    <string name="dimension" translatable="false">default</string>
 
     <!-- This file should NOT be translated or altered per language. -->
     <!-- Values can and should be overwritten for specific screen sizes if necessary. -->
@@ -29,7 +29,7 @@
 
     <!-- Minimum height of buttons used for digit, clear and undo. -->
     <!-- controls_pad_min_height_buttons = controls_text_size_default * 3 / 2. This meets the android -->
-    <!-- in which 1/6 of height is reserved for top marging, 4/6 used for content and 1/6 for -->
+    <!-- in which 1/6 of height is reserved for top margin, 4/6 used for content and 1/6 for -->
     <!-- the bottom margin. -->
     <dimen name="controls_pad_min_height_buttons">34dp</dimen>
 
