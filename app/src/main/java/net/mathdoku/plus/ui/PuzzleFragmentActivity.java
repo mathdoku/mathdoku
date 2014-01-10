@@ -1,6 +1,5 @@
 package net.mathdoku.plus.ui;
 
-import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -8,7 +7,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentManager;
@@ -933,7 +931,6 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	 * @param cancelable
 	 *            True in case the dialog can be cancelled.
 	 */
-	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	private void showDialogNewGame(final boolean cancelable) {
 		showDialogNewGame(cancelable,
 				mMathDokuPreferences.getPuzzleParameterSize(),
@@ -955,7 +952,6 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	 * @param puzzleComplexity
 	 *            Complexity of the puzzle new puzzle.
 	 */
-	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	private void showDialogNewGame(final boolean cancelable, int gridSize,
 			boolean visibleOperators, PuzzleComplexity puzzleComplexity) {
 		// Get view and put relevant information into the view.
@@ -1231,7 +1227,6 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	 * available for display in the drawer. As of that moment it will be
 	 * possible to open the drawer by tapping the drawer or the app icon.
 	 */
-	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	private void setNavigationDrawer() {
 		// The drawer will be opened automatically in case a new item has been
 		// added to the drawer.

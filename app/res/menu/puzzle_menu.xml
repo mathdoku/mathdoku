@@ -1,10 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" >
 
-    <!-- Don't forget to update menu-v14/puzzle_menu.xml as well. -->
-    <!-- Don't forget to update menu-v14/puzzle_menu.xml as well. -->
-    <!-- Don't forget to update menu-v14/puzzle_menu.xml as well. -->
-
     <item
         android:id="@+id/action_copy_cell_values"
         android:icon="@drawable/copy_cell_values"
@@ -25,14 +21,22 @@
         android:showAsAction="ifRoom"
         android:title="@string/action_check_progress"/>
     <item
-        android:id="@+id/action_reveal_cell"
-        android:title="@string/action_reveal_cell"/>
-    <item
-        android:id="@+id/action_reveal_operator"
-        android:title="@string/action_reveal_operator"/>
-    <item
-        android:id="@+id/action_show_solution"
-        android:title="@string/action_show_solution"/>
+        android:id="@+id/action_cheat"
+        android:orderInCategory="10"
+        android:showAsAction="never"
+        android:title="@string/action_cheats">
+        <menu>
+            <item
+                android:id="@+id/action_reveal_cell"
+                android:title="@string/action_reveal_cell"/>
+            <item
+                android:id="@+id/action_reveal_operator"
+                android:title="@string/action_reveal_operator"/>
+            <item
+                android:id="@+id/action_show_solution"
+                android:title="@string/action_show_solution"/>
+        </menu>
+    </item>
     <item
         android:id="@+id/action_clear_grid"
         android:orderInCategory="20"
@@ -45,7 +49,7 @@
         android:showAsAction="never"
         android:title="@string/action_share"/>
 
-    <!-- Replay will only be displayed in case the archive fragment is displayed by the puzzle fragment. -->
+    <!-- Replay will only be displayed for the archive fragment. -->
     <item
         android:id="@+id/action_replay"
         android:icon="@drawable/replay"

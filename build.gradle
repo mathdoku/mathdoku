@@ -29,7 +29,7 @@ configure(allprojects) {
 
     ext.androidVersion              = '4.4'
     ext.androidSDKVersion           = '19'
-	ext.androidMinSdkVersion        = 11
+	ext.androidMinSdkVersion        = 14
 	ext.androidTargetSdkVersion     = 17
     ext.androidCompileSdkVersion    = 18
 
