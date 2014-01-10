@@ -49,6 +49,9 @@ android {
 }
 
 dependencies {
+	// Google play services (used for leaderboards)
+	compile 'com.google.android.gms:play-services:4.0.30'
+
 	compile project(':google-play-services_lib')
 
 	// Do not use following line to compile support library
