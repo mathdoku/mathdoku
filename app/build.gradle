@@ -12,11 +12,6 @@ android {
         targetSdkVersion androidTargetSdkVersion
     }
 
-	// Temporary disable aborting build process when Lint detetcs errors.
-	lintOptions {
-		abortOnError false
-	}
-	
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
