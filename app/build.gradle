@@ -47,7 +47,7 @@ dependencies {
 	// Google play services (used for leaderboards)
 	compile 'com.google.android.gms:play-services:4.0.30'
 
-	compile project(':google-play-services_lib')
+//	compile "com.squareup.dagger:dagger:${daggerVersion}"
 
 	// Do not use following line to compile support library
 	//    compile files('libs/android-support-v4.jar')
