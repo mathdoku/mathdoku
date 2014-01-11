@@ -1,5 +1,6 @@
 package net.mathdoku.plus.grid;
 
+import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.storage.GridCageStorage;
 import net.mathdoku.plus.storage.GridStorage;
@@ -205,6 +206,12 @@ public class GridLoaderTest {
 		mGridLoaderObjectsCreator = new GridLoaderObjectsCreator();
 		mGridLoader = new GridLoader(mGridMock, mGridLoaderObjectsCreator);
 
+		// Even when running the unit test in the debug variant,
+		// the grid loader production code should be tested only.
+		if (Config.mAppMode == Config.AppMode.DEVELOPMENT) {
+			mGridLoader.setThrowExceptionOnError(false);
+		}
+
 		// Use a real array lists to store created cells, cages and cell changes
 		// instead of mock.
 		mGridMock.mCells = new ArrayList<GridCell>();
@@ -233,19 +240,19 @@ public class GridLoaderTest {
 		assertThat("Grid load", mGridLoader.load(solvingAttemptStub), is(false));
 	}
 
-	@Test(expected = InvalidGridException.class)
+	@Test
 	public void load_SolvingAttemptWithWithInvalidGridData_ThrowsInvalidGridException()
 			throws Exception {
 		gridMockSetGridSize(2);
-		SolvingAttemptStub SolvingAttempt = new SolvingAttemptStub()
+		SolvingAttemptStub solvingAttemptStub = new SolvingAttemptStub()
 				.setHasInvalidLineBetweenGridInformationAndCell();
 		when(mGridStorageMock.fromStorageString(anyString(), anyInt()))
 				.thenReturn(false);
 
-		mGridLoader.load(SolvingAttempt);
+		assertThat(mGridLoader.load(solvingAttemptStub), is(false));
 	}
 
-	@Test(expected = InvalidGridException.class)
+	@Test
 	public void load_SolvingAttemptMissingGridCellData_ThrowsInvalidGridException()
 			throws Exception {
 		gridMockSetGridSize(2);
@@ -253,10 +260,10 @@ public class GridLoaderTest {
 				.setHasGeneralGridInformation();
 		gridMockCanReadFromStorageString();
 
-		mGridLoader.load(solvingAttemptStub);
+		assertThat(mGridLoader.load(solvingAttemptStub), is(false));
 	}
 
-	@Test(expected = InvalidGridException.class)
+	@Test
 	public void load_SolvingAttemptCellDataWithNumberErrorInGridCellData_ThrowsInvalidGridException()
 			throws Exception {
 		gridMockSetGridSize(2);
@@ -270,7 +277,7 @@ public class GridLoaderTest {
 		mGridLoader.load(solvingAttemptStub);
 	}
 
-	@Test(expected = InvalidGridException.class)
+	@Test
 	public void load_SolvingAttemptGridCellLoadFailedDueToTooLittleCells_ThrowsInvalidGridException()
 			throws Exception {
 		gridMockSetGridSize(2);
@@ -281,10 +288,10 @@ public class GridLoaderTest {
 				.setHasGeneralGridInformation() //
 				.setNumberOfCells(tooLittleCells);
 
-		mGridLoader.load(solvingAttemptStub);
+		assertThat(mGridLoader.load(solvingAttemptStub), is(false));
 	}
 
-	@Test(expected = InvalidGridException.class)
+	@Test
 	public void load_SolvingAttemptGridCellLoadFailedDueToTooManyCells_ThrowsInvalidGridException()
 			throws Exception {
 		gridMockSetGridSize(2);
@@ -295,10 +302,10 @@ public class GridLoaderTest {
 				.setHasGeneralGridInformation() //
 				.setNumberOfCells(tooManyCells);
 
-		mGridLoader.load(solvingAttemptStub);
+		assertThat(mGridLoader.load(solvingAttemptStub), is(false));
 	}
 
-	@Test(expected = InvalidGridException.class)
+	@Test
 	public void load_SolvingAttemptGridCellsNotSucceededWithAnyOtherData_ThrowsInvalidGridException()
 			throws Exception {
 		gridMockSetGridSize(2);
@@ -308,10 +315,10 @@ public class GridLoaderTest {
 				.setHasGeneralGridInformation() //
 				.setNumberOfCells(mGridMockExpectedNumberOfCells);
 
-		mGridLoader.load(solvingAttemptStub);
+		assertThat(mGridLoader.load(solvingAttemptStub), is(false));
 	}
 
-	@Test(expected = InvalidGridException.class)
+	@Test
 	public void load_SolvingAttemptGridCellsSucceededWithUnexpectedData_ThrowsInvalidGridException()
 			throws Exception {
 		gridMockSetGridSize(2);
@@ -322,7 +329,7 @@ public class GridLoaderTest {
 				.setNumberOfCells(mGridMockExpectedNumberOfCells) //
 				.setHasInvalidLineBetweenCagesAndCellChanges();
 
-		mGridLoader.load(solvingAttemptStub);
+		assertThat(mGridLoader.load(solvingAttemptStub), is(false));
 	}
 
 	@Test

@@ -209,16 +209,15 @@ public class Grid {
 	 * @param gridSize
 	 *            The size of the grid.
 	 */
-	public void setGridSize(int gridSize) {
+	public boolean setGridSize(int gridSize) {
 		if (mGridSize == 0) {
 			mGridSize = gridSize;
-		} else if (gridSize != mGridSize) {
-			// Ignore changes to grid size.
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				throw new RuntimeException(
-						"GridSize can not be changed after it has been set.");
-			}
 		}
+		else if (gridSize != mGridSize) {
+			// GridSize can not be changed after it has been set.
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -314,14 +313,16 @@ public class Grid {
 	 * Unreveal the solution by setting the user value to the actual value. Only
 	 * available in DEVELOPMENT mode.
 	 */
-	public void unrevealSolution() {
+	public boolean unrevealSolution() {
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			mRevealed = false;
 			if (mGridStatistics != null) {
 				mGridStatistics.mSolutionRevealed = false;
 				mGridStatistics.mSolvedManually = true;
 			}
+			return true;
 		}
+		return false;
 	}
 
 	/**

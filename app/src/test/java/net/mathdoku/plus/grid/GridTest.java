@@ -6,7 +6,6 @@ import android.content.Context;
 import com.srlee.DLX.MathDokuDLX;
 
 import net.mathdoku.plus.Preferences;
-import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridGenerating.GridGenerator;
 import net.mathdoku.plus.statistics.GridStatistics;
@@ -231,11 +230,11 @@ public class GridTest {
 		mGrid = new Grid(mGridObjectsCreator);
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void SetGridSize_ChangeGridSize_RuntimeExceptionIsThrown()
 			throws Exception {
-		mGrid.setGridSize(5);
-		mGrid.setGridSize(6);
+		assertThat("Setting grid size initially", mGrid.setGridSize(5), is(true));
+		assertThat("Changing the grid size", mGrid.setGridSize(6), is(false));
 	}
 
 	@Test
@@ -468,11 +467,7 @@ public class GridTest {
 
 	@Test
 	public void unrevealSolution() throws Exception {
-		Config.AppMode actualAppMode = Config.mAppMode;
-		Config.AppMode expectedAppMode = Config.AppMode.DEVELOPMENT;
-
-		assertThat("Development mode", actualAppMode, is(expectedAppMode));
-		assertThat("Grid is unrevealed", mGrid.isSolutionRevealed(), is(false));
+		assertThat("Unreveal grid", mGrid.unrevealSolution(), is(false));
 	}
 
 	@Test

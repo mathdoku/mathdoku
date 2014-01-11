@@ -18,6 +18,9 @@ public class GridLoader {
 	private GridStorage mGridStorage;
 	private GridCageStorage mGridCageStorage;
 
+	// By default this module throws exceptions on error when running in development mode only.
+	private boolean mThrowExceptionOnError;
+
 	// The Objects Creator is responsible for creating all new objects needed by
 	// this class. For unit testing purposes the default create methods can be
 	// overridden if needed.
@@ -32,8 +35,8 @@ public class GridLoader {
 			return mGridObjectsCreator.createCellChange();
 		}
 
-		public GridCage createGridCage(int id, boolean hideOperator,
-				int result, int action, ArrayList<GridCell> cells) {
+		public GridCage createGridCage(int id, boolean hideOperator, int result, int action,
+									   ArrayList<GridCell> cells) {
 			return new GridCage(id, hideOperator, result, action, cells);
 		}
 
@@ -54,40 +57,40 @@ public class GridLoader {
 
 	/**
 	 * Creates new instance of {@link net.mathdoku.plus.grid.GridLoader}.
-	 * 
+	 *
 	 * @param grid
-	 *            The grid which has to be loaded by the grid loader.
+	 * 		The grid which has to be loaded by the grid loader.
 	 */
 	public GridLoader(Grid grid) {
 		mGrid = grid;
 
 		mObjectsCreator = new ObjectsCreator();
 		mObjectsCreator.mGridObjectsCreator = mGrid.getObjectsCreator();
+
+		setThrowExceptionOnError(Config.mAppMode == Config.AppMode.DEVELOPMENT);
 	}
 
 	/**
-	 * Creates new instance of {@link net.mathdoku.plus.grid.GridLoader}. All
-	 * objects in this class will be created with the given ObjectsCreator. This
-	 * method is intended for unit testing.
-	 * 
+	 * Creates new instance of {@link net.mathdoku.plus.grid.GridLoader}. All objects in this class
+	 * will be created with the given ObjectsCreator. This method is intended for unit testing.
+	 *
 	 * @param grid
-	 *            The grid which has to be loaded by the grid loader.
+	 * 		The grid which has to be loaded by the grid loader.
 	 * @param objectsCreator
-	 *            The ObjectsCreator to be used by this class. Only create
-	 *            methods for which the default implementation does not suffice,
-	 *            should be overridden.
+	 * 		The ObjectsCreator to be used by this class. Only create methods for which the default
+	 * 		implementation does not suffice, should be overridden.
 	 */
 	public GridLoader(Grid grid, ObjectsCreator objectsCreator) {
 		mGrid = grid;
-		mObjectsCreator = (objectsCreator != null ? objectsCreator
-				: new ObjectsCreator());
+		mObjectsCreator = (objectsCreator != null ? objectsCreator : new ObjectsCreator());
+
+		setThrowExceptionOnError(Config.mAppMode == Config.AppMode.DEVELOPMENT);
 	}
 
 	/**
 	 * Load a mGrid from the given solving attempt.
-	 * 
-	 * @return True in case the mGrid has been loaded successfully. False
-	 *         otherwise.
+	 *
+	 * @return True in case the mGrid has been loaded successfully. False otherwise.
 	 */
 	public boolean load(SolvingAttempt solvingAttempt) {
 		if (solvingAttempt == null) {
@@ -108,22 +111,32 @@ public class GridLoader {
 		try {
 			// Read first line
 			if ((line = solvingAttempt.mData.getFirstLine()) == null) {
-				throw new InvalidGridException(
-						"Unexpected end of solving attempt at first line");
+				if (mThrowExceptionOnError) {
+					throw new InvalidGridException(
+							"Unexpected end of solving attempt at first line");
+				}
+				return false;
 			}
 
 			mGridStorage = mObjectsCreator.createGridStorage();
 			if (mGridStorage.fromStorageString(line, mSavedWithRevision) == false) {
-				throw new InvalidGridException(
-						"Line does not contain general grid information while this was expected:"
-								+ line);
+				if (mThrowExceptionOnError) {
+					throw new InvalidGridException(
+							"Line does not contain general grid information while this was " +
+									"expected:" + line);
+				}
+				return false;
 			}
 			mGrid.setActive(mGridStorage.isActive());
 			mGrid.setRevealed(mGridStorage.isRevealed());
 
 			if ((line = solvingAttempt.mData.getNextLine()) == null) {
-				throw new InvalidGridException(
-						"Unexpected end of solving attempt after processing view information.");
+				if (mThrowExceptionOnError) {
+					throw new InvalidGridException(
+							"Unexpected end of solving attempt after processing view information"
+									+ ".");
+				}
+				return false;
 			}
 
 			// Read cells
@@ -131,12 +144,13 @@ public class GridLoader {
 				line = solvingAttempt.mData.getNextLine();
 			}
 			// Check if expected number of cells is read.
-			if (mGrid.mCells.size() != mGrid.getGridSize()
-					* mGrid.getGridSize()) {
-				throw new InvalidGridException(
-						"Unexpected number of cells loaded. Expected: "
-								+ (mGrid.getGridSize() * mGrid.getGridSize())
-								+ ", actual: " + mGrid.mCells.size());
+			if (mGrid.mCells.size() != mGrid.getGridSize() * mGrid.getGridSize()) {
+				if (mThrowExceptionOnError) {
+					throw new InvalidGridException(
+							"Unexpected number of cells loaded. Expected: " + (mGrid.getGridSize()
+									* mGrid.getGridSize()) + ", actual: " + mGrid.mCells.size());
+				}
+				return false;
 			}
 
 			// Read cages
@@ -146,9 +160,12 @@ public class GridLoader {
 			// At least one expected is expected, so throw error in case no
 			// cages have been loaded.
 			if (mGrid.mCages.size() == 0) {
-				throw new InvalidGridException(
-						"Line does not contain cage information while this was expected:"
-								+ line);
+				if (mThrowExceptionOnError) {
+					throw new InvalidGridException(
+							"Line does not contain cage information while this was expected:" +
+									line);
+				}
+				return false;
 			}
 
 			// Remaining lines contain cell changes (zero or more expected)
@@ -159,29 +176,31 @@ public class GridLoader {
 			// Check if end of file is reached an not all information was read
 			// yet.
 			if (line != null) {
-				throw new InvalidGridException(
-						"Unexpected line found while end of file was expected: "
-								+ line);
+				if (mThrowExceptionOnError) {
+					throw new InvalidGridException(
+							"Unexpected line found while end of file was expected: " + line);
+				}
+				return false;
 			}
 		} catch (InvalidGridException e) {
-			if (Config.mAppMode == Config.AppMode.DEVELOPMENT) {
+			if (mThrowExceptionOnError) {
 				throw new InvalidGridException(
-						"Invalid format error when restoring solving attempt with id '"
-								+ solvingAttempt.mId + "'\n" + e.getMessage());
+						"Invalid format error when restoring solving attempt with id '" +
+								solvingAttempt.mId + "'\n" + e.getMessage());
 			}
 			return false;
 		} catch (NumberFormatException e) {
-			if (Config.mAppMode == Config.AppMode.DEVELOPMENT) {
+			if (mThrowExceptionOnError) {
 				throw new InvalidGridException(
-						"Invalid Number format error when restoring solving attempt with id '"
-								+ solvingAttempt.mId + "'\n" + e.getMessage());
+						"Invalid Number format error when restoring solving attempt with id '" +
+								solvingAttempt.mId + "'\n" + e.getMessage());
 			}
 			return false;
 		} catch (IndexOutOfBoundsException e) {
-			if (Config.mAppMode == Config.AppMode.DEVELOPMENT) {
+			if (mThrowExceptionOnError) {
 				throw new InvalidGridException(
-						"Index out of bound error when restoring solving attempt with id '"
-								+ solvingAttempt.mId + "'\n" + e.getMessage());
+						"Index out of bound error when restoring solving attempt with id '" +
+								solvingAttempt.mId + "'\n" + e.getMessage());
 			}
 			return false;
 		}
@@ -240,14 +259,14 @@ public class GridLoader {
 		if (mGridCageStorage == null) {
 			mGridCageStorage = mObjectsCreator.createGridCageStorage();
 		}
-		if (!mGridCageStorage.fromStorageString(line, mSavedWithRevision,
-				mGrid.mCells)) {
+		if (!mGridCageStorage.fromStorageString(line, mSavedWithRevision, mGrid.mCells)) {
 			return false;
 		}
-		GridCage cage = mObjectsCreator.createGridCage(
-				mGridCageStorage.getId(), mGridCageStorage.isHideOperator(),
-				mGridCageStorage.getResult(), mGridCageStorage.getAction(),
-				mGridCageStorage.getCells());
+		GridCage cage = mObjectsCreator.createGridCage(mGridCageStorage.getId(),
+													   mGridCageStorage.isHideOperator(),
+													   mGridCageStorage.getResult(),
+													   mGridCageStorage.getAction(),
+													   mGridCageStorage.getCells());
 		mGrid.mCages.add(cage);
 
 		return true;
@@ -259,8 +278,7 @@ public class GridLoader {
 		}
 
 		CellChange cellChange = mObjectsCreator.createCellChange();
-		if (!cellChange.fromStorageString(line, mGrid.mCells,
-				mSavedWithRevision)) {
+		if (!cellChange.fromStorageString(line, mGrid.mCells, mSavedWithRevision)) {
 			return false;
 		}
 		mGrid.addMove(cellChange);
@@ -275,13 +293,16 @@ public class GridLoader {
 		// Load most recent statistics for this grid
 		StatisticsDatabaseAdapter statisticsDatabaseAdapter = mObjectsCreator
 				.createStatisticsDatabaseAdapter();
-		GridStatistics gridStatistics = statisticsDatabaseAdapter
-				.getMostRecent(gridId);
+		GridStatistics gridStatistics = statisticsDatabaseAdapter.getMostRecent(gridId);
 		if (gridStatistics == null) {
 			// No statistics available. Create a new statistics records.
 			gridStatistics = statisticsDatabaseAdapter.insert(mGrid);
 		}
 
 		return gridStatistics;
+	}
+
+	public void setThrowExceptionOnError(boolean throwExceptionOnError) {
+		mThrowExceptionOnError = throwExceptionOnError;
 	}
 }
