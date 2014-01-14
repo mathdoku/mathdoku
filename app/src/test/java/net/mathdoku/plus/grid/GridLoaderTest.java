@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 @RunWith(RobolectricGradleTestRunner.class)
 public class GridLoaderTest {
 	private GridLoader mGridLoader;
-	private GridLoader.ObjectsCreator mGridLoaderObjectsCreator;
+	private GridLoaderObjectsCreator mGridLoaderObjectsCreator;
 
 	private int mGridMockSize;
 	private int mGridMockExpectedNumberOfCells;
@@ -47,33 +47,7 @@ public class GridLoaderTest {
 	private GridStorage mGridStorageMock = mock(GridStorage.class);
 	private GridCageStorage mGridCageStorageMock = mock(GridCageStorage.class);
 
-	private class GridLoaderObjectsCreator extends GridLoader.ObjectsCreator {
-		@Override
-		public GridCell createGridCell(int id, int gridSize) {
-			return mGridCellMock;
-		}
 
-		@Override
-		public GridCage createGridCage(int id, boolean hideOperator,
-				int result, int action, ArrayList<GridCell> cells) {
-			return mGridCageMock;
-		}
-
-		@Override
-		public StatisticsDatabaseAdapter createStatisticsDatabaseAdapter() {
-			return mStatisticsDatabaseAdapterMock;
-		}
-
-		@Override
-		public GridStorage createGridStorage() {
-			return mGridStorageMock;
-		}
-
-		@Override
-		public GridCageStorage createGridCageStorage() {
-			return mGridCageStorageMock;
-		}
-	}
 
 	private class SolvingAttemptStub extends SolvingAttempt {
 		private boolean mIncludeGridInformation = false;
@@ -203,11 +177,39 @@ public class GridLoaderTest {
 
 	@Before
 	public void Setup() {
-		mGridLoaderObjectsCreator = new GridLoaderObjectsCreator();
-		mGridLoader = new GridLoader(mGridMock, mGridLoaderObjectsCreator);
+		mGridLoader = new GridLoader(mGridMock);
+		GridLoaderObjectsCreator gridLoaderObjectsCreator = new GridLoaderObjectsCreator() {
+			@Override
+			public GridCell createGridCell(int id, int gridSize) {
+				return mGridCellMock;
+			}
 
-		// Even when running the unit test in the debug variant,
-		// the grid loader production code should be tested only.
+			@Override
+			public GridCage createGridCage(int id, boolean hideOperator,
+										   int result, int action, ArrayList<GridCell> cells) {
+				return mGridCageMock;
+			}
+
+			@Override
+			public StatisticsDatabaseAdapter createStatisticsDatabaseAdapter() {
+				return mStatisticsDatabaseAdapterMock;
+			}
+
+			@Override
+			public GridStorage createGridStorage() {
+				return mGridStorageMock;
+			}
+
+			@Override
+			public GridCageStorage createGridCageStorage() {
+				return mGridCageStorageMock;
+			}
+		};
+		mGridLoader.setObjectsCreator(gridLoaderObjectsCreator);
+
+		// Even when running the unit test in the debug variant, the grid loader should not throw
+		// development exceptions as the tests below only test the release variant in which no
+		// such exceptions are thrown.
 		if (Config.mAppMode == Config.AppMode.DEVELOPMENT) {
 			mGridLoader.setThrowExceptionOnError(false);
 		}

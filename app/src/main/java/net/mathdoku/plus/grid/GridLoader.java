@@ -7,7 +7,7 @@ import net.mathdoku.plus.storage.GridStorage;
 import net.mathdoku.plus.storage.database.SolvingAttempt;
 import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
 
-import java.util.ArrayList;
+import java.security.InvalidParameterException;
 
 public class GridLoader {
 	private static final String TAG = "MathDoku.GridLoader";
@@ -21,39 +21,7 @@ public class GridLoader {
 	// By default this module throws exceptions on error when running in development mode only.
 	private boolean mThrowExceptionOnError;
 
-	// The Objects Creator is responsible for creating all new objects needed by
-	// this class. For unit testing purposes the default create methods can be
-	// overridden if needed.
-	public static class ObjectsCreator {
-		private Grid.ObjectsCreator mGridObjectsCreator;
-
-		public GridCell createGridCell(int id, int gridSize) {
-			return mGridObjectsCreator.createGridCell(id, gridSize);
-		}
-
-		public CellChange createCellChange() {
-			return mGridObjectsCreator.createCellChange();
-		}
-
-		public GridCage createGridCage(int id, boolean hideOperator, int result, int action,
-									   ArrayList<GridCell> cells) {
-			return new GridCage(id, hideOperator, result, action, cells);
-		}
-
-		public StatisticsDatabaseAdapter createStatisticsDatabaseAdapter() {
-			return new StatisticsDatabaseAdapter();
-		}
-
-		public GridStorage createGridStorage() {
-			return new GridStorage();
-		}
-
-		public GridCageStorage createGridCageStorage() {
-			return new GridCageStorage();
-		}
-	}
-
-	private final ObjectsCreator mObjectsCreator;
+	private GridLoaderObjectsCreator mObjectsCreator;
 
 	/**
 	 * Creates new instance of {@link net.mathdoku.plus.grid.GridLoader}.
@@ -64,27 +32,16 @@ public class GridLoader {
 	public GridLoader(Grid grid) {
 		mGrid = grid;
 
-		mObjectsCreator = new ObjectsCreator();
-		mObjectsCreator.mGridObjectsCreator = mGrid.getObjectsCreator();
+		mObjectsCreator = new GridLoaderObjectsCreator();
 
 		setThrowExceptionOnError(Config.mAppMode == Config.AppMode.DEVELOPMENT);
 	}
 
-	/**
-	 * Creates new instance of {@link net.mathdoku.plus.grid.GridLoader}. All objects in this class
-	 * will be created with the given ObjectsCreator. This method is intended for unit testing.
-	 *
-	 * @param grid
-	 * 		The grid which has to be loaded by the grid loader.
-	 * @param objectsCreator
-	 * 		The ObjectsCreator to be used by this class. Only create methods for which the default
-	 * 		implementation does not suffice, should be overridden.
-	 */
-	public GridLoader(Grid grid, ObjectsCreator objectsCreator) {
-		mGrid = grid;
-		mObjectsCreator = (objectsCreator != null ? objectsCreator : new ObjectsCreator());
-
-		setThrowExceptionOnError(Config.mAppMode == Config.AppMode.DEVELOPMENT);
+	public void setObjectsCreator(GridLoaderObjectsCreator gridLoaderObjectsCreator) {
+		if (gridLoaderObjectsCreator == null) {
+			throw new InvalidParameterException("Parameter GridLoadObjectsCreator can not be null.");
+		}
+		mObjectsCreator = gridLoaderObjectsCreator;
 	}
 
 	/**
