@@ -6,6 +6,7 @@ import android.content.Context;
 import com.srlee.DLX.MathDokuDLX;
 
 import net.mathdoku.plus.Preferences;
+import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridGenerating.GridGenerator;
 import net.mathdoku.plus.statistics.GridStatistics;
@@ -467,7 +468,10 @@ public class GridTest {
 
 	@Test
 	public void unrevealSolution() throws Exception {
-		assertThat("Unreveal grid", mGrid.unrevealSolution(), is(false));
+		// Unrevealing a solution is only available when running in development mode.
+		boolean unrevealMethodAvailableInCurrentAppMode = (Config.mAppMode == Config.AppMode.DEVELOPMENT);
+
+		assertThat("Unreveal grid", mGrid.unrevealSolution(), is(unrevealMethodAvailableInCurrentAppMode));
 	}
 
 	@Test
