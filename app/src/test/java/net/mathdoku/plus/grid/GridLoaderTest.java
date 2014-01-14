@@ -218,11 +218,13 @@ public class GridLoaderTest {
 		mGridMock.mCages = new ArrayList<GridCage>();
 	}
 
+	@Test
 	public void load_SolvingAttemptNull_NotLoaded() throws Exception {
 		SolvingAttempt solvingAttempt = null;
 		assertThat("Grid load", mGridLoader.load(solvingAttempt), is(false));
 	}
 
+	@Test
 	public void load_SolvingAttemptWithInvalidGridSize_NotLoaded()
 			throws Exception {
 		gridMockSetGridSize(0);
