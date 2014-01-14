@@ -25,22 +25,23 @@ buildscript {
 
 // These are the common version numbers, etc for the rest of the gradle files
 configure(allprojects) {
-    ext.androidBuildToolsVersion    = '19.0.1'
-
     ext.androidVersion              = '4.4'
     ext.androidSDKVersion           = '19'
-	ext.androidMinSdkVersion        = 14
-	ext.androidTargetSdkVersion     = 17
+    ext.androidBuildToolsVersion    = '19.0.1'
+
+    ext.androidMinSdkVersion        = 14
+    ext.androidTargetSdkVersion     = 17
     ext.androidCompileSdkVersion    = 18
+    ext.androidSupportV4Version     = '18.0.0'
+    ext.androidAppCompatV7Version   = '+'
 
-    ext.androidSupportVersion       = '18.0.1'
+    ext.googlePlayServicesVersion   = '4.0.30'
+    ext.aChartEngineVersion         = '1.1.0'
 
-	// Not sure whether following is used.
-	ext.androidAnnotationsVersion   = '2.7.1'
-	ext.robotiumVersion             = '4.3'
-	ext.dexmakerVersion             = '1.0'
-	ext.dexmakerMockitoVersion      = '1.0'
-    ext.mockitoVersion              = '1.9.5'
+    ext.jUnitVersion                = '4.10'
+    ext.mockitoCoreVersion          = '1.9.5+'
+    ext.robolectricVersion          = '2.3-SNAPSHOT'
+    ext.festAndroidVersion          = '1.0.+'
 }
 
 // inject these settings in all of the sub projects

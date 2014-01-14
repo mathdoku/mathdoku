@@ -1,4 +1,4 @@
-// This gradle build file relieas on extra properties which are defined in the gradle build file for the overall project.
+// This gradle build file relies on extra properties which are defined in the gradle build file for the overall project.
 
 apply plugin: 'android'
 apply plugin: 'android-test'
@@ -23,72 +23,53 @@ android {
             assets.srcDirs = ['assets']
         }
 
-		// The instrument test is used as base dir for the unit test
+        // The instrumentTest of Android Studio will be used to run unit tests with Robolectric
+        // in a Java VM. To ensure that 1) the unit test are executed and 2) source code completion
+        // and navigation for unit tests in Android Studio works properly the following is done:
+        //   a) Move instrumentTest Root to other location. Note: the unit tests won't run when
+        //      invoking gradle check as long as they are strored in the default instrumentTest
+        //      directory.
+        //   b) Add dependencies for unit testing, mocking, robolectric etc. See dependencies
+        //      section.
         instrumentTest.setRoot('src/test')
-
-        // Move the build types to build-types/<type>
-        // For instance, build-types/debug/java, build-types/debug/AndroidManifest.xml, ...
-        // This moves them out of them default location under src/<type>/... which would
-        // conflict with src/ being used by the main source set.
-        // Adding new build types or product flavors should be accompanied
-        // by a similar customization.
-        debug.setRoot('build-types/debug')
-        release.setRoot('build-types/release')
     }
-	
+
 	applicationVariants.all { variant ->
-		variant.mergeResources.dependsOn {
-			overrideConfig(variant)
-		}
-	}
+        variant.mergeResources.doFirst {
+            println "Copy templates from . /src-templates/${variant.name} to source dir."
+
+            copy {
+                from "./src-templates/${variant.name}"
+                into '.'
+                include '**/*'
+            }
+        }
+    }
 }
 
 dependencies {
-	// Google play services (used for leaderboards)
-	compile 'com.google.android.gms:play-services:4.0.30'
+    compile "com.google.android.gms:play-services:${googlePlayServicesVersion}"
+    compile "com.android.support:support-v4:${androidSupportV4Version}"
+    compile "com.android.support:appcompat-v7:${androidAppCompatV7Version}"
+    compile files("libs/achartengine-${aChartEngineVersion}.jar")
+    compile files("libs/annotations.jar")
 
-//	compile "com.squareup.dagger:dagger:${daggerVersion}"
+    // Dependencies for executing the unit tests. These should be kept in sync with the
+    // dependencies for task instrumentTestCompile.
+    testCompile "junit:junit:${jUnitVersion}", "org.mockito:mockito-core:${mockitoCoreVersion}"
+    testCompile "org.robolectric:robolectric:${robolectricVersion}"
+    testCompile "com.squareup:fest-android:${festAndroidVersion}"
 
-	// Do not use following line to compile support library
-	//    compile files('libs/android-support-v4.jar')
-	// as this result in an error in :app:dexDebug on building 
-	// a clean build.
-	compile 'com.android.support:support-v4:18.0.0'
-
-	compile files('libs/achartengine-1.1.0.jar')
-	compile files('libs/annotations.jar')
-	
-	
-	compile 'com.android.support:appcompat-v7:+'
-
-	testCompile 'junit:junit:4.10', 'org.mockito:mockito-core:1.9.5+'
-	testCompile 'org.robolectric:robolectric:2.3-SNAPSHOT'
-	testCompile 'com.squareup:fest-android:1.0.+'
-
-	instrumentTestCompile 'junit:junit:4.10', 'org.mockito:mockito-core:1.9.5+'
-	instrumentTestCompile 'org.robolectric:robolectric:2.3-SNAPSHOT'
-	instrumentTestCompile 'com.squareup:fest-android:1.0.+'
-}
-
-def overrideConfig(variant) {
-	println 'Merge templates to source dir for buidling ' + variant.name + ' variant. '
-	
-	// Copy general (non variant specific) templates, but replace variant specific values
-	if (variant.name.toUpperCase() == 'DEBUG') {
-		copyDebugTemplates
-	} else {
-		copyReleaseTemplates
-	}
-}
-
-task copyDebugTemplates(type: Copy) {
-	from './src-templates/debug'
-	into '.'
-	include '**/*'
-}
-
-task copyReleaseTemplates(type: Copy) {
-	from './src-templates/release'
-	into '.'
-	include '**/*'
+    // The instrumentTest of Android Studio will be used to run unit tests with Robolectric
+    // in a Java VM. To ensure that 1) the unit test are executed and 2) source code completion
+    // and navigation for unit tests in Android Studio works properly the following is done:
+    //   a) Move instrumentTest Root to other location. Note: the unit tests won't run when
+    //      invoking gradle check as long as they are strored in the default instrumentTest
+    //      directory.
+    //   b) Add dependencies for unit testing, mocking, robolectric etc. See dependencies
+    //      section.
+    // The dependencies below should be kept in sync with the dependencies for task testCompile.
+    instrumentTestCompile "junit:junit:${jUnitVersion}", "org.mockito:mockito-core:${mockitoCoreVersion}"
+    instrumentTestCompile "org.robolectric:robolectric:${robolectricVersion}"
+    instrumentTestCompile "com.squareup:fest-android:${festAndroidVersion}"
 }
