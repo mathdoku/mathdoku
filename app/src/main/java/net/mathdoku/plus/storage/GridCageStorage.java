@@ -23,8 +23,8 @@ public class GridCageStorage {
 	private boolean mHideOperator;
 
 	/**
-	 * Read cage information from or a storage string which was created with @
-	 * GridCage#toStorageString()} before.
+	 * Read cage information from a storage string which was created with
+	 * {@link #toStorageString(net.mathdoku.plus.grid.GridCage)} before.
 	 * 
 	 * @param line
 	 *            The line containing the cage information.
@@ -73,8 +73,10 @@ public class GridCageStorage {
 	}
 
 	/**
-	 * Create a string representation of the Grid Cage which can be used to
-	 * store a grid cage in a saved game.
+	 * Creates a string representation of the given Grid Cage which can be
+	 * persisted. Use
+	 * {@link #fromStorageString(String, int, java.util.ArrayList)} to parse the
+	 * storage string.
 	 * 
 	 * @param gridCage
 	 *            The grid cage which has to be converted to a storage string.
