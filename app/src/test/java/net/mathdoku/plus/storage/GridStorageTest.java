@@ -44,7 +44,7 @@ public class GridStorageTest {
 			mCells.add(gridCellMock);
 		}
 
-		private void addGridMockCagesWithStorageString(String... storageString) {
+		private void addGridCageMockWithStorageString(String... storageString) {
 			switch (storageString.length) {
 			case 1:
 				mCages.add(mock(GridCage.class));
@@ -59,7 +59,7 @@ public class GridStorageTest {
 				break;
 			default:
 				throw new InvalidParameterException(
-						"Invalid number of parameters in helper method addGridMockCagesWithStorageString");
+						"Invalid number of parameters in helper method addGridCageMockWithStorageString");
 			}
 		}
 
@@ -224,7 +224,7 @@ public class GridStorageTest {
 		mGridStub.setIsActive(false);
 		mGridStub.setIsSolutionRevealed(false);
 		String gridCageStubStorageString = "** A CAGE STORAGE STRING **";
-		mGridStub.addGridMockCagesWithStorageString(gridCageStubStorageString);
+		mGridStub.addGridCageMockWithStorageString(gridCageStubStorageString);
 
 		assertThat("Storage string", gridStorage.toStorageString(mGridStub),
 				is(equalTo("GRID:false:false" + "\n"
@@ -239,7 +239,7 @@ public class GridStorageTest {
 		String gridCageStubStorageString[] = {
 				"** FIRST CAGE STORAGE STRING **",
 				"** SECOND CAGE STORAGE STRING **" };
-		mGridStub.addGridMockCagesWithStorageString(gridCageStubStorageString);
+		mGridStub.addGridCageMockWithStorageString(gridCageStubStorageString);
 
 		assertThat("Storage string", gridStorage.toStorageString(mGridStub),
 				is(equalTo("GRID:false:false" + "\n"
@@ -288,7 +288,7 @@ public class GridStorageTest {
 		String gridCellStubStorageString = "** A CELL STORAGE STRING **";
 		mGridStub.addGridMockCellWithStorageString(gridCellStubStorageString);
 		String gridCageStubStorageString = "** A CAGE STORAGE STRING **";
-		mGridStub.addGridMockCagesWithStorageString(gridCageStubStorageString);
+		mGridStub.addGridCageMockWithStorageString(gridCageStubStorageString);
 		String mCellChangeStubStorageString = "** A CELL CHANGE STORAGE STRING **";
 		mGridStub
 				.addCellChangeMockWithStorageString(mCellChangeStubStorageString);

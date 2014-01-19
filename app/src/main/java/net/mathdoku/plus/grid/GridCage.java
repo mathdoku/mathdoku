@@ -1,6 +1,7 @@
 package net.mathdoku.plus.grid;
 
 import net.mathdoku.plus.gridGenerating.ComboGenerator;
+import net.mathdoku.plus.storage.GridCageStorage;
 
 import java.util.ArrayList;
 
@@ -55,14 +56,13 @@ public class GridCage {
 	/**
 	 * Creates a new instance of {@link GridCage}.
 	 */
-	public GridCage(int id, boolean hideOperator, int result, int action,
-			ArrayList<GridCell> cells) {
+	public GridCage(GridCageStorage gridCageStorage) {
 		initGridCage();
-		mId = id;
-		mResult = result;
-		mAction = action;
-		mHideOperator = hideOperator;
-		mCells = cells;
+		mId = gridCageStorage.getId();
+		mHideOperator =gridCageStorage.isHideOperator();
+		mResult = gridCageStorage.getResult();
+		mAction = gridCageStorage.getAction();
+		mCells = gridCageStorage.getCells();
 	}
 
 	/**

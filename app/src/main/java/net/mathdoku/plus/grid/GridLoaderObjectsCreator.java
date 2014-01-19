@@ -21,9 +21,8 @@ public class GridLoaderObjectsCreator {
 		return new CellChange();
 	}
 
-	public GridCage createGridCage(int id, boolean hideOperator, int result,
-			int action, ArrayList<GridCell> cells) {
-		return new GridCage(id, hideOperator, result, action, cells);
+	public GridCage createGridCage(GridCageStorage gridCageStorage) {
+		return new GridCage(gridCageStorage);
 	}
 
 	public StatisticsDatabaseAdapter createStatisticsDatabaseAdapter() {

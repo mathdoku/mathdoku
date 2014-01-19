@@ -23,7 +23,6 @@ public class GridLoader {
 	private GridLoaderData mGridLoaderData;
 
 	private GridStorage mGridStorage;
-	private GridCageStorage mGridCageStorage;
 
 	// By default this module throws exceptions on error when running in
 	// development mode only.
@@ -240,15 +239,12 @@ public class GridLoader {
 			return false;
 		}
 
-		mGridCageStorage = mGridLoaderObjectsCreator.createGridCageStorage();
+		GridCageStorage mGridCageStorage = mGridLoaderObjectsCreator.createGridCageStorage();
 		if (mGridCageStorage.fromStorageString(line, mSavedWithRevision,
 				mGridLoaderData.mCells) == false) {
 			return false;
 		}
-		GridCage cage = mGridLoaderObjectsCreator.createGridCage(
-				mGridCageStorage.getId(), mGridCageStorage.isHideOperator(),
-				mGridCageStorage.getResult(), mGridCageStorage.getAction(),
-				mGridCageStorage.getCells());
+		GridCage cage = mGridLoaderObjectsCreator.createGridCage(mGridCageStorage);
 		mGridLoaderData.mCages.add(cage);
 
 		return true;
