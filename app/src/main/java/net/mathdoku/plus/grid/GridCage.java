@@ -1,19 +1,14 @@
 package net.mathdoku.plus.grid;
 
+import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.gridGenerating.ComboGenerator;
 import net.mathdoku.plus.storage.GridCageStorage;
 
 import java.util.ArrayList;
 
 public class GridCage {
-	public static final int ACTION_NONE = 0;
-	public static final int ACTION_ADD = 1;
-	public static final int ACTION_SUBTRACT = 2;
-	public static final int ACTION_MULTIPLY = 3;
-	public static final int ACTION_DIVIDE = 4;
-
 	private int mId;
-	private int mAction;
+	private CageOperator mCageOperator;
 	private int mResult;
 	private boolean mHideOperator;
 	public ArrayList<GridCell> mCells;
@@ -61,7 +56,7 @@ public class GridCage {
 		mId = gridCageStorage.getId();
 		mHideOperator = gridCageStorage.isHideOperator();
 		mResult = gridCageStorage.getResult();
-		mAction = gridCageStorage.getAction();
+		mCageOperator = gridCageStorage.getCageOperator();
 		mCells = gridCageStorage.getCells();
 	}
 
@@ -79,27 +74,10 @@ public class GridCage {
 	@Override
 	public String toString() {
 		String retStr = "";
-		retStr += "Cage id: " + this.mId + ", Size: "
-				+ (this.mCells == null ? 0 : this.mCells.size());
-		retStr += ", Action: ";
-		switch (this.mAction) {
-		case ACTION_NONE:
-			retStr += "None";
-			break;
-		case ACTION_ADD:
-			retStr += "Add";
-			break;
-		case ACTION_SUBTRACT:
-			retStr += "Subtract";
-			break;
-		case ACTION_MULTIPLY:
-			retStr += "Multiply";
-			break;
-		case ACTION_DIVIDE:
-			retStr += "Divide";
-			break;
-		}
-		retStr += ", Result: " + this.mResult;
+		retStr += "Cage id: " + mId + ", Size: "
+				+ (mCells == null ? 0 : mCells.size());
+		retStr += ", Action: " + mCageOperator.toString();
+		retStr += ", Result: " + mResult;
 		retStr += ", cells: ";
 		if (mCells != null) {
 			for (GridCell cell : mCells)
@@ -114,47 +92,29 @@ public class GridCage {
 
 	public void revealOperator() {
 		mHideOperator = false;
-		setCageResults(mResult, mAction, false);
+		setCageResults(mResult, mCageOperator, false);
 	}
 
 	/**
 	 * Set the result and operator for this cage.
 	 * 
 	 * @param resultValue
-	 *            The resulting value of the cage when applying the given action
+	 *            The resulting value of the cage when applying the given cageOperator
 	 *            on the cell values in the cage.
-	 * @param action
-	 *            The action to be applied on the cell values in this cage.
+	 * @param cageOperator
+	 *            The cageOperator to be applied on the cell values in this cage.
 	 * @param hideOperator
 	 *            True in case the operator of this cage can be hidden but the
 	 *            puzzle can still be solved.
 	 */
-	public void setCageResults(int resultValue, int action, boolean hideOperator) {
+	public void setCageResults(int resultValue, CageOperator cageOperator, boolean hideOperator) {
 		// Store results in cage object
 		mResult = resultValue;
-		mAction = action;
-		String operator = "";
-		switch (mAction) {
-		case ACTION_NONE:
-			operator = "";
-			break;
-		case ACTION_ADD:
-			operator = "+";
-			break;
-		case ACTION_SUBTRACT:
-			operator = "-";
-			break;
-		case ACTION_MULTIPLY:
-			operator = "x";
-			break;
-		case ACTION_DIVIDE:
-			operator = "/";
-			break;
-		}
+		mCageOperator = cageOperator;
 		mHideOperator = hideOperator;
 
 		// Store cage outcome in top left cell of cage
-		mCells.get(0).setCageText(mResult + (mHideOperator ? "" : operator));
+		mCells.get(0).setCageText(mResult + (mHideOperator ? "" : mCageOperator.getSign()));
 	}
 
 	/**
@@ -162,7 +122,7 @@ public class GridCage {
 	 */
 	public void clearCageResult() {
 		mResult = 0;
-		mAction = ACTION_NONE;
+		mCageOperator = CageOperator.NONE;
 
 		// Remove outcome from top left cell of cage
 		mCells.get(0).setCageText("");
@@ -172,57 +132,57 @@ public class GridCage {
 	 * Sets the cageId of the cage's cells.
 	 */
 	public void setCageId(int id) {
-		this.mId = id;
-		for (GridCell cell : this.mCells)
-			cell.setCageId(this.mId);
+		mId = id;
+		for (GridCell cell : mCells)
+			cell.setCageId(mId);
 	}
 
 	boolean isAddMathsCorrect() {
 		int total = 0;
-		for (GridCell cell : this.mCells) {
+		for (GridCell cell : mCells) {
 			total += cell.getUserValue();
 		}
-		return (total == this.mResult);
+		return (total == mResult);
 	}
 
 	boolean isMultiplyMathsCorrect() {
 		int total = 1;
-		for (GridCell cell : this.mCells) {
+		for (GridCell cell : mCells) {
 			total *= cell.getUserValue();
 		}
-		return (total == this.mResult);
+		return (total == mResult);
 	}
 
 	boolean isDivideMathsCorrect() {
-		if (this.mCells.size() != 2)
+		if (mCells.size() != 2)
 			return false;
 
-		if (this.mCells.get(0).getUserValue() > this.mCells
+		if (mCells.get(0).getUserValue() > mCells
 				.get(1)
 				.getUserValue())
-			return this.mCells.get(0).getUserValue() == (this.mCells
+			return mCells.get(0).getUserValue() == (mCells
 					.get(1)
-					.getUserValue() * this.mResult);
+					.getUserValue() * mResult);
 		else
-			return this.mCells.get(1).getUserValue() == (this.mCells
+			return mCells.get(1).getUserValue() == (mCells
 					.get(0)
-					.getUserValue() * this.mResult);
+					.getUserValue() * mResult);
 	}
 
 	boolean isSubtractMathsCorrect() {
-		if (this.mCells.size() != 2)
+		if (mCells.size() != 2)
 			return false;
 
-		if (this.mCells.get(0).getUserValue() > this.mCells
+		if (mCells.get(0).getUserValue() > mCells
 				.get(1)
 				.getUserValue())
-			return (this.mCells.get(0).getUserValue() - this.mCells
+			return (mCells.get(0).getUserValue() - mCells
 					.get(1)
-					.getUserValue()) == this.mResult;
+					.getUserValue()) == mResult;
 		else
-			return (this.mCells.get(1).getUserValue() - this.mCells
+			return (mCells.get(1).getUserValue() - mCells
 					.get(0)
-					.getUserValue()) == this.mResult;
+					.getUserValue()) == mResult;
 	}
 
 	/**
@@ -242,22 +202,22 @@ public class GridCage {
 
 		boolean oldUserMathCorrect = mUserMathCorrect;
 		if (allCellsFilledWithUserValue()) {
-			if (this.mHideOperator) {
+			if (mHideOperator) {
 				mUserMathCorrect = isAddMathsCorrect()
 						|| isMultiplyMathsCorrect() || isDivideMathsCorrect()
 						|| isSubtractMathsCorrect();
 			} else {
-				switch (this.mAction) {
-				case ACTION_ADD:
+				switch (mCageOperator) {
+				case ADD:
 					mUserMathCorrect = isAddMathsCorrect();
 					break;
-				case ACTION_MULTIPLY:
+				case MULTIPLY:
 					mUserMathCorrect = isMultiplyMathsCorrect();
 					break;
-				case ACTION_DIVIDE:
+				case DIVIDE:
 					mUserMathCorrect = isDivideMathsCorrect();
 					break;
-				case ACTION_SUBTRACT:
+				case SUBTRACT:
 					mUserMathCorrect = isSubtractMathsCorrect();
 					break;
 				}
@@ -305,25 +265,7 @@ public class GridCage {
 	}
 
 	public ArrayList<int[]> setPossibleCombos(int gridSize) {
-		ComboGenerator.Operator operator;
-		switch (mAction) {
-		case ACTION_NONE:
-			operator = ComboGenerator.Operator.NONE;
-			break;
-		case ACTION_ADD:
-			operator = ComboGenerator.Operator.ADD;
-			break;
-		case ACTION_SUBTRACT:
-			operator = ComboGenerator.Operator.SUBTRACT;
-			break;
-		case ACTION_MULTIPLY:
-			operator = ComboGenerator.Operator.MULTIPLY;
-			break;
-		case ACTION_DIVIDE:
-			operator = ComboGenerator.Operator.DIVIDE;
-			break;
-		}
-		ComboGenerator comboGenerator = new ComboGenerator(mResult, mAction,
+		ComboGenerator comboGenerator = new ComboGenerator(mResult, mCageOperator,
 				mHideOperator, mCells, gridSize);
 		mPossibleCombos = comboGenerator.getPossibleCombos();
 
@@ -338,8 +280,8 @@ public class GridCage {
 		return mId;
 	}
 
-	public int getAction() {
-		return mAction;
+	public CageOperator getOperator() {
+		return mCageOperator;
 	}
 
 	public int getResult() {

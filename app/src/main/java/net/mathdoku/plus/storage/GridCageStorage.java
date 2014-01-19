@@ -1,5 +1,6 @@
 package net.mathdoku.plus.storage;
 
+import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.grid.GridCell;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
@@ -20,7 +21,7 @@ public class GridCageStorage {
 	private static final String SAVE_GAME_CAGE_LINE = "CAGE";
 
 	private int mId;
-	private int mAction;
+	private CageOperator mCageOperator;
 	private int mResult;
 	private ArrayList<GridCell> mCells;
 	private boolean mHideOperator;
@@ -72,7 +73,7 @@ public class GridCageStorage {
 		// Process all parts
 		int index = 1;
 		mId = Integer.parseInt(cageParts[index++]);
-		mAction = Integer.parseInt(cageParts[index++]);
+		mCageOperator = CageOperator.fromId(cageParts[index++]);
 		mResult = Integer.parseInt(cageParts[index++]);
 		mCells = new ArrayList<GridCell>();
 		if (!cageParts[index].equals("")) {
@@ -103,7 +104,7 @@ public class GridCageStorage {
 	 */
 	public String toStorageString(GridCage gridCage) {
 		mId = gridCage.getId();
-		mAction = gridCage.getAction();
+		mCageOperator = gridCage.getOperator();
 		mResult = gridCage.getResult();
 		mCells = gridCage.getCells();
 		mHideOperator = gridCage.isOperatorHidden();
@@ -111,7 +112,7 @@ public class GridCageStorage {
 		String storageString = SAVE_GAME_CAGE_LINE
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + mId
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ mAction
+				+ mCageOperator.getId()
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ mResult
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1;
@@ -131,8 +132,8 @@ public class GridCageStorage {
 		return mId;
 	}
 
-	public int getAction() {
-		return mAction;
+	public CageOperator getCageOperator() {
+		return mCageOperator;
 	}
 
 	public int getResult() {

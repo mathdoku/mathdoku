@@ -5,6 +5,7 @@ import com.srlee.DLX.MathDokuDLX;
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
+import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
 import net.mathdoku.plus.statistics.GridStatistics;
@@ -677,8 +678,8 @@ public class Grid {
 					.append(",")
 					.append(cage.getResult())
 					.append(",")
-					.append(gridGeneratingParameters.mHideOperators ? GridCage.ACTION_NONE
-							: cage.getAction());
+					.append(gridGeneratingParameters.mHideOperators ? CageOperator.NONE.getId()
+							: cage.getOperator().getId());
 		}
 		return definitionString.toString();
 	}
@@ -1123,7 +1124,7 @@ public class Grid {
 				return false;
 			}
 			gridCage.setCageResults(Integer.valueOf(cageElements[1]),
-					Integer.valueOf(cageElements[2]), false);
+					CageOperator.fromId(cageElements[2]), false);
 		}
 
 		// Check whether a single solution can be found.

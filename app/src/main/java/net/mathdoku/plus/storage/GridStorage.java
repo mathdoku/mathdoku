@@ -43,7 +43,7 @@ public class GridStorage {
 
 	/**
 	 * Read view information from or a storage string which was created with @
-	 * GridView#toStorageString()} before.
+	 * GridView#getId()} before.
 	 * 
 	 * @param line
 	 *            The line containing the view information.

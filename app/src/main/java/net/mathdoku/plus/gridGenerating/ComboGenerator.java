@@ -1,43 +1,22 @@
 package net.mathdoku.plus.gridGenerating;
 
-import net.mathdoku.plus.grid.GridCage;
+import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.grid.GridCell;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ComboGenerator {
-	public enum Operator {
-		NONE, ADD, SUBTRACT, MULTIPLY, DIVIDE
-	}
-
 	private int mResult;
-	private Operator mCageOperator;
+	private CageOperator mCageOperator;
 	private boolean mHideOperator;
 	private ArrayList<GridCell> mCageCells;
 	private int mGridSize;
 
-	public ComboGenerator(int result, int action, boolean hideOperator,
+	public ComboGenerator(int result, CageOperator cageOperator, boolean hideOperator,
 			ArrayList<GridCell> cageCells, int gridSize) {
 		mResult = result;
-		// TODO: change GridCage.ACTION* to Operator-enum
-		switch (action) {
-		case GridCage.ACTION_NONE:
-			mCageOperator = Operator.NONE;
-			break;
-		case GridCage.ACTION_ADD:
-			mCageOperator = Operator.ADD;
-			break;
-		case GridCage.ACTION_SUBTRACT:
-			mCageOperator = Operator.SUBTRACT;
-			break;
-		case GridCage.ACTION_MULTIPLY:
-			mCageOperator = Operator.MULTIPLY;
-			break;
-		case GridCage.ACTION_DIVIDE:
-			mCageOperator = Operator.DIVIDE;
-			break;
-		}
+		mCageOperator = cageOperator;
 		mHideOperator = hideOperator;
 		mCageCells = cageCells;
 		mGridSize = gridSize;
@@ -51,7 +30,7 @@ public class ComboGenerator {
 	 */
 	public ArrayList<int[]> getPossibleCombos() {
 		if (mHideOperator
-				|| (mCageOperator == Operator.NONE && mCageCells.size() > 1)) {
+				|| (mCageOperator == CageOperator.NONE && mCageCells.size() > 1)) {
 			return setPossibleCombosHiddenOperator();
 		} else {
 			return setPossibleCombosVisibleOperator();

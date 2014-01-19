@@ -9,6 +9,7 @@ import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.developmentHelper.DevelopmentHelper;
+import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.grid.GridCell;
@@ -1069,8 +1070,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			// Single cell cage have an empty operator which is never hidden. IN
 			// this way it can be prevented that for a single cage cell it
 			// operator can be revealed using the context menu.
-			cage.setCageResults(cage.mCells.get(0).getCorrectValue(),
-					GridCage.ACTION_NONE, false);
+			cage.setCageResults(cage.mCells.get(0).getCorrectValue(), CageOperator.NONE, false);
 			return;
 		}
 
@@ -1124,7 +1124,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 		// Check whether the division operator has to be applied
 		if (index < divisionWeight) {
-			cage.setCageResults(divisionCageResult, GridCage.ACTION_DIVIDE,
+			cage.setCageResults(divisionCageResult, CageOperator.DIVIDE,
 					mGridGeneratingParameters.mHideOperators);
 			return;
 		}
@@ -1133,7 +1133,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		// Check whether the subtraction operator has to be applied
 		if (index < subtractionWeight) {
 			cage.setCageResults(subtractionCageResult,
-					GridCage.ACTION_SUBTRACT,
+					CageOperator.SUBTRACT,
 					mGridGeneratingParameters.mHideOperators);
 			return;
 		}
@@ -1147,7 +1147,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 				total *= cell.getCorrectValue();
 			}
 			if (total <= mGridGeneratingParameters.mMaxCageResult) {
-				cage.setCageResults(total, GridCage.ACTION_MULTIPLY,
+				cage.setCageResults(total, CageOperator.MULTIPLY,
 						mGridGeneratingParameters.mHideOperators);
 				return;
 			}
@@ -1164,7 +1164,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		for (GridCell cell : cage.mCells) {
 			total += cell.getCorrectValue();
 		}
-		cage.setCageResults(total, GridCage.ACTION_ADD,
+		cage.setCageResults(total, CageOperator.ADD,
 				mGridGeneratingParameters.mHideOperators);
 	}
 

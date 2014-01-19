@@ -1,5 +1,6 @@
 package net.mathdoku.plus.storage;
 
+import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.grid.GridCell;
 
@@ -61,7 +62,7 @@ public class GridCageStorageTest {
 		assertThat(mGridCageStorage.fromStorageString(mLine, mRevisionNumber,
 				mCells), is(true));
 		assertThat(mGridCageStorage.getId(), is(1));
-		assertThat(mGridCageStorage.getAction(), is(2));
+		assertThat(mGridCageStorage.getCageOperator().getId(), is(2));
 		assertThat(mGridCageStorage.getResult(), is(3));
 		assertThat(mGridCageStorage.getCells().size(), is(0));
 		assertThat(mGridCageStorage.isHideOperator(), is(false));
@@ -75,7 +76,7 @@ public class GridCageStorageTest {
 		assertThat(mGridCageStorage.fromStorageString(mLine, mRevisionNumber,
 				mCells), is(true));
 		assertThat(mGridCageStorage.getId(), is(1));
-		assertThat(mGridCageStorage.getAction(), is(2));
+		assertThat(mGridCageStorage.getCageOperator().getId(), is(2));
 		assertThat(mGridCageStorage.getResult(), is(3));
 		assertThat(mGridCageStorage.getCells().size(), is(1));
 		assertThat(mGridCageStorage.isHideOperator(), is(true));
@@ -89,7 +90,7 @@ public class GridCageStorageTest {
 		assertThat(mGridCageStorage.fromStorageString(mLine, mRevisionNumber,
 				mCells), is(true));
 		assertThat(mGridCageStorage.getId(), is(1));
-		assertThat(mGridCageStorage.getAction(), is(2));
+		assertThat(mGridCageStorage.getCageOperator().getId(), is(2));
 		assertThat(mGridCageStorage.getResult(), is(3));
 		assertThat(mGridCageStorage.getCells().size(), is(4));
 		assertThat(mGridCageStorage.isHideOperator(), is(false));
@@ -100,14 +101,14 @@ public class GridCageStorageTest {
 			throws Exception {
 		GridCage gridCageMock = mock(GridCage.class);
 		when(gridCageMock.getId()).thenReturn(1);
-		when(gridCageMock.getAction()).thenReturn(2);
-		when(gridCageMock.getResult()).thenReturn(3);
+		when(gridCageMock.getOperator()).thenReturn(CageOperator.MULTIPLY);
+		when(gridCageMock.getResult()).thenReturn(4);
 		ArrayList<GridCell> cells = new ArrayList<GridCell>();
 		when(gridCageMock.getCells()).thenReturn(cells);
 		when(gridCageMock.isOperatorHidden()).thenReturn(false);
 
 		assertThat(mGridCageStorage.toStorageString(gridCageMock),
-				is("CAGE:1:2:3::false"));
+				is("CAGE:1:3:4::false"));
 	}
 
 	@Test
@@ -115,7 +116,7 @@ public class GridCageStorageTest {
 			throws Exception {
 		GridCage gridCageMock = mock(GridCage.class);
 		when(gridCageMock.getId()).thenReturn(1);
-		when(gridCageMock.getAction()).thenReturn(2);
+		when(gridCageMock.getOperator()).thenReturn(CageOperator.SUBTRACT);
 		when(gridCageMock.getResult()).thenReturn(3);
 		ArrayList<GridCell> cells = new ArrayList<GridCell>();
 		GridCell gridCell = mock(GridCell.class);
@@ -133,11 +134,11 @@ public class GridCageStorageTest {
 			throws Exception {
 		GridCage gridCageMock = mock(GridCage.class);
 		when(gridCageMock.getId()).thenReturn(1);
-		when(gridCageMock.getAction()).thenReturn(2);
+		when(gridCageMock.getOperator()).thenReturn(CageOperator.DIVIDE);
 		when(gridCageMock.getResult()).thenReturn(3);
 		ArrayList<GridCell> cells = new ArrayList<GridCell>();
 		GridCell gridCell = mock(GridCell.class);
-		when(gridCell.getCellId()).thenReturn(4, 5, 6);
+		when(gridCell.getCellId()).thenReturn(5, 6, 7);
 		cells.add(gridCell);
 		cells.add(gridCell);
 		cells.add(gridCell);
@@ -145,6 +146,6 @@ public class GridCageStorageTest {
 		when(gridCageMock.isOperatorHidden()).thenReturn(false);
 
 		assertThat(mGridCageStorage.toStorageString(gridCageMock),
-				is("CAGE:1:2:3:4,5,6,:false"));
+				is("CAGE:1:4:3:5,6,7,:false"));
 	}
 }

@@ -7,6 +7,7 @@ import com.srlee.DLX.MathDokuDLX;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridGenerating.GridGenerator;
 import net.mathdoku.plus.statistics.GridStatistics;
@@ -920,17 +921,17 @@ public class GridTest {
 		GridCage gridCageStub1 = mock(GridCage.class);
 		when(gridCageStub1.getId()).thenReturn(0);
 		when(gridCageStub1.getResult()).thenReturn(1);
-		when(gridCageStub1.getAction()).thenReturn(GridCage.ACTION_NONE);
+		when(gridCageStub1.getOperator()).thenReturn(CageOperator.NONE);
 
 		GridCage gridCageStub2 = mock(GridCage.class);
 		when(gridCageStub2.getId()).thenReturn(1);
 		when(gridCageStub2.getResult()).thenReturn(3);
-		when(gridCageStub2.getAction()).thenReturn(GridCage.ACTION_ADD);
+		when(gridCageStub2.getOperator()).thenReturn(CageOperator.ADD);
 
 		GridCage gridCageStub3 = mock(GridCage.class);
 		when(gridCageStub3.getId()).thenReturn(2);
 		when(gridCageStub3.getResult()).thenReturn(2);
-		when(gridCageStub3.getAction()).thenReturn(GridCage.ACTION_NONE);
+		when(gridCageStub3.getOperator()).thenReturn(CageOperator.NONE);
 
 		ArrayList<GridCage> gridCages = createArrayListOfGridCagesWithGridCages(
 				gridCageStub1, gridCageStub2, gridCageStub3);

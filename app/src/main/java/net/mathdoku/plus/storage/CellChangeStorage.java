@@ -37,7 +37,7 @@ public class CellChangeStorage {
 
 	/**
 	 * Read cell information from or a storage string which was created with @
-	 * GridCell#toStorageString()} before.
+	 * GridCell#getId()} before.
 	 *
 	 * @param line
 	 *            The line containing the cell information.
@@ -88,7 +88,7 @@ public class CellChangeStorage {
 
 	/**
 	 * Read cell information from or a storage string which was created with @
-	 * GridCell#toStorageString()} before.
+	 * GridCell#getId()} before.
 	 *
 	 * @param revisionNumber
 	 *            The version of the cell change information.
