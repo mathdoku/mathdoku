@@ -44,6 +44,7 @@ import net.mathdoku.plus.grid.DigitPositionGrid;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.grid.GridCell;
+import net.mathdoku.plus.grid.GridLoader;
 import net.mathdoku.plus.grid.ui.GridInputMode;
 import net.mathdoku.plus.grid.ui.GridPlayerView;
 import net.mathdoku.plus.hint.TickerTape;
@@ -297,8 +298,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		if (args != null) {
 			int solvingAttemptId = args.getInt(BUNDLE_KEY_SOLVING_ATTEMPT_ID);
 
-			mGrid = new Grid();
-			if (mGrid.load(solvingAttemptId)) {
+			mGrid = new GridLoader().load(solvingAttemptId);
+			if (mGrid != null) {
 				setNewGrid(mGrid);
 			}
 		}
@@ -522,8 +523,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 *            The solvingAttemptId which has to be loaded.
 	 */
 	public void loadSolvingAttempt(int solvingAttemptId) {
-		Grid grid = new Grid();
-		if (grid.load(solvingAttemptId)) {
+		Grid grid = new GridLoader().load(solvingAttemptId);
+		if (grid != null) {
 			setNewGrid(grid);
 		}
 	}

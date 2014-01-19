@@ -59,6 +59,7 @@ public class GridCageStorage {
 		mId = Integer.parseInt(cageParts[index++]);
 		mAction = Integer.parseInt(cageParts[index++]);
 		mResult = Integer.parseInt(cageParts[index++]);
+		mCells = new ArrayList<GridCell>();
 		for (String cellId : cageParts[index++]
 				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
 			GridCell gridCell = gridCells.get(Integer.parseInt(cellId));

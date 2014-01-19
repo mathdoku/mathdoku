@@ -13,7 +13,6 @@ import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.storage.database.DatabaseHelper;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.database.GridRow;
-import net.mathdoku.plus.storage.database.SolvingAttempt;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
@@ -201,11 +200,6 @@ public class GridTest {
 		public StatisticsDatabaseAdapter createStatisticsDatabaseAdapter() {
 			return mStatisticsDatabaseAdapterMock;
 		}
-
-		@Override
-		public GridLoader createGridLoader(Grid grid) {
-			return mGridLoaderMock;
-		}
 	}
 
 	@Before
@@ -234,8 +228,8 @@ public class GridTest {
 	@Test
 	public void SetGridSize_ChangeGridSize_RuntimeExceptionIsThrown()
 			throws Exception {
-		assertThat("Setting grid size initially", mGrid.setGridSize(5), is(true));
-		assertThat("Changing the grid size", mGrid.setGridSize(6), is(false));
+		mGrid.setGridSize(5);
+		assertThat("Update of grid size", mGrid.setGridSize(6), is(false));
 	}
 
 	@Test
@@ -468,10 +462,11 @@ public class GridTest {
 
 	@Test
 	public void unrevealSolution() throws Exception {
-		// Unrevealing a solution is only available when running in development mode.
-		boolean unrevealMethodAvailableInCurrentAppMode = (Config.mAppMode == Config.AppMode.DEVELOPMENT);
+		Config.AppMode actualAppMode = Config.mAppMode;
+		Config.AppMode expectedAppMode = Config.AppMode.DEVELOPMENT;
 
-		assertThat("Unreveal grid", mGrid.unrevealSolution(), is(unrevealMethodAvailableInCurrentAppMode));
+		assertThat("Development mode", actualAppMode, is(expectedAppMode));
+		assertThat("Grid is unrevealed", mGrid.isSolutionRevealed(), is(false));
 	}
 
 	@Test
@@ -953,6 +948,7 @@ public class GridTest {
 				is(equalTo("3:00010201:0,1,0:1,3,1:2,2,0")));
 	}
 
+
 	@Test(expected = InvalidParameterException.class)
 	public void create_GridCellsListIsNull_InvalidParameterException()
 			throws Exception {
@@ -1307,64 +1303,6 @@ public class GridTest {
 		boolean resultSaveGridStatistics = true;
 
 		assertThatSaveOnUpgrade(resultSaveGridStatistics, is(true));
-	}
-
-	@Test
-	public void load_ViaSolvingAttemptIdWhichDoesNotExist_GridNotLoaded()
-			throws Exception {
-		int solvingAttemptId = 12;
-		when(mSolvingAttemptDatabaseAdapterMock.getData(anyInt())).thenReturn(
-				null);
-
-		assertThat("Loading solving attempt", mGrid.load(solvingAttemptId),
-				is(false));
-	}
-
-	@Test
-	public void load_ViaSolvingAttemptButGridDoesNotExist_GridNotLoaded()
-			throws Exception {
-		int solvingAttemptId = 12;
-		SolvingAttempt solvingAttempt = mock(SolvingAttempt.class);
-		when(mSolvingAttemptDatabaseAdapterMock.getData(anyInt())).thenReturn(
-				solvingAttempt);
-		when(mGridDatabaseAdapterMock.get(anyInt())).thenReturn(null);
-
-		assertThat("Loading solving attempt", mGrid.load(solvingAttemptId),
-				is(false));
-		verify(mGridDatabaseAdapterMock).get(anyInt());
-	}
-
-	@Test
-	public void load_ViaSolvingAttemptButLoadSolvingAttemptDataFailed_GridNotLoaded()
-			throws Exception {
-		int solvingAttemptId = 12;
-		SolvingAttempt solvingAttempt = mock(SolvingAttempt.class);
-		when(mSolvingAttemptDatabaseAdapterMock.getData(anyInt())).thenReturn(
-				solvingAttempt);
-		when(mGridDatabaseAdapterMock.get(anyInt())).thenReturn(
-				mock(GridRow.class));
-		when(mGridLoaderMock.load(any(SolvingAttempt.class))).thenReturn(false);
-
-		assertThat("Loading solving attempt", mGrid.load(solvingAttemptId),
-				is(false));
-		verify(mGridDatabaseAdapterMock).get(anyInt());
-		verify(mGridLoaderMock).load(any(SolvingAttempt.class));
-	}
-
-	@Test
-	public void load_ViaSolvingAttempt_GridLoaded() throws Exception {
-		int solvingAttemptId = 12;
-		SolvingAttempt solvingAttempt = mock(SolvingAttempt.class);
-		when(mSolvingAttemptDatabaseAdapterMock.getData(anyInt())).thenReturn(
-				solvingAttempt);
-		when(mGridDatabaseAdapterMock.get(anyInt())).thenReturn(
-				mock(GridRow.class));
-		when(mGridLoaderMock.load(any(SolvingAttempt.class))).thenReturn(true);
-
-		assertThat("Loading solving attempt", mGrid.load(solvingAttemptId),
-				is(true));
-		verify(mGridDatabaseAdapterMock).get(anyInt());
-		verify(mGridLoaderMock).load(any(SolvingAttempt.class));
 	}
 
 	@Test

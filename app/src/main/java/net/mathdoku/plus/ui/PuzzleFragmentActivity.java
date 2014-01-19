@@ -36,6 +36,7 @@ import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.developmentHelper.DevelopmentHelper;
 import net.mathdoku.plus.grid.Grid;
+import net.mathdoku.plus.grid.GridLoader;
 import net.mathdoku.plus.grid.InvalidGridException;
 import net.mathdoku.plus.grid.ui.GridInputMode;
 import net.mathdoku.plus.gridGenerating.DialogPresentingGridGenerator;
@@ -903,13 +904,13 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		if (solvingAttemptId >= 0) {
 			// Load the grid
 			try {
-				Grid newGrid = new Grid();
-				newGrid.load(solvingAttemptId);
-
-				if (newGrid.isActive()) {
-					initializePuzzleFragment(solvingAttemptId);
-				} else {
-					initializeArchiveFragment(solvingAttemptId);
+				Grid newGrid = new GridLoader().load(solvingAttemptId);
+				if (newGrid != null) {
+					if (newGrid.isActive()) {
+						initializePuzzleFragment(solvingAttemptId);
+					} else {
+						initializeArchiveFragment(solvingAttemptId);
+					}
 				}
 			} catch (InvalidGridException e) {
 				if (Config.mAppMode == AppMode.DEVELOPMENT) {
@@ -1178,8 +1179,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	private void replayPuzzle(int solvingAttemptId) {
 		// Load the grid for the returned solving attempt id and reset the grid
 		// so it can be replayed.
-		Grid grid = new Grid();
-		if (grid.load(solvingAttemptId)) {
+		Grid grid = new GridLoader().load(solvingAttemptId);
+		if (grid != null) {
 			if (grid.isActive() == false) {
 				grid.replay();
 			}

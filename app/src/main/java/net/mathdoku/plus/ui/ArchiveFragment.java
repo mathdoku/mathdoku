@@ -21,6 +21,7 @@ import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.grid.DigitPositionGrid;
 import net.mathdoku.plus.grid.Grid;
+import net.mathdoku.plus.grid.GridLoader;
 import net.mathdoku.plus.grid.ui.GridViewerView;
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.statistics.GridStatistics;
@@ -84,8 +85,8 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 				.findViewById(R.id.grid_viewer_view);
 
 		// Load grid from database
-		mGrid = new Grid();
-		if (mGrid.load(solvingAttemptId)) {
+		mGrid = new GridLoader().load(solvingAttemptId);
+		if (mGrid != null) {
 			// Load grid into grid view
 			mGridViewerView.loadNewGrid(mGrid);
 

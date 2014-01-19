@@ -8,6 +8,7 @@ import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.grid.Grid;
+import net.mathdoku.plus.grid.GridLoader;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 
@@ -133,8 +134,8 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 			// Convert data in SolvingAttempt to newest structure.
 			if (solvingAttemptIds != null) {
 				for (int solvingAttemptId : solvingAttemptIds) {
-					Grid grid = new Grid();
-					if (grid.load(solvingAttemptId)) {
+					Grid grid = new GridLoader().load(solvingAttemptId);
+					if (grid != null) {
 						// Get definition for the grid.
 						String definition = grid.toGridDefinitionString();
 						if (!mGridDefinitions.contains(definition)) {

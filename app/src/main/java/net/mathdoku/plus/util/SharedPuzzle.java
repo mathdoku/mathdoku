@@ -1,17 +1,18 @@
 package net.mathdoku.plus.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.mathdoku.plus.R;
-import net.mathdoku.plus.grid.Grid;
-import net.mathdoku.plus.ui.ArchiveFragment;
-
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.Html;
 import android.view.View;
+
+import net.mathdoku.plus.R;
+import net.mathdoku.plus.grid.Grid;
+import net.mathdoku.plus.grid.GridLoader;
+import net.mathdoku.plus.ui.ArchiveFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SharedPuzzle {
 
@@ -78,9 +79,8 @@ public class SharedPuzzle {
 	 * game with another user.
 	 */
 	public void share(int solvingAttemptId) {
-		Grid grid = new Grid();
-		if (grid.load(solvingAttemptId)) {
-
+		Grid grid = new GridLoader().load(solvingAttemptId);
+		if (grid != null) {
 			Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
 			intent.setType("message/rfc822");
 			intent.putExtra(Intent.EXTRA_SUBJECT, mContext.getResources()

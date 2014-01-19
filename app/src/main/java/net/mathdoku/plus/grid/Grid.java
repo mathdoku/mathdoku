@@ -12,7 +12,6 @@ import net.mathdoku.plus.statistics.GridStatistics.StatisticsCounterType;
 import net.mathdoku.plus.storage.database.DatabaseHelper;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.database.GridRow;
-import net.mathdoku.plus.storage.database.SolvingAttempt;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
@@ -45,7 +44,7 @@ public class Grid {
 	// Grid elements and references which do change while solving the game.
 	// ************************************************************************
 
-	private long mDateLastSaved;
+	private long mDateUpdated;
 
 	// Has the solution of the grid been revealed?
 	private boolean mRevealed;
@@ -152,10 +151,6 @@ public class Grid {
 		public StatisticsDatabaseAdapter createStatisticsDatabaseAdapter() {
 			return new StatisticsDatabaseAdapter();
 		}
-
-		public GridLoader createGridLoader(Grid grid) {
-			return new GridLoader(grid);
-		}
 	}
 
 	private final ObjectsCreator mObjectsCreator;
@@ -166,6 +161,50 @@ public class Grid {
 	public Grid() {
 		mObjectsCreator = new ObjectsCreator();
 		initialize();
+	}
+
+	public Grid(GridLoaderData gridLoaderData) {
+		mObjectsCreator = new ObjectsCreator();
+
+		mGridSize = gridLoaderData.mGridSize;
+		mGridGeneratingParameters = gridLoaderData.mGridGeneratingParameters;
+		mDateCreated = gridLoaderData.mDateCreated;
+		mDateUpdated = gridLoaderData.mDateUpdated;
+		mSolvingAttemptId = gridLoaderData.mSolvingAttemptId;
+		mCells = gridLoaderData.mCells;
+		mCages = gridLoaderData.mCages;
+		mMoves = gridLoaderData.mCellChanges;
+		mActive = gridLoaderData.mActive;
+		mRevealed = gridLoaderData.mRevealed;
+
+		for (GridCage gridCage : mCages) {
+			gridCage.setGridReference(this);
+		}
+		for (GridCell gridCell : mCells) {
+			gridCell.setGridReference(this);
+		}
+
+		checkUserMathForAllCages();
+		for (GridCell gridCell : mCells) {
+			gridCell.markDuplicateValuesInSameRowAndColumn();
+		}
+		for (GridCell gridCell : mCells) {
+			if (gridCell.isSelected()) {
+				// The first cell which is marked as selected, is set as
+				// selected cell for the grid.
+				setSelectedCell(gridCell);
+				break;
+			}
+		}
+
+		if (gridLoaderData.mGridStatistics == null) {
+			mGridStatistics = mObjectsCreator.createStatisticsDatabaseAdapter()
+					.insert(this);
+		} else {
+			mGridStatistics = gridLoaderData.mGridStatistics;
+		}
+
+		setPreferences();
 	}
 
 	/**
@@ -212,8 +251,7 @@ public class Grid {
 	public boolean setGridSize(int gridSize) {
 		if (mGridSize == 0) {
 			mGridSize = gridSize;
-		}
-		else if (gridSize != mGridSize) {
+		} else if (gridSize != mGridSize) {
 			// GridSize can not be changed after it has been set.
 			return false;
 		}
@@ -760,7 +798,7 @@ public class Grid {
 	}
 
 	public long getDateSaved() {
-		return mDateLastSaved;
+		return mDateUpdated;
 	}
 
 	public boolean hasPrefShowDupeDigits() {
@@ -908,37 +946,6 @@ public class Grid {
 	}
 
 	/**
-	 * Load a solving attempt and the corresponding grid from the database.
-	 * 
-	 * @param solvingAttemptId
-	 *            The unique id of the solving attempt which has to be loaded.
-	 * @return True in case the grid has been loaded successfully. False
-	 *         otherwise.
-	 */
-	public boolean load(int solvingAttemptId) throws InvalidGridException {
-		// First load the solving attempt to get the grid id.
-		SolvingAttempt solvingAttempt = mObjectsCreator
-				.createSolvingAttemptDatabaseAdapter()
-				.getData(solvingAttemptId);
-		if (solvingAttempt == null) {
-			return false;
-		}
-
-		// Load the grid before processing the solving attempt data.
-		GridRow gridRow = mObjectsCreator.createGridDatabaseAdapter().get(
-				solvingAttempt.mGridId);
-		if (gridRow == null) {
-			return false;
-		}
-		mGridSize = gridRow.mGridSize;
-		mGridGeneratingParameters = gridRow.mGridGeneratingParameters;
-
-		// Load the data from the solving attempt into the grid object.
-		final GridLoader gridLoader = mObjectsCreator.createGridLoader(this);
-		return gridLoader.load(solvingAttempt);
-	}
-
-	/**
 	 * Checks if the grid is empty (i.e. cells do not contain a user value nor a
 	 * possible value).
 	 * 
@@ -973,7 +980,7 @@ public class Grid {
 		deselectSelectedCell();
 
 		// The solving attempt is not yet saved.
-		mDateLastSaved = 0;
+		mDateUpdated = 0;
 
 		// Forget it if the solution was revealed before.
 		mRevealed = false;
@@ -1262,7 +1269,7 @@ public class Grid {
 	}
 
 	/* package private */void setDateLastSaved(long dateLastSaved) {
-		mDateLastSaved = dateLastSaved;
+		mDateUpdated = dateLastSaved;
 	}
 
 	/* package private */void setSolvingAttemptId(int solvingAttemptId) {
