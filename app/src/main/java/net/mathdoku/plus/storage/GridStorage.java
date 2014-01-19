@@ -23,34 +23,19 @@ public class GridStorage {
 	private ArrayList<GridCage> mCages;
 	private ArrayList<CellChange> mCellChanges;
 
-	// The Objects Creator is responsible for creating all new objects needed by
-	// this class. For unit testing purposes the default create methods can be
-	// overridden if needed.
-	public static class ObjectsCreator {
-		public GridCageStorage createGridCageStorage() {
-			return new GridCageStorage();
-		}
-	}
-
-	private final ObjectsCreator mObjectsCreator;
+	private GridStorageObjectsCreator mGridStorageObjectsCreator;
 
 	public GridStorage() {
-		mObjectsCreator = new ObjectsCreator();
+		mGridStorageObjectsCreator = new GridStorageObjectsCreator();
 	}
 
-	/**
-	 * Creates new instance of {@link net.mathdoku.plus.storage.GridStorage}.
-	 * All objects in this class will be created with the given ObjectsCreator.
-	 * This method is intended for unit testing.
-	 * 
-	 * @param objectsCreator
-	 *            The ObjectsCreator to be used by this class. Only create
-	 *            methods for which the default implementation does not suffice,
-	 *            should be overridden.
-	 */
-	public GridStorage(ObjectsCreator objectsCreator) {
-		mObjectsCreator = (objectsCreator != null ? objectsCreator
-				: new ObjectsCreator());
+	public void setObjectsCreator(
+			GridStorageObjectsCreator gridStorageObjectsCreator) {
+		if (gridStorageObjectsCreator == null) {
+			throw new InvalidParameterException(
+					"Parameter gridStorageObjectsCreator can not be null.");
+		}
+		mGridStorageObjectsCreator = gridStorageObjectsCreator;
 	}
 
 	/**
@@ -139,7 +124,7 @@ public class GridStorage {
 		// Store information about the cages. Use one line per single
 		// cage.
 		if (mCages != null) {
-			GridCageStorage gridCageStorage = mObjectsCreator
+			GridCageStorage gridCageStorage = mGridStorageObjectsCreator
 					.createGridCageStorage();
 			for (GridCage cage : mCages) {
 				stringBuilder.append(gridCageStorage.toStorageString(cage))
