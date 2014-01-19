@@ -12,9 +12,12 @@ import java.util.ArrayList;
 public class GridStorage {
 	private static final String TAG = "MathDoku.GridStorage";
 
-	// Each line in the GridFile which contains information about the grid
-	// starts with an identifier. This identifier consists of a generic part and
-	// the package revision number.
+	/*
+	 * Each line in the entire storage string of a Grid contains information
+	 * about the type of data stored on the line. The first line of this entire
+	 * storage string contains general data of the grid and starts with
+	 * following identifier.
+	 */
 	public static final String SAVE_GAME_GRID_LINE = "GRID";
 
 	private boolean mActive;
@@ -107,7 +110,8 @@ public class GridStorage {
 		StringBuilder stringBuilder = new StringBuilder(256);
 
 		// First store data for the grid object itself.
-		stringBuilder.append(SAVE_GAME_GRID_LINE)
+		stringBuilder
+				.append(SAVE_GAME_GRID_LINE)
 				.append(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1)
 				.append(mActive)
 				.append(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1)
@@ -116,7 +120,8 @@ public class GridStorage {
 
 		// Store information about the cells. Use one line per single
 		// cell.
-		GridCellStorage gridCellStorage = mGridStorageObjectsCreator.createGridCellStorage();
+		GridCellStorage gridCellStorage = mGridStorageObjectsCreator
+				.createGridCellStorage();
 		for (GridCell cell : mCells) {
 			stringBuilder.append(gridCellStorage.toStorageString(cell)).append(
 					SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
@@ -128,7 +133,8 @@ public class GridStorage {
 			GridCageStorage gridCageStorage = mGridStorageObjectsCreator
 					.createGridCageStorage();
 			for (GridCage cage : mCages) {
-				stringBuilder.append(gridCageStorage.toStorageString(cage))
+				stringBuilder
+						.append(gridCageStorage.toStorageString(cage))
 						.append(SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
 			}
 		}

@@ -13,9 +13,11 @@ import java.util.ArrayList;
 public class GridCellStorage {
 	private static final String TAG = "MathDoku.GridCellStorage";
 
-	// Each line in the GridFile which contains information about the cell
-	// starts with an identifier. This identifier consists of a generic part and
-	// the package revision number.
+	/*
+	 * Each line in the entire storage string of a Grid contains information
+	 * about the type of data stored on the line. Lines containing data for a
+	 * Grid Cell starts with following identifier.
+	 */
 	private static final String SAVE_GAME_CELL_LINE = "CELL";
 
 	private int mId;
