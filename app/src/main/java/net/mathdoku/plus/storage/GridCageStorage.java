@@ -4,6 +4,7 @@ import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.grid.GridCell;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
 /**
@@ -38,13 +39,8 @@ public class GridCageStorage {
 	 */
 	public boolean fromStorageString(String line, int savedWithRevisionNumber,
 			ArrayList<GridCell> gridCells) {
-		String[] cageParts = line
-				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1);
-
-		// Only process the storage string if it starts with the correct
-		// identifier.
-		if (cageParts[0].equals(SAVE_GAME_CAGE_LINE) == false) {
-			return false;
+		if (line == null) {
+			throw new NullPointerException("Parameter line cannot be null");
 		}
 
 		// When upgrading to MathDoku v2 the history is not converted. As of
@@ -54,18 +50,38 @@ public class GridCageStorage {
 			return false;
 		}
 
+		String[] cageParts = line
+				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1);
+
+		int expectedNumberOfElements = 6;
+		if (cageParts.length != expectedNumberOfElements) {
+			throw new InvalidParameterException(
+					"Wrong number of elements in storage string. Got "
+							+ cageParts.length + ", expected "
+							+ expectedNumberOfElements + ".");
+		}
+
+		// Only process the storage string if it starts with the correct
+		// identifier.
+		if (cageParts[0].equals(SAVE_GAME_CAGE_LINE) == false) {
+			return false;
+		}
+
 		// Process all parts
 		int index = 1;
 		mId = Integer.parseInt(cageParts[index++]);
 		mAction = Integer.parseInt(cageParts[index++]);
 		mResult = Integer.parseInt(cageParts[index++]);
 		mCells = new ArrayList<GridCell>();
-		for (String cellId : cageParts[index++]
-				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
-			GridCell gridCell = gridCells.get(Integer.parseInt(cellId));
-			gridCell.setCageId(mId);
-			mCells.add(gridCell);
+		if (!cageParts[index].equals("")) {
+			for (String cellId : cageParts[index]
+					.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
+				GridCell gridCell = gridCells.get(Integer.parseInt(cellId));
+				gridCell.setCageId(mId);
+				mCells.add(gridCell);
+			}
 		}
+		index++;
 		// noinspection UnusedAssignment
 		mHideOperator = Boolean.parseBoolean(cageParts[index++]);
 
@@ -84,10 +100,10 @@ public class GridCageStorage {
 	 * @return A string representation of the grid cage.
 	 */
 	public String toStorageString(GridCage gridCage) {
-		mId = gridCage.mId;
-		mAction = gridCage.mAction;
-		mResult = gridCage.mResult;
-		mCells = gridCage.mCells;
+		mId = gridCage.getId();
+		mAction = gridCage.getAction();
+		mResult = gridCage.getResult();
+		mCells = gridCage.getCells();
 		mHideOperator = gridCage.isOperatorHidden();
 
 		String storageString = SAVE_GAME_CAGE_LINE

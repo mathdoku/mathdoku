@@ -13,6 +13,7 @@ public class GridCage {
 	public static final int ACTION_DIVIDE = 4;
 
 	public int mId;
+
 	public int mAction;
 	public int mResult;
 	private boolean mHideOperator;
@@ -59,7 +60,7 @@ public class GridCage {
 	public GridCage(GridCageStorage gridCageStorage) {
 		initGridCage();
 		mId = gridCageStorage.getId();
-		mHideOperator =gridCageStorage.isHideOperator();
+		mHideOperator = gridCageStorage.isHideOperator();
 		mResult = gridCageStorage.getResult();
 		mAction = gridCageStorage.getAction();
 		mCells = gridCageStorage.getCells();
@@ -197,12 +198,15 @@ public class GridCage {
 		if (this.mCells.size() != 2)
 			return false;
 
-		if (this.mCells.get(0).getUserValue() > this.mCells.get(1)
+		if (this.mCells.get(0).getUserValue() > this.mCells
+				.get(1)
 				.getUserValue())
-			return this.mCells.get(0).getUserValue() == (this.mCells.get(1)
+			return this.mCells.get(0).getUserValue() == (this.mCells
+					.get(1)
 					.getUserValue() * this.mResult);
 		else
-			return this.mCells.get(1).getUserValue() == (this.mCells.get(0)
+			return this.mCells.get(1).getUserValue() == (this.mCells
+					.get(0)
 					.getUserValue() * this.mResult);
 	}
 
@@ -210,12 +214,15 @@ public class GridCage {
 		if (this.mCells.size() != 2)
 			return false;
 
-		if (this.mCells.get(0).getUserValue() > this.mCells.get(1)
+		if (this.mCells.get(0).getUserValue() > this.mCells
+				.get(1)
 				.getUserValue())
-			return (this.mCells.get(0).getUserValue() - this.mCells.get(1)
+			return (this.mCells.get(0).getUserValue() - this.mCells
+					.get(1)
 					.getUserValue()) == this.mResult;
 		else
-			return (this.mCells.get(1).getUserValue() - this.mCells.get(0)
+			return (this.mCells.get(1).getUserValue() - this.mCells
+					.get(0)
 					.getUserValue()) == this.mResult;
 	}
 
@@ -326,5 +333,23 @@ public class GridCage {
 
 	public ArrayList<int[]> getPossibleCombos() {
 		return mPossibleCombos;
+	}
+
+	public int getId() {
+		return mId;
+	}
+
+	public int getAction() {
+		return mAction;
+	}
+
+	public int getResult() {
+		return mResult;
+	}
+
+	public ArrayList<GridCell> getCells() {
+		// Return copy of the cell list so the requesting object cannot
+		// manipulate the original list.
+		return new ArrayList<GridCell>(mCells);
 	}
 }
