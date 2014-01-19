@@ -1,6 +1,7 @@
 package net.mathdoku.plus.grid;
 
 import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.storage.CellChangeStorage;
 import net.mathdoku.plus.storage.GridCageStorage;
 import net.mathdoku.plus.storage.GridCellStorage;
 import net.mathdoku.plus.storage.GridStorage;
@@ -256,11 +257,12 @@ public class GridLoader {
 			return false;
 		}
 
-		CellChange cellChange = mGridLoaderObjectsCreator.createCellChange();
-		if (!cellChange.fromStorageString(line, mGridLoaderData.mCells,
+		CellChangeStorage cellChangeStorage = mGridLoaderObjectsCreator.createCellChangeStorage();
+		if (!cellChangeStorage.fromStorageString(line, mGridLoaderData.mCells,
 				mSavedWithRevision)) {
 			return false;
 		}
+		CellChange cellChange = mGridLoaderObjectsCreator.createCellChange(cellChangeStorage);
 		mGridLoaderData.mCellChanges.add(cellChange);
 
 		return true;

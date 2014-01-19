@@ -1,5 +1,6 @@
 package net.mathdoku.plus.grid;
 
+import net.mathdoku.plus.storage.CellChangeStorage;
 import net.mathdoku.plus.storage.GridCageStorage;
 import net.mathdoku.plus.storage.GridCellStorage;
 import net.mathdoku.plus.storage.GridStorage;
@@ -18,8 +19,8 @@ public class GridLoaderObjectsCreator {
 		return new GridCell(gridCellStorage);
 	}
 
-	public CellChange createCellChange() {
-		return new CellChange();
+	public CellChange createCellChange(CellChangeStorage cellChangeStorage) {
+		return new CellChange(cellChangeStorage);
 	}
 
 	public GridCage createGridCage(GridCageStorage gridCageStorage) {
@@ -68,5 +69,9 @@ public class GridLoaderObjectsCreator {
 
 	public GridCellStorage createGridCellStorage() {
 		return new GridCellStorage();
+	}
+
+	public CellChangeStorage createCellChangeStorage() {
+		return createCellChangeStorage();
 	}
 }

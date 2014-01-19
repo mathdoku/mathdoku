@@ -142,8 +142,9 @@ public class GridStorage {
 		// Store information about the cell changes. Use one line per single
 		// cell change. Note: watch for lengthy line due to recursive cell
 		// changes.
+		CellChangeStorage cellChangeStorage = mGridStorageObjectsCreator.createCellChangeStorage();
 		for (CellChange cellChange : mCellChanges) {
-			stringBuilder.append(cellChange.toStorageString()).append(
+			stringBuilder.append(cellChangeStorage.toStorageString(cellChange)).append(
 					SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
 		}
 

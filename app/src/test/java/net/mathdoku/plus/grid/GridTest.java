@@ -87,11 +87,6 @@ public class GridTest {
 		}
 
 		@Override
-		public CellChange createCellChange() {
-			return mCellChangeMock;
-		}
-
-		@Override
 		public GridCage createGridCage() {
 			return mGridCageMock;
 		}

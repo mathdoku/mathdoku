@@ -98,10 +98,6 @@ public class Grid {
 			return new GridCell(id, gridSize);
 		}
 
-		public CellChange createCellChange() {
-			return new CellChange();
-		}
-
 		public GridCage createGridCage() {
 			return new GridCage();
 		}

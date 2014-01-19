@@ -11,4 +11,8 @@ public class GridStorageObjectsCreator {
 	public GridCellStorage createGridCellStorage() {
 		return new GridCellStorage();
 	}
+
+	public CellChangeStorage createCellChangeStorage() {
+		return new CellChangeStorage();
+	}
 }

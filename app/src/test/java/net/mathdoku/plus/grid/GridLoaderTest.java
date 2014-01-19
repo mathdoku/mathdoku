@@ -3,6 +3,7 @@ package net.mathdoku.plus.grid;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.statistics.GridStatistics;
+import net.mathdoku.plus.storage.CellChangeStorage;
 import net.mathdoku.plus.storage.GridCageStorage;
 import net.mathdoku.plus.storage.GridCellStorage;
 import net.mathdoku.plus.storage.GridStorage;
@@ -360,18 +361,18 @@ public class GridLoaderTest {
 		}
 
 		@Override
-		public CellChange createCellChange() {
-			CellChange cellChange = mock(CellChange.class);
+		public CellChangeStorage createCellChangeStorage() {
+			CellChangeStorage cellChangeStorage = mock(CellChangeStorage.class);
 
 			// Determine whether this mock should return a valid or invalid
 			// storage string.
 			when(
-					cellChange.fromStorageString(anyString(),
+					cellChangeStorage.fromStorageString(anyString(),
 							any(ArrayList.class), anyInt())).thenReturn(
 					mNumberOfCellChangeMocksReturningAValidStorageString > 0);
 			mNumberOfCellChangeMocksReturningAValidStorageString--;
 
-			return cellChange;
+			return cellChangeStorage;
 		}
 
 		@Override

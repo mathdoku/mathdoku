@@ -25,6 +25,7 @@ public class GridStorageTest {
 	private GridStorage gridStorage;
 	private GridStorageObjectsCreator mGridStorageObjectsCreator;
 	private GridCellStorage mGridCellStorageMock = mock(GridCellStorage.class);
+	private CellChangeStorage mCellChangeStorageMock = mock(CellChangeStorage.class);
 	private GridCageStorage mGridCageStorageMock = mock(GridCageStorage.class);
 
 	private class GridStub extends Grid {
@@ -77,10 +78,23 @@ public class GridStorageTest {
 			}
 		}
 
-		private void addCellChangeMockWithStorageString(String storageString) {
-			CellChange cellChangeMock = mock(CellChange.class);
-			when(cellChangeMock.toStorageString()).thenReturn(storageString);
-			addMove(cellChangeMock);
+		private void addCellChangeMockWithStorageString(String... storageString) {
+			switch (storageString.length) {
+				case 1:
+					addMove(mock(CellChange.class));
+					when(mCellChangeStorageMock.toStorageString(any(CellChange.class)))
+							.thenReturn(storageString[0]);
+					break;
+				case 2:
+					addMove(mock(CellChange.class));
+					addMove(mock(CellChange.class));
+					when(mCellChangeStorageMock.toStorageString(any(CellChange.class)))
+							.thenReturn(storageString[0], storageString[1]);
+					break;
+				default:
+					throw new InvalidParameterException(
+							"Invalid number of parameters in helper method addCellChangeMockWithStorageString");
+			}
 		}
 
 		@Override
@@ -108,6 +122,11 @@ public class GridStorageTest {
 			@Override
 			public GridCellStorage createGridCellStorage() {
 				return mGridCellStorageMock;
+			}
+
+			@Override
+			public CellChangeStorage createCellChangeStorage() {
+				return mCellChangeStorageMock;
 			}
 		};
 		gridStorage.setObjectsCreator(mGridStorageObjectsCreator);
@@ -289,9 +308,7 @@ public class GridStorageTest {
 				"** FIRST CELL CHANGE STORAGE STRING **",
 				"** SECOND CELL CHANGE STORAGE STRING **" };
 		mGridStub
-				.addCellChangeMockWithStorageString(mCellChangeStubStorageString[0]);
-		mGridStub
-				.addCellChangeMockWithStorageString(mCellChangeStubStorageString[1]);
+				.addCellChangeMockWithStorageString(mCellChangeStubStorageString);
 
 		assertThat("Storage string", gridStorage.toStorageString(mGridStub),
 				is(equalTo("GRID:false:false" + "\n"
