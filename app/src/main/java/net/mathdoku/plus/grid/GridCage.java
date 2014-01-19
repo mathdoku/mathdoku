@@ -12,10 +12,9 @@ public class GridCage {
 	public static final int ACTION_MULTIPLY = 3;
 	public static final int ACTION_DIVIDE = 4;
 
-	public int mId;
-
-	public int mAction;
-	public int mResult;
+	private int mId;
+	private int mAction;
+	private int mResult;
 	private boolean mHideOperator;
 	public ArrayList<GridCell> mCells;
 
@@ -23,7 +22,7 @@ public class GridCage {
 	private Grid mGrid;
 
 	// User math is correct
-	public boolean mUserMathCorrect;
+	private boolean mUserMathCorrect;
 
 	// Cached list of possible combo's which can be used in this cage if other
 	// cages in the grid were not relevant.
@@ -351,5 +350,9 @@ public class GridCage {
 		// Return copy of the cell list so the requesting object cannot
 		// manipulate the original list.
 		return new ArrayList<GridCell>(mCells);
+	}
+
+	public boolean isUserMathCorrect() {
+		return mUserMathCorrect;
 	}
 }

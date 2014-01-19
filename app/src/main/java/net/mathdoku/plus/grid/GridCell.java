@@ -918,7 +918,7 @@ public class GridCell {
 
 		GridCage selectedCageInGrid = selectedCellInGrid.getCage();
 
-		return (selectedCageInGrid.mId == mCageId);
+		return (selectedCageInGrid.getId() == mCageId);
 	}
 
 	/**
@@ -1045,7 +1045,7 @@ public class GridCell {
 		// If cell1 is part of the selected cage, it status is more important
 		// than status of cell 2.
 		if (cell1.isCellInSelectedCage()) {
-			if (!cell1.getCage().mUserMathCorrect
+			if (!cell1.getCage().isUserMathCorrect()
 					&& mGrid.hasPrefShowBadCageMaths()) {
 				return BorderType.SELECTED__BAD_MATH;
 			} else {
@@ -1056,7 +1056,7 @@ public class GridCell {
 		// If cell1 is not part of the selected cage, than status of cell2 will
 		// prevail in case it is part of the selected cage.
 		if (cell2 != null && cell2.isCellInSelectedCage()) {
-			if (!cell2.getCage().mUserMathCorrect
+			if (!cell2.getCage().isUserMathCorrect()
 					&& mGrid.hasPrefShowBadCageMaths()) {
 				return BorderType.SELECTED__BAD_MATH;
 			} else {
@@ -1065,8 +1065,8 @@ public class GridCell {
 		}
 
 		// Both cells are in a cage which is not selected.
-		if ((!cell1.getCage().mUserMathCorrect || (cell2 != null && !cell2
-				.getCage().mUserMathCorrect))
+		if ((!cell1.getCage().isUserMathCorrect() || (cell2 != null && !cell2
+				.getCage().isUserMathCorrect()))
 				&& mGrid.hasPrefShowBadCageMaths()) {
 			return BorderType.NOT_SELECTED__BAD_MATH;
 		} else {

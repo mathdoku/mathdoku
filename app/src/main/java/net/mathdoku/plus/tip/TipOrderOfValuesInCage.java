@@ -1,10 +1,10 @@
 package net.mathdoku.plus.tip;
 
+import android.content.Context;
+
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.grid.GridCage;
-
-import android.content.Context;
 
 public class TipOrderOfValuesInCage extends TipDialog {
 
@@ -47,15 +47,17 @@ public class TipOrderOfValuesInCage extends TipDialog {
 	 * @return True in case the tip might be displayed. False otherwise.
 	 */
 	public static boolean toBeDisplayed(Preferences preferences, GridCage cage) {
+		int gridCageAction = cage.getAction();
+
 		// No tip to be displayed for non existing cages or single cell cages
-		if (cage == null || cage.mAction == GridCage.ACTION_NONE) {
+		if (cage == null || gridCageAction == GridCage.ACTION_NONE) {
 			return false;
 		}
 
 		// No tip to be displayed in case operators are visible and values have
 		// to be added or multiplied.
 		if (!cage.isOperatorHidden()
-				&& (cage.mAction == GridCage.ACTION_ADD || cage.mAction == GridCage.ACTION_MULTIPLY)) {
+				&& (gridCageAction == GridCage.ACTION_ADD || gridCageAction == GridCage.ACTION_MULTIPLY)) {
 			return false;
 		}
 

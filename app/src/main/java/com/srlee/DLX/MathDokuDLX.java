@@ -93,7 +93,7 @@ public class MathDokuDLX extends DLX {
 		Collections.sort(sortedCages, new SortCagesOnNumberOfMoves());
 		if (DEBUG_DLX) {
 			for (GridCage gridCage : sortedCages) {
-				Log.i(TAG, "Cage " + gridCage.mId + " has "
+				Log.i(TAG, "Cage " + gridCage.getId() + " has "
 						+ gridCage.getPossibleCombos().size()
 						+ " permutations with " + gridCage.mCells.size()
 						+ " cells");
@@ -117,7 +117,7 @@ public class MathDokuDLX extends DLX {
 			for (int[] possibleCombo : possibleCombos) {
 				if (DEBUG_DLX) {
 					Log.i(TAG, "Combo " + comboIndex + " - Cage "
-							+ gridCage.mId + " with " + gridCage.mCells.size()
+							+ gridCage.getId() + " with " + gridCage.mCells.size()
 							+ " cells");
 				}
 
@@ -147,7 +147,7 @@ public class MathDokuDLX extends DLX {
 
 					// Fill data structure for uncovering solution if needed
 					if (uncoverSolution) {
-						mMoves.add(new Move(gridCage.mId, comboIndex, gridCell
+						mMoves.add(new Move(gridCage.getId(), comboIndex, gridCell
 								.getRow(), gridCell.getColumn(),
 								possibleCombo[i]));
 					}
@@ -185,7 +185,7 @@ public class MathDokuDLX extends DLX {
 				if (difference == 0) {
 					// Also the number of cells is equal. Finally compare the
 					// id's.
-					difference = gridCage1.mId - gridCage2.mId;
+					difference = gridCage1.getId() - gridCage2.getId();
 				}
 			}
 			return difference;

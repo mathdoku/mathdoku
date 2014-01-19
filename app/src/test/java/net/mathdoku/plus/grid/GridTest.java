@@ -918,19 +918,19 @@ public class GridTest {
 				mGridCellMock, mGridCellMock, mGridCellMock, mGridCellMock);
 
 		GridCage gridCageStub1 = mock(GridCage.class);
-		gridCageStub1.mId = 0;
-		gridCageStub1.mResult = 1;
-		gridCageStub1.mAction = GridCage.ACTION_NONE;
+		when(gridCageStub1.getId()).thenReturn(0);
+		when(gridCageStub1.getResult()).thenReturn(1);
+		when(gridCageStub1.getAction()).thenReturn(GridCage.ACTION_NONE);
 
 		GridCage gridCageStub2 = mock(GridCage.class);
-		gridCageStub2.mId = 1;
-		gridCageStub2.mResult = 3;
-		gridCageStub2.mAction = GridCage.ACTION_ADD;
+		when(gridCageStub2.getId()).thenReturn(1);
+		when(gridCageStub2.getResult()).thenReturn(3);
+		when(gridCageStub2.getAction()).thenReturn(GridCage.ACTION_ADD);
 
 		GridCage gridCageStub3 = mock(GridCage.class);
-		gridCageStub3.mId = 2;
-		gridCageStub3.mResult = 2;
-		gridCageStub3.mAction = GridCage.ACTION_NONE;
+		when(gridCageStub3.getId()).thenReturn(2);
+		when(gridCageStub3.getResult()).thenReturn(2);
+		when(gridCageStub3.getAction()).thenReturn(GridCage.ACTION_NONE);
 
 		ArrayList<GridCage> gridCages = createArrayListOfGridCagesWithGridCages(
 				gridCageStub1, gridCageStub2, gridCageStub3);

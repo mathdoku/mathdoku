@@ -577,7 +577,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 							this.mCages.add(firstCage);
 							for (GridCell cellInCage : firstCage.mCells) {
 								mCageMatrix[cellInCage.getRow()][cellInCage
-										.getColumn()] = firstCage.mId;
+										.getColumn()] = firstCage.getId();
 							}
 							break;
 						}
@@ -619,7 +619,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 				// Add the cage to the grid
 				this.mCages.add(cage);
 				for (GridCell cellInCage : cage.mCells) {
-					mCageMatrix[cellInCage.getRow()][cellInCage.getColumn()] = cage.mId;
+					mCageMatrix[cellInCage.getRow()][cellInCage.getColumn()] = cage.getId();
 				}
 			}
 

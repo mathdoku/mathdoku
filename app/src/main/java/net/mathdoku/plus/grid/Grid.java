@@ -673,12 +673,12 @@ public class Grid {
 		for (GridCage cage : cages) {
 			definitionString
 					.append(":")
-					.append(cage.mId)
+					.append(cage.getId())
 					.append(",")
-					.append(cage.mResult)
+					.append(cage.getResult())
 					.append(",")
 					.append(gridGeneratingParameters.mHideOperators ? GridCage.ACTION_NONE
-							: cage.mAction);
+							: cage.getAction());
 		}
 		return definitionString.toString();
 	}
