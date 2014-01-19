@@ -1,6 +1,7 @@
 package net.mathdoku.plus.grid;
 
 import net.mathdoku.plus.storage.GridCageStorage;
+import net.mathdoku.plus.storage.GridCellStorage;
 import net.mathdoku.plus.storage.GridStorage;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
@@ -13,8 +14,8 @@ import java.util.ArrayList;
  * by the GridLoader.
  */
 public class GridLoaderObjectsCreator {
-	public GridCell createGridCell(int id, int gridSize) {
-		return new GridCell(id, gridSize);
+	public GridCell createGridCell(GridCellStorage gridCellStorage) {
+		return new GridCell(gridCellStorage);
 	}
 
 	public CellChange createCellChange() {
@@ -63,5 +64,9 @@ public class GridLoaderObjectsCreator {
 
 	public ArrayList<CellChange> createArrayListOfCellChanges() {
 		return new ArrayList<CellChange>();
+	}
+
+	public GridCellStorage createGridCellStorage() {
+		return new GridCellStorage();
 	}
 }

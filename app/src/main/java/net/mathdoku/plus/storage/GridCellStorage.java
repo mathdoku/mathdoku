@@ -1,10 +1,10 @@
 package net.mathdoku.plus.storage;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.mathdoku.plus.grid.GridCell;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
+
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
 
 /**
  * This class converts relevant GridCell data to a string which can be persisted
@@ -40,19 +40,31 @@ public class GridCellStorage {
 	 */
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public boolean fromStorageString(String line, int savedWithRevisionNumber) {
-		String[] cellParts = line
-				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1);
-
-		// Only process the storage string if it starts with the correct
-		// identifier.
-		if (cellParts[0].equals(SAVE_GAME_CELL_LINE) == false) {
-			return false;
+		if (line == null) {
+			throw new NullPointerException("Parameter line cannot be null");
 		}
 
 		// When upgrading to MathDoku v2 the history is not converted. As of
 		// revision 369 all logic for handling games stored with older versions
 		// is removed.
 		if (savedWithRevisionNumber <= 368) {
+			return false;
+		}
+
+		String[] cellParts = line
+				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1);
+
+		int expectedNumberOfElements = 11;
+		if (cellParts.length != expectedNumberOfElements) {
+			throw new InvalidParameterException(
+					"Wrong number of elements in storage string. Got "
+							+ cellParts.length + ", expected "
+							+ expectedNumberOfElements + ".");
+		}
+
+		// Only process the storage string if it starts with the correct
+		// identifier.
+		if (cellParts[0].equals(SAVE_GAME_CELL_LINE) == false) {
 			return false;
 		}
 
@@ -66,6 +78,7 @@ public class GridCellStorage {
 		mUserValue = Integer.parseInt(cellParts[index++]);
 
 		// Get possible values
+		mPossibles = new ArrayList<Integer>();
 		if (!cellParts[index].equals("")) {
 			for (String possible : cellParts[index]
 					.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {

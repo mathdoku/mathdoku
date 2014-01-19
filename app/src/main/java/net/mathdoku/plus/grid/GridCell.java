@@ -15,7 +15,7 @@ import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.painter.UserValuePainter;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.statistics.GridStatistics.StatisticsCounterType;
-import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
+import net.mathdoku.plus.storage.GridCellStorage;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -24,11 +24,6 @@ import java.util.Collections;
 public class GridCell {
 	@SuppressWarnings("unused")
 	private static final String TAG = "MathDoku.GridCell";
-
-	// Each line in the GridFile which contains information about the cell
-	// starts with an identifier. This identifier consists of a generic part and
-	// the package revision number.
-	private static final String SAVE_GAME_CELL_LINE = "CELL";
 
 	// Index of the cell (left to right, top to bottom, zero-indexed)
 	private int mId;
@@ -74,25 +69,43 @@ public class GridCell {
 	private BorderType mBorderTypeRight;
 
 	// References to the global painter objects.
-	private final CellPainter mCellPainter;
-	private final UserValuePainter mUserValuePainter;
-	private final MaybeValuePainter mMaybeGridPainter;
-	private final MaybeValuePainter mMaybeLinePainter;
-	private final CagePainter mCagePainter;
-	private final InputModeBorderPainter mInputModeBorderPainter;
+	private CellPainter mCellPainter;
+	private UserValuePainter mUserValuePainter;
+	private MaybeValuePainter mMaybeGridPainter;
+	private MaybeValuePainter mMaybeLinePainter;
+	private CagePainter mCagePainter;
+	private InputModeBorderPainter mInputModeBorderPainter;
 
 	public GridCell(int id, int gridSize) {
+		initialize();
 		mId = id;
 		mColumn = id % gridSize;
 		mRow = id / gridSize;
 		mCageText = "";
-		mCageId = -1;
 		mCorrectValue = 0;
 		mUserValue = 0;
-		mDuplicateValueHighlight = false;
 		mRevealed = false;
 		mInvalidUserValueHighlight = false;
 		mPossibles = new ArrayList<Integer>();
+	}
+
+	public GridCell(GridCellStorage gridCellStorage) {
+		initialize();
+		mId = gridCellStorage.getId();
+		mColumn = gridCellStorage.getColumn();
+		mRow = gridCellStorage.getRow();
+		mCageText = gridCellStorage.getCageText();
+		mCorrectValue = gridCellStorage.getCorrectValue();
+		mUserValue = gridCellStorage.getUserValue();
+		mRevealed = gridCellStorage.isRevealed();
+		mInvalidUserValueHighlight = gridCellStorage
+				.isInvalidUserValueHighlight();
+		mPossibles = gridCellStorage.getPossibles();
+	}
+
+	private void initialize() {
+		mCageId = -1;
+		mDuplicateValueHighlight = false;
 		mPosX = 0;
 		mPosY = 0;
 
@@ -476,8 +489,10 @@ public class GridCell {
 				// lines do overlap.
 				canvas.drawLine(left, top + borderOffset, right - borderWidth,
 						top + borderOffset, borderPaint);
-				canvas.drawLine(right - borderOffset, top,
-						right - borderOffset, bottom - borderWidth, borderPaint);
+				canvas
+						.drawLine(right - borderOffset, top, right
+								- borderOffset, bottom - borderWidth,
+								borderPaint);
 				canvas.drawLine(left + borderWidth, bottom - borderOffset,
 						right, bottom - borderOffset, borderPaint);
 				canvas.drawLine(left + borderOffset, top + borderWidth, left
@@ -737,16 +752,18 @@ public class GridCell {
 			// Draw separator lines between the segments of the swipe circle
 			for (int i = 0; i <= gridSize; i++) {
 				angle = SwipeMotion.getAngleToNextSwipeSegment(i);
-				canvas.drawLine(
-						centerX
-								+ (int) (Math.cos(Math.toRadians(angle)) * radius),
-						centerY
-								+ (int) (Math.sin(Math.toRadians(angle)) * radius),
-						centerX
-								+ (int) (Math.cos(Math.toRadians(angle)) * (radius - borderOverlayWidth)),
-						centerY
-								+ (int) (Math.sin(Math.toRadians(angle)) * (radius - borderOverlayWidth)),
-						segmentSeparatorPaint);
+				canvas
+						.drawLine(
+								centerX
+										+ (int) (Math
+												.cos(Math.toRadians(angle)) * radius),
+								centerY
+										+ (int) (Math.sin(Math.toRadians(angle)) * radius),
+								centerX
+										+ (int) (Math.cos(Math.toRadians(angle)) * (radius - borderOverlayWidth)),
+								centerY
+										+ (int) (Math.sin(Math.toRadians(angle)) * (radius - borderOverlayWidth)),
+								segmentSeparatorPaint);
 			}
 		}
 
@@ -760,93 +777,6 @@ public class GridCell {
 		canvas.drawLine(left + (cellSize / 2), top + (cellSize / 2),
 				mXPosSwipe, mYPosSwipe,
 				mInputModeBorderPainter.getSwipeLinePaint());
-	}
-
-	/**
-	 * Create a string representation of the Grid Cell which can be used to
-	 * store a grid cell in a saved game.
-	 * 
-	 * @return A string representation of the grid cell.
-	 */
-	public String toStorageString() {
-		String storageString = SAVE_GAME_CELL_LINE
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ mId
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + mRow
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ mColumn
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ mCageText
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ mCorrectValue
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ mUserValue
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1;
-		for (int possible : mPossibles) {
-			storageString += possible
-					+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2;
-		}
-		storageString += SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ Boolean.toString(mInvalidUserValueHighlight)
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ Boolean.toString(mRevealed)
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ Boolean.toString(mSelected);
-
-		return storageString;
-	}
-
-	/**
-	 * Read cell information from or a storage string which was created with @
-	 * GridCell#toStorageString()} before.
-	 * 
-	 * @param line
-	 *            The line containing the cell information.
-	 * @return True in case the given line contains cell information and is
-	 *         processed correctly. False otherwise.
-	 */
-	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
-	public boolean fromStorageString(String line, int savedWithRevisionNumber) {
-		String[] cellParts = line
-				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1);
-
-		// Only process the storage string if it starts with the correct
-		// identifier.
-		if (cellParts[0].equals(SAVE_GAME_CELL_LINE) == false) {
-			return false;
-		}
-
-		// When upgrading to MathDoku v2 the history is not converted. As of
-		// revision 369 all logic for handling games stored with older versions
-		// is removed.
-		if (savedWithRevisionNumber <= 368) {
-			return false;
-		}
-
-		// Process all parts
-		int index = 1;
-		mId = Integer.parseInt(cellParts[index++]);
-		mRow = Integer.parseInt(cellParts[index++]);
-		mColumn = Integer.parseInt(cellParts[index++]);
-		mCageText = cellParts[index++];
-		mCorrectValue = Integer.parseInt(cellParts[index++]);
-		mUserValue = Integer.parseInt(cellParts[index++]);
-
-		// Get possible values
-		if (!cellParts[index].equals("")) {
-			for (String possible : cellParts[index]
-					.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
-				addPossible(Integer.parseInt(possible), false);
-			}
-		}
-		index++;
-
-		mInvalidUserValueHighlight = Boolean.parseBoolean(cellParts[index++]);
-		mRevealed = Boolean.parseBoolean(cellParts[index++]);
-		// noinspection UnusedAssignment
-		mSelected = Boolean.parseBoolean(cellParts[index++]);
-
-		return true;
 	}
 
 	public int getCellId() {
@@ -1242,5 +1172,19 @@ public class GridCell {
 	 */
 	public void deselect() {
 		mSelected = false;
+	}
+
+	public String getCageText() {
+		return mCageText;
+	}
+
+	public ArrayList<Integer> getPossibles() {
+		// Return a copy of the list of possible values so the original list
+		// cannot be manipulated by the requesting object.
+		return new ArrayList<Integer>(mPossibles);
+	}
+
+	public boolean isRevealed() {
+		return mRevealed;
 	}
 }

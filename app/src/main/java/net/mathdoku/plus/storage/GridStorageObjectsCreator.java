@@ -7,4 +7,8 @@ public class GridStorageObjectsCreator {
 	public GridCageStorage createGridCageStorage() {
 		return new GridCageStorage();
 	}
+
+	public GridCellStorage createGridCellStorage() {
+		return new GridCellStorage();
+	}
 }

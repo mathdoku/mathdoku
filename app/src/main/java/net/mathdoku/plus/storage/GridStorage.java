@@ -116,8 +116,9 @@ public class GridStorage {
 
 		// Store information about the cells. Use one line per single
 		// cell.
+		GridCellStorage gridCellStorage = mGridStorageObjectsCreator.createGridCellStorage();
 		for (GridCell cell : mCells) {
-			stringBuilder.append(cell.toStorageString()).append(
+			stringBuilder.append(gridCellStorage.toStorageString(cell)).append(
 					SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
 		}
 

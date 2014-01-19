@@ -4,6 +4,7 @@ import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.storage.GridCageStorage;
+import net.mathdoku.plus.storage.GridCellStorage;
 import net.mathdoku.plus.storage.GridStorage;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.database.GridRow;
@@ -312,8 +313,8 @@ public class GridLoaderTest {
 		}
 
 		@Override
-		public GridCell createGridCell(int id, int gridSize) {
-			GridCell gridCell = mock(GridCell.class);
+		public GridCellStorage createGridCellStorage() {
+			GridCellStorage gridCellStorage = mock(GridCellStorage.class);
 
 			// Determine whether this mock should return a valid or invalid
 			// storage string.
@@ -323,22 +324,19 @@ public class GridLoaderTest {
 			} else {
 				mNumberOfGridCellMocksReturningAValidStorageString--;
 			}
-			when(gridCell.fromStorageString(anyString(), anyInt())).thenReturn(
-					validStorageString);
+			when(gridCellStorage.fromStorageString(anyString(), anyInt())).thenReturn(validStorageString);
 
 			// Check if a InvalidNumberException will be thrown for this cell
 			if (mCellNumberOnWhichAnNumberFormatExceptionIsThrown >= 0) {
 				if (mCellNumberOnWhichAnNumberFormatExceptionIsThrown == 0) {
-					when(gridCell.fromStorageString(anyString(), anyInt()))
-							.thenThrow(
-									new NumberFormatException(
-											"** INVALID NUMBER IN CELL DATA "
-													+ "**"));
+					when(gridCellStorage.fromStorageString(anyString(), anyInt()))
+							.thenThrow(new NumberFormatException(
+									"** INVALID NUMBER IN CELL DATA " + "**"));
 				}
 				mCellNumberOnWhichAnNumberFormatExceptionIsThrown--;
 			}
 
-			return gridCell;
+			return gridCellStorage;
 		}
 
 		@Override
