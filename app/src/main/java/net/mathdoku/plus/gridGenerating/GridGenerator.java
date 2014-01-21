@@ -806,11 +806,6 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 						+ "than " + maxPermutations + " initial "
 						+ "permutations which fulfill the cage requirement.");
 			}
-
-			// Clear the cage result from the cage and the top left cell of the
-			// cage.
-			cage.clearCageResult();
-
 			return null;
 		}
 

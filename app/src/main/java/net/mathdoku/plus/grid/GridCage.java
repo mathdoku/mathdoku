@@ -117,17 +117,6 @@ public class GridCage {
 		mCells.get(0).setCageText(mResult + (mHideOperator ? "" : mCageOperator.getSign()));
 	}
 
-	/**
-	 * Clears the cage result form the cage and the top left cell in the cage.
-	 */
-	public void clearCageResult() {
-		mResult = 0;
-		mCageOperator = CageOperator.NONE;
-
-		// Remove outcome from top left cell of cage
-		mCells.get(0).setCageText("");
-	}
-
 	/*
 	 * Sets the cageId of the cage's cells.
 	 */
