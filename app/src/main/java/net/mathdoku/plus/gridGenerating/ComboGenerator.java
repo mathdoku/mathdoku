@@ -29,8 +29,7 @@ public class ComboGenerator {
 	 *         combinations or too many permutations have been found.
 	 */
 	public ArrayList<int[]> getPossibleCombos() {
-		if (mHideOperator
-				|| (mCageOperator == CageOperator.NONE && mCageCells.size() > 1)) {
+		if (mHideOperator) {
 			return setPossibleCombosHiddenOperator();
 		} else {
 			return setPossibleCombosVisibleOperator();
