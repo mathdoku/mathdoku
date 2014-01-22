@@ -72,6 +72,6 @@ public class GridLoaderObjectsCreator {
 	}
 
 	public CellChangeStorage createCellChangeStorage() {
-		return createCellChangeStorage();
+		return new CellChangeStorage();
 	}
 }
