@@ -59,16 +59,16 @@ public class GridStorage {
 		String[] viewParts = line
 				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1);
 
+		// Only process the storage string if it starts with the correct
+		// identifier.
+		if (viewParts == null || SAVE_GAME_GRID_LINE.equals(viewParts[0]) == false) {
+			return false;
+		}
+
 		int expectedNumberOfElements = (savedWithRevisionNumber <= 595 ? 4 : 3);
 		if (viewParts.length != expectedNumberOfElements) {
 			throw new InvalidParameterException(
-					"Wrong number of elements in storage string");
-		}
-
-		// Only process the storage string if it starts with the correct
-		// identifier.
-		if (viewParts[0].equals(SAVE_GAME_GRID_LINE) == false) {
-			return false;
+					"Wrong number of elements in grid storage string");
 		}
 
 		// When upgrading to MathDoku v2 the history is not converted. As of

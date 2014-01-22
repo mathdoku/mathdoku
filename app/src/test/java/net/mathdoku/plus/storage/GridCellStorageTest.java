@@ -36,19 +36,27 @@ public class GridCellStorageTest {
 				is(false));
 	}
 
+	@Test
+	public void FromStorageString_InvalidLineId_False() throws Exception {
+		mLine = "WRONG:this is not a cell storage string";
+		assertThat(mGridCellStorage.fromStorageString(mLine, mRevisionNumber),
+				   is(false));
+	}
+
 	@Test(expected = InvalidParameterException.class)
-	public void FromStorageString_StorageStringHasIncorrectNumberOfElements_False()
+	public void FromStorageString_StorageStringHasTooLittleElements_False()
 			throws Exception {
-		mLine = "CELL:too little arguments";
+		mLine = "CELL:2:3:4:5:6:7:8:9:10";
 		assertThat(mGridCellStorage.fromStorageString(mLine, mRevisionNumber),
 				is(false));
 	}
 
-	@Test
-	public void FromStorageString_InvalidLineId_False() throws Exception {
-		mLine = "WRONG:Line:With:an:invalid:identifier:but:with:a:correct:number of elements (11)";
+	@Test(expected = InvalidParameterException.class)
+	public void FromStorageString_StorageStringHasTooManyElements_False()
+			throws Exception {
+		mLine = "CELL:2:3:4:5:6:7:8:9:10:11:12";
 		assertThat(mGridCellStorage.fromStorageString(mLine, mRevisionNumber),
-				is(false));
+				   is(false));
 	}
 
 	@Test

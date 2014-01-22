@@ -40,19 +40,27 @@ public class GridCageStorageTest {
 				mCells), is(false));
 	}
 
+	@Test
+	public void fromStorageString_InvalidLineId_False() throws Exception {
+		mLine = "WRONG:This is not a valid cage storage string";
+		assertThat(mGridCageStorage.fromStorageString(mLine, mRevisionNumber,
+													  mCells), is(false));
+	}
+
 	@Test(expected = InvalidParameterException.class)
-	public void fromStorageString_StorageStringHasIncorrectNumberOfElements_False()
+	public void fromStorageString_StorageStringHasTooLittleElements_False()
 			throws Exception {
-		mLine = "CAGE:too little arguments";
+		mLine = "CAGE:2:3:4:5";
 		assertThat(mGridCageStorage.fromStorageString(mLine, mRevisionNumber,
 				mCells), is(false));
 	}
 
-	@Test
-	public void fromStorageString_InvalidLineId_False() throws Exception {
-		mLine = "WRONG:Line:with:an:invalid:identifier but with a correct number of elements (6)";
+	@Test(expected = InvalidParameterException.class)
+	public void fromStorageString_StorageStringHasTooManyElements_False()
+			throws Exception {
+		mLine = "CAGE:2:3:4:5:6:7";
 		assertThat(mGridCageStorage.fromStorageString(mLine, mRevisionNumber,
-				mCells), is(false));
+													  mCells), is(false));
 	}
 
 	@Test

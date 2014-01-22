@@ -143,41 +143,50 @@ public class GridStorageTest {
 		gridStorage.fromStorageString(storageString, revisionNumber);
 	}
 
-	@Test(expected = InvalidParameterException.class)
-	public void fromStorageString_StorageStringIsEmpty_InvalidParameterException()
-			throws Exception {
-		String storageString = "";
+	@Test
+	public void fromStorageString_InvalidLineId_False() throws Exception {
+		String storageString = "WRONG:this is not a valid grid storage string";
 		int revisionNumber = 596;
 
-		gridStorage.fromStorageString(storageString, revisionNumber);
+		assertThat(
+				gridStorage.fromStorageString(storageString, revisionNumber),
+				is(false));
 	}
 
 	@Test(expected = InvalidParameterException.class)
-	public void fromStorageString_StorageStringHasIncorrectNumberOfElementsForRevisionLessOrEqualTo595_InvalidParameterException()
+	public void fromStorageString_StorageStringHasTooLittleElementsForRevisionLessOrEqualTo595_InvalidParameterException()
 			throws Exception {
-		String storageString = "GRID:too little arguments";
+		String storageString = "GRID:2:3";
 		int revisionNumber = 595;
 
 		gridStorage.fromStorageString(storageString, revisionNumber);
 	}
 
 	@Test(expected = InvalidParameterException.class)
-	public void fromStorageString_StorageStringHasIncorrectNumberOfElementsForRevisionGreaterOrEqualTo596_InvalidParameterException()
+	public void fromStorageString_StorageStringHasTooManyElementsForRevisionLessOrEqualTo595_InvalidParameterException()
 			throws Exception {
-		String storageString = "GRID:too:many:arguments";
+		String storageString = "GRID:2:3:4:5";
+		int revisionNumber = 595;
+
+		gridStorage.fromStorageString(storageString, revisionNumber);
+	}
+
+	@Test(expected = InvalidParameterException.class)
+	public void fromStorageString_StorageStringHasTooLittleElementsForRevisionLessOrEqualTo596_InvalidParameterException()
+			throws Exception {
+		String storageString = "GRID:2";
 		int revisionNumber = 596;
 
 		gridStorage.fromStorageString(storageString, revisionNumber);
 	}
 
-	@Test
-	public void fromStorageString_InvalidLineId_False() throws Exception {
-		String storageString = "WRONG:true:true";
+	@Test(expected = InvalidParameterException.class)
+	public void fromStorageString_StorageStringHasTooManyElementsForRevisionLessOrEqualTo596_InvalidParameterException()
+			throws Exception {
+		String storageString = "GRID:2:3:4";
 		int revisionNumber = 596;
 
-		assertThat(
-				gridStorage.fromStorageString(storageString, revisionNumber),
-				is(false));
+		gridStorage.fromStorageString(storageString, revisionNumber);
 	}
 
 	@Test

@@ -56,18 +56,18 @@ public class GridCageStorage {
 		String[] cageParts = line
 				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1);
 
+		// Only process the storage string if it starts with the correct
+		// identifier.
+		if (cageParts == null || SAVE_GAME_CAGE_LINE.equals(cageParts[0]) == false) {
+			return false;
+		}
+
 		int expectedNumberOfElements = 6;
 		if (cageParts.length != expectedNumberOfElements) {
 			throw new InvalidParameterException(
-					"Wrong number of elements in storage string. Got "
+					"Wrong number of elements in cage storage string. Got "
 							+ cageParts.length + ", expected "
 							+ expectedNumberOfElements + ".");
-		}
-
-		// Only process the storage string if it starts with the correct
-		// identifier.
-		if (cageParts[0].equals(SAVE_GAME_CAGE_LINE) == false) {
-			return false;
 		}
 
 		// Process all parts
