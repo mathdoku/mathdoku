@@ -93,4 +93,8 @@ public class Util {
 	public static <T> boolean isArrayListNullOrEmpty(ArrayList<T> arrayList) {
 		return (arrayList == null || arrayList.size() == 0);
 	}
+
+	public static <T> boolean isNotArrayListNullOrEmpty(ArrayList<T> arrayList) {
+		return (!isArrayListNullOrEmpty(arrayList));
+	}
 }

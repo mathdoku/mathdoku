@@ -6,6 +6,7 @@ import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.grid.GridCell;
+import net.mathdoku.plus.gridGenerating.ComboGenerator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -74,9 +75,13 @@ public class MathDokuDLX extends DLX {
 		// 1 (cage constraint)
 		mTotalMoves = 0;
 		int total_nodes = 0;
+		ComboGenerator comboGenerator = null;
 		for (GridCage gridCage : mCages) {
 			if (gridCage.getPossibleCombos() == null) {
-				gridCage.setPossibleCombos(mGridSize);
+				if (comboGenerator == null) {
+					comboGenerator = new ComboGenerator(mGridSize);
+				}
+				gridCage.setPossibleCombos(comboGenerator.getPossibleCombos(gridCage));
 			}
 			int possibleMovesInCage = gridCage.getPossibleCombos().size();
 			mTotalMoves += possibleMovesInCage;

@@ -794,9 +794,10 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			cage.mCells.add(getCellAt(row, col));
 		}
 		setArithmetic(cage);
-		cage.setPossibleCombos(mGridSize);
+		ComboGenerator comboGenerator = new ComboGenerator(mGridSize);
+		ArrayList<int[]> possibleCombos = comboGenerator.getPossibleCombos(cage);
 		if (maxPermutations > 0
-				&& cage.getPossibleCombos().size() > maxPermutations) {
+				&& possibleCombos.size() > maxPermutations) {
 			// This cage has too many permutations which fulfill the
 			// cage requirements. As this reduces the chance to find a
 			// solution for the puzzle too much, the cage type will not
@@ -808,6 +809,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			}
 			return null;
 		}
+		cage.setPossibleCombos(possibleCombos);
 
 		// Set cage id in cage (and indirectly in all cells in the cage as well)
 		cage.setCageId(newCageId);

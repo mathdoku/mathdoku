@@ -1,8 +1,8 @@
 package net.mathdoku.plus.grid;
 
 import net.mathdoku.plus.enums.CageOperator;
-import net.mathdoku.plus.gridGenerating.ComboGenerator;
 import net.mathdoku.plus.storage.GridCageStorage;
+import net.mathdoku.plus.util.Util;
 
 import java.util.ArrayList;
 
@@ -99,22 +99,27 @@ public class GridCage {
 	 * Set the result and operator for this cage.
 	 * 
 	 * @param resultValue
-	 *            The resulting value of the cage when applying the given cageOperator
-	 *            on the cell values in the cage.
+	 *            The resulting value of the cage when applying the given
+	 *            cageOperator on the cell values in the cage.
 	 * @param cageOperator
-	 *            The cageOperator to be applied on the cell values in this cage.
+	 *            The cageOperator to be applied on the cell values in this
+	 *            cage.
 	 * @param hideOperator
 	 *            True in case the operator of this cage can be hidden but the
 	 *            puzzle can still be solved.
 	 */
-	public void setCageResults(int resultValue, CageOperator cageOperator, boolean hideOperator) {
+	public void setCageResults(int resultValue, CageOperator cageOperator,
+			boolean hideOperator) {
 		// Store results in cage object
 		mResult = resultValue;
 		mCageOperator = cageOperator;
 		mHideOperator = hideOperator;
 
 		// Store cage outcome in top left cell of cage
-		mCells.get(0).setCageText(mResult + (mHideOperator ? "" : mCageOperator.getSign()));
+		if (Util.isNotArrayListNullOrEmpty(mCells)) {
+			mCells.get(0).setCageText(
+					mResult + (mHideOperator ? "" : mCageOperator.getSign()));
+		}
 	}
 
 	/*
@@ -122,56 +127,90 @@ public class GridCage {
 	 */
 	public void setCageId(int id) {
 		mId = id;
-		for (GridCell cell : mCells)
-			cell.setCageId(mId);
-	}
-
-	boolean isAddMathsCorrect() {
-		int total = 0;
-		for (GridCell cell : mCells) {
-			total += cell.getUserValue();
+		if (mCells != null) {
+			for (GridCell cell : mCells) {
+				cell.setCageId(mId);
+			}
 		}
-		return (total == mResult);
 	}
 
-	boolean isMultiplyMathsCorrect() {
-		int total = 1;
-		for (GridCell cell : mCells) {
-			total *= cell.getUserValue();
+	private boolean hasValidNumberOfCellsForOperator(CageOperator cageOperator) {
+		if (Util.isArrayListNullOrEmpty(mCells)) {
+			return false;
 		}
-		return (total == mResult);
+
+		switch (cageOperator) {
+		case NONE:
+			return (mCells.size() == 1);
+		case ADD:
+			return (mCells.size() >= 2);
+		case MULTIPLY:
+			return (mCells.size() >= 2);
+		case DIVIDE:
+			return (mCells.size() == 2);
+		case SUBTRACT:
+			return (mCells.size() == 2);
+		}
+		return false;
 	}
 
-	boolean isDivideMathsCorrect() {
-		if (mCells.size() != 2)
-			return false;
-
-		if (mCells.get(0).getUserValue() > mCells
-				.get(1)
-				.getUserValue())
-			return mCells.get(0).getUserValue() == (mCells
-					.get(1)
-					.getUserValue() * mResult);
-		else
-			return mCells.get(1).getUserValue() == (mCells
-					.get(0)
-					.getUserValue() * mResult);
+	private boolean isNoneMathsCorrect() {
+		if (hasValidNumberOfCellsForOperator(CageOperator.NONE)) {
+			return (mCells.get(0).getUserValue() == mResult);
+		}
+		return false;
 	}
 
-	boolean isSubtractMathsCorrect() {
-		if (mCells.size() != 2)
-			return false;
+	private boolean isAddMathsCorrect() {
+		if (hasValidNumberOfCellsForOperator(CageOperator.ADD)) {
+			int total = 0;
+			for (GridCell cell : mCells) {
+				total += cell.getUserValue();
+			}
+			return (total == mResult);
+		}
+		return false;
+	}
 
-		if (mCells.get(0).getUserValue() > mCells
-				.get(1)
-				.getUserValue())
-			return (mCells.get(0).getUserValue() - mCells
-					.get(1)
-					.getUserValue()) == mResult;
-		else
-			return (mCells.get(1).getUserValue() - mCells
-					.get(0)
-					.getUserValue()) == mResult;
+	private boolean isMultiplyMathsCorrect() {
+		if (hasValidNumberOfCellsForOperator(CageOperator.MULTIPLY)) {
+			int total = 1;
+			for (GridCell cell : mCells) {
+				total *= cell.getUserValue();
+			}
+			return (total == mResult);
+		}
+		return false;
+	}
+
+	private boolean isDivideMathsCorrect() {
+		if (hasValidNumberOfCellsForOperator(CageOperator.DIVIDE)) {
+			if (mCells.get(0).getUserValue() > mCells.get(1).getUserValue()) {
+				return mCells.get(0).getUserValue() == (mCells
+						.get(1)
+						.getUserValue() * mResult);
+			} else {
+				return mCells.get(1).getUserValue() == (mCells
+						.get(0)
+						.getUserValue() * mResult);
+			}
+		}
+		return false;
+	}
+
+	private boolean isSubtractMathsCorrect() {
+		if (hasValidNumberOfCellsForOperator(CageOperator.ADD.SUBTRACT)) {
+			if (mCells.get(0).getUserValue() > mCells.get(1).getUserValue()) {
+				return (mCells.get(0).getUserValue() - mCells
+						.get(1)
+						.getUserValue()) == mResult;
+			} else {
+				return (mCells.get(1).getUserValue() - mCells
+						.get(0)
+						.getUserValue()) == mResult;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -184,19 +223,21 @@ public class GridCage {
 	 *         not all cells in the cage have been filled in.
 	 */
 	public boolean checkUserMath() {
-		// If cage has no cells, the maths are not wrong
-		if (mCells == null || mCells.size() == 0) {
-			return true;
+		if (Util.isArrayListNullOrEmpty(mCells)) {
+			return false;
 		}
 
 		boolean oldUserMathCorrect = mUserMathCorrect;
 		if (allCellsFilledWithUserValue()) {
 			if (mHideOperator) {
-				mUserMathCorrect = isAddMathsCorrect()
+				mUserMathCorrect = isNoneMathsCorrect() || isAddMathsCorrect()
 						|| isMultiplyMathsCorrect() || isDivideMathsCorrect()
 						|| isSubtractMathsCorrect();
 			} else {
 				switch (mCageOperator) {
+				case NONE:
+					mUserMathCorrect = isNoneMathsCorrect();
+					break;
 				case ADD:
 					mUserMathCorrect = isAddMathsCorrect();
 					break;
@@ -227,8 +268,10 @@ public class GridCage {
 	 * Set borders for all cells in this cage.
 	 */
 	public void setBorders() {
-		for (GridCell cell2 : mCells) {
-			cell2.setBorders();
+		if (mCells != null) {
+			for (GridCell cell2 : mCells) {
+				cell2.setBorders();
+			}
 		}
 	}
 
@@ -240,6 +283,9 @@ public class GridCage {
 	 */
 	public void setGridReference(Grid grid) {
 		mGrid = grid;
+
+		// Don't needs to set the reference to the grid cells in mCells as they
+		// will be set directly via the list of grid cells of mGrid.
 	}
 
 	private boolean allCellsFilledWithUserValue() {
@@ -253,12 +299,8 @@ public class GridCage {
 		return true;
 	}
 
-	public ArrayList<int[]> setPossibleCombos(int gridSize) {
-		ComboGenerator comboGenerator = new ComboGenerator(mResult, mCageOperator,
-				mHideOperator, mCells, gridSize);
-		mPossibleCombos = comboGenerator.getPossibleCombos();
-
-		return mPossibleCombos;
+	public void setPossibleCombos(ArrayList<int[]> possibleCombos) {
+		mPossibleCombos = possibleCombos;
 	}
 
 	public ArrayList<int[]> getPossibleCombos() {
