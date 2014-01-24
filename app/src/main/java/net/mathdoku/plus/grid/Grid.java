@@ -1,7 +1,5 @@
 package net.mathdoku.plus.grid;
 
-import com.srlee.DLX.MathDokuDLX;
-
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
@@ -91,77 +89,18 @@ public class Grid {
 	// Solved listener
 	private OnSolvedListener mSolvedListener;
 
-	// The Objects Creator is responsible for creating all new objects needed by
-	// this class. For unit testing purposes the default create methods can be
-	// overridden if needed.
-	public static class ObjectsCreator {
-		public GridCell createGridCell(int id, int gridSize) {
-			return new GridCell(id, gridSize);
-		}
-
-		public GridCage createGridCage() {
-			return new GridCage();
-		}
-
-		public GridStatistics createGridStatistics() {
-			return new GridStatistics();
-		}
-
-		public GridGeneratingParameters createGridGeneratingParameters() {
-			return new GridGeneratingParameters();
-		}
-
-		public MathDokuDLX createMathDokuDLX(int gridSize,
-				ArrayList<GridCage> cages) {
-			return new MathDokuDLX(gridSize, cages);
-		}
-
-		public ArrayList<GridCell> createArrayListOfGridCells() {
-			return new ArrayList<GridCell>();
-		}
-
-		public ArrayList<GridCage> createArrayListOfGridCages() {
-			return new ArrayList<GridCage>();
-		}
-
-		public ArrayList<CellChange> createArrayListOfCellChanges() {
-			return new ArrayList<CellChange>();
-		}
-
-		public GridCellSelectorInRowOrColumn createGridCellSelectorInRowOrColumn(
-				ArrayList<GridCell> cells, int row, int column) {
-			return new GridCellSelectorInRowOrColumn(cells, row, column);
-		}
-
-		public DatabaseHelper createDatabaseHelper() {
-			return DatabaseHelper.getInstance();
-		}
-
-		public GridDatabaseAdapter createGridDatabaseAdapter() {
-			return new GridDatabaseAdapter();
-		}
-
-		public SolvingAttemptDatabaseAdapter createSolvingAttemptDatabaseAdapter() {
-			return new SolvingAttemptDatabaseAdapter();
-		}
-
-		public StatisticsDatabaseAdapter createStatisticsDatabaseAdapter() {
-			return new StatisticsDatabaseAdapter();
-		}
-	}
-
-	private final ObjectsCreator mObjectsCreator;
+	private GridObjectsCreator mGridObjectsCreator;
 
 	/**
 	 * Creates new instance of {@link net.mathdoku.plus.grid.Grid}.
 	 */
 	public Grid() {
-		mObjectsCreator = new ObjectsCreator();
+		mGridObjectsCreator = new GridObjectsCreator();
 		initialize();
 	}
 
 	public Grid(GridLoaderData gridLoaderData) {
-		mObjectsCreator = new ObjectsCreator();
+		mGridObjectsCreator = new GridObjectsCreator();
 
 		mGridSize = gridLoaderData.mGridSize;
 		mGridGeneratingParameters = gridLoaderData.mGridGeneratingParameters;
@@ -195,29 +134,13 @@ public class Grid {
 		}
 
 		if (gridLoaderData.mGridStatistics == null) {
-			mGridStatistics = mObjectsCreator.createStatisticsDatabaseAdapter()
+			mGridStatistics = mGridObjectsCreator.createStatisticsDatabaseAdapter()
 					.insert(this);
 		} else {
 			mGridStatistics = gridLoaderData.mGridStatistics;
 		}
 
 		setPreferences();
-	}
-
-	/**
-	 * Creates new instance of {@link net.mathdoku.plus.grid.Grid}. All objects
-	 * in this class will be created with the given ObjectsCreator. This method
-	 * is intended for unit testing.
-	 * 
-	 * @param objectsCreator
-	 *            The ObjectsCreator to be used by this class. Only create
-	 *            methods for which the default implementation does not suffice,
-	 *            should be overridden.
-	 */
-	public Grid(ObjectsCreator objectsCreator) {
-		mObjectsCreator = (objectsCreator != null ? objectsCreator
-				: new ObjectsCreator());
-		initialize();
 	}
 
 	/**
@@ -229,14 +152,59 @@ public class Grid {
 		mRowId = -1;
 		mSolvingAttemptId = -1;
 		mGridSize = 0;
-		mCells = mObjectsCreator.createArrayListOfGridCells();
-		mCages = mObjectsCreator.createArrayListOfGridCages();
-		mMoves = mObjectsCreator.createArrayListOfCellChanges();
+		mCells = mGridObjectsCreator.createArrayListOfGridCells();
+		mCages = mGridObjectsCreator.createArrayListOfGridCages();
+		mMoves = mGridObjectsCreator.createArrayListOfCellChanges();
 		mSolvedListener = null;
-		mGridGeneratingParameters = mObjectsCreator
+		mGridGeneratingParameters = mGridObjectsCreator
 				.createGridGeneratingParameters();
-		mGridStatistics = mObjectsCreator.createGridStatistics();
+		mGridStatistics = mGridObjectsCreator.createGridStatistics();
 		setPreferences();
+	}
+
+	public void setObjectsCreator(
+			GridObjectsCreator gridObjectsCreator) {
+		if (gridObjectsCreator== null) {
+			throw new InvalidParameterException(
+					"Parameter GridObjectsCreator can not be null.");
+		}
+		mGridObjectsCreator = gridObjectsCreator;
+
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		// TO BE REMOVED. Temporary called unti BUILDER PATTERN IS IMPLEMENTED!!!!!!!!!!!!!!!!!!!
+		initialize();
 	}
 
 	/**
@@ -416,7 +384,7 @@ public class Grid {
 	 */
 	public void addMove(CellChange cellChange) {
 		if (mMoves == null) {
-			mMoves = mObjectsCreator.createArrayListOfCellChanges();
+			mMoves = mGridObjectsCreator.createArrayListOfCellChanges();
 		}
 
 		boolean identicalToLastMove = false;
@@ -467,7 +435,7 @@ public class Grid {
 		if (userValueBeforeUndo != cellChangeGridCell.getUserValue()) {
 			// Each cell in the same column or row as the restored cell, has to
 			// be checked for duplicate values.
-			GridCellSelectorInRowOrColumn gridCellSelectorInRowOrColumn = mObjectsCreator
+			GridCellSelectorInRowOrColumn gridCellSelectorInRowOrColumn = mGridObjectsCreator
 					.createGridCellSelectorInRowOrColumn(mCells,
 							cellChangeGridCell.getRow(),
 							cellChangeGridCell.getColumn());
@@ -725,7 +693,7 @@ public class Grid {
 		mSolvingAttemptId = -1;
 		mRowId = -1;
 		mSolvedListener = null;
-		mGridStatistics = mObjectsCreator.createGridStatistics();
+		mGridStatistics = mGridObjectsCreator.createGridStatistics();
 
 		// Set new data in grid
 		mGridGeneratingParameters = gridGeneratingParameters;
@@ -820,12 +788,12 @@ public class Grid {
 	 * @return True in case the gird has been inserted. False otherwise.
 	 */
 	public boolean insertInDatabase() {
-		DatabaseHelper databaseHelper = mObjectsCreator.createDatabaseHelper();
+		DatabaseHelper databaseHelper = mGridObjectsCreator.createDatabaseHelper();
 		databaseHelper.beginTransaction();
 
 		// Insert grid record if it does not yet exists.
 		if (mRowId < 0) {
-			GridDatabaseAdapter gridDatabaseAdapter = mObjectsCreator
+			GridDatabaseAdapter gridDatabaseAdapter = mGridObjectsCreator
 					.createGridDatabaseAdapter();
 			GridRow gridRow = gridDatabaseAdapter
 					.getByGridDefinition(toGridDefinitionString());
@@ -834,13 +802,13 @@ public class Grid {
 		}
 
 		// Insert new solving attempt.
-		SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = mObjectsCreator
+		SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = mGridObjectsCreator
 				.createSolvingAttemptDatabaseAdapter();
 		mSolvingAttemptId = solvingAttemptDatabaseAdapter.insert(this,
 				Util.getPackageVersionNumber());
 
 		// Insert new statistics.
-		StatisticsDatabaseAdapter statisticsDatabaseAdapter = mObjectsCreator
+		StatisticsDatabaseAdapter statisticsDatabaseAdapter = mGridObjectsCreator
 				.createStatisticsDatabaseAdapter();
 		mGridStatistics = statisticsDatabaseAdapter.insert(this);
 
@@ -887,7 +855,7 @@ public class Grid {
 		synchronized (mLock) {
 			// The solving attempt was already created as soon as the grid was
 			// created first. So only an update is needed.
-			SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = mObjectsCreator
+			SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = mGridObjectsCreator
 					.createSolvingAttemptDatabaseAdapter();
 			if (solvingAttemptDatabaseAdapter.update(mSolvingAttemptId, this) == false) {
 				return false;
@@ -904,7 +872,7 @@ public class Grid {
 					&& mGridStatistics.isIncludedInStatistics() == false) {
 				// Note: do not return false in case following fails as it is
 				// not relevant to the user.
-				StatisticsDatabaseAdapter statisticsDatabaseAdapter = mObjectsCreator
+				StatisticsDatabaseAdapter statisticsDatabaseAdapter = mGridObjectsCreator
 						.createStatisticsDatabaseAdapter();
 				statisticsDatabaseAdapter
 						.updateSolvingAttemptToBeIncludedInStatistics(mRowId,
@@ -926,7 +894,7 @@ public class Grid {
 		synchronized (mLock) {
 			// The solving attempt was already created as soon as the grid was
 			// created first. So only an update is needed.
-			SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = mObjectsCreator
+			SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = mGridObjectsCreator
 					.createSolvingAttemptDatabaseAdapter();
 			if (solvingAttemptDatabaseAdapter.updateOnAppUpgrade(
 					mSolvingAttemptId, this) == false) {
@@ -1028,7 +996,7 @@ public class Grid {
 		int cageIndex = 0;
 		for (int i = ID_PART_FIRST_CAGE; i <= ID_PART_LAST_CAGE; i++) {
 			// Define new cage
-			GridCage gridCage = mObjectsCreator.createGridCage();
+			GridCage gridCage = mGridObjectsCreator.createGridCage();
 			gridCage.setCageId(cageIndex++);
 
 			// Add cage to cages list
@@ -1099,7 +1067,7 @@ public class Grid {
 			int cageId = Integer.valueOf(matcher.group());
 
 			// Create new cell and add it to the cells list.
-			GridCell gridCell = mObjectsCreator.createGridCell(cellNumber++,
+			GridCell gridCell = mGridObjectsCreator.createGridCell(cellNumber++,
 					mGridSize);
 			gridCell.setCageId(cageId);
 			mCells.add(gridCell);
@@ -1128,7 +1096,7 @@ public class Grid {
 		}
 
 		// Check whether a single solution can be found.
-		int[][] solution = mObjectsCreator.createMathDokuDLX(mGridSize, mCages)
+		int[][] solution = mGridObjectsCreator.createMathDokuDLX(mGridSize, mCages)
 				.getSolutionGrid();
 		if (solution == null) {
 			// Either no or multiple solutions can be found. In both case this
@@ -1261,28 +1229,8 @@ public class Grid {
 		return true;
 	}
 
-	/* package private */void setDateCreated(long dateCreated) {
-		mDateCreated = dateCreated;
-	}
-
-	/* package private */void setDateLastSaved(long dateLastSaved) {
-		mDateUpdated = dateLastSaved;
-	}
-
 	/* package private */void setSolvingAttemptId(int solvingAttemptId) {
 		mSolvingAttemptId = solvingAttemptId;
-	}
-
-	/* package private */void setRowId(int rowId) {
-		mRowId = rowId;
-	}
-
-	/* package private */void setGridStatistics(GridStatistics gridStatistics) {
-		mGridStatistics = gridStatistics;
-	}
-
-	/* package private */ObjectsCreator getObjectsCreator() {
-		return mObjectsCreator;
 	}
 
 	/* package private */void setRevealed(boolean revealed) {
