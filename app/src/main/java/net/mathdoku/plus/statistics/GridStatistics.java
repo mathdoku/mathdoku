@@ -7,7 +7,7 @@ import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
  */
 public class GridStatistics {
 	// Unique row id for the statistics. This value may not be altered.
-	public int mId;
+	public int mId = -1; // -1 if not saved
 
 	// Row id of the grid on which these statistics apply
 	public int mGridId;

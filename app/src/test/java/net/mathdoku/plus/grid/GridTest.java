@@ -22,7 +22,6 @@ import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.MockitoAnnotations;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -31,7 +30,6 @@ import robolectric.RobolectricGradleTestRunner;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
@@ -50,11 +48,88 @@ import static org.mockito.Mockito.when;
 public class GridTest {
 	private Activity mActivity;
 	private Preferences preferences;
-	private Grid mGrid;
+	private GridBuilderStub mGridBuilder;
+
+	private class GridBuilderStub extends GridBuilder {
+		public GridBuilderStub setupDefaultWhichDoesNotThrowErrorsOnBuild() {
+			int gridSize = 4;
+			setGridSize(gridSize);
+
+			// Insert exact number of cells needed with this grid size.
+			int numberOfCells = gridSize * gridSize;
+			ArrayList<GridCell> gridCells = mGridObjectsCreator
+					.createArrayListOfGridCells();
+			for (int i = 0; i < numberOfCells; i++) {
+				gridCells.add(mGridObjectsCreator.createGridCell(i, gridSize));
+			}
+			super.setCells(gridCells);
+
+			// Insert an arbitrary number of cages (at least 1)
+			int numberOfCages = 3;
+			ArrayList<GridCage> gridCages = mGridObjectsCreator
+					.createArrayListOfGridCages();
+			for (int i = 0; i < numberOfCages; i++) {
+				gridCages.add(mGridObjectsCreator.createGridCage());
+			}
+			super.setCages(gridCages);
+
+			super.setGridStatistics(mGridObjectsCreator.createGridStatistics());
+
+			super.setGridGeneratingParameters(mGridObjectsCreator
+					.createGridGeneratingParameters());
+
+			return this;
+		}
+
+		/**
+		 * Initializes the list of cells of the GridBuilder with the given grid
+		 * cells.
+		 */
+		private GridBuilderStub setCellsInitializedWith(GridCell... gridCell) {
+			ArrayList<GridCell> gridCells = new ArrayList<GridCell>();
+
+			for (int i = 0; i < gridCell.length; i++) {
+				gridCells.add(gridCell[i]);
+			}
+			super.setCells(gridCells);
+
+			return this;
+		}
+
+		/**
+		 * Initializes the list of cages of the GridBuilder with the given grid
+		 * cages.
+		 */
+		private GridBuilderStub setCagesInitializedWith(GridCage... gridCage) {
+			ArrayList<GridCage> gridCages = new ArrayList<GridCage>();
+
+			for (int i = 0; i < gridCage.length; i++) {
+				gridCages.add(gridCage[i]);
+			}
+			super.setCages(gridCages);
+
+			return this;
+		}
+
+		/**
+		 * Initializes the list of cell changess of the GridBuilder with the
+		 * given cell changes.
+		 */
+		private GridBuilderStub setCellChangesInitializedWith(
+				CellChange... cellChange) {
+			ArrayList<CellChange> cellChanges = new ArrayList<CellChange>();
+
+			for (int i = 0; i < cellChange.length; i++) {
+				cellChanges.add(cellChange[i]);
+			}
+			super.setCellChanges(cellChanges);
+
+			return this;
+		}
+	}
 
 	// Mocks used by the GridObjectsCreatorStub when creating new objects for
-	// the
-	// Grid.
+	// the Grid.
 	private GridCell mGridCellMock = mock(GridCell.class);
 	private GridCage mGridCageMock = mock(GridCage.class);
 	private CellChange mCellChangeMock = mock(CellChange.class);
@@ -65,21 +140,10 @@ public class GridTest {
 	private SolvingAttemptDatabaseAdapter mSolvingAttemptDatabaseAdapterMock = mock(SolvingAttemptDatabaseAdapter.class);
 	private StatisticsDatabaseAdapter mStatisticsDatabaseAdapterMock = mock(StatisticsDatabaseAdapter.class);
 	private GridCellSelectorInRowOrColumn mGridCellSelectorInRowOrColumn = mock(GridCellSelectorInRowOrColumn.class);
-	private GridLoader mGridLoaderMock = mock(GridLoader.class);
 
 	private GridObjectsCreatorStub mGridObjectsCreatorStub;
 
 	private class GridObjectsCreatorStub extends GridObjectsCreator {
-		// Array list for Grid Cells to be used when the Grid Cell list is
-		// created.
-		private ArrayList<GridCell> mArrayListOfGridCells = null;
-
-		// Array lists for Cell Changes to be used when the Cell Change list is
-		// created. By default an empty array list is returned.
-		private boolean mArrayListOfCellChangesMockReturnsMockOnNextCall = false;
-		private boolean mArrayListOfCellChangesMockReturnsNullOnFirstCall = false;
-		private ArrayList<CellChange> mArrayListOfCellChangesInitial = null;
-
 		// Unreveal the array list of cell changes as it is hidden in the Grid
 		// Object.
 		public ArrayList<CellChange> mArrayListOfCellChanges = null;
@@ -110,66 +174,9 @@ public class GridTest {
 			return mock(MathDokuDLX.class);
 		}
 
-		/**
-		 * Initializes the ArrayList of Grid Cells with an ArrayList filled with
-		 * given (mocked) GridCells.
-		 */
-		public GridObjectsCreatorStub initializeArrayListOfGridCells(
-				GridCell... gridCell) {
-			if (mArrayListOfGridCells != null) {
-				throw new RuntimeException(
-						"Cannot initialize Array List of Grid Cells after Grid has been initialized.");
-			}
-			mArrayListOfGridCells = createArrayListOfGridCellsWithGridCells(gridCell);
-
-			return this;
-		}
-
-		@Override
-		public ArrayList<GridCell> createArrayListOfGridCells() {
-			if (mArrayListOfGridCells == null) {
-				mArrayListOfGridCells = super.createArrayListOfGridCells();
-			}
-			return mArrayListOfGridCells;
-		}
-
-		@Override
-		public ArrayList<GridCage> createArrayListOfGridCages() {
-			return super.createArrayListOfGridCages();
-		}
-
-		public GridObjectsCreatorStub replaceArrayListOfCellChangesWithMock() {
-			if (mArrayListOfCellChanges != null) {
-				throw new RuntimeException(
-						"Cannot replace Array List of Cell Changes with Mock after Grid has been initialized.");
-			}
-			mArrayListOfCellChangesInitial = mock(ArrayList.class);
-
-			return this;
-		}
-
-		public GridObjectsCreatorStub replaceArrayListOfCellChangesWithNullWhenCreatingGrid() {
-			if (mArrayListOfCellChanges != null) {
-				throw new RuntimeException(
-						"Cannot replace Array List of Cell Changes with Mock after Grid has been initialized.");
-			}
-			mArrayListOfCellChangesMockReturnsNullOnFirstCall = true;
-
-			return this;
-		}
-
 		@Override
 		public ArrayList<CellChange> createArrayListOfCellChanges() {
-			// As the array list of cell changes is not accessible via the Grid,
-			// it is unrevealed via the GridObjectCreator.
-			if (mArrayListOfCellChangesMockReturnsNullOnFirstCall) {
-				mArrayListOfCellChangesMockReturnsNullOnFirstCall = false;
-				mArrayListOfCellChanges = null;
-			} else {
-				mArrayListOfCellChanges = (mArrayListOfCellChangesInitial != null ? mArrayListOfCellChangesInitial
-						: super.createArrayListOfCellChanges());
-			}
-
+			mArrayListOfCellChanges = super.createArrayListOfCellChanges();
 			return mArrayListOfCellChanges;
 		}
 
@@ -202,8 +209,6 @@ public class GridTest {
 
 	@Before
 	public void setUp() {
-		MockitoAnnotations.initMocks(this);
-
 		mActivity = new Activity();
 
 		Preferences.ObjectsCreator preferencesObjectsCreator = new Preferences.ObjectsCreator() {
@@ -219,22 +224,17 @@ public class GridTest {
 		preferences = Preferences.getInstance(mActivity,
 				preferencesObjectsCreator);
 
-		mGrid = new Grid();
 		mGridObjectsCreatorStub = new GridObjectsCreatorStub();
-		mGrid.setObjectsCreator(mGridObjectsCreatorStub);
-	}
-
-	@Test
-	public void SetGridSize_ChangeGridSize_RuntimeExceptionIsThrown()
-			throws Exception {
-		mGrid.setGridSize(5);
-		assertThat("Update of grid size", mGrid.setGridSize(6), is(false));
+		mGridBuilder = new GridBuilderStub();
+		mGridBuilder.setObjectsCreator(mGridObjectsCreatorStub);
+		mGridBuilder.setupDefaultWhichDoesNotThrowErrorsOnBuild();
 	}
 
 	@Test
 	public void setPreferences_CreateGrid_PreferencesAreRetrieved()
 			throws Exception {
-		mGrid.setPreferences();
+		Grid grid = mGridBuilder.build();
+		grid.setPreferences();
 
 		// Check that preferences are retrieved when setting the preferences.
 		// Note: method setPreference is also called when creating the grid. So
@@ -247,107 +247,102 @@ public class GridTest {
 	@Test
 	public void setPreferences_CreateGridOfSize4_CellBordersAreSet()
 			throws Exception {
-		mGrid.mCells = createArrayListOfGridCellsWithGridCells(mGridCellMock,
-				mGridCellMock, mGridCellMock, mGridCellMock);
-		int numberOfCells = mGrid.mCells.size();
+		Grid grid = mGridBuilder.build();
+		verify(mGridCellMock, times(grid.mCells.size())).setBorders();
 
-		mGrid.setPreferences();
+		grid.setPreferences();
 
-		verify(mGridCellMock, times(numberOfCells)).setBorders();
+		verify(mGridCellMock, times(2 * grid.mCells.size())).setBorders();
 	}
 
 	@Test
 	public void getSelectedCage_SelectedCellIsNull_NullCage() {
-		assertThat("Selected cage", mGrid.getSelectedCage(), is(nullValue()));
+		Grid grid = mGridBuilder.build();
+		assertThat("Selected cage", grid.getSelectedCage(), is(nullValue()));
 	}
 
 	@Test
 	public void getSelectedCage_SelectedCellIsNotNull_CageSelected() {
-		mGrid.mCages = createArrayListOfGridCagesWithGridCages(
-				mock(GridCage.class), mGridCageMock, mock(GridCage.class));
 		when(mGridCellMock.getCage()).thenReturn(mGridCageMock);
-		mGrid.setSelectedCell(mGridCellMock);
+		Grid grid = mGridBuilder.build();
+		grid.setSelectedCell(mGridCellMock);
 
-		assertThat("Selected cage", mGrid.getSelectedCage(), is(mGridCageMock));
+		assertThat("Selected cage", grid.getSelectedCage(), is(mGridCageMock));
 	}
 
 	@Test
 	public void clearCells_GridWithMultipleMovesCleared_AllMovesCleared()
 			throws Exception {
-		mGrid.addMove(mCellChangeMock);
-		mGrid.addMove(mock(CellChange.class));
-		mGrid.addMove(mock(CellChange.class));
-		mGrid.addMove(mock(CellChange.class));
-		assertThat("Number of cell changes before clear",
-				mGridObjectsCreatorStub.mArrayListOfCellChanges.size(), is(4));
+		mGridBuilder.setCellChangesInitializedWith(mCellChangeMock,
+				mock(CellChange.class), mock(CellChange.class),
+				mock(CellChange.class));
+		Grid grid = mGridBuilder.build();
+		assertThat("Number of cell changes before clear", grid.countMoves(),
+				is(mGridBuilder.mCellChanges.size()));
 
 		// Clear the cells. Value of variable replace is not relevant for this
 		// unit test.
 		boolean replay = false;
-		mGrid.clearCells(replay);
+		grid.clearCells(replay);
 
-		assertThat("Number of moves for grid after clear",
-				mGridObjectsCreatorStub.mArrayListOfCellChanges.size(), is(0));
+		assertThat("Number of moves for grid after clear", grid.countMoves(),
+				is(0));
 	}
 
 	@Test
 	public void clearCells_GridWithMultipleCellsCleared_AllCellsCleared()
 			throws Exception {
-		mGrid.mCells = createArrayListOfGridCellsWithGridCells(mGridCellMock,
-				mGridCellMock, mGridCellMock);
+		Grid grid = mGridBuilder.build();
 
 		// Clear the cells. Value of variable "replay" is not relevant for this
 		// unit test.
 		boolean replay = false;
-		mGrid.clearCells(replay);
+		grid.clearCells(replay);
 
 		// Note: currently a cell is always cleared even in case it does not
 		// contain a user values nor any maybe values.
-		int expectedNumberOfCells = mGrid.mCells.size();
-		verify(mGridCellMock, times(expectedNumberOfCells)).clear();
+		verify(mGridCellMock, times(grid.mCells.size())).clear();
 	}
 
 	@Test
 	public void clearCells_GridWithMultipleCellsCleared_FlagsOfAllCellsCleared()
 			throws Exception {
-		mGrid.mCells = createArrayListOfGridCellsWithGridCells(mGridCellMock,
-				mGridCellMock, mGridCellMock);
+		Grid grid = mGridBuilder.build();
 
 		// Clear the cells. Value of variable "replay" is not relevant for this
 		// unit test.
 		boolean replay = true;
-		mGrid.clearCells(replay);
+		grid.clearCells(replay);
 
-		int expectedNumberOfCells = mGrid.mCells.size();
-		verify(mGridCellMock, times(expectedNumberOfCells)).clearAllFlags();
+		verify(mGridCellMock, times(grid.mCells.size())).clearAllFlags();
 	}
 
 	@Test
 	public void clearCells_GridWithMultipleCellsCleared_GridStatisticsUpdated()
 			throws Exception {
 		when(mGridCellMock.getUserValue()).thenReturn(0, 1, 2, 0);
-		mGrid.mCells = createArrayListOfGridCellsWithGridCells(mGridCellMock,
-				mGridCellMock, mGridCellMock);
+		Grid grid = mGridBuilder.build();
 
 		// Clear the cells. Value of variable "replay" is not relevant for this
 		// unit test.
 		boolean replay = true;
-		mGrid.clearCells(replay);
+		grid.clearCells(replay);
 
 		// Clearing a second time won't change the statistics as no cells are
 		// left to be cleared
 		when(mGridCellMock.getUserValue()).thenReturn(0, 0, 0, 0);
-		mGrid.clearCells(replay);
+		grid.clearCells(replay);
 
 		verify(mGridStatisticsMock).increaseCounter(
 				GridStatistics.StatisticsCounterType.ACTION_CLEAR_GRID);
 	}
 
 	private void assertThatGridCellDoesNotExist(int gridSize, int row, int col) {
-		mGrid.setGridSize(gridSize);
+		mGridBuilder.setGridSize(gridSize);
+		Grid grid = mGridBuilder.build();
 
 		assertThat("GridCell found for row and column",
-				mGrid.getCellAt(row, col), is(nullValue()));
+				grid.getCellAt(row, col), is(nullValue()));
 	}
 
 	@Test
@@ -392,39 +387,11 @@ public class GridTest {
 
 	@Test
 	public void getCellAt_ValidRowAndColNumber_NotNull() throws Exception {
-		int gridSize = 2;
-		mGrid.setGridSize(gridSize);
-		mGrid.mCells = createArrayListOfGridCellsWithGridCells(
-				mock(GridCell.class), mock(GridCell.class),
-				mock(GridCell.class), mGridCellMock);
+		Grid grid = mGridBuilder.build();
 
-		assertThat("Number of cells in grid", mGrid.mCells.size(), is(gridSize
-				* gridSize));
-
-		// Get cell at row 2 and col 2
-		int rowForGridCellMock = 2;
-		int colForGridCellMock = 2;
-		assertThat(
-				"Cell retrieved from grid",
-				mGrid.getCellAt(rowForGridCellMock - 1, colForGridCellMock - 1),
+		assertThat("Cell retrieved from grid", grid.getCellAt(
+				mGridBuilder.mGridSize - 1, mGridBuilder.mGridSize - 1),
 				is(sameInstance(mGridCellMock)));
-	}
-
-	@Test
-	public void revealSolution_NullCellList_True() throws Exception {
-		// Override the default (empty) array list with null
-		mGrid.mCells = null;
-
-		mGrid.revealSolution();
-
-		assertThat("Solution revealed", mGrid.isSolutionRevealed(), is(true));
-	}
-
-	@Test
-	public void revealSolution_EmptyCellList_True() throws Exception {
-		mGrid.revealSolution();
-
-		assertThat("Solution revealed", mGrid.isSolutionRevealed(), is(true));
 	}
 
 	@Test
@@ -432,14 +399,12 @@ public class GridTest {
 			throws Exception {
 		when(mGridCellMock.isUserValueIncorrect()).thenReturn(false, true,
 				false, true, false);
-		mGrid.mCells = createArrayListOfGridCellsWithGridCells(mGridCellMock,
-				mGridCellMock, mGridCellMock, mGridCellMock, mGridCellMock);
+		Grid grid = mGridBuilder.build();
 
-		mGrid.revealSolution();
+		grid.revealSolution();
 
 		// Check if test isn't flawed with incorrect number of cells in list.
-		int expectedNumberOfCellsInList = 5;
-		verify(mGridCellMock, times(expectedNumberOfCellsInList))
+		verify(mGridCellMock, times(mGridBuilder.mCells.size()))
 				.isUserValueIncorrect();
 
 		// Check whether the correct number of cells has been revealed.
@@ -454,28 +419,32 @@ public class GridTest {
 	@Test
 	public void revealSolution_NonEmptyCellList_GridStatisticsUpdated()
 			throws Exception {
-		mGrid.revealSolution();
+		Grid grid = mGridBuilder.build();
+		grid.revealSolution();
 
 		verify(mGridStatisticsMock).solutionRevealed();
 	}
 
 	@Test
 	public void unrevealSolution() throws Exception {
+		Grid grid = mGridBuilder.build();
 		Config.AppMode actualAppMode = Config.mAppMode;
 		Config.AppMode expectedAppMode = Config.AppMode.DEVELOPMENT;
 
 		assertThat("Development mode", actualAppMode, is(expectedAppMode));
-		assertThat("Grid is unrevealed", mGrid.isSolutionRevealed(), is(false));
+		assertThat("Grid is unrevealed", grid.isSolutionRevealed(), is(false));
 	}
 
 	@Test
 	public void isSolved_UnSolvedGridIsChecked_False() throws Exception {
 		when(mGridCellMock.isUserValueIncorrect()).thenReturn(false, false,
 				true, false);
-		mGrid.mCells = createArrayListOfGridCellsWithGridCells(mGridCellMock,
-				mGridCellMock, mGridCellMock, mGridCellMock);
+		mGridBuilder.setGridSize(2);
+		mGridBuilder.setCellsInitializedWith(mGridCellMock, mGridCellMock,
+				mGridCellMock, mGridCellMock);
+		Grid grid = mGridBuilder.build();
 
-		assertThat("Grid is solved", mGrid.isSolved(), is(false));
+		assertThat("Grid is solved", grid.isSolved(), is(false));
 
 		// Check if test isn't flawed with incorrect number of cells in list.
 		verify(mGridCellMock, atLeast(1)).isUserValueIncorrect();
@@ -483,50 +452,46 @@ public class GridTest {
 
 	@Test
 	public void isSolved_SolvedGridIsChecked_True() throws Exception {
-		when(mGridCellMock.isUserValueIncorrect()).thenReturn(false, false,
-				false, false);
-		mGrid.mCells = createArrayListOfGridCellsWithGridCells(mGridCellMock,
-				mGridCellMock, mGridCellMock, mGridCellMock);
+		when(mGridCellMock.isUserValueIncorrect()).thenReturn(false);
+		Grid grid = mGridBuilder.build();
 
-		assertThat("Grid is solved", mGrid.isSolved(), is(true));
+		assertThat("Grid is solved", grid.isSolved(), is(true));
 
 		// Check if test isn't flawed with incorrect number of cells in list.
-		int expectedNumberOfCellsInList = 4;
-		verify(mGridCellMock, times(expectedNumberOfCellsInList))
+		verify(mGridCellMock, times(mGridBuilder.mCells.size()))
 				.isUserValueIncorrect();
 	}
 
 	@Test
 	public void setSolved_SolvedGrid_GridStatisticsUpdated() throws Exception {
-		mGrid.setSolved();
+		Grid grid = mGridBuilder.build();
+		grid.setSolved();
 
 		verify(mGridStatisticsMock).solved();
 	}
 
 	@Test
 	public void setSolved_SolvedGrid_OnSolvedListenerCalled() throws Exception {
+		Grid grid = mGridBuilder.build();
 		Grid.OnSolvedListener gridOnSolvedListener = mock(Grid.OnSolvedListener.class);
-		mGrid.setSolvedHandler(gridOnSolvedListener);
+		grid.setSolvedHandler(gridOnSolvedListener);
 
 		// Solve it
-		mGrid.setSolved();
+		grid.setSolved();
 
 		verify(gridOnSolvedListener).puzzleSolved();
 	}
 
 	@Test
 	public void isSolutionValidSoFar_AllCellsEmpty_True() throws Exception {
-		when(mGridCellMock.isUserValueSet()).thenReturn(false, false, false,
-				false);
-		mGrid.mCells = createArrayListOfGridCellsWithGridCells(mGridCellMock,
-				mGridCellMock, mGridCellMock, mGridCellMock);
+		when(mGridCellMock.isUserValueSet()).thenReturn(false);
+		Grid grid = mGridBuilder.build();
 
-		assertThat("Grid is valid so far", mGrid.isSolutionValidSoFar(),
+		assertThat("Grid is valid so far", grid.isSolutionValidSoFar(),
 				is(true));
 
 		// Check if test isn't flawed with incorrect number of cells in list.
-		int expectedNumberOfCellsInList = 4;
-		verify(mGridCellMock, times(expectedNumberOfCellsInList))
+		verify(mGridCellMock, times(mGridBuilder.mCells.size()))
 				.isUserValueSet();
 	}
 
@@ -534,9 +499,9 @@ public class GridTest {
 	public void isSolutionValidSoFar_FilledCellIsValid_True() throws Exception {
 		when(mGridCellMock.isUserValueSet()).thenReturn(true);
 		when(mGridCellMock.isUserValueIncorrect()).thenReturn(false);
-		mGrid.mCells.add(mGridCellMock);
+		Grid grid = mGridBuilder.build();
 
-		assertThat("Grid is valid so far", mGrid.isSolutionValidSoFar(),
+		assertThat("Grid is valid so far", grid.isSolutionValidSoFar(),
 				is(true));
 	}
 
@@ -545,9 +510,9 @@ public class GridTest {
 			throws Exception {
 		when(mGridCellMock.isUserValueSet()).thenReturn(true);
 		when(mGridCellMock.isUserValueIncorrect()).thenReturn(true);
-		mGrid.mCells.add(mGridCellMock);
+		Grid grid = mGridBuilder.build();
 
-		assertThat("Grid is valid so far", mGrid.isSolutionValidSoFar(),
+		assertThat("Grid is valid so far", grid.isSolutionValidSoFar(),
 				is(false));
 	}
 
@@ -571,23 +536,22 @@ public class GridTest {
 		when(gridCellWithInvalidUserValueStub.isUserValueIncorrect())
 				.thenReturn(true);
 
-		mGrid.mCells = createArrayListOfGridCellsWithGridCells(
-				gridCellEmptyStub, gridCellWithValidUserValueStub,
-				gridCellWithInvalidUserValueStub,
+		mGridBuilder.setGridSize(2);
+		mGridBuilder.setCellsInitializedWith(gridCellEmptyStub,
+				gridCellWithValidUserValueStub,
 				gridCellWithInvalidUserValueStub,
 				gridCellWithValidUserValueStub);
+		Grid grid = mGridBuilder.build();
 
-		assertThat("Grid is valid so far", mGrid.isSolutionValidSoFar(),
+		assertThat("Grid is valid so far", grid.isSolutionValidSoFar(),
 				is(false));
 	}
 
 	@Test
 	public void addMove_FirstMoveAddedToNullList_True() throws Exception {
-		mGrid = new Grid();
-		mGridObjectsCreatorStub = new GridObjectsCreatorStub()
-				.replaceArrayListOfCellChangesWithNullWhenCreatingGrid();
-		mGrid.setObjectsCreator(mGridObjectsCreatorStub);
-		mGrid.addMove(mCellChangeMock);
+		mGridBuilder.mCellChanges = null;
+		Grid grid = mGridBuilder.build();
+		grid.addMove(mCellChangeMock);
 
 		assertThat("Number of cell changes",
 				mGridObjectsCreatorStub.mArrayListOfCellChanges.size(), is(1));
@@ -595,7 +559,8 @@ public class GridTest {
 
 	@Test
 	public void addMove_FirstMoveAddedToEmptyList_True() throws Exception {
-		mGrid.addMove(mCellChangeMock);
+		Grid grid = mGridBuilder.build();
+		grid.addMove(mCellChangeMock);
 
 		assertThat("Number of cell changes",
 				mGridObjectsCreatorStub.mArrayListOfCellChanges.size(), is(1));
@@ -603,9 +568,10 @@ public class GridTest {
 
 	@Test
 	public void addMove_AddMultipleDifferentMoves_True() throws Exception {
-		mGrid.addMove(mCellChangeMock);
+		Grid grid = mGridBuilder.build();
+		grid.addMove(mCellChangeMock);
 		// Add another mock as moves may not be identical for this test
-		mGrid.addMove(mock(CellChange.class));
+		grid.addMove(mock(CellChange.class));
 
 		assertThat("Number of cell changes",
 				mGridObjectsCreatorStub.mArrayListOfCellChanges.size(), is(2));
@@ -613,9 +579,10 @@ public class GridTest {
 
 	@Test
 	public void addMove_AddMultipleIdenticalMoves_True() throws Exception {
+		Grid grid = mGridBuilder.build();
 		// Add same mock twice as we need identical moves for this test
-		mGrid.addMove(mCellChangeMock);
-		mGrid.addMove(mCellChangeMock);
+		grid.addMove(mCellChangeMock);
+		grid.addMove(mCellChangeMock);
 
 		assertThat("Number of cell changes",
 				mGridObjectsCreatorStub.mArrayListOfCellChanges.size(), is(1));
@@ -623,89 +590,56 @@ public class GridTest {
 
 	@Test
 	public void countMoves_MovesListIsNull_ZeroMoves() throws Exception {
-		mGridObjectsCreatorStub = new GridObjectsCreatorStub()
-				.replaceArrayListOfCellChangesWithNullWhenCreatingGrid();
-		mGrid = new Grid();
-		mGrid.setObjectsCreator(mGridObjectsCreatorStub);
+		mGridBuilder.mCellChanges = null;
+		Grid grid = mGridBuilder.build();
 
-		int actualNumberOfCellChanges = mGrid.countMoves();
-		assertThat("Number of moves in a Grid with an empty moves list",
+		int actualNumberOfCellChanges = grid.countMoves();
+		assertThat("Number of moves in a Grid with an null moves list",
 				actualNumberOfCellChanges, is(0));
 	}
 
 	@Test
 	public void countMoves_MovesListIsNotEmpty_MovesCountedCorrectly()
 			throws Exception {
-		mGridObjectsCreatorStub = new GridObjectsCreatorStub()
-				.replaceArrayListOfCellChangesWithMock();
-		mGrid = new Grid();
-		mGrid.setObjectsCreator(mGridObjectsCreatorStub);
-		int expectedNumberOfCellChanges = 99;
-		when(mGridObjectsCreatorStub.mArrayListOfCellChanges.size())
-				.thenReturn(expectedNumberOfCellChanges);
+		mGridBuilder.setCellChangesInitializedWith(mock(CellChange.class),
+				mock(CellChange.class), mock(CellChange.class),
+				mock(CellChange.class), mock(CellChange.class),
+				mock(CellChange.class));
+		Grid grid = mGridBuilder.build();
 
-		int actualNumberOfCellChanges = mGrid.countMoves();
-		assertThat("Number of moves in a Grid with an empty moves list",
-				actualNumberOfCellChanges, is(expectedNumberOfCellChanges));
+		assertThat("Number of moves in a Grid with a non-empty moves list",
+				grid.countMoves(), is(mGridBuilder.mCellChanges.size()));
 	}
 
 	@Test
 	public void countMoves_MovesListIsEmpty_ZeroMoves() throws Exception {
-		int actualNumberOfCellChanges = mGrid.countMoves();
+		Grid grid = mGridBuilder.build();
+		int actualNumberOfCellChanges = grid.countMoves();
 		assertThat("Number of moves in a Grid with an empty moves list",
 				actualNumberOfCellChanges, is(0));
 	}
 
 	@Test
 	public void undoLastMove_NullMovesList_False() throws Exception {
-		mGridObjectsCreatorStub = new GridObjectsCreatorStub()
-				.replaceArrayListOfCellChangesWithNullWhenCreatingGrid();
-		mGrid = new Grid();
-		mGrid.setObjectsCreator(mGridObjectsCreatorStub);
+		mGridBuilder.setCellChanges(null);
+		Grid grid = mGridBuilder.build();
 
-		assertThat("Undo last move", mGrid.undoLastMove(), is(false));
+		assertThat("Undo last move", grid.undoLastMove(), is(false));
 	}
 
 	@Test
 	public void undoLastMove_EmptyMovesList_False() throws Exception {
-		assertThat("Undo last move", mGrid.undoLastMove(), is(false));
+		Grid grid = mGridBuilder.build();
+		assertThat("Undo last move", grid.undoLastMove(), is(false));
 	}
 
 	@Test
-	public void undoLastMove_MovesListWithOneEntry_MoveIsRestored()
+	public void undoLastMove_RestoreCellAndCellChangeAreEmptyOrContainMaybes_MoveIsRestored()
 			throws Exception {
-		when(mGridCellMock.getCage()).thenReturn(mGridCageMock);
-		when(mCellChangeMock.getGridCell()).thenReturn(mGridCellMock);
-		mGrid.addMove(mCellChangeMock);
-
-		mGrid.undoLastMove();
-
-		verify(mCellChangeMock).restore();
-	}
-
-	private void undoLastMove_SetupGridAndMocks() {
-		mGridObjectsCreatorStub = new GridObjectsCreatorStub()
-				.initializeArrayListOfGridCells(mGridCellMock)
-				.replaceArrayListOfCellChangesWithMock();
-		mGrid = new Grid();
-		mGrid.setObjectsCreator(mGridObjectsCreatorStub);
-		when(mGridCellMock.getCage()).thenReturn(mGridCageMock);
-		when(mCellChangeMock.getGridCell()).thenReturn(mGridCellMock);
-		when(mGridObjectsCreatorStub.mArrayListOfCellChanges.size())
-				.thenReturn(1);
-		when(mGridObjectsCreatorStub.mArrayListOfCellChanges.get(0))
-				.thenReturn(mCellChangeMock);
-		mGrid.addMove(mCellChangeMock);
-	}
-
-	@Test
-	public void undoLastMove_UserValueOfCellNotFilledBeforeNorAfterUndo_UndoSucceededAndDuplicateValuesInSameRowAndColumnNotChecked()
-			throws Exception {
-		undoLastMove_SetupGridAndMocks();
-		// This test simulates following:
+		// This test simulates following situations:
 		// 1) Before undo the cell is empty. After undo the cell is filled with
 		// one or more maybe values.
-		// 2) Before undo the cell contains on or more maybe values. After undo
+		// 2) Before undo the cell contains one or more maybe values. After undo
 		// the cell contains another set of maybe values (including 0 maybe
 		// values).
 		// In both cases the user value equals 0 before and after the actual
@@ -713,28 +647,26 @@ public class GridTest {
 		when(mGridCellMock.getUserValue()).thenReturn( //
 				0 /* value before actual undo */, //
 				0 /* value after actual undo */);
+		when(mGridCellMock.getCage()).thenReturn(mGridCageMock);
+		when(mCellChangeMock.getGridCell()).thenReturn(mGridCellMock);
+		mGridBuilder.setCellChangesInitializedWith(mCellChangeMock);
+		int numberOfMovesBeforeUndo = mGridBuilder.mCellChanges.size();
+		Grid grid = mGridBuilder.build();
+		assertThat(grid.countMoves(), is(numberOfMovesBeforeUndo));
 
-		mGrid.undoLastMove();
+		grid.undoLastMove();
 
 		verify(mCellChangeMock).restore();
-		verify(mGridObjectsCreatorStub.mArrayListOfCellChanges)
-				.remove(anyInt());
+		assertThat(grid.countMoves(), is(numberOfMovesBeforeUndo - 1));
 		verify(mGridStatisticsMock).increaseCounter(
 				GridStatistics.StatisticsCounterType.ACTION_UNDO_MOVE);
-		assertThat("Selected cell", mGrid.getSelectedCell(),
+		assertThat("Selected cell", grid.getSelectedCell(),
 				is(sameInstance(mGridCellMock)));
-
-		// In case the user value of a cell is not changed, duplicate values are
-		// not checked.
-		verify(mGridCellMock, times(0)).getRow();
-		verify(mGridCellMock, times(0)).markDuplicateValuesInSameRowAndColumn();
-		verify(mGridCageMock, times(0)).checkUserMath();
 	}
 
 	@Test
-	public void undoLastMove_UserValueOfCellChanges_DuplicateValuesInSameRowAndColumnMarkedAndCageMathChecked()
+	public void undoLastMove_RestoreCellOrCellChangeAreEmptyOrContainUserValue_MoveIsRestored()
 			throws Exception {
-		undoLastMove_SetupGridAndMocks();
 		// This test simulates following:
 		// 1) Before undo the cell is empty. After undo the cell is filled with
 		// a user value.
@@ -746,37 +678,71 @@ public class GridTest {
 		when(mGridCellMock.getUserValue()).thenReturn( //
 				0 /* value before actual undo */, //
 				1 /* value after actual undo */);
-
+		// This unit test checks whether UndoLastMove correctly calls methods
+		// markDuplicateValuesInSameRowAndColumn and checkUserMath. Both those
+		// methods are called when instantiating the new grid via the
+		// GridBuilder.build(). To isolate the effects caused by UndoLastMove,
+		// some additional mocks are used which are not related to the mocks
+		// used by the default grid stub:
+		// The cage of the cell being restored refers to an entire new grid cage
+		// mock. For this unit test it is not relevant that the grid cell of the
+		// cell change refers to another mock.
+		GridCage gridCageMockOfGridCellInCellChange = mock(GridCage.class);
+		when(mGridCellMock.getCage()).thenReturn(
+				gridCageMockOfGridCellInCellChange);
+		when(mCellChangeMock.getGridCell()).thenReturn(mGridCellMock);
+		mGridBuilder.setCellChangesInitializedWith(mCellChangeMock);
+		// The selector GridCellSelectorInSameRowOrColumn returns an array
+		// list of new grid cell mocks. For this unit test it is not relevant
+		// that those mocks are not related to "real" cells of the default grid
+		// stub.
+		GridCell gridCellInSameRowOrColumn = mock(GridCell.class);
 		ArrayList<GridCell> arrayListOfGridCells = new ArrayList<GridCell>();
-		arrayListOfGridCells.add(mGridCellMock);
+		arrayListOfGridCells.add(gridCellInSameRowOrColumn);
+		arrayListOfGridCells.add(gridCellInSameRowOrColumn);
+		arrayListOfGridCells.add(gridCellInSameRowOrColumn);
+		arrayListOfGridCells.add(gridCellInSameRowOrColumn);
 		when(mGridCellSelectorInRowOrColumn.find()).thenReturn(
 				arrayListOfGridCells);
+		// Check if setup is correct
+		int numberOfMovesBeforeUndo = mGridBuilder.mCellChanges.size();
+		Grid grid = mGridBuilder.build();
+		assertThat(grid.countMoves(), is(numberOfMovesBeforeUndo));
 
-		mGrid.undoLastMove();
+		grid.undoLastMove();
 
-		verify(mGridCellMock).markDuplicateValuesInSameRowAndColumn();
-		verify(mGridCageMock).checkUserMath();
+		verify(mCellChangeMock).restore();
+		assertThat(grid.countMoves(), is(numberOfMovesBeforeUndo - 1));
+		verify(mGridStatisticsMock).increaseCounter(
+				GridStatistics.StatisticsCounterType.ACTION_UNDO_MOVE);
+		assertThat("Selected cell", grid.getSelectedCell(),
+				is(sameInstance(mGridCellMock)));
+		verify(gridCellInSameRowOrColumn, times(arrayListOfGridCells.size()))
+				.markDuplicateValuesInSameRowAndColumn();
+		verify(gridCageMockOfGridCellInCellChange).checkUserMath();
 	}
 
 	@Test
 	public void deselectSelectedCell_CellIsSelected_CellIsDeselected()
 			throws Exception {
 		when(mGridCellMock.getCage()).thenReturn(mGridCageMock);
-		mGrid.setSelectedCell(mGridCellMock);
+		Grid grid = mGridBuilder.build();
+		grid.setSelectedCell(mGridCellMock);
 		verify(mGridCageMock).setBorders();
 
 		// Deselect this cell
-		mGrid.deselectSelectedCell();
+		grid.deselectSelectedCell();
 
 		verify(mGridCellMock).deselect();
 		verify(mGridCageMock, times(2)).setBorders();
 
-		assertThat("Selected cell", mGrid.getSelectedCell(), is(nullValue()));
+		assertThat("Selected cell", grid.getSelectedCell(), is(nullValue()));
 	}
 
 	@Test
 	public void setSelectedCell_SelectNullGridCell_Null() throws Exception {
-		assertThat("Selected cell", mGrid.setSelectedCell((GridCell) null),
+		Grid grid = mGridBuilder.build();
+		assertThat("Selected cell", grid.setSelectedCell((GridCell) null),
 				is(nullValue()));
 	}
 
@@ -784,8 +750,9 @@ public class GridTest {
 	public void setSelectedCell_NoCellCurrentlySelectedInGrid_BordersOfNewCageSetAndSelectedCellReturned()
 			throws Exception {
 		when(mGridCellMock.getCage()).thenReturn(mGridCageMock);
+		Grid grid = mGridBuilder.build();
 
-		assertThat("Selected cell", mGrid.setSelectedCell(mGridCellMock),
+		assertThat("Selected cell", grid.setSelectedCell(mGridCellMock),
 				is(sameInstance(mGridCellMock)));
 
 		verify(mGridCageMock).setBorders();
@@ -797,10 +764,11 @@ public class GridTest {
 		when(mGridCellMock.getCage()).thenReturn(mGridCageMock);
 		GridCell otherGridCellMock = mock(GridCell.class);
 		when(otherGridCellMock.getCage()).thenReturn(mGridCageMock);
+		Grid grid = mGridBuilder.build();
 
 		// Select the cells in given order
-		mGrid.setSelectedCell(mGridCellMock);
-		mGrid.setSelectedCell(otherGridCellMock);
+		grid.setSelectedCell(mGridCellMock);
+		grid.setSelectedCell(otherGridCellMock);
 
 		verify(mGridCellMock).deselect();
 	}
@@ -809,13 +777,14 @@ public class GridTest {
 	public void setSelectedCell_CurrentlySelectedCellInGridIsSelectedAgain_NoBordersReset()
 			throws Exception {
 		when(mGridCellMock.getCage()).thenReturn(mGridCageMock);
+		Grid grid = mGridBuilder.build();
 
 		// Select the grid cell
-		mGrid.setSelectedCell(mGridCellMock);
+		grid.setSelectedCell(mGridCellMock);
 		verify(mGridCageMock, times(1)).setBorders();
 
 		// Select the same cell one more. The borders may not be reset again.
-		mGrid.setSelectedCell(mGridCellMock);
+		grid.setSelectedCell(mGridCellMock);
 		verify(mGridCageMock, times(1)).setBorders();
 	}
 
@@ -826,14 +795,15 @@ public class GridTest {
 
 		GridCell otherGridCellMock = mock(GridCell.class);
 		when(otherGridCellMock.getCage()).thenReturn(mGridCageMock);
+		Grid grid = mGridBuilder.build();
 
 		// Select grid cell stub 1
-		mGrid.setSelectedCell(mGridCellMock);
+		grid.setSelectedCell(mGridCellMock);
 		verify(mGridCageMock, times(1)).setBorders();
 
 		// Select the other cell in the same cage. The borders may not be reset
 		// again.
-		mGrid.setSelectedCell(otherGridCellMock);
+		grid.setSelectedCell(otherGridCellMock);
 		verify(mGridCageMock, times(1)).setBorders();
 	}
 
@@ -849,14 +819,15 @@ public class GridTest {
 
 		GridCell gridCellStub2 = mock(GridCell.class);
 		when(gridCellStub2.getCage()).thenReturn(gridCageMock2);
+		Grid grid = mGridBuilder.build();
 
 		// Select grid cell stub 1
-		mGrid.setSelectedCell(gridCellStub1);
+		grid.setSelectedCell(gridCellStub1);
 		verify(gridCageMock1, times(1)).setBorders();
 
 		// Select the other cell in the same cage. The borders of cage 1 and
 		// cage 2 need both to be set.
-		mGrid.setSelectedCell(gridCellStub2);
+		grid.setSelectedCell(gridCellStub2);
 		verify(gridCageMock1, times(2)).setBorders();
 		verify(gridCageMock2, times(1)).setBorders();
 	}
@@ -867,8 +838,9 @@ public class GridTest {
 		ArrayList<GridCell> gridCells = null;
 		ArrayList<GridCage> gridCages = mock(ArrayList.class);
 		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
+		Grid grid = mGridBuilder.build();
 
-		mGrid.toGridDefinitionString(gridCells, gridCages,
+		grid.toGridDefinitionString(gridCells, gridCages,
 				gridGeneratingParameters);
 	}
 
@@ -878,8 +850,9 @@ public class GridTest {
 		ArrayList<GridCell> gridCells = new ArrayList<GridCell>();
 		ArrayList<GridCage> gridCages = mock(ArrayList.class);
 		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
+		Grid grid = mGridBuilder.build();
 
-		mGrid.toGridDefinitionString(gridCells, gridCages,
+		grid.toGridDefinitionString(gridCells, gridCages,
 				gridGeneratingParameters);
 	}
 
@@ -890,8 +863,9 @@ public class GridTest {
 		when(gridCells.size()).thenReturn(1);
 		ArrayList<GridCage> gridCages = null;
 		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
+		Grid grid = mGridBuilder.build();
 
-		mGrid.toGridDefinitionString(gridCells, gridCages,
+		grid.toGridDefinitionString(gridCells, gridCages,
 				gridGeneratingParameters);
 	}
 
@@ -902,8 +876,9 @@ public class GridTest {
 		when(gridCells.size()).thenReturn(1);
 		ArrayList<GridCage> gridCages = new ArrayList<GridCage>();
 		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
+		Grid grid = mGridBuilder.build();
 
-		mGrid.toGridDefinitionString(gridCells, gridCages,
+		grid.toGridDefinitionString(gridCells, gridCages,
 				gridGeneratingParameters);
 	}
 
@@ -915,8 +890,9 @@ public class GridTest {
 		ArrayList<GridCage> gridCages = mock(ArrayList.class);
 		when(gridCages.size()).thenReturn(1);
 		GridGeneratingParameters gridGeneratingParameters = null;
+		Grid grid = mGridBuilder.build();
 
-		mGrid.toGridDefinitionString(gridCells, gridCages,
+		grid.toGridDefinitionString(gridCells, gridCages,
 				gridGeneratingParameters);
 	}
 
@@ -924,9 +900,12 @@ public class GridTest {
 	public void toGridDefinitionString_WithValidParameters_GridDefinitionCreated()
 			throws Exception {
 
-		when(mGridCellMock.getCageId()).thenReturn(0, 1, 2, 1);
-		ArrayList<GridCell> gridCells = createArrayListOfGridCellsWithGridCells(
-				mGridCellMock, mGridCellMock, mGridCellMock, mGridCellMock);
+		when(mGridCellMock.getCageId()).thenReturn( //
+				0, 1, 2, 2, // Row 1
+				0, 1, 2, 2, // Row 2
+				1, 1, 1, 2, // Row 3
+				3, 3, 3, 2 // Row 4
+				);
 
 		GridCage gridCageStub1 = mock(GridCage.class);
 		when(gridCageStub1.getId()).thenReturn(0);
@@ -943,160 +922,157 @@ public class GridTest {
 		when(gridCageStub3.getResult()).thenReturn(2);
 		when(gridCageStub3.getOperator()).thenReturn(CageOperator.NONE);
 
-		ArrayList<GridCage> gridCages = createArrayListOfGridCagesWithGridCages(
-				gridCageStub1, gridCageStub2, gridCageStub3);
+		mGridBuilder.setCagesInitializedWith(gridCageStub1, gridCageStub2,
+				gridCageStub3);
 
 		mGeneratingParametersMock.mPuzzleComplexity = GridGenerator.PuzzleComplexity.NORMAL;
 		mGeneratingParametersMock.mHideOperators = false;
+		Grid grid = mGridBuilder.build();
 
-		assertThat("Grid definition", mGrid.toGridDefinitionString(gridCells,
-				gridCages, mGeneratingParametersMock),
-				is(equalTo("3:00010201:0,1,0:1,3,1:2,2,0")));
+		assertThat(
+				"Grid definition",
+				grid.toGridDefinitionString(mGridBuilder.mCells,
+						mGridBuilder.mCages, mGeneratingParametersMock),
+				is(equalTo("3:00010202000102020101010203030302:0,1,0:1,3,1:2,2,0")));
 	}
 
-	@Test(expected = InvalidParameterException.class)
-	public void create_GridCellsListIsNull_InvalidParameterException()
+	@Test(expected = InvalidGridException.class)
+	public void gridCreateWithGridBuilder_GridCellsListIsNull_InvalidParameterException()
 			throws Exception {
-		// Do not use the mocking objects which are use by the
-		// GridObjectsCreatorStub as method Grid.create() should be executed on
-		// the
-		// default values as set by the Grid constructor.
-		int gridSize = 4;
-		ArrayList<GridCell> gridCells = null;
-		ArrayList<GridCage> gridCages = mock(ArrayList.class);
-		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
-
-		mGrid.create(gridSize, gridCells, gridCages, gridGeneratingParameters);
+		mGridBuilder.setCells(null);
+		assertThat(mGridBuilder.build(), is(nullValue()));
 	}
 
-	@Test(expected = InvalidParameterException.class)
-	public void create_GridCellsListIsEmpty_InvalidParameterException()
+	@Test(expected = InvalidGridException.class)
+	public void gridCreateWithGridBuilder_GridCellsListIsEmpty_InvalidParameterException()
 			throws Exception {
-		// Do not use the mocking objects which are use by the
-		// GridObjectsCreatorStub as the Grid.create() should be executed on the
-		// default values as set by the Grid constructor.
-		int gridSize = 4;
-		ArrayList<GridCell> gridCells = new ArrayList<GridCell>();
-		ArrayList<GridCage> gridCages = mock(ArrayList.class);
-		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
-
-		mGrid.create(gridSize, gridCells, gridCages, gridGeneratingParameters);
+		mGridBuilder.setCells(new ArrayList<GridCell>());
+		assertThat(mGridBuilder.build(), is(nullValue()));
 	}
 
-	@Test(expected = InvalidParameterException.class)
-	public void create_GridCagesListIsNull_InvalidParameterException()
+	@Test(expected = InvalidGridException.class)
+	public void gridCreateWithGridBuilder_GridCellsHasTooLittleCells_InvalidParameterException()
 			throws Exception {
-		// Do not use the mocking objects which are use by the
-		// GridObjectsCreatorStub as the Grid.create() should be executed on the
-		// default values as set by the Grid constructor.
-		int gridSize = 4;
-		ArrayList<GridCell> gridCells = createArrayListOfGridCellsWithOneGridCellStub();
-		ArrayList<GridCage> gridCages = null;
-		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
-
-		mGrid.create(gridSize, gridCells, gridCages, gridGeneratingParameters);
+		mGridBuilder.setGridSize(2);
+		mGridBuilder.setCellsInitializedWith(mGridCellMock, mGridCellMock,
+				mGridCellMock);
+		assertThat(mGridBuilder.build(), is(nullValue()));
 	}
 
-	@Test(expected = InvalidParameterException.class)
-	public void create_GridCagesListIsEmpty_InvalidParameterException()
+	@Test(expected = InvalidGridException.class)
+	public void gridCreateWithGridBuilder_GridCellsHasTooManyCells_InvalidParameterException()
 			throws Exception {
-		// Do not use the mocking objects which are use by the
-		// GridObjectsCreatorStub as the Grid.create() should be executed on the
-		// default values as set by the Grid constructor.
-		int gridSize = 4;
-		ArrayList<GridCell> gridCells = createArrayListOfGridCellsWithOneGridCellStub();
-		ArrayList<GridCage> gridCages = new ArrayList<GridCage>();
-		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
-
-		mGrid.create(gridSize, gridCells, gridCages, gridGeneratingParameters);
+		mGridBuilder.setGridSize(1);
+		mGridBuilder.setCellsInitializedWith(mGridCellMock, mGridCellMock);
+		assertThat(mGridBuilder.build(), is(nullValue()));
 	}
 
-	@Test(expected = InvalidParameterException.class)
-	public void create_GridGeneratingParametersIsNull_InvalidParameterException()
+	@Test(expected = InvalidGridException.class)
+	public void gridCreateWithGridBuilder_GridCagesListIsNull_InvalidParameterException()
 			throws Exception {
-		// Do not use the mocking objects which are use by the
-		// GridObjectsCreatorStub as the Grid.create() should be executed on the
-		// default values as set by the Grid constructor.
-		int gridSize = 4;
-		ArrayList<GridCell> gridCells = createArrayListOfGridCellsWithOneGridCellStub();
-		ArrayList<GridCage> gridCages = createArrayListOfGridCagesWithOneGridCagestub();
-		GridGeneratingParameters gridGeneratingParameters = null;
+		mGridBuilder.setCages(null);
+		assertThat(mGridBuilder.build(), is(nullValue()));
+	}
 
-		mGrid.create(gridSize, gridCells, gridCages, gridGeneratingParameters);
+	@Test(expected = InvalidGridException.class)
+	public void gridCreateWithGridBuilder_GridCagesListIsEmpty_InvalidParameterException()
+			throws Exception {
+		mGridBuilder.setCages(new ArrayList<GridCage>());
+		assertThat(mGridBuilder.build(), is(nullValue()));
+	}
+
+	@Test(expected = InvalidGridException.class)
+	public void gridCreateWithGridBuilder_GridGeneratingParametersIsNull_InvalidParameterException()
+			throws Exception {
+		mGridBuilder.setGridGeneratingParameters(null);
+		assertThat(mGridBuilder.build(), is(nullValue()));
 	}
 
 	@Test
-	public void create_ValidParameters_MovesCleared() throws Exception {
-		mGridObjectsCreatorStub = new GridObjectsCreatorStub()
-				.replaceArrayListOfCellChangesWithMock();
-		mGrid = new Grid() {
-			@Override
-			public boolean insertInDatabase() {
-				// Method will be tested in another unit test.
-				return true;
-			}
-		};
-		mGrid.setObjectsCreator(mGridObjectsCreatorStub);
-
-		// Do not use the mocking objects which are use by the
-		// GridObjectsCreatorStub as the Grid.create() should be executed on the
-		// default values as set by the Grid constructor.
-		int gridSize = 4;
-		ArrayList<GridCell> gridCells = createArrayListOfGridCellsWithGridCells(
-				mGridCellMock, mGridCellMock);
-		ArrayList<GridCage> gridCages = createArrayListOfGridCagesWithGridCages(mGridCageMock);
-		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
-
-		long timeBeforeCreate = System.currentTimeMillis();
-		assertThat("Creating grid", mGrid.create(gridSize, gridCells,
-				gridCages, gridGeneratingParameters), is(true));
-		verify(mGridObjectsCreatorStub.mArrayListOfCellChanges).clear();
-		assertThat("Selected grid cell", mGrid.getSelectedCell(),
+	public void gridCreateWithGridBuilder_ValidParameters_GridBuilderParamsUsed()
+			throws Exception {
+		long dateCreated = System.currentTimeMillis();
+		mGridBuilder.setDateCreated(dateCreated);
+		mGridBuilder.setActive(false);
+		Grid grid = mGridBuilder.build();
+		assertThat("Selected grid cell", grid.getSelectedCell(),
 				is(nullValue()));
-		assertThat("Solution revealed", mGrid.isSolutionRevealed(), is(false));
-		assertThat("Solving attempt id", mGrid.getSolvingAttemptId(),
+		assertThat("Solution revealed", grid.isSolutionRevealed(), is(false));
+		assertThat("Solving attempt id", grid.getSolvingAttemptId(),
 				is(equalTo(-1)));
-		assertThat("Row id", mGrid.getRowId(), is(equalTo(-1)));
-		assertThat("Grid statistics", mGrid.getGridStatistics(),
+		assertThat("Row id", grid.getRowId(), is(equalTo(-1)));
+		assertThat("Grid statistics", grid.getGridStatistics(),
 				is(sameInstance(mGridStatisticsMock)));
 		assertThat("Date created filled with system time",
-				(mGrid.getDateCreated() >= timeBeforeCreate), is(true));
-		assertThat("Grid size", mGrid.getGridSize(), is(gridSize));
-		assertThat("Cells", mGrid.mCells, is(sameInstance(gridCells)));
-		assertThat("Cells", mGrid.mCages, is(sameInstance(gridCages)));
-		assertThat("Is active", mGrid.isActive(), is(true));
-		verify(mGridCageMock).setGridReference(any(Grid.class));
-		verify(mGridCellMock, times(gridCells.size())).setGridReference(
-				any(Grid.class));
-		verify(mGridCellMock, times(gridCells.size())).setBorders();
+				grid.getDateCreated(), is(dateCreated));
+		assertThat("Date updated filled with system time", grid.getDateSaved(),
+				is(dateCreated));
+		assertThat("Grid size", grid.getGridSize(), is(mGridBuilder.mGridSize));
+		assertThat("Cells", grid.mCells, is(sameInstance(mGridBuilder.mCells)));
+		assertThat("Cells", grid.mCages, is(sameInstance(mGridBuilder.mCages)));
+		assertThat("Is active", grid.isActive(), is(mGridBuilder.mActive));
+		verify(mGridCageMock, times(mGridBuilder.mCages.size()))
+				.setGridReference(any(Grid.class));
+		verify(mGridCellMock, times(mGridBuilder.mCells.size()))
+				.setGridReference(any(Grid.class));
+		verify(mGridCellMock, times(mGridBuilder.mCells.size())).setBorders();
+	}
+
+	private void setupForSaveTest() {
+		// Instantiate singleton class Util
+		new Util(new Activity());
+
+		// Stub method toGridDefinitionString as this methods requires a lot of
+		// setup which is not needed to test method save.
+		mGridObjectsCreatorStub = new GridObjectsCreatorStub() {
+			@Override
+			public Grid createGrid(GridBuilder gridBuilder) {
+				return new Grid(gridBuilder) {
+					@Override
+					public String toGridDefinitionString() {
+						// This function will be tested in other unit tests.
+						return "** SOME GRID DEFINITION STRING **";
+					}
+				};
+			}
+		};
+		mGridBuilder.setObjectsCreator(mGridObjectsCreatorStub);
+
+		// Initialize the mock as was it a real GridStatistics object which was
+		// not yet saved.
+		mGridStatisticsMock.mId = -1;
 	}
 
 	@Test
-	public void insertInDatabase_GridWithUniqueGridDefinition_GridAndSolvingAttemptAndStatisticsAreInserted()
+	public void save_InsertGridWithUniqueGridDefinition_Saved()
 			throws Exception {
-		// Call the Util class once to instantiate the statics which are used by
-		// the insertInDatabase method.
-		new Util(mActivity);
-
-		mGridObjectsCreatorStub = new GridObjectsCreatorStub();
-		mGrid = new Grid() {
-			@Override
-			public String toGridDefinitionString() {
-				return "** A Grid definition string **";
-			}
-		};
-		mGrid.setObjectsCreator(mGridObjectsCreatorStub);
-
+		setupForSaveTest();
+		// Prepare for not finding an existing grid row with the same definition
 		when(mGridDatabaseAdapterMock.getByGridDefinition(anyString()))
 				.thenReturn(null);
-		when(mGridDatabaseAdapterMock.insert(any(Grid.class))).thenReturn(1);
+		// Prepare for insert of new grid row
+		int mGridRowIdAfterSuccessfulInsert = 34;
+		when(mGridDatabaseAdapterMock.insert(any(Grid.class))).thenReturn(
+				mGridRowIdAfterSuccessfulInsert);
+		// Prepare insert of new solving attempt
+		int mSolvingAttemptIdAfterSuccessfulInsert = 51;
 		when(
 				mSolvingAttemptDatabaseAdapterMock.insert(any(Grid.class),
-						anyInt())).thenReturn(1);
+						anyInt())).thenReturn(
+				mSolvingAttemptIdAfterSuccessfulInsert);
+		// Prepare insert of new statistics
+		GridStatistics mGridStatisticsAfterSuccessfulInsert = mock(GridStatistics.class);
+		mGridStatisticsAfterSuccessfulInsert.mId = 52;
 		when(mStatisticsDatabaseAdapterMock.insert(any(Grid.class)))
-				.thenReturn(mock(GridStatistics.class));
+				.thenReturn(mGridStatisticsAfterSuccessfulInsert);
+		// Build grid and check that grid, solving attempt and statistics are
+		// not yet saved.
+		Grid grid = mGridBuilder.build();
+		assertThat(grid.getRowId(), is(-1));
+		assertThat(grid.getSolvingAttemptId(), is(-1));
+		assertThat(grid.getGridStatistics().mId, is(-1));
 
-		boolean resultInsertInDatabase = mGrid.insertInDatabase();
+		boolean saveResult = grid.save();
 
 		verify(mDatabaseHelperMock).beginTransaction();
 		verify(mGridDatabaseAdapterMock).insert(any(Grid.class));
@@ -1105,37 +1081,70 @@ public class GridTest {
 		verify(mStatisticsDatabaseAdapterMock).insert(any(Grid.class));
 		verify(mDatabaseHelperMock).setTransactionSuccessful();
 		verify(mDatabaseHelperMock).endTransaction();
-
-		assertThat("Inserted in database", resultInsertInDatabase, is(true));
+		assertThat(grid.getRowId() >= 0, is(true));
+		assertThat(grid.getSolvingAttemptId() >= 0, is(true));
+		assertThat(grid.getGridStatistics().mId >= 0, is(true));
+		assertThat(saveResult, is(true));
 	}
 
 	@Test
-	public void insertInDatabase_GridWithExistingGridDefinition_SolvingAttemptAndStatisticsAreInserted()
+	public void save_InsertGridWithUniqueGridDefinitionButInsertGridFails_NotSaved()
 			throws Exception {
-		// Call the Util class once to instantiate the statics which are used by
-		// the insertInDatabase method.
-		new Util(mActivity);
+		setupForSaveTest();
+		// Prepare for not finding an existing grid row with the same definition
+		when(mGridDatabaseAdapterMock.getByGridDefinition(anyString()))
+				.thenReturn(null);
+		// Prepare for failing insert of new grid row
+		int mGridRowIdWhenInsertFails = -1;
+		when(mGridDatabaseAdapterMock.insert(any(Grid.class))).thenReturn(
+				mGridRowIdWhenInsertFails);
+		// Build grid and check that grid, solving attempt and statistics are
+		// not yet saved.
+		Grid grid = mGridBuilder.build();
+		assertThat(grid.getRowId(), is(-1));
+		assertThat(grid.getSolvingAttemptId(), is(-1));
+		assertThat(grid.getGridStatistics().mId, is(-1));
 
-		mGridObjectsCreatorStub = new GridObjectsCreatorStub();
-		mGrid = new Grid() {
-			@Override
-			public String toGridDefinitionString() {
-				return "** A Grid definition string **";
-			}
-		};
-		mGrid.setObjectsCreator(mGridObjectsCreatorStub);
+		boolean saveResult = grid.save();
 
-		final GridRow gridRow = mock(GridRow.class);
-		gridRow.mId = 123;
+		verify(mDatabaseHelperMock).beginTransaction();
+		verify(mGridDatabaseAdapterMock).insert(any(Grid.class));
+		verify(mDatabaseHelperMock, never()).setTransactionSuccessful();
+		verify(mDatabaseHelperMock).endTransaction();
+		assertThat(grid.getRowId(), is(-1));
+		assertThat(grid.getSolvingAttemptId(), is(-1));
+		assertThat(grid.getGridStatistics().mId, is(-1));
+		assertThat(saveResult, is(false));
+	}
+
+	@Test
+	public void save_InsertGridWithExistingGridDefinition_Saved()
+			throws Exception {
+		setupForSaveTest();
+		// Prepare for finding existing grid row when inserting a new grid
+		GridRow gridRow = mock(GridRow.class);
+		gridRow.mId = 25;
 		when(mGridDatabaseAdapterMock.getByGridDefinition(anyString()))
 				.thenReturn(gridRow);
+		// Prepare insert of new solving attempt
+		int mSolvingAttemptIdAfterSuccessfulInsert = 51;
 		when(
 				mSolvingAttemptDatabaseAdapterMock.insert(any(Grid.class),
-						anyInt())).thenReturn(1);
+						anyInt())).thenReturn(
+				mSolvingAttemptIdAfterSuccessfulInsert);
+		// Prepare insert of new statistics
+		GridStatistics mGridStatisticsAfterSuccessfulInsert = mock(GridStatistics.class);
+		mGridStatisticsAfterSuccessfulInsert.mId = 52;
 		when(mStatisticsDatabaseAdapterMock.insert(any(Grid.class)))
-				.thenReturn(mock(GridStatistics.class));
+				.thenReturn(mGridStatisticsAfterSuccessfulInsert);
+		// Build grid and check that grid, solving attempt and statistics are
+		// not yet saved.
+		Grid grid = mGridBuilder.build();
+		assertThat(grid.getRowId(), is(-1));
+		assertThat(grid.getSolvingAttemptId(), is(-1));
+		assertThat(grid.getGridStatistics().mId, is(-1));
 
-		boolean resultInsertInDatabase = mGrid.insertInDatabase();
+		boolean saveResult = grid.save();
 
 		verify(mDatabaseHelperMock).beginTransaction();
 		verify(mGridDatabaseAdapterMock, never()).insert(any(Grid.class));
@@ -1144,123 +1153,294 @@ public class GridTest {
 		verify(mStatisticsDatabaseAdapterMock).insert(any(Grid.class));
 		verify(mDatabaseHelperMock).setTransactionSuccessful();
 		verify(mDatabaseHelperMock).endTransaction();
-
-		assertThat("Inserted in database", resultInsertInDatabase, is(true));
+		assertThat(grid.getRowId() >= 0, is(true));
+		assertThat(grid.getSolvingAttemptId() >= 0, is(true));
+		assertThat(grid.getGridStatistics().mId >= 0, is(true));
+		assertThat(saveResult, is(true));
 	}
 
 	@Test
-	public void save_SaveSolvingAttemptFails_False() throws Exception {
+	public void save_SavedGridButMissingSolvingAttemptAndStatistics_Saved()
+			throws Exception {
+		setupForSaveTest();
+		// Grid was already saved
+		int existingGridId = 12;
+		mGridBuilder.setGridId(existingGridId);
+		// Prepare insert of new solving attempt
+		int mSolvingAttemptIdAfterSuccessfulInsert = 51;
+		when(
+				mSolvingAttemptDatabaseAdapterMock.insert(any(Grid.class),
+						anyInt())).thenReturn(
+				mSolvingAttemptIdAfterSuccessfulInsert);
+		// Prepare insert of new statistics
+		GridStatistics mGridStatisticsAfterSuccessfulInsert = mock(GridStatistics.class);
+		mGridStatisticsAfterSuccessfulInsert.mId = 52;
+		when(mStatisticsDatabaseAdapterMock.insert(any(Grid.class)))
+				.thenReturn(mGridStatisticsAfterSuccessfulInsert);
+		// Build grid and check that grid, solving attempt and statistics are
+		// not yet saved.
+		Grid grid = mGridBuilder.build();
+		assertThat(grid.getRowId(), is(existingGridId));
+		assertThat(grid.getSolvingAttemptId(), is(-1));
+		assertThat(grid.getGridStatistics().mId, is(-1));
+
+		boolean saveResult = grid.save();
+
+		verify(mDatabaseHelperMock).beginTransaction();
+		verify(mGridDatabaseAdapterMock, never()).insert(any(Grid.class));
+		verify(mSolvingAttemptDatabaseAdapterMock).insert(any(Grid.class),
+				anyInt());
+		verify(mStatisticsDatabaseAdapterMock).insert(any(Grid.class));
+		verify(mDatabaseHelperMock).setTransactionSuccessful();
+		verify(mDatabaseHelperMock).endTransaction();
+		assertThat(grid.getRowId(), is(existingGridId));
+		assertThat(grid.getSolvingAttemptId() >= 0, is(true));
+		assertThat(grid.getGridStatistics().mId >= 0, is(true));
+		assertThat(saveResult, is(true));
+	}
+
+	@Test
+	public void save_SavedGridButInsertSolvingAttemptFails_NotSaved()
+			throws Exception {
+		setupForSaveTest();
+		// Grid was already saved
+		int existingGridId = 12;
+		mGridBuilder.setGridId(existingGridId);
+		// Prepare for failing insert of new solving attempt
+		int mSolvingAttemptIdWhenInsertFails = -1;
+		when(
+				mSolvingAttemptDatabaseAdapterMock.insert(any(Grid.class),
+						anyInt())).thenReturn(mSolvingAttemptIdWhenInsertFails);
+		// Build grid and check that grid, solving attempt and statistics are
+		// not yet saved.
+		Grid grid = mGridBuilder.build();
+		assertThat(grid.getRowId(), is(existingGridId));
+		assertThat(grid.getSolvingAttemptId(), is(-1));
+		assertThat(grid.getGridStatistics().mId, is(-1));
+
+		boolean saveResult = grid.save();
+
+		verify(mDatabaseHelperMock).beginTransaction();
+		verify(mGridDatabaseAdapterMock, never()).insert(any(Grid.class));
+		verify(mSolvingAttemptDatabaseAdapterMock).insert(any(Grid.class),
+				anyInt());
+		verify(mStatisticsDatabaseAdapterMock, never()).insert(any(Grid.class));
+		verify(mDatabaseHelperMock, never()).setTransactionSuccessful();
+		verify(mDatabaseHelperMock).endTransaction();
+		assertThat(grid.getRowId(), is(existingGridId));
+		assertThat(grid.getSolvingAttemptId(), is(-1));
+		assertThat(grid.getGridStatistics().mId, is(-1));
+		assertThat(saveResult, is(false));
+	}
+
+	@Test
+	public void save_ExistingGridAndSolvingAttemptUpdateSolvingAttemptAndInsertStatistics_Saved()
+			throws Exception {
+		setupForSaveTest();
+		// Grid and solving attempt were already saved
+		int existingGridId = 12;
+		int existingSolvingAttemptId = 15;
+		mGridBuilder.setSolvingAttemptId(existingGridId,
+				existingSolvingAttemptId);
+		// Prepare successful update of solving attempt
+		when(
+				mSolvingAttemptDatabaseAdapterMock.update(anyInt(),
+						any(Grid.class))).thenReturn(true);
+		// Prepare insert of new statistics
+		GridStatistics mGridStatisticsAfterSuccessfulInsert = mock(GridStatistics.class);
+		mGridStatisticsAfterSuccessfulInsert.mId = 52;
+		when(mStatisticsDatabaseAdapterMock.insert(any(Grid.class)))
+				.thenReturn(mGridStatisticsAfterSuccessfulInsert);
+		// Build grid and check that grid, solving attempt and statistics are
+		// not yet saved.
+		Grid grid = mGridBuilder.build();
+		assertThat(grid.getRowId(), is(existingGridId));
+		assertThat(grid.getSolvingAttemptId(), is(existingSolvingAttemptId));
+		assertThat(grid.getGridStatistics().mId, is(-1));
+
+		boolean saveResult = grid.save();
+
+		verify(mDatabaseHelperMock).beginTransaction();
+		verify(mGridDatabaseAdapterMock, never()).insert(any(Grid.class));
+		verify(mSolvingAttemptDatabaseAdapterMock, never()).insert(
+				any(Grid.class), anyInt());
+		verify(mSolvingAttemptDatabaseAdapterMock).update(anyInt(),
+				any(Grid.class));
+		verify(mStatisticsDatabaseAdapterMock).insert(any(Grid.class));
+		verify(mDatabaseHelperMock).setTransactionSuccessful();
+		verify(mDatabaseHelperMock).endTransaction();
+		assertThat(grid.getRowId(), is(existingGridId));
+		assertThat(grid.getSolvingAttemptId(), is(existingSolvingAttemptId));
+		assertThat(grid.getGridStatistics().mId >= 0, is(true));
+		assertThat(saveResult, is(true));
+	}
+
+	@Test
+	public void save_ExistingGridAndSolvingAttemptButUpdateSolvingAttemptFails_NotSaved()
+			throws Exception {
+		setupForSaveTest();
+		// Grid and solving attempt were already saved
+		int existingGridId = 12;
+		int existingSolvingAttemptId = 15;
+		mGridBuilder.setSolvingAttemptId(existingGridId,
+				existingSolvingAttemptId);
+		// Prepare failing update of solving attempt
 		when(
 				mSolvingAttemptDatabaseAdapterMock.update(anyInt(),
 						any(Grid.class))).thenReturn(false);
+		// Build grid and check that grid, solving attempt and statistics are
+		// not yet saved.
+		Grid grid = mGridBuilder.build();
+		assertThat(grid.getRowId(), is(existingGridId));
+		assertThat(grid.getSolvingAttemptId(), is(existingSolvingAttemptId));
+		assertThat(grid.getGridStatistics().mId, is(-1));
 
-		assertThat("Grid saved?", mGrid.save(), is(false));
+		boolean saveResult = grid.save();
+
+		verify(mDatabaseHelperMock).beginTransaction();
+		verify(mGridDatabaseAdapterMock, never()).insert(any(Grid.class));
+		verify(mSolvingAttemptDatabaseAdapterMock, never()).insert(
+				any(Grid.class), anyInt());
+		verify(mSolvingAttemptDatabaseAdapterMock).update(anyInt(),
+				any(Grid.class));
+		verify(mStatisticsDatabaseAdapterMock, never()).insert(any(Grid.class));
+		verify(mDatabaseHelperMock, never()).setTransactionSuccessful();
+		verify(mDatabaseHelperMock).endTransaction();
+		assertThat(grid.getRowId(), is(existingGridId));
+		assertThat(grid.getSolvingAttemptId(), is(existingSolvingAttemptId));
+		assertThat(grid.getGridStatistics().mId, is(-1));
+		assertThat(saveResult, is(false));
 	}
 
 	@Test
-	public void save_GridStatisticsIsNull_GridIsSaved() throws Exception {
-		mGridObjectsCreatorStub = new GridObjectsCreatorStub();
-		mGridStatisticsMock = null;
-		mGrid = new Grid();
-		mGrid.setObjectsCreator(mGridObjectsCreatorStub);
-		mGrid.setActive(true);
+	public void save_ExistingGridAndSolvingAttemptButInsertStatisticsFails_NotSaved()
+			throws Exception {
+		setupForSaveTest();
+		// Grid and solving attempt were already saved
+		int existingGridId = 12;
+		int existingSolvingAttemptId = 15;
+		mGridBuilder.setSolvingAttemptId(existingGridId,
+				existingSolvingAttemptId);
+		// Prepare successful update of solving attempt
 		when(
 				mSolvingAttemptDatabaseAdapterMock.update(anyInt(),
 						any(Grid.class))).thenReturn(true);
+		// Prepare failing insert of new statistics
+		when(mStatisticsDatabaseAdapterMock.insert(any(Grid.class)))
+				.thenReturn(null);
+		// Build grid and check that grid, solving attempt and statistics are
+		// not yet saved.
+		Grid grid = mGridBuilder.build();
+		assertThat(grid.getRowId(), is(existingGridId));
+		assertThat(grid.getSolvingAttemptId(), is(existingSolvingAttemptId));
+		assertThat(grid.getGridStatistics().mId, is(-1));
 
-		assertThat("Grid saved?", mGrid.save(), is(true));
+		boolean saveResult = grid.save();
+
+		verify(mDatabaseHelperMock).beginTransaction();
+		verify(mGridDatabaseAdapterMock, never()).insert(any(Grid.class));
+		verify(mSolvingAttemptDatabaseAdapterMock, never()).insert(
+				any(Grid.class), anyInt());
+		verify(mSolvingAttemptDatabaseAdapterMock).update(anyInt(),
+				any(Grid.class));
+		verify(mStatisticsDatabaseAdapterMock).insert(any(Grid.class));
+		verify(mDatabaseHelperMock, never()).setTransactionSuccessful();
+		verify(mDatabaseHelperMock).endTransaction();
+		assertThat(grid.getRowId(), is(existingGridId));
+		assertThat(grid.getSolvingAttemptId(), is(existingSolvingAttemptId));
+		assertThat(saveResult, is(false));
 	}
 
 	@Test
-	public void save_SaveGridStatisticsFails_False() throws Exception {
+	public void save_ExistingGridAndSolvingAttemptAndStatisticsUpdateStatisticsFails_NotSaved()
+			throws Exception {
+		setupForSaveTest();
+		// Grid and solving attempt were already saved
+		int existingGridId = 12;
+		int existingSolvingAttemptId = 15;
+		mGridBuilder.setSolvingAttemptId(existingGridId,
+				existingSolvingAttemptId);
+		// Prepare successful update of solving attempt
 		when(
 				mSolvingAttemptDatabaseAdapterMock.update(anyInt(),
 						any(Grid.class))).thenReturn(true);
+		// Prepare failing update of statistics
+		int existingStatisticsId = 16;
+		mGridStatisticsMock.mId = existingStatisticsId;
 		when(mGridStatisticsMock.save()).thenReturn(false);
+		// Build grid and check that grid, solving attempt and statistics are
+		// not yet saved.
+		Grid grid = mGridBuilder.build();
+		assertThat(grid.getRowId(), is(existingGridId));
+		assertThat(grid.getSolvingAttemptId(), is(existingSolvingAttemptId));
+		assertThat(grid.getGridStatistics().mId, is(existingStatisticsId));
 
-		boolean resultSave = mGrid.save();
+		boolean saveResult = grid.save();
 
+		verify(mDatabaseHelperMock).beginTransaction();
+		verify(mGridDatabaseAdapterMock, never()).insert(any(Grid.class));
+		verify(mSolvingAttemptDatabaseAdapterMock, never()).insert(
+				any(Grid.class), anyInt());
+		verify(mSolvingAttemptDatabaseAdapterMock).update(anyInt(),
+				any(Grid.class));
+		verify(mStatisticsDatabaseAdapterMock, never()).insert(any(Grid.class));
 		verify(mGridStatisticsMock).save();
-		assertThat("Grid saved?", mGrid.save(), is(false));
+		verify(mDatabaseHelperMock, never()).setTransactionSuccessful();
+		verify(mDatabaseHelperMock).endTransaction();
+		assertThat(grid.getRowId(), is(existingGridId));
+		assertThat(grid.getSolvingAttemptId(), is(existingSolvingAttemptId));
+		assertThat(grid.getGridStatistics().mId, is(existingStatisticsId));
+		assertThat(saveResult, is(false));
 	}
 
-	private void assertThatGridIsSaved(
-			boolean grid_IsActive,
-			int gridStatistics_ReplayCount,
-			boolean gridStatistics_IsIncludedInStatistics,
-			int expectedNumberOfCallsToUpdateSolvingAttemptToBeIncludedInStatistics) {
+	@Test
+	public void save_ExistingGridAndSolvingAttemptAndStatisticsUpdateAfterReplayIsFinished_Saved()
+			throws Exception {
+		setupForSaveTest();
+		// Grid and solving attempt were already saved
+		int existingGridId = 12;
+		int existingSolvingAttemptId = 15;
+		mGridBuilder.setSolvingAttemptId(existingGridId,
+				existingSolvingAttemptId);
+		// Prepare successful update of solving attempt
 		when(
 				mSolvingAttemptDatabaseAdapterMock.update(anyInt(),
 						any(Grid.class))).thenReturn(true);
+		// Prepare successful update of statistics
+		int existingStatisticsId = 16;
+		mGridStatisticsMock.mId = existingStatisticsId;
 		when(mGridStatisticsMock.save()).thenReturn(true);
-		when(mGridStatisticsMock.getReplayCount()).thenReturn(
-				gridStatistics_ReplayCount);
-		when(mGridStatisticsMock.isIncludedInStatistics()).thenReturn(
-				gridStatistics_IsIncludedInStatistics);
-		when(mStatisticsDatabaseAdapterMock.update(any(GridStatistics.class)))
-				.thenReturn(true);
+		// Prepare that this is a finished replay of a grid which is not yet
+		// included in the (overall) statistics
+		mGridBuilder.setActive(false);
+		when(mGridStatisticsMock.getReplayCount()).thenReturn(1);
+		when(mGridStatisticsMock.isIncludedInStatistics()).thenReturn(false);
+		// Build grid and check that grid, solving attempt and statistics are
+		// not yet saved.
+		Grid grid = mGridBuilder.build();
+		assertThat(grid.getRowId(), is(existingGridId));
+		assertThat(grid.getSolvingAttemptId(), is(existingSolvingAttemptId));
+		assertThat(grid.getGridStatistics().mId, is(existingStatisticsId));
 
-		mGrid.setActive(grid_IsActive);
+		boolean saveResult = grid.save();
 
-		assertThat("Grid is saved?", mGrid.save(), is(true));
+		verify(mDatabaseHelperMock).beginTransaction();
+		verify(mGridDatabaseAdapterMock, never()).insert(any(Grid.class));
+		verify(mSolvingAttemptDatabaseAdapterMock, never()).insert(
+				any(Grid.class), anyInt());
+		verify(mSolvingAttemptDatabaseAdapterMock).update(anyInt(),
+				any(Grid.class));
+		verify(mStatisticsDatabaseAdapterMock, never()).insert(any(Grid.class));
 		verify(mGridStatisticsMock).save();
-		verify(
-				mStatisticsDatabaseAdapterMock,
-				times(expectedNumberOfCallsToUpdateSolvingAttemptToBeIncludedInStatistics))
+		verify(mStatisticsDatabaseAdapterMock)
 				.updateSolvingAttemptToBeIncludedInStatistics(anyInt(),
 						anyInt());
-	}
-
-	@Test
-	public void save_GridIsActive_GridSavedButSolvingAttemptsNotUpdated()
-			throws Exception {
-		boolean grid_IsActive = true;
-		int gridStatistics_ReplayCount = 1;
-		boolean gridStatistics_IsIncludedInStatistics = false;
-		int expectedNumberOfCallsToUpdateSolvingAttemptToBeIncludedInStatistics = 0;
-
-		assertThatGridIsSaved(grid_IsActive, gridStatistics_ReplayCount,
-				gridStatistics_IsIncludedInStatistics,
-				expectedNumberOfCallsToUpdateSolvingAttemptToBeIncludedInStatistics);
-	}
-
-	@Test
-	public void save_GridIsNotReplayed_GridSavedButSolvingAttemptsNotUpdated()
-			throws Exception {
-		boolean grid_IsActive = false;
-		int gridStatistics_ReplayCount = 0;
-		boolean gridStatistics_IsIncludedInStatistics = false;
-		int expectedNumberOfCallsToUpdateSolvingAttemptToBeIncludedInStatistics = 0;
-
-		assertThatGridIsSaved(grid_IsActive, gridStatistics_ReplayCount,
-				gridStatistics_IsIncludedInStatistics,
-				expectedNumberOfCallsToUpdateSolvingAttemptToBeIncludedInStatistics);
-	}
-
-	@Test
-	public void save_GridIsNotIncludedInStatistics_GridSavedButSolvingAttemptsNotUpdated()
-			throws Exception {
-		boolean grid_IsActive = false;
-		int gridStatistics_ReplayCount = 1;
-		boolean gridStatistics_IsIncludedInStatistics = true;
-		int expectedNumberOfCallsToUpdateSolvingAttemptToBeIncludedInStatistics = 0;
-
-		assertThatGridIsSaved(grid_IsActive, gridStatistics_ReplayCount,
-				gridStatistics_IsIncludedInStatistics,
-				expectedNumberOfCallsToUpdateSolvingAttemptToBeIncludedInStatistics);
-	}
-
-	@Test
-	public void save_Grid_GridSavedAndSolvingAttemptsNotUpdated()
-			throws Exception {
-		boolean grid_IsActive = false;
-		int gridStatistics_ReplayCount = 1;
-		boolean gridStatistics_IsIncludedInStatistics = false;
-		int expectedNumberOfCallsToUpdateSolvingAttemptToBeIncludedInStatistics = 1;
-
-		assertThatGridIsSaved(grid_IsActive, gridStatistics_ReplayCount,
-				gridStatistics_IsIncludedInStatistics,
-				expectedNumberOfCallsToUpdateSolvingAttemptToBeIncludedInStatistics);
+		verify(mDatabaseHelperMock).setTransactionSuccessful();
+		verify(mDatabaseHelperMock).endTransaction();
+		assertThat(grid.getRowId(), is(existingGridId));
+		assertThat(grid.getSolvingAttemptId(), is(existingSolvingAttemptId));
+		assertThat(grid.getGridStatistics().mId, is(existingStatisticsId));
+		assertThat(saveResult, is(true));
 	}
 
 	@Test
@@ -1269,23 +1449,9 @@ public class GridTest {
 		when(
 				mSolvingAttemptDatabaseAdapterMock.updateOnAppUpgrade(anyInt(),
 						any(Grid.class))).thenReturn(false);
+		Grid grid = mGridBuilder.build();
 
-		assertThat("Grid is saved?", mGrid.saveOnAppUpgrade(), is(false));
-	}
-
-	@Test
-	public void saveOnUpgrade_GridStatisticsIsNull_GridIsSaved()
-			throws Exception {
-		mGridObjectsCreatorStub = new GridObjectsCreatorStub();
-		mGridStatisticsMock = null;
-		mGrid = new Grid();
-		mGrid.setObjectsCreator(mGridObjectsCreatorStub);
-
-		when(
-				mSolvingAttemptDatabaseAdapterMock.updateOnAppUpgrade(anyInt(),
-						any(Grid.class))).thenReturn(true);
-
-		assertThat("Grid is saved?", mGrid.saveOnAppUpgrade(), is(true));
+		assertThat("Grid is saved?", grid.saveOnAppUpgrade(), is(false));
 	}
 
 	private void assertThatSaveOnUpgrade(boolean resultSaveGridStatistics,
@@ -1295,8 +1461,9 @@ public class GridTest {
 						any(Grid.class))).thenReturn(true);
 
 		when(mGridStatisticsMock.save()).thenReturn(resultSaveGridStatistics);
+		Grid grid = mGridBuilder.build();
 
-		assertThat("Grid is saved?", mGrid.saveOnAppUpgrade(),
+		assertThat("Grid is saved?", grid.saveOnAppUpgrade(),
 				expectedResultSaveOnUpgrade);
 		verify(mGridStatisticsMock).save();
 	}
@@ -1315,87 +1482,6 @@ public class GridTest {
 		boolean resultSaveGridStatistics = true;
 
 		assertThatSaveOnUpgrade(resultSaveGridStatistics, is(true));
-	}
-
-	private class GridForConstructorTestWithGridLoaderData extends Grid {
-		// Variables will be initialized to false by default. Do not explicitly
-		// assign an initial value to these variables as they will be set when
-		// calling the constructor of the super class.
-		private boolean cellSelectedCalled;
-		private boolean checkUserMathForAllCagesCalled;
-		private boolean setPreferencesCalled;
-
-		public GridForConstructorTestWithGridLoaderData(
-				GridLoaderData gridLoaderData) {
-			super(gridLoaderData);
-		}
-
-		@Override
-		public GridCell setSelectedCell(GridCell cell) {
-			cellSelectedCalled = true;
-			return cell;
-		}
-
-		public boolean verifyIsCellSelectedCalled() {
-			return cellSelectedCalled;
-		}
-
-		@Override
-		void checkUserMathForAllCages() {
-			checkUserMathForAllCagesCalled = true;
-		}
-
-		public boolean verifyIsCheckUserMathForAllCagesCalled() {
-			return checkUserMathForAllCagesCalled;
-		}
-
-		@Override
-		public void setPreferences() {
-			setPreferencesCalled = true;
-		}
-
-		public boolean verifyIsSetPreferencesCalled() {
-			return setPreferencesCalled;
-		}
-	}
-
-	@Test
-	public void grid_ConstructorTestWithGridLoaderData() throws Exception {
-		GridLoaderData gridLoaderData = mock(GridLoaderData.class);
-		gridLoaderData.mCages = new ArrayList<GridCage>();
-		GridCage gridCage = mock(GridCage.class);
-		gridLoaderData.mCages.add(gridCage);
-		gridLoaderData.mCages.add(gridCage);
-		gridLoaderData.mCells = new ArrayList<GridCell>();
-		GridCell gridCell = mock(GridCell.class);
-		when(gridCell.isSelected()).thenReturn(false);
-		gridLoaderData.mCells.add(gridCell);
-		gridLoaderData.mCells.add(gridCell);
-		gridLoaderData.mCells.add(gridCell);
-		gridLoaderData.mCells.add(gridCell);
-		GridCell selectedGridCell = mock(GridCell.class);
-		gridLoaderData.mCells.add(selectedGridCell);
-		when(selectedGridCell.isSelected()).thenReturn(true);
-		gridLoaderData.mCellChanges = new ArrayList<CellChange>();
-		CellChange cellChange = mock(CellChange.class);
-		gridLoaderData.mCellChanges.add(cellChange);
-		gridLoaderData.mGridStatistics = mGridStatisticsMock;
-
-		GridForConstructorTestWithGridLoaderData grid;
-		grid = new GridForConstructorTestWithGridLoaderData(gridLoaderData);
-		assertThat(grid, is(notNullValue()));
-		verify(gridCage, times(gridLoaderData.mCages.size())).setGridReference(
-				grid);
-		verify(gridCell, times(gridLoaderData.mCells.size() - 1))
-				.setGridReference(grid);
-		verify(selectedGridCell, times(1)).setGridReference(grid);
-		verify(gridCell, times(gridLoaderData.mCells.size() - 1))
-				.markDuplicateValuesInSameRowAndColumn();
-		verify(selectedGridCell, times(1))
-				.markDuplicateValuesInSameRowAndColumn();
-		assertThat(grid.verifyIsCellSelectedCalled(), is(true));
-		assertThat(grid.verifyIsCheckUserMathForAllCagesCalled(), is(true));
-		assertThat(grid.verifyIsSetPreferencesCalled(), is(true));
 	}
 
 	@Test
@@ -1431,57 +1517,5 @@ public class GridTest {
 	@Test
 	public void isReplay() throws Exception {
 
-	}
-
-	/**
-	 * Creates a new array list and add one Grid Cell stub as list entry.
-	 */
-	private ArrayList<GridCell> createArrayListOfGridCellsWithOneGridCellStub() {
-		ArrayList<GridCell> gridCells = new ArrayList<GridCell>();
-		GridCell gridCellMock = mock(GridCell.class);
-		gridCells.add(gridCellMock);
-
-		return gridCells;
-	}
-
-	/**
-	 * Creates a new array list and adds all given grid cells (possibly fakes)
-	 * as list entries.
-	 */
-	private ArrayList<GridCell> createArrayListOfGridCellsWithGridCells(
-			GridCell... gridCell) {
-		ArrayList<GridCell> gridCells = new ArrayList<GridCell>();
-
-		for (int i = 0; i < gridCell.length; i++) {
-			gridCells.add(gridCell[i]);
-		}
-
-		return gridCells;
-	}
-
-	/**
-	 * Creates a new array list and add one Grid Cage stub as list entry.
-	 */
-	private ArrayList<GridCage> createArrayListOfGridCagesWithOneGridCagestub() {
-		ArrayList<GridCage> gridCages = new ArrayList<GridCage>();
-		GridCage gridCageMock = mock(GridCage.class);
-		gridCages.add(gridCageMock);
-
-		return gridCages;
-	}
-
-	/**
-	 * Creates a new array list and adds all given grid cages (possibly fakes)
-	 * as list entries.
-	 */
-	private ArrayList<GridCage> createArrayListOfGridCagesWithGridCages(
-			GridCage... gridCage) {
-		ArrayList<GridCage> gridCages = new ArrayList<GridCage>();
-
-		for (int i = 0; i < gridCage.length; i++) {
-			gridCages.add(gridCage[i]);
-		}
-
-		return gridCages;
 	}
 }

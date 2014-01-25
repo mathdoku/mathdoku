@@ -1,6 +1,7 @@
 package net.mathdoku.plus.grid;
 
 import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.storage.CellChangeStorage;
 import net.mathdoku.plus.storage.GridCageStorage;
 import net.mathdoku.plus.storage.GridCellStorage;
@@ -12,6 +13,7 @@ import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 
 /**
  * The GridLoad is responsible for loading a grid from the database into a new
@@ -22,7 +24,10 @@ public class GridLoader {
 
 	private int mSavedWithRevision;
 
-	private GridLoaderData mGridLoaderData;
+	private GridBuilder mGridBuilder;
+	private ArrayList<GridCell> mGridCells;
+	private ArrayList<GridCage> mGridCages;
+	private ArrayList<CellChange> mCellChanges;
 
 	private GridStorage mGridStorage;
 
@@ -64,12 +69,13 @@ public class GridLoader {
 			return null;
 		}
 
-		mGridLoaderData = mGridLoaderObjectsCreator.createGridLoaderData();
-		mGridLoaderData.mDateCreated = solvingAttempt.mDateCreated;
-		mGridLoaderData.mDateUpdated = solvingAttempt.mDateUpdated;
-		mGridLoaderData.mSolvingAttemptId = solvingAttempt.mId;
-
-		GridRow gridRow = mGridLoaderObjectsCreator.createGridDatabaseAdapter()
+		mGridBuilder = mGridLoaderObjectsCreator
+				.createGridBuilder()
+				.setDateCreated(solvingAttempt.mDateCreated)
+				.setDateUpdated(solvingAttempt.mDateUpdated)
+				.setSolvingAttemptId(solvingAttempt.mGridId,solvingAttempt.mId);
+		GridRow gridRow = mGridLoaderObjectsCreator
+				.createGridDatabaseAdapter()
 				.get(solvingAttempt.mGridId);
 		if (gridRow == null) {
 			return null;
@@ -79,8 +85,9 @@ public class GridLoader {
 			return null;
 		}
 
-		mGridLoaderData.mGridSize = gridRow.mGridSize;
-		mGridLoaderData.mGridGeneratingParameters = gridRow.mGridGeneratingParameters;
+		mGridBuilder
+				.setGridSize(gridRow.mGridSize)
+				.setGridGeneratingParameters(gridRow.mGridGeneratingParameters);
 		mSavedWithRevision = solvingAttempt.mSavedWithRevision;
 
 		// SolvingAttemptData can only be processed after the grid size and
@@ -92,8 +99,7 @@ public class GridLoader {
 		if (loadStatistics(solvingAttempt.mGridId) == false) {
 			return null;
 		}
-
-		return mGridLoaderObjectsCreator.createGrid(mGridLoaderData);
+		return mGridBuilder.build();
 	}
 
 	private SolvingAttempt loadSolvingAttempt(int solvingAttemptId) {
@@ -135,8 +141,8 @@ public class GridLoader {
 				}
 				return false;
 			}
-			mGridLoaderData.mActive = mGridStorage.isActive();
-			mGridLoaderData.mRevealed = mGridStorage.isRevealed();
+			mGridBuilder.setActive(mGridStorage.isActive());
+			mGridBuilder.setRevealed(mGridStorage.isRevealed());
 
 			if ((line = solvingAttempt.mData.getNextLine()) == null) {
 				if (mThrowExceptionOnError) {
@@ -148,29 +154,28 @@ public class GridLoader {
 			}
 
 			// Read cells
-			mGridLoaderData.mCells = mGridLoaderObjectsCreator
-					.createArrayListOfGridCells();
+			mGridCells = mGridLoaderObjectsCreator.createArrayListOfGridCells();
 			while (loadCell(line)) {
 				line = solvingAttempt.mData.getNextLine();
 			}
 			// Check if expected number of cells is read.
-			if (mGridLoaderData.mCells.size() != mGridLoaderData.mGridSize
-					* mGridLoaderData.mGridSize) {
+			if (mGridCells.size() != mGridBuilder.mGridSize
+					* mGridBuilder.mGridSize) {
 				throw new InvalidGridException(
 						"Unexpected number of cells loaded. Expected: "
-								+ (mGridLoaderData.mGridSize * mGridLoaderData.mGridSize)
-								+ ", actual: " + mGridLoaderData.mCells.size());
+								+ (mGridBuilder.mGridSize * mGridBuilder.mGridSize)
+								+ ", actual: " + mGridCells.size());
 			}
+			mGridBuilder.setCells(mGridCells);
 
 			// Read cages
-			mGridLoaderData.mCages = mGridLoaderObjectsCreator
-					.createArrayListOfGridCages();
+			mGridCages = mGridLoaderObjectsCreator.createArrayListOfGridCages();
 			while (loadCage(line)) {
 				line = solvingAttempt.mData.getNextLine();
 			}
 			// At least one expected is expected, so throw error in case no
 			// cages have been loaded.
-			if (mGridLoaderData.mCages.size() == 0) {
+			if (mGridCages.size() == 0) {
 				if (mThrowExceptionOnError) {
 					throw new InvalidGridException(
 							"Line does not contain cage information while this was expected:"
@@ -178,13 +183,15 @@ public class GridLoader {
 				}
 				return false;
 			}
+			mGridBuilder.setCages(mGridCages);
 
 			// Remaining lines contain cell changes (zero or more expected)
-			mGridLoaderData.mCellChanges = mGridLoaderObjectsCreator
+			mCellChanges = mGridLoaderObjectsCreator
 					.createArrayListOfCellChanges();
 			while (loadCellChange(line)) {
 				line = solvingAttempt.mData.getNextLine();
 			}
+			mGridBuilder.setCellChanges(mCellChanges);
 
 			// Check if end of file is reached an not all information was read
 			// yet.
@@ -226,12 +233,14 @@ public class GridLoader {
 			return false;
 		}
 
-		GridCellStorage mGridCellStorage = mGridLoaderObjectsCreator.createGridCellStorage();
+		GridCellStorage mGridCellStorage = mGridLoaderObjectsCreator
+				.createGridCellStorage();
 		if (mGridCellStorage.fromStorageString(line, mSavedWithRevision) == false) {
 			return false;
 		}
-		GridCell cell = mGridLoaderObjectsCreator.createGridCell(mGridCellStorage);
-		mGridLoaderData.mCells.add(cell);
+		GridCell cell = mGridLoaderObjectsCreator
+				.createGridCell(mGridCellStorage);
+		mGridCells.add(cell);
 
 		return true;
 	}
@@ -241,13 +250,15 @@ public class GridLoader {
 			return false;
 		}
 
-		GridCageStorage mGridCageStorage = mGridLoaderObjectsCreator.createGridCageStorage();
+		GridCageStorage mGridCageStorage = mGridLoaderObjectsCreator
+				.createGridCageStorage();
 		if (mGridCageStorage.fromStorageString(line, mSavedWithRevision,
-				mGridLoaderData.mCells) == false) {
+				mGridCells) == false) {
 			return false;
 		}
-		GridCage cage = mGridLoaderObjectsCreator.createGridCage(mGridCageStorage);
-		mGridLoaderData.mCages.add(cage);
+		GridCage cage = mGridLoaderObjectsCreator
+				.createGridCage(mGridCageStorage);
+		mGridCages.add(cage);
 
 		return true;
 	}
@@ -257,13 +268,15 @@ public class GridLoader {
 			return false;
 		}
 
-		CellChangeStorage cellChangeStorage = mGridLoaderObjectsCreator.createCellChangeStorage();
-		if (!cellChangeStorage.fromStorageString(line, mGridLoaderData.mCells,
+		CellChangeStorage cellChangeStorage = mGridLoaderObjectsCreator
+				.createCellChangeStorage();
+		if (!cellChangeStorage.fromStorageString(line, mGridCells,
 				mSavedWithRevision)) {
 			return false;
 		}
-		CellChange cellChange = mGridLoaderObjectsCreator.createCellChange(cellChangeStorage);
-		mGridLoaderData.mCellChanges.add(cellChange);
+		CellChange cellChange = mGridLoaderObjectsCreator
+				.createCellChange(cellChangeStorage);
+		mCellChanges.add(cellChange);
 
 		return true;
 	}
@@ -274,8 +287,10 @@ public class GridLoader {
 	private boolean loadStatistics(int gridId) {
 		StatisticsDatabaseAdapter statisticsDatabaseAdapter = mGridLoaderObjectsCreator
 				.createStatisticsDatabaseAdapter();
-		mGridLoaderData.mGridStatistics = statisticsDatabaseAdapter.getMostRecent(gridId);
-		return (mGridLoaderData.mGridStatistics != null);
+		GridStatistics gridStatistics = statisticsDatabaseAdapter
+				.getMostRecent(gridId);
+		mGridBuilder.setGridStatistics(gridStatistics);
+		return (gridStatistics != null);
 	}
 
 	public void setThrowExceptionOnError(boolean throwExceptionOnError) {

@@ -1,15 +1,5 @@
 package net.mathdoku.plus.ui;
 
-import net.mathdoku.plus.R;
-import net.mathdoku.plus.grid.Grid;
-import net.mathdoku.plus.grid.ui.GridViewerView;
-import net.mathdoku.plus.painter.Painter;
-import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
-import net.mathdoku.plus.storage.database.GridRow;
-import net.mathdoku.plus.ui.base.AppFragmentActivity;
-import net.mathdoku.plus.util.FeedbackEmail;
-import net.mathdoku.plus.util.SharedPuzzle;
-
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -20,6 +10,16 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+
+import net.mathdoku.plus.R;
+import net.mathdoku.plus.grid.Grid;
+import net.mathdoku.plus.grid.ui.GridViewerView;
+import net.mathdoku.plus.painter.Painter;
+import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
+import net.mathdoku.plus.storage.database.GridRow;
+import net.mathdoku.plus.ui.base.AppFragmentActivity;
+import net.mathdoku.plus.util.FeedbackEmail;
+import net.mathdoku.plus.util.SharedPuzzle;
 
 public class SharedPuzzleActivity extends AppFragmentActivity {
 
@@ -205,7 +205,7 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 		// Activate and store the newly created grid so it will be played when
 		// the puzzle fragment activity is (re)started.
 		mGrid.setActive(true);
-		if (mGrid.insertInDatabase() && mGrid.save()) {
+		if (mGrid.save()) {
 			// Stop the preview activity.
 			finish();
 

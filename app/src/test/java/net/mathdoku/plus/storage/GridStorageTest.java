@@ -2,21 +2,24 @@ package net.mathdoku.plus.storage;
 
 import net.mathdoku.plus.grid.CellChange;
 import net.mathdoku.plus.grid.Grid;
+import net.mathdoku.plus.grid.GridBuilder;
 import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.grid.GridCell;
+import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
+import net.mathdoku.plus.statistics.GridStatistics;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 
 import robolectric.RobolectricGradleTestRunner;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -28,87 +31,89 @@ public class GridStorageTest {
 	private CellChangeStorage mCellChangeStorageMock = mock(CellChangeStorage.class);
 	private GridCageStorage mGridCageStorageMock = mock(GridCageStorage.class);
 
-	private class GridStub extends Grid {
-		private boolean mIsActive;
-		private boolean mIsSolutionRevealed;
+	private class GridBuilderStub extends GridBuilder {
+		int mGridSize;
 
-		public void setIsActive(boolean isActive) {
-			mIsActive = isActive;
-		}
+		public GridBuilderStub() {
+			super();
 
-		public void setIsSolutionRevealed(boolean isSolutionRevealed) {
-			mIsSolutionRevealed = isSolutionRevealed;
-		}
+			setGridSize(4);
 
-		private void addGridCellMockWithStorageString(String... storageString) {
-			switch (storageString.length) {
-			case 1:
-				mCells.add(mock(GridCell.class));
-				when(mGridCellStorageMock.toStorageString(any(GridCell.class)))
-						.thenReturn(storageString[0]);
-				break;
-			case 2:
-				mCells.add(mock(GridCell.class));
-				mCells.add(mock(GridCell.class));
-				when(mGridCellStorageMock.toStorageString(any(GridCell.class)))
-						.thenReturn(storageString[0], storageString[1]);
-				break;
-			default:
-				throw new InvalidParameterException(
-						"Invalid number of parameters in helper method addGridCellMockWithStorageString");
-			}
-		}
+			super.setGridStatistics(mock(GridStatistics.class));
 
-		private void addGridCageMockWithStorageString(String... storageString) {
-			switch (storageString.length) {
-			case 1:
-				mCages.add(mock(GridCage.class));
-				when(mGridCageStorageMock.toStorageString(any(GridCage.class)))
-						.thenReturn(storageString[0]);
-				break;
-			case 2:
-				mCages.add(mock(GridCage.class));
-				mCages.add(mock(GridCage.class));
-				when(mGridCageStorageMock.toStorageString(any(GridCage.class)))
-						.thenReturn(storageString[0], storageString[1]);
-				break;
-			default:
-				throw new InvalidParameterException(
-						"Invalid number of parameters in helper method addGridCageMockWithStorageString");
-			}
-		}
-
-		private void addCellChangeMockWithStorageString(String... storageString) {
-			switch (storageString.length) {
-				case 1:
-					addMove(mock(CellChange.class));
-					when(mCellChangeStorageMock.toStorageString(any(CellChange.class)))
-							.thenReturn(storageString[0]);
-					break;
-				case 2:
-					addMove(mock(CellChange.class));
-					addMove(mock(CellChange.class));
-					when(mCellChangeStorageMock.toStorageString(any(CellChange.class)))
-							.thenReturn(storageString[0], storageString[1]);
-					break;
-				default:
-					throw new InvalidParameterException(
-							"Invalid number of parameters in helper method addCellChangeMockWithStorageString");
-			}
+			super
+					.setGridGeneratingParameters(mock(GridGeneratingParameters.class));
 		}
 
 		@Override
-		public boolean isActive() {
-			return mIsActive;
+		public GridBuilder setGridSize(int gridSize) {
+			mGridSize = gridSize;
+			return super.setGridSize(gridSize);
 		}
 
-		@Override
-		public boolean isSolutionRevealed() {
-			return mIsSolutionRevealed;
+		/**
+		 * Initializes the list of cells of the GridBuilder with the given grid
+		 * cells.
+		 */
+		private GridBuilderStub addGridCellMockWithStorageString(
+				String... storageString) {
+			ArrayList<GridCell> gridCells = new ArrayList<GridCell>();
+
+			// Create the number of cell as determined by the grid size. The
+			// cells return the given storage strings if enough storage strings
+			// are available.
+			int numberOfCells = mGridSize * mGridSize;
+			for (int i = 0; i < numberOfCells; i++) {
+				GridCell gridCell = mock(GridCell.class);
+				when(mGridCellStorageMock.toStorageString(gridCell))
+						.thenReturn(
+								i < storageString.length ? storageString[i]
+										: "");
+				gridCells.add(gridCell);
+			}
+			super.setCells(gridCells);
+
+			return this;
+		}
+
+		/**
+		 * Initializes the list of cages of the GridBuilder with the given grid
+		 * cages.
+		 */
+		private GridBuilderStub addGridCageMockWithStorageString(
+				String... storageString) {
+			ArrayList<GridCage> gridCages = new ArrayList<GridCage>();
+
+			for (int i = 0; i < storageString.length; i++) {
+				GridCage gridCage = mock(GridCage.class);
+				when(mGridCageStorageMock.toStorageString(gridCage))
+						.thenReturn(storageString[i]);
+				gridCages.add(gridCage);
+			}
+			super.setCages(gridCages);
+
+			return this;
+		}
+
+		/**
+		 * Initializes the list of cell changess of the GridBuilder with the
+		 * given cell changes.
+		 */
+		private GridBuilderStub addCellChangeMockWithStorageString(
+				String... storageString) {
+			ArrayList<CellChange> cellChanges = new ArrayList<CellChange>();
+
+			for (int i = 0; i < storageString.length; i++) {
+				CellChange cellChange = mock(CellChange.class);
+				when(mCellChangeStorageMock.toStorageString(cellChange))
+						.thenReturn(storageString[i]);
+				cellChanges.add(cellChange);
+			}
+			super.setCellChanges(cellChanges);
+
+			return this;
 		}
 	}
-
-	private GridStub mGridStub;
 
 	@Before
 	public void setup() {
@@ -130,8 +135,6 @@ public class GridStorageTest {
 			}
 		};
 		gridStorage.setObjectsCreator(mGridStorageObjectsCreator);
-
-		mGridStub = new GridStub();
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -228,120 +231,130 @@ public class GridStorageTest {
 	}
 
 	@Test
-	public void toStorageString_SaveNewGrid_StorageStringCreated()
+	public void toStorageString_SaveNewGridWithOneCellAndOneCage_StorageStringCreated()
 			throws Exception {
-		mGridStub.setIsActive(true);
-		mGridStub.setIsSolutionRevealed(true);
-		assertThat("Storage string", gridStorage.toStorageString(mGridStub),
-				is(equalTo("GRID:true:true" + "\n")));
-	}
-
-	@Test
-	public void toStorageString_SaveNewGridWithOneCell_StorageStringCreated()
-			throws Exception {
-		mGridStub.setIsActive(true);
-		mGridStub.setIsSolutionRevealed(false);
+		GridBuilderStub gridBuilderStub = new GridBuilderStub();
+		gridBuilderStub.setGridSize(1);
+		gridBuilderStub.setActive(true);
+		gridBuilderStub.setRevealed(false);
 		String gridCellStubStorageString = "** A CELL STORAGE STRING **";
-		mGridStub.addGridCellMockWithStorageString(gridCellStubStorageString);
+		gridBuilderStub
+				.addGridCellMockWithStorageString(gridCellStubStorageString);
+		String gridCageStubStorageString = "** A CAGE STORAGE STRING **";
+		gridBuilderStub
+				.addGridCageMockWithStorageString(gridCageStubStorageString);
+		Grid grid = gridBuilderStub.build();
 
-		assertThat("Storage string", gridStorage.toStorageString(mGridStub),
-				is(equalTo("GRID:true:false" + "\n" + gridCellStubStorageString
-						+ "\n")));
+		assertThat("Storage string", gridStorage.toStorageString(grid),
+				is(equalTo("GRID:true:false" + "\n" + //
+						gridCellStubStorageString + "\n" + //
+						gridCageStubStorageString + "\n")));
 	}
 
 	@Test
-	public void toStorageString_SaveNewGridWithMultipleCell_StorageStringCreated()
+	public void toStorageString_SaveNewGridWithMultipleCellsAndOneCage_StorageStringCreated()
 			throws Exception {
-		mGridStub.setIsActive(false);
-		mGridStub.setIsSolutionRevealed(true);
-		String gridCellStubStorageString[] = {
-				"** FIRST CELL STORAGE STRING **",
-				"** SECOND CELL STORAGE STRING **" };
-		mGridStub.addGridCellMockWithStorageString(gridCellStubStorageString);
+		GridBuilderStub gridBuilderStub = new GridBuilderStub();
+		gridBuilderStub.setGridSize(2);
+		gridBuilderStub.setActive(false);
+		gridBuilderStub.setRevealed(true);
+		String gridCellStubStorageString[] = { "** CELL 1 STORAGE STRING **",
+				"** CELL 2 STORAGE STRING **", "** CELL 3 STORAGE STRING **",
+				"** CELL 4 STORAGE STRING **" };
+		gridBuilderStub
+				.addGridCellMockWithStorageString(gridCellStubStorageString);
+		String gridCageStubStorageString = "** A CAGE STORAGE STRING **";
+		gridBuilderStub
+				.addGridCageMockWithStorageString(gridCageStubStorageString);
+		Grid grid = gridBuilderStub.build();
 
-		assertThat("Storage string", gridStorage.toStorageString(mGridStub),
+		assertThat("Storage string", gridStorage.toStorageString(grid),
 				is(equalTo("GRID:false:true" + "\n"
 						+ gridCellStubStorageString[0] + "\n"
-						+ gridCellStubStorageString[1] + "\n")));
-	}
-
-	@Test
-	public void toStorageString_SaveNewGridWithOneCage_StorageStringCreated()
-			throws Exception {
-		mGridStub.setIsActive(false);
-		mGridStub.setIsSolutionRevealed(false);
-		String gridCageStubStorageString = "** A CAGE STORAGE STRING **";
-		mGridStub.addGridCageMockWithStorageString(gridCageStubStorageString);
-
-		assertThat("Storage string", gridStorage.toStorageString(mGridStub),
-				is(equalTo("GRID:false:false" + "\n"
+						+ gridCellStubStorageString[1] + "\n"
+						+ gridCellStubStorageString[2] + "\n"
+						+ gridCellStubStorageString[3] + "\n"
 						+ gridCageStubStorageString + "\n")));
 	}
 
 	@Test
-	public void toStorageString_SaveNewGridWithMultipleCage_StorageStringCreated()
+	public void toStorageString_SaveNewGridWithMultipleCellsAndMultipleCages_StorageStringCreated()
 			throws Exception {
-		mGridStub.setIsActive(false);
-		mGridStub.setIsSolutionRevealed(false);
-		String gridCageStubStorageString[] = {
-				"** FIRST CAGE STORAGE STRING **",
-				"** SECOND CAGE STORAGE STRING **" };
-		mGridStub.addGridCageMockWithStorageString(gridCageStubStorageString);
+		GridBuilderStub gridBuilderStub = new GridBuilderStub();
+		gridBuilderStub.setGridSize(2);
+		gridBuilderStub.setActive(false);
+		gridBuilderStub.setRevealed(true);
+		String gridCellStubStorageString[] = { "** CELL 1 STORAGE STRING **",
+				"** CELL 2 STORAGE STRING **", "** CELL 3 STORAGE STRING **",
+				"** CELL 4 STORAGE STRING **" };
+		gridBuilderStub
+				.addGridCellMockWithStorageString(gridCellStubStorageString);
+		String gridCageStubStorageString[] = { "** CAGE 1 STORAGE STRING **",
+				"** CAGE 2 STORAGE STRING **" };
+		gridBuilderStub
+				.addGridCageMockWithStorageString(gridCageStubStorageString);
+		Grid grid = gridBuilderStub.build();
 
-		assertThat("Storage string", gridStorage.toStorageString(mGridStub),
-				is(equalTo("GRID:false:false" + "\n"
+		assertThat("Storage string", gridStorage.toStorageString(grid),
+				is(equalTo("GRID:false:true" + "\n"
+						+ gridCellStubStorageString[0] + "\n"
+						+ gridCellStubStorageString[1] + "\n"
+						+ gridCellStubStorageString[2] + "\n"
+						+ gridCellStubStorageString[3] + "\n"
 						+ gridCageStubStorageString[0] + "\n"
 						+ gridCageStubStorageString[1] + "\n")));
 	}
 
 	@Test
-	public void toStorageString_SaveNewGridWithOneCellChange_StorageStringCreated()
+	public void toStorageString_SaveNewGridWithOneCellAndOneCageAndOneCellChange_StorageStringCreated()
 			throws Exception {
-		mGridStub.setIsActive(false);
-		mGridStub.setIsSolutionRevealed(false);
-		String mCellChangeStubStorageString = "** A CELL CHANGE STORAGE STRING **";
-		mGridStub
-				.addCellChangeMockWithStorageString(mCellChangeStubStorageString);
-
-		assertThat("Storage string", gridStorage.toStorageString(mGridStub),
-				is(equalTo("GRID:false:false" + "\n"
-						+ mCellChangeStubStorageString + "\n")));
-	}
-
-	@Test
-	public void toStorageString_SaveNewGridWithMultipleCellChange_StorageStringCreated()
-			throws Exception {
-		mGridStub.setIsActive(false);
-		mGridStub.setIsSolutionRevealed(false);
-		String mCellChangeStubStorageString[] = {
-				"** FIRST CELL CHANGE STORAGE STRING **",
-				"** SECOND CELL CHANGE STORAGE STRING **" };
-		mGridStub
-				.addCellChangeMockWithStorageString(mCellChangeStubStorageString);
-
-		assertThat("Storage string", gridStorage.toStorageString(mGridStub),
-				is(equalTo("GRID:false:false" + "\n"
-						+ mCellChangeStubStorageString[0] + "\n"
-						+ mCellChangeStubStorageString[1] + "\n")));
-	}
-
-	@Test
-	public void toStorageString_SaveNewGridWithCellAndCageAndCellChange_StorageStringCreated()
-			throws Exception {
-		mGridStub.setIsActive(false);
-		mGridStub.setIsSolutionRevealed(false);
+		GridBuilderStub gridBuilderStub = new GridBuilderStub();
+		gridBuilderStub.setGridSize(1);
+		gridBuilderStub.setActive(true);
+		gridBuilderStub.setRevealed(false);
 		String gridCellStubStorageString = "** A CELL STORAGE STRING **";
-		mGridStub.addGridCellMockWithStorageString(gridCellStubStorageString);
+		gridBuilderStub
+				.addGridCellMockWithStorageString(gridCellStubStorageString);
 		String gridCageStubStorageString = "** A CAGE STORAGE STRING **";
-		mGridStub.addGridCageMockWithStorageString(gridCageStubStorageString);
+		gridBuilderStub
+				.addGridCageMockWithStorageString(gridCageStubStorageString);
 		String mCellChangeStubStorageString = "** A CELL CHANGE STORAGE STRING **";
-		mGridStub
+		gridBuilderStub
 				.addCellChangeMockWithStorageString(mCellChangeStubStorageString);
+		Grid grid = gridBuilderStub.build();
 
-		assertThat("Storage string", gridStorage.toStorageString(mGridStub),
-				is(equalTo("GRID:false:false" + "\n"
-						+ gridCellStubStorageString + "\n"
-						+ gridCageStubStorageString + "\n"
+		assertThat("Storage string", gridStorage.toStorageString(grid),
+				is(equalTo("GRID:true:false" + "\n" //
+						+ gridCellStubStorageString + "\n" //
+						+ gridCageStubStorageString + "\n" //
 						+ mCellChangeStubStorageString + "\n")));
+	}
+
+	@Test
+	public void toStorageString_SaveNewGridWithOneCellAndOneCageAndMultipleCellChange_StorageStringCreated()
+			throws Exception {
+		GridBuilderStub gridBuilderStub = new GridBuilderStub();
+		gridBuilderStub.setGridSize(1);
+		gridBuilderStub.setActive(true);
+		gridBuilderStub.setRevealed(false);
+		String gridCellStubStorageString = "** A CELL STORAGE STRING **";
+		gridBuilderStub
+				.addGridCellMockWithStorageString(gridCellStubStorageString);
+		String gridCageStubStorageString = "** A CAGE STORAGE STRING **";
+		gridBuilderStub
+				.addGridCageMockWithStorageString(gridCageStubStorageString);
+		String mCellChangeStubStorageString[] = {
+				"** CELL CHANGE 1 STORAGE STRING **",
+				"** CELL CHANGE 2 STORAGE STRING **" };
+		gridBuilderStub
+				.addCellChangeMockWithStorageString(mCellChangeStubStorageString);
+		Grid grid = gridBuilderStub.build();
+
+		assertThat("Storage string", gridStorage.toStorageString(grid),
+				is(equalTo("GRID:true:false" + "\n" //
+						+ gridCellStubStorageString + "\n" //
+						+ gridCageStubStorageString + "\n" //
+						+ mCellChangeStubStorageString[0] + "\n" //
+						+ mCellChangeStubStorageString[1] + "\n")));
 	}
 }

@@ -61,7 +61,8 @@ public class GridStorage {
 
 		// Only process the storage string if it starts with the correct
 		// identifier.
-		if (viewParts == null || SAVE_GAME_GRID_LINE.equals(viewParts[0]) == false) {
+		if (viewParts == null
+				|| SAVE_GAME_GRID_LINE.equals(viewParts[0]) == false) {
 			return false;
 		}
 
@@ -142,10 +143,14 @@ public class GridStorage {
 		// Store information about the cell changes. Use one line per single
 		// cell change. Note: watch for lengthy line due to recursive cell
 		// changes.
-		CellChangeStorage cellChangeStorage = mGridStorageObjectsCreator.createCellChangeStorage();
-		for (CellChange cellChange : mCellChanges) {
-			stringBuilder.append(cellChangeStorage.toStorageString(cellChange)).append(
-					SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+		CellChangeStorage cellChangeStorage = mGridStorageObjectsCreator
+				.createCellChangeStorage();
+		if (mCellChanges != null) {
+			for (CellChange cellChange : mCellChanges) {
+				stringBuilder.append(
+						cellChangeStorage.toStorageString(cellChange)).append(
+						SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+			}
 		}
 
 		return stringBuilder.toString();

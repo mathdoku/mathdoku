@@ -11,6 +11,7 @@ import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.developmentHelper.DevelopmentHelper;
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.grid.Grid;
+import net.mathdoku.plus.grid.GridBuilder;
 import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.grid.GridCell;
 import net.mathdoku.plus.painter.Painter;
@@ -46,9 +47,6 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	private int mMaxCagePermutations;
 	private int mMaximumSingleCellCages;
 
-	// The grid created by the generator
-	private Grid mGrid;
-
 	// The user that will use the generated grid.
 	final Listener mListener;
 
@@ -69,6 +67,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 	// Additional option for generating the grid
 	GridGeneratorOptions mGridGeneratorOptions;
+
+	boolean mForceExceptionInDevelopmentModeDueToSlowGenerating = false;
 
 	// Timestamp for logging purposes
 	private long mTimeStarted;
@@ -261,10 +261,6 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 		mTimeStarted = System.currentTimeMillis();
 
-		// Create a new empty grid.
-		mGrid = new Grid();
-		mGrid.setGridSize(mGridSize);
-
 		boolean hasUniqueSolution = false;
 		int num_attempts = 0;
 
@@ -324,12 +320,18 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 					// solution which results in much faster generation time.
 
 					// Create the grid object
-					if (!mGrid.create(mGridSize, mCells, mCages,
-							mGridGeneratingParameters)) {
+					GridBuilder mGridBuilder = new GridBuilder();
+					mGridBuilder
+							.setGridSize(mGridSize)
+							.setCells(mCells)
+							.setCages(mCages)
+							.setGridGeneratingParameters(mGridGeneratingParameters);
+					Grid grid = mGridBuilder.build();
+					if (grid == null) {
 						Log.e(TAG, "Can not create grid.");
 						continue;
 					}
-					mGrid.save();
+					grid.save();
 
 					publishProgress(
 							DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_MESSAGE,
@@ -351,8 +353,6 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 							mGridGeneratingParameters.mHideOperators = new Random()
 									.nextBoolean();
 						}
-						mGrid = new Grid();
-						mGrid.setGridSize(mGridSize);
 
 						// Fake a non unique solution so another grid is
 						// generated.
@@ -408,11 +408,9 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} // Pause a moment to publish message
-						// Force exception by creating a null pointer exception
-					mGrid = null;
+					mForceExceptionInDevelopmentModeDueToSlowGenerating = true;
 					return null;
 				}
 			}
@@ -465,15 +463,23 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	protected void onPostExecute(Void result) {
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			// catch null pointer exception created in background process
-			if (mGrid == null) {
+			if (mForceExceptionInDevelopmentModeDueToSlowGenerating) {
 				throw new RuntimeException(
 						"Investigate slow game generation. See logcat above for more info.");
 			}
 		}
 
 		// Create the grid object
-		if (mGrid.create(mGridSize, mCells, mCages, mGridGeneratingParameters)) {
-			mListener.onFinishGridGenerating(mGrid);
+		GridBuilder mGridBuilder = new GridBuilder();
+		mGridBuilder
+				.setGridSize(mGridSize)
+				.setCells(mCells)
+				.setCages(mCages)
+				.setGridGeneratingParameters(mGridGeneratingParameters);
+		Grid grid = mGridBuilder.build();
+		if (grid != null) {
+			grid.save();
+			mListener.onFinishGridGenerating(grid);
 		}
 	}
 

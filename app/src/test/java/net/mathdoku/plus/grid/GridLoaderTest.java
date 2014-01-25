@@ -1,5 +1,8 @@
 package net.mathdoku.plus.grid;
 
+import android.app.Activity;
+
+import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.statistics.GridStatistics;
@@ -209,12 +212,21 @@ public class GridLoaderTest {
 		private GridDatabaseAdapter mGridDatabaseAdapterMock = mock(GridDatabaseAdapter.class);
 		private StatisticsDatabaseAdapter mStatisticsDatabaseAdapterMock = mock(StatisticsDatabaseAdapter.class);
 		private GridStorage mGridStorageMock = mock(GridStorage.class);
-		private Grid mGridMock = mock(Grid.class);
 		private int mCellNumberOnWhichAnNumberFormatExceptionIsThrown = -1;
 		private boolean mHasUnExpectedDataBeforeGridCells = false;
 		private boolean mHasUnExpectedDataBeforeGridCages = false;
-
-		private GridLoaderData mGridLoaderData = new GridLoaderData();
+		private GridBuilder mGridBuilderMock = new GridBuilder() {
+			@Override
+			public Grid build() {
+				/*
+				 * As the stub does not contain real data, building the grid
+				 * would always fail. As unit testing of the Grid constructor is
+				 * not inside the scope of these unit tests, a mock is returned
+				 * whenever the build is called.
+				 */
+				return mock(Grid.class);
+			}
+		};
 
 		public void setGridMockReturningAValidStorageString() {
 			when(mGridStorageMock.fromStorageString(anyString(), anyInt()))
@@ -309,8 +321,8 @@ public class GridLoaderTest {
 			return mGridDatabaseAdapterMock;
 		}
 
-		public GridLoaderData getGridLoaderData() {
-			return mGridLoaderData;
+		public GridBuilder getGridBuilder() {
+			return mGridBuilderMock;
 		}
 
 		@Override
@@ -396,13 +408,8 @@ public class GridLoaderTest {
 		}
 
 		@Override
-		public GridLoaderData createGridLoaderData() {
-			return mGridLoaderData;
-		}
-
-		@Override
-		public Grid createGrid(GridLoaderData gridLoaderData) {
-			return mGridMock;
+		public GridBuilder createGridBuilder() {
+			return mGridBuilderMock;
 		}
 	}
 
@@ -410,6 +417,9 @@ public class GridLoaderTest {
 
 	@Before
 	public void Setup() {
+		// Instantiate Singleton
+		Preferences.getInstance(new Activity());
+
 		mGridLoader = new GridLoader();
 		mGridLoaderObjectsCreatorStub = new GridLoaderObjectsCreatorStub();
 		mGridLoader.setObjectsCreator(mGridLoaderObjectsCreatorStub);
@@ -652,10 +662,10 @@ public class GridLoaderTest {
 
 		assertThat("Grid load", mGridLoader.load(solvingAttemptId),
 				is(notNullValue()));
-		GridLoaderData gridLoaderData = mGridLoaderObjectsCreatorStub
-				.getGridLoaderData();
+		GridBuilder gridBuilder = mGridLoaderObjectsCreatorStub
+				.getGridBuilder();
 		assertThat("Grid has number of cell changes",
-				gridLoaderData.mCellChanges.size(), is(numberOfCellChanges));
+				gridBuilder.mCellChanges.size(), is(numberOfCellChanges));
 	}
 
 	@Test
@@ -664,7 +674,7 @@ public class GridLoaderTest {
 		int solvingAttemptId = 134;
 		int mGridId = 1235;
 		long dateCreated = 123456789;
-		long dateUpdated = 123455555;
+		long dateUpdated = 123457777;
 		int mSavedWithRevision = 597;
 		int gridSize = 4;
 		int numberOfCells = gridSize * gridSize;
@@ -705,33 +715,32 @@ public class GridLoaderTest {
 
 		assertThat("Grid load", mGridLoader.load(solvingAttemptId),
 				is(notNullValue()));
-		GridLoaderData gridLoaderData = mGridLoaderObjectsCreatorStub
-				.getGridLoaderData();
-		assertThat("Grid has size", gridLoaderData.mGridSize, is(gridSize));
+		GridBuilder gridBuilder = mGridLoaderObjectsCreatorStub
+				.getGridBuilder();
+		assertThat("Grid has size", gridBuilder.mGridSize, is(gridSize));
 		assertThat("Grid has generating parameters",
-				gridLoaderData.mGridGeneratingParameters,
+				gridBuilder.mGridGeneratingParameters,
 				is(sameInstance(gridRow.mGridGeneratingParameters)));
-		assertThat("Grid has statistics", gridLoaderData.mGridStatistics,
+		assertThat("Grid has statistics", gridBuilder.mGridStatistics,
 				is(sameInstance(gridStatistics)));
-		assertThat("Grid has date created", gridLoaderData.mDateCreated,
+		assertThat("Grid has date created", gridBuilder.mDateCreated,
 				is(dateCreated));
-		assertThat("Grid has date updated", gridLoaderData.mDateUpdated,
+		assertThat("Grid has date updated", gridBuilder.mDateUpdated,
 				is(dateUpdated));
 		assertThat("Grid has solving attempt id",
-				gridLoaderData.mSolvingAttemptId, is(solvingAttemptId));
-		assertThat("Grid has number of cells", gridLoaderData.mCells.size(),
+				gridBuilder.mSolvingAttemptId, is(solvingAttemptId));
+		assertThat("Grid has number of cells", gridBuilder.mCells.size(),
 				is(numberOfCells));
-		assertThat("Grid has number of cages", gridLoaderData.mCages.size(),
+		assertThat("Grid has number of cages", gridBuilder.mCages.size(),
 				is(numberOfCages));
 		assertThat("Grid has number of cell changes",
-				gridLoaderData.mCellChanges.size(), is(numberOfCellChanges));
-		assertThat("Grid is active", gridLoaderData.mActive, is(isActive));
-		assertThat("Grid is revealed", gridLoaderData.mRevealed, is(isRevealed));
+				gridBuilder.mCellChanges.size(), is(numberOfCellChanges));
+		assertThat("Grid is active", gridBuilder.mActive, is(isActive));
+		assertThat("Grid is revealed", gridBuilder.mRevealed, is(isRevealed));
 	}
 
 	@Test
-	public void load_StatisticsNotLoaded_GridNotLoaded()
-			throws Exception {
+	public void load_StatisticsNotLoaded_GridNotLoaded() throws Exception {
 		int solvingAttemptId = 56;
 		int gridSize = 4;
 		int numberOfCells = gridSize * gridSize;
@@ -741,7 +750,6 @@ public class GridLoaderTest {
 		SolvingAttempt solvingAttemptStub = new SolvingAttemptStub()
 				.setHasGeneralGridInformation()
 				.setNumberOfCells(numberOfCells)
-				.setHasInvalidLineBetweenCellAndCages()
 				.setNumberOfCages(numberOfCages);
 		setupForParsingSolvingAttemptData(gridSize, numberOfCells,
 				numberOfCages, numberOfCellChanges, solvingAttemptStub);
@@ -779,5 +787,4 @@ public class GridLoaderTest {
 		GridStatistics gridStatistics = mock(GridStatistics.class);
 		mGridLoaderObjectsCreatorStub.returnsGridStatistics(gridStatistics);
 	}
-
 }

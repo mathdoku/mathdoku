@@ -39,16 +39,12 @@ public class GridLoaderObjectsCreator {
 		return new GridCageStorage();
 	}
 
-	public GridLoaderData createGridLoaderData() {
-		return new GridLoaderData();
+	public GridBuilder createGridBuilder() {
+		return new GridBuilder();
 	}
 
 	public GridDatabaseAdapter createGridDatabaseAdapter() {
 		return new GridDatabaseAdapter();
-	}
-
-	public Grid createGrid(GridLoaderData gridLoaderData) {
-		return new Grid(gridLoaderData);
 	}
 
 	public SolvingAttemptDatabaseAdapter createSolvingAttemptDatabaseAdapter() {

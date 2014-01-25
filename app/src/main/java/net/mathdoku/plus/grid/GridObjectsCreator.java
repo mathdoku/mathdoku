@@ -16,6 +16,10 @@ import java.util.ArrayList;
  * by the Grid.
  */
 public class GridObjectsCreator {
+	public Grid createGrid(GridBuilder gridBuilder) {
+		return new Grid(gridBuilder);
+	}
+
 	public GridCell createGridCell(int id, int gridSize) {
 		return new GridCell(id, gridSize);
 	}
