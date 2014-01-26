@@ -14,6 +14,7 @@ import android.view.View;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.ui.GridViewerView;
+import net.mathdoku.plus.gridDefinition.GridDefinition;
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.database.GridRow;
@@ -49,7 +50,8 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 										int whichButton) {
 									finish();
 								}
-							}).show();
+							})
+					.show();
 			return;
 		}
 
@@ -149,10 +151,11 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 			return false;
 		}
 
-		// Disable the grid as the user should not be able to click
-		// cells in the shared puzzle view
-		mGrid = new Grid();
-		if (mGrid.load(gridDefinition)) {
+		// Create a new grid based on the definition
+		mGrid = new GridDefinition().createGrid(gridDefinition);
+		if (mGrid != null) {
+			// Disable the grid as the user should not be able to click
+			// cells in the shared puzzle view
 			mGrid.setActive(false);
 			return true;
 		}
@@ -165,8 +168,9 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 	 */
 	public void onClickPlayGame(@SuppressWarnings("UnusedParameters") View view) {
 		// First check if the puzzle already exists
-		GridRow gridRow = new GridDatabaseAdapter().getByGridDefinition(mGrid
-				.toGridDefinitionString());
+		String gridDefinition = GridDefinition.getDefinition(mGrid);
+		GridRow gridRow = new GridDatabaseAdapter()
+				.getByGridDefinition(gridDefinition);
 		if (gridRow == null) {
 			startPuzzleFragment();
 		} else {
@@ -194,7 +198,8 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 										int whichButton) {
 									startPuzzleFragment();
 								}
-							}).show();
+							})
+					.show();
 		}
 	}
 

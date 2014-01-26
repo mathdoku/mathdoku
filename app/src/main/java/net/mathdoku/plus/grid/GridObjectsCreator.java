@@ -73,4 +73,8 @@ public class GridObjectsCreator {
 	public StatisticsDatabaseAdapter createStatisticsDatabaseAdapter() {
 		return new StatisticsDatabaseAdapter();
 	}
+
+	public GridBuilder createGridBuilder() {
+		return new GridBuilder();
+	}
 }

@@ -3,7 +3,7 @@ package net.mathdoku.plus.grid;
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
-import net.mathdoku.plus.enums.CageOperator;
+import net.mathdoku.plus.gridDefinition.GridDefinition;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
 import net.mathdoku.plus.statistics.GridStatistics;
@@ -15,36 +15,32 @@ import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Grid {
 	private static final String TAG = "MathDoku.Grid";
 
-	// ************************************************************************
-	// Grid variables which are determined when generating the grid and which do
-	// not alter anymore.
-	// ************************************************************************
-
 	// Unique row id of grid in database
 	private int mRowId;
 
-	// Size of the grid
-	// TODO: make final after methods create and load have been altered to
-	// builder pattern.
-	private int mGridSize;
+	/**
+	 * Grid variables below are determined when generating and should not be
+	 * altered after being set. These variables can only be set via
+	 * {@link net.mathdoku.plus.grid.Grid#Grid(GridBuilder)}.
+	 */
+	private final int mGridSize;
+	private final long mDateCreated;
+	private final GridGeneratingParameters mGridGeneratingParameters;
+	private final GridObjectsCreator mGridObjectsCreator;
 
-	// All parameters that influence the game generation and which are needed to
-	// regenerate a specific game again.
-	private long mDateCreated;
-	private GridGeneratingParameters mGridGeneratingParameters;
+	// Be careful: although mCages and mCell are final variables, the content of
+	// those list can still be altered!
+	public final ArrayList<GridCage> mCages;
+	public final ArrayList<GridCell> mCells;
 
 	// ************************************************************************
 	// Grid elements and references which do change while solving the game.
 	// ************************************************************************
-
 	private long mDateUpdated;
 
 	// Has the solution of the grid been revealed?
@@ -59,16 +55,6 @@ public class Grid {
 
 	// Statistics for this grid
 	private GridStatistics mGridStatistics;
-
-	// ************************************************************************
-	// References to other elements of which the grid is constructed.
-	// ************************************************************************
-
-	// Cages
-	public ArrayList<GridCage> mCages;
-
-	// Cells
-	public ArrayList<GridCell> mCells;
 
 	// Keep track of all moves as soon as grid is built or restored.
 	private ArrayList<CellChange> mMoves;
@@ -91,16 +77,12 @@ public class Grid {
 	// Solved listener
 	private OnSolvedListener mSolvedListener;
 
-	private GridObjectsCreator mGridObjectsCreator;
-
 	/**
 	 * Prevent the Grid from being instantiated directly. To create a new
 	 * instance of {@link net.mathdoku.plus.grid.Grid} the GridBuilder has to be
 	 * used.
 	 */
-	// TODO: change accessor to private as method load has been rewritten to use
-	// the GridBuilder
-	public Grid() {
+	private Grid() {
 		throw new InvalidGridException(
 				"Grid can only be instantiated via the GridBuilder.");
 	}
@@ -180,26 +162,6 @@ public class Grid {
 			mGridStatistics = mGridObjectsCreator.createGridStatistics();
 		}
 
-		setPreferences();
-	}
-
-	/**
-	 * Initializes a new grid object.
-	 * 
-	 */
-	// TODO: remove when GridBuild patter has been implemented on methods which
-	// currently invoke this method.
-	void initialize() {
-		mRowId = -1;
-		mSolvingAttemptId = -1;
-		mGridSize = 0;
-		mCells = mGridObjectsCreator.createArrayListOfGridCells();
-		mCages = mGridObjectsCreator.createArrayListOfGridCages();
-		mMoves = mGridObjectsCreator.createArrayListOfCellChanges();
-		mSolvedListener = null;
-		mGridGeneratingParameters = mGridObjectsCreator
-				.createGridGeneratingParameters();
-		mGridStatistics = mGridObjectsCreator.createGridStatistics();
 		setPreferences();
 	}
 
@@ -545,93 +507,6 @@ public class Grid {
 		return this.mRevealed;
 	}
 
-	/**
-	 * Converts the definition of this grid to a string. This is a shortcut for
-	 * calling
-	 * {@link #toGridDefinitionString(java.util.ArrayList, java.util.ArrayList, net.mathdoku.plus.gridGenerating.GridGeneratingParameters)}
-	 * .
-	 * 
-	 * @return A unique string representation of the grid.
-	 */
-	public String toGridDefinitionString() {
-		return toGridDefinitionString(mCells, mCages, mGridGeneratingParameters);
-	}
-
-	/**
-	 * Converts the definition of this grid to a string. This definitions only
-	 * consists of information needed to rebuild the puzzle. It does not include
-	 * information about how it was created or about the current status of
-	 * solving. This definition is unique regardless of grid size and or the
-	 * version of the grid generator used.
-	 * 
-	 * @return A unique string representation of the grid.
-	 */
-	public static String toGridDefinitionString(ArrayList<GridCell> cells,
-			ArrayList<GridCage> cages,
-			GridGeneratingParameters gridGeneratingParameters) {
-		StringBuilder definitionString = new StringBuilder();
-
-		if (Util.isArrayListNullOrEmpty(cells)) {
-			throw new InvalidParameterException(
-					"Parameter cells cannot be null or empty list.");
-		}
-		if (Util.isArrayListNullOrEmpty(cages)) {
-			throw new InvalidParameterException(
-					"Parameter cages cannot be null or empty list.");
-		}
-		if (gridGeneratingParameters == null) {
-			throw new InvalidParameterException(
-					"Parameter gridGeneratingParameters cannot be null.");
-		}
-
-		// Convert puzzle complexity to an integer value. Do not use the ordinal
-		// of the enumeration as this value is not persistent.
-		int complexity = 0;
-		switch (gridGeneratingParameters.mPuzzleComplexity) {
-		case RANDOM:
-			// Note: puzzles will never be stored with this complexity.
-			complexity = 0;
-			break;
-		case VERY_EASY:
-			complexity = 1;
-			break;
-		case EASY:
-			complexity = 2;
-			break;
-		case NORMAL:
-			complexity = 3;
-			break;
-		case DIFFICULT:
-			complexity = 4;
-			break;
-		case VERY_DIFFICULT:
-			complexity = 5;
-			break;
-		// NO DEFAULT here as we want to be notified at compile time in case a
-		// new enum value is added.
-		}
-		definitionString.append(Integer.toString(complexity)).append(":");
-
-		// Get the cage number (represented as a value of two digits, if needed
-		// prefixed with a 0) for each cell. Note: with a maximum of 81 cells in
-		// a 9x9 grid we can never have a cage-id > 99.
-		for (GridCell cell : cells) {
-			definitionString.append(String.format("%02d", cell.getCageId()));
-		}
-		// Followed by cages
-		for (GridCage cage : cages) {
-			definitionString
-					.append(":")
-					.append(cage.getId())
-					.append(",")
-					.append(cage.getResult())
-					.append(",")
-					.append(gridGeneratingParameters.mHideOperators ? CageOperator.NONE
-							.getId() : cage.getOperator().getId());
-		}
-		return definitionString.toString();
-	}
-
 	public void setSolvedHandler(OnSolvedListener listener) {
 		this.mSolvedListener = listener;
 	}
@@ -735,10 +610,11 @@ public class Grid {
 		if (mRowId < 0) {
 			// Before insert first check if already a grid record exists for the
 			// grid definition. If so, then reuse the existing grid definition.
+			String gridDefinition = GridDefinition.getDefinition(this);
 			GridDatabaseAdapter gridDatabaseAdapter = mGridObjectsCreator
 					.createGridDatabaseAdapter();
 			GridRow gridRow = gridDatabaseAdapter
-					.getByGridDefinition(toGridDefinitionString());
+					.getByGridDefinition(gridDefinition);
 			mRowId = (gridRow == null ? gridDatabaseAdapter.insert(this)
 					: gridRow.mId);
 			if (mRowId < 0) {
@@ -875,161 +751,6 @@ public class Grid {
 
 		// Save the grid
 		save();
-	}
-
-	/**
-	 * Load a grid from the given definition string.
-	 * 
-	 * @return True in case the grid has been loaded successfully. False
-	 *         otherwise.
-	 */
-	public boolean load(String definition) {
-		// Be sure to start with an empty grid when load from a definition.
-		initialize();
-
-		// Example of a grid definition:
-		// 1:00010202000103040506030405060707:0,4,1:1,2,4:2,2,4:3,1,2:4,4,4:5,2,4:6,4,1:7,6,3
-
-		// Split the definition into parts.
-		String[] definitionParts = definition.split(":");
-		if (definitionParts == null) {
-			return false;
-		}
-
-		// The definition contains followings parts:
-		int ID_PART_COMPLEXITY = 0;
-		int ID_PART_CELLS = 1;
-		int ID_PART_FIRST_CAGE = 2;
-		int ID_PART_LAST_CAGE = definitionParts.length - 1;
-		if (ID_PART_LAST_CAGE < ID_PART_FIRST_CAGE) {
-			return false;
-		}
-
-		// Create an empty cage for each cage part. The cages needs to exists
-		// before the cell can be created.
-		int cageIndex = 0;
-		for (int i = ID_PART_FIRST_CAGE; i <= ID_PART_LAST_CAGE; i++) {
-			// Define new cage
-			GridCage gridCage = mGridObjectsCreator.createGridCage();
-			gridCage.setCageId(cageIndex++);
-
-			// Add cage to cages list
-			if (mCages.add(gridCage) == false) {
-				return false;
-			}
-		}
-
-		// Retrieve the complexity from the definition. Convert it back to the
-		// enumeration. Note that values are not consistent with the ordinal
-		// values of the enumeration.
-		// The complexity is not needed to rebuild the puzzle, but it is stored
-		// as it is a great communicator to the (receiving) user how difficult
-		// the puzzle is.
-		switch (Integer.parseInt(definitionParts[ID_PART_COMPLEXITY])) {
-		case 1:
-			mGridGeneratingParameters.mPuzzleComplexity = PuzzleComplexity.VERY_EASY;
-			break;
-		case 2:
-			mGridGeneratingParameters.mPuzzleComplexity = PuzzleComplexity.EASY;
-			break;
-		case 3:
-			mGridGeneratingParameters.mPuzzleComplexity = PuzzleComplexity.NORMAL;
-			break;
-		case 4:
-			mGridGeneratingParameters.mPuzzleComplexity = PuzzleComplexity.DIFFICULT;
-			break;
-		case 5:
-			mGridGeneratingParameters.mPuzzleComplexity = PuzzleComplexity.VERY_DIFFICULT;
-			break;
-		default:
-			// This value can not be specified in a share url created by the
-			// app. But in case it is manipulated by a user before sending to
-			// another user, the receiver should not get an exception.
-			return false;
-		}
-
-		// The first part of the definitions contains the cage number for each
-		// individual cell. The cage number always consists of two digits.
-		int cellCount = definitionParts[ID_PART_CELLS].length() / 2;
-		switch (cellCount) {
-		case 16:
-			mGridSize = 4;
-			break;
-		case 25:
-			mGridSize = 5;
-			break;
-		case 36:
-			mGridSize = 6;
-			break;
-		case 49:
-			mGridSize = 7;
-			break;
-		case 64:
-			mGridSize = 8;
-			break;
-		case 81:
-			mGridSize = 9;
-			break;
-		default:
-			// Invalid number of cells.
-			return false;
-		}
-		Pattern pattern = Pattern.compile("\\d\\d");
-		Matcher matcher = pattern.matcher(definitionParts[ID_PART_CELLS]);
-		int cellNumber = 0;
-		while (matcher.find()) {
-			int cageId = Integer.valueOf(matcher.group());
-
-			// Create new cell and add it to the cells list.
-			GridCell gridCell = mGridObjectsCreator.createGridCell(
-					cellNumber++, mGridSize);
-			gridCell.setCageId(cageId);
-			mCells.add(gridCell);
-
-			// Determine the cage to which the cell has to be added.
-			GridCage gridCage = mCages.get(cageId);
-			if (gridCage == null) {
-				return false;
-			}
-			gridCage.mCells.add(gridCell);
-		}
-
-		// Finalize the grid cages which only can be done after the cell have
-		// been attached to the cages.
-		for (int i = ID_PART_FIRST_CAGE; i <= ID_PART_LAST_CAGE; i++) {
-			// Split the cage part into elements
-			String[] cageElements = definitionParts[i].split(",");
-
-			// Get the cage
-			GridCage gridCage = mCages.get(i - ID_PART_FIRST_CAGE);
-			if (gridCage == null) {
-				return false;
-			}
-			gridCage.setCageResults(Integer.valueOf(cageElements[1]),
-					CageOperator.fromId(cageElements[2]), false);
-		}
-
-		// Check whether a single solution can be found.
-		int[][] solution = mGridObjectsCreator.createMathDokuDLX(mGridSize,
-				mCages).getSolutionGrid();
-		if (solution == null) {
-			// Either no or multiple solutions can be found. In both case this
-			// would mean that the grid definition string was manipulated by the
-			// user.
-			return false;
-		}
-
-		// Store the solution in the grid cells.
-		for (int row = 0; row < this.mGridSize; row++) {
-			for (int col = 0; col < this.mGridSize; col++) {
-				getCellAt(row, col).setCorrectValue(solution[row][col]);
-			}
-		}
-
-		// Finally set all cage borders by checking their math
-		checkUserMathForAllCages();
-
-		return true;
 	}
 
 	/**

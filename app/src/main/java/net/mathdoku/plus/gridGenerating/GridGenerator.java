@@ -14,6 +14,7 @@ import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.GridBuilder;
 import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.grid.GridCell;
+import net.mathdoku.plus.gridDefinition.GridDefinition;
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.storage.database.DatabaseHelper;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
@@ -630,12 +631,12 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 				}
 			}
 
-			// Create a new grid in case the exact same grid has been generated
-			// before.
+			// A valid grid has been created. Check if grid was never created before.
 			if (!restart) {
-				if (new GridDatabaseAdapter().getByGridDefinition(Grid
-						.toGridDefinitionString(mCells, mCages,
-								mGridGeneratingParameters)) != null) {
+				String gridDefinition = GridDefinition.getDefinition(mCells, mCages,
+																	 mGridGeneratingParameters);
+				if (new GridDatabaseAdapter().getByGridDefinition(gridDefinition) != null) {
+					// The exact same grid has been created before. Create another grid.
 					clearAllCages();
 					restart = true;
 					if (DEBUG_GRID_GENERATOR) {

@@ -9,6 +9,7 @@ import android.view.View;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.GridLoader;
+import net.mathdoku.plus.gridDefinition.GridDefinition;
 import net.mathdoku.plus.ui.ArchiveFragment;
 
 import java.util.ArrayList;
@@ -87,7 +88,8 @@ public class SharedPuzzle {
 					.getString(R.string.share_puzzle_subject));
 
 			// Get the share url for this grid.
-			String shareURL = getShareUrl(grid.toGridDefinitionString());
+			String gridDefinition = GridDefinition.getDefinition(grid);
+			String shareURL = getShareUrl(gridDefinition);
 
 			// Get the download url for MathDoku
 			String downloadUrl = "https://play.google.com/store/apps/details?id=net.mathdoku.plus";
