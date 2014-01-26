@@ -128,6 +128,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	// attempt with this specific number should be replayed in the onResume
 	// call.
 	private int mOnResumeReplaySolvingAttempt;
+	private boolean mOnResumeRestartLastGame;
 
 	/**
 	 * Called when the activity is first created.
@@ -187,6 +188,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 		// At this point there will never be a need to replay a solving attempt.
 		mOnResumeReplaySolvingAttempt = -1;
+		mOnResumeRestartLastGame = false;
 	}
 
 	@Override
@@ -213,6 +215,10 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		if (mOnResumeReplaySolvingAttempt >= 0) {
 			replayPuzzle(mOnResumeReplaySolvingAttempt);
 			mOnResumeReplaySolvingAttempt = -1;
+		}
+		if (mOnResumeRestartLastGame) {
+			restartLastGame();
+			mOnResumeRestartLastGame = false;
 		}
 
 		super.onResume();
@@ -814,7 +820,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 							.setMessage(
 									R.string.google_plus_login_dialog_on_game_completion)
 							.displayCheckboxHideTillNextTopScoreAchieved(
-									hideTillNextTopScore).show();
+									hideTillNextTopScore)
+							.show();
 				}
 			} else if (newTopScore) {
 				GridStatistics gridStatistics = grid.getGridStatistics();
@@ -889,7 +896,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager
 				.beginTransaction();
-		fragmentTransaction.replace(R.id.content_frame, mArchiveFragment)
+		fragmentTransaction
+				.replace(R.id.content_frame, mArchiveFragment)
 				.commit();
 		fragmentManager.executePendingTransactions();
 	}
@@ -1048,7 +1056,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this)
 				.setTitle(R.string.dialog_puzzle_parameters_title)
-				.setView(view).setCancelable(cancelable);
+				.setView(view)
+				.setCancelable(cancelable);
 		if (cancelable) {
 			alertDialogBuilder.setNegativeButton(
 					R.string.dialog_general_button_cancel,
@@ -1103,7 +1112,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 										.isChecked() == false),
 								puzzleComplexity);
 					}
-				}).show();
+				})
+				.show();
 	}
 
 	@Override
@@ -1142,7 +1152,17 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 						.containsKey(SharedPuzzleActivity.RESTART_LAST_GAME_SHARED_PUZZLE)
 						&& bundle
 								.getBoolean(SharedPuzzleActivity.RESTART_LAST_GAME_SHARED_PUZZLE)) {
-					restartLastGame();
+					if (mPuzzleFragment != null) {
+						restartLastGame();
+					} else {
+						// Currently the Archive fragment is beïng displayed.
+						// This fragment cannot yet be replaced with a
+						// PuzzleFragment as this results in
+						// IllegalStateException [Can not perform this action
+						// after onSaveInstanceState]. Therefore restart is
+						// postponed till onResume is called.
+						mOnResumeRestartLastGame = true;
+					}
 				}
 				if (bundle
 						.containsKey(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD)
@@ -1271,7 +1291,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		String string = getResources().getString(R.string.action_leaderboards);
 		navigationDrawerItems.add(string);
 		if (openDrawer == false && mNavigationDrawerItems != null) {
-			openDrawer = (Arrays.asList(mNavigationDrawerItems)
+			openDrawer = (Arrays
+					.asList(mNavigationDrawerItems)
 					.contains(string) == false);
 		}
 
@@ -1338,8 +1359,10 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		// Get list view for drawer
 		mDrawerListView = (ListView) findViewById(R.id.left_drawer);
 
-		mDrawerListView.setBackgroundColor(Painter.getInstance()
-				.getNavigationDrawerPainter().getBackgroundColor());
+		mDrawerListView.setBackgroundColor(Painter
+				.getInstance()
+				.getNavigationDrawerPainter()
+				.getBackgroundColor());
 
 		// Set the adapter for the list view containing the navigation items
 		mDrawerListView.setAdapter(new ArrayAdapter<String>(this,
@@ -1443,7 +1466,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 								mMathDokuPreferences.setDigitInputMethod(false,
 										true);
 							}
-						}).show();
+						})
+				.show();
 	}
 
 	/**
@@ -1472,7 +1496,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 									int which) {
 								replayPuzzle(solvingAttemptId);
 							}
-						}).show();
+						})
+				.show();
 	}
 
 	/**
