@@ -1,5 +1,26 @@
 package net.mathdoku.plus.ui;
 
+import net.mathdoku.plus.Cheat;
+import net.mathdoku.plus.Cheat.CheatType;
+import net.mathdoku.plus.GameTimer;
+import net.mathdoku.plus.Preferences;
+import net.mathdoku.plus.Preferences.PuzzleSettingInputMethod;
+import net.mathdoku.plus.R;
+import net.mathdoku.plus.grid.DigitPositionGrid;
+import net.mathdoku.plus.grid.Grid;
+import net.mathdoku.plus.grid.GridCage;
+import net.mathdoku.plus.grid.GridCell;
+import net.mathdoku.plus.grid.GridLoader;
+import net.mathdoku.plus.grid.ui.GridInputMode;
+import net.mathdoku.plus.grid.ui.GridPlayerView;
+import net.mathdoku.plus.hint.TickerTape;
+import net.mathdoku.plus.painter.Painter;
+import net.mathdoku.plus.painter.Painter.GridTheme;
+import net.mathdoku.plus.tip.TipCheat;
+import net.mathdoku.plus.tip.TipDialog;
+import net.mathdoku.plus.tip.TipIncorrectValue;
+import net.mathdoku.plus.util.FeedbackEmail;
+import net.mathdoku.plus.util.Util;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -33,28 +54,6 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import net.mathdoku.plus.Cheat;
-import net.mathdoku.plus.Cheat.CheatType;
-import net.mathdoku.plus.GameTimer;
-import net.mathdoku.plus.Preferences;
-import net.mathdoku.plus.Preferences.PuzzleSettingInputMethod;
-import net.mathdoku.plus.R;
-import net.mathdoku.plus.grid.DigitPositionGrid;
-import net.mathdoku.plus.grid.Grid;
-import net.mathdoku.plus.grid.GridCage;
-import net.mathdoku.plus.grid.GridCell;
-import net.mathdoku.plus.grid.GridLoader;
-import net.mathdoku.plus.grid.ui.GridInputMode;
-import net.mathdoku.plus.grid.ui.GridPlayerView;
-import net.mathdoku.plus.hint.TickerTape;
-import net.mathdoku.plus.painter.Painter;
-import net.mathdoku.plus.painter.Painter.GridTheme;
-import net.mathdoku.plus.tip.TipCheat;
-import net.mathdoku.plus.tip.TipDialog;
-import net.mathdoku.plus.tip.TipIncorrectValue;
-import net.mathdoku.plus.util.FeedbackEmail;
-import net.mathdoku.plus.util.Util;
 
 public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		OnSharedPreferenceChangeListener, OnCreateContextMenuListener,
@@ -406,7 +405,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 *         otherwise.
 	 */
 	boolean showClearGrid() {
-		return (mGrid != null && mGrid.isActive() && mGrid.isEmpty(true) == false);
+		return (mGrid != null && mGrid.isActive() && mGrid.isEmpty() == false);
 	}
 
 	/**
@@ -752,7 +751,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * @return True if check progress can be used on the grid. False otherwise.
 	 */
 	boolean showCheckProgress() {
-		return (mGrid != null && mGrid.isActive() && !mGrid.isEmpty(false));
+		return (mGrid != null && mGrid.isActive() && mGrid
+				.containsNoUserValues());
 	}
 
 	/**

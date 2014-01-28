@@ -707,19 +707,32 @@ public class Grid {
 	}
 
 	/**
+	 * Checks if the grid does not contain any user value. It is not relevant
+	 * whether the grid does contain maybe values.
+	 * 
+	 * @return True in case no user values have been filled in. False in case at
+	 *         least one user value is filled in.
+	 */
+	public boolean containsNoUserValues() {
+		for (GridCell cell : mCells) {
+			if (cell.isUserValueSet()) {
+				return false;
+			}
+		}
+
+		// No user values found
+		return true;
+	}
+
+	/**
 	 * Checks if the grid is empty (i.e. cells do not contain a user value nor a
 	 * possible value).
 	 * 
-	 * @param checkPossibles
-	 *            Also check possible values to determine whether grid is empty.
-	 *            If false it is only checked whether user values have been
-	 *            entered.
 	 * @return True in case the grid is empty. False otherwise
 	 */
-	public boolean isEmpty(boolean checkPossibles) {
+	public boolean isEmpty() {
 		for (GridCell cell : mCells) {
-			if (cell.isUserValueSet()
-					|| (checkPossibles && cell.countPossibles() > 0)) {
+			if (cell.isUserValueSet() || cell.countPossibles() > 0) {
 				// Not empty as this cell contains a user value or a possible
 				// value
 				return false;

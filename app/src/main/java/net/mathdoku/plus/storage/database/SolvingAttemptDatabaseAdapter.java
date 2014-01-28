@@ -1,17 +1,16 @@
 package net.mathdoku.plus.storage.database;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.util.Log;
+import java.util.ArrayList;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.storage.GridStorage;
-
-import java.util.ArrayList;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+import android.util.Log;
 
 /**
  * The database adapter for the solving attempt table. For each grid one or more
@@ -384,7 +383,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		}
 
 		// Check if the grid is empty
-		if (grid.isEmpty(true)) {
+		if (grid.isEmpty()) {
 			return STATUS_NOT_STARTED;
 		}
 

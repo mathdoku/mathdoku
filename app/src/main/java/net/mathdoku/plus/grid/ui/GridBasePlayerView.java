@@ -1,12 +1,6 @@
 package net.mathdoku.plus.grid.ui;
 
-import android.content.Context;
-import android.os.Handler;
-import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.SoundEffectConstants;
-import android.view.View;
-import android.view.View.OnTouchListener;
+import java.util.ArrayList;
 
 import net.mathdoku.plus.grid.CellChange;
 import net.mathdoku.plus.grid.Grid;
@@ -20,8 +14,13 @@ import net.mathdoku.plus.tip.TipDuplicateValue;
 import net.mathdoku.plus.tip.TipIncorrectValue;
 import net.mathdoku.plus.tip.TipOrderOfValuesInCage;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
-
-import java.util.ArrayList;
+import android.content.Context;
+import android.os.Handler;
+import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.SoundEffectConstants;
+import android.view.View;
+import android.view.View.OnTouchListener;
 
 /**
  * The grid base player view allows to play a grid with a digit button interface
@@ -182,9 +181,10 @@ public class GridBasePlayerView extends GridViewerView implements
 				mGrid.getGridStatistics().increaseCounter(
 						StatisticsCounterType.ACTION_CLEAR_CELL);
 
-				// In case the last user value has been cleared in the grid, the
+				// In case the last user value has been cleared from the grid,
+				// the
 				// check progress should no longer be available.
-				if (mGrid.isEmpty(false)) {
+				if (mGrid.containsNoUserValues()) {
 					((PuzzleFragmentActivity) mContext).invalidateOptionsMenu();
 				}
 			}

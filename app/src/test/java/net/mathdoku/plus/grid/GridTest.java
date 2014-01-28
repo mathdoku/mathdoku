@@ -49,6 +49,8 @@ public class GridTest {
 	private GridBuilderStub mGridBuilder;
 
 	private class GridBuilderStub extends GridBuilder {
+		private GridCell mGridCellOfDefaultSetup = null;
+
 		public GridBuilderStub setupDefaultWhichDoesNotThrowErrorsOnBuild() {
 			int gridSize = 4;
 			setGridSize(gridSize);
@@ -58,7 +60,9 @@ public class GridTest {
 			ArrayList<GridCell> gridCells = mGridObjectsCreator
 					.createArrayListOfGridCells();
 			for (int i = 0; i < numberOfCells; i++) {
-				gridCells.add(mGridObjectsCreator.createGridCell(i, gridSize));
+				mGridCellOfDefaultSetup = mGridObjectsCreator.createGridCell(i,
+						gridSize);
+				gridCells.add(mGridCellOfDefaultSetup);
 			}
 			super.setCells(gridCells);
 
@@ -79,11 +83,19 @@ public class GridTest {
 			return this;
 		}
 
+		public GridCell getLastCellFromDefaultSetup() {
+			return mGridCellOfDefaultSetup;
+		}
+
 		/**
 		 * Initializes the list of cells of the GridBuilder with the given grid
 		 * cells.
 		 */
-		private GridBuilderStub setCellsInitializedWith(GridCell... gridCell) {
+		public GridBuilderStub setCellsInitializedWith(GridCell... gridCell) {
+			// Default setup is no longer valid as the list of cells is
+			// replaced.
+			mGridCellOfDefaultSetup = null;
+
 			ArrayList<GridCell> gridCells = new ArrayList<GridCell>();
 
 			for (int i = 0; i < gridCell.length; i++) {
@@ -98,7 +110,7 @@ public class GridTest {
 		 * Initializes the list of cages of the GridBuilder with the given grid
 		 * cages.
 		 */
-		private GridBuilderStub setCagesInitializedWith(GridCage... gridCage) {
+		public GridBuilderStub setCagesInitializedWith(GridCage... gridCage) {
 			ArrayList<GridCage> gridCages = new ArrayList<GridCage>();
 
 			for (int i = 0; i < gridCage.length; i++) {
@@ -113,7 +125,7 @@ public class GridTest {
 		 * Initializes the list of cell changess of the GridBuilder with the
 		 * given cell changes.
 		 */
-		private GridBuilderStub setCellChangesInitializedWith(
+		public GridBuilderStub setCellChangesInitializedWith(
 				CellChange... cellChange) {
 			ArrayList<CellChange> cellChanges = new ArrayList<CellChange>();
 
@@ -1370,17 +1382,63 @@ public class GridTest {
 	}
 
 	@Test
-	public void isEmpty() throws Exception {
+	public void containsNoUserValues_GridHasNoUserValuesAndNoMaybeValues_True()
+			throws Exception {
+		Grid grid = mGridBuilder.build();
 
+		assertThat(grid.containsNoUserValues(), is(true));
+	}
+
+	@Test
+	public void containsNoUserValues_GridHasOneUserValueButNoMaybeValues_False()
+			throws Exception {
+		when(mGridBuilder.getLastCellFromDefaultSetup().isUserValueSet())
+				.thenReturn(true);
+		Grid grid = mGridBuilder.build();
+
+		assertThat(grid.containsNoUserValues(), is(false));
+	}
+
+	@Test
+	public void containsNoUserValues_GridHasOneMaybeValueButNoUserValues_True()
+			throws Exception {
+		when(mGridBuilder.getLastCellFromDefaultSetup().countPossibles())
+				.thenReturn(1);
+		Grid grid = mGridBuilder.build();
+
+		assertThat(grid.containsNoUserValues(), is(true));
+	}
+
+	@Test
+	public void isEmpty_GridHasNoUserValuesAndNoMaybeValues_True()
+			throws Exception {
+		Grid grid = mGridBuilder.build();
+
+		assertThat(grid.isEmpty(), is(true));
+	}
+
+	@Test
+	public void isEmpty_GridHasOneUserValueButNoMaybeValues_False()
+			throws Exception {
+		when(mGridBuilder.getLastCellFromDefaultSetup().isUserValueSet())
+				.thenReturn(true);
+		Grid grid = mGridBuilder.build();
+
+		assertThat(grid.isEmpty(), is(false));
+	}
+
+	@Test
+	public void isEmpty_GridHasOneMaybeValueButNoUserValues_False()
+			throws Exception {
+		when(mGridBuilder.getLastCellFromDefaultSetup().countPossibles())
+				.thenReturn(1);
+		Grid grid = mGridBuilder.build();
+
+		assertThat(grid.isEmpty(), is(false));
 	}
 
 	@Test
 	public void replay() throws Exception {
-
-	}
-
-	@Test
-	public void load1() throws Exception {
 
 	}
 
