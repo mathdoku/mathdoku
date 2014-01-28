@@ -1,24 +1,23 @@
 package net.mathdoku.plus.developmentHelper;
 
+import net.mathdoku.plus.Preferences;
+import net.mathdoku.plus.R;
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
+import net.mathdoku.plus.enums.PuzzleComplexity;
+import net.mathdoku.plus.grid.Grid;
+import net.mathdoku.plus.gridGenerating.DialogPresentingGridGenerator;
+import net.mathdoku.plus.gridGenerating.GridGenerator;
+import net.mathdoku.plus.statistics.GridStatistics;
+import net.mathdoku.plus.storage.database.DatabaseHelper;
+import net.mathdoku.plus.ui.PuzzleFragmentActivity;
+import net.mathdoku.plus.util.Util;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences.Editor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
-
-import net.mathdoku.plus.Preferences;
-import net.mathdoku.plus.R;
-import net.mathdoku.plus.config.Config;
-import net.mathdoku.plus.config.Config.AppMode;
-import net.mathdoku.plus.grid.Grid;
-import net.mathdoku.plus.gridGenerating.DialogPresentingGridGenerator;
-import net.mathdoku.plus.gridGenerating.GridGenerator;
-import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
-import net.mathdoku.plus.statistics.GridStatistics;
-import net.mathdoku.plus.storage.database.DatabaseHelper;
-import net.mathdoku.plus.ui.PuzzleFragmentActivity;
-import net.mathdoku.plus.util.Util;
 
 /**
  * The Development Helper class is intended to support Development and Unit
@@ -138,7 +137,8 @@ public class DevelopmentHelper {
 										int id) {
 									// Do nothing
 								}
-							}).show();
+							})
+					.show();
 		}
 	}
 
@@ -169,7 +169,8 @@ public class DevelopmentHelper {
 									// Restart the activity
 									puzzleFragmentActivity.recreate();
 								}
-							}).show();
+							})
+					.show();
 		}
 	}
 
@@ -339,8 +340,10 @@ public class DevelopmentHelper {
 	public static void submitManualScore(
 			final PuzzleFragmentActivity puzzleFragmentActivity, final Grid grid) {
 		if (Config.mAppMode == AppMode.DEVELOPMENT
-				&& puzzleFragmentActivity.getResources()
-						.getString(R.string.app_id).equals("282401107486")) {
+				&& puzzleFragmentActivity
+						.getResources()
+						.getString(R.string.app_id)
+						.equals("282401107486")) {
 			LayoutInflater li = LayoutInflater.from(puzzleFragmentActivity);
 			View view = li.inflate(R.layout.leaderboard_score, null);
 			assert view != null;
@@ -363,7 +366,8 @@ public class DevelopmentHelper {
 									// noinspection ConstantConditions
 									long score = Long
 											.valueOf(manualLeaderboardScore
-													.getText().toString());
+													.getText()
+													.toString());
 									if (score > 0) {
 										// Manipulate grid and statistics so it
 										// can be re-submitted again.

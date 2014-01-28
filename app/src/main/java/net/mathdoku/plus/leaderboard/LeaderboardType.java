@@ -1,7 +1,7 @@
 package net.mathdoku.plus.leaderboard;
 
 import net.mathdoku.plus.R;
-import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
+import net.mathdoku.plus.enums.PuzzleComplexity;
 
 /**
  * This class is used to translate puzzle characteristics (grid size, visibility

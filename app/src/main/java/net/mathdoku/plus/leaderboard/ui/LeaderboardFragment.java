@@ -2,7 +2,7 @@ package net.mathdoku.plus.leaderboard.ui;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
-import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
+import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.leaderboard.LeaderboardType;
 import net.mathdoku.plus.leaderboard.ui.LeaderboardFragmentActivity.LeaderboardFilter;
 import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter;
@@ -11,7 +11,6 @@ import net.mathdoku.plus.storage.database.LeaderboardRankRow;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 import net.mathdoku.plus.ui.base.GooglePlayServiceFragmentActivity;
 import net.mathdoku.plus.util.Util;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -250,7 +249,8 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 										intent,
 										GooglePlayServiceFragmentActivity.RC_UNUSED);
 
-								Preferences.getInstance()
+								Preferences
+										.getInstance()
 										.increaseLeaderboardsDetailsViewed();
 							}
 						}
@@ -285,7 +285,8 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 								mPuzzleComplexity.toString());
 						startActivity(intent);
 
-						Preferences.getInstance()
+						Preferences
+								.getInstance()
 								.increaseLeaderboardsGamesCreated();
 					}
 
@@ -311,11 +312,13 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 					ViewGroup.LayoutParams.WRAP_CONTENT));
 			textView.setText(getResources().getString(
 					R.string.leaderboard_none_played, mGridSize));
-			textView.setTextSize(
-					TypedValue.COMPLEX_UNIT_DIP,
-					(int) (getResources().getDimension(
-							net.mathdoku.plus.R.dimen.text_size_default) / getResources()
-							.getDisplayMetrics().density));
+			textView
+					.setTextSize(
+							TypedValue.COMPLEX_UNIT_DIP,
+							(int) (getResources()
+									.getDimension(
+											net.mathdoku.plus.R.dimen.text_size_default) / getResources()
+									.getDisplayMetrics().density));
 
 			mView = textView;
 		}

@@ -1,32 +1,5 @@
 package net.mathdoku.plus.grid;
 
-import android.app.Activity;
-import android.content.Context;
-
-import com.srlee.DLX.MathDokuDLX;
-
-import net.mathdoku.plus.Preferences;
-import net.mathdoku.plus.config.Config;
-import net.mathdoku.plus.enums.CageOperator;
-import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
-import net.mathdoku.plus.gridGenerating.GridGenerator;
-import net.mathdoku.plus.statistics.GridStatistics;
-import net.mathdoku.plus.storage.database.DatabaseHelper;
-import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
-import net.mathdoku.plus.storage.database.GridRow;
-import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
-import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
-import net.mathdoku.plus.util.Util;
-
-import org.hamcrest.Matcher;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.ArrayList;
-
-import robolectric.RobolectricGradleTestRunner;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -42,6 +15,32 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+
+import net.mathdoku.plus.Preferences;
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.enums.CageOperator;
+import net.mathdoku.plus.enums.PuzzleComplexity;
+import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
+import net.mathdoku.plus.statistics.GridStatistics;
+import net.mathdoku.plus.storage.database.DatabaseHelper;
+import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
+import net.mathdoku.plus.storage.database.GridRow;
+import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
+import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
+import net.mathdoku.plus.util.Util;
+
+import org.hamcrest.Matcher;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import robolectric.RobolectricGradleTestRunner;
+import android.app.Activity;
+import android.content.Context;
+
+import com.srlee.DLX.MathDokuDLX;
 
 @RunWith(RobolectricGradleTestRunner.class)
 public class GridTest {
@@ -918,8 +917,9 @@ public class GridTest {
 		new Util(new Activity());
 
 		// Explicitly set the grid generating parameters and cage methods which
-		// are used when getting the grid definition to avoid a null pointer exceptions.
-		mGridGeneratingParametersMock.mPuzzleComplexity = GridGenerator.PuzzleComplexity.NORMAL;
+		// are used when getting the grid definition to avoid a null pointer
+		// exceptions.
+		mGridGeneratingParametersMock.mPuzzleComplexity = PuzzleComplexity.NORMAL;
 		mGridGeneratingParametersMock.mHideOperators = false;
 		when(mGridCageMock.getOperator()).thenReturn(CageOperator.ADD);
 

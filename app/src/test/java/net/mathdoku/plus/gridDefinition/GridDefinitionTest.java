@@ -1,25 +1,5 @@
 package net.mathdoku.plus.gridDefinition;
 
-import com.srlee.DLX.MathDokuDLX;
-
-import net.mathdoku.plus.config.Config;
-import net.mathdoku.plus.enums.CageOperator;
-import net.mathdoku.plus.grid.Grid;
-import net.mathdoku.plus.grid.GridCage;
-import net.mathdoku.plus.grid.GridCell;
-import net.mathdoku.plus.grid.GridObjectsCreator;
-import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
-import net.mathdoku.plus.gridGenerating.GridGenerator;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-
-import robolectric.RobolectricGradleTestRunner;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -27,6 +7,26 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.enums.CageOperator;
+import net.mathdoku.plus.enums.PuzzleComplexity;
+import net.mathdoku.plus.grid.Grid;
+import net.mathdoku.plus.grid.GridCage;
+import net.mathdoku.plus.grid.GridCell;
+import net.mathdoku.plus.grid.GridObjectsCreator;
+import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import robolectric.RobolectricGradleTestRunner;
+
+import com.srlee.DLX.MathDokuDLX;
 
 @RunWith(RobolectricGradleTestRunner.class)
 public class GridDefinitionTest {
@@ -170,7 +170,7 @@ public class GridDefinitionTest {
 		gridCages.add(gridCageStub3);
 
 		GridGeneratingParameters gridGeneratingParameters = new GridGeneratingParameters();
-		gridGeneratingParameters.mPuzzleComplexity = GridGenerator.PuzzleComplexity.NORMAL;
+		gridGeneratingParameters.mPuzzleComplexity = PuzzleComplexity.NORMAL;
 		gridGeneratingParameters.mHideOperators = false;
 
 		assertThat(
@@ -308,35 +308,35 @@ public class GridDefinitionTest {
 	public void createGrid_DefinitionWithVeryEasyComplexity_GridCreated()
 			throws Exception {
 		createGrid_DefinitionWithGivenComplexity_GridCreated("1",
-				GridGenerator.PuzzleComplexity.VERY_EASY);
+				PuzzleComplexity.VERY_EASY);
 	}
 
 	@Test
 	public void createGrid_DefinitionWithEasyComplexity_GridCreated()
 			throws Exception {
 		createGrid_DefinitionWithGivenComplexity_GridCreated("2",
-				GridGenerator.PuzzleComplexity.EASY);
+				PuzzleComplexity.EASY);
 	}
 
 	@Test
 	public void createGrid_DefinitionWithNormalComplexity_GridCreated()
 			throws Exception {
 		createGrid_DefinitionWithGivenComplexity_GridCreated("3",
-				GridGenerator.PuzzleComplexity.NORMAL);
+				PuzzleComplexity.NORMAL);
 	}
 
 	@Test
 	public void createGrid_DefinitionWithDifficultComplexity_GridCreated()
 			throws Exception {
 		createGrid_DefinitionWithGivenComplexity_GridCreated("4",
-				GridGenerator.PuzzleComplexity.DIFFICULT);
+				PuzzleComplexity.DIFFICULT);
 	}
 
 	@Test
 	public void createGrid_DefinitionWithVeryDifficultComplexity_GridCreated()
 			throws Exception {
 		createGrid_DefinitionWithGivenComplexity_GridCreated("5",
-				GridGenerator.PuzzleComplexity.VERY_DIFFICULT);
+				PuzzleComplexity.VERY_DIFFICULT);
 	}
 
 	@Test
@@ -495,7 +495,7 @@ public class GridDefinitionTest {
 
 	private void createGrid_DefinitionWithGivenComplexity_GridCreated(
 			String puzzleComplexityString,
-			GridGenerator.PuzzleComplexity puzzleComplexity) {
+ PuzzleComplexity puzzleComplexity) {
 		mGridDefinitionString = puzzleComplexityString + ":00:0,9,0";
 		int solution[][] = { { 9 } };
 		when(mMathDokuDLXMock.getSolutionGrid()).thenReturn(solution);

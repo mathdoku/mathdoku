@@ -1,6 +1,6 @@
 package net.mathdoku.plus.storage.database;
 
-import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
+import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter.RankStatus;
 import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter.ScoreOrigin;
 

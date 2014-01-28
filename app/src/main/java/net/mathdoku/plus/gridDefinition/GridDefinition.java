@@ -1,7 +1,13 @@
 package net.mathdoku.plus.gridDefinition;
 
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.enums.CageOperator;
+import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.GridBuilder;
 import net.mathdoku.plus.grid.GridCage;
@@ -9,13 +15,7 @@ import net.mathdoku.plus.grid.GridCell;
 import net.mathdoku.plus.grid.GridObjectsCreator;
 import net.mathdoku.plus.grid.InvalidGridException;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
-import net.mathdoku.plus.gridGenerating.GridGenerator;
 import net.mathdoku.plus.util.Util;
-
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * This class creates the unique definition for a grid. This definition is used
@@ -80,34 +80,9 @@ public class GridDefinition {
 					"Parameter gridGeneratingParameters cannot be null.");
 		}
 
-		// Convert puzzle complexity to an integer value. Do not use the ordinal
-		// of the enumeration as this value is not persistent.
-		int complexity = 0;
-		switch (gridGeneratingParameters.mPuzzleComplexity) {
-		case RANDOM:
-			// Note: puzzles will never be stored with this complexity.
-			complexity = 0;
-			break;
-		case VERY_EASY:
-			complexity = 1;
-			break;
-		case EASY:
-			complexity = 2;
-			break;
-		case NORMAL:
-			complexity = 3;
-			break;
-		case DIFFICULT:
-			complexity = 4;
-			break;
-		case VERY_DIFFICULT:
-			complexity = 5;
-			break;
-		// NO DEFAULT here as we want to be notified at compile time in case a
-		// new enum value is added.
-		}
-		definitionString.append(Integer.toString(complexity)).append(
-				DELIMITER_LEVEL1);
+		definitionString.append(
+				Integer.toString(gridGeneratingParameters.mPuzzleComplexity
+						.getId())).append(DELIMITER_LEVEL1);
 
 		// Get the cage number (represented as a value of two digits, if needed
 		// prefixed with a 0) for each cell. Note: with a maximum of 81 cells in
@@ -341,30 +316,11 @@ public class GridDefinition {
 		return (mGridSize != 0);
 	}
 
-	private GridGenerator.PuzzleComplexity getPuzzleComplexity(
-			String puzzleComplexityString) {
-		// TODO: refactor enumeration for persisting id of enum values. Note
-		// that values are not consistent with the ordinal values of the
-		// enumeration.
-		GridGenerator.PuzzleComplexity puzzleComplexity = null;
-
-		switch (Integer.parseInt(puzzleComplexityString)) {
-		case 1:
-			puzzleComplexity = GridGenerator.PuzzleComplexity.VERY_EASY;
-			break;
-		case 2:
-			puzzleComplexity = GridGenerator.PuzzleComplexity.EASY;
-			break;
-		case 3:
-			puzzleComplexity = GridGenerator.PuzzleComplexity.NORMAL;
-			break;
-		case 4:
-			puzzleComplexity = GridGenerator.PuzzleComplexity.DIFFICULT;
-			break;
-		case 5:
-			puzzleComplexity = GridGenerator.PuzzleComplexity.VERY_DIFFICULT;
-			break;
-		default:
+	private PuzzleComplexity getPuzzleComplexity(String puzzleComplexityString) {
+		PuzzleComplexity puzzleComplexity = null;
+		try {
+			puzzleComplexity = PuzzleComplexity.fromId(puzzleComplexityString);
+		} catch (InvalidParameterException e) {
 			// This value can not be specified in a share url created by the
 			// app. But in case it is manipulated by a user before sending
 			// to another user, the receiver should not get an exception.

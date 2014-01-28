@@ -4,8 +4,7 @@ import java.security.InvalidParameterException;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
-import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
-
+import net.mathdoku.plus.enums.PuzzleComplexity;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;

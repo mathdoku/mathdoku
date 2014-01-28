@@ -4,9 +4,9 @@ import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.developmentHelper.DevelopmentHelper;
+import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
-
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
@@ -55,8 +55,9 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 		public final void onCancelGridGenerating() {
 			if (mDialogPresentingGridGenerator.mPuzzleFragmentActivity != null) {
 				if (DEBUG_GRID_GENERATOR) {
-					Log.d(TAG,
-							"Inform activity about cancellation of the grid generation.");
+					Log
+							.d(TAG,
+									"Inform activity about cancellation of the grid generation.");
 				}
 				// The task is still attached to a activity. Inform activity
 				// about completing the new game generation. The activity will
@@ -97,8 +98,12 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 	 *            this task.
 	 */
 	public void attachToActivity(PuzzleFragmentActivity activity) {
-		if (activity.equals(this.mPuzzleFragmentActivity)
+		if ((((Object) activity).equals(mPuzzleFragmentActivity))
 				&& mProgressDialog != null && mProgressDialog.isShowing()) {
+			// Casting to Object is needed due to bug in Android Studio and/or
+			// IntelliJ IDEA Community edition:
+			// http://youtrack.jetbrains.com/issue/IDEA-79680
+			//
 			// The activity is already attached to this task.
 			return;
 		}
@@ -120,7 +125,8 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 		// Build the dialog
 		mProgressDialog = new ProgressDialog(mPuzzleFragmentActivity);
 		mProgressDialog.setTitle(R.string.dialog_building_puzzle_title);
-		mProgressDialog.setMessage(mPuzzleFragmentActivity.getResources()
+		mProgressDialog.setMessage(mPuzzleFragmentActivity
+				.getResources()
 				.getString(R.string.dialog_building_puzzle_message));
 		mProgressDialog.setIcon(android.R.drawable.ic_dialog_info);
 		mProgressDialog.setIndeterminate(false);

@@ -1,12 +1,10 @@
 package net.mathdoku.plus;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.preference.PreferenceManager;
+import java.util.Locale;
+import java.util.Map;
 
+import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.grid.ui.GridInputMode;
-import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
 import net.mathdoku.plus.leaderboard.ui.LeaderboardFragmentActivity.LeaderboardFilter;
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.painter.Painter.GridTheme;
@@ -14,9 +12,10 @@ import net.mathdoku.plus.storage.database.GridDatabaseAdapter.SizeFilter;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter.StatusFilter;
 import net.mathdoku.plus.tip.TipDialog;
 import net.mathdoku.plus.util.SingletonInstanceNotInstantiated;
-
-import java.util.Locale;
-import java.util.Map;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.preference.PreferenceManager;
 
 public class Preferences {
 	@SuppressWarnings("unused")
@@ -368,9 +367,10 @@ public class Preferences {
 							PUZZLE_INPUT_MODE_COPY_ENABLED_DEFAULT);
 		}
 		if (previousInstalledVersion < 586 && currentVersion >= 586) {
-			editor.putBoolean(
-					PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE,
-					PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE_DEFAULT);
+			editor
+					.putBoolean(
+							PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE,
+							PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE_DEFAULT);
 		}
 		if (previousInstalledVersion < 587 && currentVersion >= 587) {
 			editor.putInt(LEADERBOARD_TAB_LAST_SHOWED,
@@ -1187,7 +1187,8 @@ public class Preferences {
 				.edit()
 				.putBoolean(
 						PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE,
-						checked).apply();
+						checked)
+				.apply();
 	}
 
 	/**

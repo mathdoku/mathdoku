@@ -1,11 +1,13 @@
 package net.mathdoku.plus.grid;
 
+import java.util.ArrayList;
+
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
+import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.gridDefinition.GridDefinition;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
-import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.statistics.GridStatistics.StatisticsCounterType;
 import net.mathdoku.plus.storage.database.DatabaseHelper;
@@ -14,8 +16,6 @@ import net.mathdoku.plus.storage.database.GridRow;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
-
-import java.util.ArrayList;
 
 public class Grid {
 	private static final String TAG = "MathDoku.Grid";

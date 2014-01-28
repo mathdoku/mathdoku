@@ -1,5 +1,41 @@
 package net.mathdoku.plus.ui;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import net.mathdoku.plus.R;
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
+import net.mathdoku.plus.developmentHelper.DevelopmentHelper;
+import net.mathdoku.plus.enums.PuzzleComplexity;
+import net.mathdoku.plus.grid.Grid;
+import net.mathdoku.plus.grid.GridLoader;
+import net.mathdoku.plus.grid.InvalidGridException;
+import net.mathdoku.plus.grid.ui.GridInputMode;
+import net.mathdoku.plus.gridGenerating.DialogPresentingGridGenerator;
+import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
+import net.mathdoku.plus.leaderboard.LeaderboardConnector;
+import net.mathdoku.plus.leaderboard.LeaderboardRankUpdater;
+import net.mathdoku.plus.leaderboard.LeaderboardType;
+import net.mathdoku.plus.leaderboard.ui.LeaderboardFragment;
+import net.mathdoku.plus.leaderboard.ui.LeaderboardFragmentActivity;
+import net.mathdoku.plus.painter.Painter;
+import net.mathdoku.plus.statistics.GridStatistics;
+import net.mathdoku.plus.storage.GameFileConverter;
+import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
+import net.mathdoku.plus.storage.database.GridDatabaseAdapter.SizeFilter;
+import net.mathdoku.plus.storage.database.GridDatabaseAdapter.StatusFilter;
+import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter;
+import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter.ScoreOrigin;
+import net.mathdoku.plus.storage.database.LeaderboardRankRow;
+import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
+import net.mathdoku.plus.tip.TipArchiveAvailable;
+import net.mathdoku.plus.tip.TipDialog;
+import net.mathdoku.plus.tip.TipStatistics;
+import net.mathdoku.plus.ui.base.GooglePlayServiceFragmentActivity;
+import net.mathdoku.plus.util.FeedbackEmail;
+import net.mathdoku.plus.util.SharedPuzzle;
+import net.mathdoku.plus.util.Util;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -30,43 +66,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.games.GamesClient;
-
-import net.mathdoku.plus.R;
-import net.mathdoku.plus.config.Config;
-import net.mathdoku.plus.config.Config.AppMode;
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper;
-import net.mathdoku.plus.grid.Grid;
-import net.mathdoku.plus.grid.GridLoader;
-import net.mathdoku.plus.grid.InvalidGridException;
-import net.mathdoku.plus.grid.ui.GridInputMode;
-import net.mathdoku.plus.gridGenerating.DialogPresentingGridGenerator;
-import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
-import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
-import net.mathdoku.plus.leaderboard.LeaderboardConnector;
-import net.mathdoku.plus.leaderboard.LeaderboardRankUpdater;
-import net.mathdoku.plus.leaderboard.LeaderboardType;
-import net.mathdoku.plus.leaderboard.ui.LeaderboardFragment;
-import net.mathdoku.plus.leaderboard.ui.LeaderboardFragmentActivity;
-import net.mathdoku.plus.painter.Painter;
-import net.mathdoku.plus.statistics.GridStatistics;
-import net.mathdoku.plus.storage.GameFileConverter;
-import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
-import net.mathdoku.plus.storage.database.GridDatabaseAdapter.SizeFilter;
-import net.mathdoku.plus.storage.database.GridDatabaseAdapter.StatusFilter;
-import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter;
-import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter.ScoreOrigin;
-import net.mathdoku.plus.storage.database.LeaderboardRankRow;
-import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
-import net.mathdoku.plus.tip.TipArchiveAvailable;
-import net.mathdoku.plus.tip.TipDialog;
-import net.mathdoku.plus.tip.TipStatistics;
-import net.mathdoku.plus.ui.base.GooglePlayServiceFragmentActivity;
-import net.mathdoku.plus.util.FeedbackEmail;
-import net.mathdoku.plus.util.SharedPuzzle;
-import net.mathdoku.plus.util.Util;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		implements PuzzleFragment.PuzzleFragmentListener {

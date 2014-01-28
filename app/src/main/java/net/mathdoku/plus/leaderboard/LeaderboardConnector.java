@@ -2,14 +2,13 @@ package net.mathdoku.plus.leaderboard;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
-import net.mathdoku.plus.gridGenerating.GridGenerator.PuzzleComplexity;
+import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.leaderboard.ui.TopScoreDialog;
 import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter;
 import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter.ScoreOrigin;
 import net.mathdoku.plus.storage.database.LeaderboardRankRow;
 import net.mathdoku.plus.ui.base.AppFragmentActivity;
 import net.mathdoku.plus.util.Util;
-
 import android.content.res.Resources;
 import android.util.Log;
 
@@ -124,11 +123,12 @@ public class LeaderboardConnector {
 					// The score was submitted and processed by Google Play
 					// Services.
 					if (DEBUG) {
-						Log.i(TAG,
-								"The onScoreSubmitted listener for method submitScore has "
-										+ "been called successfully for leaderboard "
-										+ getLeaderboardNameForLogging(submitScoreResult
-												.getLeaderboardId()));
+						Log
+								.i(TAG,
+										"The onScoreSubmitted listener for method submitScore has "
+												+ "been called successfully for leaderboard "
+												+ getLeaderboardNameForLogging(submitScoreResult
+														.getLeaderboardId()));
 					}
 
 					// Retrieve the current rank of the player. This rank
@@ -200,21 +200,29 @@ public class LeaderboardConnector {
 			// is re-installed or the database was removed manually.
 			if (DEBUG) {
 				if (leaderboardRankRow.mScoreOrigin == ScoreOrigin.NONE) {
-					Log.i(TAG,
-							"No local score does yet exist for leaderboard "
-									+ getLeaderboardNameForLogging(leaderboardId)
-									+ ". The top score as registered on Google Play Services ("
-									+ leaderboardScore.getRawScore()
-									+ ") will be set as the best score for this leaderboard.");
+					Log
+							.i(TAG,
+									"No local score does yet exist for leaderboard "
+											+ getLeaderboardNameForLogging(leaderboardId)
+											+ ". The top score as registered on Google "
+											+ "Play Services ("
+											+ leaderboardScore.getRawScore()
+											+ ") "
+											+ "will be set as the best score for this leaderboard.");
 				} else {
-					Log.i(TAG,
-							"The local top score ("
-									+ leaderboardRankRow.mRawScore
-									+ ") is not as good as the top score as registered on Google Play Services ("
-									+ leaderboardScore.getRawScore()
-									+ ") for leaderboard"
-									+ getLeaderboardNameForLogging(leaderboardId)
-									+ ". The local top score will be updated to this score.");
+					Log
+							.i(TAG,
+									"The local top score ("
+											+ leaderboardRankRow.mRawScore
+											+ ") is not "
+											+ "as good as the top score as registered on Google Play "
+											+ "Services ("
+											+ leaderboardScore.getRawScore()
+											+ ") for "
+											+ "leaderboard"
+											+ getLeaderboardNameForLogging(leaderboardId)
+											+ ". The local top score will be updated to "
+											+ "this score.");
 				}
 			}
 
