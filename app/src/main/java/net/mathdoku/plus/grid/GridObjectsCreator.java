@@ -1,15 +1,19 @@
 package net.mathdoku.plus.grid;
 
-import com.srlee.DLX.MathDokuDLX;
+import java.util.ArrayList;
 
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.statistics.GridStatistics;
+import net.mathdoku.plus.storage.CellChangeStorage;
+import net.mathdoku.plus.storage.GridCageStorage;
+import net.mathdoku.plus.storage.GridCellStorage;
+import net.mathdoku.plus.storage.GridStorage;
 import net.mathdoku.plus.storage.database.DatabaseHelper;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
 
-import java.util.ArrayList;
+import com.srlee.DLX.MathDokuDLX;
 
 /**
  * The GridObjectsCreator is responsible for creating all objects needed
@@ -74,7 +78,35 @@ public class GridObjectsCreator {
 		return new StatisticsDatabaseAdapter();
 	}
 
+	public GridCell createGridCell(GridCellStorage gridCellStorage) {
+		return new GridCell(gridCellStorage);
+	}
+
+	public CellChange createCellChange(CellChangeStorage cellChangeStorage) {
+		return new CellChange(cellChangeStorage);
+	}
+
+	public GridCage createGridCage(GridCageStorage gridCageStorage) {
+		return new GridCage(gridCageStorage);
+	}
+
+	public GridStorage createGridStorage() {
+		return new GridStorage();
+	}
+
+	public GridCageStorage createGridCageStorage() {
+		return new GridCageStorage();
+	}
+
 	public GridBuilder createGridBuilder() {
 		return new GridBuilder();
+	}
+
+	public GridCellStorage createGridCellStorage() {
+		return new GridCellStorage();
+	}
+
+	public CellChangeStorage createCellChangeStorage() {
+		return new CellChangeStorage();
 	}
 }
