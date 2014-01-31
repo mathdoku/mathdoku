@@ -1,22 +1,9 @@
 package net.mathdoku.plus.grid;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.CoreMatchers.sameInstance;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import android.app.Activity;
+import android.content.Context;
 
-import java.util.ArrayList;
+import com.srlee.DLX.MathDokuDLX;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.config.Config;
@@ -36,11 +23,25 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import robolectric.RobolectricGradleTestRunner;
-import android.app.Activity;
-import android.content.Context;
+import java.util.ArrayList;
 
-import com.srlee.DLX.MathDokuDLX;
+import robolectric.RobolectricGradleTestRunner;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 public class GridTest {
@@ -917,8 +918,6 @@ public class GridTest {
 		assertThat("Cells", grid.mCells, is(sameInstance(mGridBuilder.mCells)));
 		assertThat("Cells", grid.mCages, is(sameInstance(mGridBuilder.mCages)));
 		assertThat("Is active", grid.isActive(), is(mGridBuilder.mActive));
-		verify(mGridCageMock, times(mGridBuilder.mCages.size()))
-				.setGridReference(any(Grid.class));
 		verify(mGridCellMock, times(mGridBuilder.mCells.size()))
 				.setGridReference(any(Grid.class));
 		verify(mGridCellMock, times(mGridBuilder.mCells.size())).setBorders();

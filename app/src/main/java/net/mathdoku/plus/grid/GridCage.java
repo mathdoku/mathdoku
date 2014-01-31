@@ -13,8 +13,6 @@ public class GridCage {
 	private boolean mHideOperator;
 	public ArrayList<GridCell> mCells;
 
-	// Enclosing context
-	private Grid mGrid;
 
 	// User math is correct
 	private boolean mUserMathCorrect;
@@ -273,19 +271,6 @@ public class GridCage {
 				cell2.setBorders();
 			}
 		}
-	}
-
-	/**
-	 * Sets the reference to the grid to which this cage belongs.
-	 * 
-	 * @param grid
-	 *            The grid to which the cage belongs.
-	 */
-	public void setGridReference(Grid grid) {
-		mGrid = grid;
-
-		// Don't needs to set the reference to the grid cells in mCells as they
-		// will be set directly via the list of grid cells of mGrid.
 	}
 
 	private boolean allCellsFilledWithUserValue() {

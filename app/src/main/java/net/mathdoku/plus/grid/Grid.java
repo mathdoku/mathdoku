@@ -1,7 +1,5 @@
 package net.mathdoku.plus.grid;
 
-import java.util.ArrayList;
-
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
@@ -16,6 +14,8 @@ import net.mathdoku.plus.storage.database.GridRow;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
+
+import java.util.ArrayList;
 
 public class Grid {
 	private static final String TAG = "MathDoku.Grid";
@@ -138,9 +138,6 @@ public class Grid {
 					"Cannot create a grid without gridGeneratingParameters.");
 		}
 
-		for (GridCage gridCage : mCages) {
-			gridCage.setGridReference(this);
-		}
 		for (GridCell gridCell : mCells) {
 			gridCell.setGridReference(this);
 		}
