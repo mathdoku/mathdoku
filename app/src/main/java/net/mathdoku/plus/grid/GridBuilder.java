@@ -6,9 +6,8 @@ import net.mathdoku.plus.statistics.GridStatistics;
 import java.util.ArrayList;
 
 /**
- * This class holds parsed data as retrieved by the
- * {@link net.mathdoku.plus.grid.GridLoader} from the database which is needed
- * to create a new {@link net.mathdoku.plus.grid.Grid}.
+ * This class holds all data needed to build a new
+ * {@link net.mathdoku.plus.grid.Grid} instance.
  */
 public class GridBuilder {
 	GridObjectsCreator mGridObjectsCreator; // Optional
@@ -31,8 +30,10 @@ public class GridBuilder {
 		mGridStatistics = null;
 		mDateCreated = System.currentTimeMillis();
 		mDateUpdated = mDateCreated;
-		mGridId = -1; // 0 is a valid id in the database and should not be used as default.
-		mSolvingAttemptId = -1; // 0 is a valid id in the database and should not be used as default.
+		mGridId = -1; // 0 is a valid id in the database and should not be used
+						// as default.
+		mSolvingAttemptId = -1; // 0 is a valid id in the database and should
+								// not be used as default.
 		mCellChanges = null;
 		mActive = true;
 		mRevealed = false;
@@ -85,7 +86,8 @@ public class GridBuilder {
 	}
 
 	public GridBuilder setSolvingAttemptId(int gridId, int solvingAttemptId) {
-		// Solving attempt should not be set without setting its corresponding grid id.
+		// Solving attempt should not be set without setting its corresponding
+		// grid id.
 		mGridId = gridId;
 		mSolvingAttemptId = solvingAttemptId;
 		return this;
