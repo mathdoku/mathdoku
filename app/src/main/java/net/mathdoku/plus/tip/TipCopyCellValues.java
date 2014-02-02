@@ -1,11 +1,11 @@
 package net.mathdoku.plus.tip;
 
+import android.content.Context;
+
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.grid.GridCell;
-
-import android.content.Context;
 
 public class TipCopyCellValues extends TipDialog {
 
@@ -69,7 +69,9 @@ public class TipCopyCellValues extends TipDialog {
 		// at least one cell is still empty. This is not strictly necessary for
 		// copying but the tip will make more sense in case the cell values can
 		// be copied to another cell in the same cage.
-		if (existsNonEmptyCellInCage(gridCell.getCage()) == false) {
+		GridCage gridCage = gridCell.getCage();
+		if (gridCage == null || gridCage.getNumberOfCells() <= 1
+				|| gridCage.hasEmptyCells() == false) {
 			return false;
 		}
 
@@ -82,25 +84,5 @@ public class TipCopyCellValues extends TipDialog {
 		// Determine on basis of preferences whether the tip should be shown.
 		return TipDialog
 				.getDisplayTipAgain(preferences, TIP_NAME, TIP_PRIORITY);
-	}
-
-	/**
-	 * Checks whether the cage contains an empty cell.
-	 * 
-	 * @param gridCage
-	 *            The cage to be checked.
-	 * @return True in case the cage contains an empty cell. False otherwise.
-	 */
-	private static boolean existsNonEmptyCellInCage(GridCage gridCage) {
-		if (gridCage == null || gridCage.mCells == null) {
-			return false;
-		}
-		for (GridCell cell : gridCage.mCells) {
-			if (cell.isEmpty()) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 }

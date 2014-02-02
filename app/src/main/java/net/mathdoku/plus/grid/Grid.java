@@ -138,8 +138,15 @@ public class Grid {
 					"Cannot create a grid without gridGeneratingParameters.");
 		}
 
+		for (GridCage gridCage : mCages) {
+			gridCage.setGridReference(this);
+		}
 		for (GridCell gridCell : mCells) {
 			gridCell.setGridReference(this);
+		}
+
+		for (GridCage gridCage : mCages) {
+			setCageTextToUpperLeftCell(gridCage);
 		}
 
 		checkUserMathForAllCages();
@@ -221,6 +228,15 @@ public class Grid {
 
 		// clear cages to remove the border related to bad cage maths.
 		checkUserMathForAllCages();
+	}
+
+	/* Fetch the cell with the id. */
+	public GridCell getCell(int id) {
+		if (mCells == null || id < 0 || id >= mCells.size()) {
+			return null;
+		}
+
+		return this.mCells.get(id);
 	}
 
 	/* Fetch the cell at the given row, column */
@@ -743,6 +759,7 @@ public class Grid {
 	/**
 	 * Replay a grid as if the grid was just created.
 	 */
+	// todo: when refactoring test if timer is reset after replay
 	public void replay() {
 		// Clear the cells and the moves list.
 		clearCells(true);
@@ -865,8 +882,13 @@ public class Grid {
 		if (selectedGridCage == null) {
 			return false;
 		}
+		if (selectedGridCage.isOperatorHidden() == false) {
+			// Operator is already visible.
+			return false;
+		}
 
 		selectedGridCage.revealOperator();
+		setCageTextToUpperLeftCell(selectedGridCage);
 
 		mGridStatistics
 				.increaseCounter(StatisticsCounterType.ACTION_REVEAL_OPERATOR);
@@ -886,5 +908,87 @@ public class Grid {
 		// Copy the entire ArrayList to a new instance. The ObjectsCreator
 		// should not be used.
 		return (mMoves == null ? null : new ArrayList(mMoves));
+	}
+
+	/**
+	 * Gets the user values for a given list of cells.
+	 * 
+	 * @param cells
+	 *            The list of cells for which the user values have to be
+	 *            returned.
+	 * @return The user values which are filled in for the given cells. Null in case of an error. In case the returned arrays contains less elements than the number of cells given this indicates that not all cells have a user value.
+	 */
+	public ArrayList<Integer> getUserValuesForCells(int[] cells) {
+		if (Util.isArrayNullOrEmpty(cells)) {
+			return null;
+		}
+
+		ArrayList<Integer> userValues = new ArrayList<Integer>();
+		for (int i = 0; i < cells.length; i++) {
+			int cell = cells[i];
+			if (cell < 0 || cell > mCells.size()) {
+				return null;
+			}
+			GridCell gridCell = mCells.get(cell);
+			if (gridCell == null) {
+				return null;
+			}
+			if (gridCell.isUserValueSet()) {
+				userValues.add(gridCell.getUserValue());
+			}
+		}
+
+		return userValues;
+	}
+
+	public boolean setBorderForCells(int[] cells) {
+		if (Util.isArrayNullOrEmpty(cells)) {
+			return false;
+		}
+
+		for (int i = 0; i < cells.length; i++) {
+			int cell = cells[i];
+			if (cell < 0 || cell > mCells.size()) {
+				return false;
+			}
+			GridCell gridCell = mCells.get(cell);
+			if (gridCell == null) {
+				return false;
+			}
+			gridCell.setBorders();
+		}
+
+		return true;
+	}
+
+	public ArrayList<GridCell> getGridCells(int[] cells) {
+		if (Util.isArrayNullOrEmpty(cells)) {
+			return null;
+		}
+
+		ArrayList<GridCell> gridCells = new ArrayList<GridCell>();
+		for (int i = 0; i < cells.length; i++) {
+			int cell = cells[i];
+			if (cell < 0 || cell > mCells.size()) {
+				return null;
+			}
+			GridCell gridCell = mCells.get(cell);
+			if (gridCell == null) {
+				return null;
+			}
+			gridCells.add(gridCell);
+		}
+
+		return gridCells;
+	}
+
+	private void setCageTextToUpperLeftCell(GridCage gridCage) {
+		if (gridCage != null) {
+			int idUpperLeftCell = gridCage.getIdUpperLeftCell();
+			GridCell gridCell = getCell(idUpperLeftCell);
+			if (gridCell != null) {
+				gridCell.setCageText(gridCage.getCageText());
+			}
+		}
 	}
 }

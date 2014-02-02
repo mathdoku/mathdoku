@@ -81,12 +81,12 @@ public class MathDokuDLX extends DLX {
 				if (comboGenerator == null) {
 					comboGenerator = new ComboGenerator(mGridSize);
 				}
-				gridCage.setPossibleCombos(comboGenerator.getPossibleCombos(gridCage));
+				gridCage.setPossibleCombos(comboGenerator.getPossibleCombos(gridCage, gridCage.getCells()));
 			}
 			int possibleMovesInCage = gridCage.getPossibleCombos().size();
 			mTotalMoves += possibleMovesInCage;
 			total_nodes += possibleMovesInCage
-					* (2 * gridCage.mCells.size() + 1);
+					* (2 * gridCage.getNumberOfCells() + 1);
 		}
 		Init(totalCages + 2 * gridSizeSquare, total_nodes);
 
@@ -100,7 +100,7 @@ public class MathDokuDLX extends DLX {
 			for (GridCage gridCage : sortedCages) {
 				Log.i(TAG, "Cage " + gridCage.getId() + " has "
 						+ gridCage.getPossibleCombos().size()
-						+ " permutations with " + gridCage.mCells.size()
+						+ " permutations with " + gridCage.getNumberOfCells()
 						+ " cells");
 			}
 		}
@@ -122,7 +122,7 @@ public class MathDokuDLX extends DLX {
 			for (int[] possibleCombo : possibleCombos) {
 				if (DEBUG_DLX) {
 					Log.i(TAG, "Combo " + comboIndex + " - Cage "
-							+ gridCage.getId() + " with " + gridCage.mCells.size()
+							+ gridCage.getId() + " with " + gridCage.getNumberOfCells()
 							+ " cells");
 				}
 
@@ -135,8 +135,8 @@ public class MathDokuDLX extends DLX {
 
 				// Apply the permutation of "possibleCombo" to the cells in the
 				// cages
-				for (int i = 0; i < gridCage.mCells.size(); i++) {
-					GridCell gridCell = gridCage.mCells.get(i);
+				for (int i = 0; i < gridCage.getNumberOfCells(); i++) {
+					GridCell gridCell = gridCage.getCell(i);
 
 					// Fill data structure for DLX algorithm
 
@@ -186,7 +186,7 @@ public class MathDokuDLX extends DLX {
 			if (difference == 0) {
 				// Both cages have the same number of possible permutation. Next
 				// compare the number of cells in the cage.
-				difference = gridCage1.mCells.size() - gridCage2.mCells.size();
+				difference = gridCage1.getNumberOfCells() - gridCage2.getNumberOfCells();
 				if (difference == 0) {
 					// Also the number of cells is equal. Finally compare the
 					// id's.
@@ -320,10 +320,10 @@ public class MathDokuDLX extends DLX {
 								// Test whether this cage move could be applied
 								// to
 								// the cells of the cage.
-								for (int j = 0; j < gridCage.mCells.size(); j++) {
+								for (int j = 0; j < gridCage.getNumberOfCells(); j++) {
 									// Check if value is already used in this
 									// row
-									int cellRow = gridCage.mCells.get(j)
+									int cellRow = gridCage.getCell(j)
 											.getRow();
 									for (int col = 0; col < mGridSize; col++) {
 										if (solutionGrid[cellRow][col] == cageMove[j]) {
@@ -339,7 +339,7 @@ public class MathDokuDLX extends DLX {
 
 									// Check if value is already used in this
 									// row
-									int cellColumn = gridCage.mCells.get(j)
+									int cellColumn = gridCage.getCell(j)
 											.getColumn();
 									for (int row = 0; row < mGridSize; row++) {
 										if (solutionGrid[row][cellColumn] == cageMove[j]) {

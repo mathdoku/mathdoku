@@ -1,15 +1,6 @@
 package net.mathdoku.plus.gridDefinition;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
+import com.srlee.DLX.MathDokuDLX;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.enums.CageOperator;
@@ -24,9 +15,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+
 import robolectric.RobolectricGradleTestRunner;
 
-import com.srlee.DLX.MathDokuDLX;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 public class GridDefinitionTest {
@@ -365,8 +365,20 @@ public class GridDefinitionTest {
 	@Test
 	public void createGrid_DefinitionHasCellCagesPartForValidNumberOfCells_GridCreated()
 			throws Exception {
-		for (int gridSize = 1; gridSize <= 9; gridSize++) {
-			createGrid_DefinitionHasCellCagesPartForValidNumberOfCells_GridCreated(gridSize);
+		// For grid size 1, the None operator has to be used as this is the only
+		// valid operator for a single cage cell.
+		createGrid_DefinitionHasCellCagesPartForValidNumberOfCells_GridCreated(
+				1, "1:00:0,9,0");
+		// For the other grid sizes the add or multiply operator has to be used
+		// as all cells are part of one cage having at least 4 (2 * 2) cells.
+		int j = 1;
+		StringBuilder cellParts = new StringBuilder();
+		for (int gridSize = 2; gridSize <= 9; gridSize++) {
+			for (; j <= gridSize * gridSize; j++) {
+				cellParts.append("00");
+			}
+			createGrid_DefinitionHasCellCagesPartForValidNumberOfCells_GridCreated(
+					gridSize, "1:" + cellParts.toString() + ":0,9,1");
 		}
 	}
 
@@ -391,7 +403,7 @@ public class GridDefinitionTest {
 	@Test
 	public void createGrid_DefinitionDoesNotHaveAUniqueSolution_GridNotCreated()
 			throws Exception {
-		mGridDefinitionString = "1:00:0,9,1";
+		mGridDefinitionString = "1:00:0,9,0";
 		when(mMathDokuDLXMock.getSolutionGrid()).thenReturn(null);
 
 		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
@@ -410,42 +422,48 @@ public class GridDefinitionTest {
 	@Test
 	public void createGrid_DefinitionCageOperatorNone_GridCreated()
 			throws Exception {
-		createGrid_DefinitionWithValidCageOperator_GridCreated("0",
-				CageOperator.NONE);
+		mGridDefinitionString = "1:00:0,9,0";
+		int solution[][] = { { 9 } };
+		when(mMathDokuDLXMock.getSolutionGrid()).thenReturn(solution);
+
+		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
+				is(notNullValue()));
+		assertThat(mGridObjectsCreatorStub.gridCages.get(0).getOperator(),
+				is(CageOperator.NONE));
 	}
 
 	@Test
 	public void createGrid_DefinitionCageOperatorAdd_GridCreated()
 			throws Exception {
 		createGrid_DefinitionWithValidCageOperator_GridCreated("1",
-															   CageOperator.ADD);
+				CageOperator.ADD);
 	}
 
 	@Test
 	public void createGrid_DefinitionCageOperatorSubtract_GridCreated()
 			throws Exception {
 		createGrid_DefinitionWithValidCageOperator_GridCreated("2",
-															   CageOperator.SUBTRACT);
+				CageOperator.SUBTRACT);
 	}
 
 	@Test
 	public void createGrid_DefinitionCageOperatorMultiply_GridCreated()
 			throws Exception {
 		createGrid_DefinitionWithValidCageOperator_GridCreated("3",
-															   CageOperator.MULTIPLY);
+				CageOperator.MULTIPLY);
 	}
 
 	@Test
 	public void createGrid_DefinitionCageOperatorDivide_GridCreated()
 			throws Exception {
 		createGrid_DefinitionWithValidCageOperator_GridCreated("4",
-															   CageOperator.DIVIDE);
+				CageOperator.DIVIDE);
 	}
 
 	@Test
 	public void createGrid_SolutionHasUnexpectedNumberOfRows_GridNotCreated()
 			throws Exception {
-		mGridDefinitionString = "1:00:0,9,1";
+		mGridDefinitionString = "1:00:0,9,0";
 		int solution[][] = { { 1 }, { 2 } };
 		when(mMathDokuDLXMock.getSolutionGrid()).thenReturn(solution);
 
@@ -456,7 +474,7 @@ public class GridDefinitionTest {
 	@Test
 	public void createGrid_SolutionHasUnexpectedNumberOfColumns_GridNotCreated()
 			throws Exception {
-		mGridDefinitionString = "1:00:0,9,1";
+		mGridDefinitionString = "1:00:0,9,0";
 		int solution[][] = { { 1, 2 } };
 		when(mMathDokuDLXMock.getSolutionGrid()).thenReturn(solution);
 
@@ -477,12 +495,8 @@ public class GridDefinitionTest {
 	}
 
 	private void createGrid_DefinitionHasCellCagesPartForValidNumberOfCells_GridCreated(
-			int gridSize) throws Exception {
-		StringBuilder cagesPart = new StringBuilder();
-		for (int i = 0; i < gridSize * gridSize; i++) {
-			cagesPart.append("00");
-		}
-		mGridDefinitionString = "1:" + cagesPart + ":0,9,0";
+			int gridSize, String definitionString) throws Exception {
+		mGridDefinitionString = definitionString;
 		// The mMathdokuDLXMock has to return a solution matrix of correct size.
 		// The content does not need to be correct for this test.
 		int solution[][] = new int[gridSize][gridSize];
@@ -494,8 +508,7 @@ public class GridDefinitionTest {
 	}
 
 	private void createGrid_DefinitionWithGivenComplexity_GridCreated(
-			String puzzleComplexityString,
- PuzzleComplexity puzzleComplexity) {
+			String puzzleComplexityString, PuzzleComplexity puzzleComplexity) {
 		mGridDefinitionString = puzzleComplexityString + ":00:0,9,0";
 		int solution[][] = { { 9 } };
 		when(mMathDokuDLXMock.getSolutionGrid()).thenReturn(solution);
@@ -521,28 +534,16 @@ public class GridDefinitionTest {
 		assertThat(cage.getOperator(), is(cageOperator));
 	}
 
-	private void assertThatCellHasIdAndCageIdAndCorrectValue(int cellId,
-			int cageId, int correctValue) {
-		assertThat(mGridObjectsCreatorStub.gridCells, is(notNullValue()));
-		GridCell cell = mGridObjectsCreatorStub.gridCells.get(cellId);
-		assertThat(cell, is(notNullValue()));
-		assertThat(cell.getCellId(), is(cellId));
-		assertThat(cell.getCageId(), is(cageId));
-		assertThat(cell.getCorrectValue(), is(correctValue));
-	}
-
 	private void createGrid_DefinitionWithValidCageOperator_GridCreated(
 			String cageOperatorString, CageOperator cageOperator) {
-		// All operators except operator NONE need 2 or more cells to be used in
-		// real grids. For this unit test all operator can be tested on a single
-		// cell as the given definition is not checked for a unique solution.
-		mGridDefinitionString = "1:00:0,9," + cageOperatorString;
-		int solution[][] = { { 9 } };
+		mGridDefinitionString = "1:00010201:0,1,0:1,3," + cageOperatorString
+				+ ":2,2,0";
+		int solution[][] = { { 1, 2 }, { 2, 1 } };
 		when(mMathDokuDLXMock.getSolutionGrid()).thenReturn(solution);
 
 		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
 				is(notNullValue()));
-		assertThat(mGridObjectsCreatorStub.gridCages.get(0).getOperator(),
+		assertThat(mGridObjectsCreatorStub.gridCages.get(1).getOperator(),
 				is(cageOperator));
 	}
 }

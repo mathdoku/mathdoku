@@ -40,7 +40,7 @@ public class Util {
 
 	/**
 	 * Get the package version number.
-	 * 
+	 *
 	 * @return The package version number.
 	 */
 	public static int getPackageVersionNumber() {
@@ -52,7 +52,7 @@ public class Util {
 
 	/**
 	 * Get the package version name.
-	 * 
+	 *
 	 * @return The package version name.
 	 */
 	public static String getPackageVersionName() {
@@ -64,7 +64,7 @@ public class Util {
 
 	/**
 	 * Converts a duration value from long to a string.
-	 * 
+	 *
 	 * @param elapsedTime
 	 *            The duration value in milliseconds.
 	 * @return The string representing the duration.
@@ -96,5 +96,9 @@ public class Util {
 
 	public static <T> boolean isNotArrayListNullOrEmpty(ArrayList<T> arrayList) {
 		return (!isArrayListNullOrEmpty(arrayList));
+	}
+
+	public static boolean isArrayNullOrEmpty(int[] array) {
+		return (array == null || array.length == 0);
 	}
 }

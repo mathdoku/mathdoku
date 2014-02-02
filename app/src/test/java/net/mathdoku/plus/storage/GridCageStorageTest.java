@@ -1,6 +1,7 @@
 package net.mathdoku.plus.storage;
 
 import net.mathdoku.plus.enums.CageOperator;
+import net.mathdoku.plus.grid.CageBuilder;
 import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.grid.GridCell;
 
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import robolectric.RobolectricGradleTestRunner;
 
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
@@ -28,80 +30,96 @@ public class GridCageStorageTest {
 	@Test(expected = NullPointerException.class)
 	public void fromStorageString_NullLine_False() throws Exception {
 		mLine = null;
-		assertThat(mGridCageStorage.fromStorageString(mLine, mRevisionNumber,
-				mCells), is(false));
+
+		assertThat(mGridCageStorage.getCageBuilderFromStorageString(mLine,
+				mRevisionNumber, mCells), is(nullValue()));
 	}
 
 	@Test
 	public void fromStorageString_RevisionIdToLow_False() throws Exception {
 		mLine = "CAGE:1:2:3:4,5,6:false";
 		mRevisionNumber = 368;
-		assertThat(mGridCageStorage.fromStorageString(mLine, mRevisionNumber,
-				mCells), is(false));
+		assertThat(mGridCageStorage.getCageBuilderFromStorageString(mLine,
+				mRevisionNumber, mCells), is(nullValue()));
 	}
 
 	@Test
 	public void fromStorageString_InvalidLineId_False() throws Exception {
 		mLine = "WRONG:This is not a valid cage storage string";
-		assertThat(mGridCageStorage.fromStorageString(mLine, mRevisionNumber,
-													  mCells), is(false));
+		assertThat(mGridCageStorage.getCageBuilderFromStorageString(mLine,
+				mRevisionNumber, mCells), is(nullValue()));
 	}
 
 	@Test(expected = InvalidParameterException.class)
 	public void fromStorageString_StorageStringHasTooLittleElements_False()
 			throws Exception {
 		mLine = "CAGE:2:3:4:5";
-		assertThat(mGridCageStorage.fromStorageString(mLine, mRevisionNumber,
-				mCells), is(false));
+		assertThat(mGridCageStorage.getCageBuilderFromStorageString(mLine,
+				mRevisionNumber, mCells), is(nullValue()));
 	}
 
 	@Test(expected = InvalidParameterException.class)
 	public void fromStorageString_StorageStringHasTooManyElements_False()
 			throws Exception {
 		mLine = "CAGE:2:3:4:5:6:7";
-		assertThat(mGridCageStorage.fromStorageString(mLine, mRevisionNumber,
-													  mCells), is(false));
+		assertThat(mGridCageStorage.getCageBuilderFromStorageString(mLine,
+				mRevisionNumber, mCells), is(nullValue()));
 	}
 
 	@Test
 	public void fromStorageString_ValidLineWithoutCells_True() throws Exception {
 		mLine = "CAGE:1:2:3::false";
 		when(mCells.get(anyInt())).thenReturn(mock(GridCell.class));
-		assertThat(mGridCageStorage.fromStorageString(mLine, mRevisionNumber,
-				mCells), is(true));
-		assertThat(mGridCageStorage.getId(), is(1));
-		assertThat(mGridCageStorage.getCageOperator().getId(), is(2));
-		assertThat(mGridCageStorage.getResult(), is(3));
-		assertThat(mGridCageStorage.getCells().size(), is(0));
-		assertThat(mGridCageStorage.isHideOperator(), is(false));
+
+		CageBuilder cageBuilder = mGridCageStorage
+				.getCageBuilderFromStorageString(mLine, mRevisionNumber, mCells);
+
+		CageBuilder expectedCageBuilder = new CageBuilder()
+				.setId(1)
+				.setCageOperator(CageOperator.fromId("2"))
+				.setResult(3)
+				.setHideOperator(false);
+		assertThat(cageBuilder, is(expectedCageBuilder));
 	}
 
 	@Test
 	public void fromStorageString_ValidLineWithSingeCell_True()
 			throws Exception {
 		mLine = "CAGE:1:2:3:4:true";
-		when(mCells.get(anyInt())).thenReturn(mock(GridCell.class));
-		assertThat(mGridCageStorage.fromStorageString(mLine, mRevisionNumber,
-				mCells), is(true));
-		assertThat(mGridCageStorage.getId(), is(1));
-		assertThat(mGridCageStorage.getCageOperator().getId(), is(2));
-		assertThat(mGridCageStorage.getResult(), is(3));
-		assertThat(mGridCageStorage.getCells().size(), is(1));
-		assertThat(mGridCageStorage.isHideOperator(), is(true));
+		GridCell gridCellMock = mock(GridCell.class);
+		when(gridCellMock.getCellId()).thenReturn(4);
+		when(mCells.get(anyInt())).thenReturn(gridCellMock);
+
+		CageBuilder cageBuilder = mGridCageStorage
+				.getCageBuilderFromStorageString(mLine, mRevisionNumber, mCells);
+
+		CageBuilder expectedCageBuilder = new CageBuilder()
+				.setId(1)
+				.setCageOperator(CageOperator.fromId("2"))
+				.setResult(3)
+				.setCells(new int[] {4})
+				.setHideOperator(true);
+		assertThat(cageBuilder, is(expectedCageBuilder));
 	}
 
 	@Test
 	public void fromStorageString_ValidLineWithMultipleCellCage_True()
 			throws Exception {
 		mLine = "CAGE:1:2:3:4,5,6,7:false";
-		when(mCells.get(anyInt())).thenReturn(mock(GridCell.class));
-		assertThat(mGridCageStorage.fromStorageString(mLine, mRevisionNumber,
-				mCells), is(true));
-		assertThat(mGridCageStorage.getId(), is(1));
-		assertThat(mGridCageStorage.getCageOperator().getId(), is(2));
-		assertThat(mGridCageStorage.getResult(), is(3));
-		assertThat(mGridCageStorage.getCells().size(), is(4));
-		assertThat(mGridCageStorage.isHideOperator(), is(false));
+		GridCell gridCellMock = mock(GridCell.class);
+		when(gridCellMock.getCellId()).thenReturn(4,5,6,7);
+		when(mCells.get(anyInt())).thenReturn(gridCellMock);
+
+		CageBuilder cageBuilder = mGridCageStorage
+				.getCageBuilderFromStorageString(mLine, mRevisionNumber, mCells);
+
+		CageBuilder expectedCageBuilder = new CageBuilder()
+				.setId(1)
+				.setCageOperator(CageOperator.fromId("2"))
+				.setResult(3)
+				.setCells(new int[] {4, 5, 6, 7})
+				.setHideOperator(false);
+		assertThat(cageBuilder, is(expectedCageBuilder));
 	}
 
 	@Test

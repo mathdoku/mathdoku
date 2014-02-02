@@ -1,8 +1,5 @@
 package net.mathdoku.plus.grid;
 
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.storage.CellChangeStorage;
@@ -14,6 +11,9 @@ import net.mathdoku.plus.storage.database.GridRow;
 import net.mathdoku.plus.storage.database.SolvingAttempt;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
+
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
 
 /**
  * The GridLoad is responsible for loading a grid from the database into a new
@@ -247,13 +247,14 @@ GridObjectsCreator gridObjectsCreator) {
 			return false;
 		}
 
-		GridCageStorage mGridCageStorage = mGridObjectsCreator
+		GridCageStorage gridCageStorage = mGridObjectsCreator
 				.createGridCageStorage();
-		if (mGridCageStorage.fromStorageString(line, mSavedWithRevision,
-				mGridCells) == false) {
+		CageBuilder cageBuilder = gridCageStorage.getCageBuilderFromStorageString(line, mSavedWithRevision,
+				mGridCells);
+		if (cageBuilder == null) {
 			return false;
 		}
-		GridCage cage = mGridObjectsCreator.createGridCage(mGridCageStorage);
+		GridCage cage = mGridObjectsCreator.createGridCage(cageBuilder);
 		mGridCages.add(cage);
 
 		return true;

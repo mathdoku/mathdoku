@@ -1,13 +1,9 @@
 package net.mathdoku.plus.gridDefinition;
 
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.enums.PuzzleComplexity;
+import net.mathdoku.plus.grid.CageBuilder;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.GridBuilder;
 import net.mathdoku.plus.grid.GridCage;
@@ -16,6 +12,11 @@ import net.mathdoku.plus.grid.GridObjectsCreator;
 import net.mathdoku.plus.grid.InvalidGridException;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.util.Util;
+
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This class creates the unique definition for a grid. This definition is used
@@ -34,6 +35,8 @@ public class GridDefinition {
 	private int mGridSize;
 	private ArrayList<GridCage> mCages;
 	private ArrayList<GridCell> mCells;
+	private int[] mCageIdPerCell;
+	private int[] mCountCellsPerCage;
 
 	// By default this module throws exceptions on error when running in
 	// development mode only.
@@ -171,17 +174,6 @@ public class GridDefinition {
 		int ID_PART_CELLS = 1;
 		int ID_PART_FIRST_CAGE = 2;
 
-		// Create an empty cage for each cage part. The cages needs to exists
-		// before the cells can be created.
-		int cageCount = definitionParts.length - ID_PART_FIRST_CAGE;
-		if (createArrayListOfCages(cageCount) == false) {
-			if (mThrowExceptionOnError) {
-				throw new InvalidGridException(
-						"Cannot create array list of cages.");
-			}
-			return null;
-		}
-
 		// The complexity is not needed to rebuild the puzzle, but it is stored
 		// as it is a great communicator to the (receiving) user how difficult
 		// the puzzle is.
@@ -212,8 +204,17 @@ public class GridDefinition {
 			return null;
 		}
 
+		// Determine number of cages expected
+		int cageCount = definitionParts.length - ID_PART_FIRST_CAGE;
+
+		// Initialize helper variables. Those variables are filled while adding
+		// the cells. Later, when adding the cages, the data of those vars is
+		// used.
+		mCountCellsPerCage = new int[cageCount];
+		mCageIdPerCell = new int[cellCount];
+
 		// Create the cells based on the list of cage numbers for each cell.
-		if (createArrayListOfCells(definitionParts[ID_PART_CELLS]) == false) {
+		if (createArrayListOfCells(definitionParts[ID_PART_CELLS], cageCount) == false) {
 			if (mThrowExceptionOnError) {
 				throw new InvalidGridException(
 						"Cannot create array list of cells.");
@@ -221,24 +222,9 @@ public class GridDefinition {
 			return null;
 		}
 
-		// Finalize the grid cages which only can be done after the cell have
-		// been attached to the cages.
-		for (GridCage cage : mCages) {
-			int definitionPartId = ID_PART_FIRST_CAGE + cage.getId();
-
-			if (definitionPartId < ID_PART_FIRST_CAGE
-					|| definitionPartId >= definitionParts.length) {
-				if (mThrowExceptionOnError) {
-					throw new InvalidGridException("Cage definition for cage "
-							+ cage.getId() + " does not exist.");
-				}
-				return null;
-			}
-			if (setResults(cage, definitionParts[definitionPartId]) == false) {
-				if (mThrowExceptionOnError) {
-					throw new InvalidGridException("Cage results for cage "
-							+ cage.getId() + " cannot be set.");
-				}
+		mCages = mGridObjectsCreator.createArrayListOfGridCages();
+		for (int i = ID_PART_FIRST_CAGE; i < definitionParts.length; i++) {
+			if (createCage(definitionParts[i]) == false) {
 				return null;
 			}
 		}
@@ -261,23 +247,6 @@ public class GridDefinition {
 				.setCages(mCages)
 				.setGridGeneratingParameters(mGridGeneratingParameters)
 				.build();
-	}
-
-	private boolean createArrayListOfCages(int numberOfCages) {
-		mCages = mGridObjectsCreator.createArrayListOfGridCages();
-		for (int i = 0; i < numberOfCages; i++) {
-			GridCage gridCage = mGridObjectsCreator.createGridCage();
-			gridCage.setCageId(i);
-
-			if (mCages.add(gridCage) == false) {
-				if (mThrowExceptionOnError) {
-					throw new InvalidGridException("Adding new cage failed.");
-				}
-				return false;
-			}
-		}
-
-		return true;
 	}
 
 	private boolean setGridSize(int cellCount) {
@@ -330,7 +299,8 @@ public class GridDefinition {
 		return puzzleComplexity;
 	}
 
-	private boolean createArrayListOfCells(String cagesString) {
+	private boolean createArrayListOfCells(String cagesString,
+			int expectedNumberOfCages) {
 		mCells = mGridObjectsCreator.createArrayListOfGridCells();
 
 		// The cagesString contains the cage number for each individual cell.
@@ -342,36 +312,30 @@ public class GridDefinition {
 			int cageId = Integer.valueOf(matcher.group());
 
 			// Create new cell and add it to the cells list.
-			GridCell gridCell = mGridObjectsCreator.createGridCell(
-					cellNumber++, mGridSize);
+			GridCell gridCell = mGridObjectsCreator.createGridCell(cellNumber,
+					mGridSize);
 			gridCell.setCageId(cageId);
 			mCells.add(gridCell);
 
 			// Determine the cage to which the cell has to be added.
-			if (cageId < 0 || cageId >= mCages.size()) {
+			if (cageId < 0 || cageId >= expectedNumberOfCages) {
 				if (mThrowExceptionOnError) {
 					throw new InvalidGridException(
 							"Cell refers to invalid cage id '" + cageId + "'.");
 				}
 				return false;
 			}
-			GridCage gridCage = mCages.get(cageId);
-			if (gridCage == null || gridCage.getId() != cageId) {
-				if (mThrowExceptionOnError) {
-					throw new InvalidGridException("Id of cage is "
-							+ gridCage.getId() + " while " + cageId
-							+ " was expected.");
-				}
-				return false;
-			}
-			gridCage.mCells.add(gridCell);
+			mCageIdPerCell[cellNumber] = cageId;
+			mCountCellsPerCage[cageId]++;
+
+			cellNumber++;
 		}
 
 		return true;
 	}
 
-	private boolean setResults(GridCage cage, String cageDefinition) {
-		if (cage == null || cageDefinition == null) {
+	private boolean createCage(String cageDefinition) {
+		if (cageDefinition == null) {
 			return false;
 		}
 
@@ -384,11 +348,21 @@ public class GridDefinition {
 			}
 			return false;
 		}
+
+		CageBuilder cageBuilder = new CageBuilder();
 		int cageId = Integer.valueOf(cageElements[0]);
-		int cageResultValue = Integer.valueOf(cageElements[1]);
-		CageOperator cageOperator;
+		if (cageId < 0 || cageId >= mCountCellsPerCage.length) {
+			if (mThrowExceptionOnError) {
+				throw new InvalidGridException(
+						"Invalid cage id in cage definition '" + cageDefinition
+								+ "'.");
+			}
+			return false;
+		}
+		cageBuilder.setId(cageId);
+		cageBuilder.setResult(Integer.valueOf(cageElements[1]));
 		try {
-			cageOperator = CageOperator.fromId(cageElements[2]);
+			cageBuilder.setCageOperator(CageOperator.fromId(cageElements[2]));
 		} catch (InvalidParameterException e) {
 			// If the cage operator in the url was manipulated this should not
 			// result in an Invalid Parameter Exception as the receiving user
@@ -398,18 +372,19 @@ public class GridDefinition {
 			}
 			return false;
 		}
-
-		if (cage.getId() != cageId) {
-			if (mThrowExceptionOnError) {
-				throw new InvalidGridException(
-						"Cage part does not contain the expected cage id. Got id "
-								+ cageId + " while " + cage.getId()
-								+ " was expected.");
+		int[] cells = new int[mCountCellsPerCage[cageId]];
+		int cellIndex = 0;
+		for (int i = 0; i < mCageIdPerCell.length; i++) {
+			if (mCageIdPerCell[i] == cageId) {
+				cells[cellIndex++] = i;
 			}
-			return false;
 		}
 
-		cage.setCageResults(cageResultValue, cageOperator, false);
+		cageBuilder.setCells(cells);
+		cageBuilder.setHideOperator(false);
+
+		GridCage cage = cageBuilder.build();
+		mCages.add(cage);
 
 		return true;
 	}
