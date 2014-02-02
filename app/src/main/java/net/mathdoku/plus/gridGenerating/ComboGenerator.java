@@ -35,19 +35,19 @@ public class ComboGenerator {
 		mCageCells = cells;
 
 		if (mHideOperator) {
-			return setPossibleCombosHiddenOperator();
+			return getPossibleCombosHiddenOperator();
 		} else {
-			return setPossibleCombosVisibleOperator();
+			return getPossibleCombosVisibleOperator();
 		}
 	}
 
 	/**
 	 * Get all permutations of cell values for this cage.
-	 * 
+	 *
 	 * @return The list of all permutations of cell values which can be used for
 	 *         this cage.
 	 */
-	private ArrayList<int[]> setPossibleCombosHiddenOperator() {
+	private ArrayList<int[]> getPossibleCombosHiddenOperator() {
 		ArrayList<int[]> resultCombos = new ArrayList<int[]>();
 
 		// Single cell cages can only contain the value of the single cell.
@@ -78,7 +78,7 @@ public class ComboGenerator {
 		// operation
 		resultCombos = getAllAddCombos(mGridSize, mResult, mCageCells.size());
 		ArrayList<int[]> multiplyCombos = getAllMultiplyCombos(mGridSize,
-				mResult, mCageCells.size());
+															   mResult, mCageCells.size());
 
 		// Combine Add & Multiply result sets
 		for (int[] multiplyCombo : multiplyCombos) {
@@ -102,44 +102,44 @@ public class ComboGenerator {
 	 * and MathDoku constraints i.e. a digit can only appear once in a
 	 * column/row
 	 */
-	private ArrayList<int[]> setPossibleCombosVisibleOperator() {
+	private ArrayList<int[]> getPossibleCombosVisibleOperator() {
 		ArrayList<int[]> AllResults = new ArrayList<int[]>();
 
 		switch (mCageOperator) {
-		case NONE:
-			assert (mCageCells.size() == 1);
-			int number[] = { mResult };
-			AllResults.add(number);
-			break;
-		case SUBTRACT:
-			assert (mCageCells.size() == 2);
-			for (int i1 = 1; i1 <= mGridSize; i1++)
-				for (int i2 = i1 + 1; i2 <= mGridSize; i2++)
-					if (i2 - i1 == mResult || i1 - i2 == mResult) {
-						int numbers[] = { i1, i2 };
-						AllResults.add(numbers);
-						numbers = new int[] { i2, i1 };
-						AllResults.add(numbers);
-					}
-			break;
-		case DIVIDE:
-			assert (mCageCells.size() == 2);
-			for (int i1 = 1; i1 <= mGridSize; i1++)
-				for (int i2 = i1 + 1; i2 <= mGridSize; i2++)
-					if (mResult * i1 == i2 || mResult * i2 == i1) {
-						int numbers[] = { i1, i2 };
-						AllResults.add(numbers);
-						numbers = new int[] { i2, i1 };
-						AllResults.add(numbers);
-					}
-			break;
-		case ADD:
-			AllResults = getAllAddCombos(mGridSize, mResult, mCageCells.size());
-			break;
-		case MULTIPLY:
-			AllResults = getAllMultiplyCombos(mGridSize, mResult,
-					mCageCells.size());
-			break;
+			case NONE:
+				assert (mCageCells.size() == 1);
+				int number[] = { mResult };
+				AllResults.add(number);
+				break;
+			case SUBTRACT:
+				assert (mCageCells.size() == 2);
+				for (int i1 = 1; i1 <= mGridSize; i1++)
+					for (int i2 = i1 + 1; i2 <= mGridSize; i2++)
+						if (i2 - i1 == mResult || i1 - i2 == mResult) {
+							int numbers[] = { i1, i2 };
+							AllResults.add(numbers);
+							numbers = new int[] { i2, i1 };
+							AllResults.add(numbers);
+						}
+				break;
+			case DIVIDE:
+				assert (mCageCells.size() == 2);
+				for (int i1 = 1; i1 <= mGridSize; i1++)
+					for (int i2 = i1 + 1; i2 <= mGridSize; i2++)
+						if (mResult * i1 == i2 || mResult * i2 == i1) {
+							int numbers[] = { i1, i2 };
+							AllResults.add(numbers);
+							numbers = new int[] { i2, i1 };
+							AllResults.add(numbers);
+						}
+				break;
+			case ADD:
+				AllResults = getAllAddCombos(mGridSize, mResult, mCageCells.size());
+				break;
+			case MULTIPLY:
+				AllResults = getAllMultiplyCombos(mGridSize, mResult,
+												  mCageCells.size());
+				break;
 		}
 		return AllResults;
 	}
@@ -151,7 +151,7 @@ public class ComboGenerator {
 	private ArrayList<int[]> getAllCombos_ResultSet;
 
 	private ArrayList<int[]> getAllAddCombos(int max_val, int target_sum,
-			int n_cells) {
+											 int n_cells) {
 		getAllCombos_Numbers = new int[n_cells];
 		getAllCombos_ResultSet = new ArrayList<int[]>();
 		getAddCombos(max_val, target_sum, n_cells);
@@ -185,7 +185,7 @@ public class ComboGenerator {
 	}
 
 	private ArrayList<int[]> getAllMultiplyCombos(int max_val, int target_sum,
-			int n_cells) {
+												  int n_cells) {
 		getAllCombos_Numbers = new int[n_cells];
 		getAllCombos_ResultSet = new ArrayList<int[]>();
 		getMultiplyCombos(max_val, target_sum, n_cells);
@@ -222,32 +222,53 @@ public class ComboGenerator {
 		}
 	}
 
-	/*
-	 * Check whether the set of numbers satisfies all constraints Looking for
-	 * cases where a digit appears more than once in a column/row Constraints: 0
-	 * -> (mGridSize * mGridSize)-1 = column constraints (each column must
-	 * contain each digit) mGridSize * mGridSize -> 2*(mGridSize * mGridSize)-1
-	 * = row constraints (each row must contain each digit)
+	/**
+	 * Checks if the given permutation can be filled in in the cells of the
+	 * cages without violating the rule that a digit can be used only once on
+	 * each row and each column.
+	 *
+	 * @param possibles
+	 *            The permutation which has to be checked.
 	 */
 	private boolean satisfiesConstraints(int[] possibles) {
-		boolean constraints[] = new boolean[mGridSize * mGridSize * 2];
-		int constraint_num;
+		// The first dimension for rowConstraints holds the different rows of
+		// the grid. The second dimension indicates whether digit (columnIndex +
+		// 1) is used in this row.
+		boolean[][] rowConstraints = new boolean[mGridSize][mGridSize];
+
+		// The first dimension for columnConstraints holds the different columns
+		// of the grid. The second dimension indicates whether digit
+		// (columnIndex + 1) is used in this column.
+		boolean[][] columnConstraints = new boolean[mGridSize][mGridSize];
+
+		// The values of the given permutation are copied in the specified order
+		// to the cells of the cages.
+		int rowConstraintsDimension1;
+		int columnConstraintsDimension1;
+		int constraintsDimension2;
 		for (int i = 0; i < this.mCageCells.size(); i++) {
-			constraint_num = mGridSize * (possibles[i] - 1)
-					+ mCageCells.get(i).getColumn();
-			if (constraints[constraint_num]) {
+			// The actual position of i-th cell in the grid determines the first dimension of the constraint arrays.
+			rowConstraintsDimension1 = mCageCells.get(i).getRow();
+			columnConstraintsDimension1 = mCageCells.get(i).getColumn();
+
+			// The value of the i-th position of the permutation determines the second dimension for both constraint arrays.
+			constraintsDimension2 = possibles[i] - 1;
+
+			if (rowConstraints[rowConstraintsDimension1][constraintsDimension2]) {
+				// The value is already used on this row of the grid
 				return false;
-			} else {
-				constraints[constraint_num] = true;
-				constraint_num = mGridSize * mGridSize + mGridSize
-						* (possibles[i] - 1) + mCageCells.get(i).getRow();
 			}
-			if (constraints[constraint_num]) {
+			rowConstraints[rowConstraintsDimension1][constraintsDimension2] = true;
+
+
+			if (columnConstraints[columnConstraintsDimension1][constraintsDimension2]) {
+				// The value is already used on this column of the grid.
 				return false;
-			} else {
-				constraints[constraint_num] = true;
 			}
+			columnConstraints[columnConstraintsDimension1][constraintsDimension2] = true;
 		}
+
+		// This permutation can be used to fill the cells of the cage without violation the rules.
 		return true;
 	}
 }
