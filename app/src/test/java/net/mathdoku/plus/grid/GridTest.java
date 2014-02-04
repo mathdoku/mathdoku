@@ -480,6 +480,30 @@ public class GridTest {
 	}
 
 	@Test
+	public void revealSolution_GridWithHiddenOperators_OperatorsRevealed()
+			throws Exception {
+		mGridBuilderStub
+				.useSameMockForAllGridCells()
+				.useSameMockForAllGridCages()
+				.setupDefaultWhichDoesNotThrowErrorsOnBuild();
+		mGridBuilderStub.mGridGeneratingParametersDefaultSetup.mHideOperators = true;
+		Grid grid = mGridBuilderStub.build();
+		// During setup of default grid the method setCageText is already called once for each cage.
+		verify(
+				mGridBuilderStub.mAnyGridCellMockOfDefaultSetup, times(mGridBuilderStub.mCages.size()))
+				.setCageText(anyString());
+
+		grid.revealSolution();
+
+		verify(mGridBuilderStub.mAnyGridCageOfDefaultSetup, times(mGridBuilderStub.mCages.size())).revealOperator();
+		// Check if setCageText is called a second time for each cage
+		verify(
+				mGridBuilderStub.mAnyGridCellMockOfDefaultSetup, times(2 * mGridBuilderStub.mCages.size()))
+				.setCageText(anyString());
+
+	}
+
+	@Test
 	public void revealSolution_NonEmptyCellList_GridStatisticsUpdated()
 			throws Exception {
 		Grid grid = mGridBuilderStub.build();

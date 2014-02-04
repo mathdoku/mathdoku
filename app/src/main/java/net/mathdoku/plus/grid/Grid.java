@@ -262,6 +262,12 @@ public class Grid {
 				}
 			}
 		}
+		if (mGridGeneratingParameters != null && mGridGeneratingParameters.mHideOperators && mCages != null) {
+			for (GridCage gridCage : mCages) {
+				gridCage.revealOperator();
+				setCageTextToUpperLeftCell(gridCage);
+			}
+		}
 		if (mGridStatistics != null) {
 			mGridStatistics.solutionRevealed();
 		}
