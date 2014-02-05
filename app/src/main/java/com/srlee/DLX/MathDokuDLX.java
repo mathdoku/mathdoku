@@ -81,7 +81,7 @@ public class MathDokuDLX extends DLX {
 				if (comboGenerator == null) {
 					comboGenerator = new ComboGenerator(mGridSize);
 				}
-				gridCage.setPossibleCombos(comboGenerator.getPossibleCombos(gridCage, gridCage.getCells()));
+				gridCage.setPossibleCombos(comboGenerator.getPossibleCombos(gridCage, gridCage.getGridCells()));
 			}
 			int possibleMovesInCage = gridCage.getPossibleCombos().size();
 			mTotalMoves += possibleMovesInCage;

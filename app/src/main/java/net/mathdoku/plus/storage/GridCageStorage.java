@@ -131,7 +131,7 @@ public class GridCageStorage {
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ gridCage.getResult()
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1;
-		ArrayList<GridCell> cells = gridCage.getCells();
+		ArrayList<GridCell> cells = gridCage.getGridCells();
 		if (cells != null) {
 			for (GridCell cell : cells) {
 				storageString += cell.getCellId()

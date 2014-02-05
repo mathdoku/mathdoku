@@ -130,7 +130,7 @@ public class GridCageStorageTest {
 		when(gridCageMock.getOperator()).thenReturn(CageOperator.MULTIPLY);
 		when(gridCageMock.getResult()).thenReturn(4);
 		ArrayList<GridCell> cells = new ArrayList<GridCell>();
-		when(gridCageMock.getCells()).thenReturn(cells);
+		when(gridCageMock.getGridCells()).thenReturn(cells);
 		when(gridCageMock.isOperatorHidden()).thenReturn(false);
 
 		assertThat(mGridCageStorage.toStorageString(gridCageMock),
@@ -148,7 +148,7 @@ public class GridCageStorageTest {
 		GridCell gridCell = mock(GridCell.class);
 		when(gridCell.getCellId()).thenReturn(4);
 		cells.add(gridCell);
-		when(gridCageMock.getCells()).thenReturn(cells);
+		when(gridCageMock.getGridCells()).thenReturn(cells);
 		when(gridCageMock.isOperatorHidden()).thenReturn(false);
 
 		assertThat(mGridCageStorage.toStorageString(gridCageMock),
@@ -168,7 +168,7 @@ public class GridCageStorageTest {
 		cells.add(gridCell);
 		cells.add(gridCell);
 		cells.add(gridCell);
-		when(gridCageMock.getCells()).thenReturn(cells);
+		when(gridCageMock.getGridCells()).thenReturn(cells);
 		when(gridCageMock.isOperatorHidden()).thenReturn(false);
 
 		assertThat(mGridCageStorage.toStorageString(gridCageMock),

@@ -1774,10 +1774,11 @@ public class GridTest {
 
 	@Test
 	public void getGridCells_InvalidCellId_CellReturned() throws Exception {
-		int idOfCell = -1; // Value should not be in range 0 to gridsize * gridsize
+		int idOfCell = -1; // Value should not be in range 0 to gridsize *
+							// gridsize
 		Grid grid = mGridBuilderStub.build();
 
-		assertThat(grid.getGridCells(new int[] {idOfCell}), is(nullValue()));
+		assertThat(grid.getGridCells(new int[] { idOfCell }), is(nullValue()));
 	}
 
 	@Test
@@ -1786,8 +1787,10 @@ public class GridTest {
 		Grid grid = mGridBuilderStub.build();
 
 		ArrayList<GridCell> expectedGridCells = new ArrayList<GridCell>();
-		expectedGridCells.add(mGridBuilderStub.mGridCellMockOfDefaultSetup[idOfCell]);
-		assertThat(grid.getGridCells(new int[] {idOfCell}), is(expectedGridCells));
+		expectedGridCells
+				.add(mGridBuilderStub.mGridCellMockOfDefaultSetup[idOfCell]);
+		assertThat(grid.getGridCells(new int[] { idOfCell }),
+				is(expectedGridCells));
 	}
 
 	@Test
@@ -1797,8 +1800,11 @@ public class GridTest {
 		Grid grid = mGridBuilderStub.build();
 
 		ArrayList<GridCell> expectedGridCells = new ArrayList<GridCell>();
-		expectedGridCells.add(mGridBuilderStub.mGridCellMockOfDefaultSetup[idOfCell_1]);
-		expectedGridCells.add(mGridBuilderStub.mGridCellMockOfDefaultSetup[idOfCell_2]);
-		assertThat(grid.getGridCells(new int[] {idOfCell_1, idOfCell_2}), is(expectedGridCells));
+		expectedGridCells
+				.add(mGridBuilderStub.mGridCellMockOfDefaultSetup[idOfCell_1]);
+		expectedGridCells
+				.add(mGridBuilderStub.mGridCellMockOfDefaultSetup[idOfCell_2]);
+		assertThat(grid.getGridCells(new int[] { idOfCell_1, idOfCell_2 }),
+				is(expectedGridCells));
 	}
 }
