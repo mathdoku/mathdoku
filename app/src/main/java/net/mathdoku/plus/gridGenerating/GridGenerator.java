@@ -806,7 +806,6 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	 */
 	private GridCage createCage(int[][] cageTypeCoordinates, int maxPermutations) {
 		CageBuilder cageBuilder = new CageBuilder();
-		cageBuilder.setHideOperator(mGridGeneratingParameters.mHideOperators);
 		int newCageId = mCages.size();
 		cageBuilder.setId(newCageId);
 
@@ -827,13 +826,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		cageBuilder.setCells(cellsInCage);
 		CageOperator cageOperator = generateCageOperator(cellCorrectValues);
 		cageBuilder.setCageOperator(cageOperator);
+		cageBuilder.setHideOperator(mGridGeneratingParameters.mHideOperators);
 		cageBuilder.setResult(getCageResult(cellCorrectValues, cageOperator));
-		if (cellsInCage.length == 1) {
-			// The cage operator for a single cell is set to *not* hidden regardless of the grid generating parameters. This prevents that for a single cage cell the operator can be revealed using the context menu.
-			cageBuilder.setHideOperator(false);
-		} else {
-			cageBuilder.setHideOperator(mGridGeneratingParameters.mHideOperators);
-		}
 
 		// All data is gathered which is needed to build the cage.
 		GridCage cage = cageBuilder.build();

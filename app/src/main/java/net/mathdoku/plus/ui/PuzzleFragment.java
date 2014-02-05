@@ -707,7 +707,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 		// Determine current selected cage.
 		GridCage selectedGridCage = mGrid.getSelectedCage();
-		return (selectedGridCage != null && selectedGridCage.isOperatorHidden());
+		return (selectedGridCage != null && selectedGridCage.isOperatorHidden() && selectedGridCage.getOperator() != CageOperator.NONE);
 	}
 
 	/**
