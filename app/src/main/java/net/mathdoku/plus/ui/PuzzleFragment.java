@@ -1,26 +1,5 @@
 package net.mathdoku.plus.ui;
 
-import net.mathdoku.plus.Cheat;
-import net.mathdoku.plus.Cheat.CheatType;
-import net.mathdoku.plus.GameTimer;
-import net.mathdoku.plus.Preferences;
-import net.mathdoku.plus.Preferences.PuzzleSettingInputMethod;
-import net.mathdoku.plus.R;
-import net.mathdoku.plus.grid.DigitPositionGrid;
-import net.mathdoku.plus.grid.Grid;
-import net.mathdoku.plus.grid.GridCage;
-import net.mathdoku.plus.grid.GridCell;
-import net.mathdoku.plus.grid.GridLoader;
-import net.mathdoku.plus.grid.ui.GridInputMode;
-import net.mathdoku.plus.grid.ui.GridPlayerView;
-import net.mathdoku.plus.hint.TickerTape;
-import net.mathdoku.plus.painter.Painter;
-import net.mathdoku.plus.painter.Painter.GridTheme;
-import net.mathdoku.plus.tip.TipCheat;
-import net.mathdoku.plus.tip.TipDialog;
-import net.mathdoku.plus.tip.TipIncorrectValue;
-import net.mathdoku.plus.util.FeedbackEmail;
-import net.mathdoku.plus.util.Util;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -31,8 +10,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.ActionMode;
@@ -41,11 +18,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -55,8 +29,30 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class PuzzleFragment extends android.support.v4.app.Fragment implements
-		OnSharedPreferenceChangeListener, OnCreateContextMenuListener,
+import net.mathdoku.plus.Cheat;
+import net.mathdoku.plus.GameTimer;
+import net.mathdoku.plus.Preferences;
+import net.mathdoku.plus.R;
+import net.mathdoku.plus.enums.CageOperator;
+import net.mathdoku.plus.grid.DigitPositionGrid;
+import net.mathdoku.plus.grid.Grid;
+import net.mathdoku.plus.grid.GridCage;
+import net.mathdoku.plus.grid.GridCell;
+import net.mathdoku.plus.grid.GridLoader;
+import net.mathdoku.plus.grid.ui.GridInputMode;
+import net.mathdoku.plus.grid.ui.GridPlayerView;
+import net.mathdoku.plus.hint.TickerTape;
+import net.mathdoku.plus.painter.Painter;
+import net.mathdoku.plus.tip.TipCheat;
+import net.mathdoku.plus.tip.TipDialog;
+import net.mathdoku.plus.tip.TipIncorrectValue;
+import net.mathdoku.plus.util.FeedbackEmail;
+import net.mathdoku.plus.util.Util;
+
+import static android.os.Build.VERSION;
+import static android.os.Build.VERSION_CODES;
+
+public class PuzzleFragment extends android.support.v4.app.Fragment implements SharedPreferences.OnSharedPreferenceChangeListener, View.OnCreateContextMenuListener,
 		GridPlayerView.OnInputModeChangedListener {
 	public final static String TAG = "MathDoku.PuzzleFragment";
 
@@ -218,7 +214,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 		for (Button digitPosition : mDigitPosition) {
 			if (digitPosition != null) {
-				digitPosition.setOnClickListener(new OnClickListener() {
+				digitPosition.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						// Convert text of button (number) to Integer
@@ -242,7 +238,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		}
 
 		// Set same onClickListener for both clear buttons
-		OnClickListener onClickListener = new OnClickListener() {
+		View.OnClickListener onClickListener = new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if (mGridPlayerView != null) {
@@ -262,7 +258,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		mClearButtonSwipeOnly.setOnClickListener(onClickListener);
 
 		// Set same onClickListener for both undo buttons
-		onClickListener = new OnClickListener() {
+		onClickListener = new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if (mGrid.undoLastMove()) {
@@ -344,11 +340,11 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		super.onDestroy();
 	}
 
-	@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+	@TargetApi(VERSION_CODES.JELLY_BEAN_MR1)
 	@Override
 	public void onResume() {
 		// Register a broadcast receiver on the intents related to day dreaming.
-		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+		if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
 			// Create broad cast receiver
 			if (mDreamingBroadcastReceiver == null) {
 				mDreamingBroadcastReceiver = new BroadcastReceiver() {
@@ -417,22 +413,21 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				.setTitle(R.string.dialog_clear_grid_confirmation_title)
 				.setMessage(R.string.dialog_clear_grid_confirmation_message)
 				.setIcon(android.R.drawable.ic_dialog_alert)
-				.setNegativeButton(
-						R.string.dialog_clear_grid_confirmation_negative_button,
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int whichButton) {
-								//
-							}
-						})
+				.setNegativeButton(R.string.dialog_clear_grid_confirmation_negative_button,
+								   new DialogInterface.OnClickListener() {
+									   @Override
+									   public void onClick(DialogInterface dialog, 
+														   int whichButton) {
+										   //
+									   }
+								   })
 				.setPositiveButton(
 						R.string.dialog_clear_grid_confirmation_positive_button,
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-								PuzzleFragment.this.mGrid.clearCells(false);
+								PuzzleFragment.this.mGrid.clearCells();
 								PuzzleFragment.this.mGridPlayerView
 										.invalidate();
 								// Invalidate the option menu to hide the check
@@ -485,10 +480,10 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 					textView.setVisibility(View.VISIBLE);
 
 					// Build the animation
-					Animation animation = AnimationUtils.loadAnimation(
-							mContext, R.anim.solved);
+					Animation animation = AnimationUtils.loadAnimation(mContext,
+																	   R.anim.solved);
 					if (animation != null) {
-						animation.setAnimationListener(new AnimationListener() {
+						animation.setAnimationListener(new Animation.AnimationListener() {
 							@Override
 							public void onAnimationEnd(Animation animation) {
 								textView.setVisibility(View.GONE);
@@ -654,7 +649,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			if (mGridPlayerView != null) {
 				mGridPlayerView
 						.setSwipeInputMethodEnabled((mMathDokuPreferences
-								.getDigitInputMethod() != PuzzleSettingInputMethod.BUTTONS_ONLY));
+								.getDigitInputMethod() != Preferences.PuzzleSettingInputMethod.BUTTONS_ONLY));
 			}
 		}
 
@@ -684,7 +679,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			GridCell selectedCell = mGrid.getSelectedCell();
 			setClearAndUndoButtonVisibility(selectedCell);
 
-			Cheat cheat = registerNewCheat(CheatType.CELL_REVEALED);
+			Cheat cheat = registerNewCheat(Cheat.CheatType.CELL_REVEALED);
 
 			if (TipCheat.toBeDisplayed(mMathDokuPreferences, cheat)) {
 				new TipCheat(mContext, cheat).show();
@@ -715,7 +710,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 */
 	void revealOperator() {
 		if (mGrid != null && mGrid.revealOperatorSelectedCage()) {
-			Cheat cheat = registerNewCheat(CheatType.OPERATOR_REVEALED);
+			Cheat cheat = registerNewCheat(Cheat.CheatType.OPERATOR_REVEALED);
 
 			// Display tip
 			if (TipCheat.toBeDisplayed(mMathDokuPreferences, cheat)) {
@@ -733,7 +728,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * @param cheatType
 	 *            The type of cheat to be processed.
 	 */
-	private Cheat registerNewCheat(CheatType cheatType) {
+	private Cheat registerNewCheat(Cheat.CheatType cheatType) {
 		// Create new cheat
 		Cheat cheat = new Cheat(mContext, cheatType);
 
@@ -774,7 +769,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		// Always create a new cheat as the usage of the function (even in case
 		// all cells are valid) will result in a cheat penalty being counted.
 		Cheat cheat = new Cheat(this.getActivity(),
-				CheatType.CHECK_PROGRESS_USED, countNewInvalidChoices);
+				Cheat.CheatType.CHECK_PROGRESS_USED, countNewInvalidChoices);
 
 		// Add penalty time
 		if (mTimerTask != null) {
@@ -891,7 +886,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 								// Create the cheat. This also updates the cheat
 								// penalty in the timer.
-								Cheat cheat = registerNewCheat(CheatType.SOLUTION_REVEALED);
+								Cheat cheat = registerNewCheat(Cheat.CheatType.SOLUTION_REVEALED);
 
 								// Stop the timer and unselect the current cell
 								// and cage. Finally save the grid.
@@ -1037,7 +1032,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		if (mGridPlayerView != null) {
 			mGridPlayerView
 					.setSwipeInputMethodEnabled((mMathDokuPreferences
-							.getDigitInputMethod() != PuzzleSettingInputMethod.BUTTONS_ONLY));
+							.getDigitInputMethod() != Preferences.PuzzleSettingInputMethod.BUTTONS_ONLY));
 		}
 
 		// Set sound effects if applicable
@@ -1108,7 +1103,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	private void setButtonLayout() {
 		// In case the digit buttons are hidden, entering digit can only be done
 		// using swiping.
-		boolean swipeOnly = (mMathDokuPreferences.getDigitInputMethod() == PuzzleSettingInputMethod.SWIPE_ONLY);
+		boolean swipeOnly = (mMathDokuPreferences.getDigitInputMethod() == Preferences
+				.PuzzleSettingInputMethod.SWIPE_ONLY);
 
 		if (mControlsPadBigTableLayout != null) {
 			mControlsPadBigTableLayout.setVisibility(swipeOnly ? View.GONE
@@ -1169,7 +1165,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		int index = (mGridPlayerView.getGridInputMode() == GridInputMode.NORMAL ? 0
 				: 4)
 				+ (mMathDokuPreferences.isColoredDigitsVisible() ? 0 : 2)
-				+ (mMathDokuPreferences.getTheme() == GridTheme.LIGHT ? 0 : 1);
+				+ (mMathDokuPreferences.getTheme() == Painter.GridTheme.LIGHT ? 0 : 1);
 		switch (index) {
 		case 0:
 		case 1:

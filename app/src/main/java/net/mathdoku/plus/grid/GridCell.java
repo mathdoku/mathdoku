@@ -296,19 +296,10 @@ public class GridCell {
 	/**
 	 * Clear the user value and/or possible values in a cell.
 	 */
-	public void clear() {
+	public void clearValue() {
 		// Note: setting the userValue to 0 clear the cell but also the possible
 		// values!
 		setUserValue(0);
-	}
-
-	/**
-	 * Clear cheat and error flags.
-	 */
-	public void clearAllFlags() {
-		mDuplicateValueHighlight = false;
-		mRevealed = false;
-		mInvalidUserValueHighlight = false;
 	}
 
 	/**

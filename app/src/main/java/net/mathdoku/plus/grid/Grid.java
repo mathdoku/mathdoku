@@ -200,12 +200,8 @@ public class Grid {
 
 	/**
 	 * Clears all cells and cages in the entire grid.
-	 * 
-	 * @param replay
-	 *            True if clear is needed for replay of a finished grid. False
-	 *            otherwise.
 	 */
-	public void clearCells(boolean replay) {
+	public void clearCells() {
 		if (this.mMoves != null) {
 			this.mMoves.clear();
 		}
@@ -215,10 +211,7 @@ public class Grid {
 				if (cell.getUserValue() != 0 || cell.countPossibles() > 0) {
 					updateGridClearCounter = true;
 				}
-				cell.clear();
-				if (replay) {
-					cell.clearAllFlags();
-				}
+				cell.clearValue();
 			}
 			if (updateGridClearCounter) {
 				mGridStatistics
@@ -765,25 +758,37 @@ public class Grid {
 	/**
 	 * Replay a grid as if the grid was just created.
 	 */
-	// todo: when refactoring test if timer is reset after replay
-	public void replay() {
-		// Clear the cells and the moves list.
-		clearCells(true);
+	public Grid createNewGridForReplay() {
+		// Copy all cells without the play history
+		ArrayList<GridCell> cells = new ArrayList<GridCell>();
+		for (GridCell cell : mCells) {
+			GridCell gridCell = new GridCell(cell.getCellId(), mGridSize);
+			gridCell.setCorrectValue(cell.getCorrectValue());
+			gridCell.setCageId(cell.getCageId());
+			cells.add(gridCell);
+		}
 
-		// No cell may be selected.
-		deselectSelectedCell();
+		// Copy all cages without the play history
+		ArrayList<GridCage> cages = new ArrayList<GridCage>();
+		for (GridCage cage : mCages) {
+			CageBuilder cageBuilder = mGridObjectsCreator.createCageBuilder();
+			GridCage gridCage = cageBuilder.setId(cage.getId())
+					.setResult(cage.getResult())
+					.setCageOperator(cage.getOperator())
+					.setHideOperator(mGridGeneratingParameters.mHideOperators)
+					.setCells(cage.getCells()).build();
+			cages.add(gridCage);
+		}
 
-		// The solving attempt is not yet saved.
-		mDateUpdated = 0;
-
-		// Forget it if the solution was revealed before.
-		mRevealed = false;
-
-		// Make the grid active again.
-		mActive = true;
-
-		// Save the grid
-		save();
+		// Create a new grid
+		return mGridObjectsCreator
+				.createGridBuilder()
+				.setGridSize(mGridSize)
+				.setGridId(mRowId)
+				.setGridGeneratingParameters(mGridGeneratingParameters)
+				.setCells(cells)
+				.setCages(cages)
+				.build();
 	}
 
 	/**

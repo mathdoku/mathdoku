@@ -1,7 +1,35 @@
 package net.mathdoku.plus.ui;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import android.app.ActionBar;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.ListView;
+import android.widget.RatingBar;
+import android.widget.RatingBar.OnRatingBarChangeListener;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+import com.google.android.gms.games.GamesClient;
 
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
@@ -36,36 +64,9 @@ import net.mathdoku.plus.ui.base.GooglePlayServiceFragmentActivity;
 import net.mathdoku.plus.util.FeedbackEmail;
 import net.mathdoku.plus.util.SharedPuzzle;
 import net.mathdoku.plus.util.Util;
-import android.app.ActionBar;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.net.Uri;
-import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.OnTouchListener;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.ListView;
-import android.widget.RatingBar;
-import android.widget.RatingBar.OnRatingBarChangeListener;
-import android.widget.Spinner;
-import android.widget.TextView;
 
-import com.google.android.gms.games.GamesClient;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		implements PuzzleFragment.PuzzleFragmentListener {
@@ -1196,15 +1197,14 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	 *            The solving attempt for which the grid has to be replayed.
 	 */
 	private void replayPuzzle(int solvingAttemptId) {
-		// Load the grid for the returned solving attempt id and reset the grid
-		// so it can be replayed.
 		Grid grid = new GridLoader().load(solvingAttemptId);
 		if (grid != null) {
-			if (grid.isActive() == false) {
-				grid.replay();
+			Grid newGrid = grid.createNewGridForReplay();
+			if (newGrid != null) {
+				if (newGrid.save()) {
+					initializePuzzleFragment(newGrid.getSolvingAttemptId());
+				}
 			}
-
-			initializePuzzleFragment(grid.getSolvingAttemptId());
 		}
 	}
 

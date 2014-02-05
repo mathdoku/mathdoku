@@ -1,6 +1,12 @@
 package net.mathdoku.plus.grid.ui;
 
-import java.util.ArrayList;
+import android.content.Context;
+import android.os.Handler;
+import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.SoundEffectConstants;
+import android.view.View;
+import android.view.View.OnTouchListener;
 
 import net.mathdoku.plus.grid.CellChange;
 import net.mathdoku.plus.grid.Grid;
@@ -14,13 +20,8 @@ import net.mathdoku.plus.tip.TipDuplicateValue;
 import net.mathdoku.plus.tip.TipIncorrectValue;
 import net.mathdoku.plus.tip.TipOrderOfValuesInCage;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
-import android.content.Context;
-import android.os.Handler;
-import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.SoundEffectConstants;
-import android.view.View;
-import android.view.View.OnTouchListener;
+
+import java.util.ArrayList;
 
 /**
  * The grid base player view allows to play a grid with a digit button interface
@@ -195,7 +196,7 @@ public class GridBasePlayerView extends GridViewerView implements
 			}
 			if (mInputMode == GridInputMode.MAYBE) {
 				if (selectedCell.isUserValueSet()) {
-					selectedCell.clear();
+					selectedCell.clearValue();
 				}
 				if (selectedCell.hasPossible(newValue)) {
 					selectedCell.removePossible(newValue);
@@ -267,7 +268,7 @@ public class GridBasePlayerView extends GridViewerView implements
 							// value which will now be overwritten with maybe
 							// values.
 							if (toGridCell.isUserValueSet()) {
-								toGridCell.clear();
+								toGridCell.clearValue();
 							}
 						}
 
@@ -294,7 +295,7 @@ public class GridBasePlayerView extends GridViewerView implements
 						toGridCell.setUserValue(fromGridCell.getUserValue());
 						toGridCell.clearPossibles();
 					} else {
-						toGridCell.clear();
+						toGridCell.clearValue();
 					}
 
 					if (mPreferences.isPuzzleSettingClearMaybesEnabled()) {
