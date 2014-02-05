@@ -4,6 +4,7 @@ import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.util.Util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class GridCage {
@@ -81,17 +82,25 @@ public class GridCage {
 
 	@Override
 	public String toString() {
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("Cage id: " + mId + "\n");
-		stringBuilder.append("\tSize: " + mCells.length + "\n");
-		stringBuilder.append("\tAction: " + mCageOperator.toString() + "\n");
-		stringBuilder.append("\tResult: " + mResult + "\n");
-		stringBuilder.append("\tcells: ");
-		for (int cell : mCells) {
-			stringBuilder.append(cell + ", ");
-		}
-		stringBuilder.append("\n");
-		return stringBuilder.toString();
+		final StringBuilder sb = new StringBuilder("GridCage{");
+		sb.append("mId=")
+				.append(mId);
+		sb.append(", mCageOperator=")
+				.append(mCageOperator);
+		sb.append(", mResult=")
+				.append(mResult);
+		sb.append(", mHideOperator=")
+				.append(mHideOperator);
+		sb.append(", mCells=")
+				.append(Arrays.toString(mCells));
+		sb.append(", mUserMathCorrect=")
+				.append(mUserMathCorrect);
+		sb.append(", mPossibleCombos=")
+				.append(mPossibleCombos);
+		sb.append(", mGrid=")
+				.append(mGrid);
+		sb.append('}');
+		return sb.toString();
 	}
 
 	public boolean isOperatorHidden() {
@@ -256,7 +265,8 @@ public class GridCage {
 
 		List userValues = mGrid.getUserValuesForCells(mCells);
 		return (userValues == null || userValues.size() < mCells.length);
-	}	
+	}
+
 	public int getNumberOfCells() {
 		return mCells.length;
 	}
@@ -281,8 +291,13 @@ public class GridCage {
 		return mResult;
 	}
 
-	public ArrayList<GridCell> getCells() {
+	// TODO: method should be removed after refactor MathDokuDLX.java
+	public ArrayList<GridCell> getGridCells() {
 		return (mGrid == null ? null : mGrid.getGridCells(mCells));
+	}
+
+	public int[] getCells() {
+		return mCells;
 	}
 
 	public GridCell getCell(int position) {

@@ -126,10 +126,34 @@ public class GridCell {
 
 	@Override
 	public String toString() {
-		return "<cell:" + this.mId + " col:" + this.mColumn + " row:"
-				+ this.mRow + " posX:" + this.mPosX + " posY:" + this.mPosY
-				+ " val:" + this.mCorrectValue + ", user value: "
-				+ this.mUserValue + ">";
+		final StringBuilder sb = new StringBuilder("GridCell{");
+		sb.append("mId=")
+				.append(mId);
+		sb.append(", mColumn=")
+				.append(mColumn);
+		sb.append(", mRow=")
+				.append(mRow);
+		sb.append(", mCorrectValue=")
+				.append(mCorrectValue);
+		sb.append(", mUserValue=")
+				.append(mUserValue);
+		sb.append(", mCageId=")
+				.append(mCageId);
+		sb.append(", mCageText='")
+				.append(mCageText)
+				.append('\'');
+		sb.append(", mPossibles=")
+				.append(mPossibles);
+		sb.append(", mDuplicateValueHighlight=")
+				.append(mDuplicateValueHighlight);
+		sb.append(", mSelected=")
+				.append(mSelected);
+		sb.append(", mRevealed=")
+				.append(mRevealed);
+		sb.append(", mInvalidUserValueHighlight=")
+				.append(mInvalidUserValueHighlight);
+		sb.append('}');
+		return sb.toString();
 	}
 
 	private Paint getBorderPaint(BorderType borderType) {
