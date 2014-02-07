@@ -1738,8 +1738,20 @@ public class GridTest {
 	}
 
 	@Test
-	public void isReplay() throws Exception {
+	public void isReplay_GridStatisticsReplayCounterIs0_False()
+			throws Exception {
+		Grid grid = mGridBuilderStub.build();
+		when(mGridStatisticsMock.getReplayCount()).thenReturn(0);
 
+		assertThat(grid.isReplay(), is(false));
+	}
+
+	@Test
+	public void isReplay_GridStatisticsReplayCounterIs1_True() throws Exception {
+		Grid grid = mGridBuilderStub.build();
+		when(mGridStatisticsMock.getReplayCount()).thenReturn(1);
+
+		assertThat(grid.isReplay(), is(true));
 	}
 
 	@Test
