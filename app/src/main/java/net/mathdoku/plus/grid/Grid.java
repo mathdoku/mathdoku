@@ -842,7 +842,7 @@ public class Grid {
 	/**
 	 * Set borders of all cages having incorrect maths.
 	 */
-	/* package private */void checkUserMathForAllCages() {
+	private void checkUserMathForAllCages() {
 		if (mCages != null) {
 			for (GridCage cage : mCages) {
 				cage.checkUserMath();

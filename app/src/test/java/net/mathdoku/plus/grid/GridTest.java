@@ -118,7 +118,7 @@ public class GridTest {
 					.createArrayListOfGridCages();
 			for (int i = 0; i < numberOfCages; i++) {
 				if (mUseSameMockForAllGridCages == false
-						|| mAnyGridCageOfDefaultSetup == null) {
+						|| mAnyGridCageOfDefaultSetup == null || i == 0) {
 					mAnyGridCageOfDefaultSetup = mock(GridCage.class);
 				}
 				gridCages.add(mAnyGridCageOfDefaultSetup);
@@ -372,6 +372,22 @@ public class GridTest {
 
 		verify(mGridStatisticsMock).increaseCounter(
 				GridStatistics.StatisticsCounterType.ACTION_CLEAR_GRID);
+	}
+
+	@Test
+	public void clearCells_AnyGrid_UserMathOfAllCagesIsChecked()
+			throws Exception {
+		mGridBuilderStub.useSameMockForAllGridCages()
+				.setupDefaultWhichDoesNotThrowErrorsOnBuild();
+		Grid grid = mGridBuilderStub.build();
+		// Method checkUserMath is already call while instantiating the new grid.
+		verify(mGridBuilderStub.mAnyGridCageOfDefaultSetup,
+			   times(mGridBuilderStub.mCages.size())).checkUserMath();
+
+		grid.clearCells();
+
+		verify(mGridBuilderStub.mAnyGridCageOfDefaultSetup,
+				times(2 * mGridBuilderStub.mCages.size())).checkUserMath();
 	}
 
 	private void assertThatGridCellDoesNotExist(int gridSize, int row, int col) {
@@ -1008,8 +1024,8 @@ public class GridTest {
 	@Test
 	public void gridCreateWithGridBuilder_ValidParameters_GridBuilderParamsUsed()
 			throws Exception {
-		mGridBuilderStub
-				.useSameMockForAllGridCells()
+		mGridBuilderStub.useSameMockForAllGridCells()
+				.useSameMockForAllGridCages()
 				.setupDefaultWhichDoesNotThrowErrorsOnBuild();
 		long dateCreated = System.currentTimeMillis();
 		mGridBuilderStub.setDateCreated(dateCreated);
@@ -1034,9 +1050,20 @@ public class GridTest {
 		assertThat("Cells", grid.mCages,
 				is(sameInstance(mGridBuilderStub.mCages)));
 		assertThat("Is active", grid.isActive(), is(mGridBuilderStub.mActive));
+		verify(mGridBuilderStub.mAnyGridCageOfDefaultSetup,
+				times(mGridBuilderStub.mCages.size())).setGridReference(
+				any(Grid.class));
 		verify(mGridBuilderStub.mAnyGridCellMockOfDefaultSetup,
 				times(mGridBuilderStub.mCells.size())).setGridReference(
 				any(Grid.class));
+		verify(mGridBuilderStub.mAnyGridCellMockOfDefaultSetup,
+				times(mGridBuilderStub.mCages.size())).setCageText(anyString());
+		verify(mGridBuilderStub.mAnyGridCageOfDefaultSetup,
+				times(mGridBuilderStub.mCages.size())).checkUserMath();
+		verify(mGridBuilderStub.mAnyGridCellMockOfDefaultSetup,
+				times(mGridBuilderStub.mCells.size()))
+				.markDuplicateValuesInSameRowAndColumn();
+		// test selected cell...
 		verify(mGridBuilderStub.mAnyGridCellMockOfDefaultSetup,
 				times(mGridBuilderStub.mCells.size())).setBorders();
 	}
@@ -1752,11 +1779,6 @@ public class GridTest {
 		when(mGridStatisticsMock.getReplayCount()).thenReturn(1);
 
 		assertThat(grid.isReplay(), is(true));
-	}
-
-	@Test
-	public void checkUserMathForAllCages() throws Exception {
-
 	}
 
 	@Test
