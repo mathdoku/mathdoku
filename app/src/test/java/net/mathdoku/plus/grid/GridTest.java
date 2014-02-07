@@ -48,7 +48,7 @@ import static org.mockito.Mockito.when;
 @RunWith(RobolectricGradleTestRunner.class)
 public class GridTest {
 	private Activity mActivity;
-	private Preferences preferences;
+	private Preferences mPreferencesMock;
 	private GridBuilderStub mGridBuilderStub;
 
 	/**
@@ -184,6 +184,42 @@ public class GridTest {
 
 			return this;
 		}
+
+		public GridBuilderStub setGridCellMockAsSelectedCell(int idSelectedCell) {
+			// Set the selected cell before building the grid
+			when(mGridCellMockOfDefaultSetup[idSelectedCell].isSelected())
+					.thenReturn(true);
+			when(mGridCellMockOfDefaultSetup[idSelectedCell].getCage())
+					.thenReturn(mAnyGridCageOfDefaultSetup);
+
+			return this;
+		}
+
+		private GridBuilderStub setGridCellMockWithUserValue(int id, int row,
+				int column, int userValue) {
+			// Define row and column of the selected cell
+			when(mGridCellMockOfDefaultSetup[id].getRow()).thenReturn(row);
+			when(mGridCellMockOfDefaultSetup[id].getColumn())
+					.thenReturn(column);
+			// Set user value
+			when(mGridCellMockOfDefaultSetup[id].getUserValue()).thenReturn(
+					userValue);
+
+			return this;
+		}
+
+		private GridBuilderStub setGridCellMockWithMaybeValues(int id, int row,
+				int column, int maybeValues[]) {
+			when(mGridCellMockOfDefaultSetup[id].getRow()).thenReturn(row);
+			when(mGridCellMockOfDefaultSetup[id].getColumn())
+					.thenReturn(column);
+			for (int maybeValue : maybeValues) {
+				when(mGridCellMockOfDefaultSetup[id].hasPossible(maybeValue))
+						.thenReturn(true);
+			}
+
+			return this;
+		}
 	}
 
 	// Mocks used by the GridObjectsCreatorStub when creating new objects for
@@ -261,7 +297,7 @@ public class GridTest {
 
 		// Create the Preference Instance with the Singleton Creator which uses
 		// a mocked Preferences object
-		preferences = Preferences.getInstance(mActivity,
+		mPreferencesMock = Preferences.getInstance(mActivity,
 				preferencesObjectsCreator);
 
 		mGridObjectsCreatorStub = new GridObjectsCreatorStub();
@@ -276,12 +312,14 @@ public class GridTest {
 		Grid grid = mGridBuilderStub.build();
 		grid.setPreferences();
 
-		// Check that preferences are retrieved when setting the preferences.
+		// Check that mPreferencesMock are retrieved when setting the
+		// mPreferencesMock.
 		// Note: method setPreference is also called when creating the grid. So
 		// each method is invoked more than once.
-		verify(preferences, atLeastOnce()).isDuplicateDigitHighlightVisible();
-		verify(preferences, atLeastOnce()).isMaybesDisplayedInGrid();
-		verify(preferences, atLeastOnce()).isBadCageMathHighlightVisible();
+		verify(mPreferencesMock, atLeastOnce())
+				.isDuplicateDigitHighlightVisible();
+		verify(mPreferencesMock, atLeastOnce()).isMaybesDisplayedInGrid();
+		verify(mPreferencesMock, atLeastOnce()).isBadCageMathHighlightVisible();
 	}
 
 	@Test
@@ -298,7 +336,7 @@ public class GridTest {
 
 		// While building the grid, the borders were already set (see verify
 		// above). Now check if it has been called again while setting the
-		// preferences.
+		// mPreferencesMock.
 		verify(mGridBuilderStub.mAnyGridCellMockOfDefaultSetup,
 				times(2 * grid.mCells.size())).setBorders();
 	}
@@ -377,12 +415,14 @@ public class GridTest {
 	@Test
 	public void clearCells_AnyGrid_UserMathOfAllCagesIsChecked()
 			throws Exception {
-		mGridBuilderStub.useSameMockForAllGridCages()
+		mGridBuilderStub
+				.useSameMockForAllGridCages()
 				.setupDefaultWhichDoesNotThrowErrorsOnBuild();
 		Grid grid = mGridBuilderStub.build();
-		// Method checkUserMath is already call while instantiating the new grid.
+		// Method checkUserMath is already call while instantiating the new
+		// grid.
 		verify(mGridBuilderStub.mAnyGridCageOfDefaultSetup,
-			   times(mGridBuilderStub.mCages.size())).checkUserMath();
+				times(mGridBuilderStub.mCages.size())).checkUserMath();
 
 		grid.clearCells();
 
@@ -965,6 +1005,11 @@ public class GridTest {
 		verify(gridCageMock2, times(1)).setBorders();
 	}
 
+	@Test
+	public void clearRedundantPossiblesInSameRowOrColumn() throws Exception {
+		// TODO: add unit tests
+	}
+
 	@Test(expected = InvalidGridException.class)
 	public void gridCreateWithGridBuilder_GridCellsListIsNull_InvalidParameterException()
 			throws Exception {
@@ -1024,7 +1069,8 @@ public class GridTest {
 	@Test
 	public void gridCreateWithGridBuilder_ValidParameters_GridBuilderParamsUsed()
 			throws Exception {
-		mGridBuilderStub.useSameMockForAllGridCells()
+		mGridBuilderStub
+				.useSameMockForAllGridCells()
 				.useSameMockForAllGridCages()
 				.setupDefaultWhichDoesNotThrowErrorsOnBuild();
 		long dateCreated = System.currentTimeMillis();
@@ -1782,23 +1828,105 @@ public class GridTest {
 	}
 
 	@Test
-	public void revealSelectedCell() throws Exception {
+	public void revealSelectedCell_CellIsSelected_UndoInformationForSelectedCellIsSaved()
+			throws Exception {
+		int idSelectedCell = 14;
+		Grid grid = mGridBuilderStub.setGridCellMockAsSelectedCell(
+				idSelectedCell).build();
 
+		assertThat(grid.revealSelectedCell(), is(true));
+		verify(mGridBuilderStub.mGridCellMockOfDefaultSetup[idSelectedCell])
+				.saveUndoInformation(any(CellChange.class));
+	}
+
+	@Test
+	public void revealSelectedCell_CellIsSelected_SelectedCellIsRevealed()
+			throws Exception {
+		int idSelectedCell = 14;
+		Grid grid = mGridBuilderStub.setGridCellMockAsSelectedCell(
+				idSelectedCell).build();
+
+		assertThat(grid.revealSelectedCell(), is(true));
+		verify(mGridBuilderStub.mGridCellMockOfDefaultSetup[idSelectedCell])
+				.setRevealed();
+	}
+
+	@Test
+	public void revealSelectedCell_CellIsSelected_SelectedCellContainsCorrectUserValue()
+			throws Exception {
+		int idSelectedCell = 14;
+		Grid grid = mGridBuilderStub.setGridCellMockAsSelectedCell(
+				idSelectedCell).build();
+		int correctValue = 3;
+		when(
+				mGridBuilderStub.mGridCellMockOfDefaultSetup[idSelectedCell]
+						.getCorrectValue()).thenReturn(correctValue);
+
+		assertThat(grid.revealSelectedCell(), is(true));
+		verify(mGridBuilderStub.mGridCellMockOfDefaultSetup[idSelectedCell])
+				.setUserValue(correctValue);
+	}
+
+	@Test
+	public void revealSelectedCell_RevealedValueIsUsedAsPossibleInOtherCellOnSameRow_RedundantPossibleValueIsRemoved()
+			throws Exception {
+		// Set up a grid with a for which the user value of the selected is
+		// revealed and for which the same value os also used as a possible
+		// value in another cell on the same row as the selected cell.
+		int idSelectedCell = 14;
+		int rowSelectedCell = 3;
+		int columnSelectedCell = 2;
+		int idOtherCellOnSameRow = idSelectedCell - 1;
+		int valueRevealed = 1;
+		Grid grid = mGridBuilderStub
+				.setGridCellMockAsSelectedCell(idSelectedCell)
+				.setGridCellMockWithUserValue(idSelectedCell, rowSelectedCell,
+						columnSelectedCell, valueRevealed)
+				.setGridCellMockWithMaybeValues(idOtherCellOnSameRow,
+						rowSelectedCell, columnSelectedCell - 1,
+						new int[] { valueRevealed })
+				.build();
+		// Enable puzzle setting to clear maybes.
+		when(mPreferencesMock.isPuzzleSettingClearMaybesEnabled()).thenReturn(
+				true);
+
+		// See unit tests for method clearRedundantPossiblesInSameRowOrColumn
+		// for other scenario's. Just one scenario is tested for method
+		// revealSelectedCell in order to test whether this method is invoked.
+		assertThat(grid.revealSelectedCell(), is(true));
+		verify(
+				mGridBuilderStub.mGridCellMockOfDefaultSetup[idOtherCellOnSameRow])
+				.removePossible(valueRevealed);
+	}
+
+	@Test
+	public void revealSelectedCell_CellIsSelected_StatisticsUpdated()
+			throws Exception {
+		int idSelectedCell = 14;
+		Grid grid = mGridBuilderStub.setGridCellMockAsSelectedCell(
+				idSelectedCell).build();
+
+		assertThat(grid.revealSelectedCell(), is(true));
+		verify(mGridBuilderStub.mGridStatistics).increaseCounter(
+				GridStatistics.StatisticsCounterType.ACTION_REVEAL_CELL);
+	}
+
+	@Test
+	public void revealSelectedCell_NoCellIsSelected_False() throws Exception {
+		Grid grid = mGridBuilderStub.build();
+
+		assertThat(grid.revealSelectedCell(), is(false));
 	}
 
 	@Test
 	public void revealOperatorSelectedCage_CageSelectedForCageWithHiddenOperator_OperatorRevealed()
 			throws Exception {
-		// Set a cage as selected by selecting a cell before building the grid.
-		when(mGridBuilderStub.mAnyGridCellMockOfDefaultSetup.isSelected())
-				.thenReturn(true);
-		when(mGridBuilderStub.mAnyGridCellMockOfDefaultSetup.getCage())
-				.thenReturn(mGridBuilderStub.mAnyGridCageOfDefaultSetup);
+		int idOfSelectedCell = 14;
+		Grid grid = mGridBuilderStub.setGridCellMockAsSelectedCell(
+				idOfSelectedCell).build();
+		int idOfUpperLeftCellOfSelectedCage = 13;
 		when(mGridBuilderStub.mAnyGridCageOfDefaultSetup.isOperatorHidden())
 				.thenReturn(true);
-		Grid grid = mGridBuilderStub.build();
-		// Remainder of setup after the grid is build.
-		int idOfUpperLeftCellOfSelectedCage = 13;
 		when(mGridBuilderStub.mAnyGridCageOfDefaultSetup.getIdUpperLeftCell())
 				.thenReturn(idOfUpperLeftCellOfSelectedCage);
 		String newCageText = "** SOME NEW CAGE TEXT **";
@@ -1817,14 +1945,11 @@ public class GridTest {
 	@Test
 	public void revealOperatorSelectedCage_CageSelectedForCageWithVisibleOperator_OperatorRevealed()
 			throws Exception {
-		// Set a cage as selected by selecting a cell before building the grid.
-		when(mGridBuilderStub.mAnyGridCellMockOfDefaultSetup.isSelected())
-				.thenReturn(true);
-		when(mGridBuilderStub.mAnyGridCellMockOfDefaultSetup.getCage())
-				.thenReturn(mGridBuilderStub.mAnyGridCageOfDefaultSetup);
+		int idOfSelectedCell = 14;
+		Grid grid = mGridBuilderStub.setGridCellMockAsSelectedCell(
+				idOfSelectedCell).build();
 		when(mGridBuilderStub.mAnyGridCageOfDefaultSetup.isOperatorHidden())
 				.thenReturn(false);
-		Grid grid = mGridBuilderStub.build();
 
 		assertThat(grid.revealOperatorSelectedCage(), is(false));
 		verify(mGridBuilderStub.mAnyGridCageOfDefaultSetup, never())

@@ -255,7 +255,8 @@ public class Grid {
 				}
 			}
 		}
-		if (mGridGeneratingParameters != null && mGridGeneratingParameters.mHideOperators && mCages != null) {
+		if (mGridGeneratingParameters != null
+				&& mGridGeneratingParameters.mHideOperators && mCages != null) {
 			for (GridCage gridCage : mCages) {
 				gridCage.revealOperator();
 				setCageTextToUpperLeftCell(gridCage);
@@ -495,14 +496,12 @@ public class Grid {
 			int rowSelectedCell = this.mSelectedCell.getRow();
 			int columnSelectedCell = this.mSelectedCell.getColumn();
 			int valueSelectedCell = this.mSelectedCell.getUserValue();
-			if (this.mSelectedCell != null) {
-				for (GridCell cell : this.mCells) {
-					if (cell.getRow() == rowSelectedCell
-							|| cell.getColumn() == columnSelectedCell) {
-						if (cell.hasPossible(valueSelectedCell)) {
-							cell.saveUndoInformation(originalCellChange);
-							cell.removePossible(valueSelectedCell);
-						}
+			for (GridCell cell : this.mCells) {
+				if (cell.getRow() == rowSelectedCell
+						|| cell.getColumn() == columnSelectedCell) {
+					if (cell.hasPossible(valueSelectedCell)) {
+						cell.saveUndoInformation(originalCellChange);
+						cell.removePossible(valueSelectedCell);
 					}
 				}
 			}
@@ -772,11 +771,13 @@ public class Grid {
 		ArrayList<GridCage> cages = new ArrayList<GridCage>();
 		for (GridCage cage : mCages) {
 			CageBuilder cageBuilder = mGridObjectsCreator.createCageBuilder();
-			GridCage gridCage = cageBuilder.setId(cage.getId())
+			GridCage gridCage = cageBuilder
+					.setId(cage.getId())
 					.setResult(cage.getResult())
 					.setCageOperator(cage.getOperator())
 					.setHideOperator(mGridGeneratingParameters.mHideOperators)
-					.setCells(cage.getCells()).build();
+					.setCells(cage.getCells())
+					.build();
 			cages.add(gridCage);
 		}
 
@@ -925,7 +926,10 @@ public class Grid {
 	 * @param cells
 	 *            The list of cells for which the user values have to be
 	 *            returned.
-	 * @return The user values which are filled in for the given cells. Null in case of an error. In case the returned arrays contains less elements than the number of cells given this indicates that not all cells have a user value.
+	 * @return The user values which are filled in for the given cells. Null in
+	 *         case of an error. In case the returned arrays contains less
+	 *         elements than the number of cells given this indicates that not
+	 *         all cells have a user value.
 	 */
 	public ArrayList<Integer> getUserValuesForCells(int[] cells) {
 		if (Util.isArrayNullOrEmpty(cells)) {
