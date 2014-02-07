@@ -1050,7 +1050,9 @@ public class GridTest {
 		// exceptions.
 		mGridGeneratingParametersMock.mPuzzleComplexity = PuzzleComplexity.NORMAL;
 		mGridGeneratingParametersMock.mHideOperators = false;
-		mGridBuilderStub.useSameMockForAllGridCages();
+		mGridBuilderStub
+				.useSameMockForAllGridCages()
+				.setupDefaultWhichDoesNotThrowErrorsOnBuild();
 		when(mGridBuilderStub.mAnyGridCageOfDefaultSetup.getOperator())
 				.thenReturn(CageOperator.ADD);
 
