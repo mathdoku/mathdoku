@@ -47,6 +47,30 @@ android {
     }
 }
 
+
+// Base Config for a local sonar installation
+// To use: gradle sonarRunner
+// Pre-requisites: gradle clean assemble :app:installDebug
+apply plugin: 'sonar-runner'
+sonarRunner {
+    sonarProperties {
+        property 'sonar.projectName', 'MathDoku Plus'
+        property 'sonar.projectKey', 'net.mathdoku.plus'
+        property 'sonar.projectVersion', '595'
+        property 'sonar.host.url', 'http://localhost:9000'
+        property 'sonar.jdbc.url', 'jdbc:h2:tcp://localhost:9092/sonar'
+        property 'sonar.jdbc.driverClassName', 'org.h2.Driver'
+        property 'sonar.jdbc.username', 'sonar'
+        property 'sonar.jdbc.password', 'sonar'
+        property 'sonar.branch', 'gradle'
+        property 'sonar.dynamicAnalysis', 'reuseReports'
+        properties['sonar.sources'] = android.sourceSets.main.java.srcDirs
+        properties['sonar.tests'] = android.sourceSets.instrumentTest.java.srcDirs
+        properties['sonar.binaries'] = file('build/classes/debug')
+        property 'sonar.surefire.reportsPath','build/instrumentTest-results/connected/'
+    }
+}
+
 dependencies {
     compile "com.google.android.gms:play-services:${googlePlayServicesVersion}"
     compile "com.android.support:support-v4:${androidSupportV4Version}"

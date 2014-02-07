@@ -57,50 +57,6 @@ configure(subprojects) { subproject ->
     }
 }
 
-// Base Config for a local sonar installation
-// To use: gradle sonarRunner
-//
-// Sonar runner is not yet used
-//
-// apply plugin: 'sonar-runner'
-// sonarRunner 
-// {
-// 	sonarProperties {
-// 		// Project Name
-// 		// This can be anything, whatever describes your project
-// 		property 'sonar.projectName', 'MathDoku Plus'
-// 
-// 		// Project Key
-// 		// this should be unique, so the namespace of the app is a good option
-// 		property 'sonar.projectKey', 'net.mathdoku.plus'
-// 
-// 		// Comma separated list of sub projects
-// 		// This will often match the values in the settings.gradle
-// 		property 'sonar.modules', 'app,lib'
-// 
-// 		// Mapping list for modules to their actual directories
-// 		property 'app.sonar.projectBaseDir', './app/'
-// 		property 'lib.sonar.projectBaseDir', './lib/'
-// 
-// 		// Project Version
-// 		property 'sonar.projectVersion', '1.0'
-// 
-// 		// java version
-// 		property 'sonar.java.target', '1.6'
-// 
-// 		// sonar connection parameters
-// 		property 'sonar.host.url', 'http://localhost:9000'
-// 		property 'sonar.jdbc.url', 'jdbc:mysql://localhost:3306/sonar?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true'
-// 		property 'sonar.jdbc.driverClassName', 'com.mysql.jdbc.Driver'
-// 		property 'sonar.jdbc.username', 'sonar'
-// 		property 'sonar.jdbc.password', 'sonar'
-// 
-// 		// so far incomplete attempts to get code coverage to work
-// 		property 'sonar.dynamicAnalysis', 'reuseReports'
-// 		property 'sonar.surefire.reportsPath', 'build/instrumentTest-results/connected/'
-// 	}
-// }
-
 task wrapper(type: Wrapper) {
 	gradleVersion = '1.9'
 }
