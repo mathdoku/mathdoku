@@ -493,10 +493,10 @@ public class Grid {
 	public void clearRedundantPossiblesInSameRowOrColumn(
 			CellChange originalCellChange) {
 		if (mSelectedCell != null) {
-			int rowSelectedCell = this.mSelectedCell.getRow();
-			int columnSelectedCell = this.mSelectedCell.getColumn();
-			int valueSelectedCell = this.mSelectedCell.getUserValue();
-			for (GridCell cell : this.mCells) {
+			int rowSelectedCell = mSelectedCell.getRow();
+			int columnSelectedCell = mSelectedCell.getColumn();
+			int valueSelectedCell = mSelectedCell.getUserValue();
+			for (GridCell cell : mCells) {
 				if (cell.getRow() == rowSelectedCell
 						|| cell.getColumn() == columnSelectedCell) {
 					if (cell.hasPossible(valueSelectedCell)) {

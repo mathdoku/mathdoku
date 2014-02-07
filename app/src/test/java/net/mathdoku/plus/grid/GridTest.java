@@ -1006,8 +1006,123 @@ public class GridTest {
 	}
 
 	@Test
-	public void clearRedundantPossiblesInSameRowOrColumn() throws Exception {
-		// TODO: add unit tests
+	public void clearRedundantPossiblesInSameRowOrColumn_AnotherCellInSameRowContainsTheRedundantPossibleValueButNoOtherPossibleValues_TheRedundantPossibleValueIsCleared() throws Exception {
+		// Set up a grid with a for which the user value of the selected is
+		// revealed and for which the same value os also used as a possible
+		// value in another cell on the same row as the selected cell.
+		int idSelectedCell = 14;
+		int valueSelectedCell = 1;
+		int rowSelectedCell = 3;
+		int columnSelectedCell = 2;
+		int idOtherCellOnSameRow = idSelectedCell - 1;
+		Grid grid = mGridBuilderStub
+				.setGridCellMockAsSelectedCell(idSelectedCell)
+				.setGridCellMockWithUserValue(idSelectedCell, rowSelectedCell,
+											  columnSelectedCell, valueSelectedCell)
+				.setGridCellMockWithMaybeValues(idOtherCellOnSameRow,
+												rowSelectedCell, columnSelectedCell - 1,
+												new int[] { valueSelectedCell })
+				.build();
+
+		grid.clearRedundantPossiblesInSameRowOrColumn(mock(CellChange.class));
+
+		verify(
+				mGridBuilderStub.mGridCellMockOfDefaultSetup[idOtherCellOnSameRow])
+				.hasPossible(valueSelectedCell);
+		verify(mGridBuilderStub.mGridCellMockOfDefaultSetup[idOtherCellOnSameRow])
+				.removePossible(valueSelectedCell);
+	}
+
+	@Test
+	public void clearRedundantPossiblesInSameRowOrColumn_AnotherCellInSameRowContainsMultiplePossibleValuesIncludingTheRedundantValue_TheRedundantPossibleValueIsCleared() throws Exception {
+		// Set up a grid with a for which the user value of the selected is
+		// revealed and for which the same value os also used as a possible
+		// value in another cell on the same row as the selected cell.
+		int idSelectedCell = 14;
+		int valueSelectedCell = 2;
+		int rowSelectedCell = 3;
+		int columnSelectedCell = 2;
+		int idOtherCellOnSameRow = idSelectedCell - 1;
+		Grid grid = mGridBuilderStub
+				.setGridCellMockAsSelectedCell(idSelectedCell)
+				.setGridCellMockWithUserValue(idSelectedCell, rowSelectedCell,
+											  columnSelectedCell, valueSelectedCell)
+				.setGridCellMockWithMaybeValues(idOtherCellOnSameRow,
+												rowSelectedCell, columnSelectedCell - 1,
+												new int[] { valueSelectedCell - 1, valueSelectedCell, valueSelectedCell + 1 })
+				.build();
+
+		grid.clearRedundantPossiblesInSameRowOrColumn(mock(CellChange.class));
+
+		verify(
+				mGridBuilderStub.mGridCellMockOfDefaultSetup[idOtherCellOnSameRow])
+				.hasPossible(valueSelectedCell);
+		verify(mGridBuilderStub.mGridCellMockOfDefaultSetup[idOtherCellOnSameRow])
+				.removePossible(valueSelectedCell);
+		verify(mGridBuilderStub.mGridCellMockOfDefaultSetup[idOtherCellOnSameRow],never())
+				.removePossible(valueSelectedCell - 1);
+		verify(mGridBuilderStub.mGridCellMockOfDefaultSetup[idOtherCellOnSameRow],never())
+				.removePossible(valueSelectedCell + 1);
+	}
+
+	@Test
+	public void clearRedundantPossiblesInSameRowOrColumn_AnotherCellInSameColumnContainsTheRedundantPossibleValueButNoOtherPossibleValues_TheRedundantPossibleValueIsCleared() throws Exception {
+		// Set up a grid with a for which the user value of the selected is
+		// revealed and for which the same value is also used as a possible
+		// value in another cell in the same column as the selected cell.
+		int idSelectedCell = 14;
+		int valueSelectedCell = 1;
+		int rowSelectedCell = 3;
+		int columnSelectedCell = 2;
+		int idOtherCellInSameColumn = idSelectedCell - 1;
+		Grid grid = mGridBuilderStub
+				.setGridCellMockAsSelectedCell(idSelectedCell)
+				.setGridCellMockWithUserValue(idSelectedCell, rowSelectedCell,
+											  columnSelectedCell, valueSelectedCell)
+				.setGridCellMockWithMaybeValues(idOtherCellInSameColumn,
+												rowSelectedCell - 1, columnSelectedCell,
+												new int[] { valueSelectedCell })
+				.build();
+
+		grid.clearRedundantPossiblesInSameRowOrColumn(mock(CellChange.class));
+
+		verify(
+				mGridBuilderStub.mGridCellMockOfDefaultSetup[idOtherCellInSameColumn])
+				.hasPossible(valueSelectedCell);
+		verify(mGridBuilderStub.mGridCellMockOfDefaultSetup[idOtherCellInSameColumn])
+				.removePossible(valueSelectedCell);
+	}
+
+	@Test
+	public void clearRedundantPossiblesInSameRowOrColumn_AnotherCellInSameColumnContainsMultiplePossibleValuesIncludingTheRedundantValue_TheRedundantPossibleValueIsCleared() throws Exception {
+		// Set up a grid with a for which the user value of the selected is
+		// revealed and for which the same value os also used as a possible
+		// value in another cell on the same row as the selected cell.
+		int idSelectedCell = 14;
+		int valueSelectedCell = 1;
+		int rowSelectedCell = 3;
+		int columnSelectedCell = 2;
+		int idOtherCellInSameColumn = idSelectedCell - 1;
+		Grid grid = mGridBuilderStub
+				.setGridCellMockAsSelectedCell(idSelectedCell)
+				.setGridCellMockWithUserValue(idSelectedCell, rowSelectedCell,
+											  columnSelectedCell, valueSelectedCell)
+				.setGridCellMockWithMaybeValues(idOtherCellInSameColumn,
+												rowSelectedCell - 1, columnSelectedCell,
+												new int[] { valueSelectedCell })
+				.build();
+
+		grid.clearRedundantPossiblesInSameRowOrColumn(mock(CellChange.class));
+
+		verify(
+				mGridBuilderStub.mGridCellMockOfDefaultSetup[idOtherCellInSameColumn])
+				.hasPossible(valueSelectedCell);
+		verify(mGridBuilderStub.mGridCellMockOfDefaultSetup[idOtherCellInSameColumn])
+				.removePossible(valueSelectedCell);
+		verify(mGridBuilderStub.mGridCellMockOfDefaultSetup[idOtherCellInSameColumn],never())
+				.removePossible(valueSelectedCell - 1);
+		verify(mGridBuilderStub.mGridCellMockOfDefaultSetup[idOtherCellInSameColumn],never())
+				.removePossible(valueSelectedCell + 1);
 	}
 
 	@Test(expected = InvalidGridException.class)
