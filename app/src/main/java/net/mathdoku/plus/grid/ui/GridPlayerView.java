@@ -1,16 +1,16 @@
 package net.mathdoku.plus.grid.ui;
 
-import net.mathdoku.plus.Preferences.PuzzleSettingInputMethod;
-import net.mathdoku.plus.R;
-import net.mathdoku.plus.grid.Grid;
-import net.mathdoku.plus.grid.GridCell;
-import net.mathdoku.plus.hint.TickerTape;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+
+import net.mathdoku.plus.Preferences.PuzzleSettingInputMethod;
+import net.mathdoku.plus.R;
+import net.mathdoku.plus.grid.Grid;
+import net.mathdoku.plus.grid.GridCell;
+import net.mathdoku.plus.hint.TickerTape;
 
 /**
  * This class implements the swiping functionality on top of the grid base
@@ -252,7 +252,7 @@ public class GridPlayerView extends GridBasePlayerView {
 			return;
 		}
 
-		synchronized (mGrid.mLock) {
+		synchronized (mGrid.getLock()) {
 			onDrawLocked(canvas);
 
 			GridCell selectedCell = mGrid.getSelectedCell();

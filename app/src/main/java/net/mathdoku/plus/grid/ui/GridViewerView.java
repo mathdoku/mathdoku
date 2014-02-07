@@ -1,5 +1,12 @@
 package net.mathdoku.plus.grid.ui;
 
+import android.content.Context;
+import android.content.res.Configuration;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.util.AttributeSet;
+import android.view.View;
+
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.grid.DigitPositionGrid;
 import net.mathdoku.plus.grid.Grid;
@@ -7,13 +14,6 @@ import net.mathdoku.plus.grid.GridCell;
 import net.mathdoku.plus.painter.GridPainter;
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.painter.Painter.DigitPainterMode;
-
-import android.content.Context;
-import android.content.res.Configuration;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.util.AttributeSet;
-import android.view.View;
 
 public class GridViewerView extends View {
 	@SuppressWarnings("unused")
@@ -94,7 +94,7 @@ public class GridViewerView extends View {
 			return;
 		}
 
-		synchronized (mGrid.mLock) {
+		synchronized (mGrid.getLock()) {
 			onDrawLocked(canvas);
 		}
 	}

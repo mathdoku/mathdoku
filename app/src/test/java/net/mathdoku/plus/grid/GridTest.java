@@ -2082,20 +2082,20 @@ public class GridTest {
 	}
 
 	@Test
-	public void getUserValuesForCells_CellsIsNull_Null() throws Exception {
+	public void getUserValuesForCells_CellsIsNull_EmptyListReturned() throws Exception {
 		Grid grid = mGridBuilderStub.build();
 
-		assertThat(grid.getUserValuesForCells(null), is(nullValue()));
+		assertThat(grid.getUserValuesForCells(null), is(new ArrayList<Integer>()));
 	}
 
 	@Test
-	public void getUserValuesForCells_CellWithInvalidId_Null() throws Exception {
+	public void getUserValuesForCells_CellWithInvalidId_EmptyListReturned() throws Exception {
 		int idOfCell = -1; // Value should not be in range 0 to gridsize *
 							// gridsize
 		Grid grid = mGridBuilderStub.build();
 
 		assertThat(grid.getUserValuesForCells(new int[] { idOfCell }),
-				is(nullValue()));
+				is(new ArrayList<Integer>()));
 	}
 
 	@Test
@@ -2241,19 +2241,19 @@ public class GridTest {
 	}
 
 	@Test
-	public void getGridCells_CellsIsNull_NullReturned() throws Exception {
+	public void getGridCells_CellsIsNull_EmptyListReturned() throws Exception {
 		Grid grid = mGridBuilderStub.build();
 
-		assertThat(grid.getGridCells(null), is(nullValue()));
+		assertThat(grid.getGridCells(null), is(new ArrayList<GridCell>()));
 	}
 
 	@Test
-	public void getGridCells_InvalidCellId_CellReturned() throws Exception {
+	public void getGridCells_InvalidCellId_EmptyListReturned() throws Exception {
 		int idOfCell = -1; // Value should not be in range 0 to gridsize *
 							// gridsize
 		Grid grid = mGridBuilderStub.build();
 
-		assertThat(grid.getGridCells(new int[] { idOfCell }), is(nullValue()));
+		assertThat(grid.getGridCells(new int[] { idOfCell }), is(new ArrayList<GridCell>()));
 	}
 
 	@Test

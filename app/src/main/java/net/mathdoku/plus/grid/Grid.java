@@ -18,6 +18,7 @@ import net.mathdoku.plus.util.Util;
 import java.util.ArrayList;
 
 public class Grid {
+	@SuppressWarnings("unused")
 	private static final String TAG = "MathDoku.Grid";
 
 	// Unique row id of grid in database
@@ -67,7 +68,7 @@ public class Grid {
 	private int mSolvingAttemptId;
 
 	// Used to avoid redrawing or saving grid during creation of new grid
-	public final Object mLock = new Object();
+	private final Object mLock = new Object();
 
 	// Preferences used when drawing the grid
 	private boolean mPrefShowDupeDigits;
@@ -118,8 +119,7 @@ public class Grid {
 		}
 		if (Util.isArrayListNullOrEmpty(mCells)) {
 			throw new InvalidGridException(
-					"Cannot create a grid without a list of cells. mCells = "
-							+ (mCells == null ? "null" : "empty list"));
+					"Cannot create a grid without a list of cells. mCells is null or empty.");
 		}
 		if (mCells.size() != mGridSize * mGridSize) {
 			throw new InvalidGridException(
@@ -130,8 +130,7 @@ public class Grid {
 		}
 		if (Util.isArrayListNullOrEmpty(mCages)) {
 			throw new InvalidGridException(
-					"Cannot create a grid without a list of cages. mCages = "
-							+ (mCages == null ? "null" : "empty list"));
+					"Cannot create a grid without a list of cages. mCages is null or empty.");
 		}
 		if (mGridGeneratingParameters == null) {
 			throw new InvalidGridException(
@@ -178,7 +177,7 @@ public class Grid {
 		mPrefShowMaybesAs3x3Grid = preferences.isMaybesDisplayedInGrid();
 		mPrefShowBadCageMaths = preferences.isBadCageMathHighlightVisible();
 
-		// Reset borders of cells as they are affected by the preferences;
+		// Reset borders of cells as they are affected by the preferences.
 		for (GridCell cell : mCells) {
 			cell.setBorders();
 		}
@@ -219,7 +218,7 @@ public class Grid {
 			}
 		}
 
-		// clear cages to remove the border related to bad cage maths.
+		// Clear cages to remove the border related to bad cage maths.
 		checkUserMathForAllCages();
 	}
 
@@ -234,10 +233,12 @@ public class Grid {
 
 	/* Fetch the cell at the given row, column */
 	public GridCell getCellAt(int row, int column) {
-		if (row < 0 || row >= mGridSize)
+		if (row < 0 || row >= mGridSize) {
 			return null;
-		if (column < 0 || column >= mGridSize)
+		}
+		if (column < 0 || column >= mGridSize) {
 			return null;
+		}
 
 		return this.mCells.get(column + row * this.mGridSize);
 	}
@@ -320,11 +321,8 @@ public class Grid {
 	 */
 	public boolean isSolutionValidSoFar() {
 		for (GridCell cell : this.mCells) {
-			if (cell.isUserValueSet()) {
-				// Only check the cells which are filled with a user value.
-				if (cell.isUserValueIncorrect()) {
-					return false;
-				}
+			if (cell.isUserValueSet() && cell.isUserValueIncorrect()) {
+				return false;
 			}
 		}
 
@@ -359,12 +357,12 @@ public class Grid {
 	 * @return The number of moves made by the user.
 	 */
 	public int countMoves() {
-		return (mMoves == null ? 0 : mMoves.size());
+		return mMoves == null ? 0 : mMoves.size();
 	}
 
 	public boolean undoLastMove() {
 		// Check if list contains at least one move
-		if (mMoves == null || mMoves.size() == 0) {
+		if (Util.isArrayListNullOrEmpty(mMoves)) {
 			// Cannot undo on non existing list.
 			return false;
 		}
@@ -461,7 +459,7 @@ public class Grid {
 		mSelectedCell = cell;
 
 		// Set borders if another cage is selected.
-		if (newSelectedCage.equals(oldSelectedCage) == false) {
+		if (!newSelectedCage.equals(oldSelectedCage)) {
 			if (oldSelectedCage != null) {
 				oldSelectedCage.setBorders();
 			}
@@ -478,7 +476,7 @@ public class Grid {
 	 *            The (x,y) coordinates of the cell.
 	 * @return The selected cell.
 	 */
-	public GridCell setSelectedCell(int coordinates[]) {
+	public final GridCell setSelectedCell(int[] coordinates) {
 		return setSelectedCell(getCellAt(coordinates[1], coordinates[0]));
 	}
 
@@ -492,18 +490,18 @@ public class Grid {
 	 */
 	public void clearRedundantPossiblesInSameRowOrColumn(
 			CellChange originalCellChange) {
-		if (mSelectedCell != null) {
-			int rowSelectedCell = mSelectedCell.getRow();
-			int columnSelectedCell = mSelectedCell.getColumn();
-			int valueSelectedCell = mSelectedCell.getUserValue();
-			for (GridCell cell : mCells) {
-				if (cell.getRow() == rowSelectedCell
-						|| cell.getColumn() == columnSelectedCell) {
-					if (cell.hasPossible(valueSelectedCell)) {
-						cell.saveUndoInformation(originalCellChange);
-						cell.removePossible(valueSelectedCell);
-					}
-				}
+		if (mSelectedCell == null) {
+			return;
+		}
+
+		int rowSelectedCell = mSelectedCell.getRow();
+		int columnSelectedCell = mSelectedCell.getColumn();
+		int valueSelectedCell = mSelectedCell.getUserValue();
+		for (GridCell cell : mCells) {
+			if ((cell.getRow() == rowSelectedCell || cell.getColumn() == columnSelectedCell)
+					&& cell.hasPossible(valueSelectedCell)) {
+				cell.saveUndoInformation(originalCellChange);
+				cell.removePossible(valueSelectedCell);
 			}
 		}
 	}
@@ -646,8 +644,8 @@ public class Grid {
 				databaseHelper.endTransaction();
 				return false;
 			}
-		} else if (solvingAttemptDatabaseAdapter
-				.update(mSolvingAttemptId, this) == false) {
+		} else if (!solvingAttemptDatabaseAdapter.update(mSolvingAttemptId,
+				this)) {
 			// Update of solving attempt failed.
 			databaseHelper.endTransaction();
 			return false;
@@ -664,7 +662,7 @@ public class Grid {
 				return false;
 			}
 		} else {
-			if (mGridStatistics.save() == false) {
+			if (!mGridStatistics.save()) {
 				// Update of grid statistics failed.
 				databaseHelper.endTransaction();
 				return false;
@@ -673,8 +671,8 @@ public class Grid {
 			// In case a replay of the grid is finished the statistics which
 			// have to included in the cumulative and the historic statistics
 			// should be changed to the current solving attempt.
-			if (mActive == false && mGridStatistics.getReplayCount() > 0
-					&& mGridStatistics.isIncludedInStatistics() == false) {
+			if (!mActive && mGridStatistics.getReplayCount() > 0
+					&& !mGridStatistics.isIncludedInStatistics()) {
 				// Note: do not return false in case following fails as it is
 				// not relevant to the user.
 				statisticsDatabaseAdapter
@@ -703,12 +701,12 @@ public class Grid {
 			// created first. So only an update is needed.
 			SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = mGridObjectsCreator
 					.createSolvingAttemptDatabaseAdapter();
-			if (solvingAttemptDatabaseAdapter.updateOnAppUpgrade(
-					mSolvingAttemptId, this) == false) {
+			if (!solvingAttemptDatabaseAdapter.updateOnAppUpgrade(
+					mSolvingAttemptId, this)) {
 				return false;
 			}
 
-			if (mGridStatistics != null && mGridStatistics.save() == false) {
+			if (mGridStatistics != null && !mGridStatistics.save()) {
 				return false;
 			}
 
@@ -813,12 +811,10 @@ public class Grid {
 		mGridStatistics
 				.increaseCounter(StatisticsCounterType.ACTION_CHECK_PROGRESS);
 		for (GridCell cell : mCells) {
-			// Check all cells having a value and not (yet) marked as invalid.
-			if (cell.isUserValueSet() && !cell.hasInvalidUserValueHighlight()) {
-				if (cell.getUserValue() != cell.getCorrectValue()) {
-					cell.setInvalidHighlight();
-					countNewInvalids++;
-				}
+			if (cell.isUserValueSet() && !cell.hasInvalidUserValueHighlight()
+					&& cell.getUserValue() != cell.getCorrectValue()) {
+				cell.setInvalidHighlight();
+				countNewInvalids++;
 			}
 		}
 		if (countNewInvalids > 0) {
@@ -836,7 +832,8 @@ public class Grid {
 	 * @return True in case of a replay. False otherwise.
 	 */
 	public boolean isReplay() {
-		return (mGridStatistics != null && (mGridStatistics.getReplayCount() > 0));
+		return mGridStatistics != null
+				&& (mGridStatistics.getReplayCount() > 0);
 
 	}
 
@@ -892,7 +889,7 @@ public class Grid {
 		if (selectedGridCage == null) {
 			return false;
 		}
-		if (selectedGridCage.isOperatorHidden() == false) {
+		if (!selectedGridCage.isOperatorHidden()) {
 			// Operator is already visible.
 			return false;
 		}
@@ -906,18 +903,10 @@ public class Grid {
 		return true;
 	}
 
-	/* package private */void setSolvingAttemptId(int solvingAttemptId) {
-		mSolvingAttemptId = solvingAttemptId;
-	}
-
-	/* package private */void setRevealed(boolean revealed) {
-		mRevealed = revealed;
-	}
-
 	public ArrayList<CellChange> getCellChanges() {
 		// Copy the entire ArrayList to a new instance. The ObjectsCreator
 		// should not be used.
-		return (mMoves == null ? null : new ArrayList(mMoves));
+		return mMoves == null ? null : new ArrayList(mMoves);
 	}
 
 	/**
@@ -932,22 +921,17 @@ public class Grid {
 	 *         all cells have a user value.
 	 */
 	public ArrayList<Integer> getUserValuesForCells(int[] cells) {
-		if (Util.isArrayNullOrEmpty(cells)) {
-			return null;
+		ArrayList<Integer> userValues = new ArrayList<Integer>();
+		if (cells == null) {
+			return userValues;
 		}
 
-		ArrayList<Integer> userValues = new ArrayList<Integer>();
-		for (int i = 0; i < cells.length; i++) {
-			int cell = cells[i];
-			if (cell < 0 || cell > mCells.size()) {
-				return null;
-			}
-			GridCell gridCell = mCells.get(cell);
-			if (gridCell == null) {
-				return null;
-			}
-			if (gridCell.isUserValueSet()) {
-				userValues.add(gridCell.getUserValue());
+		for (int cell : cells) {
+			if (cell >= 0 && cell < mCells.size()) {
+				GridCell gridCell = mCells.get(cell);
+				if (gridCell != null && gridCell.isUserValueSet()) {
+					userValues.add(gridCell.getUserValue());
+				}
 			}
 		}
 
@@ -959,8 +943,7 @@ public class Grid {
 			return false;
 		}
 
-		for (int i = 0; i < cells.length; i++) {
-			int cell = cells[i];
+		for (int cell : cells) {
 			if (cell < 0 || cell > mCells.size()) {
 				return false;
 			}
@@ -975,27 +958,24 @@ public class Grid {
 	}
 
 	public ArrayList<GridCell> getGridCells(int[] cells) {
-		if (Util.isArrayNullOrEmpty(cells)) {
-			return null;
+		ArrayList<GridCell> gridCells = new ArrayList<GridCell>();
+		if (cells == null) {
+			return gridCells;
 		}
 
-		ArrayList<GridCell> gridCells = new ArrayList<GridCell>();
-		for (int i = 0; i < cells.length; i++) {
-			int cell = cells[i];
-			if (cell < 0 || cell > mCells.size()) {
-				return null;
+		for (int cell : cells) {
+			if (cell >= 0 && cell < mCells.size()) {
+				GridCell gridCell = mCells.get(cell);
+				if (gridCell != null) {
+					gridCells.add(gridCell);
+				}
 			}
-			GridCell gridCell = mCells.get(cell);
-			if (gridCell == null) {
-				return null;
-			}
-			gridCells.add(gridCell);
 		}
 
 		return gridCells;
 	}
 
-	private void setCageTextToUpperLeftCell(GridCage gridCage) {
+	private final void setCageTextToUpperLeftCell(GridCage gridCage) {
 		if (gridCage != null) {
 			int idUpperLeftCell = gridCage.getIdUpperLeftCell();
 			GridCell gridCell = getCell(idUpperLeftCell);
@@ -1003,5 +983,9 @@ public class Grid {
 				gridCell.setCageText(gridCage.getCageText());
 			}
 		}
+	}
+
+	public Object getLock() {
+		return mLock;
 	}
 }
