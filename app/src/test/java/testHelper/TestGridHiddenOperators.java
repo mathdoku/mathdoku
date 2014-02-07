@@ -3,8 +3,6 @@ package testHelper;
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.grid.CageBuilder;
-import net.mathdoku.plus.grid.Grid;
-import net.mathdoku.plus.grid.GridBuilder;
 import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.grid.GridCell;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
@@ -16,9 +14,7 @@ public class TestGridHiddenOperators extends TestGrid {
 
 	public TestGridHiddenOperators() {
 		super(4, true);
-	}
 
-	public Grid createNewGridWithAllEmptyCells() {
 		// Create the cages
 		ArrayList<GridCage> mCages = new ArrayList<GridCage>();
 		int cageId = 0; // Cage id's are 0-based
@@ -47,7 +43,7 @@ public class TestGridHiddenOperators extends TestGrid {
 		gridCage = new CageBuilder()
 				.setId(cageId++)
 				.setHideOperator(mHideOperator)
-				.setCells(new int[]{4, 8})
+				.setCells(new int[] { 4, 8 })
 				.setResult(2)
 				.setCageOperator(CageOperator.SUBTRACT)
 				.build();
@@ -58,7 +54,10 @@ public class TestGridHiddenOperators extends TestGrid {
 		gridCage = new CageBuilder()
 				.setId(cageId++)
 				.setHideOperator(true)
-				.setCells(new int[]{mIdOfUpperLeftCellOfCageWithAnUnrevealedCageOperator, 6})
+				.setCells(
+						new int[] {
+								mIdOfUpperLeftCellOfCageWithAnUnrevealedCageOperator,
+								6 })
 				.setResult(12)
 				.setCageOperator(CageOperator.MULTIPLY)
 				.build();
@@ -68,7 +67,7 @@ public class TestGridHiddenOperators extends TestGrid {
 		gridCage = new CageBuilder()
 				.setId(cageId++)
 				.setHideOperator(mHideOperator)
-				.setCells(new int[]{7, 11})
+				.setCells(new int[] { 7, 11 })
 				.setResult(3)
 				.setCageOperator(CageOperator.DIVIDE)
 				.build();
@@ -78,7 +77,7 @@ public class TestGridHiddenOperators extends TestGrid {
 		gridCage = new CageBuilder()
 				.setId(cageId++)
 				.setHideOperator(mHideOperator)
-				.setCells(new int[]{9, 13})
+				.setCells(new int[] { 9, 13 })
 				.setResult(3)
 				.setCageOperator(CageOperator.ADD)
 				.build();
@@ -88,7 +87,7 @@ public class TestGridHiddenOperators extends TestGrid {
 		gridCage = new CageBuilder()
 				.setId(cageId++)
 				.setHideOperator(mHideOperator)
-				.setCells(new int[]{10, 14})
+				.setCells(new int[] { 10, 14 })
 				.setResult(3)
 				.setCageOperator(CageOperator.SUBTRACT)
 				.build();
@@ -98,7 +97,7 @@ public class TestGridHiddenOperators extends TestGrid {
 		gridCage = new CageBuilder()
 				.setId(cageId++)
 				.setHideOperator(mHideOperator)
-				.setCells(new int[]{12})
+				.setCells(new int[] { 12 })
 				.setResult(3)
 				.setCageOperator(CageOperator.NONE)
 				.build();
@@ -108,7 +107,7 @@ public class TestGridHiddenOperators extends TestGrid {
 		gridCage = new CageBuilder()
 				.setId(cageId++)
 				.setHideOperator(mHideOperator)
-				.setCells(new int[]{15})
+				.setCells(new int[] { 15 })
 				.setResult(2)
 				.setCageOperator(CageOperator.NONE)
 				.build();
@@ -150,12 +149,15 @@ public class TestGridHiddenOperators extends TestGrid {
 		gridGeneratingParameters.mGeneratorRevisionNumber = 596;
 		gridGeneratingParameters.mMaxCageResult = 999999;
 		gridGeneratingParameters.mMaxCageSize = 2;
-		GridBuilder gridBuilder = new GridBuilder()
+		mGridBuilder
 				.setGridSize(mGridSize)
 				.setGridGeneratingParameters(gridGeneratingParameters)
 				.setCells(mCells)
 				.setCages(mCages);
-		return gridBuilder.build();
+	}
+
+	public TestGridHiddenOperators setEmptyGrid() {
+		return (TestGridHiddenOperators) super.setEmptyGrid();
 	}
 
 	public int getIdOfUpperLeftCellOfCageWithAnUnrevealedCageOperator() {

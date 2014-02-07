@@ -1561,7 +1561,8 @@ public class GridTest {
 			throws Exception {
 		// Use a grid without mocks for this test.
 		Grid originalGrid = new TestGridVisibleOperators()
-				.createNewGridWithAllEmptyCells();
+				.setEmptyGrid()
+				.getGrid();
 		// Set only one property of one cell which should not be copied to the
 		// new grid.
 		int idOfCell_1 = 5;
@@ -1579,7 +1580,8 @@ public class GridTest {
 			throws Exception {
 		// Use a grid without mocks for this test.
 		Grid originalGrid = new TestGridVisibleOperators()
-				.createNewGridWithAllEmptyCells();
+				.setEmptyGrid()
+				.getGrid();
 		// Set only one property of one cell which should not be copied to the
 		// new grid.
 		int idOfCell_1 = 5;
@@ -1597,7 +1599,8 @@ public class GridTest {
 			throws Exception {
 		// Use a grid without mocks for this test.
 		Grid originalGrid = new TestGridVisibleOperators()
-				.createNewGridWithAllEmptyCells();
+				.setEmptyGrid()
+				.getGrid();
 		// Set only one property of one cell which should not be copied to the
 		// new grid.
 		int idOfCell_1 = 5;
@@ -1615,7 +1618,8 @@ public class GridTest {
 			throws Exception {
 		// Use a grid without mocks for this test.
 		Grid originalGrid = new TestGridVisibleOperators()
-				.createNewGridWithAllEmptyCells();
+				.setEmptyGrid()
+				.getGrid();
 		// Set only one property of one cell which should not be copied to the
 		// new grid.
 		int idOfCell_1 = 5;
@@ -1633,7 +1637,8 @@ public class GridTest {
 			throws Exception {
 		// Use a grid without mocks for this test.
 		Grid originalGrid = new TestGridVisibleOperators()
-				.createNewGridWithAllEmptyCells();
+				.setEmptyGrid()
+				.getGrid();
 		// Set only one property of one cell which should not be copied to the
 		// new grid.
 		int idOfCell_1 = 5;
@@ -1651,7 +1656,8 @@ public class GridTest {
 			throws Exception {
 		// Use a grid without mocks for this test.
 		Grid originalGrid = new TestGridVisibleOperators()
-				.createNewGridWithAllEmptyCells();
+				.setEmptyGrid()
+				.getGrid();
 		// Set only one property of one cell which should not be copied to the
 		// new grid.
 		int idOfCell_1 = 5;
@@ -1668,9 +1674,9 @@ public class GridTest {
 	public void createNewGridForReplay_RevealedCageOperator_RevealedCageOperatorIsHidden()
 			throws Exception {
 		// Use a grid without mocks for this test.
-		TestGridHiddenOperators testGridHiddenOperators = new TestGridHiddenOperators();
-		Grid originalGrid = testGridHiddenOperators
-				.createNewGridWithAllEmptyCells();
+		TestGridHiddenOperators testGridHiddenOperators = new TestGridHiddenOperators()
+				.setEmptyGrid();
+		Grid originalGrid = testGridHiddenOperators.getGrid();
 		// Reveal the operator of a cage with an unrevealed cage operator. For
 		// this a cell in such a cage has to be selected after which the cage
 		// operator can be unrevealed. Deselect the cell again as after creating
@@ -1690,18 +1696,43 @@ public class GridTest {
 	}
 
 	@Test
-	public void markDuplicateValuesInRowAndColumn() throws Exception {
+	public void markInvalidChoices_GridHasNoInvalidValues_GridStatisticsAreUpdated()
+			throws Exception {
+		Grid grid = mGridBuilderStub.build();
 
+		assertThat(grid.markInvalidChoices(), is(0));
+
+		verify(mGridStatisticsMock).increaseCounter(
+				GridStatistics.StatisticsCounterType.ACTION_CHECK_PROGRESS);
 	}
 
 	@Test
-	public void getPuzzleComplexity() throws Exception {
+	public void markInvalidChoices_GridHasOneCellWithInvalidValue_CellWithInvalidValueIsHighlighted()
+			throws Exception {
+		int cellId = 7;
+		TestGridVisibleOperators testGridCreator = new TestGridVisibleOperators()
+				.setEmptyGrid()
+				.setIncorrectUserValueInCell(cellId);
+		Grid grid = testGridCreator.getGrid();
 
+		assertThat(grid.markInvalidChoices(), is(1));
+		assertThat(grid.getCell(7).hasInvalidUserValueHighlight(), is(true));
 	}
 
 	@Test
-	public void markInvalidChoices() throws Exception {
+	public void markInvalidChoices_GridHasTwoCellsWithInvalidValue_StatisticsOfInvalidCellsFoundUpdated()
+			throws Exception {
+		int cellId_1 = 7;
+		int cellId_2 = 0;
+		TestGridVisibleOperators testGridCreator = new TestGridVisibleOperators()
+				.setEmptyGrid()
+				.setIncorrectUserValueInCell(cellId_1)
+				.setIncorrectUserValueInCell(cellId_2);
+		Grid grid = testGridCreator.getGrid();
 
+		assertThat(grid.markInvalidChoices(), is(2));
+		assertThat(grid.getGridStatistics().mCheckProgressInvalidCellsFound,
+				is(2));
 	}
 
 	@Test

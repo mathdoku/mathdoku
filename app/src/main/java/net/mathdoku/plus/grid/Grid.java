@@ -816,8 +816,6 @@ public class Grid {
 			if (cell.isUserValueSet() && !cell.hasInvalidUserValueHighlight()) {
 				if (cell.getUserValue() != cell.getCorrectValue()) {
 					cell.setInvalidHighlight();
-					mGridStatistics
-							.increaseCounter(StatisticsCounterType.CHECK_PROGRESS_INVALIDS_CELLS_FOUND);
 					countNewInvalids++;
 				}
 			}

@@ -3,8 +3,6 @@ package testHelper;
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.grid.CageBuilder;
-import net.mathdoku.plus.grid.Grid;
-import net.mathdoku.plus.grid.GridBuilder;
 import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.grid.GridCell;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
@@ -14,9 +12,7 @@ import java.util.ArrayList;
 public class TestGridVisibleOperators extends TestGrid {
 	public TestGridVisibleOperators() {
 		super(4, false);
-	}
 
-	public Grid createNewGridWithAllEmptyCells() {
 		// Create the cages
 		ArrayList<GridCage> mCages = new ArrayList<GridCage>();
 		int cageId = 0; // Cage id's are 0-based
@@ -127,12 +123,23 @@ public class TestGridVisibleOperators extends TestGrid {
 		gridGeneratingParameters.mGeneratorRevisionNumber = 596;
 		gridGeneratingParameters.mMaxCageResult = 999999;
 		gridGeneratingParameters.mMaxCageSize = 4;
-		GridBuilder gridBuilder = new GridBuilder()
+
+		mGridBuilder
 				.setGridSize(mGridSize)
 				.setGridGeneratingParameters(gridGeneratingParameters)
 				.setCells(mCells)
 				.setCages(mCages);
+	}
 
-		return gridBuilder.build();
+	public TestGridVisibleOperators setEmptyGrid() {
+		return (TestGridVisibleOperators) super.setEmptyGrid();
+	}
+
+	public TestGridVisibleOperators setIncorrectUserValueInCell(int cellId) {
+		GridCell gridCell = mGrid.getCell(cellId);
+		int correctValue = gridCell.getCorrectValue();
+		gridCell.setUserValue(correctValue == 1 ? mGridSize : 1);
+
+		return this;
 	}
 }
