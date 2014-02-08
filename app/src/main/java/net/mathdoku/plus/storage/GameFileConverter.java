@@ -14,6 +14,7 @@ import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Converts all game files to the latest version.
@@ -36,13 +37,13 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	private final int mNewVersion;
 
 	// Solving attempts to be converted
-	private ArrayList<Integer> solvingAttemptIds;
+	private List<Integer> solvingAttemptIds;
 
 	// The dialog for this task
 	private ProgressDialog mProgressDialog;
 
 	// Conversion results
-	private ArrayList<String> mGridDefinitions;
+	private List<String> mGridDefinitions;
 
 	/**
 	 * Creates a new instance of {@link GameFileConverter}.

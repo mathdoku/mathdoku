@@ -1,19 +1,19 @@
 package net.mathdoku.plus.storage.database;
 
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import net.mathdoku.plus.config.Config;
-import net.mathdoku.plus.config.Config.AppMode;
-
 import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 import android.util.Log;
+
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
+
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Basic database adapter. All other database adapters should be extend from
@@ -404,7 +404,7 @@ abstract class DatabaseAdapter {
 		Cursor cur = sqliteDatabase.rawQuery(cmd, null);
 
 		// Convert columns to list.
-		ArrayList<String> columns = new ArrayList<String>();
+		List<String> columns = new ArrayList<String>();
 		while (cur.moveToNext()) {
 			columns.add(cur.getString(cur.getColumnIndex("name")));
 		}

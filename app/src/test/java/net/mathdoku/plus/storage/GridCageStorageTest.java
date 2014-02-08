@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.List;
 
 import robolectric.RobolectricGradleTestRunner;
 
@@ -25,7 +26,7 @@ public class GridCageStorageTest {
 	private GridCageStorage mGridCageStorage = new GridCageStorage();
 	private String mLine;
 	private int mRevisionNumber = 596;
-	private ArrayList<GridCell> mCells = mock(ArrayList.class);
+	private List<GridCell> mCells = mock(ArrayList.class);
 
 	@Test(expected = NullPointerException.class)
 	public void fromStorageString_NullLine_False() throws Exception {
@@ -129,7 +130,7 @@ public class GridCageStorageTest {
 		when(gridCageMock.getId()).thenReturn(1);
 		when(gridCageMock.getOperator()).thenReturn(CageOperator.MULTIPLY);
 		when(gridCageMock.getResult()).thenReturn(4);
-		ArrayList<GridCell> cells = new ArrayList<GridCell>();
+		List<GridCell> cells = new ArrayList<GridCell>();
 		when(gridCageMock.getGridCells()).thenReturn(cells);
 		when(gridCageMock.isOperatorHidden()).thenReturn(false);
 
@@ -144,7 +145,7 @@ public class GridCageStorageTest {
 		when(gridCageMock.getId()).thenReturn(1);
 		when(gridCageMock.getOperator()).thenReturn(CageOperator.SUBTRACT);
 		when(gridCageMock.getResult()).thenReturn(3);
-		ArrayList<GridCell> cells = new ArrayList<GridCell>();
+		List<GridCell> cells = new ArrayList<GridCell>();
 		GridCell gridCell = mock(GridCell.class);
 		when(gridCell.getCellId()).thenReturn(4);
 		cells.add(gridCell);
@@ -162,7 +163,7 @@ public class GridCageStorageTest {
 		when(gridCageMock.getId()).thenReturn(1);
 		when(gridCageMock.getOperator()).thenReturn(CageOperator.DIVIDE);
 		when(gridCageMock.getResult()).thenReturn(3);
-		ArrayList<GridCell> cells = new ArrayList<GridCell>();
+		List<GridCell> cells = new ArrayList<GridCell>();
 		GridCell gridCell = mock(GridCell.class);
 		when(gridCell.getCellId()).thenReturn(5, 6, 7);
 		cells.add(gridCell);

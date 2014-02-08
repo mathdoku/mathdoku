@@ -23,6 +23,7 @@ import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -55,12 +56,12 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	private int mGridSize;
 
 	// Cell and solution
-	private ArrayList<GridCell> mCells;
+	private List<GridCell> mCells;
 	private int[][] mSolutionMatrix;
 
 	// Cages
 	private CageTypeGenerator mGridCageTypeGenerator;
-	private ArrayList<GridCage> mCages;
+	private List<GridCage> mCages;
 	private int[][] mCageMatrix;
 
 	// Grid
@@ -688,7 +689,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 		// Store indexes of all defined cages types, except cage type 0 which is
 		// a single cell, in a temporary list of available cages.
-		ArrayList<Integer> availableCages = new ArrayList<Integer>();
+		List<Integer> availableCages = new ArrayList<Integer>();
 		for (int i = 1; i < mGridCageTypeGenerator
 				.size(mGridGeneratingParameters.mMaxCageSize); i++) {
 			availableCages.add(i);
@@ -811,7 +812,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 		int cellsInCage[] = new int[cageTypeCoordinates.length];
 		int cellCorrectValues[] = new int[cageTypeCoordinates.length];
-		ArrayList<GridCell> cellsInCageArrayList = new ArrayList<GridCell>();
+		List<GridCell> cellsInCageArrayList = new ArrayList<GridCell>();
 		int index = 0;
 		for (int[] cageTypeCoordinate : cageTypeCoordinates) {
 			int row = cageTypeCoordinate[0];
@@ -834,7 +835,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 		// Finally check whether the number of permutations of possible solutions for the cage is not to big.
 		ComboGenerator comboGenerator = new ComboGenerator(mGridSize);
-		ArrayList<int[]> possibleCombos = comboGenerator
+		List<int[]> possibleCombos = comboGenerator
 				.getPossibleCombos(cage, cellsInCageArrayList);
 		if (maxPermutations > 0 && possibleCombos.size() > maxPermutations) {
 			// This cage has too many permutations which fulfill the
@@ -933,7 +934,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 						// Cages which are already checked during processing of
 						// this column of the new cage, can be skipped.
-						ArrayList<Integer> cagesChecked = new ArrayList<Integer>();
+						List<Integer> cagesChecked = new ArrayList<Integer>();
 
 						// Iterate all cells in the column from top to bottom.
 						for (int row = 0; row < this.mGridSize; row++) {
@@ -963,7 +964,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 								}
 
 								// Determine which values are used in both cages
-								ArrayList<Integer> duplicateValues = new ArrayList<Integer>();
+								List<Integer> duplicateValues = new ArrayList<Integer>();
 								for (int i = 0; i < this.mGridSize; i++) {
 									if (valuesUsed[i] > 1) {
 										// Value (i+1) has been used in both
@@ -1034,7 +1035,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 						// Cages which are already checked during processing of
 						// this row of the new cage, can be skipped.
-						ArrayList<Integer> cagesChecked = new ArrayList<Integer>();
+						List<Integer> cagesChecked = new ArrayList<Integer>();
 
 						// Iterate all cells in the row from left to right.
 						for (int col = 0; col < this.mGridSize; col++) {
@@ -1066,7 +1067,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 								}
 
 								// Determine which values are used in both cages
-								ArrayList<Integer> duplicateValues = new ArrayList<Integer>();
+								List<Integer> duplicateValues = new ArrayList<Integer>();
 								for (int i = 0; i < this.mGridSize; i++) {
 									if (valuesUsed[i] > 1) {
 										// Value (i+1) has been used in both

@@ -3,6 +3,7 @@ package net.mathdoku.plus.grid;
 import net.mathdoku.plus.storage.CellChangeStorage;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The CellChange holds undo information for a GridCell.
@@ -15,11 +16,11 @@ public class CellChange {
 
 	// Properties of the GridCell which can be restored.
 	private int mPreviousUserValue;
-	private final ArrayList<Integer> mPreviousPossibleValues;
+	private final List<Integer> mPreviousPossibleValues;
 
 	// Undo information for other cell which are changed as a result of changing
 	// the cell.
-	private ArrayList<CellChange> mRelatedCellChanges;
+	private List<CellChange> mRelatedCellChanges;
 
 	/**
 	 * Creates a new [@link #CellChange] instance.
@@ -32,7 +33,7 @@ public class CellChange {
 	 *            The possible values of the cell before it is changed.
 	 */
 	public CellChange(GridCell cell, int previousUserValue,
-			ArrayList<Integer> previousPossibleValues) {
+			List<Integer> previousPossibleValues) {
 		mGridCell = cell;
 		mPreviousUserValue = previousUserValue;
 		mPreviousPossibleValues = new ArrayList<Integer>(
@@ -142,13 +143,13 @@ public class CellChange {
 		return mPreviousUserValue;
 	}
 
-	public ArrayList<Integer> getPreviousPossibleValues() {
+	public List<Integer> getPreviousPossibleValues() {
 		// Return copy of list of previous possible values so the requesting
 		// object cannot manipulate the original list.
 		return new ArrayList(mPreviousPossibleValues);
 	}
 
-	public ArrayList<CellChange> getRelatedCellChanges() {
+	public List<CellChange> getRelatedCellChanges() {
 		// Return copy of list of related cell changes so the requesting
 		// object cannot manipulate the original list.
 		return (mRelatedCellChanges == null ? null : new ArrayList(mRelatedCellChanges));

@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.Parcelable;
 import android.util.DisplayMetrics;
 
 import net.mathdoku.plus.Preferences;
@@ -271,13 +272,14 @@ public class FeedbackEmail {
 												R.string.feedback_email_body));
 
 								if (createLogFile(FileProvider.FEEDBACK_LOG_FILE_NAME)) {
-									ArrayList<Uri> uris = new ArrayList<Uri>();
+									List<Uri> uris = new ArrayList<Uri>();
 									uris.add(FileProvider
 											.getUri(FileProvider.FEEDBACK_LOG_FILE_NAME));
 									uris.add(FileProvider
 											.getUri(FileProvider.SCREENDUMP_FILE_NAME));
 									i.putParcelableArrayListExtra(
-											Intent.EXTRA_STREAM, uris);
+											Intent.EXTRA_STREAM,
+											(ArrayList<? extends Parcelable>) uris);
 								}
 								try {
 									mActivity.startActivity(Intent

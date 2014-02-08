@@ -20,6 +20,7 @@ import net.mathdoku.plus.storage.GridCellStorage;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class GridCell {
 	@SuppressWarnings("unused")
@@ -40,7 +41,7 @@ public class GridCell {
 	// String of the cage
 	private String mCageText;
 	// User's candidate digits
-	private final ArrayList<Integer> mPossibles;
+	private final List<Integer> mPossibles;
 
 	// X pixel position
 	private float mPosX;
@@ -869,7 +870,7 @@ public class GridCell {
 	}
 
 	public void undo(int previousUserValue,
-			ArrayList<Integer> previousPossibleValues) {
+			List<Integer> previousPossibleValues) {
 		setUserValue(previousUserValue);
 		if (previousPossibleValues != null) {
 			for (int previousPossibleValue : previousPossibleValues) {
@@ -1193,7 +1194,7 @@ public class GridCell {
 		return mCageText;
 	}
 
-	public ArrayList<Integer> getPossibles() {
+	public List<Integer> getPossibles() {
 		// Return a copy of the list of possible values so the original list
 		// cannot be manipulated by the requesting object.
 		return new ArrayList<Integer>(mPossibles);

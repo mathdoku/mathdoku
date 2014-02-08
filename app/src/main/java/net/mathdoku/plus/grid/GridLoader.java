@@ -14,6 +14,7 @@ import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The GridLoad is responsible for loading a grid from the database into a new
@@ -25,9 +26,9 @@ public class GridLoader {
 	private int mSavedWithRevision;
 
 	private GridBuilder mGridBuilder;
-	private ArrayList<GridCell> mGridCells;
-	private ArrayList<GridCage> mGridCages;
-	private ArrayList<CellChange> mCellChanges;
+	private List<GridCell> mGridCells;
+	private List<GridCage> mGridCages;
+	private List<CellChange> mCellChanges;
 
 	private GridStorage mGridStorage;
 

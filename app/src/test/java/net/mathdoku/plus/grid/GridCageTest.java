@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import robolectric.RobolectricGradleTestRunner;
 
@@ -47,7 +48,7 @@ public class GridCageTest {
 			super.setCells(ids);
 
 			// Only add the real user values. 0 and negative values indicated that the cell is not filled.
-			ArrayList<Integer> userValuesArrayList = new ArrayList<Integer>();
+			List<Integer> userValuesArrayList = new ArrayList<Integer>();
 			for (int userValue : userValues) {
 				if (userValue > 0) {
 					userValuesArrayList.add(userValue);

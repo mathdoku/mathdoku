@@ -1,0 +1,11 @@
+Sonar rules below are excluded for given reasons:
+
+1) Tabulation characters should not be used
+   Currently this is a one man project.
+
+2 )Constructor Calls Overridable Method
+   Declaring methods called from constructor as final would resolve this problem. But if such is
+   done, the unit tests will fail as Mockito cannot handle final methods.
+
+3) Insufficient branch coverage by unit tests
+   Code coverage for Android using Sonar/Gradle does not yet work.

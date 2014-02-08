@@ -14,6 +14,7 @@ import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The GridObjectsCreator is responsible for creating all objects needed
@@ -41,24 +42,24 @@ public class GridObjectsCreator {
 	}
 
 	public MathDokuDLX createMathDokuDLX(int gridSize,
-										 ArrayList<GridCage> cages) {
+										 List<GridCage> cages) {
 		return new MathDokuDLX(gridSize, cages);
 	}
 
-	public ArrayList<GridCell> createArrayListOfGridCells() {
+	public List<GridCell> createArrayListOfGridCells() {
 		return new ArrayList<GridCell>();
 	}
 
-	public ArrayList<GridCage> createArrayListOfGridCages() {
+	public List<GridCage> createArrayListOfGridCages() {
 		return new ArrayList<GridCage>();
 	}
 
-	public ArrayList<CellChange> createArrayListOfCellChanges() {
+	public List<CellChange> createArrayListOfCellChanges() {
 		return new ArrayList<CellChange>();
 	}
 
 	public GridCellSelectorInRowOrColumn createGridCellSelectorInRowOrColumn(
-			ArrayList<GridCell> cells, int row, int column) {
+			List<GridCell> cells, int row, int column) {
 		return new GridCellSelectorInRowOrColumn(cells, row, column);
 	}
 

@@ -1,8 +1,9 @@
 package com.srlee.DLX;
 
-import java.util.ArrayList;
-
 import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DLX {
 	private static final String TAG = "MathDoku.DLX";
@@ -16,8 +17,8 @@ public class DLX {
 	private DLXNode[] nodes;
 	private int numNodes;
 	private DLXNode lastNodeAdded;
-	private ArrayList<Integer> trySolution;
-	private ArrayList<Integer> foundSolution;
+	private List<Integer> trySolution;
+	private List<Integer> foundSolution;
 	private int countSolutions;
 	private boolean isValid;
 	private int previousRowIndex = -1;

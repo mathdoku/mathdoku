@@ -1,6 +1,6 @@
 package net.mathdoku.plus.grid;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class GridCellSelectorInRowOrColumn extends GridCellSelector {
 	private int mTargetRow;
@@ -16,7 +16,7 @@ public class GridCellSelectorInRowOrColumn extends GridCellSelector {
 	 * @param row
 	 * @param column
 	 */
-	public GridCellSelectorInRowOrColumn(ArrayList<GridCell> cells, int row,
+	public GridCellSelectorInRowOrColumn(List<GridCell> cells, int row,
 			int column) {
 		super(cells);
 		mTargetRow = row;

@@ -3,6 +3,7 @@ package net.mathdoku.plus.util;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Parcelable;
 import android.text.Html;
 import android.view.View;
 
@@ -21,7 +22,7 @@ public class SharedPuzzle {
 	private final Context mContext;
 
 	// List of uri which have to be enclosed as attachments in the share email.
-	private ArrayList<Uri> mUris;
+	private List<Uri> mUris;
 
 	// Elements of the share url for Mathdoku Plus
 	private final String mSharedPuzzleSchemeMathdokuPlus;
@@ -120,7 +121,8 @@ public class SharedPuzzle {
 
 			// Store attachments uris
 			if (mUris != null && mUris.size() > 0) {
-				intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, mUris);
+				intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM,
+												   (ArrayList<? extends Parcelable>) mUris);
 			}
 
 			// Start activity choosers

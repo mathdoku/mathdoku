@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.List;
 
 import robolectric.RobolectricGradleTestRunner;
 
@@ -28,7 +29,7 @@ public class GridCellSelectorTest {
 
 	@Test
 	public void find_CreateGridSelectorWithEmptyList_NoCellsFound() {
-		ArrayList<GridCell> gridCellArrayList = new ArrayList<GridCell>();
+		List<GridCell> gridCellArrayList = new ArrayList<GridCell>();
 
 		GridCellSelector gridCellSelector = new GridCellSelector(
 				gridCellArrayList) {
@@ -39,8 +40,8 @@ public class GridCellSelectorTest {
 			}
 		};
 
-		ArrayList<GridCell> resultGridCellList = gridCellSelector.find();
-		ArrayList<GridCell> expectedGridCellList = new ArrayList<GridCell>();
+		List<GridCell> resultGridCellList = gridCellSelector.find();
+		List<GridCell> expectedGridCellList = new ArrayList<GridCell>();
 
 		assertEquals("Selected gridCell list", expectedGridCellList,
 				resultGridCellList);
@@ -65,7 +66,7 @@ public class GridCellSelectorTest {
 		when(gridCellStub4.getUserValue()).thenReturn(duplicatedUserValue);
 
 		// Add the the subbed grid cells to the list of cells.
-		ArrayList<GridCell> gridCellArrayList = new ArrayList<GridCell>();
+		List<GridCell> gridCellArrayList = new ArrayList<GridCell>();
 		gridCellArrayList.add(gridCellStub1);
 		gridCellArrayList.add(gridCellStub2);
 		gridCellArrayList.add(gridCellStub3);
@@ -80,11 +81,11 @@ public class GridCellSelectorTest {
 			}
 		};
 
-		ArrayList<GridCell> expectedGridCellList = new ArrayList<GridCell>();
+		List<GridCell> expectedGridCellList = new ArrayList<GridCell>();
 		expectedGridCellList.add(gridCellStub2);
 		expectedGridCellList.add(gridCellStub4);
 
-		ArrayList<GridCell> resultGridCellList = gridCellSelector.find();
+		List<GridCell> resultGridCellList = gridCellSelector.find();
 
 		assertEquals("Selected gridCell list", expectedGridCellList,
 				resultGridCellList);

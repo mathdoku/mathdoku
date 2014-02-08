@@ -1,9 +1,10 @@
 package net.mathdoku.plus.gridGenerating;
 
-import java.util.ArrayList;
-import java.util.Random;
-
 import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class CageTypeGenerator {
 	private static final String TAG = "MathDoku.CageTypeGenerator";
@@ -34,7 +35,7 @@ public class CageTypeGenerator {
 
 	// All available cage types.
 	private GridCageType mSingleCellCageType;
-	private final ArrayList<GridCageType>[] mCageTypes;
+	private final List<GridCageType>[] mCageTypes;
 
 	/**
 	 * Get an instance to the singleton instance of the cage type generator.
@@ -186,7 +187,7 @@ public class CageTypeGenerator {
 	 */
 	public GridCageType getCageType(int cageTypeIndex) {
 		// Find cage type array in which the cage type is defined.
-		for (ArrayList<GridCageType> mCageType : mCageTypes) {
+		for (List<GridCageType> mCageType : mCageTypes) {
 			if (mCageType != null) {
 				// This cage type array does contain elements. Check if it
 				// contains enough elements to find the given index.
@@ -246,7 +247,7 @@ public class CageTypeGenerator {
 		}
 
 		// Determine which cageTypeArray to use
-		ArrayList<GridCageType> gridCageTypes = (cellsUsed - 1 < mCageTypes.length ? mCageTypes[cellsUsed - 1]
+		List<GridCageType> gridCageTypes = (cellsUsed - 1 < mCageTypes.length ? mCageTypes[cellsUsed - 1]
 				: mCageTypes[mCageTypes.length - 1]);
 		assert (gridCageTypes != null);
 
@@ -298,7 +299,7 @@ public class CageTypeGenerator {
 
 		// Determine which used cells can be extended.
 		int numberOfCellsPerRow = newCageTypeMatrix[0].length;
-		ArrayList<Integer> extendIndexes = new ArrayList<Integer>();
+		List<Integer> extendIndexes = new ArrayList<Integer>();
 		for (int row = 0; row < newCageTypeMatrix.length; row++) {
 			for (int col = 0; col < newCageTypeMatrix[row].length; col++) {
 				if (newCageTypeMatrix[row][col]) {

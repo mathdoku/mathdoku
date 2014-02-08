@@ -5,6 +5,7 @@ import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class converts relevant GridCell data to a string which can be persisted
@@ -26,7 +27,7 @@ public class GridCellStorage {
 	private String mCageText;
 	private int mCorrectValue;
 	private int mUserValue;
-	private ArrayList<Integer> mPossibles;
+	private List<Integer> mPossibles;
 	private boolean mInvalidUserValueHighlight;
 	private boolean mRevealed;
 	private boolean mSelected;
@@ -165,7 +166,7 @@ public class GridCellStorage {
 		return mUserValue;
 	}
 
-	public ArrayList<Integer> getPossibles() {
+	public List<Integer> getPossibles() {
 		return mPossibles;
 	}
 

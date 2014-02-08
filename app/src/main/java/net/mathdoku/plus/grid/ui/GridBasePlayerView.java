@@ -21,7 +21,7 @@ import net.mathdoku.plus.tip.TipIncorrectValue;
 import net.mathdoku.plus.tip.TipOrderOfValuesInCage;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The grid base player view allows to play a grid with a digit button interface
@@ -322,7 +322,7 @@ public class GridBasePlayerView extends GridViewerView implements
 		// Get a list of cells in the same row or column as the selected cell.
 		GridCellSelectorInRowOrColumn gridCellSelectorInRowOrColumn = new GridCellSelectorInRowOrColumn(
 				mGrid.mCells, selectedCell.getRow(), selectedCell.getColumn());
-		ArrayList<GridCell> gridCellsInSameRowOrColumn = gridCellSelectorInRowOrColumn
+		List<GridCell> gridCellsInSameRowOrColumn = gridCellSelectorInRowOrColumn
 				.find();
 
 		// Check for each cell if it has duplicate values in the same column or

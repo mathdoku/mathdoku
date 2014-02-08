@@ -16,6 +16,7 @@ import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Grid {
 	@SuppressWarnings("unused")
@@ -36,8 +37,8 @@ public class Grid {
 
 	// Be careful: although mCages and mCell are final variables, the content of
 	// those list can still be altered!
-	public final ArrayList<GridCage> mCages;
-	public final ArrayList<GridCell> mCells;
+	public final List<GridCage> mCages;
+	public final List<GridCell> mCells;
 
 	// ************************************************************************
 	// Grid elements and references which do change while solving the game.
@@ -58,7 +59,7 @@ public class Grid {
 	private GridStatistics mGridStatistics;
 
 	// Keep track of all moves as soon as grid is built or restored.
-	private ArrayList<CellChange> mMoves;
+	private List<CellChange> mMoves;
 
 	// ************************************************************************
 	// Miscellaneous
@@ -117,7 +118,7 @@ public class Grid {
 			throw new InvalidGridException("GridSize " + mGridSize
 					+ " is not a valid grid size.");
 		}
-		if (Util.isArrayListNullOrEmpty(mCells)) {
+		if (Util.isListNullOrEmpty(mCells)) {
 			throw new InvalidGridException(
 					"Cannot create a grid without a list of cells. mCells is null or empty.");
 		}
@@ -128,7 +129,7 @@ public class Grid {
 							+ " cells, got "
 							+ mCells.size() + " cells.");
 		}
-		if (Util.isArrayListNullOrEmpty(mCages)) {
+		if (Util.isListNullOrEmpty(mCages)) {
 			throw new InvalidGridException(
 					"Cannot create a grid without a list of cages. mCages is null or empty.");
 		}
@@ -362,7 +363,7 @@ public class Grid {
 
 	public boolean undoLastMove() {
 		// Check if list contains at least one move
-		if (Util.isArrayListNullOrEmpty(mMoves)) {
+		if (Util.isListNullOrEmpty(mMoves)) {
 			// Cannot undo on non existing list.
 			return false;
 		}
@@ -392,7 +393,7 @@ public class Grid {
 					.createGridCellSelectorInRowOrColumn(mCells,
 							cellChangeGridCell.getRow(),
 							cellChangeGridCell.getColumn());
-			ArrayList<GridCell> gridCellsInSameRowOrColumn = gridCellSelectorInRowOrColumn
+			List<GridCell> gridCellsInSameRowOrColumn = gridCellSelectorInRowOrColumn
 					.find();
 			if (gridCellsInSameRowOrColumn != null) {
 				for (GridCell gridCellInSameRowOrColumn : gridCellsInSameRowOrColumn) {
@@ -757,7 +758,7 @@ public class Grid {
 	 */
 	public Grid createNewGridForReplay() {
 		// Copy all cells without the play history
-		ArrayList<GridCell> cells = new ArrayList<GridCell>();
+		List<GridCell> cells = new ArrayList<GridCell>();
 		for (GridCell cell : mCells) {
 			GridCell gridCell = new GridCell(cell.getCellId(), mGridSize);
 			gridCell.setCorrectValue(cell.getCorrectValue());
@@ -766,7 +767,7 @@ public class Grid {
 		}
 
 		// Copy all cages without the play history
-		ArrayList<GridCage> cages = new ArrayList<GridCage>();
+		List<GridCage> cages = new ArrayList<GridCage>();
 		for (GridCage cage : mCages) {
 			CageBuilder cageBuilder = mGridObjectsCreator.createCageBuilder();
 			GridCage gridCage = cageBuilder
@@ -903,7 +904,7 @@ public class Grid {
 		return true;
 	}
 
-	public ArrayList<CellChange> getCellChanges() {
+	public List<CellChange> getCellChanges() {
 		// Copy the entire ArrayList to a new instance. The ObjectsCreator
 		// should not be used.
 		return mMoves == null ? null : new ArrayList(mMoves);
@@ -920,8 +921,8 @@ public class Grid {
 	 *         elements than the number of cells given this indicates that not
 	 *         all cells have a user value.
 	 */
-	public ArrayList<Integer> getUserValuesForCells(int[] cells) {
-		ArrayList<Integer> userValues = new ArrayList<Integer>();
+	public List<Integer> getUserValuesForCells(int[] cells) {
+		List<Integer> userValues = new ArrayList<Integer>();
 		if (cells == null) {
 			return userValues;
 		}
@@ -957,8 +958,8 @@ public class Grid {
 		return true;
 	}
 
-	public ArrayList<GridCell> getGridCells(int[] cells) {
-		ArrayList<GridCell> gridCells = new ArrayList<GridCell>();
+	public List<GridCell> getGridCells(int[] cells) {
+		List<GridCell> gridCells = new ArrayList<GridCell>();
 		if (cells == null) {
 			return gridCells;
 		}

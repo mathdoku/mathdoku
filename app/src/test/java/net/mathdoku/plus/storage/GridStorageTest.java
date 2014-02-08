@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.List;
 
 import robolectric.RobolectricGradleTestRunner;
 
@@ -57,7 +58,7 @@ public class GridStorageTest {
 		 */
 		private GridBuilderStub addGridCellMockWithStorageString(
 				String... storageString) {
-			ArrayList<GridCell> gridCells = new ArrayList<GridCell>();
+			List<GridCell> gridCells = new ArrayList<GridCell>();
 
 			// Create the number of cell as determined by the grid size. The
 			// cells return the given storage strings if enough storage strings
@@ -82,7 +83,7 @@ public class GridStorageTest {
 		 */
 		private GridBuilderStub addGridCageMockWithStorageString(
 				String... storageString) {
-			ArrayList<GridCage> gridCages = new ArrayList<GridCage>();
+			List<GridCage> gridCages = new ArrayList<GridCage>();
 
 			for (int i = 0; i < storageString.length; i++) {
 				GridCage gridCage = mock(GridCage.class);
@@ -101,7 +102,7 @@ public class GridStorageTest {
 		 */
 		private GridBuilderStub addCellChangeMockWithStorageString(
 				String... storageString) {
-			ArrayList<CellChange> cellChanges = new ArrayList<CellChange>();
+			List<CellChange> cellChanges = new ArrayList<CellChange>();
 
 			for (int i = 0; i < storageString.length; i++) {
 				CellChange cellChange = mock(CellChange.class);

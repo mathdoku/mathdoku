@@ -8,6 +8,7 @@ import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class GridStorage {
 	private static final String TAG = "MathDoku.GridStorage";
@@ -22,9 +23,9 @@ public class GridStorage {
 
 	private boolean mActive;
 	private boolean mRevealed;
-	private ArrayList<GridCell> mCells;
-	private ArrayList<GridCage> mCages;
-	private ArrayList<CellChange> mCellChanges;
+	private List<GridCell> mCells;
+	private List<GridCage> mCages;
+	private List<CellChange> mCellChanges;
 
 	private GridStorageObjectsCreator mGridStorageObjectsCreator;
 

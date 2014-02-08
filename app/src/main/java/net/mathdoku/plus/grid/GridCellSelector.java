@@ -2,11 +2,12 @@ package net.mathdoku.plus.grid;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class GridCellSelector {
-	private ArrayList<GridCell> mCells;
+	private List<GridCell> mCells;
 
-	public GridCellSelector(ArrayList<GridCell> cells) {
+	public GridCellSelector(List<GridCell> cells) {
 		if (cells == null) {
 			throw new InvalidParameterException(
 					"GridSelector cannot be instantiated without list of GridCell.");
@@ -29,8 +30,8 @@ public abstract class GridCellSelector {
 	/**
 	 * Selects all cells from the list which fulfill the select-criteria.
 	 */
-	public ArrayList<GridCell> find() {
-		ArrayList<GridCell> cells = new ArrayList<GridCell>();
+	public List<GridCell> find() {
+		List<GridCell> cells = new ArrayList<GridCell>();
 
 		for (GridCell gridCell : mCells) {
 			if (select(gridCell)) {

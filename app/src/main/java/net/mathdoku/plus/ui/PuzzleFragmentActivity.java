@@ -67,6 +67,7 @@ import net.mathdoku.plus.util.Util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		implements PuzzleFragment.PuzzleFragmentListener {
@@ -1253,7 +1254,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		boolean openDrawer = false;
 
 		// Determine the items which have to be shown in the drawer.
-		ArrayList<String> navigationDrawerItems = new ArrayList<String>();
+		List<String> navigationDrawerItems = new ArrayList<String>();
 
 		// It is not possible to disable the navigation drawer entirely in case
 		// the archive and statistics are not yet unlocked. To prevent showing

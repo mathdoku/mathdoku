@@ -1,16 +1,18 @@
 package net.mathdoku.plus.storage.database;
 
-import java.util.ArrayList;
-
-import net.mathdoku.plus.config.Config;
-import net.mathdoku.plus.config.Config.AppMode;
-import net.mathdoku.plus.grid.Grid;
-import net.mathdoku.plus.storage.GridStorage;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
+
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
+import net.mathdoku.plus.grid.Grid;
+import net.mathdoku.plus.storage.GridStorage;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The database adapter for the solving attempt table. For each grid one or more
@@ -330,8 +332,8 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 * @return The list of id's for all solving attempts which need to be
 	 *         converted.
 	 */
-	public ArrayList<Integer> getAllToBeConverted() {
-		ArrayList<Integer> idArrayList = null;
+	public List<Integer> getAllToBeConverted() {
+		List<Integer> idArrayList = null;
 		Cursor cursor = null;
 		String[] columns = { KEY_ROWID };
 		try {

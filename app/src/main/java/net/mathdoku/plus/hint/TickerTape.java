@@ -1,10 +1,5 @@
 package net.mathdoku.plus.hint;
 
-import java.util.ArrayList;
-
-import net.mathdoku.plus.R;
-import net.mathdoku.plus.painter.Painter;
-
 import android.content.Context;
 import android.os.Handler;
 import android.util.AttributeSet;
@@ -13,6 +8,12 @@ import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import net.mathdoku.plus.R;
+import net.mathdoku.plus.painter.Painter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TickerTape extends HorizontalScrollView {
 	public final static String TAG = "MathDoku.TickerTape";
@@ -103,7 +104,7 @@ public class TickerTape extends HorizontalScrollView {
 	private Handler mTickerTapeUpdaterHandler;
 	private TickerTapeUpdaterRunnable mTickerTapeUpdaterRunnable;
 
-	private final ArrayList<TextView> mTextViewList = new ArrayList<TextView>();
+	private final List<TextView> mTextViewList = new ArrayList<TextView>();
 
 	/**
 	 * Creates a new instance of {@see TickerTape}.

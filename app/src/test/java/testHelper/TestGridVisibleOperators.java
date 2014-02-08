@@ -8,13 +8,14 @@ import net.mathdoku.plus.grid.GridCell;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TestGridVisibleOperators extends TestGrid {
 	public TestGridVisibleOperators() {
 		super(4, false);
 
 		// Create the cages
-		ArrayList<GridCage> mCages = new ArrayList<GridCage>();
+		List<GridCage> mCages = new ArrayList<GridCage>();
 		int cageId = 0; // Cage id's are 0-based
 
 		// Cage 0
@@ -88,7 +89,7 @@ public class TestGridVisibleOperators extends TestGrid {
 		mCages.add(gridCage);
 
 		// Create the cells
-		ArrayList<GridCell> mCells = new ArrayList<GridCell>();
+		List<GridCell> mCells = new ArrayList<GridCell>();
 		GridCell gridCell[] = new GridCell[16];
 		int cellNumber = 0;
 

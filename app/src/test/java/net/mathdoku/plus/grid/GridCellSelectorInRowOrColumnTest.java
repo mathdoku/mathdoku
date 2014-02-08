@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import robolectric.RobolectricGradleTestRunner;
 
@@ -22,7 +23,7 @@ public class GridCellSelectorInRowOrColumnTest {
 		// The actual content of the grid cell list is not relevant for this
 		// test. An empty list is ok in order to initialize the
 		// GridCellSelectorInRowOrColumn.
-		ArrayList<GridCell> gridCellArrayList = new ArrayList<GridCell>();
+		List<GridCell> gridCellArrayList = new ArrayList<GridCell>();
 		GridCellSelectorInRowOrColumn GridCellSelectorInRowOrColumn = new GridCellSelectorInRowOrColumn(
 				gridCellArrayList, row, column);
 
@@ -47,7 +48,7 @@ public class GridCellSelectorInRowOrColumnTest {
 		// The actual content of the grid cell list is not relevant for this
 		// test. An empty list is ok in order to initialize the
 		// GridCellSelectorInRowOrColumn.
-		ArrayList<GridCell> gridCellArrayList = new ArrayList<GridCell>();
+		List<GridCell> gridCellArrayList = new ArrayList<GridCell>();
 		GridCellSelectorInRowOrColumn GridCellSelectorInRowOrColumn = new GridCellSelectorInRowOrColumn(
 				gridCellArrayList, row, column);
 
@@ -72,7 +73,7 @@ public class GridCellSelectorInRowOrColumnTest {
 		// The actual content of the grid cell list is not relevant for this
 		// test. An empty list is ok in order to initialize the
 		// GridCellSelectorInRowOrColumn.
-		ArrayList<GridCell> gridCellArrayList = new ArrayList<GridCell>();
+		List<GridCell> gridCellArrayList = new ArrayList<GridCell>();
 		GridCellSelectorInRowOrColumn GridCellSelectorInRowOrColumn = new GridCellSelectorInRowOrColumn(
 				gridCellArrayList, row, column);
 
@@ -97,7 +98,7 @@ public class GridCellSelectorInRowOrColumnTest {
 		// The actual content of the grid cell list is not relevant for this
 		// test. An empty list is ok in order to initialize the
 		// GridCellSelectorInRowOrColumn.
-		ArrayList<GridCell> gridCellArrayList = new ArrayList<GridCell>();
+		List<GridCell> gridCellArrayList = new ArrayList<GridCell>();
 		GridCellSelectorInRowOrColumn GridCellSelectorInRowOrColumn = new GridCellSelectorInRowOrColumn(
 				gridCellArrayList, row, column);
 

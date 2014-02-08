@@ -8,6 +8,7 @@ import net.mathdoku.plus.grid.GridCell;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,8 +33,8 @@ public class CellChangeStorage {
 
 	private GridCell mGridCell;
 	private Integer mPreviousUserValue;
-	private ArrayList<Integer> mPreviousPossibleValues;
-	private ArrayList<CellChange> mRelatedCellChanges;
+	private List<Integer> mPreviousPossibleValues;
+	private List<CellChange> mRelatedCellChanges;
 
 	/**
 	 * Read cell information from or a storage string which was created with @
@@ -46,7 +47,7 @@ public class CellChangeStorage {
 	 * @return True in case the given line contains cell information and is
 	 *         processed correctly. False otherwise.
 	 */
-	public boolean fromStorageString(String line, ArrayList<GridCell> cells,
+	public boolean fromStorageString(String line, List<GridCell> cells,
 									 int savedWithRevisionNumber) {
 		if (line == null) {
 			throw new NullPointerException("Parameter line cannot be null");
@@ -102,7 +103,7 @@ public class CellChangeStorage {
 	 *         processed correctly. False otherwise.
 	 */
 	private boolean fromStorageStringRecursive(int revisionNumber, String line,
-											   int level, ArrayList<GridCell> cells) {
+											   int level, List<GridCell> cells) {
 		// Regexp and groups inside. Groups 4 - 6 are helper groups which are
 		// needed to ensure the validity of the cell information but are not
 		// used programmatic.
@@ -276,11 +277,11 @@ public class CellChangeStorage {
 		return mPreviousUserValue;
 	}
 
-	public ArrayList<Integer> getPreviousPossibleValues() {
+	public List<Integer> getPreviousPossibleValues() {
 		return mPreviousPossibleValues;
 	}
 
-	public ArrayList<CellChange> getRelatedCellChanges() {
+	public List<CellChange> getRelatedCellChanges() {
 		return mRelatedCellChanges;
 	}
 }

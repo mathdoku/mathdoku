@@ -19,7 +19,7 @@ public class GridCage {
 
 	// Cached list of possible combo's which can be used in this cage if other
 	// cages in the grid were not relevant.
-	private ArrayList<int[]> mPossibleCombos;
+	private List<int[]> mPossibleCombos;
 
 	// Enclosing context
 	private Grid mGrid;
@@ -271,11 +271,11 @@ public class GridCage {
 		return mCells.length;
 	}
 
-	public void setPossibleCombos(ArrayList<int[]> possibleCombos) {
+	public void setPossibleCombos(List<int[]> possibleCombos) {
 		mPossibleCombos = possibleCombos;
 	}
 
-	public ArrayList<int[]> getPossibleCombos() {
+	public List<int[]> getPossibleCombos() {
 		return mPossibleCombos;
 	}
 
@@ -292,7 +292,7 @@ public class GridCage {
 	}
 
 	// TODO: method should be removed after refactor MathDokuDLX.java
-	public ArrayList<GridCell> getGridCells() {
+	public List<GridCell> getGridCells() {
 		return (mGrid == null ? null : mGrid.getGridCells(mCells));
 	}
 

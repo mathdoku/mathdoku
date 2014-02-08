@@ -11,6 +11,7 @@ import net.mathdoku.plus.gridGenerating.ComboGenerator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 public class MathDokuDLX extends DLX {
 	private static final String TAG = "MathDoku.MathDokuDLX";
@@ -24,7 +25,7 @@ public class MathDokuDLX extends DLX {
 	private int mTotalMoves;
 
 	// The list of cages for which the solution has to be checked
-	private final ArrayList<GridCage> mCages;
+	private final List<GridCage> mCages;
 
 	// Additional data structure in case the solution has to be uncovered.
 	private class Move {
@@ -44,7 +45,7 @@ public class MathDokuDLX extends DLX {
 		}
 	}
 
-	private ArrayList<Move> mMoves;
+	private List<Move> mMoves;
 
 	/**
 	 * Creates a new instance of {@see MathDokuDLX}.
@@ -54,7 +55,7 @@ public class MathDokuDLX extends DLX {
 	 * @param cages
 	 *            The cages defined for the grid.
 	 */
-	public MathDokuDLX(int gridSize, ArrayList<GridCage> cages) {
+	public MathDokuDLX(int gridSize, List<GridCage> cages) {
 		mGridSize = gridSize;
 		mCages = cages;
 	}
@@ -94,7 +95,7 @@ public class MathDokuDLX extends DLX {
 		// because this has a major impact on the time it will take to find a
 		// solution. Cage should be ordered on increasing number of possible
 		// moves.
-		ArrayList<GridCage> sortedCages = new ArrayList<GridCage>(mCages);
+		List<GridCage> sortedCages = new ArrayList<GridCage>(mCages);
 		Collections.sort(sortedCages, new SortCagesOnNumberOfMoves());
 		if (DEBUG_DLX) {
 			for (GridCage gridCage : sortedCages) {
@@ -118,7 +119,7 @@ public class MathDokuDLX extends DLX {
 		int comboIndex = 0;
 		int cageCount = 0;
 		for (GridCage gridCage : sortedCages) {
-			ArrayList<int[]> possibleCombos = gridCage.getPossibleCombos();
+			List<int[]> possibleCombos = gridCage.getPossibleCombos();
 			for (int[] possibleCombo : possibleCombos) {
 				if (DEBUG_DLX) {
 					Log.i(TAG, "Combo " + comboIndex + " - Cage "
@@ -312,7 +313,7 @@ public class MathDokuDLX extends DLX {
 							// are
 							// still possible with the partially filled grid.
 							GridCage gridCage = mCages.get(move.mCageId);
-							ArrayList<int[]> cageMoves = gridCage
+							List<int[]> cageMoves = gridCage
 									.getPossibleCombos();
 							int possiblePermutations = 0;
 							for (int[] cageMove : cageMoves) {

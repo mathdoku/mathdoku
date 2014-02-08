@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.List;
 
 import robolectric.RobolectricGradleTestRunner;
 
@@ -125,7 +126,7 @@ public class GridCellStorageTest {
 		when(gridCellMock.getCageText()).thenReturn("4+");
 		when(gridCellMock.getCorrectValue()).thenReturn(5);
 		when(gridCellMock.getUserValue()).thenReturn(6);
-		ArrayList<Integer> possibles = new ArrayList<Integer>();
+		List<Integer> possibles = new ArrayList<Integer>();
 		possibles.add(7);
 		when(gridCellMock.getPossibles()).thenReturn(possibles);
 		when(gridCellMock.hasInvalidUserValueHighlight()).thenReturn(false);
@@ -145,7 +146,7 @@ public class GridCellStorageTest {
 		when(gridCellMock.getCageText()).thenReturn("4+");
 		when(gridCellMock.getCorrectValue()).thenReturn(5);
 		when(gridCellMock.getUserValue()).thenReturn(6);
-		ArrayList<Integer> possibles = new ArrayList<Integer>();
+		List<Integer> possibles = new ArrayList<Integer>();
 		possibles.add(7);
 		possibles.add(8);
 		possibles.add(9);

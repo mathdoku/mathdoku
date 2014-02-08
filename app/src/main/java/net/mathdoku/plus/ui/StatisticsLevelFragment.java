@@ -1,6 +1,18 @@
 package net.mathdoku.plus.ui;
 
-import java.util.ArrayList;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.graphics.Color;
+import android.graphics.Paint.Align;
+import android.os.Bundle;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TextView;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
@@ -22,19 +34,8 @@ import org.achartengine.renderer.SimpleSeriesRenderer;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
 
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.graphics.Color;
-import android.graphics.Paint.Align;
-import android.os.Bundle;
-import android.util.TypedValue;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.LinearLayout;
-import android.widget.TableLayout;
-import android.widget.TextView;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A fragment representing the statistics for a specific grid size or the
@@ -317,7 +318,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		// Create object for category series and the series renderer
 		XYMultipleSeriesDataset xyMultipleSeriesDataset = new XYMultipleSeriesDataset();
 
-		ArrayList<String> typesList = new ArrayList<String>();
+		List<String> typesList = new ArrayList<String>();
 
 		// Add series for elapsed time (including cheat time) of solved games
 		if (historicStatistics.isXYSeriesUsed(Series.SOLVED, true, true)) {

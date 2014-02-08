@@ -4,6 +4,7 @@ import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.statistics.GridStatistics;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class holds all data needed to build a new
@@ -18,9 +19,9 @@ public class GridBuilder {
 	long mDateUpdated; // Optional
 	int mGridId; // Optional
 	int mSolvingAttemptId; // Optional
-	ArrayList<GridCell> mCells; // Required
-	ArrayList<GridCage> mCages; // Required
-	ArrayList<CellChange> mCellChanges; // Optional
+	List<GridCell> mCells; // Required
+	List<GridCage> mCages; // Required
+	List<CellChange> mCellChanges; // Optional
 	boolean mActive; // Optional
 	boolean mRevealed; // Optional
 
@@ -93,17 +94,17 @@ public class GridBuilder {
 		return this;
 	}
 
-	public GridBuilder setCells(ArrayList<GridCell> cells) {
+	public GridBuilder setCells(List<GridCell> cells) {
 		mCells = cells;
 		return this;
 	}
 
-	public GridBuilder setCages(ArrayList<GridCage> cages) {
+	public GridBuilder setCages(List<GridCage> cages) {
 		mCages = cages;
 		return this;
 	}
 
-	public GridBuilder setCellChanges(ArrayList<CellChange> cellChanges) {
+	public GridBuilder setCellChanges(List<CellChange> cellChanges) {
 		mCellChanges = cellChanges;
 		return this;
 	}

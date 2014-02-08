@@ -1,10 +1,11 @@
 package net.mathdoku.plus.statistics;
 
-import java.util.ArrayList;
+import android.database.Cursor;
 
 import org.achartengine.model.XYSeries;
 
-import android.database.Cursor;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class holds time related statistics for one property.
@@ -38,7 +39,7 @@ public class HistoricStatistics {
 	}
 
 	// Storage for data points retrieved from database
-	private final ArrayList<DataPoint> dataPoints;
+	private final List<DataPoint> dataPoints;
 
 	// Internal data structure to store data per series
 	private class SeriesSummary {

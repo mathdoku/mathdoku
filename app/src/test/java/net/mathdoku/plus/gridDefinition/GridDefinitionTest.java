@@ -1,6 +1,16 @@
 package net.mathdoku.plus.gridDefinition;
 
-import com.srlee.DLX.MathDokuDLX;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.enums.CageOperator;
@@ -15,18 +25,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-
 import robolectric.RobolectricGradleTestRunner;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.srlee.DLX.MathDokuDLX;
 
 @RunWith(RobolectricGradleTestRunner.class)
 public class GridDefinitionTest {
@@ -37,24 +38,24 @@ public class GridDefinitionTest {
 	private MathDokuDLX mMathDokuDLXMock = mock(MathDokuDLX.class);
 
 	private class GridObjectsCreatorStub extends GridObjectsCreator {
-		ArrayList<GridCell> gridCells;
-		ArrayList<GridCage> gridCages;
+		List<GridCell> gridCells;
+		List<GridCage> gridCages;
 
 		@Override
-		public ArrayList<GridCell> createArrayListOfGridCells() {
+		public List<GridCell> createArrayListOfGridCells() {
 			gridCells = super.createArrayListOfGridCells();
 			return gridCells;
 		}
 
 		@Override
-		public ArrayList<GridCage> createArrayListOfGridCages() {
+		public List<GridCage> createArrayListOfGridCages() {
 			gridCages = super.createArrayListOfGridCages();
 			return gridCages;
 		}
 
 		@Override
 		public MathDokuDLX createMathDokuDLX(int gridSize,
-				ArrayList<GridCage> cages) {
+				List<GridCage> cages) {
 			return mMathDokuDLXMock;
 		}
 	}
@@ -78,8 +79,8 @@ public class GridDefinitionTest {
 	@Test(expected = InvalidParameterException.class)
 	public void getDefinition_ArrayListGridCellsIsNull_ThrowsInvalidParameterException()
 			throws Exception {
-		ArrayList<GridCell> gridCells = null;
-		ArrayList<GridCage> gridCages = mock(ArrayList.class);
+		List<GridCell> gridCells = null;
+		List<GridCage> gridCages = mock(ArrayList.class);
 		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
 
 		GridDefinition.getDefinition(gridCells, gridCages,
@@ -89,8 +90,8 @@ public class GridDefinitionTest {
 	@Test(expected = InvalidParameterException.class)
 	public void getDefinition_ArrayListGridCellsIsEmpty_ThrowsInvalidParameterException()
 			throws Exception {
-		ArrayList<GridCell> gridCells = new ArrayList<GridCell>();
-		ArrayList<GridCage> gridCages = mock(ArrayList.class);
+		List<GridCell> gridCells = new ArrayList<GridCell>();
+		List<GridCage> gridCages = mock(ArrayList.class);
 		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
 
 		GridDefinition.getDefinition(gridCells, gridCages,
@@ -100,9 +101,9 @@ public class GridDefinitionTest {
 	@Test(expected = InvalidParameterException.class)
 	public void getDefinition_ArrayListGridCagesIsNull_ThrowsInvalidParameterException()
 			throws Exception {
-		ArrayList<GridCell> gridCells = mock(ArrayList.class);
+		List<GridCell> gridCells = mock(ArrayList.class);
 		when(gridCells.size()).thenReturn(1);
-		ArrayList<GridCage> gridCages = null;
+		List<GridCage> gridCages = null;
 		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
 
 		GridDefinition.getDefinition(gridCells, gridCages,
@@ -112,9 +113,9 @@ public class GridDefinitionTest {
 	@Test(expected = InvalidParameterException.class)
 	public void getDefinition_ArrayListGridCagesIsEmpty_ThrowsInvalidParameterException()
 			throws Exception {
-		ArrayList<GridCell> gridCells = mock(ArrayList.class);
+		List<GridCell> gridCells = mock(ArrayList.class);
 		when(gridCells.size()).thenReturn(1);
-		ArrayList<GridCage> gridCages = new ArrayList<GridCage>();
+		List<GridCage> gridCages = new ArrayList<GridCage>();
 		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
 
 		GridDefinition.getDefinition(gridCells, gridCages,
@@ -124,9 +125,9 @@ public class GridDefinitionTest {
 	@Test(expected = InvalidParameterException.class)
 	public void getDefinition_GridGeneratingParametersIsNull_ThrowsInvalidParameterException()
 			throws Exception {
-		ArrayList<GridCell> gridCells = mock(ArrayList.class);
+		List<GridCell> gridCells = mock(ArrayList.class);
 		when(gridCells.size()).thenReturn(1);
-		ArrayList<GridCage> gridCages = mock(ArrayList.class);
+		List<GridCage> gridCages = mock(ArrayList.class);
 		when(gridCages.size()).thenReturn(1);
 		GridGeneratingParameters gridGeneratingParameters = null;
 
@@ -144,7 +145,7 @@ public class GridDefinitionTest {
 				1, 1, 1, 2, // Row 3
 				3, 3, 3, 2 // Row 4
 				);
-		ArrayList<GridCell> gridCells = new ArrayList<GridCell>();
+		List<GridCell> gridCells = new ArrayList<GridCell>();
 		for (int i = 0; i < 16; i++) {
 			gridCells.add(gridCellMock);
 		}
@@ -164,7 +165,7 @@ public class GridDefinitionTest {
 		when(gridCageStub3.getResult()).thenReturn(2);
 		when(gridCageStub3.getOperator()).thenReturn(CageOperator.NONE);
 
-		ArrayList<GridCage> gridCages = new ArrayList<GridCage>();
+		List<GridCage> gridCages = new ArrayList<GridCage>();
 		gridCages.add(gridCageStub1);
 		gridCages.add(gridCageStub2);
 		gridCages.add(gridCageStub3);

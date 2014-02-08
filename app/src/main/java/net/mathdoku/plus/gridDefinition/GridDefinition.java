@@ -14,7 +14,7 @@ import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.util.Util;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,8 +33,8 @@ public class GridDefinition {
 	private GridObjectsCreator mGridObjectsCreator;
 
 	private int mGridSize;
-	private ArrayList<GridCage> mCages;
-	private ArrayList<GridCell> mCells;
+	private List<GridCage> mCages;
+	private List<GridCell> mCells;
 	private int[] mCageIdPerCell;
 	private int[] mCountCellsPerCage;
 
@@ -65,16 +65,16 @@ public class GridDefinition {
 	 * 
 	 * @return A unique string representation of the grid.
 	 */
-	public static String getDefinition(ArrayList<GridCell> cells,
-			ArrayList<GridCage> cages,
+	public static String getDefinition(List<GridCell> cells,
+			List<GridCage> cages,
 			GridGeneratingParameters gridGeneratingParameters) {
 		StringBuilder definitionString = new StringBuilder();
 
-		if (Util.isArrayListNullOrEmpty(cells)) {
+		if (Util.isListNullOrEmpty(cells)) {
 			throw new InvalidParameterException(
 					"Parameter cells cannot be null or empty list.");
 		}
-		if (Util.isArrayListNullOrEmpty(cages)) {
+		if (Util.isListNullOrEmpty(cages)) {
 			throw new InvalidParameterException(
 					"Parameter cages cannot be null or empty list.");
 		}

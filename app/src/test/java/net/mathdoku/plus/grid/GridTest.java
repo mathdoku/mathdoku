@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import robolectric.RobolectricGradleTestRunner;
 import testHelper.TestGridHiddenOperators;
@@ -95,7 +96,7 @@ public class GridTest {
 			// reference to the last created grid cell mock is kept for tests
 			// which need just a cell in the default grid.
 			int numberOfCells = gridSize * gridSize;
-			ArrayList<GridCell> gridCells = mGridObjectsCreator
+			List<GridCell> gridCells = mGridObjectsCreator
 					.createArrayListOfGridCells();
 			mGridCellMockOfDefaultSetup = new GridCell[numberOfCells];
 			for (int i = 0; i < numberOfCells; i++) {
@@ -114,7 +115,7 @@ public class GridTest {
 			// reference to the last created grid cage mock is kept for tests
 			// which need just a cage in the default grid.
 			int numberOfCages = 3;
-			ArrayList<GridCage> gridCages = mGridObjectsCreator
+			List<GridCage> gridCages = mGridObjectsCreator
 					.createArrayListOfGridCages();
 			for (int i = 0; i < numberOfCages; i++) {
 				if (mUseSameMockForAllGridCages == false
@@ -144,7 +145,7 @@ public class GridTest {
 			// replaced.
 			mAnyGridCellMockOfDefaultSetup = null;
 
-			ArrayList<GridCell> gridCells = new ArrayList<GridCell>();
+			List<GridCell> gridCells = new ArrayList<GridCell>();
 
 			for (int i = 0; i < gridCell.length; i++) {
 				gridCells.add(gridCell[i]);
@@ -159,7 +160,7 @@ public class GridTest {
 		 * cages.
 		 */
 		public GridBuilderStub setCagesInitializedWith(GridCage... gridCage) {
-			ArrayList<GridCage> gridCages = new ArrayList<GridCage>();
+			List<GridCage> gridCages = new ArrayList<GridCage>();
 
 			for (int i = 0; i < gridCage.length; i++) {
 				gridCages.add(gridCage[i]);
@@ -175,7 +176,7 @@ public class GridTest {
 		 */
 		public GridBuilderStub setCellChangesInitializedWith(
 				CellChange... cellChange) {
-			ArrayList<CellChange> cellChanges = new ArrayList<CellChange>();
+			List<CellChange> cellChanges = new ArrayList<CellChange>();
 
 			for (int i = 0; i < cellChange.length; i++) {
 				cellChanges.add(cellChange[i]);
@@ -238,7 +239,7 @@ public class GridTest {
 	private class GridObjectsCreatorStub extends GridObjectsCreator {
 		// Unreveal the array list of cell changes as it is hidden in the Grid
 		// Object.
-		public ArrayList<CellChange> mArrayListOfCellChanges = null;
+		public List<CellChange> mArrayListOfCellChanges = null;
 
 		@Override
 		public GridStatistics createGridStatistics() {
@@ -251,14 +252,14 @@ public class GridTest {
 		}
 
 		@Override
-		public ArrayList<CellChange> createArrayListOfCellChanges() {
+		public List<CellChange> createArrayListOfCellChanges() {
 			mArrayListOfCellChanges = super.createArrayListOfCellChanges();
 			return mArrayListOfCellChanges;
 		}
 
 		@Override
 		public GridCellSelectorInRowOrColumn createGridCellSelectorInRowOrColumn(
-				ArrayList<GridCell> cells, int row, int column) {
+				List<GridCell> cells, int row, int column) {
 			return mGridCellSelectorInRowOrColumn;
 		}
 
@@ -853,7 +854,7 @@ public class GridTest {
 		// that those mocks are not related to "real" cells of the default grid
 		// stub.
 		GridCell gridCellInSameRowOrColumn = mock(GridCell.class);
-		ArrayList<GridCell> arrayListOfGridCells = new ArrayList<GridCell>();
+		List<GridCell> arrayListOfGridCells = new ArrayList<GridCell>();
 		arrayListOfGridCells.add(gridCellInSameRowOrColumn);
 		arrayListOfGridCells.add(gridCellInSameRowOrColumn);
 		arrayListOfGridCells.add(gridCellInSameRowOrColumn);
@@ -2085,7 +2086,7 @@ public class GridTest {
 	public void getUserValuesForCells_CellsIsNull_EmptyListReturned() throws Exception {
 		Grid grid = mGridBuilderStub.build();
 
-		assertThat(grid.getUserValuesForCells(null), is(new ArrayList<Integer>()));
+		assertThat(grid.getUserValuesForCells(null).size(), is(0));
 	}
 
 	@Test
@@ -2094,8 +2095,8 @@ public class GridTest {
 							// gridsize
 		Grid grid = mGridBuilderStub.build();
 
-		assertThat(grid.getUserValuesForCells(new int[] { idOfCell }),
-				is(new ArrayList<Integer>()));
+		assertThat(grid.getUserValuesForCells(new int[] { idOfCell }).size(),
+				is(0));
 	}
 
 	@Test
@@ -2111,7 +2112,7 @@ public class GridTest {
 						.getUserValue()).thenReturn(valueOfCell);
 		Grid grid = mGridBuilderStub.build();
 
-		ArrayList<Integer> expectedUserValues = new ArrayList<Integer>();
+		List<Integer> expectedUserValues = new ArrayList<Integer>();
 		expectedUserValues.add(valueOfCell);
 		assertThat(grid.getUserValuesForCells(new int[] { idOfCell }),
 				is(expectedUserValues));
@@ -2126,7 +2127,7 @@ public class GridTest {
 						.isUserValueSet()).thenReturn(false);
 		Grid grid = mGridBuilderStub.build();
 
-		ArrayList<Integer> expectedUserValues = new ArrayList<Integer>();
+		List<Integer> expectedUserValues = new ArrayList<Integer>();
 		assertThat(grid.getUserValuesForCells(new int[] { idOfCell }),
 				is(expectedUserValues));
 	}
@@ -2152,7 +2153,7 @@ public class GridTest {
 						.getUserValue()).thenReturn(valueOfCell_2);
 		Grid grid = mGridBuilderStub.build();
 
-		ArrayList<Integer> expectedUserValues = new ArrayList<Integer>();
+		List<Integer> expectedUserValues = new ArrayList<Integer>();
 		expectedUserValues.add(valueOfCell_1);
 		expectedUserValues.add(valueOfCell_2);
 		assertThat(grid.getUserValuesForCells(new int[] { idOfCell_1,
@@ -2184,7 +2185,7 @@ public class GridTest {
 						.isUserValueSet()).thenReturn(false);
 		Grid grid = mGridBuilderStub.build();
 
-		ArrayList<Integer> expectedUserValues = new ArrayList<Integer>();
+		List<Integer> expectedUserValues = new ArrayList<Integer>();
 		expectedUserValues.add(valueOfCell_1);
 		expectedUserValues.add(valueOfCell_2);
 		assertThat(
@@ -2244,7 +2245,7 @@ public class GridTest {
 	public void getGridCells_CellsIsNull_EmptyListReturned() throws Exception {
 		Grid grid = mGridBuilderStub.build();
 
-		assertThat(grid.getGridCells(null), is(new ArrayList<GridCell>()));
+		assertThat(grid.getGridCells(null).size(), is(0));
 	}
 
 	@Test
@@ -2253,7 +2254,7 @@ public class GridTest {
 							// gridsize
 		Grid grid = mGridBuilderStub.build();
 
-		assertThat(grid.getGridCells(new int[] { idOfCell }), is(new ArrayList<GridCell>()));
+		assertThat(grid.getGridCells(new int[] { idOfCell }).size(), is(0));
 	}
 
 	@Test
@@ -2261,7 +2262,7 @@ public class GridTest {
 		int idOfCell = 4;
 		Grid grid = mGridBuilderStub.build();
 
-		ArrayList<GridCell> expectedGridCells = new ArrayList<GridCell>();
+		List<GridCell> expectedGridCells = new ArrayList<GridCell>();
 		expectedGridCells
 				.add(mGridBuilderStub.mGridCellMockOfDefaultSetup[idOfCell]);
 		assertThat(grid.getGridCells(new int[] { idOfCell }),
@@ -2274,7 +2275,7 @@ public class GridTest {
 		int idOfCell_2 = 8;
 		Grid grid = mGridBuilderStub.build();
 
-		ArrayList<GridCell> expectedGridCells = new ArrayList<GridCell>();
+		List<GridCell> expectedGridCells = new ArrayList<GridCell>();
 		expectedGridCells
 				.add(mGridBuilderStub.mGridCellMockOfDefaultSetup[idOfCell_1]);
 		expectedGridCells

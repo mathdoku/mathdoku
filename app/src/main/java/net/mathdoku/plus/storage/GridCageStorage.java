@@ -8,7 +8,7 @@ import net.mathdoku.plus.grid.GridObjectsCreator;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class converts relevant GridCage data to a string which can be persisted
@@ -52,7 +52,7 @@ public class GridCageStorage {
 	 *         processed correctly. False otherwise.
 	 */
 	public CageBuilder getCageBuilderFromStorageString(String line,
-			int savedWithRevisionNumber, ArrayList<GridCell> gridCells) {
+			int savedWithRevisionNumber, List<GridCell> gridCells) {
 		if (line == null) {
 			throw new NullPointerException("Parameter line cannot be null");
 		}
@@ -131,7 +131,7 @@ public class GridCageStorage {
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ gridCage.getResult()
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1;
-		ArrayList<GridCell> cells = gridCage.getGridCells();
+		List<GridCell> cells = gridCage.getGridCells();
 		if (cells != null) {
 			for (GridCell cell : cells) {
 				storageString += cell.getCellId()

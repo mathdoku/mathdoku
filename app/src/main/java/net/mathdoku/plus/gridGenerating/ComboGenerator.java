@@ -28,7 +28,7 @@ public class ComboGenerator {
 	 * @return The list of all possible combinations. Null in case no
 	 *         combinations or too many permutations have been found.
 	 */
-	public ArrayList<int[]> getPossibleCombos(GridCage gridCage, List<GridCell> cells) {
+	public List<int[]> getPossibleCombos(GridCage gridCage, List<GridCell> cells) {
 		mResult = gridCage.getResult();
 		mCageOperator = gridCage.getOperator();
 		mHideOperator = gridCage.isOperatorHidden();
@@ -47,8 +47,8 @@ public class ComboGenerator {
 	 * @return The list of all permutations of cell values which can be used for
 	 *         this cage.
 	 */
-	private ArrayList<int[]> getPossibleCombosHiddenOperator() {
-		ArrayList<int[]> resultCombos = new ArrayList<int[]>();
+	private List<int[]> getPossibleCombosHiddenOperator() {
+		List<int[]> resultCombos = new ArrayList<int[]>();
 
 		// Single cell cages can only contain the value of the single cell.
 		if (mCageCells.size() == 1) {
@@ -77,7 +77,7 @@ public class ComboGenerator {
 		// Cages of size two and above can only contain an add or a multiply
 		// operation
 		resultCombos = getAllAddCombos(mGridSize, mResult, mCageCells.size());
-		ArrayList<int[]> multiplyCombos = getAllMultiplyCombos(mGridSize,
+		List<int[]> multiplyCombos = getAllMultiplyCombos(mGridSize,
 															   mResult, mCageCells.size());
 
 		// Combine Add & Multiply result sets
@@ -102,8 +102,8 @@ public class ComboGenerator {
 	 * and MathDoku constraints i.e. a digit can only appear once in a
 	 * column/row
 	 */
-	private ArrayList<int[]> getPossibleCombosVisibleOperator() {
-		ArrayList<int[]> AllResults = new ArrayList<int[]>();
+	private List<int[]> getPossibleCombosVisibleOperator() {
+		List<int[]> AllResults = new ArrayList<int[]>();
 
 		switch (mCageOperator) {
 			case NONE:
@@ -148,9 +148,9 @@ public class ComboGenerator {
 	// They could be passed as parameters of the recursive methods, but this
 	// reduces performance.
 	private int[] getAllCombos_Numbers;
-	private ArrayList<int[]> getAllCombos_ResultSet;
+	private List<int[]> getAllCombos_ResultSet;
 
-	private ArrayList<int[]> getAllAddCombos(int max_val, int target_sum,
+	private List<int[]> getAllAddCombos(int max_val, int target_sum,
 											 int n_cells) {
 		getAllCombos_Numbers = new int[n_cells];
 		getAllCombos_ResultSet = new ArrayList<int[]>();
@@ -184,7 +184,7 @@ public class ComboGenerator {
 		}
 	}
 
-	private ArrayList<int[]> getAllMultiplyCombos(int max_val, int target_sum,
+	private List<int[]> getAllMultiplyCombos(int max_val, int target_sum,
 												  int n_cells) {
 		getAllCombos_Numbers = new int[n_cells];
 		getAllCombos_ResultSet = new ArrayList<int[]>();

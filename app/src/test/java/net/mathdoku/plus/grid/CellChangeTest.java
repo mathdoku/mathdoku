@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import robolectric.RobolectricGradleTestRunner;
 
@@ -15,7 +16,7 @@ public class CellChangeTest {
 	@Test
 	public void restore_CellWithUserValue_UndoForGridCellIsCalledWithCorrectParameters() {
 		int expectedUserValue = 123;
-		ArrayList<Integer> expectedMaybeValues = new ArrayList<Integer>();
+		List<Integer> expectedMaybeValues = new ArrayList<Integer>();
 
 		// Init the Grid Cell Mock
 		GridCell gridCellMock = mock(GridCell.class);
@@ -35,7 +36,7 @@ public class CellChangeTest {
 	@Test
 	public void restore_GridCellWithMultipleMaybeValues_UndoForGridCellIsCalledWithCorrectParameters() {
 		int expectedUserValue = 0;
-		ArrayList<Integer> expectedMaybeValues = new ArrayList<Integer>();
+		List<Integer> expectedMaybeValues = new ArrayList<Integer>();
 		expectedMaybeValues.add(1);
 		expectedMaybeValues.add(2);
 		expectedMaybeValues.add(3);

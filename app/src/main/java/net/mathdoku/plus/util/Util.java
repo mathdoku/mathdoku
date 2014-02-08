@@ -5,7 +5,7 @@ import android.app.Activity;
 import android.content.pm.PackageInfo;
 import android.util.Log;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Util {
 	private final static String TAG = "MathDoku.Util";
@@ -90,12 +90,8 @@ public class Util {
 		return duration;
 	}
 
-	public static <T> boolean isArrayListNullOrEmpty(ArrayList<T> arrayList) {
-		return (arrayList == null || arrayList.size() == 0);
-	}
-
-	public static <T> boolean isNotArrayListNullOrEmpty(ArrayList<T> arrayList) {
-		return (!isArrayListNullOrEmpty(arrayList));
+	public static <T> boolean isListNullOrEmpty(List<T> list) {
+		return (list == null || list.size() == 0);
 	}
 
 	public static boolean isArrayNullOrEmpty(int[] array) {

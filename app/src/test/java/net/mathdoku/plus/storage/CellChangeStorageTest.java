@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import robolectric.RobolectricGradleTestRunner;
 
@@ -19,7 +20,7 @@ import static org.mockito.Mockito.when;
 public class CellChangeStorageTest {
 	private CellChangeStorage mCellChangeStorage = new CellChangeStorage();
 	private String mLine;
-	private ArrayList<GridCell> mArrayListOfGridCellsStub = mock(ArrayList.class);
+	private List<GridCell> mArrayListOfGridCellsStub = mock(ArrayList.class);
 	private int mRevisionNumber = 596;
 
 
@@ -120,7 +121,7 @@ public class CellChangeStorageTest {
 	public void toStorageString_CellChangeWithUserValue_StorageStringCreated() {
 		int cellId = 5;
 		int cellUserValue = 2;
-		ArrayList<Integer> cellPossibles = new ArrayList<Integer>();
+		List<Integer> cellPossibles = new ArrayList<Integer>();
 
 		CellChange cellChange = new CellChange(createGridCellMock(cellId), cellUserValue,
 						cellPossibles);
@@ -132,7 +133,7 @@ public class CellChangeStorageTest {
 	public void toStorageString_CellChangeWithOneMaybeValue_StorageStringCreated() {
 		int cellId = 5;
 		int cellUserValue = 0; // Cell has no user value
-		ArrayList<Integer> cellPossibles = new ArrayList<Integer>();
+		List<Integer> cellPossibles = new ArrayList<Integer>();
 		cellPossibles.add(3);
 
 		CellChange cellChange = new CellChange(createGridCellMock(cellId), cellUserValue,
@@ -145,7 +146,7 @@ public class CellChangeStorageTest {
 	public void toStorageString_CellChangeWithMultipleMaybeValue_StorageStringCreated() {
 		int cellId = 5;
 		int cellUserValue = 0; // Cell has no user value
-		ArrayList<Integer> cellPossibles = new ArrayList<Integer>();
+		List<Integer> cellPossibles = new ArrayList<Integer>();
 		cellPossibles.add(3);
 		cellPossibles.add(4);
 		cellPossibles.add(5);
@@ -160,13 +161,13 @@ public class CellChangeStorageTest {
 	public void toStorageString_CellChangeWithOneRelatedCellChange_StorageStringCreated() {
 		int rootCellId = 4;
 		int rootCellUserValue = 1;
-		ArrayList<Integer> rootCellPossibles = new ArrayList<Integer>();
+		List<Integer> rootCellPossibles = new ArrayList<Integer>();
 		CellChange cellChange = new CellChange(createGridCellMock(rootCellId), rootCellUserValue,
 												rootCellPossibles);
 
 		int relatedCellId = 2;
 		int relatedCellUserValue = 0; // No user value
-		ArrayList<Integer> relatedCellPossibles = new ArrayList<Integer>();
+		List<Integer> relatedCellPossibles = new ArrayList<Integer>();
 		relatedCellPossibles.add(3);
 		CellChange relatedCellChange = new CellChange(createGridCellMock(relatedCellId),
 						relatedCellUserValue, relatedCellPossibles);
@@ -180,13 +181,13 @@ public class CellChangeStorageTest {
 	public void toStorageString_CellChangeWithMultipleRelatedCellChanges_StorageStringCreated() {
 		int rootCellId = 4;
 		int rootCellUserValue = 1;
-		ArrayList<Integer> rootCellPossibles = new ArrayList<Integer>();
+		List<Integer> rootCellPossibles = new ArrayList<Integer>();
 		CellChange cellChange = new CellChange(createGridCellMock(rootCellId), rootCellUserValue,
 											   rootCellPossibles);
 
 		int relatedCellId1 = 2;
 		int relatedCellUserValue1 = 0; // No user value
-		ArrayList<Integer> relatedCellPossibles1 = new ArrayList<Integer>();
+		List<Integer> relatedCellPossibles1 = new ArrayList<Integer>();
 		relatedCellPossibles1.add(3);
 		CellChange relatedCellChange1 = new CellChange(createGridCellMock(relatedCellId1),
 													  relatedCellUserValue1, relatedCellPossibles1);
@@ -194,7 +195,7 @@ public class CellChangeStorageTest {
 
 		int relatedCellId2 = 16;
 		int relatedCellUserValue2 = 0; // No user value
-		ArrayList<Integer> relatedCellPossibles2 = new ArrayList<Integer>();
+		List<Integer> relatedCellPossibles2 = new ArrayList<Integer>();
 		relatedCellPossibles2.add(2);
 		relatedCellPossibles2.add(3);
 		relatedCellPossibles2.add(4);
