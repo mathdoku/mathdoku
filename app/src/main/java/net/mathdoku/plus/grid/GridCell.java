@@ -1138,7 +1138,7 @@ public class GridCell {
 	 *         on the same row or column.
 	 */
 	public boolean markDuplicateValuesInSameRowAndColumn() {
-		if (mGrid == null || mGrid.mCells == null) {
+		if (mGrid == null) {
 			// Cannot look for other GridCells in same row or column as the cell
 			// is not used in a grid.
 			return false;
@@ -1146,7 +1146,7 @@ public class GridCell {
 
 		boolean duplicateValue = false;
 		if (isUserValueSet()) {
-			for (GridCell gridCell : mGrid.mCells) {
+			for (GridCell gridCell : mGrid.getCells()) {
 				if (gridCell.equals(this) == false
 						&& gridCell.getUserValue() == mUserValue) {
 					if (gridCell.getColumn() == mColumn

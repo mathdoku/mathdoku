@@ -331,7 +331,7 @@ public class GridTest {
 				.setupDefaultWhichDoesNotThrowErrorsOnBuild()
 				.build();
 		verify(mGridBuilderStub.mAnyGridCellMockOfDefaultSetup,
-				times(grid.mCells.size())).setBorders();
+				times(grid.getCells().size())).setBorders();
 
 		grid.setPreferences();
 
@@ -339,7 +339,7 @@ public class GridTest {
 		// above). Now check if it has been called again while setting the
 		// mPreferencesMock.
 		verify(mGridBuilderStub.mAnyGridCellMockOfDefaultSetup,
-				times(2 * grid.mCells.size())).setBorders();
+				times(2 * grid.getCells().size())).setBorders();
 	}
 
 	@Test
@@ -388,7 +388,7 @@ public class GridTest {
 		// Note: currently a cell is always cleared even in case it does not
 		// contain a user values nor any maybe values.
 		verify(mGridBuilderStub.mAnyGridCellMockOfDefaultSetup,
-				times(grid.mCells.size())).clearValue();
+				times(grid.getCells().size())).clearValue();
 	}
 
 	@Test
@@ -1207,8 +1207,8 @@ public class GridTest {
 				is(dateCreated));
 		assertThat("Grid size", grid.getGridSize(),
 				is(mGridBuilderStub.mGridSize));
-		assertThat("Cells", grid.mCells,
-				is(sameInstance(mGridBuilderStub.mCells)));
+		assertThat("Cells", grid.getCells(),
+				is(mGridBuilderStub.mCells));
 		assertThat("Cages", grid.getCages(),
 				is(mGridBuilderStub.mCages));
 		assertThat("Is active", grid.isActive(), is(mGridBuilderStub.mActive));

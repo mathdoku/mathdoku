@@ -144,7 +144,7 @@ public class GridViewerView extends View {
 				: DigitPainterMode.MONOCHROME);
 
 		GridInputMode gridInputMode = getRestrictedGridInputMode();
-		for (GridCell cell : mGrid.mCells) {
+		for (GridCell cell : mGrid.getCells()) {
 			cell.draw(canvas, mBorderWidth, gridInputMode, 0);
 		}
 	}

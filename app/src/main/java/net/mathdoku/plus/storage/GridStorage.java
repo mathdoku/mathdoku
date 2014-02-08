@@ -104,7 +104,7 @@ public class GridStorage {
 	public String toStorageString(Grid grid) {
 		mActive = grid.isActive();
 		mRevealed = grid.isSolutionRevealed();
-		mCells = grid.mCells;
+		mCells = grid.getCells();
 		mCages = grid.getCages();
 		mCellChanges = grid.getCellChanges();
 

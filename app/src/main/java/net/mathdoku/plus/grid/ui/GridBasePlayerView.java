@@ -321,7 +321,7 @@ public class GridBasePlayerView extends GridViewerView implements
 	private void checkGridValidity(GridCell selectedCell) {
 		// Get a list of cells in the same row or column as the selected cell.
 		GridCellSelectorInRowOrColumn gridCellSelectorInRowOrColumn = new GridCellSelectorInRowOrColumn(
-				mGrid.mCells, selectedCell.getRow(), selectedCell.getColumn());
+				mGrid.getCells(), selectedCell.getRow(), selectedCell.getColumn());
 		List<GridCell> gridCellsInSameRowOrColumn = gridCellSelectorInRowOrColumn
 				.find();
 

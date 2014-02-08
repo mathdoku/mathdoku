@@ -35,11 +35,8 @@ public class Grid {
 	private final long mDateCreated;
 	private final GridGeneratingParameters mGridGeneratingParameters;
 	private final GridObjectsCreator mGridObjectsCreator;
-
-	// Be careful: although mCages and mCell are final variables, the content of
-	// those list can still be altered!
 	private final List<GridCage> mCages;
-	public final List<GridCell> mCells;
+	private final List<GridCell> mCells;
 
 	// ************************************************************************
 	// Grid elements and references which do change while solving the game.
@@ -1002,5 +999,14 @@ public class Grid {
 	 */
 	public List<GridCage> getCages() {
 		return Collections.unmodifiableList(mCages);
+	}
+
+	/**
+	 * Gets an unmodifiable list of cells.
+	 *
+	 * @return An unmodifiable list of cells.
+	 */
+	public List<GridCell> getCells() {
+		return Collections.unmodifiableList(mCells);
 	}
 }
