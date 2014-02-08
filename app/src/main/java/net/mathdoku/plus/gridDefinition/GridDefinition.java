@@ -114,7 +114,7 @@ public class GridDefinition {
 	 * @return
 	 */
 	public static String getDefinition(Grid grid) {
-		return getDefinition(grid.mCells, grid.mCages,
+		return getDefinition(grid.mCells, grid.getCages(),
 				grid.getGridGeneratingParameters());
 	}
 

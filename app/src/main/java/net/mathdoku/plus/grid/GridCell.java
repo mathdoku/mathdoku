@@ -830,7 +830,7 @@ public class GridCell {
 	}
 
 	public GridCage getCage() {
-		return (mGrid == null ? null : mGrid.mCages.get(mCageId));
+		return (mGrid == null ? null : mGrid.getCage(mCageId));
 	}
 
 	public void setCageId(int newCageId) {

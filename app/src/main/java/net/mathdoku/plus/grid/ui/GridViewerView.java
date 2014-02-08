@@ -116,8 +116,6 @@ public class GridViewerView extends View {
 		// creating
 		if (mGridSize < 3)
 			return;
-		if (mGrid.mCages == null)
-			return;
 
 		// Draw outer grid border. For support of transparent borders it has
 		// to be avoided that lines do overlap.

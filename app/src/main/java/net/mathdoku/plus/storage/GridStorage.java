@@ -7,7 +7,6 @@ import net.mathdoku.plus.grid.GridCell;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class GridStorage {
@@ -106,7 +105,7 @@ public class GridStorage {
 		mActive = grid.isActive();
 		mRevealed = grid.isSolutionRevealed();
 		mCells = grid.mCells;
-		mCages = grid.mCages;
+		mCages = grid.getCages();
 		mCellChanges = grid.getCellChanges();
 
 		StringBuilder stringBuilder = new StringBuilder(256);

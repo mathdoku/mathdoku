@@ -1209,8 +1209,8 @@ public class GridTest {
 				is(mGridBuilderStub.mGridSize));
 		assertThat("Cells", grid.mCells,
 				is(sameInstance(mGridBuilderStub.mCells)));
-		assertThat("Cells", grid.mCages,
-				is(sameInstance(mGridBuilderStub.mCages)));
+		assertThat("Cages", grid.getCages(),
+				is(mGridBuilderStub.mCages));
 		assertThat("Is active", grid.isActive(), is(mGridBuilderStub.mActive));
 		verify(mGridBuilderStub.mAnyGridCageOfDefaultSetup,
 				times(mGridBuilderStub.mCages.size())).setGridReference(

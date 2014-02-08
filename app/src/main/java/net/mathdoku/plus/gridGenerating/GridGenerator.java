@@ -383,7 +383,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			Grid grid = mGridBuilder.build();
 
 			// Determine whether grid has a unique solution.
-			hasUniqueSolution = new MathDokuDLX(mGridSize, grid.mCages)
+			hasUniqueSolution = new MathDokuDLX(mGridSize, grid.getCages())
 					.hasUniqueSolution();
 
 			if (DEBUG_GRID_GENERATOR) {

@@ -16,6 +16,7 @@ import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Grid {
@@ -37,7 +38,7 @@ public class Grid {
 
 	// Be careful: although mCages and mCell are final variables, the content of
 	// those list can still be altered!
-	public final List<GridCage> mCages;
+	private final List<GridCage> mCages;
 	public final List<GridCell> mCells;
 
 	// ************************************************************************
@@ -521,6 +522,10 @@ public class Grid {
 		this.mSolvedListener = listener;
 	}
 
+	public GridCage getCage(int cageId) {
+		return mCages.get(cageId);
+	}
+
 	public abstract class OnSolvedListener {
 		public abstract void puzzleSolved();
 	}
@@ -988,5 +993,14 @@ public class Grid {
 
 	public Object getLock() {
 		return mLock;
+	}
+
+	/**
+	 * Gets an unmodifiable list of cages.
+	 *
+	 * @return An unmodifiable list of cages.
+	 */
+	public List<GridCage> getCages() {
+		return Collections.unmodifiableList(mCages);
 	}
 }
