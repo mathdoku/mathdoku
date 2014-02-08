@@ -107,15 +107,63 @@ public class Grid {
 		mActive = gridBuilder.mActive;
 		mRevealed = gridBuilder.mRevealed;
 
-		// Check if required parameters are specified
+		validateGridObjectsCreatorThrowsExceptionOnError();
+		validateGridSizeThrowsExceptionOnError();
+		validateCellsThrowsExceptionOnError();
+		validateCagesThrowsExceptionOnError();
+		validateGridGeneratingParametersThrowsExceptionOnError();
+		setGridReferences();
+		setCageTextToUpperLeftCellAllCages();
+		checkUserMathForAllCages();
+		markDuplicateValues();
+		setSelectedCell(findFirstSelectedCell());
+
+		if (mGridStatistics == null) {
+			mGridStatistics = mGridObjectsCreator.createGridStatistics();
+		}
+
+		setPreferences();
+	}
+
+	private GridCell findFirstSelectedCell() {
+		for (GridCell gridCell : mCells) {
+			if (gridCell.isSelected()) {
+				return gridCell;
+			}
+		}
+		return null;
+	}
+
+	private void markDuplicateValues() {
+		for (GridCell gridCell : mCells) {
+			gridCell.markDuplicateValuesInSameRowAndColumn();
+		}
+	}
+
+	private void setGridReferences() {
+		for (GridCage gridCage : mCages) {
+			gridCage.setGridReference(this);
+		}
+		for (GridCell gridCell : mCells) {
+			gridCell.setGridReference(this);
+		}
+	}
+
+	private void validateGridObjectsCreatorThrowsExceptionOnError() {
 		if (mGridObjectsCreator == null) {
 			throw new InvalidGridException(
 					"Cannot create a grid if GridObjectsCreator is null.");
 		}
+	}
+
+	private void validateGridSizeThrowsExceptionOnError() {
 		if (mGridSize < 1 || mGridSize > 9) {
 			throw new InvalidGridException("GridSize " + mGridSize
 					+ " is not a valid grid size.");
 		}
+	}
+
+	private void validateCellsThrowsExceptionOnError() {
 		if (Util.isListNullOrEmpty(mCells)) {
 			throw new InvalidGridException(
 					"Cannot create a grid without a list of cells. mCells is null or empty.");
@@ -127,44 +175,20 @@ public class Grid {
 							+ " cells, got "
 							+ mCells.size() + " cells.");
 		}
+	}
+
+	private void validateCagesThrowsExceptionOnError() {
 		if (Util.isListNullOrEmpty(mCages)) {
 			throw new InvalidGridException(
 					"Cannot create a grid without a list of cages. mCages is null or empty.");
 		}
+	}
+
+	private void validateGridGeneratingParametersThrowsExceptionOnError() {
 		if (mGridGeneratingParameters == null) {
 			throw new InvalidGridException(
 					"Cannot create a grid without gridGeneratingParameters.");
 		}
-
-		for (GridCage gridCage : mCages) {
-			gridCage.setGridReference(this);
-		}
-		for (GridCell gridCell : mCells) {
-			gridCell.setGridReference(this);
-		}
-
-		for (GridCage gridCage : mCages) {
-			setCageTextToUpperLeftCell(gridCage);
-		}
-
-		checkUserMathForAllCages();
-		for (GridCell gridCell : mCells) {
-			gridCell.markDuplicateValuesInSameRowAndColumn();
-		}
-		for (GridCell gridCell : mCells) {
-			if (gridCell.isSelected()) {
-				// The first cell which is marked as selected, is set as
-				// selected cell for the grid.
-				setSelectedCell(gridCell);
-				break;
-			}
-		}
-
-		if (mGridStatistics == null) {
-			mGridStatistics = mGridObjectsCreator.createGridStatistics();
-		}
-
-		setPreferences();
 	}
 
 	/**
@@ -978,6 +1002,12 @@ public class Grid {
 		return gridCells;
 	}
 
+	private final void setCageTextToUpperLeftCellAllCages() {
+		for (GridCage gridCage : mCages) {
+			setCageTextToUpperLeftCell(gridCage);
+		}
+	}
+
 	private final void setCageTextToUpperLeftCell(GridCage gridCage) {
 		if (gridCage != null) {
 			int idUpperLeftCell = gridCage.getIdUpperLeftCell();
@@ -994,7 +1024,7 @@ public class Grid {
 
 	/**
 	 * Gets an unmodifiable list of cages.
-	 *
+	 * 
 	 * @return An unmodifiable list of cages.
 	 */
 	public List<GridCage> getCages() {
@@ -1003,7 +1033,7 @@ public class Grid {
 
 	/**
 	 * Gets an unmodifiable list of cells.
-	 *
+	 * 
 	 * @return An unmodifiable list of cells.
 	 */
 	public List<GridCell> getCells() {
