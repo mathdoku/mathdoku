@@ -1,20 +1,21 @@
-package net.mathdoku.plus.storage.database;
+package net.mathdoku.plus.storage;
+
+import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 
 /**
  * The data for the grid in a compound string of storage strings.
  */
-public class SolvingAttemptData {
+public class SolvingAttemptStorage {
 	private String[] mData;
 	private int mDataIndex = -1;
 
 	/**
-	 * Creates a new
-	 * {@link net.mathdoku.plus.storage.database.SolvingAttemptData} instance.
+	 * Creates a new {@link SolvingAttemptStorage} instance.
 	 * 
 	 * @param data
 	 *            The data string to be set.
 	 */
-	public SolvingAttemptData(String data) {
+	public SolvingAttemptStorage(String data) {
 		mData = (data == null ? null : data
 				.split(SolvingAttemptDatabaseAdapter.EOL_DELIMITER));
 		mDataIndex = -1;

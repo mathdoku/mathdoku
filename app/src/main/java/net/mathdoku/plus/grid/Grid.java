@@ -8,11 +8,6 @@ import net.mathdoku.plus.gridDefinition.GridDefinition;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.statistics.GridStatistics.StatisticsCounterType;
-import net.mathdoku.plus.storage.database.DatabaseHelper;
-import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
-import net.mathdoku.plus.storage.database.GridRow;
-import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
-import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
 
 import java.util.ArrayList;
@@ -637,82 +632,15 @@ public class Grid {
 	 * @return True in case everything has been saved. False otherwise.
 	 */
 	public boolean save() {
-		DatabaseHelper databaseHelper = mGridObjectsCreator
-				.createDatabaseHelper();
-		databaseHelper.beginTransaction();
-
-		// Insert grid record if it does not yet exists. The grid record never
-		// needs to be updated as the definition is immutable.
-		if (mRowId < 0) {
-			// Before insert first check if already a grid record exists for the
-			// grid definition. If so, then reuse the existing grid definition.
-			String gridDefinition = GridDefinition.getDefinition(this);
-			GridDatabaseAdapter gridDatabaseAdapter = mGridObjectsCreator
-					.createGridDatabaseAdapter();
-			GridRow gridRow = gridDatabaseAdapter
-					.getByGridDefinition(gridDefinition);
-			mRowId = (gridRow == null ? gridDatabaseAdapter.insert(this)
-					: gridRow.mId);
-			if (mRowId < 0) {
-				// Insert of new Grid record failed.
-				databaseHelper.endTransaction();
-				return false;
-			}
+		GridSaver gridSaver = mGridObjectsCreator.createGridSaver();
+		boolean isSaved = gridSaver.save(this);
+		if (isSaved) {
+			mRowId = gridSaver.getRowId();
+			mSolvingAttemptId = gridSaver.getSolvingAttemptId();
+			mGridStatistics = gridSaver.getGridStatistics();
+			mDateUpdated = gridSaver.getDateUpdated();
 		}
-
-		// Insert or update the solving attempt.
-		SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = mGridObjectsCreator
-				.createSolvingAttemptDatabaseAdapter();
-		if (mSolvingAttemptId < 0) {
-			mSolvingAttemptId = solvingAttemptDatabaseAdapter.insert(this,
-					Util.getPackageVersionNumber());
-			if (mSolvingAttemptId < 0) {
-				// Insert of new solving attempt failed.
-				databaseHelper.endTransaction();
-				return false;
-			}
-		} else if (!solvingAttemptDatabaseAdapter.update(mSolvingAttemptId,
-				this)) {
-			// Update of solving attempt failed.
-			databaseHelper.endTransaction();
-			return false;
-		}
-
-		// Insert or update the grid statistics.
-		StatisticsDatabaseAdapter statisticsDatabaseAdapter = mGridObjectsCreator
-				.createStatisticsDatabaseAdapter();
-		if (mGridStatistics.mId < 0) {
-			mGridStatistics = statisticsDatabaseAdapter.insert(this);
-			if (mGridStatistics == null || mGridStatistics.mId < 0) {
-				// Insert of new grid statistics failed.
-				databaseHelper.endTransaction();
-				return false;
-			}
-		} else {
-			if (!mGridStatistics.save()) {
-				// Update of grid statistics failed.
-				databaseHelper.endTransaction();
-				return false;
-			}
-
-			// In case a replay of the grid is finished the statistics which
-			// have to included in the cumulative and the historic statistics
-			// should be changed to the current solving attempt.
-			if (!mActive && mGridStatistics.getReplayCount() > 0
-					&& !mGridStatistics.isIncludedInStatistics()) {
-				// Note: do not return false in case following fails as it is
-				// not relevant to the user.
-				statisticsDatabaseAdapter
-						.updateSolvingAttemptToBeIncludedInStatistics(mRowId,
-								mSolvingAttemptId);
-			}
-		}
-
-		// Commit and close transaction
-		databaseHelper.setTransactionSuccessful();
-		databaseHelper.endTransaction();
-
-		return true;
+		return isSaved;
 	}
 
 	/**
@@ -723,23 +651,15 @@ public class Grid {
 	 */
 	@SuppressWarnings("UnusedReturnValue")
 	public boolean saveOnAppUpgrade() {
-		synchronized (mLock) {
-			// The solving attempt was already created as soon as the grid was
-			// created first. So only an update is needed.
-			SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = mGridObjectsCreator
-					.createSolvingAttemptDatabaseAdapter();
-			if (!solvingAttemptDatabaseAdapter.updateOnAppUpgrade(
-					mSolvingAttemptId, this)) {
-				return false;
-			}
-
-			if (mGridStatistics != null && !mGridStatistics.save()) {
-				return false;
-			}
-
+		GridSaver gridSaver = mGridObjectsCreator.createGridSaver();
+		boolean isSaved = gridSaver.saveOnAppUpgrade(this);
+		if (isSaved) {
+			mRowId = gridSaver.getRowId();
+			mSolvingAttemptId = gridSaver.getSolvingAttemptId();
+			mGridStatistics = gridSaver.getGridStatistics();
+			mDateUpdated = gridSaver.getDateUpdated();
 		}
-
-		return true;
+		return isSaved;
 	}
 
 	/**
@@ -1038,5 +958,9 @@ public class Grid {
 	 */
 	public List<GridCell> getCells() {
 		return Collections.unmodifiableList(mCells);
+	}
+
+	public String getDefinition() {
+		return GridDefinition.getDefinition(this);
 	}
 }

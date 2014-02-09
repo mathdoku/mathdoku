@@ -8,8 +8,7 @@ import android.util.Log;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
-import net.mathdoku.plus.grid.Grid;
-import net.mathdoku.plus.storage.GridStorage;
+import net.mathdoku.plus.enums.SolvingAttemptStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,13 +36,6 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	private static final String KEY_SAVED_WITH_REVISION = "revision";
 	private static final String KEY_DATA = "data";
 	static final String KEY_STATUS = "status";
-
-	// Status of solving attempt
-	private static final int STATUS_UNDETERMINED = -1;
-	public static final int STATUS_NOT_STARTED = 0;
-	public static final int STATUS_UNFINISHED = 50;
-	public static final int STATUS_FINISHED_SOLVED = 100;
-	public static final int STATUS_REVEALED_SOLUTION = 101;
 
 	private static final String[] dataColumns = { KEY_ROWID, KEY_GRID_ID,
 			KEY_DATE_CREATED, KEY_DATE_UPDATED, KEY_SAVED_WITH_REVISION,
@@ -82,7 +74,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 				createColumn(KEY_SAVED_WITH_REVISION, "integer", " not null"),
 				createColumn(KEY_DATA, "string", "not null"),
 				createColumn(KEY_STATUS, "integer", "not null default "
-						+ STATUS_UNDETERMINED),
+						+ SolvingAttemptStatus.UNDETERMINED.getId()),
 				createForeignKey(KEY_GRID_ID, GridDatabaseAdapter.TABLE,
 						GridDatabaseAdapter.KEY_ROWID));
 	}
@@ -147,28 +139,20 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	/**
 	 * Inserts a new solving attempt record for a grid into the database.
 	 * 
-	 * @param grid
-	 *            The grid for which a new solving attempt record has to be
-	 *            inserted.
-	 * @param revision
-	 *            The app revision used to store the data.
+	 * @param solvingAttempt
+	 *            The solving attempt to be inserted.
 	 * @return The row id of the row created. -1 in case of an error.
 	 */
-	public int insert(Grid grid, int revision) {
+	public int insert(SolvingAttempt solvingAttempt) {
 		ContentValues initialValues = new ContentValues();
-		initialValues.put(KEY_GRID_ID, grid.getRowId());
+		initialValues.put(KEY_GRID_ID, solvingAttempt.mGridId);
 		initialValues.put(KEY_DATE_CREATED,
-				toSQLiteTimestamp(grid.getDateCreated()));
+				toSQLiteTimestamp(solvingAttempt.mDateCreated));
 		initialValues.put(KEY_DATE_UPDATED,
-				toSQLiteTimestamp(grid.getDateSaved()));
-		initialValues.put(KEY_SAVED_WITH_REVISION, revision);
-
-		GridStorage gridStorage = new GridStorage();
-		initialValues.put(KEY_DATA, gridStorage.toStorageString(grid));
-
-		// Status is derived from grid. It is stored as derived data for easy
-		// filtering on solving attempts for the archive
-		initialValues.put(KEY_STATUS, getDerivedStatus(grid));
+				toSQLiteTimestamp(solvingAttempt.mDateUpdated));
+		initialValues.put(KEY_SAVED_WITH_REVISION, solvingAttempt.mSavedWithRevision);
+		initialValues.put(KEY_DATA, solvingAttempt.mStorageString);
+		initialValues.put(KEY_STATUS, solvingAttempt.mSolvingAttemptStatus.getId());
 
 		long id = -1;
 		try {
@@ -218,8 +202,8 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 					.getString(cursor.getColumnIndexOrThrow(KEY_DATE_UPDATED)));
 			solvingAttempt.mSavedWithRevision = cursor.getInt(cursor
 					.getColumnIndexOrThrow(KEY_SAVED_WITH_REVISION));
-			solvingAttempt.mData = new SolvingAttemptData(
-					cursor.getString(cursor.getColumnIndexOrThrow(KEY_DATA)));
+			solvingAttempt.mStorageString =
+					cursor.getString(cursor.getColumnIndexOrThrow(KEY_DATA));
 		} catch (SQLiteException e) {
 			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				e.printStackTrace();
@@ -268,62 +252,20 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	}
 
 	/**
-	 * Update the data of a solving attempt with given data. Also the last
-	 * update timestamp is set. It is required that the record already exists.
-	 * The id should never be changed.
+	 * Update the solving attempt.
 	 * 
-	 * @param id
-	 *            The id of the solving attempt to be updated.
-	 * @param grid
-	 *            The grid to be stored in the solving attempt.
+	 * @param solvingAttempt The solving attempt to be updated.
 	 * @return True in case the statistics have been updated. False otherwise.
 	 */
-	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
-	public boolean update(int id, Grid grid) {
-		ContentValues newValues = new ContentValues();
-		newValues.put(KEY_DATE_UPDATED,
-				toSQLiteTimestamp(new java.util.Date().getTime()));
-		return update(id, grid, newValues);
-	}
-
-	/**
-	 * Update the data of a solving attempt with given data. The last update
-	 * timestamp is not updated. It is required that the record already exists.
-	 * The id should never be changed.
-	 * 
-	 * @param id
-	 *            The id of the solving attempt to be updated.
-	 * @param grid
-	 *            The grid to be stored in the solving attempt.
-	 * @return True in case the statistics have been updated. False otherwise.
-	 */
-	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
-	public boolean updateOnAppUpgrade(int id, Grid grid) {
-		return update(id, grid, new ContentValues());
-	}
-
-	/**
-	 * Update the solving attempt. The given content values will be updated with
-	 * information from the grid.
-	 * 
-	 * @param id
-	 *            The id of the solving attempt to be updated.
-	 * @param grid
-	 *            The grid to be stored in the solving attempt.
-	 * @param contentValues
-	 *            The content values to be use as base for updating.
-	 * @return True in case the statistics have been updated. False otherwise.
-	 */
-	private boolean update(int id, Grid grid, ContentValues contentValues) {
-		GridStorage gridStorage = new GridStorage();
-		contentValues.put(KEY_DATA, gridStorage.toStorageString(grid));
-
-		// Status is derived from grid. It is stored as derived data for easy
-		// filtering on solving attempts for the archive
-		contentValues.put(KEY_STATUS, getDerivedStatus(grid));
+	public boolean update(SolvingAttempt solvingAttempt) {
+		ContentValues contentValues = new ContentValues();
+		contentValues.put(KEY_DATE_UPDATED, toSQLiteTimestamp(solvingAttempt.mDateUpdated));
+		contentValues.put(KEY_SAVED_WITH_REVISION, solvingAttempt.mSavedWithRevision);
+		contentValues.put(KEY_DATA, solvingAttempt.mStorageString);
+		contentValues.put(KEY_STATUS, solvingAttempt.mSolvingAttemptStatus.getId());
 
 		return (mSqliteDatabase.update(TABLE, contentValues, KEY_ROWID + " = "
-				+ id, null) == 1);
+				+ solvingAttempt.mId, null) == 1);
 	}
 
 	/**
@@ -364,32 +306,6 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 			}
 		}
 		return idArrayList;
-	}
-
-	/**
-	 * Get the status of this solving attempt.
-	 * 
-	 * @param grid
-	 *            The grid to which the solving attempt applies.
-	 * @return The status of the solving attempt.
-	 */
-	private int getDerivedStatus(Grid grid) {
-		// Check if the game was finished by revealing the solution
-		if (grid.isSolutionRevealed()) {
-			return STATUS_REVEALED_SOLUTION;
-		}
-
-		// Check if the game has been solved manually
-		if (grid.isActive() == false) {
-			return STATUS_FINISHED_SOLVED;
-		}
-
-		// Check if the grid is empty
-		if (grid.isEmpty()) {
-			return STATUS_NOT_STARTED;
-		}
-
-		return STATUS_UNFINISHED;
 	}
 
 	/**

@@ -1,11 +1,12 @@
 package net.mathdoku.plus.storage.database;
 
+import net.mathdoku.plus.enums.SolvingAttemptStatus;
+
 /**
  * Mapping for records in database table SolvingAttempt. Note: it depends on the
  * specific query which was executed whether a field is filled.
  */
 public class SolvingAttempt {
-
 	// Unique row id for the solving attempt in the database.
 	public int mId;
 
@@ -23,5 +24,8 @@ public class SolvingAttempt {
 	public int mSavedWithRevision;
 
 	// The compound storage string
-	public SolvingAttemptData mData;
+	public String mStorageString;
+
+	// Status of the solving attempt.
+	public SolvingAttemptStatus mSolvingAttemptStatus;
 }

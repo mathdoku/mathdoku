@@ -9,7 +9,6 @@ import android.util.Log;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
-import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.statistics.CumulativeStatistics;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.statistics.HistoricStatistics;
@@ -185,40 +184,29 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	}
 
 	/**
-	 * Inserts a new statistics record for a grid into the database.
+	 * Inserts a new statistics record into the database.
 	 * 
-	 * @param grid
-	 *            The grid for which a new statistics record has to be inserted.
-	 * @return The grid statistics created. Null in case of an error.
+	 * @param gridStatistics
+	 *            The grid new statistics to be inserted.
+	 * @return The row id of statistics record created. -1 in case of an error.
 	 */
-	public GridStatistics insert(Grid grid) {
-		java.sql.Timestamp now = new java.sql.Timestamp(
-				new java.util.Date().getTime());
-		// Determine the number of solving attempts (excluding the attempt
-		// currently loaded in the grid)which exist for this grid.
-		// Note: replay == 0 means it is the first attempt to solve this grid.
-		int countSolvingAttemptsForGrid = new SolvingAttemptDatabaseAdapter()
-				.countSolvingAttemptForGrid(grid.getRowId())
-				- (grid.getSolvingAttemptId() > 0 ? 1 : 0);
-
-		ContentValues initialValues = new ContentValues();
-		initialValues.put(KEY_GRID_ID, grid.getRowId());
-		initialValues.put(KEY_REPLAY, countSolvingAttemptsForGrid);
-		initialValues.put(KEY_CELLS_EMPTY,
-				grid.getGridSize() * grid.getGridSize());
-		initialValues.put(KEY_FIRST_MOVE, now.toString());
-		initialValues.put(KEY_LAST_MOVE, now.toString());
-		initialValues.put(KEY_INCLUDE_IN_STATISTICS, DatabaseAdapter
-				.toSQLiteBoolean(countSolvingAttemptsForGrid == 0));
+	public int insert(GridStatistics gridStatistics) {
+		ContentValues contentValues = new ContentValues();
+		contentValues.put(KEY_GRID_ID, gridStatistics.mGridId);
+		contentValues.put(KEY_REPLAY, gridStatistics.mReplayCount);
+		contentValues.put(KEY_CELLS_EMPTY, gridStatistics.mCellsEmpty);
+		contentValues.put(KEY_FIRST_MOVE, gridStatistics.mFirstMove.toString());
+		contentValues.put(KEY_LAST_MOVE, gridStatistics.mLastMove.toString());
+		contentValues.put(KEY_INCLUDE_IN_STATISTICS, gridStatistics.mIncludedInStatistics);
 
 		long id;
 		try {
-			id = mSqliteDatabase.insertOrThrow(TABLE, null, initialValues);
+			id = mSqliteDatabase.insertOrThrow(TABLE, null, contentValues);
 		} catch (SQLiteException e) {
 			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				e.printStackTrace();
 			}
-			return null;
+			return -1;
 		}
 
 		if (id < 0) {
@@ -227,7 +215,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		}
 
 		// Retrieve the record created.
-		return get((int) id);
+		return (int) id;
 	}
 
 	/**

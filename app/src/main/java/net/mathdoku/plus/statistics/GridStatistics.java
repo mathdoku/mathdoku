@@ -260,4 +260,12 @@ public class GridStatistics {
 	public boolean isIncludedInStatistics() {
 		return mIncludedInStatistics;
 	}
+
+	public void setFirstMove(long datetime) {
+		mFirstMove = new java.sql.Timestamp(datetime);
+	}
+
+	public void setLastMove(long datetime) {
+		mLastMove = new java.sql.Timestamp(datetime);
+	}
 }

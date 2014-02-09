@@ -13,7 +13,6 @@ import net.mathdoku.plus.storage.GridStorage;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.database.GridRow;
 import net.mathdoku.plus.storage.database.SolvingAttempt;
-import net.mathdoku.plus.storage.database.SolvingAttemptData;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
 
@@ -56,7 +55,7 @@ public class GridLoaderTest {
 			mDateCreated = 12345678;
 			mDateUpdated = 123456789;
 			mSavedWithRevision = 596;
-			setData();
+			setStorageString();
 		}
 
 		public SolvingAttemptStub setId(int id) {
@@ -92,21 +91,21 @@ public class GridLoaderTest {
 		public SolvingAttemptStub setHasInvalidLineBetweenGridInformationAndCell() {
 			mIncludeInvalidLineBetweenGridInformationAndCell = true;
 			mGridObjectsCreatorStub.setHasUnExpectedDataBeforeGridCells();
-			setData();
+			setStorageString();
 
 			return this;
 		}
 
 		public SolvingAttemptStub setHasGeneralGridInformation() {
 			mIncludeGridInformation = true;
-			setData();
+			setStorageString();
 
 			return this;
 		}
 
 		public SolvingAttemptStub setNumberOfCells(int numberOfCells) {
 			mNumberOfCells = numberOfCells;
-			setData();
+			setStorageString();
 
 			return this;
 		}
@@ -114,14 +113,14 @@ public class GridLoaderTest {
 		public SolvingAttemptStub setHasInvalidLineBetweenCellAndCages() {
 			mIncludeInvalidLineBetweenCellAndCages = true;
 			mGridObjectsCreatorStub.setHasUnExpectedDataBeforeGridCages();
-			setData();
+			setStorageString();
 
 			return this;
 		}
 
 		public SolvingAttemptStub setNumberOfCages(int numberOfCages) {
 			mNumberOfCages = numberOfCages;
-			setData();
+			setStorageString();
 
 			return this;
 		}
@@ -129,26 +128,26 @@ public class GridLoaderTest {
 		public SolvingAttemptStub setHasInvalidLineBetweenCagesAndCellChanges() {
 			mIncludeInvalidLineBetweenCagesAndCellChanges = true;
 			mGridObjectsCreatorStub.setHasUnExpectedDataBeforeCellChanges();
-			setData();
+			setStorageString();
 
 			return this;
 		}
 
 		public SolvingAttemptStub setNumberOfCellChanges(int numberOfCellChanges) {
 			mNumberOfCellChanges = numberOfCellChanges;
-			setData();
+			setStorageString();
 
 			return this;
 		}
 
 		public SolvingAttemptStub setHasInvalidLineAfterCellChanges() {
 			mIncludeInvalidLineAfterCellChanges = true;
-			setData();
+			setStorageString();
 
 			return this;
 		}
 
-		private void setData() {
+		private void setStorageString() {
 			StringBuilder stringBuilder = new StringBuilder();
 
 			if (mIncludeGridInformation) {
@@ -195,11 +194,11 @@ public class GridLoaderTest {
 						.append(SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
 			}
 
-			mData = new SolvingAttemptData(stringBuilder.toString());
+			mStorageString = stringBuilder.toString();
 		}
 
 		public SolvingAttemptStub setNullData() {
-			mData = null;
+			mStorageString = null;
 
 			return this;
 		}
@@ -367,9 +366,12 @@ public class GridLoaderTest {
 			} else {
 				mNumberOfGridCageStorageMocksReturningAValidStorageString--;
 			}
-			when(gridCageStorage.getCageBuilderFromStorageString(anyString(), anyInt(),
-																 any(ArrayList.class)))
-					.thenReturn((isValidStorageString ? mock(CageBuilder.class) : null));
+			when(
+					gridCageStorage.getCageBuilderFromStorageString(
+							anyString(), anyInt(), any(ArrayList.class)))
+					.thenReturn(
+							(isValidStorageString ? mock(CageBuilder.class)
+									: null));
 
 			return gridCageStorage;
 		}
@@ -672,7 +674,8 @@ public class GridLoaderTest {
 				numberOfCages, numberOfCellChanges, solvingAttemptStub);
 		mGridLoader.setThrowExceptionOnError(true);
 
-		assertThat("Grid load", mGridLoader.load(solvingAttemptId), is(notNullValue()));
+		assertThat("Grid load", mGridLoader.load(solvingAttemptId),
+				is(notNullValue()));
 		GridBuilder gridBuilder = mGridObjectsCreatorStub.getGridBuilder();
 		assertThat("Grid has number of cell changes",
 				gridBuilder.mCellChanges.size(), is(numberOfCellChanges));
