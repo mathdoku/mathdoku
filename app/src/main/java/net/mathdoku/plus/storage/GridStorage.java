@@ -26,19 +26,35 @@ public class GridStorage {
 	private List<GridCage> mCages;
 	private List<CellChange> mCellChanges;
 
-	private GridStorageObjectsCreator mGridStorageObjectsCreator;
+	// The Objects Creator is responsible for creating all new objects needed by
+	// this class. For unit testing purposes the default create methods can be
+	// overridden if needed.
+	public static class ObjectsCreator {
+		public GridCageStorage createGridCageStorage() {
+			return new GridCageStorage();
+		}
+
+		public GridCellStorage createGridCellStorage() {
+			return new GridCellStorage();
+		}
+
+		public CellChangeStorage createCellChangeStorage() {
+			return new CellChangeStorage();
+		}
+	}
+	private GridStorage.ObjectsCreator mObjectsCreator;
 
 	public GridStorage() {
-		mGridStorageObjectsCreator = new GridStorageObjectsCreator();
+		mObjectsCreator = new GridStorage.ObjectsCreator();
 	}
 
 	public void setObjectsCreator(
-			GridStorageObjectsCreator gridStorageObjectsCreator) {
-		if (gridStorageObjectsCreator == null) {
+			GridStorage.ObjectsCreator objectsCreator) {
+		if (objectsCreator == null) {
 			throw new InvalidParameterException(
-					"Parameter gridStorageObjectsCreator can not be null.");
+					"Parameter objectsCreator cannot be null.");
 		}
-		mGridStorageObjectsCreator = gridStorageObjectsCreator;
+		mObjectsCreator = objectsCreator;
 	}
 
 	/**
@@ -121,7 +137,7 @@ public class GridStorage {
 
 		// Store information about the cells. Use one line per single
 		// cell.
-		GridCellStorage gridCellStorage = mGridStorageObjectsCreator
+		GridCellStorage gridCellStorage = mObjectsCreator
 				.createGridCellStorage();
 		for (GridCell cell : mCells) {
 			stringBuilder.append(gridCellStorage.toStorageString(cell)).append(
@@ -131,7 +147,7 @@ public class GridStorage {
 		// Store information about the cages. Use one line per single
 		// cage.
 		if (mCages != null) {
-			GridCageStorage gridCageStorage = mGridStorageObjectsCreator
+			GridCageStorage gridCageStorage = mObjectsCreator
 					.createGridCageStorage();
 			for (GridCage cage : mCages) {
 				stringBuilder
@@ -143,7 +159,7 @@ public class GridStorage {
 		// Store information about the cell changes. Use one line per single
 		// cell change. Note: watch for lengthy line due to recursive cell
 		// changes.
-		CellChangeStorage cellChangeStorage = mGridStorageObjectsCreator
+		CellChangeStorage cellChangeStorage = mObjectsCreator
 				.createCellChangeStorage();
 		if (mCellChanges != null) {
 			for (CellChange cellChange : mCellChanges) {

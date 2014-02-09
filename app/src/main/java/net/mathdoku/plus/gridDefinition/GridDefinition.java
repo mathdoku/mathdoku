@@ -1,5 +1,7 @@
 package net.mathdoku.plus.gridDefinition;
 
+import com.srlee.DLX.MathDokuDLX;
+
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.enums.PuzzleComplexity;
@@ -8,12 +10,12 @@ import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.GridBuilder;
 import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.grid.GridCell;
-import net.mathdoku.plus.grid.GridObjectsCreator;
 import net.mathdoku.plus.grid.InvalidGridException;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.util.Util;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,30 +32,56 @@ public class GridDefinition {
 	public static final String DELIMITER_LEVEL1 = ":";
 	public static final String DELIMITER_LEVEL2 = ",";
 
-	private GridObjectsCreator mGridObjectsCreator;
-
 	private int mGridSize;
 	private List<GridCage> mCages;
 	private List<GridCell> mCells;
 	private int[] mCageIdPerCell;
 	private int[] mCountCellsPerCage;
 
+	public static class ObjectsCreator {
+		public GridCell createGridCell(int id, int gridSize) {
+			return new GridCell(id, gridSize);
+		}
+
+		public GridGeneratingParameters createGridGeneratingParameters() {
+			return new GridGeneratingParameters();
+		}
+
+		public MathDokuDLX createMathDokuDLX(int gridSize,
+											 List<GridCage> cages) {
+			return new MathDokuDLX(gridSize, cages);
+		}
+
+		public List<GridCell> createArrayListOfGridCells() {
+			return new ArrayList<GridCell>();
+		}
+
+		public List<GridCage> createArrayListOfGridCages() {
+			return new ArrayList<GridCage>();
+		}
+
+		public GridBuilder createGridBuilder() {
+			return new GridBuilder();
+		}
+	}
+	private GridDefinition.ObjectsCreator mObjectsCreator;
+
 	// By default this module throws exceptions on error when running in
 	// development mode only.
 	private boolean mThrowExceptionOnError;
 
 	public GridDefinition() {
-		mGridObjectsCreator = new GridObjectsCreator();
+		mObjectsCreator = new GridDefinition.ObjectsCreator();
 
 		setThrowExceptionOnError(Config.mAppMode == Config.AppMode.DEVELOPMENT);
 	}
 
-	public void setObjectsCreator(GridObjectsCreator gridObjectsCreator) {
-		if (gridObjectsCreator == null) {
+	public void setObjectsCreator(GridDefinition.ObjectsCreator objectsCreator) {
+		if (objectsCreator == null) {
 			throw new InvalidParameterException(
-					"Parameter gridObjectsCreator can not be null.");
+					"Parameter objectsCreator cannot be null.");
 		}
-		mGridObjectsCreator = gridObjectsCreator;
+		mObjectsCreator = objectsCreator;
 	}
 
 	/**
@@ -177,7 +205,7 @@ public class GridDefinition {
 		// The complexity is not needed to rebuild the puzzle, but it is stored
 		// as it is a great communicator to the (receiving) user how difficult
 		// the puzzle is.
-		GridGeneratingParameters mGridGeneratingParameters = mGridObjectsCreator
+		GridGeneratingParameters mGridGeneratingParameters = mObjectsCreator
 				.createGridGeneratingParameters();
 		mGridGeneratingParameters.mPuzzleComplexity = getPuzzleComplexity(definitionParts[ID_PART_COMPLEXITY]);
 		if (mGridGeneratingParameters.mPuzzleComplexity == null) {
@@ -222,7 +250,7 @@ public class GridDefinition {
 			return null;
 		}
 
-		mCages = mGridObjectsCreator.createArrayListOfGridCages();
+		mCages = mObjectsCreator.createArrayListOfGridCages();
 		for (int i = ID_PART_FIRST_CAGE; i < definitionParts.length; i++) {
 			if (createCage(definitionParts[i]) == false) {
 				return null;
@@ -240,7 +268,7 @@ public class GridDefinition {
 		}
 
 		// All data is gathered now
-		GridBuilder gridBuilder = mGridObjectsCreator.createGridBuilder();
+		GridBuilder gridBuilder = mObjectsCreator.createGridBuilder();
 		return gridBuilder
 				.setGridSize(mGridSize)
 				.setCells(mCells)
@@ -301,7 +329,7 @@ public class GridDefinition {
 
 	private boolean createArrayListOfCells(String cagesString,
 			int expectedNumberOfCages) {
-		mCells = mGridObjectsCreator.createArrayListOfGridCells();
+		mCells = mObjectsCreator.createArrayListOfGridCells();
 
 		// The cagesString contains the cage number for each individual cell.
 		// The cage number always consists of two digits.
@@ -312,7 +340,7 @@ public class GridDefinition {
 			int cageId = Integer.valueOf(matcher.group());
 
 			// Create new cell and add it to the cells list.
-			GridCell gridCell = mGridObjectsCreator.createGridCell(cellNumber,
+			GridCell gridCell = mObjectsCreator.createGridCell(cellNumber,
 					mGridSize);
 			gridCell.setCageId(cageId);
 			mCells.add(gridCell);
@@ -391,7 +419,7 @@ public class GridDefinition {
 
 	private boolean setCorrectCellValues() {
 		// Check whether a single solution can be found.
-		int[][] solution = mGridObjectsCreator.createMathDokuDLX(mGridSize,
+		int[][] solution = mObjectsCreator.createMathDokuDLX(mGridSize,
 				mCages).getSolutionGrid();
 		if (solution == null) {
 			// Either no or multiple solutions can be found. In both case this

@@ -8,6 +8,7 @@ import net.mathdoku.plus.gridDefinition.GridDefinition;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.statistics.GridStatistics.StatisticsCounterType;
+import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class Grid {
 	private final int mGridSize;
 	private final long mDateCreated;
 	private final GridGeneratingParameters mGridGeneratingParameters;
-	private final GridObjectsCreator mGridObjectsCreator;
+	private final Grid.ObjectsCreator mObjectsCreator;
 	private final List<GridCage> mCages;
 	private final List<GridCell> mCells;
 
@@ -72,6 +73,48 @@ public class Grid {
 	// Solved listener
 	private OnSolvedListener mSolvedListener;
 
+	public static class ObjectsCreator {
+		public GridStatistics createGridStatistics() {
+			return new GridStatistics();
+		}
+
+		public GridGeneratingParameters createGridGeneratingParameters() {
+			return new GridGeneratingParameters();
+		}
+
+		public List<GridCell> createArrayListOfGridCells() {
+			return new ArrayList<GridCell>();
+		}
+
+		public List<GridCage> createArrayListOfGridCages() {
+			return new ArrayList<GridCage>();
+		}
+
+		public List<CellChange> createArrayListOfCellChanges() {
+			return new ArrayList<CellChange>();
+		}
+
+		public GridCellSelectorInRowOrColumn createGridCellSelectorInRowOrColumn(
+				List<GridCell> cells, int row, int column) {
+			return new GridCellSelectorInRowOrColumn(cells, row, column);
+		}
+
+		public SolvingAttemptDatabaseAdapter createSolvingAttemptDatabaseAdapter() {
+			return new SolvingAttemptDatabaseAdapter();
+		}
+
+		public GridBuilder createGridBuilder() {
+			return new GridBuilder();
+		}
+		public CageBuilder createCageBuilder() {
+			return new CageBuilder();
+		}
+
+		public GridSaver createGridSaver() {
+			return new GridSaver();
+		}
+	}
+
 	/**
 	 * Prevent the Grid from being instantiated directly. To create a new
 	 * instance of {@link net.mathdoku.plus.grid.Grid} the GridBuilder has to be
@@ -88,7 +131,8 @@ public class Grid {
 		mSolvedListener = null;
 
 		// Get defaults from builder
-		mGridObjectsCreator = gridBuilder.mGridObjectsCreator;
+		mObjectsCreator = gridBuilder.mGridObjectsCreator == null ? new Grid.ObjectsCreator()
+				: gridBuilder.mGridObjectsCreator;
 		mGridSize = gridBuilder.mGridSize;
 		mGridGeneratingParameters = gridBuilder.mGridGeneratingParameters;
 		mGridStatistics = gridBuilder.mGridStatistics;
@@ -114,7 +158,7 @@ public class Grid {
 		setSelectedCell(findFirstSelectedCell());
 
 		if (mGridStatistics == null) {
-			mGridStatistics = mGridObjectsCreator.createGridStatistics();
+			mGridStatistics = mObjectsCreator.createGridStatistics();
 		}
 
 		setPreferences();
@@ -145,9 +189,9 @@ public class Grid {
 	}
 
 	private void validateGridObjectsCreatorThrowsExceptionOnError() {
-		if (mGridObjectsCreator == null) {
+		if (mObjectsCreator == null) {
 			throw new InvalidGridException(
-					"Cannot create a grid if GridObjectsCreator is null.");
+					"Cannot create a grid if mObjectsCreator is null.");
 		}
 	}
 
@@ -355,7 +399,7 @@ public class Grid {
 	 */
 	public void addMove(CellChange cellChange) {
 		if (mMoves == null) {
-			mMoves = mGridObjectsCreator.createArrayListOfCellChanges();
+			mMoves = mObjectsCreator.createArrayListOfCellChanges();
 		}
 
 		boolean identicalToLastMove = false;
@@ -406,7 +450,7 @@ public class Grid {
 		if (userValueBeforeUndo != cellChangeGridCell.getUserValue()) {
 			// Each cell in the same column or row as the restored cell, has to
 			// be checked for duplicate values.
-			GridCellSelectorInRowOrColumn gridCellSelectorInRowOrColumn = mGridObjectsCreator
+			GridCellSelectorInRowOrColumn gridCellSelectorInRowOrColumn = mObjectsCreator
 					.createGridCellSelectorInRowOrColumn(mCells,
 							cellChangeGridCell.getRow(),
 							cellChangeGridCell.getColumn());
@@ -632,7 +676,7 @@ public class Grid {
 	 * @return True in case everything has been saved. False otherwise.
 	 */
 	public boolean save() {
-		GridSaver gridSaver = mGridObjectsCreator.createGridSaver();
+		GridSaver gridSaver = mObjectsCreator.createGridSaver();
 		boolean isSaved = gridSaver.save(this);
 		if (isSaved) {
 			mRowId = gridSaver.getRowId();
@@ -651,7 +695,7 @@ public class Grid {
 	 */
 	@SuppressWarnings("UnusedReturnValue")
 	public boolean saveOnAppUpgrade() {
-		GridSaver gridSaver = mGridObjectsCreator.createGridSaver();
+		GridSaver gridSaver = mObjectsCreator.createGridSaver();
 		boolean isSaved = gridSaver.saveOnAppUpgrade(this);
 		if (isSaved) {
 			mRowId = gridSaver.getRowId();
@@ -659,6 +703,7 @@ public class Grid {
 			mGridStatistics = gridSaver.getGridStatistics();
 			mDateUpdated = gridSaver.getDateUpdated();
 		}
+
 		return isSaved;
 	}
 
@@ -715,7 +760,7 @@ public class Grid {
 		// Copy all cages without the play history
 		List<GridCage> cages = new ArrayList<GridCage>();
 		for (GridCage cage : mCages) {
-			CageBuilder cageBuilder = mGridObjectsCreator.createCageBuilder();
+			CageBuilder cageBuilder = mObjectsCreator.createCageBuilder();
 			GridCage gridCage = cageBuilder
 					.setId(cage.getId())
 					.setResult(cage.getResult())
@@ -727,7 +772,7 @@ public class Grid {
 		}
 
 		// Create a new grid
-		return mGridObjectsCreator
+		return mObjectsCreator
 				.createGridBuilder()
 				.setGridSize(mGridSize)
 				.setGridId(mRowId)

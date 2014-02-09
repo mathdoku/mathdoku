@@ -14,8 +14,6 @@ import net.mathdoku.plus.util.Util;
 import java.security.InvalidParameterException;
 
 public class GridSaver {
-	GridObjectsCreator mGridObjectsCreator;
-
 	private int mRowId;
 	private int mSolvingAttemptId;
 	private GridStatistics mGridStatistics;
@@ -23,18 +21,47 @@ public class GridSaver {
 	private boolean mSetDateUpdatedOnUpdateOfSolvingAttempt;
 	private boolean mIsSaved;
 
+	public static class ObjectsCreator {
+		public DatabaseHelper createDatabaseHelper() {
+			return DatabaseHelper.getInstance();
+		}
+
+		public GridDatabaseAdapter createGridDatabaseAdapter() {
+			return new GridDatabaseAdapter();
+		}
+
+		public SolvingAttemptDatabaseAdapter createSolvingAttemptDatabaseAdapter() {
+			return new SolvingAttemptDatabaseAdapter();
+		}
+
+		public StatisticsDatabaseAdapter createStatisticsDatabaseAdapter() {
+			return new StatisticsDatabaseAdapter();
+		}
+
+		public SolvingAttempt createSolvingAttempt() {
+			return new SolvingAttempt();
+		}
+
+		public GridStorage createGridStorage() {
+			return new GridStorage();
+		}
+	}
+	GridSaver.ObjectsCreator mObjectsCreator;
+
+
+
 	public GridSaver() {
-		mGridObjectsCreator = new GridObjectsCreator();
+		mObjectsCreator = new GridSaver.ObjectsCreator();
 		mSetDateUpdatedOnUpdateOfSolvingAttempt = true;
 		mIsSaved = false;
 	}
 
-	public GridSaver setObjectsCreator(GridObjectsCreator gridObjectsCreator) {
-		if (gridObjectsCreator == null) {
+	public GridSaver setObjectsCreator(GridSaver.ObjectsCreator objectsCreator) {
+		if (objectsCreator == null) {
 			throw new InvalidParameterException(
-					"Parameter GridLoadObjectsCreator can not be null.");
+					"Parameter objectsCreator cannot be null.");
 		}
-		mGridObjectsCreator = gridObjectsCreator;
+		mObjectsCreator = objectsCreator;
 
 		return this;
 	}
@@ -56,7 +83,7 @@ public class GridSaver {
 		mSolvingAttemptId = grid.getSolvingAttemptId();
 		mGridStatistics = grid.getGridStatistics();
 
-		DatabaseHelper databaseHelper = mGridObjectsCreator
+		DatabaseHelper databaseHelper = mObjectsCreator
 				.createDatabaseHelper();
 		databaseHelper.beginTransaction();
 
@@ -78,7 +105,7 @@ public class GridSaver {
 			// Before insert first check if already a grid record exists for the
 			// grid definition. If so, then reuse the existing grid definition.
 			String gridDefinition = grid.getDefinition();
-			GridDatabaseAdapter gridDatabaseAdapter = mGridObjectsCreator
+			GridDatabaseAdapter gridDatabaseAdapter = mObjectsCreator
 					.createGridDatabaseAdapter();
 			GridRow gridRow = gridDatabaseAdapter
 					.getByGridDefinition(gridDefinition);
@@ -90,19 +117,19 @@ public class GridSaver {
 	}
 
 	private boolean saveSolvingAttempt(Grid grid) {
-		SolvingAttempt solvingAttempt = new SolvingAttempt();
+		SolvingAttempt solvingAttempt = mObjectsCreator.createSolvingAttempt();
 		solvingAttempt.mId = mSolvingAttemptId;
 		solvingAttempt.mGridId = mRowId;
 		solvingAttempt.mDateCreated = grid.getDateCreated();
 		solvingAttempt.mDateUpdated = grid.getDateSaved();
 		solvingAttempt.mSavedWithRevision = Util.getPackageVersionNumber();
-		solvingAttempt.mStorageString = new GridStorage().toStorageString(grid);
+		solvingAttempt.mStorageString = mObjectsCreator.createGridStorage().toStorageString(grid);
 		solvingAttempt.mSolvingAttemptStatus = SolvingAttemptStatus
 				.getDerivedStatus(grid.isSolutionRevealed(), grid.isActive(),
 						grid.isEmpty());
 
 		// Insert or update the solving attempt.
-		SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = mGridObjectsCreator
+		SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = mObjectsCreator
 				.createSolvingAttemptDatabaseAdapter();
 		if (mSolvingAttemptId < 0) {
 			mDateUpdated = solvingAttempt.mDateUpdated;
@@ -120,7 +147,7 @@ public class GridSaver {
 
 	private boolean saveStatistics(Grid grid) {
 		// Insert or update the grid statistics.
-		StatisticsDatabaseAdapter statisticsDatabaseAdapter = mGridObjectsCreator
+		StatisticsDatabaseAdapter statisticsDatabaseAdapter = mObjectsCreator
 				.createStatisticsDatabaseAdapter();
 		if (mGridStatistics.mId < 0) {
 			mGridStatistics.mGridId = mRowId;
@@ -131,7 +158,7 @@ public class GridSaver {
 
 			// Count all solving attempts for this grid. Note taht the solving
 			// attempt is already inserted before the statistics are inserted.
-			int countSolvingAttemptsForGrid = new SolvingAttemptDatabaseAdapter()
+			int countSolvingAttemptsForGrid = mObjectsCreator.createSolvingAttemptDatabaseAdapter()
 					.countSolvingAttemptForGrid(mRowId);
 			mGridStatistics.mReplayCount = countSolvingAttemptsForGrid - 1;
 			mGridStatistics.mIncludedInStatistics = countSolvingAttemptsForGrid == 1;

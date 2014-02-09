@@ -25,8 +25,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	// this class. For unit testing purposes the default create methods can be
 	// overridden if needed.
 	public static class ObjectsCreator {
-		public DatabaseHelper createDatabaseHelperSingletonInstance(
-				Context context) {
+		public DatabaseHelper createDatabaseHelper(Context context) {
 			return new DatabaseHelper(context);
 		}
 	}
@@ -61,8 +60,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			// order to avoid locking problems and leaking an Activity's
 			// context.
 			mDatabaseHelperSingletonInstance = new ObjectsCreator()
-					.createDatabaseHelperSingletonInstance(context
-							.getApplicationContext());
+					.createDatabaseHelper(context.getApplicationContext());
 		}
 		return mDatabaseHelperSingletonInstance;
 	}
@@ -70,23 +68,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	/**
 	 * Creates new instance of
 	 * {@link net.mathdoku.plus.storage.database.DatabaseHelper}. All objects in
-	 * this class will be created with the given ObjectsCreator. This method is
-	 * intended for unit testing.
+	 * this class will be created with the given DatabaseHelper.ObjectsCreator.
+	 * This method is intended for unit testing.
 	 * 
 	 * @param context
 	 *            The context in which the Preference object is created.
 	 * @param objectsCreator
-	 *            The ObjectsCreator to be used by this class. Only create
-	 *            methods for which the default implementation does not suffice,
-	 *            should be overridden.
+	 *            The DatabaseHelper.ObjectsCreator to be used by this class.
+	 *            Only create methods for which the default implementation does
+	 *            not suffice, should be overridden.
 	 * @return The singleton instance for the Preferences.
 	 */
 	public static DatabaseHelper getInstance(Context context,
-			ObjectsCreator objectsCreator) {
+			DatabaseHelper.ObjectsCreator objectsCreator) {
 		if (objectsCreator != null) {
 			mDatabaseHelperSingletonInstance = objectsCreator
-					.createDatabaseHelperSingletonInstance(context
-							.getApplicationContext());
+					.createDatabaseHelper(context.getApplicationContext());
 		}
 		return getInstance(context);
 	}

@@ -223,9 +223,7 @@ public class GridTest {
 	private GridCellSelectorInRowOrColumn mGridCellSelectorInRowOrColumn = mock(GridCellSelectorInRowOrColumn.class);
 	private GridSaver mGridSaverMock = mock(GridSaver.class);
 
-	private GridObjectsCreatorStub mGridObjectsCreatorStub;
-
-	private class GridObjectsCreatorStub extends GridObjectsCreator {
+	private class GridTestObjectsCreator extends Grid.ObjectsCreator {
 		// Unreveal the array list of cell changes as it is hidden in the Grid
 		// Object.
 		public List<CellChange> mArrayListOfCellChanges = null;
@@ -257,6 +255,7 @@ public class GridTest {
 			return mGridSaverMock;
 		}
 	}
+	private GridTestObjectsCreator mGridTestObjectsCreator;
 
 	@Before
 	public void setUp() {
@@ -264,8 +263,7 @@ public class GridTest {
 
 		Preferences.ObjectsCreator preferencesObjectsCreator = new Preferences.ObjectsCreator() {
 			@Override
-			public Preferences createPreferencesSingletonInstance(
-					Context context) {
+			public Preferences createPreferences(Context context) {
 				return mock(Preferences.class);
 			}
 		};
@@ -275,9 +273,9 @@ public class GridTest {
 		mPreferencesMock = Preferences.getInstance(mActivity,
 				preferencesObjectsCreator);
 
-		mGridObjectsCreatorStub = new GridObjectsCreatorStub();
 		mGridBuilderStub = new GridBuilderStub();
-		mGridBuilderStub.setObjectsCreator(mGridObjectsCreatorStub);
+		mGridTestObjectsCreator = new GridTestObjectsCreator();
+		mGridBuilderStub.setGridObjectsCreator(mGridTestObjectsCreator);
 		mGridBuilderStub.setupDefaultWhichDoesNotThrowErrorsOnBuild();
 	}
 
@@ -672,7 +670,7 @@ public class GridTest {
 		grid.addMove(mCellChangeMock);
 
 		assertThat("Number of cell changes",
-				mGridObjectsCreatorStub.mArrayListOfCellChanges.size(), is(1));
+				mGridTestObjectsCreator.mArrayListOfCellChanges.size(), is(1));
 	}
 
 	@Test
@@ -681,7 +679,7 @@ public class GridTest {
 		grid.addMove(mCellChangeMock);
 
 		assertThat("Number of cell changes",
-				mGridObjectsCreatorStub.mArrayListOfCellChanges.size(), is(1));
+				mGridTestObjectsCreator.mArrayListOfCellChanges.size(), is(1));
 	}
 
 	@Test
@@ -692,7 +690,7 @@ public class GridTest {
 		grid.addMove(mock(CellChange.class));
 
 		assertThat("Number of cell changes",
-				mGridObjectsCreatorStub.mArrayListOfCellChanges.size(), is(2));
+				mGridTestObjectsCreator.mArrayListOfCellChanges.size(), is(2));
 	}
 
 	@Test
@@ -703,7 +701,7 @@ public class GridTest {
 		grid.addMove(mCellChangeMock);
 
 		assertThat("Number of cell changes",
-				mGridObjectsCreatorStub.mArrayListOfCellChanges.size(), is(1));
+				mGridTestObjectsCreator.mArrayListOfCellChanges.size(), is(1));
 	}
 
 	@Test

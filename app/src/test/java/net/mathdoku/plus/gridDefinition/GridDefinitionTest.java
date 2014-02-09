@@ -1,5 +1,25 @@
 package net.mathdoku.plus.gridDefinition;
 
+import com.srlee.DLX.MathDokuDLX;
+
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.enums.CageOperator;
+import net.mathdoku.plus.enums.PuzzleComplexity;
+import net.mathdoku.plus.grid.Grid;
+import net.mathdoku.plus.grid.GridCage;
+import net.mathdoku.plus.grid.GridCell;
+import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.List;
+
+import robolectric.RobolectricGradleTestRunner;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -8,36 +28,15 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.List;
-
-import net.mathdoku.plus.config.Config;
-import net.mathdoku.plus.enums.CageOperator;
-import net.mathdoku.plus.enums.PuzzleComplexity;
-import net.mathdoku.plus.grid.Grid;
-import net.mathdoku.plus.grid.GridCage;
-import net.mathdoku.plus.grid.GridCell;
-import net.mathdoku.plus.grid.GridObjectsCreator;
-import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import robolectric.RobolectricGradleTestRunner;
-
-import com.srlee.DLX.MathDokuDLX;
-
 @RunWith(RobolectricGradleTestRunner.class)
 public class GridDefinitionTest {
 	private GridDefinition mGridDefinition;
-	private GridObjectsCreatorStub mGridObjectsCreatorStub;
 	private String mGridDefinitionString;
 	private Grid mGrid;
 	private MathDokuDLX mMathDokuDLXMock = mock(MathDokuDLX.class);
 
-	private class GridObjectsCreatorStub extends GridObjectsCreator {
+	private class GridDefinitionTestObjectsCreator extends
+			GridDefinition.ObjectsCreator {
 		List<GridCell> gridCells;
 		List<GridCage> gridCages;
 
@@ -54,17 +53,18 @@ public class GridDefinitionTest {
 		}
 
 		@Override
-		public MathDokuDLX createMathDokuDLX(int gridSize,
-				List<GridCage> cages) {
+		public MathDokuDLX createMathDokuDLX(int gridSize, List<GridCage> cages) {
 			return mMathDokuDLXMock;
 		}
 	}
 
+	private GridDefinitionTestObjectsCreator mGridDefinitionTestObjectsCreator;
+
 	@Before
 	public void setup() {
-		mGridObjectsCreatorStub = new GridObjectsCreatorStub();
+		mGridDefinitionTestObjectsCreator = new GridDefinitionTestObjectsCreator();
 		mGridDefinition = new GridDefinition();
-		mGridDefinition.setObjectsCreator(mGridObjectsCreatorStub);
+		mGridDefinition.setObjectsCreator(mGridDefinitionTestObjectsCreator);
 
 		// Even when running the unit test in the debug variant, the grid loader
 		// should not throw development exceptions as the tests below only test
@@ -429,7 +429,7 @@ public class GridDefinitionTest {
 
 		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
 				is(notNullValue()));
-		assertThat(mGridObjectsCreatorStub.gridCages.get(0).getOperator(),
+		assertThat(mGridDefinitionTestObjectsCreator.gridCages.get(0).getOperator(),
 				is(CageOperator.NONE));
 	}
 
@@ -517,18 +517,14 @@ public class GridDefinitionTest {
 		mGrid = mGridDefinition.createGrid(mGridDefinitionString);
 
 		// Additional assertions in case an unexpected error occurs
-		// assertThat(mGridObjectsCreatorStub.gridCages.size(), is(1));
-		// assertThatCageHasIdAndResultAndOperator(0, 9, CageOperator.NONE);
-		// assertThat(mGridObjectsCreatorStub.gridCells.size(), is(1));
-		// assertThatCellHasIdAndCageIdAndCorrectValue(0, 0, solution[0][0]);
 		assertThat(mGrid, is(notNullValue()));
 		assertThat(mGrid.getPuzzleComplexity(), is(puzzleComplexity));
 	}
 
 	private void assertThatCageHasIdAndResultAndOperator(int cageId,
 			int cageResult, CageOperator cageOperator) {
-		assertThat(mGridObjectsCreatorStub.gridCages, is(notNullValue()));
-		GridCage cage = mGridObjectsCreatorStub.gridCages.get(cageId);
+		assertThat(mGridDefinitionTestObjectsCreator.gridCages, is(notNullValue()));
+		GridCage cage = mGridDefinitionTestObjectsCreator.gridCages.get(cageId);
 		assertThat(cage, is(notNullValue()));
 		assertThat(cage.getId(), is(cageId));
 		assertThat(cage.getResult(), is(cageResult));
@@ -544,7 +540,7 @@ public class GridDefinitionTest {
 
 		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
 				is(notNullValue()));
-		assertThat(mGridObjectsCreatorStub.gridCages.get(1).getOperator(),
+		assertThat(mGridDefinitionTestObjectsCreator.gridCages.get(1).getOperator(),
 				is(cageOperator));
 	}
 }

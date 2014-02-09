@@ -9,7 +9,6 @@ import java.util.Arrays;
  * {@link net.mathdoku.plus.grid.GridCage} instance.
  */
 public class CageBuilder {
-	private GridObjectsCreator mGridObjectsCreator; // Optional
 	private int mId; // Required
 	private CageOperator mCageOperator; // Required
 	private int mResult; // Required
@@ -18,25 +17,7 @@ public class CageBuilder {
 
 	public CageBuilder() {
 		// Set default values for all optionals
-		mGridObjectsCreator = new GridObjectsCreator();
 		mHideOperator = false;
-	}
-
-	/**
-	 * Only for Unit test purposes the objects creator should be overwritten if
-	 * needed.
-	 */
-	public CageBuilder setObjectsCreator(GridObjectsCreator gridObjectsCreator) {
-		mGridObjectsCreator = gridObjectsCreator;
-
-		// Set default values for variables which are required so it can be checked if they have been set.
-		mId = -1;
-		mCageOperator = null;
-		mResult = -1;
-		mHideOperator = false;
-		mCells = null;
-
-		return this;
 	}
 
 	public CageBuilder setId(int id) {
@@ -70,7 +51,7 @@ public class CageBuilder {
 	}
 
 	public GridCage build() {
-		return mGridObjectsCreator.createGridCage(this);
+		return new GridCage(this);
 	}
 
 	public int getId() {

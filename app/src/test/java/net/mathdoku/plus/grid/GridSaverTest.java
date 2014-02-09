@@ -42,28 +42,12 @@ public class GridSaverTest {
 	private SolvingAttemptDatabaseAdapter mSolvingAttemptDatabaseAdapterMock = mock(SolvingAttemptDatabaseAdapter.class);
 	private StatisticsDatabaseAdapter mStatisticsDatabaseAdapterMock = mock(StatisticsDatabaseAdapter.class);
 
-	private GridObjectsCreatorStub mGridObjectsCreatorStub;
+	private GridSaverTestObjectsCreator mGridSaverTestGridSaverTestObjectsCreator;
 
-	private class GridObjectsCreatorStub extends GridObjectsCreator {
+	private class GridSaverTestObjectsCreator extends GridSaver.ObjectsCreator {
 		// Unreveal the array list of cell changes as it is hidden in the Grid
 		// Object.
 		public List<CellChange> mArrayListOfCellChanges = null;
-
-		@Override
-		public GridStatistics createGridStatistics() {
-			return mGridStatisticsMock;
-		}
-
-		@Override
-		public GridGeneratingParameters createGridGeneratingParameters() {
-			return mGridGeneratingParametersMock;
-		}
-
-		@Override
-		public List<CellChange> createArrayListOfCellChanges() {
-			mArrayListOfCellChanges = super.createArrayListOfCellChanges();
-			return mArrayListOfCellChanges;
-		}
 
 		@Override
 		public DatabaseHelper createDatabaseHelper() {
@@ -104,9 +88,8 @@ public class GridSaverTest {
 		when(mGridMock.getDateCreated()).thenReturn(dateCreated);
 		when(mGridMock.getDateSaved()).thenReturn(dateCreated);
 
-		mGridSaver = new GridSaver();
-		mGridObjectsCreatorStub = new GridObjectsCreatorStub();
-		mGridSaver.setObjectsCreator(mGridObjectsCreatorStub);
+		mGridSaverTestGridSaverTestObjectsCreator = new GridSaverTestObjectsCreator();
+		mGridSaver = new GridSaver().setObjectsCreator(mGridSaverTestGridSaverTestObjectsCreator);
 	}
 
 	@Test

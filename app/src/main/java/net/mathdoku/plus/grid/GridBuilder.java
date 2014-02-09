@@ -3,7 +3,6 @@ package net.mathdoku.plus.grid;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.statistics.GridStatistics;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,7 +10,7 @@ import java.util.List;
  * {@link net.mathdoku.plus.grid.Grid} instance.
  */
 public class GridBuilder {
-	GridObjectsCreator mGridObjectsCreator; // Optional
+	Grid.ObjectsCreator mGridObjectsCreator; // Optional
 	int mGridSize; // Required
 	GridGeneratingParameters mGridGeneratingParameters; // Required
 	GridStatistics mGridStatistics; // Optional
@@ -27,7 +26,6 @@ public class GridBuilder {
 
 	public GridBuilder() {
 		// Set default values for all optionals
-		mGridObjectsCreator = new GridObjectsCreator();
 		mGridStatistics = null;
 		mDateCreated = System.currentTimeMillis();
 		mDateUpdated = mDateCreated;
@@ -41,10 +39,18 @@ public class GridBuilder {
 	}
 
 	/**
-	 * Only for Unit test purposes the objects creator should be overwritten if
-	 * needed.
+	 * Sets the Grids Object Creator which has to be passed to the Grid
+	 * constructor. This is not an ObjectCreator for class GridBuilder itself.
+	 * 
+	 * This method is intended to be called in unit tests only in case the
+	 * Grid.ObjectsCreator of class Grid needs to be overridden.
+	 * 
+	 * @param gridObjectsCreator
+	 *            The Grid.ObjectCreator to be passed to the Grid constructor.
+	 * @return the GridBuilder object so it can be chained.
 	 */
-	public GridBuilder setObjectsCreator(GridObjectsCreator gridObjectsCreator) {
+	public GridBuilder setGridObjectsCreator(
+			Grid.ObjectsCreator gridObjectsCreator) {
 		mGridObjectsCreator = gridObjectsCreator;
 		return this;
 	}
@@ -120,7 +126,9 @@ public class GridBuilder {
 	}
 
 	public Grid build() {
-		return mGridObjectsCreator.createGrid(this);
+		// The GridBuilder class does not use the ObjectsCreator pattern to
+		// create the new grid object.
+		return new Grid(this);
 	}
 
 	@Override

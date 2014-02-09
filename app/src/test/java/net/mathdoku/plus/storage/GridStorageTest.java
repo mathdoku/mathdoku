@@ -27,7 +27,6 @@ import static org.mockito.Mockito.when;
 @RunWith(RobolectricGradleTestRunner.class)
 public class GridStorageTest {
 	private GridStorage gridStorage;
-	private GridStorageObjectsCreator mGridStorageObjectsCreator;
 	private GridCellStorage mGridCellStorageMock = mock(GridCellStorage.class);
 	private CellChangeStorage mCellChangeStorageMock = mock(CellChangeStorage.class);
 	private GridCageStorage mGridCageStorageMock = mock(GridCageStorage.class);
@@ -116,26 +115,31 @@ public class GridStorageTest {
 		}
 	}
 
+	private class GridStorageTestObjectsCreator extends
+			GridStorage.ObjectsCreator {
+		@Override
+		public GridCageStorage createGridCageStorage() {
+			return mGridCageStorageMock;
+		}
+
+		@Override
+		public GridCellStorage createGridCellStorage() {
+			return mGridCellStorageMock;
+		}
+
+		@Override
+		public CellChangeStorage createCellChangeStorage() {
+			return mCellChangeStorageMock;
+		}
+	};
+
+	private GridStorageTestObjectsCreator mGridStorageTestObjectsCreator;
+
 	@Before
 	public void setup() {
 		gridStorage = new GridStorage();
-		mGridStorageObjectsCreator = new GridStorageObjectsCreator() {
-			@Override
-			public GridCageStorage createGridCageStorage() {
-				return mGridCageStorageMock;
-			}
-
-			@Override
-			public GridCellStorage createGridCellStorage() {
-				return mGridCellStorageMock;
-			}
-
-			@Override
-			public CellChangeStorage createCellChangeStorage() {
-				return mCellChangeStorageMock;
-			}
-		};
-		gridStorage.setObjectsCreator(mGridStorageObjectsCreator);
+		mGridStorageTestObjectsCreator = new GridStorageTestObjectsCreator();
+		gridStorage.setObjectsCreator(mGridStorageTestObjectsCreator);
 	}
 
 	@Test(expected = NullPointerException.class)

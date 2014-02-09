@@ -14,6 +14,7 @@ import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,29 +31,89 @@ public class GridLoader {
 	private List<GridCage> mGridCages;
 	private List<CellChange> mCellChanges;
 
-	private GridStorage mGridStorage;
+	public static class ObjectsCreator {
+
+		public GridBuilder createGridBuilder() {
+			return new GridBuilder();
+		}
+
+		public GridDatabaseAdapter createGridDatabaseAdapter() {
+			return new GridDatabaseAdapter();
+		}
+
+		public SolvingAttemptDatabaseAdapter createSolvingAttemptDatabaseAdapter() {
+			return new SolvingAttemptDatabaseAdapter();
+		}
+
+		public SolvingAttemptStorage createSolvingAttemptStorage(String storageString) {
+			return new SolvingAttemptStorage(storageString);
+		}
+
+		public GridStorage createGridStorage() {
+			return new GridStorage();
+		}
+
+		public List<GridCell> createArrayListOfGridCells() {
+			return new ArrayList<GridCell>();
+		}
+
+		public List<GridCage> createArrayListOfGridCages() {
+			return new ArrayList<GridCage>();
+		}
+
+		public List<CellChange> createArrayListOfCellChanges() {
+			return new ArrayList<CellChange>();
+		}
+
+		public GridCellStorage createGridCellStorage() {
+			return new GridCellStorage();
+		}
+
+		public GridCell createGridCell(GridCellStorage gridCellStorage) {
+			return new GridCell(gridCellStorage);
+		}
+
+		public GridCageStorage createGridCageStorage() {
+			return new GridCageStorage();
+		}
+
+		public GridCage createGridCage(CageBuilder cageBuilder) {
+			return new GridCage(cageBuilder);
+		}
+
+		public CellChangeStorage createCellChangeStorage() {
+			return new CellChangeStorage();
+		}
+
+		public CellChange createCellChange(CellChangeStorage cellChangeStorage) {
+			return new CellChange(cellChangeStorage);
+		}
+
+		public StatisticsDatabaseAdapter createStatisticsDatabaseAdapter() {
+			return new StatisticsDatabaseAdapter();
+		}
+	}
+	private GridLoader.ObjectsCreator mObjectsCreator;
 
 	// By default this module throws exceptions on error when running in
 	// development mode only.
 	private boolean mThrowExceptionOnError;
 
-	private GridObjectsCreator mGridObjectsCreator;
-
 	/**
 	 * Creates new instance of {@link net.mathdoku.plus.grid.GridLoader}.
 	 */
 	public GridLoader() {
-		mGridObjectsCreator = new GridObjectsCreator();
+		mObjectsCreator = new GridLoader.ObjectsCreator();
 
 		setThrowExceptionOnError(Config.mAppMode == Config.AppMode.DEVELOPMENT);
 	}
 
-	public void setObjectsCreator(GridObjectsCreator gridObjectsCreator) {
-		if (gridObjectsCreator == null) {
+	public void setObjectsCreator(GridLoader.ObjectsCreator objectsCreator) {
+		if (objectsCreator == null) {
 			throw new InvalidParameterException(
-					"Parameter GridLoadObjectsCreator can not be null.");
+					"Parameter objectsCreator cannot be null.");
 		}
-		mGridObjectsCreator = gridObjectsCreator;
+		mObjectsCreator = objectsCreator;
 	}
 
 	/**
@@ -69,12 +130,12 @@ public class GridLoader {
 			return null;
 		}
 
-		mGridBuilder = mGridObjectsCreator
+		mGridBuilder = mObjectsCreator
 				.createGridBuilder()
 				.setDateCreated(solvingAttempt.mDateCreated)
 				.setDateUpdated(solvingAttempt.mDateUpdated)
 				.setSolvingAttemptId(solvingAttempt.mGridId, solvingAttempt.mId);
-		GridRow gridRow = mGridObjectsCreator.createGridDatabaseAdapter().get(
+		GridRow gridRow = mObjectsCreator.createGridDatabaseAdapter().get(
 				solvingAttempt.mGridId);
 		if (gridRow == null) {
 			return null;
@@ -103,13 +164,13 @@ public class GridLoader {
 	}
 
 	private SolvingAttempt loadSolvingAttempt(int solvingAttemptId) {
-		SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = mGridObjectsCreator
+		SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = mObjectsCreator
 				.createSolvingAttemptDatabaseAdapter();
 		return solvingAttemptDatabaseAdapter.getData(solvingAttemptId);
 	}
 
 	private GridRow loadGridRow(int gridId) {
-		GridDatabaseAdapter gridDatabaseAdapter = mGridObjectsCreator
+		GridDatabaseAdapter gridDatabaseAdapter = mObjectsCreator
 				.createGridDatabaseAdapter();
 		return gridDatabaseAdapter.get(gridId);
 	}
@@ -131,7 +192,7 @@ public class GridLoader {
 				return false;
 			}
 
-			SolvingAttemptStorage solvingAttemptStorage = mGridObjectsCreator
+			SolvingAttemptStorage solvingAttemptStorage = mObjectsCreator
 					.createSolvingAttemptStorage(solvingAttempt.mStorageString);
 			if ((line = solvingAttemptStorage.getFirstLine()) == null) {
 				if (mThrowExceptionOnError) {
@@ -141,7 +202,7 @@ public class GridLoader {
 				return false;
 			}
 
-			mGridStorage = mGridObjectsCreator.createGridStorage();
+			GridStorage mGridStorage = mObjectsCreator.createGridStorage();
 			if (mGridStorage.fromStorageString(line, mSavedWithRevision) == false) {
 				if (mThrowExceptionOnError) {
 					throw new InvalidGridException(
@@ -163,7 +224,7 @@ public class GridLoader {
 			}
 
 			// Read cells
-			mGridCells = mGridObjectsCreator.createArrayListOfGridCells();
+			mGridCells = mObjectsCreator.createArrayListOfGridCells();
 			while (loadCell(line)) {
 				line = solvingAttemptStorage.getNextLine();
 			}
@@ -178,7 +239,7 @@ public class GridLoader {
 			mGridBuilder.setCells(mGridCells);
 
 			// Read cages
-			mGridCages = mGridObjectsCreator.createArrayListOfGridCages();
+			mGridCages = mObjectsCreator.createArrayListOfGridCages();
 			while (loadCage(line)) {
 				line = solvingAttemptStorage.getNextLine();
 			}
@@ -195,7 +256,7 @@ public class GridLoader {
 			mGridBuilder.setCages(mGridCages);
 
 			// Remaining lines contain cell changes (zero or more expected)
-			mCellChanges = mGridObjectsCreator.createArrayListOfCellChanges();
+			mCellChanges = mObjectsCreator.createArrayListOfCellChanges();
 			while (loadCellChange(line)) {
 				line = solvingAttemptStorage.getNextLine();
 			}
@@ -241,12 +302,12 @@ public class GridLoader {
 			return false;
 		}
 
-		GridCellStorage mGridCellStorage = mGridObjectsCreator
+		GridCellStorage mGridCellStorage = mObjectsCreator
 				.createGridCellStorage();
 		if (mGridCellStorage.fromStorageString(line, mSavedWithRevision) == false) {
 			return false;
 		}
-		GridCell cell = mGridObjectsCreator.createGridCell(mGridCellStorage);
+		GridCell cell = mObjectsCreator.createGridCell(mGridCellStorage);
 		mGridCells.add(cell);
 
 		return true;
@@ -257,7 +318,7 @@ public class GridLoader {
 			return false;
 		}
 
-		GridCageStorage gridCageStorage = mGridObjectsCreator
+		GridCageStorage gridCageStorage = mObjectsCreator
 				.createGridCageStorage();
 		CageBuilder cageBuilder = gridCageStorage
 				.getCageBuilderFromStorageString(line, mSavedWithRevision,
@@ -265,7 +326,7 @@ public class GridLoader {
 		if (cageBuilder == null) {
 			return false;
 		}
-		GridCage cage = mGridObjectsCreator.createGridCage(cageBuilder);
+		GridCage cage = mObjectsCreator.createGridCage(cageBuilder);
 		mGridCages.add(cage);
 
 		return true;
@@ -276,13 +337,13 @@ public class GridLoader {
 			return false;
 		}
 
-		CellChangeStorage cellChangeStorage = mGridObjectsCreator
+		CellChangeStorage cellChangeStorage = mObjectsCreator
 				.createCellChangeStorage();
 		if (!cellChangeStorage.fromStorageString(line, mGridCells,
 				mSavedWithRevision)) {
 			return false;
 		}
-		CellChange cellChange = mGridObjectsCreator
+		CellChange cellChange = mObjectsCreator
 				.createCellChange(cellChangeStorage);
 		mCellChanges.add(cellChange);
 
@@ -293,7 +354,7 @@ public class GridLoader {
 	 * Load the most recent statistics for this grid.
 	 */
 	private boolean loadStatistics(int gridId) {
-		StatisticsDatabaseAdapter statisticsDatabaseAdapter = mGridObjectsCreator
+		StatisticsDatabaseAdapter statisticsDatabaseAdapter = mObjectsCreator
 				.createStatisticsDatabaseAdapter();
 		// TODO: statistics should be loaded for a specific solving attempt
 		GridStatistics gridStatistics = statisticsDatabaseAdapter

@@ -1,7 +1,9 @@
 package net.mathdoku.plus;
 
-import java.util.Locale;
-import java.util.Map;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.preference.PreferenceManager;
 
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.grid.ui.GridInputMode;
@@ -12,10 +14,9 @@ import net.mathdoku.plus.storage.database.GridDatabaseAdapter.SizeFilter;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter.StatusFilter;
 import net.mathdoku.plus.tip.TipDialog;
 import net.mathdoku.plus.util.SingletonInstanceNotInstantiated;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.preference.PreferenceManager;
+
+import java.util.Locale;
+import java.util.Map;
 
 public class Preferences {
 	@SuppressWarnings("unused")
@@ -28,7 +29,7 @@ public class Preferences {
 	// this class. For unit testing purposes the default create methods can be
 	// overridden if needed.
 	public static class ObjectsCreator {
-		public Preferences createPreferencesSingletonInstance(Context context) {
+		public Preferences createPreferences(Context context) {
 			return new Preferences(context);
 		}
 	}
@@ -232,29 +233,29 @@ public class Preferences {
 			// Only the first time this method is called, the object will be
 			// created.
 			mPreferencesSingletonInstance = new ObjectsCreator()
-					.createPreferencesSingletonInstance(context);
+					.createPreferences(context);
 		}
 		return mPreferencesSingletonInstance;
 	}
 
 	/**
 	 * Creates new instance of {@link net.mathdoku.plus.Preferences}. All
-	 * objects in this class will be created with the given ObjectsCreator. This
-	 * method is intended for unit testing.
+	 * objects in this class will be created with the given
+	 * Preferences.ObjectsCreator. This method is intended for unit testing.
 	 * 
 	 * @param context
 	 *            The context in which the Preference object is created.
 	 * @param objectsCreator
-	 *            The ObjectsCreator to be used by this class. Only create
-	 *            methods for which the default implementation does not suffice,
-	 *            should be overridden.
+	 *            The Preferences.ObjectsCreator to be used by this class. Only
+	 *            create methods for which the default implementation does not
+	 *            suffice, should be overridden.
 	 * @return The singleton instance for the Preferences.
 	 */
 	public static Preferences getInstance(Context context,
-			ObjectsCreator objectsCreator) {
+			Preferences.ObjectsCreator objectsCreator) {
 		if (objectsCreator != null) {
 			mPreferencesSingletonInstance = objectsCreator
-					.createPreferencesSingletonInstance(context);
+					.createPreferences(context);
 		}
 		return getInstance(context);
 	}

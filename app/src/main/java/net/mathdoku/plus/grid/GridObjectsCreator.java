@@ -8,7 +8,6 @@ import net.mathdoku.plus.storage.CellChangeStorage;
 import net.mathdoku.plus.storage.GridCageStorage;
 import net.mathdoku.plus.storage.GridCellStorage;
 import net.mathdoku.plus.storage.GridStorage;
-import net.mathdoku.plus.storage.SolvingAttemptStorage;
 import net.mathdoku.plus.storage.database.DatabaseHelper;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
@@ -18,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The GridObjectsCreator is responsible for creating all objects needed by the
- * Grid.
+ * The GridObjectsCreator is responsible for creating all objects needed
+ * by the Grid.
  */
 public class GridObjectsCreator {
 	public Grid createGrid(GridBuilder gridBuilder) {
@@ -42,7 +41,8 @@ public class GridObjectsCreator {
 		return new GridGeneratingParameters();
 	}
 
-	public MathDokuDLX createMathDokuDLX(int gridSize, List<GridCage> cages) {
+	public MathDokuDLX createMathDokuDLX(int gridSize,
+										 List<GridCage> cages) {
 		return new MathDokuDLX(gridSize, cages);
 	}
 
@@ -113,10 +113,5 @@ public class GridObjectsCreator {
 
 	public GridSaver createGridSaver() {
 		return new GridSaver();
-	}
-
-	public SolvingAttemptStorage createSolvingAttemptStorage(
-			String storageString) {
-		return new SolvingAttemptStorage(storageString);
 	}
 }

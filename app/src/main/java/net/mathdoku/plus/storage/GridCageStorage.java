@@ -4,7 +4,6 @@ import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.grid.CageBuilder;
 import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.grid.GridCell;
-import net.mathdoku.plus.grid.GridObjectsCreator;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 
 import java.security.InvalidParameterException;
@@ -21,21 +20,6 @@ public class GridCageStorage {
 	 * Grid Cage starts with following identifier.
 	 */
 	private static final String CAGE_LINE_ID = "CAGE";
-
-	private GridObjectsCreator mGridObjectsCreator;
-
-	public GridCageStorage() {
-		mGridObjectsCreator = new GridObjectsCreator();
-	}
-
-	public void setObjectsCreator(
-			GridObjectsCreator gridObjectsCreator) {
-		if (gridObjectsCreator == null) {
-			throw new InvalidParameterException(
-					"Parameter gridObjectsCreator cannot be null.");
-		}
-		mGridObjectsCreator = gridObjectsCreator;
-	}
 
 	/**
 	 * Read cage information from a storage string which was created with
@@ -82,7 +66,7 @@ public class GridCageStorage {
 							+ expectedNumberOfElements + ".");
 		}
 
-		CageBuilder cageBuilder = mGridObjectsCreator.createCageBuilder();
+		CageBuilder cageBuilder = new CageBuilder();
 
 		// Process all parts
 		int index = 1;
@@ -115,7 +99,7 @@ public class GridCageStorage {
 	/**
 	 * Creates a string representation of the given Grid Cage which can be
 	 * persisted. Use
-	 * {@link #getCageBuilderFromStorageString(String, int, java.util.ArrayList)}
+	 * {@link #getCageBuilderFromStorageString(String, int, java.util.List)}
 	 * to parse the storage string.
 	 * 
 	 * @param gridCage
