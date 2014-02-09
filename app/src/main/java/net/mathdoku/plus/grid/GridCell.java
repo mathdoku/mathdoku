@@ -127,34 +127,23 @@ public class GridCell {
 
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder("GridCell{");
-		sb.append("mId=")
-				.append(mId);
-		sb.append(", mColumn=")
-				.append(mColumn);
-		sb.append(", mRow=")
-				.append(mRow);
-		sb.append(", mCorrectValue=")
-				.append(mCorrectValue);
-		sb.append(", mUserValue=")
-				.append(mUserValue);
-		sb.append(", mCageId=")
-				.append(mCageId);
-		sb.append(", mCageText='")
-				.append(mCageText)
-				.append('\'');
-		sb.append(", mPossibles=")
-				.append(mPossibles);
-		sb.append(", mDuplicateValueHighlight=")
-				.append(mDuplicateValueHighlight);
-		sb.append(", mSelected=")
-				.append(mSelected);
-		sb.append(", mRevealed=")
-				.append(mRevealed);
-		sb.append(", mInvalidUserValueHighlight=")
-				.append(mInvalidUserValueHighlight);
-		sb.append('}');
-		return sb.toString();
+		final StringBuilder stringBuilder = new StringBuilder("GridCell{");
+		stringBuilder.append("mId=").append(mId);
+		stringBuilder.append(", mColumn=").append(mColumn);
+		stringBuilder.append(", mRow=").append(mRow);
+		stringBuilder.append(", mCorrectValue=").append(mCorrectValue);
+		stringBuilder.append(", mUserValue=").append(mUserValue);
+		stringBuilder.append(", mCageId=").append(mCageId);
+		stringBuilder.append(", mCageText='").append(mCageText).append('\'');
+		stringBuilder.append(", mPossibles=").append(mPossibles);
+		stringBuilder.append(", mDuplicateValueHighlight=").append(
+				mDuplicateValueHighlight);
+		stringBuilder.append(", mSelected=").append(mSelected);
+		stringBuilder.append(", mRevealed=").append(mRevealed);
+		stringBuilder.append(", mInvalidUserValueHighlight=").append(
+				mInvalidUserValueHighlight);
+		stringBuilder.append('}');
+		return stringBuilder.toString();
 	}
 
 	private Paint getBorderPaint(BorderType borderType) {
@@ -180,11 +169,11 @@ public class GridCell {
 	}
 
 	public int countPossibles() {
-		return this.mPossibles.size();
+		return mPossibles.size();
 	}
 
 	public void clearPossibles() {
-		this.mPossibles.clear();
+		mPossibles.clear();
 	}
 
 	/**
@@ -209,7 +198,7 @@ public class GridCell {
 	void addPossible(int digit, boolean updateStatistics) {
 		if (!hasPossible(digit)) {
 			// Add possible value and sort the list of possible values.
-			this.mPossibles.add(digit);
+			mPossibles.add(digit);
 			Collections.sort(mPossibles);
 
 			// Update statistics
@@ -334,7 +323,7 @@ public class GridCell {
 	 */
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public boolean hasInvalidUserValueHighlight() {
-		return this.mInvalidUserValueHighlight;
+		return mInvalidUserValueHighlight;
 	}
 
 	// The next variable could also be declared as local variable in method
@@ -348,16 +337,16 @@ public class GridCell {
 	public void draw(Canvas canvas, float gridBorderWidth,
 			GridInputMode inputMode, int swipeDigit) {
 		// Get cell size
-		int cellSize = (int) this.mCellPainter.getCellSize();
+		int cellSize = (int) mCellPainter.getCellSize();
 
 		// Calculate x and y for the cell origin (top left). Use an offset to
 		// prevent overlapping of cells and border for entire grid.
-		this.mPosX = Math.round(gridBorderWidth + cellSize * this.mColumn);
-		this.mPosY = Math.round(gridBorderWidth + cellSize * this.mRow);
-		float top = this.mPosY;
-		float bottom = this.mPosY + cellSize;
-		float left = this.mPosX;
-		float right = this.mPosX + cellSize;
+		mPosX = Math.round(gridBorderWidth + cellSize * mColumn);
+		mPosY = Math.round(gridBorderWidth + cellSize * mRow);
+		float top = mPosY;
+		float bottom = mPosY + cellSize;
+		float left = mPosX;
+		float right = mPosX + cellSize;
 
 		// ---------------------------------------------------------------------
 		// Draw cage borders first. In case a cell border is part of the cage
@@ -367,14 +356,10 @@ public class GridCell {
 		// IMPORTANT: Transparent cage borders are not correctly supported as
 		// overlapping borders will lead to a slightly darker color.
 		// ---------------------------------------------------------------------
-		boolean cellOnLeftIsInSameCage = isInSameCageAsCell(this.mRow,
-				this.mColumn - 1);
-		boolean cellOnRightIsInSameCage = isInSameCageAsCell(this.mRow,
-				this.mColumn + 1);
-		boolean cellAboveIsInSameCage = isInSameCageAsCell(this.mRow - 1,
-				this.mColumn);
-		boolean cellBelowIsInSameCage = isInSameCageAsCell(this.mRow + 1,
-				this.mColumn);
+		boolean cellOnLeftIsInSameCage = isInSameCageAsCell(mRow, mColumn - 1);
+		boolean cellOnRightIsInSameCage = isInSameCageAsCell(mRow, mColumn + 1);
+		boolean cellAboveIsInSameCage = isInSameCageAsCell(mRow - 1, mColumn);
+		boolean cellBelowIsInSameCage = isInSameCageAsCell(mRow + 1, mColumn);
 
 		Paint borderPaint;
 
@@ -549,7 +534,7 @@ public class GridCell {
 		// other than 0 while a swipe motion is started but not yet finished. In
 		// this case the original user value may not be drawn as it will be
 		// replace with another definitive value or with a maybe value.
-		if ((this.isUserValueSet() && swipeDigit == 0)
+		if ((isUserValueSet() && swipeDigit == 0)
 				|| (inputMode == GridInputMode.NORMAL && swipeDigit != 0)) {
 			// Get the value which will be shown as user value in case the swipe
 			// motion will be released at this moment.
@@ -569,7 +554,7 @@ public class GridCell {
 					+ mUserValuePainter.getBottomOffset(), paint);
 		}
 		// Cage text
-		if (!this.mCageText.equals("")) {
+		if (!mCageText.equals("")) {
 			// Clone the text painter and decrease text size until the cage text
 			// fits within the cell.
 			draw_textPaint.set(mCagePainter.getTextPaint());
@@ -581,7 +566,7 @@ public class GridCell {
 			}
 
 			canvas.drawText(mCageText,
-					this.mPosX + mCagePainter.getTextLeftOffset(), this.mPosY
+					mPosX + mCagePainter.getTextLeftOffset(), mPosY
 							+ mCagePainter.getTextBottomOffset(),
 					draw_textPaint);
 		}
@@ -690,14 +675,14 @@ public class GridCell {
 		}
 
 		// Get cell size
-		int cellSize = (int) this.mCellPainter.getCellSize();
+		int cellSize = (int) mCellPainter.getCellSize();
 
 		// Calculate x and y for the cell origin (top left). Use an offset to
 		// prevent overlapping of cells and border for entire grid.
-		this.mPosX = Math.round(gridBorderWidth + cellSize * this.mColumn);
-		this.mPosY = Math.round(gridBorderWidth + cellSize * this.mRow);
-		float top = this.mPosY;
-		float left = this.mPosX;
+		mPosX = Math.round(gridBorderWidth + cellSize * mColumn);
+		mPosY = Math.round(gridBorderWidth + cellSize * mRow);
+		float top = mPosY;
+		float left = mPosX;
 
 		// Get the painters for the overlay border
 		// Determine which painter to use
@@ -859,18 +844,17 @@ public class GridCell {
 	 */
 	public CellChange saveUndoInformation(CellChange originalCellChange) {
 		// Store old values of this cell
-		CellChange move = new CellChange(this, this.mUserValue, this.mPossibles);
+		CellChange move = new CellChange(this, mUserValue, mPossibles);
 		if (originalCellChange == null) {
 			// This move is not a result of another move.
-			this.mGrid.addMove(move);
+			mGrid.addMove(move);
 		} else {
 			originalCellChange.addRelatedMove(move);
 		}
 		return move;
 	}
 
-	public void undo(int previousUserValue,
-			List<Integer> previousPossibleValues) {
+	public void undo(int previousUserValue, List<Integer> previousPossibleValues) {
 		setUserValue(previousUserValue);
 		if (previousPossibleValues != null) {
 			for (int previousPossibleValue : previousPossibleValues) {
@@ -889,7 +873,7 @@ public class GridCell {
 	 *         cell. False otherwise.
 	 */
 	public boolean hasPossible(int digit) {
-		return (this.mPossibles.indexOf(Integer.valueOf(digit)) >= 0);
+		return (mPossibles.indexOf(Integer.valueOf(digit)) >= 0);
 	}
 
 	/**
@@ -948,8 +932,8 @@ public class GridCell {
 	 * @return True in case cells are part of same cage. False otherwise.
 	 */
 	boolean isInSameCageAsCell(int row, int column) {
-		GridCell cell = this.mGrid.getCellAt(row, column);
-		return (cell != null && cell.getCageId() == this.mCageId);
+		GridCell cell = mGrid.getCellAt(row, column);
+		return (cell != null && cell.getCageId() == mCageId);
 	}
 
 	// The next variable could also be declared as local variable in method
@@ -1082,8 +1066,8 @@ public class GridCell {
 
 		// Both cells are in a cage which is not selected.
 		if ((!cell1.getCage().isUserMathCorrect() || (cell2 != null && !cell2
-				.getCage().isUserMathCorrect()))
-				&& mGrid.hasPrefShowBadCageMaths()) {
+				.getCage()
+				.isUserMathCorrect())) && mGrid.hasPrefShowBadCageMaths()) {
 			return BorderType.NOT_SELECTED__BAD_MATH;
 		} else {
 			return BorderType.NOT_SELECTED__GOOD_MATH;
@@ -1109,12 +1093,12 @@ public class GridCell {
 	 */
 	public float[] getCellCentreCoordinates(float gridBorderWidth) {
 		// Get cell size
-		int cellSize = (int) this.mCellPainter.getCellSize();
+		int cellSize = (int) mCellPainter.getCellSize();
 
-		float top = Math.round(gridBorderWidth + cellSize * this.mRow);
-		// float bottom = this.mPosY + cellSize;
-		float left = Math.round(gridBorderWidth + cellSize * this.mColumn);
-		// float right = this.mPosX + cellSize;
+		float top = Math.round(gridBorderWidth + cellSize * mRow);
+		// float bottom = mPosY + cellSize;
+		float left = Math.round(gridBorderWidth + cellSize * mColumn);
+		// float right = mPosX + cellSize;
 
 		return new float[] { left + (cellSize / 2), top + (cellSize / 2) };
 	}
