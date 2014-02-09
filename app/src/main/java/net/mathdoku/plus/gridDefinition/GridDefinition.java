@@ -6,6 +6,7 @@ import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.grid.CageBuilder;
+import net.mathdoku.plus.grid.CellBuilder;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.GridBuilder;
 import net.mathdoku.plus.grid.GridCage;
@@ -39,16 +40,11 @@ public class GridDefinition {
 	private int[] mCountCellsPerCage;
 
 	public static class ObjectsCreator {
-		public GridCell createGridCell(int id, int gridSize) {
-			return new GridCell(id, gridSize);
-		}
-
 		public GridGeneratingParameters createGridGeneratingParameters() {
 			return new GridGeneratingParameters();
 		}
 
-		public MathDokuDLX createMathDokuDLX(int gridSize,
-											 List<GridCage> cages) {
+		public MathDokuDLX createMathDokuDLX(int gridSize, List<GridCage> cages) {
 			return new MathDokuDLX(gridSize, cages);
 		}
 
@@ -64,6 +60,7 @@ public class GridDefinition {
 			return new GridBuilder();
 		}
 	}
+
 	private GridDefinition.ObjectsCreator mObjectsCreator;
 
 	// By default this module throws exceptions on error when running in
@@ -340,9 +337,12 @@ public class GridDefinition {
 			int cageId = Integer.valueOf(matcher.group());
 
 			// Create new cell and add it to the cells list.
-			GridCell gridCell = mObjectsCreator.createGridCell(cellNumber,
-					mGridSize);
-			gridCell.setCageId(cageId);
+			GridCell gridCell = new CellBuilder()
+					.setGridSize(mGridSize)
+					.setId(cellNumber)
+					.setCageId(cageId)
+					.setSkipCheckCorrectValueOnBuild()
+					.build();
 			mCells.add(gridCell);
 
 			// Determine the cage to which the cell has to be added.
@@ -419,8 +419,9 @@ public class GridDefinition {
 
 	private boolean setCorrectCellValues() {
 		// Check whether a single solution can be found.
-		int[][] solution = mObjectsCreator.createMathDokuDLX(mGridSize,
-				mCages).getSolutionGrid();
+		int[][] solution = mObjectsCreator
+				.createMathDokuDLX(mGridSize, mCages)
+				.getSolutionGrid();
 		if (solution == null) {
 			// Either no or multiple solutions can be found. In both case this
 			// would mean that the grid definition string was manipulated by the

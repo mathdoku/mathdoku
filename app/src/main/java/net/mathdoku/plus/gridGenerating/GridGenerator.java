@@ -12,6 +12,7 @@ import net.mathdoku.plus.developmentHelper.DevelopmentHelper;
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.grid.CageBuilder;
+import net.mathdoku.plus.grid.CellBuilder;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.GridBuilder;
 import net.mathdoku.plus.grid.GridCage;
@@ -287,13 +288,21 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 			handleNewAttemptStarted(num_attempts);
 
+			randomiseGrid();
+
 			mCells = new ArrayList<GridCell>();
 			int cellNumber = 0;
-			for (int i = 0; i < mGridSize * mGridSize; i++) {
-				mCells.add(new GridCell(cellNumber++, mGridSize));
+			for (int column = 0; column < mGridSize; column++) {
+				for (int row = 0; row < mGridSize; row++) {
+					GridCell cell = new CellBuilder()
+							.setGridSize(mGridSize)
+							.setId(cellNumber++)
+							.setCorrectValue(mSolutionMatrix[row][column])
+							.setSkipCheckCageReferenceOnBuild()
+							.build();
+					mCells.add(cell);
+				}
 			}
-
-			randomiseGrid();
 
 			// Check whether the generating process should be aborted due to
 			// cancellation of the grid dialog.
@@ -321,7 +330,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 					// The faked user games files do not require a unique
 					// solution which results in much faster generation time.
 
-					// Create a temporary grid object which is used to store the fake game.
+					// Create a temporary grid object which is used to store the
+					// fake game.
 					GridBuilder mGridBuilder = new GridBuilder();
 					mGridBuilder
 							.setGridSize(mGridSize)
@@ -512,24 +522,30 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		for (int value = 1; value < this.mGridSize + 1; value++) {
 			for (int row = 0; row < this.mGridSize; row++) {
 				attempts = 20;
-				GridCell cell;
 				int column;
 				while (true) {
 					column = this.mRandom.nextInt(this.mGridSize);
-					cell = getCellAt(row, column);
-					if (--attempts == 0)
+					if (--attempts == 0) {
+						// Too many attempts needed to fill grid.
 						break;
-					if (cell.getCorrectValue() != 0)
+					}
+					if (mSolutionMatrix[row][column] > 0) {
+						// Position already occupied.
 						continue;
-					if (valueInColumn(column, value))
+					}
+					if (valueInColumn(column, value)) {
+						// Value already used in this column.
 						continue;
+					}
 					break;
 				}
 				if (attempts == 0) {
-					this.clearValue(value--);
+					// No attempts left to sey the current value in each column.
+					// Clear the value from all positions in the solution matrix
+					// and try next value.
+					clearValue(value--);
 					break;
 				}
-				cell.setCorrectValue(value);
 				mSolutionMatrix[row][column] = value;
 			}
 		}
@@ -833,10 +849,11 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		// All data is gathered which is needed to build the cage.
 		GridCage cage = cageBuilder.build();
 
-		// Finally check whether the number of permutations of possible solutions for the cage is not to big.
+		// Finally check whether the number of permutations of possible
+		// solutions for the cage is not to big.
 		ComboGenerator comboGenerator = new ComboGenerator(mGridSize);
-		List<int[]> possibleCombos = comboGenerator
-				.getPossibleCombos(cage, cellsInCageArrayList);
+		List<int[]> possibleCombos = comboGenerator.getPossibleCombos(cage,
+				cellsInCageArrayList);
 		if (maxPermutations > 0 && possibleCombos.size() > maxPermutations) {
 			// This cage has too many permutations which fulfill the
 			// cage requirements. As this reduces the chance to find a
@@ -1173,7 +1190,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		// greater than the maximum cage result, the add operator will be used
 		// instead.
 		if (index < multiplyWeight) {
-			int cageResultMultiplication = getCageResult(cellValues, CageOperator.MULTIPLY);
+			int cageResultMultiplication = getCageResult(cellValues,
+					CageOperator.MULTIPLY);
 			if (cageResultMultiplication <= mGridGeneratingParameters.mMaxCageResult) {
 				return CageOperator.MULTIPLY;
 			}
@@ -1182,7 +1200,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			// operator will be used for this cage which leads to a small cage
 			// outcome.
 			Log.i(TAG, "GameSeed: " + mGridGeneratingParameters.mGameSeed
-					+ " cage result " + cageResultMultiplication + " is rejected");
+					+ " cage result " + cageResultMultiplication
+					+ " is rejected");
 		}
 
 		// Use ADD in all other cases.
@@ -1233,18 +1252,26 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		this.mCages = new ArrayList<GridCage>();
 	}
 
-	/* Clear any cells containing the given number. */
+	/**
+	 * Clears the given value from all positions in the solution matrix.
+	 */
 	private void clearValue(int value) {
-		for (GridCell cell : this.mCells)
-			if (cell.getCorrectValue() == value)
-				cell.setCorrectValue(0);
+		for (int row = 0; row < mGridSize; row++) {
+			for (int column = 0; column < mGridSize; column++) {
+				if (mSolutionMatrix[row][column] == value) {
+					mSolutionMatrix[row][column] = 0;
+				}
+			}
+		}
 	}
 
 	/* Determine if the given value is in the given column */
 	private boolean valueInColumn(int column, int value) {
-		for (int row = 0; row < mGridSize; row++)
-			if (this.mCells.get(column + row * mGridSize).getCorrectValue() == value)
+		for (int row = 0; row < mGridSize; row++) {
+			if (mSolutionMatrix[row][column] == value) {
 				return true;
+			}
+		}
 		return false;
 	}
 

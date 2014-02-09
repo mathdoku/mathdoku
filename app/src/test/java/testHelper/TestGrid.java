@@ -1,5 +1,6 @@
 package testHelper;
 
+import net.mathdoku.plus.grid.CellBuilder;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.GridBuilder;
 import net.mathdoku.plus.grid.GridCell;
@@ -27,10 +28,12 @@ public abstract class TestGrid {
 	}
 
 	protected GridCell createGridCell(int cellNumber, int cellValue, int cageId) {
-		GridCell gridCell = new GridCell(cellNumber, mGridSize);
-		gridCell.setCorrectValue(cellValue);
-		gridCell.setCageId(cageId);
-		return gridCell;
+		return new CellBuilder()
+				.setGridSize(mGridSize)
+				.setId(cellNumber)
+				.setCorrectValue(cellValue)
+				.setCageId(cageId)
+				.build();
 	}
 
 	public Grid getGrid() {

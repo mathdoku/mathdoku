@@ -15,7 +15,6 @@ import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.painter.UserValuePainter;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.statistics.GridStatistics.StatisticsCounterType;
-import net.mathdoku.plus.storage.GridCellStorage;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -41,7 +40,7 @@ public class GridCell {
 	// String of the cage
 	private String mCageText;
 	// User's candidate digits
-	private final List<Integer> mPossibles;
+	private List<Integer> mPossibles;
 
 	// X pixel position
 	private float mPosX;
@@ -77,40 +76,38 @@ public class GridCell {
 	private CagePainter mCagePainter;
 	private InputModeBorderPainter mInputModeBorderPainter;
 
-	public GridCell(int id, int gridSize) {
-		initialize();
-		mId = id;
-		mColumn = id % gridSize;
-		mRow = id / gridSize;
-		mCageText = "";
-		mCorrectValue = 0;
-		mUserValue = 0;
-		mRevealed = false;
-		mInvalidUserValueHighlight = false;
-		mPossibles = new ArrayList<Integer>();
-	}
-
-	public GridCell(GridCellStorage gridCellStorage) {
-		initialize();
-		mId = gridCellStorage.getId();
-		mColumn = gridCellStorage.getColumn();
-		mRow = gridCellStorage.getRow();
-		mCageText = gridCellStorage.getCageText();
-		mCorrectValue = gridCellStorage.getCorrectValue();
-		mUserValue = gridCellStorage.getUserValue();
-		mRevealed = gridCellStorage.isRevealed();
-		mInvalidUserValueHighlight = gridCellStorage
-				.isInvalidUserValueHighlight();
-		mPossibles = gridCellStorage.getPossibles();
-	}
-
-	private void initialize() {
-		mCageId = -1;
-		mDuplicateValueHighlight = false;
+	public GridCell(CellBuilder cellBuilder) {
+		// Initialize the variables
 		mPosX = 0;
 		mPosY = 0;
+		initializePainters();
+		initializeBorders();
 
-		// Retrieve all painters
+		// Get values from CellBuilder
+		int gridSize = cellBuilder.getGridSize();
+		mId = cellBuilder.getId();
+		mCorrectValue = cellBuilder.getCorrectValue();
+		mUserValue = cellBuilder.getUserValue();
+		mCageId = cellBuilder.getCageId();
+		mCageText = cellBuilder.getCageText();
+		mPossibles = cellBuilder.getPossibles();
+		mDuplicateValueHighlight = cellBuilder.isDuplicateValueHighlighted();
+		mSelected = cellBuilder.isSelected();
+		mRevealed = cellBuilder.isRevealed();
+		mInvalidUserValueHighlight = cellBuilder
+				.isInvalidUserValueHighlighted();
+
+		// Check if required parameters are specified
+		validateGridCellParametersThrowsExceptionOnError(cellBuilder);
+		validateCorrectValueThrowsExceptionOnError(cellBuilder);
+		validateCageReferenceThrowsExceptionOnError(cellBuilder);
+
+		// Determine row and column based on
+		mColumn = mId % gridSize;
+		mRow = mId / gridSize;
+	}
+
+	private void initializePainters() {
 		Painter painter = Painter.getInstance();
 		mCellPainter = painter.getCellPainter();
 		mUserValuePainter = painter.getUserValuePainter();
@@ -118,11 +115,47 @@ public class GridCell {
 		mMaybeLinePainter = painter.getMaybeLinePainter();
 		mCagePainter = painter.getCagePainter();
 		mInputModeBorderPainter = painter.getInputModeBorderPainter();
+	}
 
+	private void initializeBorders() {
 		mBorderTypeTop = BorderType.NONE;
 		mBorderTypeRight = BorderType.NONE;
 		mBorderTypeBottom = BorderType.NONE;
 		mBorderTypeLeft = BorderType.NONE;
+	}
+
+	private void validateGridCellParametersThrowsExceptionOnError(
+			CellBuilder cellBuilder) {
+		int gridSize = cellBuilder.getGridSize();
+		if (gridSize <= 0) {
+			throw new InvalidGridException("Parameter gridSize (" + gridSize
+					+ ") has an invalid value.");
+		}
+		if (mId < 0) {
+			throw new InvalidGridException("Parameter mId (" + mId
+					+ ") has an invalid value.");
+		}
+		if (mUserValue < 0 || mUserValue > gridSize) {
+			throw new InvalidGridException("Parameter mUserValue ("
+					+ mUserValue + ") has an invalid value.");
+		}
+	}
+
+	private void validateCorrectValueThrowsExceptionOnError(
+			CellBuilder cellBuilder) {
+		if (cellBuilder.performCorrectValueCheck()
+				&& (mCorrectValue <= 0 || mCorrectValue > cellBuilder
+						.getGridSize())) {
+			throw new InvalidGridException("Parameter mCorrectValue ("
+					+ mCorrectValue + ") has an invalid value.");
+		}
+	}
+
+	private void validateCageReferenceThrowsExceptionOnError(CellBuilder cellBuilder) {
+		if (cellBuilder.performCageReferenceCheck() && mCageId < 0) {
+				throw new InvalidGridException("Parameter mCageId (" + mCageId
+													   + ") has an invalid value.");
+		}
 	}
 
 	@Override

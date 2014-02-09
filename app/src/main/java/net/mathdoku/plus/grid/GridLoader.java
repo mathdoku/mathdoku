@@ -45,7 +45,8 @@ public class GridLoader {
 			return new SolvingAttemptDatabaseAdapter();
 		}
 
-		public SolvingAttemptStorage createSolvingAttemptStorage(String storageString) {
+		public SolvingAttemptStorage createSolvingAttemptStorage(
+				String storageString) {
 			return new SolvingAttemptStorage(storageString);
 		}
 
@@ -69,10 +70,6 @@ public class GridLoader {
 			return new GridCellStorage();
 		}
 
-		public GridCell createGridCell(GridCellStorage gridCellStorage) {
-			return new GridCell(gridCellStorage);
-		}
-
 		public GridCageStorage createGridCageStorage() {
 			return new GridCageStorage();
 		}
@@ -92,7 +89,12 @@ public class GridLoader {
 		public StatisticsDatabaseAdapter createStatisticsDatabaseAdapter() {
 			return new StatisticsDatabaseAdapter();
 		}
+
+		public GridCell createGridCell(CellBuilder cellBuilder) {
+			return new GridCell(cellBuilder);
+		}
 	}
+
 	private GridLoader.ObjectsCreator mObjectsCreator;
 
 	// By default this module throws exceptions on error when running in
@@ -182,7 +184,7 @@ public class GridLoader {
 	 *         otherwise.
 	 */
 	private boolean loadFromStorageStrings(SolvingAttempt solvingAttempt) {
-		String line;
+		String line = "";
 		try {
 			if (solvingAttempt.mStorageString == null) {
 				if (mThrowExceptionOnError) {
@@ -274,22 +276,22 @@ public class GridLoader {
 			}
 		} catch (InvalidGridException e) {
 			if (mThrowExceptionOnError) {
-				throw new InvalidGridException(
-						"Invalid format error when restoring solving attempt with id '"
-								+ solvingAttempt.mId + "'\n" + e.getMessage());
+				throw new InvalidGridException("Invalid format error in line ("
+						+ line + ") when restoring solving attempt with id '"
+						+ solvingAttempt.mId + "'\n" + e.getMessage());
 			}
 			return false;
 		} catch (NumberFormatException e) {
 			if (mThrowExceptionOnError) {
 				throw new InvalidGridException(
-						"Invalid Number format error when restoring solving attempt with id '"
+						"Invalid Number format error in line (\" + line + \") when restoring solving attempt with id '"
 								+ solvingAttempt.mId + "'\n" + e.getMessage());
 			}
 			return false;
 		} catch (IndexOutOfBoundsException e) {
 			if (mThrowExceptionOnError) {
 				throw new InvalidGridException(
-						"Index out of bound error when restoring solving attempt with id '"
+						"Index out of bound error in line (\" + line + \") when restoring solving attempt with id '"
 								+ solvingAttempt.mId + "'\n" + e.getMessage());
 			}
 			return false;
@@ -304,10 +306,14 @@ public class GridLoader {
 
 		GridCellStorage mGridCellStorage = mObjectsCreator
 				.createGridCellStorage();
-		if (mGridCellStorage.fromStorageString(line, mSavedWithRevision) == false) {
+		CellBuilder cellBuilder = mGridCellStorage
+				.getCellBuilderFromStorageString(line, mSavedWithRevision);
+		if (cellBuilder == null) {
 			return false;
 		}
-		GridCell cell = mObjectsCreator.createGridCell(mGridCellStorage);
+		cellBuilder.setGridSize(mGridBuilder.mGridSize);
+		cellBuilder.setSkipCheckCageReferenceOnBuild();
+		GridCell cell = mObjectsCreator.createGridCell(cellBuilder);
 		mGridCells.add(cell);
 
 		return true;

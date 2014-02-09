@@ -106,12 +106,17 @@ public class Grid {
 		public GridBuilder createGridBuilder() {
 			return new GridBuilder();
 		}
+
 		public CageBuilder createCageBuilder() {
 			return new CageBuilder();
 		}
 
 		public GridSaver createGridSaver() {
 			return new GridSaver();
+		}
+
+		public CellBuilder createCellBuilder() {
+			return new CellBuilder();
 		}
 	}
 
@@ -751,9 +756,13 @@ public class Grid {
 		// Copy all cells without the play history
 		List<GridCell> cells = new ArrayList<GridCell>();
 		for (GridCell cell : mCells) {
-			GridCell gridCell = new GridCell(cell.getCellId(), mGridSize);
-			gridCell.setCorrectValue(cell.getCorrectValue());
-			gridCell.setCageId(cell.getCageId());
+			CellBuilder cellBuilder = mObjectsCreator.createCellBuilder();
+			GridCell gridCell = cellBuilder
+					.setGridSize(mGridSize)
+					.setId(cell.getCellId())
+					.setCorrectValue(cell.getCorrectValue())
+					.setCageId(cell.getCageId())
+					.build();
 			cells.add(gridCell);
 		}
 

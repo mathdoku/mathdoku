@@ -205,6 +205,7 @@ public class GridLoaderTest {
 	}
 
 	public class GridLoaderTestObjectsCreator extends GridLoader.ObjectsCreator {
+		private int mGridSize;
 		private int mNumberOfGridCellMocksReturningAValidStorageString = 0;
 		private int mNumberOfGridCageStorageMocksReturningAValidStorageString = 0;
 		private int mNumberOfCellChangeStorageMocksReturningAValidStorageString = 0;
@@ -230,6 +231,10 @@ public class GridLoaderTest {
 			}
 		};
 		private GridCage mGridCageMock = mock(GridCage.class);
+
+		private void setGridSize(int gridSize) {
+			mGridSize = gridSize;
+		}
 
 		public void setGridMockReturningAValidStorageString() {
 			when(mGridStorageMock.fromStorageString(anyString(), anyInt()))
@@ -336,14 +341,22 @@ public class GridLoaderTest {
 			} else {
 				mNumberOfGridCellMocksReturningAValidStorageString--;
 			}
-			when(gridCellStorage.fromStorageString(anyString(), anyInt()))
-					.thenReturn(validStorageString);
+			if (validStorageString) {
+				CellBuilder cellBuilder = validStorageString ? mock(CellBuilder.class) : null;
+				when(gridCellStorage.getCellBuilderFromStorageString(anyString(), anyInt()))
+						.thenReturn(validStorageString ? cellBuilder : null);
+				when(cellBuilder.getGridSize()).thenReturn(mGridSize);
+
+			} else {
+				when(gridCellStorage.getCellBuilderFromStorageString(anyString(), anyInt()))
+					.thenReturn(null);
+			}
 
 			// Check if a InvalidNumberException will be thrown for this cell
 			if (mCellNumberOnWhichAnNumberFormatExceptionIsThrown >= 0) {
 				if (mCellNumberOnWhichAnNumberFormatExceptionIsThrown == 0) {
 					when(
-							gridCellStorage.fromStorageString(anyString(),
+							gridCellStorage.getCellBuilderFromStorageString(anyString(),
 									anyInt())).thenThrow(
 							new NumberFormatException(
 									"** INVALID NUMBER IN CELL DATA " + "**"));
@@ -834,6 +847,7 @@ public class GridLoaderTest {
 		mGridLoaderTestObjectsCreator.setGridMockReturningAValidStorageString();
 		mGridLoaderTestObjectsCreator.setGridMockIsActive(isActive);
 		mGridLoaderTestObjectsCreator.setGridMockIsRevealed(isRevealed);
+		mGridLoaderTestObjectsCreator.setGridSize(gridSize);
 		mGridLoaderTestObjectsCreator
 				.setNumberOfGridCellMocksReturningAValidStorageString(numberOfCells);
 		mGridLoaderTestObjectsCreator
