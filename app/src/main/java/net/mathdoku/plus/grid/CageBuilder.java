@@ -45,7 +45,7 @@ public class CageBuilder {
 	}
 
 	public CageBuilder setCells(int[] cells) {
-		mCells = cells;
+		mCells = cells == null ? null : cells.clone();
 
 		return this;
 	}
@@ -78,10 +78,18 @@ public class CageBuilder {
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("CageBuilder{\n");
-		stringBuilder.append("\tmId=" + mId + "\n");
-		stringBuilder.append("\tmCageOperator=" + mCageOperator + "\n");
-		stringBuilder.append("\tmResult=" + mResult + "\n");
-		stringBuilder.append("\tmHideOperator=" + mHideOperator + "\n");
+		stringBuilder.append("\tmId=")
+				.append(mId)
+				.append("\n");
+		stringBuilder.append("\tmCageOperator=")
+				.append(mCageOperator)
+				.append("\n");
+		stringBuilder.append("\tmResult=")
+				.append(mResult)
+				.append("\n");
+		stringBuilder.append("\tmHideOperator=")
+				.append(mHideOperator)
+				.append("\n");
 		stringBuilder.append("\tmCells=[");
 		for (int i = 0; i < mCells.length; i++) {
 			stringBuilder.append(mCells[i]);
@@ -117,11 +125,8 @@ public class CageBuilder {
 		if (mCageOperator != that.mCageOperator) {
 			return false;
 		}
-		if (!Arrays.equals(mCells, that.mCells)) {
-			return false;
-		}
 
-		return true;
+		return Arrays.equals(mCells, that.mCells);
 	}
 
 	@Override
