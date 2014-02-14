@@ -2,8 +2,8 @@ package net.mathdoku.plus.gridGenerating;
 
 import net.mathdoku.plus.grid.Cell;
 
-public class GridCageType {
-	public static final String TAG = "MathDoku.GridCageType";
+public class CageType {
+	public static final String TAG = "MathDoku.CageType";
 
 	// Number or cells used in this cage type.
 	private int mSize;
@@ -22,10 +22,9 @@ public class GridCageType {
 	private boolean[][] mUsedCells;
 
 	/**
-	 * Creates a new instance of
-	 * {@link net.mathdoku.plus.gridGenerating.GridCageType}.
+	 * Creates a new instance of {@link CageType}.
 	 */
-	public GridCageType() {
+	public CageType() {
 	}
 
 	/**
@@ -208,14 +207,14 @@ public class GridCageType {
 		// Return false if the other object has the wrong type.
 		// This type may be an interface depending on the interface's
 		// specification.
-		if (!(o instanceof GridCageType)) {
+		if (!(o instanceof CageType)) {
 			return false;
 		}
 
 		// Cast to the appropriate type.
 		// This will succeed because of the instanceof, and lets us access
 		// private fields.
-		GridCageType lhs = (GridCageType) o;
+		CageType lhs = (CageType) o;
 
 		// Return false in case dimensions are not the same.
 		if (mRows != lhs.mRows || mCols != lhs.mCols) {

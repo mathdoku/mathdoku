@@ -11,7 +11,7 @@ import android.view.View.OnTouchListener;
 import net.mathdoku.plus.grid.Cell;
 import net.mathdoku.plus.grid.CellChange;
 import net.mathdoku.plus.grid.Grid;
-import net.mathdoku.plus.grid.GridCage;
+import net.mathdoku.plus.grid.Cage;
 import net.mathdoku.plus.grid.CellSelectorInRowOrColumn;
 import net.mathdoku.plus.statistics.GridStatistics.StatisticsCounterType;
 import net.mathdoku.plus.tip.TipBadCageMath;
@@ -340,8 +340,8 @@ public class GridBasePlayerView extends GridViewerView implements
 		}
 
 		// Check the cage math
-		GridCage gridCage = selectedCell.getCage();
-		if (gridCage != null && gridCage.checkUserMath() == false) {
+		Cage cage = selectedCell.getCage();
+		if (cage != null && cage.checkUserMath() == false) {
 			if (TipBadCageMath.toBeDisplayed(mPreferences)) {
 				new TipBadCageMath(mContext).show();
 			}

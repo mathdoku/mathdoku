@@ -31,7 +31,7 @@ public class Grid {
 	private final long mDateCreated;
 	private final GridGeneratingParameters mGridGeneratingParameters;
 	private final Grid.ObjectsCreator mObjectsCreator;
-	private final List<GridCage> mCages;
+	private final List<Cage> mCages;
 	private final List<Cell> mCells;
 
 	// ************************************************************************
@@ -81,8 +81,8 @@ public class Grid {
 			return new ArrayList<Cell>();
 		}
 
-		public List<GridCage> createArrayListOfGridCages() {
-			return new ArrayList<GridCage>();
+		public List<Cage> createArrayListOfCages() {
+			return new ArrayList<Cage>();
 		}
 
 		public List<CellChange> createArrayListOfCellChanges() {
@@ -178,8 +178,8 @@ public class Grid {
 	}
 
 	private void setGridReferences() {
-		for (GridCage gridCage : mCages) {
-			gridCage.setGridReference(this);
+		for (Cage cage : mCages) {
+			cage.setGridReference(this);
 		}
 		for (Cell cell : mCells) {
 			cell.setGridReference(this);
@@ -234,7 +234,7 @@ public class Grid {
 	 * @return The cage to which the currently selected cell belongs. Null in
 	 *         case no cell is selected or no cage exists.
 	 */
-	public GridCage getSelectedCage() {
+	public Cage getSelectedCage() {
 		if (mSelectedCell == null) {
 			return null;
 		}
@@ -303,9 +303,9 @@ public class Grid {
 		}
 		if (mGridGeneratingParameters != null
 				&& mGridGeneratingParameters.mHideOperators && mCages != null) {
-			for (GridCage gridCage : mCages) {
-				gridCage.revealOperator();
-				setCageTextToUpperLeftCell(gridCage);
+			for (Cage cage : mCages) {
+				cage.revealOperator();
+				setCageTextToUpperLeftCell(cage);
 			}
 		}
 		if (mGridStatistics != null) {
@@ -446,9 +446,9 @@ public class Grid {
 			}
 
 			// Check the cage math
-			GridCage gridCage = affectedCell.getCage();
-			if (gridCage != null) {
-				gridCage.checkUserMath();
+			Cage cage = affectedCell.getCage();
+			if (cage != null) {
+				cage.checkUserMath();
 			}
 		}
 
@@ -466,7 +466,7 @@ public class Grid {
 		}
 
 		// Remember cage which is currently selected.
-		GridCage oldSelectedCage = mSelectedCell.getCage();
+		Cage oldSelectedCage = mSelectedCell.getCage();
 
 		// Deselect the cell itself
 		mSelectedCell.deselect();
@@ -490,13 +490,13 @@ public class Grid {
 			return null;
 		}
 
-		GridCage oldSelectedCage = null;
+		Cage oldSelectedCage = null;
 		if (mSelectedCell != null) {
 			oldSelectedCage = mSelectedCell.getCage();
 			mSelectedCell.deselect();
 		}
 		// Determine new cage
-		GridCage newSelectedCage = cell.getCage();
+		Cage newSelectedCage = cell.getCage();
 
 		// Select the new cell
 		cell.select();
@@ -564,7 +564,7 @@ public class Grid {
 		this.mSolvedListener = listener;
 	}
 
-	public GridCage getCage(int cageId) {
+	public Cage getCage(int cageId) {
 		return mCages.get(cageId);
 	}
 
@@ -732,17 +732,17 @@ public class Grid {
 		}
 
 		// Copy all cages without the play history
-		List<GridCage> cages = new ArrayList<GridCage>();
-		for (GridCage cage : mCages) {
+		List<Cage> cages = new ArrayList<Cage>();
+		for (Cage cage : mCages) {
 			CageBuilder cageBuilder = mObjectsCreator.createCageBuilder();
-			GridCage gridCage = cageBuilder
+			Cage newCage = cageBuilder
 					.setId(cage.getId())
 					.setResult(cage.getResult())
 					.setCageOperator(cage.getOperator())
 					.setHideOperator(mGridGeneratingParameters.mHideOperators)
 					.setCells(cage.getCells())
 					.build();
-			cages.add(gridCage);
+			cages.add(newCage);
 		}
 
 		// Create a new grid
@@ -808,7 +808,7 @@ public class Grid {
 	 */
 	private void checkUserMathForAllCages() {
 		if (mCages != null) {
-			for (GridCage cage : mCages) {
+			for (Cage cage : mCages) {
 				cage.checkUserMath();
 			}
 		}
@@ -851,17 +851,17 @@ public class Grid {
 	 *         otherwise.
 	 */
 	public boolean revealOperatorSelectedCage() {
-		GridCage selectedGridCage = getSelectedCage();
-		if (selectedGridCage == null) {
+		Cage selectedCage = getSelectedCage();
+		if (selectedCage == null) {
 			return false;
 		}
-		if (!selectedGridCage.isOperatorHidden()) {
+		if (!selectedCage.isOperatorHidden()) {
 			// Operator is already visible.
 			return false;
 		}
 
-		selectedGridCage.revealOperator();
-		setCageTextToUpperLeftCell(selectedGridCage);
+		selectedCage.revealOperator();
+		setCageTextToUpperLeftCell(selectedCage);
 
 		mGridStatistics
 				.increaseCounter(StatisticsCounterType.ACTION_REVEAL_OPERATOR);
@@ -929,17 +929,17 @@ public class Grid {
 	}
 
 	private final void setCageTextToUpperLeftCellAllCages() {
-		for (GridCage gridCage : mCages) {
-			setCageTextToUpperLeftCell(gridCage);
+		for (Cage cage : mCages) {
+			setCageTextToUpperLeftCell(cage);
 		}
 	}
 
-	private final void setCageTextToUpperLeftCell(GridCage gridCage) {
-		if (gridCage != null) {
-			int idUpperLeftCell = gridCage.getIdUpperLeftCell();
+	private final void setCageTextToUpperLeftCell(Cage cage) {
+		if (cage != null) {
+			int idUpperLeftCell = cage.getIdUpperLeftCell();
 			Cell cell = getCell(idUpperLeftCell);
 			if (cell != null) {
-				cell.setCageText(gridCage.getCageText());
+				cell.setCageText(cage.getCageText());
 			}
 		}
 	}
@@ -953,7 +953,7 @@ public class Grid {
 	 * 
 	 * @return An unmodifiable list of cages.
 	 */
-	public List<GridCage> getCages() {
+	public List<Cage> getCages() {
 		return Collections.unmodifiableList(mCages);
 	}
 

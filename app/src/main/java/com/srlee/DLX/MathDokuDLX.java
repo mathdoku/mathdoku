@@ -4,8 +4,8 @@ import android.util.Log;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
+import net.mathdoku.plus.grid.Cage;
 import net.mathdoku.plus.grid.Cell;
-import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.gridGenerating.ComboGenerator;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class MathDokuDLX extends DLX {
 	private int mTotalMoves;
 
 	// The list of cages for which the solution has to be checked
-	private final List<GridCage> mCages;
+	private final List<Cage> mCages;
 
 	// Additional data structure in case the solution has to be uncovered.
 	private class Move {
@@ -55,7 +55,7 @@ public class MathDokuDLX extends DLX {
 	 * @param cages
 	 *            The cages defined for the grid.
 	 */
-	public MathDokuDLX(int gridSize, List<GridCage> cages) {
+	public MathDokuDLX(int gridSize, List<Cage> cages) {
 		mGridSize = gridSize;
 		mCages = cages;
 	}
@@ -77,18 +77,18 @@ public class MathDokuDLX extends DLX {
 		mTotalMoves = 0;
 		int total_nodes = 0;
 		ComboGenerator comboGenerator = null;
-		for (GridCage gridCage : mCages) {
-			if (gridCage.getPossibleCombos() == null) {
+		for (Cage cage : mCages) {
+			if (cage.getPossibleCombos() == null) {
 				if (comboGenerator == null) {
 					comboGenerator = new ComboGenerator(mGridSize);
 				}
-				gridCage.setPossibleCombos(comboGenerator.getPossibleCombos(
-						gridCage, gridCage.getListOfCells()));
+				cage.setPossibleCombos(comboGenerator.getPossibleCombos(cage,
+						cage.getListOfCells()));
 			}
-			int possibleMovesInCage = gridCage.getPossibleCombos().size();
+			int possibleMovesInCage = cage.getPossibleCombos().size();
 			mTotalMoves += possibleMovesInCage;
 			total_nodes += possibleMovesInCage
-					* (2 * gridCage.getNumberOfCells() + 1);
+					* (2 * cage.getNumberOfCells() + 1);
 		}
 		Init(totalCages + 2 * gridSizeSquare, total_nodes);
 
@@ -96,13 +96,13 @@ public class MathDokuDLX extends DLX {
 		// because this has a major impact on the time it will take to find a
 		// solution. Cage should be ordered on increasing number of possible
 		// moves.
-		List<GridCage> sortedCages = new ArrayList<GridCage>(mCages);
+		List<Cage> sortedCages = new ArrayList<Cage>(mCages);
 		Collections.sort(sortedCages, new SortCagesOnNumberOfMoves());
 		if (DEBUG_DLX) {
-			for (GridCage gridCage : sortedCages) {
-				Log.i(TAG, "Cage " + gridCage.getId() + " has "
-						+ gridCage.getPossibleCombos().size()
-						+ " permutations with " + gridCage.getNumberOfCells()
+			for (Cage cage : sortedCages) {
+				Log.i(TAG, "Cage " + cage.getId() + " has "
+						+ cage.getPossibleCombos().size()
+						+ " permutations with " + cage.getNumberOfCells()
 						+ " cells");
 			}
 		}
@@ -119,14 +119,14 @@ public class MathDokuDLX extends DLX {
 		int constraintNumber;
 		int comboIndex = 0;
 		int cageCount = 0;
-		for (GridCage gridCage : sortedCages) {
-			List<int[]> possibleCombos = gridCage.getPossibleCombos();
+		for (Cage cage : sortedCages) {
+			List<int[]> possibleCombos = cage.getPossibleCombos();
 			for (int[] possibleCombo : possibleCombos) {
 				if (DEBUG_DLX) {
 					Log.i(TAG,
-							"Combo " + comboIndex + " - Cage "
-									+ gridCage.getId() + " with "
-									+ gridCage.getNumberOfCells() + " cells");
+							"Combo " + comboIndex + " - Cage " + cage.getId()
+									+ " with " + cage.getNumberOfCells()
+									+ " cells");
 				}
 
 				// Is this permutation used for cage "cageCount"? The cage
@@ -138,8 +138,8 @@ public class MathDokuDLX extends DLX {
 
 				// Apply the permutation of "possibleCombo" to the cells in the
 				// cages
-				for (int i = 0; i < gridCage.getNumberOfCells(); i++) {
-					Cell cell = gridCage.getCell(i);
+				for (int i = 0; i < cage.getNumberOfCells(); i++) {
+					Cell cell = cage.getCell(i);
 
 					// Fill data structure for DLX algorithm
 
@@ -155,7 +155,7 @@ public class MathDokuDLX extends DLX {
 
 					// Fill data structure for uncovering solution if needed
 					if (uncoverSolution) {
-						mMoves.add(new Move(gridCage.getId(), comboIndex, cell
+						mMoves.add(new Move(cage.getId(), comboIndex, cell
 								.getRow(), cell.getColumn(), possibleCombo[i]));
 					}
 					if (DEBUG_DLX) {
@@ -179,20 +179,20 @@ public class MathDokuDLX extends DLX {
 	 * number of cells in the cage and/or the cage id. This order of the cages
 	 * determine how efficient the puzzle solving will be.
 	 */
-	private class SortCagesOnNumberOfMoves implements Comparator<GridCage> {
+	private class SortCagesOnNumberOfMoves implements Comparator<Cage> {
 		@Override
-		public int compare(GridCage gridCage1, GridCage gridCage2) {
-			int difference = gridCage1.getPossibleCombos().size()
-					- gridCage2.getPossibleCombos().size();
+		public int compare(Cage cage1, Cage cage2) {
+			int difference = cage1.getPossibleCombos().size()
+					- cage2.getPossibleCombos().size();
 			if (difference == 0) {
 				// Both cages have the same number of possible permutation. Next
 				// compare the number of cells in the cage.
-				difference = gridCage1.getNumberOfCells()
-						- gridCage2.getNumberOfCells();
+				difference = cage1.getNumberOfCells()
+						- cage2.getNumberOfCells();
 				if (difference == 0) {
 					// Also the number of cells is equal. Finally compare the
 					// id's.
-					difference = gridCage1.getId() - gridCage2.getId();
+					difference = cage1.getId() - cage2.getId();
 				}
 			}
 			return difference;
@@ -313,19 +313,18 @@ public class MathDokuDLX extends DLX {
 							// Determine the number of move for this cage which
 							// are
 							// still possible with the partially filled grid.
-							GridCage gridCage = mCages.get(move.mCageId);
-							List<int[]> cageMoves = gridCage
-									.getPossibleCombos();
+							Cage cage = mCages.get(move.mCageId);
+							List<int[]> cageMoves = cage.getPossibleCombos();
 							int possiblePermutations = 0;
 							for (int[] cageMove : cageMoves) {
 								boolean validMove = true;
 								// Test whether this cage move could be applied
 								// to
 								// the cells of the cage.
-								for (int j = 0; j < gridCage.getNumberOfCells(); j++) {
+								for (int j = 0; j < cage.getNumberOfCells(); j++) {
 									// Check if value is already used in this
 									// row
-									int cellRow = gridCage.getCell(j).getRow();
+									int cellRow = cage.getCell(j).getRow();
 									for (int col = 0; col < mGridSize; col++) {
 										if (solutionGrid[cellRow][col] == cageMove[j]) {
 											// The value is already used on this
@@ -340,7 +339,7 @@ public class MathDokuDLX extends DLX {
 
 									// Check if value is already used in this
 									// row
-									int cellColumn = gridCage
+									int cellColumn = cage
 											.getCell(j)
 											.getColumn();
 									for (int row = 0; row < mGridSize; row++) {

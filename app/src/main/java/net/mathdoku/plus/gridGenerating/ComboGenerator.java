@@ -2,7 +2,7 @@ package net.mathdoku.plus.gridGenerating;
 
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.grid.Cell;
-import net.mathdoku.plus.grid.GridCage;
+import net.mathdoku.plus.grid.Cage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,17 +22,17 @@ public class ComboGenerator {
 	/**
 	 * Get all possible combinations for the given cage.
 	 * 
-	 * @param gridCage
+	 * @param cage
 	 *            The cage for which all possible combo's have to be determined.
 	 * @param cells
 	 *            The list of cells for this cage.
 	 * @return The list of all possible combinations. Null in case no
 	 *         combinations or too many permutations have been found.
 	 */
-	public List<int[]> getPossibleCombos(GridCage gridCage, List<Cell> cells) {
-		mResult = gridCage.getResult();
-		mCageOperator = gridCage.getOperator();
-		mHideOperator = gridCage.isOperatorHidden();
+	public List<int[]> getPossibleCombos(Cage cage, List<Cell> cells) {
+		mResult = cage.getResult();
+		mCageOperator = cage.getOperator();
+		mHideOperator = cage.isOperatorHidden();
 		mCageCells = cells;
 
 		if (mHideOperator) {

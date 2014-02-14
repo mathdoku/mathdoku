@@ -1,19 +1,19 @@
 package net.mathdoku.plus.storage;
 
 import net.mathdoku.plus.enums.CageOperator;
+import net.mathdoku.plus.grid.Cage;
 import net.mathdoku.plus.grid.CageBuilder;
 import net.mathdoku.plus.grid.Cell;
-import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 
 import java.security.InvalidParameterException;
 import java.util.List;
 
 /**
- * This class converts relevant GridCage data to a string which can be persisted
- * and vice versa.
+ * This class converts relevant Cage data to a string which can be persisted and
+ * vice versa.
  */
-public class GridCageStorage {
+public class CageStorage {
 	/*
 	 * Each line in the entire storage string of a Grid contains information
 	 * about the type of data stored on the line. Lines containing data for a
@@ -23,7 +23,7 @@ public class GridCageStorage {
 
 	/**
 	 * Read cage information from a storage string which was created with
-	 * {@link #toStorageString(net.mathdoku.plus.grid.GridCage)} before.
+	 * {@link #toStorageString(net.mathdoku.plus.grid.Cage)} before.
 	 * 
 	 * @param line
 	 *            The line containing the cage information.
@@ -101,21 +101,21 @@ public class GridCageStorage {
 	 * {@link #getCageBuilderFromStorageString(String, int, java.util.List)} to
 	 * parse the storage string.
 	 * 
-	 * @param gridCage
+	 * @param cage
 	 *            The grid cage which has to be converted to a storage string.
 	 * 
 	 * @return A string representation of the grid cage.
 	 */
-	public String toStorageString(GridCage gridCage) {
+	public String toStorageString(Cage cage) {
 		String storageString = CAGE_LINE_ID
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ gridCage.getId()
+				+ cage.getId()
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ gridCage.getOperator().getId()
+				+ cage.getOperator().getId()
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ gridCage.getResult()
+				+ cage.getResult()
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1;
-		List<Cell> cells = gridCage.getListOfCells();
+		List<Cell> cells = cage.getListOfCells();
 		if (cells != null) {
 			for (Cell cell : cells) {
 				storageString += cell.getCellId()
@@ -123,7 +123,7 @@ public class GridCageStorage {
 			}
 		}
 		storageString += SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ Boolean.toString(gridCage.isOperatorHidden());
+				+ Boolean.toString(cage.isOperatorHidden());
 
 		return storageString;
 	}

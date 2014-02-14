@@ -5,8 +5,7 @@ import net.mathdoku.plus.enums.CageOperator;
 import java.util.Arrays;
 
 /**
- * This class holds all data needed to build a new
- * {@link net.mathdoku.plus.grid.GridCage} instance.
+ * This class holds all data needed to build a new {@link Cage} instance.
  */
 public class CageBuilder {
 	private int mId; // Required
@@ -50,8 +49,8 @@ public class CageBuilder {
 		return this;
 	}
 
-	public GridCage build() {
-		return new GridCage(this);
+	public Cage build() {
+		return new Cage(this);
 	}
 
 	public int getId() {

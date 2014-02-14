@@ -1,9 +1,9 @@
 package net.mathdoku.plus.storage;
 
+import net.mathdoku.plus.grid.Cage;
 import net.mathdoku.plus.grid.CellChange;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.GridBuilder;
-import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.grid.Cell;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.statistics.GridStatistics;
@@ -29,7 +29,7 @@ public class GridStorageTest {
 	private GridStorage gridStorage;
 	private CellStorage mCellStorageMock = mock(CellStorage.class);
 	private CellChangeStorage mCellChangeStorageMock = mock(CellChangeStorage.class);
-	private GridCageStorage mGridCageStorageMock = mock(GridCageStorage.class);
+	private CageStorage mCageStorageMock = mock(CageStorage.class);
 
 	private class GridBuilderStub extends GridBuilder {
 		int mGridSize;
@@ -79,17 +79,16 @@ public class GridStorageTest {
 		 * Initializes the list of cages of the GridBuilder with the given grid
 		 * cages.
 		 */
-		private GridBuilderStub addGridCageMockWithStorageString(
-				String... storageString) {
-			List<GridCage> gridCages = new ArrayList<GridCage>();
+		private GridBuilderStub addCageMockWithStorageString(String... storageString) {
+			List<Cage> cages = new ArrayList<Cage>();
 
 			for (int i = 0; i < storageString.length; i++) {
-				GridCage gridCage = mock(GridCage.class);
-				when(mGridCageStorageMock.toStorageString(gridCage))
+				Cage cage = mock(Cage.class);
+				when(mCageStorageMock.toStorageString(cage))
 						.thenReturn(storageString[i]);
-				gridCages.add(gridCage);
+				cages.add(cage);
 			}
-			super.setCages(gridCages);
+			super.setCages(cages);
 
 			return this;
 		}
@@ -117,8 +116,8 @@ public class GridStorageTest {
 	private class GridStorageTestObjectsCreator extends
 			GridStorage.ObjectsCreator {
 		@Override
-		public GridCageStorage createGridCageStorage() {
-			return mGridCageStorageMock;
+		public CageStorage createCageStorage() {
+			return mCageStorageMock;
 		}
 
 		@Override
@@ -244,15 +243,15 @@ public class GridStorageTest {
 		String cellStubStorageString = "** A CELL STORAGE STRING **";
 		gridBuilderStub
 				.addCellMockWithStorageString(cellStubStorageString);
-		String gridCageStubStorageString = "** A CAGE STORAGE STRING **";
+		String cageStubStorageString = "** A CAGE STORAGE STRING **";
 		gridBuilderStub
-				.addGridCageMockWithStorageString(gridCageStubStorageString);
+				.addCageMockWithStorageString(cageStubStorageString);
 		Grid grid = gridBuilderStub.build();
 
 		assertThat("Storage string", gridStorage.toStorageString(grid),
 				is(equalTo("GRID:true:false" + "\n" + //
 						cellStubStorageString + "\n" + //
-						gridCageStubStorageString + "\n")));
+						cageStubStorageString + "\n")));
 	}
 
 	@Test
@@ -267,9 +266,9 @@ public class GridStorageTest {
 				"** CELL 4 STORAGE STRING **" };
 		gridBuilderStub
 				.addCellMockWithStorageString(cellStubStorageString);
-		String gridCageStubStorageString = "** A CAGE STORAGE STRING **";
+		String cageStubStorageString = "** A CAGE STORAGE STRING **";
 		gridBuilderStub
-				.addGridCageMockWithStorageString(gridCageStubStorageString);
+				.addCageMockWithStorageString(cageStubStorageString);
 		Grid grid = gridBuilderStub.build();
 
 		assertThat("Storage string", gridStorage.toStorageString(grid),
@@ -278,7 +277,7 @@ public class GridStorageTest {
 						+ cellStubStorageString[1] + "\n"
 						+ cellStubStorageString[2] + "\n"
 						+ cellStubStorageString[3] + "\n"
-						+ gridCageStubStorageString + "\n")));
+						+ cageStubStorageString + "\n")));
 	}
 
 	@Test
@@ -293,10 +292,10 @@ public class GridStorageTest {
 				"** CELL 4 STORAGE STRING **" };
 		gridBuilderStub
 				.addCellMockWithStorageString(cellStubStorageString);
-		String gridCageStubStorageString[] = { "** CAGE 1 STORAGE STRING **",
+		String cageStubStorageString[] = { "** CAGE 1 STORAGE STRING **",
 				"** CAGE 2 STORAGE STRING **" };
 		gridBuilderStub
-				.addGridCageMockWithStorageString(gridCageStubStorageString);
+				.addCageMockWithStorageString(cageStubStorageString);
 		Grid grid = gridBuilderStub.build();
 
 		assertThat("Storage string", gridStorage.toStorageString(grid),
@@ -305,8 +304,8 @@ public class GridStorageTest {
 						+ cellStubStorageString[1] + "\n"
 						+ cellStubStorageString[2] + "\n"
 						+ cellStubStorageString[3] + "\n"
-						+ gridCageStubStorageString[0] + "\n"
-						+ gridCageStubStorageString[1] + "\n")));
+						+ cageStubStorageString[0] + "\n"
+						+ cageStubStorageString[1] + "\n")));
 	}
 
 	@Test
@@ -319,9 +318,9 @@ public class GridStorageTest {
 		String cellStubStorageString = "** A CELL STORAGE STRING **";
 		gridBuilderStub
 				.addCellMockWithStorageString(cellStubStorageString);
-		String gridCageStubStorageString = "** A CAGE STORAGE STRING **";
+		String cageStubStorageString = "** A CAGE STORAGE STRING **";
 		gridBuilderStub
-				.addGridCageMockWithStorageString(gridCageStubStorageString);
+				.addCageMockWithStorageString(cageStubStorageString);
 		String mCellChangeStubStorageString = "** A CELL CHANGE STORAGE STRING **";
 		gridBuilderStub
 				.addCellChangeMockWithStorageString(mCellChangeStubStorageString);
@@ -330,7 +329,7 @@ public class GridStorageTest {
 		assertThat("Storage string", gridStorage.toStorageString(grid),
 				is(equalTo("GRID:true:false" + "\n" //
 						+ cellStubStorageString + "\n" //
-						+ gridCageStubStorageString + "\n" //
+						+ cageStubStorageString + "\n" //
 						+ mCellChangeStubStorageString + "\n")));
 	}
 
@@ -344,9 +343,9 @@ public class GridStorageTest {
 		String cellStubStorageString = "** A CELL STORAGE STRING **";
 		gridBuilderStub
 				.addCellMockWithStorageString(cellStubStorageString);
-		String gridCageStubStorageString = "** A CAGE STORAGE STRING **";
+		String cageStubStorageString = "** A CAGE STORAGE STRING **";
 		gridBuilderStub
-				.addGridCageMockWithStorageString(gridCageStubStorageString);
+				.addCageMockWithStorageString(cageStubStorageString);
 		String mCellChangeStubStorageString[] = {
 				"** CELL CHANGE 1 STORAGE STRING **",
 				"** CELL CHANGE 2 STORAGE STRING **" };
@@ -357,7 +356,7 @@ public class GridStorageTest {
 		assertThat("Storage string", gridStorage.toStorageString(grid),
 				is(equalTo("GRID:true:false" + "\n" //
 						+ cellStubStorageString + "\n" //
-						+ gridCageStubStorageString + "\n" //
+						+ cageStubStorageString + "\n" //
 						+ mCellChangeStubStorageString[0] + "\n" //
 						+ mCellChangeStubStorageString[1] + "\n")));
 	}

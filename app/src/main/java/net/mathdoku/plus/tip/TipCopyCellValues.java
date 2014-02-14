@@ -4,8 +4,8 @@ import android.content.Context;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
+import net.mathdoku.plus.grid.Cage;
 import net.mathdoku.plus.grid.Cell;
-import net.mathdoku.plus.grid.GridCage;
 
 public class TipCopyCellValues extends TipDialog {
 
@@ -68,9 +68,9 @@ public class TipCopyCellValues extends TipDialog {
 		// at least one cell is still empty. This is not strictly necessary for
 		// copying but the tip will make more sense in case the cell values can
 		// be copied to another cell in the same cage.
-		GridCage gridCage = cell.getCage();
-		if (gridCage == null || gridCage.getNumberOfCells() <= 1
-				|| gridCage.hasEmptyCells() == false) {
+		Cage cage = cell.getCage();
+		if (cage == null || cage.getNumberOfCells() <= 1
+				|| cage.hasEmptyCells() == false) {
 			return false;
 		}
 

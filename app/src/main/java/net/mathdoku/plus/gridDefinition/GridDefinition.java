@@ -5,12 +5,12 @@ import com.srlee.DLX.MathDokuDLX;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.enums.PuzzleComplexity;
+import net.mathdoku.plus.grid.Cage;
 import net.mathdoku.plus.grid.CageBuilder;
 import net.mathdoku.plus.grid.Cell;
 import net.mathdoku.plus.grid.CellBuilder;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.GridBuilder;
-import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.grid.InvalidGridException;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.util.Util;
@@ -34,7 +34,7 @@ public class GridDefinition {
 	public static final String DELIMITER_LEVEL2 = ",";
 
 	private int mGridSize;
-	private List<GridCage> mCages;
+	private List<Cage> mCages;
 	private List<Cell> mCells;
 	private int[] mCageIdPerCell;
 	private int[] mCountCellsPerCage;
@@ -44,7 +44,7 @@ public class GridDefinition {
 			return new GridGeneratingParameters();
 		}
 
-		public MathDokuDLX createMathDokuDLX(int gridSize, List<GridCage> cages) {
+		public MathDokuDLX createMathDokuDLX(int gridSize, List<Cage> cages) {
 			return new MathDokuDLX(gridSize, cages);
 		}
 
@@ -52,8 +52,8 @@ public class GridDefinition {
 			return new ArrayList<Cell>();
 		}
 
-		public List<GridCage> createArrayListOfGridCages() {
-			return new ArrayList<GridCage>();
+		public List<Cage> createArrayListOfCages() {
+			return new ArrayList<Cage>();
 		}
 
 		public GridBuilder createGridBuilder() {
@@ -90,7 +90,7 @@ public class GridDefinition {
 	 * 
 	 * @return A unique string representation of the grid.
 	 */
-	public static String getDefinition(List<Cell> cells, List<GridCage> cages,
+	public static String getDefinition(List<Cell> cells, List<Cage> cages,
 			GridGeneratingParameters gridGeneratingParameters) {
 		StringBuilder definitionString = new StringBuilder();
 
@@ -118,7 +118,7 @@ public class GridDefinition {
 			definitionString.append(String.format("%02d", cell.getCageId()));
 		}
 		// Followed by cages
-		for (GridCage cage : cages) {
+		for (Cage cage : cages) {
 			definitionString
 					.append(DELIMITER_LEVEL1)
 					.append(cage.getId())
@@ -246,7 +246,7 @@ public class GridDefinition {
 			return null;
 		}
 
-		mCages = mObjectsCreator.createArrayListOfGridCages();
+		mCages = mObjectsCreator.createArrayListOfCages();
 		for (int i = ID_PART_FIRST_CAGE; i < definitionParts.length; i++) {
 			if (createCage(definitionParts[i]) == false) {
 				return null;
@@ -410,7 +410,7 @@ public class GridDefinition {
 		cageBuilder.setCells(cells);
 		cageBuilder.setHideOperator(false);
 
-		GridCage cage = cageBuilder.build();
+		Cage cage = cageBuilder.build();
 		mCages.add(cage);
 
 		return true;

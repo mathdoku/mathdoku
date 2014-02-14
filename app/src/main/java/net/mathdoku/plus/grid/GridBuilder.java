@@ -19,7 +19,7 @@ public class GridBuilder {
 	int mGridId; // Optional
 	int mSolvingAttemptId; // Optional
 	List<Cell> mCells; // Required
-	List<GridCage> mCages; // Required
+	List<Cage> mCages; // Required
 	List<CellChange> mCellChanges; // Optional
 	boolean mActive; // Optional
 	boolean mRevealed; // Optional
@@ -105,7 +105,7 @@ public class GridBuilder {
 		return this;
 	}
 
-	public GridBuilder setCages(List<GridCage> cages) {
+	public GridBuilder setCages(List<Cage> cages) {
 		mCages = cages;
 		return this;
 	}

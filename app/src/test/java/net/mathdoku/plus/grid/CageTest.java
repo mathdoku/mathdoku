@@ -22,7 +22,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
-public class GridCageTest {
+public class CageTest {
 	private CageBuilderStub mCageBuilder;
 	Grid mGridMock = mock(Grid.class);
 
@@ -186,28 +186,28 @@ public class GridCageTest {
 				.setResult(resultValue)
 				.setCageOperator(cageOperator)
 				.setHideOperator(hideOperator);
-		GridCage gridCage = mCageBuilder.build();
-		assertThat(gridCage.isOperatorHidden(), is(true));
+		Cage cage = mCageBuilder.build();
+		assertThat(cage.isOperatorHidden(), is(true));
 
-		gridCage.revealOperator();
+		cage.revealOperator();
 
-		assertThat(gridCage.isOperatorHidden(), is(false));
+		assertThat(cage.isOperatorHidden(), is(false));
 	}
 
 	@Test(expected = InvalidGridException.class)
 	public void checkUserMath_CageCellListIsNull_UserMathIsCorrect()
 			throws Exception {
-		GridCage gridCage = mCageBuilder.setCells((int[]) null).build();
+		Cage cage = mCageBuilder.setCells((int[]) null).build();
 
-		assertThat(gridCage.checkUserMath(), is(false));
+		assertThat(cage.checkUserMath(), is(false));
 	}
 
 	@Test
 	public void checkUserMath_CageWithoutCells_UserMathIsCorrect()
 			throws Exception {
-		GridCage gridCage = mCageBuilder.build();
+		Cage cage = mCageBuilder.build();
 
-		assertThat(gridCage.checkUserMath(), is(false));
+		assertThat(cage.checkUserMath(), is(false));
 	}
 
 	@Test
@@ -221,10 +221,10 @@ public class GridCageTest {
 				.setResult(resultValue)
 				.setCageOperator(cageOperator)
 				.setHideOperator(hideOperator);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.checkUserMath(), is(false));
+		assertThat(cage.checkUserMath(), is(false));
 	}
 
 	@Test
@@ -238,10 +238,10 @@ public class GridCageTest {
 				.setResult(resultValue)
 				.setCageOperator(cageOperator)
 				.setHideOperator(hideOperator);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.checkUserMath(), is(true));
+		assertThat(cage.checkUserMath(), is(true));
 	}
 
 	@Test
@@ -255,10 +255,10 @@ public class GridCageTest {
 				.setResult(resultValue)
 				.setCageOperator(cageOperator)
 				.setHideOperator(hideOperator);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.checkUserMath(), is(false));
+		assertThat(cage.checkUserMath(), is(false));
 	}
 
 	@Test
@@ -272,10 +272,10 @@ public class GridCageTest {
 				.setResult(resultValue)
 				.setCageOperator(cageOperator)
 				.setHideOperator(hideOperator);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.checkUserMath(), is(true));
+		assertThat(cage.checkUserMath(), is(true));
 	}
 
 	@Test
@@ -289,10 +289,10 @@ public class GridCageTest {
 				.setResult(resultValue)
 				.setCageOperator(cageOperator)
 				.setHideOperator(hideOperator);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.checkUserMath(), is(false));
+		assertThat(cage.checkUserMath(), is(false));
 	}
 
 	@Test
@@ -306,10 +306,10 @@ public class GridCageTest {
 				.setResult(resultValue)
 				.setCageOperator(cageOperator)
 				.setHideOperator(hideOperator);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.checkUserMath(), is(true));
+		assertThat(cage.checkUserMath(), is(true));
 	}
 
 	@Test
@@ -323,10 +323,10 @@ public class GridCageTest {
 				.setResult(resultValue)
 				.setCageOperator(cageOperator)
 				.setHideOperator(hideOperator);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.checkUserMath(), is(false));
+		assertThat(cage.checkUserMath(), is(false));
 	}
 
 	@Test
@@ -340,10 +340,10 @@ public class GridCageTest {
 				.setResult(resultValue)
 				.setCageOperator(cageOperator)
 				.setHideOperator(hideOperator);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.checkUserMath(), is(true));
+		assertThat(cage.checkUserMath(), is(true));
 	}
 
 	@Test
@@ -357,10 +357,10 @@ public class GridCageTest {
 				.setResult(resultValue)
 				.setCageOperator(cageOperator)
 				.setHideOperator(hideOperator);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.checkUserMath(), is(true));
+		assertThat(cage.checkUserMath(), is(true));
 	}
 
 	@Test
@@ -374,10 +374,10 @@ public class GridCageTest {
 				.setResult(resultValue)
 				.setCageOperator(cageOperator)
 				.setHideOperator(hideOperator);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.checkUserMath(), is(true));
+		assertThat(cage.checkUserMath(), is(true));
 	}
 
 	@Test
@@ -391,10 +391,10 @@ public class GridCageTest {
 				.setResult(resultValue)
 				.setCageOperator(cageOperator)
 				.setHideOperator(hideOperator);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.checkUserMath(), is(true));
+		assertThat(cage.checkUserMath(), is(true));
 	}
 
 	@Test
@@ -408,10 +408,10 @@ public class GridCageTest {
 				.setResult(resultValue)
 				.setCageOperator(cageOperator)
 				.setHideOperator(hideOperator);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.checkUserMath(), is(false));
+		assertThat(cage.checkUserMath(), is(false));
 	}
 
 	@Test
@@ -425,10 +425,10 @@ public class GridCageTest {
 				.setResult(resultValue)
 				.setCageOperator(cageOperator)
 				.setHideOperator(hideOperator);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.checkUserMath(), is(true));
+		assertThat(cage.checkUserMath(), is(true));
 	}
 
 	@Test
@@ -442,10 +442,10 @@ public class GridCageTest {
 				.setResult(resultValue)
 				.setCageOperator(cageOperator)
 				.setHideOperator(hideOperator);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.checkUserMath(), is(true));
+		assertThat(cage.checkUserMath(), is(true));
 	}
 
 	@Test
@@ -459,10 +459,10 @@ public class GridCageTest {
 				.setResult(resultValue)
 				.setCageOperator(cageOperator)
 				.setHideOperator(hideOperator);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.checkUserMath(), is(false));
+		assertThat(cage.checkUserMath(), is(false));
 	}
 
 	@Test
@@ -476,10 +476,10 @@ public class GridCageTest {
 				.setResult(resultValue)
 				.setCageOperator(cageOperator)
 				.setHideOperator(hideOperator);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.checkUserMath(), is(true));
+		assertThat(cage.checkUserMath(), is(true));
 	}
 
 	@Test
@@ -493,10 +493,10 @@ public class GridCageTest {
 				.setResult(resultValue)
 				.setCageOperator(cageOperator)
 				.setHideOperator(hideOperator);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.checkUserMath(), is(false));
+		assertThat(cage.checkUserMath(), is(false));
 	}
 
 	@Test
@@ -510,10 +510,10 @@ public class GridCageTest {
 				.setResult(resultValue)
 				.setCageOperator(cageOperator)
 				.setHideOperator(hideOperator);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.checkUserMath(), is(true));
+		assertThat(cage.checkUserMath(), is(true));
 	}
 
 	@Test
@@ -527,10 +527,10 @@ public class GridCageTest {
 				.setResult(resultValue)
 				.setCageOperator(cageOperator)
 				.setHideOperator(hideOperator);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.checkUserMath(), is(false));
+		assertThat(cage.checkUserMath(), is(false));
 	}
 
 	@Test
@@ -544,10 +544,10 @@ public class GridCageTest {
 				.setResult(resultValue)
 				.setCageOperator(cageOperator)
 				.setHideOperator(hideOperator);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.checkUserMath(), is(true));
+		assertThat(cage.checkUserMath(), is(true));
 	}
 
 	@Test
@@ -561,10 +561,10 @@ public class GridCageTest {
 				.setResult(resultValue)
 				.setCageOperator(cageOperator)
 				.setHideOperator(hideOperator);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.checkUserMath(), is(true));
+		assertThat(cage.checkUserMath(), is(true));
 	}
 
 	@Test
@@ -578,10 +578,10 @@ public class GridCageTest {
 				.setResult(resultValue)
 				.setCageOperator(cageOperator)
 				.setHideOperator(hideOperator);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.checkUserMath(), is(true));
+		assertThat(cage.checkUserMath(), is(true));
 	}
 
 	@Test
@@ -595,10 +595,10 @@ public class GridCageTest {
 				.setResult(resultValue)
 				.setCageOperator(cageOperator)
 				.setHideOperator(hideOperator);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.checkUserMath(), is(true));
+		assertThat(cage.checkUserMath(), is(true));
 	}
 
 	@Test
@@ -612,10 +612,10 @@ public class GridCageTest {
 				.setResult(resultValue)
 				.setCageOperator(cageOperator)
 				.setHideOperator(hideOperator);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.checkUserMath(), is(false));
+		assertThat(cage.checkUserMath(), is(false));
 	}
 
 	@Test
@@ -629,10 +629,10 @@ public class GridCageTest {
 				.setResult(resultValue)
 				.setCageOperator(cageOperator)
 				.setHideOperator(hideOperator);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.checkUserMath(), is(true));
+		assertThat(cage.checkUserMath(), is(true));
 	}
 
 	@Test
@@ -646,10 +646,10 @@ public class GridCageTest {
 				.setResult(resultValue)
 				.setCageOperator(cageOperator)
 				.setHideOperator(hideOperator);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.checkUserMath(), is(true));
+		assertThat(cage.checkUserMath(), is(true));
 	}
 
 	@Test
@@ -663,17 +663,17 @@ public class GridCageTest {
 				.setResult(resultValue)
 				.setCageOperator(cageOperator)
 				.setHideOperator(hideOperator);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.checkUserMath(), is(false));
+		assertThat(cage.checkUserMath(), is(false));
 	}
 
 	@Test
 	public void invalidateBordersOfAllCells_SetCageIdForAllCells_AllCellsChanged()
 			throws Exception {
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 		Cell cellMock = mock(Cell.class);
 		List<Cell> mCells = new ArrayList<Cell>();
 		mCells.add(cellMock);
@@ -681,7 +681,7 @@ public class GridCageTest {
 		mCells.add(cellMock);
 		when(mGridMock.getCells(any(int[].class))).thenReturn(mCells);
 
-		gridCage.invalidateBordersOfAllCells();
+		cage.invalidateBordersOfAllCells();
 
 		verify(cellMock,times(mCells.size())).invalidateBorders();
 	}
@@ -694,9 +694,9 @@ public class GridCageTest {
 				.setOffsetCellId(firstCellId)
 				.setCells(3, 4)
 				.setCageOperator(CageOperator.ADD);
-		GridCage gridCage = mCageBuilder.build();
+		Cage cage = mCageBuilder.build();
 
-		assertThat(gridCage.getIdUpperLeftCell(), is(firstCellId));
+		assertThat(cage.getIdUpperLeftCell(), is(firstCellId));
 	}
 
 	@Test
@@ -710,41 +710,41 @@ public class GridCageTest {
 				.setResult(resultValue)
 				.setCageOperator(cageOperator)
 				.setHideOperator(hideOperator);
-		GridCage gridCage = mCageBuilder.build();
+		Cage cage = mCageBuilder.build();
 
-		assertThat(gridCage.getCageText(), is("3"));
+		assertThat(cage.getCageText(), is("3"));
 	}
 
 	@Test
 	public void getCageText_VisibleOperatorsForCageWithAddOperator_CorrectTextReturned()
 			throws Exception {
-		GridCage gridCage = setupForGetCageText_VisibleOperators(3, CageOperator.ADD);
+		Cage cage = setupForGetCageText_VisibleOperators(3, CageOperator.ADD);
 
-		assertThat(gridCage.getCageText(), is("3+"));
+		assertThat(cage.getCageText(), is("3+"));
 	}
 
 	@Test
 	public void getCageText_VisibleOperatorsForCageWithSubtractOperator_CorrectTextReturned()
 			throws Exception {
-		GridCage gridCage = setupForGetCageText_VisibleOperators(4, CageOperator.SUBTRACT);
+		Cage cage = setupForGetCageText_VisibleOperators(4, CageOperator.SUBTRACT);
 
-		assertThat(gridCage.getCageText(), is("4-"));
+		assertThat(cage.getCageText(), is("4-"));
 	}
 
 	@Test
 	public void getCageText_VisibleOperatorsForCageWithMultiplyOperator_CorrectTextReturned()
 			throws Exception {
-		GridCage gridCage = setupForGetCageText_VisibleOperators(5, CageOperator.MULTIPLY);
+		Cage cage = setupForGetCageText_VisibleOperators(5, CageOperator.MULTIPLY);
 
-		assertThat(gridCage.getCageText(), is("5x"));
+		assertThat(cage.getCageText(), is("5x"));
 	}
 
 	@Test
 	public void getCageText_VisibleOperatorsForCageWithDivideOperator_CorrectTextReturned()
 			throws Exception {
-		GridCage gridCage = setupForGetCageText_VisibleOperators(6, CageOperator.DIVIDE);
+		Cage cage = setupForGetCageText_VisibleOperators(6, CageOperator.DIVIDE);
 
-		assertThat(gridCage.getCageText(), is("6/"));
+		assertThat(cage.getCageText(), is("6/"));
 	}
 
 	@Test
@@ -752,10 +752,10 @@ public class GridCageTest {
 		mCageBuilder
 				.setCells(2, 1, 4)
 				.setCageOperator(CageOperator.ADD);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.hasEmptyCells(), is(false));
+		assertThat(cage.hasEmptyCells(), is(false));
 	}
 
 	@Test
@@ -763,10 +763,10 @@ public class GridCageTest {
 		mCageBuilder
 				.setCells(2, 0, 3)
 				.setCageOperator(CageOperator.ADD);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.hasEmptyCells(), is(true));
+		assertThat(cage.hasEmptyCells(), is(true));
 	}
 
 	@Test
@@ -774,33 +774,33 @@ public class GridCageTest {
 		mCageBuilder
 				.setCells(0, 0, 0)
 				.setCageOperator(CageOperator.ADD);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.hasEmptyCells(), is(true));
+		assertThat(cage.hasEmptyCells(), is(true));
 	}
 
 	@Test
 	public void getCell_GridReferenceNotSet_Null() throws Exception {
-		GridCage gridCage = mCageBuilder.build();
+		Cage cage = mCageBuilder.build();
 
-		assertThat(gridCage.getCell(0), is(nullValue()));
+		assertThat(cage.getCell(0), is(nullValue()));
 	}
 
 	@Test
 	public void getCell_PositionTooLow_Null() throws Exception {
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.getCell(-1), is(nullValue()));
+		assertThat(cage.getCell(-1), is(nullValue()));
 	}
 
 	@Test
 	public void getCell_PositionTooHigh_Null() throws Exception {
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 
-		assertThat(gridCage.getCell(1), is(nullValue()));
+		assertThat(cage.getCell(1), is(nullValue()));
 	}
 
 	@Test
@@ -808,16 +808,16 @@ public class GridCageTest {
 		mCageBuilder
 				.setCells(2, 0, 3)
 				.setCageOperator(CageOperator.ADD);
-		GridCage gridCage = mCageBuilder.build();
-		gridCage.setGridReference(mGridMock);
+		Cage cage = mCageBuilder.build();
+		cage.setGridReference(mGridMock);
 		when(mGridMock.getCell(0)).thenReturn(null);
 		when(mGridMock.getCell(1)).thenReturn(mock(Cell.class));
 		when(mGridMock.getCell(2)).thenReturn(null);
 
-		assertThat(gridCage.getCell(1), is(notNullValue()));
+		assertThat(cage.getCell(1), is(notNullValue()));
 	}
 
-	private GridCage setupForGetCageText_VisibleOperators(int resultValue, CageOperator cageOperator) {
+	private Cage setupForGetCageText_VisibleOperators(int resultValue, CageOperator cageOperator) {
 		boolean hideOperator = false;
 		mCageBuilder
 				.setCells(2, 3)

@@ -3,7 +3,7 @@ package net.mathdoku.plus.storage;
 import net.mathdoku.plus.grid.Cell;
 import net.mathdoku.plus.grid.CellChange;
 import net.mathdoku.plus.grid.Grid;
-import net.mathdoku.plus.grid.GridCage;
+import net.mathdoku.plus.grid.Cage;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 
 import java.security.InvalidParameterException;
@@ -23,15 +23,15 @@ public class GridStorage {
 	private boolean mActive;
 	private boolean mRevealed;
 	private List<Cell> mCells;
-	private List<GridCage> mCages;
+	private List<Cage> mCages;
 	private List<CellChange> mCellChanges;
 
 	// The Objects Creator is responsible for creating all new objects needed by
 	// this class. For unit testing purposes the default create methods can be
 	// overridden if needed.
 	public static class ObjectsCreator {
-		public GridCageStorage createGridCageStorage() {
-			return new GridCageStorage();
+		public CageStorage createCageStorage() {
+			return new CageStorage();
 		}
 
 		public CellStorage createCellStorage() {
@@ -146,12 +146,10 @@ public class GridStorage {
 		// Store information about the cages. Use one line per single
 		// cage.
 		if (mCages != null) {
-			GridCageStorage gridCageStorage = mObjectsCreator
-					.createGridCageStorage();
-			for (GridCage cage : mCages) {
-				stringBuilder
-						.append(gridCageStorage.toStorageString(cage))
-						.append(SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+			CageStorage cageStorage = mObjectsCreator.createCageStorage();
+			for (Cage cage : mCages) {
+				stringBuilder.append(cageStorage.toStorageString(cage)).append(
+						SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
 			}
 		}
 

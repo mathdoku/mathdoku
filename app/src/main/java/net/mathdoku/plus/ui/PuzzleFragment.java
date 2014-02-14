@@ -34,10 +34,10 @@ import net.mathdoku.plus.GameTimer;
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.enums.CageOperator;
+import net.mathdoku.plus.grid.Cage;
 import net.mathdoku.plus.grid.Cell;
 import net.mathdoku.plus.grid.DigitPositionGrid;
 import net.mathdoku.plus.grid.Grid;
-import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.grid.GridLoader;
 import net.mathdoku.plus.grid.ui.GridInputMode;
 import net.mathdoku.plus.grid.ui.GridPlayerView;
@@ -714,8 +714,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		}
 
 		// Determine current selected cage.
-		GridCage selectedGridCage = mGrid.getSelectedCage();
-		return (selectedGridCage != null && selectedGridCage.isOperatorHidden() && selectedGridCage
+		Cage selectedCage = mGrid.getSelectedCage();
+		return (selectedCage != null && selectedCage.isOperatorHidden() && selectedCage
 				.getOperator() != CageOperator.NONE);
 	}
 

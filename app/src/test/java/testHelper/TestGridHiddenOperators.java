@@ -2,9 +2,9 @@ package testHelper;
 
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.enums.PuzzleComplexity;
+import net.mathdoku.plus.grid.Cage;
 import net.mathdoku.plus.grid.CageBuilder;
 import net.mathdoku.plus.grid.Cell;
-import net.mathdoku.plus.grid.GridCage;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 
 import java.util.ArrayList;
@@ -17,42 +17,42 @@ public class TestGridHiddenOperators extends TestGrid {
 		super(4, true);
 
 		// Create the cages
-		List<GridCage> mCages = new ArrayList<GridCage>();
+		List<Cage> mCages = new ArrayList<Cage>();
 		int cageId = 0; // Cage id's are 0-based
 
 		// Cage 0
-		GridCage gridCage = new CageBuilder()
+		Cage cage = new CageBuilder()
 				.setId(cageId++)
 				.setHideOperator(mHideOperator)
 				.setCells(new int[] { 0, 1 })
 				.setResult(2)
 				.setCageOperator(CageOperator.SUBTRACT)
 				.build();
-		mCages.add(gridCage);
+		mCages.add(cage);
 
 		// Cage 1
-		gridCage = new CageBuilder()
+		cage = new CageBuilder()
 				.setId(cageId++)
 				.setHideOperator(mHideOperator)
 				.setCells(new int[] { 2, 3 })
 				.setResult(6)
 				.setCageOperator(CageOperator.ADD)
 				.build();
-		mCages.add(gridCage);
+		mCages.add(cage);
 
 		// Cage 2
-		gridCage = new CageBuilder()
+		cage = new CageBuilder()
 				.setId(cageId++)
 				.setHideOperator(mHideOperator)
 				.setCells(new int[] { 4, 8 })
 				.setResult(2)
 				.setCageOperator(CageOperator.SUBTRACT)
 				.build();
-		mCages.add(gridCage);
+		mCages.add(cage);
 
 		// Cage 3
 		mIdOfUpperLeftCellOfCageWithAnUnrevealedCageOperator = 5;
-		gridCage = new CageBuilder()
+		cage = new CageBuilder()
 				.setId(cageId++)
 				.setHideOperator(true)
 				.setCells(
@@ -62,57 +62,57 @@ public class TestGridHiddenOperators extends TestGrid {
 				.setResult(12)
 				.setCageOperator(CageOperator.MULTIPLY)
 				.build();
-		mCages.add(gridCage);
+		mCages.add(cage);
 
 		// Cage 4
-		gridCage = new CageBuilder()
+		cage = new CageBuilder()
 				.setId(cageId++)
 				.setHideOperator(mHideOperator)
 				.setCells(new int[] { 7, 11 })
 				.setResult(3)
 				.setCageOperator(CageOperator.DIVIDE)
 				.build();
-		mCages.add(gridCage);
+		mCages.add(cage);
 
 		// Cage 5
-		gridCage = new CageBuilder()
+		cage = new CageBuilder()
 				.setId(cageId++)
 				.setHideOperator(mHideOperator)
 				.setCells(new int[] { 9, 13 })
 				.setResult(3)
 				.setCageOperator(CageOperator.ADD)
 				.build();
-		mCages.add(gridCage);
+		mCages.add(cage);
 
 		// Cage 6
-		gridCage = new CageBuilder()
+		cage = new CageBuilder()
 				.setId(cageId++)
 				.setHideOperator(mHideOperator)
 				.setCells(new int[] { 10, 14 })
 				.setResult(3)
 				.setCageOperator(CageOperator.SUBTRACT)
 				.build();
-		mCages.add(gridCage);
+		mCages.add(cage);
 
 		// Cage 7
-		gridCage = new CageBuilder()
+		cage = new CageBuilder()
 				.setId(cageId++)
 				.setHideOperator(mHideOperator)
 				.setCells(new int[] { 12 })
 				.setResult(3)
 				.setCageOperator(CageOperator.NONE)
 				.build();
-		mCages.add(gridCage);
+		mCages.add(cage);
 
 		// Cage 8
-		gridCage = new CageBuilder()
+		cage = new CageBuilder()
 				.setId(cageId++)
 				.setHideOperator(mHideOperator)
 				.setCells(new int[] { 15 })
 				.setResult(2)
 				.setCageOperator(CageOperator.NONE)
 				.build();
-		mCages.add(gridCage);
+		mCages.add(cage);
 
 		// Create the cells
 		List<Cell> mCells = new ArrayList<Cell>();

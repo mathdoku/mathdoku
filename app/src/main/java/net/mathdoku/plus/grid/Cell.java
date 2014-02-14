@@ -340,7 +340,7 @@ public class Cell {
 		return mCageId;
 	}
 
-	public GridCage getCage() {
+	public Cage getCage() {
 		return (mGrid == null ? null : mGrid.getCage(mCageId));
 	}
 
@@ -442,7 +442,7 @@ public class Cell {
 			return false;
 		}
 
-		GridCage selectedCageInGrid = selectedCellInGrid.getCage();
+		Cage selectedCageInGrid = selectedCellInGrid.getCage();
 
 		return (selectedCageInGrid.getId() == mCageId);
 	}

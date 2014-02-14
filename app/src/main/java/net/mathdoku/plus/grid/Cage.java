@@ -6,7 +6,7 @@ import net.mathdoku.plus.util.Util;
 import java.util.Arrays;
 import java.util.List;
 
-public class GridCage {
+public class Cage {
 	private final int mId;
 	private final CageOperator mCageOperator;
 	private final int mResult;
@@ -24,9 +24,9 @@ public class GridCage {
 	private Grid mGrid;
 
 	/**
-	 * Creates a new instance of {@link GridCage}.
+	 * Creates a new instance of {@link Cage}.
 	 */
-	public GridCage(CageBuilder cageBuilder) {
+	public Cage(CageBuilder cageBuilder) {
 		// Set default for variables which can not be set via the builder
 		mPossibleCombos = null;
 		// Reference to grid will only be set after the entire grid is created
@@ -71,7 +71,7 @@ public class GridCage {
 	/**
 	 * Initializes the cage variables.
 	 */
-	private void initGridCage() {
+	private void initCage() {
 		mPossibleCombos = null;
 
 		// Defaulting mUserMathCorrect to false result in setting all borders
@@ -81,7 +81,7 @@ public class GridCage {
 
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder("GridCage{");
+		final StringBuilder sb = new StringBuilder("Cage{");
 		sb.append("mId=").append(mId);
 		sb.append(", mCageOperator=").append(mCageOperator);
 		sb.append(", mResult=").append(mResult);

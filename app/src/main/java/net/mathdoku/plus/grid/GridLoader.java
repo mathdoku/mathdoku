@@ -3,7 +3,7 @@ package net.mathdoku.plus.grid;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.storage.CellChangeStorage;
-import net.mathdoku.plus.storage.GridCageStorage;
+import net.mathdoku.plus.storage.CageStorage;
 import net.mathdoku.plus.storage.CellStorage;
 import net.mathdoku.plus.storage.GridStorage;
 import net.mathdoku.plus.storage.SolvingAttemptStorage;
@@ -28,7 +28,7 @@ public class GridLoader {
 
 	private GridBuilder mGridBuilder;
 	private List<Cell> mCells;
-	private List<GridCage> mGridCages;
+	private List<Cage> mCages;
 	private List<CellChange> mCellChanges;
 
 	public static class ObjectsCreator {
@@ -58,8 +58,8 @@ public class GridLoader {
 			return new ArrayList<Cell>();
 		}
 
-		public List<GridCage> createArrayListOfGridCages() {
-			return new ArrayList<GridCage>();
+		public List<Cage> createArrayListOfCages() {
+			return new ArrayList<Cage>();
 		}
 
 		public List<CellChange> createArrayListOfCellChanges() {
@@ -70,12 +70,12 @@ public class GridLoader {
 			return new CellStorage();
 		}
 
-		public GridCageStorage createGridCageStorage() {
-			return new GridCageStorage();
+		public CageStorage createCageStorage() {
+			return new CageStorage();
 		}
 
-		public GridCage createGridCage(CageBuilder cageBuilder) {
-			return new GridCage(cageBuilder);
+		public Cage createCage(CageBuilder cageBuilder) {
+			return new Cage(cageBuilder);
 		}
 
 		public CellChangeStorage createCellChangeStorage() {
@@ -241,13 +241,13 @@ public class GridLoader {
 			mGridBuilder.setCells(mCells);
 
 			// Read cages
-			mGridCages = mObjectsCreator.createArrayListOfGridCages();
+			mCages = mObjectsCreator.createArrayListOfCages();
 			while (loadCage(line)) {
 				line = solvingAttemptStorage.getNextLine();
 			}
 			// At least one expected is expected, so throw error in case no
 			// cages have been loaded.
-			if (mGridCages.size() == 0) {
+			if (mCages.size() == 0) {
 				if (mThrowExceptionOnError) {
 					throw new InvalidGridException(
 							"Line does not contain cage information while this was expected:"
@@ -255,7 +255,7 @@ public class GridLoader {
 				}
 				return false;
 			}
-			mGridBuilder.setCages(mGridCages);
+			mGridBuilder.setCages(mCages);
 
 			// Remaining lines contain cell changes (zero or more expected)
 			mCellChanges = mObjectsCreator.createArrayListOfCellChanges();
@@ -323,16 +323,14 @@ public class GridLoader {
 			return false;
 		}
 
-		GridCageStorage gridCageStorage = mObjectsCreator
-				.createGridCageStorage();
-		CageBuilder cageBuilder = gridCageStorage
-				.getCageBuilderFromStorageString(line, mSavedWithRevision,
-						mCells);
+		CageStorage cageStorage = mObjectsCreator.createCageStorage();
+		CageBuilder cageBuilder = cageStorage.getCageBuilderFromStorageString(
+				line, mSavedWithRevision, mCells);
 		if (cageBuilder == null) {
 			return false;
 		}
-		GridCage cage = mObjectsCreator.createGridCage(cageBuilder);
-		mGridCages.add(cage);
+		Cage cage = mObjectsCreator.createCage(cageBuilder);
+		mCages.add(cage);
 
 		return true;
 	}
