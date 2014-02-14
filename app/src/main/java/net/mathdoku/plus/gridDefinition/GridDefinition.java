@@ -6,11 +6,11 @@ import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.grid.CageBuilder;
+import net.mathdoku.plus.grid.Cell;
 import net.mathdoku.plus.grid.CellBuilder;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.GridBuilder;
 import net.mathdoku.plus.grid.GridCage;
-import net.mathdoku.plus.grid.GridCell;
 import net.mathdoku.plus.grid.InvalidGridException;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.util.Util;
@@ -35,7 +35,7 @@ public class GridDefinition {
 
 	private int mGridSize;
 	private List<GridCage> mCages;
-	private List<GridCell> mCells;
+	private List<Cell> mCells;
 	private int[] mCageIdPerCell;
 	private int[] mCountCellsPerCage;
 
@@ -48,8 +48,8 @@ public class GridDefinition {
 			return new MathDokuDLX(gridSize, cages);
 		}
 
-		public List<GridCell> createArrayListOfGridCells() {
-			return new ArrayList<GridCell>();
+		public List<Cell> createArrayListOfCells() {
+			return new ArrayList<Cell>();
 		}
 
 		public List<GridCage> createArrayListOfGridCages() {
@@ -90,8 +90,7 @@ public class GridDefinition {
 	 * 
 	 * @return A unique string representation of the grid.
 	 */
-	public static String getDefinition(List<GridCell> cells,
-			List<GridCage> cages,
+	public static String getDefinition(List<Cell> cells, List<GridCage> cages,
 			GridGeneratingParameters gridGeneratingParameters) {
 		StringBuilder definitionString = new StringBuilder();
 
@@ -115,7 +114,7 @@ public class GridDefinition {
 		// Get the cage number (represented as a value of two digits, if needed
 		// prefixed with a 0) for each cell. Note: with a maximum of 81 cells in
 		// a 9x9 grid we can never have a cage-id > 99.
-		for (GridCell cell : cells) {
+		for (Cell cell : cells) {
 			definitionString.append(String.format("%02d", cell.getCageId()));
 		}
 		// Followed by cages
@@ -326,7 +325,7 @@ public class GridDefinition {
 
 	private boolean createArrayListOfCells(String cagesString,
 			int expectedNumberOfCages) {
-		mCells = mObjectsCreator.createArrayListOfGridCells();
+		mCells = mObjectsCreator.createArrayListOfCells();
 
 		// The cagesString contains the cage number for each individual cell.
 		// The cage number always consists of two digits.
@@ -337,13 +336,13 @@ public class GridDefinition {
 			int cageId = Integer.valueOf(matcher.group());
 
 			// Create new cell and add it to the cells list.
-			GridCell gridCell = new CellBuilder()
+			Cell cell = new CellBuilder()
 					.setGridSize(mGridSize)
 					.setId(cellNumber)
 					.setCageId(cageId)
 					.setSkipCheckCorrectValueOnBuild()
 					.build();
-			mCells.add(gridCell);
+			mCells.add(cell);
 
 			// Determine the cage to which the cell has to be added.
 			if (cageId < 0 || cageId >= expectedNumberOfCages) {
@@ -453,7 +452,7 @@ public class GridDefinition {
 		}
 
 		// Store the solution in the grid cells.
-		for (GridCell cell : mCells) {
+		for (Cell cell : mCells) {
 			int row = cell.getRow();
 			int column = cell.getColumn();
 			if (row >= 0 && row < solution.length && column >= 0

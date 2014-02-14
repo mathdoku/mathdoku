@@ -2,7 +2,7 @@ package net.mathdoku.plus.grid;
 
 import org.junit.Test;
 
-public class GridCellTest {
+public class CellTest {
 	@Test
 	public void addPossible_X_UpdateStatistics() throws Exception {
 		// TODO: Implement unit test

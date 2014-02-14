@@ -2,8 +2,8 @@ package net.mathdoku.plus.storage;
 
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.grid.CageBuilder;
+import net.mathdoku.plus.grid.Cell;
 import net.mathdoku.plus.grid.GridCage;
-import net.mathdoku.plus.grid.GridCell;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +26,7 @@ public class GridCageStorageTest {
 	private GridCageStorage mGridCageStorage = new GridCageStorage();
 	private String mLine;
 	private int mRevisionNumber = 596;
-	private List<GridCell> mCells = mock(ArrayList.class);
+	private List<Cell> mCells = mock(ArrayList.class);
 
 	@Test(expected = NullPointerException.class)
 	public void fromStorageString_NullLine_False() throws Exception {
@@ -70,7 +70,7 @@ public class GridCageStorageTest {
 	@Test
 	public void fromStorageString_ValidLineWithoutCells_True() throws Exception {
 		mLine = "CAGE:1:2:3::false";
-		when(mCells.get(anyInt())).thenReturn(mock(GridCell.class));
+		when(mCells.get(anyInt())).thenReturn(mock(Cell.class));
 
 		CageBuilder cageBuilder = mGridCageStorage
 				.getCageBuilderFromStorageString(mLine, mRevisionNumber, mCells);
@@ -87,9 +87,9 @@ public class GridCageStorageTest {
 	public void fromStorageString_ValidLineWithSingeCell_True()
 			throws Exception {
 		mLine = "CAGE:1:2:3:4:true";
-		GridCell gridCellMock = mock(GridCell.class);
-		when(gridCellMock.getCellId()).thenReturn(4);
-		when(mCells.get(anyInt())).thenReturn(gridCellMock);
+		Cell cellMock = mock(Cell.class);
+		when(cellMock.getCellId()).thenReturn(4);
+		when(mCells.get(anyInt())).thenReturn(cellMock);
 
 		CageBuilder cageBuilder = mGridCageStorage
 				.getCageBuilderFromStorageString(mLine, mRevisionNumber, mCells);
@@ -107,9 +107,9 @@ public class GridCageStorageTest {
 	public void fromStorageString_ValidLineWithMultipleCellCage_True()
 			throws Exception {
 		mLine = "CAGE:1:2:3:4,5,6,7:false";
-		GridCell gridCellMock = mock(GridCell.class);
-		when(gridCellMock.getCellId()).thenReturn(4,5,6,7);
-		when(mCells.get(anyInt())).thenReturn(gridCellMock);
+		Cell cellMock = mock(Cell.class);
+		when(cellMock.getCellId()).thenReturn(4,5,6,7);
+		when(mCells.get(anyInt())).thenReturn(cellMock);
 
 		CageBuilder cageBuilder = mGridCageStorage
 				.getCageBuilderFromStorageString(mLine, mRevisionNumber, mCells);
@@ -130,8 +130,8 @@ public class GridCageStorageTest {
 		when(gridCageMock.getId()).thenReturn(1);
 		when(gridCageMock.getOperator()).thenReturn(CageOperator.MULTIPLY);
 		when(gridCageMock.getResult()).thenReturn(4);
-		List<GridCell> cells = new ArrayList<GridCell>();
-		when(gridCageMock.getGridCells()).thenReturn(cells);
+		List<Cell> cells = new ArrayList<Cell>();
+		when(gridCageMock.getListOfCells()).thenReturn(cells);
 		when(gridCageMock.isOperatorHidden()).thenReturn(false);
 
 		assertThat(mGridCageStorage.toStorageString(gridCageMock),
@@ -145,11 +145,11 @@ public class GridCageStorageTest {
 		when(gridCageMock.getId()).thenReturn(1);
 		when(gridCageMock.getOperator()).thenReturn(CageOperator.SUBTRACT);
 		when(gridCageMock.getResult()).thenReturn(3);
-		List<GridCell> cells = new ArrayList<GridCell>();
-		GridCell gridCell = mock(GridCell.class);
-		when(gridCell.getCellId()).thenReturn(4);
-		cells.add(gridCell);
-		when(gridCageMock.getGridCells()).thenReturn(cells);
+		List<Cell> cells = new ArrayList<Cell>();
+		Cell cell = mock(Cell.class);
+		when(cell.getCellId()).thenReturn(4);
+		cells.add(cell);
+		when(gridCageMock.getListOfCells()).thenReturn(cells);
 		when(gridCageMock.isOperatorHidden()).thenReturn(false);
 
 		assertThat(mGridCageStorage.toStorageString(gridCageMock),
@@ -163,13 +163,13 @@ public class GridCageStorageTest {
 		when(gridCageMock.getId()).thenReturn(1);
 		when(gridCageMock.getOperator()).thenReturn(CageOperator.DIVIDE);
 		when(gridCageMock.getResult()).thenReturn(3);
-		List<GridCell> cells = new ArrayList<GridCell>();
-		GridCell gridCell = mock(GridCell.class);
-		when(gridCell.getCellId()).thenReturn(5, 6, 7);
-		cells.add(gridCell);
-		cells.add(gridCell);
-		cells.add(gridCell);
-		when(gridCageMock.getGridCells()).thenReturn(cells);
+		List<Cell> cells = new ArrayList<Cell>();
+		Cell cell = mock(Cell.class);
+		when(cell.getCellId()).thenReturn(5, 6, 7);
+		cells.add(cell);
+		cells.add(cell);
+		cells.add(cell);
+		when(gridCageMock.getListOfCells()).thenReturn(cells);
 		when(gridCageMock.isOperatorHidden()).thenReturn(false);
 
 		assertThat(mGridCageStorage.toStorageString(gridCageMock),

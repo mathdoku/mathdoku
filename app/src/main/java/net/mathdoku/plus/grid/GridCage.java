@@ -82,22 +82,14 @@ public class GridCage {
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder("GridCage{");
-		sb.append("mId=")
-				.append(mId);
-		sb.append(", mCageOperator=")
-				.append(mCageOperator);
-		sb.append(", mResult=")
-				.append(mResult);
-		sb.append(", mHideOperator=")
-				.append(mHideOperator);
-		sb.append(", mCells=")
-				.append(Arrays.toString(mCells));
-		sb.append(", mUserMathCorrect=")
-				.append(mUserMathCorrect);
-		sb.append(", mPossibleCombos=")
-				.append(mPossibleCombos);
-		sb.append(", mGrid=")
-				.append(mGrid);
+		sb.append("mId=").append(mId);
+		sb.append(", mCageOperator=").append(mCageOperator);
+		sb.append(", mResult=").append(mResult);
+		sb.append(", mHideOperator=").append(mHideOperator);
+		sb.append(", mCells=").append(Arrays.toString(mCells));
+		sb.append(", mUserMathCorrect=").append(mUserMathCorrect);
+		sb.append(", mPossibleCombos=").append(mPossibleCombos);
+		sb.append(", mGrid=").append(mGrid);
 		sb.append('}');
 		return sb.toString();
 	}
@@ -157,7 +149,7 @@ public class GridCage {
 
 	private boolean isDivideMathsCorrect(List<Integer> userValues) {
 		if (userValues.size() == 2) {
-			int lower = Math.min(userValues.get(0),userValues.get(1));
+			int lower = Math.min(userValues.get(0), userValues.get(1));
 			int higher = Math.max(userValues.get(0), userValues.get(1));
 			return higher == (lower * mResult);
 		}
@@ -166,8 +158,8 @@ public class GridCage {
 
 	private boolean isSubtractMathsCorrect(List<Integer> userValues) {
 		if (userValues.size() == 2) {
-			int lower = Math.min(userValues.get(0),userValues.get(1));
-			int higher = Math.max(userValues.get(0),userValues.get(1));
+			int lower = Math.min(userValues.get(0), userValues.get(1));
+			int higher = Math.max(userValues.get(0), userValues.get(1));
 			return (higher - lower == mResult);
 		}
 		return false;
@@ -235,9 +227,9 @@ public class GridCage {
 		if (mGrid == null) {
 			return false;
 		}
-		List<GridCell> cells = mGrid.getGridCells(mCells);
+		List<Cell> cells = mGrid.getCells(mCells);
 		if (cells != null) {
-			for (GridCell cell : cells) {
+			for (Cell cell : cells) {
 				cell.invalidateBorders();
 			}
 		}
@@ -249,8 +241,7 @@ public class GridCage {
 	}
 
 	public String getCageText() {
-		return mResult
-					+ (mHideOperator ? "" : mCageOperator.getSign());
+		return mResult + (mHideOperator ? "" : mCageOperator.getSign());
 	}
 
 	/**
@@ -300,15 +291,15 @@ public class GridCage {
 	}
 
 	// TODO: method should be removed after refactor MathDokuDLX.java
-	public List<GridCell> getGridCells() {
-		return (mGrid == null ? null : mGrid.getGridCells(mCells));
+	public List<Cell> getListOfCells() {
+		return (mGrid == null ? null : mGrid.getCells(mCells));
 	}
 
 	public int[] getCells() {
 		return mCells;
 	}
 
-	public GridCell getCell(int position) {
+	public Cell getCell(int position) {
 		if (mGrid == null || position < 0 || position >= mCells.length) {
 			return null;
 		}

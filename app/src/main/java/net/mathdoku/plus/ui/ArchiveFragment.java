@@ -90,7 +90,8 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 			// Set background color of button
 			Button archiveActionButton = (Button) rootView
 					.findViewById(R.id.archiveActionButton);
-			archiveActionButton.setBackgroundColor(Painter.getInstance()
+			archiveActionButton.setBackgroundColor(Painter
+					.getInstance()
 					.getButtonBackgroundColor());
 			if (getActivity() instanceof PuzzleFragmentActivity) {
 				final PuzzleFragmentActivity puzzleFragmentActivity = (PuzzleFragmentActivity) getActivity();
@@ -254,7 +255,8 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
 		if (key.equals(Preferences.ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE)) {
-			setDisplayChartDescription(Preferences.getInstance(getActivity())
+			setDisplayChartDescription(Preferences
+					.getInstance(getActivity())
 					.isArchiveChartDescriptionVisible());
 		}
 
@@ -616,7 +618,9 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 	private int getBarWidth() {
 		// Get screen width
 		DisplayMetrics mDisplayMetrics = new DisplayMetrics();
-		getActivity().getWindowManager().getDefaultDisplay()
+		getActivity()
+				.getWindowManager()
+				.getDefaultDisplay()
 				.getMetrics(mDisplayMetrics);
 
 		// Assume 90% of screen width is actually available to display all

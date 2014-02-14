@@ -4,7 +4,7 @@ import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.storage.CellChangeStorage;
 import net.mathdoku.plus.storage.GridCageStorage;
-import net.mathdoku.plus.storage.GridCellStorage;
+import net.mathdoku.plus.storage.CellStorage;
 import net.mathdoku.plus.storage.GridStorage;
 import net.mathdoku.plus.storage.SolvingAttemptStorage;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
@@ -27,7 +27,7 @@ public class GridLoader {
 	private int mSavedWithRevision;
 
 	private GridBuilder mGridBuilder;
-	private List<GridCell> mGridCells;
+	private List<Cell> mCells;
 	private List<GridCage> mGridCages;
 	private List<CellChange> mCellChanges;
 
@@ -54,8 +54,8 @@ public class GridLoader {
 			return new GridStorage();
 		}
 
-		public List<GridCell> createArrayListOfGridCells() {
-			return new ArrayList<GridCell>();
+		public List<Cell> createArrayListOfCells() {
+			return new ArrayList<Cell>();
 		}
 
 		public List<GridCage> createArrayListOfGridCages() {
@@ -66,8 +66,8 @@ public class GridLoader {
 			return new ArrayList<CellChange>();
 		}
 
-		public GridCellStorage createGridCellStorage() {
-			return new GridCellStorage();
+		public CellStorage createCellStorage() {
+			return new CellStorage();
 		}
 
 		public GridCageStorage createGridCageStorage() {
@@ -90,8 +90,8 @@ public class GridLoader {
 			return new StatisticsDatabaseAdapter();
 		}
 
-		public GridCell createGridCell(CellBuilder cellBuilder) {
-			return new GridCell(cellBuilder);
+		public Cell createCell(CellBuilder cellBuilder) {
+			return new Cell(cellBuilder);
 		}
 	}
 
@@ -226,19 +226,19 @@ public class GridLoader {
 			}
 
 			// Read cells
-			mGridCells = mObjectsCreator.createArrayListOfGridCells();
+			mCells = mObjectsCreator.createArrayListOfCells();
 			while (loadCell(line)) {
 				line = solvingAttemptStorage.getNextLine();
 			}
 			// Check if expected number of cells is read.
-			if (mGridCells.size() != mGridBuilder.mGridSize
+			if (mCells.size() != mGridBuilder.mGridSize
 					* mGridBuilder.mGridSize) {
 				throw new InvalidGridException(
 						"Unexpected number of cells loaded. Expected: "
 								+ (mGridBuilder.mGridSize * mGridBuilder.mGridSize)
-								+ ", actual: " + mGridCells.size());
+								+ ", actual: " + mCells.size());
 			}
-			mGridBuilder.setCells(mGridCells);
+			mGridBuilder.setCells(mCells);
 
 			// Read cages
 			mGridCages = mObjectsCreator.createArrayListOfGridCages();
@@ -304,17 +304,16 @@ public class GridLoader {
 			return false;
 		}
 
-		GridCellStorage mGridCellStorage = mObjectsCreator
-				.createGridCellStorage();
-		CellBuilder cellBuilder = mGridCellStorage
-				.getCellBuilderFromStorageString(line, mSavedWithRevision);
+		CellStorage mCellStorage = mObjectsCreator.createCellStorage();
+		CellBuilder cellBuilder = mCellStorage.getCellBuilderFromStorageString(
+				line, mSavedWithRevision);
 		if (cellBuilder == null) {
 			return false;
 		}
 		cellBuilder.setGridSize(mGridBuilder.mGridSize);
 		cellBuilder.setSkipCheckCageReferenceOnBuild();
-		GridCell cell = mObjectsCreator.createGridCell(cellBuilder);
-		mGridCells.add(cell);
+		Cell cell = mObjectsCreator.createCell(cellBuilder);
+		mCells.add(cell);
 
 		return true;
 	}
@@ -328,7 +327,7 @@ public class GridLoader {
 				.createGridCageStorage();
 		CageBuilder cageBuilder = gridCageStorage
 				.getCageBuilderFromStorageString(line, mSavedWithRevision,
-						mGridCells);
+						mCells);
 		if (cageBuilder == null) {
 			return false;
 		}
@@ -345,7 +344,7 @@ public class GridLoader {
 
 		CellChangeStorage cellChangeStorage = mObjectsCreator
 				.createCellChangeStorage();
-		if (!cellChangeStorage.fromStorageString(line, mGridCells,
+		if (!cellChangeStorage.fromStorageString(line, mCells,
 				mSavedWithRevision)) {
 			return false;
 		}

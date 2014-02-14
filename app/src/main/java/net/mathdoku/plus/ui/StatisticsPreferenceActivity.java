@@ -16,6 +16,7 @@ public class StatisticsPreferenceActivity extends AppActivity {
 		getFragmentManager()
 				.beginTransaction()
 				.replace(android.R.id.content,
-						new StatisticsPreferenceFragment()).commit();
+						new StatisticsPreferenceFragment())
+				.commit();
 	}
 }

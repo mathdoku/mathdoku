@@ -5,9 +5,9 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 
+import net.mathdoku.plus.grid.Cell;
 import net.mathdoku.plus.grid.DigitPositionGrid;
 import net.mathdoku.plus.grid.Grid;
-import net.mathdoku.plus.grid.GridCell;
 import net.mathdoku.plus.painter.CagePainter;
 import net.mathdoku.plus.painter.CellPainter;
 import net.mathdoku.plus.painter.InputModeBorderPainter;
@@ -21,7 +21,7 @@ import java.util.List;
 
 public class CellDrawer {
 	private final GridViewerView mGridViewerView;
-	private GridCell mGridCell;
+	private Cell mCell;
 	private Grid mGrid;
 	private int mColumn;
 	private int mRow;
@@ -32,7 +32,7 @@ public class CellDrawer {
 		NONE, CELL_IN_SELECTED_CAGE_WITH_BAD_MATH, CELL_IN_SELECTED_CAGE_WITH_GOOD_MATH, CELL_IN_UNSELECTED_CAGE_WITH_BAD_MATH, CELL_IN_UNSELECTED_CAGE_WITH_GOOD_MATH
 	}
 
-	// Which GridCells are adjacent to the GridCell which is drawn by this
+	// Which cells are adjacent to the Cell which is drawn by this
 	// CellDrawer and is this adjacent cell in the same cage.
 	private static enum AdjacentPosition {
 		CELL_ABOVE(0), CELL_TO_RIGHT(1), CELL_BELOW(2), CELL_TO_LEFT(3);
@@ -58,9 +58,9 @@ public class CellDrawer {
 
 	static int mNumberOfAdjacentPositions = AdjacentPosition.values().length;
 
-	private GridCell[] mAdjacentGridCells;
+	private Cell[] mAdjacentCells;
 	private CellDrawer[] mAdjacentCellDrawers;
-	private boolean[] mIsInSameCageAsAdjacentGridCell;
+	private boolean[] mIsInSameCageAsAdjacentCell;
 	private BorderType[] mCommonBorderTypeWithAdjacentCell;
 
 	private DigitPositionGrid mDigitPositionGrid;
@@ -73,16 +73,16 @@ public class CellDrawer {
 	private CagePainter mCagePainter;
 	private InputModeBorderPainter mInputModeBorderPainter;
 
-	public CellDrawer(GridViewerView gridViewerView, GridCell gridCell) {
+	public CellDrawer(GridViewerView gridViewerView, Cell cell) {
 		mGridViewerView = gridViewerView;
-		mGridCell = gridCell;
-		mGrid = gridCell.getGrid();
-		mRow = gridCell.getRow();
-		mColumn = gridCell.getColumn();
+		mCell = cell;
+		mGrid = cell.getGrid();
+		mRow = cell.getRow();
+		mColumn = cell.getColumn();
 
-		mAdjacentGridCells = new GridCell[mNumberOfAdjacentPositions];
+		mAdjacentCells = new Cell[mNumberOfAdjacentPositions];
 		mAdjacentCellDrawers = new CellDrawer[mNumberOfAdjacentPositions];
-		mIsInSameCageAsAdjacentGridCell = new boolean[mNumberOfAdjacentPositions];
+		mIsInSameCageAsAdjacentCell = new boolean[mNumberOfAdjacentPositions];
 
 		initializePainters();
 		initializeCommonBorderTypeWithAdjacentCell();
@@ -100,41 +100,41 @@ public class CellDrawer {
 
 	private void initializeCommonBorderTypeWithAdjacentCell() {
 		mCommonBorderTypeWithAdjacentCell = new BorderType[mNumberOfAdjacentPositions];
-		for (int i = 0; i < mIsInSameCageAsAdjacentGridCell.length; i++) {
+		for (int i = 0; i < mIsInSameCageAsAdjacentCell.length; i++) {
 			mCommonBorderTypeWithAdjacentCell[i] = BorderType.NONE;
 		}
 	}
 
-	public void setReferencesToCellAbove(GridCell gridCellAbove,
+	public void setReferencesToCellAbove(Cell cellAbove,
 			CellDrawer cellDrawerAbove) {
-		setReferencesToCell(AdjacentPosition.CELL_ABOVE, gridCellAbove,
+		setReferencesToCell(AdjacentPosition.CELL_ABOVE, cellAbove,
 				cellDrawerAbove);
 	}
 
-	public void setReferencesToCellToRight(GridCell gridCellToRight,
+	public void setReferencesToCellToRight(Cell cellToRight,
 			CellDrawer cellDrawerToRight) {
-		setReferencesToCell(AdjacentPosition.CELL_TO_RIGHT, gridCellToRight,
+		setReferencesToCell(AdjacentPosition.CELL_TO_RIGHT, cellToRight,
 				cellDrawerToRight);
 	}
 
-	public void setReferencesToCellBelow(GridCell gridCellBelow,
+	public void setReferencesToCellBelow(Cell cellBelow,
 			CellDrawer cellDrawerBelow) {
-		setReferencesToCell(AdjacentPosition.CELL_BELOW, gridCellBelow,
+		setReferencesToCell(AdjacentPosition.CELL_BELOW, cellBelow,
 				cellDrawerBelow);
 	}
 
-	public void setReferencesToCellToLeft(GridCell gridCellToLeft,
+	public void setReferencesToCellToLeft(Cell cellToLeft,
 			CellDrawer cellDrawerToLeft) {
-		setReferencesToCell(AdjacentPosition.CELL_TO_LEFT, gridCellToLeft,
+		setReferencesToCell(AdjacentPosition.CELL_TO_LEFT, cellToLeft,
 				cellDrawerToLeft);
 	}
 
 	private void setReferencesToCell(AdjacentPosition adjacentPosition,
-			GridCell gridCellReference, CellDrawer cellDrawerReference) {
-		mAdjacentGridCells[adjacentPosition.mIndex] = gridCellReference;
+			Cell cellReference, CellDrawer cellDrawerReference) {
+		mAdjacentCells[adjacentPosition.mIndex] = cellReference;
 		mAdjacentCellDrawers[adjacentPosition.mIndex] = cellDrawerReference;
-		mIsInSameCageAsAdjacentGridCell[adjacentPosition.mIndex] = (gridCellReference != null && mGridCell
-				.getCageId() == gridCellReference.getCageId());
+		mIsInSameCageAsAdjacentCell[adjacentPosition.mIndex] = (cellReference != null && mCell
+				.getCageId() == cellReference.getCageId());
 	}
 
 	public void setDigitPositionGrid(DigitPositionGrid digitPositionGrid) {
@@ -163,7 +163,7 @@ public class CellDrawer {
 		float left = mPosX;
 		float right = mPosX + cellSize;
 
-		if (mGridCell.isBordersInvalidated()) {
+		if (mCell.isBordersInvalidated()) {
 			setBorders();
 		}
 
@@ -187,11 +187,11 @@ public class CellDrawer {
 			canvas
 					.drawLine(
 							left
-									- (mIsInSameCageAsAdjacentGridCell[AdjacentPosition.CELL_TO_LEFT.mIndex] ? offset
+									- (mIsInSameCageAsAdjacentCell[AdjacentPosition.CELL_TO_LEFT.mIndex] ? offset
 											: 0),
 							top + offset,
 							right
-									+ (mIsInSameCageAsAdjacentGridCell[AdjacentPosition.CELL_TO_RIGHT.mIndex] ? offset
+									+ (mIsInSameCageAsAdjacentCell[AdjacentPosition.CELL_TO_RIGHT.mIndex] ? offset
 											: 0), top + offset, borderPaint);
 
 			// Calculate offset for inner space after drawing top border
@@ -211,11 +211,11 @@ public class CellDrawer {
 					.drawLine(
 							right - offset,
 							top
-									- (mIsInSameCageAsAdjacentGridCell[AdjacentPosition.CELL_ABOVE.mIndex] ? offset
+									- (mIsInSameCageAsAdjacentCell[AdjacentPosition.CELL_ABOVE.mIndex] ? offset
 											: 0),
 							right - offset,
 							bottom
-									+ (mIsInSameCageAsAdjacentGridCell[AdjacentPosition.CELL_BELOW.mIndex] ? offset
+									+ (mIsInSameCageAsAdjacentCell[AdjacentPosition.CELL_BELOW.mIndex] ? offset
 											: 0), borderPaint);
 
 			// Calculate offset for inner space after drawing right border
@@ -240,11 +240,11 @@ public class CellDrawer {
 			canvas
 					.drawLine(
 							left
-									- (mIsInSameCageAsAdjacentGridCell[AdjacentPosition.CELL_TO_LEFT.mIndex] ? offset
+									- (mIsInSameCageAsAdjacentCell[AdjacentPosition.CELL_TO_LEFT.mIndex] ? offset
 											: 0),
 							bottom - offset,
 							right
-									+ (mIsInSameCageAsAdjacentGridCell[AdjacentPosition.CELL_TO_RIGHT.mIndex] ? offset
+									+ (mIsInSameCageAsAdjacentCell[AdjacentPosition.CELL_TO_RIGHT.mIndex] ? offset
 											: 0), bottom - offset, borderPaint);
 
 			// Calculate offset for inner space after drawing bottom border
@@ -270,11 +270,11 @@ public class CellDrawer {
 					.drawLine(
 							left + offset,
 							top
-									- (mIsInSameCageAsAdjacentGridCell[AdjacentPosition.CELL_ABOVE.mIndex] ? offset
+									- (mIsInSameCageAsAdjacentCell[AdjacentPosition.CELL_ABOVE.mIndex] ? offset
 											: 0),
 							left + offset,
 							bottom
-									+ (mIsInSameCageAsAdjacentGridCell[AdjacentPosition.CELL_BELOW.mIndex] ? offset
+									+ (mIsInSameCageAsAdjacentCell[AdjacentPosition.CELL_BELOW.mIndex] ? offset
 											: 0), borderPaint);
 
 			// Calculate offset for inner space after drawing left border
@@ -302,20 +302,20 @@ public class CellDrawer {
 		for (int i = 1; i <= 4; i++) {
 			switch (i) {
 			case 1:
-				borderPaint = ((mGridCell.isDuplicateValueHighlighted() && mGridViewerView
+				borderPaint = ((mCell.isDuplicateValueHighlighted() && mGridViewerView
 						.hasPrefShowDupeDigits()) ? mCellPainter
 						.getDuplicateBorderPaint() : null);
 				break;
 			case 2:
-				borderPaint = (mGridCell.isRevealed() ? mCellPainter
+				borderPaint = (mCell.isRevealed() ? mCellPainter
 						.getRevealedBorderPaint() : null);
 				break;
 			case 3:
-				borderPaint = (mGridCell.hasInvalidUserValueHighlight() ? mCellPainter
+				borderPaint = (mCell.hasInvalidUserValueHighlight() ? mCellPainter
 						.getInvalidBorderPaint() : null);
 				break;
 			case 4:
-				borderPaint = (mGridCell.isSelected() && mGrid != null
+				borderPaint = (mCell.isSelected() && mGrid != null
 						&& mGrid.isActive() ? mCellPainter
 						.getSelectedBorderPaint() : null);
 				break;
@@ -356,13 +356,13 @@ public class CellDrawer {
 		// ---------------------------------------------------------------------
 
 		Paint background = null;
-		if (mGridCell.isSelected() && mGrid != null && mGrid.isActive()) {
+		if (mCell.isSelected() && mGrid != null && mGrid.isActive()) {
 			background = mCellPainter.getSelectedBackgroundPaint();
-		} else if (mGridCell.hasInvalidUserValueHighlight()) {
+		} else if (mCell.hasInvalidUserValueHighlight()) {
 			background = mCellPainter.getInvalidBackgroundPaint();
-		} else if (mGridCell.isRevealed()) {
+		} else if (mCell.isRevealed()) {
 			background = mCellPainter.getRevealedBackgroundPaint();
-		} else if (mGridCell.isDuplicateValueHighlighted()
+		} else if (mCell.isDuplicateValueHighlighted()
 				&& mGridViewerView.hasPrefShowDupeDigits()) {
 			background = mCellPainter.getWarningBackgroundPaint();
 		}
@@ -375,13 +375,13 @@ public class CellDrawer {
 		// other than 0 while a swipe motion is started but not yet finished. In
 		// this case the original user value may not be drawn as it will be
 		// replace with another definitive value or with a maybe value.
-		if ((mGridCell.isUserValueSet() && swipeDigit == 0)
+		if ((mCell.isUserValueSet() && swipeDigit == 0)
 				|| (inputMode == GridInputMode.NORMAL && swipeDigit != 0)) {
 			// Get the value which will be shown as user value in case the swipe
 			// motion will be released at this moment.
 			String userValue = Integer
 					.toString(inputMode == GridInputMode.NORMAL
-							&& swipeDigit != 0 ? swipeDigit : mGridCell
+							&& swipeDigit != 0 ? swipeDigit : mCell
 							.getUserValue());
 
 			Paint paint = (inputMode == GridInputMode.NORMAL ? mUserValuePainter
@@ -396,7 +396,7 @@ public class CellDrawer {
 					+ mUserValuePainter.getBottomOffset(), paint);
 		}
 		// Cage text
-		String cageText = mGridCell.getCageText();
+		String cageText = mCell.getCageText();
 		if (!cageText.equals("")) {
 			// Clone the text painter and decrease text size until the cage text
 			// fits within the cell.
@@ -419,7 +419,7 @@ public class CellDrawer {
 		// removed (if already present) from the possible values of this cell.
 		// Note that the original possible values may not be shown in case the
 		// content of the cell have to replaced with a new user value.
-		List<Integer> possibles = mGridCell.getPossibles();
+		List<Integer> possibles = mCell.getPossibles();
 		if ((possibles.size() > 0 && !(inputMode == GridInputMode.NORMAL && swipeDigit != 0))
 				|| (inputMode == GridInputMode.MAYBE && swipeDigit != 0)) {
 			// Temporary alter the possible values in case a swipe digit is
@@ -500,7 +500,7 @@ public class CellDrawer {
 			GridInputMode inputMode, float mXPosSwipe, float mYPosSwipe,
 			int swipeDigit, boolean outerSwipeCircleVisible) {
 		assert (inputMode == GridInputMode.NORMAL || inputMode == GridInputMode.MAYBE);
-		if (mGrid.getSelectedCell() != mGridCell) {
+		if (mGrid.getSelectedCell() != mCell) {
 			// This cell is not the selected cell.
 			return;
 		}
@@ -674,7 +674,7 @@ public class CellDrawer {
 					.getOppositeAdjacentPosition();
 
 			mCommonBorderTypeWithAdjacentCell[adjacentPosition.mIndex] = getCommonBorderType(
-					mGridCell, mAdjacentGridCells[adjacentPosition.mIndex]);
+					mCell, mAdjacentCells[adjacentPosition.mIndex]);
 			if (mAdjacentCellDrawers[adjacentPosition.mIndex] != null) {
 				mAdjacentCellDrawers[adjacentPosition.mIndex]
 						.setCommonBorderTypeWithCell(
@@ -701,7 +701,7 @@ public class CellDrawer {
 	 *            first cell will be used to determine the correct border.
 	 * @return The border type to be used between the given cell.
 	 */
-	private BorderType getCommonBorderType(GridCell cell1, GridCell cell2) {
+	private BorderType getCommonBorderType(Cell cell1, Cell cell2) {
 		if (cell1 == null) {
 			throw new InvalidParameterException(
 					"Method getMostImportantBorderType can not be called with "

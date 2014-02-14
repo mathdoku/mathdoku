@@ -108,7 +108,9 @@ public class FeedbackEmail {
 				mActivity.getResources().getString(R.string.dimension));
 
 		DisplayMetrics mDisplayMetrics = new DisplayMetrics();
-		mActivity.getWindowManager().getDefaultDisplay()
+		mActivity
+				.getWindowManager()
+				.getDefaultDisplay()
 				.getMetrics(mDisplayMetrics);
 
 		sortedMap.put("Display.Density",
@@ -129,7 +131,8 @@ public class FeedbackEmail {
 	private void logConfiguration() {
 		SortedMap<String, String> sortedMap = new TreeMap<String, String>();
 
-		Configuration configuration = mActivity.getResources()
+		Configuration configuration = mActivity
+				.getResources()
 				.getConfiguration();
 		// noinspection ConstantConditions
 		sortedMap.put("locale", configuration.locale.toString());
@@ -150,7 +153,8 @@ public class FeedbackEmail {
 			SortedMap<String, String> sortedMap = new TreeMap<String, String>();
 
 			for (Map.Entry<String, ?> entry : preferences
-					.getAllSharedPreferences().entrySet()) {
+					.getAllSharedPreferences()
+					.entrySet()) {
 				if (entry != null) {
 					String key = entry.getKey();
 					if (key == null) {
@@ -260,12 +264,13 @@ public class FeedbackEmail {
 								i.setType("message/rfc822");
 								i.putExtra(Intent.EXTRA_EMAIL,
 										new String[] { "info@mathdoku.net" });
-								i.putExtra(
-										Intent.EXTRA_SUBJECT,
-										mActivity
-												.getResources()
-												.getString(
-														R.string.feedback_email_subject));
+								i
+										.putExtra(
+												Intent.EXTRA_SUBJECT,
+												mActivity
+														.getResources()
+														.getString(
+																R.string.feedback_email_subject));
 								i.putExtra(
 										Intent.EXTRA_TEXT,
 										mActivity.getResources().getString(
@@ -277,9 +282,10 @@ public class FeedbackEmail {
 											.getUri(FileProvider.FEEDBACK_LOG_FILE_NAME));
 									uris.add(FileProvider
 											.getUri(FileProvider.SCREENDUMP_FILE_NAME));
-									i.putParcelableArrayListExtra(
-											Intent.EXTRA_STREAM,
-											(ArrayList<? extends Parcelable>) uris);
+									i
+											.putParcelableArrayListExtra(
+													Intent.EXTRA_STREAM,
+													(ArrayList<? extends Parcelable>) uris);
 								}
 								try {
 									mActivity.startActivity(Intent
@@ -294,7 +300,8 @@ public class FeedbackEmail {
 									// this intent.
 								}
 							}
-						}).show();
+						})
+				.show();
 	}
 
 	/**

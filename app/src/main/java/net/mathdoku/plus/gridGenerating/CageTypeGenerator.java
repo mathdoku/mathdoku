@@ -162,8 +162,10 @@ public class CageTypeGenerator {
 		mCageTypes[sizeCageType - 1].add(newPossibleCageType);
 
 		if (GridGenerator.DEBUG_GRID_GENERATOR_FULL) {
-			Log.i(TAG,
-					"Found a new cage type:\n" + newPossibleCageType.toString());
+			Log
+					.i(TAG,
+							"Found a new cage type:\n"
+									+ newPossibleCageType.toString());
 		}
 
 		return true;

@@ -18,7 +18,7 @@ public class GridBuilder {
 	long mDateUpdated; // Optional
 	int mGridId; // Optional
 	int mSolvingAttemptId; // Optional
-	List<GridCell> mCells; // Required
+	List<Cell> mCells; // Required
 	List<GridCage> mCages; // Required
 	List<CellChange> mCellChanges; // Optional
 	boolean mActive; // Optional
@@ -100,7 +100,7 @@ public class GridBuilder {
 		return this;
 	}
 
-	public GridBuilder setCells(List<GridCell> cells) {
+	public GridBuilder setCells(List<Cell> cells) {
 		mCells = cells;
 		return this;
 	}

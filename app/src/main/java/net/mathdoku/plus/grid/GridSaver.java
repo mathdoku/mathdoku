@@ -46,9 +46,8 @@ public class GridSaver {
 			return new GridStorage();
 		}
 	}
+
 	GridSaver.ObjectsCreator mObjectsCreator;
-
-
 
 	public GridSaver() {
 		mObjectsCreator = new GridSaver.ObjectsCreator();
@@ -83,8 +82,7 @@ public class GridSaver {
 		mSolvingAttemptId = grid.getSolvingAttemptId();
 		mGridStatistics = grid.getGridStatistics();
 
-		DatabaseHelper databaseHelper = mObjectsCreator
-				.createDatabaseHelper();
+		DatabaseHelper databaseHelper = mObjectsCreator.createDatabaseHelper();
 		databaseHelper.beginTransaction();
 
 		mIsSaved = saveGridRow(grid) && saveSolvingAttempt(grid)
@@ -123,7 +121,9 @@ public class GridSaver {
 		solvingAttempt.mDateCreated = grid.getDateCreated();
 		solvingAttempt.mDateUpdated = grid.getDateSaved();
 		solvingAttempt.mSavedWithRevision = Util.getPackageVersionNumber();
-		solvingAttempt.mStorageString = mObjectsCreator.createGridStorage().toStorageString(grid);
+		solvingAttempt.mStorageString = mObjectsCreator
+				.createGridStorage()
+				.toStorageString(grid);
 		solvingAttempt.mSolvingAttemptStatus = SolvingAttemptStatus
 				.getDerivedStatus(grid.isSolutionRevealed(), grid.isActive(),
 						grid.isEmpty());
@@ -158,7 +158,8 @@ public class GridSaver {
 
 			// Count all solving attempts for this grid. Note taht the solving
 			// attempt is already inserted before the statistics are inserted.
-			int countSolvingAttemptsForGrid = mObjectsCreator.createSolvingAttemptDatabaseAdapter()
+			int countSolvingAttemptsForGrid = mObjectsCreator
+					.createSolvingAttemptDatabaseAdapter()
 					.countSolvingAttemptForGrid(mRowId);
 			mGridStatistics.mReplayCount = countSolvingAttemptsForGrid - 1;
 			mGridStatistics.mIncludedInStatistics = countSolvingAttemptsForGrid == 1;

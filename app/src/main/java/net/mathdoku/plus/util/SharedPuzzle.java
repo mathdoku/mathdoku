@@ -51,7 +51,8 @@ public class SharedPuzzle {
 				R.string.shared_puzzle_scheme_mathdoku_plus);
 		mSharedPuzzleHostMathdokuPlus = mContext.getResources().getString(
 				R.string.shared_puzzle_host_mathdoku_plus);
-		mSharedPuzzlePathPrefixMathdokuPlus = mContext.getResources()
+		mSharedPuzzlePathPrefixMathdokuPlus = mContext
+				.getResources()
 				.getString(R.string.shared_puzzle_path_prefix_mathdoku_plus);
 
 		// Strip slash of start of prefix
@@ -61,7 +62,8 @@ public class SharedPuzzle {
 		}
 
 		// Mathdoku Original elements of share url
-		mSharedPuzzleSchemeMathdokuOriginal = mContext.getResources()
+		mSharedPuzzleSchemeMathdokuOriginal = mContext
+				.getResources()
 				.getString(R.string.shared_puzzle_scheme_mathdoku_original);
 		mSharedPuzzleHostMathdokuOriginal = mContext.getResources().getString(
 				R.string.shared_puzzle_host_mathdoku_original);
@@ -85,7 +87,8 @@ public class SharedPuzzle {
 		if (grid != null) {
 			Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
 			intent.setType("message/rfc822");
-			intent.putExtra(Intent.EXTRA_SUBJECT, mContext.getResources()
+			intent.putExtra(Intent.EXTRA_SUBJECT, mContext
+					.getResources()
 					.getString(R.string.share_puzzle_subject));
 
 			// Get the share url for this grid.
@@ -122,15 +125,14 @@ public class SharedPuzzle {
 			// Store attachments uris
 			if (mUris != null && mUris.size() > 0) {
 				intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM,
-												   (ArrayList<? extends Parcelable>) mUris);
+						(ArrayList<? extends Parcelable>) mUris);
 			}
 
 			// Start activity choosers
 			try {
-				mContext.startActivity(Intent.createChooser(
-						intent,
-						mContext.getResources().getString(
-								R.string.feedback_choose_action_title)));
+				mContext.startActivity(Intent.createChooser(intent, mContext
+						.getResources()
+						.getString(R.string.feedback_choose_action_title)));
 			} catch (android.content.ActivityNotFoundException ex) {
 				// No clients installed which can handle this intent.
 			}

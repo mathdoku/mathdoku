@@ -6,15 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The CellChange holds undo information for a GridCell.
+ * The CellChange holds undo information for a Cell.
  */
 public class CellChange {
 	private static final String TAG = "MathDoku.CellChange";
 
 	// The cell for which the undo information is stored.
-	private GridCell mGridCell;
+	private Cell mCell;
 
-	// Properties of the GridCell which can be restored.
+	// Properties of the Cell which can be restored.
 	private int mPreviousUserValue;
 	private final List<Integer> mPreviousPossibleValues;
 
@@ -32,24 +32,23 @@ public class CellChange {
 	 * @param previousPossibleValues
 	 *            The possible values of the cell before it is changed.
 	 */
-	public CellChange(GridCell cell, int previousUserValue,
+	public CellChange(Cell cell, int previousUserValue,
 			List<Integer> previousPossibleValues) {
-		mGridCell = cell;
+		mCell = cell;
 		mPreviousUserValue = previousUserValue;
-		mPreviousPossibleValues = new ArrayList<Integer>(
-				previousPossibleValues);
+		mPreviousPossibleValues = new ArrayList<Integer>(previousPossibleValues);
 		mRelatedCellChanges = null;
 	}
 
 	public CellChange(CellChangeStorage cellChangeStorage) {
-		mGridCell = cellChangeStorage.getGridCell();
+		mCell = cellChangeStorage.getCell();
 		mPreviousUserValue = cellChangeStorage.getPreviousUserValue();
 		mPreviousPossibleValues = cellChangeStorage.getPreviousPossibleValues();
 		mRelatedCellChanges = cellChangeStorage.getRelatedCellChanges();
 	}
 
 	/**
-	 * Restores the user value and maybe values of a GridCell using the undo
+	 * Restores the user value and maybe values of a Cell using the undo
 	 * information.
 	 */
 	public void restore() {
@@ -59,7 +58,7 @@ public class CellChange {
 				relatedMove.restore();
 			}
 		}
-		mGridCell.undo(this.mPreviousUserValue, this.mPreviousPossibleValues);
+		mCell.undo(this.mPreviousUserValue, this.mPreviousPossibleValues);
 	}
 
 	/**
@@ -83,10 +82,10 @@ public class CellChange {
 	 */
 	@Override
 	public String toString() {
-		return "<cell:" + this.mGridCell.getCellId() + " col:"
-				+ this.mGridCell.getColumn() + " row:"
-				+ this.mGridCell.getRow() + " previous user value:"
-				+ this.mPreviousUserValue + " previous possible values:"
+		return "<cell:" + this.mCell.getCellId() + " col:"
+				+ this.mCell.getColumn() + " row:" + this.mCell.getRow()
+				+ " previous user value:" + this.mPreviousUserValue
+				+ " previous possible values:"
 				+ mPreviousPossibleValues.toString() + ">";
 	}
 
@@ -119,7 +118,7 @@ public class CellChange {
 		// reference
 		// fields are all treated differently.
 		return mPreviousUserValue == lhs.mPreviousUserValue
-				&& mGridCell.equals(lhs.mGridCell)
+				&& mCell.equals(lhs.mCell)
 				&& (mPreviousPossibleValues == null ? lhs.mPreviousPossibleValues == null
 						: mPreviousPossibleValues
 								.equals(lhs.mPreviousPossibleValues));
@@ -135,8 +134,8 @@ public class CellChange {
 		throw new UnsupportedOperationException();
 	}
 
-	public GridCell getGridCell() {
-		return mGridCell;
+	public Cell getCell() {
+		return mCell;
 	}
 
 	public Integer getPreviousUserValue() {
@@ -152,6 +151,7 @@ public class CellChange {
 	public List<CellChange> getRelatedCellChanges() {
 		// Return copy of list of related cell changes so the requesting
 		// object cannot manipulate the original list.
-		return (mRelatedCellChanges == null ? null : new ArrayList(mRelatedCellChanges));
+		return (mRelatedCellChanges == null ? null : new ArrayList(
+				mRelatedCellChanges));
 	}
 }

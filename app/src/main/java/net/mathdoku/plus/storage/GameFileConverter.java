@@ -139,7 +139,8 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 					Grid grid = new GridLoader().load(solvingAttemptId);
 					if (grid != null) {
 						// Get definition for the grid.
-						String gridDefinition = GridDefinition.getDefinition(grid);
+						String gridDefinition = GridDefinition
+								.getDefinition(grid);
 						if (!mGridDefinitions.contains(gridDefinition)) {
 							// New definition found
 							mGridDefinitions.add(gridDefinition);

@@ -13,7 +13,8 @@ public class PuzzlePreferenceActivity extends AppActivity {
 
 		setTitle(R.string.general_settings_actionbar_title);
 
-		getFragmentManager().beginTransaction()
+		getFragmentManager()
+				.beginTransaction()
 				.replace(android.R.id.content, new PuzzlePreferenceFragment())
 				.commit();
 	}

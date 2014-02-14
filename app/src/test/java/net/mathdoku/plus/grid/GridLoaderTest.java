@@ -8,7 +8,7 @@ import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.storage.CellChangeStorage;
 import net.mathdoku.plus.storage.GridCageStorage;
-import net.mathdoku.plus.storage.GridCellStorage;
+import net.mathdoku.plus.storage.CellStorage;
 import net.mathdoku.plus.storage.GridStorage;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.database.GridRow;
@@ -90,7 +90,7 @@ public class GridLoaderTest {
 
 		public SolvingAttemptStub setHasInvalidLineBetweenGridInformationAndCell() {
 			mIncludeInvalidLineBetweenGridInformationAndCell = true;
-			mGridLoaderTestObjectsCreator.setHasUnExpectedDataBeforeGridCells();
+			mGridLoaderTestObjectsCreator.setHasUnExpectedDataBeforeCells();
 			setStorageString();
 
 			return this;
@@ -206,7 +206,7 @@ public class GridLoaderTest {
 
 	public class GridLoaderTestObjectsCreator extends GridLoader.ObjectsCreator {
 		private int mGridSize;
-		private int mNumberOfGridCellMocksReturningAValidStorageString = 0;
+		private int mNumberOfCellMocksReturningAValidStorageString = 0;
 		private int mNumberOfGridCageStorageMocksReturningAValidStorageString = 0;
 		private int mNumberOfCellChangeStorageMocksReturningAValidStorageString = 0;
 		private SolvingAttemptDatabaseAdapter mSolvingAttemptDatabaseAdapterMock = mock(SolvingAttemptDatabaseAdapter.class);
@@ -214,7 +214,7 @@ public class GridLoaderTest {
 		private StatisticsDatabaseAdapter mStatisticsDatabaseAdapterMock = mock(StatisticsDatabaseAdapter.class);
 		private GridStorage mGridStorageMock = mock(GridStorage.class);
 		private int mCellNumberOnWhichAnNumberFormatExceptionIsThrown = -1;
-		private boolean mHasUnExpectedDataBeforeGridCells = false;
+		private boolean mHasUnExpectedDataBeforeCells = false;
 		private boolean mHasUnExpectedDataBeforeGridCages = false;
 		private boolean mHasUnExpectedDataBeforeCellChanges = false;
 		private boolean mHasUnExpectedDataAfterCellChanges = false;
@@ -259,8 +259,8 @@ public class GridLoaderTest {
 			mCellNumberOnWhichAnNumberFormatExceptionIsThrown = cellNumberOnWhichAnInvalidNumberExceptionIsThrown;
 		}
 
-		public void setHasUnExpectedDataBeforeGridCells() {
-			mHasUnExpectedDataBeforeGridCells = true;
+		public void setHasUnExpectedDataBeforeCells() {
+			mHasUnExpectedDataBeforeCells = true;
 		}
 
 		public void setHasUnExpectedDataBeforeGridCages() {
@@ -277,11 +277,11 @@ public class GridLoaderTest {
 		 * In case more objects than the given number are created, the
 		 * corresponding grid cell mocks will return an invalid storage string.
 		 * 
-		 * @param numberOfGridCellMocksReturningAValidStorageString
+		 * @param numberOfCellMocksReturningAValidStorageString
 		 */
-		public void setNumberOfGridCellMocksReturningAValidStorageString(
-				int numberOfGridCellMocksReturningAValidStorageString) {
-			mNumberOfGridCellMocksReturningAValidStorageString = numberOfGridCellMocksReturningAValidStorageString;
+		public void setNumberOfCellMocksReturningAValidStorageString(int
+																			 numberOfCellMocksReturningAValidStorageString) {
+			mNumberOfCellMocksReturningAValidStorageString = numberOfCellMocksReturningAValidStorageString;
 		}
 
 		/**
@@ -306,8 +306,8 @@ public class GridLoaderTest {
 		 * 
 		 * @param numberOfCellChangeMocksReturningAValidStorageString
 		 */
-		public void setNumberOfGridCellChangeMocksReturningAValidStorageString(
-				int numberOfCellChangeMocksReturningAValidStorageString) {
+		public void setNumberOfCellChangeMocksReturningAValidStorageString(int
+																				   numberOfCellChangeMocksReturningAValidStorageString) {
 			mNumberOfCellChangeStorageMocksReturningAValidStorageString = numberOfCellChangeMocksReturningAValidStorageString;
 		}
 
@@ -330,25 +330,25 @@ public class GridLoaderTest {
 		}
 
 		@Override
-		public GridCellStorage createGridCellStorage() {
-			GridCellStorage gridCellStorage = mock(GridCellStorage.class);
+		public CellStorage createCellStorage() {
+			CellStorage cellStorage = mock(CellStorage.class);
 
 			// Determine whether this mock should return a valid or invalid
 			// storage string.
-			boolean validStorageString = (mHasUnExpectedDataBeforeGridCells == false && mNumberOfGridCellMocksReturningAValidStorageString > 0);
-			if (mHasUnExpectedDataBeforeGridCells) {
-				mHasUnExpectedDataBeforeGridCells = false;
+			boolean validStorageString = (mHasUnExpectedDataBeforeCells == false && mNumberOfCellMocksReturningAValidStorageString > 0);
+			if (mHasUnExpectedDataBeforeCells) {
+				mHasUnExpectedDataBeforeCells = false;
 			} else {
-				mNumberOfGridCellMocksReturningAValidStorageString--;
+				mNumberOfCellMocksReturningAValidStorageString--;
 			}
 			if (validStorageString) {
 				CellBuilder cellBuilder = validStorageString ? mock(CellBuilder.class) : null;
-				when(gridCellStorage.getCellBuilderFromStorageString(anyString(), anyInt()))
+				when(cellStorage.getCellBuilderFromStorageString(anyString(), anyInt()))
 						.thenReturn(validStorageString ? cellBuilder : null);
 				when(cellBuilder.getGridSize()).thenReturn(mGridSize);
 
 			} else {
-				when(gridCellStorage.getCellBuilderFromStorageString(anyString(), anyInt()))
+				when(cellStorage.getCellBuilderFromStorageString(anyString(), anyInt()))
 					.thenReturn(null);
 			}
 
@@ -356,7 +356,7 @@ public class GridLoaderTest {
 			if (mCellNumberOnWhichAnNumberFormatExceptionIsThrown >= 0) {
 				if (mCellNumberOnWhichAnNumberFormatExceptionIsThrown == 0) {
 					when(
-							gridCellStorage.getCellBuilderFromStorageString(anyString(),
+							cellStorage.getCellBuilderFromStorageString(anyString(),
 									anyInt())).thenThrow(
 							new NumberFormatException(
 									"** INVALID NUMBER IN CELL DATA " + "**"));
@@ -364,7 +364,7 @@ public class GridLoaderTest {
 				mCellNumberOnWhichAnNumberFormatExceptionIsThrown--;
 			}
 
-			return gridCellStorage;
+			return cellStorage;
 		}
 
 		@Override
@@ -544,7 +544,7 @@ public class GridLoaderTest {
 	}
 
 	@Test
-	public void load_SolvingAttemptMissingGridCellData_GridNotLoaded()
+	public void load_SolvingAttemptMissingCellData_GridNotLoaded()
 			throws Exception {
 		int solvingAttemptId = 56;
 		int gridSize = 4;
@@ -564,7 +564,7 @@ public class GridLoaderTest {
 	}
 
 	@Test
-	public void load_SolvingAttemptCellDataWithNumberErrorInGridCellData_GridNotLoaded()
+	public void load_SolvingAttemptCellDataWithNumberErrorInCellData_GridNotLoaded()
 			throws Exception {
 		int solvingAttemptId = 56;
 		int gridSize = 4;
@@ -587,7 +587,7 @@ public class GridLoaderTest {
 	}
 
 	@Test
-	public void load_SolvingAttemptGridCellLoadFailedDueToTooLittleCells_GridNotLoaded()
+	public void load_SolvingAttemptCellLoadFailedDueToTooLittleCells_GridNotLoaded()
 			throws Exception {
 		int solvingAttemptId = 56;
 		int gridSize = 4;
@@ -608,7 +608,7 @@ public class GridLoaderTest {
 	}
 
 	@Test
-	public void load_SolvingAttemptGridCellLoadFailedDueToTooManyCells_GridNotLoaded()
+	public void load_SolvingAttemptCellLoadFailedDueToTooManyCells_GridNotLoaded()
 			throws Exception {
 		int solvingAttemptId = 56;
 		int gridSize = 4;
@@ -629,7 +629,7 @@ public class GridLoaderTest {
 	}
 
 	@Test
-	public void load_SolvingAttemptGridCellsNotSucceededWithAnyOtherData_GridNotLoaded()
+	public void load_SolvingAttemptCellsNotSucceededWithAnyOtherData_GridNotLoaded()
 			throws Exception {
 		int solvingAttemptId = 56;
 		int gridSize = 4;
@@ -649,7 +649,7 @@ public class GridLoaderTest {
 	}
 
 	@Test
-	public void load_SolvingAttemptGridCellsSucceededWithUnexpectedData_GridNotLoaded()
+	public void load_SolvingAttemptCellsSucceededWithUnexpectedData_GridNotLoaded()
 			throws Exception {
 		int solvingAttemptId = 56;
 		int gridSize = 4;
@@ -775,11 +775,11 @@ public class GridLoaderTest {
 		mGridLoaderTestObjectsCreator.setGridMockIsActive(isActive);
 		mGridLoaderTestObjectsCreator.setGridMockIsRevealed(isRevealed);
 		mGridLoaderTestObjectsCreator
-				.setNumberOfGridCellMocksReturningAValidStorageString(numberOfCells);
+				.setNumberOfCellMocksReturningAValidStorageString(numberOfCells);
 		mGridLoaderTestObjectsCreator
 				.setNumberOfGridCageStorageMocksReturningAValidStorageString(numberOfCages);
 		mGridLoaderTestObjectsCreator
-				.setNumberOfGridCellChangeMocksReturningAValidStorageString(numberOfCellChanges);
+				.setNumberOfCellChangeMocksReturningAValidStorageString(numberOfCellChanges);
 		GridStatistics gridStatistics = mock(GridStatistics.class);
 		mGridLoaderTestObjectsCreator.returnsGridStatistics(gridStatistics);
 		mGridLoader.setThrowExceptionOnError(true);
@@ -849,11 +849,11 @@ public class GridLoaderTest {
 		mGridLoaderTestObjectsCreator.setGridMockIsRevealed(isRevealed);
 		mGridLoaderTestObjectsCreator.setGridSize(gridSize);
 		mGridLoaderTestObjectsCreator
-				.setNumberOfGridCellMocksReturningAValidStorageString(numberOfCells);
+				.setNumberOfCellMocksReturningAValidStorageString(numberOfCells);
 		mGridLoaderTestObjectsCreator
 				.setNumberOfGridCageStorageMocksReturningAValidStorageString(numberOfCages);
 		mGridLoaderTestObjectsCreator
-				.setNumberOfGridCellChangeMocksReturningAValidStorageString(numberOfCellChanges);
+				.setNumberOfCellChangeMocksReturningAValidStorageString(numberOfCellChanges);
 		mGridLoaderTestObjectsCreator.returnsSolvingAttempt(solvingAttempt);
 		GridStatistics gridStatistics = mock(GridStatistics.class);
 		mGridLoaderTestObjectsCreator.returnsGridStatistics(gridStatistics);

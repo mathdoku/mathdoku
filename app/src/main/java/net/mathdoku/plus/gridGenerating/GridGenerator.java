@@ -16,7 +16,7 @@ import net.mathdoku.plus.grid.CellBuilder;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.GridBuilder;
 import net.mathdoku.plus.grid.GridCage;
-import net.mathdoku.plus.grid.GridCell;
+import net.mathdoku.plus.grid.Cell;
 import net.mathdoku.plus.gridDefinition.GridDefinition;
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.storage.database.DatabaseHelper;
@@ -57,7 +57,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	private int mGridSize;
 
 	// Cell and solution
-	private List<GridCell> mCells;
+	private List<Cell> mCells;
 	private int[][] mSolutionMatrix;
 
 	// Cages
@@ -290,11 +290,11 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 			randomiseGrid();
 
-			mCells = new ArrayList<GridCell>();
+			mCells = new ArrayList<Cell>();
 			int cellNumber = 0;
 			for (int column = 0; column < mGridSize; column++) {
 				for (int row = 0; row < mGridSize; row++) {
-					GridCell cell = new CellBuilder()
+					Cell cell = new CellBuilder()
 							.setGridSize(mGridSize)
 							.setId(cellNumber++)
 							.setCorrectValue(mSolutionMatrix[row][column])
@@ -627,7 +627,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 			// Fill remainder of grid
 			int countSingles = 0;
-			for (GridCell cell : this.mCells) {
+			for (Cell cell : this.mCells) {
 				if (cell.cellInAnyCage()) {
 					continue; // Cell already in a cage, skip
 				}
@@ -697,7 +697,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	 *            The cell at which the cage originates.
 	 * @return The selected grid cage type.
 	 */
-	private GridCage selectRandomCageType(GridCell origin) {
+	private GridCage selectRandomCageType(Cell origin) {
 		if (DEBUG_GRID_GENERATOR_FULL) {
 			Log.i(TAG, "Determine valid cages for cell[" + origin.getRow()
 					+ "," + origin.getColumn() + "]");
@@ -828,15 +828,15 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 		int cellsInCage[] = new int[cageTypeCoordinates.length];
 		int cellCorrectValues[] = new int[cageTypeCoordinates.length];
-		List<GridCell> cellsInCageArrayList = new ArrayList<GridCell>();
+		List<Cell> cellsInCageArrayList = new ArrayList<Cell>();
 		int index = 0;
 		for (int[] cageTypeCoordinate : cageTypeCoordinates) {
 			int row = cageTypeCoordinate[0];
 			int col = cageTypeCoordinate[1];
-			GridCell gridCell = getCellAt(row, col);
-			cellsInCage[index] = gridCell.getCellId();
-			cellsInCageArrayList.add(gridCell);
-			cellCorrectValues[index] = gridCell.getCorrectValue();
+			Cell cell = getCellAt(row, col);
+			cellsInCage[index] = cell.getCellId();
+			cellsInCageArrayList.add(cell);
+			cellCorrectValues[index] = cell.getCorrectValue();
 			index++;
 		}
 
@@ -869,8 +869,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		cage.setPossibleCombos(possibleCombos);
 
 		// Set cage id in all cells used by this cage.
-		for (GridCell gridCell : cellsInCageArrayList) {
-			gridCell.setCageId(newCageId);
+		for (Cell cell : cellsInCageArrayList) {
+			cell.setCageId(newCageId);
 		}
 
 		// Update the cage matrix
@@ -1246,7 +1246,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	}
 
 	private void clearAllCages() {
-		for (GridCell cell : this.mCells) {
+		for (Cell cell : this.mCells) {
 			cell.clearCage();
 		}
 		this.mCages = new ArrayList<GridCage>();
@@ -1276,7 +1276,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	}
 
 	/* Fetch the cell at the given row, column */
-	private GridCell getCellAt(int row, int column) {
+	private Cell getCellAt(int row, int column) {
 		int cellId = getCellId(row, column);
 		if (cellId < 0) {
 			return null;

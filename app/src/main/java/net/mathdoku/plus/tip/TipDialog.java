@@ -171,7 +171,8 @@ public class TipDialog extends AlertDialog {
 			}
 		});
 
-		setButton(DialogInterface.BUTTON_POSITIVE, mContext.getResources()
+		setButton(DialogInterface.BUTTON_POSITIVE, mContext
+				.getResources()
 				.getString(R.string.dialog_general_button_close),
 				new DialogInterface.OnClickListener() {
 					@Override
@@ -282,9 +283,10 @@ public class TipDialog extends AlertDialog {
 			// displayed dialog.
 			if (priority.ordinal() < mDisplayedDialog.mPriority.ordinal()) {
 				if (DEBUG_TIP_DIALOG) {
-					Log.i(TAG,
-							tip
-									+ ": do not replace as priority is lower than already displayed tip");
+					Log
+							.i(TAG,
+									tip
+											+ ": do not replace as priority is lower than already displayed tip");
 				}
 				return false;
 			}
@@ -294,9 +296,10 @@ public class TipDialog extends AlertDialog {
 			if (priority.ordinal() == mDisplayedDialog.mPriority.ordinal()
 					&& new Random().nextBoolean()) {
 				if (DEBUG_TIP_DIALOG) {
-					Log.i(TAG,
-							tip
-									+ ": equal priorities. Randomly determined to replace");
+					Log
+							.i(TAG,
+									tip
+											+ ": equal priorities. Randomly determined to replace");
 				}
 				return false;
 			}

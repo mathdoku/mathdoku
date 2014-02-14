@@ -192,9 +192,12 @@ public class GameHelper implements
 		if (type == TYPE_DEVELOPER_ERROR) {
 			sb.append("GameHelper: you attempted an operation at an invalid. ");
 		} else {
-			sb.append("GameHelper: bug detected. Please report it at our bug tracker ");
-			sb.append("https://github.com/playgameservices/android-samples/issues. ");
-			sb.append("Please include the last couple hundred lines of logcat output ");
+			sb
+					.append("GameHelper: bug detected. Please report it at our bug tracker ");
+			sb
+					.append("https://github.com/playgameservices/android-samples/issues. ");
+			sb
+					.append("Please include the last couple hundred lines of logcat output ");
 			sb.append("and describe the operation that caused this. ");
 		}
 		sb.append("Explanation: ").append(warning);
@@ -202,7 +205,8 @@ public class GameHelper implements
 		sb.append("State: ").append(STATE_NAMES[mState]).append(". ");
 		if (expectedStates.length == 1) {
 			sb.append("Expected state: ")
-					.append(STATE_NAMES[expectedStates[0]]).append(".");
+					.append(STATE_NAMES[expectedStates[0]])
+					.append(".");
 		} else {
 			sb.append("Expected states:");
 			for (int expectedState : expectedStates) {
@@ -291,13 +295,15 @@ public class GameHelper implements
 			mGamesClient = new GamesClient.Builder(getContext(), this, this)
 					.setGravityForPopups(
 							Gravity.TOP | Gravity.CENTER_HORIZONTAL)
-					.setScopes(mScopes).create();
+					.setScopes(mScopes)
+					.create();
 		}
 
 		if (0 != (clientsToUse & CLIENT_PLUS)) {
 			debugLog("setup: creating GamesPlusClient");
 			mPlusClient = new PlusClient.Builder(getContext(), this, this)
-					.setScopes(mScopes).build();
+					.setScopes(mScopes)
+					.build();
 		}
 
 		if (0 != (clientsToUse & CLIENT_APPSTATE)) {
@@ -442,17 +448,23 @@ public class GameHelper implements
 	 * Convenience method to show an alert dialog.
 	 */
 	public void showAlert(String title, String message) {
-		(new AlertDialog.Builder(getContext())).setTitle(title)
+		(new AlertDialog.Builder(getContext()))
+				.setTitle(title)
 				.setMessage(message)
-				.setNeutralButton(android.R.string.ok, null).create().show();
+				.setNeutralButton(android.R.string.ok, null)
+				.create()
+				.show();
 	}
 
 	/**
 	 * Convenience method to show an alert dialog.
 	 */
 	public void showAlert(String message) {
-		(new AlertDialog.Builder(getContext())).setMessage(message)
-				.setNeutralButton(android.R.string.ok, null).create().show();
+		(new AlertDialog.Builder(getContext()))
+				.setMessage(message)
+				.setNeutralButton(android.R.string.ok, null)
+				.create()
+				.show();
 	}
 
 	/**
@@ -1084,8 +1096,10 @@ public class GameHelper implements
 	}
 
 	Dialog makeSimpleDialog(String text) {
-		return (new AlertDialog.Builder(getContext())).setMessage(text)
-				.setNeutralButton(android.R.string.ok, null).create();
+		return (new AlertDialog.Builder(getContext()))
+				.setMessage(text)
+				.setNeutralButton(android.R.string.ok, null)
+				.create();
 	}
 
 	void debugLog(String message) {

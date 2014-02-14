@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class GridCell {
+public class Cell {
 	@SuppressWarnings("unused")
-	private static final String TAG = "MathDoku.GridCell";
+	private static final String TAG = "MathDoku.Cell";
 
 	// Index of the cell (left to right, top to bottom, zero-indexed)
 	private int mId;
@@ -47,7 +47,7 @@ public class GridCell {
 	// Indicates whether borders of the cell need to be redrawn
 	private boolean mBordersInvalidated;
 
-	public GridCell(CellBuilder cellBuilder) {
+	public Cell(CellBuilder cellBuilder) {
 		// Initialize the variables
 		mPosX = 0;
 		mPosY = 0;
@@ -67,7 +67,7 @@ public class GridCell {
 				.isInvalidUserValueHighlighted();
 
 		// Check if required parameters are specified
-		validateGridCellParametersThrowsExceptionOnError(cellBuilder);
+		validateCellParametersThrowsExceptionOnError(cellBuilder);
 		validateCorrectValueThrowsExceptionOnError(cellBuilder);
 		validateCageReferenceThrowsExceptionOnError(cellBuilder);
 
@@ -76,7 +76,7 @@ public class GridCell {
 		mRow = mId / gridSize;
 	}
 
-	private void validateGridCellParametersThrowsExceptionOnError(
+	private void validateCellParametersThrowsExceptionOnError(
 			CellBuilder cellBuilder) {
 		int gridSize = cellBuilder.getGridSize();
 		if (gridSize <= 0) {
@@ -103,16 +103,17 @@ public class GridCell {
 		}
 	}
 
-	private void validateCageReferenceThrowsExceptionOnError(CellBuilder cellBuilder) {
+	private void validateCageReferenceThrowsExceptionOnError(
+			CellBuilder cellBuilder) {
 		if (cellBuilder.performCageReferenceCheck() && mCageId < 0) {
-				throw new InvalidGridException("Parameter mCageId (" + mCageId
-													   + ") has an invalid value.");
+			throw new InvalidGridException("Parameter mCageId (" + mCageId
+					+ ") has an invalid value.");
 		}
 	}
 
 	@Override
 	public String toString() {
-		final StringBuilder stringBuilder = new StringBuilder("GridCell{");
+		final StringBuilder stringBuilder = new StringBuilder("Cell{");
 		stringBuilder.append("mId=").append(mId);
 		stringBuilder.append(", mColumn=").append(mColumn);
 		stringBuilder.append(", mRow=").append(mRow);
@@ -247,8 +248,9 @@ public class GridCell {
 	}
 
 	/**
-	 * Checks whether the borders of the cell are invalidated since last call to this method.
-	 *
+	 * Checks whether the borders of the cell are invalidated since last call to
+	 * this method.
+	 * 
 	 * @return True in case the borders are invalidated. False otherwise.
 	 */
 	public boolean isBordersInvalidated() {
@@ -260,7 +262,6 @@ public class GridCell {
 	public void invalidateBorders() {
 		mBordersInvalidated = true;
 	}
-
 
 	/**
 	 * Clear the user value and/or possible values in a cell.
@@ -435,7 +436,7 @@ public class GridCell {
 	 *         False otherwise.
 	 */
 	public boolean isCellInSelectedCage() {
-		GridCell selectedCellInGrid = mGrid.getSelectedCell();
+		Cell selectedCellInGrid = mGrid.getSelectedCell();
 		if (selectedCellInGrid == null) {
 			// When no cell is selected, a cage isn't selected as well.
 			return false;
@@ -457,23 +458,23 @@ public class GridCell {
 	 * @return True in case cells are part of same cage. False otherwise.
 	 */
 	boolean isInSameCageAsCell(int row, int column) {
-		GridCell cell = mGrid.getCellAt(row, column);
+		Cell cell = mGrid.getCellAt(row, column);
 		return (cell != null && cell.getCageId() == mCageId);
 	}
 
-	public GridCell getCellAbove() {
+	public Cell getCellAbove() {
 		return mGrid.getCellAt(mRow - 1, mColumn);
 	}
 
-	public GridCell getCellOnRight() {
+	public Cell getCellOnRight() {
 		return mGrid.getCellAt(mRow, mColumn + 1);
 	}
 
-	public GridCell getCellBelow() {
+	public Cell getCellBelow() {
 		return mGrid.getCellAt(mRow + 1, mColumn);
 	}
 
-	public GridCell getCellOnLeft() {
+	public Cell getCellOnLeft() {
 		return mGrid.getCellAt(mRow, mColumn - 1);
 	}
 
@@ -507,23 +508,22 @@ public class GridCell {
 	 */
 	public boolean markDuplicateValuesInSameRowAndColumn() {
 		if (mGrid == null) {
-			// Cannot look for other GridCells in same row or column as the cell
+			// Cannot look for other cells in same row or column as the cell
 			// is not used in a grid.
 			return false;
 		}
 
 		boolean duplicateValue = false;
 		if (isUserValueSet()) {
-			for (GridCell gridCell : mGrid.getCells()) {
-				if (gridCell.equals(this) == false
-						&& gridCell.getUserValue() == mUserValue) {
-					if (gridCell.getColumn() == mColumn
-							|| gridCell.getRow() == mRow) {
+			for (Cell cell : mGrid.getCells()) {
+				if (cell.equals(this) == false
+						&& cell.getUserValue() == mUserValue) {
+					if (cell.getColumn() == mColumn || cell.getRow() == mRow) {
 						// Found another cell in the same row or column
 						// containing the same user value. Mark this other cell
 						// as duplicate.
 						duplicateValue = true;
-						gridCell.setDuplicateHighlight(true);
+						cell.setDuplicateHighlight(true);
 					}
 				}
 			}

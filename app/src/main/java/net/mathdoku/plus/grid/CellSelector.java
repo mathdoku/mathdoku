@@ -4,13 +4,13 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class GridCellSelector {
-	private List<GridCell> mCells;
+public abstract class CellSelector {
+	private List<Cell> mCells;
 
-	public GridCellSelector(List<GridCell> cells) {
+	public CellSelector(List<Cell> cells) {
 		if (cells == null) {
 			throw new InvalidParameterException(
-					"GridSelector cannot be instantiated without list of GridCell.");
+					"GridSelector cannot be instantiated without list of Cell.");
 		}
 
 		mCells = cells;
@@ -20,22 +20,22 @@ public abstract class GridCellSelector {
 	 * Determines whether a grid cell should be returned by the selector upon
 	 * calling find().
 	 * 
-	 * @param gridCell
+	 * @param cell
 	 *            The grid cell for which it has to be determined whether it has
 	 *            to be selected.
-	 * @return True if the gridCell has to be selected. False otherwise.
+	 * @return True if the cell has to be selected. False otherwise.
 	 */
-	abstract public boolean select(GridCell gridCell);
+	abstract public boolean select(Cell cell);
 
 	/**
 	 * Selects all cells from the list which fulfill the select-criteria.
 	 */
-	public List<GridCell> find() {
-		List<GridCell> cells = new ArrayList<GridCell>();
+	public List<Cell> find() {
+		List<Cell> cells = new ArrayList<Cell>();
 
-		for (GridCell gridCell : mCells) {
-			if (select(gridCell)) {
-				cells.add(gridCell);
+		for (Cell cell : mCells) {
+			if (select(cell)) {
+				cells.add(cell);
 			}
 		}
 

@@ -3,8 +3,8 @@ package testHelper;
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.grid.CageBuilder;
+import net.mathdoku.plus.grid.Cell;
 import net.mathdoku.plus.grid.GridCage;
-import net.mathdoku.plus.grid.GridCell;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 
 import java.util.ArrayList;
@@ -89,33 +89,33 @@ public class TestGridVisibleOperators extends TestGrid {
 		mCages.add(gridCage);
 
 		// Create the cells
-		List<GridCell> mCells = new ArrayList<GridCell>();
-		GridCell gridCell[] = new GridCell[16];
+		List<Cell> mCells = new ArrayList<Cell>();
+		Cell cell[] = new Cell[16];
 		int cellNumber = 0;
 
 		// Row 1
-		mCells.add(createGridCell(cellNumber++, 2, 0));
-		mCells.add(createGridCell(cellNumber++, 1, 0));
-		mCells.add(createGridCell(cellNumber++, 4, 1));
-		mCells.add(createGridCell(cellNumber++, 3, 1));
+		mCells.add(createCell(cellNumber++, 2, 0));
+		mCells.add(createCell(cellNumber++, 1, 0));
+		mCells.add(createCell(cellNumber++, 4, 1));
+		mCells.add(createCell(cellNumber++, 3, 1));
 
 		// Row 2
-		mCells.add(createGridCell(cellNumber++, 3, 2));
-		mCells.add(createGridCell(cellNumber++, 2, 0));
-		mCells.add(createGridCell(cellNumber++, 1, 3));
-		mCells.add(createGridCell(cellNumber++, 4, 3));
+		mCells.add(createCell(cellNumber++, 3, 2));
+		mCells.add(createCell(cellNumber++, 2, 0));
+		mCells.add(createCell(cellNumber++, 1, 3));
+		mCells.add(createCell(cellNumber++, 4, 3));
 
 		// Row 3
-		mCells.add(createGridCell(cellNumber++, 1, 2));
-		mCells.add(createGridCell(cellNumber++, 4, 0));
-		mCells.add(createGridCell(cellNumber++, 3, 4));
-		mCells.add(createGridCell(cellNumber++, 2, 5));
+		mCells.add(createCell(cellNumber++, 1, 2));
+		mCells.add(createCell(cellNumber++, 4, 0));
+		mCells.add(createCell(cellNumber++, 3, 4));
+		mCells.add(createCell(cellNumber++, 2, 5));
 
 		// Row 4
-		mCells.add(createGridCell(cellNumber++, 4, 6));
-		mCells.add(createGridCell(cellNumber++, 3, 6));
-		mCells.add(createGridCell(cellNumber++, 2, 4));
-		mCells.add(createGridCell(cellNumber++, 1, 4));
+		mCells.add(createCell(cellNumber++, 4, 6));
+		mCells.add(createCell(cellNumber++, 3, 6));
+		mCells.add(createCell(cellNumber++, 2, 4));
+		mCells.add(createCell(cellNumber++, 1, 4));
 
 		GridGeneratingParameters gridGeneratingParameters = new GridGeneratingParameters();
 		gridGeneratingParameters.mHideOperators = mHideOperator;
@@ -137,9 +137,9 @@ public class TestGridVisibleOperators extends TestGrid {
 	}
 
 	public TestGridVisibleOperators setIncorrectUserValueInCell(int cellId) {
-		GridCell gridCell = mGrid.getCell(cellId);
-		int correctValue = gridCell.getCorrectValue();
-		gridCell.setUserValue(correctValue == 1 ? mGridSize : 1);
+		Cell cell = mGrid.getCell(cellId);
+		int correctValue = cell.getCorrectValue();
+		cell.setUserValue(correctValue == 1 ? mGridSize : 1);
 
 		return this;
 	}

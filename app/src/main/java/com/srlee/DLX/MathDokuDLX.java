@@ -4,8 +4,8 @@ import android.util.Log;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
+import net.mathdoku.plus.grid.Cell;
 import net.mathdoku.plus.grid.GridCage;
-import net.mathdoku.plus.grid.GridCell;
 import net.mathdoku.plus.gridGenerating.ComboGenerator;
 
 import java.util.ArrayList;
@@ -82,7 +82,8 @@ public class MathDokuDLX extends DLX {
 				if (comboGenerator == null) {
 					comboGenerator = new ComboGenerator(mGridSize);
 				}
-				gridCage.setPossibleCombos(comboGenerator.getPossibleCombos(gridCage, gridCage.getGridCells()));
+				gridCage.setPossibleCombos(comboGenerator.getPossibleCombos(
+						gridCage, gridCage.getListOfCells()));
 			}
 			int possibleMovesInCage = gridCage.getPossibleCombos().size();
 			mTotalMoves += possibleMovesInCage;
@@ -122,9 +123,10 @@ public class MathDokuDLX extends DLX {
 			List<int[]> possibleCombos = gridCage.getPossibleCombos();
 			for (int[] possibleCombo : possibleCombos) {
 				if (DEBUG_DLX) {
-					Log.i(TAG, "Combo " + comboIndex + " - Cage "
-							+ gridCage.getId() + " with " + gridCage.getNumberOfCells()
-							+ " cells");
+					Log.i(TAG,
+							"Combo " + comboIndex + " - Cage "
+									+ gridCage.getId() + " with "
+									+ gridCage.getNumberOfCells() + " cells");
 				}
 
 				// Is this permutation used for cage "cageCount"? The cage
@@ -137,31 +139,29 @@ public class MathDokuDLX extends DLX {
 				// Apply the permutation of "possibleCombo" to the cells in the
 				// cages
 				for (int i = 0; i < gridCage.getNumberOfCells(); i++) {
-					GridCell gridCell = gridCage.getCell(i);
+					Cell cell = gridCage.getCell(i);
 
 					// Fill data structure for DLX algorithm
 
 					// Is digit "possibleCombo[i]" used in column getColumn()?
 					constraintNumber = totalCages + mGridSize
-							* (possibleCombo[i] - 1) + gridCell.getColumn() + 1;
+							* (possibleCombo[i] - 1) + cell.getColumn() + 1;
 					AddNode(constraintNumber, comboIndex); // Column constraint
 
 					// Is digit "possibleCombo[i]" used in row getRow()?
 					constraintNumber = totalCages + gridSizeSquare + mGridSize
-							* (possibleCombo[i] - 1) + gridCell.getRow() + 1;
+							* (possibleCombo[i] - 1) + cell.getRow() + 1;
 					AddNode(constraintNumber, comboIndex); // Row constraint
 
 					// Fill data structure for uncovering solution if needed
 					if (uncoverSolution) {
-						mMoves.add(new Move(gridCage.getId(), comboIndex, gridCell
-								.getRow(), gridCell.getColumn(),
-								possibleCombo[i]));
+						mMoves.add(new Move(gridCage.getId(), comboIndex, cell
+								.getRow(), cell.getColumn(), possibleCombo[i]));
 					}
 					if (DEBUG_DLX) {
-						Log.i(TAG, "  Cell " + gridCell.getCellId()
-								+ " row =" + gridCell.getRow() + " col = "
-								+ gridCell.getColumn() + " value = "
-								+ possibleCombo[i]);
+						Log.i(TAG, "  Cell " + cell.getCellId() + " row ="
+								+ cell.getRow() + " col = " + cell.getColumn()
+								+ " value = " + possibleCombo[i]);
 					}
 				}
 
@@ -187,7 +187,8 @@ public class MathDokuDLX extends DLX {
 			if (difference == 0) {
 				// Both cages have the same number of possible permutation. Next
 				// compare the number of cells in the cage.
-				difference = gridCage1.getNumberOfCells() - gridCage2.getNumberOfCells();
+				difference = gridCage1.getNumberOfCells()
+						- gridCage2.getNumberOfCells();
 				if (difference == 0) {
 					// Also the number of cells is equal. Finally compare the
 					// id's.
@@ -324,8 +325,7 @@ public class MathDokuDLX extends DLX {
 								for (int j = 0; j < gridCage.getNumberOfCells(); j++) {
 									// Check if value is already used in this
 									// row
-									int cellRow = gridCage.getCell(j)
-											.getRow();
+									int cellRow = gridCage.getCell(j).getRow();
 									for (int col = 0; col < mGridSize; col++) {
 										if (solutionGrid[cellRow][col] == cageMove[j]) {
 											// The value is already used on this
@@ -340,7 +340,8 @@ public class MathDokuDLX extends DLX {
 
 									// Check if value is already used in this
 									// row
-									int cellColumn = gridCage.getCell(j)
+									int cellColumn = gridCage
+											.getCell(j)
 											.getColumn();
 									for (int row = 0; row < mGridSize; row++) {
 										if (solutionGrid[row][cellColumn] == cageMove[j]) {

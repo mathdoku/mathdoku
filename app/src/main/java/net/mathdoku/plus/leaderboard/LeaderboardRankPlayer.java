@@ -84,10 +84,11 @@ class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener {
 
 			if (gamesClient != null) {
 				if (DEBUG) {
-					Log.i(TAG,
-							"Request the current player rank score for leaderboard "
-									+ mLeaderboardConnector
-											.getLeaderboardNameForLogging(leaderboardId));
+					Log
+							.i(TAG,
+									"Request the current player rank score for leaderboard "
+											+ mLeaderboardConnector
+													.getLeaderboardNameForLogging(leaderboardId));
 				}
 
 				// The scores centered around the current player will be
@@ -110,7 +111,8 @@ class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener {
 			if (mLeaderboardConnector != null && leaderboardBuffer != null
 					&& leaderboardBuffer.getCount() > 0) {
 				leaderboardName = mLeaderboardConnector
-						.getLeaderboardNameForLogging(leaderboardBuffer.get(0)
+						.getLeaderboardNameForLogging(leaderboardBuffer
+								.get(0)
 								.getLeaderboardId());
 			}
 		}
@@ -146,7 +148,9 @@ class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener {
 
 		if (leaderboardScoresBuffer.getCount() > 0
 				&& gamesClient.getCurrentPlayerId().equals(
-						leaderboardScoresBuffer.get(0).getScoreHolder()
+						leaderboardScoresBuffer
+								.get(0)
+								.getScoreHolder()
 								.getPlayerId())) {
 			// A leaderboard score for the current player is found.
 			if (DEBUG) {

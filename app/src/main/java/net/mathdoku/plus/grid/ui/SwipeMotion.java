@@ -89,13 +89,13 @@ public class SwipeMotion extends Motion {
 	 * @param gridViewBorderWidth
 	 *            The border width in the grid view in which the swipe motion is
 	 *            created.
-	 * @param gridCellSize
+	 * @param cellSize
 	 *            The size of the cells in the grid view in which the swipe
 	 *            motion is created.
 	 */
 	SwipeMotion(GridPlayerView gridPlayerView, float gridViewBorderWidth,
-			float gridCellSize) {
-		super(gridPlayerView, gridViewBorderWidth, gridCellSize);
+			float cellSize) {
+		super(gridPlayerView, gridViewBorderWidth, cellSize);
 
 		mGridPlayerView = gridPlayerView;
 
@@ -137,8 +137,9 @@ public class SwipeMotion extends Motion {
 		// actual touch down position.
 		CellDrawer cellDrawer = null;
 		if (mGridPlayerView != null) {
-			cellDrawer = mGridPlayerView.getCellDrawer(touchDownCellCoordinates[Y_POS],
-						touchDownCellCoordinates[X_POS]);
+			cellDrawer = mGridPlayerView.getCellDrawer(
+					touchDownCellCoordinates[Y_POS],
+					touchDownCellCoordinates[X_POS]);
 		}
 		mTouchDownCellCenterPixelCoordinates = (cellDrawer == null ? getTouchDownPixelCoordinates()
 				.clone() : cellDrawer
@@ -353,13 +354,15 @@ public class SwipeMotion extends Motion {
 		if (DEBUG_SWIPE_MOTION) {
 			Log.i(TAG, "getDigit");
 			if (inTouchDownCell) {
-				Log.i(TAG,
-						"Current swipe position inside touch down cell. Angle computed to real touch down position");
+				Log
+						.i(TAG,
+								"Current swipe position inside touch down cell. Angle computed to real touch down position");
 				Log.i(TAG, " - start = (" + getTouchDownPixelCoordinate(X_POS)
 						+ ", " + getTouchDownPixelCoordinate(Y_POS) + ")");
 			} else {
-				Log.i(TAG,
-						"Current swipe position outside touch down cell. Angle computed to center of touch down cell");
+				Log
+						.i(TAG,
+								"Current swipe position outside touch down cell. Angle computed to center of touch down cell");
 				Log.i(TAG, " - start = ("
 						+ mTouchDownCellCenterPixelCoordinates[X_POS] + ", "
 						+ mTouchDownCellCenterPixelCoordinates[Y_POS] + ")");
@@ -442,8 +445,9 @@ public class SwipeMotion extends Motion {
 		// digit for this grid
 		// size.
 		if (DEBUG_SWIPE_MOTION) {
-			Log.i(TAG,
-					"Current swipe position does not correspond with a selectable digit.");
+			Log
+					.i(TAG,
+							"Current swipe position does not correspond with a selectable digit.");
 		}
 
 		// Call listener only in case previously a digit was selectable.

@@ -118,7 +118,8 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 		// This pager contains a maximum of 3 visible items. The selected tab
 		// will always be displayed in the middle. Hide the tab indicator by
 		// setting color identical to background color.
-		PagerTabStripPainter pagerTabStripPainter = Painter.getInstance()
+		PagerTabStripPainter pagerTabStripPainter = Painter
+				.getInstance()
 				.getPagerTabStripPainter();
 		pagerTabStrip.setTabIndicatorColor(pagerTabStripPainter
 				.getBackgroundColor());
@@ -221,7 +222,9 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 				// This activity is not part of the application's task, so
 				// create a new task with a synthesized back stack.
 				// If there are ancestor activities, they should be added here.
-				TaskStackBuilder.create(this).addNextIntent(upIntent)
+				TaskStackBuilder
+						.create(this)
+						.addNextIntent(upIntent)
 						.startActivities();
 				finish();
 			} else {
@@ -387,7 +390,9 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 		// Hide spinner if only two choices are available. As one of those
 		// choices is always "ALL" the choices will result in an identical
 		// selection.
-		spinner.setVisibility((usedSizes.length <= 2 ? View.GONE : View.VISIBLE));
+		spinner
+				.setVisibility((usedSizes.length <= 2 ? View.GONE
+						: View.VISIBLE));
 
 		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
@@ -445,7 +450,8 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
 							}
-						}).show();
+						})
+				.show();
 	}
 
 	/**
@@ -530,15 +536,17 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 							public void onClick(DialogInterface dialog,
 									int which) {
 								Intent intent = new Intent();
-								intent.putExtra(
-										BUNDLE_KEY_SOLVING_ATTEMPT_ID,
-										getSolvingAttemptIdForCurrentSelectedGrid());
+								intent
+										.putExtra(
+												BUNDLE_KEY_SOLVING_ATTEMPT_ID,
+												getSolvingAttemptIdForCurrentSelectedGrid());
 								setResult(Activity.RESULT_OK, intent);
 
 								// Finish the archive activity
 								finish();
 
 							}
-						}).show();
+						})
+				.show();
 	}
 }

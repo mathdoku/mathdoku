@@ -3,8 +3,8 @@ package testHelper;
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.grid.CageBuilder;
+import net.mathdoku.plus.grid.Cell;
 import net.mathdoku.plus.grid.GridCage;
-import net.mathdoku.plus.grid.GridCell;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 
 import java.util.ArrayList;
@@ -115,33 +115,33 @@ public class TestGridHiddenOperators extends TestGrid {
 		mCages.add(gridCage);
 
 		// Create the cells
-		List<GridCell> mCells = new ArrayList<GridCell>();
-		GridCell gridCell[] = new GridCell[16];
+		List<Cell> mCells = new ArrayList<Cell>();
+		Cell cell[] = new Cell[16];
 		int cellNumber = 0;
 
 		// Row 1
-		mCells.add(createGridCell(cellNumber++, 1, 0));
-		mCells.add(createGridCell(cellNumber++, 3, 0));
-		mCells.add(createGridCell(cellNumber++, 2, 1));
-		mCells.add(createGridCell(cellNumber++, 4, 1));
+		mCells.add(createCell(cellNumber++, 1, 0));
+		mCells.add(createCell(cellNumber++, 3, 0));
+		mCells.add(createCell(cellNumber++, 2, 1));
+		mCells.add(createCell(cellNumber++, 4, 1));
 
 		// Row 2
-		mCells.add(createGridCell(cellNumber++, 2, 2));
-		mCells.add(createGridCell(cellNumber++, 4, 3));
-		mCells.add(createGridCell(cellNumber++, 3, 3));
-		mCells.add(createGridCell(cellNumber++, 1, 4));
+		mCells.add(createCell(cellNumber++, 2, 2));
+		mCells.add(createCell(cellNumber++, 4, 3));
+		mCells.add(createCell(cellNumber++, 3, 3));
+		mCells.add(createCell(cellNumber++, 1, 4));
 
 		// Row 3
-		mCells.add(createGridCell(cellNumber++, 4, 2));
-		mCells.add(createGridCell(cellNumber++, 2, 5));
-		mCells.add(createGridCell(cellNumber++, 1, 6));
-		mCells.add(createGridCell(cellNumber++, 3, 4));
+		mCells.add(createCell(cellNumber++, 4, 2));
+		mCells.add(createCell(cellNumber++, 2, 5));
+		mCells.add(createCell(cellNumber++, 1, 6));
+		mCells.add(createCell(cellNumber++, 3, 4));
 
 		// Row 4
-		mCells.add(createGridCell(cellNumber++, 3, 7));
-		mCells.add(createGridCell(cellNumber++, 1, 5));
-		mCells.add(createGridCell(cellNumber++, 4, 6));
-		mCells.add(createGridCell(cellNumber++, 2, 8));
+		mCells.add(createCell(cellNumber++, 3, 7));
+		mCells.add(createCell(cellNumber++, 1, 5));
+		mCells.add(createCell(cellNumber++, 4, 6));
+		mCells.add(createCell(cellNumber++, 2, 8));
 
 		GridGeneratingParameters gridGeneratingParameters = new GridGeneratingParameters();
 		gridGeneratingParameters.mHideOperators = mHideOperator;

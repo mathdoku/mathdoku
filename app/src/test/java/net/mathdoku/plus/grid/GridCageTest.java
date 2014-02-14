@@ -195,7 +195,7 @@ public class GridCageTest {
 	}
 
 	@Test(expected = InvalidGridException.class)
-	public void checkUserMath_CageGridCellListIsNull_UserMathIsCorrect()
+	public void checkUserMath_CageCellListIsNull_UserMathIsCorrect()
 			throws Exception {
 		GridCage gridCage = mCageBuilder.setCells((int[]) null).build();
 
@@ -674,16 +674,16 @@ public class GridCageTest {
 			throws Exception {
 		GridCage gridCage = mCageBuilder.build();
 		gridCage.setGridReference(mGridMock);
-		GridCell gridCellMock = mock(GridCell.class);
-		List<GridCell> mCells = new ArrayList<GridCell>();
-		mCells.add(gridCellMock);
-		mCells.add(gridCellMock);
-		mCells.add(gridCellMock);
-		when(mGridMock.getGridCells(any(int[].class))).thenReturn(mCells);
+		Cell cellMock = mock(Cell.class);
+		List<Cell> mCells = new ArrayList<Cell>();
+		mCells.add(cellMock);
+		mCells.add(cellMock);
+		mCells.add(cellMock);
+		when(mGridMock.getCells(any(int[].class))).thenReturn(mCells);
 
 		gridCage.invalidateBordersOfAllCells();
 
-		verify(gridCellMock,times(mCells.size())).invalidateBorders();
+		verify(cellMock,times(mCells.size())).invalidateBorders();
 	}
 
 	@Test
@@ -781,14 +781,14 @@ public class GridCageTest {
 	}
 
 	@Test
-	public void getGridCell_GridReferenceNotSet_Null() throws Exception {
+	public void getCell_GridReferenceNotSet_Null() throws Exception {
 		GridCage gridCage = mCageBuilder.build();
 
 		assertThat(gridCage.getCell(0), is(nullValue()));
 	}
 
 	@Test
-	public void getGridCell_PositionTooLow_Null() throws Exception {
+	public void getCell_PositionTooLow_Null() throws Exception {
 		GridCage gridCage = mCageBuilder.build();
 		gridCage.setGridReference(mGridMock);
 
@@ -796,7 +796,7 @@ public class GridCageTest {
 	}
 
 	@Test
-	public void getGridCell_PositionTooHigh_Null() throws Exception {
+	public void getCell_PositionTooHigh_Null() throws Exception {
 		GridCage gridCage = mCageBuilder.build();
 		gridCage.setGridReference(mGridMock);
 
@@ -804,14 +804,14 @@ public class GridCageTest {
 	}
 
 	@Test
-	public void getGridCell_ValidPosition_CorrectCellReturned() throws Exception {
+	public void getCell_ValidPosition_CorrectCellReturned() throws Exception {
 		mCageBuilder
 				.setCells(2, 0, 3)
 				.setCageOperator(CageOperator.ADD);
 		GridCage gridCage = mCageBuilder.build();
 		gridCage.setGridReference(mGridMock);
 		when(mGridMock.getCell(0)).thenReturn(null);
-		when(mGridMock.getCell(1)).thenReturn(mock(GridCell.class));
+		when(mGridMock.getCell(1)).thenReturn(mock(Cell.class));
 		when(mGridMock.getCell(2)).thenReturn(null);
 
 		assertThat(gridCage.getCell(1), is(notNullValue()));

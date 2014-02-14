@@ -142,7 +142,9 @@ public class StatisticsFragmentActivity extends AppFragmentActivity implements
 				// This activity is not part of the application's task, so
 				// create a new task with a synthesized back stack.
 				// If there are ancestor activities, they should be added here.
-				TaskStackBuilder.create(this).addNextIntent(upIntent)
+				TaskStackBuilder
+						.create(this)
+						.addNextIntent(upIntent)
 						.startActivities();
 				finish();
 			} else {
@@ -187,6 +189,7 @@ public class StatisticsFragmentActivity extends AppFragmentActivity implements
 									int whichButton) {
 								// Do nothing
 							}
-						}).show();
+						})
+				.show();
 	}
 }

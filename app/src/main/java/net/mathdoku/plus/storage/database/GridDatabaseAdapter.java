@@ -428,7 +428,8 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 						"CASE WHEN "
 								+ stringBetweenBackTicks(SolvingAttemptDatabaseAdapter.KEY_STATUS)
 								+ " = "
-								+ SolvingAttemptStatus.REVEALED_SOLUTION.getId()
+								+ SolvingAttemptStatus.REVEALED_SOLUTION
+										.getId()
 								+ " THEN "
 								+ StatusFilter.REVEALED.ordinal()
 								+ " WHEN "
@@ -623,13 +624,11 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		case REVEALED:
 			return SolvingAttemptDatabaseAdapter
 					.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_STATUS)
-					+ " = "
-					+ SolvingAttemptStatus.REVEALED_SOLUTION.getId();
+					+ " = " + SolvingAttemptStatus.REVEALED_SOLUTION.getId();
 		case SOLVED:
 			return SolvingAttemptDatabaseAdapter
 					.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_STATUS)
-					+ " = "
-					+ SolvingAttemptStatus.FINISHED_SOLVED.getId();
+					+ " = " + SolvingAttemptStatus.FINISHED_SOLVED.getId();
 		case UNFINISHED:
 			return SolvingAttemptDatabaseAdapter
 					.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_STATUS)

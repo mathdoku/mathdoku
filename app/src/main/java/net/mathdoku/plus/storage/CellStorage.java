@@ -1,7 +1,7 @@
 package net.mathdoku.plus.storage;
 
 import net.mathdoku.plus.grid.CellBuilder;
-import net.mathdoku.plus.grid.GridCell;
+import net.mathdoku.plus.grid.Cell;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 
 import java.security.InvalidParameterException;
@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class converts relevant GridCell data to a string which can be persisted
- * and vice versa.
+ * This class converts relevant Cell data to a string which can be persisted and
+ * vice versa.
  */
-public class GridCellStorage {
-	private static final String TAG = "MathDoku.GridCellStorage";
+public class CellStorage {
+	private static final String TAG = "MathDoku.CellStorage";
 
 	/*
 	 * Each line in the entire storage string of a Grid contains information
@@ -24,7 +24,7 @@ public class GridCellStorage {
 
 	/**
 	 * Read cell information from a storage string which was created with
-	 * {@link #toStorageString(net.mathdoku.plus.grid.GridCell)} before.
+	 * {@link #toStorageString(net.mathdoku.plus.grid.Cell)} before.
 	 * 
 	 * @param line
 	 *            The line containing the cell information.
@@ -32,7 +32,8 @@ public class GridCellStorage {
 	 *         processed correctly. False otherwise.
 	 */
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
-	public CellBuilder getCellBuilderFromStorageString(String line, int savedWithRevisionNumber) {
+	public CellBuilder getCellBuilderFromStorageString(String line,
+			int savedWithRevisionNumber) {
 		if (line == null) {
 			throw new NullPointerException("Parameter line cannot be null");
 		}
@@ -49,7 +50,8 @@ public class GridCellStorage {
 
 		// Only process the storage string if it starts with the correct
 		// identifier.
-		if (cellParts == null || SAVE_GAME_CELL_LINE.equals(cellParts[0]) == false) {
+		if (cellParts == null
+				|| SAVE_GAME_CELL_LINE.equals(cellParts[0]) == false) {
 			return null;
 		}
 
@@ -67,7 +69,8 @@ public class GridCellStorage {
 		int index = 1;
 		cellBuilder.setId(Integer.parseInt(cellParts[index++]));
 		if (savedWithRevisionNumber <= 596) {
-			// Skip fields row and column. These will be derived from the cell number.
+			// Skip fields row and column. These will be derived from the cell
+			// number.
 			index += 2;
 		}
 		cellBuilder.setCageText(cellParts[index++]);
@@ -85,7 +88,8 @@ public class GridCellStorage {
 		index++;
 		cellBuilder.setPossibles(possibles);
 
-		cellBuilder.setInvalidUserValueHighlight(Boolean.parseBoolean(cellParts[index++]));
+		cellBuilder.setInvalidUserValueHighlight(Boolean
+				.parseBoolean(cellParts[index++]));
 		cellBuilder.setRevealed(Boolean.parseBoolean(cellParts[index++]));
 		cellBuilder.setSelected(Boolean.parseBoolean(cellParts[index++]));
 
@@ -98,26 +102,27 @@ public class GridCellStorage {
 	 * 
 	 * @return A string representation of the grid cell.
 	 */
-	public String toStorageString(GridCell gridCell) {
+	public String toStorageString(Cell cell) {
 		String storageString = SAVE_GAME_CELL_LINE
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + gridCell.getCellId()
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ gridCell.getCageText()
+				+ cell.getCellId()
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ gridCell.getCorrectValue()
+				+ cell.getCageText()
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ gridCell.getUserValue()
+				+ cell.getCorrectValue()
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ cell.getUserValue()
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1;
-		for (int possible : gridCell.getPossibles()) {
+		for (int possible : cell.getPossibles()) {
 			storageString += possible
 					+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2;
 		}
 		storageString += SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ Boolean.toString(gridCell.hasInvalidUserValueHighlight())
+				+ Boolean.toString(cell.hasInvalidUserValueHighlight())
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ Boolean.toString(gridCell.isRevealed())
+				+ Boolean.toString(cell.isRevealed())
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ Boolean.toString(gridCell.isSelected());
+				+ Boolean.toString(cell.isSelected());
 
 		return storageString;
 	}

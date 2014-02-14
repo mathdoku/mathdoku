@@ -1,9 +1,9 @@
 package net.mathdoku.plus.storage;
 
+import net.mathdoku.plus.grid.Cell;
 import net.mathdoku.plus.grid.CellChange;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.GridCage;
-import net.mathdoku.plus.grid.GridCell;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 
 import java.security.InvalidParameterException;
@@ -22,7 +22,7 @@ public class GridStorage {
 
 	private boolean mActive;
 	private boolean mRevealed;
-	private List<GridCell> mCells;
+	private List<Cell> mCells;
 	private List<GridCage> mCages;
 	private List<CellChange> mCellChanges;
 
@@ -34,22 +34,22 @@ public class GridStorage {
 			return new GridCageStorage();
 		}
 
-		public GridCellStorage createGridCellStorage() {
-			return new GridCellStorage();
+		public CellStorage createCellStorage() {
+			return new CellStorage();
 		}
 
 		public CellChangeStorage createCellChangeStorage() {
 			return new CellChangeStorage();
 		}
 	}
+
 	private GridStorage.ObjectsCreator mObjectsCreator;
 
 	public GridStorage() {
 		mObjectsCreator = new GridStorage.ObjectsCreator();
 	}
 
-	public void setObjectsCreator(
-			GridStorage.ObjectsCreator objectsCreator) {
+	public void setObjectsCreator(GridStorage.ObjectsCreator objectsCreator) {
 		if (objectsCreator == null) {
 			throw new InvalidParameterException(
 					"Parameter objectsCreator cannot be null.");
@@ -137,10 +137,9 @@ public class GridStorage {
 
 		// Store information about the cells. Use one line per single
 		// cell.
-		GridCellStorage gridCellStorage = mObjectsCreator
-				.createGridCellStorage();
-		for (GridCell cell : mCells) {
-			stringBuilder.append(gridCellStorage.toStorageString(cell)).append(
+		CellStorage cellStorage = mObjectsCreator.createCellStorage();
+		for (Cell cell : mCells) {
+			stringBuilder.append(cellStorage.toStorageString(cell)).append(
 					SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
 		}
 

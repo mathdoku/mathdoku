@@ -252,7 +252,8 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	 */
 	int getMaxContentHeight(int titleHeightPixels, int paddingChartPixels) {
 		// Get size of display
-		DisplayMetrics displayMetrics = getActivity().getResources()
+		DisplayMetrics displayMetrics = getActivity()
+				.getResources()
 				.getDisplayMetrics();
 		int maxContentHeight = displayMetrics.heightPixels;
 
@@ -296,7 +297,8 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	private int getMaxChartHeight(int titleHeightPixels, int paddingChartPixels) {
 		// Determine an acceptable height / width ratio for the chart dependent
 		// on the orientation of the device
-		Configuration configuration = getActivity().getResources()
+		Configuration configuration = getActivity()
+				.getResources()
 				.getConfiguration();
 		float ratio = (configuration.orientation == Configuration.ORIENTATION_PORTRAIT ? (2f / 3f)
 				: (1f / 2f));

@@ -115,7 +115,8 @@ public class LeaderboardFragmentActivity extends
 			// the adapter. Also specify this Activity object, which implements
 			// the TabListener interface, as the listener for when this tab is
 			// selected.
-			mActionBar.addTab(mActionBar.newTab()
+			mActionBar.addTab(mActionBar
+					.newTab()
 					.setText(mLeaderboardFragmentPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
@@ -198,7 +199,9 @@ public class LeaderboardFragmentActivity extends
 				// This activity is not part of the application's task, so
 				// create a new task with a synthesized back stack.
 				// If there are ancestor activities, they should be added here.
-				TaskStackBuilder.create(this).addNextIntent(upIntent)
+				TaskStackBuilder
+						.create(this)
+						.addNextIntent(upIntent)
 						.startActivities();
 				finish();
 			} else {
@@ -244,7 +247,8 @@ public class LeaderboardFragmentActivity extends
 									int whichButton) {
 								// Do nothing
 							}
-						}).show();
+						})
+				.show();
 	}
 
 	@Override

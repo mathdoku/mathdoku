@@ -142,7 +142,8 @@ class PuzzlePreferenceFragment extends PreferenceFragment implements
 						.setSummary(getResources()
 								.getString(
 										R.string.puzzle_setting_outer_swipe_circle_visible_from_grid_size_long,
-										Integer.valueOf(outerSwipeCircleVisibility)));
+										Integer
+												.valueOf(outerSwipeCircleVisibility)));
 			}
 		}
 	}

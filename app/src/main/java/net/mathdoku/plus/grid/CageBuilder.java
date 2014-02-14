@@ -78,16 +78,14 @@ public class CageBuilder {
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("CageBuilder{\n");
-		stringBuilder.append("\tmId=")
-				.append(mId)
-				.append("\n");
-		stringBuilder.append("\tmCageOperator=")
+		stringBuilder.append("\tmId=").append(mId).append("\n");
+		stringBuilder
+				.append("\tmCageOperator=")
 				.append(mCageOperator)
 				.append("\n");
-		stringBuilder.append("\tmResult=")
-				.append(mResult)
-				.append("\n");
-		stringBuilder.append("\tmHideOperator=")
+		stringBuilder.append("\tmResult=").append(mResult).append("\n");
+		stringBuilder
+				.append("\tmHideOperator=")
 				.append(mHideOperator)
 				.append("\n");
 		stringBuilder.append("\tmCells=[");
@@ -132,7 +130,8 @@ public class CageBuilder {
 	@Override
 	public int hashCode() {
 		int result = mId;
-		result = 31 * result + (mCageOperator != null ? mCageOperator.hashCode() : 0);
+		result = 31 * result
+				+ (mCageOperator != null ? mCageOperator.hashCode() : 0);
 		result = 31 * result + mResult;
 		result = 31 * result + (mHideOperator ? 1 : 0);
 		result = 31 * result + (mCells != null ? Arrays.hashCode(mCells) : 0);

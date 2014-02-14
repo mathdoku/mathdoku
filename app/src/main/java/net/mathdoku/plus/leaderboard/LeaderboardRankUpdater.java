@@ -131,16 +131,17 @@ public class LeaderboardRankUpdater {
 	 */
 	private void submitLocalTopScore() {
 		if (DEBUG) {
-			Log.i(TAG,
-					"Submit score ("
-							+ mLeaderboardRankRow.mRawScore
-							+ ") for existing leaderboard"
-							+ mLeaderboardConnector
-									.getLeaderboardNameForLogging(mLeaderboardRankRow.mLeaderboardId)
-							+ " which was last submitted on "
-							+ DateFormat.getDateTimeInstance().format(
-									mLeaderboardRankRow.mDateSubmitted)
-							+ " with callback listener");
+			Log
+					.i(TAG,
+							"Submit score ("
+									+ mLeaderboardRankRow.mRawScore
+									+ ") for existing leaderboard"
+									+ mLeaderboardConnector
+											.getLeaderboardNameForLogging(mLeaderboardRankRow.mLeaderboardId)
+									+ " which was last submitted on "
+									+ DateFormat.getDateTimeInstance().format(
+											mLeaderboardRankRow.mDateSubmitted)
+									+ " with callback listener");
 		}
 		mLeaderboardConnector.getGamesClient().submitScoreImmediate(
 				new OnScoreSubmittedListener() {
@@ -152,12 +153,13 @@ public class LeaderboardRankUpdater {
 							// The score was submitted and processed by Google
 							// Play Services.
 							if (DEBUG) {
-								Log.i(TAG,
-										"Score for leaderboard"
-												+ mLeaderboardConnector
-														.getLeaderboardNameForLogging(submitScoreResult
-																.getLeaderboardId())
-												+ " has been processed by Google Play Services.");
+								Log
+										.i(TAG,
+												"Score for leaderboard"
+														+ mLeaderboardConnector
+																.getLeaderboardNameForLogging(submitScoreResult
+																		.getLeaderboardId())
+														+ " has been processed by Google Play Services.");
 							}
 
 							// Retrieve the current rank of the
@@ -183,10 +185,11 @@ public class LeaderboardRankUpdater {
 												Leaderboard leaderboard) {
 											// Nothing to do here.
 											if (DEBUG) {
-												Log.i(TAG,
-														"ERROR: it should not possible that a player rank "
-																+ "is not found after it has just been "
-																+ "successfully submitted and received.");
+												Log
+														.i(TAG,
+																"ERROR: it should not possible that a player rank "
+																		+ "is not found after it has just been "
+																		+ "successfully submitted and received.");
 											}
 											// Although not possible, still wrap
 											// up just in case...
@@ -226,13 +229,14 @@ public class LeaderboardRankUpdater {
 						// as no rank for this player was found on Google Play
 						// Services.
 						if (DEBUG) {
-							Log.i(TAG,
-									"No local top score and no ranking information "
-											+ "was found for the current user for leaderboard "
-											+ mLeaderboardConnector
-													.getLeaderboardNameForLogging(leaderboard
-															.getLeaderboardId())
-											+ ".");
+							Log
+									.i(TAG,
+											"No local top score and no ranking information "
+													+ "was found for the current user for leaderboard "
+													+ mLeaderboardConnector
+															.getLeaderboardNameForLogging(leaderboard
+																	.getLeaderboardId())
+													+ ".");
 						}
 						new LeaderboardRankDatabaseAdapter()
 								.updateWithGooglePlayRankNotAvailable(leaderboard

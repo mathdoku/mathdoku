@@ -98,8 +98,10 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-		if (key.equals(Preferences.STATISTICS_SETTING_CHART_DESCRIPTION_VISIBLE)) {
-			setDisplayChartDescription(Preferences.getInstance(getActivity())
+		if (key
+				.equals(Preferences.STATISTICS_SETTING_CHART_DESCRIPTION_VISIBLE)) {
+			setDisplayChartDescription(Preferences
+					.getInstance(getActivity())
 					.isStatisticsChartDescriptionVisible());
 		}
 
@@ -226,7 +228,8 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 
 		// The number of entries to be displayed is restricted to the maximum
 		// set in the preferences.
-		historicStatistics.setLimit(Preferences.getInstance()
+		historicStatistics.setLimit(Preferences
+				.getInstance()
 				.getStatisticsSettingElapsedTimeChartMaximumGames());
 
 		// Check if at least one series will contain data in the limited range.
@@ -462,9 +465,9 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 							tableLayoutParams,
 							getResources().getString(
 									R.string.chart_serie_solved)
-									+ String.format(
-											" (%d)",
-											mCumulativeStatistics.mCountSolvedManually),
+									+ String
+											.format(" (%d)",
+													mCumulativeStatistics.mCountSolvedManually),
 							null));
 			tableLayout
 					.addView(createDataTableRow(

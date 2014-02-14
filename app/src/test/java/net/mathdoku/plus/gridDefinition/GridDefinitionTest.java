@@ -5,9 +5,9 @@ import com.srlee.DLX.MathDokuDLX;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.enums.PuzzleComplexity;
+import net.mathdoku.plus.grid.Cell;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.GridCage;
-import net.mathdoku.plus.grid.GridCell;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 
 import org.junit.Before;
@@ -37,13 +37,13 @@ public class GridDefinitionTest {
 
 	private class GridDefinitionTestObjectsCreator extends
 			GridDefinition.ObjectsCreator {
-		List<GridCell> gridCells;
+		List<Cell> cells;
 		List<GridCage> gridCages;
 
 		@Override
-		public List<GridCell> createArrayListOfGridCells() {
-			gridCells = super.createArrayListOfGridCells();
-			return gridCells;
+		public List<Cell> createArrayListOfCells() {
+			cells = super.createArrayListOfCells();
+			return cells;
 		}
 
 		@Override
@@ -77,77 +77,77 @@ public class GridDefinitionTest {
 	}
 
 	@Test(expected = InvalidParameterException.class)
-	public void getDefinition_ArrayListGridCellsIsNull_ThrowsInvalidParameterException()
+	public void getDefinition_ArrayListCellsIsNull_ThrowsInvalidParameterException()
 			throws Exception {
-		List<GridCell> gridCells = null;
+		List<Cell> cells = null;
 		List<GridCage> gridCages = mock(ArrayList.class);
 		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
 
-		GridDefinition.getDefinition(gridCells, gridCages,
+		GridDefinition.getDefinition(cells, gridCages,
 				gridGeneratingParameters);
 	}
 
 	@Test(expected = InvalidParameterException.class)
-	public void getDefinition_ArrayListGridCellsIsEmpty_ThrowsInvalidParameterException()
+	public void getDefinition_ArrayListCellsIsEmpty_ThrowsInvalidParameterException()
 			throws Exception {
-		List<GridCell> gridCells = new ArrayList<GridCell>();
+		List<Cell> cells = new ArrayList<Cell>();
 		List<GridCage> gridCages = mock(ArrayList.class);
 		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
 
-		GridDefinition.getDefinition(gridCells, gridCages,
+		GridDefinition.getDefinition(cells, gridCages,
 				gridGeneratingParameters);
 	}
 
 	@Test(expected = InvalidParameterException.class)
 	public void getDefinition_ArrayListGridCagesIsNull_ThrowsInvalidParameterException()
 			throws Exception {
-		List<GridCell> gridCells = mock(ArrayList.class);
-		when(gridCells.size()).thenReturn(1);
+		List<Cell> cells = mock(ArrayList.class);
+		when(cells.size()).thenReturn(1);
 		List<GridCage> gridCages = null;
 		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
 
-		GridDefinition.getDefinition(gridCells, gridCages,
+		GridDefinition.getDefinition(cells, gridCages,
 				gridGeneratingParameters);
 	}
 
 	@Test(expected = InvalidParameterException.class)
 	public void getDefinition_ArrayListGridCagesIsEmpty_ThrowsInvalidParameterException()
 			throws Exception {
-		List<GridCell> gridCells = mock(ArrayList.class);
-		when(gridCells.size()).thenReturn(1);
+		List<Cell> cells = mock(ArrayList.class);
+		when(cells.size()).thenReturn(1);
 		List<GridCage> gridCages = new ArrayList<GridCage>();
 		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
 
-		GridDefinition.getDefinition(gridCells, gridCages,
+		GridDefinition.getDefinition(cells, gridCages,
 				gridGeneratingParameters);
 	}
 
 	@Test(expected = InvalidParameterException.class)
 	public void getDefinition_GridGeneratingParametersIsNull_ThrowsInvalidParameterException()
 			throws Exception {
-		List<GridCell> gridCells = mock(ArrayList.class);
-		when(gridCells.size()).thenReturn(1);
+		List<Cell> cells = mock(ArrayList.class);
+		when(cells.size()).thenReturn(1);
 		List<GridCage> gridCages = mock(ArrayList.class);
 		when(gridCages.size()).thenReturn(1);
 		GridGeneratingParameters gridGeneratingParameters = null;
 
-		GridDefinition.getDefinition(gridCells, gridCages,
+		GridDefinition.getDefinition(cells, gridCages,
 				gridGeneratingParameters);
 	}
 
 	@Test
 	public void getDefinition_WithValidParameters_GridDefinitionCreated()
 			throws Exception {
-		GridCell gridCellMock = mock(GridCell.class);
-		when(gridCellMock.getCageId()).thenReturn( //
+		Cell cellMock = mock(Cell.class);
+		when(cellMock.getCageId()).thenReturn( //
 				0, 1, 2, 2, // Row 1
 				0, 1, 2, 2, // Row 2
 				1, 1, 1, 2, // Row 3
 				3, 3, 3, 2 // Row 4
 				);
-		List<GridCell> gridCells = new ArrayList<GridCell>();
+		List<Cell> cells = new ArrayList<Cell>();
 		for (int i = 0; i < 16; i++) {
-			gridCells.add(gridCellMock);
+			cells.add(cellMock);
 		}
 
 		GridCage gridCageStub1 = mock(GridCage.class);
@@ -176,7 +176,7 @@ public class GridDefinitionTest {
 
 		assertThat(
 				"Grid definition",
-				GridDefinition.getDefinition(gridCells, gridCages,
+				GridDefinition.getDefinition(cells, gridCages,
 						gridGeneratingParameters),
 				is(equalTo("3:00010202000102020101010203030302:0,1,0:1,3,1:2,2,0")));
 	}

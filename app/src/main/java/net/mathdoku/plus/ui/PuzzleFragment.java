@@ -34,10 +34,10 @@ import net.mathdoku.plus.GameTimer;
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.enums.CageOperator;
+import net.mathdoku.plus.grid.Cell;
 import net.mathdoku.plus.grid.DigitPositionGrid;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.GridCage;
-import net.mathdoku.plus.grid.GridCell;
 import net.mathdoku.plus.grid.GridLoader;
 import net.mathdoku.plus.grid.ui.GridInputMode;
 import net.mathdoku.plus.grid.ui.GridPlayerView;
@@ -52,7 +52,9 @@ import net.mathdoku.plus.util.Util;
 import static android.os.Build.VERSION;
 import static android.os.Build.VERSION_CODES;
 
-public class PuzzleFragment extends android.support.v4.app.Fragment implements SharedPreferences.OnSharedPreferenceChangeListener, View.OnCreateContextMenuListener,
+public class PuzzleFragment extends android.support.v4.app.Fragment implements
+		SharedPreferences.OnSharedPreferenceChangeListener,
+		View.OnCreateContextMenuListener,
 		GridPlayerView.OnInputModeChangedListener {
 	public final static String TAG = "MathDoku.PuzzleFragment";
 
@@ -203,7 +205,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements S
 		mGridPlayerView
 				.setOnGridTouchListener(mGridPlayerView.new OnGridTouchListener() {
 					@Override
-					public void gridTouched(GridCell cell) {
+					public void gridTouched(Cell cell) {
 						setClearAndUndoButtonVisibility(cell);
 
 						// Invalidate the option menu as the copy cell value
@@ -219,7 +221,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements S
 					public void onClick(View v) {
 						// Convert text of button (number) to Integer
 						@SuppressWarnings("ConstantConditions")
-						int d = Integer.parseInt(((Button) v).getText()
+						int d = Integer.parseInt(((Button) v)
+								.getText()
 								.toString());
 
 						mGridPlayerView.digitSelected(d);
@@ -413,14 +416,15 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements S
 				.setTitle(R.string.dialog_clear_grid_confirmation_title)
 				.setMessage(R.string.dialog_clear_grid_confirmation_message)
 				.setIcon(android.R.drawable.ic_dialog_alert)
-				.setNegativeButton(R.string.dialog_clear_grid_confirmation_negative_button,
-								   new DialogInterface.OnClickListener() {
-									   @Override
-									   public void onClick(DialogInterface dialog, 
-														   int whichButton) {
-										   //
-									   }
-								   })
+				.setNegativeButton(
+						R.string.dialog_clear_grid_confirmation_negative_button,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+								//
+							}
+						})
 				.setPositiveButton(
 						R.string.dialog_clear_grid_confirmation_positive_button,
 						new DialogInterface.OnClickListener() {
@@ -436,7 +440,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements S
 										.invalidateOptionsMenu();
 								setClearAndUndoButtonVisibility(null);
 							}
-						}).show();
+						})
+				.show();
 	}
 
 	/**
@@ -472,33 +477,41 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements S
 					final TextView textView = (TextView) mRootView
 							.findViewById(R.id.solvedText);
 					textView.setText(R.string.main_ui_solved_messsage);
-					textView.setTextColor(Painter.getInstance()
-							.getSolvedTextPainter().getTextColor());
-					textView.setBackgroundColor(Painter.getInstance()
-							.getSolvedTextPainter().getBackgroundColor());
+					textView.setTextColor(Painter
+							.getInstance()
+							.getSolvedTextPainter()
+							.getTextColor());
+					textView.setBackgroundColor(Painter
+							.getInstance()
+							.getSolvedTextPainter()
+							.getBackgroundColor());
 					textView.setTypeface(Painter.getInstance().getTypeface());
 					textView.setVisibility(View.VISIBLE);
 
 					// Build the animation
-					Animation animation = AnimationUtils.loadAnimation(mContext,
-																	   R.anim.solved);
+					Animation animation = AnimationUtils.loadAnimation(
+							mContext, R.anim.solved);
 					if (animation != null) {
-						animation.setAnimationListener(new Animation.AnimationListener() {
-							@Override
-							public void onAnimationEnd(Animation animation) {
-								textView.setVisibility(View.GONE);
-								mPuzzleFragmentListener
-										.onPuzzleFinishedListener(mGrid);
-							}
+						animation
+								.setAnimationListener(new Animation.AnimationListener() {
+									@Override
+									public void onAnimationEnd(
+											Animation animation) {
+										textView.setVisibility(View.GONE);
+										mPuzzleFragmentListener
+												.onPuzzleFinishedListener(mGrid);
+									}
 
-							@Override
-							public void onAnimationRepeat(Animation animation) {
-							}
+									@Override
+									public void onAnimationRepeat(
+											Animation animation) {
+									}
 
-							@Override
-							public void onAnimationStart(Animation animation) {
-							}
-						});
+									@Override
+									public void onAnimationStart(
+											Animation animation) {
+									}
+								});
 
 						// Start animation of the text view.
 						textView.startAnimation(animation);
@@ -676,7 +689,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements S
 	 */
 	void revealCell() {
 		if (mGrid != null && mGrid.revealSelectedCell()) {
-			GridCell selectedCell = mGrid.getSelectedCell();
+			Cell selectedCell = mGrid.getSelectedCell();
 			setClearAndUndoButtonVisibility(selectedCell);
 
 			Cheat cheat = registerNewCheat(Cheat.CheatType.CELL_REVEALED);
@@ -702,7 +715,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements S
 
 		// Determine current selected cage.
 		GridCage selectedGridCage = mGrid.getSelectedCage();
-		return (selectedGridCage != null && selectedGridCage.isOperatorHidden() && selectedGridCage.getOperator() != CageOperator.NONE);
+		return (selectedGridCage != null && selectedGridCage.isOperatorHidden() && selectedGridCage
+				.getOperator() != CageOperator.NONE);
 	}
 
 	/**
@@ -800,7 +814,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements S
 	 *            The cell to be used to check whether the clear and undo button
 	 *            should be visible. Use null in case no cell is selected.
 	 */
-	private void setClearAndUndoButtonVisibility(GridCell cell) {
+	private void setClearAndUndoButtonVisibility(Cell cell) {
 		// Set the clear button of the visible controls layout. The clear
 		// buttons is always visible but is disabled in case the cell is empty.
 		Button clearButton = (mControlsPadBigTableLayout.getVisibility() == View.VISIBLE ? mClearButton
@@ -924,7 +938,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements S
 																		.onPuzzleFinishedListener(mGrid);
 															}
 														}
-													}).show();
+													})
+											.show();
 								} else {
 									if (mGrid != null
 											&& mPuzzleFragmentListener != null) {
@@ -933,7 +948,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements S
 									}
 								}
 							}
-						}).show();
+						})
+				.show();
 	}
 
 	/**
@@ -1023,7 +1039,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements S
 	private void resume() {
 		setTheme();
 
-		// Inform the GridPlayerView about the input method and propagate current preferences to the grid.
+		// Inform the GridPlayerView about the input method and propagate
+		// current preferences to the grid.
 		if (mGridPlayerView != null) {
 			mGridPlayerView.setPreferences();
 			mGridPlayerView
@@ -1095,8 +1112,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements S
 	private void setButtonLayout() {
 		// In case the digit buttons are hidden, entering digit can only be done
 		// using swiping.
-		boolean swipeOnly = (mMathDokuPreferences.getDigitInputMethod() == Preferences
-				.PuzzleSettingInputMethod.SWIPE_ONLY);
+		boolean swipeOnly = (mMathDokuPreferences.getDigitInputMethod() == Preferences.PuzzleSettingInputMethod.SWIPE_ONLY);
 
 		if (mControlsPadBigTableLayout != null) {
 			mControlsPadBigTableLayout.setVisibility(swipeOnly ? View.GONE
@@ -1157,7 +1173,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements S
 		int index = (mGridPlayerView.getGridInputMode() == GridInputMode.NORMAL ? 0
 				: 4)
 				+ (mMathDokuPreferences.isColoredDigitsVisible() ? 0 : 2)
-				+ (mMathDokuPreferences.getTheme() == Painter.GridTheme.LIGHT ? 0 : 1);
+				+ (mMathDokuPreferences.getTheme() == Painter.GridTheme.LIGHT ? 0
+						: 1);
 		switch (index) {
 		case 0:
 		case 1:
@@ -1215,7 +1232,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements S
 			return false;
 		}
 
-		GridCell selectedCell = mGrid.getSelectedCell();
+		Cell selectedCell = mGrid.getSelectedCell();
 		return !(selectedCell == null || selectedCell.isEmpty());
 
 	}

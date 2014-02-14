@@ -78,20 +78,28 @@ public class GridPlayerRelativeLayout extends RelativeLayout {
 				// width of the swipe border which itself is 50% of the grid
 				// cell size.
 				if (mLeftMarginAdjustment) {
-					mLeftMargin = (int) Painter.getInstance().getCellPainter()
+					mLeftMargin = (int) Painter
+							.getInstance()
+							.getCellPainter()
 							.getCellSize() / 2;
 				}
 				if (mTopMarginAdjustment) {
-					mTopMargin = (int) Painter.getInstance().getCellPainter()
+					mTopMargin = (int) Painter
+							.getInstance()
+							.getCellPainter()
 							.getCellSize() / 2;
 				}
 				if (mRightMarginAdjustment) {
-					mRightMargin = (int) Painter.getInstance().getCellPainter()
+					mRightMargin = (int) Painter
+							.getInstance()
+							.getCellPainter()
 							.getCellSize() / 2;
 				}
 				if (mBottomMarginAdjustment) {
-					mBottomMargin = (int) Painter.getInstance()
-							.getCellPainter().getCellSize() / 2;
+					mBottomMargin = (int) Painter
+							.getInstance()
+							.getCellPainter()
+							.getCellSize() / 2;
 				}
 			}
 

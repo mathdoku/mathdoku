@@ -8,8 +8,8 @@ import android.view.View;
 
 import net.mathdoku.plus.Preferences.PuzzleSettingInputMethod;
 import net.mathdoku.plus.R;
+import net.mathdoku.plus.grid.Cell;
 import net.mathdoku.plus.grid.Grid;
-import net.mathdoku.plus.grid.GridCell;
 import net.mathdoku.plus.hint.TickerTape;
 
 /**
@@ -86,8 +86,7 @@ public class GridPlayerView extends GridBasePlayerView {
 		case MotionEvent.ACTION_DOWN:
 			super.onTouch(arg0, event);
 			if (mSwipeMotion == null) {
-				mSwipeMotion = new SwipeMotion(this, mBorderWidth,
-						mGridCellSize);
+				mSwipeMotion = new SwipeMotion(this, mBorderWidth, mCellSize);
 
 				// Set an update listener on the swipe motion until the user has
 				// completed some
@@ -104,7 +103,8 @@ public class GridPlayerView extends GridBasePlayerView {
 													getResources()
 															.getString(
 																	R.string.hint_swipe_release))
-											.setEraseConditions(2, 3000).show();
+											.setEraseConditions(2, 3000)
+											.show();
 								}
 
 								@Override
@@ -116,7 +116,8 @@ public class GridPlayerView extends GridBasePlayerView {
 													getResources()
 															.getString(
 																	R.string.hint_swipe_rotate))
-											.setEraseConditions(2, 3000).show();
+											.setEraseConditions(2, 3000)
+											.show();
 								}
 							});
 				}
@@ -154,7 +155,8 @@ public class GridPlayerView extends GridBasePlayerView {
 													.getString(
 															R.string.hint_swipe_valid_digit_completed,
 															swipeDigit))
-									.setEraseConditions(2, 3000).show();
+									.setEraseConditions(2, 3000)
+									.show();
 
 							// Disable listener and ticker tape as soon as
 							// enough valid swipe
@@ -175,7 +177,8 @@ public class GridPlayerView extends GridBasePlayerView {
 											getResources()
 													.getString(
 															R.string.hint_swipe_invalid_digit_completed))
-									.setEraseConditions(1, 3000).show();
+									.setEraseConditions(1, 3000)
+									.show();
 						}
 					}
 
@@ -255,7 +258,7 @@ public class GridPlayerView extends GridBasePlayerView {
 		synchronized (mGrid.getLock()) {
 			onDrawLocked(canvas);
 
-			GridCell selectedCell = mGrid.getSelectedCell();
+			Cell selectedCell = mGrid.getSelectedCell();
 			if (selectedCell == null) {
 				// As long a no cell is selected, the input mode border can not
 				// be drawn.
@@ -277,7 +280,8 @@ public class GridPlayerView extends GridBasePlayerView {
 							|| gridInputMode == GridInputMode.MAYBE) {
 						// The overlay needs to be draw as the swipe motion is
 						// not yet released.
-						CellDrawer cellDrawer = getCellDrawer(selectedCell.getRow(),selectedCell.getColumn());
+						CellDrawer cellDrawer = getCellDrawer(
+								selectedCell.getRow(), selectedCell.getColumn());
 						cellDrawer.drawSwipeOverlay(canvas, mBorderWidth,
 								gridInputMode, mSwipeMotion
 										.getCurrentSwipePositionX(),
@@ -305,7 +309,8 @@ public class GridPlayerView extends GridBasePlayerView {
 						.reset()
 						.addItem(
 								getResources().getString(
-										R.string.hint_swipe_basic)).show();
+										R.string.hint_swipe_basic))
+						.show();
 			}
 		}
 
@@ -319,7 +324,7 @@ public class GridPlayerView extends GridBasePlayerView {
 	private void setTickerTapeOnCellDown() {
 		// Get information about position of the cell in the grid.
 		int gridSize = mGrid.getGridSize();
-		GridCell selectedCell = mGrid.getSelectedCell();
+		Cell selectedCell = mGrid.getSelectedCell();
 		boolean isTopRow = (selectedCell != null && selectedCell.getRow() == 0);
 		boolean isBottomRow = (selectedCell != null && selectedCell.getRow() == gridSize - 1);
 		boolean isLeftColumn = (selectedCell != null && selectedCell
@@ -412,7 +417,8 @@ public class GridPlayerView extends GridBasePlayerView {
 								getResources()
 										.getString(
 												R.string.hint_swipe_basic_cell_at_border,
-												digits)).show();
+												digits))
+						.show();
 			} else {
 				mTickerTape
 						.reset()
@@ -426,7 +432,8 @@ public class GridPlayerView extends GridBasePlayerView {
 					.reset()
 					.addItem(
 							getResources().getString(
-									R.string.hint_swipe_outside_cell)).show();
+									R.string.hint_swipe_outside_cell))
+					.show();
 		}
 	}
 

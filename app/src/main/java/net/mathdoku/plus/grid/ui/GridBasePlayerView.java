@@ -8,11 +8,11 @@ import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
+import net.mathdoku.plus.grid.Cell;
 import net.mathdoku.plus.grid.CellChange;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.GridCage;
-import net.mathdoku.plus.grid.GridCell;
-import net.mathdoku.plus.grid.GridCellSelectorInRowOrColumn;
+import net.mathdoku.plus.grid.CellSelectorInRowOrColumn;
 import net.mathdoku.plus.statistics.GridStatistics.StatisticsCounterType;
 import net.mathdoku.plus.tip.TipBadCageMath;
 import net.mathdoku.plus.tip.TipCopyCellValues;
@@ -51,7 +51,7 @@ public class GridBasePlayerView extends GridViewerView implements
 
 	// Listeners
 	public abstract class OnGridTouchListener {
-		public abstract void gridTouched(GridCell cell);
+		public abstract void gridTouched(Cell cell);
 	}
 
 	OnGridTouchListener mTouchedListener;
@@ -63,7 +63,7 @@ public class GridBasePlayerView extends GridViewerView implements
 		private GridInputMode mPreviousInputMode;
 
 		// The cell which was long pressed
-		private GridCell mCopyFromCell;
+		private Cell mCopyFromCell;
 	}
 
 	private CopyInputModeState mCopyInputModeState;
@@ -103,7 +103,7 @@ public class GridBasePlayerView extends GridViewerView implements
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
 			if (mMotion == null) {
-				mMotion = new Motion(this, mBorderWidth, mGridCellSize);
+				mMotion = new Motion(this, mBorderWidth, mCellSize);
 			}
 			mMotion.setTouchDownEvent(event);
 			if (mMotion.isDoubleTap()) {
@@ -129,7 +129,7 @@ public class GridBasePlayerView extends GridViewerView implements
 				// cell will be copied to the cell which is currently selected.
 				if (mCopyInputModeState != null) {
 					// Get the currently selected cell.
-					GridCell selectedCell = mGrid.getSelectedCell();
+					Cell selectedCell = mGrid.getSelectedCell();
 
 					// Copy values of the origin cell to the currently selected
 					// cell.
@@ -162,7 +162,7 @@ public class GridBasePlayerView extends GridViewerView implements
 		assert (mInputMode == GridInputMode.NORMAL
 				|| mInputMode == GridInputMode.MAYBE || (mInputMode == GridInputMode.COPY && newValue == 0));
 
-		GridCell selectedCell = mGrid.getSelectedCell();
+		Cell selectedCell = mGrid.getSelectedCell();
 		if (selectedCell == null) {
 			// It should not be possible to select a digit without having
 			// selected a cell first. But better safe then sorry.
@@ -221,7 +221,8 @@ public class GridBasePlayerView extends GridViewerView implements
 					if (mPreferences.isPuzzleSettingClearMaybesEnabled()) {
 						// Update possible values for other cells in this row
 						// and column.
-						mGrid.clearRedundantPossiblesInSameRowOrColumn(originalUserMove);
+						mGrid
+								.clearRedundantPossiblesInSameRowOrColumn(originalUserMove);
 					}
 					if (newValue != selectedCell.getCorrectValue()
 							&& TipIncorrectValue.toBeDisplayed(mPreferences)) {
@@ -238,16 +239,16 @@ public class GridBasePlayerView extends GridViewerView implements
 	 * Copies the user value or the possible values from one cell to another
 	 * cell.
 	 * 
-	 * @param fromGridCell
+	 * @param fromCell
 	 *            The cell from which the values have to be copied.
-	 * @param toGridCell
+	 * @param toCell
 	 *            The cell to which the values are copied.
 	 */
-	private void copyCell(GridCell fromGridCell, GridCell toGridCell) {
-		if (fromGridCell != null && toGridCell != null
-				&& fromGridCell.equals(toGridCell) == false) {
+	private void copyCell(Cell fromCell, Cell toCell) {
+		if (fromCell != null && toCell != null
+				&& fromCell.equals(toCell) == false) {
 
-			if (fromGridCell.countPossibles() > 0) {
+			if (fromCell.countPossibles() > 0) {
 				// For the origin cell at least one maybe value has been set.
 				// Maybe values will only be copied to the to-cell in case at
 				// least one maybe value differs between the two cells.
@@ -255,56 +256,57 @@ public class GridBasePlayerView extends GridViewerView implements
 				boolean isMaybeDigitInFromCell;
 				boolean isMaybeDigitInToCell;
 				for (int digit = 1; digit <= mGridSize; digit++) {
-					isMaybeDigitInFromCell = fromGridCell.hasPossible(digit);
-					isMaybeDigitInToCell = toGridCell.hasPossible(digit);
+					isMaybeDigitInFromCell = fromCell.hasPossible(digit);
+					isMaybeDigitInToCell = toCell.hasPossible(digit);
 					if (isMaybeDigitInFromCell != isMaybeDigitInToCell) {
 						if (updatePossibleValues == false) {
 							updatePossibleValues = true;
 
 							// Save undo information
-							toGridCell.saveUndoInformation(null);
+							toCell.saveUndoInformation(null);
 
 							// Clear the to-cell in case it contains a user
 							// value which will now be overwritten with maybe
 							// values.
-							if (toGridCell.isUserValueSet()) {
-								toGridCell.clearValue();
+							if (toCell.isUserValueSet()) {
+								toCell.clearValue();
 							}
 						}
 
 						// noinspection ConstantConditions
 						if (isMaybeDigitInFromCell == true
 								&& isMaybeDigitInToCell == false) {
-							toGridCell.addPossible(digit);
+							toCell.addPossible(digit);
 						} else // noinspection ConstantConditions
 						if (isMaybeDigitInFromCell == false
 								&& isMaybeDigitInToCell == true) {
-							toGridCell.removePossible(digit);
+							toCell.removePossible(digit);
 						}
 					}
 				}
 			} else {
 				// The from cell does not contain a maybe value. So the cell is
 				// either empty or is filled with a user value.
-				if (fromGridCell.getUserValue() != toGridCell.getUserValue()) {
+				if (fromCell.getUserValue() != toCell.getUserValue()) {
 					// Save undo information
-					CellChange originalUserMove = toGridCell
+					CellChange originalUserMove = toCell
 							.saveUndoInformation(null);
 
-					if (fromGridCell.isUserValueSet()) {
-						toGridCell.setUserValue(fromGridCell.getUserValue());
-						toGridCell.clearPossibles();
+					if (fromCell.isUserValueSet()) {
+						toCell.setUserValue(fromCell.getUserValue());
+						toCell.clearPossibles();
 					} else {
-						toGridCell.clearValue();
+						toCell.clearValue();
 					}
 
 					if (mPreferences.isPuzzleSettingClearMaybesEnabled()) {
 						// Update possible values for other cells in this row
 						// and column.
-						mGrid.clearRedundantPossiblesInSameRowOrColumn(originalUserMove);
+						mGrid
+								.clearRedundantPossiblesInSameRowOrColumn(originalUserMove);
 					}
 
-					checkGridValidity(toGridCell);
+					checkGridValidity(toCell);
 				}
 			}
 			invalidate();
@@ -318,19 +320,18 @@ public class GridBasePlayerView extends GridViewerView implements
 	 * @param selectedCell
 	 *            The grid cell for which a user value was set.
 	 */
-	private void checkGridValidity(GridCell selectedCell) {
+	private void checkGridValidity(Cell selectedCell) {
 		// Get a list of cells in the same row or column as the selected cell.
-		GridCellSelectorInRowOrColumn gridCellSelectorInRowOrColumn = new GridCellSelectorInRowOrColumn(
-				mGrid.getCells(), selectedCell.getRow(), selectedCell.getColumn());
-		List<GridCell> gridCellsInSameRowOrColumn = gridCellSelectorInRowOrColumn
-				.find();
+		CellSelectorInRowOrColumn cellSelectorInRowOrColumn = new CellSelectorInRowOrColumn(
+				mGrid.getCells(), selectedCell.getRow(),
+				selectedCell.getColumn());
+		List<Cell> cellsInSameRowOrColumn = cellSelectorInRowOrColumn.find();
 
 		// Check for each cell if it has duplicate values in the same column or
 		// row.
 		boolean foundDuplicateValue = false;
-		for (GridCell gridCell : gridCellsInSameRowOrColumn) {
-			foundDuplicateValue = gridCell
-					.markDuplicateValuesInSameRowAndColumn()
+		for (Cell cell : cellsInSameRowOrColumn) {
+			foundDuplicateValue = cell.markDuplicateValuesInSameRowAndColumn()
 					|| foundDuplicateValue;
 		}
 		if (foundDuplicateValue
@@ -381,7 +382,7 @@ public class GridBasePlayerView extends GridViewerView implements
 
 		if (enableCopyMode) {
 			// Check if a cell is selected
-			GridCell selectedCell = mGrid.getSelectedCell();
+			Cell selectedCell = mGrid.getSelectedCell();
 			if (selectedCell == null) {
 				return;
 			}

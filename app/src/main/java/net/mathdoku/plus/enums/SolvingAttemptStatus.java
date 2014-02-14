@@ -3,8 +3,8 @@ package net.mathdoku.plus.enums;
 public enum SolvingAttemptStatus {
 	// The solving attempt status id's of the enum values should not be altered
 	// as these values are persisted.
-	UNDETERMINED(-1), NOT_STARTED(0), UNFINISHED(50), FINISHED_SOLVED(
-			100), REVEALED_SOLUTION(101);
+	UNDETERMINED(-1), NOT_STARTED(0), UNFINISHED(50), FINISHED_SOLVED(100), REVEALED_SOLUTION(
+			101);
 
 	private final int mSolvingAttemptStatusId;
 
@@ -18,7 +18,7 @@ public enum SolvingAttemptStatus {
 
 	/**
 	 * Gets the derived status of a solving attempt.
-	 *
+	 * 
 	 * @param isRevealed
 	 *            True is the solution of the solving attempt is revealed. False
 	 *            otherwise.
@@ -29,8 +29,8 @@ public enum SolvingAttemptStatus {
 	 *            the solving attempt. False otherwise.
 	 * @return The status of the solving attempt.
 	 */
-	public static SolvingAttemptStatus getDerivedStatus(boolean isRevealed, boolean isActive,
-								 boolean isEmpty) {
+	public static SolvingAttemptStatus getDerivedStatus(boolean isRevealed,
+			boolean isActive, boolean isEmpty) {
 		if (isRevealed) {
 			return REVEALED_SOLUTION;
 		}

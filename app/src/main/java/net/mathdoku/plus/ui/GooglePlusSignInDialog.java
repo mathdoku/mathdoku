@@ -78,7 +78,8 @@ public class GooglePlusSignInDialog extends Dialog implements
 	public void onClick(View v) {
 		if (mHideTillNextTopScoreAchievedCheckbox != null
 				&& mHideTillNextTopScoreAchievedCheckbox.getVisibility() == View.VISIBLE) {
-			Preferences.getInstance(mAppFragmentActivity)
+			Preferences
+					.getInstance(mAppFragmentActivity)
 					.setHideTillNextTopScoreAchievedChecked(
 							mHideTillNextTopScoreAchievedCheckbox.isChecked());
 		}

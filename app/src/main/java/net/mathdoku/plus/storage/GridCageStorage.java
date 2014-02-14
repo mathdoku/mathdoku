@@ -2,8 +2,8 @@ package net.mathdoku.plus.storage;
 
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.grid.CageBuilder;
+import net.mathdoku.plus.grid.Cell;
 import net.mathdoku.plus.grid.GridCage;
-import net.mathdoku.plus.grid.GridCell;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 
 import java.security.InvalidParameterException;
@@ -30,13 +30,13 @@ public class GridCageStorage {
 	 * @param savedWithRevisionNumber
 	 *            The revision number of the app which was used to created the
 	 *            storage string.
-	 * @param gridCells
+	 * @param cells
 	 *            The cells to which the cell id's in the storage string refer.
 	 * @return True in case the given line contains cage information and is
 	 *         processed correctly. False otherwise.
 	 */
 	public CageBuilder getCageBuilderFromStorageString(String line,
-			int savedWithRevisionNumber, List<GridCell> gridCells) {
+			int savedWithRevisionNumber, List<Cell> cells) {
 		if (line == null) {
 			throw new NullPointerException("Parameter line cannot be null");
 		}
@@ -53,8 +53,7 @@ public class GridCageStorage {
 
 		// Only process the storage string if it starts with the correct
 		// identifier.
-		if (cageParts == null
-				|| CAGE_LINE_ID.equals(cageParts[0]) == false) {
+		if (cageParts == null || CAGE_LINE_ID.equals(cageParts[0]) == false) {
 			return null;
 		}
 
@@ -82,8 +81,8 @@ public class GridCageStorage {
 			mCells = new int[cellParts.length];
 			for (int i = 0; i < cellParts.length; i++) {
 				int cellId = Integer.parseInt(cellParts[i]);
-				GridCell gridCell = gridCells.get(cellId);
-				gridCell.setCageId(cageId);
+				Cell cell = cells.get(cellId);
+				cell.setCageId(cageId);
 				mCells[i] = cellId;
 			}
 		}
@@ -99,8 +98,8 @@ public class GridCageStorage {
 	/**
 	 * Creates a string representation of the given Grid Cage which can be
 	 * persisted. Use
-	 * {@link #getCageBuilderFromStorageString(String, int, java.util.List)}
-	 * to parse the storage string.
+	 * {@link #getCageBuilderFromStorageString(String, int, java.util.List)} to
+	 * parse the storage string.
 	 * 
 	 * @param gridCage
 	 *            The grid cage which has to be converted to a storage string.
@@ -109,15 +108,16 @@ public class GridCageStorage {
 	 */
 	public String toStorageString(GridCage gridCage) {
 		String storageString = CAGE_LINE_ID
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + gridCage.getId()
+				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ gridCage.getId()
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ gridCage.getOperator().getId()
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ gridCage.getResult()
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1;
-		List<GridCell> cells = gridCage.getGridCells();
+		List<Cell> cells = gridCage.getListOfCells();
 		if (cells != null) {
-			for (GridCell cell : cells) {
+			for (Cell cell : cells) {
 				storageString += cell.getCellId()
 						+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2;
 			}

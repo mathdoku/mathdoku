@@ -4,8 +4,8 @@ import android.content.Context;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
+import net.mathdoku.plus.grid.Cell;
 import net.mathdoku.plus.grid.GridCage;
-import net.mathdoku.plus.grid.GridCell;
 
 public class TipCopyCellValues extends TipDialog {
 
@@ -41,27 +41,26 @@ public class TipCopyCellValues extends TipDialog {
 	 * @param preferences
 	 *            Preferences of the activity for which has to be checked
 	 *            whether this tip should be shown.
-	 * @param gridCell
+	 * @param cell
 	 *            The grid cell which will be used to check if now is the
 	 *            appropriate time to display the tip.
 	 * @return True in case the tip might be displayed. False otherwise.
 	 */
-	public static boolean toBeDisplayed(Preferences preferences,
-			GridCell gridCell) {
+	public static boolean toBeDisplayed(Preferences preferences, Cell cell) {
 		// Do not display in case the copy function has been used
 		if (preferences.getInputModeCopyCounter() > 0) {
 			return false;
 		}
 
 		// No tip to be displayed for non existing cell
-		if (gridCell == null) {
+		if (cell == null) {
 			return false;
 		}
 
 		// Only display in case the cell contains at least 3 maybe values. This
 		// is not strictly necessary for copying but the tip will make more
 		// sense when a cell contains multiple values.
-		if (gridCell.countPossibles() < 3) {
+		if (cell.countPossibles() < 3) {
 			return false;
 		}
 
@@ -69,7 +68,7 @@ public class TipCopyCellValues extends TipDialog {
 		// at least one cell is still empty. This is not strictly necessary for
 		// copying but the tip will make more sense in case the cell values can
 		// be copied to another cell in the same cage.
-		GridCage gridCage = gridCell.getCage();
+		GridCage gridCage = cell.getCage();
 		if (gridCage == null || gridCage.getNumberOfCells() <= 1
 				|| gridCage.hasEmptyCells() == false) {
 			return false;

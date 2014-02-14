@@ -14,15 +14,15 @@ import static org.mockito.Mockito.verify;
 @RunWith(RobolectricGradleTestRunner.class)
 public class CellChangeTest {
 	@Test
-	public void restore_CellWithUserValue_UndoForGridCellIsCalledWithCorrectParameters() {
+	public void restore_CellWithUserValue_UndoForCellIsCalledWithCorrectParameters() {
 		int expectedUserValue = 123;
 		List<Integer> expectedMaybeValues = new ArrayList<Integer>();
 
 		// Init the Grid Cell Mock
-		GridCell gridCellMock = mock(GridCell.class);
+		Cell cellMock = mock(Cell.class);
 
 		// Store current value of cell in a cell change
-		CellChange cellChange = new CellChange(gridCellMock, expectedUserValue,
+		CellChange cellChange = new CellChange(cellMock, expectedUserValue,
 				expectedMaybeValues);
 
 		// Restore the cell change which ...
@@ -30,11 +30,11 @@ public class CellChangeTest {
 
 		// ... results in undoing the change to the user value or the maybe
 		// values for the cell
-		verify(gridCellMock).undo(expectedUserValue, expectedMaybeValues);
+		verify(cellMock).undo(expectedUserValue, expectedMaybeValues);
 	}
 
 	@Test
-	public void restore_GridCellWithMultipleMaybeValues_UndoForGridCellIsCalledWithCorrectParameters() {
+	public void restore_CellWithMultipleMaybeValues_UndoForCellIsCalledWithCorrectParameters() {
 		int expectedUserValue = 0;
 		List<Integer> expectedMaybeValues = new ArrayList<Integer>();
 		expectedMaybeValues.add(1);
@@ -42,10 +42,10 @@ public class CellChangeTest {
 		expectedMaybeValues.add(3);
 
 		// Init the Grid Cell Mock
-		GridCell gridCellMock = mock(GridCell.class);
+		Cell cellMock = mock(Cell.class);
 
 		// Store current value of cell in a cell change
-		CellChange cellChange = new CellChange(gridCellMock, expectedUserValue,
+		CellChange cellChange = new CellChange(cellMock, expectedUserValue,
 				expectedMaybeValues);
 
 		// Restore the cell change which ...
@@ -53,6 +53,6 @@ public class CellChangeTest {
 
 		// ... results in undoing the change to the user value or the maybe
 		// values for the cell
-		verify(gridCellMock).undo(expectedUserValue, expectedMaybeValues);
+		verify(cellMock).undo(expectedUserValue, expectedMaybeValues);
 	}
 }

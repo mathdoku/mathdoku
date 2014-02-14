@@ -56,7 +56,8 @@ class ArchivePreferenceFragment extends PreferenceFragment implements
 	private void setStatusFilterSummary() {
 		Preference preference;
 		if ((preference = findPreference(Preferences.ARCHIVE_SETTING_STATUS_FILTER_VISIBLE)) != null) {
-			int summaryResId = Preferences.getInstance()
+			int summaryResId = Preferences
+					.getInstance()
 					.isArchiveStatusFilterVisible() ? R.string.archive_settings_show_status_filter_enabled
 					: R.string.archive_settings_show_status_filter_disabled;
 			preference.setSummary(getResources().getString(summaryResId));
@@ -70,7 +71,8 @@ class ArchivePreferenceFragment extends PreferenceFragment implements
 	private void setSizeFilterSummary() {
 		Preference preference;
 		if ((preference = findPreference(Preferences.ARCHIVE_SETTING_SIZE_FILTER_VISIBLE)) != null) {
-			int summaryResId = Preferences.getInstance()
+			int summaryResId = Preferences
+					.getInstance()
 					.isArchiveSizeFilterVisible() ? R.string.archive_settings_show_size_filter_enabled
 					: R.string.archive_settings_show_size_filter_disabled;
 			preference.setSummary(getResources().getString(summaryResId));

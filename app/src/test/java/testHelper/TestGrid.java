@@ -3,7 +3,7 @@ package testHelper;
 import net.mathdoku.plus.grid.CellBuilder;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.GridBuilder;
-import net.mathdoku.plus.grid.GridCell;
+import net.mathdoku.plus.grid.Cell;
 
 /**
  * Each Sub class of this class construct a specific a grid object with cells
@@ -27,7 +27,7 @@ public abstract class TestGrid {
 		return this;
 	}
 
-	protected GridCell createGridCell(int cellNumber, int cellValue, int cageId) {
+	protected Cell createCell(int cellNumber, int cellValue, int cageId) {
 		return new CellBuilder()
 				.setGridSize(mGridSize)
 				.setId(cellNumber)

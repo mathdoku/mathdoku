@@ -150,9 +150,11 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 				toSQLiteTimestamp(solvingAttempt.mDateCreated));
 		initialValues.put(KEY_DATE_UPDATED,
 				toSQLiteTimestamp(solvingAttempt.mDateUpdated));
-		initialValues.put(KEY_SAVED_WITH_REVISION, solvingAttempt.mSavedWithRevision);
+		initialValues.put(KEY_SAVED_WITH_REVISION,
+				solvingAttempt.mSavedWithRevision);
 		initialValues.put(KEY_DATA, solvingAttempt.mStorageString);
-		initialValues.put(KEY_STATUS, solvingAttempt.mSolvingAttemptStatus.getId());
+		initialValues.put(KEY_STATUS,
+				solvingAttempt.mSolvingAttemptStatus.getId());
 
 		long id = -1;
 		try {
@@ -202,8 +204,8 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 					.getString(cursor.getColumnIndexOrThrow(KEY_DATE_UPDATED)));
 			solvingAttempt.mSavedWithRevision = cursor.getInt(cursor
 					.getColumnIndexOrThrow(KEY_SAVED_WITH_REVISION));
-			solvingAttempt.mStorageString =
-					cursor.getString(cursor.getColumnIndexOrThrow(KEY_DATA));
+			solvingAttempt.mStorageString = cursor.getString(cursor
+					.getColumnIndexOrThrow(KEY_DATA));
 		} catch (SQLiteException e) {
 			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				e.printStackTrace();
@@ -254,15 +256,19 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	/**
 	 * Update the solving attempt.
 	 * 
-	 * @param solvingAttempt The solving attempt to be updated.
+	 * @param solvingAttempt
+	 *            The solving attempt to be updated.
 	 * @return True in case the statistics have been updated. False otherwise.
 	 */
 	public boolean update(SolvingAttempt solvingAttempt) {
 		ContentValues contentValues = new ContentValues();
-		contentValues.put(KEY_DATE_UPDATED, toSQLiteTimestamp(solvingAttempt.mDateUpdated));
-		contentValues.put(KEY_SAVED_WITH_REVISION, solvingAttempt.mSavedWithRevision);
+		contentValues.put(KEY_DATE_UPDATED,
+				toSQLiteTimestamp(solvingAttempt.mDateUpdated));
+		contentValues.put(KEY_SAVED_WITH_REVISION,
+				solvingAttempt.mSavedWithRevision);
 		contentValues.put(KEY_DATA, solvingAttempt.mStorageString);
-		contentValues.put(KEY_STATUS, solvingAttempt.mSolvingAttemptStatus.getId());
+		contentValues.put(KEY_STATUS,
+				solvingAttempt.mSolvingAttemptStatus.getId());
 
 		return (mSqliteDatabase.update(TABLE, contentValues, KEY_ROWID + " = "
 				+ solvingAttempt.mId, null) == 1);

@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class holds all data needed to build a new
- * {@link net.mathdoku.plus.grid.GridCell} instance.
+ * This class holds all data needed to build a new {@link Cell} instance.
  */
 public class CellBuilder {
 	private int mGridSize; // Required
@@ -22,9 +21,7 @@ public class CellBuilder {
 	private CellBuilderErrorChecking mCellBuilderErrorChecking; // Optional
 
 	private enum CellBuilderErrorChecking {
-		NORMAL,
-		SKIP_CORRECT_VALUE_CHECK,
-		SKIP_CAGE_CHECK
+		NORMAL, SKIP_CORRECT_VALUE_CHECK, SKIP_CAGE_CHECK
 	}
 
 	public CellBuilder() {
@@ -127,8 +124,8 @@ public class CellBuilder {
 	 * Skips checking the cage reference.
 	 * 
 	 * In case of generating a grid the cells are created before the cages. The
-	 * cage checks should therefore be deferred.
-	 * Cannot be used in conjunction with setDeferCageCheck.
+	 * cage checks should therefore be deferred. Cannot be used in conjunction
+	 * with setDeferCageCheck.
 	 */
 	public CellBuilder setSkipCheckCageReferenceOnBuild() {
 		mCellBuilderErrorChecking = CellBuilderErrorChecking.SKIP_CAGE_CHECK;
@@ -136,8 +133,8 @@ public class CellBuilder {
 		return this;
 	}
 
-	public GridCell build() {
-		return new GridCell(this);
+	public Cell build() {
+		return new Cell(this);
 	}
 
 	public int getGridSize() {
@@ -195,31 +192,21 @@ public class CellBuilder {
 	@Override
 	public String toString() {
 		final StringBuilder stringBuilder = new StringBuilder("CellBuilder{");
-		stringBuilder.append("mGridSize=")
-				.append(mGridSize);
-		stringBuilder.append(", mId=")
-				.append(mId);
-		stringBuilder.append(", mCorrectValue=")
-				.append(mCorrectValue);
-		stringBuilder.append(", mUserValue=")
-				.append(mUserValue);
-		stringBuilder.append(", mCageId=")
-				.append(mCageId);
-		stringBuilder.append(", mCageText='")
-				.append(mCageText)
-				.append('\'');
-		stringBuilder.append(", mPossibles=")
-				.append(mPossibles);
-		stringBuilder.append(", mDuplicateValueHighlight=")
-				.append(mDuplicateValueHighlight);
-		stringBuilder.append(", mSelected=")
-				.append(mSelected);
-		stringBuilder.append(", mRevealed=")
-				.append(mRevealed);
-		stringBuilder.append(", mInvalidUserValueHighlight=")
-				.append(mInvalidUserValueHighlight);
-		stringBuilder.append(", mCellBuilderErrorChecking=")
-				.append(mCellBuilderErrorChecking);
+		stringBuilder.append("mGridSize=").append(mGridSize);
+		stringBuilder.append(", mId=").append(mId);
+		stringBuilder.append(", mCorrectValue=").append(mCorrectValue);
+		stringBuilder.append(", mUserValue=").append(mUserValue);
+		stringBuilder.append(", mCageId=").append(mCageId);
+		stringBuilder.append(", mCageText='").append(mCageText).append('\'');
+		stringBuilder.append(", mPossibles=").append(mPossibles);
+		stringBuilder.append(", mDuplicateValueHighlight=").append(
+				mDuplicateValueHighlight);
+		stringBuilder.append(", mSelected=").append(mSelected);
+		stringBuilder.append(", mRevealed=").append(mRevealed);
+		stringBuilder.append(", mInvalidUserValueHighlight=").append(
+				mInvalidUserValueHighlight);
+		stringBuilder.append(", mCellBuilderErrorChecking=").append(
+				mCellBuilderErrorChecking);
 		stringBuilder.append('}');
 		return stringBuilder.toString();
 	}

@@ -146,7 +146,9 @@ public class TickerTape extends HorizontalScrollView {
 		setHorizontalScrollBarEnabled(false);
 
 		// set color
-		setBackgroundColor(Painter.getInstance().getTickerTapePainter()
+		setBackgroundColor(Painter
+				.getInstance()
+				.getTickerTapePainter()
 				.getBackgroundColor());
 
 		mDisabled = false;
@@ -178,7 +180,9 @@ public class TickerTape extends HorizontalScrollView {
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
 				android.view.ViewGroup.LayoutParams.MATCH_PARENT));
 		textView.setPadding(0, 0, 4 * mScrollStepSize, 0);
-		textView.setTextColor(Painter.getInstance().getTickerTapePainter()
+		textView.setTextColor(Painter
+				.getInstance()
+				.getTickerTapePainter()
 				.getTextColor());
 
 		// Add the text view to the layout and the list of text views.

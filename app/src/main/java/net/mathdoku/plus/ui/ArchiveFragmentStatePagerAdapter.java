@@ -60,9 +60,9 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	public android.support.v4.app.Fragment getItem(int i) {
 		android.support.v4.app.Fragment fragment = new ArchiveFragment();
 		Bundle args = new Bundle();
-		args.putInt(
-				ArchiveFragment.BUNDLE_KEY_SOLVING_ATTEMPT_ID,
-				mGridIds[i][GridDatabaseAdapter.LATEST_SOLVING_ATTEMPT_PER_GRID__SOLVING_ATTEMPT_ID]);
+		args
+				.putInt(ArchiveFragment.BUNDLE_KEY_SOLVING_ATTEMPT_ID,
+						mGridIds[i][GridDatabaseAdapter.LATEST_SOLVING_ATTEMPT_PER_GRID__SOLVING_ATTEMPT_ID]);
 		fragment.setArguments(args);
 		return fragment;
 	}

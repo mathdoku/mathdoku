@@ -8,9 +8,9 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import net.mathdoku.plus.Preferences;
+import net.mathdoku.plus.grid.Cell;
 import net.mathdoku.plus.grid.DigitPositionGrid;
 import net.mathdoku.plus.grid.Grid;
-import net.mathdoku.plus.grid.GridCell;
 import net.mathdoku.plus.painter.GridPainter;
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.painter.Painter.DigitPainterMode;
@@ -34,7 +34,7 @@ public class GridViewerView extends View {
 	int mGridSize;
 	private float mViewSize;
 	float mBorderWidth;
-	float mGridCellSize;
+	float mCellSize;
 
 	// Reference to the global (grid) painter object
 	private Painter mPainter;
@@ -144,7 +144,7 @@ public class GridViewerView extends View {
 				mGridPainter.getBackgroundPaint());
 
 		// Update the current cell size
-		mPainter.setCellSize(mGridCellSize);
+		mPainter.setCellSize(mCellSize);
 
 		// Draw cells
 		GridInputMode gridInputMode = getRestrictedGridInputMode();
@@ -174,7 +174,7 @@ public class GridViewerView extends View {
 
 		// Build the matrix of cell drawers
 		mCellDrawer = new CellDrawer[mGridSize][mGridSize];
-		GridCell[][] cells = new GridCell[mGridSize][mGridSize];
+		Cell[][] cells = new Cell[mGridSize][mGridSize];
 		for (int row = 0; row < mGridSize; row++) {
 			for (int column = 0; column < mGridSize; column++) {
 				cells[row][column] = mGrid.getCellAt(row, column);
@@ -235,10 +235,10 @@ public class GridViewerView extends View {
 			// border is displayed at all sides of the grid the cell size is
 			// calculated as if a grid with size (size + 1) would be drawn
 			// without a swipe border.
-			mGridCellSize = (float) Math.floor(maxSize / (mGridSize + 1));
+			mCellSize = (float) Math.floor(maxSize / (mGridSize + 1));
 
 			// The grid border width equals 50% of a normal cell
-			mBorderWidth = mGridCellSize / 2;
+			mBorderWidth = mCellSize / 2;
 		} else {
 			// Force to compute the cell size based on the maximum width
 			// available for the entire grid without a swipe border.
@@ -256,14 +256,14 @@ public class GridViewerView extends View {
 				.getStrokeWidth(), (mSwipeBorder ? 15 : 0));
 		if (mBorderWidth < minGridBorderWidth) {
 			mBorderWidth = minGridBorderWidth;
-			mGridCellSize = (float) Math.floor((maxSize - 2 * mBorderWidth)
+			mCellSize = (float) Math.floor((maxSize - 2 * mBorderWidth)
 					/ mGridSize);
 		}
 
-		Painter.getInstance().setCellSize(mGridCellSize);
+		Painter.getInstance().setCellSize(mCellSize);
 
 		// Finally compute the total size of the grid
-		mViewSize = 2 * mBorderWidth + mGridSize * mGridCellSize;
+		mViewSize = 2 * mBorderWidth + mGridSize * mCellSize;
 
 		// Last but not least restrict the size of the grid to the given
 		// maximum in case the view is displayed inside a scroll view.

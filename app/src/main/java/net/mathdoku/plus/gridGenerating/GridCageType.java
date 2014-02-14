@@ -1,6 +1,6 @@
 package net.mathdoku.plus.gridGenerating;
 
-import net.mathdoku.plus.grid.GridCell;
+import net.mathdoku.plus.grid.Cell;
 
 public class GridCageType {
 	public static final String TAG = "MathDoku.GridCageType";
@@ -84,7 +84,7 @@ public class GridCageType {
 	 * @return An array of coordinates (row,col) of cells involved. The caller
 	 *         needs to check whether all returned coordinates are valid.
 	 */
-	public int[][] getCellCoordinates(GridCell origin) {
+	public int[][] getCellCoordinates(Cell origin) {
 		int rowOrigin = origin.getRow();
 		int colOrigin = origin.getColumn();
 

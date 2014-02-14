@@ -1,8 +1,8 @@
 package net.mathdoku.plus.grid.ui;
 
-import net.mathdoku.plus.grid.Grid;
-
 import android.view.MotionEvent;
+
+import net.mathdoku.plus.grid.Grid;
 
 public class Motion {
 	@SuppressWarnings("unused")
@@ -22,7 +22,7 @@ public class Motion {
 
 	// Size of the border and cells in pixels
 	final float mGridPlayerViewBorderWidth;
-	private final float mGridCellSize;
+	private final float mCellSize;
 
 	// The size of the grid
 	final int mGridSize;
@@ -32,13 +32,13 @@ public class Motion {
 	static final int Y_POS = 1;
 
 	public Motion(GridBasePlayerView gridBasePlayerView,
-			float gridViewBorderWidth, float gridCellSize) {
+			float gridViewBorderWidth, float cellSize) {
 		// Determine size of the grid
 		Grid grid = gridBasePlayerView.getGrid();
 		mGridSize = (grid == null ? 1 : grid.getGridSize());
 
 		mGridPlayerViewBorderWidth = gridViewBorderWidth;
-		mGridCellSize = gridCellSize;
+		mCellSize = cellSize;
 
 		mDoubleTapTouchDownTime = 0;
 	}
@@ -123,7 +123,7 @@ public class Motion {
 
 		// Convert x-position to a column number. -1 means left of grid,
 		// mGridSize means right of grid.
-		xPos = (xPos - mGridPlayerViewBorderWidth) / mGridCellSize;
+		xPos = (xPos - mGridPlayerViewBorderWidth) / mCellSize;
 		if (xPos > mGridSize) {
 			coordinates[X_POS] = mGridSize;
 		} else if (xPos < 0) {
@@ -134,7 +134,7 @@ public class Motion {
 
 		// Convert y-position to a column number. -1 means above grid, mGridSize
 		// means below grid.
-		yPos = (yPos - mGridPlayerViewBorderWidth) / mGridCellSize;
+		yPos = (yPos - mGridPlayerViewBorderWidth) / mCellSize;
 		if (yPos > mGridSize) {
 			coordinates[Y_POS] = mGridSize;
 		} else if (yPos < 0) {

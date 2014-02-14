@@ -1,7 +1,7 @@
 package net.mathdoku.plus.storage;
 
+import net.mathdoku.plus.grid.Cell;
 import net.mathdoku.plus.grid.CellBuilder;
-import net.mathdoku.plus.grid.GridCell;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,15 +19,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
-public class GridCellStorageTest {
-	private GridCellStorage mGridCellStorage = new GridCellStorage();
+public class CellStorageTest {
+	private CellStorage mCellStorage = new CellStorage();
 	private String mLine;
 
 	@Test(expected = NullPointerException.class)
 	public void FromStorageString_NullLine_False() throws Exception {
 		mLine = null;
 		int mRevisionNumber = 369;
-		assertThat(mGridCellStorage.getCellBuilderFromStorageString(mLine,
+		assertThat(mCellStorage.getCellBuilderFromStorageString(mLine,
 				mRevisionNumber), is(nullValue()));
 	}
 
@@ -35,7 +35,7 @@ public class GridCellStorageTest {
 	public void FromStorageString_RevisionIdToLow_False() throws Exception {
 		mLine = "** NOT RELEVANT FOR THIS TEST **";
 		int mRevisionNumber = 369;
-		assertThat(mGridCellStorage.getCellBuilderFromStorageString(mLine,
+		assertThat(mCellStorage.getCellBuilderFromStorageString(mLine,
 				mRevisionNumber), is(nullValue()));
 	}
 
@@ -43,7 +43,7 @@ public class GridCellStorageTest {
 	public void FromStorageString_InvalidLineId_False() throws Exception {
 		mLine = "WRONG:this is not a cell storage string identifier";
 		int mRevisionNumber = 369;
-		assertThat(mGridCellStorage.getCellBuilderFromStorageString(mLine,
+		assertThat(mCellStorage.getCellBuilderFromStorageString(mLine,
 				mRevisionNumber), is(nullValue()));
 	}
 
@@ -52,7 +52,7 @@ public class GridCellStorageTest {
 			throws Exception {
 		mLine = "CELL:2:3:4:5:6:7:8:9:10";
 		int mRevisionNumber = 369;
-		assertThat(mGridCellStorage.getCellBuilderFromStorageString(mLine,
+		assertThat(mCellStorage.getCellBuilderFromStorageString(mLine,
 				mRevisionNumber), is(nullValue()));
 	}
 
@@ -61,7 +61,7 @@ public class GridCellStorageTest {
 			throws Exception {
 		mLine = "CELL:2:3:4:5:6:7:8";
 		int mRevisionNumber = 597;
-		assertThat(mGridCellStorage.getCellBuilderFromStorageString(mLine,
+		assertThat(mCellStorage.getCellBuilderFromStorageString(mLine,
 																	mRevisionNumber), is(nullValue()));
 	}
 
@@ -70,7 +70,7 @@ public class GridCellStorageTest {
 			throws Exception {
 		mLine = "CELL:2:3:4:5:6:7:8:9:10:11:12";
 		int mRevisionNumber = 369;
-		assertThat(mGridCellStorage.getCellBuilderFromStorageString(mLine,
+		assertThat(mCellStorage.getCellBuilderFromStorageString(mLine,
 				mRevisionNumber), is(nullValue()));
 	}
 
@@ -79,7 +79,7 @@ public class GridCellStorageTest {
 			throws Exception {
 		mLine = "CELL:2:3:4:5:6:7:8:9:10";
 		int mRevisionNumber = 597;
-		assertThat(mGridCellStorage.getCellBuilderFromStorageString(mLine,
+		assertThat(mCellStorage.getCellBuilderFromStorageString(mLine,
 																	mRevisionNumber), is(nullValue()));
 	}
 
@@ -89,7 +89,7 @@ public class GridCellStorageTest {
 		mLine = "CELL:1:2:3:4+:5:6::true:false:false";
 		int mRevisionNumber = 369;
 
-		CellBuilder cellBuilder = mGridCellStorage
+		CellBuilder cellBuilder = mCellStorage
 				.getCellBuilderFromStorageString(mLine, mRevisionNumber);
 
 		CellBuilder expectedCellBuilder = new CellBuilder()
@@ -107,7 +107,7 @@ public class GridCellStorageTest {
 		mLine = "CELL:1:2-:3:4::true:false:false";
 		int mRevisionNumber = 597;
 
-		CellBuilder cellBuilder = mGridCellStorage
+		CellBuilder cellBuilder = mCellStorage
 				.getCellBuilderFromStorageString(mLine, mRevisionNumber);
 
 		CellBuilder expectedCellBuilder = new CellBuilder()
@@ -125,7 +125,7 @@ public class GridCellStorageTest {
 		mLine = "CELL:1:2-:3:0:4,:false:true:false";
 		int mRevisionNumber = 597;
 
-		CellBuilder cellBuilder = mGridCellStorage
+		CellBuilder cellBuilder = mCellStorage
 				.getCellBuilderFromStorageString(mLine, mRevisionNumber);
 
 		List<Integer> possibles = new ArrayList<Integer>();
@@ -145,7 +145,7 @@ public class GridCellStorageTest {
 		mLine = "CELL:1:2:3:4+:5:0:1,2,3,4,:false:false:true";
 		int mRevisionNumber = 369;
 
-		CellBuilder cellBuilder = mGridCellStorage
+		CellBuilder cellBuilder = mCellStorage
 				.getCellBuilderFromStorageString(mLine, mRevisionNumber);
 
 		List<Integer> possibles = new ArrayList<Integer>();
@@ -168,7 +168,7 @@ public class GridCellStorageTest {
 		mLine = "CELL:1:2-:3:0:1,2,3,4,:false:false:true";
 		int mRevisionNumber = 597;
 
-		CellBuilder cellBuilder = mGridCellStorage
+		CellBuilder cellBuilder = mCellStorage
 				.getCellBuilderFromStorageString(mLine, mRevisionNumber);
 
 		List<Integer> possibles = new ArrayList<Integer>();
@@ -186,56 +186,56 @@ public class GridCellStorageTest {
 	}
 
 	@Test
-	public void toStorageString_GridCellWithoutPossibleValues_StorageStringCreated()
+	public void toStorageString_CellWithoutPossibleValues_StorageStringCreated()
 			throws Exception {
-		GridCell gridCellMock = mock(GridCell.class);
-		when(gridCellMock.getCellId()).thenReturn(1);
-		when(gridCellMock.getCageText()).thenReturn("2+");
-		when(gridCellMock.getCorrectValue()).thenReturn(3);
-		when(gridCellMock.getUserValue()).thenReturn(4);
-		when(gridCellMock.getPossibles()).thenReturn(new ArrayList<Integer>());
-		when(gridCellMock.hasInvalidUserValueHighlight()).thenReturn(true);
-		when(gridCellMock.isRevealed()).thenReturn(false);
-		when(gridCellMock.isSelected()).thenReturn(false);
-		assertThat(mGridCellStorage.toStorageString(gridCellMock),
+		Cell cellMock = mock(Cell.class);
+		when(cellMock.getCellId()).thenReturn(1);
+		when(cellMock.getCageText()).thenReturn("2+");
+		when(cellMock.getCorrectValue()).thenReturn(3);
+		when(cellMock.getUserValue()).thenReturn(4);
+		when(cellMock.getPossibles()).thenReturn(new ArrayList<Integer>());
+		when(cellMock.hasInvalidUserValueHighlight()).thenReturn(true);
+		when(cellMock.isRevealed()).thenReturn(false);
+		when(cellMock.isSelected()).thenReturn(false);
+		assertThat(mCellStorage.toStorageString(cellMock),
 				is("CELL:1:2+:3:4::true:false:false"));
 	}
 
 	@Test
-	public void toStorageString_GridCellWithSinglePossibleValue_StorageStringCreated()
+	public void toStorageString_CellWithSinglePossibleValue_StorageStringCreated()
 			throws Exception {
-		GridCell gridCellMock = mock(GridCell.class);
-		when(gridCellMock.getCellId()).thenReturn(1);
-		when(gridCellMock.getCageText()).thenReturn("2x");
-		when(gridCellMock.getCorrectValue()).thenReturn(3);
-		when(gridCellMock.getUserValue()).thenReturn(4);
+		Cell cellMock = mock(Cell.class);
+		when(cellMock.getCellId()).thenReturn(1);
+		when(cellMock.getCageText()).thenReturn("2x");
+		when(cellMock.getCorrectValue()).thenReturn(3);
+		when(cellMock.getUserValue()).thenReturn(4);
 		List<Integer> possibles = new ArrayList<Integer>();
 		possibles.add(5);
-		when(gridCellMock.getPossibles()).thenReturn(possibles);
-		when(gridCellMock.hasInvalidUserValueHighlight()).thenReturn(false);
-		when(gridCellMock.isRevealed()).thenReturn(true);
-		when(gridCellMock.isSelected()).thenReturn(false);
-		assertThat(mGridCellStorage.toStorageString(gridCellMock),
+		when(cellMock.getPossibles()).thenReturn(possibles);
+		when(cellMock.hasInvalidUserValueHighlight()).thenReturn(false);
+		when(cellMock.isRevealed()).thenReturn(true);
+		when(cellMock.isSelected()).thenReturn(false);
+		assertThat(mCellStorage.toStorageString(cellMock),
 				is("CELL:1:2x:3:4:5,:false:true:false"));
 	}
 
 	@Test
-	public void toStorageString_GridCellWithMultiplePossibleValue_StorageStringCreated()
+	public void toStorageString_CellWithMultiplePossibleValue_StorageStringCreated()
 			throws Exception {
-		GridCell gridCellMock = mock(GridCell.class);
-		when(gridCellMock.getCellId()).thenReturn(1);
-		when(gridCellMock.getCageText()).thenReturn("2/");
-		when(gridCellMock.getCorrectValue()).thenReturn(3);
-		when(gridCellMock.getUserValue()).thenReturn(4);
+		Cell cellMock = mock(Cell.class);
+		when(cellMock.getCellId()).thenReturn(1);
+		when(cellMock.getCageText()).thenReturn("2/");
+		when(cellMock.getCorrectValue()).thenReturn(3);
+		when(cellMock.getUserValue()).thenReturn(4);
 		List<Integer> possibles = new ArrayList<Integer>();
 		possibles.add(5);
 		possibles.add(6);
 		possibles.add(7);
-		when(gridCellMock.getPossibles()).thenReturn(possibles);
-		when(gridCellMock.hasInvalidUserValueHighlight()).thenReturn(false);
-		when(gridCellMock.isRevealed()).thenReturn(false);
-		when(gridCellMock.isSelected()).thenReturn(true);
-		assertThat(mGridCellStorage.toStorageString(gridCellMock),
+		when(cellMock.getPossibles()).thenReturn(possibles);
+		when(cellMock.hasInvalidUserValueHighlight()).thenReturn(false);
+		when(cellMock.isRevealed()).thenReturn(false);
+		when(cellMock.isSelected()).thenReturn(true);
+		assertThat(mCellStorage.toStorageString(cellMock),
 				is("CELL:1:2/:3:4:5,6,7,:false:false:true"));
 	}
 }
