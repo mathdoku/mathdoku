@@ -65,11 +65,6 @@ public class Grid {
 	// Used to avoid redrawing or saving grid during creation of new grid
 	private final Object mLock = new Object();
 
-	// Preferences used when drawing the grid
-	private boolean mPrefShowDupeDigits;
-	private boolean mPrefShowBadCageMaths;
-	private boolean mPrefShowMaybesAs3x3Grid;
-
 	// Solved listener
 	private OnSolvedListener mSolvedListener;
 
@@ -165,8 +160,6 @@ public class Grid {
 		if (mGridStatistics == null) {
 			mGridStatistics = mObjectsCreator.createGridStatistics();
 		}
-
-		setPreferences();
 	}
 
 	private GridCell findFirstSelectedCell() {
@@ -232,21 +225,6 @@ public class Grid {
 		if (mGridGeneratingParameters == null) {
 			throw new InvalidGridException(
 					"Cannot create a grid without gridGeneratingParameters.");
-		}
-	}
-
-	/**
-	 * Set preferences which are used for drawing the grid.
-	 */
-	public void setPreferences() {
-		Preferences preferences = Preferences.getInstance();
-		mPrefShowDupeDigits = preferences.isDuplicateDigitHighlightVisible();
-		mPrefShowMaybesAs3x3Grid = preferences.isMaybesDisplayedInGrid();
-		mPrefShowBadCageMaths = preferences.isBadCageMathHighlightVisible();
-
-		// Reset borders of cells as they are affected by the preferences.
-		for (GridCell cell : mCells) {
-			cell.setBorders();
 		}
 	}
 
@@ -496,7 +474,7 @@ public class Grid {
 		mSelectedCell = null;
 
 		// Update borders of cage which was selected before.
-		oldSelectedCage.setBorders();
+		oldSelectedCage.invalidateBordersOfAllCells();
 	}
 
 	/**
@@ -528,9 +506,9 @@ public class Grid {
 		// Set borders if another cage is selected.
 		if (!newSelectedCage.equals(oldSelectedCage)) {
 			if (oldSelectedCage != null) {
-				oldSelectedCage.setBorders();
+				oldSelectedCage.invalidateBordersOfAllCells();
 			}
-			newSelectedCage.setBorders();
+			newSelectedCage.invalidateBordersOfAllCells();
 		}
 
 		return mSelectedCell;
@@ -630,18 +608,6 @@ public class Grid {
 
 	public long getDateSaved() {
 		return mDateUpdated;
-	}
-
-	public boolean hasPrefShowDupeDigits() {
-		return mPrefShowDupeDigits;
-	}
-
-	public boolean hasPrefShowBadCageMaths() {
-		return mPrefShowBadCageMaths;
-	}
-
-	public boolean hasPrefShowMaybesAs3x3Grid() {
-		return mPrefShowMaybesAs3x3Grid;
 	}
 
 	public GridGeneratingParameters getGridGeneratingParameters() {
@@ -939,23 +905,10 @@ public class Grid {
 		return userValues;
 	}
 
-	public boolean setBorderForCells(int[] cells) {
-		if (Util.isArrayNullOrEmpty(cells)) {
-			return false;
+	public void invalidateBordersOfAllCells() {
+		for (GridCell cell : mCells) {
+			cell.invalidateBorders();
 		}
-
-		for (int cell : cells) {
-			if (cell < 0 || cell > mCells.size()) {
-				return false;
-			}
-			GridCell gridCell = mCells.get(cell);
-			if (gridCell == null) {
-				return false;
-			}
-			gridCell.setBorders();
-		}
-
-		return true;
 	}
 
 	public List<GridCell> getGridCells(int[] cells) {

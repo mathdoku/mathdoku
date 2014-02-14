@@ -3,7 +3,6 @@ package net.mathdoku.plus.grid;
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.util.Util;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -223,7 +222,7 @@ public class GridCage {
 		}
 
 		if (oldUserMathCorrect != mUserMathCorrect) {
-			setBorders();
+			invalidateBordersOfAllCells();
 		}
 
 		return mUserMathCorrect;
@@ -232,8 +231,17 @@ public class GridCage {
 	/**
 	 * Set borders for all cells in this cage.
 	 */
-	public boolean setBorders() {
-		return (mGrid == null ? false : mGrid.setBorderForCells(mCells));
+	public boolean invalidateBordersOfAllCells() {
+		if (mGrid == null) {
+			return false;
+		}
+		List<GridCell> cells = mGrid.getGridCells(mCells);
+		if (cells != null) {
+			for (GridCell cell : cells) {
+				cell.invalidateBorders();
+			}
+		}
+		return true;
 	}
 
 	public int getIdUpperLeftCell() {

@@ -19,7 +19,6 @@ import android.widget.TextView;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
-import net.mathdoku.plus.grid.DigitPositionGrid;
 import net.mathdoku.plus.grid.Grid;
 import net.mathdoku.plus.grid.GridLoader;
 import net.mathdoku.plus.grid.ui.GridViewerView;
@@ -47,8 +46,6 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 	private static final String TAG = "ArchiveFragment";
 
 	public static final String BUNDLE_KEY_SOLVING_ATTEMPT_ID = "solvingAttemptId";
-
-	private static DigitPositionGrid mDigitPositionGrid = null;
 
 	private Grid mGrid;
 	private GridStatistics mGridStatistics;
@@ -142,22 +139,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 				archiveActionButton.setVisibility(View.GONE);
 			}
 
-			// In case the grid isn't finished, the digit position grid type
-			// has to be determined for positioning maybe values inside the
-			// cells.
 			if (mGrid.isActive()) {
-				// Only create the digit position grid if needed
-				if (mDigitPositionGrid == null
-						|| mDigitPositionGrid
-								.isNotReusable(mGrid.getGridSize())) {
-					mDigitPositionGrid = new DigitPositionGrid(
-							mGrid.getGridSize());
-				}
-
-				// Propagate setting to the grid view for displaying maybe
-				// values (dependent on preferences).
-				mGridViewerView.setDigitPositionGrid(mDigitPositionGrid);
-
 				// Disable the grid as the user should not be able to click
 				// cells in the archive view
 				mGrid.setActive(false);

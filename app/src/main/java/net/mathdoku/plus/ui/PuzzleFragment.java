@@ -1023,13 +1023,9 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements S
 	private void resume() {
 		setTheme();
 
-		// Propagate current preferences to the grid.
-		if (mGrid != null) {
-			mGrid.setPreferences();
-		}
-
-		// Inform the GridPlayerView about the input method.
+		// Inform the GridPlayerView about the input method and propagate current preferences to the grid.
 		if (mGridPlayerView != null) {
+			mGridPlayerView.setPreferences();
 			mGridPlayerView
 					.setSwipeInputMethodEnabled((mMathDokuPreferences
 							.getDigitInputMethod() != Preferences.PuzzleSettingInputMethod.BUTTONS_ONLY));
@@ -1072,10 +1068,6 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements S
 			// Create the mapping for mDigitPosition on the correct button
 			// grid layout.
 			mDigitPositionGrid = new DigitPositionGrid(gridSize);
-
-			// Propagate setting to the grid view as well for displaying maybe
-			// values (dependent on preferences).
-			mGridPlayerView.setDigitPositionGrid(mDigitPositionGrid);
 		}
 
 		// Use the created mapping to fill all digit positions.

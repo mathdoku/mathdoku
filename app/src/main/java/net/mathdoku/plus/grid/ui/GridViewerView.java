@@ -26,6 +26,9 @@ public class GridViewerView extends View {
 	// Actual content of the puzzle in this grid view
 	Grid mGrid;
 
+	// All cell drawers needed to draw the grid
+	private CellDrawer[][] mCellDrawer;
+
 	// Size (in cells and pixels) of the grid view and size (in pixel) of cells
 	// in grid
 	int mGridSize;
@@ -33,11 +36,17 @@ public class GridViewerView extends View {
 	float mBorderWidth;
 	float mGridCellSize;
 
-	// Reference to the global grid painter object
+	// Reference to the global (grid) painter object
+	private Painter mPainter;
 	private GridPainter mGridPainter;
 
 	// Current orientation of the device
 	private int mOrientation;
+
+	// Preferences used when drawing the grid
+	private boolean mPrefShowDupeDigits;
+	private boolean mPrefShowBadCageMaths;
+	private boolean mPrefShowMaybesAs3x3Grid;
 
 	// In case the grid viewer view is displayed in a scroll view and the device
 	// is in landscape mode, it is necessary to restrict the size of the grid
@@ -45,9 +54,6 @@ public class GridViewerView extends View {
 	// based on the width and height of the device.
 	private boolean mInScrollView;
 	private float mMaxViewSize;
-
-	// The layout to be used for positioning the maybe digits in a grid.
-	private DigitPositionGrid mDigitPositionGrid;
 
 	// Flag which determine whether a swipe border should be reserved around the
 	// visible grid.
@@ -76,6 +82,7 @@ public class GridViewerView extends View {
 		mPreferences = Preferences.getInstance(mContext);
 
 		mViewSize = 0;
+		mPainter = Painter.getInstance();
 		mGridPainter = Painter.getInstance().getGridPainter();
 
 		// noinspection ConstantConditions,ConstantConditions
@@ -136,16 +143,16 @@ public class GridViewerView extends View {
 				- mBorderWidth + 2, mViewSize - mBorderWidth + 2,
 				mGridPainter.getBackgroundPaint());
 
-		// Draw cells
-		Painter painter = Painter.getInstance();
-		painter.setCellSize(mGridCellSize);
-		painter.getMaybeGridPainter().setDigitPositionGrid(mDigitPositionGrid);
-		painter.setColorMode(mPreferences.isColoredDigitsVisible() ? DigitPainterMode.INPUT_MODE_BASED
-				: DigitPainterMode.MONOCHROME);
+		// Update the current cell size
+		mPainter.setCellSize(mGridCellSize);
 
+		// Draw cells
 		GridInputMode gridInputMode = getRestrictedGridInputMode();
-		for (GridCell cell : mGrid.getCells()) {
-			cell.draw(canvas, mBorderWidth, gridInputMode, 0);
+		for (int row = 0; row < mGridSize; row++) {
+			for (int column = 0; column < mGridSize; column++) {
+				mCellDrawer[row][column].draw(canvas, mBorderWidth,
+						gridInputMode, 0);
+			}
 		}
 	}
 
@@ -165,11 +172,47 @@ public class GridViewerView extends View {
 		// onMeasure as this will be called before the grid is loaded.
 		mGridSize = (mGrid == null ? 1 : mGrid.getGridSize());
 
-		// Determine the layout which has to be used for drawing the possible
-		// values inside a cell.
-		mDigitPositionGrid = (mGrid != null
-				&& mGrid.hasPrefShowMaybesAs3x3Grid() ? new DigitPositionGrid(
-				mGrid.getGridSize()) : null);
+		// Build the matrix of cell drawers
+		mCellDrawer = new CellDrawer[mGridSize][mGridSize];
+		GridCell[][] cells = new GridCell[mGridSize][mGridSize];
+		for (int row = 0; row < mGridSize; row++) {
+			for (int column = 0; column < mGridSize; column++) {
+				cells[row][column] = mGrid.getCellAt(row, column);
+				mCellDrawer[row][column] = new CellDrawer(this,
+						cells[row][column]);
+			}
+		}
+		// For each cell drawer set the adjacent cell drawers
+		CellDrawer mCellDrawerAbove;
+		CellDrawer mCellDrawerToRight;
+		CellDrawer mCellDrawerBelow;
+		CellDrawer mCellDrawerToLeft;
+		for (int row = 0; row < mGridSize; row++) {
+			for (int column = 0; column < mGridSize; column++) {
+				if (row > 0) {
+					mCellDrawer[row][column].setReferencesToCellAbove(
+							cells[row - 1][column],
+							mCellDrawer[row - 1][column]);
+				}
+				if (column + 1 < mGridSize) {
+					mCellDrawer[row][column].setReferencesToCellToRight(
+							cells[row][column + 1],
+							mCellDrawer[row][column + 1]);
+				}
+				if (row + 1 < mGridSize) {
+					mCellDrawer[row][column].setReferencesToCellBelow(
+							cells[row + 1][column],
+							mCellDrawer[row + 1][column]);
+				}
+				if (column > 0) {
+					mCellDrawer[row][column].setReferencesToCellToLeft(
+							cells[row][column - 1],
+							mCellDrawer[row][column - 1]);
+				}
+			}
+		}
+
+		setDigitPositionGrid();
 
 		invalidate();
 	}
@@ -208,7 +251,8 @@ public class GridViewerView extends View {
 		// the border width was already computed to display the swipe border,
 		// but is less than the minimal width, both the border width as cell
 		// size has to be recomputed as well.
-		float minGridBorderWidth = Math.max(mGridPainter.getBorderPaint()
+		float minGridBorderWidth = Math.max(mGridPainter
+				.getBorderPaint()
 				.getStrokeWidth(), (mSwipeBorder ? 15 : 0));
 		if (mBorderWidth < minGridBorderWidth) {
 			mBorderWidth = minGridBorderWidth;
@@ -238,14 +282,26 @@ public class GridViewerView extends View {
 	/**
 	 * Sets the {@link net.mathdoku.plus.grid.DigitPositionGrid} used to
 	 * position the digit buttons for reuse when drawing the maybe values.
-	 * 
-	 * @param digitPositionGrid
-	 *            The digit position grid type to be set.
 	 */
-	public void setDigitPositionGrid(DigitPositionGrid digitPositionGrid) {
-		mDigitPositionGrid = (mGrid == null
-				|| !mGrid.hasPrefShowMaybesAs3x3Grid() ? null
-				: digitPositionGrid);
+	private void setDigitPositionGrid() {
+		// Determine the layout which has to be used for drawing the possible
+		// values inside a cell.
+		DigitPositionGrid mDigitPositionGrid = (mGrid != null ? new DigitPositionGrid(
+				mGrid.getGridSize()) : null);
+
+		// Propagate the digit position grid to the maybe painter which is used
+		// by the cell drawer to paint the maybe digits inside a cell.
+		mPainter.getMaybeGridPainter().setDigitPositionGrid(mDigitPositionGrid);
+
+		// Propagate the digit position grid to the cell drawers
+		if (mCellDrawer != null) {
+			for (int row = 0; row < mGridSize; row++) {
+				for (int column = 0; column < mGridSize; column++) {
+					mCellDrawer[row][column]
+							.setDigitPositionGrid(mDigitPositionGrid);
+				}
+			}
+		}
 	}
 
 	/**
@@ -300,5 +356,49 @@ public class GridViewerView extends View {
 	 */
 	void setSwipeBorder(boolean swipeBorder) {
 		mSwipeBorder = swipeBorder;
+	}
+
+	/**
+	 * Set preferences which are used for drawing the grid.
+	 */
+	public void setPreferences() {
+		Preferences preferences = Preferences.getInstance();
+		mPrefShowDupeDigits = preferences.isDuplicateDigitHighlightVisible();
+		mPrefShowMaybesAs3x3Grid = preferences.isMaybesDisplayedInGrid();
+		mPrefShowBadCageMaths = preferences.isBadCageMathHighlightVisible();
+
+		// Update the painter which is used by the cell drawer when drawing the
+		// cell.
+		mPainter
+				.setColorMode(mPreferences.isColoredDigitsVisible() ? DigitPainterMode.INPUT_MODE_BASED
+						: DigitPainterMode.MONOCHROME);
+
+		// Reset borders of cells as they are affected by the preferences.
+		mGrid.invalidateBordersOfAllCells();
+	}
+
+	public boolean hasPrefShowDupeDigits() {
+		return mPrefShowDupeDigits;
+	}
+
+	public boolean hasPrefShowBadCageMaths() {
+		return mPrefShowBadCageMaths;
+	}
+
+	public boolean hasPrefShowMaybesAs3x3Grid() {
+		return mPrefShowMaybesAs3x3Grid;
+	}
+
+	public CellDrawer getCellDrawer(int row, int column) {
+		if (mCellDrawer == null) {
+			return null;
+		}
+		if (row < 0 || row >= mGridSize) {
+			return null;
+		}
+		if (column < 0 || column >= mGridSize) {
+			return null;
+		}
+		return mCellDrawer[row][column];
 	}
 }

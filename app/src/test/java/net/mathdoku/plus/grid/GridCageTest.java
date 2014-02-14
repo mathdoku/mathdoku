@@ -17,6 +17,7 @@ import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -669,14 +670,20 @@ public class GridCageTest {
 	}
 
 	@Test
-	public void setBorders_SetCageIdForAllCells_AllCellsChanged()
+	public void invalidateBordersOfAllCells_SetCageIdForAllCells_AllCellsChanged()
 			throws Exception {
 		GridCage gridCage = mCageBuilder.build();
 		gridCage.setGridReference(mGridMock);
+		GridCell gridCellMock = mock(GridCell.class);
+		List<GridCell> mCells = new ArrayList<GridCell>();
+		mCells.add(gridCellMock);
+		mCells.add(gridCellMock);
+		mCells.add(gridCellMock);
+		when(mGridMock.getGridCells(any(int[].class))).thenReturn(mCells);
 
-		gridCage.setBorders();
+		gridCage.invalidateBordersOfAllCells();
 
-		verify(mGridMock).setBorderForCells(any(int[].class));
+		verify(gridCellMock,times(mCells.size())).invalidateBorders();
 	}
 
 	@Test

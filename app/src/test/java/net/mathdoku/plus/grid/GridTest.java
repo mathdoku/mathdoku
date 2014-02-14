@@ -31,7 +31,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -277,41 +276,6 @@ public class GridTest {
 		mGridTestObjectsCreator = new GridTestObjectsCreator();
 		mGridBuilderStub.setGridObjectsCreator(mGridTestObjectsCreator);
 		mGridBuilderStub.setupDefaultWhichDoesNotThrowErrorsOnBuild();
-	}
-
-	@Test
-	public void setPreferences_CreateGrid_PreferencesAreRetrieved()
-			throws Exception {
-		Grid grid = mGridBuilderStub.build();
-		grid.setPreferences();
-
-		// Check that mPreferencesMock are retrieved when setting the
-		// mPreferencesMock.
-		// Note: method setPreference is also called when creating the grid. So
-		// each method is invoked more than once.
-		verify(mPreferencesMock, atLeastOnce())
-				.isDuplicateDigitHighlightVisible();
-		verify(mPreferencesMock, atLeastOnce()).isMaybesDisplayedInGrid();
-		verify(mPreferencesMock, atLeastOnce()).isBadCageMathHighlightVisible();
-	}
-
-	@Test
-	public void setPreferences_CreateGridOfSize4_CellBordersAreSet()
-			throws Exception {
-		Grid grid = mGridBuilderStub
-				.useSameMockForAllGridCells()
-				.setupDefaultWhichDoesNotThrowErrorsOnBuild()
-				.build();
-		verify(mGridBuilderStub.mAnyGridCellMockOfDefaultSetup,
-				times(grid.getCells().size())).setBorders();
-
-		grid.setPreferences();
-
-		// While building the grid, the borders were already set (see verify
-		// above). Now check if it has been called again while setting the
-		// mPreferencesMock.
-		verify(mGridBuilderStub.mAnyGridCellMockOfDefaultSetup,
-				times(2 * grid.getCells().size())).setBorders();
 	}
 
 	@Test
@@ -860,14 +824,14 @@ public class GridTest {
 				.thenReturn(mGridBuilderStub.mAnyGridCageOfDefaultSetup);
 		Grid grid = mGridBuilderStub.build();
 		grid.setSelectedCell(mGridBuilderStub.mAnyGridCellMockOfDefaultSetup);
-		verify(mGridBuilderStub.mAnyGridCageOfDefaultSetup).setBorders();
+		verify(mGridBuilderStub.mAnyGridCageOfDefaultSetup).invalidateBordersOfAllCells();
 
 		// Deselect this cell
 		grid.deselectSelectedCell();
 
 		verify(mGridBuilderStub.mAnyGridCellMockOfDefaultSetup).deselect();
 		verify(mGridBuilderStub.mAnyGridCageOfDefaultSetup, times(2))
-				.setBorders();
+				.invalidateBordersOfAllCells();
 
 		assertThat("Selected cell", grid.getSelectedCell(), is(nullValue()));
 	}
@@ -892,7 +856,7 @@ public class GridTest {
 						.setSelectedCell(mGridBuilderStub.mAnyGridCellMockOfDefaultSetup),
 				is(sameInstance(mGridBuilderStub.mAnyGridCellMockOfDefaultSetup)));
 
-		verify(mGridBuilderStub.mAnyGridCageOfDefaultSetup).setBorders();
+		verify(mGridBuilderStub.mAnyGridCageOfDefaultSetup).invalidateBordersOfAllCells();
 	}
 
 	@Test
@@ -922,12 +886,12 @@ public class GridTest {
 		// Select the grid cell
 		grid.setSelectedCell(mGridBuilderStub.mAnyGridCellMockOfDefaultSetup);
 		verify(mGridBuilderStub.mAnyGridCageOfDefaultSetup, times(1))
-				.setBorders();
+				.invalidateBordersOfAllCells();
 
 		// Select the same cell one more. The borders may not be reset again.
 		grid.setSelectedCell(mGridBuilderStub.mAnyGridCellMockOfDefaultSetup);
 		verify(mGridBuilderStub.mAnyGridCageOfDefaultSetup, times(1))
-				.setBorders();
+				.invalidateBordersOfAllCells();
 	}
 
 	@Test
@@ -944,13 +908,13 @@ public class GridTest {
 		// Select grid cell stub 1
 		grid.setSelectedCell(mGridBuilderStub.mAnyGridCellMockOfDefaultSetup);
 		verify(mGridBuilderStub.mAnyGridCageOfDefaultSetup, times(1))
-				.setBorders();
+				.invalidateBordersOfAllCells();
 
 		// Select the other cell in the same cage. The borders may not be reset
 		// again.
 		grid.setSelectedCell(otherGridCellMock);
 		verify(mGridBuilderStub.mAnyGridCageOfDefaultSetup, times(1))
-				.setBorders();
+				.invalidateBordersOfAllCells();
 	}
 
 	@Test
@@ -969,13 +933,13 @@ public class GridTest {
 
 		// Select grid cell stub 1
 		grid.setSelectedCell(gridCellStub1);
-		verify(gridCageMock1, times(1)).setBorders();
+		verify(gridCageMock1, times(1)).invalidateBordersOfAllCells();
 
 		// Select the other cell in the same cage. The borders of cage 1 and
 		// cage 2 need both to be set.
 		grid.setSelectedCell(gridCellStub2);
-		verify(gridCageMock1, times(2)).setBorders();
-		verify(gridCageMock2, times(1)).setBorders();
+		verify(gridCageMock1, times(2)).invalidateBordersOfAllCells();
+		verify(gridCageMock2, times(1)).invalidateBordersOfAllCells();
 	}
 
 	@Test
@@ -1210,9 +1174,6 @@ public class GridTest {
 		verify(mGridBuilderStub.mAnyGridCellMockOfDefaultSetup,
 				times(mGridBuilderStub.mCells.size()))
 				.markDuplicateValuesInSameRowAndColumn();
-		// test selected cell...
-		verify(mGridBuilderStub.mAnyGridCellMockOfDefaultSetup,
-				times(mGridBuilderStub.mCells.size())).setBorders();
 	}
 
 	@Test
@@ -1808,51 +1769,12 @@ public class GridTest {
 	}
 
 	@Test
-	public void setBorderForCells_CellsIsNull_NoBorderAreSet() throws Exception {
-		Grid grid = mGridBuilderStub.build();
+	public void invalidateBordersOfAllCells_MultipleCells_BorderAreSet() throws Exception {
+		Grid grid = mGridBuilderStub.useSameMockForAllGridCells().build();
 
-		assertThat(grid.setBorderForCells(null), is(false));
-	}
+		grid.invalidateBordersOfAllCells();
 
-	@Test
-	public void setBorderForCells_CellWithInvalidId_BorderAreSet()
-			throws Exception {
-		int idOfCell = -1; // Value should not be in range 0 to gridsize *
-							// gridsize
-		Grid grid = mGridBuilderStub.build();
-
-		assertThat(grid.setBorderForCells(new int[] { idOfCell }), is(false));
-	}
-
-	@Test
-	public void setBorderForCells_SingleCell_BorderAreSet() throws Exception {
-		int idOfCell = 4;
-		Grid grid = mGridBuilderStub.build();
-		verify(mGridBuilderStub.mGridCellMockOfDefaultSetup[idOfCell])
-				.setBorders();
-
-		assertThat(grid.setBorderForCells(new int[] { idOfCell }), is(true));
-		verify(mGridBuilderStub.mGridCellMockOfDefaultSetup[idOfCell], times(2))
-				.setBorders();
-	}
-
-	@Test
-	public void setBorderForCells_MultipleCells_BorderAreSet() throws Exception {
-		int idOfCell_1 = 4;
-		int idOfCell_2 = 8;
-		Grid grid = mGridBuilderStub.build();
-		verify(mGridBuilderStub.mGridCellMockOfDefaultSetup[idOfCell_1])
-				.setBorders();
-		verify(mGridBuilderStub.mGridCellMockOfDefaultSetup[idOfCell_2])
-				.setBorders();
-
-		assertThat(
-				grid.setBorderForCells(new int[] { idOfCell_1, idOfCell_2 }),
-				is(true));
-		verify(mGridBuilderStub.mGridCellMockOfDefaultSetup[idOfCell_1],
-				times(2)).setBorders();
-		verify(mGridBuilderStub.mGridCellMockOfDefaultSetup[idOfCell_2],
-				times(2)).setBorders();
+		verify(mGridBuilderStub.mAnyGridCellMockOfDefaultSetup).invalidateBorders();
 	}
 
 	@Test

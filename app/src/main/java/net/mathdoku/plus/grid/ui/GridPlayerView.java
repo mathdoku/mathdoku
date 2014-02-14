@@ -277,7 +277,8 @@ public class GridPlayerView extends GridBasePlayerView {
 							|| gridInputMode == GridInputMode.MAYBE) {
 						// The overlay needs to be draw as the swipe motion is
 						// not yet released.
-						selectedCell.drawSwipeOverlay(canvas, mBorderWidth,
+						CellDrawer cellDrawer = getCellDrawer(selectedCell.getRow(),selectedCell.getColumn());
+						cellDrawer.drawSwipeOverlay(canvas, mBorderWidth,
 								gridInputMode, mSwipeMotion
 										.getCurrentSwipePositionX(),
 								mSwipeMotion.getCurrentSwipePositionY(),
