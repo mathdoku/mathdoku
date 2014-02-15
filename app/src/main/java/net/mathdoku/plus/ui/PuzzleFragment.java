@@ -761,7 +761,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 */
 	boolean showCheckProgress() {
 		return (mGrid != null && mGrid.isActive() && mGrid
-				.containsNoUserValues());
+				.containsNoUserValues() == false);
 	}
 
 	/**
