@@ -253,6 +253,11 @@ public class GridTest {
 		public GridSaver createGridSaver() {
 			return mGridSaverMock;
 		}
+
+		@Override
+		public CellChange createCellChange(Cell selectedCell) {
+			return mCellChangeMock;
+		}
 	}
 	private GridTestObjectsCreator mGridTestObjectsCreator;
 
@@ -1516,8 +1521,7 @@ public class GridTest {
 		Grid grid = mGridBuilderStub.setCellMockAsSelectedCell(idSelectedCell).build();
 
 		assertThat(grid.revealSelectedCell(), is(true));
-		verify(mGridBuilderStub.mCellMockOfDefaultSetup[idSelectedCell])
-				.saveUndoInformation(any(CellChange.class));
+		assertThat(grid.countMoves(),is(1));
 	}
 
 	@Test

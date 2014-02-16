@@ -113,6 +113,10 @@ public class Grid {
 		public CellBuilder createCellBuilder() {
 			return new CellBuilder();
 		}
+
+		public CellChange createCellChange(Cell selectedCell) {
+			return new CellChange(selectedCell);
+		}
 	}
 
 	/**
@@ -544,7 +548,7 @@ public class Grid {
 		for (Cell cell : mCells) {
 			if ((cell.getRow() == rowSelectedCell || cell.getColumn() == columnSelectedCell)
 					&& cell.hasPossible(valueSelectedCell)) {
-				cell.saveUndoInformation(originalCellChange);
+				originalCellChange.addRelatedMove(new CellChange(cell));
 				cell.removePossible(valueSelectedCell);
 			}
 		}
@@ -825,8 +829,8 @@ public class Grid {
 			return false;
 		}
 
-		// Save old cell info
-		CellChange originalUserMove = selectedCell.saveUndoInformation(null);
+		// Save current state of selected cell
+		CellChange cellChange = mObjectsCreator.createCellChange(selectedCell);
 
 		// Reveal the user value
 		selectedCell.setRevealed();
@@ -835,8 +839,12 @@ public class Grid {
 		if (Preferences.getInstance().isPuzzleSettingClearMaybesEnabled()) {
 			// Update possible values for other cells in this row and
 			// column.
-			clearRedundantPossiblesInSameRowOrColumn(originalUserMove);
+			clearRedundantPossiblesInSameRowOrColumn(cellChange);
 		}
+
+		// Store the cell change (including related cell changed for redundant
+		// value which have been cleared.
+		addMove(cellChange);
 
 		mGridStatistics
 				.increaseCounter(StatisticsCounterType.ACTION_REVEAL_CELL);

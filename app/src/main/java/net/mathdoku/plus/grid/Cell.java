@@ -347,35 +347,10 @@ public class Cell {
 		mCageText = newCageText;
 	}
 
-	/**
-	 * Saves all information needed to undo a user move on this cell.
-	 * 
-	 * @param originalCellChange
-	 *            Use null in case this cell change is a result of a
-	 *            modification made by the user itself. In case the cell is
-	 *            changed indirectly as a result of changing another cell, use
-	 *            the original cell change.
-	 * @return The cell change which is created. This value can be used
-	 *         optionally to related other cell changes to this cell change.
-	 */
-	public CellChange saveUndoInformation(CellChange originalCellChange) {
-		// Store old values of this cell
-		CellChange move = new CellChange(this, mUserValue, mPossibles);
-		if (originalCellChange == null) {
-			// This move is not a result of another move.
-			mGrid.addMove(move);
-		} else {
-			originalCellChange.addRelatedMove(move);
-		}
-		return move;
-	}
-
 	public void undo(int previousUserValue, List<Integer> previousPossibleValues) {
 		setUserValue(previousUserValue);
 		if (previousPossibleValues != null) {
-			for (int previousPossibleValue : previousPossibleValues) {
-				mPossibles.add(previousPossibleValue);
-			}
+			mPossibles = new ArrayList<Integer>(previousPossibleValues);
 			Collections.sort(mPossibles);
 		}
 	}

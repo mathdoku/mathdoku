@@ -169,8 +169,8 @@ public class GridBasePlayerView extends GridViewerView implements
 			return;
 		}
 
-		// Save undo information
-		CellChange originalUserMove = selectedCell.saveUndoInformation(null);
+		// Save current state of selected cell
+		CellChange cellChange = new CellChange(selectedCell);
 
 		// Get old value of selected cell
 		int oldValue = selectedCell.getUserValue();
@@ -183,8 +183,7 @@ public class GridBasePlayerView extends GridViewerView implements
 						StatisticsCounterType.ACTION_CLEAR_CELL);
 
 				// In case the last user value has been cleared from the grid,
-				// the
-				// check progress should no longer be available.
+				// the check progress should no longer be available.
 				if (mGrid.containsNoUserValues()) {
 					((PuzzleFragmentActivity) mContext).invalidateOptionsMenu();
 				}
@@ -222,7 +221,7 @@ public class GridBasePlayerView extends GridViewerView implements
 						// Update possible values for other cells in this row
 						// and column.
 						mGrid
-								.clearRedundantPossiblesInSameRowOrColumn(originalUserMove);
+								.clearRedundantPossiblesInSameRowOrColumn(cellChange);
 					}
 					if (newValue != selectedCell.getCorrectValue()
 							&& TipIncorrectValue.toBeDisplayed(mPreferences)) {
@@ -231,6 +230,10 @@ public class GridBasePlayerView extends GridViewerView implements
 				}
 			}
 		}
+
+		// Store the cell change (including related cell changed for redundant
+		// value which have been cleared.
+		mGrid.addMove(cellChange);
 
 		checkGridValidity(selectedCell);
 	}
@@ -262,8 +265,8 @@ public class GridBasePlayerView extends GridViewerView implements
 						if (updatePossibleValues == false) {
 							updatePossibleValues = true;
 
-							// Save undo information
-							toCell.saveUndoInformation(null);
+							// Save current state of target cell
+							mGrid.addMove(new CellChange(toCell));
 
 							// Clear the to-cell in case it contains a user
 							// value which will now be overwritten with maybe
@@ -288,9 +291,8 @@ public class GridBasePlayerView extends GridViewerView implements
 				// The from cell does not contain a maybe value. So the cell is
 				// either empty or is filled with a user value.
 				if (fromCell.getUserValue() != toCell.getUserValue()) {
-					// Save undo information
-					CellChange originalUserMove = toCell
-							.saveUndoInformation(null);
+					// Save current state of target cell
+					CellChange cellChange = new CellChange(toCell);
 
 					if (fromCell.isUserValueSet()) {
 						toCell.setUserValue(fromCell.getUserValue());
@@ -303,8 +305,12 @@ public class GridBasePlayerView extends GridViewerView implements
 						// Update possible values for other cells in this row
 						// and column.
 						mGrid
-								.clearRedundantPossiblesInSameRowOrColumn(originalUserMove);
+								.clearRedundantPossiblesInSameRowOrColumn(cellChange);
 					}
+
+					// Store the cell change (including related cell changed for redundant
+					// value which have been cleared.
+					mGrid.addMove(cellChange);
 
 					checkGridValidity(toCell);
 				}

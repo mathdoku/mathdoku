@@ -40,6 +40,13 @@ public class CellChange {
 		mRelatedCellChanges = null;
 	}
 
+	public CellChange(Cell cell) {
+		mCell = cell;
+		mPreviousUserValue = cell.getUserValue();
+		mPreviousPossibleValues = new ArrayList<Integer>(cell.getPossibles());
+		mRelatedCellChanges = null;
+	}
+
 	public CellChange(CellChangeStorage cellChangeStorage) {
 		mCell = cellChangeStorage.getCell();
 		mPreviousUserValue = cellChangeStorage.getPreviousUserValue();
