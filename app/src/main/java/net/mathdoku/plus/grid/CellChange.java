@@ -65,7 +65,13 @@ public class CellChange {
 				relatedMove.restore();
 			}
 		}
-		mCell.undo(this.mPreviousUserValue, this.mPreviousPossibleValues);
+		// Always restore the user value as value 0 indicates an empty cell.
+		mCell.setUserValue(mPreviousUserValue);
+		if (mPreviousPossibleValues != null) {
+			for (int possible : mPreviousPossibleValues) {
+				mCell.addPossible(possible);
+			}
+		}
 	}
 
 	/**

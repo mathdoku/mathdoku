@@ -8,7 +8,10 @@ import java.util.List;
 
 import robolectric.RobolectricGradleTestRunner;
 
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricGradleTestRunner.class)
@@ -28,9 +31,9 @@ public class CellChangeTest {
 		// Restore the cell change which ...
 		cellChange.restore();
 
-		// ... results in undoing the change to the user value or the maybe
-		// values for the cell
-		verify(cellMock).undo(expectedUserValue, expectedMaybeValues);
+		// ... results in undoing the change to the user value.
+		verify(cellMock).setUserValue(expectedUserValue);
+		verify(cellMock, never()).addPossible(anyInt());
 	}
 
 	@Test
@@ -51,8 +54,9 @@ public class CellChangeTest {
 		// Restore the cell change which ...
 		cellChange.restore();
 
-		// ... results in undoing the change to the user value or the maybe
+		// ... results in undoing the change to the user value and the maybe
 		// values for the cell
-		verify(cellMock).undo(expectedUserValue, expectedMaybeValues);
+		verify(cellMock).setUserValue(expectedUserValue);
+		verify(cellMock, times(expectedMaybeValues.size())).addPossible(anyInt());
 	}
 }

@@ -347,14 +347,6 @@ public class Cell {
 		mCageText = newCageText;
 	}
 
-	public void undo(int previousUserValue, List<Integer> previousPossibleValues) {
-		setUserValue(previousUserValue);
-		if (previousPossibleValues != null) {
-			mPossibles = new ArrayList<Integer>(previousPossibleValues);
-			Collections.sort(mPossibles);
-		}
-	}
-
 	/**
 	 * Check if the given digit is registered as a possible value for this cell.
 	 * 
