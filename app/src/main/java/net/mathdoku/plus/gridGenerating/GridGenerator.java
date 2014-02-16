@@ -33,6 +33,11 @@ import java.util.Random;
 public class GridGenerator extends AsyncTask<Void, String, Void> {
 	private static final String TAG = "MathDoku.GridGenerator";
 
+	private static final int ROW_COORDINATE = 0;
+	private static final int COLUMN_COORDINATE = 1;
+
+	private static final int CELL_NOT_IN_CAGE = -1;
+
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
 	@SuppressWarnings("PointlessBooleanExpression")
@@ -570,7 +575,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			mCageMatrix = new int[this.mGridSize][this.mGridSize];
 			for (int row = 0; row < this.mGridSize; row++) {
 				for (int col = 0; col < this.mGridSize; col++) {
-					mCageMatrix[row][col] = -1;
+					mCageMatrix[row][col] = CELL_NOT_IN_CAGE;
 				}
 			}
 
@@ -607,9 +612,9 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 						// Note: no checking is done on the maximum permutations
 						// for the first cage.
 						int[][] cageTypeCoordinates = cageType
-								.getCellCoordinates(getCellAt(
-										coordinatesTopLeft[0],
-										coordinatesTopLeft[1]));
+								.getCellCoordinates(
+										coordinatesTopLeft[ROW_COORDINATE],
+										coordinatesTopLeft[COLUMN_COORDINATE]);
 						Cage firstCage = createCage(cageTypeCoordinates,
 								4 * mMaxCagePermutations);
 						if (firstCage != null) {
@@ -626,13 +631,12 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 			// Fill remainder of grid
 			int countSingles = 0;
-			for (Cell cell : this.mCells) {
-				if (cell.cellInAnyCage()) {
-					continue; // Cell already in a cage, skip
-				}
-
+			int[] coordinatesCellNotInAnyCage;
+			while ((coordinatesCellNotInAnyCage = getCoordinatesOfNextCellNotInAnyCage()) != null) {
 				// Determine a random cage which will start at this cell.
-				Cage cage = selectRandomCageType(cell);
+				Cage cage = selectRandomCageType(
+						coordinatesCellNotInAnyCage[ROW_COORDINATE],
+						coordinatesCellNotInAnyCage[COLUMN_COORDINATE]);
 
 				if (cage.getNumberOfCells() == 1) {
 					countSingles++;
@@ -645,7 +649,6 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 											+ mMaximumSingleCellCages
 											+ ") in attempt " + attempts);
 						}
-						clearAllCages();
 						restart = true;
 						break;
 					}
@@ -664,7 +667,6 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 						.getByGridDefinition(gridDefinition) != null) {
 					// The exact same grid has been created before. Create
 					// another grid.
-					clearAllCages();
 					restart = true;
 					if (DEBUG_GRID_GENERATOR) {
 						publishProgress(
@@ -692,14 +694,19 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	 * Create a new cage which originates at the given cell. The cage type for
 	 * this cage will be randomly determined.
 	 * 
-	 * @param origin
-	 *            The cell at which the cage originates.
+	 * @param rowOriginCell
+	 *            The row (0 based) at which the origin cell of the cage type
+	 *            will be placed.
+	 * @param columnOriginCell
+	 *            The column (0 based) at which the origin cell of the cage type
+	 *            will be placed.
+	 * 
 	 * @return The selected grid cage type.
 	 */
-	private Cage selectRandomCageType(Cell origin) {
+	private Cage selectRandomCageType(int rowOriginCell, int columnOriginCell) {
 		if (DEBUG_GRID_GENERATOR_FULL) {
-			Log.i(TAG, "Determine valid cages for cell[" + origin.getRow()
-					+ "," + origin.getColumn() + "]");
+			Log.i(TAG, "Determine valid cages for cell[" + rowOriginCell + ","
+					+ columnOriginCell + "]");
 		}
 
 		// Store indexes of all defined cages types, except cage type 0 which is
@@ -729,8 +736,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 			// Get coordinates of all cells involved when this cage type is
 			// placed at this origin.
-			int[][] cageTypeCoordinates = selectedCageType
-					.getCellCoordinates(origin);
+			int[][] cageTypeCoordinates = selectedCageType.getCellCoordinates(
+					rowOriginCell, columnOriginCell);
 
 			// Build mask for this cage
 			boolean[][] maskNewCage = new boolean[this.mGridSize][this.mGridSize];
@@ -738,8 +745,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			int[] maskNewCageColCount = new int[this.mGridSize];
 			boolean cageIsValid = true;
 			for (int[] cageTypeCoordinate : cageTypeCoordinates) {
-				int row = cageTypeCoordinate[0];
-				int col = cageTypeCoordinate[1];
+				int row = cageTypeCoordinate[ROW_COORDINATE];
+				int col = cageTypeCoordinate[COLUMN_COORDINATE];
 
 				if (row < 0 || row >= this.mGridSize || col < 0
 						|| col >= this.mGridSize) {
@@ -797,14 +804,14 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		if (DEBUG_GRID_GENERATOR_FULL) {
 			// Print solution, cage matrix and maskNewCage
 			boolean[][] maskNewCage = new boolean[this.mGridSize][this.mGridSize];
-			maskNewCage[origin.getRow()][origin.getColumn()] = true;
+			maskNewCage[rowOriginCell][columnOriginCell] = true;
 			printCageCreationDebugInformation(maskNewCage);
 		}
 
 		// Create the new cage for a single cell.
 		return createCage(mCageTypeGenerator
 				.getSingleCellCageType()
-				.getCellCoordinates(origin), 0);
+				.getCellCoordinates(rowOriginCell, columnOriginCell), 0);
 	}
 
 	/**
@@ -829,8 +836,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		List<Cell> cellsInCageArrayList = new ArrayList<Cell>();
 		int index = 0;
 		for (int[] cageTypeCoordinate : cageTypeCoordinates) {
-			int row = cageTypeCoordinate[0];
-			int col = cageTypeCoordinate[1];
+			int row = cageTypeCoordinate[ROW_COORDINATE];
+			int col = cageTypeCoordinate[COLUMN_COORDINATE];
 			Cell cell = getCellAt(row, col);
 			cellsInCage[index] = cell.getCellId();
 			cellsInCageArrayList.add(cell);
@@ -873,8 +880,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 		// Update the cage matrix
 		for (int[] cageTypeCoordinate : cageTypeCoordinates) {
-			int row = cageTypeCoordinate[0];
-			int col = cageTypeCoordinate[1];
+			int row = cageTypeCoordinate[ROW_COORDINATE];
+			int col = cageTypeCoordinate[COLUMN_COORDINATE];
 			mCageMatrix[row][col] = newCageId;
 		}
 
@@ -909,7 +916,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			line += "   ";
 			for (int col = 0; col < this.mGridSize; col++) {
 				line += " "
-						+ (mCageMatrix[row][col] == -1 ? emptyCell : String
+						+ (mCageMatrix[row][col] == CELL_NOT_IN_CAGE ? emptyCell : String
 								.format(cageIdFormat, mCageMatrix[row][col]));
 			}
 			if (maskNewCage != null) {
@@ -1243,13 +1250,6 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		return -1;
 	}
 
-	private void clearAllCages() {
-		for (Cell cell : this.mCells) {
-			cell.clearCage();
-		}
-		this.mCages = new ArrayList<Cage>();
-	}
-
 	/**
 	 * Clears the given value from all positions in the solution matrix.
 	 */
@@ -1299,5 +1299,23 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			mListener.onCancelGridGenerating();
 		}
 		super.onCancelled(result);
+	}
+
+	/**
+	 * Get the coordinates of the next cell which is not yet contained in a
+	 * cage.
+	 * 
+	 * @return The coordinates of the next cell which is not yet contained in a
+	 *         cage. Null in case all cells are contained in a cage.
+	 */
+	private int[] getCoordinatesOfNextCellNotInAnyCage() {
+		for (int row = 0; row < mGridSize; row++) {
+			for (int column = 0; column < mGridSize; column++) {
+				if (mCageMatrix[row][column] == CELL_NOT_IN_CAGE) {
+					return new int[] { row, column };
+				}
+			}
+		}
+		return null;
 	}
 }

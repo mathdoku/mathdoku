@@ -1,7 +1,5 @@
 package net.mathdoku.plus.gridGenerating;
 
-import net.mathdoku.plus.grid.Cell;
-
 public class CageType {
 	public static final String TAG = "MathDoku.CageType";
 
@@ -78,18 +76,19 @@ public class CageType {
 	/**
 	 * Get the cell coordinates if this cage type starts at the given origin.
 	 * 
-	 * @param origin
-	 *            The origin cell where the cage type does start.
+	 * @param rowOriginCell
+	 *            The row (0 based) at which the origin cell of the cage type
+	 *            will be placed.
+	 * @param columnOriginCell
+	 *            The column (0 based) at which the origin cell of the cage type
+	 *            will be placed.
 	 * @return An array of coordinates (row,col) of cells involved. The caller
 	 *         needs to check whether all returned coordinates are valid.
 	 */
-	public int[][] getCellCoordinates(Cell origin) {
-		int rowOrigin = origin.getRow();
-		int colOrigin = origin.getColumn();
-
-		// Get cage type matrix
+	public int[][] getCellCoordinates(int rowOriginCell, int columnOriginCell) {
+		// Get cage type matrix. If not defined, return a single cell cage.
 		if (mUsedCells == null) {
-			return new int[][] { { rowOrigin, colOrigin } };
+			return new int[][] { { rowOriginCell, columnOriginCell } };
 		}
 
 		// Calculate coordinates of cells involved in case this cage type starts
@@ -100,7 +99,8 @@ public class CageType {
 			for (int col = 0; col < mCols; col++) {
 				if (mUsedCells[row][col]) {
 					coordinates[coordinatesIndex++] = new int[] {
-							rowOrigin + row, colOrigin + col - mColOriginOffset };
+							rowOriginCell + row,
+							columnOriginCell + col - mColOriginOffset };
 				}
 			}
 		}

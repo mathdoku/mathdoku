@@ -281,11 +281,6 @@ public class Cell {
 		return mUserValue != mCorrectValue;
 	}
 
-	/* Returns whether the cell is a member of any cage */
-	public boolean cellInAnyCage() {
-		return mCageId != -1;
-	}
-
 	/**
 	 * Mark the cell as a cell containing an invalid value.
 	 */
@@ -346,11 +341,6 @@ public class Cell {
 
 	public void setCageId(int newCageId) {
 		mCageId = newCageId;
-	}
-
-	public void clearCage() {
-		mCageId = -1;
-		mCageText = "";
 	}
 
 	public void setCageText(String newCageText) {
