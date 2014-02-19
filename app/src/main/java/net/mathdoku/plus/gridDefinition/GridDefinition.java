@@ -340,7 +340,7 @@ public class GridDefinition {
 					.setGridSize(mGridSize)
 					.setId(cellNumber)
 					.setCageId(cageId)
-					.setSkipCheckCorrectValueOnBuild()
+					.setLenientCheckCorrectValueOnBuild()
 					.build();
 			mCells.add(cell);
 

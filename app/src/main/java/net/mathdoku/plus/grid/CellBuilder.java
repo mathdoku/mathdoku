@@ -21,15 +21,21 @@ public class CellBuilder {
 	private CellBuilderErrorChecking mCellBuilderErrorChecking; // Optional
 
 	private enum CellBuilderErrorChecking {
-		NORMAL, SKIP_CORRECT_VALUE_CHECK, SKIP_CAGE_CHECK
+		NORMAL, LENIENT_CORRECT_VALUE_CHECK, SKIP_CAGE_CHECK
 	}
 
+	public static final int GRID_SIZE_NOT_SET = -1;
+	public static final int ID_NOT_SET = -1;
+	public static final int CORRECT_VALUE_NOT_SET = 0;
+	public static final int USER_VALUE_NOT_SET = 0;
+	public static final int CAGE_ID_NOT_SET = -1;
+
 	public CellBuilder() {
-		mGridSize = -1; // Unknown
-		mId = -1; // Unknown
-		mCorrectValue = -1; // Unknown
-		mUserValue = 0; // Not filled in
-		mCageId = -1; // Unknown
+		mGridSize = GRID_SIZE_NOT_SET;
+		mId = ID_NOT_SET;
+		mCorrectValue = CORRECT_VALUE_NOT_SET;
+		mUserValue = USER_VALUE_NOT_SET;
+		mCageId = CAGE_ID_NOT_SET;
 		mCageText = "";
 		mPossibles = new ArrayList<Integer>();
 		mDuplicateValueHighlight = false;
@@ -108,14 +114,15 @@ public class CellBuilder {
 	}
 
 	/**
-	 * Skips checking the correct value.
-	 * 
-	 * In case of loading a grid based on a grid definition this is not possible
-	 * as those value are unknown until the grid is solved with the MathdokuDLX
-	 * class. Cannot be used in conjunction with setDeferCageCheck.
+	 * Perform a lenient check on the correct value when building the cell. This
+	 * allows the correct value to be equal to zero. This is needed in case a
+	 * grid is being build solely on a grid definition which does not contain
+	 * the correct values. After the grid is created, the correct values are
+	 * determined with the MathdokuDLX class. This method cannot be used in
+	 * conjunction with setSkipCheckCageReferenceOnBuild.
 	 */
-	public CellBuilder setSkipCheckCorrectValueOnBuild() {
-		mCellBuilderErrorChecking = CellBuilderErrorChecking.SKIP_CORRECT_VALUE_CHECK;
+	public CellBuilder setLenientCheckCorrectValueOnBuild() {
+		mCellBuilderErrorChecking = CellBuilderErrorChecking.LENIENT_CORRECT_VALUE_CHECK;
 
 		return this;
 	}
@@ -181,8 +188,8 @@ public class CellBuilder {
 		return mInvalidUserValueHighlight;
 	}
 
-	public boolean performCorrectValueCheck() {
-		return mCellBuilderErrorChecking != CellBuilderErrorChecking.SKIP_CORRECT_VALUE_CHECK;
+	public boolean performLenientCorrectValueCheck() {
+		return mCellBuilderErrorChecking == CellBuilderErrorChecking.LENIENT_CORRECT_VALUE_CHECK;
 	}
 
 	public boolean performCageReferenceCheck() {

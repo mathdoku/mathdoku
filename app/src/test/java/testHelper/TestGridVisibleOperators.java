@@ -13,7 +13,9 @@ import java.util.List;
 public class TestGridVisibleOperators extends TestGrid {
 	public TestGridVisibleOperators() {
 		super(4, false);
+	}
 
+	protected void createTestGrid() {
 		// Create the cages
 		List<Cage> mCages = new ArrayList<Cage>();
 		int cageId = 0; // Cage id's are 0-based

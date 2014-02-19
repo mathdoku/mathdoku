@@ -916,8 +916,9 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			line += "   ";
 			for (int col = 0; col < this.mGridSize; col++) {
 				line += " "
-						+ (mCageMatrix[row][col] == CELL_NOT_IN_CAGE ? emptyCell : String
-								.format(cageIdFormat, mCageMatrix[row][col]));
+						+ (mCageMatrix[row][col] == CELL_NOT_IN_CAGE ? emptyCell
+								: String.format(cageIdFormat,
+										mCageMatrix[row][col]));
 			}
 			if (maskNewCage != null) {
 				line += "   ";

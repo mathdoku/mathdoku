@@ -346,6 +346,7 @@ public class GridLoaderTest {
 				when(cellStorage.getCellBuilderFromStorageString(anyString(), anyInt()))
 						.thenReturn(validStorageString ? cellBuilder : null);
 				when(cellBuilder.getGridSize()).thenReturn(mGridSize);
+				when(cellBuilder.getCorrectValue()).thenReturn(1);
 
 			} else {
 				when(cellStorage.getCellBuilderFromStorageString(anyString(), anyInt()))

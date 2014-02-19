@@ -8,11 +8,10 @@ import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
+import net.mathdoku.plus.grid.Cage;
 import net.mathdoku.plus.grid.Cell;
 import net.mathdoku.plus.grid.CellChange;
 import net.mathdoku.plus.grid.Grid;
-import net.mathdoku.plus.grid.Cage;
-import net.mathdoku.plus.grid.CellSelectorInRowOrColumn;
 import net.mathdoku.plus.statistics.GridStatistics.StatisticsCounterType;
 import net.mathdoku.plus.tip.TipBadCageMath;
 import net.mathdoku.plus.tip.TipCopyCellValues;
@@ -20,8 +19,6 @@ import net.mathdoku.plus.tip.TipDuplicateValue;
 import net.mathdoku.plus.tip.TipIncorrectValue;
 import net.mathdoku.plus.tip.TipOrderOfValuesInCage;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
-
-import java.util.List;
 
 /**
  * The grid base player view allows to play a grid with a digit button interface
@@ -308,7 +305,8 @@ public class GridBasePlayerView extends GridViewerView implements
 								.clearRedundantPossiblesInSameRowOrColumn(cellChange);
 					}
 
-					// Store the cell change (including related cell changed for redundant
+					// Store the cell change (including related cell changed for
+					// redundant
 					// value which have been cleared.
 					mGrid.addMove(cellChange);
 
@@ -327,20 +325,9 @@ public class GridBasePlayerView extends GridViewerView implements
 	 *            The grid cell for which a user value was set.
 	 */
 	private void checkGridValidity(Cell selectedCell) {
-		// Get a list of cells in the same row or column as the selected cell.
-		CellSelectorInRowOrColumn cellSelectorInRowOrColumn = new CellSelectorInRowOrColumn(
-				mGrid.getCells(), selectedCell.getRow(),
-				selectedCell.getColumn());
-		List<Cell> cellsInSameRowOrColumn = cellSelectorInRowOrColumn.find();
-
-		// Check for each cell if it has duplicate values in the same column or
-		// row.
-		boolean foundDuplicateValue = false;
-		for (Cell cell : cellsInSameRowOrColumn) {
-			foundDuplicateValue = cell.markDuplicateValuesInSameRowAndColumn()
-					|| foundDuplicateValue;
-		}
-		if (foundDuplicateValue
+		// Mark all cells having a duplicate cell value. If a duplicate value is
+		// found, check whether the duplicate value tip should be displayed.
+		if (mGrid != null && mGrid.markDuplicateValues()
 				&& TipDuplicateValue.toBeDisplayed(mPreferences)) {
 			new TipDuplicateValue(mContext).show();
 		}

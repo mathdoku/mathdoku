@@ -15,7 +15,10 @@ public class TestGridHiddenOperators extends TestGrid {
 
 	public TestGridHiddenOperators() {
 		super(4, true);
+	}
 
+	@Override
+	protected void createTestGrid() {
 		// Create the cages
 		List<Cage> mCages = new ArrayList<Cage>();
 		int cageId = 0; // Cage id's are 0-based

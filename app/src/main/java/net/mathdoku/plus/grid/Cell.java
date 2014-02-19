@@ -12,11 +12,11 @@ public class Cell {
 	private static final String TAG = "MathDoku.Cell";
 
 	// Index of the cell (left to right, top to bottom, zero-indexed)
-	private int mId;
+	private final int mId;
 	// X grid position, zero indexed
-	private int mColumn;
+	private final int mColumn;
 	// Y grid position, zero indexed
-	private int mRow;
+	private final int mRow;
 	// Value of the digit in the cell
 	private int mCorrectValue;
 	// User's entered value
@@ -26,12 +26,7 @@ public class Cell {
 	// String of the cage
 	private String mCageText;
 	// User's candidate digits
-	private List<Integer> mPossibles;
-
-	// X pixel position
-	private float mPosX;
-	// Y pixel position
-	private float mPosY;
+	private final List<Integer> mPossibles;
 
 	private Grid mGrid;
 
@@ -48,10 +43,6 @@ public class Cell {
 	private boolean mBordersInvalidated;
 
 	public Cell(CellBuilder cellBuilder) {
-		// Initialize the variables
-		mPosX = 0;
-		mPosY = 0;
-
 		// Get values from CellBuilder
 		int gridSize = cellBuilder.getGridSize();
 		mId = cellBuilder.getId();
@@ -68,6 +59,7 @@ public class Cell {
 
 		// Check if required parameters are specified
 		validateCellParametersThrowsExceptionOnError(cellBuilder);
+		validatePossiblesThrowsExceptionOnError(cellBuilder);
 		validateCorrectValueThrowsExceptionOnError(cellBuilder);
 		validateCageReferenceThrowsExceptionOnError(cellBuilder);
 
@@ -79,35 +71,52 @@ public class Cell {
 	private void validateCellParametersThrowsExceptionOnError(
 			CellBuilder cellBuilder) {
 		int gridSize = cellBuilder.getGridSize();
-		if (gridSize <= 0) {
-			throw new InvalidGridException("Parameter gridSize (" + gridSize
-					+ ") has an invalid value.");
+		if (gridSize <= 0 || gridSize > 9) {
+			throw new InvalidGridException(String.format(
+					"Parameter gridSize (%d) has an invalid value.", gridSize));
 		}
 		if (mId < 0) {
-			throw new InvalidGridException("Parameter mId (" + mId
-					+ ") has an invalid value.");
+			throw new InvalidGridException(String.format(
+					"Parameter mId (%d) has an invalid value.", mId));
 		}
 		if (mUserValue < 0 || mUserValue > gridSize) {
-			throw new InvalidGridException("Parameter mUserValue ("
-					+ mUserValue + ") has an invalid value.");
+			throw new InvalidGridException(String.format(
+					"Parameter mUserValue (%d) has an invalid value.",
+					mUserValue));
+		}
+	}
+
+	private void validatePossiblesThrowsExceptionOnError(CellBuilder cellBuilder) {
+		int gridSize = cellBuilder.getGridSize();
+		if (mPossibles == null) {
+			throw new InvalidGridException("Parameter mPossibles is null.");
+		}
+		for (int possible : mPossibles) {
+			if (possible <= 0 || possible > gridSize) {
+				throw new InvalidGridException(String.format(
+						"Parameter mPossible contains a possible value (%d) with "
+								+ "an invalid " + "value.", possible));
+			}
 		}
 	}
 
 	private void validateCorrectValueThrowsExceptionOnError(
 			CellBuilder cellBuilder) {
-		if (cellBuilder.performCorrectValueCheck()
-				&& (mCorrectValue <= 0 || mCorrectValue > cellBuilder
-						.getGridSize())) {
-			throw new InvalidGridException("Parameter mCorrectValue ("
-					+ mCorrectValue + ") has an invalid value.");
+		int minimumCorrectValue = cellBuilder.performLenientCorrectValueCheck() ? CellBuilder.CORRECT_VALUE_NOT_SET
+				: 1;
+		if (mCorrectValue < minimumCorrectValue
+				|| mCorrectValue > cellBuilder.getGridSize()) {
+			throw new InvalidGridException(String.format(
+					"Parameter mCorrectValue (%d) has an invalid value.",
+					mCorrectValue));
 		}
 	}
 
 	private void validateCageReferenceThrowsExceptionOnError(
 			CellBuilder cellBuilder) {
 		if (cellBuilder.performCageReferenceCheck() && mCageId < 0) {
-			throw new InvalidGridException("Parameter mCageId (" + mCageId
-					+ ") has an invalid value.");
+			throw new InvalidGridException(String.format(
+					"Parameter mCageId (%d) has an invalid value.", mCageId));
 		}
 	}
 
@@ -145,35 +154,26 @@ public class Cell {
 	 * 
 	 * @param digit
 	 *            The digit which has to be added.
+	 * @return True is the value has been added. False otherwise.
 	 */
-	public void addPossible(int digit) {
-		addPossible(digit, true);
-	}
+	public boolean addPossible(int digit) {
+		if (isValueNotValid(digit) || hasPossible(digit)) {
+			return false;
+		}
 
-	/**
-	 * Adds the given digit to the possible values if not yet added before.
-	 * 
-	 * @param digit
-	 *            The digit which has to be added.
-	 * @param updateStatistics
-	 *            True in case the statistics have to be updated when adding a
-	 *            new maybe value. False otherwise.
-	 */
-	void addPossible(int digit, boolean updateStatistics) {
-		if (!hasPossible(digit)) {
-			// Add possible value and sort the list of possible values.
-			mPossibles.add(digit);
-			Collections.sort(mPossibles);
+		// Add possible value and sort the list of possible values.
+		mPossibles.add(digit);
+		Collections.sort(mPossibles);
 
-			// Update statistics
-			if (updateStatistics && mGrid != null) {
-				GridStatistics gridStatistics = mGrid.getGridStatistics();
-				if (gridStatistics != null) {
-					gridStatistics
-							.increaseCounter(StatisticsCounterType.POSSIBLES);
-				}
+		// Update statistics
+		if (mGrid != null) {
+			GridStatistics gridStatistics = mGrid.getGridStatistics();
+			if (gridStatistics != null) {
+				gridStatistics.increaseCounter(StatisticsCounterType.POSSIBLES);
 			}
 		}
+
+		return true;
 	}
 
 	/**
@@ -181,10 +181,15 @@ public class Cell {
 	 * 
 	 * @param digit
 	 *            The digit which has to be removed.
+	 * @return True in case the given digit has been removed. False otherwise.
 	 */
-	public void removePossible(int digit) {
+	public boolean removePossible(int digit) {
 		if (hasPossible(digit)) {
 			mPossibles.remove(Integer.valueOf(digit));
+			return true;
+		} else {
+			// Digit was not added as possible.
+			return false;
 		}
 	}
 
@@ -199,52 +204,78 @@ public class Cell {
 	/**
 	 * Set the user value of the cell to a new value.
 	 * 
-	 * @param digit
+	 * @param newValue
 	 *            The new value for the cell. Use 0 to clear the cell.
+	 * @return True if the value is set as user value. False otherwise.
 	 */
-	public void setUserValue(int digit) {
-		// Update statistics
-		if (mGrid != null) {
-			GridStatistics gridStatistics = mGrid.getGridStatistics();
-
-			// Only count as replacement as both the original and the new value
-			// are not 0 as this is used to indicate an empty cell.
-			if (digit != 0 && mUserValue != 0 && digit != mUserValue) {
-				gridStatistics
-						.increaseCounter(StatisticsCounterType.USER_VALUE_REPLACED);
-			}
-
-			// Cell counters are only update if the solution of the cell has
-			// not been revealed.
-			if (mRevealed == false) {
-				gridStatistics
-						.decreaseCounter(mUserValue == 0 ? StatisticsCounterType.CELLS_EMPTY
-								: StatisticsCounterType.CELLS_FILLED);
-				gridStatistics
-						.increaseCounter(digit == 0 ? StatisticsCounterType.CELLS_EMPTY
-								: StatisticsCounterType.CELLS_FILLED);
-			}
+	public boolean setUserValue(int newValue) {
+		if (isValueNotValid(newValue) && newValue != 0) {
+			// New value is invalid. Note: 0 is used to indicate that no user
+			// value is set!
+			return false;
 		}
 
-		// Remove possibles
+		// Check if the value is changed.
+		int oldValue = mUserValue;
+		if (newValue == oldValue) {
+			return false;
+		}
+
+		// Set new value and remove possibles
+		mUserValue = newValue;
 		mPossibles.clear();
+
+		updateStatisticsOnChangeOfUserValue(oldValue, newValue);
 
 		// Clear highlight except cheating
 		mInvalidUserValueHighlight = false;
 		mDuplicateValueHighlight = false;
 
-		// Set new value
-		mUserValue = digit;
-
 		// Set borders for this cell and the adjacent cells
 		mBordersInvalidated = true;
 
 		// Check if grid is solved.
-		if (mGrid != null) {
-			if (mGrid.isSolved()) {
-				mGrid.setSolved();
+		if (mGrid != null && mGrid.isSolved()) {
+			mGrid.setSolved();
+		}
+
+		return true;
+	}
+
+	private void updateStatisticsOnChangeOfUserValue(int oldUserValue,
+			int newUserValue) {
+		if (mGrid != null && newUserValue != oldUserValue) {
+			GridStatistics gridStatistics = mGrid.getGridStatistics();
+
+			// Only count as replacement as both the original and the new value
+			// are not 0 as this is used to indicate an empty cell.
+			if (newUserValue != 0 && oldUserValue != 0) {
+				gridStatistics
+						.increaseCounter(StatisticsCounterType.USER_VALUE_REPLACED);
+			}
+
+			// Counters for filled and empty cells are only updated if the
+			// solution of the cell has not been revealed.
+			if (!mRevealed) {
+				if (oldUserValue == 0 && newUserValue != 0) {
+					// Empty cell is filled in
+					gridStatistics
+							.decreaseCounter(StatisticsCounterType.CELLS_EMPTY);
+					gridStatistics
+							.increaseCounter(StatisticsCounterType.CELLS_FILLED);
+				} else if (oldUserValue != 0 && newUserValue == 0) {
+					// Cell with user value is cleared
+					gridStatistics
+							.decreaseCounter(StatisticsCounterType.CELLS_FILLED);
+					gridStatistics
+							.increaseCounter(StatisticsCounterType.CELLS_EMPTY);
+				}
 			}
 		}
+	}
+
+	private boolean isValueNotValid(int digit) {
+		return digit < 1 || digit > mGrid.getGridSize();
 	}
 
 	/**
@@ -336,7 +367,7 @@ public class Cell {
 	}
 
 	public Cage getCage() {
-		return (mGrid == null ? null : mGrid.getCage(mCageId));
+		return mGrid == null ? null : mGrid.getCage(mCageId);
 	}
 
 	public void setCageId(int newCageId) {
@@ -356,24 +387,34 @@ public class Cell {
 	 *         cell. False otherwise.
 	 */
 	public boolean hasPossible(int digit) {
-		return (mPossibles.indexOf(Integer.valueOf(digit)) >= 0);
+		return mPossibles.indexOf(digit) >= 0;
 	}
 
 	/**
-	 * Confirm that the user has revealed the content of the cell.
+	 * Reveals the correct value of a cell. Note, revealing a cell containing
+	 * the correct value is handled the same way as revealing the cell which
+	 * does not contain a correct value. In this way, revealing a cell cannot be
+	 * abused as a way of using check progress for a single cell without having
+	 * a penalty to be paid.
 	 */
-	public void setRevealed() {
-		// Correct grid statistics
-		if (mRevealed == false && mGrid != null) {
-			GridStatistics gridStatistics = mGrid.getGridStatistics();
-			gridStatistics
-					.decreaseCounter(isUserValueSet() ? StatisticsCounterType.CELLS_FILLED
-							: StatisticsCounterType.CELLS_EMPTY);
-			gridStatistics
-					.increaseCounter(StatisticsCounterType.CELLS_REVEALED);
+	public void revealCorrectValue() {
+		// Update the grid statistics only in case the cell is revealed for the
+		// first time.
+		if (!mRevealed) {
+			if (mGrid != null) {
+				GridStatistics gridStatistics = mGrid.getGridStatistics();
+				gridStatistics
+						.decreaseCounter(isUserValueSet() ? StatisticsCounterType.CELLS_FILLED
+								: StatisticsCounterType.CELLS_EMPTY);
+				gridStatistics
+						.increaseCounter(StatisticsCounterType.CELLS_REVEALED);
+			}
+			mRevealed = true;
 		}
 
-		mRevealed = true;
+		// Always set the user value again to the correct value as it might have
+		// been changed af the previous time it was revealed.
+		mUserValue = mCorrectValue;
 	}
 
 	/**
@@ -399,40 +440,7 @@ public class Cell {
 			return false;
 		}
 
-		Cage selectedCageInGrid = selectedCellInGrid.getCage();
-
-		return (selectedCageInGrid.getId() == mCageId);
-	}
-
-	/**
-	 * Checks whether this cell is part of the same cage as the cell at the
-	 * given coordinates.
-	 * 
-	 * @param row
-	 *            Row number (zero based) of cell to compare with.
-	 * @param column
-	 *            Column number (zero based) of cell to compare with.
-	 * @return True in case cells are part of same cage. False otherwise.
-	 */
-	boolean isInSameCageAsCell(int row, int column) {
-		Cell cell = mGrid.getCellAt(row, column);
-		return (cell != null && cell.getCageId() == mCageId);
-	}
-
-	public Cell getCellAbove() {
-		return mGrid.getCellAt(mRow - 1, mColumn);
-	}
-
-	public Cell getCellOnRight() {
-		return mGrid.getCellAt(mRow, mColumn + 1);
-	}
-
-	public Cell getCellBelow() {
-		return mGrid.getCellAt(mRow + 1, mColumn);
-	}
-
-	public Cell getCellOnLeft() {
-		return mGrid.getCellAt(mRow, mColumn - 1);
+		return selectedCellInGrid.getCageId() == mCageId;
 	}
 
 	/**
@@ -442,7 +450,7 @@ public class Cell {
 	 * @return True in case the cell is empty. False otherwise.
 	 */
 	public boolean isEmpty() {
-		return (mUserValue == 0 && mPossibles.size() == 0);
+		return mUserValue == 0 && mPossibles.isEmpty();
 	}
 
 	/**
@@ -457,42 +465,6 @@ public class Cell {
 	}
 
 	/**
-	 * Check whether the user value of this cell is used in another cell on the
-	 * same row or column.
-	 * 
-	 * @return True in case the user value of this cell is used in another cell
-	 *         on the same row or column.
-	 */
-	public boolean markDuplicateValuesInSameRowAndColumn() {
-		if (mGrid == null) {
-			// Cannot look for other cells in same row or column as the cell
-			// is not used in a grid.
-			return false;
-		}
-
-		boolean duplicateValue = false;
-		if (isUserValueSet()) {
-			for (Cell cell : mGrid.getCells()) {
-				if (cell.equals(this) == false
-						&& cell.getUserValue() == mUserValue) {
-					if (cell.getColumn() == mColumn || cell.getRow() == mRow) {
-						// Found another cell in the same row or column
-						// containing the same user value. Mark this other cell
-						// as duplicate.
-						duplicateValue = true;
-						cell.setDuplicateHighlight(true);
-					}
-				}
-			}
-		}
-		// Always update this cell as the duplicate highlight must be removed if
-		// not applicable anymore.
-		setDuplicateHighlight(duplicateValue);
-
-		return duplicateValue;
-	}
-
-	/**
 	 * Checks whether the cell is the selected cell.
 	 * 
 	 * @return True if the cell is the selected cell. False otherwise.
@@ -501,18 +473,8 @@ public class Cell {
 		return mSelected;
 	}
 
-	/**
-	 * Mark this cell as the selected cell.
-	 */
-	public void select() {
-		mSelected = true;
-	}
-
-	/**
-	 * Unmark this cell as the selected cell.
-	 */
-	public void deselect() {
-		mSelected = false;
+	public void setSelected(boolean selected) {
+		mSelected = selected;
 	}
 
 	public String getCageText() {

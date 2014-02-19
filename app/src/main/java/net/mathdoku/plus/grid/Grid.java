@@ -8,7 +8,6 @@ import net.mathdoku.plus.gridDefinition.GridDefinition;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.statistics.GridStatistics.StatisticsCounterType;
-import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
 
 import java.util.ArrayList;
@@ -89,15 +88,6 @@ public class Grid {
 			return new ArrayList<CellChange>();
 		}
 
-		public CellSelectorInRowOrColumn createCellSelectorInRowOrColumn(
-				List<Cell> cells, int row, int column) {
-			return new CellSelectorInRowOrColumn(cells, row, column);
-		}
-
-		public SolvingAttemptDatabaseAdapter createSolvingAttemptDatabaseAdapter() {
-			return new SolvingAttemptDatabaseAdapter();
-		}
-
 		public GridBuilder createGridBuilder() {
 			return new GridBuilder();
 		}
@@ -173,12 +163,6 @@ public class Grid {
 			}
 		}
 		return null;
-	}
-
-	private void markDuplicateValues() {
-		for (Cell cell : mCells) {
-			cell.markDuplicateValuesInSameRowAndColumn();
-		}
 	}
 
 	private void setGridReferences() {
@@ -300,8 +284,7 @@ public class Grid {
 		if (mCells != null) {
 			for (Cell cell : this.mCells) {
 				if (cell.isUserValueIncorrect()) {
-					cell.setRevealed();
-					cell.setUserValue(cell.getCorrectValue());
+					cell.revealCorrectValue();
 				}
 			}
 		}
@@ -435,19 +418,10 @@ public class Grid {
 		setSelectedCell(affectedCell);
 
 		if (userValueBeforeUndo != affectedCell.getUserValue()) {
-			// Each cell in the same column or row as the restored cell, has to
-			// be checked for duplicate values.
-			CellSelectorInRowOrColumn cellSelectorInRowOrColumn = mObjectsCreator
-					.createCellSelectorInRowOrColumn(mCells,
-							affectedCell.getRow(), affectedCell.getColumn());
-			List<Cell> cellsInSameRowOrColumn = cellSelectorInRowOrColumn
-					.find();
-			if (cellsInSameRowOrColumn != null) {
-				for (Cell cellInSameRowOrColumn : cellsInSameRowOrColumn) {
-					cellInSameRowOrColumn
-							.markDuplicateValuesInSameRowAndColumn();
-				}
-			}
+			// Mark all cells having a duplicate cell value. If a duplicate
+			// value is
+			// found, check whether the duplicate value tip should be displayed.
+			markDuplicateValues();
 
 			// Check the cage math
 			Cage cage = affectedCell.getCage();
@@ -473,7 +447,7 @@ public class Grid {
 		Cage oldSelectedCage = mSelectedCell.getCage();
 
 		// Deselect the cell itself
-		mSelectedCell.deselect();
+		mSelectedCell.setSelected(false);
 		mSelectedCell = null;
 
 		// Update borders of cage which was selected before.
@@ -497,13 +471,13 @@ public class Grid {
 		Cage oldSelectedCage = null;
 		if (mSelectedCell != null) {
 			oldSelectedCage = mSelectedCell.getCage();
-			mSelectedCell.deselect();
+			mSelectedCell.setSelected(false);
 		}
 		// Determine new cage
 		Cage newSelectedCage = cell.getCage();
 
 		// Select the new cell
-		cell.select();
+		cell.setSelected(true);
 		mSelectedCell = cell;
 
 		// Set borders if another cage is selected.
@@ -832,9 +806,7 @@ public class Grid {
 		// Save current state of selected cell
 		CellChange cellChange = mObjectsCreator.createCellChange(selectedCell);
 
-		// Reveal the user value
-		selectedCell.setRevealed();
-		selectedCell.setUserValue(selectedCell.getCorrectValue());
+		selectedCell.revealCorrectValue();
 
 		if (Preferences.getInstance().isPuzzleSettingClearMaybesEnabled()) {
 			// Update possible values for other cells in this row and
@@ -976,5 +948,85 @@ public class Grid {
 
 	public String getDefinition() {
 		return GridDefinition.getDefinition(this);
+	}
+
+	/**
+	 * Mark all cells having a duplicate user value.
+	 * 
+	 * @return True in case a duplicate value is found. False otherwise.
+	 */
+	public boolean markDuplicateValues() {
+		boolean duplicateValueFound = false;
+
+		// The first dimension for digitUsedInRow holds the different rows of
+		// the grid. The second dimension indicates whether digit (columnIndex +
+		// 1) is used in this row. The value stored refers to the first cell
+		// containing the digit.
+		Cell[][] digitUsedInRow = new Cell[mGridSize][mGridSize];
+
+		// The first dimension for digitUsedInColumn holds the different columns
+		// of the grid. The second dimension indicates whether digit
+		// (columnIndex + 1) is used in this column. The value stored refers to
+		// the first cell containing the digit.
+		Cell[][] digitUsedInColumn = new Cell[mGridSize][mGridSize];
+
+		// The user values of all cells are to the digitUsedInRow and
+		// digitUserInColumn matrices.
+		int rowConstraintsDimension1;
+		int columnConstraintsDimension1;
+		int constraintsDimension2;
+		boolean cellHasDuplicateUserValue;
+		for (Cell cell : mCells) {
+			rowConstraintsDimension1 = cell.getRow();
+			columnConstraintsDimension1 = cell.getColumn();
+
+			cellHasDuplicateUserValue = false;
+			if (cell.isUserValueSet()) {
+				// The user value of cell determines the second dimension for
+				// both constraint arrays.
+				constraintsDimension2 = cell.getUserValue() - 1;
+
+				if (digitUsedInRow[rowConstraintsDimension1][constraintsDimension2] == null) {
+					// The current cell is the first cell on the row using the
+					// user value.
+					digitUsedInRow[rowConstraintsDimension1][constraintsDimension2] = cell;
+				} else {
+					// This user value is also used by another cell on this row.
+					// Mark both the value of that cell and the current cell as
+					// duplicate value. Note: in case the same value is used
+					// more than twice in the same row, the first cell will be
+					// marked multiple times as duplicate.
+					markCellAsDuplicate(
+							digitUsedInRow[rowConstraintsDimension1][constraintsDimension2]);
+					cellHasDuplicateUserValue = true;
+					duplicateValueFound = true;
+				}
+
+				if (digitUsedInColumn[columnConstraintsDimension1][constraintsDimension2] == null) {
+					// The current cell is the first cell on the row using the
+					// user value.
+					digitUsedInColumn[columnConstraintsDimension1][constraintsDimension2] = cell;
+				} else {
+					// This user value is also used by another cell on this row.
+					// Mark both the value of that cell and the current cell as
+					// duplicate value. Note: in case the same value is used
+					// more than twice in the same row, the first cell will be
+					// marked multiple times as duplicate.
+					markCellAsDuplicate(
+							digitUsedInColumn[columnConstraintsDimension1][constraintsDimension2]);
+					cellHasDuplicateUserValue = true;
+					duplicateValueFound = true;
+				}
+			}
+			cell.setDuplicateHighlight(cellHasDuplicateUserValue);
+		}
+
+		return duplicateValueFound;
+	}
+
+	private void markCellAsDuplicate(Cell cell) {
+		if (!cell.isDuplicateValueHighlighted()) {
+			cell.setDuplicateHighlight(true);
+		}
 	}
 }
