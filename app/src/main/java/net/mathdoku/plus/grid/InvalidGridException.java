@@ -21,8 +21,8 @@ public class InvalidGridException extends ExceptionInInitializerError {
 	 *            The error message for the exception.
 	 */
 	public InvalidGridException(String errorMessage) {
-		super(errorMessage); // call super class constructor
-		this.mErrorMessage = errorMessage; // save message
+		super(errorMessage);
+		this.mErrorMessage = errorMessage;
 	}
 
 	public String getError() {
