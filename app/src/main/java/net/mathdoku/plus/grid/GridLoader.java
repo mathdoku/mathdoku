@@ -22,6 +22,7 @@ import java.util.List;
  * {@link net.mathdoku.plus.grid.Grid} object.
  */
 public class GridLoader {
+	@SuppressWarnings("unused")
 	private static final String TAG = "MathDoku.GridLoader";
 
 	private int mSavedWithRevision;
@@ -107,6 +108,8 @@ public class GridLoader {
 	public GridLoader() {
 		mObjectsCreator = new GridLoader.ObjectsCreator();
 
+		// Only throw exceptions when running in development mode. In production
+		// mode the grid load just fails without an error.
 		setThrowExceptionOnError(Config.mAppMode == Config.AppMode.DEVELOPMENT);
 	}
 
@@ -139,11 +142,7 @@ public class GridLoader {
 				.setSolvingAttemptId(solvingAttempt.mGridId, solvingAttempt.mId);
 		GridRow gridRow = mObjectsCreator.createGridDatabaseAdapter().get(
 				solvingAttempt.mGridId);
-		if (gridRow == null) {
-			return null;
-		}
-		if (gridRow.mGridSize <= 0) {
-			// Cannot load solving attempt for grids with an invalid grid size.
+		if (gridRow == null || gridRow.mGridSize <= 0) {
 			return null;
 		}
 
@@ -154,11 +153,8 @@ public class GridLoader {
 
 		// SolvingAttemptStorage can only be processed after the grid size and
 		// revision number is known.
-		if (loadFromStorageStrings(solvingAttempt) == false) {
-			return null;
-		}
-
-		if (loadStatistics(solvingAttempt.mGridId) == false) {
+		if (!loadFromStorageStrings(solvingAttempt)
+				|| !loadStatistics(solvingAttempt.mGridId)) {
 			return null;
 		}
 
@@ -171,131 +167,85 @@ public class GridLoader {
 		return solvingAttemptDatabaseAdapter.getData(solvingAttemptId);
 	}
 
-	private GridRow loadGridRow(int gridId) {
-		GridDatabaseAdapter gridDatabaseAdapter = mObjectsCreator
-				.createGridDatabaseAdapter();
-		return gridDatabaseAdapter.get(gridId);
-	}
-
 	/**
 	 * Loads data from the concatenated storage strings.
 	 * 
 	 * @return True in case the entire string is processed successful. False
 	 *         otherwise.
 	 */
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	private boolean loadFromStorageStrings(SolvingAttempt solvingAttempt) {
-		String line = "";
-		try {
-			if (solvingAttempt.mStorageString == null) {
-				if (mThrowExceptionOnError) {
-					throw new InvalidGridException(
-							"Solving attempt contains no storage string.");
-				}
-				return false;
-			}
+		if (solvingAttempt.mStorageString == null) {
+			return errorOnLoadStorageString(
+					"Solving attempt contains no storage string.", null);
+		}
 
+		try {
 			SolvingAttemptStorage solvingAttemptStorage = mObjectsCreator
 					.createSolvingAttemptStorage(solvingAttempt.mStorageString);
-			if ((line = solvingAttemptStorage.getFirstLine()) == null) {
-				if (mThrowExceptionOnError) {
-					throw new InvalidGridException(
-							"Unexpected end of solving attempt at first line");
-				}
-				return false;
-			}
-
-			GridStorage mGridStorage = mObjectsCreator.createGridStorage();
-			if (mGridStorage.fromStorageString(line, mSavedWithRevision) == false) {
-				if (mThrowExceptionOnError) {
-					throw new InvalidGridException(
-							"Line does not contain general grid information while this was "
-									+ "expected:" + line);
-				}
-				return false;
-			}
-			mGridBuilder.setActive(mGridStorage.isActive());
-			mGridBuilder.setRevealed(mGridStorage.isRevealed());
-
-			if ((line = solvingAttemptStorage.getNextLine()) == null) {
-				if (mThrowExceptionOnError) {
-					throw new InvalidGridException(
-							"Unexpected end of solving attempt after processing view information"
-									+ ".");
-				}
-				return false;
-			}
-
-			// Read cells
-			mCells = mObjectsCreator.createArrayListOfCells();
-			while (loadCell(line)) {
-				line = solvingAttemptStorage.getNextLine();
-			}
-			// Check if expected number of cells is read.
-			if (mCells.size() != mGridBuilder.mGridSize
-					* mGridBuilder.mGridSize) {
-				throw new InvalidGridException(
-						"Unexpected number of cells loaded. Expected: "
-								+ (mGridBuilder.mGridSize * mGridBuilder.mGridSize)
-								+ ", actual: " + mCells.size());
-			}
-			mGridBuilder.setCells(mCells);
-
-			// Read cages
-			mCages = mObjectsCreator.createArrayListOfCages();
-			while (loadCage(line)) {
-				line = solvingAttemptStorage.getNextLine();
-			}
-			// At least one expected is expected, so throw error in case no
-			// cages have been loaded.
-			if (mCages.size() == 0) {
-				if (mThrowExceptionOnError) {
-					throw new InvalidGridException(
-							"Line does not contain cage information while this was expected:"
-									+ line);
-				}
-				return false;
-			}
-			mGridBuilder.setCages(mCages);
-
-			// Remaining lines contain cell changes (zero or more expected)
-			mCellChanges = mObjectsCreator.createArrayListOfCellChanges();
-			while (loadCellChange(line)) {
-				line = solvingAttemptStorage.getNextLine();
-			}
-			mGridBuilder.setCellChanges(mCellChanges);
-
-			// Check if end of file is reached an not all information was read
-			// yet.
-			if (line != null) {
-				if (mThrowExceptionOnError) {
-					throw new InvalidGridException(
-							"Unexpected line found while end of file was expected: "
-									+ line);
-				}
-				return false;
-			}
-		} catch (InvalidGridException e) {
-			if (mThrowExceptionOnError) {
-				throw new InvalidGridException("Invalid format error in line ("
-						+ line + ") when restoring solving attempt with id '"
-						+ solvingAttempt.mId + "'\n" + e.getMessage());
-			}
-			return false;
+			loadGridStorage(solvingAttemptStorage);
+			loadCells(solvingAttemptStorage);
+			loadCages(solvingAttemptStorage);
+			loadCellChanges(solvingAttemptStorage);
 		} catch (NumberFormatException e) {
-			if (mThrowExceptionOnError) {
-				throw new InvalidGridException(
-						"Invalid Number format error in line (\" + line + \") when restoring solving attempt with id '"
-								+ solvingAttempt.mId + "'\n" + e.getMessage());
-			}
-			return false;
-		} catch (IndexOutOfBoundsException e) {
-			if (mThrowExceptionOnError) {
-				throw new InvalidGridException(
-						"Index out of bound error in line (\" + line + \") when restoring solving attempt with id '"
-								+ solvingAttempt.mId + "'\n" + e.getMessage());
-			}
-			return false;
+			return errorOnLoadStorageString(
+					String.format(
+							"Invalid Number format error when restoring solving attempt with id %d.",
+							solvingAttempt.mId), e);
+		} catch (InvalidGridException e) {
+			return errorOnLoadStorageString(
+					String.format(
+							"Loading of solving attempt data with id %d to grid builder failed.'",
+							solvingAttempt.mId), e);
 		}
+
+		return true;
+	}
+
+	private boolean loadGridStorage(SolvingAttemptStorage solvingAttemptStorage) {
+		String line = solvingAttemptStorage.getNextLine();
+		if (line == null) {
+			throw new InvalidGridException(
+					"Unexpected end of solving attempt at first line");
+		}
+
+		GridStorage mGridStorage = mObjectsCreator.createGridStorage();
+		if (!mGridStorage.fromStorageString(line, mSavedWithRevision)) {
+			throw new InvalidGridException(
+					"Line below does not contain general grid information while this was expected."
+							+ "\nLine: " + line);
+		}
+		mGridBuilder.setActive(mGridStorage.isActive());
+		mGridBuilder.setRevealed(mGridStorage.isRevealed());
+
+		line = solvingAttemptStorage.getNextLine();
+		if (line == null) {
+			throw new InvalidGridException(
+					"Unexpected end of solving attempt after processing view information.");
+		}
+
+		return true;
+	}
+
+	private boolean loadCells(SolvingAttemptStorage solvingAttemptStorage) {
+		mCells = mObjectsCreator.createArrayListOfCells();
+
+		String line = solvingAttemptStorage.getLine();
+		while (loadCell(line)) {
+			line = solvingAttemptStorage.getNextLine();
+		}
+		// Check if expected number of cells is read.
+		if (mCells.size() != mGridBuilder.mGridSize * mGridBuilder.mGridSize) {
+
+			throw new InvalidGridException(
+					String
+							.format("Unexpected number of cells loaded. Expected: %d, actual %d.",
+									mGridBuilder.mGridSize
+											* mGridBuilder.mGridSize,
+									mCells.size()));
+		}
+		mGridBuilder.setCells(mCells);
+
 		return true;
 	}
 
@@ -318,6 +268,26 @@ public class GridLoader {
 		return true;
 	}
 
+	private boolean loadCages(SolvingAttemptStorage solvingAttemptStorage) {
+		mCages = mObjectsCreator.createArrayListOfCages();
+
+		String line = solvingAttemptStorage.getLine();
+		while (loadCage(line)) {
+			line = solvingAttemptStorage.getNextLine();
+		}
+
+		// At least one cage expected is expected, so throw error in case no
+		// cages have been loaded.
+		if (mCages.isEmpty()) {
+			throw new InvalidGridException(
+					"Line below does not contain cage information while this was expected.\nLine: "
+							+ line);
+		}
+		mGridBuilder.setCages(mCages);
+
+		return true;
+	}
+
 	private boolean loadCage(String line) {
 		if (line == null) {
 			return false;
@@ -331,6 +301,28 @@ public class GridLoader {
 		}
 		Cage cage = mObjectsCreator.createCage(cageBuilder);
 		mCages.add(cage);
+
+		return true;
+	}
+
+	private boolean loadCellChanges(SolvingAttemptStorage solvingAttemptStorage) {
+		mCellChanges = mObjectsCreator.createArrayListOfCellChanges();
+
+		// Start with the last line which was read but which was not yet
+		// processed.
+		String line = solvingAttemptStorage.getLine();
+		while (loadCellChange(line)) {
+			line = solvingAttemptStorage.getNextLine();
+		}
+		// Zero or more cell changes expected.
+		mGridBuilder.setCellChanges(mCellChanges);
+
+		// Check if end of file is reached and not all information was read
+		// yet.
+		if (line != null) {
+			throw new InvalidGridException(
+					"Unexpected line below found while end of file was expected.\nLine: " + line);
+		}
 
 		return true;
 	}
@@ -356,6 +348,7 @@ public class GridLoader {
 	/**
 	 * Load the most recent statistics for this grid.
 	 */
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	private boolean loadStatistics(int gridId) {
 		StatisticsDatabaseAdapter statisticsDatabaseAdapter = mObjectsCreator
 				.createStatisticsDatabaseAdapter();
@@ -369,5 +362,12 @@ public class GridLoader {
 
 	public void setThrowExceptionOnError(boolean throwExceptionOnError) {
 		mThrowExceptionOnError = throwExceptionOnError;
+	}
+
+	private boolean errorOnLoadStorageString(String error, Throwable throwable) {
+		if (mThrowExceptionOnError) {
+			throw new InvalidGridException(error, throwable);
+		}
+		return false;
 	}
 }

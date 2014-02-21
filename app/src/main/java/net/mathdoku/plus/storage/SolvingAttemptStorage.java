@@ -22,25 +22,36 @@ public class SolvingAttemptStorage {
 	}
 
 	/**
-	 * Get the first line of data.
-	 * 
-	 * @return The first line of data. Null in case no line was found.
-	 */
-	public String getFirstLine() {
-		mDataIndex = 0;
-		return getNextLine();
-	}
-
-	/**
 	 * Get the next line of data.
 	 * 
 	 * @return The next line of data. Null in case no line was found.
 	 */
 	public String getNextLine() {
-		if (mData == null || mDataIndex >= mData.length) {
+		if (mData == null || mDataIndex + 1 >= mData.length) {
+			// Set data index beyond end of mData so method getLine does not
+			// return a line anymore.
+			mDataIndex = mData.length;
 			return null;
 		} else {
-			return mData[mDataIndex++];
+			return mData[++mDataIndex];
 		}
+	}
+
+	/**
+	 * Get the current line of data.
+	 * 
+	 * @return The current line of data. Null in case no line was found.
+	 */
+	public String getLine() {
+		if (mData == null || mDataIndex < 0 || mDataIndex >= mData.length) {
+			return null;
+		} else {
+			// Do not increase the current line pointer.
+			return mData[mDataIndex];
+		}
+	}
+
+	public boolean hasNextLine() {
+		return mDataIndex + 1 < mData.length;
 	}
 }

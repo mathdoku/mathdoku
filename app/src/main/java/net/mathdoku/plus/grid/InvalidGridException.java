@@ -1,32 +1,48 @@
 package net.mathdoku.plus.grid;
 
-public class InvalidGridException extends ExceptionInInitializerError {
-
+public class InvalidGridException extends RuntimeException {
 	private static final long serialVersionUID = -1502716956881113470L;
 
-	private final String mErrorMessage;
-
 	/**
-	 * Creates a new instance of {@link InvalidGridException}.
+	 * Constructs a new {@code InvalidGridException} that includes the current
+	 * stack trace.
 	 */
 	public InvalidGridException() {
 		super();
-		mErrorMessage = "unknown";
 	}
 
 	/**
-	 * Creates a new instance of {@link InvalidGridException}.
+	 * Constructs a new {@code InvalidGridException} with the current stack
+	 * trace and the specified detail message.
 	 * 
-	 * @param errorMessage
-	 *            The error message for the exception.
+	 * @param detailMessage
+	 *            the detail message for this exception.
 	 */
-	public InvalidGridException(String errorMessage) {
-		super(errorMessage);
-		this.mErrorMessage = errorMessage;
+	public InvalidGridException(String detailMessage) {
+		super(detailMessage);
 	}
 
-	public String getError() {
-		return mErrorMessage;
+	/**
+	 * Constructs a new {@code InvalidGridException} with the current stack
+	 * trace, the specified detail message and the specified cause.
+	 * 
+	 * @param detailMessage
+	 *            the detail message for this exception.
+	 * @param throwable
+	 *            the cause of this exception.
+	 */
+	public InvalidGridException(String detailMessage, Throwable throwable) {
+		super(detailMessage, throwable);
 	}
 
+	/**
+	 * Constructs a new {@code InvalidGridException} with the current stack
+	 * trace and the specified cause.
+	 * 
+	 * @param throwable
+	 *            the cause of this exception.
+	 */
+	public InvalidGridException(Throwable throwable) {
+		super(throwable);
+	}
 }
