@@ -29,10 +29,12 @@ public class GridBuilder {
 		mGridStatistics = null;
 		mDateCreated = System.currentTimeMillis();
 		mDateUpdated = mDateCreated;
-		mGridId = -1; // 0 is a valid id in the database and should not be used
-						// as default.
-		mSolvingAttemptId = -1; // 0 is a valid id in the database and should
-								// not be used as default.
+
+		// Id of grid and solving attempt can not use standard default value (0)
+		// as this is a valid row id in the database.
+		mGridId = -1;
+		mSolvingAttemptId = -1;
+
 		mCellChanges = null;
 		mActive = true;
 		mRevealed = false;
