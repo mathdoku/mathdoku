@@ -9,6 +9,7 @@ import java.util.List;
  * The CellChange holds undo information for a Cell.
  */
 public class CellChange {
+	@SuppressWarnings("unused")
 	private static final String TAG = "MathDoku.CellChange";
 
 	// The cell for which the undo information is stored.
@@ -164,7 +165,7 @@ public class CellChange {
 	public List<CellChange> getRelatedCellChanges() {
 		// Return copy of list of related cell changes so the requesting
 		// object cannot manipulate the original list.
-		return (mRelatedCellChanges == null ? null : new ArrayList(
-				mRelatedCellChanges));
+		return mRelatedCellChanges == null ? null : new ArrayList(
+				mRelatedCellChanges);
 	}
 }
