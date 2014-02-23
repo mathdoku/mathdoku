@@ -12,7 +12,7 @@
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp" >
 
-        <net.mathdoku.plus.grid.ui.GridViewerView
+        <net.mathdoku.plus.puzzle.ui.GridViewerView
             android:id="@+id/grid_viewer_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

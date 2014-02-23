@@ -1,6 +1,6 @@
 package net.mathdoku.plus.painter;
 
-import net.mathdoku.plus.grid.DigitPositionGrid;
+import net.mathdoku.plus.puzzle.digitPositionGrid.DigitPositionGrid;
 import net.mathdoku.plus.painter.Painter.DigitPainterMode;
 import net.mathdoku.plus.painter.Painter.GridTheme;
 

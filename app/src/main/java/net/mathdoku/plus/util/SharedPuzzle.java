@@ -8,8 +8,8 @@ import android.text.Html;
 import android.view.View;
 
 import net.mathdoku.plus.R;
-import net.mathdoku.plus.grid.Grid;
-import net.mathdoku.plus.grid.GridLoader;
+import net.mathdoku.plus.puzzle.grid.Grid;
+import net.mathdoku.plus.puzzle.grid.GridLoader;
 import net.mathdoku.plus.gridDefinition.GridDefinition;
 import net.mathdoku.plus.ui.ArchiveFragment;
 

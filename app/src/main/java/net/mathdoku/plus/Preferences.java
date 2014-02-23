@@ -6,7 +6,7 @@ import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
 import net.mathdoku.plus.enums.PuzzleComplexity;
-import net.mathdoku.plus.grid.ui.GridInputMode;
+import net.mathdoku.plus.puzzle.ui.GridInputMode;
 import net.mathdoku.plus.leaderboard.ui.LeaderboardFragmentActivity.LeaderboardFilter;
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.painter.Painter.GridTheme;

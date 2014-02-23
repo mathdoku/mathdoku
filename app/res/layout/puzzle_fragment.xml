@@ -44,7 +44,7 @@
         android:paddingTop="1dp"
         android:visibility="gone" >
 
-        <net.mathdoku.plus.grid.ui.GridPlayerRelativeLayout
+        <net.mathdoku.plus.puzzle.ui.GridPlayerRelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/grid_player_view"
@@ -87,9 +87,9 @@
                     android:textStyle="bold"
                     tools:ignore="ButtonStyle" />
             </LinearLayout>
-        </net.mathdoku.plus.grid.ui.GridPlayerRelativeLayout>
+        </net.mathdoku.plus.puzzle.ui.GridPlayerRelativeLayout>
 
-        <net.mathdoku.plus.grid.ui.GridPlayerView
+        <net.mathdoku.plus.puzzle.ui.GridPlayerView
             android:id="@+id/grid_player_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

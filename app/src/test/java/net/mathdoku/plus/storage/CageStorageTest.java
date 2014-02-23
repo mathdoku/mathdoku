@@ -1,9 +1,9 @@
 package net.mathdoku.plus.storage;
 
 import net.mathdoku.plus.enums.CageOperator;
-import net.mathdoku.plus.grid.Cage;
-import net.mathdoku.plus.grid.CageBuilder;
-import net.mathdoku.plus.grid.Cell;
+import net.mathdoku.plus.puzzle.cage.Cage;
+import net.mathdoku.plus.puzzle.cage.CageBuilder;
+import net.mathdoku.plus.puzzle.cell.Cell;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

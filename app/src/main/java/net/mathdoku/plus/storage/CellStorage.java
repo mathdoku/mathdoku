@@ -1,7 +1,7 @@
 package net.mathdoku.plus.storage;
 
-import net.mathdoku.plus.grid.CellBuilder;
-import net.mathdoku.plus.grid.Cell;
+import net.mathdoku.plus.puzzle.cell.CellBuilder;
+import net.mathdoku.plus.puzzle.cell.Cell;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 
 import java.security.InvalidParameterException;
@@ -24,7 +24,7 @@ public class CellStorage {
 
 	/**
 	 * Read cell information from a storage string which was created with
-	 * {@link #toStorageString(net.mathdoku.plus.grid.Cell)} before.
+	 * {@link #toStorageString(net.mathdoku.plus.puzzle.cell.Cell)} before.
 	 * 
 	 * @param line
 	 *            The line containing the cell information.

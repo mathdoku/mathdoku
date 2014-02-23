@@ -1,10 +1,10 @@
 package net.mathdoku.plus.storage;
 
-import net.mathdoku.plus.grid.Cage;
-import net.mathdoku.plus.grid.CellChange;
-import net.mathdoku.plus.grid.Grid;
-import net.mathdoku.plus.grid.GridBuilder;
-import net.mathdoku.plus.grid.Cell;
+import net.mathdoku.plus.puzzle.cage.Cage;
+import net.mathdoku.plus.puzzle.cellChange.CellChange;
+import net.mathdoku.plus.puzzle.grid.Grid;
+import net.mathdoku.plus.puzzle.grid.GridBuilder;
+import net.mathdoku.plus.puzzle.cell.Cell;
 import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
 import net.mathdoku.plus.statistics.GridStatistics;
 

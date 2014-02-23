@@ -4,8 +4,8 @@ import android.util.Log;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
-import net.mathdoku.plus.grid.Cage;
-import net.mathdoku.plus.grid.Cell;
+import net.mathdoku.plus.puzzle.cage.Cage;
+import net.mathdoku.plus.puzzle.cell.Cell;
 import net.mathdoku.plus.gridGenerating.ComboGenerator;
 
 import java.util.ArrayList;

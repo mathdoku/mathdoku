@@ -5,7 +5,7 @@ import android.content.Context;
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.enums.CageOperator;
-import net.mathdoku.plus.grid.Cage;
+import net.mathdoku.plus.puzzle.cage.Cage;
 
 public class TipOrderOfValuesInCage extends TipDialog {
 

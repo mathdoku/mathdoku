@@ -1,10 +1,10 @@
 package testHelper;
 
-import net.mathdoku.plus.grid.Cell;
-import net.mathdoku.plus.grid.CellBuilder;
-import net.mathdoku.plus.grid.Grid;
-import net.mathdoku.plus.grid.GridBuilder;
-import net.mathdoku.plus.grid.UnexpectedMethodInvocationException;
+import net.mathdoku.plus.puzzle.cell.Cell;
+import net.mathdoku.plus.puzzle.cell.CellBuilder;
+import net.mathdoku.plus.puzzle.grid.Grid;
+import net.mathdoku.plus.puzzle.grid.GridBuilder;
+import net.mathdoku.plus.puzzle.grid.UnexpectedMethodInvocationException;
 
 /**
  * Each Sub class of this class construct a specific a grid object with cells

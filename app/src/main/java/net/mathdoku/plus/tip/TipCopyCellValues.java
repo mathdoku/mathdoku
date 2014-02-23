@@ -4,8 +4,8 @@ import android.content.Context;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
-import net.mathdoku.plus.grid.Cage;
-import net.mathdoku.plus.grid.Cell;
+import net.mathdoku.plus.puzzle.cage.Cage;
+import net.mathdoku.plus.puzzle.cell.Cell;
 
 public class TipCopyCellValues extends TipDialog {
 

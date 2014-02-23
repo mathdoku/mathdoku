@@ -1,9 +1,9 @@
 package net.mathdoku.plus.storage;
 
 import net.mathdoku.plus.enums.CageOperator;
-import net.mathdoku.plus.grid.Cage;
-import net.mathdoku.plus.grid.CageBuilder;
-import net.mathdoku.plus.grid.Cell;
+import net.mathdoku.plus.puzzle.cage.Cage;
+import net.mathdoku.plus.puzzle.cage.CageBuilder;
+import net.mathdoku.plus.puzzle.cell.Cell;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 
 import java.security.InvalidParameterException;
@@ -23,7 +23,7 @@ public class CageStorage {
 
 	/**
 	 * Read cage information from a storage string which was created with
-	 * {@link #toStorageString(net.mathdoku.plus.grid.Cage)} before.
+	 * {@link #toStorageString(net.mathdoku.plus.puzzle.cage.Cage)} before.
 	 * 
 	 * @param line
 	 *            The line containing the cage information.

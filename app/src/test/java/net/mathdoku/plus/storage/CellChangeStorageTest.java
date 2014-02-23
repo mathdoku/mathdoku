@@ -1,7 +1,7 @@
 package net.mathdoku.plus.storage;
 
-import net.mathdoku.plus.grid.CellChange;
-import net.mathdoku.plus.grid.Cell;
+import net.mathdoku.plus.puzzle.cellChange.CellChange;
+import net.mathdoku.plus.puzzle.cell.Cell;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
