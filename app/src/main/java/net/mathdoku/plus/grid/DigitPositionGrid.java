@@ -7,7 +7,8 @@ import android.view.View;
  * position in a grid of positions.
  */
 public class DigitPositionGrid {
-	private final static String TAG = "MathDoku.DigitPositionGrid";
+	@SuppressWarnings("unused")
+	private static final String TAG = "MathDoku.DigitPositionGrid";
 
 	// Matrices holding information about the visibility and the content of the
 	// button positions available.
@@ -84,7 +85,7 @@ public class DigitPositionGrid {
 	 *         of the given size.
 	 */
 	public boolean isNotReusable(int maxDigit) {
-		return (mPositionsUsed != maxDigit);
+		return mPositionsUsed != maxDigit;
 	}
 
 	/**
@@ -117,7 +118,7 @@ public class DigitPositionGrid {
 	 * @return The row corresponding with the index.
 	 */
 	private int indexToRow(int index) {
-		return (index / mMaxCols);
+		return index / mMaxCols;
 	}
 
 	/**
@@ -128,7 +129,7 @@ public class DigitPositionGrid {
 	 * @return The column corresponding with the index.
 	 */
 	private int indexToCol(int index) {
-		return (index - (indexToRow(index) * mMaxCols));
+		return index - (indexToRow(index) * mMaxCols);
 	}
 
 	/**
