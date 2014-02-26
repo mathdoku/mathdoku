@@ -1,8 +1,7 @@
 package net.mathdoku.plus.puzzle.cell;
 
-import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.puzzle.InvalidGridException;
-import net.mathdoku.plus.puzzle.cage.Cage;
+import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.statistics.GridStatistics.StatisticsCounterType;
 
@@ -367,10 +366,6 @@ public class Cell {
 
 	public int getCageId() {
 		return mCageId;
-	}
-
-	public Cage getCage() {
-		return mGrid == null ? null : mGrid.getCage(mCageId);
 	}
 
 	public void setCageId(int newCageId) {

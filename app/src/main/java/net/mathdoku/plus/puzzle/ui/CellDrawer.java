@@ -5,15 +5,15 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 
-import net.mathdoku.plus.puzzle.cell.Cell;
-import net.mathdoku.plus.puzzle.digitPositionGrid.DigitPositionGrid;
-import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.painter.CagePainter;
 import net.mathdoku.plus.painter.CellPainter;
 import net.mathdoku.plus.painter.InputModeBorderPainter;
 import net.mathdoku.plus.painter.MaybeValuePainter;
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.painter.UserValuePainter;
+import net.mathdoku.plus.puzzle.cell.Cell;
+import net.mathdoku.plus.puzzle.digitPositionGrid.DigitPositionGrid;
+import net.mathdoku.plus.puzzle.grid.Grid;
 
 import java.security.InvalidParameterException;
 import java.util.Collections;
@@ -709,14 +709,14 @@ public class CellDrawer {
 		}
 
 		// If both cells are part of the same cage there will be no border.
-		if (cell2 != null && cell1.getCage().equals(cell2.getCage())) {
+		if (cell2 != null && cell1.getCageId() == cell2.getCageId()) {
 			return BorderType.NONE;
 		}
 
 		// If cell1 is part of the selected cage, it status is more important
 		// than status of cell 2.
 		if (cell1.isCellInSelectedCage()) {
-			if (!cell1.getCage().isUserMathCorrect()
+			if (!mGrid.getCage(cell1).isUserMathCorrect()
 					&& mGridViewerView.hasPrefShowBadCageMaths()) {
 				return BorderType.CELL_IN_SELECTED_CAGE_WITH_BAD_MATH;
 			} else {
@@ -727,7 +727,7 @@ public class CellDrawer {
 		// If cell1 is not part of the selected cage, than status of cell2 will
 		// prevail in case it is part of the selected cage.
 		if (cell2 != null && cell2.isCellInSelectedCage()) {
-			if (!cell2.getCage().isUserMathCorrect()
+			if (!mGrid.getCage(cell2).isUserMathCorrect()
 					&& mGridViewerView.hasPrefShowBadCageMaths()) {
 				return BorderType.CELL_IN_SELECTED_CAGE_WITH_BAD_MATH;
 			} else {
@@ -736,8 +736,8 @@ public class CellDrawer {
 		}
 
 		// Both cells are in a cage which is not selected.
-		if ((!cell1.getCage().isUserMathCorrect() || (cell2 != null && !cell2
-				.getCage()
+		if ((!mGrid.getCage(cell1).isUserMathCorrect() || (cell2 != null && !mGrid
+				.getCage(cell2)
 				.isUserMathCorrect()))
 				&& mGridViewerView.hasPrefShowBadCageMaths()) {
 			return BorderType.CELL_IN_UNSELECTED_CAGE_WITH_BAD_MATH;

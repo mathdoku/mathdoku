@@ -6,6 +6,7 @@ import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cell.Cell;
+import net.mathdoku.plus.puzzle.grid.Grid;
 
 public class TipCopyCellValues extends TipDialog {
 
@@ -41,18 +42,22 @@ public class TipCopyCellValues extends TipDialog {
 	 * @param preferences
 	 *            Preferences of the activity for which has to be checked
 	 *            whether this tip should be shown.
-	 * @param cell
-	 *            The grid cell which will be used to check if now is the
-	 *            appropriate time to display the tip.
+	 * @param grid
+	 *            The grid which will be checked if now is the appropriate time
+	 *            to display the tip.
 	 * @return True in case the tip might be displayed. False otherwise.
 	 */
-	public static boolean toBeDisplayed(Preferences preferences, Cell cell) {
+	public static boolean toBeDisplayed(Preferences preferences, Grid grid) {
 		// Do not display in case the copy function has been used
 		if (preferences.getInputModeCopyCounter() > 0) {
 			return false;
 		}
 
-		// No tip to be displayed for non existing cell
+		if (grid == null) {
+			return false;
+		}
+
+		Cell cell = grid.getSelectedCell();
 		if (cell == null) {
 			return false;
 		}
@@ -68,7 +73,7 @@ public class TipCopyCellValues extends TipDialog {
 		// at least one cell is still empty. This is not strictly necessary for
 		// copying but the tip will make more sense in case the cell values can
 		// be copied to another cell in the same cage.
-		Cage cage = cell.getCage();
+		Cage cage = grid.getCage(cell);
 		if (cage == null || cage.getNumberOfCells() <= 1
 				|| cage.hasEmptyCells() == false) {
 			return false;

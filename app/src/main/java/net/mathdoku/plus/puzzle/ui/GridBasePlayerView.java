@@ -187,7 +187,7 @@ public class GridBasePlayerView extends GridViewerView implements
 			}
 		} else {
 			if (TipOrderOfValuesInCage.toBeDisplayed(mPreferences,
-					selectedCell.getCage())) {
+					mGrid.getSelectedCage())) {
 				new TipOrderOfValuesInCage(mContext).show();
 			}
 			if (mInputMode == GridInputMode.MAYBE) {
@@ -199,7 +199,7 @@ public class GridBasePlayerView extends GridViewerView implements
 				} else {
 					selectedCell.addPossible(newValue);
 					if (TipCopyCellValues.toBeDisplayed(mPreferences,
-							selectedCell)) {
+							mGrid)) {
 						new TipCopyCellValues(mContext).show();
 					}
 				}
@@ -333,7 +333,7 @@ public class GridBasePlayerView extends GridViewerView implements
 		}
 
 		// Check the cage math
-		Cage cage = selectedCell.getCage();
+		Cage cage = mGrid.getSelectedCage();
 		if (cage != null && cage.checkUserMath() == false) {
 			if (TipBadCageMath.toBeDisplayed(mPreferences)) {
 				new TipBadCageMath(mContext).show();

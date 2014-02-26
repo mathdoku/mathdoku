@@ -233,7 +233,7 @@ public class Grid {
 			return null;
 		}
 
-		return mSelectedCell.getCage();
+		return getCage(mSelectedCell);
 	}
 
 	/**
@@ -430,7 +430,7 @@ public class Grid {
 			markDuplicateValues();
 
 			// Check the cage math
-			Cage cage = affectedCell.getCage();
+			Cage cage = getCage(affectedCell);
 			if (cage != null) {
 				cage.checkUserMath();
 			}
@@ -450,7 +450,7 @@ public class Grid {
 		}
 
 		// Remember cage which is currently selected.
-		Cage oldSelectedCage = mSelectedCell.getCage();
+		Cage oldSelectedCage = getCage(mSelectedCell);
 
 		// Deselect the cell itself
 		mSelectedCell.setSelected(false);
@@ -476,11 +476,11 @@ public class Grid {
 
 		Cage oldSelectedCage = null;
 		if (mSelectedCell != null) {
-			oldSelectedCage = mSelectedCell.getCage();
+			oldSelectedCage = getCage(mSelectedCell);
 			mSelectedCell.setSelected(false);
 		}
 		// Determine new cage
-		Cage newSelectedCage = cell.getCage();
+		Cage newSelectedCage = getCage(cell);
 
 		// Select the new cell
 		cell.setSelected(true);
@@ -546,6 +546,10 @@ public class Grid {
 
 	public void setSolvedHandler(OnSolvedListener listener) {
 		this.mSolvedListener = listener;
+	}
+
+	public Cage getCage(Cell cell) {
+		return cell == null ? null : mCages.get(cell.getCageId());
 	}
 
 	public Cage getCage(int cageId) {
