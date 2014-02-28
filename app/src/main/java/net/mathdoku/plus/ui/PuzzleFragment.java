@@ -404,7 +404,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 *         otherwise.
 	 */
 	boolean showClearGrid() {
-		return (mGrid != null && mGrid.isActive() && mGrid.isEmpty() == false);
+		return (mGrid != null && mGrid.isActive() && !mGrid.isEmpty());
 	}
 
 	/**
@@ -709,7 +709,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 *         otherwise.
 	 */
 	boolean showRevealOperator() {
-		if (mGrid == null || mGrid.isActive() == false) {
+		if (mGrid == null || !mGrid.isActive()) {
 			return false;
 		}
 
@@ -760,8 +760,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * @return True if check progress can be used on the grid. False otherwise.
 	 */
 	boolean showCheckProgress() {
-		return (mGrid != null && mGrid.isActive() && mGrid
-				.containsNoUserValues() == false);
+		return (mGrid != null && mGrid.isActive() && !mGrid.containsNoUserValues());
 	}
 
 	/**
@@ -821,7 +820,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				: mClearButtonSwipeOnly);
 		if (clearButton != null) {
 			clearButton.setVisibility(View.VISIBLE);
-			clearButton.setEnabled((cell != null && cell.isEmpty() == false));
+			clearButton.setEnabled((cell != null && !cell.isEmpty()));
 			clearButton.invalidate();
 		}
 
@@ -832,8 +831,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				: mUndoButtonSwipeOnly);
 		if (undoButton != null) {
 			undoButton
-					.setVisibility((mGrid == null || mGrid.countMoves() == 0 || mGrid
-							.isActive() == false) ? View.INVISIBLE
+					.setVisibility((mGrid == null || mGrid.countMoves() == 0 || !mGrid.isActive()) ? View.INVISIBLE
 							: View.VISIBLE);
 			undoButton.invalidate();
 		}
@@ -1227,7 +1225,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 *         otherwise.
 	 */
 	boolean showCopyCellValues() {
-		if (mGrid == null || mGrid.isActive() == false
+		if (mGrid == null || !mGrid.isActive()
 				|| mGridPlayerView.getGridInputMode() == GridInputMode.COPY) {
 			return false;
 		}

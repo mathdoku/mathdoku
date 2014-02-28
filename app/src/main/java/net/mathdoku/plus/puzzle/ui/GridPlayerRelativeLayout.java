@@ -1,12 +1,12 @@
 package net.mathdoku.plus.puzzle.ui;
 
-import net.mathdoku.plus.R;
-import net.mathdoku.plus.painter.Painter;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
+
+import net.mathdoku.plus.R;
+import net.mathdoku.plus.painter.Painter;
 
 /**
  * This GridPlayerRelativeLayout should be used in case a relative layout is
@@ -64,14 +64,14 @@ public class GridPlayerRelativeLayout extends RelativeLayout {
 
 		// Additional margins will be determined in first pass of onMeasure,
 		// except no margins needs to be adjusted at all.
-		mMarginsInitialised = (mMarginAdjustment == false);
+		mMarginsInitialised = (!mMarginAdjustment);
 	}
 
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		if (mMarginAdjustment) {
 			// Initialize margins if not yet done
-			if (mMarginsInitialised == false) {
+			if (!mMarginsInitialised) {
 				mMarginsInitialised = true;
 
 				// In case a margin has to be adjusted, it will be set to the

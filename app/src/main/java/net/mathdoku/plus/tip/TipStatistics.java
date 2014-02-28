@@ -39,7 +39,7 @@ public class TipStatistics extends TipDialog {
 	 */
 	public static boolean toBeDisplayed(Preferences preferences) {
 		// Do not display in case statistics are not yet available.
-		if (preferences.isStatisticsAvailable() == false) {
+		if (!preferences.isStatisticsAvailable()) {
 			return false;
 		}
 

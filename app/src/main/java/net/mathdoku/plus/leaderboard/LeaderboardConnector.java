@@ -1,5 +1,14 @@
 package net.mathdoku.plus.leaderboard;
 
+import android.content.res.Resources;
+import android.util.Log;
+
+import com.google.android.gms.games.GamesClient;
+import com.google.android.gms.games.leaderboard.Leaderboard;
+import com.google.android.gms.games.leaderboard.LeaderboardScore;
+import com.google.android.gms.games.leaderboard.OnScoreSubmittedListener;
+import com.google.android.gms.games.leaderboard.SubmitScoreResult;
+
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.enums.PuzzleComplexity;
@@ -9,14 +18,6 @@ import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter.ScoreOr
 import net.mathdoku.plus.storage.database.LeaderboardRankRow;
 import net.mathdoku.plus.ui.base.AppFragmentActivity;
 import net.mathdoku.plus.util.Util;
-import android.content.res.Resources;
-import android.util.Log;
-
-import com.google.android.gms.games.GamesClient;
-import com.google.android.gms.games.leaderboard.Leaderboard;
-import com.google.android.gms.games.leaderboard.LeaderboardScore;
-import com.google.android.gms.games.leaderboard.OnScoreSubmittedListener;
-import com.google.android.gms.games.leaderboard.SubmitScoreResult;
 
 public class LeaderboardConnector {
 	private final static String TAG = "MathDoku.Leaderboard";
@@ -96,7 +97,7 @@ public class LeaderboardConnector {
 		}
 
 		// Check if already signed in
-		if (isSignedIn() == false) {
+		if (!isSignedIn()) {
 			return;
 		}
 

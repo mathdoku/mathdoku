@@ -1,8 +1,5 @@
 package net.mathdoku.plus.util;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
@@ -11,6 +8,9 @@ import android.database.MatrixCursor;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.OpenableColumns;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 
 /**
  * The file provider can only be used to get access to files which have to be
@@ -97,7 +97,7 @@ public class FileProvider extends ContentProvider {
 		// Check if dir exists
 		// noinspection ConstantConditions
 		File dir = getContext().getFilesDir();
-		if (dir == null || dir.exists() == false) {
+		if (dir == null || !dir.exists()) {
 			return null;
 		}
 
@@ -127,7 +127,7 @@ public class FileProvider extends ContentProvider {
 		// Check if dir exists
 		// noinspection ConstantConditions
 		File dir = getContext().getFilesDir();
-		if (dir == null || dir.exists() == false) {
+		if (dir == null || !dir.exists()) {
 			return null;
 		}
 

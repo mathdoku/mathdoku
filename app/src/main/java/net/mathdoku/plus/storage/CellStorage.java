@@ -51,7 +51,7 @@ public class CellStorage {
 		// Only process the storage string if it starts with the correct
 		// identifier.
 		if (cellParts == null
-				|| SAVE_GAME_CELL_LINE.equals(cellParts[0]) == false) {
+				|| !SAVE_GAME_CELL_LINE.equals(cellParts[0])) {
 			return null;
 		}
 

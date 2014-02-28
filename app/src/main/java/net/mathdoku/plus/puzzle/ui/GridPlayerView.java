@@ -73,7 +73,7 @@ public class GridPlayerView extends GridBasePlayerView {
 	public boolean onTouch(View arg0, MotionEvent event) {
 		// In case the input method does not allow swiping or in case the copy
 		// mode has been enabled, only the super class is called.
-		if (mSwipeInputMethodEnabled == false
+		if (!mSwipeInputMethodEnabled
 				|| getGridInputMode() == GridInputMode.COPY) {
 			return super.onTouch(arg0, event);
 		}
@@ -133,7 +133,7 @@ public class GridPlayerView extends GridBasePlayerView {
 			}
 			return true;
 		case MotionEvent.ACTION_UP:
-			if (super.onTouch(arg0, event) == false) {
+			if (!super.onTouch(arg0, event)) {
 				if (this.mTouchedListener != null && mSwipeMotion != null) {
 					mSwipeMotion.release(event);
 					int swipeDigit = mSwipeMotion.getFocusedDigit();
@@ -244,7 +244,7 @@ public class GridPlayerView extends GridBasePlayerView {
 	protected void onDraw(Canvas canvas) {
 		// In case the input method does not allow swiping, only the super class
 		// is called.
-		if (mSwipeInputMethodEnabled == false) {
+		if (!mSwipeInputMethodEnabled) {
 			super.onDraw(canvas);
 			return;
 		}
@@ -267,7 +267,7 @@ public class GridPlayerView extends GridBasePlayerView {
 
 			// Draw the overlay for the swipe border around the selected
 			// cell plus the swipe line.
-			if (mSwipeMotion != null && mSwipeMotion.isFinished() == false) {
+			if (mSwipeMotion != null && !mSwipeMotion.isFinished()) {
 				if (mSwipeMotion.isReleased()) {
 					// The swipe motion was released. Now it can be set to
 					// completed as it is confirmed that the overlay border
@@ -447,8 +447,8 @@ public class GridPlayerView extends GridBasePlayerView {
 		// If currently in copy mode then cancel the swipe motion which is used
 		// to display the copy mode status.
 		if (getGridInputMode() == GridInputMode.COPY && mSwipeMotion != null
-				&& mSwipeMotion.isReleased() == false
-				&& mSwipeMotion.isFinished() == false) {
+				&& !mSwipeMotion.isReleased()
+				&& !mSwipeMotion.isFinished()) {
 			mSwipeMotion.release(null);
 			invalidate();
 		}
@@ -476,7 +476,7 @@ public class GridPlayerView extends GridBasePlayerView {
 		mSwipeInputMethodEnabled = swipeInputMethodEnabled;
 		setSwipeBorder(mSwipeInputMethodEnabled);
 		if (mTickerTape != null) {
-			mTickerTape.setDisabled((mSwipeInputMethodEnabled == false));
+			mTickerTape.setDisabled((!mSwipeInputMethodEnabled));
 		}
 	}
 }

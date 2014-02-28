@@ -1,12 +1,5 @@
 package net.mathdoku.plus.tip;
 
-import java.util.Random;
-
-import net.mathdoku.plus.Preferences;
-import net.mathdoku.plus.R;
-import net.mathdoku.plus.config.Config;
-import net.mathdoku.plus.config.Config.AppMode;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,6 +10,13 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import net.mathdoku.plus.Preferences;
+import net.mathdoku.plus.R;
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
+
+import java.util.Random;
 
 /**
  * For each tip this class has to be extended. The constructor of the subclass
@@ -262,7 +262,7 @@ public class TipDialog extends AlertDialog {
 	static boolean getDisplayTipAgain(Preferences preferences, String tip,
 			TipPriority priority) {
 		// Check do-not-show-again-preference for this tip first.
-		if (preferences.getTipDisplayAgain(tip) == false) {
+		if (!preferences.getTipDisplayAgain(tip)) {
 			if (DEBUG_TIP_DIALOG) {
 				Log.i(TAG, tip + ": do-not-show-again enabled");
 			}

@@ -75,7 +75,7 @@ public class TipCopyCellValues extends TipDialog {
 		// be copied to another cell in the same cage.
 		Cage cage = grid.getCage(cell);
 		if (cage == null || cage.getNumberOfCells() <= 1
-				|| cage.hasEmptyCells() == false) {
+				|| !cage.hasEmptyCells()) {
 			return false;
 		}
 

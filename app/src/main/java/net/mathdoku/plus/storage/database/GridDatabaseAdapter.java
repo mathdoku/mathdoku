@@ -363,9 +363,9 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 				+ SolvingAttemptDatabaseAdapter
 						.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_ROWID)
 				+ ") "
-				+ (selectionStatus.isEmpty() == false ? " AND "
+				+ (!selectionStatus.isEmpty() ? " AND "
 						+ selectionStatus : "")
-				+ (selectionSize.isEmpty() == false ? " AND " + selectionSize
+				+ (!selectionSize.isEmpty() ? " AND " + selectionSize
 						: "");
 
 		if (DEBUG_SQL) {

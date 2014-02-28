@@ -1,13 +1,5 @@
 package net.mathdoku.plus.leaderboard;
 
-import java.text.DateFormat;
-
-import net.mathdoku.plus.config.Config;
-import net.mathdoku.plus.config.Config.AppMode;
-import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter;
-import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter.ScoreOrigin;
-import net.mathdoku.plus.storage.database.LeaderboardRankRow;
-
 import android.util.Log;
 
 import com.google.android.gms.games.GamesClient;
@@ -15,6 +7,14 @@ import com.google.android.gms.games.leaderboard.Leaderboard;
 import com.google.android.gms.games.leaderboard.LeaderboardScore;
 import com.google.android.gms.games.leaderboard.OnScoreSubmittedListener;
 import com.google.android.gms.games.leaderboard.SubmitScoreResult;
+
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
+import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter;
+import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter.ScoreOrigin;
+import net.mathdoku.plus.storage.database.LeaderboardRankRow;
+
+import java.text.DateFormat;
 
 /**
  * This class updates one single leaderboard rank in the database with the
@@ -88,7 +88,7 @@ public class LeaderboardRankUpdater {
 	public void update() {
 		// In case the update is not yet started then get the first leaderboard
 		// to be updated.
-		if (mIsUpdateStarted == false) {
+		if (!mIsUpdateStarted) {
 			mLeaderboardRankRow = mLeaderboardRankDatabaseAdapter
 					.getMostOutdatedLeaderboardRank();
 			mIsUpdateStarted = true;

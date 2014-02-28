@@ -339,7 +339,7 @@ abstract class DatabaseAdapter {
 		List<String> currentColumnList = getTableColumns(sqliteDatabase,
 				tableName);
 		List<String> newColumnList = new ArrayList<String>(currentColumnList);
-		if (newColumnList.removeAll(Arrays.asList(columnsToDropped)) == false
+		if (!newColumnList.removeAll(Arrays.asList(columnsToDropped))
 				|| newColumnList.isEmpty()
 				|| newColumnList.equals(currentColumnList)) {
 			// Can not delete.

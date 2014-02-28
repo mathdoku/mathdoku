@@ -333,7 +333,7 @@ public class MathDokuDLX extends DLX {
 											break;
 										}
 									}
-									if (validMove == false) {
+									if (!validMove) {
 										break;
 									}
 
@@ -350,7 +350,7 @@ public class MathDokuDLX extends DLX {
 											break;
 										}
 									}
-									if (validMove == false) {
+									if (!validMove) {
 										break;
 									}
 								}

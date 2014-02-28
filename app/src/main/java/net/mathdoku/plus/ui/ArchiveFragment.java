@@ -109,8 +109,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 						// as were used for creating the last game.
 						puzzleFragmentActivity.startNewGame(
 								mPreferences.getPuzzleParameterSize(),
-								(mPreferences
-										.getPuzzleParameterOperatorsVisible() == false),
+								(!mPreferences.getPuzzleParameterOperatorsVisible()),
 								mPreferences.getPuzzleParameterComplexity());
 					}
 				});
@@ -211,7 +210,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 			}
 
 			// Show elapsed time for puzzles which are solved manually.
-			if (mGrid.isActive() == false) {
+			if (!mGrid.isActive()) {
 				rootView.findViewById(R.id.statistics_general_elapsed_time_row)
 						.setVisibility(View.VISIBLE);
 				((TextView) rootView

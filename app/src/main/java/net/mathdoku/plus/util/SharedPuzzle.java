@@ -275,8 +275,8 @@ public class SharedPuzzle {
 		}
 
 		// Only process when valid scheme and host are specified.
-		if (scheme.equals(mSharedPuzzleSchemeMathdokuPlus) == false
-				|| host.equals(mSharedPuzzleHostMathdokuPlus) == false) {
+		if (!scheme.equals(mSharedPuzzleSchemeMathdokuPlus)
+				|| !host.equals(mSharedPuzzleHostMathdokuPlus)) {
 			return null;
 		}
 
@@ -285,10 +285,12 @@ public class SharedPuzzle {
 		if (pathSegments == null || pathSegments.size() != 4) {
 			return null;
 		}
-		if (pathSegments.get(0).equals(mSharedPuzzlePathPrefixMathdokuPlus) == false) {
+		if (!pathSegments.get(0)
+				.equals(mSharedPuzzlePathPrefixMathdokuPlus)) {
 			return null;
 		}
-		if (pathSegments.get(1).equals(SHARE_URI_VERSION_MATHDOKU_PLUS) == false) {
+		if (!pathSegments.get(1)
+				.equals(SHARE_URI_VERSION_MATHDOKU_PLUS)) {
 			return null;
 		}
 		// Check if grid definition (part 3) matches with the hash code (part
@@ -331,8 +333,8 @@ public class SharedPuzzle {
 		}
 
 		// Only process when valid scheme and host are specified.
-		if (scheme.equals(mSharedPuzzleSchemeMathdokuOriginal) == false
-				|| host.equals(mSharedPuzzleHostMathdokuOriginal) == false) {
+		if (!scheme.equals(mSharedPuzzleSchemeMathdokuOriginal)
+				|| !host.equals(mSharedPuzzleHostMathdokuOriginal)) {
 			return null;
 		}
 
@@ -341,10 +343,12 @@ public class SharedPuzzle {
 		if (pathSegments == null || pathSegments.size() != 4) {
 			return null;
 		}
-		if (pathSegments.get(0).equals(mSharedPuzzlePathPrefixMathdokuOriginal) == false) {
+		if (!pathSegments.get(0)
+				.equals(mSharedPuzzlePathPrefixMathdokuOriginal)) {
 			return null;
 		}
-		if (pathSegments.get(1).equals(SHARE_URI_VERSION_MATHDOKU_ORIGINAL) == false) {
+		if (!pathSegments.get(1)
+				.equals(SHARE_URI_VERSION_MATHDOKU_ORIGINAL)) {
 			return null;
 		}
 		// Check if grid definition (part 3) matches with the hash code (part

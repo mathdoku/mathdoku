@@ -339,7 +339,7 @@ public class GridLoaderTest {
 
 			// Determine whether this mock should return a valid or invalid
 			// storage string.
-			boolean validStorageString = (mHasUnExpectedDataBeforeCells == false && mNumberOfCellMocksReturningAValidStorageString > 0);
+			boolean validStorageString = (!mHasUnExpectedDataBeforeCells && mNumberOfCellMocksReturningAValidStorageString > 0);
 			if (mHasUnExpectedDataBeforeCells) {
 				mHasUnExpectedDataBeforeCells = false;
 			} else {
@@ -382,7 +382,7 @@ public class GridLoaderTest {
 
 			// Determine what result will be returned when
 			// getCageBuilderFromStorageString is called.
-			boolean isValidStorageString = (mHasUnExpectedDataBeforeCages == false && mNumberOfCageStorageMocksReturningAValidStorageString > 0);
+			boolean isValidStorageString = (!mHasUnExpectedDataBeforeCages && mNumberOfCageStorageMocksReturningAValidStorageString > 0);
 			if (mHasUnExpectedDataBeforeCages) {
 				mHasUnExpectedDataBeforeCages = false;
 			} else {
@@ -402,7 +402,7 @@ public class GridLoaderTest {
 
 			// Determine whether this mock should return a valid or invalid
 			// storage string.
-			boolean validStorageString = (mHasUnExpectedDataBeforeCellChanges == false && mNumberOfCellChangeStorageMocksReturningAValidStorageString > 0);
+			boolean validStorageString = (!mHasUnExpectedDataBeforeCellChanges && mNumberOfCellChangeStorageMocksReturningAValidStorageString > 0);
 			if (mHasUnExpectedDataBeforeCellChanges) {
 				mHasUnExpectedDataBeforeCellChanges = false;
 			} else {

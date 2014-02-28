@@ -37,7 +37,7 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 		super.onCreate(savedInstanceState);
 
 		// First check whether the intent can be processed.
-		if (isValidIntent(getIntent()) == false) {
+		if (!isValidIntent(getIntent())) {
 			new AlertDialog.Builder(this)
 					.setIcon(R.drawable.icon)
 					.setTitle(R.string.dialog_invalid_share_url_title)

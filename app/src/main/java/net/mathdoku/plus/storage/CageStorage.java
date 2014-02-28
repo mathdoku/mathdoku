@@ -53,7 +53,7 @@ public class CageStorage {
 
 		// Only process the storage string if it starts with the correct
 		// identifier.
-		if (cageParts == null || CAGE_LINE_ID.equals(cageParts[0]) == false) {
+		if (cageParts == null || !CAGE_LINE_ID.equals(cageParts[0])) {
 			return null;
 		}
 

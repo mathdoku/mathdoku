@@ -1,16 +1,5 @@
 package net.mathdoku.plus.leaderboard.ui;
 
-import net.mathdoku.plus.Preferences;
-import net.mathdoku.plus.R;
-import net.mathdoku.plus.enums.PuzzleComplexity;
-import net.mathdoku.plus.leaderboard.LeaderboardType;
-import net.mathdoku.plus.leaderboard.ui.LeaderboardFragmentActivity.LeaderboardFilter;
-import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter;
-import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter.ScoreOrigin;
-import net.mathdoku.plus.storage.database.LeaderboardRankRow;
-import net.mathdoku.plus.ui.PuzzleFragmentActivity;
-import net.mathdoku.plus.ui.base.GooglePlayServiceFragmentActivity;
-import net.mathdoku.plus.util.Util;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -26,6 +15,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.games.GamesClient;
+
+import net.mathdoku.plus.Preferences;
+import net.mathdoku.plus.R;
+import net.mathdoku.plus.enums.PuzzleComplexity;
+import net.mathdoku.plus.leaderboard.LeaderboardType;
+import net.mathdoku.plus.leaderboard.ui.LeaderboardFragmentActivity.LeaderboardFilter;
+import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter;
+import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter.ScoreOrigin;
+import net.mathdoku.plus.storage.database.LeaderboardRankRow;
+import net.mathdoku.plus.ui.PuzzleFragmentActivity;
+import net.mathdoku.plus.ui.base.GooglePlayServiceFragmentActivity;
+import net.mathdoku.plus.util.Util;
 
 public class LeaderboardFragment extends android.support.v4.app.Fragment {
 	public final static String TAG = "MathDoku.LeaderboardFragment";
@@ -338,16 +339,16 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 				return false;
 			}
 			if (leaderboardFilter == LeaderboardFilter.MY_LEADERBOARDS
-					&& mHasScore == false) {
+					&& !mHasScore) {
 				return false;
 			}
 			if (leaderboardFilter == LeaderboardFilter.HIDDEN_OPERATORS
-					&& mHideOperators == false) {
+					&& !mHideOperators) {
 				return false;
 			}
 			// noinspection RedundantIfStatement
 			if (leaderboardFilter == LeaderboardFilter.VISIBLE_OPERATORS
-					&& mHideOperators == true) {
+					&& mHideOperators) {
 				return false;
 			}
 			return true;

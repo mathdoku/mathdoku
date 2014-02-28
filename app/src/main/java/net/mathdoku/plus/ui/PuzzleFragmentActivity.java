@@ -142,7 +142,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 		// Check if database is consistent.
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
-			if (DevelopmentHelper.checkDatabaseConsistency(this) == false) {
+			if (!DevelopmentHelper.checkDatabaseConsistency(this)) {
 				// Skip remainder of onCreate because further database access
 				// can result in a forced close.
 				return;
@@ -183,7 +183,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		}
 
 		// Check if app needs to be upgraded. If not, restart the last game.
-		if (isUpgradeRunning() == false) {
+		if (!isUpgradeRunning()) {
 			restartLastGame();
 		}
 
@@ -648,7 +648,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		mMathDokuPreferences.upgrade(previousInstalledVersion, currentVersion);
 
 		// Initialize new leaderboards
-		if (mMathDokuPreferences.isLeaderboardsInitialized() == false) {
+		if (!mMathDokuPreferences.isLeaderboardsInitialized()) {
 			Resources resources = getResources();
 			String leaderboardId;
 			LeaderboardRankDatabaseAdapter leaderboardRankDatabaseAdapter = new LeaderboardRankDatabaseAdapter();
@@ -738,7 +738,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 		// Enable the statistics as soon as the first game has been
 		// finished.
-		if (mMathDokuPreferences.isStatisticsAvailable() == false) {
+		if (!mMathDokuPreferences.isStatisticsAvailable()) {
 			mMathDokuPreferences.setStatisticsAvailable();
 			setNavigationDrawer();
 		}
@@ -749,7 +749,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		// Enable the archive as soon as 5 games have been solved. Note: as the
 		// gird is actually not yet saved in the database at this moment the
 		// check on the number of completed games is lowered with 1.
-		if (mMathDokuPreferences.isArchiveAvailable() == false
+		if (!mMathDokuPreferences.isArchiveAvailable()
 				&& new GridDatabaseAdapter().countGrids(StatusFilter.SOLVED,
 						SizeFilter.ALL) >= 4) {
 			mMathDokuPreferences.setArchiveVisible();
@@ -761,9 +761,9 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 		// Check whether the grid meets the criteria for submitting to the
 		// leaderboards.
-		if (grid.getCheatPenaltyTime() == 0 && grid.isReplay() == false
-				&& grid.isActive() == false
-				&& grid.isSolutionRevealed() == false) {
+		if (grid.getCheatPenaltyTime() == 0 && !grid.isReplay()
+				&& !grid.isActive()
+				&& !grid.isSolutionRevealed()) {
 			GridGeneratingParameters gridGeneratingParameters = grid
 					.getGridGeneratingParameters();
 
@@ -791,12 +791,12 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 			// Submit score to Google+ in case already signed in.
 			if (mLeaderboardConnector == null
-					|| mLeaderboardConnector.isSignedIn() == false) {
+					|| !mLeaderboardConnector.isSignedIn()) {
 				// The user is not logged in to Google Plus. Check whether the
 				// sign in dialog should be shown.
 				boolean hideTillNextTopScore = mMathDokuPreferences
 						.isHideTillNextTopScoreAchievedChecked();
-				if (hideTillNextTopScore == false || newTopScore == true) {
+				if (!hideTillNextTopScore || newTopScore) {
 					// In case the google sign dialog is shown, the score will
 					// be processed after the sign in has succeeded.
 					new GooglePlusSignInDialog(this,
@@ -1102,8 +1102,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 						// Start a new game with specified parameters
 						startNewGame(gridSize,
-								(puzzleParameterDisplayOperatorsCheckBox
-										.isChecked() == false),
+								(!puzzleParameterDisplayOperatorsCheckBox.isChecked()),
 								puzzleComplexity);
 					}
 				})
@@ -1170,8 +1169,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 								.containsKey(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_PUZZLE_COMPLEXITY)) {
 					int gridSize = bundle
 							.getInt(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_SIZE);
-					boolean visibleOperators = (bundle
-							.getBoolean(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS) == false);
+					boolean visibleOperators = (!bundle.getBoolean(
+							LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS));
 					PuzzleComplexity puzzleComplexity = PuzzleComplexity
 							.valueOf(bundle
 									.getString(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_PUZZLE_COMPLEXITY));
@@ -1263,9 +1262,9 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			String string = getResources().getString(R.string.action_archive);
 			navigationDrawerItems.add(string);
 			// noinspection ConstantConditions
-			if (openDrawer == false && mNavigationDrawerItems != null) {
-				openDrawer = (Arrays.asList(mNavigationDrawerItems).contains(
-						string) == false);
+			if (!openDrawer && mNavigationDrawerItems != null) {
+				openDrawer = (!Arrays.asList(mNavigationDrawerItems)
+						.contains(string));
 			}
 		}
 
@@ -1274,19 +1273,18 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			String string = getResources()
 					.getString(R.string.action_statistics);
 			navigationDrawerItems.add(string);
-			if (openDrawer == false && mNavigationDrawerItems != null) {
-				openDrawer = (Arrays.asList(mNavigationDrawerItems).contains(
-						string) == false);
+			if (!openDrawer && mNavigationDrawerItems != null) {
+				openDrawer = (!Arrays.asList(mNavigationDrawerItems)
+						.contains(string));
 			}
 		}
 
 		// Leaderboards are always available
 		String string = getResources().getString(R.string.action_leaderboards);
 		navigationDrawerItems.add(string);
-		if (openDrawer == false && mNavigationDrawerItems != null) {
-			openDrawer = (Arrays
-					.asList(mNavigationDrawerItems)
-					.contains(string) == false);
+		if (!openDrawer && mNavigationDrawerItems != null) {
+			openDrawer = (!Arrays.asList(mNavigationDrawerItems)
+					.contains(string));
 		}
 
 		mNavigationDrawerItems = navigationDrawerItems

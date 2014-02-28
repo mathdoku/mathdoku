@@ -283,7 +283,7 @@ public class HistoricStatistics {
 	public XYSeries getXYSeriesSolutionRevealed(String title, double maxY,
 			boolean includeElapsedTime, boolean includeCheatTime) {
 		XYSeries xySeries = new XYSeries(title);
-		if (includeElapsedTime == false && includeCheatTime == false) {
+		if (!includeElapsedTime && !includeCheatTime) {
 			// No data points will be included in series.
 			return xySeries;
 		}

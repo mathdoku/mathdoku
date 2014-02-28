@@ -126,7 +126,7 @@ public class SwipeMotion extends Motion {
 		// Update swipe position.
 		setCurrentSwipeCoordinates(event);
 
-		if (isTouchDownInsideGrid() == false) {
+		if (!isTouchDownInsideGrid()) {
 			mStatus = Status.INIT;
 			mVisible = false;
 			return;
@@ -379,7 +379,7 @@ public class SwipeMotion extends Motion {
 			// Determine whether the digit should be accepted based on the
 			// current swipe position.
 			boolean acceptDigit = (!inTouchDownCell);
-			if (acceptDigit == false) {
+			if (!acceptDigit) {
 				// Normally the digit is not accepted in case the swipe motion
 				// is inside the touch down cell. In case a swipe motion is
 				// started and ended in a cell on the outer edge of the grid,

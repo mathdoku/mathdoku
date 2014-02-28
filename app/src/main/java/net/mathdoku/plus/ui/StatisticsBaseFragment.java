@@ -129,7 +129,7 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 
 		// Set title. The chart title of achartengine is not used.
 		int titleHeightDIP = 0;
-		if (title != null && title.isEmpty() == false) {
+		if (title != null && !title.isEmpty()) {
 			TextView textView = (TextView) sectionView
 					.findViewById(R.id.statistics_section_title);
 			if (textView != null) {
@@ -171,7 +171,7 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 		}
 
 		// Add body text for explaining the chart
-		if (explanation != null && explanation.isEmpty() == false
+		if (explanation != null && !explanation.isEmpty()
 				&& mDisplayStatisticDescription) {
 			TextView textView = (TextView) sectionView
 					.findViewById(R.id.statistics_section_explanation);

@@ -1113,10 +1113,10 @@ public class Preferences {
 	 */
 	public void setDigitInputMethod(boolean enableSwipe, boolean enableButtons) {
 		Editor editor = mSharedPreferences.edit();
-		if (enableSwipe == true && enableButtons == false) {
+		if (enableSwipe && !enableButtons) {
 			editor.putString(PUZZLE_SETTING_INPUT_METHOD,
 					PuzzleSettingInputMethod.SWIPE_ONLY.toString());
-		} else if (enableSwipe == false && enableButtons == true) {
+		} else if (!enableSwipe && enableButtons) {
 			editor.putString(PUZZLE_SETTING_INPUT_METHOD,
 					PuzzleSettingInputMethod.BUTTONS_ONLY.toString());
 		} else {

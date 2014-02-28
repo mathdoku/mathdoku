@@ -317,8 +317,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 			// Create the cages.
 			this.mCages = new ArrayList<Cage>();
-			if (createCages(mGridGeneratingParameters.mHideOperators) == false
-					&& isCancelled() == false) {
+			if (!createCages(mGridGeneratingParameters.mHideOperators)
+					&& !isCancelled()) {
 				// For some reason the creation of the cages was not successful.
 				// Start over again.
 				continue;
@@ -453,7 +453,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			if (hasUniqueSolution) {
 				mGrid = grid;
 			}
-		} while (hasUniqueSolution == false);
+		} while (!hasUniqueSolution);
 		if (DEBUG_GRID_GENERATOR) {
 			Log.d(TAG, "Found puzzle with unique solution in " + num_attempts
 					+ " attempts.");

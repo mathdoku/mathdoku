@@ -94,7 +94,7 @@ public class GridTest {
 			List<Cell> cells = mGridObjectsCreator.createArrayListOfCells();
 			mCellMockOfDefaultSetup = new Cell[numberOfCells];
 			for (int i = 0; i < numberOfCells; i++) {
-				if (mUseSameMockForAllCells == false || i == 0) {
+				if (!mUseSameMockForAllCells || i == 0) {
 					mCellMockOfDefaultSetup[i] = mock(Cell.class);
 				} else {
 					mCellMockOfDefaultSetup[i] = mCellMockOfDefaultSetup[0];
@@ -111,7 +111,7 @@ public class GridTest {
 			List<Cage> cages = mGridObjectsCreator.createArrayListOfCages();
 			mCageMockOfDefaultSetup = new Cage[numberOfCages];
 			for (int i = 0; i < numberOfCages; i++) {
-				if (mUseSameMockForAllCages == false || i == 0) {
+				if (!mUseSameMockForAllCages || i == 0) {
 					mCageMockOfDefaultSetup[i] = mock(Cage.class);
 				} else {
 					mCageMockOfDefaultSetup[i] = mCageMockOfDefaultSetup[0];

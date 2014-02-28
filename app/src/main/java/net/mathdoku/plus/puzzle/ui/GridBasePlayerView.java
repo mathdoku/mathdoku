@@ -173,7 +173,7 @@ public class GridBasePlayerView extends GridViewerView implements
 		int oldValue = selectedCell.getUserValue();
 
 		if (newValue == 0) { // Clear Button
-			if (selectedCell.isEmpty() == false) {
+			if (!selectedCell.isEmpty()) {
 				selectedCell.clearPossibles();
 				selectedCell.setUserValue(0);
 				mGrid.getGridStatistics().increaseCounter(
@@ -246,7 +246,7 @@ public class GridBasePlayerView extends GridViewerView implements
 	 */
 	private void copyCell(Cell fromCell, Cell toCell) {
 		if (fromCell != null && toCell != null
-				&& fromCell.equals(toCell) == false) {
+				&& !fromCell.equals(toCell)) {
 
 			if (fromCell.countPossibles() > 0) {
 				// For the origin cell at least one maybe value has been set.
@@ -259,7 +259,7 @@ public class GridBasePlayerView extends GridViewerView implements
 					isMaybeDigitInFromCell = fromCell.hasPossible(digit);
 					isMaybeDigitInToCell = toCell.hasPossible(digit);
 					if (isMaybeDigitInFromCell != isMaybeDigitInToCell) {
-						if (updatePossibleValues == false) {
+						if (!updatePossibleValues) {
 							updatePossibleValues = true;
 
 							// Save current state of target cell
@@ -274,12 +274,12 @@ public class GridBasePlayerView extends GridViewerView implements
 						}
 
 						// noinspection ConstantConditions
-						if (isMaybeDigitInFromCell == true
-								&& isMaybeDigitInToCell == false) {
+						if (isMaybeDigitInFromCell
+								&& !isMaybeDigitInToCell) {
 							toCell.addPossible(digit);
 						} else // noinspection ConstantConditions
-						if (isMaybeDigitInFromCell == false
-								&& isMaybeDigitInToCell == true) {
+						if (!isMaybeDigitInFromCell
+								&& isMaybeDigitInToCell) {
 							toCell.removePossible(digit);
 						}
 					}
@@ -334,7 +334,7 @@ public class GridBasePlayerView extends GridViewerView implements
 
 		// Check the cage math
 		Cage cage = mGrid.getSelectedCage();
-		if (cage != null && cage.checkUserMath() == false) {
+		if (cage != null && !cage.checkUserMath()) {
 			if (TipBadCageMath.toBeDisplayed(mPreferences)) {
 				new TipBadCageMath(mContext).show();
 			}

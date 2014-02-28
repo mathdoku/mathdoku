@@ -158,25 +158,25 @@ public class GridDefinition {
 			return null;
 		}
 
-		if (definition.matches("" //
-				// Part for puzzle complexity
-				+ "\\d"
-				// Part for cage id's per cell
-				+ DELIMITER_LEVEL1 //
-				+ "(" //
-				+ "\\d\\d" // Cage id for a cell
-				+ ")+" // At least one cell needed
-				// Part for cage definitions
-				+ "(" //
-				// Start of new cage part
-				+ DELIMITER_LEVEL1 //
-				+ "\\d+" // Cage id
-				+ DELIMITER_LEVEL2 //
-				+ "\\d+" // Result value of cage
-				+ DELIMITER_LEVEL2 //
-				+ "\\d" // Cage operator
-				+ ")+" // At least one cage needed
-		) == false) {
+		if (!definition.matches("" //
+										// Part for puzzle complexity
+										+ "\\d"
+										// Part for cage id's per cell
+										+ DELIMITER_LEVEL1 //
+										+ "(" //
+										+ "\\d\\d" // Cage id for a cell
+										+ ")+" // At least one cell needed
+										// Part for cage definitions
+										+ "(" //
+										// Start of new cage part
+										+ DELIMITER_LEVEL1 //
+										+ "\\d+" // Cage id
+										+ DELIMITER_LEVEL2 //
+										+ "\\d+" // Result value of cage
+										+ DELIMITER_LEVEL2 //
+										+ "\\d" // Cage operator
+										+ ")+" // At least one cage needed
+		)) {
 			if (mThrowExceptionOnError) {
 				throw new InvalidGridException("Definition has invalid format.");
 			}
@@ -220,7 +220,7 @@ public class GridDefinition {
 		// individual cell. The cage number always consists of two digits. So
 		// the number of cells is equal to 50% of the length of this string.
 		int cellCount = definitionParts[ID_PART_CELLS].length() / 2;
-		if (setGridSize(cellCount) == false) {
+		if (!setGridSize(cellCount)) {
 			if (mThrowExceptionOnError) {
 				throw new InvalidGridException("Number of cells " + cellCount
 						+ " does not match with accepted grid sizes (1-9).");
@@ -238,7 +238,7 @@ public class GridDefinition {
 		mCageIdPerCell = new int[cellCount];
 
 		// Create the cells based on the list of cage numbers for each cell.
-		if (createArrayListOfCells(definitionParts[ID_PART_CELLS], cageCount) == false) {
+		if (!createArrayListOfCells(definitionParts[ID_PART_CELLS], cageCount)) {
 			if (mThrowExceptionOnError) {
 				throw new InvalidGridException(
 						"Cannot create array list of cells.");
@@ -248,14 +248,14 @@ public class GridDefinition {
 
 		mCages = mObjectsCreator.createArrayListOfCages();
 		for (int i = ID_PART_FIRST_CAGE; i < definitionParts.length; i++) {
-			if (createCage(definitionParts[i]) == false) {
+			if (!createCage(definitionParts[i])) {
 				return null;
 			}
 		}
 
 		// Calculate and set the correct values for each cell if a single
 		// solution can be determined for the definition.
-		if (setCorrectCellValues() == false) {
+		if (!setCorrectCellValues()) {
 			if (mThrowExceptionOnError) {
 				throw new InvalidGridException(
 						"Cannot set the correct values for all cells.");
