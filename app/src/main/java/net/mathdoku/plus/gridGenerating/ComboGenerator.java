@@ -53,7 +53,7 @@ public class ComboGenerator {
 
 		// Single cell cages can only contain the value of the single cell.
 		if (mCageCells.size() == 1) {
-			int number[] = { mResult };
+			int[] number = { mResult };
 			resultCombos.add(number);
 			return resultCombos;
 		}
@@ -65,7 +65,7 @@ public class ComboGenerator {
 					if (i2 - i1 == mResult || i1 - i2 == mResult
 							|| mResult * i1 == i2 || mResult * i2 == i1
 							|| i1 + i2 == mResult || i1 * i2 == mResult) {
-						int numbers[] = { i1, i2 };
+						int[] numbers = { i1, i2 };
 						resultCombos.add(numbers);
 						numbers = new int[] { i2, i1 };
 						resultCombos.add(numbers);
@@ -109,7 +109,7 @@ public class ComboGenerator {
 		switch (mCageOperator) {
 		case NONE:
 			assert (mCageCells.size() == 1);
-			int number[] = { mResult };
+			int[] number = { mResult };
 			AllResults.add(number);
 			break;
 		case SUBTRACT:
@@ -117,7 +117,7 @@ public class ComboGenerator {
 			for (int i1 = 1; i1 <= mGridSize; i1++)
 				for (int i2 = i1 + 1; i2 <= mGridSize; i2++)
 					if (i2 - i1 == mResult || i1 - i2 == mResult) {
-						int numbers[] = { i1, i2 };
+						int[] numbers = { i1, i2 };
 						AllResults.add(numbers);
 						numbers = new int[] { i2, i1 };
 						AllResults.add(numbers);
@@ -128,7 +128,7 @@ public class ComboGenerator {
 			for (int i1 = 1; i1 <= mGridSize; i1++)
 				for (int i2 = i1 + 1; i2 <= mGridSize; i2++)
 					if (mResult * i1 == i2 || mResult * i2 == i1) {
-						int numbers[] = { i1, i2 };
+						int[] numbers = { i1, i2 };
 						AllResults.add(numbers);
 						numbers = new int[] { i2, i1 };
 						AllResults.add(numbers);

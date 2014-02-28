@@ -681,7 +681,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 */
 	@SuppressWarnings("SameParameterValue")
 	public int countGrids(StatusFilter statusFilter, SizeFilter sizeFilter) {
-		int gridIds[][] = getLatestSolvingAttemptsPerGrid(statusFilter,
+		int[][] gridIds = getLatestSolvingAttemptsPerGrid(statusFilter,
 				sizeFilter);
 		return (gridIds == null ? 0 : gridIds.length);
 	}

@@ -276,7 +276,7 @@ abstract class DatabaseAdapter {
 		boolean tableDefinitionChanged = false;
 
 		final String KEY_SQL = "sql";
-		String columns[] = { KEY_SQL };
+		String[] columns = { KEY_SQL };
 
 		Cursor cursor = mSqliteDatabase.query(true, "sqlite_master", columns,
 				"name = " + stringBetweenQuotes(getTableName())

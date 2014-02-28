@@ -117,7 +117,7 @@ public class SwipeMotion extends Motion {
 		super.setTouchDownEvent(event);
 
 		// Get the cell coordinates of the new touch down position.
-		int touchDownCellCoordinates[] = getTouchDownCellCoordinates();
+		int[] touchDownCellCoordinates = getTouchDownCellCoordinates();
 
 		// Set the resulting digit for previous to unknown
 		mPreviousSwipePositionDigit = DIGIT_UNDETERMINED;

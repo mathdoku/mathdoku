@@ -79,7 +79,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	private LinearLayout mControlsSwipeOnlyLinearLayout;
 	private TableLayout mControlsPadBigTableLayout;
 	private TableRow mControlsPadBigTableRow3;
-	private final Button mDigitPosition[] = new Button[9];
+	private final Button[] mDigitPosition = new Button[9];
 	private DigitPositionGrid mDigitPositionGrid;
 
 	// Clear buttons

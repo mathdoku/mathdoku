@@ -336,7 +336,7 @@ public class GridPlayerView extends GridBasePlayerView {
 		// additional hint has to be shown.
 		if (isTopRow || isBottomRow || isLeftColumn || isRightColumn) {
 			// List for all digits which can not be shown.
-			boolean digitNotVisible[] = { false, false, false, false, false,
+			boolean[] digitNotVisible = { false, false, false, false, false,
 					false, false, false, false, false, false, false };
 
 			// Determine invisible digits in case the selected cell is in the

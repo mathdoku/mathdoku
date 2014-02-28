@@ -831,8 +831,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		int newCageId = mCages.size();
 		cageBuilder.setId(newCageId);
 
-		int cellsInCage[] = new int[cageTypeCoordinates.length];
-		int cellCorrectValues[] = new int[cageTypeCoordinates.length];
+		int[] cellsInCage = new int[cageTypeCoordinates.length];
+		int[] cellCorrectValues = new int[cageTypeCoordinates.length];
 		List<Cell> cellsInCageArrayList = new ArrayList<Cell>();
 		int index = 0;
 		for (int[] cageTypeCoordinate : cageTypeCoordinates) {
