@@ -4,18 +4,18 @@ class DLXNode extends LL2DNode {
 	public DLXNode(DLXColumn col, int ri) {
 		RowIdx = ri;
 		C = col;
-		col.GetUp().SetDown(this);
-		SetUp(col.GetUp());
-		SetDown(col);
-		col.SetUp(this);
-		col.IncSize();
+		col.getUp().setDown(this);
+		setUp(col.getUp());
+		setDown(col);
+		col.setUp(this);
+		col.increaseSize();
 	}
 
-	public DLXColumn GetColumn() {
+	public DLXColumn getColumn() {
 		return C;
 	}
 
-	public int GetRowIdx() {
+	public int getRowIdx() {
 		return RowIdx;
 	}
 

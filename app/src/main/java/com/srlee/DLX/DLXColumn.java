@@ -5,19 +5,19 @@ public class DLXColumn extends LL2DNode {
 
 	public DLXColumn() {
 		size = 0;
-		SetUp(this);
-		SetDown(this);
+		setUp(this);
+		setDown(this);
 	}
 
-	public int GetSize() {
+	public int getSize() {
 		return size;
 	}
 
-	public void DecSize() {
+	public void decreaseSize() {
 		size--;
 	}
 
-	public void IncSize() {
+	public void increaseSize() {
 		size++;
 	}
 }

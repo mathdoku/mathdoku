@@ -1,40 +1,40 @@
 package com.srlee.dlx;
 
 public class LL2DNode {
-	public void SetLeft(LL2DNode left) {
+	LL2DNode() {
+		L = R = U = D = null;
+	}
+
+	public void setLeft(LL2DNode left) {
 		L = left;
 	}
 
-	public void SetRight(LL2DNode right) {
+	public void setRight(LL2DNode right) {
 		R = right;
 	}
 
-	public void SetUp(LL2DNode up) {
+	public void setUp(LL2DNode up) {
 		U = up;
 	}
 
-	public void SetDown(LL2DNode down) {
+	public void setDown(LL2DNode down) {
 		D = down;
 	}
 
-	public LL2DNode GetLeft() {
+	public LL2DNode getLeft() {
 		return L;
 	}
 
-	public LL2DNode GetRight() {
+	public LL2DNode getRight() {
 		return R;
 	}
 
-	public LL2DNode GetUp() {
+	public LL2DNode getUp() {
 		return U;
 	}
 
-	public LL2DNode GetDown() {
+	public LL2DNode getDown() {
 		return D;
-	}
-
-	LL2DNode() {
-		L = R = U = D = null;
 	}
 
 	private LL2DNode L; // Pointer to left node

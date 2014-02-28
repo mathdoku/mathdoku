@@ -90,7 +90,7 @@ public class MathDokuDLX extends DLX {
 			total_nodes += possibleMovesInCage
 					* (2 * cage.getNumberOfCells() + 1);
 		}
-		Init(totalCages + 2 * gridSizeSquare, total_nodes);
+		init(totalCages + 2 * gridSizeSquare, total_nodes);
 
 		// Reorder cages based on the number of possible moves for the cage
 		// because this has a major impact on the time it will take to find a
@@ -134,7 +134,7 @@ public class MathDokuDLX extends DLX {
 				// the number of possible permutations this has a positive
 				// influence on the solving time.
 				constraintNumber = cageCount + 1;
-				AddNode(constraintNumber, comboIndex); // Cage constraint
+				addNode(constraintNumber, comboIndex); // Cage constraint
 
 				// Apply the permutation of "possibleCombo" to the cells in the
 				// cages
@@ -146,12 +146,12 @@ public class MathDokuDLX extends DLX {
 					// Is digit "possibleCombo[i]" used in column getColumn()?
 					constraintNumber = totalCages + mGridSize
 							* (possibleCombo[i] - 1) + cell.getColumn() + 1;
-					AddNode(constraintNumber, comboIndex); // Column constraint
+					addNode(constraintNumber, comboIndex); // Column constraint
 
 					// Is digit "possibleCombo[i]" used in row getRow()?
 					constraintNumber = totalCages + gridSizeSquare + mGridSize
 							* (possibleCombo[i] - 1) + cell.getRow() + 1;
-					AddNode(constraintNumber, comboIndex); // Row constraint
+					addNode(constraintNumber, comboIndex); // Row constraint
 
 					// Fill data structure for uncovering solution if needed
 					if (uncoverSolution) {
@@ -211,7 +211,7 @@ public class MathDokuDLX extends DLX {
 
 			// Search for multiple solutions (but stop as soon as the second
 			// solution has been found).
-			if (Solve(SolveType.MULTIPLE) == 1) {
+			if (solve(SolveType.MULTIPLE) == 1) {
 				// Only one solution has been found. The real complexity of the
 				// puzzle is computed based on this solution.
 
@@ -222,7 +222,7 @@ public class MathDokuDLX extends DLX {
 			}
 		} else {
 			initialize(false);
-			return (Solve(SolveType.MULTIPLE) == 1);
+			return (solve(SolveType.MULTIPLE) == 1);
 		}
 	}
 
@@ -236,7 +236,7 @@ public class MathDokuDLX extends DLX {
 		initialize(true);
 
 		// Check if a single unique solution can be determined.
-		if (mMoves == null || Solve(SolveType.MULTIPLE) != 1) {
+		if (mMoves == null || solve(SolveType.MULTIPLE) != 1) {
 			return null;
 		}
 
@@ -245,8 +245,8 @@ public class MathDokuDLX extends DLX {
 		for (int i = 0; i < mTotalMoves; i++) {
 			rowInSolution[i] = false;
 		}
-		for (int i = 1; i <= GetRowsInSolution(); i++) {
-			rowInSolution[GetSolutionRow(i)] = true;
+		for (int i = 1; i <= getRowsInSolution(); i++) {
+			rowInSolution[getSolutionRow(i)] = true;
 		}
 
 		// Now rebuild the solution
@@ -295,7 +295,7 @@ public class MathDokuDLX extends DLX {
 			int moveCount = 1;
 			int previousCageId = -1;
 			int puzzleComplexity = 1;
-			for (int i = 1; i <= GetRowsInSolution(); i++) {
+			for (int i = 1; i <= getRowsInSolution(); i++) {
 				// Each solution row corresponds with one cage in the grid. The
 				// order in which the cages are resolved is important. As soon a
 				// the
@@ -303,7 +303,7 @@ public class MathDokuDLX extends DLX {
 				// the
 				// least possible number of permutations available at that
 				// moment.
-				int solutionRow = GetSolutionRow(i);
+				int solutionRow = getSolutionRow(i);
 
 				for (Move move : mMoves) {
 					if (move.mSolutionRow == solutionRow) {
