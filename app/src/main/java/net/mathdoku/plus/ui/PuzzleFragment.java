@@ -56,7 +56,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		SharedPreferences.OnSharedPreferenceChangeListener,
 		View.OnCreateContextMenuListener,
 		GridPlayerView.OnInputModeChangedListener {
-	public final static String TAG = "MathDoku.PuzzleFragment";
+	public static final String TAG = "MathDoku.PuzzleFragment";
 
 	public static final String BUNDLE_KEY_SOLVING_ATTEMPT_ID = "PuzzleFragment.solvingAttemptId";
 

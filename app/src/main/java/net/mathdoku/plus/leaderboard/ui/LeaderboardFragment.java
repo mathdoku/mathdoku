@@ -29,10 +29,10 @@ import net.mathdoku.plus.ui.base.GooglePlayServiceFragmentActivity;
 import net.mathdoku.plus.util.Util;
 
 public class LeaderboardFragment extends android.support.v4.app.Fragment {
-	public final static String TAG = "MathDoku.LeaderboardFragment";
+	public static final String TAG = "MathDoku.LeaderboardFragment";
 
-	public final static String ARG_GRID_SIZE = "Leaderboard.arg_grid_size";
-	public final static String ARG_FILTER = "Leaderboard.arg_filter";
+	public static final String ARG_GRID_SIZE = "Leaderboard.arg_grid_size";
+	public static final String ARG_FILTER = "Leaderboard.arg_filter";
 
 	// Intent parameters for creating a new game of specified type
 	public static final String NEW_PUZZLE_FOR_LEADERBOARD = "CreateNewGameForLeaderboard";

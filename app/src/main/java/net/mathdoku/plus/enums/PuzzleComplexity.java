@@ -14,7 +14,7 @@ public enum PuzzleComplexity {
 		mPuzzleComplexityId = puzzleComplexityId;
 	}
 
-	static public PuzzleComplexity fromId(String puzzleComplexityId) {
+	public static PuzzleComplexity fromId(String puzzleComplexityId) {
 		int id = -1;
 		try {
 			id = Integer.parseInt(puzzleComplexityId);

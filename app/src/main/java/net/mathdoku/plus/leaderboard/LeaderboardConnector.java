@@ -20,7 +20,7 @@ import net.mathdoku.plus.ui.base.AppFragmentActivity;
 import net.mathdoku.plus.util.Util;
 
 public class LeaderboardConnector {
-	private final static String TAG = "MathDoku.Leaderboard";
+	private static final String TAG = "MathDoku.Leaderboard";
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.

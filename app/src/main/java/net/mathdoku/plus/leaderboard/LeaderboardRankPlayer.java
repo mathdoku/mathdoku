@@ -18,7 +18,7 @@ import com.google.android.gms.games.leaderboard.OnLeaderboardScoresLoadedListene
  * Play Services for a specific leaderboard.
  */
 class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener {
-	private final static String TAG = "MathDoku.LeaderboardRankPlayer";
+	private static final String TAG = "MathDoku.LeaderboardRankPlayer";
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.

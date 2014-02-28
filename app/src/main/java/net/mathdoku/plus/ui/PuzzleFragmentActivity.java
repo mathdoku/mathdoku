@@ -71,7 +71,7 @@ import java.util.List;
 
 public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		implements PuzzleFragment.PuzzleFragmentListener {
-	private final static String TAG = "MathDoku.PuzzleFragmentActivity";
+	private static final String TAG = "MathDoku.PuzzleFragmentActivity";
 
 	// Background tasks for generating a new puzzle and converting game files
 	public DialogPresentingGridGenerator mDialogPresentingGridGenerator;
@@ -121,7 +121,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	}
 
 	// Request code
-	private final static int REQUEST_ARCHIVE = 1;
+	private static final int REQUEST_ARCHIVE = 1;
 
 	// When using the support package, onActivityResult is called before
 	// onResume. As a result fragment can not be manipulated in the

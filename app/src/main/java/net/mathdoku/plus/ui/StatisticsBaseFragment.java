@@ -24,7 +24,7 @@ import org.achartengine.renderer.SimpleSeriesRenderer;
  * A base fragment representing the statistics for a game or a grid size.
  */
 public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
-	public final static String TAG = "MathDoku.StatisticsBaseFragment";
+	public static final String TAG = "MathDoku.StatisticsBaseFragment";
 
 	LinearLayout mChartsLayout;
 

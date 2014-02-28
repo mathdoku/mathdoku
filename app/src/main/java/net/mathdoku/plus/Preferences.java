@@ -38,171 +38,171 @@ public class Preferences {
 	public final SharedPreferences mSharedPreferences;
 
 	// Global APP preferences
-	private final static String APP_CURRENT_VERSION = "app_current_version";
-	private final static int APP_CURRENT_VERSION_DEFAULT = -1;
+	private static final String APP_CURRENT_VERSION = "app_current_version";
+	private static final int APP_CURRENT_VERSION_DEFAULT = -1;
 
 	// Archive preferences
-	public final static String ARCHIVE_AVAILABLE = "archive_available";
-	private final static boolean ARCHIVE_AVAILABLE_DEFAULT = false;
+	public static final String ARCHIVE_AVAILABLE = "archive_available";
+	private static final boolean ARCHIVE_AVAILABLE_DEFAULT = false;
 
-	private final static String ARCHIVE_GRID_LAST_SHOWED = "archive_grid_last_showed";
-	private final static int ARCHIVE_GRID_LAST_SHOWED_DEFAULT = -1;
+	private static final String ARCHIVE_GRID_LAST_SHOWED = "archive_grid_last_showed";
+	private static final int ARCHIVE_GRID_LAST_SHOWED_DEFAULT = -1;
 
-	private final static String ARCHIVE_SIZE_FILTER_LAST_VALUE = "archive_size_filter_last_value";
-	private final static String ARCHIVE_SIZE_FILTER_LAST_VALUE_DEFAULT = SizeFilter.ALL
+	private static final String ARCHIVE_SIZE_FILTER_LAST_VALUE = "archive_size_filter_last_value";
+	private static final String ARCHIVE_SIZE_FILTER_LAST_VALUE_DEFAULT = SizeFilter.ALL
 			.toString();
 
-	private final static String ARCHIVE_STATUS_FILTER_LAST_VALUE = "archive_status_filter_last_value";
-	private final static String ARCHIVE_STATUS_FILTER_LAST_VALUE_DEFAULT = StatusFilter.ALL
+	private static final String ARCHIVE_STATUS_FILTER_LAST_VALUE = "archive_status_filter_last_value";
+	private static final String ARCHIVE_STATUS_FILTER_LAST_VALUE_DEFAULT = StatusFilter.ALL
 			.toString();
 
-	public final static String ARCHIVE_SETTING_SIZE_FILTER_VISIBLE = "archive_setting_size_filter_size_visible";
-	private final static boolean ARCHIVE_SETTING_SIZE_FILTER_VISIBLE_DEFAULT = false;
+	public static final String ARCHIVE_SETTING_SIZE_FILTER_VISIBLE = "archive_setting_size_filter_size_visible";
+	private static final boolean ARCHIVE_SETTING_SIZE_FILTER_VISIBLE_DEFAULT = false;
 
-	public final static String ARCHIVE_SETTING_STATUS_FILTER_VISIBLE = "archive_setting_status_filter_visible";
-	private final static boolean ARCHIVE_SETTING_STATUS_FILTER_VISIBLE_DEFAULT = true;
+	public static final String ARCHIVE_SETTING_STATUS_FILTER_VISIBLE = "archive_setting_status_filter_visible";
+	private static final boolean ARCHIVE_SETTING_STATUS_FILTER_VISIBLE_DEFAULT = true;
 
-	public final static String ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE = "archive_setting_chart_description_visible";
-	private final static boolean ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT = true;
+	public static final String ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE = "archive_setting_chart_description_visible";
+	private static final boolean ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT = true;
 
 	// Leaderboard settings
-	private final static String LEADERBOARD_ALL_INITIALIZED = "leaderboard_all_initialized";
-	private final static boolean LEADERBOARD_ALL_INITIALIZED_DEFAULT = false;
+	private static final String LEADERBOARD_ALL_INITIALIZED = "leaderboard_all_initialized";
+	private static final boolean LEADERBOARD_ALL_INITIALIZED_DEFAULT = false;
 
-	private final static String LEADERBOARD_FILTER_LAST_VALUE = "leaderboard_filter_last_value";
-	private final static String LEADERBOARD_FILTER_LAST_VALUE_DEFAULT = LeaderboardFilter.ALL_LEADERBOARDS
+	private static final String LEADERBOARD_FILTER_LAST_VALUE = "leaderboard_filter_last_value";
+	private static final String LEADERBOARD_FILTER_LAST_VALUE_DEFAULT = LeaderboardFilter.ALL_LEADERBOARDS
 			.toString();
 
-	private final static String LEADERBOARD_TAB_LAST_SHOWED = "leaderboard_tab_last_showed";
-	private final static int LEADERBOARD_TAB_LAST_SHOWED_DEFAULT = 0;
+	private static final String LEADERBOARD_TAB_LAST_SHOWED = "leaderboard_tab_last_showed";
+	private static final int LEADERBOARD_TAB_LAST_SHOWED_DEFAULT = 0;
 
-	private final static String LEADERBOARD_DETAILS_VIEWED_COUNTER = "leaderboard_details_viewed_counter";
-	private final static int LEADERBOARD_DETAILS_VIEWED_COUNTER_DEFAULT = 0;
+	private static final String LEADERBOARD_DETAILS_VIEWED_COUNTER = "leaderboard_details_viewed_counter";
+	private static final int LEADERBOARD_DETAILS_VIEWED_COUNTER_DEFAULT = 0;
 
-	private final static String LEADERBOARD_GAMES_CREATED_COUNTER = "leaderboard_games_created_counter";
-	private final static int LEADERBOARD_GAMES_CREATED_COUNTER_DEFAULT = 0;
+	private static final String LEADERBOARD_GAMES_CREATED_COUNTER = "leaderboard_games_created_counter";
+	private static final int LEADERBOARD_GAMES_CREATED_COUNTER_DEFAULT = 0;
 
-	private final static String LEADERBOARD_OVERVIEW_VIEWED_COUNTER = "leaderboard_overview_viewed";
-	private final static int LEADERBOARD_OVERVIEW_VIEWED_COUNTER_DEFAULT = 0;
+	private static final String LEADERBOARD_OVERVIEW_VIEWED_COUNTER = "leaderboard_overview_viewed";
+	private static final int LEADERBOARD_OVERVIEW_VIEWED_COUNTER_DEFAULT = 0;
 
-	private final static String PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE = "puzzle_hide_google_plus_sign_in_till_next_top_score";
-	private final static boolean PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE_DEFAULT = false;
+	private static final String PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE = "puzzle_hide_google_plus_sign_in_till_next_top_score";
+	private static final boolean PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE_DEFAULT = false;
 
 	// Puzzle input mode settings
-	private final static String PUZZLE_INPUT_MODE_CHANGED_COUNTER = "puzzle_input_mode_changed_counter";
-	private final static int PUZZLE_INPUT_MODE_CHANGED_COUNTER_DEFAULT = 0;
+	private static final String PUZZLE_INPUT_MODE_CHANGED_COUNTER = "puzzle_input_mode_changed_counter";
+	private static final int PUZZLE_INPUT_MODE_CHANGED_COUNTER_DEFAULT = 0;
 
-	private final static String PUZZLE_INPUT_MODE_COPY_COUNTER = "puzzle_input_mode_copy_counter";
-	private final static int PUZZLE_INPUT_MODE_COPY_COUNTER_DEFAULT = 0;
+	private static final String PUZZLE_INPUT_MODE_COPY_COUNTER = "puzzle_input_mode_copy_counter";
+	private static final int PUZZLE_INPUT_MODE_COPY_COUNTER_DEFAULT = 0;
 
-	private final static String PUZZLE_INPUT_MODE_LAST_USED = "puzzle_input_mode_last_used";
-	private final static String PUZZLE_INPUT_MODE_LAST_USED_DEFAULT = GridInputMode.NORMAL
+	private static final String PUZZLE_INPUT_MODE_LAST_USED = "puzzle_input_mode_last_used";
+	private static final String PUZZLE_INPUT_MODE_LAST_USED_DEFAULT = GridInputMode.NORMAL
 			.toString();
 
-	private final static String PUZZLE_INPUT_MODE_COPY_ENABLED = "puzzle_input_mode_copy_enabled";
-	private final static boolean PUZZLE_INPUT_MODE_COPY_ENABLED_DEFAULT = false;
+	private static final String PUZZLE_INPUT_MODE_COPY_ENABLED = "puzzle_input_mode_copy_enabled";
+	private static final boolean PUZZLE_INPUT_MODE_COPY_ENABLED_DEFAULT = false;
 
 	// Puzzle parameters settings to be set as default values for next game
-	private final static String PUZZLE_PARAMETER_COMPLEXITY = "puzzle_parameter_complexity";
-	private final static String PUZZLE_PARAMETER_COMPLEXITY_DEFAULT = PuzzleComplexity.VERY_EASY
+	private static final String PUZZLE_PARAMETER_COMPLEXITY = "puzzle_parameter_complexity";
+	private static final String PUZZLE_PARAMETER_COMPLEXITY_DEFAULT = PuzzleComplexity.VERY_EASY
 			.toString();
 
-	private final static String PUZZLE_PARAMETER_OPERATORS_VISIBLE = "puzzle_parameter_operators_visible";
-	private final static boolean PUZZLE_PARAMETER_OPERATORS_VISIBLE_DEFAULT = true;
+	private static final String PUZZLE_PARAMETER_OPERATORS_VISIBLE = "puzzle_parameter_operators_visible";
+	private static final boolean PUZZLE_PARAMETER_OPERATORS_VISIBLE_DEFAULT = true;
 
-	private final static String PUZZLE_PARAMETER_SIZE = "puzzle_parameter_size";
-	private final static int PUZZLE_PARAMETER_SIZE_DEFAULT = 4;
+	private static final String PUZZLE_PARAMETER_SIZE = "puzzle_parameter_size";
+	private static final int PUZZLE_PARAMETER_SIZE_DEFAULT = 4;
 
 	// Puzzle setting preferences
-	private final static String PUZZLE_SETTING_BAD_CAGE_MATHS_VISIBLE = "puzzle_setting_bad_cage_math_visible";
-	private final static boolean PUZZLE_SETTING_BAD_CAGE_MATHS_VISIBLE_DEFAULT = true;
+	private static final String PUZZLE_SETTING_BAD_CAGE_MATHS_VISIBLE = "puzzle_setting_bad_cage_math_visible";
+	private static final boolean PUZZLE_SETTING_BAD_CAGE_MATHS_VISIBLE_DEFAULT = true;
 
-	private final static String PUZZLE_SETTING_CLEAR_MAYBES = "puzzle_setting_clear_maybes";
-	private final static boolean PUZZLE_SETTING_CLEAR_MAYBES_DEFAULT = true;
+	private static final String PUZZLE_SETTING_CLEAR_MAYBES = "puzzle_setting_clear_maybes";
+	private static final boolean PUZZLE_SETTING_CLEAR_MAYBES_DEFAULT = true;
 
-	public final static String PUZZLE_SETTING_COLORED_DIGITS = "puzzle_setting_colored_digits";
-	private final static boolean PUZZLE_SETTING_COLORED_DIGITS_DEFAULT = true;
+	public static final String PUZZLE_SETTING_COLORED_DIGITS = "puzzle_setting_colored_digits";
+	private static final boolean PUZZLE_SETTING_COLORED_DIGITS_DEFAULT = true;
 
-	private final static String PUZZLE_SETTING_DUPLICATE_DIGITS_VISIBLE = "puzzle_setting_duplicate_digits_visible";
-	private final static boolean PUZZLE_SETTING_DUPLICATE_DIGITS_VISIBLE_DEFAULT = true;
+	private static final String PUZZLE_SETTING_DUPLICATE_DIGITS_VISIBLE = "puzzle_setting_duplicate_digits_visible";
+	private static final boolean PUZZLE_SETTING_DUPLICATE_DIGITS_VISIBLE_DEFAULT = true;
 
-	public final static String PUZZLE_SETTING_FULL_SCREEN = "puzzle_setting_full_screen";
-	private final static boolean PUZZLE_SETTING_FULL_SCREEN_DEFAULT = false;
+	public static final String PUZZLE_SETTING_FULL_SCREEN = "puzzle_setting_full_screen";
+	private static final boolean PUZZLE_SETTING_FULL_SCREEN_DEFAULT = false;
 
 	public enum PuzzleSettingInputMethod {
 		SWIPE_ONLY, SWIPE_AND_BUTTONS, BUTTONS_ONLY
 	}
 
-	public final static String PUZZLE_SETTING_INPUT_METHOD = "puzzle_setting_input_method";
-	private final static String PUZZLE_SETTING_INPUT_METHOD_DEFAULT = PuzzleSettingInputMethod.SWIPE_ONLY
+	public static final String PUZZLE_SETTING_INPUT_METHOD = "puzzle_setting_input_method";
+	private static final String PUZZLE_SETTING_INPUT_METHOD_DEFAULT = PuzzleSettingInputMethod.SWIPE_ONLY
 			.toString();
 
-	private final static String PUZZLE_SETTING_MAYBES_DISPLAYED_IN_GRID = "puzzle_setting_maybes_displayed_in_grid";
-	private final static boolean PUZZLE_SETTING_MAYBES_DISPLAYED_IN_GRID_DEFAULT = true;
+	private static final String PUZZLE_SETTING_MAYBES_DISPLAYED_IN_GRID = "puzzle_setting_maybes_displayed_in_grid";
+	private static final boolean PUZZLE_SETTING_MAYBES_DISPLAYED_IN_GRID_DEFAULT = true;
 
-	public final static String PUZZLE_SETTING_OUTER_SWIPE_CIRCLE = "puzzle_setting_outer_swipe_circle";
-	private final static String PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_DEFAULT = "4";
-	private final static String PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_NEVER_VISIBLE = Integer
+	public static final String PUZZLE_SETTING_OUTER_SWIPE_CIRCLE = "puzzle_setting_outer_swipe_circle";
+	private static final String PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_DEFAULT = "4";
+	private static final String PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_NEVER_VISIBLE = Integer
 			.toString(Integer.MAX_VALUE);
 
-	private final static String PUZZLE_SETTING_PLAY_SOUND_EFFECTS = "puzzle_setting_sound_effects";
-	private final static boolean PUZZLE_SETTING_PLAY_SOUND_EFFECTS_DEFAULT = true;
+	private static final String PUZZLE_SETTING_PLAY_SOUND_EFFECTS = "puzzle_setting_sound_effects";
+	private static final boolean PUZZLE_SETTING_PLAY_SOUND_EFFECTS_DEFAULT = true;
 
-	public final static String PUZZLE_SETTING_THEME = "puzzle_setting_theme";
-	private final static String PUZZLE_SETTING_THEME_DARK = "theme_dark";
-	private final static String PUZZLE_SETTING_THEME_LIGHT = "theme_light";
-	private final static String PUZZLE_SETTING_THEME_DEFAULT = PUZZLE_SETTING_THEME_LIGHT;
+	public static final String PUZZLE_SETTING_THEME = "puzzle_setting_theme";
+	private static final String PUZZLE_SETTING_THEME_DARK = "theme_dark";
+	private static final String PUZZLE_SETTING_THEME_LIGHT = "theme_light";
+	private static final String PUZZLE_SETTING_THEME_DEFAULT = PUZZLE_SETTING_THEME_LIGHT;
 
-	private final static String PUZZLE_SETTING_TIMER_VISIBLE = "puzzle_setting_timer_visible";
-	private final static boolean PUZZLE_SETTING_TIMER_VISIBLE_DEFAULT = true;
+	private static final String PUZZLE_SETTING_TIMER_VISIBLE = "puzzle_setting_timer_visible";
+	private static final boolean PUZZLE_SETTING_TIMER_VISIBLE_DEFAULT = true;
 
-	public final static String PUZZLE_SETTING_WAKE_LOCK = "puzzle_setting_wake_lock";
-	private final static boolean PUZZLE_SETTING_WAKE_LOCK_DEFAULT = true;
+	public static final String PUZZLE_SETTING_WAKE_LOCK = "puzzle_setting_wake_lock";
+	private static final boolean PUZZLE_SETTING_WAKE_LOCK_DEFAULT = true;
 
 	// Statistics setting preferences
-	public final static String STATISTICS_AVAILABLE = "statistics_available";
-	private final static boolean STATISTICS_AVAILABLE_DEFAULT = false;
+	public static final String STATISTICS_AVAILABLE = "statistics_available";
+	private static final boolean STATISTICS_AVAILABLE_DEFAULT = false;
 
-	public final static String STATISTICS_SETTING_CHART_DESCRIPTION_VISIBLE = "statistics_setting_chart_description_visible";
-	private final static boolean STATISTICS_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT = true;
+	public static final String STATISTICS_SETTING_CHART_DESCRIPTION_VISIBLE = "statistics_setting_chart_description_visible";
+	private static final boolean STATISTICS_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT = true;
 
-	public final static String STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES = "statistics_setting_elapsed_time_chart_maximum_games";
-	private final static String STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES_DEFAULT = Integer
+	public static final String STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES = "statistics_setting_elapsed_time_chart_maximum_games";
+	private static final String STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES_DEFAULT = Integer
 			.toString(100);
 
-	private final static String STATISTICS_TAB_LAST_SHOWED = "statistics_tab_last_showed";
-	private final static int STATISTICS_TAB_LAST_SHOWED_DEFAULT = -1;
+	private static final String STATISTICS_TAB_LAST_SHOWED = "statistics_tab_last_showed";
+	private static final int STATISTICS_TAB_LAST_SHOWED_DEFAULT = -1;
 
 	// Swipe counters
-	private final static String SWIPE_INVALID_MOTION_COUNTER = "swipe_invalid_motion_counter";
-	private final static String SWIPE_VALID_MOTION_COUNTER = "swipe_valid_motion_counter";
-	private final static String SWIPE_DIGIT_1_COUNTER = "swipe_digit_1_counter";
-	private final static String SWIPE_DIGIT_2_COUNTER = "swipe_digit_2_counter";
-	private final static String SWIPE_DIGIT_3_COUNTER = "swipe_digit_3_counter";
-	private final static String SWIPE_DIGIT_4_COUNTER = "swipe_digit_4_counter";
-	private final static String SWIPE_DIGIT_5_COUNTER = "swipe_digit_5_counter";
-	private final static String SWIPE_DIGIT_6_COUNTER = "swipe_digit_6_counter";
-	private final static String SWIPE_DIGIT_7_COUNTER = "swipe_digit_7_counter";
-	private final static String SWIPE_DIGIT_8_COUNTER = "swipe_digit_8_counter";
-	private final static String SWIPE_DIGIT_9_COUNTER = "swipe_digit_9_counter";
-	private final static int SWIPE_DIGIT_COUNTER_DEFAULT = 0;
+	private static final String SWIPE_INVALID_MOTION_COUNTER = "swipe_invalid_motion_counter";
+	private static final String SWIPE_VALID_MOTION_COUNTER = "swipe_valid_motion_counter";
+	private static final String SWIPE_DIGIT_1_COUNTER = "swipe_digit_1_counter";
+	private static final String SWIPE_DIGIT_2_COUNTER = "swipe_digit_2_counter";
+	private static final String SWIPE_DIGIT_3_COUNTER = "swipe_digit_3_counter";
+	private static final String SWIPE_DIGIT_4_COUNTER = "swipe_digit_4_counter";
+	private static final String SWIPE_DIGIT_5_COUNTER = "swipe_digit_5_counter";
+	private static final String SWIPE_DIGIT_6_COUNTER = "swipe_digit_6_counter";
+	private static final String SWIPE_DIGIT_7_COUNTER = "swipe_digit_7_counter";
+	private static final String SWIPE_DIGIT_8_COUNTER = "swipe_digit_8_counter";
+	private static final String SWIPE_DIGIT_9_COUNTER = "swipe_digit_9_counter";
+	private static final int SWIPE_DIGIT_COUNTER_DEFAULT = 0;
 
 	// Dependent on the speed of playing, the counter preferences are often
 	// updated. For this reason they are kept in memory and only committed to
 	// memory on call to commitCounters.
-	private final static int PUZZLE_INPUT_MODE_CHANGED_COUNTER_ID = 0;
-	private final static int SWIPE_DIGIT_1_COUNTER_ID = 1;
-	private final static int SWIPE_DIGIT_2_COUNTER_ID = 2;
-	private final static int SWIPE_DIGIT_3_COUNTER_ID = 3;
-	private final static int SWIPE_DIGIT_4_COUNTER_ID = 4;
-	private final static int SWIPE_DIGIT_5_COUNTER_ID = 5;
-	private final static int SWIPE_DIGIT_6_COUNTER_ID = 6;
-	private final static int SWIPE_DIGIT_7_COUNTER_ID = 7;
-	private final static int SWIPE_DIGIT_8_COUNTER_ID = 8;
-	private final static int SWIPE_DIGIT_9_COUNTER_ID = 9;
-	private final static int SWIPE_VALID_MOTION_COUNTER_ID = 10;
-	private final static int SWIPE_INVALID_MOTION_COUNTER_ID = 11;
-	private final static int PUZZLE_INPUT_MODE_COPY_COUNTER_ID = 12;
+	private static final int PUZZLE_INPUT_MODE_CHANGED_COUNTER_ID = 0;
+	private static final int SWIPE_DIGIT_1_COUNTER_ID = 1;
+	private static final int SWIPE_DIGIT_2_COUNTER_ID = 2;
+	private static final int SWIPE_DIGIT_3_COUNTER_ID = 3;
+	private static final int SWIPE_DIGIT_4_COUNTER_ID = 4;
+	private static final int SWIPE_DIGIT_5_COUNTER_ID = 5;
+	private static final int SWIPE_DIGIT_6_COUNTER_ID = 6;
+	private static final int SWIPE_DIGIT_7_COUNTER_ID = 7;
+	private static final int SWIPE_DIGIT_8_COUNTER_ID = 8;
+	private static final int SWIPE_DIGIT_9_COUNTER_ID = 9;
+	private static final int SWIPE_VALID_MOTION_COUNTER_ID = 10;
+	private static final int SWIPE_INVALID_MOTION_COUNTER_ID = 11;
+	private static final int PUZZLE_INPUT_MODE_COPY_COUNTER_ID = 12;
 	private int[] counters = null;
 
 	/**

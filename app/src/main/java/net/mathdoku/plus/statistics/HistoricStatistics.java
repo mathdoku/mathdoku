@@ -26,10 +26,10 @@ public class HistoricStatistics {
 	}
 
 	// Columns in the DATA cursor
-	public final static String DATA_COL_ID = "id";
-	public final static String DATA_COL_ELAPSED_TIME_EXCLUDING_CHEAT_PENALTY = "elapsed_time_excluding_cheat_penalty";
-	public final static String DATA_COL_CHEAT_PENALTY = "cheat_penalty";
-	public final static String DATA_COL_SERIES = "series";
+	public static final String DATA_COL_ID = "id";
+	public static final String DATA_COL_ELAPSED_TIME_EXCLUDING_CHEAT_PENALTY = "elapsed_time_excluding_cheat_penalty";
+	public static final String DATA_COL_CHEAT_PENALTY = "cheat_penalty";
+	public static final String DATA_COL_SERIES = "series";
 
 	// Internal structure to store data points retrieved from database
 	private class DataPoint {
@@ -119,7 +119,7 @@ public class HistoricStatistics {
 	private final SeriesSummary mUnfinishedSeriesSummary;
 
 	// Limit on XYSeries
-	private final static int XY_SERIES_NOT_LIMITED = -1;
+	private static final int XY_SERIES_NOT_LIMITED = -1;
 	private int mLimit;
 
 	/**

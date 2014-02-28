@@ -151,31 +151,31 @@ public class LeaderboardType {
 			R.drawable.leaderboard_9x9_operators_visible_5_stars };
 
 	// Maximum number of leaderboards available
-	public final static int MAX_LEADERBOARDS = mLeaderboardResId.length;
+	public static final int MAX_LEADERBOARDS = mLeaderboardResId.length;
 
 	// Number of elements for index factor PuzzleComplexity. Note this enum
 	// contains a value RANDOM (ordinal value 0) which is not a real complexity
 	// factor (no leaderboards exists for it) and therefore needs to be
 	// excluded.
-	private final static int PUZZLE_COMPLEXITY_OFFSET = (PuzzleComplexity.RANDOM
+	private static final int PUZZLE_COMPLEXITY_OFFSET = (PuzzleComplexity.RANDOM
 			.ordinal() == 0 ? 1 : 0);
-	private final static int MAX_ELEMENTS_INDEX_FACTOR_PUZZLE_COMPLEXITY = PuzzleComplexity
+	private static final int MAX_ELEMENTS_INDEX_FACTOR_PUZZLE_COMPLEXITY = PuzzleComplexity
 			.values().length - 1;
 
 	// Number of elements for index factor operator visibility
-	private final static int MAX_ELEMENTS_INDEX_FACTOR_OPERATORS = 2; // boolean
+	private static final int MAX_ELEMENTS_INDEX_FACTOR_OPERATORS = 2; // boolean
 
 	// Number of elements for index factor grid size
-	private final static int MIN_GRID_SIZE = 4;
-	private final static int MAX_GRID_SIZE = 9;
+	private static final int MIN_GRID_SIZE = 4;
+	private static final int MAX_GRID_SIZE = 9;
 
 	// When computing the index it is computed using following index factors.
 	// Each index factor is the product of all possible combinations of previous
 	// factors.
-	private final static int PUZZLE_COMPLEXITY_INDEX_FACTOR = 1;
+	private static final int PUZZLE_COMPLEXITY_INDEX_FACTOR = 1;
 	@SuppressWarnings("PointlessArithmeticExpression")
-	private final static int HIDE_OPERATOR_INDEX_FACTOR = (1 * MAX_ELEMENTS_INDEX_FACTOR_PUZZLE_COMPLEXITY);
-	private final static int GRID_SIZE_INDEX_FACTOR = (HIDE_OPERATOR_INDEX_FACTOR * MAX_ELEMENTS_INDEX_FACTOR_OPERATORS);
+	private static final int HIDE_OPERATOR_INDEX_FACTOR = (1 * MAX_ELEMENTS_INDEX_FACTOR_PUZZLE_COMPLEXITY);
+	private static final int GRID_SIZE_INDEX_FACTOR = (HIDE_OPERATOR_INDEX_FACTOR * MAX_ELEMENTS_INDEX_FACTOR_OPERATORS);
 
 	/**
 	 * Get the leaderboard index for the given combination of grid size,

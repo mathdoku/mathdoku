@@ -63,8 +63,8 @@ public class SwipeMotion extends Motion {
 	// arranged clockwise.
 	// The swipe angle offset is used for the segment boundary between digits 9
 	// and 1.
-	private final static int SWIPE_ANGLE_OFFSET_91 = -170;
-	private final static int SWIPE_SEGMENT_ANGLE = 360 / 9;
+	private static final int SWIPE_ANGLE_OFFSET_91 = -170;
+	private static final int SWIPE_SEGMENT_ANGLE = 360 / 9;
 
 	// Listener
 	public interface Listener {

@@ -15,7 +15,7 @@ public enum CageOperator {
 		mCageOperatorSign = cageOperatorSign;
 	}
 
-	static public CageOperator fromId(String cageOperatorId) {
+	public static CageOperator fromId(String cageOperatorId) {
 		int id = Integer.parseInt(cageOperatorId);
 		switch (id) {
 		case 0:

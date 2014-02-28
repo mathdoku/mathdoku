@@ -111,10 +111,10 @@ public class GameHelper implements
 
 	// Request code we use when invoking other Activities to complete the
 	// sign-in flow.
-	final static int RC_RESOLVE = 9001;
+	static final int RC_RESOLVE = 9001;
 
 	// Request code when invoking Activities whose result we don't care about.
-	final static int RC_UNUSED = 9002;
+	static final int RC_UNUSED = 9002;
 
 	// Client objects we manage. If a given client is not enabled, it is null.
 	private GamesClient mGamesClient = null;
@@ -123,11 +123,11 @@ public class GameHelper implements
 
 	// What clients we manage (OR-able values, can be combined as flags)
 	@SuppressWarnings("WeakerAccess")
-	public final static int CLIENT_NONE = 0x00;
-	public final static int CLIENT_GAMES = 0x01;
-	public final static int CLIENT_PLUS = 0x02;
-	public final static int CLIENT_APPSTATE = 0x04;
-	public final static int CLIENT_ALL = CLIENT_GAMES | CLIENT_PLUS
+	public static final int CLIENT_NONE = 0x00;
+	public static final int CLIENT_GAMES = 0x01;
+	public static final int CLIENT_PLUS = 0x02;
+	public static final int CLIENT_APPSTATE = 0x04;
+	public static final int CLIENT_ALL = CLIENT_GAMES | CLIENT_PLUS
 			| CLIENT_APPSTATE;
 
 	// What clients were requested? (bit flags)
@@ -178,8 +178,8 @@ public class GameHelper implements
 		mActivity = activity;
 	}
 
-	static private final int TYPE_DEVELOPER_ERROR = 1001;
-	static private final int TYPE_GAMEHELPER_BUG = 1002;
+	private static final int TYPE_DEVELOPER_ERROR = 1001;
+	private static final int TYPE_GAMEHELPER_BUG = 1002;
 
 	boolean checkState(int type, String operation, String warning,
 			int... expectedStates) {

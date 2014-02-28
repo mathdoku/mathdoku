@@ -11,7 +11,7 @@ public class Motion {
 	// The cell coordinates of the cell in the grid for which the touch down was
 	// registered. Will be kept statically so it can be compared with the
 	// previous touch down event.
-	static private int[] mTouchDownCellCoordinates = { -1, -1 };
+	private static int[] mTouchDownCellCoordinates = { -1, -1 };
 
 	// The pixel coordinates of the touch down position.
 	private final float[] mTouchDownPixelCoordinates = { -1f, -1f };
@@ -21,7 +21,7 @@ public class Motion {
 	private boolean mDoubleTapDetected;
 
 	// Size of the border and cells in pixels
-	final float mGridPlayerViewBorderWidth;
+	protected final float mGridPlayerViewBorderWidth;
 	private final float mCellSize;
 
 	// The size of the grid

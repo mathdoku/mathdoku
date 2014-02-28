@@ -4,11 +4,11 @@ import android.graphics.Paint;
 
 abstract class BorderPainter extends BasePainter {
 	// Border sizes
-	final static int BORDER_STROKE_HAIR_LINE = 0;
-	final static int BORDER_STROKE_WIDTH_THIN = 1;
-	final static int BORDER_STROKE_WIDTH_NORMAL = 2;
-	final static int BORDER_STROKE_WIDTH_MEDIUM = 3;
-	final static int BORDER_STROKE_WIDTH_THICK = 4;
+	static final int BORDER_STROKE_HAIR_LINE = 0;
+	static final int BORDER_STROKE_WIDTH_THIN = 1;
+	static final int BORDER_STROKE_WIDTH_NORMAL = 2;
+	static final int BORDER_STROKE_WIDTH_MEDIUM = 3;
+	static final int BORDER_STROKE_WIDTH_THICK = 4;
 
 	// Common properties for all derived painter classes
 	Paint mBorderPaint;
