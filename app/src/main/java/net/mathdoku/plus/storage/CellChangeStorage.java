@@ -221,6 +221,7 @@ public class CellChangeStorage {
 								+ "'at position " + index);
 						return false;
 					}
+					break;
 				}
 				index++;
 			}

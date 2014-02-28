@@ -483,9 +483,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 			// When running in development mode it should be checked whether a
 			// development menu item was selected.
-			if (Config.mAppMode != AppMode.DEVELOPMENT) {
-				return super.onOptionsItemSelected(menuItem);
-			} else {
+			if (Config.mAppMode == AppMode.DEVELOPMENT) {
 				if (mPuzzleFragment != null) {
 					// Cancel old timer
 					mPuzzleFragment.stopTimer();
@@ -496,20 +494,15 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 					DevelopmentHelper.submitManualScore(this,
 							mArchiveFragment.getGrid());
 				}
-				if (DevelopmentHelper.onDevelopmentHelperOption(this, menuId)) {
-					// A development helper menu option was processed
-					// successfully.
-					if (mPuzzleFragment != null) {
+				boolean processedByDevelopmentHelper = DevelopmentHelper.onDevelopmentHelperOption(this, menuId);
+				if (mPuzzleFragment != null) {
 						mPuzzleFragment.startTimer();
-					}
+				}
+				if (processedByDevelopmentHelper) {
 					return true;
-				} else {
-					if (mPuzzleFragment != null) {
-						mPuzzleFragment.startTimer();
-					}
-					return super.onOptionsItemSelected(menuItem);
 				}
 			}
+			return super.onOptionsItemSelected(menuItem);
 		}
 	}
 

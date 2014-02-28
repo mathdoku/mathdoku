@@ -93,6 +93,7 @@ public class Projection extends HashMap<String, String> {
 			break;
 		default:
 			aggregatedSource = aggregation.toString() + "(" + source + ")";
+			break;
 		}
 
 		super.put(target, aggregatedSource + " AS " + target);

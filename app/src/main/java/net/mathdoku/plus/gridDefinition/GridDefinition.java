@@ -305,6 +305,7 @@ public class GridDefinition {
 		default:
 			// Invalid number of cells.
 			mGridSize = 0;
+			break;
 		}
 		return (mGridSize != 0);
 	}

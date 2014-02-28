@@ -16,13 +16,6 @@
 
 package net.mathdoku.plus.ui.base;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Collections;
-import java.util.Vector;
-
-import net.mathdoku.plus.R;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -44,6 +37,13 @@ import com.google.android.gms.games.GamesActivityResultCodes;
 import com.google.android.gms.games.GamesClient;
 import com.google.android.gms.games.multiplayer.Invitation;
 import com.google.android.gms.plus.PlusClient;
+
+import net.mathdoku.plus.R;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
+import java.util.Vector;
 
 @SuppressWarnings("WeakerAccess")
 public class GameHelper implements
@@ -1089,6 +1089,7 @@ public class GameHelper implements
 						+ " "
 						+ errorCodeToString(errorCode));
 			}
+			break;
 		}
 
 		debugLog("Showing error dialog.");
