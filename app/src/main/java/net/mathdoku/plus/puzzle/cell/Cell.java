@@ -163,19 +163,21 @@ public class Cell {
 			return false;
 		}
 
-		// Add possible value and sort the list of possible values.
 		mPossibles.add(digit);
 		Collections.sort(mPossibles);
 
-		// Update statistics
+		increasePossiblesCounter();
+
+		return true;
+	}
+
+	private void increasePossiblesCounter() {
 		if (mGrid != null) {
 			GridStatistics gridStatistics = mGrid.getGridStatistics();
 			if (gridStatistics != null) {
 				gridStatistics.increaseCounter(StatisticsCounterType.POSSIBLES);
 			}
 		}
-
-		return true;
 	}
 
 	/**
@@ -208,7 +210,8 @@ public class Cell {
 	 * 
 	 * @param newValue
 	 *            The new value for the cell. Use 0 to clear the cell.
-	 * @return True if the value is set as user value. False otherwise.
+	 * @return True if the new value is set as user value. False otherwise. Also
+	 *         in case the user value isn't changed, false is returned.
 	 */
 	public boolean setUserValue(int newValue) {
 		if (isValueNotValid(newValue) && newValue != 0) {
@@ -232,8 +235,6 @@ public class Cell {
 		// Clear highlight except cheating
 		mInvalidUserValueHighlight = false;
 		mDuplicateValueHighlight = false;
-
-		// Set borders for this cell and the adjacent cells
 		mBordersInvalidated = true;
 
 		// Check if grid is solved.
