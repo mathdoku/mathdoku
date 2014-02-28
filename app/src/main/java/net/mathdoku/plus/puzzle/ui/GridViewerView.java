@@ -9,7 +9,7 @@ import android.view.View;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.puzzle.cell.Cell;
-import net.mathdoku.plus.puzzle.digitPositionGrid.DigitPositionGrid;
+import net.mathdoku.plus.puzzle.digitpositiongrid.DigitPositionGrid;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.painter.GridPainter;
 import net.mathdoku.plus.painter.Painter;
@@ -280,7 +280,7 @@ public class GridViewerView extends View {
 	}
 
 	/**
-	 * Sets the {@link net.mathdoku.plus.puzzle.digitPositionGrid.DigitPositionGrid} used to
+	 * Sets the {@link net.mathdoku.plus.puzzle.digitpositiongrid.DigitPositionGrid} used to
 	 * position the digit buttons for reuse when drawing the maybe values.
 	 */
 	private void setDigitPositionGrid() {

@@ -14,8 +14,8 @@ import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.enums.SolvingAttemptStatus;
 import net.mathdoku.plus.puzzle.grid.Grid;
-import net.mathdoku.plus.gridDefinition.GridDefinition;
-import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
+import net.mathdoku.plus.griddefinition.GridDefinition;
+import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 
 import java.security.InvalidParameterException;
 

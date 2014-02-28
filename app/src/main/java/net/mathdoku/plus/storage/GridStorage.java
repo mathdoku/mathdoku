@@ -1,7 +1,7 @@
 package net.mathdoku.plus.storage;
 
 import net.mathdoku.plus.puzzle.cell.Cell;
-import net.mathdoku.plus.puzzle.cellChange.CellChange;
+import net.mathdoku.plus.puzzle.cellchange.CellChange;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;

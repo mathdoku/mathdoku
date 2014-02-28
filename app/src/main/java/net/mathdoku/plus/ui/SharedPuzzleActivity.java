@@ -14,7 +14,7 @@ import android.view.View;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.puzzle.ui.GridViewerView;
-import net.mathdoku.plus.gridDefinition.GridDefinition;
+import net.mathdoku.plus.griddefinition.GridDefinition;
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.database.GridRow;

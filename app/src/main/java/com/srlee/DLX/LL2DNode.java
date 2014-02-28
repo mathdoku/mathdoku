@@ -1,4 +1,4 @@
-package com.srlee.DLX;
+package com.srlee.dlx;
 
 public class LL2DNode {
 	public void SetLeft(LL2DNode left) {

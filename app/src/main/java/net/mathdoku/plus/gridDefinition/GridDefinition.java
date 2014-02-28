@@ -1,6 +1,6 @@
-package net.mathdoku.plus.gridDefinition;
+package net.mathdoku.plus.griddefinition;
 
-import com.srlee.DLX.MathDokuDLX;
+import com.srlee.dlx.MathDokuDLX;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.enums.CageOperator;
@@ -12,7 +12,7 @@ import net.mathdoku.plus.puzzle.cell.CellBuilder;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.puzzle.grid.GridBuilder;
 import net.mathdoku.plus.puzzle.InvalidGridException;
-import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
+import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.util.Util;
 
 import java.security.InvalidParameterException;

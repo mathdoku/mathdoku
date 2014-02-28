@@ -1,9 +1,9 @@
-package net.mathdoku.plus.gridGenerating;
+package net.mathdoku.plus.gridgenerating;
 
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper;
+import net.mathdoku.plus.developmenthelper.DevelopmentHelper;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;

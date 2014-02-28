@@ -1,4 +1,4 @@
-package com.srlee.DLX;
+package com.srlee.dlx;
 
 import android.util.Log;
 
@@ -6,7 +6,7 @@ import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cell.Cell;
-import net.mathdoku.plus.gridGenerating.ComboGenerator;
+import net.mathdoku.plus.gridgenerating.ComboGenerator;
 
 import java.util.ArrayList;
 import java.util.Collections;

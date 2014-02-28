@@ -1,4 +1,4 @@
-package net.mathdoku.plus.puzzle.cellChange;
+package net.mathdoku.plus.puzzle.cellchange;
 
 import net.mathdoku.plus.puzzle.cell.Cell;
 import net.mathdoku.plus.storage.CellChangeStorage;

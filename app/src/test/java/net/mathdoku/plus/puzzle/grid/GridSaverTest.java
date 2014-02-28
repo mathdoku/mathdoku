@@ -2,8 +2,8 @@ package net.mathdoku.plus.puzzle.grid;
 
 import android.app.Activity;
 
-import net.mathdoku.plus.puzzle.cellChange.CellChange;
-import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
+import net.mathdoku.plus.puzzle.cellchange.CellChange;
+import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.storage.database.DatabaseHelper;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;

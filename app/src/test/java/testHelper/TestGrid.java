@@ -2,7 +2,7 @@ package testHelper;
 
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.enums.PuzzleComplexity;
-import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
+import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cage.CageBuilder;
 import net.mathdoku.plus.puzzle.cell.Cell;

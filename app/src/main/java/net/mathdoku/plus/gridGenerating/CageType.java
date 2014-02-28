@@ -1,4 +1,4 @@
-package net.mathdoku.plus.gridGenerating;
+package net.mathdoku.plus.gridgenerating;
 
 public class CageType {
 	public static final String TAG = "MathDoku.CageType";

@@ -1,6 +1,6 @@
 package net.mathdoku.plus.storage.database;
 
-import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
+import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 
 /**
  * Mapping for records in database table Grid

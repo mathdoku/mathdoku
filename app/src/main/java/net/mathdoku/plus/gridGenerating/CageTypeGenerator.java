@@ -1,4 +1,4 @@
-package net.mathdoku.plus.gridGenerating;
+package net.mathdoku.plus.gridgenerating;
 
 import android.util.Log;
 

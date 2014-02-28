@@ -1,4 +1,4 @@
-package net.mathdoku.plus.developmentHelper;
+package net.mathdoku.plus.developmenthelper;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
@@ -6,8 +6,8 @@ import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.puzzle.grid.Grid;
-import net.mathdoku.plus.gridGenerating.DialogPresentingGridGenerator;
-import net.mathdoku.plus.gridGenerating.GridGenerator;
+import net.mathdoku.plus.gridgenerating.DialogPresentingGridGenerator;
+import net.mathdoku.plus.gridgenerating.GridGenerator;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.storage.database.DatabaseHelper;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;

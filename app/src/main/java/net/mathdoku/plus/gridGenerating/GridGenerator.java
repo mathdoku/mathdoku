@@ -1,14 +1,14 @@
-package net.mathdoku.plus.gridGenerating;
+package net.mathdoku.plus.gridgenerating;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.srlee.DLX.MathDokuDLX;
+import com.srlee.dlx.MathDokuDLX;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
-import net.mathdoku.plus.developmentHelper.DevelopmentHelper;
+import net.mathdoku.plus.developmenthelper.DevelopmentHelper;
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.puzzle.cage.Cage;
@@ -17,7 +17,7 @@ import net.mathdoku.plus.puzzle.cell.CellBuilder;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.puzzle.grid.GridBuilder;
 import net.mathdoku.plus.puzzle.cell.Cell;
-import net.mathdoku.plus.gridDefinition.GridDefinition;
+import net.mathdoku.plus.griddefinition.GridDefinition;
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.storage.database.DatabaseHelper;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;

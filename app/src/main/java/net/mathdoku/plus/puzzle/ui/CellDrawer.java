@@ -12,7 +12,7 @@ import net.mathdoku.plus.painter.MaybeValuePainter;
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.painter.UserValuePainter;
 import net.mathdoku.plus.puzzle.cell.Cell;
-import net.mathdoku.plus.puzzle.digitPositionGrid.DigitPositionGrid;
+import net.mathdoku.plus.puzzle.digitpositiongrid.DigitPositionGrid;
 import net.mathdoku.plus.puzzle.grid.Grid;
 
 import java.security.InvalidParameterException;

@@ -1,4 +1,4 @@
-package net.mathdoku.plus.puzzle.digitPositionGrid;
+package net.mathdoku.plus.puzzle.digitpositiongrid;
 
 import android.view.View;
 

@@ -7,7 +7,7 @@ import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cage.CageBuilder;
 import net.mathdoku.plus.puzzle.cell.CellBuilder;
-import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
+import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.storage.CellChangeStorage;
 import net.mathdoku.plus.storage.CageStorage;

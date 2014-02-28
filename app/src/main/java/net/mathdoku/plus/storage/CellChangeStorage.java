@@ -4,7 +4,7 @@ import android.util.Log;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.puzzle.cell.Cell;
-import net.mathdoku.plus.puzzle.cellChange.CellChange;
+import net.mathdoku.plus.puzzle.cellchange.CellChange;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 
 import java.util.ArrayList;

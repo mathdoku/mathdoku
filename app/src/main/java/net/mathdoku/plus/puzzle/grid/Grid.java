@@ -9,9 +9,9 @@ import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cage.CageBuilder;
 import net.mathdoku.plus.puzzle.cell.Cell;
 import net.mathdoku.plus.puzzle.cell.CellBuilder;
-import net.mathdoku.plus.puzzle.cellChange.CellChange;
-import net.mathdoku.plus.gridDefinition.GridDefinition;
-import net.mathdoku.plus.gridGenerating.GridGeneratingParameters;
+import net.mathdoku.plus.puzzle.cellchange.CellChange;
+import net.mathdoku.plus.griddefinition.GridDefinition;
+import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.statistics.GridStatistics.StatisticsCounterType;
 import net.mathdoku.plus.util.Util;
@@ -24,14 +24,9 @@ public class Grid {
 	@SuppressWarnings("unused")
 	private static final String TAG = "MathDoku.Grid";
 
-	// Unique row id of grid in database
 	private int mRowId;
+	private int mSolvingAttemptId;
 
-	/**
-	 * Grid variables below are determined when generating and should not be
-	 * altered after being set. These variables can only be set via
-	 * {@link Grid#Grid(GridBuilder)}.
-	 */
 	private final int mGridSize;
 	private final long mDateCreated;
 	private final GridGeneratingParameters mGridGeneratingParameters;
@@ -39,33 +34,13 @@ public class Grid {
 	private final List<Cage> mCages;
 	private final List<Cell> mCells;
 
-	// ************************************************************************
-	// Grid elements and references which do change while solving the game.
-	// ************************************************************************
 	private long mDateUpdated;
-
-	// Has the solution of the grid been revealed?
 	private boolean mRevealed;
-
-	// Puzzle is active as long as it has not been solved.
 	private boolean mActive;
-
-	// Which cell is currently be selected? Null if no cell has been selected
-	// yet.
 	private Cell mSelectedCell;
-
-	// Statistics for this grid
 	private GridStatistics mGridStatistics;
 
-	// Keep track of all moves as soon as grid is built or restored.
 	private List<CellChange> mMoves;
-
-	// ************************************************************************
-	// Miscellaneous
-	// ************************************************************************
-
-	// The solving attempt which is merged into this grid.
-	private int mSolvingAttemptId;
 
 	// Used to avoid redrawing or saving grid during creation of new grid
 	private final Object mLock = new Object();

@@ -36,7 +36,7 @@ import net.mathdoku.plus.R;
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cell.Cell;
-import net.mathdoku.plus.puzzle.digitPositionGrid.DigitPositionGrid;
+import net.mathdoku.plus.puzzle.digitpositiongrid.DigitPositionGrid;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.puzzle.grid.GridLoader;
 import net.mathdoku.plus.puzzle.ui.GridInputMode;
