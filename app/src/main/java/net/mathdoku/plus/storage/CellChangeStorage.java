@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  * persisted and vice versa.
  */
 public class CellChangeStorage {
-	private static final String TAG = "MathDoku.CellChangeStorage";
+	private static final String TAG = CellChangeStorage.class.getName();
 
 	// Remove "&& false" in following line to show debug information about
 	// reading information from a storage string

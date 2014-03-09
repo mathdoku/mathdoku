@@ -22,7 +22,7 @@ import java.util.List;
 
 public class Grid {
 	@SuppressWarnings("unused")
-	private static final String TAG = "MathDoku.Grid";
+	private static final String TAG = Grid.class.getName();
 
 	private int mRowId;
 	private int mSolvingAttemptId;

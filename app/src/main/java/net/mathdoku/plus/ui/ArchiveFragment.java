@@ -19,10 +19,10 @@ import android.widget.TextView;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
+import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.puzzle.grid.GridLoader;
 import net.mathdoku.plus.puzzle.ui.GridViewerView;
-import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.util.Util;
 
@@ -43,7 +43,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		OnSharedPreferenceChangeListener {
 
 	@SuppressWarnings("unused")
-	private static final String TAG = "ArchiveFragment";
+	private static final String TAG = ArchiveFragment.class.getName();
 
 	public static final String BUNDLE_KEY_SOLVING_ATTEMPT_ID = "solvingAttemptId";
 

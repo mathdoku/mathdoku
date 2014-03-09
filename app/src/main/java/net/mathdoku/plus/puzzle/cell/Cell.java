@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Cell {
 	@SuppressWarnings("unused")
-	private static final String TAG = "MathDoku.Cell";
+	private static final String TAG = Cell.class.getName();
 
 	// Index of the cell (left to right, top to bottom, zero-indexed)
 	private final int mId;

@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
  * class is able to recreate a grid based on the grid definition.
  */
 public class GridDefinition {
-	private static final String TAG = "MathDoku.GridDefinition";
+	private static final String TAG = GridDefinition.class.getName();
 
 	// Delimiters below should not be altered as they are persisted.
 	public static final String DELIMITER_LEVEL1 = ":";

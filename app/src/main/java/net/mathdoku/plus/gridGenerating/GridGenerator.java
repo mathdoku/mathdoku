@@ -31,7 +31,7 @@ import java.util.Random;
  * An asynchronous task that generates a grid.
  */
 public class GridGenerator extends AsyncTask<Void, String, Void> {
-	private static final String TAG = "MathDoku.GridGenerator";
+	private static final String TAG = GridGenerator.class.getName();
 
 	private static final int ROW_COORDINATE = 0;
 	private static final int COLUMN_COORDINATE = 1;

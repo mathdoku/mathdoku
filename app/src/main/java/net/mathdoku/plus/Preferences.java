@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class Preferences {
 	@SuppressWarnings("unused")
-	private static final String TAG = "MathDoku.Preferences";
+	private static final String TAG = Preferences.class.getName();
 
 	// Singleton reference to the preferences object
 	private static Preferences mPreferencesSingletonInstance = null;

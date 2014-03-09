@@ -10,7 +10,7 @@ import android.support.v4.view.ViewPager;
  * of leaderboard pages.
  */
 class LeaderboardFragmentPagerAdapter extends FragmentPagerAdapter {
-	public static final String TAG = "MathDoku.LeaderboardFragmentPagerAdapter";
+	private static final String TAG = LeaderboardFragmentPagerAdapter.class.getName();
 
 	private static final int FRAGMENT_ID_GRID_SIZE_4 = 0;
 	private static final int FRAGMENT_ID_GRID_SIZE_5 = 1;

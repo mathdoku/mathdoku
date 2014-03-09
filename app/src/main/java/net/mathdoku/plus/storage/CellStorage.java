@@ -13,7 +13,7 @@ import java.util.List;
  * vice versa.
  */
 public class CellStorage {
-	private static final String TAG = "MathDoku.CellStorage";
+	private static final String TAG = CellStorage.class.getName();
 
 	/*
 	 * Each line in the entire storage string of a Grid contains information

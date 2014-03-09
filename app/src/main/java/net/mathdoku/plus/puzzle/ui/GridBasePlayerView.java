@@ -27,7 +27,7 @@ import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 public class GridBasePlayerView extends GridViewerView implements
 		OnTouchListener {
 	@SuppressWarnings("unused")
-	private static final String TAG = "MathDoku.GridBasePlayerView";
+	private static final String TAG = GridBasePlayerView.class.getName();
 
 	// Input mode changed listener
 	public interface OnInputModeChangedListener {

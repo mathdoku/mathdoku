@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DLX {
-	private static final String TAG = "MathDoku.DLX";
+	private static final String TAG = DLX.class.getName();
 
 	public enum SolveType {
 		ONE, MULTIPLE, ALL

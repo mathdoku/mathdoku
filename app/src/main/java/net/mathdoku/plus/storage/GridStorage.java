@@ -10,7 +10,7 @@ import java.security.InvalidParameterException;
 import java.util.List;
 
 public class GridStorage {
-	private static final String TAG = "MathDoku.GridStorage";
+	private static final String TAG = GridStorage.class.getName();
 
 	/*
 	 * Each line in the entire storage string of a Grid contains information

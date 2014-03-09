@@ -6,7 +6,7 @@ import net.mathdoku.plus.puzzle.grid.Grid;
 
 public class Motion {
 	@SuppressWarnings("unused")
-	private static final String TAG = "MathDoku.Motion";
+	private static final String TAG = Motion.class.getName();
 
 	// The cell coordinates of the cell in the grid for which the touch down was
 	// registered. Will be kept statically so it can be compared with the

@@ -25,7 +25,7 @@ import net.mathdoku.plus.util.SharedPuzzle;
 public class SharedPuzzleActivity extends AppFragmentActivity {
 
 	@SuppressWarnings("unused")
-	private static final String TAG = "MathDoku.SharedPuzzleFragmentActivity";
+	private static final String TAG = SharedPuzzleActivity.class.getName();
 
 	public static final String RESTART_LAST_GAME_SHARED_PUZZLE = "RestartLastGame";
 

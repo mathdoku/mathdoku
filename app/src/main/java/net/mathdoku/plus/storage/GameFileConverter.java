@@ -20,7 +20,7 @@ import java.util.List;
  * Converts all game files to the latest version.
  */
 public class GameFileConverter extends AsyncTask<Void, Void, Void> {
-	private static final String TAG = "MathDoku.GameFileConverter";
+	private static final String TAG = GameFileConverter.class.getName();
 
 	// Remove "&& false" in following line to show debug information about
 	// converting game files when running in development mode.

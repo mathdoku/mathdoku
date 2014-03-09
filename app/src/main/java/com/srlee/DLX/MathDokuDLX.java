@@ -14,7 +14,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class MathDokuDLX extends DLX {
-	private static final String TAG = "MathDoku.MathDokuDLX";
+	private static final String TAG = MathDokuDLX.class.getName();
 
 	// Remove "&& false" in following line to show debug information about
 	// filling the DLX data structure when running in development mode.

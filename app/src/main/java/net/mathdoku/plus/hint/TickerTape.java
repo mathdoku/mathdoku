@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TickerTape extends HorizontalScrollView {
-	public static final String TAG = "MathDoku.TickerTape";
+	private static final String TAG = TickerTape.class.getName();
 
 	private final LinearLayout mTickerTapeLinearLayout;
 

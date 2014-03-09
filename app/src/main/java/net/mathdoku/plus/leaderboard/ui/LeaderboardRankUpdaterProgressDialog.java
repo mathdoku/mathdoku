@@ -1,11 +1,11 @@
 package net.mathdoku.plus.leaderboard.ui;
 
+import android.app.ProgressDialog;
+
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.leaderboard.LeaderboardConnector;
 import net.mathdoku.plus.leaderboard.LeaderboardRankUpdater;
 import net.mathdoku.plus.ui.base.AppFragmentActivity;
-
-import android.app.ProgressDialog;
 
 /**
  * Displays a progress dialog while updating all leaderboards.
@@ -13,7 +13,7 @@ import android.app.ProgressDialog;
 public class LeaderboardRankUpdaterProgressDialog extends ProgressDialog
 		implements LeaderboardRankUpdater.Listener {
 	@SuppressWarnings("unused")
-	private static final String TAG = "MathDoku.LeaderboardRankUpdaterProgressDialog";
+	private static final String TAG = LeaderboardRankUpdaterProgressDialog.class.getName();
 
 	// The updater for the leaderboard rank rows
 	private final LeaderboardRankUpdater mLeaderboardRankUpdater;

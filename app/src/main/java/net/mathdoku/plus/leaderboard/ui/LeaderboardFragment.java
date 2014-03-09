@@ -29,7 +29,7 @@ import net.mathdoku.plus.ui.base.GooglePlayServiceFragmentActivity;
 import net.mathdoku.plus.util.Util;
 
 public class LeaderboardFragment extends android.support.v4.app.Fragment {
-	public static final String TAG = "MathDoku.LeaderboardFragment";
+	private static final String TAG = LeaderboardFragment.class.getName();
 
 	public static final String ARG_GRID_SIZE = "Leaderboard.arg_grid_size";
 	public static final String ARG_FILTER = "Leaderboard.arg_filter";

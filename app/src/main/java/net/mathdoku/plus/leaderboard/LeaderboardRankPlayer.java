@@ -1,8 +1,5 @@
 package net.mathdoku.plus.leaderboard;
 
-import net.mathdoku.plus.config.Config;
-import net.mathdoku.plus.config.Config.AppMode;
-
 import android.util.Log;
 
 import com.google.android.gms.games.GamesClient;
@@ -13,12 +10,15 @@ import com.google.android.gms.games.leaderboard.LeaderboardScoreBuffer;
 import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.android.gms.games.leaderboard.OnLeaderboardScoresLoadedListener;
 
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
+
 /**
  * This class is used to retrieve the rank for the current player from Google
  * Play Services for a specific leaderboard.
  */
 class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener {
-	private static final String TAG = "MathDoku.LeaderboardRankPlayer";
+	private static final String TAG = LeaderboardRankPlayer.class.getName();
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.

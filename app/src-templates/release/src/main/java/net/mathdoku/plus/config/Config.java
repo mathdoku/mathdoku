@@ -23,7 +23,7 @@ package net.mathdoku.plus.config;
  * FILE IN FOLDER $project/app/src-templates/.../Config.java.
  */
 public class Config {
-	public static String TAG_LOG = "MathDoku.Config";
+	private static final String TAG = Config.class.getName();
 
 	public enum AppMode {
 		DEVELOPMENT, PRODUCTION

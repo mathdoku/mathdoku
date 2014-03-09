@@ -20,7 +20,7 @@ import java.util.List;
  * this base class.
  */
 abstract class DatabaseAdapter {
-	private static final String TAG = "MathDoku.DatabaseAdapter";
+	private static final String TAG = DatabaseAdapter.class.getName();
 
 	private static final char BACK_TICK = '`';
 	private static final char QUOTE = '\'';

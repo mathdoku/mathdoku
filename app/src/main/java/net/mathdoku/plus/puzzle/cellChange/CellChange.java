@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class CellChange {
 	@SuppressWarnings("unused")
-	private static final String TAG = "MathDoku.CellChange";
+	private static final String TAG = CellChange.class.getName();
 
 	// The cell for which the undo information is stored.
 	private Cell mCell;

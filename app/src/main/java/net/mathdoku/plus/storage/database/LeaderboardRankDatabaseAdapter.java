@@ -1,10 +1,5 @@
 package net.mathdoku.plus.storage.database;
 
-import java.security.InvalidParameterException;
-
-import net.mathdoku.plus.config.Config;
-import net.mathdoku.plus.config.Config.AppMode;
-import net.mathdoku.plus.enums.PuzzleComplexity;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -13,12 +8,17 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
+import net.mathdoku.plus.enums.PuzzleComplexity;
+
+import java.security.InvalidParameterException;
+
 /**
  * The database adapter for the grid table.
  */
 public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
-
-	private static final String TAG = "MathDoku.LeaderboardRankDatabaseAdapter";
+	private static final String TAG = LeaderboardRankDatabaseAdapter.class.getName();
 
 	// Remove "&& false" in following line to show the SQL-statements in the
 	// debug information

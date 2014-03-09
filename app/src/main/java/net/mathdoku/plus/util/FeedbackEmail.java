@@ -30,7 +30,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class FeedbackEmail {
-	public static final String TAG = "MathDoku.FeedbackEmail";
+	private static final String TAG = FeedbackEmail.class.getName();
 
 	// Delimiters used in files to separate objects, fields and value
 	private static final String EOL_DELIMITER = "\n"; // Separate objects

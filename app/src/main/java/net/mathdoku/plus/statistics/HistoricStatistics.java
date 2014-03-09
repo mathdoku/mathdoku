@@ -11,9 +11,8 @@ import java.util.List;
  * This class holds time related statistics for one property.
  */
 public class HistoricStatistics {
-
 	@SuppressWarnings("unused")
-	private static final String TAG = "MathDoku.HistoricStatistics";
+	private static final String TAG = HistoricStatistics.class.getName();
 
 	// Historic statistics will be split in distinct series.
 	public enum Series {

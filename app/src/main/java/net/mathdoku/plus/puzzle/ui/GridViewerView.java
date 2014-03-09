@@ -17,7 +17,7 @@ import net.mathdoku.plus.painter.Painter.DigitPainterMode;
 
 public class GridViewerView extends View {
 	@SuppressWarnings("unused")
-	private static final String TAG = "MathDoku.GridViewerView";
+	private static final String TAG = GridViewerView.class.getName();
 
 	// Context and preferences in context
 	Context mContext;

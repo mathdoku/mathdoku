@@ -1,13 +1,15 @@
 package net.mathdoku.plus;
 
-import net.mathdoku.plus.ui.PuzzleFragment;
-
 import android.os.AsyncTask;
+import android.util.Log;
+
+import net.mathdoku.plus.ui.PuzzleFragment;
 
 /*
  * Controls the timer within the game.
  */
 public class GameTimer extends AsyncTask<Void, Long, Long> {
+	private final static String TAG = GameTimer.class.getName();
 
 	// Reference to activity that started the timer.
 	private final PuzzleFragment mPuzzleFragment;

@@ -1,5 +1,10 @@
 package net.mathdoku.plus.gridgenerating;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
+import android.util.Log;
+
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
@@ -7,10 +12,6 @@ import net.mathdoku.plus.developmenthelper.DevelopmentHelper;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
-import android.util.Log;
 
 /**
  * An asynchronous task that generates a grid, displays a dialog in the process
@@ -18,7 +19,7 @@ import android.util.Log;
  * task and the activity aren't detached before this may happen.
  */
 public final class DialogPresentingGridGenerator extends GridGenerator {
-	private static final String TAG = "MathDoku.DialogPresentingGridGenerator";
+	private static final String TAG = DialogPresentingGridGenerator.class.getName();
 
 	/**
 	 * The activity used to display the dialog, and to forward the generated

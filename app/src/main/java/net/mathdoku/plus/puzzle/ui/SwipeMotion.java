@@ -9,7 +9,7 @@ import net.mathdoku.plus.config.Config.AppMode;
 
 // Definition of swipe motion
 public class SwipeMotion extends Motion {
-	private static final String TAG = "MathDoku.SwipeMotion";
+	private static final String TAG = SwipeMotion.class.getName();
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.

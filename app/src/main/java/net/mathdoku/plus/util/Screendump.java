@@ -1,17 +1,17 @@
 package net.mathdoku.plus.util;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.view.View;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 public class Screendump {
 	@SuppressWarnings("unused")
-	private static final String TAG = "MathDoku.Screendump";
+	private static final String TAG = Screendump.class.getName();
 
 	private final Context mContext;
 

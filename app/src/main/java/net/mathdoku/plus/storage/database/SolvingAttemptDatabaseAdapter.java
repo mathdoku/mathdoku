@@ -20,7 +20,7 @@ import java.util.List;
  * an older version, statistics data is not available.
  */
 public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
-	private static final String TAG = "MathDoku.SolvingAttemptDatabaseAdapter";
+	private static final String TAG = SolvingAttemptDatabaseAdapter.class.getName();
 
 	// Remove "&& false" in following line to show the SQL-statements in the
 	// debug information

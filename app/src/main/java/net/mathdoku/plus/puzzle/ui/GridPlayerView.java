@@ -23,7 +23,7 @@ import net.mathdoku.plus.hint.TickerTape;
  */
 public class GridPlayerView extends GridBasePlayerView {
 	@SuppressWarnings("unused")
-	private static final String TAG = "MathDoku.GridPlayerView";
+	private static final String TAG = GridPlayerView.class.getName();
 
 	// Reference to the last swipe motion which was started.
 	private SwipeMotion mSwipeMotion;

@@ -23,7 +23,7 @@ import java.util.Random;
  * determine the preference, title, text and image to be used for this tip.
  */
 public class TipDialog extends AlertDialog {
-	private static final String TAG = "Tip.TipDialog";
+	private static final String TAG = TipDialog.class.getName();
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.

@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class GridLoader {
 	@SuppressWarnings("unused")
-	private static final String TAG = "MathDoku.GridLoader";
+	private static final String TAG = GridLoader.class.getName();
 
 	private int mSavedWithRevision;
 

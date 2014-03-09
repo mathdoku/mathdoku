@@ -21,7 +21,7 @@ import java.text.DateFormat;
  * latest ranking information from Google Play Services.
  */
 public class LeaderboardRankUpdater {
-	private static final String TAG = "MathDoku.LeaderboardRankUpdater";
+	private static final String TAG = LeaderboardRankUpdater.class.getName();
 
 	// Remove "&& false" in following line to show debug information about
 	// converting game files when running in development mode.

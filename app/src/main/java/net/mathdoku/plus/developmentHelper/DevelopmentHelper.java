@@ -1,23 +1,24 @@
 package net.mathdoku.plus.developmenthelper;
 
-import net.mathdoku.plus.Preferences;
-import net.mathdoku.plus.R;
-import net.mathdoku.plus.config.Config;
-import net.mathdoku.plus.config.Config.AppMode;
-import net.mathdoku.plus.enums.PuzzleComplexity;
-import net.mathdoku.plus.puzzle.grid.Grid;
-import net.mathdoku.plus.gridgenerating.DialogPresentingGridGenerator;
-import net.mathdoku.plus.gridgenerating.GridGenerator;
-import net.mathdoku.plus.statistics.GridStatistics;
-import net.mathdoku.plus.storage.database.DatabaseHelper;
-import net.mathdoku.plus.ui.PuzzleFragmentActivity;
-import net.mathdoku.plus.util.Util;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences.Editor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
+
+import net.mathdoku.plus.Preferences;
+import net.mathdoku.plus.R;
+import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.config.Config.AppMode;
+import net.mathdoku.plus.enums.PuzzleComplexity;
+import net.mathdoku.plus.gridgenerating.DialogPresentingGridGenerator;
+import net.mathdoku.plus.gridgenerating.GridGenerator;
+import net.mathdoku.plus.puzzle.grid.Grid;
+import net.mathdoku.plus.statistics.GridStatistics;
+import net.mathdoku.plus.storage.database.DatabaseHelper;
+import net.mathdoku.plus.ui.PuzzleFragmentActivity;
+import net.mathdoku.plus.util.Util;
 
 /**
  * The Development Helper class is intended to support Development and Unit
@@ -43,7 +44,7 @@ import android.widget.TextView;
  * development mode is turned off.
  */
 public class DevelopmentHelper {
-	private static String TAG_LOG = "MathDoku.DevelopmentHelper";
+	private static final String TAG = DevelopmentHelper.class.getName();
 
 	// In development mode the grid generator will show a modified progress
 	// dialog. Following types of progress updates are supported. Actual values

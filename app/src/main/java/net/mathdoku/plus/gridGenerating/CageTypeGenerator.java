@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 public class CageTypeGenerator {
-	private static final String TAG = "MathDoku.CageTypeGenerator";
+	private static final String TAG = CageTypeGenerator.class.getName();
 
 	/**
 	 * Size of largest cages to be generated. Be careful with adjusting this

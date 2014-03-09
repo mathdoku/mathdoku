@@ -1,7 +1,7 @@
 package net.mathdoku.plus.gridgenerating;
 
 public class CageType {
-	public static final String TAG = "MathDoku.CageType";
+	private static final String TAG = CageType.class.getName();
 
 	// Number or cells used in this cage type.
 	private int mSize;
