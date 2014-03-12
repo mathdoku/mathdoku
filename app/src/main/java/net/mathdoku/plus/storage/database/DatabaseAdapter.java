@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -289,14 +290,14 @@ abstract class DatabaseAdapter {
 				// noinspection ConstantConditions
 				String sql = cursor.getString(
 						cursor.getColumnIndexOrThrow(KEY_SQL)).toUpperCase();
-				tableDefinitionChanged = !sql.equals(getCreateSQL()
-						.toUpperCase());
+				String expectedSql = getCreateSQL().toUpperCase();
+				tableDefinitionChanged = !sql.equals(expectedSql);
 
 				if (tableDefinitionChanged) {
 					Log.e(TAG, "Change in table '" + getTableName()
 							+ "' detected. Table has not yet been upgraded.");
 					Log.e(TAG, "Database-version: " + sql);
-					Log.e(TAG, "Expected version: " + getCreateSQL());
+					Log.e(TAG, "Expected version: " + expectedSql);
 				}
 			}
 			cursor.close();
@@ -308,6 +309,37 @@ abstract class DatabaseAdapter {
 		}
 
 		return tableDefinitionChanged;
+	}
+
+	/**
+	 * Drop the given table and create a new table with the given SQL. This
+	 * method is only available when running in development way.
+	 * 
+	 * @param table
+	 *            The table to be dropped.
+	 * @param createSql
+	 *            The SQL statement to recreate the table.
+	 */
+	protected static void recreateTableInDevelopmentMode(SQLiteDatabase db,
+			String table, String createSql) {
+		if (Config.mAppMode == AppMode.DEVELOPMENT) {
+			try {
+				String dropSql = "DROP TABLE " + table;
+				execAndLogSQL(db, dropSql);
+			} catch (SQLiteException e) {
+				Log
+						.i(TAG,
+								String
+										.format("Table %s does not exist. Cannot drop table (not an error.",
+												table), e);
+			}
+			execAndLogSQL(db, createSql);
+		}
+	}
+
+	private static void execAndLogSQL(SQLiteDatabase db, String sql) {
+		Log.i(TAG, "Executing SQL: " + sql);
+		db.execSQL(sql);
 	}
 
 	/**
@@ -328,7 +360,7 @@ abstract class DatabaseAdapter {
 		// Check if columns to be dropped has been specified.
 		if (columnsToDropped == null || columnsToDropped.length == 0) {
 			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				throw new RuntimeException(TAG
+				throw new DatabaseException(TAG
 						+ ".dropColumn has invalid parameter.'");
 			} else {
 				return false;
@@ -344,7 +376,7 @@ abstract class DatabaseAdapter {
 				|| newColumnList.equals(currentColumnList)) {
 			// Can not delete.
 			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				throw new RuntimeException(TAG
+				throw new DatabaseException(TAG
 						+ ".dropColumn can not drop columns '"
 						+ Arrays.toString(columnsToDropped) + "'.");
 			} else {
@@ -380,7 +412,9 @@ abstract class DatabaseAdapter {
 			sqliteDatabase.setTransactionSuccessful();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Log.wtf(TAG, String.format(
+					"Error while dropping column(s) from table %s", tableName),
+					e);
 			return false;
 		} finally {
 			sqliteDatabase.endTransaction();

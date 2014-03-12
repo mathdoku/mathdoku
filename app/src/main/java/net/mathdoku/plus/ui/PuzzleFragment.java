@@ -125,8 +125,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		try {
 			mPuzzleFragmentListener = (PuzzleFragmentListener) activity;
 		} catch (ClassCastException e) {
-			throw new ClassCastException(activity.toString()
-					+ " must implement PuzzleFragmentListener");
+			throw new IllegalStateException(activity.getClass().getName()
+					+ " must implement PuzzleFragmentListener", e);
 		}
 	}
 

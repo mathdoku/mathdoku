@@ -10,6 +10,7 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Parcelable;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
@@ -73,23 +74,29 @@ public class FeedbackEmail {
 					return false;
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				Log.d(TAG, "Error while creating log file for feedback email.",
+						e);
 				return false;
 			}
 		}
 
 		try {
 			mLogFile = new FileOutputStream(file);
+			logDevice();
+			logConfiguration();
+			logPreferences();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			Log.d(TAG, "Log file for feedback email not found.", e);
 			return false;
+		} catch (IOException e) {
+			Log
+					.d(TAG,
+							"Error while writing to log file for feedback email.",
+							e);
+			return false;
+		} finally {
+			close();
 		}
-
-		logDevice();
-		logConfiguration();
-		logPreferences();
-
-		close();
 
 		return true;
 	}
@@ -97,7 +104,7 @@ public class FeedbackEmail {
 	/**
 	 * Logs info about device.
 	 */
-	private void logDevice() {
+	private void logDevice() throws IOException {
 		SortedMap<String, String> sortedMap = new TreeMap<String, String>();
 
 		sortedMap.put("Android.Version", android.os.Build.VERSION.CODENAME);
@@ -128,7 +135,7 @@ public class FeedbackEmail {
 	/**
 	 * Logs information about a configuration.
 	 */
-	private void logConfiguration() {
+	private void logConfiguration() throws IOException {
 		SortedMap<String, String> sortedMap = new TreeMap<String, String>();
 
 		Configuration configuration = mActivity
@@ -145,7 +152,7 @@ public class FeedbackEmail {
 	/**
 	 * Logs all preferences.
 	 */
-	private void logPreferences() {
+	private void logPreferences() throws IOException {
 		// Get preferences and check whether it is allowed to gather new data.
 		Preferences preferences = Preferences.getInstance();
 
@@ -176,7 +183,8 @@ public class FeedbackEmail {
 	 * @param map
 	 *            The set of key/values to be written to the log.
 	 */
-	private void logSortedMap(String identifier, SortedMap<String, String> map) {
+	private void logSortedMap(String identifier, SortedMap<String, String> map)
+			throws IOException {
 		String logLine = identifier;
 
 		// Get Map in Set interface to get key and value
@@ -197,16 +205,11 @@ public class FeedbackEmail {
 	 * @param line
 	 *            The line to be written.
 	 */
-	private void writeLine(String line) {
-		try {
-			// Prefix line with current date time
-			line = mDateFormat.format(new Date()) + FIELD_DELIMITER_LEVEL1
-					+ line;
-			mLogFile.write(line.getBytes());
-			mLogFile.flush();
-		} catch (IOException e) {
-			// Could not write
-		}
+	private void writeLine(String line) throws IOException {
+		// Prefix line with current date time
+		line = mDateFormat.format(new Date()) + FIELD_DELIMITER_LEVEL1 + line;
+		mLogFile.write(line.getBytes());
+		mLogFile.flush();
 	}
 
 	/**
@@ -218,7 +221,7 @@ public class FeedbackEmail {
 				mLogFile.flush();
 				mLogFile.close();
 			} catch (IOException e) {
-				// Do nothing.
+				Log.d(TAG, "Error while closing logfile of FeedbackEmail.", e);
 			}
 		}
 	}

@@ -20,7 +20,8 @@ import java.util.List;
  * an older version, statistics data is not available.
  */
 public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
-	private static final String TAG = SolvingAttemptDatabaseAdapter.class.getName();
+	private static final String TAG = SolvingAttemptDatabaseAdapter.class
+			.getName();
 
 	// Remove "&& false" in following line to show the SQL-statements in the
 	// debug information
@@ -118,21 +119,9 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 *            to identify the database version.
 	 */
 	static void upgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		if (oldVersion < 433 && newVersion >= 433) {
-			// In development revisions the table is simply dropped and
-			// recreated.
-			try {
-				String sql = "DROP TABLE " + TABLE;
-				if (DEBUG_SQL) {
-					Log.i(TAG, sql);
-				}
-				db.execSQL(sql);
-			} catch (SQLiteException e) {
-				if (Config.mAppMode == AppMode.DEVELOPMENT) {
-					e.printStackTrace();
-				}
-			}
-			create(db);
+		if (Config.mAppMode == AppMode.DEVELOPMENT && oldVersion < 433
+				&& newVersion >= 433) {
+			recreateTableInDevelopmentMode(db, TABLE, buildCreateSQL());
 		}
 	}
 
@@ -160,9 +149,8 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		try {
 			id = mSqliteDatabase.insertOrThrow(TABLE, null, initialValues);
 		} catch (SQLiteException e) {
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				e.printStackTrace();
-			}
+			throw new DatabaseException(
+					"Cannot insert new solving attempt in database.", e);
 		}
 
 		if (id < 0) {
@@ -207,10 +195,10 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 			solvingAttempt.mStorageString = cursor.getString(cursor
 					.getColumnIndexOrThrow(KEY_DATA));
 		} catch (SQLiteException e) {
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				e.printStackTrace();
-			}
-			return null;
+			throw new DatabaseException(
+					String.format(
+							"Cannot retrieve solving attempt with id '%d' from database.",
+							solvingAttemptId), e);
 		} finally {
 			if (cursor != null) {
 				cursor.close();
@@ -241,10 +229,9 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 			// Convert cursor record to a SolvingAttempt row
 			id = cursor.getInt(cursor.getColumnIndexOrThrow(KEY_ROWID));
 		} catch (SQLiteException e) {
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				e.printStackTrace();
-			}
-			return -1;
+			throw new DatabaseException(
+					"Cannot retrieve the most recent played solving attempt id in database.",
+					e);
 		} finally {
 			if (cursor != null) {
 				cursor.close();
@@ -302,10 +289,9 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 						.getColumnIndexOrThrow(KEY_ROWID)));
 			} while (cursor.moveToNext());
 		} catch (SQLiteException e) {
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				e.printStackTrace();
-			}
-			return null;
+			throw new DatabaseException(
+					"Cannot retrieve all solving attempt id's from database which have to be converted.",
+					e);
 		} finally {
 			if (cursor != null) {
 				cursor.close();
@@ -350,10 +336,10 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 			// Convert cursor record to a SolvingAttempt row
 			count = cursor.getInt(0);
 		} catch (SQLiteException e) {
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				e.printStackTrace();
-			}
-			return 0;
+			throw new DatabaseException(
+					String.format(
+							"Cannot count the number of solving attempts for grid with id '%d' from database.",
+							gridId), e);
 		} finally {
 			if (cursor != null) {
 				cursor.close();

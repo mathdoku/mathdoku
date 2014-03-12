@@ -233,7 +233,7 @@ public class HistoricStatistics {
 	public XYSeries getXYSeries(Series series, String title, Scale scale,
 			boolean includeElapsedTime, boolean includeCheatTime) {
 		if (series == Series.SOLUTION_REVEALED) {
-			throw new RuntimeException(
+			throw new IllegalArgumentException(
 					"Method getXYSeries should not be used for the solution "
 							+ "revealed series. Use getXYSeriesSolutionsRevealed "
 							+ "instead.");

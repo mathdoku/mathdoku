@@ -19,7 +19,8 @@ import net.mathdoku.plus.ui.PuzzleFragmentActivity;
  * task and the activity aren't detached before this may happen.
  */
 public final class DialogPresentingGridGenerator extends GridGenerator {
-	private static final String TAG = DialogPresentingGridGenerator.class.getName();
+	private static final String TAG = DialogPresentingGridGenerator.class
+			.getName();
 
 	/**
 	 * The activity used to display the dialog, and to forward the generated

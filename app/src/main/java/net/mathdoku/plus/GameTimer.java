@@ -55,6 +55,8 @@ public class GameTimer extends AsyncTask<Void, Long, Long> {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				// Nothing to be done, task will be cancelled.
+				Log.d(TAG, "Sleep of game timer is cancelled (not an error).",
+						e);
 			}
 		}
 		return mElapsedTime;

@@ -1,18 +1,20 @@
 package net.mathdoku.plus.griddefinition;
 
+import android.util.Log;
+
 import com.srlee.dlx.MathDokuDLX;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.enums.PuzzleComplexity;
+import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
+import net.mathdoku.plus.puzzle.InvalidGridException;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cage.CageBuilder;
 import net.mathdoku.plus.puzzle.cell.Cell;
 import net.mathdoku.plus.puzzle.cell.CellBuilder;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.puzzle.grid.GridBuilder;
-import net.mathdoku.plus.puzzle.InvalidGridException;
-import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.util.Util;
 
 import java.security.InvalidParameterException;
@@ -159,23 +161,23 @@ public class GridDefinition {
 		}
 
 		if (!definition.matches("" //
-										// Part for puzzle complexity
-										+ "\\d"
-										// Part for cage id's per cell
-										+ DELIMITER_LEVEL1 //
-										+ "(" //
-										+ "\\d\\d" // Cage id for a cell
-										+ ")+" // At least one cell needed
-										// Part for cage definitions
-										+ "(" //
-										// Start of new cage part
-										+ DELIMITER_LEVEL1 //
-										+ "\\d+" // Cage id
-										+ DELIMITER_LEVEL2 //
-										+ "\\d+" // Result value of cage
-										+ DELIMITER_LEVEL2 //
-										+ "\\d" // Cage operator
-										+ ")+" // At least one cage needed
+									// Part for puzzle complexity
+				+ "\\d"
+				// Part for cage id's per cell
+				+ DELIMITER_LEVEL1 //
+				+ "(" //
+				+ "\\d\\d" // Cage id for a cell
+				+ ")+" // At least one cell needed
+				// Part for cage definitions
+				+ "(" //
+				// Start of new cage part
+				+ DELIMITER_LEVEL1 //
+				+ "\\d+" // Cage id
+				+ DELIMITER_LEVEL2 //
+				+ "\\d+" // Result value of cage
+				+ DELIMITER_LEVEL2 //
+				+ "\\d" // Cage operator
+				+ ")+" // At least one cage needed
 		)) {
 			if (mThrowExceptionOnError) {
 				throw new InvalidGridException("Definition has invalid format.");
@@ -314,7 +316,8 @@ public class GridDefinition {
 		PuzzleComplexity puzzleComplexity = null;
 		try {
 			puzzleComplexity = PuzzleComplexity.fromId(puzzleComplexityString);
-		} catch (InvalidParameterException e) {
+		} catch (IllegalArgumentException e) {
+			Log.d(TAG, e.getMessage(), e);
 			// This value can not be specified in a share url created by the
 			// app. But in case it is manipulated by a user before sending
 			// to another user, the receiver should not get an exception.
@@ -391,12 +394,12 @@ public class GridDefinition {
 		cageBuilder.setResult(Integer.valueOf(cageElements[1]));
 		try {
 			cageBuilder.setCageOperator(CageOperator.fromId(cageElements[2]));
-		} catch (InvalidParameterException e) {
+		} catch (IllegalArgumentException e) {
 			// If the cage operator in the url was manipulated this should not
 			// result in an Invalid Parameter Exception as the receiving user
 			// might be ignorant of the url being manipulated.
 			if (mThrowExceptionOnError) {
-				throw e;
+				throw new IllegalArgumentException(e.getMessage(), e);
 			}
 			return false;
 		}

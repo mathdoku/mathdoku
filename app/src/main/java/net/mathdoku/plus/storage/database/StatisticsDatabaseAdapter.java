@@ -122,6 +122,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 						" not null default `false`"),
 				createColumn(KEY_INCLUDE_IN_STATISTICS, "string",
 						" not null default `false`"),
+				createColumn("dummy", "string", " not null default `false`"),
 				createForeignKey(KEY_GRID_ID, GridDatabaseAdapter.TABLE,
 						GridDatabaseAdapter.KEY_ROWID));
 	}
@@ -165,21 +166,9 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 *            to identify the database version.
 	 */
 	static void upgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		if (oldVersion < 438 && newVersion >= 438) {
-			// In development and beta revisions the table is simply dropped and
-			// recreated.
-			try {
-				String sql = "DROP TABLE " + TABLE;
-				if (DEBUG_SQL) {
-					Log.i(TAG, sql);
-				}
-				db.execSQL(sql);
-			} catch (SQLiteException e) {
-				if (Config.mAppMode == AppMode.DEVELOPMENT) {
-					e.printStackTrace();
-				}
-			}
-			create(db);
+		if (Config.mAppMode == AppMode.DEVELOPMENT && oldVersion < 438
+				&& newVersion >= 438) {
+			recreateTableInDevelopmentMode(db, TABLE, buildCreateSQL());
 		}
 	}
 
@@ -204,10 +193,8 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		try {
 			id = mSqliteDatabase.insertOrThrow(TABLE, null, contentValues);
 		} catch (SQLiteException e) {
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				e.printStackTrace();
-			}
-			return -1;
+			throw new DatabaseException(
+					"Cannot insert new grid statistics in database.", e);
 		}
 
 		if (id < 0) {
@@ -217,33 +204,6 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 
 		// Retrieve the record created.
 		return (int) id;
-	}
-
-	/**
-	 * Get the statistics for the given (row) id.
-	 * 
-	 * @param id
-	 *            The unique row id of the statistics to be found.
-	 * @return The grid statistics for the given id. Null in case of an error.
-	 */
-	GridStatistics get(int id) {
-		GridStatistics gridStatistics = null;
-		Cursor cursor = null;
-		try {
-			cursor = mSqliteDatabase.query(true, TABLE, allColumns, KEY_ROWID
-					+ "=" + id, null, null, null, null, null);
-			gridStatistics = toGridStatistics(cursor);
-		} catch (SQLiteException e) {
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				e.printStackTrace();
-			}
-			return null;
-		} finally {
-			if (cursor != null) {
-				cursor.close();
-			}
-		}
-		return gridStatistics;
 	}
 
 	/**
@@ -262,10 +222,10 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 					+ "=" + gridId, null, null, null, KEY_ROWID + " DESC", "1");
 			gridStatistics = toGridStatistics(cursor);
 		} catch (SQLiteException e) {
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				e.printStackTrace();
-			}
-			return null;
+			throw new DatabaseException(
+					String.format(
+							"Cannot retrieve statistics for grid with id '%d' from database.",
+							gridId), e);
 		} finally {
 			if (cursor != null) {
 				cursor.close();
@@ -505,10 +465,10 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 					mCumulativeStatisticsProjection.getAllColumnNames(),
 					selection, null, null, null, null);
 		} catch (SQLiteException e) {
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				e.printStackTrace();
-			}
-			return null;
+			throw new DatabaseException(
+					String.format(
+							"Cannot retrieve the cumulative statistics for grids with sizes '%d-%d' from database.",
+							minGridSize, maxGridSize), e);
 		}
 
 		if (cursor == null || !cursor.moveToFirst()) {
@@ -764,10 +724,10 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 			cursor = sqliteQueryBuilder.query(mSqliteDatabase, columnsData,
 					selection, null, null, null, KEY_GRID_ID);
 		} catch (SQLiteException e) {
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				e.printStackTrace();
-			}
-			return null;
+			throw new DatabaseException(
+					String.format(
+							"Cannot retrieve the historic statistics for grids with sizes '%d-%d' from database.",
+							minGridSize, maxGridSize), e);
 		}
 
 		HistoricStatistics historicStatistics = new HistoricStatistics(cursor);
@@ -817,9 +777,10 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		try {
 			mSqliteDatabase.execSQL(sql);
 		} catch (SQLiteException e) {
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				e.printStackTrace();
-			}
+			throw new DatabaseException(
+					String.format(
+							"Cannot update the grid statistics in database for grid with id '%d'.",
+							gridId), e);
 		}
 	}
 }

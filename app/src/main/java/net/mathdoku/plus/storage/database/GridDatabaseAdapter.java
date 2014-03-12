@@ -2,7 +2,6 @@ package net.mathdoku.plus.storage.database;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -13,11 +12,9 @@ import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.enums.SolvingAttemptStatus;
-import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.griddefinition.GridDefinition;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
-
-import java.security.InvalidParameterException;
+import net.mathdoku.plus.puzzle.grid.Grid;
 
 /**
  * The database adapter for the grid table.
@@ -131,15 +128,9 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 *            to identify the database version.
 	 */
 	static void upgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		if (oldVersion < 432 && newVersion >= 432) {
-			// In development revisions the table is simply dropped and
-			// recreated.
-			try {
-				db.execSQL("DROP TABLE " + TABLE);
-			} catch (SQLiteException e) {
-				// Table does not exist
-			}
-			create(db);
+		if (Config.mAppMode == AppMode.DEVELOPMENT && oldVersion < 432
+				&& newVersion >= 432) {
+			recreateTableInDevelopmentMode(db, TABLE, buildCreateSQL());
 		}
 	}
 
@@ -150,18 +141,13 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 * @param grid
 	 *            The grid which has to be inserted into the database.
 	 * @return The unique row id of the grid created. -1 in case of an error.
-	 * @throws InvalidParameterException
-	 *             In case the definition is empty or null.
-	 * @throws SQLException
-	 *             In case the definition is not unique.
 	 */
-	public int insert(Grid grid) throws InvalidParameterException, SQLException {
+	public int insert(Grid grid) {
 		String gridDefinition = GridDefinition.getDefinition(grid);
 		if (gridDefinition == null || gridDefinition.trim().equals("")) {
 			// TODO: better handling of situation in which a grid definition was
 			// added before. It is a very rare situation but it can occur.
-			throw new InvalidParameterException(
-					"Definition of grid is not unique.");
+			throw new DatabaseException("Definition of grid is not unique.");
 		}
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(KEY_DEFINITION, gridDefinition);
@@ -187,10 +173,8 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 			id = (int) mSqliteDatabase
 					.insertOrThrow(TABLE, null, initialValues);
 		} catch (SQLiteConstraintException e) {
-			InvalidParameterException ipe = new InvalidParameterException(
-					e.getLocalizedMessage());
-			ipe.initCause(e);
-			throw ipe;
+			throw new DatabaseException("Cannot insert new grid in database.",
+					e);
 		}
 
 		if (id < 0) {
@@ -216,10 +200,9 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 					+ "=" + id, null, null, null, null, null);
 			gridRow = toGridRow(cursor);
 		} catch (SQLiteException e) {
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				e.printStackTrace();
-			}
-			return null;
+			throw new DatabaseException(String.format(
+					"Cannot retrieve gridRow with id '%d' from database", id),
+					e);
 		} finally {
 			if (cursor != null) {
 				cursor.close();
@@ -244,10 +227,9 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 					null, null, null, null, null);
 			gridRow = toGridRow(cursor);
 		} catch (SQLiteException e) {
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				e.printStackTrace();
-			}
-			return null;
+			throw new DatabaseException(String.format(
+					"Cannot retrieve grid with definition '%s' from database",
+					definition), e);
 		} finally {
 			if (cursor != null) {
 				cursor.close();
@@ -362,10 +344,8 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 				+ SolvingAttemptDatabaseAdapter
 						.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_ROWID)
 				+ ") "
-				+ (!selectionStatus.isEmpty() ? " AND "
-						+ selectionStatus : "")
-				+ (!selectionSize.isEmpty() ? " AND " + selectionSize
-						: "");
+				+ (!selectionStatus.isEmpty() ? " AND " + selectionStatus : "")
+				+ (!selectionSize.isEmpty() ? " AND " + selectionSize : "");
 
 		if (DEBUG_SQL) {
 			String sql = sqliteQueryBuilder.buildQuery(
@@ -397,10 +377,10 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 				} while (cursor.moveToNext());
 			}
 		} catch (SQLiteException e) {
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				e.printStackTrace();
-			}
-			return null;
+			throw new DatabaseException(
+					String.format(
+							"Cannot retrieve latest solving attempt per grid from the database (status filter = %s, size filter = %s).",
+							statusFilter.toString(), sizeFilter.toString()), e);
 		} finally {
 			if (cursor != null) {
 				cursor.close();
@@ -506,10 +486,10 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 				} while (cursor.moveToNext());
 			}
 		} catch (SQLiteException e) {
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				e.printStackTrace();
-			}
-			return null;
+			throw new DatabaseException(
+					String.format(
+							"Cannot retrieve used statuses of latest solving attempt per grid from the database (size filter = %s).",
+							sizeFilter.toString()), e);
 		} finally {
 			if (cursor != null) {
 				cursor.close();
@@ -593,10 +573,10 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 				} while (cursor.moveToNext());
 			}
 		} catch (SQLiteException e) {
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				e.printStackTrace();
-			}
-			return null;
+			throw new DatabaseException(
+					String.format(
+							"Cannot retrieve used sizes of latest solving attempt per grid from the database (status filter = %s).",
+							statusFilter.toString()), e);
 		} finally {
 			if (cursor != null) {
 				cursor.close();

@@ -18,7 +18,7 @@ import java.io.FileNotFoundException;
  * all apps can access this provider.
  */
 public class FileProvider extends ContentProvider {
-	private static final String PROVIDER_NAME = "net.mathdoku.plus.util.FileProvider";
+	private static final String PROVIDER_NAME = FileProvider.class.getName();
 
 	// Supported files.
 	private static final int FEEDBACK_LOG_ID = 1;
@@ -48,7 +48,8 @@ public class FileProvider extends ContentProvider {
 
 	@Override
 	public int delete(Uri arg0, String arg1, String[] arg2) {
-		throw new RuntimeException("Operation not supported");
+		throw new UnsupportedOperationException(PROVIDER_NAME
+				+ " does not support delete.");
 	}
 
 	@Override
@@ -75,7 +76,8 @@ public class FileProvider extends ContentProvider {
 
 	@Override
 	public Uri insert(Uri arg0, ContentValues arg1) {
-		throw new RuntimeException("Operation not supported");
+		throw new UnsupportedOperationException(PROVIDER_NAME
+				+ " does not support delete.");
 	}
 
 	@Override
@@ -114,7 +116,8 @@ public class FileProvider extends ContentProvider {
 
 	@Override
 	public int update(Uri arg0, ContentValues arg1, String arg2, String[] arg3) {
-		throw new RuntimeException("Operation not supported");
+		throw new UnsupportedOperationException(PROVIDER_NAME
+				+ " does not support delete.");
 	}
 
 	@Override

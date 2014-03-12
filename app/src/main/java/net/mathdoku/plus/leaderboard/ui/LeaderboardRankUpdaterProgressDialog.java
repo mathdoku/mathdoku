@@ -13,7 +13,8 @@ import net.mathdoku.plus.ui.base.AppFragmentActivity;
 public class LeaderboardRankUpdaterProgressDialog extends ProgressDialog
 		implements LeaderboardRankUpdater.Listener {
 	@SuppressWarnings("unused")
-	private static final String TAG = LeaderboardRankUpdaterProgressDialog.class.getName();
+	private static final String TAG = LeaderboardRankUpdaterProgressDialog.class
+			.getName();
 
 	// The updater for the leaderboard rank rows
 	private final LeaderboardRankUpdater mLeaderboardRankUpdater;

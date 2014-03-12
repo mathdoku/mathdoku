@@ -165,8 +165,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			// This value has already been transformed to another complexity
 			// value but is required by the compiler.
 			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				throw new RuntimeException(
-						"GridGenerator: complexity RANDOM was not transformed.");
+				throw new GridGeneratingException(
+						"Complexity RANDOM was not transformed.");
 			}
 			break;
 		case VERY_EASY:
@@ -224,7 +224,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		}
 
 		if (DEBUG_GRID_GENERATOR) {
-			Log.i(TAG, "Game seed: " + mGridGeneratingParameters.mGameSeed);
+			Log.d(TAG, "Game seed: " + mGridGeneratingParameters.mGameSeed);
 		}
 
 		mListener = listener;
@@ -346,7 +346,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 									mGridGeneratingParameters);
 					Grid grid = mGridBuilder.build();
 					if (grid == null) {
-						Log.e(TAG, "Can not create grid.");
+						Log.d(TAG, "Can not create grid.");
 						continue;
 					}
 					grid.save();
@@ -426,25 +426,26 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 							.i(TAG,
 									" - mGeneratorRevisionNumber: "
 											+ mGridGeneratingParameters.mGeneratorRevisionNumber);
-					Log.i(TAG, " - mPuzzleComplexity: "
+					Log.d(TAG, " - mPuzzleComplexity: "
 							+ mGridGeneratingParameters.mPuzzleComplexity);
-					Log.i(TAG, " - mGameSeed: "
+					Log.d(TAG, " - mGameSeed: "
 							+ mGridGeneratingParameters.mGameSeed);
-					Log.i(TAG, " - mMaxCageSize: "
+					Log.d(TAG, " - mMaxCageSize: "
 							+ mGridGeneratingParameters.mMaxCageSize);
-					Log.i(TAG, " - mMaxCageResult: "
+					Log.d(TAG, " - mMaxCageResult: "
 							+ mGridGeneratingParameters.mMaxCageResult);
-					Log.i(TAG, " - mHideOperators: "
+					Log.d(TAG, " - mHideOperators: "
 							+ mGridGeneratingParameters.mHideOperators);
 					publishProgress(
 							DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_MESSAGE,
 							"Slow game generation. See LogCat for grid generating parameters which might help to reproduce the problem. Game seed = "
 									+ mGridGeneratingParameters.mGameSeed);
+					// Pause a moment to publish message in the progress dialog
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
-						e.printStackTrace();
-					} // Pause a moment to publish message
+						Log.d(TAG, "Sleep was interrupted.", e);
+					}
 					mForceExceptionInDevelopmentModeDueToSlowGenerating = true;
 					return null;
 				}
@@ -489,7 +490,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			}
 			if (values.length >= 2 && values[0] != null && values[1] != null
 					&& !values[1].equals("")) {
-				Log.i(TAG, Long.toString(timeElapsed) + ": " + values[1]);
+				Log.d(TAG, Long.toString(timeElapsed) + ": " + values[1]);
 			}
 		}
 	}
@@ -503,7 +504,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	protected void onPostExecute(Void result) {
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			if (mForceExceptionInDevelopmentModeDueToSlowGenerating) {
-				throw new RuntimeException(
+				throw new GridGeneratingException(
 						"Investigate slow game generation. See logcat above for more info.");
 			}
 		}
@@ -705,7 +706,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	 */
 	private Cage selectRandomCageType(int rowOriginCell, int columnOriginCell) {
 		if (DEBUG_GRID_GENERATOR_FULL) {
-			Log.i(TAG, "Determine valid cages for cell[" + rowOriginCell + ","
+			Log.d(TAG, "Determine valid cages for cell[" + rowOriginCell + ","
 					+ columnOriginCell + "]");
 		}
 
@@ -865,7 +866,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			// solution for the puzzle too much, the cage type will not
 			// returned.
 			if (DEBUG_GRID_GENERATOR_FULL) {
-				Log.i(TAG, "This cage type has been rejected as it has more "
+				Log.d(TAG, "This cage type has been rejected as it has more "
 						+ "than " + maxPermutations + " initial "
 						+ "permutations which fulfill the cage requirement.");
 			}
@@ -895,7 +896,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	 *            Mask of cage type which is currently processed.
 	 */
 	private void printCageCreationDebugInformation(boolean[][] maskNewCage) {
-		Log.i(TAG, "   Checking cage type");
+		Log.d(TAG, "   Checking cage type");
 		String cageIdFormat = "%d";
 		String emptyCell = ".";
 		String usedCell = "X";
@@ -927,7 +928,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 							+ (maskNewCage[row][col] ? usedCell : emptyCell);
 				}
 			}
-			Log.i(TAG, line);
+			Log.d(TAG, line);
 		}
 	}
 
@@ -1205,7 +1206,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			// displayed on this device. Instead of multiplication the add
 			// operator will be used for this cage which leads to a small cage
 			// outcome.
-			Log.i(TAG, "GameSeed: " + mGridGeneratingParameters.mGameSeed
+			Log.d(TAG, "GameSeed: " + mGridGeneratingParameters.mGameSeed
 					+ " cage result " + cageResultMultiplication
 					+ " is rejected");
 		}

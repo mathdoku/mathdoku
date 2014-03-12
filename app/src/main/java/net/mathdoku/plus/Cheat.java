@@ -7,6 +7,7 @@ import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 
 public class Cheat {
+	private static final String TAG = Cheat.class.getName();
 
 	public enum CheatType {
 		CELL_REVEALED, OPERATOR_REVEALED, SOLUTION_REVEALED, CHECK_PROGRESS_USED
@@ -79,7 +80,7 @@ public class Cheat {
 			mTipTitle = "";
 			mTipText = "";
 			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				throw new RuntimeException(
+				throw new IllegalArgumentException(
 						"Invalid value for parameter cheatType used in call to method Cheat(Context, CheatType).");
 			}
 			break;
@@ -120,7 +121,7 @@ public class Cheat {
 			mPenaltyTimeMillisecondsPerOccurrence = 0;
 			mConditionalOccurrences = 0;
 			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				throw new RuntimeException(
+				throw new IllegalArgumentException(
 						"Invalid value for parameter cheatType used in call to method Cheat(Context, CheatType).");
 			}
 			break;

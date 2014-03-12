@@ -164,9 +164,8 @@ public class SwipeMotion extends Motion {
 			// Already released. Nothing to do here.
 			return;
 		} else if (Config.mAppMode == AppMode.DEVELOPMENT) {
-			throw new RuntimeException(
-					"Swipe Motion status can not be changed from "
-							+ mStatus.toString() + " to " + Status.RELEASED);
+			throw new IllegalStateException(getErrorIllegalStateTransition(
+					mStatus.toString(), Status.RELEASED.toString()));
 		}
 		if (event != null && update(event)) {
 			// A digit was determined upon release the swipe motion. This motion
@@ -223,10 +222,16 @@ public class SwipeMotion extends Motion {
 			mStatus = Status.FINISHED;
 		} else if (Config.mAppMode == AppMode.DEVELOPMENT
 				&& mStatus != Status.FINISHED) {
-			throw new RuntimeException(
-					"Swipe Motion status can not be changed from "
-							+ mStatus.toString() + " to " + Status.FINISHED);
+			throw new IllegalStateException(getErrorIllegalStateTransition(
+					mStatus.toString(), Status.FINISHED.toString()));
 		}
+	}
+
+	private String getErrorIllegalStateTransition(String fromState,
+			String toState) {
+		return String.format(
+				"Swipe Motion status can not be changed from %s to %s",
+				fromState, toState);
 	}
 
 	/**

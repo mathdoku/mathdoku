@@ -1,7 +1,5 @@
 package net.mathdoku.plus.enums;
 
-import java.security.InvalidParameterException;
-
 public enum CageOperator {
 	// The cage operators id's of the enum values should not be altered as these
 	// values are persisted.
@@ -15,23 +13,36 @@ public enum CageOperator {
 		mCageOperatorSign = cageOperatorSign;
 	}
 
-	public static CageOperator fromId(String cageOperatorId) {
+	public static CageOperator fromId(String cageOperatorId)
+			throws IllegalArgumentException {
 		int id = Integer.parseInt(cageOperatorId);
-		switch (id) {
-		case 0:
-			return NONE;
-		case 1:
-			return ADD;
-		case 2:
-			return SUBTRACT;
-		case 3:
-			return MULTIPLY;
-		case 4:
-			return DIVIDE;
-		default:
-			throw new InvalidParameterException("Cannot convert id '" + id
-					+ "' to a CageOperator");
+		try {
+			switch (id) {
+			case 0:
+				return NONE;
+			case 1:
+				return ADD;
+			case 2:
+				return SUBTRACT;
+			case 3:
+				return MULTIPLY;
+			case 4:
+				return DIVIDE;
+			default:
+				throw new IllegalArgumentException(
+						getErrorStringCannotConvertIdToCageOperator(cageOperatorId));
+			}
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException(
+					getErrorStringCannotConvertIdToCageOperator(cageOperatorId),
+					e);
 		}
+	}
+
+	private static String getErrorStringCannotConvertIdToCageOperator(
+			String cageOperatorId) {
+		return String.format("Cannot convert id '%s' to a CageOperator",
+				cageOperatorId);
 	}
 
 	public int getId() {

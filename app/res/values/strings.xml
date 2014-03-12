@@ -303,6 +303,11 @@
     <string name="dialog_invalid_share_url_title">Invalid MathDoku+ link</string>
     <string name="dialog_invalid_share_url_body">Sorry, this link to the MathDoku+ puzzle is not valid. Please contact the sender of the link and request a new link to be sent.</string>
 
+    <!-- Dialog for missing email client. -->
+    <string name="dialog_no_email_client_found_title">No email app found</string>
+    <string name="dialog_sharing_puzzles_is_not_possible_body">No email app is installed on your device. Sharing puzzles via email is not possible.</string>
+    <string name="dialog_sending_feedback_email_is_not_possible_body">No email app is installed on your device. Sending a feedback email using your device is not possible.</string>
+
     <!-- PLAYING HINT - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 

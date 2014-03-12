@@ -2,7 +2,6 @@ package net.mathdoku.plus.storage.database;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -12,13 +11,12 @@ import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 
-import java.security.InvalidParameterException;
-
 /**
  * The database adapter for the grid table.
  */
 public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
-	private static final String TAG = LeaderboardRankDatabaseAdapter.class.getName();
+	private static final String TAG = LeaderboardRankDatabaseAdapter.class
+			.getName();
 
 	// Remove "&& false" in following line to show the SQL-statements in the
 	// debug information
@@ -138,15 +136,9 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	 *            to identify the database version.
 	 */
 	static void upgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		if (oldVersion < 587 && newVersion >= 587) {
-			// In development revisions the table is simply dropped and
-			// recreated.
-			try {
-				db.execSQL("DROP TABLE " + TABLE);
-			} catch (SQLiteException e) {
-				// Table does not exist
-			}
-			create(db);
+		if (Config.mAppMode == AppMode.DEVELOPMENT && oldVersion < 587
+				&& newVersion >= 587) {
+			recreateTableInDevelopmentMode(db, TABLE, buildCreateSQL());
 		}
 	}
 
@@ -157,17 +149,12 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	 *            The leaderboard is as used by Google Play Services.
 	 * @return The unique rowid of the leaderboard rank created. -1 in case of
 	 *         an error.
-	 * @throws InvalidParameterException
-	 *             In case the leaderboard id is empty or null.
-	 * @throws SQLException
-	 *             In case the leaderboard id is not unique.
 	 */
 	@SuppressWarnings("UnusedReturnValue")
 	public int insertInitializedLeaderboard(String leaderboardId, int gridSize,
-			boolean operatorsVisible, PuzzleComplexity puzzleComplexity)
-			throws InvalidParameterException, SQLException {
+			boolean operatorsVisible, PuzzleComplexity puzzleComplexity) {
 		if (leaderboardId == null || leaderboardId.trim().equals("")) {
-			throw new InvalidParameterException(
+			throw new DatabaseException(
 					"Parameter LeaderboardId is not specified.");
 		}
 
@@ -196,10 +183,8 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 			id = (int) mSqliteDatabase
 					.insertOrThrow(TABLE, null, contentValues);
 		} catch (SQLiteConstraintException e) {
-			InvalidParameterException ipe = new InvalidParameterException(
-					e.getLocalizedMessage());
-			ipe.initCause(e);
-			throw ipe;
+			throw new DatabaseException(
+					"Cannot insert new initialized leaderboard in database.", e);
 		}
 		return id;
 	}
@@ -215,25 +200,19 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	 * @param rawScore
 	 *            The raw score (milliseconds).
 	 * @return True in case successfully updated. False otherwise.
-	 * @throws InvalidParameterException
-	 *             In case the leaderboard id is empty or null.
-	 * @throws SQLException
-	 *             In case the leaderboard id is not unique.
 	 */
 	@SuppressWarnings("UnusedReturnValue")
 	public boolean updateWithLocalScore(String leaderboardId, int statisticsId,
-			long rawScore) throws InvalidParameterException, SQLException {
+			long rawScore) {
 		if (leaderboardId == null || leaderboardId.trim().equals("")) {
-			throw new InvalidParameterException(
+			throw new DatabaseException(
 					"Parameter LeaderboardId is not specified.");
 		}
 		if (statisticsId <= 0) {
-			throw new InvalidParameterException(
-					"Parameter statisticsId is invalid.");
+			throw new DatabaseException("Parameter statisticsId is invalid.");
 		}
 		if (rawScore <= 0) {
-			throw new InvalidParameterException(
-					"Parameter rawScore Id is invalid.");
+			throw new DatabaseException("Parameter rawScore Id is invalid.");
 		}
 
 		ContentValues contentValues = new ContentValues();
@@ -275,22 +254,16 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	 *            The rank for the leaderboard as displayed on Google Play
 	 *            Service
 	 * @return True in case successfully updated. False otherwise.
-	 * @throws InvalidParameterException
-	 *             In case the leaderboard id is empty or null.
-	 * @throws SQLException
-	 *             In case the leaderboard id is not unique.
 	 */
 	@SuppressWarnings("UnusedReturnValue")
 	public boolean updateWithGooglePlayScore(String leaderboardId,
-			long rawScore, long rank, String rankDisplay)
-			throws InvalidParameterException, SQLException {
+			long rawScore, long rank, String rankDisplay) {
 		if (leaderboardId == null || leaderboardId.trim().equals("")) {
-			throw new InvalidParameterException(
+			throw new DatabaseException(
 					"Parameter LeaderboardId is not specified.");
 		}
 		if (rawScore <= 0) {
-			throw new InvalidParameterException(
-					"Parameter rawScore Id is invalid.");
+			throw new DatabaseException("Parameter rawScore Id is invalid.");
 		}
 
 		String timestamp = toSQLiteTimestamp(new java.util.Date().getTime());
@@ -320,15 +293,12 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	 * Updates the ranking information for a leaderboard.
 	 * 
 	 * @return True in case successfully updated. False otherwise.
-	 * @throws InvalidParameterException
-	 *             In case the leaderboard id is empty or null.
 	 */
 	@SuppressWarnings("UnusedReturnValue")
 	public boolean updateWithGooglePlayRank(String leaderboardId, long rank,
-			String rankDisplay) throws InvalidParameterException, SQLException {
+			String rankDisplay) {
 		if (leaderboardId == null || leaderboardId.trim().equals("")) {
-			throw new InvalidParameterException(
-					"LeaderboardId is not specified.");
+			throw new DatabaseException("LeaderboardId is not specified.");
 		}
 
 		// Update the ranking fields.
@@ -348,15 +318,11 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	 * Updates the ranking information for a leaderboard.
 	 * 
 	 * @return True in case successfully updated. False otherwise.
-	 * @throws InvalidParameterException
-	 *             In case the leaderboard id is empty or null.
 	 */
 	@SuppressWarnings("UnusedReturnValue")
-	public boolean updateWithGooglePlayRankNotAvailable(String leaderboardId)
-			throws InvalidParameterException, SQLException {
+	public boolean updateWithGooglePlayRankNotAvailable(String leaderboardId) {
 		if (leaderboardId == null || leaderboardId.trim().equals("")) {
-			throw new InvalidParameterException(
-					"LeaderboardId is not specified.");
+			throw new DatabaseException("LeaderboardId is not specified.");
 		}
 
 		// Update the ranking fields.
@@ -390,10 +356,9 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 					null, null, null);
 			leaderboardRankRow = toLeaderboardRankRow(cursor);
 		} catch (SQLiteException e) {
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				e.printStackTrace();
-			}
-			return null;
+			throw new DatabaseException(String.format(
+					"Cannot retrieve leaderboard rank id '%s' from database",
+					leaderboardId), e);
 		} finally {
 			if (cursor != null) {
 				cursor.close();
@@ -479,10 +444,9 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 					orderBy, "1");
 			leaderboardRankRow = toLeaderboardRankRow(cursor);
 		} catch (SQLiteException e) {
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				e.printStackTrace();
-			}
-			return null;
+			throw new DatabaseException(
+					"Cannot retrieve most outdated leaderboard rank from database",
+					e);
 		} finally {
 			if (cursor != null) {
 				cursor.close();
@@ -516,10 +480,9 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 			// Convert cursor record to a count of grids
 			count = cursor.getInt(0);
 		} catch (SQLiteException e) {
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				e.printStackTrace();
-			}
-			return 0;
+			throw new DatabaseException(
+					"Cannot count number of outdated leaderboard ranks in database",
+					e);
 		} finally {
 			if (cursor != null) {
 				cursor.close();
@@ -604,9 +567,8 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 
 			mSqliteDatabase.execSQL(query.toString());
 		} catch (SQLiteException e) {
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				e.printStackTrace();
-			}
+			throw new DatabaseException(
+					"Cannot set ranks to be updated in database", e);
 		}
 	}
 }

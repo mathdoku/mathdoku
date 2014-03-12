@@ -995,7 +995,7 @@ public class GameHelper implements
 						RC_RESOLVE);
 			} catch (SendIntentException e) {
 				// Try connecting again
-				debugLog("SendIntentException, so connecting again.");
+				debugLog("SendIntentException, so connecting again.", e);
 				connectCurrentClient();
 			}
 		} else {
@@ -1106,6 +1106,12 @@ public class GameHelper implements
 	void debugLog(String message) {
 		if (mDebugLog) {
 			Log.d(mDebugTag, "GameHelper: " + message);
+		}
+	}
+
+	void debugLog(String message, Throwable tr) {
+		if (mDebugLog) {
+			Log.d(mDebugTag, "GameHelper: " + message, tr);
 		}
 	}
 
@@ -1220,8 +1226,8 @@ public class GameHelper implements
 			int res_id = res.getIdentifier("app_id", "string", pkgName);
 			return res.getString(res_id);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			return "??? (failed to retrieve APP ID)";
+			debugLog("failed to retrieve APP ID.", ex);
+			return "(failed)";
 		}
 	}
 
@@ -1248,11 +1254,11 @@ public class GameHelper implements
 			return hexString.toString();
 
 		} catch (PackageManager.NameNotFoundException ex) {
-			ex.printStackTrace();
-			return "(ERROR: package not found)";
+			debugLog("ERROR: package not found.", ex);
+			return "(failed)";
 		} catch (NoSuchAlgorithmException ex) {
-			ex.printStackTrace();
-			return "(ERROR: SHA1 algorithm not found)";
+			debugLog("ERROR: SHA1 algorithm not found.", ex);
+			return "(failed)";
 		}
 	}
 

@@ -3,6 +3,7 @@ package net.mathdoku.plus.util;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.View;
 
 import java.io.File;
@@ -52,25 +53,33 @@ public class Screendump {
 					return false;
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				Log.d(TAG, "Error while creating file for screendump.", e);
 				return false;
 			}
 		}
 
 		// Write the created bitmap to a file.
+		FileOutputStream out = null;
 		try {
 
-			FileOutputStream out = new FileOutputStream(file);
+			out = new FileOutputStream(file);
 			bitmap.compress(Bitmap.CompressFormat.PNG, 1, out); /*
 																 * Compress
 																 * factor is not
 																 * used not used
 																 * with PNG
 																 */
-			out.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.d(TAG, "Error while writing to file with screendump.", e);
 			return false;
+		} finally {
+			if (out != null) {
+				try {
+					out.close();
+				} catch (IOException e) {
+					Log.d(TAG, "Error while closing file of screendump.", e);
+				}
+			}
 		}
 
 		return true;
