@@ -77,8 +77,7 @@ public class GridStorage {
 
 		// Only process the storage string if it starts with the correct
 		// identifier.
-		if (viewParts == null
-				|| !SAVE_GAME_GRID_LINE.equals(viewParts[0])) {
+		if (viewParts == null || !SAVE_GAME_GRID_LINE.equals(viewParts[0])) {
 			return false;
 		}
 

@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class holds all data needed to build a new {@link net.mathdoku.plus.puzzle.cell.Cell} instance.
+ * This class holds all data needed to build a new
+ * {@link net.mathdoku.plus.puzzle.cell.Cell} instance.
  */
 public class CellBuilder {
 	private int mGridSize; // Required
@@ -262,7 +263,8 @@ public class CellBuilder {
 		if (mCellBuilderErrorChecking != that.mCellBuilderErrorChecking) {
 			return false;
 		}
-		if (mPossibles != null ? !mPossibles.equals(that.mPossibles) : that.mPossibles != null) {
+		if (mPossibles != null ? !mPossibles.equals(that.mPossibles)
+				: that.mPossibles != null) {
 			return false;
 		}
 

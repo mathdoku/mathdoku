@@ -280,8 +280,9 @@ public class GridViewerView extends View {
 	}
 
 	/**
-	 * Sets the {@link net.mathdoku.plus.puzzle.digitpositiongrid.DigitPositionGrid} used to
-	 * position the digit buttons for reuse when drawing the maybe values.
+	 * Sets the
+	 * {@link net.mathdoku.plus.puzzle.digitpositiongrid.DigitPositionGrid} used
+	 * to position the digit buttons for reuse when drawing the maybe values.
 	 */
 	private void setDigitPositionGrid() {
 		// Determine the layout which has to be used for drawing the possible

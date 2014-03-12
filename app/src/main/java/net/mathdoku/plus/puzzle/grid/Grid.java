@@ -92,8 +92,7 @@ public class Grid {
 
 	/**
 	 * Prevent the Grid from being instantiated directly. To create a new
-	 * instance of {@link Grid} the GridBuilder has to be
-	 * used.
+	 * instance of {@link Grid} the GridBuilder has to be used.
 	 */
 	private Grid() {
 		throw new InvalidGridException(
@@ -981,8 +980,7 @@ public class Grid {
 					// duplicate value. Note: in case the same value is used
 					// more than twice in the same row, the first cell will be
 					// marked multiple times as duplicate.
-					markCellAsDuplicate(
-							digitUsedInRow[rowConstraintsDimension1][constraintsDimension2]);
+					markCellAsDuplicate(digitUsedInRow[rowConstraintsDimension1][constraintsDimension2]);
 					cellHasDuplicateUserValue = true;
 					duplicateValueFound = true;
 				}
@@ -997,8 +995,7 @@ public class Grid {
 					// duplicate value. Note: in case the same value is used
 					// more than twice in the same row, the first cell will be
 					// marked multiple times as duplicate.
-					markCellAsDuplicate(
-							digitUsedInColumn[columnConstraintsDimension1][constraintsDimension2]);
+					markCellAsDuplicate(digitUsedInColumn[columnConstraintsDimension1][constraintsDimension2]);
 					cellHasDuplicateUserValue = true;
 					duplicateValueFound = true;
 				}

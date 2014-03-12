@@ -447,8 +447,7 @@ public class GridPlayerView extends GridBasePlayerView {
 		// If currently in copy mode then cancel the swipe motion which is used
 		// to display the copy mode status.
 		if (getGridInputMode() == GridInputMode.COPY && mSwipeMotion != null
-				&& !mSwipeMotion.isReleased()
-				&& !mSwipeMotion.isFinished()) {
+				&& !mSwipeMotion.isReleased() && !mSwipeMotion.isFinished()) {
 			mSwipeMotion.release(null);
 			invalidate();
 		}

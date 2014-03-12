@@ -214,10 +214,10 @@ public class Cage {
 
 	private boolean checkUserMathHiddenOperators(List<Integer> userValues) {
 		boolean userMathCorrect = isNoneMathsCorrect(userValues);
-		userMathCorrect = userMathCorrect  || isAddMathsCorrect(userValues);
-		userMathCorrect = userMathCorrect  || isMultiplyMathsCorrect(userValues);
-		userMathCorrect = userMathCorrect  || isDivideMathsCorrect(userValues);
-		userMathCorrect = userMathCorrect  || isSubtractMathsCorrect(userValues);
+		userMathCorrect = userMathCorrect || isAddMathsCorrect(userValues);
+		userMathCorrect = userMathCorrect || isMultiplyMathsCorrect(userValues);
+		userMathCorrect = userMathCorrect || isDivideMathsCorrect(userValues);
+		userMathCorrect = userMathCorrect || isSubtractMathsCorrect(userValues);
 
 		return userMathCorrect;
 	}

@@ -9,8 +9,7 @@ import net.mathdoku.plus.statistics.GridStatistics;
 import java.util.List;
 
 /**
- * This class holds all data needed to build a new
- * {@link Grid} instance.
+ * This class holds all data needed to build a new {@link Grid} instance.
  */
 public class GridBuilder {
 	Grid.ObjectsCreator mGridObjectsCreator; // Optional

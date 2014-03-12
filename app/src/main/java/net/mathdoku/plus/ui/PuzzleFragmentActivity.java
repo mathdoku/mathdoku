@@ -494,9 +494,10 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 					DevelopmentHelper.submitManualScore(this,
 							mArchiveFragment.getGrid());
 				}
-				boolean processedByDevelopmentHelper = DevelopmentHelper.onDevelopmentHelperOption(this, menuId);
+				boolean processedByDevelopmentHelper = DevelopmentHelper
+						.onDevelopmentHelperOption(this, menuId);
 				if (mPuzzleFragment != null) {
-						mPuzzleFragment.startTimer();
+					mPuzzleFragment.startTimer();
 				}
 				if (processedByDevelopmentHelper) {
 					return true;
@@ -762,8 +763,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		// Check whether the grid meets the criteria for submitting to the
 		// leaderboards.
 		if (grid.getCheatPenaltyTime() == 0 && !grid.isReplay()
-				&& !grid.isActive()
-				&& !grid.isSolutionRevealed()) {
+				&& !grid.isActive() && !grid.isSolutionRevealed()) {
 			GridGeneratingParameters gridGeneratingParameters = grid
 					.getGridGeneratingParameters();
 
@@ -915,11 +915,9 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 					}
 				}
 			} catch (InvalidGridException e) {
-				if (Config.mAppMode == AppMode.DEVELOPMENT) {
-					Log.e(TAG,
-							"PuzzleFragmentActivity.restartLastGame can not load solvingAttempt with id '"
-									+ solvingAttemptId + "'.");
-				}
+				Log.d(TAG,
+						"PuzzleFragmentActivity.restartLastGame can not load solvingAttempt with id '"
+								+ solvingAttemptId + "'.", e);
 			}
 		} else {
 			showDialogNewGame(false);
@@ -1102,8 +1100,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 						// Start a new game with specified parameters
 						startNewGame(gridSize,
-								(!puzzleParameterDisplayOperatorsCheckBox.isChecked()),
-								puzzleComplexity);
+								(!puzzleParameterDisplayOperatorsCheckBox
+										.isChecked()), puzzleComplexity);
 					}
 				})
 				.show();
@@ -1169,8 +1167,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 								.containsKey(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_PUZZLE_COMPLEXITY)) {
 					int gridSize = bundle
 							.getInt(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_SIZE);
-					boolean visibleOperators = (!bundle.getBoolean(
-							LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS));
+					boolean visibleOperators = (!bundle
+							.getBoolean(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS));
 					PuzzleComplexity puzzleComplexity = PuzzleComplexity
 							.valueOf(bundle
 									.getString(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_PUZZLE_COMPLEXITY));
@@ -1263,8 +1261,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			navigationDrawerItems.add(string);
 			// noinspection ConstantConditions
 			if (!openDrawer && mNavigationDrawerItems != null) {
-				openDrawer = (!Arrays.asList(mNavigationDrawerItems)
-						.contains(string));
+				openDrawer = (!Arrays.asList(mNavigationDrawerItems).contains(
+						string));
 			}
 		}
 
@@ -1274,8 +1272,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 					.getString(R.string.action_statistics);
 			navigationDrawerItems.add(string);
 			if (!openDrawer && mNavigationDrawerItems != null) {
-				openDrawer = (!Arrays.asList(mNavigationDrawerItems)
-						.contains(string));
+				openDrawer = (!Arrays.asList(mNavigationDrawerItems).contains(
+						string));
 			}
 		}
 
@@ -1283,8 +1281,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		String string = getResources().getString(R.string.action_leaderboards);
 		navigationDrawerItems.add(string);
 		if (!openDrawer && mNavigationDrawerItems != null) {
-			openDrawer = (!Arrays.asList(mNavigationDrawerItems)
-					.contains(string));
+			openDrawer = (!Arrays.asList(mNavigationDrawerItems).contains(
+					string));
 		}
 
 		mNavigationDrawerItems = navigationDrawerItems

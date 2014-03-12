@@ -107,9 +107,9 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 					public void onClick(View v) {
 						// Start a game with the same puzzle parameter settings
 						// as were used for creating the last game.
-						puzzleFragmentActivity.startNewGame(
-								mPreferences.getPuzzleParameterSize(),
-								(!mPreferences.getPuzzleParameterOperatorsVisible()),
+						puzzleFragmentActivity.startNewGame(mPreferences
+								.getPuzzleParameterSize(), (!mPreferences
+								.getPuzzleParameterOperatorsVisible()),
 								mPreferences.getPuzzleParameterComplexity());
 					}
 				});

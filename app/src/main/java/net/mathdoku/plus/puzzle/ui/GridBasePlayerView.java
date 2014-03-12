@@ -198,8 +198,7 @@ public class GridBasePlayerView extends GridViewerView implements
 					selectedCell.removePossible(newValue);
 				} else {
 					selectedCell.addPossible(newValue);
-					if (TipCopyCellValues.toBeDisplayed(mPreferences,
-							mGrid)) {
+					if (TipCopyCellValues.toBeDisplayed(mPreferences, mGrid)) {
 						new TipCopyCellValues(mContext).show();
 					}
 				}
@@ -245,8 +244,7 @@ public class GridBasePlayerView extends GridViewerView implements
 	 *            The cell to which the values are copied.
 	 */
 	private void copyCell(Cell fromCell, Cell toCell) {
-		if (fromCell != null && toCell != null
-				&& !fromCell.equals(toCell)) {
+		if (fromCell != null && toCell != null && !fromCell.equals(toCell)) {
 
 			if (fromCell.countPossibles() > 0) {
 				// For the origin cell at least one maybe value has been set.
@@ -274,12 +272,10 @@ public class GridBasePlayerView extends GridViewerView implements
 						}
 
 						// noinspection ConstantConditions
-						if (isMaybeDigitInFromCell
-								&& !isMaybeDigitInToCell) {
+						if (isMaybeDigitInFromCell && !isMaybeDigitInToCell) {
 							toCell.addPossible(digit);
 						} else // noinspection ConstantConditions
-						if (!isMaybeDigitInFromCell
-								&& isMaybeDigitInToCell) {
+						if (!isMaybeDigitInFromCell && isMaybeDigitInToCell) {
 							toCell.removePossible(digit);
 						}
 					}

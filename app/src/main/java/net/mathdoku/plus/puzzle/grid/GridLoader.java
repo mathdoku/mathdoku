@@ -327,7 +327,8 @@ public class GridLoader {
 		// yet.
 		if (line != null) {
 			throw new InvalidGridException(
-					"Unexpected line below found while end of file was expected.\nLine: " + line);
+					"Unexpected line below found while end of file was expected.\nLine: "
+							+ line);
 		}
 
 		return true;
