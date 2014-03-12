@@ -25,7 +25,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	// Remove "&& false" in following line to show debug information about
 	// converting game files when running in development mode.
 	@SuppressWarnings("PointlessBooleanExpression")
-	private static final boolean DEBUG_GRID_GAME_FILE_CONVERTER = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
+	private static final boolean DEBUG_GRID_GAME_FILE_CONVERTER = Config.mAppMode == AppMode.DEVELOPMENT && false;
 
 	// The activity which started this task
 	private PuzzleFragmentActivity mActivity;
@@ -77,7 +77,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	 *            this task.
 	 */
 	public void attachToActivity(PuzzleFragmentActivity activity) {
-		if ((((Object) activity).equals(mActivity)) && mProgressDialog != null
+		if (((Object) activity).equals(mActivity) && mProgressDialog != null
 				&& mProgressDialog.isShowing()) {
 			// Casting to Object is needed due to bug in Android Studio and/or
 			// IntelliJ IDEA Community edition:

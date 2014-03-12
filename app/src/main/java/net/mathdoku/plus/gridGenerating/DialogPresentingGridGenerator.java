@@ -100,7 +100,7 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 	 *            this task.
 	 */
 	public void attachToActivity(PuzzleFragmentActivity activity) {
-		if ((((Object) activity).equals(mPuzzleFragmentActivity))
+		if (((Object) activity).equals(mPuzzleFragmentActivity)
 				&& mProgressDialog != null && mProgressDialog.isShowing()) {
 			// Casting to Object is needed due to bug in Android Studio and/or
 			// IntelliJ IDEA Community edition:

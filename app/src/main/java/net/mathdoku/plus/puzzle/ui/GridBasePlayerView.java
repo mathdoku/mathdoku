@@ -156,8 +156,8 @@ public class GridBasePlayerView extends GridViewerView implements
 	 *            cell in the grid.
 	 */
 	public void digitSelected(int newValue) {
-		assert (mInputMode == GridInputMode.NORMAL
-				|| mInputMode == GridInputMode.MAYBE || (mInputMode == GridInputMode.COPY && newValue == 0));
+		assert mInputMode == GridInputMode.NORMAL
+				|| mInputMode == GridInputMode.MAYBE || mInputMode == GridInputMode.COPY && newValue == 0;
 
 		Cell selectedCell = mGrid.getSelectedCell();
 		if (selectedCell == null) {
@@ -344,8 +344,8 @@ public class GridBasePlayerView extends GridViewerView implements
 	 */
 	@Override
 	public GridInputMode getRestrictedGridInputMode() {
-		return (mInputMode == GridInputMode.COPY && mCopyInputModeState != null ? mCopyInputModeState.mPreviousInputMode
-				: mInputMode);
+		return mInputMode == GridInputMode.COPY && mCopyInputModeState != null ? mCopyInputModeState.mPreviousInputMode
+				: mInputMode;
 	}
 
 	/**

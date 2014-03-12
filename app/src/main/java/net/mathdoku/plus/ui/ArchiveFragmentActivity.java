@@ -16,16 +16,6 @@
 
 package net.mathdoku.plus.ui;
 
-import net.mathdoku.plus.R;
-import net.mathdoku.plus.painter.PagerTabStripPainter;
-import net.mathdoku.plus.painter.Painter;
-import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
-import net.mathdoku.plus.storage.database.GridDatabaseAdapter.SizeFilter;
-import net.mathdoku.plus.storage.database.GridDatabaseAdapter.StatusFilter;
-import net.mathdoku.plus.ui.base.AppFragmentActivity;
-import net.mathdoku.plus.util.FeedbackEmail;
-import net.mathdoku.plus.util.SharedPuzzle;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -46,6 +36,16 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+
+import net.mathdoku.plus.R;
+import net.mathdoku.plus.painter.PagerTabStripPainter;
+import net.mathdoku.plus.painter.Painter;
+import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
+import net.mathdoku.plus.storage.database.GridDatabaseAdapter.SizeFilter;
+import net.mathdoku.plus.storage.database.GridDatabaseAdapter.StatusFilter;
+import net.mathdoku.plus.ui.base.AppFragmentActivity;
+import net.mathdoku.plus.util.FeedbackEmail;
+import net.mathdoku.plus.util.SharedPuzzle;
 
 public class ArchiveFragmentActivity extends AppFragmentActivity {
 
@@ -304,8 +304,8 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 		// Hide spinner if only two choices are available. As one of those
 		// choices is always "ALL" the choices will result in an identical
 		// selection.
-		spinner.setVisibility((usedStatuses.length <= 2 ? View.GONE
-				: View.VISIBLE));
+		spinner.setVisibility(usedStatuses.length <= 2 ? View.GONE
+				: View.VISIBLE);
 
 		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
@@ -391,8 +391,8 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 		// choices is always "ALL" the choices will result in an identical
 		// selection.
 		spinner
-				.setVisibility((usedSizes.length <= 2 ? View.GONE
-						: View.VISIBLE));
+				.setVisibility(usedSizes.length <= 2 ? View.GONE
+						: View.VISIBLE);
 
 		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
@@ -508,7 +508,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 	}
 
 	public int getViewPagerCurrentPosition() {
-		return (mViewPager == null ? -1 : mViewPager.getCurrentItem());
+		return mViewPager == null ? -1 : mViewPager.getCurrentItem();
 	}
 
 	/**

@@ -64,7 +64,7 @@ public class GridPlayerView extends GridBasePlayerView {
 		mSwipeBorderDelayRunnable = new SwipeBorderDelayRunnable();
 
 		// Determine whether swiping is enabled.
-		mSwipeInputMethodEnabled = (mPreferences.getDigitInputMethod() != PuzzleSettingInputMethod.BUTTONS_ONLY);
+		mSwipeInputMethodEnabled = mPreferences.getDigitInputMethod() != PuzzleSettingInputMethod.BUTTONS_ONLY;
 
 		setSwipeBorder(mSwipeInputMethodEnabled);
 	}
@@ -325,12 +325,12 @@ public class GridPlayerView extends GridBasePlayerView {
 		// Get information about position of the cell in the grid.
 		int gridSize = mGrid.getGridSize();
 		Cell selectedCell = mGrid.getSelectedCell();
-		boolean isTopRow = (selectedCell != null && selectedCell.getRow() == 0);
-		boolean isBottomRow = (selectedCell != null && selectedCell.getRow() == gridSize - 1);
-		boolean isLeftColumn = (selectedCell != null && selectedCell
-				.getColumn() == 0);
-		boolean isRightColumn = (selectedCell != null && selectedCell
-				.getColumn() == gridSize - 1);
+		boolean isTopRow = selectedCell != null && selectedCell.getRow() == 0;
+		boolean isBottomRow = selectedCell != null && selectedCell.getRow() == gridSize - 1;
+		boolean isLeftColumn = selectedCell != null && selectedCell
+				.getColumn() == 0;
+		boolean isRightColumn = selectedCell != null && selectedCell
+				.getColumn() == gridSize - 1;
 
 		// In case the digit is on an outer row or column of the grid an
 		// additional hint has to be shown.
@@ -475,7 +475,7 @@ public class GridPlayerView extends GridBasePlayerView {
 		mSwipeInputMethodEnabled = swipeInputMethodEnabled;
 		setSwipeBorder(mSwipeInputMethodEnabled);
 		if (mTickerTape != null) {
-			mTickerTape.setDisabled((!mSwipeInputMethodEnabled));
+			mTickerTape.setDisabled(!mSwipeInputMethodEnabled);
 		}
 	}
 }

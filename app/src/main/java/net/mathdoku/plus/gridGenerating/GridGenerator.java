@@ -41,7 +41,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
 	@SuppressWarnings("PointlessBooleanExpression")
-	static final boolean DEBUG_GRID_GENERATOR = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
+	static final boolean DEBUG_GRID_GENERATOR = Config.mAppMode == AppMode.DEVELOPMENT && false;
 	@SuppressWarnings("PointlessBooleanExpression")
 	public static final boolean DEBUG_GRID_GENERATOR_FULL = DEBUG_GRID_GENERATOR && false;
 
@@ -144,7 +144,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 		// Set all grid generating parameters. GameSeed will be set later.
 		mGridGeneratingParameters = new GridGeneratingParameters();
-		mGridGeneratingParameters.mGameSeed = (new Random()).nextLong();
+		mGridGeneratingParameters.mGameSeed = new Random().nextLong();
 		mGridGeneratingParameters.mGeneratorRevisionNumber = packageVersionNumber;
 		if (puzzleComplexity == PuzzleComplexity.RANDOM) {
 			// Determine a random complexity to be used for this specific
@@ -360,12 +360,12 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 					if (num_attempts < mGridGeneratorOptions.numberOfGamesToGenerate) {
 						// Determine random size and hide operator values of
 						// next grid
-						mGridGeneratingParameters.mGameSeed = (new Random())
+						mGridGeneratingParameters.mGameSeed = new Random()
 								.nextLong();
 						mRandom = new Random(
 								mGridGeneratingParameters.mGameSeed);
 						if (mGridGeneratorOptions.randomGridSize) {
-							mGridSize = 4 + (new Random().nextInt(6));
+							mGridSize = 4 + new Random().nextInt(6);
 						}
 						if (mGridGeneratorOptions.randomHideOperators) {
 							mGridGeneratingParameters.mHideOperators = new Random()
@@ -598,10 +598,10 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 						// will be placed. Use +1 in calls to randomizer to
 						// prevent exceptions in case the entire height and/or
 						// width is needed for the cage type.
-						int startRow = mRandom.nextInt((mGridSize - cageType
-								.getHeight()) + 1);
-						int startCol = mRandom.nextInt((mGridSize - cageType
-								.getWidth()) + 1);
+						int startRow = mRandom.nextInt(mGridSize - cageType
+								.getHeight() + 1);
+						int startCol = mRandom.nextInt(mGridSize - cageType
+								.getWidth() + 1);
 
 						// Determine the origin cell of the cage type in case
 						// the cage type mask is put at the randomly determined
@@ -1162,7 +1162,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			// equals 0 it gets even more weight.
 			int lower = Math.min(cellValues[0], cellValues[1]);
 			int higher = Math.max(cellValues[0], cellValues[1]);
-			divisionWeight = ((higher % lower == 0) ? 50 : 0);
+			divisionWeight = higher % lower == 0 ? 50 : 0;
 			subtractionWeight = 30;
 			addWeight = 15;
 			multiplyWeight = 15;
@@ -1240,7 +1240,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			return total;
 		}
 
-		if ((cageOperator == CageOperator.MULTIPLY) && cellValues.length >= 2) {
+		if (cageOperator == CageOperator.MULTIPLY && cellValues.length >= 2) {
 			int total = 1;
 			for (int cellValue : cellValues) {
 				total *= cellValue;
@@ -1292,7 +1292,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		if (column < 0 || column >= mGridSize) {
 			return -1;
 		}
-		return (row * mGridSize) + column;
+		return row * mGridSize + column;
 	}
 
 	@Override

@@ -19,7 +19,7 @@ public class MathDokuDLX extends DLX {
 	// Remove "&& false" in following line to show debug information about
 	// filling the DLX data structure when running in development mode.
 	@SuppressWarnings("PointlessBooleanExpression")
-	public static final boolean DEBUG_DLX = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
+	public static final boolean DEBUG_DLX = Config.mAppMode == AppMode.DEVELOPMENT && false;
 
 	private final int mGridSize;
 	private int mTotalMoves;
@@ -222,7 +222,7 @@ public class MathDokuDLX extends DLX {
 			}
 		} else {
 			initialize(false);
-			return (solve(SolveType.MULTIPLE) == 1);
+			return solve(SolveType.MULTIPLE) == 1;
 		}
 	}
 
@@ -390,7 +390,7 @@ public class MathDokuDLX extends DLX {
 					}
 				}
 				if (DEBUG_DLX) {
-					Log.i(TAG, "*********** MOVE " + (moveCount++)
+					Log.i(TAG, "*********** MOVE " + moveCount++
 							+ " ***********");
 					for (int row = 0; row < this.mGridSize; row++) {
 						String line = "";

@@ -26,7 +26,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	// Remove "&& false" in following line to show the SQL-statements in the
 	// debug information
 	@SuppressWarnings("PointlessBooleanExpression")
-	private static final boolean DEBUG_SQL = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
+	private static final boolean DEBUG_SQL = Config.mAppMode == AppMode.DEVELOPMENT && false;
 
 	// Columns for table
 	static final String TABLE = "solving_attempt";
@@ -257,8 +257,8 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		contentValues.put(KEY_STATUS,
 				solvingAttempt.mSolvingAttemptStatus.getId());
 
-		return (mSqliteDatabase.update(TABLE, contentValues, KEY_ROWID + " = "
-				+ solvingAttempt.mId, null) == 1);
+		return mSqliteDatabase.update(TABLE, contentValues, KEY_ROWID + " = "
+				+ solvingAttempt.mId, null) == 1;
 	}
 
 	/**

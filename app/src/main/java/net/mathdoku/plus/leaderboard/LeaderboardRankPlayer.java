@@ -17,13 +17,14 @@ import net.mathdoku.plus.config.Config.AppMode;
  * This class is used to retrieve the rank for the current player from Google
  * Play Services for a specific leaderboard.
  */
+@SuppressWarnings("UnnecessaryParentheses")
 class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener {
 	private static final String TAG = LeaderboardRankPlayer.class.getName();
 
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
 	@SuppressWarnings("PointlessBooleanExpression")
-	private static final boolean DEBUG = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
+	private static final boolean DEBUG = Config.mAppMode == AppMode.DEVELOPMENT && false;
 
 	// The games client which is connected to Google Play Services
 	private final LeaderboardConnector mLeaderboardConnector;
@@ -141,10 +142,10 @@ class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener {
 			return;
 		}
 
-		assert (mLeaderboardConnector != null);
+		assert mLeaderboardConnector != null;
 
 		GamesClient gamesClient = mLeaderboardConnector.getGamesClient();
-		assert (gamesClient != null);
+		assert gamesClient != null;
 
 		if (leaderboardScoresBuffer.getCount() > 0
 				&& gamesClient.getCurrentPlayerId().equals(

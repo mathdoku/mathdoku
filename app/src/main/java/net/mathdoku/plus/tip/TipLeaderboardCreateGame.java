@@ -55,7 +55,7 @@ public class TipLeaderboardCreateGame extends TipDialog {
 
 		// Do not display in case it was displayed less than 2 days ago.
 		if (preferences.getTipLastDisplayTime(TIP_NAME) > System
-				.currentTimeMillis() - (2 * 24 * 60 * 60 * 1000)) {
+				.currentTimeMillis() - 2 * 24 * 60 * 60 * 1000) {
 			return false;
 		}
 

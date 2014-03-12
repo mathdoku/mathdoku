@@ -108,8 +108,8 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 						// Start a game with the same puzzle parameter settings
 						// as were used for creating the last game.
 						puzzleFragmentActivity.startNewGame(mPreferences
-								.getPuzzleParameterSize(), (!mPreferences
-								.getPuzzleParameterOperatorsVisible()),
+								.getPuzzleParameterSize(), !mPreferences
+								.getPuzzleParameterOperatorsVisible(),
 								mPreferences.getPuzzleParameterComplexity());
 					}
 				});
@@ -496,8 +496,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		int maxCheats = Math.max(mGridStatistics.mActionCheckProgress,
 				mGridStatistics.mActionRevealCell);
 		maxCheats = Math.max(maxCheats, mGridStatistics.mActionCheckProgress);
-		maxCheats = Math.max(maxCheats,
-				(mGridStatistics.isSolutionRevealed() ? 1 : 0));
+		maxCheats = Math.max(maxCheats, mGridStatistics.isSolutionRevealed() ? 1 : 0);
 
 		// Define the renderer
 		XYMultipleSeriesRenderer xyMultipleSeriesRenderer = new XYMultipleSeriesRenderer();
@@ -579,15 +578,13 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		if (mGridStatistics.isSolutionRevealed()) {
 			XYSeries xySeries = new XYSeries(getResources().getString(
 					R.string.statistics_cheats_solution_revealed));
-			xySeries.add(categoryIndex,
-					(mGridStatistics.isSolutionRevealed() ? 1 : 0));
+			xySeries.add(categoryIndex, mGridStatistics.isSolutionRevealed() ? 1 : 0);
 			xyMultipleSeriesDataset.addSeries(xySeries);
 			xyMultipleSeriesRenderer
 					.addSeriesRenderer(createSimpleSeriesRenderer(chartRed4));
 			// noinspection UnusedAssignment
 			categoryIndex++;
-			maxYValue = Math.max(maxYValue,
-					(mGridStatistics.isSolutionRevealed() ? 1 : 0));
+			maxYValue = Math.max(maxYValue, mGridStatistics.isSolutionRevealed() ? 1 : 0);
 		}
 
 		// Fill dimensions of axis based on number of categories and maximum
@@ -624,7 +621,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 
 		// Assume 90% of screen width is actually available to display all
 		// elements
-		return (int) (((float) 0.90 * mDisplayMetrics.widthPixels / MAX_CATEGORIES_BAR_CHART) / 2);
+		return (int) ((float) 0.90 * mDisplayMetrics.widthPixels / MAX_CATEGORIES_BAR_CHART / 2);
 	}
 
 	/**

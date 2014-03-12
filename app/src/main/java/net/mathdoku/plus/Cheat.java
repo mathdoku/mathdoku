@@ -135,7 +135,7 @@ public class Cheat {
 	 */
 	public long getPenaltyTimeMilliseconds() {
 		return mPenaltyTimeMillisecondsBase
-				+ (mConditionalOccurrences * mPenaltyTimeMillisecondsPerOccurrence);
+				+ mConditionalOccurrences * mPenaltyTimeMillisecondsPerOccurrence;
 	}
 
 	/**
@@ -190,7 +190,7 @@ public class Cheat {
 		} else {
 			penaltyTimeText = "";
 		}
-		penaltyTime -= (days * MILLISECONDS_PER_DAY);
+		penaltyTime -= days * MILLISECONDS_PER_DAY;
 
 		if (penaltyTime > 0) {
 			// Determine number of hours
@@ -206,39 +206,39 @@ public class Cheat {
 			} else {
 				penaltyTimeText += "";
 			}
-			penaltyTime -= (hours * MILLISECONDS_PER_HOUR);
+			penaltyTime -= hours * MILLISECONDS_PER_HOUR;
 
 			// Determine number of minutes
 			if (penaltyTime > 0) {
 				long minutes = penaltyTime / MILLISECONDS_PER_MINUTE;
 				if (minutes > 1) {
-					penaltyTimeText += ((days + hours) > 0 ? and : "")
+					penaltyTimeText += (days + hours > 0 ? and : "")
 							+ minutes
 							+ " "
 							+ mResources
 									.getString(R.string.time_unit_minutes_plural);
 				} else if (minutes == 1) {
-					penaltyTimeText += ((days + hours) > 0 ? and : "")
+					penaltyTimeText += (days + hours > 0 ? and : "")
 							+ "1 "
 							+ mResources
 									.getString(R.string.time_unit_minutes_singular);
 				} else {
 					penaltyTimeText += "";
 				}
-				penaltyTime -= (minutes * MILLISECONDS_PER_MINUTE);
+				penaltyTime -= minutes * MILLISECONDS_PER_MINUTE;
 
 				// Determine number of seconds
 				if (penaltyTime > 0) {
 					long seconds = penaltyTime / MILLISECONDS_PER_SECOND;
 					if (seconds > 1) {
-						penaltyTimeText += ((days + hours + minutes) > 0 ? and
+						penaltyTimeText += (days + hours + minutes > 0 ? and
 								: "")
 								+ seconds
 								+ " "
 								+ mResources
 										.getString(R.string.time_unit_seconds_plural);
 					} else if (seconds == 1) {
-						penaltyTimeText += ((days + hours + minutes) > 0 ? and
+						penaltyTimeText += (days + hours + minutes > 0 ? and
 								: "")
 								+ seconds
 								+ " "

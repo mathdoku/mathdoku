@@ -138,8 +138,8 @@ public class FileProvider extends ContentProvider {
 		// read only.
 		File file = new File(dir, uri.getLastPathSegment());
 		if (file.exists()) {
-			return (ParcelFileDescriptor.open(file,
-					ParcelFileDescriptor.MODE_READ_ONLY));
+			return ParcelFileDescriptor.open(file,
+					ParcelFileDescriptor.MODE_READ_ONLY);
 		}
 		throw new FileNotFoundException(uri.getPath());
 	}

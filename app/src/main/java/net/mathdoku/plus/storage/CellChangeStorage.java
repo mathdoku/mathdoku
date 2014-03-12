@@ -22,7 +22,7 @@ public class CellChangeStorage {
 	// Remove "&& false" in following line to show debug information about
 	// reading information from a storage string
 	@SuppressWarnings("PointlessBooleanExpression")
-	private static final boolean DEBUG_STORAGE_STRING = (Config.mAppMode == Config.AppMode.DEVELOPMENT) && false;
+	private static final boolean DEBUG_STORAGE_STRING = Config.mAppMode == Config.AppMode.DEVELOPMENT && false;
 
 	/*
 	 * Each line in the entire storage string of a Grid contains information

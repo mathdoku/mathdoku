@@ -213,8 +213,8 @@ public class CageTypeGenerator {
 	 */
 	public int size(int maxCageSize) {
 		int totalCageTypes = 0;
-		maxCageSize = (maxCageSize > MAX_CAGE_SIZE ? MAX_CAGE_SIZE
-				: maxCageSize);
+		maxCageSize = maxCageSize > MAX_CAGE_SIZE ? MAX_CAGE_SIZE
+				: maxCageSize;
 		for (int i = 0; i < maxCageSize; i++) {
 			totalCageTypes += mCageTypes[i].size();
 		}
@@ -239,9 +239,9 @@ public class CageTypeGenerator {
 	 */
 	public CageType getRandomCageType(int cellsUsed, int maxWidth,
 			int maxHeight, Random random) {
-		assert (cellsUsed > 0);
-		assert (maxWidth >= 0);
-		assert (maxHeight >= 0);
+		assert cellsUsed > 0;
+		assert maxWidth >= 0;
+		assert maxHeight >= 0;
 		if (maxWidth > 0 && maxHeight > 0 && maxWidth * maxHeight < cellsUsed) {
 			// No such grid cage type can exist as more cells are requested than
 			// the maximum space can contain.
@@ -249,17 +249,17 @@ public class CageTypeGenerator {
 		}
 
 		// Determine which cageTypeArray to use
-		List<CageType> cageTypes = (cellsUsed - 1 < mCageTypes.length ? mCageTypes[cellsUsed - 1]
-				: mCageTypes[mCageTypes.length - 1]);
-		assert (cageTypes != null);
+		List<CageType> cageTypes = cellsUsed - 1 < mCageTypes.length ? mCageTypes[cellsUsed - 1]
+				: mCageTypes[mCageTypes.length - 1];
+		assert cageTypes != null;
 
 		// Choose a random cage type in the array which fits within the given
 		// maximum dimensions
 		CageType cageType;
 		do {
 			cageType = cageTypes.get(random.nextInt(cageTypes.size()));
-		} while ((maxWidth > 0 && cageType.getWidth() > maxWidth)
-				|| (maxHeight > 0 && cageType.getHeight() > maxHeight));
+		} while (maxWidth > 0 && cageType.getWidth() > maxWidth
+				|| maxHeight > 0 && cageType.getHeight() > maxHeight);
 
 		if (cellsUsed - 1 < mCageTypes.length || cageType == null) {
 			// Return the already defined grid cage type.
@@ -312,7 +312,7 @@ public class CageTypeGenerator {
 					if (cageType.getHeight() < maxHeight) {
 						// Check above
 						if (!newCageTypeMatrix[row - 1][col]) {
-							int cellNumber = ((row - 1) * numberOfCellsPerRow)
+							int cellNumber = (row - 1) * numberOfCellsPerRow
 									+ col;
 							if (!extendIndexes.contains(cellNumber)) {
 								extendIndexes.add(cellNumber);
@@ -321,7 +321,7 @@ public class CageTypeGenerator {
 						// Check below
 						if (cageType.getHeight() < maxHeight
 								&& !newCageTypeMatrix[row + 1][col]) {
-							int cellNumber = ((row + 1) * numberOfCellsPerRow)
+							int cellNumber = (row + 1) * numberOfCellsPerRow
 									+ col;
 							if (!extendIndexes.contains(cellNumber)) {
 								extendIndexes.add(cellNumber);
@@ -334,8 +334,8 @@ public class CageTypeGenerator {
 					if (cageType.getWidth() < maxWidth) {
 						// Check to right
 						if (!newCageTypeMatrix[row][col + 1]) {
-							int cellNumber = (row * numberOfCellsPerRow)
-									+ (col + 1);
+							int cellNumber = row * numberOfCellsPerRow
+									+ col + 1;
 							if (!extendIndexes.contains(cellNumber)) {
 								extendIndexes.add(cellNumber);
 							}
@@ -343,8 +343,8 @@ public class CageTypeGenerator {
 
 						// Check to left
 						if (!newCageTypeMatrix[row][col - 1]) {
-							int cellNumber = (row * numberOfCellsPerRow)
-									+ (col - 1);
+							int cellNumber = row * numberOfCellsPerRow
+									+ col - 1;
 							if (!extendIndexes.contains(cellNumber)) {
 								extendIndexes.add(cellNumber);
 							}

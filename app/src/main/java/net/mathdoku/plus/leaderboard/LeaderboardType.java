@@ -157,8 +157,8 @@ public class LeaderboardType {
 	// contains a value RANDOM (ordinal value 0) which is not a real complexity
 	// factor (no leaderboards exists for it) and therefore needs to be
 	// excluded.
-	private static final int PUZZLE_COMPLEXITY_OFFSET = (PuzzleComplexity.RANDOM
-			.ordinal() == 0 ? 1 : 0);
+	private static final int PUZZLE_COMPLEXITY_OFFSET = PuzzleComplexity.RANDOM
+			.ordinal() == 0 ? 1 : 0;
 	private static final int MAX_ELEMENTS_INDEX_FACTOR_PUZZLE_COMPLEXITY = PuzzleComplexity
 			.values().length - 1;
 
@@ -174,8 +174,8 @@ public class LeaderboardType {
 	// factors.
 	private static final int PUZZLE_COMPLEXITY_INDEX_FACTOR = 1;
 	@SuppressWarnings("PointlessArithmeticExpression")
-	private static final int HIDE_OPERATOR_INDEX_FACTOR = (1 * MAX_ELEMENTS_INDEX_FACTOR_PUZZLE_COMPLEXITY);
-	private static final int GRID_SIZE_INDEX_FACTOR = (HIDE_OPERATOR_INDEX_FACTOR * MAX_ELEMENTS_INDEX_FACTOR_OPERATORS);
+	private static final int HIDE_OPERATOR_INDEX_FACTOR = 1 * MAX_ELEMENTS_INDEX_FACTOR_PUZZLE_COMPLEXITY;
+	private static final int GRID_SIZE_INDEX_FACTOR = HIDE_OPERATOR_INDEX_FACTOR * MAX_ELEMENTS_INDEX_FACTOR_OPERATORS;
 
 	/**
 	 * Get the leaderboard index for the given combination of grid size,
@@ -194,7 +194,7 @@ public class LeaderboardType {
 			PuzzleComplexity puzzleComplexity) {
 
 		// Test whether grid size is within known size.
-		assert (gridSize >= MIN_GRID_SIZE && gridSize <= MAX_GRID_SIZE);
+		assert gridSize >= MIN_GRID_SIZE && gridSize <= MAX_GRID_SIZE;
 
 		// Determine the leaderboard index to use.
 		int index = (puzzleComplexity.ordinal() - PUZZLE_COMPLEXITY_OFFSET)
@@ -270,7 +270,7 @@ public class LeaderboardType {
 		int gridSize = index / GRID_SIZE_INDEX_FACTOR + MIN_GRID_SIZE;
 
 		// Test whether a valid grid size has been computed.
-		assert (gridSize >= MIN_GRID_SIZE && gridSize <= MAX_GRID_SIZE);
+		assert gridSize >= MIN_GRID_SIZE && gridSize <= MAX_GRID_SIZE;
 
 		return gridSize;
 	}
@@ -293,9 +293,9 @@ public class LeaderboardType {
 		remainder /= HIDE_OPERATOR_INDEX_FACTOR;
 
 		// Test whether a valid remainder has been computed.
-		assert (remainder == 0 || remainder == 1);
+		assert remainder == 0 || remainder == 1;
 
-		return (remainder == 0);
+		return remainder == 0;
 	}
 
 	/**
@@ -312,7 +312,7 @@ public class LeaderboardType {
 
 		// Get puzzle complexity
 		remainder /= PUZZLE_COMPLEXITY_INDEX_FACTOR;
-		assert (remainder >= 0 && remainder <= MAX_ELEMENTS_INDEX_FACTOR_PUZZLE_COMPLEXITY);
+		assert remainder >= 0 && remainder <= MAX_ELEMENTS_INDEX_FACTOR_PUZZLE_COMPLEXITY;
 		remainder += PUZZLE_COMPLEXITY_OFFSET;
 
 		return PuzzleComplexity.values()[remainder];

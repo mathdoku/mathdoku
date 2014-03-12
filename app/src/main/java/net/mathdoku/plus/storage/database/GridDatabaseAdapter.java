@@ -25,7 +25,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	// Remove "&& false" in following line to show the SQL-statements in the
 	// debug information
 	@SuppressWarnings("PointlessBooleanExpression")
-	private static final boolean DEBUG_SQL = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
+	private static final boolean DEBUG_SQL = Config.mAppMode == AppMode.DEVELOPMENT && false;
 
 	// Columns for table statistics
 	static final String TABLE = "grid";
@@ -662,7 +662,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	public int countGrids(StatusFilter statusFilter, SizeFilter sizeFilter) {
 		int[][] gridIds = getLatestSolvingAttemptsPerGrid(statusFilter,
 				sizeFilter);
-		return (gridIds == null ? 0 : gridIds.length);
+		return gridIds == null ? 0 : gridIds.length;
 	}
 
 }

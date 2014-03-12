@@ -251,8 +251,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		// If the navigation drawer is open, hide action items related to the
 		// content view
-		boolean drawerOpen = (!(mDrawerLayout == null || mDrawerListView == null) && mDrawerLayout
-				.isDrawerOpen(mDrawerListView));
+		boolean drawerOpen = !(mDrawerLayout == null || mDrawerListView == null) && mDrawerLayout
+				.isDrawerOpen(mDrawerListView);
 
 		// Determine which fragment is active
 		boolean showCheats = false;
@@ -339,18 +339,16 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		// Determine position of new game button
 		if ((menuItem = menu.findItem(R.id.action_new_game)) != null) {
 			menuItem.setVisible(!drawerOpen)
-					.setShowAsAction(
-							(mPuzzleFragment != null
-									&& mPuzzleFragment.isActive() ? MenuItem.SHOW_AS_ACTION_NEVER
-									: MenuItem.SHOW_AS_ACTION_ALWAYS));
+					.setShowAsAction(mPuzzleFragment != null
+							&& mPuzzleFragment.isActive() ? MenuItem.SHOW_AS_ACTION_NEVER
+							: MenuItem.SHOW_AS_ACTION_ALWAYS);
 		}
 
 		// Display the share button on the action bar dependent on the fragment
 		// being showed.
 		if ((menuItem = menu.findItem(R.id.action_share)) != null) {
-			menuItem.setVisible(!drawerOpen).setShowAsAction(
-					(mArchiveFragment != null ? MenuItem.SHOW_AS_ACTION_IF_ROOM
-							: MenuItem.SHOW_AS_ACTION_NEVER));
+			menuItem.setVisible(!drawerOpen).setShowAsAction(mArchiveFragment != null ? MenuItem.SHOW_AS_ACTION_IF_ROOM
+					: MenuItem.SHOW_AS_ACTION_NEVER);
 		}
 
 		// The replay button on the action bar is only visible in case the
@@ -778,9 +776,9 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 					.get(leaderboardId);
 
 			// Check if a new top score is achieved.
-			boolean newTopScore = (leaderboardRankRow == null
+			boolean newTopScore = leaderboardRankRow == null
 					|| leaderboardRankRow.mScoreOrigin == ScoreOrigin.NONE || grid
-					.getElapsedTime() < leaderboardRankRow.mRawScore);
+					.getElapsedTime() < leaderboardRankRow.mRawScore;
 
 			// Store the top score in the leaderboard table.
 			if (newTopScore) {
@@ -1099,9 +1097,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 								.setPuzzleParameterComplexity(puzzleComplexity);
 
 						// Start a new game with specified parameters
-						startNewGame(gridSize,
-								(!puzzleParameterDisplayOperatorsCheckBox
-										.isChecked()), puzzleComplexity);
+						startNewGame(gridSize, !puzzleParameterDisplayOperatorsCheckBox
+								.isChecked(), puzzleComplexity);
 					}
 				})
 				.show();
@@ -1167,8 +1164,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 								.containsKey(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_PUZZLE_COMPLEXITY)) {
 					int gridSize = bundle
 							.getInt(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_SIZE);
-					boolean visibleOperators = (!bundle
-							.getBoolean(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS));
+					boolean visibleOperators = !bundle
+							.getBoolean(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS);
 					PuzzleComplexity puzzleComplexity = PuzzleComplexity
 							.valueOf(bundle
 									.getString(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_PUZZLE_COMPLEXITY));
@@ -1261,8 +1258,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			navigationDrawerItems.add(string);
 			// noinspection ConstantConditions
 			if (!openDrawer && mNavigationDrawerItems != null) {
-				openDrawer = (!Arrays.asList(mNavigationDrawerItems).contains(
-						string));
+				openDrawer = !Arrays.asList(mNavigationDrawerItems).contains(
+						string);
 			}
 		}
 
@@ -1272,8 +1269,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 					.getString(R.string.action_statistics);
 			navigationDrawerItems.add(string);
 			if (!openDrawer && mNavigationDrawerItems != null) {
-				openDrawer = (!Arrays.asList(mNavigationDrawerItems).contains(
-						string));
+				openDrawer = !Arrays.asList(mNavigationDrawerItems).contains(
+						string);
 			}
 		}
 
@@ -1281,8 +1278,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		String string = getResources().getString(R.string.action_leaderboards);
 		navigationDrawerItems.add(string);
 		if (!openDrawer && mNavigationDrawerItems != null) {
-			openDrawer = (!Arrays.asList(mNavigationDrawerItems).contains(
-					string));
+			openDrawer = !Arrays.asList(mNavigationDrawerItems).contains(
+					string);
 		}
 
 		mNavigationDrawerItems = navigationDrawerItems

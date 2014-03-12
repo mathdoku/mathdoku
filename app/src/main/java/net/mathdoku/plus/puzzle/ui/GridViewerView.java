@@ -165,12 +165,13 @@ public class GridViewerView extends View {
 		return GridInputMode.NORMAL;
 	}
 
+	@SuppressWarnings("UnnecessaryParentheses")
 	public void loadNewGrid(Grid grid) {
 		mGrid = grid;
 
 		// Compute grid size. Set to 1 in case grid is null to avoid problems in
 		// onMeasure as this will be called before the grid is loaded.
-		mGridSize = (mGrid == null ? 1 : mGrid.getGridSize());
+		mGridSize = mGrid == null ? 1 : mGrid.getGridSize();
 
 		// Build the matrix of cell drawers
 		mCellDrawer = new CellDrawer[mGridSize][mGridSize];
@@ -217,6 +218,7 @@ public class GridViewerView extends View {
 		invalidate();
 	}
 
+	@SuppressWarnings("UnnecessaryParentheses")
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		// Get maximum width and height available to display the grid view.
@@ -253,7 +255,7 @@ public class GridViewerView extends View {
 		// size has to be recomputed as well.
 		float minGridBorderWidth = Math.max(mGridPainter
 				.getBorderPaint()
-				.getStrokeWidth(), (mSwipeBorder ? 15 : 0));
+				.getStrokeWidth(), mSwipeBorder ? 15 : 0);
 		if (mBorderWidth < minGridBorderWidth) {
 			mBorderWidth = minGridBorderWidth;
 			mCellSize = (float) Math.floor((maxSize - 2 * mBorderWidth)
@@ -284,11 +286,12 @@ public class GridViewerView extends View {
 	 * {@link net.mathdoku.plus.puzzle.digitpositiongrid.DigitPositionGrid} used
 	 * to position the digit buttons for reuse when drawing the maybe values.
 	 */
+	@SuppressWarnings("UnnecessaryParentheses")
 	private void setDigitPositionGrid() {
 		// Determine the layout which has to be used for drawing the possible
 		// values inside a cell.
-		DigitPositionGrid mDigitPositionGrid = (mGrid != null ? new DigitPositionGrid(
-				mGrid.getGridSize()) : null);
+		DigitPositionGrid mDigitPositionGrid = mGrid != null ? new DigitPositionGrid(
+				mGrid.getGridSize()) : null;
 
 		// Propagate the digit position grid to the maybe painter which is used
 		// by the cell drawer to paint the maybe digits inside a cell.

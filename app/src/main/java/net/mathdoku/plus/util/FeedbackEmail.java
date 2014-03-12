@@ -168,7 +168,7 @@ public class FeedbackEmail {
 						continue;
 					}
 					Object value = entry.getValue();
-					sortedMap.put(key, (value == null ? "" : value.toString()));
+					sortedMap.put(key, value == null ? "" : value.toString());
 				}
 			}
 			logSortedMap("Settings", sortedMap);

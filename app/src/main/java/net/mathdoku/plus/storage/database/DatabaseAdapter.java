@@ -72,7 +72,7 @@ abstract class DatabaseAdapter {
 		return stringBetweenBackTicks(column)
 				+ " "
 				+ dataType
-				+ ((constraint != null && !constraint.equals("")) ? " "
+				+ (constraint != null && !constraint.equals("") ? " "
 						+ constraint.trim() : "");
 	}
 
@@ -196,7 +196,7 @@ abstract class DatabaseAdapter {
 	 *         SQLite.
 	 */
 	static String toSQLiteBoolean(boolean value) {
-		return (value ? SQLITE_TRUE : SQLITE_FALSE);
+		return value ? SQLITE_TRUE : SQLITE_FALSE;
 	}
 
 	/**
@@ -247,7 +247,7 @@ abstract class DatabaseAdapter {
 	 *         null value was passed.
 	 */
 	static long valueOfSQLiteTimestamp(String value) {
-		return (value == null ? 0 : java.sql.Timestamp.valueOf(value).getTime());
+		return value == null ? 0 : java.sql.Timestamp.valueOf(value).getTime();
 	}
 
 	/**

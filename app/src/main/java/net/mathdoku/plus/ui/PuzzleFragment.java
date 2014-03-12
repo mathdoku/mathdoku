@@ -404,7 +404,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 *         otherwise.
 	 */
 	boolean showClearGrid() {
-		return (mGrid != null && mGrid.isActive() && !mGrid.isEmpty());
+		return mGrid != null && mGrid.isActive() && !mGrid.isEmpty();
 	}
 
 	/**
@@ -567,8 +567,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 				}
 				startTimer();
 
-				setClearAndUndoButtonVisibility((mGrid == null ? null : mGrid
-						.getSelectedCell()));
+				setClearAndUndoButtonVisibility(mGrid == null ? null : mGrid
+						.getSelectedCell());
 				setDigitPositionGrid();
 
 				// Handler for solved game
@@ -661,8 +661,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			// Inform the GridPlayerView about the change of input method.
 			if (mGridPlayerView != null) {
 				mGridPlayerView
-						.setSwipeInputMethodEnabled((mMathDokuPreferences
-								.getDigitInputMethod() != Preferences.PuzzleSettingInputMethod.BUTTONS_ONLY));
+						.setSwipeInputMethodEnabled(mMathDokuPreferences
+								.getDigitInputMethod() != Preferences.PuzzleSettingInputMethod.BUTTONS_ONLY);
 			}
 		}
 
@@ -681,7 +681,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * @return True in case the selected cell can be revealed. False otherwise.
 	 */
 	boolean showRevealCell() {
-		return (mGrid != null && mGrid.isActive() && mGrid.getSelectedCell() != null);
+		return mGrid != null && mGrid.isActive() && mGrid.getSelectedCell() != null;
 	}
 
 	/**
@@ -715,8 +715,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 		// Determine current selected cage.
 		Cage selectedCage = mGrid.getSelectedCage();
-		return (selectedCage != null && selectedCage.isOperatorHidden() && selectedCage
-				.getOperator() != CageOperator.NONE);
+		return selectedCage != null && selectedCage.isOperatorHidden() && selectedCage
+				.getOperator() != CageOperator.NONE;
 	}
 
 	/**
@@ -760,8 +760,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * @return True if check progress can be used on the grid. False otherwise.
 	 */
 	boolean showCheckProgress() {
-		return (mGrid != null && mGrid.isActive() && !mGrid
-				.containsNoUserValues());
+		return mGrid != null && mGrid.isActive() && !mGrid
+				.containsNoUserValues();
 	}
 
 	/**
@@ -773,8 +773,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		}
 
 		boolean allUserValuesValid = mGrid.isSolutionValidSoFar();
-		int countNewInvalidChoices = (allUserValuesValid ? 0 : mGrid
-				.markInvalidChoices());
+		int countNewInvalidChoices = allUserValuesValid ? 0 : mGrid
+				.markInvalidChoices();
 
 		if (countNewInvalidChoices > 0) {
 			mGridPlayerView.invalidate();
@@ -817,29 +817,29 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	private void setClearAndUndoButtonVisibility(Cell cell) {
 		// Set the clear button of the visible controls layout. The clear
 		// buttons is always visible but is disabled in case the cell is empty.
-		Button clearButton = (mControlsPadBigTableLayout.getVisibility() == View.VISIBLE ? mClearButton
-				: mClearButtonSwipeOnly);
+		Button clearButton = mControlsPadBigTableLayout.getVisibility() == View.VISIBLE ? mClearButton
+				: mClearButtonSwipeOnly;
 		if (clearButton != null) {
 			clearButton.setVisibility(View.VISIBLE);
-			clearButton.setEnabled((cell != null && !cell.isEmpty()));
+			clearButton.setEnabled(cell != null && !cell.isEmpty());
 			clearButton.invalidate();
 		}
 
 		// Set the undo button of the visible controls layout. The button is
 		// only visible when appropriate (e.g. as long as the user has not made
 		// any moves or did not undo all moves).
-		Button undoButton = (mControlsPadBigTableLayout.getVisibility() == View.VISIBLE ? mUndoButton
-				: mUndoButtonSwipeOnly);
+		Button undoButton = mControlsPadBigTableLayout.getVisibility() == View.VISIBLE ? mUndoButton
+				: mUndoButtonSwipeOnly;
 		if (undoButton != null) {
 			undoButton
-					.setVisibility((mGrid == null || mGrid.countMoves() == 0 || !mGrid
-							.isActive()) ? View.INVISIBLE : View.VISIBLE);
+					.setVisibility(mGrid == null || mGrid.countMoves() == 0 || !mGrid
+							.isActive() ? View.INVISIBLE : View.VISIBLE);
 			undoButton.invalidate();
 		}
 	}
 
 	public boolean isActive() {
-		return (mGrid != null && mGrid.isActive());
+		return mGrid != null && mGrid.isActive();
 	}
 
 	public void prepareLoadNewGame() {
@@ -859,7 +859,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 *         otherwise.
 	 */
 	boolean showRevealSolution() {
-		return (mGrid != null && mGrid.isActive());
+		return mGrid != null && mGrid.isActive();
 	}
 
 	/**
@@ -1043,8 +1043,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		if (mGridPlayerView != null) {
 			mGridPlayerView.setPreferences();
 			mGridPlayerView
-					.setSwipeInputMethodEnabled((mMathDokuPreferences
-							.getDigitInputMethod() != Preferences.PuzzleSettingInputMethod.BUTTONS_ONLY));
+					.setSwipeInputMethodEnabled(mMathDokuPreferences
+							.getDigitInputMethod() != Preferences.PuzzleSettingInputMethod.BUTTONS_ONLY);
 		}
 
 		// Set sound effects if applicable
@@ -1075,7 +1075,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 */
 	private void setDigitPositionGrid() {
 		// Get grid size
-		assert (mGrid != null);
+		assert mGrid != null;
 		int gridSize = mGrid.getGridSize();
 
 		// Only create the digit position grid if needed
@@ -1111,7 +1111,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	private void setButtonLayout() {
 		// In case the digit buttons are hidden, entering digit can only be done
 		// using swiping.
-		boolean swipeOnly = (mMathDokuPreferences.getDigitInputMethod() == Preferences.PuzzleSettingInputMethod.SWIPE_ONLY);
+		boolean swipeOnly = mMathDokuPreferences.getDigitInputMethod() == Preferences.PuzzleSettingInputMethod.SWIPE_ONLY;
 
 		if (mControlsPadBigTableLayout != null) {
 			mControlsPadBigTableLayout.setVisibility(swipeOnly ? View.GONE
@@ -1142,9 +1142,9 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			int color = 0xFFFFFFFF;
 			if (mPainter != null && mGridPlayerView != null) {
 				if (mMathDokuPreferences.isColoredDigitsVisible()) {
-					color = (mGridPlayerView.getGridInputMode() == GridInputMode.NORMAL ? mPainter
+					color = mGridPlayerView.getGridInputMode() == GridInputMode.NORMAL ? mPainter
 							.getHighlightedTextColorNormalInputMode()
-							: mPainter.getHighlightedTextColorMaybeInputMode());
+							: mPainter.getHighlightedTextColorMaybeInputMode();
 				}
 			}
 
@@ -1205,8 +1205,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			return R.string.input_mode_normal_long_description;
 		}
 
-		return (mGridPlayerView.getGridInputMode() == GridInputMode.NORMAL ? R.string.input_mode_normal_long_description
-				: R.string.input_mode_maybe_long_description);
+		return mGridPlayerView.getGridInputMode() == GridInputMode.NORMAL ? R.string.input_mode_normal_long_description
+				: R.string.input_mode_maybe_long_description;
 	}
 
 	/**

@@ -176,7 +176,7 @@ public class Grid {
 		if (mCells.size() != mGridSize * mGridSize) {
 			throw new InvalidGridException(
 					"Cannot create a grid if number of cells does not match with grid size. Expected "
-							+ (mGridSize * mGridSize)
+							+ mGridSize * mGridSize
 							+ " cells, got "
 							+ mCells.size() + " cells.");
 		}
@@ -761,7 +761,7 @@ public class Grid {
 	 */
 	public boolean isReplay() {
 		return mGridStatistics != null
-				&& (mGridStatistics.getReplayCount() > 0);
+				&& mGridStatistics.getReplayCount() > 0;
 
 	}
 

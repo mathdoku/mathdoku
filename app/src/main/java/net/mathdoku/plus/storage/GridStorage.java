@@ -81,7 +81,7 @@ public class GridStorage {
 			return false;
 		}
 
-		int expectedNumberOfElements = (savedWithRevisionNumber <= 595 ? 4 : 3);
+		int expectedNumberOfElements = savedWithRevisionNumber <= 595 ? 4 : 3;
 		if (viewParts.length != expectedNumberOfElements) {
 			throw new InvalidParameterException(
 					"Wrong number of elements in grid storage string");

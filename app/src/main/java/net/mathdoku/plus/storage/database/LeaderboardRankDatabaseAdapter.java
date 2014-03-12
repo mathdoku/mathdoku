@@ -21,7 +21,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	// Remove "&& false" in following line to show the SQL-statements in the
 	// debug information
 	@SuppressWarnings("PointlessBooleanExpression")
-	public static final boolean DEBUG_SQL = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
+	public static final boolean DEBUG_SQL = Config.mAppMode == AppMode.DEVELOPMENT && false;
 
 	// Score origins statuses:
 	// LOCAL_DATABASE: the score is based on a solving attempt which is stored
@@ -233,8 +233,8 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		contentValues.put(KEY_RANK_DISPLAY, (String) null);
 		contentValues.put(KEY_RANK_DATE_LAST_UPDATED, (String) null);
 
-		return (mSqliteDatabase.update(TABLE, contentValues, KEY_LEADERBOARD_ID
-				+ " = " + stringBetweenQuotes(leaderboardId), null) == 1);
+		return mSqliteDatabase.update(TABLE, contentValues, KEY_LEADERBOARD_ID
+				+ " = " + stringBetweenQuotes(leaderboardId), null) == 1;
 	}
 
 	/**
@@ -285,8 +285,8 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		contentValues.put(KEY_RANK_DISPLAY, rankDisplay);
 		contentValues.put(KEY_RANK_DATE_LAST_UPDATED, timestamp);
 
-		return (mSqliteDatabase.update(TABLE, contentValues, KEY_LEADERBOARD_ID
-				+ " = " + stringBetweenQuotes(leaderboardId), null) == 1);
+		return mSqliteDatabase.update(TABLE, contentValues, KEY_LEADERBOARD_ID
+				+ " = " + stringBetweenQuotes(leaderboardId), null) == 1;
 	}
 
 	/**
@@ -310,8 +310,8 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		contentValues.put(KEY_RANK_DATE_LAST_UPDATED,
 				toSQLiteTimestamp(new java.util.Date().getTime()));
 
-		return (mSqliteDatabase.update(TABLE, contentValues, KEY_LEADERBOARD_ID
-				+ " = " + stringBetweenQuotes(leaderboardId), null) == 1);
+		return mSqliteDatabase.update(TABLE, contentValues, KEY_LEADERBOARD_ID
+				+ " = " + stringBetweenQuotes(leaderboardId), null) == 1;
 	}
 
 	/**
@@ -334,8 +334,8 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		contentValues.put(KEY_RANK_DATE_LAST_UPDATED,
 				toSQLiteTimestamp(new java.util.Date().getTime()));
 
-		return (mSqliteDatabase.update(TABLE, contentValues, KEY_LEADERBOARD_ID
-				+ " = " + stringBetweenQuotes(leaderboardId), null) == 1);
+		return mSqliteDatabase.update(TABLE, contentValues, KEY_LEADERBOARD_ID
+				+ " = " + stringBetweenQuotes(leaderboardId), null) == 1;
 	}
 
 	/**
@@ -502,9 +502,9 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		// noinspection StringBufferReplaceableByString
 		StringBuilder stringBuilder = new StringBuilder();
 		long currentTimeMinus15Minutes = new java.util.Date().getTime()
-				- (15 * 60 * 1000);
+				- 15 * 60 * 1000;
 		long currentTimeMinus24Hours = new java.util.Date().getTime()
-				- (24 * 60 * 60 * 1000);
+				- 24 * 60 * 60 * 1000;
 
 		// Include all leaderboards for which the rank status equals
 		// TO_BE_UPDATED

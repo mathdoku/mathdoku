@@ -1,10 +1,10 @@
 package net.mathdoku.plus.painter;
 
-import net.mathdoku.plus.puzzle.digitpositiongrid.DigitPositionGrid;
+import android.graphics.Paint;
+
 import net.mathdoku.plus.painter.Painter.DigitPainterMode;
 import net.mathdoku.plus.painter.Painter.GridTheme;
-
-import android.graphics.Paint;
+import net.mathdoku.plus.puzzle.digitpositiongrid.DigitPositionGrid;
 
 public class MaybeValuePainter extends DigitPainter {
 
@@ -69,7 +69,7 @@ public class MaybeValuePainter extends DigitPainter {
 			// reserve a margin below the maybes grid for the selected cage
 			// border.
 			int margin = 4;
-			float maxHeightForMaybes = (size * 2 / 3) - margin;
+			float maxHeightForMaybes = size * 2 / 3 - margin;
 
 			mMaybeDigitHeight = maxHeightForMaybes / rows;
 			mMaybeDigitWidth = Math.min((size - 2 * margin) / cols,
@@ -81,8 +81,8 @@ public class MaybeValuePainter extends DigitPainter {
 
 			// Compute the offsets at which the top left digit (1) will be
 			// displayed within the cell if it is entered as a possible value.
-			mLeftOffset = (size - margin) - (cols * mMaybeDigitWidth);
-			mBottomOffset = (size - margin) - ((rows - 1) * mMaybeDigitHeight);
+			mLeftOffset = size - margin - cols * mMaybeDigitWidth;
+			mBottomOffset = size - margin - (rows - 1) * mMaybeDigitHeight;
 		}
 	}
 
@@ -126,7 +126,7 @@ public class MaybeValuePainter extends DigitPainter {
 
 	@Override
 	public Paint getTextPaintMaybeInputMode() {
-		return (mDigitPainterMode == DigitPainterMode.INPUT_MODE_BASED ? mTextPaintMaybeInputMode
-				: mTextPaintNormalInputMode);
+		return mDigitPainterMode == DigitPainterMode.INPUT_MODE_BASED ? mTextPaintMaybeInputMode
+				: mTextPaintNormalInputMode;
 	}
 }

@@ -81,7 +81,7 @@ public class TipCopyCellValues extends TipDialog {
 
 		// Do not display in case it was displayed less than 2 hours ago.
 		if (preferences.getTipLastDisplayTime(TIP_NAME) > System
-				.currentTimeMillis() - (2 * 60 * 60 * 1000)) {
+				.currentTimeMillis() - 2 * 60 * 60 * 1000) {
 			return false;
 		}
 

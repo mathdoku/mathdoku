@@ -6,6 +6,7 @@ import android.view.View;
  * The DigitPositionGrid is used to determine which digit is shown at each
  * position in a grid of positions.
  */
+@SuppressWarnings("UnnecessaryParentheses")
 public class DigitPositionGrid {
 	@SuppressWarnings("unused")
 	private static final String TAG = DigitPositionGrid.class.getName();
@@ -47,7 +48,7 @@ public class DigitPositionGrid {
 		// size 7: 3 rows, 2 rows of 3 buttons, last row 1 button
 		// size 8: 3 rows, 2 rows of 3 buttons, last row 2 buttons
 		// size 9: 3 rows, 2 rows of 3 buttons, last row 3 buttons
-		mRowsUsed = (maxDigit <= 6 ? 2 : 3);
+		mRowsUsed = maxDigit <= 6 ? 2 : 3;
 
 		mVisibility = new int[mMaxRows][mMaxCols];
 		mValue = new int[mMaxRows][mMaxCols];
@@ -129,7 +130,7 @@ public class DigitPositionGrid {
 	 * @return The column corresponding with the index.
 	 */
 	private int indexToCol(int index) {
-		return index - (indexToRow(index) * mMaxCols);
+		return index - indexToRow(index) * mMaxCols;
 	}
 
 	/**

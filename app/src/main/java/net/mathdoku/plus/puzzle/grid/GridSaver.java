@@ -107,8 +107,8 @@ public class GridSaver {
 					.createGridDatabaseAdapter();
 			GridRow gridRow = gridDatabaseAdapter
 					.getByGridDefinition(gridDefinition);
-			mRowId = (gridRow == null ? gridDatabaseAdapter.insert(grid)
-					: gridRow.mId);
+			mRowId = gridRow == null ? gridDatabaseAdapter.insert(grid)
+					: gridRow.mId;
 		}
 
 		return mRowId >= 0;

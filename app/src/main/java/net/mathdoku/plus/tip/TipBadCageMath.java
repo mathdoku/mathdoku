@@ -40,7 +40,7 @@ public class TipBadCageMath extends TipDialog {
 	public static boolean toBeDisplayed(Preferences preferences) {
 		// Do not display in case it was displayed less than 5 minutes ago
 		if (preferences.getTipLastDisplayTime(TIP_NAME) > System
-				.currentTimeMillis() - (5 * 60 * 1000)) {
+				.currentTimeMillis() - 5 * 60 * 1000) {
 			return false;
 		}
 

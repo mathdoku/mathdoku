@@ -65,8 +65,8 @@ public class HistoricStatistics {
 		public void addValue(DataPoint dataPoint) {
 			long totalValue = dataPoint.mElapsedTimeExcludingCheatPenalty
 					+ dataPoint.mCheatPenalty;
-			mMinValue = (totalValue < mMinValue ? totalValue : mMinValue);
-			mMaxValue = (totalValue > mMaxValue ? totalValue : mMaxValue);
+			mMinValue = totalValue < mMinValue ? totalValue : mMinValue;
+			mMaxValue = totalValue > mMaxValue ? totalValue : mMaxValue;
 			mSumValue += totalValue;
 			mCount++;
 		}
@@ -198,8 +198,8 @@ public class HistoricStatistics {
 		for (DataPoint dataPoint : dataPoints) {
 			if (index >= start) {
 				if (dataPoint.mSeries == series || series == null) {
-					if ((includeElapsedTime && dataPoint.mElapsedTimeExcludingCheatPenalty > 0)
-							|| (includeCheatTime && dataPoint.mCheatPenalty > 0)) {
+					if (includeElapsedTime && dataPoint.mElapsedTimeExcludingCheatPenalty > 0
+							|| includeCheatTime && dataPoint.mCheatPenalty > 0) {
 						return true;
 					}
 				}
@@ -299,9 +299,9 @@ public class HistoricStatistics {
 				double value = 0;
 				if (dataPoint.mSeries == Series.SOLUTION_REVEALED) {
 					if (includeElapsedTime) {
-						value = (includeCheatTime ? maxY : Math.min(
+						value = includeCheatTime ? maxY : Math.min(
 								dataPoint.mElapsedTimeExcludingCheatPenalty,
-								maxY));
+								maxY);
 					} else {
 						value = Math.max(Math.min(maxY
 								- dataPoint.mElapsedTimeExcludingCheatPenalty,
@@ -377,8 +377,8 @@ public class HistoricStatistics {
 
 		if (mSolvedSeriesSummary.getCount() > 0
 				|| mUnfinishedSeriesSummary.getCount() > 0) {
-			return (Math.max(mSolvedSeriesSummary.getMaximum(),
-					mUnfinishedSeriesSummary.getMaximum()) / scaleFactor);
+			return Math.max(mSolvedSeriesSummary.getMaximum(),
+					mUnfinishedSeriesSummary.getMaximum()) / scaleFactor;
 		} else {
 			return mSolutionRevealedSeriesSummary.getMaximum() / scaleFactor;
 		}
@@ -422,8 +422,8 @@ public class HistoricStatistics {
 	 * @return The slowest time in which a game was solved.
 	 */
 	public long getSolvedSlowest() {
-		return (mSolvedSeriesSummary.getCount() > 0 ? mSolvedSeriesSummary
-				.getMaximum() : 0);
+		return mSolvedSeriesSummary.getCount() > 0 ? mSolvedSeriesSummary
+				.getMaximum() : 0;
 	}
 
 	/**
@@ -432,8 +432,8 @@ public class HistoricStatistics {
 	 * @return The fastest time in which a game was solved.
 	 */
 	public long getSolvedFastest() {
-		return (mSolvedSeriesSummary.getCount() > 0 ? mSolvedSeriesSummary
-				.getMinimum() : 0);
+		return mSolvedSeriesSummary.getCount() > 0 ? mSolvedSeriesSummary
+				.getMinimum() : 0;
 	}
 
 	/**
@@ -442,8 +442,8 @@ public class HistoricStatistics {
 	 * @return The average time in which game have been solved.
 	 */
 	public long getSolvedAverage() {
-		return (mSolvedSeriesSummary.getCount() > 0 ? mSolvedSeriesSummary
-				.getAverage() : 0);
+		return mSolvedSeriesSummary.getCount() > 0 ? mSolvedSeriesSummary
+				.getAverage() : 0;
 	}
 
 	/**

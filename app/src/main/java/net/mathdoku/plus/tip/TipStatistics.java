@@ -45,7 +45,7 @@ public class TipStatistics extends TipDialog {
 
 		// Do not display in case it was displayed less than 12 hours ago
 		if (preferences.getTipLastDisplayTime(TIP_NAME) > System
-				.currentTimeMillis() - (12 * 60 * 60 * 1000)) {
+				.currentTimeMillis() - 12 * 60 * 60 * 1000) {
 			return false;
 		}
 

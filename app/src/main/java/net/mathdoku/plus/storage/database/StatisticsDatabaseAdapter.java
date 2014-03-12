@@ -25,7 +25,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	private static final String TAG = StatisticsDatabaseAdapter.class.getName();
 
 	@SuppressWarnings("PointlessBooleanExpression")
-	private static final boolean DEBUG_SQL = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
+	private static final boolean DEBUG_SQL = Config.mAppMode == AppMode.DEVELOPMENT && false;
 
 	// Columns for table statistics
 	private static final String TABLE = "statistics";
@@ -341,8 +341,8 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		newValues.put(KEY_INCLUDE_IN_STATISTICS,
 				Boolean.toString(gridStatistics.mIncludedInStatistics));
 
-		return (mSqliteDatabase.update(TABLE, newValues, KEY_ROWID + " = "
-				+ gridStatistics.mId, null) == 1);
+		return mSqliteDatabase.update(TABLE, newValues, KEY_ROWID + " = "
+				+ gridStatistics.mId, null) == 1;
 	}
 
 	/**

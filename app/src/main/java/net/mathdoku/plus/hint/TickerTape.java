@@ -310,7 +310,7 @@ public class TickerTape extends HorizontalScrollView {
 			}
 		}
 
-		return (displayNextItem ? 1 : 0);
+		return displayNextItem ? 1 : 0;
 	}
 
 	/**

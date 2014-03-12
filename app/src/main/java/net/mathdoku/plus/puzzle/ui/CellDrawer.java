@@ -133,8 +133,8 @@ public class CellDrawer {
 			Cell cellReference, CellDrawer cellDrawerReference) {
 		mAdjacentCells[adjacentPosition.mIndex] = cellReference;
 		mAdjacentCellDrawers[adjacentPosition.mIndex] = cellDrawerReference;
-		mIsInSameCageAsAdjacentCell[adjacentPosition.mIndex] = (cellReference != null && mCell
-				.getCageId() == cellReference.getCageId());
+		mIsInSameCageAsAdjacentCell[adjacentPosition.mIndex] = cellReference != null && mCell
+				.getCageId() == cellReference.getCageId();
 	}
 
 	public void setDigitPositionGrid(DigitPositionGrid digitPositionGrid) {
@@ -182,8 +182,8 @@ public class CellDrawer {
 		borderPaint = getBorderPaint(mCommonBorderTypeWithAdjacentCell[AdjacentPosition.CELL_ABOVE.mIndex]);
 		if (borderPaint != null) {
 			// Calculate offset and draw top border
-			float offset = (mRow == 0 ? (float) Math
-					.floor((float) (0.5 * borderPaint.getStrokeWidth())) : 0);
+			float offset = mRow == 0 ? (float) Math
+					.floor((float) (0.5 * borderPaint.getStrokeWidth())) : 0;
 			canvas
 					.drawLine(
 							left
@@ -205,8 +205,8 @@ public class CellDrawer {
 		float rightOffset = 0;
 		if (borderPaint != null) {
 			// Calculate offset and draw right border
-			float offset = (mColumn == mGrid.getGridSize() - 1 ? (float) Math
-					.ceil((float) (0.5 * borderPaint.getStrokeWidth())) : 0);
+			float offset = mColumn == mGrid.getGridSize() - 1 ? (float) Math
+					.ceil((float) (0.5 * borderPaint.getStrokeWidth())) : 0;
 			canvas
 					.drawLine(
 							right - offset,
@@ -235,8 +235,8 @@ public class CellDrawer {
 		float bottomOffset = 0;
 		if (borderPaint != null) {
 			// Calculate offset and draw bottom border
-			float offset = (mRow == mGrid.getGridSize() - 1 ? (float) Math
-					.ceil((float) (0.5 * borderPaint.getStrokeWidth())) : 0);
+			float offset = mRow == mGrid.getGridSize() - 1 ? (float) Math
+					.ceil((float) (0.5 * borderPaint.getStrokeWidth())) : 0;
 			canvas
 					.drawLine(
 							left
@@ -264,8 +264,8 @@ public class CellDrawer {
 		borderPaint = getBorderPaint(mCommonBorderTypeWithAdjacentCell[AdjacentPosition.CELL_TO_LEFT.mIndex]);
 		if (borderPaint != null) {
 			// Calculate offset and draw left border
-			float offset = (mColumn == 0 ? (float) Math
-					.floor((float) (0.5 * borderPaint.getStrokeWidth())) : 0);
+			float offset = mColumn == 0 ? (float) Math
+					.floor((float) (0.5 * borderPaint.getStrokeWidth())) : 0;
 			canvas
 					.drawLine(
 							left + offset,
@@ -302,22 +302,22 @@ public class CellDrawer {
 		for (int i = 1; i <= 4; i++) {
 			switch (i) {
 			case 1:
-				borderPaint = ((mCell.isDuplicateValueHighlighted() && mGridViewerView
-						.hasPrefShowDupeDigits()) ? mCellPainter
-						.getDuplicateBorderPaint() : null);
+				borderPaint = mCell.isDuplicateValueHighlighted() && mGridViewerView
+						.hasPrefShowDupeDigits() ? mCellPainter
+						.getDuplicateBorderPaint() : null;
 				break;
 			case 2:
-				borderPaint = (mCell.isRevealed() ? mCellPainter
-						.getRevealedBorderPaint() : null);
+				borderPaint = mCell.isRevealed() ? mCellPainter
+						.getRevealedBorderPaint() : null;
 				break;
 			case 3:
-				borderPaint = (mCell.hasInvalidUserValueHighlight() ? mCellPainter
-						.getInvalidBorderPaint() : null);
+				borderPaint = mCell.hasInvalidUserValueHighlight() ? mCellPainter
+						.getInvalidBorderPaint() : null;
 				break;
 			case 4:
-				borderPaint = (mCell.isSelected() && mGrid != null
+				borderPaint = mCell.isSelected() && mGrid != null
 						&& mGrid.isActive() ? mCellPainter
-						.getSelectedBorderPaint() : null);
+						.getSelectedBorderPaint() : null;
 				break;
 			}
 			if (borderPaint != null) {
@@ -375,8 +375,8 @@ public class CellDrawer {
 		// other than 0 while a swipe motion is started but not yet finished. In
 		// this case the original user value may not be drawn as it will be
 		// replace with another definitive value or with a maybe value.
-		if ((mCell.isUserValueSet() && swipeDigit == 0)
-				|| (inputMode == GridInputMode.NORMAL && swipeDigit != 0)) {
+		if (mCell.isUserValueSet() && swipeDigit == 0
+				|| inputMode == GridInputMode.NORMAL && swipeDigit != 0) {
 			// Get the value which will be shown as user value in case the swipe
 			// motion will be released at this moment.
 			String userValue = Integer
@@ -384,9 +384,9 @@ public class CellDrawer {
 							&& swipeDigit != 0 ? swipeDigit : mCell
 							.getUserValue());
 
-			Paint paint = (inputMode == GridInputMode.NORMAL ? mUserValuePainter
+			Paint paint = inputMode == GridInputMode.NORMAL ? mUserValuePainter
 					.getTextPaintNormalInputMode() : mUserValuePainter
-					.getTextPaintMaybeInputMode());
+					.getTextPaintMaybeInputMode();
 
 			// Calculate left offset to get the user value centered
 			// horizontally.
@@ -420,8 +420,8 @@ public class CellDrawer {
 		// Note that the original possible values may not be shown in case the
 		// content of the cell have to replaced with a new user value.
 		List<Integer> possibles = mCell.getPossibles();
-		if ((possibles.size() > 0 && !(inputMode == GridInputMode.NORMAL && swipeDigit != 0))
-				|| (inputMode == GridInputMode.MAYBE && swipeDigit != 0)) {
+		if (possibles.size() > 0 && !(inputMode == GridInputMode.NORMAL && swipeDigit != 0)
+				|| inputMode == GridInputMode.MAYBE && swipeDigit != 0) {
 			// Temporary alter the possible values in case a swipe digit is
 			// selected.
 			if (swipeDigit != 0) {
@@ -437,9 +437,9 @@ public class CellDrawer {
 			if (mGridViewerView.hasPrefShowMaybesAs3x3Grid()
 					&& mDigitPositionGrid != null) {
 				// Determine which painter to use
-				Paint paint = (inputMode == GridInputMode.NORMAL ? mMaybeGridPainter
+				Paint paint = inputMode == GridInputMode.NORMAL ? mMaybeGridPainter
 						.getTextPaintNormalInputMode() : mMaybeGridPainter
-						.getTextPaintMaybeInputMode());
+						.getTextPaintMaybeInputMode();
 
 				// Draw all possible which are currently set for this cell.
 				for (Integer possible : possibles) {
@@ -499,7 +499,7 @@ public class CellDrawer {
 	public void drawSwipeOverlay(Canvas canvas, float gridBorderWidth,
 			GridInputMode inputMode, float mXPosSwipe, float mYPosSwipe,
 			int swipeDigit, boolean outerSwipeCircleVisible) {
-		assert (inputMode == GridInputMode.NORMAL || inputMode == GridInputMode.MAYBE);
+		assert inputMode == GridInputMode.NORMAL || inputMode == GridInputMode.MAYBE;
 		if (mGrid.getSelectedCell() != mCell) {
 			// This cell is not the selected cell.
 			return;
@@ -517,9 +517,9 @@ public class CellDrawer {
 
 		// Get the painters for the overlay border
 		// Determine which painter to use
-		Paint borderPaint = (inputMode == GridInputMode.NORMAL ? mInputModeBorderPainter
+		Paint borderPaint = inputMode == GridInputMode.NORMAL ? mInputModeBorderPainter
 				.getNormalInputModeBorderPaint() : mInputModeBorderPainter
-				.getMaybeInputModeBorderPaint());
+				.getMaybeInputModeBorderPaint();
 		float borderOverlayWidth = borderPaint.getStrokeWidth();
 		Paint segmentSeparatorPaint = mInputModeBorderPainter
 				.getSegmentDivider();
@@ -533,7 +533,7 @@ public class CellDrawer {
 
 		// Draw the swipe border background
 		int centerX = (int) (left + cellSize / 2);
-		int centerY = (int) (top + (cellSize / 2));
+		int centerY = (int) (top + cellSize / 2);
 
 		// Define helper variables outside loop
 		double radiusOffset;
@@ -546,7 +546,7 @@ public class CellDrawer {
 			float radius = cellSize * circle;
 			if (borderPaint != null) {
 				canvas.drawCircle(centerX, centerY, radius
-						- (borderOverlayWidth / 2) - 2, borderPaint);
+						- borderOverlayWidth / 2 - 2, borderPaint);
 			}
 
 			// Plot all applicable digits clockwise in the swipe circle.
@@ -558,10 +558,10 @@ public class CellDrawer {
 				// Determine the offset for which the radius has to be correct
 				// to get to the center of the space needed to draw the digit.
 				radiusOffset = Math
-						.sqrt((drawSwipeOverlay_bounds.height() * drawSwipeOverlay_bounds
-								.height())
-								+ (drawSwipeOverlay_bounds.width() * drawSwipeOverlay_bounds
-										.width())) / 2;
+						.sqrt(drawSwipeOverlay_bounds.height() * drawSwipeOverlay_bounds
+								.height()
+								+ drawSwipeOverlay_bounds.width() * drawSwipeOverlay_bounds
+										.width()) / 2;
 
 				// Determine the point at which the center of the digit has to
 				// placed.
@@ -572,13 +572,12 @@ public class CellDrawer {
 				// Find the lower left corner of the space in which the digit
 				// has to
 				// be drawn.
-				offsetX += centerX - (drawSwipeOverlay_bounds.width() / 2);
-				offsetY += centerY + (drawSwipeOverlay_bounds.height() / 2);
+				offsetX += centerX - drawSwipeOverlay_bounds.width() / 2;
+				offsetY += centerY + drawSwipeOverlay_bounds.height() / 2;
 
 				// Draw the text at the lower left corner
-				canvas.drawText(Integer.toString(i), offsetX, offsetY,
-						(i == swipeDigit ? textHighlightedPaint
-								: textNormalPaint));
+				canvas.drawText(Integer.toString(i), offsetX, offsetY, i == swipeDigit ? textHighlightedPaint
+						: textNormalPaint);
 			}
 
 			// Draw separator lines between the segments of the swipe circle
@@ -601,12 +600,12 @@ public class CellDrawer {
 
 		// Redraw the cell including the content which results as the swipe
 		// motion is released at the current position.
-		draw(canvas, gridBorderWidth, inputMode, (swipeDigit >= 1
-				&& swipeDigit <= gridSize ? swipeDigit : 0));
+		draw(canvas, gridBorderWidth, inputMode, swipeDigit >= 1
+				&& swipeDigit <= gridSize ? swipeDigit : 0);
 
 		// Draw a line from the middle of the selected cell to the current swipe
 		// position to indicate which digit will be selected on release.
-		canvas.drawLine(left + (cellSize / 2), top + (cellSize / 2),
+		canvas.drawLine(left + cellSize / 2, top + cellSize / 2,
 				mXPosSwipe, mYPosSwipe,
 				mInputModeBorderPainter.getSwipeLinePaint());
 	}
@@ -623,12 +622,12 @@ public class CellDrawer {
 			// In case the grid is deactivated (for example when an unfinished
 			// puzzle is displayed in the archive, display the border as if the
 			// cage was not selected
-			return (mGrid != null && mGrid.isActive() ? mCagePainter
-					.getBorderSelectedPaint() : mCagePainter.getBorderPaint());
+			return mGrid != null && mGrid.isActive() ? mCagePainter
+					.getBorderSelectedPaint() : mCagePainter.getBorderPaint();
 		case CELL_IN_SELECTED_CAGE_WITH_BAD_MATH:
-			return (mGrid != null && mGrid.isActive() ? mCagePainter
+			return mGrid != null && mGrid.isActive() ? mCagePainter
 					.getBorderSelectedBadMathPaint() : mCagePainter
-					.getBorderBadMathPaint());
+					.getBorderBadMathPaint();
 		}
 		return null;
 	}
@@ -736,9 +735,9 @@ public class CellDrawer {
 		}
 
 		// Both cells are in a cage which is not selected.
-		if ((!mGrid.getCage(cell1).isUserMathCorrect() || (cell2 != null && !mGrid
+		if ((!mGrid.getCage(cell1).isUserMathCorrect() || cell2 != null && !mGrid
 				.getCage(cell2)
-				.isUserMathCorrect()))
+				.isUserMathCorrect())
 				&& mGridViewerView.hasPrefShowBadCageMaths()) {
 			return BorderType.CELL_IN_UNSELECTED_CAGE_WITH_BAD_MATH;
 		} else {
@@ -762,6 +761,6 @@ public class CellDrawer {
 		float left = Math.round(gridBorderWidth + cellSize * mColumn);
 		// float right = mPosX + cellSize;
 
-		return new float[] { left + (cellSize / 2), top + (cellSize / 2) };
+		return new float[] { left + cellSize / 2, top + cellSize / 2};
 	}
 }

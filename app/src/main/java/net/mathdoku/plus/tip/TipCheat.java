@@ -52,7 +52,7 @@ public class TipCheat extends TipDialog implements
 	public static boolean toBeDisplayed(Preferences preferences, Cheat cheat) {
 		// Do not display in case it was displayed less than 12 hours ago
 		if (preferences.getTipLastDisplayTime(getTipName(cheat)) > System
-				.currentTimeMillis() - (12 * 60 * 60 * 1000)) {
+				.currentTimeMillis() - 12 * 60 * 60 * 1000) {
 			return false;
 		}
 

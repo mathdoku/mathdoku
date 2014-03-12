@@ -1,14 +1,14 @@
 package net.mathdoku.plus.ui;
 
+import android.os.Bundle;
+import android.support.v4.app.FragmentStatePagerAdapter;
+
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter.SizeFilter;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter.StatusFilter;
-
-import android.os.Bundle;
-import android.support.v4.app.FragmentStatePagerAdapter;
 
 /**
  * A {@link android.support.v4.app.FragmentStatePagerAdapter} that returns a
@@ -19,7 +19,7 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	// Remove "&& false" in following line to show the solving attempt id in the
 	// pager title of the archive.
 	@SuppressWarnings("PointlessBooleanExpression")
-	private static final boolean DEBUG_SHOW_SOLVING_ATTEMPT_ID = (Config.mAppMode == AppMode.DEVELOPMENT) && false;
+	private static final boolean DEBUG_SHOW_SOLVING_ATTEMPT_ID = Config.mAppMode == AppMode.DEVELOPMENT && false;
 
 	private static final int UNKNOWN_GRID_ID = -1;
 	private static final int INVALID_POSITION_ID = -2;
@@ -74,7 +74,7 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 
 	@Override
 	public int getCount() {
-		return (mGridIds == null ? 0 : mGridIds.length);
+		return mGridIds == null ? 0 : mGridIds.length;
 	}
 
 	@Override

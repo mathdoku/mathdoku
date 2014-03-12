@@ -162,8 +162,8 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 
 		// Add extra data
 		if (extraDataView != null) {
-			LinearLayout linearLayout = ((LinearLayout) sectionView
-					.findViewById(R.id.statistics_section_extra_data));
+			LinearLayout linearLayout = (LinearLayout) sectionView
+					.findViewById(R.id.statistics_section_extra_data);
 			if (linearLayout != null) {
 				linearLayout.setVisibility(View.VISIBLE);
 				linearLayout.addView(extraDataView);
@@ -277,7 +277,7 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 
 		// Subtract height (inclusive padding) of chart title and padding of the
 		// chart itself
-		maxContentHeight -= (titleHeightPixels + paddingChartPixels);
+		maxContentHeight -= titleHeightPixels + paddingChartPixels;
 
 		return maxContentHeight;
 	}
@@ -300,8 +300,8 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 		Configuration configuration = getActivity()
 				.getResources()
 				.getConfiguration();
-		float ratio = (configuration.orientation == Configuration.ORIENTATION_PORTRAIT ? (2f / 3f)
-				: (1f / 2f));
+		float ratio = configuration.orientation == Configuration.ORIENTATION_PORTRAIT ? 2f / 3f
+				: 1f / 2f;
 
 		// The actual height of the chart is preferably equal to the ratio of
 		// the width but it may never exceeds the maximum content height as the

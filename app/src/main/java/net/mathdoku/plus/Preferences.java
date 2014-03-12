@@ -1069,11 +1069,11 @@ public class Preferences {
 		String puzzleSettingOuterSwipeCircle = mSharedPreferences.getString(
 				PUZZLE_SETTING_OUTER_SWIPE_CIRCLE,
 				PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_DEFAULT);
-		int minGridSize = (puzzleSettingOuterSwipeCircle
+		int minGridSize = puzzleSettingOuterSwipeCircle
 				.equals(PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_NEVER_VISIBLE) ? Integer.MAX_VALUE
-				: Integer.valueOf(puzzleSettingOuterSwipeCircle));
+				: Integer.valueOf(puzzleSettingOuterSwipeCircle);
 
-		return (gridSize >= minGridSize);
+		return gridSize >= minGridSize;
 	}
 
 	/**

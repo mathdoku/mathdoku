@@ -78,7 +78,7 @@ public class LeaderboardRankUpdaterProgressDialog extends ProgressDialog
 	 *         does not have a score registered on Google Play Services).
 	 */
 	public boolean hasNoLeaderboardUpdated() {
-		return (mLeaderboardRankUpdater
-				.getCountUpdatedLeaderboardWithScoreCurrentPlayer() == 0);
+		return mLeaderboardRankUpdater
+				.getCountUpdatedLeaderboardWithScoreCurrentPlayer() == 0;
 	}
 }

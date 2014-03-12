@@ -108,12 +108,12 @@ public class ComboGenerator {
 
 		switch (mCageOperator) {
 		case NONE:
-			assert (mCageCells.size() == 1);
+			assert mCageCells.size() == 1;
 			int[] number = { mResult };
 			AllResults.add(number);
 			break;
 		case SUBTRACT:
-			assert (mCageCells.size() == 2);
+			assert mCageCells.size() == 2;
 			for (int i1 = 1; i1 <= mGridSize; i1++)
 				for (int i2 = i1 + 1; i2 <= mGridSize; i2++)
 					if (i2 - i1 == mResult || i1 - i2 == mResult) {
@@ -124,7 +124,7 @@ public class ComboGenerator {
 					}
 			break;
 		case DIVIDE:
-			assert (mCageCells.size() == 2);
+			assert mCageCells.size() == 2;
 			for (int i1 = 1; i1 <= mGridSize; i1++)
 				for (int i2 = i1 + 1; i2 <= mGridSize; i2++)
 					if (mResult * i1 == i2 || mResult * i2 == i1) {

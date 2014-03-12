@@ -448,7 +448,7 @@ public class GameHelper implements
 	 * Convenience method to show an alert dialog.
 	 */
 	public void showAlert(String title, String message) {
-		(new AlertDialog.Builder(getContext()))
+		new AlertDialog.Builder(getContext())
 				.setTitle(title)
 				.setMessage(message)
 				.setNeutralButton(android.R.string.ok, null)
@@ -460,7 +460,7 @@ public class GameHelper implements
 	 * Convenience method to show an alert dialog.
 	 */
 	public void showAlert(String message) {
-		(new AlertDialog.Builder(getContext()))
+		new AlertDialog.Builder(getContext())
 				.setMessage(message)
 				.setNeutralButton(android.R.string.ok, null)
 				.create()
@@ -766,17 +766,17 @@ public class GameHelper implements
 		// failsafe, in case we somehow lost track of what clients are connected
 		// or not.
 		if (mGamesClient != null && mGamesClient.isConnected()
-				&& (0 == (mConnectedClients & CLIENT_GAMES))) {
+				&& 0 == (mConnectedClients & CLIENT_GAMES)) {
 			logWarn("GamesClient was already connected. Fixing.");
 			mConnectedClients |= CLIENT_GAMES;
 		}
 		if (mPlusClient != null && mPlusClient.isConnected()
-				&& (0 == (mConnectedClients & CLIENT_PLUS))) {
+				&& 0 == (mConnectedClients & CLIENT_PLUS)) {
 			logWarn("PlusClient was already connected. Fixing.");
 			mConnectedClients |= CLIENT_PLUS;
 		}
 		if (mAppStateClient != null && mAppStateClient.isConnected()
-				&& (0 == (mConnectedClients & CLIENT_APPSTATE))) {
+				&& 0 == (mConnectedClients & CLIENT_APPSTATE)) {
 			logWarn("AppStateClient was already connected. Fixing");
 			mConnectedClients |= CLIENT_APPSTATE;
 		}
@@ -791,14 +791,14 @@ public class GameHelper implements
 		}
 
 		// which client should be the next one to connect?
-		if (mGamesClient != null && (0 != (pendingClients & CLIENT_GAMES))) {
+		if (mGamesClient != null && 0 != (pendingClients & CLIENT_GAMES)) {
 			debugLog("Connecting GamesClient.");
 			mClientCurrentlyConnecting = CLIENT_GAMES;
-		} else if (mPlusClient != null && (0 != (pendingClients & CLIENT_PLUS))) {
+		} else if (mPlusClient != null && 0 != (pendingClients & CLIENT_PLUS)) {
 			debugLog("Connecting PlusClient.");
 			mClientCurrentlyConnecting = CLIENT_PLUS;
 		} else if (mAppStateClient != null
-				&& (0 != (pendingClients & CLIENT_APPSTATE))) {
+				&& 0 != (pendingClients & CLIENT_APPSTATE)) {
 			debugLog("Connecting AppStateClient.");
 			mClientCurrentlyConnecting = CLIENT_APPSTATE;
 		} else {
@@ -1097,7 +1097,7 @@ public class GameHelper implements
 	}
 
 	Dialog makeSimpleDialog(String text) {
-		return (new AlertDialog.Builder(getContext()))
+		return new AlertDialog.Builder(getContext())
 				.setMessage(text)
 				.setNeutralButton(android.R.string.ok, null)
 				.create();
@@ -1181,9 +1181,9 @@ public class GameHelper implements
 		public String toString() {
 			return "SignInFailureReason(serviceErrorCode:"
 					+ errorCodeToString(mServiceErrorCode)
-					+ ((mActivityResultCode == NO_ACTIVITY_RESULT_CODE) ? ")"
-							: (",activityResultCode:"
-									+ activityResponseCodeToString(mActivityResultCode) + ")"));
+					+ (mActivityResultCode == NO_ACTIVITY_RESULT_CODE ? ")"
+							: ",activityResultCode:"
+									+ activityResponseCodeToString(mActivityResultCode) + ")");
 		}
 	}
 

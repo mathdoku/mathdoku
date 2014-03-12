@@ -309,7 +309,7 @@ public class GridDefinition {
 			mGridSize = 0;
 			break;
 		}
-		return (mGridSize != 0);
+		return mGridSize != 0;
 	}
 
 	private PuzzleComplexity getPuzzleComplexity(String puzzleComplexityString) {

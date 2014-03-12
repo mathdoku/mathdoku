@@ -137,7 +137,7 @@ public class Cage {
 	}
 
 	private boolean isNoneMathsCorrect(List<Integer> userValues) {
-		return userValues.size() == 1 && (userValues.get(0) == mResult);
+		return userValues.size() == 1 && userValues.get(0) == mResult;
 	}
 
 	private boolean isAddMathsCorrect(List<Integer> userValues) {
@@ -166,7 +166,7 @@ public class Cage {
 		if (userValues.size() == 2) {
 			int lower = Math.min(userValues.get(0), userValues.get(1));
 			int higher = Math.max(userValues.get(0), userValues.get(1));
-			return higher == (lower * mResult);
+			return higher == lower * mResult;
 		}
 		return false;
 	}

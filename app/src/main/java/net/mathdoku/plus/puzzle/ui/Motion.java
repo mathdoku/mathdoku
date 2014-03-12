@@ -35,7 +35,7 @@ public class Motion {
 			float gridViewBorderWidth, float cellSize) {
 		// Determine size of the grid
 		Grid grid = gridBasePlayerView.getGrid();
-		mGridSize = (grid == null ? 1 : grid.getGridSize());
+		mGridSize = grid == null ? 1 : grid.getGridSize();
 
 		mGridPlayerViewBorderWidth = gridViewBorderWidth;
 		mCellSize = cellSize;
@@ -176,8 +176,8 @@ public class Motion {
 	 *         registered.
 	 */
 	float getTouchDownPixelCoordinate(int dimension) {
-		return (dimension == X_POS || dimension == Y_POS ? mTouchDownPixelCoordinates[dimension]
-				: -1f);
+		return dimension == X_POS || dimension == Y_POS ? mTouchDownPixelCoordinates[dimension]
+				: -1f;
 	}
 
 	/**
@@ -191,10 +191,10 @@ public class Motion {
 	 * @return True in case the coordinates match. False otherwise.
 	 */
 	boolean equalsCoordinatesTouchDownCell(int[] coordinates) {
-		return (coordinates != null && mTouchDownCellCoordinates != null
+		return coordinates != null && mTouchDownCellCoordinates != null
 				&& coordinates.length == 2
 				&& mTouchDownCellCoordinates.length == 2
-				&& coordinates[X_POS] == mTouchDownCellCoordinates[X_POS] && coordinates[Y_POS] == mTouchDownCellCoordinates[Y_POS]);
+				&& coordinates[X_POS] == mTouchDownCellCoordinates[X_POS] && coordinates[Y_POS] == mTouchDownCellCoordinates[Y_POS];
 	}
 
 	/**
