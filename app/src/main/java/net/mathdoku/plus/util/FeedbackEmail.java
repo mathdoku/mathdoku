@@ -299,8 +299,25 @@ public class FeedbackEmail {
 															.getString(
 																	R.string.dialog_send_feedback_title)));
 								} catch (android.content.ActivityNotFoundException ex) {
-									// No clients installed which can handle
-									// this intent.
+									Log.d(TAG, "No email app installed", ex);
+									AlertDialog.Builder builder = new AlertDialog.Builder(
+											mActivity);
+									builder.setTitle(
+											R.string.dialog_no_email_client_found_title)
+											.setMessage(
+													R.string.dialog_sending_feedback_email_is_not_possible_body)
+											.setNeutralButton(
+													R.string.dialog_general_button_close,
+													new DialogInterface.OnClickListener() {
+														@Override
+														public void onClick(
+																DialogInterface dialog,
+																int id) {
+															// Do nothing
+														}
+													})
+											.create()
+											.show();
 								}
 							}
 						})

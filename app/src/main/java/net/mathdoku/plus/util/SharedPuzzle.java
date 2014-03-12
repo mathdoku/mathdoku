@@ -1,10 +1,13 @@
 package net.mathdoku.plus.util;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Parcelable;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 
 import net.mathdoku.plus.R;
@@ -17,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SharedPuzzle {
+	private static final String TAG = SharedPuzzle.class.getName();
 
 	// Context in which the SharedPuzzle is created.
 	private final Context mContext;
@@ -133,8 +137,23 @@ public class SharedPuzzle {
 				mContext.startActivity(Intent.createChooser(intent, mContext
 						.getResources()
 						.getString(R.string.feedback_choose_action_title)));
+
 			} catch (android.content.ActivityNotFoundException ex) {
-				// No clients installed which can handle this intent.
+				Log.d(TAG, "No email app installed", ex);
+				AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+				builder.setTitle(R.string.dialog_no_email_client_found_title)
+						.setMessage(
+								R.string.dialog_sharing_puzzles_is_not_possible_body)
+						.setNeutralButton(R.string.dialog_general_button_close,
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int id) {
+										// Do nothing
+									}
+								})
+						.create()
+						.show();
 			}
 		}
 	}
@@ -285,12 +304,10 @@ public class SharedPuzzle {
 		if (pathSegments == null || pathSegments.size() != 4) {
 			return null;
 		}
-		if (!pathSegments.get(0)
-				.equals(mSharedPuzzlePathPrefixMathdokuPlus)) {
+		if (!pathSegments.get(0).equals(mSharedPuzzlePathPrefixMathdokuPlus)) {
 			return null;
 		}
-		if (!pathSegments.get(1)
-				.equals(SHARE_URI_VERSION_MATHDOKU_PLUS)) {
+		if (!pathSegments.get(1).equals(SHARE_URI_VERSION_MATHDOKU_PLUS)) {
 			return null;
 		}
 		// Check if grid definition (part 3) matches with the hash code (part
@@ -343,12 +360,12 @@ public class SharedPuzzle {
 		if (pathSegments == null || pathSegments.size() != 4) {
 			return null;
 		}
-		if (!pathSegments.get(0)
+		if (!pathSegments
+				.get(0)
 				.equals(mSharedPuzzlePathPrefixMathdokuOriginal)) {
 			return null;
 		}
-		if (!pathSegments.get(1)
-				.equals(SHARE_URI_VERSION_MATHDOKU_ORIGINAL)) {
+		if (!pathSegments.get(1).equals(SHARE_URI_VERSION_MATHDOKU_ORIGINAL)) {
 			return null;
 		}
 		// Check if grid definition (part 3) matches with the hash code (part
