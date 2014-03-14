@@ -94,7 +94,7 @@ public class CellChangeStorageTest {
 		assertThat(mCellChangeStorage.fromStorageString(mLine, mArrayListOfCellsStub, mRevisionNumber), is(false));
 	}
 
-	@Test
+	@Test(expected = IllegalStateException.class)
 	public void fromStorageString_CellChangeInvalidStorageStringTooManyArguments_FailedToRead() {
 		mLine = "CELL_CHANGE:[0:1:::]";
 		assertThat(mCellChangeStorage.fromStorageString(mLine, mArrayListOfCellsStub, mRevisionNumber), is(false));
