@@ -59,4 +59,15 @@ public enum GridSize {
 	public static int getBiggestGridSize() {
 		return BIGGEST.size;
 	}
+
+	public static GridSize getFromNumberOfCells(int numberOfCells) {
+		int gridSize = (int) Math.sqrt(numberOfCells);
+		if (gridSize * gridSize != numberOfCells) {
+			throw new IllegalArgumentException(
+					String
+							.format("Cannot determine a valid grid size for number of cells equal to %d.",
+									numberOfCells));
+		}
+		return fromInteger(gridSize);
+	}
 }

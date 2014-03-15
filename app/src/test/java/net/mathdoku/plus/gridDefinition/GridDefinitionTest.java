@@ -2,13 +2,13 @@ package net.mathdoku.plus.griddefinition;
 
 import com.srlee.dlx.MathDokuDLX;
 
-import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.enums.PuzzleComplexity;
+import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
+import net.mathdoku.plus.puzzle.InvalidGridException;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cell.Cell;
 import net.mathdoku.plus.puzzle.grid.Grid;
-import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +23,6 @@ import robolectric.RobolectricGradleTestRunner;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -34,6 +33,95 @@ public class GridDefinitionTest {
 	private String mGridDefinitionString;
 	private Grid mGrid;
 	private MathDokuDLX mMathDokuDLXMock = mock(MathDokuDLX.class);
+
+	/**
+	 * The GridDefinitionString class creates a grid definition string. Use the
+	 * setXXX methods to change the default string into an invalid grid
+	 * definition string.
+	 */
+	private class GridDefinitionString {
+		// The grid below is constructed in such a way that each operator is
+		// used.
+		private String complexityString = "5";
+		private String[] cellCageIds = { "00", "00", "00", "01", // Row 1
+				"02", "00", "03", "01", // Row 2
+				"02", "04", "03", "01", // Row 3
+				"05", "04", "06", "01" // Row 4
+		};
+		private String[] cages = { "0,18,3", "1,10,1", "2,8,3", "3,1,2",
+				"4,4,4", "5,1,0", "6,2,0" };
+		private final String separator = ":";
+		private final int solution[][] = { { 3, 2, 1, 4 }, // Row 1
+				{ 2, 3, 4, 1 }, // Row 2
+				{ 4, 1, 3, 2 }, // Row 3
+				{ 1, 4, 2, 3 } // Row 4
+		};
+
+		public String create() {
+			StringBuilder stringBuilder = new StringBuilder();
+			stringBuilder.append(complexityString).append(separator);
+			for (String cellCageId : cellCageIds) {
+				stringBuilder.append(cellCageId);
+			}
+			for (String cage : cages) {
+				stringBuilder.append(separator).append(cage);
+			}
+			return stringBuilder.toString();
+		}
+
+		public GridDefinitionString setPuzzleComplexityReference(
+				String puzzleComplexityReference) {
+			complexityString = puzzleComplexityReference;
+
+			return this;
+		}
+
+		public GridDefinitionString setInvalidCageReferenceInListOfCells(
+				String invalidCageReferenceOfLastCell) {
+			if (invalidCageReferenceOfLastCell.length() != 2) {
+				throw new IllegalStateException(
+						"Invalid size of cage reference.");
+			}
+			int arbitraryCellWithInvalidCageReference = 7;
+			cellCageIds[arbitraryCellWithInvalidCageReference] = invalidCageReferenceOfLastCell;
+
+			return this;
+		}
+
+		public GridDefinitionString setInvalidCageDefinition(
+				String cageDefinition) {
+			int arbitraryCage = 2;
+			cages[arbitraryCage] = cageDefinition;
+
+			return this;
+		}
+
+		public int[][] getSolution() {
+			return solution;
+		}
+
+		public int[][] getSolutionWithTooFewRows() {
+			int gridSize = solution.length;
+			int invalidSolution[][] = new int[gridSize - 1][gridSize];
+			for (int row = 0; row < gridSize - 1; row++) {
+				for (int col = 0; col < gridSize; col++) {
+					invalidSolution[row][col] = solution[row][col];
+				}
+			}
+			return solution;
+		}
+
+		public int[][] getSolutionWithTooFewColumns() {
+			int gridSize = solution.length;
+			int invalidSolution[][] = new int[gridSize][gridSize - 1];
+			for (int row = 0; row < gridSize; row++) {
+				for (int col = 0; col < gridSize - 1; col++) {
+					invalidSolution[row][col] = solution[row][col];
+				}
+			}
+			return solution;
+		}
+	}
 
 	private class GridDefinitionTestObjectsCreator extends
 			GridDefinition.ObjectsCreator {
@@ -65,15 +153,6 @@ public class GridDefinitionTest {
 		mGridDefinitionTestObjectsCreator = new GridDefinitionTestObjectsCreator();
 		mGridDefinition = new GridDefinition();
 		mGridDefinition.setObjectsCreator(mGridDefinitionTestObjectsCreator);
-
-		// Even when running the unit test in the debug variant, the grid loader
-		// should not throw development exceptions as the tests below only test
-		// the release variant in which no such exceptions are thrown.
-		if (Config.mAppMode == Config.AppMode.DEVELOPMENT) {
-			// Disable this until all unit tests succeed in development mode!
-			mGridDefinition.setThrowExceptionOnError(false);
-		}
-
 	}
 
 	@Test(expected = InvalidParameterException.class)
@@ -83,8 +162,7 @@ public class GridDefinitionTest {
 		List<Cage> cages = mock(ArrayList.class);
 		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
 
-		GridDefinition.getDefinition(cells, cages,
-				gridGeneratingParameters);
+		GridDefinition.getDefinition(cells, cages, gridGeneratingParameters);
 	}
 
 	@Test(expected = InvalidParameterException.class)
@@ -94,8 +172,7 @@ public class GridDefinitionTest {
 		List<Cage> cages = mock(ArrayList.class);
 		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
 
-		GridDefinition.getDefinition(cells, cages,
-				gridGeneratingParameters);
+		GridDefinition.getDefinition(cells, cages, gridGeneratingParameters);
 	}
 
 	@Test(expected = InvalidParameterException.class)
@@ -106,8 +183,7 @@ public class GridDefinitionTest {
 		List<Cage> cages = null;
 		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
 
-		GridDefinition.getDefinition(cells, cages,
-				gridGeneratingParameters);
+		GridDefinition.getDefinition(cells, cages, gridGeneratingParameters);
 	}
 
 	@Test(expected = InvalidParameterException.class)
@@ -118,8 +194,7 @@ public class GridDefinitionTest {
 		List<Cage> cages = new ArrayList<Cage>();
 		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
 
-		GridDefinition.getDefinition(cells, cages,
-				gridGeneratingParameters);
+		GridDefinition.getDefinition(cells, cages, gridGeneratingParameters);
 	}
 
 	@Test(expected = InvalidParameterException.class)
@@ -131,8 +206,7 @@ public class GridDefinitionTest {
 		when(cages.size()).thenReturn(1);
 		GridGeneratingParameters gridGeneratingParameters = null;
 
-		GridDefinition.getDefinition(cells, cages,
-				gridGeneratingParameters);
+		GridDefinition.getDefinition(cells, cages, gridGeneratingParameters);
 	}
 
 	@Test
@@ -165,10 +239,16 @@ public class GridDefinitionTest {
 		when(cageStub3.getResult()).thenReturn(2);
 		when(cageStub3.getOperator()).thenReturn(CageOperator.NONE);
 
+		Cage cageStub4 = mock(Cage.class);
+		when(cageStub4.getId()).thenReturn(3);
+		when(cageStub4.getResult()).thenReturn(3);
+		when(cageStub4.getOperator()).thenReturn(CageOperator.ADD);
+
 		List<Cage> cages = new ArrayList<Cage>();
 		cages.add(cageStub1);
 		cages.add(cageStub2);
 		cages.add(cageStub3);
+		cages.add(cageStub4);
 
 		GridGeneratingParameters gridGeneratingParameters = new GridGeneratingParameters();
 		gridGeneratingParameters.mPuzzleComplexity = PuzzleComplexity.NORMAL;
@@ -178,165 +258,121 @@ public class GridDefinitionTest {
 				"Grid definition",
 				GridDefinition.getDefinition(cells, cages,
 						gridGeneratingParameters),
-				is(equalTo("3:00010202000102020101010203030302:0,1,0:1,3,1:2,2,0")));
+				is(equalTo("3:00010202000102020101010203030302:0,1,0:1,3,1:2,2,0:3,3,1")));
 	}
 
-	@Test
+	@Test(expected = InvalidGridException.class)
 	public void createGrid_NullDefinition_NoGridCreated() throws Exception {
-		mGridDefinitionString = null;
-
-		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
-				is(nullValue()));
+		mGridDefinition.createGrid(null);
 	}
 
-	@Test
+	@Test(expected = InvalidGridException.class)
 	public void createGrid_EmptyDefinition_NoGridCreated() throws Exception {
-		mGridDefinitionString = "";
-
-		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
-				is(nullValue()));
+		mGridDefinition.createGrid("");
 	}
 
-	@Test
+	@Test(expected = InvalidGridException.class)
 	public void createGrid_DefinitionHasTooLittleElements_NoGridCreated()
 			throws Exception {
-		mGridDefinitionString = "1:02";
-
-		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
-				is(nullValue()));
+		mGridDefinition.createGrid("1:02");
 	}
 
-	@Test
+	@Test(expected = InvalidGridException.class)
 	public void createGrid_DefinitionWithNonNumericPuzzleComplexity_NoGridCreated()
 			throws Exception {
-		mGridDefinitionString = "INVALID PUZZLE COMPLEXITY ID:00:0,9,1";
-
-		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
-				is(nullValue()));
+		mGridDefinition.createGrid("INVALID PUZZLE COMPLEXITY ID:00:0,9,1");
 	}
 
-	@Test
+	@Test(expected = InvalidGridException.class)
 	public void createGrid_DefinitionWithTooBigNumericPuzzleComplexity_NoGridCreated()
 			throws Exception {
-		mGridDefinitionString = "10:00:0,9,1";
-
-		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
-				is(nullValue()));
+		mGridDefinition.createGrid("10:00:0,9,1");
 	}
 
-	@Test
+	@Test(expected = InvalidGridException.class)
 	public void createGrid_DefinitionHasEmptyCellCagesPart_GridNotCreated()
 			throws Exception {
-		mGridDefinitionString = "1::0,9,0";
-
-		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
-				is(nullValue()));
+		mGridDefinition.createGrid("1::0,9,0");
 	}
 
-	@Test
+	@Test(expected = InvalidGridException.class)
 	public void createGrid_DefinitionHasCellCagesPartWithUnevenNumberOfDigitis_GridNotCreated()
 			throws Exception {
-		mGridDefinitionString = "1:001:0,9,0";
-
-		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
-				is(nullValue()));
+		mGridDefinition.createGrid("1:001:0,9,0");
 	}
 
-	@Test
+	@Test(expected = InvalidGridException.class)
 	public void createGrid_DefinitionHasCellCagesPartWithNonNumericCharacters_GridNotCreated()
 			throws Exception {
-		mGridDefinitionString = "1:0x:0,9,0";
-
-		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
-				is(nullValue()));
+		mGridDefinition.createGrid("1:0x:0,9,0");
 	}
 
-	@Test
+	@Test(expected = InvalidGridException.class)
 	public void createGrid_DefinitionHasCagePartWithTooLittleElements_GridNotCreated()
 			throws Exception {
-		mGridDefinitionString = "1:00:0,9";
-
-		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
-				is(nullValue()));
+		mGridDefinition.createGrid("1:00:0,9");
 	}
 
-	@Test
+	@Test(expected = InvalidGridException.class)
 	public void createGrid_DefinitionHasCagePartWithTooManyElements_GridNotCreated()
 			throws Exception {
-		mGridDefinitionString = "1:00:0,9,1,2";
-
-		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
-				is(nullValue()));
+		mGridDefinition.createGrid("1:00:0,9,1,2");
 	}
 
-	@Test
+	@Test(expected = InvalidGridException.class)
 	public void createGrid_DefinitionHasCagePartWithEmptyCageId_GridNotCreated()
 			throws Exception {
-		mGridDefinitionString = "1:00:,9,0";
-
-		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
-				is(nullValue()));
+		mGridDefinition.createGrid("1:00:,9,0");
 	}
 
-	@Test
+	@Test(expected = InvalidGridException.class)
 	public void createGrid_DefinitionHasCagePartWithEmptyCageResult_GridNotCreated()
 			throws Exception {
-		mGridDefinitionString = "1:00:0,,0";
-
-		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
-				is(nullValue()));
+		mGridDefinition.createGrid("1:00:0,,0");
 	}
 
-	@Test
+	@Test(expected = InvalidGridException.class)
 	public void createGrid_DefinitionHasCagePartWithEmptyCageOperator_GridNotCreated()
 			throws Exception {
-		mGridDefinitionString = "1:00:0,9,";
-
-		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
-				is(nullValue()));
+		mGridDefinition.createGrid("1:00:0,9,");
 	}
 
-	@Test
+	@Test(expected = InvalidGridException.class)
 	public void createGrid_DefinitionHasCagePartWithTooBigCageOperator_GridNotCreated()
 			throws Exception {
-		mGridDefinitionString = "1:00:0,9,10";
-
-		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
-				is(nullValue()));
+		mGridDefinition.createGrid("1:00:0,9,10");
 	}
 
 	@Test
 	public void createGrid_DefinitionWithVeryEasyComplexity_GridCreated()
 			throws Exception {
-		createGrid_DefinitionWithGivenComplexity_GridCreated("1",
+		assertThatGridIsCreatedWithGivenComplexity("1",
 				PuzzleComplexity.VERY_EASY);
 	}
 
 	@Test
 	public void createGrid_DefinitionWithEasyComplexity_GridCreated()
 			throws Exception {
-		createGrid_DefinitionWithGivenComplexity_GridCreated("2",
-				PuzzleComplexity.EASY);
+		assertThatGridIsCreatedWithGivenComplexity("2", PuzzleComplexity.EASY);
 	}
 
 	@Test
 	public void createGrid_DefinitionWithNormalComplexity_GridCreated()
 			throws Exception {
-		createGrid_DefinitionWithGivenComplexity_GridCreated("3",
-				PuzzleComplexity.NORMAL);
+		assertThatGridIsCreatedWithGivenComplexity("3", PuzzleComplexity.NORMAL);
 	}
 
 	@Test
 	public void createGrid_DefinitionWithDifficultComplexity_GridCreated()
 			throws Exception {
-		createGrid_DefinitionWithGivenComplexity_GridCreated("4",
+		assertThatGridIsCreatedWithGivenComplexity("4",
 				PuzzleComplexity.DIFFICULT);
 	}
 
 	@Test
 	public void createGrid_DefinitionWithVeryDifficultComplexity_GridCreated()
 			throws Exception {
-		createGrid_DefinitionWithGivenComplexity_GridCreated("5",
+		assertThatGridIsCreatedWithGivenComplexity("5",
 				PuzzleComplexity.VERY_DIFFICULT);
 	}
 
@@ -345,9 +381,6 @@ public class GridDefinitionTest {
 			throws Exception {
 		for (int i = 1; i <= 82; i++) {
 			switch (i) {
-			case 1: // fall through
-			case 4: // fall through
-			case 9: // fall through
 			case 16: // fall through
 			case 25: // fall through
 			case 36: // fall through
@@ -358,7 +391,7 @@ public class GridDefinitionTest {
 				// these are valid lengths
 				continue;
 			default:
-				createGrid_DefinitionHasCellCagesPartForInvalidNumberOfCells_GridNotCreated(i);
+				assertThatExceptionIsThrownWhenCreatingGridFromDefinitionWithInvalidNumberOfCells(i);
 			}
 		}
 	}
@@ -366,15 +399,9 @@ public class GridDefinitionTest {
 	@Test
 	public void createGrid_DefinitionHasCellCagesPartForValidNumberOfCells_GridCreated()
 			throws Exception {
-		// For grid size 1, the None operator has to be used as this is the only
-		// valid operator for a single cage cell.
-		createGrid_DefinitionHasCellCagesPartForValidNumberOfCells_GridCreated(
-				1, "1:00:0,9,0");
-		// For the other grid sizes the add or multiply operator has to be used
-		// as all cells are part of one cage having at least 4 (2 * 2) cells.
 		int j = 1;
 		StringBuilder cellParts = new StringBuilder();
-		for (int gridSize = 2; gridSize <= 9; gridSize++) {
+		for (int gridSize = 4; gridSize <= 9; gridSize++) {
 			for (; j <= gridSize * gridSize; j++) {
 				cellParts.append("00");
 			}
@@ -383,107 +410,70 @@ public class GridDefinitionTest {
 		}
 	}
 
-	@Test
+	@Test(expected = InvalidGridException.class)
 	public void createGrid_DefinitionCellRefersToNonExistentCage_GridNotCreated()
 			throws Exception {
-		mGridDefinitionString = "1:01:0,9,1";
+		mGridDefinitionString = new GridDefinitionString()
+				.setInvalidCageReferenceInListOfCells("99")
+				.create();
 
-		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
-				is(nullValue()));
+		mGridDefinition.createGrid(mGridDefinitionString);
 	}
 
-	@Test
+	@Test(expected = InvalidGridException.class)
 	public void createGrid_DefinitionCageHasUnexpectedId_GridNotCreated()
 			throws Exception {
-		mGridDefinitionString = "1:00:1,9,1";
+		mGridDefinitionString = new GridDefinitionString()
+				.setInvalidCageDefinition("999,2,3")
+				.create();
 
-		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
-				is(nullValue()));
+		mGridDefinition.createGrid(mGridDefinitionString);
 	}
 
-	@Test
-	public void createGrid_DefinitionDoesNotHaveAUniqueSolution_GridNotCreated()
-			throws Exception {
-		mGridDefinitionString = "1:00:0,9,0";
-		when(mMathDokuDLXMock.getSolutionGrid()).thenReturn(null);
-
-		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
-				is(nullValue()));
-	}
-
-	@Test
+	@Test(expected = InvalidGridException.class)
 	public void createGrid_DefinitionInvalidCageOperator_GridNotCreated()
 			throws Exception {
-		mGridDefinitionString = "1:00:0,9,9";
+		mGridDefinitionString = new GridDefinitionString()
+				.setInvalidCageDefinition("2,2,9")
+				.create();
 
-		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
-				is(nullValue()));
+		mGridDefinition.createGrid(mGridDefinitionString);
 	}
 
-	@Test
-	public void createGrid_DefinitionCageOperatorNone_GridCreated()
+	@Test(expected = InvalidGridException.class)
+	public void createGrid_DefinitionDoesNotHaveAUniqueSolution_GridNotCreated()
 			throws Exception {
-		mGridDefinitionString = "1:00:0,9,0";
-		int solution[][] = { { 9 } };
-		when(mMathDokuDLXMock.getSolutionGrid()).thenReturn(solution);
+		mGridDefinitionString = new GridDefinitionString().create();
+		// Although the default grid has one unique solution, let the
+		// MathDokuDLX mock return that no unique solution exists.
+		when(mMathDokuDLXMock.getSolutionGrid()).thenReturn(null);
 
-		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
-				is(notNullValue()));
-		assertThat(mGridDefinitionTestObjectsCreator.cages.get(0).getOperator(),
-				is(CageOperator.NONE));
-	}
-
-	@Test
-	public void createGrid_DefinitionCageOperatorAdd_GridCreated()
-			throws Exception {
-		createGrid_DefinitionWithValidCageOperator_GridCreated("1",
-				CageOperator.ADD);
-	}
-
-	@Test
-	public void createGrid_DefinitionCageOperatorSubtract_GridCreated()
-			throws Exception {
-		createGrid_DefinitionWithValidCageOperator_GridCreated("2",
-				CageOperator.SUBTRACT);
-	}
-
-	@Test
-	public void createGrid_DefinitionCageOperatorMultiply_GridCreated()
-			throws Exception {
-		createGrid_DefinitionWithValidCageOperator_GridCreated("3",
-				CageOperator.MULTIPLY);
-	}
-
-	@Test
-	public void createGrid_DefinitionCageOperatorDivide_GridCreated()
-			throws Exception {
-		createGrid_DefinitionWithValidCageOperator_GridCreated("4",
-				CageOperator.DIVIDE);
+		mGridDefinition.createGrid(mGridDefinitionString);
 	}
 
 	@Test
 	public void createGrid_SolutionHasUnexpectedNumberOfRows_GridNotCreated()
 			throws Exception {
-		mGridDefinitionString = "1:00:0,9,0";
-		int solution[][] = { { 1 }, { 2 } };
-		when(mMathDokuDLXMock.getSolutionGrid()).thenReturn(solution);
+		GridDefinitionString gridDefinitionString = new GridDefinitionString();
+		mGridDefinitionString = gridDefinitionString.create();
+		when(mMathDokuDLXMock.getSolutionGrid()).thenReturn(
+				gridDefinitionString.getSolutionWithTooFewRows());
 
-		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
-				is(nullValue()));
+		mGridDefinition.createGrid(mGridDefinitionString);
 	}
 
 	@Test
 	public void createGrid_SolutionHasUnexpectedNumberOfColumns_GridNotCreated()
 			throws Exception {
-		mGridDefinitionString = "1:00:0,9,0";
-		int solution[][] = { { 1, 2 } };
-		when(mMathDokuDLXMock.getSolutionGrid()).thenReturn(solution);
+		GridDefinitionString gridDefinitionString = new GridDefinitionString();
+		mGridDefinitionString = gridDefinitionString.create();
+		when(mMathDokuDLXMock.getSolutionGrid()).thenReturn(
+				gridDefinitionString.getSolutionWithTooFewColumns());
 
-		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
-				is(nullValue()));
+		mGridDefinition.createGrid(mGridDefinitionString);
 	}
 
-	private void createGrid_DefinitionHasCellCagesPartForInvalidNumberOfCells_GridNotCreated(
+	private boolean assertThatExceptionIsThrownWhenCreatingGridFromDefinitionWithInvalidNumberOfCells(
 			int numberOfCellsInCagePart) throws Exception {
 		StringBuilder cagesPart = new StringBuilder();
 		for (int i = 0; i < numberOfCellsInCagePart; i++) {
@@ -491,8 +481,14 @@ public class GridDefinitionTest {
 		}
 		mGridDefinitionString = "1:" + cagesPart + ":0,9,0";
 
-		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
-				is(nullValue()));
+		try {
+			mGridDefinition.createGrid(mGridDefinitionString);
+		} catch (InvalidGridException e) {
+			return true;
+		}
+
+		// No exception was thrown
+		return false;
 	}
 
 	private void createGrid_DefinitionHasCellCagesPartForValidNumberOfCells_GridCreated(
@@ -502,45 +498,22 @@ public class GridDefinitionTest {
 		// The content does not need to be correct for this test.
 		int solution[][] = new int[gridSize][gridSize];
 		when(mMathDokuDLXMock.getSolutionGrid()).thenReturn(solution);
-		mGridDefinition.setThrowExceptionOnError(true);
 
 		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
 				is(notNullValue()));
 	}
 
-	private void createGrid_DefinitionWithGivenComplexity_GridCreated(
+	private void assertThatGridIsCreatedWithGivenComplexity(
 			String puzzleComplexityString, PuzzleComplexity puzzleComplexity) {
-		mGridDefinitionString = puzzleComplexityString + ":00:0,9,0";
-		int solution[][] = { { 9 } };
-		when(mMathDokuDLXMock.getSolutionGrid()).thenReturn(solution);
+		GridDefinitionString gridDefinitionString = new GridDefinitionString();
+		mGridDefinitionString = gridDefinitionString
+				.setPuzzleComplexityReference(puzzleComplexityString)
+				.create();
+		when(mMathDokuDLXMock.getSolutionGrid()).thenReturn(
+				gridDefinitionString.getSolution());
 
-		mGrid = mGridDefinition.createGrid(mGridDefinitionString);
-
-		// Additional assertions in case an unexpected error occurs
-		assertThat(mGrid, is(notNullValue()));
-		assertThat(mGrid.getPuzzleComplexity(), is(puzzleComplexity));
-	}
-
-	private void assertThatCageHasIdAndResultAndOperator(int cageId,
-			int cageResult, CageOperator cageOperator) {
-		assertThat(mGridDefinitionTestObjectsCreator.cages, is(notNullValue()));
-		Cage cage = mGridDefinitionTestObjectsCreator.cages.get(cageId);
-		assertThat(cage, is(notNullValue()));
-		assertThat(cage.getId(), is(cageId));
-		assertThat(cage.getResult(), is(cageResult));
-		assertThat(cage.getOperator(), is(cageOperator));
-	}
-
-	private void createGrid_DefinitionWithValidCageOperator_GridCreated(
-			String cageOperatorString, CageOperator cageOperator) {
-		mGridDefinitionString = "1:00010201:0,1,0:1,3," + cageOperatorString
-				+ ":2,2,0";
-		int solution[][] = { { 1, 2 }, { 2, 1 } };
-		when(mMathDokuDLXMock.getSolutionGrid()).thenReturn(solution);
-
-		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
-				is(notNullValue()));
-		assertThat(mGridDefinitionTestObjectsCreator.cages.get(1).getOperator(),
-				is(cageOperator));
+		assertThat(mGridDefinition
+				.createGrid(mGridDefinitionString)
+				.getPuzzleComplexity(), is(puzzleComplexity));
 	}
 }

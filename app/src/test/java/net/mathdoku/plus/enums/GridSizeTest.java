@@ -70,4 +70,31 @@ public class GridSizeTest {
 	public void getBiggestGridSize() throws Exception {
 		assertThat(GridSize.getBiggestGridSize(),is(BIGGEST_GRID_SIZE));
 	}
+
+	@Test
+	public void getFromNumberOfCells_ValidGridSize() throws Exception {
+		assertThat(GridSize.getFromNumberOfCells(16),is(GridSize.GRID_4X4));
+		assertThat(GridSize.getFromNumberOfCells(25),is(GridSize.GRID_5X5));
+		assertThat(GridSize.getFromNumberOfCells(36),is(GridSize.GRID_6X6));
+		assertThat(GridSize.getFromNumberOfCells(49),is(GridSize.GRID_7X7));
+		assertThat(GridSize.getFromNumberOfCells(64),is(GridSize.GRID_8X8));
+		assertThat(GridSize.getFromNumberOfCells(81),is(GridSize.GRID_9X9));
+	}
+
+	@Test (expected = IllegalArgumentException.class)
+	public void getFromNumberOfCells_SquareOfSmallestGridSizeMinusOne() throws Exception {
+		int gridSize = (SMALLEST_GRID_SIZE - 1) * (SMALLEST_GRID_SIZE - 1);
+		GridSize.getFromNumberOfCells(gridSize);
+	}
+
+	@Test (expected = IllegalArgumentException.class)
+	public void getFromNumberOfCells_InvalidGridSize21() throws Exception {
+		GridSize.getFromNumberOfCells(21);
+	}
+
+	@Test (expected = IllegalArgumentException.class)
+	public void getFromNumberOfCells_SquareOfBiggestGridSizePlusOne() throws Exception {
+		int gridSize = (BIGGEST_GRID_SIZE + 1) * (BIGGEST_GRID_SIZE + 1);
+		GridSize.getFromNumberOfCells(gridSize);
+	}
 }

@@ -1,12 +1,9 @@
 package net.mathdoku.plus.griddefinition;
 
-import android.util.Log;
-
 import com.srlee.dlx.MathDokuDLX;
 
-import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.enums.CageOperator;
-import net.mathdoku.plus.enums.PuzzleComplexity;
+import net.mathdoku.plus.enums.GridSize;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.puzzle.InvalidGridException;
 import net.mathdoku.plus.puzzle.cage.Cage;
@@ -20,8 +17,6 @@ import net.mathdoku.plus.util.Util;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * This class creates the unique definition for a grid. This definition is used
@@ -30,10 +25,6 @@ import java.util.regex.Pattern;
  */
 public class GridDefinition {
 	private static final String TAG = GridDefinition.class.getName();
-
-	// Delimiters below should not be altered as they are persisted.
-	public static final String DELIMITER_LEVEL1 = ":";
-	public static final String DELIMITER_LEVEL2 = ",";
 
 	private int mGridSize;
 	private List<Cage> mCages;
@@ -65,14 +56,8 @@ public class GridDefinition {
 
 	private GridDefinition.ObjectsCreator mObjectsCreator;
 
-	// By default this module throws exceptions on error when running in
-	// development mode only.
-	private boolean mThrowExceptionOnError;
-
 	public GridDefinition() {
 		mObjectsCreator = new GridDefinition.ObjectsCreator();
-
-		setThrowExceptionOnError(Config.mAppMode == Config.AppMode.DEVELOPMENT);
 	}
 
 	public void setObjectsCreator(GridDefinition.ObjectsCreator objectsCreator) {
@@ -111,7 +96,7 @@ public class GridDefinition {
 
 		definitionString.append(
 				Integer.toString(gridGeneratingParameters.mPuzzleComplexity
-						.getId())).append(DELIMITER_LEVEL1);
+						.getId())).append(GridDefinitionDelimiter.LEVEL1);
 
 		// Get the cage number (represented as a value of two digits, if needed
 		// prefixed with a 0) for each cell. Note: with a maximum of 81 cells in
@@ -122,11 +107,11 @@ public class GridDefinition {
 		// Followed by cages
 		for (Cage cage : cages) {
 			definitionString
-					.append(DELIMITER_LEVEL1)
+					.append(GridDefinitionDelimiter.LEVEL1)
 					.append(cage.getId())
-					.append(DELIMITER_LEVEL2)
+					.append(GridDefinitionDelimiter.LEVEL2)
 					.append(cage.getResult())
-					.append(DELIMITER_LEVEL2)
+					.append(GridDefinitionDelimiter.LEVEL2)
 					.append(gridGeneratingParameters.mHideOperators ? CageOperator.NONE
 							.getId() : cage.getOperator().getId());
 		}
@@ -150,107 +135,41 @@ public class GridDefinition {
 	 * @return The grid created from the definition. Null in case of an error.
 	 */
 	public Grid createGrid(String definition) {
-		// Example of a grid definition:
-		// 1:00010202000103040506030405060707:0,4,1:1,2,4:2,2,4:3,1,2:4,4,4:5,2,4:6,4,1:7,6,3
-
-		if (definition == null) {
-			if (mThrowExceptionOnError) {
-				throw new InvalidGridException("Definition cannot be null.");
-			}
-			return null;
-		}
-
-		if (!definition.matches("" //
-									// Part for puzzle complexity
-				+ "\\d"
-				// Part for cage id's per cell
-				+ DELIMITER_LEVEL1 //
-				+ "(" //
-				+ "\\d\\d" // Cage id for a cell
-				+ ")+" // At least one cell needed
-				// Part for cage definitions
-				+ "(" //
-				// Start of new cage part
-				+ DELIMITER_LEVEL1 //
-				+ "\\d+" // Cage id
-				+ DELIMITER_LEVEL2 //
-				+ "\\d+" // Result value of cage
-				+ DELIMITER_LEVEL2 //
-				+ "\\d" // Cage operator
-				+ ")+" // At least one cage needed
-		)) {
-			if (mThrowExceptionOnError) {
-				throw new InvalidGridException("Definition has invalid format.");
-			}
-			return null;
-		}
-
-		// Split the definition into parts.
-		String[] definitionParts = definition.split(DELIMITER_LEVEL1);
-		if (definitionParts == null || definitionParts.length < 3) {
-			if (mThrowExceptionOnError) {
-				throw new InvalidGridException(
-						"Definition has too little elements.");
-			}
-			return null;
-		}
-
-		// The definition contains followings parts:
-		int ID_PART_COMPLEXITY = 0;
-		int ID_PART_CELLS = 1;
-		int ID_PART_FIRST_CAGE = 2;
+		GridDefinitionSplitter gridDefinitionSplitter = new GridDefinitionSplitter(
+				definition);
 
 		// The complexity is not needed to rebuild the puzzle, but it is stored
 		// as it is a great communicator to the (receiving) user how difficult
 		// the puzzle is.
 		GridGeneratingParameters mGridGeneratingParameters = mObjectsCreator
 				.createGridGeneratingParameters();
-		mGridGeneratingParameters.mPuzzleComplexity = getPuzzleComplexity(definitionParts[ID_PART_COMPLEXITY]);
-		if (mGridGeneratingParameters.mPuzzleComplexity == null) {
-			// The complexity as stored in the definition is not valid. Most
-			// likely this definition is received via a shared puzzle url which
-			// is manipulated. To prevent NULL pointer exceptions, the
-			// definition is no converted to a grid.
-			if (mThrowExceptionOnError) {
-				throw new InvalidGridException("Complexity '"
-						+ definitionParts[ID_PART_COMPLEXITY] + "' is invalid.");
-			}
-			return null;
-		}
+		mGridGeneratingParameters.mPuzzleComplexity = gridDefinitionSplitter
+				.getPuzzleComplexity();
 
-		// The first part of the definition contains the cage number for each
-		// individual cell. The cage number always consists of two digits. So
-		// the number of cells is equal to 50% of the length of this string.
-		int cellCount = definitionParts[ID_PART_CELLS].length() / 2;
-		if (!setGridSize(cellCount)) {
-			if (mThrowExceptionOnError) {
-				throw new InvalidGridException("Number of cells " + cellCount
-						+ " does not match with accepted grid sizes (1-9).");
-			}
-			return null;
+		int cellCount = gridDefinitionSplitter.getNumberOfCells();
+		try {
+			mGridSize = GridSize.getFromNumberOfCells(cellCount).getGridSize();
+		} catch (IllegalArgumentException e) {
+			throw new InvalidGridException(String.format(
+					"Definition '%s' contains an invalid number of cells.",
+					definition), e);
 		}
-
-		// Determine number of cages expected
-		int cageCount = definitionParts.length - ID_PART_FIRST_CAGE;
 
 		// Initialize helper variables. Those variables are filled while adding
 		// the cells. Later, when adding the cages, the data of those vars is
 		// used.
-		mCountCellsPerCage = new int[cageCount];
-		mCageIdPerCell = new int[cellCount];
+		mCountCellsPerCage = new int[gridDefinitionSplitter.getNumberOfCages()];
+		mCageIdPerCell = gridDefinitionSplitter.getCageIdPerCell();
 
 		// Create the cells based on the list of cage numbers for each cell.
-		if (!createArrayListOfCells(definitionParts[ID_PART_CELLS], cageCount)) {
-			if (mThrowExceptionOnError) {
-				throw new InvalidGridException(
-						"Cannot create array list of cells.");
-			}
-			return null;
+		if (!createArrayListOfCells(gridDefinitionSplitter.getNumberOfCages())) {
+			throw new InvalidGridException("Cannot create array list of cells.");
 		}
 
 		mCages = mObjectsCreator.createArrayListOfCages();
-		for (int i = ID_PART_FIRST_CAGE; i < definitionParts.length; i++) {
-			if (!createCage(definitionParts[i])) {
+		for (String cageDefinition : gridDefinitionSplitter
+				.getCageDefinitions()) {
+			if (!createCage(cageDefinition)) {
 				return null;
 			}
 		}
@@ -258,11 +177,8 @@ public class GridDefinition {
 		// Calculate and set the correct values for each cell if a single
 		// solution can be determined for the definition.
 		if (!setCorrectCellValues()) {
-			if (mThrowExceptionOnError) {
-				throw new InvalidGridException(
-						"Cannot set the correct values for all cells.");
-			}
-			return null;
+			throw new InvalidGridException(
+					"Cannot set the correct values for all cells.");
 		}
 
 		// All data is gathered now
@@ -275,71 +191,11 @@ public class GridDefinition {
 				.build();
 	}
 
-	private boolean setGridSize(int cellCount) {
-		switch (cellCount) {
-		case 1:
-			mGridSize = 1;
-			break;
-		case 4:
-			mGridSize = 2;
-			break;
-		case 9:
-			mGridSize = 3;
-			break;
-		case 16:
-			mGridSize = 4;
-			break;
-		case 25:
-			mGridSize = 5;
-			break;
-		case 36:
-			mGridSize = 6;
-			break;
-		case 49:
-			mGridSize = 7;
-			break;
-		case 64:
-			mGridSize = 8;
-			break;
-		case 81:
-			mGridSize = 9;
-			break;
-		default:
-			// Invalid number of cells.
-			mGridSize = 0;
-			break;
-		}
-		return mGridSize != 0;
-	}
-
-	private PuzzleComplexity getPuzzleComplexity(String puzzleComplexityString) {
-		PuzzleComplexity puzzleComplexity = null;
-		try {
-			puzzleComplexity = PuzzleComplexity.fromId(puzzleComplexityString);
-		} catch (IllegalArgumentException e) {
-			Log.d(TAG, e.getMessage(), e);
-			// This value can not be specified in a share url created by the
-			// app. But in case it is manipulated by a user before sending
-			// to another user, the receiver should not get an exception.
-			puzzleComplexity = null;
-		}
-
-		return puzzleComplexity;
-	}
-
-	private boolean createArrayListOfCells(String cagesString,
-			int expectedNumberOfCages) {
+	private boolean createArrayListOfCells(int expectedNumberOfCages) {
 		mCells = mObjectsCreator.createArrayListOfCells();
 
-		// The cagesString contains the cage number for each individual cell.
-		// The cage number always consists of two digits.
-		Pattern pattern = Pattern.compile("\\d\\d");
-		Matcher matcher = pattern.matcher(cagesString);
-		int cellNumber = 0;
-		while (matcher.find()) {
-			int cageId = Integer.valueOf(matcher.group());
-
-			// Create new cell and add it to the cells list.
+		for (int cellNumber = 0; cellNumber < mCageIdPerCell.length; cellNumber++) {
+			int cageId = mCageIdPerCell[cellNumber];
 			Cell cell = new CellBuilder()
 					.setGridSize(mGridSize)
 					.setId(cellNumber)
@@ -348,64 +204,35 @@ public class GridDefinition {
 					.build();
 			mCells.add(cell);
 
-			// Determine the cage to which the cell has to be added.
 			if (cageId < 0 || cageId >= expectedNumberOfCages) {
-				if (mThrowExceptionOnError) {
-					throw new InvalidGridException(
-							"Cell refers to invalid cage id '" + cageId + "'.");
-				}
-				return false;
+				throw new InvalidGridException(
+						"Cell refers to invalid cage id '" + cageId + "'.");
 			}
 			mCageIdPerCell[cellNumber] = cageId;
 			mCountCellsPerCage[cageId]++;
-
-			cellNumber++;
 		}
 
 		return true;
 	}
 
 	private boolean createCage(String cageDefinition) {
-		if (cageDefinition == null) {
-			return false;
-		}
-
-		String[] cageElements = cageDefinition.split(DELIMITER_LEVEL2);
-		if (cageElements == null || cageElements.length != 3) {
-			if (mThrowExceptionOnError) {
-				throw new InvalidGridException(
-						"Invalid number of elements for cage part with definition '"
-								+ cageDefinition + "'.");
-			}
-			return false;
-		}
+		CageDefinitionSplitter cageDefinitionSplitter = new CageDefinitionSplitter(
+				cageDefinition);
 
 		CageBuilder cageBuilder = new CageBuilder();
-		int cageId = Integer.valueOf(cageElements[0]);
+		int cageId = cageDefinitionSplitter.getCageId();
 		if (cageId < 0 || cageId >= mCountCellsPerCage.length) {
-			if (mThrowExceptionOnError) {
-				throw new InvalidGridException(
-						"Invalid cage id in cage definition '" + cageDefinition
-								+ "'.");
-			}
-			return false;
+			throw new InvalidGridException(String.format(
+					"Cage id '%d' in cage definition '%s' is not valid.",
+					cageId, cageDefinition));
 		}
 		cageBuilder.setId(cageId);
-		cageBuilder.setResult(Integer.valueOf(cageElements[1]));
-		try {
-			cageBuilder.setCageOperator(CageOperator.fromId(cageElements[2]));
-		} catch (IllegalArgumentException e) {
-			// If the cage operator in the url was manipulated this should not
-			// result in an Invalid Parameter Exception as the receiving user
-			// might be ignorant of the url being manipulated.
-			if (mThrowExceptionOnError) {
-				throw new IllegalArgumentException(e.getMessage(), e);
-			}
-			return false;
-		}
+		cageBuilder.setResult(cageDefinitionSplitter.getResult());
+		cageBuilder.setCageOperator(cageDefinitionSplitter.getCageOperator());
+
 		int[] cells = new int[mCountCellsPerCage[cageId]];
 		int cellIndex = 0;
-		for (int i = 0; i < mCageIdPerCell.length; i++) {
+		for (int i = 0; i < mCountCellsPerCage[cageId]; i++) {
 			if (mCageIdPerCell[i] == cageId) {
 				cells[cellIndex++] = i;
 			}
@@ -429,29 +256,20 @@ public class GridDefinition {
 			// Either no or multiple solutions can be found. In both case this
 			// would mean that the grid definition string was manipulated by the
 			// user.
-			if (mThrowExceptionOnError) {
-				throw new InvalidGridException(
-						"Grid does not have a unique solution.");
-			}
-			return false;
+			throw new InvalidGridException(
+					"Grid does not have a unique solution.");
 		}
 		if (solution.length != mGridSize) {
-			if (mThrowExceptionOnError) {
-				throw new InvalidGridException("Solution array has "
-						+ solution.length + " rows while " + mGridSize
-						+ " row were expected.");
-			}
-			return false;
+			throw new InvalidGridException("Solution array has "
+					+ solution.length + " rows while " + mGridSize
+					+ " row were expected.");
 		}
 		for (int row = 0; row < mGridSize; row++) {
 			if (solution[row].length != mGridSize) {
-				if (mThrowExceptionOnError) {
-					throw new InvalidGridException("Solution array has "
-							+ (solution == null ? 0 : solution[row].length)
-							+ " columns in row " + row + " while " + mGridSize
-							+ " columns were expected.");
-				}
-				return false;
+				throw new InvalidGridException("Solution array has "
+						+ (solution == null ? 0 : solution[row].length)
+						+ " columns in row " + row + " while " + mGridSize
+						+ " columns were expected.");
 			}
 		}
 
@@ -468,9 +286,5 @@ public class GridDefinition {
 		}
 
 		return true;
-	}
-
-	public void setThrowExceptionOnError(boolean throwExceptionOnError) {
-		mThrowExceptionOnError = throwExceptionOnError;
 	}
 }

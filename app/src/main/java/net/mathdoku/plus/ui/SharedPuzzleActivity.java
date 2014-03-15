@@ -6,16 +6,18 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
 import net.mathdoku.plus.R;
-import net.mathdoku.plus.puzzle.grid.Grid;
-import net.mathdoku.plus.puzzle.ui.GridViewerView;
 import net.mathdoku.plus.griddefinition.GridDefinition;
 import net.mathdoku.plus.painter.Painter;
+import net.mathdoku.plus.puzzle.InvalidGridException;
+import net.mathdoku.plus.puzzle.grid.Grid;
+import net.mathdoku.plus.puzzle.ui.GridViewerView;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.database.GridRow;
 import net.mathdoku.plus.ui.base.AppFragmentActivity;
@@ -144,23 +146,20 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 			return false;
 		}
 
-		// Get the grid definition form the uri.
 		String gridDefinition = new SharedPuzzle(this)
 				.getGridDefinitionFromUrl(uri);
-		if (gridDefinition == null) {
+		try {
+			mGrid = new GridDefinition().createGrid(gridDefinition);
+		} catch (InvalidGridException e) {
+			Log.d("Cannot create a grid for definition '%s'.", gridDefinition,
+					e);
 			return false;
 		}
 
-		// Create a new grid based on the definition
-		mGrid = new GridDefinition().createGrid(gridDefinition);
-		if (mGrid != null) {
-			// Disable the grid as the user should not be able to click
-			// cells in the shared puzzle view
-			mGrid.setActive(false);
-			return true;
-		}
-
-		return false;
+		// Disable the grid as the user should not be able to click
+		// cells in the shared puzzle view
+		mGrid.setActive(false);
+		return true;
 	}
 
 	/**
