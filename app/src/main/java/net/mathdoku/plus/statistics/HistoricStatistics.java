@@ -198,7 +198,8 @@ public class HistoricStatistics {
 		for (DataPoint dataPoint : dataPoints) {
 			if (index >= start) {
 				if (dataPoint.mSeries == series || series == null) {
-					if (includeElapsedTime && dataPoint.mElapsedTimeExcludingCheatPenalty > 0
+					if (includeElapsedTime
+							&& dataPoint.mElapsedTimeExcludingCheatPenalty > 0
 							|| includeCheatTime && dataPoint.mCheatPenalty > 0) {
 						return true;
 					}

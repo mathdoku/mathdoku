@@ -213,8 +213,7 @@ public class CageTypeGenerator {
 	 */
 	public int size(int maxCageSize) {
 		int totalCageTypes = 0;
-		maxCageSize = maxCageSize > MAX_CAGE_SIZE ? MAX_CAGE_SIZE
-				: maxCageSize;
+		maxCageSize = maxCageSize > MAX_CAGE_SIZE ? MAX_CAGE_SIZE : maxCageSize;
 		for (int i = 0; i < maxCageSize; i++) {
 			totalCageTypes += mCageTypes[i].size();
 		}
@@ -334,8 +333,8 @@ public class CageTypeGenerator {
 					if (cageType.getWidth() < maxWidth) {
 						// Check to right
 						if (!newCageTypeMatrix[row][col + 1]) {
-							int cellNumber = row * numberOfCellsPerRow
-									+ col + 1;
+							int cellNumber = row * numberOfCellsPerRow + col
+									+ 1;
 							if (!extendIndexes.contains(cellNumber)) {
 								extendIndexes.add(cellNumber);
 							}
@@ -343,8 +342,8 @@ public class CageTypeGenerator {
 
 						// Check to left
 						if (!newCageTypeMatrix[row][col - 1]) {
-							int cellNumber = row * numberOfCellsPerRow
-									+ col - 1;
+							int cellNumber = row * numberOfCellsPerRow + col
+									- 1;
 							if (!extendIndexes.contains(cellNumber)) {
 								extendIndexes.add(cellNumber);
 							}

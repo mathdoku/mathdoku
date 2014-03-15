@@ -326,11 +326,12 @@ public class GridPlayerView extends GridBasePlayerView {
 		int gridSize = mGrid.getGridSize();
 		Cell selectedCell = mGrid.getSelectedCell();
 		boolean isTopRow = selectedCell != null && selectedCell.getRow() == 0;
-		boolean isBottomRow = selectedCell != null && selectedCell.getRow() == gridSize - 1;
-		boolean isLeftColumn = selectedCell != null && selectedCell
-				.getColumn() == 0;
-		boolean isRightColumn = selectedCell != null && selectedCell
-				.getColumn() == gridSize - 1;
+		boolean isBottomRow = selectedCell != null
+				&& selectedCell.getRow() == gridSize - 1;
+		boolean isLeftColumn = selectedCell != null
+				&& selectedCell.getColumn() == 0;
+		boolean isRightColumn = selectedCell != null
+				&& selectedCell.getColumn() == gridSize - 1;
 
 		// In case the digit is on an outer row or column of the grid an
 		// additional hint has to be shown.

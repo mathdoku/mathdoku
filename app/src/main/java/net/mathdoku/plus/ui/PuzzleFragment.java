@@ -681,7 +681,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * @return True in case the selected cell can be revealed. False otherwise.
 	 */
 	boolean showRevealCell() {
-		return mGrid != null && mGrid.isActive() && mGrid.getSelectedCell() != null;
+		return mGrid != null && mGrid.isActive()
+				&& mGrid.getSelectedCell() != null;
 	}
 
 	/**
@@ -715,8 +716,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 		// Determine current selected cage.
 		Cage selectedCage = mGrid.getSelectedCage();
-		return selectedCage != null && selectedCage.isOperatorHidden() && selectedCage
-				.getOperator() != CageOperator.NONE;
+		return selectedCage != null && selectedCage.isOperatorHidden()
+				&& selectedCage.getOperator() != CageOperator.NONE;
 	}
 
 	/**
@@ -760,8 +761,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 * @return True if check progress can be used on the grid. False otherwise.
 	 */
 	boolean showCheckProgress() {
-		return mGrid != null && mGrid.isActive() && !mGrid
-				.containsNoUserValues();
+		return mGrid != null && mGrid.isActive()
+				&& !mGrid.containsNoUserValues();
 	}
 
 	/**
@@ -831,9 +832,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		Button undoButton = mControlsPadBigTableLayout.getVisibility() == View.VISIBLE ? mUndoButton
 				: mUndoButtonSwipeOnly;
 		if (undoButton != null) {
-			undoButton
-					.setVisibility(mGrid == null || mGrid.countMoves() == 0 || !mGrid
-							.isActive() ? View.INVISIBLE : View.VISIBLE);
+			undoButton.setVisibility(mGrid == null || mGrid.countMoves() == 0
+					|| !mGrid.isActive() ? View.INVISIBLE : View.VISIBLE);
 			undoButton.invalidate();
 		}
 	}

@@ -501,10 +501,9 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	private String getSelectionOutdatedLeaderboardRanks() {
 		// noinspection StringBufferReplaceableByString
 		StringBuilder stringBuilder = new StringBuilder();
-		long currentTimeMinus15Minutes = new java.util.Date().getTime()
-				- 15 * 60 * 1000;
-		long currentTimeMinus24Hours = new java.util.Date().getTime()
-				- 24 * 60 * 60 * 1000;
+		long currentTimeMinus15Minutes = new java.util.Date().getTime() - 15 * 60 * 1000;
+		long currentTimeMinus24Hours = new java.util.Date().getTime() - 24 * 60
+				* 60 * 1000;
 
 		// Include all leaderboards for which the rank status equals
 		// TO_BE_UPDATED

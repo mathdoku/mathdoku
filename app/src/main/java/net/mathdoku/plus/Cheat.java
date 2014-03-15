@@ -134,8 +134,8 @@ public class Cheat {
 	 * @return The penalty time in milliseconds for this cheat.
 	 */
 	public long getPenaltyTimeMilliseconds() {
-		return mPenaltyTimeMillisecondsBase
-				+ mConditionalOccurrences * mPenaltyTimeMillisecondsPerOccurrence;
+		return mPenaltyTimeMillisecondsBase + mConditionalOccurrences
+				* mPenaltyTimeMillisecondsPerOccurrence;
 	}
 
 	/**

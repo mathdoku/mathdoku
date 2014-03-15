@@ -304,8 +304,9 @@ public class SwipeMotion extends Motion {
 			if (mStatus != Status.RELEASED
 					|| mGridSize < 7
 					|| mCurrentSwipePositionCellCoordinates[X_POS] > 0
-							&& mCurrentSwipePositionCellCoordinates[X_POS] < mGridSize - 1
-							&& mCurrentSwipePositionCellCoordinates[Y_POS] > 0 && mCurrentSwipePositionCellCoordinates[Y_POS] < mGridSize - 1) {
+					&& mCurrentSwipePositionCellCoordinates[X_POS] < mGridSize - 1
+					&& mCurrentSwipePositionCellCoordinates[Y_POS] > 0
+					&& mCurrentSwipePositionCellCoordinates[Y_POS] < mGridSize - 1) {
 				// Call listener only in case previously a digit was selectable.
 				if (mListener != null
 						&& mCurrentSwipePositionDigit != DIGIT_UNDETERMINED) {
@@ -352,8 +353,8 @@ public class SwipeMotion extends Motion {
 		// *real* touch down position. In case the current swipe position is
 		// outside the touch down cell than the angle is computed relative to
 		// the center of the touch down cell.
-		double angle = Math.toDegrees(Math.atan2(deltaY, deltaX))
-				+ -1 * SWIPE_ANGLE_OFFSET_91;
+		double angle = Math.toDegrees(Math.atan2(deltaY, deltaX)) + -1
+				* SWIPE_ANGLE_OFFSET_91;
 		int digit = angle < 0 ? 9 : (int) (angle / SWIPE_SEGMENT_ANGLE) + 1;
 
 		if (DEBUG_SWIPE_MOTION) {
@@ -413,18 +414,23 @@ public class SwipeMotion extends Motion {
 					break;
 				case 4: // fall through
 				case 5:
-					acceptDigit = mGridPlayerView.getOrientation() == Configuration.ORIENTATION_PORTRAIT && mCurrentSwipePositionCellCoordinates[X_POS] == mGridSize - 1;
+					acceptDigit = mGridPlayerView.getOrientation() == Configuration.ORIENTATION_PORTRAIT
+							&& mCurrentSwipePositionCellCoordinates[X_POS] == mGridSize - 1;
 					break;
 				case 6:
-					acceptDigit = mGridPlayerView.getOrientation() == Configuration.ORIENTATION_PORTRAIT && mCurrentSwipePositionCellCoordinates[X_POS] == mGridSize - 1
-							|| mGridPlayerView.getOrientation() == Configuration.ORIENTATION_LANDSCAPE && mCurrentSwipePositionCellCoordinates[Y_POS] == mGridSize - 1;
+					acceptDigit = mGridPlayerView.getOrientation() == Configuration.ORIENTATION_PORTRAIT
+							&& mCurrentSwipePositionCellCoordinates[X_POS] == mGridSize - 1
+							|| mGridPlayerView.getOrientation() == Configuration.ORIENTATION_LANDSCAPE
+							&& mCurrentSwipePositionCellCoordinates[Y_POS] == mGridSize - 1;
 					break;
 				case 7:
-					acceptDigit = mGridPlayerView.getOrientation() == Configuration.ORIENTATION_LANDSCAPE && mCurrentSwipePositionCellCoordinates[Y_POS] == mGridSize - 1;
+					acceptDigit = mGridPlayerView.getOrientation() == Configuration.ORIENTATION_LANDSCAPE
+							&& mCurrentSwipePositionCellCoordinates[Y_POS] == mGridSize - 1;
 					break;
 				case 8:
 					acceptDigit = mCurrentSwipePositionCellCoordinates[X_POS] == 0
-							|| mGridPlayerView.getOrientation() == Configuration.ORIENTATION_LANDSCAPE && mCurrentSwipePositionCellCoordinates[Y_POS] == mGridSize - 1;
+							|| mGridPlayerView.getOrientation() == Configuration.ORIENTATION_LANDSCAPE
+							&& mCurrentSwipePositionCellCoordinates[Y_POS] == mGridSize - 1;
 					break;
 				case 9:
 					acceptDigit = mCurrentSwipePositionCellCoordinates[X_POS] == 0;

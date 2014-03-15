@@ -305,7 +305,8 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		// Build projection
 		Projection projection = new Projection();
 		projection.put(KEY_ROWID, TABLE, KEY_ROWID);
-		projection.put(keySolvingAttemptId, SolvingAttemptDatabaseAdapter.TABLE,
+		projection.put(keySolvingAttemptId,
+				SolvingAttemptDatabaseAdapter.TABLE,
 				SolvingAttemptDatabaseAdapter.KEY_ROWID);
 
 		// Build query
@@ -472,8 +473,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 				statuses = new StatusFilter[cursor.getCount() + 1];
 				statuses[0] = StatusFilter.ALL;
 				int i = 1;
-				int columnIndex = cursor
-						.getColumnIndexOrThrow(keyStatusFilter);
+				int columnIndex = cursor.getColumnIndexOrThrow(keyStatusFilter);
 				do {
 					int status = cursor.getInt(columnIndex);
 					if (status == StatusFilter.UNFINISHED.ordinal()) {

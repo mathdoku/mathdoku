@@ -175,7 +175,8 @@ public class LeaderboardType {
 	private static final int PUZZLE_COMPLEXITY_INDEX_FACTOR = 1;
 	@SuppressWarnings("PointlessArithmeticExpression")
 	private static final int HIDE_OPERATOR_INDEX_FACTOR = 1 * MAX_ELEMENTS_INDEX_FACTOR_PUZZLE_COMPLEXITY;
-	private static final int GRID_SIZE_INDEX_FACTOR = HIDE_OPERATOR_INDEX_FACTOR * MAX_ELEMENTS_INDEX_FACTOR_OPERATORS;
+	private static final int GRID_SIZE_INDEX_FACTOR = HIDE_OPERATOR_INDEX_FACTOR
+			* MAX_ELEMENTS_INDEX_FACTOR_OPERATORS;
 
 	/**
 	 * Get the leaderboard index for the given combination of grid size,
@@ -312,7 +313,8 @@ public class LeaderboardType {
 
 		// Get puzzle complexity
 		remainder /= PUZZLE_COMPLEXITY_INDEX_FACTOR;
-		assert remainder >= 0 && remainder <= MAX_ELEMENTS_INDEX_FACTOR_PUZZLE_COMPLEXITY;
+		assert remainder >= 0
+				&& remainder <= MAX_ELEMENTS_INDEX_FACTOR_PUZZLE_COMPLEXITY;
 		remainder += PUZZLE_COMPLEXITY_OFFSET;
 
 		return PuzzleComplexity.values()[remainder];

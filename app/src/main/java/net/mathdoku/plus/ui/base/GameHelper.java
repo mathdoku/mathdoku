@@ -1183,7 +1183,8 @@ public class GameHelper implements
 					+ errorCodeToString(mServiceErrorCode)
 					+ (mActivityResultCode == NO_ACTIVITY_RESULT_CODE ? ")"
 							: ",activityResultCode:"
-									+ activityResponseCodeToString(mActivityResultCode) + ")");
+									+ activityResponseCodeToString(mActivityResultCode)
+									+ ")");
 		}
 	}
 

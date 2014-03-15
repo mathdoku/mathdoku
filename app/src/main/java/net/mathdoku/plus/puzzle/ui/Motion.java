@@ -194,7 +194,8 @@ public class Motion {
 		return coordinates != null && mTouchDownCellCoordinates != null
 				&& coordinates.length == 2
 				&& mTouchDownCellCoordinates.length == 2
-				&& coordinates[X_POS] == mTouchDownCellCoordinates[X_POS] && coordinates[Y_POS] == mTouchDownCellCoordinates[Y_POS];
+				&& coordinates[X_POS] == mTouchDownCellCoordinates[X_POS]
+				&& coordinates[Y_POS] == mTouchDownCellCoordinates[Y_POS];
 	}
 
 	/**

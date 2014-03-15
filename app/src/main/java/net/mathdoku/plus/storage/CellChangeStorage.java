@@ -84,8 +84,8 @@ public class CellChangeStorage {
 	 * @return True in case the given line contains cell information and is
 	 *         processed correctly. False otherwise.
 	 */
-	private boolean fromStorageStringRecursive(String line,
-			int level, List<Cell> cells) {
+	private boolean fromStorageStringRecursive(String line, int level,
+			List<Cell> cells) {
 		if (DEBUG_STORAGE_STRING) {
 			String indent = getDebugLogIndent(level);
 			Log.i(TAG, indent + "Line: " + line);

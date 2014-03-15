@@ -294,11 +294,9 @@ abstract class DatabaseAdapter {
 				tableDefinitionChanged = !sql.equals(expectedSql);
 
 				if (tableDefinitionChanged) {
-					Log
-							.e(TAG, String.format(
-									"Change in table '%s' detected. Table has not yet been " +
-											"upgraded.",
-									getTableName()));
+					Log.e(TAG, String.format(
+							"Change in table '%s' detected. Table has not yet been "
+									+ "upgraded.", getTableName()));
 					Log.e(TAG, "Database-version: " + sql);
 					Log.e(TAG, "Expected version: " + expectedSql);
 				}

@@ -390,9 +390,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 		// Hide spinner if only two choices are available. As one of those
 		// choices is always "ALL" the choices will result in an identical
 		// selection.
-		spinner
-				.setVisibility(usedSizes.length <= 2 ? View.GONE
-						: View.VISIBLE);
+		spinner.setVisibility(usedSizes.length <= 2 ? View.GONE : View.VISIBLE);
 
 		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override

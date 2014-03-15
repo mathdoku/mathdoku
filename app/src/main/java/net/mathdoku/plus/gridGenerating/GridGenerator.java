@@ -598,10 +598,10 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 						// will be placed. Use +1 in calls to randomizer to
 						// prevent exceptions in case the entire height and/or
 						// width is needed for the cage type.
-						int startRow = mRandom.nextInt(mGridSize - cageType
-								.getHeight() + 1);
-						int startCol = mRandom.nextInt(mGridSize - cageType
-								.getWidth() + 1);
+						int startRow = mRandom.nextInt(mGridSize
+								- cageType.getHeight() + 1);
+						int startCol = mRandom.nextInt(mGridSize
+								- cageType.getWidth() + 1);
 
 						// Determine the origin cell of the cage type in case
 						// the cage type mask is put at the randomly determined

@@ -106,9 +106,11 @@ public class CellChangeStoragePatternMatcher {
 						&& !Character
 								.toString(c)
 								.equals(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
-					throw new IllegalStateException(String.format(
-							"Unexpected character '%c' at position %d in group '%s'.",
-									c, index, concatenatedStringOfCellChanges));
+					throw new IllegalStateException(
+							String
+									.format("Unexpected character '%c' at position %d in group '%s'.",
+											c, index,
+											concatenatedStringOfCellChanges));
 				}
 				break;
 			}
