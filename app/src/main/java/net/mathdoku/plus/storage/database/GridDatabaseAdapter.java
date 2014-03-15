@@ -300,12 +300,12 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 */
 	public int[][] getLatestSolvingAttemptsPerGrid(StatusFilter statusFilter,
 			SizeFilter sizeFilter) {
-		String SOLVING_ATTEMPT_ID = "solving_attempt_id";
+		String keySolvingAttemptId = "solving_attempt_id";
 
 		// Build projection
 		Projection projection = new Projection();
 		projection.put(KEY_ROWID, TABLE, KEY_ROWID);
-		projection.put(SOLVING_ATTEMPT_ID, SolvingAttemptDatabaseAdapter.TABLE,
+		projection.put(keySolvingAttemptId, SolvingAttemptDatabaseAdapter.TABLE,
 				SolvingAttemptDatabaseAdapter.KEY_ROWID);
 
 		// Build query
@@ -366,7 +366,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 				int i = 0;
 				int gridIdColumnIndex = cursor.getColumnIndexOrThrow(KEY_ROWID);
 				int maxSolvingAttemptColumnIndex = cursor
-						.getColumnIndexOrThrow(SOLVING_ATTEMPT_ID);
+						.getColumnIndexOrThrow(keySolvingAttemptId);
 				do {
 					gridIds[i][LATEST_SOLVING_ATTEMPT_PER_GRID__GRID_ID] = cursor
 							.getInt(gridIdColumnIndex);
@@ -401,9 +401,9 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	public StatusFilter[] getUsedStatuses(SizeFilter sizeFilter) {
 		// Build the projection
 		Projection projection = new Projection();
-		final String KEY_STATUS_FILTER = "status_filter";
+		final String keyStatusFilter = "status_filter";
 		projection
-				.put(KEY_STATUS_FILTER,
+				.put(keyStatusFilter,
 						"CASE WHEN "
 								+ stringBetweenBackTicks(SolvingAttemptDatabaseAdapter.KEY_STATUS)
 								+ " = "
@@ -433,7 +433,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 
 		// Retrieve all data. Note: in case column is not added to the
 		// projection, no data will be retrieved!
-		String[] columnsData = { KEY_STATUS_FILTER };
+		String[] columnsData = { keyStatusFilter };
 
 		// Build where clause. Be sure only to retrieve the status of the last
 		// solving attempt of a grid as the archive will only display the last
@@ -458,7 +458,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 
 		if (DEBUG_SQL) {
 			String sql = sqliteQueryBuilder.buildQuery(columnsData, selection,
-					KEY_STATUS_FILTER, null, KEY_STATUS_FILTER, null);
+					keyStatusFilter, null, keyStatusFilter, null);
 			Log.i(TAG, sql);
 		}
 
@@ -467,13 +467,13 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		Cursor cursor = null;
 		try {
 			cursor = sqliteQueryBuilder.query(mSqliteDatabase, columnsData,
-					selection, null, KEY_STATUS_FILTER, null, null);
+					selection, null, keyStatusFilter, null, null);
 			if (cursor != null && cursor.moveToFirst()) {
 				statuses = new StatusFilter[cursor.getCount() + 1];
 				statuses[0] = StatusFilter.ALL;
 				int i = 1;
 				int columnIndex = cursor
-						.getColumnIndexOrThrow(KEY_STATUS_FILTER);
+						.getColumnIndexOrThrow(keyStatusFilter);
 				do {
 					int status = cursor.getInt(columnIndex);
 					if (status == StatusFilter.UNFINISHED.ordinal()) {

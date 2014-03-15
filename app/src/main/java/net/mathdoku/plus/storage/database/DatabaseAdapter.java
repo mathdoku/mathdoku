@@ -276,8 +276,8 @@ abstract class DatabaseAdapter {
 	public boolean isTableDefinitionChanged() {
 		boolean tableDefinitionChanged = false;
 
-		final String KEY_SQL = "sql";
-		String[] columns = { KEY_SQL };
+		final String columnSql = "sql";
+		String[] columns = { columnSql };
 
 		Cursor cursor = mSqliteDatabase.query(true, "sqlite_master", columns,
 				"name = " + stringBetweenQuotes(getTableName())
@@ -289,13 +289,16 @@ abstract class DatabaseAdapter {
 				// definition.
 				// noinspection ConstantConditions
 				String sql = cursor.getString(
-						cursor.getColumnIndexOrThrow(KEY_SQL)).toUpperCase();
+						cursor.getColumnIndexOrThrow(columnSql)).toUpperCase();
 				String expectedSql = getCreateSQL().toUpperCase();
 				tableDefinitionChanged = !sql.equals(expectedSql);
 
 				if (tableDefinitionChanged) {
-					Log.e(TAG, "Change in table '" + getTableName()
-							+ "' detected. Table has not yet been upgraded.");
+					Log
+							.e(TAG, String.format(
+									"Change in table '%s' detected. Table has not yet been " +
+											"upgraded.",
+									getTableName()));
 					Log.e(TAG, "Database-version: " + sql);
 					Log.e(TAG, "Expected version: " + expectedSql);
 				}

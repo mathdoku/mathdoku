@@ -772,15 +772,15 @@ public class Preferences {
 	 * updated on calling this method. Call commitCounters() to commit counters
 	 * to storage.
 	 * 
-	 * @param counter_id
+	 * @param counterId
 	 *            The id of the preferences counter.
 	 * @return The number of occurrence for this counter (after being updated).
 	 */
-	private int increaseCounter(int counter_id) {
+	private int increaseCounter(int counterId) {
 		if (counters == null) {
 			initializeCounters();
 		}
-		return counters[counter_id]++;
+		return counters[counterId]++;
 	}
 
 	/**

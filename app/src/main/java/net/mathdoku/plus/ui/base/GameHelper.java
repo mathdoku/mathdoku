@@ -1223,8 +1223,8 @@ public class GameHelper implements
 		try {
 			Resources res = getContext().getResources();
 			String pkgName = getContext().getPackageName();
-			int res_id = res.getIdentifier("app_id", "string", pkgName);
-			return res.getString(res_id);
+			int resId = res.getIdentifier("app_id", "string", pkgName);
+			return res.getString(resId);
 		} catch (Exception ex) {
 			debugLog("failed to retrieve APP ID.", ex);
 			return "(failed)";
@@ -1263,9 +1263,9 @@ public class GameHelper implements
 	}
 
 	void byteToString(StringBuilder sb, byte b) {
-		int unsigned_byte = b < 0 ? b + 256 : b;
-		int hi = unsigned_byte / 16;
-		int lo = unsigned_byte % 16;
+		int unsignedByte = b < 0 ? b + 256 : b;
+		int hi = unsignedByte / 16;
+		int lo = unsignedByte % 16;
 		sb.append("0123456789ABCDEF".substring(hi, hi + 1));
 		sb.append("0123456789ABCDEF".substring(lo, lo + 1));
 	}
