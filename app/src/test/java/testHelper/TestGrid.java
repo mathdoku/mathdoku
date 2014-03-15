@@ -22,7 +22,7 @@ public class TestGrid {
 	private final boolean mHideOperator;
 	private final GridBuilder mGridBuilder;
 	private Grid mGrid;
-	private boolean mSetCorrectUserValue;
+	private boolean mSetCorrectEnteredValue;
 	private static final int ID_NO_CELL_SELECTED = -1;
 	private int mSelectedCellId = ID_NO_CELL_SELECTED;
 
@@ -109,18 +109,18 @@ public class TestGrid {
 			throw new UnexpectedMethodInvocationException(
 					"Grid has already been build by other method invocation.");
 		}
-		mSetCorrectUserValue = false;
+		mSetCorrectEnteredValue = false;
 		createGrid();
 
 		return this;
 	}
 
-	public TestGrid setCorrectUserValueToAllCells() {
+	public TestGrid setCorrectEnteredValueToAllCells() {
 		if (mGrid != null) {
 			throw new UnexpectedMethodInvocationException(
 					"Grid has already been build by other method invocation.");
 		}
-		mSetCorrectUserValue = true;
+		mSetCorrectEnteredValue = true;
 		createGrid();
 
 		return this;
@@ -195,8 +195,8 @@ public class TestGrid {
 				.setId(cellNumber)
 				.setCorrectValue(cellValue)
 				.setCageId(cageId);
-		if (mSetCorrectUserValue) {
-			cellBuilder.setUserValue(cellValue);
+		if (mSetCorrectEnteredValue) {
+			cellBuilder.setEnteredValue(cellValue);
 		}
 		if (cellNumber == mSelectedCellId) {
 			cellBuilder.setSelected(true);
@@ -234,10 +234,10 @@ public class TestGrid {
 		return -1;
 	}
 
-	public TestGrid setIncorrectUserValueInCell(int cellId) {
+	public TestGrid setIncorrectEnteredValueInCell(int cellId) {
 		Cell cell = mGrid.getCell(cellId);
 		int correctValue = cell.getCorrectValue();
-		cell.setUserValue(correctValue == 1 ? mGridSize : 1);
+		cell.setEnteredValue(correctValue == 1 ? mGridSize : 1);
 
 		return this;
 	}

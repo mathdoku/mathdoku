@@ -171,18 +171,18 @@ public class GridBasePlayerView extends GridViewerView implements
 		CellChange cellChange = new CellChange(selectedCell);
 
 		// Get old value of selected cell
-		int oldValue = selectedCell.getUserValue();
+		int oldValue = selectedCell.getEnteredValue();
 
 		if (newValue == 0) { // Clear Button
 			if (!selectedCell.isEmpty()) {
 				selectedCell.clearPossibles();
-				selectedCell.setUserValue(0);
+				selectedCell.setEnteredValue(0);
 				mGrid.getGridStatistics().increaseCounter(
 						StatisticsCounterType.ACTION_CLEAR_CELL);
 
 				// In case the last user value has been cleared from the grid,
 				// the check progress should no longer be available.
-				if (mGrid.containsNoUserValues()) {
+				if (mGrid.containsNoEnteredValues()) {
 					((PuzzleFragmentActivity) mContext).invalidateOptionsMenu();
 				}
 			}
@@ -192,7 +192,7 @@ public class GridBasePlayerView extends GridViewerView implements
 				new TipOrderOfValuesInCage(mContext).show();
 			}
 			if (mInputMode == GridInputMode.MAYBE) {
-				if (selectedCell.isUserValueSet()) {
+				if (selectedCell.hasEnteredValue()) {
 					selectedCell.clearValue();
 				}
 				if (selectedCell.hasPossible(newValue)) {
@@ -206,7 +206,7 @@ public class GridBasePlayerView extends GridViewerView implements
 			} else {
 				if (newValue != oldValue) {
 					// User value of cell has actually changed.
-					selectedCell.setUserValue(newValue);
+					selectedCell.setEnteredValue(newValue);
 					selectedCell.clearPossibles();
 					if (oldValue == 0) {
 						// In case a user value has been entered, the
@@ -267,7 +267,7 @@ public class GridBasePlayerView extends GridViewerView implements
 							// Clear the to-cell in case it contains a user
 							// value which will now be overwritten with maybe
 							// values.
-							if (toCell.isUserValueSet()) {
+							if (toCell.hasEnteredValue()) {
 								toCell.clearValue();
 							}
 						}
@@ -284,12 +284,12 @@ public class GridBasePlayerView extends GridViewerView implements
 			} else {
 				// The from cell does not contain a maybe value. So the cell is
 				// either empty or is filled with a user value.
-				if (fromCell.getUserValue() != toCell.getUserValue()) {
+				if (fromCell.getEnteredValue() != toCell.getEnteredValue()) {
 					// Save current state of target cell
 					CellChange cellChange = new CellChange(toCell);
 
-					if (fromCell.isUserValueSet()) {
-						toCell.setUserValue(fromCell.getUserValue());
+					if (fromCell.hasEnteredValue()) {
+						toCell.setEnteredValue(fromCell.getEnteredValue());
 						toCell.clearPossibles();
 					} else {
 						toCell.clearValue();
@@ -331,7 +331,7 @@ public class GridBasePlayerView extends GridViewerView implements
 
 		// Check the cage math
 		Cage cage = mGrid.getSelectedCage();
-		if (cage != null && !cage.checkUserMath()) {
+		if (cage != null && !cage.checkMathOnEnteredValues()) {
 			if (TipBadCageMath.toBeDisplayed(mPreferences)) {
 				new TipBadCageMath(mContext).show();
 			}

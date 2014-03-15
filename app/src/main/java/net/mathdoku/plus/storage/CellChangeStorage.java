@@ -23,7 +23,7 @@ public class CellChangeStorage {
 	private static final boolean DEBUG_STORAGE_STRING = Config.mAppMode == Config.AppMode.DEVELOPMENT && false;
 
 	private Cell mCell;
-	private Integer mPreviousUserValue;
+	private Integer mPreviousEnteredValue;
 	private List<Integer> mPreviousPossibleValues;
 	private List<CellChange> mRelatedCellChanges;
 
@@ -107,8 +107,8 @@ public class CellChangeStorage {
 		}
 
 		mCell = cells.get(cellChangeStoragePatternMatcher.getCellNumber());
-		mPreviousUserValue = cellChangeStoragePatternMatcher
-				.getPreviousUserValue();
+		mPreviousEnteredValue = cellChangeStoragePatternMatcher
+				.getPreviousEnteredValue();
 		mPreviousPossibleValues = cellChangeStoragePatternMatcher
 				.getPreviousPossibleValues();
 
@@ -160,13 +160,13 @@ public class CellChangeStorage {
 	 */
 	private String toStorageStringRecursive(CellChange rootCellChange) {
 		mCell = rootCellChange.getCell();
-		mPreviousUserValue = rootCellChange.getPreviousUserValue();
+		mPreviousEnteredValue = rootCellChange.getPreviousEnteredValue();
 		mPreviousPossibleValues = rootCellChange.getPreviousPossibleValues();
 		mRelatedCellChanges = rootCellChange.getRelatedCellChanges();
 
 		String storageString = "[" + mCell.getCellId()
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ mPreviousUserValue
+				+ mPreviousEnteredValue
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1;
 		for (int previousPossibleValue : mPreviousPossibleValues) {
 			storageString += Integer.toString(previousPossibleValue)
@@ -190,8 +190,8 @@ public class CellChangeStorage {
 		return mCell;
 	}
 
-	public Integer getPreviousUserValue() {
-		return mPreviousUserValue;
+	public Integer getPreviousEnteredValue() {
+		return mPreviousEnteredValue;
 	}
 
 	public List<Integer> getPreviousPossibleValues() {

@@ -762,7 +762,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 */
 	boolean showCheckProgress() {
 		return mGrid != null && mGrid.isActive()
-				&& !mGrid.containsNoUserValues();
+				&& !mGrid.containsNoEnteredValues();
 	}
 
 	/**
@@ -773,8 +773,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			return;
 		}
 
-		boolean allUserValuesValid = mGrid.isSolutionValidSoFar();
-		int countNewInvalidChoices = allUserValuesValid ? 0 : mGrid
+		boolean allEnteredValuesValid = mGrid.isSolutionValidSoFar();
+		int countNewInvalidChoices = allEnteredValuesValid ? 0 : mGrid
 				.markInvalidChoices();
 
 		if (countNewInvalidChoices > 0) {
@@ -794,7 +794,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		// Display tip or toast
 		if (TipCheat.toBeDisplayed(mMathDokuPreferences, cheat)) {
 			new TipCheat(mContext, cheat).show();
-		} else if (allUserValuesValid) {
+		} else if (allEnteredValuesValid) {
 			Toast.makeText(mContext, R.string.ProgressOK, Toast.LENGTH_SHORT)
 					.show();
 		} else {
@@ -832,8 +832,9 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		Button undoButton = mControlsPadBigTableLayout.getVisibility() == View.VISIBLE ? mUndoButton
 				: mUndoButtonSwipeOnly;
 		if (undoButton != null) {
-			undoButton.setVisibility(mGrid == null || mGrid.countMoves() == 0
-					|| !mGrid.isActive() ? View.INVISIBLE : View.VISIBLE);
+			undoButton.setVisibility(
+					mGrid == null || mGrid.countMoves() == 0 || !mGrid.isActive() ? View.INVISIBLE
+							: View.VISIBLE);
 			undoButton.invalidate();
 		}
 	}

@@ -16,8 +16,7 @@ public class Cage {
 	private boolean mHideOperator;
 	private final int[] mCells;
 
-	// User math is correct
-	private boolean mUserMathCorrect;
+	private boolean mMathOnEnteredValuesIsCorrect;
 
 	// Cached list of possible combo's which can be used in this cage if other
 	// cages in the grid were not relevant.
@@ -35,9 +34,10 @@ public class Cage {
 		// Reference to grid will only be set after the entire grid is created
 		// which cannot be done until all cages are created.
 		mGrid = null;
-		// Defaulting mUserMathCorrect to false result in setting all borders
+		// Defaulting mMathOnEnteredValuesIsCorrect to false result in setting
+		// all borders
 		// when checking the cage math for the first time.
-		mUserMathCorrect = false;
+		mMathOnEnteredValuesIsCorrect = false;
 
 		// Get defaults from builder
 		mId = cageBuilder.getId();
@@ -100,7 +100,8 @@ public class Cage {
 		sb.append(", mResult=").append(mResult);
 		sb.append(", mHideOperator=").append(mHideOperator);
 		sb.append(", mCells=").append(Arrays.toString(mCells));
-		sb.append(", mUserMathCorrect=").append(mUserMathCorrect);
+		sb.append(", mMathOnEnteredValuesIsCorrect=").append(
+				mMathOnEnteredValuesIsCorrect);
 		sb.append(", mPossibleCombos=").append(mPossibleCombos);
 		sb.append(", mGrid=").append(mGrid);
 		sb.append('}');
@@ -136,45 +137,45 @@ public class Cage {
 		return result;
 	}
 
-	private boolean isNoneMathsCorrect(List<Integer> userValues) {
-		return userValues.size() == 1 && userValues.get(0) == mResult;
+	private boolean isNoneMathsCorrect(List<Integer> values) {
+		return values.size() == 1 && values.get(0) == mResult;
 	}
 
-	private boolean isAddMathsCorrect(List<Integer> userValues) {
-		if (userValues.size() >= 2) {
+	private boolean isAddMathsCorrect(List<Integer> values) {
+		if (values.size() >= 2) {
 			int total = 0;
-			for (int userValue : userValues) {
-				total += userValue;
+			for (int value : values) {
+				total += value;
 			}
 			return total == mResult;
 		}
 		return false;
 	}
 
-	private boolean isMultiplyMathsCorrect(List<Integer> userValues) {
-		if (userValues.size() >= 2) {
+	private boolean isMultiplyMathsCorrect(List<Integer> values) {
+		if (values.size() >= 2) {
 			int total = 1;
-			for (int userValue : userValues) {
-				total *= userValue;
+			for (int value : values) {
+				total *= value;
 			}
 			return total == mResult;
 		}
 		return false;
 	}
 
-	private boolean isDivideMathsCorrect(List<Integer> userValues) {
-		if (userValues.size() == 2) {
-			int lower = Math.min(userValues.get(0), userValues.get(1));
-			int higher = Math.max(userValues.get(0), userValues.get(1));
+	private boolean isDivideMathsCorrect(List<Integer> values) {
+		if (values.size() == 2) {
+			int lower = Math.min(values.get(0), values.get(1));
+			int higher = Math.max(values.get(0), values.get(1));
 			return higher == lower * mResult;
 		}
 		return false;
 	}
 
-	private boolean isSubtractMathsCorrect(List<Integer> userValues) {
-		if (userValues.size() == 2) {
-			int lower = Math.min(userValues.get(0), userValues.get(1));
-			int higher = Math.max(userValues.get(0), userValues.get(1));
+	private boolean isSubtractMathsCorrect(List<Integer> values) {
+		if (values.size() == 2) {
+			int lower = Math.min(values.get(0), values.get(1));
+			int higher = Math.max(values.get(0), values.get(1));
 			return higher - lower == mResult;
 		}
 		return false;
@@ -186,67 +187,70 @@ public class Cage {
 	 * reflect a change of state. For single cell cages the math will never be
 	 * incorrect.
 	 * 
-	 * @return True in case the user math does not contain an error or in case
-	 *         not all cells in the cage have been filled in.
+	 * @return True in case the math on the entered values in the cage does not
+	 *         contain an error or in case not all cells in the cage have been
+	 *         filled in.
 	 */
-	public boolean checkUserMath() {
+	public boolean checkMathOnEnteredValues() {
 		if (mGrid == null) {
 			return false;
 		}
 
-		boolean oldUserMathCorrect = mUserMathCorrect;
+		boolean oldMathOnEnteredValuesIsCorrect = mMathOnEnteredValuesIsCorrect;
 
-		List<Integer> userValues = mGrid.getUserValuesForCells(mCells);
-		if (userValues != null && userValues.size() == mCells.length) {
-			mUserMathCorrect = mHideOperator ? checkUserMathHiddenOperators(userValues)
-					: checkUserMathVisibleOperators(userValues);
+		List<Integer> enteredValues = mGrid.getEnteredValuesForCells(mCells);
+		if (enteredValues != null && enteredValues.size() == mCells.length) {
+			mMathOnEnteredValuesIsCorrect = mHideOperator ? checkMathOnEnteredValuesWithHiddenOperators(
+					enteredValues)
+					: checkMathOnEnteredValuesWithVisibleOperators(enteredValues);
 		} else {
-			// At least one cell has no user value. So math is not incorrect.
-			mUserMathCorrect = true;
+			// At least one cell is empty. So math is not incorrect.
+			mMathOnEnteredValuesIsCorrect = true;
 		}
 
-		if (oldUserMathCorrect != mUserMathCorrect) {
+		if (oldMathOnEnteredValuesIsCorrect != mMathOnEnteredValuesIsCorrect) {
 			invalidateBordersOfAllCells();
 		}
 
-		return mUserMathCorrect;
+		return mMathOnEnteredValuesIsCorrect;
 	}
 
-	private boolean checkUserMathHiddenOperators(List<Integer> userValues) {
-		boolean userMathCorrect = isNoneMathsCorrect(userValues);
-		userMathCorrect = userMathCorrect || isAddMathsCorrect(userValues);
-		userMathCorrect = userMathCorrect || isMultiplyMathsCorrect(userValues);
-		userMathCorrect = userMathCorrect || isDivideMathsCorrect(userValues);
-		userMathCorrect = userMathCorrect || isSubtractMathsCorrect(userValues);
+	private boolean checkMathOnEnteredValuesWithHiddenOperators(List<Integer> enteredValues) {
+		boolean mathCorrect = isNoneMathsCorrect(enteredValues);
+		mathCorrect = mathCorrect || isAddMathsCorrect(enteredValues);
+		mathCorrect = mathCorrect || isMultiplyMathsCorrect(enteredValues);
+		mathCorrect = mathCorrect || isDivideMathsCorrect(enteredValues);
+		mathCorrect = mathCorrect || isSubtractMathsCorrect(enteredValues);
 
-		return userMathCorrect;
+		return mathCorrect;
 	}
 
-	private boolean checkUserMathVisibleOperators(List<Integer> userValues) {
-		boolean userMathCorrect;
+	private boolean checkMathOnEnteredValuesWithVisibleOperators(
+			List<Integer> enteredValues) {
+		boolean mathCorrect;
 
 		switch (mCageOperator) {
 		case NONE:
-			userMathCorrect = isNoneMathsCorrect(userValues);
+			mathCorrect = isNoneMathsCorrect(enteredValues);
 			break;
 		case ADD:
-			userMathCorrect = isAddMathsCorrect(userValues);
+			mathCorrect = isAddMathsCorrect(enteredValues);
 			break;
 		case MULTIPLY:
-			userMathCorrect = isMultiplyMathsCorrect(userValues);
+			mathCorrect = isMultiplyMathsCorrect(enteredValues);
 			break;
 		case DIVIDE:
-			userMathCorrect = isDivideMathsCorrect(userValues);
+			mathCorrect = isDivideMathsCorrect(enteredValues);
 			break;
 		case SUBTRACT:
-			userMathCorrect = isSubtractMathsCorrect(userValues);
+			mathCorrect = isSubtractMathsCorrect(enteredValues);
 			break;
 		default:
-			userMathCorrect = false;
+			mathCorrect = false;
 			break;
 		}
 
-		return userMathCorrect;
+		return mathCorrect;
 	}
 
 	/**
@@ -291,8 +295,8 @@ public class Cage {
 			return true;
 		}
 
-		List userValues = mGrid.getUserValuesForCells(mCells);
-		return userValues == null || userValues.size() < mCells.length;
+		List enteredValues = mGrid.getEnteredValuesForCells(mCells);
+		return enteredValues == null || enteredValues.size() < mCells.length;
 	}
 
 	public int getNumberOfCells() {
@@ -335,7 +339,7 @@ public class Cage {
 		return mGrid.getCell(mCells[position]);
 	}
 
-	public boolean isUserMathCorrect() {
-		return mUserMathCorrect;
+	public boolean isMathOnEnteredValuesCorrect() {
+		return mMathOnEnteredValuesIsCorrect;
 	}
 }

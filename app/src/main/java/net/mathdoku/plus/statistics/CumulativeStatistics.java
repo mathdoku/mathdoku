@@ -26,7 +26,7 @@ public class CumulativeStatistics {
 	// ****************
 
 	// The number of times a user value in cell was replaced by another value
-	public int mSumUserValueReplaced;
+	public int mSumEnteredValueReplaced;
 
 	// The number of possible values used
 	public int mSumMaybeValue;

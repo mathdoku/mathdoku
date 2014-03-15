@@ -404,7 +404,7 @@
     <string name="avoidable_moves_yaxis_description">Aantal zetten</string>
     <string name="avoidable_moves_chart_body">Minder ervaren spelers maken meer vermijdbare zetten dan ervaren spelers. Een vermijdbare zet is een zet die niet noodzakelijk is om de puzzel op te lossen. Corrigeren of leegmaken van waarden in een cel, het gebruiken van \"mogelijke waarden\" of terugzetten van waarden zijn zetten die voorkomen moeten worden om een betere speler te worden.</string>
     <!-- Dimensions displayed in chart "Avoidable moves". -->
-    <string name="avoidable_moves_chart_user_value_replaced">Cel waarden gecorrigeerd</string>
+    <string name="avoidable_moves_chart_entered_value_replaced">Cel waarden gecorrigeerd</string>
     <string name="avoidable_moves_chart_maybe_value_used">Mogelijke waarden gebruikt</string>
     <string name="avoidable_moves_chart_undo_button_used">Terugzetten gebruikt</string>
     <string name="avoidable_moves_chart_clear_used">Leegmaken (cel of puzzel) gebruikt</string>

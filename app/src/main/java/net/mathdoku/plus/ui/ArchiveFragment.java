@@ -356,7 +356,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 	private void createAvoidableMovesChart() {
 		// Build chart for analysis of moves only in case at least one move
 		// has been made.
-		int totalAvoidableMoves = mGridStatistics.mUserValueReplaced
+		int totalAvoidableMoves = mGridStatistics.mEnteredValueReplaced
 				+ mGridStatistics.mMaybeValue + mGridStatistics.mActionUndoMove
 				+ mGridStatistics.mActionClearCell
 				+ mGridStatistics.mActionClearGrid;
@@ -398,17 +398,18 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		int categoryIndex = 1;
 		int maxYValue = 0;
 
-		// Bar for number of times a user value in a cell was replace by another
-		// value
-		if (mGridStatistics.mUserValueReplaced > 0) {
+		// Bar for number of times an entered value in a cell was replace by
+		// another value.
+		if (mGridStatistics.mEnteredValueReplaced > 0) {
 			XYSeries xySeries = new XYSeries(getResources().getString(
-					R.string.avoidable_moves_chart_user_value_replaced));
-			xySeries.add(categoryIndex, mGridStatistics.mUserValueReplaced);
+					R.string.avoidable_moves_chart_entered_value_replaced));
+			xySeries.add(categoryIndex, mGridStatistics.mEnteredValueReplaced);
 			xyMultipleSeriesDataset.addSeries(xySeries);
 			xyMultipleSeriesRenderer
 					.addSeriesRenderer(createSimpleSeriesRenderer(chartGreen1));
 			categoryIndex++;
-			maxYValue = Math.max(maxYValue, mGridStatistics.mUserValueReplaced);
+			maxYValue = Math.max(maxYValue,
+					mGridStatistics.mEnteredValueReplaced);
 		}
 
 		// Bar for number of maybe values that have been used while playing the
@@ -437,8 +438,8 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 			maxYValue = Math.max(maxYValue, mGridStatistics.mActionUndoMove);
 		}
 
-		// Bar for number of times a user cleared a value in a cell or
-		// the entire grid.
+		// Bar for number of times a value in a cell or the entire grid is
+		// cleared.
 		int totalClears = mGridStatistics.mActionClearCell
 				+ mGridStatistics.mActionClearGrid;
 		if (totalClears > 0) {

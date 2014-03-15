@@ -96,8 +96,8 @@ public class CellStorageTest {
 				.setId(1)
 				.setCageText("4+")
 				.setCorrectValue(5)
-				.setUserValue(6)
-				.setInvalidUserValueHighlight(true);
+				.setEnteredValue(6)
+				.setInvalidValueHighlight(true);
 		assertThat(cellBuilder, is(expectedCellBuilder));
 	}
 
@@ -114,8 +114,8 @@ public class CellStorageTest {
 				.setId(1)
 				.setCageText("2-")
 				.setCorrectValue(3)
-				.setUserValue(4)
-				.setInvalidUserValueHighlight(true);
+				.setEnteredValue(4)
+				.setInvalidValueHighlight(true);
 		assertThat(cellBuilder, is(expectedCellBuilder));
 	}
 
@@ -192,9 +192,9 @@ public class CellStorageTest {
 		when(cellMock.getCellId()).thenReturn(1);
 		when(cellMock.getCageText()).thenReturn("2+");
 		when(cellMock.getCorrectValue()).thenReturn(3);
-		when(cellMock.getUserValue()).thenReturn(4);
+		when(cellMock.getEnteredValue()).thenReturn(4);
 		when(cellMock.getPossibles()).thenReturn(new ArrayList<Integer>());
-		when(cellMock.hasInvalidUserValueHighlight()).thenReturn(true);
+		when(cellMock.hasInvalidValueHighlight()).thenReturn(true);
 		when(cellMock.isRevealed()).thenReturn(false);
 		when(cellMock.isSelected()).thenReturn(false);
 		assertThat(mCellStorage.toStorageString(cellMock),
@@ -208,11 +208,11 @@ public class CellStorageTest {
 		when(cellMock.getCellId()).thenReturn(1);
 		when(cellMock.getCageText()).thenReturn("2x");
 		when(cellMock.getCorrectValue()).thenReturn(3);
-		when(cellMock.getUserValue()).thenReturn(4);
+		when(cellMock.getEnteredValue()).thenReturn(4);
 		List<Integer> possibles = new ArrayList<Integer>();
 		possibles.add(5);
 		when(cellMock.getPossibles()).thenReturn(possibles);
-		when(cellMock.hasInvalidUserValueHighlight()).thenReturn(false);
+		when(cellMock.hasInvalidValueHighlight()).thenReturn(false);
 		when(cellMock.isRevealed()).thenReturn(true);
 		when(cellMock.isSelected()).thenReturn(false);
 		assertThat(mCellStorage.toStorageString(cellMock),
@@ -226,13 +226,13 @@ public class CellStorageTest {
 		when(cellMock.getCellId()).thenReturn(1);
 		when(cellMock.getCageText()).thenReturn("2/");
 		when(cellMock.getCorrectValue()).thenReturn(3);
-		when(cellMock.getUserValue()).thenReturn(4);
+		when(cellMock.getEnteredValue()).thenReturn(4);
 		List<Integer> possibles = new ArrayList<Integer>();
 		possibles.add(5);
 		possibles.add(6);
 		possibles.add(7);
 		when(cellMock.getPossibles()).thenReturn(possibles);
-		when(cellMock.hasInvalidUserValueHighlight()).thenReturn(false);
+		when(cellMock.hasInvalidValueHighlight()).thenReturn(false);
 		when(cellMock.isRevealed()).thenReturn(false);
 		when(cellMock.isSelected()).thenReturn(true);
 		assertThat(mCellStorage.toStorageString(cellMock),

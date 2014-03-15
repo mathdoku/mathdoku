@@ -64,17 +64,17 @@ public class CellTest {
 	}
 
 	@Test(expected = InvalidGridException.class)
-	public void cellConstructor_UserValueTooLow_CellNotCreated()
+	public void cellConstructor_EnteredValueTooLow_CellNotCreated()
 			throws Exception {
-		mCellBuilder.setUserValue(-1);
+		mCellBuilder.setEnteredValue(-1);
 
 		assertThat(mCellBuilder.build(), is(nullValue()));
 	}
 
 	@Test(expected = InvalidGridException.class)
-	public void cellConstructor_UserValueTooHigh_CellNotCreated()
+	public void cellConstructor_EnteredValueTooHigh_CellNotCreated()
 			throws Exception {
-		mCellBuilder.setUserValue(mGridSize + 1);
+		mCellBuilder.setEnteredValue(mGridSize + 1);
 
 		assertThat(mCellBuilder.build(), is(nullValue()));
 	}
@@ -241,195 +241,195 @@ public class CellTest {
 	}
 
 	@Test
-	public void isUserValueSet_ValueIsSet_True() throws Exception {
+	public void hasEnteredValueSet_ValueIsSet_True() throws Exception {
 		Cell cell = mCellBuilder.build();
 		cell.setGridReference(mGridMock);
-		int userValue = 1;
-		cell.setUserValue(userValue);
+		int enteredValue = 1;
+		cell.setEnteredValue(enteredValue);
 
-		assertThat(cell.isUserValueSet(), is(true));
+		assertThat(cell.hasEnteredValue(), is(true));
 	}
 
 	@Test
-	public void isUserValueSet_ValueIsZero_False() throws Exception {
+	public void hasEnteredValueSet_ValueIsZero_False() throws Exception {
 		Cell cell = mCellBuilder.build();
 		cell.setGridReference(mGridMock);
-		int userValue = 0;
-		cell.setUserValue(userValue);
+		int enteredValue = Cell.NO_ENTERED_VALUE;
+		cell.setEnteredValue(enteredValue);
 
-		assertThat(cell.isUserValueSet(), is(false));
+		assertThat(cell.hasEnteredValue(), is(false));
 	}
 
 	@Test
-	public void setUserValue_DigitIsTooLow_ValueNotSet() throws Exception {
+	public void setEnteredValue_DigitIsTooLow_ValueNotSet() throws Exception {
 		Cell cell = mCellBuilder.build();
 		cell.setGridReference(mGridMock);
 
-		assertThat(cell.setUserValue(-1), is(false)); // Note: 0 is a valid user
+		assertThat(cell.setEnteredValue(-1), is(false)); // Note: 0 is a valid user
 														// value!
 	}
 
 	@Test
-	public void setUserValue_DigitIsTooHigh_ValueNotSet() throws Exception {
+	public void setEnteredValue_DigitIsTooHigh_ValueNotSet() throws Exception {
 		Cell cell = mCellBuilder.build();
 		cell.setGridReference(mGridMock);
 
-		assertThat(cell.setUserValue(mGridSize + 1), is(false));
+		assertThat(cell.setEnteredValue(mGridSize + 1), is(false));
 	}
 
 	@Test
-	public void setUserValue_UserValueIsReplacedWithSameValue_ValueNotSet()
+	public void setEnteredValue_EnteredValueIsReplacedWithSameValue_ValueNotSet()
 			throws Exception {
-		int userValue = 2;
-		Cell cell = mCellBuilder.setUserValue(userValue).build();
+		int enteredValue = 2;
+		Cell cell = mCellBuilder.setEnteredValue(enteredValue).build();
 		cell.setGridReference(mGridMock);
 
-		assertThat(cell.setUserValue(userValue), is(false));
+		assertThat(cell.setEnteredValue(enteredValue), is(false));
 	}
 
 	@Test
-	public void setUserValue_CellContainsPossibleValue_PossiblesAreCleared()
+	public void setEnteredValue_CellContainsPossibleValue_PossiblesAreCleared()
 			throws Exception {
 		Cell cell = mCellBuilder
 				.setPossibles(createListOfPossibleValues(1, 3))
 				.build();
 		cell.setGridReference(mGridMock);
 
-		assertThat(cell.setUserValue(1), is(true));
+		assertThat(cell.setEnteredValue(1), is(true));
 		assertThat(cell.countPossibles(), is(0));
 	}
 
 	@Test
-	public void setUserValue_UserValueEnteredInEmptyCell_StatisticsCellValueReplacedNotIncreased()
+	public void setEnteredValue_EnteredValueEnteredInEmptyCell_StatisticsCellValueReplacedNotIncreased()
 			throws Exception {
-		setupSetUserValueTest_ReplaceUserValue(0, 2);
+		setupSetEnteredValueTest_ReplaceEnteredValue(0, 2);
 		verify(mGridStatisticsMock, never()).increaseCounter(
 				GridStatistics.StatisticsCounterType.USER_VALUE_REPLACED);
 	}
 
 	@Test
-	public void setUserValue_CellWithUserValueIsCleared_StatisticsCellValueReplacedNotIncreased()
+	public void setEnteredValue_CellWithEnteredValueIsCleared_StatisticsCellValueReplacedNotIncreased()
 			throws Exception {
-		setupSetUserValueTest_ReplaceUserValue(2, 0);
+		setupSetEnteredValueTest_ReplaceEnteredValue(2, 0);
 		verify(mGridStatisticsMock, never()).increaseCounter(
 				GridStatistics.StatisticsCounterType.USER_VALUE_REPLACED);
 	}
 
 	@Test
-	public void setUserValue_UserValueIsReplacedWithOtherValue_StatisticsCellValueReplacedIncreased()
+	public void setEnteredValue_EnteredValueIsReplacedWithOtherValue_StatisticsCellValueReplacedIncreased()
 			throws Exception {
-		setupSetUserValueTest_ReplaceUserValue(2, 3);
+		setupSetEnteredValueTest_ReplaceEnteredValue(2, 3);
 		verify(mGridStatisticsMock).increaseCounter(
 				GridStatistics.StatisticsCounterType.USER_VALUE_REPLACED);
 	}
 
 	@Test
-	public void setUserValue_UserValueEnteredInEmptyCell_StatisticsCellsEmptyIsDecreased()
+	public void setEnteredValue_EnteredValueEnteredInEmptyCell_StatisticsCellsEmptyIsDecreased()
 			throws Exception {
-		setupSetUserValueTest_ReplaceUserValue(0, 2);
+		setupSetEnteredValueTest_ReplaceEnteredValue(0, 2);
 		verify(mGridStatisticsMock).decreaseCounter(
 				GridStatistics.StatisticsCounterType.CELLS_EMPTY);
 	}
 
 	@Test
-	public void setUserValue_UserValueEnteredInEmptyCell_StatisticsCellsFilledIsIncreased()
+	public void setEnteredValue_EnteredValueEnteredInEmptyCell_StatisticsCellsFilledIsIncreased()
 			throws Exception {
-		setupSetUserValueTest_ReplaceUserValue(0, 2);
+		setupSetEnteredValueTest_ReplaceEnteredValue(0, 2);
 		verify(mGridStatisticsMock).increaseCounter(
 				GridStatistics.StatisticsCounterType.CELLS_FILLED);
 	}
 
 	@Test
-	public void setUserValue_CellWithUserValueIsCleared_StatisticsCellsFilledIsDecreased()
+	public void setEnteredValue_CellWithEnteredValueIsCleared_StatisticsCellsFilledIsDecreased()
 			throws Exception {
-		setupSetUserValueTest_ReplaceUserValue(2, 0);
+		setupSetEnteredValueTest_ReplaceEnteredValue(2, 0);
 		verify(mGridStatisticsMock).decreaseCounter(
 				GridStatistics.StatisticsCounterType.CELLS_FILLED);
 	}
 
 	@Test
-	public void setUserValue_CellWithUserValueIsCleared_StatisticsCellsEmptyIsIncreased()
+	public void setEnteredValue_CellWithEnteredValueIsCleared_StatisticsCellsEmptyIsIncreased()
 			throws Exception {
-		setupSetUserValueTest_ReplaceUserValue(2, 0);
+		setupSetEnteredValueTest_ReplaceEnteredValue(2, 0);
 		verify(mGridStatisticsMock).increaseCounter(
 				GridStatistics.StatisticsCounterType.CELLS_EMPTY);
 	}
 
 	@Test
-	public void setUserValue_RevealedCellValueIsChanged_StatisticsCellsEmptyNotUpdated()
+	public void setEnteredValue_RevealedCellValueIsChanged_StatisticsCellsEmptyNotUpdated()
 			throws Exception {
 		Cell cell = mCellBuilder.setRevealed(true).build();
 		cell.setGridReference(mGridMock);
 
-		int newUserValue = 1;
-		assertThat(cell.setUserValue(newUserValue), is(true));
+		int newEnteredValue = 1;
+		assertThat(cell.setEnteredValue(newEnteredValue), is(true));
 
 		verify(mGridStatisticsMock, never()).increaseCounter(
 				GridStatistics.StatisticsCounterType.CELLS_EMPTY);
 	}
 
 	@Test
-	public void setUserValue_RevealedCellValueIsChanged_StatisticsCellsFilledNotUpdated()
+	public void setEnteredValue_RevealedCellValueIsChanged_StatisticsCellsFilledNotUpdated()
 			throws Exception {
 		Cell cell = mCellBuilder.setRevealed(true).build();
 		cell.setGridReference(mGridMock);
 
-		int newUserValue = 1;
-		assertThat(cell.setUserValue(newUserValue), is(true));
+		int newEnteredValue = 1;
+		assertThat(cell.setEnteredValue(newEnteredValue), is(true));
 
 		verify(mGridStatisticsMock, never()).increaseCounter(
 				GridStatistics.StatisticsCounterType.CELLS_FILLED);
 	}
 
 	@Test
-	public void setUserValue_CellValueIsChanged_InvalidUserValueHighlightIsReset()
+	public void setEnteredValue_CellValueIsChanged_InvalidEnteredValueHighlightIsReset()
 			throws Exception {
-		Cell cell = mCellBuilder.setInvalidUserValueHighlight(true).build();
+		Cell cell = mCellBuilder.setInvalidValueHighlight(true).build();
 		cell.setGridReference(mGridMock);
-		assertThat(cell.hasInvalidUserValueHighlight(), is(true));
+		assertThat(cell.hasInvalidValueHighlight(), is(true));
 
-		int newUserValue = 1;
-		assertThat(cell.setUserValue(newUserValue), is(true));
+		int newEnteredValue = 1;
+		assertThat(cell.setEnteredValue(newEnteredValue), is(true));
 
-		assertThat(cell.hasInvalidUserValueHighlight(), is(false));
+		assertThat(cell.hasInvalidValueHighlight(), is(false));
 	}
 
 	@Test
-	public void setUserValue_CellValueIsChanged_DuplicateValueHighlightIsReset()
+	public void setEnteredValue_CellValueIsChanged_DuplicateValueHighlightIsReset()
 			throws Exception {
 		Cell cell = mCellBuilder.setDuplicateValueHighlight(true).build();
 		cell.setGridReference(mGridMock);
 		assertThat(cell.isDuplicateValueHighlighted(), is(true));
 
-		int newUserValue = 1;
-		assertThat(cell.setUserValue(newUserValue), is(true));
+		int newEnteredValue = 1;
+		assertThat(cell.setEnteredValue(newEnteredValue), is(true));
 
 		assertThat(cell.isDuplicateValueHighlighted(), is(false));
 	}
 
 	@Test
-	public void setUserValue_CellValueIsChangedButGridNotYetSolved_GridNotSolved()
+	public void setEnteredValue_CellValueIsChangedButGridNotYetSolved_GridNotSolved()
 			throws Exception {
 		Cell cell = mCellBuilder.build();
 		when(mGridMock.isSolved()).thenReturn(false);
 		cell.setGridReference(mGridMock);
 
-		int newUserValue = 1;
-		assertThat(cell.setUserValue(newUserValue), is(true));
+		int newEnteredValue = 1;
+		assertThat(cell.setEnteredValue(newEnteredValue), is(true));
 
 		verify(mGridMock).isSolved();
 		verify(mGridMock, never()).setSolved();
 	}
 
 	@Test
-	public void setUserValue_CellValueIsChangedAndGridIsSolved_GridSolved()
+	public void setEnteredValue_CellValueIsChangedAndGridIsSolved_GridSolved()
 			throws Exception {
 		Cell cell = mCellBuilder.build();
 		when(mGridMock.isSolved()).thenReturn(true);
 		cell.setGridReference(mGridMock);
 
-		int newUserValue = 1;
-		assertThat(cell.setUserValue(newUserValue), is(true));
+		int newEnteredValue = 1;
+		assertThat(cell.setEnteredValue(newEnteredValue), is(true));
 
 		verify(mGridMock).isSolved();
 		verify(mGridMock).setSolved();
@@ -450,40 +450,40 @@ public class CellTest {
 	}
 
 	@Test
-	public void clearValue_CellWithUserValue_ValueIsCleared() throws Exception {
-		int oldUserValue = 1;
-		Cell cell = mCellBuilder.setUserValue(oldUserValue).build();
+	public void clearValue_CellWithEnteredValue_ValueIsCleared() throws Exception {
+		int oldEnteredValue = 1;
+		Cell cell = mCellBuilder.setEnteredValue(oldEnteredValue).build();
 		cell.setGridReference(mGridMock);
 
 		cell.clearValue();
 
-		assertThat(cell.getUserValue(), is(0));
+		assertThat(cell.getEnteredValue(), is(0));
 	}
 
 	@Test
-	public void isUserValueIncorrect_CorrectValueAndUserValueAreDifferent_True()
+	public void isEnteredValueIncorrect_CorrectValueAndEnteredValueAreDifferent_True()
 			throws Exception {
 		int correctValue = 1;
 		Cell cell = mCellBuilder
 				.setCorrectValue(correctValue)
-				.setUserValue(correctValue + 1)
+				.setEnteredValue(correctValue + 1)
 				.build();
 		cell.setGridReference(mGridMock);
 
-		assertThat(cell.isUserValueIncorrect(), is(true));
+		assertThat(cell.isEnteredValueIncorrect(), is(true));
 	}
 
 	@Test
-	public void isUserValueIncorrect_CorrectValueAndUserValueAreIdentical_False()
+	public void isEnteredValueIncorrect_CorrectValueAndEnteredValueAreIdentical_False()
 			throws Exception {
 		int correctValue = 1;
 		Cell cell = mCellBuilder
 				.setCorrectValue(correctValue)
-				.setUserValue(correctValue)
+				.setEnteredValue(correctValue)
 				.build();
 		cell.setGridReference(mGridMock);
 
-		assertThat(cell.isUserValueIncorrect(), is(false));
+		assertThat(cell.isEnteredValueIncorrect(), is(false));
 	}
 
 	@Test
@@ -513,9 +513,9 @@ public class CellTest {
 	}
 
 	@Test
-	public void revealCorrectValue_RevealedCellContainsUserValue_StatisticsFilledCellsUpdated()
+	public void revealCorrectValue_RevealedCellContainsEnteredValue_StatisticsFilledCellsUpdated()
 			throws Exception {
-		Cell cell = mCellBuilder.setUserValue(1).build();
+		Cell cell = mCellBuilder.setEnteredValue(1).build();
 		cell.setGridReference(mGridMock);
 
 		cell.revealCorrectValue();
@@ -525,9 +525,9 @@ public class CellTest {
 	}
 
 	@Test
-	public void revealCorrectValue_RevealedCellContainsNoUserValue_StatisticsEmptyCellsUpdated()
+	public void revealCorrectValue_RevealedCellContainsNoEnteredValue_StatisticsEmptyCellsUpdated()
 			throws Exception {
-		Cell cell = mCellBuilder.setUserValue(0).build();
+		Cell cell = mCellBuilder.setEnteredValue(0).build();
 		cell.setGridReference(mGridMock);
 
 		cell.revealCorrectValue();
@@ -560,27 +560,27 @@ public class CellTest {
 
 		cell.revealCorrectValue();
 
-		assertThat(cell.isUserValueIncorrect(), is(false));
+		assertThat(cell.isEnteredValueIncorrect(), is(false));
 	}
 
 	@Test
-	public void revealCorrectValue_RevealedCell_UserValueUpdatedToCorrectValue()
+	public void revealCorrectValue_RevealedCell_EnteredValueUpdatedToCorrectValue()
 			throws Exception {
 		int correctValue = 1;
 		// For this test it is not relevant whether the cell contains a user
 		// value or not. In case it contains a user value, it should not be
 		// equal to the correct value as we need proof that the value is
 		// changed.
-		int userValue = correctValue + 1;
+		int enteredValue = correctValue + 1;
 		Cell cell = mCellBuilder
 				.setCorrectValue(correctValue)
-				.setUserValue(userValue)
+				.setEnteredValue(enteredValue)
 				.build();
 		cell.setGridReference(mGridMock);
 
 		cell.revealCorrectValue();
 
-		assertThat(cell.getUserValue(), is(correctValue));
+		assertThat(cell.getEnteredValue(), is(correctValue));
 	}
 
 	@Test
@@ -620,10 +620,10 @@ public class CellTest {
 	}
 
 	@Test
-	public void isEmpty_CellHasNoUserValueAndNoPossibleValues_True()
+	public void isEmpty_CellHasNoEnteredValueAndNoPossibleValues_True()
 			throws Exception {
 		Cell cell = mCellBuilder
-				.setUserValue(0)
+				.setEnteredValue(0)
 				.setPossibles(createListOfPossibleValues())
 				.build();
 
@@ -632,10 +632,10 @@ public class CellTest {
 
 
 	@Test
-	public void isEmpty_CellHasUserValueButNoPossibleValues_False()
+	public void isEmpty_CellHasEnteredValueButNoPossibleValues_False()
 			throws Exception {
 		Cell cell = mCellBuilder
-				.setUserValue(1)
+				.setEnteredValue(1)
 				.setPossibles(createListOfPossibleValues())
 				.build();
 
@@ -643,10 +643,10 @@ public class CellTest {
 	}
 
 	@Test
-	public void isEmpty_CellHasNoUserValueButHasPossibleValues_False()
+	public void isEmpty_CellHasNoEnteredValueButHasPossibleValues_False()
 			throws Exception {
 		Cell cell = mCellBuilder
-				.setUserValue(0)
+				.setEnteredValue(0)
 				.setPossibles(createListOfPossibleValues(1,2,3))
 				.build();
 
@@ -654,10 +654,10 @@ public class CellTest {
 	}
 
 	@Test
-	public void isEmpty_CellHasUserValueAndPossibleValues_False()
+	public void isEmpty_CellHasEnteredValueAndPossibleValues_False()
 			throws Exception {
 		Cell cell = mCellBuilder
-				.setUserValue(1)
+				.setEnteredValue(1)
 				.setPossibles(createListOfPossibleValues(1,2))
 				.build();
 
@@ -672,11 +672,10 @@ public class CellTest {
 		return list;
 	}
 
-	private void setupSetUserValueTest_ReplaceUserValue(int oldUserValue,
-			int newUserValue) {
-		Cell cell = mCellBuilder.setUserValue(oldUserValue).build();
+	private void setupSetEnteredValueTest_ReplaceEnteredValue(int oldEnteredValue, int newEnteredValue) {
+		Cell cell = mCellBuilder.setEnteredValue(oldEnteredValue).build();
 		cell.setGridReference(mGridMock);
 
-		assertThat(cell.setUserValue(newUserValue), is(true));
+		assertThat(cell.setEnteredValue(newEnteredValue), is(true));
 	}
 }

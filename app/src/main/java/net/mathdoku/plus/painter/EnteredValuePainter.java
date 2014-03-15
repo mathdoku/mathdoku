@@ -1,19 +1,19 @@
 package net.mathdoku.plus.painter;
 
+import android.graphics.Paint;
+
 import net.mathdoku.plus.painter.Painter.DigitPainterMode;
 import net.mathdoku.plus.painter.Painter.GridTheme;
 
-import android.graphics.Paint;
-
-public class UserValuePainter extends DigitPainter {
+public class EnteredValuePainter extends DigitPainter {
 
 	/**
-	 * Creates a new instance of {@link UserValuePainter}.
+	 * Creates a new instance of {@link EnteredValuePainter}.
 	 * 
 	 * @param painter
 	 *            The global container for all painters.
 	 */
-	public UserValuePainter(Painter painter) {
+	public EnteredValuePainter(Painter painter) {
 		super(painter);
 		mTextPaintNormalInputMode = new Paint(Paint.ANTI_ALIAS_FLAG);
 		mTextPaintMaybeInputMode = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -36,14 +36,14 @@ public class UserValuePainter extends DigitPainter {
 		// 1/3 of cell is used for the cage results. Remaining space can be sued
 		// to display the user value.
 		int bottomMargin = (int) (size * 0.1);
-		int userValueTextSize = (int) (size * 2 / 3);
+		int enteredValueTextSize = (int) (size * 2 / 3);
 
-		mTextPaintNormalInputMode.setTextSize(userValueTextSize);
-		mTextPaintMaybeInputMode.setTextSize(userValueTextSize);
+		mTextPaintNormalInputMode.setTextSize(enteredValueTextSize);
+		mTextPaintMaybeInputMode.setTextSize(enteredValueTextSize);
 
 		// Compute the offsets at which the user value will be displayed within
 		// the cell
-		mLeftOffset = size / 2 - userValueTextSize / 4;
+		mLeftOffset = size / 2 - enteredValueTextSize / 4;
 
 		mBottomOffset = size - bottomMargin;
 	}

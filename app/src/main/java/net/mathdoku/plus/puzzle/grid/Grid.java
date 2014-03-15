@@ -221,7 +221,7 @@ public class Grid {
 		if (mCells != null) {
 			boolean updateGridClearCounter = false;
 			for (Cell cell : this.mCells) {
-				if (cell.getUserValue() != 0 || cell.countPossibles() > 0) {
+				if (cell.getEnteredValue() != 0 || cell.countPossibles() > 0) {
 					updateGridClearCounter = true;
 				}
 				cell.clearValue();
@@ -264,7 +264,7 @@ public class Grid {
 		this.mRevealed = true;
 		if (mCells != null) {
 			for (Cell cell : this.mCells) {
-				if (cell.isUserValueIncorrect()) {
+				if (cell.isEnteredValueIncorrect()) {
 					cell.revealCorrectValue();
 				}
 			}
@@ -303,7 +303,7 @@ public class Grid {
 	public boolean isSolved() {
 		// Check if all cells are filled and do contain the correct value.
 		for (Cell cell : this.mCells) {
-			if (cell.isUserValueIncorrect()) {
+			if (cell.isEnteredValueIncorrect()) {
 				return false;
 			}
 		}
@@ -334,7 +334,7 @@ public class Grid {
 	 */
 	public boolean isSolutionValidSoFar() {
 		for (Cell cell : this.mCells) {
-			if (cell.isUserValueSet() && cell.isUserValueIncorrect()) {
+			if (cell.hasEnteredValue() && cell.isEnteredValueIncorrect()) {
 				return false;
 			}
 		}
@@ -386,7 +386,7 @@ public class Grid {
 
 		// Remember current situation before restoring the last move
 		Cell affectedCell = cellChange.getCell();
-		int userValueBeforeUndo = affectedCell.getUserValue();
+		int enteredValueBeforeUndo = affectedCell.getEnteredValue();
 
 		// Restore the last cell change in the list of moves
 		cellChange.restore();
@@ -398,7 +398,7 @@ public class Grid {
 		// Set the cell to which the cell change applies as selected cell.
 		setSelectedCell(affectedCell);
 
-		if (userValueBeforeUndo != affectedCell.getUserValue()) {
+		if (enteredValueBeforeUndo != affectedCell.getEnteredValue()) {
 			// Mark all cells having a duplicate cell value. If a duplicate
 			// value is
 			// found, check whether the duplicate value tip should be displayed.
@@ -407,7 +407,7 @@ public class Grid {
 			// Check the cage math
 			Cage cage = getCage(affectedCell);
 			if (cage != null) {
-				cage.checkUserMath();
+				cage.checkMathOnEnteredValues();
 			}
 		}
 
@@ -499,7 +499,7 @@ public class Grid {
 
 		int rowSelectedCell = mSelectedCell.getRow();
 		int columnSelectedCell = mSelectedCell.getColumn();
-		int valueSelectedCell = mSelectedCell.getUserValue();
+		int valueSelectedCell = mSelectedCell.getEnteredValue();
 		for (Cell cell : mCells) {
 			if ((cell.getRow() == rowSelectedCell || cell.getColumn() == columnSelectedCell)
 					&& cell.hasPossible(valueSelectedCell)) {
@@ -647,9 +647,9 @@ public class Grid {
 	 * @return True in case no user values have been filled in. False in case at
 	 *         least one user value is filled in.
 	 */
-	public boolean containsNoUserValues() {
+	public boolean containsNoEnteredValues() {
 		for (Cell cell : mCells) {
-			if (cell.isUserValueSet()) {
+			if (cell.hasEnteredValue()) {
 				return false;
 			}
 		}
@@ -666,7 +666,7 @@ public class Grid {
 	 */
 	public boolean isEmpty() {
 		for (Cell cell : mCells) {
-			if (cell.isUserValueSet() || cell.countPossibles() > 0) {
+			if (cell.hasEnteredValue() || cell.countPossibles() > 0) {
 				// Not empty as this cell contains a user value or a possible
 				// value
 				return false;
@@ -740,8 +740,8 @@ public class Grid {
 		mGridStatistics
 				.increaseCounter(StatisticsCounterType.ACTION_CHECK_PROGRESS);
 		for (Cell cell : mCells) {
-			if (cell.isUserValueSet() && !cell.hasInvalidUserValueHighlight()
-					&& cell.getUserValue() != cell.getCorrectValue()) {
+			if (cell.hasEnteredValue() && !cell.hasInvalidValueHighlight()
+					&& cell.getEnteredValue() != cell.getCorrectValue()) {
 				cell.setInvalidHighlight();
 				countNewInvalids++;
 			}
@@ -771,7 +771,7 @@ public class Grid {
 	private void checkUserMathForAllCages() {
 		if (mCages != null) {
 			for (Cage cage : mCages) {
-				cage.checkUserMath();
+				cage.checkMathOnEnteredValues();
 			}
 		}
 	}
@@ -850,22 +850,22 @@ public class Grid {
 	 *         elements than the number of cells given this indicates that not
 	 *         all cells have a user value.
 	 */
-	public List<Integer> getUserValuesForCells(int[] cells) {
-		List<Integer> userValues = new ArrayList<Integer>();
+	public List<Integer> getEnteredValuesForCells(int[] cells) {
+		List<Integer> enteredValues = new ArrayList<Integer>();
 		if (cells == null) {
-			return userValues;
+			return enteredValues;
 		}
 
 		for (int cell : cells) {
 			if (cell >= 0 && cell < mCells.size()) {
 				Cell cellCopy = mCells.get(cell);
-				if (cellCopy != null && cellCopy.isUserValueSet()) {
-					userValues.add(cellCopy.getUserValue());
+				if (cellCopy != null && cellCopy.hasEnteredValue()) {
+					enteredValues.add(cellCopy.getEnteredValue());
 				}
 			}
 		}
 
-		return userValues;
+		return enteredValues;
 	}
 
 	public void invalidateBordersOfAllCells() {
@@ -959,16 +959,16 @@ public class Grid {
 		int rowConstraintsDimension1;
 		int columnConstraintsDimension1;
 		int constraintsDimension2;
-		boolean cellHasDuplicateUserValue;
+		boolean cellHasDuplicateEnteredValue;
 		for (Cell cell : mCells) {
 			rowConstraintsDimension1 = cell.getRow();
 			columnConstraintsDimension1 = cell.getColumn();
 
-			cellHasDuplicateUserValue = false;
-			if (cell.isUserValueSet()) {
+			cellHasDuplicateEnteredValue = false;
+			if (cell.hasEnteredValue()) {
 				// The user value of cell determines the second dimension for
 				// both constraint arrays.
-				constraintsDimension2 = cell.getUserValue() - 1;
+				constraintsDimension2 = cell.getEnteredValue() - 1;
 
 				if (digitUsedInRow[rowConstraintsDimension1][constraintsDimension2] == null) {
 					// The current cell is the first cell on the row using the
@@ -981,7 +981,7 @@ public class Grid {
 					// more than twice in the same row, the first cell will be
 					// marked multiple times as duplicate.
 					markCellAsDuplicate(digitUsedInRow[rowConstraintsDimension1][constraintsDimension2]);
-					cellHasDuplicateUserValue = true;
+					cellHasDuplicateEnteredValue = true;
 					duplicateValueFound = true;
 				}
 
@@ -996,11 +996,11 @@ public class Grid {
 					// more than twice in the same row, the first cell will be
 					// marked multiple times as duplicate.
 					markCellAsDuplicate(digitUsedInColumn[columnConstraintsDimension1][constraintsDimension2]);
-					cellHasDuplicateUserValue = true;
+					cellHasDuplicateEnteredValue = true;
 					duplicateValueFound = true;
 				}
 			}
-			cell.setDuplicateHighlight(cellHasDuplicateUserValue);
+			cell.setDuplicateHighlight(cellHasDuplicateEnteredValue);
 		}
 
 		return duplicateValueFound;

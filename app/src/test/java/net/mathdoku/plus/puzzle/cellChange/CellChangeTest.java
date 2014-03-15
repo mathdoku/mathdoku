@@ -19,28 +19,28 @@ import static org.mockito.Mockito.verify;
 @RunWith(RobolectricGradleTestRunner.class)
 public class CellChangeTest {
 	@Test
-	public void restore_CellWithUserValue_UndoForCellIsCalledWithCorrectParameters() {
-		int expectedUserValue = 123;
+	public void restore_CellWithValue_UndoForCellIsCalledWithCorrectParameters() {
+		int expectedEnteredValue = 123;
 		List<Integer> expectedMaybeValues = new ArrayList<Integer>();
 
 		// Init the Grid Cell Mock
 		Cell cellMock = mock(Cell.class);
 
 		// Store current value of cell in a cell change
-		CellChange cellChange = new CellChange(cellMock, expectedUserValue,
+		CellChange cellChange = new CellChange(cellMock, expectedEnteredValue,
 				expectedMaybeValues);
 
 		// Restore the cell change which ...
 		cellChange.restore();
 
 		// ... results in undoing the change to the user value.
-		verify(cellMock).setUserValue(expectedUserValue);
+		verify(cellMock).setEnteredValue(expectedEnteredValue);
 		verify(cellMock, never()).addPossible(anyInt());
 	}
 
 	@Test
 	public void restore_CellWithMultipleMaybeValues_UndoForCellIsCalledWithCorrectParameters() {
-		int expectedUserValue = 0;
+		int expectedEnteredValue = Cell.NO_ENTERED_VALUE;
 		List<Integer> expectedMaybeValues = new ArrayList<Integer>();
 		expectedMaybeValues.add(1);
 		expectedMaybeValues.add(2);
@@ -50,7 +50,7 @@ public class CellChangeTest {
 		Cell cellMock = mock(Cell.class);
 
 		// Store current value of cell in a cell change
-		CellChange cellChange = new CellChange(cellMock, expectedUserValue,
+		CellChange cellChange = new CellChange(cellMock, expectedEnteredValue,
 				expectedMaybeValues);
 
 		// Restore the cell change which ...
@@ -58,7 +58,7 @@ public class CellChangeTest {
 
 		// ... results in undoing the change to the user value and the maybe
 		// values for the cell
-		verify(cellMock).setUserValue(expectedUserValue);
+		verify(cellMock).setEnteredValue(expectedEnteredValue);
 		verify(cellMock, times(expectedMaybeValues.size())).addPossible(anyInt());
 	}
 }

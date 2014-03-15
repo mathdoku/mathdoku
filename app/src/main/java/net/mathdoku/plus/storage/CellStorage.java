@@ -74,7 +74,7 @@ public class CellStorage {
 		}
 		cellBuilder.setCageText(cellParts[index++]);
 		cellBuilder.setCorrectValue(Integer.parseInt(cellParts[index++]));
-		cellBuilder.setUserValue(Integer.parseInt(cellParts[index++]));
+		cellBuilder.setEnteredValue(Integer.parseInt(cellParts[index++]));
 
 		// Get possible values
 		List<Integer> possibles = new ArrayList<Integer>();
@@ -87,8 +87,7 @@ public class CellStorage {
 		index++;
 		cellBuilder.setPossibles(possibles);
 
-		cellBuilder.setInvalidUserValueHighlight(Boolean
-				.parseBoolean(cellParts[index++]));
+		cellBuilder.setInvalidValueHighlight(Boolean.parseBoolean(cellParts[index++]));
 		cellBuilder.setRevealed(Boolean.parseBoolean(cellParts[index++]));
 		cellBuilder.setSelected(Boolean.parseBoolean(cellParts[index++]));
 
@@ -110,14 +109,14 @@ public class CellStorage {
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ cell.getCorrectValue()
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ cell.getUserValue()
+				+ cell.getEnteredValue()
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1;
 		for (int possible : cell.getPossibles()) {
 			storageString += possible
 					+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2;
 		}
 		storageString += SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ Boolean.toString(cell.hasInvalidUserValueHighlight())
+				+ Boolean.toString(cell.hasInvalidValueHighlight())
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
 				+ Boolean.toString(cell.isRevealed())
 				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1

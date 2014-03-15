@@ -17,7 +17,7 @@ public class CellChange {
 	private Cell mCell;
 
 	// Properties of the Cell which can be restored.
-	private int mPreviousUserValue;
+	private int mPreviousEnteredValue;
 	private final List<Integer> mPreviousPossibleValues;
 
 	// Undo information for other cell which are changed as a result of changing
@@ -29,35 +29,35 @@ public class CellChange {
 	 * 
 	 * @param cell
 	 *            The cell to which the undo information is related.
-	 * @param previousUserValue
-	 *            The user value of the cell before it is changed.
+	 * @param previousEnteredValue
+	 *            The entered value of the cell before it is changed.
 	 * @param previousPossibleValues
 	 *            The possible values of the cell before it is changed.
 	 */
-	public CellChange(Cell cell, int previousUserValue,
+	public CellChange(Cell cell, int previousEnteredValue,
 			List<Integer> previousPossibleValues) {
 		mCell = cell;
-		mPreviousUserValue = previousUserValue;
+		mPreviousEnteredValue = previousEnteredValue;
 		mPreviousPossibleValues = new ArrayList<Integer>(previousPossibleValues);
 		mRelatedCellChanges = null;
 	}
 
 	public CellChange(Cell cell) {
 		mCell = cell;
-		mPreviousUserValue = cell.getUserValue();
+		mPreviousEnteredValue = cell.getEnteredValue();
 		mPreviousPossibleValues = new ArrayList<Integer>(cell.getPossibles());
 		mRelatedCellChanges = null;
 	}
 
 	public CellChange(CellChangeStorage cellChangeStorage) {
 		mCell = cellChangeStorage.getCell();
-		mPreviousUserValue = cellChangeStorage.getPreviousUserValue();
+		mPreviousEnteredValue = cellChangeStorage.getPreviousEnteredValue();
 		mPreviousPossibleValues = cellChangeStorage.getPreviousPossibleValues();
 		mRelatedCellChanges = cellChangeStorage.getRelatedCellChanges();
 	}
 
 	/**
-	 * Restores the user value and maybe values of a Cell using the undo
+	 * Restores the entered value and maybe values of a Cell using the undo
 	 * information.
 	 */
 	public void restore() {
@@ -67,8 +67,8 @@ public class CellChange {
 				relatedMove.restore();
 			}
 		}
-		// Always restore the user value as value 0 indicates an empty cell.
-		mCell.setUserValue(mPreviousUserValue);
+		// Always restore the entered value as value 0 indicates an empty cell.
+		mCell.setEnteredValue(mPreviousEnteredValue);
 		if (mPreviousPossibleValues != null) {
 			for (int possible : mPreviousPossibleValues) {
 				mCell.addPossible(possible);
@@ -99,7 +99,7 @@ public class CellChange {
 	public String toString() {
 		return "<cell:" + this.mCell.getCellId() + " col:"
 				+ this.mCell.getColumn() + " row:" + this.mCell.getRow()
-				+ " previous user value:" + this.mPreviousUserValue
+				+ " previous entered value:" + this.mPreviousEnteredValue
 				+ " previous possible values:"
 				+ mPreviousPossibleValues.toString() + ">";
 	}
@@ -132,7 +132,7 @@ public class CellChange {
 		// Check each field. Primitive fields, reference fields, and nullable
 		// reference
 		// fields are all treated differently.
-		return mPreviousUserValue == lhs.mPreviousUserValue
+		return mPreviousEnteredValue == lhs.mPreviousEnteredValue
 				&& mCell.equals(lhs.mCell)
 				&& (mPreviousPossibleValues == null ? lhs.mPreviousPossibleValues == null
 						: mPreviousPossibleValues
@@ -153,8 +153,8 @@ public class CellChange {
 		return mCell;
 	}
 
-	public Integer getPreviousUserValue() {
-		return mPreviousUserValue;
+	public Integer getPreviousEnteredValue() {
+		return mPreviousEnteredValue;
 	}
 
 	public List<Integer> getPreviousPossibleValues() {

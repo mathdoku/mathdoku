@@ -10,7 +10,7 @@ import net.mathdoku.plus.painter.CellPainter;
 import net.mathdoku.plus.painter.InputModeBorderPainter;
 import net.mathdoku.plus.painter.MaybeValuePainter;
 import net.mathdoku.plus.painter.Painter;
-import net.mathdoku.plus.painter.UserValuePainter;
+import net.mathdoku.plus.painter.EnteredValuePainter;
 import net.mathdoku.plus.puzzle.cell.Cell;
 import net.mathdoku.plus.puzzle.digitpositiongrid.DigitPositionGrid;
 import net.mathdoku.plus.puzzle.grid.Grid;
@@ -67,7 +67,7 @@ public class CellDrawer {
 
 	// References to the global painter objects.
 	private CellPainter mCellPainter;
-	private UserValuePainter mUserValuePainter;
+	private EnteredValuePainter mEnteredValuePainter;
 	private MaybeValuePainter mMaybeGridPainter;
 	private MaybeValuePainter mMaybeLinePainter;
 	private CagePainter mCagePainter;
@@ -91,7 +91,7 @@ public class CellDrawer {
 	private void initializePainters() {
 		Painter painter = Painter.getInstance();
 		mCellPainter = painter.getCellPainter();
-		mUserValuePainter = painter.getUserValuePainter();
+		mEnteredValuePainter = painter.getEnteredValuePainter();
 		mMaybeGridPainter = painter.getMaybeGridPainter();
 		mMaybeLinePainter = painter.getMaybeLinePainter();
 		mCagePainter = painter.getCagePainter();
@@ -311,7 +311,7 @@ public class CellDrawer {
 						.getRevealedBorderPaint() : null;
 				break;
 			case 3:
-				borderPaint = mCell.hasInvalidUserValueHighlight() ? mCellPainter
+				borderPaint = mCell.hasInvalidValueHighlight() ? mCellPainter
 						.getInvalidBorderPaint() : null;
 				break;
 			case 4:
@@ -358,7 +358,7 @@ public class CellDrawer {
 		Paint background = null;
 		if (mCell.isSelected() && mGrid != null && mGrid.isActive()) {
 			background = mCellPainter.getSelectedBackgroundPaint();
-		} else if (mCell.hasInvalidUserValueHighlight()) {
+		} else if (mCell.hasInvalidValueHighlight()) {
 			background = mCellPainter.getInvalidBackgroundPaint();
 		} else if (mCell.isRevealed()) {
 			background = mCellPainter.getRevealedBackgroundPaint();
@@ -375,25 +375,25 @@ public class CellDrawer {
 		// other than 0 while a swipe motion is started but not yet finished. In
 		// this case the original user value may not be drawn as it will be
 		// replace with another definitive value or with a maybe value.
-		if (mCell.isUserValueSet() && swipeDigit == 0
+		if (mCell.hasEnteredValue() && swipeDigit == 0
 				|| inputMode == GridInputMode.NORMAL && swipeDigit != 0) {
 			// Get the value which will be shown as user value in case the swipe
 			// motion will be released at this moment.
-			String userValue = Integer
+			String enteredValue = Integer
 					.toString(inputMode == GridInputMode.NORMAL
 							&& swipeDigit != 0 ? swipeDigit : mCell
-							.getUserValue());
+							.getEnteredValue());
 
-			Paint paint = inputMode == GridInputMode.NORMAL ? mUserValuePainter
-					.getTextPaintNormalInputMode() : mUserValuePainter
+			Paint paint = inputMode == GridInputMode.NORMAL ? mEnteredValuePainter
+					.getTextPaintNormalInputMode() : mEnteredValuePainter
 					.getTextPaintMaybeInputMode();
 
 			// Calculate left offset to get the user value centered
 			// horizontally.
-			int centerOffset = (int) ((cellSize - paint.measureText(userValue)) / 2);
+			int centerOffset = (int) ((cellSize - paint.measureText(enteredValue)) / 2);
 
-			canvas.drawText(userValue, mPosX + centerOffset, mPosY
-					+ mUserValuePainter.getBottomOffset(), paint);
+			canvas.drawText(enteredValue, mPosX + centerOffset, mPosY
+					+ mEnteredValuePainter.getBottomOffset(), paint);
 		}
 		// Cage text
 		String cageText = mCell.getCageText();
@@ -716,7 +716,7 @@ public class CellDrawer {
 		// If cell1 is part of the selected cage, it status is more important
 		// than status of cell 2.
 		if (cell1.isCellInSelectedCage()) {
-			if (!mGrid.getCage(cell1).isUserMathCorrect()
+			if (!mGrid.getCage(cell1).isMathOnEnteredValuesCorrect()
 					&& mGridViewerView.hasPrefShowBadCageMaths()) {
 				return BorderType.CELL_IN_SELECTED_CAGE_WITH_BAD_MATH;
 			} else {
@@ -727,7 +727,7 @@ public class CellDrawer {
 		// If cell1 is not part of the selected cage, than status of cell2 will
 		// prevail in case it is part of the selected cage.
 		if (cell2 != null && cell2.isCellInSelectedCage()) {
-			if (!mGrid.getCage(cell2).isUserMathCorrect()
+			if (!mGrid.getCage(cell2).isMathOnEnteredValuesCorrect()
 					&& mGridViewerView.hasPrefShowBadCageMaths()) {
 				return BorderType.CELL_IN_SELECTED_CAGE_WITH_BAD_MATH;
 			} else {
@@ -736,8 +736,8 @@ public class CellDrawer {
 		}
 
 		// Both cells are in a cage which is not selected.
-		if ((!mGrid.getCage(cell1).isUserMathCorrect() || cell2 != null
-				&& !mGrid.getCage(cell2).isUserMathCorrect())
+		if ((!mGrid.getCage(cell1).isMathOnEnteredValuesCorrect() || cell2 != null
+				&& !mGrid.getCage(cell2).isMathOnEnteredValuesCorrect())
 				&& mGridViewerView.hasPrefShowBadCageMaths()) {
 			return BorderType.CELL_IN_UNSELECTED_CAGE_WITH_BAD_MATH;
 		} else {

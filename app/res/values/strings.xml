@@ -409,7 +409,7 @@
     <string name="avoidable_moves_yaxis_description">Number of moves</string>
     <string name="avoidable_moves_chart_body">Less experienced players make more avoidable moves than experienced players. An avoidable move is a move which is not necessary to solve a puzzle. Correcting or clearing values in cells, using \"maybe values\" or \"undo\", are actions which should be avoided in order to become a better player.</string>
     <!-- Dimensions displayed in chart "Avoidable moves". -->
-    <string name="avoidable_moves_chart_user_value_replaced">Cell value replaced</string>
+    <string name="avoidable_moves_chart_entered_value_replaced">Cell value replaced</string>
     <string name="avoidable_moves_chart_maybe_value_used">Maybe values</string>
     <string name="avoidable_moves_chart_undo_button_used">Undo used</string>
     <string name="avoidable_moves_chart_clear_used">Clear cell or clear grid used</string>

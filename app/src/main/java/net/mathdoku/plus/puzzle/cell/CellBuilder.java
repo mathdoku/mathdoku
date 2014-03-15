@@ -11,14 +11,14 @@ public class CellBuilder {
 	private int mGridSize; // Required
 	private int mId; // Required
 	private int mCorrectValue; // Required
-	private int mUserValue; // Optional
+	private int mEnteredValue; // Optional
 	private int mCageId; // Required
 	private String mCageText; // Optional
 	private List<Integer> mPossibles; // Optional
 	private boolean mDuplicateValueHighlight; // Optional
 	private boolean mSelected; // Optional
 	private boolean mRevealed; // Optional
-	private boolean mInvalidUserValueHighlight; // Optional
+	private boolean mInvalidValueHighlight; // Optional
 	private CellBuilderErrorChecking mCellBuilderErrorChecking; // Optional
 
 	private enum CellBuilderErrorChecking {
@@ -28,21 +28,21 @@ public class CellBuilder {
 	public static final int GRID_SIZE_NOT_SET = -1;
 	public static final int ID_NOT_SET = -1;
 	public static final int CORRECT_VALUE_NOT_SET = 0;
-	public static final int USER_VALUE_NOT_SET = 0;
+	public static final int ENTERED_VALUE_NOT_SET = 0;
 	public static final int CAGE_ID_NOT_SET = -1;
 
 	public CellBuilder() {
 		mGridSize = GRID_SIZE_NOT_SET;
 		mId = ID_NOT_SET;
 		mCorrectValue = CORRECT_VALUE_NOT_SET;
-		mUserValue = USER_VALUE_NOT_SET;
+		mEnteredValue = ENTERED_VALUE_NOT_SET;
 		mCageId = CAGE_ID_NOT_SET;
 		mCageText = "";
 		mPossibles = new ArrayList<Integer>();
 		mDuplicateValueHighlight = false;
 		mSelected = false;
 		mRevealed = false;
-		mInvalidUserValueHighlight = false;
+		mInvalidValueHighlight = false;
 		mCellBuilderErrorChecking = CellBuilderErrorChecking.NORMAL;
 	}
 
@@ -64,8 +64,8 @@ public class CellBuilder {
 		return this;
 	}
 
-	public CellBuilder setUserValue(int userValue) {
-		mUserValue = userValue;
+	public CellBuilder setEnteredValue(int enteredValue) {
+		mEnteredValue = enteredValue;
 
 		return this;
 	}
@@ -107,9 +107,8 @@ public class CellBuilder {
 		return this;
 	}
 
-	public CellBuilder setInvalidUserValueHighlight(
-			boolean invalidUserValueHighlight) {
-		mInvalidUserValueHighlight = invalidUserValueHighlight;
+	public CellBuilder setInvalidValueHighlight(boolean invalidValueHighlight) {
+		mInvalidValueHighlight = invalidValueHighlight;
 
 		return this;
 	}
@@ -157,8 +156,8 @@ public class CellBuilder {
 		return mCorrectValue;
 	}
 
-	public int getUserValue() {
-		return mUserValue;
+	public int getEnteredValue() {
+		return mEnteredValue;
 	}
 
 	public int getCageId() {
@@ -185,8 +184,8 @@ public class CellBuilder {
 		return mRevealed;
 	}
 
-	public boolean isInvalidUserValueHighlighted() {
-		return mInvalidUserValueHighlight;
+	public boolean isInvalidValueHighlighted() {
+		return mInvalidValueHighlight;
 	}
 
 	public boolean performLenientCorrectValueCheck() {
@@ -203,7 +202,7 @@ public class CellBuilder {
 		stringBuilder.append("mGridSize=").append(mGridSize);
 		stringBuilder.append(", mId=").append(mId);
 		stringBuilder.append(", mCorrectValue=").append(mCorrectValue);
-		stringBuilder.append(", mUserValue=").append(mUserValue);
+		stringBuilder.append(", mEnteredValue=").append(mEnteredValue);
 		stringBuilder.append(", mCageId=").append(mCageId);
 		stringBuilder.append(", mCageText='").append(mCageText).append('\'');
 		stringBuilder.append(", mPossibles=").append(mPossibles);
@@ -211,8 +210,7 @@ public class CellBuilder {
 				mDuplicateValueHighlight);
 		stringBuilder.append(", mSelected=").append(mSelected);
 		stringBuilder.append(", mRevealed=").append(mRevealed);
-		stringBuilder.append(", mInvalidUserValueHighlight=").append(
-				mInvalidUserValueHighlight);
+		stringBuilder.append(", mInvalidValueHighlight=").append(mInvalidValueHighlight);
 		stringBuilder.append(", mCellBuilderErrorChecking=").append(
 				mCellBuilderErrorChecking);
 		stringBuilder.append('}');
@@ -245,7 +243,7 @@ public class CellBuilder {
 		if (mId != that.mId) {
 			return false;
 		}
-		if (mInvalidUserValueHighlight != that.mInvalidUserValueHighlight) {
+		if (mInvalidValueHighlight != that.mInvalidValueHighlight) {
 			return false;
 		}
 		if (mRevealed != that.mRevealed) {
@@ -254,7 +252,7 @@ public class CellBuilder {
 		if (mSelected != that.mSelected) {
 			return false;
 		}
-		if (mUserValue != that.mUserValue) {
+		if (mEnteredValue != that.mEnteredValue) {
 			return false;
 		}
 		if (!mCageText.equals(that.mCageText)) {
@@ -276,14 +274,14 @@ public class CellBuilder {
 		int result = mGridSize;
 		result = 31 * result + mId;
 		result = 31 * result + mCorrectValue;
-		result = 31 * result + mUserValue;
+		result = 31 * result + mEnteredValue;
 		result = 31 * result + mCageId;
 		result = 31 * result + mCageText.hashCode();
 		result = 31 * result + (mPossibles != null ? mPossibles.hashCode() : 0);
 		result = 31 * result + (mDuplicateValueHighlight ? 1 : 0);
 		result = 31 * result + (mSelected ? 1 : 0);
 		result = 31 * result + (mRevealed ? 1 : 0);
-		result = 31 * result + (mInvalidUserValueHighlight ? 1 : 0);
+		result = 31 * result + (mInvalidValueHighlight ? 1 : 0);
 		result = 31 * result + mCellBuilderErrorChecking.hashCode();
 		return result;
 	}

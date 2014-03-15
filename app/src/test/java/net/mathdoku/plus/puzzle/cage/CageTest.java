@@ -39,27 +39,27 @@ public class CageTest {
 		}
 
 		@Override
-		public CageBuilderStub setCells(int... userValues) {
-			if (userValues == null) {
+		public CageBuilderStub setCells(int... enteredValues) {
+			if (enteredValues == null) {
 				super.setCells((int[]) null);
 				return this;
 			}
 
-			int[] ids = new int[userValues.length];
-			for (int i = 0; i < userValues.length; i++) {
+			int[] ids = new int[enteredValues.length];
+			for (int i = 0; i < enteredValues.length; i++) {
 				ids[i] = mOffsetCellId + i;
 			}
 			super.setCells(ids);
 
-			// Only add the real user values. 0 and negative values indicated that the cell is not filled.
-			List<Integer> userValuesArrayList = new ArrayList<Integer>();
-			for (int userValue : userValues) {
-				if (userValue > 0) {
-					userValuesArrayList.add(userValue);
+			// Only add the real values. 0 and negative values indicate that the cell is not filled.
+			List<Integer> enteredValuesArrayList = new ArrayList<Integer>();
+			for (int enteredValue : enteredValues) {
+				if (enteredValue > 0) {
+					enteredValuesArrayList.add(enteredValue);
 				}
 			}
-			when(mGridMock.getUserValuesForCells(any(int[].class))).thenReturn(
-					userValuesArrayList);
+			when(mGridMock.getEnteredValuesForCells(any(int[].class))).thenReturn(
+					enteredValuesArrayList);
 
 			return this;
 		}
@@ -159,7 +159,7 @@ public class CageTest {
 	}
 
 	@Test(expected = InvalidGridException.class)
-	public void checkUserMath_CageTooManyCellsSubtractOperator_CageNotCreated()
+	public void checkMathOnEnteredValues_CageTooManyCellsSubtractOperator_CageNotCreated()
 			throws Exception {
 		CageOperator cageOperator = CageOperator.SUBTRACT;
 		mCageBuilder
@@ -169,7 +169,7 @@ public class CageTest {
 	}
 
 	@Test(expected = InvalidGridException.class)
-	public void checkUserMath_CageTooManyCellsDivideOperator_CageNotCreated()
+	public void checkMathOnEnteredValues_CageTooManyCellsDivideOperator_CageNotCreated()
 			throws Exception {
 		CageOperator cageOperator = CageOperator.DIVIDE;
 		mCageBuilder
@@ -198,23 +198,23 @@ public class CageTest {
 	}
 
 	@Test(expected = InvalidGridException.class)
-	public void checkUserMath_CageCellListIsNull_UserMathIsCorrect()
+	public void checkMathOnEnteredValues_CageCellListIsNull_MathIsCorrect()
 			throws Exception {
 		Cage cage = mCageBuilder.setCells((int[]) null).build();
 
-		assertThat(cage.checkUserMath(), is(false));
+		assertThat(cage.checkMathOnEnteredValues(), is(false));
 	}
 
 	@Test
-	public void checkUserMath_CageWithoutCells_UserMathIsCorrect()
+	public void checkMathOnEnteredValues_CageWithoutCells_MathIsCorrect()
 			throws Exception {
 		Cage cage = mCageBuilder.build();
 
-		assertThat(cage.checkUserMath(), is(false));
+		assertThat(cage.checkMathOnEnteredValues(), is(false));
 	}
 
 	@Test
-	public void checkUserMath_CageOneCellVisibleNoneOperator_UserMathIsIncorrect()
+	public void checkMathOnEnteredValues_CageOneCellVisibleNoneOperator_MathIsIncorrect()
 			throws Exception {
 		int resultValue = 3;
 		CageOperator cageOperator = CageOperator.NONE;
@@ -227,11 +227,11 @@ public class CageTest {
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
-		assertThat(cage.checkUserMath(), is(false));
+		assertThat(cage.checkMathOnEnteredValues(), is(false));
 	}
 
 	@Test
-	public void checkUserMath_CageOneCellInvisibleNoneOperator_UserMathIsCorrect()
+	public void checkMathOnEnteredValues_CageOneCellInvisibleNoneOperator_MathIsCorrect()
 			throws Exception {
 		int resultValue = 2;
 		CageOperator cageOperator = CageOperator.NONE;
@@ -244,11 +244,11 @@ public class CageTest {
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
-		assertThat(cage.checkUserMath(), is(true));
+		assertThat(cage.checkMathOnEnteredValues(), is(true));
 	}
 
 	@Test
-	public void checkUserMath_CageOneCellInvisibleNoneOperator_UserMathIsIncorrect()
+	public void checkMathOnEnteredValues_CageOneCellInvisibleNoneOperator_MathIsIncorrect()
 			throws Exception {
 		int resultValue = 3;
 		CageOperator cageOperator = CageOperator.NONE;
@@ -261,11 +261,11 @@ public class CageTest {
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
-		assertThat(cage.checkUserMath(), is(false));
+		assertThat(cage.checkMathOnEnteredValues(), is(false));
 	}
 
 	@Test
-	public void checkUserMath_CageTwoCellsVisibleAddOperator_UserMathIsCorrect()
+	public void checkMathOnEnteredValues_CageTwoCellsVisibleAddOperator_MathIsCorrect()
 			throws Exception {
 		int resultValue = 5;
 		CageOperator cageOperator = CageOperator.ADD;
@@ -278,11 +278,11 @@ public class CageTest {
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
-		assertThat(cage.checkUserMath(), is(true));
+		assertThat(cage.checkMathOnEnteredValues(), is(true));
 	}
 
 	@Test
-	public void checkUserMath_CageTwoCellsVisibleAddOperator_UserMathIsNotCorrect()
+	public void checkMathOnEnteredValues_CageTwoCellsVisibleAddOperator_MathIsNotCorrect()
 			throws Exception {
 		int resultValue = 5;
 		CageOperator cageOperator = CageOperator.ADD;
@@ -295,11 +295,11 @@ public class CageTest {
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
-		assertThat(cage.checkUserMath(), is(false));
+		assertThat(cage.checkMathOnEnteredValues(), is(false));
 	}
 
 	@Test
-	public void checkUserMath_CageTwoCellsInvisibleAddOperator_UserMathIsCorrect()
+	public void checkMathOnEnteredValues_CageTwoCellsInvisibleAddOperator_MathIsCorrect()
 			throws Exception {
 		int resultValue = 5;
 		CageOperator cageOperator = CageOperator.ADD;
@@ -312,11 +312,11 @@ public class CageTest {
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
-		assertThat(cage.checkUserMath(), is(true));
+		assertThat(cage.checkMathOnEnteredValues(), is(true));
 	}
 
 	@Test
-	public void checkUserMath_CageTwoCellsInvisibleAddOperator_UserMathIsNotCorrect()
+	public void checkMathOnEnteredValues_CageTwoCellsInvisibleAddOperator_MathIsNotCorrect()
 			throws Exception {
 		int resultValue = 5;
 		CageOperator cageOperator = CageOperator.ADD;
@@ -329,11 +329,11 @@ public class CageTest {
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
-		assertThat(cage.checkUserMath(), is(false));
+		assertThat(cage.checkMathOnEnteredValues(), is(false));
 	}
 
 	@Test
-	public void checkUserMath_CageThreeCellsVisibleAddOperator_UserMathIsCorrect()
+	public void checkMathOnEnteredValues_CageThreeCellsVisibleAddOperator_MathIsCorrect()
 			throws Exception {
 		int resultValue = 9;
 		CageOperator cageOperator = CageOperator.ADD;
@@ -346,11 +346,11 @@ public class CageTest {
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
-		assertThat(cage.checkUserMath(), is(true));
+		assertThat(cage.checkMathOnEnteredValues(), is(true));
 	}
 
 	@Test
-	public void checkUserMath_CageThreeCellsInvisibleAddOperator_UserMathIsCorrect()
+	public void checkMathOnEnteredValues_CageThreeCellsInvisibleAddOperator_MathIsCorrect()
 			throws Exception {
 		int resultValue = 9;
 		CageOperator cageOperator = CageOperator.ADD;
@@ -363,11 +363,11 @@ public class CageTest {
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
-		assertThat(cage.checkUserMath(), is(true));
+		assertThat(cage.checkMathOnEnteredValues(), is(true));
 	}
 
 	@Test
-	public void checkUserMath_CageTwoCellsVisibleSubtractOperator_UserMathIsCorrect()
+	public void checkMathOnEnteredValues_CageTwoCellsVisibleSubtractOperator_MathIsCorrect()
 			throws Exception {
 		int resultValue = 1;
 		CageOperator cageOperator = CageOperator.SUBTRACT;
@@ -380,11 +380,11 @@ public class CageTest {
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
-		assertThat(cage.checkUserMath(), is(true));
+		assertThat(cage.checkMathOnEnteredValues(), is(true));
 	}
 
 	@Test
-	public void checkUserMath_CageTwoCellsReversedVisibleSubtractOperator_UserMathIsCorrect()
+	public void checkMathOnEnteredValues_CageTwoCellsReversedVisibleSubtractOperator_MathIsCorrect()
 			throws Exception {
 		int resultValue = 1;
 		CageOperator cageOperator = CageOperator.SUBTRACT;
@@ -397,11 +397,11 @@ public class CageTest {
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
-		assertThat(cage.checkUserMath(), is(true));
+		assertThat(cage.checkMathOnEnteredValues(), is(true));
 	}
 
 	@Test
-	public void checkUserMath_CageTwoCellsVisibleSubtractOperator_UserMathIsNotCorrect()
+	public void checkMathOnEnteredValues_CageTwoCellsVisibleSubtractOperator_MathIsNotCorrect()
 			throws Exception {
 		int resultValue = 1;
 		CageOperator cageOperator = CageOperator.SUBTRACT;
@@ -414,11 +414,11 @@ public class CageTest {
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
-		assertThat(cage.checkUserMath(), is(false));
+		assertThat(cage.checkMathOnEnteredValues(), is(false));
 	}
 
 	@Test
-	public void checkUserMath_CageTwoCellsInvisibleSubtractOperator_UserMathIsCorrect()
+	public void checkMathOnEnteredValues_CageTwoCellsInvisibleSubtractOperator_MathIsCorrect()
 			throws Exception {
 		int resultValue = 1;
 		CageOperator cageOperator = CageOperator.SUBTRACT;
@@ -431,11 +431,11 @@ public class CageTest {
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
-		assertThat(cage.checkUserMath(), is(true));
+		assertThat(cage.checkMathOnEnteredValues(), is(true));
 	}
 
 	@Test
-	public void checkUserMath_CageTwoCellsReversedInvisibleSubtractOperator_UserMathIsCorrect()
+	public void checkMathOnEnteredValues_CageTwoCellsReversedInvisibleSubtractOperator_MathIsCorrect()
 			throws Exception {
 		int resultValue = 1;
 		CageOperator cageOperator = CageOperator.SUBTRACT;
@@ -448,11 +448,11 @@ public class CageTest {
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
-		assertThat(cage.checkUserMath(), is(true));
+		assertThat(cage.checkMathOnEnteredValues(), is(true));
 	}
 
 	@Test
-	public void checkUserMath_CageTwoCellsInvisibleSubtractOperator_UserMathIsNotCorrect()
+	public void checkMathOnEnteredValues_CageTwoCellsInvisibleSubtractOperator_MathIsNotCorrect()
 			throws Exception {
 		int resultValue = 5;
 		CageOperator cageOperator = CageOperator.SUBTRACT;
@@ -465,11 +465,11 @@ public class CageTest {
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
-		assertThat(cage.checkUserMath(), is(false));
+		assertThat(cage.checkMathOnEnteredValues(), is(false));
 	}
 
 	@Test
-	public void checkUserMath_CageTwoCellsVisibleMultiplyOperator_UserMathIsCorrect()
+	public void checkMathOnEnteredValues_CageTwoCellsVisibleMultiplyOperator_MathIsCorrect()
 			throws Exception {
 		int resultValue = 6;
 		CageOperator cageOperator = CageOperator.MULTIPLY;
@@ -482,11 +482,11 @@ public class CageTest {
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
-		assertThat(cage.checkUserMath(), is(true));
+		assertThat(cage.checkMathOnEnteredValues(), is(true));
 	}
 
 	@Test
-	public void checkUserMath_CageTwoCellsVisibleMultiplyOperator_UserMathIsNotCorrect()
+	public void checkMathOnEnteredValues_CageTwoCellsVisibleMultiplyOperator_MathIsNotCorrect()
 			throws Exception {
 		int resultValue = 1;
 		CageOperator cageOperator = CageOperator.MULTIPLY;
@@ -499,11 +499,11 @@ public class CageTest {
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
-		assertThat(cage.checkUserMath(), is(false));
+		assertThat(cage.checkMathOnEnteredValues(), is(false));
 	}
 
 	@Test
-	public void checkUserMath_CageTwoCellsInvisibleMultiplyOperator_UserMathIsCorrect()
+	public void checkMathOnEnteredValues_CageTwoCellsInvisibleMultiplyOperator_MathIsCorrect()
 			throws Exception {
 		int resultValue = 6;
 		CageOperator cageOperator = CageOperator.MULTIPLY;
@@ -516,11 +516,11 @@ public class CageTest {
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
-		assertThat(cage.checkUserMath(), is(true));
+		assertThat(cage.checkMathOnEnteredValues(), is(true));
 	}
 
 	@Test
-	public void checkUserMath_CageTwoCellsInvisibleMultiplyOperator_UserMathIsNotCorrect()
+	public void checkMathOnEnteredValues_CageTwoCellsInvisibleMultiplyOperator_MathIsNotCorrect()
 			throws Exception {
 		int resultValue = 5;
 		CageOperator cageOperator = CageOperator.MULTIPLY;
@@ -533,11 +533,11 @@ public class CageTest {
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
-		assertThat(cage.checkUserMath(), is(false));
+		assertThat(cage.checkMathOnEnteredValues(), is(false));
 	}
 
 	@Test
-	public void checkUserMath_CageThreeCellsVisibleMultiplyOperator_UserMathIsCorrect()
+	public void checkMathOnEnteredValues_CageThreeCellsVisibleMultiplyOperator_MathIsCorrect()
 			throws Exception {
 		int resultValue = 24;
 		CageOperator cageOperator = CageOperator.MULTIPLY;
@@ -550,11 +550,11 @@ public class CageTest {
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
-		assertThat(cage.checkUserMath(), is(true));
+		assertThat(cage.checkMathOnEnteredValues(), is(true));
 	}
 
 	@Test
-	public void checkUserMath_CageThreeCellsInvisibleMultiplyOperator_UserMathIsCorrect()
+	public void checkMathOnEnteredValues_CageThreeCellsInvisibleMultiplyOperator_MathIsCorrect()
 			throws Exception {
 		int resultValue = 24;
 		CageOperator cageOperator = CageOperator.MULTIPLY;
@@ -567,11 +567,11 @@ public class CageTest {
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
-		assertThat(cage.checkUserMath(), is(true));
+		assertThat(cage.checkMathOnEnteredValues(), is(true));
 	}
 
 	@Test
-	public void checkUserMath_CageTwoCellsVisibleDivideOperator_UserMathIsCorrect()
+	public void checkMathOnEnteredValues_CageTwoCellsVisibleDivideOperator_MathIsCorrect()
 			throws Exception {
 		int resultValue = 2;
 		CageOperator cageOperator = CageOperator.DIVIDE;
@@ -584,11 +584,11 @@ public class CageTest {
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
-		assertThat(cage.checkUserMath(), is(true));
+		assertThat(cage.checkMathOnEnteredValues(), is(true));
 	}
 
 	@Test
-	public void checkUserMath_CageTwoCellsReversedVisibleDivideOperator_UserMathIsCorrect()
+	public void checkMathOnEnteredValues_CageTwoCellsReversedVisibleDivideOperator_MathIsCorrect()
 			throws Exception {
 		int resultValue = 2;
 		CageOperator cageOperator = CageOperator.DIVIDE;
@@ -601,11 +601,11 @@ public class CageTest {
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
-		assertThat(cage.checkUserMath(), is(true));
+		assertThat(cage.checkMathOnEnteredValues(), is(true));
 	}
 
 	@Test
-	public void checkUserMath_CageTwoCellsVisibleDivideOperator_UserMathIsNotCorrect()
+	public void checkMathOnEnteredValues_CageTwoCellsVisibleDivideOperator_MathIsNotCorrect()
 			throws Exception {
 		int resultValue = 1;
 		CageOperator cageOperator = CageOperator.DIVIDE;
@@ -618,11 +618,11 @@ public class CageTest {
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
-		assertThat(cage.checkUserMath(), is(false));
+		assertThat(cage.checkMathOnEnteredValues(), is(false));
 	}
 
 	@Test
-	public void checkUserMath_CageTwoCellsInvisibleDivideOperator_UserMathIsCorrect()
+	public void checkMathOnEnteredValues_CageTwoCellsInvisibleDivideOperator_MathIsCorrect()
 			throws Exception {
 		int resultValue = 2;
 		CageOperator cageOperator = CageOperator.DIVIDE;
@@ -635,11 +635,11 @@ public class CageTest {
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
-		assertThat(cage.checkUserMath(), is(true));
+		assertThat(cage.checkMathOnEnteredValues(), is(true));
 	}
 
 	@Test
-	public void checkUserMath_CageTwoCellsReversedInvisibleDivideOperator_UserMathIsCorrect()
+	public void checkMathOnEnteredValues_CageTwoCellsReversedInvisibleDivideOperator_MathIsCorrect()
 			throws Exception {
 		int resultValue = 2;
 		CageOperator cageOperator = CageOperator.DIVIDE;
@@ -652,11 +652,11 @@ public class CageTest {
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
-		assertThat(cage.checkUserMath(), is(true));
+		assertThat(cage.checkMathOnEnteredValues(), is(true));
 	}
 
 	@Test
-	public void checkUserMath_CageTwoCellsInvisibleDivideOperator_UserMathIsNotCorrect()
+	public void checkMathOnEnteredValues_CageTwoCellsInvisibleDivideOperator_MathIsNotCorrect()
 			throws Exception {
 		int resultValue = 5;
 		CageOperator cageOperator = CageOperator.DIVIDE;
@@ -669,7 +669,7 @@ public class CageTest {
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
-		assertThat(cage.checkUserMath(), is(false));
+		assertThat(cage.checkMathOnEnteredValues(), is(false));
 	}
 
 	@Test

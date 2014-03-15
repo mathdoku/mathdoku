@@ -189,14 +189,14 @@ public class GridTest {
 			return this;
 		}
 
-		private GridBuilderStub setCellMockWithUserValue(int id, int row,
-				int column, int userValue) {
+		private GridBuilderStub setCellMockWithEnteredValue(int id, int row, int column, 
+															int enteredValue) {
 			// Define row and column of the selected cell
 			when(mCellMockOfDefaultSetup[id].getRow()).thenReturn(row);
 			when(mCellMockOfDefaultSetup[id].getColumn()).thenReturn(column);
 			// Set user value
-			when(mCellMockOfDefaultSetup[id].getUserValue()).thenReturn(
-					userValue);
+			when(mCellMockOfDefaultSetup[id].getEnteredValue()).thenReturn(
+					enteredValue);
 
 			return this;
 		}
@@ -328,7 +328,7 @@ public class GridTest {
 		mGridBuilderStub
 				.useSameMockForAllCells()
 				.setupDefaultWhichDoesNotThrowErrorsOnBuild();
-		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.getUserValue())
+		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.getEnteredValue())
 				.thenReturn(0, 1, 2, 0);
 		Grid grid = mGridBuilderStub.build();
 
@@ -336,7 +336,7 @@ public class GridTest {
 
 		// Clearing a second time won't change the statistics as no cells are
 		// left to be cleared
-		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.getUserValue())
+		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.getEnteredValue())
 				.thenReturn(0, 0, 0, 0);
 		grid.clearCells();
 
@@ -348,14 +348,14 @@ public class GridTest {
 	public void clearCells_AnyGrid_UserMathOfAllCagesIsChecked()
 			throws Exception {
 		Grid grid = mGridBuilderStub.build();
-		// Method checkUserMath is already called while instantiating the new
+		// Method checkMathOnEnteredValues is already called while instantiating the new
 		// grid.
-		verify(mGridBuilderStub.mAnyCageOfDefaultSetup).checkUserMath();
+		verify(mGridBuilderStub.mAnyCageOfDefaultSetup).checkMathOnEnteredValues();
 
 		grid.clearCells();
 
 		verify(mGridBuilderStub.mAnyCageOfDefaultSetup,
-				times(2)).checkUserMath();
+				times(2)).checkMathOnEnteredValues();
 	}
 
 	private void assertThatCellDoesNotExist(int gridSize, int row, int col) {
@@ -420,7 +420,7 @@ public class GridTest {
 		mGridBuilderStub
 				.useSameMockForAllCells()
 				.setupDefaultWhichDoesNotThrowErrorsOnBuild();
-		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.isUserValueIncorrect())
+		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.isEnteredValueIncorrect())
 				.thenReturn(false, true, false, true, false);
 		Grid grid = mGridBuilderStub.build();
 
@@ -428,7 +428,7 @@ public class GridTest {
 
 		// Check if test isn't flawed with incorrect number of cells in list.
 		verify(mGridBuilderStub.mAnyCellMockOfDefaultSetup,
-				times(mGridBuilderStub.mCells.size())).isUserValueIncorrect();
+				times(mGridBuilderStub.mCells.size())).isEnteredValueIncorrect();
 
 		// Check whether the correct number of cells has been revealed.
 		int expectedNumberOfCellsRevealed = 2; // Number of cells with value
@@ -485,7 +485,7 @@ public class GridTest {
 		mGridBuilderStub
 				.useSameMockForAllCells()
 				.setupDefaultWhichDoesNotThrowErrorsOnBuild();
-		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.isUserValueIncorrect())
+		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.isEnteredValueIncorrect())
 				.thenReturn(false, false, true, false);
 		Grid grid = mGridBuilderStub.build();
 
@@ -493,7 +493,7 @@ public class GridTest {
 
 		// Check if test isn't flawed with incorrect number of cells in list.
 		verify(mGridBuilderStub.mAnyCellMockOfDefaultSetup, atLeast(1))
-				.isUserValueIncorrect();
+				.isEnteredValueIncorrect();
 	}
 
 	@Test
@@ -501,7 +501,7 @@ public class GridTest {
 		mGridBuilderStub
 				.useSameMockForAllCells()
 				.setupDefaultWhichDoesNotThrowErrorsOnBuild();
-		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.isUserValueIncorrect())
+		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.isEnteredValueIncorrect())
 				.thenReturn(false);
 		Grid grid = mGridBuilderStub.build();
 
@@ -509,7 +509,7 @@ public class GridTest {
 
 		// Check if test isn't flawed with incorrect number of cells in list.
 		verify(mGridBuilderStub.mAnyCellMockOfDefaultSetup,
-				times(mGridBuilderStub.mCells.size())).isUserValueIncorrect();
+				times(mGridBuilderStub.mCells.size())).isEnteredValueIncorrect();
 	}
 
 	@Test
@@ -537,7 +537,7 @@ public class GridTest {
 		mGridBuilderStub
 				.useSameMockForAllCells()
 				.setupDefaultWhichDoesNotThrowErrorsOnBuild();
-		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.isUserValueSet())
+		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.hasEnteredValue())
 				.thenReturn(false);
 		Grid grid = mGridBuilderStub.build();
 
@@ -547,11 +547,11 @@ public class GridTest {
 
 	@Test
 	public void isSolutionValidSoFar_FilledCellIsValid_True() throws Exception {
-		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.isUserValueSet())
+		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.hasEnteredValue())
 				.thenReturn(true);
-		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.getUserValue())
+		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.getEnteredValue())
 				.thenReturn(2);
-		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.isUserValueIncorrect())
+		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.isEnteredValueIncorrect())
 				.thenReturn(false);
 		Grid grid = mGridBuilderStub.build();
 
@@ -562,11 +562,11 @@ public class GridTest {
 	@Test
 	public void isSolutionValidSoFar_FilledCellIsInvalid_False()
 			throws Exception {
-		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.isUserValueSet())
+		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.hasEnteredValue())
 				.thenReturn(true);
-		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.getUserValue())
+		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.getEnteredValue())
 				.thenReturn(2);
-		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.isUserValueIncorrect())
+		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.isEnteredValueIncorrect())
 				.thenReturn(true);
 		Grid grid = mGridBuilderStub.build();
 
@@ -579,25 +579,25 @@ public class GridTest {
 			throws Exception {
 		// Create stub for an empty cell
 		Cell cellEmptyStub = mock(Cell.class);
-		when(cellEmptyStub.isUserValueSet()).thenReturn(false);
+		when(cellEmptyStub.hasEnteredValue()).thenReturn(false);
 
 		// Create stub for a cell with a correct value
-		Cell cellWithValidUserValueStub = mock(Cell.class);
-		when(cellWithValidUserValueStub.isUserValueSet()).thenReturn(true);
-		when(cellWithValidUserValueStub.getUserValue()).thenReturn(2);
-		when(cellWithValidUserValueStub.isUserValueIncorrect()).thenReturn(
+		Cell cellWithValidEnteredValueStub = mock(Cell.class);
+		when(cellWithValidEnteredValueStub.hasEnteredValue()).thenReturn(true);
+		when(cellWithValidEnteredValueStub.getEnteredValue()).thenReturn(2);
+		when(cellWithValidEnteredValueStub.isEnteredValueIncorrect()).thenReturn(
 				false);
 
 		// Create stub for a cell with a incorrect value
-		Cell cellWithInvalidUserValueStub = mock(Cell.class);
-		when(cellWithInvalidUserValueStub.isUserValueSet()).thenReturn(true);
-		when(cellWithInvalidUserValueStub.getUserValue()).thenReturn(1);
-		when(cellWithInvalidUserValueStub.isUserValueIncorrect()).thenReturn(true);
+		Cell cellWithInvalidEnteredValueStub = mock(Cell.class);
+		when(cellWithInvalidEnteredValueStub.hasEnteredValue()).thenReturn(true);
+		when(cellWithInvalidEnteredValueStub.getEnteredValue()).thenReturn(1);
+		when(cellWithInvalidEnteredValueStub.isEnteredValueIncorrect()).thenReturn(true);
 
 		mGridBuilderStub.setGridSize(2);
 		mGridBuilderStub.setCellsInitializedWith(cellEmptyStub,
-				cellWithValidUserValueStub, cellWithInvalidUserValueStub,
-				cellWithValidUserValueStub);
+				cellWithValidEnteredValueStub, cellWithInvalidEnteredValueStub,
+				cellWithValidEnteredValueStub);
 		Grid grid = mGridBuilderStub.build();
 
 		assertThat("Grid is valid so far", grid.isSolutionValidSoFar(),
@@ -701,7 +701,7 @@ public class GridTest {
 		// values).
 		// In both cases the user value equals 0 before and after the actual
 		// undo, indicating that the cell does not contain a user value.
-		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.getUserValue())
+		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.getEnteredValue())
 				.thenReturn( //
 						0 /*
 						 * value before actual undo
@@ -728,7 +728,7 @@ public class GridTest {
 	}
 
 	@Test
-	public void undoLastMove_RestoreCellOrCellChangeAreEmptyOrContainUserValue_MoveIsRestored()
+	public void undoLastMove_RestoreCellOrCellChangeAreEmptyOrContainEnteredValue_MoveIsRestored()
 			throws Exception {
 		// This test simulates following:
 		// 1) Before undo the cell is empty. After undo the cell is filled with
@@ -738,13 +738,13 @@ public class GridTest {
 		// 3) Before undo the cell is filled with a user value. After undo the
 		// cell does not contain a user value; the cell can contain a maybe
 		// value.
-		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.getUserValue())
+		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.getEnteredValue())
 				.thenReturn( //
 						0 /* value before actual undo */,
 						//
 						1 /* value after actual undo */);
 		// This unit test checks whether UndoLastMove correctly calls methods
-		// markDuplicateValuesInSameRowAndColumn and checkUserMath. Both those
+		// markDuplicateValuesInSameRowAndColumn and checkMathOnEnteredValues. Both those
 		// methods are called when instantiating the new grid via the
 		// GridBuilder.build(). 
 		int cageIdAffectedCellInCellChange = 2;
@@ -757,10 +757,10 @@ public class GridTest {
 		int numberOfMovesBeforeUndo = mGridBuilderStub.mCellChanges.size();
 		Grid grid = mGridBuilderStub.build();
 		assertThat(grid.countMoves(), is(numberOfMovesBeforeUndo));
-		// Check if setDuplicateHighlight and checkUserMath are called during build
+		// Check if setDuplicateHighlight and checkMathOnEnteredValues are called during build
 		verify(mGridBuilderStub.mAnyCellMockOfDefaultSetup)
 				.setDuplicateHighlight(anyBoolean());
-		verify(mGridBuilderStub.mCageMockOfDefaultSetup[cageIdAffectedCellInCellChange]).checkUserMath();
+		verify(mGridBuilderStub.mCageMockOfDefaultSetup[cageIdAffectedCellInCellChange]).checkMathOnEnteredValues();
 
 		grid.undoLastMove();
 
@@ -770,10 +770,10 @@ public class GridTest {
 				GridStatistics.StatisticsCounterType.ACTION_UNDO_MOVE);
 		assertThat("Selected cell", grid.getSelectedCell(),
 				is(sameInstance(mGridBuilderStub.mAnyCellMockOfDefaultSetup)));
-		// Check if setDuplicateHighlight and checkUserMath are called as second time
+		// Check if setDuplicateHighlight and checkMathOnEnteredValues are called as second time
 		verify(mGridBuilderStub.mAnyCellMockOfDefaultSetup, times(2))
 				.setDuplicateHighlight(anyBoolean());
-		verify(mGridBuilderStub.mCageMockOfDefaultSetup[cageIdAffectedCellInCellChange], times(2)).checkUserMath();
+		verify(mGridBuilderStub.mCageMockOfDefaultSetup[cageIdAffectedCellInCellChange], times(2)).checkMathOnEnteredValues();
 	}
 
 	@Test
@@ -915,8 +915,8 @@ public class GridTest {
 		int idOtherCellOnSameRow = idSelectedCell - 1;
 		Grid grid = mGridBuilderStub
 				.setCellMockAsSelectedCell(idSelectedCell)
-				.setCellMockWithUserValue(idSelectedCell, rowSelectedCell,
-						columnSelectedCell, valueSelectedCell)
+				.setCellMockWithEnteredValue(idSelectedCell, rowSelectedCell, columnSelectedCell,
+											 valueSelectedCell)
 				.setCellMockWithMaybeValues(idOtherCellOnSameRow,
 						rowSelectedCell, columnSelectedCell - 1,
 						new int[] { valueSelectedCell })
@@ -943,8 +943,8 @@ public class GridTest {
 		int idOtherCellOnSameRow = idSelectedCell - 1;
 		Grid grid = mGridBuilderStub
 				.setCellMockAsSelectedCell(idSelectedCell)
-				.setCellMockWithUserValue(idSelectedCell, rowSelectedCell,
-						columnSelectedCell, valueSelectedCell)
+				.setCellMockWithEnteredValue(idSelectedCell, rowSelectedCell, columnSelectedCell,
+											 valueSelectedCell)
 				.setCellMockWithMaybeValues(
 						idOtherCellOnSameRow,
 						rowSelectedCell,
@@ -978,8 +978,8 @@ public class GridTest {
 		int idOtherCellInSameColumn = idSelectedCell - 1;
 		Grid grid = mGridBuilderStub
 				.setCellMockAsSelectedCell(idSelectedCell)
-				.setCellMockWithUserValue(idSelectedCell, rowSelectedCell,
-						columnSelectedCell, valueSelectedCell)
+				.setCellMockWithEnteredValue(idSelectedCell, rowSelectedCell, columnSelectedCell,
+											 valueSelectedCell)
 				.setCellMockWithMaybeValues(idOtherCellInSameColumn,
 						rowSelectedCell - 1, columnSelectedCell,
 						new int[] { valueSelectedCell })
@@ -1008,8 +1008,8 @@ public class GridTest {
 		int idOtherCellInSameColumn = idSelectedCell - 1;
 		Grid grid = mGridBuilderStub
 				.setCellMockAsSelectedCell(idSelectedCell)
-				.setCellMockWithUserValue(idSelectedCell, rowSelectedCell,
-						columnSelectedCell, valueSelectedCell)
+				.setCellMockWithEnteredValue(idSelectedCell, rowSelectedCell, columnSelectedCell,
+											 valueSelectedCell)
 				.setCellMockWithMaybeValues(idOtherCellInSameColumn,
 						rowSelectedCell - 1, columnSelectedCell,
 						new int[] { valueSelectedCell })
@@ -1123,7 +1123,7 @@ public class GridTest {
 		verify(mGridBuilderStub.mAnyCellMockOfDefaultSetup,
 				times(mGridBuilderStub.mCages.size())).setCageText(anyString());
 		verify(mGridBuilderStub.mAnyCageOfDefaultSetup,
-				times(mGridBuilderStub.mCages.size())).checkUserMath();
+				times(mGridBuilderStub.mCages.size())).checkMathOnEnteredValues();
 		verify(mGridBuilderStub.mAnyCellMockOfDefaultSetup, never())
 				.setDuplicateHighlight(true);
 	}
@@ -1221,37 +1221,37 @@ public class GridTest {
 	}
 
 	@Test
-	public void containsNoUserValues_GridHasNoUserValuesAndNoMaybeValues_True()
+	public void containsNoEnteredValues_GridHasNoEnteredValuesAndNoMaybeValues_True()
 			throws Exception {
 		Grid grid = mGridBuilderStub.build();
 
-		assertThat(grid.containsNoUserValues(), is(true));
+		assertThat(grid.containsNoEnteredValues(), is(true));
 	}
 
 	@Test
-	public void containsNoUserValues_GridHasOneUserValueButNoMaybeValues_False()
+	public void containsNoEnteredValues_GridHasOneEnteredValueButNoMaybeValues_False()
 			throws Exception {
-		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.isUserValueSet())
+		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.hasEnteredValue())
 				.thenReturn(true);
-		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.getUserValue())
+		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.getEnteredValue())
 				.thenReturn(2);
 		Grid grid = mGridBuilderStub.build();
 
-		assertThat(grid.containsNoUserValues(), is(false));
+		assertThat(grid.containsNoEnteredValues(), is(false));
 	}
 
 	@Test
-	public void containsNoUserValues_GridHasOneMaybeValueButNoUserValues_True()
+	public void containsNoEnteredValues_GridHasOneMaybeValueButNoEnteredValues_True()
 			throws Exception {
 		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.countPossibles())
 				.thenReturn(1);
 		Grid grid = mGridBuilderStub.build();
 
-		assertThat(grid.containsNoUserValues(), is(true));
+		assertThat(grid.containsNoEnteredValues(), is(true));
 	}
 
 	@Test
-	public void isEmpty_GridHasNoUserValuesAndNoMaybeValues_True()
+	public void isEmpty_GridHasNoEnteredValuesAndNoMaybeValues_True()
 			throws Exception {
 		Grid grid = mGridBuilderStub.build();
 
@@ -1259,11 +1259,11 @@ public class GridTest {
 	}
 
 	@Test
-	public void isEmpty_GridHasOneUserValueButNoMaybeValues_False()
+	public void isEmpty_GridHasOneEnteredValueButNoMaybeValues_False()
 			throws Exception {
-		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.isUserValueSet())
+		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.hasEnteredValue())
 				.thenReturn(true);
-		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.getUserValue())
+		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.getEnteredValue())
 				.thenReturn(2);
 		Grid grid = mGridBuilderStub.build();
 
@@ -1271,7 +1271,7 @@ public class GridTest {
 	}
 
 	@Test
-	public void isEmpty_GridHasOneMaybeValueButNoUserValues_False()
+	public void isEmpty_GridHasOneMaybeValueButNoEnteredValues_False()
 			throws Exception {
 		when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.countPossibles())
 				.thenReturn(1);
@@ -1300,7 +1300,7 @@ public class GridTest {
 	}
 
 	@Test
-	public void createNewGridForReplay_ContainsCellWithUserValue_UserValueIsCleared()
+	public void createNewGridForReplay_ContainsCellWithEnteredValue_EnteredValueIsCleared()
 			throws Exception {
 		// Use a grid without mocks for this test.
 		Grid originalGrid = TestGrid.WithVisibleOperators()
@@ -1309,13 +1309,13 @@ public class GridTest {
 		// Set only one property of one cell which should not be copied to the
 		// new grid.
 		int idOfCell_1 = 5;
-		originalGrid.getCell(idOfCell_1).setUserValue(3);
+		originalGrid.getCell(idOfCell_1).setEnteredValue(3);
 
 		Grid newGrid = originalGrid.createNewGridForReplay();
 
 		assertThat(newGrid, is(notNullValue()));
-		assertThat(newGrid.getCell(idOfCell_1).getUserValue(),
-				is(not(originalGrid.getCell(idOfCell_1).getUserValue())));
+		assertThat(newGrid.getCell(idOfCell_1).getEnteredValue(),
+				is(not(originalGrid.getCell(idOfCell_1).getEnteredValue())));
 	}
 
 	@Test
@@ -1435,11 +1435,11 @@ public class GridTest {
 		int cellId = 7;
 		TestGrid testGridCreator = TestGrid.WithVisibleOperators()
 				.setEmptyGrid()
-				.setIncorrectUserValueInCell(cellId);
+				.setIncorrectEnteredValueInCell(cellId);
 		Grid grid = testGridCreator.getGrid();
 
 		assertThat(grid.markInvalidChoices(), is(1));
-		assertThat(grid.getCell(7).hasInvalidUserValueHighlight(), is(true));
+		assertThat(grid.getCell(7).hasInvalidValueHighlight(), is(true));
 	}
 
 	@Test
@@ -1449,8 +1449,8 @@ public class GridTest {
 		int cellId_2 = 0;
 		TestGrid testGridCreator = TestGrid.WithVisibleOperators()
 				.setEmptyGrid()
-				.setIncorrectUserValueInCell(cellId_1)
-				.setIncorrectUserValueInCell(cellId_2);
+				.setIncorrectEnteredValueInCell(cellId_1)
+				.setIncorrectEnteredValueInCell(cellId_2);
 		Grid grid = testGridCreator.getGrid();
 
 		assertThat(grid.markInvalidChoices(), is(2));
@@ -1501,7 +1501,7 @@ public class GridTest {
 	}
 
 	@Test
-	public void revealSelectedCell_CellIsSelected_SelectedCellContainsCorrectUserValue()
+	public void revealSelectedCell_CellIsSelected_SelectedCellContainsCorrectEnteredValue()
 			throws Exception {
 		int idSelectedCell = 14;
 		Grid grid = mGridBuilderStub
@@ -1530,8 +1530,8 @@ public class GridTest {
 		int valueRevealed = 1;
 		Grid grid = mGridBuilderStub
 				.setCellMockAsSelectedCell(idSelectedCell)
-				.setCellMockWithUserValue(idSelectedCell, rowSelectedCell,
-						columnSelectedCell, valueRevealed)
+				.setCellMockWithEnteredValue(idSelectedCell, rowSelectedCell, columnSelectedCell,
+											 valueRevealed)
 				.setCellMockWithMaybeValues(idOtherCellOnSameRow,
 						rowSelectedCell, columnSelectedCell - 1,
 						new int[] { valueRevealed })
@@ -1613,115 +1613,114 @@ public class GridTest {
 	}
 
 	@Test
-	public void getUserValuesForCells_CellsIsNull_EmptyListReturned()
+	public void getEnteredValuesForCells_CellsIsNull_EmptyListReturned()
 			throws Exception {
 		Grid grid = mGridBuilderStub.build();
 
-		assertThat(grid.getUserValuesForCells(null).size(), is(0));
+		assertThat(grid.getEnteredValuesForCells(null).size(), is(0));
 	}
 
 	@Test
-	public void getUserValuesForCells_CellWithInvalidId_EmptyListReturned()
+	public void getEnteredValuesForCells_CellWithInvalidId_EmptyListReturned()
 			throws Exception {
 		int idOfCell = -1; // Value should not be in range 0 to gridsize *
 							// gridsize
 		Grid grid = mGridBuilderStub.build();
 
-		assertThat(grid.getUserValuesForCells(new int[] { idOfCell }).size(),
+		assertThat(grid.getEnteredValuesForCells(new int[]{idOfCell}).size(),
 				is(0));
 	}
 
 	@Test
-	public void getUserValuesForCells_GetValueForOneCellHavingAUserValue_UserValueReturned()
+	public void getEnteredValuesForCells_GetValueForOneCellHavingAEnteredValue_EnteredValueReturned()
 			throws Exception {
 		int idOfCell = 4;
 		int valueOfCell = 3;
 		when(
 				mGridBuilderStub.mCellMockOfDefaultSetup[idOfCell]
-						.isUserValueSet()).thenReturn(true);
-		when(mGridBuilderStub.mCellMockOfDefaultSetup[idOfCell].getUserValue())
+						.hasEnteredValue()).thenReturn(true);
+		when(mGridBuilderStub.mCellMockOfDefaultSetup[idOfCell].getEnteredValue())
 				.thenReturn(valueOfCell);
 		Grid grid = mGridBuilderStub.build();
 
-		List<Integer> expectedUserValues = new ArrayList<Integer>();
-		expectedUserValues.add(valueOfCell);
-		assertThat(grid.getUserValuesForCells(new int[] { idOfCell }),
-				is(expectedUserValues));
+		List<Integer> expectedEnteredValues = new ArrayList<Integer>();
+		expectedEnteredValues.add(valueOfCell);
+		assertThat(grid.getEnteredValuesForCells(new int[]{idOfCell}),
+				is(expectedEnteredValues));
 	}
 
 	@Test
-	public void getUserValuesForCells_GetValueForOneCellNotHavingAUserValue_NoUserValuesReturned()
+	public void getEnteredValuesForCells_GetValueForOneCellNotHavingAEnteredValue_NoEnteredValuesReturned()
 			throws Exception {
 		int idOfCell = 4;
 		when(
 				mGridBuilderStub.mCellMockOfDefaultSetup[idOfCell]
-						.isUserValueSet()).thenReturn(false);
+						.hasEnteredValue()).thenReturn(false);
 		Grid grid = mGridBuilderStub.build();
 
-		List<Integer> expectedUserValues = new ArrayList<Integer>();
-		assertThat(grid.getUserValuesForCells(new int[] { idOfCell }),
-				is(expectedUserValues));
+		List<Integer> expectedEnteredValues = new ArrayList<Integer>();
+		assertThat(grid.getEnteredValuesForCells(new int[]{idOfCell}),
+				is(expectedEnteredValues));
 	}
 
 	@Test
-	public void getUserValuesForCells_GetValueForMultipleCellsAllHavingAUserValue_UserValuesReturned()
+	public void getEnteredValuesForCells_GetValueForMultipleCellsAllHavingAEnteredValue_EnteredValuesReturned()
 			throws Exception {
 		int idOfCell_1 = 4;
 		int valueOfCell_1 = 3;
 		when(
 				mGridBuilderStub.mCellMockOfDefaultSetup[idOfCell_1]
-						.isUserValueSet()).thenReturn(true);
+						.hasEnteredValue()).thenReturn(true);
 		when(
 				mGridBuilderStub.mCellMockOfDefaultSetup[idOfCell_1]
-						.getUserValue()).thenReturn(valueOfCell_1);
+						.getEnteredValue()).thenReturn(valueOfCell_1);
 		int idOfCell_2 = 8;
 		int valueOfCell_2 = 2;
 		when(
 				mGridBuilderStub.mCellMockOfDefaultSetup[idOfCell_2]
-						.isUserValueSet()).thenReturn(true);
+						.hasEnteredValue()).thenReturn(true);
 		when(
 				mGridBuilderStub.mCellMockOfDefaultSetup[idOfCell_2]
-						.getUserValue()).thenReturn(valueOfCell_2);
+						.getEnteredValue()).thenReturn(valueOfCell_2);
 		Grid grid = mGridBuilderStub.build();
 
-		List<Integer> expectedUserValues = new ArrayList<Integer>();
-		expectedUserValues.add(valueOfCell_1);
-		expectedUserValues.add(valueOfCell_2);
-		assertThat(grid.getUserValuesForCells(new int[] { idOfCell_1,
-				idOfCell_2 }), is(expectedUserValues));
+		List<Integer> expectedEnteredValues = new ArrayList<Integer>();
+		expectedEnteredValues.add(valueOfCell_1);
+		expectedEnteredValues.add(valueOfCell_2);
+		assertThat(grid.getEnteredValuesForCells(new int[]{idOfCell_1, idOfCell_2}), is(expectedEnteredValues));
 	}
 
 	@Test
-	public void getUserValuesForCells_GetValueForMultipleCellsNotAllHavingAUserValue_UserValuesReturned()
+	public void getEnteredValuesForCells_GetValueForMultipleCellsNotAllHavingAEnteredValue_EnteredValuesReturned()
 			throws Exception {
 		int idOfCell_1 = 4;
 		int valueOfCell_1 = 3;
 		when(
 				mGridBuilderStub.mCellMockOfDefaultSetup[idOfCell_1]
-						.isUserValueSet()).thenReturn(true);
+						.hasEnteredValue()).thenReturn(true);
 		when(
 				mGridBuilderStub.mCellMockOfDefaultSetup[idOfCell_1]
-						.getUserValue()).thenReturn(valueOfCell_1);
+						.getEnteredValue()).thenReturn(valueOfCell_1);
 		int idOfCell_2 = 8;
 		int valueOfCell_2 = 2;
 		when(
 				mGridBuilderStub.mCellMockOfDefaultSetup[idOfCell_2]
-						.isUserValueSet()).thenReturn(true);
+						.hasEnteredValue()).thenReturn(true);
 		when(
 				mGridBuilderStub.mCellMockOfDefaultSetup[idOfCell_2]
-						.getUserValue()).thenReturn(valueOfCell_2);
+						.getEnteredValue()).thenReturn(valueOfCell_2);
 		int idOfCell_3 = 9;
 		when(
 				mGridBuilderStub.mCellMockOfDefaultSetup[idOfCell_3]
-						.isUserValueSet()).thenReturn(false);
+						.hasEnteredValue()).thenReturn(false);
 		Grid grid = mGridBuilderStub.build();
 
-		List<Integer> expectedUserValues = new ArrayList<Integer>();
-		expectedUserValues.add(valueOfCell_1);
-		expectedUserValues.add(valueOfCell_2);
+		List<Integer> expectedEnteredValues = new ArrayList<Integer>();
+		expectedEnteredValues.add(valueOfCell_1);
+		expectedEnteredValues.add(valueOfCell_2);
 		assertThat(
-				grid.getUserValuesForCells(new int[] { idOfCell_1, idOfCell_2,
-						idOfCell_3 }), is(expectedUserValues));
+				grid.getEnteredValuesForCells(new int[]{idOfCell_1, idOfCell_2, idOfCell_3}),
+				is(expectedEnteredValues));
 	}
 
 	@Test
@@ -1782,39 +1781,39 @@ public class GridTest {
 	}
 
 	@Test
-	public void markDuplicateValues_GridWithUserValuesButNoDuplicates_NoDuplicatesFounds()
+	public void markDuplicateValues_GridWithEnteredValuesButNoDuplicates_NoDuplicatesFounds()
 			throws Exception {
 		Grid grid = TestGrid.WithVisibleOperators()
-				.setCorrectUserValueToAllCells()
+				.setCorrectEnteredValueToAllCells()
 				.getGrid();
 
 		assertThat(grid.markDuplicateValues(), is(false));
 	}
 
 	@Test
-	public void markDuplicateValues_GridWithDuplicateUserValuesOnSameRow_DuplicatesFounds()
+	public void markDuplicateValues_GridWithDuplicateEnteredValuesOnSameRow_DuplicatesFounds()
 			throws Exception {
 		Grid grid = TestGrid.WithVisibleOperators().setEmptyGrid().getGrid();
 		int row = 1;
 		int col1 = 2;
 		int col2 = col1 + 1;
-		int userValue = 2;
-		grid.getCellAt(row, col1).setUserValue(userValue);
-		grid.getCellAt(row, col2).setUserValue(userValue);
+		int enteredValue = 2;
+		grid.getCellAt(row, col1).setEnteredValue(enteredValue);
+		grid.getCellAt(row, col2).setEnteredValue(enteredValue);
 
 		assertThat(grid.markDuplicateValues(), is(true));
 	}
 
 	@Test
-	public void markDuplicateValues_GridWithDuplicateUserValuesInSameColumn_DuplicatesFounds()
+	public void markDuplicateValues_GridWithDuplicateEnteredValuesInSameColumn_DuplicatesFounds()
 			throws Exception {
 		Grid grid = TestGrid.WithVisibleOperators().setEmptyGrid().getGrid();
 		int row1 = 1;
 		int row2 = row1 + 1;
 		int col = 2;
-		int userValue = 2;
-		grid.getCellAt(row1, col).setUserValue(userValue);
-		grid.getCellAt(row2, col).setUserValue(userValue);
+		int enteredValue = 2;
+		grid.getCellAt(row1, col).setEnteredValue(enteredValue);
+		grid.getCellAt(row2, col).setEnteredValue(enteredValue);
 
 		assertThat(grid.markDuplicateValues(), is(true));
 	}

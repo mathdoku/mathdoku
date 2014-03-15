@@ -31,7 +31,7 @@ public class GridStatistics {
 	// ****************
 
 	// The number of times a user value in cell was replaced by another value
-	public int mUserValueReplaced;
+	public int mEnteredValueReplaced;
 
 	// The number of possible values used
 	public int mMaybeValue;
@@ -130,7 +130,7 @@ public class GridStatistics {
 			mCellsRevealed += occurrences;
 			break;
 		case USER_VALUE_REPLACED:
-			mUserValueReplaced += occurrences;
+			mEnteredValueReplaced += occurrences;
 			break;
 		case POSSIBLES:
 			mMaybeValue += occurrences;

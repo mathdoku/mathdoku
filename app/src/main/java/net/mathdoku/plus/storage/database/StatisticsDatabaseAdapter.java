@@ -270,7 +270,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				.getColumnIndexOrThrow(KEY_CELLS_EMPTY));
 		gridStatistics.mCellsRevealed = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_CELLS_REVEALED));
-		gridStatistics.mUserValueReplaced = cursor.getInt(cursor
+		gridStatistics.mEnteredValueReplaced = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_USER_VALUES_REPLACED));
 		gridStatistics.mMaybeValue = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_POSSIBLES));
@@ -321,7 +321,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		newValues.put(KEY_CELLS_EMPTY, gridStatistics.mCellsEmpty);
 		newValues.put(KEY_CELLS_REVEALED, gridStatistics.mCellsRevealed);
 		newValues.put(KEY_USER_VALUES_REPLACED,
-				gridStatistics.mUserValueReplaced);
+				gridStatistics.mEnteredValueReplaced);
 		newValues.put(KEY_POSSIBLES, gridStatistics.mMaybeValue);
 		newValues.put(KEY_ACTION_UNDOS, gridStatistics.mActionUndoMove);
 		newValues.put(KEY_ACTION_CLEAR_CELL, gridStatistics.mActionClearCell);

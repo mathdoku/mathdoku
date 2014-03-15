@@ -52,7 +52,7 @@ public class CellChangeStoragePatternMatcher {
 		return Integer.valueOf(matcherInner.group(GROUP_CELL_NUMBER));
 	}
 
-	public int getPreviousUserValue() {
+	public int getPreviousEnteredValue() {
 		return Integer.valueOf(matcherInner.group(GROUP_PREVIOUS_USER_VALUE));
 	}
 

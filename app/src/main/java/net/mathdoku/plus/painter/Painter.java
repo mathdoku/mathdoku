@@ -35,7 +35,7 @@ public class Painter {
 	private final GridPainter mGridPainter;
 	private final CagePainter mCagePainter;
 	private final CellPainter mCellPainter;
-	private final UserValuePainter mUserValuePainter;
+	private final EnteredValuePainter mEnteredValuePainter;
 	private final MaybeValuePainter mMaybeGridPainter;
 	private final MaybeValuePainter mMaybeLinePainter;
 	private final InputModeBorderPainter mInputModeBorderPainter;
@@ -67,7 +67,7 @@ public class Painter {
 		mGridPainter = new GridPainter(this);
 		mCagePainter = new CagePainter(this);
 		mCellPainter = new CellPainter(this);
-		mUserValuePainter = new UserValuePainter(this);
+		mEnteredValuePainter = new EnteredValuePainter(this);
 		mMaybeGridPainter = new MaybeValuePainter(this);
 		mMaybeLinePainter = new MaybeValuePainter(this);
 		mInputModeBorderPainter = new InputModeBorderPainter(this);
@@ -132,7 +132,7 @@ public class Painter {
 		mGridPainter.setTheme(theme);
 		mCagePainter.setTheme(theme);
 		mCellPainter.setTheme(theme);
-		mUserValuePainter.setTheme(theme);
+		mEnteredValuePainter.setTheme(theme);
 		mMaybeGridPainter.setTheme(theme);
 		mMaybeLinePainter.setTheme(theme);
 		mInputModeBorderPainter.setTheme(theme);
@@ -151,7 +151,7 @@ public class Painter {
 		// Propagate the new cell size to all border-painters
 		mCagePainter.setCellSize(size);
 		mCellPainter.setCellSize(size);
-		mUserValuePainter.setCellSize(size);
+		mEnteredValuePainter.setCellSize(size);
 		mMaybeGridPainter.setCellSize(size);
 		mMaybeLinePainter.setCellSize(size);
 		mInputModeBorderPainter.setCellSize(size);
@@ -258,8 +258,8 @@ public class Painter {
 	 * 
 	 * @return The user value painter.
 	 */
-	public UserValuePainter getUserValuePainter() {
-		return mUserValuePainter;
+	public EnteredValuePainter getEnteredValuePainter() {
+		return mEnteredValuePainter;
 	}
 
 	/**
@@ -344,7 +344,7 @@ public class Painter {
 	public void setColorMode(DigitPainterMode digitPainterMode) {
 		mMaybeGridPainter.setColorMode(digitPainterMode);
 		mMaybeLinePainter.setColorMode(digitPainterMode);
-		mUserValuePainter.setColorMode(digitPainterMode);
+		mEnteredValuePainter.setColorMode(digitPainterMode);
 
 	}
 }

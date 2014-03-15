@@ -421,7 +421,7 @@
     <string name="avoidable_moves_yaxis_description">Anzahl der Spielzüge</string>
     <string name="avoidable_moves_chart_body">Weniger erfahrene Spieler machen mehr vermeidbare Spielzüge, als erfahrene Spieler. Ein vermeidbarer Spielzug, ist ein Spielzug, der nicht für das Lösen des Rätsels notwendig ist. Das Korrigieren oder das Löschen von Werten einer Zelle soll, mit Hilfe von \"Vielleichtwerten\", vermieden werden, um ein besserer Spieler zu werden.</string>
     <!-- Dimensions displayed in chart "Avoidable moves". -->
-    <string name="avoidable_moves_chart_user_value_replaced">Wert der Zelle geändert</string>
+    <string name="avoidable_moves_chart_entered_value_replaced">Wert der Zelle geändert</string>
     <string name="avoidable_moves_chart_maybe_value_used">\"Vielleichtwerte\"</string>
     <string name="avoidable_moves_chart_undo_button_used">Verwendungen von \"Rückgängig\"</string>
     <string name="avoidable_moves_chart_clear_used">Verwendungen von \"Zelle löschen\" oder \"Raster löschen\"</string>
