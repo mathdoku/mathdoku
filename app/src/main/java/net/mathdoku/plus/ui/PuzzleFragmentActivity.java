@@ -35,11 +35,8 @@ import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.developmenthelper.DevelopmentHelper;
+import net.mathdoku.plus.enums.GridSize;
 import net.mathdoku.plus.enums.PuzzleComplexity;
-import net.mathdoku.plus.puzzle.grid.Grid;
-import net.mathdoku.plus.puzzle.grid.GridLoader;
-import net.mathdoku.plus.puzzle.InvalidGridException;
-import net.mathdoku.plus.puzzle.ui.GridInputMode;
 import net.mathdoku.plus.gridgenerating.DialogPresentingGridGenerator;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.leaderboard.LeaderboardConnector;
@@ -48,6 +45,10 @@ import net.mathdoku.plus.leaderboard.LeaderboardType;
 import net.mathdoku.plus.leaderboard.ui.LeaderboardFragment;
 import net.mathdoku.plus.leaderboard.ui.LeaderboardFragmentActivity;
 import net.mathdoku.plus.painter.Painter;
+import net.mathdoku.plus.puzzle.InvalidGridException;
+import net.mathdoku.plus.puzzle.grid.Grid;
+import net.mathdoku.plus.puzzle.grid.GridLoader;
+import net.mathdoku.plus.puzzle.ui.GridInputMode;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.storage.GameFileConverter;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
@@ -251,8 +252,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		// If the navigation drawer is open, hide action items related to the
 		// content view
-		boolean drawerOpen = !(mDrawerLayout == null || mDrawerListView == null) && mDrawerLayout
-				.isDrawerOpen(mDrawerListView);
+		boolean drawerOpen = !(mDrawerLayout == null || mDrawerListView == null)
+				&& mDrawerLayout.isDrawerOpen(mDrawerListView);
 
 		// Determine which fragment is active
 		boolean showCheats = false;
@@ -339,16 +340,18 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		// Determine position of new game button
 		if ((menuItem = menu.findItem(R.id.action_new_game)) != null) {
 			menuItem.setVisible(!drawerOpen)
-					.setShowAsAction(mPuzzleFragment != null
-							&& mPuzzleFragment.isActive() ? MenuItem.SHOW_AS_ACTION_NEVER
-							: MenuItem.SHOW_AS_ACTION_ALWAYS);
+					.setShowAsAction(
+							mPuzzleFragment != null
+									&& mPuzzleFragment.isActive() ? MenuItem.SHOW_AS_ACTION_NEVER
+									: MenuItem.SHOW_AS_ACTION_ALWAYS);
 		}
 
 		// Display the share button on the action bar dependent on the fragment
 		// being showed.
 		if ((menuItem = menu.findItem(R.id.action_share)) != null) {
-			menuItem.setVisible(!drawerOpen).setShowAsAction(mArchiveFragment != null ? MenuItem.SHOW_AS_ACTION_IF_ROOM
-					: MenuItem.SHOW_AS_ACTION_NEVER);
+			menuItem.setVisible(!drawerOpen).setShowAsAction(
+					mArchiveFragment != null ? MenuItem.SHOW_AS_ACTION_IF_ROOM
+							: MenuItem.SHOW_AS_ACTION_NEVER);
 		}
 
 		// The replay button on the action bar is only visible in case the
@@ -777,8 +780,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 			// Check if a new top score is achieved.
 			boolean newTopScore = leaderboardRankRow == null
-					|| leaderboardRankRow.mScoreOrigin == ScoreOrigin.NONE || grid
-					.getElapsedTime() < leaderboardRankRow.mRawScore;
+					|| leaderboardRankRow.mScoreOrigin == ScoreOrigin.NONE
+					|| grid.getElapsedTime() < leaderboardRankRow.mRawScore;
 
 			// Store the top score in the leaderboard table.
 			if (newTopScore) {
@@ -971,21 +974,18 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		final CheckableImageView puzzleParameterDifficultyRandom = (CheckableImageView) view
 				.findViewById(R.id.puzzleParameterDifficultyRandom);
 
-		// Create the list of available puzzle sizes.
-		String[] puzzleSizes = { "4x4", "5x5", "6x6", "7x7", "8x8", "9x9" };
-		final int OFFSET_INDEX_TO_GRID_SIZE = 4;
-
 		// Populate the spinner. Initial value is set to value used for
 		// generating the previous puzzle.
 		ArrayAdapter<String> adapterStatus = new ArrayAdapter<String>(this,
-				android.R.layout.simple_spinner_item, puzzleSizes);
+				android.R.layout.simple_spinner_item,
+				GridSize.getAllGridSizes());
 		adapterStatus
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		puzzleParameterSizeSpinner.setAdapter(adapterStatus);
 
 		// Initialize the parameters to the given values
-		puzzleParameterSizeSpinner.setSelection(gridSize
-				- OFFSET_INDEX_TO_GRID_SIZE);
+		puzzleParameterSizeSpinner.setSelection(GridSize
+				.toZeroBasedIndex(gridSize));
 		puzzleParameterDisplayOperatorsCheckBox.setChecked(visibleOperators);
 		switch (puzzleComplexity) {
 		case RANDOM:
@@ -1065,9 +1065,9 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 					@Override
 					public void onClick(DialogInterface dialog, int whichButton) {
 						// Transform size spinner to grid size
-						int gridSize = (int) puzzleParameterSizeSpinner
-								.getSelectedItemId()
-								+ OFFSET_INDEX_TO_GRID_SIZE;
+						int gridSize = GridSize.fromZeroBasedIndex(
+								(int) puzzleParameterSizeSpinner
+										.getSelectedItemId()).getGridSize();
 
 						// Transform rating to puzzle complexity.
 						int rating = Math
@@ -1097,8 +1097,9 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 								.setPuzzleParameterComplexity(puzzleComplexity);
 
 						// Start a new game with specified parameters
-						startNewGame(gridSize, !puzzleParameterDisplayOperatorsCheckBox
-								.isChecked(), puzzleComplexity);
+						startNewGame(gridSize,
+								!puzzleParameterDisplayOperatorsCheckBox
+										.isChecked(), puzzleComplexity);
 					}
 				})
 				.show();
@@ -1278,8 +1279,9 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		String string = getResources().getString(R.string.action_leaderboards);
 		navigationDrawerItems.add(string);
 		if (!openDrawer && mNavigationDrawerItems != null) {
-			openDrawer = !Arrays.asList(mNavigationDrawerItems).contains(
-					string);
+			openDrawer = !Arrays
+					.asList(mNavigationDrawerItems)
+					.contains(string);
 		}
 
 		mNavigationDrawerItems = navigationDrawerItems
