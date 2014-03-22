@@ -18,6 +18,7 @@ import com.google.android.gms.games.GamesClient;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
+import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.leaderboard.LeaderboardType;
 import net.mathdoku.plus.leaderboard.ui.LeaderboardFragmentActivity.LeaderboardFilter;
@@ -36,7 +37,7 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 
 	// Intent parameters for creating a new game of specified type
 	public static final String NEW_PUZZLE_FOR_LEADERBOARD = "CreateNewGameForLeaderboard";
-	public static final String NEW_PUZZLE_FOR_LEADERBOARD_SIZE = "CreateNewGameForLeaderboard_Size";
+	public static final String NEW_PUZZLE_FOR_LEADERBOARD_GRID_SIZE = "CreateNewGameForLeaderboard_Size";
 	public static final String NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS = "CreateNewGameForLeaderboard_HideOperators";
 	public static final String NEW_PUZZLE_FOR_LEADERBOARD_PUZZLE_COMPLEXITY = "CreateNewGameForLeaderboard_PuzzleComplexity";
 
@@ -78,6 +79,10 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 	 */
 	public void refresh() {
 		Resources resources = getActivity().getResources();
+
+		if (LeaderboardType.notDefinedForGridSize(mGridSize)) {
+			return;
+		}
 
 		// Create the fixes list of available leaderboards.
 		mLeaderboardSection = new LeaderboardSection[11];
@@ -276,8 +281,8 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 									+ Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					if (intent != null) {
 						intent.putExtra(NEW_PUZZLE_FOR_LEADERBOARD, true);
-						intent.putExtra(NEW_PUZZLE_FOR_LEADERBOARD_SIZE,
-								mGridSize);
+						intent.putExtra(NEW_PUZZLE_FOR_LEADERBOARD_GRID_SIZE,
+								GridType.fromInteger(mGridSize).toString());
 						intent.putExtra(
 								NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS,
 								mHideOperators);

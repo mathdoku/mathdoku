@@ -3,6 +3,7 @@ package net.mathdoku.plus.puzzle.grid;
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
+import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.puzzle.InvalidGridException;
 import net.mathdoku.plus.puzzle.cage.Cage;
@@ -162,9 +163,10 @@ public class Grid {
 	}
 
 	private void validateGridSizeThrowsExceptionOnError() {
-		if (mGridSize < 1 || mGridSize > 9) {
-			throw new InvalidGridException("GridSize " + mGridSize
-					+ " is not a valid grid size.");
+		if (mGridSize < GridType.getSmallestGridSize()
+				|| mGridSize > GridType.getBiggestGridSize()) {
+			throw new InvalidGridException(String.format(
+					"GridType '%d' is not a valid grid size.", mGridSize));
 		}
 	}
 

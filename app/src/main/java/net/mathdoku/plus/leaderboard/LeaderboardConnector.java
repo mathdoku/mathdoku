@@ -101,6 +101,10 @@ public class LeaderboardConnector {
 			return;
 		}
 
+		if (LeaderboardType.notDefinedForGridSize(gridSize)) {
+			return;
+		}
+
 		// Determine the leaderboardId to which the score has to be submitted.
 		String leaderboardId = mAppFragmentActivity.getResources().getString(
 				LeaderboardType.getResId(LeaderboardType.getIndex(gridSize,

@@ -3,7 +3,7 @@ package net.mathdoku.plus.griddefinition;
 import com.srlee.dlx.MathDokuDLX;
 
 import net.mathdoku.plus.enums.CageOperator;
-import net.mathdoku.plus.enums.GridSize;
+import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.puzzle.InvalidGridException;
 import net.mathdoku.plus.puzzle.cage.Cage;
@@ -148,7 +148,7 @@ public class GridDefinition {
 
 		int cellCount = gridDefinitionSplitter.getNumberOfCells();
 		try {
-			mGridSize = GridSize.getFromNumberOfCells(cellCount).getGridSize();
+			mGridSize = GridType.getFromNumberOfCells(cellCount).getGridSize();
 		} catch (IllegalArgumentException e) {
 			throw new InvalidGridException(String.format(
 					"Definition '%s' contains an invalid number of cells.",

@@ -35,7 +35,8 @@ import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.developmenthelper.DevelopmentHelper;
-import net.mathdoku.plus.enums.GridSize;
+import net.mathdoku.plus.enums.GridType;
+import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.gridgenerating.DialogPresentingGridGenerator;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
@@ -52,7 +53,6 @@ import net.mathdoku.plus.puzzle.ui.GridInputMode;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.storage.GameFileConverter;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
-import net.mathdoku.plus.storage.database.GridDatabaseAdapter.SizeFilter;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter.StatusFilter;
 import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter;
 import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter.ScoreOrigin;
@@ -511,12 +511,12 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	/**
 	 * Starts a new game by building a new grid at the specified size.
 	 * 
-	 * @param gridSize
+	 * @param gridType
 	 *            The grid size of the new puzzle.
 	 * @param hideOperators
 	 *            True in case operators should be hidden in the new puzzle.
 	 */
-	public void startNewGame(int gridSize, boolean hideOperators,
+	public void startNewGame(GridType gridType, boolean hideOperators,
 			PuzzleComplexity puzzleComplexity) {
 		if (mPuzzleFragment != null) {
 			mPuzzleFragment.prepareLoadNewGame();
@@ -525,7 +525,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		// Start a background task to generate the new grid. As soon as the new
 		// grid is created, the method onNewGridReady will be called.
 		mDialogPresentingGridGenerator = new DialogPresentingGridGenerator(
-				this, gridSize, hideOperators, puzzleComplexity,
+				this, gridType, hideOperators, puzzleComplexity,
 				Util.getPackageVersionNumber());
 		mDialogPresentingGridGenerator.execute();
 	}
@@ -753,7 +753,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		// check on the number of completed games is lowered with 1.
 		if (!mMathDokuPreferences.isArchiveAvailable()
 				&& new GridDatabaseAdapter().countGrids(StatusFilter.SOLVED,
-						SizeFilter.ALL) >= 4) {
+						GridTypeFilter.ALL) >= 4) {
 			mMathDokuPreferences.setArchiveVisible();
 			setNavigationDrawer();
 		}
@@ -763,8 +763,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 		// Check whether the grid meets the criteria for submitting to the
 		// leaderboards.
-		if (grid.getCheatPenaltyTime() == 0 && !grid.isReplay()
-				&& !grid.isActive() && !grid.isSolutionRevealed()) {
+		if (isEligibleForScoreSubmission(grid)) {
 			GridGeneratingParameters gridGeneratingParameters = grid
 					.getGridGeneratingParameters();
 
@@ -828,6 +827,22 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 				}
 			}
 		}
+	}
+
+	private boolean isEligibleForScoreSubmission(Grid grid) {
+		if (grid.isActive()) {
+			return false;
+		}
+		if (grid.getCheatPenaltyTime() >= 0 || grid.isSolutionRevealed()) {
+			return false;
+		}
+		if (grid.isReplay()) {
+			return false;
+		}
+		if (LeaderboardType.notDefinedForGridSize(grid.getGridSize())) {
+			return false;
+		}
+		return true;
 	}
 
 	private void replaceFragment(android.support.v4.app.Fragment fragment) {
@@ -935,7 +950,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	 */
 	private void showDialogNewGame(final boolean cancelable) {
 		showDialogNewGame(cancelable,
-				mMathDokuPreferences.getPuzzleParameterSize(),
+				mMathDokuPreferences.getPuzzleParameterGridSize(),
 				mMathDokuPreferences.getPuzzleParameterOperatorsVisible(),
 				mMathDokuPreferences.getPuzzleParameterComplexity());
 	}
@@ -947,14 +962,14 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	 * 
 	 * @param cancelable
 	 *            True in case the dialog can be cancelled.
-	 * @param gridSize
+	 * @param gridType
 	 *            The grid size of the new puzzle.
 	 * @param visibleOperators
 	 *            True in case operators should be hidden in the new puzzle.
 	 * @param puzzleComplexity
 	 *            Complexity of the puzzle new puzzle.
 	 */
-	private void showDialogNewGame(final boolean cancelable, int gridSize,
+	private void showDialogNewGame(final boolean cancelable, GridType gridType,
 			boolean visibleOperators, PuzzleComplexity puzzleComplexity) {
 		// Get view and put relevant information into the view.
 		LayoutInflater layoutInflater = LayoutInflater.from(this);
@@ -978,14 +993,13 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		// generating the previous puzzle.
 		ArrayAdapter<String> adapterStatus = new ArrayAdapter<String>(this,
 				android.R.layout.simple_spinner_item,
-				GridSize.getAllGridSizes());
+				getAllGridSizeDescriptions());
 		adapterStatus
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		puzzleParameterSizeSpinner.setAdapter(adapterStatus);
 
 		// Initialize the parameters to the given values
-		puzzleParameterSizeSpinner.setSelection(GridSize
-				.toZeroBasedIndex(gridSize));
+		puzzleParameterSizeSpinner.setSelection(gridType.toZeroBasedIndex());
 		puzzleParameterDisplayOperatorsCheckBox.setChecked(visibleOperators);
 		switch (puzzleComplexity) {
 		case RANDOM:
@@ -1065,9 +1079,9 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 					@Override
 					public void onClick(DialogInterface dialog, int whichButton) {
 						// Transform size spinner to grid size
-						int gridSize = GridSize.fromZeroBasedIndex(
-								(int) puzzleParameterSizeSpinner
-										.getSelectedItemId()).getGridSize();
+						GridType gridType = GridType
+								.fromZeroBasedIndex((int) puzzleParameterSizeSpinner
+										.getSelectedItemId());
 
 						// Transform rating to puzzle complexity.
 						int rating = Math
@@ -1089,7 +1103,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 						}
 
 						// Store current settings in the preferences
-						mMathDokuPreferences.setPuzzleParameterSize(gridSize);
+						mMathDokuPreferences
+								.setPuzzleParameterGridSize(gridType);
 						mMathDokuPreferences
 								.setPuzzleParameterOperatorsVisible(puzzleParameterDisplayOperatorsCheckBox
 										.isChecked());
@@ -1097,12 +1112,23 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 								.setPuzzleParameterComplexity(puzzleComplexity);
 
 						// Start a new game with specified parameters
-						startNewGame(gridSize,
+						startNewGame(gridType,
 								!puzzleParameterDisplayOperatorsCheckBox
 										.isChecked(), puzzleComplexity);
 					}
 				})
 				.show();
+	}
+
+	private String[] getAllGridSizeDescriptions() {
+		GridType[] gridTypes = GridType.values();
+		String[] gridSizeDescriptions = new String[gridTypes.length];
+		for (int i = 0; i < gridTypes.length; i++) {
+			gridSizeDescriptions[i] = getString(
+					R.string.grid_description_short,
+					gridTypes[i].getGridSize(), gridTypes[i].getGridSize());
+		}
+		return gridSizeDescriptions;
 	}
 
 	@Override
@@ -1158,19 +1184,20 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 						&& bundle
 								.getBoolean(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD)
 						&& bundle
-								.containsKey(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_SIZE)
+								.containsKey(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_GRID_SIZE)
 						&& bundle
 								.containsKey(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS)
 						&& bundle
 								.containsKey(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_PUZZLE_COMPLEXITY)) {
-					int gridSize = bundle
-							.getInt(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_SIZE);
+					GridType gridType = GridType
+							.valueOf(bundle
+									.getString(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_GRID_SIZE));
 					boolean visibleOperators = !bundle
 							.getBoolean(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS);
 					PuzzleComplexity puzzleComplexity = PuzzleComplexity
 							.valueOf(bundle
 									.getString(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_PUZZLE_COMPLEXITY));
-					showDialogNewGame(true, gridSize, visibleOperators,
+					showDialogNewGame(true, gridType, visibleOperators,
 							puzzleComplexity);
 				}
 			}

@@ -87,7 +87,8 @@ public class CellStorage {
 		index++;
 		cellBuilder.setPossibles(possibles);
 
-		cellBuilder.setInvalidValueHighlight(Boolean.parseBoolean(cellParts[index++]));
+		cellBuilder.setInvalidValueHighlight(Boolean
+				.parseBoolean(cellParts[index++]));
 		cellBuilder.setRevealed(Boolean.parseBoolean(cellParts[index++]));
 		cellBuilder.setSelected(Boolean.parseBoolean(cellParts[index++]));
 

@@ -832,9 +832,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		Button undoButton = mControlsPadBigTableLayout.getVisibility() == View.VISIBLE ? mUndoButton
 				: mUndoButtonSwipeOnly;
 		if (undoButton != null) {
-			undoButton.setVisibility(
-					mGrid == null || mGrid.countMoves() == 0 || !mGrid.isActive() ? View.INVISIBLE
-							: View.VISIBLE);
+			undoButton.setVisibility(mGrid == null || mGrid.countMoves() == 0
+					|| !mGrid.isActive() ? View.INVISIBLE : View.VISIBLE);
 			undoButton.invalidate();
 		}
 	}

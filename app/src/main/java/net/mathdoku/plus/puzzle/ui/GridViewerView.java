@@ -119,11 +119,6 @@ public class GridViewerView extends View {
 	 *            The canvas on which should be drawn.
 	 */
 	void onDrawLocked(Canvas canvas) {
-		// Avoid redrawing at the same time as
-		// creating
-		if (mGridSize < 3)
-			return;
-
 		// Draw outer grid border. For support of transparent borders it has
 		// to be avoided that lines do overlap.
 		Paint borderPaint = mGridPainter.getBorderPaint();

@@ -5,12 +5,13 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
+import net.mathdoku.plus.enums.GridType;
+import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.enums.PuzzleComplexity;
-import net.mathdoku.plus.puzzle.ui.GridInputMode;
 import net.mathdoku.plus.leaderboard.ui.LeaderboardFragmentActivity.LeaderboardFilter;
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.painter.Painter.GridTheme;
-import net.mathdoku.plus.storage.database.GridDatabaseAdapter.SizeFilter;
+import net.mathdoku.plus.puzzle.ui.GridInputMode;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter.StatusFilter;
 import net.mathdoku.plus.tip.TipDialog;
 import net.mathdoku.plus.util.SingletonInstanceNotInstantiated;
@@ -48,20 +49,23 @@ public class Preferences {
 	private static final String ARCHIVE_GRID_LAST_SHOWED = "archive_grid_last_showed";
 	private static final int ARCHIVE_GRID_LAST_SHOWED_DEFAULT = -1;
 
-	private static final String ARCHIVE_SIZE_FILTER_LAST_VALUE = "archive_size_filter_last_value";
-	private static final String ARCHIVE_SIZE_FILTER_LAST_VALUE_DEFAULT = SizeFilter.ALL
+	private static final String ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE = "archive_grid_type_filter_last_value";
+	private static final String ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE_DEFAULT = GridTypeFilter.ALL
 			.toString();
 
 	private static final String ARCHIVE_STATUS_FILTER_LAST_VALUE = "archive_status_filter_last_value";
 	private static final String ARCHIVE_STATUS_FILTER_LAST_VALUE_DEFAULT = StatusFilter.ALL
 			.toString();
 
-	public static final String ARCHIVE_SETTING_SIZE_FILTER_VISIBLE = "archive_setting_size_filter_size_visible";
-	private static final boolean ARCHIVE_SETTING_SIZE_FILTER_VISIBLE_DEFAULT = false;
+	// Keep value of key in sync with value in archive_preferences.xml
+	public static final String ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE = "archive_setting_grid_type_filter_visible";
+	private static final boolean ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE_DEFAULT = false;
 
+	// Keep value of key in sync with value in archive_preferences.xml
 	public static final String ARCHIVE_SETTING_STATUS_FILTER_VISIBLE = "archive_setting_status_filter_visible";
 	private static final boolean ARCHIVE_SETTING_STATUS_FILTER_VISIBLE_DEFAULT = true;
 
+	// Keep value of key in sync with value in archive_preferences.xml
 	public static final String ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE = "archive_setting_chart_description_visible";
 	private static final boolean ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT = true;
 
@@ -110,22 +114,29 @@ public class Preferences {
 	private static final String PUZZLE_PARAMETER_OPERATORS_VISIBLE = "puzzle_parameter_operators_visible";
 	private static final boolean PUZZLE_PARAMETER_OPERATORS_VISIBLE_DEFAULT = true;
 
-	private static final String PUZZLE_PARAMETER_SIZE = "puzzle_parameter_size";
-	private static final int PUZZLE_PARAMETER_SIZE_DEFAULT = 4;
+	private static final String PUZZLE_PARAMETER_GRID_SIZE = "puzzle_parameter_grid_size";
+	private static final String PUZZLE_PARAMETER_GRID_SIZE_DEFAULT = GridType.GRID_4x4
+			.toString();
 
 	// Puzzle setting preferences
+
+	// Keep value of key in sync with value in puzzle_preferences.xml
 	private static final String PUZZLE_SETTING_BAD_CAGE_MATHS_VISIBLE = "puzzle_setting_bad_cage_math_visible";
 	private static final boolean PUZZLE_SETTING_BAD_CAGE_MATHS_VISIBLE_DEFAULT = true;
 
+	// Keep value of key in sync with value in puzzle_preferences.xml
 	private static final String PUZZLE_SETTING_CLEAR_MAYBES = "puzzle_setting_clear_maybes";
 	private static final boolean PUZZLE_SETTING_CLEAR_MAYBES_DEFAULT = true;
 
+	// Keep value of key in sync with value in puzzle_preferences.xml
 	public static final String PUZZLE_SETTING_COLORED_DIGITS = "puzzle_setting_colored_digits";
 	private static final boolean PUZZLE_SETTING_COLORED_DIGITS_DEFAULT = true;
 
+	// Keep value of key in sync with value in puzzle_preferences.xml
 	private static final String PUZZLE_SETTING_DUPLICATE_DIGITS_VISIBLE = "puzzle_setting_duplicate_digits_visible";
 	private static final boolean PUZZLE_SETTING_DUPLICATE_DIGITS_VISIBLE_DEFAULT = true;
 
+	// Keep value of key in sync with value in puzzle_preferences.xml
 	public static final String PUZZLE_SETTING_FULL_SCREEN = "puzzle_setting_full_screen";
 	private static final boolean PUZZLE_SETTING_FULL_SCREEN_DEFAULT = false;
 
@@ -133,29 +144,36 @@ public class Preferences {
 		SWIPE_ONLY, SWIPE_AND_BUTTONS, BUTTONS_ONLY
 	}
 
+	// Keep value of key in sync with value in puzzle_preferences.xml
 	public static final String PUZZLE_SETTING_INPUT_METHOD = "puzzle_setting_input_method";
 	private static final String PUZZLE_SETTING_INPUT_METHOD_DEFAULT = PuzzleSettingInputMethod.SWIPE_ONLY
 			.toString();
 
+	// Keep value of key in sync with value in puzzle_preferences.xml
 	private static final String PUZZLE_SETTING_MAYBES_DISPLAYED_IN_GRID = "puzzle_setting_maybes_displayed_in_grid";
 	private static final boolean PUZZLE_SETTING_MAYBES_DISPLAYED_IN_GRID_DEFAULT = true;
 
+	// Keep value of key in sync with value in puzzle_preferences.xml
 	public static final String PUZZLE_SETTING_OUTER_SWIPE_CIRCLE = "puzzle_setting_outer_swipe_circle";
 	private static final String PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_DEFAULT = "4";
 	private static final String PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_NEVER_VISIBLE = Integer
 			.toString(Integer.MAX_VALUE);
 
+	// Keep value of key in sync with value in puzzle_preferences.xml
 	private static final String PUZZLE_SETTING_PLAY_SOUND_EFFECTS = "puzzle_setting_sound_effects";
 	private static final boolean PUZZLE_SETTING_PLAY_SOUND_EFFECTS_DEFAULT = true;
 
+	// Keep value of key in sync with value in puzzle_preferences.xml
 	public static final String PUZZLE_SETTING_THEME = "puzzle_setting_theme";
 	private static final String PUZZLE_SETTING_THEME_DARK = "theme_dark";
 	private static final String PUZZLE_SETTING_THEME_LIGHT = "theme_light";
 	private static final String PUZZLE_SETTING_THEME_DEFAULT = PUZZLE_SETTING_THEME_LIGHT;
 
+	// Keep value of key in sync with value in puzzle_preferences.xml
 	private static final String PUZZLE_SETTING_TIMER_VISIBLE = "puzzle_setting_timer_visible";
 	private static final boolean PUZZLE_SETTING_TIMER_VISIBLE_DEFAULT = true;
 
+	// Keep value of key in sync with value in puzzle_preferences.xml
 	public static final String PUZZLE_SETTING_WAKE_LOCK = "puzzle_setting_wake_lock";
 	private static final boolean PUZZLE_SETTING_WAKE_LOCK_DEFAULT = true;
 
@@ -163,9 +181,11 @@ public class Preferences {
 	public static final String STATISTICS_AVAILABLE = "statistics_available";
 	private static final boolean STATISTICS_AVAILABLE_DEFAULT = false;
 
+	// Keep value of key in sync with value in statistics_preferences.xml
 	public static final String STATISTICS_SETTING_CHART_DESCRIPTION_VISIBLE = "statistics_setting_chart_description_visible";
 	private static final boolean STATISTICS_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT = true;
 
+	// Keep value of key in sync with value in statistics_preferences.xml
 	public static final String STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES = "statistics_setting_elapsed_time_chart_maximum_games";
 	private static final String STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES_DEFAULT = Integer
 			.toString(100);
@@ -308,8 +328,6 @@ public class Preferences {
 							PUZZLE_SETTING_THEME_DEFAULT)
 					.putBoolean(PUZZLE_SETTING_WAKE_LOCK,
 							PUZZLE_SETTING_WAKE_LOCK_DEFAULT)
-					.putString(ARCHIVE_SIZE_FILTER_LAST_VALUE,
-							ARCHIVE_SIZE_FILTER_LAST_VALUE_DEFAULT)
 					.putString(ARCHIVE_STATUS_FILTER_LAST_VALUE,
 							ARCHIVE_STATUS_FILTER_LAST_VALUE_DEFAULT)
 					.putInt(ARCHIVE_GRID_LAST_SHOWED,
@@ -327,8 +345,6 @@ public class Preferences {
 							PUZZLE_PARAMETER_COMPLEXITY_DEFAULT)
 					.putBoolean(PUZZLE_PARAMETER_OPERATORS_VISIBLE,
 							PUZZLE_PARAMETER_OPERATORS_VISIBLE_DEFAULT)
-					.putInt(PUZZLE_PARAMETER_SIZE,
-							PUZZLE_PARAMETER_SIZE_DEFAULT)
 					.putBoolean(ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE,
 							ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT)
 					.putBoolean(ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE,
@@ -339,8 +355,8 @@ public class Preferences {
 							STATISTICS_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT)
 					.putBoolean(ARCHIVE_SETTING_STATUS_FILTER_VISIBLE,
 							ARCHIVE_SETTING_STATUS_FILTER_VISIBLE_DEFAULT)
-					.putBoolean(ARCHIVE_SETTING_SIZE_FILTER_VISIBLE,
-							ARCHIVE_SETTING_SIZE_FILTER_VISIBLE_DEFAULT)
+					.putBoolean(ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE,
+							ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE_DEFAULT)
 					.putInt(SWIPE_INVALID_MOTION_COUNTER,
 							SWIPE_DIGIT_COUNTER_DEFAULT)
 					.putInt(SWIPE_VALID_MOTION_COUNTER,
@@ -389,8 +405,22 @@ public class Preferences {
 			editor.putInt(LEADERBOARD_OVERVIEW_VIEWED_COUNTER,
 					LEADERBOARD_OVERVIEW_VIEWED_COUNTER_DEFAULT);
 		}
+		if (previousInstalledVersion < 598 && currentVersion >= 598) {
+			// Remove obsolete preferences
+			editor.remove("puzzle_parameter_size")
+					.remove("archive_size_filter_last_value")
+					.remove("archive_setting_size_filter_size_visible");
 
-		// Save
+			// Add new preferences. Values are not converted from old
+			// preferences.
+			editor.putString(ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE,
+					ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE_DEFAULT)
+					.putBoolean(ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE,
+							ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE_DEFAULT)
+					.putString(PUZZLE_PARAMETER_GRID_SIZE,
+							PUZZLE_PARAMETER_GRID_SIZE_DEFAULT);
+		}
+
 		editor.putInt(APP_CURRENT_VERSION, currentVersion);
 		editor.commit();
 	}
@@ -611,8 +641,8 @@ public class Preferences {
 	 */
 	public boolean isArchiveSizeFilterVisible() {
 		return mSharedPreferences.getBoolean(
-				ARCHIVE_SETTING_SIZE_FILTER_VISIBLE,
-				ARCHIVE_SETTING_SIZE_FILTER_VISIBLE_DEFAULT);
+				ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE,
+				ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE_DEFAULT);
 	}
 
 	/**
@@ -683,22 +713,23 @@ public class Preferences {
 	 * 
 	 * @return The last value used for the size filter in the archive.
 	 */
-	public SizeFilter getArchiveSizeFilterLastValueUsed() {
-		return SizeFilter.valueOf(mSharedPreferences.getString(
-				ARCHIVE_SIZE_FILTER_LAST_VALUE,
-				ARCHIVE_SIZE_FILTER_LAST_VALUE_DEFAULT));
+	public GridTypeFilter getArchiveSizeFilterLastValueUsed() {
+		return GridTypeFilter.valueOf(mSharedPreferences.getString(
+				ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE,
+				ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE_DEFAULT));
 	}
 
 	/**
 	 * Set the last value used for the size filter in the archive.
 	 * 
-	 * @param sizeFilter
+	 * @param gridTypeFilter
 	 *            The size filter which has to be saved as last selected in the
 	 *            archive.
 	 */
-	public void setArchiveSizeFilterLastValueUsed(SizeFilter sizeFilter) {
+	public void setArchiveSizeFilterLastValueUsed(GridTypeFilter gridTypeFilter) {
 		Editor editor = mSharedPreferences.edit();
-		editor.putString(ARCHIVE_SIZE_FILTER_LAST_VALUE, sizeFilter.toString());
+		editor.putString(ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE,
+				gridTypeFilter.toString());
 		editor.apply();
 	}
 
@@ -998,17 +1029,19 @@ public class Preferences {
 	 * 
 	 * @return The size of the puzzle which was last generated.
 	 */
-	public int getPuzzleParameterSize() {
-		return mSharedPreferences.getInt(PUZZLE_PARAMETER_SIZE,
-				PUZZLE_PARAMETER_SIZE_DEFAULT);
+	public GridType getPuzzleParameterGridSize() {
+		return GridType
+				.valueOf(mSharedPreferences.getString(
+						PUZZLE_PARAMETER_GRID_SIZE,
+						PUZZLE_PARAMETER_GRID_SIZE_DEFAULT));
 	}
 
 	/**
 	 * Set the size of the puzzle which was last generated. closed.
 	 */
-	public void setPuzzleParameterSize(int gridSize) {
+	public void setPuzzleParameterGridSize(GridType gridType) {
 		Editor editor = mSharedPreferences.edit();
-		editor.putInt(PUZZLE_PARAMETER_SIZE, gridSize);
+		editor.putString(PUZZLE_PARAMETER_GRID_SIZE, gridType.toString());
 		editor.apply();
 	}
 

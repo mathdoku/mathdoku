@@ -390,7 +390,8 @@ public class CellDrawer {
 
 			// Calculate left offset to get the user value centered
 			// horizontally.
-			int centerOffset = (int) ((cellSize - paint.measureText(enteredValue)) / 2);
+			int centerOffset = (int) ((cellSize - paint
+					.measureText(enteredValue)) / 2);
 
 			canvas.drawText(enteredValue, mPosX + centerOffset, mPosY
 					+ mEnteredValuePainter.getBottomOffset(), paint);

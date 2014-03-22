@@ -2,61 +2,88 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <PreferenceCategory android:title="@string/puzzle_setting_group_assistance" >
+
+        <!-- Keep value of key in sync with class preferences -->
         <CheckBoxPreference
             android:key="puzzle_setting_bad_cage_math_visible"
             android:summary="@string/puzzle_setting_bad_cage_math_visible_summary"
             android:title="@string/puzzle_setting_bad_cage_math_visible_title" />
+
+        <!-- Keep value of key in sync with class preferences -->
         <CheckBoxPreference
             android:key="puzzle_setting_duplicate_digits_visible"
             android:summary="@string/puzzle_setting_duplicate_digits_visible_summary"
             android:title="@string/puzzle_setting_duplicate_digits_visible_title" />
+
+        <!-- Keep value of key in sync with class preferences -->
         <CheckBoxPreference
             android:key="puzzle_setting_clear_maybes"
             android:summary="@string/puzzle_setting_clear_maybes_summary"
             android:title="@string/puzzle_setting_clear_maybes_title" />
     </PreferenceCategory>
+
+
     <PreferenceCategory android:title="@string/puzzle_setting_group_display" >
+
+        <!-- Keep value of key in sync with class preferences -->
         <ListPreference
             android:entries="@array/puzzle_setting_theme_values_text"
             android:entryValues="@array/puzzle_setting_theme_values_code"
             android:key="puzzle_setting_theme"
             android:title="@string/puzzle_setting_theme_title" />
 
+        <!-- Keep value of key in sync with class preferences -->
         <CheckBoxPreference
             android:key="puzzle_setting_colored_digits"
             android:summary="@string/puzzle_setting_colored_digits_summary"
             android:title="@string/puzzle_setting_colored_digits_title" />
+
+        <!-- Keep value of key in sync with class preferences -->
         <CheckBoxPreference
             android:key="puzzle_setting_maybes_displayed_in_grid"
             android:summary="@string/puzzle_setting_maybes_displayed_in_grid_summary"
             android:title="@string/puzzle_setting_maybes_displayed_in_grid_title" />
+
+        <!-- Keep value of key in sync with class preferences -->
         <CheckBoxPreference
             android:key="puzzle_setting_timer_visible"
             android:summary="@string/puzzle_setting_timer_visible_summary"
             android:title="@string/puzzle_setting_timer_visible_title" />
+
+        <!-- Keep value of key in sync with class preferences -->
         <CheckBoxPreference
             android:key="puzzle_setting_full_screen"
             android:summary="@string/puzzle_setting_full_screen_summary"
             android:title="@string/puzzle_setting_full_screen_title" />
+
+        <!-- Keep value of key in sync with class preferences -->
         <CheckBoxPreference
             android:key="puzzle_setting_wake_lock"
             android:summary="@string/puzzle_setting_wake_lock_summary"
             android:title="@string/puzzle_setting_wake_lock_title" />
     </PreferenceCategory>
+
     <PreferenceCategory android:title="@string/puzzle_setting_group_input" >
+
+        <!-- Keep value of key in sync with class preferences -->
         <ListPreference
             android:entries="@array/puzzle_setting_input_methods_values_text"
             android:entryValues="@array/puzzle_setting_input_methods_values_code"
             android:key="puzzle_setting_input_method"
             android:title="@string/puzzle_setting_input_method" />
+
+        <!-- Keep value of key in sync with class preferences -->
         <!-- Entries, entry values and summary for preference puzzle_setting_outer_swipe_circle will be set programmatically. -->
         <ListPreference
             android:key="puzzle_setting_outer_swipe_circle"
             android:title="@string/puzzle_setting_outer_swipe_circle_title" />
     </PreferenceCategory>
+
     <PreferenceCategory
         android:key="Sound"
         android:title="@string/puzzle_setting_group_sound" >
+
+        <!-- Keep value of key in sync with class preferences -->
         <CheckBoxPreference
             android:key="puzzle_setting_sound_effects"
             android:summary="@string/puzzle_setting_sound_effects_summary"

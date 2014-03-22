@@ -1,9 +1,5 @@
 package net.mathdoku.plus.ui;
 
-import net.mathdoku.plus.R;
-import net.mathdoku.plus.ui.base.AppFragmentActivity;
-import net.mathdoku.plus.util.FeedbackEmail;
-
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
@@ -17,6 +13,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import net.mathdoku.plus.R;
+import net.mathdoku.plus.ui.base.AppFragmentActivity;
+import net.mathdoku.plus.util.FeedbackEmail;
 
 public class StatisticsFragmentActivity extends AppFragmentActivity implements
 		ActionBar.TabListener {
@@ -36,7 +36,7 @@ public class StatisticsFragmentActivity extends AppFragmentActivity implements
 		// {@link android.support.v4.app.FragmentPagerAdapter} derivative is
 		// used, which will keep every loaded fragment in memory.
 		StatisticsFragmentPagerAdapter statisticsFragmentPagerAdapter = new StatisticsFragmentPagerAdapter(
-				getSupportFragmentManager());
+				getSupportFragmentManager(), this);
 
 		// Set up the action bar.
 		final ActionBar actionBar = getActionBar();

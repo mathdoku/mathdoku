@@ -1,15 +1,16 @@
 package net.mathdoku.plus.ui;
 
-import net.mathdoku.plus.Preferences;
-import net.mathdoku.plus.R;
-import net.mathdoku.plus.painter.Painter;
-
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+
+import net.mathdoku.plus.Preferences;
+import net.mathdoku.plus.R;
+import net.mathdoku.plus.enums.GridType;
+import net.mathdoku.plus.painter.Painter;
 
 class PuzzlePreferenceFragment extends PreferenceFragment implements
 		OnSharedPreferenceChangeListener {
@@ -32,7 +33,8 @@ class PuzzlePreferenceFragment extends PreferenceFragment implements
 		String[] entries = new String[7];
 		String[] entryValues = new String[7];
 		int index = 0;
-		for (int gridSize = 4; gridSize <= 9; gridSize++) {
+		for (int gridSize = GridType.getSmallestGridSize(); gridSize <= GridType
+				.getBiggestGridSize(); gridSize++) {
 			entries[index] = getResources()
 					.getString(
 							R.string.puzzle_setting_outer_swipe_circle_visible_from_grid_size_short,

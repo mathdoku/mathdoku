@@ -516,9 +516,9 @@
     <string name="archive_settings_show_status_filter_disabled">Hides the filter for selecting by status</string>
 
     <!-- The title and summary of the "Show size filter" option. This option enables or disables showing of the size filter in the action bar of the archive. -->
-    <string name="archive_settings_show_size_filter_title">Show size filter</string>
-    <string name="archive_settings_show_size_filter_enabled">Allows filtering by size</string>
-    <string name="archive_settings_show_size_filter_disabled">Hides the filter for selecting by size</string>
+    <string name="archive_settings_show_grid_type_filter_title">Show size filter</string>
+    <string name="archive_settings_show_grid_type_filter_enabled">Allows filtering by size</string>
+    <string name="archive_settings_show_grid_type_filter_disabled">Hides the filter for selecting by size</string>
 
     <!-- The title and summary of the "Chart description" option. This option enables or disables displaying the description below the charts in the archive activity. -->
     <string name="archive_setting_show_chart_description_title">Chart description</string>
@@ -612,4 +612,6 @@
 
     <!-- Connection word for the last two elements in a list. Example: "1 minute and 15 seconds" or "1, 2, 3 and 4)" -->
     <string name="connector_last_two_elements">and</string>
+
+    <string name="all">All</string>
 </resources>

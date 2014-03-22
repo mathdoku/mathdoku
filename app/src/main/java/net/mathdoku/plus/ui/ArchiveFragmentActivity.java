@@ -38,10 +38,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import net.mathdoku.plus.R;
+import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.painter.PagerTabStripPainter;
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
-import net.mathdoku.plus.storage.database.GridDatabaseAdapter.SizeFilter;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter.StatusFilter;
 import net.mathdoku.plus.ui.base.AppFragmentActivity;
 import net.mathdoku.plus.util.FeedbackEmail;
@@ -169,7 +169,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 				.isArchiveSizeFilterVisible();
 		if (mShowSizeFilter != showSizeFilterNew) {
 			mShowSizeFilter = showSizeFilterNew;
-			mArchiveFragmentStatePagerAdapter.setSizeFilter(SizeFilter.ALL);
+			mArchiveFragmentStatePagerAdapter.setSizeFilter(GridTypeFilter.ALL);
 			setSpinners = true;
 		}
 
@@ -195,7 +195,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 						.getStatusFilter());
 		mMathDokuPreferences
 				.setArchiveSizeFilterLastValueUsed(mArchiveFragmentStatePagerAdapter
-						.getSizeFilter());
+						.getSelectedSizeFilter());
 		mMathDokuPreferences
 				.setArchiveGridIdLastShowed(getCurrentSelectedGridId());
 
@@ -274,7 +274,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 		GridDatabaseAdapter gridDatabaseAdapter = new GridDatabaseAdapter();
 		final StatusFilter[] usedStatuses = gridDatabaseAdapter
 				.getUsedStatuses(mArchiveFragmentStatePagerAdapter
-						.getSizeFilter());
+						.getSelectedSizeFilter());
 
 		// Load the list of descriptions for statuses actually used into the
 		// array adapter.
@@ -355,42 +355,29 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 			return;
 		}
 
-		// Determine which sizes are actually used for the currently
-		// selected status filter.
-		GridDatabaseAdapter gridDatabaseAdapter = new GridDatabaseAdapter();
-		final SizeFilter[] usedSizes = gridDatabaseAdapter
-				.getUsedSizes(mArchiveFragmentStatePagerAdapter
-						.getStatusFilter());
+		final ArchiveFragmentGridSizeFilterSpinner archiveFragmentGridSizeFilterSpinner = new ArchiveFragmentGridSizeFilterSpinner(
+				this);
 
 		// Load the list of descriptions for sizes actually used into the
 		// array adapter.
-		String[] usedSizesDescription = new String[usedSizes.length];
-		for (int i = 0; i < usedSizes.length; i++) {
-			usedSizesDescription[i] = getResources().getStringArray(
-					R.array.archive_size_filter)[usedSizes[i].ordinal()];
-		}
 		ArrayAdapter<String> adapterStatus = new ArrayAdapter<String>(this,
-				android.R.layout.simple_spinner_item, usedSizesDescription);
+				android.R.layout.simple_spinner_item,
+				archiveFragmentGridSizeFilterSpinner.getSpinnerElements());
 		adapterStatus
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
 		// Build the spinner
 		spinner.setAdapter(adapterStatus);
 
-		// Restore selected size
-		SizeFilter selectedSizeFilter = mArchiveFragmentStatePagerAdapter
-				.getSizeFilter();
-		for (int i = 0; i < usedSizes.length; i++) {
-			if (usedSizes[i] == selectedSizeFilter) {
-				spinner.setSelection(i);
-				break;
-			}
-		}
+		spinner.setSelection(archiveFragmentGridSizeFilterSpinner
+				.indexOfSelectedGridSizeFilter());
 
 		// Hide spinner if only two choices are available. As one of those
 		// choices is always "ALL" the choices will result in an identical
 		// selection.
-		spinner.setVisibility(usedSizes.length <= 2 ? View.GONE : View.VISIBLE);
+		spinner
+				.setVisibility(archiveFragmentGridSizeFilterSpinner.size() <= 2 ? View.GONE
+						: View.VISIBLE);
 
 		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
@@ -399,14 +386,14 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 				// Remember currently displayed grid id.
 				int gridId = getCurrentSelectedGridId();
 
-				// Get the selected status
-				SizeFilter sizeFilter = usedSizes[(int) id];
+				GridTypeFilter newGridTypeFilter = archiveFragmentGridSizeFilterSpinner
+						.get((int) id);
 
 				// Check if value for status spinner has changed.
-				if (sizeFilter != mArchiveFragmentStatePagerAdapter
-						.getSizeFilter()) {
+				if (mArchiveFragmentStatePagerAdapter.getSelectedSizeFilter() != newGridTypeFilter) {
 					// Refresh pager adapter with new status.
-					mArchiveFragmentStatePagerAdapter.setSizeFilter(sizeFilter);
+					mArchiveFragmentStatePagerAdapter
+							.setSizeFilter(newGridTypeFilter);
 
 					// Refresh the status spinner as the content of the spinners
 					// are related.
@@ -546,5 +533,9 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 							}
 						})
 				.show();
+	}
+
+	public ArchiveFragmentStatePagerAdapter getArchiveFragmentStatePagerAdapter() {
+		return mArchiveFragmentStatePagerAdapter;
 	}
 }

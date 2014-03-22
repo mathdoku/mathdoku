@@ -1,6 +1,7 @@
 package net.mathdoku.plus.leaderboard;
 
 import net.mathdoku.plus.R;
+import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 
 /**
@@ -9,6 +10,14 @@ import net.mathdoku.plus.enums.PuzzleComplexity;
  * and vice versa.
  */
 public class LeaderboardType {
+	// All grid sizes for which leaderboards are available. Elements have to be
+	// order in order of ascending size.
+	private static final GridType[] GRID_SIZES_WITH_LEADER_BOARD = {
+			GridType.GRID_4x4, GridType.GRID_5X5, GridType.GRID_6X6,
+			GridType.GRID_7X7, GridType.GRID_8X8, GridType.GRID_9X9 };
+	private static final int GRID_SIZE_SMALLEST = GRID_SIZES_WITH_LEADER_BOARD[0]
+			.getGridSize();
+
 	// All leaderboards as defined in the game service on Google Play. The order
 	// of this array should be kept in sync with the computation of the index
 	// value in method getIndex.
@@ -162,12 +171,9 @@ public class LeaderboardType {
 	private static final int MAX_ELEMENTS_INDEX_FACTOR_PUZZLE_COMPLEXITY = PuzzleComplexity
 			.values().length - 1;
 
-	// Number of elements for index factor operator visibility
-	private static final int MAX_ELEMENTS_INDEX_FACTOR_OPERATORS = 2; // boolean
-
-	// Number of elements for index factor grid size
-	private static final int MIN_GRID_SIZE = 4;
-	private static final int MAX_GRID_SIZE = 9;
+	// Number of elements for index factor operator visibility. Boolean value
+	// has only 2 values.
+	private static final int MAX_ELEMENTS_INDEX_FACTOR_OPERATORS = 2;
 
 	// When computing the index it is computed using following index factors.
 	// Each index factor is the product of all possible combinations of previous
@@ -177,6 +183,19 @@ public class LeaderboardType {
 	private static final int HIDE_OPERATOR_INDEX_FACTOR = 1 * MAX_ELEMENTS_INDEX_FACTOR_PUZZLE_COMPLEXITY;
 	private static final int GRID_SIZE_INDEX_FACTOR = HIDE_OPERATOR_INDEX_FACTOR
 			* MAX_ELEMENTS_INDEX_FACTOR_OPERATORS;
+
+	public static GridType[] getGridSizeWithLeaderboard() {
+		return GRID_SIZES_WITH_LEADER_BOARD;
+	}
+
+	public static boolean notDefinedForGridSize(int gridSize) {
+		for (GridType gridTypeWithLeaderBoard : GRID_SIZES_WITH_LEADER_BOARD) {
+			if (gridTypeWithLeaderBoard.getGridSize() == gridSize) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	/**
 	 * Get the leaderboard index for the given combination of grid size,
@@ -195,13 +214,14 @@ public class LeaderboardType {
 			PuzzleComplexity puzzleComplexity) {
 
 		// Test whether grid size is within known size.
-		assert gridSize >= MIN_GRID_SIZE && gridSize <= MAX_GRID_SIZE;
+		assert gridSize >= GridType.getSmallestGridSize()
+				&& gridSize <= GridType.getBiggestGridSize();
 
 		// Determine the leaderboard index to use.
 		int index = (puzzleComplexity.ordinal() - PUZZLE_COMPLEXITY_OFFSET)
 				* PUZZLE_COMPLEXITY_INDEX_FACTOR;
 		index += (hideOperators ? 0 : 1) * HIDE_OPERATOR_INDEX_FACTOR;
-		index += (gridSize - MIN_GRID_SIZE) * GRID_SIZE_INDEX_FACTOR;
+		index += (gridSize - GRID_SIZE_SMALLEST) * GRID_SIZE_INDEX_FACTOR;
 
 		// Update leaderboard if an valid index was determined.
 		if (index >= 0 && index < mLeaderboardResId.length) {
@@ -268,10 +288,12 @@ public class LeaderboardType {
 
 		// As grid size is the biggest factor it is not needed to strip other
 		// factors from index.
-		int gridSize = index / GRID_SIZE_INDEX_FACTOR + MIN_GRID_SIZE;
+		int gridSize = index / GRID_SIZE_INDEX_FACTOR
+				+ GridType.getSmallestGridSize();
 
 		// Test whether a valid grid size has been computed.
-		assert gridSize >= MIN_GRID_SIZE && gridSize <= MAX_GRID_SIZE;
+		assert gridSize >= GridType.getSmallestGridSize()
+				&& gridSize <= GridType.getBiggestGridSize();
 
 		return gridSize;
 	}

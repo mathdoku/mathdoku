@@ -511,9 +511,9 @@
     <string name="archive_settings_show_status_filter_disabled">Verberg het filter voor het selecteren op status</string>
 
     <!-- The title and summary of the "Show size filter" option. This option enables or disables showing of the size filter in the action bar of the archive. -->
-    <string name="archive_settings_show_size_filter_title">Toon grootte filter</string>
-    <string name="archive_settings_show_size_filter_enabled">Sta filtering op grootte van de puzzel toe</string>
-    <string name="archive_settings_show_size_filter_disabled">Verberg het filter voor het selecteren op grootte</string>
+    <string name="archive_settings_show_grid_type_filter_title">Toon grootte filter</string>
+    <string name="archive_settings_show_grid_type_filter_enabled">Sta filtering op grootte van de puzzel toe</string>
+    <string name="archive_settings_show_grid_type_filter_disabled">Verberg het filter voor het selecteren op grootte</string>
 
     <!-- The title and summary of the "Chart description" option. This option enables or disables displaying the description below the charts in the archive activity. -->
     <string name="archive_setting_show_chart_description_title">Grafiek toelichting</string>
@@ -606,4 +606,6 @@
 
     <!-- Connection word for the last two elements in a list. Example: "1 minute and 15 seconds" or "1, 2, 3 and 4)" -->
     <string name="connector_last_two_elements">en</string>
+
+    <string name="all">Alle</string>
 </resources>

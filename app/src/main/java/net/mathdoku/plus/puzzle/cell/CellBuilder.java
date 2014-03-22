@@ -210,7 +210,8 @@ public class CellBuilder {
 				mDuplicateValueHighlight);
 		stringBuilder.append(", mSelected=").append(mSelected);
 		stringBuilder.append(", mRevealed=").append(mRevealed);
-		stringBuilder.append(", mInvalidValueHighlight=").append(mInvalidValueHighlight);
+		stringBuilder.append(", mInvalidValueHighlight=").append(
+				mInvalidValueHighlight);
 		stringBuilder.append(", mCellBuilderErrorChecking=").append(
 				mCellBuilderErrorChecking);
 		stringBuilder.append('}');

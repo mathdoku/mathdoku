@@ -1,6 +1,6 @@
 package net.mathdoku.plus.puzzle.cell;
 
-import net.mathdoku.plus.enums.GridSize;
+import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.puzzle.InvalidGridException;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.statistics.GridStatistics;
@@ -29,7 +29,8 @@ public class Cell {
 	private final List<Integer> mPossibles;
 	private final int mMaxValue;
 
-	// String of the cage, only filled in case the cell is the top left cell in the cage.
+	// String of the cage, only filled in case the cell is the top left cell in
+	// the cage.
 	private String mCageText;
 
 	private int mCageId;
@@ -55,8 +56,7 @@ public class Cell {
 		mDuplicateValueHighlight = cellBuilder.isDuplicateValueHighlighted();
 		mSelected = cellBuilder.isSelected();
 		mRevealed = cellBuilder.isRevealed();
-		mInvalidValueHighlight = cellBuilder
-				.isInvalidValueHighlighted();
+		mInvalidValueHighlight = cellBuilder.isInvalidValueHighlighted();
 
 		// Check if required parameters are specified
 		validateCellParametersThrowsExceptionOnError(cellBuilder);
@@ -73,10 +73,11 @@ public class Cell {
 			CellBuilder cellBuilder) {
 		int gridSize = cellBuilder.getGridSize();
 		try {
-			GridSize.fromInteger(gridSize);
+			GridType.fromInteger(gridSize);
 		} catch (IllegalArgumentException e) {
 			throw new InvalidGridException(String.format(
-					"Parameter gridSize (%d) has an invalid value.", gridSize), e);
+					"Parameter gridSize (%d) has an invalid value.", gridSize),
+					e);
 		}
 		if (mId < 0) {
 			throw new InvalidGridException(String.format(
@@ -84,7 +85,8 @@ public class Cell {
 		}
 		if (mEnteredValue < 0 || mEnteredValue > mMaxValue) {
 			throw new InvalidGridException(String.format(
-					"Parameter mEnteredValue (%d) has an invalid value.", mEnteredValue));
+					"Parameter mEnteredValue (%d) has an invalid value.",
+					mEnteredValue));
 		}
 	}
 
@@ -106,8 +108,7 @@ public class Cell {
 			CellBuilder cellBuilder) {
 		int minimumCorrectValue = cellBuilder.performLenientCorrectValueCheck() ? CellBuilder.CORRECT_VALUE_NOT_SET
 				: 1;
-		if (mCorrectValue < minimumCorrectValue
-				|| mCorrectValue > mMaxValue) {
+		if (mCorrectValue < minimumCorrectValue || mCorrectValue > mMaxValue) {
 			throw new InvalidGridException(String.format(
 					"Parameter mCorrectValue (%d) has an invalid value.",
 					mCorrectValue));
@@ -137,7 +138,8 @@ public class Cell {
 				mDuplicateValueHighlight);
 		stringBuilder.append(", mSelected=").append(mSelected);
 		stringBuilder.append(", mRevealed=").append(mRevealed);
-		stringBuilder.append(", mInvalidValueHighlight=").append(mInvalidValueHighlight);
+		stringBuilder.append(", mInvalidValueHighlight=").append(
+				mInvalidValueHighlight);
 		stringBuilder.append('}');
 		return stringBuilder.toString();
 	}
@@ -209,8 +211,8 @@ public class Cell {
 	 * 
 	 * @param newValue
 	 *            The new value for the cell. Use 0 to clear the cell.
-	 * @return True if the new value is set as entered value. False otherwise. Also
-	 *         in case the entered value isn't changed, false is returned.
+	 * @return True if the new value is set as entered value. False otherwise.
+	 *         Also in case the entered value isn't changed, false is returned.
 	 */
 	public boolean setEnteredValue(int newValue) {
 		if (isValueNotValid(newValue) && newValue != NO_ENTERED_VALUE) {
@@ -244,13 +246,15 @@ public class Cell {
 		return true;
 	}
 
-	private void updateStatisticsOnChangeOfEnteredValue(int oldEnteredValue, int newEnteredValue) {
+	private void updateStatisticsOnChangeOfEnteredValue(int oldEnteredValue,
+			int newEnteredValue) {
 		if (mGrid != null && newEnteredValue != oldEnteredValue) {
 			GridStatistics gridStatistics = mGrid.getGridStatistics();
 
 			// Only count as replacement as both the original and the new value
 			// are not 0 as this is used to indicate an empty cell.
-			if (newEnteredValue != NO_ENTERED_VALUE && oldEnteredValue != NO_ENTERED_VALUE) {
+			if (newEnteredValue != NO_ENTERED_VALUE
+					&& oldEnteredValue != NO_ENTERED_VALUE) {
 				gridStatistics
 						.increaseCounter(StatisticsCounterType.USER_VALUE_REPLACED);
 			}
@@ -258,13 +262,15 @@ public class Cell {
 			// Counters for filled and empty cells are only updated if the
 			// solution of the cell has not been revealed.
 			if (!mRevealed) {
-				if (oldEnteredValue == NO_ENTERED_VALUE && newEnteredValue != NO_ENTERED_VALUE) {
+				if (oldEnteredValue == NO_ENTERED_VALUE
+						&& newEnteredValue != NO_ENTERED_VALUE) {
 					// Empty cell is filled in
 					gridStatistics
 							.decreaseCounter(StatisticsCounterType.CELLS_EMPTY);
 					gridStatistics
 							.increaseCounter(StatisticsCounterType.CELLS_FILLED);
-				} else if (oldEnteredValue != NO_ENTERED_VALUE && newEnteredValue == NO_ENTERED_VALUE) {
+				} else if (oldEnteredValue != NO_ENTERED_VALUE
+						&& newEnteredValue == NO_ENTERED_VALUE) {
 					// Non empty cell is cleared
 					gridStatistics
 							.decreaseCounter(StatisticsCounterType.CELLS_FILLED);
@@ -408,7 +414,8 @@ public class Cell {
 			mRevealed = true;
 		}
 
-		// Always set the entered value again to the correct value as it might have
+		// Always set the entered value again to the correct value as it might
+		// have
 		// been changed af the previous time it was revealed.
 		mEnteredValue = mCorrectValue;
 	}
@@ -440,8 +447,8 @@ public class Cell {
 	}
 
 	/**
-	 * Checks if this cell is empty, i.e. it does not contain a entered value nor
-	 * possible values.
+	 * Checks if this cell is empty, i.e. it does not contain a entered value
+	 * nor possible values.
 	 * 
 	 * @return True in case the cell is empty. False otherwise.
 	 */

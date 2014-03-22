@@ -10,6 +10,8 @@ import android.util.Log;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
+import net.mathdoku.plus.enums.GridType;
+import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.enums.SolvingAttemptStatus;
 import net.mathdoku.plus.griddefinition.GridDefinition;
@@ -52,11 +54,6 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	// Allowed values for the status filter
 	public enum StatusFilter {
 		ALL, UNFINISHED, SOLVED, REVEALED
-	}
-
-	// Allowed values for the size filter
-	public enum SizeFilter {
-		ALL, SIZE_4, SIZE_5, SIZE_6, SIZE_7, SIZE_8, SIZE_9
 	}
 
 	@Override
@@ -299,7 +296,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 *         grid.
 	 */
 	public int[][] getLatestSolvingAttemptsPerGrid(StatusFilter statusFilter,
-			SizeFilter sizeFilter) {
+			GridTypeFilter gridTypeFilter) {
 		String keySolvingAttemptId = "solving_attempt_id";
 
 		// Build projection
@@ -323,7 +320,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 
 		// Determine where clause elements for the filters.
 		String selectionStatus = getStatusSelectionString(statusFilter);
-		String selectionSize = getSizeSelectionString(sizeFilter);
+		String selectionSize = getSizeSelectionString(gridTypeFilter);
 
 		// Build where clause. Note: it is not possible to use an aggregation
 		// function like MAX(solving_attempt_id) as the selection on status
@@ -378,10 +375,10 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 				} while (cursor.moveToNext());
 			}
 		} catch (SQLiteException e) {
-			throw new DatabaseException(
-					String.format(
-							"Cannot retrieve latest solving attempt per grid from the database (status filter = %s, size filter = %s).",
-							statusFilter.toString(), sizeFilter.toString()), e);
+			throw new DatabaseException(String.format(
+					"Cannot retrieve latest solving attempt per grid from the database "
+							+ "(status filter = %s, size filter = %s).",
+					statusFilter.toString(), gridTypeFilter.toString()), e);
 		} finally {
 			if (cursor != null) {
 				cursor.close();
@@ -399,7 +396,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 * @return The list of statuses used by grids which matches with the given
 	 *         size filter.
 	 */
-	public StatusFilter[] getUsedStatuses(SizeFilter sizeFilter) {
+	public StatusFilter[] getUsedStatuses(GridTypeFilter sizeFilter) {
 		// Build the projection
 		Projection projection = new Projection();
 		final String keyStatusFilter = "status_filter";
@@ -507,7 +504,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 * @return The list of sizes used by grids which matches with the given
 	 *         status filter.
 	 */
-	public SizeFilter[] getUsedSizes(StatusFilter statusFilter) {
+	public GridType[] getUsedSizes(StatusFilter statusFilter) {
 		// Build the projection
 		Projection projection = new Projection();
 		projection.put(KEY_GRID_SIZE, TABLE, KEY_GRID_SIZE);
@@ -538,38 +535,18 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		}
 
 		// Convert results in cursor to array of grid id's
-		SizeFilter[] sizes = null;
+		GridType[] sizes = null;
 		Cursor cursor = null;
 		try {
 			cursor = sqliteQueryBuilder.query(mSqliteDatabase, columnsData,
 					selection, null, KEY_GRID_SIZE, null, null);
 			if (cursor != null && cursor.moveToFirst()) {
-				sizes = new SizeFilter[cursor.getCount() + 1];
-				sizes[0] = SizeFilter.ALL;
-				int i = 1;
+				sizes = new GridType[cursor.getCount()];
+				int i = 0;
 				int columnIndex = cursor.getColumnIndexOrThrow(KEY_GRID_SIZE);
 				do {
-					int size = cursor.getInt(columnIndex);
-					switch (size) {
-					case 4:
-						sizes[i++] = SizeFilter.SIZE_4;
-						break;
-					case 5:
-						sizes[i++] = SizeFilter.SIZE_5;
-						break;
-					case 6:
-						sizes[i++] = SizeFilter.SIZE_6;
-						break;
-					case 7:
-						sizes[i++] = SizeFilter.SIZE_7;
-						break;
-					case 8:
-						sizes[i++] = SizeFilter.SIZE_8;
-						break;
-					case 9:
-						sizes[i++] = SizeFilter.SIZE_9;
-						break;
-					}
+					sizes[i++] = GridType.fromInteger(cursor
+							.getInt(columnIndex));
 				} while (cursor.moveToNext());
 			}
 		} catch (SQLiteException e) {
@@ -623,30 +600,15 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 * Get the SQL where clause to select solving attempts for which the size
 	 * matches the given size filter.
 	 * 
-	 * @param sizeFilter
+	 * @param gridTypeFilter
 	 *            The size filter to be matched.
 	 * @return The SQL where clause which matches solving attempts with the
 	 *         given size filter.
 	 */
-	private String getSizeSelectionString(SizeFilter sizeFilter) {
-		switch (sizeFilter) {
-		case ALL:
-			// no filter on status
-			return "";
-		case SIZE_4:
-			return getPrefixedColumnName(KEY_GRID_SIZE) + " = " + 4;
-		case SIZE_5:
-			return getPrefixedColumnName(KEY_GRID_SIZE) + " = " + 5;
-		case SIZE_6:
-			return getPrefixedColumnName(KEY_GRID_SIZE) + " = " + 6;
-		case SIZE_7:
-			return getPrefixedColumnName(KEY_GRID_SIZE) + " = " + 7;
-		case SIZE_8:
-			return getPrefixedColumnName(KEY_GRID_SIZE) + " = " + 8;
-		case SIZE_9:
-			return getPrefixedColumnName(KEY_GRID_SIZE) + " = " + 9;
-		}
-		return null;
+	private String getSizeSelectionString(GridTypeFilter gridTypeFilter) {
+		return gridTypeFilter == GridTypeFilter.ALL ? ""
+				: getPrefixedColumnName(KEY_GRID_SIZE) + " = "
+						+ gridTypeFilter.getGridType();
 	}
 
 	/**
@@ -659,7 +621,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 * @return The number of grids having a specific status and or size.
 	 */
 	@SuppressWarnings("SameParameterValue")
-	public int countGrids(StatusFilter statusFilter, SizeFilter sizeFilter) {
+	public int countGrids(StatusFilter statusFilter, GridTypeFilter sizeFilter) {
 		int[][] gridIds = getLatestSolvingAttemptsPerGrid(statusFilter,
 				sizeFilter);
 		return gridIds == null ? 0 : gridIds.length;

@@ -353,6 +353,11 @@ public class CageTypeGenerator {
 			}
 		}
 
+		if (extendIndexes.size() == 0) {
+			// Cannot extend anymore.
+			return null;
+		}
+
 		// Select one of the cell index numbers to which the given cage type can
 		// be extended
 		int extendToCellNumber = extendIndexes.get(random.nextInt(extendIndexes

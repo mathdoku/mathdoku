@@ -11,6 +11,7 @@ import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
+import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.gridgenerating.DialogPresentingGridGenerator;
 import net.mathdoku.plus.gridgenerating.GridGenerator;
@@ -99,8 +100,8 @@ public class DevelopmentHelper {
 	private static void generateGames(
 			final PuzzleFragmentActivity puzzleFragmentActivity) {
 		puzzleFragmentActivity.mDialogPresentingGridGenerator = new DialogPresentingGridGenerator(
-				puzzleFragmentActivity, 6, false, PuzzleComplexity.NORMAL,
-				Util.getPackageVersionNumber());
+				puzzleFragmentActivity, GridType.GRID_6X6, false,
+				PuzzleComplexity.NORMAL, Util.getPackageVersionNumber());
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			// Set the options for the grid generator
 			GridGenerator.GridGeneratorOptions gridGeneratorOptions = puzzleFragmentActivity.mDialogPresentingGridGenerator.new GridGeneratorOptions();

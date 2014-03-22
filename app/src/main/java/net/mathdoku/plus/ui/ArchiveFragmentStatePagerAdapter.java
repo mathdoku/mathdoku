@@ -6,8 +6,8 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
+import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
-import net.mathdoku.plus.storage.database.GridDatabaseAdapter.SizeFilter;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter.StatusFilter;
 
 /**
@@ -32,7 +32,7 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 
 	// Selected filters
 	private StatusFilter mStatusFilter;
-	private SizeFilter mSizeFilter;
+	private GridTypeFilter mGridTypeFilter;
 
 	// Label used in the pager strip
 	private static String mLabelPuzzleNumber;
@@ -44,7 +44,7 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 
 		// Initialize the filters
 		mStatusFilter = StatusFilter.ALL;
-		mSizeFilter = SizeFilter.ALL;
+		mGridTypeFilter = GridTypeFilter.ALL;
 
 		// Initialize the label used in the page titles.
 		mArchiveFragmentActivity = archiveFragmentActivity;
@@ -135,9 +135,9 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	 * @param sizeFilter
 	 *            The new value of the size filter.
 	 */
-	public void setSizeFilter(SizeFilter sizeFilter) {
-		if (sizeFilter != mSizeFilter) {
-			mSizeFilter = sizeFilter;
+	public void setSizeFilter(GridTypeFilter sizeFilter) {
+		if (sizeFilter != mGridTypeFilter) {
+			mGridTypeFilter = sizeFilter;
 			setGridIds();
 		}
 	}
@@ -147,8 +147,8 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	 * 
 	 * @return The currently selected value of the size filter.
 	 */
-	public SizeFilter getSizeFilter() {
-		return mSizeFilter;
+	public GridTypeFilter getSelectedSizeFilter() {
+		return mGridTypeFilter;
 	}
 
 	/**
@@ -158,7 +158,7 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 		// Determine which grid should be shown
 		GridDatabaseAdapter gridDatabaseAdapter = new GridDatabaseAdapter();
 		mGridIds = gridDatabaseAdapter.getLatestSolvingAttemptsPerGrid(
-				mStatusFilter, mSizeFilter);
+				mStatusFilter, mGridTypeFilter);
 		notifyDataSetChanged();
 	}
 

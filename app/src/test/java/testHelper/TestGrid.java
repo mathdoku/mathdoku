@@ -234,6 +234,14 @@ public class TestGrid {
 		return -1;
 	}
 
+	public TestGrid setCorrectEnteredValueInCell(int cellId) {
+		Cell cell = mGrid.getCell(cellId);
+		int correctValue = cell.getCorrectValue();
+		cell.setEnteredValue(correctValue);
+
+		return this;
+	}
+
 	public TestGrid setIncorrectEnteredValueInCell(int cellId) {
 		Cell cell = mGrid.getCell(cellId);
 		int correctValue = cell.getCorrectValue();

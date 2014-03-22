@@ -200,8 +200,7 @@ public class Cage {
 
 		List<Integer> enteredValues = mGrid.getEnteredValuesForCells(mCells);
 		if (enteredValues != null && enteredValues.size() == mCells.length) {
-			mMathOnEnteredValuesIsCorrect = mHideOperator ? checkMathOnEnteredValuesWithHiddenOperators(
-					enteredValues)
+			mMathOnEnteredValuesIsCorrect = mHideOperator ? checkMathOnEnteredValuesWithHiddenOperators(enteredValues)
 					: checkMathOnEnteredValuesWithVisibleOperators(enteredValues);
 		} else {
 			// At least one cell is empty. So math is not incorrect.
@@ -215,7 +214,8 @@ public class Cage {
 		return mMathOnEnteredValuesIsCorrect;
 	}
 
-	private boolean checkMathOnEnteredValuesWithHiddenOperators(List<Integer> enteredValues) {
+	private boolean checkMathOnEnteredValuesWithHiddenOperators(
+			List<Integer> enteredValues) {
 		boolean mathCorrect = isNoneMathsCorrect(enteredValues);
 		mathCorrect = mathCorrect || isAddMathsCorrect(enteredValues);
 		mathCorrect = mathCorrect || isMultiplyMathsCorrect(enteredValues);

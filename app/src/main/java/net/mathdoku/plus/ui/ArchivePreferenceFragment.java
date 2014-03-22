@@ -1,13 +1,13 @@
 package net.mathdoku.plus.ui;
 
-import net.mathdoku.plus.Preferences;
-import net.mathdoku.plus.R;
-
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+
+import net.mathdoku.plus.Preferences;
+import net.mathdoku.plus.R;
 
 class ArchivePreferenceFragment extends PreferenceFragment implements
 		OnSharedPreferenceChangeListener {
@@ -44,7 +44,7 @@ class ArchivePreferenceFragment extends PreferenceFragment implements
 		if (key.equals(Preferences.ARCHIVE_SETTING_STATUS_FILTER_VISIBLE)) {
 			setStatusFilterSummary();
 		}
-		if (key.equals(Preferences.ARCHIVE_SETTING_SIZE_FILTER_VISIBLE)) {
+		if (key.equals(Preferences.ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE)) {
 			setSizeFilterSummary();
 		}
 	}
@@ -70,11 +70,11 @@ class ArchivePreferenceFragment extends PreferenceFragment implements
 	 */
 	private void setSizeFilterSummary() {
 		Preference preference;
-		if ((preference = findPreference(Preferences.ARCHIVE_SETTING_SIZE_FILTER_VISIBLE)) != null) {
+		if ((preference = findPreference(Preferences.ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE)) != null) {
 			int summaryResId = Preferences
 					.getInstance()
-					.isArchiveSizeFilterVisible() ? R.string.archive_settings_show_size_filter_enabled
-					: R.string.archive_settings_show_size_filter_disabled;
+					.isArchiveSizeFilterVisible() ? R.string.archive_settings_show_grid_type_filter_enabled
+					: R.string.archive_settings_show_grid_type_filter_disabled;
 			preference.setSummary(getResources().getString(summaryResId));
 		}
 	}
