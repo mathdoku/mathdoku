@@ -1,4 +1,4 @@
-package net.mathdoku.plus.ui;
+package net.mathdoku.plus.Archive.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentStatePagerAdapter;

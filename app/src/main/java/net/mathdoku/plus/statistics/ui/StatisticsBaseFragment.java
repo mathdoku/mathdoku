@@ -1,4 +1,4 @@
-package net.mathdoku.plus.ui;
+package net.mathdoku.plus.statistics.ui;
 
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -26,13 +26,13 @@ import org.achartengine.renderer.SimpleSeriesRenderer;
 public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	private static final String TAG = StatisticsBaseFragment.class.getName();
 
-	LinearLayout mChartsLayout;
+	protected LinearLayout mChartsLayout;
 
 	// Database adapter for the statistics data
 	StatisticsDatabaseAdapter mStatisticsDatabaseAdapter;
 
 	// Text size for body text
-	int mDefaultTextSize;
+	protected int mDefaultTextSize;
 	int mDefaultTextSizeInDIP;
 
 	// The inflater for this activity.
@@ -41,20 +41,20 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	private boolean mDisplayStatisticDescription;
 
 	// Green colors will be used at things which are positive
-	static final int chartGreen1 = 0xFF80FF00;
+	protected static final int chartGreen1 = 0xFF80FF00;
 	static final int chartGreen2 = 0xFF59B200;
 
 	// Grey colors will be used at things which are neutral
-	static final int chartGrey1 = 0xFFD4D4D4;
-	static final int chartSignal1 = 0xFFFF00FF;
-	static final int chartSignal2 = 0xFF8000FF;
-	static final int chartSignal3 = 0xFF0000FF;
+	protected static final int chartGrey1 = 0xFFD4D4D4;
+	protected static final int chartSignal1 = 0xFFFF00FF;
+	protected static final int chartSignal2 = 0xFF8000FF;
+	protected static final int chartSignal3 = 0xFF0000FF;
 
 	// Green colors will be used at things which are negative
-	static final int chartRed1 = 0xFFFF0000;
-	static final int chartRed2 = 0xFFFF3300;
-	static final int chartRed3 = 0xFFB22400;
-	static final int chartRed4 = 0xFFFECCBF;
+	protected static final int chartRed1 = 0xFFFF0000;
+	protected static final int chartRed2 = 0xFFFF3300;
+	protected static final int chartRed3 = 0xFFB22400;
+	protected static final int chartRed4 = 0xFFFECCBF;
 	static final int chartRed5 = 0xFFFE9980;
 
 	@Override
@@ -64,8 +64,9 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 				savedInstanceState);
 	}
 
-	View onCreateView(LayoutInflater inflater, int layout, ViewGroup container,
-			@SuppressWarnings("UnusedParameters") Bundle savedInstanceState) {
+	protected View onCreateView(LayoutInflater inflater, int layout, ViewGroup container,
+								@SuppressWarnings(
+			"UnusedParameters") Bundle savedInstanceState) {
 		// Get default sizes for text
 		mDefaultTextSize = getResources().getDimensionPixelSize(
 				R.dimen.text_size_default);
@@ -88,7 +89,7 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	 *            The color for the new simple series renderer.
 	 * @return A new simple series renderer for the given color.
 	 */
-	SimpleSeriesRenderer createSimpleSeriesRenderer(int color) {
+	protected SimpleSeriesRenderer createSimpleSeriesRenderer(int color) {
 		SimpleSeriesRenderer simpleSeriesRenderer = new SimpleSeriesRenderer();
 		simpleSeriesRenderer.setColor(color);
 
@@ -113,8 +114,8 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	 *            with respect to settings. Null in case explanation is never
 	 *            available.
 	 */
-	void addStatisticsSection(String tag, String title, GraphicalView chart,
-			View extraDataView, String explanation) {
+	protected void addStatisticsSection(String tag, String title, GraphicalView chart,
+										View extraDataView, String explanation) {
 		// Inflate a new view for this statistics section
 		View sectionView = mLayoutInflater.inflate(R.layout.statistics_section,
 				null);
@@ -234,7 +235,7 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	 * @param display
 	 *            True in case the chart descriptions have to be displayed.
 	 */
-	void setDisplayChartDescription(boolean display) {
+	protected void setDisplayChartDescription(boolean display) {
 		mDisplayStatisticDescription = display;
 	}
 
@@ -250,7 +251,7 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	 *            which the chart is added.
 	 * @return The height to be set on the chart.
 	 */
-	int getMaxContentHeight(int titleHeightPixels, int paddingChartPixels) {
+	protected int getMaxContentHeight(int titleHeightPixels, int paddingChartPixels) {
 		// Get size of display
 		DisplayMetrics displayMetrics = getActivity()
 				.getResources()

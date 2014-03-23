@@ -1,4 +1,4 @@
-package net.mathdoku.plus.ui;
+package net.mathdoku.plus.statistics.ui;
 
 import android.content.Context;
 import android.os.Bundle;

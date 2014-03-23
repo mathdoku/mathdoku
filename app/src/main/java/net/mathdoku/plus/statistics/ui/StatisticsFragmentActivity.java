@@ -1,4 +1,4 @@
-package net.mathdoku.plus.ui;
+package net.mathdoku.plus.statistics.ui;
 
 import android.app.ActionBar;
 import android.app.AlertDialog;
@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import net.mathdoku.plus.R;
+import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 import net.mathdoku.plus.ui.base.AppFragmentActivity;
 import net.mathdoku.plus.util.FeedbackEmail;
 

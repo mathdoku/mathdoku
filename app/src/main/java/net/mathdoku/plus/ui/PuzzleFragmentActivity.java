@@ -31,6 +31,8 @@ import android.widget.TextView;
 
 import com.google.android.gms.games.GamesClient;
 
+import net.mathdoku.plus.Archive.ui.ArchiveFragment;
+import net.mathdoku.plus.Archive.ui.ArchiveFragmentActivity;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
@@ -51,6 +53,7 @@ import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.puzzle.grid.GridLoader;
 import net.mathdoku.plus.puzzle.ui.GridInputMode;
 import net.mathdoku.plus.statistics.GridStatistics;
+import net.mathdoku.plus.statistics.ui.StatisticsFragmentActivity;
 import net.mathdoku.plus.storage.GameFileConverter;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter.StatusFilter;

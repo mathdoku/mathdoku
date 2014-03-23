@@ -1,4 +1,4 @@
-package net.mathdoku.plus.ui;
+package net.mathdoku.plus.Archive.ui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -24,6 +24,9 @@ import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.puzzle.grid.GridLoader;
 import net.mathdoku.plus.puzzle.ui.GridViewerView;
 import net.mathdoku.plus.statistics.GridStatistics;
+import net.mathdoku.plus.ui.PuzzleFragmentActivity;
+import net.mathdoku.plus.statistics.ui.StatisticsBaseFragment;
+import net.mathdoku.plus.ui.VerticalRatingBar;
 import net.mathdoku.plus.util.Util;
 
 import org.achartengine.ChartFactory;
@@ -641,7 +644,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 	}
 
 	@Override
-	int getMaxContentHeight(int titleHeightPixels, int paddingChartPixels) {
+	protected int getMaxContentHeight(int titleHeightPixels, int paddingChartPixels) {
 		int maxContentHeight = super.getMaxContentHeight(titleHeightPixels,
 				paddingChartPixels);
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.mathdoku.plus.ui;
+package net.mathdoku.plus.Archive.ui;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -43,6 +43,7 @@ import net.mathdoku.plus.painter.PagerTabStripPainter;
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter.StatusFilter;
+import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 import net.mathdoku.plus.ui.base.AppFragmentActivity;
 import net.mathdoku.plus.util.FeedbackEmail;
 import net.mathdoku.plus.util.SharedPuzzle;

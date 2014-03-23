@@ -1,4 +1,4 @@
-package net.mathdoku.plus.ui;
+package net.mathdoku.plus.statistics.ui;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;

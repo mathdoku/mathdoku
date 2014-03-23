@@ -1,4 +1,4 @@
-package net.mathdoku.plus.ui;
+package net.mathdoku.plus.Archive.ui;
 
 import android.app.Activity;
 import android.content.res.Resources;

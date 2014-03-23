@@ -1,4 +1,4 @@
-package net.mathdoku.plus.ui;
+package net.mathdoku.plus.Archive.ui;
 
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.enums.GridType;

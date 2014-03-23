@@ -14,7 +14,7 @@ import net.mathdoku.plus.R;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.puzzle.grid.GridLoader;
 import net.mathdoku.plus.griddefinition.GridDefinition;
-import net.mathdoku.plus.ui.ArchiveFragment;
+import net.mathdoku.plus.Archive.ui.ArchiveFragment;
 
 import java.util.ArrayList;
 import java.util.List;
