@@ -531,7 +531,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		mDialogPresentingGridGenerator = new DialogPresentingGridGenerator(
 				this, createGridGeneratingParameters(gridType, hideOperators,
 						puzzleComplexity));
-		mDialogPresentingGridGenerator.execute();
+		mDialogPresentingGridGenerator.generate();
 	}
 
 	private GridGeneratingParameters createGridGeneratingParameters(

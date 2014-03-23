@@ -12,14 +12,21 @@ import net.mathdoku.plus.developmenthelper.DevelopmentHelper;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 
+import java.util.List;
+
 /**
- * An asynchronous task that generates a grid, displays a dialog in the process
- * and ultimately calls the onNewGridReady method of the passed activity, if the
- * task and the activity aren't detached before this may happen.
+ * This class presents a progress dialog while the grid is generated
+ * asynchronously. The onNewGridReady method of the passed activity will be
+ * called as the grid has been generated as long as the activity is still
+ * attached to this class.
  */
-public final class DialogPresentingGridGenerator extends GridGenerator {
+public final class DialogPresentingGridGenerator {
 	private static final String TAG = DialogPresentingGridGenerator.class
 			.getName();
+
+	private int numberOfGamesToGenerate;
+	private GridGenerator gridGenerator;
+	private GridGeneratorListener gridGeneratorListener;
 
 	/**
 	 * The activity used to display the dialog, and to forward the generated
@@ -35,27 +42,44 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 	// The dialog for this task
 	private ProgressDialog mProgressDialog;
 
-	private static final class GridForwarder implements Listener {
+	private static final class GridGeneratorListener implements
+			GridGenerator.Listener {
 		public DialogPresentingGridGenerator mDialogPresentingGridGenerator;
 
+		public GridGeneratorListener(
+				DialogPresentingGridGenerator dialogPresentingGridGenerator) {
+			this.mDialogPresentingGridGenerator = dialogPresentingGridGenerator;
+		}
+
 		@Override
-		public final void onFinishGridGenerating(Grid grid) {
-			if (mDialogPresentingGridGenerator.mPuzzleFragmentActivity != null) {
-				if (DEBUG_GRID_GENERATOR) {
+		public void onFinishGridGenerator(List<Grid> grids) {
+			mDialogPresentingGridGenerator.dismissProgressDialog();
+			if (grids == null || grids.isEmpty()) {
+				return;
+			}
+			if (grids.size() == 1
+					&& mDialogPresentingGridGenerator.mPuzzleFragmentActivity != null) {
+				if (GridGenerator.DEBUG_GRID_GENERATOR) {
 					Log.d(TAG, "Send results to activity.");
 				}
-				// The task is still attached to a activity. Inform activity
-				// about completing the new game generation. The activity will
+				// The task is still attached to a activity. Inform
+				// activity
+				// about completing the new game generation. The
+				// activity will
 				// deal with showing the new grid directly.
 				mDialogPresentingGridGenerator.mPuzzleFragmentActivity
-						.onNewGridReady(grid);
+						.onNewGridReady(grids.get(0));
+			} else if (grids.size() > 1) {
+				DevelopmentHelper.generateGamesReady(
+						mDialogPresentingGridGenerator.mPuzzleFragmentActivity,
+						grids.size());
 			}
 		}
 
 		@Override
-		public final void onCancelGridGenerating() {
+		public final void onCancelGridGenerator() {
 			if (mDialogPresentingGridGenerator.mPuzzleFragmentActivity != null) {
-				if (DEBUG_GRID_GENERATOR) {
+				if (GridGenerator.DEBUG_GRID_GENERATOR) {
 					Log
 							.d(TAG,
 									"Inform activity about cancellation of the grid generation.");
@@ -67,6 +91,21 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 						.onCancelGridGeneration();
 			}
 		}
+
+		@Override
+		public void updateProgressHighLevel(String text) {
+			mDialogPresentingGridGenerator.setTitle(text);
+		}
+
+		@Override
+		public void updateProgressDetailLevel(String text) {
+			mDialogPresentingGridGenerator.setMessage(text);
+		}
+
+		@Override
+		public void onGridGenerated() {
+			mDialogPresentingGridGenerator.onGridGenerated();
+		}
 	}
 
 	/**
@@ -75,12 +114,16 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 	 * @param activity
 	 *            The activity from which this task is started.
 	 * @param gridGeneratingParameters
-	 *            The parameters to be used to create the new grid.
+	 *            The parameters to be used to create the new grid. Only in
+	 *            development mode an array of grid generating parameters is
+	 *            accepted as well.
 	 */
 	public DialogPresentingGridGenerator(PuzzleFragmentActivity activity,
-			GridGeneratingParameters gridGeneratingParameters) {
-		super(gridGeneratingParameters, new GridForwarder());
-		((GridForwarder) mListener).mDialogPresentingGridGenerator = this;
+			GridGeneratingParameters... gridGeneratingParameters) {
+		gridGeneratorListener = new GridGeneratorListener(this);
+		gridGenerator = new GridGenerator(gridGeneratorListener,
+				gridGeneratingParameters);
+		numberOfGamesToGenerate = gridGeneratingParameters.length;
 
 		// Attach the task to the activity activity and show progress dialog if
 		// needed.
@@ -105,7 +148,7 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 			return;
 		}
 
-		if (DEBUG_GRID_GENERATOR) {
+		if (GridGenerator.DEBUG_GRID_GENERATOR) {
 			Log.i(TAG, "Attach to activity");
 		}
 
@@ -137,23 +180,27 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 			@Override
 			public void onCancel(DialogInterface dialog) {
 				// Cancel the async task which generates the grid
-				cancel(true);
+				gridGenerator.cancel(true);
 			}
 		});
 
 		// Set style of dialog.
-		mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		if (Config.mAppMode == AppMode.DEVELOPMENT) {
-			if (mGridGeneratorOptions.numberOfGamesToGenerate > 1) {
-				mProgressDialog
-						.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-				mProgressDialog
-						.setMax(mGridGeneratorOptions.numberOfGamesToGenerate);
-			}
+		if (Config.mAppMode == AppMode.DEVELOPMENT
+				&& numberOfGamesToGenerate > 1) {
+			mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+			mProgressDialog.setMax(numberOfGamesToGenerate);
+		} else {
+			mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 		}
 
 		// Show the dialog
 		mProgressDialog.show();
+	}
+
+	public void generate() {
+		if (gridGenerator != null) {
+			gridGenerator.execute();
+		}
 	}
 
 	/**
@@ -162,7 +209,7 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 	 * until the grid is generated.
 	 */
 	public void detachFromActivity() {
-		if (DEBUG_GRID_GENERATOR) {
+		if (GridGenerator.DEBUG_GRID_GENERATOR) {
 			Log.d(TAG, "Detach from activity");
 		}
 
@@ -181,74 +228,35 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 		}
 	}
 
-	@Override
-	protected void handleNewAttemptStarted(int attemptCount) {
-		if (DEBUG_GRID_GENERATOR) {
-			Log.i(TAG, "Puzzle generation attempt: " + attemptCount);
-			publishProgress(
-					DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_TITLE,
-					mPuzzleFragmentActivity.getResources().getString(
-							R.string.dialog_building_puzzle_title)
-							+ " (attempt " + attemptCount + ")");
-		}
-	}
+	void setTitle(final String title) {
+		if (mPuzzleFragmentActivity != null) {
+			mPuzzleFragmentActivity.runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					if (mProgressDialog != null) {
+						mProgressDialog.setTitle(title);
+					}
 
-	@Override
-	protected void onPostExecute(Void result) {
-		if (Config.mAppMode == AppMode.DEVELOPMENT) {
-			if (mGridGeneratorOptions.createFakeUserGameFiles) {
-				mPuzzleFragmentActivity.mDialogPresentingGridGenerator = null;
-				// Grids are already saved.
-				DevelopmentHelper.generateGamesReady(mPuzzleFragmentActivity,
-						mGridGeneratorOptions.numberOfGamesToGenerate);
-				if (this.mProgressDialog != null) {
-					dismissProgressDialog();
 				}
-				return;
-			}
-		}
-		// Call the super implementation, which - if everything works as it
-		// should - will call handleGridGenerated.
-		super.onPostExecute(result);
-		// Dismiss the dialog if still visible
-		if (this.mProgressDialog != null) {
-			dismissProgressDialog();
+			});
 		}
 	}
 
-	@Override
-	protected void onProgressUpdate(String... values) {
-		if (DEBUG_GRID_GENERATOR) {
-			if (values.length >= 2 && values[0] != null && values[1] != null) {
-				if (values[0]
-						.equals(DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_TITLE)) {
-					mProgressDialog.setTitle(values[1]);
-				} else if (values[0]
-						.equals(DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_MESSAGE)) {
-					mProgressDialog.setMessage(values[1]);
+	void setMessage(final String message) {
+		if (mPuzzleFragmentActivity != null) {
+			mPuzzleFragmentActivity.runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					if (mProgressDialog != null) {
+						mProgressDialog.setMessage(message);
+					}
+
 				}
-			}
+			});
 		}
-		if (Config.mAppMode == AppMode.DEVELOPMENT) {
-			if (values.length > 0
-					&& values[0] != null
-					&& values[0]
-							.equals(DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_PROGRESS)) {
-				mProgressDialog.incrementProgressBy(1);
-			}
-		}
-		super.onProgressUpdate(values);
 	}
 
-	@Override
-	public void setGridGeneratorOptions(
-			GridGeneratorOptions gridGeneratorOptions) {
-		super.setGridGeneratorOptions(gridGeneratorOptions);
-
-		// Rebuild the dialog using the grid generator options.
-		if (Config.mAppMode == AppMode.DEVELOPMENT && mProgressDialog != null) {
-			mProgressDialog.dismiss();
-			buildDialog();
-		}
+	void onGridGenerated() {
+		mProgressDialog.incrementProgressBy(1);
 	}
 }

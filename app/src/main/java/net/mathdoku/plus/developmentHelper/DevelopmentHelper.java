@@ -12,15 +12,15 @@ import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.enums.GridType;
-import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.gridgenerating.DialogPresentingGridGenerator;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParametersBuilder;
-import net.mathdoku.plus.gridgenerating.GridGenerator;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.storage.database.DatabaseHelper;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
+
+import java.util.Random;
 
 /**
  * The Development Helper class is intended to support Development and Unit
@@ -101,33 +101,37 @@ public class DevelopmentHelper {
 	private static void generateGames(
 			final PuzzleFragmentActivity puzzleFragmentActivity) {
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
-			GridGeneratingParameters gridGeneratingParameters = new GridGeneratingParametersBuilder()
-					.setGridType(GridType.GRID_6X6)
-					.setHideOperators(false)
-					.setPuzzleComplexity(PuzzleComplexity.NORMAL)
-					.createGridGeneratingParameters();
-
 			puzzleFragmentActivity.mDialogPresentingGridGenerator = new DialogPresentingGridGenerator(
-					puzzleFragmentActivity, gridGeneratingParameters);
-
-			// Set the options for the grid generator
-			GridGenerator.GridGeneratorOptions gridGeneratorOptions = puzzleFragmentActivity.mDialogPresentingGridGenerator.new GridGeneratorOptions();
-			gridGeneratorOptions.createFakeUserGameFiles = true;
-			gridGeneratorOptions.numberOfGamesToGenerate = 20;
-
-			// Set to false to generate grids with same size and hideOperators
-			// value as initial grid.
-			gridGeneratorOptions.randomGridSize = true;
-			gridGeneratorOptions.randomHideOperators = true;
-			gridGeneratorOptions.randomComplexity = true;
-
-			// Start the grid generator
-			puzzleFragmentActivity.mDialogPresentingGridGenerator
-					.setGridGeneratorOptions(gridGeneratorOptions);
+					puzzleFragmentActivity,
+					createArrayOfRandomGridGeneratingParameters(10));
 
 			// Start the background task to generate the new grids.
-			puzzleFragmentActivity.mDialogPresentingGridGenerator.execute();
+			puzzleFragmentActivity.mDialogPresentingGridGenerator.generate();
 		}
+	}
+
+	private static GridGeneratingParameters[] createArrayOfRandomGridGeneratingParameters(
+			int numberOfGridsToBeCreated) {
+		GridGeneratingParameters[] arrayOfGridGeneratingParameters = new GridGeneratingParameters[numberOfGridsToBeCreated];
+		for (int i = 0; i < numberOfGridsToBeCreated; i++) {
+			arrayOfGridGeneratingParameters[i] = createRandomGridGeneratingParameters();
+		}
+
+		return arrayOfGridGeneratingParameters;
+	}
+
+	private static GridGeneratingParameters createRandomGridGeneratingParameters() {
+		return new GridGeneratingParametersBuilder()
+				.setGridType(getRandomGridType())
+				.setHideOperators(new Random().nextBoolean())
+				.setRandomPuzzleComplexity()
+				.createGridGeneratingParameters();
+	}
+
+	private static GridType getRandomGridType() {
+		GridType[] gridTypes = GridType.values();
+		int randomIndex = new Random().nextInt(gridTypes.length);
+		return gridTypes[randomIndex];
 	}
 
 	public static void generateGamesReady(
