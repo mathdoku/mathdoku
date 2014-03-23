@@ -51,15 +51,16 @@ public class CageTest {
 			}
 			super.setCells(ids);
 
-			// Only add the real values. 0 and negative values indicate that the cell is not filled.
+			// Only add the real values. 0 and negative values indicate that the
+			// cell is not filled.
 			List<Integer> enteredValuesArrayList = new ArrayList<Integer>();
 			for (int enteredValue : enteredValues) {
 				if (enteredValue > 0) {
 					enteredValuesArrayList.add(enteredValue);
 				}
 			}
-			when(mGridMock.getEnteredValuesForCells(any(int[].class))).thenReturn(
-					enteredValuesArrayList);
+			when(mGridMock.getEnteredValuesForCells(any(int[].class)))
+					.thenReturn(enteredValuesArrayList);
 
 			return this;
 		}
@@ -112,9 +113,7 @@ public class CageTest {
 	public void cageConstructor_CageWithAddOperatorHasTooLittleCells_CageNotCreated()
 			throws Exception {
 		CageOperator cageOperator = CageOperator.ADD;
-		mCageBuilder
-				.setCells(2)
-				.setCageOperator(cageOperator);
+		mCageBuilder.setCells(2).setCageOperator(cageOperator);
 		assertThat(mCageBuilder.build(), is(nullValue()));
 	}
 
@@ -122,9 +121,7 @@ public class CageTest {
 	public void cageConstructor_CageWithSubtractOperatorHasTooLittleCells_CageNotCreated()
 			throws Exception {
 		CageOperator cageOperator = CageOperator.SUBTRACT;
-		mCageBuilder
-				.setCells(2)
-				.setCageOperator(cageOperator);
+		mCageBuilder.setCells(2).setCageOperator(cageOperator);
 		assertThat(mCageBuilder.build(), is(nullValue()));
 	}
 
@@ -132,9 +129,7 @@ public class CageTest {
 	public void cageConstructor_CageWithMultiplyOperatorHasTooLittleCells_CageNotCreated()
 			throws Exception {
 		CageOperator cageOperator = CageOperator.MULTIPLY;
-		mCageBuilder
-				.setCells(2)
-				.setCageOperator(cageOperator);
+		mCageBuilder.setCells(2).setCageOperator(cageOperator);
 		assertThat(mCageBuilder.build(), is(nullValue()));
 	}
 
@@ -142,9 +137,7 @@ public class CageTest {
 	public void cageConstructor_CageWithDivideOperatorHasTooLittleCells_CageNotCreated()
 			throws Exception {
 		CageOperator cageOperator = CageOperator.DIVIDE;
-		mCageBuilder
-				.setCells(2)
-				.setCageOperator(cageOperator);
+		mCageBuilder.setCells(2).setCageOperator(cageOperator);
 		assertThat(mCageBuilder.build(), is(nullValue()));
 	}
 
@@ -152,9 +145,7 @@ public class CageTest {
 	public void cageConstructor_CageWithNoneOperatorHasTooManyCells_CageNotCreated()
 			throws Exception {
 		CageOperator cageOperator = CageOperator.NONE;
-		mCageBuilder
-				.setCells(2, 3)
-				.setCageOperator(cageOperator);
+		mCageBuilder.setCells(2, 3).setCageOperator(cageOperator);
 		assertThat(mCageBuilder.build(), is(nullValue()));
 	}
 
@@ -162,9 +153,7 @@ public class CageTest {
 	public void checkMathOnEnteredValues_CageTooManyCellsSubtractOperator_CageNotCreated()
 			throws Exception {
 		CageOperator cageOperator = CageOperator.SUBTRACT;
-		mCageBuilder
-				.setCells(2, 3, 4)
-				.setCageOperator(cageOperator);
+		mCageBuilder.setCells(2, 3, 4).setCageOperator(cageOperator);
 		assertThat(mCageBuilder.build(), is(nullValue()));
 	}
 
@@ -172,9 +161,7 @@ public class CageTest {
 	public void checkMathOnEnteredValues_CageTooManyCellsDivideOperator_CageNotCreated()
 			throws Exception {
 		CageOperator cageOperator = CageOperator.DIVIDE;
-		mCageBuilder
-				.setCells(2, 3, 4)
-				.setCageOperator(cageOperator);
+		mCageBuilder.setCells(2, 3, 4).setCageOperator(cageOperator);
 		assertThat(mCageBuilder.build(), is(nullValue()));
 	}
 
@@ -686,7 +673,7 @@ public class CageTest {
 
 		cage.invalidateBordersOfAllCells();
 
-		verify(cellMock,times(mCells.size())).invalidateBorders();
+		verify(cellMock, times(mCells.size())).invalidateBorders();
 	}
 
 	@Test
@@ -729,7 +716,8 @@ public class CageTest {
 	@Test
 	public void getCageText_VisibleOperatorsForCageWithSubtractOperator_CorrectTextReturned()
 			throws Exception {
-		Cage cage = setupForGetCageText_VisibleOperators(4, CageOperator.SUBTRACT);
+		Cage cage = setupForGetCageText_VisibleOperators(4,
+				CageOperator.SUBTRACT);
 
 		assertThat(cage.getCageText(), is("4-"));
 	}
@@ -737,7 +725,8 @@ public class CageTest {
 	@Test
 	public void getCageText_VisibleOperatorsForCageWithMultiplyOperator_CorrectTextReturned()
 			throws Exception {
-		Cage cage = setupForGetCageText_VisibleOperators(5, CageOperator.MULTIPLY);
+		Cage cage = setupForGetCageText_VisibleOperators(5,
+				CageOperator.MULTIPLY);
 
 		assertThat(cage.getCageText(), is("5x"));
 	}
@@ -752,9 +741,7 @@ public class CageTest {
 
 	@Test
 	public void hasEmptyCells_CageWithNoEmptyCells_True() throws Exception {
-		mCageBuilder
-				.setCells(2, 1, 4)
-				.setCageOperator(CageOperator.ADD);
+		mCageBuilder.setCells(2, 1, 4).setCageOperator(CageOperator.ADD);
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
@@ -762,10 +749,9 @@ public class CageTest {
 	}
 
 	@Test
-	public void hasEmptyCells_CageWitFilledAndEmptyCells_True() throws Exception {
-		mCageBuilder
-				.setCells(2, 0, 3)
-				.setCageOperator(CageOperator.ADD);
+	public void hasEmptyCells_CageWitFilledAndEmptyCells_True()
+			throws Exception {
+		mCageBuilder.setCells(2, 0, 3).setCageOperator(CageOperator.ADD);
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
@@ -774,9 +760,7 @@ public class CageTest {
 
 	@Test
 	public void hasEmptyCells_CageWithOnlyEmptyCells_True() throws Exception {
-		mCageBuilder
-				.setCells(0, 0, 0)
-				.setCageOperator(CageOperator.ADD);
+		mCageBuilder.setCells(0, 0, 0).setCageOperator(CageOperator.ADD);
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 
@@ -808,9 +792,7 @@ public class CageTest {
 
 	@Test
 	public void getCell_ValidPosition_CorrectCellReturned() throws Exception {
-		mCageBuilder
-				.setCells(2, 0, 3)
-				.setCageOperator(CageOperator.ADD);
+		mCageBuilder.setCells(2, 0, 3).setCageOperator(CageOperator.ADD);
 		Cage cage = mCageBuilder.build();
 		cage.setGridReference(mGridMock);
 		when(mGridMock.getCell(0)).thenReturn(null);
@@ -820,7 +802,8 @@ public class CageTest {
 		assertThat(cage.getCell(1), is(notNullValue()));
 	}
 
-	private Cage setupForGetCageText_VisibleOperators(int resultValue, CageOperator cageOperator) {
+	private Cage setupForGetCageText_VisibleOperators(int resultValue,
+			CageOperator cageOperator) {
 		boolean hideOperator = false;
 		mCageBuilder
 				.setCells(2, 3)

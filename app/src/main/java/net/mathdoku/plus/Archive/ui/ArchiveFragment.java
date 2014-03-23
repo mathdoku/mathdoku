@@ -644,7 +644,8 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 	}
 
 	@Override
-	protected int getMaxContentHeight(int titleHeightPixels, int paddingChartPixels) {
+	protected int getMaxContentHeight(int titleHeightPixels,
+			int paddingChartPixels) {
 		int maxContentHeight = super.getMaxContentHeight(titleHeightPixels,
 				paddingChartPixels);
 

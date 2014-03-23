@@ -84,13 +84,15 @@ public class GridSaverTest {
 		when(mGridMock.getSolvingAttemptId()).thenReturn(-1);
 		mGridStatisticsMock.mId = -1;
 		when(mGridMock.getGridStatistics()).thenReturn(mGridStatisticsMock);
-		long dateCreated = new java.util.GregorianCalendar(2014, Calendar.FEBRUARY, 8, 7, 6)
-				.getTimeInMillis(); // 2014, february 8th at 07:06
+		long dateCreated = new java.util.GregorianCalendar(2014,
+				Calendar.FEBRUARY, 8, 7, 6).getTimeInMillis(); // 2014, february
+																// 8th at 07:06
 		when(mGridMock.getDateCreated()).thenReturn(dateCreated);
 		when(mGridMock.getDateSaved()).thenReturn(dateCreated);
 
 		mGridSaverTestGridSaverTestObjectsCreator = new GridSaverTestObjectsCreator();
-		mGridSaver = new GridSaver().setObjectsCreator(mGridSaverTestGridSaverTestObjectsCreator);
+		mGridSaver = new GridSaver()
+				.setObjectsCreator(mGridSaverTestGridSaverTestObjectsCreator);
 	}
 
 	@Test
@@ -120,7 +122,8 @@ public class GridSaverTest {
 		verify(mGridDatabaseAdapterMock).insert(any(Grid.class));
 		verify(mSolvingAttemptDatabaseAdapterMock).insert(
 				any(SolvingAttempt.class));
-		verify(mStatisticsDatabaseAdapterMock).insert(any(GridStatistics.class));
+		verify(mStatisticsDatabaseAdapterMock)
+				.insert(any(GridStatistics.class));
 		verify(mDatabaseHelperMock).setTransactionSuccessful();
 		verify(mDatabaseHelperMock).endTransaction();
 		assertThat(mGridSaver.getRowId() >= 0, is(true));
@@ -175,7 +178,8 @@ public class GridSaverTest {
 		verify(mGridDatabaseAdapterMock, never()).insert(any(Grid.class));
 		verify(mSolvingAttemptDatabaseAdapterMock).insert(
 				any(SolvingAttempt.class));
-		verify(mStatisticsDatabaseAdapterMock).insert(any(GridStatistics.class));
+		verify(mStatisticsDatabaseAdapterMock)
+				.insert(any(GridStatistics.class));
 		verify(mDatabaseHelperMock).setTransactionSuccessful();
 		verify(mDatabaseHelperMock).endTransaction();
 		assertThat(mGridSaver.getRowId(), is(gridRow.mId));
@@ -208,7 +212,8 @@ public class GridSaverTest {
 		verify(mGridDatabaseAdapterMock, never()).insert(any(Grid.class));
 		verify(mSolvingAttemptDatabaseAdapterMock).insert(
 				any(SolvingAttempt.class));
-		verify(mStatisticsDatabaseAdapterMock).insert(any(GridStatistics.class));
+		verify(mStatisticsDatabaseAdapterMock)
+				.insert(any(GridStatistics.class));
 		verify(mDatabaseHelperMock).setTransactionSuccessful();
 		verify(mDatabaseHelperMock).endTransaction();
 		assertThat(mGridSaver.getRowId(), is(existingGridId));
@@ -235,8 +240,10 @@ public class GridSaverTest {
 
 		verify(mDatabaseHelperMock).beginTransaction();
 		verify(mGridDatabaseAdapterMock, never()).insert(any(Grid.class));
-		verify(mSolvingAttemptDatabaseAdapterMock).insert(any(SolvingAttempt.class));
-		verify(mStatisticsDatabaseAdapterMock, never()).insert(any(GridStatistics.class));
+		verify(mSolvingAttemptDatabaseAdapterMock).insert(
+				any(SolvingAttempt.class));
+		verify(mStatisticsDatabaseAdapterMock, never()).insert(
+				any(GridStatistics.class));
 		verify(mDatabaseHelperMock, never()).setTransactionSuccessful();
 		verify(mDatabaseHelperMock).endTransaction();
 		assertThat(saveResult, is(false));
@@ -267,15 +274,18 @@ public class GridSaverTest {
 		verify(mGridDatabaseAdapterMock, never()).insert(any(Grid.class));
 		verify(mSolvingAttemptDatabaseAdapterMock, never()).insert(
 				any(SolvingAttempt.class));
-		verify(mSolvingAttemptDatabaseAdapterMock).update(any(SolvingAttempt.class));
-		verify(mStatisticsDatabaseAdapterMock).insert(any(GridStatistics.class));
+		verify(mSolvingAttemptDatabaseAdapterMock).update(
+				any(SolvingAttempt.class));
+		verify(mStatisticsDatabaseAdapterMock)
+				.insert(any(GridStatistics.class));
 		verify(mDatabaseHelperMock).setTransactionSuccessful();
 		verify(mDatabaseHelperMock).endTransaction();
 		assertThat(mGridSaver.getRowId(), is(existingGridId));
 		assertThat(mGridSaver.getSolvingAttemptId(),
 				is(existingSolvingAttemptId));
 		assertThat(mGridSaver.getGridStatistics().mId >= 0, is(true));
-		assertThat(mGridSaver.getDateUpdated() > mGridMock.getDateSaved(),is(true));
+		assertThat(mGridSaver.getDateUpdated() > mGridMock.getDateSaved(),
+				is(true));
 		assertThat(saveResult, is(true));
 	}
 
@@ -297,9 +307,12 @@ public class GridSaverTest {
 
 		verify(mDatabaseHelperMock).beginTransaction();
 		verify(mGridDatabaseAdapterMock, never()).insert(any(Grid.class));
-		verify(mSolvingAttemptDatabaseAdapterMock, never()).insert(any(SolvingAttempt.class));
-		verify(mSolvingAttemptDatabaseAdapterMock).update(any(SolvingAttempt.class));
-		verify(mStatisticsDatabaseAdapterMock, never()).insert(any(GridStatistics.class));
+		verify(mSolvingAttemptDatabaseAdapterMock, never()).insert(
+				any(SolvingAttempt.class));
+		verify(mSolvingAttemptDatabaseAdapterMock).update(
+				any(SolvingAttempt.class));
+		verify(mStatisticsDatabaseAdapterMock, never()).insert(
+				any(GridStatistics.class));
 		verify(mDatabaseHelperMock, never()).setTransactionSuccessful();
 		verify(mDatabaseHelperMock).endTransaction();
 		assertThat(saveResult, is(false));
@@ -328,8 +341,10 @@ public class GridSaverTest {
 		verify(mGridDatabaseAdapterMock, never()).insert(any(Grid.class));
 		verify(mSolvingAttemptDatabaseAdapterMock, never()).insert(
 				any(SolvingAttempt.class));
-		verify(mSolvingAttemptDatabaseAdapterMock).update(any(SolvingAttempt.class));
-		verify(mStatisticsDatabaseAdapterMock).insert(any(GridStatistics.class));
+		verify(mSolvingAttemptDatabaseAdapterMock).update(
+				any(SolvingAttempt.class));
+		verify(mStatisticsDatabaseAdapterMock)
+				.insert(any(GridStatistics.class));
 		verify(mDatabaseHelperMock, never()).setTransactionSuccessful();
 		verify(mDatabaseHelperMock).endTransaction();
 		assertThat(saveResult, is(false));
@@ -359,9 +374,12 @@ public class GridSaverTest {
 
 		verify(mDatabaseHelperMock).beginTransaction();
 		verify(mGridDatabaseAdapterMock, never()).insert(any(Grid.class));
-		verify(mSolvingAttemptDatabaseAdapterMock, never()).insert(any(SolvingAttempt.class));
-		verify(mSolvingAttemptDatabaseAdapterMock).update(any(SolvingAttempt.class));
-		verify(mStatisticsDatabaseAdapterMock, never()).insert(any(GridStatistics.class));
+		verify(mSolvingAttemptDatabaseAdapterMock, never()).insert(
+				any(SolvingAttempt.class));
+		verify(mSolvingAttemptDatabaseAdapterMock).update(
+				any(SolvingAttempt.class));
+		verify(mStatisticsDatabaseAdapterMock, never()).insert(
+				any(GridStatistics.class));
 		verify(mGridStatisticsMock).save();
 		verify(mDatabaseHelperMock, never()).setTransactionSuccessful();
 		verify(mDatabaseHelperMock).endTransaction();
@@ -399,7 +417,8 @@ public class GridSaverTest {
 				any(SolvingAttempt.class));
 		verify(mSolvingAttemptDatabaseAdapterMock).update(
 				any(SolvingAttempt.class));
-		verify(mStatisticsDatabaseAdapterMock, never()).insert(any(GridStatistics.class));
+		verify(mStatisticsDatabaseAdapterMock, never()).insert(
+				any(GridStatistics.class));
 		verify(mGridStatisticsMock).save();
 		verify(mStatisticsDatabaseAdapterMock)
 				.updateSolvingAttemptToBeIncludedInStatistics(anyInt(),
@@ -410,7 +429,8 @@ public class GridSaverTest {
 		assertThat(mGridSaver.getSolvingAttemptId(),
 				is(existingSolvingAttemptId));
 		assertThat(mGridSaver.getGridStatistics().mId, is(existingStatisticsId));
-		assertThat(mGridSaver.getDateUpdated() > mGridMock.getDateSaved(),is(true));
+		assertThat(mGridSaver.getDateUpdated() > mGridMock.getDateSaved(),
+				is(true));
 		assertThat(saveResult, is(true));
 	}
 
@@ -444,18 +464,19 @@ public class GridSaverTest {
 				any(SolvingAttempt.class));
 		verify(mSolvingAttemptDatabaseAdapterMock).update(
 				any(SolvingAttempt.class));
-		verify(mStatisticsDatabaseAdapterMock, never()).insert(any(GridStatistics.class));
+		verify(mStatisticsDatabaseAdapterMock, never()).insert(
+				any(GridStatistics.class));
 		verify(mGridStatisticsMock).save();
 		verify(mStatisticsDatabaseAdapterMock)
 				.updateSolvingAttemptToBeIncludedInStatistics(anyInt(),
-															  anyInt());
+						anyInt());
 		verify(mDatabaseHelperMock).setTransactionSuccessful();
 		verify(mDatabaseHelperMock).endTransaction();
 		assertThat(mGridSaver.getRowId(), is(existingGridId));
 		assertThat(mGridSaver.getSolvingAttemptId(),
-				   is(existingSolvingAttemptId));
+				is(existingSolvingAttemptId));
 		assertThat(mGridSaver.getGridStatistics().mId, is(existingStatisticsId));
-		assertThat(mGridSaver.getDateUpdated(),is(mGridMock.getDateSaved()));
+		assertThat(mGridSaver.getDateUpdated(), is(mGridMock.getDateSaved()));
 		assertThat(saveResult, is(true));
 	}
 

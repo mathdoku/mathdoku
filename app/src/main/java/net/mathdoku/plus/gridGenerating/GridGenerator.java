@@ -1119,8 +1119,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			// displayed on this device. Instead of multiplication the add
 			// operator will be used for this cage which leads to a small cage
 			// outcome.
-			Log.d(TAG, String.format(
-					"GameSeed: %d cage result %d is rejected",
+			Log.d(TAG, String.format("GameSeed: %d cage result %d is rejected",
 					mGridGeneratingParameters.getGameSeed(),
 					cageResultMultiplication));
 		}

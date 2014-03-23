@@ -64,9 +64,9 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 				savedInstanceState);
 	}
 
-	protected View onCreateView(LayoutInflater inflater, int layout, ViewGroup container,
-								@SuppressWarnings(
-			"UnusedParameters") Bundle savedInstanceState) {
+	protected View onCreateView(LayoutInflater inflater, int layout,
+			ViewGroup container,
+			@SuppressWarnings("UnusedParameters") Bundle savedInstanceState) {
 		// Get default sizes for text
 		mDefaultTextSize = getResources().getDimensionPixelSize(
 				R.dimen.text_size_default);
@@ -114,8 +114,8 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	 *            with respect to settings. Null in case explanation is never
 	 *            available.
 	 */
-	protected void addStatisticsSection(String tag, String title, GraphicalView chart,
-										View extraDataView, String explanation) {
+	protected void addStatisticsSection(String tag, String title,
+			GraphicalView chart, View extraDataView, String explanation) {
 		// Inflate a new view for this statistics section
 		View sectionView = mLayoutInflater.inflate(R.layout.statistics_section,
 				null);
@@ -251,7 +251,8 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	 *            which the chart is added.
 	 * @return The height to be set on the chart.
 	 */
-	protected int getMaxContentHeight(int titleHeightPixels, int paddingChartPixels) {
+	protected int getMaxContentHeight(int titleHeightPixels,
+			int paddingChartPixels) {
 		// Get size of display
 		DisplayMetrics displayMetrics = getActivity()
 				.getResources()

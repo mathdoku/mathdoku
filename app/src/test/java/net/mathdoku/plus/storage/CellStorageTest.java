@@ -62,7 +62,7 @@ public class CellStorageTest {
 		mLine = "CELL:2:3:4:5:6:7:8";
 		int mRevisionNumber = 597;
 		assertThat(mCellStorage.getCellBuilderFromStorageString(mLine,
-																	mRevisionNumber), is(nullValue()));
+				mRevisionNumber), is(nullValue()));
 	}
 
 	@Test(expected = InvalidParameterException.class)
@@ -80,7 +80,7 @@ public class CellStorageTest {
 		mLine = "CELL:2:3:4:5:6:7:8:9:10";
 		int mRevisionNumber = 597;
 		assertThat(mCellStorage.getCellBuilderFromStorageString(mLine,
-																	mRevisionNumber), is(nullValue()));
+				mRevisionNumber), is(nullValue()));
 	}
 
 	@Test
@@ -89,8 +89,8 @@ public class CellStorageTest {
 		mLine = "CELL:1:2:3:4+:5:6::true:false:false";
 		int mRevisionNumber = 369;
 
-		CellBuilder cellBuilder = mCellStorage
-				.getCellBuilderFromStorageString(mLine, mRevisionNumber);
+		CellBuilder cellBuilder = mCellStorage.getCellBuilderFromStorageString(
+				mLine, mRevisionNumber);
 
 		CellBuilder expectedCellBuilder = new CellBuilder()
 				.setId(1)
@@ -107,8 +107,8 @@ public class CellStorageTest {
 		mLine = "CELL:1:2-:3:4::true:false:false";
 		int mRevisionNumber = 597;
 
-		CellBuilder cellBuilder = mCellStorage
-				.getCellBuilderFromStorageString(mLine, mRevisionNumber);
+		CellBuilder cellBuilder = mCellStorage.getCellBuilderFromStorageString(
+				mLine, mRevisionNumber);
 
 		CellBuilder expectedCellBuilder = new CellBuilder()
 				.setId(1)
@@ -125,8 +125,8 @@ public class CellStorageTest {
 		mLine = "CELL:1:2-:3:0:4,:false:true:false";
 		int mRevisionNumber = 597;
 
-		CellBuilder cellBuilder = mCellStorage
-				.getCellBuilderFromStorageString(mLine, mRevisionNumber);
+		CellBuilder cellBuilder = mCellStorage.getCellBuilderFromStorageString(
+				mLine, mRevisionNumber);
 
 		List<Integer> possibles = new ArrayList<Integer>();
 		possibles.add(4);
@@ -145,8 +145,8 @@ public class CellStorageTest {
 		mLine = "CELL:1:2:3:4+:5:0:1,2,3,4,:false:false:true";
 		int mRevisionNumber = 369;
 
-		CellBuilder cellBuilder = mCellStorage
-				.getCellBuilderFromStorageString(mLine, mRevisionNumber);
+		CellBuilder cellBuilder = mCellStorage.getCellBuilderFromStorageString(
+				mLine, mRevisionNumber);
 
 		List<Integer> possibles = new ArrayList<Integer>();
 		possibles.add(1);
@@ -168,8 +168,8 @@ public class CellStorageTest {
 		mLine = "CELL:1:2-:3:0:1,2,3,4,:false:false:true";
 		int mRevisionNumber = 597;
 
-		CellBuilder cellBuilder = mCellStorage
-				.getCellBuilderFromStorageString(mLine, mRevisionNumber);
+		CellBuilder cellBuilder = mCellStorage.getCellBuilderFromStorageString(
+				mLine, mRevisionNumber);
 
 		List<Integer> possibles = new ArrayList<Integer>();
 		possibles.add(1);

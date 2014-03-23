@@ -69,13 +69,13 @@ public class ArchiveFragmentGridTypeFilterSpinnerTest {
 				is(Arrays.asList(gridSizeFilters)));
 	}
 
-	private ArchiveFragmentGridSizeFilterSpinner setSpinnerWithGridSizes(GridType... gridTypes) {
+	private ArchiveFragmentGridSizeFilterSpinner setSpinnerWithGridSizes(
+			GridType... gridTypes) {
 		when(
 				gridDatabaseAdapter
 						.getUsedSizes(any(GridDatabaseAdapter.StatusFilter.class)))
 				.thenReturn(gridTypes);
-		return new ArchiveFragmentGridSizeFilterSpinner(
-				archiveFragmentActivity) {
+		return new ArchiveFragmentGridSizeFilterSpinner(archiveFragmentActivity) {
 			@Override
 			GridDatabaseAdapter createGridDatabaseAdapter() {
 				return gridDatabaseAdapter;
@@ -87,48 +87,58 @@ public class ArchiveFragmentGridTypeFilterSpinnerTest {
 	public void getSpinnerElements_GridsWithMultipleSizesInDatabase_GridSizeFiltersInclusiveAllReturned()
 			throws Exception {
 		spinner = setSpinnerWithGridSizes(GridType.GRID_2X2, GridType.GRID_4x4,
-										  GridType.GRID_5X5);
+				GridType.GRID_5X5);
 
 		String[] gridSizeFilters = { FILTER_ALL, FILTER_2, FILTER_4, FILTER_5 };
 		assertThat(spinner.getSpinnerElements(),
-				   is(Arrays.asList(gridSizeFilters)));
+				is(Arrays.asList(gridSizeFilters)));
 	}
 
 	@Test
-	public void indexOfSelectedGridSizeFilter_GridSizeFilterAllSelected_AtIndex0() throws Exception {
+	public void indexOfSelectedGridSizeFilter_GridSizeFilterAllSelected_AtIndex0()
+			throws Exception {
 		spinner = setSpinnerWithGridSizes(GridType.GRID_2X2, GridType.GRID_4x4,
-										  GridType.GRID_5X5);
-		when(archiveFragmentStatePagerAdapter.getSelectedSizeFilter()).thenReturn(GridTypeFilter.ALL);
+				GridType.GRID_5X5);
+		when(archiveFragmentStatePagerAdapter.getSelectedSizeFilter())
+				.thenReturn(GridTypeFilter.ALL);
 
 		assertThat(spinner.indexOfSelectedGridSizeFilter(), is(0));
 	}
 
 	@Test
-	public void indexOfSelectedGridSizeFilter_GridSizeFilterSelected_AtIndex() throws Exception {
-		GridType[] gridTypes = {GridType.GRID_2X2, GridType.GRID_4x4, GridType.GRID_5X5};
+	public void indexOfSelectedGridSizeFilter_GridSizeFilterSelected_AtIndex()
+			throws Exception {
+		GridType[] gridTypes = { GridType.GRID_2X2, GridType.GRID_4x4,
+				GridType.GRID_5X5 };
 		spinner = setSpinnerWithGridSizes(gridTypes);
 		int indexLastGridSize = gridTypes.length - 1;
 		GridType lastGridType = gridTypes[indexLastGridSize];
-		GridTypeFilter lastGridTypeFilter = GridTypeFilter.fromGridSize(lastGridType);
-		when(archiveFragmentStatePagerAdapter.getSelectedSizeFilter()).thenReturn(
-				lastGridTypeFilter);
+		GridTypeFilter lastGridTypeFilter = GridTypeFilter
+				.fromGridSize(lastGridType);
+		when(archiveFragmentStatePagerAdapter.getSelectedSizeFilter())
+				.thenReturn(lastGridTypeFilter);
 		int offsetSetForGridSizeFilterAllAtIndex0 = 1;
 
-		assertThat(spinner.indexOfSelectedGridSizeFilter(),is(offsetSetForGridSizeFilterAllAtIndex0 + indexLastGridSize));
+		assertThat(spinner.indexOfSelectedGridSizeFilter(),
+				is(offsetSetForGridSizeFilterAllAtIndex0 + indexLastGridSize));
 	}
 
 	@Test
-	public void testSize_GridsWithMultipleSizesInDatabase_SizeIncludesGridSizeFilterAll() throws Exception {
-		GridType[] gridTypes = {GridType.GRID_2X2, GridType.GRID_4x4, GridType.GRID_5X5};
+	public void testSize_GridsWithMultipleSizesInDatabase_SizeIncludesGridSizeFilterAll()
+			throws Exception {
+		GridType[] gridTypes = { GridType.GRID_2X2, GridType.GRID_4x4,
+				GridType.GRID_5X5 };
 		spinner = setSpinnerWithGridSizes(gridTypes);
 		int countForGridSizeFilterAll = 1;
 
-		assertThat(spinner.size(), is(countForGridSizeFilterAll + gridTypes.length));
+		assertThat(spinner.size(), is(countForGridSizeFilterAll
+				+ gridTypes.length));
 	}
 
 	@Test
 	public void get_GridsWithMultipleSizesInDatabase() throws Exception {
-		GridType[] gridTypes = {GridType.GRID_2X2, GridType.GRID_4x4, GridType.GRID_5X5};
+		GridType[] gridTypes = { GridType.GRID_2X2, GridType.GRID_4x4,
+				GridType.GRID_5X5 };
 		spinner = setSpinnerWithGridSizes(gridTypes);
 
 		assertThat(spinner.get(0), is(GridTypeFilter.ALL));

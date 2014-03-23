@@ -59,6 +59,7 @@ public class CellChangeTest {
 		// ... results in undoing the change to the user value and the maybe
 		// values for the cell
 		verify(cellMock).setEnteredValue(expectedEnteredValue);
-		verify(cellMock, times(expectedMaybeValues.size())).addPossible(anyInt());
+		verify(cellMock, times(expectedMaybeValues.size())).addPossible(
+				anyInt());
 	}
 }

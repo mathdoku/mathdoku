@@ -265,8 +265,9 @@ public class CellTest {
 		Cell cell = mCellBuilder.build();
 		cell.setGridReference(mGridMock);
 
-		assertThat(cell.setEnteredValue(-1), is(false)); // Note: 0 is a valid user
-														// value!
+		assertThat(cell.setEnteredValue(-1), is(false)); // Note: 0 is a valid
+															// user
+															// value!
 	}
 
 	@Test
@@ -450,7 +451,8 @@ public class CellTest {
 	}
 
 	@Test
-	public void clearValue_CellWithEnteredValue_ValueIsCleared() throws Exception {
+	public void clearValue_CellWithEnteredValue_ValueIsCleared()
+			throws Exception {
 		int oldEnteredValue = 1;
 		Cell cell = mCellBuilder.setEnteredValue(oldEnteredValue).build();
 		cell.setGridReference(mGridMock);
@@ -627,9 +629,8 @@ public class CellTest {
 				.setPossibles(createListOfPossibleValues())
 				.build();
 
-		assertThat(cell.isEmpty(),is(true));
+		assertThat(cell.isEmpty(), is(true));
 	}
-
 
 	@Test
 	public void isEmpty_CellHasEnteredValueButNoPossibleValues_False()
@@ -639,7 +640,7 @@ public class CellTest {
 				.setPossibles(createListOfPossibleValues())
 				.build();
 
-		assertThat(cell.isEmpty(),is(false));
+		assertThat(cell.isEmpty(), is(false));
 	}
 
 	@Test
@@ -647,10 +648,10 @@ public class CellTest {
 			throws Exception {
 		Cell cell = mCellBuilder
 				.setEnteredValue(0)
-				.setPossibles(createListOfPossibleValues(1,2,3))
+				.setPossibles(createListOfPossibleValues(1, 2, 3))
 				.build();
 
-		assertThat(cell.isEmpty(),is(false));
+		assertThat(cell.isEmpty(), is(false));
 	}
 
 	@Test
@@ -658,10 +659,10 @@ public class CellTest {
 			throws Exception {
 		Cell cell = mCellBuilder
 				.setEnteredValue(1)
-				.setPossibles(createListOfPossibleValues(1,2))
+				.setPossibles(createListOfPossibleValues(1, 2))
 				.build();
 
-		assertThat(cell.isEmpty(),is(false));
+		assertThat(cell.isEmpty(), is(false));
 	}
 
 	private List<Integer> createListOfPossibleValues(Integer... possibles) {
@@ -672,7 +673,8 @@ public class CellTest {
 		return list;
 	}
 
-	private void setupSetEnteredValueTest_ReplaceEnteredValue(int oldEnteredValue, int newEnteredValue) {
+	private void setupSetEnteredValueTest_ReplaceEnteredValue(
+			int oldEnteredValue, int newEnteredValue) {
 		Cell cell = mCellBuilder.setEnteredValue(oldEnteredValue).build();
 		cell.setGridReference(mGridMock);
 

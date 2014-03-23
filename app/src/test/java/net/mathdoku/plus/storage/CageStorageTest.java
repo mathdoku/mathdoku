@@ -72,8 +72,8 @@ public class CageStorageTest {
 		mLine = "CAGE:1:2:3::false";
 		when(mCells.get(anyInt())).thenReturn(mock(Cell.class));
 
-		CageBuilder cageBuilder = mCageStorage
-				.getCageBuilderFromStorageString(mLine, mRevisionNumber, mCells);
+		CageBuilder cageBuilder = mCageStorage.getCageBuilderFromStorageString(
+				mLine, mRevisionNumber, mCells);
 
 		CageBuilder expectedCageBuilder = new CageBuilder()
 				.setId(1)
@@ -91,14 +91,14 @@ public class CageStorageTest {
 		when(cellMock.getCellId()).thenReturn(4);
 		when(mCells.get(anyInt())).thenReturn(cellMock);
 
-		CageBuilder cageBuilder = mCageStorage
-				.getCageBuilderFromStorageString(mLine, mRevisionNumber, mCells);
+		CageBuilder cageBuilder = mCageStorage.getCageBuilderFromStorageString(
+				mLine, mRevisionNumber, mCells);
 
 		CageBuilder expectedCageBuilder = new CageBuilder()
 				.setId(1)
 				.setCageOperator(CageOperator.fromId("2"))
 				.setResult(3)
-				.setCells(new int[] {4})
+				.setCells(new int[] { 4 })
 				.setHideOperator(true);
 		assertThat(cageBuilder, is(expectedCageBuilder));
 	}
@@ -108,17 +108,17 @@ public class CageStorageTest {
 			throws Exception {
 		mLine = "CAGE:1:2:3:4,5,6,7:false";
 		Cell cellMock = mock(Cell.class);
-		when(cellMock.getCellId()).thenReturn(4,5,6,7);
+		when(cellMock.getCellId()).thenReturn(4, 5, 6, 7);
 		when(mCells.get(anyInt())).thenReturn(cellMock);
 
-		CageBuilder cageBuilder = mCageStorage
-				.getCageBuilderFromStorageString(mLine, mRevisionNumber, mCells);
+		CageBuilder cageBuilder = mCageStorage.getCageBuilderFromStorageString(
+				mLine, mRevisionNumber, mCells);
 
 		CageBuilder expectedCageBuilder = new CageBuilder()
 				.setId(1)
 				.setCageOperator(CageOperator.fromId("2"))
 				.setResult(3)
-				.setCells(new int[] {4, 5, 6, 7})
+				.setCells(new int[] { 4, 5, 6, 7 })
 				.setHideOperator(false);
 		assertThat(cageBuilder, is(expectedCageBuilder));
 	}
