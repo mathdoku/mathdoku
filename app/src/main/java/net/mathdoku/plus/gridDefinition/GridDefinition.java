@@ -5,6 +5,7 @@ import com.srlee.dlx.MathDokuDLX;
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
+import net.mathdoku.plus.gridgenerating.GridGeneratingParametersBuilder;
 import net.mathdoku.plus.puzzle.InvalidGridException;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cage.CageBuilder;
@@ -26,6 +27,7 @@ import java.util.List;
 public class GridDefinition {
 	private static final String TAG = GridDefinition.class.getName();
 
+	private GridType mGridType;
 	private int mGridSize;
 	private List<Cage> mCages;
 	private List<Cell> mCells;
@@ -33,8 +35,8 @@ public class GridDefinition {
 	private int[] mCountCellsPerCage;
 
 	public static class ObjectsCreator {
-		public GridGeneratingParameters createGridGeneratingParameters() {
-			return new GridGeneratingParameters();
+		public GridGeneratingParametersBuilder createGridGeneratingParametersBuilder() {
+			return new GridGeneratingParametersBuilder();
 		}
 
 		public MathDokuDLX createMathDokuDLX(int gridSize, List<Cage> cages) {
@@ -95,7 +97,8 @@ public class GridDefinition {
 		}
 
 		definitionString.append(
-				Integer.toString(gridGeneratingParameters.mPuzzleComplexity
+				Integer.toString(gridGeneratingParameters
+						.getPuzzleComplexity()
 						.getId())).append(GridDefinitionDelimiter.LEVEL1);
 
 		// Get the cage number (represented as a value of two digits, if needed
@@ -112,7 +115,7 @@ public class GridDefinition {
 					.append(GridDefinitionDelimiter.LEVEL2)
 					.append(cage.getResult())
 					.append(GridDefinitionDelimiter.LEVEL2)
-					.append(gridGeneratingParameters.mHideOperators ? CageOperator.NONE
+					.append(gridGeneratingParameters.isHideOperators() ? CageOperator.NONE
 							.getId() : cage.getOperator().getId());
 		}
 		return definitionString.toString();
@@ -138,22 +141,15 @@ public class GridDefinition {
 		GridDefinitionSplitter gridDefinitionSplitter = new GridDefinitionSplitter(
 				definition);
 
-		// The complexity is not needed to rebuild the puzzle, but it is stored
-		// as it is a great communicator to the (receiving) user how difficult
-		// the puzzle is.
-		GridGeneratingParameters mGridGeneratingParameters = mObjectsCreator
-				.createGridGeneratingParameters();
-		mGridGeneratingParameters.mPuzzleComplexity = gridDefinitionSplitter
-				.getPuzzleComplexity();
-
 		int cellCount = gridDefinitionSplitter.getNumberOfCells();
 		try {
-			mGridSize = GridType.getFromNumberOfCells(cellCount).getGridSize();
+			mGridType = GridType.getFromNumberOfCells(cellCount);
 		} catch (IllegalArgumentException e) {
 			throw new InvalidGridException(String.format(
 					"Definition '%s' contains an invalid number of cells.",
 					definition), e);
 		}
+		mGridSize = mGridType.getGridSize();
 
 		// Initialize helper variables. Those variables are filled while adding
 		// the cells. Later, when adding the cages, the data of those vars is
@@ -182,13 +178,37 @@ public class GridDefinition {
 		}
 
 		// All data is gathered now
+
+		GridGeneratingParametersBuilder mGridGeneratingParametersBuilder = mObjectsCreator
+				.createGridGeneratingParametersBuilder();
+		mGridGeneratingParametersBuilder.setGridType(mGridType);
+		// The complexity is not needed to rebuild the puzzle, but it is stored
+		// as it is a great communicator to the (receiving) user how difficult
+		// the puzzle is.
+		mGridGeneratingParametersBuilder
+				.setPuzzleComplexity(gridDefinitionSplitter
+						.getPuzzleComplexity());
+		mGridGeneratingParametersBuilder
+				.setHideOperators(allCagesHaveCageOperatorNone(mCages));
+
 		GridBuilder gridBuilder = mObjectsCreator.createGridBuilder();
 		return gridBuilder
 				.setGridSize(mGridSize)
 				.setCells(mCells)
 				.setCages(mCages)
-				.setGridGeneratingParameters(mGridGeneratingParameters)
+				.setGridGeneratingParameters(
+						mGridGeneratingParametersBuilder
+								.createGridGeneratingParameters())
 				.build();
+	}
+
+	private boolean allCagesHaveCageOperatorNone(List<Cage> cages) {
+		for (Cage cage : cages) {
+			if (cage.getOperator() != CageOperator.NONE) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private boolean createArrayListOfCells(int expectedNumberOfCages) {

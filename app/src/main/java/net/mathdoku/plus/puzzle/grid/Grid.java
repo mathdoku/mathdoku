@@ -5,6 +5,7 @@ import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.PuzzleComplexity;
+import net.mathdoku.plus.gridgenerating.GridGeneratingParametersBuilder;
 import net.mathdoku.plus.puzzle.InvalidGridException;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cage.CageBuilder;
@@ -54,8 +55,14 @@ public class Grid {
 			return new GridStatistics();
 		}
 
-		public GridGeneratingParameters createGridGeneratingParameters() {
-			return new GridGeneratingParameters();
+		public GridGeneratingParameters createGridGeneratingParameters(
+				GridType gridType, boolean hideOperators,
+				PuzzleComplexity puzzleComplexity, int packageVersionNumber) {
+			return new GridGeneratingParametersBuilder()
+					.setGridType(gridType)
+					.setHideOperators(hideOperators)
+					.setPuzzleComplexity(puzzleComplexity)
+					.createGridGeneratingParameters();
 		}
 
 		public List<Cell> createArrayListOfCells() {
@@ -272,7 +279,8 @@ public class Grid {
 			}
 		}
 		if (mGridGeneratingParameters != null
-				&& mGridGeneratingParameters.mHideOperators && mCages != null) {
+				&& mGridGeneratingParameters.isHideOperators()
+				&& mCages != null) {
 			for (Cage cage : mCages) {
 				cage.revealOperator();
 				setCageTextToUpperLeftCell(cage);
@@ -704,7 +712,8 @@ public class Grid {
 					.setId(cage.getId())
 					.setResult(cage.getResult())
 					.setCageOperator(cage.getOperator())
-					.setHideOperator(mGridGeneratingParameters.mHideOperators)
+					.setHideOperator(
+							mGridGeneratingParameters.isHideOperators())
 					.setCells(cage.getCells())
 					.build();
 			cages.add(newCage);
@@ -727,7 +736,7 @@ public class Grid {
 	 * @return The puzzle complexity which is used to generate this puzzle.
 	 */
 	public PuzzleComplexity getPuzzleComplexity() {
-		return mGridGeneratingParameters.mPuzzleComplexity;
+		return mGridGeneratingParameters.getPuzzleComplexity();
 	}
 
 	/**

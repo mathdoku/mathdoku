@@ -11,15 +11,14 @@ import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.developmenthelper.DevelopmentHelper;
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.enums.GridType;
-import net.mathdoku.plus.enums.PuzzleComplexity;
+import net.mathdoku.plus.griddefinition.GridDefinition;
+import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cage.CageBuilder;
+import net.mathdoku.plus.puzzle.cell.Cell;
 import net.mathdoku.plus.puzzle.cell.CellBuilder;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.puzzle.grid.GridBuilder;
-import net.mathdoku.plus.puzzle.cell.Cell;
-import net.mathdoku.plus.griddefinition.GridDefinition;
-import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.storage.database.DatabaseHelper;
 import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
@@ -47,11 +46,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	public static final boolean DEBUG_GRID_GENERATOR_FULL = DEBUG_GRID_GENERATOR && false;
 
 	// The parameters use to generate a grid
-	private final GridGeneratingParameters mGridGeneratingParameters;
-
-	// The complexity of a puzzle will be determined by following factors.
-	private int mMaxCagePermutations;
-	private int mMaximumSingleCellCages;
+	private GridGeneratingParameters mGridGeneratingParameters;
 
 	// The user that will use the generated grid.
 	final Listener mListener;
@@ -99,6 +94,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		// will have the specified grid size and operator setting.
 		public boolean randomGridSize;
 		public boolean randomHideOperators;
+		public boolean randomComplexity;
 	}
 
 	// The user that will use the grid once this task finished generating it.
@@ -119,110 +115,26 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	}
 
 	/**
-	 * Creates a new instance of {@link GridGenerator}. Though the signature of
-	 * the constructor suggests otherwise, the singleton classes
-	 * {@link DatabaseHelper}, {@link Painter}, {@link Preferences} and
-	 * {@link Util} all have to be initialised before this generator can be
-	 * used.
+	 * Creates a new instance of {@link GridGenerator}.
 	 * 
-	 * @param gridType
-	 *            The size of the grid to be created.
-	 * @param hideOperators
-	 *            True in case should be solvable without using operators.
-	 * @param puzzleComplexity
-	 *            The complexity of the grid to be created.
-	 * @param packageVersionNumber
-	 *            The version number of the app used to generate the grid.
+	 * Note: the singleton classes {@link DatabaseHelper}, {@link Painter},
+	 * {@link Preferences} and {@link Util} all have to be initialised before
+	 * this generator can be used.
+	 * 
+	 * @param gridGeneratingParameters
+	 *            The parameters to be used to generate the new grid.
 	 * @param listener
 	 *            The user (either the Main UI or the Development Tools menu)
 	 *            who will receive the callback as soon as the grid is
 	 *            generated.
 	 */
-	GridGenerator(GridType gridType, boolean hideOperators,
-			PuzzleComplexity puzzleComplexity, int packageVersionNumber,
+	public GridGenerator(GridGeneratingParameters gridGeneratingParameters,
 			Listener listener) {
-		mGridSizeValue = gridType.getGridSize();
-
-		// Set all grid generating parameters. GameSeed will be set later.
-		mGridGeneratingParameters = new GridGeneratingParameters();
-		mGridGeneratingParameters.mGameSeed = new Random().nextLong();
-		mGridGeneratingParameters.mGeneratorRevisionNumber = packageVersionNumber;
-		if (puzzleComplexity == PuzzleComplexity.RANDOM) {
-			// Determine a random complexity to be used for this specific
-			// puzzle. Note that the random complexity itself has to be
-			// excluded.
-			int index = new Random()
-					.nextInt(PuzzleComplexity.values().length - 1) + 1;
-			mGridGeneratingParameters.mPuzzleComplexity = PuzzleComplexity
-					.values()[index];
-		} else {
-			mGridGeneratingParameters.mPuzzleComplexity = puzzleComplexity;
-		}
-		mGridGeneratingParameters.mHideOperators = hideOperators;
-
-		mMaximumSingleCellCages = Math.max(2, mGridSizeValue / 2);
-		switch (mGridGeneratingParameters.mPuzzleComplexity) {
-		case RANDOM:
-			// This value has already been transformed to another complexity
-			// value but is required by the compiler.
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				throw new GridGeneratingException(
-						"Complexity RANDOM was not transformed.");
-			}
-			break;
-		case VERY_EASY:
-			mGridGeneratingParameters.mMaxCageSize = 2;
-			mGridGeneratingParameters.mMaxCageResult = 99; /*
-															 * Not used
-															 * effectively as
-															 * the maximum will
-															 * be9 * 8 = 72
-															 */
-			mMaxCagePermutations = 20;
-			break;
-		case EASY:
-			mGridGeneratingParameters.mMaxCageSize = 3;
-			mGridGeneratingParameters.mMaxCageResult = 999; /*
-															 * Not used
-															 * effectively as
-															 * the maximum will
-															 * be 9 * 8 = 648
-															 */
-			mMaxCagePermutations = 20;
-			break;
-		case NORMAL:
-			mGridGeneratingParameters.mMaxCageSize = 4;
-			mGridGeneratingParameters.mMaxCageResult = 2500; /*
-															 * Real maximum = 9
-															 * 9 * 8 * 8 = 5,184
-															 */
-			mMaxCagePermutations = 40;
-			break;
-		case DIFFICULT:
-			mGridGeneratingParameters.mMaxCageSize = 5;
-			mGridGeneratingParameters.mMaxCageResult = 9999; /*
-															 * Real maximum = 9
-															 * 9 * 9 * 8 * 8 =
-															 * 46,656
-															 */
-			mMaxCagePermutations = 80;
-			break;
-		case VERY_DIFFICULT:
-			mGridGeneratingParameters.mMaxCageSize = 6;
-			mGridGeneratingParameters.mMaxCageResult = 99999; /*
-															 * Real maximum = 9
-															 * * 9 * 9 * 8 8 * 8
-															 * = 373,248
-															 */
-			mMaxCagePermutations = 120;
-			break;
-		}
-		mGridGeneratingParameters.mMaxCageSize = Math.min(
-				gridType.getNumberOfCells(),
-				mGridGeneratingParameters.mMaxCageSize);
+		mGridGeneratingParameters = gridGeneratingParameters;
+		mGridSizeValue = mGridGeneratingParameters.getGridType().getGridSize();
 
 		if (DEBUG_GRID_GENERATOR) {
-			Log.d(TAG, "Game seed: " + mGridGeneratingParameters.mGameSeed);
+			Log.d(TAG, "Game seed: " + mGridGeneratingParameters.getGameSeed());
 		}
 
 		mListener = listener;
@@ -245,6 +157,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			this.mGridGeneratorOptions.createFakeUserGameFiles = false;
 			this.mGridGeneratorOptions.randomGridSize = false;
 			this.mGridGeneratorOptions.randomHideOperators = false;
+			this.mGridGeneratorOptions.randomComplexity = false;
 			return;
 		}
 
@@ -266,13 +179,13 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		boolean hasUniqueSolution = false;
 		int num_attempts = 0;
 
-		// Use the game seed to initialize the randomize which is used to
+		// Use the game seed to initialize the randomizer which is used to
 		// generate the game. Overwrite this game seed with the fixed value of a
 		// given game in case you want to recreate the same grid. All you need
 		// to ensure is that you the correct revision of this GridGenerator
 		// module. Please be aware that in case the implementation of the random
 		// method changes, it will not be possible to recreate the grids!
-		mRandom = new Random(mGridGeneratingParameters.mGameSeed);
+		mRandom = new Random(mGridGeneratingParameters.getGameSeed());
 
 		do {
 			// Check whether the generating process should be aborted due to
@@ -311,7 +224,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 			// Create the cages.
 			this.mCages = new ArrayList<Cage>();
-			if (!createCages(mGridGeneratingParameters.mHideOperators)
+			if (!createCages(mGridGeneratingParameters.isHideOperators())
 					&& !isCancelled()) {
 				// For some reason the creation of the cages was not successful.
 				// Start over again.
@@ -352,21 +265,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 					// Check if more puzzles have to generated.
 					if (num_attempts < mGridGeneratorOptions.numberOfGamesToGenerate) {
-						// Determine random size and hide operator values of
-						// next grid
-						mGridGeneratingParameters.mGameSeed = new Random()
-								.nextLong();
-						mRandom = new Random(
-								mGridGeneratingParameters.mGameSeed);
-						if (mGridGeneratorOptions.randomGridSize) {
-							mGridSizeValue = GridType.getSmallestGridSize()
-									+ new Random().nextInt(GridType
-											.getGridSizeRange());
-						}
-						if (mGridGeneratorOptions.randomHideOperators) {
-							mGridGeneratingParameters.mHideOperators = new Random()
-									.nextBoolean();
-						}
+						mGridGeneratingParameters = createGridGeneratingParametersForNextGrid(mGridGeneratingParameters);
 
 						// Fake a non unique solution so another grid is
 						// generated.
@@ -413,29 +312,17 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 				if (System.currentTimeMillis() - mTimeStarted > 30 * 1000) {
 					Log
 							.i(TAG,
-									"Game generation takes too long ("
-											+ (int) ((System
-													.currentTimeMillis() - mTimeStarted) / 1000)
-											+ " secs). "
-											+ "Please investigate. Grid generating params are:");
-					Log
-							.i(TAG,
-									" - mGeneratorRevisionNumber: "
-											+ mGridGeneratingParameters.mGeneratorRevisionNumber);
-					Log.d(TAG, " - mPuzzleComplexity: "
-							+ mGridGeneratingParameters.mPuzzleComplexity);
-					Log.d(TAG, " - mGameSeed: "
-							+ mGridGeneratingParameters.mGameSeed);
-					Log.d(TAG, " - mMaxCageSize: "
-							+ mGridGeneratingParameters.mMaxCageSize);
-					Log.d(TAG, " - mMaxCageResult: "
-							+ mGridGeneratingParameters.mMaxCageResult);
-					Log.d(TAG, " - mHideOperators: "
-							+ mGridGeneratingParameters.mHideOperators);
+									String
+											.format("Game generation takes too long (%d) secs). "
+													+ "Please "
+													+ "investigate.",
+													(int) ((System
+															.currentTimeMillis() - mTimeStarted) / 1000)));
+					Log.i(TAG, mGridGeneratingParameters.toString());
 					publishProgress(
 							DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_MESSAGE,
 							"Slow game generation. See LogCat for grid generating parameters which might help to reproduce the problem. Game seed = "
-									+ mGridGeneratingParameters.mGameSeed);
+									+ mGridGeneratingParameters.getGameSeed());
 					// Pause a moment to publish message in the progress dialog
 					try {
 						Thread.sleep(1000);
@@ -456,6 +343,30 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 					+ " attempts.");
 		}
 		return null;
+	}
+
+	private GridGeneratingParameters createGridGeneratingParametersForNextGrid(
+			GridGeneratingParameters gridGeneratingParameters) {
+		GridGeneratingParametersBuilder gridGeneratingParametersBuilder = GridGeneratingParametersBuilder
+				.createCopyOfGridGeneratingParameters(gridGeneratingParameters);
+
+		// Determine random size and hide operator values of
+		// next grid
+		gridGeneratingParametersBuilder.setGameSeed(new Random().nextLong());
+		mRandom = new Random(mGridGeneratingParameters.getGameSeed());
+		if (mGridGeneratorOptions.randomGridSize) {
+			mGridSizeValue = GridType.getSmallestGridSize()
+					+ new Random().nextInt(GridType.getGridSizeRange());
+		}
+		if (mGridGeneratorOptions.randomHideOperators) {
+			gridGeneratingParametersBuilder.setHideOperators(new Random()
+					.nextBoolean());
+		}
+		if (mGridGeneratorOptions.randomComplexity) {
+			gridGeneratingParametersBuilder.setRandomPuzzleComplexity();
+		}
+
+		return gridGeneratingParametersBuilder.createGridGeneratingParameters();
 	}
 
 	/**
@@ -576,7 +487,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 				}
 			}
 
-			if (mGridGeneratingParameters.mMaxCageSize >= CageTypeGenerator.MAX_CAGE_SIZE) {
+			if (mGridGeneratingParameters.getMaxCageSize() >= CageTypeGenerator.MAX_CAGE_SIZE) {
 				// Drop a first (bigger) cage type somewhere in the grid.
 				int remainingAttemptsToPlaceBigCageType = 10;
 				while (remainingAttemptsToPlaceBigCageType > 0) {
@@ -587,7 +498,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 					}
 
 					CageType cageType = mCageTypeGenerator.getRandomCageType(
-							mGridGeneratingParameters.mMaxCageSize,
+							mGridGeneratingParameters.getMaxCageSize(),
 							mGridSizeValue, mGridSizeValue, mRandom);
 					if (cageType != null) {
 						// Determine a random row and column at which the mask
@@ -613,7 +524,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 										coordinatesTopLeft[ROW_COORDINATE],
 										coordinatesTopLeft[COLUMN_COORDINATE]);
 						Cage firstCage = createCage(cageTypeCoordinates,
-								4 * mMaxCagePermutations);
+								4 * mGridGeneratingParameters
+										.getMaxCagePermutations());
 						if (firstCage != null) {
 							mCages.add(firstCage);
 							break;
@@ -637,13 +549,15 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 
 				if (cage.getNumberOfCells() == 1) {
 					countSingles++;
-					if (countSingles > mMaximumSingleCellCages) {
+					if (countSingles > mGridGeneratingParameters
+							.getMaximumSingleCellCages()) {
 						if (DEBUG_GRID_GENERATOR) {
 							// Too many singles
 							publishProgress(
 									DevelopmentHelper.GRID_GENERATOR_PROGRESS_UPDATE_MESSAGE,
 									"Found more single cell cages than allowed ("
-											+ mMaximumSingleCellCages
+											+ mGridGeneratingParameters
+													.getMaximumSingleCellCages()
 											+ ") in attempt " + attempts);
 						}
 						restart = true;
@@ -709,8 +623,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		// Store indexes of all defined cages types, except cage type 0 which is
 		// a single cell, in a temporary list of available cages.
 		List<Integer> availableCages = new ArrayList<Integer>();
-		for (int i = 1; i < mCageTypeGenerator
-				.size(mGridGeneratingParameters.mMaxCageSize); i++) {
+		for (int i = 1; i < mCageTypeGenerator.size(mGridGeneratingParameters
+				.getMaxCageSize()); i++) {
 			availableCages.add(i);
 		}
 
@@ -786,7 +700,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 			}
 
 			// So far the cage is still valid
-			Cage cage = createCage(cageTypeCoordinates, mMaxCagePermutations);
+			Cage cage = createCage(cageTypeCoordinates,
+					mGridGeneratingParameters.getMaxCagePermutations());
 			if (cage != null) {
 				// As we randomly check available cages, we can stop as soon as
 				// a valid cage is found which does fit on this position.
@@ -845,7 +760,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		cageBuilder.setCells(cellsInCage);
 		CageOperator cageOperator = generateCageOperator(cellCorrectValues);
 		cageBuilder.setCageOperator(cageOperator);
-		cageBuilder.setHideOperator(mGridGeneratingParameters.mHideOperators);
+		cageBuilder
+				.setHideOperator(mGridGeneratingParameters.isHideOperators());
 		cageBuilder.setResult(getCageResult(cellCorrectValues, cageOperator));
 
 		// All data is gathered which is needed to build the cage.
@@ -1195,16 +1111,18 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		if (index < multiplyWeight) {
 			int cageResultMultiplication = getCageResult(cellValues,
 					CageOperator.MULTIPLY);
-			if (cageResultMultiplication <= mGridGeneratingParameters.mMaxCageResult) {
+			if (cageResultMultiplication <= mGridGeneratingParameters
+					.getMaxCageResult()) {
 				return CageOperator.MULTIPLY;
 			}
 			// Multiplication leads to a cage value that is too big to be
 			// displayed on this device. Instead of multiplication the add
 			// operator will be used for this cage which leads to a small cage
 			// outcome.
-			Log.d(TAG, "GameSeed: " + mGridGeneratingParameters.mGameSeed
-					+ " cage result " + cageResultMultiplication
-					+ " is rejected");
+			Log.d(TAG, String.format(
+					"GameSeed: %d cage result %d is rejected",
+					mGridGeneratingParameters.getGameSeed(),
+					cageResultMultiplication));
 		}
 
 		// Use ADD in all other cases.

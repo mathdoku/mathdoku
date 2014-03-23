@@ -1,14 +1,18 @@
 package net.mathdoku.plus.griddefinition;
 
+import android.app.Activity;
+
 import com.srlee.dlx.MathDokuDLX;
 
 import net.mathdoku.plus.enums.CageOperator;
+import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
+import net.mathdoku.plus.gridgenerating.GridGeneratingParametersBuilder;
 import net.mathdoku.plus.puzzle.InvalidGridException;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cell.Cell;
-import net.mathdoku.plus.puzzle.grid.Grid;
+import net.mathdoku.plus.util.Util;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +35,6 @@ import static org.mockito.Mockito.when;
 public class GridDefinitionTest {
 	private GridDefinition mGridDefinition;
 	private String mGridDefinitionString;
-	private Grid mGrid;
 	private MathDokuDLX mMathDokuDLXMock = mock(MathDokuDLX.class);
 
 	/**
@@ -150,6 +153,10 @@ public class GridDefinitionTest {
 
 	@Before
 	public void setup() {
+		// Instantiate the singleton classes
+		Activity activity = new Activity();
+		new Util(activity);
+
 		mGridDefinitionTestObjectsCreator = new GridDefinitionTestObjectsCreator();
 		mGridDefinition = new GridDefinition();
 		mGridDefinition.setObjectsCreator(mGridDefinitionTestObjectsCreator);
@@ -250,9 +257,11 @@ public class GridDefinitionTest {
 		cages.add(cageStub3);
 		cages.add(cageStub4);
 
-		GridGeneratingParameters gridGeneratingParameters = new GridGeneratingParameters();
-		gridGeneratingParameters.mPuzzleComplexity = PuzzleComplexity.NORMAL;
-		gridGeneratingParameters.mHideOperators = false;
+		GridGeneratingParameters gridGeneratingParameters = new GridGeneratingParametersBuilder()
+				.setGridType(GridType.GRID_4x4)
+				.setPuzzleComplexity(PuzzleComplexity.NORMAL)
+				.setHideOperators(false)
+				.createGridGeneratingParameters();
 
 		assertThat(
 				"Grid definition",

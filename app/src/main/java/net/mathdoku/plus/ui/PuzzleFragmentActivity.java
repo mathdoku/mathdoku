@@ -42,6 +42,7 @@ import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.gridgenerating.DialogPresentingGridGenerator;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
+import net.mathdoku.plus.gridgenerating.GridGeneratingParametersBuilder;
 import net.mathdoku.plus.leaderboard.LeaderboardConnector;
 import net.mathdoku.plus.leaderboard.LeaderboardRankUpdater;
 import net.mathdoku.plus.leaderboard.LeaderboardType;
@@ -528,9 +529,24 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		// Start a background task to generate the new grid. As soon as the new
 		// grid is created, the method onNewGridReady will be called.
 		mDialogPresentingGridGenerator = new DialogPresentingGridGenerator(
-				this, gridType, hideOperators, puzzleComplexity,
-				Util.getPackageVersionNumber());
+				this, createGridGeneratingParameters(gridType, hideOperators,
+						puzzleComplexity));
 		mDialogPresentingGridGenerator.execute();
+	}
+
+	private GridGeneratingParameters createGridGeneratingParameters(
+			GridType gridType, boolean hideOperators,
+			PuzzleComplexity puzzleComplexity) {
+		GridGeneratingParametersBuilder gridGeneratingParametersBuilder = new GridGeneratingParametersBuilder()
+				.setGridType(gridType)
+				.setHideOperators(hideOperators);
+		if (puzzleComplexity == PuzzleComplexity.RANDOM) {
+			gridGeneratingParametersBuilder.setRandomPuzzleComplexity();
+		} else {
+			gridGeneratingParametersBuilder
+					.setPuzzleComplexity(puzzleComplexity);
+		}
+		return gridGeneratingParametersBuilder.createGridGeneratingParameters();
 	}
 
 	/**
@@ -772,8 +788,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 			// Determine the leaderboard for this puzzle
 			int leaderboardResId = LeaderboardType.getResId(grid.getGridSize(),
-					gridGeneratingParameters.mHideOperators,
-					gridGeneratingParameters.mPuzzleComplexity);
+					gridGeneratingParameters.isHideOperators(),
+					gridGeneratingParameters.getPuzzleComplexity());
 			String leaderboardId = getResources().getString(leaderboardResId);
 
 			// Retrieve the best score for this leaderboard
@@ -824,8 +840,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 				GridStatistics gridStatistics = grid.getGridStatistics();
 				if (gridStatistics != null) {
 					mLeaderboardConnector.submitScore(grid.getGridSize(),
-							gridGeneratingParameters.mPuzzleComplexity,
-							gridGeneratingParameters.mHideOperators,
+							gridGeneratingParameters.getPuzzleComplexity(),
+							gridGeneratingParameters.isHideOperators(),
 							grid.getElapsedTime());
 				}
 			}

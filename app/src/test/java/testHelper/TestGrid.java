@@ -1,8 +1,10 @@
 package testHelper;
 
 import net.mathdoku.plus.enums.CageOperator;
+import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
+import net.mathdoku.plus.gridgenerating.GridGeneratingParametersBuilder;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cage.CageBuilder;
 import net.mathdoku.plus.puzzle.cell.Cell;
@@ -28,7 +30,7 @@ public class TestGrid {
 
 	// The arrays belows define a grid which can be solved with hidden
 	// operators. As a result the grid can also use with visible operators.
-	private final int mGridSize = 4;
+	private final GridType mGridType = GridType.GRID_4x4;
 	private int mCorrectValuePerCell[/* cell id */] = {
 			// Row 1
 			3, 1, 4, 2,
@@ -127,12 +129,20 @@ public class TestGrid {
 	}
 
 	private void createGrid() {
+		GridGeneratingParameters gridGeneratingParameters = new GridGeneratingParametersBuilder()
+				.setGridType(mGridType)
+				.setHideOperators(mHideOperator)
+				.setPuzzleComplexity(PuzzleComplexity.NORMAL)
+				.setGameSeed(0)
+				.setGeneratorVersionNumber(596)
+				.setMaxCageResult(999999)
+				.setMaxCageSize(4)
+				.createGridGeneratingParameters();
 		List<Cage> cages = getCages();
 		List<Cell> cells = getCells();
-		GridGeneratingParameters gridGeneratingParameters = getGridGeneratingParameters();
 
 		mGridBuilder
-				.setGridSize(mGridSize)
+				.setGridSize(mGridType.getGridSize())
 				.setGridGeneratingParameters(gridGeneratingParameters)
 				.setCells(cells)
 				.setCages(cages);
@@ -183,7 +193,7 @@ public class TestGrid {
 		List<Cell> cells = new ArrayList<Cell>();
 		for (int cellNumber = 0; cellNumber < mCorrectValuePerCell.length; cellNumber++) {
 			cells.add(createCell(cellNumber, mCorrectValuePerCell[cellNumber],
-								 cageIdPerCell[cellNumber]));
+					cageIdPerCell[cellNumber]));
 		}
 
 		return cells;
@@ -191,7 +201,7 @@ public class TestGrid {
 
 	protected Cell createCell(int cellNumber, int cellValue, int cageId) {
 		CellBuilder cellBuilder = new CellBuilder()
-				.setGridSize(mGridSize)
+				.setGridSize(mGridType.getGridSize())
 				.setId(cellNumber)
 				.setCorrectValue(cellValue)
 				.setCageId(cageId);
@@ -203,17 +213,6 @@ public class TestGrid {
 		}
 
 		return cellBuilder.build();
-	}
-
-	private GridGeneratingParameters getGridGeneratingParameters() {
-		GridGeneratingParameters gridGeneratingParameters = new GridGeneratingParameters();
-		gridGeneratingParameters.mHideOperators = mHideOperator;
-		gridGeneratingParameters.mPuzzleComplexity = PuzzleComplexity.NORMAL;
-		gridGeneratingParameters.mGameSeed = 0;
-		gridGeneratingParameters.mGeneratorRevisionNumber = 596;
-		gridGeneratingParameters.mMaxCageResult = 999999;
-		gridGeneratingParameters.mMaxCageSize = 4;
-		return gridGeneratingParameters;
 	}
 
 	public Grid getGrid() {
@@ -245,7 +244,7 @@ public class TestGrid {
 	public TestGrid setIncorrectEnteredValueInCell(int cellId) {
 		Cell cell = mGrid.getCell(cellId);
 		int correctValue = cell.getCorrectValue();
-		cell.setEnteredValue(correctValue == 1 ? mGridSize : 1);
+		cell.setEnteredValue(correctValue == 1 ? mGridType.getGridSize() : 1);
 
 		return this;
 	}

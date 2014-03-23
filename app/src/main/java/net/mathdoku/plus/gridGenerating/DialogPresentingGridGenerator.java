@@ -9,8 +9,6 @@ import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.developmenthelper.DevelopmentHelper;
-import net.mathdoku.plus.enums.GridType;
-import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 
@@ -76,16 +74,12 @@ public final class DialogPresentingGridGenerator extends GridGenerator {
 	 * 
 	 * @param activity
 	 *            The activity from which this task is started.
-	 * @param gridType
-	 *            The size of the gird to be created.
-	 * @param hideOperators
-	 *            True in case should be solvable without using operators.
+	 * @param gridGeneratingParameters
+	 *            The parameters to be used to create the new grid.
 	 */
 	public DialogPresentingGridGenerator(PuzzleFragmentActivity activity,
-			GridType gridType, boolean hideOperators,
-			PuzzleComplexity puzzleComplexity, int packageVersionNumber) {
-		super(gridType, hideOperators, puzzleComplexity, packageVersionNumber,
-				new GridForwarder());
+			GridGeneratingParameters gridGeneratingParameters) {
+		super(gridGeneratingParameters, new GridForwarder());
 		((GridForwarder) mListener).mDialogPresentingGridGenerator = this;
 
 		// Attach the task to the activity activity and show progress dialog if

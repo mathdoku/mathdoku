@@ -5,6 +5,8 @@ import android.content.Context;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.enums.GridType;
+import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.puzzle.InvalidGridException;
 import net.mathdoku.plus.puzzle.cage.Cage;
@@ -53,8 +55,7 @@ public class GridTest {
 	 */
 	private class GridBuilderStub extends GridBuilder {
 		/*
-		 * By default a 4 x 4 Grid is created in which each cell and each cage
-		 * is represented with a unique mock.
+		 * By default create a new mock for each each cell in the grid.
 		 */
 		private boolean mUseSameMockForAllCells = false;
 		private boolean mUseSameMockForAllCages = false;
@@ -68,6 +69,8 @@ public class GridTest {
 		public Cell mCellMockOfDefaultSetup[] = null;
 		public Cage mAnyCageOfDefaultSetup = null;
 		public Cage mCageMockOfDefaultSetup[] = null;
+
+		private boolean mHideOperators = false;
 
 		public GridGeneratingParameters mGridGeneratingParametersDefaultSetup;
 
@@ -83,14 +86,20 @@ public class GridTest {
 			return this;
 		}
 
+		public GridBuilderStub setHiddenOperators() {
+			mHideOperators = true;
+
+			return this;
+		}
+
 		public GridBuilderStub setupDefaultWhichDoesNotThrowErrorsOnBuild() {
-			int gridSize = 4;
-			setGridSize(gridSize);
+			GridType gridType = GridType.GRID_4x4;
+			setGridSize(gridType.getGridSize());
 
 			// Insert exact number of cells needed with this grid size. A
 			// reference to the last created grid cell mock is kept for tests
 			// which need just a cell in the default grid.
-			int numberOfCells = gridSize * gridSize;
+			int numberOfCells = gridType.getNumberOfCells();
 			List<Cell> cells = mGridObjectsCreator.createArrayListOfCells();
 			mCellMockOfDefaultSetup = new Cell[numberOfCells];
 			for (int i = 0; i < numberOfCells; i++) {
@@ -124,7 +133,8 @@ public class GridTest {
 			super.setGridStatistics(mGridObjectsCreator.createGridStatistics());
 
 			mGridGeneratingParametersDefaultSetup = mGridObjectsCreator
-					.createGridGeneratingParameters();
+					.createGridGeneratingParameters(gridType, mHideOperators,
+							PuzzleComplexity.EASY, 598);
 			super
 					.setGridGeneratingParameters(mGridGeneratingParametersDefaultSetup);
 
@@ -448,8 +458,8 @@ public class GridTest {
 		mGridBuilderStub
 				.useSameMockForAllCells()
 				.useSameMockForAllCages()
+				.setHiddenOperators()
 				.setupDefaultWhichDoesNotThrowErrorsOnBuild();
-		mGridBuilderStub.mGridGeneratingParametersDefaultSetup.mHideOperators = true;
 		Grid grid = mGridBuilderStub.build();
 		// During setup of default grid the method setCageText is already called
 		// once for each cage.

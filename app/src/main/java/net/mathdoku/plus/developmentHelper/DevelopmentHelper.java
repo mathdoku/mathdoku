@@ -14,12 +14,13 @@ import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.gridgenerating.DialogPresentingGridGenerator;
+import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
+import net.mathdoku.plus.gridgenerating.GridGeneratingParametersBuilder;
 import net.mathdoku.plus.gridgenerating.GridGenerator;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.storage.database.DatabaseHelper;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
-import net.mathdoku.plus.util.Util;
 
 /**
  * The Development Helper class is intended to support Development and Unit
@@ -99,19 +100,26 @@ public class DevelopmentHelper {
 	 */
 	private static void generateGames(
 			final PuzzleFragmentActivity puzzleFragmentActivity) {
-		puzzleFragmentActivity.mDialogPresentingGridGenerator = new DialogPresentingGridGenerator(
-				puzzleFragmentActivity, GridType.GRID_6X6, false,
-				PuzzleComplexity.NORMAL, Util.getPackageVersionNumber());
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
+			GridGeneratingParameters gridGeneratingParameters = new GridGeneratingParametersBuilder()
+					.setGridType(GridType.GRID_6X6)
+					.setHideOperators(false)
+					.setPuzzleComplexity(PuzzleComplexity.NORMAL)
+					.createGridGeneratingParameters();
+
+			puzzleFragmentActivity.mDialogPresentingGridGenerator = new DialogPresentingGridGenerator(
+					puzzleFragmentActivity, gridGeneratingParameters);
+
 			// Set the options for the grid generator
 			GridGenerator.GridGeneratorOptions gridGeneratorOptions = puzzleFragmentActivity.mDialogPresentingGridGenerator.new GridGeneratorOptions();
 			gridGeneratorOptions.createFakeUserGameFiles = true;
-			gridGeneratorOptions.numberOfGamesToGenerate = 8;
+			gridGeneratorOptions.numberOfGamesToGenerate = 20;
 
 			// Set to false to generate grids with same size and hideOperators
 			// value as initial grid.
-			gridGeneratorOptions.randomGridSize = false;
-			gridGeneratorOptions.randomHideOperators = false;
+			gridGeneratorOptions.randomGridSize = true;
+			gridGeneratorOptions.randomHideOperators = true;
+			gridGeneratorOptions.randomComplexity = true;
 
 			// Start the grid generator
 			puzzleFragmentActivity.mDialogPresentingGridGenerator

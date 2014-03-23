@@ -16,6 +16,7 @@ import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.enums.SolvingAttemptStatus;
 import net.mathdoku.plus.griddefinition.GridDefinition;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
+import net.mathdoku.plus.gridgenerating.GridGeneratingParametersBuilder;
 import net.mathdoku.plus.puzzle.grid.Grid;
 
 /**
@@ -153,17 +154,19 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 				toSQLiteTimestamp(grid.getDateCreated()));
 		GridGeneratingParameters gridGeneratingParameters = grid
 				.getGridGeneratingParameters();
-		initialValues.put(KEY_GAME_SEED, gridGeneratingParameters.mGameSeed);
+		initialValues
+				.put(KEY_GAME_SEED, gridGeneratingParameters.getGameSeed());
 		initialValues.put(KEY_GENERATOR_REVISION_NUMBER,
-				gridGeneratingParameters.mGeneratorRevisionNumber);
-		initialValues.put(KEY_PUZZLE_COMPLEXITY,
-				gridGeneratingParameters.mPuzzleComplexity.toString());
+				gridGeneratingParameters.getGeneratorVersionNumber());
+		initialValues.put(KEY_PUZZLE_COMPLEXITY, gridGeneratingParameters
+				.getPuzzleComplexity()
+				.toString());
 		initialValues.put(KEY_HIDE_OPERATORS,
-				toSQLiteBoolean(gridGeneratingParameters.mHideOperators));
+				toSQLiteBoolean(gridGeneratingParameters.isHideOperators()));
 		initialValues.put(KEY_MAX_CAGE_RESULT,
-				gridGeneratingParameters.mMaxCageResult);
+				gridGeneratingParameters.getMaxCageResult());
 		initialValues.put(KEY_MAX_CAGE_SIZE,
-				gridGeneratingParameters.mMaxCageSize);
+				gridGeneratingParameters.getMaxCageSize());
 
 		int id;
 		try {
@@ -259,23 +262,50 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		gridRow.mDateCreated = valueOfSQLiteTimestamp(cursor.getString(cursor
 				.getColumnIndexOrThrow(KEY_DATE_CREATED)));
 
-		gridRow.mGridGeneratingParameters = new GridGeneratingParameters();
-		gridRow.mGridGeneratingParameters.mGameSeed = cursor.getLong(cursor
-				.getColumnIndexOrThrow(KEY_GAME_SEED));
-		gridRow.mGridGeneratingParameters.mGeneratorRevisionNumber = cursor
-				.getInt(cursor
-						.getColumnIndexOrThrow(KEY_GENERATOR_REVISION_NUMBER));
-		gridRow.mGridGeneratingParameters.mPuzzleComplexity = PuzzleComplexity
-				.valueOf(cursor.getString(cursor
-						.getColumnIndexOrThrow(KEY_PUZZLE_COMPLEXITY)));
-		gridRow.mGridGeneratingParameters.mHideOperators = valueOfSQLiteBoolean(cursor
-				.getString(cursor.getColumnIndexOrThrow(KEY_HIDE_OPERATORS)));
-		gridRow.mGridGeneratingParameters.mMaxCageResult = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_MAX_CAGE_RESULT));
-		gridRow.mGridGeneratingParameters.mMaxCageSize = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_MAX_CAGE_SIZE));
+		gridRow.mGridGeneratingParameters = new GridGeneratingParametersBuilder()
+				.setGridType(getGridTypeFromCursor(cursor))
+				.setHideOperators(getHideOperatorFromCursor(cursor))
+				.setPuzzleComplexity(getPuzzleComplexityFromCursor(cursor))
+				.setGeneratorVersionNumber(
+						getGeneratorRevisionNumberFromCursor(cursor))
+				.setGameSeed(getGameSeedFromCursor(cursor))
+				.setMaxCageResult(getMaxCageResultFromCursor(cursor))
+				.setMaxCageSize(getMaxCageSizeFromCursor(cursor))
+				.createGridGeneratingParameters();
 
 		return gridRow;
+	}
+
+	private GridType getGridTypeFromCursor(Cursor cursor) {
+		return GridType.fromInteger(cursor.getInt(cursor
+				.getColumnIndexOrThrow(KEY_GRID_SIZE)));
+	}
+
+	private boolean getHideOperatorFromCursor(Cursor cursor) {
+		return valueOfSQLiteBoolean(cursor.getString(cursor
+				.getColumnIndexOrThrow(KEY_HIDE_OPERATORS)));
+	}
+
+	private PuzzleComplexity getPuzzleComplexityFromCursor(Cursor cursor) {
+		return PuzzleComplexity.valueOf(cursor.getString(cursor
+				.getColumnIndexOrThrow(KEY_PUZZLE_COMPLEXITY)));
+	}
+
+	private int getGeneratorRevisionNumberFromCursor(Cursor cursor) {
+		return cursor.getInt(cursor
+				.getColumnIndexOrThrow(KEY_GENERATOR_REVISION_NUMBER));
+	}
+
+	private long getGameSeedFromCursor(Cursor cursor) {
+		return cursor.getLong(cursor.getColumnIndexOrThrow(KEY_GAME_SEED));
+	}
+
+	private int getMaxCageResultFromCursor(Cursor cursor) {
+		return cursor.getInt(cursor.getColumnIndexOrThrow(KEY_MAX_CAGE_RESULT));
+	}
+
+	private int getMaxCageSizeFromCursor(Cursor cursor) {
+		return cursor.getInt(cursor.getColumnIndexOrThrow(KEY_MAX_CAGE_SIZE));
 	}
 
 	/**
