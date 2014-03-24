@@ -7,6 +7,9 @@ import net.mathdoku.plus.util.Util;
 import java.util.Random;
 
 public class GridGeneratingParametersBuilder {
+	public static final String PUZZLE_COMPLEXITY_PARAMETER_NAME = "PuzzleComplexity";
+	public static final String HIDE_OPERATOR_PARAMETER_NAME = "HideOperator";
+	public static final String GRID_TYPE_PARAMETER_NAME = "GridType";
 	private GridType gridType;
 	private boolean hideOperators;
 	private PuzzleComplexity puzzleComplexity;
@@ -50,7 +53,7 @@ public class GridGeneratingParametersBuilder {
 
 	public GridGeneratingParametersBuilder setGridType(GridType gridType) {
 		throwErrorWhenDependingParameterHasBeenOverridden(
-				isParameterDependentOnGridTypeOverridden, "GridType");
+				isParameterDependentOnGridTypeOverridden, GRID_TYPE_PARAMETER_NAME);
 		this.gridType = gridType;
 		isGridTypeSet = true;
 		maxSingleCellCages = Math.max(2, gridType.getGridSize() / 2);
@@ -79,47 +82,24 @@ public class GridGeneratingParametersBuilder {
 			PuzzleComplexity puzzleComplexity) {
 		throwErrorWhenDependingParameterHasBeenOverridden(
 				isParameterDependentOnPuzzleComplexityOverridden,
-				"PuzzleComplexity");
+				PUZZLE_COMPLEXITY_PARAMETER_NAME);
 		this.puzzleComplexity = puzzleComplexity;
 
 		switch (puzzleComplexity) {
 		case VERY_EASY:
-			maxCageSize = 2;
-			maxCageResult = 99; /*
-								 * Not used effectively as the maximum will be9
-								 * * 8 = 72
-								 */
-			maxCagePermutations = 20;
+			setVeryEasyPuzzleComplexity();
 			break;
 		case EASY:
-			maxCageSize = 3;
-			maxCageResult = 999; /*
-								 * Not used effectively as the maximum will be 9
-								 * * 8 = 648
-								 */
-			maxCagePermutations = 20;
+			setEasyPuzzleComplexity();
 			break;
 		case NORMAL:
-			maxCageSize = 4;
-			maxCageResult = 2500; /*
-								 * Real maximum = 9 9 * 8 * 8 = 5,184
-								 */
-			maxCagePermutations = 40;
+			setNormalPuzzleComplexity();
 			break;
 		case DIFFICULT:
-			maxCageSize = 5;
-			maxCageResult = 9999; /*
-								 * Real maximum = 9 9 * 9 * 8 * 8 = 46,656
-								 */
-			maxCagePermutations = 80;
+			setDifficultPuzzleComplexity();
 			break;
 		case VERY_DIFFICULT:
-			maxCageSize = 6;
-			maxCageResult = 99999; /*
-									 * Real maximum = 9 * 9 * 9 * 8 8 * 8 =
-									 * 373,248
-									 */
-			maxCagePermutations = 120;
+			setVeryDifficultPuzzleComplexity();
 			break;
 		default:
 			throw new GridGeneratingException(String.format(
@@ -131,6 +111,38 @@ public class GridGeneratingParametersBuilder {
 		restrictCageSizeToNumberOfCellsInGrid();
 
 		return this;
+	}
+
+	private void setVeryEasyPuzzleComplexity() {
+		maxCageSize = 2;
+		maxCageResult = 9 * 8;
+		maxCagePermutations = 20;
+	}
+
+	private void setEasyPuzzleComplexity() {
+		maxCageSize = 3;
+		maxCageResult = 9 * 9 * 8;
+		maxCagePermutations = 20;
+	}
+
+	private void setNormalPuzzleComplexity() {
+		maxCageSize = 4;
+		// maxCageResult is limited. Real maximum = 9 * 9 * 8 * 8 = 5,184
+		maxCageResult = 2500;
+		maxCagePermutations = 40;
+	}
+	private void setDifficultPuzzleComplexity() {
+		maxCageSize = 5;
+		// maxCageResult is limited. Real maximum = 9 * 9 * 9 * 8 * 8 = 46,656
+		maxCageResult = 9999;
+		maxCagePermutations = 80;
+	}
+
+	private void setVeryDifficultPuzzleComplexity() {
+		maxCageSize = 6;
+		// maxCageResult is limited. Real maximum = 9 * 9 * 9 * 8 * 8 * 8 = 373,248
+		maxCageResult = 99999;
+		maxCagePermutations = 120;
 	}
 
 	private void restrictCageSizeToNumberOfCellsInGrid() {
@@ -208,9 +220,9 @@ public class GridGeneratingParametersBuilder {
 	}
 
 	private void throwErrorWhenNotAllRequiredParametersAreSet() {
-		throwErrorWhenParameterNotSet(isGridTypeSet, "GridType");
-		throwErrorWhenParameterNotSet(isHideOperatorsSet, "HideOperator");
-		throwErrorWhenParameterNotSet(isPuzzleComplexitySet, "PuzzleComplexity");
+		throwErrorWhenParameterNotSet(isGridTypeSet, GRID_TYPE_PARAMETER_NAME);
+		throwErrorWhenParameterNotSet(isHideOperatorsSet, HIDE_OPERATOR_PARAMETER_NAME);
+		throwErrorWhenParameterNotSet(isPuzzleComplexitySet, PUZZLE_COMPLEXITY_PARAMETER_NAME);
 	}
 
 	private void throwErrorWhenParameterNotSet(boolean parameterIsSet,
