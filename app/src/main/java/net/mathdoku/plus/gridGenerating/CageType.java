@@ -76,36 +76,32 @@ public class CageType {
 	/**
 	 * Get the cell coordinates if this cage type starts at the given origin.
 	 * 
-	 * @param rowOriginCell
-	 *            The row (0 based) at which the origin cell of the cage type
-	 *            will be placed.
-	 * @param columnOriginCell
-	 *            The column (0 based) at which the origin cell of the cage type
+	 * @param originCell
+	 *            The cell (0 based) at which the origin cell of the cage type
 	 *            will be placed.
 	 * @return An array of coordinates (row,col) of cells involved. The caller
 	 *         needs to check whether all returned coordinates are valid.
 	 */
-	public int[][] getCellCoordinates(int rowOriginCell, int columnOriginCell) {
-		// Get cage type matrix. If not defined, return a single cell cage.
+	public CellCoordinates[] getCellCoordinatesOfAllCellsInCage(CellCoordinates originCell) {
+		// Get cage type matrix. If not defined, return the given origin cell as a single cell cage.
 		if (mUsedCells == null) {
-			return new int[][] { { rowOriginCell, columnOriginCell } };
+			return new CellCoordinates[] { originCell };
 		}
 
 		// Calculate coordinates of cells involved in case this cage type starts
 		// at the given origin cell.
-		int[][] coordinates = new int[mSize][2];
+		CellCoordinates[] cellCoordinates = new CellCoordinates[mSize];
 		int coordinatesIndex = 0;
 		for (int row = 0; row < mRows; row++) {
 			for (int col = 0; col < mCols; col++) {
 				if (mUsedCells[row][col]) {
-					coordinates[coordinatesIndex++] = new int[] {
-							rowOriginCell + row,
-							columnOriginCell + col - mColOriginOffset };
+					cellCoordinates[coordinatesIndex++] = new CellCoordinates(
+							originCell.getRow() + row, originCell.getColumn() + col - mColOriginOffset);
 				}
 			}
 		}
 
-		return coordinates;
+		return cellCoordinates;
 	}
 
 	/**
@@ -114,8 +110,8 @@ public class CageType {
 	 * 
 	 * @return The coordinates of the most top left cell used in the cage type.
 	 */
-	public int[] getOriginCoordinates(int rowOffset, int colOffset) {
-		return new int[] { rowOffset, colOffset + mColOriginOffset };
+	public CellCoordinates getOriginCoordinates(CellCoordinates offset) {
+		return new CellCoordinates(offset.getRow(), offset.getColumn() + mColOriginOffset);
 	}
 
 	/**
