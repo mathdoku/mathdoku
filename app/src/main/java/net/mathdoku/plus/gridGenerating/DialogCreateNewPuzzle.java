@@ -20,12 +20,12 @@ import java.util.List;
  * called as the grid has been generated as long as the activity is still
  * attached to this class.
  */
-public final class DialogPresentingGridGenerator {
-	private static final String TAG = DialogPresentingGridGenerator.class
+public final class DialogCreateNewPuzzle {
+	private static final String TAG = DialogCreateNewPuzzle.class
 			.getName();
 
 	private int numberOfGamesToGenerate;
-	private GridGenerator gridGenerator;
+	private GridGeneratorAsyncTask gridGeneratorAsyncTask;
 	private GridGeneratorListener gridGeneratorListener;
 
 	/**
@@ -43,23 +43,23 @@ public final class DialogPresentingGridGenerator {
 	private ProgressDialog mProgressDialog;
 
 	private static final class GridGeneratorListener implements
-			GridGenerator.Listener {
-		public DialogPresentingGridGenerator mDialogPresentingGridGenerator;
+			GridGeneratorAsyncTask.Listener {
+		public DialogCreateNewPuzzle mDialogCreateNewPuzzle;
 
 		public GridGeneratorListener(
-				DialogPresentingGridGenerator dialogPresentingGridGenerator) {
-			this.mDialogPresentingGridGenerator = dialogPresentingGridGenerator;
+				DialogCreateNewPuzzle dialogCreateNewPuzzle) {
+			this.mDialogCreateNewPuzzle = dialogCreateNewPuzzle;
 		}
 
 		@Override
 		public void onFinishGridGenerator(List<Grid> grids) {
-			mDialogPresentingGridGenerator.dismissProgressDialog();
+			mDialogCreateNewPuzzle.dismissProgressDialog();
 			if (grids == null || grids.isEmpty()) {
 				return;
 			}
 			if (grids.size() == 1
-					&& mDialogPresentingGridGenerator.mPuzzleFragmentActivity != null) {
-				if (GridGenerator.DEBUG_GRID_GENERATOR) {
+					&& mDialogCreateNewPuzzle.mPuzzleFragmentActivity != null) {
+				if (GridGeneratorAsyncTask.DEBUG_GRID_GENERATOR) {
 					Log.d(TAG, "Send results to activity.");
 				}
 				// The task is still attached to a activity. Inform
@@ -67,19 +67,19 @@ public final class DialogPresentingGridGenerator {
 				// about completing the new game generation. The
 				// activity will
 				// deal with showing the new grid directly.
-				mDialogPresentingGridGenerator.mPuzzleFragmentActivity
+				mDialogCreateNewPuzzle.mPuzzleFragmentActivity
 						.onNewGridReady(grids.get(0));
 			} else if (grids.size() > 1) {
 				DevelopmentHelper.generateGamesReady(
-						mDialogPresentingGridGenerator.mPuzzleFragmentActivity,
+						mDialogCreateNewPuzzle.mPuzzleFragmentActivity,
 						grids.size());
 			}
 		}
 
 		@Override
 		public final void onCancelGridGenerator() {
-			if (mDialogPresentingGridGenerator.mPuzzleFragmentActivity != null) {
-				if (GridGenerator.DEBUG_GRID_GENERATOR) {
+			if (mDialogCreateNewPuzzle.mPuzzleFragmentActivity != null) {
+				if (GridGeneratorAsyncTask.DEBUG_GRID_GENERATOR) {
 					Log
 							.d(TAG,
 									"Inform activity about cancellation of the grid generation.");
@@ -87,29 +87,29 @@ public final class DialogPresentingGridGenerator {
 				// The task is still attached to a activity. Inform activity
 				// about completing the new game generation. The activity will
 				// deal with showing the new grid directly.
-				mDialogPresentingGridGenerator.mPuzzleFragmentActivity
+				mDialogCreateNewPuzzle.mPuzzleFragmentActivity
 						.onCancelGridGeneration();
 			}
 		}
 
 		@Override
 		public void updateProgressHighLevel(String text) {
-			mDialogPresentingGridGenerator.setTitle(text);
+			mDialogCreateNewPuzzle.setTitle(text);
 		}
 
 		@Override
 		public void updateProgressDetailLevel(String text) {
-			mDialogPresentingGridGenerator.setMessage(text);
+			mDialogCreateNewPuzzle.setMessage(text);
 		}
 
 		@Override
 		public void onGridGenerated() {
-			mDialogPresentingGridGenerator.onGridGenerated();
+			mDialogCreateNewPuzzle.onGridGenerated();
 		}
 	}
 
 	/**
-	 * Creates a new instance of {@link DialogPresentingGridGenerator}.
+	 * Creates a new instance of {@link DialogCreateNewPuzzle}.
 	 * 
 	 * @param activity
 	 *            The activity from which this task is started.
@@ -118,10 +118,10 @@ public final class DialogPresentingGridGenerator {
 	 *            development mode an array of grid generating parameters is
 	 *            accepted as well.
 	 */
-	public DialogPresentingGridGenerator(PuzzleFragmentActivity activity,
-			GridGeneratingParameters... gridGeneratingParameters) {
+	public DialogCreateNewPuzzle(PuzzleFragmentActivity activity, GridGeneratingParameters...
+			gridGeneratingParameters) {
 		gridGeneratorListener = new GridGeneratorListener(this);
-		gridGenerator = new GridGenerator(gridGeneratorListener,
+		gridGeneratorAsyncTask = new GridGeneratorAsyncTask(gridGeneratorListener,
 				gridGeneratingParameters);
 		numberOfGamesToGenerate = gridGeneratingParameters.length;
 
@@ -148,7 +148,7 @@ public final class DialogPresentingGridGenerator {
 			return;
 		}
 
-		if (GridGenerator.DEBUG_GRID_GENERATOR) {
+		if (GridGeneratorAsyncTask.DEBUG_GRID_GENERATOR) {
 			Log.i(TAG, "Attach to activity");
 		}
 
@@ -180,7 +180,7 @@ public final class DialogPresentingGridGenerator {
 			@Override
 			public void onCancel(DialogInterface dialog) {
 				// Cancel the async task which generates the grid
-				gridGenerator.cancel(true);
+				gridGeneratorAsyncTask.cancel(true);
 			}
 		});
 
@@ -198,8 +198,8 @@ public final class DialogPresentingGridGenerator {
 	}
 
 	public void generate() {
-		if (gridGenerator != null) {
-			gridGenerator.execute();
+		if (gridGeneratorAsyncTask != null) {
+			gridGeneratorAsyncTask.execute();
 		}
 	}
 
@@ -209,7 +209,7 @@ public final class DialogPresentingGridGenerator {
 	 * until the grid is generated.
 	 */
 	public void detachFromActivity() {
-		if (GridGenerator.DEBUG_GRID_GENERATOR) {
+		if (GridGeneratorAsyncTask.DEBUG_GRID_GENERATOR) {
 			Log.d(TAG, "Detach from activity");
 		}
 

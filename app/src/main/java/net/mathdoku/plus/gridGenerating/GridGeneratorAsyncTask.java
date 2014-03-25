@@ -28,8 +28,8 @@ import java.util.Random;
 /**
  * An asynchronous task that generates a grid.
  */
-public class GridGenerator extends AsyncTask<Void, String, Void> {
-	private static final String TAG = GridGenerator.class.getName();
+public class GridGeneratorAsyncTask extends AsyncTask<Void, String, Void> {
+	private static final String TAG = GridGeneratorAsyncTask.class.getName();
 
 	private static final int CELL_NOT_IN_CAGE = -1;
 
@@ -99,7 +99,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	}
 
 	/**
-	 * Creates a new instance of {@link GridGenerator}.
+	 * Creates a new instance of {@link GridGeneratorAsyncTask}.
 	 * 
 	 * Note: the singleton classes {@link DatabaseHelper}, {@link Painter},
 	 * {@link Preferences} and {@link Util} all have to be initialised before
@@ -115,8 +115,8 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 	 *            who will receive the callback as soon as the grid is
 	 *            generated.
 	 */
-	public GridGenerator(Listener listener,
-			GridGeneratingParameters... arrayOfGridGeneratingParameters) {
+	public GridGeneratorAsyncTask(Listener listener, GridGeneratingParameters...
+			arrayOfGridGeneratingParameters) {
 		if (arrayOfGridGeneratingParameters == null) {
 			throw new GridGeneratingException(
 					"Grid generating parameters must be specified.");
@@ -184,7 +184,7 @@ public class GridGenerator extends AsyncTask<Void, String, Void> {
 		// Use the game seed to initialize the randomizer which is used to
 		// generate the game. Overwrite this game seed with the fixed value of a
 		// given game in case you want to recreate the same grid. All you need
-		// to ensure is that you the correct revision of this GridGenerator
+		// to ensure is that you the correct revision of this GridGeneratorAsyncTask
 		// module. Please be aware that in case the implementation of the random
 		// method changes, it will not be possible to recreate the grids!
 		mRandom = new Random(mCurrentGridGeneratingParameters.getGameSeed());

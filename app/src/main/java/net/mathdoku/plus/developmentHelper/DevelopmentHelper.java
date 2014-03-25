@@ -12,7 +12,7 @@ import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.enums.GridType;
-import net.mathdoku.plus.gridgenerating.DialogPresentingGridGenerator;
+import net.mathdoku.plus.gridgenerating.DialogCreateNewPuzzle;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParametersBuilder;
 import net.mathdoku.plus.puzzle.grid.Grid;
@@ -101,12 +101,12 @@ public class DevelopmentHelper {
 	private static void generateGames(
 			final PuzzleFragmentActivity puzzleFragmentActivity) {
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
-			puzzleFragmentActivity.mDialogPresentingGridGenerator = new DialogPresentingGridGenerator(
+			puzzleFragmentActivity.mDialogCreateNewPuzzle = new DialogCreateNewPuzzle(
 					puzzleFragmentActivity,
 					createArrayOfRandomGridGeneratingParameters(10));
 
 			// Start the background task to generate the new grids.
-			puzzleFragmentActivity.mDialogPresentingGridGenerator.generate();
+			puzzleFragmentActivity.mDialogCreateNewPuzzle.generate();
 		}
 	}
 

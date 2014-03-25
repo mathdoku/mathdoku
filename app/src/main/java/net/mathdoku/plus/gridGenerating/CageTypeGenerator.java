@@ -128,7 +128,7 @@ public class CageTypeGenerator {
 		}
 
 		// Report number of cage types found
-		if (GridGenerator.DEBUG_GRID_GENERATOR_FULL) {
+		if (GridGeneratorAsyncTask.DEBUG_GRID_GENERATOR_FULL) {
 			for (int i = 0; i < mCageTypes.length; i++) {
 				if (mCageTypes[i] != null) {
 					Log.i(TAG, "Number of cage type with " + (i + 1)
@@ -161,7 +161,7 @@ public class CageTypeGenerator {
 		// This cage type does not yet exist.
 		mCageTypes[sizeCageType - 1].add(newPossibleCageType);
 
-		if (GridGenerator.DEBUG_GRID_GENERATOR_FULL) {
+		if (GridGeneratorAsyncTask.DEBUG_GRID_GENERATOR_FULL) {
 			Log
 					.i(TAG,
 							"Found a new cage type:\n"
