@@ -4,14 +4,12 @@ import android.app.Activity;
 
 import com.srlee.dlx.MathDokuDLX;
 
-import net.mathdoku.plus.enums.CageOperator;
-import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
-import net.mathdoku.plus.gridgenerating.GridGeneratingParametersBuilder;
 import net.mathdoku.plus.puzzle.InvalidGridException;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cell.Cell;
+import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.util.Util;
 
 import org.junit.Before;
@@ -23,6 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import robolectric.RobolectricGradleTestRunner;
+import testHelper.GridCreator;
+import testHelper.GridCreator2x2;
+import testHelper.GridCreator4x4;
+import testHelper.GridCreator4x4CageIdsNotConsecutive;
+import testHelper.GridCreator4x4CageIdsNotSorted;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -217,57 +220,33 @@ public class GridDefinitionTest {
 	}
 
 	@Test
-	public void getDefinition_WithValidParameters_GridDefinitionCreated()
+	public void getDefinition_TestGrid2x2_GridDefinitionCreated()
 			throws Exception {
-		Cell cellMock = mock(Cell.class);
-		when(cellMock.getCageId()).thenReturn( //
-				0, 1, 2, 2, // Row 1
-				0, 1, 2, 2, // Row 2
-				1, 1, 1, 2, // Row 3
-				3, 3, 3, 2 // Row 4
-				);
-		List<Cell> cells = new ArrayList<Cell>();
-		for (int i = 0; i < 16; i++) {
-			cells.add(cellMock);
-		}
+		assertGridDefinition(GridCreator2x2.create());
+	}
 
-		Cage cageStub1 = mock(Cage.class);
-		when(cageStub1.getId()).thenReturn(0);
-		when(cageStub1.getResult()).thenReturn(1);
-		when(cageStub1.getOperator()).thenReturn(CageOperator.NONE);
+	private void assertGridDefinition(GridCreator gridCreator) {
+		Grid grid = gridCreator.setEmptyGrid().getGrid();
+		assertThat(grid.getDefinition(),
+				is(equalTo(gridCreator.getGridDefinition())));
+	}
 
-		Cage cageStub2 = mock(Cage.class);
-		when(cageStub2.getId()).thenReturn(1);
-		when(cageStub2.getResult()).thenReturn(3);
-		when(cageStub2.getOperator()).thenReturn(CageOperator.ADD);
+	@Test
+	public void getDefinition_TestGrid4x4_GridDefinitionCreated()
+			throws Exception {
+		assertGridDefinition(GridCreator4x4.create());
+	}
 
-		Cage cageStub3 = mock(Cage.class);
-		when(cageStub3.getId()).thenReturn(2);
-		when(cageStub3.getResult()).thenReturn(2);
-		when(cageStub3.getOperator()).thenReturn(CageOperator.NONE);
+	@Test
+	public void getDefinition_TestGrid4x4CageIdsNotConsecutive_GridDefinitionCreated()
+			throws Exception {
+		assertGridDefinition(GridCreator4x4CageIdsNotConsecutive.create());
+	}
 
-		Cage cageStub4 = mock(Cage.class);
-		when(cageStub4.getId()).thenReturn(3);
-		when(cageStub4.getResult()).thenReturn(3);
-		when(cageStub4.getOperator()).thenReturn(CageOperator.ADD);
-
-		List<Cage> cages = new ArrayList<Cage>();
-		cages.add(cageStub1);
-		cages.add(cageStub2);
-		cages.add(cageStub3);
-		cages.add(cageStub4);
-
-		GridGeneratingParameters gridGeneratingParameters = new GridGeneratingParametersBuilder()
-				.setGridType(GridType.GRID_4x4)
-				.setPuzzleComplexity(PuzzleComplexity.NORMAL)
-				.setHideOperators(false)
-				.createGridGeneratingParameters();
-
-		assertThat(
-				"Grid definition",
-				GridDefinition.getDefinition(cells, cages,
-						gridGeneratingParameters),
-				is(equalTo("3:00010202000102020101010203030302:0,1,0:1,3,1:2,2,0:3,3,1")));
+	@Test
+	public void getDefinition_TestGrid4x4CageIdsNotSorted_GridDefinitionCreated()
+			throws Exception {
+		assertGridDefinition(GridCreator4x4CageIdsNotSorted.create());
 	}
 
 	@Test(expected = InvalidGridException.class)

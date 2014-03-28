@@ -30,7 +30,7 @@ public class GridGenerator {
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
 	@SuppressWarnings("PointlessBooleanExpression")
-	static final boolean DEBUG_GRID_GENERATOR = Config.mAppMode == Config.AppMode.DEVELOPMENT && false;
+	static final boolean DEBUG_GRID_GENERATOR = Config.mAppMode == Config.AppMode.DEVELOPMENT && true;
 	@SuppressWarnings("PointlessBooleanExpression")
 	public static final boolean DEBUG_GRID_GENERATOR_FULL = DEBUG_GRID_GENERATOR && false;
 	private boolean developmentMode = false;
@@ -62,7 +62,7 @@ public class GridGenerator {
 		void signalSlowGridGeneration(String text);
 	}
 
-	Listener listener;
+	private final Listener listener;
 
 	public GridGenerator(Listener listener) {
 		this.listener = listener;

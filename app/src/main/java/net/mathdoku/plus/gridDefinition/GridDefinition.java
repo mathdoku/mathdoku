@@ -77,6 +77,11 @@ public class GridDefinition {
 	 * solving. This definition is unique regardless of grid size and or the
 	 * version of the grid generator used.
 	 * 
+	 * The id's of the cages are reindexed so the list of top-left-cells of the
+	 * cages are sorted in order of increasing cell numbers. In this way to
+	 * identical grids in which only the cage id's are different result in
+	 * identical grid definitions.
+	 * 
 	 * @return A unique string representation of the grid.
 	 */
 	public static String getDefinition(List<Cell> cells, List<Cage> cages,
@@ -101,17 +106,21 @@ public class GridDefinition {
 						.getPuzzleComplexity()
 						.getId())).append(GridDefinitionDelimiter.LEVEL1);
 
+		List<Integer> cageIdsInOrderOfOccurrence = getCageIdsInOrderOfOccurrence(cells);
+
 		// Get the cage number (represented as a value of two digits, if needed
 		// prefixed with a 0) for each cell. Note: with a maximum of 81 cells in
 		// a 9x9 grid we can never have a cage-id > 99.
 		for (Cell cell : cells) {
-			definitionString.append(String.format("%02d", cell.getCageId()));
+			definitionString.append(String.format("%02d",
+					cageIdsInOrderOfOccurrence.indexOf(cell.getCageId())));
 		}
-		// Followed by cages
-		for (Cage cage : cages) {
+		// Followed by cages in the order in which they are used by the cells.
+		for (int cageId : cageIdsInOrderOfOccurrence) {
+			Cage cage = getCageWithIdFromListOfCages(cageId, cages);
 			definitionString
 					.append(GridDefinitionDelimiter.LEVEL1)
-					.append(cage.getId())
+					.append(cageIdsInOrderOfOccurrence.indexOf(cage.getId()))
 					.append(GridDefinitionDelimiter.LEVEL2)
 					.append(cage.getResult())
 					.append(GridDefinitionDelimiter.LEVEL2)
@@ -119,6 +128,29 @@ public class GridDefinition {
 							.getId() : cage.getOperator().getId());
 		}
 		return definitionString.toString();
+	}
+
+	private static Cage getCageWithIdFromListOfCages(int id, List<Cage> cages) {
+		if (cages != null) {
+			for (Cage cage : cages) {
+				if (cage.getId() == id) {
+					return cage;
+				}
+			}
+		}
+		return null;
+	}
+
+	private static List<Integer> getCageIdsInOrderOfOccurrence(List<Cell> cells) {
+		List<Integer> cageIdsInOrderOfOccurrence = new ArrayList<Integer>();
+		if (cells != null) {
+			for (Cell cell : cells) {
+				if (!cageIdsInOrderOfOccurrence.contains(cell.getCageId())) {
+					cageIdsInOrderOfOccurrence.add(cell.getCageId());
+				}
+			}
+		}
+		return cageIdsInOrderOfOccurrence;
 	}
 
 	/**

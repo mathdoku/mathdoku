@@ -22,8 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import robolectric.RobolectricGradleTestRunner;
-import testHelper.TestGrid;
-import testHelper.TestGridHiddenOperators;
+import testHelper.GridCreator;
+import testHelper.GridCreator4x4;
+import testHelper.GridCreator4x4HiddenOperators;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -289,7 +290,7 @@ public class GridTest {
 
 	@Test
 	public void getSelectedCage_SelectedCellIsNotNull_CageSelected() {
-		TestGrid testGrid = TestGrid.WithVisibleOperators().setEmptyGrid();
+		GridCreator testGrid = GridCreator4x4.createEmpty();
 		Grid grid = testGrid.getGrid();
 		int idSelectedCell = 3;
 		int idSelectedCage = testGrid.getCageIdOfCell(idSelectedCell);
@@ -600,9 +601,8 @@ public class GridTest {
 	public void isSolutionValidSoFar_MultipleCellsIncludingAnInvalid_False()
 			throws Exception {
 		int cellIdToBeFilledWithCorrectValue = 4;
-		Grid grid = TestGrid
-				.WithVisibleOperators()
-				.setEmptyGrid()
+		Grid grid = GridCreator4x4
+				.createEmpty()
 				.setCorrectEnteredValueInCell(cellIdToBeFilledWithCorrectValue)
 				.setCorrectEnteredValueInCell(
 						cellIdToBeFilledWithCorrectValue + 1)
@@ -796,7 +796,7 @@ public class GridTest {
 	@Test
 	public void deselectSelectedCell_CellIsSelected_CellIsDeselected()
 			throws Exception {
-		Grid grid = TestGrid.WithVisibleOperators().setEmptyGrid().getGrid();
+		Grid grid = GridCreator4x4.createEmptyGrid();
 		int idSelectedCell = 3;
 		Cell cell = grid.getCell(idSelectedCell);
 		grid.setSelectedCell(cell);
@@ -1303,10 +1303,7 @@ public class GridTest {
 	public void createNewGridForReplay_ContainsCellWithDuplicateValueHighlight_DuplicateHighLightIsCleared()
 			throws Exception {
 		// Use a grid without mocks for this test.
-		Grid originalGrid = TestGrid
-				.WithVisibleOperators()
-				.setEmptyGrid()
-				.getGrid();
+		Grid originalGrid = GridCreator4x4.createEmptyGrid();
 		// Set only one property of one cell which should not be copied to the
 		// new grid.
 		int idOfCell_1 = 5;
@@ -1323,10 +1320,7 @@ public class GridTest {
 	public void createNewGridForReplay_ContainsCellWithEnteredValue_EnteredValueIsCleared()
 			throws Exception {
 		// Use a grid without mocks for this test.
-		Grid originalGrid = TestGrid
-				.WithVisibleOperators()
-				.setEmptyGrid()
-				.getGrid();
+		Grid originalGrid = GridCreator4x4.createEmptyGrid();
 		// Set only one property of one cell which should not be copied to the
 		// new grid.
 		int idOfCell_1 = 5;
@@ -1343,10 +1337,7 @@ public class GridTest {
 	public void createNewGridForReplay_ContainsCellWithMaybeValue_PossiblesIsCleared()
 			throws Exception {
 		// Use a grid without mocks for this test.
-		Grid originalGrid = TestGrid
-				.WithVisibleOperators()
-				.setEmptyGrid()
-				.getGrid();
+		Grid originalGrid = GridCreator4x4.createEmptyGrid();
 		// Set only one property of one cell which should not be copied to the
 		// new grid.
 		int idOfCell_1 = 5;
@@ -1363,10 +1354,7 @@ public class GridTest {
 	public void createNewGridForReplay_ContainsRevealedCell_IsRevealedIsCleared()
 			throws Exception {
 		// Use a grid without mocks for this test.
-		Grid originalGrid = TestGrid
-				.WithVisibleOperators()
-				.setEmptyGrid()
-				.getGrid();
+		Grid originalGrid = GridCreator4x4.createEmptyGrid();
 		// Set only one property of one cell which should not be copied to the
 		// new grid.
 		int idOfCell_1 = 5;
@@ -1383,10 +1371,7 @@ public class GridTest {
 	public void createNewGridForReplay_InvalidUserHighlight_InvalidHighlightIsCleared()
 			throws Exception {
 		// Use a grid without mocks for this test.
-		Grid originalGrid = TestGrid
-				.WithVisibleOperators()
-				.setEmptyGrid()
-				.getGrid();
+		Grid originalGrid = GridCreator4x4.createEmptyGrid();
 		// Set only one property of one cell which should not be copied to the
 		// new grid.
 		int idOfCell_1 = 5;
@@ -1403,10 +1388,7 @@ public class GridTest {
 	public void createNewGridForReplay_HasSelectedCell_SelectedCellIsCleared()
 			throws Exception {
 		// Use a grid without mocks for this test.
-		Grid originalGrid = TestGrid
-				.WithVisibleOperators()
-				.setEmptyGrid()
-				.getGrid();
+		Grid originalGrid = GridCreator4x4.createEmptyGrid();
 		// Set only one property of one cell which should not be copied to the
 		// new grid.
 		int idOfCell_1 = 5;
@@ -1423,14 +1405,14 @@ public class GridTest {
 	public void createNewGridForReplay_RevealedCageOperator_RevealedCageOperatorIsHidden()
 			throws Exception {
 		// Use a grid without mocks for this test.
-		TestGridHiddenOperators testGridHiddenOperators = (TestGridHiddenOperators) TestGrid
-				.WithHiddenOperators();
-		Grid originalGrid = testGridHiddenOperators.setEmptyGrid().getGrid();
+		GridCreator4x4HiddenOperators gridCreator = GridCreator4x4HiddenOperators
+				.createEmpty();
+		Grid originalGrid = gridCreator.getGrid();
 		// Reveal the operator of a cage with an unrevealed cage operator. For
 		// this a cell in such a cage has to be selected after which the cage
 		// operator can be unrevealed. Deselect the cell again as after creating
 		// the new grid, no cell is selected.
-		int idOfCell_1 = testGridHiddenOperators
+		int idOfCell_1 = gridCreator
 				.getIdOfUpperLeftCellOfCageWithAnUnrevealedCageOperator();
 		Cell cell_1 = originalGrid.getCell(idOfCell_1);
 		originalGrid.setSelectedCell(cell_1);
@@ -1459,9 +1441,8 @@ public class GridTest {
 	public void markInvalidChoices_GridHasOneCellWithInvalidValue_CellWithInvalidValueIsHighlighted()
 			throws Exception {
 		int cellId = 7;
-		TestGrid testGridCreator = TestGrid
-				.WithVisibleOperators()
-				.setEmptyGrid()
+		GridCreator testGridCreator = GridCreator4x4
+				.createEmpty()
 				.setIncorrectEnteredValueInCell(cellId);
 		Grid grid = testGridCreator.getGrid();
 
@@ -1474,9 +1455,8 @@ public class GridTest {
 			throws Exception {
 		int cellId_1 = 7;
 		int cellId_2 = 0;
-		TestGrid testGridCreator = TestGrid
-				.WithVisibleOperators()
-				.setEmptyGrid()
+		GridCreator testGridCreator = GridCreator4x4
+				.createEmpty()
 				.setIncorrectEnteredValueInCell(cellId_1)
 				.setIncorrectEnteredValueInCell(cellId_2);
 		Grid grid = testGridCreator.getGrid();
@@ -1599,15 +1579,12 @@ public class GridTest {
 	@Test
 	public void revealOperatorSelectedCage_CageSelectedForCageWithHiddenOperator_OperatorRevealed()
 			throws Exception {
-		TestGrid testGrid;
 		int idSelectedCell = 6;
-		testGrid = TestGrid
-				.WithHiddenOperators()
-				.setSelectedCell(idSelectedCell)
-				.setEmptyGrid();
-		int idOfUpperLeftCellOfSelectedCage = testGrid
+		GridCreator gridCreator = GridCreator4x4HiddenOperators
+				.createEmptyWithSelectedCell(idSelectedCell);
+		int idOfUpperLeftCellOfSelectedCage = gridCreator
 				.getIdTopLeftCellOfCageContainingCellWithId(idSelectedCell);
-		Grid grid = testGrid.getGrid();
+		Grid grid = gridCreator.getGrid();
 		String cageTextBeforeReveal = grid.getCell(
 				idOfUpperLeftCellOfSelectedCage).getCageText();
 
@@ -1816,8 +1793,8 @@ public class GridTest {
 	@Test
 	public void markDuplicateValues_GridWithEnteredValuesButNoDuplicates_NoDuplicatesFounds()
 			throws Exception {
-		Grid grid = TestGrid
-				.WithVisibleOperators()
+		Grid grid = GridCreator4x4
+				.create()
 				.setCorrectEnteredValueToAllCells()
 				.getGrid();
 
@@ -1827,7 +1804,10 @@ public class GridTest {
 	@Test
 	public void markDuplicateValues_GridWithDuplicateEnteredValuesOnSameRow_DuplicatesFounds()
 			throws Exception {
-		Grid grid = TestGrid.WithVisibleOperators().setEmptyGrid().getGrid();
+		Grid grid = GridCreator4x4
+				.createWithVisibleOperators()
+				.setEmptyGrid()
+				.getGrid();
 		int row = 1;
 		int col1 = 2;
 		int col2 = col1 + 1;
@@ -1841,7 +1821,10 @@ public class GridTest {
 	@Test
 	public void markDuplicateValues_GridWithDuplicateEnteredValuesInSameColumn_DuplicatesFounds()
 			throws Exception {
-		Grid grid = TestGrid.WithVisibleOperators().setEmptyGrid().getGrid();
+		Grid grid = GridCreator4x4
+				.createWithVisibleOperators()
+				.setEmptyGrid()
+				.getGrid();
 		int row1 = 1;
 		int row2 = row1 + 1;
 		int col = 2;

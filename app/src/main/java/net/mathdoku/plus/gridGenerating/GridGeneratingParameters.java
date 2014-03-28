@@ -80,4 +80,60 @@ public class GridGeneratingParameters {
 		sb.append('}');
 		return sb.toString();
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof GridGeneratingParameters)) {
+			return false;
+		}
+
+		GridGeneratingParameters that = (GridGeneratingParameters) o;
+
+		if (gameSeed != that.gameSeed) {
+			return false;
+		}
+		if (generatorVersionNumber != that.generatorVersionNumber) {
+			return false;
+		}
+		if (hideOperators != that.hideOperators) {
+			return false;
+		}
+		if (maxCagePermutations != that.maxCagePermutations) {
+			return false;
+		}
+		if (maxCageResult != that.maxCageResult) {
+			return false;
+		}
+		if (maxCageSize != that.maxCageSize) {
+			return false;
+		}
+		if (maximumSingleCellCages != that.maximumSingleCellCages) {
+			return false;
+		}
+		if (gridType != that.gridType) {
+			return false;
+		}
+		if (puzzleComplexity != that.puzzleComplexity) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = gridType.hashCode();
+		result = 31 * result + (hideOperators ? 1 : 0);
+		result = 31 * result + puzzleComplexity.hashCode();
+		result = 31 * result + generatorVersionNumber;
+		result = 31 * result + (int) (gameSeed ^ (gameSeed >>> 32));
+		result = 31 * result + maxCageSize;
+		result = 31 * result + maxCageResult;
+		result = 31 * result + maxCagePermutations;
+		result = 31 * result + maximumSingleCellCages;
+		return result;
+	}
 }
