@@ -82,8 +82,10 @@ public class CageType {
 	 * @return An array of coordinates (row,col) of cells involved. The caller
 	 *         needs to check whether all returned coordinates are valid.
 	 */
-	public CellCoordinates[] getCellCoordinatesOfAllCellsInCage(CellCoordinates originCell) {
-		// Get cage type matrix. If not defined, return the given origin cell as a single cell cage.
+	public CellCoordinates[] getCellCoordinatesOfAllCellsInCage(
+			CellCoordinates originCell) {
+		// Get cage type matrix. If not defined, return the given origin cell as
+		// a single cell cage.
 		if (mUsedCells == null) {
 			return new CellCoordinates[] { originCell };
 		}
@@ -96,7 +98,8 @@ public class CageType {
 			for (int col = 0; col < mCols; col++) {
 				if (mUsedCells[row][col]) {
 					cellCoordinates[coordinatesIndex++] = new CellCoordinates(
-							originCell.getRow() + row, originCell.getColumn() + col - mColOriginOffset);
+							originCell.getRow() + row, originCell.getColumn()
+									+ col - mColOriginOffset);
 				}
 			}
 		}
@@ -111,7 +114,8 @@ public class CageType {
 	 * @return The coordinates of the most top left cell used in the cage type.
 	 */
 	public CellCoordinates getOriginCoordinates(CellCoordinates offset) {
-		return new CellCoordinates(offset.getRow(), offset.getColumn() + mColOriginOffset);
+		return new CellCoordinates(offset.getRow(), offset.getColumn()
+				+ mColOriginOffset);
 	}
 
 	/**

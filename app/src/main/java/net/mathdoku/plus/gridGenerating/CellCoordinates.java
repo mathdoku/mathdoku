@@ -10,7 +10,8 @@ public class CellCoordinates {
 	}
 
 	boolean isInvalidForGridSize(int gridSize) {
-		return isInvalidIndexForGridSize(row, gridSize) || isInvalidIndexForGridSize(column, gridSize);
+		return isInvalidIndexForGridSize(row, gridSize)
+				|| isInvalidIndexForGridSize(column, gridSize);
 	}
 
 	private boolean isInvalidIndexForGridSize(int index, int gridSize) {

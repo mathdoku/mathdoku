@@ -53,7 +53,8 @@ public class GridGeneratingParametersBuilder {
 
 	public GridGeneratingParametersBuilder setGridType(GridType gridType) {
 		throwErrorWhenDependingParameterHasBeenOverridden(
-				isParameterDependentOnGridTypeOverridden, GRID_TYPE_PARAMETER_NAME);
+				isParameterDependentOnGridTypeOverridden,
+				GRID_TYPE_PARAMETER_NAME);
 		this.gridType = gridType;
 		isGridTypeSet = true;
 		maxSingleCellCages = Math.max(2, gridType.getGridSize() / 2);
@@ -131,6 +132,7 @@ public class GridGeneratingParametersBuilder {
 		maxCageResult = 2500;
 		maxCagePermutations = 40;
 	}
+
 	private void setDifficultPuzzleComplexity() {
 		maxCageSize = 5;
 		// maxCageResult is limited. Real maximum = 9 * 9 * 9 * 8 * 8 = 46,656
@@ -140,7 +142,8 @@ public class GridGeneratingParametersBuilder {
 
 	private void setVeryDifficultPuzzleComplexity() {
 		maxCageSize = 6;
-		// maxCageResult is limited. Real maximum = 9 * 9 * 9 * 8 * 8 * 8 = 373,248
+		// maxCageResult is limited. Real maximum = 9 * 9 * 9 * 8 * 8 * 8 =
+		// 373,248
 		maxCageResult = 99999;
 		maxCagePermutations = 120;
 	}
@@ -221,8 +224,10 @@ public class GridGeneratingParametersBuilder {
 
 	private void throwErrorWhenNotAllRequiredParametersAreSet() {
 		throwErrorWhenParameterNotSet(isGridTypeSet, GRID_TYPE_PARAMETER_NAME);
-		throwErrorWhenParameterNotSet(isHideOperatorsSet, HIDE_OPERATOR_PARAMETER_NAME);
-		throwErrorWhenParameterNotSet(isPuzzleComplexitySet, PUZZLE_COMPLEXITY_PARAMETER_NAME);
+		throwErrorWhenParameterNotSet(isHideOperatorsSet,
+				HIDE_OPERATOR_PARAMETER_NAME);
+		throwErrorWhenParameterNotSet(isPuzzleComplexitySet,
+				PUZZLE_COMPLEXITY_PARAMETER_NAME);
 	}
 
 	private void throwErrorWhenParameterNotSet(boolean parameterIsSet,
