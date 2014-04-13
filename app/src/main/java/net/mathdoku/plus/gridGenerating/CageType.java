@@ -1,6 +1,9 @@
 package net.mathdoku.plus.gridgenerating;
 
+import net.mathdoku.plus.gridgenerating.CellCoordinates.CellCoordinates;
+
 public class CageType {
+	@SuppressWarnings("unused")
 	private static final String TAG = CageType.class.getName();
 
 	// Number or cells used in this cage type.
@@ -84,6 +87,10 @@ public class CageType {
 	 */
 	public CellCoordinates[] getCellCoordinatesOfAllCellsInCage(
 			CellCoordinates originCell) {
+		if (canNotBeCreatedAtOrigin(originCell)) {
+			return new CellCoordinates[] { CellCoordinates.EMPTY };
+		}
+
 		// Get cage type matrix. If not defined, return the given origin cell as
 		// a single cell cage.
 		if (mUsedCells == null) {
@@ -105,6 +112,11 @@ public class CageType {
 		}
 
 		return cellCoordinates;
+	}
+
+	private boolean canNotBeCreatedAtOrigin(
+			CellCoordinates originCellCoordinates) {
+		return (originCellCoordinates.getColumn() < mColOriginOffset);
 	}
 
 	/**
@@ -191,56 +203,50 @@ public class CageType {
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object o) {
-		// Return true if the objects are identical.
-		// (This is just an optimization, not required for correctness.)
 		if (this == o) {
 			return true;
 		}
-
-		// Return false if the other object has the wrong type.
-		// This type may be an interface depending on the interface's
-		// specification.
 		if (!(o instanceof CageType)) {
 			return false;
 		}
 
-		// Cast to the appropriate type.
-		// This will succeed because of the instanceof, and lets us access
-		// private fields.
-		CageType lhs = (CageType) o;
+		CageType cageType = (CageType) o;
 
-		// Return false in case dimensions are not the same.
-		if (mRows != lhs.mRows || mCols != lhs.mCols) {
+		if (mColOriginOffset != cageType.mColOriginOffset) {
 			return false;
 		}
-
-		// Return false in case content of shape matrices are not the same.
-		for (int row = 0; row < mRows; row++) {
-			for (int col = 0; col < mCols; col++) {
-				if (mUsedCells[row][col] != lhs.mUsedCells[row][col]) {
-					return false;
-				}
-			}
+		if (mCols != cageType.mCols) {
+			return false;
 		}
+		if (mRows != cageType.mRows) {
+			return false;
+		}
+		if (mSize != cageType.mSize) {
+			return false;
+		}
+		return getUsedCellsAsString().equals(cageType.getUsedCellsAsString());
 
-		// Objects are equal.
-		return true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
-		throw new UnsupportedOperationException();
+		int result = mSize;
+		result = 31 * result + mRows;
+		result = 31 * result + mCols;
+		result = 31 * result + mColOriginOffset;
+		result = 31 * result + getUsedCellsAsString().hashCode();
+		return result;
+	}
+
+	private String getUsedCellsAsString() {
+		StringBuilder stringBuilder = new StringBuilder();
+		for (int row = 0; row < mRows; row++) {
+			for (int col = 0; col < mCols; col++) {
+				stringBuilder.append(mUsedCells[row][col] ? "X" : "-");
+			}
+		}
+		return stringBuilder.toString();
 	}
 }

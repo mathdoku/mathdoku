@@ -180,44 +180,15 @@ public class CageTypeGenerator {
 		return this.mSingleCellCageType;
 	}
 
-	/**
-	 * Get the cage type with given index.
-	 * 
-	 * @param cageTypeIndex
-	 *            The index of the cage type to be retrieved.
-	 * @return The cage type which was requested. Null in case of an error.
-	 */
-	public CageType getCageType(int cageTypeIndex) {
-		// Find cage type array in which the cage type is defined.
-		for (List<CageType> mCageType : mCageTypes) {
-			if (mCageType != null) {
-				// This cage type array does contain elements. Check if it
-				// contains enough elements to find the given index.
-				if (cageTypeIndex < mCageType.size()) {
-					return mCageType.get(cageTypeIndex);
-				}
-
-				// Decrease index for search in next array.
-				cageTypeIndex -= mCageType.size();
+	public List<CageType> getCageTypesWithSizeEqualOrLessThan(int maxCageSize) {
+		List<CageType> cageTypes = new ArrayList<CageType>();
+		maxCageSize = Math.min(maxCageSize, MAX_CAGE_SIZE);
+		for (int i = 0; i < maxCageSize; i++) {
+			for (CageType cageType : mCageTypes[i]) {
+				cageTypes.add(cageType);
 			}
 		}
-
-		// Index not found
-		return null;
-	}
-
-	/**
-	 * Get the number of generated cage types for the given size.
-	 * 
-	 * @return the number of available cage types for the given size.
-	 */
-	public int size(int maxCageSize) {
-		int totalCageTypes = 0;
-		maxCageSize = maxCageSize > MAX_CAGE_SIZE ? MAX_CAGE_SIZE : maxCageSize;
-		for (int i = 0; i < maxCageSize; i++) {
-			totalCageTypes += mCageTypes[i].size();
-		}
-		return totalCageTypes;
+		return cageTypes;
 	}
 
 	/**

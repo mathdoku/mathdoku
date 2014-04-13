@@ -10,12 +10,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Cage {
+	public static final int CAGE_ID_NOT_SET = -1;
+
 	private final int mId;
 	private final CageOperator mCageOperator;
 	private final int mResult;
 	private boolean mHideOperator;
 	private final int[] mCells;
-
 	private boolean mMathOnEnteredValuesIsCorrect;
 
 	// Cached list of possible combo's which can be used in this cage if other
@@ -25,18 +26,12 @@ public class Cage {
 	// Enclosing context
 	private Grid mGrid;
 
-	/**
-	 * Creates a new instance of {@link Cage}.
-	 */
 	public Cage(CageBuilder cageBuilder) {
-		// Set default for variables which can not be set via the builder
 		mPossibleCombos = null;
-		// Reference to grid will only be set after the entire grid is created
-		// which cannot be done until all cages are created.
 		mGrid = null;
+
 		// Defaulting mMathOnEnteredValuesIsCorrect to false result in setting
-		// all borders
-		// when checking the cage math for the first time.
+		// all borders when checking the cage math for the first time.
 		mMathOnEnteredValuesIsCorrect = false;
 
 		// Get defaults from builder
@@ -66,8 +61,8 @@ public class Cage {
 
 	private void validateResultThrowsExceptionOnError() {
 		if (mResult <= 0) {
-			throw new InvalidGridException("Result of cage " + mResult
-					+ " not set correctly.");
+			throw new InvalidGridException("Result of cage not set correctly."
+					+ toString());
 		}
 	}
 
@@ -341,5 +336,13 @@ public class Cage {
 
 	public boolean isMathOnEnteredValuesCorrect() {
 		return mMathOnEnteredValuesIsCorrect;
+	}
+
+	public boolean isNull() {
+		return false;
+	}
+
+	public boolean isValid() {
+		return !isNull();
 	}
 }

@@ -6,6 +6,7 @@ import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.storage.database.DatabaseHelper;
 import net.mathdoku.plus.util.Util;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +19,11 @@ import testHelper.GridCreator9x9;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
+
+/**
+ * NOTE: the first test which is executed will take significant longer than the
+ * other tests as the database structure will be created during this test.
+ */
 
 @RunWith(RobolectricGradleTestRunner.class)
 public class GridGeneratorTest {
@@ -32,14 +38,17 @@ public class GridGeneratorTest {
 
 		@Override
 		public void updateProgressHighLevel(String text) {
+			// Swallow
 		}
 
 		@Override
 		public void updateProgressDetailLevel(String text) {
+			// Swallow
 		}
 
 		@Override
-		public void signalSlowGridGeneration(String text) {
+		public void signalSlowGridGeneration() {
+			// Swallow
 		}
 	}
 
@@ -50,6 +59,17 @@ public class GridGeneratorTest {
 		DatabaseHelper.getInstance(activity);
 
 		gridGeneratorListener = new GridGeneratorListener();
+	}
+
+	@After
+	public void tearDown() {
+		// Close the database helper. This ensure that the next test will use a
+		// new DatabaseHelper instance with a new SQLite database connection. In
+		// this way it is possible to generate the same grid multiple times in
+		// one test cyclus. Without this tear down, a grid can only be generated
+		// once because the grid generator checks whether the generated grid
+		// definition is unique.
+		DatabaseHelper.getInstance().close();
 	}
 
 	@Test

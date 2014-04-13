@@ -131,7 +131,7 @@ public class GridGeneratorAsyncTask extends
 	}
 
 	@Override
-	public void signalSlowGridGeneration(String text) {
+	public void signalSlowGridGeneration() {
 		if (generateInDevelopmentMode) {
 			forceSlowGeneratingExceptionInDevelopmentMode = true;
 			// Pause a moment to publish message in the progress dialog
