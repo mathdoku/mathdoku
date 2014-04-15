@@ -37,7 +37,6 @@ public class GridGenerator {
 	private List<Cage> mCages;
 	private Matrix<Integer> correctValueMatrix;
 	private Matrix<Integer> cageIdMatrix;
-	private int countSingles;
 	private Random mRandom;
 	private CageTypeGenerator mCageTypeGenerator;
 
@@ -210,12 +209,13 @@ public class GridGenerator {
 		if (developmentMode) {
 			listener.updateProgressDetailLevel("Randomize grid.");
 		}
-		correctValueMatrix = new RandomIntegerMatrixGenerator(gridSizeValue, mRandom).getMatrix();
+		correctValueMatrix = new RandomIntegerMatrixGenerator(gridSizeValue,
+				mRandom).getMatrix();
 	}
 
 	/**
 	 * Creates cages for the current grid which is already filled with numbers.
-	 *
+	 * 
 	 * @return True in case the cages have been created successfully.
 	 */
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
@@ -244,25 +244,7 @@ public class GridGenerator {
 
 	private boolean attemptToFillGridWithCages() {
 		cageIdMatrix = new Matrix<Integer>(gridSizeValue, Cage.CAGE_ID_NOT_SET);
-
-		// TODO: actually the cage list should be cleared when starting a new
-		// cycle of generating a cage. This however breaks the current unit test
-		// because the entire list of cages is given to MathDokuDLX-class for
-		// checking for a valid solution. If previously a grid was found with a
-		// non unique solution, this will also fail all solutions in this
-		// do-while loop as well and as a result affects the randomizer!!
-		//
-		// After refactoring of the GridGenerator, the GridCreators-classes and
-		// their parameters need to be refreshed. Also the GeneratorVersion has
-		// to be increased!
-		for (int i = 0; i <= 15; i++) {
-			Log.d(TAG, "CAGES NEED TO BE CLEARED!"); // Todo: remove
-		}
-		// mCages.clear();
-
-		// Todo: remove the variable countSingles when refactoring of
-		// GridGenerator is completed.
-		countSingles = 0;
+		mCages.clear();
 
 		if (gridGeneratingParameters.getMaxCageSize() >= CageTypeGenerator.MAX_CAGE_SIZE) {
 			createFirstCageWithBiggerSize();
@@ -351,27 +333,21 @@ public class GridGenerator {
 	}
 
 	private int countSingleCellCages() {
-		// TODO: replace with for loop below when refactoring of GridGenerator
-		// is completed. Currently the list of cages is not cleared when
-		// starting a new attempt. As a result it is not yet possible to count
-		// the number of single cell cages.
-		return countSingles;
-
-		// int countSingleCellCages = 0;
-		// for (Cage cage : mCages) {
-		// if (cage.isSingleCellCage()) {
-		// countSingleCellCages++;
-		// }
-		// }
-		// return countSingleCellCages;
+		int countSingleCellCages = 0;
+		for (Cage cage : mCages) {
+			if (cage.isSingleCellCage()) {
+				countSingleCellCages++;
+			}
+		}
+		return countSingleCellCages;
 	}
 
 	private CellCoordinates getCellCoordinatesForFirstCage(CageType cageType) {
-		/*
-		 * // TODO: enable when mCages.clear is enabled if (mCages.size() != 0)
-		 * { throw new IllegalStateException(
-		 * "Only to be used if not other cells are placed in the grid."); }
-		 */
+		if (mCages.size() != 0) {
+			throw new IllegalStateException(
+					"Only to be used if no other cells are placed in the grid.");
+		}
+
 		// Use +1 in calls to randomizer to prevent exceptions in case the
 		// entire height and/or width is needed for the cage type.
 		int startRow = mRandom
@@ -411,7 +387,7 @@ public class GridGenerator {
 
 	/**
 	 * Create the cage at the given coordinates.
-	 *
+	 * 
 	 * @param cageType
 	 *            The type of cage to be created.
 	 * @param originCell
@@ -435,7 +411,8 @@ public class GridGenerator {
 			return false;
 		}
 
-		List<Cell> cells = getAllCells(candidateCageCreator.getCellsCoordinates());
+		List<Cell> cells = getAllCells(candidateCageCreator
+				.getCellsCoordinates());
 
 		Cage candidateCage = candidateCageCreator.create(getIdNewCage(), cells);
 		if (candidateCageHasTooManyPermutations(candidateCage, maxPermutations)) {
@@ -548,24 +525,18 @@ public class GridGenerator {
 	}
 
 	private boolean hasTooManySingleCellCages(CageType selectedCageType) {
-		if (!selectedCageType.equals(mCageTypeGenerator
-				.getSingleCellCageType())) {
+		if (!selectedCageType
+				.equals(mCageTypeGenerator.getSingleCellCageType())) {
 			return false;
 		}
 		if (noMoreSingleCellCagesAllowed()) {
 			if (developmentMode) {
 				listener.updateProgressDetailLevel(String.format(
 						"Found more single cell cages than allowed (%d).",
-						gridGeneratingParameters
-								.getMaximumSingleCellCages()));
+						gridGeneratingParameters.getMaximumSingleCellCages()));
 			}
 			return true;
 		}
-
-		// Todo: remove after refactoring GridGenerator is completed. Single
-		// cell cages have to be counted using the list mCages instead of
-		// using this var.
-		countSingles++;
 
 		return false;
 	}

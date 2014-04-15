@@ -345,4 +345,8 @@ public class Cage {
 	public boolean isValid() {
 		return !isNull();
 	}
+
+	public boolean isSingleCellCage() {
+		return mCells != null && mCells.length == 1;
+	}
 }
