@@ -1324,4 +1324,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 					});
 		}
 	}
+
+	public Grid getGrid() {
+		return mGrid;
+	}
 }

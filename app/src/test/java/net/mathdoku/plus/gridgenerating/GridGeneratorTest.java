@@ -99,8 +99,18 @@ public class GridGeneratorTest {
 				.createGrid(gridCreator.getGridGeneratingParameters());
 		assertThat(generatedGrid.getGridGeneratingParameters(),
 				is(gridCreator.getGridGeneratingParameters()));
-		assertThat(generatedGrid.getDefinition(), is(gridCreator
-				.getGrid()
-				.getDefinition()));
+		assertThat(
+				"This grid cannot be regenerated. However first check if this is\n"
+						+ "caused by any of following:\n"
+						+ " 1. A change in the grid generating algorithm, If so, first check some puzzles manually.\n"
+						+ "    Then regenerate the GridCreator test helper class which fails.\n"
+						+ " 2. If a newly generated GridCreator test helper class fails on the first run of the\n"
+						+ "    unit tests, than this is most likely caused by generating the code based on a puzzle\n"
+						+ "    which was generated on a non empty database in which the exact same puzzle was\n"
+						+ "    already generated before. If suc a thing happens when generating a puzzle with the\n"
+						+ "    the (real) app, another puzzle will be generated automatically. This however will\n"
+						+ "    never occur when running the unit tetst as this will be executed on an empty database\n"
+						+ "    by default\n", generatedGrid.getDefinition(),
+				is(gridCreator.getGrid().getDefinition()));
 	}
 }

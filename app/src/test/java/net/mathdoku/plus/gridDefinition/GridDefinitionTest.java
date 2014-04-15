@@ -24,8 +24,7 @@ import robolectric.RobolectricGradleTestRunner;
 import testHelper.GridCreator;
 import testHelper.GridCreator2x2;
 import testHelper.GridCreator4x4;
-import testHelper.GridCreator4x4CageIdsNotConsecutive;
-import testHelper.GridCreator4x4CageIdsNotSorted;
+import testHelper.GridCreator4x4CageIdsNotConsecutiveNorSorted;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -227,8 +226,7 @@ public class GridDefinitionTest {
 
 	private void assertGridDefinition(GridCreator gridCreator) {
 		Grid grid = gridCreator.setEmptyGrid().getGrid();
-		assertThat(grid.getDefinition(),
-				is(equalTo(gridCreator.getGridDefinition())));
+		assertThat(grid.getDefinition(), is(equalTo(gridCreator.getGridDefinition())));
 	}
 
 	@Test
@@ -240,13 +238,7 @@ public class GridDefinitionTest {
 	@Test
 	public void getDefinition_TestGrid4x4CageIdsNotConsecutive_GridDefinitionCreated()
 			throws Exception {
-		assertGridDefinition(GridCreator4x4CageIdsNotConsecutive.create());
-	}
-
-	@Test
-	public void getDefinition_TestGrid4x4CageIdsNotSorted_GridDefinitionCreated()
-			throws Exception {
-		assertGridDefinition(GridCreator4x4CageIdsNotSorted.create());
+		assertGridDefinition(GridCreator4x4CageIdsNotConsecutiveNorSorted.create());
 	}
 
 	@Test(expected = InvalidGridException.class)

@@ -25,15 +25,8 @@ public abstract class GridCreator {
 	private int mSelectedCellId = ID_NO_CELL_SELECTED;
 	public static final long DO_NOT_USE_TO_REGENERATE_GRID = 0;
 
-	private final boolean mHideOperator;
-
-	protected GridCreator(boolean hideOperator) {
+	protected GridCreator() {
 		mGridBuilder = new GridBuilder();
-		mHideOperator = hideOperator;
-	}
-
-	protected boolean isHiddenOperator() {
-		return mHideOperator;
 	}
 
 	/**
@@ -88,7 +81,7 @@ public abstract class GridCreator {
 	public GridGeneratingParameters getGridGeneratingParameters() {
 		return new GridGeneratingParametersBuilder()
 				.setGridType(getGridType())
-				.setHideOperators(mHideOperator)
+				.setHideOperators(getHideOperator())
 				.setPuzzleComplexity(getPuzzleComplexity())
 				.setGameSeed(getGameSeed())
 				.setGeneratorVersionNumber(getGeneratorVersionNumber())
@@ -103,7 +96,7 @@ public abstract class GridCreator {
 		for (int cageId = 0; cageId < getResultPerCage().length; cageId++) {
 			Cage cage = new CageBuilder()
 					.setId(cageId)
-					.setHideOperator(mHideOperator)
+					.setHideOperator(getHideOperator())
 					.setCells(getCells(cageId))
 					.setResult(getResultPerCage()[cageId])
 					.setCageOperator(getCageOperatorPerCage()[cageId])
@@ -220,6 +213,8 @@ public abstract class GridCreator {
 
 	protected abstract GridType getGridType();
 
+	protected abstract boolean getHideOperator();
+
 	protected abstract PuzzleComplexity getPuzzleComplexity();
 
 	protected abstract int getGeneratorVersionNumber();
@@ -237,4 +232,13 @@ public abstract class GridCreator {
 	protected abstract CageOperator[] getCageOperatorPerCage();
 
 	public abstract String getGridDefinition();
+
+	public int getIdOfUpperLeftCellOfCageWithMultipleCellsAndAnUnrevealedCageOperator() {
+		for (Cage cage : mGrid.getCages()) {
+			if (cage.isOperatorHidden() && cage.getNumberOfCells() > 1) {
+				return cage.getIdUpperLeftCell();
+			}
+		}
+		throw new IllegalStateException("This grid has no cage having multiple cells for which the cage operator is not yet unrevealed.");
+	}
 }

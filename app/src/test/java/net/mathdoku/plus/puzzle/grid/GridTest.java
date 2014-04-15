@@ -1413,7 +1413,7 @@ public class GridTest {
 		// operator can be unrevealed. Deselect the cell again as after creating
 		// the new grid, no cell is selected.
 		int idOfCell_1 = gridCreator
-				.getIdOfUpperLeftCellOfCageWithAnUnrevealedCageOperator();
+				.getIdOfUpperLeftCellOfCageWithMultipleCellsAndAnUnrevealedCageOperator();
 		Cell cell_1 = originalGrid.getCell(idOfCell_1);
 		originalGrid.setSelectedCell(cell_1);
 		originalGrid.revealOperatorSelectedCage();
@@ -1805,7 +1805,7 @@ public class GridTest {
 	public void markDuplicateValues_GridWithDuplicateEnteredValuesOnSameRow_DuplicatesFounds()
 			throws Exception {
 		Grid grid = GridCreator4x4
-				.createWithVisibleOperators()
+				.create()
 				.setEmptyGrid()
 				.getGrid();
 		int row = 1;
@@ -1822,7 +1822,7 @@ public class GridTest {
 	public void markDuplicateValues_GridWithDuplicateEnteredValuesInSameColumn_DuplicatesFounds()
 			throws Exception {
 		Grid grid = GridCreator4x4
-				.createWithVisibleOperators()
+				.create()
 				.setEmptyGrid()
 				.getGrid();
 		int row1 = 1;

@@ -27,6 +27,10 @@
                 android:title="Delete database + prefs"
                 tools:ignore="HardcodedText"/>
             <item
+                android:id="@+id/development_mode_generate_test_helper"
+                android:title="Generate code for test helper"
+                tools:ignore="HardcodedText"/>
+            <item
                 android:id="@+id/development_mode_leaderboard_menu"
                 android:title="Leaderboard"
                 tools:ignore="HardcodedText">

@@ -12,9 +12,9 @@ import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.enums.GridType;
-import net.mathdoku.plus.gridgenerating.ProgressDialogGeneratePuzzle;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParametersBuilder;
+import net.mathdoku.plus.gridgenerating.ProgressDialogGeneratePuzzle;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.storage.database.DatabaseHelper;
@@ -48,14 +48,6 @@ import java.util.Random;
 public class DevelopmentHelper {
 	private static final String TAG = DevelopmentHelper.class.getName();
 
-	// In development mode the grid generator will show a modified progress
-	// dialog. Following types of progress updates are supported. Actual values
-	// do not matter as long they are unique strings.
-	public static final String GRID_GENERATOR_PROGRESS_UPDATE_TITLE = "Update title";
-	public static final String GRID_GENERATOR_PROGRESS_UPDATE_MESSAGE = "Update message";
-	public static final String GRID_GENERATOR_PROGRESS_UPDATE_PROGRESS = "Update progress";
-	public static final String GRID_GENERATOR_PROGRESS_UPDATE_SOLUTION = "Found a solution";
-
 	/**
 	 * Checks if given menu item id can be processed by the development helper.
 	 * 
@@ -67,7 +59,7 @@ public class DevelopmentHelper {
 	 *         otherwise.
 	 */
 	public static boolean onDevelopmentHelperOption(
-			PuzzleFragmentActivity puzzleFragmentActivity, int menuId) {
+			PuzzleFragmentActivity puzzleFragmentActivity, int menuId, Grid grid) {
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			switch (menuId) {
 			case R.id.development_mode_generate_games:
@@ -82,6 +74,16 @@ public class DevelopmentHelper {
 				return true;
 			case R.id.development_mode_delete_database_and_preferences:
 				deleteDatabaseAndPreferences(puzzleFragmentActivity);
+				return true;
+			case R.id.development_mode_submit_manual_score:
+				if (grid != null && !grid.isActive()) {
+					submitManualScore(puzzleFragmentActivity, grid);
+				}
+				return true;
+			case R.id.development_mode_generate_test_helper:
+				if (grid != null) {
+					new TestHelperCodeGenerator(grid).logCode();
+				}
 				return true;
 			default:
 				return false;
@@ -170,9 +172,8 @@ public class DevelopmentHelper {
 			// Show dialog
 			new AlertDialog.Builder(puzzleFragmentActivity)
 					.setMessage(
-							"All preferences have been removed. After restart "
-									+ "of the app the preferences will be "
-									+ "initialized with default values.")
+							"All preferences have been removed. After restart " + "of the app the " +
+									"preferences will be " + "initialized with default values.")
 					.setPositiveButton("OK",
 							new DialogInterface.OnClickListener() {
 								@Override

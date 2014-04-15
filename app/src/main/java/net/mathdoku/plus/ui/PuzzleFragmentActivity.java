@@ -469,7 +469,6 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			startActivity(new Intent(android.content.Intent.ACTION_VIEW,
 					Uri.parse(getResources().getString(
 							R.string.google_plus_community_url))));
-
 			return true;
 		case R.id.action_puzzle_settings:
 			startActivity(new Intent(this, PuzzlePreferenceActivity.class));
@@ -494,13 +493,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 					mPuzzleFragment.stopTimer();
 				}
 
-				if (menuId == R.id.development_mode_submit_manual_score
-						&& mArchiveFragment != null) {
-					DevelopmentHelper.submitManualScore(this,
-							mArchiveFragment.getGrid());
-				}
 				boolean processedByDevelopmentHelper = DevelopmentHelper
-						.onDevelopmentHelperOption(this, menuId);
+						.onDevelopmentHelperOption(this, menuId, getActiveFragmentGrid());
 				if (mPuzzleFragment != null) {
 					mPuzzleFragment.startTimer();
 				}
@@ -510,6 +504,15 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			}
 			return super.onOptionsItemSelected(menuItem);
 		}
+	}
+
+	private Grid getActiveFragmentGrid() {
+		if (mPuzzleFragment != null) {
+			return mPuzzleFragment.getGrid();
+		} else if (mArchiveFragment != null) {
+			return mArchiveFragment.getGrid();
+		}
+		return null;
 	}
 
 	/**
