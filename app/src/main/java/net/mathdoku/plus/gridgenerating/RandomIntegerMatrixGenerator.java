@@ -65,8 +65,11 @@ public class RandomIntegerMatrixGenerator {
 	 * the column.
 	 */
 	private int getRandomEligibleColumnOnRowForValue(int row, int value) {
-		// todo: probably it is more efficient to keep a list of positions which
-		// still can be chosen and select a random position from this list.
+		// todo: probably this is not the most efficient way to determine the
+		// next position. An alternative would be to keep a list of positions
+		// which still can be chosen and select a random position from this
+		// list. For this moment this is not the most important performance
+		// bottleneck.
 		for (int attempts = 1; attempts <= MAX_ATTEMPTS_TO_GET_AN_ELIGIBLE_COLUMN_FOR_A_ROW; attempts++) {
 			int column = random.nextInt(size);
 			if (integerMatrix.isEmpty(row, column)
