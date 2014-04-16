@@ -36,7 +36,7 @@ public class GridCreator4x4HiddenOperators extends GridCreator4x4 {
 	 */
 	@Override
 	protected long getGameSeed() {
-		return -3460409899147014050L;
+		return 8307938949349702277L;
 	}
 
 	protected GridType getGridType() {
@@ -66,52 +66,60 @@ public class GridCreator4x4HiddenOperators extends GridCreator4x4 {
 	protected int[] getCorrectValuePerCell() {
 		return new int[] {
 				// Row 0
-				4, 3, 1, 2,
+				2, 4, 1, 3,
 				// Row 1
-				3, 2, 4, 1,
+				1, 3, 4, 2,
 				// Row 2
-				1, 4, 2, 3,
+				4, 2, 3, 1,
 				// Row 3
-				2, 1, 3, 4, };
+				3, 1, 2, 4, };
 	}
 
 	protected int[] getCageIdPerCell() {
 		return new int[] {
 				// Row 0
-				0, 1, 1, 1,
+				1, 0, 2, 2,
 				// Row 1
-				0, 0, 0, 1,
+				1, 0, 3, 3,
 				// Row 2
-				0, 2, 3, 4,
+				4, 0, 5, 3,
 				// Row 3
-				2, 2, 3, 3, };
+				4, 0, 0, 6, };
 	}
 
 	protected int[] getResultPerCage() {
 		return new int[] {
 				// Cage 0
-				14,
+				48,
 				// Cage 1
-				6,
+				1,
 				// Cage 2
-				8,
+				2,
 				// Cage 3
-				24,
+				8,
 				// Cage 4
-				3, };
+				12,
+				// Cage 5
+				3,
+				// Cage 6
+				4, };
 	}
 
 	protected CageOperator[] getCageOperatorPerCage() {
 		return new CageOperator[] {
 				// Cage 0
-				CageOperator.ADD,
+				CageOperator.MULTIPLY,
 				// Cage 1
-				CageOperator.MULTIPLY,
+				CageOperator.SUBTRACT,
 				// Cage 2
-				CageOperator.MULTIPLY,
+				CageOperator.SUBTRACT,
 				// Cage 3
 				CageOperator.MULTIPLY,
 				// Cage 4
+				CageOperator.MULTIPLY,
+				// Cage 5
+				CageOperator.NONE,
+				// Cage 6
 				CageOperator.NONE, };
 	}
 
@@ -122,28 +130,34 @@ public class GridCreator4x4HiddenOperators extends GridCreator4x4 {
 				.append("4")
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
 				// Cage ids for cells on row 0
-				.append("00010101")
+				.append("01000202")
 				// Cage ids for cells on row 1
-				.append("00000001")
+				.append("01000303")
 				// Cage ids for cells on row 2
-				.append("00020304")
+				.append("04000503")
 				// Cage ids for cells on row 3
-				.append("02020303")
+				.append("04000006")
 				// Definition for cage id 0
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("0,14,0")
+				.append("0,48,0")
 				// Definition for cage id 1
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("1,6,0")
+				.append("1,1,0")
 				// Definition for cage id 2
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("2,8,0")
+				.append("2,2,0")
 				// Definition for cage id 3
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("3,24,0")
+				.append("3,8,0")
 				// Definition for cage id 4
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("4,3,0")
+				.append("4,12,0")
+				// Definition for cage id 5
+				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
+				.append("5,3,0")
+				// Definition for cage id 6
+				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
+				.append("6,4,0")
 				.toString();
 	}
 }

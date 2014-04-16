@@ -6,7 +6,6 @@ import net.mathdoku.plus.gridgenerating.cageresult.CageResult;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 class CageOperatorGenerator {
@@ -71,69 +70,30 @@ class CageOperatorGenerator {
 
 		addPossibleCageResult(CageOperator.NONE,
 				WEIGHT_CAGE_RESULT_WITH_NONE_OPERATOR);
-		if (!possibleCageResults.isEmpty()) {
-			// Todo: remove this return statement when refactoring of grid
-			// generator is completed.
-			// Removing this if statement alters the grid which is generated as
-			// it results in an addition invocation of the randomizer.
-			return;
-		}
 		addPossibleCageResult(CageOperator.DIVIDE,
 				WEIGHT_CAGE_RESULT_WITH_DIVIDE_OPERATOR);
 		addPossibleCageResult(CageOperator.SUBTRACT,
 				WEIGHT_CAGE_RESULT_WITH_SUBTRACT_OPERATOR);
-
-		// TODO: do not use different weights based on number of cells in cage.
-		// This should be done after refactoring is done as it influences the
-		// randomizer ans therefore changes the generated grid.
-		addPossibleCageResultMultiply(
-				CageOperator.MULTIPLY,
-				cellValues.length == 2 ? WEIGHT_CAGE_RESULT_WITH_MULTIPLY_OPERATOR
-						: 50);
-
-		// TODO: do not use different weights based on number of cells in cage.
-		// This should be done after refactoring is done as it influences the
-		// randomizer ans therefore changes the generated grid.
+		addPossibleCageResultMultiply(WEIGHT_CAGE_RESULT_WITH_MULTIPLY_OPERATOR);
 		addPossibleCageResult(CageOperator.ADD,
-				cellValues.length == 2 ? WEIGHT_CAGE_RESULT_WITH_ADD_OPERATOR
-						: 50);
+				WEIGHT_CAGE_RESULT_WITH_ADD_OPERATOR);
 	}
 
 	private void addPossibleCageResult(CageOperator cageOperator, int weight) {
-		CageResult possibleCageResult = CageResult
-				.tryToCreate(cageOperator, cellValues);
+		CageResult possibleCageResult = CageResult.tryToCreate(cageOperator,
+				cellValues);
 		if (possibleCageResult.isValid()) {
 			possibleCageResults.put(possibleCageResult, weight);
 		}
 	}
 
-	private void addPossibleCageResultMultiply(CageOperator cageOperator,
-			int weight) {
-		// Multiply
+	private void addPossibleCageResultMultiply(int weight) {
 		CageResult cageResultMultiplyOperator = CageResult.tryToCreate(
-				cageOperator, cellValues);
-		if (cageResultMultiplyOperator.isValid()) {
-			if (cageResultMultiplyOperator.getResult() <= gridGeneratingParameters
-					.getMaxCageResult()) {
-				possibleCageResults.put(cageResultMultiplyOperator, weight);
-			} else {
-				// Todo: it would be better to remove this branch as
-				// multiplication for the current values is not allowed. But
-				// this will change the generator result as the total weights of
-				// the operators will change.
-				LOGGER.log(Level.ALL,
-						"GameSeed: %d. Operator MULTIPLY is not allowed as result of "
-								+ "multiplication %d is above limit %d.",
-						new Object[] { gridGeneratingParameters.getGameSeed(),
-								cageResultMultiplyOperator.getResult(),
-								gridGeneratingParameters.getMaxCageResult() });
-
-				CageResult cageResultAddOperator = CageResult.tryToCreate(
-						CageOperator.ADD, cellValues);
-				if (cageResultAddOperator.isValid()) {
-					possibleCageResults.put(cageResultAddOperator, weight);
-				}
-			}
+				CageOperator.MULTIPLY, cellValues);
+		if (cageResultMultiplyOperator.isValid()
+				&& cageResultMultiplyOperator.getResult() <= gridGeneratingParameters
+						.getMaxCageResult()) {
+			possibleCageResults.put(cageResultMultiplyOperator, weight);
 		}
 	}
 
