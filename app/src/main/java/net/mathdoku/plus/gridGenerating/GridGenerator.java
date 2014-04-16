@@ -301,23 +301,7 @@ public class GridGenerator {
 				gridGeneratingParameters.getMaxCageSize(), gridSizeValue,
 				gridSizeValue, mRandom);
 		if (cageType != null) {
-			CellCoordinates cellCoordinatesForFirstCage = getCellCoordinatesForFirstCage(cageType);
-
-			CellCoordinates coordinatesTopLeft = cageType
-					.getOriginCoordinates(cellCoordinatesForFirstCage);
-
-			// TODO: replace the two lines above with the single
-			// line below. As the cell coordinates
-			// for the first cell are determined at random, it has
-			// no value to shift the cage type
-			// in such a way that the top left cell of the cage type
-			// is positioned at the origin cell.
-			// This however breaks the unit test and should not be
-			// done until refactor of this class
-			// has been completed.
-			// CellCoordinates coordinatesTopLeft =
-			// getCellCoordinatesForFirstCage(cageType);
-
+			CellCoordinates coordinatesTopLeft = getCellCoordinatesForFirstCage(cageType);
 			if (createCageAtCoordinates(cageType, coordinatesTopLeft,
 					4 * gridGeneratingParameters.getMaxCagePermutations())) {
 				return true;
