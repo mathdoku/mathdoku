@@ -40,7 +40,7 @@ public class GridCreator2x2 extends GridCreator {
 	 */
 	@Override
 	protected long getGameSeed() {
-		return 5955006327955777134L;
+		return -8503226797676746502L;
 	}
 
 	protected GridType getGridType() {
@@ -70,9 +70,9 @@ public class GridCreator2x2 extends GridCreator {
 	protected int[] getCorrectValuePerCell() {
 		return new int[] {
 				// Row 0
-				2, 1,
+				1, 2,
 				// Row 1
-				1, 2, };
+				2, 1, };
 	}
 
 	protected int[] getCageIdPerCell() {
@@ -88,9 +88,9 @@ public class GridCreator2x2 extends GridCreator {
 				// Cage 0
 				1,
 				// Cage 1
-				1,
+				2,
 				// Cage 2
-				2, };
+				1, };
 	}
 
 	protected CageOperator[] getCageOperatorPerCage() {
@@ -118,10 +118,10 @@ public class GridCreator2x2 extends GridCreator {
 				.append("0,1,2")
 				// Definition for cage id 1
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("1,1,0")
+				.append("1,2,0")
 				// Definition for cage id 2
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("2,2,0")
+				.append("2,1,0")
 				.toString();
 	}
 }

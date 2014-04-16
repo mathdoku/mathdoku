@@ -81,11 +81,7 @@ public class RandomWeightedListItemSelector<T> {
 	}
 
 	private int getRandomIndexWeight() {
-		// TODO: the random weight should be a value in the range 1 ..
-		// totalWeight.
-		// Currently it is in the range 0 .. (totalWeight - 1)
-		// return random.nextInt(getTotalWeight() + 1);
-		return random.nextInt(getTotalWeight());
+		return random.nextInt(getTotalWeight()) + 1;
 	}
 
 	private int getTotalWeight() {
@@ -100,13 +96,11 @@ public class RandomWeightedListItemSelector<T> {
 		int cumulativeWeight = 0;
 		for (WeightedItem<T> weightedItem : list) {
 			cumulativeWeight += weightedItem.getWeight();
-			// if (cumulativeWeight >= indexWeight) {
-			if (cumulativeWeight > indexWeight) {
+			if (cumulativeWeight >= indexWeight) {
 				return weightedItem;
 			}
 		}
-
-		throw new IllegalStateException("Out of bounds.");
+		throw new IllegalStateException("Index out of bounds.");
 	}
 
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
