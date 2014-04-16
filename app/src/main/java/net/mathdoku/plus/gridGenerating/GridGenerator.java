@@ -25,9 +25,9 @@ public class GridGenerator {
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
 	@SuppressWarnings("PointlessBooleanExpression")
-	private static final boolean DEBUG_GRID_GENERATOR = Config.mAppMode == Config.AppMode.DEVELOPMENT && true;
+	private static final boolean DEBUG_GRID_GENERATOR = Config.mAppMode == Config.AppMode.DEVELOPMENT && false;
 	@SuppressWarnings("PointlessBooleanExpression")
-	public static final boolean DEBUG_GRID_GENERATOR_FULL = DEBUG_GRID_GENERATOR && true;
+	public static final boolean DEBUG_GRID_GENERATOR_FULL = DEBUG_GRID_GENERATOR && false;
 	private static final String TAG = GridGenerator.class.getName();
 	private final Listener listener;
 	private boolean developmentMode = false;
