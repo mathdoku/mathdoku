@@ -3,8 +3,12 @@ package net.mathdoku.plus.gridgenerating.cageresult;
 import net.mathdoku.plus.enums.CageOperator;
 
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class CageResult {
+	private static final String TAG = CageResult.class.getName();
+
 	private int[] cellValues;
 	private CageOperator cageOperator;
 
@@ -38,6 +42,7 @@ public abstract class CageResult {
 				return DivisionCageResult.tryToCreate(cellValues);
 			}
 		} catch (InstantiationException e) {
+			Logger.getLogger(TAG).log(Level.WARNING, "Create new cage result failed", e);
 			return NullCageResult.create();
 		}
 
