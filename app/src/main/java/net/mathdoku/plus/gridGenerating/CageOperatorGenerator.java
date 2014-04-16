@@ -38,21 +38,7 @@ class CageOperatorGenerator {
 	private CageResult selectRandomCageOperator() {
 		addPossibleCageResults();
 
-		// Todo: remove next if statement when refactoring of grid generator is
-		// completed. Removing this if statement alters the grid which is
-		// generated as it results in an addition invocation of the randomizer.
-		if (possibleCageResults.size() == 1
-				&& possibleCageResults
-						.entrySet()
-						.iterator()
-						.next()
-						.getKey()
-						.getCageOperator() == CageOperator.NONE) {
-			return possibleCageResults.entrySet().iterator().next().getKey();
-		}
-
 		int indexWeight = random.nextInt(getTotalWeightPossibleCageResults());
-
 		int cumulativeWeight = 0;
 		for (Map.Entry<CageResult, Integer> entry : possibleCageResults
 				.entrySet()) {

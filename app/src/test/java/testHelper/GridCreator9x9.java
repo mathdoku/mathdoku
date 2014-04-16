@@ -40,7 +40,7 @@ public class GridCreator9x9 extends GridCreator {
 	 */
 	@Override
 	protected long getGameSeed() {
-		return 6408386309654828268L;
+		return -1837503720999519711L;
 	}
 
 	protected GridType getGridType() {
@@ -70,201 +70,197 @@ public class GridCreator9x9 extends GridCreator {
 	protected int[] getCorrectValuePerCell() {
 		return new int[] {
 				// Row 0
-				5, 4, 9, 1, 6, 2, 7, 8, 3,
+				9, 7, 2, 5, 8, 6, 1, 3, 4,
 				// Row 1
-				9, 6, 2, 8, 1, 4, 3, 7, 5,
+				1, 3, 4, 9, 6, 2, 7, 5, 8,
 				// Row 2
-				1, 9, 7, 5, 8, 3, 6, 4, 2,
+				7, 4, 9, 1, 3, 5, 2, 8, 6,
 				// Row 3
-				8, 7, 4, 3, 5, 1, 9, 2, 6,
+				5, 6, 3, 2, 4, 1, 8, 7, 9,
 				// Row 4
-				4, 5, 3, 7, 2, 9, 1, 6, 8,
+				3, 2, 1, 8, 9, 4, 5, 6, 7,
 				// Row 5
-				3, 2, 6, 9, 7, 8, 5, 1, 4,
+				2, 9, 7, 6, 5, 8, 4, 1, 3,
 				// Row 6
-				7, 8, 1, 2, 3, 6, 4, 5, 9,
+				8, 1, 6, 4, 7, 9, 3, 2, 5,
 				// Row 7
-				2, 3, 5, 6, 4, 7, 8, 9, 1,
+				4, 5, 8, 7, 1, 3, 6, 9, 2,
 				// Row 8
-				6, 1, 8, 4, 9, 5, 2, 3, 7, };
+				6, 8, 5, 3, 2, 7, 9, 4, 1, };
 	}
 
 	protected int[] getCageIdPerCell() {
 		return new int[] {
 				// Row 0
-				0, 0, 1, 1, 2, 2, 3, 3, 4,
+				0, 1, 1, 2, 2, 3, 4, 5, 6,
 				// Row 1
-				5, 5, 6, 6, 2, 7, 7, 3, 4,
+				0, 7, 8, 8, 9, 3, 4, 5, 5,
 				// Row 2
-				8, 5, 9, 10, 10, 11, 12, 12, 13,
+				10, 7, 7, 11, 9, 9, 12, 13, 14,
 				// Row 3
-				8, 14, 9, 10, 15, 11, 16, 12, 13,
+				10, 10, 11, 11, 15, 15, 12, 13, 13,
 				// Row 4
-				17, 14, 18, 15, 15, 19, 16, 20, 13,
+				16, 16, 17, 18, 18, 18, 19, 20, 21,
 				// Row 5
-				17, 21, 18, 22, 23, 19, 24, 20, 25,
+				22, 22, 17, 17, 23, 23, 19, 20, 21,
 				// Row 6
-				26, 21, 27, 22, 28, 29, 24, 30, 25,
+				24, 24, 25, 26, 23, 27, 19, 28, 28,
 				// Row 7
-				26, 31, 27, 32, 28, 29, 29, 30, 33,
+				29, 29, 25, 26, 30, 27, 31, 32, 32,
 				// Row 8
-				31, 31, 34, 32, 32, 35, 35, 36, 33, };
+				33, 33, 34, 34, 30, 31, 31, 35, 35, };
 	}
 
 	protected int[] getResultPerCage() {
 		return new int[] {
 				// Cage 0
-				9,
-				// Cage 1
 				8,
+				// Cage 1
+				5,
 				// Cage 2
-				12,
+				3,
 				// Cage 3
-				22,
+				3,
 				// Cage 4
-				15,
+				7,
 				// Cage 5
-				486,
+				120,
 				// Cage 6
 				4,
 				// Cage 7
-				12,
+				108,
 				// Cage 8
-				8,
+				13,
 				// Cage 9
-				11,
+				90,
 				// Cage 10
-				120,
+				210,
 				// Cage 11
-				3,
+				6,
 				// Cage 12
-				48,
+				6,
 				// Cage 13
-				96,
+				24,
 				// Cage 14
-				2,
+				6,
 				// Cage 15
-				70,
+				5,
 				// Cage 16
-				9,
+				1,
 				// Cage 17
-				7,
+				42,
 				// Cage 18
-				2,
+				21,
 				// Cage 19
-				72,
+				60,
 				// Cage 20
-				7,
+				6,
 				// Cage 21
-				4,
+				10,
 				// Cage 22
 				7,
 				// Cage 23
-				7,
+				280,
 				// Cage 24
-				1,
-				// Cage 25
-				5,
-				// Cage 26
-				5,
-				// Cage 27
-				4,
-				// Cage 28
-				1,
-				// Cage 29
-				336,
-				// Cage 30
-				14,
-				// Cage 31
-				18,
-				// Cage 32
-				216,
-				// Cage 33
-				6,
-				// Cage 34
 				8,
-				// Cage 35
+				// Cage 25
+				48,
+				// Cage 26
+				3,
+				// Cage 27
+				27,
+				// Cage 28
 				10,
-				// Cage 36
-				3, };
+				// Cage 29
+				20,
+				// Cage 30
+				1,
+				// Cage 31
+				378,
+				// Cage 32
+				7,
+				// Cage 33
+				48,
+				// Cage 34
+				2,
+				// Cage 35
+				4, };
 	}
 
 	protected CageOperator[] getCageOperatorPerCage() {
 		return new CageOperator[] {
 				// Cage 0
-				CageOperator.ADD,
+				CageOperator.SUBTRACT,
 				// Cage 1
 				CageOperator.SUBTRACT,
 				// Cage 2
-				CageOperator.MULTIPLY,
+				CageOperator.SUBTRACT,
 				// Cage 3
-				CageOperator.ADD,
+				CageOperator.DIVIDE,
 				// Cage 4
 				CageOperator.MULTIPLY,
 				// Cage 5
 				CageOperator.MULTIPLY,
 				// Cage 6
-				CageOperator.DIVIDE,
+				CageOperator.NONE,
 				// Cage 7
 				CageOperator.MULTIPLY,
 				// Cage 8
-				CageOperator.DIVIDE,
-				// Cage 9
 				CageOperator.ADD,
+				// Cage 9
+				CageOperator.MULTIPLY,
 				// Cage 10
 				CageOperator.MULTIPLY,
 				// Cage 11
-				CageOperator.DIVIDE,
-				// Cage 12
-				CageOperator.MULTIPLY,
-				// Cage 13
-				CageOperator.MULTIPLY,
-				// Cage 14
-				CageOperator.SUBTRACT,
-				// Cage 15
-				CageOperator.MULTIPLY,
-				// Cage 16
-				CageOperator.DIVIDE,
-				// Cage 17
 				CageOperator.ADD,
+				// Cage 12
+				CageOperator.SUBTRACT,
+				// Cage 13
+				CageOperator.ADD,
+				// Cage 14
+				CageOperator.NONE,
+				// Cage 15
+				CageOperator.ADD,
+				// Cage 16
+				CageOperator.SUBTRACT,
+				// Cage 17
+				CageOperator.MULTIPLY,
 				// Cage 18
-				CageOperator.DIVIDE,
+				CageOperator.ADD,
 				// Cage 19
 				CageOperator.MULTIPLY,
 				// Cage 20
-				CageOperator.ADD,
+				CageOperator.MULTIPLY,
 				// Cage 21
-				CageOperator.DIVIDE,
+				CageOperator.ADD,
 				// Cage 22
 				CageOperator.SUBTRACT,
 				// Cage 23
-				CageOperator.NONE,
+				CageOperator.MULTIPLY,
 				// Cage 24
-				CageOperator.SUBTRACT,
+				CageOperator.DIVIDE,
 				// Cage 25
-				CageOperator.SUBTRACT,
+				CageOperator.MULTIPLY,
 				// Cage 26
 				CageOperator.SUBTRACT,
 				// Cage 27
-				CageOperator.SUBTRACT,
+				CageOperator.MULTIPLY,
 				// Cage 28
-				CageOperator.SUBTRACT,
+				CageOperator.MULTIPLY,
 				// Cage 29
 				CageOperator.MULTIPLY,
 				// Cage 30
-				CageOperator.ADD,
+				CageOperator.SUBTRACT,
 				// Cage 31
 				CageOperator.MULTIPLY,
 				// Cage 32
-				CageOperator.MULTIPLY,
-				// Cage 33
 				CageOperator.SUBTRACT,
-				// Cage 34
-				CageOperator.NONE,
-				// Cage 35
+				// Cage 33
 				CageOperator.MULTIPLY,
-				// Cage 36
-				CageOperator.NONE, };
+				// Cage 34
+				CageOperator.SUBTRACT,
+				// Cage 35
+				CageOperator.DIVIDE, };
 	}
 
 	@Override
@@ -274,134 +270,131 @@ public class GridCreator9x9 extends GridCreator {
 				.append("2")
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
 				// Cage ids for cells on row 0
-				.append("000001010202030304")
+				.append("000101020203040506")
 				// Cage ids for cells on row 1
-				.append("050506060207070304")
+				.append("000708080903040505")
 				// Cage ids for cells on row 2
-				.append("080509101011121213")
+				.append("100707110909121314")
 				// Cage ids for cells on row 3
-				.append("081409101511161213")
+				.append("101011111515121313")
 				// Cage ids for cells on row 4
-				.append("171418151519162013")
+				.append("161617181818192021")
 				// Cage ids for cells on row 5
-				.append("172118222319242025")
+				.append("222217172323192021")
 				// Cage ids for cells on row 6
-				.append("262127222829243025")
+				.append("242425262327192828")
 				// Cage ids for cells on row 7
-				.append("263127322829293033")
+				.append("292925263027313232")
 				// Cage ids for cells on row 8
-				.append("313134323235353633")
+				.append("333334343031313535")
 				// Definition for cage id 0
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("0,9,1")
+				.append("0,8,2")
 				// Definition for cage id 1
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("1,8,2")
+				.append("1,5,2")
 				// Definition for cage id 2
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("2,12,3")
+				.append("2,3,2")
 				// Definition for cage id 3
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("3,22,1")
+				.append("3,3,4")
 				// Definition for cage id 4
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("4,15,3")
+				.append("4,7,3")
 				// Definition for cage id 5
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("5,486,3")
+				.append("5,120,3")
 				// Definition for cage id 6
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("6,4,4")
+				.append("6,4,0")
 				// Definition for cage id 7
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("7,12,3")
+				.append("7,108,3")
 				// Definition for cage id 8
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("8,8,4")
+				.append("8,13,1")
 				// Definition for cage id 9
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("9,11,1")
+				.append("9,90,3")
 				// Definition for cage id 10
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("10,120,3")
+				.append("10,210,3")
 				// Definition for cage id 11
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("11,3,4")
+				.append("11,6,1")
 				// Definition for cage id 12
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("12,48,3")
+				.append("12,6,2")
 				// Definition for cage id 13
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("13,96,3")
+				.append("13,24,1")
 				// Definition for cage id 14
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("14,2,2")
+				.append("14,6,0")
 				// Definition for cage id 15
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("15,70,3")
+				.append("15,5,1")
 				// Definition for cage id 16
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("16,9,4")
+				.append("16,1,2")
 				// Definition for cage id 17
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("17,7,1")
+				.append("17,42,3")
 				// Definition for cage id 18
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("18,2,4")
+				.append("18,21,1")
 				// Definition for cage id 19
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("19,72,3")
+				.append("19,60,3")
 				// Definition for cage id 20
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("20,7,1")
+				.append("20,6,3")
 				// Definition for cage id 21
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("21,4,4")
+				.append("21,10,1")
 				// Definition for cage id 22
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
 				.append("22,7,2")
 				// Definition for cage id 23
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("23,7,0")
+				.append("23,280,3")
 				// Definition for cage id 24
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("24,1,2")
+				.append("24,8,4")
 				// Definition for cage id 25
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("25,5,2")
+				.append("25,48,3")
 				// Definition for cage id 26
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("26,5,2")
+				.append("26,3,2")
 				// Definition for cage id 27
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("27,4,2")
+				.append("27,27,3")
 				// Definition for cage id 28
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("28,1,2")
+				.append("28,10,3")
 				// Definition for cage id 29
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("29,336,3")
+				.append("29,20,3")
 				// Definition for cage id 30
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("30,14,1")
+				.append("30,1,2")
 				// Definition for cage id 31
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("31,18,3")
+				.append("31,378,3")
 				// Definition for cage id 32
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("32,216,3")
+				.append("32,7,2")
 				// Definition for cage id 33
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("33,6,2")
+				.append("33,48,3")
 				// Definition for cage id 34
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("34,8,0")
+				.append("34,2,2")
 				// Definition for cage id 35
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("35,10,3")
-				// Definition for cage id 36
-				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("36,3,0")
+				.append("35,4,4")
 				.toString();
 	}
 }
