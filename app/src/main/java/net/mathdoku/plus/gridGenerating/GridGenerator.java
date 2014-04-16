@@ -22,13 +22,16 @@ import java.util.Random;
  * Generate a single grid.
  */
 public class GridGenerator {
+	private static final String TAG = GridGenerator.class.getName();
+
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
 	@SuppressWarnings("PointlessBooleanExpression")
 	private static final boolean DEBUG_GRID_GENERATOR = Config.mAppMode == Config.AppMode.DEVELOPMENT && false;
 	@SuppressWarnings("PointlessBooleanExpression")
 	public static final boolean DEBUG_GRID_GENERATOR_FULL = DEBUG_GRID_GENERATOR && false;
-	private static final String TAG = GridGenerator.class.getName();
+
+	private static final int MAX_ATTEMPTS_TO_FILL_GRID_WITH_CAGES = 20;
 	private final Listener listener;
 	private boolean developmentMode = false;
 	private GridGeneratingParameters gridGeneratingParameters;
@@ -226,15 +229,11 @@ public class GridGenerator {
 
 		mCageTypeGenerator = CageTypeGenerator.getInstance();
 
-		for (int attempts = 1; attempts <= 20; attempts++) {
+		for (int attempts = 1; attempts <= MAX_ATTEMPTS_TO_FILL_GRID_WITH_CAGES; attempts++) {
 			if (listener.isCancelled()) {
 				return false;
 			}
 			if (attemptToFillGridWithCages()) {
-				if (DEBUG_GRID_GENERATOR) {
-					printCageCreationDebugInformation();
-				}
-
 				return true;
 			}
 		}

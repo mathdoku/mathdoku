@@ -81,12 +81,8 @@ public class CandidateCageCreator {
 	 * @param maskNewCage
 	 *            Mask of cage type which is currently processed.
 	 */
-	private void printCageCreationDebugInformation(Matrix<Boolean> maskNewCage) { // todo:
-																					// is
-																					// copied
-																					// from
-																					// CandidateCageCreator
-		Log.d(TAG, "   Checking cage type");
+	private void printCageCreationDebugInformation(Matrix<Boolean> maskNewCage) {
+		Log.d(TAG, "   Checking candidate cage");
 		String emptyCell = "  .";
 		String usedCell = "  X";
 		int gridSizeValue = correctValueMatrix.size();
