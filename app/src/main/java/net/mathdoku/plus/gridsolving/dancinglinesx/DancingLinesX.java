@@ -1,44 +1,46 @@
-package com.srlee.dlx;
+package net.mathdoku.plus.gridsolving.dancinglinesx;
 
 import android.util.Log;
+
+import net.mathdoku.plus.gridsolving.GridSolver;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DLX {
-	private static final String TAG = DLX.class.getName();
+public class DancingLinesX {
+	private static final String TAG = DancingLinesX.class.getName();
 
 	public enum SolveType {
 		ONE, MULTIPLE, ALL
 	}
 
-	private final DLXColumn root = new DLXColumn();
-	private DLXColumn[] colHeaders;
-	private DLXNode[] nodes;
+	private final DancingLinesXColumn root = new DancingLinesXColumn();
+	private DancingLinesXColumn[] colHeaders;
+	private DancingLinesXNode[] nodes;
 	private int numNodes;
-	private DLXNode lastNodeAdded;
+	private DancingLinesXNode lastNodeAdded;
 	private List<Integer> trySolution;
 	private List<Integer> foundSolution;
 	private int countSolutions;
 	private boolean isValid;
 	private int previousRowIndex = -1;
 	private SolveType solveType;
-	int complexity;
+	public int complexity;
 
-	DLX() {
+	public DancingLinesX() {
 		trySolution = new ArrayList<Integer>();
 		isValid = true;
 	}
 
-	void init(int numCols, int numNodes) {
-		colHeaders = new DLXColumn[numCols + 1];
+	public void init(int numCols, int numNodes) {
+		colHeaders = new DancingLinesXColumn[numCols + 1];
 		for (int c = 1; c <= numCols; c++)
-			colHeaders[c] = new DLXColumn();
+			colHeaders[c] = new DancingLinesXColumn();
 
-		nodes = new DLXNode[numNodes + 1];
+		nodes = new DancingLinesXNode[numNodes + 1];
 		this.numNodes = 0; // None allocated
 
-		DLXColumn prev = root;
+		DancingLinesXColumn prev = root;
 		for (int i = 1; i <= numCols; i++) {
 			prev.setRight(colHeaders[i]);
 			colHeaders[i].setLeft(prev);
@@ -48,16 +50,16 @@ public class DLX {
 		colHeaders[numCols].setRight(root);
 	}
 
-	int getRowsInSolution() {
+	public int getRowsInSolution() {
 		return foundSolution.size();
 	}
 
-	int getSolutionRow(int row) {
+	public int getSolutionRow(int row) {
 		return foundSolution.get(row - 1);
 	}
 
-	private void coverCol(DLXColumn coverCol) {
-		LL2DNode i, j;
+	private void coverCol(DancingLinesXColumn coverCol) {
+		DancingLinesX2DNode i, j;
 		coverCol.getRight().setLeft(coverCol.getLeft());
 		coverCol.getLeft().setRight(coverCol.getRight());
 
@@ -67,21 +69,21 @@ public class DLX {
 			while (j != i) {
 				j.getDown().setUp(j.getUp());
 				j.getUp().setDown(j.getDown());
-				((DLXNode) j).getColumn().decreaseSize();
+				((DancingLinesXNode) j).getColumn().decreaseSize();
 				j = j.getRight();
 			}
 			i = i.getDown();
 		}
 	}
 
-	private void uncoverCol(DLXColumn uncoverCol) {
-		LL2DNode i, j;
+	private void uncoverCol(DancingLinesXColumn uncoverCol) {
+		DancingLinesX2DNode i, j;
 
 		i = uncoverCol.getUp();
 		while (i != uncoverCol) {
 			j = i.getLeft();
 			while (j != i) {
-				((DLXNode) j).getColumn().increaseSize();
+				((DancingLinesXNode) j).getColumn().increaseSize();
 				j.getDown().setUp(j);
 				j.getUp().setDown(j);
 				j = j.getLeft();
@@ -92,11 +94,11 @@ public class DLX {
 		uncoverCol.getLeft().setRight(uncoverCol);
 	}
 
-	private DLXColumn chooseMinCol() {
+	private DancingLinesXColumn chooseMinCol() {
 		int minSize = Integer.MAX_VALUE;
-		DLXColumn search, minColumn;
+		DancingLinesXColumn search, minColumn;
 
-		minColumn = search = (DLXColumn) root.getRight();
+		minColumn = search = (DancingLinesXColumn) root.getRight();
 
 		while (search != root) {
 			if (search.getSize() < minSize) {
@@ -106,7 +108,7 @@ public class DLX {
 					break;
 				}
 			}
-			search = (DLXColumn) search.getRight();
+			search = (DancingLinesXColumn) search.getRight();
 		}
 		if (minSize == 0)
 			return null;
@@ -114,8 +116,8 @@ public class DLX {
 			return minColumn;
 	}
 
-	void addNode(int columnIndex, int rowIndex) {
-		nodes[++numNodes] = new DLXNode(colHeaders[columnIndex], rowIndex);
+	public void addNode(int columnIndex, int rowIndex) {
+		nodes[++numNodes] = new DancingLinesXNode(colHeaders[columnIndex], rowIndex);
 		if (previousRowIndex == rowIndex) {
 			nodes[numNodes].setLeft(lastNodeAdded);
 			nodes[numNodes].setRight(lastNodeAdded.getRight());
@@ -139,7 +141,7 @@ public class DLX {
 	 *         found for this grid.
 	 */
 	@SuppressWarnings("SameParameterValue")
-	int solve(SolveType solveType) {
+	public int solve(SolveType solveType) {
 		if (!isValid)
 			return -1;
 
@@ -151,14 +153,14 @@ public class DLX {
 	}
 
 	private void search(int k) {
-		DLXColumn chosenCol;
-		LL2DNode r, j;
+		DancingLinesXColumn chosenCol;
+		DancingLinesX2DNode r, j;
 
 		// A solution is found in case all columns are covered
 		if (root.getRight() == root) {
 			countSolutions++;
 			foundSolution = new ArrayList<Integer>(trySolution);
-			if (MathDokuDLX.DEBUG_DLX) {
+			if (GridSolver.DEBUG_DLX) {
 				Log.i(TAG, "Solution " + countSolutions
 						+ " found which consists of following moves: "
 						+ trySolution.toString());
@@ -181,12 +183,12 @@ public class DLX {
 
 			while (r != chosenCol) {
 				if (k >= trySolution.size())
-					trySolution.add(((DLXNode) r).getRowIdx());
+					trySolution.add(((DancingLinesXNode) r).getRowIdx());
 				else
-					trySolution.set(k, ((DLXNode) r).getRowIdx());
+					trySolution.set(k, ((DancingLinesXNode) r).getRowIdx());
 				j = r.getRight();
 				while (j != r) {
-					coverCol(((DLXNode) j).getColumn());
+					coverCol(((DancingLinesXNode) j).getColumn());
 					j = j.getRight();
 				}
 				search(k + 1);
@@ -200,7 +202,7 @@ public class DLX {
 				}
 				j = r.getLeft();
 				while (j != r) {
-					uncoverCol(((DLXNode) j).getColumn());
+					uncoverCol(((DancingLinesXNode) j).getColumn());
 					j = j.getLeft();
 				}
 				r = r.getDown();

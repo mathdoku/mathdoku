@@ -318,7 +318,7 @@ public class Cage {
 		return mResult;
 	}
 
-	// TODO: method should be removed after refactor MathDokuDLX.java
+	// TODO: method should be removed after refactor GridSolver.java
 	public List<Cell> getListOfCells() {
 		return mGrid == null ? null : mGrid.getCells(mCells);
 	}

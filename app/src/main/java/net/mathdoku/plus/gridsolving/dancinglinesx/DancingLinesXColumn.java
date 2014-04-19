@@ -1,9 +1,9 @@
-package com.srlee.dlx;
+package net.mathdoku.plus.gridsolving.dancinglinesx;
 
-public class DLXColumn extends LL2DNode {
+class DancingLinesXColumn extends DancingLinesX2DNode {
 	private int size; // Number of items in column
 
-	public DLXColumn() {
+	public DancingLinesXColumn() {
 		size = 0;
 		setUp(this);
 		setDown(this);

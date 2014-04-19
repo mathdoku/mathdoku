@@ -1,4 +1,4 @@
-package net.mathdoku.plus.gridgenerating;
+package net.mathdoku.plus.gridsolving;
 
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.puzzle.cell.Cell;

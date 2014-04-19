@@ -1,5 +1,7 @@
 package net.mathdoku.plus.gridgenerating;
 
+import net.mathdoku.plus.gridsolving.ComboGenerator;
+
 import java.util.Random;
 
 public class CandidateCageCreatorParameters {

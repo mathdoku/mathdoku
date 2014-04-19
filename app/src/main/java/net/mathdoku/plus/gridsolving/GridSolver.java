@@ -1,26 +1,27 @@
-package com.srlee.dlx;
+package net.mathdoku.plus.gridsolving;
 
 import android.util.Log;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
+import net.mathdoku.plus.gridsolving.dancinglinesx.DancingLinesX;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cell.Cell;
-import net.mathdoku.plus.gridgenerating.ComboGenerator;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class MathDokuDLX extends DLX {
-	private static final String TAG = MathDokuDLX.class.getName();
+public class GridSolver {
+	private static final String TAG = GridSolver.class.getName();
 
 	// Remove "&& false" in following line to show debug information about
-	// filling the DLX data structure when running in development mode.
+	// filling the DancingLinesX data structure when running in development mode.
 	@SuppressWarnings("PointlessBooleanExpression")
 	public static final boolean DEBUG_DLX = Config.mAppMode == AppMode.DEVELOPMENT && false;
 
+	private final DancingLinesX dancingLinesX;
 	private final int mGridSize;
 	private int mTotalMoves;
 
@@ -48,16 +49,17 @@ public class MathDokuDLX extends DLX {
 	private List<Move> mMoves;
 
 	/**
-	 * Creates a new instance of {@see MathDokuDLX}.
+	 * Creates a new instance of {@see GridSolver}.
 	 * 
 	 * @param gridSize
 	 *            The size of the grid.
 	 * @param cages
 	 *            The cages defined for the grid.
 	 */
-	public MathDokuDLX(int gridSize, List<Cage> cages) {
+	public GridSolver(int gridSize, List<Cage> cages) {
 		mGridSize = gridSize;
 		mCages = cages;
+		dancingLinesX = new DancingLinesX();
 	}
 
 	private void initialize(boolean uncoverSolution) {
@@ -90,7 +92,7 @@ public class MathDokuDLX extends DLX {
 			total_nodes += possibleMovesInCage
 					* (2 * cage.getNumberOfCells() + 1);
 		}
-		init(totalCages + 2 * gridSizeSquare, total_nodes);
+		dancingLinesX.init(totalCages + 2 * gridSizeSquare, total_nodes);
 
 		// Reorder cages based on the number of possible moves for the cage
 		// because this has a major impact on the time it will take to find a
@@ -134,24 +136,24 @@ public class MathDokuDLX extends DLX {
 				// the number of possible permutations this has a positive
 				// influence on the solving time.
 				constraintNumber = cageCount + 1;
-				addNode(constraintNumber, comboIndex); // Cage constraint
+				dancingLinesX.addNode(constraintNumber, comboIndex); // Cage constraint
 
 				// Apply the permutation of "possibleCombo" to the cells in the
 				// cages
 				for (int i = 0; i < cage.getNumberOfCells(); i++) {
 					Cell cell = cage.getCell(i);
 
-					// Fill data structure for DLX algorithm
+					// Fill data structure for DancingLinesX algorithm
 
 					// Is digit "possibleCombo[i]" used in column getColumn()?
 					constraintNumber = totalCages + mGridSize
 							* (possibleCombo[i] - 1) + cell.getColumn() + 1;
-					addNode(constraintNumber, comboIndex); // Column constraint
+					dancingLinesX.addNode(constraintNumber, comboIndex); // Column constraint
 
 					// Is digit "possibleCombo[i]" used in row getRow()?
 					constraintNumber = totalCages + gridSizeSquare + mGridSize
 							* (possibleCombo[i] - 1) + cell.getRow() + 1;
-					addNode(constraintNumber, comboIndex); // Row constraint
+					dancingLinesX.addNode(constraintNumber, comboIndex); // Row constraint
 
 					// Fill data structure for uncovering solution if needed
 					if (uncoverSolution) {
@@ -211,7 +213,7 @@ public class MathDokuDLX extends DLX {
 
 			// Search for multiple solutions (but stop as soon as the second
 			// solution has been found).
-			if (solve(SolveType.MULTIPLE) == 1) {
+			if (dancingLinesX.solve(DancingLinesX.SolveType.MULTIPLE) == 1) {
 				// Only one solution has been found. The real complexity of the
 				// puzzle is computed based on this solution.
 
@@ -222,7 +224,7 @@ public class MathDokuDLX extends DLX {
 			}
 		} else {
 			initialize(false);
-			return solve(SolveType.MULTIPLE) == 1;
+			return dancingLinesX.solve(DancingLinesX.SolveType.MULTIPLE) == 1;
 		}
 	}
 
@@ -236,7 +238,7 @@ public class MathDokuDLX extends DLX {
 		initialize(true);
 
 		// Check if a single unique solution can be determined.
-		if (mMoves == null || solve(SolveType.MULTIPLE) != 1) {
+		if (mMoves == null || dancingLinesX.solve(DancingLinesX.SolveType.MULTIPLE) != 1) {
 			return null;
 		}
 
@@ -245,8 +247,8 @@ public class MathDokuDLX extends DLX {
 		for (int i = 0; i < mTotalMoves; i++) {
 			rowInSolution[i] = false;
 		}
-		for (int i = 1; i <= getRowsInSolution(); i++) {
-			rowInSolution[getSolutionRow(i)] = true;
+		for (int i = 1; i <= dancingLinesX.getRowsInSolution(); i++) {
+			rowInSolution[dancingLinesX.getSolutionRow(i)] = true;
 		}
 
 		// Now rebuild the solution
@@ -295,7 +297,7 @@ public class MathDokuDLX extends DLX {
 			int moveCount = 1;
 			int previousCageId = -1;
 			int puzzleComplexity = 1;
-			for (int i = 1; i <= getRowsInSolution(); i++) {
+			for (int i = 1; i <= dancingLinesX.getRowsInSolution(); i++) {
 				// Each solution row corresponds with one cage in the grid. The
 				// order in which the cages are resolved is important. As soon a
 				// the
@@ -303,7 +305,7 @@ public class MathDokuDLX extends DLX {
 				// the
 				// least possible number of permutations available at that
 				// moment.
-				int solutionRow = getSolutionRow(i);
+				int solutionRow = dancingLinesX.getSolutionRow(i);
 
 				for (Move move : mMoves) {
 					if (move.mSolutionRow == solutionRow) {
@@ -403,7 +405,7 @@ public class MathDokuDLX extends DLX {
 			}
 			if (DEBUG_DLX) {
 				Log.i(TAG, "Total complexity of puzzle " + puzzleComplexity
-						+ " (or " + complexity + "??)");
+						+ " (or " + dancingLinesX.complexity + "??)");
 			}
 
 			return puzzleComplexity;

@@ -2,7 +2,7 @@ package net.mathdoku.plus.gridgenerating;
 
 import android.util.Log;
 
-import com.srlee.dlx.MathDokuDLX;
+import net.mathdoku.plus.gridsolving.GridSolver;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.griddefinition.GridDefinition;
@@ -159,7 +159,7 @@ public class GridGenerator {
 		}
 
 		listener.updateProgressDetailLevel("Verify unique solution");
-		if (new MathDokuDLX(gridSizeValue, grid.getCages()).hasUniqueSolution()) {
+		if (new GridSolver(gridSizeValue, grid.getCages()).hasUniqueSolution()) {
 			if (DEBUG_GRID_GENERATOR) {
 				debugLog("This grid has a unique solution.");
 			}

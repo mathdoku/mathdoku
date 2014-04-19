@@ -118,7 +118,7 @@ public class CellBuilder {
 	 * allows the correct value to be equal to zero. This is needed in case a
 	 * grid is being build solely on a grid definition which does not contain
 	 * the correct values. After the grid is created, the correct values are
-	 * determined with the MathdokuDLX class. This method cannot be used in
+	 * determined with the GridSolver class. This method cannot be used in
 	 * conjunction with setSkipCheckCageReferenceOnBuild.
 	 */
 	public CellBuilder setLenientCheckCorrectValueOnBuild() {

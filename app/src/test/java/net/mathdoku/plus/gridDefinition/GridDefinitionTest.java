@@ -2,7 +2,7 @@ package net.mathdoku.plus.griddefinition;
 
 import android.app.Activity;
 
-import com.srlee.dlx.MathDokuDLX;
+import net.mathdoku.plus.gridsolving.GridSolver;
 
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
@@ -37,7 +37,7 @@ import static org.mockito.Mockito.when;
 public class GridDefinitionTest {
 	private GridDefinition mGridDefinition;
 	private String mGridDefinitionString;
-	private MathDokuDLX mMathDokuDLXMock = mock(MathDokuDLX.class);
+	private GridSolver mGridSolverMock = mock(GridSolver.class);
 
 	/**
 	 * The GridDefinitionString class creates a grid definition string. Use the
@@ -146,8 +146,8 @@ public class GridDefinitionTest {
 		}
 
 		@Override
-		public MathDokuDLX createMathDokuDLX(int gridSize, List<Cage> cages) {
-			return mMathDokuDLXMock;
+		public GridSolver createGridSolver(int gridSize, List<Cage> cages) {
+			return mGridSolverMock;
 		}
 	}
 
@@ -425,8 +425,8 @@ public class GridDefinitionTest {
 			throws Exception {
 		mGridDefinitionString = new GridDefinitionString().create();
 		// Although the default grid has one unique solution, let the
-		// MathDokuDLX mock return that no unique solution exists.
-		when(mMathDokuDLXMock.getSolutionGrid()).thenReturn(null);
+		// GridSolver mock return that no unique solution exists.
+		when(mGridSolverMock.getSolutionGrid()).thenReturn(null);
 
 		mGridDefinition.createGrid(mGridDefinitionString);
 	}
@@ -436,7 +436,7 @@ public class GridDefinitionTest {
 			throws Exception {
 		GridDefinitionString gridDefinitionString = new GridDefinitionString();
 		mGridDefinitionString = gridDefinitionString.create();
-		when(mMathDokuDLXMock.getSolutionGrid()).thenReturn(
+		when(mGridSolverMock.getSolutionGrid()).thenReturn(
 				gridDefinitionString.getSolutionWithTooFewRows());
 
 		mGridDefinition.createGrid(mGridDefinitionString);
@@ -447,7 +447,7 @@ public class GridDefinitionTest {
 			throws Exception {
 		GridDefinitionString gridDefinitionString = new GridDefinitionString();
 		mGridDefinitionString = gridDefinitionString.create();
-		when(mMathDokuDLXMock.getSolutionGrid()).thenReturn(
+		when(mGridSolverMock.getSolutionGrid()).thenReturn(
 				gridDefinitionString.getSolutionWithTooFewColumns());
 
 		mGridDefinition.createGrid(mGridDefinitionString);
@@ -474,10 +474,10 @@ public class GridDefinitionTest {
 	private void createGrid_DefinitionHasCellCagesPartForValidNumberOfCells_GridCreated(
 			int gridSize, String definitionString) throws Exception {
 		mGridDefinitionString = definitionString;
-		// The mMathdokuDLXMock has to return a solution matrix of correct size.
+		// The mGridSolverMock has to return a solution matrix of correct size.
 		// The content does not need to be correct for this test.
 		int solution[][] = new int[gridSize][gridSize];
-		when(mMathDokuDLXMock.getSolutionGrid()).thenReturn(solution);
+		when(mGridSolverMock.getSolutionGrid()).thenReturn(solution);
 
 		assertThat(mGridDefinition.createGrid(mGridDefinitionString),
 				is(notNullValue()));
@@ -489,8 +489,7 @@ public class GridDefinitionTest {
 		mGridDefinitionString = gridDefinitionString
 				.setPuzzleComplexityReference(puzzleComplexityString)
 				.create();
-		when(mMathDokuDLXMock.getSolutionGrid()).thenReturn(
-				gridDefinitionString.getSolution());
+		when(mGridSolverMock.getSolutionGrid()).thenReturn(gridDefinitionString.getSolution());
 
 		assertThat(mGridDefinition
 				.createGrid(mGridDefinitionString)

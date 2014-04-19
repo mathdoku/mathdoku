@@ -1,6 +1,6 @@
 package net.mathdoku.plus.griddefinition;
 
-import com.srlee.dlx.MathDokuDLX;
+import net.mathdoku.plus.gridsolving.GridSolver;
 
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.enums.GridType;
@@ -39,8 +39,8 @@ public class GridDefinition {
 			return new GridGeneratingParametersBuilder();
 		}
 
-		public MathDokuDLX createMathDokuDLX(int gridSize, List<Cage> cages) {
-			return new MathDokuDLX(gridSize, cages);
+		public GridSolver createGridSolver(int gridSize, List<Cage> cages) {
+			return new GridSolver(gridSize, cages);
 		}
 
 		public List<Cell> createArrayListOfCells() {
@@ -302,7 +302,7 @@ public class GridDefinition {
 	private boolean setCorrectCellValues() {
 		// Check whether a single solution can be found.
 		int[][] solution = mObjectsCreator
-				.createMathDokuDLX(mGridSize, mCages)
+				.createGridSolver(mGridSize, mCages)
 				.getSolutionGrid();
 		if (solution == null) {
 			// Either no or multiple solutions can be found. In both case this
