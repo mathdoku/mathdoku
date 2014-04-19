@@ -4,7 +4,6 @@ import android.util.Log;
 
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.gridgenerating.CellCoordinates.CellCoordinates;
-import net.mathdoku.plus.gridsolving.ComboGenerator;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cage.CageBuilder;
 import net.mathdoku.plus.puzzle.cell.Cell;
@@ -124,18 +123,7 @@ public class CandidateCageCreator {
 		cageBuilder.setHideOperator(gridGeneratingParameters.isHideOperators());
 		cageBuilder.setResult(cageOperatorGenerator.getCageResult());
 
-		Cage candidateCage = cageBuilder.build();
-
-		// Finally check whether the number of permutations of possible
-		// solutions for the cage is not to big in case the specific cell values
-		// are unknown.
-		ComboGenerator comboGenerator = candidateCageCreatorParameters
-				.createComboGenerator();
-		List<int[]> possibleCombos = comboGenerator.getPossibleCombos(
-				candidateCage, cells);
-		candidateCage.setPossibleCombos(possibleCombos);
-
-		return candidateCage;
+		return cageBuilder.build();
 	}
 
 	private int[] getAllCellIds(List<Cell> cells) {

@@ -1,7 +1,5 @@
 package net.mathdoku.plus.gridgenerating;
 
-import net.mathdoku.plus.gridsolving.ComboGenerator;
-
 import java.util.Random;
 
 public class CandidateCageCreatorParameters {
@@ -55,9 +53,5 @@ public class CandidateCageCreatorParameters {
 	public CageOperatorGenerator createCageOperatorGenerator(int... cellValues) {
 		return new CageOperatorGenerator(gridGeneratingParameters, random,
 				cellValues);
-	}
-
-	public ComboGenerator createComboGenerator() {
-		return new ComboGenerator(correctValueMatrix.size());
 	}
 }

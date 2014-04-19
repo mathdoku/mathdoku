@@ -2,6 +2,7 @@ package net.mathdoku.plus.gridgenerating;
 
 import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.PuzzleComplexity;
+import net.mathdoku.plus.gridsolving.ComboGenerator;
 
 /**
  * Immutable grid generating parameters.
@@ -63,6 +64,10 @@ public class GridGeneratingParameters {
 
 	public int getMaximumSingleCellCages() {
 		return maximumSingleCellCages;
+	}
+
+	public ComboGenerator createComboGenerator() {
+		return new ComboGenerator(gridType.getGridSize());
 	}
 
 	@Override

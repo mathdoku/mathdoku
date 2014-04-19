@@ -2,6 +2,7 @@ package net.mathdoku.plus.gridgenerating;
 
 import android.util.Log;
 
+import net.mathdoku.plus.gridsolving.ComboGenerator;
 import net.mathdoku.plus.gridsolving.GridSolver;
 
 import net.mathdoku.plus.config.Config;
@@ -398,7 +399,7 @@ public class GridGenerator {
 				.getCellsCoordinates());
 
 		Cage candidateCage = candidateCageCreator.create(getIdNewCage(), cells);
-		if (candidateCageHasTooManyPermutations(candidateCage, maxPermutations)) {
+		if (candidateCageHasTooManyPermutations(candidateCage, cells, maxPermutations)) {
 			return false;
 		}
 
@@ -414,9 +415,12 @@ public class GridGenerator {
 		return false;
 	}
 
-	private boolean candidateCageHasTooManyPermutations(Cage candidateCage,
+	private boolean candidateCageHasTooManyPermutations(Cage candidateCage, List<Cell> cells,
 			int maxPermutations) {
-		if (candidateCage.getPossibleCombos().size() > maxPermutations) {
+		ComboGenerator comboGenerator = gridGeneratingParameters.createComboGenerator();
+		List<int[]> possibleCombos = comboGenerator.getPossibleCombos(
+				candidateCage, cells);
+		if (possibleCombos.size() > maxPermutations) {
 			// If a cage has many permutations it reduces the chance to find a
 			// unique solution for the puzzle.
 			if (DEBUG_GRID_GENERATOR_FULL) {
@@ -426,6 +430,9 @@ public class GridGenerator {
 			}
 			return true;
 		}
+
+		candidateCage.setPossibleCombos(possibleCombos);
+
 		return false;
 	}
 

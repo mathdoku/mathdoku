@@ -1,8 +1,8 @@
 package net.mathdoku.plus.gridgenerating;
 
 import net.mathdoku.plus.enums.CageOperator;
+import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.gridgenerating.CellCoordinates.CellCoordinates;
-import net.mathdoku.plus.gridsolving.ComboGenerator;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cell.Cell;
 
@@ -15,11 +15,11 @@ import java.util.List;
 import java.util.Random;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -31,9 +31,9 @@ public class CandidateCageCreatorTest {
 	private Matrix<Integer> cageIdMatrix;
 	private OverlappingSubsetChecker overlappingSubsetCheckerMock = mock(OverlappingSubsetChecker.class);
 	private CageOperatorGenerator cageOperatorGeneratorMock = mock(CageOperatorGenerator.class);
-	private ComboGenerator comboGeneratorMock = mock(ComboGenerator.class);
 	private CellCoordinates[] arrayOfCellCoordinates;
-	private final int sizeOfMatrix = 2;
+	private final GridType gridType = GridType.GRID_2X2;
+	private final int sizeOfMatrix = gridType.getGridSize();
 	private final CellCoordinates validCellCoordinates1 = new CellCoordinates(
 			0, 0);
 	private final CellCoordinates validCellCoordinates2 = new CellCoordinates(
@@ -51,11 +51,6 @@ public class CandidateCageCreatorTest {
 		@Override
 		public CageOperatorGenerator createCageOperatorGenerator(int... cellValues) {
 			return cageOperatorGeneratorMock;
-		}
-
-		@Override
-		public ComboGenerator createComboGenerator() {
-			return comboGeneratorMock;
 		}
 	}
 
@@ -188,13 +183,8 @@ public class CandidateCageCreatorTest {
 		int cageResult = correctValueCellMock1 * correctValueCellMock2;
 		when(cageOperatorGeneratorMock.getCageResult()).thenReturn(cageResult);
 
-		List<int[]> comboList = new ArrayList<int[]>();
-		when(comboGeneratorMock.getPossibleCombos(any(Cage.class), anyList()))
-				.thenReturn(comboList);
-
 		boolean hideOperators = true;
-		when(gridGeneratingParametersMock.isHideOperators()).thenReturn(
-				hideOperators);
+		when(gridGeneratingParametersMock.isHideOperators()).thenReturn(hideOperators);
 
 		int cageId = 3;
 		Cage cage = candidateCageCreator.create(cageId, cells);
@@ -205,6 +195,6 @@ public class CandidateCageCreatorTest {
 		assertThat(cage.getOperator(), is(cageOperatorMock));
 		assertThat(cage.getResult(), is(cageResult));
 		assertThat(cage.isOperatorHidden(), is(hideOperators));
-		assertThat(cage.getPossibleCombos(), is(sameInstance(comboList)));
+		assertThat(cage.getPossibleCombos(), is(nullValue()));
 	}
 }
