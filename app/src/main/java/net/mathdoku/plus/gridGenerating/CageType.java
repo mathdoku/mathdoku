@@ -25,7 +25,51 @@ public class CageType {
 	/**
 	 * Creates a new instance of {@link CageType}.
 	 */
-	public CageType() {
+	public CageType(boolean[][] newCageTypeMatrix) {
+		// Determine top-left and bottom-right coordinates of the rectangle in
+		// which the shape is placed.
+		int top = Integer.MAX_VALUE;
+		int bottom = -1;
+		int left = Integer.MAX_VALUE;
+		int right = -1;
+		for (int row = 0; row < newCageTypeMatrix.length; row++) {
+			for (int col = 0; col < newCageTypeMatrix[row].length; col++) {
+				if (newCageTypeMatrix[row][col]) {
+					if (row < top) {
+						top = row;
+					}
+					if (col < left) {
+						left = col;
+					}
+					if (row > bottom) {
+						bottom = row;
+					}
+					if (col > right) {
+						right = col;
+					}
+				}
+			}
+		}
+
+		// Create a new cage type matrix by stripping all unused rows and
+		// columns
+		this.mRows = bottom - top + 1;
+		this.mCols = right - left + 1;
+		this.mUsedCells = new boolean[this.mRows][this.mCols];
+		boolean originFound = false;
+		this.mSize = 0;
+		for (int row = top; row <= bottom; row++) {
+			for (int col = left; col <= right; col++) {
+				this.mUsedCells[row - top][col - left] = newCageTypeMatrix[row][col];
+				if (newCageTypeMatrix[row][col]) {
+					this.mSize++;
+					if (!originFound) {
+						originFound = true;
+						this.mColOriginOffset = col - left;
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -128,61 +172,6 @@ public class CageType {
 	public CellCoordinates getOriginCoordinates(CellCoordinates offset) {
 		return new CellCoordinates(offset.getRow(), offset.getColumn()
 				+ mColOriginOffset);
-	}
-
-	/**
-	 * Sets a cage type matrix. Empty rows and columns will be removed from the
-	 * given matrix.
-	 * 
-	 * @param newCageTypeMatrix
-	 *            The matrix defining the cage type. Used cells have value true.
-	 *            Unused cells have value false.
-	 */
-	public void setMatrix(boolean[][] newCageTypeMatrix) {
-		// Determine top-left and bottom-right coordinates of the rectangle in
-		// which the shape is placed.
-		int top = Integer.MAX_VALUE;
-		int bottom = -1;
-		int left = Integer.MAX_VALUE;
-		int right = -1;
-		for (int row = 0; row < newCageTypeMatrix.length; row++) {
-			for (int col = 0; col < newCageTypeMatrix[row].length; col++) {
-				if (newCageTypeMatrix[row][col]) {
-					if (row < top) {
-						top = row;
-					}
-					if (col < left) {
-						left = col;
-					}
-					if (row > bottom) {
-						bottom = row;
-					}
-					if (col > right) {
-						right = col;
-					}
-				}
-			}
-		}
-
-		// Create a new cage type matrix by stripping all unused rows and
-		// columns
-		this.mRows = bottom - top + 1;
-		this.mCols = right - left + 1;
-		this.mUsedCells = new boolean[this.mRows][this.mCols];
-		boolean originFound = false;
-		this.mSize = 0;
-		for (int row = top; row <= bottom; row++) {
-			for (int col = left; col <= right; col++) {
-				this.mUsedCells[row - top][col - left] = newCageTypeMatrix[row][col];
-				if (newCageTypeMatrix[row][col]) {
-					this.mSize++;
-					if (!originFound) {
-						originFound = true;
-						this.mColOriginOffset = col - left;
-					}
-				}
-			}
-		}
 	}
 
 	/*

@@ -246,7 +246,7 @@ public class GridGenerator {
 		cageIdMatrix = new Matrix<Integer>(gridSizeValue, Cage.CAGE_ID_NOT_SET);
 		mCages.clear();
 
-		if (gridGeneratingParameters.getMaxCageSize() >= CageTypeGenerator.MAX_CAGE_SIZE) {
+		if (gridGeneratingParameters.getMaxCageSize() >= CageTypeGenerator.MAX_SIZE_STANDARD_CAGE_TYPE) {
 			createFirstCageWithBiggerSize();
 			if (listener.isCancelled()) {
 				return false;
@@ -297,6 +297,8 @@ public class GridGenerator {
 	}
 
 	private boolean attemptToCreateFirstCageWithBiggerSize() {
+		// todo: first determine start position and than try to fit in a cage in
+		// the space to the right and below
 		CageType cageType = mCageTypeGenerator.getRandomCageType(
 				gridGeneratingParameters.getMaxCageSize(), gridSizeValue,
 				gridSizeValue, mRandom);
@@ -399,7 +401,8 @@ public class GridGenerator {
 				.getCellsCoordinates());
 
 		Cage candidateCage = candidateCageCreator.create(getIdNewCage(), cells);
-		if (candidateCageHasTooManyPermutations(candidateCage, cells, maxPermutations)) {
+		if (candidateCageHasTooManyPermutations(candidateCage, cells,
+				maxPermutations)) {
 			return false;
 		}
 
@@ -415,9 +418,10 @@ public class GridGenerator {
 		return false;
 	}
 
-	private boolean candidateCageHasTooManyPermutations(Cage candidateCage, List<Cell> cells,
-			int maxPermutations) {
-		ComboGenerator comboGenerator = gridGeneratingParameters.createComboGenerator();
+	private boolean candidateCageHasTooManyPermutations(Cage candidateCage,
+			List<Cell> cells, int maxPermutations) {
+		ComboGenerator comboGenerator = gridGeneratingParameters
+				.createComboGenerator();
 		List<int[]> possibleCombos = comboGenerator.getPossibleCombos(
 				candidateCage, cells);
 		if (possibleCombos.size() > maxPermutations) {

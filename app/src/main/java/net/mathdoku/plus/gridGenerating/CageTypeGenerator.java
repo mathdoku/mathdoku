@@ -19,172 +19,169 @@ public class CageTypeGenerator {
 	 * 	MaxSize    #cage_types     #cumulative
 	 *        1              1               1
 	 *        2              2               3
-	 *        3              6               6
-	 *        4             19              29
-	 *        5             63              92
-	 *        6            216             308
-	 *        7            760           1,068
-	 *        8          2,725           3,793
-	 *        9          9,910          13,703
+	 *        3              6               9
+	 *        4             19              28
+	 *        5             63              91
+	 *        6            216             307
+	 *        7            760           1,067
+	 *        8          2,725           3,792
+	 *        9          9,910          13,702
 	 * </pre>
 	 */
-	public static final int MAX_CAGE_SIZE = 5;
+	public static final int MAX_SIZE_STANDARD_CAGE_TYPE = 5;
+	private static final CageType SINGLE_CELL_CAGE_TYPE = createSingleCellCageType();
 
-	// Singleton reference for the cage type generator.
-	private static CageTypeGenerator mCageTypeGeneratorSingletonInstance = null;
+	private static CageTypeGenerator cageTypeGeneratorSingletonInstance = null;
+	private final CageTypeList cageTypeList;
 
-	// All available cage types.
-	private CageType mSingleCellCageType;
-	private final List<CageType>[] mCageTypes;
+	private class CageTypeList extends ArrayList<CageType> {
+		public boolean addUnique(CageType cageType) {
+			if (cageType != null && !contains(cageType)) {
+				return add(cageType);
+			}
+			return false;
+		}
+
+		public void addAllUnique(CageTypeList cageTypeList) {
+			for (CageType cageType : cageTypeList) {
+				add(cageType);
+			}
+		}
+
+		public CageTypeList filterOnHeightAndWidth(int maxHeight, int maxWidth) {
+			CageTypeList filteredCageTypeList = new CageTypeList();
+			for (CageType cageType : this) {
+				if (cageType.getHeight() <= maxHeight
+						&& cageType.getWidth() <= maxWidth) {
+					filteredCageTypeList.addUnique(cageType);
+				}
+			}
+
+			return filteredCageTypeList;
+		}
+	}
+
+	private CageTypeGenerator() {
+		cageTypeList = new CageTypeList();
+		cageTypeList.addUnique(SINGLE_CELL_CAGE_TYPE);
+		for (int cageSize = 2; cageSize <= MAX_SIZE_STANDARD_CAGE_TYPE; cageSize++) {
+			cageTypeList.addAllUnique(createMultipleCellCageTypes(cageSize));
+		}
+
+		logNumberOfGeneratedCageTypes();
+	}
+
+	private static CageType createSingleCellCageType() {
+		boolean[][] singleCellMatrix = new boolean[1][1];
+		singleCellMatrix[0][0] = true;
+		return new CageType(singleCellMatrix);
+	}
+
+	private CageTypeList createMultipleCellCageTypes(int targetCageSize) {
+		CageTypeList cageTypeListTargetCageSize = new CageTypeList();
+		for (CageType cageType : getCageTypesWithSize(targetCageSize - 1)) {
+			addCageTypesToListByExtending(cageTypeListTargetCageSize, cageType);
+		}
+		return cageTypeListTargetCageSize;
+	}
+
+	private CageTypeList addCageTypesToListByExtending(
+			CageTypeList cageTypeList, CageType cageType) {
+		boolean[][] newCageTypeMatrix = cageType.getExtendedCageTypeMatrix();
+		for (int row = 0; row < newCageTypeMatrix.length; row++) {
+			for (int column = 0; column < newCageTypeMatrix[row].length; column++) {
+				if (newCageTypeMatrix[row][column]) {
+					// This cell was already occupied in the original grid. Fill
+					// each free cell above, right, below or left to create a
+					// new cage type.
+
+					addCageTypeToListByExtendingToRowColumn(cageTypeList,
+							newCageTypeMatrix, row - 1, column);
+					addCageTypeToListByExtendingToRowColumn(cageTypeList,
+							newCageTypeMatrix, row, column + 1);
+					addCageTypeToListByExtendingToRowColumn(cageTypeList,
+							newCageTypeMatrix, row + 1, column);
+					addCageTypeToListByExtendingToRowColumn(cageTypeList,
+							newCageTypeMatrix, row, column - 1);
+				}
+			}
+		}
+		return cageTypeList;
+	}
+
+	private void addCageTypeToListByExtendingToRowColumn(
+			CageTypeList cageTypeList, boolean[][] newCageTypeMatrix, int row,
+			int column) {
+		CageType cageType = createCageTypeByExtendingToRowColumn(
+				newCageTypeMatrix, row, column);
+		boolean added = cageTypeList.addUnique(cageType);
+		if (GridGenerator.DEBUG_GRID_GENERATOR_FULL && added) {
+			Log.i(TAG, "Found a new cage type:\n" + cageType.toString());
+		}
+	}
+
+	private CageType createCageTypeByExtendingToRowColumn(
+			boolean[][] newCageTypeMatrix, int row, int column) {
+		if (!newCageTypeMatrix[row][column]) {
+			newCageTypeMatrix[row][column] = true;
+			CageType cageType = new CageType(newCageTypeMatrix);
+			newCageTypeMatrix[row][column] = false;
+
+			return cageType;
+		} else {
+			return null;
+		}
+	}
+
+	private void logNumberOfGeneratedCageTypes() {
+		if (GridGenerator.DEBUG_GRID_GENERATOR_FULL) {
+			int maxCageSize = 0;
+			for (CageType cageType : cageTypeList) {
+				maxCageSize = Math.max(maxCageSize, cageType.cellsUsed());
+			}
+			int[] countCageTypesPerSize = new int[maxCageSize];
+			for (CageType cageType : cageTypeList) {
+				countCageTypesPerSize[cageType.cellsUsed()]++;
+			}
+			for (int i = 0; i < countCageTypesPerSize.length; i++) {
+				Log.i(TAG, String.format(
+						"Number of cage types with %d cells: %d", i + 1,
+						countCageTypesPerSize[i]));
+			}
+		}
+	}
 
 	/**
 	 * Get an instance to the singleton instance of the cage type generator.
 	 * <p/>
 	 * The {@link CageTypeGenerator} containing cage types having minimum 1 and
-	 * maximum {@value #MAX_CAGE_SIZE} cells. Cages of bigger size have to
-	 * generated with
+	 * maximum {@value #MAX_SIZE_STANDARD_CAGE_TYPE} cells. Cages of bigger size
+	 * have to generated with
 	 * {@link #getRandomCageType(int, int, int, java.util.Random)}.
 	 * 
 	 * @return The singleton instance for the cage type generator.
 	 */
 	public static CageTypeGenerator getInstance() {
-		if (mCageTypeGeneratorSingletonInstance == null) {
-			mCageTypeGeneratorSingletonInstance = new CageTypeGenerator();
+		if (cageTypeGeneratorSingletonInstance == null) {
+			cageTypeGeneratorSingletonInstance = new CageTypeGenerator();
 		}
-		return mCageTypeGeneratorSingletonInstance;
+		return cageTypeGeneratorSingletonInstance;
 	}
 
-	/**
-	 * Creates a new instance of {@link CageTypeGenerator} containing cage types
-	 * having minimum 1 and maximum {@value #MAX_CAGE_SIZE} cells. Cages of
-	 * bigger size have to generated with
-	 * {@link #getRandomCageType(int, int, int, java.util.Random)}.
-	 */
-	private CageTypeGenerator() {
-		// Initialize all cage type array lists
-		mCageTypes = new ArrayList[MAX_CAGE_SIZE];
-		for (int i = 0; i < MAX_CAGE_SIZE; i++) {
-			mCageTypes[i] = new ArrayList<CageType>();
-		}
-
-		// Start with a cage consisting of a single cell.
-		boolean[][] singleCageTypeMatrix = new boolean[1][1];
-		singleCageTypeMatrix[0][0] = true;
-		if (addCageTypeIfNotExists(singleCageTypeMatrix)) {
-			mSingleCellCageType = mCageTypes[0].get(0);
-		}
-
-		// The other cage types (size n) can be generated by adding one
-		// additional cell to any cage having one cell less (size n-1).
-		for (int smallerCageSize = 1; smallerCageSize < MAX_CAGE_SIZE; smallerCageSize++) {
-			for (CageType cageType : mCageTypes[smallerCageSize - 1]) {
-				// Add a cell to each existing cage type having just one cell
-				// less than size of the grid type that we need to be create
-				// now.
-				boolean[][] newCageTypeMatrix = cageType
-						.getExtendedCageTypeMatrix();
-				for (int row = 0; row < newCageTypeMatrix.length; row++) {
-					for (int col = 0; col < newCageTypeMatrix[row].length; col++) {
-						if (newCageTypeMatrix[row][col]) {
-							// This cell was already occupied in the
-							// original grid. Fill each free cell above,
-							// right, below or left to create a new cage
-							// type.
-
-							// Because the ExtendedCageType has a free
-							// border of empty cells around the cage there
-							// is no need to check indexes.
-
-							// Check above current occupied cell
-							if (!newCageTypeMatrix[row - 1][col]) {
-								newCageTypeMatrix[row - 1][col] = true;
-								addCageTypeIfNotExists(newCageTypeMatrix);
-								newCageTypeMatrix[row - 1][col] = false;
-							}
-
-							// Check to right of current occupied cell
-							if (!newCageTypeMatrix[row][col + 1]) {
-								newCageTypeMatrix[row][col + 1] = true;
-								addCageTypeIfNotExists(newCageTypeMatrix);
-								newCageTypeMatrix[row][col + 1] = false;
-							}
-							// Check below current occupied cell
-							if (!newCageTypeMatrix[row + 1][col]) {
-								newCageTypeMatrix[row + 1][col] = true;
-								addCageTypeIfNotExists(newCageTypeMatrix);
-								newCageTypeMatrix[row + 1][col] = false;
-							}
-
-							// Check to left of current occupied cell
-							if (!newCageTypeMatrix[row][col - 1]) {
-								newCageTypeMatrix[row][col - 1] = true;
-								addCageTypeIfNotExists(newCageTypeMatrix);
-								newCageTypeMatrix[row][col - 1] = false;
-							}
-						}
-					}
-				}
-			}
-		}
-
-		// Report number of cage types found
-		if (GridGenerator.DEBUG_GRID_GENERATOR_FULL) {
-			for (int i = 0; i < mCageTypes.length; i++) {
-				if (mCageTypes[i] != null) {
-					Log.i(TAG, "Number of cage type with " + (i + 1)
-							+ " cells: " + mCageTypes[i].size());
-				}
-			}
-		}
-	}
-
-	/**
-	 * Adds a new cage type to the list of cage types in case it is not yet on
-	 * this list.
-	 * 
-	 * @param newCageTypeMatrix
-	 *            The cage type matrix which has to be added to the list of
-	 *            available cage types.
-	 * @return True in case the cage type is added. False otherwise.
-	 */
-	private boolean addCageTypeIfNotExists(boolean[][] newCageTypeMatrix) {
-		CageType newPossibleCageType = new CageType();
-		newPossibleCageType.setMatrix(newCageTypeMatrix);
-
-		int sizeCageType = newPossibleCageType.cellsUsed();
-
-		// Check if this cage type was not yet defined.
-		if (mCageTypes[sizeCageType - 1].contains(newPossibleCageType)) {
-			return false;
-		}
-
-		// This cage type does not yet exist.
-		mCageTypes[sizeCageType - 1].add(newPossibleCageType);
-
-		if (GridGenerator.DEBUG_GRID_GENERATOR_FULL) {
-			Log
-					.i(TAG,
-							"Found a new cage type:\n"
-									+ newPossibleCageType.toString());
-		}
-
-		return true;
-	}
-
-	/**
-	 * Gets the cage type for a single cell.
-	 * 
-	 * @return Cage type representing a single cell.
-	 */
 	public CageType getSingleCellCageType() {
-		return this.mSingleCellCageType;
+		return SINGLE_CELL_CAGE_TYPE;
 	}
 
 	public List<CageType> getCageTypesWithSizeEqualOrLessThan(int maxCageSize) {
+		return getCageTypesWithSizeInRange(1, maxCageSize);
+	}
+
+	private List<CageType> getCageTypesWithSizeInRange(int minCageSize,
+			int maxCageSize) {
 		List<CageType> cageTypes = new ArrayList<CageType>();
-		maxCageSize = Math.min(maxCageSize, MAX_CAGE_SIZE);
-		for (int i = 0; i < maxCageSize; i++) {
-			for (CageType cageType : mCageTypes[i]) {
+		for (CageType cageType : cageTypeList) {
+			if (cageType.cellsUsed() >= minCageSize
+					&& cageType.cellsUsed() <= maxCageSize) {
 				cageTypes.add(cageType);
 			}
 		}
@@ -195,157 +192,103 @@ public class CageTypeGenerator {
 	 * Get a random cage type of the requested size. It is possible to retrieve
 	 * a cage type of a bigger size than is pre-generated.
 	 * 
-	 * @param cellsUsed
+	 * @param numberOfCells
 	 *            The number of cells the cage consists of.
-	 * @param maxWidth
-	 *            The maximum width 0f the cell. Use 0 in case width does not
-	 *            matter.
 	 * @param maxHeight
 	 *            The maximum height 0f the cell. Use 0 in case width does not
+	 *            matter.
+	 * @param maxWidth
+	 *            The maximum width 0f the cell. Use 0 in case width does not
 	 *            matter.
 	 * @param random
 	 *            The random generator to use for randomized decisions.
 	 * @return A cage type.
 	 */
-	public CageType getRandomCageType(int cellsUsed, int maxWidth,
-			int maxHeight, Random random) {
-		assert cellsUsed > 0;
-		assert maxWidth >= 0;
-		assert maxHeight >= 0;
-		if (maxWidth > 0 && maxHeight > 0 && maxWidth * maxHeight < cellsUsed) {
-			// No such grid cage type can exist as more cells are requested than
-			// the maximum space can contain.
-			return null;
-		}
+	public CageType getRandomCageType(int numberOfCells, int maxHeight,
+			int maxWidth, Random random) {
+		validateGetRandomCageTypeParameters(numberOfCells, maxHeight, maxWidth);
 
-		// Determine which cageTypeArray to use
-		List<CageType> cageTypes = cellsUsed - 1 < mCageTypes.length ? mCageTypes[cellsUsed - 1]
-				: mCageTypes[mCageTypes.length - 1];
-		assert cageTypes != null;
-
-		// Choose a random cage type in the array which fits within the given
-		// maximum dimensions
-		CageType cageType;
-		do {
-			cageType = cageTypes.get(random.nextInt(cageTypes.size()));
-		} while (maxWidth > 0 && cageType.getWidth() > maxWidth
-				|| maxHeight > 0 && cageType.getHeight() > maxHeight);
-
-		if (cellsUsed - 1 < mCageTypes.length || cageType == null) {
-			// Return the already defined grid cage type.
-			return cageType;
+		if (numberOfCells <= MAX_SIZE_STANDARD_CAGE_TYPE) {
+			// Cage types of the requested size are already generated
+			return selectRandomCageTypeFromList(numberOfCells, maxWidth,
+					maxHeight, random);
 		} else {
-			// A cage type of this size does not yet exist. Use the selected
-			// cage type to generate a cage type of the requested size.
-			return deriveNewCageType(cageType,
-					cellsUsed - cageType.cellsUsed(), maxWidth, maxHeight,
-					random);
+			return deriveNewCageType(numberOfCells, maxHeight, maxWidth, random);
 		}
 	}
 
-	/**
-	 * Derives a new cage type by adding the given number of cells to the given
-	 * base cage type. The new cells will be placed adjacent to an already
-	 * occupied cell. The created cage type will not be added to the list of
-	 * cage types.
-	 * 
-	 * @param cageType
-	 *            The cage type to be used as base to generate a new cage type.
-	 * @param extendWithCells
-	 *            The number of cells with which the given cage type will be
-	 *            extended.
-	 * @param maxWidth
-	 *            The maximum width 0f the cell. Use 0 in case width does not
-	 *            matter.
-	 * @param maxHeight
-	 *            The maximum height 0f the cell. Use 0 in case width does not
-	 *            matter.
-	 * @param random
-	 *            The randomize which should be used for random decisions.
-	 * @return The new cage type.
-	 */
-	private CageType deriveNewCageType(CageType cageType, int extendWithCells,
-			int maxWidth, int maxHeight, Random random) {
-		boolean[][] newCageTypeMatrix = cageType.getExtendedCageTypeMatrix();
-
-		// Determine which used cells can be extended.
-		int numberOfCellsPerRow = newCageTypeMatrix[0].length;
-		List<Integer> extendIndexes = new ArrayList<Integer>();
-		for (int row = 0; row < newCageTypeMatrix.length; row++) {
-			for (int col = 0; col < newCageTypeMatrix[row].length; col++) {
-				if (newCageTypeMatrix[row][col]) {
-					// This cell was already occupied in the
-					// original grid. Check which cells can be extended.
-
-					// Check above and below current occupied cell in case the
-					// base cage type has not yet reached its maximum height.
-					if (cageType.getHeight() < maxHeight) {
-						// Check above
-						if (!newCageTypeMatrix[row - 1][col]) {
-							int cellNumber = (row - 1) * numberOfCellsPerRow
-									+ col;
-							if (!extendIndexes.contains(cellNumber)) {
-								extendIndexes.add(cellNumber);
-							}
-						}
-						// Check below
-						if (cageType.getHeight() < maxHeight
-								&& !newCageTypeMatrix[row + 1][col]) {
-							int cellNumber = (row + 1) * numberOfCellsPerRow
-									+ col;
-							if (!extendIndexes.contains(cellNumber)) {
-								extendIndexes.add(cellNumber);
-							}
-						}
-					}
-
-					// Check to right and left of current occupied cell in case
-					// the base cage type has not yet reached its maximum width.
-					if (cageType.getWidth() < maxWidth) {
-						// Check to right
-						if (!newCageTypeMatrix[row][col + 1]) {
-							int cellNumber = row * numberOfCellsPerRow + col
-									+ 1;
-							if (!extendIndexes.contains(cellNumber)) {
-								extendIndexes.add(cellNumber);
-							}
-						}
-
-						// Check to left
-						if (!newCageTypeMatrix[row][col - 1]) {
-							int cellNumber = row * numberOfCellsPerRow + col
-									- 1;
-							if (!extendIndexes.contains(cellNumber)) {
-								extendIndexes.add(cellNumber);
-							}
-						}
-					}
-				}
-			}
+	private void validateGetRandomCageTypeParameters(int numberOfCells,
+			int maxHeight, int maxWidth) {
+		if (numberOfCells <= 0) {
+			throw new IllegalArgumentException(String.format(
+					"Number of cells (%d) for cage is invalid", numberOfCells));
 		}
+		if (maxWidth <= 0) {
+			throw new IllegalArgumentException(String.format(
+					"Maximum width (%d) for cage is invalid", maxWidth));
+		}
+		if (maxHeight <= 0) {
+			throw new IllegalArgumentException(String.format(
+					"Maximum height (%d) for cage is invalid", maxHeight));
+		}
+		if (maxWidth * maxHeight < numberOfCells) {
+			throw new IllegalArgumentException(String.format(
+					"Number of cells (%d) does not fit in available space (%d x "
+							+ "%d)", numberOfCells, maxHeight, maxWidth));
+		}
+	}
 
-		if (extendIndexes.size() == 0) {
-			// Cannot extend anymore.
+	private CageType selectRandomCageTypeFromList(int cageSize, int maxWidth,
+			int maxHeight, Random random) {
+		RandomListItemSelector<CageType> randomCageTypeSelector;
+		randomCageTypeSelector = new RandomListItemSelector<CageType>(random,
+				getCageTypesWithSize(cageSize));
+		do {
+			CageType cageType = randomCageTypeSelector.next();
+			if (cageType.getWidth() <= maxWidth
+					&& cageType.getHeight() <= maxHeight) {
+				return cageType;
+			}
+		} while (!randomCageTypeSelector.isEmpty());
+
+		return null;
+	}
+
+	private List<CageType> getCageTypesWithSize(int cageSize) {
+		return getCageTypesWithSizeInRange(cageSize, cageSize);
+	}
+
+	private CageType deriveNewCageType(int numberOfCells, int maxHeight,
+			int maxWidth, Random random) {
+		CageType baseCageType = selectRandomCageTypeFromList(
+				MAX_SIZE_STANDARD_CAGE_TYPE, maxWidth, maxHeight, random);
+		if (baseCageType != null) {
+			return deriveNewCageType(baseCageType, numberOfCells, maxWidth,
+					maxHeight, random);
+		} else {
+			return null;
+		}
+	}
+
+	private CageType deriveNewCageType(CageType baseCageType,
+			int numberOfCells, int maxWidth, int maxHeight, Random random) {
+		CageTypeList derivedCageTypes = addCageTypesToListByExtending(
+				new CageTypeList(), baseCageType).filterOnHeightAndWidth(
+				maxHeight, maxWidth);
+		if (derivedCageTypes.isEmpty()) {
 			return null;
 		}
 
-		// Select one of the cell index numbers to which the given cage type can
-		// be extended
-		int extendToCellNumber = extendIndexes.get(random.nextInt(extendIndexes
-				.size()));
-		int col = extendToCellNumber % numberOfCellsPerRow;
-		int row = extendToCellNumber / numberOfCellsPerRow;
-		newCageTypeMatrix[row][col] = true;
-
-		CageType newCageType = new CageType();
-		newCageType.setMatrix(newCageTypeMatrix);
-
-		if (extendWithCells == 1) {
-			return newCageType;
+		RandomListItemSelector<CageType> randomListItemSelector;
+		randomListItemSelector = new RandomListItemSelector<CageType>(random,
+				derivedCageTypes);
+		CageType randomCageType = randomListItemSelector.next();
+		if (randomCageType.cellsUsed() == numberOfCells) {
+			return randomCageType;
 		} else {
-			// An extra level of extension is needed.
-			return deriveNewCageType(newCageType, extendWithCells - 1,
-					maxWidth, maxHeight, random);
+			// Use the new cage type as basis to extend with another cell.
+			return deriveNewCageType(randomCageType, numberOfCells, maxWidth,
+					maxHeight, random);
 		}
 	}
 }

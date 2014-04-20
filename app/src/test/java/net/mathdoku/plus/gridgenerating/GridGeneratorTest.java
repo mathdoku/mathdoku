@@ -14,7 +14,9 @@ import org.junit.runner.RunWith;
 import robolectric.RobolectricGradleTestRunner;
 import testHelper.GridCreator;
 import testHelper.GridCreator2x2;
+import testHelper.GridCreator4x4;
 import testHelper.GridCreator4x4HiddenOperators;
+import testHelper.GridCreator5x5;
 import testHelper.GridCreator9x9;
 
 import static org.hamcrest.core.Is.is;
@@ -79,9 +81,21 @@ public class GridGeneratorTest {
 	}
 
 	@Test
+	public void createGrid_Grid4x4_RegeneratedGridHasSameGridDefinition()
+			throws Exception {
+		assertRegenerateGrid(GridCreator4x4.createEmpty());
+	}
+
+	@Test
 	public void createGrid_Grid4x4HiddenOperators_RegeneratedGridHasSameGridDefinition()
 			throws Exception {
 		assertRegenerateGrid(GridCreator4x4HiddenOperators.createEmpty());
+	}
+
+	@Test
+	public void createGrid_Grid5x5_RegeneratedGridHasSameGridDefinition()
+			throws Exception {
+		assertRegenerateGrid(GridCreator5x5.createEmpty());
 	}
 
 	@Test
