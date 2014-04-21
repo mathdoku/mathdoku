@@ -22,7 +22,7 @@ import java.util.Random;
 /**
  * Generate a single grid.
  */
-public class GridGenerator {
+public class GridGenerator implements GridGeneratorInterface {
 	private static final String TAG = GridGenerator.class.getName();
 
 	// Remove "&& false" in following line to show debug information about
@@ -49,6 +49,7 @@ public class GridGenerator {
 		developmentMode = false;
 	}
 
+	@Override
 	public Grid createGrid(GridGeneratingParameters gridGeneratingParameters) {
 		this.gridGeneratingParameters = gridGeneratingParameters;
 		gridSizeValue = this.gridGeneratingParameters
@@ -159,7 +160,9 @@ public class GridGenerator {
 			return false;
 		}
 
-		listener.updateProgressDetailLevel("Verify unique solution");
+		if (DEBUG_GRID_GENERATOR) {
+			listener.updateProgressDetailLevel("Verify unique solution");
+		}
 		if (new GridSolver(gridSizeValue, grid.getCages()).hasUniqueSolution()) {
 			if (DEBUG_GRID_GENERATOR) {
 				debugLog("This grid has a unique solution.");
@@ -199,8 +202,8 @@ public class GridGenerator {
 		Log.i(TAG, gridGeneratingParameters.toString());
 	}
 
-	public Grid createGridInDevelopmentMode(
-			GridGeneratingParameters gridGeneratingParameters) {
+	@Override
+	public Grid createGridInDevelopmentMode(GridGeneratingParameters gridGeneratingParameters) {
 		developmentMode = true;
 		return createGrid(gridGeneratingParameters);
 	}

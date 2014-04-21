@@ -44,28 +44,46 @@ public class GridGeneratorAsyncTask extends
 		void onDetailLevelProgressDetail(String text);
 	}
 
+	public static class ObjectsCreator {
+		public GridGeneratorInterface createGridGenerator(
+				GridGeneratorAsyncTask gridGeneratorAsyncTask) {
+			return new GridGenerator(gridGeneratorAsyncTask);
+		}
+	}
+
+	private final ObjectsCreator objectsCreator;
+
 	private boolean generateInDevelopmentMode = false;
-	private String prefixProgressUpdateDevelopmentMode;
+	private String prefixProgressUpdateDevelopmentMode = "";
 	private boolean forceSlowGeneratingExceptionInDevelopmentMode;
 
 	public GridGeneratorAsyncTask(Listener listener) {
+		this(listener, null);
+	}
+
+	// package private constructor is needed for unit testing.
+	GridGeneratorAsyncTask(Listener listener, ObjectsCreator objectsCreator) {
 		if (listener == null) {
 			throw new IllegalArgumentException("Listener should be specified.");
 		}
 		mListener = listener;
+
+		this.objectsCreator = objectsCreator == null ? new ObjectsCreator()
+				: objectsCreator;
 	}
 
 	@Override
 	protected List<Grid> doInBackground(
 			GridGeneratingParameters... gridGeneratingParametersArray) {
 		setGenerateMode(gridGeneratingParametersArray);
-		return (generateInDevelopmentMode ? generateGridsInDevelopmentMode(gridGeneratingParametersArray)
-				: generateGridsInNormalMode(gridGeneratingParametersArray));
+		return generateInDevelopmentMode ? generateGridsInDevelopmentMode(gridGeneratingParametersArray)
+				: generateGridsInNormalMode(gridGeneratingParametersArray);
 	}
 
 	private void setGenerateMode(
 			GridGeneratingParameters... gridGeneratingParametersArray) {
-		if (gridGeneratingParametersArray == null) {
+		if (gridGeneratingParametersArray == null
+				|| gridGeneratingParametersArray.length == 0) {
 			throw new GridGeneratingException(
 					"Grid generating parameters must be specified.");
 		}
@@ -83,10 +101,11 @@ public class GridGeneratorAsyncTask extends
 		}
 	}
 
-	private ArrayList<Grid> generateGridsInDevelopmentMode(
+	private List<Grid> generateGridsInDevelopmentMode(
 			GridGeneratingParameters... gridGeneratingParametersArray) {
-		GridGenerator gridGenerator = new GridGenerator(this);
-		ArrayList<Grid> generatedGridsInDevelopmentMode = new ArrayList<Grid>();
+		GridGeneratorInterface gridGenerator = objectsCreator
+				.createGridGenerator(this);
+		List<Grid> generatedGridsInDevelopmentMode = new ArrayList<Grid>();
 		for (GridGeneratingParameters gridGeneratingParameters : gridGeneratingParametersArray) {
 			prefixProgressUpdateDevelopmentMode = String.format(
 					"Generating grid %d: ",
@@ -101,10 +120,11 @@ public class GridGeneratorAsyncTask extends
 		return generatedGridsInDevelopmentMode;
 	}
 
-	private ArrayList<Grid> generateGridsInNormalMode(
+	private List<Grid> generateGridsInNormalMode(
 			GridGeneratingParameters... gridGeneratingParametersArray) {
-		GridGenerator gridGenerator = new GridGenerator(this);
-		ArrayList<Grid> generatedGrids = new ArrayList<Grid>();
+		GridGeneratorInterface gridGenerator = objectsCreator
+				.createGridGenerator(this);
+		List<Grid> generatedGrids = new ArrayList<Grid>();
 		for (GridGeneratingParameters gridGeneratingParameters : gridGeneratingParametersArray) {
 			Grid grid = gridGenerator.createGrid(gridGeneratingParameters);
 			if (grid != null) {
@@ -116,32 +136,24 @@ public class GridGeneratorAsyncTask extends
 
 	@Override
 	public void updateProgressHighLevel(String text) {
-		if (generateInDevelopmentMode) {
-			mListener
-					.onHighLevelProgressUpdate(prefixProgressUpdateDevelopmentMode
-							+ text);
-		}
+		mListener.onHighLevelProgressUpdate(prefixProgressUpdateDevelopmentMode + text);
 	}
 
 	@Override
 	public void updateProgressDetailLevel(String text) {
-		if (generateInDevelopmentMode) {
-			mListener.onDetailLevelProgressDetail(text);
-		}
+		mListener.onDetailLevelProgressDetail(text);
 	}
 
 	@Override
 	public void signalSlowGridGeneration() {
-		if (generateInDevelopmentMode) {
-			forceSlowGeneratingExceptionInDevelopmentMode = true;
-			// Pause a moment to publish message in the progress dialog
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				Log.d(TAG, "Sleep was interrupted.", e);
-			} finally {
-				cancel(true);
-			}
+		forceSlowGeneratingExceptionInDevelopmentMode = true;
+		// Pause a moment to publish message in the progress dialog
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			Log.d(TAG, "Sleep was interrupted.", e);
+		} finally {
+			cancel(true);
 		}
 	}
 
