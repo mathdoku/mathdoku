@@ -94,6 +94,7 @@ public final class ProgressDialogGeneratePuzzle {
 				mProgressDialogGeneratePuzzle.mPuzzleFragmentActivity
 						.onCancelGridGeneration();
 			}
+			this.mProgressDialogGeneratePuzzle.dismissProgressDialog();
 		}
 
 		@Override
