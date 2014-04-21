@@ -541,36 +541,6 @@ public class GridGenerator implements GridGeneratorInterface {
 		return false;
 	}
 
-	/**
-	 * Print debug information for create cage process to logging.
-	 */
-	private void printCageCreationDebugInformation() {
-		debugLog("   Checking cage type");
-		String cageIdFormat = "%d";
-		String emptyCell = ".";
-		if (mCages.size() > 100) {
-			cageIdFormat = "%03d";
-			emptyCell = "  .";
-		} else if (mCages.size() > 10) {
-			cageIdFormat = "%02d";
-			emptyCell = " .";
-		}
-		for (int row = 0; row < gridSizeValue; row++) {
-			String line = "      ";
-			for (int col = 0; col < gridSizeValue; col++) {
-				line += " " + correctValueMatrix.get(row, col);
-			}
-			line += "   ";
-			for (int col = 0; col < gridSizeValue; col++) {
-				line += " "
-						+ (cageIdMatrix.isEmpty(row, col) ? emptyCell : String
-								.format(cageIdFormat,
-										cageIdMatrix.get(row, col)));
-			}
-			debugLog(line);
-		}
-	}
-
 	interface Listener {
 		// Requests the listener whether the generating of this grid has to be
 		// cancelled.
