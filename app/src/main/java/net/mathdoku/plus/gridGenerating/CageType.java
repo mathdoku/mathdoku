@@ -6,70 +6,150 @@ public class CageType {
 	@SuppressWarnings("unused")
 	private static final String TAG = CageType.class.getName();
 
+	// Smallest possible rectangle of cells, used to define the cage type. True
+	// in case the cell is part of the cage type. False in case the cell is
+	// unused.
+	private final boolean[][] usedCells;
+
 	// Number or cells used in this cage type.
-	private int mSize;
+	private final int size;
 
-	// Dimensions of matrix needed to store the cage type shape.
-	private int mRows;
-	private int mCols;
-
-	// Each cage type has an origin cell which is defined as the left most
-	// occupied cell in the top row of the shape. As empty top rows can not
-	// occur by default, there is no rowOriginOffset.
-	private int mColOriginOffset;
-
-	// Matrix to store the cage type. True in case the cell is part of the cage
-	// type. False in case the cell is unused.
-	private boolean[][] mUsedCells;
+	// Dimensions of matrix needed to store the cage type shape. These
+	// dimensions can easily be derived from the matrix itself but are kept for
+	// readability of source code.
+	private final int rows;
+	private final int columns;
 
 	/**
 	 * Creates a new instance of {@link CageType}.
 	 */
-	public CageType(boolean[][] newCageTypeMatrix) {
-		// Determine top-left and bottom-right coordinates of the rectangle in
-		// which the shape is placed.
-		int top = Integer.MAX_VALUE;
-		int bottom = -1;
-		int left = Integer.MAX_VALUE;
-		int right = -1;
-		for (int row = 0; row < newCageTypeMatrix.length; row++) {
-			for (int col = 0; col < newCageTypeMatrix[row].length; col++) {
-				if (newCageTypeMatrix[row][col]) {
-					if (row < top) {
-						top = row;
-					}
-					if (col < left) {
-						left = col;
-					}
-					if (row > bottom) {
-						bottom = row;
-					}
-					if (col > right) {
-						right = col;
-					}
+	public CageType(boolean[][] cageTypeMatrix) {
+		validateCageTypeMatrix(cageTypeMatrix);
+		usedCells = removeUnusedBorders(cageTypeMatrix);
+		rows = usedCells.length;
+		columns = usedCells[0].length;
+		size = initSize();
+	}
+
+	private void validateCageTypeMatrix(boolean[][] cageTypeMatrix) {
+		if (cageTypeMatrix == null) {
+			throw new IllegalArgumentException("Cage type matrix should not be null.");
+		}
+		if (hasNoRowsOrColumns(cageTypeMatrix)) {
+			throw new IllegalArgumentException("Cage type matrix should not be empty.");
+		}
+		if (hasRowsOfDifferentLength(cageTypeMatrix)) {
+			throw new IllegalArgumentException("All rows in cage type matrix should have same length.");
+		}
+		if (isEmpty(cageTypeMatrix)) {
+			throw new IllegalArgumentException("Cage type matrix can not be empty.");
+		}
+	}
+
+	private boolean hasNoRowsOrColumns(boolean[][] cageTypeMatrix) {
+		return cageTypeMatrix.length == 0 || cageTypeMatrix[0].length == 0;
+	}
+
+	private boolean hasRowsOfDifferentLength(boolean[][] cageTypeMatrix) {
+		for (int row = 1; row < cageTypeMatrix.length; row++) {
+			if (cageTypeMatrix[row].length != cageTypeMatrix[0].length) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean isEmpty(boolean[][] cageTypeMatrix) {
+		for (int row = 0; row < cageTypeMatrix.length; row++) {
+			for (int col = 0; col < cageTypeMatrix[row].length; col++) {
+				if (cageTypeMatrix[row][col]) {
+					return false;
 				}
 			}
 		}
 
-		// Create a new cage type matrix by stripping all unused rows and
-		// columns
-		this.mRows = bottom - top + 1;
-		this.mCols = right - left + 1;
-		this.mUsedCells = new boolean[this.mRows][this.mCols];
-		boolean originFound = false;
-		this.mSize = 0;
-		for (int row = top; row <= bottom; row++) {
-			for (int col = left; col <= right; col++) {
-				this.mUsedCells[row - top][col - left] = newCageTypeMatrix[row][col];
-				if (newCageTypeMatrix[row][col]) {
-					this.mSize++;
-					if (!originFound) {
-						originFound = true;
-						this.mColOriginOffset = col - left;
-					}
+		return true;
+	}
+
+	private boolean[][] removeUnusedBorders(boolean[][] cageTypeMatrix) {
+		int top = getTopRowOfUsedArea(cageTypeMatrix);
+		int left = getLeftColumnOfUsedArea(cageTypeMatrix);
+		int bottom = getBottomRowOfUsedArea(cageTypeMatrix);
+		int right = getRightMostColumnOfUserArea(cageTypeMatrix);
+
+		int height = bottom - top + 1;
+		int width = right - left + 1;
+		if (height == cageTypeMatrix.length
+				&& width == cageTypeMatrix[0].length) {
+			return cageTypeMatrix;
+		} else {
+			boolean[][] strippedCageTypeMatrix = new boolean[height][width];
+			for (int row = top; row <= bottom; row++) {
+				System.arraycopy(cageTypeMatrix[row], left,
+						strippedCageTypeMatrix[row - top], 0, width);
+			}
+			return strippedCageTypeMatrix;
+		}
+	}
+
+	private int getTopRowOfUsedArea(boolean[][] cageTypeMatrix) {
+		for (int row = 0; row < cageTypeMatrix.length; row++) {
+			for (int col = 0; col < cageTypeMatrix[row].length; col++) {
+				if (cageTypeMatrix[row][col]) {
+					return row;
 				}
 			}
 		}
+		throw new IllegalStateException(
+				"Cannot determine top row of used area when matrix is empty.");
+	}
+
+	private int getLeftColumnOfUsedArea(boolean[][] cageTypeMatrix) {
+		for (int col = 0; col < cageTypeMatrix[0].length; col++) {
+			for (int row = 0; row < cageTypeMatrix.length; row++) {
+				if (cageTypeMatrix[row][col]) {
+					return col;
+				}
+			}
+		}
+		throw new IllegalStateException(
+				"Cannot determine left column of used area when matrix is empty.");
+	}
+
+	private int getBottomRowOfUsedArea(boolean[][] cageTypeMatrix) {
+		for (int row = cageTypeMatrix.length - 1; row >= 0; row--) {
+			for (int col = 0; col < cageTypeMatrix[row].length; col++) {
+				if (cageTypeMatrix[row][col]) {
+					return row;
+				}
+			}
+		}
+		throw new IllegalStateException(
+				"Cannot determine bottom row of used area when matrix is empty.");
+	}
+
+	private int getRightMostColumnOfUserArea(boolean[][] cageTypeMatrix) {
+		for (int col = cageTypeMatrix[0].length - 1; col >= 0; col--) {
+			for (int row = 0; row < cageTypeMatrix.length; row++) {
+				if (cageTypeMatrix[row][col]) {
+					return col;
+				}
+			}
+		}
+		throw new IllegalStateException(
+				"Cannot determine right column of used area when matrix is empty.");
+	}
+
+	private int initSize() {
+		int countUsedCells = 0;
+		for (int row = 0; row < usedCells.length; row++) {
+			for (int col = 0; col < usedCells[row].length; col++) {
+				if (usedCells[row][col]) {
+					countUsedCells++;
+				}
+			}
+		}
+		return countUsedCells;
 	}
 
 	/**
@@ -77,26 +157,26 @@ public class CageType {
 	 * 
 	 * @return The size, i.e. the number of cells, used by this cage type.
 	 */
-	public int cellsUsed() {
-		return mSize;
+	public int size() {
+		return size;
 	}
 
 	/**
-	 * Get the (maximum) width in number of cells of the cage type.
+	 * Get the width of the smallest rectangle in which the cage type fits.
 	 * 
-	 * @return The (maximum) width in number of cells of the cage type.
+	 * @return The width of the smallest rectangle in which the cage type fits.
 	 */
 	public int getWidth() {
-		return mCols;
+		return columns;
 	}
 
 	/**
-	 * Get the (maximum) height in number of cells of the cage type.
+	 * Get the height of the smallest rectangle in which the cage type fits.
 	 * 
-	 * @return The (maximum) height in number of cells of the cage type.
+	 * @return The height of the smallest rectangle in which the cage type fits.
 	 */
 	public int getHeight() {
-		return mRows;
+		return rows;
 	}
 
 	/**
@@ -109,12 +189,11 @@ public class CageType {
 	 *         shape.
 	 */
 	public boolean[][] getExtendedCageTypeMatrix() {
-		boolean[][] extendedUsedCells = new boolean[mRows + 2][mCols + 2];
+		boolean[][] extendedUsedCells = new boolean[rows + 2][columns + 2];
 
 		// Shift cage type one row down and 1 column to the right.
-		for (int row = 0; row < mRows; row++) {
-			System.arraycopy(mUsedCells[row], 0, extendedUsedCells[row + 1], 1,
-					mCols);
+		for (int row = 0; row < rows; row++) {
+			System.arraycopy(usedCells[row], 0, extendedUsedCells[row + 1], 1, columns);
 		}
 
 		return extendedUsedCells;
@@ -131,26 +210,21 @@ public class CageType {
 	 */
 	public CellCoordinates[] getCellCoordinatesOfAllCellsInCage(
 			CellCoordinates originCell) {
-		if (canNotBeCreatedAtOrigin(originCell)) {
+		int columnOffset = getColumnOffsetToFirstUsedCellOnTheFirstRow();
+		if (canNotBeShiftedToOriginCell(originCell, columnOffset)) {
 			return new CellCoordinates[] { CellCoordinates.EMPTY };
-		}
-
-		// Get cage type matrix. If not defined, return the given origin cell as
-		// a single cell cage.
-		if (mUsedCells == null) {
-			return new CellCoordinates[] { originCell };
 		}
 
 		// Calculate coordinates of cells involved in case this cage type starts
 		// at the given origin cell.
-		CellCoordinates[] cellCoordinates = new CellCoordinates[mSize];
+		CellCoordinates[] cellCoordinates = new CellCoordinates[size];
 		int coordinatesIndex = 0;
-		for (int row = 0; row < mRows; row++) {
-			for (int col = 0; col < mCols; col++) {
-				if (mUsedCells[row][col]) {
+		for (int row = 0; row < rows; row++) {
+			for (int col = 0; col < columns; col++) {
+				if (usedCells[row][col]) {
 					cellCoordinates[coordinatesIndex++] = new CellCoordinates(
 							originCell.getRow() + row, originCell.getColumn()
-									+ col - mColOriginOffset);
+									+ col - columnOffset);
 				}
 			}
 		}
@@ -158,34 +232,28 @@ public class CageType {
 		return cellCoordinates;
 	}
 
-	private boolean canNotBeCreatedAtOrigin(
-			CellCoordinates originCellCoordinates) {
-		return (originCellCoordinates.getColumn() < mColOriginOffset);
+	private boolean canNotBeShiftedToOriginCell(CellCoordinates originCell,
+			int columnOffset) {
+		return originCell.getColumn() < columnOffset;
 	}
 
-	/**
-	 * Return the coordinates of the origin cell within the cage type in case
-	 * the top left cell of the cage type mask is placed at given offsets.
-	 * 
-	 * @return The coordinates of the most top left cell used in the cage type.
-	 */
-	public CellCoordinates getOriginCoordinates(CellCoordinates offset) {
-		return new CellCoordinates(offset.getRow(), offset.getColumn()
-				+ mColOriginOffset);
+	private int getColumnOffsetToFirstUsedCellOnTheFirstRow() {
+		for (int col = 0; col < columns; col++) {
+			if (usedCells[0][col]) {
+				return col;
+			}
+		}
+		throw new IllegalStateException(
+				"Cannot determine offset to first used cell if top row is empty");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		String result = "";
-		for (int row = 0; row < mRows; row++) {
+		for (int row = 0; row < rows; row++) {
 			result += "  ";
-			for (int col = 0; col < mCols; col++) {
-				result += mUsedCells[row][col] ? " X" : " -";
+			for (int col = 0; col < columns; col++) {
+				result += usedCells[row][col] ? " X" : " -";
 			}
 			result += "\n";
 		}
@@ -203,16 +271,13 @@ public class CageType {
 
 		CageType cageType = (CageType) o;
 
-		if (mColOriginOffset != cageType.mColOriginOffset) {
+		if (columns != cageType.columns) {
 			return false;
 		}
-		if (mCols != cageType.mCols) {
+		if (rows != cageType.rows) {
 			return false;
 		}
-		if (mRows != cageType.mRows) {
-			return false;
-		}
-		if (mSize != cageType.mSize) {
+		if (size != cageType.size) {
 			return false;
 		}
 		return getUsedCellsAsString().equals(cageType.getUsedCellsAsString());
@@ -221,19 +286,18 @@ public class CageType {
 
 	@Override
 	public int hashCode() {
-		int result = mSize;
-		result = 31 * result + mRows;
-		result = 31 * result + mCols;
-		result = 31 * result + mColOriginOffset;
+		int result = size;
+		result = 31 * result + rows;
+		result = 31 * result + columns;
 		result = 31 * result + getUsedCellsAsString().hashCode();
 		return result;
 	}
 
 	private String getUsedCellsAsString() {
 		StringBuilder stringBuilder = new StringBuilder();
-		for (int row = 0; row < mRows; row++) {
-			for (int col = 0; col < mCols; col++) {
-				stringBuilder.append(mUsedCells[row][col] ? "X" : "-");
+		for (int row = 0; row < rows; row++) {
+			for (int col = 0; col < columns; col++) {
+				stringBuilder.append(usedCells[row][col] ? "X" : "-");
 			}
 		}
 		return stringBuilder.toString();

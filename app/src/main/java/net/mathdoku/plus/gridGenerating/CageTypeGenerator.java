@@ -137,11 +137,11 @@ public class CageTypeGenerator {
 		if (GridGenerator.DEBUG_GRID_GENERATOR_FULL) {
 			int maxCageSize = 0;
 			for (CageType cageType : cageTypeList) {
-				maxCageSize = Math.max(maxCageSize, cageType.cellsUsed());
+				maxCageSize = Math.max(maxCageSize, cageType.size());
 			}
 			int[] countCageTypesPerSize = new int[maxCageSize];
 			for (CageType cageType : cageTypeList) {
-				countCageTypesPerSize[cageType.cellsUsed()]++;
+				countCageTypesPerSize[cageType.size()]++;
 			}
 			for (int i = 0; i < countCageTypesPerSize.length; i++) {
 				Log.i(TAG, String.format(
@@ -180,8 +180,8 @@ public class CageTypeGenerator {
 			int maxCageSize) {
 		List<CageType> cageTypes = new ArrayList<CageType>();
 		for (CageType cageType : cageTypeList) {
-			if (cageType.cellsUsed() >= minCageSize
-					&& cageType.cellsUsed() <= maxCageSize) {
+			if (cageType.size() >= minCageSize
+					&& cageType.size() <= maxCageSize) {
 				cageTypes.add(cageType);
 			}
 		}
@@ -283,7 +283,7 @@ public class CageTypeGenerator {
 		randomListItemSelector = new RandomListItemSelector<CageType>(random,
 				derivedCageTypes);
 		CageType randomCageType = randomListItemSelector.next();
-		if (randomCageType.cellsUsed() == numberOfCells) {
+		if (randomCageType.size() == numberOfCells) {
 			return randomCageType;
 		} else {
 			// Use the new cage type as basis to extend with another cell.

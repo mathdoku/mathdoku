@@ -34,7 +34,7 @@ public class CageTypeGeneratorTest {
 			throws Exception {
 		CageType cageType = cageTypeGenerator.getSingleCellCageType();
 		assertThat(cageType, is(notNullValue()));
-		assertThat(cageType.cellsUsed(), is(1));
+		assertThat(cageType.size(), is(1));
 		assertThat(cageType.getHeight(), is(1));
 		assertThat(cageType.getWidth(), is(1));
 	}
@@ -66,9 +66,9 @@ public class CageTypeGeneratorTest {
 				.getCageTypesWithSizeEqualOrLessThan(2);
 		assertThat(cageTypes, is(notNullValue()));
 		assertThat(cageTypes.size(), is(3));
-		assertThat(cageTypes.get(0).cellsUsed(), is(1));
-		assertThat(cageTypes.get(1).cellsUsed(), is(2));
-		assertThat(cageTypes.get(2).cellsUsed(), is(2));
+		assertThat(cageTypes.get(0).size(), is(1));
+		assertThat(cageTypes.get(1).size(), is(2));
+		assertThat(cageTypes.get(2).size(), is(2));
 	}
 
 	@Test
@@ -78,15 +78,15 @@ public class CageTypeGeneratorTest {
 				.getCageTypesWithSizeEqualOrLessThan(3);
 		assertThat(cageTypes, is(notNullValue()));
 		assertThat(cageTypes.size(), is(9));
-		assertThat(cageTypes.get(0).cellsUsed(), is(1));
-		assertThat(cageTypes.get(1).cellsUsed(), is(2));
-		assertThat(cageTypes.get(2).cellsUsed(), is(2));
-		assertThat(cageTypes.get(3).cellsUsed(), is(3));
-		assertThat(cageTypes.get(4).cellsUsed(), is(3));
-		assertThat(cageTypes.get(5).cellsUsed(), is(3));
-		assertThat(cageTypes.get(6).cellsUsed(), is(3));
-		assertThat(cageTypes.get(7).cellsUsed(), is(3));
-		assertThat(cageTypes.get(8).cellsUsed(), is(3));
+		assertThat(cageTypes.get(0).size(), is(1));
+		assertThat(cageTypes.get(1).size(), is(2));
+		assertThat(cageTypes.get(2).size(), is(2));
+		assertThat(cageTypes.get(3).size(), is(3));
+		assertThat(cageTypes.get(4).size(), is(3));
+		assertThat(cageTypes.get(5).size(), is(3));
+		assertThat(cageTypes.get(6).size(), is(3));
+		assertThat(cageTypes.get(7).size(), is(3));
+		assertThat(cageTypes.get(8).size(), is(3));
 	}
 
 	@Test
@@ -178,7 +178,7 @@ public class CageTypeGeneratorTest {
 				maxHeight, maxWidth, random);
 
 		assertThat(cageType, is(notNullValue()));
-		assertThat(cageType.cellsUsed(), is(numberOfCells));
+		assertThat(cageType.size(), is(numberOfCells));
 		assertThat(
 				"Width of cage type is smaller than or equal to maximum width",
 				cageType.getWidth() <= maxWidth, is(true));
