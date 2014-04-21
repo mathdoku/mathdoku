@@ -203,7 +203,8 @@ public class GridGenerator implements GridGeneratorInterface {
 	}
 
 	@Override
-	public Grid createGridInDevelopmentMode(GridGeneratingParameters gridGeneratingParameters) {
+	public Grid createGridInDevelopmentMode(
+			GridGeneratingParameters gridGeneratingParameters) {
 		developmentMode = true;
 		return createGrid(gridGeneratingParameters);
 	}
@@ -300,8 +301,6 @@ public class GridGenerator implements GridGeneratorInterface {
 	}
 
 	private boolean attemptToCreateFirstCageWithBiggerSize() {
-		// todo: first determine start position and than try to fit in a cage in
-		// the space to the right and below
 		CageType cageType = mCageTypeGenerator.getRandomCageType(
 				gridGeneratingParameters.getMaxCageSize(), gridSizeValue,
 				gridSizeValue, mRandom);
@@ -337,11 +336,15 @@ public class GridGenerator implements GridGeneratorInterface {
 					"Only to be used if no other cells are placed in the grid.");
 		}
 
+		CellCoordinates topLeftCellInCageType = cageType
+				.getCellCoordinatesTopLeftCell();
+
 		// Use +1 in calls to randomizer to prevent exceptions in case the
 		// entire height and/or width is needed for the cage type.
-		int startRow = mRandom
-				.nextInt(gridSizeValue - cageType.getHeight() + 1);
-		int startCol = mRandom.nextInt(gridSizeValue - cageType.getWidth() + 1);
+		int startRow = topLeftCellInCageType.getRow()
+				+ mRandom.nextInt(gridSizeValue - cageType.getHeight() + 1);
+		int startCol = topLeftCellInCageType.getColumn()
+				+ mRandom.nextInt(gridSizeValue - cageType.getWidth() + 1);
 		return new CellCoordinates(startRow, startCol);
 	}
 

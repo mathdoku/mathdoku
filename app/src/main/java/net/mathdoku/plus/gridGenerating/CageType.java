@@ -247,6 +247,10 @@ public class CageType {
 				"Cannot determine offset to first used cell if top row is empty");
 	}
 
+	public CellCoordinates getCellCoordinatesTopLeftCell() {
+		return new CellCoordinates(0, getColumnOffsetToFirstUsedCellOnTheFirstRow());
+	}
+
 	@Override
 	public String toString() {
 		String result = "";
