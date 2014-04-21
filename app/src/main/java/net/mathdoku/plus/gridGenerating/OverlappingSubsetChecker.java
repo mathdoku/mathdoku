@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OverlappingSubsetChecker {
-	private static final String TAG = GridGenerator.class.getName();
+	private static final String TAG = OverlappingSubsetChecker.class.getName();
 
 	private final Matrix<Integer> correctValueMatrix;
 	private int[] countValues;
