@@ -141,7 +141,7 @@ public class CageTypeGenerator {
 			}
 			int[] countCageTypesPerSize = new int[maxCageSize];
 			for (CageType cageType : cageTypeList) {
-				countCageTypesPerSize[cageType.size()]++;
+				countCageTypesPerSize[cageType.size() - 1]++;
 			}
 			for (int i = 0; i < countCageTypesPerSize.length; i++) {
 				Log.i(TAG, String.format(
