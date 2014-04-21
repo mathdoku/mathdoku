@@ -3,8 +3,6 @@ package net.mathdoku.plus.gridgenerating.cageresult;
 import net.mathdoku.plus.enums.CageOperator;
 
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public abstract class CageResult {
 	private static final String TAG = CageResult.class.getName();
@@ -21,29 +19,43 @@ public abstract class CageResult {
 	CageResult() {
 	}
 
-	public static CageResult tryToCreate(CageOperator cageOperator,
+	public static boolean canBeCreated(CageOperator cageOperator,
+			int... cellValues) {
+		switch (cageOperator) {
+		case NONE:
+			return SingeCellCageResult.canBeCreated(cellValues);
+		case ADD:
+			return AdditionCageResult.canBeCreated(cellValues);
+		case SUBTRACT:
+			return SubtractionCageResult.canBeCreated(cellValues);
+		case MULTIPLY:
+			return MultiplicationCageResult.canBeCreated(cellValues);
+		case DIVIDE:
+			return DivisionCageResult.canBeCreated(cellValues);
+		}
+		throw new IllegalArgumentException(String.format(
+				"Operator '%s' not allowed for cell values '%s'.",
+				cageOperator.toString(), Arrays.toString(cellValues)));
+	}
+
+	public static CageResult create(CageOperator cageOperator,
 			int... cellValues) {
 		if (cellValues == null) {
 			throw new IllegalArgumentException(
 					"Parameter cellValues cannot be null.");
 		}
 
-		try {
-			switch (cageOperator) {
-			case NONE:
-				return SingeCellCageResult.tryToCreate(cellValues);
-			case ADD:
-				return AdditionCageResult.tryToCreate(cellValues);
-			case SUBTRACT:
-				return SubtractionCageResult.tryToCreate(cellValues);
-			case MULTIPLY:
-				return MultiplicationCageResult.tryToCreate(cellValues);
-			case DIVIDE:
-				return DivisionCageResult.tryToCreate(cellValues);
-			}
-		} catch (InstantiationException e) {
-			Logger.getLogger(TAG).log(Level.WARNING, "Create new cage result failed", e);
-			return NullCageResult.create();
+		switch (cageOperator) {
+		case NONE:
+			return SingeCellCageResult.tryToCreate(cellValues);
+		case ADD:
+			return AdditionCageResult.tryToCreate(cellValues);
+		case SUBTRACT:
+			return SubtractionCageResult.tryToCreate(cellValues);
+		case MULTIPLY:
+			return MultiplicationCageResult.tryToCreate(cellValues);
+		case DIVIDE:
+			return DivisionCageResult.tryToCreate(cellValues);
 		}
 
 		throw new IllegalArgumentException(String.format(

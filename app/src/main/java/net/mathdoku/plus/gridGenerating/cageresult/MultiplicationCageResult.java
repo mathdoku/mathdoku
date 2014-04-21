@@ -5,17 +5,16 @@ import net.mathdoku.plus.enums.CageOperator;
 import java.util.Arrays;
 
 public class MultiplicationCageResult extends CageResult {
-	static MultiplicationCageResult tryToCreate(int... cellValues)
-			throws InstantiationException {
+	static MultiplicationCageResult tryToCreate(int... cellValues) {
 		if (canBeCreated(cellValues)) {
 			return new MultiplicationCageResult(cellValues);
 		}
-		throw new InstantiationException(String.format(
+		throw new IllegalStateException(String.format(
 				"Cannot instantiate with specified values: %s",
 				Arrays.toString(cellValues)));
 	}
 
-	private static boolean canBeCreated(int... cellValues) {
+	public static boolean canBeCreated(int... cellValues) {
 		return cellValues != null && cellValues.length >= 2;
 	}
 

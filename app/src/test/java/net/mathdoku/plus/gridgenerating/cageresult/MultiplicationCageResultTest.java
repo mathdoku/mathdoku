@@ -7,13 +7,13 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 public class MultiplicationCageResultTest {
-	@Test(expected = InstantiationException.class)
-	public void tryToCreate_NullValue_ThrowInstantiationException() throws Exception {
+	@Test(expected = IllegalStateException.class)
+	public void tryToCreate_NullValue_ThrowsIllegalStateException() throws Exception {
 		MultiplicationCageResult.tryToCreate(null);
 	}
 
-	@Test(expected = InstantiationException.class)
-	public void tryToCreate_TooLittleValues_ThrowInstantiationException() throws Exception {
+	@Test(expected = IllegalStateException.class)
+	public void tryToCreate_TooLittleValues_ThrowsIllegalStateException() throws Exception {
 		MultiplicationCageResult.tryToCreate(1);
 	}
 

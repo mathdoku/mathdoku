@@ -80,20 +80,24 @@ class CageOperatorGenerator {
 	}
 
 	private void addPossibleCageResult(CageOperator cageOperator, int weight) {
-		CageResult possibleCageResult = CageResult.tryToCreate(cageOperator,
-				cellValues);
-		if (possibleCageResult.isValid()) {
-			possibleCageResults.put(possibleCageResult, weight);
+		if (CageResult.canBeCreated(cageOperator, cellValues)) {
+			CageResult possibleCageResult = CageResult.create(cageOperator,
+					cellValues);
+			if (possibleCageResult.isValid()) {
+				possibleCageResults.put(possibleCageResult, weight);
+			}
 		}
 	}
 
 	private void addPossibleCageResultMultiply(int weight) {
-		CageResult cageResultMultiplyOperator = CageResult.tryToCreate(
-				CageOperator.MULTIPLY, cellValues);
-		if (cageResultMultiplyOperator.isValid()
-				&& cageResultMultiplyOperator.getResult() <= gridGeneratingParameters
-						.getMaxCageResult()) {
-			possibleCageResults.put(cageResultMultiplyOperator, weight);
+		if (CageResult.canBeCreated(CageOperator.MULTIPLY, cellValues)) {
+			CageResult cageResultMultiplyOperator = CageResult.create(
+					CageOperator.MULTIPLY, cellValues);
+			if (cageResultMultiplyOperator.isValid()
+					&& cageResultMultiplyOperator.getResult() <= gridGeneratingParameters
+							.getMaxCageResult()) {
+				possibleCageResults.put(cageResultMultiplyOperator, weight);
+			}
 		}
 	}
 
