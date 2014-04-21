@@ -43,6 +43,7 @@ public class GridGenerator implements GridGeneratorInterface {
 	private Matrix<Integer> cageIdMatrix;
 	private Random mRandom;
 	private CageTypeGenerator mCageTypeGenerator;
+	private long mTimeStarted;
 
 	public GridGenerator(Listener listener) {
 		this.listener = listener;
@@ -69,10 +70,10 @@ public class GridGenerator implements GridGeneratorInterface {
 			debugLog(this.gridGeneratingParameters.toString());
 		}
 
-		final long mTimeStarted = System.currentTimeMillis();
 
 		Grid grid = null;
 		int attemptsToCreateGrid = 0;
+		mTimeStarted = System.currentTimeMillis();
 		while (grid == null) {
 			attemptsToCreateGrid++;
 
@@ -88,20 +89,11 @@ public class GridGenerator implements GridGeneratorInterface {
 			}
 
 			grid = attemptToCreateGrid();
+			cancelOnSlowGridGeneration();
 		}
 		if (DEBUG_GRID_GENERATOR) {
 			debugLog("Finished create grid in %d attempts.",
 					attemptsToCreateGrid);
-		}
-		if (Config.mAppMode == Config.AppMode.DEVELOPMENT
-				&& System.currentTimeMillis() - mTimeStarted > 30 * 1000) {
-			// Sometimes grid generation takes too long. Until I have a game
-			// seed which reproduces this problem I can not fix it. If such
-			// a game is found in development, an exception will be thrown
-			// to investigate it.
-			final int elapsedTimeInSeconds = (int) ((System.currentTimeMillis() - mTimeStarted) / 1000);
-			signalSlowGridGeneration(elapsedTimeInSeconds);
-			return null;
 		}
 
 		grid.save();
@@ -110,8 +102,10 @@ public class GridGenerator implements GridGeneratorInterface {
 
 	private Grid attemptToCreateGrid() {
 		randomizeCorrectValueMatrix();
+		cancelOnSlowGridGeneration();
 
 		createCells();
+		cancelOnSlowGridGeneration();
 
 		// Check whether the generating process should be aborted due to
 		// cancellation of the grid dialog.
@@ -126,6 +120,7 @@ public class GridGenerator implements GridGeneratorInterface {
 			// Start over again.
 			return null;
 		}
+		cancelOnSlowGridGeneration();
 
 		// Check whether the generating process should be aborted due to
 		// cancellation of the grid dialog.
@@ -141,6 +136,7 @@ public class GridGenerator implements GridGeneratorInterface {
 				.setCages(mCages)
 				.setGridGeneratingParameters(this.gridGeneratingParameters);
 		Grid grid = mGridBuilder.build();
+		cancelOnSlowGridGeneration();
 
 		if (hasNonUniqueSolution(grid)) {
 			return null;
@@ -192,9 +188,21 @@ public class GridGenerator implements GridGeneratorInterface {
 		}
 	}
 
+	private void cancelOnSlowGridGeneration() {
+		if (Config.mAppMode == Config.AppMode.DEVELOPMENT
+				&& System.currentTimeMillis() - mTimeStarted > 30 * 1000) {
+			// Sometimes grid generation takes too long. Until I have a game
+			// seed which reproduces this problem I can not fix it. If such
+			// a game is found in development, an exception will be thrown
+			// to investigate it.
+			final int elapsedTimeInSeconds = (int) ((System.currentTimeMillis() - mTimeStarted) / 1000);
+			signalSlowGridGeneration(elapsedTimeInSeconds);
+		}
+	}
+
 	private void signalSlowGridGeneration(int elapsedTimeInSeconds) {
 		String message = String.format(
-				"Game generation took too long (%d) secs.",
+				"Game generation took too long (%d) secs. Generating is aborted",
 				elapsedTimeInSeconds);
 		listener.updateProgressDetailLevel(message);
 		listener.signalSlowGridGeneration();
@@ -235,6 +243,7 @@ public class GridGenerator implements GridGeneratorInterface {
 		mCageTypeGenerator = CageTypeGenerator.getInstance();
 
 		for (int attempts = 1; attempts <= MAX_ATTEMPTS_TO_FILL_GRID_WITH_CAGES; attempts++) {
+			cancelOnSlowGridGeneration();
 			if (listener.isCancelled()) {
 				return false;
 			}
@@ -252,6 +261,7 @@ public class GridGenerator implements GridGeneratorInterface {
 
 		if (gridGeneratingParameters.getMaxCageSize() >= CageTypeGenerator.MAX_SIZE_STANDARD_CAGE_TYPE) {
 			createFirstCageWithBiggerSize();
+			cancelOnSlowGridGeneration();
 			if (listener.isCancelled()) {
 				return false;
 			}
@@ -261,6 +271,7 @@ public class GridGenerator implements GridGeneratorInterface {
 		CellCoordinates coordinatesCellNotInAnyCage = cageIdMatrix
 				.getCellCoordinatesForFirstEmptyCell();
 		while (coordinatesCellNotInAnyCage.isNotNull()) {
+			cancelOnSlowGridGeneration();
 			if (listener.isCancelled()) {
 				return false;
 			}
@@ -291,6 +302,7 @@ public class GridGenerator implements GridGeneratorInterface {
 
 	private void createFirstCageWithBiggerSize() {
 		for (int attempts = 1; attempts <= 10; attempts++) {
+			cancelOnSlowGridGeneration();
 			if (listener.isCancelled()) {
 				return;
 			}
@@ -504,6 +516,7 @@ public class GridGenerator implements GridGeneratorInterface {
 		randomCageTypeSelector.setLastItemToBeSelected(mCageTypeGenerator
 				.getSingleCellCageType());
 		while (!randomCageTypeSelector.isEmpty()) {
+			cancelOnSlowGridGeneration();
 			// Check whether the generating process should be aborted
 			// due to cancellation of the grid dialog.
 			if (listener.isCancelled()) {
