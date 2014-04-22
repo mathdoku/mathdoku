@@ -343,7 +343,7 @@ public class GridGenerator implements GridGeneratorInterface {
 	}
 
 	private CellCoordinates getCellCoordinatesForFirstCage(CageType cageType) {
-		if (mCages.size() != 0) {
+		if (!mCages.isEmpty()) {
 			throw new IllegalStateException(
 					"Only to be used if no other cells are placed in the grid.");
 		}
