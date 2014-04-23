@@ -11,8 +11,9 @@ import net.mathdoku.plus.ui.PuzzleFragment;
 public class GameTimer extends AsyncTask<Void, Long, Long> {
 	private final static String TAG = GameTimer.class.getName();
 
-	// Reference to activity that started the timer.
+	// References to activity that started the timer and the solving attempt to which the timer applies
 	private final PuzzleFragment mPuzzleFragment;
+	private final int solvingAttemptId;
 
 	// Starting point of timer. Note this is not the real time at which the game
 	// started but the actual time at which the timer started minus the time
@@ -26,8 +27,9 @@ public class GameTimer extends AsyncTask<Void, Long, Long> {
 	// the starting time of the game is decreased.
 	public Long mCheatPenaltyTime = (long) 0;
 
-	public GameTimer(PuzzleFragment puzzleFragmentActivity) {
+	public GameTimer(PuzzleFragment puzzleFragmentActivity, int solvingAttemptId) {
 		mPuzzleFragment = puzzleFragmentActivity;
+		this.solvingAttemptId = solvingAttemptId;
 	}
 
 	/*
@@ -102,5 +104,9 @@ public class GameTimer extends AsyncTask<Void, Long, Long> {
 		mStartTime -= cheatPenaltyTime;
 		mElapsedTime += cheatPenaltyTime;
 		mCheatPenaltyTime += cheatPenaltyTime;
+	}
+
+	public boolean isCreatedForSolvingAttemptId(int solvingAttemptId) {
+		return this.solvingAttemptId == solvingAttemptId;
 	}
 }
