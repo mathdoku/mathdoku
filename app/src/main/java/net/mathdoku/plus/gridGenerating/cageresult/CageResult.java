@@ -22,18 +22,32 @@ public abstract class CageResult {
 
 	public static boolean canBeCreated(CageOperator cageOperator,
 			int... cellValues) {
+		boolean canBeCreated = false;
 		switch (cageOperator) {
 		case NONE:
-			return SingeCellCageResult.canBeCreated(cellValues);
+			canBeCreated = SingeCellCageResult.canBeCreated(cellValues);
+			break;
 		case ADD:
-			return AdditionCageResult.canBeCreated(cellValues);
+			canBeCreated = AdditionCageResult.canBeCreated(cellValues);
+			break;
 		case SUBTRACT:
-			return SubtractionCageResult.canBeCreated(cellValues);
+			canBeCreated = SubtractionCageResult.canBeCreated(cellValues);
+			break;
 		case MULTIPLY:
-			return MultiplicationCageResult.canBeCreated(cellValues);
+			canBeCreated = MultiplicationCageResult.canBeCreated(cellValues);
+			break;
 		case DIVIDE:
-			return DivisionCageResult.canBeCreated(cellValues);
+			canBeCreated = DivisionCageResult.canBeCreated(cellValues);
+			break;
+		default:
+			throwExceptionForInvalidOperator(cageOperator, cellValues);
+			break;
 		}
+		return canBeCreated;
+	}
+
+	private static void throwExceptionForInvalidOperator(
+			CageOperator cageOperator, int[] cellValues) {
 		throw new IllegalArgumentException(String.format(
 				"Operator '%s' not allowed for cell values '%s'.",
 				cageOperator.toString(), Arrays.toString(cellValues)));
@@ -46,22 +60,28 @@ public abstract class CageResult {
 					"Parameter cellValues cannot be null.");
 		}
 
+		CageResult cageResult = NullCageResult.create();
 		switch (cageOperator) {
 		case NONE:
-			return SingeCellCageResult.tryToCreate(cellValues);
+			cageResult = SingeCellCageResult.tryToCreate(cellValues);
+			break;
 		case ADD:
-			return AdditionCageResult.tryToCreate(cellValues);
+			cageResult = AdditionCageResult.tryToCreate(cellValues);
+			break;
 		case SUBTRACT:
-			return SubtractionCageResult.tryToCreate(cellValues);
+			cageResult = SubtractionCageResult.tryToCreate(cellValues);
+			break;
 		case MULTIPLY:
-			return MultiplicationCageResult.tryToCreate(cellValues);
+			cageResult = MultiplicationCageResult.tryToCreate(cellValues);
+			break;
 		case DIVIDE:
-			return DivisionCageResult.tryToCreate(cellValues);
+			cageResult = DivisionCageResult.tryToCreate(cellValues);
+			break;
+		default:
+			throwExceptionForInvalidOperator(cageOperator, cellValues);
+			break;
 		}
-
-		throw new IllegalArgumentException(String.format(
-				"Operator '%s' not allowed for cell values '%s'.",
-				cageOperator.toString(), Arrays.toString(cellValues)));
+		return cageResult;
 	}
 
 	public abstract int getResult();
