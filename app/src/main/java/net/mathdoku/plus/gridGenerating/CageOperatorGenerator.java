@@ -6,12 +6,9 @@ import net.mathdoku.plus.gridgenerating.cageresult.CageResult;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.logging.Logger;
 
 class CageOperatorGenerator {
 	private static final String TAG = CageOperatorGenerator.class.getName();
-
-	private static final Logger LOGGER = Logger.getLogger(TAG);
 
 	private static final int WEIGHT_CAGE_RESULT_WITH_NONE_OPERATOR = 100;
 	private static final int WEIGHT_CAGE_RESULT_WITH_DIVIDE_OPERATOR = 50;
