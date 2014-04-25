@@ -12,9 +12,9 @@ import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.enums.GridType;
+import net.mathdoku.plus.gridgenerating.GeneratePuzzleProgressDialog;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParametersBuilder;
-import net.mathdoku.plus.gridgenerating.ProgressDialogGeneratePuzzle;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.storage.database.DatabaseHelper;
@@ -103,10 +103,10 @@ public class DevelopmentHelper {
 	private static void generateGames(
 			final PuzzleFragmentActivity puzzleFragmentActivity) {
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
-			puzzleFragmentActivity.mProgressDialogGeneratePuzzle = new ProgressDialogGeneratePuzzle(
+			puzzleFragmentActivity.mGeneratePuzzleProgressDialog = new GeneratePuzzleProgressDialog(
 					puzzleFragmentActivity,
 					createArrayOfRandomGridGeneratingParameters(10));
-			puzzleFragmentActivity.mProgressDialogGeneratePuzzle.show();
+			puzzleFragmentActivity.mGeneratePuzzleProgressDialog.show();
 		}
 	}
 

@@ -2,6 +2,7 @@ package net.mathdoku.plus.gridgenerating;
 
 import android.app.Activity;
 
+import net.mathdoku.plus.gridgenerating.iface.GridGeneratorListenerIface;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.storage.database.DatabaseHelper;
 import net.mathdoku.plus.util.Util;
@@ -29,30 +30,7 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricGradleTestRunner.class)
 public class GridGeneratorTest {
-	GridGeneratorListener gridGeneratorListener;
-
-	private static class GridGeneratorListener implements
-			GridGenerator.Listener {
-		@Override
-		public boolean isCancelled() {
-			return false;
-		}
-
-		@Override
-		public void updateProgressHighLevel(String text) {
-			// Swallow
-		}
-
-		@Override
-		public void updateProgressDetailLevel(String text) {
-			// Swallow
-		}
-
-		@Override
-		public void signalSlowGridGeneration() {
-			// Swallow
-		}
-	}
+	GridGeneratorListenerIface gridGeneratorListener;
 
 	@Before
 	public void setup() {
@@ -60,7 +38,27 @@ public class GridGeneratorTest {
 		new Util(activity);
 		DatabaseHelper.getInstance(activity);
 
-		gridGeneratorListener = new GridGeneratorListener();
+		gridGeneratorListener = new GridGeneratorListenerIface() {
+			@Override
+			public boolean isCancelled() {
+				return false;
+			}
+
+			@Override
+			public void updateProgressHighLevel(String text) {
+				// swallow
+			}
+
+			@Override
+			public void updateProgressDetailLevel(String text) {
+				// swallow
+			}
+
+			@Override
+			public void signalSlowGridGeneration() {
+				// swallow
+			}
+		};
 	}
 
 	@After

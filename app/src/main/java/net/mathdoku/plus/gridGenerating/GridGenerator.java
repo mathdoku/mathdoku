@@ -2,12 +2,13 @@ package net.mathdoku.plus.gridgenerating;
 
 import android.util.Log;
 
-import net.mathdoku.plus.gridsolving.ComboGenerator;
-import net.mathdoku.plus.gridsolving.GridSolver;
-
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.griddefinition.GridDefinition;
 import net.mathdoku.plus.gridgenerating.CellCoordinates.CellCoordinates;
+import net.mathdoku.plus.gridgenerating.iface.GridGeneratorIface;
+import net.mathdoku.plus.gridgenerating.iface.GridGeneratorListenerIface;
+import net.mathdoku.plus.gridsolving.ComboGenerator;
+import net.mathdoku.plus.gridsolving.GridSolver;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cell.Cell;
 import net.mathdoku.plus.puzzle.cell.CellBuilder;
@@ -22,7 +23,7 @@ import java.util.Random;
 /**
  * Generate a single grid.
  */
-public class GridGenerator implements GridGeneratorInterface {
+public class GridGenerator implements GridGeneratorIface {
 	private static final String TAG = GridGenerator.class.getName();
 
 	// Remove "&& false" in following line to show debug information about
@@ -33,7 +34,7 @@ public class GridGenerator implements GridGeneratorInterface {
 	public static final boolean DEBUG_GRID_GENERATOR_FULL = DEBUG_GRID_GENERATOR && false;
 
 	private static final int MAX_ATTEMPTS_TO_FILL_GRID_WITH_CAGES = 20;
-	private final Listener listener;
+	private final GridGeneratorListenerIface gridGeneratorListener;
 	private boolean developmentMode = false;
 	private GridGeneratingParameters gridGeneratingParameters;
 	private int gridSizeValue;
@@ -45,8 +46,8 @@ public class GridGenerator implements GridGeneratorInterface {
 	private CageTypeGenerator mCageTypeGenerator;
 	private long mTimeStarted;
 
-	public GridGenerator(Listener listener) {
-		this.listener = listener;
+	public GridGenerator(GridGeneratorListenerIface gridGeneratorListener) {
+		this.gridGeneratorListener = gridGeneratorListener;
 		developmentMode = false;
 	}
 
@@ -70,7 +71,6 @@ public class GridGenerator implements GridGeneratorInterface {
 			debugLog(this.gridGeneratingParameters.toString());
 		}
 
-
 		Grid grid = null;
 		int attemptsToCreateGrid = 0;
 		mTimeStarted = System.currentTimeMillis();
@@ -79,12 +79,12 @@ public class GridGenerator implements GridGeneratorInterface {
 
 			// Check whether the generating process should be aborted due to
 			// cancellation of the grid dialog.
-			if (listener.isCancelled()) {
+			if (gridGeneratorListener.isCancelled()) {
 				return null;
 			}
 
 			if (developmentMode) {
-				listener.updateProgressHighLevel("attempt"
+				gridGeneratorListener.updateProgressHighLevel("attempt"
 						+ attemptsToCreateGrid);
 			}
 
@@ -109,7 +109,7 @@ public class GridGenerator implements GridGeneratorInterface {
 
 		// Check whether the generating process should be aborted due to
 		// cancellation of the grid dialog.
-		if (listener.isCancelled()) {
+		if (gridGeneratorListener.isCancelled()) {
 			return null;
 		}
 
@@ -124,7 +124,7 @@ public class GridGenerator implements GridGeneratorInterface {
 
 		// Check whether the generating process should be aborted due to
 		// cancellation of the grid dialog.
-		if (listener.isCancelled()) {
+		if (gridGeneratorListener.isCancelled()) {
 			return null;
 		}
 
@@ -157,7 +157,8 @@ public class GridGenerator implements GridGeneratorInterface {
 		}
 
 		if (DEBUG_GRID_GENERATOR) {
-			listener.updateProgressDetailLevel("Verify unique solution");
+			gridGeneratorListener
+					.updateProgressDetailLevel("Verify unique solution");
 		}
 		if (new GridSolver(gridSizeValue, grid.getCages()).hasUniqueSolution()) {
 			if (DEBUG_GRID_GENERATOR) {
@@ -201,11 +202,11 @@ public class GridGenerator implements GridGeneratorInterface {
 	}
 
 	private void signalSlowGridGeneration(int elapsedTimeInSeconds) {
-		String message = String.format(
-				"Game generation took too long (%d) secs. Generating is aborted",
-				elapsedTimeInSeconds);
-		listener.updateProgressDetailLevel(message);
-		listener.signalSlowGridGeneration();
+		String message = String
+				.format("Game generation took too long (%d) secs. Generating is aborted",
+						elapsedTimeInSeconds);
+		gridGeneratorListener.updateProgressDetailLevel(message);
+		gridGeneratorListener.signalSlowGridGeneration();
 		Log.i(TAG, message);
 		Log.i(TAG, gridGeneratingParameters.toString());
 	}
@@ -223,7 +224,7 @@ public class GridGenerator implements GridGeneratorInterface {
 	 */
 	private void randomizeCorrectValueMatrix() {
 		if (developmentMode) {
-			listener.updateProgressDetailLevel("Randomize grid.");
+			gridGeneratorListener.updateProgressDetailLevel("Randomize grid.");
 		}
 		correctValueMatrix = new RandomIntegerMatrixGenerator(gridSizeValue,
 				mRandom).getMatrix();
@@ -237,14 +238,14 @@ public class GridGenerator implements GridGeneratorInterface {
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	private boolean fillGridWithCages() {
 		if (developmentMode) {
-			listener.updateProgressDetailLevel("Create cages.");
+			gridGeneratorListener.updateProgressDetailLevel("Create cages.");
 		}
 
 		mCageTypeGenerator = CageTypeGenerator.getInstance();
 
 		for (int attempts = 1; attempts <= MAX_ATTEMPTS_TO_FILL_GRID_WITH_CAGES; attempts++) {
 			cancelOnSlowGridGeneration();
-			if (listener.isCancelled()) {
+			if (gridGeneratorListener.isCancelled()) {
 				return false;
 			}
 			if (attemptToFillGridWithCages()) {
@@ -262,7 +263,7 @@ public class GridGenerator implements GridGeneratorInterface {
 		if (gridGeneratingParameters.getMaxCageSize() >= CageTypeGenerator.MAX_SIZE_STANDARD_CAGE_TYPE) {
 			createFirstCageWithBiggerSize();
 			cancelOnSlowGridGeneration();
-			if (listener.isCancelled()) {
+			if (gridGeneratorListener.isCancelled()) {
 				return false;
 			}
 		}
@@ -272,7 +273,7 @@ public class GridGenerator implements GridGeneratorInterface {
 				.getCellCoordinatesForFirstEmptyCell();
 		while (coordinatesCellNotInAnyCage.isNotNull()) {
 			cancelOnSlowGridGeneration();
-			if (listener.isCancelled()) {
+			if (gridGeneratorListener.isCancelled()) {
 				return false;
 			}
 
@@ -292,7 +293,7 @@ public class GridGenerator implements GridGeneratorInterface {
 				gridGeneratingParameters);
 		if (new GridDatabaseAdapter().getByGridDefinition(gridDefinition) != null) {
 			if (developmentMode) {
-				listener
+				gridGeneratorListener
 						.updateProgressDetailLevel("Grid has been generated before.");
 			}
 			return false;
@@ -303,7 +304,7 @@ public class GridGenerator implements GridGeneratorInterface {
 	private void createFirstCageWithBiggerSize() {
 		for (int attempts = 1; attempts <= 10; attempts++) {
 			cancelOnSlowGridGeneration();
-			if (listener.isCancelled()) {
+			if (gridGeneratorListener.isCancelled()) {
 				return;
 			}
 			if (attemptToCreateFirstCageWithBiggerSize()) {
@@ -519,7 +520,7 @@ public class GridGenerator implements GridGeneratorInterface {
 			cancelOnSlowGridGeneration();
 			// Check whether the generating process should be aborted
 			// due to cancellation of the grid dialog.
-			if (listener.isCancelled()) {
+			if (gridGeneratorListener.isCancelled()) {
 				return false;
 			}
 
@@ -544,7 +545,7 @@ public class GridGenerator implements GridGeneratorInterface {
 		}
 		if (noMoreSingleCellCagesAllowed()) {
 			if (developmentMode) {
-				listener.updateProgressDetailLevel(String.format(
+				gridGeneratorListener.updateProgressDetailLevel(String.format(
 						"Found more single cell cages than allowed (%d).",
 						gridGeneratingParameters.getMaximumSingleCellCages()));
 			}
@@ -552,20 +553,5 @@ public class GridGenerator implements GridGeneratorInterface {
 		}
 
 		return false;
-	}
-
-	interface Listener {
-		// Requests the listener whether the generating of this grid has to be
-		// cancelled.
-		boolean isCancelled();
-
-		// Send a high level progress update to the listener.
-		void updateProgressHighLevel(String text);
-
-		// Send a detail level progress update to the listener.
-		void updateProgressDetailLevel(String text);
-
-		// Send signal about slow grid generating
-		void signalSlowGridGeneration();
 	}
 }

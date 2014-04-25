@@ -5,6 +5,10 @@ import android.util.Log;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
+import net.mathdoku.plus.gridgenerating.iface.GridGeneratorAsyncTaskIface;
+import net.mathdoku.plus.gridgenerating.iface.GridGeneratorAsyncTaskListenerIface;
+import net.mathdoku.plus.gridgenerating.iface.GridGeneratorIface;
+import net.mathdoku.plus.gridgenerating.iface.GridGeneratorListenerIface;
 import net.mathdoku.plus.puzzle.grid.Grid;
 
 import java.util.ArrayList;
@@ -16,36 +20,13 @@ import java.util.List;
  */
 public class GridGeneratorAsyncTask extends
 		AsyncTask<GridGeneratingParameters, String, List<Grid>> implements
-		GridGenerator.Listener {
+		GridGeneratorAsyncTaskIface, GridGeneratorListenerIface {
 	private static final String TAG = GridGeneratorAsyncTask.class.getName();
 
-	private final Listener mListener;
-
-	public interface Listener {
-		/**
-		 * Inform the listeners if a grid is generated. This event is only sent
-		 * in case multiple grids have to be generated.
-		 */
-		void onGridGenerated();
-
-		/**
-		 * Inform the listeners when the grid generator has finished generating
-		 * the grid(s).
-		 * 
-		 * @param grid
-		 *            The list of generated grid(s).
-		 */
-		void onFinishGridGenerator(List<Grid> grid);
-
-		void onCancelGridGeneratorAsyncTask();
-
-		void onHighLevelProgressUpdate(String text);
-
-		void onDetailLevelProgressDetail(String text);
-	}
+	private final GridGeneratorAsyncTaskListenerIface gridGeneratorAsyncTaskListenerIface;
 
 	public static class ObjectsCreator {
-		public GridGeneratorInterface createGridGenerator(
+		public GridGeneratorIface createGridGenerator(
 				GridGeneratorAsyncTask gridGeneratorAsyncTask) {
 			return new GridGenerator(gridGeneratorAsyncTask);
 		}
@@ -57,19 +38,31 @@ public class GridGeneratorAsyncTask extends
 	private String prefixProgressUpdateDevelopmentMode = "";
 	private boolean forceSlowGeneratingExceptionInDevelopmentMode;
 
-	public GridGeneratorAsyncTask(Listener listener) {
-		this(listener, null);
+	public GridGeneratorAsyncTask(
+			GridGeneratorAsyncTaskListenerIface generatorAsyncTaskListenerInterface) {
+		this(generatorAsyncTaskListenerInterface, null);
 	}
 
 	// package private constructor is needed for unit testing.
-	GridGeneratorAsyncTask(Listener listener, ObjectsCreator objectsCreator) {
-		if (listener == null) {
+	GridGeneratorAsyncTask(
+			GridGeneratorAsyncTaskListenerIface generatorAsyncTaskListenerInterface,
+			ObjectsCreator objectsCreator) {
+		if (generatorAsyncTaskListenerInterface == null) {
 			throw new IllegalArgumentException("Listener should be specified.");
 		}
-		mListener = listener;
+		this.gridGeneratorAsyncTaskListenerIface = generatorAsyncTaskListenerInterface;
 
 		this.objectsCreator = objectsCreator == null ? new ObjectsCreator()
 				: objectsCreator;
+	}
+
+	public void createGrids(
+			GridGeneratingParameters... gridGeneratingParametersArray) {
+		super.execute(gridGeneratingParametersArray);
+	}
+
+	public void cancel() {
+		super.cancel(true);
 	}
 
 	@Override
@@ -103,7 +96,7 @@ public class GridGeneratorAsyncTask extends
 
 	private List<Grid> generateGridsInDevelopmentMode(
 			GridGeneratingParameters... gridGeneratingParametersArray) {
-		GridGeneratorInterface gridGenerator = objectsCreator
+		GridGeneratorIface gridGenerator = objectsCreator
 				.createGridGenerator(this);
 		List<Grid> generatedGridsInDevelopmentMode = new ArrayList<Grid>();
 		for (GridGeneratingParameters gridGeneratingParameters : gridGeneratingParametersArray) {
@@ -115,14 +108,14 @@ public class GridGeneratorAsyncTask extends
 			if (grid != null) {
 				generatedGridsInDevelopmentMode.add(grid);
 			}
-			mListener.onGridGenerated();
+			gridGeneratorAsyncTaskListenerIface.onGridGenerated();
 		}
 		return generatedGridsInDevelopmentMode;
 	}
 
 	private List<Grid> generateGridsInNormalMode(
 			GridGeneratingParameters... gridGeneratingParametersArray) {
-		GridGeneratorInterface gridGenerator = objectsCreator
+		GridGeneratorIface gridGenerator = objectsCreator
 				.createGridGenerator(this);
 		List<Grid> generatedGrids = new ArrayList<Grid>();
 		for (GridGeneratingParameters gridGeneratingParameters : gridGeneratingParametersArray) {
@@ -136,12 +129,15 @@ public class GridGeneratorAsyncTask extends
 
 	@Override
 	public void updateProgressHighLevel(String text) {
-		mListener.onHighLevelProgressUpdate(prefixProgressUpdateDevelopmentMode + text);
+		gridGeneratorAsyncTaskListenerIface
+				.onHighLevelProgressUpdate(prefixProgressUpdateDevelopmentMode
+						+ text);
 	}
 
 	@Override
 	public void updateProgressDetailLevel(String text) {
-		mListener.onDetailLevelProgressDetail(text);
+		gridGeneratorAsyncTaskListenerIface
+				.onDetailLevelProgressDetail(text);
 	}
 
 	@Override
@@ -165,12 +161,14 @@ public class GridGeneratorAsyncTask extends
 					"Investigate slow game generation. See logcat for more info.");
 		}
 
-		mListener.onFinishGridGenerator(generatedGrids);
+		gridGeneratorAsyncTaskListenerIface
+				.onFinishGridGenerator(generatedGrids);
 	}
 
 	@Override
 	protected void onCancelled(List<Grid> generatedGrids) {
-		mListener.onCancelGridGeneratorAsyncTask();
+		gridGeneratorAsyncTaskListenerIface
+				.onCancelGridGeneratorAsyncTask();
 		super.onCancelled(generatedGrids);
 	}
 }

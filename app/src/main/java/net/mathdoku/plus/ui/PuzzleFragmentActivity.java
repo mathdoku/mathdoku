@@ -40,7 +40,7 @@ import net.mathdoku.plus.developmenthelper.DevelopmentHelper;
 import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.enums.PuzzleComplexity;
-import net.mathdoku.plus.gridgenerating.ProgressDialogGeneratePuzzle;
+import net.mathdoku.plus.gridgenerating.GeneratePuzzleProgressDialog;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParametersBuilder;
 import net.mathdoku.plus.leaderboard.LeaderboardConnector;
@@ -79,7 +79,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	private static final String TAG = PuzzleFragmentActivity.class.getName();
 
 	// Background tasks for generating a new puzzle and converting game files
-	public ProgressDialogGeneratePuzzle mProgressDialogGeneratePuzzle;
+	public GeneratePuzzleProgressDialog mGeneratePuzzleProgressDialog;
 	private GameFileConverter mGameFileConverter;
 
 	// Different types of fragments supported by this activity.
@@ -106,18 +106,18 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	// Object to save data on a configuration change. Note: for the puzzle
 	// fragment the RetainInstance property is set to true.
 	private class ConfigurationInstanceState {
-		private final ProgressDialogGeneratePuzzle mProgressDialogGeneratePuzzle;
+		private final GeneratePuzzleProgressDialog mGeneratePuzzleProgressDialog;
 		private final GameFileConverter mGameFileConverter;
 
 		public ConfigurationInstanceState(
-				ProgressDialogGeneratePuzzle gridGeneratorTask,
+				GeneratePuzzleProgressDialog gridGeneratorTask,
 				GameFileConverter gameFileConverterTask) {
-			mProgressDialogGeneratePuzzle = gridGeneratorTask;
+			mGeneratePuzzleProgressDialog = gridGeneratorTask;
 			mGameFileConverter = gameFileConverterTask;
 		}
 
-		public ProgressDialogGeneratePuzzle getGridGeneratorTask() {
-			return mProgressDialogGeneratePuzzle;
+		public GeneratePuzzleProgressDialog getGridGeneratorTask() {
+			return mGeneratePuzzleProgressDialog;
 		}
 
 		public GameFileConverter getGameFileConverter() {
@@ -173,10 +173,10 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			ConfigurationInstanceState configurationInstanceState = (ConfigurationInstanceState) object;
 
 			// Restore background process if running.
-			mProgressDialogGeneratePuzzle = configurationInstanceState
+			mGeneratePuzzleProgressDialog = configurationInstanceState
 					.getGridGeneratorTask();
-			if (mProgressDialogGeneratePuzzle != null) {
-				mProgressDialogGeneratePuzzle.attachToActivity(this).show();
+			if (mGeneratePuzzleProgressDialog != null) {
+				mGeneratePuzzleProgressDialog.attachToActivity(this).show();
 			}
 
 			// Restore background process if running.
@@ -199,12 +199,12 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 	@Override
 	public void onResume() {
-		if (mProgressDialogGeneratePuzzle != null) {
+		if (mGeneratePuzzleProgressDialog != null) {
 			// In case the grid is created in the background and the dialog is
 			// closed, the activity will be moved to the background as well. In
 			// case the user starts this app again onResume is called but
 			// onCreate isn't. So we have to check here as well.
-			mProgressDialogGeneratePuzzle.attachToActivity(this).show();
+			mGeneratePuzzleProgressDialog.attachToActivity(this).show();
 		}
 
 		// Select the the play puzzle item as active item. This is especially
@@ -531,10 +531,10 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 		// Start a background task to generate the new grid. As soon as the new
 		// grid is created, the method onNewGridReady will be called.
-		mProgressDialogGeneratePuzzle = new ProgressDialogGeneratePuzzle(this,
+		mGeneratePuzzleProgressDialog = new GeneratePuzzleProgressDialog(this,
 				createGridGeneratingParameters(gridType, hideOperators,
 						puzzleComplexity));
-		mProgressDialogGeneratePuzzle.show();
+		mGeneratePuzzleProgressDialog.show();
 	}
 
 	private GridGeneratingParameters createGridGeneratingParameters(
@@ -557,7 +557,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	 */
 	public void onNewGridReady(final Grid newGrid) {
 		// The background task for creating a new grid has been finished.
-		mProgressDialogGeneratePuzzle = null;
+		mGeneratePuzzleProgressDialog = null;
 
 		// Initializes a new puzzle fragment
 		initializePuzzleFragment(newGrid.getSolvingAttemptId());
@@ -735,10 +735,10 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		}
 		TipDialog.resetDisplayedDialogs();
 
-		if (mProgressDialogGeneratePuzzle != null) {
+		if (mGeneratePuzzleProgressDialog != null) {
 			// A new grid is generated in the background. Detach the background
 			// task from this activity. It will keep on running until finished.
-			mProgressDialogGeneratePuzzle.detachFromActivity();
+			mGeneratePuzzleProgressDialog.detachFromActivity();
 		}
 		if (mGameFileConverter != null) {
 			// The game files are converted in the background. Detach the
@@ -746,7 +746,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			// task from this activity. It will keep on running until finished.
 			mGameFileConverter.detachFromActivity();
 		}
-		return new ConfigurationInstanceState(mProgressDialogGeneratePuzzle,
+		return new ConfigurationInstanceState(mGeneratePuzzleProgressDialog,
 				mGameFileConverter);
 	}
 
@@ -1419,7 +1419,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 	public void onCancelGridGeneration() {
 		// The background task for creating a new grid has been finished.
-		mProgressDialogGeneratePuzzle = null;
+		mGeneratePuzzleProgressDialog = null;
 
 		if (mPuzzleFragment != null) {
 			mPuzzleFragment.startTimer();

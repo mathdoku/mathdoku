@@ -1,6 +1,9 @@
 package net.mathdoku.plus.gridgenerating;
 
 import net.mathdoku.plus.config.Config;
+import net.mathdoku.plus.gridgenerating.iface.GridGeneratorAsyncTaskListenerIface;
+import net.mathdoku.plus.gridgenerating.iface.GridGeneratorIface;
+import net.mathdoku.plus.gridgenerating.iface.GridGeneratorListenerIface;
 import net.mathdoku.plus.puzzle.grid.Grid;
 
 import org.junit.Before;
@@ -22,9 +25,9 @@ public class GridGeneratorAsyncTaskTest {
 	private GridGeneratorAsyncTaskListener gridGeneratorAsyncTaskListener;
 
 	private class GridGeneratorStub extends GridGenerator {
-		protected Listener listener;
+		protected GridGeneratorListenerIface listener;
 
-		public GridGeneratorStub(Listener listener) {
+		public GridGeneratorStub(GridGeneratorListenerIface listener) {
 			super(listener);
 			this.listener = listener;
 		}
@@ -41,8 +44,7 @@ public class GridGeneratorAsyncTaskTest {
 		}
 	}
 
-	private class GridGeneratorAsyncTaskListener implements
-			GridGeneratorAsyncTask.Listener {
+	private class GridGeneratorAsyncTaskListener implements GridGeneratorAsyncTaskListenerIface {
 		private boolean onGeneratedIsCalled = false;
 		private boolean onFinishGridGeneratorIsCalled = false;
 		private int onFinishGridGeneratorGridCount = 0;
@@ -84,7 +86,7 @@ public class GridGeneratorAsyncTaskTest {
 				gridGeneratorAsyncTaskListener,
 				new GridGeneratorAsyncTask.ObjectsCreator() {
 					@Override
-					public GridGeneratorInterface createGridGenerator(
+					public GridGeneratorIface createGridGenerator(
 							GridGeneratorAsyncTask gridGeneratorAsyncTask) {
 						return new GridGeneratorStub(gridGeneratorAsyncTask);
 					}
