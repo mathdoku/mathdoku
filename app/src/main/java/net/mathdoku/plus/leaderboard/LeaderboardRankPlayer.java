@@ -17,7 +17,6 @@ import net.mathdoku.plus.config.Config.AppMode;
  * This class is used to retrieve the rank for the current player from Google
  * Play Services for a specific leaderboard.
  */
-@SuppressWarnings("UnnecessaryParentheses")
 class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener {
 	@SuppressWarnings("unused")
 	private static final String TAG = LeaderboardRankPlayer.class.getName();

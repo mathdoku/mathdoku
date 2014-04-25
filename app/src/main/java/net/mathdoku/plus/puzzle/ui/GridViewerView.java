@@ -160,7 +160,6 @@ public class GridViewerView extends View {
 		return GridInputMode.NORMAL;
 	}
 
-	@SuppressWarnings("UnnecessaryParentheses")
 	public void loadNewGrid(Grid grid) {
 		mGrid = grid;
 
@@ -213,7 +212,6 @@ public class GridViewerView extends View {
 		invalidate();
 	}
 
-	@SuppressWarnings("UnnecessaryParentheses")
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		// Get maximum width and height available to display the grid view.
@@ -281,7 +279,6 @@ public class GridViewerView extends View {
 	 * {@link net.mathdoku.plus.puzzle.digitpositiongrid.DigitPositionGrid} used
 	 * to position the digit buttons for reuse when drawing the maybe values.
 	 */
-	@SuppressWarnings("UnnecessaryParentheses")
 	private void setDigitPositionGrid() {
 		// Determine the layout which has to be used for drawing the possible
 		// values inside a cell.

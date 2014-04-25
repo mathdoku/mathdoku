@@ -6,7 +6,6 @@ import android.view.View;
  * The DigitPositionGrid is used to determine which digit is shown at each
  * position in a grid of positions.
  */
-@SuppressWarnings("UnnecessaryParentheses")
 public class DigitPositionGrid {
 	@SuppressWarnings("unused")
 	private static final String TAG = DigitPositionGrid.class.getName();
