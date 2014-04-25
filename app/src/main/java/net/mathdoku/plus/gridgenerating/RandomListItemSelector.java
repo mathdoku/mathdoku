@@ -23,11 +23,11 @@ public class RandomListItemSelector<T> extends
 		super(random, convertToWeightedList(list));
 	}
 
-	private static <Type> List<WeightedItem<Type>> convertToWeightedList(
-			List<Type> list) {
-		List<WeightedItem<Type>> weightedItemList = new ArrayList<WeightedItem<Type>>();
-		for (Type item : list) {
-			weightedItemList.add(new WeightedItem<Type>(item, 1));
+	private static <T> List<WeightedItem<T>> convertToWeightedList(
+			List<T> list) {
+		List<WeightedItem<T>> weightedItemList = new ArrayList<WeightedItem<T>>();
+		for (T item : list) {
+			weightedItemList.add(new WeightedItem<T>(item, 1));
 		}
 		return weightedItemList;
 	}
