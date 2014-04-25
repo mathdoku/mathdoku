@@ -5,10 +5,6 @@ public class CellCoordinates {
 	private final int row;
 	private final int column;
 
-	public static boolean canBeCreated(int row, int column) {
-		return (row >= 0 && column >= 0);
-	}
-
 	public CellCoordinates(int row, int column) {
 		if (row < 0) {
 			throw new IllegalArgumentException(
@@ -27,6 +23,10 @@ public class CellCoordinates {
 	CellCoordinates() {
 		row = -1;
 		column = -1;
+	}
+
+	public static boolean canBeCreated(int row, int column) {
+		return row >= 0 && column >= 0;
 	}
 
 	public int getRow() {
