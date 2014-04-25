@@ -31,6 +31,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class FeedbackEmail {
+	@SuppressWarnings("unused")
 	private static final String TAG = FeedbackEmail.class.getName();
 
 	// Delimiters used in files to separate objects, fields and value

@@ -46,6 +46,7 @@ import java.util.Random;
  * development mode is turned off.
  */
 public class DevelopmentHelper {
+	@SuppressWarnings("unused")
 	private static final String TAG = DevelopmentHelper.class.getName();
 
 	/**

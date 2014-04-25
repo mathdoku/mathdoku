@@ -15,6 +15,7 @@ import java.util.List;
  * persisted and vice versa.
  */
 public class CellChangeStorage {
+	@SuppressWarnings("unused")
 	private static final String TAG = CellChangeStorage.class.getName();
 
 	// Remove "&& false" in following line to show debug information about

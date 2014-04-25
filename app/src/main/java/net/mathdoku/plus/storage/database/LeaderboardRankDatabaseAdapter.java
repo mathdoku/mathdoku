@@ -15,6 +15,7 @@ import net.mathdoku.plus.enums.PuzzleComplexity;
  * The database adapter for the grid table.
  */
 public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
+	@SuppressWarnings("unused")
 	private static final String TAG = LeaderboardRankDatabaseAdapter.class
 			.getName();
 

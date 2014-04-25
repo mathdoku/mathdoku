@@ -21,6 +21,7 @@ import java.text.DateFormat;
  * latest ranking information from Google Play Services.
  */
 public class LeaderboardRankUpdater {
+	@SuppressWarnings("unused")
 	private static final String TAG = LeaderboardRankUpdater.class.getName();
 
 	// Remove "&& false" in following line to show debug information about

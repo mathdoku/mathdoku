@@ -23,6 +23,7 @@ import java.util.List;
  * attached to this class.
  */
 public class GeneratePuzzleProgressDialog implements GridGeneratorAsyncTaskListenerIface {
+	@SuppressWarnings("unused")
 	private static final String TAG = GeneratePuzzleProgressDialog.class
 			.getName();
 

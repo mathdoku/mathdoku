@@ -14,6 +14,7 @@ import net.mathdoku.plus.painter.Painter;
  * border on the outside of the visible grid).
  */
 public class GridPlayerRelativeLayout extends RelativeLayout {
+	@SuppressWarnings("unused")
 	private static final String TAG = GridPlayerRelativeLayout.class.getName();
 
 	private boolean mMarginsInitialised;

@@ -5,6 +5,7 @@ import net.mathdoku.plus.enums.CageOperator;
 import java.util.Arrays;
 
 public abstract class CageResult {
+	@SuppressWarnings("unused")
 	private static final String TAG = CageResult.class.getName();
 
 	private int[] cellValues;

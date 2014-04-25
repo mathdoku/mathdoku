@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Random;
 
 class CageOperatorGenerator {
+	@SuppressWarnings("unused")
 	private static final String TAG = CageOperatorGenerator.class.getName();
 
 	private static final int WEIGHT_CAGE_RESULT_WITH_NONE_OPERATOR = 100;

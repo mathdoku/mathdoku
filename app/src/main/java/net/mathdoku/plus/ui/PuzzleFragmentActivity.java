@@ -76,6 +76,7 @@ import java.util.List;
 
 public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		implements PuzzleFragment.PuzzleFragmentListener {
+	@SuppressWarnings("unused")
 	private static final String TAG = PuzzleFragmentActivity.class.getName();
 
 	// Background tasks for generating a new puzzle and converting game files

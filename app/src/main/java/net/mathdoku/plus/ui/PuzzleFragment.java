@@ -56,6 +56,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		SharedPreferences.OnSharedPreferenceChangeListener,
 		View.OnCreateContextMenuListener,
 		GridPlayerView.OnInputModeChangedListener {
+	@SuppressWarnings("unused")
 	private static final String TAG = PuzzleFragment.class.getName();
 
 	public static final String BUNDLE_KEY_SOLVING_ATTEMPT_ID = "PuzzleFragment.solvingAttemptId";

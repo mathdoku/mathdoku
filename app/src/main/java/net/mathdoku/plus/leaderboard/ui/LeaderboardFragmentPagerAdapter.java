@@ -13,6 +13,7 @@ import net.mathdoku.plus.leaderboard.LeaderboardType;
  * of leaderboard pages.
  */
 class LeaderboardFragmentPagerAdapter extends FragmentPagerAdapter {
+	@SuppressWarnings("unused")
 	private static final String TAG = LeaderboardFragmentPagerAdapter.class
 			.getName();
 

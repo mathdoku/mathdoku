@@ -22,6 +22,7 @@ import net.mathdoku.plus.storage.database.Projection.Aggregation;
  * replayed in order to try to improve the statistics for the grid.
  */
 public class StatisticsDatabaseAdapter extends DatabaseAdapter {
+	@SuppressWarnings("unused")
 	private static final String TAG = StatisticsDatabaseAdapter.class.getName();
 
 	@SuppressWarnings("PointlessBooleanExpression")

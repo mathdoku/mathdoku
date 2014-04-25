@@ -13,6 +13,7 @@ import net.mathdoku.plus.util.SingletonInstanceNotInstantiated;
  * communicate with one SQLite database.
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
+	@SuppressWarnings("unused")
 	private static final String TAG = DatabaseHelper.class.getName();
 
 	public static final String DATABASE_NAME = "MathDoku.sqlite";

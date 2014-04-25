@@ -5,6 +5,7 @@ public enum PuzzleComplexity {
 	// these values are persisted.
 	RANDOM(0), VERY_EASY(1), EASY(2), NORMAL(3), DIFFICULT(4), VERY_DIFFICULT(5);
 
+	@SuppressWarnings("unused")
 	private static final String TAG = PuzzleComplexity.class.getName();
 
 	private final int mPuzzleComplexityId;

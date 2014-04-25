@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DancingLinesX {
+	@SuppressWarnings("unused")
 	private static final String TAG = DancingLinesX.class.getName();
 
 	public enum SolveType {

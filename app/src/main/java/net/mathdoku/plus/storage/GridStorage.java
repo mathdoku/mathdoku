@@ -10,6 +10,7 @@ import java.security.InvalidParameterException;
 import java.util.List;
 
 public class GridStorage {
+	@SuppressWarnings("unused")
 	private static final String TAG = GridStorage.class.getName();
 
 	/*

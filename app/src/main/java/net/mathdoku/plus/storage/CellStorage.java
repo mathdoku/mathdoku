@@ -13,6 +13,7 @@ import java.util.List;
  * vice versa.
  */
 public class CellStorage {
+	@SuppressWarnings("unused")
 	private static final String TAG = CellStorage.class.getName();
 
 	/*

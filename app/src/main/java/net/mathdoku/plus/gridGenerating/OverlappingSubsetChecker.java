@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OverlappingSubsetChecker {
+	@SuppressWarnings("unused")
 	private static final String TAG = OverlappingSubsetChecker.class.getName();
 
 	private final Matrix<Integer> correctValueMatrix;

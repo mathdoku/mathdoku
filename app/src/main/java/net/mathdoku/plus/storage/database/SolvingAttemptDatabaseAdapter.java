@@ -20,6 +20,7 @@ import java.util.List;
  * an older version, statistics data is not available.
  */
 public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
+	@SuppressWarnings("unused")
 	private static final String TAG = SolvingAttemptDatabaseAdapter.class
 			.getName();
 

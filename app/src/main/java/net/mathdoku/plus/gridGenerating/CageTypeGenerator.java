@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 public class CageTypeGenerator {
+	@SuppressWarnings("unused")
 	private static final String TAG = CageTypeGenerator.class.getName();
 
 	/**

@@ -19,6 +19,7 @@ import net.mathdoku.plus.config.Config.AppMode;
  */
 @SuppressWarnings("UnnecessaryParentheses")
 class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener {
+	@SuppressWarnings("unused")
 	private static final String TAG = LeaderboardRankPlayer.class.getName();
 
 	// Remove "&& false" in following line to show debug information about

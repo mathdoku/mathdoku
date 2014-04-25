@@ -18,11 +18,12 @@ package net.mathdoku.plus.config;
  * }
  * </pre>
  *
- * DO NOT ALTER THE SOURCE FILE DIRECTLTY IN CASE YOU WANT TO PERSIST YOUR
+ * DO NOT ALTER THE SOURCE FILE DIRECTLY IN CASE YOU WANT TO PERSIST YOUR
  * CHANGES. PERSISTENT CHANGES SHOULD ALWAYS BE MADE TO THE CORRESPONDING TEMPLATE
  * FILE IN FOLDER $project/app/src-templates/.../Config.java.
  */
 public class Config {
+	@SuppressWarnings("unused")
 	private static final String TAG = Config.class.getName();
 
 	public enum AppMode {

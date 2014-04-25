@@ -44,7 +44,6 @@ import java.text.DateFormat;
  */
 public class ArchiveFragment extends StatisticsBaseFragment implements
 		OnSharedPreferenceChangeListener {
-
 	@SuppressWarnings("unused")
 	private static final String TAG = ArchiveFragment.class.getName();
 

@@ -11,6 +11,7 @@ import net.mathdoku.plus.puzzle.grid.Grid;
  * Write a skeleton for a TestHelper class to the log messages.
  */
 public class TestHelperCodeGenerator {
+	@SuppressWarnings("unused")
 	private static final String TAG = TestHelperCodeGenerator.class.getName();
 
 	private StringBuilder stringBuilder;

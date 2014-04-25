@@ -24,6 +24,7 @@ import java.util.Random;
  * Generate a single grid.
  */
 public class GridGenerator implements GridGeneratorIface {
+	@SuppressWarnings("unused")
 	private static final String TAG = GridGenerator.class.getName();
 
 	// Remove "&& false" in following line to show debug information about

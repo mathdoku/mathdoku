@@ -7,6 +7,7 @@ import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 
 public class Cheat {
+	@SuppressWarnings("unused")
 	private static final String TAG = Cheat.class.getName();
 
 	public enum CheatType {

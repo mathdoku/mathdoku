@@ -25,6 +25,7 @@ import java.util.List;
  * class is able to recreate a grid based on the grid definition.
  */
 public class GridDefinition {
+	@SuppressWarnings("unused")
 	private static final String TAG = GridDefinition.class.getName();
 
 	private GridType mGridType;

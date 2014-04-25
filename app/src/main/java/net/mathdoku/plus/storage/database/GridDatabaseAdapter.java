@@ -23,6 +23,7 @@ import net.mathdoku.plus.puzzle.grid.Grid;
  * The database adapter for the grid table.
  */
 public class GridDatabaseAdapter extends DatabaseAdapter {
+	@SuppressWarnings("unused")
 	private static final String TAG = GridDatabaseAdapter.class.getName();
 
 	// Remove "&& false" in following line to show the SQL-statements in the

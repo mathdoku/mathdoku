@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CellChangeStoragePatternMatcher {
+	@SuppressWarnings("unused")
 	private static final String TAG = CellChangeStoragePatternMatcher.class
 			.getName();
 

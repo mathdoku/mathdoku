@@ -11,6 +11,7 @@ import net.mathdoku.plus.puzzle.cell.Cell;
 import java.util.List;
 
 public class CandidateCageCreator {
+	@SuppressWarnings("unused")
 	private static final String TAG = CandidateCageCreator.class.getName();
 
 	private final GridGeneratingParameters gridGeneratingParameters;

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TickerTape extends HorizontalScrollView {
+	@SuppressWarnings("unused")
 	private static final String TAG = TickerTape.class.getName();
 
 	private final LinearLayout mTickerTapeLinearLayout;

@@ -14,6 +14,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class GridSolver {
+	@SuppressWarnings("unused")
 	private static final String TAG = GridSolver.class.getName();
 
 	// Remove "&& false" in following line to show debug information about

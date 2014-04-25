@@ -21,6 +21,7 @@ import java.util.List;
 public class GridGeneratorAsyncTask extends
 		AsyncTask<GridGeneratingParameters, String, List<Grid>> implements
 		GridGeneratorAsyncTaskIface, GridGeneratorListenerIface {
+	@SuppressWarnings("unused")
 	private static final String TAG = GridGeneratorAsyncTask.class.getName();
 
 	private final GridGeneratorAsyncTaskListenerIface gridGeneratorAsyncTaskListenerIface;

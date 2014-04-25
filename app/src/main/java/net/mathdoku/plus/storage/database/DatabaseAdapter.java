@@ -21,6 +21,7 @@ import java.util.List;
  * this base class.
  */
 abstract class DatabaseAdapter {
+	@SuppressWarnings("unused")
 	private static final String TAG = DatabaseAdapter.class.getName();
 
 	private static final char BACK_TICK = '`';

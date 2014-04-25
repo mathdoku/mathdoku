@@ -20,6 +20,7 @@ import net.mathdoku.plus.ui.base.AppFragmentActivity;
 import net.mathdoku.plus.util.Util;
 
 public class LeaderboardConnector {
+	@SuppressWarnings("unused")
 	private static final String TAG = LeaderboardConnector.class.getName();
 
 	// Remove "&& false" in following line to show debug information about

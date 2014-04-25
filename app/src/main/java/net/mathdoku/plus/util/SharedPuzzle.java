@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SharedPuzzle {
+	@SuppressWarnings("unused")
 	private static final String TAG = SharedPuzzle.class.getName();
 
 	// Context in which the SharedPuzzle is created.

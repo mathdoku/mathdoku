@@ -9,6 +9,7 @@ import net.mathdoku.plus.config.Config.AppMode;
 
 // Definition of swipe motion
 public class SwipeMotion extends Motion {
+	@SuppressWarnings("unused")
 	private static final String TAG = SwipeMotion.class.getName();
 
 	// Remove "&& false" in following line to show debug information about

@@ -8,6 +8,7 @@ import android.util.Log;
 import java.util.List;
 
 public class Util {
+	@SuppressWarnings("unused")
 	private static final String TAG = Util.class.getName();
 
 	// Home directory url of promotion website. Most url's used in this app will
