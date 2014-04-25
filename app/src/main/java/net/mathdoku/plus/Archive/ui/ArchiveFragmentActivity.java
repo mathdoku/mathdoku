@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.mathdoku.plus.Archive.ui;
+package net.mathdoku.plus.archive.ui;
 
 import android.app.ActionBar;
 import android.app.Activity;

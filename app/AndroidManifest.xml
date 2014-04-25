@@ -72,8 +72,8 @@
             </intent-filter>
         </activity>
         <activity android:name="net.mathdoku.plus.ui.PuzzlePreferenceActivity" />
-        <activity android:name=".Archive.ui.ArchiveFragmentActivity" />
-        <activity android:name=".Archive.ui.ArchivePreferenceActivity" />
+        <activity android:name=".archive.ui.ArchiveFragmentActivity" />
+        <activity android:name=".archive.ui.ArchivePreferenceActivity" />
         <activity android:name=".statistics.ui.StatisticsFragmentActivity" />
         <activity android:name=".statistics.ui.StatisticsPreferenceActivity" />
         <activity android:name="net.mathdoku.plus.leaderboard.ui.LeaderboardFragmentActivity" />

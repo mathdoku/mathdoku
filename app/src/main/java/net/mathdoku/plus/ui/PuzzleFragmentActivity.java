@@ -31,8 +31,8 @@ import android.widget.TextView;
 
 import com.google.android.gms.games.GamesClient;
 
-import net.mathdoku.plus.Archive.ui.ArchiveFragment;
-import net.mathdoku.plus.Archive.ui.ArchiveFragmentActivity;
+import net.mathdoku.plus.archive.ui.ArchiveFragment;
+import net.mathdoku.plus.archive.ui.ArchiveFragmentActivity;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;

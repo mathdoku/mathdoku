@@ -1,6 +1,6 @@
 package net.mathdoku.plus.gridgenerating;
 
-import net.mathdoku.plus.gridgenerating.CellCoordinates.CellCoordinates;
+import net.mathdoku.plus.gridgenerating.cellcoordinates.CellCoordinates;
 
 public class CageType {
 	@SuppressWarnings("unused")

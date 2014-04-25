@@ -4,7 +4,7 @@ import android.util.Log;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.griddefinition.GridDefinition;
-import net.mathdoku.plus.gridgenerating.CellCoordinates.CellCoordinates;
+import net.mathdoku.plus.gridgenerating.cellcoordinates.CellCoordinates;
 import net.mathdoku.plus.gridgenerating.iface.GridGeneratorIface;
 import net.mathdoku.plus.gridgenerating.iface.GridGeneratorListenerIface;
 import net.mathdoku.plus.gridsolving.ComboGenerator;

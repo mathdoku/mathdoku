@@ -2,7 +2,7 @@ package net.mathdoku.plus.gridgenerating;
 
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.enums.GridType;
-import net.mathdoku.plus.gridgenerating.CellCoordinates.CellCoordinates;
+import net.mathdoku.plus.gridgenerating.cellcoordinates.CellCoordinates;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cell.Cell;
 

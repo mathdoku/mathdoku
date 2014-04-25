@@ -1,4 +1,4 @@
-package net.mathdoku.plus.gridgenerating.CellCoordinates;
+package net.mathdoku.plus.gridgenerating.cellcoordinates;
 
 public class CellCoordinates {
 	public static final CellCoordinates EMPTY = NullCellCoordinates.create();
