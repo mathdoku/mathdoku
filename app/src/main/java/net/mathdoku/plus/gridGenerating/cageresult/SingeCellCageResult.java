@@ -5,6 +5,10 @@ import net.mathdoku.plus.enums.CageOperator;
 import java.util.Arrays;
 
 public class SingeCellCageResult extends CageResult {
+	private SingeCellCageResult(int cellValue) {
+		super(CageOperator.NONE, cellValue);
+	}
+
 	static SingeCellCageResult tryToCreate(int... cellValues) {
 		if (canBeCreated(cellValues)) {
 			return new SingeCellCageResult(cellValues[0]);
@@ -14,16 +18,12 @@ public class SingeCellCageResult extends CageResult {
 				Arrays.toString(cellValues)));
 	}
 
-	private SingeCellCageResult(int cellValue) {
-		super(CageOperator.NONE, cellValue);
+	public static boolean canBeCreated(int... cellValues) {
+		return cellValues != null && cellValues.length == 1;
 	}
 
 	@Override
 	public int getResult() {
 		return getCellValue(0);
-	}
-
-	public static boolean canBeCreated(int... cellValues) {
-		return cellValues != null && cellValues.length == 1;
 	}
 }

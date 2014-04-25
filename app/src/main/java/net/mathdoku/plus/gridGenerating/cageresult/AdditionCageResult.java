@@ -5,6 +5,10 @@ import net.mathdoku.plus.enums.CageOperator;
 import java.util.Arrays;
 
 public class AdditionCageResult extends CageResult {
+	private AdditionCageResult(int... cellValues) {
+		super(CageOperator.ADD, cellValues);
+	}
+
 	static AdditionCageResult tryToCreate(int... cellValues) {
 		if (canBeCreated(cellValues)) {
 			return new AdditionCageResult(cellValues);
@@ -16,10 +20,6 @@ public class AdditionCageResult extends CageResult {
 
 	public static boolean canBeCreated(int... cellValues) {
 		return cellValues != null && cellValues.length >= 2;
-	}
-
-	private AdditionCageResult(int... cellValues) {
-		super(CageOperator.ADD, cellValues);
 	}
 
 	@Override
