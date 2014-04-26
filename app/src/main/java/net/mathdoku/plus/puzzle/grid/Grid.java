@@ -5,6 +5,8 @@ import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.PuzzleComplexity;
+import net.mathdoku.plus.griddefinition.GridDefinitionCreator;
+import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParametersBuilder;
 import net.mathdoku.plus.puzzle.InvalidGridException;
 import net.mathdoku.plus.puzzle.cage.Cage;
@@ -12,8 +14,6 @@ import net.mathdoku.plus.puzzle.cage.CageBuilder;
 import net.mathdoku.plus.puzzle.cell.Cell;
 import net.mathdoku.plus.puzzle.cell.CellBuilder;
 import net.mathdoku.plus.puzzle.cellchange.CellChange;
-import net.mathdoku.plus.griddefinition.GridDefinition;
-import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.statistics.GridStatistics.StatisticsCounterType;
 import net.mathdoku.plus.util.Util;
@@ -942,7 +942,7 @@ public class Grid {
 	}
 
 	public String getDefinition() {
-		return GridDefinition.getDefinition(this);
+		return new GridDefinitionCreator(mCells, mCages, mGridGeneratingParameters).invoke();
 	}
 
 	/**

@@ -1,11 +1,9 @@
 package net.mathdoku.plus.griddefinition;
 
-import net.mathdoku.plus.gridsolving.GridSolver;
-
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.enums.GridType;
-import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParametersBuilder;
+import net.mathdoku.plus.gridsolving.GridSolver;
 import net.mathdoku.plus.puzzle.InvalidGridException;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cage.CageBuilder;
@@ -13,7 +11,6 @@ import net.mathdoku.plus.puzzle.cell.Cell;
 import net.mathdoku.plus.puzzle.cell.CellBuilder;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.puzzle.grid.GridBuilder;
-import net.mathdoku.plus.util.Util;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -28,8 +25,8 @@ public class GridDefinition {
 	@SuppressWarnings("unused")
 	private static final String TAG = GridDefinition.class.getName();
 
-	private GridType mGridType;
-	private int mGridSize;
+	private GridType gridType;
+	private int gridSize;
 	private List<Cage> mCages;
 	private List<Cell> mCells;
 	private int[] mCageIdPerCell;
@@ -72,100 +69,6 @@ public class GridDefinition {
 	}
 
 	/**
-	 * Converts the definition of this grid to a string. This definitions only
-	 * consists of information needed to rebuild the puzzle. It does not include
-	 * information about how it was created or about the current status of
-	 * solving. This definition is unique regardless of grid size and or the
-	 * version of the grid generator used.
-	 * 
-	 * The id's of the cages are reindexed so the list of top-left-cells of the
-	 * cages are sorted in order of increasing cell numbers. In this way to
-	 * identical grids in which only the cage id's are different result in
-	 * identical grid definitions.
-	 * 
-	 * @return A unique string representation of the grid.
-	 */
-	public static String getDefinition(List<Cell> cells, List<Cage> cages,
-			GridGeneratingParameters gridGeneratingParameters) {
-		StringBuilder definitionString = new StringBuilder();
-
-		if (Util.isListNullOrEmpty(cells)) {
-			throw new InvalidParameterException(
-					"Parameter cells cannot be null or empty list.");
-		}
-		if (Util.isListNullOrEmpty(cages)) {
-			throw new InvalidParameterException(
-					"Parameter cages cannot be null or empty list.");
-		}
-		if (gridGeneratingParameters == null) {
-			throw new InvalidParameterException(
-					"Parameter gridGeneratingParameters cannot be null.");
-		}
-
-		definitionString.append(
-				Integer.toString(gridGeneratingParameters
-						.getPuzzleComplexity()
-						.getId())).append(GridDefinitionDelimiter.LEVEL1);
-
-		List<Integer> cageIdsInOrderOfOccurrence = getCageIdsInOrderOfOccurrence(cells);
-
-		// Get the cage number (represented as a value of two digits, if needed
-		// prefixed with a 0) for each cell. Note: with a maximum of 81 cells in
-		// a 9x9 grid we can never have a cage-id > 99.
-		for (Cell cell : cells) {
-			definitionString.append(String.format("%02d",
-					cageIdsInOrderOfOccurrence.indexOf(cell.getCageId())));
-		}
-		// Followed by cages in the order in which they are used by the cells.
-		for (int cageId : cageIdsInOrderOfOccurrence) {
-			Cage cage = getCageWithIdFromListOfCages(cageId, cages);
-			definitionString
-					.append(GridDefinitionDelimiter.LEVEL1)
-					.append(cageIdsInOrderOfOccurrence.indexOf(cage.getId()))
-					.append(GridDefinitionDelimiter.LEVEL2)
-					.append(cage.getResult())
-					.append(GridDefinitionDelimiter.LEVEL2)
-					.append(gridGeneratingParameters.isHideOperators() ? CageOperator.NONE
-							.getId() : cage.getOperator().getId());
-		}
-		return definitionString.toString();
-	}
-
-	private static Cage getCageWithIdFromListOfCages(int id, List<Cage> cages) {
-		if (cages != null) {
-			for (Cage cage : cages) {
-				if (cage.getId() == id) {
-					return cage;
-				}
-			}
-		}
-		return null;
-	}
-
-	private static List<Integer> getCageIdsInOrderOfOccurrence(List<Cell> cells) {
-		List<Integer> cageIdsInOrderOfOccurrence = new ArrayList<Integer>();
-		if (cells != null) {
-			for (Cell cell : cells) {
-				if (!cageIdsInOrderOfOccurrence.contains(cell.getCageId())) {
-					cageIdsInOrderOfOccurrence.add(cell.getCageId());
-				}
-			}
-		}
-		return cageIdsInOrderOfOccurrence;
-	}
-
-	/**
-	 * Convenience method for getting the definition of a grid.
-	 * 
-	 * @param grid
-	 * @return
-	 */
-	public static String getDefinition(Grid grid) {
-		return getDefinition(grid.getCells(), grid.getCages(),
-				grid.getGridGeneratingParameters());
-	}
-
-	/**
 	 * Create a grid from the given definition string.
 	 * 
 	 * @return The grid created from the definition. Null in case of an error.
@@ -176,13 +79,13 @@ public class GridDefinition {
 
 		int cellCount = gridDefinitionSplitter.getNumberOfCells();
 		try {
-			mGridType = GridType.getFromNumberOfCells(cellCount);
+			gridType = GridType.getFromNumberOfCells(cellCount);
 		} catch (IllegalArgumentException e) {
 			throw new InvalidGridException(String.format(
 					"Definition '%s' contains an invalid number of cells.",
 					definition), e);
 		}
-		mGridSize = mGridType.getGridSize();
+		gridSize = gridType.getGridSize();
 
 		// Initialize helper variables. Those variables are filled while adding
 		// the cells. Later, when adding the cages, the data of those vars is
@@ -214,7 +117,7 @@ public class GridDefinition {
 
 		GridGeneratingParametersBuilder mGridGeneratingParametersBuilder = mObjectsCreator
 				.createGridGeneratingParametersBuilder();
-		mGridGeneratingParametersBuilder.setGridType(mGridType);
+		mGridGeneratingParametersBuilder.setGridType(gridType);
 		// The complexity is not needed to rebuild the puzzle, but it is stored
 		// as it is a great communicator to the (receiving) user how difficult
 		// the puzzle is.
@@ -226,7 +129,7 @@ public class GridDefinition {
 
 		GridBuilder gridBuilder = mObjectsCreator.createGridBuilder();
 		return gridBuilder
-				.setGridSize(mGridSize)
+				.setGridSize(gridSize)
 				.setCells(mCells)
 				.setCages(mCages)
 				.setGridGeneratingParameters(
@@ -250,7 +153,7 @@ public class GridDefinition {
 		for (int cellNumber = 0; cellNumber < mCageIdPerCell.length; cellNumber++) {
 			int cageId = mCageIdPerCell[cellNumber];
 			Cell cell = new CellBuilder()
-					.setGridSize(mGridSize)
+					.setGridSize(gridSize)
 					.setId(cellNumber)
 					.setCageId(cageId)
 					.setLenientCheckCorrectValueOnBuild()
@@ -303,7 +206,7 @@ public class GridDefinition {
 	private boolean setCorrectCellValues() {
 		// Check whether a single solution can be found.
 		int[][] solution = mObjectsCreator
-				.createGridSolver(mGridSize, mCages)
+				.createGridSolver(gridSize, mCages)
 				.getSolutionGrid();
 		if (solution == null) {
 			// Either no or multiple solutions can be found. In both case this
@@ -312,16 +215,16 @@ public class GridDefinition {
 			throw new InvalidGridException(
 					"Grid does not have a unique solution.");
 		}
-		if (solution.length != mGridSize) {
+		if (solution.length != gridSize) {
 			throw new InvalidGridException("Solution array has "
-					+ solution.length + " rows while " + mGridSize
+					+ solution.length + " rows while " + gridSize
 					+ " row were expected.");
 		}
-		for (int row = 0; row < mGridSize; row++) {
-			if (solution[row].length != mGridSize) {
+		for (int row = 0; row < gridSize; row++) {
+			if (solution[row].length != gridSize) {
 				throw new InvalidGridException("Solution array has "
 						+ (solution == null ? 0 : solution[row].length)
-						+ " columns in row " + row + " while " + mGridSize
+						+ " columns in row " + row + " while " + gridSize
 						+ " columns were expected.");
 			}
 		}

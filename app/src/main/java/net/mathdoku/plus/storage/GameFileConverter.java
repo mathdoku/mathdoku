@@ -9,7 +9,6 @@ import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.puzzle.grid.GridLoader;
-import net.mathdoku.plus.griddefinition.GridDefinition;
 import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 
@@ -140,8 +139,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 					Grid grid = new GridLoader().load(solvingAttemptId);
 					if (grid != null) {
 						// Get definition for the grid.
-						String gridDefinition = GridDefinition
-								.getDefinition(grid);
+						String gridDefinition = grid.getDefinition();
 						if (!mGridDefinitions.contains(gridDefinition)) {
 							// New definition found
 							mGridDefinitions.add(gridDefinition);

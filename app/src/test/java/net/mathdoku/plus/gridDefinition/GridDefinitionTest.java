@@ -2,31 +2,21 @@ package net.mathdoku.plus.griddefinition;
 
 import android.app.Activity;
 
-import net.mathdoku.plus.gridsolving.GridSolver;
-
 import net.mathdoku.plus.enums.PuzzleComplexity;
-import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
+import net.mathdoku.plus.gridsolving.GridSolver;
 import net.mathdoku.plus.puzzle.InvalidGridException;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cell.Cell;
-import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.util.Util;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
 import java.util.List;
 
 import robolectric.RobolectricGradleTestRunner;
-import testHelper.GridCreator;
-import testHelper.GridCreator2x2;
-import testHelper.GridCreator4x4;
-import testHelper.GridCreator4x4CageIdsNotConsecutiveNorSorted;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -162,83 +152,6 @@ public class GridDefinitionTest {
 		mGridDefinitionTestObjectsCreator = new GridDefinitionTestObjectsCreator();
 		mGridDefinition = new GridDefinition();
 		mGridDefinition.setObjectsCreator(mGridDefinitionTestObjectsCreator);
-	}
-
-	@Test(expected = InvalidParameterException.class)
-	public void getDefinition_ArrayListCellsIsNull_ThrowsInvalidParameterException()
-			throws Exception {
-		List<Cell> cells = null;
-		List<Cage> cages = mock(ArrayList.class);
-		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
-
-		GridDefinition.getDefinition(cells, cages, gridGeneratingParameters);
-	}
-
-	@Test(expected = InvalidParameterException.class)
-	public void getDefinition_ArrayListCellsIsEmpty_ThrowsInvalidParameterException()
-			throws Exception {
-		List<Cell> cells = new ArrayList<Cell>();
-		List<Cage> cages = mock(ArrayList.class);
-		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
-
-		GridDefinition.getDefinition(cells, cages, gridGeneratingParameters);
-	}
-
-	@Test(expected = InvalidParameterException.class)
-	public void getDefinition_ArrayListCagesIsNull_ThrowsInvalidParameterException()
-			throws Exception {
-		List<Cell> cells = mock(ArrayList.class);
-		when(cells.size()).thenReturn(1);
-		List<Cage> cages = null;
-		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
-
-		GridDefinition.getDefinition(cells, cages, gridGeneratingParameters);
-	}
-
-	@Test(expected = InvalidParameterException.class)
-	public void getDefinition_ArrayListCagesIsEmpty_ThrowsInvalidParameterException()
-			throws Exception {
-		List<Cell> cells = mock(ArrayList.class);
-		when(cells.size()).thenReturn(1);
-		List<Cage> cages = new ArrayList<Cage>();
-		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
-
-		GridDefinition.getDefinition(cells, cages, gridGeneratingParameters);
-	}
-
-	@Test(expected = InvalidParameterException.class)
-	public void getDefinition_GridGeneratingParametersIsNull_ThrowsInvalidParameterException()
-			throws Exception {
-		List<Cell> cells = mock(ArrayList.class);
-		when(cells.size()).thenReturn(1);
-		List<Cage> cages = mock(ArrayList.class);
-		when(cages.size()).thenReturn(1);
-		GridGeneratingParameters gridGeneratingParameters = null;
-
-		GridDefinition.getDefinition(cells, cages, gridGeneratingParameters);
-	}
-
-	@Test
-	public void getDefinition_TestGrid2x2_GridDefinitionCreated()
-			throws Exception {
-		assertGridDefinition(GridCreator2x2.create());
-	}
-
-	private void assertGridDefinition(GridCreator gridCreator) {
-		Grid grid = gridCreator.setEmptyGrid().getGrid();
-		assertThat(grid.getDefinition(), is(equalTo(gridCreator.getGridDefinition())));
-	}
-
-	@Test
-	public void getDefinition_TestGrid4x4_GridDefinitionCreated()
-			throws Exception {
-		assertGridDefinition(GridCreator4x4.create());
-	}
-
-	@Test
-	public void getDefinition_TestGrid4x4CageIdsNotConsecutive_GridDefinitionCreated()
-			throws Exception {
-		assertGridDefinition(GridCreator4x4CageIdsNotConsecutiveNorSorted.create());
 	}
 
 	@Test(expected = InvalidGridException.class)

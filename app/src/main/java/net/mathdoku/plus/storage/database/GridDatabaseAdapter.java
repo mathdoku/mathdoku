@@ -14,7 +14,6 @@ import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.enums.SolvingAttemptStatus;
-import net.mathdoku.plus.griddefinition.GridDefinition;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParametersBuilder;
 import net.mathdoku.plus.puzzle.grid.Grid;
@@ -142,7 +141,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 * @return The unique row id of the grid created. -1 in case of an error.
 	 */
 	public int insert(Grid grid) {
-		String gridDefinition = GridDefinition.getDefinition(grid);
+		String gridDefinition = grid.getDefinition();
 		if (gridDefinition == null || gridDefinition.trim().equals("")) {
 			// TODO: better handling of situation in which a grid definition was
 			// added before. It is a very rare situation but it can occur.

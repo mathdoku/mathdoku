@@ -167,7 +167,7 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 	 */
 	public void onClickPlayGame(@SuppressWarnings("UnusedParameters") View view) {
 		// First check if the puzzle already exists
-		String gridDefinition = GridDefinition.getDefinition(mGrid);
+		String gridDefinition = mGrid.getDefinition();
 		GridRow gridRow = new GridDatabaseAdapter()
 				.getByGridDefinition(gridDefinition);
 		if (gridRow == null) {

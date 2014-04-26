@@ -3,7 +3,7 @@ package net.mathdoku.plus.gridgenerating;
 import android.util.Log;
 
 import net.mathdoku.plus.config.Config;
-import net.mathdoku.plus.griddefinition.GridDefinition;
+import net.mathdoku.plus.griddefinition.GridDefinitionCreator;
 import net.mathdoku.plus.gridgenerating.cellcoordinates.CellCoordinates;
 import net.mathdoku.plus.gridgenerating.iface.GridGeneratorIface;
 import net.mathdoku.plus.gridgenerating.iface.GridGeneratorListenerIface;
@@ -290,8 +290,8 @@ public class GridGenerator implements GridGeneratorIface {
 	}
 
 	private boolean gridHasUniqueGridDefinition() {
-		String gridDefinition = GridDefinition.getDefinition(mCells, mCages,
-				gridGeneratingParameters);
+		String gridDefinition = new GridDefinitionCreator(mCells, mCages,
+				gridGeneratingParameters).invoke();
 		if (new GridDatabaseAdapter().getByGridDefinition(gridDefinition) != null) {
 			if (developmentMode) {
 				gridGeneratorListener
