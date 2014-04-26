@@ -9,31 +9,40 @@ import java.util.regex.Pattern;
 class GridDefinitionSplitter {
 	// Example of a grid definition:
 	// 1:00010202000103040506030405060707:0,4,1:1,2,4:2,2,4:3,1,2:4,4,4:5,2,4:6,4,1:7,6,3
-	private final static String REGEXP = "" //
-			// Part for puzzle complexity
-			+ "\\d"
+	private static final String REGEXP_EXACTLY_ONE_DIGIT = "\\d";
+	private static final String REGEXP_EXACTLY_TWO_DIGITS = "\\d\\d";
+	private static final String REGEXP_AT_LEAST_ONE_DIGIT = "\\d+";
+	private static final  String REGEXP_GRID_DEFINITION = new StringBuilder()
+	// Part for puzzle complexity
+			.append(REGEXP_EXACTLY_ONE_DIGIT)
 			// Part for cage id's per cell
-			+ GridDefinitionDelimiter.LEVEL1.toString() //
-			+ "(" //
-			+ "\\d\\d" // Cage id for a cell
-			+ ")+" // At least one cell needed
+			.append(GridDefinitionDelimiter.LEVEL1.toString())
+			.append("(")
+			// Cage id for a cell
+			.append(REGEXP_EXACTLY_TWO_DIGITS)
+			// At least one cell needed
+			.append(")+")
 			// Part for cage definitions
-			+ "(" //
+			.append("(")
 			// Start of new cage part
-			+ GridDefinitionDelimiter.LEVEL1.toString() //
-			+ "\\d+" // Cage id
-			+ GridDefinitionDelimiter.LEVEL2.toString() //
-			+ "\\d+" // Result value of cage
-			+ GridDefinitionDelimiter.LEVEL2.toString() //
-			+ "\\d" // Cage operator
-			+ ")+" // At least one cage needed
-	;
+			.append(GridDefinitionDelimiter.LEVEL1.toString())
+			// Cage id
+			.append(REGEXP_AT_LEAST_ONE_DIGIT)
+			.append(GridDefinitionDelimiter.LEVEL2.toString())
+			// Result value of cage
+			.append(REGEXP_AT_LEAST_ONE_DIGIT)
+			.append(GridDefinitionDelimiter.LEVEL2.toString())
+			// Cage operator
+			.append(REGEXP_EXACTLY_ONE_DIGIT)
+			// At least one cage needed
+			.append(")+")
+			.toString();
 
 	private final String gridDefinition;
 	private final String[] gridDefinitionElements;
-	private final int ID_PART_COMPLEXITY = 0;
-	private final int ID_PART_CELLS = 1;
-	private final int ID_PART_FIRST_CAGE = 2;
+	private static final int ID_PART_COMPLEXITY = 0;
+	private static final int ID_PART_CELLS = 1;
+	private static final int ID_PART_FIRST_CAGE = 2;
 
 	public GridDefinitionSplitter(String gridDefinition) {
 		if (gridDefinition == null) {
@@ -41,7 +50,7 @@ class GridDefinitionSplitter {
 		}
 
 		this.gridDefinition = gridDefinition;
-		if (!gridDefinition.matches(REGEXP)) {
+		if (!gridDefinition.matches(REGEXP_GRID_DEFINITION)) {
 			throw new InvalidGridException(
 					"Grid definition has invalid format.");
 		}
@@ -84,7 +93,7 @@ class GridDefinitionSplitter {
 	public int[] getCageIdPerCell() {
 		// The cagesString contains the cage number for each individual cell.
 		// The cage number always consists of two digits.
-		Pattern pattern = Pattern.compile("\\d\\d");
+		Pattern pattern = Pattern.compile(REGEXP_EXACTLY_TWO_DIGITS);
 		Matcher matcher = pattern
 				.matcher(gridDefinitionElements[ID_PART_CELLS]);
 		int[] cageIdPerCell = new int[getNumberOfCells()];
