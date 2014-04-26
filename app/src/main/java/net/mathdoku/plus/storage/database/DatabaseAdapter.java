@@ -2,10 +2,8 @@ package net.mathdoku.plus.storage.database;
 
 import android.annotation.SuppressLint;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.text.TextUtils;
 import android.util.Log;
 
 import net.mathdoku.plus.config.Config;
@@ -13,7 +11,6 @@ import net.mathdoku.plus.config.Config.AppMode;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -54,27 +51,44 @@ abstract class DatabaseAdapter {
 	 *            "not null" or "primary key autoincrement".
 	 * @return The definition for one column in a SQLite table.
 	 */
-	static String createColumn(String column, String dataType, String constraint)
-			throws InvalidParameterException {
+	static String createColumn(String column, String dataType, String constraint) {
+		validateStringParameterNotNullOrEmpty(column);
+		validateStringParameterNotNullOrEmpty(dataType);
 
-		if (column == null || column.trim().equals("")) {
-			Log.e(TAG,
-					"Method createColumn has invalid parameter 'column' with value '"
-							+ column + "'.");
-			throw new InvalidParameterException();
+		StringBuilder columnDefinition = new StringBuilder();
+		String space = " ";
+		columnDefinition.append(stringBetweenBackTicks(column.trim()));
+		columnDefinition.append(space);
+		columnDefinition.append(dataType.trim());
+		if (constraint != null) {
+			columnDefinition.append(space);
+			columnDefinition.append(constraint.trim());
 		}
-		if (dataType == null || dataType.trim().equals("")) {
-			Log.e(TAG,
-					"Method createColumn has invalid parameter 'data type' with value '"
-							+ dataType + "'.");
-			throw new InvalidParameterException();
-		}
+		return columnDefinition.toString();
+	}
 
-		return stringBetweenBackTicks(column)
-				+ " "
-				+ dataType
-				+ (constraint != null && !constraint.equals("") ? " "
-						+ constraint.trim() : "");
+	private static void validateStringParameterNotNullOrEmpty(
+			String parameterValue) {
+		if (parameterValue == null || parameterValue.trim().isEmpty()) {
+			throw new InvalidParameterException(String.format(
+					"Parameter has invalid value '%s'.", parameterValue));
+		}
+	}
+
+	/**
+	 * Generates a SQLite column definition. This method should best be used in
+	 * conjunction with method createTable.
+	 * 
+	 * @param column
+	 *            Name of column.
+	 * @param dataType
+	 *            Data type of new column. Must be a valid SQLite data type:
+	 *            blob, bool, char, datetime, double, float, integer, numeric,
+	 *            real, text or varchar.
+	 * @return The definition for one column in a SQLite table.
+	 */
+	static String createColumn(String column, String dataType) {
+		return createColumn(column, dataType, "");
 	}
 
 	/**
@@ -92,30 +106,20 @@ abstract class DatabaseAdapter {
 	 */
 	@SuppressWarnings("SameParameterValue")
 	static String createForeignKey(String column, String refersToTable,
-			String refersToColumn) throws InvalidParameterException {
+			String refersToColumn) {
+		validateStringParameterNotNullOrEmpty(column);
+		validateStringParameterNotNullOrEmpty(refersToTable);
+		validateStringParameterNotNullOrEmpty(refersToColumn);
 
-		if (column == null || column.trim().equals("")) {
-			Log.e(TAG,
-					"Method createForeignKey has invalid parameter 'column' with value '"
-							+ column + "'.");
-			throw new InvalidParameterException();
-		}
-		if (refersToTable == null || refersToTable.trim().equals("")) {
-			Log.e(TAG,
-					"Method createForeignKey has invalid parameter 'refersToTable' with value '"
-							+ refersToTable + "'.");
-			throw new InvalidParameterException();
-		}
-		if (refersToColumn == null || refersToColumn.trim().equals("")) {
-			Log.e(TAG,
-					"Method createForeignKey has invalid parameter 'refersToColumn' with value '"
-							+ refersToColumn + "'.");
-			throw new InvalidParameterException();
-		}
-
-		return " FOREIGN KEY(" + stringBetweenBackTicks(column.trim())
-				+ ") REFERENCES " + refersToTable.trim() + "("
-				+ refersToColumn.trim() + ")";
+		StringBuilder foreignKey = new StringBuilder();
+		foreignKey.append(" FOREIGN KEY(");
+		foreignKey.append(stringBetweenBackTicks(column.trim()));
+		foreignKey.append(") REFERENCES ");
+		foreignKey.append(refersToTable.trim());
+		foreignKey.append("(");
+		foreignKey.append(refersToColumn.trim());
+		foreignKey.append(")");
+		return foreignKey.toString();
 	}
 
 	/**
@@ -130,33 +134,22 @@ abstract class DatabaseAdapter {
 	 *            createForeignKey. Foreign keys should be ordered after the
 	 *            columns.
 	 * @return Definition for a SQLite table.
-	 * @throws InvalidParameterException
 	 */
-	static String createTable(String table, String... elements)
-			throws InvalidParameterException {
-		StringBuilder query = new StringBuilder();
-
-		if (table == null || table.trim().equals("")) {
-			Log.e(TAG,
-					"Method createTable has invalid parameter 'table' with value '"
-							+ table + "'.");
-			throw new InvalidParameterException();
-		}
+	static String createTable(String table, String... elements) {
+		validateStringParameterNotNullOrEmpty(table);
 		if (elements == null || elements.length < 1) {
-			Log.e(TAG, "Method createTable expects at least 1 column.");
-			throw new InvalidParameterException();
+			throw new InvalidParameterException(
+					"At least one element has to be specified.");
 		}
 
-		// noinspection StringConcatenationInsideStringBufferAppend
-		query.append("CREATE TABLE " + stringBetweenBackTicks(table) + " (");
+		StringBuilder query = new StringBuilder();
+		query.append("CREATE TABLE ");
+		query.append(stringBetweenBackTicks(table));
+		query.append(" (");
 		for (int i = 0; i < elements.length; i++) {
-			if (elements[i] == null || elements[i].trim().equals("")) {
-				Log.e(TAG, "Method createTable has invalid parameter 'columns["
-						+ i + "]' with value '" + elements[i] + "'.");
-				throw new InvalidParameterException();
-			}
-			// noinspection StringConcatenationInsideStringBufferAppend
-			query.append(elements[i] + (i < elements.length - 1 ? ", " : ")"));
+			validateStringParameterNotNullOrEmpty(elements[i]);
+			query.append(elements[i]);
+			query.append(i < elements.length - 1 ? ", " : ")");
 		}
 
 		return query.toString();
@@ -288,26 +281,27 @@ abstract class DatabaseAdapter {
 			if (cursor.moveToFirst()) {
 				// Table exists. Check if definition matches with expected
 				// definition.
-				// noinspection ConstantConditions
 				String sql = cursor.getString(
 						cursor.getColumnIndexOrThrow(columnSql)).toUpperCase();
 				String expectedSql = getCreateSQL().toUpperCase();
 				tableDefinitionChanged = !sql.equals(expectedSql);
-
-				if (tableDefinitionChanged) {
+				if (Config.mAppMode == AppMode.DEVELOPMENT
+						&& tableDefinitionChanged) {
 					Log.e(TAG, String.format(
 							"Change in table '%s' detected. Table has not yet been "
 									+ "upgraded.", getTableName()));
 					Log.e(TAG, "Database-version: " + sql);
-					Log.e(TAG, "Expected version: " + expectedSql);
 				}
 			}
 			cursor.close();
 		} else {
 			// Table does not exist.
-			Log.e(TAG, "Table '" + getTableName() + "' not found in database.");
-			Log.e(TAG, "Expected version: " + getCreateSQL());
+			Log.e(TAG, String.format("Table '%s' not found in database.",
+					getTableName()));
 			tableDefinitionChanged = true;
+		}
+		if (Config.mAppMode == AppMode.DEVELOPMENT && tableDefinitionChanged) {
+			Log.e(TAG, "Expected table definition: " + getCreateSQL());
 		}
 
 		return tableDefinitionChanged;
@@ -326,7 +320,7 @@ abstract class DatabaseAdapter {
 			String table, String createSql) {
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			try {
-				String dropSql = "DROP TABLE " + table;
+				String dropSql = getDropTableSQL(table);
 				execAndLogSQL(db, dropSql);
 			} catch (SQLiteException e) {
 				Log
@@ -339,89 +333,17 @@ abstract class DatabaseAdapter {
 		}
 	}
 
+	static String getDropTableSQL(String table) {
+		return "DROP TABLE " + table;
+	}
+
+	public String getDropTableSQL() {
+		return getDropTableSQL(getTableName());
+	}
+
 	private static void execAndLogSQL(SQLiteDatabase db, String sql) {
 		Log.i(TAG, "Executing SQL: " + sql);
 		db.execSQL(sql);
-	}
-
-	/**
-	 * Drops one or more columns from the table.
-	 * 
-	 * @param sqliteDatabase
-	 *            The database to be used by the adapter.
-	 * @param tableName
-	 *            The table name.
-	 * @param columnsToDropped
-	 *            The array of columns to be dropped.
-	 * @param createSQL
-	 *            The SQL statement to create the new version of the table.
-	 * @return True in case the table is recreated. False otherwise.
-	 */
-	protected static boolean dropColumn(SQLiteDatabase sqliteDatabase,
-			String tableName, String[] columnsToDropped, String createSQL) {
-		// Check if columns to be dropped has been specified.
-		if (columnsToDropped == null || columnsToDropped.length == 0) {
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				throw new DatabaseException(TAG
-						+ ".dropColumn has invalid parameter.'");
-			} else {
-				return false;
-			}
-		}
-
-		// Build the list of columns for the new version of the table.
-		List<String> currentColumnList = getTableColumns(sqliteDatabase,
-				tableName);
-		List<String> newColumnList = new ArrayList<String>(currentColumnList);
-		if (!newColumnList.removeAll(Arrays.asList(columnsToDropped))
-				|| newColumnList.isEmpty()
-				|| newColumnList.equals(currentColumnList)) {
-			// Can not delete.
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
-				throw new DatabaseException(TAG
-						+ ".dropColumn can not drop columns '"
-						+ Arrays.toString(columnsToDropped) + "'.");
-			} else {
-				return false;
-			}
-		}
-
-		// Start a new transaction.
-		sqliteDatabase.beginTransaction();
-
-		try {
-			// Rename current table to temporary table.
-			sqliteDatabase.execSQL("ALTER TABLE " + tableName + " RENAME TO "
-					+ tableName + "_old;");
-
-			// Create the (new version of the) table on its new format (no
-			// redundant
-			// columns).
-			sqliteDatabase.execSQL(createSQL);
-
-			String newColumnsString = TextUtils.join(",", newColumnList);
-
-			// Populating the (new version of the) table with the data from the
-			// temporary table.
-			sqliteDatabase.execSQL("INSERT INTO " + tableName + "("
-					+ newColumnsString + ") SELECT " + newColumnsString
-					+ " FROM " + tableName + "_old;");
-
-			// Drop the temporary table.
-			sqliteDatabase.execSQL("DROP TABLE " + tableName + "_old;");
-
-			// Commit changes.
-			sqliteDatabase.setTransactionSuccessful();
-
-		} catch (SQLException e) {
-			Log.wtf(TAG, String.format(
-					"Error while dropping column(s) from table %s", tableName),
-					e);
-			return false;
-		} finally {
-			sqliteDatabase.endTransaction();
-		}
-		return true;
 	}
 
 	/**
@@ -433,7 +355,7 @@ abstract class DatabaseAdapter {
 	 *            The table for which the actual columns have to be determined.
 	 * @return The list of columns in the given table.
 	 */
-	private static List<String> getTableColumns(SQLiteDatabase sqliteDatabase,
+	static List<String> getTableColumns(SQLiteDatabase sqliteDatabase,
 			String tableName) {
 		// Retrieve columns
 		String cmd = "pragma table_info(" + tableName + ");";
@@ -447,5 +369,9 @@ abstract class DatabaseAdapter {
 		cur.close();
 
 		return columns;
+	}
+
+	public List<String> getTableColumns() {
+		return getTableColumns(mSqliteDatabase, getTableName());
 	}
 }
