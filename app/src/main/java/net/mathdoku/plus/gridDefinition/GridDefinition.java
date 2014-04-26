@@ -2,6 +2,7 @@ package net.mathdoku.plus.griddefinition;
 
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.enums.GridType;
+import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParametersBuilder;
 import net.mathdoku.plus.gridsolving.GridSolver;
 import net.mathdoku.plus.puzzle.InvalidGridException;
@@ -25,10 +26,12 @@ public class GridDefinition {
 	@SuppressWarnings("unused")
 	private static final String TAG = GridDefinition.class.getName();
 
+	private final String gridDefinition;
 	private GridType gridType;
 	private int gridSize;
 	private List<Cage> mCages;
 	private List<Cell> mCells;
+	private PuzzleComplexity puzzleComplexity;
 	private int[] mCageIdPerCell;
 	private int[] mCountCellsPerCage;
 
@@ -54,121 +57,97 @@ public class GridDefinition {
 		}
 	}
 
-	private GridDefinition.ObjectsCreator mObjectsCreator;
+	private GridDefinition.ObjectsCreator objectsCreator;
 
-	public GridDefinition() {
-		mObjectsCreator = new GridDefinition.ObjectsCreator();
-	}
-
-	public void setObjectsCreator(GridDefinition.ObjectsCreator objectsCreator) {
+	// package private access for unit testing.
+	GridDefinition(String gridDefinition,
+			GridDefinition.ObjectsCreator objectsCreator) {
 		if (objectsCreator == null) {
 			throw new InvalidParameterException(
 					"Parameter objectsCreator cannot be null.");
 		}
-		mObjectsCreator = objectsCreator;
+		this.objectsCreator = objectsCreator;
+
+		this.gridDefinition = gridDefinition;
+
+		parse();
 	}
 
-	/**
-	 * Create a grid from the given definition string.
-	 * 
-	 * @return The grid created from the definition. Null in case of an error.
-	 */
-	public Grid createGrid(String definition) {
-		GridDefinitionSplitter gridDefinitionSplitter = new GridDefinitionSplitter(
-				definition);
+	public GridDefinition(String gridDefinition) {
+		this(gridDefinition, new ObjectsCreator());
+	}
 
+	private void parse() {
+		GridDefinitionSplitter gridDefinitionSplitter = new GridDefinitionSplitter(
+				gridDefinition);
+
+		parseGridSize(gridDefinitionSplitter);
+		parsePuzzleComplexity(gridDefinitionSplitter);
+		parseCells(gridDefinitionSplitter);
+		parseCages(gridDefinitionSplitter);
+
+		// Calculate and set the correct values for each cell if a single
+		// solution can be determined for the definition.
+		if (!setCorrectCellValues(getSolution())) {
+			throw new InvalidGridException(
+					"Cannot set the correct values for all cells.");
+		}
+	}
+
+	private void parseGridSize(GridDefinitionSplitter gridDefinitionSplitter) {
 		int cellCount = gridDefinitionSplitter.getNumberOfCells();
 		try {
 			gridType = GridType.getFromNumberOfCells(cellCount);
 		} catch (IllegalArgumentException e) {
 			throw new InvalidGridException(String.format(
 					"Definition '%s' contains an invalid number of cells.",
-					definition), e);
+					gridDefinition), e);
 		}
 		gridSize = gridType.getGridSize();
+	}
 
-		// Initialize helper variables. Those variables are filled while adding
-		// the cells. Later, when adding the cages, the data of those vars is
-		// used.
-		mCountCellsPerCage = new int[gridDefinitionSplitter.getNumberOfCages()];
+	private void parsePuzzleComplexity(
+			GridDefinitionSplitter gridDefinitionSplitter) {
+		puzzleComplexity = gridDefinitionSplitter.getPuzzleComplexity();
+	}
+
+	private void parseCells(GridDefinitionSplitter gridDefinitionSplitter) {
+		mCells = objectsCreator.createArrayListOfCells();
+
+		int expectedNumberOfCages = gridDefinitionSplitter.getNumberOfCages();
+		mCountCellsPerCage = new int[expectedNumberOfCages];
+
 		mCageIdPerCell = gridDefinitionSplitter.getCageIdPerCell();
-
-		// Create the cells based on the list of cage numbers for each cell.
-		if (!createArrayListOfCells(gridDefinitionSplitter.getNumberOfCages())) {
-			throw new InvalidGridException("Cannot create array list of cells.");
+		for (int cellNumber = 0; cellNumber < mCageIdPerCell.length; cellNumber++) {
+			addCell(cellNumber, mCageIdPerCell[cellNumber]);
 		}
+	}
 
-		mCages = mObjectsCreator.createArrayListOfCages();
+	private void addCell(int cellNumber, int cageId) {
+		if (cageId < 0 || cageId >= mCountCellsPerCage.length) {
+			throw new InvalidGridException("Cell refers to invalid cage id '"
+					+ cageId + "'.");
+		}
+		Cell cell = new CellBuilder()
+				.setGridSize(gridSize)
+				.setId(cellNumber)
+				.setCageId(cageId)
+				.setLenientCheckCorrectValueOnBuild()
+				.build();
+		mCells.add(cell);
+		mCountCellsPerCage[cageId]++;
+	}
+
+	private void parseCages(GridDefinitionSplitter gridDefinitionSplitter) {
+		mCages = objectsCreator.createArrayListOfCages();
 		for (String cageDefinition : gridDefinitionSplitter
 				.getCageDefinitions()) {
 			if (!createCage(cageDefinition)) {
-				return null;
+				throw new InvalidGridException(String.format(
+						"Cannot create cage with definition '%s'.",
+						cageDefinition));
 			}
 		}
-
-		// Calculate and set the correct values for each cell if a single
-		// solution can be determined for the definition.
-		if (!setCorrectCellValues()) {
-			throw new InvalidGridException(
-					"Cannot set the correct values for all cells.");
-		}
-
-		// All data is gathered now
-
-		GridGeneratingParametersBuilder mGridGeneratingParametersBuilder = mObjectsCreator
-				.createGridGeneratingParametersBuilder();
-		mGridGeneratingParametersBuilder.setGridType(gridType);
-		// The complexity is not needed to rebuild the puzzle, but it is stored
-		// as it is a great communicator to the (receiving) user how difficult
-		// the puzzle is.
-		mGridGeneratingParametersBuilder
-				.setPuzzleComplexity(gridDefinitionSplitter
-						.getPuzzleComplexity());
-		mGridGeneratingParametersBuilder
-				.setHideOperators(allCagesHaveCageOperatorNone(mCages));
-
-		GridBuilder gridBuilder = mObjectsCreator.createGridBuilder();
-		return gridBuilder
-				.setGridSize(gridSize)
-				.setCells(mCells)
-				.setCages(mCages)
-				.setGridGeneratingParameters(
-						mGridGeneratingParametersBuilder
-								.createGridGeneratingParameters())
-				.build();
-	}
-
-	private boolean allCagesHaveCageOperatorNone(List<Cage> cages) {
-		for (Cage cage : cages) {
-			if (cage.getOperator() != CageOperator.NONE) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	private boolean createArrayListOfCells(int expectedNumberOfCages) {
-		mCells = mObjectsCreator.createArrayListOfCells();
-
-		for (int cellNumber = 0; cellNumber < mCageIdPerCell.length; cellNumber++) {
-			int cageId = mCageIdPerCell[cellNumber];
-			Cell cell = new CellBuilder()
-					.setGridSize(gridSize)
-					.setId(cellNumber)
-					.setCageId(cageId)
-					.setLenientCheckCorrectValueOnBuild()
-					.build();
-			mCells.add(cell);
-
-			if (cageId < 0 || cageId >= expectedNumberOfCages) {
-				throw new InvalidGridException(
-						"Cell refers to invalid cage id '" + cageId + "'.");
-			}
-			mCageIdPerCell[cellNumber] = cageId;
-			mCountCellsPerCage[cageId]++;
-		}
-
-		return true;
 	}
 
 	private boolean createCage(String cageDefinition) {
@@ -185,16 +164,7 @@ public class GridDefinition {
 		cageBuilder.setId(cageId);
 		cageBuilder.setResult(cageDefinitionSplitter.getResult());
 		cageBuilder.setCageOperator(cageDefinitionSplitter.getCageOperator());
-
-		int[] cells = new int[mCountCellsPerCage[cageId]];
-		int cellIndex = 0;
-		for (int i = 0; i < mCountCellsPerCage[cageId]; i++) {
-			if (mCageIdPerCell[i] == cageId) {
-				cells[cellIndex++] = i;
-			}
-		}
-
-		cageBuilder.setCells(cells);
+		cageBuilder.setCells(getCellsWithCageId(cageId));
 		cageBuilder.setHideOperator(false);
 
 		Cage cage = cageBuilder.build();
@@ -203,33 +173,20 @@ public class GridDefinition {
 		return true;
 	}
 
-	private boolean setCorrectCellValues() {
-		// Check whether a single solution can be found.
-		int[][] solution = mObjectsCreator
-				.createGridSolver(gridSize, mCages)
-				.getSolutionGrid();
-		if (solution == null) {
-			// Either no or multiple solutions can be found. In both case this
-			// would mean that the grid definition string was manipulated by the
-			// user.
-			throw new InvalidGridException(
-					"Grid does not have a unique solution.");
-		}
-		if (solution.length != gridSize) {
-			throw new InvalidGridException("Solution array has "
-					+ solution.length + " rows while " + gridSize
-					+ " row were expected.");
-		}
-		for (int row = 0; row < gridSize; row++) {
-			if (solution[row].length != gridSize) {
-				throw new InvalidGridException("Solution array has "
-						+ (solution == null ? 0 : solution[row].length)
-						+ " columns in row " + row + " while " + gridSize
-						+ " columns were expected.");
+	private int[] getCellsWithCageId(int cageId) {
+		int[] cells = new int[mCountCellsPerCage[cageId]];
+
+		int cellIndex = 0;
+		for (int i = 0; i < mCountCellsPerCage[cageId]; i++) {
+			if (mCageIdPerCell[i] == cageId) {
+				cells[cellIndex++] = i;
 			}
 		}
 
-		// Store the solution in the grid cells.
+		return cells;
+	}
+
+	private boolean setCorrectCellValues(int[][] solution) {
 		for (Cell cell : mCells) {
 			int row = cell.getRow();
 			int column = cell.getColumn();
@@ -241,6 +198,68 @@ public class GridDefinition {
 			}
 		}
 
+		return true;
+	}
+
+	private int[][] getSolution() {
+		int[][] solution = objectsCreator
+				.createGridSolver(gridSize, mCages)
+				.getSolutionGrid();
+
+		if (solution == null) {
+			throw new InvalidGridException(
+					"Grid does not have a unique solution.");
+		}
+		if (solution.length != gridSize) {
+			throw new InvalidGridException(String.format(
+					"Solution array has %d rows while %d rows were expected.",
+					solution.length, gridSize));
+		}
+		for (int row = 0; row < gridSize; row++) {
+			if (solution[row].length != gridSize) {
+				throw new InvalidGridException(String.format(
+						"Solution array has %d columns in row %d while %d columns "
+								+ "were expected.", solution == null ? 0
+								: solution[row].length, row, gridSize));
+			}
+		}
+
+		return solution;
+	}
+
+	/**
+	 * Create a grid from the given definition string.
+	 * 
+	 * @return The grid created from the definition. Null in case of an error.
+	 */
+	public Grid createGrid() {
+		GridGeneratingParametersBuilder mGridGeneratingParametersBuilder = objectsCreator
+				.createGridGeneratingParametersBuilder();
+		mGridGeneratingParametersBuilder.setGridType(gridType);
+		// The complexity is not needed to rebuild the puzzle, but it is stored
+		// as it is a great communicator to the (receiving) user how difficult
+		// the puzzle is.
+		mGridGeneratingParametersBuilder.setPuzzleComplexity(puzzleComplexity);
+		mGridGeneratingParametersBuilder
+				.setHideOperators(allCagesHaveCageOperatorNone(mCages));
+
+		GridBuilder gridBuilder = objectsCreator.createGridBuilder();
+		return gridBuilder
+				.setGridSize(gridSize)
+				.setCells(mCells)
+				.setCages(mCages)
+				.setGridGeneratingParameters(
+						mGridGeneratingParametersBuilder
+								.createGridGeneratingParameters())
+				.build();
+	}
+
+	private boolean allCagesHaveCageOperatorNone(List<Cage> cages) {
+		for (Cage cage : cages) {
+			if (cage.getOperator() != CageOperator.NONE) {
+				return false;
+			}
+		}
 		return true;
 	}
 }

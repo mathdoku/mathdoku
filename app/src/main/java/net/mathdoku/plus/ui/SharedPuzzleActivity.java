@@ -149,7 +149,7 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 		String gridDefinition = new SharedPuzzle(this)
 				.getGridDefinitionFromUrl(uri);
 		try {
-			mGrid = new GridDefinition().createGrid(gridDefinition);
+			mGrid = new GridDefinition(gridDefinition).createGrid();
 		} catch (InvalidGridException e) {
 			Log.d("Cannot create a grid for definition '%s'.", gridDefinition,
 					e);
