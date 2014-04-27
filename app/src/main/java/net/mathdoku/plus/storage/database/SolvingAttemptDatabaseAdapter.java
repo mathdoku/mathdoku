@@ -52,7 +52,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		super();
 	}
 
-	// Package private access for DatabaseHelper only
+	// Package private access, intended for DatabaseHelper only
 	SolvingAttemptDatabaseAdapter(SQLiteDatabase sqLiteDatabase) {
 		super(sqLiteDatabase);
 	}
@@ -67,13 +67,9 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		return TABLE;
 	}
 
-	/**
-	 * Builds the SQL create statement for this table.
-	 * 
-	 * @return The SQL create statement for this table.
-	 */
-	private static String buildCreateSQL() {
-		return createTable(
+	@Override
+	protected String getCreateSQL() {
+		return getCreateTableSQL(
 				TABLE,
 				createColumn(KEY_ROWID, "integer", "primary key autoincrement"),
 				createColumn(KEY_GRID_ID, "integer", " not null"),
@@ -85,16 +81,6 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 						+ SolvingAttemptStatus.UNDETERMINED.getId()),
 				createForeignKey(KEY_GRID_ID, GridDatabaseAdapter.TABLE,
 						GridDatabaseAdapter.KEY_ROWID));
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.mathdoku.plus.storage.database.DatabaseAdapter#getCreateSQL ()
-	 */
-	@Override
-	protected String getCreateSQL() {
-		return buildCreateSQL();
 	}
 
 	/**

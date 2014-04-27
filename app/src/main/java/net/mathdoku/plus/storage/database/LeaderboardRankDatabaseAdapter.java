@@ -73,7 +73,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		super();
 	}
 
-	// Package private access for DatabaseHelper only
+	// Package private access, intended for DatabaseHelper only
 	LeaderboardRankDatabaseAdapter(SQLiteDatabase sqLiteDatabase) {
 		super(sqLiteDatabase);
 	}
@@ -83,13 +83,9 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		return TABLE;
 	}
 
-	/**
-	 * Builds the SQL create statement for this table.
-	 * 
-	 * @return The SQL create statement for this table.
-	 */
-	private static String buildCreateSQL() {
-		return createTable(
+	@Override
+	protected String getCreateSQL() {
+		return getCreateTableSQL(
 				TABLE,
 				createColumn(KEY_ROWID, "integer", "primary key autoincrement"),
 				createColumn(KEY_LEADERBOARD_ID, "text", "not null unique"),
@@ -104,16 +100,6 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 				createColumn(KEY_RANK, "long", null),
 				createColumn(KEY_RANK_DISPLAY, "text", null),
 				createColumn(KEY_RANK_DATE_LAST_UPDATED, "datetime", null));
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.mathdoku.plus.storage.database.DatabaseAdapter#getCreateSQL ()
-	 */
-	@Override
-	protected String getCreateSQL() {
-		return buildCreateSQL();
 	}
 
 	/**

@@ -61,7 +61,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		super();
 	}
 
-	// Package private access for DatabaseHelper only
+	// Package private access, intended for DatabaseHelper only
 	GridDatabaseAdapter(SQLiteDatabase sqLiteDatabase) {
 		super(sqLiteDatabase);
 	}
@@ -71,37 +71,25 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		return TABLE;
 	}
 
-	/**
-	 * Builds the SQL create statement for this table.
-	 * 
-	 * @return The SQL create statement for this table.
-	 */
-	private static String buildCreateSQL() {
-		return createTable(TABLE, createColumn(KEY_ROWID, "integer", "primary key autoincrement"),
-						   createColumn(KEY_DEFINITION, "text", "not null unique"),
-						   createColumn(KEY_GRID_SIZE, "integer", " not null"),
-						   createColumn(KEY_DATE_CREATED, "datetime", "not null"),
-						   // Grid generating parameters.
-						   // These values can be null as they are not known for
-						   // historic games. Neither will they be know when games
-						   // will be exchanged in the future.
-						   createColumn(KEY_GAME_SEED, "long", null),
-						   // changes in tables
-						   createColumn(KEY_GENERATOR_REVISION_NUMBER, "integer", null),
-						   createColumn(KEY_PUZZLE_COMPLEXITY, "string", null),
-						   createColumn(KEY_HIDE_OPERATORS, "string", null),
-						   createColumn(KEY_MAX_CAGE_RESULT, "integer", null),
-						   createColumn(KEY_MAX_CAGE_SIZE, "integer", null));
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.mathdoku.plus.storage.database.DatabaseAdapter#getCreateSQL ()
-	 */
 	@Override
 	protected String getCreateSQL() {
-		return buildCreateSQL();
+		return getCreateTableSQL(
+				TABLE,
+				createColumn(KEY_ROWID, "integer", "primary key autoincrement"),
+				createColumn(KEY_DEFINITION, "text", "not null unique"),
+				createColumn(KEY_GRID_SIZE, "integer", " not null"),
+				createColumn(KEY_DATE_CREATED, "datetime", "not null"),
+				// Grid generating parameters.
+				// These values can be null as they are not known for
+				// historic games. Neither will they be know when games
+				// will be exchanged in the future.
+				createColumn(KEY_GAME_SEED, "long", null),
+				// changes in tables
+				createColumn(KEY_GENERATOR_REVISION_NUMBER, "integer", null),
+				createColumn(KEY_PUZZLE_COMPLEXITY, "string", null),
+				createColumn(KEY_HIDE_OPERATORS, "string", null),
+				createColumn(KEY_MAX_CAGE_RESULT, "integer", null),
+				createColumn(KEY_MAX_CAGE_SIZE, "integer", null));
 	}
 
 	/**

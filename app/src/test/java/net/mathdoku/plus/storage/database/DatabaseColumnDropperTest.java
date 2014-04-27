@@ -39,7 +39,7 @@ public class DatabaseColumnDropperTest {
 
 		@Override
 		protected String getCreateSQL() {
-			return createTable(getTableName(),
+			return getCreateTableSQL(getTableName(),
 					createColumn(KEY_TO_BE_KEPT_1, "text"),
 					createColumn(KEY_TO_BE_KEPT_2, "text"),
 					createColumn(KEY_TO_BE_DELETED_1, "text"),
@@ -54,7 +54,8 @@ public class DatabaseColumnDropperTest {
 		DatabaseHelper.getInstance(activity);
 
 		testTableDatabaseAdapter = new TestTableDatabaseAdapter();
-		databaseColumnDropper = new DatabaseColumnDropper(testTableDatabaseAdapter);
+		databaseColumnDropper = new DatabaseColumnDropper(
+				testTableDatabaseAdapter);
 	}
 
 	@After
@@ -65,41 +66,56 @@ public class DatabaseColumnDropperTest {
 	}
 
 	@Test(expected = DatabaseException.class)
-	public void dropColumns_NullColumnArray_ThrowsDatabaseException() throws Exception {
+	public void dropColumns_NullColumnArray_ThrowsDatabaseException()
+			throws Exception {
 		assertThat(databaseColumnDropper.dropColumns(null), is(false));
 	}
 
 	@Test(expected = DatabaseException.class)
-	public void dropColumns_EmptyColumnArray_ThrowsDatabaseException() throws Exception {
-		assertThat(databaseColumnDropper.dropColumns(new String[]{}), is(false));
+	public void dropColumns_EmptyColumnArray_ThrowsDatabaseException()
+			throws Exception {
+		assertThat(databaseColumnDropper.dropColumns(new String[] {}),
+				is(false));
 	}
 
 	@Test(expected = DatabaseException.class)
-	public void dropColumns_NullColumn_ThrowsDatabaseException() throws Exception {
-		assertThat(databaseColumnDropper.dropColumns(new String[]{null}), is(false));
+	public void dropColumns_NullColumn_ThrowsDatabaseException()
+			throws Exception {
+		assertThat(databaseColumnDropper.dropColumns(new String[] { null }),
+				is(false));
 	}
 
 	@Test(expected = DatabaseException.class)
-	public void dropColumns_DropNonExistingColumn_ThrowsDatabaseException() throws Exception {
-		assertThat(databaseColumnDropper.dropColumns(new String[]{"*** NON EXISTENT COLUMN ***"}), is(false));
+	public void dropColumns_DropNonExistingColumn_ThrowsDatabaseException()
+			throws Exception {
+		assertThat(
+				databaseColumnDropper
+						.dropColumns(new String[] { "*** NON EXISTENT COLUMN ***" }),
+				is(false));
 	}
 
 	@Test
 	public void dropColumns_DropOneExistingColumn_Success() throws Exception {
-		assertThat(databaseColumnDropper.dropColumns(new String[]{KEY_TO_BE_DELETED_2}), is(true));
+		assertThat(
+				databaseColumnDropper
+						.dropColumns(new String[] { KEY_TO_BE_DELETED_2 }),
+				is(true));
 	}
 
 	@Test
 	public void dropColumns_DropTwoExistingColumns_Success() throws Exception {
-		assertThat(databaseColumnDropper.dropColumns(
-				new String[]{KEY_TO_BE_DELETED_1, KEY_TO_BE_DELETED_2}), is(true));
+		assertThat(
+				databaseColumnDropper.dropColumns(new String[] {
+						KEY_TO_BE_DELETED_1, KEY_TO_BE_DELETED_2 }), is(true));
 	}
 
 	@Test(expected = DatabaseException.class)
-	public void dropColumns_DropAllColumns_ThrowsDatabaseException() throws Exception {
-		assertThat(databaseColumnDropper.dropColumns(
-				new String[]{ KEY_TO_BE_KEPT_1,
-						KEY_TO_BE_KEPT_2, KEY_TO_BE_DELETED_1, KEY_TO_BE_KEPT_3,
+	public void dropColumns_DropAllColumns_ThrowsDatabaseException()
+			throws Exception {
+		assertThat(
+				databaseColumnDropper.dropColumns(new String[] {
+						KEY_TO_BE_KEPT_1, KEY_TO_BE_KEPT_2,
+						KEY_TO_BE_DELETED_1, KEY_TO_BE_KEPT_3,
 						KEY_TO_BE_DELETED_2 }), is(true));
 	}
 }

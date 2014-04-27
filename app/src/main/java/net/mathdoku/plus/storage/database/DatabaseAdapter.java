@@ -33,12 +33,13 @@ abstract class DatabaseAdapter {
 		mSqliteDatabase = DatabaseHelper.getInstance().getWritableDatabase();
 	}
 
-	// Package private access for DatabaseHelper only
+	// Package private access, intended for DatabaseHelper only
 	DatabaseAdapter(SQLiteDatabase sqLiteDatabase) {
 		mSqliteDatabase = sqLiteDatabase;
 	}
 
-	static DatabaseAdapter[] getAllDatabaseAdapters(
+	// Package private access, intended for DatabaseHelper only
+	static final DatabaseAdapter[] getAllDatabaseAdapters(
 			SQLiteDatabase sqLiteDatabase) {
 		return new DatabaseAdapter[] { new GridDatabaseAdapter(sqLiteDatabase),
 				new SolvingAttemptDatabaseAdapter(sqLiteDatabase),
@@ -60,7 +61,7 @@ abstract class DatabaseAdapter {
 
 	/**
 	 * Generates a SQLite column definition. This method should best be used in
-	 * conjunction with method createTable.
+	 * conjunction with method getCreateTableSQL.
 	 * 
 	 * @param column
 	 *            Name of column.
@@ -99,7 +100,7 @@ abstract class DatabaseAdapter {
 
 	/**
 	 * Generates a SQLite column definition. This method should best be used in
-	 * conjunction with method createTable.
+	 * conjunction with method getCreateTableSQL.
 	 * 
 	 * @param column
 	 *            Name of column.
@@ -115,7 +116,7 @@ abstract class DatabaseAdapter {
 
 	/**
 	 * Generates a SQLite foreign key constraint. This method should best be
-	 * used in conjunction with method createTable.
+	 * used in conjunction with method getCreateTableSQL.
 	 * 
 	 * @param column
 	 *            Name of column in the table to be created.
@@ -157,7 +158,7 @@ abstract class DatabaseAdapter {
 	 *            columns.
 	 * @return Definition for a SQLite table.
 	 */
-	static String createTable(String table, String... elements) {
+	static String getCreateTableSQL(String table, String... elements) {
 		validateStringParameterNotNullOrEmpty(table);
 		if (elements == null || elements.length < 1) {
 			throw new InvalidParameterException(
