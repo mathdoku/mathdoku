@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.util.Log;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
@@ -49,7 +48,14 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	public static final String FIELD_DELIMITER_LEVEL1 = ":"; // Separate fields
 	public static final String FIELD_DELIMITER_LEVEL2 = ","; // Separate values
 
-	// in fields
+	public SolvingAttemptDatabaseAdapter() {
+		super();
+	}
+
+	// Package private access for DatabaseHelper only
+	SolvingAttemptDatabaseAdapter(SQLiteDatabase sqLiteDatabase) {
+		super(sqLiteDatabase);
+	}
 
 	/**
 	 * Get the table name.
@@ -92,26 +98,8 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	}
 
 	/**
-	 * Creates the table.
-	 * 
-	 * @param db
-	 *            The database in which the table has to be created.
-	 */
-	static void create(SQLiteDatabase db) {
-		String sql = buildCreateSQL();
-		if (Config.mAppMode == AppMode.DEVELOPMENT) {
-			Log.i(TAG, sql);
-		}
-
-		// Execute create statement
-		db.execSQL(sql);
-	}
-
-	/**
 	 * Upgrades the table to an other version.
 	 * 
-	 * @param db
-	 *            The database in which the table has to be updated.
 	 * @param oldVersion
 	 *            The old version of the database. Use the app revision number
 	 *            to identify the database version.
@@ -119,10 +107,10 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 *            The new version of the database. Use the app revision number
 	 *            to identify the database version.
 	 */
-	static void upgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+	void upgrade(int oldVersion, int newVersion) {
 		if (Config.mAppMode == AppMode.DEVELOPMENT && oldVersion < 433
 				&& newVersion >= 433) {
-			recreateTableInDevelopmentMode(db, TABLE, buildCreateSQL());
+			recreateTableInDevelopmentMode();
 		}
 	}
 

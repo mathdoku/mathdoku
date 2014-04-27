@@ -29,12 +29,34 @@ abstract class DatabaseAdapter {
 
 	final SQLiteDatabase mSqliteDatabase;
 
-	/**
-	 * Creates a new instance of {@link DatabaseAdapter}.
-	 */
-	DatabaseAdapter() {
+	public DatabaseAdapter() {
 		mSqliteDatabase = DatabaseHelper.getInstance().getWritableDatabase();
 	}
+
+	// Package private access for DatabaseHelper only
+	DatabaseAdapter(SQLiteDatabase sqLiteDatabase) {
+		mSqliteDatabase = sqLiteDatabase;
+	}
+
+	static DatabaseAdapter[] getAllDatabaseAdapters(
+			SQLiteDatabase sqLiteDatabase) {
+		return new DatabaseAdapter[] { new GridDatabaseAdapter(sqLiteDatabase),
+				new SolvingAttemptDatabaseAdapter(sqLiteDatabase),
+				new StatisticsDatabaseAdapter(sqLiteDatabase),
+				new LeaderboardRankDatabaseAdapter(sqLiteDatabase) };
+	}
+
+	void createTable() {
+		String sql = getCreateSQL();
+		if (Config.mAppMode == AppMode.DEVELOPMENT) {
+			Log.i(TAG, sql);
+		}
+
+		// Execute create statement
+		mSqliteDatabase.execSQL(sql);
+	}
+
+	abstract void upgrade(int oldVersion, int newVersion);
 
 	/**
 	 * Generates a SQLite column definition. This method should best be used in
@@ -308,28 +330,21 @@ abstract class DatabaseAdapter {
 	}
 
 	/**
-	 * Drop the given table and create a new table with the given SQL. This
-	 * method is only available when running in development way.
-	 * 
-	 * @param table
-	 *            The table to be dropped.
-	 * @param createSql
-	 *            The SQL statement to recreate the table.
+	 * Drop the table and create a table for this database adapter. This method
+	 * is only available when running in development way.
 	 */
-	protected static void recreateTableInDevelopmentMode(SQLiteDatabase db,
-			String table, String createSql) {
+	protected void recreateTableInDevelopmentMode() {
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			try {
-				String dropSql = getDropTableSQL(table);
-				execAndLogSQL(db, dropSql);
+				execAndLogSQL(mSqliteDatabase, getDropTableSQL());
 			} catch (SQLiteException e) {
 				Log
 						.i(TAG,
 								String
-										.format("Table %s does not exist. Cannot drop table (not an error.",
-												table), e);
+										.format("Table %s does not exist. Cannot drop table (not necessarily an error).",
+												getTableName()), e);
 			}
-			execAndLogSQL(db, createSql);
+			execAndLogSQL(mSqliteDatabase, getCreateSQL());
 		}
 	}
 

@@ -74,6 +74,15 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	private static Projection mCumulativeStatisticsProjection = null;
 	private static Projection mHistoricStatisticsProjection = null;
 
+	public StatisticsDatabaseAdapter() {
+		super();
+	}
+
+	// Package private access for DatabaseHelper only
+	StatisticsDatabaseAdapter(SQLiteDatabase sqLiteDatabase) {
+		super(sqLiteDatabase);
+	}
+
 	@Override
 	protected String getTableName() {
 		return TABLE;
@@ -139,26 +148,8 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	}
 
 	/**
-	 * Creates the table.
-	 * 
-	 * @param db
-	 *            The database in which the table has to be created.
-	 */
-	static void create(SQLiteDatabase db) {
-		String sql = buildCreateSQL();
-		if (Config.mAppMode == AppMode.DEVELOPMENT) {
-			Log.i(TAG, sql);
-		}
-
-		// Execute create statement
-		db.execSQL(sql);
-	}
-
-	/**
 	 * Upgrades the table to an other version.
 	 * 
-	 * @param db
-	 *            The database in which the table has to be updated.
 	 * @param oldVersion
 	 *            The old version of the database. Use the app revision number
 	 *            to identify the database version.
@@ -166,10 +157,10 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 *            The new version of the database. Use the app revision number
 	 *            to identify the database version.
 	 */
-	static void upgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+	void upgrade(int oldVersion, int newVersion) {
 		if (Config.mAppMode == AppMode.DEVELOPMENT && oldVersion < 438
 				&& newVersion >= 438) {
-			recreateTableInDevelopmentMode(db, TABLE, buildCreateSQL());
+			recreateTableInDevelopmentMode();
 		}
 	}
 

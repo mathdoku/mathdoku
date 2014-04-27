@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.util.Log;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
@@ -70,6 +69,15 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 			KEY_SCORE_DATE_SUBMITTED, KEY_RANK_STATUS, KEY_RANK,
 			KEY_RANK_DISPLAY, KEY_RANK_DATE_LAST_UPDATED };
 
+	public LeaderboardRankDatabaseAdapter() {
+		super();
+	}
+
+	// Package private access for DatabaseHelper only
+	LeaderboardRankDatabaseAdapter(SQLiteDatabase sqLiteDatabase) {
+		super(sqLiteDatabase);
+	}
+
 	@Override
 	protected String getTableName() {
 		return TABLE;
@@ -109,26 +117,8 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	}
 
 	/**
-	 * Creates the table.
-	 * 
-	 * @param db
-	 *            The database in which the table has to be created.
-	 */
-	static void create(SQLiteDatabase db) {
-		String sql = buildCreateSQL();
-		if (Config.mAppMode == AppMode.DEVELOPMENT) {
-			Log.i(TAG, sql);
-		}
-
-		// Execute create statement
-		db.execSQL(sql);
-	}
-
-	/**
 	 * Upgrades the table to an other version.
 	 * 
-	 * @param db
-	 *            The database in which the table has to be updated.
 	 * @param oldVersion
 	 *            The old version of the database. Use the app revision number
 	 *            to identify the database version.
@@ -136,10 +126,10 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	 *            The new version of the database. Use the app revision number
 	 *            to identify the database version.
 	 */
-	static void upgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+	void upgrade(int oldVersion, int newVersion) {
 		if (Config.mAppMode == AppMode.DEVELOPMENT && oldVersion < 587
 				&& newVersion >= 587) {
-			recreateTableInDevelopmentMode(db, TABLE, buildCreateSQL());
+			recreateTableInDevelopmentMode();
 		}
 	}
 

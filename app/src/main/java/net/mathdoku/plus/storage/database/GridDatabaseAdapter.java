@@ -57,6 +57,15 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		ALL, UNFINISHED, SOLVED, REVEALED
 	}
 
+	public GridDatabaseAdapter() {
+		super();
+	}
+
+	// Package private access for DatabaseHelper only
+	GridDatabaseAdapter(SQLiteDatabase sqLiteDatabase) {
+		super(sqLiteDatabase);
+	}
+
 	@Override
 	protected String getTableName() {
 		return TABLE;
@@ -68,23 +77,21 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 * @return The SQL create statement for this table.
 	 */
 	private static String buildCreateSQL() {
-		return createTable(
-				TABLE,
-				createColumn(KEY_ROWID, "integer", "primary key autoincrement"),
-				createColumn(KEY_DEFINITION, "text", "not null unique"),
-				createColumn(KEY_GRID_SIZE, "integer", " not null"),
-				createColumn(KEY_DATE_CREATED, "datetime", "not null"),
-				// Grid generating parameters.
-				// These values can be null as they are not known for
-				// historic games. Neither will they be know when games
-				// will be exchanged in the future.
-				createColumn(KEY_GAME_SEED, "long", null),
-				// changes in tables
-				createColumn(KEY_GENERATOR_REVISION_NUMBER, "integer", null),
-				createColumn(KEY_PUZZLE_COMPLEXITY, "string", null),
-				createColumn(KEY_HIDE_OPERATORS, "string", null),
-				createColumn(KEY_MAX_CAGE_RESULT, "integer", null),
-				createColumn(KEY_MAX_CAGE_SIZE, "integer", null));
+		return createTable(TABLE, createColumn(KEY_ROWID, "integer", "primary key autoincrement"),
+						   createColumn(KEY_DEFINITION, "text", "not null unique"),
+						   createColumn(KEY_GRID_SIZE, "integer", " not null"),
+						   createColumn(KEY_DATE_CREATED, "datetime", "not null"),
+						   // Grid generating parameters.
+						   // These values can be null as they are not known for
+						   // historic games. Neither will they be know when games
+						   // will be exchanged in the future.
+						   createColumn(KEY_GAME_SEED, "long", null),
+						   // changes in tables
+						   createColumn(KEY_GENERATOR_REVISION_NUMBER, "integer", null),
+						   createColumn(KEY_PUZZLE_COMPLEXITY, "string", null),
+						   createColumn(KEY_HIDE_OPERATORS, "string", null),
+						   createColumn(KEY_MAX_CAGE_RESULT, "integer", null),
+						   createColumn(KEY_MAX_CAGE_SIZE, "integer", null));
 	}
 
 	/*
@@ -98,26 +105,8 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	}
 
 	/**
-	 * Creates the table.
-	 * 
-	 * @param db
-	 *            The database in which the table has to be created.
-	 */
-	static void create(SQLiteDatabase db) {
-		String sql = buildCreateSQL();
-		if (Config.mAppMode == AppMode.DEVELOPMENT) {
-			Log.i(TAG, sql);
-		}
-
-		// Execute create statement
-		db.execSQL(sql);
-	}
-
-	/**
 	 * Upgrades the table to an other version.
 	 * 
-	 * @param db
-	 *            The database in which the table has to be updated.
 	 * @param oldVersion
 	 *            The old version of the database. Use the app revision number
 	 *            to identify the database version.
@@ -125,10 +114,10 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 *            The new version of the database. Use the app revision number
 	 *            to identify the database version.
 	 */
-	static void upgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+	void upgrade(int oldVersion, int newVersion) {
 		if (Config.mAppMode == AppMode.DEVELOPMENT && oldVersion < 432
 				&& newVersion >= 432) {
-			recreateTableInDevelopmentMode(db, TABLE, buildCreateSQL());
+			recreateTableInDevelopmentMode();
 		}
 	}
 

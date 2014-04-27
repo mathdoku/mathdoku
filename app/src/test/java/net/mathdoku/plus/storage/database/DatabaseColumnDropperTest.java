@@ -29,6 +29,10 @@ public class DatabaseColumnDropperTest {
 		}
 
 		@Override
+		void upgrade(int oldVersion, int newVersion) {
+		}
+
+		@Override
 		protected String getTableName() {
 			return "TestTable";
 		}

@@ -19,7 +19,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public static final String DATABASE_NAME = "MathDoku.sqlite";
 
 	private static DatabaseHelper mDatabaseHelperSingletonInstance = null;
-	private static Context currentRenamingDelegatingContext = null;
 
 	// The Objects Creator is responsible for creating all new objects needed by
 	// this class. For unit testing purposes the default create methods can be
@@ -175,10 +174,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		GridDatabaseAdapter.create(db);
-		SolvingAttemptDatabaseAdapter.create(db);
-		StatisticsDatabaseAdapter.create(db);
-		LeaderboardRankDatabaseAdapter.create(db);
+		for (DatabaseAdapter databaseAdapter : DatabaseAdapter
+				.getAllDatabaseAdapters(db)) {
+			databaseAdapter.createTable();
+		}
 
 		// Enable foreign key constraints
 		db.execSQL("PRAGMA foreign_keys=ON;");
@@ -186,19 +185,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		GridDatabaseAdapter.upgrade(db, oldVersion, newVersion);
-		SolvingAttemptDatabaseAdapter.upgrade(db, oldVersion, newVersion);
-		StatisticsDatabaseAdapter.upgrade(db, oldVersion, newVersion);
-		LeaderboardRankDatabaseAdapter.upgrade(db, oldVersion, newVersion);
+		for (DatabaseAdapter databaseAdapter : DatabaseAdapter
+				.getAllDatabaseAdapters(db)) {
+			databaseAdapter.upgrade(oldVersion, newVersion);
+		}
 	}
 
 	public static boolean hasChangedTableDefinitions() {
-		return new GridDatabaseAdapter().isTableDefinitionChanged()
-				|| new StatisticsDatabaseAdapter().isTableDefinitionChanged()
-				|| new SolvingAttemptDatabaseAdapter()
-						.isTableDefinitionChanged()
-				|| new LeaderboardRankDatabaseAdapter()
-						.isTableDefinitionChanged();
+		for (DatabaseAdapter databaseAdapter : DatabaseAdapter
+				.getAllDatabaseAdapters(mDatabaseHelperSingletonInstance
+						.getReadableDatabase())) {
+			if (databaseAdapter.isTableDefinitionChanged()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
