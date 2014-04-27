@@ -2,6 +2,7 @@ package net.mathdoku.plus.developmenthelper;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
+import net.mathdoku.plus.archive.ui.ArchivePreferenceActivity;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.enums.GridType;
@@ -181,7 +183,10 @@ public class DevelopmentHelper {
 								public void onClick(DialogInterface dialog,
 										int id) {
 									// Restart the activity
-									puzzleFragmentActivity.recreate();
+									//puzzleFragmentActivity.recreate();
+									Intent intent = new Intent(puzzleFragmentActivity, ArchivePreferenceActivity.class);
+									puzzleFragmentActivity.getBaseContext().startActivity(intent);
+									puzzleFragmentActivity.finish();
 								}
 							})
 					.show();
@@ -220,14 +225,20 @@ public class DevelopmentHelper {
 										int id) {
 									executeDeleteAllPreferences();
 									executeDeleteDatabase(puzzleFragmentActivity);
+									restartApp(puzzleFragmentActivity);
 
-									// Restart the activity
-									puzzleFragmentActivity.recreate();
+
 								}
 							});
 			AlertDialog dialog = builder.create();
 			dialog.show();
 		}
+	}
+
+	private static void restartApp(PuzzleFragmentActivity puzzleFragmentActivity) {
+		Intent intent = new Intent(puzzleFragmentActivity, PuzzleFragmentActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+		puzzleFragmentActivity.getBaseContext().startActivity(intent);
 	}
 
 	/**
@@ -315,9 +326,7 @@ public class DevelopmentHelper {
 									public void onClick(DialogInterface dialog,
 											int id) {
 										executeDeleteDatabase(puzzleFragmentActivity);
-
-										// Restart the activity
-										puzzleFragmentActivity.recreate();
+										restartApp(puzzleFragmentActivity);
 									}
 								});
 				AlertDialog dialog = builder.create();
