@@ -25,7 +25,7 @@ public class DatabaseColumnDropperTest {
 
 	private class TestTableDatabaseAdapter extends DatabaseAdapter {
 		public TestTableDatabaseAdapter() {
-			mSqliteDatabase.execSQL(getCreateSQL());
+			execSQL(getCreateSQL());
 		}
 
 		@Override

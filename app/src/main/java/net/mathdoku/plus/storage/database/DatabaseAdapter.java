@@ -27,15 +27,15 @@ abstract class DatabaseAdapter {
 	private static final String SQLITE_TRUE = "true";
 	private static final String SQLITE_FALSE = "false";
 
-	final SQLiteDatabase mSqliteDatabase;
+	protected final SQLiteDatabase sqliteDatabase;
 
 	public DatabaseAdapter() {
-		mSqliteDatabase = DatabaseHelper.getInstance().getWritableDatabase();
+		sqliteDatabase = DatabaseHelper.getInstance().getWritableDatabase();
 	}
 
 	// Package private access, intended for DatabaseHelper only
 	DatabaseAdapter(SQLiteDatabase sqLiteDatabase) {
-		mSqliteDatabase = sqLiteDatabase;
+		sqliteDatabase = sqLiteDatabase;
 	}
 
 	// Package private access, intended for DatabaseHelper only
@@ -54,7 +54,7 @@ abstract class DatabaseAdapter {
 		}
 
 		// Execute create statement
-		mSqliteDatabase.execSQL(sql);
+		sqliteDatabase.execSQL(sql);
 	}
 
 	abstract void upgrade(int oldVersion, int newVersion);
@@ -296,7 +296,7 @@ abstract class DatabaseAdapter {
 		final String columnSql = "sql";
 		String[] columns = { columnSql };
 
-		Cursor cursor = mSqliteDatabase.query(true, "sqlite_master", columns,
+		Cursor cursor = sqliteDatabase.query(true, "sqlite_master", columns,
 				"name = " + stringBetweenQuotes(getTableName())
 						+ " AND type = " + stringBetweenQuotes("table"), null,
 				null, null, null, null);
@@ -337,7 +337,7 @@ abstract class DatabaseAdapter {
 	protected void recreateTableInDevelopmentMode() {
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			try {
-				execAndLogSQL(mSqliteDatabase, getDropTableSQL());
+				execAndLogSQL(sqliteDatabase, getDropTableSQL());
 			} catch (SQLiteException e) {
 				Log
 						.i(TAG,
@@ -345,7 +345,7 @@ abstract class DatabaseAdapter {
 										.format("Table %s does not exist. Cannot drop table (not necessarily an error).",
 												getTableName()), e);
 			}
-			execAndLogSQL(mSqliteDatabase, getCreateSQL());
+			execAndLogSQL(sqliteDatabase, getCreateSQL());
 		}
 	}
 
@@ -388,6 +388,22 @@ abstract class DatabaseAdapter {
 	}
 
 	public List<String> getTableColumns() {
-		return getTableColumns(mSqliteDatabase, getTableName());
+		return getTableColumns(sqliteDatabase, getTableName());
+	}
+
+	public void beginTransaction() {
+		sqliteDatabase.beginTransaction();
+	}
+
+	public void endTransaction() {
+		sqliteDatabase.endTransaction();
+	}
+
+	public void setTransactionSuccessful() {
+		sqliteDatabase.setTransactionSuccessful();
+	}
+
+	public void execSQL(String sql) {
+		sqliteDatabase.execSQL(sql);
 	}
 }

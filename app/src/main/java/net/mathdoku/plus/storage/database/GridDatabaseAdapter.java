@@ -147,7 +147,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 
 		int id;
 		try {
-			id = (int) mSqliteDatabase
+			id = (int) sqliteDatabase
 					.insertOrThrow(TABLE, null, initialValues);
 		} catch (SQLiteConstraintException e) {
 			throw new DatabaseException("Cannot insert new grid in database.",
@@ -173,7 +173,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		GridRow gridRow = null;
 		Cursor cursor = null;
 		try {
-			cursor = mSqliteDatabase.query(true, TABLE, allColumns, KEY_ROWID
+			cursor = sqliteDatabase.query(true, TABLE, allColumns, KEY_ROWID
 					+ "=" + id, null, null, null, null, null);
 			gridRow = toGridRow(cursor);
 		} catch (SQLiteException e) {
@@ -199,7 +199,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		GridRow gridRow = null;
 		Cursor cursor = null;
 		try {
-			cursor = mSqliteDatabase.query(true, TABLE, allColumns,
+			cursor = sqliteDatabase.query(true, TABLE, allColumns,
 					KEY_DEFINITION + "=" + stringBetweenQuotes(definition),
 					null, null, null, null, null);
 			gridRow = toGridRow(cursor);
@@ -363,7 +363,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		int[][] gridIds = null;
 		Cursor cursor = null;
 		try {
-			cursor = sqliteQueryBuilder.query(mSqliteDatabase,
+			cursor = sqliteQueryBuilder.query(sqliteDatabase,
 					projection.getAllColumnNames(), selection, null, KEY_ROWID,
 					null, null);
 			if (cursor != null && cursor.moveToFirst()) {
@@ -471,7 +471,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		StatusFilter[] statuses = null;
 		Cursor cursor = null;
 		try {
-			cursor = sqliteQueryBuilder.query(mSqliteDatabase, columnsData,
+			cursor = sqliteQueryBuilder.query(sqliteDatabase, columnsData,
 					selection, null, keyStatusFilter, null, null);
 			if (cursor != null && cursor.moveToFirst()) {
 				statuses = new StatusFilter[cursor.getCount() + 1];
@@ -545,7 +545,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		GridType[] sizes = null;
 		Cursor cursor = null;
 		try {
-			cursor = sqliteQueryBuilder.query(mSqliteDatabase, columnsData,
+			cursor = sqliteQueryBuilder.query(sqliteDatabase, columnsData,
 					selection, null, KEY_GRID_SIZE, null, null);
 			if (cursor != null && cursor.moveToFirst()) {
 				sizes = new GridType[cursor.getCount()];

@@ -34,23 +34,21 @@ class DatabaseColumnDropper {
 		validateColumnsRemaining();
 
 		try {
-			databaseAdapter.mSqliteDatabase.beginTransaction();
+			databaseAdapter.beginTransaction();
 
-			databaseAdapter.mSqliteDatabase.execSQL(getRenameTableSQL());
-			databaseAdapter.mSqliteDatabase.execSQL(databaseAdapter
-					.getCreateSQL());
-			databaseAdapter.mSqliteDatabase.execSQL(getInsertDataSQL());
-			databaseAdapter.mSqliteDatabase.execSQL(databaseAdapter
-					.getDropTableSQL());
+			databaseAdapter.execSQL(getRenameTableSQL());
+			databaseAdapter.execSQL(databaseAdapter.getCreateSQL());
+			databaseAdapter.execSQL(getInsertDataSQL());
+			databaseAdapter.execSQL(databaseAdapter.getDropTableSQL());
 
-			databaseAdapter.mSqliteDatabase.setTransactionSuccessful();
+			databaseAdapter.setTransactionSuccessful();
 		} catch (SQLException e) {
 			Log.wtf(TAG, String.format(
 					"Error while dropping column(s) from table %s.",
 					databaseAdapter.getTableName()), e);
 			return false;
 		} finally {
-			databaseAdapter.mSqliteDatabase.endTransaction();
+			databaseAdapter.endTransaction();
 		}
 		return true;
 	}
@@ -89,8 +87,8 @@ class DatabaseColumnDropper {
 		if (newColumnList == null || newColumnList.isEmpty()
 				|| newColumnList.equals(currentColumnList)) {
 			throw new DatabaseException(String.format(
-					"Remaining list of columns which are not deleted is not valid:" + " %s.",
-					newColumnList));
+					"Remaining list of columns which are not deleted is not valid:"
+							+ " %s.", newColumnList));
 		}
 	}
 

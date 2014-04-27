@@ -157,7 +157,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 
 		int id;
 		try {
-			id = (int) mSqliteDatabase
+			id = (int) sqliteDatabase
 					.insertOrThrow(TABLE, null, contentValues);
 		} catch (SQLiteConstraintException e) {
 			throw new DatabaseException(
@@ -210,7 +210,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		contentValues.put(KEY_RANK_DISPLAY, (String) null);
 		contentValues.put(KEY_RANK_DATE_LAST_UPDATED, (String) null);
 
-		return mSqliteDatabase.update(TABLE, contentValues, KEY_LEADERBOARD_ID
+		return sqliteDatabase.update(TABLE, contentValues, KEY_LEADERBOARD_ID
 				+ " = " + stringBetweenQuotes(leaderboardId), null) == 1;
 	}
 
@@ -262,7 +262,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		contentValues.put(KEY_RANK_DISPLAY, rankDisplay);
 		contentValues.put(KEY_RANK_DATE_LAST_UPDATED, timestamp);
 
-		return mSqliteDatabase.update(TABLE, contentValues, KEY_LEADERBOARD_ID
+		return sqliteDatabase.update(TABLE, contentValues, KEY_LEADERBOARD_ID
 				+ " = " + stringBetweenQuotes(leaderboardId), null) == 1;
 	}
 
@@ -287,7 +287,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		contentValues.put(KEY_RANK_DATE_LAST_UPDATED,
 				toSQLiteTimestamp(new java.util.Date().getTime()));
 
-		return mSqliteDatabase.update(TABLE, contentValues, KEY_LEADERBOARD_ID
+		return sqliteDatabase.update(TABLE, contentValues, KEY_LEADERBOARD_ID
 				+ " = " + stringBetweenQuotes(leaderboardId), null) == 1;
 	}
 
@@ -311,7 +311,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		contentValues.put(KEY_RANK_DATE_LAST_UPDATED,
 				toSQLiteTimestamp(new java.util.Date().getTime()));
 
-		return mSqliteDatabase.update(TABLE, contentValues, KEY_LEADERBOARD_ID
+		return sqliteDatabase.update(TABLE, contentValues, KEY_LEADERBOARD_ID
 				+ " = " + stringBetweenQuotes(leaderboardId), null) == 1;
 	}
 
@@ -327,7 +327,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		LeaderboardRankRow leaderboardRankRow = null;
 		Cursor cursor = null;
 		try {
-			cursor = mSqliteDatabase.query(true, TABLE, allColumns,
+			cursor = sqliteDatabase.query(true, TABLE, allColumns,
 					KEY_LEADERBOARD_ID + "="
 							+ stringBetweenQuotes(leaderboardId), null, null,
 					null, null, null);
@@ -416,7 +416,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 			String orderBy = "IFNULL(" + KEY_RANK_DATE_LAST_UPDATED + ","
 					+ KEY_SCORE_DATE_SUBMITTED + ") ASC";
 
-			cursor = mSqliteDatabase.query(true, TABLE, allColumns,
+			cursor = sqliteDatabase.query(true, TABLE, allColumns,
 					getSelectionOutdatedLeaderboardRanks(), null, null, null,
 					orderBy, "1");
 			leaderboardRankRow = toLeaderboardRankRow(cursor);
@@ -445,7 +445,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		try {
 			// Build selection and order by clauses
 			String[] columns = new String[] { "COUNT(1)" };
-			cursor = mSqliteDatabase.query(true, TABLE, columns,
+			cursor = sqliteDatabase.query(true, TABLE, columns,
 					getSelectionOutdatedLeaderboardRanks(), null, null, null,
 					null, null);
 
@@ -541,7 +541,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 			query.append(",  " + KEY_RANK_DISPLAY + " = null");
 			query.append(",  " + KEY_RANK_DATE_LAST_UPDATED + " = null");
 
-			mSqliteDatabase.execSQL(query.toString());
+			sqliteDatabase.execSQL(query.toString());
 		} catch (SQLiteException e) {
 			throw new DatabaseException(
 					"Cannot set ranks to be updated in database", e);

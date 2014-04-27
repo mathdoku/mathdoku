@@ -169,7 +169,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 
 		long id;
 		try {
-			id = mSqliteDatabase.insertOrThrow(TABLE, null, contentValues);
+			id = sqliteDatabase.insertOrThrow(TABLE, null, contentValues);
 		} catch (SQLiteException e) {
 			throw new DatabaseException(
 					"Cannot insert new grid statistics in database.", e);
@@ -196,7 +196,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		GridStatistics gridStatistics = null;
 		Cursor cursor = null;
 		try {
-			cursor = mSqliteDatabase.query(true, TABLE, allColumns, KEY_GRID_ID
+			cursor = sqliteDatabase.query(true, TABLE, allColumns, KEY_GRID_ID
 					+ "=" + gridId, null, null, null, KEY_ROWID + " DESC", "1");
 			gridStatistics = toGridStatistics(cursor);
 		} catch (SQLiteException e) {
@@ -319,7 +319,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		newValues.put(KEY_INCLUDE_IN_STATISTICS,
 				Boolean.toString(gridStatistics.mIncludedInStatistics));
 
-		return mSqliteDatabase.update(TABLE, newValues, KEY_ROWID + " = "
+		return sqliteDatabase.update(TABLE, newValues, KEY_ROWID + " = "
 				+ gridStatistics.mId, null) == 1;
 	}
 
@@ -439,7 +439,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 
 		Cursor cursor;
 		try {
-			cursor = sqliteQueryBuilder.query(mSqliteDatabase,
+			cursor = sqliteQueryBuilder.query(sqliteDatabase,
 					mCumulativeStatisticsProjection.getAllColumnNames(),
 					selection, null, null, null, null);
 		} catch (SQLiteException e) {
@@ -699,7 +699,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 
 		Cursor cursor;
 		try {
-			cursor = sqliteQueryBuilder.query(mSqliteDatabase, columnsData,
+			cursor = sqliteQueryBuilder.query(sqliteDatabase, columnsData,
 					selection, null, null, null, KEY_GRID_ID);
 		} catch (SQLiteException e) {
 			throw new DatabaseException(
@@ -753,7 +753,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 			Log.i(TAG, sql);
 		}
 		try {
-			mSqliteDatabase.execSQL(sql);
+			sqliteDatabase.execSQL(sql);
 		} catch (SQLiteException e) {
 			throw new DatabaseException(
 					String.format(

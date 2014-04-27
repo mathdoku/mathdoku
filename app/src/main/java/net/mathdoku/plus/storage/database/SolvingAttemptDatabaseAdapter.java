@@ -122,7 +122,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 
 		long id = -1;
 		try {
-			id = mSqliteDatabase.insertOrThrow(TABLE, null, initialValues);
+			id = sqliteDatabase.insertOrThrow(TABLE, null, initialValues);
 		} catch (SQLiteException e) {
 			throw new DatabaseException(
 					"Cannot insert new solving attempt in database.", e);
@@ -147,7 +147,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		SolvingAttempt solvingAttempt = null;
 		Cursor cursor = null;
 		try {
-			cursor = mSqliteDatabase.query(true, TABLE, dataColumns, KEY_ROWID
+			cursor = sqliteDatabase.query(true, TABLE, dataColumns, KEY_ROWID
 					+ "=" + solvingAttemptId, null, null, null, null, null);
 
 			if (cursor == null || !cursor.moveToFirst()) {
@@ -192,7 +192,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		int id = -1;
 		Cursor cursor = null;
 		try {
-			cursor = mSqliteDatabase.query(true, TABLE,
+			cursor = sqliteDatabase.query(true, TABLE,
 					new String[] { KEY_ROWID }, null, null, null, null,
 					KEY_DATE_UPDATED + " DESC", "1");
 
@@ -232,7 +232,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		contentValues.put(KEY_STATUS,
 				solvingAttempt.mSolvingAttemptStatus.getId());
 
-		return mSqliteDatabase.update(TABLE, contentValues, KEY_ROWID + " = "
+		return sqliteDatabase.update(TABLE, contentValues, KEY_ROWID + " = "
 				+ solvingAttempt.mId, null) == 1;
 	}
 
@@ -249,7 +249,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		try {
 			// Currently all solving attempts are returned. In future this can
 			// be restricted to games which are not solved.
-			cursor = mSqliteDatabase.query(true, TABLE, columns, null, null,
+			cursor = sqliteDatabase.query(true, TABLE, columns, null, null,
 					null, null, null, null);
 
 			if (cursor == null || !cursor.moveToFirst()) {
@@ -299,7 +299,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		int count = 0;
 		Cursor cursor = null;
 		try {
-			cursor = mSqliteDatabase.query(true, TABLE,
+			cursor = sqliteDatabase.query(true, TABLE,
 					new String[] { "COUNT(1)" }, KEY_GRID_ID + "=" + gridId,
 					null, null, null, null, null);
 
