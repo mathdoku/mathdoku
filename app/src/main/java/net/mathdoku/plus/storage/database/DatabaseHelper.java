@@ -187,14 +187,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		for (DatabaseAdapter databaseAdapter : DatabaseAdapter
 				.getAllDatabaseAdapters(db)) {
-			databaseAdapter.upgrade(oldVersion, newVersion);
+			databaseAdapter.upgradeTable(oldVersion, newVersion);
 		}
 	}
 
 	public static boolean hasChangedTableDefinitions() {
 		for (DatabaseAdapter databaseAdapter : DatabaseAdapter
-				.getAllDatabaseAdapters(mDatabaseHelperSingletonInstance
-						.getReadableDatabase())) {
+				.getAllDatabaseAdapters(mDatabaseHelperSingletonInstance.getReadableDatabase())) {
 			if (databaseAdapter.isTableDefinitionChanged()) {
 				return true;
 			}

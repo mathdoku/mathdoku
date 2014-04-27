@@ -29,7 +29,7 @@ public class DatabaseColumnDropperTest {
 		}
 
 		@Override
-		void upgrade(int oldVersion, int newVersion) {
+		void upgradeTable(int oldVersion, int newVersion) {
 		}
 
 		@Override
@@ -40,11 +40,11 @@ public class DatabaseColumnDropperTest {
 		@Override
 		protected String getCreateSQL() {
 			return getCreateTableSQL(getTableName(),
-					createColumn(KEY_TO_BE_KEPT_1, "text"),
-					createColumn(KEY_TO_BE_KEPT_2, "text"),
-					createColumn(KEY_TO_BE_DELETED_1, "text"),
-					createColumn(KEY_TO_BE_KEPT_3, "text"),
-					createColumn(KEY_TO_BE_DELETED_2, "text"));
+					getCreateColumnClause(KEY_TO_BE_KEPT_1, DataType.STRING),
+					getCreateColumnClause(KEY_TO_BE_KEPT_2, DataType.STRING),
+					getCreateColumnClause(KEY_TO_BE_DELETED_1, DataType.STRING),
+					getCreateColumnClause(KEY_TO_BE_KEPT_3, DataType.STRING),
+					getCreateColumnClause(KEY_TO_BE_DELETED_2, DataType.STRING));
 		}
 	}
 
@@ -90,7 +90,7 @@ public class DatabaseColumnDropperTest {
 			throws Exception {
 		assertThat(
 				databaseColumnDropper
-						.dropColumns(new String[] { "*** NON EXISTENT COLUMN ***" }),
+						.dropColumns(new String[]{"*** NON EXISTENT COLUMN ***"}),
 				is(false));
 	}
 
@@ -98,7 +98,7 @@ public class DatabaseColumnDropperTest {
 	public void dropColumns_DropOneExistingColumn_Success() throws Exception {
 		assertThat(
 				databaseColumnDropper
-						.dropColumns(new String[] { KEY_TO_BE_DELETED_2 }),
+						.dropColumns(new String[]{KEY_TO_BE_DELETED_2}),
 				is(true));
 	}
 

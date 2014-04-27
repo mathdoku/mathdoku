@@ -71,14 +71,18 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	protected String getCreateSQL() {
 		return getCreateTableSQL(
 				TABLE,
-				createColumn(KEY_ROWID, "integer", "primary key autoincrement"),
-				createColumn(KEY_GRID_ID, "integer", " not null"),
-				createColumn(KEY_DATE_CREATED, "datetime", "not null"),
-				createColumn(KEY_DATE_UPDATED, "datetime", "not null"),
-				createColumn(KEY_SAVED_WITH_REVISION, "integer", " not null"),
-				createColumn(KEY_DATA, "string", "not null"),
-				createColumn(KEY_STATUS, "integer", "not null default "
-						+ SolvingAttemptStatus.UNDETERMINED.getId()),
+				getCreateColumnClause(KEY_ROWID, DataType.INTEGER,
+						primaryKeyAutoIncremented()),
+				getCreateColumnClause(KEY_GRID_ID, DataType.INTEGER, notNull()),
+				getCreateColumnClause(KEY_DATE_CREATED, DataType.TIMESTAMP,
+						notNull()),
+				getCreateColumnClause(KEY_DATE_UPDATED, DataType.TIMESTAMP,
+						notNull()),
+				getCreateColumnClause(KEY_SAVED_WITH_REVISION,
+						DataType.INTEGER, notNull()),
+				getCreateColumnClause(KEY_DATA, DataType.STRING, notNull()),
+				getCreateColumnClause(KEY_STATUS, DataType.INTEGER, notNull(),
+						defaultValue(SolvingAttemptStatus.UNDETERMINED.getId())),
 				createForeignKey(KEY_GRID_ID, GridDatabaseAdapter.TABLE,
 						GridDatabaseAdapter.KEY_ROWID));
 	}
@@ -93,7 +97,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 *            The new version of the database. Use the app revision number
 	 *            to identify the database version.
 	 */
-	void upgrade(int oldVersion, int newVersion) {
+	void upgradeTable(int oldVersion, int newVersion) {
 		if (Config.mAppMode == AppMode.DEVELOPMENT && oldVersion < 433
 				&& newVersion >= 433) {
 			recreateTableInDevelopmentMode();

@@ -87,19 +87,28 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	protected String getCreateSQL() {
 		return getCreateTableSQL(
 				TABLE,
-				createColumn(KEY_ROWID, "integer", "primary key autoincrement"),
-				createColumn(KEY_LEADERBOARD_ID, "text", "not null unique"),
-				createColumn(KEY_GRID_SIZE, "integer", "not null"),
-				createColumn(KEY_HIDDEN_OPERATORS, "text", "not null"),
-				createColumn(KEY_PUZZLE_COMPLEXITY, "text", "not null"),
-				createColumn(KEY_SCORE_ORIGIN, "text", " not null"),
-				createColumn(KEY_SCORE_STATISTICS_ID, "integer", null),
-				createColumn(KEY_SCORE_RAW_SCORE, "long", null),
-				createColumn(KEY_SCORE_DATE_SUBMITTED, "datetime", null),
-				createColumn(KEY_RANK_STATUS, "text", " not null"),
-				createColumn(KEY_RANK, "long", null),
-				createColumn(KEY_RANK_DISPLAY, "text", null),
-				createColumn(KEY_RANK_DATE_LAST_UPDATED, "datetime", null));
+				getCreateColumnClause(KEY_ROWID, DataType.INTEGER,
+						primaryKeyAutoIncremented()),
+				getCreateColumnClause(KEY_LEADERBOARD_ID, DataType.STRING,
+						notNull(), unique()),
+				getCreateColumnClause(KEY_GRID_SIZE, DataType.INTEGER,
+						notNull()),
+				getCreateColumnClause(KEY_HIDDEN_OPERATORS, DataType.STRING,
+						notNull()),
+				getCreateColumnClause(KEY_PUZZLE_COMPLEXITY, DataType.STRING,
+						notNull()),
+				getCreateColumnClause(KEY_SCORE_ORIGIN, DataType.STRING,
+						notNull()),
+				getCreateColumnClause(KEY_SCORE_STATISTICS_ID, DataType.INTEGER),
+				getCreateColumnClause(KEY_SCORE_RAW_SCORE, DataType.LONG),
+				getCreateColumnClause(KEY_SCORE_DATE_SUBMITTED,
+						DataType.TIMESTAMP),
+				getCreateColumnClause(KEY_RANK_STATUS, DataType.STRING,
+						notNull()),
+				getCreateColumnClause(KEY_RANK, DataType.LONG),
+				getCreateColumnClause(KEY_RANK_DISPLAY, DataType.STRING),
+				getCreateColumnClause(KEY_RANK_DATE_LAST_UPDATED,
+						DataType.TIMESTAMP));
 	}
 
 	/**
@@ -112,7 +121,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	 *            The new version of the database. Use the app revision number
 	 *            to identify the database version.
 	 */
-	void upgrade(int oldVersion, int newVersion) {
+	void upgradeTable(int oldVersion, int newVersion) {
 		if (Config.mAppMode == AppMode.DEVELOPMENT && oldVersion < 587
 				&& newVersion >= 587) {
 			recreateTableInDevelopmentMode();
@@ -157,8 +166,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 
 		int id;
 		try {
-			id = (int) sqliteDatabase
-					.insertOrThrow(TABLE, null, contentValues);
+			id = (int) sqliteDatabase.insertOrThrow(TABLE, null, contentValues);
 		} catch (SQLiteConstraintException e) {
 			throw new DatabaseException(
 					"Cannot insert new initialized leaderboard in database.", e);

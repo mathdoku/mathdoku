@@ -57,7 +57,7 @@ abstract class DatabaseAdapter {
 		sqliteDatabase.execSQL(sql);
 	}
 
-	abstract void upgrade(int oldVersion, int newVersion);
+	abstract void upgradeTable(int oldVersion, int newVersion);
 
 	/**
 	 * Generates a SQLite column definition. This method should best be used in
@@ -66,26 +66,27 @@ abstract class DatabaseAdapter {
 	 * @param column
 	 *            Name of column.
 	 * @param dataType
-	 *            Data type of new column. Must be a valid SQLite data type:
-	 *            blob, bool, char, datetime, double, float, integer, numeric,
-	 *            real, text or varchar.
-	 * @param constraint
+	 *            Data type of new column.
+	 * @param constraints
 	 *            Optional constraint or modifiers for column. For example:
 	 *            "not null" or "primary key autoincrement".
 	 * @return The definition for one column in a SQLite table.
 	 */
-	static String createColumn(String column, String dataType, String constraint) {
+	static String getCreateColumnClause(String column, DataType dataType,
+			String... constraints) {
 		validateStringParameterNotNullOrEmpty(column);
-		validateStringParameterNotNullOrEmpty(dataType);
+		validateParameterNotNull(dataType);
 
 		StringBuilder columnDefinition = new StringBuilder();
 		String space = " ";
 		columnDefinition.append(stringBetweenBackTicks(column.trim()));
 		columnDefinition.append(space);
-		columnDefinition.append(dataType.trim());
-		if (constraint != null) {
-			columnDefinition.append(space);
-			columnDefinition.append(constraint.trim());
+		columnDefinition.append(dataType.getSqliteDataType());
+		if (constraints != null && constraints.length > 0) {
+			for (String constraint : constraints) {
+				columnDefinition.append(space);
+				columnDefinition.append(constraint);
+			}
 		}
 		return columnDefinition.toString();
 	}
@@ -98,20 +99,11 @@ abstract class DatabaseAdapter {
 		}
 	}
 
-	/**
-	 * Generates a SQLite column definition. This method should best be used in
-	 * conjunction with method getCreateTableSQL.
-	 * 
-	 * @param column
-	 *            Name of column.
-	 * @param dataType
-	 *            Data type of new column. Must be a valid SQLite data type:
-	 *            blob, bool, char, datetime, double, float, integer, numeric,
-	 *            real, text or varchar.
-	 * @return The definition for one column in a SQLite table.
-	 */
-	static String createColumn(String column, String dataType) {
-		return createColumn(column, dataType, "");
+	private static void validateParameterNotNull(Object parameterValue) {
+		if (parameterValue == null) {
+			throw new InvalidParameterException(String.format(
+					"Parameter has invalid value '%s'.", parameterValue));
+		}
 	}
 
 	/**
@@ -147,13 +139,13 @@ abstract class DatabaseAdapter {
 
 	/**
 	 * Generates a SQLite table definition. This method should best be used in
-	 * conjunction with method createColumn.
+	 * conjunction with method getCreateColumnClause.
 	 * 
 	 * @param table
 	 *            Name of table.
 	 * @param elements
 	 *            1 or more column definitions and or foreign keys which are
-	 *            preferably generated with method createColumn and
+	 *            preferably generated with method getCreateColumnClause and
 	 *            createForeignKey. Foreign keys should be ordered after the
 	 *            columns.
 	 * @return Definition for a SQLite table.
@@ -405,5 +397,30 @@ abstract class DatabaseAdapter {
 
 	public void execSQL(String sql) {
 		sqliteDatabase.execSQL(sql);
+	}
+
+	protected String primaryKeyAutoIncremented() {
+		return "primary key autoincrement";
+	}
+
+	protected String notNull() {
+		return "not null";
+	}
+
+	protected String unique() {
+		return "unique";
+	}
+
+	protected String defaultValue(String string) {
+		validateStringParameterNotNullOrEmpty(string);
+		return "default " + string;
+	}
+
+	protected String defaultValue(int integer) {
+		return defaultValue(new Integer(integer).toString());
+	}
+
+	protected String defaultValue(boolean booleanValue) {
+		return defaultValue(stringBetweenBackTicks(toSQLiteBoolean(booleanValue)));
 	}
 }

@@ -75,21 +75,26 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	protected String getCreateSQL() {
 		return getCreateTableSQL(
 				TABLE,
-				createColumn(KEY_ROWID, "integer", "primary key autoincrement"),
-				createColumn(KEY_DEFINITION, "text", "not null unique"),
-				createColumn(KEY_GRID_SIZE, "integer", " not null"),
-				createColumn(KEY_DATE_CREATED, "datetime", "not null"),
+				getCreateColumnClause(KEY_ROWID, DataType.INTEGER,
+						primaryKeyAutoIncremented()),
+				getCreateColumnClause(KEY_DEFINITION, DataType.STRING,
+						notNull(), unique()),
+				getCreateColumnClause(KEY_GRID_SIZE, DataType.INTEGER,
+						notNull()),
+				getCreateColumnClause(KEY_DATE_CREATED, DataType.TIMESTAMP,
+						notNull()),
 				// Grid generating parameters.
 				// These values can be null as they are not known for
 				// historic games. Neither will they be know when games
 				// will be exchanged in the future.
-				createColumn(KEY_GAME_SEED, "long", null),
+				getCreateColumnClause(KEY_GAME_SEED, DataType.LONG),
 				// changes in tables
-				createColumn(KEY_GENERATOR_REVISION_NUMBER, "integer", null),
-				createColumn(KEY_PUZZLE_COMPLEXITY, "string", null),
-				createColumn(KEY_HIDE_OPERATORS, "string", null),
-				createColumn(KEY_MAX_CAGE_RESULT, "integer", null),
-				createColumn(KEY_MAX_CAGE_SIZE, "integer", null));
+				getCreateColumnClause(KEY_GENERATOR_REVISION_NUMBER,
+						DataType.INTEGER),
+				getCreateColumnClause(KEY_PUZZLE_COMPLEXITY, DataType.STRING),
+				getCreateColumnClause(KEY_HIDE_OPERATORS, DataType.STRING),
+				getCreateColumnClause(KEY_MAX_CAGE_RESULT, DataType.INTEGER),
+				getCreateColumnClause(KEY_MAX_CAGE_SIZE, DataType.INTEGER));
 	}
 
 	/**
@@ -102,7 +107,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 *            The new version of the database. Use the app revision number
 	 *            to identify the database version.
 	 */
-	void upgrade(int oldVersion, int newVersion) {
+	void upgradeTable(int oldVersion, int newVersion) {
 		if (Config.mAppMode == AppMode.DEVELOPMENT && oldVersion < 432
 				&& newVersion >= 432) {
 			recreateTableInDevelopmentMode();
@@ -147,8 +152,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 
 		int id;
 		try {
-			id = (int) sqliteDatabase
-					.insertOrThrow(TABLE, null, initialValues);
+			id = (int) sqliteDatabase.insertOrThrow(TABLE, null, initialValues);
 		} catch (SQLiteConstraintException e) {
 			throw new DatabaseException("Cannot insert new grid in database.",
 					e);
