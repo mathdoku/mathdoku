@@ -1,4 +1,4 @@
-package net.mathdoku.plus.storage.database;
+package net.mathdoku.plus.storage.databaseadapter.database;
 
 public enum DataType {
 	INTEGER("integer"), LONG("long"), BOOLEAN("text"), STRING("text"), TIMESTAMP("datetime");

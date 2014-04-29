@@ -1,4 +1,4 @@
-package net.mathdoku.plus.storage.database;
+package net.mathdoku.plus.storage.databaseadapter.database;
 
 import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 

@@ -1,4 +1,4 @@
-package net.mathdoku.plus.storage.database;
+package net.mathdoku.plus.storage.databaseadapter.database;
 
 import android.app.Activity;
 
@@ -29,22 +29,24 @@ public class DatabaseColumnDropperTest {
 		}
 
 		@Override
-		void upgradeTable(int oldVersion, int newVersion) {
+		protected void upgradeTable(int oldVersion, int newVersion) {
 		}
 
 		@Override
-		protected String getTableName() {
-			return "TestTable";
-		}
-
-		@Override
-		protected String getCreateSQL() {
-			return getCreateTableSQL(getTableName(),
-					getCreateColumnClause(KEY_TO_BE_KEPT_1, DataType.STRING),
-					getCreateColumnClause(KEY_TO_BE_KEPT_2, DataType.STRING),
-					getCreateColumnClause(KEY_TO_BE_DELETED_1, DataType.STRING),
-					getCreateColumnClause(KEY_TO_BE_KEPT_3, DataType.STRING),
-					getCreateColumnClause(KEY_TO_BE_DELETED_2, DataType.STRING));
+		protected DatabaseTableDefinition getDatabaseTableDefinition() {
+			DatabaseTableDefinition databaseTableDefinition = new DatabaseTableDefinition(
+					"TestTable");
+			databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+					KEY_TO_BE_KEPT_1, DataType.STRING));
+			databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+					KEY_TO_BE_KEPT_2, DataType.STRING));
+			databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+					KEY_TO_BE_DELETED_1, DataType.STRING));
+			databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+					KEY_TO_BE_KEPT_3, DataType.STRING));
+			databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+					KEY_TO_BE_DELETED_2, DataType.STRING));
+			return databaseTableDefinition;
 		}
 	}
 
@@ -90,7 +92,7 @@ public class DatabaseColumnDropperTest {
 			throws Exception {
 		assertThat(
 				databaseColumnDropper
-						.dropColumns(new String[]{"*** NON EXISTENT COLUMN ***"}),
+						.dropColumns(new String[] { "*** NON EXISTENT COLUMN ***" }),
 				is(false));
 	}
 
@@ -98,7 +100,7 @@ public class DatabaseColumnDropperTest {
 	public void dropColumns_DropOneExistingColumn_Success() throws Exception {
 		assertThat(
 				databaseColumnDropper
-						.dropColumns(new String[]{KEY_TO_BE_DELETED_2}),
+						.dropColumns(new String[] { KEY_TO_BE_DELETED_2 }),
 				is(true));
 	}
 

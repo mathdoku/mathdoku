@@ -1,4 +1,4 @@
-package net.mathdoku.plus.storage.database;
+package net.mathdoku.plus.storage.databaseadapter.database;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -42,7 +42,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	/**
 	 * Gets the singleton reference of
-	 * {@link net.mathdoku.plus.storage.database.DatabaseHelper}. If it does not
+	 * {@link net.mathdoku.plus.storage.databaseadapter.database.DatabaseHelper}. If it does not
 	 * yet exist then it will be created.
 	 * 
 	 * @param context
@@ -66,7 +66,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	/**
 	 * Creates new instance of
-	 * {@link net.mathdoku.plus.storage.database.DatabaseHelper}. All objects in
+	 * {@link net.mathdoku.plus.storage.databaseadapter.database.DatabaseHelper}. All objects in
 	 * this class will be created with the given DatabaseHelper.ObjectsCreator.
 	 * This method is intended for unit testing.
 	 * 

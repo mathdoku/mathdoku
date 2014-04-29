@@ -1,4 +1,4 @@
-package net.mathdoku.plus.storage.database;
+package net.mathdoku.plus.storage.databaseadapter.database;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -11,6 +11,10 @@ import net.mathdoku.plus.enums.SolvingAttemptStatus;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.stringBetweenBackTicks;
+import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.toSQLiteTimestamp;
+import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.valueOfSQLiteTimestamp;
 
 /**
  * The database adapter for the solving attempt table. For each grid one or more
@@ -28,8 +32,10 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	@SuppressWarnings("PointlessBooleanExpression")
 	private static final boolean DEBUG_SQL = Config.mAppMode == AppMode.DEVELOPMENT && false;
 
+	private static final DatabaseTableDefinition DATABASE_TABLE = defineTable();
+
 	// Columns for table
-	static final String TABLE = "solving_attempt";
+	static final String TABLE_NAME = "solving_attempt";
 	static final String KEY_ROWID = "_id";
 	static final String KEY_GRID_ID = "grid_id";
 	private static final String KEY_DATE_CREATED = "date_created";
@@ -37,10 +43,6 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	private static final String KEY_SAVED_WITH_REVISION = "revision";
 	private static final String KEY_DATA = "data";
 	static final String KEY_STATUS = "status";
-
-	private static final String[] dataColumns = { KEY_ROWID, KEY_GRID_ID,
-			KEY_DATE_CREATED, KEY_DATE_UPDATED, KEY_SAVED_WITH_REVISION,
-			KEY_DATA, KEY_STATUS };
 
 	// Delimiters used in the data field to separate objects, fields and values
 	// in a field which can hold multiple values.
@@ -57,34 +59,36 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		super(sqLiteDatabase);
 	}
 
-	/**
-	 * Get the table name.
-	 * 
-	 * @return The table name;
-	 */
-	@Override
-	protected String getTableName() {
-		return TABLE;
+	private static DatabaseTableDefinition defineTable() {
+		DatabaseTableDefinition databaseTableDefinition = new DatabaseTableDefinition(
+				TABLE_NAME);
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_ROWID, DataType.INTEGER).setPrimaryKey());
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_GRID_ID, DataType.INTEGER).setNotNull());
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_DATE_CREATED, DataType.TIMESTAMP).setNotNull());
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_DATE_UPDATED, DataType.TIMESTAMP).setNotNull());
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_SAVED_WITH_REVISION, DataType.INTEGER).setNotNull());
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_DATA, DataType.STRING).setNotNull());
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_STATUS, DataType.INTEGER).setNotNull().setDefaultValue(
+				SolvingAttemptStatus.UNDETERMINED.getId()));
+		databaseTableDefinition.setForeignKey(new DatabaseForeignKeyDefinition(
+				KEY_GRID_ID, GridDatabaseAdapter.TABLE_NAME,
+				GridDatabaseAdapter.KEY_ROWID));
+
+		databaseTableDefinition.build();
+
+		return databaseTableDefinition;
 	}
 
 	@Override
-	protected String getCreateSQL() {
-		return getCreateTableSQL(
-				TABLE,
-				getCreateColumnClause(KEY_ROWID, DataType.INTEGER,
-						primaryKeyAutoIncremented()),
-				getCreateColumnClause(KEY_GRID_ID, DataType.INTEGER, notNull()),
-				getCreateColumnClause(KEY_DATE_CREATED, DataType.TIMESTAMP,
-						notNull()),
-				getCreateColumnClause(KEY_DATE_UPDATED, DataType.TIMESTAMP,
-						notNull()),
-				getCreateColumnClause(KEY_SAVED_WITH_REVISION,
-						DataType.INTEGER, notNull()),
-				getCreateColumnClause(KEY_DATA, DataType.STRING, notNull()),
-				getCreateColumnClause(KEY_STATUS, DataType.INTEGER, notNull(),
-						defaultValue(SolvingAttemptStatus.UNDETERMINED.getId())),
-				createForeignKey(KEY_GRID_ID, GridDatabaseAdapter.TABLE,
-						GridDatabaseAdapter.KEY_ROWID));
+	protected DatabaseTableDefinition getDatabaseTableDefinition() {
+		return DATABASE_TABLE;
 	}
 
 	/**
@@ -97,7 +101,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 *            The new version of the database. Use the app revision number
 	 *            to identify the database version.
 	 */
-	void upgradeTable(int oldVersion, int newVersion) {
+	protected void upgradeTable(int oldVersion, int newVersion) {
 		if (Config.mAppMode == AppMode.DEVELOPMENT && oldVersion < 433
 				&& newVersion >= 433) {
 			recreateTableInDevelopmentMode();
@@ -126,7 +130,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 
 		long id = -1;
 		try {
-			id = sqliteDatabase.insertOrThrow(TABLE, null, initialValues);
+			id = sqliteDatabase.insertOrThrow(TABLE_NAME, null, initialValues);
 		} catch (SQLiteException e) {
 			throw new DatabaseException(
 					"Cannot insert new solving attempt in database.", e);
@@ -151,8 +155,9 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		SolvingAttempt solvingAttempt = null;
 		Cursor cursor = null;
 		try {
-			cursor = sqliteDatabase.query(true, TABLE, dataColumns, KEY_ROWID
-					+ "=" + solvingAttemptId, null, null, null, null, null);
+			cursor = sqliteDatabase.query(true, TABLE_NAME,
+					DATABASE_TABLE.getColumnNames(), KEY_ROWID + "="
+							+ solvingAttemptId, null, null, null, null, null);
 
 			if (cursor == null || !cursor.moveToFirst()) {
 				// No record found for this grid.
@@ -196,7 +201,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		int id = -1;
 		Cursor cursor = null;
 		try {
-			cursor = sqliteDatabase.query(true, TABLE,
+			cursor = sqliteDatabase.query(true, TABLE_NAME,
 					new String[] { KEY_ROWID }, null, null, null, null,
 					KEY_DATE_UPDATED + " DESC", "1");
 
@@ -236,8 +241,8 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		contentValues.put(KEY_STATUS,
 				solvingAttempt.mSolvingAttemptStatus.getId());
 
-		return sqliteDatabase.update(TABLE, contentValues, KEY_ROWID + " = "
-				+ solvingAttempt.mId, null) == 1;
+		return sqliteDatabase.update(TABLE_NAME, contentValues, KEY_ROWID
+				+ " = " + solvingAttempt.mId, null) == 1;
 	}
 
 	/**
@@ -253,8 +258,8 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		try {
 			// Currently all solving attempts are returned. In future this can
 			// be restricted to games which are not solved.
-			cursor = sqliteDatabase.query(true, TABLE, columns, null, null,
-					null, null, null, null);
+			cursor = sqliteDatabase.query(true, TABLE_NAME, columns, null,
+					null, null, null, null, null);
 
 			if (cursor == null || !cursor.moveToFirst()) {
 				// No record found for this grid.
@@ -287,7 +292,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 * @return The prefixed column name.
 	 */
 	public static String getPrefixedColumnName(String column) {
-		return stringBetweenBackTicks(TABLE) + "."
+		return stringBetweenBackTicks(TABLE_NAME) + "."
 				+ stringBetweenBackTicks(column);
 	}
 
@@ -303,7 +308,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		int count = 0;
 		Cursor cursor = null;
 		try {
-			cursor = sqliteDatabase.query(true, TABLE,
+			cursor = sqliteDatabase.query(true, TABLE_NAME,
 					new String[] { "COUNT(1)" }, KEY_GRID_ID + "=" + gridId,
 					null, null, null, null, null);
 

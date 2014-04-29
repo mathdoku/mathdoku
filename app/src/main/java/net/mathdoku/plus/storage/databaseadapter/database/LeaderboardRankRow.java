@@ -1,8 +1,8 @@
-package net.mathdoku.plus.storage.database;
+package net.mathdoku.plus.storage.databaseadapter.database;
 
 import net.mathdoku.plus.enums.PuzzleComplexity;
-import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter.RankStatus;
-import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter.ScoreOrigin;
+import net.mathdoku.plus.storage.databaseadapter.database.LeaderboardRankDatabaseAdapter.RankStatus;
+import net.mathdoku.plus.storage.databaseadapter.database.LeaderboardRankDatabaseAdapter.ScoreOrigin;
 
 /**
  * Mapping for records in database table Grid

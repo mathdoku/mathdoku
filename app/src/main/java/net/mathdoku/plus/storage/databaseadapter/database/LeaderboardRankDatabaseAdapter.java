@@ -1,4 +1,4 @@
-package net.mathdoku.plus.storage.database;
+package net.mathdoku.plus.storage.databaseadapter.database;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -9,6 +9,12 @@ import android.database.sqlite.SQLiteException;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.enums.PuzzleComplexity;
+
+import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.stringBetweenQuotes;
+import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.toSQLiteBoolean;
+import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.toSQLiteTimestamp;
+import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.valueOfSQLiteBoolean;
+import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.valueOfSQLiteTimestamp;
 
 /**
  * The database adapter for the grid table.
@@ -47,8 +53,10 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		TO_BE_UPDATED, TOP_RANK_UPDATED, TOP_RANK_NOT_AVAILABLE
 	}
 
+	private static final DatabaseTableDefinition DATABASE_TABLE = defineTable();
+
 	// Columns for table statistics.
-	private static final String TABLE = "leaderboard_rank";
+	private static final String TABLE_NAME = "leaderboard_rank";
 	private static final String KEY_ROWID = "_id";
 	private static final String KEY_LEADERBOARD_ID = "leaderboard_id";
 	private static final String KEY_GRID_SIZE = "grid_size";
@@ -63,12 +71,6 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	private static final String KEY_RANK_DISPLAY = "rank_display";
 	private static final String KEY_RANK_DATE_LAST_UPDATED = "rank_date_last_updated";
 
-	private static final String[] allColumns = { KEY_ROWID, KEY_LEADERBOARD_ID,
-			KEY_GRID_SIZE, KEY_HIDDEN_OPERATORS, KEY_PUZZLE_COMPLEXITY,
-			KEY_SCORE_ORIGIN, KEY_SCORE_STATISTICS_ID, KEY_SCORE_RAW_SCORE,
-			KEY_SCORE_DATE_SUBMITTED, KEY_RANK_STATUS, KEY_RANK,
-			KEY_RANK_DISPLAY, KEY_RANK_DATE_LAST_UPDATED };
-
 	public LeaderboardRankDatabaseAdapter() {
 		super();
 	}
@@ -78,37 +80,45 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		super(sqLiteDatabase);
 	}
 
-	@Override
-	protected String getTableName() {
-		return TABLE;
+	private static DatabaseTableDefinition defineTable() {
+		DatabaseTableDefinition databaseTableDefinition = new DatabaseTableDefinition(
+				TABLE_NAME);
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_ROWID, DataType.INTEGER).setPrimaryKey());
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_LEADERBOARD_ID, DataType.STRING)
+				.setNotNull()
+				.setUniqueKey());
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_GRID_SIZE, DataType.INTEGER).setNotNull());
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_HIDDEN_OPERATORS, DataType.STRING).setNotNull());
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_PUZZLE_COMPLEXITY, DataType.STRING).setNotNull());
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_SCORE_ORIGIN, DataType.STRING).setNotNull());
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_SCORE_STATISTICS_ID, DataType.INTEGER));
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_SCORE_RAW_SCORE, DataType.LONG));
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_SCORE_DATE_SUBMITTED, DataType.TIMESTAMP));
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_RANK_STATUS, DataType.STRING).setNotNull());
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_RANK, DataType.LONG));
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_RANK_DISPLAY, DataType.STRING));
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_RANK_DATE_LAST_UPDATED, DataType.TIMESTAMP));
+		databaseTableDefinition.build();
+
+		return databaseTableDefinition;
 	}
 
 	@Override
-	protected String getCreateSQL() {
-		return getCreateTableSQL(
-				TABLE,
-				getCreateColumnClause(KEY_ROWID, DataType.INTEGER,
-						primaryKeyAutoIncremented()),
-				getCreateColumnClause(KEY_LEADERBOARD_ID, DataType.STRING,
-						notNull(), unique()),
-				getCreateColumnClause(KEY_GRID_SIZE, DataType.INTEGER,
-						notNull()),
-				getCreateColumnClause(KEY_HIDDEN_OPERATORS, DataType.STRING,
-						notNull()),
-				getCreateColumnClause(KEY_PUZZLE_COMPLEXITY, DataType.STRING,
-						notNull()),
-				getCreateColumnClause(KEY_SCORE_ORIGIN, DataType.STRING,
-						notNull()),
-				getCreateColumnClause(KEY_SCORE_STATISTICS_ID, DataType.INTEGER),
-				getCreateColumnClause(KEY_SCORE_RAW_SCORE, DataType.LONG),
-				getCreateColumnClause(KEY_SCORE_DATE_SUBMITTED,
-						DataType.TIMESTAMP),
-				getCreateColumnClause(KEY_RANK_STATUS, DataType.STRING,
-						notNull()),
-				getCreateColumnClause(KEY_RANK, DataType.LONG),
-				getCreateColumnClause(KEY_RANK_DISPLAY, DataType.STRING),
-				getCreateColumnClause(KEY_RANK_DATE_LAST_UPDATED,
-						DataType.TIMESTAMP));
+	protected DatabaseTableDefinition getDatabaseTableDefinition() {
+		return DATABASE_TABLE;
 	}
 
 	/**
@@ -121,7 +131,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	 *            The new version of the database. Use the app revision number
 	 *            to identify the database version.
 	 */
-	void upgradeTable(int oldVersion, int newVersion) {
+	protected void upgradeTable(int oldVersion, int newVersion) {
 		if (Config.mAppMode == AppMode.DEVELOPMENT && oldVersion < 587
 				&& newVersion >= 587) {
 			recreateTableInDevelopmentMode();
@@ -166,7 +176,8 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 
 		int id;
 		try {
-			id = (int) sqliteDatabase.insertOrThrow(TABLE, null, contentValues);
+			id = (int) sqliteDatabase.insertOrThrow(TABLE_NAME, null,
+					contentValues);
 		} catch (SQLiteConstraintException e) {
 			throw new DatabaseException(
 					"Cannot insert new initialized leaderboard in database.", e);
@@ -218,8 +229,9 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		contentValues.put(KEY_RANK_DISPLAY, (String) null);
 		contentValues.put(KEY_RANK_DATE_LAST_UPDATED, (String) null);
 
-		return sqliteDatabase.update(TABLE, contentValues, KEY_LEADERBOARD_ID
-				+ " = " + stringBetweenQuotes(leaderboardId), null) == 1;
+		return sqliteDatabase
+				.update(TABLE_NAME, contentValues,
+						KEY_LEADERBOARD_ID + " = " + stringBetweenQuotes(leaderboardId), null) == 1;
 	}
 
 	/**
@@ -270,8 +282,9 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		contentValues.put(KEY_RANK_DISPLAY, rankDisplay);
 		contentValues.put(KEY_RANK_DATE_LAST_UPDATED, timestamp);
 
-		return sqliteDatabase.update(TABLE, contentValues, KEY_LEADERBOARD_ID
-				+ " = " + stringBetweenQuotes(leaderboardId), null) == 1;
+		return sqliteDatabase
+				.update(TABLE_NAME, contentValues,
+						KEY_LEADERBOARD_ID + " = " + stringBetweenQuotes(leaderboardId), null) == 1;
 	}
 
 	/**
@@ -295,8 +308,9 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		contentValues.put(KEY_RANK_DATE_LAST_UPDATED,
 				toSQLiteTimestamp(new java.util.Date().getTime()));
 
-		return sqliteDatabase.update(TABLE, contentValues, KEY_LEADERBOARD_ID
-				+ " = " + stringBetweenQuotes(leaderboardId), null) == 1;
+		return sqliteDatabase
+				.update(TABLE_NAME, contentValues,
+						KEY_LEADERBOARD_ID + " = " + stringBetweenQuotes(leaderboardId), null) == 1;
 	}
 
 	/**
@@ -319,8 +333,9 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		contentValues.put(KEY_RANK_DATE_LAST_UPDATED,
 				toSQLiteTimestamp(new java.util.Date().getTime()));
 
-		return sqliteDatabase.update(TABLE, contentValues, KEY_LEADERBOARD_ID
-				+ " = " + stringBetweenQuotes(leaderboardId), null) == 1;
+		return sqliteDatabase
+				.update(TABLE_NAME, contentValues,
+						KEY_LEADERBOARD_ID + " = " + stringBetweenQuotes(leaderboardId), null) == 1;
 	}
 
 	/**
@@ -335,8 +350,8 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		LeaderboardRankRow leaderboardRankRow = null;
 		Cursor cursor = null;
 		try {
-			cursor = sqliteDatabase.query(true, TABLE, allColumns,
-					KEY_LEADERBOARD_ID + "="
+			cursor = sqliteDatabase.query(true, TABLE_NAME,
+					DATABASE_TABLE.getColumnNames(), KEY_LEADERBOARD_ID + "="
 							+ stringBetweenQuotes(leaderboardId), null, null,
 					null, null, null);
 			leaderboardRankRow = toLeaderboardRankRow(cursor);
@@ -407,7 +422,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	 * @return The prefixed column name.
 	 */
 	public static String getPrefixedColumnName(String column) {
-		return TABLE + "." + column;
+		return TABLE_NAME + "." + column;
 	}
 
 	/**
@@ -424,7 +439,8 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 			String orderBy = "IFNULL(" + KEY_RANK_DATE_LAST_UPDATED + ","
 					+ KEY_SCORE_DATE_SUBMITTED + ") ASC";
 
-			cursor = sqliteDatabase.query(true, TABLE, allColumns,
+			cursor = sqliteDatabase.query(true, TABLE_NAME,
+					DATABASE_TABLE.getColumnNames(),
 					getSelectionOutdatedLeaderboardRanks(), null, null, null,
 					orderBy, "1");
 			leaderboardRankRow = toLeaderboardRankRow(cursor);
@@ -453,7 +469,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		try {
 			// Build selection and order by clauses
 			String[] columns = new String[] { "COUNT(1)" };
-			cursor = sqliteDatabase.query(true, TABLE, columns,
+			cursor = sqliteDatabase.query(true, TABLE_NAME, columns,
 					getSelectionOutdatedLeaderboardRanks(), null, null, null,
 					null, null);
 
@@ -541,7 +557,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	public void setAllRanksToBeUpdated() {
 		try {
 			StringBuilder query = new StringBuilder();
-			query.append("UPDATE " + TABLE + " ");
+			query.append("UPDATE " + TABLE_NAME + " ");
 			// noinspection StringConcatenationInsideStringBufferAppend
 			query.append("SET " + KEY_RANK_STATUS + " = "
 					+ stringBetweenQuotes(RankStatus.TO_BE_UPDATED.toString()));

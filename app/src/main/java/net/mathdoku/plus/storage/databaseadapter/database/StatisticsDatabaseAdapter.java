@@ -1,4 +1,4 @@
-package net.mathdoku.plus.storage.database;
+package net.mathdoku.plus.storage.databaseadapter.database;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -13,7 +13,12 @@ import net.mathdoku.plus.statistics.CumulativeStatistics;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.statistics.HistoricStatistics;
 import net.mathdoku.plus.statistics.HistoricStatistics.Series;
-import net.mathdoku.plus.storage.database.Projection.Aggregation;
+import net.mathdoku.plus.storage.databaseadapter.database.DatabaseProjection.Aggregation;
+
+import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.stringBetweenBackTicks;
+import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.stringBetweenQuotes;
+import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.toSQLTimestamp;
+import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.toSQLiteBoolean;
 
 /**
  * The database adapter for the statistics table. For each grid zero or more
@@ -28,8 +33,10 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	@SuppressWarnings("PointlessBooleanExpression")
 	private static final boolean DEBUG_SQL = Config.mAppMode == AppMode.DEVELOPMENT && false;
 
+	private static final DatabaseTableDefinition DATABASE_TABLE = defineTable();
+
 	// Columns for table statistics
-	private static final String TABLE = "statistics";
+	private static final String TABLE_NAME = "statistics";
 	private static final String KEY_ROWID = "_id";
 	private static final String KEY_GRID_ID = "grid_id";
 	private static final String KEY_REPLAY = "replay";
@@ -60,19 +67,102 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	// attempt should be included or excluded from the statistics.
 	private static final String KEY_INCLUDE_IN_STATISTICS = "include_in_statistics";
 
-	private static final String[] allColumns = { KEY_ROWID, KEY_GRID_ID,
-			KEY_REPLAY, KEY_FIRST_MOVE, KEY_LAST_MOVE, KEY_ELAPSED_TIME,
-			KEY_CHEAT_PENALTY_TIME, KEY_CELLS_FILLED, KEY_CELLS_EMPTY,
-			KEY_CELLS_REVEALED, KEY_USER_VALUES_REPLACED, KEY_POSSIBLES,
-			KEY_ACTION_UNDOS, KEY_ACTION_CLEAR_CELL, KEY_ACTION_CLEAR_GRID,
-			KEY_ACTION_REVEAL_CELL, KEY_ACTION_REVEAL_OPERATOR,
-			KEY_ACTION_CHECK_PROGRESS, KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND,
-			KEY_ACTION_REVEAL_SOLUTION, KEY_SOLVED_MANUALLY, KEY_FINISHED,
-			KEY_INCLUDE_IN_STATISTICS };
+	// DatabaseProjection for retrieve the cumulative and historic statistics
+	private static DatabaseProjection mCumulativeStatisticsDatabaseProjection = null;
+	private static DatabaseProjection mHistoricStatisticsDatabaseProjection = null;
 
-	// Projection for retrieve the cumulative and historic statistics
-	private static Projection mCumulativeStatisticsProjection = null;
-	private static Projection mHistoricStatisticsProjection = null;
+	private static DatabaseTableDefinition defineTable() {
+		DatabaseTableDefinition databaseTableDefinition = new DatabaseTableDefinition(
+				TABLE_NAME);
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_ROWID, DataType.INTEGER).setPrimaryKey());
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_GRID_ID, DataType.INTEGER).setNotNull());
+		databaseTableDefinition.addColumn(
+				new DatabaseColumnDefinition(KEY_REPLAY, DataType.INTEGER).setNotNull()
+						.setDefaultValue(0));
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_FIRST_MOVE, DataType.TIMESTAMP).setNotNull());
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_LAST_MOVE, DataType.TIMESTAMP).setNotNull());
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_ELAPSED_TIME, DataType.LONG)
+				.setNotNull()
+				.setDefaultValue(0));
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_CHEAT_PENALTY_TIME, DataType.LONG)
+				.setNotNull()
+				.setDefaultValue(0));
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_CELLS_FILLED, DataType.INTEGER)
+				.setNotNull()
+				.setDefaultValue(0));
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_CELLS_EMPTY, DataType.INTEGER)
+				.setNotNull()
+				.setDefaultValue(0));
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_CELLS_REVEALED, DataType.INTEGER)
+				.setNotNull()
+				.setDefaultValue(0));
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_USER_VALUES_REPLACED, DataType.INTEGER)
+				.setNotNull()
+				.setDefaultValue(0));
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_POSSIBLES, DataType.INTEGER)
+				.setNotNull()
+				.setDefaultValue(0));
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_ACTION_UNDOS, DataType.INTEGER)
+				.setNotNull()
+				.setDefaultValue(0));
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_ACTION_CLEAR_CELL, DataType.INTEGER)
+				.setNotNull()
+				.setDefaultValue(0));
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_ACTION_CLEAR_GRID, DataType.INTEGER)
+				.setNotNull()
+				.setDefaultValue(0));
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_ACTION_REVEAL_CELL, DataType.INTEGER)
+				.setNotNull()
+				.setDefaultValue(0));
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_ACTION_REVEAL_OPERATOR, DataType.INTEGER)
+				.setNotNull()
+				.setDefaultValue(0));
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_ACTION_CHECK_PROGRESS, DataType.INTEGER)
+				.setNotNull()
+				.setDefaultValue(0));
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND, DataType.INTEGER)
+				.setNotNull()
+				.setDefaultValue(0));
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_ACTION_REVEAL_SOLUTION, DataType.BOOLEAN)
+				.setNotNull()
+				.setDefaultValue(false));
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_SOLVED_MANUALLY, DataType.BOOLEAN)
+				.setNotNull()
+				.setDefaultValue(false));
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_FINISHED, DataType.BOOLEAN).setNotNull().setDefaultValue(
+				false));
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_INCLUDE_IN_STATISTICS, DataType.BOOLEAN)
+				.setNotNull()
+				.setDefaultValue(false));
+		databaseTableDefinition.setForeignKey(new DatabaseForeignKeyDefinition(
+				KEY_GRID_ID, GridDatabaseAdapter.TABLE_NAME,
+				GridDatabaseAdapter.KEY_ROWID));
+		databaseTableDefinition.build();
+
+		return databaseTableDefinition;
+	}
 
 	public StatisticsDatabaseAdapter() {
 		super();
@@ -84,61 +174,8 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	}
 
 	@Override
-	protected String getTableName() {
-		return TABLE;
-	}
-
-	@Override
-	protected String getCreateSQL() {
-		return getCreateTableSQL(
-				TABLE,
-				getCreateColumnClause(KEY_ROWID, DataType.INTEGER,
-						primaryKeyAutoIncremented()),
-				getCreateColumnClause(KEY_GRID_ID, DataType.INTEGER, notNull()),
-				getCreateColumnClause(KEY_REPLAY, DataType.INTEGER, notNull(),
-						defaultValue(0)),
-				getCreateColumnClause(KEY_FIRST_MOVE, DataType.TIMESTAMP,
-						notNull()),
-				getCreateColumnClause(KEY_LAST_MOVE, DataType.TIMESTAMP,
-						notNull()),
-				getCreateColumnClause(KEY_ELAPSED_TIME, DataType.LONG,
-						notNull(), defaultValue(0)),
-				getCreateColumnClause(KEY_CHEAT_PENALTY_TIME, DataType.LONG,
-						notNull(), defaultValue(0)),
-				getCreateColumnClause(KEY_CELLS_FILLED, DataType.INTEGER,
-						notNull(), defaultValue(0)),
-				getCreateColumnClause(KEY_CELLS_EMPTY, DataType.INTEGER,
-						notNull(), defaultValue(0)),
-				getCreateColumnClause(KEY_CELLS_REVEALED, DataType.INTEGER,
-						notNull(), defaultValue(0)),
-				getCreateColumnClause(KEY_USER_VALUES_REPLACED,
-						DataType.INTEGER, notNull(), defaultValue(0)),
-				getCreateColumnClause(KEY_POSSIBLES, DataType.INTEGER,
-						notNull(), defaultValue(0)),
-				getCreateColumnClause(KEY_ACTION_UNDOS, DataType.INTEGER,
-						notNull(), defaultValue(0)),
-				getCreateColumnClause(KEY_ACTION_CLEAR_CELL, DataType.INTEGER,
-						notNull(), defaultValue(0)),
-				getCreateColumnClause(KEY_ACTION_CLEAR_GRID, DataType.INTEGER,
-						notNull(), defaultValue(0)),
-				getCreateColumnClause(KEY_ACTION_REVEAL_CELL, DataType.INTEGER,
-						notNull(), defaultValue(0)),
-				getCreateColumnClause(KEY_ACTION_REVEAL_OPERATOR,
-						DataType.INTEGER, notNull(), defaultValue(0)),
-				getCreateColumnClause(KEY_ACTION_CHECK_PROGRESS,
-						DataType.INTEGER, notNull(), defaultValue(0)),
-				getCreateColumnClause(KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND,
-						DataType.INTEGER, notNull(), defaultValue(0)),
-				getCreateColumnClause(KEY_ACTION_REVEAL_SOLUTION,
-						DataType.BOOLEAN, notNull(), defaultValue(false)),
-				getCreateColumnClause(KEY_SOLVED_MANUALLY, DataType.BOOLEAN,
-						notNull(), defaultValue(false)),
-				getCreateColumnClause(KEY_FINISHED, DataType.BOOLEAN,
-						notNull(), defaultValue(false)),
-				getCreateColumnClause(KEY_INCLUDE_IN_STATISTICS,
-						DataType.BOOLEAN, notNull(), defaultValue(false)),
-				createForeignKey(KEY_GRID_ID, GridDatabaseAdapter.TABLE,
-						GridDatabaseAdapter.KEY_ROWID));
+	protected DatabaseTableDefinition getDatabaseTableDefinition() {
+		return DATABASE_TABLE;
 	}
 
 	/**
@@ -151,7 +188,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 *            The new version of the database. Use the app revision number
 	 *            to identify the database version.
 	 */
-	void upgradeTable(int oldVersion, int newVersion) {
+	protected void upgradeTable(int oldVersion, int newVersion) {
 		if (Config.mAppMode == AppMode.DEVELOPMENT && oldVersion < 438
 				&& newVersion >= 438) {
 			recreateTableInDevelopmentMode();
@@ -177,7 +214,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 
 		long id;
 		try {
-			id = sqliteDatabase.insertOrThrow(TABLE, null, contentValues);
+			id = sqliteDatabase.insertOrThrow(TABLE_NAME, null, contentValues);
 		} catch (SQLiteException e) {
 			throw new DatabaseException(
 					"Cannot insert new grid statistics in database.", e);
@@ -204,8 +241,10 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		GridStatistics gridStatistics = null;
 		Cursor cursor = null;
 		try {
-			cursor = sqliteDatabase.query(true, TABLE, allColumns, KEY_GRID_ID
-					+ "=" + gridId, null, null, null, KEY_ROWID + " DESC", "1");
+			cursor = sqliteDatabase.query(true, TABLE_NAME,
+					DATABASE_TABLE.getColumnNames(),
+					KEY_GRID_ID + "=" + gridId, null, null, null, KEY_ROWID
+							+ " DESC", "1");
 			gridStatistics = toGridStatistics(cursor);
 		} catch (SQLiteException e) {
 			throw new DatabaseException(
@@ -327,7 +366,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		newValues.put(KEY_INCLUDE_IN_STATISTICS,
 				Boolean.toString(gridStatistics.mIncludedInStatistics));
 
-		return sqliteDatabase.update(TABLE, newValues, KEY_ROWID + " = "
+		return sqliteDatabase.update(TABLE_NAME, newValues, KEY_ROWID + " = "
 				+ gridStatistics.mId, null) == 1;
 	}
 
@@ -346,85 +385,87 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	public CumulativeStatistics getCumulativeStatistics(int minGridSize,
 			int maxGridSize) {
 		// Build projection if not yet done
-		if (mCumulativeStatisticsProjection == null) {
-			mCumulativeStatisticsProjection = new Projection();
+		if (mCumulativeStatisticsDatabaseProjection == null) {
+			mCumulativeStatisticsDatabaseProjection = new DatabaseProjection();
 
 			// Grid size minimum and maximum
-			mCumulativeStatisticsProjection.put(Aggregation.MIN,
-					GridDatabaseAdapter.TABLE,
+			mCumulativeStatisticsDatabaseProjection.put(Aggregation.MIN,
+					GridDatabaseAdapter.TABLE_NAME,
 					GridDatabaseAdapter.KEY_GRID_SIZE);
-			mCumulativeStatisticsProjection.put(Aggregation.MAX,
-					GridDatabaseAdapter.TABLE,
+			mCumulativeStatisticsDatabaseProjection.put(Aggregation.MAX,
+					GridDatabaseAdapter.TABLE_NAME,
 					GridDatabaseAdapter.KEY_GRID_SIZE);
 
 			// First and last move
-			mCumulativeStatisticsProjection.put(Aggregation.MIN, TABLE,
-					KEY_FIRST_MOVE);
-			mCumulativeStatisticsProjection.put(Aggregation.MAX, TABLE,
-					KEY_LAST_MOVE);
+			mCumulativeStatisticsDatabaseProjection.put(Aggregation.MIN,
+					TABLE_NAME, KEY_FIRST_MOVE);
+			mCumulativeStatisticsDatabaseProjection.put(Aggregation.MAX,
+					TABLE_NAME, KEY_LAST_MOVE);
 
 			// Total, minimum, average, and maximum elapsed time
-			mCumulativeStatisticsProjection.put(Aggregation.SUM, TABLE,
-					KEY_ELAPSED_TIME);
-			mCumulativeStatisticsProjection.put(Aggregation.MIN, TABLE,
-					KEY_ELAPSED_TIME);
-			mCumulativeStatisticsProjection.put(Aggregation.AVG, TABLE,
-					KEY_ELAPSED_TIME);
-			mCumulativeStatisticsProjection.put(Aggregation.MAX, TABLE,
-					KEY_ELAPSED_TIME);
+			mCumulativeStatisticsDatabaseProjection.put(Aggregation.SUM,
+					TABLE_NAME, KEY_ELAPSED_TIME);
+			mCumulativeStatisticsDatabaseProjection.put(Aggregation.MIN,
+					TABLE_NAME, KEY_ELAPSED_TIME);
+			mCumulativeStatisticsDatabaseProjection.put(Aggregation.AVG,
+					TABLE_NAME, KEY_ELAPSED_TIME);
+			mCumulativeStatisticsDatabaseProjection.put(Aggregation.MAX,
+					TABLE_NAME, KEY_ELAPSED_TIME);
 
 			// Total, minimum, average, and maximum penalty time
-			mCumulativeStatisticsProjection.put(Aggregation.SUM, TABLE,
-					KEY_CHEAT_PENALTY_TIME);
-			mCumulativeStatisticsProjection.put(Aggregation.MIN, TABLE,
-					KEY_CHEAT_PENALTY_TIME);
-			mCumulativeStatisticsProjection.put(Aggregation.AVG, TABLE,
-					KEY_CHEAT_PENALTY_TIME);
-			mCumulativeStatisticsProjection.put(Aggregation.MAX, TABLE,
-					KEY_CHEAT_PENALTY_TIME);
+			mCumulativeStatisticsDatabaseProjection.put(Aggregation.SUM,
+					TABLE_NAME, KEY_CHEAT_PENALTY_TIME);
+			mCumulativeStatisticsDatabaseProjection.put(Aggregation.MIN,
+					TABLE_NAME, KEY_CHEAT_PENALTY_TIME);
+			mCumulativeStatisticsDatabaseProjection.put(Aggregation.AVG,
+					TABLE_NAME, KEY_CHEAT_PENALTY_TIME);
+			mCumulativeStatisticsDatabaseProjection.put(Aggregation.MAX,
+					TABLE_NAME, KEY_CHEAT_PENALTY_TIME);
 
 			// not (yet) used KEY_CELLS_USER_VALUE_FILLED,
 			// not (yet) used KEY_CELLS_USER_VALUES_EMPTY
 			// not (yet) used KEY_CELLS_USER_VALUES_REPLACED,
 
 			// Totals of avoidable moves
-			mCumulativeStatisticsProjection.put(Aggregation.SUM, TABLE,
-					KEY_POSSIBLES);
-			mCumulativeStatisticsProjection.put(Aggregation.SUM, TABLE,
-					KEY_ACTION_UNDOS);
-			mCumulativeStatisticsProjection.put(Aggregation.SUM, TABLE,
-					KEY_ACTION_CLEAR_CELL);
-			mCumulativeStatisticsProjection.put(Aggregation.SUM, TABLE,
-					KEY_ACTION_CLEAR_GRID);
+			mCumulativeStatisticsDatabaseProjection.put(Aggregation.SUM,
+					TABLE_NAME, KEY_POSSIBLES);
+			mCumulativeStatisticsDatabaseProjection.put(Aggregation.SUM,
+					TABLE_NAME, KEY_ACTION_UNDOS);
+			mCumulativeStatisticsDatabaseProjection.put(Aggregation.SUM,
+					TABLE_NAME, KEY_ACTION_CLEAR_CELL);
+			mCumulativeStatisticsDatabaseProjection.put(Aggregation.SUM,
+					TABLE_NAME, KEY_ACTION_CLEAR_GRID);
 
 			// Totals per cheat
-			mCumulativeStatisticsProjection.put(Aggregation.SUM, TABLE,
-					KEY_ACTION_REVEAL_CELL);
-			mCumulativeStatisticsProjection.put(Aggregation.SUM, TABLE,
-					KEY_ACTION_REVEAL_OPERATOR);
-			mCumulativeStatisticsProjection.put(Aggregation.SUM, TABLE,
-					KEY_ACTION_CHECK_PROGRESS);
-			mCumulativeStatisticsProjection.put(Aggregation.SUM, TABLE,
-					KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND);
+			mCumulativeStatisticsDatabaseProjection.put(Aggregation.SUM,
+					TABLE_NAME, KEY_ACTION_REVEAL_CELL);
+			mCumulativeStatisticsDatabaseProjection.put(Aggregation.SUM,
+					TABLE_NAME, KEY_ACTION_REVEAL_OPERATOR);
+			mCumulativeStatisticsDatabaseProjection.put(Aggregation.SUM,
+					TABLE_NAME, KEY_ACTION_CHECK_PROGRESS);
+			mCumulativeStatisticsDatabaseProjection.put(Aggregation.SUM,
+					TABLE_NAME, KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND);
 
 			// Totals per status of game'
-			mCumulativeStatisticsProjection.put(Aggregation.COUNTIF_TRUE,
-					TABLE, KEY_ACTION_REVEAL_SOLUTION);
-			mCumulativeStatisticsProjection.put(Aggregation.COUNTIF_TRUE,
-					TABLE, KEY_SOLVED_MANUALLY);
-			mCumulativeStatisticsProjection.put(Aggregation.COUNTIF_TRUE,
-					TABLE, KEY_FINISHED);
+			mCumulativeStatisticsDatabaseProjection.put(
+					Aggregation.COUNTIF_TRUE, TABLE_NAME,
+					KEY_ACTION_REVEAL_SOLUTION);
+			mCumulativeStatisticsDatabaseProjection.put(
+					Aggregation.COUNTIF_TRUE, TABLE_NAME, KEY_SOLVED_MANUALLY);
+			mCumulativeStatisticsDatabaseProjection.put(
+					Aggregation.COUNTIF_TRUE, TABLE_NAME, KEY_FINISHED);
 
 			// Total games
-			mCumulativeStatisticsProjection.put(Aggregation.COUNT, TABLE,
-					KEY_ROWID);
+			mCumulativeStatisticsDatabaseProjection.put(Aggregation.COUNT,
+					TABLE_NAME, KEY_ROWID);
 		}
 
 		SQLiteQueryBuilder sqliteQueryBuilder = new SQLiteQueryBuilder();
-		sqliteQueryBuilder.setProjectionMap(mCumulativeStatisticsProjection);
-		sqliteQueryBuilder.setTables(GridDatabaseAdapter.TABLE
+		sqliteQueryBuilder
+				.setProjectionMap(mCumulativeStatisticsDatabaseProjection);
+		sqliteQueryBuilder.setTables(GridDatabaseAdapter.TABLE_NAME
 				+ " INNER JOIN "
-				+ TABLE
+				+ TABLE_NAME
 				+ " ON "
 				+ GridDatabaseAdapter
 						.getPrefixedColumnName(GridDatabaseAdapter.KEY_ROWID)
@@ -439,17 +480,18 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				+ KEY_INCLUDE_IN_STATISTICS + " = 'true'";
 
 		if (DEBUG_SQL) {
-			String sql = sqliteQueryBuilder.buildQuery(
-					mCumulativeStatisticsProjection.getAllColumnNames(),
-					selection, null, null, null, null);
+			String sql = sqliteQueryBuilder
+					.buildQuery(mCumulativeStatisticsDatabaseProjection.getAllColumnNames(),
+								selection, null, null, null, null);
 			Log.i(TAG, sql);
 		}
 
 		Cursor cursor;
 		try {
-			cursor = sqliteQueryBuilder.query(sqliteDatabase,
-					mCumulativeStatisticsProjection.getAllColumnNames(),
-					selection, null, null, null, null);
+			cursor = sqliteQueryBuilder
+					.query(sqliteDatabase,
+						   mCumulativeStatisticsDatabaseProjection.getAllColumnNames(), selection,
+						   null, null, null, null);
 		} catch (SQLiteException e) {
 			throw new DatabaseException(
 					String.format(
@@ -467,55 +509,55 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 
 		// Grid size minimum and maximum
 		cumulativeStatistics.mMinGridSize = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
+				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
 						.getAggregatedKey(Aggregation.MIN,
 								GridDatabaseAdapter.KEY_GRID_SIZE)));
 		cumulativeStatistics.mMaxGridSize = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
+				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
 						.getAggregatedKey(Aggregation.MAX,
 								GridDatabaseAdapter.KEY_GRID_SIZE)));
 
 		// First and last move
 		cumulativeStatistics.mMinFirstMove = toSQLTimestamp(cursor
 				.getString(cursor
-						.getColumnIndexOrThrow(mCumulativeStatisticsProjection
+						.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
 								.getAggregatedKey(Aggregation.MIN,
 										KEY_FIRST_MOVE))));
 		cumulativeStatistics.mMaxLastMove = toSQLTimestamp(cursor
 				.getString(cursor
-						.getColumnIndexOrThrow(mCumulativeStatisticsProjection
+						.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
 								.getAggregatedKey(Aggregation.MAX,
 										KEY_LAST_MOVE))));
 
 		// Total, minimum, average, and maximum elapsed time
 		cumulativeStatistics.mSumElapsedTime = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
+				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
 						.getAggregatedKey(Aggregation.SUM, KEY_ELAPSED_TIME)));
 		cumulativeStatistics.mAvgElapsedTime = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
+				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
 						.getAggregatedKey(Aggregation.AVG, KEY_ELAPSED_TIME)));
 		cumulativeStatistics.mMinElapsedTime = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
+				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
 						.getAggregatedKey(Aggregation.MIN, KEY_ELAPSED_TIME)));
 		cumulativeStatistics.mMaxElapsedTime = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
+				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
 						.getAggregatedKey(Aggregation.MAX, KEY_ELAPSED_TIME)));
 
 		// Total, minimum, average, and maximum penalty time
 		cumulativeStatistics.mSumCheatPenaltyTime = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
+				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
 						.getAggregatedKey(Aggregation.SUM,
 								KEY_CHEAT_PENALTY_TIME)));
 		cumulativeStatistics.mAvgCheatPenaltyTime = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
+				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
 						.getAggregatedKey(Aggregation.AVG,
 								KEY_CHEAT_PENALTY_TIME)));
 		cumulativeStatistics.mMinCheatPenaltyTime = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
+				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
 						.getAggregatedKey(Aggregation.MIN,
 								KEY_CHEAT_PENALTY_TIME)));
 		cumulativeStatistics.mMaxCheatPenaltyTime = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
+				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
 						.getAggregatedKey(Aggregation.MAX,
 								KEY_CHEAT_PENALTY_TIME)));
 
@@ -525,53 +567,54 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 
 		// Totals of avoidable moves
 		cumulativeStatistics.mSumMaybeValue = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
+				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
 						.getAggregatedKey(Aggregation.SUM, KEY_POSSIBLES)));
 		cumulativeStatistics.mSumActionUndoMove = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
+				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
 						.getAggregatedKey(Aggregation.SUM, KEY_ACTION_UNDOS)));
 		cumulativeStatistics.mSumActionClearCell = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
+				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
 						.getAggregatedKey(Aggregation.SUM,
 								KEY_ACTION_CLEAR_CELL)));
 		cumulativeStatistics.mSumActionClearGrid = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
+				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
 						.getAggregatedKey(Aggregation.SUM,
 								KEY_ACTION_CLEAR_GRID)));
 
 		// Totals per cheat
 		cumulativeStatistics.mSumActionRevealCell = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
+				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
 						.getAggregatedKey(Aggregation.SUM,
 								KEY_ACTION_REVEAL_CELL)));
 		cumulativeStatistics.mSumActionRevealOperator = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
+				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
 						.getAggregatedKey(Aggregation.SUM,
 								KEY_ACTION_REVEAL_OPERATOR)));
 		cumulativeStatistics.mSumActionCheckProgress = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
+				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
 						.getAggregatedKey(Aggregation.SUM,
 								KEY_ACTION_CHECK_PROGRESS)));
 		cumulativeStatistics.mSumCheckProgressInvalidCellsFound = cursor
-				.getInt(cursor.getColumnIndexOrThrow(mCumulativeStatisticsProjection
-						.getAggregatedKey(Aggregation.SUM,
-								KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND)));
+				.getInt(cursor
+						.getColumnIndexOrThrow(
+								mCumulativeStatisticsDatabaseProjection.getAggregatedKey(
+										Aggregation.SUM, KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND)));
 
 		// Totals per status of game
 		cumulativeStatistics.mCountSolutionRevealed = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
+				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
 						.getAggregatedKey(Aggregation.COUNTIF_TRUE,
 								KEY_ACTION_REVEAL_SOLUTION)));
 		cumulativeStatistics.mCountSolvedManually = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
+				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
 						.getAggregatedKey(Aggregation.COUNTIF_TRUE,
 								KEY_SOLVED_MANUALLY)));
 		cumulativeStatistics.mCountFinished = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
+				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
 						.getAggregatedKey(Aggregation.COUNTIF_TRUE,
 								KEY_FINISHED)));
 		cumulativeStatistics.mCountStarted = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsProjection
+				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
 						.getAggregatedKey(Aggregation.COUNT, KEY_ROWID)));
 
 		cursor.close();
@@ -596,13 +639,13 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		// Build projection if not yet done. As this projection is only build
 		// once, it has to contain all base columns and all columns for which
 		// the historic data can be retrieved.
-		if (mHistoricStatisticsProjection == null) {
-			mHistoricStatisticsProjection = new Projection();
+		if (mHistoricStatisticsDatabaseProjection == null) {
+			mHistoricStatisticsDatabaseProjection = new DatabaseProjection();
 
 			// Add base columns to the projection
-			mHistoricStatisticsProjection.put(HistoricStatistics.DATA_COL_ID,
-					TABLE, KEY_ROWID);
-			mHistoricStatisticsProjection.put(
+			mHistoricStatisticsDatabaseProjection.put(
+					HistoricStatistics.DATA_COL_ID, TABLE_NAME, KEY_ROWID);
+			mHistoricStatisticsDatabaseProjection.put(
 					stringBetweenBackTicks(HistoricStatistics.DATA_COL_SERIES), /*
 																				 * Explicit
 																				 * back
@@ -628,43 +671,46 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 							+ " END");
 
 			// Add data columns to the projection.
-			mHistoricStatisticsProjection.put(KEY_ELAPSED_TIME, TABLE,
-					KEY_ELAPSED_TIME);
-			mHistoricStatisticsProjection.put(KEY_CHEAT_PENALTY_TIME, TABLE,
-					KEY_CHEAT_PENALTY_TIME);
-			mHistoricStatisticsProjection.put(KEY_CELLS_FILLED, TABLE,
-					KEY_CELLS_FILLED);
-			mHistoricStatisticsProjection.put(KEY_CELLS_EMPTY, TABLE,
-					KEY_CELLS_EMPTY);
-			mHistoricStatisticsProjection.put(KEY_CELLS_REVEALED, TABLE,
-					KEY_CELLS_REVEALED);
-			mHistoricStatisticsProjection.put(KEY_USER_VALUES_REPLACED, TABLE,
-					KEY_USER_VALUES_REPLACED);
-			mHistoricStatisticsProjection.put(KEY_POSSIBLES, TABLE,
-					KEY_POSSIBLES);
-			mHistoricStatisticsProjection.put(KEY_ACTION_UNDOS, TABLE,
-					KEY_ACTION_UNDOS);
-			mHistoricStatisticsProjection.put(KEY_ACTION_CLEAR_CELL, TABLE,
-					KEY_ACTION_CLEAR_CELL);
-			mHistoricStatisticsProjection.put(KEY_ACTION_CLEAR_GRID, TABLE,
-					KEY_ACTION_CLEAR_GRID);
-			mHistoricStatisticsProjection.put(KEY_ACTION_REVEAL_CELL, TABLE,
-					KEY_ACTION_REVEAL_CELL);
-			mHistoricStatisticsProjection.put(KEY_ACTION_REVEAL_OPERATOR,
-					TABLE, KEY_ACTION_REVEAL_OPERATOR);
-			mHistoricStatisticsProjection.put(KEY_ACTION_CHECK_PROGRESS, TABLE,
+			mHistoricStatisticsDatabaseProjection.put(KEY_ELAPSED_TIME,
+					TABLE_NAME, KEY_ELAPSED_TIME);
+			mHistoricStatisticsDatabaseProjection.put(KEY_CHEAT_PENALTY_TIME,
+					TABLE_NAME, KEY_CHEAT_PENALTY_TIME);
+			mHistoricStatisticsDatabaseProjection.put(KEY_CELLS_FILLED,
+					TABLE_NAME, KEY_CELLS_FILLED);
+			mHistoricStatisticsDatabaseProjection.put(KEY_CELLS_EMPTY,
+					TABLE_NAME, KEY_CELLS_EMPTY);
+			mHistoricStatisticsDatabaseProjection.put(KEY_CELLS_REVEALED,
+					TABLE_NAME, KEY_CELLS_REVEALED);
+			mHistoricStatisticsDatabaseProjection.put(KEY_USER_VALUES_REPLACED,
+					TABLE_NAME, KEY_USER_VALUES_REPLACED);
+			mHistoricStatisticsDatabaseProjection.put(KEY_POSSIBLES,
+					TABLE_NAME, KEY_POSSIBLES);
+			mHistoricStatisticsDatabaseProjection.put(KEY_ACTION_UNDOS,
+					TABLE_NAME, KEY_ACTION_UNDOS);
+			mHistoricStatisticsDatabaseProjection.put(KEY_ACTION_CLEAR_CELL,
+					TABLE_NAME, KEY_ACTION_CLEAR_CELL);
+			mHistoricStatisticsDatabaseProjection.put(KEY_ACTION_CLEAR_GRID,
+					TABLE_NAME, KEY_ACTION_CLEAR_GRID);
+			mHistoricStatisticsDatabaseProjection.put(KEY_ACTION_REVEAL_CELL,
+					TABLE_NAME, KEY_ACTION_REVEAL_CELL);
+			mHistoricStatisticsDatabaseProjection.put(
+					KEY_ACTION_REVEAL_OPERATOR, TABLE_NAME,
+					KEY_ACTION_REVEAL_OPERATOR);
+			mHistoricStatisticsDatabaseProjection.put(
+					KEY_ACTION_CHECK_PROGRESS, TABLE_NAME,
 					KEY_ACTION_CHECK_PROGRESS);
-			mHistoricStatisticsProjection.put(
-					KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND, TABLE,
+			mHistoricStatisticsDatabaseProjection.put(
+					KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND, TABLE_NAME,
 					KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND);
 		}
 
 		// Build query
 		SQLiteQueryBuilder sqliteQueryBuilder = new SQLiteQueryBuilder();
-		sqliteQueryBuilder.setProjectionMap(mHistoricStatisticsProjection);
-		sqliteQueryBuilder.setTables(GridDatabaseAdapter.TABLE
+		sqliteQueryBuilder
+				.setProjectionMap(mHistoricStatisticsDatabaseProjection);
+		sqliteQueryBuilder.setTables(GridDatabaseAdapter.TABLE_NAME
 				+ " INNER JOIN "
-				+ TABLE
+				+ TABLE_NAME
 				+ " ON "
 				+ GridDatabaseAdapter
 						.getPrefixedColumnName(GridDatabaseAdapter.KEY_ROWID)
@@ -733,7 +779,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 */
 	@SuppressWarnings("SameParameterValue")
 	private static String getPrefixedColumnName(String column) {
-		return TABLE + "." + column;
+		return TABLE_NAME + "." + column;
 	}
 
 	/**
@@ -749,11 +795,12 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 */
 	public void updateSolvingAttemptToBeIncludedInStatistics(int gridId,
 			int solvingAttemptId) {
-		String sql = "UPDATE " + TABLE + " SET " + KEY_INCLUDE_IN_STATISTICS
-				+ " = " + " CASE WHEN " + KEY_ROWID + " = " + solvingAttemptId
-				+ " THEN " + stringBetweenQuotes(toSQLiteBoolean(true))
-				+ " ELSE " + stringBetweenQuotes(toSQLiteBoolean(false))
-				+ " END " + " WHERE " + KEY_GRID_ID + " = " + gridId + " AND ("
+		String sql = "UPDATE " + TABLE_NAME + " SET "
+				+ KEY_INCLUDE_IN_STATISTICS + " = " + " CASE WHEN " + KEY_ROWID
+				+ " = " + solvingAttemptId + " THEN "
+				+ stringBetweenQuotes(toSQLiteBoolean(true)) + " ELSE "
+				+ stringBetweenQuotes(toSQLiteBoolean(false)) + " END "
+				+ " WHERE " + KEY_GRID_ID + " = " + gridId + " AND ("
 				+ KEY_ROWID + " = " + solvingAttemptId + " OR "
 				+ KEY_INCLUDE_IN_STATISTICS + " = "
 				+ stringBetweenQuotes(toSQLiteBoolean(true)) + ")";

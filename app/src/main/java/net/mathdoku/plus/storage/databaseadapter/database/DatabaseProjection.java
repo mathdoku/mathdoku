@@ -1,8 +1,10 @@
-package net.mathdoku.plus.storage.database;
+package net.mathdoku.plus.storage.databaseadapter.database;
 
 import java.util.HashMap;
 
-public class Projection extends HashMap<String, String> {
+import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.stringBetweenBackTicks;
+
+public class DatabaseProjection extends HashMap<String, String> {
 
 	private static final long serialVersionUID = 12382389483847823L;
 
@@ -10,14 +12,14 @@ public class Projection extends HashMap<String, String> {
 		MIN, MAX, AVG, SUM, COUNT, COUNTIF_TRUE
 	}
 
-	public Projection() {
+	public DatabaseProjection() {
 		super();
 	}
 
 	/**
 	 * Add a column to the projection. Preferred usage is
 	 * {@link #put(String, String, String)} or
-	 * {@link #put(net.mathdoku.plus.storage.database.Projection.Aggregation, String, String)}
+	 * {@link #put(DatabaseProjection.Aggregation, String, String)}
 	 * .
 	 * <p>
 	 * Note: In contradiction to other put functions, the target and source
@@ -52,9 +54,9 @@ public class Projection extends HashMap<String, String> {
 	@SuppressWarnings("UnusedReturnValue")
 	public String put(String targetColumn, String sourceTable,
 			String sourceColumn) {
-		String target = DatabaseAdapter.stringBetweenBackTicks(targetColumn);
-		String source = DatabaseAdapter.stringBetweenBackTicks(sourceTable)
-				+ "." + DatabaseAdapter.stringBetweenBackTicks(sourceColumn);
+		String target = stringBetweenBackTicks(targetColumn);
+		String source = stringBetweenBackTicks(sourceTable)
+				+ "." + stringBetweenBackTicks(sourceColumn);
 
 		return super.put(target, source + " AS " + target);
 	}
@@ -76,11 +78,10 @@ public class Projection extends HashMap<String, String> {
 	 */
 	public void put(Aggregation aggregation, String sourceTable,
 			String sourceColumn) {
-		String target = DatabaseAdapter
-				.stringBetweenBackTicks(getAggregatedKey(aggregation,
+		String target = stringBetweenBackTicks(getAggregatedKey(aggregation,
 						sourceColumn));
-		String source = DatabaseAdapter.stringBetweenBackTicks(sourceTable)
-				+ "." + DatabaseAdapter.stringBetweenBackTicks(sourceColumn);
+		String source = stringBetweenBackTicks(sourceTable)
+				+ "." + stringBetweenBackTicks(sourceColumn);
 
 		String aggregatedSource;
 		switch (aggregation) {

@@ -1,4 +1,4 @@
-package net.mathdoku.plus.storage.database;
+package net.mathdoku.plus.storage.databaseadapter.database;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -18,6 +18,13 @@ import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParametersBuilder;
 import net.mathdoku.plus.puzzle.grid.Grid;
 
+import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.stringBetweenBackTicks;
+import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.stringBetweenQuotes;
+import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.toSQLiteBoolean;
+import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.toSQLiteTimestamp;
+import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.valueOfSQLiteBoolean;
+import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.valueOfSQLiteTimestamp;
+
 /**
  * The database adapter for the grid table.
  */
@@ -30,8 +37,10 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	@SuppressWarnings("PointlessBooleanExpression")
 	private static final boolean DEBUG_SQL = Config.mAppMode == AppMode.DEVELOPMENT && false;
 
+	private static final DatabaseTableDefinition DATABASE_TABLE = defineTable();
+
 	// Columns for table statistics
-	static final String TABLE = "grid";
+	static final String TABLE_NAME = "grid";
 	static final String KEY_ROWID = "_id";
 	private static final String KEY_DEFINITION = "definition";
 	static final String KEY_GRID_SIZE = "grid_size";
@@ -42,11 +51,6 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	private static final String KEY_HIDE_OPERATORS = "hide_operators";
 	private static final String KEY_MAX_CAGE_RESULT = "max_cage_result";
 	private static final String KEY_MAX_CAGE_SIZE = "max_cage_size";
-
-	private static final String[] allColumns = { KEY_ROWID, KEY_DEFINITION,
-			KEY_GRID_SIZE, KEY_DATE_CREATED, KEY_GAME_SEED,
-			KEY_GENERATOR_REVISION_NUMBER, KEY_PUZZLE_COMPLEXITY,
-			KEY_HIDE_OPERATORS, KEY_MAX_CAGE_RESULT, KEY_MAX_CAGE_SIZE };
 
 	// Columns used in result of function getLatestSolvingAttemptsPerGrid
 	public static final int LATEST_SOLVING_ATTEMPT_PER_GRID__GRID_ID = 0;
@@ -61,40 +65,47 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		super();
 	}
 
+	private static DatabaseTableDefinition defineTable() {
+		DatabaseTableDefinition databaseTableDefinition = new DatabaseTableDefinition(
+				TABLE_NAME);
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_ROWID, DataType.INTEGER).setPrimaryKey());
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_DEFINITION, DataType.STRING).setNotNull().setUniqueKey());
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_GRID_SIZE, DataType.INTEGER).setNotNull());
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_DATE_CREATED, DataType.TIMESTAMP).setNotNull());
+		// Grid generating parameters. These values can be null as they are not
+		// known for historic games. Neither will they be know when games will
+		// be exchanged in the future.
+		databaseTableDefinition.addColumn(
+				new DatabaseColumnDefinition(KEY_GAME_SEED, DataType.LONG));
+		// changes in tables
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_GENERATOR_REVISION_NUMBER, DataType.INTEGER));
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_PUZZLE_COMPLEXITY, DataType.STRING));
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_HIDE_OPERATORS, DataType.STRING));
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_MAX_CAGE_RESULT, DataType.INTEGER));
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_MAX_CAGE_SIZE, DataType.INTEGER));
+
+		databaseTableDefinition.build();
+
+		return databaseTableDefinition;
+	}
+
 	// Package private access, intended for DatabaseHelper only
 	GridDatabaseAdapter(SQLiteDatabase sqLiteDatabase) {
 		super(sqLiteDatabase);
 	}
 
 	@Override
-	protected String getTableName() {
-		return TABLE;
-	}
-
-	@Override
-	protected String getCreateSQL() {
-		return getCreateTableSQL(
-				TABLE,
-				getCreateColumnClause(KEY_ROWID, DataType.INTEGER,
-						primaryKeyAutoIncremented()),
-				getCreateColumnClause(KEY_DEFINITION, DataType.STRING,
-						notNull(), unique()),
-				getCreateColumnClause(KEY_GRID_SIZE, DataType.INTEGER,
-						notNull()),
-				getCreateColumnClause(KEY_DATE_CREATED, DataType.TIMESTAMP,
-						notNull()),
-				// Grid generating parameters.
-				// These values can be null as they are not known for
-				// historic games. Neither will they be know when games
-				// will be exchanged in the future.
-				getCreateColumnClause(KEY_GAME_SEED, DataType.LONG),
-				// changes in tables
-				getCreateColumnClause(KEY_GENERATOR_REVISION_NUMBER,
-						DataType.INTEGER),
-				getCreateColumnClause(KEY_PUZZLE_COMPLEXITY, DataType.STRING),
-				getCreateColumnClause(KEY_HIDE_OPERATORS, DataType.STRING),
-				getCreateColumnClause(KEY_MAX_CAGE_RESULT, DataType.INTEGER),
-				getCreateColumnClause(KEY_MAX_CAGE_SIZE, DataType.INTEGER));
+	protected DatabaseTableDefinition getDatabaseTableDefinition() {
+		return DATABASE_TABLE;
 	}
 
 	/**
@@ -107,7 +118,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 *            The new version of the database. Use the app revision number
 	 *            to identify the database version.
 	 */
-	void upgradeTable(int oldVersion, int newVersion) {
+	protected  void upgradeTable(int oldVersion, int newVersion) {
 		if (Config.mAppMode == AppMode.DEVELOPMENT && oldVersion < 432
 				&& newVersion >= 432) {
 			recreateTableInDevelopmentMode();
@@ -152,7 +163,8 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 
 		int id;
 		try {
-			id = (int) sqliteDatabase.insertOrThrow(TABLE, null, initialValues);
+			id = (int) sqliteDatabase.insertOrThrow(TABLE_NAME, null,
+					initialValues);
 		} catch (SQLiteConstraintException e) {
 			throw new DatabaseException("Cannot insert new grid in database.",
 					e);
@@ -177,8 +189,9 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		GridRow gridRow = null;
 		Cursor cursor = null;
 		try {
-			cursor = sqliteDatabase.query(true, TABLE, allColumns, KEY_ROWID
-					+ "=" + id, null, null, null, null, null);
+			cursor = sqliteDatabase.query(true, TABLE_NAME,
+					DATABASE_TABLE.getColumnNames(), KEY_ROWID + "=" + id,
+					null, null, null, null, null);
 			gridRow = toGridRow(cursor);
 		} catch (SQLiteException e) {
 			throw new DatabaseException(String.format(
@@ -203,9 +216,10 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		GridRow gridRow = null;
 		Cursor cursor = null;
 		try {
-			cursor = sqliteDatabase.query(true, TABLE, allColumns,
-					KEY_DEFINITION + "=" + stringBetweenQuotes(definition),
-					null, null, null, null, null);
+			cursor = sqliteDatabase.query(true, TABLE_NAME,
+					DATABASE_TABLE.getColumnNames(), KEY_DEFINITION + "="
+							+ stringBetweenQuotes(definition), null, null,
+					null, null, null);
 			gridRow = toGridRow(cursor);
 		} catch (SQLiteException e) {
 			throw new DatabaseException(String.format(
@@ -297,7 +311,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 * @return The prefixed column name.
 	 */
 	public static String getPrefixedColumnName(String column) {
-		return TABLE + "." + column;
+		return TABLE_NAME + "." + column;
 	}
 
 	/**
@@ -310,20 +324,20 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 			GridTypeFilter gridTypeFilter) {
 		String keySolvingAttemptId = "solving_attempt_id";
 
-		// Build projection
-		Projection projection = new Projection();
-		projection.put(KEY_ROWID, TABLE, KEY_ROWID);
-		projection.put(keySolvingAttemptId,
-				SolvingAttemptDatabaseAdapter.TABLE,
+		// Build databaseProjection
+		DatabaseProjection databaseProjection = new DatabaseProjection();
+		databaseProjection.put(KEY_ROWID, TABLE_NAME, KEY_ROWID);
+		databaseProjection.put(keySolvingAttemptId,
+				SolvingAttemptDatabaseAdapter.TABLE_NAME,
 				SolvingAttemptDatabaseAdapter.KEY_ROWID);
 
 		// Build query
 		SQLiteQueryBuilder sqliteQueryBuilder = new SQLiteQueryBuilder();
-		sqliteQueryBuilder.setProjectionMap(projection);
+		sqliteQueryBuilder.setProjectionMap(databaseProjection);
 		sqliteQueryBuilder
-				.setTables(TABLE
+				.setTables(TABLE_NAME
 						+ " INNER JOIN "
-						+ SolvingAttemptDatabaseAdapter.TABLE
+						+ SolvingAttemptDatabaseAdapter.TABLE_NAME
 						+ " ON "
 						+ SolvingAttemptDatabaseAdapter
 								.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_GRID_ID)
@@ -341,7 +355,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		// which do match the status while ignore the fact that a more recent
 		// solving attempt exists with another status.
 		String selection = "not exists (select 1 from "
-				+ SolvingAttemptDatabaseAdapter.TABLE
+				+ SolvingAttemptDatabaseAdapter.TABLE_NAME
 				+ " as sa2 where sa2."
 				+ SolvingAttemptDatabaseAdapter.KEY_GRID_ID
 				+ " = "
@@ -358,8 +372,8 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 
 		if (DEBUG_SQL) {
 			String sql = sqliteQueryBuilder.buildQuery(
-					projection.getAllColumnNames(), selection, KEY_ROWID, null,
-					null, null);
+					databaseProjection.getAllColumnNames(), selection,
+					KEY_ROWID, null, null, null);
 			Log.i(TAG, sql);
 		}
 
@@ -368,8 +382,8 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		Cursor cursor = null;
 		try {
 			cursor = sqliteQueryBuilder.query(sqliteDatabase,
-					projection.getAllColumnNames(), selection, null, KEY_ROWID,
-					null, null);
+					databaseProjection.getAllColumnNames(), selection, null,
+					KEY_ROWID, null, null);
 			if (cursor != null && cursor.moveToFirst()) {
 				gridIds = new int[cursor.getCount()][2];
 				int i = 0;
@@ -408,10 +422,10 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 *         size filter.
 	 */
 	public StatusFilter[] getUsedStatuses(GridTypeFilter sizeFilter) {
-		// Build the projection
-		Projection projection = new Projection();
+		// Build the databaseProjection
+		DatabaseProjection databaseProjection = new DatabaseProjection();
 		final String keyStatusFilter = "status_filter";
-		projection
+		databaseProjection
 				.put(keyStatusFilter,
 						"CASE WHEN "
 								+ stringBetweenBackTicks(SolvingAttemptDatabaseAdapter.KEY_STATUS)
@@ -430,18 +444,18 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 
 		// Build query
 		SQLiteQueryBuilder sqliteQueryBuilder = new SQLiteQueryBuilder();
-		sqliteQueryBuilder.setProjectionMap(projection);
+		sqliteQueryBuilder.setProjectionMap(databaseProjection);
 		sqliteQueryBuilder
-				.setTables(TABLE
+				.setTables(TABLE_NAME
 						+ " INNER JOIN "
-						+ SolvingAttemptDatabaseAdapter.TABLE
+						+ SolvingAttemptDatabaseAdapter.TABLE_NAME
 						+ " as sa1 "
 						+ " ON sa1."
 						+ stringBetweenBackTicks(SolvingAttemptDatabaseAdapter.KEY_GRID_ID)
 						+ " = " + getPrefixedColumnName(KEY_ROWID));
 
 		// Retrieve all data. Note: in case column is not added to the
-		// projection, no data will be retrieved!
+		// databaseProjection, no data will be retrieved!
 		String[] columnsData = { keyStatusFilter };
 
 		// Build where clause. Be sure only to retrieve the status of the last
@@ -453,7 +467,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 				+ " NOT EXISTS ( "
 				+ "SELECT 1 "
 				+ " FROM "
-				+ SolvingAttemptDatabaseAdapter.TABLE
+				+ SolvingAttemptDatabaseAdapter.TABLE_NAME
 				+ " as sa2"
 				+ " WHERE sa2."
 				+ stringBetweenBackTicks(SolvingAttemptDatabaseAdapter.KEY_GRID_ID)
@@ -516,24 +530,24 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 *         status filter.
 	 */
 	public GridType[] getUsedSizes(StatusFilter statusFilter) {
-		// Build the projection
-		Projection projection = new Projection();
-		projection.put(KEY_GRID_SIZE, TABLE, KEY_GRID_SIZE);
+		// Build the databaseProjection
+		DatabaseProjection databaseProjection = new DatabaseProjection();
+		databaseProjection.put(KEY_GRID_SIZE, TABLE_NAME, KEY_GRID_SIZE);
 
 		// Build query
 		SQLiteQueryBuilder sqliteQueryBuilder = new SQLiteQueryBuilder();
-		sqliteQueryBuilder.setProjectionMap(projection);
+		sqliteQueryBuilder.setProjectionMap(databaseProjection);
 		sqliteQueryBuilder
-				.setTables(TABLE
+				.setTables(TABLE_NAME
 						+ " INNER JOIN "
-						+ SolvingAttemptDatabaseAdapter.TABLE
+						+ SolvingAttemptDatabaseAdapter.TABLE_NAME
 						+ " ON "
 						+ SolvingAttemptDatabaseAdapter
 								.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_GRID_ID)
 						+ " = " + getPrefixedColumnName(KEY_ROWID));
 
 		// Retrieve all data. Note: in case column is not added to the
-		// projection, no data will be retrieved!
+		// databaseProjection, no data will be retrieved!
 		String[] columnsData = { stringBetweenBackTicks(KEY_GRID_SIZE) };
 
 		// Build where clause
