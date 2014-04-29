@@ -19,7 +19,7 @@ import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParametersBuilder;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.statistics.GridStatistics;
-import net.mathdoku.plus.storage.database.DatabaseHelper;
+import net.mathdoku.plus.storage.databaseadapter.database.DatabaseHelper;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 
 import java.util.Random;

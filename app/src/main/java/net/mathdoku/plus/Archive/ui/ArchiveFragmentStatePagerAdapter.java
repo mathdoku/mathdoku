@@ -7,8 +7,8 @@ import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.enums.GridTypeFilter;
-import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
-import net.mathdoku.plus.storage.database.GridDatabaseAdapter.StatusFilter;
+import net.mathdoku.plus.storage.databaseadapter.database.GridDatabaseAdapter;
+import net.mathdoku.plus.storage.databaseadapter.database.GridDatabaseAdapter.StatusFilter;
 
 /**
  * A {@link android.support.v4.app.FragmentStatePagerAdapter} that returns a

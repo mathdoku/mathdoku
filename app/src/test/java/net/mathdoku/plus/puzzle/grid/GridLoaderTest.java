@@ -13,11 +13,11 @@ import net.mathdoku.plus.storage.CellChangeStorage;
 import net.mathdoku.plus.storage.CageStorage;
 import net.mathdoku.plus.storage.CellStorage;
 import net.mathdoku.plus.storage.GridStorage;
-import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
-import net.mathdoku.plus.storage.database.GridRow;
-import net.mathdoku.plus.storage.database.SolvingAttempt;
-import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
-import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
+import net.mathdoku.plus.storage.databaseadapter.database.GridDatabaseAdapter;
+import net.mathdoku.plus.storage.databaseadapter.database.GridRow;
+import net.mathdoku.plus.storage.databaseadapter.database.SolvingAttempt;
+import net.mathdoku.plus.storage.databaseadapter.database.SolvingAttemptDatabaseAdapter;
+import net.mathdoku.plus.storage.databaseadapter.database.StatisticsDatabaseAdapter;
 
 import org.junit.Before;
 import org.junit.Test;

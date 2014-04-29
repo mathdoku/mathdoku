@@ -1,6 +1,6 @@
 package net.mathdoku.plus.statistics;
 
-import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
+import net.mathdoku.plus.storage.databaseadapter.database.StatisticsDatabaseAdapter;
 
 /**
  * Statistics for a single grid.

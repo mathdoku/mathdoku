@@ -14,7 +14,7 @@ import net.mathdoku.plus.puzzle.cell.Cell;
 import net.mathdoku.plus.puzzle.cell.CellBuilder;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.puzzle.grid.GridBuilder;
-import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
+import net.mathdoku.plus.storage.databaseadapter.database.GridDatabaseAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

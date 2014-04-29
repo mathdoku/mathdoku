@@ -8,17 +8,17 @@ import android.util.Log;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
+import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseTableDefinition;
+import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.stringBetweenQuotes;
 
 /**
  * Basic database adapter. All other database adapters should be extend from
  * this base class.
  */
-abstract class DatabaseAdapter {
+public abstract class DatabaseAdapter {
 	@SuppressWarnings("unused")
 	private static final String TAG = DatabaseAdapter.class.getName();
 
@@ -56,11 +56,11 @@ abstract class DatabaseAdapter {
 
 	protected abstract DatabaseTableDefinition getDatabaseTableDefinition();
 
-	String getTableName() {
+	public String getTableName() {
 		return getDatabaseTableDefinition().getTableName();
 	}
 
-	String getCreateSQL() {
+	public String getCreateSQL() {
 		return getDatabaseTableDefinition().getCreateTableSQL();
 	}
 
@@ -184,5 +184,40 @@ abstract class DatabaseAdapter {
 
 	public void execSQL(String sql) {
 		sqliteDatabase.execSQL(sql);
+	}
+
+	// Convenience method
+	protected static String stringBetweenBackTicks(String string) {
+		return DatabaseUtil.stringBetweenBackTicks(string);
+	}
+
+	// Convenience method
+	protected static String stringBetweenQuotes(String string) {
+		return DatabaseUtil.stringBetweenQuotes(string);
+	}
+
+	// Convenience method
+	protected static String toSQLiteBoolean(boolean value) {
+		return DatabaseUtil.toSQLiteBoolean(value);
+	}
+
+	// Convenience method
+	protected static boolean valueOfSQLiteBoolean(String value) {
+		return DatabaseUtil.valueOfSQLiteBoolean(value);
+	}
+
+	// Convenience method
+	protected static String toSQLiteTimestamp(long value) {
+		return DatabaseUtil.toSQLiteTimestamp(value);
+	}
+
+	// Convenience method
+	protected static java.sql.Timestamp toSQLTimestamp(String value) {
+		return DatabaseUtil.toSQLTimestamp(value);
+	}
+
+	// Convenience method
+	protected static long valueOfSQLiteTimestamp(String value) {
+		return DatabaseUtil.valueOfSQLiteTimestamp(value);
 	}
 }

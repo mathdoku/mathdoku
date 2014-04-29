@@ -1,4 +1,4 @@
-package net.mathdoku.plus.storage.databaseadapter.database;
+package net.mathdoku.plus.storage.databaseadapter.database.database;
 
 public class DatabaseException extends RuntimeException {
 	public DatabaseException() {

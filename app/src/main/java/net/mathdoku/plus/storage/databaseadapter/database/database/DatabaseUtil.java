@@ -1,6 +1,6 @@
-package net.mathdoku.plus.storage.databaseadapter.database;
+package net.mathdoku.plus.storage.databaseadapter.database.database;
 
-class DatabaseUtil {
+public class DatabaseUtil {
 	private static final char BACK_TICK = '`';
 	private static final char QUOTE = '\'';
 
@@ -33,7 +33,7 @@ class DatabaseUtil {
 	 *            quotes.
 	 * @return The string properly enclosed with quotes.
 	 */
-	static String stringBetweenQuotes(String string) {
+	public static String stringBetweenQuotes(String string) {
 		return QUOTE + string + QUOTE;
 	}
 
@@ -45,7 +45,7 @@ class DatabaseUtil {
 	 * @return The string representation of the boolean value as it is stored in
 	 *         SQLite.
 	 */
-	static String toSQLiteBoolean(boolean value) {
+	public static String toSQLiteBoolean(boolean value) {
 		return value ? SQLITE_TRUE : SQLITE_FALSE;
 	}
 
@@ -56,7 +56,7 @@ class DatabaseUtil {
 	 *            The boolean string value to be converted.
 	 * @return The boolean value corresponding with the SQLite string value.
 	 */
-	static boolean valueOfSQLiteBoolean(String value) {
+	public static boolean valueOfSQLiteBoolean(String value) {
 		return value.equals(SQLITE_TRUE);
 	}
 
@@ -68,7 +68,7 @@ class DatabaseUtil {
 	 * @return The string representation of the long value as it is stored in
 	 *         SQLite.
 	 */
-	static String toSQLiteTimestamp(long value) {
+	public static String toSQLiteTimestamp(long value) {
 		return new java.sql.Timestamp(value).toString();
 	}
 
@@ -80,7 +80,7 @@ class DatabaseUtil {
 	 *            The string value to be converted.
 	 * @return The SQL timestamp representation of the string value.
 	 */
-	static java.sql.Timestamp toSQLTimestamp(String value) {
+	public static java.sql.Timestamp toSQLTimestamp(String value) {
 		if (value == null) {
 			return new java.sql.Timestamp(0);
 		} else {
@@ -96,7 +96,7 @@ class DatabaseUtil {
 	 * @return The long value representing the given string value. 0 in case a
 	 *         null value was passed.
 	 */
-	static long valueOfSQLiteTimestamp(String value) {
+	public static long valueOfSQLiteTimestamp(String value) {
 		return value == null ? 0 : java.sql.Timestamp.valueOf(value).getTime();
 	}
 }

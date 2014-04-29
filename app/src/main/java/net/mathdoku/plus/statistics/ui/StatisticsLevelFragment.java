@@ -20,7 +20,7 @@ import net.mathdoku.plus.statistics.CumulativeStatistics;
 import net.mathdoku.plus.statistics.HistoricStatistics;
 import net.mathdoku.plus.statistics.HistoricStatistics.Scale;
 import net.mathdoku.plus.statistics.HistoricStatistics.Series;
-import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
+import net.mathdoku.plus.storage.databaseadapter.database.StatisticsDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
 
 import org.achartengine.ChartFactory;

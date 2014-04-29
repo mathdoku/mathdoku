@@ -5,12 +5,12 @@ import android.app.Activity;
 import net.mathdoku.plus.puzzle.cellchange.CellChange;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.statistics.GridStatistics;
-import net.mathdoku.plus.storage.database.DatabaseHelper;
-import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
-import net.mathdoku.plus.storage.database.GridRow;
-import net.mathdoku.plus.storage.database.SolvingAttempt;
-import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
-import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
+import net.mathdoku.plus.storage.databaseadapter.database.DatabaseHelper;
+import net.mathdoku.plus.storage.databaseadapter.database.GridDatabaseAdapter;
+import net.mathdoku.plus.storage.databaseadapter.database.GridRow;
+import net.mathdoku.plus.storage.databaseadapter.database.SolvingAttempt;
+import net.mathdoku.plus.storage.databaseadapter.database.SolvingAttemptDatabaseAdapter;
+import net.mathdoku.plus.storage.databaseadapter.database.StatisticsDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
 
 import org.junit.Before;

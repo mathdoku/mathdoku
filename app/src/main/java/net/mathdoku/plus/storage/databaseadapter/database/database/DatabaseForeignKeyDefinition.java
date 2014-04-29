@@ -1,8 +1,6 @@
-package net.mathdoku.plus.storage.databaseadapter.database;
+package net.mathdoku.plus.storage.databaseadapter.database.database;
 
 import net.mathdoku.plus.util.ParameterValidator;
-
-import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.stringBetweenBackTicks;
 
 public class DatabaseForeignKeyDefinition {
 	private final String clause;
@@ -15,7 +13,7 @@ public class DatabaseForeignKeyDefinition {
 
 		StringBuilder foreignKey = new StringBuilder();
 		foreignKey.append(" FOREIGN KEY(");
-		foreignKey.append(stringBetweenBackTicks(column.trim()));
+		foreignKey.append(DatabaseUtil.stringBetweenBackTicks(column.trim()));
 		foreignKey.append(") REFERENCES ");
 		foreignKey.append(refersToTable.trim());
 		foreignKey.append("(");

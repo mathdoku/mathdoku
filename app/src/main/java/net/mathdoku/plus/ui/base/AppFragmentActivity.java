@@ -8,7 +8,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.WindowManager;
 
 import net.mathdoku.plus.Preferences;
-import net.mathdoku.plus.storage.database.DatabaseHelper;
+import net.mathdoku.plus.storage.databaseadapter.database.DatabaseHelper;
 import net.mathdoku.plus.util.Util;
 
 @SuppressLint("Registered")

@@ -1,8 +1,6 @@
-package net.mathdoku.plus.storage.databaseadapter.database;
+package net.mathdoku.plus.storage.databaseadapter.database.database;
 
 import java.util.HashMap;
-
-import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.stringBetweenBackTicks;
 
 public class DatabaseProjection extends HashMap<String, String> {
 
@@ -54,9 +52,9 @@ public class DatabaseProjection extends HashMap<String, String> {
 	@SuppressWarnings("UnusedReturnValue")
 	public String put(String targetColumn, String sourceTable,
 			String sourceColumn) {
-		String target = stringBetweenBackTicks(targetColumn);
-		String source = stringBetweenBackTicks(sourceTable)
-				+ "." + stringBetweenBackTicks(sourceColumn);
+		String target = DatabaseUtil.stringBetweenBackTicks(targetColumn);
+		String source = DatabaseUtil.stringBetweenBackTicks(sourceTable)
+				+ "." + DatabaseUtil.stringBetweenBackTicks(sourceColumn);
 
 		return super.put(target, source + " AS " + target);
 	}
@@ -78,10 +76,10 @@ public class DatabaseProjection extends HashMap<String, String> {
 	 */
 	public void put(Aggregation aggregation, String sourceTable,
 			String sourceColumn) {
-		String target = stringBetweenBackTicks(getAggregatedKey(aggregation,
-						sourceColumn));
-		String source = stringBetweenBackTicks(sourceTable)
-				+ "." + stringBetweenBackTicks(sourceColumn);
+		String target = DatabaseUtil.stringBetweenBackTicks(
+				getAggregatedKey(aggregation, sourceColumn));
+		String source = DatabaseUtil.stringBetweenBackTicks(sourceTable)
+				+ "." + DatabaseUtil.stringBetweenBackTicks(sourceColumn);
 
 		String aggregatedSource;
 		switch (aggregation) {

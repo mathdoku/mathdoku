@@ -1,8 +1,10 @@
-package net.mathdoku.plus.storage.databaseadapter.database;
+package net.mathdoku.plus.storage.databaseadapter.database.database;
 
-import android.database.SQLException;
 import android.text.TextUtils;
 import android.util.Log;
+
+import net.mathdoku.plus.storage.databaseadapter.database.*;
+import net.mathdoku.plus.storage.databaseadapter.database.DatabaseAdapterException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,7 +14,7 @@ import java.util.List;
  * Utility class to drop a column from an existing table. This class should not
  * be removed even in case it is currently only used in the unit tests.
  */
-class DatabaseColumnDropper {
+public class DatabaseColumnDropper {
 	@SuppressWarnings("unused")
 	private static final String TAG = DatabaseColumnDropper.class.getName();
 
@@ -42,7 +44,7 @@ class DatabaseColumnDropper {
 			databaseAdapter.execSQL(databaseAdapter.getDropTableSQL());
 
 			databaseAdapter.setTransactionSuccessful();
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			Log.wtf(TAG, String.format(
 					"Error while dropping column(s) from table %s.",
 					databaseAdapter.getTableName()), e);

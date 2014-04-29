@@ -6,8 +6,8 @@ import android.content.res.Resources;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.GridTypeFilter;
-import net.mathdoku.plus.storage.database.DatabaseHelper;
-import net.mathdoku.plus.storage.database.GridDatabaseAdapter;
+import net.mathdoku.plus.storage.databaseadapter.database.DatabaseHelper;
+import net.mathdoku.plus.storage.databaseadapter.database.GridDatabaseAdapter;
 
 import org.junit.Before;
 import org.junit.Test;

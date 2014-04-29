@@ -17,13 +17,10 @@ import net.mathdoku.plus.enums.SolvingAttemptStatus;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParametersBuilder;
 import net.mathdoku.plus.puzzle.grid.Grid;
-
-import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.stringBetweenBackTicks;
-import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.stringBetweenQuotes;
-import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.toSQLiteBoolean;
-import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.toSQLiteTimestamp;
-import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.valueOfSQLiteBoolean;
-import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.valueOfSQLiteTimestamp;
+import net.mathdoku.plus.storage.databaseadapter.database.database.DataType;
+import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseColumnDefinition;
+import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseProjection;
+import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseTableDefinition;
 
 /**
  * The database adapter for the grid table.
@@ -138,7 +135,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		if (gridDefinition == null || gridDefinition.trim().equals("")) {
 			// TODO: better handling of situation in which a grid definition was
 			// added before. It is a very rare situation but it can occur.
-			throw new DatabaseException("Definition of grid is not unique.");
+			throw new DatabaseAdapterException("Definition of grid is not unique.");
 		}
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(KEY_DEFINITION, gridDefinition);
@@ -166,12 +163,12 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 			id = (int) sqliteDatabase.insertOrThrow(TABLE_NAME, null,
 					initialValues);
 		} catch (SQLiteConstraintException e) {
-			throw new DatabaseException("Cannot insert new grid in database.",
+			throw new DatabaseAdapterException("Cannot insert new grid in database.",
 					e);
 		}
 
 		if (id < 0) {
-			throw new DatabaseException(
+			throw new DatabaseAdapterException(
 					"Insert of new puzzle failed when inserting the grid into the database.");
 		}
 
@@ -194,7 +191,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 					null, null, null, null, null);
 			gridRow = toGridRow(cursor);
 		} catch (SQLiteException e) {
-			throw new DatabaseException(String.format(
+			throw new DatabaseAdapterException(String.format(
 					"Cannot retrieve gridRow with id '%d' from database", id),
 					e);
 		} finally {
@@ -222,7 +219,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 					null, null, null);
 			gridRow = toGridRow(cursor);
 		} catch (SQLiteException e) {
-			throw new DatabaseException(String.format(
+			throw new DatabaseAdapterException(String.format(
 					"Cannot retrieve grid with definition '%s' from database",
 					definition), e);
 		} finally {
@@ -400,7 +397,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 				} while (cursor.moveToNext());
 			}
 		} catch (SQLiteException e) {
-			throw new DatabaseException(String.format(
+			throw new DatabaseAdapterException(String.format(
 					"Cannot retrieve latest solving attempt per grid from the database "
 							+ "(status filter = %s, size filter = %s).",
 					statusFilter.toString(), gridTypeFilter.toString()), e);
@@ -508,7 +505,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 				} while (cursor.moveToNext());
 			}
 		} catch (SQLiteException e) {
-			throw new DatabaseException(
+			throw new DatabaseAdapterException(
 					String.format(
 							"Cannot retrieve used statuses of latest solving attempt per grid from the database (size filter = %s).",
 							sizeFilter.toString()), e);
@@ -575,7 +572,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 				} while (cursor.moveToNext());
 			}
 		} catch (SQLiteException e) {
-			throw new DatabaseException(
+			throw new DatabaseAdapterException(
 					String.format(
 							"Cannot retrieve used sizes of latest solving attempt per grid from the database (status filter = %s).",
 							statusFilter.toString()), e);

@@ -15,7 +15,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import net.mathdoku.plus.R;
-import net.mathdoku.plus.storage.database.StatisticsDatabaseAdapter;
+import net.mathdoku.plus.storage.databaseadapter.database.StatisticsDatabaseAdapter;
 
 import org.achartengine.GraphicalView;
 import org.achartengine.renderer.SimpleSeriesRenderer;

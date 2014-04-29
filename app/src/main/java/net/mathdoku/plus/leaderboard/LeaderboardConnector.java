@@ -13,9 +13,9 @@ import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.leaderboard.ui.TopScoreDialog;
-import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter;
-import net.mathdoku.plus.storage.database.LeaderboardRankDatabaseAdapter.ScoreOrigin;
-import net.mathdoku.plus.storage.database.LeaderboardRankRow;
+import net.mathdoku.plus.storage.databaseadapter.database.LeaderboardRankDatabaseAdapter;
+import net.mathdoku.plus.storage.databaseadapter.database.LeaderboardRankDatabaseAdapter.ScoreOrigin;
+import net.mathdoku.plus.storage.databaseadapter.database.LeaderboardRankRow;
 import net.mathdoku.plus.ui.base.AppFragmentActivity;
 import net.mathdoku.plus.util.Util;
 

@@ -2,7 +2,7 @@ package net.mathdoku.plus.storage;
 
 import net.mathdoku.plus.puzzle.cell.CellBuilder;
 import net.mathdoku.plus.puzzle.cell.Cell;
-import net.mathdoku.plus.storage.database.SolvingAttemptDatabaseAdapter;
+import net.mathdoku.plus.storage.databaseadapter.database.SolvingAttemptDatabaseAdapter;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;

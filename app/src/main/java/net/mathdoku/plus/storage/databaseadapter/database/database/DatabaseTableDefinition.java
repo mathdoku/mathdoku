@@ -1,4 +1,4 @@
-package net.mathdoku.plus.storage.databaseadapter.database;
+package net.mathdoku.plus.storage.databaseadapter.database.database;
 
 import net.mathdoku.plus.util.ParameterValidator;
 import net.mathdoku.plus.util.Util;
@@ -7,9 +7,7 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.stringBetweenBackTicks;
-
-class DatabaseTableDefinition {
+public class DatabaseTableDefinition {
 	private final String tableName;
 	private final List<DatabaseColumnDefinition> databaseColumnDefinitions;
 	private DatabaseForeignKeyDefinition foreignKey;
@@ -71,7 +69,7 @@ class DatabaseTableDefinition {
 	public String getCreateTableSQL() {
 		StringBuilder query = new StringBuilder();
 		query.append("CREATE TABLE ");
-		query.append(stringBetweenBackTicks(tableName));
+		query.append(DatabaseUtil.stringBetweenBackTicks(tableName));
 		query.append(" (");
 		int remainingColumns = databaseColumnDefinitions.size();
 		for (DatabaseColumnDefinition databaseColumnDefinition : databaseColumnDefinitions) {

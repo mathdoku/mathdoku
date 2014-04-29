@@ -8,13 +8,13 @@ import android.database.sqlite.SQLiteException;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.enums.SolvingAttemptStatus;
+import net.mathdoku.plus.storage.databaseadapter.database.database.DataType;
+import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseColumnDefinition;
+import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseForeignKeyDefinition;
+import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseTableDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.stringBetweenBackTicks;
-import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.toSQLiteTimestamp;
-import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.valueOfSQLiteTimestamp;
 
 /**
  * The database adapter for the solving attempt table. For each grid one or more
@@ -132,12 +132,12 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		try {
 			id = sqliteDatabase.insertOrThrow(TABLE_NAME, null, initialValues);
 		} catch (SQLiteException e) {
-			throw new DatabaseException(
+			throw new DatabaseAdapterException(
 					"Cannot insert new solving attempt in database.", e);
 		}
 
 		if (id < 0) {
-			throw new DatabaseException(
+			throw new DatabaseAdapterException(
 					"Insert of new puzzle failed when inserting the solving attempt into the database.");
 		}
 
@@ -179,7 +179,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 			solvingAttempt.mStorageString = cursor.getString(cursor
 					.getColumnIndexOrThrow(KEY_DATA));
 		} catch (SQLiteException e) {
-			throw new DatabaseException(
+			throw new DatabaseAdapterException(
 					String.format(
 							"Cannot retrieve solving attempt with id '%d' from database.",
 							solvingAttemptId), e);
@@ -213,7 +213,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 			// Convert cursor record to a SolvingAttempt row
 			id = cursor.getInt(cursor.getColumnIndexOrThrow(KEY_ROWID));
 		} catch (SQLiteException e) {
-			throw new DatabaseException(
+			throw new DatabaseAdapterException(
 					"Cannot retrieve the most recent played solving attempt id in database.",
 					e);
 		} finally {
@@ -273,7 +273,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 						.getColumnIndexOrThrow(KEY_ROWID)));
 			} while (cursor.moveToNext());
 		} catch (SQLiteException e) {
-			throw new DatabaseException(
+			throw new DatabaseAdapterException(
 					"Cannot retrieve all solving attempt id's from database which have to be converted.",
 					e);
 		} finally {
@@ -320,7 +320,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 			// Convert cursor record to a SolvingAttempt row
 			count = cursor.getInt(0);
 		} catch (SQLiteException e) {
-			throw new DatabaseException(
+			throw new DatabaseAdapterException(
 					String.format(
 							"Cannot count the number of solving attempts for grid with id '%d' from database.",
 							gridId), e);

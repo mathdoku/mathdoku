@@ -13,12 +13,12 @@ import net.mathdoku.plus.statistics.CumulativeStatistics;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.statistics.HistoricStatistics;
 import net.mathdoku.plus.statistics.HistoricStatistics.Series;
-import net.mathdoku.plus.storage.databaseadapter.database.DatabaseProjection.Aggregation;
-
-import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.stringBetweenBackTicks;
-import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.stringBetweenQuotes;
-import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.toSQLTimestamp;
-import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.toSQLiteBoolean;
+import net.mathdoku.plus.storage.databaseadapter.database.database.DataType;
+import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseColumnDefinition;
+import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseForeignKeyDefinition;
+import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseProjection;
+import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseProjection.Aggregation;
+import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseTableDefinition;
 
 /**
  * The database adapter for the statistics table. For each grid zero or more
@@ -216,12 +216,12 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		try {
 			id = sqliteDatabase.insertOrThrow(TABLE_NAME, null, contentValues);
 		} catch (SQLiteException e) {
-			throw new DatabaseException(
+			throw new DatabaseAdapterException(
 					"Cannot insert new grid statistics in database.", e);
 		}
 
 		if (id < 0) {
-			throw new DatabaseException(
+			throw new DatabaseAdapterException(
 					"Insert of new puzzle failed when inserting the statistics into the database.");
 		}
 
@@ -247,7 +247,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 							+ " DESC", "1");
 			gridStatistics = toGridStatistics(cursor);
 		} catch (SQLiteException e) {
-			throw new DatabaseException(
+			throw new DatabaseAdapterException(
 					String.format(
 							"Cannot retrieve statistics for grid with id '%d' from database.",
 							gridId), e);
@@ -493,7 +493,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 						   mCumulativeStatisticsDatabaseProjection.getAllColumnNames(), selection,
 						   null, null, null, null);
 		} catch (SQLiteException e) {
-			throw new DatabaseException(
+			throw new DatabaseAdapterException(
 					String.format(
 							"Cannot retrieve the cumulative statistics for grids with sizes '%d-%d' from database.",
 							minGridSize, maxGridSize), e);
@@ -756,7 +756,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 			cursor = sqliteQueryBuilder.query(sqliteDatabase, columnsData,
 					selection, null, null, null, KEY_GRID_ID);
 		} catch (SQLiteException e) {
-			throw new DatabaseException(
+			throw new DatabaseAdapterException(
 					String.format(
 							"Cannot retrieve the historic statistics for grids with sizes '%d-%d' from database.",
 							minGridSize, maxGridSize), e);
@@ -810,7 +810,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		try {
 			sqliteDatabase.execSQL(sql);
 		} catch (SQLiteException e) {
-			throw new DatabaseException(
+			throw new DatabaseAdapterException(
 					String.format(
 							"Cannot update the grid statistics in database for grid with id '%d'.",
 							gridId), e);

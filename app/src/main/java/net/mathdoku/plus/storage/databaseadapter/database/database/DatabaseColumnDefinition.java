@@ -1,11 +1,8 @@
-package net.mathdoku.plus.storage.databaseadapter.database;
+package net.mathdoku.plus.storage.databaseadapter.database.database;
 
 import net.mathdoku.plus.util.ParameterValidator;
 
-import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.stringBetweenBackTicks;
-import static net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil.toSQLiteBoolean;
-
-class DatabaseColumnDefinition {
+public class DatabaseColumnDefinition {
 	private final String columnName;
 	private final DataType dataType;
 	private boolean primaryKey;
@@ -39,7 +36,7 @@ class DatabaseColumnDefinition {
 	public DatabaseColumnDefinition setDefaultValue(String defaultValue) {
 		hasDefaultValue = true;
 		if (defaultValue == null || defaultValue.isEmpty()) {
-			this.defaultValue = stringBetweenBackTicks("");
+			this.defaultValue = DatabaseUtil.stringBetweenBackTicks("");
 		} else {
 			this.defaultValue = defaultValue;
 		}
@@ -51,14 +48,15 @@ class DatabaseColumnDefinition {
 	}
 
 	public DatabaseColumnDefinition setDefaultValue(boolean booleanValue) {
-		return setDefaultValue(stringBetweenBackTicks(toSQLiteBoolean(booleanValue)));
+		return setDefaultValue(
+				DatabaseUtil.stringBetweenBackTicks(DatabaseUtil.toSQLiteBoolean(booleanValue)));
 	}
 
 	public String getColumnClause() {
 		String space = " ";
 
 		StringBuilder columnDefinition = new StringBuilder();
-		columnDefinition.append(stringBetweenBackTicks(columnName.trim()));
+		columnDefinition.append(DatabaseUtil.stringBetweenBackTicks(columnName.trim()));
 		columnDefinition.append(space);
 		columnDefinition.append(dataType.getSqliteDataType());
 		if (primaryKey) {
