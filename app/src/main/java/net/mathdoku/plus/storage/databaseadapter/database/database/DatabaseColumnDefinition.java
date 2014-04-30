@@ -34,30 +34,30 @@ public class DatabaseColumnDefinition {
 	}
 
 	public DatabaseColumnDefinition setDefaultValue(String defaultValue) {
-		hasDefaultValue = true;
-		if (defaultValue == null || defaultValue.isEmpty()) {
-			this.defaultValue = DatabaseUtil.stringBetweenBackTicks("");
-		} else {
-			this.defaultValue = defaultValue;
-		}
+		setDefaultValueAsString(DatabaseUtil.stringBetweenBackTicks(defaultValue == null ? "" : defaultValue));
 		return this;
 	}
 
+	private void setDefaultValueAsString(String defaultValue) {
+		hasDefaultValue = true;
+		this.defaultValue = defaultValue;
+	}
+
 	public DatabaseColumnDefinition setDefaultValue(int integer) {
-		return setDefaultValue(Integer.toString(integer));
+		setDefaultValueAsString(Integer.toString(integer));
+		return this;
 	}
 
 	public DatabaseColumnDefinition setDefaultValue(boolean booleanValue) {
-		return setDefaultValue(
+		setDefaultValueAsString(
 				DatabaseUtil.stringBetweenBackTicks(DatabaseUtil.toSQLiteBoolean(booleanValue)));
+		return this;
 	}
 
 	public String getColumnClause() {
-		String space = " ";
-
 		StringBuilder columnDefinition = new StringBuilder();
 		columnDefinition.append(DatabaseUtil.stringBetweenBackTicks(columnName.trim()));
-		columnDefinition.append(space);
+		columnDefinition.append(" ");
 		columnDefinition.append(dataType.getSqliteDataType());
 		if (primaryKey) {
 			columnDefinition.append(" primary key autoincrement");
