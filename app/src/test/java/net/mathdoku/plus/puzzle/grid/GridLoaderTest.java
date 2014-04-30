@@ -15,7 +15,7 @@ import net.mathdoku.plus.storage.CellStorage;
 import net.mathdoku.plus.storage.GridStorage;
 import net.mathdoku.plus.storage.databaseadapter.database.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.database.GridRow;
-import net.mathdoku.plus.storage.databaseadapter.database.SolvingAttempt;
+import net.mathdoku.plus.storage.databaseadapter.database.SolvingAttemptRow;
 import net.mathdoku.plus.storage.databaseadapter.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.database.StatisticsDatabaseAdapter;
 
@@ -42,7 +42,7 @@ import static org.mockito.Mockito.when;
 public class GridLoaderTest {
 	private GridLoader mGridLoader;
 
-	private class SolvingAttemptStub extends SolvingAttempt {
+	private class SolvingAttemptRowStub extends SolvingAttemptRow {
 		private boolean mIncludeGridInformation = false;
 		private boolean mIncludeInvalidLineBetweenGridInformationAndCell = false;
 		private int mNumberOfCells = 0;
@@ -52,7 +52,7 @@ public class GridLoaderTest {
 		private int mNumberOfCellChanges = 0;
 		private boolean mIncludeInvalidLineAfterCellChanges = false;
 
-		public SolvingAttemptStub() {
+		public SolvingAttemptRowStub() {
 			mId = 1;
 			mGridId = 1;
 			mDateCreated = 12345678;
@@ -61,37 +61,37 @@ public class GridLoaderTest {
 			setStorageString();
 		}
 
-		public SolvingAttemptStub setId(int id) {
+		public SolvingAttemptRowStub setId(int id) {
 			mId = id;
 
 			return this;
 		}
 
-		public SolvingAttemptStub setGridId(int gridId) {
+		public SolvingAttemptRowStub setGridId(int gridId) {
 			mGridId = gridId;
 
 			return this;
 		}
 
-		public SolvingAttemptStub setDateCreated(long dateCreated) {
+		public SolvingAttemptRowStub setDateCreated(long dateCreated) {
 			mDateCreated = dateCreated;
 
 			return this;
 		}
 
-		public SolvingAttemptStub setDateUpdated(long dateUpdated) {
+		public SolvingAttemptRowStub setDateUpdated(long dateUpdated) {
 			mDateUpdated = dateUpdated;
 
 			return this;
 		}
 
-		public SolvingAttemptStub setSavedWithRevision(int savedWithRevision) {
+		public SolvingAttemptRowStub setSavedWithRevision(int savedWithRevision) {
 			mSavedWithRevision = savedWithRevision;
 
 			return this;
 		}
 
-		public SolvingAttemptStub setHasInvalidLineBetweenGridInformationAndCell() {
+		public SolvingAttemptRowStub setHasInvalidLineBetweenGridInformationAndCell() {
 			mIncludeInvalidLineBetweenGridInformationAndCell = true;
 			mGridLoaderTestObjectsCreator.setHasUnExpectedDataBeforeCells();
 			setStorageString();
@@ -99,21 +99,21 @@ public class GridLoaderTest {
 			return this;
 		}
 
-		public SolvingAttemptStub setHasGeneralGridInformation() {
+		public SolvingAttemptRowStub setHasGeneralGridInformation() {
 			mIncludeGridInformation = true;
 			setStorageString();
 
 			return this;
 		}
 
-		public SolvingAttemptStub setNumberOfCells(int numberOfCells) {
+		public SolvingAttemptRowStub setNumberOfCells(int numberOfCells) {
 			mNumberOfCells = numberOfCells;
 			setStorageString();
 
 			return this;
 		}
 
-		public SolvingAttemptStub setHasInvalidLineBetweenCellAndCages() {
+		public SolvingAttemptRowStub setHasInvalidLineBetweenCellAndCages() {
 			mIncludeInvalidLineBetweenCellAndCages = true;
 			mGridLoaderTestObjectsCreator.setHasUnExpectedDataBeforeCages();
 			setStorageString();
@@ -121,14 +121,14 @@ public class GridLoaderTest {
 			return this;
 		}
 
-		public SolvingAttemptStub setNumberOfCages(int numberOfCages) {
+		public SolvingAttemptRowStub setNumberOfCages(int numberOfCages) {
 			mNumberOfCages = numberOfCages;
 			setStorageString();
 
 			return this;
 		}
 
-		public SolvingAttemptStub setHasInvalidLineBetweenCagesAndCellChanges() {
+		public SolvingAttemptRowStub setHasInvalidLineBetweenCagesAndCellChanges() {
 			mIncludeInvalidLineBetweenCagesAndCellChanges = true;
 			mGridLoaderTestObjectsCreator
 					.setHasUnExpectedDataBeforeCellChanges();
@@ -137,14 +137,14 @@ public class GridLoaderTest {
 			return this;
 		}
 
-		public SolvingAttemptStub setNumberOfCellChanges(int numberOfCellChanges) {
+		public SolvingAttemptRowStub setNumberOfCellChanges(int numberOfCellChanges) {
 			mNumberOfCellChanges = numberOfCellChanges;
 			setStorageString();
 
 			return this;
 		}
 
-		public SolvingAttemptStub setHasInvalidLineAfterCellChanges() {
+		public SolvingAttemptRowStub setHasInvalidLineAfterCellChanges() {
 			mIncludeInvalidLineAfterCellChanges = true;
 			setStorageString();
 
@@ -201,7 +201,7 @@ public class GridLoaderTest {
 			mStorageString = stringBuilder.toString();
 		}
 
-		public SolvingAttemptStub setNullData() {
+		public SolvingAttemptRowStub setNullData() {
 			mStorageString = null;
 
 			return this;
@@ -315,9 +315,9 @@ public class GridLoaderTest {
 			mNumberOfCellChangeStorageMocksReturningAValidStorageString = numberOfCellChangeMocksReturningAValidStorageString;
 		}
 
-		public void returnsSolvingAttempt(SolvingAttempt solvingAttempt) {
+		public void returnsSolvingAttempt(SolvingAttemptRow solvingAttemptRow) {
 			when(mSolvingAttemptDatabaseAdapterMock.getData(anyInt()))
-					.thenReturn(solvingAttempt);
+					.thenReturn(solvingAttemptRow);
 		}
 
 		public void returnsGridRow(GridRow gridRow) {
@@ -504,7 +504,7 @@ public class GridLoaderTest {
 	public void load_SolvingAttemptWithNullData_GridNotLoaded()
 			throws Exception {
 		int mSolvingAttemptId = 1;
-		SolvingAttempt solvingAttemptStub = new SolvingAttemptStub()
+		SolvingAttemptRow solvingAttemptRowStub = new SolvingAttemptRowStub()
 				.setNullData();
 
 		assertThat("Grid load", mGridLoader.load(mSolvingAttemptId),
@@ -520,12 +520,12 @@ public class GridLoaderTest {
 		int numberOfCages = 5;
 		int numberOfCellChanges = 12;
 
-		SolvingAttempt solvingAttemptStub = new SolvingAttemptStub()
+		SolvingAttemptRow solvingAttemptRowStub = new SolvingAttemptRowStub()
 		// Missing general info
 				.setNumberOfCells(numberOfCells)
 				.setNumberOfCages(numberOfCages);
 		setupForParsingSolvingAttemptData(gridSize, numberOfCells,
-				numberOfCages, numberOfCellChanges, solvingAttemptStub);
+				numberOfCages, numberOfCellChanges, solvingAttemptRowStub);
 		mGridLoaderTestObjectsCreator
 				.setGridMockReturningAnInvalidStorageString();
 
@@ -542,13 +542,13 @@ public class GridLoaderTest {
 		int numberOfCages = 5;
 		int numberOfCellChanges = 12;
 
-		SolvingAttempt solvingAttemptStub = new SolvingAttemptStub()
+		SolvingAttemptRow solvingAttemptRowStub = new SolvingAttemptRowStub()
 				.setHasGeneralGridInformation()
 				.setHasInvalidLineBetweenGridInformationAndCell()
 				.setNumberOfCells(numberOfCells)
 				.setNumberOfCages(numberOfCages);
 		setupForParsingSolvingAttemptData(gridSize, numberOfCells,
-				numberOfCages, numberOfCellChanges, solvingAttemptStub);
+				numberOfCages, numberOfCellChanges, solvingAttemptRowStub);
 
 		assertThat("Grid load", mGridLoader.load(solvingAttemptId),
 				is(nullValue()));
@@ -563,12 +563,12 @@ public class GridLoaderTest {
 		int numberOfCages = 5;
 		int numberOfCellChanges = 12;
 
-		SolvingAttempt solvingAttemptStub = new SolvingAttemptStub()
+		SolvingAttemptRow solvingAttemptRowStub = new SolvingAttemptRowStub()
 				.setHasGeneralGridInformation()
 				.setNumberOfCells(numberOfCells)
 				.setNumberOfCages(numberOfCages);
 		setupForParsingSolvingAttemptData(gridSize, numberOfCells,
-				numberOfCages, numberOfCellChanges, solvingAttemptStub);
+				numberOfCages, numberOfCellChanges, solvingAttemptRowStub);
 
 		assertThat("Grid load", mGridLoader.load(solvingAttemptId),
 				is(nullValue()));
@@ -583,12 +583,12 @@ public class GridLoaderTest {
 		int numberOfCages = 5;
 		int numberOfCellChanges = 12;
 
-		SolvingAttempt solvingAttemptStub = new SolvingAttemptStub()
+		SolvingAttemptRow solvingAttemptRowStub = new SolvingAttemptRowStub()
 				.setHasGeneralGridInformation()
 				.setNumberOfCells(numberOfCells)
 				.setNumberOfCages(numberOfCages);
 		setupForParsingSolvingAttemptData(gridSize, numberOfCells,
-				numberOfCages, numberOfCellChanges, solvingAttemptStub);
+				numberOfCages, numberOfCellChanges, solvingAttemptRowStub);
 		// About half way of the cells throw an invalid number exception
 		mGridLoaderTestObjectsCreator
 				.setCellNumberOnWhichAnNumberFormatExceptionIsThrown(numberOfCells / 2);
@@ -607,12 +607,12 @@ public class GridLoaderTest {
 		int numberOfCages = 5;
 		int numberOfCellChanges = 12;
 
-		SolvingAttempt solvingAttemptStub = new SolvingAttemptStub()
+		SolvingAttemptRow solvingAttemptRowStub = new SolvingAttemptRowStub()
 				.setHasGeneralGridInformation()
 				.setNumberOfCells(tooLittleCells)
 				.setNumberOfCages(numberOfCages);
 		setupForParsingSolvingAttemptData(gridSize, tooLittleCells,
-				numberOfCages, numberOfCellChanges, solvingAttemptStub);
+				numberOfCages, numberOfCellChanges, solvingAttemptRowStub);
 
 		assertThat("Grid load", mGridLoader.load(solvingAttemptId),
 				is(nullValue()));
@@ -628,12 +628,12 @@ public class GridLoaderTest {
 		int numberOfCages = 5;
 		int numberOfCellChanges = 12;
 
-		SolvingAttempt solvingAttemptStub = new SolvingAttemptStub()
+		SolvingAttemptRow solvingAttemptRowStub = new SolvingAttemptRowStub()
 				.setHasGeneralGridInformation()
 				.setNumberOfCells(tooManyCells)
 				.setNumberOfCages(numberOfCages);
 		setupForParsingSolvingAttemptData(gridSize, tooManyCells,
-				numberOfCages, numberOfCellChanges, solvingAttemptStub);
+				numberOfCages, numberOfCellChanges, solvingAttemptRowStub);
 
 		assertThat("Grid load", mGridLoader.load(solvingAttemptId),
 				is(nullValue()));
@@ -648,12 +648,12 @@ public class GridLoaderTest {
 		int numberOfCages = 0;
 		int numberOfCellChanges = 12;
 
-		SolvingAttempt solvingAttemptStub = new SolvingAttemptStub()
+		SolvingAttemptRow solvingAttemptRowStub = new SolvingAttemptRowStub()
 				.setHasGeneralGridInformation()
 				.setNumberOfCells(numberOfCells)
 				.setNumberOfCages(numberOfCages);
 		setupForParsingSolvingAttemptData(gridSize, numberOfCells,
-				numberOfCages, numberOfCellChanges, solvingAttemptStub);
+				numberOfCages, numberOfCellChanges, solvingAttemptRowStub);
 
 		assertThat("Grid load", mGridLoader.load(solvingAttemptId),
 				is(nullValue()));
@@ -668,13 +668,13 @@ public class GridLoaderTest {
 		int numberOfCages = 5;
 		int numberOfCellChanges = 12;
 
-		SolvingAttempt solvingAttemptStub = new SolvingAttemptStub()
+		SolvingAttemptRow solvingAttemptRowStub = new SolvingAttemptRowStub()
 				.setHasGeneralGridInformation()
 				.setNumberOfCells(numberOfCells)
 				.setHasInvalidLineBetweenCellAndCages()
 				.setNumberOfCages(numberOfCages);
 		setupForParsingSolvingAttemptData(gridSize, numberOfCells,
-				numberOfCages, numberOfCellChanges, solvingAttemptStub);
+				numberOfCages, numberOfCellChanges, solvingAttemptRowStub);
 
 		assertThat("Grid load", mGridLoader.load(solvingAttemptId),
 				is(nullValue()));
@@ -689,13 +689,13 @@ public class GridLoaderTest {
 		int numberOfCages = 5;
 		int numberOfCellChanges = 0;
 
-		SolvingAttempt solvingAttemptStub = new SolvingAttemptStub()
+		SolvingAttemptRow solvingAttemptRowStub = new SolvingAttemptRowStub()
 				.setHasGeneralGridInformation()
 				.setNumberOfCells(numberOfCells)
 				.setNumberOfCages(numberOfCages)
 				.setNumberOfCellChanges(numberOfCellChanges);
 		setupForParsingSolvingAttemptData(gridSize, numberOfCells,
-				numberOfCages, numberOfCellChanges, solvingAttemptStub);
+				numberOfCages, numberOfCellChanges, solvingAttemptRowStub);
 		mGridLoader.setThrowExceptionOnError(true);
 
 		assertThat("Grid load", mGridLoader.load(solvingAttemptId),
@@ -715,14 +715,14 @@ public class GridLoaderTest {
 		int numberOfCages = 5;
 		int numberOfCellChanges = 12;
 
-		SolvingAttempt solvingAttemptStub = new SolvingAttemptStub()
+		SolvingAttemptRow solvingAttemptRowStub = new SolvingAttemptRowStub()
 				.setHasGeneralGridInformation()
 				.setNumberOfCells(numberOfCells)
 				.setNumberOfCages(numberOfCages)
 				.setHasInvalidLineBetweenCagesAndCellChanges()
 				.setNumberOfCellChanges(numberOfCellChanges);
 		setupForParsingSolvingAttemptData(gridSize, numberOfCells,
-				numberOfCages, numberOfCellChanges, solvingAttemptStub);
+				numberOfCages, numberOfCellChanges, solvingAttemptRowStub);
 
 		assertThat("Grid load", mGridLoader.load(solvingAttemptId),
 				is(nullValue()));
@@ -737,14 +737,14 @@ public class GridLoaderTest {
 		int numberOfCages = 5;
 		int numberOfCellChanges = 12;
 
-		SolvingAttempt solvingAttemptStub = new SolvingAttemptStub()
+		SolvingAttemptRow solvingAttemptRowStub = new SolvingAttemptRowStub()
 				.setHasGeneralGridInformation()
 				.setNumberOfCells(numberOfCells)
 				.setNumberOfCages(numberOfCages)
 				.setNumberOfCellChanges(numberOfCellChanges)
 				.setHasInvalidLineAfterCellChanges();
 		setupForParsingSolvingAttemptData(gridSize, numberOfCells,
-				numberOfCages, numberOfCellChanges, solvingAttemptStub);
+				numberOfCages, numberOfCellChanges, solvingAttemptRowStub);
 
 		assertThat("Grid load", mGridLoader.load(solvingAttemptId),
 				is(nullValue()));
@@ -765,7 +765,7 @@ public class GridLoaderTest {
 		boolean isActive = true;
 		boolean isRevealed = false;
 
-		SolvingAttempt solvingAttemptStub = new SolvingAttemptStub()
+		SolvingAttemptRow solvingAttemptRowStub = new SolvingAttemptRowStub()
 				.setId(solvingAttemptId)
 				.setGridId(mGridId)
 				.setDateCreated(dateCreated)
@@ -776,9 +776,9 @@ public class GridLoaderTest {
 				.setNumberOfCages(numberOfCages)
 				.setNumberOfCellChanges(numberOfCellChanges);
 		setupForParsingSolvingAttemptData(gridSize, numberOfCells,
-				numberOfCages, numberOfCellChanges, solvingAttemptStub);
+				numberOfCages, numberOfCellChanges, solvingAttemptRowStub);
 
-		mGridLoaderTestObjectsCreator.returnsSolvingAttempt(solvingAttemptStub);
+		mGridLoaderTestObjectsCreator.returnsSolvingAttempt(solvingAttemptRowStub);
 		GridRow gridRow = mock(GridRow.class);
 		gridRow.mGridSize = gridSize;
 		gridRow.mGridGeneratingParameters = mock(GridGeneratingParameters.class);
@@ -830,12 +830,12 @@ public class GridLoaderTest {
 		int numberOfCages = 5;
 		int numberOfCellChanges = 12;
 
-		SolvingAttempt solvingAttemptStub = new SolvingAttemptStub()
+		SolvingAttemptRow solvingAttemptRowStub = new SolvingAttemptRowStub()
 				.setHasGeneralGridInformation()
 				.setNumberOfCells(numberOfCells)
 				.setNumberOfCages(numberOfCages);
 		setupForParsingSolvingAttemptData(gridSize, numberOfCells,
-				numberOfCages, numberOfCellChanges, solvingAttemptStub);
+				numberOfCages, numberOfCellChanges, solvingAttemptRowStub);
 		mGridLoaderTestObjectsCreator.returnsGridStatistics(null);
 
 		assertThat("Grid load", mGridLoader.load(solvingAttemptId),
@@ -847,7 +847,7 @@ public class GridLoaderTest {
 	 */
 	private void setupForParsingSolvingAttemptData(int gridSize,
 			int numberOfCells, int numberOfCages, int numberOfCellChanges,
-			SolvingAttempt solvingAttempt) {
+			SolvingAttemptRow solvingAttemptRow) {
 		boolean isActive = true;
 		boolean isRevealed = false;
 
@@ -867,7 +867,7 @@ public class GridLoaderTest {
 				.setNumberOfCageStorageMocksReturningAValidStorageString(numberOfCages);
 		mGridLoaderTestObjectsCreator
 				.setNumberOfCellChangeMocksReturningAValidStorageString(numberOfCellChanges);
-		mGridLoaderTestObjectsCreator.returnsSolvingAttempt(solvingAttempt);
+		mGridLoaderTestObjectsCreator.returnsSolvingAttempt(solvingAttemptRow);
 		GridStatistics gridStatistics = mock(GridStatistics.class);
 		mGridLoaderTestObjectsCreator.returnsGridStatistics(gridStatistics);
 	}

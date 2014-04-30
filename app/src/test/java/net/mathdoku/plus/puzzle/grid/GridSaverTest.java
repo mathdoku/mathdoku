@@ -8,7 +8,7 @@ import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseHelper;
 import net.mathdoku.plus.storage.databaseadapter.database.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.database.GridRow;
-import net.mathdoku.plus.storage.databaseadapter.database.SolvingAttempt;
+import net.mathdoku.plus.storage.databaseadapter.database.SolvingAttemptRow;
 import net.mathdoku.plus.storage.databaseadapter.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.database.StatisticsDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
@@ -109,7 +109,7 @@ public class GridSaverTest {
 		int mSolvingAttemptIdAfterSuccessfulInsert = 51;
 		when(
 				mSolvingAttemptDatabaseAdapterMock
-						.insert(any(SolvingAttempt.class))).thenReturn(
+						.insert(any(SolvingAttemptRow.class))).thenReturn(
 				mSolvingAttemptIdAfterSuccessfulInsert);
 		// Prepare insert of new statistics
 		int mGridStatisticsIdAfterSuccessfulInsert = 52;
@@ -121,7 +121,7 @@ public class GridSaverTest {
 		verify(mDatabaseHelperMock).beginTransaction();
 		verify(mGridDatabaseAdapterMock).insert(any(Grid.class));
 		verify(mSolvingAttemptDatabaseAdapterMock).insert(
-				any(SolvingAttempt.class));
+				any(SolvingAttemptRow.class));
 		verify(mStatisticsDatabaseAdapterMock)
 				.insert(any(GridStatistics.class));
 		verify(mDatabaseHelperMock).setTransactionSuccessful();
@@ -165,7 +165,7 @@ public class GridSaverTest {
 		int mSolvingAttemptIdAfterSuccessfulInsert = 51;
 		when(
 				mSolvingAttemptDatabaseAdapterMock
-						.insert(any(SolvingAttempt.class))).thenReturn(
+						.insert(any(SolvingAttemptRow.class))).thenReturn(
 				mSolvingAttemptIdAfterSuccessfulInsert);
 		// Prepare insert of new statistics
 		int mGridStatisticsIdAfterSuccessfulInsert = 52;
@@ -177,7 +177,7 @@ public class GridSaverTest {
 		verify(mDatabaseHelperMock).beginTransaction();
 		verify(mGridDatabaseAdapterMock, never()).insert(any(Grid.class));
 		verify(mSolvingAttemptDatabaseAdapterMock).insert(
-				any(SolvingAttempt.class));
+				any(SolvingAttemptRow.class));
 		verify(mStatisticsDatabaseAdapterMock)
 				.insert(any(GridStatistics.class));
 		verify(mDatabaseHelperMock).setTransactionSuccessful();
@@ -199,7 +199,7 @@ public class GridSaverTest {
 		int mSolvingAttemptIdAfterSuccessfulInsert = 51;
 		when(
 				mSolvingAttemptDatabaseAdapterMock
-						.insert(any(SolvingAttempt.class))).thenReturn(
+						.insert(any(SolvingAttemptRow.class))).thenReturn(
 				mSolvingAttemptIdAfterSuccessfulInsert);
 		// Prepare insert of new statistics
 		int mGridStatisticsIdAfterSuccessfulInsert = 52;
@@ -211,7 +211,7 @@ public class GridSaverTest {
 		verify(mDatabaseHelperMock).beginTransaction();
 		verify(mGridDatabaseAdapterMock, never()).insert(any(Grid.class));
 		verify(mSolvingAttemptDatabaseAdapterMock).insert(
-				any(SolvingAttempt.class));
+				any(SolvingAttemptRow.class));
 		verify(mStatisticsDatabaseAdapterMock)
 				.insert(any(GridStatistics.class));
 		verify(mDatabaseHelperMock).setTransactionSuccessful();
@@ -233,7 +233,7 @@ public class GridSaverTest {
 		int mSolvingAttemptIdWhenInsertFails = -1;
 		when(
 				mSolvingAttemptDatabaseAdapterMock
-						.insert(any(SolvingAttempt.class))).thenReturn(
+						.insert(any(SolvingAttemptRow.class))).thenReturn(
 				mSolvingAttemptIdWhenInsertFails);
 
 		boolean saveResult = mGridSaver.save(mGridMock);
@@ -241,7 +241,7 @@ public class GridSaverTest {
 		verify(mDatabaseHelperMock).beginTransaction();
 		verify(mGridDatabaseAdapterMock, never()).insert(any(Grid.class));
 		verify(mSolvingAttemptDatabaseAdapterMock).insert(
-				any(SolvingAttempt.class));
+				any(SolvingAttemptRow.class));
 		verify(mStatisticsDatabaseAdapterMock, never()).insert(
 				any(GridStatistics.class));
 		verify(mDatabaseHelperMock, never()).setTransactionSuccessful();
@@ -262,7 +262,7 @@ public class GridSaverTest {
 		// Prepare successful update of solving attempt
 		when(
 				mSolvingAttemptDatabaseAdapterMock
-						.update(any(SolvingAttempt.class))).thenReturn(true);
+						.update(any(SolvingAttemptRow.class))).thenReturn(true);
 		// Prepare insert of new statistics
 		int mGridStatisticsIdAfterSuccessfulInsert = 52;
 		when(mStatisticsDatabaseAdapterMock.insert(any(GridStatistics.class)))
@@ -273,9 +273,9 @@ public class GridSaverTest {
 		verify(mDatabaseHelperMock).beginTransaction();
 		verify(mGridDatabaseAdapterMock, never()).insert(any(Grid.class));
 		verify(mSolvingAttemptDatabaseAdapterMock, never()).insert(
-				any(SolvingAttempt.class));
+				any(SolvingAttemptRow.class));
 		verify(mSolvingAttemptDatabaseAdapterMock).update(
-				any(SolvingAttempt.class));
+				any(SolvingAttemptRow.class));
 		verify(mStatisticsDatabaseAdapterMock)
 				.insert(any(GridStatistics.class));
 		verify(mDatabaseHelperMock).setTransactionSuccessful();
@@ -301,16 +301,16 @@ public class GridSaverTest {
 		// Prepare failing update of solving attempt
 		when(
 				mSolvingAttemptDatabaseAdapterMock
-						.update(any(SolvingAttempt.class))).thenReturn(false);
+						.update(any(SolvingAttemptRow.class))).thenReturn(false);
 
 		boolean saveResult = mGridSaver.save(mGridMock);
 
 		verify(mDatabaseHelperMock).beginTransaction();
 		verify(mGridDatabaseAdapterMock, never()).insert(any(Grid.class));
 		verify(mSolvingAttemptDatabaseAdapterMock, never()).insert(
-				any(SolvingAttempt.class));
+				any(SolvingAttemptRow.class));
 		verify(mSolvingAttemptDatabaseAdapterMock).update(
-				any(SolvingAttempt.class));
+				any(SolvingAttemptRow.class));
 		verify(mStatisticsDatabaseAdapterMock, never()).insert(
 				any(GridStatistics.class));
 		verify(mDatabaseHelperMock, never()).setTransactionSuccessful();
@@ -330,7 +330,7 @@ public class GridSaverTest {
 		// Prepare successful update of solving attempt
 		when(
 				mSolvingAttemptDatabaseAdapterMock
-						.update(any(SolvingAttempt.class))).thenReturn(true);
+						.update(any(SolvingAttemptRow.class))).thenReturn(true);
 		// Prepare failing insert of new statistics
 		when(mStatisticsDatabaseAdapterMock.insert(any(GridStatistics.class)))
 				.thenReturn(-1);
@@ -340,9 +340,9 @@ public class GridSaverTest {
 		verify(mDatabaseHelperMock).beginTransaction();
 		verify(mGridDatabaseAdapterMock, never()).insert(any(Grid.class));
 		verify(mSolvingAttemptDatabaseAdapterMock, never()).insert(
-				any(SolvingAttempt.class));
+				any(SolvingAttemptRow.class));
 		verify(mSolvingAttemptDatabaseAdapterMock).update(
-				any(SolvingAttempt.class));
+				any(SolvingAttemptRow.class));
 		verify(mStatisticsDatabaseAdapterMock)
 				.insert(any(GridStatistics.class));
 		verify(mDatabaseHelperMock, never()).setTransactionSuccessful();
@@ -362,7 +362,7 @@ public class GridSaverTest {
 		// Prepare successful update of solving attempt
 		when(
 				mSolvingAttemptDatabaseAdapterMock
-						.update(any(SolvingAttempt.class))).thenReturn(true);
+						.update(any(SolvingAttemptRow.class))).thenReturn(true);
 		// Prepare failing update of statistics
 		int existingStatisticsId = 16;
 		mGridStatisticsMock.mId = existingStatisticsId;
@@ -375,9 +375,9 @@ public class GridSaverTest {
 		verify(mDatabaseHelperMock).beginTransaction();
 		verify(mGridDatabaseAdapterMock, never()).insert(any(Grid.class));
 		verify(mSolvingAttemptDatabaseAdapterMock, never()).insert(
-				any(SolvingAttempt.class));
+				any(SolvingAttemptRow.class));
 		verify(mSolvingAttemptDatabaseAdapterMock).update(
-				any(SolvingAttempt.class));
+				any(SolvingAttemptRow.class));
 		verify(mStatisticsDatabaseAdapterMock, never()).insert(
 				any(GridStatistics.class));
 		verify(mGridStatisticsMock).save();
@@ -398,7 +398,7 @@ public class GridSaverTest {
 		// Prepare successful update of solving attempt
 		when(
 				mSolvingAttemptDatabaseAdapterMock
-						.update(any(SolvingAttempt.class))).thenReturn(true);
+						.update(any(SolvingAttemptRow.class))).thenReturn(true);
 		// Prepare successful update of statistics
 		int existingStatisticsId = 16;
 		mGridStatisticsMock.mId = existingStatisticsId;
@@ -414,9 +414,9 @@ public class GridSaverTest {
 		verify(mDatabaseHelperMock).beginTransaction();
 		verify(mGridDatabaseAdapterMock, never()).insert(any(Grid.class));
 		verify(mSolvingAttemptDatabaseAdapterMock, never()).insert(
-				any(SolvingAttempt.class));
+				any(SolvingAttemptRow.class));
 		verify(mSolvingAttemptDatabaseAdapterMock).update(
-				any(SolvingAttempt.class));
+				any(SolvingAttemptRow.class));
 		verify(mStatisticsDatabaseAdapterMock, never()).insert(
 				any(GridStatistics.class));
 		verify(mGridStatisticsMock).save();
@@ -445,7 +445,7 @@ public class GridSaverTest {
 		// Prepare successful update of solving attempt
 		when(
 				mSolvingAttemptDatabaseAdapterMock
-						.update(any(SolvingAttempt.class))).thenReturn(true);
+						.update(any(SolvingAttemptRow.class))).thenReturn(true);
 		// Prepare successful update of statistics
 		int existingStatisticsId = 16;
 		mGridStatisticsMock.mId = existingStatisticsId;
@@ -461,9 +461,9 @@ public class GridSaverTest {
 		verify(mDatabaseHelperMock).beginTransaction();
 		verify(mGridDatabaseAdapterMock, never()).insert(any(Grid.class));
 		verify(mSolvingAttemptDatabaseAdapterMock, never()).insert(
-				any(SolvingAttempt.class));
+				any(SolvingAttemptRow.class));
 		verify(mSolvingAttemptDatabaseAdapterMock).update(
-				any(SolvingAttempt.class));
+				any(SolvingAttemptRow.class));
 		verify(mStatisticsDatabaseAdapterMock, never()).insert(
 				any(GridStatistics.class));
 		verify(mGridStatisticsMock).save();

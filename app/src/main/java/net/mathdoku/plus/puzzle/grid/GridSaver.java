@@ -6,7 +6,7 @@ import net.mathdoku.plus.storage.GridStorage;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseHelper;
 import net.mathdoku.plus.storage.databaseadapter.database.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.database.GridRow;
-import net.mathdoku.plus.storage.databaseadapter.database.SolvingAttempt;
+import net.mathdoku.plus.storage.databaseadapter.database.SolvingAttemptRow;
 import net.mathdoku.plus.storage.databaseadapter.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.database.StatisticsDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
@@ -38,8 +38,8 @@ public class GridSaver {
 			return new StatisticsDatabaseAdapter();
 		}
 
-		public SolvingAttempt createSolvingAttempt() {
-			return new SolvingAttempt();
+		public SolvingAttemptRow createSolvingAttempt() {
+			return new SolvingAttemptRow();
 		}
 
 		public GridStorage createGridStorage() {
@@ -115,16 +115,16 @@ public class GridSaver {
 	}
 
 	private boolean saveSolvingAttempt(Grid grid) {
-		SolvingAttempt solvingAttempt = mObjectsCreator.createSolvingAttempt();
-		solvingAttempt.mId = mSolvingAttemptId;
-		solvingAttempt.mGridId = mRowId;
-		solvingAttempt.mDateCreated = grid.getDateCreated();
-		solvingAttempt.mDateUpdated = grid.getDateSaved();
-		solvingAttempt.mSavedWithRevision = Util.getPackageVersionNumber();
-		solvingAttempt.mStorageString = mObjectsCreator
+		SolvingAttemptRow solvingAttemptRow = mObjectsCreator.createSolvingAttempt();
+		solvingAttemptRow.mId = mSolvingAttemptId;
+		solvingAttemptRow.mGridId = mRowId;
+		solvingAttemptRow.mDateCreated = grid.getDateCreated();
+		solvingAttemptRow.mDateUpdated = grid.getDateSaved();
+		solvingAttemptRow.mSavedWithRevision = Util.getPackageVersionNumber();
+		solvingAttemptRow.mStorageString = mObjectsCreator
 				.createGridStorage()
 				.toStorageString(grid);
-		solvingAttempt.mSolvingAttemptStatus = SolvingAttemptStatus
+		solvingAttemptRow.mSolvingAttemptStatus = SolvingAttemptStatus
 				.getDerivedStatus(grid.isSolutionRevealed(), grid.isActive(),
 						grid.isEmpty());
 
@@ -132,16 +132,16 @@ public class GridSaver {
 		SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = mObjectsCreator
 				.createSolvingAttemptDatabaseAdapter();
 		if (mSolvingAttemptId < 0) {
-			mDateUpdated = solvingAttempt.mDateUpdated;
+			mDateUpdated = solvingAttemptRow.mDateUpdated;
 			mSolvingAttemptId = solvingAttemptDatabaseAdapter
-					.insert(solvingAttempt);
+					.insert(solvingAttemptRow);
 			return mSolvingAttemptId >= 0;
 		} else {
 			if (mSetDateUpdatedOnUpdateOfSolvingAttempt) {
-				solvingAttempt.mDateUpdated = System.currentTimeMillis();
+				solvingAttemptRow.mDateUpdated = System.currentTimeMillis();
 			}
-			mDateUpdated = solvingAttempt.mDateUpdated;
-			return solvingAttemptDatabaseAdapter.update(solvingAttempt);
+			mDateUpdated = solvingAttemptRow.mDateUpdated;
+			return solvingAttemptDatabaseAdapter.update(solvingAttemptRow);
 		}
 	}
 

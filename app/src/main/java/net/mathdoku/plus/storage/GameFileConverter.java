@@ -133,7 +133,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	@Override
 	protected Void doInBackground(Void... params) {
 		if (mCurrentVersion < mNewVersion) {
-			// Convert data in SolvingAttempt to newest structure.
+			// Convert data in SolvingAttemptRow to newest structure.
 			if (solvingAttemptIds != null) {
 				for (int solvingAttemptId : solvingAttemptIds) {
 					Grid grid = new GridLoader().load(solvingAttemptId);

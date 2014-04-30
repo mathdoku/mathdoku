@@ -15,7 +15,7 @@ import net.mathdoku.plus.storage.GridStorage;
 import net.mathdoku.plus.storage.SolvingAttemptStorage;
 import net.mathdoku.plus.storage.databaseadapter.database.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.database.GridRow;
-import net.mathdoku.plus.storage.databaseadapter.database.SolvingAttempt;
+import net.mathdoku.plus.storage.databaseadapter.database.SolvingAttemptRow;
 import net.mathdoku.plus.storage.databaseadapter.database.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.database.StatisticsDatabaseAdapter;
 
@@ -136,18 +136,18 @@ public class GridLoader {
 	 *         error.
 	 */
 	public Grid load(int solvingAttemptId) {
-		SolvingAttempt solvingAttempt = loadSolvingAttempt(solvingAttemptId);
-		if (solvingAttempt == null) {
+		SolvingAttemptRow solvingAttemptRow = loadSolvingAttempt(solvingAttemptId);
+		if (solvingAttemptRow == null) {
 			return null;
 		}
 
 		mGridBuilder = mObjectsCreator
 				.createGridBuilder()
-				.setDateCreated(solvingAttempt.mDateCreated)
-				.setDateUpdated(solvingAttempt.mDateUpdated)
-				.setSolvingAttemptId(solvingAttempt.mGridId, solvingAttempt.mId);
+				.setDateCreated(solvingAttemptRow.mDateCreated)
+				.setDateUpdated(solvingAttemptRow.mDateUpdated)
+				.setSolvingAttemptId(solvingAttemptRow.mGridId, solvingAttemptRow.mId);
 		GridRow gridRow = mObjectsCreator.createGridDatabaseAdapter().get(
-				solvingAttempt.mGridId);
+				solvingAttemptRow.mGridId);
 		if (gridRow == null || gridRow.mGridSize <= 0) {
 			return null;
 		}
@@ -155,19 +155,19 @@ public class GridLoader {
 		mGridBuilder
 				.setGridSize(gridRow.mGridSize)
 				.setGridGeneratingParameters(gridRow.mGridGeneratingParameters);
-		mSavedWithRevision = solvingAttempt.mSavedWithRevision;
+		mSavedWithRevision = solvingAttemptRow.mSavedWithRevision;
 
 		// SolvingAttemptStorage can only be processed after the grid size and
 		// revision number is known.
-		if (!loadFromStorageStrings(solvingAttempt)
-				|| !loadStatistics(solvingAttempt.mGridId)) {
+		if (!loadFromStorageStrings(solvingAttemptRow)
+				|| !loadStatistics(solvingAttemptRow.mGridId)) {
 			return null;
 		}
 
 		return mGridBuilder.build();
 	}
 
-	private SolvingAttempt loadSolvingAttempt(int solvingAttemptId) {
+	private SolvingAttemptRow loadSolvingAttempt(int solvingAttemptId) {
 		SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = mObjectsCreator
 				.createSolvingAttemptDatabaseAdapter();
 		return solvingAttemptDatabaseAdapter.getData(solvingAttemptId);
@@ -180,15 +180,15 @@ public class GridLoader {
 	 *         otherwise.
 	 */
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
-	private boolean loadFromStorageStrings(SolvingAttempt solvingAttempt) {
-		if (solvingAttempt.mStorageString == null) {
+	private boolean loadFromStorageStrings(SolvingAttemptRow solvingAttemptRow) {
+		if (solvingAttemptRow.mStorageString == null) {
 			return errorOnLoadStorageString(
 					"Solving attempt contains no storage string.", null);
 		}
 
 		try {
 			SolvingAttemptStorage solvingAttemptStorage = mObjectsCreator
-					.createSolvingAttemptStorage(solvingAttempt.mStorageString);
+					.createSolvingAttemptStorage(solvingAttemptRow.mStorageString);
 			loadGridStorage(solvingAttemptStorage);
 			loadCells(solvingAttemptStorage);
 			loadCages(solvingAttemptStorage);
@@ -197,12 +197,12 @@ public class GridLoader {
 			return errorOnLoadStorageString(
 					String.format(
 							"Invalid Number format error when restoring solving attempt with id %d.",
-							solvingAttempt.mId), e);
+							solvingAttemptRow.mId), e);
 		} catch (InvalidGridException e) {
 			return errorOnLoadStorageString(
 					String.format(
 							"Loading of solving attempt data with id %d to grid builder failed.'",
-							solvingAttempt.mId), e);
+							solvingAttemptRow.mId), e);
 		}
 
 		return true;

@@ -111,22 +111,22 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	/**
 	 * Inserts a new solving attempt record for a grid into the database.
 	 * 
-	 * @param solvingAttempt
+	 * @param solvingAttemptRow
 	 *            The solving attempt to be inserted.
 	 * @return The row id of the row created. -1 in case of an error.
 	 */
-	public int insert(SolvingAttempt solvingAttempt) {
+	public int insert(SolvingAttemptRow solvingAttemptRow) {
 		ContentValues initialValues = new ContentValues();
-		initialValues.put(KEY_GRID_ID, solvingAttempt.mGridId);
+		initialValues.put(KEY_GRID_ID, solvingAttemptRow.mGridId);
 		initialValues.put(KEY_DATE_CREATED,
-				toSQLiteTimestamp(solvingAttempt.mDateCreated));
+				toSQLiteTimestamp(solvingAttemptRow.mDateCreated));
 		initialValues.put(KEY_DATE_UPDATED,
-				toSQLiteTimestamp(solvingAttempt.mDateUpdated));
+				toSQLiteTimestamp(solvingAttemptRow.mDateUpdated));
 		initialValues.put(KEY_SAVED_WITH_REVISION,
-				solvingAttempt.mSavedWithRevision);
-		initialValues.put(KEY_DATA, solvingAttempt.mStorageString);
+				solvingAttemptRow.mSavedWithRevision);
+		initialValues.put(KEY_DATA, solvingAttemptRow.mStorageString);
 		initialValues.put(KEY_STATUS,
-				solvingAttempt.mSolvingAttemptStatus.getId());
+				solvingAttemptRow.mSolvingAttemptStatus.getId());
 
 		long id = -1;
 		try {
@@ -151,8 +151,8 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 *            The solving attempt id for which the data has to be retrieved.
 	 * @return The data of the solving attempt.
 	 */
-	public SolvingAttempt getData(int solvingAttemptId) {
-		SolvingAttempt solvingAttempt = null;
+	public SolvingAttemptRow getData(int solvingAttemptId) {
+		SolvingAttemptRow solvingAttemptRow = null;
 		Cursor cursor = null;
 		try {
 			cursor = sqliteDatabase.query(true, TABLE_NAME,
@@ -164,19 +164,19 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 				return null;
 			}
 
-			// Convert cursor record to a SolvingAttempt row
-			solvingAttempt = new SolvingAttempt();
-			solvingAttempt.mId = cursor.getInt(cursor
+			// Convert cursor record to a SolvingAttemptRow row
+			solvingAttemptRow = new SolvingAttemptRow();
+			solvingAttemptRow.mId = cursor.getInt(cursor
 					.getColumnIndexOrThrow(KEY_ROWID));
-			solvingAttempt.mGridId = cursor.getInt(cursor
+			solvingAttemptRow.mGridId = cursor.getInt(cursor
 					.getColumnIndexOrThrow(KEY_GRID_ID));
-			solvingAttempt.mDateCreated = valueOfSQLiteTimestamp(cursor
+			solvingAttemptRow.mDateCreated = valueOfSQLiteTimestamp(cursor
 					.getString(cursor.getColumnIndexOrThrow(KEY_DATE_CREATED)));
-			solvingAttempt.mDateUpdated = valueOfSQLiteTimestamp(cursor
+			solvingAttemptRow.mDateUpdated = valueOfSQLiteTimestamp(cursor
 					.getString(cursor.getColumnIndexOrThrow(KEY_DATE_UPDATED)));
-			solvingAttempt.mSavedWithRevision = cursor.getInt(cursor
+			solvingAttemptRow.mSavedWithRevision = cursor.getInt(cursor
 					.getColumnIndexOrThrow(KEY_SAVED_WITH_REVISION));
-			solvingAttempt.mStorageString = cursor.getString(cursor
+			solvingAttemptRow.mStorageString = cursor.getString(cursor
 					.getColumnIndexOrThrow(KEY_DATA));
 		} catch (SQLiteException e) {
 			throw new DatabaseAdapterException(
@@ -188,7 +188,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 				cursor.close();
 			}
 		}
-		return solvingAttempt;
+		return solvingAttemptRow;
 	}
 
 	/**
@@ -210,7 +210,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 				return -1;
 			}
 
-			// Convert cursor record to a SolvingAttempt row
+			// Convert cursor record to a SolvingAttemptRow row
 			id = cursor.getInt(cursor.getColumnIndexOrThrow(KEY_ROWID));
 		} catch (SQLiteException e) {
 			throw new DatabaseAdapterException(
@@ -227,22 +227,22 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	/**
 	 * Update the solving attempt.
 	 * 
-	 * @param solvingAttempt
+	 * @param solvingAttemptRow
 	 *            The solving attempt to be updated.
 	 * @return True in case the statistics have been updated. False otherwise.
 	 */
-	public boolean update(SolvingAttempt solvingAttempt) {
+	public boolean update(SolvingAttemptRow solvingAttemptRow) {
 		ContentValues contentValues = new ContentValues();
 		contentValues.put(KEY_DATE_UPDATED,
-				toSQLiteTimestamp(solvingAttempt.mDateUpdated));
+				toSQLiteTimestamp(solvingAttemptRow.mDateUpdated));
 		contentValues.put(KEY_SAVED_WITH_REVISION,
-				solvingAttempt.mSavedWithRevision);
-		contentValues.put(KEY_DATA, solvingAttempt.mStorageString);
+				solvingAttemptRow.mSavedWithRevision);
+		contentValues.put(KEY_DATA, solvingAttemptRow.mStorageString);
 		contentValues.put(KEY_STATUS,
-				solvingAttempt.mSolvingAttemptStatus.getId());
+				solvingAttemptRow.mSolvingAttemptStatus.getId());
 
 		return sqliteDatabase.update(TABLE_NAME, contentValues, KEY_ROWID
-				+ " = " + solvingAttempt.mId, null) == 1;
+				+ " = " + solvingAttemptRow.mId, null) == 1;
 	}
 
 	/**
@@ -317,7 +317,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 				return 0;
 			}
 
-			// Convert cursor record to a SolvingAttempt row
+			// Convert cursor record to a SolvingAttemptRow row
 			count = cursor.getInt(0);
 		} catch (SQLiteException e) {
 			throw new DatabaseAdapterException(

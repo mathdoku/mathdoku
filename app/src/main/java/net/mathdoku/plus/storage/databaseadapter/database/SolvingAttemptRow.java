@@ -3,10 +3,10 @@ package net.mathdoku.plus.storage.databaseadapter.database;
 import net.mathdoku.plus.enums.SolvingAttemptStatus;
 
 /**
- * Mapping for records in database table SolvingAttempt. Note: it depends on the
+ * Mapping for records in database table SolvingAttemptRow. Note: it depends on the
  * specific query which was executed whether a field is filled.
  */
-public class SolvingAttempt {
+public class SolvingAttemptRow {
 	// Unique row id for the solving attempt in the database.
 	public int mId;
 
