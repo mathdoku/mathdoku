@@ -3,7 +3,6 @@ package net.mathdoku.plus.storage.databaseadapter.database.database;
 import net.mathdoku.plus.util.ParameterValidator;
 import net.mathdoku.plus.util.Util;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +10,6 @@ public class DatabaseTableDefinition {
 	private final String tableName;
 	private final List<DatabaseColumnDefinition> databaseColumnDefinitions;
 	private DatabaseForeignKeyDefinition foreignKey;
-	private boolean isComposed;
 	private String[] columnNames;
 
 	public DatabaseTableDefinition(String tableName) {
@@ -21,10 +19,14 @@ public class DatabaseTableDefinition {
 	}
 
 	public void addColumn(DatabaseColumnDefinition databaseColumnDefinition) {
-		if (isComposed) {
+		if (isComposed()) {
 			throwAlterDatabaseTableNotAllowedAfterCompose();
 		}
 		databaseColumnDefinitions.add(databaseColumnDefinition);
+	}
+
+	private boolean isComposed() {
+		return (columnNames != null && columnNames.length > 0);
 	}
 
 	private void throwAlterDatabaseTableNotAllowedAfterCompose() {
@@ -32,7 +34,7 @@ public class DatabaseTableDefinition {
 	}
 
 	public void setForeignKey(DatabaseForeignKeyDefinition foreignKey) {
-		if (isComposed) {
+		if (isComposed()) {
 			throwAlterDatabaseTableNotAllowedAfterCompose();
 		}
 		this.foreignKey = foreignKey;
@@ -40,10 +42,10 @@ public class DatabaseTableDefinition {
 
 	public void build() {
 		if (Util.isListNullOrEmpty(databaseColumnDefinitions)) {
-			throw new InvalidParameterException(
+			throw new DatabaseException(
 					"At least one column has to be specified.");
 		}
-		setColumnNames();
+		columnNames = setColumnNames();
 	}
 
 	private String[] setColumnNames() {
@@ -60,7 +62,7 @@ public class DatabaseTableDefinition {
 	}
 
 	public String[] getColumnNames() {
-		if (!isComposed) {
+		if (!isComposed()) {
 			new IllegalStateException("Cannot be called until database table has been composed.");
 		}
 		return columnNames;
