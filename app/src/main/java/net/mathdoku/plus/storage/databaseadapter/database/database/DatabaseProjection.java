@@ -1,5 +1,7 @@
 package net.mathdoku.plus.storage.databaseadapter.database.database;
 
+import net.mathdoku.plus.util.ParameterValidator;
+
 import java.util.HashMap;
 
 public class DatabaseProjection extends HashMap<String, String> {
@@ -7,7 +9,13 @@ public class DatabaseProjection extends HashMap<String, String> {
 	private static final long serialVersionUID = 12382389483847823L;
 
 	public enum Aggregation {
-		MIN, MAX, AVG, SUM, COUNT, COUNTIF_TRUE
+		MIN, MAX, AVG, SUM, COUNT, COUNTIF_TRUE;
+
+		public String getAggregationColumnNameForColumn(String sourceColumn) {
+			ParameterValidator.validateNotNullOrEmpty(sourceColumn);
+
+			return toString() + "_" + sourceColumn;
+		}
 	}
 
 	public DatabaseProjection() {
@@ -17,8 +25,7 @@ public class DatabaseProjection extends HashMap<String, String> {
 	/**
 	 * Add a column to the projection. Preferred usage is
 	 * {@link #put(String, String, String)} or
-	 * {@link #put(DatabaseProjection.Aggregation, String, String)}
-	 * .
+	 * {@link #put(DatabaseProjection.Aggregation, String, String)} .
 	 * <p>
 	 * Note: In contradiction to other put functions, the target and source
 	 * columns are not back ticked. If appropriate this should have been done in
@@ -30,10 +37,14 @@ public class DatabaseProjection extends HashMap<String, String> {
 	 * @param sourceColumn
 	 *            Name of column on which the aggregation function will be
 	 *            applied to determine the value of the target column.
-	 * @return Concatenation of "[sourceColumn] AS [ targetColumn]".
+	 * @return If constructed value ("[sourceColumn] AS [ targetColumn]")
+	 *         already exists, its value is returned. If the value does not yet
+	 *         exists, null is returned.
 	 */
 	@Override
 	public String put(String targetColumn, String sourceColumn) {
+		ParameterValidator.validateNotNullOrEmpty(targetColumn);
+		ParameterValidator.validateNotNullOrEmpty(sourceColumn);
 		return super.put(targetColumn, sourceColumn + " AS " + targetColumn);
 	}
 
@@ -48,22 +59,28 @@ public class DatabaseProjection extends HashMap<String, String> {
 	 * @param sourceColumn
 	 *            Name of column on which the aggregation function will be
 	 *            applied to determine the value of the target column.
+	 * @return If constructed value
+	 *         ("[`sourceTable`.`sourceColumn`] AS [ `targetColumn`]") already
+	 *         exists, its value is returned. If the value does not yet exists,
+	 *         null is returned.
 	 */
 	@SuppressWarnings("UnusedReturnValue")
 	public String put(String targetColumn, String sourceTable,
 			String sourceColumn) {
-		String target = DatabaseUtil.stringBetweenBackTicks(targetColumn);
-		String source = DatabaseUtil.stringBetweenBackTicks(sourceTable)
-				+ "." + DatabaseUtil.stringBetweenBackTicks(sourceColumn);
+		ParameterValidator.validateNotNullOrEmpty(targetColumn);
+		ParameterValidator.validateNotNullOrEmpty(sourceTable);
+		ParameterValidator.validateNotNullOrEmpty(sourceColumn);
 
-		return super.put(target, source + " AS " + target);
+		String target = DatabaseUtil.stringBetweenBackTicks(targetColumn);
+		String source = DatabaseUtil.stringBetweenBackTicks(sourceTable) + "."
+				+ DatabaseUtil.stringBetweenBackTicks(sourceColumn);
+
+		return super.put(targetColumn, source + " AS " + target);
 	}
 
 	/**
 	 * Add a column which is constructed using an aggregated SQL function to the
-	 * projection. The name of the target column name will be determined with
-	 * method {@link #getAggregatedKey(Aggregation, String)} which can also be
-	 * used to find the corresponding column in the cursor.
+	 * projection.
 	 * 
 	 * @param aggregation
 	 *            The aggregation to be used.
@@ -73,13 +90,19 @@ public class DatabaseProjection extends HashMap<String, String> {
 	 *            Name of column on which the aggregation function will be
 	 *            applied to determine the value of the target column. Can be
 	 *            NULL for aggregation COUNT.
+	 * @return If constructed value already exists, its value is returned. If
+	 *         the value does not yet exists, null is returned.
 	 */
-	public void put(Aggregation aggregation, String sourceTable,
+	public String  put(Aggregation aggregation, String sourceTable,
 			String sourceColumn) {
-		String target = DatabaseUtil.stringBetweenBackTicks(
-				getAggregatedKey(aggregation, sourceColumn));
-		String source = DatabaseUtil.stringBetweenBackTicks(sourceTable)
-				+ "." + DatabaseUtil.stringBetweenBackTicks(sourceColumn);
+		ParameterValidator.validateNotNull(aggregation);
+		ParameterValidator.validateNotNullOrEmpty(sourceTable);
+		ParameterValidator.validateNotNullOrEmpty(sourceColumn);
+
+		String targetKey = aggregation.getAggregationColumnNameForColumn(sourceColumn);
+		String target = DatabaseUtil.stringBetweenBackTicks(targetKey);
+		String source = DatabaseUtil.stringBetweenBackTicks(sourceTable) + "."
+				+ DatabaseUtil.stringBetweenBackTicks(sourceColumn);
 
 		String aggregatedSource;
 		switch (aggregation) {
@@ -95,7 +118,7 @@ public class DatabaseProjection extends HashMap<String, String> {
 			break;
 		}
 
-		super.put(target, aggregatedSource + " AS " + target);
+		return super.put(targetKey, aggregatedSource + " AS " + target);
 	}
 
 	/**
@@ -106,28 +129,5 @@ public class DatabaseProjection extends HashMap<String, String> {
 	 */
 	public String[] getAllColumnNames() {
 		return keySet().toArray(new String[size()]);
-	}
-
-	/**
-	 * Gets the aggregated key for a given aggregation function and a source
-	 * column.
-	 * 
-	 * @param aggregation
-	 *            The aggregation to be used.
-	 * @param sourceColumn
-	 *            Name of column on which the aggregation function will be
-	 *            applied. Can be null for aggregation COUNT.
-	 * @return The aggregated key for a given aggregation function and a source
-	 *         column.
-	 */
-	public String getAggregatedKey(Aggregation aggregation, String sourceColumn) {
-		switch (aggregation) {
-		case COUNT:
-			return "count_rows";
-		case COUNTIF_TRUE:
-			return "count_" + sourceColumn;
-		default:
-			return aggregation.toString() + "_" + sourceColumn;
-		}
 	}
 }

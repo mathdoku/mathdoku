@@ -78,9 +78,8 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				KEY_ROWID, DataType.INTEGER).setPrimaryKey());
 		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
 				KEY_GRID_ID, DataType.INTEGER).setNotNull());
-		databaseTableDefinition.addColumn(
-				new DatabaseColumnDefinition(KEY_REPLAY, DataType.INTEGER).setNotNull()
-						.setDefaultValue(0));
+		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
+				KEY_REPLAY, DataType.INTEGER).setNotNull().setDefaultValue(0));
 		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
 				KEY_FIRST_MOVE, DataType.TIMESTAMP).setNotNull());
 		databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
@@ -481,8 +480,9 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 
 		if (DEBUG_SQL) {
 			String sql = sqliteQueryBuilder
-					.buildQuery(mCumulativeStatisticsDatabaseProjection.getAllColumnNames(),
-								selection, null, null, null, null);
+					.buildQuery(mCumulativeStatisticsDatabaseProjection
+							.getAllColumnNames(), selection, null, null, null,
+							null);
 			Log.i(TAG, sql);
 		}
 
@@ -490,8 +490,9 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		try {
 			cursor = sqliteQueryBuilder
 					.query(sqliteDatabase,
-						   mCumulativeStatisticsDatabaseProjection.getAllColumnNames(), selection,
-						   null, null, null, null);
+							mCumulativeStatisticsDatabaseProjection
+									.getAllColumnNames(), selection, null,
+							null, null, null);
 		} catch (SQLiteException e) {
 			throw new DatabaseAdapterException(
 					String.format(
@@ -508,58 +509,48 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		CumulativeStatistics cumulativeStatistics = new CumulativeStatistics();
 
 		// Grid size minimum and maximum
-		cumulativeStatistics.mMinGridSize = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
-						.getAggregatedKey(Aggregation.MIN,
-								GridDatabaseAdapter.KEY_GRID_SIZE)));
-		cumulativeStatistics.mMaxGridSize = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
-						.getAggregatedKey(Aggregation.MAX,
-								GridDatabaseAdapter.KEY_GRID_SIZE)));
+		cumulativeStatistics.mMinGridSize = cursor
+				.getInt(cursor.getColumnIndexOrThrow(Aggregation.MIN
+						.getAggregationColumnNameForColumn(GridDatabaseAdapter.KEY_GRID_SIZE)));
+		cumulativeStatistics.mMaxGridSize = cursor
+				.getInt(cursor.getColumnIndexOrThrow(Aggregation.MAX
+						.getAggregationColumnNameForColumn(GridDatabaseAdapter.KEY_GRID_SIZE)));
 
 		// First and last move
 		cumulativeStatistics.mMinFirstMove = toSQLTimestamp(cursor
-				.getString(cursor
-						.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
-								.getAggregatedKey(Aggregation.MIN,
-										KEY_FIRST_MOVE))));
+				.getString(cursor.getColumnIndexOrThrow(Aggregation.MIN
+						.getAggregationColumnNameForColumn(KEY_FIRST_MOVE))));
 		cumulativeStatistics.mMaxLastMove = toSQLTimestamp(cursor
-				.getString(cursor
-						.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
-								.getAggregatedKey(Aggregation.MAX,
-										KEY_LAST_MOVE))));
+				.getString(cursor.getColumnIndexOrThrow(Aggregation.MAX
+						.getAggregationColumnNameForColumn(KEY_LAST_MOVE))));
 
 		// Total, minimum, average, and maximum elapsed time
 		cumulativeStatistics.mSumElapsedTime = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
-						.getAggregatedKey(Aggregation.SUM, KEY_ELAPSED_TIME)));
+				.getColumnIndexOrThrow(Aggregation.SUM
+						.getAggregationColumnNameForColumn(KEY_ELAPSED_TIME)));
 		cumulativeStatistics.mAvgElapsedTime = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
-						.getAggregatedKey(Aggregation.AVG, KEY_ELAPSED_TIME)));
+				.getColumnIndexOrThrow(Aggregation.AVG
+						.getAggregationColumnNameForColumn(KEY_ELAPSED_TIME)));
 		cumulativeStatistics.mMinElapsedTime = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
-						.getAggregatedKey(Aggregation.MIN, KEY_ELAPSED_TIME)));
+				.getColumnIndexOrThrow(Aggregation.MIN
+						.getAggregationColumnNameForColumn(KEY_ELAPSED_TIME)));
 		cumulativeStatistics.mMaxElapsedTime = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
-						.getAggregatedKey(Aggregation.MAX, KEY_ELAPSED_TIME)));
+				.getColumnIndexOrThrow(Aggregation.MAX
+						.getAggregationColumnNameForColumn(KEY_ELAPSED_TIME)));
 
 		// Total, minimum, average, and maximum penalty time
-		cumulativeStatistics.mSumCheatPenaltyTime = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
-						.getAggregatedKey(Aggregation.SUM,
-								KEY_CHEAT_PENALTY_TIME)));
-		cumulativeStatistics.mAvgCheatPenaltyTime = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
-						.getAggregatedKey(Aggregation.AVG,
-								KEY_CHEAT_PENALTY_TIME)));
-		cumulativeStatistics.mMinCheatPenaltyTime = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
-						.getAggregatedKey(Aggregation.MIN,
-								KEY_CHEAT_PENALTY_TIME)));
-		cumulativeStatistics.mMaxCheatPenaltyTime = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
-						.getAggregatedKey(Aggregation.MAX,
-								KEY_CHEAT_PENALTY_TIME)));
+		cumulativeStatistics.mSumCheatPenaltyTime = cursor
+				.getInt(cursor.getColumnIndexOrThrow(Aggregation.SUM
+						.getAggregationColumnNameForColumn(KEY_CHEAT_PENALTY_TIME)));
+		cumulativeStatistics.mAvgCheatPenaltyTime = cursor
+				.getInt(cursor.getColumnIndexOrThrow(Aggregation.AVG
+						.getAggregationColumnNameForColumn(KEY_CHEAT_PENALTY_TIME)));
+		cumulativeStatistics.mMinCheatPenaltyTime = cursor
+				.getInt(cursor.getColumnIndexOrThrow(Aggregation.MIN
+						.getAggregationColumnNameForColumn(KEY_CHEAT_PENALTY_TIME)));
+		cumulativeStatistics.mMaxCheatPenaltyTime = cursor
+				.getInt(cursor.getColumnIndexOrThrow(Aggregation.MAX
+						.getAggregationColumnNameForColumn(KEY_CHEAT_PENALTY_TIME)));
 
 		// not (yet) used KEY_CELLS_USER_VALUE_FILLED,
 		// not (yet) used KEY_CELLS_USER_VALUES_EMPTY
@@ -567,55 +558,34 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 
 		// Totals of avoidable moves
 		cumulativeStatistics.mSumMaybeValue = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
-						.getAggregatedKey(Aggregation.SUM, KEY_POSSIBLES)));
+				.getColumnIndexOrThrow(Aggregation.SUM.getAggregationColumnNameForColumn(KEY_POSSIBLES)));
 		cumulativeStatistics.mSumActionUndoMove = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
-						.getAggregatedKey(Aggregation.SUM, KEY_ACTION_UNDOS)));
+				.getColumnIndexOrThrow(Aggregation.SUM.getAggregationColumnNameForColumn(KEY_ACTION_UNDOS)));
 		cumulativeStatistics.mSumActionClearCell = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
-						.getAggregatedKey(Aggregation.SUM,
-								KEY_ACTION_CLEAR_CELL)));
+				.getColumnIndexOrThrow(Aggregation.SUM.getAggregationColumnNameForColumn(KEY_ACTION_CLEAR_CELL)));
 		cumulativeStatistics.mSumActionClearGrid = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
-						.getAggregatedKey(Aggregation.SUM,
-								KEY_ACTION_CLEAR_GRID)));
+				.getColumnIndexOrThrow(Aggregation.SUM.getAggregationColumnNameForColumn(KEY_ACTION_CLEAR_GRID)));
 
 		// Totals per cheat
 		cumulativeStatistics.mSumActionRevealCell = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
-						.getAggregatedKey(Aggregation.SUM,
-								KEY_ACTION_REVEAL_CELL)));
+				.getColumnIndexOrThrow(Aggregation.SUM.getAggregationColumnNameForColumn(KEY_ACTION_REVEAL_CELL)));
 		cumulativeStatistics.mSumActionRevealOperator = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
-						.getAggregatedKey(Aggregation.SUM,
-								KEY_ACTION_REVEAL_OPERATOR)));
+				.getColumnIndexOrThrow(Aggregation.SUM.getAggregationColumnNameForColumn(KEY_ACTION_REVEAL_OPERATOR)));
 		cumulativeStatistics.mSumActionCheckProgress = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
-						.getAggregatedKey(Aggregation.SUM,
-								KEY_ACTION_CHECK_PROGRESS)));
+				.getColumnIndexOrThrow(Aggregation.SUM.getAggregationColumnNameForColumn(KEY_ACTION_CHECK_PROGRESS)));
 		cumulativeStatistics.mSumCheckProgressInvalidCellsFound = cursor
 				.getInt(cursor
-						.getColumnIndexOrThrow(
-								mCumulativeStatisticsDatabaseProjection.getAggregatedKey(
-										Aggregation.SUM, KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND)));
+						.getColumnIndexOrThrow(Aggregation.SUM.getAggregationColumnNameForColumn(KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND)));
 
 		// Totals per status of game
 		cumulativeStatistics.mCountSolutionRevealed = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
-						.getAggregatedKey(Aggregation.COUNTIF_TRUE,
-								KEY_ACTION_REVEAL_SOLUTION)));
+				.getColumnIndexOrThrow(Aggregation.COUNTIF_TRUE.getAggregationColumnNameForColumn(KEY_ACTION_REVEAL_SOLUTION)));
 		cumulativeStatistics.mCountSolvedManually = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
-						.getAggregatedKey(Aggregation.COUNTIF_TRUE,
-								KEY_SOLVED_MANUALLY)));
+				.getColumnIndexOrThrow(Aggregation.COUNTIF_TRUE.getAggregationColumnNameForColumn(KEY_SOLVED_MANUALLY)));
 		cumulativeStatistics.mCountFinished = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
-						.getAggregatedKey(Aggregation.COUNTIF_TRUE,
-								KEY_FINISHED)));
+				.getColumnIndexOrThrow(Aggregation.COUNTIF_TRUE.getAggregationColumnNameForColumn(KEY_FINISHED)));
 		cumulativeStatistics.mCountStarted = cursor.getInt(cursor
-				.getColumnIndexOrThrow(mCumulativeStatisticsDatabaseProjection
-						.getAggregatedKey(Aggregation.COUNT, KEY_ROWID)));
+				.getColumnIndexOrThrow(Aggregation.COUNT.getAggregationColumnNameForColumn(KEY_ROWID)));
 
 		cursor.close();
 		return cumulativeStatistics;
@@ -720,7 +690,8 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		// projection, no data will be retrieved!
 		String[] columnsData = {
 				// Statistics id
-				stringBetweenBackTicks(HistoricStatistics.DATA_COL_ID),
+				//stringBetweenBackTicks(HistoricStatistics.DATA_COL_ID),
+				HistoricStatistics.DATA_COL_ID,
 
 				// Elapsed time excluding the cheat penalty
 				stringBetweenBackTicks(KEY_ELAPSED_TIME)
