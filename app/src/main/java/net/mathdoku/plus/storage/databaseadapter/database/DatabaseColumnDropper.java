@@ -24,7 +24,7 @@ public class DatabaseColumnDropper {
 
 	public DatabaseColumnDropper(DatabaseAdapter databaseAdapter) {
 		this.databaseAdapter = databaseAdapter;
-		currentColumnList = databaseAdapter.getTableColumns();
+		currentColumnList = databaseAdapter.getActualTableColumns();
 	}
 
 	public boolean dropColumns(String[] columnsToBeDropped) {
@@ -38,9 +38,9 @@ public class DatabaseColumnDropper {
 			databaseAdapter.beginTransaction();
 
 			databaseAdapter.execSQL(getRenameTableSQL());
-			databaseAdapter.execSQL(databaseAdapter.getCreateSQL());
+			databaseAdapter.createTable();
 			databaseAdapter.execSQL(getInsertDataSQL());
-			databaseAdapter.execSQL(databaseAdapter.getDropTableSQL());
+			databaseAdapter.dropTable();
 
 			databaseAdapter.setTransactionSuccessful();
 		} catch (Exception e) {

@@ -42,14 +42,15 @@ public abstract class DatabaseAdapter {
 				new LeaderboardRankDatabaseAdapter(sqLiteDatabase) };
 	}
 
-	void createTable() {
-		String sql = getCreateSQL();
-		if (Config.mAppMode == AppMode.DEVELOPMENT) {
-			Log.i(TAG, sql);
+	public boolean createTable() {
+		try {
+			execAndLogSQL(getDatabaseTableDefinition().getCreateTableSQL());
+		} catch (SQLiteException e) {
+			throw new DatabaseAdapterException(String.format(
+					"Table %s already exists. Cannot create table.",
+					getTableName()), e);
 		}
-
-		// Execute create statement
-		sqliteDatabase.execSQL(sql);
+		return isExistingDatabaseTable();
 	}
 
 	protected abstract void upgradeTable(int oldVersion, int newVersion);
@@ -60,22 +61,14 @@ public abstract class DatabaseAdapter {
 		return getDatabaseTableDefinition().getTableName();
 	}
 
-	public String getCreateSQL() {
-		return getDatabaseTableDefinition().getCreateTableSQL();
-	}
-
 	/**
-	 * Checks the table definition, of a table which has been created in the
-	 * database before, with the expected table definition as defined in the
-	 * software.
+	 * Get the definition for the given table as it is currently stored in the
+	 * database.
 	 * 
-	 * @return True in case the definition of an already existing table does not
-	 *         match with the expected definition. False otherwise.
+	 * @return The definition for the given table as it is currently stored in
+	 *         the database. Empty string if the table does not yet exist.
 	 */
-	@SuppressLint("DefaultLocale")
-	public boolean isTableDefinitionChanged() {
-		boolean tableDefinitionChanged = false;
-
+	public String getCurrentDefinitionOfDatabaseTable() {
 		final String columnSql = "sql";
 		String[] columns = { columnSql };
 
@@ -88,33 +81,57 @@ public abstract class DatabaseAdapter {
 						+ DatabaseUtil.stringBetweenQuotes("table"), null,
 				null, null, null, null);
 		if (cursor != null) {
-			if (cursor.moveToFirst()) {
-				// Table exists. Check if definition matches with expected
-				// definition.
-				String sql = cursor.getString(
-						cursor.getColumnIndexOrThrow(columnSql)).toUpperCase();
-				String expectedSql = getCreateSQL().toUpperCase();
-				tableDefinitionChanged = !sql.equals(expectedSql);
-				if (Config.mAppMode == AppMode.DEVELOPMENT
-						&& tableDefinitionChanged) {
-					Log.e(TAG, String.format(
-							"Change in table '%s' detected. Table has not yet been "
-									+ "upgraded.", getTableName()));
-					Log.e(TAG, "Database-version: " + sql);
-				}
-			}
+			String sql = (cursor.moveToFirst() ? cursor.getString(cursor
+					.getColumnIndexOrThrow(columnSql)) : "");
 			cursor.close();
-		} else {
-			// Table does not exist.
-			Log.e(TAG, String.format("Table '%s' not found in database.",
-					getTableName()));
-			tableDefinitionChanged = true;
+			return sql;
 		}
-		if (Config.mAppMode == AppMode.DEVELOPMENT && tableDefinitionChanged) {
-			Log.e(TAG, "Expected table definition: " + getCreateSQL());
+		return "";
+	}
+
+	/**
+	 * Checks whether the given table does exist in the database.
+	 * 
+	 * @return True if a table with the given name exists. False otherwise.
+	 */
+	public boolean isExistingDatabaseTable() {
+		return !getCurrentDefinitionOfDatabaseTable().isEmpty();
+	}
+
+	/**
+	 * Checks the table definition, of a table which has been created in the
+	 * database before, with the expected table definition as defined in the
+	 * software.
+	 * 
+	 * @return True in case the definition of an already existing table does not
+	 *         match with the expected definition. False otherwise.
+	 */
+	@SuppressLint("DefaultLocale")
+	public boolean isTableDefinitionChanged() {
+		if (getCurrentDefinitionOfDatabaseTable().equalsIgnoreCase(
+				getDatabaseTableDefinition().getCreateTableSQL())) {
+			return false;
 		}
 
-		return tableDefinitionChanged;
+		if (Config.mAppMode == AppMode.DEVELOPMENT) {
+			if (isExistingDatabaseTable()) {
+				Log.e(TAG, String.format(
+						"Change in table '%s' detected. Table has not yet been "
+								+ "upgraded.", getTableName()));
+				Log.e(TAG, "Database-version: "
+						+ getCurrentDefinitionOfDatabaseTable());
+			} else {
+				Log.e(TAG, String.format("Table '%s' not found in database.",
+						getTableName()));
+			}
+
+			Log.e(TAG, "Expected table definition: "
+					+ getDatabaseTableDefinition()
+							.getCreateTableSQL()
+							.toUpperCase());
+		}
+
+		return true;
 	}
 
 	/**
@@ -123,41 +140,43 @@ public abstract class DatabaseAdapter {
 	 */
 	protected void recreateTableInDevelopmentMode() {
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
-			try {
-				execAndLogSQL(sqliteDatabase, getDropTableSQL());
-			} catch (SQLiteException e) {
-				Log
-						.i(TAG,
-								String
-										.format("Table %s does not exist. Cannot drop table (not necessarily an error).",
-												getTableName()), e);
-			}
-			execAndLogSQL(sqliteDatabase, getCreateSQL());
+			dropTable();
+			createTable();
 		}
 	}
 
-	public String getDropTableSQL() {
-		return "DROP TABLE " + getTableName();
+	public boolean dropTable() {
+		if (!isExistingDatabaseTable()) {
+			return false;
+		}
+
+		try {
+			execAndLogSQL("DROP TABLE " + getTableName());
+		} catch (SQLiteException e) {
+			throw new DatabaseAdapterException(String.format(
+					"Table %s does not exist. Cannot drop table.",
+					getTableName()), e);
+		}
+
+		return !isExistingDatabaseTable();
 	}
 
-	private static void execAndLogSQL(SQLiteDatabase db, String sql) {
-		Log.i(TAG, "Executing SQL: " + sql);
-		db.execSQL(sql);
+	private void execAndLogSQL(String sql) {
+		if (Config.mAppMode == AppMode.DEVELOPMENT) {
+			Log.i(TAG, "Executing SQL: " + sql);
+		}
+		sqliteDatabase.execSQL(sql);
 	}
 
 	/**
-	 * Get the actual column names for the given table.
+	 * Get the column names as used in the table as it is currently stored in
+	 * the database.
 	 * 
-	 * @param sqliteDatabase
-	 *            The database to be used by the adapter.
-	 * @param tableName
-	 *            The table for which the actual columns have to be determined.
 	 * @return The list of columns in the given table.
 	 */
-	private static List<String> getTableColumns(SQLiteDatabase sqliteDatabase,
-			String tableName) {
+	public List<String> getActualTableColumns() {
 		// Retrieve columns
-		String cmd = "pragma table_info(" + tableName + ");";
+		String cmd = "pragma table_info(" + getTableName() + ");";
 		Cursor cur = sqliteDatabase.rawQuery(cmd, null);
 
 		// Convert columns to list.
@@ -168,10 +187,6 @@ public abstract class DatabaseAdapter {
 		cur.close();
 
 		return columns;
-	}
-
-	public List<String> getTableColumns() {
-		return getTableColumns(sqliteDatabase, getTableName());
 	}
 
 	public void beginTransaction() {

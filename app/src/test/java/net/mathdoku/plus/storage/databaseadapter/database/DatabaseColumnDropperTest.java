@@ -28,7 +28,7 @@ public class DatabaseColumnDropperTest {
 
 	private class TestTableDatabaseAdapter extends DatabaseAdapter {
 		public TestTableDatabaseAdapter() {
-			execSQL(getCreateSQL());
+			createTable();
 		}
 
 		@Override
