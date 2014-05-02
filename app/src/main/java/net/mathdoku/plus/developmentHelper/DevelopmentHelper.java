@@ -19,6 +19,7 @@ import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParametersBuilder;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.statistics.GridStatistics;
+import net.mathdoku.plus.storage.databaseadapter.DatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.DatabaseHelper;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 
@@ -262,10 +263,9 @@ public class DevelopmentHelper {
 			PuzzleFragmentActivity puzzleFragmentActivity) {
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			// Close database helper (this will also close the open databases).
-			DatabaseHelper.getInstance().close();
-
-			// Delete the database.
-			puzzleFragmentActivity.deleteDatabase(DatabaseHelper.DATABASE_NAME);
+			DatabaseHelper databaseHelper = DatabaseHelper.getInstance();
+			databaseHelper.close();
+			databaseHelper.deleteDatabase(puzzleFragmentActivity.getBaseContext());
 
 			// Also delete all preferences as some preferences relate to content
 			// in database.

@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.util.SingletonInstanceNotInstantiated;
 
 /**
@@ -16,7 +17,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	@SuppressWarnings("unused")
 	private static final String TAG = DatabaseHelper.class.getName();
 
-	public static final String DATABASE_NAME = "MathDoku.sqlite";
+	private static final String DATABASE_NAME = "MathDoku.sqlite";
 
 	private static DatabaseHelper mDatabaseHelperSingletonInstance = null;
 
@@ -41,8 +42,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	/**
-	 * Gets the singleton reference of
-	 * {@link DatabaseHelper}. If it does not
+	 * Gets the singleton reference of {@link DatabaseHelper}. If it does not
 	 * yet exist then it will be created.
 	 * 
 	 * @param context
@@ -65,10 +65,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	/**
-	 * Creates new instance of
-	 * {@link DatabaseHelper}. All objects in
-	 * this class will be created with the given DatabaseHelper.ObjectsCreator.
-	 * This method is intended for unit testing.
+	 * Creates new instance of {@link DatabaseHelper}. All objects in this class
+	 * will be created with the given DatabaseHelper.ObjectsCreator. This method
+	 * is intended for unit testing.
 	 * 
 	 * @param context
 	 *            The context in which the Preference object is created.
@@ -193,7 +192,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	public static boolean hasChangedTableDefinitions() {
 		for (DatabaseAdapter databaseAdapter : DatabaseAdapter
-				.getAllDatabaseAdapters(mDatabaseHelperSingletonInstance.getReadableDatabase())) {
+				.getAllDatabaseAdapters(mDatabaseHelperSingletonInstance
+						.getReadableDatabase())) {
 			if (databaseAdapter.isTableDefinitionChanged()) {
 				return true;
 			}
@@ -219,5 +219,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ "' not found", e);
 		}
 		return version;
+	}
+
+	public void deleteDatabase(Context context) {
+		if (Config.mAppMode == Config.AppMode.DEVELOPMENT && context != null) {
+			context.deleteDatabase(DATABASE_NAME);
+		}
 	}
 }
