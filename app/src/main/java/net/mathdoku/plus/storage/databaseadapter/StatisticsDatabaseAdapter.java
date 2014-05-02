@@ -1,4 +1,4 @@
-package net.mathdoku.plus.storage.databaseadapter.database;
+package net.mathdoku.plus.storage.databaseadapter;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -13,13 +13,13 @@ import net.mathdoku.plus.statistics.CumulativeStatistics;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.statistics.HistoricStatistics;
 import net.mathdoku.plus.statistics.HistoricStatistics.Series;
-import net.mathdoku.plus.storage.databaseadapter.database.database.DataType;
-import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseColumnDefinition;
-import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseForeignKeyDefinition;
-import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseProjection;
-import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseProjection.Aggregation;
-import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseTableDefinition;
-import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseUtil;
+import net.mathdoku.plus.storage.databaseadapter.database.DataType;
+import net.mathdoku.plus.storage.databaseadapter.database.DatabaseColumnDefinition;
+import net.mathdoku.plus.storage.databaseadapter.database.DatabaseForeignKeyDefinition;
+import net.mathdoku.plus.storage.databaseadapter.database.DatabaseProjection;
+import net.mathdoku.plus.storage.databaseadapter.database.DatabaseProjection.Aggregation;
+import net.mathdoku.plus.storage.databaseadapter.database.DatabaseTableDefinition;
+import net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil;
 
 /**
  * The database adapter for the statistics table. For each grid zero or more

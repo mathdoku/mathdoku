@@ -4,7 +4,7 @@ import net.mathdoku.plus.puzzle.cell.Cell;
 import net.mathdoku.plus.puzzle.cellchange.CellChange;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.puzzle.cage.Cage;
-import net.mathdoku.plus.storage.databaseadapter.database.SolvingAttemptDatabaseAdapter;
+import net.mathdoku.plus.storage.databaseadapter.SolvingAttemptDatabaseAdapter;
 
 import java.security.InvalidParameterException;
 import java.util.List;

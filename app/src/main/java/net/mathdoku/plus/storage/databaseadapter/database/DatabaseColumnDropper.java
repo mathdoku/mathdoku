@@ -1,10 +1,9 @@
-package net.mathdoku.plus.storage.databaseadapter.database.database;
+package net.mathdoku.plus.storage.databaseadapter.database;
 
 import android.text.TextUtils;
 import android.util.Log;
 
-import net.mathdoku.plus.storage.databaseadapter.database.*;
-import net.mathdoku.plus.storage.databaseadapter.database.DatabaseAdapterException;
+import net.mathdoku.plus.storage.databaseadapter.DatabaseAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;

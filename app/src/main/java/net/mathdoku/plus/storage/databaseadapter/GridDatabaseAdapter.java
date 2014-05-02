@@ -1,4 +1,4 @@
-package net.mathdoku.plus.storage.databaseadapter.database;
+package net.mathdoku.plus.storage.databaseadapter;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -17,11 +17,11 @@ import net.mathdoku.plus.enums.SolvingAttemptStatus;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParametersBuilder;
 import net.mathdoku.plus.puzzle.grid.Grid;
-import net.mathdoku.plus.storage.databaseadapter.database.database.DataType;
-import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseColumnDefinition;
-import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseProjection;
-import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseTableDefinition;
-import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseUtil;
+import net.mathdoku.plus.storage.databaseadapter.database.DataType;
+import net.mathdoku.plus.storage.databaseadapter.database.DatabaseColumnDefinition;
+import net.mathdoku.plus.storage.databaseadapter.database.DatabaseProjection;
+import net.mathdoku.plus.storage.databaseadapter.database.DatabaseTableDefinition;
+import net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil;
 
 /**
  * The database adapter for the grid table.

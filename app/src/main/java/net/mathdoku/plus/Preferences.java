@@ -12,7 +12,7 @@ import net.mathdoku.plus.leaderboard.ui.LeaderboardFragmentActivity.LeaderboardF
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.painter.Painter.GridTheme;
 import net.mathdoku.plus.puzzle.ui.GridInputMode;
-import net.mathdoku.plus.storage.databaseadapter.database.GridDatabaseAdapter.StatusFilter;
+import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter.StatusFilter;
 import net.mathdoku.plus.tip.TipDialog;
 import net.mathdoku.plus.util.SingletonInstanceNotInstantiated;
 

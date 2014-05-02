@@ -3,7 +3,7 @@ package net.mathdoku.plus.archive.ui;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.GridTypeFilter;
-import net.mathdoku.plus.storage.databaseadapter.database.GridDatabaseAdapter;
+import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;

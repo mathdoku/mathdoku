@@ -3,12 +3,12 @@ package net.mathdoku.plus.puzzle.grid;
 import net.mathdoku.plus.enums.SolvingAttemptStatus;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.storage.GridStorage;
-import net.mathdoku.plus.storage.databaseadapter.database.DatabaseHelper;
-import net.mathdoku.plus.storage.databaseadapter.database.GridDatabaseAdapter;
-import net.mathdoku.plus.storage.databaseadapter.database.GridRow;
-import net.mathdoku.plus.storage.databaseadapter.database.SolvingAttemptRow;
-import net.mathdoku.plus.storage.databaseadapter.database.SolvingAttemptDatabaseAdapter;
-import net.mathdoku.plus.storage.databaseadapter.database.StatisticsDatabaseAdapter;
+import net.mathdoku.plus.storage.databaseadapter.DatabaseHelper;
+import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter;
+import net.mathdoku.plus.storage.databaseadapter.GridRow;
+import net.mathdoku.plus.storage.databaseadapter.SolvingAttemptRow;
+import net.mathdoku.plus.storage.databaseadapter.SolvingAttemptDatabaseAdapter;
+import net.mathdoku.plus.storage.databaseadapter.StatisticsDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
 
 import java.security.InvalidParameterException;

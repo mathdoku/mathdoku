@@ -1,4 +1,4 @@
-package net.mathdoku.plus.storage.databaseadapter.database;
+package net.mathdoku.plus.storage.databaseadapter;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -8,11 +8,11 @@ import android.database.sqlite.SQLiteException;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.enums.SolvingAttemptStatus;
-import net.mathdoku.plus.storage.databaseadapter.database.database.DataType;
-import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseColumnDefinition;
-import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseForeignKeyDefinition;
-import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseTableDefinition;
-import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseUtil;
+import net.mathdoku.plus.storage.databaseadapter.database.DataType;
+import net.mathdoku.plus.storage.databaseadapter.database.DatabaseColumnDefinition;
+import net.mathdoku.plus.storage.databaseadapter.database.DatabaseForeignKeyDefinition;
+import net.mathdoku.plus.storage.databaseadapter.database.DatabaseTableDefinition;
+import net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil;
 
 import java.util.ArrayList;
 import java.util.List;

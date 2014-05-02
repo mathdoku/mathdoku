@@ -10,9 +10,9 @@ import com.google.android.gms.games.leaderboard.SubmitScoreResult;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
-import net.mathdoku.plus.storage.databaseadapter.database.LeaderboardRankDatabaseAdapter;
-import net.mathdoku.plus.storage.databaseadapter.database.LeaderboardRankDatabaseAdapter.ScoreOrigin;
-import net.mathdoku.plus.storage.databaseadapter.database.LeaderboardRankRow;
+import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankDatabaseAdapter;
+import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankDatabaseAdapter.ScoreOrigin;
+import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankRow;
 
 import java.text.DateFormat;
 

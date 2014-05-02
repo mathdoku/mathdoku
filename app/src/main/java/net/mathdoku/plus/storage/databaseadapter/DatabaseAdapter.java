@@ -1,4 +1,4 @@
-package net.mathdoku.plus.storage.databaseadapter.database;
+package net.mathdoku.plus.storage.databaseadapter;
 
 import android.annotation.SuppressLint;
 import android.database.Cursor;
@@ -8,8 +8,8 @@ import android.util.Log;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
-import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseTableDefinition;
-import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseUtil;
+import net.mathdoku.plus.storage.databaseadapter.database.DatabaseTableDefinition;
+import net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -4,7 +4,7 @@ import android.app.Activity;
 
 import net.mathdoku.plus.gridgenerating.iface.GridGeneratorListenerIface;
 import net.mathdoku.plus.puzzle.grid.Grid;
-import net.mathdoku.plus.storage.databaseadapter.database.DatabaseHelper;
+import net.mathdoku.plus.storage.databaseadapter.DatabaseHelper;
 import net.mathdoku.plus.util.Util;
 
 import org.junit.After;

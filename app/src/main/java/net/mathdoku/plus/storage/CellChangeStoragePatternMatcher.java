@@ -1,6 +1,6 @@
 package net.mathdoku.plus.storage;
 
-import net.mathdoku.plus.storage.databaseadapter.database.SolvingAttemptDatabaseAdapter;
+import net.mathdoku.plus.storage.databaseadapter.SolvingAttemptDatabaseAdapter;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;

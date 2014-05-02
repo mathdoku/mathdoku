@@ -1,4 +1,4 @@
-package net.mathdoku.plus.storage.databaseadapter.database.database;
+package net.mathdoku.plus.storage.databaseadapter.database;
 
 import java.util.Date;
 

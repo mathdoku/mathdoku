@@ -1,14 +1,9 @@
-package net.mathdoku.plus.storage.databaseadapter.database.database;
+package net.mathdoku.plus.storage.databaseadapter.database;
 
 import android.app.Activity;
 
-import net.mathdoku.plus.storage.databaseadapter.database.DatabaseAdapter;
-import net.mathdoku.plus.storage.databaseadapter.database.DatabaseHelper;
-import net.mathdoku.plus.storage.databaseadapter.database.database.DataType;
-import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseColumnDefinition;
-import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseColumnDropper;
-import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseException;
-import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseTableDefinition;
+import net.mathdoku.plus.storage.databaseadapter.DatabaseAdapter;
+import net.mathdoku.plus.storage.databaseadapter.DatabaseHelper;
 
 import org.junit.After;
 import org.junit.Before;

@@ -2,7 +2,7 @@ package net.mathdoku.plus.leaderboard.ui;
 
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.leaderboard.LeaderboardConnector;
-import net.mathdoku.plus.storage.databaseadapter.database.LeaderboardRankDatabaseAdapter;
+import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankDatabaseAdapter;
 import net.mathdoku.plus.tip.TipLeaderboardCreateGame;
 import net.mathdoku.plus.tip.TipLeaderboardViewDetails;
 import net.mathdoku.plus.ui.GooglePlusSignInDialog;
