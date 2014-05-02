@@ -218,7 +218,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		contentValues.put(KEY_SCORE_STATISTICS_ID, statisticsId);
 		contentValues.put(KEY_SCORE_RAW_SCORE, rawScore);
 		contentValues.put(KEY_SCORE_DATE_SUBMITTED,
-				DatabaseUtil.toSQLiteTimestamp(new java.util.Date().getTime()));
+				DatabaseUtil.getCurrentSQLiteTimestamp());
 
 		// Rank information is cleared explicitly as the rank information does
 		// not correspond with the score in case an existing leaderboard is
@@ -263,8 +263,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 					"Parameter rawScore Id is invalid.");
 		}
 
-		String timestamp = DatabaseUtil.toSQLiteTimestamp(new java.util.Date()
-				.getTime());
+		String timestamp = DatabaseUtil.getCurrentSQLiteTimestamp();
 
 		ContentValues contentValues = new ContentValues();
 		contentValues.put(KEY_LEADERBOARD_ID, leaderboardId);
@@ -308,7 +307,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		contentValues.put(KEY_RANK, rank);
 		contentValues.put(KEY_RANK_DISPLAY, rankDisplay);
 		contentValues.put(KEY_RANK_DATE_LAST_UPDATED,
-				DatabaseUtil.toSQLiteTimestamp(new java.util.Date().getTime()));
+				DatabaseUtil.getCurrentSQLiteTimestamp());
 
 		return sqliteDatabase
 				.update(TABLE_NAME, contentValues, KEY_LEADERBOARD_ID + " = "
@@ -334,7 +333,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		contentValues.put(KEY_RANK, (String) null);
 		contentValues.put(KEY_RANK_DISPLAY, (String) null);
 		contentValues.put(KEY_RANK_DATE_LAST_UPDATED,
-				DatabaseUtil.toSQLiteTimestamp(new java.util.Date().getTime()));
+				DatabaseUtil.getCurrentSQLiteTimestamp());
 
 		return sqliteDatabase
 				.update(TABLE_NAME, contentValues, KEY_LEADERBOARD_ID + " = "
@@ -506,9 +505,8 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	private String getSelectionOutdatedLeaderboardRanks() {
 		// noinspection StringBufferReplaceableByString
 		StringBuilder stringBuilder = new StringBuilder();
-		long currentTimeMinus15Minutes = new java.util.Date().getTime() - 15 * 60 * 1000;
-		long currentTimeMinus24Hours = new java.util.Date().getTime() - 24 * 60
-				* 60 * 1000;
+		long offset15MinutesInMillis = 15 * 60 * 1000;
+		long offset24HoursInMillis = 24 * 60 * 60 * 1000;
 
 		// Include all leaderboards for which the rank status equals
 		// TO_BE_UPDATED
@@ -533,7 +531,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 				+ KEY_RANK_DATE_LAST_UPDATED
 				+ " < "
 				+ DatabaseUtil.stringBetweenQuotes(DatabaseUtil
-						.toSQLiteTimestamp(currentTimeMinus15Minutes)) + ")");
+						.getCurrentMinusOffsetSQLiteTimestamp(offset15MinutesInMillis)) + ")");
 
 		// Include all leaderboards having no rank and no score which have
 		// not been updated in the last 24 hours. These are include as the
@@ -550,7 +548,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 				+ KEY_RANK_DATE_LAST_UPDATED
 				+ " < "
 				+ DatabaseUtil.stringBetweenQuotes(DatabaseUtil
-						.toSQLiteTimestamp(currentTimeMinus24Hours)) + ")");
+						.getCurrentMinusOffsetSQLiteTimestamp(offset24HoursInMillis)) + ")");
 
 		return stringBuilder.toString();
 	}

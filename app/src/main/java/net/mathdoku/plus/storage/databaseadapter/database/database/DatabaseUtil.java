@@ -1,5 +1,7 @@
 package net.mathdoku.plus.storage.databaseadapter.database.database;
 
+import java.util.Date;
+
 public class DatabaseUtil {
 	private static final char BACK_TICK = '`';
 	private static final char QUOTE = '\'';
@@ -7,19 +9,28 @@ public class DatabaseUtil {
 	private static final String SQLITE_TRUE = "true";
 	private static final String SQLITE_FALSE = "false";
 
+	// Package private access as for unit testing.
+	private static long currentDateTime = -1;
+
 	private DatabaseUtil() {
 		// Prevent instantiation of utility class.
 	}
 
-	/**
-	 * Encloses a string with back ticks (`). To be used for SQLite table and
-	 * column names.
-	 * 
-	 * @param string
-	 *            The string which needs to be prefixed and suffixed with back
-	 *            ticks.
-	 * @return The string properly enclosed with back ticks.
-	 */
+	// Package private access as for unit testing.
+	DatabaseUtil(long currentDateTime) {
+		this.currentDateTime = currentDateTime;
+	}
+
+
+		/**
+		 * Encloses a string with back ticks (`). To be used for SQLite table and
+		 * column names.
+		 *
+		 * @param string
+		 *            The string which needs to be prefixed and suffixed with back
+		 *            ticks.
+		 * @return The string properly enclosed with back ticks.
+		 */
 	public static String stringBetweenBackTicks(String string) {
 		return BACK_TICK + string + BACK_TICK;
 	}
@@ -61,7 +72,38 @@ public class DatabaseUtil {
 	 * @return The boolean value corresponding with the SQLite string value.
 	 */
 	public static boolean valueOfSQLiteBoolean(String value) {
-		return value.equals(SQLITE_TRUE);
+		if (value.equals(SQLITE_TRUE)) {
+			return true;
+		}
+		if (value.equals(SQLITE_FALSE)) {
+			return false;
+		}
+		throw new IllegalStateException(String.format("Value %s is not a valid SQLite boolean value.", value));
+	}
+
+	/**
+	 * Creates a SQLite representation of the current date and time.
+	 * 
+	 * @return The string representation of the current date and time as it is
+	 *         stored in SQLite.
+	 */
+	public static String getCurrentSQLiteTimestamp() {
+		return toSQLiteTimestamp(getCurrentDateTime());
+	}
+
+	private static long getCurrentDateTime() {
+		return (currentDateTime < 0 ? new Date().getTime() : currentDateTime);
+	}
+
+	/**
+	 * Creates a SQLite representation of the current date and time minus a given offset.
+	 *
+	 * @param offsetInMillisBefore Offset in milliseconds before current date time.
+	 * @return The string representation of the current date and time minus the given offset as it is
+	 *         stored in SQLite.
+	 */
+	public static String getCurrentMinusOffsetSQLiteTimestamp(long offsetInMillisBefore) {
+		return toSQLiteTimestamp(getCurrentDateTime() - offsetInMillisBefore);
 	}
 
 	/**
