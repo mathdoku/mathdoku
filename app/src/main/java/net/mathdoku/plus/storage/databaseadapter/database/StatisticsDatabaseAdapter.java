@@ -19,6 +19,7 @@ import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseForei
 import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseProjection;
 import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseProjection.Aggregation;
 import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseTableDefinition;
+import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseUtil;
 
 /**
  * The database adapter for the statistics table. For each grid zero or more
@@ -280,10 +281,10 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 				.getColumnIndexOrThrow(KEY_GRID_ID));
 		gridStatistics.mReplayCount = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_REPLAY));
-		gridStatistics.mFirstMove = toSQLTimestamp(cursor.getString(cursor
-				.getColumnIndexOrThrow(KEY_FIRST_MOVE)));
-		gridStatistics.mLastMove = toSQLTimestamp(cursor.getString(cursor
-				.getColumnIndexOrThrow(KEY_LAST_MOVE)));
+		gridStatistics.mFirstMove = DatabaseUtil.toSQLTimestamp(cursor
+				.getString(cursor.getColumnIndexOrThrow(KEY_FIRST_MOVE)));
+		gridStatistics.mLastMove = DatabaseUtil.toSQLTimestamp(cursor
+				.getString(cursor.getColumnIndexOrThrow(KEY_LAST_MOVE)));
 		gridStatistics.mElapsedTime = cursor.getLong(cursor
 				.getColumnIndexOrThrow(KEY_ELAPSED_TIME));
 		gridStatistics.mCheatPenaltyTime = cursor.getLong(cursor
@@ -517,10 +518,10 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 						.getAggregationColumnNameForColumn(GridDatabaseAdapter.KEY_GRID_SIZE)));
 
 		// First and last move
-		cumulativeStatistics.mMinFirstMove = toSQLTimestamp(cursor
+		cumulativeStatistics.mMinFirstMove = DatabaseUtil.toSQLTimestamp(cursor
 				.getString(cursor.getColumnIndexOrThrow(Aggregation.MIN
 						.getAggregationColumnNameForColumn(KEY_FIRST_MOVE))));
-		cumulativeStatistics.mMaxLastMove = toSQLTimestamp(cursor
+		cumulativeStatistics.mMaxLastMove = DatabaseUtil.toSQLTimestamp(cursor
 				.getString(cursor.getColumnIndexOrThrow(Aggregation.MAX
 						.getAggregationColumnNameForColumn(KEY_LAST_MOVE))));
 
@@ -558,34 +559,45 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 
 		// Totals of avoidable moves
 		cumulativeStatistics.mSumMaybeValue = cursor.getInt(cursor
-				.getColumnIndexOrThrow(Aggregation.SUM.getAggregationColumnNameForColumn(KEY_POSSIBLES)));
+				.getColumnIndexOrThrow(Aggregation.SUM
+						.getAggregationColumnNameForColumn(KEY_POSSIBLES)));
 		cumulativeStatistics.mSumActionUndoMove = cursor.getInt(cursor
-				.getColumnIndexOrThrow(Aggregation.SUM.getAggregationColumnNameForColumn(KEY_ACTION_UNDOS)));
-		cumulativeStatistics.mSumActionClearCell = cursor.getInt(cursor
-				.getColumnIndexOrThrow(Aggregation.SUM.getAggregationColumnNameForColumn(KEY_ACTION_CLEAR_CELL)));
-		cumulativeStatistics.mSumActionClearGrid = cursor.getInt(cursor
-				.getColumnIndexOrThrow(Aggregation.SUM.getAggregationColumnNameForColumn(KEY_ACTION_CLEAR_GRID)));
+				.getColumnIndexOrThrow(Aggregation.SUM
+						.getAggregationColumnNameForColumn(KEY_ACTION_UNDOS)));
+		cumulativeStatistics.mSumActionClearCell = cursor
+				.getInt(cursor.getColumnIndexOrThrow(Aggregation.SUM
+						.getAggregationColumnNameForColumn(KEY_ACTION_CLEAR_CELL)));
+		cumulativeStatistics.mSumActionClearGrid = cursor
+				.getInt(cursor.getColumnIndexOrThrow(Aggregation.SUM
+						.getAggregationColumnNameForColumn(KEY_ACTION_CLEAR_GRID)));
 
 		// Totals per cheat
-		cumulativeStatistics.mSumActionRevealCell = cursor.getInt(cursor
-				.getColumnIndexOrThrow(Aggregation.SUM.getAggregationColumnNameForColumn(KEY_ACTION_REVEAL_CELL)));
-		cumulativeStatistics.mSumActionRevealOperator = cursor.getInt(cursor
-				.getColumnIndexOrThrow(Aggregation.SUM.getAggregationColumnNameForColumn(KEY_ACTION_REVEAL_OPERATOR)));
-		cumulativeStatistics.mSumActionCheckProgress = cursor.getInt(cursor
-				.getColumnIndexOrThrow(Aggregation.SUM.getAggregationColumnNameForColumn(KEY_ACTION_CHECK_PROGRESS)));
+		cumulativeStatistics.mSumActionRevealCell = cursor
+				.getInt(cursor.getColumnIndexOrThrow(Aggregation.SUM
+						.getAggregationColumnNameForColumn(KEY_ACTION_REVEAL_CELL)));
+		cumulativeStatistics.mSumActionRevealOperator = cursor
+				.getInt(cursor.getColumnIndexOrThrow(Aggregation.SUM
+						.getAggregationColumnNameForColumn(KEY_ACTION_REVEAL_OPERATOR)));
+		cumulativeStatistics.mSumActionCheckProgress = cursor
+				.getInt(cursor.getColumnIndexOrThrow(Aggregation.SUM
+						.getAggregationColumnNameForColumn(KEY_ACTION_CHECK_PROGRESS)));
 		cumulativeStatistics.mSumCheckProgressInvalidCellsFound = cursor
-				.getInt(cursor
-						.getColumnIndexOrThrow(Aggregation.SUM.getAggregationColumnNameForColumn(KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND)));
+				.getInt(cursor.getColumnIndexOrThrow(Aggregation.SUM
+						.getAggregationColumnNameForColumn(KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND)));
 
 		// Totals per status of game
-		cumulativeStatistics.mCountSolutionRevealed = cursor.getInt(cursor
-				.getColumnIndexOrThrow(Aggregation.COUNTIF_TRUE.getAggregationColumnNameForColumn(KEY_ACTION_REVEAL_SOLUTION)));
-		cumulativeStatistics.mCountSolvedManually = cursor.getInt(cursor
-				.getColumnIndexOrThrow(Aggregation.COUNTIF_TRUE.getAggregationColumnNameForColumn(KEY_SOLVED_MANUALLY)));
+		cumulativeStatistics.mCountSolutionRevealed = cursor
+				.getInt(cursor.getColumnIndexOrThrow(Aggregation.COUNTIF_TRUE
+						.getAggregationColumnNameForColumn(KEY_ACTION_REVEAL_SOLUTION)));
+		cumulativeStatistics.mCountSolvedManually = cursor
+				.getInt(cursor.getColumnIndexOrThrow(Aggregation.COUNTIF_TRUE
+						.getAggregationColumnNameForColumn(KEY_SOLVED_MANUALLY)));
 		cumulativeStatistics.mCountFinished = cursor.getInt(cursor
-				.getColumnIndexOrThrow(Aggregation.COUNTIF_TRUE.getAggregationColumnNameForColumn(KEY_FINISHED)));
+				.getColumnIndexOrThrow(Aggregation.COUNTIF_TRUE
+						.getAggregationColumnNameForColumn(KEY_FINISHED)));
 		cumulativeStatistics.mCountStarted = cursor.getInt(cursor
-				.getColumnIndexOrThrow(Aggregation.COUNT.getAggregationColumnNameForColumn(KEY_ROWID)));
+				.getColumnIndexOrThrow(Aggregation.COUNT
+						.getAggregationColumnNameForColumn(KEY_ROWID)));
 
 		cursor.close();
 		return cumulativeStatistics;
@@ -615,30 +627,37 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 			// Add base columns to the projection
 			mHistoricStatisticsDatabaseProjection.put(
 					HistoricStatistics.DATA_COL_ID, TABLE_NAME, KEY_ROWID);
-			mHistoricStatisticsDatabaseProjection.put(
-					stringBetweenBackTicks(HistoricStatistics.DATA_COL_SERIES), /*
-																				 * Explicit
-																				 * back
-																				 * ticks
-																				 * needed
-																				 * here
-																				 * !
-																				 */
-					"CASE WHEN "
-							+ stringBetweenBackTicks(KEY_FINISHED)
-							+ " <> "
-							+ stringBetweenQuotes("true")
-							+ " THEN "
-							+ stringBetweenQuotes(Series.UNFINISHED.toString())
-							+ " WHEN "
-							+ KEY_ACTION_REVEAL_SOLUTION
-							+ " = "
-							+ stringBetweenQuotes("true")
-							+ " THEN "
-							+ stringBetweenQuotes(Series.SOLUTION_REVEALED
-									.toString()) + " ELSE "
-							+ stringBetweenQuotes(Series.SOLVED.toString())
-							+ " END");
+			mHistoricStatisticsDatabaseProjection
+					.put(DatabaseUtil
+							.stringBetweenBackTicks(HistoricStatistics.DATA_COL_SERIES), /*
+																						 * Explicit
+																						 * back
+																						 * ticks
+																						 * needed
+																						 * here
+																						 * !
+																						 */
+							"CASE WHEN "
+									+ DatabaseUtil
+											.stringBetweenBackTicks(KEY_FINISHED)
+									+ " <> "
+									+ DatabaseUtil.toQuotedSQLiteString(true)
+									+ " THEN "
+									+ DatabaseUtil
+											.stringBetweenQuotes(Series.UNFINISHED
+													.toString())
+									+ " WHEN "
+									+ KEY_ACTION_REVEAL_SOLUTION
+									+ " = "
+									+ DatabaseUtil.toQuotedSQLiteString(true)
+									+ " THEN "
+									+ DatabaseUtil
+											.stringBetweenQuotes(Series.SOLUTION_REVEALED
+													.toString())
+									+ " ELSE "
+									+ DatabaseUtil
+											.stringBetweenQuotes(Series.SOLVED
+													.toString()) + " END");
 
 			// Add data columns to the projection.
 			mHistoricStatisticsDatabaseProjection.put(KEY_ELAPSED_TIME,
@@ -690,22 +709,24 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		// projection, no data will be retrieved!
 		String[] columnsData = {
 				// Statistics id
-				//stringBetweenBackTicks(HistoricStatistics.DATA_COL_ID),
+				// stringBetweenBackTicks(HistoricStatistics.DATA_COL_ID),
 				HistoricStatistics.DATA_COL_ID,
 
 				// Elapsed time excluding the cheat penalty
-				stringBetweenBackTicks(KEY_ELAPSED_TIME)
+				DatabaseUtil.stringBetweenBackTicks(KEY_ELAPSED_TIME)
 						+ " - "
-						+ stringBetweenBackTicks(KEY_CHEAT_PENALTY_TIME)
+						+ DatabaseUtil
+								.stringBetweenBackTicks(KEY_CHEAT_PENALTY_TIME)
 						+ " AS "
 						+ HistoricStatistics.DATA_COL_ELAPSED_TIME_EXCLUDING_CHEAT_PENALTY,
 
 				// Cheat penalty
-				stringBetweenBackTicks(KEY_CHEAT_PENALTY_TIME) + " AS "
-						+ HistoricStatistics.DATA_COL_CHEAT_PENALTY,
+				DatabaseUtil.stringBetweenBackTicks(KEY_CHEAT_PENALTY_TIME)
+						+ " AS " + HistoricStatistics.DATA_COL_CHEAT_PENALTY,
 
 				// Series
-				stringBetweenBackTicks(HistoricStatistics.DATA_COL_SERIES) };
+				DatabaseUtil
+						.stringBetweenBackTicks(HistoricStatistics.DATA_COL_SERIES) };
 
 		String selection = GridDatabaseAdapter
 				.getPrefixedColumnName(GridDatabaseAdapter.KEY_GRID_SIZE)
@@ -769,12 +790,12 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		String sql = "UPDATE " + TABLE_NAME + " SET "
 				+ KEY_INCLUDE_IN_STATISTICS + " = " + " CASE WHEN " + KEY_ROWID
 				+ " = " + solvingAttemptId + " THEN "
-				+ stringBetweenQuotes(toSQLiteBoolean(true)) + " ELSE "
-				+ stringBetweenQuotes(toSQLiteBoolean(false)) + " END "
+				+ DatabaseUtil.toQuotedSQLiteString(true) + " ELSE "
+				+ DatabaseUtil.toQuotedSQLiteString(false) + " END "
 				+ " WHERE " + KEY_GRID_ID + " = " + gridId + " AND ("
 				+ KEY_ROWID + " = " + solvingAttemptId + " OR "
 				+ KEY_INCLUDE_IN_STATISTICS + " = "
-				+ stringBetweenQuotes(toSQLiteBoolean(true)) + ")";
+				+ DatabaseUtil.toQuotedSQLiteString(true) + ")";
 		if (DEBUG_SQL) {
 			Log.i(TAG, sql);
 		}

@@ -11,6 +11,7 @@ import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.storage.databaseadapter.database.database.DataType;
 import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseColumnDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseTableDefinition;
+import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseUtil;
 
 /**
  * The database adapter for the grid table.
@@ -154,7 +155,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		contentValues.put(KEY_LEADERBOARD_ID, leaderboardId);
 		contentValues.put(KEY_GRID_SIZE, gridSize);
 		contentValues.put(KEY_HIDDEN_OPERATORS,
-				toSQLiteBoolean(operatorsVisible));
+				DatabaseUtil.toSQLiteBoolean(operatorsVisible));
 		contentValues.put(KEY_PUZZLE_COMPLEXITY, puzzleComplexity.toString());
 
 		contentValues.put(KEY_SCORE_ORIGIN, ScoreOrigin.NONE.toString());
@@ -201,10 +202,12 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 					"Parameter LeaderboardId is not specified.");
 		}
 		if (statisticsId <= 0) {
-			throw new DatabaseAdapterException("Parameter statisticsId is invalid.");
+			throw new DatabaseAdapterException(
+					"Parameter statisticsId is invalid.");
 		}
 		if (rawScore <= 0) {
-			throw new DatabaseAdapterException("Parameter rawScore Id is invalid.");
+			throw new DatabaseAdapterException(
+					"Parameter rawScore Id is invalid.");
 		}
 
 		ContentValues contentValues = new ContentValues();
@@ -215,7 +218,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		contentValues.put(KEY_SCORE_STATISTICS_ID, statisticsId);
 		contentValues.put(KEY_SCORE_RAW_SCORE, rawScore);
 		contentValues.put(KEY_SCORE_DATE_SUBMITTED,
-				toSQLiteTimestamp(new java.util.Date().getTime()));
+				DatabaseUtil.toSQLiteTimestamp(new java.util.Date().getTime()));
 
 		// Rank information is cleared explicitly as the rank information does
 		// not correspond with the score in case an existing leaderboard is
@@ -226,8 +229,8 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		contentValues.put(KEY_RANK_DATE_LAST_UPDATED, (String) null);
 
 		return sqliteDatabase
-				.update(TABLE_NAME, contentValues,
-						KEY_LEADERBOARD_ID + " = " + stringBetweenQuotes(leaderboardId), null) == 1;
+				.update(TABLE_NAME, contentValues, KEY_LEADERBOARD_ID + " = "
+						+ DatabaseUtil.stringBetweenQuotes(leaderboardId), null) == 1;
 	}
 
 	/**
@@ -256,10 +259,12 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 					"Parameter LeaderboardId is not specified.");
 		}
 		if (rawScore <= 0) {
-			throw new DatabaseAdapterException("Parameter rawScore Id is invalid.");
+			throw new DatabaseAdapterException(
+					"Parameter rawScore Id is invalid.");
 		}
 
-		String timestamp = toSQLiteTimestamp(new java.util.Date().getTime());
+		String timestamp = DatabaseUtil.toSQLiteTimestamp(new java.util.Date()
+				.getTime());
 
 		ContentValues contentValues = new ContentValues();
 		contentValues.put(KEY_LEADERBOARD_ID, leaderboardId);
@@ -279,8 +284,8 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		contentValues.put(KEY_RANK_DATE_LAST_UPDATED, timestamp);
 
 		return sqliteDatabase
-				.update(TABLE_NAME, contentValues,
-						KEY_LEADERBOARD_ID + " = " + stringBetweenQuotes(leaderboardId), null) == 1;
+				.update(TABLE_NAME, contentValues, KEY_LEADERBOARD_ID + " = "
+						+ DatabaseUtil.stringBetweenQuotes(leaderboardId), null) == 1;
 	}
 
 	/**
@@ -292,7 +297,8 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	public boolean updateWithGooglePlayRank(String leaderboardId, long rank,
 			String rankDisplay) {
 		if (leaderboardId == null || leaderboardId.trim().equals("")) {
-			throw new DatabaseAdapterException("LeaderboardId is not specified.");
+			throw new DatabaseAdapterException(
+					"LeaderboardId is not specified.");
 		}
 
 		// Update the ranking fields.
@@ -302,11 +308,11 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		contentValues.put(KEY_RANK, rank);
 		contentValues.put(KEY_RANK_DISPLAY, rankDisplay);
 		contentValues.put(KEY_RANK_DATE_LAST_UPDATED,
-				toSQLiteTimestamp(new java.util.Date().getTime()));
+				DatabaseUtil.toSQLiteTimestamp(new java.util.Date().getTime()));
 
 		return sqliteDatabase
-				.update(TABLE_NAME, contentValues,
-						KEY_LEADERBOARD_ID + " = " + stringBetweenQuotes(leaderboardId), null) == 1;
+				.update(TABLE_NAME, contentValues, KEY_LEADERBOARD_ID + " = "
+						+ DatabaseUtil.stringBetweenQuotes(leaderboardId), null) == 1;
 	}
 
 	/**
@@ -317,7 +323,8 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	@SuppressWarnings("UnusedReturnValue")
 	public boolean updateWithGooglePlayRankNotAvailable(String leaderboardId) {
 		if (leaderboardId == null || leaderboardId.trim().equals("")) {
-			throw new DatabaseAdapterException("LeaderboardId is not specified.");
+			throw new DatabaseAdapterException(
+					"LeaderboardId is not specified.");
 		}
 
 		// Update the ranking fields.
@@ -327,11 +334,11 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		contentValues.put(KEY_RANK, (String) null);
 		contentValues.put(KEY_RANK_DISPLAY, (String) null);
 		contentValues.put(KEY_RANK_DATE_LAST_UPDATED,
-				toSQLiteTimestamp(new java.util.Date().getTime()));
+				DatabaseUtil.toSQLiteTimestamp(new java.util.Date().getTime()));
 
 		return sqliteDatabase
-				.update(TABLE_NAME, contentValues,
-						KEY_LEADERBOARD_ID + " = " + stringBetweenQuotes(leaderboardId), null) == 1;
+				.update(TABLE_NAME, contentValues, KEY_LEADERBOARD_ID + " = "
+						+ DatabaseUtil.stringBetweenQuotes(leaderboardId), null) == 1;
 	}
 
 	/**
@@ -348,8 +355,8 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		try {
 			cursor = sqliteDatabase.query(true, TABLE_NAME,
 					DATABASE_TABLE.getColumnNames(), KEY_LEADERBOARD_ID + "="
-							+ stringBetweenQuotes(leaderboardId), null, null,
-					null, null, null);
+							+ DatabaseUtil.stringBetweenQuotes(leaderboardId),
+					null, null, null, null, null);
 			leaderboardRankRow = toLeaderboardRankRow(cursor);
 		} catch (SQLiteException e) {
 			throw new DatabaseAdapterException(String.format(
@@ -383,8 +390,9 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 				.getColumnIndexOrThrow(KEY_LEADERBOARD_ID));
 		leaderboardRankRow.mGridSize = cursor.getInt(cursor
 				.getColumnIndexOrThrow(KEY_GRID_SIZE));
-		leaderboardRankRow.mOperatorsHidden = valueOfSQLiteBoolean(cursor
-				.getString(cursor.getColumnIndexOrThrow(KEY_HIDDEN_OPERATORS)));
+		leaderboardRankRow.mOperatorsHidden = DatabaseUtil
+				.valueOfSQLiteBoolean(cursor.getString(cursor
+						.getColumnIndexOrThrow(KEY_HIDDEN_OPERATORS)));
 		leaderboardRankRow.mPuzzleComplexity = PuzzleComplexity
 				.valueOf(cursor.getString(cursor
 						.getColumnIndexOrThrow(KEY_PUZZLE_COMPLEXITY)));
@@ -394,15 +402,15 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 				.getColumnIndexOrThrow(KEY_SCORE_STATISTICS_ID));
 		leaderboardRankRow.mRawScore = cursor.getLong(cursor
 				.getColumnIndexOrThrow(KEY_SCORE_RAW_SCORE));
-		leaderboardRankRow.mDateSubmitted = valueOfSQLiteTimestamp(cursor
-				.getString(cursor
+		leaderboardRankRow.mDateSubmitted = DatabaseUtil
+				.valueOfSQLiteTimestamp(cursor.getString(cursor
 						.getColumnIndexOrThrow(KEY_SCORE_DATE_SUBMITTED)));
 		leaderboardRankRow.mRank = cursor.getLong(cursor
 				.getColumnIndexOrThrow(KEY_RANK));
 		leaderboardRankRow.mRankDisplay = cursor.getString(cursor
 				.getColumnIndexOrThrow(KEY_RANK_DISPLAY));
-		leaderboardRankRow.mDateLastUpdated = valueOfSQLiteTimestamp(cursor
-				.getString(cursor
+		leaderboardRankRow.mDateLastUpdated = DatabaseUtil
+				.valueOfSQLiteTimestamp(cursor.getString(cursor
 						.getColumnIndexOrThrow(KEY_RANK_DATE_LAST_UPDATED)));
 		leaderboardRankRow.mRankStatus = RankStatus.valueOf(cursor
 				.getString(cursor.getColumnIndexOrThrow(KEY_RANK_STATUS)));
@@ -505,8 +513,10 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		// Include all leaderboards for which the rank status equals
 		// TO_BE_UPDATED
 		// noinspection StringConcatenationInsideStringBufferAppend
-		stringBuilder.append(KEY_RANK_STATUS + " = "
-				+ stringBetweenQuotes(RankStatus.TO_BE_UPDATED.toString()));
+		stringBuilder.append(KEY_RANK_STATUS
+				+ " = "
+				+ DatabaseUtil.stringBetweenQuotes(RankStatus.TO_BE_UPDATED
+						.toString()));
 
 		// Include all leaderboards having a score and an updated rank which
 		// have not been updated in the last 15 minutes. These are included
@@ -514,34 +524,33 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		// achieved a better score than the top score of the current player
 		// in the last 15 minutes.
 		// noinspection StringConcatenationInsideStringBufferAppend
-		stringBuilder
-				.append(" OR ("
-						+ KEY_RANK_STATUS
-						+ " = "
-						+ stringBetweenQuotes(RankStatus.TOP_RANK_UPDATED
-								.toString())
-						+ " AND "
-						+ KEY_RANK_DATE_LAST_UPDATED
-						+ " < "
-						+ stringBetweenQuotes(toSQLiteTimestamp(currentTimeMinus15Minutes))
-						+ ")");
+		stringBuilder.append(" OR ("
+				+ KEY_RANK_STATUS
+				+ " = "
+				+ DatabaseUtil.stringBetweenQuotes(RankStatus.TOP_RANK_UPDATED
+						.toString())
+				+ " AND "
+				+ KEY_RANK_DATE_LAST_UPDATED
+				+ " < "
+				+ DatabaseUtil.stringBetweenQuotes(DatabaseUtil
+						.toSQLiteTimestamp(currentTimeMinus15Minutes)) + ")");
 
 		// Include all leaderboards having no rank and no score which have
 		// not been updated in the last 24 hours. These are include as the
 		// current as the current player may have played this leaderboard on
 		// another device in this interval.
 		// noinspection StringConcatenationInsideStringBufferAppend
-		stringBuilder
-				.append(" OR ("
-						+ KEY_RANK_STATUS
-						+ " = "
-						+ stringBetweenQuotes(RankStatus.TOP_RANK_NOT_AVAILABLE
+		stringBuilder.append(" OR ("
+				+ KEY_RANK_STATUS
+				+ " = "
+				+ DatabaseUtil
+						.stringBetweenQuotes(RankStatus.TOP_RANK_NOT_AVAILABLE
 								.toString())
-						+ " AND "
-						+ KEY_RANK_DATE_LAST_UPDATED
-						+ " < "
-						+ stringBetweenQuotes(toSQLiteTimestamp(currentTimeMinus24Hours))
-						+ ")");
+				+ " AND "
+				+ KEY_RANK_DATE_LAST_UPDATED
+				+ " < "
+				+ DatabaseUtil.stringBetweenQuotes(DatabaseUtil
+						.toSQLiteTimestamp(currentTimeMinus24Hours)) + ")");
 
 		return stringBuilder.toString();
 	}
@@ -555,8 +564,11 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 			StringBuilder query = new StringBuilder();
 			query.append("UPDATE " + TABLE_NAME + " ");
 			// noinspection StringConcatenationInsideStringBufferAppend
-			query.append("SET " + KEY_RANK_STATUS + " = "
-					+ stringBetweenQuotes(RankStatus.TO_BE_UPDATED.toString()));
+			query.append("SET "
+					+ KEY_RANK_STATUS
+					+ " = "
+					+ DatabaseUtil.stringBetweenQuotes(RankStatus.TO_BE_UPDATED
+							.toString()));
 			query.append(",  " + KEY_RANK + " = null");
 			query.append(",  " + KEY_RANK_DISPLAY + " = null");
 			query.append(",  " + KEY_RANK_DATE_LAST_UPDATED + " = null");

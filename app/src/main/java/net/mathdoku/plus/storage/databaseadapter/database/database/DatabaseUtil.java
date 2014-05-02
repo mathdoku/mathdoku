@@ -14,7 +14,7 @@ public class DatabaseUtil {
 	/**
 	 * Encloses a string with back ticks (`). To be used for SQLite table and
 	 * column names.
-	 *
+	 * 
 	 * @param string
 	 *            The string which needs to be prefixed and suffixed with back
 	 *            ticks.
@@ -27,7 +27,7 @@ public class DatabaseUtil {
 	/**
 	 * Encloses a string with quotes ('). To be used for string values in
 	 * SQlite.
-	 *
+	 * 
 	 * @param string
 	 *            The string which needs to be prefixed and suffixed with
 	 *            quotes.
@@ -39,7 +39,7 @@ public class DatabaseUtil {
 
 	/**
 	 * Converts a boolean value to a SQLite representation.
-	 *
+	 * 
 	 * @param value
 	 *            : The boolean value to be converted.
 	 * @return The string representation of the boolean value as it is stored in
@@ -49,9 +49,13 @@ public class DatabaseUtil {
 		return value ? SQLITE_TRUE : SQLITE_FALSE;
 	}
 
+	public static String toQuotedSQLiteString(boolean value) {
+		return stringBetweenQuotes(toSQLiteBoolean(value));
+	}
+
 	/**
 	 * Converts a SQLite boolean representation to a boolean.
-	 *
+	 * 
 	 * @param value
 	 *            The boolean string value to be converted.
 	 * @return The boolean value corresponding with the SQLite string value.
@@ -62,7 +66,7 @@ public class DatabaseUtil {
 
 	/**
 	 * Converts a datetime value from a long to a SQLite representation.
-	 *
+	 * 
 	 * @param value
 	 *            The long value to be converted.
 	 * @return The string representation of the long value as it is stored in
@@ -75,7 +79,7 @@ public class DatabaseUtil {
 	/**
 	 * Converts a datetime value from a string to a SQL timestamp
 	 * representation.
-	 *
+	 * 
 	 * @param value
 	 *            The string value to be converted.
 	 * @return The SQL timestamp representation of the string value.
@@ -90,7 +94,7 @@ public class DatabaseUtil {
 
 	/**
 	 * Converts a string value from the SQLite representation to a long.
-	 *
+	 * 
 	 * @param value
 	 *            The string value to be converted.
 	 * @return The long value representing the given string value. 0 in case a

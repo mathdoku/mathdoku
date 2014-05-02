@@ -34,7 +34,9 @@ public class DatabaseColumnDefinition {
 	}
 
 	public DatabaseColumnDefinition setDefaultValue(String defaultValue) {
-		setDefaultValueAsString(DatabaseUtil.stringBetweenBackTicks(defaultValue == null ? "" : defaultValue));
+		setDefaultValueAsString(DatabaseUtil
+				.stringBetweenBackTicks(defaultValue == null ? ""
+						: defaultValue));
 		return this;
 	}
 
@@ -49,14 +51,16 @@ public class DatabaseColumnDefinition {
 	}
 
 	public DatabaseColumnDefinition setDefaultValue(boolean booleanValue) {
-		setDefaultValueAsString(
-				DatabaseUtil.stringBetweenBackTicks(DatabaseUtil.toSQLiteBoolean(booleanValue)));
+		setDefaultValueAsString(DatabaseUtil
+				.stringBetweenBackTicks(DatabaseUtil
+						.toSQLiteBoolean(booleanValue)));
 		return this;
 	}
 
 	public String getColumnClause() {
 		StringBuilder columnDefinition = new StringBuilder();
-		columnDefinition.append(DatabaseUtil.stringBetweenBackTicks(columnName.trim()));
+		columnDefinition.append(DatabaseUtil.stringBetweenBackTicks(columnName
+				.trim()));
 		columnDefinition.append(" ");
 		columnDefinition.append(dataType.getSqliteDataType());
 		if (primaryKey) {

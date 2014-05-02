@@ -79,9 +79,13 @@ public abstract class DatabaseAdapter {
 		final String columnSql = "sql";
 		String[] columns = { columnSql };
 
-		Cursor cursor = sqliteDatabase.query(true, "sqlite_master", columns,
-				"name = " + stringBetweenQuotes(getTableName())
-						+ " AND type = " + stringBetweenQuotes("table"), null,
+		Cursor cursor = sqliteDatabase.query(
+				true,
+				"sqlite_master",
+				columns,
+				"name = " + DatabaseUtil.stringBetweenQuotes(getTableName())
+						+ " AND type = "
+						+ DatabaseUtil.stringBetweenQuotes("table"), null,
 				null, null, null, null);
 		if (cursor != null) {
 			if (cursor.moveToFirst()) {
@@ -184,40 +188,5 @@ public abstract class DatabaseAdapter {
 
 	public void execSQL(String sql) {
 		sqliteDatabase.execSQL(sql);
-	}
-
-	// Convenience method
-	protected static String stringBetweenBackTicks(String string) {
-		return DatabaseUtil.stringBetweenBackTicks(string);
-	}
-
-	// Convenience method
-	protected static String stringBetweenQuotes(String string) {
-		return DatabaseUtil.stringBetweenQuotes(string);
-	}
-
-	// Convenience method
-	protected static String toSQLiteBoolean(boolean value) {
-		return DatabaseUtil.toSQLiteBoolean(value);
-	}
-
-	// Convenience method
-	protected static boolean valueOfSQLiteBoolean(String value) {
-		return DatabaseUtil.valueOfSQLiteBoolean(value);
-	}
-
-	// Convenience method
-	protected static String toSQLiteTimestamp(long value) {
-		return DatabaseUtil.toSQLiteTimestamp(value);
-	}
-
-	// Convenience method
-	protected static java.sql.Timestamp toSQLTimestamp(String value) {
-		return DatabaseUtil.toSQLTimestamp(value);
-	}
-
-	// Convenience method
-	protected static long valueOfSQLiteTimestamp(String value) {
-		return DatabaseUtil.valueOfSQLiteTimestamp(value);
 	}
 }

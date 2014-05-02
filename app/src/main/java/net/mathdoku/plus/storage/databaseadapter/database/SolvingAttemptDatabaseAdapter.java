@@ -12,6 +12,7 @@ import net.mathdoku.plus.storage.databaseadapter.database.database.DataType;
 import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseColumnDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseForeignKeyDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseTableDefinition;
+import net.mathdoku.plus.storage.databaseadapter.database.database.DatabaseUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,9 +120,9 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(KEY_GRID_ID, solvingAttemptRow.mGridId);
 		initialValues.put(KEY_DATE_CREATED,
-				toSQLiteTimestamp(solvingAttemptRow.mDateCreated));
+				DatabaseUtil.toSQLiteTimestamp(solvingAttemptRow.mDateCreated));
 		initialValues.put(KEY_DATE_UPDATED,
-				toSQLiteTimestamp(solvingAttemptRow.mDateUpdated));
+				DatabaseUtil.toSQLiteTimestamp(solvingAttemptRow.mDateUpdated));
 		initialValues.put(KEY_SAVED_WITH_REVISION,
 				solvingAttemptRow.mSavedWithRevision);
 		initialValues.put(KEY_DATA, solvingAttemptRow.mStorageString);
@@ -170,10 +171,12 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 					.getColumnIndexOrThrow(KEY_ROWID));
 			solvingAttemptRow.mGridId = cursor.getInt(cursor
 					.getColumnIndexOrThrow(KEY_GRID_ID));
-			solvingAttemptRow.mDateCreated = valueOfSQLiteTimestamp(cursor
-					.getString(cursor.getColumnIndexOrThrow(KEY_DATE_CREATED)));
-			solvingAttemptRow.mDateUpdated = valueOfSQLiteTimestamp(cursor
-					.getString(cursor.getColumnIndexOrThrow(KEY_DATE_UPDATED)));
+			solvingAttemptRow.mDateCreated = DatabaseUtil
+					.valueOfSQLiteTimestamp(cursor.getString(cursor
+							.getColumnIndexOrThrow(KEY_DATE_CREATED)));
+			solvingAttemptRow.mDateUpdated = DatabaseUtil
+					.valueOfSQLiteTimestamp(cursor.getString(cursor
+							.getColumnIndexOrThrow(KEY_DATE_UPDATED)));
 			solvingAttemptRow.mSavedWithRevision = cursor.getInt(cursor
 					.getColumnIndexOrThrow(KEY_SAVED_WITH_REVISION));
 			solvingAttemptRow.mStorageString = cursor.getString(cursor
@@ -234,7 +237,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	public boolean update(SolvingAttemptRow solvingAttemptRow) {
 		ContentValues contentValues = new ContentValues();
 		contentValues.put(KEY_DATE_UPDATED,
-				toSQLiteTimestamp(solvingAttemptRow.mDateUpdated));
+				DatabaseUtil.toSQLiteTimestamp(solvingAttemptRow.mDateUpdated));
 		contentValues.put(KEY_SAVED_WITH_REVISION,
 				solvingAttemptRow.mSavedWithRevision);
 		contentValues.put(KEY_DATA, solvingAttemptRow.mStorageString);
@@ -292,8 +295,8 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 * @return The prefixed column name.
 	 */
 	public static String getPrefixedColumnName(String column) {
-		return stringBetweenBackTicks(TABLE_NAME) + "."
-				+ stringBetweenBackTicks(column);
+		return DatabaseUtil.stringBetweenBackTicks(TABLE_NAME) + "."
+				+ DatabaseUtil.stringBetweenBackTicks(column);
 	}
 
 	/**
