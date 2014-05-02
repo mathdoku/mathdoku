@@ -133,7 +133,7 @@ public class DatabaseColumnDefinitionTest {
 		databaseColumnDefinition.setUniqueKey();
 		databaseColumnDefinition.setPrimaryKey();
 		expectedColumnDefinitionStringBuilder
-				.append(" primary key autoincrement unique not null default 67283");
+				.append(" primary key autoincrement not null unique default 67283");
 		assertThatDatabaseColumnDefinitionMatches(expectedColumnDefinitionStringBuilder
 				.toString());
 	}

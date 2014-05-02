@@ -62,11 +62,11 @@ public class DatabaseColumnDefinition {
 		if (primaryKey) {
 			columnDefinition.append(" primary key autoincrement");
 		}
-		if (uniqueKey) {
-			columnDefinition.append(" unique");
-		}
 		if (notNull) {
 			columnDefinition.append(" not null");
+		}
+		if (uniqueKey) {
+			columnDefinition.append(" unique");
 		}
 		if (hasDefaultValue) {
 			columnDefinition.append(" default ");
