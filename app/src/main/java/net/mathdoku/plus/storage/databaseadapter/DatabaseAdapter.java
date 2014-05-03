@@ -161,7 +161,7 @@ public abstract class DatabaseAdapter {
 		return !isExistingDatabaseTable();
 	}
 
-	private void execAndLogSQL(String sql) {
+	void execAndLogSQL(String sql) {
 		if (Config.mAppMode == AppMode.DEVELOPMENT) {
 			Log.i(TAG, "Executing SQL: " + sql);
 		}
@@ -199,9 +199,5 @@ public abstract class DatabaseAdapter {
 
 	public void setTransactionSuccessful() {
 		sqliteDatabase.setTransactionSuccessful();
-	}
-
-	public void execSQL(String sql) {
-		sqliteDatabase.execSQL(sql);
 	}
 }

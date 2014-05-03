@@ -1,9 +1,14 @@
-package net.mathdoku.plus.storage.databaseadapter.database;
+package net.mathdoku.plus.storage.databaseadapter;
 
 import android.app.Activity;
 
 import net.mathdoku.plus.storage.databaseadapter.DatabaseAdapter;
+import net.mathdoku.plus.storage.databaseadapter.DatabaseColumnDropper;
 import net.mathdoku.plus.storage.databaseadapter.DatabaseHelper;
+import net.mathdoku.plus.storage.databaseadapter.database.DataType;
+import net.mathdoku.plus.storage.databaseadapter.database.DatabaseColumnDefinition;
+import net.mathdoku.plus.storage.databaseadapter.database.DatabaseException;
+import net.mathdoku.plus.storage.databaseadapter.database.DatabaseTableDefinition;
 
 import org.junit.After;
 import org.junit.Before;
@@ -65,6 +70,8 @@ public class DatabaseColumnDropperTest {
 
 	@After
 	public void tearDown() {
+		testTableDatabaseAdapter.dropTable();
+
 		// Close the database helper. This ensure that the next test will use a
 		// new DatabaseHelper instance with a new SQLite database connection.
 		DatabaseHelper.getInstance().close();

@@ -1,9 +1,8 @@
-package net.mathdoku.plus.storage.databaseadapter.database;
+package net.mathdoku.plus.storage.databaseadapter;
 
 import android.text.TextUtils;
-import android.util.Log;
 
-import net.mathdoku.plus.storage.databaseadapter.DatabaseAdapter;
+import net.mathdoku.plus.storage.databaseadapter.database.DatabaseException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,17 +36,16 @@ public class DatabaseColumnDropper {
 		try {
 			databaseAdapter.beginTransaction();
 
-			databaseAdapter.execSQL(getRenameTableSQL());
+			databaseAdapter.execAndLogSQL(getRenameTableToTemporaryTableSQL());
 			databaseAdapter.createTable();
-			databaseAdapter.execSQL(getInsertDataSQL());
-			databaseAdapter.dropTable();
+			databaseAdapter.execAndLogSQL(getInsertDataSQL());
+			databaseAdapter.execAndLogSQL(getDropTemporaryTableSQL());
 
 			databaseAdapter.setTransactionSuccessful();
 		} catch (Exception e) {
-			Log.wtf(TAG, String.format(
+			throw new DatabaseException(String.format(
 					"Error while dropping column(s) from table %s.",
 					databaseAdapter.getTableName()), e);
-			return false;
 		} finally {
 			databaseAdapter.endTransaction();
 		}
@@ -93,14 +91,14 @@ public class DatabaseColumnDropper {
 		}
 	}
 
-	private String getRenameTableSQL() {
+	private String getRenameTableToTemporaryTableSQL() {
 		return String.format("ALTER TABLE %s RENAME TO %s;",
 				databaseAdapter.getTableName(),
-				getTempTableName(databaseAdapter.getTableName()));
+				getTempTableName());
 	}
 
-	private String getTempTableName(String tableName) {
-		return tableName + "_old";
+	private String getTempTableName() {
+		return databaseAdapter.getTableName() + "_old";
 	}
 
 	private String getInsertDataSQL() {
@@ -114,9 +112,13 @@ public class DatabaseColumnDropper {
 		stringBuilder.append(") SELECT ");
 		stringBuilder.append(newColumnsString);
 		stringBuilder.append(" FROM ");
-		stringBuilder.append(getTempTableName(databaseAdapter.getTableName()));
+		stringBuilder.append(getTempTableName());
 		stringBuilder.append(";");
 
 		return stringBuilder.toString();
+	}
+
+	public String getDropTemporaryTableSQL() {
+		return "DROP TABLE " + getTempTableName();
 	}
 }
