@@ -45,16 +45,11 @@ public class DatabaseTableDefinition {
 			throw new DatabaseException(
 					"At least one column has to be specified.");
 		}
-		columnNames = setColumnNames();
-	}
-
-	private String[] setColumnNames() {
-		String[] columnNames = new String[databaseColumnDefinitions.size()];
+		columnNames = new String[databaseColumnDefinitions.size()];
 		int index = 0;
 		for (DatabaseColumnDefinition databaseColumnDefinition : databaseColumnDefinitions) {
 			columnNames[index++] = databaseColumnDefinition.getName();
 		}
-		return columnNames;
 	}
 
 	public String getTableName() {
