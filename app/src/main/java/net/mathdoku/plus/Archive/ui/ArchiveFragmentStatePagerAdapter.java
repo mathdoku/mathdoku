@@ -10,6 +10,8 @@ import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter.StatusFilter;
 
+import java.util.List;
+
 /**
  * A {@link android.support.v4.app.FragmentStatePagerAdapter} that returns a
  * fragment representing an object in the collection.
@@ -26,9 +28,10 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 
 	private final ArchiveFragmentActivity mArchiveFragmentActivity;
 
-	// The list of grids which can be shown with the adapter. Per grid the
-	// latest solving attempt is also retrieved.
-	private int[][] mGridIds;
+	// The list of latest solving attempts which will be shown in the archive.
+	// In case multiple solving attempts exists for a grid, only the latest
+	// solving attempt is displayed.
+	private List<GridDatabaseAdapter.LatestSolvingAttemptForGrid> latestSolvingAttemptForGrids;
 
 	// Selected filters
 	private StatusFilter mStatusFilter;
@@ -57,12 +60,12 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	}
 
 	@Override
-	public android.support.v4.app.Fragment getItem(int i) {
+	public android.support.v4.app.Fragment getItem(int position) {
 		android.support.v4.app.Fragment fragment = new ArchiveFragment();
 		Bundle args = new Bundle();
 		args
 				.putInt(ArchiveFragment.BUNDLE_KEY_SOLVING_ATTEMPT_ID,
-						mGridIds[i][GridDatabaseAdapter.LATEST_SOLVING_ATTEMPT_PER_GRID__SOLVING_ATTEMPT_ID]);
+						getSolvingAttemptId(position));
 		fragment.setArguments(args);
 		return fragment;
 	}
@@ -74,37 +77,39 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 
 	@Override
 	public int getCount() {
-		return mGridIds == null ? 0 : mGridIds.length;
+		return latestSolvingAttemptForGrids.size();
 	}
 
 	@Override
 	public CharSequence getPageTitle(int position) {
-		if (mGridIds != null && position >= 0 && position < mGridIds.length) {
-			if (DEBUG_SHOW_SOLVING_ATTEMPT_ID) {
-				return mLabelPuzzleNumber
-						+ " "
-						+ mGridIds[position][GridDatabaseAdapter.LATEST_SOLVING_ATTEMPT_PER_GRID__GRID_ID]
-						+ "("
-						+ mGridIds[position][GridDatabaseAdapter.LATEST_SOLVING_ATTEMPT_PER_GRID__SOLVING_ATTEMPT_ID]
-						+ ")";
-			} else {
-				int currentPosition = mArchiveFragmentActivity
-						.getViewPagerCurrentPosition();
-				if (position < currentPosition) {
-					return "< "
-							+ mGridIds[position][GridDatabaseAdapter.LATEST_SOLVING_ATTEMPT_PER_GRID__GRID_ID];
-				} else if (position == currentPosition) {
-					return mLabelPuzzleNumber
-							+ " "
-							+ mGridIds[position][GridDatabaseAdapter.LATEST_SOLVING_ATTEMPT_PER_GRID__GRID_ID];
-				} else {
-					return mGridIds[position][GridDatabaseAdapter.LATEST_SOLVING_ATTEMPT_PER_GRID__GRID_ID]
-							+ " >";
-				}
+		if (isValidPositionInListOfLatestSolvingAttempts(position)) {
+			int relativePosition = position - mArchiveFragmentActivity
+					.getViewPagerCurrentPosition();
+
+			StringBuilder stringBuilder = new StringBuilder();
+			if (relativePosition < 0) {
+				stringBuilder.append("<");
+			} else if (relativePosition == 0) {
+				stringBuilder.append(mLabelPuzzleNumber);
 			}
+			stringBuilder.append(" ");
+			stringBuilder.append(getGridId(position));
+			if (DEBUG_SHOW_SOLVING_ATTEMPT_ID) {
+				stringBuilder.append(" (");
+				stringBuilder.append(getSolvingAttemptId(position));
+				stringBuilder.append(")");
+			}
+			if (relativePosition > 0) {
+				stringBuilder.append(" >");
+			}
+			return stringBuilder.toString();
 		} else {
 			return mLabelPuzzleNumber;
 		}
+	}
+
+	private boolean isValidPositionInListOfLatestSolvingAttempts(int position) {
+		return position >= 0 && position < latestSolvingAttemptForGrids.size();
 	}
 
 	/**
@@ -157,7 +162,7 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	private void setGridIds() {
 		// Determine which grid should be shown
 		GridDatabaseAdapter gridDatabaseAdapter = new GridDatabaseAdapter();
-		mGridIds = gridDatabaseAdapter.getLatestSolvingAttemptsPerGrid(
+		latestSolvingAttemptForGrids = gridDatabaseAdapter.getLatestSolvingAttemptPerGrid(
 				mStatusFilter, mGridTypeFilter);
 		notifyDataSetChanged();
 	}
@@ -172,12 +177,9 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	 *         this adapter.
 	 */
 	public int getPositionOfGridId(int gridId) {
-		if (mGridIds != null) {
-			// Check position of given solving attempt id.
-			for (int i = 0; i < mGridIds.length; i++) {
-				if (mGridIds[i][GridDatabaseAdapter.LATEST_SOLVING_ATTEMPT_PER_GRID__GRID_ID] == gridId) {
-					return i;
-				}
+		for (GridDatabaseAdapter.LatestSolvingAttemptForGrid latestSolvingAttemptForGrid : latestSolvingAttemptForGrids) {
+			if (latestSolvingAttemptForGrid.getGridId() == gridId) {
+				return latestSolvingAttemptForGrids.indexOf(latestSolvingAttemptForGrid);
 			}
 		}
 
@@ -192,8 +194,8 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	 * @return The grid id at the given position.
 	 */
 	public int getGridId(int position) {
-		if (mGridIds != null && position >= 0 && position < mGridIds.length) {
-			return mGridIds[position][GridDatabaseAdapter.LATEST_SOLVING_ATTEMPT_PER_GRID__GRID_ID];
+		if (isValidPositionInListOfLatestSolvingAttempts(position)) {
+			return latestSolvingAttemptForGrids.get(position).getGridId();
 		} else {
 			return INVALID_POSITION_ID;
 		}
@@ -208,8 +210,8 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	 * @return The grid id at the given position.
 	 */
 	public int getSolvingAttemptId(int position) {
-		if (mGridIds != null && position >= 0 && position < mGridIds.length) {
-			return mGridIds[position][GridDatabaseAdapter.LATEST_SOLVING_ATTEMPT_PER_GRID__SOLVING_ATTEMPT_ID];
+		if (isValidPositionInListOfLatestSolvingAttempts(position)) {
+			return latestSolvingAttemptForGrids.get(position).getSolvingAttemptId();
 		} else {
 			return INVALID_POSITION_ID;
 		}

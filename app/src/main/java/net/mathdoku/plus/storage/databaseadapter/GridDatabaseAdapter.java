@@ -23,6 +23,9 @@ import net.mathdoku.plus.storage.databaseadapter.database.DatabaseProjection;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseTableDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * The database adapter for the grid table.
  */
@@ -50,7 +53,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	private static final String KEY_MAX_CAGE_RESULT = "max_cage_result";
 	private static final String KEY_MAX_CAGE_SIZE = "max_cage_size";
 
-	// Columns used in result of function getLatestSolvingAttemptsPerGrid
+	// Columns used in result of function getLatestSolvingAttemptPerGrid
 	public static final int LATEST_SOLVING_ATTEMPT_PER_GRID__GRID_ID = 0;
 	public static final int LATEST_SOLVING_ATTEMPT_PER_GRID__SOLVING_ATTEMPT_ID = 1;
 
@@ -313,14 +316,32 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		return TABLE_NAME + "." + column;
 	}
 
+	public class LatestSolvingAttemptForGrid {
+		private final int gridId;
+		private final int solvingAttemptId;
+
+		public LatestSolvingAttemptForGrid(int gridId, int solvingAttemptId) {
+			this.gridId = gridId;
+			this.solvingAttemptId = solvingAttemptId;
+		}
+
+		public int getGridId() {
+			return gridId;
+		}
+
+		public int getSolvingAttemptId() {
+			return solvingAttemptId;
+		}
+	}
+
 	/**
 	 * Get a list of all grid id's and the latest solving attempt per grid.
 	 * 
 	 * @return The list of all grid id's and the latest solving attempt per
 	 *         grid.
 	 */
-	public int[][] getLatestSolvingAttemptsPerGrid(StatusFilter statusFilter,
-			GridTypeFilter gridTypeFilter) {
+	public List<LatestSolvingAttemptForGrid> getLatestSolvingAttemptPerGrid(
+			StatusFilter statusFilter, GridTypeFilter gridTypeFilter) {
 		String keySolvingAttemptId = "solving_attempt_id";
 
 		// Build databaseProjection
@@ -377,23 +398,22 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		}
 
 		// Convert results in cursor to array of grid id's
-		int[][] gridIds = null;
+		List<LatestSolvingAttemptForGrid> latestSolvingAttemptForGrids = new ArrayList<LatestSolvingAttemptForGrid>();
 		Cursor cursor = null;
 		try {
 			cursor = sqliteQueryBuilder.query(sqliteDatabase,
 					databaseProjection.getAllColumnNames(), selection, null,
 					KEY_ROWID, null, null);
 			if (cursor != null && cursor.moveToFirst()) {
-				gridIds = new int[cursor.getCount()][2];
 				int i = 0;
 				int gridIdColumnIndex = cursor.getColumnIndexOrThrow(KEY_ROWID);
 				int maxSolvingAttemptColumnIndex = cursor
 						.getColumnIndexOrThrow(keySolvingAttemptId);
 				do {
-					gridIds[i][LATEST_SOLVING_ATTEMPT_PER_GRID__GRID_ID] = cursor
-							.getInt(gridIdColumnIndex);
-					gridIds[i][LATEST_SOLVING_ATTEMPT_PER_GRID__SOLVING_ATTEMPT_ID] = cursor
-							.getInt(maxSolvingAttemptColumnIndex);
+					latestSolvingAttemptForGrids
+							.add(new LatestSolvingAttemptForGrid(cursor
+									.getInt(gridIdColumnIndex), cursor
+									.getInt(maxSolvingAttemptColumnIndex)));
 
 					i++;
 				} while (cursor.moveToNext());
@@ -408,7 +428,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 				cursor.close();
 			}
 		}
-		return gridIds;
+		return latestSolvingAttemptForGrids;
 	}
 
 	/**
@@ -654,9 +674,6 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 */
 	@SuppressWarnings("SameParameterValue")
 	public int countGrids(StatusFilter statusFilter, GridTypeFilter sizeFilter) {
-		int[][] gridIds = getLatestSolvingAttemptsPerGrid(statusFilter,
-				sizeFilter);
-		return gridIds == null ? 0 : gridIds.length;
+		return getLatestSolvingAttemptPerGrid(statusFilter, sizeFilter).size();
 	}
-
 }
