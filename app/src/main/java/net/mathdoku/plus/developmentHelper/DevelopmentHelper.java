@@ -19,7 +19,6 @@ import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParametersBuilder;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.statistics.GridStatistics;
-import net.mathdoku.plus.storage.databaseadapter.DatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.DatabaseHelper;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 
@@ -299,7 +298,7 @@ public class DevelopmentHelper {
 			// will be consistent just after it has been created.
 			databaseHelper.getWritableDatabase();
 
-			if (DatabaseHelper.hasChangedTableDefinitions()) {
+			if (databaseHelper.hasChangedTableDefinitions()) {
 				AlertDialog.Builder builder = new AlertDialog.Builder(
 						puzzleFragmentActivity);
 				builder.setTitle("Database is inconsistent?")

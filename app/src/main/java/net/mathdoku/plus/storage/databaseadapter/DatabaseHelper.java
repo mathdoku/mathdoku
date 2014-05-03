@@ -18,7 +18,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final String TAG = DatabaseHelper.class.getName();
 
 	private static final String DATABASE_NAME = "MathDoku.sqlite";
-
 	private static DatabaseHelper mDatabaseHelperSingletonInstance = null;
 
 	// The Objects Creator is responsible for creating all new objects needed by
@@ -37,8 +36,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * @param context
 	 *            : The context in which the database helper is needed.
 	 */
-	private DatabaseHelper(Context context) {
+	DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, getVersion(context));
+		mDatabaseHelperSingletonInstance = this;
 	}
 
 	/**
@@ -65,28 +65,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	/**
-	 * Creates new instance of {@link DatabaseHelper}. All objects in this class
-	 * will be created with the given DatabaseHelper.ObjectsCreator. This method
-	 * is intended for unit testing.
-	 * 
-	 * @param context
-	 *            The context in which the Preference object is created.
-	 * @param objectsCreator
-	 *            The DatabaseHelper.ObjectsCreator to be used by this class.
-	 *            Only create methods for which the default implementation does
-	 *            not suffice, should be overridden.
-	 * @return The singleton instance for the Preferences.
-	 */
-	public static DatabaseHelper getInstance(Context context,
-			DatabaseHelper.ObjectsCreator objectsCreator) {
-		if (objectsCreator != null) {
-			mDatabaseHelperSingletonInstance = objectsCreator
-					.createDatabaseHelper(context.getApplicationContext());
-		}
-		return getInstance(context);
-	}
-
-	/**
 	 * Gets the singleton reference to the DatabaseHelper object. If it does not
 	 * yet exist an exception will be thrown.
 	 * 
@@ -100,31 +78,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	/**
-	 * Gets the (writeable) database connected to this DatabaseHelper object. As
-	 * it is a shortcut for DatabaseHelper.getInstance().getWriteableDatabase()
-	 * you have to be sure that the DatabaseHelper has been instantiated before.
-	 * 
-	 * @return The SQLiteDatabase. Null in case of an error.
-	 */
-	public static SQLiteDatabase getDatabase() {
-		if (mDatabaseHelperSingletonInstance == null) {
-			throw new SingletonInstanceNotInstantiated();
-		}
-		return mDatabaseHelperSingletonInstance.getWritableDatabase();
-	}
-
-	/**
 	 * Begin a transaction for the database connected to this DatabaseHelper
 	 * object. As it is a shortcut for
 	 * DatabaseHelper.getInstance().getWriteableDatabase().beginTransaction()
 	 * you have to be sure that the DatabaseHelper has been instantiated before.
 	 */
 	public void beginTransaction() {
-		if (mDatabaseHelperSingletonInstance == null) {
-			throw new SingletonInstanceNotInstantiated();
-		}
-		SQLiteDatabase sqliteDatabase = mDatabaseHelperSingletonInstance
-				.getWritableDatabase();
+		SQLiteDatabase sqliteDatabase = getWritableDatabase();
 		if (sqliteDatabase != null) {
 			sqliteDatabase.beginTransaction();
 		}
@@ -137,11 +97,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * have to be sure that the DatabaseHelper has been instantiated before.
 	 */
 	public void endTransaction() {
-		if (mDatabaseHelperSingletonInstance == null) {
-			throw new SingletonInstanceNotInstantiated();
-		}
-		SQLiteDatabase sqliteDatabase = mDatabaseHelperSingletonInstance
-				.getWritableDatabase();
+		SQLiteDatabase sqliteDatabase = getWritableDatabase();
 		if (sqliteDatabase != null) {
 			sqliteDatabase.endTransaction();
 		}
@@ -155,11 +111,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * has been instantiated before.
 	 */
 	public void setTransactionSuccessful() {
-		if (mDatabaseHelperSingletonInstance == null) {
-			throw new SingletonInstanceNotInstantiated();
-		}
-		SQLiteDatabase sqliteDatabase = mDatabaseHelperSingletonInstance
-				.getWritableDatabase();
+		SQLiteDatabase sqliteDatabase = getWritableDatabase();
 		if (sqliteDatabase != null) {
 			sqliteDatabase.setTransactionSuccessful();
 		}
@@ -173,8 +125,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		for (DatabaseAdapter databaseAdapter : DatabaseAdapter
-				.getAllDatabaseAdapters(db)) {
+		for (DatabaseAdapter databaseAdapter : getAllDatabaseAdapters(db)) {
 			databaseAdapter.createTable();
 		}
 
@@ -182,18 +133,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL("PRAGMA foreign_keys=ON;");
 	}
 
+	// Package private access for unit testing
+	DatabaseAdapter[] getAllDatabaseAdapters(SQLiteDatabase db) {
+		return DatabaseAdapter.getAllDatabaseAdapters(db);
+	}
+
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		for (DatabaseAdapter databaseAdapter : DatabaseAdapter
-				.getAllDatabaseAdapters(db)) {
+		for (DatabaseAdapter databaseAdapter : getAllDatabaseAdapters(db)) {
 			databaseAdapter.upgradeTable(oldVersion, newVersion);
 		}
 	}
 
-	public static boolean hasChangedTableDefinitions() {
-		for (DatabaseAdapter databaseAdapter : DatabaseAdapter
-				.getAllDatabaseAdapters(mDatabaseHelperSingletonInstance
-						.getReadableDatabase())) {
+	public boolean hasChangedTableDefinitions() {
+		for (DatabaseAdapter databaseAdapter : getAllDatabaseAdapters(mDatabaseHelperSingletonInstance
+				.getReadableDatabase())) {
 			if (databaseAdapter.isTableDefinitionChanged()) {
 				return true;
 			}
