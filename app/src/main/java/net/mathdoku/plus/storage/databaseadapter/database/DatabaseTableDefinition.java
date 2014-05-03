@@ -26,7 +26,7 @@ public class DatabaseTableDefinition {
 	}
 
 	private boolean isComposed() {
-		return (columnNames != null && columnNames.length > 0);
+		return columnNames != null && columnNames.length > 0;
 	}
 
 	private void throwAlterDatabaseTableNotAllowedAfterCompose() {

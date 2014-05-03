@@ -92,7 +92,7 @@ public class DatabaseUtil {
 	}
 
 	private static long getCurrentDateTime() {
-		return (currentDateTime < 0 ? new Date().getTime() : currentDateTime);
+		return currentDateTime < 0 ? new Date().getTime() : currentDateTime;
 	}
 
 	/**
