@@ -20,7 +20,7 @@ public abstract class GridCreator {
 	public static final String FIELD_SEPARATOR_GRID_DEFINITION_PART = ":";
 	private final GridBuilder mGridBuilder;
 	private Grid mGrid;
-	private boolean mSetCorrectEnteredValue;
+	private boolean mSetCorrectEnteredValueToAllCells;
 	private static final int ID_NO_CELL_SELECTED = -1;
 	private int mSelectedCellId = ID_NO_CELL_SELECTED;
 	public static final long DO_NOT_USE_TO_REGENERATE_GRID = 0;
@@ -47,7 +47,7 @@ public abstract class GridCreator {
 			throw new UnexpectedMethodInvocationException(
 					"Grid has already been build by other method invocation.");
 		}
-		mSetCorrectEnteredValue = false;
+		mSetCorrectEnteredValueToAllCells = false;
 		createGrid();
 
 		return this;
@@ -58,7 +58,7 @@ public abstract class GridCreator {
 			throw new UnexpectedMethodInvocationException(
 					"Grid has already been build by other method invocation.");
 		}
-		mSetCorrectEnteredValue = true;
+		mSetCorrectEnteredValueToAllCells = true;
 		createGrid();
 
 		return this;
@@ -146,7 +146,7 @@ public abstract class GridCreator {
 				.setId(cellNumber)
 				.setCorrectValue(cellValue)
 				.setCageId(cageId);
-		if (mSetCorrectEnteredValue) {
+		if (mSetCorrectEnteredValueToAllCells) {
 			cellBuilder.setEnteredValue(cellValue);
 		}
 		if (cellNumber == mSelectedCellId) {
