@@ -31,9 +31,9 @@ import android.widget.TextView;
 
 import com.google.android.gms.games.GamesClient;
 
+import net.mathdoku.plus.R;
 import net.mathdoku.plus.archive.ui.ArchiveFragment;
 import net.mathdoku.plus.archive.ui.ArchiveFragmentActivity;
-import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.developmenthelper.DevelopmentHelper;
@@ -56,7 +56,7 @@ import net.mathdoku.plus.puzzle.ui.GridInputMode;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.statistics.ui.StatisticsFragmentActivity;
 import net.mathdoku.plus.storage.GameFileConverter;
-import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter;
+import net.mathdoku.plus.storage.selector.ArchiveSolvingAttemptSelector;
 import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter.StatusFilter;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankDatabaseAdapter.ScoreOrigin;
@@ -774,8 +774,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		// gird is actually not yet saved in the database at this moment the
 		// check on the number of completed games is lowered with 1.
 		if (!mMathDokuPreferences.isArchiveAvailable()
-				&& new GridDatabaseAdapter().countGrids(StatusFilter.SOLVED,
-						GridTypeFilter.ALL) >= 4) {
+				&& new ArchiveSolvingAttemptSelector(StatusFilter.SOLVED,
+						GridTypeFilter.ALL).countGrids() >= 4) {
 			mMathDokuPreferences.setArchiveVisible();
 			setNavigationDrawer();
 		}

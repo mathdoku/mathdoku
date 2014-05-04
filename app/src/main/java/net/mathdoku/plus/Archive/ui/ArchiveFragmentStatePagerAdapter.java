@@ -7,6 +7,7 @@ import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.enums.GridTypeFilter;
+import net.mathdoku.plus.storage.selector.ArchiveSolvingAttemptSelector;
 import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter.StatusFilter;
 
@@ -31,7 +32,7 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	// The list of latest solving attempts which will be shown in the archive.
 	// In case multiple solving attempts exists for a grid, only the latest
 	// solving attempt is displayed.
-	private List<GridDatabaseAdapter.LatestSolvingAttemptForGrid> latestSolvingAttemptForGrids;
+	private List<ArchiveSolvingAttemptSelector.LatestSolvingAttemptForGrid> latestSolvingAttemptForGrids;
 
 	// Selected filters
 	private StatusFilter mStatusFilter;
@@ -162,8 +163,8 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	private void setGridIds() {
 		// Determine which grid should be shown
 		GridDatabaseAdapter gridDatabaseAdapter = new GridDatabaseAdapter();
-		latestSolvingAttemptForGrids = gridDatabaseAdapter.getLatestSolvingAttemptPerGrid(
-				mStatusFilter, mGridTypeFilter);
+		latestSolvingAttemptForGrids = new ArchiveSolvingAttemptSelector(
+				mStatusFilter, mGridTypeFilter).getLatestSolvingAttemptIdPerGrid();
 		notifyDataSetChanged();
 	}
 
@@ -177,7 +178,7 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	 *         this adapter.
 	 */
 	public int getPositionOfGridId(int gridId) {
-		for (GridDatabaseAdapter.LatestSolvingAttemptForGrid latestSolvingAttemptForGrid : latestSolvingAttemptForGrids) {
+		for (ArchiveSolvingAttemptSelector.LatestSolvingAttemptForGrid latestSolvingAttemptForGrid : latestSolvingAttemptForGrids) {
 			if (latestSolvingAttemptForGrid.getGridId() == gridId) {
 				return latestSolvingAttemptForGrids.indexOf(latestSolvingAttemptForGrid);
 			}

@@ -23,9 +23,6 @@ import net.mathdoku.plus.storage.databaseadapter.database.DatabaseProjection;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseTableDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * The database adapter for the grid table.
  */
@@ -41,21 +38,17 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	private static final DatabaseTableDefinition DATABASE_TABLE = defineTable();
 
 	// Columns for table statistics
-	static final String TABLE_NAME = "grid";
-	static final String KEY_ROWID = "_id";
-	private static final String KEY_DEFINITION = "definition";
-	static final String KEY_GRID_SIZE = "grid_size";
-	private static final String KEY_DATE_CREATED = "date_created";
-	private static final String KEY_GAME_SEED = "game_seed";
-	private static final String KEY_GENERATOR_REVISION_NUMBER = "generator_revision_number";
-	private static final String KEY_PUZZLE_COMPLEXITY = "puzzle_complexity";
-	private static final String KEY_HIDE_OPERATORS = "hide_operators";
-	private static final String KEY_MAX_CAGE_RESULT = "max_cage_result";
-	private static final String KEY_MAX_CAGE_SIZE = "max_cage_size";
-
-	// Columns used in result of function getLatestSolvingAttemptPerGrid
-	public static final int LATEST_SOLVING_ATTEMPT_PER_GRID__GRID_ID = 0;
-	public static final int LATEST_SOLVING_ATTEMPT_PER_GRID__SOLVING_ATTEMPT_ID = 1;
+	public static final String TABLE_NAME = "grid";
+	public static final String KEY_ROWID = "_id";
+	public static final String KEY_DEFINITION = "definition";
+	public static final String KEY_GRID_SIZE = "grid_size";
+	public static final String KEY_DATE_CREATED = "date_created";
+	public static final String KEY_GAME_SEED = "game_seed";
+	public static final String KEY_GENERATOR_REVISION_NUMBER = "generator_revision_number";
+	public static final String KEY_PUZZLE_COMPLEXITY = "puzzle_complexity";
+	public static final String KEY_HIDE_OPERATORS = "hide_operators";
+	public static final String KEY_MAX_CAGE_RESULT = "max_cage_result";
+	public static final String KEY_MAX_CAGE_SIZE = "max_cage_size";
 
 	// Allowed values for the status filter
 	public enum StatusFilter {
@@ -313,122 +306,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 * @return The prefixed column name.
 	 */
 	public static String getPrefixedColumnName(String column) {
-		return TABLE_NAME + "." + column;
-	}
-
-	public class LatestSolvingAttemptForGrid {
-		private final int gridId;
-		private final int solvingAttemptId;
-
-		public LatestSolvingAttemptForGrid(int gridId, int solvingAttemptId) {
-			this.gridId = gridId;
-			this.solvingAttemptId = solvingAttemptId;
-		}
-
-		public int getGridId() {
-			return gridId;
-		}
-
-		public int getSolvingAttemptId() {
-			return solvingAttemptId;
-		}
-	}
-
-	/**
-	 * Get a list of all grid id's and the latest solving attempt per grid.
-	 * 
-	 * @return The list of all grid id's and the latest solving attempt per
-	 *         grid.
-	 */
-	public List<LatestSolvingAttemptForGrid> getLatestSolvingAttemptPerGrid(
-			StatusFilter statusFilter, GridTypeFilter gridTypeFilter) {
-		String keySolvingAttemptId = "solving_attempt_id";
-
-		// Build databaseProjection
-		DatabaseProjection databaseProjection = new DatabaseProjection();
-		databaseProjection.put(KEY_ROWID, TABLE_NAME, KEY_ROWID);
-		databaseProjection.put(keySolvingAttemptId,
-				SolvingAttemptDatabaseAdapter.TABLE_NAME,
-				SolvingAttemptDatabaseAdapter.KEY_ROWID);
-
-		// Build query
-		SQLiteQueryBuilder sqliteQueryBuilder = new SQLiteQueryBuilder();
-		sqliteQueryBuilder.setProjectionMap(databaseProjection);
-		sqliteQueryBuilder
-				.setTables(TABLE_NAME
-						+ " INNER JOIN "
-						+ SolvingAttemptDatabaseAdapter.TABLE_NAME
-						+ " ON "
-						+ SolvingAttemptDatabaseAdapter
-								.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_GRID_ID)
-						+ " = " + getPrefixedColumnName(KEY_ROWID));
-
-		// Determine where clause elements for the filters.
-		String selectionStatus = getStatusSelectionString(statusFilter);
-		String selectionSize = getSizeSelectionString(gridTypeFilter);
-
-		// Build where clause. Note: it is not possible to use an aggregation
-		// function like MAX(solving_attempt_id) as the selection on status
-		// should only be based on the status of the last solving attempt. Using
-		// an aggregate function results in wrong data when a status filter is
-		// applied as the aggregation would only be based on the solving attempt
-		// which do match the status while ignore the fact that a more recent
-		// solving attempt exists with another status.
-		String selection = "not exists (select 1 from "
-				+ SolvingAttemptDatabaseAdapter.TABLE_NAME
-				+ " as sa2 where sa2."
-				+ SolvingAttemptDatabaseAdapter.KEY_GRID_ID
-				+ " = "
-				+ SolvingAttemptDatabaseAdapter
-						.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_GRID_ID)
-				+ " and sa2."
-				+ SolvingAttemptDatabaseAdapter.KEY_ROWID
-				+ " > "
-				+ SolvingAttemptDatabaseAdapter
-						.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_ROWID)
-				+ ") "
-				+ (!selectionStatus.isEmpty() ? " AND " + selectionStatus : "")
-				+ (!selectionSize.isEmpty() ? " AND " + selectionSize : "");
-
-		if (DEBUG_SQL) {
-			String sql = sqliteQueryBuilder.buildQuery(
-					databaseProjection.getAllColumnNames(), selection,
-					KEY_ROWID, null, null, null);
-			Log.i(TAG, sql);
-		}
-
-		// Convert results in cursor to array of grid id's
-		List<LatestSolvingAttemptForGrid> latestSolvingAttemptForGrids = new ArrayList<LatestSolvingAttemptForGrid>();
-		Cursor cursor = null;
-		try {
-			cursor = sqliteQueryBuilder.query(sqliteDatabase,
-					databaseProjection.getAllColumnNames(), selection, null,
-					KEY_ROWID, null, null);
-			if (cursor != null && cursor.moveToFirst()) {
-				int i = 0;
-				int gridIdColumnIndex = cursor.getColumnIndexOrThrow(KEY_ROWID);
-				int maxSolvingAttemptColumnIndex = cursor
-						.getColumnIndexOrThrow(keySolvingAttemptId);
-				do {
-					latestSolvingAttemptForGrids
-							.add(new LatestSolvingAttemptForGrid(cursor
-									.getInt(gridIdColumnIndex), cursor
-									.getInt(maxSolvingAttemptColumnIndex)));
-
-					i++;
-				} while (cursor.moveToNext());
-			}
-		} catch (SQLiteException e) {
-			throw new DatabaseAdapterException(String.format(
-					"Cannot retrieve latest solving attempt per grid from the database "
-							+ "(status filter = %s, size filter = %s).",
-					statusFilter.toString(), gridTypeFilter.toString()), e);
-		} finally {
-			if (cursor != null) {
-				cursor.close();
-			}
-		}
-		return latestSolvingAttemptForGrids;
+		return DatabaseUtil.stringBetweenBackTicks(TABLE_NAME) + "." + DatabaseUtil.stringBetweenBackTicks(column);
 	}
 
 	/**
@@ -578,7 +456,8 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 				.stringBetweenBackTicks(KEY_GRID_SIZE) };
 
 		// Build where clause
-		String selection = getStatusSelectionString(statusFilter);
+		String selection = SolvingAttemptDatabaseAdapter
+				.getStatusSelectionString(statusFilter);
 
 		if (DEBUG_SQL) {
 			String sql = sqliteQueryBuilder.buildQuery(columnsData, selection,
@@ -615,40 +494,6 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	}
 
 	/**
-	 * Get the SQL where clause to select solving attempts for which the status
-	 * matches the given status filter.
-	 * 
-	 * @param statusFilter
-	 *            The status filter to be matched.
-	 * @return The SQL where clause which matches solving attempts with the
-	 *         given status filter.
-	 */
-	private String getStatusSelectionString(StatusFilter statusFilter) {
-		// Determine selection for status filter
-		switch (statusFilter) {
-		case ALL:
-			// no filter on status
-			return "";
-		case REVEALED:
-			return SolvingAttemptDatabaseAdapter
-					.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_STATUS)
-					+ " = " + SolvingAttemptStatus.REVEALED_SOLUTION.getId();
-		case SOLVED:
-			return SolvingAttemptDatabaseAdapter
-					.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_STATUS)
-					+ " = " + SolvingAttemptStatus.FINISHED_SOLVED.getId();
-		case UNFINISHED:
-			return SolvingAttemptDatabaseAdapter
-					.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_STATUS)
-					+ " IN ("
-					+ SolvingAttemptStatus.NOT_STARTED.getId()
-					+ ","
-					+ SolvingAttemptStatus.UNFINISHED.getId() + ")";
-		}
-		return null;
-	}
-
-	/**
 	 * Get the SQL where clause to select solving attempts for which the size
 	 * matches the given size filter.
 	 * 
@@ -657,23 +502,9 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 * @return The SQL where clause which matches solving attempts with the
 	 *         given size filter.
 	 */
-	private String getSizeSelectionString(GridTypeFilter gridTypeFilter) {
+	public static String getSizeSelectionString(GridTypeFilter gridTypeFilter) {
 		return gridTypeFilter == GridTypeFilter.ALL ? ""
 				: getPrefixedColumnName(KEY_GRID_SIZE) + " = "
 						+ gridTypeFilter.getGridType();
-	}
-
-	/**
-	 * Counts the number of grids having a specific status and or size.
-	 * 
-	 * @param statusFilter
-	 *            The status to be matched.
-	 * @param sizeFilter
-	 *            The size to be matched.
-	 * @return The number of grids having a specific status and or size.
-	 */
-	@SuppressWarnings("SameParameterValue")
-	public int countGrids(StatusFilter statusFilter, GridTypeFilter sizeFilter) {
-		return getLatestSolvingAttemptPerGrid(statusFilter, sizeFilter).size();
 	}
 }

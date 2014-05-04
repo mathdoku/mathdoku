@@ -36,14 +36,14 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	private static final DatabaseTableDefinition DATABASE_TABLE = defineTable();
 
 	// Columns for table
-	static final String TABLE_NAME = "solving_attempt";
-	static final String KEY_ROWID = "_id";
-	static final String KEY_GRID_ID = "grid_id";
-	private static final String KEY_DATE_CREATED = "date_created";
-	private static final String KEY_DATE_UPDATED = "date_updated";
-	private static final String KEY_SAVED_WITH_REVISION = "revision";
-	private static final String KEY_DATA = "data";
-	static final String KEY_STATUS = "status";
+	public static final String TABLE_NAME = "solving_attempt";
+	public static final String KEY_ROWID = "_id";
+	public static final String KEY_GRID_ID = "grid_id";
+	public static final String KEY_DATE_CREATED = "date_created";
+	public static final String KEY_DATE_UPDATED = "date_updated";
+	public static final String KEY_SAVED_WITH_REVISION = "revision";
+	public static final String KEY_DATA = "data";
+	public static final String KEY_STATUS = "status";
 
 	// Delimiters used in the data field to separate objects, fields and values
 	// in a field which can hold multiple values.
@@ -333,5 +333,40 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 			}
 		}
 		return count;
+	}
+
+	/**
+	 * Get the SQL where clause to select solving attempts for which the status
+	 * matches the given status filter.
+	 * 
+	 * @param statusFilter
+	 *            The status filter to be matched.
+	 * @return The SQL where clause which matches solving attempts with the
+	 *         given status filter.
+	 */
+	public static String getStatusSelectionString(
+			GridDatabaseAdapter.StatusFilter statusFilter) {
+		// Determine selection for status filter
+		switch (statusFilter) {
+		case ALL:
+			// no filter on status
+			return "";
+		case REVEALED:
+			return SolvingAttemptDatabaseAdapter
+					.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_STATUS)
+					+ " = " + SolvingAttemptStatus.REVEALED_SOLUTION.getId();
+		case SOLVED:
+			return SolvingAttemptDatabaseAdapter
+					.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_STATUS)
+					+ " = " + SolvingAttemptStatus.FINISHED_SOLVED.getId();
+		case UNFINISHED:
+			return SolvingAttemptDatabaseAdapter
+					.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_STATUS)
+					+ " IN ("
+					+ SolvingAttemptStatus.NOT_STARTED.getId()
+					+ ","
+					+ SolvingAttemptStatus.UNFINISHED.getId() + ")";
+		}
+		return null;
 	}
 }

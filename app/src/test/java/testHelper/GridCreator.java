@@ -74,6 +74,9 @@ public abstract class GridCreator {
 				.setGridGeneratingParameters(gridGeneratingParameters)
 				.setCells(cells)
 				.setCages(cages);
+		if (mSetCorrectEnteredValueToAllCells) {
+			mGridBuilder.setActive(false);
+		}
 
 		mGrid = mGridBuilder.build();
 	}
