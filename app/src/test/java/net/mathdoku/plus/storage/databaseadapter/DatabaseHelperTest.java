@@ -95,17 +95,26 @@ public class DatabaseHelperTest {
 		DatabaseAdapter databaseAdapterMock = mock(DatabaseAdapter.class);
 		DatabaseAdapter[] databaseAdapters = new DatabaseAdapter[] { databaseAdapterMock, databaseAdapterMock};
 
-		// Use a stub for the database helper which uses database adapter mocks instead of real tables.
-		DatabaseHelperStub databaseHelperStub = new DatabaseHelperStub(activity, databaseAdapters);
+		databaseHelper = replaceWithNewDatabaseHelperStub(databaseAdapters);
 
 		// When getting the writeable database while the database does not yet
 		// exists, results in 1) creating a new writeable database and 2)
 		// calling DatabaseHelper.onCreate to instantiate the new database. Each
 		// time the new database is created each time the unit test runs, the
 		// database does not yet exists.
-		databaseHelperStub.getWritableDatabase();
+		databaseHelper.getWritableDatabase();
 
 		verify(databaseAdapterMock, times(databaseAdapters.length)).createTable();
+	}
+
+	private DatabaseHelperStub replaceWithNewDatabaseHelperStub(DatabaseAdapter[] databaseAdapters) {
+		// First close the databaseHelper which was created in the setup method to clear the singleton variable.
+		if (databaseHelper != null) {
+		databaseHelper.close();
+		}
+
+		// Use a stub for the database helper which uses database adapter mocks instead of real tables.
+		return new DatabaseHelperStub(activity, databaseAdapters);
 	}
 
 	@Test
@@ -114,12 +123,11 @@ public class DatabaseHelperTest {
 		DatabaseAdapter databaseAdapterMock = mock(DatabaseAdapter.class);
 		DatabaseAdapter[] databaseAdapters = new DatabaseAdapter[] { databaseAdapterMock, databaseAdapterMock};
 
-		// Use a stub for the database helper which uses database adapter mocks instead of real tables.
-		DatabaseHelperStub databaseHelperStub = new DatabaseHelperStub(activity, databaseAdapters);
+		databaseHelper = replaceWithNewDatabaseHelperStub(databaseAdapters);
 
-		databaseHelperStub.onUpgrade(databaseHelperStub.getWritableDatabase(), 1, 3);
-		verify(databaseAdapterMock, times(databaseAdapters.length)).upgradeTable(
-				anyInt(), anyInt());
+		databaseHelper.onUpgrade(databaseHelper.getWritableDatabase(), 1, 3);
+		verify(databaseAdapterMock, times(databaseAdapters.length)).upgradeTable(anyInt(), anyInt
+				());
 	}
 
 	@Test
@@ -129,10 +137,9 @@ public class DatabaseHelperTest {
 		when(databaseAdapterMock.isTableDefinitionChanged()).thenReturn(false);
 		DatabaseAdapter[] databaseAdapters = new DatabaseAdapter[] { databaseAdapterMock, databaseAdapterMock};
 
-		// Use a stub for the database helper which uses database adapter mocks instead of real tables.
-		DatabaseHelperStub databaseHelperStub = new DatabaseHelperStub(activity, databaseAdapters);
+		databaseHelper = replaceWithNewDatabaseHelperStub(databaseAdapters);
 
-		assertThat(databaseHelperStub.hasChangedTableDefinitions(), is(false));
+		assertThat(databaseHelper.hasChangedTableDefinitions(), is(false));
 		verify(databaseAdapterMock, times(databaseAdapters.length)).isTableDefinitionChanged();
 	}
 
@@ -145,9 +152,8 @@ public class DatabaseHelperTest {
 		when(databaseAdapterMock1.isTableDefinitionChanged()).thenReturn(true);
 		DatabaseAdapter[] databaseAdapters = new DatabaseAdapter[] { databaseAdapterMock1, databaseAdapterMock2};
 
-		// Use a stub for the database helper which uses database adapter mocks instead of real tables.
-		DatabaseHelperStub databaseHelperStub = new DatabaseHelperStub(activity, databaseAdapters);
+		databaseHelper = replaceWithNewDatabaseHelperStub(databaseAdapters);
 
-		assertThat(databaseHelperStub.hasChangedTableDefinitions(), is(true));
+		assertThat(databaseHelper.hasChangedTableDefinitions(), is(true));
 	}
 }
