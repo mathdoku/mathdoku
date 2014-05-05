@@ -13,7 +13,6 @@ import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.enums.PuzzleComplexity;
-import net.mathdoku.plus.enums.SolvingAttemptStatus;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParametersBuilder;
 import net.mathdoku.plus.puzzle.grid.Grid;
@@ -22,6 +21,9 @@ import net.mathdoku.plus.storage.databaseadapter.database.DatabaseColumnDefiniti
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseProjection;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseTableDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil;
+import net.mathdoku.plus.storage.selector.AvailableStatusFiltersSelector;
+
+import java.util.List;
 
 /**
  * The database adapter for the grid table.
@@ -51,9 +53,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	public static final String KEY_MAX_CAGE_SIZE = "max_cage_size";
 
 	// Allowed values for the status filter
-	public enum StatusFilter {
-		ALL, UNFINISHED, SOLVED, REVEALED
-	}
+	public enum StatusFilter { ALL, UNFINISHED, SOLVED, REVEALED }
 
 	public GridDatabaseAdapter() {
 		super();
@@ -306,122 +306,8 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 * @return The prefixed column name.
 	 */
 	public static String getPrefixedColumnName(String column) {
-		return DatabaseUtil.stringBetweenBackTicks(TABLE_NAME) + "." + DatabaseUtil.stringBetweenBackTicks(column);
-	}
-
-	/**
-	 * Get a list of statuses used by grids which matches with the given size
-	 * filter.
-	 * 
-	 * @param sizeFilter
-	 *            The size filter which has to be matched by the grids.
-	 * @return The list of statuses used by grids which matches with the given
-	 *         size filter.
-	 */
-	public StatusFilter[] getUsedStatuses(GridTypeFilter sizeFilter) {
-		// Build the databaseProjection
-		DatabaseProjection databaseProjection = new DatabaseProjection();
-		final String keyStatusFilter = "status_filter";
-		databaseProjection
-				.put(keyStatusFilter,
-						"CASE WHEN "
-								+ DatabaseUtil
-										.stringBetweenBackTicks(SolvingAttemptDatabaseAdapter.KEY_STATUS)
-								+ " = "
-								+ SolvingAttemptStatus.REVEALED_SOLUTION
-										.getId()
-								+ " THEN "
-								+ StatusFilter.REVEALED.ordinal()
-								+ " WHEN "
-								+ DatabaseUtil
-										.stringBetweenBackTicks(SolvingAttemptDatabaseAdapter.KEY_STATUS)
-								+ " = "
-								+ SolvingAttemptStatus.FINISHED_SOLVED.getId()
-								+ " THEN " + StatusFilter.SOLVED.ordinal()
-								+ " ELSE " + StatusFilter.UNFINISHED.ordinal()
-								+ " END");
-
-		// Build query
-		SQLiteQueryBuilder sqliteQueryBuilder = new SQLiteQueryBuilder();
-		sqliteQueryBuilder.setProjectionMap(databaseProjection);
-		sqliteQueryBuilder
-				.setTables(TABLE_NAME
-						+ " INNER JOIN "
-						+ SolvingAttemptDatabaseAdapter.TABLE_NAME
-						+ " as sa1 "
-						+ " ON sa1."
-						+ DatabaseUtil
-								.stringBetweenBackTicks(SolvingAttemptDatabaseAdapter.KEY_GRID_ID)
-						+ " = " + getPrefixedColumnName(KEY_ROWID));
-
-		// Retrieve all data. Note: in case column is not added to the
-		// databaseProjection, no data will be retrieved!
-		String[] columnsData = { keyStatusFilter };
-
-		// Build where clause. Be sure only to retrieve the status of the last
-		// solving attempt of a grid as the archive will only display the last
-		// solving attempt.
-		String sizeSelection = getSizeSelectionString(sizeFilter);
-		String selection = sizeSelection
-				+ (sizeSelection.isEmpty() ? "" : " AND ")
-				+ " NOT EXISTS ( "
-				+ "SELECT 1 "
-				+ " FROM "
-				+ SolvingAttemptDatabaseAdapter.TABLE_NAME
-				+ " as sa2"
-				+ " WHERE sa2."
-				+ DatabaseUtil
-						.stringBetweenBackTicks(SolvingAttemptDatabaseAdapter.KEY_GRID_ID)
-				+ " = sa1."
-				+ DatabaseUtil
-						.stringBetweenBackTicks(SolvingAttemptDatabaseAdapter.KEY_GRID_ID)
-				+ " AND sa2."
-				+ DatabaseUtil
-						.stringBetweenBackTicks(SolvingAttemptDatabaseAdapter.KEY_ROWID)
-				+ " > sa1."
-				+ DatabaseUtil
-						.stringBetweenBackTicks(SolvingAttemptDatabaseAdapter.KEY_ROWID)
-				+ ")";
-
-		if (DEBUG_SQL) {
-			String sql = sqliteQueryBuilder.buildQuery(columnsData, selection,
-					keyStatusFilter, null, keyStatusFilter, null);
-			Log.i(TAG, sql);
-		}
-
-		// Convert results in cursor to array of grid id's
-		StatusFilter[] statuses = null;
-		Cursor cursor = null;
-		try {
-			cursor = sqliteQueryBuilder.query(sqliteDatabase, columnsData,
-					selection, null, keyStatusFilter, null, null);
-			if (cursor != null && cursor.moveToFirst()) {
-				statuses = new StatusFilter[cursor.getCount() + 1];
-				statuses[0] = StatusFilter.ALL;
-				int i = 1;
-				int columnIndex = cursor.getColumnIndexOrThrow(keyStatusFilter);
-				do {
-					int status = cursor.getInt(columnIndex);
-					if (status == StatusFilter.UNFINISHED.ordinal()) {
-						statuses[i++] = StatusFilter.UNFINISHED;
-					} else if (status == StatusFilter.SOLVED.ordinal()) {
-						statuses[i++] = StatusFilter.SOLVED;
-					} else if (status == StatusFilter.REVEALED.ordinal()) {
-						statuses[i++] = StatusFilter.REVEALED;
-					}
-				} while (cursor.moveToNext());
-			}
-		} catch (SQLiteException e) {
-			throw new DatabaseAdapterException(
-					String.format(
-							"Cannot retrieve used statuses of latest solving attempt per grid from the database (size filter = %s).",
-							sizeFilter.toString()), e);
-		} finally {
-			if (cursor != null) {
-				cursor.close();
-			}
-		}
-		return statuses;
+		return DatabaseUtil.stringBetweenBackTicks(TABLE_NAME) + "."
+				+ DatabaseUtil.stringBetweenBackTicks(column);
 	}
 
 	/**
@@ -507,4 +393,5 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 				: getPrefixedColumnName(KEY_GRID_SIZE) + " = "
 						+ gridTypeFilter.getGridType();
 	}
+
 }

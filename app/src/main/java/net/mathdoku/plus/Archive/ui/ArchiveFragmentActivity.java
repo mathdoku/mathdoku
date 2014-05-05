@@ -41,12 +41,14 @@ import net.mathdoku.plus.R;
 import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.painter.PagerTabStripPainter;
 import net.mathdoku.plus.painter.Painter;
-import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter.StatusFilter;
+import net.mathdoku.plus.storage.selector.AvailableStatusFiltersSelector;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 import net.mathdoku.plus.ui.base.AppFragmentActivity;
 import net.mathdoku.plus.util.FeedbackEmail;
 import net.mathdoku.plus.util.SharedPuzzle;
+
+import java.util.List;
 
 public class ArchiveFragmentActivity extends AppFragmentActivity {
 
@@ -270,22 +272,20 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 			return;
 		}
 
-		// Determine which statuses are actually used for the currently
-		// selected size filter.
-		GridDatabaseAdapter gridDatabaseAdapter = new GridDatabaseAdapter();
-		final StatusFilter[] usedStatuses = gridDatabaseAdapter
-				.getUsedStatuses(mArchiveFragmentStatePagerAdapter
-						.getSelectedSizeFilter());
+		final List<StatusFilter> availableStatusFilters = new AvailableStatusFiltersSelector(
+					mArchiveFragmentStatePagerAdapter
+							.getSelectedSizeFilter()).getAvailableStatusFilters();
 
 		// Load the list of descriptions for statuses actually used into the
 		// array adapter.
-		String[] usedStatusesDescription = new String[usedStatuses.length];
-		for (int i = 0; i < usedStatuses.length; i++) {
-			usedStatusesDescription[i] = getResources().getStringArray(
-					R.array.archive_status_filter)[usedStatuses[i].ordinal()];
+		String[] statusFilterDescriptions = new String[availableStatusFilters.size()];
+		int index = 0;
+		for (StatusFilter statusFilter : availableStatusFilters) {
+			statusFilterDescriptions[index++] = getResources().getStringArray(
+					R.array.archive_status_filter)[statusFilter.ordinal()];
 		}
 		ArrayAdapter<String> adapterStatus = new ArrayAdapter<String>(this,
-				android.R.layout.simple_spinner_item, usedStatusesDescription);
+				android.R.layout.simple_spinner_item, statusFilterDescriptions);
 		adapterStatus
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -295,17 +295,12 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 		// Restore selected status
 		StatusFilter selectedStatusFilter = mArchiveFragmentStatePagerAdapter
 				.getStatusFilter();
-		for (int i = 0; i < usedStatuses.length; i++) {
-			if (usedStatuses[i] == selectedStatusFilter) {
-				spinner.setSelection(i);
-				break;
-			}
-		}
+		spinner.setSelection(availableStatusFilters.indexOf(selectedStatusFilter));
 
 		// Hide spinner if only two choices are available. As one of those
 		// choices is always "ALL" the choices will result in an identical
 		// selection.
-		spinner.setVisibility(usedStatuses.length <= 2 ? View.GONE
+		spinner.setVisibility(availableStatusFilters.size() <= 2 ? View.GONE
 				: View.VISIBLE);
 
 		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -313,7 +308,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int position, long id) {
 				// Get the selected status
-				StatusFilter statusFilter = usedStatuses[(int) id];
+				StatusFilter statusFilter = availableStatusFilters.get((int) id);
 
 				// Check if value for status spinner has changed.
 				if (statusFilter != mArchiveFragmentStatePagerAdapter
