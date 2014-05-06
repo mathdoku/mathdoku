@@ -54,7 +54,7 @@ public class CellCoordinatesTest {
 
 	@Test
 	public void getRow_EmptyCellCoordinates_RowIsNegative() throws Exception {
-		assert (CellCoordinates.EMPTY.getRow() < 0);
+		assert CellCoordinates.EMPTY.getRow() < 0;
 	}
 
 	@Test
@@ -66,7 +66,7 @@ public class CellCoordinatesTest {
 
 	@Test
 	public void getRow_EmptyCellCoordinates_ColumnIsNegative() throws Exception {
-		assert (CellCoordinates.EMPTY.getColumn() < 0);
+		assert CellCoordinates.EMPTY.getColumn() < 0;
 	}
 
 	@Test

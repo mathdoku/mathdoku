@@ -77,7 +77,7 @@ public class GridRow {
 		int result = getGridId();
 		result = 31 * result + (getGridDefinition() != null ? getGridDefinition().hashCode() : 0);
 		result = 31 * result + getGridSize();
-		result = 31 * result + (int) (getGridDateCreated() ^ (getGridDateCreated() >>> 32));
+		result = 31 * result + (int) (getGridDateCreated() ^ getGridDateCreated() >>> 32);
 		result = 31 * result + (getGridGeneratingParameters() != null ? getGridGeneratingParameters().hashCode() : 0);
 		return result;
 	}

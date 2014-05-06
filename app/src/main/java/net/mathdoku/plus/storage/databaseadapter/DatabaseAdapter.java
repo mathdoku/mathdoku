@@ -81,8 +81,8 @@ public abstract class DatabaseAdapter {
 						+ DatabaseUtil.stringBetweenQuotes("table"), null,
 				null, null, null, null);
 		if (cursor != null) {
-			String sql = (cursor.moveToFirst() ? cursor.getString(cursor
-					.getColumnIndexOrThrow(columnSql)) : "");
+			String sql = cursor.moveToFirst() ? cursor.getString(cursor
+					.getColumnIndexOrThrow(columnSql)) : "";
 			cursor.close();
 			return sql;
 		}

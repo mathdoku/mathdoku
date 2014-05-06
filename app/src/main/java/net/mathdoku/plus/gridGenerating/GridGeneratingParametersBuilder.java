@@ -325,7 +325,7 @@ public class GridGeneratingParametersBuilder {
 		result = 31 * result + (hideOperators ? 1 : 0);
 		result = 31 * result + puzzleComplexity.hashCode();
 		result = 31 * result + generatorVersionNumber;
-		result = 31 * result + (int) (gameSeed ^ (gameSeed >>> 32));
+		result = 31 * result + (int) (gameSeed ^ gameSeed >>> 32);
 		result = 31 * result + maxCageSize;
 		result = 31 * result + maxCageResult;
 		result = 31 * result + maxCagePermutations;
