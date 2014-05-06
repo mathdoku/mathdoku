@@ -140,7 +140,7 @@ public class GridBuilder {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("GridBuilder{\n");
 		stringBuilder.append("\tmGridSize=" + mGridSize + "\n");
-		stringBuilder.append("\tmGridGeneratingParameters="
+		stringBuilder.append("\tgridGeneratingParameters="
 				+ mGridGeneratingParameters + "\n");
 		stringBuilder.append("\tmGridStatistics=" + mGridStatistics + "\n");
 		stringBuilder.append("\tmDateCreated=" + mDateCreated + "\n");

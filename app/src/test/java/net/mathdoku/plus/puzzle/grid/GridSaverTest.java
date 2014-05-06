@@ -160,7 +160,7 @@ public class GridSaverTest {
 			throws Exception {
 		// Prepare for finding existing grid row when inserting a new grid
 		GridRow gridRow = mock(GridRow.class);
-		gridRow.mId = 25;
+		when(gridRow.getGridId()).thenReturn(25);
 		when(mGridDatabaseAdapterMock.getByGridDefinition(anyString()))
 				.thenReturn(gridRow);
 		// Prepare insert of new solving attempt
@@ -184,7 +184,7 @@ public class GridSaverTest {
 				.insert(any(GridStatistics.class));
 		verify(mDatabaseHelperMock).setTransactionSuccessful();
 		verify(mDatabaseHelperMock).endTransaction();
-		assertThat(mGridSaver.getRowId(), is(gridRow.mId));
+		assertThat(mGridSaver.getRowId(), is(gridRow.getGridId()));
 		assertThat(mGridSaver.getSolvingAttemptId() >= 0, is(true));
 		assertThat(mGridSaver.getGridStatistics().mId >= 0, is(true));
 		assertThat(mGridSaver.getDateUpdated(), is(mGridMock.getDateSaved()));

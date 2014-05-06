@@ -493,7 +493,7 @@ public class GridLoaderTest {
 	public void load_SolvingAttemptWithInvalidGridSize_NotLoaded()
 			throws Exception {
 		GridRow gridRow = mock(GridRow.class);
-		gridRow.mGridSize = 0;
+		when(gridRow.getGridSize()).thenReturn(0);
 		mGridLoaderTestObjectsCreator.returnsGridRow(gridRow);
 
 		int mSolvingAttemptId = 1;
@@ -782,8 +782,8 @@ public class GridLoaderTest {
 		mGridLoaderTestObjectsCreator
 				.returnsSolvingAttempt(solvingAttemptRowStub);
 		GridRow gridRow = mock(GridRow.class);
-		gridRow.mGridSize = gridSize;
-		gridRow.mGridGeneratingParameters = mock(GridGeneratingParameters.class);
+		when(gridRow.getGridSize()).thenReturn(gridSize);
+		when(gridRow.getGridGeneratingParameters()).thenReturn(mock(GridGeneratingParameters.class));
 		mGridLoaderTestObjectsCreator.returnsGridRow(gridRow);
 		mGridLoaderTestObjectsCreator.setGridMockReturningAValidStorageString();
 		mGridLoaderTestObjectsCreator.setGridMockIsActive(isActive);
@@ -805,7 +805,7 @@ public class GridLoaderTest {
 		assertThat("Grid has size", gridBuilder.mGridSize, is(gridSize));
 		assertThat("Grid has generating parameters",
 				gridBuilder.mGridGeneratingParameters,
-				is(sameInstance(gridRow.mGridGeneratingParameters)));
+				is(sameInstance(gridRow.getGridGeneratingParameters())));
 		assertThat("Grid has statistics", gridBuilder.mGridStatistics,
 				is(sameInstance(gridStatistics)));
 		assertThat("Grid has date created", gridBuilder.mDateCreated,
@@ -856,8 +856,8 @@ public class GridLoaderTest {
 		// Beware: not all mock methods defined below will be invoked in each
 		// test!
 		GridRow gridRow = mock(GridRow.class);
-		gridRow.mGridSize = gridSize;
-		gridRow.mGridGeneratingParameters = mock(GridGeneratingParameters.class);
+		when(gridRow.getGridSize()).thenReturn(gridSize);
+		when(gridRow.getGridGeneratingParameters()).thenReturn(mock(GridGeneratingParameters.class));
 		mGridLoaderTestObjectsCreator.returnsGridRow(gridRow);
 		mGridLoaderTestObjectsCreator.setGridMockReturningAValidStorageString();
 		mGridLoaderTestObjectsCreator.setGridMockIsActive(isActive);

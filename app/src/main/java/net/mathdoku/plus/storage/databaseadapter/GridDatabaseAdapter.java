@@ -27,7 +27,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 
 	// Remove "&& false" in following line to show the SQL-statements in the
 	// debug information
-	@SuppressWarnings("PointlessBooleanExpression")
+	@SuppressWarnings("unused")
 	private static final boolean DEBUG_SQL = Config.mAppMode == AppMode.DEVELOPMENT && false;
 
 	private static final DatabaseTableDefinition DATABASE_TABLE = defineTable();
@@ -47,6 +47,11 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 
 	public GridDatabaseAdapter() {
 		super();
+	}
+
+	// Package private access, intended for DatabaseHelper only
+	GridDatabaseAdapter(SQLiteDatabase sqLiteDatabase) {
+		super(sqLiteDatabase);
 	}
 
 	private static DatabaseTableDefinition defineTable() {
@@ -82,11 +87,6 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		return databaseTableDefinition;
 	}
 
-	// Package private access, intended for DatabaseHelper only
-	GridDatabaseAdapter(SQLiteDatabase sqLiteDatabase) {
-		super(sqLiteDatabase);
-	}
-
 	@Override
 	protected DatabaseTableDefinition getDatabaseTableDefinition() {
 		return DATABASE_TABLE;
@@ -118,15 +118,8 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 * @return The unique row id of the grid created. -1 in case of an error.
 	 */
 	public int insert(Grid grid) {
-		String gridDefinition = grid.getDefinition();
-		if (gridDefinition == null || gridDefinition.trim().equals("")) {
-			// TODO: better handling of situation in which a grid definition was
-			// added before. It is a very rare situation but it can occur.
-			throw new DatabaseAdapterException(
-					"Definition of grid is not unique.");
-		}
 		ContentValues initialValues = new ContentValues();
-		initialValues.put(KEY_DEFINITION, gridDefinition);
+		initialValues.put(KEY_DEFINITION, grid.getDefinition());
 		initialValues.put(KEY_GRID_SIZE, grid.getGridSize());
 		initialValues.put(KEY_DATE_CREATED,
 				DatabaseUtil.toSQLiteTimestamp(grid.getDateCreated()));
@@ -232,33 +225,42 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 			return null;
 		}
 
-		// Convert cursor record to a grid statics object.
-		GridRow gridRow = new GridRow();
-		gridRow.mId = cursor.getInt(cursor.getColumnIndexOrThrow(KEY_ROWID));
-		gridRow.mDefinition = cursor.getString(cursor
-				.getColumnIndexOrThrow(KEY_DEFINITION));
-		gridRow.mGridSize = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_GRID_SIZE));
-		gridRow.mDateCreated = DatabaseUtil.valueOfSQLiteTimestamp(cursor
-				.getString(cursor.getColumnIndexOrThrow(KEY_DATE_CREATED)));
+		return new GridRow(getGridIdFromCursor(cursor),
+				getGridDefinitionFromCursor(cursor),
+				getGridSizeFromCursor(cursor),
+				getGridDateCreatedFromCursor(cursor),
+				new GridGeneratingParametersBuilder()
+						.setGridType(getGridTypeFromCursor(cursor))
+						.setHideOperators(getHideOperatorFromCursor(cursor))
+						.setPuzzleComplexity(
+								getPuzzleComplexityFromCursor(cursor))
+						.setGeneratorVersionNumber(
+								getGeneratorRevisionNumberFromCursor(cursor))
+						.setGameSeed(getGameSeedFromCursor(cursor))
+						.setMaxCageResult(getMaxCageResultFromCursor(cursor))
+						.setMaxCageSize(getMaxCageSizeFromCursor(cursor))
+						.createGridGeneratingParameters());
+	}
 
-		gridRow.mGridGeneratingParameters = new GridGeneratingParametersBuilder()
-				.setGridType(getGridTypeFromCursor(cursor))
-				.setHideOperators(getHideOperatorFromCursor(cursor))
-				.setPuzzleComplexity(getPuzzleComplexityFromCursor(cursor))
-				.setGeneratorVersionNumber(
-						getGeneratorRevisionNumberFromCursor(cursor))
-				.setGameSeed(getGameSeedFromCursor(cursor))
-				.setMaxCageResult(getMaxCageResultFromCursor(cursor))
-				.setMaxCageSize(getMaxCageSizeFromCursor(cursor))
-				.createGridGeneratingParameters();
+	private int getGridIdFromCursor(Cursor cursor) {
+		return cursor.getInt(cursor.getColumnIndexOrThrow(KEY_ROWID));
+	}
 
-		return gridRow;
+	private String getGridDefinitionFromCursor(Cursor cursor) {
+		return cursor.getString(cursor.getColumnIndexOrThrow(KEY_DEFINITION));
+	}
+
+	private int getGridSizeFromCursor(Cursor cursor) {
+		return cursor.getInt(cursor.getColumnIndexOrThrow(KEY_GRID_SIZE));
+	}
+
+	private long getGridDateCreatedFromCursor(Cursor cursor) {
+		return DatabaseUtil.valueOfSQLiteTimestamp(cursor.getString(cursor
+				.getColumnIndexOrThrow(KEY_DATE_CREATED)));
 	}
 
 	private GridType getGridTypeFromCursor(Cursor cursor) {
-		return GridType.fromInteger(cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_GRID_SIZE)));
+		return GridType.fromInteger(getGridSizeFromCursor(cursor));
 	}
 
 	private boolean getHideOperatorFromCursor(Cursor cursor) {

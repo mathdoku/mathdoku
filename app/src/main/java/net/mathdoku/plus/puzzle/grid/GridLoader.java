@@ -149,13 +149,13 @@ public class GridLoader {
 						solvingAttemptRow.mId);
 		GridRow gridRow = mObjectsCreator.createGridDatabaseAdapter().get(
 				solvingAttemptRow.mGridId);
-		if (gridRow == null || gridRow.mGridSize <= 0) {
+		if (gridRow == null || gridRow.getGridSize() <= 0) {
 			return null;
 		}
 
 		mGridBuilder
-				.setGridSize(gridRow.mGridSize)
-				.setGridGeneratingParameters(gridRow.mGridGeneratingParameters);
+				.setGridSize(gridRow.getGridSize())
+				.setGridGeneratingParameters(gridRow.getGridGeneratingParameters());
 		mSavedWithRevision = solvingAttemptRow.mSavedWithRevision;
 
 		// SolvingAttemptStorage can only be processed after the grid size and
