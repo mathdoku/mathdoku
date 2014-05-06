@@ -27,7 +27,7 @@ public class DatabaseColumnDropper {
 	}
 
 	public boolean dropColumns(String[] columnsToBeDropped) {
-		this.columnsToBeDropped = columnsToBeDropped;
+		this.columnsToBeDropped = columnsToBeDropped.clone();
 		validateColumnsToBeDropped();
 
 		newColumnList = getColumnsRemaining();
