@@ -29,7 +29,7 @@ public class AvailableStatusFiltersSelector extends SolvingAttemptSelector {
 	@SuppressWarnings("PointlessBooleanExpression")
 	private static final boolean DEBUG_SQL = Config.mAppMode == Config.AppMode.DEVELOPMENT && false;
 
-	private final String KEY_PROJECTION_STATUS_FILTER = "status_filter";
+	private static final String KEY_PROJECTION_STATUS_FILTER = "status_filter";
 	private final List<GridDatabaseAdapter.StatusFilter> statusFilterList;
 
 	public AvailableStatusFiltersSelector(GridTypeFilter gridTypeFilter) {
@@ -42,14 +42,14 @@ public class AvailableStatusFiltersSelector extends SolvingAttemptSelector {
 
 	private List<GridDatabaseAdapter.StatusFilter> retrieveFromDatabase() {
 		// Convert results in cursor to array of grid id's
-		List<GridDatabaseAdapter.StatusFilter> statusFilterList = new ArrayList<GridDatabaseAdapter.StatusFilter>();
-		statusFilterList.add(GridDatabaseAdapter.StatusFilter.ALL);
+		List<GridDatabaseAdapter.StatusFilter> statusFilters = new ArrayList<GridDatabaseAdapter.StatusFilter>();
+		statusFilters.add(GridDatabaseAdapter.StatusFilter.ALL);
 		Cursor cursor = null;
 		try {
 			cursor = getCursor();
 			if (cursor != null && cursor.moveToFirst()) {
 				do {
-					statusFilterList
+					statusFilters
 							.add(GridDatabaseAdapter.StatusFilter
 									.valueOf(getProjectionStatusFilterFromCursor(cursor)));
 				} while (cursor.moveToNext());
@@ -64,7 +64,7 @@ public class AvailableStatusFiltersSelector extends SolvingAttemptSelector {
 				cursor.close();
 			}
 		}
-		return statusFilterList;
+		return statusFilters;
 	}
 
 	private String getProjectionStatusFilterFromCursor(Cursor cursor) {
