@@ -4,9 +4,9 @@ import android.app.Activity;
 
 import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.enums.SolvingAttemptStatus;
+import net.mathdoku.plus.enums.StatusFilter;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.storage.databaseadapter.DatabaseHelper;
-import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
 
 import org.junit.After;
@@ -28,9 +28,9 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricGradleTestRunner.class)
 public class AvailableStatusFiltersSelectorTest {
-	private static List<GridDatabaseAdapter.StatusFilter> statusFilterListAllSizes;
-	private static List<GridDatabaseAdapter.StatusFilter> statusFilterListWithSize4;
-	private static List<GridDatabaseAdapter.StatusFilter> statusFilterListWithSize5;
+	private static List<StatusFilter> statusFilterListAllSizes;
+	private static List<StatusFilter> statusFilterListWithSize4;
+	private static List<StatusFilter> statusFilterListWithSize5;
 
 	@Before
 	public void setup() {
@@ -55,10 +55,10 @@ public class AvailableStatusFiltersSelectorTest {
 				.getGrid());
 	}
 
-	private List<GridDatabaseAdapter.StatusFilter> createAndInitializeNewStatusFilterList() {
-		List<GridDatabaseAdapter.StatusFilter> statusFilterList = new ArrayList<GridDatabaseAdapter.StatusFilter>();
+	private List<StatusFilter> createAndInitializeNewStatusFilterList() {
+		List<StatusFilter> statusFilterList = new ArrayList<StatusFilter>();
 
-		statusFilterList.add(GridDatabaseAdapter.StatusFilter.ALL);
+		statusFilterList.add(StatusFilter.ALL);
 
 		return statusFilterList;
 	}
@@ -77,7 +77,7 @@ public class AvailableStatusFiltersSelectorTest {
 				.getDerivedStatus(grid.isSolutionRevealed(), grid.isActive(),
 						grid.isEmpty());
 
-		GridDatabaseAdapter.StatusFilter statusFilter = solvingAttemptStatus
+		StatusFilter statusFilter = solvingAttemptStatus
 				.getAttachedToStatusFilter();
 		if (!statusFilterListAllSizes.contains(statusFilter)) {
 			statusFilterListAllSizes.add(statusFilter);
@@ -96,8 +96,8 @@ public class AvailableStatusFiltersSelectorTest {
 	}
 
 	private void assertThatStatusFilterList(GridTypeFilter gridTypeFilter,
-			List<GridDatabaseAdapter.StatusFilter> expectedStatusFilterList) {
-		List<GridDatabaseAdapter.StatusFilter> resultStatusFilterList = new AvailableStatusFiltersSelector(
+			List<StatusFilter> expectedStatusFilterList) {
+		List<StatusFilter> resultStatusFilterList = new AvailableStatusFiltersSelector(
 				gridTypeFilter).getAvailableStatusFilters();
 		Collections.sort(resultStatusFilterList);
 		Collections.sort(expectedStatusFilterList);

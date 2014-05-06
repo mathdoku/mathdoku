@@ -41,7 +41,7 @@ import net.mathdoku.plus.R;
 import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.painter.PagerTabStripPainter;
 import net.mathdoku.plus.painter.Painter;
-import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter.StatusFilter;
+import net.mathdoku.plus.enums.StatusFilter;
 import net.mathdoku.plus.storage.selector.AvailableStatusFiltersSelector;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 import net.mathdoku.plus.ui.base.AppFragmentActivity;

@@ -9,7 +9,7 @@ import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.storage.selector.ArchiveSolvingAttemptSelector;
 import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter;
-import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter.StatusFilter;
+import net.mathdoku.plus.enums.StatusFilter;
 
 import java.util.List;
 

@@ -3,6 +3,7 @@ package net.mathdoku.plus.archive.ui;
 import android.app.Activity;
 
 import net.mathdoku.plus.enums.GridTypeFilter;
+import net.mathdoku.plus.enums.StatusFilter;
 import net.mathdoku.plus.storage.databaseadapter.DatabaseHelper;
 import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.selector.AvailableGridTypeFilterSelector;
@@ -46,7 +47,7 @@ public class ArchiveFragmentGridTypeFilterSpinnerTest {
 		when(archiveFragmentActivity.getArchiveFragmentStatePagerAdapter())
 				.thenReturn(archiveFragmentStatePagerAdapter);
 		when(archiveFragmentStatePagerAdapter.getStatusFilter()).thenReturn(
-				GridDatabaseAdapter.StatusFilter.ALL);
+				StatusFilter.ALL);
 
 		when(archiveFragmentActivity.getResources()).thenReturn(
 				Robolectric.application.getResources());
@@ -74,7 +75,7 @@ public class ArchiveFragmentGridTypeFilterSpinnerTest {
 
 			@Override
 			AvailableGridTypeFilterSelector createAvailableSizeFilterSelector(
-					GridDatabaseAdapter.StatusFilter statusFilter) {
+					StatusFilter statusFilter) {
 				availableGridTypeFilterSelector = mock(AvailableGridTypeFilterSelector.class);
 				when(
 						availableGridTypeFilterSelector

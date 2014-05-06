@@ -45,11 +45,6 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	public static final String KEY_MAX_CAGE_RESULT = "max_cage_result";
 	public static final String KEY_MAX_CAGE_SIZE = "max_cage_size";
 
-	// Allowed values for the status filter
-	public enum StatusFilter {
-		ALL, UNFINISHED, SOLVED, REVEALED
-	}
-
 	public GridDatabaseAdapter() {
 		super();
 	}

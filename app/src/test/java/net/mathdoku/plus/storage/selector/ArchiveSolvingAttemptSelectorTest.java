@@ -3,9 +3,9 @@ package net.mathdoku.plus.storage.selector;
 import android.app.Activity;
 
 import net.mathdoku.plus.enums.GridTypeFilter;
+import net.mathdoku.plus.enums.StatusFilter;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.storage.databaseadapter.DatabaseHelper;
-import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
 
 import org.hamcrest.Matcher;
@@ -91,13 +91,12 @@ public class ArchiveSolvingAttemptSelectorTest {
 
 	@Test
 	public void getLatestSolvingAttemptIdPerGrid_AllGrids() throws Exception {
-		assertThatLatestSolvingAttemptIdPerGrid(
-				GridDatabaseAdapter.StatusFilter.ALL, GridTypeFilter.ALL,
-				is(latestSolvingAttemptForAllGrids));
+		assertThatLatestSolvingAttemptIdPerGrid(StatusFilter.ALL,
+				GridTypeFilter.ALL, is(latestSolvingAttemptForAllGrids));
 	}
 
 	private void assertThatLatestSolvingAttemptIdPerGrid(
-			GridDatabaseAdapter.StatusFilter statusFilter,
+			StatusFilter statusFilter,
 			GridTypeFilter gridTypeFilter,
 			Matcher<List<ArchiveSolvingAttemptSelector.LatestSolvingAttemptForGrid>> expectedLatestSolvingAttemptForGrids) {
 		List<ArchiveSolvingAttemptSelector.LatestSolvingAttemptForGrid> resultLatestSolvingAttemptForGrids = getResultLatestSolvingAttemptForGrids(
@@ -107,8 +106,7 @@ public class ArchiveSolvingAttemptSelectorTest {
 	}
 
 	private List<ArchiveSolvingAttemptSelector.LatestSolvingAttemptForGrid> getResultLatestSolvingAttemptForGrids(
-			GridDatabaseAdapter.StatusFilter statusFilter,
-			GridTypeFilter gridTypeFilter) {
+			StatusFilter statusFilter, GridTypeFilter gridTypeFilter) {
 		archiveSolvingAttemptSelector = new ArchiveSolvingAttemptSelector(
 				statusFilter, gridTypeFilter);
 		return archiveSolvingAttemptSelector.getLatestSolvingAttemptIdPerGrid();
@@ -117,24 +115,22 @@ public class ArchiveSolvingAttemptSelectorTest {
 	@Test
 	public void getLatestSolvingAttemptIdPerGrid_AllSolvedGrids()
 			throws Exception {
-		assertThatLatestSolvingAttemptIdPerGrid(
-				GridDatabaseAdapter.StatusFilter.SOLVED, GridTypeFilter.ALL,
-				is(latestSolvingAttemptForAllSolvedGrids));
+		assertThatLatestSolvingAttemptIdPerGrid(StatusFilter.SOLVED,
+				GridTypeFilter.ALL, is(latestSolvingAttemptForAllSolvedGrids));
 	}
 
 	@Test
 	public void getLatestSolvingAttemptIdPerGrid_AllGridsWithSize4()
 			throws Exception {
-		assertThatLatestSolvingAttemptIdPerGrid(
-				GridDatabaseAdapter.StatusFilter.ALL, GridTypeFilter.GRID_4X4,
+		assertThatLatestSolvingAttemptIdPerGrid(StatusFilter.ALL,
+				GridTypeFilter.GRID_4X4,
 				is(latestSolvingAttemptForAllGridsWithSize4));
 	}
 
 	@Test
 	public void getLatestSolvingAttemptIdPerGrid_AllSolvedGridsWithSize4()
 			throws Exception {
-		assertThatLatestSolvingAttemptIdPerGrid(
-				GridDatabaseAdapter.StatusFilter.SOLVED,
+		assertThatLatestSolvingAttemptIdPerGrid(StatusFilter.SOLVED,
 				GridTypeFilter.GRID_4X4,
 				is(latestSolvingAttemptForAllSolvedGridsWithSize4));
 	}
@@ -142,7 +138,7 @@ public class ArchiveSolvingAttemptSelectorTest {
 	@Test
 	public void countGrids_AllGrids() throws Exception {
 		List<ArchiveSolvingAttemptSelector.LatestSolvingAttemptForGrid> resultLatestSolvingAttemptForGrids = getResultLatestSolvingAttemptForGrids(
-				GridDatabaseAdapter.StatusFilter.ALL, GridTypeFilter.ALL);
+				StatusFilter.ALL, GridTypeFilter.ALL);
 		assertThat(resultLatestSolvingAttemptForGrids.size(),
 				is(latestSolvingAttemptForAllGrids.size()));
 	}

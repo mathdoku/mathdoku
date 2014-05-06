@@ -1,7 +1,5 @@
 package net.mathdoku.plus.enums;
 
-import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter;
-
 public enum SolvingAttemptStatus {
 	// The solving attempt status id's of the enum values should not be altered
 	// as these values are persisted. Each solving attempt status (except
@@ -9,19 +7,19 @@ public enum SolvingAttemptStatus {
 	// can be attached to multiple solving attempt statuses.
 	UNDETERMINED(-1, null),
 	//
-	NOT_STARTED(0, GridDatabaseAdapter.StatusFilter.UNFINISHED),
+	NOT_STARTED(0, StatusFilter.UNFINISHED),
 	//
-	UNFINISHED(50, GridDatabaseAdapter.StatusFilter.UNFINISHED),
+	UNFINISHED(50, StatusFilter.UNFINISHED),
 	//
-	FINISHED_SOLVED(100, GridDatabaseAdapter.StatusFilter.SOLVED),
+	FINISHED_SOLVED(100, StatusFilter.SOLVED),
 	//
-	REVEALED_SOLUTION(101, GridDatabaseAdapter.StatusFilter.REVEALED);
+	REVEALED_SOLUTION(101, StatusFilter.REVEALED);
 
 	private final int solvingAttemptStatusId;
-	private final GridDatabaseAdapter.StatusFilter attachedToStatusFilter;
+	private final StatusFilter attachedToStatusFilter;
 
 	private SolvingAttemptStatus(int solvingAttemptStatusId,
-			GridDatabaseAdapter.StatusFilter attachedToStatusFilter) {
+			StatusFilter attachedToStatusFilter) {
 		this.solvingAttemptStatusId = solvingAttemptStatusId;
 		this.attachedToStatusFilter = attachedToStatusFilter;
 	}
@@ -30,7 +28,7 @@ public enum SolvingAttemptStatus {
 		return solvingAttemptStatusId;
 	}
 
-	public GridDatabaseAdapter.StatusFilter getAttachedToStatusFilter() {
+	public StatusFilter getAttachedToStatusFilter() {
 		return attachedToStatusFilter;
 	}
 

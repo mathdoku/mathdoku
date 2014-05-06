@@ -6,8 +6,8 @@ import android.database.sqlite.SQLiteException;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.enums.SolvingAttemptStatus;
+import net.mathdoku.plus.enums.StatusFilter;
 import net.mathdoku.plus.storage.databaseadapter.DatabaseAdapterException;
-import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseProjection;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil;
@@ -30,27 +30,27 @@ public class AvailableStatusFiltersSelector extends SolvingAttemptSelector {
 	private static final boolean DEBUG_SQL = Config.mAppMode == Config.AppMode.DEVELOPMENT && false;
 
 	private static final String KEY_PROJECTION_STATUS_FILTER = "status_filter";
-	private final List<GridDatabaseAdapter.StatusFilter> statusFilterList;
+	private final List<StatusFilter> statusFilterList;
 
 	public AvailableStatusFiltersSelector(GridTypeFilter gridTypeFilter) {
-		super(GridDatabaseAdapter.StatusFilter.ALL, gridTypeFilter);
+		super(StatusFilter.ALL, gridTypeFilter);
 		setEnableLogging(DEBUG_SQL);
 		setOrderByString(KEY_PROJECTION_STATUS_FILTER);
 		setGroupByString(KEY_PROJECTION_STATUS_FILTER);
 		statusFilterList = retrieveFromDatabase();
 	}
 
-	private List<GridDatabaseAdapter.StatusFilter> retrieveFromDatabase() {
+	private List<StatusFilter> retrieveFromDatabase() {
 		// Convert results in cursor to array of grid id's
-		List<GridDatabaseAdapter.StatusFilter> statusFilters = new ArrayList<GridDatabaseAdapter.StatusFilter>();
-		statusFilters.add(GridDatabaseAdapter.StatusFilter.ALL);
+		List<StatusFilter> statusFilters = new ArrayList<StatusFilter>();
+		statusFilters.add(StatusFilter.ALL);
 		Cursor cursor = null;
 		try {
 			cursor = getCursor();
 			if (cursor != null && cursor.moveToFirst()) {
 				do {
 					statusFilters
-							.add(GridDatabaseAdapter.StatusFilter
+							.add(StatusFilter
 									.valueOf(getProjectionStatusFilterFromCursor(cursor)));
 				} while (cursor.moveToNext());
 			}
@@ -103,7 +103,7 @@ public class AvailableStatusFiltersSelector extends SolvingAttemptSelector {
 		return stringBuilder.toString();
 	}
 
-	public List<GridDatabaseAdapter.StatusFilter> getAvailableStatusFilters() {
+	public List<StatusFilter> getAvailableStatusFilters() {
 		return statusFilterList;
 	}
 }

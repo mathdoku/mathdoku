@@ -4,9 +4,9 @@ import android.app.Activity;
 
 import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.enums.SolvingAttemptStatus;
+import net.mathdoku.plus.enums.StatusFilter;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.storage.databaseadapter.DatabaseHelper;
-import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter;
 import net.mathdoku.plus.util.Util;
 
 import org.junit.After;
@@ -81,15 +81,15 @@ public class AvailableGridTypeFilterSelectorTest {
 			gridTypeFilterListAllStatuses.add(gridTypeFilter);
 		}
 
-		GridDatabaseAdapter.StatusFilter statusFilter = SolvingAttemptStatus
+		StatusFilter statusFilter = SolvingAttemptStatus
 				.getDerivedStatus(grid.isSolutionRevealed(), grid.isActive(),
 						grid.isEmpty())
 				.getAttachedToStatusFilter();
-		if (statusFilter == GridDatabaseAdapter.StatusFilter.SOLVED
+		if (statusFilter == StatusFilter.SOLVED
 				&& !gridTypeFilterListWithStatusSolved.contains(gridTypeFilter)) {
 			gridTypeFilterListWithStatusSolved.add(gridTypeFilter);
 		}
-		if (statusFilter == GridDatabaseAdapter.StatusFilter.UNFINISHED
+		if (statusFilter == StatusFilter.UNFINISHED
 				&& !gridTypeFilterListWithStatusUnfinished
 						.contains(gridTypeFilter)) {
 			gridTypeFilterListWithStatusUnfinished.add(gridTypeFilter);
@@ -98,12 +98,11 @@ public class AvailableGridTypeFilterSelectorTest {
 
 	@Test
 	public void getAvailableGridTypeFilters_GridAllStatuses() throws Exception {
-		assertThatGridTypeFilterList(GridDatabaseAdapter.StatusFilter.ALL,
+		assertThatGridTypeFilterList(StatusFilter.ALL,
 				gridTypeFilterListAllStatuses);
 	}
 
-	private void assertThatGridTypeFilterList(
-			GridDatabaseAdapter.StatusFilter statusFilter,
+	private void assertThatGridTypeFilterList(StatusFilter statusFilter,
 			List<GridTypeFilter> expectedGridTypeFilterList) {
 		List<GridTypeFilter> resultGridTypeFilters = new AvailableGridTypeFilterSelector(
 				statusFilter).getAvailableGridTypeFilters();
@@ -114,15 +113,14 @@ public class AvailableGridTypeFilterSelectorTest {
 
 	@Test
 	public void getAvailableGridTypeFilters_AllSolvedGrids() throws Exception {
-		assertThatGridTypeFilterList(GridDatabaseAdapter.StatusFilter.SOLVED,
+		assertThatGridTypeFilterList(StatusFilter.SOLVED,
 				gridTypeFilterListWithStatusSolved);
 	}
 
 	@Test
 	public void getAvailableGridTypeFilters_AllUnfinishedGrids()
 			throws Exception {
-		assertThatGridTypeFilterList(
-				GridDatabaseAdapter.StatusFilter.UNFINISHED,
+		assertThatGridTypeFilterList(StatusFilter.UNFINISHED,
 				gridTypeFilterListWithStatusUnfinished);
 	}
 }

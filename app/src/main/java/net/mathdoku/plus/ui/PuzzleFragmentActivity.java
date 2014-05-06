@@ -57,7 +57,7 @@ import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.statistics.ui.StatisticsFragmentActivity;
 import net.mathdoku.plus.storage.GameFileConverter;
 import net.mathdoku.plus.storage.selector.ArchiveSolvingAttemptSelector;
-import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter.StatusFilter;
+import net.mathdoku.plus.enums.StatusFilter;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankDatabaseAdapter.ScoreOrigin;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankRow;

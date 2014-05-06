@@ -6,6 +6,7 @@ import android.util.Log;
 
 import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.GridTypeFilter;
+import net.mathdoku.plus.enums.StatusFilter;
 import net.mathdoku.plus.storage.databaseadapter.DatabaseHelper;
 import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.SolvingAttemptDatabaseAdapter;
@@ -24,14 +25,13 @@ public abstract class SolvingAttemptSelector {
 
 	public static final String SQLITE_KEYWORD_AND = " AND ";
 
-	protected final GridDatabaseAdapter.StatusFilter statusFilter;
+	protected final StatusFilter statusFilter;
 	protected final GridTypeFilter gridTypeFilter;
 	private boolean enableLogging;
 	private String groupByString;
 	private String orderByString;
 
-	public SolvingAttemptSelector(
-			GridDatabaseAdapter.StatusFilter statusFilter,
+	public SolvingAttemptSelector(StatusFilter statusFilter,
 			GridTypeFilter gridTypeFilter) {
 		this.statusFilter = statusFilter;
 		this.gridTypeFilter = gridTypeFilter;

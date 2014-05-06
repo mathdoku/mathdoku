@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteException;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.enums.GridTypeFilter;
+import net.mathdoku.plus.enums.StatusFilter;
 import net.mathdoku.plus.storage.databaseadapter.DatabaseAdapterException;
 import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.SolvingAttemptDatabaseAdapter;
@@ -97,8 +98,7 @@ public class ArchiveSolvingAttemptSelector extends SolvingAttemptSelector {
 		}
 	}
 
-	public ArchiveSolvingAttemptSelector(
-			GridDatabaseAdapter.StatusFilter statusFilter,
+	public ArchiveSolvingAttemptSelector(StatusFilter statusFilter,
 			GridTypeFilter gridTypeFilter) {
 		super(statusFilter, gridTypeFilter);
 		setEnableLogging(DEBUG_SQL);

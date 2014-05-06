@@ -2,6 +2,7 @@ package net.mathdoku.plus.archive.ui;
 
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.enums.GridTypeFilter;
+import net.mathdoku.plus.enums.StatusFilter;
 import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.selector.AvailableGridTypeFilterSelector;
 
@@ -43,7 +44,7 @@ public class ArchiveFragmentGridSizeFilterSpinner {
 	 * this package.
 	 */
 	AvailableGridTypeFilterSelector createAvailableSizeFilterSelector(
-			GridDatabaseAdapter.StatusFilter statusFilter) {
+			StatusFilter statusFilter) {
 		return new AvailableGridTypeFilterSelector(statusFilter);
 	}
 

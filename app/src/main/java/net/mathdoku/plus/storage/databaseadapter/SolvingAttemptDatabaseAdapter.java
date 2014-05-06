@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteException;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.enums.SolvingAttemptStatus;
+import net.mathdoku.plus.enums.StatusFilter;
 import net.mathdoku.plus.storage.databaseadapter.database.DataType;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseColumnDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseForeignKeyDefinition;
@@ -344,8 +345,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 * @return The SQL where clause which matches solving attempts with the
 	 *         given status filter.
 	 */
-	public static String getStatusSelectionString(
-			GridDatabaseAdapter.StatusFilter statusFilter) {
+	public static String getStatusSelectionString(StatusFilter statusFilter) {
 		// Determine selection for status filter
 		switch (statusFilter) {
 		case ALL:

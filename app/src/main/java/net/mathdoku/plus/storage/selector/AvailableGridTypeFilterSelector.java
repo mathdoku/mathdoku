@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteException;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.GridTypeFilter;
+import net.mathdoku.plus.enums.StatusFilter;
 import net.mathdoku.plus.storage.databaseadapter.DatabaseAdapterException;
 import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseProjection;
@@ -30,8 +31,7 @@ public class AvailableGridTypeFilterSelector extends SolvingAttemptSelector {
 	private static final String KEY_PROJECTION_GRID_SIZE = "projection_grid_size";
 	private final List<GridTypeFilter> gridTypeFilterList;
 
-	public AvailableGridTypeFilterSelector(
-			GridDatabaseAdapter.StatusFilter statusFilter) {
+	public AvailableGridTypeFilterSelector(StatusFilter statusFilter) {
 		super(statusFilter, GridTypeFilter.ALL);
 		setEnableLogging(DEBUG_SQL);
 		setOrderByString(KEY_PROJECTION_GRID_SIZE);
