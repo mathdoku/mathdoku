@@ -68,24 +68,31 @@ public class DatabaseColumnDropperTest {
 		TestRunnerHelper.tearDown();
 	}
 
-	@Test(expected = DatabaseException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void dropColumns_NullColumnArray_ThrowsDatabaseException()
 			throws Exception {
 		assertThat(databaseColumnDropper.dropColumns(null), is(false));
 	}
 
-	@Test(expected = DatabaseException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void dropColumns_EmptyColumnArray_ThrowsDatabaseException()
 			throws Exception {
 		assertThat(databaseColumnDropper.dropColumns(new String[] {}),
 				is(false));
 	}
 
-	@Test(expected = DatabaseException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void dropColumns_NullColumn_ThrowsDatabaseException()
 			throws Exception {
 		assertThat(databaseColumnDropper.dropColumns(new String[] { null }),
 				is(false));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void dropColumns_EmptyColumn_ThrowsDatabaseException()
+			throws Exception {
+		assertThat(databaseColumnDropper.dropColumns(new String[] { "" }),
+				   is(false));
 	}
 
 	@Test(expected = DatabaseException.class)

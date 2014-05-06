@@ -3,6 +3,7 @@ package net.mathdoku.plus.storage.databaseadapter;
 import android.text.TextUtils;
 
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseException;
+import net.mathdoku.plus.util.ParameterValidator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +28,7 @@ public class DatabaseColumnDropper {
 	}
 
 	public boolean dropColumns(String[] columnsToBeDropped) {
+		ParameterValidator.validateNotNullOrEmpty(columnsToBeDropped);
 		this.columnsToBeDropped = columnsToBeDropped.clone();
 		validateColumnsToBeDropped();
 
@@ -77,9 +79,9 @@ public class DatabaseColumnDropper {
 	}
 
 	private List<String> getColumnsRemaining() {
-		List<String> newColumnList = new ArrayList<String>(currentColumnList);
-		newColumnList.removeAll(Arrays.asList(columnsToBeDropped));
-		return newColumnList;
+		List<String> remainingColumns = new ArrayList<String>(currentColumnList);
+		remainingColumns.removeAll(Arrays.asList(columnsToBeDropped));
+		return remainingColumns;
 	}
 
 	private void validateColumnsRemaining() {

@@ -12,6 +12,16 @@ public class ParameterValidator {
 		}
 	}
 
+	public static void validateNotNullOrEmpty(String[] strings) {
+		validateNotNull(strings);
+		if (strings.length == 0) {
+			throwEmptyException();
+		}
+		for (String string : strings) {
+			validateNotNullOrEmpty(string);
+		}
+	}
+
 	public static void validateNotNull(Object object) {
 		if (object == null) {
 			throw new IllegalArgumentException("Parameter cannot be null.");
