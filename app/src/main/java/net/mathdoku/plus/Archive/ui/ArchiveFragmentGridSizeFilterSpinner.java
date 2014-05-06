@@ -1,9 +1,9 @@
 package net.mathdoku.plus.archive.ui;
 
 import net.mathdoku.plus.R;
-import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter;
+import net.mathdoku.plus.storage.selector.AvailableGridTypeFilterSelector;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -31,6 +31,22 @@ public class ArchiveFragmentGridSizeFilterSpinner {
 		gridTypeFilters = getGridTypeFilters();
 	}
 
+	private List<GridTypeFilter> getGridTypeFilters() {
+		return createAvailableSizeFilterSelector(
+				archiveFragmentStatePagerAdapter.getStatusFilter())
+				.getAvailableGridTypeFilters();
+	}
+
+	/*
+	 * Package private method which allows the creation of a new
+	 * AvailableGridTypeFilterSelector to be overwritten by the test class for this
+	 * package.
+	 */
+	AvailableGridTypeFilterSelector createAvailableSizeFilterSelector(
+			GridDatabaseAdapter.StatusFilter statusFilter) {
+		return new AvailableGridTypeFilterSelector(statusFilter);
+	}
+
 	public ArchiveFragmentGridSizeFilterSpinner setObjectsCreator(
 			ArchiveFragmentGridSizeFilterSpinner.ObjectsCreator objectsCreator) {
 		if (this.objectsCreator == null) {
@@ -40,23 +56,6 @@ public class ArchiveFragmentGridSizeFilterSpinner {
 		this.objectsCreator = objectsCreator;
 
 		return this;
-	}
-
-	private List<GridTypeFilter> getGridTypeFilters() {
-		List<GridTypeFilter> gridTypeFilters = new ArrayList<GridTypeFilter>();
-		gridTypeFilters.add(GridTypeFilter.ALL);
-		for (GridType gridType : getUsedSizesForCurrentStatusFilter()) {
-			gridTypeFilters.add(GridTypeFilter.fromGridSize(gridType));
-		}
-
-		return gridTypeFilters;
-	}
-
-	private GridType[] getUsedSizesForCurrentStatusFilter() {
-		GridDatabaseAdapter gridDatabaseAdapter = createGridDatabaseAdapter();
-		return gridDatabaseAdapter
-				.getUsedSizes(archiveFragmentStatePagerAdapter
-						.getStatusFilter());
 	}
 
 	/*
@@ -80,9 +79,8 @@ public class ArchiveFragmentGridSizeFilterSpinner {
 			return archiveFragmentActivity.getResources().getString(
 					R.string.all);
 		} else {
-			return archiveFragmentActivity.getResources().getString(
-					R.string.grid_description_short,
-					gridTypeFilter.getGridType(), gridTypeFilter.getGridType());
+			return archiveFragmentActivity.getResources().getStringArray(
+					R.array.archive_size_filter)[gridTypeFilter.ordinal()];
 		}
 	}
 

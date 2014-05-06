@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import net.mathdoku.plus.R;
+import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.GridTypeFilter;
 
 /**
@@ -17,10 +18,12 @@ class StatisticsFragmentPagerAdapter extends FragmentPagerAdapter {
 			GridTypeFilter.GRID_5X5, GridTypeFilter.GRID_6X6,
 			GridTypeFilter.GRID_7X7, GridTypeFilter.GRID_8X8,
 			GridTypeFilter.GRID_9X9 };
-	private final static int MIN_GRID_SIZE_IN_PAGER_ADAPTER = GridTypeFilter.GRID_4X4
-			.getGridType();
-	private final static int MAX_GRID_SIZE_IN_PAGER_ADAPTER = GridTypeFilter.GRID_9X9
-			.getGridType();
+	private final static int MIN_GRID_SIZE_IN_PAGER_ADAPTER = GridType
+			.fromGridTypeFilter(GridTypeFilter.GRID_4X4)
+			.getGridSize();
+	private final static int MAX_GRID_SIZE_IN_PAGER_ADAPTER = GridType
+			.fromGridTypeFilter(GridTypeFilter.GRID_9X9)
+			.getGridSize();
 
 	private final Context context;
 
@@ -40,8 +43,8 @@ class StatisticsFragmentPagerAdapter extends FragmentPagerAdapter {
 			bundle.putInt(StatisticsLevelFragment.ARG_GRID_SIZE_MAX,
 					MAX_GRID_SIZE_IN_PAGER_ADAPTER);
 		} else {
-			int gridSize = GRID_TYPE_FILTERS_IN_PAGER_ADAPTER[index]
-					.getGridType();
+			int gridSize = GridType.fromGridTypeFilter(
+					GRID_TYPE_FILTERS_IN_PAGER_ADAPTER[index]).getGridSize();
 			bundle.putInt(StatisticsLevelFragment.ARG_GRID_SIZE_MIN, gridSize);
 			bundle.putInt(StatisticsLevelFragment.ARG_GRID_SIZE_MAX, gridSize);
 		}
@@ -64,8 +67,8 @@ class StatisticsFragmentPagerAdapter extends FragmentPagerAdapter {
 					MIN_GRID_SIZE_IN_PAGER_ADAPTER,
 					MAX_GRID_SIZE_IN_PAGER_ADAPTER);
 		} else {
-			return Integer.toString(GRID_TYPE_FILTERS_IN_PAGER_ADAPTER[index]
-					.getGridType());
+			return Integer.toString(GridType.fromGridTypeFilter(
+					GRID_TYPE_FILTERS_IN_PAGER_ADAPTER[index]).getGridSize());
 		}
 	}
 }

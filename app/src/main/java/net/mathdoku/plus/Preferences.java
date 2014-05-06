@@ -115,7 +115,7 @@ public class Preferences {
 	private static final boolean PUZZLE_PARAMETER_OPERATORS_VISIBLE_DEFAULT = true;
 
 	private static final String PUZZLE_PARAMETER_GRID_SIZE = "puzzle_parameter_grid_size";
-	private static final String PUZZLE_PARAMETER_GRID_SIZE_DEFAULT = GridType.GRID_4x4
+	private static final String PUZZLE_PARAMETER_GRID_SIZE_DEFAULT = GridType.GRID_4X4
 			.toString();
 
 	// Puzzle setting preferences

@@ -13,7 +13,7 @@ public class LeaderboardType {
 	// All grid sizes for which leaderboards are available. Elements have to be
 	// order in order of ascending size.
 	private static final GridType[] GRID_SIZES_WITH_LEADER_BOARD = {
-			GridType.GRID_4x4, GridType.GRID_5X5, GridType.GRID_6X6,
+			GridType.GRID_4X4, GridType.GRID_5X5, GridType.GRID_6X6,
 			GridType.GRID_7X7, GridType.GRID_8X8, GridType.GRID_9X9 };
 	private static final int GRID_SIZE_SMALLEST = GRID_SIZES_WITH_LEADER_BOARD[0]
 			.getGridSize();

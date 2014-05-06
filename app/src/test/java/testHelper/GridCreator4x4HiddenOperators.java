@@ -40,7 +40,7 @@ public class GridCreator4x4HiddenOperators extends GridCreator4x4 {
 	}
 
 	protected GridType getGridType() {
-		return GridType.GRID_4x4;
+		return GridType.GRID_4X4;
 	}
 
 	protected boolean getHideOperator() {

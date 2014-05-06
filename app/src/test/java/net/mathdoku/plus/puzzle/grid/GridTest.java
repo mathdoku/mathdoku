@@ -94,7 +94,7 @@ public class GridTest {
 		}
 
 		public GridBuilderStub setupDefaultWhichDoesNotThrowErrorsOnBuild() {
-			GridType gridType = GridType.GRID_4x4;
+			GridType gridType = GridType.GRID_4X4;
 			setGridSize(gridType.getGridSize());
 
 			// Insert exact number of cells needed with this grid size. A

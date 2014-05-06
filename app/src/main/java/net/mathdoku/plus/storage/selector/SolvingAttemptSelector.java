@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.util.Log;
 
+import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.storage.databaseadapter.DatabaseHelper;
 import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter;
@@ -143,11 +144,12 @@ public abstract class SolvingAttemptSelector {
 
 	private String getSizeSelectionString() {
 		StringBuilder stringBuilder = new StringBuilder();
-		String selectionSize = GridDatabaseAdapter
-				.getSizeSelectionString(gridTypeFilter);
-		if (!selectionSize.isEmpty()) {
+		if (gridTypeFilter != GridTypeFilter.ALL) {
 			stringBuilder.append(SQLITE_KEYWORD_AND);
-			stringBuilder.append(selectionSize);
+			stringBuilder.append(GridDatabaseAdapter.getPrefixedColumnName(
+					GridDatabaseAdapter.KEY_GRID_SIZE));
+			stringBuilder.append(" = ");
+			stringBuilder.append(GridType.fromGridTypeFilter(gridTypeFilter).getGridSize());
 		}
 
 		return stringBuilder.toString();

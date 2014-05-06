@@ -5,25 +5,18 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.database.sqlite.SQLiteQueryBuilder;
-import android.util.Log;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.enums.GridType;
-import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParametersBuilder;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.storage.databaseadapter.database.DataType;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseColumnDefinition;
-import net.mathdoku.plus.storage.databaseadapter.database.DatabaseProjection;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseTableDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil;
-import net.mathdoku.plus.storage.selector.AvailableStatusFiltersSelector;
-
-import java.util.List;
 
 /**
  * The database adapter for the grid table.
@@ -267,23 +260,21 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	}
 
 	private GridType getGridTypeFromCursor(Cursor cursor) {
-		return GridType.fromInteger(cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_GRID_SIZE)));
+		return GridType.fromInteger(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_GRID_SIZE)));
 	}
 
 	private boolean getHideOperatorFromCursor(Cursor cursor) {
-		return DatabaseUtil.valueOfSQLiteBoolean(cursor.getString(cursor
-				.getColumnIndexOrThrow(KEY_HIDE_OPERATORS)));
+		return DatabaseUtil.valueOfSQLiteBoolean(
+				cursor.getString(cursor.getColumnIndexOrThrow(KEY_HIDE_OPERATORS)));
 	}
 
 	private PuzzleComplexity getPuzzleComplexityFromCursor(Cursor cursor) {
-		return PuzzleComplexity.valueOf(cursor.getString(cursor
-				.getColumnIndexOrThrow(KEY_PUZZLE_COMPLEXITY)));
+		return PuzzleComplexity.valueOf(
+				cursor.getString(cursor.getColumnIndexOrThrow(KEY_PUZZLE_COMPLEXITY)));
 	}
 
 	private int getGeneratorRevisionNumberFromCursor(Cursor cursor) {
-		return cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_GENERATOR_REVISION_NUMBER));
+		return cursor.getInt(cursor.getColumnIndexOrThrow(KEY_GENERATOR_REVISION_NUMBER));
 	}
 
 	private long getGameSeedFromCursor(Cursor cursor) {
@@ -309,89 +300,4 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		return DatabaseUtil.stringBetweenBackTicks(TABLE_NAME) + "."
 				+ DatabaseUtil.stringBetweenBackTicks(column);
 	}
-
-	/**
-	 * Get a list of sized used by grids which matches with the given status
-	 * filter.
-	 * 
-	 * @param statusFilter
-	 *            The status filter which has to be matched by the grids.
-	 * @return The list of sizes used by grids which matches with the given
-	 *         status filter.
-	 */
-	public GridType[] getUsedSizes(StatusFilter statusFilter) {
-		// Build the databaseProjection
-		DatabaseProjection databaseProjection = new DatabaseProjection();
-		databaseProjection.put(KEY_GRID_SIZE, TABLE_NAME, KEY_GRID_SIZE);
-
-		// Build query
-		SQLiteQueryBuilder sqliteQueryBuilder = new SQLiteQueryBuilder();
-		sqliteQueryBuilder.setProjectionMap(databaseProjection);
-		sqliteQueryBuilder
-				.setTables(TABLE_NAME
-						+ " INNER JOIN "
-						+ SolvingAttemptDatabaseAdapter.TABLE_NAME
-						+ " ON "
-						+ SolvingAttemptDatabaseAdapter
-								.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_GRID_ID)
-						+ " = " + getPrefixedColumnName(KEY_ROWID));
-
-		// Retrieve all data. Note: in case column is not added to the
-		// databaseProjection, no data will be retrieved!
-		String[] columnsData = { DatabaseUtil
-				.stringBetweenBackTicks(KEY_GRID_SIZE) };
-
-		// Build where clause
-		String selection = SolvingAttemptDatabaseAdapter
-				.getStatusSelectionString(statusFilter);
-
-		if (DEBUG_SQL) {
-			String sql = sqliteQueryBuilder.buildQuery(columnsData, selection,
-					KEY_GRID_SIZE, null, KEY_GRID_SIZE, null);
-			Log.i(TAG, sql);
-		}
-
-		// Convert results in cursor to array of grid id's
-		GridType[] sizes = null;
-		Cursor cursor = null;
-		try {
-			cursor = sqliteQueryBuilder.query(sqliteDatabase, columnsData,
-					selection, null, KEY_GRID_SIZE, null, null);
-			if (cursor != null && cursor.moveToFirst()) {
-				sizes = new GridType[cursor.getCount()];
-				int i = 0;
-				int columnIndex = cursor.getColumnIndexOrThrow(KEY_GRID_SIZE);
-				do {
-					sizes[i++] = GridType.fromInteger(cursor
-							.getInt(columnIndex));
-				} while (cursor.moveToNext());
-			}
-		} catch (SQLiteException e) {
-			throw new DatabaseAdapterException(
-					String.format(
-							"Cannot retrieve used sizes of latest solving attempt per grid from the database (status filter = %s).",
-							statusFilter.toString()), e);
-		} finally {
-			if (cursor != null) {
-				cursor.close();
-			}
-		}
-		return sizes;
-	}
-
-	/**
-	 * Get the SQL where clause to select solving attempts for which the size
-	 * matches the given size filter.
-	 * 
-	 * @param gridTypeFilter
-	 *            The size filter to be matched.
-	 * @return The SQL where clause which matches solving attempts with the
-	 *         given size filter.
-	 */
-	public static String getSizeSelectionString(GridTypeFilter gridTypeFilter) {
-		return gridTypeFilter == GridTypeFilter.ALL ? ""
-				: getPrefixedColumnName(KEY_GRID_SIZE) + " = "
-						+ gridTypeFilter.getGridType();
-	}
-
 }

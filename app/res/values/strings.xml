@@ -492,6 +492,8 @@
     <!-- The possible values of the archive filter on puzzle size. -->
     <string-array name="archive_size_filter">
         <item>All</item>
+        <item>2x2</item>
+        <item>3x3</item>
         <item>4x4</item>
         <item>5x5</item>
         <item>6x6</item>

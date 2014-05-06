@@ -1,24 +1,25 @@
 package net.mathdoku.plus.archive.ui;
 
 import android.app.Activity;
-import android.content.res.Resources;
 
-import net.mathdoku.plus.R;
-import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.storage.databaseadapter.DatabaseHelper;
 import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter;
+import net.mathdoku.plus.storage.selector.AvailableGridTypeFilterSelector;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
 import robolectric.RobolectricGradleTestRunner;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -28,11 +29,10 @@ public class ArchiveFragmentGridTypeFilterSpinnerTest {
 	private ArchiveFragmentActivity archiveFragmentActivity;
 	private ArchiveFragmentStatePagerAdapter archiveFragmentStatePagerAdapter;
 	private GridDatabaseAdapter gridDatabaseAdapter;
-	private Resources resources;
-	private final String FILTER_ALL = "**ALL**";
-	private final String FILTER_2 = "2x2";
-	private final String FILTER_4 = "4 by 4";
-	private final String FILTER_5 = "5";
+	private static final String EXPECTED_DESCRIPTION_SIZE_FILTER_ALL = "All";
+	private static final String EXPECTED_DESCRIPTION_SIZE_FILTER_2 = "2x2";
+	private static final String EXPECTED_DESCRIPTION_SIZE_FILTER_4 = "4x4";
+	private static final String EXPECTED_DESCRIPTION_SIZE_FILTER_5 = "5x5";
 
 	@Before
 	public void setup() {
@@ -48,15 +48,8 @@ public class ArchiveFragmentGridTypeFilterSpinnerTest {
 		when(archiveFragmentStatePagerAdapter.getStatusFilter()).thenReturn(
 				GridDatabaseAdapter.StatusFilter.ALL);
 
-		resources = mock(Resources.class);
-		when(archiveFragmentActivity.getResources()).thenReturn(resources);
-		when(resources.getString(R.string.all)).thenReturn(FILTER_ALL);
-		when(resources.getString(R.string.grid_description_short, 2, 2))
-				.thenReturn(FILTER_2);
-		when(resources.getString(R.string.grid_description_short, 4, 4))
-				.thenReturn(FILTER_4);
-		when(resources.getString(R.string.grid_description_short, 5, 5))
-				.thenReturn(FILTER_5);
+		when(archiveFragmentActivity.getResources()).thenReturn(
+				Robolectric.application.getResources());
 	}
 
 	@Test
@@ -64,21 +57,36 @@ public class ArchiveFragmentGridTypeFilterSpinnerTest {
 			throws Exception {
 		spinner = setSpinnerWithGridSizes();
 
-		String[] gridSizeFilters = { FILTER_ALL };
+		String[] gridSizeFilters = { EXPECTED_DESCRIPTION_SIZE_FILTER_ALL };
 		assertThat(spinner.getSpinnerElements(),
 				is(Arrays.asList(gridSizeFilters)));
 	}
 
 	private ArchiveFragmentGridSizeFilterSpinner setSpinnerWithGridSizes(
-			GridType... gridTypes) {
-		when(
-				gridDatabaseAdapter
-						.getUsedSizes(any(GridDatabaseAdapter.StatusFilter.class)))
-				.thenReturn(gridTypes);
+			final GridTypeFilter... gridTypeFilters) {
 		return new ArchiveFragmentGridSizeFilterSpinner(archiveFragmentActivity) {
+			private AvailableGridTypeFilterSelector availableGridTypeFilterSelector;
+
 			@Override
 			GridDatabaseAdapter createGridDatabaseAdapter() {
 				return gridDatabaseAdapter;
+			}
+
+			@Override
+			AvailableGridTypeFilterSelector createAvailableSizeFilterSelector(
+					GridDatabaseAdapter.StatusFilter statusFilter) {
+				availableGridTypeFilterSelector = mock(AvailableGridTypeFilterSelector.class);
+				when(availableGridTypeFilterSelector.getAvailableGridTypeFilters())
+						.thenReturn(getGridTypeFiltersIncludingAll());
+				return availableGridTypeFilterSelector;
+			}
+
+			private List<GridTypeFilter> getGridTypeFiltersIncludingAll() {
+				List<GridTypeFilter> gridTypeFiltersIncludingAll = new ArrayList<GridTypeFilter>();
+				gridTypeFiltersIncludingAll.add(GridTypeFilter.ALL);
+				gridTypeFiltersIncludingAll.addAll(Arrays
+						.asList(gridTypeFilters));
+				return gridTypeFiltersIncludingAll;
 			}
 		};
 	}
@@ -86,10 +94,13 @@ public class ArchiveFragmentGridTypeFilterSpinnerTest {
 	@Test
 	public void getSpinnerElements_GridsWithMultipleSizesInDatabase_GridSizeFiltersInclusiveAllReturned()
 			throws Exception {
-		spinner = setSpinnerWithGridSizes(GridType.GRID_2X2, GridType.GRID_4x4,
-				GridType.GRID_5X5);
+		spinner = setSpinnerWithGridSizes(GridTypeFilter.GRID_2X2,
+				GridTypeFilter.GRID_4X4, GridTypeFilter.GRID_5X5);
 
-		String[] gridSizeFilters = { FILTER_ALL, FILTER_2, FILTER_4, FILTER_5 };
+		String[] gridSizeFilters = { EXPECTED_DESCRIPTION_SIZE_FILTER_ALL,
+				EXPECTED_DESCRIPTION_SIZE_FILTER_2,
+				EXPECTED_DESCRIPTION_SIZE_FILTER_4,
+				EXPECTED_DESCRIPTION_SIZE_FILTER_5 };
 		assertThat(spinner.getSpinnerElements(),
 				is(Arrays.asList(gridSizeFilters)));
 	}
@@ -97,8 +108,8 @@ public class ArchiveFragmentGridTypeFilterSpinnerTest {
 	@Test
 	public void indexOfSelectedGridSizeFilter_GridSizeFilterAllSelected_AtIndex0()
 			throws Exception {
-		spinner = setSpinnerWithGridSizes(GridType.GRID_2X2, GridType.GRID_4x4,
-				GridType.GRID_5X5);
+		spinner = setSpinnerWithGridSizes(GridTypeFilter.GRID_2X2,
+				GridTypeFilter.GRID_4X4, GridTypeFilter.GRID_5X5);
 		when(archiveFragmentStatePagerAdapter.getSelectedSizeFilter())
 				.thenReturn(GridTypeFilter.ALL);
 
@@ -108,38 +119,37 @@ public class ArchiveFragmentGridTypeFilterSpinnerTest {
 	@Test
 	public void indexOfSelectedGridSizeFilter_GridSizeFilterSelected_AtIndex()
 			throws Exception {
-		GridType[] gridTypes = { GridType.GRID_2X2, GridType.GRID_4x4,
-				GridType.GRID_5X5 };
-		spinner = setSpinnerWithGridSizes(gridTypes);
-		int indexLastGridSize = gridTypes.length - 1;
-		GridType lastGridType = gridTypes[indexLastGridSize];
-		GridTypeFilter lastGridTypeFilter = GridTypeFilter
-				.fromGridSize(lastGridType);
+		GridTypeFilter[] gridTypeFilters = { GridTypeFilter.GRID_2X2,
+				GridTypeFilter.GRID_4X4, GridTypeFilter.GRID_5X5 };
+		spinner = setSpinnerWithGridSizes(gridTypeFilters);
+		int indexLastGridSizeFilter = gridTypeFilters.length - 1;
+		GridTypeFilter lastGridTypeFilter = gridTypeFilters[indexLastGridSizeFilter];
 		when(archiveFragmentStatePagerAdapter.getSelectedSizeFilter())
 				.thenReturn(lastGridTypeFilter);
 		int offsetSetForGridSizeFilterAllAtIndex0 = 1;
 
 		assertThat(spinner.indexOfSelectedGridSizeFilter(),
-				is(offsetSetForGridSizeFilterAllAtIndex0 + indexLastGridSize));
+				is(offsetSetForGridSizeFilterAllAtIndex0
+						+ indexLastGridSizeFilter));
 	}
 
 	@Test
 	public void testSize_GridsWithMultipleSizesInDatabase_SizeIncludesGridSizeFilterAll()
 			throws Exception {
-		GridType[] gridTypes = { GridType.GRID_2X2, GridType.GRID_4x4,
-				GridType.GRID_5X5 };
-		spinner = setSpinnerWithGridSizes(gridTypes);
+		GridTypeFilter[] gridTypeFilters = { GridTypeFilter.GRID_2X2,
+				GridTypeFilter.GRID_4X4, GridTypeFilter.GRID_5X5 };
+		spinner = setSpinnerWithGridSizes(gridTypeFilters);
 		int countForGridSizeFilterAll = 1;
 
 		assertThat(spinner.size(), is(countForGridSizeFilterAll
-				+ gridTypes.length));
+				+ gridTypeFilters.length));
 	}
 
 	@Test
 	public void get_GridsWithMultipleSizesInDatabase() throws Exception {
-		GridType[] gridTypes = { GridType.GRID_2X2, GridType.GRID_4x4,
-				GridType.GRID_5X5 };
-		spinner = setSpinnerWithGridSizes(gridTypes);
+		GridTypeFilter[] gridTypeFilters = { GridTypeFilter.GRID_2X2,
+				GridTypeFilter.GRID_4X4, GridTypeFilter.GRID_5X5 };
+		spinner = setSpinnerWithGridSizes(gridTypeFilters);
 
 		assertThat(spinner.get(0), is(GridTypeFilter.ALL));
 		assertThat(spinner.get(1), is(GridTypeFilter.GRID_2X2));

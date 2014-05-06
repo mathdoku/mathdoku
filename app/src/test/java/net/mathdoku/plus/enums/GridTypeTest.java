@@ -20,7 +20,7 @@ public class GridTypeTest {
 			throws Exception {
 		assertThat(GridType.GRID_2X2.getGridSize(), is(2));
 		assertThat(GridType.GRID_3X3.getGridSize(), is(3));
-		assertThat(GridType.GRID_4x4.getGridSize(), is(4));
+		assertThat(GridType.GRID_4X4.getGridSize(), is(4));
 		assertThat(GridType.GRID_5X5.getGridSize(), is(5));
 		assertThat(GridType.GRID_6X6.getGridSize(), is(6));
 		assertThat(GridType.GRID_7X7.getGridSize(), is(7));
@@ -46,7 +46,7 @@ public class GridTypeTest {
 	public void testFromInteger() throws Exception {
 		assertThat(GridType.fromInteger(2), is(GridType.GRID_2X2));
 		assertThat(GridType.fromInteger(3), is(GridType.GRID_3X3));
-		assertThat(GridType.fromInteger(4), is(GridType.GRID_4x4));
+		assertThat(GridType.fromInteger(4), is(GridType.GRID_4X4));
 		assertThat(GridType.fromInteger(5), is(GridType.GRID_5X5));
 		assertThat(GridType.fromInteger(6), is(GridType.GRID_6X6));
 		assertThat(GridType.fromInteger(7), is(GridType.GRID_7X7));
@@ -80,7 +80,7 @@ public class GridTypeTest {
 	public void getFromNumberOfCells_ValidGridSize() throws Exception {
 		assertThat(GridType.getFromNumberOfCells(4), is(GridType.GRID_2X2));
 		assertThat(GridType.getFromNumberOfCells(9), is(GridType.GRID_3X3));
-		assertThat(GridType.getFromNumberOfCells(16), is(GridType.GRID_4x4));
+		assertThat(GridType.getFromNumberOfCells(16), is(GridType.GRID_4X4));
 		assertThat(GridType.getFromNumberOfCells(25), is(GridType.GRID_5X5));
 		assertThat(GridType.getFromNumberOfCells(36), is(GridType.GRID_6X6));
 		assertThat(GridType.getFromNumberOfCells(49), is(GridType.GRID_7X7));
@@ -111,11 +111,53 @@ public class GridTypeTest {
 	public void getNumberOfCells_ForAllGridTypes() throws Exception {
 		assertThat(GridType.GRID_2X2.getNumberOfCells(), is(4));
 		assertThat(GridType.GRID_3X3.getNumberOfCells(), is(9));
-		assertThat(GridType.GRID_4x4.getNumberOfCells(), is(16));
+		assertThat(GridType.GRID_4X4.getNumberOfCells(), is(16));
 		assertThat(GridType.GRID_5X5.getNumberOfCells(), is(25));
 		assertThat(GridType.GRID_6X6.getNumberOfCells(), is(36));
 		assertThat(GridType.GRID_7X7.getNumberOfCells(), is(49));
 		assertThat(GridType.GRID_8X8.getNumberOfCells(), is(64));
 		assertThat(GridType.GRID_9X9.getNumberOfCells(), is(81));
+	}
+
+	@Test
+	public void fromGridSize_AllGridSizeFilters_CorrectlyMappedToGridSize()
+			throws Exception {
+		assertThat(GridType.GRID_2X2.getAttachedToGridTypeFilter(),
+				is(GridTypeFilter.GRID_2X2));
+		assertThat(GridType.GRID_3X3.getAttachedToGridTypeFilter(),
+				is(GridTypeFilter.GRID_3X3));
+		assertThat(GridType.GRID_4X4.getAttachedToGridTypeFilter(),
+				is(GridTypeFilter.GRID_4X4));
+		assertThat(GridType.GRID_5X5.getAttachedToGridTypeFilter(),
+				is(GridTypeFilter.GRID_5X5));
+		assertThat(GridType.GRID_6X6.getAttachedToGridTypeFilter(),
+				is(GridTypeFilter.GRID_6X6));
+		assertThat(GridType.GRID_7X7.getAttachedToGridTypeFilter(),
+				is(GridTypeFilter.GRID_7X7));
+		assertThat(GridType.GRID_8X8.getAttachedToGridTypeFilter(),
+				is(GridTypeFilter.GRID_8X8));
+		assertThat(GridType.GRID_9X9.getAttachedToGridTypeFilter(),
+				is(GridTypeFilter.GRID_9X9));
+	}
+
+	@Test
+	public void getGridSize_AllGridSizeFilters_CorrectlyMappedToGridSize()
+			throws Exception {
+		assertThat(GridType.fromGridTypeFilter(GridTypeFilter.GRID_2X2),
+				is(GridType.GRID_2X2));
+		assertThat(GridType.fromGridTypeFilter(GridTypeFilter.GRID_3X3),
+				is(GridType.GRID_3X3));
+		assertThat(GridType.fromGridTypeFilter(GridTypeFilter.GRID_4X4),
+				is(GridType.GRID_4X4));
+		assertThat(GridType.fromGridTypeFilter(GridTypeFilter.GRID_5X5),
+				is(GridType.GRID_5X5));
+		assertThat(GridType.fromGridTypeFilter(GridTypeFilter.GRID_6X6),
+				is(GridType.GRID_6X6));
+		assertThat(GridType.fromGridTypeFilter(GridTypeFilter.GRID_7X7),
+				is(GridType.GRID_7X7));
+		assertThat(GridType.fromGridTypeFilter(GridTypeFilter.GRID_8X8),
+				is(GridType.GRID_8X8));
+		assertThat(GridType.fromGridTypeFilter(GridTypeFilter.GRID_9X9),
+				is(GridType.GRID_9X9));
 	}
 }
