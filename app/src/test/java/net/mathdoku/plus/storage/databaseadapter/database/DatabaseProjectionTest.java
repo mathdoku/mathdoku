@@ -160,7 +160,8 @@ public class DatabaseProjectionTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void put_MapAggregationToSourceTableColumn_SourceColumnIsEmpty_ThrowsIllegalArgumentException()
 			throws Exception {
-		databaseProjection.put(DatabaseProjection.Aggregation.MAX, SOURCE_TABLE, "");
+		databaseProjection.put(DatabaseProjection.Aggregation.MAX,
+				SOURCE_TABLE, "");
 	}
 
 	@Test
@@ -168,14 +169,22 @@ public class DatabaseProjectionTest {
 			throws Exception {
 		String back_tick = "`";
 		DatabaseProjection.Aggregation databaseProjectAggregation = DatabaseProjection.Aggregation.MAX;
-		String expectedAggregationProjection = "MAX(" + back_tick
-				+ SOURCE_TABLE + back_tick + "." + back_tick + SOURCE_COLUMN
-				+ back_tick + ") AS " + back_tick
-				+ databaseProjectAggregation.getAggregationColumnNameForColumn(SOURCE_COLUMN)
+		String expectedAggregationProjection = "MAX("
+				+ back_tick
+				+ SOURCE_TABLE
+				+ back_tick
+				+ "."
+				+ back_tick
+				+ SOURCE_COLUMN
+				+ back_tick
+				+ ") AS "
+				+ back_tick
+				+ databaseProjectAggregation
+						.getAggregationColumnNameForColumn(SOURCE_COLUMN)
 				+ back_tick;
 
-		assertThatDatabaseProjectionContainsAggregation(databaseProjectAggregation,
-														expectedAggregationProjection);
+		assertThatDatabaseProjectionContainsAggregation(
+				databaseProjectAggregation, expectedAggregationProjection);
 	}
 
 	private void assertThatDatabaseProjectionContainsAggregation(
@@ -186,7 +195,8 @@ public class DatabaseProjectionTest {
 				SOURCE_TABLE, SOURCE_COLUMN), is(nullValue()));
 		assertThat(databaseProjection.size(), is(1));
 		assertThatDatabaseProjectionContains(
-				databaseProjectAggregation.getAggregationColumnNameForColumn(SOURCE_COLUMN),
+				databaseProjectAggregation
+						.getAggregationColumnNameForColumn(SOURCE_COLUMN),
 				expectedAggregationProjection);
 
 		// When same value is added again, the original value should be
@@ -201,8 +211,10 @@ public class DatabaseProjectionTest {
 			throws Exception {
 		String back_tick = "`";
 		DatabaseProjection.Aggregation databaseProjectAggregation = DatabaseProjection.Aggregation.COUNT;
-		String expectedAggregationProjection = "COUNT(1) AS " + back_tick
-				+ databaseProjectAggregation.getAggregationColumnNameForColumn(SOURCE_COLUMN)
+		String expectedAggregationProjection = "COUNT(1) AS "
+				+ back_tick
+				+ databaseProjectAggregation
+						.getAggregationColumnNameForColumn(SOURCE_COLUMN)
 				+ back_tick;
 
 		assertThatDatabaseProjectionContainsAggregation(
@@ -214,14 +226,22 @@ public class DatabaseProjectionTest {
 			throws Exception {
 		String back_tick = "`";
 		DatabaseProjection.Aggregation databaseProjectAggregation = DatabaseProjection.Aggregation.COUNTIF_TRUE;
-		String expectedAggregationProjection = "SUM(CASE WHEN " + back_tick
-				+ SOURCE_TABLE + back_tick + "." + back_tick + SOURCE_COLUMN
-				+ back_tick + " = 'true' THEN 1 ELSE 0 END) AS " + back_tick
-				+ databaseProjectAggregation.getAggregationColumnNameForColumn(SOURCE_COLUMN)
+		String expectedAggregationProjection = "SUM(CASE WHEN "
+				+ back_tick
+				+ SOURCE_TABLE
+				+ back_tick
+				+ "."
+				+ back_tick
+				+ SOURCE_COLUMN
+				+ back_tick
+				+ " = 'true' THEN 1 ELSE 0 END) AS "
+				+ back_tick
+				+ databaseProjectAggregation
+						.getAggregationColumnNameForColumn(SOURCE_COLUMN)
 				+ back_tick;
 
-		assertThatDatabaseProjectionContainsAggregation(databaseProjectAggregation,
-														expectedAggregationProjection);
+		assertThatDatabaseProjectionContainsAggregation(
+				databaseProjectAggregation, expectedAggregationProjection);
 	}
 
 	@Test
@@ -250,12 +270,14 @@ public class DatabaseProjectionTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void getAggregatedKey_SourceIsNull_ThrowsIllegalArgumentException()
 			throws Exception {
-		DatabaseProjection.Aggregation.COUNT.getAggregationColumnNameForColumn(null);
+		DatabaseProjection.Aggregation.COUNT
+				.getAggregationColumnNameForColumn(null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void getAggregatedKey_SourceIsEmpty_ThrowsIllegalArgumentException()
 			throws Exception {
-		DatabaseProjection.Aggregation.COUNT.getAggregationColumnNameForColumn("");
+		DatabaseProjection.Aggregation.COUNT
+				.getAggregationColumnNameForColumn("");
 	}
 }

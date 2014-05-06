@@ -87,7 +87,8 @@ public class GridGeneratingParameters {
 	}
 
 	@Override
-	@SuppressWarnings("all") // Needed to suppress sonar warning on cyclomatic complexity
+	@SuppressWarnings("all")
+	// Needed to suppress sonar warning on cyclomatic complexity
 	public boolean equals(Object o) {
 		if (this == o) {
 			return true;

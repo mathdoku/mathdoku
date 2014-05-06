@@ -8,24 +8,29 @@ import static org.junit.Assert.assertThat;
 
 public class SingeCellCageResultTest {
 	@Test(expected = IllegalStateException.class)
-	public void tryToCreate_NullValue_ThrowsIllegalStateException() throws Exception {
+	public void tryToCreate_NullValue_ThrowsIllegalStateException()
+			throws Exception {
 		SingeCellCageResult.tryToCreate(null);
 	}
 
 	@Test(expected = IllegalStateException.class)
-	public void tryToCreate_NoValues_ThrowsIllegalStateException() throws Exception {
+	public void tryToCreate_NoValues_ThrowsIllegalStateException()
+			throws Exception {
 		SingeCellCageResult.tryToCreate();
 	}
 
 	@Test
-	public void tryToCreate_CorrectNumberOfValues_CageResultCreated() throws Exception {
-		SingeCellCageResult singeCellCageResult = SingeCellCageResult.tryToCreate(3);
+	public void tryToCreate_CorrectNumberOfValues_CageResultCreated()
+			throws Exception {
+		SingeCellCageResult singeCellCageResult = SingeCellCageResult
+				.tryToCreate(3);
 		assertThat(singeCellCageResult, is(notNullValue()));
 	}
 
 	@Test
 	public void testGetResult_1Value_CorrectResult() throws Exception {
-		SingeCellCageResult singeCellCageResult = SingeCellCageResult.tryToCreate(3);
+		SingeCellCageResult singeCellCageResult = SingeCellCageResult
+				.tryToCreate(3);
 		assertThat(singeCellCageResult.getResult(), is(3));
 	}
 }

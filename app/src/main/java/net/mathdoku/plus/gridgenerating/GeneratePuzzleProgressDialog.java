@@ -22,7 +22,8 @@ import java.util.List;
  * called as the grid has been generated as long as the activity is still
  * attached to this class.
  */
-public class GeneratePuzzleProgressDialog implements GridGeneratorAsyncTaskListenerIface {
+public class GeneratePuzzleProgressDialog implements
+		GridGeneratorAsyncTaskListenerIface {
 	@SuppressWarnings("unused")
 	private static final String TAG = GeneratePuzzleProgressDialog.class
 			.getName();
@@ -40,7 +41,10 @@ public class GeneratePuzzleProgressDialog implements GridGeneratorAsyncTaskListe
 	 */
 	private PuzzleFragmentActivity mPuzzleFragmentActivity;
 
-	// The dialog for this task. This class cannot simply extend class ProgressDialog. In case of a configuration change (e.g. device rotates) the Activity which creates this dialog is killed and a new activity is created.
+	// The dialog for this task. This class cannot simply extend class
+	// ProgressDialog. In case of a configuration change (e.g. device rotates)
+	// the Activity which creates this dialog is killed and a new activity is
+	// created.
 	private ProgressDialog mProgressDialog;
 
 	/**

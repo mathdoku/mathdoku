@@ -14,8 +14,12 @@ public class CandidateCageCreatorParametersTest {
 
 		CandidateCageCreatorParameters candidateCageCreatorParameters = new CandidateCageCreatorParameters();
 
-		assertThat(candidateCageCreatorParameters.getOverlappingSubsetChecker(),is(nullValue()));
+		assertThat(
+				candidateCageCreatorParameters.getOverlappingSubsetChecker(),
+				is(nullValue()));
 		candidateCageCreatorParameters.setCorrectValueMatrix(matrix);
-		assertThat(candidateCageCreatorParameters.getOverlappingSubsetChecker(),is(notNullValue()));
+		assertThat(
+				candidateCageCreatorParameters.getOverlappingSubsetChecker(),
+				is(notNullValue()));
 	}
 }

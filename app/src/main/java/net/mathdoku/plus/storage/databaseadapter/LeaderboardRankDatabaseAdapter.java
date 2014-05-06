@@ -522,33 +522,38 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		// achieved a better score than the top score of the current player
 		// in the last 15 minutes.
 		// noinspection StringConcatenationInsideStringBufferAppend
-		stringBuilder.append(" OR ("
-				+ KEY_RANK_STATUS
-				+ " = "
-				+ DatabaseUtil.stringBetweenQuotes(RankStatus.TOP_RANK_UPDATED
-						.toString())
-				+ " AND "
-				+ KEY_RANK_DATE_LAST_UPDATED
-				+ " < "
-				+ DatabaseUtil.stringBetweenQuotes(DatabaseUtil
-						.getCurrentMinusOffsetSQLiteTimestamp(offset15MinutesInMillis)) + ")");
+		stringBuilder
+				.append(" OR ("
+						+ KEY_RANK_STATUS
+						+ " = "
+						+ DatabaseUtil
+								.stringBetweenQuotes(RankStatus.TOP_RANK_UPDATED
+										.toString())
+						+ " AND "
+						+ KEY_RANK_DATE_LAST_UPDATED
+						+ " < "
+						+ DatabaseUtil.stringBetweenQuotes(DatabaseUtil
+								.getCurrentMinusOffsetSQLiteTimestamp(offset15MinutesInMillis))
+						+ ")");
 
 		// Include all leaderboards having no rank and no score which have
 		// not been updated in the last 24 hours. These are include as the
 		// current as the current player may have played this leaderboard on
 		// another device in this interval.
 		// noinspection StringConcatenationInsideStringBufferAppend
-		stringBuilder.append(" OR ("
-				+ KEY_RANK_STATUS
-				+ " = "
-				+ DatabaseUtil
-						.stringBetweenQuotes(RankStatus.TOP_RANK_NOT_AVAILABLE
-								.toString())
-				+ " AND "
-				+ KEY_RANK_DATE_LAST_UPDATED
-				+ " < "
-				+ DatabaseUtil.stringBetweenQuotes(DatabaseUtil
-						.getCurrentMinusOffsetSQLiteTimestamp(offset24HoursInMillis)) + ")");
+		stringBuilder
+				.append(" OR ("
+						+ KEY_RANK_STATUS
+						+ " = "
+						+ DatabaseUtil
+								.stringBetweenQuotes(RankStatus.TOP_RANK_NOT_AVAILABLE
+										.toString())
+						+ " AND "
+						+ KEY_RANK_DATE_LAST_UPDATED
+						+ " < "
+						+ DatabaseUtil.stringBetweenQuotes(DatabaseUtil
+								.getCurrentMinusOffsetSQLiteTimestamp(offset24HoursInMillis))
+						+ ")");
 
 		return stringBuilder.toString();
 	}

@@ -624,7 +624,9 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	public void stopTimer() {
 		// Stop timer if running
 		if (mTimerTask != null && !mTimerTask.isCancelled()) {
-			if (mGrid != null && mTimerTask.isCreatedForSolvingAttemptId(mGrid.getSolvingAttemptId())) {
+			if (mGrid != null
+					&& mTimerTask.isCreatedForSolvingAttemptId(mGrid
+							.getSolvingAttemptId())) {
 				this.mGrid.setElapsedTime(mTimerTask.mElapsedTime,
 						mTimerTask.mCheatPenaltyTime);
 			}

@@ -83,7 +83,8 @@ public class AvailableGridTypeFilterSelectorTest {
 
 		GridDatabaseAdapter.StatusFilter statusFilter = SolvingAttemptStatus
 				.getDerivedStatus(grid.isSolutionRevealed(), grid.isActive(),
-						grid.isEmpty()).getAttachedToStatusFilter();
+						grid.isEmpty())
+				.getAttachedToStatusFilter();
 		if (statusFilter == GridDatabaseAdapter.StatusFilter.SOLVED
 				&& !gridTypeFilterListWithStatusSolved.contains(gridTypeFilter)) {
 			gridTypeFilterListWithStatusSolved.add(gridTypeFilter);

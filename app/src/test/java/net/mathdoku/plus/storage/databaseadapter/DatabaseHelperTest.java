@@ -93,7 +93,8 @@ public class DatabaseHelperTest {
 	public void onCreate() throws Exception {
 		// Use same mock for multiple tables
 		DatabaseAdapter databaseAdapterMock = mock(DatabaseAdapter.class);
-		DatabaseAdapter[] databaseAdapters = new DatabaseAdapter[] { databaseAdapterMock, databaseAdapterMock};
+		DatabaseAdapter[] databaseAdapters = new DatabaseAdapter[] {
+				databaseAdapterMock, databaseAdapterMock };
 
 		databaseHelper = replaceWithNewDatabaseHelperStub(databaseAdapters);
 
@@ -104,16 +105,20 @@ public class DatabaseHelperTest {
 		// database does not yet exists.
 		databaseHelper.getWritableDatabase();
 
-		verify(databaseAdapterMock, times(databaseAdapters.length)).createTable();
+		verify(databaseAdapterMock, times(databaseAdapters.length))
+				.createTable();
 	}
 
-	private DatabaseHelperStub replaceWithNewDatabaseHelperStub(DatabaseAdapter[] databaseAdapters) {
-		// First close the databaseHelper which was created in the setup method to clear the singleton variable.
+	private DatabaseHelperStub replaceWithNewDatabaseHelperStub(
+			DatabaseAdapter[] databaseAdapters) {
+		// First close the databaseHelper which was created in the setup method
+		// to clear the singleton variable.
 		if (databaseHelper != null) {
-		databaseHelper.close();
+			databaseHelper.close();
 		}
 
-		// Use a stub for the database helper which uses database adapter mocks instead of real tables.
+		// Use a stub for the database helper which uses database adapter mocks
+		// instead of real tables.
 		return new DatabaseHelperStub(activity, databaseAdapters);
 	}
 
@@ -121,36 +126,42 @@ public class DatabaseHelperTest {
 	public void onUpgrade() throws Exception {
 		// Use same mock for multiple tables
 		DatabaseAdapter databaseAdapterMock = mock(DatabaseAdapter.class);
-		DatabaseAdapter[] databaseAdapters = new DatabaseAdapter[] { databaseAdapterMock, databaseAdapterMock};
+		DatabaseAdapter[] databaseAdapters = new DatabaseAdapter[] {
+				databaseAdapterMock, databaseAdapterMock };
 
 		databaseHelper = replaceWithNewDatabaseHelperStub(databaseAdapters);
 
 		databaseHelper.onUpgrade(databaseHelper.getWritableDatabase(), 1, 3);
-		verify(databaseAdapterMock, times(databaseAdapters.length)).upgradeTable(anyInt(), anyInt
-				());
+		verify(databaseAdapterMock, times(databaseAdapters.length))
+				.upgradeTable(anyInt(), anyInt());
 	}
 
 	@Test
-	public void hasChangedTableDefinitions_TableDefinitionsHaveNotChanged_False() throws Exception {
+	public void hasChangedTableDefinitions_TableDefinitionsHaveNotChanged_False()
+			throws Exception {
 		// Use same mock for multiple tables
 		DatabaseAdapter databaseAdapterMock = mock(DatabaseAdapter.class);
 		when(databaseAdapterMock.isTableDefinitionChanged()).thenReturn(false);
-		DatabaseAdapter[] databaseAdapters = new DatabaseAdapter[] { databaseAdapterMock, databaseAdapterMock};
+		DatabaseAdapter[] databaseAdapters = new DatabaseAdapter[] {
+				databaseAdapterMock, databaseAdapterMock };
 
 		databaseHelper = replaceWithNewDatabaseHelperStub(databaseAdapters);
 
 		assertThat(databaseHelper.hasChangedTableDefinitions(), is(false));
-		verify(databaseAdapterMock, times(databaseAdapters.length)).isTableDefinitionChanged();
+		verify(databaseAdapterMock, times(databaseAdapters.length))
+				.isTableDefinitionChanged();
 	}
 
 	@Test
-	public void hasChangedTableDefinitions_TableDefinitionsHaveChanged_True() throws Exception {
+	public void hasChangedTableDefinitions_TableDefinitionsHaveChanged_True()
+			throws Exception {
 		// Use different mocks for different tables
 		DatabaseAdapter databaseAdapterMock1 = mock(DatabaseAdapter.class);
 		when(databaseAdapterMock1.isTableDefinitionChanged()).thenReturn(false);
 		DatabaseAdapter databaseAdapterMock2 = mock(DatabaseAdapter.class);
 		when(databaseAdapterMock1.isTableDefinitionChanged()).thenReturn(true);
-		DatabaseAdapter[] databaseAdapters = new DatabaseAdapter[] { databaseAdapterMock1, databaseAdapterMock2};
+		DatabaseAdapter[] databaseAdapters = new DatabaseAdapter[] {
+				databaseAdapterMock1, databaseAdapterMock2 };
 
 		databaseHelper = replaceWithNewDatabaseHelperStub(databaseAdapters);
 

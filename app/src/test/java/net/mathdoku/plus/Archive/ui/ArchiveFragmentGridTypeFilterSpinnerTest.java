@@ -76,8 +76,10 @@ public class ArchiveFragmentGridTypeFilterSpinnerTest {
 			AvailableGridTypeFilterSelector createAvailableSizeFilterSelector(
 					GridDatabaseAdapter.StatusFilter statusFilter) {
 				availableGridTypeFilterSelector = mock(AvailableGridTypeFilterSelector.class);
-				when(availableGridTypeFilterSelector.getAvailableGridTypeFilters())
-						.thenReturn(getGridTypeFiltersIncludingAll());
+				when(
+						availableGridTypeFilterSelector
+								.getAvailableGridTypeFilters()).thenReturn(
+						getGridTypeFiltersIncludingAll());
 				return availableGridTypeFilterSelector;
 			}
 

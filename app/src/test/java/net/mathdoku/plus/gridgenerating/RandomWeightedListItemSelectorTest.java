@@ -167,9 +167,12 @@ public class RandomWeightedListItemSelectorTest {
 
 		int[] weight = weightItems.clone();
 		for (int i = 0; i < randomWeightsInOrder.length; i++) {
-			// TODO: remove offset "- 1" in cumulative weight. Offset is needed as
-			// randomizedWeight currently needs to be zero based instead of starting
-			// at 1. This can not ye be changed as it affects the generated result
+			// TODO: remove offset "- 1" in cumulative weight. Offset is needed
+			// as
+			// randomizedWeight currently needs to be zero based instead of
+			// starting
+			// at 1. This can not ye be changed as it affects the generated
+			// result
 			// grid.
 			randomWeightsInOrder[i] = calculateCumulativeWeight(weight,
 					orderedIndexesOfItems[i]) - 1;

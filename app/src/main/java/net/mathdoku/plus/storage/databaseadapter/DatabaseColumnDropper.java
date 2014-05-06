@@ -93,8 +93,7 @@ public class DatabaseColumnDropper {
 
 	private String getRenameTableToTemporaryTableSQL() {
 		return String.format("ALTER TABLE %s RENAME TO %s;",
-				databaseAdapter.getTableName(),
-				getTempTableName());
+				databaseAdapter.getTableName(), getTempTableName());
 	}
 
 	private String getTempTableName() {

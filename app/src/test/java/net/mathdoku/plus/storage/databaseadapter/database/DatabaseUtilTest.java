@@ -98,7 +98,9 @@ public class DatabaseUtilTest {
 
 	@Test
 	public void toSQLTimestamp_TimeIsNotNull() throws Exception {
-		assertThat(DatabaseUtil.toSQLTimestamp("2014-05-02 16:47:17.851").getTime(), is(1399042037851L));
+		assertThat(DatabaseUtil
+				.toSQLTimestamp("2014-05-02 16:47:17.851")
+				.getTime(), is(1399042037851L));
 	}
 
 	@Test
@@ -108,7 +110,9 @@ public class DatabaseUtilTest {
 
 	@Test
 	public void valueOfSQLiteTimestamp_TimeIsNotNull() throws Exception {
-		assertThat(DatabaseUtil.valueOfSQLiteTimestamp("2014-05-02 16:47:17.851"), is(1399042037851L));
+		assertThat(
+				DatabaseUtil.valueOfSQLiteTimestamp("2014-05-02 16:47:17.851"),
+				is(1399042037851L));
 	}
 
 	@Test

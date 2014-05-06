@@ -110,7 +110,8 @@ public class CellChange {
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	@SuppressWarnings("all") // Needed to suppress sonar warning on cyclomatic complexity
+	@SuppressWarnings("all")
+	// Needed to suppress sonar warning on cyclomatic complexity
 	public boolean equals(Object o) {
 		// Return true if the objects are identical.
 		// (This is just an optimization, not required for correctness.)

@@ -93,13 +93,14 @@ public class DatabaseProjection extends HashMap<String, String> {
 	 * @return If constructed value already exists, its value is returned. If
 	 *         the value does not yet exists, null is returned.
 	 */
-	public String  put(Aggregation aggregation, String sourceTable,
+	public String put(Aggregation aggregation, String sourceTable,
 			String sourceColumn) {
 		ParameterValidator.validateNotNull(aggregation);
 		ParameterValidator.validateNotNullOrEmpty(sourceTable);
 		ParameterValidator.validateNotNullOrEmpty(sourceColumn);
 
-		String targetKey = aggregation.getAggregationColumnNameForColumn(sourceColumn);
+		String targetKey = aggregation
+				.getAggregationColumnNameForColumn(sourceColumn);
 		String target = DatabaseUtil.stringBetweenBackTicks(targetKey);
 		String source = DatabaseUtil.stringBetweenBackTicks(sourceTable) + "."
 				+ DatabaseUtil.stringBetweenBackTicks(sourceColumn);

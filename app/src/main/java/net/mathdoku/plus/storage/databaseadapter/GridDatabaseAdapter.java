@@ -46,7 +46,9 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	public static final String KEY_MAX_CAGE_SIZE = "max_cage_size";
 
 	// Allowed values for the status filter
-	public enum StatusFilter { ALL, UNFINISHED, SOLVED, REVEALED }
+	public enum StatusFilter {
+		ALL, UNFINISHED, SOLVED, REVEALED
+	}
 
 	public GridDatabaseAdapter() {
 		super();
@@ -260,21 +262,23 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	}
 
 	private GridType getGridTypeFromCursor(Cursor cursor) {
-		return GridType.fromInteger(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_GRID_SIZE)));
+		return GridType.fromInteger(cursor.getInt(cursor
+				.getColumnIndexOrThrow(KEY_GRID_SIZE)));
 	}
 
 	private boolean getHideOperatorFromCursor(Cursor cursor) {
-		return DatabaseUtil.valueOfSQLiteBoolean(
-				cursor.getString(cursor.getColumnIndexOrThrow(KEY_HIDE_OPERATORS)));
+		return DatabaseUtil.valueOfSQLiteBoolean(cursor.getString(cursor
+				.getColumnIndexOrThrow(KEY_HIDE_OPERATORS)));
 	}
 
 	private PuzzleComplexity getPuzzleComplexityFromCursor(Cursor cursor) {
-		return PuzzleComplexity.valueOf(
-				cursor.getString(cursor.getColumnIndexOrThrow(KEY_PUZZLE_COMPLEXITY)));
+		return PuzzleComplexity.valueOf(cursor.getString(cursor
+				.getColumnIndexOrThrow(KEY_PUZZLE_COMPLEXITY)));
 	}
 
 	private int getGeneratorRevisionNumberFromCursor(Cursor cursor) {
-		return cursor.getInt(cursor.getColumnIndexOrThrow(KEY_GENERATOR_REVISION_NUMBER));
+		return cursor.getInt(cursor
+				.getColumnIndexOrThrow(KEY_GENERATOR_REVISION_NUMBER));
 	}
 
 	private long getGameSeedFromCursor(Cursor cursor) {

@@ -56,7 +56,7 @@ public class AvailableStatusFiltersSelectorTest {
 	}
 
 	private List<GridDatabaseAdapter.StatusFilter> createAndInitializeNewStatusFilterList() {
-		List<GridDatabaseAdapter.StatusFilter>  statusFilterList = new ArrayList<GridDatabaseAdapter.StatusFilter>();
+		List<GridDatabaseAdapter.StatusFilter> statusFilterList = new ArrayList<GridDatabaseAdapter.StatusFilter>();
 
 		statusFilterList.add(GridDatabaseAdapter.StatusFilter.ALL);
 
@@ -77,7 +77,8 @@ public class AvailableStatusFiltersSelectorTest {
 				.getDerivedStatus(grid.isSolutionRevealed(), grid.isActive(),
 						grid.isEmpty());
 
-		GridDatabaseAdapter.StatusFilter statusFilter = solvingAttemptStatus.getAttachedToStatusFilter();
+		GridDatabaseAdapter.StatusFilter statusFilter = solvingAttemptStatus
+				.getAttachedToStatusFilter();
 		if (!statusFilterListAllSizes.contains(statusFilter)) {
 			statusFilterListAllSizes.add(statusFilter);
 		}
@@ -94,7 +95,8 @@ public class AvailableStatusFiltersSelectorTest {
 		assertThatStatusFilterList(GridTypeFilter.ALL, statusFilterListAllSizes);
 	}
 
-	private void assertThatStatusFilterList(GridTypeFilter gridTypeFilter, List<GridDatabaseAdapter.StatusFilter> expectedStatusFilterList) {
+	private void assertThatStatusFilterList(GridTypeFilter gridTypeFilter,
+			List<GridDatabaseAdapter.StatusFilter> expectedStatusFilterList) {
 		List<GridDatabaseAdapter.StatusFilter> resultStatusFilterList = new AvailableStatusFiltersSelector(
 				gridTypeFilter).getAvailableStatusFilters();
 		Collections.sort(resultStatusFilterList);
@@ -104,11 +106,13 @@ public class AvailableStatusFiltersSelectorTest {
 
 	@Test
 	public void getAvailableStatusFilters_GridSize4() throws Exception {
-		assertThatStatusFilterList(GridTypeFilter.GRID_4X4, statusFilterListWithSize4);
+		assertThatStatusFilterList(GridTypeFilter.GRID_4X4,
+				statusFilterListWithSize4);
 	}
 
 	@Test
 	public void getAvailableStatusFilters_GridSize5() throws Exception {
-		assertThatStatusFilterList(GridTypeFilter.GRID_5X5, statusFilterListWithSize5);
+		assertThatStatusFilterList(GridTypeFilter.GRID_5X5,
+				statusFilterListWithSize5);
 	}
 }

@@ -12,7 +12,7 @@ class GridDefinitionSplitter {
 	private static final String REGEXP_EXACTLY_ONE_DIGIT = "\\d";
 	private static final String REGEXP_EXACTLY_TWO_DIGITS = "\\d\\d";
 	private static final String REGEXP_AT_LEAST_ONE_DIGIT = "\\d+";
-	private static final  String REGEXP_GRID_DEFINITION = new StringBuilder()
+	private static final String REGEXP_GRID_DEFINITION = new StringBuilder()
 	// Part for puzzle complexity
 			.append(REGEXP_EXACTLY_ONE_DIGIT)
 			// Part for cage id's per cell

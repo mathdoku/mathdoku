@@ -30,7 +30,8 @@ public class DatabaseTableDefinition {
 	}
 
 	private void throwAlterDatabaseTableNotAllowedAfterCompose() {
-		throw new DatabaseException("Cannot alter database table after it is composed.");
+		throw new DatabaseException(
+				"Cannot alter database table after it is composed.");
 	}
 
 	public void setForeignKey(DatabaseForeignKeyDefinition foreignKey) {
@@ -58,7 +59,8 @@ public class DatabaseTableDefinition {
 
 	public String[] getColumnNames() {
 		if (!isComposed()) {
-			new IllegalStateException("Cannot be called until database table has been composed.");
+			new IllegalStateException(
+					"Cannot be called until database table has been composed.");
 		}
 		return columnNames;
 	}

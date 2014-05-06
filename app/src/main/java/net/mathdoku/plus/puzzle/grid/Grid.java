@@ -942,7 +942,8 @@ public class Grid {
 	}
 
 	public String getDefinition() {
-		return new GridDefinitionCreator(mCells, mCages, mGridGeneratingParameters).invoke();
+		return new GridDefinitionCreator(mCells, mCages,
+				mGridGeneratingParameters).invoke();
 	}
 
 	/**

@@ -115,7 +115,8 @@ public class GridSaver {
 	}
 
 	private boolean saveSolvingAttempt(Grid grid) {
-		SolvingAttemptRow solvingAttemptRow = mObjectsCreator.createSolvingAttempt();
+		SolvingAttemptRow solvingAttemptRow = mObjectsCreator
+				.createSolvingAttempt();
 		solvingAttemptRow.mId = mSolvingAttemptId;
 		solvingAttemptRow.mGridId = mRowId;
 		solvingAttemptRow.mDateCreated = grid.getDateCreated();

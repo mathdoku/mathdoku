@@ -145,7 +145,8 @@ public class GridLoader {
 				.createGridBuilder()
 				.setDateCreated(solvingAttemptRow.mDateCreated)
 				.setDateUpdated(solvingAttemptRow.mDateUpdated)
-				.setSolvingAttemptId(solvingAttemptRow.mGridId, solvingAttemptRow.mId);
+				.setSolvingAttemptId(solvingAttemptRow.mGridId,
+						solvingAttemptRow.mId);
 		GridRow gridRow = mObjectsCreator.createGridDatabaseAdapter().get(
 				solvingAttemptRow.mGridId);
 		if (gridRow == null || gridRow.mGridSize <= 0) {

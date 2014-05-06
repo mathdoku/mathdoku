@@ -20,17 +20,19 @@ public class CellCoordinatesTest {
 
 	@Test
 	public void canBeCreated_ValidCellCoordinates_True() throws Exception {
-		assertThat(CellCoordinates.canBeCreated(0,0), is(true));
+		assertThat(CellCoordinates.canBeCreated(0, 0), is(true));
 	}
 
 	@Test
-	public void canBeCreated_InvalidRowInCellCoordinates_False() throws Exception {
-		assertThat(CellCoordinates.canBeCreated(-1,0), is(false));
+	public void canBeCreated_InvalidRowInCellCoordinates_False()
+			throws Exception {
+		assertThat(CellCoordinates.canBeCreated(-1, 0), is(false));
 	}
 
 	@Test
-	public void canBeCreated_InvalidColumnInCellCoordinates_False() throws Exception {
-		assertThat(CellCoordinates.canBeCreated(0,-1), is(false));
+	public void canBeCreated_InvalidColumnInCellCoordinates_False()
+			throws Exception {
+		assertThat(CellCoordinates.canBeCreated(0, -1), is(false));
 	}
 
 	@Test(expected = IllegalArgumentException.class)

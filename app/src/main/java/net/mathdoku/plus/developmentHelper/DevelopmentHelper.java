@@ -175,17 +175,23 @@ public class DevelopmentHelper {
 			// Show dialog
 			new AlertDialog.Builder(puzzleFragmentActivity)
 					.setMessage(
-							"All preferences have been removed. After restart " + "of the app the " +
-									"preferences will be " + "initialized with default values.")
+							"All preferences have been removed. After restart "
+									+ "of the app the "
+									+ "preferences will be "
+									+ "initialized with default values.")
 					.setPositiveButton("OK",
 							new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog,
 										int id) {
 									// Restart the activity
-									//puzzleFragmentActivity.recreate();
-									Intent intent = new Intent(puzzleFragmentActivity, ArchivePreferenceActivity.class);
-									puzzleFragmentActivity.getBaseContext().startActivity(intent);
+									// puzzleFragmentActivity.recreate();
+									Intent intent = new Intent(
+											puzzleFragmentActivity,
+											ArchivePreferenceActivity.class);
+									puzzleFragmentActivity
+											.getBaseContext()
+											.startActivity(intent);
 									puzzleFragmentActivity.finish();
 								}
 							})
@@ -227,7 +233,6 @@ public class DevelopmentHelper {
 									executeDeleteDatabase(puzzleFragmentActivity);
 									restartApp(puzzleFragmentActivity);
 
-
 								}
 							});
 			AlertDialog dialog = builder.create();
@@ -236,8 +241,10 @@ public class DevelopmentHelper {
 	}
 
 	private static void restartApp(PuzzleFragmentActivity puzzleFragmentActivity) {
-		Intent intent = new Intent(puzzleFragmentActivity, PuzzleFragmentActivity.class);
-		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+		Intent intent = new Intent(puzzleFragmentActivity,
+				PuzzleFragmentActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+				| Intent.FLAG_ACTIVITY_CLEAR_TASK);
 		puzzleFragmentActivity.getBaseContext().startActivity(intent);
 	}
 
@@ -264,7 +271,8 @@ public class DevelopmentHelper {
 			// Close database helper (this will also close the open databases).
 			DatabaseHelper databaseHelper = DatabaseHelper.getInstance();
 			databaseHelper.close();
-			databaseHelper.deleteDatabase(puzzleFragmentActivity.getBaseContext());
+			databaseHelper.deleteDatabase(puzzleFragmentActivity
+					.getBaseContext());
 
 			// Also delete all preferences as some preferences relate to content
 			// in database.

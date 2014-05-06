@@ -301,7 +301,8 @@ public class GridSaverTest {
 		// Prepare failing update of solving attempt
 		when(
 				mSolvingAttemptDatabaseAdapterMock
-						.update(any(SolvingAttemptRow.class))).thenReturn(false);
+						.update(any(SolvingAttemptRow.class)))
+				.thenReturn(false);
 
 		boolean saveResult = mGridSaver.save(mGridMock);
 

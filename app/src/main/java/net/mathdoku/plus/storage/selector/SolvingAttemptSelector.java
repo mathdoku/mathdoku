@@ -146,10 +146,12 @@ public abstract class SolvingAttemptSelector {
 		StringBuilder stringBuilder = new StringBuilder();
 		if (gridTypeFilter != GridTypeFilter.ALL) {
 			stringBuilder.append(SQLITE_KEYWORD_AND);
-			stringBuilder.append(GridDatabaseAdapter.getPrefixedColumnName(
-					GridDatabaseAdapter.KEY_GRID_SIZE));
+			stringBuilder.append(GridDatabaseAdapter
+					.getPrefixedColumnName(GridDatabaseAdapter.KEY_GRID_SIZE));
 			stringBuilder.append(" = ");
-			stringBuilder.append(GridType.fromGridTypeFilter(gridTypeFilter).getGridSize());
+			stringBuilder.append(GridType
+					.fromGridTypeFilter(gridTypeFilter)
+					.getGridSize());
 		}
 
 		return stringBuilder.toString();

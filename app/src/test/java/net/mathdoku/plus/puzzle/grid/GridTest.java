@@ -1804,10 +1804,7 @@ public class GridTest {
 	@Test
 	public void markDuplicateValues_GridWithDuplicateEnteredValuesOnSameRow_DuplicatesFounds()
 			throws Exception {
-		Grid grid = GridCreator4x4
-				.create()
-				.setEmptyGrid()
-				.getGrid();
+		Grid grid = GridCreator4x4.create().setEmptyGrid().getGrid();
 		int row = 1;
 		int col1 = 2;
 		int col2 = col1 + 1;
@@ -1821,10 +1818,7 @@ public class GridTest {
 	@Test
 	public void markDuplicateValues_GridWithDuplicateEnteredValuesInSameColumn_DuplicatesFounds()
 			throws Exception {
-		Grid grid = GridCreator4x4
-				.create()
-				.setEmptyGrid()
-				.getGrid();
+		Grid grid = GridCreator4x4.create().setEmptyGrid().getGrid();
 		int row1 = 1;
 		int row2 = row1 + 1;
 		int col = 2;

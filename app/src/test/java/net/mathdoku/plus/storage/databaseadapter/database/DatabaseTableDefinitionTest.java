@@ -19,22 +19,27 @@ public class DatabaseTableDefinitionTest {
 	@Before
 	public void setup() {
 		databaseTableDefinition = new DatabaseTableDefinition(TABLE_NAME);
-		when(databaseInitialColumnDefinitionMock.getColumnClause()).thenReturn(COLUMN_NAME_DEFINITION);
-		when(databaseInitialColumnDefinitionMock.getName()).thenReturn(COLUMN_NAME_MOCK_NAME);
+		when(databaseInitialColumnDefinitionMock.getColumnClause()).thenReturn(
+				COLUMN_NAME_DEFINITION);
+		when(databaseInitialColumnDefinitionMock.getName()).thenReturn(
+				COLUMN_NAME_MOCK_NAME);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void constructor_TableNameIsNull_ThrowsIllegalArgumentException() throws Exception {
+	public void constructor_TableNameIsNull_ThrowsIllegalArgumentException()
+			throws Exception {
 		new DatabaseTableDefinition(null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void constructor_TableNameIsEmpty_ThrowsIllegalArgumentException() throws Exception {
+	public void constructor_TableNameIsEmpty_ThrowsIllegalArgumentException()
+			throws Exception {
 		new DatabaseTableDefinition("");
 	}
 
 	@Test(expected = DatabaseException.class)
-	public void addColumn_TableAlreadyComposed_ThrowsDatabaseException() throws Exception {
+	public void addColumn_TableAlreadyComposed_ThrowsDatabaseException()
+			throws Exception {
 		databaseTableDefinition.addColumn(databaseInitialColumnDefinitionMock);
 		databaseTableDefinition.build();
 
@@ -42,7 +47,8 @@ public class DatabaseTableDefinitionTest {
 	}
 
 	@Test(expected = DatabaseException.class)
-	public void setForeignKey_TableAlreadyComposed_ThrowsDatabaseException() throws Exception {
+	public void setForeignKey_TableAlreadyComposed_ThrowsDatabaseException()
+			throws Exception {
 		databaseTableDefinition.addColumn(databaseInitialColumnDefinitionMock);
 		databaseTableDefinition.build();
 
@@ -52,7 +58,8 @@ public class DatabaseTableDefinitionTest {
 	private void addForeignKey() {
 		DatabaseForeignKeyDefinition databaseForeignKeyDefinition = mock(DatabaseForeignKeyDefinition.class);
 		databaseTableDefinition.setForeignKey(databaseForeignKeyDefinition);
-		when(databaseForeignKeyDefinition.getForeignKeyClause()).thenReturn(FOREIGN_KEY_DEFINITION);
+		when(databaseForeignKeyDefinition.getForeignKeyClause()).thenReturn(
+				FOREIGN_KEY_DEFINITION);
 	}
 
 	@Test(expected = DatabaseException.class)
@@ -62,15 +69,17 @@ public class DatabaseTableDefinitionTest {
 
 	@Test
 	public void getTableName() throws Exception {
-		assertThat(databaseTableDefinition.getTableName(),is(TABLE_NAME));
+		assertThat(databaseTableDefinition.getTableName(), is(TABLE_NAME));
 	}
 
 	@Test
-	public void getColumnNames_SingleColumnTable_ColumnsRetrieved() throws Exception {
+	public void getColumnNames_SingleColumnTable_ColumnsRetrieved()
+			throws Exception {
 		databaseTableDefinition.addColumn(databaseInitialColumnDefinitionMock);
 		databaseTableDefinition.build();
-		assertThat(databaseTableDefinition.getColumnNames().length,is(1));
-		assertThat(databaseTableDefinition.getColumnNames()[0],is(COLUMN_NAME_MOCK_NAME));
+		assertThat(databaseTableDefinition.getColumnNames().length, is(1));
+		assertThat(databaseTableDefinition.getColumnNames()[0],
+				is(COLUMN_NAME_MOCK_NAME));
 	}
 
 	@Test
@@ -82,11 +91,12 @@ public class DatabaseTableDefinitionTest {
 		expectedDatabaseTableDefinitionStringBuilder.append("CREATE TABLE `");
 		expectedDatabaseTableDefinitionStringBuilder.append(TABLE_NAME);
 		expectedDatabaseTableDefinitionStringBuilder.append("` (");
-		expectedDatabaseTableDefinitionStringBuilder.append(COLUMN_NAME_DEFINITION);
+		expectedDatabaseTableDefinitionStringBuilder
+				.append(COLUMN_NAME_DEFINITION);
 		expectedDatabaseTableDefinitionStringBuilder.append(")");
 
 		assertThat(databaseTableDefinition.getCreateTableSQL(),
-				   is(expectedDatabaseTableDefinitionStringBuilder.toString()));
+				is(expectedDatabaseTableDefinitionStringBuilder.toString()));
 	}
 
 	@Test
@@ -100,17 +110,20 @@ public class DatabaseTableDefinitionTest {
 		expectedDatabaseTableDefinitionStringBuilder.append("CREATE TABLE `");
 		expectedDatabaseTableDefinitionStringBuilder.append(TABLE_NAME);
 		expectedDatabaseTableDefinitionStringBuilder.append("` (");
-		expectedDatabaseTableDefinitionStringBuilder.append(COLUMN_NAME_DEFINITION);
+		expectedDatabaseTableDefinitionStringBuilder
+				.append(COLUMN_NAME_DEFINITION);
 		expectedDatabaseTableDefinitionStringBuilder.append(", ");
-		expectedDatabaseTableDefinitionStringBuilder.append(COLUMN_NAME_DEFINITION);
+		expectedDatabaseTableDefinitionStringBuilder
+				.append(COLUMN_NAME_DEFINITION);
 		expectedDatabaseTableDefinitionStringBuilder.append(")");
 
 		assertThat(databaseTableDefinition.getCreateTableSQL(),
-				   is(expectedDatabaseTableDefinitionStringBuilder.toString()));
+				is(expectedDatabaseTableDefinitionStringBuilder.toString()));
 	}
 
 	@Test
-	public void getCreateTableSQL_SingleColumnAndForeignKey_Success() throws Exception {
+	public void getCreateTableSQL_SingleColumnAndForeignKey_Success()
+			throws Exception {
 		databaseTableDefinition.addColumn(databaseInitialColumnDefinitionMock);
 		addForeignKey();
 		databaseTableDefinition.build();
@@ -119,12 +132,14 @@ public class DatabaseTableDefinitionTest {
 		expectedDatabaseTableDefinitionStringBuilder.append("CREATE TABLE `");
 		expectedDatabaseTableDefinitionStringBuilder.append(TABLE_NAME);
 		expectedDatabaseTableDefinitionStringBuilder.append("` (");
-		expectedDatabaseTableDefinitionStringBuilder.append(COLUMN_NAME_DEFINITION);
+		expectedDatabaseTableDefinitionStringBuilder
+				.append(COLUMN_NAME_DEFINITION);
 		expectedDatabaseTableDefinitionStringBuilder.append(", ");
-		expectedDatabaseTableDefinitionStringBuilder.append(FOREIGN_KEY_DEFINITION);
+		expectedDatabaseTableDefinitionStringBuilder
+				.append(FOREIGN_KEY_DEFINITION);
 		expectedDatabaseTableDefinitionStringBuilder.append(")");
 
-		assertThat(databaseTableDefinition.getCreateTableSQL(), is(
-				expectedDatabaseTableDefinitionStringBuilder.toString()));
+		assertThat(databaseTableDefinition.getCreateTableSQL(),
+				is(expectedDatabaseTableDefinitionStringBuilder.toString()));
 	}
 }

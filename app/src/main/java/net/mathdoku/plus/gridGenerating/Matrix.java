@@ -177,12 +177,9 @@ public class Matrix<T> {
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder("Matrix{");
-		sb.append("size=")
-				.append(size);
-		sb.append(", emptyValue=")
-				.append(emptyValue);
-		sb.append(", transposedFromOriginal=")
-				.append(transposedFromOriginal);
+		sb.append("size=").append(size);
+		sb.append(", emptyValue=").append(emptyValue);
+		sb.append(", transposedFromOriginal=").append(transposedFromOriginal);
 		sb.append(", matrix=\n");
 		for (int row = 0; row < size; row++) {
 			sb.append("    ");
@@ -196,7 +193,8 @@ public class Matrix<T> {
 	}
 
 	@Override
-	@SuppressWarnings("all") // Needed to suppress sonar warning on cyclomatic complexity
+	@SuppressWarnings("all")
+	// Needed to suppress sonar warning on cyclomatic complexity
 	public boolean equals(Object o) {
 		if (this == o) {
 			return true;
@@ -213,13 +211,14 @@ public class Matrix<T> {
 		if (transposedFromOriginal != matrix.transposedFromOriginal) {
 			return false;
 		}
-		if (emptyValue != null ? !emptyValue.equals(
-				matrix.emptyValue) : matrix.emptyValue != null) {
+		if (emptyValue != null ? !emptyValue.equals(matrix.emptyValue)
+				: matrix.emptyValue != null) {
 			return false;
 		}
 		for (int row = 0; row < size; row++) {
 			for (int column = 0; column < size; column++) {
-				if (!this.cellValue[row][column].equals(matrix.get(row,column))) {
+				if (!this.cellValue[row][column]
+						.equals(matrix.get(row, column))) {
 					return false;
 				}
 			}

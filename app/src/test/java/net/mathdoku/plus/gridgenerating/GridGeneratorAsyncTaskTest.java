@@ -44,7 +44,8 @@ public class GridGeneratorAsyncTaskTest {
 		}
 	}
 
-	private class GridGeneratorAsyncTaskListener implements GridGeneratorAsyncTaskListenerIface {
+	private class GridGeneratorAsyncTaskListener implements
+			GridGeneratorAsyncTaskListenerIface {
 		private boolean onGeneratedIsCalled = false;
 		private boolean onFinishGridGeneratorIsCalled = false;
 		private int onFinishGridGeneratorGridCount = 0;
@@ -174,8 +175,7 @@ public class GridGeneratorAsyncTaskTest {
 
 	@Test
 	public void testOnCancelled() throws Exception {
-		gridGeneratorAsyncTask
-				.onCancelled(null);
+		gridGeneratorAsyncTask.onCancelled(null);
 		assertThat(
 				gridGeneratorAsyncTaskListener.onCancelGridGeneratorAsyncTaskIsCalled,
 				is(true));

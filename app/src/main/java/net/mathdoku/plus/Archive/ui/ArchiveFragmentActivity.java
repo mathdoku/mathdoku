@@ -273,12 +273,13 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 		}
 
 		final List<StatusFilter> availableStatusFilters = new AvailableStatusFiltersSelector(
-					mArchiveFragmentStatePagerAdapter
-							.getSelectedSizeFilter()).getAvailableStatusFilters();
+				mArchiveFragmentStatePagerAdapter.getSelectedSizeFilter())
+				.getAvailableStatusFilters();
 
 		// Load the list of descriptions for statuses actually used into the
 		// array adapter.
-		String[] statusFilterDescriptions = new String[availableStatusFilters.size()];
+		String[] statusFilterDescriptions = new String[availableStatusFilters
+				.size()];
 		int index = 0;
 		for (StatusFilter statusFilter : availableStatusFilters) {
 			statusFilterDescriptions[index++] = getResources().getStringArray(
@@ -295,7 +296,8 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 		// Restore selected status
 		StatusFilter selectedStatusFilter = mArchiveFragmentStatePagerAdapter
 				.getStatusFilter();
-		spinner.setSelection(availableStatusFilters.indexOf(selectedStatusFilter));
+		spinner.setSelection(availableStatusFilters
+				.indexOf(selectedStatusFilter));
 
 		// Hide spinner if only two choices are available. As one of those
 		// choices is always "ALL" the choices will result in an identical
@@ -308,7 +310,8 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int position, long id) {
 				// Get the selected status
-				StatusFilter statusFilter = availableStatusFilters.get((int) id);
+				StatusFilter statusFilter = availableStatusFilters
+						.get((int) id);
 
 				// Check if value for status spinner has changed.
 				if (statusFilter != mArchiveFragmentStatePagerAdapter

@@ -70,7 +70,8 @@ public class RandomIntegerMatrixGeneratorTest {
 	}
 
 	@Test(expected = GridGeneratingException.class)
-	public void getMatrix_WithTooManyRepetitions_ThrowsInvalidGridException() throws Exception {
+	public void getMatrix_WithTooManyRepetitions_ThrowsInvalidGridException()
+			throws Exception {
 		when(random.nextInt(anyInt())).thenReturn(
 		// Row 1
 				0, 1, 2,
@@ -78,8 +79,7 @@ public class RandomIntegerMatrixGeneratorTest {
 				2, 0,
 				// ... but too many unsuccessful repetitions to select a value
 				// which was not chosen before on this row ...
-				2, 0, 0, 2, 2, 2, 2, 0, 2, 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 2
-				);
+				2, 0, 0, 2, 2, 2, 2, 0, 2, 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 2);
 		assertThatMatrixIsGenerated();
 	}
 }

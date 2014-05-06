@@ -39,8 +39,8 @@ public class ArchiveFragmentGridSizeFilterSpinner {
 
 	/*
 	 * Package private method which allows the creation of a new
-	 * AvailableGridTypeFilterSelector to be overwritten by the test class for this
-	 * package.
+	 * AvailableGridTypeFilterSelector to be overwritten by the test class for
+	 * this package.
 	 */
 	AvailableGridTypeFilterSelector createAvailableSizeFilterSelector(
 			GridDatabaseAdapter.StatusFilter statusFilter) {

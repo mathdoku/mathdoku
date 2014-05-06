@@ -11,7 +11,8 @@ import net.mathdoku.plus.ui.PuzzleFragment;
 public class GameTimer extends AsyncTask<Void, Long, Long> {
 	private final static String TAG = GameTimer.class.getName();
 
-	// References to activity that started the timer and the solving attempt to which the timer applies
+	// References to activity that started the timer and the solving attempt to
+	// which the timer applies
 	private final PuzzleFragment mPuzzleFragment;
 	private final int solvingAttemptId;
 

@@ -242,6 +242,7 @@ public abstract class GridCreator {
 				return cage.getIdUpperLeftCell();
 			}
 		}
-		throw new IllegalStateException("This grid has no cage having multiple cells for which the cage operator is not yet unrevealed.");
+		throw new IllegalStateException(
+				"This grid has no cage having multiple cells for which the cage operator is not yet unrevealed.");
 	}
 }

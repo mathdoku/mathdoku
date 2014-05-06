@@ -118,7 +118,8 @@ public class DancingLinesX {
 	}
 
 	public void addNode(int columnIndex, int rowIndex) {
-		nodes[++numNodes] = new DancingLinesXNode(colHeaders[columnIndex], rowIndex);
+		nodes[++numNodes] = new DancingLinesXNode(colHeaders[columnIndex],
+				rowIndex);
 		if (previousRowIndex == rowIndex) {
 			nodes[numNodes].setLeft(lastNodeAdded);
 			nodes[numNodes].setRight(lastNodeAdded.getRight());

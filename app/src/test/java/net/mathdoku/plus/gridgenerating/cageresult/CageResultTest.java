@@ -21,38 +21,49 @@ public class CageResultTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void create_NullValue_ThrowsIllegalArgumentException() throws Exception {
+	public void create_NullValue_ThrowsIllegalArgumentException()
+			throws Exception {
 		CageResult.create(CageOperator.ADD, null);
 	}
 
 	@Test
-	public void create_OperatorNoneWithCorrectNumberOfArguments_CageResultCreated() throws Exception {
+	public void create_OperatorNoneWithCorrectNumberOfArguments_CageResultCreated()
+			throws Exception {
 		cageResult = CageResult.create(CageOperator.NONE, value0);
-		assertThat((SingeCellCageResult) cageResult, is(not(nullValue(SingeCellCageResult.class))));
+		assertThat((SingeCellCageResult) cageResult,
+				is(not(nullValue(SingeCellCageResult.class))));
 	}
 
 	@Test
-	public void create_OperatorAddWithCorrectNumberOfArguments_CageResultCreated() throws Exception {
+	public void create_OperatorAddWithCorrectNumberOfArguments_CageResultCreated()
+			throws Exception {
 		cageResult = CageResult.create(CageOperator.ADD, value0, value1);
-		assertThat((AdditionCageResult) cageResult, is(not(nullValue(AdditionCageResult.class))));
+		assertThat((AdditionCageResult) cageResult,
+				is(not(nullValue(AdditionCageResult.class))));
 	}
 
 	@Test
-	public void create_SubtractWithCorrectNumberOfArguments_CageResultCreated() throws Exception {
+	public void create_SubtractWithCorrectNumberOfArguments_CageResultCreated()
+			throws Exception {
 		cageResult = CageResult.create(CageOperator.SUBTRACT, value0, value1);
-		assertThat((SubtractionCageResult) cageResult, is(not(nullValue(SubtractionCageResult.class))));
+		assertThat((SubtractionCageResult) cageResult,
+				is(not(nullValue(SubtractionCageResult.class))));
 	}
 
 	@Test
-	public void create_MultiplyWithCorrectNumberOfArguments_CageResultCreated() throws Exception {
+	public void create_MultiplyWithCorrectNumberOfArguments_CageResultCreated()
+			throws Exception {
 		cageResult = CageResult.create(CageOperator.MULTIPLY, value0, value1);
-		assertThat((MultiplicationCageResult) cageResult, is(not(nullValue(MultiplicationCageResult.class))));
+		assertThat((MultiplicationCageResult) cageResult,
+				is(not(nullValue(MultiplicationCageResult.class))));
 	}
 
 	@Test
-	public void create_DivideWithCorrectNumberOfArguments_CageResultCreated() throws Exception {
+	public void create_DivideWithCorrectNumberOfArguments_CageResultCreated()
+			throws Exception {
 		cageResult = CageResult.create(CageOperator.DIVIDE, value0, value1);
-		assertThat((DivisionCageResult) cageResult, is(not(nullValue(DivisionCageResult.class))));
+		assertThat((DivisionCageResult) cageResult,
+				is(not(nullValue(DivisionCageResult.class))));
 	}
 
 	@Test
@@ -68,7 +79,7 @@ public class CageResultTest {
 
 	@Test
 	public void getCellValues() throws Exception {
-		assertThat(cageResult.getCellValues(), is(new int[] {value0, value1}));
+		assertThat(cageResult.getCellValues(), is(new int[] { value0, value1 }));
 	}
 
 	@Test

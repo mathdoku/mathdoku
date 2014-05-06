@@ -27,9 +27,9 @@ public class RandomListItemSelectorTest {
 	private void assertThatIndexResultsInItem(int index) {
 		Random randomMock = mock(Random.class);
 		when(randomMock.nextInt(anyInt())).thenReturn(index);
-		randomListItemSelector = new RandomListItemSelector(
-				randomMock, Arrays.asList(stringItems));
+		randomListItemSelector = new RandomListItemSelector(randomMock,
+				Arrays.asList(stringItems));
 		assertThat((String) randomListItemSelector.next(),
-				   is(stringItems[index]));
+				is(stringItems[index]));
 	}
 }

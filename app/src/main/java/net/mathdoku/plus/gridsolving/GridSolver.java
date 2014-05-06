@@ -18,7 +18,8 @@ public class GridSolver {
 	private static final String TAG = GridSolver.class.getName();
 
 	// Remove "&& false" in following line to show debug information about
-	// filling the DancingLinesX data structure when running in development mode.
+	// filling the DancingLinesX data structure when running in development
+	// mode.
 	@SuppressWarnings("PointlessBooleanExpression")
 	public static final boolean DEBUG_DLX = Config.mAppMode == AppMode.DEVELOPMENT && false;
 
@@ -137,7 +138,8 @@ public class GridSolver {
 				// the number of possible permutations this has a positive
 				// influence on the solving time.
 				constraintNumber = cageCount + 1;
-				dancingLinesX.addNode(constraintNumber, comboIndex); // Cage constraint
+				dancingLinesX.addNode(constraintNumber, comboIndex); // Cage
+																		// constraint
 
 				// Apply the permutation of "possibleCombo" to the cells in the
 				// cages
@@ -149,12 +151,14 @@ public class GridSolver {
 					// Is digit "possibleCombo[i]" used in column getColumn()?
 					constraintNumber = totalCages + mGridSize
 							* (possibleCombo[i] - 1) + cell.getColumn() + 1;
-					dancingLinesX.addNode(constraintNumber, comboIndex); // Column constraint
+					dancingLinesX.addNode(constraintNumber, comboIndex); // Column
+																			// constraint
 
 					// Is digit "possibleCombo[i]" used in row getRow()?
 					constraintNumber = totalCages + gridSizeSquare + mGridSize
 							* (possibleCombo[i] - 1) + cell.getRow() + 1;
-					dancingLinesX.addNode(constraintNumber, comboIndex); // Row constraint
+					dancingLinesX.addNode(constraintNumber, comboIndex); // Row
+																			// constraint
 
 					// Fill data structure for uncovering solution if needed
 					if (uncoverSolution) {
@@ -239,7 +243,8 @@ public class GridSolver {
 		initialize(true);
 
 		// Check if a single unique solution can be determined.
-		if (mMoves == null || dancingLinesX.solve(DancingLinesX.SolveType.MULTIPLE) != 1) {
+		if (mMoves == null
+				|| dancingLinesX.solve(DancingLinesX.SolveType.MULTIPLE) != 1) {
 			return null;
 		}
 

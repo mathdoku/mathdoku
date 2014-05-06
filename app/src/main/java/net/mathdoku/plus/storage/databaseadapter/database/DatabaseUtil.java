@@ -21,16 +21,15 @@ public class DatabaseUtil {
 		this.currentDateTime = currentDateTime;
 	}
 
-
-		/**
-		 * Encloses a string with back ticks (`). To be used for SQLite table and
-		 * column names.
-		 *
-		 * @param string
-		 *            The string which needs to be prefixed and suffixed with back
-		 *            ticks.
-		 * @return The string properly enclosed with back ticks.
-		 */
+	/**
+	 * Encloses a string with back ticks (`). To be used for SQLite table and
+	 * column names.
+	 * 
+	 * @param string
+	 *            The string which needs to be prefixed and suffixed with back
+	 *            ticks.
+	 * @return The string properly enclosed with back ticks.
+	 */
 	public static String stringBetweenBackTicks(String string) {
 		return BACK_TICK + string + BACK_TICK;
 	}
@@ -78,7 +77,8 @@ public class DatabaseUtil {
 		if (value.equals(SQLITE_FALSE)) {
 			return false;
 		}
-		throw new IllegalStateException(String.format("Value %s is not a valid SQLite boolean value.", value));
+		throw new IllegalStateException(String.format(
+				"Value %s is not a valid SQLite boolean value.", value));
 	}
 
 	/**
@@ -96,13 +96,16 @@ public class DatabaseUtil {
 	}
 
 	/**
-	 * Creates a SQLite representation of the current date and time minus a given offset.
-	 *
-	 * @param offsetInMillisBefore Offset in milliseconds before current date time.
-	 * @return The string representation of the current date and time minus the given offset as it is
-	 *         stored in SQLite.
+	 * Creates a SQLite representation of the current date and time minus a
+	 * given offset.
+	 * 
+	 * @param offsetInMillisBefore
+	 *            Offset in milliseconds before current date time.
+	 * @return The string representation of the current date and time minus the
+	 *         given offset as it is stored in SQLite.
 	 */
-	public static String getCurrentMinusOffsetSQLiteTimestamp(long offsetInMillisBefore) {
+	public static String getCurrentMinusOffsetSQLiteTimestamp(
+			long offsetInMillisBefore) {
 		return toSQLiteTimestamp(getCurrentDateTime() - offsetInMillisBefore);
 	}
 

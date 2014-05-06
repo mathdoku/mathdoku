@@ -137,7 +137,8 @@ public class GridLoaderTest {
 			return this;
 		}
 
-		public SolvingAttemptRowStub setNumberOfCellChanges(int numberOfCellChanges) {
+		public SolvingAttemptRowStub setNumberOfCellChanges(
+				int numberOfCellChanges) {
 			mNumberOfCellChanges = numberOfCellChanges;
 			setStorageString();
 
@@ -778,7 +779,8 @@ public class GridLoaderTest {
 		setupForParsingSolvingAttemptData(gridSize, numberOfCells,
 				numberOfCages, numberOfCellChanges, solvingAttemptRowStub);
 
-		mGridLoaderTestObjectsCreator.returnsSolvingAttempt(solvingAttemptRowStub);
+		mGridLoaderTestObjectsCreator
+				.returnsSolvingAttempt(solvingAttemptRowStub);
 		GridRow gridRow = mock(GridRow.class);
 		gridRow.mGridSize = gridSize;
 		gridRow.mGridGeneratingParameters = mock(GridGeneratingParameters.class);

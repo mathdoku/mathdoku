@@ -14,7 +14,7 @@ public class NullCageResultTest {
 	public void setup() {
 		nullCageResult = NullCageResult.create();
 	}
-	
+
 	@Test
 	public void create() throws Exception {
 		assertThat(nullCageResult, is(notNullValue()));

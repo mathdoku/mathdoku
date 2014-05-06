@@ -93,7 +93,8 @@ public class OverlappingSubsetCheckerTest {
 		Matrix<Integer> integerMatrix = new Matrix<Integer>(size, -1);
 		for (int row = 0; row < size; row++) {
 			for (int col = 0; col < size; col++) {
-				integerMatrix.setValueToRowColumn(array[row * size + col], row, col);
+				integerMatrix.setValueToRowColumn(array[row * size + col], row,
+						col);
 			}
 		}
 		return integerMatrix;
@@ -103,7 +104,8 @@ public class OverlappingSubsetCheckerTest {
 		Matrix<Boolean> booleanMatrix = new Matrix<Boolean>(size, false);
 		for (int row = 0; row < size; row++) {
 			for (int col = 0; col < size; col++) {
-				booleanMatrix.setValueToRowColumn(array[row * size + col], row, col);
+				booleanMatrix.setValueToRowColumn(array[row * size + col], row,
+						col);
 			}
 		}
 		return booleanMatrix;

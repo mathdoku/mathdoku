@@ -137,8 +137,7 @@ public class GridGeneratorAsyncTask extends
 
 	@Override
 	public void updateProgressDetailLevel(String text) {
-		gridGeneratorAsyncTaskListenerIface
-				.onDetailLevelProgressDetail(text);
+		gridGeneratorAsyncTaskListenerIface.onDetailLevelProgressDetail(text);
 	}
 
 	@Override
@@ -168,8 +167,7 @@ public class GridGeneratorAsyncTask extends
 
 	@Override
 	protected void onCancelled(List<Grid> generatedGrids) {
-		gridGeneratorAsyncTaskListenerIface
-				.onCancelGridGeneratorAsyncTask();
+		gridGeneratorAsyncTaskListenerIface.onCancelGridGeneratorAsyncTask();
 		super.onCancelled(generatedGrids);
 	}
 }

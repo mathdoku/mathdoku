@@ -6,7 +6,7 @@ public class DatabaseForeignKeyDefinition {
 	private final String clause;
 
 	public DatabaseForeignKeyDefinition(String column, String refersToTable,
-										String refersToColumn) {
+			String refersToColumn) {
 		ParameterValidator.validateNotNullOrEmpty(column);
 		ParameterValidator.validateNotNullOrEmpty(refersToTable);
 		ParameterValidator.validateNotNullOrEmpty(refersToColumn);

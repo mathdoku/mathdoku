@@ -64,9 +64,8 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	public android.support.v4.app.Fragment getItem(int position) {
 		android.support.v4.app.Fragment fragment = new ArchiveFragment();
 		Bundle args = new Bundle();
-		args
-				.putInt(ArchiveFragment.BUNDLE_KEY_SOLVING_ATTEMPT_ID,
-						getSolvingAttemptId(position));
+		args.putInt(ArchiveFragment.BUNDLE_KEY_SOLVING_ATTEMPT_ID,
+				getSolvingAttemptId(position));
 		fragment.setArguments(args);
 		return fragment;
 	}
@@ -84,8 +83,8 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	@Override
 	public CharSequence getPageTitle(int position) {
 		if (isValidPositionInListOfLatestSolvingAttempts(position)) {
-			int relativePosition = position - mArchiveFragmentActivity
-					.getViewPagerCurrentPosition();
+			int relativePosition = position
+					- mArchiveFragmentActivity.getViewPagerCurrentPosition();
 
 			StringBuilder stringBuilder = new StringBuilder();
 			if (relativePosition < 0) {
@@ -164,7 +163,8 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 		// Determine which grid should be shown
 		GridDatabaseAdapter gridDatabaseAdapter = new GridDatabaseAdapter();
 		latestSolvingAttemptForGrids = new ArchiveSolvingAttemptSelector(
-				mStatusFilter, mGridTypeFilter).getLatestSolvingAttemptIdPerGrid();
+				mStatusFilter, mGridTypeFilter)
+				.getLatestSolvingAttemptIdPerGrid();
 		notifyDataSetChanged();
 	}
 
@@ -180,7 +180,8 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	public int getPositionOfGridId(int gridId) {
 		for (ArchiveSolvingAttemptSelector.LatestSolvingAttemptForGrid latestSolvingAttemptForGrid : latestSolvingAttemptForGrids) {
 			if (latestSolvingAttemptForGrid.getGridId() == gridId) {
-				return latestSolvingAttemptForGrids.indexOf(latestSolvingAttemptForGrid);
+				return latestSolvingAttemptForGrids
+						.indexOf(latestSolvingAttemptForGrid);
 			}
 		}
 
@@ -212,7 +213,9 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	 */
 	public int getSolvingAttemptId(int position) {
 		if (isValidPositionInListOfLatestSolvingAttempts(position)) {
-			return latestSolvingAttemptForGrids.get(position).getSolvingAttemptId();
+			return latestSolvingAttemptForGrids
+					.get(position)
+					.getSolvingAttemptId();
 		} else {
 			return INVALID_POSITION_ID;
 		}

@@ -495,7 +495,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 				}
 
 				boolean processedByDevelopmentHelper = DevelopmentHelper
-						.onDevelopmentHelperOption(this, menuId, getActiveFragmentGrid());
+						.onDevelopmentHelperOption(this, menuId,
+								getActiveFragmentGrid());
 				if (mPuzzleFragment != null) {
 					mPuzzleFragment.startTimer();
 				}

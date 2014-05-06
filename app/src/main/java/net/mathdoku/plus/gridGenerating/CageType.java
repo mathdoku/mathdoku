@@ -33,16 +33,20 @@ public class CageType {
 
 	private void validateCageTypeMatrix(boolean[][] cageTypeMatrix) {
 		if (cageTypeMatrix == null) {
-			throw new IllegalArgumentException("Cage type matrix should not be null.");
+			throw new IllegalArgumentException(
+					"Cage type matrix should not be null.");
 		}
 		if (hasNoRowsOrColumns(cageTypeMatrix)) {
-			throw new IllegalArgumentException("Cage type matrix should not be empty.");
+			throw new IllegalArgumentException(
+					"Cage type matrix should not be empty.");
 		}
 		if (hasRowsOfDifferentLength(cageTypeMatrix)) {
-			throw new IllegalArgumentException("All rows in cage type matrix should have same length.");
+			throw new IllegalArgumentException(
+					"All rows in cage type matrix should have same length.");
 		}
 		if (isEmpty(cageTypeMatrix)) {
-			throw new IllegalArgumentException("Cage type matrix can not be empty.");
+			throw new IllegalArgumentException(
+					"Cage type matrix can not be empty.");
 		}
 	}
 
@@ -193,7 +197,8 @@ public class CageType {
 
 		// Shift cage type one row down and 1 column to the right.
 		for (int row = 0; row < rows; row++) {
-			System.arraycopy(usedCells[row], 0, extendedUsedCells[row + 1], 1, columns);
+			System.arraycopy(usedCells[row], 0, extendedUsedCells[row + 1], 1,
+					columns);
 		}
 
 		return extendedUsedCells;
@@ -248,7 +253,8 @@ public class CageType {
 	}
 
 	public CellCoordinates getCellCoordinatesTopLeftCell() {
-		return new CellCoordinates(0, getColumnOffsetToFirstUsedCellOnTheFirstRow());
+		return new CellCoordinates(0,
+				getColumnOffsetToFirstUsedCellOnTheFirstRow());
 	}
 
 	@Override
@@ -265,7 +271,8 @@ public class CageType {
 	}
 
 	@Override
-	@SuppressWarnings("all") // Needed to suppress sonar warning on cyclomatic complexity
+	@SuppressWarnings("all")
+	// Needed to suppress sonar warning on cyclomatic complexity
 	public boolean equals(Object o) {
 		if (this == o) {
 			return true;

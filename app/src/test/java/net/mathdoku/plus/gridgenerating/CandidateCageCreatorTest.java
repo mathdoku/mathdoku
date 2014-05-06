@@ -49,7 +49,8 @@ public class CandidateCageCreatorTest {
 		}
 
 		@Override
-		public CageOperatorGenerator createCageOperatorGenerator(int... cellValues) {
+		public CageOperatorGenerator createCageOperatorGenerator(
+				int... cellValues) {
 			return cageOperatorGeneratorMock;
 		}
 	}
@@ -144,7 +145,7 @@ public class CandidateCageCreatorTest {
 	private void newCageHasNoOverlappingSubsetsOfValuesWithExistingCages() {
 		when(
 				overlappingSubsetCheckerMock.hasOverlap(any(Matrix.class),
-														any(Matrix.class))).thenReturn(false);
+						any(Matrix.class))).thenReturn(false);
 	}
 
 	@Test
@@ -155,7 +156,7 @@ public class CandidateCageCreatorTest {
 		assertThatCageTypeDoesNotFitAtCellCoordinates(is(false));
 
 		assertThat(candidateCageCreator.getCellsCoordinates(),
-				   is(sameInstance(arrayOfCellCoordinates)));
+				is(sameInstance(arrayOfCellCoordinates)));
 	}
 
 	@Test
@@ -184,7 +185,8 @@ public class CandidateCageCreatorTest {
 		when(cageOperatorGeneratorMock.getCageResult()).thenReturn(cageResult);
 
 		boolean hideOperators = true;
-		when(gridGeneratingParametersMock.isHideOperators()).thenReturn(hideOperators);
+		when(gridGeneratingParametersMock.isHideOperators()).thenReturn(
+				hideOperators);
 
 		int cageId = 3;
 		Cage cage = candidateCageCreator.create(cageId, cells);

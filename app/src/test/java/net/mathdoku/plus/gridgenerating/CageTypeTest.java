@@ -146,7 +146,8 @@ public class CageTypeTest {
 		int originRow = cageTypeMatrixExampleHeight + 1;
 		int originColumn = cageTypeMatrixExampleWidth + 1;
 		assertThat(
-				cageTypeExample.getCellCoordinatesOfAllCellsInCage(new CellCoordinates(originRow, originColumn)),
+				cageTypeExample.getCellCoordinatesOfAllCellsInCage(new CellCoordinates(
+						originRow, originColumn)),
 				equalTo(new CellCoordinates[] {
 						// row 1
 						new CellCoordinates(originRow, originColumn),
@@ -158,7 +159,6 @@ public class CageTypeTest {
 						new CellCoordinates(originRow + 2, originColumn - 2),
 						new CellCoordinates(originRow + 2, originColumn - 1),
 						new CellCoordinates(originRow + 2, originColumn + 1),
-						new CellCoordinates(originRow + 2, originColumn + 2),
-				}));
+						new CellCoordinates(originRow + 2, originColumn + 2), }));
 	}
 }
