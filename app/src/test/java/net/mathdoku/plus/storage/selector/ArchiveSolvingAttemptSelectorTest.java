@@ -15,9 +15,9 @@ import java.util.List;
 
 import robolectric.RobolectricGradleTestRunner;
 import robolectric.TestRunnerHelper;
-import testHelper.GridCreator4x4;
-import testHelper.GridCreator4x4HiddenOperators;
-import testHelper.GridCreator5x5;
+import testhelper.gridcreator.GridCreator4x4;
+import testhelper.gridcreator.GridCreator4x4HiddenOperators;
+import testhelper.gridcreator.GridCreator5x5;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;

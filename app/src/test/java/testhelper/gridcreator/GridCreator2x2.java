@@ -1,4 +1,4 @@
-package testHelper;
+package testhelper.gridcreator;
 
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.enums.GridType;

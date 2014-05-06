@@ -1,29 +1,39 @@
-package testHelper;
+package testhelper.gridcreator;
 
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.PuzzleComplexity;
+import net.mathdoku.plus.puzzle.grid.Grid;
 
-public class GridCreator4x4HiddenOperators extends GridCreator4x4 {
-	public static GridCreator4x4HiddenOperators create() {
-		return new GridCreator4x4HiddenOperators();
+/**
+ * The test grid in this class has been generated with the specified generator
+ * version of the app. In case the grid is recreated with the same grid
+ * generating parameters as specified by this class, the result should be equal
+ * to the grid itself.
+ * 
+ * All data in the methods below should be kept in sync with the specified
+ * version of the generator.
+ * 
+ * As the data below was generated with hidden operators, this grid can be used
+ * with visible and with hidden operator as well.
+ */
+public class GridCreator5x5 extends GridCreator {
+
+	public static GridCreator5x5 create() {
+		return new GridCreator5x5();
 	}
 
-	public static GridCreator4x4HiddenOperators createEmpty() {
-		GridCreator4x4HiddenOperators gridCreator = new GridCreator4x4HiddenOperators();
+	public static GridCreator5x5 createEmpty() {
+		GridCreator5x5 gridCreator = new GridCreator5x5();
 		gridCreator.setEmptyGrid();
 		return gridCreator;
 	}
 
-	public static GridCreator4x4HiddenOperators createEmptyWithSelectedCell(
-			int idSelectedCell) {
-		GridCreator4x4HiddenOperators gridCreator = new GridCreator4x4HiddenOperators();
-		gridCreator.setSelectedCell(idSelectedCell);
-		gridCreator.setEmptyGrid();
-		return gridCreator;
+	public static Grid createEmptyGrid() {
+		return createEmpty().getGrid();
 	}
 
-	protected GridCreator4x4HiddenOperators() {
+	protected GridCreator5x5() {
 		super();
 	}
 
@@ -36,19 +46,19 @@ public class GridCreator4x4HiddenOperators extends GridCreator4x4 {
 	 */
 	@Override
 	protected long getGameSeed() {
-		return 8307938949349702277L;
+		return -3965130064001655244L;
 	}
 
 	protected GridType getGridType() {
-		return GridType.GRID_4X4;
+		return GridType.GRID_5X5;
 	}
 
 	protected boolean getHideOperator() {
-		return true;
+		return false;
 	}
 
 	protected PuzzleComplexity getPuzzleComplexity() {
-		return PuzzleComplexity.DIFFICULT;
+		return PuzzleComplexity.VERY_DIFFICULT;
 	}
 
 	protected int getGeneratorVersionNumber() {
@@ -56,53 +66,57 @@ public class GridCreator4x4HiddenOperators extends GridCreator4x4 {
 	}
 
 	protected int getMaxCageResult() {
-		return 9999;
+		return 99999;
 	}
 
 	protected int getMaxCageSize() {
-		return 5;
+		return 6;
 	}
 
 	protected int[] getCorrectValuePerCell() {
 		return new int[] {
 				// Row 0
-				2, 4, 1, 3,
+				2, 3, 5, 4, 1,
 				// Row 1
-				1, 3, 4, 2,
+				4, 1, 3, 2, 5,
 				// Row 2
-				4, 2, 3, 1,
+				1, 5, 2, 3, 4,
 				// Row 3
-				3, 1, 2, 4, };
+				5, 2, 4, 1, 3,
+				// Row 4
+				3, 4, 1, 5, 2, };
 	}
 
 	protected int[] getCageIdPerCell() {
 		return new int[] {
 				// Row 0
-				1, 0, 2, 2,
+				1, 2, 2, 3, 3,
 				// Row 1
-				1, 0, 3, 3,
+				1, 2, 4, 4, 3,
 				// Row 2
-				4, 0, 5, 3,
+				1, 2, 5, 4, 4,
 				// Row 3
-				4, 0, 0, 6, };
+				1, 0, 5, 4, 0,
+				// Row 4
+				6, 0, 0, 0, 0, };
 	}
 
 	protected int[] getResultPerCage() {
 		return new int[] {
 				// Cage 0
-				48,
+				240,
 				// Cage 1
-				1,
+				40,
 				// Cage 2
-				2,
+				75,
 				// Cage 3
-				8,
+				10,
 				// Cage 4
-				12,
+				72,
 				// Cage 5
-				3,
+				6,
 				// Cage 6
-				4, };
+				3, };
 	}
 
 	protected CageOperator[] getCageOperatorPerCage() {
@@ -110,15 +124,15 @@ public class GridCreator4x4HiddenOperators extends GridCreator4x4 {
 				// Cage 0
 				CageOperator.MULTIPLY,
 				// Cage 1
-				CageOperator.SUBTRACT,
-				// Cage 2
-				CageOperator.SUBTRACT,
-				// Cage 3
 				CageOperator.MULTIPLY,
+				// Cage 2
+				CageOperator.MULTIPLY,
+				// Cage 3
+				CageOperator.ADD,
 				// Cage 4
 				CageOperator.MULTIPLY,
 				// Cage 5
-				CageOperator.NONE,
+				CageOperator.ADD,
 				// Cage 6
 				CageOperator.NONE, };
 	}
@@ -127,37 +141,39 @@ public class GridCreator4x4HiddenOperators extends GridCreator4x4 {
 	public String getGridDefinition() {
 		return new StringBuilder() //
 				// PuzzleComplexity id
-				.append("4")
+				.append("5")
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
 				// Cage ids for cells on row 0
-				.append("01000202")
+				.append("0102020303")
 				// Cage ids for cells on row 1
-				.append("01000303")
+				.append("0102040403")
 				// Cage ids for cells on row 2
-				.append("04000503")
+				.append("0102050404")
 				// Cage ids for cells on row 3
-				.append("04000006")
+				.append("0100050400")
+				// Cage ids for cells on row 4
+				.append("0600000000")
 				// Definition for cage id 0
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("0,48,0")
+				.append("0,240,3")
 				// Definition for cage id 1
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("1,1,0")
+				.append("1,40,3")
 				// Definition for cage id 2
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("2,2,0")
+				.append("2,75,3")
 				// Definition for cage id 3
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("3,8,0")
+				.append("3,10,1")
 				// Definition for cage id 4
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("4,12,0")
+				.append("4,72,3")
 				// Definition for cage id 5
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("5,3,0")
+				.append("5,6,1")
 				// Definition for cage id 6
 				.append(FIELD_SEPARATOR_GRID_DEFINITION_PART)
-				.append("6,4,0")
+				.append("6,3,0")
 				.toString();
 	}
 }

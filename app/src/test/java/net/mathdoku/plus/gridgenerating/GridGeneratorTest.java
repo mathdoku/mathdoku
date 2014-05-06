@@ -10,12 +10,12 @@ import org.junit.runner.RunWith;
 
 import robolectric.RobolectricGradleTestRunner;
 import robolectric.TestRunnerHelper;
-import testHelper.GridCreator;
-import testHelper.GridCreator2x2;
-import testHelper.GridCreator4x4;
-import testHelper.GridCreator4x4HiddenOperators;
-import testHelper.GridCreator5x5;
-import testHelper.GridCreator9x9;
+import testhelper.gridcreator.GridCreator;
+import testhelper.gridcreator.GridCreator2x2;
+import testhelper.gridcreator.GridCreator4x4;
+import testhelper.gridcreator.GridCreator4x4HiddenOperators;
+import testhelper.gridcreator.GridCreator5x5;
+import testhelper.gridcreator.GridCreator9x9;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;

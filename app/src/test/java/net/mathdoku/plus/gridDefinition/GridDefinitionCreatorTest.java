@@ -17,10 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import robolectric.RobolectricGradleTestRunner;
-import testHelper.GridCreator;
-import testHelper.GridCreator2x2;
-import testHelper.GridCreator4x4;
-import testHelper.GridCreator4x4CageIdsNotConsecutiveNorSorted;
+import testhelper.gridcreator.GridCreator;
+import testhelper.gridcreator.GridCreator2x2;
+import testhelper.gridcreator.GridCreator4x4;
+import testhelper.gridcreator.GridCreator4x4CageIdsNotConsecutiveNorSorted;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
