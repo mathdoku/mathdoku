@@ -3,6 +3,7 @@ package testHelper;
 import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.PuzzleComplexity;
+import net.mathdoku.plus.puzzle.grid.Grid;
 
 /**
  * The test grid in this class has been generated with the specified generator
@@ -25,6 +26,10 @@ public class GridCreator2x2 extends GridCreator {
 		GridCreator2x2 gridCreator = new GridCreator2x2();
 		gridCreator.setEmptyGrid();
 		return gridCreator;
+	}
+
+	public static Grid createEmptyGrid() {
+		return createEmpty().getGrid();
 	}
 
 	protected GridCreator2x2() {
