@@ -1,18 +1,16 @@
 package net.mathdoku.plus.puzzle.grid;
 
-import android.app.Activity;
-
-import net.mathdoku.plus.puzzle.cellchange.CellChange;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
+import net.mathdoku.plus.puzzle.cellchange.CellChange;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.storage.databaseadapter.DatabaseHelper;
 import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.GridRow;
-import net.mathdoku.plus.storage.databaseadapter.SolvingAttemptRow;
 import net.mathdoku.plus.storage.databaseadapter.SolvingAttemptDatabaseAdapter;
+import net.mathdoku.plus.storage.databaseadapter.SolvingAttemptRow;
 import net.mathdoku.plus.storage.databaseadapter.StatisticsDatabaseAdapter;
-import net.mathdoku.plus.util.Util;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +19,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import robolectric.RobolectricGradleTestRunner;
+import robolectric.TestRunnerHelper;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -73,10 +72,8 @@ public class GridSaverTest {
 
 	@Before
 	public void setup() {
-		// Instantiate singleton classes
-		Activity activity = new Activity();
-		new Util(activity);
-		DatabaseHelper.getInstance(activity);
+		TestRunnerHelper.setup(this.getClass()
+									   .getCanonicalName());
 
 		// Initialize the grid mock as if it is a new Grid which has not
 		// been saved.
@@ -93,6 +90,11 @@ public class GridSaverTest {
 		mGridSaverTestGridSaverTestObjectsCreator = new GridSaverTestObjectsCreator();
 		mGridSaver = new GridSaver()
 				.setObjectsCreator(mGridSaverTestGridSaverTestObjectsCreator);
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		TestRunnerHelper.tearDown();
 	}
 
 	@Test

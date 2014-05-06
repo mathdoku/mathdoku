@@ -1,13 +1,11 @@
 package net.mathdoku.plus.storage.databaseadapter;
 
-import android.app.Activity;
 import android.database.sqlite.SQLiteDatabase;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.storage.databaseadapter.database.DataType;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseColumnDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseTableDefinition;
-import net.mathdoku.plus.util.Util;
 
 import org.junit.After;
 import org.junit.Before;
@@ -20,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 
 import robolectric.RobolectricGradleTestRunner;
+import robolectric.TestRunnerHelper;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.Is.is;
@@ -64,19 +63,15 @@ public class DatabaseAdapterTest {
 
 	@Before
 	public void setup() {
-		// Instantiate singleton classes
-		Activity activity = new Activity();
-		new Util(activity);
-		DatabaseHelper.getInstance(activity);
+		TestRunnerHelper.setup(this.getClass()
+									   .getCanonicalName());
 
 		databaseAdapterStub = new DatabaseAdapterStub();
 	}
 
 	@After
 	public void tearDown() {
-		// Close the database helper. This ensure that the next test will use a
-		// new DatabaseHelper instance with a new SQLite database connection.
-		DatabaseHelper.getInstance().close();
+		TestRunnerHelper.tearDown();
 	}
 
 	@Test

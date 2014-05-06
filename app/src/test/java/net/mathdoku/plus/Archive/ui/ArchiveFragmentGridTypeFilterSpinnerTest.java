@@ -1,13 +1,11 @@
 package net.mathdoku.plus.archive.ui;
 
-import android.app.Activity;
-
 import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.enums.StatusFilter;
-import net.mathdoku.plus.storage.databaseadapter.DatabaseHelper;
 import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.selector.AvailableGridTypeFilterSelector;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +16,7 @@ import java.util.List;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
 import robolectric.RobolectricGradleTestRunner;
+import robolectric.TestRunnerHelper;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -37,9 +36,7 @@ public class ArchiveFragmentGridTypeFilterSpinnerTest {
 
 	@Before
 	public void setup() {
-		// Instantiate singleton classes
-		Activity activity = new Activity();
-		DatabaseHelper.getInstance(activity);
+		TestRunnerHelper.setup(this.getClass().getCanonicalName());
 
 		archiveFragmentActivity = mock(ArchiveFragmentActivity.class);
 		archiveFragmentStatePagerAdapter = mock(ArchiveFragmentStatePagerAdapter.class);
@@ -51,6 +48,11 @@ public class ArchiveFragmentGridTypeFilterSpinnerTest {
 
 		when(archiveFragmentActivity.getResources()).thenReturn(
 				Robolectric.application.getResources());
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		TestRunnerHelper.tearDown();
 	}
 
 	@Test

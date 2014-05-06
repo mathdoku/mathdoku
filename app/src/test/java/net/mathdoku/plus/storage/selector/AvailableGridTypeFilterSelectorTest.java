@@ -1,13 +1,9 @@
 package net.mathdoku.plus.storage.selector;
 
-import android.app.Activity;
-
 import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.enums.SolvingAttemptStatus;
 import net.mathdoku.plus.enums.StatusFilter;
 import net.mathdoku.plus.puzzle.grid.Grid;
-import net.mathdoku.plus.storage.databaseadapter.DatabaseHelper;
-import net.mathdoku.plus.util.Util;
 
 import org.junit.After;
 import org.junit.Before;
@@ -19,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 import robolectric.RobolectricGradleTestRunner;
+import robolectric.TestRunnerHelper;
 import testHelper.GridCreator4x4;
 import testHelper.GridCreator4x4HiddenOperators;
 import testHelper.GridCreator5x5;
@@ -34,9 +31,7 @@ public class AvailableGridTypeFilterSelectorTest {
 
 	@Before
 	public void setup() {
-		Activity activity = new Activity();
-		new Util(activity);
-		DatabaseHelper.getInstance(activity);
+		TestRunnerHelper.setup(this.getClass().getCanonicalName());
 
 		gridTypeFilterListAllStatuses = createAndInitializeNewGridTypeFilterList();
 		gridTypeFilterListWithStatusSolved = createAndInitializeNewGridTypeFilterList();
@@ -65,9 +60,7 @@ public class AvailableGridTypeFilterSelectorTest {
 
 	@After
 	public void tearDown() {
-		// Close the database helper. This ensure that the next test will use a
-		// new DatabaseHelper instance with a new SQLite database connection.
-		DatabaseHelper.getInstance().close();
+		TestRunnerHelper.tearDown();
 	}
 
 	private void createAndSaveGrid(Grid grid) {

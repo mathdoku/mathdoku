@@ -4,14 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import net.mathdoku.plus.util.SingletonInstanceNotInstantiated;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import robolectric.RobolectricGradleTestRunner;
+import robolectric.TestRunnerHelper;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
@@ -27,6 +26,7 @@ import static org.mockito.Mockito.when;
 public class DatabaseHelperTest {
 	private Activity activity;
 	private DatabaseHelper databaseHelper;
+	private boolean needToTearDownTestRunnerHelper;
 
 	private class DatabaseHelperStub extends DatabaseHelper {
 		private final DatabaseAdapter[] databaseAdapters;
@@ -44,13 +44,18 @@ public class DatabaseHelperTest {
 
 	@Before
 	public void setup() {
+		// For this class it is not possible to initialize the TestRunnerHelper
+		// for each method as some methods require the database to be closed.
 		activity = new Activity();
-		databaseHelper = DatabaseHelper.getInstance(activity);
+		needToTearDownTestRunnerHelper = false;
 	}
 
 	@After
 	public void tearDown() {
-		if (databaseHelper != null) {
+		if (needToTearDownTestRunnerHelper) {
+			TestRunnerHelper.tearDown();
+		} else if (databaseHelper != null) {
+			// Database helper was opened directly by this test class.
 			databaseHelper.close();
 		}
 	}
@@ -58,12 +63,21 @@ public class DatabaseHelperTest {
 	@Test
 	public void getInstance_InstantiateWithContext_Instantiated()
 			throws Exception {
+		initTestRunnerHelper();
 		assertThat(databaseHelper, is(notNullValue()));
+	}
+
+	private void initTestRunnerHelper() {
+		TestRunnerHelper.setup(this.getClass().getCanonicalName());
+		databaseHelper = TestRunnerHelper.getDatabaseHelper();
+		activity = TestRunnerHelper.getActivity();
+		needToTearDownTestRunnerHelper = true;
 	}
 
 	@Test
 	public void getInstance_InstantiateTwiceWithDifferentContext_SameInstance()
 			throws Exception {
+		initTestRunnerHelper();
 		assertThat(DatabaseHelper.getInstance(new Activity()),
 				is(sameInstance(databaseHelper)));
 	}
@@ -71,20 +85,18 @@ public class DatabaseHelperTest {
 	@Test
 	public void getInstance_InstantiateTwiceWithSameContext_SameInstance()
 			throws Exception {
+		initTestRunnerHelper();
 		assertThat(DatabaseHelper.getInstance(activity),
 				is(sameInstance(databaseHelper)));
 	}
 
-	@Test(expected = SingletonInstanceNotInstantiated.class)
 	public void getInstance_NotInstantiatedBefore_ThrowsSingletonInstanceNotInstantiatedException()
 			throws Exception {
-		// First close the databaseHelper to clear the singleton variable.
-		databaseHelper.close();
-
 		databaseHelper = DatabaseHelper.getInstance();
 	}
 
 	public void getInstance_InstantiatedBefore_SameInstance() throws Exception {
+		initTestRunnerHelper();
 		assertThat(DatabaseHelper.getInstance(),
 				is(sameInstance(databaseHelper)));
 	}
@@ -111,12 +123,6 @@ public class DatabaseHelperTest {
 
 	private DatabaseHelperStub replaceWithNewDatabaseHelperStub(
 			DatabaseAdapter[] databaseAdapters) {
-		// First close the databaseHelper which was created in the setup method
-		// to clear the singleton variable.
-		if (databaseHelper != null) {
-			databaseHelper.close();
-		}
-
 		// Use a stub for the database helper which uses database adapter mocks
 		// instead of real tables.
 		return new DatabaseHelperStub(activity, databaseAdapters);

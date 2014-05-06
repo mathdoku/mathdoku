@@ -1,10 +1,5 @@
 package net.mathdoku.plus.storage.databaseadapter;
 
-import android.app.Activity;
-
-import net.mathdoku.plus.storage.databaseadapter.DatabaseAdapter;
-import net.mathdoku.plus.storage.databaseadapter.DatabaseColumnDropper;
-import net.mathdoku.plus.storage.databaseadapter.DatabaseHelper;
 import net.mathdoku.plus.storage.databaseadapter.database.DataType;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseColumnDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseException;
@@ -16,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import robolectric.RobolectricGradleTestRunner;
+import robolectric.TestRunnerHelper;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -60,8 +56,7 @@ public class DatabaseColumnDropperTest {
 
 	@Before
 	public void setup() {
-		Activity activity = new Activity();
-		DatabaseHelper.getInstance(activity);
+		TestRunnerHelper.setup(this.getClass().getCanonicalName());
 
 		testTableDatabaseAdapter = new TestTableDatabaseAdapter();
 		databaseColumnDropper = new DatabaseColumnDropper(
@@ -70,11 +65,7 @@ public class DatabaseColumnDropperTest {
 
 	@After
 	public void tearDown() {
-		testTableDatabaseAdapter.dropTable();
-
-		// Close the database helper. This ensure that the next test will use a
-		// new DatabaseHelper instance with a new SQLite database connection.
-		DatabaseHelper.getInstance().close();
+		TestRunnerHelper.tearDown();
 	}
 
 	@Test(expected = DatabaseException.class)

@@ -1,11 +1,7 @@
 package net.mathdoku.plus.gridgenerating;
 
-import android.app.Activity;
-
 import net.mathdoku.plus.gridgenerating.iface.GridGeneratorListenerIface;
 import net.mathdoku.plus.puzzle.grid.Grid;
-import net.mathdoku.plus.storage.databaseadapter.DatabaseHelper;
-import net.mathdoku.plus.util.Util;
 
 import org.junit.After;
 import org.junit.Before;
@@ -13,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import robolectric.RobolectricGradleTestRunner;
+import robolectric.TestRunnerHelper;
 import testHelper.GridCreator;
 import testHelper.GridCreator2x2;
 import testHelper.GridCreator4x4;
@@ -34,9 +31,7 @@ public class GridGeneratorTest {
 
 	@Before
 	public void setup() {
-		Activity activity = new Activity();
-		new Util(activity);
-		DatabaseHelper.getInstance(activity);
+		TestRunnerHelper.setup(this.getClass().getCanonicalName());
 
 		gridGeneratorListener = new GridGeneratorListenerIface() {
 			@Override
@@ -63,13 +58,7 @@ public class GridGeneratorTest {
 
 	@After
 	public void tearDown() {
-		// Close the database helper. This ensure that the next test will use a
-		// new DatabaseHelper instance with a new SQLite database connection. In
-		// this way it is possible to generate the same grid multiple times in
-		// one test cyclus. Without this tear down, a grid can only be generated
-		// once because the grid generator checks whether the generated grid
-		// definition is unique.
-		DatabaseHelper.getInstance().close();
+		TestRunnerHelper.tearDown();
 	}
 
 	@Test

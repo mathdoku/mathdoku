@@ -1,12 +1,8 @@
 package net.mathdoku.plus.storage.selector;
 
-import android.app.Activity;
-
 import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.enums.StatusFilter;
 import net.mathdoku.plus.puzzle.grid.Grid;
-import net.mathdoku.plus.storage.databaseadapter.DatabaseHelper;
-import net.mathdoku.plus.util.Util;
 
 import org.hamcrest.Matcher;
 import org.junit.After;
@@ -18,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import robolectric.RobolectricGradleTestRunner;
+import robolectric.TestRunnerHelper;
 import testHelper.GridCreator4x4;
 import testHelper.GridCreator4x4HiddenOperators;
 import testHelper.GridCreator5x5;
@@ -27,7 +24,6 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricGradleTestRunner.class)
 public class ArchiveSolvingAttemptSelectorTest {
-	private ArchiveSolvingAttemptSelector archiveSolvingAttemptSelector;
 	private static List<ArchiveSolvingAttemptSelector.LatestSolvingAttemptForGrid> latestSolvingAttemptForAllGrids;
 	private static List<ArchiveSolvingAttemptSelector.LatestSolvingAttemptForGrid> latestSolvingAttemptForAllSolvedGrids;
 	private static List<ArchiveSolvingAttemptSelector.LatestSolvingAttemptForGrid> latestSolvingAttemptForAllGridsWithSize4;
@@ -35,9 +31,7 @@ public class ArchiveSolvingAttemptSelectorTest {
 
 	@Before
 	public void setup() {
-		Activity activity = new Activity();
-		new Util(activity);
-		DatabaseHelper.getInstance(activity);
+		TestRunnerHelper.setup(this.getClass().getCanonicalName());
 
 		latestSolvingAttemptForAllGrids = new ArrayList<ArchiveSolvingAttemptSelector.LatestSolvingAttemptForGrid>();
 		latestSolvingAttemptForAllSolvedGrids = new ArrayList<ArchiveSolvingAttemptSelector.LatestSolvingAttemptForGrid>();
@@ -59,9 +53,7 @@ public class ArchiveSolvingAttemptSelectorTest {
 
 	@After
 	public void tearDown() {
-		// Close the database helper. This ensure that the next test will use a
-		// new DatabaseHelper instance with a new SQLite database connection.
-		DatabaseHelper.getInstance().close();
+		TestRunnerHelper.tearDown();
 	}
 
 	private Grid createAndSaveGrid(Grid grid) {
@@ -107,9 +99,8 @@ public class ArchiveSolvingAttemptSelectorTest {
 
 	private List<ArchiveSolvingAttemptSelector.LatestSolvingAttemptForGrid> getResultLatestSolvingAttemptForGrids(
 			StatusFilter statusFilter, GridTypeFilter gridTypeFilter) {
-		archiveSolvingAttemptSelector = new ArchiveSolvingAttemptSelector(
-				statusFilter, gridTypeFilter);
-		return archiveSolvingAttemptSelector.getLatestSolvingAttemptIdPerGrid();
+		return new ArchiveSolvingAttemptSelector(statusFilter, gridTypeFilter)
+				.getLatestSolvingAttemptIdPerGrid();
 	}
 
 	@Test
