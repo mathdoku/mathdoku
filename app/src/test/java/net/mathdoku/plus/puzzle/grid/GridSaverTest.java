@@ -72,8 +72,7 @@ public class GridSaverTest {
 
 	@Before
 	public void setup() {
-		TestRunnerHelper.setup(this.getClass()
-									   .getCanonicalName());
+		TestRunnerHelper.setup(this.getClass().getCanonicalName());
 
 		// Initialize the grid mock as if it is a new Grid which has not
 		// been saved.

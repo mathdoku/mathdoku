@@ -177,7 +177,8 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 					.setTitle(R.string.shared_puzzle_exists_title)
 					.setMessage(
 							getResources().getString(
-									R.string.shared_puzzle_exists_message, gridRow.getGridId()))
+									R.string.shared_puzzle_exists_message,
+									gridRow.getGridId()))
 					.setNegativeButton(
 							R.string.shared_puzzle_exists_negative_button,
 							new DialogInterface.OnClickListener() {

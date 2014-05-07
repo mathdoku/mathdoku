@@ -52,9 +52,8 @@ public class TestHelperCodeGenerator {
 
 	private void appendGetHideOperator() {
 		stringBuilder.append("protected boolean getHideOperator() {\n");
-		stringBuilder.append(String
-				.format("return %s;\n", gridGeneratingParameters
-						.isHideOperators() ? "true" : "false"));
+		stringBuilder.append(String.format("return %s;\n",
+				gridGeneratingParameters.isHideOperators() ? "true" : "false"));
 		stringBuilder.append("}\n");
 		stringBuilder.append("\n");
 	}

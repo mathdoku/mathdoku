@@ -92,7 +92,7 @@ public class DatabaseColumnDropperTest {
 	public void dropColumns_EmptyColumn_ThrowsDatabaseException()
 			throws Exception {
 		assertThat(databaseColumnDropper.dropColumns(new String[] { "" }),
-				   is(false));
+				is(false));
 	}
 
 	@Test(expected = DatabaseException.class)

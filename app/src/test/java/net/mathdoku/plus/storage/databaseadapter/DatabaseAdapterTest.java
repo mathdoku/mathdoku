@@ -63,8 +63,7 @@ public class DatabaseAdapterTest {
 
 	@Before
 	public void setup() {
-		TestRunnerHelper.setup(this.getClass()
-									   .getCanonicalName());
+		TestRunnerHelper.setup(this.getClass().getCanonicalName());
 
 		databaseAdapterStub = new DatabaseAdapterStub();
 	}

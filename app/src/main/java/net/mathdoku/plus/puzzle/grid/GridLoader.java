@@ -143,10 +143,12 @@ public class GridLoader {
 
 		mGridBuilder = mObjectsCreator
 				.createGridBuilder()
-				.setDateCreated(solvingAttemptRow.getSolvingAttemptDateCreated())
-				.setDateUpdated(solvingAttemptRow.getSolvingAttemptDateUpdated())
+				.setDateCreated(
+						solvingAttemptRow.getSolvingAttemptDateCreated())
+				.setDateUpdated(
+						solvingAttemptRow.getSolvingAttemptDateUpdated())
 				.setSolvingAttemptId(solvingAttemptRow.getGridId(),
-									 solvingAttemptRow.getSolvingAttemptId());
+						solvingAttemptRow.getSolvingAttemptId());
 		GridRow gridRow = mObjectsCreator.createGridDatabaseAdapter().get(
 				solvingAttemptRow.getGridId());
 		if (gridRow == null || gridRow.getGridSize() <= 0) {
@@ -155,7 +157,8 @@ public class GridLoader {
 
 		mGridBuilder
 				.setGridSize(gridRow.getGridSize())
-				.setGridGeneratingParameters(gridRow.getGridGeneratingParameters());
+				.setGridGeneratingParameters(
+						gridRow.getGridGeneratingParameters());
 		mSavedWithRevision = solvingAttemptRow.getSavedWithRevision();
 
 		// SolvingAttemptStorage can only be processed after the grid size and
@@ -189,7 +192,8 @@ public class GridLoader {
 
 		try {
 			SolvingAttemptStorage solvingAttemptStorage = mObjectsCreator
-					.createSolvingAttemptStorage(solvingAttemptRow.getStorageString());
+					.createSolvingAttemptStorage(solvingAttemptRow
+							.getStorageString());
 			loadGridStorage(solvingAttemptStorage);
 			loadCells(solvingAttemptStorage);
 			loadCages(solvingAttemptStorage);
