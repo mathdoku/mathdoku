@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteException;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.enums.SolvingAttemptStatus;
-import net.mathdoku.plus.enums.StatusFilter;
 import net.mathdoku.plus.storage.databaseadapter.database.DataType;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseColumnDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseForeignKeyDefinition;
@@ -363,39 +362,5 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 			}
 		}
 		return count;
-	}
-
-	/**
-	 * Get the SQL where clause to select solving attempts for which the status
-	 * matches the given status filter.
-	 * 
-	 * @param statusFilter
-	 *            The status filter to be matched.
-	 * @return The SQL where clause which matches solving attempts with the
-	 *         given status filter.
-	 */
-	public static String getStatusSelectionString(StatusFilter statusFilter) {
-		// Determine selection for status filter
-		switch (statusFilter) {
-		case ALL:
-			// no filter on status
-			return "";
-		case REVEALED:
-			return SolvingAttemptDatabaseAdapter
-					.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_STATUS)
-					+ " = " + SolvingAttemptStatus.REVEALED_SOLUTION.getId();
-		case SOLVED:
-			return SolvingAttemptDatabaseAdapter
-					.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_STATUS)
-					+ " = " + SolvingAttemptStatus.FINISHED_SOLVED.getId();
-		case UNFINISHED:
-			return SolvingAttemptDatabaseAdapter
-					.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_STATUS)
-					+ " IN ("
-					+ SolvingAttemptStatus.NOT_STARTED.getId()
-					+ ","
-					+ SolvingAttemptStatus.UNFINISHED.getId() + ")";
-		}
-		return null;
 	}
 }

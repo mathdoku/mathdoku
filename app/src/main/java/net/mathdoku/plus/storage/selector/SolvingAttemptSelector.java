@@ -6,6 +6,7 @@ import android.util.Log;
 
 import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.GridTypeFilter;
+import net.mathdoku.plus.enums.SolvingAttemptStatus;
 import net.mathdoku.plus.enums.StatusFilter;
 import net.mathdoku.plus.storage.databaseadapter.DatabaseHelper;
 import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter;
@@ -23,7 +24,8 @@ public abstract class SolvingAttemptSelector {
 	@SuppressWarnings("unused")
 	private static final String TAG = SolvingAttemptSelector.class.getName();
 
-	public static final String SQLITE_KEYWORD_AND = " AND ";
+	private static final String SQLITE_KEYWORD_AND = " AND ";
+	private static final String SQLITE_KEYWORD_EQUALS = " = ";
 
 	protected final StatusFilter statusFilter;
 	protected final GridTypeFilter gridTypeFilter;
@@ -94,7 +96,7 @@ public abstract class SolvingAttemptSelector {
 		stringBuilder
 				.append(SolvingAttemptDatabaseAdapter
 						.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_GRID_ID));
-		stringBuilder.append(" = ");
+		stringBuilder.append(SQLITE_KEYWORD_EQUALS);
 		stringBuilder.append(GridDatabaseAdapter
 				.getPrefixedColumnName(GridDatabaseAdapter.KEY_ROWID));
 
@@ -114,7 +116,7 @@ public abstract class SolvingAttemptSelector {
 		stringBuilder.append(SolvingAttemptDatabaseAdapter.TABLE_NAME);
 		stringBuilder.append(" as sa2 where sa2.");
 		stringBuilder.append(SolvingAttemptDatabaseAdapter.KEY_GRID_ID);
-		stringBuilder.append(" = ");
+		stringBuilder.append(SQLITE_KEYWORD_EQUALS);
 		stringBuilder
 				.append(SolvingAttemptDatabaseAdapter
 						.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_GRID_ID));
@@ -133,11 +135,23 @@ public abstract class SolvingAttemptSelector {
 
 	private String getStatusSelectionString() {
 		StringBuilder stringBuilder = new StringBuilder();
-		String selectionStatus = SolvingAttemptDatabaseAdapter
-				.getStatusSelectionString(statusFilter);
-		if (!selectionStatus.isEmpty()) {
+		if (statusFilter != StatusFilter.ALL) {
 			stringBuilder.append(SQLITE_KEYWORD_AND);
-			stringBuilder.append(selectionStatus);
+			stringBuilder.append(" (");
+			int countSolvingAttemptStatuses = 0;
+			for (SolvingAttemptStatus solvingAttemptStatus : statusFilter
+					.getAllAttachedSolvingAttemptStatuses()) {
+				if (countSolvingAttemptStatuses > 0) {
+					stringBuilder.append(" OR ");
+				}
+				stringBuilder
+						.append(SolvingAttemptDatabaseAdapter
+								.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_STATUS));
+				stringBuilder.append(SQLITE_KEYWORD_EQUALS);
+				stringBuilder.append(solvingAttemptStatus.getId());
+				countSolvingAttemptStatuses++;
+			}
+			stringBuilder.append(") ");
 		}
 		return stringBuilder.toString();
 	}
@@ -148,7 +162,7 @@ public abstract class SolvingAttemptSelector {
 			stringBuilder.append(SQLITE_KEYWORD_AND);
 			stringBuilder.append(GridDatabaseAdapter
 					.getPrefixedColumnName(GridDatabaseAdapter.KEY_GRID_SIZE));
-			stringBuilder.append(" = ");
+			stringBuilder.append(SQLITE_KEYWORD_EQUALS);
 			stringBuilder.append(GridType
 					.fromGridTypeFilter(gridTypeFilter)
 					.getGridSize());
