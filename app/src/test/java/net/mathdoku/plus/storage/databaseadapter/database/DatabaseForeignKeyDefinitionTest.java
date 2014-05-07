@@ -55,7 +55,7 @@ public class DatabaseForeignKeyDefinitionTest {
 		DatabaseForeignKeyDefinition databaseForeignKeyDefinition = new DatabaseForeignKeyDefinition(
 				COLUMN_NAME, REFERS_TO_TABLE_NAME, REFERS_TO_COLUMN_NAME);
 		assertThat(databaseForeignKeyDefinition.getForeignKeyClause(),
-				is(" FOREIGN KEY(`" + COLUMN_NAME + "`) REFERENCES "
+				is("FOREIGN KEY(`" + COLUMN_NAME + "`) REFERENCES "
 						+ REFERS_TO_TABLE_NAME + "" + "("
 						+ REFERS_TO_COLUMN_NAME + ")"));
 	}

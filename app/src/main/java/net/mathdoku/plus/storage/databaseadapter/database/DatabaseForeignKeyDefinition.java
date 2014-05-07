@@ -12,7 +12,7 @@ public class DatabaseForeignKeyDefinition {
 		ParameterValidator.validateNotNullOrEmpty(refersToColumn);
 
 		StringBuilder foreignKey = new StringBuilder();
-		foreignKey.append(" FOREIGN KEY(");
+		foreignKey.append("FOREIGN KEY(");
 		foreignKey.append(DatabaseUtil.stringBetweenBackTicks(column.trim()));
 		foreignKey.append(") REFERENCES ");
 		foreignKey.append(refersToTable.trim());
