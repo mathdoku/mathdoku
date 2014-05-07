@@ -7,25 +7,59 @@ import net.mathdoku.plus.enums.SolvingAttemptStatus;
  * the specific query which was executed whether a field is filled.
  */
 public class SolvingAttemptRow {
-	// Unique row id for the solving attempt in the database.
-	public int mId;
+	private final int solvingAttemptId;
 
 	// The grid to which the solving attempt applies. A single grid can have
-	// multiple solving attempt. So the grid only contains the definition (cages
-	// and cage outcomes) of this grid which are identical for all solving
-	// attempts of this grid.
-	public int mGridId;
+	// multiple solving attempts. So the grid only contains the definition
+	// (cages and cage outcomes) of this grid which are identical for all
+	// solving attempts of this grid.
+	private int gridId;
 
-	// Timestamp of creation and last update of the solving attempt.
-	public long mDateCreated;
-	public long mDateUpdated;
+	private final long solvingAttemptDateCreated;
+	private final long solvingAttemptDateUpdated;
+	private final SolvingAttemptStatus solvingAttemptStatus;
 
-	// The revision of the app used to save the data.
-	public int mSavedWithRevision;
+	private final int savedWithRevision;
+	private final String storageString;
 
-	// The compound storage string
-	public String mStorageString;
+	public SolvingAttemptRow(int solvingAttemptId, int gridId,
+			long solvingAttemptDateCreated, long solvingAttemptDateUpdated,
+			SolvingAttemptStatus solvingAttemptStatus, int savedWithRevision,
+			String storageString) {
+		this.solvingAttemptId = solvingAttemptId;
+		this.gridId = gridId;
+		this.solvingAttemptDateCreated = solvingAttemptDateCreated;
+		this.solvingAttemptDateUpdated = solvingAttemptDateUpdated;
+		this.solvingAttemptStatus = solvingAttemptStatus;
+		this.savedWithRevision = savedWithRevision;
+		this.storageString = storageString;
+	}
 
-	// Status of the solving attempt.
-	public SolvingAttemptStatus mSolvingAttemptStatus;
+	public int getSolvingAttemptId() {
+		return solvingAttemptId;
+	}
+
+	public long getSolvingAttemptDateCreated() {
+		return solvingAttemptDateCreated;
+	}
+
+	public long getSolvingAttemptDateUpdated() {
+		return solvingAttemptDateUpdated;
+	}
+
+	public SolvingAttemptStatus getSolvingAttemptStatus() {
+		return solvingAttemptStatus;
+	}
+
+	public int getSavedWithRevision() {
+		return savedWithRevision;
+	}
+
+	public String getStorageString() {
+		return storageString;
+	}
+
+	public int getGridId() {
+		return gridId;
+	}
 }

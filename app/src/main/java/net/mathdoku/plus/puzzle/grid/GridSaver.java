@@ -38,8 +38,14 @@ public class GridSaver {
 			return new StatisticsDatabaseAdapter();
 		}
 
-		public SolvingAttemptRow createSolvingAttempt() {
-			return new SolvingAttemptRow();
+		public SolvingAttemptRow createSolvingAttempt(int solvingAttemptId,
+				int gridId, long solvingAttemptDateCreated,
+				long solvingAttemptDateUpdated,
+				SolvingAttemptStatus solvingAttemptStatus,
+				int savedWithRevision, String storageString) {
+			return new SolvingAttemptRow(solvingAttemptId, gridId,
+					solvingAttemptDateCreated, solvingAttemptDateUpdated,
+					solvingAttemptStatus, savedWithRevision, storageString);
 		}
 
 		public GridStorage createGridStorage() {
@@ -115,33 +121,26 @@ public class GridSaver {
 	}
 
 	private boolean saveSolvingAttempt(Grid grid) {
+		mDateUpdated = mSolvingAttemptId >= 0
+				&& mSetDateUpdatedOnUpdateOfSolvingAttempt ? System
+				.currentTimeMillis() : grid.getDateSaved();
 		SolvingAttemptRow solvingAttemptRow = mObjectsCreator
-				.createSolvingAttempt();
-		solvingAttemptRow.mId = mSolvingAttemptId;
-		solvingAttemptRow.mGridId = mRowId;
-		solvingAttemptRow.mDateCreated = grid.getDateCreated();
-		solvingAttemptRow.mDateUpdated = grid.getDateSaved();
-		solvingAttemptRow.mSavedWithRevision = Util.getPackageVersionNumber();
-		solvingAttemptRow.mStorageString = mObjectsCreator
-				.createGridStorage()
-				.toStorageString(grid);
-		solvingAttemptRow.mSolvingAttemptStatus = SolvingAttemptStatus
-				.getDerivedStatus(grid.isSolutionRevealed(), grid.isActive(),
-						grid.isEmpty());
+				.createSolvingAttempt(mSolvingAttemptId, mRowId, grid
+						.getDateCreated(), mDateUpdated, SolvingAttemptStatus
+						.getDerivedStatus(grid.isSolutionRevealed(),
+								grid.isActive(), grid.isEmpty()), Util
+						.getPackageVersionNumber(), mObjectsCreator
+						.createGridStorage()
+						.toStorageString(grid));
 
 		// Insert or update the solving attempt.
 		SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = mObjectsCreator
 				.createSolvingAttemptDatabaseAdapter();
 		if (mSolvingAttemptId < 0) {
-			mDateUpdated = solvingAttemptRow.mDateUpdated;
 			mSolvingAttemptId = solvingAttemptDatabaseAdapter
 					.insert(solvingAttemptRow);
 			return mSolvingAttemptId >= 0;
 		} else {
-			if (mSetDateUpdatedOnUpdateOfSolvingAttempt) {
-				solvingAttemptRow.mDateUpdated = System.currentTimeMillis();
-			}
-			mDateUpdated = solvingAttemptRow.mDateUpdated;
 			return solvingAttemptDatabaseAdapter.update(solvingAttemptRow);
 		}
 	}

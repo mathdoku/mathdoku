@@ -143,12 +143,12 @@ public class GridLoader {
 
 		mGridBuilder = mObjectsCreator
 				.createGridBuilder()
-				.setDateCreated(solvingAttemptRow.mDateCreated)
-				.setDateUpdated(solvingAttemptRow.mDateUpdated)
-				.setSolvingAttemptId(solvingAttemptRow.mGridId,
-						solvingAttemptRow.mId);
+				.setDateCreated(solvingAttemptRow.getSolvingAttemptDateCreated())
+				.setDateUpdated(solvingAttemptRow.getSolvingAttemptDateUpdated())
+				.setSolvingAttemptId(solvingAttemptRow.getGridId(),
+									 solvingAttemptRow.getSolvingAttemptId());
 		GridRow gridRow = mObjectsCreator.createGridDatabaseAdapter().get(
-				solvingAttemptRow.mGridId);
+				solvingAttemptRow.getGridId());
 		if (gridRow == null || gridRow.getGridSize() <= 0) {
 			return null;
 		}
@@ -156,12 +156,12 @@ public class GridLoader {
 		mGridBuilder
 				.setGridSize(gridRow.getGridSize())
 				.setGridGeneratingParameters(gridRow.getGridGeneratingParameters());
-		mSavedWithRevision = solvingAttemptRow.mSavedWithRevision;
+		mSavedWithRevision = solvingAttemptRow.getSavedWithRevision();
 
 		// SolvingAttemptStorage can only be processed after the grid size and
 		// revision number is known.
 		if (!loadFromStorageStrings(solvingAttemptRow)
-				|| !loadStatistics(solvingAttemptRow.mGridId)) {
+				|| !loadStatistics(solvingAttemptRow.getGridId())) {
 			return null;
 		}
 
@@ -182,14 +182,14 @@ public class GridLoader {
 	 */
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	private boolean loadFromStorageStrings(SolvingAttemptRow solvingAttemptRow) {
-		if (solvingAttemptRow.mStorageString == null) {
+		if (solvingAttemptRow.getStorageString() == null) {
 			return errorOnLoadStorageString(
 					"Solving attempt contains no storage string.", null);
 		}
 
 		try {
 			SolvingAttemptStorage solvingAttemptStorage = mObjectsCreator
-					.createSolvingAttemptStorage(solvingAttemptRow.mStorageString);
+					.createSolvingAttemptStorage(solvingAttemptRow.getStorageString());
 			loadGridStorage(solvingAttemptStorage);
 			loadCells(solvingAttemptStorage);
 			loadCages(solvingAttemptStorage);
@@ -198,12 +198,12 @@ public class GridLoader {
 			return errorOnLoadStorageString(
 					String.format(
 							"Invalid Number format error when restoring solving attempt with id %d.",
-							solvingAttemptRow.mId), e);
+							solvingAttemptRow.getSolvingAttemptId()), e);
 		} catch (InvalidGridException e) {
 			return errorOnLoadStorageString(
 					String.format(
 							"Loading of solving attempt data with id %d to grid builder failed.'",
-							solvingAttemptRow.mId), e);
+							solvingAttemptRow.getSolvingAttemptId()), e);
 		}
 
 		return true;

@@ -28,6 +28,28 @@ public enum SolvingAttemptStatus {
 		return solvingAttemptStatusId;
 	}
 
+	public static SolvingAttemptStatus valueOf(int id) {
+		SolvingAttemptStatus firstSolvingAttemptStatus = null;
+		for (SolvingAttemptStatus solvingAttemptStatus : values()) {
+			if (solvingAttemptStatus.solvingAttemptStatusId == id) {
+				if (firstSolvingAttemptStatus != null) {
+					throw new IllegalStateException(
+							String
+									.format("Value '%d' is mapped to multiple solving attempt statuses.",
+											id));
+				}
+				firstSolvingAttemptStatus = solvingAttemptStatus;
+			}
+		}
+		if (firstSolvingAttemptStatus == null) {
+			throw new IllegalStateException(
+					String
+							.format("Value '%d' is not mapped to any solving attempt statuses.",
+									id));
+		}
+		return firstSolvingAttemptStatus;
+	}
+
 	public StatusFilter getAttachedToStatusFilter() {
 		return attachedToStatusFilter;
 	}

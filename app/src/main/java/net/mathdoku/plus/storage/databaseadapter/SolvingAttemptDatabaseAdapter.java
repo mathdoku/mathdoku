@@ -119,16 +119,19 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 */
 	public int insert(SolvingAttemptRow solvingAttemptRow) {
 		ContentValues initialValues = new ContentValues();
-		initialValues.put(KEY_GRID_ID, solvingAttemptRow.mGridId);
-		initialValues.put(KEY_DATE_CREATED,
-				DatabaseUtil.toSQLiteTimestamp(solvingAttemptRow.mDateCreated));
-		initialValues.put(KEY_DATE_UPDATED,
-				DatabaseUtil.toSQLiteTimestamp(solvingAttemptRow.mDateUpdated));
+		initialValues.put(KEY_GRID_ID, solvingAttemptRow.getGridId());
+		initialValues.put(KEY_DATE_CREATED, DatabaseUtil
+				.toSQLiteTimestamp(solvingAttemptRow
+						.getSolvingAttemptDateCreated()));
+		initialValues.put(KEY_DATE_UPDATED, DatabaseUtil
+				.toSQLiteTimestamp(solvingAttemptRow
+						.getSolvingAttemptDateUpdated()));
 		initialValues.put(KEY_SAVED_WITH_REVISION,
-				solvingAttemptRow.mSavedWithRevision);
-		initialValues.put(KEY_DATA, solvingAttemptRow.mStorageString);
-		initialValues.put(KEY_STATUS,
-				solvingAttemptRow.mSolvingAttemptStatus.getId());
+				solvingAttemptRow.getSavedWithRevision());
+		initialValues.put(KEY_DATA, solvingAttemptRow.getStorageString());
+		initialValues.put(KEY_STATUS, solvingAttemptRow
+				.getSolvingAttemptStatus()
+				.getId());
 
 		long id = -1;
 		try {
@@ -167,21 +170,14 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 			}
 
 			// Convert cursor record to a SolvingAttemptRow row
-			solvingAttemptRow = new SolvingAttemptRow();
-			solvingAttemptRow.mId = cursor.getInt(cursor
-					.getColumnIndexOrThrow(KEY_ROWID));
-			solvingAttemptRow.mGridId = cursor.getInt(cursor
-					.getColumnIndexOrThrow(KEY_GRID_ID));
-			solvingAttemptRow.mDateCreated = DatabaseUtil
-					.valueOfSQLiteTimestamp(cursor.getString(cursor
-							.getColumnIndexOrThrow(KEY_DATE_CREATED)));
-			solvingAttemptRow.mDateUpdated = DatabaseUtil
-					.valueOfSQLiteTimestamp(cursor.getString(cursor
-							.getColumnIndexOrThrow(KEY_DATE_UPDATED)));
-			solvingAttemptRow.mSavedWithRevision = cursor.getInt(cursor
-					.getColumnIndexOrThrow(KEY_SAVED_WITH_REVISION));
-			solvingAttemptRow.mStorageString = cursor.getString(cursor
-					.getColumnIndexOrThrow(KEY_DATA));
+			solvingAttemptRow = new SolvingAttemptRow(
+					getSolvingAttemptIdFromCursor(cursor),
+					getGridIdFromCursor(cursor),
+					getDateCreatedFromCursor(cursor),
+					getDateUpdatedFromCursor(cursor),
+					getSolvingAttemptStatusFromCursor(cursor),
+					getSavedWithRevisionFromCursor(cursor),
+					getStorageStringFromCursor(cursor));
 		} catch (SQLiteException e) {
 			throw new DatabaseAdapterException(
 					String.format(
@@ -193,6 +189,38 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 			}
 		}
 		return solvingAttemptRow;
+	}
+
+	private int getSolvingAttemptIdFromCursor(Cursor cursor) {
+		return cursor.getInt(cursor.getColumnIndexOrThrow(KEY_ROWID));
+	}
+
+	private int getGridIdFromCursor(Cursor cursor) {
+		return cursor.getInt(cursor.getColumnIndexOrThrow(KEY_GRID_ID));
+	}
+
+	private long getDateCreatedFromCursor(Cursor cursor) {
+		return DatabaseUtil.valueOfSQLiteTimestamp(cursor.getString(cursor
+				.getColumnIndexOrThrow(KEY_DATE_CREATED)));
+	}
+
+	private long getDateUpdatedFromCursor(Cursor cursor) {
+		return DatabaseUtil.valueOfSQLiteTimestamp(cursor.getString(cursor
+				.getColumnIndexOrThrow(KEY_DATE_UPDATED)));
+	}
+
+	private SolvingAttemptStatus getSolvingAttemptStatusFromCursor(Cursor cursor) {
+		return SolvingAttemptStatus.valueOf(cursor.getInt(cursor
+				.getColumnIndexOrThrow(KEY_STATUS)));
+	}
+
+	private int getSavedWithRevisionFromCursor(Cursor cursor) {
+		return cursor.getInt(cursor
+				.getColumnIndexOrThrow(KEY_SAVED_WITH_REVISION));
+	}
+
+	private String getStorageStringFromCursor(Cursor cursor) {
+		return cursor.getString(cursor.getColumnIndexOrThrow(KEY_DATA));
 	}
 
 	/**
@@ -215,7 +243,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 			}
 
 			// Convert cursor record to a SolvingAttemptRow row
-			id = cursor.getInt(cursor.getColumnIndexOrThrow(KEY_ROWID));
+			id = getSolvingAttemptIdFromCursor(cursor);
 		} catch (SQLiteException e) {
 			throw new DatabaseAdapterException(
 					"Cannot retrieve the most recent played solving attempt id in database.",
@@ -237,16 +265,18 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 */
 	public boolean update(SolvingAttemptRow solvingAttemptRow) {
 		ContentValues contentValues = new ContentValues();
-		contentValues.put(KEY_DATE_UPDATED,
-				DatabaseUtil.toSQLiteTimestamp(solvingAttemptRow.mDateUpdated));
+		contentValues.put(KEY_DATE_UPDATED, DatabaseUtil
+				.toSQLiteTimestamp(solvingAttemptRow
+						.getSolvingAttemptDateUpdated()));
 		contentValues.put(KEY_SAVED_WITH_REVISION,
-				solvingAttemptRow.mSavedWithRevision);
-		contentValues.put(KEY_DATA, solvingAttemptRow.mStorageString);
-		contentValues.put(KEY_STATUS,
-				solvingAttemptRow.mSolvingAttemptStatus.getId());
+				solvingAttemptRow.getSavedWithRevision());
+		contentValues.put(KEY_DATA, solvingAttemptRow.getStorageString());
+		contentValues.put(KEY_STATUS, solvingAttemptRow
+				.getSolvingAttemptStatus()
+				.getId());
 
 		return sqliteDatabase.update(TABLE_NAME, contentValues, KEY_ROWID
-				+ " = " + solvingAttemptRow.mId, null) == 1;
+				+ " = " + solvingAttemptRow.getSolvingAttemptId(), null) == 1;
 	}
 
 	/**
@@ -273,8 +303,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 			// Convert cursor records to an array list of id's.
 			idArrayList = new ArrayList<Integer>();
 			do {
-				idArrayList.add(cursor.getInt(cursor
-						.getColumnIndexOrThrow(KEY_ROWID)));
+				idArrayList.add(getSolvingAttemptIdFromCursor(cursor));
 			} while (cursor.moveToNext());
 		} catch (SQLiteException e) {
 			throw new DatabaseAdapterException(
