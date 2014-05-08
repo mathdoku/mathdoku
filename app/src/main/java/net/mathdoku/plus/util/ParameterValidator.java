@@ -7,7 +7,7 @@ public class ParameterValidator {
 
 	public static void validateNotNullOrEmpty(String string) {
 		validateNotNull(string);
-		if (string.isEmpty()) {
+		if (string.trim().isEmpty()) {
 			throwEmptyException();
 		}
 	}
