@@ -97,10 +97,9 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 		// Determine how many solving attempts in the database have to be
 		// converted.
 		int maxProgressCounter = 0;
-		if ((solvingAttemptIds = new SolvingAttemptDatabaseAdapter()
-				.getAllToBeConverted()) != null) {
-			maxProgressCounter += solvingAttemptIds.size();
-		}
+		solvingAttemptIds = new SolvingAttemptDatabaseAdapter()
+				.getAllToBeConverted();
+		maxProgressCounter += solvingAttemptIds.size();
 
 		if (maxProgressCounter > 0) {
 			// Build the dialog

@@ -309,7 +309,7 @@ public class GridLoaderTest {
 		}
 
 		public void returnsSolvingAttempt(SolvingAttemptRow solvingAttemptRow) {
-			when(mSolvingAttemptDatabaseAdapterMock.getData(anyInt()))
+			when(mSolvingAttemptDatabaseAdapterMock.getSolvingAttemptRow(anyInt()))
 					.thenReturn(solvingAttemptRow);
 		}
 

@@ -30,7 +30,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 
 	// Remove "&& false" in following line to show the SQL-statements in the
 	// debug information
-	@SuppressWarnings("PointlessBooleanExpression")
+	@SuppressWarnings("unused")
 	private static final boolean DEBUG_SQL = Config.mAppMode == AppMode.DEVELOPMENT && false;
 
 	private static final DatabaseTableDefinition DATABASE_TABLE = defineTable();
@@ -112,11 +112,13 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	/**
 	 * Inserts a new solving attempt record for a grid into the database.
 	 * 
+	 *
 	 * @param solvingAttemptRow
 	 *            The solving attempt to be inserted.
-	 * @return The row id of the row created. -1 in case of an error.
+	 * @return The solving attempt record with an updated row is in case the
+	 *         record is successfully inserted. Null in case of an error.
 	 */
-	public int insert(SolvingAttemptRow solvingAttemptRow) {
+	public SolvingAttemptRow insert(SolvingAttemptRow solvingAttemptRow) {
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(KEY_GRID_ID, solvingAttemptRow.getGridId());
 		initialValues.put(KEY_DATE_CREATED, DatabaseUtil
@@ -132,20 +134,15 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 				.getSolvingAttemptStatus()
 				.getId());
 
-		long id = -1;
+		int id = -1;
 		try {
-			id = sqliteDatabase.insertOrThrow(TABLE_NAME, null, initialValues);
+			id = (int) sqliteDatabase.insertOrThrow(TABLE_NAME, null, initialValues);
 		} catch (SQLiteException e) {
 			throw new DatabaseAdapterException(
 					"Cannot insert new solving attempt in database.", e);
 		}
 
-		if (id < 0) {
-			throw new DatabaseAdapterException(
-					"Insert of new puzzle failed when inserting the solving attempt into the database.");
-		}
-
-		return (int) id;
+		return new SolvingAttemptRow(solvingAttemptRow, id);
 	}
 
 	/**
@@ -155,7 +152,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 *            The solving attempt id for which the data has to be retrieved.
 	 * @return The data of the solving attempt.
 	 */
-	public SolvingAttemptRow getData(int solvingAttemptId) {
+	public SolvingAttemptRow getSolvingAttemptRow(int solvingAttemptId) {
 		SolvingAttemptRow solvingAttemptRow = null;
 		Cursor cursor = null;
 		try {
@@ -285,7 +282,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 *         converted.
 	 */
 	public List<Integer> getAllToBeConverted() {
-		List<Integer> idArrayList = null;
+		List<Integer> idArrayList = new ArrayList<Integer>();
 		Cursor cursor = null;
 		String[] columns = { KEY_ROWID };
 		try {
@@ -294,16 +291,11 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 			cursor = sqliteDatabase.query(true, TABLE_NAME, columns, null,
 					null, null, null, null, null);
 
-			if (cursor == null || !cursor.moveToFirst()) {
-				// No record found for this grid.
-				return null;
+			if (cursor != null && cursor.moveToFirst()) {
+				do {
+					idArrayList.add(getSolvingAttemptIdFromCursor(cursor));
+				} while (cursor.moveToNext());
 			}
-
-			// Convert cursor records to an array list of id's.
-			idArrayList = new ArrayList<Integer>();
-			do {
-				idArrayList.add(getSolvingAttemptIdFromCursor(cursor));
-			} while (cursor.moveToNext());
 		} catch (SQLiteException e) {
 			throw new DatabaseAdapterException(
 					"Cannot retrieve all solving attempt id's from database which have to be converted.",

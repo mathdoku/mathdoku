@@ -107,11 +107,9 @@ public class GridSaverTest {
 		when(mGridDatabaseAdapterMock.insert(any(Grid.class))).thenReturn(
 				mGridRowIdAfterSuccessfulInsert);
 		// Prepare insert of new solving attempt
-		int mSolvingAttemptIdAfterSuccessfulInsert = 51;
 		when(
 				mSolvingAttemptDatabaseAdapterMock
-						.insert(any(SolvingAttemptRow.class))).thenReturn(
-				mSolvingAttemptIdAfterSuccessfulInsert);
+						.insert(any(SolvingAttemptRow.class))).thenReturn(mock(SolvingAttemptRow.class));
 		// Prepare insert of new statistics
 		int mGridStatisticsIdAfterSuccessfulInsert = 52;
 		when(mStatisticsDatabaseAdapterMock.insert(any(GridStatistics.class)))
@@ -163,11 +161,9 @@ public class GridSaverTest {
 		when(mGridDatabaseAdapterMock.getByGridDefinition(anyString()))
 				.thenReturn(gridRow);
 		// Prepare insert of new solving attempt
-		int mSolvingAttemptIdAfterSuccessfulInsert = 51;
 		when(
 				mSolvingAttemptDatabaseAdapterMock
-						.insert(any(SolvingAttemptRow.class))).thenReturn(
-				mSolvingAttemptIdAfterSuccessfulInsert);
+						.insert(any(SolvingAttemptRow.class))).thenReturn(mock(SolvingAttemptRow.class));
 		// Prepare insert of new statistics
 		int mGridStatisticsIdAfterSuccessfulInsert = 52;
 		when(mStatisticsDatabaseAdapterMock.insert(any(GridStatistics.class)))
@@ -197,11 +193,9 @@ public class GridSaverTest {
 		int existingGridId = 12;
 		when(mGridMock.getRowId()).thenReturn(existingGridId);
 		// Prepare insert of new solving attempt
-		int mSolvingAttemptIdAfterSuccessfulInsert = 51;
 		when(
 				mSolvingAttemptDatabaseAdapterMock
-						.insert(any(SolvingAttemptRow.class))).thenReturn(
-				mSolvingAttemptIdAfterSuccessfulInsert);
+						.insert(any(SolvingAttemptRow.class))).thenReturn(mock(SolvingAttemptRow.class));
 		// Prepare insert of new statistics
 		int mGridStatisticsIdAfterSuccessfulInsert = 52;
 		when(mStatisticsDatabaseAdapterMock.insert(any(GridStatistics.class)))
@@ -231,12 +225,9 @@ public class GridSaverTest {
 		int existingGridId = 12;
 		when(mGridMock.getRowId()).thenReturn(existingGridId);
 		// Prepare for failing insert of new solving attempt
-		int mSolvingAttemptIdWhenInsertFails = -1;
 		when(
 				mSolvingAttemptDatabaseAdapterMock
-						.insert(any(SolvingAttemptRow.class))).thenReturn(
-				mSolvingAttemptIdWhenInsertFails);
-
+						.insert(any(SolvingAttemptRow.class))).thenReturn(null);
 		boolean saveResult = mGridSaver.save(mGridMock);
 
 		verify(mDatabaseHelperMock).beginTransaction();

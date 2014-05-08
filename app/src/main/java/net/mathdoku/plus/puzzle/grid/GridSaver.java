@@ -137,9 +137,13 @@ public class GridSaver {
 		SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = mObjectsCreator
 				.createSolvingAttemptDatabaseAdapter();
 		if (mSolvingAttemptId < 0) {
-			mSolvingAttemptId = solvingAttemptDatabaseAdapter
+			solvingAttemptRow = solvingAttemptDatabaseAdapter
 					.insert(solvingAttemptRow);
-			return mSolvingAttemptId >= 0;
+			if (solvingAttemptRow == null) {
+				return false;
+			}
+			mSolvingAttemptId = solvingAttemptRow.getSolvingAttemptId();
+			return true;
 		} else {
 			return solvingAttemptDatabaseAdapter.update(solvingAttemptRow);
 		}
