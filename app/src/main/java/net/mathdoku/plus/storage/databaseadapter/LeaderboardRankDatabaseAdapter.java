@@ -384,37 +384,77 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		}
 
 		// Convert cursor record to a leaderboard rank row.
-		LeaderboardRankRow leaderboardRankRow = new LeaderboardRankRow();
-		leaderboardRankRow.mLeaderboardId = cursor.getString(cursor
-				.getColumnIndexOrThrow(KEY_LEADERBOARD_ID));
-		leaderboardRankRow.mGridSize = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_GRID_SIZE));
-		leaderboardRankRow.mOperatorsHidden = DatabaseUtil
-				.valueOfSQLiteBoolean(cursor.getString(cursor
-						.getColumnIndexOrThrow(KEY_HIDDEN_OPERATORS)));
-		leaderboardRankRow.mPuzzleComplexity = PuzzleComplexity
-				.valueOf(cursor.getString(cursor
-						.getColumnIndexOrThrow(KEY_PUZZLE_COMPLEXITY)));
-		leaderboardRankRow.mScoreOrigin = ScoreOrigin.valueOf(cursor
-				.getString(cursor.getColumnIndexOrThrow(KEY_SCORE_ORIGIN)));
-		leaderboardRankRow.mStatisticsId = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_SCORE_STATISTICS_ID));
-		leaderboardRankRow.mRawScore = cursor.getLong(cursor
-				.getColumnIndexOrThrow(KEY_SCORE_RAW_SCORE));
-		leaderboardRankRow.mDateSubmitted = DatabaseUtil
-				.valueOfSQLiteTimestamp(cursor.getString(cursor
-						.getColumnIndexOrThrow(KEY_SCORE_DATE_SUBMITTED)));
-		leaderboardRankRow.mRank = cursor.getLong(cursor
-				.getColumnIndexOrThrow(KEY_RANK));
-		leaderboardRankRow.mRankDisplay = cursor.getString(cursor
-				.getColumnIndexOrThrow(KEY_RANK_DISPLAY));
-		leaderboardRankRow.mDateLastUpdated = DatabaseUtil
-				.valueOfSQLiteTimestamp(cursor.getString(cursor
-						.getColumnIndexOrThrow(KEY_RANK_DATE_LAST_UPDATED)));
-		leaderboardRankRow.mRankStatus = RankStatus.valueOf(cursor
-				.getString(cursor.getColumnIndexOrThrow(KEY_RANK_STATUS)));
+		LeaderboardRankRow leaderboardRankRow = new LeaderboardRankRow(
+				getLeaderboardIdFromCursor(cursor),
+				getGridSizeFromCursor(cursor),
+				getHideOperatorsFromCursor(cursor),
+				getPuzzleComplexityFromCursor(cursor),
+				getScoreOriginFromCursor(cursor),
+				getStatisticsIdFromCursor(cursor),
+				getRawScoreFromCurssor(cursor),
+				getDateScoreSubmittedFromCursor(cursor),
+				getRankStatusFromCursor(cursor),
+				getRankFromCursor(cursor),
+				getRankDisplayFromCursor(cursor),
+				getDateLastUpdatedFromCursor(cursor));
 
 		return leaderboardRankRow;
+	}
+
+	private String getLeaderboardIdFromCursor(Cursor cursor) {
+		return cursor.getString(cursor
+				.getColumnIndexOrThrow(KEY_LEADERBOARD_ID));
+	}
+
+	private int getGridSizeFromCursor(Cursor cursor) {
+		return cursor.getInt(cursor.getColumnIndexOrThrow(KEY_GRID_SIZE));
+	}
+
+	private boolean getHideOperatorsFromCursor(Cursor cursor) {
+		return DatabaseUtil.valueOfSQLiteBoolean(
+				cursor.getString(cursor.getColumnIndexOrThrow(KEY_HIDDEN_OPERATORS)));
+	}
+
+	private PuzzleComplexity getPuzzleComplexityFromCursor(Cursor cursor) {
+		return PuzzleComplexity.valueOf(
+				cursor.getString(cursor.getColumnIndexOrThrow(KEY_PUZZLE_COMPLEXITY)));
+	}
+
+	private ScoreOrigin getScoreOriginFromCursor(Cursor cursor) {
+		return ScoreOrigin.valueOf(cursor.getString(cursor.getColumnIndexOrThrow
+				(KEY_SCORE_ORIGIN)));
+	}
+
+	private int getStatisticsIdFromCursor(Cursor cursor) {
+		return cursor.getInt(cursor
+				.getColumnIndexOrThrow(KEY_SCORE_STATISTICS_ID));
+	}
+
+	private long getRawScoreFromCurssor(Cursor cursor) {
+		return cursor.getLong(cursor
+				.getColumnIndexOrThrow(KEY_SCORE_RAW_SCORE));
+	}
+
+	private long getDateScoreSubmittedFromCursor(Cursor cursor) {
+		return DatabaseUtil.valueOfSQLiteTimestamp(
+				cursor.getString(cursor.getColumnIndexOrThrow(KEY_SCORE_DATE_SUBMITTED)));
+	}
+
+	private RankStatus getRankStatusFromCursor(Cursor cursor) {
+		return RankStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(KEY_RANK_STATUS)));
+	}
+
+	private long getRankFromCursor(Cursor cursor) {
+		return cursor.getLong(cursor.getColumnIndexOrThrow(KEY_RANK));
+	}
+
+	private String getRankDisplayFromCursor(Cursor cursor) {
+		return cursor.getString(cursor.getColumnIndexOrThrow(KEY_RANK_DISPLAY));
+	}
+
+	private long getDateLastUpdatedFromCursor(Cursor cursor) {
+		return DatabaseUtil.valueOfSQLiteTimestamp(
+				cursor.getString(cursor.getColumnIndexOrThrow(KEY_RANK_DATE_LAST_UPDATED)));
 	}
 
 	/**

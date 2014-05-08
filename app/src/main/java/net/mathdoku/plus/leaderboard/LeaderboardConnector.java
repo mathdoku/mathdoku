@@ -197,15 +197,15 @@ public class LeaderboardConnector {
 		// Get the current score registered for the leaderboard.
 		LeaderboardRankRow leaderboardRankRow = leaderboardRankDatabaseAdapter
 				.get(leaderboardId);
-		if (leaderboardRankRow.mScoreOrigin == ScoreOrigin.NONE
-				|| leaderboardRankRow.mRawScore > leaderboardScore
+		if (leaderboardRankRow.getScoreOrigin() == ScoreOrigin.NONE
+				|| leaderboardRankRow.getRawScore() > leaderboardScore
 						.getRawScore()) {
 			// The score which was registered on Google Play Services is better
 			// than the local top score. This can only happen in case the user
 			// has achieved that score using another device or in case the app
 			// is re-installed or the database was removed manually.
 			if (DEBUG) {
-				if (leaderboardRankRow.mScoreOrigin == ScoreOrigin.NONE) {
+				if (leaderboardRankRow.getScoreOrigin() == ScoreOrigin.NONE) {
 					Log
 							.i(TAG,
 									"No local score does yet exist for leaderboard "
@@ -219,7 +219,7 @@ public class LeaderboardConnector {
 					Log
 							.i(TAG,
 									"The local top score ("
-											+ leaderboardRankRow.mRawScore
+											+ leaderboardRankRow.getRawScore()
 											+ ") is not "
 											+ "as good as the top score as registered on Google Play "
 											+ "Services ("
@@ -253,9 +253,9 @@ public class LeaderboardConnector {
 		if (displayToast) {
 			new TopScoreDialog(mAppFragmentActivity,
 					LeaderboardType.getIconResId(LeaderboardType.getIndex(
-							leaderboardRankRow.mGridSize,
-							leaderboardRankRow.mOperatorsHidden,
-							leaderboardRankRow.mPuzzleComplexity)),
+							leaderboardRankRow.getGridSize(),
+							leaderboardRankRow.isOperatorsHidden(),
+							leaderboardRankRow.getPuzzleComplexity())),
 					Util.durationTimeToString(leaderboardScore.getRawScore()),
 					leaderboardScore.getDisplayRank()).show();
 			if (DEBUG) {
@@ -279,7 +279,7 @@ public class LeaderboardConnector {
 		if (DEBUG) {
 			// Check if reference list of leaderboard id is initialized.
 			if (mLeaderboardId == null) {
-				return "<<mLeaderboardId is not initialized>>";
+				return "<<leaderboardId is not initialized>>";
 			}
 
 			// Search for the leaderboard id

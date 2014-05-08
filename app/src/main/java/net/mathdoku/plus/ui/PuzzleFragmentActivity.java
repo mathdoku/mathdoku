@@ -802,8 +802,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 			// Check if a new top score is achieved.
 			boolean newTopScore = leaderboardRankRow == null
-					|| leaderboardRankRow.mScoreOrigin == ScoreOrigin.NONE
-					|| grid.getElapsedTime() < leaderboardRankRow.mRawScore;
+					|| leaderboardRankRow.getScoreOrigin() == ScoreOrigin.NONE
+					|| grid.getElapsedTime() < leaderboardRankRow.getRawScore();
 
 			// Store the top score in the leaderboard table.
 			if (newTopScore) {

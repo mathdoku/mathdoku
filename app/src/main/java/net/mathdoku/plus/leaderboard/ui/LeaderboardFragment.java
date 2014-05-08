@@ -214,7 +214,7 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 			LeaderboardRankRow leaderboardRankRow = new LeaderboardRankDatabaseAdapter()
 					.get(mLeaderboardId);
 			if (leaderboardRankRow == null
-					|| leaderboardRankRow.mScoreOrigin == ScoreOrigin.NONE) {
+					|| leaderboardRankRow.getScoreOrigin() == ScoreOrigin.NONE) {
 				mHasScore = false;
 				mLeaderboardScoreLabel.setVisibility(View.GONE);
 				mLeaderboardScoreDisplay.setVisibility(View.GONE);
@@ -224,11 +224,11 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 				mHasScore = true;
 				mLeaderboardScoreLabel.setVisibility(View.VISIBLE);
 				mLeaderboardScoreDisplay.setText(Util
-						.durationTimeToString(leaderboardRankRow.mRawScore));
+						.durationTimeToString(leaderboardRankRow.getRawScore()));
 				mLeaderboardScoreDisplay.setVisibility(View.VISIBLE);
 				mLeaderboardNotPlayed.setVisibility(View.GONE);
 				mLeaderboardRankDisplay
-						.setText(leaderboardRankRow.mRankDisplay);
+						.setText(leaderboardRankRow.getRankDisplay());
 				mLeaderboardRankDisplay.setVisibility(View.VISIBLE);
 			}
 

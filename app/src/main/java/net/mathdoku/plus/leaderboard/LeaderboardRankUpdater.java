@@ -102,8 +102,8 @@ public class LeaderboardRankUpdater {
 			}
 		} else {
 			// Update this leaderboard rank.
-			if (mLeaderboardRankRow.mScoreOrigin == ScoreOrigin.LOCAL_DATABASE
-					&& mLeaderboardRankRow.mRawScore > 0) {
+			if (mLeaderboardRankRow.getScoreOrigin() == ScoreOrigin.LOCAL_DATABASE
+					&& mLeaderboardRankRow.getRawScore() > 0) {
 				// A local top score was already registered for this
 				// leaderboard. This score is submitted which will also result
 				// in updating the ranking information.
@@ -135,13 +135,14 @@ public class LeaderboardRankUpdater {
 			Log
 					.i(TAG,
 							"Submit score ("
-									+ mLeaderboardRankRow.mRawScore
+									+ mLeaderboardRankRow.getRawScore()
 									+ ") for existing leaderboard"
 									+ mLeaderboardConnector
-											.getLeaderboardNameForLogging(mLeaderboardRankRow.mLeaderboardId)
+											.getLeaderboardNameForLogging(
+													mLeaderboardRankRow.getLeaderboardId())
 									+ " which was last submitted on "
 									+ DateFormat.getDateTimeInstance().format(
-											mLeaderboardRankRow.mDateSubmitted)
+									mLeaderboardRankRow.getDateSubmitted())
 									+ " with callback listener");
 		}
 		mLeaderboardConnector.getGamesClient().submitScoreImmediate(
@@ -203,8 +204,7 @@ public class LeaderboardRankUpdater {
 									.getLeaderboardId());
 						}
 					}
-				}, mLeaderboardRankRow.mLeaderboardId,
-				mLeaderboardRankRow.mRawScore);
+				}, mLeaderboardRankRow.getLeaderboardId(), mLeaderboardRankRow.getRawScore());
 	}
 
 	/**
@@ -245,7 +245,7 @@ public class LeaderboardRankUpdater {
 
 						setUpdateFinished();
 					}
-				}).loadCurrentPlayerRank(mLeaderboardRankRow.mLeaderboardId);
+				}).loadCurrentPlayerRank(mLeaderboardRankRow.getLeaderboardId());
 	}
 
 	/**
