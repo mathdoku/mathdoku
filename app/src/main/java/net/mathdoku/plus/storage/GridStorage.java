@@ -4,7 +4,7 @@ import net.mathdoku.plus.puzzle.cell.Cell;
 import net.mathdoku.plus.puzzle.cellchange.CellChange;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.puzzle.cage.Cage;
-import net.mathdoku.plus.storage.databaseadapter.SolvingAttemptDatabaseAdapter;
+import net.mathdoku.plus.storage.selector.StorageDelimiter;
 
 import java.security.InvalidParameterException;
 import java.util.List;
@@ -74,7 +74,7 @@ public class GridStorage {
 		}
 
 		String[] viewParts = line
-				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1);
+				.split(StorageDelimiter.FIELD_DELIMITER_LEVEL1);
 
 		// Only process the storage string if it starts with the correct
 		// identifier.
@@ -129,18 +129,18 @@ public class GridStorage {
 		// First store data for the grid object itself.
 		stringBuilder
 				.append(SAVE_GAME_GRID_LINE)
-				.append(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1)
+				.append(StorageDelimiter.FIELD_DELIMITER_LEVEL1)
 				.append(mActive)
-				.append(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1)
+				.append(StorageDelimiter.FIELD_DELIMITER_LEVEL1)
 				.append(mRevealed)
-				.append(SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+				.append(StorageDelimiter.EOL_DELIMITER);
 
 		// Store information about the cells. Use one line per single
 		// cell.
 		CellStorage cellStorage = mObjectsCreator.createCellStorage();
 		for (Cell cell : mCells) {
 			stringBuilder.append(cellStorage.toStorageString(cell)).append(
-					SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+					StorageDelimiter.EOL_DELIMITER);
 		}
 
 		// Store information about the cages. Use one line per single
@@ -149,7 +149,7 @@ public class GridStorage {
 			CageStorage cageStorage = mObjectsCreator.createCageStorage();
 			for (Cage cage : mCages) {
 				stringBuilder.append(cageStorage.toStorageString(cage)).append(
-						SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+						StorageDelimiter.EOL_DELIMITER);
 			}
 		}
 
@@ -162,7 +162,7 @@ public class GridStorage {
 			for (CellChange cellChange : mCellChanges) {
 				stringBuilder.append(
 						cellChangeStorage.toStorageString(cellChange)).append(
-						SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+						StorageDelimiter.EOL_DELIMITER);
 			}
 		}
 

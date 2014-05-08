@@ -45,12 +45,6 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	public static final String KEY_DATA = "data";
 	public static final String KEY_STATUS = "status";
 
-	// Delimiters used in the data field to separate objects, fields and values
-	// in a field which can hold multiple values.
-	public static final String EOL_DELIMITER = "\n"; // Separate objects
-	public static final String FIELD_DELIMITER_LEVEL1 = ":"; // Separate fields
-	public static final String FIELD_DELIMITER_LEVEL2 = ","; // Separate values
-
 	public SolvingAttemptDatabaseAdapter() {
 		super();
 	}
@@ -112,7 +106,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	/**
 	 * Inserts a new solving attempt record for a grid into the database.
 	 * 
-	 *
+	 * 
 	 * @param solvingAttemptRow
 	 *            The solving attempt to be inserted.
 	 * @return The solving attempt record with an updated row is in case the
@@ -136,7 +130,8 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 
 		int id = -1;
 		try {
-			id = (int) sqliteDatabase.insertOrThrow(TABLE_NAME, null, initialValues);
+			id = (int) sqliteDatabase.insertOrThrow(TABLE_NAME, null,
+					initialValues);
 		} catch (SQLiteException e) {
 			throw new DatabaseAdapterException(
 					"Cannot insert new solving attempt in database.", e);

@@ -19,6 +19,7 @@ import net.mathdoku.plus.storage.databaseadapter.GridRow;
 import net.mathdoku.plus.storage.databaseadapter.SolvingAttemptRow;
 import net.mathdoku.plus.storage.databaseadapter.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.StatisticsDatabaseAdapter;
+import net.mathdoku.plus.storage.selector.StorageDelimiter;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -149,46 +150,38 @@ public class GridLoaderTest {
 
 			if (mIncludeGridInformation) {
 				stringBuilder.append("** GRID INFORMATION **");
-				stringBuilder
-						.append(SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+				stringBuilder.append(StorageDelimiter.EOL_DELIMITER);
 			}
 			if (mIncludeInvalidLineBetweenGridInformationAndCell) {
 				stringBuilder
 						.append("** INVALID DATA BETWEEN GRID INFORMATION AND CELLS **");
-				stringBuilder
-						.append(SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+				stringBuilder.append(StorageDelimiter.EOL_DELIMITER);
 			}
 			for (int i = 1; i <= mNumberOfCells; i++) {
 				stringBuilder.append("** CELL " + i + " DATA **");
-				stringBuilder
-						.append(SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+				stringBuilder.append(StorageDelimiter.EOL_DELIMITER);
 			}
 			if (mIncludeInvalidLineBetweenCellAndCages) {
 				stringBuilder
 						.append("** INVALID DATA BETWEEN CELLS AND CAGES **");
-				stringBuilder
-						.append(SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+				stringBuilder.append(StorageDelimiter.EOL_DELIMITER);
 			}
 			for (int i = 1; i <= mNumberOfCages; i++) {
 				stringBuilder.append("** CAGE " + i + " DATA **");
-				stringBuilder
-						.append(SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+				stringBuilder.append(StorageDelimiter.EOL_DELIMITER);
 			}
 			if (mIncludeInvalidLineBetweenCagesAndCellChanges) {
 				stringBuilder
 						.append("** INVALID DATA BETWEEN CAGES AND CELL CHANGES **");
-				stringBuilder
-						.append(SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+				stringBuilder.append(StorageDelimiter.EOL_DELIMITER);
 			}
 			for (int i = 1; i <= mNumberOfCellChanges; i++) {
 				stringBuilder.append("** CELL CHANGE " + i + " DATA **");
-				stringBuilder
-						.append(SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+				stringBuilder.append(StorageDelimiter.EOL_DELIMITER);
 			}
 			if (mIncludeInvalidLineAfterCellChanges) {
 				stringBuilder.append("** INVALID DATA AFTER CELL CHANGES **");
-				stringBuilder
-						.append(SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+				stringBuilder.append(StorageDelimiter.EOL_DELIMITER);
 			}
 
 			return stringBuilder.toString();
@@ -309,8 +302,10 @@ public class GridLoaderTest {
 		}
 
 		public void returnsSolvingAttempt(SolvingAttemptRow solvingAttemptRow) {
-			when(mSolvingAttemptDatabaseAdapterMock.getSolvingAttemptRow(anyInt()))
-					.thenReturn(solvingAttemptRow);
+			when(
+					mSolvingAttemptDatabaseAdapterMock
+							.getSolvingAttemptRow(anyInt())).thenReturn(
+					solvingAttemptRow);
 		}
 
 		public void returnsGridRow(GridRow gridRow) {

@@ -4,7 +4,7 @@ import net.mathdoku.plus.enums.CageOperator;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cage.CageBuilder;
 import net.mathdoku.plus.puzzle.cell.Cell;
-import net.mathdoku.plus.storage.databaseadapter.SolvingAttemptDatabaseAdapter;
+import net.mathdoku.plus.storage.selector.StorageDelimiter;
 
 import java.security.InvalidParameterException;
 import java.util.List;
@@ -49,7 +49,7 @@ public class CageStorage {
 		}
 
 		String[] cageParts = line
-				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1);
+				.split(StorageDelimiter.FIELD_DELIMITER_LEVEL1);
 
 		// Only process the storage string if it starts with the correct
 		// identifier.
@@ -77,7 +77,7 @@ public class CageStorage {
 		int[] mCells = null;
 		if (!cageParts[index].equals("")) {
 			String[] cellParts = cageParts[index]
-					.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2);
+					.split(StorageDelimiter.FIELD_DELIMITER_LEVEL2);
 			mCells = new int[cellParts.length];
 			for (int i = 0; i < cellParts.length; i++) {
 				int cellId = Integer.parseInt(cellParts[i]);
@@ -108,21 +108,19 @@ public class CageStorage {
 	 */
 	public String toStorageString(Cage cage) {
 		String storageString = CAGE_LINE_ID
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ cage.getId()
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ StorageDelimiter.FIELD_DELIMITER_LEVEL1 + cage.getId()
+				+ StorageDelimiter.FIELD_DELIMITER_LEVEL1
 				+ cage.getOperator().getId()
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ cage.getResult()
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1;
+				+ StorageDelimiter.FIELD_DELIMITER_LEVEL1 + cage.getResult()
+				+ StorageDelimiter.FIELD_DELIMITER_LEVEL1;
 		List<Cell> cells = cage.getListOfCells();
 		if (cells != null) {
 			for (Cell cell : cells) {
 				storageString += cell.getCellId()
-						+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2;
+						+ StorageDelimiter.FIELD_DELIMITER_LEVEL2;
 			}
 		}
-		storageString += SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+		storageString += StorageDelimiter.FIELD_DELIMITER_LEVEL1
 				+ Boolean.toString(cage.isOperatorHidden());
 
 		return storageString;

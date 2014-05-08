@@ -2,7 +2,7 @@ package net.mathdoku.plus.storage;
 
 import net.mathdoku.plus.puzzle.cell.CellBuilder;
 import net.mathdoku.plus.puzzle.cell.Cell;
-import net.mathdoku.plus.storage.databaseadapter.SolvingAttemptDatabaseAdapter;
+import net.mathdoku.plus.storage.selector.StorageDelimiter;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class CellStorage {
 		}
 
 		String[] cellParts = line
-				.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1);
+				.split(StorageDelimiter.FIELD_DELIMITER_LEVEL1);
 
 		// Only process the storage string if it starts with the correct
 		// identifier.
@@ -81,7 +81,7 @@ public class CellStorage {
 		List<Integer> possibles = new ArrayList<Integer>();
 		if (!cellParts[index].equals("")) {
 			for (String possible : cellParts[index]
-					.split(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
+					.split(StorageDelimiter.FIELD_DELIMITER_LEVEL2)) {
 				possibles.add(Integer.parseInt(possible));
 			}
 		}
@@ -104,24 +104,21 @@ public class CellStorage {
 	 */
 	public String toStorageString(Cell cell) {
 		String storageString = SAVE_GAME_CELL_LINE
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ cell.getCellId()
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-				+ cell.getCageText()
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ StorageDelimiter.FIELD_DELIMITER_LEVEL1 + cell.getCellId()
+				+ StorageDelimiter.FIELD_DELIMITER_LEVEL1 + cell.getCageText()
+				+ StorageDelimiter.FIELD_DELIMITER_LEVEL1
 				+ cell.getCorrectValue()
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ StorageDelimiter.FIELD_DELIMITER_LEVEL1
 				+ cell.getEnteredValue()
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1;
+				+ StorageDelimiter.FIELD_DELIMITER_LEVEL1;
 		for (int possible : cell.getPossibles()) {
-			storageString += possible
-					+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2;
+			storageString += possible + StorageDelimiter.FIELD_DELIMITER_LEVEL2;
 		}
-		storageString += SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+		storageString += StorageDelimiter.FIELD_DELIMITER_LEVEL1
 				+ Boolean.toString(cell.hasInvalidValueHighlight())
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ StorageDelimiter.FIELD_DELIMITER_LEVEL1
 				+ Boolean.toString(cell.isRevealed())
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ StorageDelimiter.FIELD_DELIMITER_LEVEL1
 				+ Boolean.toString(cell.isSelected());
 
 		return storageString;

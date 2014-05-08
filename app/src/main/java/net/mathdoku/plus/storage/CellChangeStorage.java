@@ -5,7 +5,7 @@ import android.util.Log;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.puzzle.cell.Cell;
 import net.mathdoku.plus.puzzle.cellchange.CellChange;
-import net.mathdoku.plus.storage.databaseadapter.SolvingAttemptDatabaseAdapter;
+import net.mathdoku.plus.storage.selector.StorageDelimiter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -149,7 +149,7 @@ public class CellChangeStorage {
 	 */
 	public String toStorageString(CellChange cellChange) {
 		return CellChangeStoragePatternMatcher.SAVE_GAME_CELL_CHANGE_LINE
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ StorageDelimiter.FIELD_DELIMITER_LEVEL1
 				+ toStorageStringRecursive(cellChange);
 	}
 
@@ -166,20 +166,20 @@ public class CellChangeStorage {
 		mRelatedCellChanges = rootCellChange.getRelatedCellChanges();
 
 		String storageString = "[" + mCell.getCellId()
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
+				+ StorageDelimiter.FIELD_DELIMITER_LEVEL1
 				+ mPreviousEnteredValue
-				+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1;
+				+ StorageDelimiter.FIELD_DELIMITER_LEVEL1;
 		for (int previousPossibleValue : mPreviousPossibleValues) {
 			storageString += Integer.toString(previousPossibleValue)
-					+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2;
+					+ StorageDelimiter.FIELD_DELIMITER_LEVEL2;
 		}
-		storageString += SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1;
+		storageString += StorageDelimiter.FIELD_DELIMITER_LEVEL1;
 		if (mRelatedCellChanges != null) {
 			CellChangeStorage cellChangeStorage = new CellChangeStorage();
 			for (CellChange relatedCellChange : mRelatedCellChanges) {
 				storageString += cellChangeStorage
 						.toStorageStringRecursive(relatedCellChange)
-						+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2;
+						+ StorageDelimiter.FIELD_DELIMITER_LEVEL2;
 			}
 		}
 		storageString += "]";

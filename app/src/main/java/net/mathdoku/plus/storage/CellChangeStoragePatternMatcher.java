@@ -1,6 +1,6 @@
 package net.mathdoku.plus.storage;
 
-import net.mathdoku.plus.storage.databaseadapter.SolvingAttemptDatabaseAdapter;
+import net.mathdoku.plus.storage.selector.StorageDelimiter;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -20,18 +20,17 @@ public class CellChangeStoragePatternMatcher {
 	// starts with correct line identifier. Further checking is done with the
 	// inner regular expression which can be used recursively.
 	private static final String REGEXP_OUTER = "^" + SAVE_GAME_CELL_CHANGE_LINE
-			+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + "(.*)$";
+			+ StorageDelimiter.FIELD_DELIMITER_LEVEL1 + "(.*)$";
 	private static final int GROUP_CELL_CHANGE = 1;
 
 	// Regexp and groups inside. Groups 4 - 6 are helper groups which are
 	// needed to ensure the validity of the cell information but are not
 	// used programmatic.
 	private static final String REGEXP_INNER = "^\\[(\\d+)"
-			+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + "(\\d*)"
-			+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1
-			+ "((\\d*)|((\\d*"
-			+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2 + ")+))"
-			+ SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL1 + "(.*)\\]$";
+			+ StorageDelimiter.FIELD_DELIMITER_LEVEL1 + "(\\d*)"
+			+ StorageDelimiter.FIELD_DELIMITER_LEVEL1 + "((\\d*)|((\\d*"
+			+ StorageDelimiter.FIELD_DELIMITER_LEVEL2 + ")+))"
+			+ StorageDelimiter.FIELD_DELIMITER_LEVEL1 + "(.*)\\]$";
 	final int GROUP_CELL_NUMBER = 1;
 	final int GROUP_PREVIOUS_USER_VALUE = 2;
 	final int GROUP_PREVIOUS_POSSIBLE_VALUES = 3;
@@ -62,7 +61,7 @@ public class CellChangeStoragePatternMatcher {
 		if (!matcherInner.group(GROUP_PREVIOUS_POSSIBLE_VALUES).equals("")) {
 			for (String possible : matcherInner.group(
 					GROUP_PREVIOUS_POSSIBLE_VALUES).split(
-					SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
+					StorageDelimiter.FIELD_DELIMITER_LEVEL2)) {
 				previousPossibleValues.add(Integer.valueOf(possible));
 			}
 		}
@@ -104,9 +103,8 @@ public class CellChangeStoragePatternMatcher {
 				break;
 			default:
 				if (levelNestedGroup == 0
-						&& !Character
-								.toString(c)
-								.equals(SolvingAttemptDatabaseAdapter.FIELD_DELIMITER_LEVEL2)) {
+						&& !Character.toString(c).equals(
+								StorageDelimiter.FIELD_DELIMITER_LEVEL2)) {
 					throw new IllegalStateException(
 							String
 									.format("Unexpected character '%c' at position %d in group '%s'.",

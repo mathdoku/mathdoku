@@ -1,6 +1,6 @@
 package net.mathdoku.plus.storage;
 
-import net.mathdoku.plus.storage.databaseadapter.SolvingAttemptDatabaseAdapter;
+import net.mathdoku.plus.storage.selector.StorageDelimiter;
 
 /**
  * The data for the grid in a compound string of storage strings.
@@ -17,7 +17,7 @@ public class SolvingAttemptStorage {
 	 */
 	public SolvingAttemptStorage(String data) {
 		mData = data == null ? null : data
-				.split(SolvingAttemptDatabaseAdapter.EOL_DELIMITER);
+				.split(StorageDelimiter.EOL_DELIMITER);
 		mDataIndex = -1;
 	}
 
