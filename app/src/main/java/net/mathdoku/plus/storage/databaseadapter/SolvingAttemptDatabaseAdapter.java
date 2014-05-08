@@ -13,6 +13,7 @@ import net.mathdoku.plus.storage.databaseadapter.database.DatabaseColumnDefiniti
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseForeignKeyDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseTableDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil;
+import net.mathdoku.plus.util.ParameterValidator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,6 +114,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 *         record is successfully inserted. Null in case of an error.
 	 */
 	public SolvingAttemptRow insert(SolvingAttemptRow solvingAttemptRow) {
+		ParameterValidator.validateNotNull(solvingAttemptRow);
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(KEY_GRID_ID, solvingAttemptRow.getGridId());
 		initialValues.put(KEY_DATE_CREATED, DatabaseUtil
@@ -255,6 +257,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 * @return True in case the statistics have been updated. False otherwise.
 	 */
 	public boolean update(SolvingAttemptRow solvingAttemptRow) {
+		ParameterValidator.validateNotNull(solvingAttemptRow);
 		ContentValues contentValues = new ContentValues();
 		contentValues.put(KEY_DATE_UPDATED, DatabaseUtil
 				.toSQLiteTimestamp(solvingAttemptRow
@@ -311,6 +314,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 * @return The prefixed column name.
 	 */
 	public static String getPrefixedColumnName(String column) {
+		ParameterValidator.validateNotNullOrEmpty(column);
 		return DatabaseUtil.stringBetweenBackTicks(TABLE_NAME) + "."
 				+ DatabaseUtil.stringBetweenBackTicks(column);
 	}

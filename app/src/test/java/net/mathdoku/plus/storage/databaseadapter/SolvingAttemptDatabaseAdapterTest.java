@@ -116,13 +116,24 @@ public class SolvingAttemptDatabaseAdapterTest {
 		// Nothing to test currently.
 	}
 
+	@Test(expected=IllegalArgumentException.class)
+	public void insert_SolvingAttemptRowIsNull_ThrowsIllegalArgumentException() throws Exception {
+		solvingAttemptDatabaseAdapter.insert(null);
+	}
+
 	@Test
-	public void insert() throws Exception {
+	public void insert_SolvingAttemptRowIsNotNull() throws Exception {
 		int idOfFirstSolvingAttemptIdInEmptyDatabase = 1;
 		SolvingAttemptRow solvingAttemptRow = createAndInsertSolvingAttemptRow("*** SOME STORAGE STRING 1 ***");
 		assertThat(solvingAttemptRow, is(notNullValue()));
 		assertThat(solvingAttemptRow.getSolvingAttemptId(),
 				is(idOfFirstSolvingAttemptIdInEmptyDatabase));
+	}
+
+	private SolvingAttemptRow createAndInsertSolvingAttemptRow(
+			String storageString) {
+		return solvingAttemptDatabaseAdapter.insert(new SolvingAttemptRowStub(
+				storageString));
 	}
 
 	@Test
@@ -136,12 +147,6 @@ public class SolvingAttemptDatabaseAdapterTest {
 				solvingAttemptDatabaseAdapter
 						.getSolvingAttemptRow(solvingAttemptId),
 				is(solvingAttemptRow));
-	}
-
-	private SolvingAttemptRow createAndInsertSolvingAttemptRow(
-			String storageString) {
-		return solvingAttemptDatabaseAdapter.insert(new SolvingAttemptRowStub(
-				storageString));
 	}
 
 	@Test
@@ -166,8 +171,13 @@ public class SolvingAttemptDatabaseAdapterTest {
 				is(solvingAttemptRow1.getSolvingAttemptId()));
 	}
 
+	@Test(expected=IllegalArgumentException.class)
+	public void update_SolvingAttemptRowIsNull_ThrowsIllegalArgumentException() throws Exception {
+		solvingAttemptDatabaseAdapter.update(null);
+	}
+
 	@Test
-	public void update() throws Exception {
+	public void updateSolvingAttemptRowIsNotNull() throws Exception {
 		SolvingAttemptRow solvingAttemptRow = createAndInsertSolvingAttemptRow("*** SOME STORAGE STRING 1 ***");
 		SolvingAttemptRow updatedSolvingAttemptRow = SolvingAttemptRowStub
 				.createUpdatedSolvingAttemptRowStub(solvingAttemptRow);
@@ -211,8 +221,22 @@ public class SolvingAttemptDatabaseAdapterTest {
 				"*** SOME STORAGE STRING 3 FOR GRID 1 ***");
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void getPrefixedColumnName_ColumnNameIsNull_ThrowsIllegalArgumentException() throws Exception {
+		assertThat(
+				SolvingAttemptDatabaseAdapter.getPrefixedColumnName(null),
+				is("`solving_attempt`.`TestAbC`"));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void getPrefixedColumnName_ColumnNamIsEmpty_ThrowsIllegalArgumentException() throws Exception {
+		assertThat(
+				SolvingAttemptDatabaseAdapter.getPrefixedColumnName(""),
+				is("`solving_attempt`.`TestAbC`"));
+	}
+
 	@Test
-	public void getPrefixedColumnName() throws Exception {
+	public void getPrefixedColumnName_ColumnNameIsNotNull() throws Exception {
 		assertThat(
 				SolvingAttemptDatabaseAdapter.getPrefixedColumnName("TestAbC"),
 				is("`solving_attempt`.`TestAbC`"));

@@ -17,6 +17,7 @@ import net.mathdoku.plus.storage.databaseadapter.database.DataType;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseColumnDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseTableDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil;
+import net.mathdoku.plus.util.ParameterValidator;
 
 /**
  * The database adapter for the grid table.
@@ -118,6 +119,8 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 * @return The unique row id of the grid created. -1 in case of an error.
 	 */
 	public int insert(Grid grid) {
+		ParameterValidator.validateNotNull(grid);
+
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(KEY_DEFINITION, grid.getDefinition());
 		initialValues.put(KEY_GRID_SIZE, grid.getGridSize());
@@ -191,6 +194,8 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 * @return The grid with the given definition. Null in case of an error.
 	 */
 	public GridRow getByGridDefinition(String definition) {
+		ParameterValidator.validateNotNullOrEmpty(definition);
+
 		GridRow gridRow = null;
 		Cursor cursor = null;
 		try {
@@ -298,6 +303,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 	 * @return The prefixed column name.
 	 */
 	public static String getPrefixedColumnName(String column) {
+		ParameterValidator.validateNotNullOrEmpty(column);
 		return DatabaseUtil.stringBetweenBackTicks(TABLE_NAME) + "."
 				+ DatabaseUtil.stringBetweenBackTicks(column);
 	}
