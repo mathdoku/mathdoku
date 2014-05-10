@@ -12,6 +12,7 @@ import net.mathdoku.plus.storage.databaseadapter.database.DataType;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseColumnDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseTableDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil;
+import net.mathdoku.plus.storage.databaseadapter.database.LeaderboardRankRowBuilder;
 import net.mathdoku.plus.util.ParameterValidator;
 
 /**
@@ -158,8 +159,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 					"Cannot insert new initialized leaderboard in database.", e);
 		}
 
-		return new LeaderboardRankRow(leaderboardRankRow, id);
-
+		return LeaderboardRankRowBuilder.from(leaderboardRankRow, id).build();
 	}
 
 	private ContentValues getContentValues(LeaderboardRankRow leaderboardRankRow) {
@@ -256,18 +256,20 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		}
 
 		// Convert cursor record to a leaderboard rank row.
-		LeaderboardRankRow leaderboardRankRow = new LeaderboardRankRow(
+		LeaderboardRankRow leaderboardRankRow = new LeaderboardRankRowBuilder(
 				getRowIdFromCursor(cursor), getLeaderboardIdFromCursor(cursor),
 				getGridSizeFromCursor(cursor),
 				getHideOperatorsFromCursor(cursor),
-				getPuzzleComplexityFromCursor(cursor),
-				getScoreOriginFromCursor(cursor),
-				getStatisticsIdFromCursor(cursor),
-				getRawScoreFromCursor(cursor),
-				getDateScoreSubmittedFromCursor(cursor),
-				getRankStatusFromCursor(cursor), getRankFromCursor(cursor),
-				getRankDisplayFromCursor(cursor),
-				getDateLastUpdatedFromCursor(cursor));
+				getPuzzleComplexityFromCursor(cursor))
+				.setScore(getScoreOriginFromCursor(cursor),
+						getStatisticsIdFromCursor(cursor),
+						getRawScoreFromCursor(cursor),
+						getDateScoreSubmittedFromCursor(cursor))
+				.setRank(getRankStatusFromCursor(cursor),
+						getRankFromCursor(cursor),
+						getRankDisplayFromCursor(cursor),
+						getDateLastUpdatedFromCursor(cursor))
+				.build();
 
 		return leaderboardRankRow;
 	}

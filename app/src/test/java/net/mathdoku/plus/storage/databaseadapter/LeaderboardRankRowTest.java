@@ -1,6 +1,7 @@
 package net.mathdoku.plus.storage.databaseadapter;
 
 import net.mathdoku.plus.enums.PuzzleComplexity;
+import net.mathdoku.plus.storage.databaseadapter.database.LeaderboardRankRowBuilder;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +20,7 @@ public class LeaderboardRankRowTest {
 	int gridSizeInitialValue = 7;
 	boolean operatorsHiddenInitialValue = true;
 	PuzzleComplexity puzzleComplexityInitialValue = PuzzleComplexity.DIFFICULT;
-	LeaderboardRankDatabaseAdapter.ScoreOrigin scoreOriginInitialValue = LeaderboardRankDatabaseAdapter.ScoreOrigin.EXTERNAL;
+	LeaderboardRankDatabaseAdapter.ScoreOrigin scoreOriginInitialValue = LeaderboardRankDatabaseAdapter.ScoreOrigin.LOCAL_DATABASE;
 	int statisticsIdInitialValue = 67;
 	long rawScoreInitialValue = 18293;
 	long dateSubmittedInitialValue = 192030434L;
@@ -36,10 +37,10 @@ public class LeaderboardRankRowTest {
 
 	@Test
 	public void createInitial() throws Exception {
-		LeaderboardRankRow leaderboardRankRow = LeaderboardRankRow
-				.createInitial(leaderboardIdInitialValue, gridSizeInitialValue,
-						operatorsHiddenInitialValue,
-						puzzleComplexityInitialValue);
+		LeaderboardRankRow leaderboardRankRow = new LeaderboardRankRowBuilder(
+				leaderboardIdInitialValue, gridSizeInitialValue,
+				operatorsHiddenInitialValue, puzzleComplexityInitialValue)
+				.build();
 		assertThatBasicFieldsHaveInitialValues(leaderboardRankRow);
 		assertThatScoreOriginHasDefaultValue(leaderboardRankRow);
 		assertThatStatisticsIdHasDefaultValue(leaderboardRankRow);
@@ -108,8 +109,10 @@ public class LeaderboardRankRowTest {
 	public void createWithLocalScore() throws Exception {
 		int updatedStatisticsId = statisticsIdInitialValue + 23;
 		long updatedRawScore = rawScoreInitialValue - 17;
-		LeaderboardRankRow updatedLeaderboardRank = createLeaderboardRankRowWithInitialValues()
-				.createWithNewLocalScore(updatedStatisticsId, updatedRawScore);
+		LeaderboardRankRow updatedLeaderboardRank = LeaderboardRankRowBuilder
+				.from(createLeaderboardRankRowWithInitialValues())
+				.setScoreLocal(updatedStatisticsId, updatedRawScore)
+				.build();
 
 		assertThatBasicFieldsHaveInitialValues(updatedLeaderboardRank);
 		assertThat(updatedLeaderboardRank.getScoreOrigin(),
@@ -126,14 +129,15 @@ public class LeaderboardRankRowTest {
 	}
 
 	private LeaderboardRankRow createLeaderboardRankRowWithInitialValues() {
-		return new LeaderboardRankRow(
+		return new LeaderboardRankRowBuilder(
 				idFirstLeaderboardIdInEmptyDatabaseInitialValue,
 				leaderboardIdInitialValue, gridSizeInitialValue,
-				operatorsHiddenInitialValue, puzzleComplexityInitialValue,
-				scoreOriginInitialValue, statisticsIdInitialValue,
-				rawScoreInitialValue, dateSubmittedInitialValue,
-				rankStatusInitialValue, rankInitialValue,
-				rankDisplayInitialValue, dateLastUpdatedInitialValue);
+				operatorsHiddenInitialValue, puzzleComplexityInitialValue)
+				.setScore(scoreOriginInitialValue, statisticsIdInitialValue,
+						rawScoreInitialValue, dateSubmittedInitialValue)
+				.setRank(rankStatusInitialValue, rankInitialValue,
+						rankDisplayInitialValue, dateLastUpdatedInitialValue)
+				.build();
 	}
 
 	private void assertThatDateSubmittedIsLaterThan(
@@ -147,9 +151,11 @@ public class LeaderboardRankRowTest {
 		long updatedRawScore = rawScoreInitialValue - 17;
 		long updatedRank = rankInitialValue - 1;
 		String updatedRankDisplay = "11th";
-		LeaderboardRankRow updatedLeaderboardRank = createLeaderboardRankRowWithInitialValues()
-				.createWithNewGooglePlayScore(updatedRawScore, updatedRank,
-						updatedRankDisplay);
+		LeaderboardRankRow updatedLeaderboardRank = LeaderboardRankRowBuilder
+				.from(createLeaderboardRankRowWithInitialValues())
+				.setScoreAndRank(updatedRawScore, updatedRank,
+						updatedRankDisplay)
+				.build();
 
 		assertThatBasicFieldsHaveInitialValues(updatedLeaderboardRank);
 		assertThat(updatedLeaderboardRank.getScoreOrigin(),
@@ -177,8 +183,10 @@ public class LeaderboardRankRowTest {
 	public void createWithNewGooglePlayRank() throws Exception {
 		long updatedRank = rankInitialValue - 1;
 		String updatedRankDisplay = "***" + rankDisplayInitialValue + "***";
-		LeaderboardRankRow updatedLeaderboardRank = createLeaderboardRankRowWithInitialValues()
-				.createWithNewGooglePlayRank(updatedRank, updatedRankDisplay);
+		LeaderboardRankRow updatedLeaderboardRank = LeaderboardRankRowBuilder
+				.from(createLeaderboardRankRowWithInitialValues())
+				.setRank(updatedRank, updatedRankDisplay)
+				.build();
 
 		assertThatBasicFieldsHaveInitialValues(updatedLeaderboardRank);
 		assertThat(updatedLeaderboardRank.getScoreOrigin(),
@@ -203,8 +211,10 @@ public class LeaderboardRankRowTest {
 
 	@Test
 	public void createWithGooglePlayRankNotAvailable() throws Exception {
-		LeaderboardRankRow updatedLeaderboardRank = createLeaderboardRankRowWithInitialValues()
-				.createWithGooglePlayRankNotAvailable();
+		LeaderboardRankRow updatedLeaderboardRank = LeaderboardRankRowBuilder
+				.from(createLeaderboardRankRowWithInitialValues())
+				.setRankNotAvailable()
+				.build();
 
 		assertThatBasicFieldsHaveInitialValues(updatedLeaderboardRank);
 		assertThatScoreOriginHasInitialValue(updatedLeaderboardRank);

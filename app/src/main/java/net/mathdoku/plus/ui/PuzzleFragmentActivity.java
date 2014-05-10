@@ -56,6 +56,7 @@ import net.mathdoku.plus.puzzle.ui.GridInputMode;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.statistics.ui.StatisticsFragmentActivity;
 import net.mathdoku.plus.storage.GameFileConverter;
+import net.mathdoku.plus.storage.databaseadapter.database.LeaderboardRankRowBuilder;
 import net.mathdoku.plus.storage.selector.ArchiveSolvingAttemptSelector;
 import net.mathdoku.plus.enums.StatusFilter;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankDatabaseAdapter;
@@ -684,11 +685,11 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 				// Create a leaderboard record if currently does not yet exist.
 				if (leaderboardRankDatabaseAdapter.get(leaderboardId) == null) {
-					leaderboardRankDatabaseAdapter.insert(LeaderboardRankRow
-							.createInitial(leaderboardId,
-									LeaderboardType.getGridSize(i),
-									LeaderboardType.hasHiddenOperator(i),
-									LeaderboardType.getPuzzleComplexity(i)));
+					LeaderboardRankRow leaderboardRankRow = new LeaderboardRankRowBuilder(
+							leaderboardId, LeaderboardType.getGridSize(i),
+							LeaderboardType.hasHiddenOperator(i),
+							LeaderboardType.getPuzzleComplexity(i)).build();
+					leaderboardRankDatabaseAdapter.insert(leaderboardRankRow);
 				}
 			}
 			mMathDokuPreferences.setLeaderboardsInitialized();
@@ -806,9 +807,12 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 			// Store the top score in the leaderboard table.
 			if (newTopScore) {
-				new LeaderboardRankDatabaseAdapter().update(leaderboardRankRow
-						.createWithNewLocalScore(grid.getGridStatistics().mId,
-								grid.getElapsedTime()));
+				leaderboardRankRow = LeaderboardRankRowBuilder
+						.from(leaderboardRankRow)
+						.setScoreLocal(grid.getGridStatistics().mId,
+								grid.getElapsedTime())
+						.build();
+				new LeaderboardRankDatabaseAdapter().update(leaderboardRankRow);
 			}
 
 			// Submit score to Google+ in case already signed in.

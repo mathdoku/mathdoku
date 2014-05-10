@@ -16,6 +16,7 @@ import net.mathdoku.plus.leaderboard.ui.TopScoreDialog;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankDatabaseAdapter.ScoreOrigin;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankRow;
+import net.mathdoku.plus.storage.databaseadapter.database.LeaderboardRankRowBuilder;
 import net.mathdoku.plus.ui.base.AppFragmentActivity;
 import net.mathdoku.plus.util.Util;
 
@@ -234,19 +235,22 @@ public class LeaderboardConnector {
 
 			// Update both the score and ranking information for this
 			// leaderboard.
-			leaderboardRankRow = leaderboardRankRow
-					.createWithNewGooglePlayScore(
-							leaderboardScore.getRawScore(),
+			leaderboardRankRow = LeaderboardRankRowBuilder
+					.from(leaderboardRankRow)
+					.setScoreAndRank(leaderboardScore.getRawScore(),
 							leaderboardScore.getRank(),
-							leaderboardScore.getDisplayRank());
+							leaderboardScore.getDisplayRank())
+					.build();
 
 			// No toast may be displayed as the top score on Google Play
 			// Services was not improved.
 			displayToast = false;
 		} else {
-			leaderboardRankRow = leaderboardRankRow
-					.createWithNewGooglePlayRank(leaderboardScore.getRank(),
-							leaderboardScore.getDisplayRank());
+			leaderboardRankRow = LeaderboardRankRowBuilder
+					.from(leaderboardRankRow)
+					.setRank(leaderboardScore.getRank(),
+							leaderboardScore.getDisplayRank())
+					.build();
 		}
 		new LeaderboardRankDatabaseAdapter().update(leaderboardRankRow);
 

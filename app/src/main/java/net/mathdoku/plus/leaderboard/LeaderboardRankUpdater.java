@@ -13,6 +13,7 @@ import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankDatabaseAdapter.ScoreOrigin;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankRow;
+import net.mathdoku.plus.storage.databaseadapter.database.LeaderboardRankRowBuilder;
 
 import java.text.DateFormat;
 
@@ -208,12 +209,13 @@ public class LeaderboardRankUpdater {
 	}
 
 	private void clearLeaderboardRank(Leaderboard leaderboard) {
-		LeaderboardRankDatabaseAdapter leaderboardRankDatabaseAdapter;
-		leaderboardRankDatabaseAdapter = new LeaderboardRankDatabaseAdapter();
-		LeaderboardRankRow leaderboardRankRow = leaderboardRankDatabaseAdapter
-				.get(leaderboard.getLeaderboardId());
-		leaderboardRankDatabaseAdapter.update(leaderboardRankRow
-				.createWithGooglePlayRankNotAvailable());
+		LeaderboardRankDatabaseAdapter leaderboardRankDatabaseAdapter = new LeaderboardRankDatabaseAdapter();
+		LeaderboardRankRow leaderboardRankRow = LeaderboardRankRowBuilder
+				.from(leaderboardRankDatabaseAdapter.get(leaderboard
+						.getLeaderboardId()))
+				.setRankNotAvailable()
+				.build();
+		leaderboardRankDatabaseAdapter.update(leaderboardRankRow);
 	}
 
 	/**

@@ -1,6 +1,7 @@
 package net.mathdoku.plus.storage.databaseadapter;
 
 import net.mathdoku.plus.enums.PuzzleComplexity;
+import net.mathdoku.plus.storage.databaseadapter.database.LeaderboardRankRowBuilder;
 
 import org.junit.After;
 import org.junit.Before;
@@ -76,7 +77,7 @@ public class LeaderboardRankDatabaseAdapterTest {
 		int gridSize = 7;
 		boolean operatorsHidden = true;
 		PuzzleComplexity puzzleComplexity = PuzzleComplexity.DIFFICULT;
-		LeaderboardRankDatabaseAdapter.ScoreOrigin scoreOrigin = LeaderboardRankDatabaseAdapter.ScoreOrigin.EXTERNAL;
+		LeaderboardRankDatabaseAdapter.ScoreOrigin scoreOrigin = LeaderboardRankDatabaseAdapter.ScoreOrigin.LOCAL_DATABASE;
 		int statisticsId = 67;
 		long rawScore = 18293;
 		long dateSubmitted = 192030434L;
@@ -84,10 +85,13 @@ public class LeaderboardRankDatabaseAdapterTest {
 		long rank = 12;
 		String rankDisplay = "12th";
 		long dateLastUpdated = 199999999L;
-		return new LeaderboardRankRow(idFirstLeaderboardIdInEmptyDatabase,
-				leaderboardId, gridSize, operatorsHidden, puzzleComplexity,
-				scoreOrigin, statisticsId, rawScore, dateSubmitted, rankStatus,
-				rank, rankDisplay, dateLastUpdated);
+
+		return new LeaderboardRankRowBuilder(
+				idFirstLeaderboardIdInEmptyDatabase, leaderboardId, gridSize,
+				operatorsHidden, puzzleComplexity)
+				.setScore(scoreOrigin, statisticsId, rawScore, dateSubmitted)
+				.setRank(rankStatus, rank, rankDisplay, dateLastUpdated)
+				.build();
 	}
 
 	@Test
@@ -97,8 +101,10 @@ public class LeaderboardRankDatabaseAdapterTest {
 
 		int updatedStatisticsId = originalLeaderboardRankRow.getStatisticsId() + 23;
 		long updatedRawScore = originalLeaderboardRankRow.getRawScore() - 51;
-		LeaderboardRankRow updatedLeaderboardRankRow = originalLeaderboardRankRow
-				.createWithNewLocalScore(updatedStatisticsId, updatedRawScore);
+		LeaderboardRankRow updatedLeaderboardRankRow = LeaderboardRankRowBuilder
+				.from(originalLeaderboardRankRow)
+				.setScoreLocal(updatedStatisticsId, updatedRawScore)
+				.build();
 		assertThat(
 				leaderboardRankDatabaseAdapter
 						.update(updatedLeaderboardRankRow),
@@ -124,9 +130,9 @@ public class LeaderboardRankDatabaseAdapterTest {
 		int gridSize = 4;
 		boolean operatorsHidden = true;
 		PuzzleComplexity puzzleComplexity = PuzzleComplexity.NORMAL;
-		return leaderboardRankDatabaseAdapter.insert(LeaderboardRankRow
-				.createInitial(leaderboardId, gridSize, operatorsHidden,
-						puzzleComplexity));
+		return leaderboardRankDatabaseAdapter
+				.insert(new LeaderboardRankRowBuilder(leaderboardId, gridSize,
+						operatorsHidden, puzzleComplexity).build());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -183,42 +189,39 @@ public class LeaderboardRankDatabaseAdapterTest {
 
 	private LeaderboardRankRow createAndInsertLeaderboardWithLocalScoreAtDateTime(
 			String leaderboardId, long datetime) {
+		LeaderboardRankRowBuilder leaderboardRankRowBuilder = createLeaderboardRankRowBuilderForTest(leaderboardId);
+
+		// At a later time a new (better) score was registered locally only.
+		int statisticsId = 78;
+		leaderboardRankRowBuilder.setScoreLocal(statisticsId,
+				leaderboardRankRowBuilder.getRawScore() - 1);
+
+		// Manipulate the date last update of the score for the unit test
+		// purposes.
+		leaderboardRankRowBuilder.setScore(
+				leaderboardRankRowBuilder.getScoreOrigin(),
+				leaderboardRankRowBuilder.getStatisticsId(),
+				leaderboardRankRowBuilder.getRawScore(), datetime);
+
+		return leaderboardRankDatabaseAdapter.insert(leaderboardRankRowBuilder
+				.build());
+	}
+
+	private LeaderboardRankRowBuilder createLeaderboardRankRowBuilderForTest(
+			String leaderboardId) {
 		int gridSize = 4;
 		boolean operatorsHidden = true;
 		PuzzleComplexity puzzleComplexity = PuzzleComplexity.NORMAL;
-		int statisticsId = 78;
+		LeaderboardRankRowBuilder leaderboardRankRowBuilder = new LeaderboardRankRowBuilder(
+				leaderboardId, gridSize, operatorsHidden, puzzleComplexity);
+
+		// At some time in space a score was registered and the corresponding
+		// rank was retrieved from Google Play Services.
 		long rawScore = 12033;
 		long rank = 12;
 		String rankDisplay = "12th";
-
-		// Create the leaderboard rank with normal methods
-		LeaderboardRankRow leaderboardRankRow = LeaderboardRankRow
-				.createInitial(leaderboardId, gridSize, operatorsHidden,
-						puzzleComplexity)
-				.createWithNewGooglePlayScore(rawScore, rank, rankDisplay)
-				.createWithNewLocalScore(statisticsId, rawScore);
-
-		// Manipulate the date last update
-		leaderboardRankRow = getLeaderboardRankRowWithManipulatedDateLastSubmitted(
-				leaderboardRankRow, datetime);
-
-		return leaderboardRankDatabaseAdapter.insert(leaderboardRankRow);
-	}
-
-	private LeaderboardRankRow getLeaderboardRankRowWithManipulatedDateLastSubmitted(
-			LeaderboardRankRow leaderboardRankRow, long datetime) {
-		return new LeaderboardRankRow(leaderboardRankRow.getRowId(),
-				leaderboardRankRow.getLeaderboardId(),
-				leaderboardRankRow.getGridSize(),
-				leaderboardRankRow.isOperatorsHidden(),
-				leaderboardRankRow.getPuzzleComplexity(),
-				leaderboardRankRow.getScoreOrigin(),
-				leaderboardRankRow.getStatisticsId(),
-				leaderboardRankRow.getRawScore(), datetime,
-				leaderboardRankRow.getRankStatus(),
-				leaderboardRankRow.getRank(),
-				leaderboardRankRow.getRankDisplay(),
-				leaderboardRankRow.getDateLastUpdated());
+		leaderboardRankRowBuilder.setScoreAndRank(rawScore, rank, rankDisplay);
+		return leaderboardRankRowBuilder;
 	}
 
 	@Test
@@ -243,40 +246,17 @@ public class LeaderboardRankDatabaseAdapterTest {
 
 	private LeaderboardRankRow createAndInsertLeaderboardWithGooglePlayScoreAtDatetime(
 			String leaderboardId, long datetime) {
-		int gridSize = 4;
-		boolean operatorsHidden = true;
-		PuzzleComplexity puzzleComplexity = PuzzleComplexity.NORMAL;
-		long rawScore = 12033;
-		long rank = 12;
-		String rankDisplay = "12th";
+		LeaderboardRankRowBuilder leaderboardRankRowBuilder = createLeaderboardRankRowBuilderForTest(leaderboardId);
 
-		// Create the leaderboard rank with normal methods
-		LeaderboardRankRow leaderboardRankRow = LeaderboardRankRow
-				.createInitial(leaderboardId, gridSize, operatorsHidden,
-						puzzleComplexity)
-				.createWithNewGooglePlayScore(rawScore, rank, rankDisplay);
+		// Manipulate the date last update of the rank for the unit test
+		// purposes.
+		leaderboardRankRowBuilder.setRank(
+				leaderboardRankRowBuilder.getRankStatus(),
+				leaderboardRankRowBuilder.getRank(),
+				leaderboardRankRowBuilder.getRankDisplay(), datetime);
 
-		// Manipulate the date last update
-		leaderboardRankRow = getLeaderboardRankRowWithManipulatedDateLastUpdateRank(
-				leaderboardRankRow, datetime);
-
-		return leaderboardRankDatabaseAdapter.insert(leaderboardRankRow);
-	}
-
-	private LeaderboardRankRow getLeaderboardRankRowWithManipulatedDateLastUpdateRank(
-			LeaderboardRankRow leaderboardRankRow, long datetime) {
-		return new LeaderboardRankRow(leaderboardRankRow.getRowId(),
-				leaderboardRankRow.getLeaderboardId(),
-				leaderboardRankRow.getGridSize(),
-				leaderboardRankRow.isOperatorsHidden(),
-				leaderboardRankRow.getPuzzleComplexity(),
-				leaderboardRankRow.getScoreOrigin(),
-				leaderboardRankRow.getStatisticsId(),
-				leaderboardRankRow.getRawScore(),
-				leaderboardRankRow.getDateSubmitted(),
-				leaderboardRankRow.getRankStatus(),
-				leaderboardRankRow.getRank(),
-				leaderboardRankRow.getRankDisplay(), datetime);
+		return leaderboardRankDatabaseAdapter.insert(leaderboardRankRowBuilder
+				.build());
 	}
 
 	@Test
@@ -330,25 +310,19 @@ public class LeaderboardRankDatabaseAdapterTest {
 
 	private LeaderboardRankRow createAndInsertLeaderboardWithGooglePlayRankNotAvailableAtDatetime(
 			String leaderboardId, long datetime) {
-		int gridSize = 4;
-		boolean operatorsHidden = true;
-		PuzzleComplexity puzzleComplexity = PuzzleComplexity.NORMAL;
-		long rawScore = 12033;
-		long rank = 12;
-		String rankDisplay = "12th";
+		LeaderboardRankRowBuilder leaderboardRankRowBuilder = createLeaderboardRankRowBuilderForTest(leaderboardId);
 
-		// Create the leaderboard rank with normal methods
-		LeaderboardRankRow leaderboardRankRow = LeaderboardRankRow
-				.createInitial(leaderboardId, gridSize, operatorsHidden,
-						puzzleComplexity)
-				.createWithNewGooglePlayScore(rawScore, rank, rankDisplay)
-				.createWithGooglePlayRankNotAvailable();
+		leaderboardRankRowBuilder.setRankNotAvailable().build();
 
-		// Manipulate the date last update
-		leaderboardRankRow = getLeaderboardRankRowWithManipulatedDateLastUpdateRank(
-				leaderboardRankRow, datetime);
+		// Manipulate the date last update of the rank for the unit test
+		// purposes.
+		leaderboardRankRowBuilder.setRank(
+				leaderboardRankRowBuilder.getRankStatus(),
+				leaderboardRankRowBuilder.getRank(),
+				leaderboardRankRowBuilder.getRankDisplay(), datetime);
 
-		return leaderboardRankDatabaseAdapter.insert(leaderboardRankRow);
+		return leaderboardRankDatabaseAdapter.insert(leaderboardRankRowBuilder
+				.build());
 	}
 
 	@Test

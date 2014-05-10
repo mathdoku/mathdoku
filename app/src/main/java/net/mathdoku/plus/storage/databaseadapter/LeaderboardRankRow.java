@@ -3,6 +3,7 @@ package net.mathdoku.plus.storage.databaseadapter;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankDatabaseAdapter.RankStatus;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankDatabaseAdapter.ScoreOrigin;
+import net.mathdoku.plus.storage.databaseadapter.database.LeaderboardRankRowBuilder;
 
 /**
  * Mapping for records in database table Grid
@@ -41,169 +42,20 @@ public class LeaderboardRankRow {
 	// has not been updated for a certain amount of time.
 	private final long dateLastUpdated;
 
-	LeaderboardRankRow(int id, String leaderboardId, int gridSize,
-			boolean operatorsHidden, PuzzleComplexity puzzleComplexity,
-			ScoreOrigin scoreOrigin, int statisticsId, long rawScore,
-			long dateSubmitted, RankStatus rankStatus, long rank,
-			String rankDisplay, long dateLastUpdated) {
-		this.id = id;
-		this.leaderboardId = leaderboardId;
-		this.gridSize = gridSize;
-		this.operatorsHidden = operatorsHidden;
-		this.puzzleComplexity = puzzleComplexity;
-		this.scoreOrigin = scoreOrigin;
-		this.statisticsId = statisticsId;
-		this.rawScore = rawScore;
-		this.dateSubmitted = dateSubmitted;
-		this.rankStatus = rankStatus;
-		this.rank = rank;
-		this.rankDisplay = rankDisplay;
-		this.dateLastUpdated = dateLastUpdated;
-	}
-
-	LeaderboardRankRow(LeaderboardRankRow source, int newId) {
-		this(newId, source.leaderboardId, source.gridSize,
-				source.operatorsHidden, source.puzzleComplexity,
-				source.scoreOrigin, source.statisticsId, source.rawScore,
-				source.dateSubmitted, source.rankStatus, source.rank,
-				source.rankDisplay, source.dateLastUpdated);
-	}
-
-	public static LeaderboardRankRow createInitial(String leaderboardId,
-			int gridSize, boolean operatorsHidden,
-			PuzzleComplexity puzzleComplexity) {
-		return new LeaderboardRankRow(getDefaultId(), leaderboardId, gridSize,
-				operatorsHidden, puzzleComplexity, getDefaultScoreOrigin(),
-				getDefaultStatisticsId(), getDefaultRawScore(),
-				getDefaultDateSubmitted(), getDefaultRankStatus(),
-				getDefaultRank(), getDefaultRankDisplay(),
-				getDefaultDateLastUpdated());
-	}
-
-	private static int getDefaultId() {
-		return 1;
-	}
-
-	private static ScoreOrigin getDefaultScoreOrigin() {
-		return ScoreOrigin.NONE;
-	}
-
-	private static int getDefaultStatisticsId() {
-		return 0;
-	}
-
-	private static long getDefaultRawScore() {
-		return 0;
-	}
-
-	private static long getDefaultDateSubmitted() {
-		return 0;
-	}
-
-	private static RankStatus getDefaultRankStatus() {
-		return RankStatus.TO_BE_UPDATED;
-	}
-
-	private static long getDefaultRank() {
-		return 0;
-	}
-
-	private static String getDefaultRankDisplay() {
-		return null;
-	}
-
-	private static long getDefaultDateLastUpdated() {
-		return 0;
-	}
-
-	/**
-	 * Creates a new leaderboard rank row with an updated local score based on
-	 * the current leaderboard rank.
-	 * 
-	 * @param statisticsId
-	 *            The id of the statistics rows on which the score is based.
-	 * @param rawScore
-	 *            The raw score (in milliseconds) to be registered.
-	 * @return A new leaderboard rank row.
-	 */
-	public LeaderboardRankRow createWithNewLocalScore(int statisticsId,
-			long rawScore) {
-		if (statisticsId <= 0) {
-			throw new IllegalArgumentException(
-					"Parameter statisticsId is invalid.");
-		}
-		validateRawScore(rawScore);
-		return new LeaderboardRankRow(this.id, this.leaderboardId,
-				this.gridSize, this.operatorsHidden, this.puzzleComplexity,
-				// Set fields for local score
-				ScoreOrigin.LOCAL_DATABASE, statisticsId, rawScore,
-				System.currentTimeMillis(),
-				// Reset ranking fields to defaults
-				getDefaultRankStatus(), getDefaultRank(),
-				getDefaultRankDisplay(), getDefaultDateLastUpdated());
-	}
-
-	private void validateRawScore(long rawScore) {
-		if (rawScore <= 0) {
-			throw new IllegalArgumentException("Parameter rawScore is invalid.");
-		}
-	}
-
-	/**
-	 * Creates a new leaderboard rank row with an updated google play score,
-	 * based on the current leaderboard rank row.
-	 * 
-	 * @param rawScore
-	 *            The raw score (in milliseconds) to be registered.
-	 * @param rank
-	 *            The rank on Google Play for the score.
-	 * @param rankDisplay
-	 *            The rank description as displayed on Google Play.
-	 * @return A new leaderboard rank row.
-	 */
-	public LeaderboardRankRow createWithNewGooglePlayScore(long rawScore,
-			long rank, String rankDisplay) {
-		validateRawScore(rawScore);
-		long timestamp = System.currentTimeMillis();
-		return new LeaderboardRankRow(this.id, this.leaderboardId,
-				this.gridSize, this.operatorsHidden, this.puzzleComplexity,
-				// Set fields for local score
-				ScoreOrigin.EXTERNAL, 0, rawScore, timestamp,
-				// Reset ranking fields to defaults
-				RankStatus.TOP_RANK_UPDATED, rank, rankDisplay, timestamp);
-	}
-
-	/**
-	 * Creates a new leaderboard rank row with an updated google play score,
-	 * based on the current leaderboard rank row.
-	 * 
-	 * @param rank
-	 *            The rank on Google Play for the score.
-	 * @param rankDisplay
-	 *            The rank description as displayed on Google Play.
-	 * @return A new leaderboard rank row.
-	 */
-	public LeaderboardRankRow createWithNewGooglePlayRank(long rank,
-			String rankDisplay) {
-		return createWithNewGooglePlayScore(rawScore, rank, rankDisplay);
-	}
-
-	/**
-	 * Updates the ranking information for a leaderboard.
-	 * 
-	 * @return True in case successfully updated. False otherwise.
-	 */
-	@SuppressWarnings("UnusedReturnValue")
-	public LeaderboardRankRow createWithGooglePlayRankNotAvailable() {
-		return new LeaderboardRankRow(this.id, this.leaderboardId,
-				this.gridSize, this.operatorsHidden,
-				this.puzzleComplexity,
-				// Set fields for local score
-				this.scoreOrigin, this.statisticsId, this.rawScore,
-				this.dateSubmitted,
-				// Reset ranking fields to defaults
-				RankStatus.TOP_RANK_NOT_AVAILABLE, getDefaultRank(),
-				getDefaultRankDisplay(), System.currentTimeMillis());
+	public LeaderboardRankRow(LeaderboardRankRowBuilder leaderboardRankRowBuilder) {
+		id = leaderboardRankRowBuilder.getId();
+		leaderboardId = leaderboardRankRowBuilder.getLeaderboardId();
+		gridSize = leaderboardRankRowBuilder.getGridSize();
+		operatorsHidden = leaderboardRankRowBuilder.isOperatorsHidden();
+		puzzleComplexity = leaderboardRankRowBuilder.getPuzzleComplexity();
+		scoreOrigin = leaderboardRankRowBuilder.getScoreOrigin();
+		statisticsId = leaderboardRankRowBuilder.getStatisticsId();
+		rawScore = leaderboardRankRowBuilder.getRawScore();
+		dateSubmitted = leaderboardRankRowBuilder.getDateSubmitted();
+		rankStatus = leaderboardRankRowBuilder.getRankStatus();
+		rank = leaderboardRankRowBuilder.getRank();
+		rankDisplay = leaderboardRankRowBuilder.getRankDisplay();
+		dateLastUpdated = leaderboardRankRowBuilder.getDateLastUpdated();
 	}
 
 	public int getRowId() {
