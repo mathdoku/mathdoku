@@ -234,20 +234,21 @@ public class LeaderboardConnector {
 
 			// Update both the score and ranking information for this
 			// leaderboard.
-			leaderboardRankDatabaseAdapter.updateWithGooglePlayScore(
-					leaderboardId, leaderboardScore.getRawScore(),
-					leaderboardScore.getRank(),
-					leaderboardScore.getDisplayRank());
+			leaderboardRankRow = leaderboardRankRow
+					.createWithNewGooglePlayScore(
+							leaderboardScore.getRawScore(),
+							leaderboardScore.getRank(),
+							leaderboardScore.getDisplayRank());
 
 			// No toast may be displayed as the top score on Google Play
 			// Services was not improved.
 			displayToast = false;
 		} else {
-			// Update the leaderboard ranking information only
-			new LeaderboardRankDatabaseAdapter().updateWithGooglePlayRank(
-					leaderboardId, leaderboardScore.getRank(),
-					leaderboardScore.getDisplayRank());
+			leaderboardRankRow = leaderboardRankRow
+					.createWithNewGooglePlayRank(leaderboardScore.getRank(),
+							leaderboardScore.getDisplayRank());
 		}
+		new LeaderboardRankDatabaseAdapter().update(leaderboardRankRow);
 
 		// Display a toast containing the ranking information for the score.
 		if (displayToast) {

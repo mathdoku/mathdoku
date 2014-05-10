@@ -138,11 +138,12 @@ public class LeaderboardRankUpdater {
 									+ mLeaderboardRankRow.getRawScore()
 									+ ") for existing leaderboard"
 									+ mLeaderboardConnector
-											.getLeaderboardNameForLogging(
-													mLeaderboardRankRow.getLeaderboardId())
+											.getLeaderboardNameForLogging(mLeaderboardRankRow
+													.getLeaderboardId())
 									+ " which was last submitted on "
 									+ DateFormat.getDateTimeInstance().format(
-									mLeaderboardRankRow.getDateSubmitted())
+											mLeaderboardRankRow
+													.getDateSubmitted())
 									+ " with callback listener");
 		}
 		mLeaderboardConnector.getGamesClient().submitScoreImmediate(
@@ -195,16 +196,24 @@ public class LeaderboardRankUpdater {
 											}
 											// Although not possible, still wrap
 											// up just in case...
-											new LeaderboardRankDatabaseAdapter()
-													.updateWithGooglePlayRankNotAvailable(leaderboard
-															.getLeaderboardId());
+											clearLeaderboardRank(leaderboard);
 											setUpdateFinished();
 										}
 									}).loadCurrentPlayerRank(submitScoreResult
 									.getLeaderboardId());
 						}
 					}
-				}, mLeaderboardRankRow.getLeaderboardId(), mLeaderboardRankRow.getRawScore());
+				}, mLeaderboardRankRow.getLeaderboardId(),
+				mLeaderboardRankRow.getRawScore());
+	}
+
+	private void clearLeaderboardRank(Leaderboard leaderboard) {
+		LeaderboardRankDatabaseAdapter leaderboardRankDatabaseAdapter;
+		leaderboardRankDatabaseAdapter = new LeaderboardRankDatabaseAdapter();
+		LeaderboardRankRow leaderboardRankRow = leaderboardRankDatabaseAdapter
+				.get(leaderboard.getLeaderboardId());
+		leaderboardRankDatabaseAdapter.update(leaderboardRankRow
+				.createWithGooglePlayRankNotAvailable());
 	}
 
 	/**
@@ -239,13 +248,11 @@ public class LeaderboardRankUpdater {
 																	.getLeaderboardId())
 													+ ".");
 						}
-						new LeaderboardRankDatabaseAdapter()
-								.updateWithGooglePlayRankNotAvailable(leaderboard
-										.getLeaderboardId());
-
+						clearLeaderboardRank(leaderboard);
 						setUpdateFinished();
 					}
-				}).loadCurrentPlayerRank(mLeaderboardRankRow.getLeaderboardId());
+				})
+				.loadCurrentPlayerRank(mLeaderboardRankRow.getLeaderboardId());
 	}
 
 	/**

@@ -684,11 +684,11 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 				// Create a leaderboard record if currently does not yet exist.
 				if (leaderboardRankDatabaseAdapter.get(leaderboardId) == null) {
-					leaderboardRankDatabaseAdapter
-							.insertInitializedLeaderboard(leaderboardId,
+					leaderboardRankDatabaseAdapter.insert(LeaderboardRankRow
+							.createInitial(leaderboardId,
 									LeaderboardType.getGridSize(i),
 									LeaderboardType.hasHiddenOperator(i),
-									LeaderboardType.getPuzzleComplexity(i));
+									LeaderboardType.getPuzzleComplexity(i)));
 				}
 			}
 			mMathDokuPreferences.setLeaderboardsInitialized();
@@ -801,15 +801,14 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 					.get(leaderboardId);
 
 			// Check if a new top score is achieved.
-			boolean newTopScore = leaderboardRankRow == null
-					|| leaderboardRankRow.getScoreOrigin() == ScoreOrigin.NONE
+			boolean newTopScore = leaderboardRankRow.getScoreOrigin() == ScoreOrigin.NONE
 					|| grid.getElapsedTime() < leaderboardRankRow.getRawScore();
 
 			// Store the top score in the leaderboard table.
 			if (newTopScore) {
-				new LeaderboardRankDatabaseAdapter().updateWithLocalScore(
-						leaderboardId, grid.getGridStatistics().mId,
-						grid.getElapsedTime());
+				new LeaderboardRankDatabaseAdapter().update(leaderboardRankRow
+						.createWithNewLocalScore(grid.getGridStatistics().mId,
+								grid.getElapsedTime()));
 			}
 
 			// Submit score to Google+ in case already signed in.
@@ -856,7 +855,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		if (grid.isActive()) {
 			return false;
 		}
-		if (grid.getCheatPenaltyTime() >= 0 || grid.isSolutionRevealed()) {
+		if (grid.getCheatPenaltyTime() > 0 || grid.isSolutionRevealed()) {
 			return false;
 		}
 		if (grid.isReplay()) {
