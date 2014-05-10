@@ -13,6 +13,8 @@ import net.mathdoku.plus.storage.databaseadapter.database.DatabaseColumnDefiniti
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseForeignKeyDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseTableDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.OrderByHelper;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.QueryHelper;
 import net.mathdoku.plus.util.ParameterValidator;
 
 import java.util.ArrayList;
@@ -153,9 +155,9 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		SolvingAttemptRow solvingAttemptRow = null;
 		Cursor cursor = null;
 		try {
-			cursor = sqliteDatabase.query(true, TABLE_NAME,
-					DATABASE_TABLE.getColumnNames(), KEY_ROWID + "="
-							+ solvingAttemptId, null, null, null, null, null);
+			cursor = sqliteDatabase.query(true, TABLE_NAME, DATABASE_TABLE
+					.getColumnNames(), QueryHelper.getFieldEqualsValue(
+					KEY_ROWID, solvingAttemptId), null, null, null, null, null);
 
 			if (cursor == null || !cursor.moveToFirst()) {
 				// No record found for this grid.
@@ -226,9 +228,11 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		int id = -1;
 		Cursor cursor = null;
 		try {
+			OrderByHelper orderByHelper = new OrderByHelper();
+			orderByHelper.sortDescending(KEY_DATE_UPDATED);
 			cursor = sqliteDatabase.query(true, TABLE_NAME,
 					new String[] { KEY_ROWID }, null, null, null, null,
-					KEY_DATE_UPDATED + " DESC", "1");
+					orderByHelper.toString(), "1");
 
 			if (cursor == null || !cursor.moveToFirst()) {
 				// No record found
@@ -332,8 +336,9 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		Cursor cursor = null;
 		try {
 			cursor = sqliteDatabase.query(true, TABLE_NAME,
-					new String[] { "COUNT(1)" }, KEY_GRID_ID + "=" + gridId,
-					null, null, null, null, null);
+					new String[] { "COUNT(1)" },
+					QueryHelper.getFieldEqualsValue(KEY_GRID_ID, gridId), null,
+					null, null, null, null);
 
 			if (cursor == null || !cursor.moveToFirst()) {
 				// No record found for this grid.

@@ -13,6 +13,10 @@ import net.mathdoku.plus.storage.databaseadapter.database.DatabaseColumnDefiniti
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseTableDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil;
 import net.mathdoku.plus.storage.databaseadapter.database.LeaderboardRankRowBuilder;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.ConditionQueryHelper;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.OrderByHelper;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.QueryHelper;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.UpdateQueryHelper;
 import net.mathdoku.plus.util.ParameterValidator;
 
 /**
@@ -224,10 +228,10 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		LeaderboardRankRow leaderboardRankRow = null;
 		Cursor cursor = null;
 		try {
-			cursor = sqliteDatabase.query(true, TABLE_NAME,
-					DATABASE_TABLE.getColumnNames(), KEY_LEADERBOARD_ID + "="
-							+ DatabaseUtil.stringBetweenQuotes(leaderboardId),
-					null, null, null, null, null);
+			cursor = sqliteDatabase.query(true, TABLE_NAME, DATABASE_TABLE
+					.getColumnNames(), QueryHelper.getFieldEqualsValue(
+					KEY_LEADERBOARD_ID, leaderboardId), null, null, null, null,
+					null);
 			leaderboardRankRow = toLeaderboardRankRow(cursor);
 		} catch (SQLiteException e) {
 			throw new DatabaseAdapterException(String.format(
@@ -377,17 +381,14 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	}
 
 	private String getOrderByMostOutdatedLeaderboardRank() {
-		String commaSpace = ", ";
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append(KEY_RANK_DATE_LAST_UPDATED);
-		stringBuilder.append(commaSpace);
+		OrderByHelper orderByHelper = new OrderByHelper();
+		orderByHelper.sortAscending(KEY_RANK_DATE_LAST_UPDATED);
 		// In case the rank date is null or equal, sort on submit date of local
 		// score.
-		stringBuilder.append(KEY_SCORE_DATE_SUBMITTED);
-		stringBuilder.append(commaSpace);
+		orderByHelper.sortAscending(KEY_SCORE_DATE_SUBMITTED);
 		// Add sort on row id to get a deterministic result in the unit tests.
-		stringBuilder.append(KEY_ROWID);
-		return stringBuilder.toString();
+		orderByHelper.sortAscending(KEY_ROWID);
+		return orderByHelper.toString();
 	}
 
 	/**
@@ -434,62 +435,43 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	 *         leaderboard ranks.
 	 */
 	private String getSelectionOutdatedLeaderboardRanks() {
-		// noinspection StringBufferReplaceableByString
-		StringBuilder stringBuilder = new StringBuilder();
+		ConditionQueryHelper conditionQueryHelper = new ConditionQueryHelper();
 
 		// Include all leaderboards for which the rank status equals
 		// TO_BE_UPDATED
-		// noinspection StringConcatenationInsideStringBufferAppend
-		stringBuilder.append(KEY_RANK_STATUS
-				+ " = "
-				+ DatabaseUtil.stringBetweenQuotes(RankStatus.TO_BE_UPDATED
-						.toString()));
+		conditionQueryHelper.addOperand(ConditionQueryHelper
+				.getFieldEqualsValue(KEY_RANK_STATUS,
+						RankStatus.TO_BE_UPDATED.toString()));
 
 		long interval15MinutesInMillis = 15 * 60 * 1000;
-		stringBuilder
-				.append(getSelectionStringStatusNotUpdatedInIntervalInMillisBeforeSystemTime(
+		conditionQueryHelper
+				.addOperand(getSelectionStringStatusNotUpdatedInIntervalInMillisBeforeSystemTime(
 						RankStatus.TOP_RANK_UPDATED, interval15MinutesInMillis));
 
 		long interval24HoursInMillis = 24 * 60 * 60 * 1000;
-		stringBuilder
-				.append(getSelectionStringStatusNotUpdatedInIntervalInMillisBeforeSystemTime(
+		conditionQueryHelper
+				.addOperand(getSelectionStringStatusNotUpdatedInIntervalInMillisBeforeSystemTime(
 						RankStatus.TOP_RANK_NOT_AVAILABLE,
 						interval24HoursInMillis));
+		conditionQueryHelper.setOrOperator();
 
-		return stringBuilder.toString();
+		return conditionQueryHelper.toString();
 	}
 
 	private String getSelectionStringStatusNotUpdatedInIntervalInMillisBeforeSystemTime(
 			RankStatus rankStatus, long intervalInMillis) {
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append(" OR (");
-		stringBuilder.append(getFieldEqualsValue(KEY_RANK_STATUS,
-				DatabaseUtil.stringBetweenQuotes(rankStatus.toString())));
-		stringBuilder.append(" AND ");
-		stringBuilder
-				.append(getFieldLessThanValue(
-						KEY_RANK_DATE_LAST_UPDATED,
-						DatabaseUtil.stringBetweenQuotes(DatabaseUtil
-								.getCurrentMinusOffsetSQLiteTimestamp(intervalInMillis))));
-		stringBuilder.append(")");
-		return stringBuilder.toString();
-	}
+		String intervalInMillisString = DatabaseUtil
+				.getCurrentMinusOffsetSQLiteTimestamp(intervalInMillis);
 
-	private String getFieldEqualsValue(String field, String value) {
-		return getFieldOperatorValue(field, " = ", value);
-	}
+		ConditionQueryHelper conditionQueryHelper = new ConditionQueryHelper();
+		conditionQueryHelper.addOperand(ConditionQueryHelper
+				.getFieldEqualsValue(KEY_RANK_STATUS, rankStatus.toString()));
+		conditionQueryHelper.addOperand(ConditionQueryHelper
+				.getFieldLessThanValue(KEY_RANK_DATE_LAST_UPDATED,
+						intervalInMillisString));
+		conditionQueryHelper.setAndOperator();
 
-	private String getFieldOperatorValue(String field, String operator,
-			String value) {
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append(field);
-		stringBuilder.append(operator);
-		stringBuilder.append(value);
-		return stringBuilder.toString();
-	}
-
-	private String getFieldLessThanValue(String field, String value) {
-		return getFieldOperatorValue(field, " < ", value);
+		return conditionQueryHelper.toString();
 	}
 
 	/**
@@ -497,28 +479,18 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	 */
 	@SuppressWarnings("StringBufferReplaceableByString")
 	public void setAllRanksToBeUpdated() {
-		String commaSpace = ", ";
 		try {
-			StringBuilder query = new StringBuilder();
-			query.append("UPDATE ");
-			query.append(TABLE_NAME);
-			query.append(" SET ");
-			query.append(getFieldEqualsValue(KEY_RANK_STATUS, DatabaseUtil
-					.stringBetweenQuotes(RankStatus.TO_BE_UPDATED.toString())));
-			query.append(commaSpace);
-			query.append(getFieldIsNull(KEY_RANK));
-			query.append(commaSpace);
-			query.append(getFieldIsNull(KEY_RANK_DISPLAY));
-			query.append(commaSpace);
-			query.append(getFieldIsNull(KEY_RANK_DATE_LAST_UPDATED));
-			sqliteDatabase.execSQL(query.toString());
+			UpdateQueryHelper updateQueryHelper = new UpdateQueryHelper(
+					TABLE_NAME);
+			updateQueryHelper.setColumnTo(KEY_RANK_STATUS,
+					RankStatus.TO_BE_UPDATED.toString());
+			updateQueryHelper.setColumnToNull(KEY_RANK);
+			updateQueryHelper.setColumnToNull(KEY_RANK_DISPLAY);
+			updateQueryHelper.setColumnToNull(KEY_RANK_DATE_LAST_UPDATED);
+			sqliteDatabase.execSQL(updateQueryHelper.toString());
 		} catch (SQLiteException e) {
 			throw new DatabaseAdapterException(
 					"Cannot set ranks to be updated in database", e);
 		}
-	}
-
-	private String getFieldIsNull(String field) {
-		return getFieldEqualsValue(field, "null");
 	}
 }

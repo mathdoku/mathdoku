@@ -116,8 +116,9 @@ public class SolvingAttemptDatabaseAdapterTest {
 		// Nothing to test currently.
 	}
 
-	@Test(expected=IllegalArgumentException.class)
-	public void insert_SolvingAttemptRowIsNull_ThrowsIllegalArgumentException() throws Exception {
+	@Test(expected = IllegalArgumentException.class)
+	public void insert_SolvingAttemptRowIsNull_ThrowsIllegalArgumentException()
+			throws Exception {
 		solvingAttemptDatabaseAdapter.insert(null);
 	}
 
@@ -171,8 +172,9 @@ public class SolvingAttemptDatabaseAdapterTest {
 				is(solvingAttemptRow1.getSolvingAttemptId()));
 	}
 
-	@Test(expected=IllegalArgumentException.class)
-	public void update_SolvingAttemptRowIsNull_ThrowsIllegalArgumentException() throws Exception {
+	@Test(expected = IllegalArgumentException.class)
+	public void update_SolvingAttemptRowIsNull_ThrowsIllegalArgumentException()
+			throws Exception {
 		solvingAttemptDatabaseAdapter.update(null);
 	}
 
@@ -222,16 +224,16 @@ public class SolvingAttemptDatabaseAdapterTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void getPrefixedColumnName_ColumnNameIsNull_ThrowsIllegalArgumentException() throws Exception {
-		assertThat(
-				SolvingAttemptDatabaseAdapter.getPrefixedColumnName(null),
+	public void getPrefixedColumnName_ColumnNameIsNull_ThrowsIllegalArgumentException()
+			throws Exception {
+		assertThat(SolvingAttemptDatabaseAdapter.getPrefixedColumnName(null),
 				is("`solving_attempt`.`TestAbC`"));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void getPrefixedColumnName_ColumnNamIsEmpty_ThrowsIllegalArgumentException() throws Exception {
-		assertThat(
-				SolvingAttemptDatabaseAdapter.getPrefixedColumnName(""),
+	public void getPrefixedColumnName_ColumnNamIsEmpty_ThrowsIllegalArgumentException()
+			throws Exception {
+		assertThat(SolvingAttemptDatabaseAdapter.getPrefixedColumnName(""),
 				is("`solving_attempt`.`TestAbC`"));
 	}
 

@@ -9,7 +9,7 @@ import android.util.Log;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseTableDefinition;
-import net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.ConditionQueryHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,14 +72,8 @@ public abstract class DatabaseAdapter {
 		final String columnSql = "sql";
 		String[] columns = { columnSql };
 
-		Cursor cursor = sqliteDatabase.query(
-				true,
-				"sqlite_master",
-				columns,
-				"name = " + DatabaseUtil.stringBetweenQuotes(getTableName())
-						+ " AND type = "
-						+ DatabaseUtil.stringBetweenQuotes("table"), null,
-				null, null, null, null);
+		Cursor cursor = sqliteDatabase.query(true, "sqlite_master", columns,
+				getTableSelectionString(), null, null, null, null, null);
 		if (cursor != null) {
 			String sql = cursor.moveToFirst() ? cursor.getString(cursor
 					.getColumnIndexOrThrow(columnSql)) : "";
@@ -87,6 +81,16 @@ public abstract class DatabaseAdapter {
 			return sql;
 		}
 		return "";
+	}
+
+	private String getTableSelectionString() {
+		ConditionQueryHelper conditionQueryHelper = new ConditionQueryHelper();
+		conditionQueryHelper.addOperand(ConditionQueryHelper
+				.getFieldEqualsValue("name", getTableName()));
+		conditionQueryHelper.addOperand(ConditionQueryHelper
+				.getFieldEqualsValue("type", "table"));
+		conditionQueryHelper.setAndOperator();
+		return conditionQueryHelper.toString();
 	}
 
 	/**

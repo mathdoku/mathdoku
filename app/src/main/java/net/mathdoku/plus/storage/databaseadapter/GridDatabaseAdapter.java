@@ -17,6 +17,7 @@ import net.mathdoku.plus.storage.databaseadapter.database.DataType;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseColumnDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseTableDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.QueryHelper;
 import net.mathdoku.plus.util.ParameterValidator;
 
 /**
@@ -171,8 +172,9 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		Cursor cursor = null;
 		try {
 			cursor = sqliteDatabase.query(true, TABLE_NAME,
-					DATABASE_TABLE.getColumnNames(), KEY_ROWID + "=" + id,
-					null, null, null, null, null);
+					DATABASE_TABLE.getColumnNames(),
+					QueryHelper.getFieldEqualsValue(KEY_ROWID, id), null, null,
+					null, null, null);
 			gridRow = toGridRow(cursor);
 		} catch (SQLiteException e) {
 			throw new DatabaseAdapterException(String.format(
@@ -199,10 +201,10 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		GridRow gridRow = null;
 		Cursor cursor = null;
 		try {
-			cursor = sqliteDatabase.query(true, TABLE_NAME,
-					DATABASE_TABLE.getColumnNames(), KEY_DEFINITION + "="
-							+ DatabaseUtil.stringBetweenQuotes(definition),
-					null, null, null, null, null);
+			cursor = sqliteDatabase
+					.query(true, TABLE_NAME, DATABASE_TABLE.getColumnNames(),
+							QueryHelper.getFieldEqualsValue(KEY_DEFINITION,
+									definition), null, null, null, null, null);
 			gridRow = toGridRow(cursor);
 		} catch (SQLiteException e) {
 			throw new DatabaseAdapterException(String.format(

@@ -20,6 +20,8 @@ import net.mathdoku.plus.storage.databaseadapter.database.DatabaseProjection;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseProjection.Aggregation;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseTableDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.OrderByHelper;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.QueryHelper;
 
 /**
  * The database adapter for the statistics table. For each grid zero or more
@@ -241,10 +243,20 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		GridStatistics gridStatistics = null;
 		Cursor cursor = null;
 		try {
-			cursor = sqliteDatabase.query(true, TABLE_NAME,
+			cursor = sqliteDatabase.query(true,
+					//
+					TABLE_NAME,
+					//
 					DATABASE_TABLE.getColumnNames(),
-					KEY_GRID_ID + "=" + gridId, null, null, null, KEY_ROWID
-							+ " DESC", "1");
+					//
+					QueryHelper.getFieldEqualsValue(KEY_GRID_ID, gridId), null,
+					null,
+					//
+					null,
+					//
+					new OrderByHelper().sortDescending(KEY_ROWID).toString(),
+					//
+					"1");
 			gridStatistics = toGridStatistics(cursor);
 		} catch (SQLiteException e) {
 			throw new DatabaseAdapterException(

@@ -65,7 +65,8 @@ public class GridDatabaseAdapterTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void insert_GridIsNull_ThrowsIllegalArgumentException() throws Exception {
+	public void insert_GridIsNull_ThrowsIllegalArgumentException()
+			throws Exception {
 		gridDatabaseAdapter.insert(null);
 	}
 
@@ -107,17 +108,20 @@ public class GridDatabaseAdapterTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void getByGridDefinition_DefinitionIsNull_ThrowsIllegalArgumentException() throws Exception {
+	public void getByGridDefinition_DefinitionIsNull_ThrowsIllegalArgumentException()
+			throws Exception {
 		gridDatabaseAdapter.getByGridDefinition(null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void getByGridDefinition_DefinitionIsEmpty_ThrowsIllegalArgumentException() throws Exception {
+	public void getByGridDefinition_DefinitionIsEmpty_ThrowsIllegalArgumentException()
+			throws Exception {
 		gridDatabaseAdapter.getByGridDefinition("");
 	}
 
 	@Test
-	public void getByGridDefinition_DefinitionIsNotNullOrEmpty() throws Exception {
+	public void getByGridDefinition_DefinitionIsNotNullOrEmpty()
+			throws Exception {
 		insertGridAndAddToHashMap(GridCreator4x4.createEmptyGrid());
 		int gridId = insertGridAndAddToHashMap(GridCreator2x2.createEmptyGrid());
 		insertGridAndAddToHashMap(GridCreator5x5.createEmptyGrid());
@@ -129,15 +133,17 @@ public class GridDatabaseAdapterTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void getPrefixedColumnName_Null_ThrowsIllegalArgumentException() throws Exception {
+	public void getPrefixedColumnName_Null_ThrowsIllegalArgumentException()
+			throws Exception {
 		assertThat(GridDatabaseAdapter.getPrefixedColumnName(null),
-				   is("`grid`.`TestAbC`"));
+				is("`grid`.`TestAbC`"));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void getPrefixedColumnName_Empty_ThrowsIllegalArgumentException() throws Exception {
+	public void getPrefixedColumnName_Empty_ThrowsIllegalArgumentException()
+			throws Exception {
 		assertThat(GridDatabaseAdapter.getPrefixedColumnName(""),
-				   is("`grid`.`TestAbC`"));
+				is("`grid`.`TestAbC`"));
 	}
 
 	@Test

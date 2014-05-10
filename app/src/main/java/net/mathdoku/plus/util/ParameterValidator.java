@@ -1,5 +1,7 @@
 package net.mathdoku.plus.util;
 
+import java.util.List;
+
 public class ParameterValidator {
 	private ParameterValidator() {
 		// Prevent instantiation of utility class.
@@ -8,6 +10,12 @@ public class ParameterValidator {
 	public static void validateNotNullOrEmpty(String string) {
 		validateNotNull(string);
 		if (string.trim().isEmpty()) {
+			throwEmptyException();
+		}
+	}
+
+	public static <T> void validateNotNullOrEmpty(List<T> list) {
+		if (list == null || list.size() == 0) {
 			throwEmptyException();
 		}
 	}
