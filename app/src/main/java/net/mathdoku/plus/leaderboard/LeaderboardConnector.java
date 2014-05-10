@@ -16,7 +16,7 @@ import net.mathdoku.plus.leaderboard.ui.TopScoreDialog;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankDatabaseAdapter.ScoreOrigin;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankRow;
-import net.mathdoku.plus.storage.databaseadapter.database.LeaderboardRankRowBuilder;
+import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankRowBuilder;
 import net.mathdoku.plus.ui.base.AppFragmentActivity;
 import net.mathdoku.plus.util.Util;
 

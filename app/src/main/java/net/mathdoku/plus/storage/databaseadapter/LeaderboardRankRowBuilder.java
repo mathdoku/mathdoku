@@ -1,8 +1,6 @@
-package net.mathdoku.plus.storage.databaseadapter.database;
+package net.mathdoku.plus.storage.databaseadapter;
 
 import net.mathdoku.plus.enums.PuzzleComplexity;
-import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankDatabaseAdapter;
-import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankRow;
 
 public class LeaderboardRankRowBuilder {
 	private final int id;
@@ -111,7 +109,7 @@ public class LeaderboardRankRowBuilder {
 
 	/**
 	 * Updates the score. Preferred usage is
-	 * {@link net.mathdoku.plus.storage.databaseadapter.database.LeaderboardRankRowBuilder#setScoreLocal(int, long)}
+	 * {@link LeaderboardRankRowBuilder#setScoreLocal(int, long)}
 	 * .
 	 * 
 	 * @param scoreOrigin
@@ -142,12 +140,16 @@ public class LeaderboardRankRowBuilder {
 			long rawScore) {
 		if (scoreOrigin != LeaderboardRankDatabaseAdapter.ScoreOrigin.NONE
 				&& rawScore <= 0) {
-			throw new IllegalArgumentException("Parameter rawScore is invalid.");
+			throwRawScoreIllegalArgumentException();
 		}
 		if (scoreOrigin == LeaderboardRankDatabaseAdapter.ScoreOrigin.NONE
 				&& rawScore != 0) {
-			throw new IllegalArgumentException("Parameter rawScore is invalid.");
+			throwRawScoreIllegalArgumentException();
 		}
+	}
+
+	private void throwRawScoreIllegalArgumentException() {
+		throw new IllegalArgumentException("Parameter rawScore is invalid.");
 	}
 
 	private void validateScoreOrigin(
@@ -155,14 +157,17 @@ public class LeaderboardRankRowBuilder {
 			int statisticsId) {
 		if (scoreOrigin == LeaderboardRankDatabaseAdapter.ScoreOrigin.LOCAL_DATABASE
 				&& statisticsId <= 0) {
-			throw new IllegalArgumentException(
-					"Parameter statisticsId is invalid.");
+			throwStatisticsIdIllegalArgumentException();
 		}
 		if (scoreOrigin != LeaderboardRankDatabaseAdapter.ScoreOrigin.LOCAL_DATABASE
 				&& statisticsId != 0) {
-			throw new IllegalArgumentException(
-					"Parameter statisticsId is invalid.");
+			throwStatisticsIdIllegalArgumentException();
 		}
+	}
+
+	private void throwStatisticsIdIllegalArgumentException() {
+		throw new IllegalArgumentException(
+				"Parameter statisticsId is invalid.");
 	}
 
 	private void setDefaultRankingInformation() {

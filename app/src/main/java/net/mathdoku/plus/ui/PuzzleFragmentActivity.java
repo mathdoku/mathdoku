@@ -56,7 +56,7 @@ import net.mathdoku.plus.puzzle.ui.GridInputMode;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.statistics.ui.StatisticsFragmentActivity;
 import net.mathdoku.plus.storage.GameFileConverter;
-import net.mathdoku.plus.storage.databaseadapter.database.LeaderboardRankRowBuilder;
+import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankRowBuilder;
 import net.mathdoku.plus.storage.selector.ArchiveSolvingAttemptSelector;
 import net.mathdoku.plus.enums.StatusFilter;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankDatabaseAdapter;

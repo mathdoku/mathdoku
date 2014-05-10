@@ -12,7 +12,6 @@ import net.mathdoku.plus.storage.databaseadapter.database.DataType;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseColumnDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseTableDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil;
-import net.mathdoku.plus.storage.databaseadapter.database.LeaderboardRankRowBuilder;
 import net.mathdoku.plus.storage.databaseadapter.queryhelper.ConditionQueryHelper;
 import net.mathdoku.plus.storage.databaseadapter.queryhelper.OrderByHelper;
 import net.mathdoku.plus.storage.databaseadapter.queryhelper.QueryHelper;

@@ -1,7 +1,6 @@
 package net.mathdoku.plus.storage.databaseadapter;
 
 import net.mathdoku.plus.enums.PuzzleComplexity;
-import net.mathdoku.plus.storage.databaseadapter.database.LeaderboardRankRowBuilder;
 
 import org.junit.After;
 import org.junit.Before;

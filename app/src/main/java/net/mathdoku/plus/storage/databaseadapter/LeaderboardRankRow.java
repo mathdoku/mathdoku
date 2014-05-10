@@ -3,7 +3,6 @@ package net.mathdoku.plus.storage.databaseadapter;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankDatabaseAdapter.RankStatus;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankDatabaseAdapter.ScoreOrigin;
-import net.mathdoku.plus.storage.databaseadapter.database.LeaderboardRankRowBuilder;
 
 /**
  * Mapping for records in database table Grid
