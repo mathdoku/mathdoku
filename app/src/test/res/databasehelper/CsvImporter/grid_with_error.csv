@@ -1,12 +1,17 @@
-"// Importing grid rows for unit tests for class CsvImporterTest.",,,,,,,,,,,
-,,,,,,,,,,,
-"_id","definition","grid_size","date_created","game_seed","generator_revision_number","puzzle_complexity","hide_operators","max_cage_result","max_cage_size",,"REMARK"
-1,"0101020203030301",4,"2014-05-11 16:59:00.001",1,568,"NORMAL","true",1000,5,,"Dummy data"
-2,"0101020203030301",4,"2014-05-11 16:59:00.001",1,568,"NORMAL","true",1000,5,,
-"// Comment should be ignore as well as empty line",,,,,,,,,,,
-,,,,,,,,,,,
-3,"0101020203030301",4,"2014-05-11 16:59:00.001",1,568,"NORMAL","true",1000,5,,
-"// Test should fail on next line as “eror” is not a valid integer value for column grid_size.",,,,,,,,,,,
-4,"0101020203030301","error",,,,,,,,,"Line is not properly finished"
-,,,,,,,,,,,
-5,"0101020203030301",4,"2014-05-11 16:59:00.001",1,568,"NORMAL","true",1000,5,,
+// ------------------------------------------------------
+// ---------- Grid import file for class CsvImporterTest.
+// ------------------------------------------------------
+// This file deliberately contains an error.
+// ------------------------------------------------------
+
+_id|definition|grid_size|date_created|game_seed|generator_revision_number|puzzle_complexity|hide_operators|max_cage_result|max_cage_size
+1#1:00000102030401020304050506060707:0,3,1:1,1,2:2,3,2:3,2,2:4,7,1:5,2,2:6,2,2:7,3,4#4#"2014-05-11 20:37:35.542"#7509582130924284681#598#VERY_EASY#false#72#2
+2#1:00010202000103040506030405060707:0,2,4:1,3,3:2,4,4:3,3,4:4,6,1:5,3,3:6,2,2:7,6,3#4#"2014-05-11 20:38:37.738"#6636398313894690886#598#VERY_EASY#false#72#2
+
+// Comment should be ignore as well as empty lines
+
+3#1:00000101020304050602030405060708080910071111091012:0,6,1:1,4,2:2,12,3:3,4,1:4,2,2:5,3,1:6,8,3:7,4,2:8,10,3:9,1,2:10,15,3:11,4,4:12,2,0#5#"2014-05-11 20:39:25.897"#2011051131966705560#598#VERY_EASY#false#72#2
+
+// Next line contains a deliberate error in the grid size.
+
+4#1:00000101020304050602030405060708080910071111091012:0,6,1:1,4,2:2,12,3:3,4,1:4,2,2:5,3,1:6,8,3:7,4,2:8,10,3:9,1,2:10,15,3:11,4,4:12,2,0#ERROR#"2014-05-11 20:39:25.897"#2011051131966705560#598#VERY_EASY#false#72#2

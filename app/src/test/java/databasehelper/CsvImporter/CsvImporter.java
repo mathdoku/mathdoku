@@ -27,9 +27,28 @@ import robolectric.TestRunnerHelper;
  * 3. Data type of values must match with data type in table.
  * 
  * 4. Additional columns at end are ignored.
+ * 
+ * Instructions for manually exporting all MathDoku+ sqlite tables to a csv file
+ * which can be read by this class. After opening the SQLite-database, enter the
+ * commands below:
+ * 
+ * <pre>
+ *  .headers on
+ *  .mode csv
+ *  .separator #
+ *  .output grid.csv
+ *  select * from grid;
+ *  .output statistics.csv
+ *  select * from statistics;
+ *  .output leaderboard_rank.csv
+ *  select * from leaderboard_rank;
+ *  .output solving_attempt.csv
+ *  select * from solving_attempt;
+ *  .quit
+ * </pre>
  */
 public class CsvImporter {
-	private static final String REGEXP_CSV_SEPARATOR = "\\|";
+	private static final String REGEXP_CSV_SEPARATOR = "#";
 	private final String fileName;
 	private final String tableName;
 	private final String[] columnNames;
@@ -39,10 +58,12 @@ public class CsvImporter {
 
 	public CsvImporter(String fileName, DatabaseAdapter databaseAdapter) {
 		if (fileName == null || fileName.isEmpty()) {
-			throw new CsvImportException("Parameter filename should not be empty.");
+			throw new CsvImportException(
+					"Parameter filename should not be empty.");
 		}
 		if (databaseAdapter == null) {
-			throw new CsvImportException("Parameter database adapter should not be null.");
+			throw new CsvImportException(
+					"Parameter database adapter should not be null.");
 		}
 		this.fileName = fileName;
 		sqliteDatabase = DatabaseHelper.getInstance().getWritableDatabase();
@@ -72,7 +93,8 @@ public class CsvImporter {
 
 			line = getNextRowFromBufferedReader(br);
 			while (line != null) {
-				sqliteDatabase.insertOrThrow(tableName, null, getContentValuesFromLine(line));
+				sqliteDatabase.insertOrThrow(tableName, null,
+						getContentValuesFromLine(line));
 				line = getNextRowFromBufferedReader(br);
 			}
 		} catch (IOException e) {
@@ -110,7 +132,8 @@ public class CsvImporter {
 		if (line != null && isMultiLine(line)) {
 			StringBuilder stringBuilder = new StringBuilder();
 			stringBuilder.append(line);
-			while (line != null && !containsRequiredNumberOfValues(stringBuilder.toString())) {
+			while (line != null
+					&& !containsRequiredNumberOfValues(stringBuilder.toString())) {
 				line = readLineFromBuffer(bufferedReader);
 				stringBuilder.append("\n");
 				stringBuilder.append(line);
@@ -120,7 +143,8 @@ public class CsvImporter {
 		return line;
 	}
 
-	private String readLineFromBuffer(BufferedReader bufferedReader) throws IOException {
+	private String readLineFromBuffer(BufferedReader bufferedReader)
+			throws IOException {
 		String line = bufferedReader.readLine();
 		linesRead++;
 		return line;
@@ -141,7 +165,8 @@ public class CsvImporter {
 			return false;
 		}
 		String lastValueOnLine = values[values.length - 1];
-		return (lastValueOnLine.startsWith("\"") && !lastValueOnLine.endsWith("\""));
+		return (lastValueOnLine.startsWith("\"") && !lastValueOnLine
+				.endsWith("\""));
 	}
 
 	private boolean containsRequiredNumberOfValues(String line) {
@@ -154,8 +179,8 @@ public class CsvImporter {
 
 		if (values.length < columnNames.length) {
 			throw new CsvImportException(String.format(
-					"Line %d below contains to few values. Expected at least %d " + "values while " +
-							"%s are found.\nLine: %s",
+					"Line %d below contains to few values. Expected at least %d "
+							+ "values while " + "%s are found.\nLine: %s",
 					linesRead, columnNames.length, values.length, line));
 		}
 
@@ -175,20 +200,15 @@ public class CsvImporter {
 					break;
 				}
 			} catch (NumberFormatException e) {
-				throw new CsvImportException(
-						String
-								.format("Value '%s' on line %d is not a valid %s value for column " +
-												"'%s'.",
-										values[i], linesRead, columnTypes[i].toString(),
-										columnNames[i]), e);
-			}
-			catch (Exception e) {
-				throw new CsvImportException(
-						String
-								.format("Error while processing value '%s' on line %d for %s column " +
-												"'%s'.",
-										values[i], linesRead, columnTypes[i].toString(),
-										columnNames[i]), e);
+				throw new CsvImportException(String.format(
+						"Value '%s' on line %d is not a valid %s value for column "
+								+ "" + "'%s'.", values[i], linesRead,
+						columnTypes[i].toString(), columnNames[i]), e);
+			} catch (Exception e) {
+				throw new CsvImportException(String.format(
+						"Error while processing value '%s' on line %d for %s "
+								+ "column " + "'%s'.", values[i], linesRead,
+						columnTypes[i].toString(), columnNames[i]), e);
 			}
 		}
 

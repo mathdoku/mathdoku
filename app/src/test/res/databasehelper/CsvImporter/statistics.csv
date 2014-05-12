@@ -2,9 +2,8 @@
 // ---------- Statistics import file for class CsvImporterTest.
 // ------------------------------------------------------------
 
-_id|grid_id|replay|first_move|last_move|elapsed_time|cheat_penalty_time|cells_filled|cells_empty|cells_revealed|user_value_replaced|possibles|action_undos|action_clear_cells|action_clear_grid|action_reveal_cell|action_reveal_operators|action_check_progress|check_progress_invalid_cells_found|action_reveal_solution|solved_manually|finished|include_in_statistics
-1|1|0|"2014-05-11 20:37:35.542"|"2014-05-11 20:38:14.948"|38512|0|16|0|0|0|0|0|0|0|0|0|0|0|false|true|true|true
-2|2|0|"2014-05-11 20:38:37.738"|"2014-05-11 20:39:06.613"|28038|0|16|0|0|0|0|0|0|0|0|0|0|0|false|true|true|true
-3|3|0|"2014-05-11 20:39:25.897"|"2014-05-11 20:41:13.412"|106395|0|25|0|0|0|14|0|0|0|0|0|0|0|false|true|true|false
-4|3|1|"2014-05-11 21:54:18.148"|"2014-05-11 21:55:04.315"|153219|80000|5|19|1|0|0|1|2|1|1|0|0|0|false|false|false|true
-5|4|0|"2014-05-11 21:55:38.522"|"2014-05-11 21:55:38.522"|0|0|0|25|0|0|0|0|0|0|0|0|0|0|false|false|false|true
+_id#grid_id#replay#first_move#last_move#elapsed_time#cheat_penalty_time#cells_filled#cells_empty#cells_revealed#user_value_replaced#possibles#action_undos#action_clear_cells#action_clear_grid#action_reveal_cell#action_reveal_operators#action_check_progress#check_progress_invalid_cells_found#action_reveal_solution#solved_manually#finished#include_in_statistics
+1#1#0#"2014-05-11 20:37:35.542"#"2014-05-11 20:38:14.948"#38512#0#16#0#0#0#0#0#0#0#0#0#0#0#false#true#true#true
+2#2#0#"2014-05-11 20:38:37.738"#"2014-05-11 20:39:06.613"#28038#0#16#0#0#0#0#0#0#0#0#0#0#0#false#true#true#true
+3#3#0#"2014-05-11 20:39:25.897"#"2014-05-11 20:41:13.412"#106395#0#25#0#0#0#14#0#0#0#0#0#0#0#false#true#true#false
+4#3#1#"2014-05-11 21:54:18.148"#"2014-05-11 21:55:04.315"#153219#80000#5#19#1#0#0#1#2#1#1#0#0#0#false#false#false#true

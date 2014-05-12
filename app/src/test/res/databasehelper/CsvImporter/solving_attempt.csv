@@ -4,11 +4,13 @@
 // Note: Be aware that each table row consist of multiple lines in
 //       this file. For readibality an empty line and a comment is
 //       added for each new row.
+// -----------------------------------------------------------------
 
-_id|grid_id|date_created|date_updated|revision|data|status
+_id#grid_id#date_created#date_updated#revision#data#status
 
-// Start of row 1
-1|1|"2014-05-11 20:37:35.542"|"2014-05-11 20:38:15.088"|598|"GRID:false:false
+// Row 1
+
+1#1#"2014-05-11 20:37:35.542"#"2014-05-11 20:38:15.088"#598#"GRID:false:false
 CELL:0:3+:2:2::false:false:false
 CELL:1::1:1::false:false:false
 CELL:2:1-:3:3::false:false:false
@@ -48,10 +50,11 @@ CELL_CHANGE:[10:0::]
 CELL_CHANGE:[9:0::]
 CELL_CHANGE:[5:0::]
 CELL_CHANGE:[8:0::]
-"|100
+"#100
 
-// Start of row 2
-2|2|"2014-05-11 20:38:37.738"|"2014-05-11 20:39:06.807"|598|"GRID:false:false
+// Row 2
+
+2#2#"2014-05-11 20:38:37.738"#"2014-05-11 20:39:06.807"#598#"GRID:false:false
 CELL:0:2/:2:2::false:false:false
 CELL:1:3x:3:3::false:false:false
 CELL:2:4/:4:4::false:false:false
@@ -91,10 +94,11 @@ CELL_CHANGE:[14:0::]
 CELL_CHANGE:[13:0::]
 CELL_CHANGE:[9:0::]
 CELL_CHANGE:[12:0::]
-"|100
+"#100
 
-// Start of row 3
-3|3|"2014-05-11 20:39:25.897"|"2014-05-11 20:41:13.627"|598|"GRID:false:false
+// Row 3
+
+3#3#"2014-05-11 20:39:25.897"#"2014-05-11 20:41:13.627"#598#"GRID:false:false
 CELL:0:6+:2:2::false:false:false
 CELL:1::4:4::false:false:false
 CELL:2:4-:5:5::false:false:false
@@ -171,91 +175,4 @@ CELL_CHANGE:[10:0::]
 CELL_CHANGE:[12:0::]
 CELL_CHANGE:[7:0::]
 CELL_CHANGE:[8:0::]
-"|100
-
-// Start of row 4
-4|3|"2014-05-11 21:54:18.148"|"2014-05-11 21:55:34.75"|598|"GRID:true:false
-CELL:0:6+:2:0::false:false:false
-CELL:1::4:0::false:false:false
-CELL:2:4-:5:0::false:false:false
-CELL:3::1:1::false:false:true
-CELL:4:12x:3:0::false:false:false
-CELL:5:4+:3:0::false:false:false
-CELL:6:2-:5:0::false:false:false
-CELL:7:3+:1:0::false:false:false
-CELL:8:8x:2:0::false:false:false
-CELL:9::4:0::false:true:false
-CELL:10::1:0::false:false:false
-CELL:11::3:0::false:false:false
-CELL:12::2:0::false:false:false
-CELL:13::4:0::false:false:false
-CELL:14:4-:5:0::false:false:false
-CELL:15:10x:5:0::false:false:false
-CELL:16::2:0::false:false:false
-CELL:17:1-:4:0::false:false:false
-CELL:18:15x:3:3::false:false:false
-CELL:19::1:0::false:false:false
-CELL:20:4/:4:0::false:false:false
-CELL:21::1:0::false:false:false
-CELL:22::3:3::false:false:false
-CELL:23::5:5::false:false:false
-CELL:24:2:2:2::false:false:false
-CAGE:0:1:6:0,1,:false
-CAGE:1:2:4:2,3,:false
-CAGE:2:3:12:4,9,:false
-CAGE:3:1:4:5,10,:false
-CAGE:4:2:2:6,11,:false
-CAGE:5:1:3:7,12,:false
-CAGE:6:3:8:8,13,:false
-CAGE:7:2:4:14,19,:false
-CAGE:8:3:10:15,16,:false
-CAGE:9:2:1:17,22,:false
-CAGE:10:3:15:18,23,:false
-CAGE:11:4:4:20,21,:false
-CAGE:12:0:2:24,:false
-CELL_CHANGE:[24:0::]
-CELL_CHANGE:[18:0::]
-CELL_CHANGE:[23:0::]
-CELL_CHANGE:[22:0::]
-CELL_CHANGE:[3:0::]
-"|50
-
-// Start of row 5
-5|4|"2014-05-11 21:55:38.522"|"2014-05-11 21:55:38.522"|598|"GRID:true:false
-CELL:0:9+:4:0::false:false:false
-CELL:1::5:0::false:false:false
-CELL:2:6x:2:0::false:false:false
-CELL:3:12x:1:0::false:false:false
-CELL:4:2-:3:0::false:false:false
-CELL:5:2/:2:0::false:false:false
-CELL:6::1:0::false:false:false
-CELL:7::3:0::false:false:false
-CELL:8::4:0::false:false:false
-CELL:9::5:0::false:false:false
-CELL:10:3-:5:0::false:false:false
-CELL:11::2:0::false:false:false
-CELL:12::1:0::false:false:false
-CELL:13::3:0::false:false:false
-CELL:14:4/:4:0::false:false:false
-CELL:15:12x:3:0::false:false:false
-CELL:16::4:0::false:false:false
-CELL:17:3-:5:0::false:false:false
-CELL:18::2:0::false:false:false
-CELL:19::1:0::false:false:false
-CELL:20::1:0::false:false:false
-CELL:21:12x:3:0::false:false:false
-CELL:22::4:0::false:false:false
-CELL:23:10x:5:0::false:false:false
-CELL:24::2:0::false:false:false
-CAGE:0:1:9:0,1,:false
-CAGE:1:3:6:2,7,12,:false
-CAGE:2:3:12:3,8,13,:false
-CAGE:3:2:2:4,9,:false
-CAGE:4:4:2:5,6,:false
-CAGE:5:2:3:10,11,:false
-CAGE:6:4:4:14,19,:false
-CAGE:7:3:12:15,16,20,:false
-CAGE:8:2:3:17,18,:false
-CAGE:9:3:12:21,22,:false
-CAGE:10:3:10:23,24,:false
-"|0
+"#100
