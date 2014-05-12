@@ -212,7 +212,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		contentValues.put(KEY_FIRST_MOVE, gridStatistics.mFirstMove.toString());
 		contentValues.put(KEY_LAST_MOVE, gridStatistics.mLastMove.toString());
 		contentValues.put(KEY_INCLUDE_IN_STATISTICS,
-				gridStatistics.mIncludedInStatistics);
+						  Boolean.toString(gridStatistics.mIncludedInStatistics));
 
 		long id;
 		try {
