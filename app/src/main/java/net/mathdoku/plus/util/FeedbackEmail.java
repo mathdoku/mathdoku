@@ -14,8 +14,10 @@ import android.util.Log;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
+import net.mathdoku.plus.config.Config;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -263,38 +265,34 @@ public class FeedbackEmail {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
 								// Send log file
-								Intent i = new Intent(
+								Intent intent = new Intent(
 										Intent.ACTION_SEND_MULTIPLE);
-								i.setType("message/rfc822");
-								i.putExtra(Intent.EXTRA_EMAIL,
-										new String[] { "info@mathdoku.net" });
-								i
-										.putExtra(
-												Intent.EXTRA_SUBJECT,
-												mActivity
-														.getResources()
-														.getString(
-																R.string.feedback_email_subject));
-								i.putExtra(
-										Intent.EXTRA_TEXT,
-										mActivity.getResources().getString(
-												R.string.feedback_email_body));
+								intent.setType("message/rfc822");
+								intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"info@mathdoku.net"});
+								intent
+										.putExtra(Intent.EXTRA_SUBJECT, mActivity.getResources()
+												.getString(R.string.feedback_email_subject));
+								intent.putExtra(Intent.EXTRA_TEXT, mActivity.getResources()
+										.getString(R.string.feedback_email_body));
 
+								List<Uri> uris = new ArrayList<Uri>();
+								uris.add(FileProvider
+												 .getUri(FileProvider.SCREENDUMP_FILE_NAME));
 								if (createLogFile(FileProvider.FEEDBACK_LOG_FILE_NAME)) {
-									List<Uri> uris = new ArrayList<Uri>();
 									uris.add(FileProvider
 											.getUri(FileProvider.FEEDBACK_LOG_FILE_NAME));
-									uris.add(FileProvider
-											.getUri(FileProvider.SCREENDUMP_FILE_NAME));
-									i
-											.putParcelableArrayListExtra(
-													Intent.EXTRA_STREAM,
-													(ArrayList<? extends Parcelable>) uris);
 								}
+								if (Config.mAppMode == Config.AppMode.DEVELOPMENT && copyDatabase(FileProvider.DATABASE_FILE_NAME)) {
+									uris.add(FileProvider
+													 .getUri(FileProvider.DATABASE_FILE_NAME));
+								}
+								intent
+										.putParcelableArrayListExtra(Intent.EXTRA_STREAM,
+																	 (ArrayList<? extends Parcelable>) uris);
 								try {
 									mActivity.startActivity(Intent
 											.createChooser(
-													i,
+													intent,
 													mActivity
 															.getResources()
 															.getString(
@@ -344,5 +342,35 @@ public class FeedbackEmail {
 				PackageManager.MATCH_DEFAULT_ONLY);
 
 		return list.size() <= 0;
+	}
+
+	private boolean copyDatabase(String filename) {
+		File file = new File(mActivity.getFilesDir(), filename);
+		if (file.exists()) {
+			if (!file.delete()) {
+				return false;
+			}
+		}
+		try {
+			FileInputStream fin = new FileInputStream(mActivity.getDatabasePath(filename));
+			FileOutputStream fos = new FileOutputStream(file);
+			byte[] buffer = new byte[1024];
+			int len1 = 0;
+			while ((len1 = fin.read(buffer)) != -1) {
+				fos.write(buffer, 0, len1);
+			}
+			fin.close();
+			fos.close();
+		} catch (IOException e) {
+			Log
+					.d(TAG,
+					   "Error while copying database for feedback email.",
+					   e);
+			return false;
+		} finally {
+			close();
+		}
+
+		return true;
 	}
 }

@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.OpenableColumns;
 
+import net.mathdoku.plus.config.Config;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -33,6 +35,9 @@ public class FileProvider extends ContentProvider {
 	private static final int CHEATS_CHART_ID = 4;
 	public static final String CHEATS_CHART_FILE_NAME = "cheats.png";
 
+	private static final int DATABASE_ID = 5;
+	public static final String DATABASE_FILE_NAME = "MathDoku.sqlite";
+
 	private static final UriMatcher uriMatcher;
 
 	static {
@@ -44,6 +49,9 @@ public class FileProvider extends ContentProvider {
 				AVOIDABLE_MOVES_CHART_ID);
 		uriMatcher.addURI(PROVIDER_NAME, CHEATS_CHART_FILE_NAME,
 				CHEATS_CHART_ID);
+		if (Config.mAppMode == Config.AppMode.DEVELOPMENT) {
+			uriMatcher.addURI(PROVIDER_NAME, DATABASE_FILE_NAME, DATABASE_ID);
+		}
 	}
 
 	@Override
