@@ -46,6 +46,9 @@ public class DatabaseTableDefinition {
 			throw new DatabaseException(
 					"At least one column has to be specified.");
 		}
+
+		// Array with column names is pre filled as method getColumnNames is
+		// called often.
 		columnNames = new String[databaseColumnDefinitions.size()];
 		int index = 0;
 		for (DatabaseColumnDefinition databaseColumnDefinition : databaseColumnDefinitions) {
@@ -63,6 +66,22 @@ public class DatabaseTableDefinition {
 					"Cannot be called until database table has been composed.");
 		}
 		return columnNames;
+	}
+
+	public DataType[] getColumnTypes() {
+		if (!isComposed()) {
+			new IllegalStateException(
+					"Cannot be called until database table has been composed.");
+		}
+
+		// Array with column types is not pre filled as method getColumnTypes is
+		// only called a few times when running the unit tests.
+		DataType[] columnTypes = new DataType[databaseColumnDefinitions.size()];
+		int index = 0;
+		for (DatabaseColumnDefinition databaseColumnDefinition : databaseColumnDefinitions) {
+			columnTypes[index++] = databaseColumnDefinition.getDataType();
+		}
+		return columnTypes;
 	}
 
 	public String getCreateTableSQL() {
@@ -84,5 +103,4 @@ public class DatabaseTableDefinition {
 		query.append(")");
 		return query.toString();
 	}
-
 }

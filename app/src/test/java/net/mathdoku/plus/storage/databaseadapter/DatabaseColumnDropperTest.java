@@ -37,7 +37,7 @@ public class DatabaseColumnDropperTest {
 		}
 
 		@Override
-		protected DatabaseTableDefinition getDatabaseTableDefinition() {
+		public DatabaseTableDefinition getDatabaseTableDefinition() {
 			DatabaseTableDefinition databaseTableDefinition = new DatabaseTableDefinition(
 					"TestTable");
 			databaseTableDefinition.addColumn(new DatabaseColumnDefinition(

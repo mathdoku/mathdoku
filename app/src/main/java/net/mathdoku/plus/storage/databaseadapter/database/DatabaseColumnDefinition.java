@@ -82,4 +82,8 @@ public class DatabaseColumnDefinition {
 	public String getName() {
 		return columnName;
 	}
+
+	public DataType getDataType() {
+		return dataType;
+	}
 }

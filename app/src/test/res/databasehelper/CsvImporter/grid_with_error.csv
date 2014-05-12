@@ -1,0 +1,12 @@
+"// Importing grid rows for unit tests for class CsvImporterTest.",,,,,,,,,,,
+,,,,,,,,,,,
+"_id","definition","grid_size","date_created","game_seed","generator_revision_number","puzzle_complexity","hide_operators","max_cage_result","max_cage_size",,"REMARK"
+1,"0101020203030301",4,"2014-05-11 16:59:00.001",1,568,"NORMAL","true",1000,5,,"Dummy data"
+2,"0101020203030301",4,"2014-05-11 16:59:00.001",1,568,"NORMAL","true",1000,5,,
+"// Comment should be ignore as well as empty line",,,,,,,,,,,
+,,,,,,,,,,,
+3,"0101020203030301",4,"2014-05-11 16:59:00.001",1,568,"NORMAL","true",1000,5,,
+"// Test should fail on next line as “eror” is not a valid integer value for column grid_size.",,,,,,,,,,,
+4,"0101020203030301","error",,,,,,,,,"Line is not properly finished"
+,,,,,,,,,,,
+5,"0101020203030301",4,"2014-05-11 16:59:00.001",1,568,"NORMAL","true",1000,5,,

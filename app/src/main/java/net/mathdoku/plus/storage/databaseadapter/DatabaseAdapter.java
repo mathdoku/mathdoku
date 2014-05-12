@@ -55,7 +55,7 @@ public abstract class DatabaseAdapter {
 
 	protected abstract void upgradeTable(int oldVersion, int newVersion);
 
-	protected abstract DatabaseTableDefinition getDatabaseTableDefinition();
+	public abstract DatabaseTableDefinition getDatabaseTableDefinition();
 
 	public String getTableName() {
 		return getDatabaseTableDefinition().getTableName();

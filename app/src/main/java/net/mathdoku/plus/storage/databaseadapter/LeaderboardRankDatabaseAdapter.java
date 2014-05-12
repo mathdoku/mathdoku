@@ -119,7 +119,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	}
 
 	@Override
-	protected DatabaseTableDefinition getDatabaseTableDefinition() {
+	public DatabaseTableDefinition getDatabaseTableDefinition() {
 		return DATABASE_TABLE;
 	}
 

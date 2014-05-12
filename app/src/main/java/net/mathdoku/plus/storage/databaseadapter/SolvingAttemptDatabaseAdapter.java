@@ -85,7 +85,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	}
 
 	@Override
-	protected DatabaseTableDefinition getDatabaseTableDefinition() {
+	public DatabaseTableDefinition getDatabaseTableDefinition() {
 		return DATABASE_TABLE;
 	}
 

@@ -47,7 +47,7 @@ public class DatabaseAdapterTest {
 		}
 
 		@Override
-		protected DatabaseTableDefinition getDatabaseTableDefinition() {
+		public DatabaseTableDefinition getDatabaseTableDefinition() {
 			databaseTableDefinition = new DatabaseTableDefinition(TABLE_NAME);
 			databaseTableDefinition.addColumn(new DatabaseColumnDefinition(
 					"column", DataType.STRING));

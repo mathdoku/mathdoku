@@ -36,12 +36,19 @@ android {
 
 	applicationVariants.all { variant ->
         variant.mergeResources.doFirst {
-            println "Copy templates from . /src-templates/${variant.name} to source dir."
+            println "Copy templates from './src-templates/${variant.name}' to source dir."
 
             copy {
                 from "./src-templates/${variant.name}"
                 into '.'
                 include '**/*'
+            }
+
+            println "Copy assets from './src/test/res' to '.build/assets/${variant.name}'."
+
+            copy {
+                from "./src/test/res"
+                into "./build/assets/${variant.name}"
             }
         }
     }
