@@ -22,14 +22,32 @@ public class ConditionQueryHelper extends QueryHelper {
 		return getFieldOperatorValue(column, LESS_THAN_OPERATOR, value);
 	}
 
-	public void addOperand(String operand) {
-		ParameterValidator.validateNotNullOrEmpty(operand);
-		operands.add(operand);
+	public static String getFieldBetweenValues(String column, int minValue,
+											   int maxValue) {
+		ParameterValidator.validateNotNullOrEmpty(column);
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(column);
+		stringBuilder.append(" BETWEEN ");
+		stringBuilder.append(minValue);
+		stringBuilder.append(SPACE);
+		stringBuilder.append(AND_OPERATOR);
+		stringBuilder.append(SPACE);
+		stringBuilder.append(maxValue);
+		return stringBuilder.toString();
 	}
 
-	public void setAndOperator() {
+	public ConditionQueryHelper addOperand(String operand) {
+		ParameterValidator.validateNotNullOrEmpty(operand);
+		operands.add(operand);
+
+		return this;
+	}
+
+	public ConditionQueryHelper setAndOperator() {
 		validateNumberOfOperands();
 		operator = AND_OPERATOR;
+
+		return this;
 	}
 
 	private void validateNumberOfOperands() {
@@ -38,17 +56,25 @@ public class ConditionQueryHelper extends QueryHelper {
 		}
 	}
 
-	public void setOrOperator() {
+	public ConditionQueryHelper setOrOperator() {
 		validateNumberOfOperands();
 		operator = OR_OPERATOR;
+
+		return this;
 	}
 
 	@Override
 	public String toString() {
-		validateNumberOfOperands();
-		query.append(" (");
-		query.append(joinStringsSeparatedWith(operands, operator));
-		query.append(")");
+		if (operands.size() < 1) {
+			throw new IllegalStateException("At least one operand expected.");
+		}
+		if (operands.size() == 1) {
+			query.append(operands.get(0));
+		} else {
+			query.append(" (");
+			query.append(joinStringsSeparatedWith(operands, operator));
+			query.append(")");
+		}
 
 		return query.toString();
 	}

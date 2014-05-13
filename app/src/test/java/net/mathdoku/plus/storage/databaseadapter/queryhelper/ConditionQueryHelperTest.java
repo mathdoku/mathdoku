@@ -25,6 +25,27 @@ public class ConditionQueryHelperTest {
 				is("`FIELD` < 'VALUE'"));
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void addBetweenOperand_FieldIsNull_ThrowsIllegalStateException()
+			throws Exception {
+		ConditionQueryHelper.getFieldBetweenValues(null, Integer.MIN_VALUE, Integer.MAX_VALUE);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void addBetweenOperand_FieldIsEmpty_ThrowsIllegalStateException()
+			throws Exception {
+		ConditionQueryHelper.getFieldBetweenValues("", Integer.MIN_VALUE, Integer.MAX_VALUE);
+	}
+
+	@Test
+	public void addBetweenOperand_OperandsNotNullOrEmpty_ThrowsIllegalStateException()
+			throws Exception {
+		assertThat(
+				ConditionQueryHelper
+						.getFieldBetweenValues("FIELD", 123, 456)
+						.toString(), is("FIELD BETWEEN 123 AND 456"));
+	}
+
 	@Test(expected = IllegalStateException.class)
 	public void setAndOperator_NoOperandsSet_ThrowsIllegalStateException()
 			throws Exception {
@@ -95,10 +116,8 @@ public class ConditionQueryHelperTest {
 		conditionQueryHelper.toString();
 	}
 
-	@Test(expected = IllegalStateException.class)
 	public void toString_1OperandSet_ThrowsIllegalStateException()
 			throws Exception {
-		conditionQueryHelper.addOperand("OPERAND1");
-		conditionQueryHelper.toString();
+		assertThat(conditionQueryHelper.addOperand("OPERAND1").toString(),is("OPERAND1"));
 	}
 }
