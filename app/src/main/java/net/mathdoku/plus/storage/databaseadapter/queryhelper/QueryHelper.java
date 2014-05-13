@@ -51,6 +51,11 @@ public abstract class QueryHelper {
 				String.valueOf(value));
 	}
 
+	public static String getFieldEqualsValue(String column, boolean value) {
+		return getFieldOperatorEscapedString(column, EQUALS_OPERATOR,
+											 DatabaseUtil.toQuotedSQLiteString(value));
+	}
+
 	public String toString() {
 		return query.toString();
 	}

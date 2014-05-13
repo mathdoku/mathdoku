@@ -72,6 +72,12 @@ public class QueryHelperTest {
 				is("`FIELD` = 23"));
 	}
 
+	@Test
+	public void getFieldEqualsValue_BooleanValue_Success() throws Exception {
+		assertThat(QueryHelper.getFieldEqualsValue("FIELD", true),
+				   is("`FIELD` = `true`"));
+	}
+
 	@Test(expected = IllegalArgumentException.class)
 	public void joinStringsSeparatedWith_StringIsNull_ThrowsIllegalArgumentException()
 			throws Exception {
