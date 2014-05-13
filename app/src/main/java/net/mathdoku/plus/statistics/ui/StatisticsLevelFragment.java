@@ -21,6 +21,7 @@ import net.mathdoku.plus.statistics.HistoricStatistics;
 import net.mathdoku.plus.statistics.HistoricStatistics.Scale;
 import net.mathdoku.plus.statistics.HistoricStatistics.Series;
 import net.mathdoku.plus.storage.databaseadapter.StatisticsDatabaseAdapter;
+import net.mathdoku.plus.storage.selector.CumulativeStatisticsSelector;
 import net.mathdoku.plus.util.Util;
 
 import org.achartengine.ChartFactory;
@@ -73,10 +74,8 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		mPreferences.mSharedPreferences
 				.registerOnSharedPreferenceChangeListener(this);
 
-		// Retrieve statistics from database
-		mStatisticsDatabaseAdapter = new StatisticsDatabaseAdapter();
-		mCumulativeStatistics = mStatisticsDatabaseAdapter
-				.getCumulativeStatistics(mMinGridSize, mMaxGridSize);
+		mCumulativeStatistics = new CumulativeStatisticsSelector(mMinGridSize, mMaxGridSize)
+				.getCumulativeStatistics();
 
 		// Get layout where charts will be drawn and the inflater for
 		// creating new statistics sections.
@@ -223,7 +222,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 	 */
 	private boolean createElapsedTimeHistoryChart() {
 		// Retrieve the data
-		HistoricStatistics historicStatistics = mStatisticsDatabaseAdapter
+		HistoricStatistics historicStatistics = new StatisticsDatabaseAdapter()
 				.getHistoricData(mMinGridSize, mMaxGridSize);
 
 		// The number of entries to be displayed is restricted to the maximum

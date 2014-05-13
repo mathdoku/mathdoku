@@ -9,7 +9,6 @@ import android.util.Log;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
-import net.mathdoku.plus.statistics.CumulativeStatistics;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.statistics.HistoricStatistics;
 import net.mathdoku.plus.statistics.HistoricStatistics.Series;
@@ -17,7 +16,6 @@ import net.mathdoku.plus.storage.databaseadapter.database.DataType;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseColumnDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseForeignKeyDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseProjection;
-import net.mathdoku.plus.storage.databaseadapter.database.DatabaseProjection.Aggregation;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseTableDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil;
 import net.mathdoku.plus.storage.databaseadapter.queryhelper.OrderByHelper;
@@ -39,39 +37,38 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	private static final DatabaseTableDefinition DATABASE_TABLE = defineTable();
 
 	// Columns for table statistics
-	private static final String TABLE_NAME = "statistics";
-	private static final String KEY_ROWID = "_id";
-	private static final String KEY_GRID_ID = "grid_id";
-	private static final String KEY_REPLAY = "replay";
-	private static final String KEY_FIRST_MOVE = "first_move";
-	private static final String KEY_LAST_MOVE = "last_move";
-	private static final String KEY_ELAPSED_TIME = "elapsed_time";
-	private static final String KEY_CHEAT_PENALTY_TIME = "cheat_penalty_time";
-	private static final String KEY_CELLS_FILLED = "cells_filled";
-	private static final String KEY_CELLS_EMPTY = "cells_empty";
-	private static final String KEY_CELLS_REVEALED = "cells_revealed";
-	private static final String KEY_USER_VALUES_REPLACED = "user_value_replaced";
-	private static final String KEY_POSSIBLES = "possibles";
-	private static final String KEY_ACTION_UNDOS = "action_undos";
-	private static final String KEY_ACTION_CLEAR_CELL = "action_clear_cells";
-	private static final String KEY_ACTION_CLEAR_GRID = "action_clear_grid";
-	private static final String KEY_ACTION_REVEAL_CELL = "action_reveal_cell";
-	private static final String KEY_ACTION_REVEAL_OPERATOR = "action_reveal_operators";
-	private static final String KEY_ACTION_CHECK_PROGRESS = "action_check_progress";
-	private static final String KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND = "check_progress_invalid_cells_found";
-	private static final String KEY_ACTION_REVEAL_SOLUTION = "action_reveal_solution";
-	private static final String KEY_SOLVED_MANUALLY = "solved_manually";
-	private static final String KEY_FINISHED = "finished";
+	public static final String TABLE_NAME = "statistics";
+	public static final String KEY_ROWID = "_id";
+	public static final String KEY_GRID_ID = "grid_id";
+	public static final String KEY_REPLAY = "replay";
+	public static final String KEY_FIRST_MOVE = "first_move";
+	public static final String KEY_LAST_MOVE = "last_move";
+	public static final String KEY_ELAPSED_TIME = "elapsed_time";
+	public static final String KEY_CHEAT_PENALTY_TIME = "cheat_penalty_time";
+	public static final String KEY_CELLS_FILLED = "cells_filled";
+	public static final String KEY_CELLS_EMPTY = "cells_empty";
+	public static final String KEY_CELLS_REVEALED = "cells_revealed";
+	public static final String KEY_USER_VALUES_REPLACED = "user_value_replaced";
+	public static final String KEY_POSSIBLES = "possibles";
+	public static final String KEY_ACTION_UNDOS = "action_undos";
+	public static final String KEY_ACTION_CLEAR_CELL = "action_clear_cells";
+	public static final String KEY_ACTION_CLEAR_GRID = "action_clear_grid";
+	public static final String KEY_ACTION_REVEAL_CELL = "action_reveal_cell";
+	public static final String KEY_ACTION_REVEAL_OPERATOR = "action_reveal_operators";
+	public static final String KEY_ACTION_CHECK_PROGRESS = "action_check_progress";
+	public static final String KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND = "check_progress_invalid_cells_found";
+	public static final String KEY_ACTION_REVEAL_SOLUTION = "action_reveal_solution";
+	public static final String KEY_SOLVED_MANUALLY = "solved_manually";
+	public static final String KEY_FINISHED = "finished";
 
 	// For each grid only the latest completed solving attempt should be
 	// included in the statistics. Only in case no finished solving attempt
 	// exists for a grid, the latest unfinished solving attempt should be used.
 	// For ease and speed of retrieving it is stored whether this solving
 	// attempt should be included or excluded from the statistics.
-	private static final String KEY_INCLUDE_IN_STATISTICS = "include_in_statistics";
+	public static final String KEY_INCLUDE_IN_STATISTICS = "include_in_statistics";
 
 	// DatabaseProjection for retrieve the cumulative and historic statistics
-	private static DatabaseProjection mCumulativeStatisticsDatabaseProjection = null;
 	private static DatabaseProjection mHistoricStatisticsDatabaseProjection = null;
 
 	private static DatabaseTableDefinition defineTable() {
@@ -176,7 +173,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	}
 
 	@Override
-	protected DatabaseTableDefinition getDatabaseTableDefinition() {
+	public DatabaseTableDefinition getDatabaseTableDefinition() {
 		return DATABASE_TABLE;
 	}
 
@@ -383,239 +380,6 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	}
 
 	/**
-	 * Get cumulative statistics for all grids with a given grid size.
-	 * 
-	 * @param minGridSize
-	 *            The minimum size of the grid for which the cumulative
-	 *            statistics have to be determined.
-	 * @param maxGridSize
-	 *            The maximum size of the grid for which the cumulative
-	 *            statistics have to be determined. Use same value as minimum
-	 *            grid size to retrieve statistics for 1 specific grid size.
-	 * @return The cumulative statistics for the given grid size.
-	 */
-	public CumulativeStatistics getCumulativeStatistics(int minGridSize,
-			int maxGridSize) {
-		// Build projection if not yet done
-		if (mCumulativeStatisticsDatabaseProjection == null) {
-			mCumulativeStatisticsDatabaseProjection = new DatabaseProjection();
-
-			// Grid size minimum and maximum
-			mCumulativeStatisticsDatabaseProjection.put(Aggregation.MIN,
-					GridDatabaseAdapter.TABLE_NAME,
-					GridDatabaseAdapter.KEY_GRID_SIZE);
-			mCumulativeStatisticsDatabaseProjection.put(Aggregation.MAX,
-					GridDatabaseAdapter.TABLE_NAME,
-					GridDatabaseAdapter.KEY_GRID_SIZE);
-
-			// First and last move
-			mCumulativeStatisticsDatabaseProjection.put(Aggregation.MIN,
-					TABLE_NAME, KEY_FIRST_MOVE);
-			mCumulativeStatisticsDatabaseProjection.put(Aggregation.MAX,
-					TABLE_NAME, KEY_LAST_MOVE);
-
-			// Total, minimum, average, and maximum elapsed time
-			mCumulativeStatisticsDatabaseProjection.put(Aggregation.SUM,
-					TABLE_NAME, KEY_ELAPSED_TIME);
-			mCumulativeStatisticsDatabaseProjection.put(Aggregation.MIN,
-					TABLE_NAME, KEY_ELAPSED_TIME);
-			mCumulativeStatisticsDatabaseProjection.put(Aggregation.AVG,
-					TABLE_NAME, KEY_ELAPSED_TIME);
-			mCumulativeStatisticsDatabaseProjection.put(Aggregation.MAX,
-					TABLE_NAME, KEY_ELAPSED_TIME);
-
-			// Total, minimum, average, and maximum penalty time
-			mCumulativeStatisticsDatabaseProjection.put(Aggregation.SUM,
-					TABLE_NAME, KEY_CHEAT_PENALTY_TIME);
-			mCumulativeStatisticsDatabaseProjection.put(Aggregation.MIN,
-					TABLE_NAME, KEY_CHEAT_PENALTY_TIME);
-			mCumulativeStatisticsDatabaseProjection.put(Aggregation.AVG,
-					TABLE_NAME, KEY_CHEAT_PENALTY_TIME);
-			mCumulativeStatisticsDatabaseProjection.put(Aggregation.MAX,
-					TABLE_NAME, KEY_CHEAT_PENALTY_TIME);
-
-			// not (yet) used KEY_CELLS_USER_VALUE_FILLED,
-			// not (yet) used KEY_CELLS_USER_VALUES_EMPTY
-			// not (yet) used KEY_CELLS_USER_VALUES_REPLACED,
-
-			// Totals of avoidable moves
-			mCumulativeStatisticsDatabaseProjection.put(Aggregation.SUM,
-					TABLE_NAME, KEY_POSSIBLES);
-			mCumulativeStatisticsDatabaseProjection.put(Aggregation.SUM,
-					TABLE_NAME, KEY_ACTION_UNDOS);
-			mCumulativeStatisticsDatabaseProjection.put(Aggregation.SUM,
-					TABLE_NAME, KEY_ACTION_CLEAR_CELL);
-			mCumulativeStatisticsDatabaseProjection.put(Aggregation.SUM,
-					TABLE_NAME, KEY_ACTION_CLEAR_GRID);
-
-			// Totals per cheat
-			mCumulativeStatisticsDatabaseProjection.put(Aggregation.SUM,
-					TABLE_NAME, KEY_ACTION_REVEAL_CELL);
-			mCumulativeStatisticsDatabaseProjection.put(Aggregation.SUM,
-					TABLE_NAME, KEY_ACTION_REVEAL_OPERATOR);
-			mCumulativeStatisticsDatabaseProjection.put(Aggregation.SUM,
-					TABLE_NAME, KEY_ACTION_CHECK_PROGRESS);
-			mCumulativeStatisticsDatabaseProjection.put(Aggregation.SUM,
-					TABLE_NAME, KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND);
-
-			// Totals per status of game'
-			mCumulativeStatisticsDatabaseProjection.put(
-					Aggregation.COUNTIF_TRUE, TABLE_NAME,
-					KEY_ACTION_REVEAL_SOLUTION);
-			mCumulativeStatisticsDatabaseProjection.put(
-					Aggregation.COUNTIF_TRUE, TABLE_NAME, KEY_SOLVED_MANUALLY);
-			mCumulativeStatisticsDatabaseProjection.put(
-					Aggregation.COUNTIF_TRUE, TABLE_NAME, KEY_FINISHED);
-
-			// Total games
-			mCumulativeStatisticsDatabaseProjection.put(Aggregation.COUNT,
-					TABLE_NAME, KEY_ROWID);
-		}
-
-		SQLiteQueryBuilder sqliteQueryBuilder = new SQLiteQueryBuilder();
-		sqliteQueryBuilder
-				.setProjectionMap(mCumulativeStatisticsDatabaseProjection);
-		sqliteQueryBuilder.setTables(GridDatabaseAdapter.TABLE_NAME
-				+ " INNER JOIN "
-				+ TABLE_NAME
-				+ " ON "
-				+ GridDatabaseAdapter
-						.getPrefixedColumnName(GridDatabaseAdapter.KEY_ROWID)
-				+ " = " + getPrefixedColumnName(KEY_GRID_ID));
-		String selection = GridDatabaseAdapter
-				.getPrefixedColumnName(GridDatabaseAdapter.KEY_GRID_SIZE)
-				+ " BETWEEN "
-				+ minGridSize
-				+ " AND "
-				+ maxGridSize
-				+ " AND "
-				+ KEY_INCLUDE_IN_STATISTICS + " = 'true'";
-
-		if (DEBUG_SQL) {
-			String sql = sqliteQueryBuilder
-					.buildQuery(mCumulativeStatisticsDatabaseProjection
-							.getAllColumnNames(), selection, null, null, null,
-							null);
-			Log.i(TAG, sql);
-		}
-
-		Cursor cursor;
-		try {
-			cursor = sqliteQueryBuilder
-					.query(sqliteDatabase,
-							mCumulativeStatisticsDatabaseProjection
-									.getAllColumnNames(), selection, null,
-							null, null, null);
-		} catch (SQLiteException e) {
-			throw new DatabaseAdapterException(
-					String.format(
-							"Cannot retrieve the cumulative statistics for grids with sizes '%d-%d' from database.",
-							minGridSize, maxGridSize), e);
-		}
-
-		if (cursor == null || !cursor.moveToFirst()) {
-			// Record can not be processed.
-			return null;
-		}
-
-		// Convert cursor record to a grid statics object.
-		CumulativeStatistics cumulativeStatistics = new CumulativeStatistics();
-
-		// Grid size minimum and maximum
-		cumulativeStatistics.mMinGridSize = cursor
-				.getInt(cursor.getColumnIndexOrThrow(Aggregation.MIN
-						.getAggregationColumnNameForColumn(GridDatabaseAdapter.KEY_GRID_SIZE)));
-		cumulativeStatistics.mMaxGridSize = cursor
-				.getInt(cursor.getColumnIndexOrThrow(Aggregation.MAX
-						.getAggregationColumnNameForColumn(GridDatabaseAdapter.KEY_GRID_SIZE)));
-
-		// First and last move
-		cumulativeStatistics.mMinFirstMove = DatabaseUtil.toSQLTimestamp(cursor
-				.getString(cursor.getColumnIndexOrThrow(Aggregation.MIN
-						.getAggregationColumnNameForColumn(KEY_FIRST_MOVE))));
-		cumulativeStatistics.mMaxLastMove = DatabaseUtil.toSQLTimestamp(cursor
-				.getString(cursor.getColumnIndexOrThrow(Aggregation.MAX
-						.getAggregationColumnNameForColumn(KEY_LAST_MOVE))));
-
-		// Total, minimum, average, and maximum elapsed time
-		cumulativeStatistics.mSumElapsedTime = cursor.getInt(cursor
-				.getColumnIndexOrThrow(Aggregation.SUM
-						.getAggregationColumnNameForColumn(KEY_ELAPSED_TIME)));
-		cumulativeStatistics.mAvgElapsedTime = cursor.getInt(cursor
-				.getColumnIndexOrThrow(Aggregation.AVG
-						.getAggregationColumnNameForColumn(KEY_ELAPSED_TIME)));
-		cumulativeStatistics.mMinElapsedTime = cursor.getInt(cursor
-				.getColumnIndexOrThrow(Aggregation.MIN
-						.getAggregationColumnNameForColumn(KEY_ELAPSED_TIME)));
-		cumulativeStatistics.mMaxElapsedTime = cursor.getInt(cursor
-				.getColumnIndexOrThrow(Aggregation.MAX
-						.getAggregationColumnNameForColumn(KEY_ELAPSED_TIME)));
-
-		// Total, minimum, average, and maximum penalty time
-		cumulativeStatistics.mSumCheatPenaltyTime = cursor
-				.getInt(cursor.getColumnIndexOrThrow(Aggregation.SUM
-						.getAggregationColumnNameForColumn(KEY_CHEAT_PENALTY_TIME)));
-		cumulativeStatistics.mAvgCheatPenaltyTime = cursor
-				.getInt(cursor.getColumnIndexOrThrow(Aggregation.AVG
-						.getAggregationColumnNameForColumn(KEY_CHEAT_PENALTY_TIME)));
-		cumulativeStatistics.mMinCheatPenaltyTime = cursor
-				.getInt(cursor.getColumnIndexOrThrow(Aggregation.MIN
-						.getAggregationColumnNameForColumn(KEY_CHEAT_PENALTY_TIME)));
-		cumulativeStatistics.mMaxCheatPenaltyTime = cursor
-				.getInt(cursor.getColumnIndexOrThrow(Aggregation.MAX
-						.getAggregationColumnNameForColumn(KEY_CHEAT_PENALTY_TIME)));
-
-		// not (yet) used KEY_CELLS_USER_VALUE_FILLED,
-		// not (yet) used KEY_CELLS_USER_VALUES_EMPTY
-		// not (yet) used KEY_CELLS_USER_VALUES_REPLACED,
-
-		// Totals of avoidable moves
-		cumulativeStatistics.mSumMaybeValue = cursor.getInt(cursor
-				.getColumnIndexOrThrow(Aggregation.SUM
-						.getAggregationColumnNameForColumn(KEY_POSSIBLES)));
-		cumulativeStatistics.mSumActionUndoMove = cursor.getInt(cursor
-				.getColumnIndexOrThrow(Aggregation.SUM
-						.getAggregationColumnNameForColumn(KEY_ACTION_UNDOS)));
-		cumulativeStatistics.mSumActionClearCell = cursor
-				.getInt(cursor.getColumnIndexOrThrow(Aggregation.SUM
-						.getAggregationColumnNameForColumn(KEY_ACTION_CLEAR_CELL)));
-		cumulativeStatistics.mSumActionClearGrid = cursor
-				.getInt(cursor.getColumnIndexOrThrow(Aggregation.SUM
-						.getAggregationColumnNameForColumn(KEY_ACTION_CLEAR_GRID)));
-
-		// Totals per cheat
-		cumulativeStatistics.mSumActionRevealCell = cursor
-				.getInt(cursor.getColumnIndexOrThrow(Aggregation.SUM
-						.getAggregationColumnNameForColumn(KEY_ACTION_REVEAL_CELL)));
-		cumulativeStatistics.mSumActionRevealOperator = cursor
-				.getInt(cursor.getColumnIndexOrThrow(Aggregation.SUM
-						.getAggregationColumnNameForColumn(KEY_ACTION_REVEAL_OPERATOR)));
-		cumulativeStatistics.mSumActionCheckProgress = cursor
-				.getInt(cursor.getColumnIndexOrThrow(Aggregation.SUM
-						.getAggregationColumnNameForColumn(KEY_ACTION_CHECK_PROGRESS)));
-		cumulativeStatistics.mSumCheckProgressInvalidCellsFound = cursor
-				.getInt(cursor.getColumnIndexOrThrow(Aggregation.SUM
-						.getAggregationColumnNameForColumn(KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND)));
-
-		// Totals per status of game
-		cumulativeStatistics.mCountSolutionRevealed = cursor
-				.getInt(cursor.getColumnIndexOrThrow(Aggregation.COUNTIF_TRUE
-						.getAggregationColumnNameForColumn(KEY_ACTION_REVEAL_SOLUTION)));
-		cumulativeStatistics.mCountSolvedManually = cursor
-				.getInt(cursor.getColumnIndexOrThrow(Aggregation.COUNTIF_TRUE
-						.getAggregationColumnNameForColumn(KEY_SOLVED_MANUALLY)));
-		cumulativeStatistics.mCountFinished = cursor.getInt(cursor
-				.getColumnIndexOrThrow(Aggregation.COUNTIF_TRUE
-						.getAggregationColumnNameForColumn(KEY_FINISHED)));
-		cumulativeStatistics.mCountStarted = cursor.getInt(cursor
-				.getColumnIndexOrThrow(Aggregation.COUNT
-						.getAggregationColumnNameForColumn(KEY_ROWID)));
-
-		cursor.close();
-		return cumulativeStatistics;
-	}
-
-	/**
 	 * Get the historic statistics for the given column for all grids with a
 	 * given grid size.
 	 * 
@@ -782,7 +546,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 * @return The prefixed column name.
 	 */
 	@SuppressWarnings("SameParameterValue")
-	private static String getPrefixedColumnName(String column) {
+	public static String getPrefixedColumnName(String column) {
 		return TABLE_NAME + "." + column;
 	}
 

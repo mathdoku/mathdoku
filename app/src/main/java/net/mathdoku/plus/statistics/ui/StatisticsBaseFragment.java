@@ -15,7 +15,6 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import net.mathdoku.plus.R;
-import net.mathdoku.plus.storage.databaseadapter.StatisticsDatabaseAdapter;
 
 import org.achartengine.GraphicalView;
 import org.achartengine.renderer.SimpleSeriesRenderer;
@@ -28,9 +27,6 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	private static final String TAG = StatisticsBaseFragment.class.getName();
 
 	protected LinearLayout mChartsLayout;
-
-	// Database adapter for the statistics data
-	StatisticsDatabaseAdapter mStatisticsDatabaseAdapter;
 
 	// Text size for body text
 	protected int mDefaultTextSize;
