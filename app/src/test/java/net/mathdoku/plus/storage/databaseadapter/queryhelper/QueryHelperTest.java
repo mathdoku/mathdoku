@@ -75,7 +75,7 @@ public class QueryHelperTest {
 	@Test
 	public void getFieldEqualsValue_BooleanValue_Success() throws Exception {
 		assertThat(QueryHelper.getFieldEqualsValue("FIELD", true),
-				   is("`FIELD` = `true`"));
+				   is("`FIELD` = 'true'"));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
