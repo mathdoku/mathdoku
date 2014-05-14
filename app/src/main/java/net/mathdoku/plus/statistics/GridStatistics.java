@@ -268,4 +268,169 @@ public class GridStatistics {
 	public void setLastMove(long datetime) {
 		mLastMove = new java.sql.Timestamp(datetime);
 	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder("GridStatistics{");
+		sb.append("mId=")
+				.append(mId);
+		sb.append(", mGridId=")
+				.append(mGridId);
+		sb.append(", mReplayCount=")
+				.append(mReplayCount);
+		sb.append(", mFirstMove=")
+				.append(mFirstMove);
+		sb.append(", mLastMove=")
+				.append(mLastMove);
+		sb.append(", mElapsedTime=")
+				.append(mElapsedTime);
+		sb.append(", mCheatPenaltyTime=")
+				.append(mCheatPenaltyTime);
+		sb.append(", mEnteredValueReplaced=")
+				.append(mEnteredValueReplaced);
+		sb.append(", mMaybeValue=")
+				.append(mMaybeValue);
+		sb.append(", mActionUndoMove=")
+				.append(mActionUndoMove);
+		sb.append(", mActionClearCell=")
+				.append(mActionClearCell);
+		sb.append(", mActionClearGrid=")
+				.append(mActionClearGrid);
+		sb.append(", mActionRevealCell=")
+				.append(mActionRevealCell);
+		sb.append(", mActionRevealOperator=")
+				.append(mActionRevealOperator);
+		sb.append(", mActionCheckProgress=")
+				.append(mActionCheckProgress);
+		sb.append(", mCheckProgressInvalidCellsFound=")
+				.append(mCheckProgressInvalidCellsFound);
+		sb.append(", mSolutionRevealed=")
+				.append(mSolutionRevealed);
+		sb.append(", mCellsFilled=")
+				.append(mCellsFilled);
+		sb.append(", mCellsEmpty=")
+				.append(mCellsEmpty);
+		sb.append(", mCellsRevealed=")
+				.append(mCellsRevealed);
+		sb.append(", mSolvedManually=")
+				.append(mSolvedManually);
+		sb.append(", mFinished=")
+				.append(mFinished);
+		sb.append(", mIncludedInStatistics=")
+				.append(mIncludedInStatistics);
+		sb.append('}');
+		return sb.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof GridStatistics)) {
+			return false;
+		}
+
+		GridStatistics that = (GridStatistics) o;
+
+		if (mActionCheckProgress != that.mActionCheckProgress) {
+			return false;
+		}
+		if (mActionClearCell != that.mActionClearCell) {
+			return false;
+		}
+		if (mActionClearGrid != that.mActionClearGrid) {
+			return false;
+		}
+		if (mActionRevealCell != that.mActionRevealCell) {
+			return false;
+		}
+		if (mActionRevealOperator != that.mActionRevealOperator) {
+			return false;
+		}
+		if (mActionUndoMove != that.mActionUndoMove) {
+			return false;
+		}
+		if (mCellsEmpty != that.mCellsEmpty) {
+			return false;
+		}
+		if (mCellsFilled != that.mCellsFilled) {
+			return false;
+		}
+		if (mCellsRevealed != that.mCellsRevealed) {
+			return false;
+		}
+		if (mCheatPenaltyTime != that.mCheatPenaltyTime) {
+			return false;
+		}
+		if (mCheckProgressInvalidCellsFound != that.mCheckProgressInvalidCellsFound) {
+			return false;
+		}
+		if (mElapsedTime != that.mElapsedTime) {
+			return false;
+		}
+		if (mEnteredValueReplaced != that.mEnteredValueReplaced) {
+			return false;
+		}
+		if (mFinished != that.mFinished) {
+			return false;
+		}
+		if (mGridId != that.mGridId) {
+			return false;
+		}
+		if (mId != that.mId) {
+			return false;
+		}
+		if (mIncludedInStatistics != that.mIncludedInStatistics) {
+			return false;
+		}
+		if (mMaybeValue != that.mMaybeValue) {
+			return false;
+		}
+		if (mReplayCount != that.mReplayCount) {
+			return false;
+		}
+		if (mSolutionRevealed != that.mSolutionRevealed) {
+			return false;
+		}
+		if (mSolvedManually != that.mSolvedManually) {
+			return false;
+		}
+		if (mFirstMove != null ? !mFirstMove.equals(that.mFirstMove) : that.mFirstMove != null) {
+			return false;
+		}
+		if (mLastMove != null ? !mLastMove.equals(that.mLastMove) : that.mLastMove != null) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = mId;
+		result = 31 * result + mGridId;
+		result = 31 * result + mReplayCount;
+		result = 31 * result + (mFirstMove != null ? mFirstMove.hashCode() : 0);
+		result = 31 * result + (mLastMove != null ? mLastMove.hashCode() : 0);
+		result = 31 * result + (int) (mElapsedTime ^ (mElapsedTime >>> 32));
+		result = 31 * result + (int) (mCheatPenaltyTime ^ (mCheatPenaltyTime >>> 32));
+		result = 31 * result + mEnteredValueReplaced;
+		result = 31 * result + mMaybeValue;
+		result = 31 * result + mActionUndoMove;
+		result = 31 * result + mActionClearCell;
+		result = 31 * result + mActionClearGrid;
+		result = 31 * result + mActionRevealCell;
+		result = 31 * result + mActionRevealOperator;
+		result = 31 * result + mActionCheckProgress;
+		result = 31 * result + mCheckProgressInvalidCellsFound;
+		result = 31 * result + (mSolutionRevealed ? 1 : 0);
+		result = 31 * result + mCellsFilled;
+		result = 31 * result + mCellsEmpty;
+		result = 31 * result + mCellsRevealed;
+		result = 31 * result + (mSolvedManually ? 1 : 0);
+		result = 31 * result + (mFinished ? 1 : 0);
+		result = 31 * result + (mIncludedInStatistics ? 1 : 0);
+		return result;
+	}
 }

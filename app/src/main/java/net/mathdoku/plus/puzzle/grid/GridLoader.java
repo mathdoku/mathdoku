@@ -164,7 +164,7 @@ public class GridLoader {
 		// SolvingAttemptStorage can only be processed after the grid size and
 		// revision number is known.
 		if (!loadFromStorageStrings(solvingAttemptRow)
-				|| !loadStatistics(solvingAttemptRow.getGridId())) {
+				|| !loadStatistics(solvingAttemptRow.getSolvingAttemptId())) {
 			return null;
 		}
 
@@ -361,12 +361,11 @@ public class GridLoader {
 	 * Load the most recent statistics for this grid.
 	 */
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
-	private boolean loadStatistics(int gridId) {
+	private boolean loadStatistics(int solvingAttemptId) {
 		StatisticsDatabaseAdapter statisticsDatabaseAdapter = mObjectsCreator
 				.createStatisticsDatabaseAdapter();
-		// TODO: statistics should be loaded for a specific solving attempt
 		GridStatistics gridStatistics = statisticsDatabaseAdapter
-				.getMostRecent(gridId);
+				.getStatisticsForSolvingAttempt(solvingAttemptId);
 		mGridBuilder.setGridStatistics(gridStatistics);
 
 		return gridStatistics != null;

@@ -14,8 +14,11 @@ import net.mathdoku.plus.storage.databaseadapter.database.DatabaseColumnDefiniti
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseForeignKeyDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseTableDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.ConditionQueryHelper;
 import net.mathdoku.plus.storage.databaseadapter.queryhelper.OrderByHelper;
 import net.mathdoku.plus.storage.databaseadapter.queryhelper.QueryHelper;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.UpdateQueryHelper;
+import net.mathdoku.plus.util.ParameterValidator;
 
 /**
  * The database adapter for the statistics table. For each grid zero or more
@@ -56,13 +59,21 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	public static final String KEY_ACTION_REVEAL_SOLUTION = "action_reveal_solution";
 	public static final String KEY_SOLVED_MANUALLY = "solved_manually";
 	public static final String KEY_FINISHED = "finished";
-
 	// For each grid only the latest completed solving attempt should be
 	// included in the statistics. Only in case no finished solving attempt
 	// exists for a grid, the latest unfinished solving attempt should be used.
 	// For ease and speed of retrieving it is stored whether this solving
 	// attempt should be included or excluded from the statistics.
 	public static final String KEY_INCLUDE_IN_STATISTICS = "include_in_statistics";
+
+	public StatisticsDatabaseAdapter() {
+		super();
+	}
+
+	// Package private access, intended for DatabaseHelper only
+	StatisticsDatabaseAdapter(SQLiteDatabase sqLiteDatabase) {
+		super(sqLiteDatabase);
+	}
 
 	private static DatabaseTableDefinition defineTable() {
 		DatabaseTableDefinition databaseTableDefinition = new DatabaseTableDefinition(
@@ -156,15 +167,6 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		return databaseTableDefinition;
 	}
 
-	public StatisticsDatabaseAdapter() {
-		super();
-	}
-
-	// Package private access, intended for DatabaseHelper only
-	StatisticsDatabaseAdapter(SQLiteDatabase sqLiteDatabase) {
-		super(sqLiteDatabase);
-	}
-
 	@Override
 	public DatabaseTableDefinition getDatabaseTableDefinition() {
 		return DATABASE_TABLE;
@@ -195,6 +197,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 * @return The row id of statistics record created. -1 in case of an error.
 	 */
 	public int insert(GridStatistics gridStatistics) {
+		ParameterValidator.validateNotNull(gridStatistics);
 		ContentValues contentValues = new ContentValues();
 		contentValues.put(KEY_GRID_ID, gridStatistics.mGridId);
 		contentValues.put(KEY_REPLAY, gridStatistics.mReplayCount);
@@ -222,14 +225,13 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	}
 
 	/**
-	 * Get most recent statistics for a given grid id.
+	 * Get the statistics for the given solving attempt id.
 	 * 
-	 * @param gridId
-	 *            The grid id for which the most recent statistics have to be
-	 *            determined.
-	 * @return The most recent grid statistics for the grid.
+	 * @param solvingAttemptId
+	 *            The solving attempt Id for which the statistics have to be retrieved.
+	 * @return The most statistics for the solving attempt.
 	 */
-	public GridStatistics getMostRecent(int gridId) {
+	public GridStatistics getStatisticsForSolvingAttempt(int solvingAttemptId) {
 		GridStatistics gridStatistics = null;
 		Cursor cursor = null;
 		try {
@@ -239,20 +241,20 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 					//
 					DATABASE_TABLE.getColumnNames(),
 					//
-					QueryHelper.getFieldEqualsValue(KEY_GRID_ID, gridId), null,
+					QueryHelper.getFieldEqualsValue(KEY_ROWID, solvingAttemptId), null,
 					null,
 					//
 					null,
 					//
 					new OrderByHelper().sortDescending(KEY_ROWID).toString(),
 					//
-					"1");
-			gridStatistics = toGridStatistics(cursor);
+					null);
+			gridStatistics = getGridStatisticsFromCursor(cursor);
 		} catch (SQLiteException e) {
 			throw new DatabaseAdapterException(
 					String.format(
 							"Cannot retrieve statistics for grid with id '%d' from database.",
-							gridId), e);
+							solvingAttemptId), e);
 		} finally {
 			if (cursor != null) {
 				cursor.close();
@@ -269,7 +271,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 * @return A GridStatistics object for the first statistics record stored in
 	 *         the given cursor. Null in case of an error.
 	 */
-	private GridStatistics toGridStatistics(Cursor cursor) {
+	private GridStatistics getGridStatisticsFromCursor(Cursor cursor) {
 		if (cursor == null || !cursor.moveToFirst()) {
 			// No statistics records found for this grid.
 			return null;
@@ -277,56 +279,149 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 
 		// Convert cursor record to a grid statics object.
 		GridStatistics gridStatistics = new GridStatistics();
-		gridStatistics.mId = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_ROWID));
-		gridStatistics.mGridId = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_GRID_ID));
-		gridStatistics.mReplayCount = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_REPLAY));
+		gridStatistics.mId = cursor.getInt(getRowIdColumnFromCursor(cursor));
+		gridStatistics.mGridId = cursor
+				.getInt(getGridIdColumnFromCursor(cursor));
+		gridStatistics.mReplayCount = cursor
+				.getInt(getReplayCountColumnFromCursor(cursor));
 		gridStatistics.mFirstMove = DatabaseUtil.toSQLTimestamp(cursor
-				.getString(cursor.getColumnIndexOrThrow(KEY_FIRST_MOVE)));
+				.getString(getFirstMoveColumnFromCursor(cursor)));
 		gridStatistics.mLastMove = DatabaseUtil.toSQLTimestamp(cursor
-				.getString(cursor.getColumnIndexOrThrow(KEY_LAST_MOVE)));
-		gridStatistics.mElapsedTime = cursor.getLong(cursor
-				.getColumnIndexOrThrow(KEY_ELAPSED_TIME));
-		gridStatistics.mCheatPenaltyTime = cursor.getLong(cursor
-				.getColumnIndexOrThrow(KEY_CHEAT_PENALTY_TIME));
-		gridStatistics.mCellsFilled = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_CELLS_FILLED));
-		gridStatistics.mCellsEmpty = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_CELLS_EMPTY));
-		gridStatistics.mCellsRevealed = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_CELLS_REVEALED));
-		gridStatistics.mEnteredValueReplaced = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_USER_VALUES_REPLACED));
-		gridStatistics.mMaybeValue = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_POSSIBLES));
-		gridStatistics.mActionUndoMove = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_ACTION_UNDOS));
-		gridStatistics.mActionClearCell = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_ACTION_CLEAR_CELL));
-		gridStatistics.mActionClearGrid = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_ACTION_CLEAR_GRID));
-		gridStatistics.mActionRevealCell = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_ACTION_REVEAL_CELL));
-		gridStatistics.mActionRevealOperator = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_ACTION_REVEAL_OPERATOR));
-		gridStatistics.mActionCheckProgress = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_ACTION_CHECK_PROGRESS));
-		gridStatistics.mCheckProgressInvalidCellsFound = cursor.getInt(cursor
-				.getColumnIndexOrThrow(KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND));
-		gridStatistics.mSolutionRevealed = Boolean.valueOf(cursor
-				.getString(cursor
-						.getColumnIndexOrThrow(KEY_ACTION_REVEAL_SOLUTION)));
-		gridStatistics.mSolvedManually = Boolean.valueOf(cursor
-				.getString(cursor.getColumnIndexOrThrow(KEY_SOLVED_MANUALLY)));
-		gridStatistics.mFinished = Boolean.valueOf(cursor.getString(cursor
-				.getColumnIndexOrThrow(KEY_FINISHED)));
-		gridStatistics.mIncludedInStatistics = Boolean.valueOf(cursor
-				.getString(cursor
-						.getColumnIndexOrThrow(KEY_INCLUDE_IN_STATISTICS)));
+				.getString(getLastMoveColumnFromCursor(cursor)));
+		gridStatistics.mElapsedTime = cursor
+				.getLong(getElapsedTimeColumnFromCursor(cursor));
+		gridStatistics.mCheatPenaltyTime = cursor
+				.getLong(getCheatPenaltyTimeColumnFromCursor(cursor));
+		gridStatistics.mCellsFilled = cursor
+				.getInt(getCellFilledColumnFromCursor(cursor));
+		gridStatistics.mCellsEmpty = cursor
+				.getInt(getCellsEmptyColumnFromCursor(cursor));
+		gridStatistics.mCellsRevealed = cursor
+				.getInt(getCellRevealedColumnFromCursor(cursor));
+		gridStatistics.mEnteredValueReplaced = cursor
+				.getInt(getEnteredValueReplacedColumnFromCursor(cursor));
+		gridStatistics.mMaybeValue = cursor
+				.getInt(getMaybeValueColumnFromCursor(cursor));
+		gridStatistics.mActionUndoMove = cursor
+				.getInt(getActionUndoMoveColumnFromCursor(cursor));
+		gridStatistics.mActionClearCell = cursor
+				.getInt(getActionClearCellColumnFromCursor(cursor));
+		gridStatistics.mActionClearGrid = cursor
+				.getInt(getActionClearGridColumnFromCursor(cursor));
+		gridStatistics.mActionRevealCell = cursor
+				.getInt(getActionRevealCellColumnFromCursor(cursor));
+		gridStatistics.mActionRevealOperator = cursor
+				.getInt(getActionRevealOperatorColumnFromCursor(cursor));
+		gridStatistics.mActionCheckProgress = cursor
+				.getInt(getActionCheckProgressColumnFromCursor(cursor));
+		gridStatistics.mCheckProgressInvalidCellsFound = cursor
+				.getInt(getCheckProgressInvalidCellsFoundColumnFromCursor(cursor));
+		gridStatistics.mSolutionRevealed = Boolean
+				.valueOf(getSolutionRevealedStatusColumnFromCursor(cursor));
+		gridStatistics.mSolvedManually = Boolean
+				.valueOf(getSolvedManuallyStatusColumnFromCursor(cursor));
+		gridStatistics.mFinished = Boolean
+				.valueOf(getFinishedStatusColumnFromCursor(cursor));
+		gridStatistics.mIncludedInStatistics = Boolean
+				.valueOf(getIncludeInStatisticsColumnFromCursor(cursor));
 
 		return gridStatistics;
+	}
+
+	private int getRowIdColumnFromCursor(Cursor cursor) {
+		return cursor.getColumnIndexOrThrow(KEY_ROWID);
+	}
+
+	private int getGridIdColumnFromCursor(Cursor cursor) {
+		return cursor.getColumnIndexOrThrow(KEY_GRID_ID);
+	}
+
+	private int getReplayCountColumnFromCursor(Cursor cursor) {
+		return cursor.getColumnIndexOrThrow(KEY_REPLAY);
+	}
+
+	private int getFirstMoveColumnFromCursor(Cursor cursor) {
+		return cursor.getColumnIndexOrThrow(KEY_FIRST_MOVE);
+	}
+
+	private int getLastMoveColumnFromCursor(Cursor cursor) {
+		return cursor.getColumnIndexOrThrow(KEY_LAST_MOVE);
+	}
+
+	private int getElapsedTimeColumnFromCursor(Cursor cursor) {
+		return cursor.getColumnIndexOrThrow(KEY_ELAPSED_TIME);
+	}
+
+	private int getCheatPenaltyTimeColumnFromCursor(Cursor cursor) {
+		return cursor.getColumnIndexOrThrow(KEY_CHEAT_PENALTY_TIME);
+	}
+
+	private int getCellFilledColumnFromCursor(Cursor cursor) {
+		return cursor.getColumnIndexOrThrow(KEY_CELLS_FILLED);
+	}
+
+	private int getCellsEmptyColumnFromCursor(Cursor cursor) {
+		return cursor.getColumnIndexOrThrow(KEY_CELLS_EMPTY);
+	}
+
+	private int getCellRevealedColumnFromCursor(Cursor cursor) {
+		return cursor.getColumnIndexOrThrow(KEY_CELLS_REVEALED);
+	}
+
+	private int getEnteredValueReplacedColumnFromCursor(Cursor cursor) {
+		return cursor.getColumnIndexOrThrow(KEY_USER_VALUES_REPLACED);
+	}
+
+	private int getMaybeValueColumnFromCursor(Cursor cursor) {
+		return cursor.getColumnIndexOrThrow(KEY_POSSIBLES);
+	}
+
+	private int getActionUndoMoveColumnFromCursor(Cursor cursor) {
+		return cursor.getColumnIndexOrThrow(KEY_ACTION_UNDOS);
+	}
+
+	private int getActionClearCellColumnFromCursor(Cursor cursor) {
+		return cursor.getColumnIndexOrThrow(KEY_ACTION_CLEAR_CELL);
+	}
+
+	private int getActionClearGridColumnFromCursor(Cursor cursor) {
+		return cursor.getColumnIndexOrThrow(KEY_ACTION_CLEAR_GRID);
+	}
+
+	private int getActionRevealCellColumnFromCursor(Cursor cursor) {
+		return cursor.getColumnIndexOrThrow(KEY_ACTION_REVEAL_CELL);
+	}
+
+	private int getActionRevealOperatorColumnFromCursor(Cursor cursor) {
+		return cursor.getColumnIndexOrThrow(KEY_ACTION_REVEAL_OPERATOR);
+	}
+
+	private int getActionCheckProgressColumnFromCursor(Cursor cursor) {
+		return cursor.getColumnIndexOrThrow(KEY_ACTION_CHECK_PROGRESS);
+	}
+
+	private int getCheckProgressInvalidCellsFoundColumnFromCursor(Cursor cursor) {
+		return cursor
+				.getColumnIndexOrThrow(KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND);
+	}
+
+	private String getSolutionRevealedStatusColumnFromCursor(Cursor cursor) {
+		return cursor.getString(cursor
+				.getColumnIndexOrThrow(KEY_ACTION_REVEAL_SOLUTION));
+	}
+
+	private String getSolvedManuallyStatusColumnFromCursor(Cursor cursor) {
+		return cursor.getString(cursor
+				.getColumnIndexOrThrow(KEY_SOLVED_MANUALLY));
+	}
+
+	private String getFinishedStatusColumnFromCursor(Cursor cursor) {
+		return cursor.getString(cursor.getColumnIndexOrThrow(KEY_FINISHED));
+	}
+
+	private String getIncludeInStatisticsColumnFromCursor(Cursor cursor) {
+		return cursor.getString(cursor
+				.getColumnIndexOrThrow(KEY_INCLUDE_IN_STATISTICS));
 	}
 
 	/**
@@ -339,8 +434,6 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 */
 	public boolean update(GridStatistics gridStatistics) {
 		ContentValues newValues = new ContentValues();
-		newValues.put(KEY_ROWID, gridStatistics.mId);
-		newValues.put(KEY_FIRST_MOVE, gridStatistics.mFirstMove.toString());
 		newValues.put(KEY_LAST_MOVE, gridStatistics.mLastMove.toString());
 		newValues.put(KEY_ELAPSED_TIME, gridStatistics.mElapsedTime);
 		newValues.put(KEY_CHEAT_PENALTY_TIME, gridStatistics.mCheatPenaltyTime);
@@ -390,27 +483,40 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 * 
 	 * @param gridId
 	 *            The grid id for which the solving attempts have to changed.
-	 * @param solvingAttemptId
-	 *            The solving attempt which has to be included for the grid when
-	 *            retrieving the cumulative or historic statistics are
-	 *            retrieved.
+	 * @param statisticsIdToBeIncluded
+	 *            The row id of the statistics record which has to be included
+	 *            as *the* statistics of the grid when retrieving the cumulative
+	 *            or historic statistics are retrieved.
 	 */
 	public void updateSolvingAttemptToBeIncludedInStatistics(int gridId,
-			int solvingAttemptId) {
-		String sql = "UPDATE " + TABLE_NAME + " SET "
-				+ KEY_INCLUDE_IN_STATISTICS + " = " + " CASE WHEN " + KEY_ROWID
-				+ " = " + solvingAttemptId + " THEN "
-				+ DatabaseUtil.toQuotedSQLiteString(true) + " ELSE "
-				+ DatabaseUtil.toQuotedSQLiteString(false) + " END "
-				+ " WHERE " + KEY_GRID_ID + " = " + gridId + " AND ("
-				+ KEY_ROWID + " = " + solvingAttemptId + " OR "
-				+ KEY_INCLUDE_IN_STATISTICS + " = "
-				+ DatabaseUtil.toQuotedSQLiteString(true) + ")";
+			int statisticsIdToBeIncluded) {
+		UpdateQueryHelper updateQueryHelper = new UpdateQueryHelper(TABLE_NAME);
+		updateQueryHelper
+				.setColumnToStatement(KEY_INCLUDE_IN_STATISTICS,
+								  getDerivationNewValueIncludeInStatistics(
+										  statisticsIdToBeIncluded));
+
+		ConditionQueryHelper conditionQueryHelperInner = new ConditionQueryHelper();
+		conditionQueryHelperInner.addOperand(ConditionQueryHelper
+				.getFieldEqualsValue(KEY_ROWID, statisticsIdToBeIncluded));
+		conditionQueryHelperInner.addOperand(ConditionQueryHelper
+				.getFieldEqualsValue(KEY_INCLUDE_IN_STATISTICS, true));
+		conditionQueryHelperInner.setOrOperator();
+
+		ConditionQueryHelper conditionQueryHelperOuter = new ConditionQueryHelper();
+		conditionQueryHelperOuter.addOperand(ConditionQueryHelper
+				.getFieldEqualsValue(KEY_GRID_ID, gridId));
+		conditionQueryHelperOuter.addOperand(conditionQueryHelperInner
+				.toString());
+		conditionQueryHelperOuter.setAndOperator();
+
+		updateQueryHelper.setWhereCondition(conditionQueryHelperOuter);
+
 		if (DEBUG_SQL) {
-			Log.i(TAG, sql);
+			Log.i(TAG, updateQueryHelper.toString());
 		}
 		try {
-			sqliteDatabase.execSQL(sql);
+			sqliteDatabase.execSQL(updateQueryHelper.toString());
 		} catch (SQLiteException e) {
 			throw new DatabaseAdapterException(
 					String.format(
@@ -419,4 +525,15 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		}
 	}
 
+	private String getDerivationNewValueIncludeInStatistics(int statisticsIdToBeIncluded) {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(" CASE WHEN ");
+		stringBuilder.append(QueryHelper.getFieldEqualsValue(KEY_ROWID, statisticsIdToBeIncluded));
+		stringBuilder.append(" THEN ");
+		stringBuilder.append(DatabaseUtil.toQuotedSQLiteString(true));
+		stringBuilder.append(" ELSE ");
+		stringBuilder.append(DatabaseUtil.toQuotedSQLiteString(false));
+		stringBuilder.append(" END ");
+		return stringBuilder.toString();
+	}
 }
