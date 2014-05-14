@@ -44,20 +44,20 @@ public class ConditionQueryHelper extends QueryHelper {
 	}
 
 	public ConditionQueryHelper setAndOperator() {
-		validateNumberOfOperands();
+		validateNumberOfOperands(2);
 		operator = AND_OPERATOR;
 
 		return this;
 	}
 
-	private void validateNumberOfOperands() {
-		if (operands.size() <= 1) {
-			throw new IllegalStateException("At least two operands expected.");
+	private void validateNumberOfOperands(int minimumOperandsRequired) {
+		if (operands.size() < minimumOperandsRequired) {
+			throw new IllegalStateException(String.format("At least %d operand(s) expected.", minimumOperandsRequired));
 		}
 	}
 
 	public ConditionQueryHelper setOrOperator() {
-		validateNumberOfOperands();
+		validateNumberOfOperands(2);
 		operator = OR_OPERATOR;
 
 		return this;
@@ -65,9 +65,7 @@ public class ConditionQueryHelper extends QueryHelper {
 
 	@Override
 	public String toString() {
-		if (operands.size() < 1) {
-			throw new IllegalStateException("At least one operand expected.");
-		}
+		validateNumberOfOperands(1);
 		if (operands.size() == 1) {
 			query.append(operands.get(0));
 		} else {
