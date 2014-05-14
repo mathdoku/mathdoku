@@ -30,19 +30,38 @@ public class HistoricStatisticsSelector {
 
 	// Columns in the DatabaseProjection
 	public static final String DATA_COL_ID = "id";
-	public static final String DATA_COL_ELAPSED_TIME_EXCLUDING_CHEAT_PENALTY = "elapsed_time_excluding_cheat_penalty";
-	public static final String DATA_COL_CHEAT_PENALTY = "cheat_penalty";
-	public static final String DATA_COL_SERIES = "series";
+	public static final String PROJECTION_ELAPSED_TIME_EXCLUDING_CHEAT_PENALTY = "elapsed_time_excluding_cheat_penalty";
+	public static final String PROJECTION_CHEAT_PENALTY = "cheat_penalty";
+	public static final String PROJECTION_SOLVING_ATTEMPT_STATUS = "series";
 
 	private int minGridSize;
 	private int maxGridSize;
-	private final static DatabaseProjection databaseProjection = buildDatabaseProjection();
-	private List<DataPoint> dataPoints;
+	private static final DatabaseProjection DATABASE_PROJECTION = buildDatabaseProjection();
+	private List<DataPoint> dataPointList;
 
 	public static class DataPoint {
-		public long elapsedTimeExcludingCheatPenalty;
-		public long cheatPenalty;
-		public SolvingAttemptStatus solvingAttemptStatus;
+		private final long elapsedTimeExcludingCheatPenalty;
+		private final long cheatPenalty;
+		private final SolvingAttemptStatus solvingAttemptStatus;
+
+		public DataPoint(long elapsedTimeExcludingCheatPenalty,
+				long cheatPenalty, SolvingAttemptStatus solvingAttemptStatus) {
+			this.elapsedTimeExcludingCheatPenalty = elapsedTimeExcludingCheatPenalty;
+			this.cheatPenalty = cheatPenalty;
+			this.solvingAttemptStatus = solvingAttemptStatus;
+		}
+
+		public long getElapsedTimeExcludingCheatPenalty() {
+			return elapsedTimeExcludingCheatPenalty;
+		}
+
+		public long getCheatPenalty() {
+			return cheatPenalty;
+		}
+
+		public SolvingAttemptStatus getSolvingAttemptStatus() {
+			return solvingAttemptStatus;
+		}
 
 		@Override
 		public String toString() {
@@ -56,6 +75,8 @@ public class HistoricStatisticsSelector {
 		}
 
 		@Override
+		@SuppressWarnings("all")
+		// Needed to suppress sonar warning on cyclomatic complexity
 		public boolean equals(Object o) {
 			if (this == o) {
 				return true;
@@ -94,17 +115,16 @@ public class HistoricStatisticsSelector {
 	public HistoricStatisticsSelector(int minGridSize, int maxGridSize) {
 		this.minGridSize = minGridSize;
 		this.maxGridSize = maxGridSize;
-		dataPoints = retrieveFromDatabase();
+		dataPointList = retrieveFromDatabase();
 	}
 
 	private List<DataPoint> retrieveFromDatabase() {
-		// Build query
 		SQLiteQueryBuilder sqliteQueryBuilder = new SQLiteQueryBuilder();
-		sqliteQueryBuilder.setProjectionMap(databaseProjection);
+		sqliteQueryBuilder.setProjectionMap(DATABASE_PROJECTION);
 		sqliteQueryBuilder.setTables(getJoinString());
 		if (DEBUG_SQL) {
 			String sql = sqliteQueryBuilder.buildQuery(
-					databaseProjection.getAllColumnNames(),
+					DATABASE_PROJECTION.getAllColumnNames(),
 					getSelectionString(), null, null,
 					StatisticsDatabaseAdapter.KEY_GRID_ID, null);
 			Log.i(TAG, sql);
@@ -114,7 +134,7 @@ public class HistoricStatisticsSelector {
 		try {
 			cursor = sqliteQueryBuilder.query(DatabaseHelper
 					.getInstance()
-					.getReadableDatabase(), databaseProjection
+					.getReadableDatabase(), DATABASE_PROJECTION
 					.getAllColumnNames(), getSelectionString(), null, null,
 					null, StatisticsDatabaseAdapter.KEY_GRID_ID);
 		} catch (SQLiteException e) {
@@ -159,15 +179,11 @@ public class HistoricStatisticsSelector {
 		if (cursor != null && cursor.moveToFirst()) {
 			do {
 				// Fill new data point
-				DataPoint dataPoint = new DataPoint();
-				dataPoint.elapsedTimeExcludingCheatPenalty = cursor
-						.getLong(cursor
-								.getColumnIndexOrThrow(DATA_COL_ELAPSED_TIME_EXCLUDING_CHEAT_PENALTY));
-				dataPoint.cheatPenalty = cursor.getLong(cursor
-						.getColumnIndexOrThrow(DATA_COL_CHEAT_PENALTY));
-				dataPoint.solvingAttemptStatus = SolvingAttemptStatus
-						.valueOf(cursor.getString(cursor
-								.getColumnIndexOrThrow(DATA_COL_SERIES)));
+				DataPoint dataPoint = new DataPoint(
+						getElapsedTimeExcludingCheatPenaltyFromCursor(cursor),
+						getCheatPenaltyFromCursor(cursor),
+						SolvingAttemptStatus
+								.valueOf(getSolvingAttemptStatusFromCursor(cursor)));
 
 				// Add data point to the list
 				dataPoints.add(dataPoint);
@@ -176,24 +192,41 @@ public class HistoricStatisticsSelector {
 		return dataPoints;
 	}
 
+	private long getElapsedTimeExcludingCheatPenaltyFromCursor(Cursor cursor) {
+		return cursor
+				.getLong(cursor
+						.getColumnIndexOrThrow(PROJECTION_ELAPSED_TIME_EXCLUDING_CHEAT_PENALTY));
+	}
+
+	private long getCheatPenaltyFromCursor(Cursor cursor) {
+		return cursor.getLong(cursor
+				.getColumnIndexOrThrow(PROJECTION_CHEAT_PENALTY));
+	}
+
+	private String getSolvingAttemptStatusFromCursor(Cursor cursor) {
+		return cursor.getString(cursor
+				.getColumnIndexOrThrow(PROJECTION_SOLVING_ATTEMPT_STATUS));
+	}
+
 	private static DatabaseProjection buildDatabaseProjection() {
 		DatabaseProjection databaseProjection = new DatabaseProjection();
 		databaseProjection.put(DATA_COL_ID,
 				StatisticsDatabaseAdapter.TABLE_NAME,
 				StatisticsDatabaseAdapter.KEY_ROWID);
 		databaseProjection
-				.put(DATA_COL_ELAPSED_TIME_EXCLUDING_CHEAT_PENALTY,
+				.put(PROJECTION_ELAPSED_TIME_EXCLUDING_CHEAT_PENALTY,
 						StatisticsDatabaseAdapter
 								.getPrefixedColumnName(StatisticsDatabaseAdapter.KEY_ELAPSED_TIME)
 								+ " - "
 								+ StatisticsDatabaseAdapter
 										.getPrefixedColumnName(StatisticsDatabaseAdapter.KEY_CHEAT_PENALTY_TIME));
 
-		databaseProjection.put(DATA_COL_CHEAT_PENALTY,
+		databaseProjection.put(PROJECTION_CHEAT_PENALTY,
 				StatisticsDatabaseAdapter.TABLE_NAME,
 				StatisticsDatabaseAdapter.KEY_CHEAT_PENALTY_TIME);
 
-		databaseProjection.put(DATA_COL_SERIES, getStatusColumnProjection());
+		databaseProjection.put(PROJECTION_SOLVING_ATTEMPT_STATUS,
+				getStatusColumnProjection());
 
 		return databaseProjection;
 	}
@@ -224,8 +257,7 @@ public class HistoricStatisticsSelector {
 		return stringBuilder.toString();
 	}
 
-	public List<DataPoint> getDataPoints() {
-		return dataPoints;
+	public List<DataPoint> getDataPointList() {
+		return dataPointList;
 	}
-
 }

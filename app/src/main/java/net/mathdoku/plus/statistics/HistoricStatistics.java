@@ -44,8 +44,8 @@ public class HistoricStatistics {
 		 *            The data point which has to be included in the series.
 		 */
 		public void addDataPoint(HistoricStatisticsSelector.DataPoint dataPoint) {
-			long totalValue = dataPoint.elapsedTimeExcludingCheatPenalty
-					+ dataPoint.cheatPenalty;
+			long totalValue = dataPoint.getElapsedTimeExcludingCheatPenalty()
+					+ dataPoint.getCheatPenalty();
 			mMinValue = totalValue < mMinValue ? totalValue : mMinValue;
 			mMaxValue = totalValue > mMaxValue ? totalValue : mMaxValue;
 			mSumValue += totalValue;
@@ -116,13 +116,13 @@ public class HistoricStatistics {
 	 */
 	public HistoricStatistics(int mMinGridSize, int mMaxGridSize) {
 		dataPoints = new HistoricStatisticsSelector(mMinGridSize, mMaxGridSize)
-				.getDataPoints();
+				.getDataPointList();
 		mSolvedSeriesSummary = new SeriesSummary();
 		mSolutionRevealedSeriesSummary = new SeriesSummary();
 		mUnfinishedSeriesSummary = new SeriesSummary();
 		for (HistoricStatisticsSelector.DataPoint dataPoint : dataPoints) {
 			// Update summary for the series
-			switch (dataPoint.solvingAttemptStatus) {
+			switch (dataPoint.getSolvingAttemptStatus()) {
 			case REVEALED_SOLUTION:
 				mSolutionRevealedSeriesSummary.addDataPoint(dataPoint);
 				break;
@@ -162,11 +162,11 @@ public class HistoricStatistics {
 
 		for (HistoricStatisticsSelector.DataPoint dataPoint : dataPoints) {
 			if (index >= start) {
-				if (dataPoint.solvingAttemptStatus == solvingAttemptStatus
+				if (dataPoint.getSolvingAttemptStatus() == solvingAttemptStatus
 						|| solvingAttemptStatus == null) {
 					if (includeElapsedTime
-							&& dataPoint.elapsedTimeExcludingCheatPenalty > 0
-							|| includeCheatTime && dataPoint.cheatPenalty > 0) {
+							&& dataPoint.getElapsedTimeExcludingCheatPenalty() > 0
+							|| includeCheatTime && dataPoint.getCheatPenalty() > 0) {
 						return true;
 					}
 				}
@@ -221,11 +221,11 @@ public class HistoricStatistics {
 		for (HistoricStatisticsSelector.DataPoint dataPoint : dataPoints) {
 			if (index >= start) {
 				double value = 0;
-				if (dataPoint.solvingAttemptStatus == solvingAttemptStatus) {
+				if (dataPoint.getSolvingAttemptStatus() == solvingAttemptStatus) {
 					// Get unscaled value
-					value = (includeElapsedTime ? dataPoint.elapsedTimeExcludingCheatPenalty
+					value = (includeElapsedTime ? dataPoint.getElapsedTimeExcludingCheatPenalty()
 							: 0)
-							+ (includeCheatTime ? dataPoint.cheatPenalty : 0);
+							+ (includeCheatTime ? dataPoint.getCheatPenalty() : 0);
 
 					// Scale value
 					value /= scaleFactor;
@@ -268,15 +268,15 @@ public class HistoricStatistics {
 		for (HistoricStatisticsSelector.DataPoint dataPoint : dataPoints) {
 			if (index >= start) {
 				double value = 0;
-				if (dataPoint.solvingAttemptStatus == SolvingAttemptStatus.REVEALED_SOLUTION) {
+				if (dataPoint.getSolvingAttemptStatus() == SolvingAttemptStatus.REVEALED_SOLUTION) {
 					if (includeElapsedTime) {
 						value = includeCheatTime ? maxY : Math.min(
-								dataPoint.elapsedTimeExcludingCheatPenalty,
+								dataPoint.getElapsedTimeExcludingCheatPenalty(),
 								maxY);
 					} else {
 						value = Math.max(Math.min(maxY
-								- dataPoint.elapsedTimeExcludingCheatPenalty,
-								dataPoint.cheatPenalty), 0);
+								- dataPoint.getElapsedTimeExcludingCheatPenalty(),
+												  dataPoint.getCheatPenalty()), 0);
 					}
 				}
 				xySeries.add(index, value);
@@ -316,8 +316,8 @@ public class HistoricStatistics {
 
 		for (HistoricStatisticsSelector.DataPoint dataPoint : dataPoints) {
 			if (solvingAttemptStatus == null
-					|| dataPoint.solvingAttemptStatus == solvingAttemptStatus) {
-				totalValue += dataPoint.elapsedTimeExcludingCheatPenalty;
+					|| dataPoint.getSolvingAttemptStatus() == solvingAttemptStatus) {
+				totalValue += dataPoint.getElapsedTimeExcludingCheatPenalty();
 				countValue++;
 			}
 			if (countValue > 0 && index >= start) {

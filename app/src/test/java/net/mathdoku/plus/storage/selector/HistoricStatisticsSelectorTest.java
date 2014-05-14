@@ -60,7 +60,7 @@ public class HistoricStatisticsSelectorTest {
 		int maxGridSize = 4;
 		assertThat(
 				new HistoricStatisticsSelector(minGridSize, maxGridSize)
-						.getDataPoints(),
+						.getDataPointList(),
 				is(getDataPoints(minGridSize, maxGridSize)));
 	}
 
@@ -71,15 +71,17 @@ public class HistoricStatisticsSelectorTest {
 			expectedDataPoints.add(createDataPoint(78512, 40000,
 					SolvingAttemptStatus.FINISHED_SOLVED));
 			expectedDataPoints.add(createDataPoint(128038, 100000,
-												   SolvingAttemptStatus.UNFINISHED));
+					SolvingAttemptStatus.UNFINISHED));
 		}
 		if (maxGridSize >= 5) {
-			expectedDataPoints
-					.add(createDataPoint(153219, 80000,
-										 SolvingAttemptStatus.REVEALED_SOLUTION));
-			expectedDataPoints.add(createDataPoint(1337031, 0, SolvingAttemptStatus.FINISHED_SOLVED));
-			expectedDataPoints.add(createDataPoint(116916, 0, SolvingAttemptStatus.FINISHED_SOLVED));
-			expectedDataPoints.add(createDataPoint(0, 0,SolvingAttemptStatus.UNFINISHED));
+			expectedDataPoints.add(createDataPoint(153219, 80000,
+					SolvingAttemptStatus.REVEALED_SOLUTION));
+			expectedDataPoints.add(createDataPoint(1337031, 0,
+					SolvingAttemptStatus.FINISHED_SOLVED));
+			expectedDataPoints.add(createDataPoint(116916, 0,
+					SolvingAttemptStatus.FINISHED_SOLVED));
+			expectedDataPoints.add(createDataPoint(0, 0,
+					SolvingAttemptStatus.UNFINISHED));
 		}
 		return expectedDataPoints;
 	}
@@ -87,11 +89,9 @@ public class HistoricStatisticsSelectorTest {
 	private HistoricStatisticsSelector.DataPoint createDataPoint(
 			long elapsedTimeExcludingCheatPenalty, long cheatPenalty,
 			SolvingAttemptStatus solvingAttemptStatus) {
-		HistoricStatisticsSelector.DataPoint dataPoint = new HistoricStatisticsSelector.DataPoint();
-		dataPoint.elapsedTimeExcludingCheatPenalty = elapsedTimeExcludingCheatPenalty
-				- cheatPenalty;
-		dataPoint.cheatPenalty = cheatPenalty;
-		dataPoint.solvingAttemptStatus = solvingAttemptStatus;
+		HistoricStatisticsSelector.DataPoint dataPoint = new HistoricStatisticsSelector.DataPoint(
+				elapsedTimeExcludingCheatPenalty - cheatPenalty, cheatPenalty,
+				solvingAttemptStatus);
 		return dataPoint;
 	}
 
@@ -101,7 +101,7 @@ public class HistoricStatisticsSelectorTest {
 		int maxGridSize = 5;
 		assertThat(
 				new HistoricStatisticsSelector(minGridSize, maxGridSize)
-						.getDataPoints(),
+						.getDataPointList(),
 				is(getDataPoints(minGridSize, maxGridSize)));
 	}
 
@@ -111,7 +111,7 @@ public class HistoricStatisticsSelectorTest {
 		int maxGridSize = 5;
 		assertThat(
 				new HistoricStatisticsSelector(minGridSize, maxGridSize)
-						.getDataPoints(),
+						.getDataPointList(),
 				is(getDataPoints(minGridSize, maxGridSize)));
 	}
 }
