@@ -4,18 +4,14 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.util.Log;
 
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.statistics.GridStatistics;
-import net.mathdoku.plus.statistics.HistoricStatistics;
-import net.mathdoku.plus.statistics.HistoricStatistics.Series;
 import net.mathdoku.plus.storage.databaseadapter.database.DataType;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseColumnDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseForeignKeyDefinition;
-import net.mathdoku.plus.storage.databaseadapter.database.DatabaseProjection;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseTableDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil;
 import net.mathdoku.plus.storage.databaseadapter.queryhelper.OrderByHelper;
@@ -67,9 +63,6 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	// For ease and speed of retrieving it is stored whether this solving
 	// attempt should be included or excluded from the statistics.
 	public static final String KEY_INCLUDE_IN_STATISTICS = "include_in_statistics";
-
-	// DatabaseProjection for retrieve the cumulative and historic statistics
-	private static DatabaseProjection mHistoricStatisticsDatabaseProjection = null;
 
 	private static DatabaseTableDefinition defineTable() {
 		DatabaseTableDefinition databaseTableDefinition = new DatabaseTableDefinition(
@@ -209,7 +202,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		contentValues.put(KEY_FIRST_MOVE, gridStatistics.mFirstMove.toString());
 		contentValues.put(KEY_LAST_MOVE, gridStatistics.mLastMove.toString());
 		contentValues.put(KEY_INCLUDE_IN_STATISTICS,
-						  Boolean.toString(gridStatistics.mIncludedInStatistics));
+				Boolean.toString(gridStatistics.mIncludedInStatistics));
 
 		long id;
 		try {
@@ -380,165 +373,6 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	}
 
 	/**
-	 * Get the historic statistics for the given column for all grids with a
-	 * given grid size.
-	 * 
-	 * @param minGridSize
-	 *            The minimum size of the grid for which the cumulative
-	 *            statistics have to be determined.
-	 * @param maxGridSize
-	 *            The maximum size of the grid for which the cumulative
-	 *            statistics have to be determined. Use same value as minimum
-	 *            grid size to retrieve statistics for 1 specific grid size.
-	 * @return The cumulative statistics for the given grid size.
-	 */
-	public HistoricStatistics getHistoricData(int minGridSize, int maxGridSize) {
-
-		// Build projection if not yet done. As this projection is only build
-		// once, it has to contain all base columns and all columns for which
-		// the historic data can be retrieved.
-		if (mHistoricStatisticsDatabaseProjection == null) {
-			mHistoricStatisticsDatabaseProjection = new DatabaseProjection();
-
-			// Add base columns to the projection
-			mHistoricStatisticsDatabaseProjection.put(
-					HistoricStatistics.DATA_COL_ID, TABLE_NAME, KEY_ROWID);
-			mHistoricStatisticsDatabaseProjection
-					.put(DatabaseUtil
-							.stringBetweenBackTicks(HistoricStatistics.DATA_COL_SERIES), /*
-																						 * Explicit
-																						 * back
-																						 * ticks
-																						 * needed
-																						 * here
-																						 * !
-																						 */
-							"CASE WHEN "
-									+ DatabaseUtil
-											.stringBetweenBackTicks(KEY_FINISHED)
-									+ " <> "
-									+ DatabaseUtil.toQuotedSQLiteString(true)
-									+ " THEN "
-									+ DatabaseUtil
-											.stringBetweenQuotes(Series.UNFINISHED
-													.toString())
-									+ " WHEN "
-									+ KEY_ACTION_REVEAL_SOLUTION
-									+ " = "
-									+ DatabaseUtil.toQuotedSQLiteString(true)
-									+ " THEN "
-									+ DatabaseUtil
-											.stringBetweenQuotes(Series.SOLUTION_REVEALED
-													.toString())
-									+ " ELSE "
-									+ DatabaseUtil
-											.stringBetweenQuotes(Series.SOLVED
-													.toString()) + " END");
-
-			// Add data columns to the projection.
-			mHistoricStatisticsDatabaseProjection.put(KEY_ELAPSED_TIME,
-					TABLE_NAME, KEY_ELAPSED_TIME);
-			mHistoricStatisticsDatabaseProjection.put(KEY_CHEAT_PENALTY_TIME,
-					TABLE_NAME, KEY_CHEAT_PENALTY_TIME);
-			mHistoricStatisticsDatabaseProjection.put(KEY_CELLS_FILLED,
-					TABLE_NAME, KEY_CELLS_FILLED);
-			mHistoricStatisticsDatabaseProjection.put(KEY_CELLS_EMPTY,
-					TABLE_NAME, KEY_CELLS_EMPTY);
-			mHistoricStatisticsDatabaseProjection.put(KEY_CELLS_REVEALED,
-					TABLE_NAME, KEY_CELLS_REVEALED);
-			mHistoricStatisticsDatabaseProjection.put(KEY_USER_VALUES_REPLACED,
-					TABLE_NAME, KEY_USER_VALUES_REPLACED);
-			mHistoricStatisticsDatabaseProjection.put(KEY_POSSIBLES,
-					TABLE_NAME, KEY_POSSIBLES);
-			mHistoricStatisticsDatabaseProjection.put(KEY_ACTION_UNDOS,
-					TABLE_NAME, KEY_ACTION_UNDOS);
-			mHistoricStatisticsDatabaseProjection.put(KEY_ACTION_CLEAR_CELL,
-					TABLE_NAME, KEY_ACTION_CLEAR_CELL);
-			mHistoricStatisticsDatabaseProjection.put(KEY_ACTION_CLEAR_GRID,
-					TABLE_NAME, KEY_ACTION_CLEAR_GRID);
-			mHistoricStatisticsDatabaseProjection.put(KEY_ACTION_REVEAL_CELL,
-					TABLE_NAME, KEY_ACTION_REVEAL_CELL);
-			mHistoricStatisticsDatabaseProjection.put(
-					KEY_ACTION_REVEAL_OPERATOR, TABLE_NAME,
-					KEY_ACTION_REVEAL_OPERATOR);
-			mHistoricStatisticsDatabaseProjection.put(
-					KEY_ACTION_CHECK_PROGRESS, TABLE_NAME,
-					KEY_ACTION_CHECK_PROGRESS);
-			mHistoricStatisticsDatabaseProjection.put(
-					KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND, TABLE_NAME,
-					KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND);
-		}
-
-		// Build query
-		SQLiteQueryBuilder sqliteQueryBuilder = new SQLiteQueryBuilder();
-		sqliteQueryBuilder
-				.setProjectionMap(mHistoricStatisticsDatabaseProjection);
-		sqliteQueryBuilder.setTables(GridDatabaseAdapter.TABLE_NAME
-				+ " INNER JOIN "
-				+ TABLE_NAME
-				+ " ON "
-				+ GridDatabaseAdapter
-						.getPrefixedColumnName(GridDatabaseAdapter.KEY_ROWID)
-				+ " = " + getPrefixedColumnName(KEY_GRID_ID));
-
-		// Retrieve all data. Note: in case column is not added to the
-		// projection, no data will be retrieved!
-		String[] columnsData = {
-				// Statistics id
-				// stringBetweenBackTicks(HistoricStatistics.DATA_COL_ID),
-				HistoricStatistics.DATA_COL_ID,
-
-				// Elapsed time excluding the cheat penalty
-				DatabaseUtil.stringBetweenBackTicks(KEY_ELAPSED_TIME)
-						+ " - "
-						+ DatabaseUtil
-								.stringBetweenBackTicks(KEY_CHEAT_PENALTY_TIME)
-						+ " AS "
-						+ HistoricStatistics.DATA_COL_ELAPSED_TIME_EXCLUDING_CHEAT_PENALTY,
-
-				// Cheat penalty
-				DatabaseUtil.stringBetweenBackTicks(KEY_CHEAT_PENALTY_TIME)
-						+ " AS " + HistoricStatistics.DATA_COL_CHEAT_PENALTY,
-
-				// Series
-				DatabaseUtil
-						.stringBetweenBackTicks(HistoricStatistics.DATA_COL_SERIES) };
-
-		String selection = GridDatabaseAdapter
-				.getPrefixedColumnName(GridDatabaseAdapter.KEY_GRID_SIZE)
-				+ " BETWEEN "
-				+ minGridSize
-				+ " AND "
-				+ maxGridSize
-				+ " AND "
-				+ KEY_INCLUDE_IN_STATISTICS + " = 'true'";
-
-		if (DEBUG_SQL) {
-			String sql = sqliteQueryBuilder.buildQuery(columnsData, selection,
-					null, null, KEY_GRID_ID, null);
-			Log.i(TAG, sql);
-		}
-
-		Cursor cursor;
-		try {
-			cursor = sqliteQueryBuilder.query(sqliteDatabase, columnsData,
-					selection, null, null, null, KEY_GRID_ID);
-		} catch (SQLiteException e) {
-			throw new DatabaseAdapterException(
-					String.format(
-							"Cannot retrieve the historic statistics for grids with sizes '%d-%d' from database.",
-							minGridSize, maxGridSize), e);
-		}
-
-		HistoricStatistics historicStatistics = new HistoricStatistics(cursor);
-		if (cursor != null) {
-			cursor.close();
-		}
-
-		return historicStatistics;
-	}
-
-	/**
 	 * Prefix the given column name with the table name.
 	 * 
 	 * @param column
@@ -547,7 +381,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 */
 	@SuppressWarnings("SameParameterValue")
 	public static String getPrefixedColumnName(String column) {
-		return TABLE_NAME + "." + column;
+		return DatabaseUtil.tableAndColumnBetweenBackTicks(TABLE_NAME, column);
 	}
 
 	/**
@@ -584,4 +418,5 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 							gridId), e);
 		}
 	}
+
 }

@@ -11,6 +11,7 @@ public abstract class QueryHelper {
 	protected static final String COMMA = ",";
 	protected static final String SPACE = " ";
 	protected static final String EQUALS_OPERATOR = "=";
+	protected static final String NOT_EQUALS_OPERATOR = "<>";
 	protected static final String NULL_VALUE = "null";
 
 	protected StringBuilder query;
@@ -53,6 +54,11 @@ public abstract class QueryHelper {
 
 	public static String getFieldEqualsValue(String column, boolean value) {
 		return getFieldOperatorEscapedString(column, EQUALS_OPERATOR,
+											 DatabaseUtil.toQuotedSQLiteString(value));
+	}
+
+	public static String getFieldNotEqualsValue(String column, boolean value) {
+		return getFieldOperatorEscapedString(column, NOT_EQUALS_OPERATOR,
 											 DatabaseUtil.toQuotedSQLiteString(value));
 	}
 

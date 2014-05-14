@@ -16,11 +16,10 @@ import android.widget.TextView;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
+import net.mathdoku.plus.enums.SolvingAttemptStatus;
 import net.mathdoku.plus.statistics.CumulativeStatistics;
 import net.mathdoku.plus.statistics.HistoricStatistics;
 import net.mathdoku.plus.statistics.HistoricStatistics.Scale;
-import net.mathdoku.plus.statistics.HistoricStatistics.Series;
-import net.mathdoku.plus.storage.databaseadapter.StatisticsDatabaseAdapter;
 import net.mathdoku.plus.storage.selector.CumulativeStatisticsSelector;
 import net.mathdoku.plus.util.Util;
 
@@ -74,8 +73,8 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		mPreferences.mSharedPreferences
 				.registerOnSharedPreferenceChangeListener(this);
 
-		mCumulativeStatistics = new CumulativeStatisticsSelector(mMinGridSize, mMaxGridSize)
-				.getCumulativeStatistics();
+		mCumulativeStatistics = new CumulativeStatisticsSelector(mMinGridSize,
+				mMaxGridSize).getCumulativeStatistics();
 
 		// Get layout where charts will be drawn and the inflater for
 		// creating new statistics sections.
@@ -221,9 +220,8 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 	 * @return True in case the chart has been created. False otherwise.
 	 */
 	private boolean createElapsedTimeHistoryChart() {
-		// Retrieve the data
-		HistoricStatistics historicStatistics = new StatisticsDatabaseAdapter()
-				.getHistoricData(mMinGridSize, mMaxGridSize);
+		HistoricStatistics historicStatistics = new HistoricStatistics(
+				mMinGridSize, mMaxGridSize);
 
 		// The number of entries to be displayed is restricted to the maximum
 		// set in the preferences.
@@ -323,12 +321,13 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		List<String> typesList = new ArrayList<String>();
 
 		// Add series for elapsed time (including cheat time) of solved games
-		if (historicStatistics.isXYSeriesUsed(Series.SOLVED, true, true)) {
+		if (historicStatistics.isXYSeriesUsed(
+				SolvingAttemptStatus.FINISHED_SOLVED, true, true)) {
 			typesList.add(BarChart.TYPE);
 			xyMultipleSeriesDataset
 					.addSeries(historicStatistics
 							.getXYSeries(
-									Series.SOLVED,
+									SolvingAttemptStatus.FINISHED_SOLVED,
 									getResources()
 											.getString(
 													R.string.statistics_elapsed_time_historic_elapsed_time_solved),
@@ -341,13 +340,13 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		boolean cheatLegendDisplayed = false;
 
 		// Add series for cheat time of solved games
-		if (historicStatistics.isXYSeriesUsed(HistoricStatistics.Series.SOLVED,
-				false, true)) {
+		if (historicStatistics.isXYSeriesUsed(
+				SolvingAttemptStatus.FINISHED_SOLVED, false, true)) {
 			typesList.add(BarChart.TYPE);
 			xyMultipleSeriesDataset
 					.addSeries(historicStatistics
 							.getXYSeries(
-									Series.SOLVED,
+									SolvingAttemptStatus.FINISHED_SOLVED,
 									getResources()
 											.getString(
 													R.string.statistics_elapsed_time_historic_cheat_time),
@@ -367,13 +366,14 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 
 		// Add series for elapsed time (including cheat time) of unfinished
 		// games
-		if (historicStatistics.isXYSeriesUsed(Series.UNFINISHED, true, true)) {
+		if (historicStatistics.isXYSeriesUsed(SolvingAttemptStatus.UNFINISHED,
+				true, true)) {
 			// Elapsed time so far including cheats
 			typesList.add(BarChart.TYPE);
 			xyMultipleSeriesDataset
 					.addSeries(historicStatistics
 							.getXYSeries(
-									HistoricStatistics.Series.UNFINISHED,
+									SolvingAttemptStatus.UNFINISHED,
 									getResources()
 											.getString(
 													R.string.statistics_elapsed_time_historic_elapsed_time_unfinished),
@@ -383,12 +383,13 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		}
 
 		// Add series for cheat time of solved games
-		if (historicStatistics.isXYSeriesUsed(Series.UNFINISHED, false, true)) {
+		if (historicStatistics.isXYSeriesUsed(SolvingAttemptStatus.UNFINISHED,
+				false, true)) {
 			typesList.add(BarChart.TYPE);
 			xyMultipleSeriesDataset
 					.addSeries(historicStatistics
 							.getXYSeries(
-									HistoricStatistics.Series.UNFINISHED,
+									SolvingAttemptStatus.UNFINISHED,
 									getResources()
 											.getString(
 													R.string.statistics_elapsed_time_historic_cheat_time),
@@ -405,8 +406,8 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		}
 
 		// Add series for games in which the solution was revealed
-		if (historicStatistics.isXYSeriesUsed(Series.SOLUTION_REVEALED, true,
-				true)) {
+		if (historicStatistics.isXYSeriesUsed(
+				SolvingAttemptStatus.REVEALED_SOLUTION, true, true)) {
 			typesList.add(BarChart.TYPE);
 
 			xyMultipleSeriesDataset
@@ -432,10 +433,11 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		// Add series for the historic average of solved games. As this series
 		// is displayed as a line chart, it can only be shown if at least two
 		// data points in the series are available.
-		if (historicStatistics.isXYSeriesUsed(Series.SOLVED, true, true)) {
+		if (historicStatistics.isXYSeriesUsed(
+				SolvingAttemptStatus.FINISHED_SOLVED, true, true)) {
 			XYSeries xySeries = historicStatistics
 					.getXYSeriesHistoricAverage(
-							HistoricStatistics.Series.SOLVED,
+							SolvingAttemptStatus.FINISHED_SOLVED,
 							getResources()
 									.getString(
 											R.string.statistics_elapsed_time_historic_solved_average_serie),
@@ -452,8 +454,8 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 
 		// Create a table with extra data for fastest, average and slowest time.
 		TableLayout tableLayout = null;
-		if (historicStatistics.isXYSeriesUsed(HistoricStatistics.Series.SOLVED,
-				true, true)) {
+		if (historicStatistics.isXYSeriesUsed(
+				SolvingAttemptStatus.FINISHED_SOLVED, true, true)) {
 			tableLayout = new TableLayout(getActivity());
 			TableLayout.LayoutParams tableLayoutParams = new TableLayout.LayoutParams(
 					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);

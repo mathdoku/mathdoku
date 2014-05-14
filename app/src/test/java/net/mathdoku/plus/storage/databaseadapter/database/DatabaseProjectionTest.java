@@ -53,7 +53,7 @@ public class DatabaseProjectionTest {
 	@Test
 	public void put_MapTargetStringToSourceString_ProjectionCanBeRetrieved()
 			throws Exception {
-		String expectedProjection = SOURCE_STRING + " AS " + TARGET_STRING;
+		String expectedProjection = SOURCE_STRING + " AS `" + TARGET_STRING + "`";
 
 		// When first adding the target_string, a null value is returned.
 		assertThat(databaseProjection.put(TARGET_STRING, SOURCE_STRING),

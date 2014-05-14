@@ -1,10 +1,10 @@
 package net.mathdoku.plus.statistics;
 
-import android.database.Cursor;
+import net.mathdoku.plus.enums.SolvingAttemptStatus;
+import net.mathdoku.plus.storage.selector.HistoricStatisticsSelector;
 
 import org.achartengine.model.XYSeries;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,31 +14,12 @@ public class HistoricStatistics {
 	@SuppressWarnings("unused")
 	private static final String TAG = HistoricStatistics.class.getName();
 
-	// Historic statistics will be split in distinct series.
-	public enum Series {
-		UNFINISHED, SOLUTION_REVEALED, SOLVED
-	}
+	private final List<HistoricStatisticsSelector.DataPoint> dataPoints;
 
 	// Scales which can be applied on the values
 	public enum Scale {
 		NO_SCALE, SECONDS, MINUTES, HOURS, DAYS
 	}
-
-	// Columns in the DATA cursor
-	public static final String DATA_COL_ID = "id";
-	public static final String DATA_COL_ELAPSED_TIME_EXCLUDING_CHEAT_PENALTY = "elapsed_time_excluding_cheat_penalty";
-	public static final String DATA_COL_CHEAT_PENALTY = "cheat_penalty";
-	public static final String DATA_COL_SERIES = "series";
-
-	// Internal structure to store data points retrieved from database
-	private class DataPoint {
-		public long mElapsedTimeExcludingCheatPenalty;
-		public long mCheatPenalty;
-		public Series mSeries;
-	}
-
-	// Storage for data points retrieved from database
-	private final List<DataPoint> dataPoints;
 
 	// Internal data structure to store data per series
 	private class SeriesSummary {
@@ -62,9 +43,9 @@ public class HistoricStatistics {
 		 * @param dataPoint
 		 *            The data point which has to be included in the series.
 		 */
-		public void addValue(DataPoint dataPoint) {
-			long totalValue = dataPoint.mElapsedTimeExcludingCheatPenalty
-					+ dataPoint.mCheatPenalty;
+		public void addDataPoint(HistoricStatisticsSelector.DataPoint dataPoint) {
+			long totalValue = dataPoint.elapsedTimeExcludingCheatPenalty
+					+ dataPoint.cheatPenalty;
 			mMinValue = totalValue < mMinValue ? totalValue : mMinValue;
 			mMaxValue = totalValue > mMaxValue ? totalValue : mMaxValue;
 			mSumValue += totalValue;
@@ -125,60 +106,44 @@ public class HistoricStatistics {
 	 * Creates a new instance of {@link HistoricStatistics}. Note that order of
 	 * columns in cursors is defined.
 	 * 
-	 * @param dataPointsCursor
-	 *            The database cursor holding the data to be transformed into
-	 *            the historic statistics series.
+	 * @param mMinGridSize
+	 *            The minimum grid size for which the statistics have to be
+	 *            displayed.
+	 * @param mMaxGridSize
+	 *            The maximum grid size for which the statistics have to be
+	 *            displayed.
+	 * 
 	 */
-	public HistoricStatistics(Cursor dataPointsCursor) {
-		dataPoints = new ArrayList<DataPoint>();
+	public HistoricStatistics(int mMinGridSize, int mMaxGridSize) {
+		dataPoints = new HistoricStatisticsSelector(mMinGridSize, mMaxGridSize)
+				.getDataPoints();
 		mSolvedSeriesSummary = new SeriesSummary();
 		mSolutionRevealedSeriesSummary = new SeriesSummary();
 		mUnfinishedSeriesSummary = new SeriesSummary();
-
-		// Get historic data from cursor
-		if (dataPointsCursor != null && dataPointsCursor.moveToFirst()) {
-			do {
-				// Fill new data point
-				DataPoint dataPoint = new DataPoint();
-				dataPoint.mElapsedTimeExcludingCheatPenalty = dataPointsCursor
-						.getLong(dataPointsCursor
-								.getColumnIndexOrThrow(DATA_COL_ELAPSED_TIME_EXCLUDING_CHEAT_PENALTY));
-				dataPoint.mCheatPenalty = dataPointsCursor
-						.getLong(dataPointsCursor
-								.getColumnIndexOrThrow(DATA_COL_CHEAT_PENALTY));
-				dataPoint.mSeries = Series.valueOf(dataPointsCursor
-						.getString(dataPointsCursor
-								.getColumnIndexOrThrow(DATA_COL_SERIES)));
-
-				// Update summary for the series
-				switch (dataPoint.mSeries) {
-				case UNFINISHED:
-					mUnfinishedSeriesSummary.addValue(dataPoint);
-					break;
-				case SOLUTION_REVEALED:
-					mSolutionRevealedSeriesSummary.addValue(dataPoint);
-					break;
-				case SOLVED:
-					mSolvedSeriesSummary.addValue(dataPoint);
-					break;
-				}
-
-				// Add data point to the list
-				dataPoints.add(dataPoint);
-			} while (dataPointsCursor.moveToNext());
-
-			mLimit = XY_SERIES_NOT_LIMITED;
+		for (HistoricStatisticsSelector.DataPoint dataPoint : dataPoints) {
+			// Update summary for the series
+			switch (dataPoint.solvingAttemptStatus) {
+			case REVEALED_SOLUTION:
+				mSolutionRevealedSeriesSummary.addDataPoint(dataPoint);
+				break;
+			case FINISHED_SOLVED:
+				mSolvedSeriesSummary.addDataPoint(dataPoint);
+				break;
+			default:
+				mUnfinishedSeriesSummary.addDataPoint(dataPoint);
+				break;
+			}
 		}
+		mLimit = XY_SERIES_NOT_LIMITED;
 	}
 
 	/**
-	 * Checks whether the given series has been filled with at least one data
-	 * point.
+	 * Checks whether at least one data point for the given status exists. If
+	 * so, the corresponding series can be plotted.
 	 * 
-	 * @param series
-	 *            The series to be converted. Use null in case it needs to be
-	 *            checked if at least one data point exists for any of the
-	 *            series.
+	 * @param solvingAttemptStatus
+	 *            The required status of the data points to be selected. Use
+	 *            null in case no selection on status has to be made.
 	 * @param includeElapsedTime
 	 *            True in case the elapsed time should be included in the values
 	 *            of the return series.
@@ -188,19 +153,20 @@ public class HistoricStatistics {
 	 * @return True in case the series contain at least one data point.
 	 */
 	@SuppressWarnings("SameParameterValue")
-	public boolean isXYSeriesUsed(Series series, boolean includeElapsedTime,
-			boolean includeCheatTime) {
+	public boolean isXYSeriesUsed(SolvingAttemptStatus solvingAttemptStatus,
+			boolean includeElapsedTime, boolean includeCheatTime) {
 		// In case a limit is specified, only the last <limit> number of
 		// data points are converted to the series.
 		int start = getIndexFirstEntry();
 		int index = 1;
 
-		for (DataPoint dataPoint : dataPoints) {
+		for (HistoricStatisticsSelector.DataPoint dataPoint : dataPoints) {
 			if (index >= start) {
-				if (dataPoint.mSeries == series || series == null) {
+				if (dataPoint.solvingAttemptStatus == solvingAttemptStatus
+						|| solvingAttemptStatus == null) {
 					if (includeElapsedTime
-							&& dataPoint.mElapsedTimeExcludingCheatPenalty > 0
-							|| includeCheatTime && dataPoint.mCheatPenalty > 0) {
+							&& dataPoint.elapsedTimeExcludingCheatPenalty > 0
+							|| includeCheatTime && dataPoint.cheatPenalty > 0) {
 						return true;
 					}
 				}
@@ -215,8 +181,11 @@ public class HistoricStatistics {
 	 * Converts the given series to a XYSeries object which can be processed by
 	 * AChartEngine.
 	 * 
-	 * @param series
-	 *            The series to be converted.
+	 * @param solvingAttemptStatus
+	 *            The required status ({@value
+	 *            net.mathdoku.plus.enums.SolvingAttemptStatus .UNFINISHED} or
+	 *            {@value net.mathdoku.plus.enums.SolvingAttemptStatus
+	 *            .FINISHED_SOLVED}) of the data points to be selected.
 	 * @param title
 	 *            The title to be used in the XYSeries.
 	 * @param scale
@@ -231,9 +200,10 @@ public class HistoricStatistics {
 	 * @return A XYSeries object which can be processed by AChartEngine
 	 */
 	@SuppressWarnings("SameParameterValue")
-	public XYSeries getXYSeries(Series series, String title, Scale scale,
-			boolean includeElapsedTime, boolean includeCheatTime) {
-		if (series == Series.SOLUTION_REVEALED) {
+	public XYSeries getXYSeries(SolvingAttemptStatus solvingAttemptStatus,
+			String title, Scale scale, boolean includeElapsedTime,
+			boolean includeCheatTime) {
+		if (solvingAttemptStatus == SolvingAttemptStatus.REVEALED_SOLUTION) {
 			throw new IllegalArgumentException(
 					"Method getXYSeries should not be used for the solution "
 							+ "revealed series. Use getXYSeriesSolutionsRevealed "
@@ -248,14 +218,14 @@ public class HistoricStatistics {
 		int start = getIndexFirstEntry();
 		int index = 1;
 
-		for (DataPoint dataPoint : dataPoints) {
+		for (HistoricStatisticsSelector.DataPoint dataPoint : dataPoints) {
 			if (index >= start) {
 				double value = 0;
-				if (dataPoint.mSeries == series) {
+				if (dataPoint.solvingAttemptStatus == solvingAttemptStatus) {
 					// Get unscaled value
-					value = (includeElapsedTime ? dataPoint.mElapsedTimeExcludingCheatPenalty
+					value = (includeElapsedTime ? dataPoint.elapsedTimeExcludingCheatPenalty
 							: 0)
-							+ (includeCheatTime ? dataPoint.mCheatPenalty : 0);
+							+ (includeCheatTime ? dataPoint.cheatPenalty : 0);
 
 					// Scale value
 					value /= scaleFactor;
@@ -295,18 +265,18 @@ public class HistoricStatistics {
 
 		// For games in which the solution is revealed the Y-value of the
 		// games will always be equals to the maximum Y-value.
-		for (DataPoint dataPoint : dataPoints) {
+		for (HistoricStatisticsSelector.DataPoint dataPoint : dataPoints) {
 			if (index >= start) {
 				double value = 0;
-				if (dataPoint.mSeries == Series.SOLUTION_REVEALED) {
+				if (dataPoint.solvingAttemptStatus == SolvingAttemptStatus.REVEALED_SOLUTION) {
 					if (includeElapsedTime) {
 						value = includeCheatTime ? maxY : Math.min(
-								dataPoint.mElapsedTimeExcludingCheatPenalty,
+								dataPoint.elapsedTimeExcludingCheatPenalty,
 								maxY);
 					} else {
 						value = Math.max(Math.min(maxY
-								- dataPoint.mElapsedTimeExcludingCheatPenalty,
-								dataPoint.mCheatPenalty), 0);
+								- dataPoint.elapsedTimeExcludingCheatPenalty,
+								dataPoint.cheatPenalty), 0);
 					}
 				}
 				xySeries.add(index, value);
@@ -320,8 +290,9 @@ public class HistoricStatistics {
 	/**
 	 * Gets a XYSeries object for the historic average of the given series.
 	 * 
-	 * @param series
-	 *            The series to be converted.
+	 * @param solvingAttemptStatus
+	 *            The required status of the data points to be selected. Use
+	 *            null in case no selection on status has to be made.
 	 * @param title
 	 *            The title to be used in the XYSeries.
 	 * @param scale
@@ -330,8 +301,8 @@ public class HistoricStatistics {
 	 * @return A XYSeries object which can be processed by AChartEngine
 	 */
 	@SuppressWarnings("SameParameterValue")
-	public XYSeries getXYSeriesHistoricAverage(Series series, String title,
-			Scale scale) {
+	public XYSeries getXYSeriesHistoricAverage(
+			SolvingAttemptStatus solvingAttemptStatus, String title, Scale scale) {
 		XYSeries xySeries = new XYSeries(title);
 
 		double totalValue = 0;
@@ -343,9 +314,10 @@ public class HistoricStatistics {
 		int start = getIndexFirstEntry();
 		int index = 1;
 
-		for (DataPoint dataPoint : dataPoints) {
-			if (series == null || dataPoint.mSeries == series) {
-				totalValue += dataPoint.mElapsedTimeExcludingCheatPenalty;
+		for (HistoricStatisticsSelector.DataPoint dataPoint : dataPoints) {
+			if (solvingAttemptStatus == null
+					|| dataPoint.solvingAttemptStatus == solvingAttemptStatus) {
+				totalValue += dataPoint.elapsedTimeExcludingCheatPenalty;
 				countValue++;
 			}
 			if (countValue > 0 && index >= start) {

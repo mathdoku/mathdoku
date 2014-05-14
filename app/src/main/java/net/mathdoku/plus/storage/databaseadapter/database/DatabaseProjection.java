@@ -37,7 +37,7 @@ public class DatabaseProjection extends HashMap<String, String> {
 	 * @param sourceColumn
 	 *            Name of column on which the aggregation function will be
 	 *            applied to determine the value of the target column.
-	 * @return If constructed value ("[sourceColumn] AS [ targetColumn]")
+	 * @return If constructed value ("[sourceColumn] AS [ `targetColumn`]")
 	 *         already exists, its value is returned. If the value does not yet
 	 *         exists, null is returned.
 	 */
@@ -45,7 +45,10 @@ public class DatabaseProjection extends HashMap<String, String> {
 	public String put(String targetColumn, String sourceColumn) {
 		ParameterValidator.validateNotNullOrEmpty(targetColumn);
 		ParameterValidator.validateNotNullOrEmpty(sourceColumn);
-		return super.put(targetColumn, sourceColumn + " AS " + targetColumn);
+		return super.put(
+				targetColumn,
+				sourceColumn + " AS "
+						+ DatabaseUtil.stringBetweenBackTicks(targetColumn));
 	}
 
 	/**

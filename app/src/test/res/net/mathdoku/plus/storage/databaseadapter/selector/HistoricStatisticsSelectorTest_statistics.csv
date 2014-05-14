@@ -1,0 +1,21 @@
+"// ------------------------------------------------------------"######################
+"// ---------- Statistics import file for class mathdoku\plus\storage\databaseadapter\selector\CumulativeStatisticsSelectorTest."######################
+"// ------------------------------------------------------------"######################
+######################
+######################
+######################
+"_id"#"grid_id"#"replay"#"first_move"#"last_move"#"elapsed_time"#"cheat_penalty_time"#"cells_filled"#"cells_empty"#"cells_revealed"#"user_value_replaced"#"possibles"#"action_undos"#"action_clear_cells"#"action_clear_grid"#"action_reveal_cell"#"action_reveal_operators"#"action_check_progress"#"check_progress_invalid_cells_found"#"action_reveal_solution"#"solved_manually"#"finished"#"include_in_statistics"
+######################
+"// Usage of columns in CumulativeStatistics"######################
+"// COUNT"#"-"#"-"#"-"#"-"#"-"#"-"#"-"#"-"#"-"#"-"#"-"#"-"#"-"#"-"#"-"#"-"#"-"#"-"#"COUNTIF_TRUE"#"COUNTIF_TRUE"#"COUNTIF_TRUE"#"COUNT"
+######################
+"// Statistics for grids with size 4"######################
+1#40#0#"2014-05-11 20:37:35.542"#"2014-05-11 20:38:14.948"#78512#40000#16#0#0#0#0#0#0#0#0#0#0#0#"false"#"true"#"true"#"true"
+2#41#0#"2014-05-11 20:38:37.738"#"2014-05-11 20:39:06.613"#128038#100000#13#3#4#20#58#12#11#5#6#2#1#7#"false"#"false"#"false"#"true"
+######################
+"// Statistics for grids with size 5"######################
+3#50#0#"2014-05-11 20:39:25.897"#"2014-05-11 20:41:13.412"#106395#0#25#0#0#0#14#0#0#0#0#0#0#0#"false"#"true"#"true"#"false"
+4#50#1#"2014-05-11 21:54:18.148"#"2014-05-11 21:55:04.315"#153219#80000#5#19#1#0#0#1#2#1#1#0#0#0#"true"#"false"#"true"#"true"
+5#51#0#"2014-05-11 21:55:38.522"#"2014-05-11 21:55:56.871"#1337031#0#2#23#0#0#0#1#0#0#0#0#0#0#"false"#"true"#"true"#"true"
+6#52#0#"2014-05-12 12:06:20.765"#"2014-05-12 12:06:20.765"#116916#0#0#25#0#0#0#0#0#0#0#0#0#0#"false"#"true"#"true"#"true"
+7#53#0#"2014-05-12 12:09:04.479"#"2014-05-12 12:09:04.479"#0#0#0#25#0#0#0#0#0#0#0#0#0#0#"false"#"false"#"false"#"true"

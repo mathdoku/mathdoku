@@ -30,7 +30,7 @@ public class CumulativeStatisticsSelectorTest {
 			 * not yet set when executing a @BeforeClass method. As a result it
 			 * is not possible to open the database helper correctly.
 			 */
-			TestRunnerHelper.setup(HistoricStatisticsSelectorTest.class
+			TestRunnerHelper.setup(CumulativeStatisticsSelectorTest.class
 					.getCanonicalName());
 			String pathToImportFile = "net/mathdoku/plus/storage/databaseadapter/selector/";
 			new CsvImporter(pathToImportFile
