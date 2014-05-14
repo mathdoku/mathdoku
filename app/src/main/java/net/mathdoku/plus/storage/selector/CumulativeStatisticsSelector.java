@@ -24,7 +24,7 @@ public class CumulativeStatisticsSelector {
 
 	private final int minGridSize;
 	private final int maxGridSize;
-	private final static DatabaseProjection databaseProjection = buildDatabaseProjection();
+	private static final DatabaseProjection DATABASE_PROJECTION = buildDatabaseProjection();
 	private final CumulativeStatistics cumulativeStatistics;
 
 	public CumulativeStatisticsSelector(int minGridSize, int maxGridSize) {
@@ -65,7 +65,7 @@ public class CumulativeStatisticsSelector {
 
 	private CumulativeStatistics retrieveFromDatabase() {
 		SQLiteQueryBuilder sqliteQueryBuilder = new SQLiteQueryBuilder();
-		sqliteQueryBuilder.setProjectionMap(databaseProjection);
+		sqliteQueryBuilder.setProjectionMap(DATABASE_PROJECTION);
 		sqliteQueryBuilder.setTables(new JoinHelper(
 				GridDatabaseAdapter.TABLE_NAME, GridDatabaseAdapter.KEY_ROWID)
 				.innerJoinWith(StatisticsDatabaseAdapter.TABLE_NAME,
@@ -73,9 +73,8 @@ public class CumulativeStatisticsSelector {
 				.toString());
 
 		if (DEBUG_SQL) {
-			String sql = sqliteQueryBuilder.buildQuery(
-					databaseProjection.getAllColumnNames(),
-					getSelectionString(), null, null, null, null);
+			String sql = sqliteQueryBuilder.buildQuery(DATABASE_PROJECTION.getAllColumnNames(),
+													   getSelectionString(), null, null, null, null);
 			Log.i(TAG, sql);
 		}
 
@@ -83,7 +82,7 @@ public class CumulativeStatisticsSelector {
 		try {
 			cursor = sqliteQueryBuilder.query(DatabaseHelper
 					.getInstance()
-					.getReadableDatabase(), databaseProjection
+					.getReadableDatabase(), DATABASE_PROJECTION
 					.getAllColumnNames(), getSelectionString(), null, null,
 					null, null);
 		} catch (SQLiteException e) {
@@ -117,29 +116,28 @@ public class CumulativeStatisticsSelector {
 	}
 
 	private CumulativeStatistics getCumulativeStatisticsFromCursor(Cursor cursor) {
-		// Convert cursor record to a grid statics object.
-		CumulativeStatistics cumulativeStatistics = new CumulativeStatistics();
+		CumulativeStatistics statistics = new CumulativeStatistics();
 
 		// Grid size minimum and maximum
-		cumulativeStatistics.mMinGridSize = cursor
+		statistics.mMinGridSize = cursor
 				.getInt(getColumnIndexMinGridSizeFromCursor(cursor));
-		cumulativeStatistics.mMaxGridSize = cursor
+		statistics.mMaxGridSize = cursor
 				.getInt(getColumnIndexMaxGridSizeFromCursor(cursor));
 
 		// Totals per status of game
-		cumulativeStatistics.mCountSolutionRevealed = cursor
+		statistics.mCountSolutionRevealed = cursor
 				.getInt(getColumnIndexCountSolutionRevealedFromCursor(cursor));
-		cumulativeStatistics.mCountSolvedManually = cursor
+		statistics.mCountSolvedManually = cursor
 				.getInt(getColumnIndexCountSolvedManuallyFromCursor(cursor));
-		cumulativeStatistics.mCountFinished = cursor
+		statistics.mCountFinished = cursor
 				.getInt(getColumnIndexCountFinishedFromCursor(cursor));
 
 		// Total games
-		cumulativeStatistics.mCountStarted = cursor
+		statistics.mCountStarted = cursor
 				.getInt(getColumnIndexRowIdFromCursor(cursor));
 
 		cursor.close();
-		return cumulativeStatistics;
+		return statistics;
 	}
 
 	private int getColumnIndexMinGridSizeFromCursor(Cursor cursor) {
