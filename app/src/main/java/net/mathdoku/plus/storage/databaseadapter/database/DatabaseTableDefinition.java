@@ -61,18 +61,19 @@ public class DatabaseTableDefinition {
 	}
 
 	public String[] getColumnNames() {
-		if (!isComposed()) {
-			new IllegalStateException(
-					"Cannot be called until database table has been composed.");
-		}
+		throwIllegalStateExceptionIfNotYetComposed();
 		return columnNames;
 	}
 
-	public DataType[] getColumnTypes() {
+	private void throwIllegalStateExceptionIfNotYetComposed() {
 		if (!isComposed()) {
 			new IllegalStateException(
 					"Cannot be called until database table has been composed.");
 		}
+	}
+
+	public DataType[] getColumnTypes() {
+		throwIllegalStateExceptionIfNotYetComposed();
 
 		// Array with column types is not pre filled as method getColumnTypes is
 		// only called a few times when running the unit tests.
