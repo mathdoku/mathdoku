@@ -481,8 +481,8 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		try {
 			UpdateQueryHelper updateQueryHelper = new UpdateQueryHelper(
 					TABLE_NAME);
-			updateQueryHelper.setColumnTo(KEY_RANK_STATUS,
-					RankStatus.TO_BE_UPDATED.toString());
+			updateQueryHelper.setColumnToValue(KEY_RANK_STATUS, RankStatus.TO_BE_UPDATED.toString
+					());
 			updateQueryHelper.setColumnToNull(KEY_RANK);
 			updateQueryHelper.setColumnToNull(KEY_RANK_DISPLAY);
 			updateQueryHelper.setColumnToNull(KEY_RANK_DATE_LAST_UPDATED);

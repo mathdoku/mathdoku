@@ -29,7 +29,7 @@ public abstract class QueryHelper {
 						.stringBetweenQuotes(value));
 	}
 
-	private static String getFieldOperatorEscapedString(String field,
+	protected static String getFieldOperatorEscapedString(String field,
 			String operator, String value) {
 		ParameterValidator.validateNotNullOrEmpty(field);
 		ParameterValidator.validateNotNullOrEmpty(operator);
