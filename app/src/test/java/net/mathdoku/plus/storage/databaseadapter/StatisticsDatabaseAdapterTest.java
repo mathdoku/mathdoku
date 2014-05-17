@@ -71,8 +71,11 @@ public class StatisticsDatabaseAdapterTest {
 		GridStatistics gridStatistics = createGridStatisticsWithAllFieldsHavingAValue(
 				idOfFirstGridStatistics, gridId);
 
-		assertThat(statisticsDatabaseAdapter.insert(gridStatistics), is(idOfFirstGridStatistics));
-		assertThat(statisticsDatabaseAdapter.getStatisticsForSolvingAttempt(idOfFirstGridStatistics),
+		assertThat(statisticsDatabaseAdapter.insert(gridStatistics),
+				is(idOfFirstGridStatistics));
+		assertThat(
+				statisticsDatabaseAdapter
+						.getStatisticsForSolvingAttempt(idOfFirstGridStatistics),
 				is(gridStatistics));
 	}
 
@@ -123,8 +126,7 @@ public class StatisticsDatabaseAdapterTest {
 		int idGridStatistics2 = idOfNextGridStatistics++;
 		GridStatistics gridStatistics2 = createGridStatisticsWithAllFieldsHavingAValue(
 				idGridStatistics2, gridId);
-		statisticsDatabaseAdapter
-				.insert(gridStatistics2);
+		statisticsDatabaseAdapter.insert(gridStatistics2);
 
 		int otherGridId = 9999;
 		int otherGridStatistics = idOfNextGridStatistics++;
@@ -132,7 +134,9 @@ public class StatisticsDatabaseAdapterTest {
 				.insert(createGridStatisticsWithAllFieldsHavingAValue(
 						otherGridStatistics, otherGridId));
 
-		assertThat(statisticsDatabaseAdapter.getStatisticsForSolvingAttempt(idGridStatistics2),
+		assertThat(
+				statisticsDatabaseAdapter
+						.getStatisticsForSolvingAttempt(idGridStatistics2),
 				is(gridStatistics2));
 	}
 
@@ -167,7 +171,9 @@ public class StatisticsDatabaseAdapterTest {
 		gridStatistics.mFinished = true;
 
 		assertThat(statisticsDatabaseAdapter.update(gridStatistics), is(true));
-		assertThat(statisticsDatabaseAdapter.getStatisticsForSolvingAttempt(idOfFirstGridStatistics),
+		assertThat(
+				statisticsDatabaseAdapter
+						.getStatisticsForSolvingAttempt(idOfFirstGridStatistics),
 				is(gridStatistics));
 	}
 
@@ -198,13 +204,17 @@ public class StatisticsDatabaseAdapterTest {
 		gridStatistics1.mIncludedInStatistics = false;
 		statisticsDatabaseAdapter.insert(gridStatistics2);
 
-
-		statisticsDatabaseAdapter.updateSolvingAttemptToBeIncludedInStatistics(gridId, idGridStatistics2);
+		statisticsDatabaseAdapter.updateSolvingAttemptToBeIncludedInStatistics(
+				gridId, idGridStatistics2);
 		gridStatistics1.mIncludedInStatistics = false;
-		assertThat(statisticsDatabaseAdapter.getStatisticsForSolvingAttempt(idGridStatistics1),
+		assertThat(
+				statisticsDatabaseAdapter
+						.getStatisticsForSolvingAttempt(idGridStatistics1),
 				is(gridStatistics1));
 		gridStatistics2.mIncludedInStatistics = true;
-		assertThat(statisticsDatabaseAdapter.getStatisticsForSolvingAttempt(idGridStatistics2),
-				   is(gridStatistics2));
+		assertThat(
+				statisticsDatabaseAdapter
+						.getStatisticsForSolvingAttempt(idGridStatistics2),
+				is(gridStatistics2));
 	}
 }

@@ -223,12 +223,13 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 			} else {
 				mHasScore = true;
 				mLeaderboardScoreLabel.setVisibility(View.VISIBLE);
-				mLeaderboardScoreDisplay.setText(Util
-						.durationTimeToString(leaderboardRankRow.getRawScore()));
+				mLeaderboardScoreDisplay
+						.setText(Util.durationTimeToString(leaderboardRankRow
+								.getRawScore()));
 				mLeaderboardScoreDisplay.setVisibility(View.VISIBLE);
 				mLeaderboardNotPlayed.setVisibility(View.GONE);
-				mLeaderboardRankDisplay
-						.setText(leaderboardRankRow.getRankDisplay());
+				mLeaderboardRankDisplay.setText(leaderboardRankRow
+						.getRankDisplay());
 				mLeaderboardRankDisplay.setVisibility(View.VISIBLE);
 			}
 

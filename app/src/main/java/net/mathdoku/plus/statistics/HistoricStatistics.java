@@ -166,7 +166,8 @@ public class HistoricStatistics {
 						|| solvingAttemptStatus == null) {
 					if (includeElapsedTime
 							&& dataPoint.getElapsedTimeExcludingCheatPenalty() > 0
-							|| includeCheatTime && dataPoint.getCheatPenalty() > 0) {
+							|| includeCheatTime
+							&& dataPoint.getCheatPenalty() > 0) {
 						return true;
 					}
 				}
@@ -223,9 +224,10 @@ public class HistoricStatistics {
 				double value = 0;
 				if (dataPoint.getSolvingAttemptStatus() == solvingAttemptStatus) {
 					// Get unscaled value
-					value = (includeElapsedTime ? dataPoint.getElapsedTimeExcludingCheatPenalty()
-							: 0)
-							+ (includeCheatTime ? dataPoint.getCheatPenalty() : 0);
+					value = (includeElapsedTime ? dataPoint
+							.getElapsedTimeExcludingCheatPenalty() : 0)
+							+ (includeCheatTime ? dataPoint.getCheatPenalty()
+									: 0);
 
 					// Scale value
 					value /= scaleFactor;
@@ -270,13 +272,17 @@ public class HistoricStatistics {
 				double value = 0;
 				if (dataPoint.getSolvingAttemptStatus() == SolvingAttemptStatus.REVEALED_SOLUTION) {
 					if (includeElapsedTime) {
-						value = includeCheatTime ? maxY : Math.min(
-								dataPoint.getElapsedTimeExcludingCheatPenalty(),
-								maxY);
+						value = includeCheatTime ? maxY : Math
+								.min(dataPoint
+										.getElapsedTimeExcludingCheatPenalty(),
+										maxY);
 					} else {
-						value = Math.max(Math.min(maxY
-								- dataPoint.getElapsedTimeExcludingCheatPenalty(),
-												  dataPoint.getCheatPenalty()), 0);
+						value = Math
+								.max(Math.min(
+										maxY
+												- dataPoint
+														.getElapsedTimeExcludingCheatPenalty(),
+										dataPoint.getCheatPenalty()), 0);
 					}
 				}
 				xySeries.add(index, value);

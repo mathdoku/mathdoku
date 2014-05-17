@@ -174,7 +174,8 @@ public class GridLoader {
 	private SolvingAttemptRow loadSolvingAttempt(int solvingAttemptId) {
 		SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = mObjectsCreator
 				.createSolvingAttemptDatabaseAdapter();
-		return solvingAttemptDatabaseAdapter.getSolvingAttemptRow(solvingAttemptId);
+		return solvingAttemptDatabaseAdapter
+				.getSolvingAttemptRow(solvingAttemptId);
 	}
 
 	/**

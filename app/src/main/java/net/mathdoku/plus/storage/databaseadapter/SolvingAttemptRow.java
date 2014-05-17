@@ -73,21 +73,15 @@ public class SolvingAttemptRow {
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder("SolvingAttemptRow{");
-		sb.append("solvingAttemptId=")
-				.append(solvingAttemptId);
-		sb.append(", gridId=")
-				.append(gridId);
-		sb.append(", solvingAttemptDateCreated=")
-				.append(solvingAttemptDateCreated);
-		sb.append(", solvingAttemptDateUpdated=")
-				.append(solvingAttemptDateUpdated);
-		sb.append(", solvingAttemptStatus=")
-				.append(solvingAttemptStatus);
-		sb.append(", savedWithRevision=")
-				.append(savedWithRevision);
-		sb.append(", storageString='")
-				.append(storageString)
-				.append('\'');
+		sb.append("solvingAttemptId=").append(solvingAttemptId);
+		sb.append(", gridId=").append(gridId);
+		sb.append(", solvingAttemptDateCreated=").append(
+				solvingAttemptDateCreated);
+		sb.append(", solvingAttemptDateUpdated=").append(
+				solvingAttemptDateUpdated);
+		sb.append(", solvingAttemptStatus=").append(solvingAttemptStatus);
+		sb.append(", savedWithRevision=").append(savedWithRevision);
+		sb.append(", storageString='").append(storageString).append('\'');
 		sb.append('}');
 		return sb.toString();
 	}
@@ -123,8 +117,8 @@ public class SolvingAttemptRow {
 		if (solvingAttemptStatus != that.solvingAttemptStatus) {
 			return false;
 		}
-		if (storageString != null ? !storageString.equals(
-				that.storageString) : that.storageString != null) {
+		if (storageString != null ? !storageString.equals(that.storageString)
+				: that.storageString != null) {
 			return false;
 		}
 
@@ -135,13 +129,16 @@ public class SolvingAttemptRow {
 	public int hashCode() {
 		int result = solvingAttemptId;
 		result = 31 * result + gridId;
-		result = 31 * result + (int) (solvingAttemptDateCreated ^ solvingAttemptDateCreated >>>
-				32);
-		result = 31 * result + (int) (solvingAttemptDateUpdated ^ solvingAttemptDateUpdated >>>
-				32);
+		result = 31
+				* result
+				+ (int) (solvingAttemptDateCreated ^ solvingAttemptDateCreated >>> 32);
+		result = 31
+				* result
+				+ (int) (solvingAttemptDateUpdated ^ solvingAttemptDateUpdated >>> 32);
 		result = 31 * result + solvingAttemptStatus.hashCode();
 		result = 31 * result + savedWithRevision;
-		result = 31 * result + (storageString != null ? storageString.hashCode() : 0);
+		result = 31 * result
+				+ (storageString != null ? storageString.hashCode() : 0);
 		return result;
 	}
 }

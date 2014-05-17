@@ -313,7 +313,9 @@ public class GridLoaderTest {
 		}
 
 		public void returnsGridStatistics(GridStatistics gridStatistics) {
-			when(mStatisticsDatabaseAdapterMock.getStatisticsForSolvingAttempt(anyInt()))
+			when(
+					mStatisticsDatabaseAdapterMock
+							.getStatisticsForSolvingAttempt(anyInt()))
 					.thenReturn(gridStatistics);
 		}
 

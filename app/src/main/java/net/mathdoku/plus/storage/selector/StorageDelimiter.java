@@ -14,4 +14,3 @@ public class StorageDelimiter {
 	private StorageDelimiter() {
 	}
 }
-

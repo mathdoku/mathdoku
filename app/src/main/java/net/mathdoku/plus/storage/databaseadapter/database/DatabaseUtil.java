@@ -36,17 +36,19 @@ public class DatabaseUtil {
 
 	/**
 	 * Encloses a table and column names with back ticks (`).
-	 *
+	 * 
 	 * @param tableName
-	 *            The tableName which needs to be prefixed and suffixed with back
-	 *            ticks.
+	 *            The tableName which needs to be prefixed and suffixed with
+	 *            back ticks.
 	 * @param columnName
-	 *            The columnName which needs to be prefixed and suffixed with back
-	 *            ticks.
+	 *            The columnName which needs to be prefixed and suffixed with
+	 *            back ticks.
 	 * @return The table and column name in format "`table`.`column`".
 	 */
-	public static String tableAndColumnBetweenBackTicks(String tableName, String columnName) {
-		return stringBetweenBackTicks(tableName) + "." + stringBetweenBackTicks(columnName);
+	public static String tableAndColumnBetweenBackTicks(String tableName,
+			String columnName) {
+		return stringBetweenBackTicks(tableName) + "."
+				+ stringBetweenBackTicks(columnName);
 	}
 
 	/**

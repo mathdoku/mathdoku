@@ -272,52 +272,30 @@ public class GridStatistics {
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder("GridStatistics{");
-		sb.append("mId=")
-				.append(mId);
-		sb.append(", mGridId=")
-				.append(mGridId);
-		sb.append(", mReplayCount=")
-				.append(mReplayCount);
-		sb.append(", mFirstMove=")
-				.append(mFirstMove);
-		sb.append(", mLastMove=")
-				.append(mLastMove);
-		sb.append(", mElapsedTime=")
-				.append(mElapsedTime);
-		sb.append(", mCheatPenaltyTime=")
-				.append(mCheatPenaltyTime);
-		sb.append(", mEnteredValueReplaced=")
-				.append(mEnteredValueReplaced);
-		sb.append(", mMaybeValue=")
-				.append(mMaybeValue);
-		sb.append(", mActionUndoMove=")
-				.append(mActionUndoMove);
-		sb.append(", mActionClearCell=")
-				.append(mActionClearCell);
-		sb.append(", mActionClearGrid=")
-				.append(mActionClearGrid);
-		sb.append(", mActionRevealCell=")
-				.append(mActionRevealCell);
-		sb.append(", mActionRevealOperator=")
-				.append(mActionRevealOperator);
-		sb.append(", mActionCheckProgress=")
-				.append(mActionCheckProgress);
-		sb.append(", mCheckProgressInvalidCellsFound=")
-				.append(mCheckProgressInvalidCellsFound);
-		sb.append(", mSolutionRevealed=")
-				.append(mSolutionRevealed);
-		sb.append(", mCellsFilled=")
-				.append(mCellsFilled);
-		sb.append(", mCellsEmpty=")
-				.append(mCellsEmpty);
-		sb.append(", mCellsRevealed=")
-				.append(mCellsRevealed);
-		sb.append(", mSolvedManually=")
-				.append(mSolvedManually);
-		sb.append(", mFinished=")
-				.append(mFinished);
-		sb.append(", mIncludedInStatistics=")
-				.append(mIncludedInStatistics);
+		sb.append("mId=").append(mId);
+		sb.append(", mGridId=").append(mGridId);
+		sb.append(", mReplayCount=").append(mReplayCount);
+		sb.append(", mFirstMove=").append(mFirstMove);
+		sb.append(", mLastMove=").append(mLastMove);
+		sb.append(", mElapsedTime=").append(mElapsedTime);
+		sb.append(", mCheatPenaltyTime=").append(mCheatPenaltyTime);
+		sb.append(", mEnteredValueReplaced=").append(mEnteredValueReplaced);
+		sb.append(", mMaybeValue=").append(mMaybeValue);
+		sb.append(", mActionUndoMove=").append(mActionUndoMove);
+		sb.append(", mActionClearCell=").append(mActionClearCell);
+		sb.append(", mActionClearGrid=").append(mActionClearGrid);
+		sb.append(", mActionRevealCell=").append(mActionRevealCell);
+		sb.append(", mActionRevealOperator=").append(mActionRevealOperator);
+		sb.append(", mActionCheckProgress=").append(mActionCheckProgress);
+		sb.append(", mCheckProgressInvalidCellsFound=").append(
+				mCheckProgressInvalidCellsFound);
+		sb.append(", mSolutionRevealed=").append(mSolutionRevealed);
+		sb.append(", mCellsFilled=").append(mCellsFilled);
+		sb.append(", mCellsEmpty=").append(mCellsEmpty);
+		sb.append(", mCellsRevealed=").append(mCellsRevealed);
+		sb.append(", mSolvedManually=").append(mSolvedManually);
+		sb.append(", mFinished=").append(mFinished);
+		sb.append(", mIncludedInStatistics=").append(mIncludedInStatistics);
 		sb.append('}');
 		return sb.toString();
 	}
@@ -396,10 +374,12 @@ public class GridStatistics {
 		if (mSolvedManually != that.mSolvedManually) {
 			return false;
 		}
-		if (mFirstMove != null ? !mFirstMove.equals(that.mFirstMove) : that.mFirstMove != null) {
+		if (mFirstMove != null ? !mFirstMove.equals(that.mFirstMove)
+				: that.mFirstMove != null) {
 			return false;
 		}
-		if (mLastMove != null ? !mLastMove.equals(that.mLastMove) : that.mLastMove != null) {
+		if (mLastMove != null ? !mLastMove.equals(that.mLastMove)
+				: that.mLastMove != null) {
 			return false;
 		}
 
@@ -414,7 +394,8 @@ public class GridStatistics {
 		result = 31 * result + (mFirstMove != null ? mFirstMove.hashCode() : 0);
 		result = 31 * result + (mLastMove != null ? mLastMove.hashCode() : 0);
 		result = 31 * result + (int) (mElapsedTime ^ (mElapsedTime >>> 32));
-		result = 31 * result + (int) (mCheatPenaltyTime ^ (mCheatPenaltyTime >>> 32));
+		result = 31 * result
+				+ (int) (mCheatPenaltyTime ^ (mCheatPenaltyTime >>> 32));
 		result = 31 * result + mEnteredValueReplaced;
 		result = 31 * result + mMaybeValue;
 		result = 31 * result + mActionUndoMove;

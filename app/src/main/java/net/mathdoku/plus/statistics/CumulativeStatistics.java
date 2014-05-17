@@ -16,18 +16,12 @@ public class CumulativeStatistics {
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder("CumulativeStatistics{");
-		sb.append("mMinGridSize=")
-				.append(mMinGridSize);
-		sb.append(", mMaxGridSize=")
-				.append(mMaxGridSize);
-		sb.append(", mCountStarted=")
-				.append(mCountStarted);
-		sb.append(", mCountSolutionRevealed=")
-				.append(mCountSolutionRevealed);
-		sb.append(", mCountSolvedManually=")
-				.append(mCountSolvedManually);
-		sb.append(", mCountFinished=")
-				.append(mCountFinished);
+		sb.append("mMinGridSize=").append(mMinGridSize);
+		sb.append(", mMaxGridSize=").append(mMaxGridSize);
+		sb.append(", mCountStarted=").append(mCountStarted);
+		sb.append(", mCountSolutionRevealed=").append(mCountSolutionRevealed);
+		sb.append(", mCountSolvedManually=").append(mCountSolvedManually);
+		sb.append(", mCountFinished=").append(mCountFinished);
 		sb.append('}');
 		return sb.toString();
 	}

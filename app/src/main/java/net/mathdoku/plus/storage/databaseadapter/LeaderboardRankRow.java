@@ -41,7 +41,8 @@ public class LeaderboardRankRow {
 	// has not been updated for a certain amount of time.
 	private final long dateLastUpdated;
 
-	public LeaderboardRankRow(LeaderboardRankRowBuilder leaderboardRankRowBuilder) {
+	public LeaderboardRankRow(
+			LeaderboardRankRowBuilder leaderboardRankRowBuilder) {
 		id = leaderboardRankRowBuilder.getId();
 		leaderboardId = leaderboardRankRowBuilder.getLeaderboardId();
 		gridSize = leaderboardRankRowBuilder.getGridSize();

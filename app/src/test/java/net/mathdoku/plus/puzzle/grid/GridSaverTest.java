@@ -109,7 +109,8 @@ public class GridSaverTest {
 		// Prepare insert of new solving attempt
 		when(
 				mSolvingAttemptDatabaseAdapterMock
-						.insert(any(SolvingAttemptRow.class))).thenReturn(mock(SolvingAttemptRow.class));
+						.insert(any(SolvingAttemptRow.class))).thenReturn(
+				mock(SolvingAttemptRow.class));
 		// Prepare insert of new statistics
 		int mGridStatisticsIdAfterSuccessfulInsert = 52;
 		when(mStatisticsDatabaseAdapterMock.insert(any(GridStatistics.class)))
@@ -163,7 +164,8 @@ public class GridSaverTest {
 		// Prepare insert of new solving attempt
 		when(
 				mSolvingAttemptDatabaseAdapterMock
-						.insert(any(SolvingAttemptRow.class))).thenReturn(mock(SolvingAttemptRow.class));
+						.insert(any(SolvingAttemptRow.class))).thenReturn(
+				mock(SolvingAttemptRow.class));
 		// Prepare insert of new statistics
 		int mGridStatisticsIdAfterSuccessfulInsert = 52;
 		when(mStatisticsDatabaseAdapterMock.insert(any(GridStatistics.class)))
@@ -195,7 +197,8 @@ public class GridSaverTest {
 		// Prepare insert of new solving attempt
 		when(
 				mSolvingAttemptDatabaseAdapterMock
-						.insert(any(SolvingAttemptRow.class))).thenReturn(mock(SolvingAttemptRow.class));
+						.insert(any(SolvingAttemptRow.class))).thenReturn(
+				mock(SolvingAttemptRow.class));
 		// Prepare insert of new statistics
 		int mGridStatisticsIdAfterSuccessfulInsert = 52;
 		when(mStatisticsDatabaseAdapterMock.insert(any(GridStatistics.class)))

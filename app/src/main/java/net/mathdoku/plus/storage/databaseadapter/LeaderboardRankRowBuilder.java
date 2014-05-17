@@ -109,8 +109,7 @@ public class LeaderboardRankRowBuilder {
 
 	/**
 	 * Updates the score. Preferred usage is
-	 * {@link LeaderboardRankRowBuilder#setScoreLocal(int, long)}
-	 * .
+	 * {@link LeaderboardRankRowBuilder#setScoreLocal(int, long)} .
 	 * 
 	 * @param scoreOrigin
 	 *            Origin of the score.
@@ -166,8 +165,7 @@ public class LeaderboardRankRowBuilder {
 	}
 
 	private void throwStatisticsIdIllegalArgumentException() {
-		throw new IllegalArgumentException(
-				"Parameter statisticsId is invalid.");
+		throw new IllegalArgumentException("Parameter statisticsId is invalid.");
 	}
 
 	private void setDefaultRankingInformation() {

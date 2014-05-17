@@ -40,7 +40,8 @@ public class CsvImporterTest {
 	@Test(expected = CsvImportException.class)
 	public void importIntoDatabase_DatabaseAdapterIsNull_ThrowsCsvImporterException()
 			throws Exception {
-		new CsvImporter("databasehelper/CsvImporter/CsvImporterTest_grid.csv", null).importIntoDatabase();
+		new CsvImporter("databasehelper/CsvImporter/CsvImporterTest_grid.csv",
+				null).importIntoDatabase();
 	}
 
 	@Test(expected = CsvImportException.class)
@@ -53,13 +54,12 @@ public class CsvImporterTest {
 	@Test(expected = CsvImportException.class)
 	public void importIntoDatabase_FileContainsAStringWhereAnIntegerWasExpected_ThrowsCsvImporterException()
 			throws Exception {
-		new CsvImporter("databasehelper/CsvImporter/grid_with_error.csv", new GridDatabaseAdapter())
-				.importIntoDatabase();
+		new CsvImporter("databasehelper/CsvImporter/grid_with_error.csv",
+				new GridDatabaseAdapter()).importIntoDatabase();
 	}
 
 	@Test
-	public void importIntoDatabase_Grid_ImportedWithoutError()
-			throws Exception {
+	public void importIntoDatabase_Grid_ImportedWithoutError() throws Exception {
 		new CsvImporter("databasehelper/CsvImporter/grid.csv",
 				new GridDatabaseAdapter()).importIntoDatabase();
 	}
@@ -68,20 +68,20 @@ public class CsvImporterTest {
 	public void importIntoDatabase_LeaderboardRank_ImportedWithoutError()
 			throws Exception {
 		new CsvImporter("databasehelper/CsvImporter/leaderboard_rank.csv",
-						new LeaderboardRankDatabaseAdapter()).importIntoDatabase();
+				new LeaderboardRankDatabaseAdapter()).importIntoDatabase();
 	}
 
 	@Test
 	public void importIntoDatabase_SolvingAttempt_ImportedWithoutError()
 			throws Exception {
 		new CsvImporter("databasehelper/CsvImporter/solving_attempt.csv",
-						new SolvingAttemptDatabaseAdapter()).importIntoDatabase();
+				new SolvingAttemptDatabaseAdapter()).importIntoDatabase();
 	}
 
 	@Test
 	public void importIntoDatabase_Statistics_ImportedWithoutError()
 			throws Exception {
 		new CsvImporter("databasehelper/CsvImporter/statistics.csv",
-						new StatisticsDatabaseAdapter()).importIntoDatabase();
+				new StatisticsDatabaseAdapter()).importIntoDatabase();
 	}
 }

@@ -125,12 +125,14 @@ public class CsvImporter {
 			throws IOException {
 		String line = readLineFromBuffer(bufferedReader);
 
-		while (line != null && (isCommentLine(line) || isEmptyLine(line) || isMultiLine(line))) {
+		while (line != null
+				&& (isCommentLine(line) || isEmptyLine(line) || isMultiLine(line))) {
 			if (isMultiLine(line)) {
 				StringBuilder stringBuilder = new StringBuilder();
 				stringBuilder.append(line);
 				while (line != null
-						&& !containsRequiredNumberOfValues(stringBuilder.toString())) {
+						&& !containsRequiredNumberOfValues(stringBuilder
+								.toString())) {
 					line = readLineFromBuffer(bufferedReader);
 					stringBuilder.append("\n");
 					stringBuilder.append(line);
