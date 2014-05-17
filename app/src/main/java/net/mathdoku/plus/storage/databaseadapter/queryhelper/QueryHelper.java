@@ -14,6 +14,10 @@ class QueryHelper {
 	protected static final String PARENTHESES_LEFT = "(";
 	protected static final String PARENTHESES_RIGHT = ")";
 
+	private QueryHelper() {
+		// Prevent instantiation of utility class.
+	}
+
 	static String join(String separator, @NotNull List<?> list) {
 		ParameterValidator.validateNotNullOrEmpty(list);
 		ParameterValidator.validateNotNullOrEmpty(separator);
@@ -26,8 +30,7 @@ class QueryHelper {
 		ParameterValidator.validateNotNullOrEmpty(queryElements);
 		ParameterValidator.validateNotNullOrEmpty(separator);
 
-		return TextUtils.join(surroundWithSpaceIfApplicable(separator),
-				queryElements);
+		return TextUtils.join(surroundWithSpaceIfApplicable(separator), queryElements);
 	}
 
 	private static String surroundWithSpaceIfApplicable(String separator) {

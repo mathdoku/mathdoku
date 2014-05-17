@@ -11,8 +11,8 @@ public class CaseWhenHelper {
 	private String elseValue;
 
 	private static class WhenThenOperand {
-		public FieldOperatorValue condition;
-		public String value;
+		FieldOperatorValue condition;
+		String value;
 	}
 
 	public CaseWhenHelper() {

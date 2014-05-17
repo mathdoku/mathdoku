@@ -5,5 +5,5 @@ package net.mathdoku.plus.storage.databaseadapter.queryhelper;
  * conditions in a ConditionList.
  */
 public interface ConditionListElement {
-	public String toString();
+	String toString();
 }
