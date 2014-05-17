@@ -15,6 +15,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 public class CellChangeTest {
@@ -25,10 +26,9 @@ public class CellChangeTest {
 
 		// Init the Grid Cell Mock
 		Cell cellMock = mock(Cell.class);
-
-		// Store current value of cell in a cell change
-		CellChange cellChange = new CellChange(cellMock, expectedEnteredValue,
-				expectedMaybeValues);
+		when(cellMock.getEnteredValue()).thenReturn(expectedEnteredValue);
+		when(cellMock.getPossibles()).thenReturn(expectedMaybeValues);
+		CellChange cellChange = new CellChange(cellMock);
 
 		// Restore the cell change which ...
 		cellChange.restore();
@@ -48,10 +48,9 @@ public class CellChangeTest {
 
 		// Init the Grid Cell Mock
 		Cell cellMock = mock(Cell.class);
-
-		// Store current value of cell in a cell change
-		CellChange cellChange = new CellChange(cellMock, expectedEnteredValue,
-				expectedMaybeValues);
+		when(cellMock.getEnteredValue()).thenReturn(expectedEnteredValue);
+		when(cellMock.getPossibles()).thenReturn(expectedMaybeValues);
+		CellChange cellChange = new CellChange(cellMock);
 
 		// Restore the cell change which ...
 		cellChange.restore();

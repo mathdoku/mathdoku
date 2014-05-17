@@ -29,19 +29,7 @@ public class CellChange {
 	 * 
 	 * @param cell
 	 *            The cell to which the undo information is related.
-	 * @param previousEnteredValue
-	 *            The entered value of the cell before it is changed.
-	 * @param previousPossibleValues
-	 *            The possible values of the cell before it is changed.
 	 */
-	public CellChange(Cell cell, int previousEnteredValue,
-			List<Integer> previousPossibleValues) {
-		mCell = cell;
-		mPreviousEnteredValue = previousEnteredValue;
-		mPreviousPossibleValues = new ArrayList<Integer>(previousPossibleValues);
-		mRelatedCellChanges = null;
-	}
-
 	public CellChange(Cell cell) {
 		mCell = cell;
 		mPreviousEnteredValue = cell.getEnteredValue();

@@ -23,9 +23,12 @@ public class CellChangeStorageTest {
 	private List<Cell> mArrayListOfCellsStub = mock(ArrayList.class);
 	private int mRevisionNumber = 596;
 
-	private Cell createCellMock(int id) {
+	private Cell createCellMock(int id, int enteredValue,
+			List<Integer> possibles) {
 		Cell cell = mock(Cell.class);
 		when(cell.getCellId()).thenReturn(id);
+		when(cell.getEnteredValue()).thenReturn(enteredValue);
+		when(cell.getPossibles()).thenReturn(possibles);
 
 		return cell;
 	}
@@ -122,8 +125,8 @@ public class CellChangeStorageTest {
 		int enteredValue = 2;
 		List<Integer> cellPossibles = new ArrayList<Integer>();
 
-		CellChange cellChange = new CellChange(createCellMock(cellId),
-				enteredValue, cellPossibles);
+		CellChange cellChange = new CellChange(createCellMock(cellId,
+				enteredValue, cellPossibles));
 		assertThat(mCellChangeStorage.toStorageString(cellChange),
 				is("CELL_CHANGE:[5:2::]"));
 	}
@@ -135,8 +138,8 @@ public class CellChangeStorageTest {
 		List<Integer> cellPossibles = new ArrayList<Integer>();
 		cellPossibles.add(3);
 
-		CellChange cellChange = new CellChange(createCellMock(cellId),
-				enteredValue, cellPossibles);
+		CellChange cellChange = new CellChange(createCellMock(cellId,
+				enteredValue, cellPossibles));
 		assertThat(mCellChangeStorage.toStorageString(cellChange),
 				is("CELL_CHANGE:[5:0:3,:]"));
 	}
@@ -151,8 +154,8 @@ public class CellChangeStorageTest {
 		cellPossibles.add(4);
 		cellPossibles.add(5);
 
-		CellChange cellChange = new CellChange(createCellMock(cellId),
-				enteredValue, cellPossibles);
+		CellChange cellChange = new CellChange(createCellMock(cellId,
+				enteredValue, cellPossibles));
 		assertThat(mCellChangeStorage.toStorageString(cellChange),
 				is("CELL_CHANGE:[5:0:3,4,5,:]"));
 	}
@@ -162,16 +165,15 @@ public class CellChangeStorageTest {
 		int rootCellId = 4;
 		int rootCellEnteredValue = 1;
 		List<Integer> rootCellPossibles = new ArrayList<Integer>();
-		CellChange cellChange = new CellChange(createCellMock(rootCellId),
-				rootCellEnteredValue, rootCellPossibles);
+		CellChange cellChange = new CellChange(createCellMock(rootCellId,
+				rootCellEnteredValue, rootCellPossibles));
 
 		int relatedCellId = 2;
 		int relatedCellEnteredValue = Cell.NO_ENTERED_VALUE;
 		List<Integer> relatedCellPossibles = new ArrayList<Integer>();
 		relatedCellPossibles.add(3);
-		CellChange relatedCellChange = new CellChange(
-				createCellMock(relatedCellId), relatedCellEnteredValue,
-				relatedCellPossibles);
+		CellChange relatedCellChange = new CellChange(createCellMock(
+				relatedCellId, relatedCellEnteredValue, relatedCellPossibles));
 		cellChange.addRelatedMove(relatedCellChange);
 
 		assertThat(mCellChangeStorage.toStorageString(cellChange),
@@ -183,16 +185,16 @@ public class CellChangeStorageTest {
 		int rootCellId = 4;
 		int rootCellEnteredValue = 1;
 		List<Integer> rootCellPossibles = new ArrayList<Integer>();
-		CellChange cellChange = new CellChange(createCellMock(rootCellId),
-				rootCellEnteredValue, rootCellPossibles);
+		CellChange cellChange = new CellChange(createCellMock(rootCellId,
+				rootCellEnteredValue, rootCellPossibles));
 
 		int relatedCellId1 = 2;
 		int relatedCellEnteredValue1 = Cell.NO_ENTERED_VALUE;
 		List<Integer> relatedCellPossibles1 = new ArrayList<Integer>();
 		relatedCellPossibles1.add(3);
 		CellChange relatedCellChange1 = new CellChange(
-				createCellMock(relatedCellId1), relatedCellEnteredValue1,
-				relatedCellPossibles1);
+				createCellMock(relatedCellId1, relatedCellEnteredValue1,
+						relatedCellPossibles1));
 		cellChange.addRelatedMove(relatedCellChange1);
 
 		int relatedCellId2 = 16;
@@ -202,8 +204,8 @@ public class CellChangeStorageTest {
 		relatedCellPossibles2.add(3);
 		relatedCellPossibles2.add(4);
 		CellChange relatedCellChange2 = new CellChange(
-				createCellMock(relatedCellId2), relatedCellEnteredValue2,
-				relatedCellPossibles2);
+				createCellMock(relatedCellId2, relatedCellEnteredValue2,
+						relatedCellPossibles2));
 		cellChange.addRelatedMove(relatedCellChange2);
 
 		assertThat(mCellChangeStorage.toStorageString(cellChange),
