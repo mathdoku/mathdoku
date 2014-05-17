@@ -112,6 +112,7 @@ public class CellChangeStorage {
 				.getPreviousEnteredValue();
 		mPreviousPossibleValues = cellChangeStoragePatternMatcher
 				.getPreviousPossibleValues();
+		mRelatedCellChanges = new ArrayList<CellChange>();
 
 		for (String relatedCellChangeString : cellChangeStoragePatternMatcher
 				.getRelatedCellChanges()) {
@@ -123,9 +124,6 @@ public class CellChangeStorage {
 				}
 				CellChange relatedCellChange = new CellChange(
 						relatedCellChangeStorage);
-				if (mRelatedCellChanges == null) {
-					mRelatedCellChanges = new ArrayList<CellChange>();
-				}
 				mRelatedCellChanges.add(relatedCellChange);
 			}
 		}

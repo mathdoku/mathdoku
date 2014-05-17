@@ -34,7 +34,7 @@ public class CellChange {
 		mCell = cell;
 		mPreviousEnteredValue = cell.getEnteredValue();
 		mPreviousPossibleValues = new ArrayList<Integer>(cell.getPossibles());
-		mRelatedCellChanges = null;
+		mRelatedCellChanges = new ArrayList<CellChange>();
 	}
 
 	public CellChange(CellChangeStorage cellChangeStorage) {
