@@ -12,10 +12,12 @@ import net.mathdoku.plus.storage.databaseadapter.DatabaseHelper;
 import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.StatisticsDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseProjection;
-import net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil;
-import net.mathdoku.plus.storage.databaseadapter.queryhelper.ConditionQueryHelper;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.CaseWhenHelper;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.ConditionList;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.FieldBetweenIntegerValues;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.FieldOperatorBooleanValue;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.FieldOperatorValue;
 import net.mathdoku.plus.storage.databaseadapter.queryhelper.JoinHelper;
-import net.mathdoku.plus.storage.databaseadapter.queryhelper.QueryHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -160,16 +162,14 @@ public class HistoricStatisticsSelector {
 	}
 
 	private String getSelectionString() {
-		ConditionQueryHelper conditionQueryHelper = new ConditionQueryHelper();
-		conditionQueryHelper.addOperand(ConditionQueryHelper
-				.getFieldBetweenValues(GridDatabaseAdapter.KEY_GRID_SIZE,
-						minGridSize, maxGridSize));
-		conditionQueryHelper.addOperand(ConditionQueryHelper
-				.getFieldEqualsValue(
-						StatisticsDatabaseAdapter.KEY_INCLUDE_IN_STATISTICS,
-						true));
-		conditionQueryHelper.setAndOperator();
-		return conditionQueryHelper.toString();
+		ConditionList conditionList = new ConditionList();
+		conditionList.addOperand(new FieldBetweenIntegerValues(
+				GridDatabaseAdapter.KEY_GRID_SIZE, minGridSize, maxGridSize));
+		conditionList.addOperand(new FieldOperatorBooleanValue(
+				StatisticsDatabaseAdapter.KEY_INCLUDE_IN_STATISTICS,
+				FieldOperatorValue.Operator.EQUALS, true));
+		conditionList.setAndOperator();
+		return conditionList.toString();
 	}
 
 	private List<DataPoint> getDataPointsFromCursor(Cursor cursor) {
@@ -232,29 +232,19 @@ public class HistoricStatisticsSelector {
 	}
 
 	private static String getStatusColumnProjection() {
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("CASE WHEN ");
-		stringBuilder.append(QueryHelper.getFieldNotEqualsValue(
-				StatisticsDatabaseAdapter.KEY_FINISHED, true));
-		stringBuilder.append(" THEN ");
-		stringBuilder
-				.append(DatabaseUtil
-						.stringBetweenQuotes(SolvingAttemptStatus.UNFINISHED
-								.toString()));
-		stringBuilder.append(" WHEN ");
-		stringBuilder.append(QueryHelper.getFieldEqualsValue(
-				StatisticsDatabaseAdapter.KEY_ACTION_REVEAL_SOLUTION, true));
-		stringBuilder.append(" THEN ");
-		stringBuilder.append(DatabaseUtil
-				.stringBetweenQuotes(SolvingAttemptStatus.REVEALED_SOLUTION
-						.toString()));
-		stringBuilder.append(" ELSE ");
-		stringBuilder.append(DatabaseUtil
-				.stringBetweenQuotes(SolvingAttemptStatus.FINISHED_SOLVED
-						.toString()));
-		stringBuilder.append(" END");
+		CaseWhenHelper caseWhenHelper = new CaseWhenHelper();
+		caseWhenHelper.addOperand(new FieldOperatorBooleanValue(
+				StatisticsDatabaseAdapter.KEY_FINISHED,
+				FieldOperatorValue.Operator.NOT_EQUALS, true),
+				SolvingAttemptStatus.UNFINISHED.toString());
+		caseWhenHelper.addOperand(new FieldOperatorBooleanValue(
+				StatisticsDatabaseAdapter.KEY_ACTION_REVEAL_SOLUTION,
+				FieldOperatorValue.Operator.EQUALS, true),
+				SolvingAttemptStatus.REVEALED_SOLUTION.toString());
+		caseWhenHelper.setElseStringValue(SolvingAttemptStatus.FINISHED_SOLVED
+				.toString());
 
-		return stringBuilder.toString();
+		return caseWhenHelper.toString();
 	}
 
 	public List<DataPoint> getDataPointList() {

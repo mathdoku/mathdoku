@@ -50,9 +50,8 @@ public class UpdateQueryHelperTest {
 			throws Exception {
 		updateQueryHelper.setColumnToStatement("COLUMN1", "SQL-STATEMENT");
 		assertThat(updateQueryHelper.toString(),
-				   is("UPDATE TABLE SET `COLUMN1` = SQL-STATEMENT"));
+				is("UPDATE TABLE SET `COLUMN1` = SQL-STATEMENT"));
 	}
-
 
 	@Test
 	public void setColumnToNull_SingleColumn_Success() throws Exception {
@@ -73,13 +72,12 @@ public class UpdateQueryHelperTest {
 	public void setWhereCondition_TableWithSingleColumnIsSQL_success()
 			throws Exception {
 		updateQueryHelper.setColumnToValue("COLUMN1", "VALUE");
-		ConditionQueryHelper conditionQueryHelperMock = mock(ConditionQueryHelper.class);
-		when(conditionQueryHelperMock.toString()).thenReturn("CONDITION");
-		updateQueryHelper.setWhereCondition(conditionQueryHelperMock);
+		ConditionList conditionListMock = mock(ConditionList.class);
+		when(conditionListMock.toString()).thenReturn("CONDITION");
+		updateQueryHelper.setWhereCondition(conditionListMock);
 		assertThat(updateQueryHelper.toString(),
-				   is("UPDATE TABLE SET `COLUMN1` = 'VALUE' WHERE CONDITION"));
+				is("UPDATE TABLE SET `COLUMN1` = 'VALUE' WHERE CONDITION"));
 	}
-
 
 	@Test(expected = IllegalStateException.class)
 	public void toString_NoColumns_ThrowsIllegalStateException()

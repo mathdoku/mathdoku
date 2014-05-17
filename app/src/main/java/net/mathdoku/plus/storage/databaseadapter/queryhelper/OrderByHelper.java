@@ -6,7 +6,7 @@ import net.mathdoku.plus.util.Util;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderByHelper extends QueryHelper {
+public class OrderByHelper {
 	private static final String SORT_ASCENDING = "ASC";
 	private static final String SORT_DESCENDING = "DESC";
 
@@ -32,7 +32,7 @@ public class OrderByHelper extends QueryHelper {
 	private void addOrderByColumn(String column, String sortOrder) {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(DatabaseUtil.stringBetweenBackTicks(column));
-		stringBuilder.append(SPACE);
+		stringBuilder.append(QueryHelper.SPACE);
 		stringBuilder.append(sortOrder);
 		orderByColumns.add(stringBuilder.toString());
 	}
@@ -56,7 +56,6 @@ public class OrderByHelper extends QueryHelper {
 			throw new IllegalStateException(
 					"At least one column has to be set.");
 		}
-		query.append(joinStringsSeparatedWith(orderByColumns, COMMA));
-		return super.toString();
+		return QueryHelper.join(QueryHelper.COMMA, orderByColumns);
 	}
 }

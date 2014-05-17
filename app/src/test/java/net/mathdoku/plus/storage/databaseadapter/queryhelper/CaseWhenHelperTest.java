@@ -16,53 +16,63 @@ public class CaseWhenHelperTest {
 		caseWhenHelper = new CaseWhenHelper();
 	}
 
-	@Test (expected = IllegalArgumentException.class)
-	public void addOperand_WhenThenConditionIsNull_ThrowsIllegalArgumentException() throws Exception {
+	@Test(expected = IllegalArgumentException.class)
+	public void addOperand_WhenThenConditionIsNull_ThrowsIllegalArgumentException()
+			throws Exception {
 		caseWhenHelper.addOperand(null, "VALUE");
 	}
 
-	@Test (expected = IllegalArgumentException.class)
-	public void addOperand_WhenThenValueIsNull_ThrowsIllegalArgumentException() throws Exception {
-		caseWhenHelper.addOperand(mock(ConditionQueryHelper.class), null);
+	@Test(expected = IllegalArgumentException.class)
+	public void addOperand_WhenThenValueIsNull_ThrowsIllegalArgumentException()
+			throws Exception {
+		caseWhenHelper.addOperand(mock(FieldOperatorValue.class), null);
 	}
 
-	@Test (expected = IllegalArgumentException.class)
-	public void addOperand_WhenThenValueIsEmpty_ThrowsIllegalArgumentException() throws Exception {
-		caseWhenHelper.addOperand(mock(ConditionQueryHelper.class), "");
+	@Test(expected = IllegalArgumentException.class)
+	public void addOperand_WhenThenValueIsEmpty_ThrowsIllegalArgumentException()
+			throws Exception {
+		caseWhenHelper.addOperand(mock(FieldOperatorValue.class), "");
 	}
 
 	@Test
 	public void addOperand_SingleWhenThen_success() throws Exception {
-		caseWhenHelper.addOperand(getConditionQueryHelperMock("CONDITION"), "VALUE");
+		caseWhenHelper.addOperand(getFieldOperatorValueMock("CONDITION"),
+				"VALUE");
 
-		assertThat(caseWhenHelper.toString(), is(" CASE WHEN CONDITION THEN 'VALUE' END"));
+		assertThat(caseWhenHelper.toString(),
+				is(" CASE WHEN CONDITION THEN 'VALUE' END"));
 	}
 
-	private ConditionQueryHelper getConditionQueryHelperMock(String condition) {
-		ConditionQueryHelper conditionQueryHelper = mock(ConditionQueryHelper.class);
-		when(conditionQueryHelper.toString()).thenReturn(condition);
+	private FieldOperatorValue getFieldOperatorValueMock(String condition) {
+		FieldOperatorValue fieldOperatorValueMock = mock(FieldOperatorValue.class);
+		when(fieldOperatorValueMock.toString()).thenReturn(condition);
 
-		return conditionQueryHelper;
+		return fieldOperatorValueMock;
 	}
 
 	@Test
 	public void addOperand_MultipleWhenThen_success() throws Exception {
-		caseWhenHelper.addOperand(getConditionQueryHelperMock("CONDITION1"), "VALUE1");
-		caseWhenHelper.addOperand(getConditionQueryHelperMock("CONDITION2"), "VALUE2");
+		caseWhenHelper.addOperand(getFieldOperatorValueMock("CONDITION1"),
+				"VALUE1");
+		caseWhenHelper.addOperand(getFieldOperatorValueMock("CONDITION2"),
+				"VALUE2");
 
-		assertThat(caseWhenHelper.toString(),
-				   is(" CASE WHEN CONDITION1 THEN 'VALUE1' WHEN CONDITION2 THEN 'VALUE2' END"));
+		assertThat(
+				caseWhenHelper.toString(),
+				is(" CASE WHEN CONDITION1 THEN 'VALUE1' WHEN CONDITION2 THEN 'VALUE2' END"));
 	}
 
 	@Test
 	public void setElse_SingleWhenThen_success() throws Exception {
-		caseWhenHelper.addOperand(getConditionQueryHelperMock("CONDITION"), "VALUE");
-		caseWhenHelper.setElse("OTHER-VALUE");
+		caseWhenHelper.addOperand(getFieldOperatorValueMock("CONDITION"),
+				"VALUE");
+		caseWhenHelper.setElseStringValue("OTHER-VALUE");
 
-		assertThat(caseWhenHelper.toString(), is(" CASE WHEN CONDITION THEN 'VALUE' ELSE 'OTHER-VALUE' END"));
+		assertThat(caseWhenHelper.toString(),
+				is(" CASE WHEN CONDITION THEN 'VALUE' ELSE 'OTHER-VALUE' END"));
 	}
 
-	@Test (expected = IllegalStateException.class)
+	@Test(expected = IllegalStateException.class)
 	public void toString_NoOperandSet() throws Exception {
 		caseWhenHelper.toString();
 	}

@@ -12,12 +12,16 @@ import net.mathdoku.plus.storage.databaseadapter.DatabaseHelper;
 import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.StatisticsDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseProjection;
-import net.mathdoku.plus.storage.databaseadapter.queryhelper.ConditionQueryHelper;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.ConditionList;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.FieldBetweenIntegerValues;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.FieldOperatorBooleanValue;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.FieldOperatorValue;
 import net.mathdoku.plus.storage.databaseadapter.queryhelper.JoinHelper;
 
 public class CumulativeStatisticsSelector {
 	@SuppressWarnings("unused")
-	private static final String TAG = CumulativeStatisticsSelector.class.getName();
+	private static final String TAG = CumulativeStatisticsSelector.class
+			.getName();
 
 	@SuppressWarnings("PointlessBooleanExpression")
 	private static final boolean DEBUG_SQL = Config.mAppMode == Config.AppMode.DEVELOPMENT && false;
@@ -73,8 +77,9 @@ public class CumulativeStatisticsSelector {
 				.toString());
 
 		if (DEBUG_SQL) {
-			String sql = sqliteQueryBuilder.buildQuery(DATABASE_PROJECTION.getAllColumnNames(),
-													   getSelectionString(), null, null, null, null);
+			String sql = sqliteQueryBuilder.buildQuery(
+					DATABASE_PROJECTION.getAllColumnNames(),
+					getSelectionString(), null, null, null, null);
 			Log.i(TAG, sql);
 		}
 
@@ -101,18 +106,14 @@ public class CumulativeStatisticsSelector {
 	}
 
 	private String getSelectionString() {
-		ConditionQueryHelper conditionQueryHelper = new ConditionQueryHelper();
-		conditionQueryHelper
-				.addOperand(ConditionQueryHelper.getFieldBetweenValues(
-						GridDatabaseAdapter
-								.getPrefixedColumnName(GridDatabaseAdapter.KEY_GRID_SIZE),
-						minGridSize, maxGridSize));
-		conditionQueryHelper.addOperand(ConditionQueryHelper
-				.getFieldEqualsValue(
-						StatisticsDatabaseAdapter.KEY_INCLUDE_IN_STATISTICS,
-						true));
-		conditionQueryHelper.setAndOperator();
-		return conditionQueryHelper.toString();
+		ConditionList conditionList = new ConditionList();
+		conditionList.addOperand(new FieldBetweenIntegerValues(
+				GridDatabaseAdapter.KEY_GRID_SIZE, minGridSize, maxGridSize));
+		conditionList.addOperand(new FieldOperatorBooleanValue(
+				StatisticsDatabaseAdapter.KEY_INCLUDE_IN_STATISTICS,
+				FieldOperatorValue.Operator.EQUALS, true));
+		conditionList.setAndOperator();
+		return conditionList.toString();
 	}
 
 	private CumulativeStatistics getCumulativeStatisticsFromCursor(Cursor cursor) {

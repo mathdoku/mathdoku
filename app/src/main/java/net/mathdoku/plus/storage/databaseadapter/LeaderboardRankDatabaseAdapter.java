@@ -12,9 +12,10 @@ import net.mathdoku.plus.storage.databaseadapter.database.DataType;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseColumnDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseTableDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil;
-import net.mathdoku.plus.storage.databaseadapter.queryhelper.ConditionQueryHelper;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.ConditionList;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.FieldOperatorStringValue;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.FieldOperatorValue;
 import net.mathdoku.plus.storage.databaseadapter.queryhelper.OrderByHelper;
-import net.mathdoku.plus.storage.databaseadapter.queryhelper.QueryHelper;
 import net.mathdoku.plus.storage.databaseadapter.queryhelper.UpdateQueryHelper;
 import net.mathdoku.plus.util.ParameterValidator;
 
@@ -227,10 +228,10 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		LeaderboardRankRow leaderboardRankRow = null;
 		Cursor cursor = null;
 		try {
-			cursor = sqliteDatabase.query(true, TABLE_NAME, DATABASE_TABLE
-					.getColumnNames(), QueryHelper.getFieldEqualsValue(
-					KEY_LEADERBOARD_ID, leaderboardId), null, null, null, null,
-					null);
+			cursor = sqliteDatabase.query(true, TABLE_NAME,
+					DATABASE_TABLE.getColumnNames(),
+					getLeaderboardSelectionString(leaderboardId), null, null,
+					null, null, null);
 			leaderboardRankRow = toLeaderboardRankRow(cursor);
 		} catch (SQLiteException e) {
 			throw new DatabaseAdapterException(String.format(
@@ -242,6 +243,11 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 			}
 		}
 		return leaderboardRankRow;
+	}
+
+	private String getLeaderboardSelectionString(String leaderboardId) {
+		return new FieldOperatorStringValue(KEY_LEADERBOARD_ID,
+				FieldOperatorValue.Operator.EQUALS, leaderboardId).toString();
 	}
 
 	/**
@@ -434,43 +440,43 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	 *         leaderboard ranks.
 	 */
 	private String getSelectionOutdatedLeaderboardRanks() {
-		ConditionQueryHelper conditionQueryHelper = new ConditionQueryHelper();
+		ConditionList conditionList = new ConditionList();
 
 		// Include all leaderboards for which the rank status equals
 		// TO_BE_UPDATED
-		conditionQueryHelper.addOperand(ConditionQueryHelper
-				.getFieldEqualsValue(KEY_RANK_STATUS,
-						RankStatus.TO_BE_UPDATED.toString()));
+		conditionList.addOperand(new FieldOperatorStringValue(KEY_RANK_STATUS,
+				FieldOperatorValue.Operator.EQUALS, RankStatus.TO_BE_UPDATED
+						.toString()));
 
 		long interval15MinutesInMillis = 15 * 60 * 1000;
-		conditionQueryHelper
-				.addOperand(getSelectionStringStatusNotUpdatedInIntervalInMillisBeforeSystemTime(
+		conditionList
+				.addOperand(getConditionListStatusNotUpdatedInIntervalInMillisBeforeSystemTime(
 						RankStatus.TOP_RANK_UPDATED, interval15MinutesInMillis));
 
 		long interval24HoursInMillis = 24 * 60 * 60 * 1000;
-		conditionQueryHelper
-				.addOperand(getSelectionStringStatusNotUpdatedInIntervalInMillisBeforeSystemTime(
+		conditionList
+				.addOperand(getConditionListStatusNotUpdatedInIntervalInMillisBeforeSystemTime(
 						RankStatus.TOP_RANK_NOT_AVAILABLE,
 						interval24HoursInMillis));
-		conditionQueryHelper.setOrOperator();
+		conditionList.setOrOperator();
 
-		return conditionQueryHelper.toString();
+		return conditionList.toString();
 	}
 
-	private String getSelectionStringStatusNotUpdatedInIntervalInMillisBeforeSystemTime(
+	private ConditionList getConditionListStatusNotUpdatedInIntervalInMillisBeforeSystemTime(
 			RankStatus rankStatus, long intervalInMillis) {
 		String intervalInMillisString = DatabaseUtil
 				.getCurrentMinusOffsetSQLiteTimestamp(intervalInMillis);
 
-		ConditionQueryHelper conditionQueryHelper = new ConditionQueryHelper();
-		conditionQueryHelper.addOperand(ConditionQueryHelper
-				.getFieldEqualsValue(KEY_RANK_STATUS, rankStatus.toString()));
-		conditionQueryHelper.addOperand(ConditionQueryHelper
-				.getFieldLessThanValue(KEY_RANK_DATE_LAST_UPDATED,
-						intervalInMillisString));
-		conditionQueryHelper.setAndOperator();
+		ConditionList conditionList = new ConditionList();
+		conditionList.addOperand(new FieldOperatorStringValue(KEY_RANK_STATUS,
+				FieldOperatorValue.Operator.EQUALS, rankStatus.toString()));
+		conditionList.addOperand(new FieldOperatorStringValue(
+				KEY_RANK_DATE_LAST_UPDATED,
+				FieldOperatorValue.Operator.LESS_THAN, intervalInMillisString));
+		conditionList.setAndOperator();
 
-		return conditionQueryHelper.toString();
+		return conditionList;
 	}
 
 	/**
@@ -481,8 +487,8 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 		try {
 			UpdateQueryHelper updateQueryHelper = new UpdateQueryHelper(
 					TABLE_NAME);
-			updateQueryHelper.setColumnToValue(KEY_RANK_STATUS, RankStatus.TO_BE_UPDATED.toString
-					());
+			updateQueryHelper.setColumnToValue(KEY_RANK_STATUS,
+					RankStatus.TO_BE_UPDATED.toString());
 			updateQueryHelper.setColumnToNull(KEY_RANK);
 			updateQueryHelper.setColumnToNull(KEY_RANK_DISPLAY);
 			updateQueryHelper.setColumnToNull(KEY_RANK_DATE_LAST_UPDATED);

@@ -14,9 +14,11 @@ import net.mathdoku.plus.storage.databaseadapter.database.DatabaseColumnDefiniti
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseForeignKeyDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseTableDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil;
-import net.mathdoku.plus.storage.databaseadapter.queryhelper.ConditionQueryHelper;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.ConditionList;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.FieldOperatorBooleanValue;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.FieldOperatorIntegerValue;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.FieldOperatorValue;
 import net.mathdoku.plus.storage.databaseadapter.queryhelper.OrderByHelper;
-import net.mathdoku.plus.storage.databaseadapter.queryhelper.QueryHelper;
 import net.mathdoku.plus.storage.databaseadapter.queryhelper.UpdateQueryHelper;
 import net.mathdoku.plus.util.ParameterValidator;
 
@@ -228,7 +230,8 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 * Get the statistics for the given solving attempt id.
 	 * 
 	 * @param solvingAttemptId
-	 *            The solving attempt Id for which the statistics have to be retrieved.
+	 *            The solving attempt Id for which the statistics have to be
+	 *            retrieved.
 	 * @return The most statistics for the solving attempt.
 	 */
 	public GridStatistics getStatisticsForSolvingAttempt(int solvingAttemptId) {
@@ -240,8 +243,8 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 					TABLE_NAME,
 					//
 					DATABASE_TABLE.getColumnNames(),
-					//
-					QueryHelper.getFieldEqualsValue(KEY_ROWID, solvingAttemptId), null,
+					// Note: statistics id equals solving attempt id
+					getStatisticsIdSelectionString(solvingAttemptId), null,
 					null,
 					//
 					null,
@@ -261,6 +264,11 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 			}
 		}
 		return gridStatistics;
+	}
+
+	private String getStatisticsIdSelectionString(int statisticsRowId) {
+		return new FieldOperatorIntegerValue(KEY_ROWID,
+				FieldOperatorValue.Operator.EQUALS, statisticsRowId).toString();
 	}
 
 	/**
@@ -492,25 +500,25 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 			int statisticsIdToBeIncluded) {
 		UpdateQueryHelper updateQueryHelper = new UpdateQueryHelper(TABLE_NAME);
 		updateQueryHelper
-				.setColumnToStatement(KEY_INCLUDE_IN_STATISTICS,
-								  getDerivationNewValueIncludeInStatistics(
-										  statisticsIdToBeIncluded));
+				.setColumnToStatement(
+						KEY_INCLUDE_IN_STATISTICS,
+						getDerivationNewValueIncludeInStatistics(statisticsIdToBeIncluded));
 
-		ConditionQueryHelper conditionQueryHelperInner = new ConditionQueryHelper();
-		conditionQueryHelperInner.addOperand(ConditionQueryHelper
-				.getFieldEqualsValue(KEY_ROWID, statisticsIdToBeIncluded));
-		conditionQueryHelperInner.addOperand(ConditionQueryHelper
-				.getFieldEqualsValue(KEY_INCLUDE_IN_STATISTICS, true));
-		conditionQueryHelperInner.setOrOperator();
+		ConditionList conditionListInner = new ConditionList();
+		conditionListInner.addOperand(new FieldOperatorIntegerValue(KEY_ROWID,
+				FieldOperatorValue.Operator.EQUALS, statisticsIdToBeIncluded));
+		conditionListInner.addOperand(new FieldOperatorBooleanValue(
+				KEY_INCLUDE_IN_STATISTICS, FieldOperatorValue.Operator.EQUALS,
+				true));
+		conditionListInner.setOrOperator();
 
-		ConditionQueryHelper conditionQueryHelperOuter = new ConditionQueryHelper();
-		conditionQueryHelperOuter.addOperand(ConditionQueryHelper
-				.getFieldEqualsValue(KEY_GRID_ID, gridId));
-		conditionQueryHelperOuter.addOperand(conditionQueryHelperInner
-				.toString());
-		conditionQueryHelperOuter.setAndOperator();
+		ConditionList conditionListOuter = new ConditionList();
+		conditionListOuter.addOperand(new FieldOperatorIntegerValue(
+				KEY_GRID_ID, FieldOperatorValue.Operator.EQUALS, gridId));
+		conditionListOuter.addOperand(conditionListInner);
+		conditionListOuter.setAndOperator();
 
-		updateQueryHelper.setWhereCondition(conditionQueryHelperOuter);
+		updateQueryHelper.setWhereCondition(conditionListOuter);
 
 		if (DEBUG_SQL) {
 			Log.i(TAG, updateQueryHelper.toString());
@@ -525,10 +533,12 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 		}
 	}
 
-	private String getDerivationNewValueIncludeInStatistics(int statisticsIdToBeIncluded) {
+	private String getDerivationNewValueIncludeInStatistics(
+			int statisticsIdToBeIncluded) {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(" CASE WHEN ");
-		stringBuilder.append(QueryHelper.getFieldEqualsValue(KEY_ROWID, statisticsIdToBeIncluded));
+		stringBuilder
+				.append(getStatisticsIdSelectionString(statisticsIdToBeIncluded));
 		stringBuilder.append(" THEN ");
 		stringBuilder.append(DatabaseUtil.toQuotedSQLiteString(true));
 		stringBuilder.append(" ELSE ");

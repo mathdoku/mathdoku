@@ -2,77 +2,32 @@ package net.mathdoku.plus.storage.databaseadapter.queryhelper;
 
 import android.text.TextUtils;
 
-import net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil;
 import net.mathdoku.plus.util.ParameterValidator;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public abstract class QueryHelper {
-	protected static final String COMMA = ",";
+class QueryHelper {
 	protected static final String SPACE = " ";
-	protected static final String EQUALS_OPERATOR = "=";
-	protected static final String NOT_EQUALS_OPERATOR = "<>";
-	protected static final String NULL_VALUE = "null";
+	protected static final String COMMA = ",";
+	protected static final String PARENTHESES_LEFT = "(";
+	protected static final String PARENTHESES_RIGHT = ")";
 
-	protected StringBuilder query;
-
-	public QueryHelper() {
-		query = new StringBuilder();
-	}
-
-	protected static String getFieldOperatorValue(String field,
-			String operator, String value) {
-		return getFieldOperatorEscapedString(
-				field,
-				operator,
-				value == null ? NULL_VALUE : DatabaseUtil
-						.stringBetweenQuotes(value));
-	}
-
-	protected static String getFieldOperatorEscapedString(String field,
-			String operator, String value) {
-		ParameterValidator.validateNotNullOrEmpty(field);
-		ParameterValidator.validateNotNullOrEmpty(operator);
-		ParameterValidator.validateNotNullOrEmpty(value);
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append(DatabaseUtil.stringBetweenBackTicks(field));
-		stringBuilder.append(SPACE);
-		stringBuilder.append(operator);
-		stringBuilder.append(SPACE);
-		stringBuilder.append(value);
-		return stringBuilder.toString();
-	}
-
-	public static String getFieldEqualsValue(String column, String value) {
-		return getFieldOperatorValue(column, EQUALS_OPERATOR, value);
-	}
-
-	public static String getFieldEqualsValue(String column, int value) {
-		return getFieldOperatorEscapedString(column, EQUALS_OPERATOR,
-				String.valueOf(value));
-	}
-
-	public static String getFieldEqualsValue(String column, boolean value) {
-		return getFieldOperatorEscapedString(column, EQUALS_OPERATOR,
-											 DatabaseUtil.toQuotedSQLiteString(value));
-	}
-
-	public static String getFieldNotEqualsValue(String column, boolean value) {
-		return getFieldOperatorEscapedString(column, NOT_EQUALS_OPERATOR,
-											 DatabaseUtil.toQuotedSQLiteString(value));
-	}
-
-	public String toString() {
-		return query.toString();
-	}
-
-	protected static String joinStringsSeparatedWith(List<String> strings,
-			String separator) {
-		ParameterValidator.validateNotNullOrEmpty(strings);
+	static String join(String separator, @NotNull List<?> list) {
+		ParameterValidator.validateNotNullOrEmpty(list);
 		ParameterValidator.validateNotNullOrEmpty(separator);
 
-		return TextUtils
-				.join(surroundWithSpaceIfApplicable(separator), strings);
+		return TextUtils.join(surroundWithSpaceIfApplicable(separator), list);
+	}
+
+	static String joinStringsSeparatedWith(List<String> queryElements,
+			String separator) {
+		ParameterValidator.validateNotNullOrEmpty(queryElements);
+		ParameterValidator.validateNotNullOrEmpty(separator);
+
+		return TextUtils.join(surroundWithSpaceIfApplicable(separator),
+				queryElements);
 	}
 
 	private static String surroundWithSpaceIfApplicable(String separator) {
@@ -85,5 +40,16 @@ public abstract class QueryHelper {
 		stringBuilder.append(SPACE);
 
 		return stringBuilder.toString();
+	}
+
+	public static String joinBetweenParentheses(
+			String operatorBetweenConditions,
+			List<ConditionListElement> conditionListElements) {
+		return new StringBuilder()
+				.append(SPACE)
+				.append(PARENTHESES_LEFT)
+				.append(join(operatorBetweenConditions, conditionListElements))
+				.append(PARENTHESES_RIGHT)
+				.toString();
 	}
 }

@@ -17,7 +17,9 @@ import net.mathdoku.plus.storage.databaseadapter.database.DataType;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseColumnDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseTableDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil;
-import net.mathdoku.plus.storage.databaseadapter.queryhelper.QueryHelper;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.FieldOperatorIntegerValue;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.FieldOperatorStringValue;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.FieldOperatorValue;
 import net.mathdoku.plus.util.ParameterValidator;
 
 /**
@@ -173,8 +175,7 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		try {
 			cursor = sqliteDatabase.query(true, TABLE_NAME,
 					DATABASE_TABLE.getColumnNames(),
-					QueryHelper.getFieldEqualsValue(KEY_ROWID, id), null, null,
-					null, null, null);
+					getRowIdSelectionString(id), null, null, null, null, null);
 			gridRow = toGridRow(cursor);
 		} catch (SQLiteException e) {
 			throw new DatabaseAdapterException(String.format(
@@ -186,6 +187,11 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 			}
 		}
 		return gridRow;
+	}
+
+	private String getRowIdSelectionString(int id) {
+		return new FieldOperatorIntegerValue(KEY_ROWID,
+				FieldOperatorValue.Operator.EQUALS, id).toString();
 	}
 
 	/**
@@ -201,10 +207,10 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 		GridRow gridRow = null;
 		Cursor cursor = null;
 		try {
-			cursor = sqliteDatabase
-					.query(true, TABLE_NAME, DATABASE_TABLE.getColumnNames(),
-							QueryHelper.getFieldEqualsValue(KEY_DEFINITION,
-									definition), null, null, null, null, null);
+			cursor = sqliteDatabase.query(true, TABLE_NAME,
+					DATABASE_TABLE.getColumnNames(),
+					getDefinitionSelectionString(definition), null, null, null,
+					null, null);
 			gridRow = toGridRow(cursor);
 		} catch (SQLiteException e) {
 			throw new DatabaseAdapterException(String.format(
@@ -216,6 +222,11 @@ public class GridDatabaseAdapter extends DatabaseAdapter {
 			}
 		}
 		return gridRow;
+	}
+
+	private String getDefinitionSelectionString(String definition) {
+		return new FieldOperatorStringValue(KEY_DEFINITION,
+				FieldOperatorValue.Operator.EQUALS, definition).toString();
 	}
 
 	/**

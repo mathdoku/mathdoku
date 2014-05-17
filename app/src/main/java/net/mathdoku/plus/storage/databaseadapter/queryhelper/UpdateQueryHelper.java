@@ -6,10 +6,10 @@ import net.mathdoku.plus.util.Util;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UpdateQueryHelper extends QueryHelper {
+public class UpdateQueryHelper {
 	private final String tableName;
 	private List<String> columnsToSet;
-	private ConditionQueryHelper whereConditionQueryHelper;
+	private ConditionList whereConditionQueryHelper;
 
 	public UpdateQueryHelper(String tableName) {
 		this.tableName = tableName;
@@ -25,7 +25,8 @@ public class UpdateQueryHelper extends QueryHelper {
 	 *            The value to be set. Null is allowed to clear the column.
 	 */
 	public void setColumnToValue(String column, String value) {
-		columnsToSet.add(getFieldOperatorValue(column, EQUALS_OPERATOR, value));
+		columnsToSet.add(new FieldOperatorStringValue(column,
+				FieldOperatorValue.Operator.EQUALS, value).toString());
 	}
 
 	/**
@@ -38,8 +39,8 @@ public class UpdateQueryHelper extends QueryHelper {
 	 *            The value to be set. Null is allowed to clear the column.
 	 */
 	public void setColumnToStatement(String column, String sqlStatement) {
-		columnsToSet.add(getFieldOperatorEscapedString(column, EQUALS_OPERATOR,
-				sqlStatement));
+		columnsToSet.add(new FieldOperatorValue(column,
+				FieldOperatorValue.Operator.EQUALS, sqlStatement).toString());
 	}
 
 	/**
@@ -52,9 +53,9 @@ public class UpdateQueryHelper extends QueryHelper {
 		setColumnToValue(column, null);
 	}
 
-	public void setWhereCondition(ConditionQueryHelper conditionQueryHelper) {
-		ParameterValidator.validateNotNull(conditionQueryHelper);
-		this.whereConditionQueryHelper = conditionQueryHelper;
+	public void setWhereCondition(ConditionList conditionList) {
+		ParameterValidator.validateNotNull(conditionList);
+		this.whereConditionQueryHelper = conditionList;
 	}
 
 	@Override
@@ -63,14 +64,15 @@ public class UpdateQueryHelper extends QueryHelper {
 			throw new IllegalStateException(
 					"At least one column has to be set.");
 		}
-		query.append("UPDATE ");
-		query.append(tableName);
-		query.append(" SET ");
-		query.append(joinStringsSeparatedWith(columnsToSet, COMMA));
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("UPDATE ");
+		stringBuilder.append(tableName);
+		stringBuilder.append(" SET ");
+		stringBuilder.append(QueryHelper.join(QueryHelper.COMMA, columnsToSet));
 		if (whereConditionQueryHelper != null) {
-			query.append(" WHERE ");
-			query.append(whereConditionQueryHelper.toString());
+			stringBuilder.append(" WHERE ");
+			stringBuilder.append(whereConditionQueryHelper.toString());
 		}
-		return super.toString();
+		return stringBuilder.toString();
 	}
 }

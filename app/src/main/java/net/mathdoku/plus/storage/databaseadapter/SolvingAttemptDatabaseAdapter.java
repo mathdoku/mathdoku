@@ -13,8 +13,9 @@ import net.mathdoku.plus.storage.databaseadapter.database.DatabaseColumnDefiniti
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseForeignKeyDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseTableDefinition;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.FieldOperatorIntegerValue;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.FieldOperatorValue;
 import net.mathdoku.plus.storage.databaseadapter.queryhelper.OrderByHelper;
-import net.mathdoku.plus.storage.databaseadapter.queryhelper.QueryHelper;
 import net.mathdoku.plus.util.ParameterValidator;
 
 import java.util.ArrayList;
@@ -155,9 +156,10 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		SolvingAttemptRow solvingAttemptRow = null;
 		Cursor cursor = null;
 		try {
-			cursor = sqliteDatabase.query(true, TABLE_NAME, DATABASE_TABLE
-					.getColumnNames(), QueryHelper.getFieldEqualsValue(
-					KEY_ROWID, solvingAttemptId), null, null, null, null, null);
+			cursor = sqliteDatabase.query(true, TABLE_NAME,
+					DATABASE_TABLE.getColumnNames(),
+					getSolvingAttemptIdSelectionString(solvingAttemptId), null,
+					null, null, null, null);
 
 			if (cursor == null || !cursor.moveToFirst()) {
 				// No record found for this grid.
@@ -184,6 +186,12 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 			}
 		}
 		return solvingAttemptRow;
+	}
+
+	private String getSolvingAttemptIdSelectionString(int solvingAttemptId) {
+		return new FieldOperatorIntegerValue(KEY_ROWID,
+				FieldOperatorValue.Operator.EQUALS, solvingAttemptId)
+				.toString();
 	}
 
 	private int getSolvingAttemptIdFromCursor(Cursor cursor) {
@@ -337,8 +345,8 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 		try {
 			cursor = sqliteDatabase.query(true, TABLE_NAME,
 					new String[] { "COUNT(1)" },
-					QueryHelper.getFieldEqualsValue(KEY_GRID_ID, gridId), null,
-					null, null, null, null);
+					getGridIdSelectionString(gridId), null, null, null, null,
+					null);
 
 			if (cursor == null || !cursor.moveToFirst()) {
 				// No record found for this grid.
@@ -358,5 +366,11 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 			}
 		}
 		return count;
+	}
+
+	private String getGridIdSelectionString(int gridId) {
+		return new FieldOperatorIntegerValue(KEY_GRID_ID,
+				FieldOperatorValue.Operator.EQUALS, gridId).toString();
+
 	}
 }

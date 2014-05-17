@@ -9,7 +9,9 @@ import android.util.Log;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseTableDefinition;
-import net.mathdoku.plus.storage.databaseadapter.queryhelper.ConditionQueryHelper;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.ConditionList;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.FieldOperatorStringValue;
+import net.mathdoku.plus.storage.databaseadapter.queryhelper.FieldOperatorValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,13 +86,13 @@ public abstract class DatabaseAdapter {
 	}
 
 	private String getTableSelectionString() {
-		ConditionQueryHelper conditionQueryHelper = new ConditionQueryHelper();
-		conditionQueryHelper.addOperand(ConditionQueryHelper
-				.getFieldEqualsValue("name", getTableName()));
-		conditionQueryHelper.addOperand(ConditionQueryHelper
-				.getFieldEqualsValue("type", "table"));
-		conditionQueryHelper.setAndOperator();
-		return conditionQueryHelper.toString();
+		ConditionList conditionList = new ConditionList();
+		conditionList.addOperand(new FieldOperatorStringValue("name",
+				FieldOperatorValue.Operator.EQUALS, getTableName()));
+		conditionList.addOperand(new FieldOperatorStringValue("type",
+				FieldOperatorValue.Operator.EQUALS, "table"));
+		conditionList.setAndOperator();
+		return conditionList.toString();
 	}
 
 	/**
