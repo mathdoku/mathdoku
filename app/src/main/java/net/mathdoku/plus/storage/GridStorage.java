@@ -31,8 +31,8 @@ public class GridStorage {
 	// this class. For unit testing purposes the default create methods can be
 	// overridden if needed.
 	public static class ObjectsCreator {
-		public CageStorage createCageStorage() {
-			return new CageStorage();
+		public String createCageStorageString(Cage cage) {
+			return CageStorage.toStorageString(cage);
 		}
 
 		public CellStorage createCellStorage() {
@@ -146,9 +146,9 @@ public class GridStorage {
 		// Store information about the cages. Use one line per single
 		// cage.
 		if (mCages != null) {
-			CageStorage cageStorage = mObjectsCreator.createCageStorage();
 			for (Cage cage : mCages) {
-				stringBuilder.append(cageStorage.toStorageString(cage)).append(
+				stringBuilder.append(
+						mObjectsCreator.createCageStorageString(cage)).append(
 						StorageDelimiter.EOL_DELIMITER);
 			}
 		}

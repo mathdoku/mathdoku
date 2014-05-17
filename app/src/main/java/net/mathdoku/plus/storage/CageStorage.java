@@ -21,6 +21,10 @@ public class CageStorage {
 	 */
 	private static final String CAGE_LINE_ID = "CAGE";
 
+	private CageStorage() {
+		// Prevent instantiation of utility class.
+	}
+
 	/**
 	 * Read cage information from a storage string which was created with
 	 * {@link #toStorageString(net.mathdoku.plus.puzzle.cage.Cage)} before.
@@ -35,7 +39,7 @@ public class CageStorage {
 	 * @return True in case the given line contains cage information and is
 	 *         processed correctly. False otherwise.
 	 */
-	public CageBuilder getCageBuilderFromStorageString(String line,
+	public static CageBuilder getCageBuilderFromStorageString(String line,
 			int savedWithRevisionNumber, List<Cell> cells) {
 		if (line == null) {
 			throw new IllegalArgumentException("Parameter line cannot be null");
@@ -106,7 +110,7 @@ public class CageStorage {
 	 * 
 	 * @return A string representation of the grid cage.
 	 */
-	public String toStorageString(Cage cage) {
+	public static String toStorageString(Cage cage) {
 		String storageString = CAGE_LINE_ID
 				+ StorageDelimiter.FIELD_DELIMITER_LEVEL1 + cage.getId()
 				+ StorageDelimiter.FIELD_DELIMITER_LEVEL1

@@ -77,10 +77,6 @@ public class GridLoader {
 			return new CellStorage();
 		}
 
-		public CageStorage createCageStorage() {
-			return new CageStorage();
-		}
-
 		public Cage createCage(CageBuilder cageBuilder) {
 			return new Cage(cageBuilder);
 		}
@@ -99,6 +95,12 @@ public class GridLoader {
 
 		public Cell createCell(CellBuilder cellBuilder) {
 			return new Cell(cellBuilder);
+		}
+
+		public CageBuilder createCageBuilderFromStorageString(String line,
+				int savedWithRevision, List<Cell> cells) {
+			return CageStorage.getCageBuilderFromStorageString(line,
+					savedWithRevision, cells);
 		}
 	}
 
@@ -305,9 +307,9 @@ public class GridLoader {
 			return false;
 		}
 
-		CageStorage cageStorage = mObjectsCreator.createCageStorage();
-		CageBuilder cageBuilder = cageStorage.getCageBuilderFromStorageString(
-				line, mSavedWithRevision, mCells);
+		CageBuilder cageBuilder = mObjectsCreator
+				.createCageBuilderFromStorageString(line, mSavedWithRevision,
+						mCells);
 		if (cageBuilder == null) {
 			return false;
 		}

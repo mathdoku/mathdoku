@@ -23,7 +23,6 @@ import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 public class CageStorageTest {
-	private CageStorage mCageStorage = new CageStorage();
 	private String mLine;
 	private int mRevisionNumber = 596;
 	private List<Cell> mCells = mock(ArrayList.class);
@@ -32,7 +31,7 @@ public class CageStorageTest {
 	public void fromStorageString_NullLine_False() throws Exception {
 		mLine = null;
 
-		assertThat(mCageStorage.getCageBuilderFromStorageString(mLine,
+		assertThat(CageStorage.getCageBuilderFromStorageString(mLine,
 				mRevisionNumber, mCells), is(nullValue()));
 	}
 
@@ -40,14 +39,14 @@ public class CageStorageTest {
 	public void fromStorageString_RevisionIdToLow_False() throws Exception {
 		mLine = "CAGE:1:2:3:4,5,6:false";
 		mRevisionNumber = 368;
-		assertThat(mCageStorage.getCageBuilderFromStorageString(mLine,
+		assertThat(CageStorage.getCageBuilderFromStorageString(mLine,
 				mRevisionNumber, mCells), is(nullValue()));
 	}
 
 	@Test
 	public void fromStorageString_InvalidLineId_False() throws Exception {
 		mLine = "WRONG:This is not a valid cage storage string";
-		assertThat(mCageStorage.getCageBuilderFromStorageString(mLine,
+		assertThat(CageStorage.getCageBuilderFromStorageString(mLine,
 				mRevisionNumber, mCells), is(nullValue()));
 	}
 
@@ -55,7 +54,7 @@ public class CageStorageTest {
 	public void fromStorageString_StorageStringHasTooLittleElements_False()
 			throws Exception {
 		mLine = "CAGE:2:3:4:5";
-		assertThat(mCageStorage.getCageBuilderFromStorageString(mLine,
+		assertThat(CageStorage.getCageBuilderFromStorageString(mLine,
 				mRevisionNumber, mCells), is(nullValue()));
 	}
 
@@ -63,7 +62,7 @@ public class CageStorageTest {
 	public void fromStorageString_StorageStringHasTooManyElements_False()
 			throws Exception {
 		mLine = "CAGE:2:3:4:5:6:7";
-		assertThat(mCageStorage.getCageBuilderFromStorageString(mLine,
+		assertThat(CageStorage.getCageBuilderFromStorageString(mLine,
 				mRevisionNumber, mCells), is(nullValue()));
 	}
 
@@ -72,7 +71,7 @@ public class CageStorageTest {
 		mLine = "CAGE:1:2:3::false";
 		when(mCells.get(anyInt())).thenReturn(mock(Cell.class));
 
-		CageBuilder cageBuilder = mCageStorage.getCageBuilderFromStorageString(
+		CageBuilder cageBuilder = CageStorage.getCageBuilderFromStorageString(
 				mLine, mRevisionNumber, mCells);
 
 		CageBuilder expectedCageBuilder = new CageBuilder()
@@ -91,7 +90,7 @@ public class CageStorageTest {
 		when(cellMock.getCellId()).thenReturn(4);
 		when(mCells.get(anyInt())).thenReturn(cellMock);
 
-		CageBuilder cageBuilder = mCageStorage.getCageBuilderFromStorageString(
+		CageBuilder cageBuilder = CageStorage.getCageBuilderFromStorageString(
 				mLine, mRevisionNumber, mCells);
 
 		CageBuilder expectedCageBuilder = new CageBuilder()
@@ -111,7 +110,7 @@ public class CageStorageTest {
 		when(cellMock.getCellId()).thenReturn(4, 5, 6, 7);
 		when(mCells.get(anyInt())).thenReturn(cellMock);
 
-		CageBuilder cageBuilder = mCageStorage.getCageBuilderFromStorageString(
+		CageBuilder cageBuilder = CageStorage.getCageBuilderFromStorageString(
 				mLine, mRevisionNumber, mCells);
 
 		CageBuilder expectedCageBuilder = new CageBuilder()
@@ -134,7 +133,7 @@ public class CageStorageTest {
 		when(cageMock.getListOfCells()).thenReturn(cells);
 		when(cageMock.isOperatorHidden()).thenReturn(false);
 
-		assertThat(mCageStorage.toStorageString(cageMock),
+		assertThat(CageStorage.toStorageString(cageMock),
 				is("CAGE:1:3:4::false"));
 	}
 
@@ -152,7 +151,7 @@ public class CageStorageTest {
 		when(cageMock.getListOfCells()).thenReturn(cells);
 		when(cageMock.isOperatorHidden()).thenReturn(false);
 
-		assertThat(mCageStorage.toStorageString(cageMock),
+		assertThat(CageStorage.toStorageString(cageMock),
 				is("CAGE:1:2:3:4,:false"));
 	}
 
@@ -172,7 +171,7 @@ public class CageStorageTest {
 		when(cageMock.getListOfCells()).thenReturn(cells);
 		when(cageMock.isOperatorHidden()).thenReturn(false);
 
-		assertThat(mCageStorage.toStorageString(cageMock),
+		assertThat(CageStorage.toStorageString(cageMock),
 				is("CAGE:1:4:3:5,6,7,:false"));
 	}
 }

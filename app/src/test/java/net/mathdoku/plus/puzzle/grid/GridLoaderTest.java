@@ -5,19 +5,19 @@ import android.app.Activity;
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.enums.SolvingAttemptStatus;
+import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cage.CageBuilder;
+import net.mathdoku.plus.puzzle.cell.Cell;
 import net.mathdoku.plus.puzzle.cell.CellBuilder;
-import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.storage.CellChangeStorage;
-import net.mathdoku.plus.storage.CageStorage;
 import net.mathdoku.plus.storage.CellStorage;
 import net.mathdoku.plus.storage.GridStorage;
 import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.GridRow;
-import net.mathdoku.plus.storage.databaseadapter.SolvingAttemptRow;
 import net.mathdoku.plus.storage.databaseadapter.SolvingAttemptDatabaseAdapter;
+import net.mathdoku.plus.storage.databaseadapter.SolvingAttemptRow;
 import net.mathdoku.plus.storage.databaseadapter.StatisticsDatabaseAdapter;
 import net.mathdoku.plus.storage.selector.StorageDelimiter;
 
@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import robolectric.RobolectricGradleTestRunner;
 
@@ -368,11 +369,10 @@ public class GridLoaderTest {
 		}
 
 		@Override
-		public CageStorage createCageStorage() {
-			CageStorage cageStorage = mock(CageStorage.class);
-
+		public CageBuilder createCageBuilderFromStorageString(String line,
+				int savedWithRevision, List<Cell> cells) {
 			// Determine what result will be returned when
-			// getCageBuilderFromStorageString is called.
+			// createCageBuilderFromStorageString is called.
 			boolean isValidStorageString = !mHasUnExpectedDataBeforeCages
 					&& mNumberOfCageStorageMocksReturningAValidStorageString > 0;
 			if (mHasUnExpectedDataBeforeCages) {
@@ -380,12 +380,7 @@ public class GridLoaderTest {
 			} else {
 				mNumberOfCageStorageMocksReturningAValidStorageString--;
 			}
-			when(
-					cageStorage.getCageBuilderFromStorageString(anyString(),
-							anyInt(), any(ArrayList.class))).thenReturn(
-					isValidStorageString ? mock(CageBuilder.class) : null);
-
-			return cageStorage;
+			return (isValidStorageString ? mock(CageBuilder.class) : null);
 		}
 
 		@Override

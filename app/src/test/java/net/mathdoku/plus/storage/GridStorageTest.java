@@ -30,6 +30,7 @@ public class GridStorageTest {
 	private CellStorage mCellStorageMock = mock(CellStorage.class);
 	private CellChangeStorage mCellChangeStorageMock = mock(CellChangeStorage.class);
 	private CageStorage mCageStorageMock = mock(CageStorage.class);
+	private List<String> cageStorageStrings = new ArrayList<String>();
 
 	private class GridBuilderStub extends GridBuilder {
 		private final int mGridSize = 4;
@@ -75,8 +76,7 @@ public class GridStorageTest {
 				Cage cage = mock(Cage.class);
 				String storageString = String.format(
 						"*** CAGE %d storage string ***", i);
-				when(mCageStorageMock.toStorageString(cage)).thenReturn(
-						storageString);
+				cageStorageStrings.add(storageString);
 				cages.add(cage);
 				stringBuilder.append(storageString).append("\n");
 			}
@@ -116,8 +116,14 @@ public class GridStorageTest {
 	private class GridStorageTestObjectsCreator extends
 			GridStorage.ObjectsCreator {
 		@Override
-		public CageStorage createCageStorage() {
-			return mCageStorageMock;
+		public String createCageStorageString(Cage cage) {
+			if (cageStorageStrings == null || cageStorageStrings.isEmpty()) {
+				return null;
+			}
+
+			String cageStorageString = cageStorageStrings.get(0).toString();
+			cageStorageStrings.remove(0);
+			return cageStorageString;
 		}
 
 		@Override
