@@ -33,14 +33,14 @@ public class CellChangeStorageTest {
 		return cell;
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void fromStorageString_NullLine_False() throws Exception {
 		mLine = null;
 		assertThat(mCellChangeStorage.fromStorageString(mLine,
 				mArrayListOfCellsStub, mRevisionNumber), is(false));
 	}
 
-	@Test
+	@Test(expected = StorageException.class)
 	public void fromStorageString_RevisionIdToLow_False() throws Exception {
 		mLine = "CELL_CHANGE:[0:1::]";
 		mRevisionNumber = 368;
@@ -107,14 +107,6 @@ public class CellChangeStorageTest {
 	@Test(expected = IllegalStateException.class)
 	public void fromStorageString_CellChangeInvalidStorageStringTooManyArguments_FailedToRead() {
 		mLine = "CELL_CHANGE:[0:1:::]";
-		assertThat(mCellChangeStorage.fromStorageString(mLine,
-				mArrayListOfCellsStub, mRevisionNumber), is(false));
-	}
-
-	@Test
-	public void fromStorageString_CellChangeRevisionTooLow_FailedToRead() {
-		mLine = "CELL_CHANGE:[0:1::]";
-		mRevisionNumber = 368;
 		assertThat(mCellChangeStorage.fromStorageString(mLine,
 				mArrayListOfCellsStub, mRevisionNumber), is(false));
 	}

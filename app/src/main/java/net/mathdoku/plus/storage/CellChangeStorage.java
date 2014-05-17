@@ -22,6 +22,7 @@ public class CellChangeStorage {
 	// reading information from a storage string
 	@SuppressWarnings("PointlessBooleanExpression")
 	private static final boolean DEBUG_STORAGE_STRING = Config.mAppMode == Config.AppMode.DEVELOPMENT && false;
+	private static final String DEBUG_LINE = "Line: ";
 
 	private Cell mCell;
 	private Integer mPreviousEnteredValue;
@@ -41,16 +42,7 @@ public class CellChangeStorage {
 	 */
 	public boolean fromStorageString(String line, List<Cell> cells,
 			int savedWithRevisionNumber) {
-		if (line == null) {
-			throw new NullPointerException("Parameter line cannot be null");
-		}
-
-		// When upgrading to MathDoku v2 the history is not converted. As of
-		// revision 369 all logic for handling games stored with older versions
-		// is removed.
-		if (savedWithRevisionNumber <= 368) {
-			return false;
-		}
+		validateParametersFromStorageString(line, savedWithRevisionNumber);
 
 		CellChangeStoragePatternMatcher cellChangeStoragePatternMatcher = new CellChangeStoragePatternMatcher();
 		if (!cellChangeStoragePatternMatcher.matchesOuter(line)) {
@@ -63,13 +55,29 @@ public class CellChangeStorage {
 			Log
 					.d(TAG,
 							"---------------------------------------------------------------------------");
-			Log.d(TAG, "Line: " + line);
+			Log.d(TAG, DEBUG_LINE + line);
 			cellChangeStoragePatternMatcher.debugLogOuter();
 		}
 
 		// Recursively process the content of the cell change
 		return fromStorageStringRecursive(
 				cellChangeStoragePatternMatcher.getDataOuter(), 1, cells);
+	}
+
+	private void validateParametersFromStorageString(String line,
+			int savedWithRevisionNumber) {
+		if (line == null) {
+			throw new IllegalArgumentException("Parameter line cannot be null");
+		}
+
+		// When upgrading to MathDoku v2 the history is not converted. As of
+		// revision 369 all logic for handling games stored with older versions
+		// is removed.
+		if (savedWithRevisionNumber <= 368) {
+			throw new StorageException(String.format(
+					"Cannot process storage strings of cell changes created with revision"
+							+ " %d or before.", savedWithRevisionNumber));
+		}
 	}
 
 	/**
@@ -88,23 +96,21 @@ public class CellChangeStorage {
 	private boolean fromStorageStringRecursive(String line, int level,
 			List<Cell> cells) {
 		if (DEBUG_STORAGE_STRING) {
-			String indent = getDebugLogIndent(level);
-			Log.i(TAG, indent + "Line: " + line);
+			Log.i(TAG, getDebugLogIndent(level) + DEBUG_LINE + line);
 		}
 
 		CellChangeStoragePatternMatcher cellChangeStoragePatternMatcher = new CellChangeStoragePatternMatcher();
 		if (!cellChangeStoragePatternMatcher.matchesInner(line)) {
 			if (DEBUG_STORAGE_STRING) {
-				String indent = getDebugLogIndent(level);
-				Log.i(TAG, indent
+				Log.i(TAG, getDebugLogIndent(level)
 						+ "Can not process this line. Format is invalid");
 			}
 			return false;
 		}
 
 		if (DEBUG_STORAGE_STRING) {
-			String indent = getDebugLogIndent(level);
-			cellChangeStoragePatternMatcher.debugLogInner(indent);
+			cellChangeStoragePatternMatcher
+					.debugLogInner(getDebugLogIndent(level));
 		}
 
 		mCell = cells.get(cellChangeStoragePatternMatcher.getCellNumber());
@@ -116,15 +122,14 @@ public class CellChangeStorage {
 
 		for (String relatedCellChangeString : cellChangeStoragePatternMatcher
 				.getRelatedCellChanges()) {
-			if (!relatedCellChangeString.equals("")) {
+			if (!relatedCellChangeString.isEmpty()) {
 				CellChangeStorage relatedCellChangeStorage = new CellChangeStorage();
 				if (!relatedCellChangeStorage.fromStorageStringRecursive(
 						relatedCellChangeString, level + 1, cells)) {
 					return false;
 				}
-				CellChange relatedCellChange = new CellChange(
-						relatedCellChangeStorage);
-				mRelatedCellChanges.add(relatedCellChange);
+				mRelatedCellChanges
+						.add(new CellChange(relatedCellChangeStorage));
 			}
 		}
 
