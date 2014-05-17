@@ -5,8 +5,8 @@ import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cage.CageBuilder;
 import net.mathdoku.plus.puzzle.cell.Cell;
 import net.mathdoku.plus.storage.selector.StorageDelimiter;
+import net.mathdoku.plus.util.Util;
 
-import java.security.InvalidParameterException;
 import java.util.List;
 
 /**
@@ -36,38 +36,17 @@ public class CageStorage {
 	 *            storage string.
 	 * @param cells
 	 *            The cells to which the cell id's in the storage string refer.
+	 *            Be aware that the contents (i.e. the cage id) of the cells is
+	 *            being set.
 	 * @return True in case the given line contains cage information and is
 	 *         processed correctly. False otherwise.
 	 */
 	public static CageBuilder getCageBuilderFromStorageString(String line,
 			int savedWithRevisionNumber, List<Cell> cells) {
-		if (line == null) {
-			throw new IllegalArgumentException("Parameter line cannot be null");
-		}
+		validateParametersGetCageBuilderFromStorageString(line,
+				savedWithRevisionNumber, cells);
 
-		// When upgrading to MathDoku v2 the history is not converted. As of
-		// revision 369 all logic for handling games stored with older versions
-		// is removed.
-		if (savedWithRevisionNumber <= 368) {
-			return null;
-		}
-
-		String[] cageParts = line
-				.split(StorageDelimiter.FIELD_DELIMITER_LEVEL1);
-
-		// Only process the storage string if it starts with the correct
-		// identifier.
-		if (cageParts == null || !CAGE_LINE_ID.equals(cageParts[0])) {
-			return null;
-		}
-
-		int expectedNumberOfElements = 6;
-		if (cageParts.length != expectedNumberOfElements) {
-			throw new InvalidParameterException(
-					"Wrong number of elements in cage storage string. Got "
-							+ cageParts.length + ", expected "
-							+ expectedNumberOfElements + ".");
-		}
+		String[] cageParts = getCagePartsFromLine(line);
 
 		CageBuilder cageBuilder = new CageBuilder();
 
@@ -78,25 +57,82 @@ public class CageStorage {
 		cageBuilder.setCageOperator(CageOperator.fromId(cageParts[index++]));
 		cageBuilder.setResult(Integer.parseInt(cageParts[index++]));
 
-		int[] mCells = null;
-		if (!cageParts[index].equals("")) {
+		if (!cageParts[index].isEmpty()) {
 			String[] cellParts = cageParts[index]
 					.split(StorageDelimiter.FIELD_DELIMITER_LEVEL2);
-			mCells = new int[cellParts.length];
 			for (int i = 0; i < cellParts.length; i++) {
 				int cellId = Integer.parseInt(cellParts[i]);
-				Cell cell = cells.get(cellId);
-				cell.setCageId(cageId);
-				mCells[i] = cellId;
+				cells.get(cellId).setCageId(cageId);
 			}
 		}
+		cageBuilder.setCells(getIdsOfCellsInCage(cells, cageId));
 		index++;
-		cageBuilder.setCells(mCells);
 
-		// noinspection UnusedAssignment
 		cageBuilder.setHideOperator(Boolean.parseBoolean(cageParts[index++]));
 
 		return cageBuilder;
+	}
+
+	private static void validateParametersGetCageBuilderFromStorageString(
+			String line, int savedWithRevisionNumber, List<Cell> cells) {
+		if (line == null) {
+			throw new IllegalArgumentException("Parameter line cannot be null");
+		}
+
+		// When upgrading to MathDoku v2 the history is not converted. As of
+		// revision 369 all logic for handling games stored with older versions
+		// is removed.
+		if (savedWithRevisionNumber <= 368) {
+			throw new StorageException(String.format(
+					"Cannot process storage strings of cages created with revision"
+							+ " %d or before.", savedWithRevisionNumber));
+		}
+
+		if (Util.isListNullOrEmpty(cells)) {
+			throw new StorageException("List cannot be null or empty.");
+		}
+	}
+
+	private static int[] getIdsOfCellsInCage(List<Cell> cells, int cageId) {
+		int[] cellIds = new int[countCellsInCage(cells, cageId)];
+		int index = 0;
+		for (Cell cell : cells) {
+			if (cell.getCageId() == cageId) {
+				cellIds[index++] = cell.getCellId();
+			}
+		}
+		return cellIds;
+	}
+
+	private static int countCellsInCage(List<Cell> cells, int cageId) {
+		int countCellsInCage = 0;
+		for (Cell cell : cells) {
+			if (cell.getCageId() == cageId) {
+				countCellsInCage++;
+			}
+		}
+		return countCellsInCage;
+	}
+
+	private static String[] getCagePartsFromLine(String line) {
+		String[] cageParts = line
+				.split(StorageDelimiter.FIELD_DELIMITER_LEVEL1);
+
+		// Only process the storage string if it starts with the correct
+		// identifier.
+		if (cageParts == null || !CAGE_LINE_ID.equals(cageParts[0])) {
+			throw new StorageException(String.format(
+					"Invalid cage storage string '%s'.", line));
+		}
+
+		int expectedNumberOfElements = 6;
+		if (cageParts.length != expectedNumberOfElements) {
+			throw new StorageException(
+					"Wrong number of elements in cage storage string. Got "
+							+ cageParts.length + ", expected "
+							+ expectedNumberOfElements + ".");
+		}
+		return cageParts;
 	}
 
 	/**

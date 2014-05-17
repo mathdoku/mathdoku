@@ -8,7 +8,6 @@ import net.mathdoku.plus.puzzle.cell.Cell;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +16,6 @@ import robolectric.RobolectricGradleTestRunner;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -25,7 +23,7 @@ import static org.mockito.Mockito.when;
 public class CageStorageTest {
 	private String mLine;
 	private int mRevisionNumber = 596;
-	private List<Cell> mCells = mock(ArrayList.class);
+	private List<Cell> mCells = new ArrayList<Cell>();
 
 	@Test(expected = IllegalArgumentException.class)
 	public void fromStorageString_NullLine_False() throws Exception {
@@ -35,7 +33,7 @@ public class CageStorageTest {
 				mRevisionNumber, mCells), is(nullValue()));
 	}
 
-	@Test
+	@Test(expected = StorageException.class)
 	public void fromStorageString_RevisionIdToLow_False() throws Exception {
 		mLine = "CAGE:1:2:3:4,5,6:false";
 		mRevisionNumber = 368;
@@ -43,14 +41,14 @@ public class CageStorageTest {
 				mRevisionNumber, mCells), is(nullValue()));
 	}
 
-	@Test
+	@Test(expected = StorageException.class)
 	public void fromStorageString_InvalidLineId_False() throws Exception {
 		mLine = "WRONG:This is not a valid cage storage string";
 		assertThat(CageStorage.getCageBuilderFromStorageString(mLine,
 				mRevisionNumber, mCells), is(nullValue()));
 	}
 
-	@Test(expected = InvalidParameterException.class)
+	@Test(expected = StorageException.class)
 	public void fromStorageString_StorageStringHasTooLittleElements_False()
 			throws Exception {
 		mLine = "CAGE:2:3:4:5";
@@ -58,7 +56,7 @@ public class CageStorageTest {
 				mRevisionNumber, mCells), is(nullValue()));
 	}
 
-	@Test(expected = InvalidParameterException.class)
+	@Test(expected = StorageException.class)
 	public void fromStorageString_StorageStringHasTooManyElements_False()
 			throws Exception {
 		mLine = "CAGE:2:3:4:5:6:7";
@@ -66,10 +64,9 @@ public class CageStorageTest {
 				mRevisionNumber, mCells), is(nullValue()));
 	}
 
-	@Test
+	@Test(expected = StorageException.class)
 	public void fromStorageString_ValidLineWithoutCells_True() throws Exception {
 		mLine = "CAGE:1:2:3::false";
-		when(mCells.get(anyInt())).thenReturn(mock(Cell.class));
 
 		CageBuilder cageBuilder = CageStorage.getCageBuilderFromStorageString(
 				mLine, mRevisionNumber, mCells);
@@ -86,12 +83,9 @@ public class CageStorageTest {
 	public void fromStorageString_ValidLineWithSingeCell_True()
 			throws Exception {
 		mLine = "CAGE:1:2:3:4:true";
-		Cell cellMock = mock(Cell.class);
-		when(cellMock.getCellId()).thenReturn(4);
-		when(mCells.get(anyInt())).thenReturn(cellMock);
 
 		CageBuilder cageBuilder = CageStorage.getCageBuilderFromStorageString(
-				mLine, mRevisionNumber, mCells);
+				mLine, mRevisionNumber, createCellMocksBasedOnCageIds(new int[] {0, 0, 0, 0, 1, 0, 0, 0, 0, 0}));
 
 		CageBuilder expectedCageBuilder = new CageBuilder()
 				.setId(1)
@@ -106,12 +100,9 @@ public class CageStorageTest {
 	public void fromStorageString_ValidLineWithMultipleCellCage_True()
 			throws Exception {
 		mLine = "CAGE:1:2:3:4,5,6,7:false";
-		Cell cellMock = mock(Cell.class);
-		when(cellMock.getCellId()).thenReturn(4, 5, 6, 7);
-		when(mCells.get(anyInt())).thenReturn(cellMock);
 
 		CageBuilder cageBuilder = CageStorage.getCageBuilderFromStorageString(
-				mLine, mRevisionNumber, mCells);
+				mLine, mRevisionNumber, createCellMocksBasedOnCageIds(new int[] {0, 0, 0, 0, 1, 1, 1, 1, 0, 0}));
 
 		CageBuilder expectedCageBuilder = new CageBuilder()
 				.setId(1)
@@ -173,5 +164,17 @@ public class CageStorageTest {
 
 		assertThat(CageStorage.toStorageString(cageMock),
 				is("CAGE:1:4:3:5,6,7,:false"));
+	}
+
+	private List<Cell> createCellMocksBasedOnCageIds(int...cageIds) {
+		List<Cell> cells = new ArrayList<Cell>();
+		int cellNumber = 0;
+		for (int cageId : cageIds) {
+			Cell cellMock = mock(Cell.class);
+			when(cellMock.getCellId()).thenReturn(cellNumber++);
+			when(cellMock.getCageId()).thenReturn(cageId);
+			cells.add(cellMock);
+		}
+		return cells;
 	}
 }
