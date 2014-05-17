@@ -28,7 +28,7 @@ public class CageStorageTest {
 	private int mRevisionNumber = 596;
 	private List<Cell> mCells = mock(ArrayList.class);
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void fromStorageString_NullLine_False() throws Exception {
 		mLine = null;
 

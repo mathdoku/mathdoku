@@ -38,7 +38,7 @@ public class CageStorage {
 	public CageBuilder getCageBuilderFromStorageString(String line,
 			int savedWithRevisionNumber, List<Cell> cells) {
 		if (line == null) {
-			throw new NullPointerException("Parameter line cannot be null");
+			throw new IllegalArgumentException("Parameter line cannot be null");
 		}
 
 		// When upgrading to MathDoku v2 the history is not converted. As of
