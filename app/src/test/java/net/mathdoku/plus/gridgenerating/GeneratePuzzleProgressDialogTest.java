@@ -6,9 +6,6 @@ import net.mathdoku.plus.gridgenerating.iface.GridGeneratorAsyncTaskIface;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +15,7 @@ import java.util.List;
 
 import robolectric.RobolectricGradleTestRunner;
 
+import static matcher.MathdokuMatcher.notSameInstance;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.core.Is.is;
@@ -252,21 +250,5 @@ public class GeneratePuzzleProgressDialogTest {
 		generatePuzzleProgressDialog
 				.onDetailLevelProgressDetail(progressUpdate);
 		verify(progressDialogMock).setMessage(progressUpdate);
-	}
-
-	public static Matcher notSameInstance(final Object expected) {
-		return new BaseMatcher() {
-			protected Object theExpected = expected;
-
-			public boolean matches(Object object) {
-				return theExpected != object;
-			}
-
-			@Override
-			public void describeTo(Description description) {
-				description.appendText("not same instance as "
-						+ theExpected.toString());
-			}
-		};
 	}
 }

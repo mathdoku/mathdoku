@@ -55,7 +55,7 @@ import net.mathdoku.plus.puzzle.grid.GridLoader;
 import net.mathdoku.plus.puzzle.ui.GridInputMode;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.statistics.ui.StatisticsFragmentActivity;
-import net.mathdoku.plus.storage.GameFileConverter;
+import net.mathdoku.plus.gridconverting.GridConverter;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankRowBuilder;
 import net.mathdoku.plus.storage.selector.ArchiveSolvingAttemptSelector;
 import net.mathdoku.plus.enums.StatusFilter;
@@ -82,7 +82,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 	// Background tasks for generating a new puzzle and converting game files
 	public GeneratePuzzleProgressDialog mGeneratePuzzleProgressDialog;
-	private GameFileConverter mGameFileConverter;
+	private GridConverter mGridConverter;
 
 	// Different types of fragments supported by this activity.
 	public enum FragmentType {
@@ -109,21 +109,21 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	// fragment the RetainInstance property is set to true.
 	private class ConfigurationInstanceState {
 		private final GeneratePuzzleProgressDialog mGeneratePuzzleProgressDialog;
-		private final GameFileConverter mGameFileConverter;
+		private final GridConverter mGridConverter;
 
 		public ConfigurationInstanceState(
 				GeneratePuzzleProgressDialog gridGeneratorTask,
-				GameFileConverter gameFileConverterTask) {
+				GridConverter gridConverterTask) {
 			mGeneratePuzzleProgressDialog = gridGeneratorTask;
-			mGameFileConverter = gameFileConverterTask;
+			mGridConverter = gridConverterTask;
 		}
 
 		public GeneratePuzzleProgressDialog getGridGeneratorTask() {
 			return mGeneratePuzzleProgressDialog;
 		}
 
-		public GameFileConverter getGameFileConverter() {
-			return mGameFileConverter;
+		public GridConverter getGameFileConverter() {
+			return mGridConverter;
 		}
 	}
 
@@ -182,10 +182,10 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			}
 
 			// Restore background process if running.
-			mGameFileConverter = configurationInstanceState
+			mGridConverter = configurationInstanceState
 					.getGameFileConverter();
-			if (mGameFileConverter != null) {
-				mGameFileConverter.attachToActivity(this);
+			if (mGridConverter != null) {
+				mGridConverter.attachToActivity(this);
 			}
 		}
 
@@ -626,7 +626,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	 * modify preferences and convert if necessary.
 	 */
 	private boolean isUpgradeRunning() {
-		if (mGameFileConverter != null) {
+		if (mGridConverter != null) {
 			// Phase 1 of the upgrade is not yet completed. The upgrade process
 			// should not be restarted till the phase 1 background process is
 			// completed.
@@ -646,9 +646,9 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			// the latest definitions. On completion of the game file
 			// conversion, method upgradePhase2_UpdatePreferences will be
 			// called.
-			mGameFileConverter = new GameFileConverter(this,
+			mGridConverter = new GridConverter(this,
 					previousInstalledVersion, packageVersionNumber);
-			mGameFileConverter.execute();
+			mGridConverter.execute();
 
 			return true;
 		}
@@ -668,7 +668,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		// The game file converter process has been completed. Reset it in order
 		// to prevent restarting the game file conversion after a configuration
 		// change.
-		mGameFileConverter = null;
+		mGridConverter = null;
 
 		// Update preferences
 		mMathDokuPreferences.upgrade(previousInstalledVersion, currentVersion);
@@ -743,14 +743,13 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			// task from this activity. It will keep on running until finished.
 			mGeneratePuzzleProgressDialog.detachFromActivity();
 		}
-		if (mGameFileConverter != null) {
+		if (mGridConverter != null) {
 			// The game files are converted in the background. Detach the
 			// background
 			// task from this activity. It will keep on running until finished.
-			mGameFileConverter.detachFromActivity();
+			mGridConverter.detachFromActivity();
 		}
-		return new ConfigurationInstanceState(mGeneratePuzzleProgressDialog,
-				mGameFileConverter);
+		return new ConfigurationInstanceState(mGeneratePuzzleProgressDialog, mGridConverter);
 	}
 
 	@Override

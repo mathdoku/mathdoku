@@ -1,4 +1,4 @@
-package net.mathdoku.plus.storage;
+package net.mathdoku.plus.gridconverting;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
@@ -12,20 +12,19 @@ import net.mathdoku.plus.puzzle.grid.GridLoader;
 import net.mathdoku.plus.storage.databaseadapter.SolvingAttemptDatabaseAdapter;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Converts all game files to the latest version.
+ * Converts stored data from a grid to to the latest version.
  */
-public class GameFileConverter extends AsyncTask<Void, Void, Void> {
+public class GridConverter extends AsyncTask<Void, Void, Void> {
 	@SuppressWarnings("unused")
-	private static final String TAG = GameFileConverter.class.getName();
+	private static final String TAG = GridConverter.class.getName();
 
 	// Remove "&& false" in following line to show debug information about
 	// converting game files when running in development mode.
 	@SuppressWarnings("PointlessBooleanExpression")
-	private static final boolean DEBUG_GRID_GAME_FILE_CONVERTER = Config.mAppMode == AppMode.DEVELOPMENT && false;
+	private static final boolean DEBUG_GRID_CONVERTER = Config.mAppMode == AppMode.DEVELOPMENT && false;
 
 	// The activity which started this task
 	private PuzzleFragmentActivity mActivity;
@@ -40,23 +39,20 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	private List<Integer> solvingAttemptIds;
 
 	// The dialog for this task
-	private ProgressDialog mProgressDialog;
-
-	// Conversion results
-	private List<String> mGridDefinitions;
+	private ProgressDialog progressDialog;
 
 	/**
-	 * Creates a new instance of {@link GameFileConverter}.
+	 * Creates a new instance of {@link GridConverter}.
 	 * 
 	 * @param activity
-	 *            The activity which started this {@link GameFileConverter}.
+	 *            The activity which started this {@link GridConverter}.
 	 * @param currentVersion
 	 *            The last version of the app which was used.
 	 * @param newVersion
 	 *            The new version to which will be upgraded.
 	 */
-	public GameFileConverter(PuzzleFragmentActivity activity,
-			int currentVersion, int newVersion) {
+	public GridConverter(PuzzleFragmentActivity activity, int currentVersion,
+			int newVersion) {
 		mActivity = activity;
 		mCurrentVersion = currentVersion;
 		mNewVersion = newVersion;
@@ -77,8 +73,8 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	 *            this task.
 	 */
 	public void attachToActivity(PuzzleFragmentActivity activity) {
-		if (((Object) activity).equals(mActivity) && mProgressDialog != null
-				&& mProgressDialog.isShowing()) {
+		if (((Object) activity).equals(mActivity) && progressDialog != null
+				&& progressDialog.isShowing()) {
 			// Casting to Object is needed due to bug in Android Studio and/or
 			// IntelliJ IDEA Community edition:
 			// http://youtrack.jetbrains.com/issue/IDEA-79680
@@ -87,41 +83,44 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 			return;
 		}
 
-		if (DEBUG_GRID_GAME_FILE_CONVERTER) {
+		if (DEBUG_GRID_CONVERTER) {
 			Log.i(TAG, "Attach to activity");
 		}
 
 		// Remember the activity that started this task.
 		this.mActivity = activity;
 
-		// Determine how many solving attempts in the database have to be
+		// Determine the solving attempts in the database which have to be
 		// converted.
-		int maxProgressCounter = 0;
-		solvingAttemptIds = new SolvingAttemptDatabaseAdapter()
+		solvingAttemptIds = createSolvingAttemptDatabaseAdapter()
 				.getAllToBeConverted();
-		maxProgressCounter += solvingAttemptIds.size();
 
+		int maxProgressCounter = solvingAttemptIds.size();
 		if (maxProgressCounter > 0) {
-			// Build the dialog
-			mProgressDialog = new ProgressDialog(mActivity);
-			mProgressDialog
-					.setTitle(R.string.dialog_converting_saved_games_title);
-			mProgressDialog.setMessage(mActivity.getResources().getString(
-					R.string.dialog_converting_saved_games_message));
-			mProgressDialog.setIcon(android.R.drawable.ic_dialog_info);
-			mProgressDialog.setIndeterminate(false);
-			mProgressDialog.setCancelable(false);
-			mProgressDialog.setMax(maxProgressCounter);
-
-			// Set style of dialog.
-			mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-
-			// Show the dialog
-			mProgressDialog.show();
+			progressDialog = createProgressDialog(maxProgressCounter);
+			progressDialog.show();
 		}
+	}
 
-		// Initialize conversion results.
-		mGridDefinitions = new ArrayList<String>();
+	// package private access for unit testing
+	ProgressDialog createProgressDialog(int maxProgressCounter) {
+		ProgressDialog dialog = new ProgressDialog(mActivity);
+
+		dialog.setTitle(R.string.dialog_converting_saved_games_title);
+		dialog.setMessage(mActivity.getResources().getString(
+				R.string.dialog_converting_saved_games_message));
+		dialog.setIcon(android.R.drawable.ic_dialog_info);
+		dialog.setIndeterminate(false);
+		dialog.setCancelable(false);
+		dialog.setMax(maxProgressCounter);
+		dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+
+		return dialog;
+	}
+
+	// package private access for unit testing
+	SolvingAttemptDatabaseAdapter createSolvingAttemptDatabaseAdapter() {
+		return new SolvingAttemptDatabaseAdapter();
 	}
 
 	/*
@@ -131,25 +130,13 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	 */
 	@Override
 	protected Void doInBackground(Void... params) {
-		if (mCurrentVersion < mNewVersion) {
-			// Convert data in SolvingAttemptRow to newest structure.
-			if (solvingAttemptIds != null) {
-				for (int solvingAttemptId : solvingAttemptIds) {
-					Grid grid = new GridLoader().load(solvingAttemptId);
-					if (grid != null) {
-						// Get definition for the grid.
-						String gridDefinition = grid.getDefinition();
-						if (!mGridDefinitions.contains(gridDefinition)) {
-							// New definition found
-							mGridDefinitions.add(gridDefinition);
-						}
+		if (mCurrentVersion < mNewVersion && solvingAttemptIds != null) {
+			for (int solvingAttemptId : solvingAttemptIds) {
+				Grid grid = createGridLoader().load(solvingAttemptId);
+				if (grid != null) {
+					grid.saveOnAppUpgrade();
 
-						// Save grid.
-						grid.saveOnAppUpgrade();
-
-						// Update progress
-						publishProgress();
-					}
+					publishProgress();
 				}
 			}
 		}
@@ -157,10 +144,15 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 		return null;
 	}
 
+	// Package private access for unit testing
+	GridLoader createGridLoader() {
+		return new GridLoader();
+	}
+
 	@Override
 	protected void onProgressUpdate(Void... values) {
-		if (!isCancelled() && mProgressDialog != null) {
-			mProgressDialog.incrementProgressBy(1);
+		if (!isCancelled() && progressDialog != null) {
+			progressDialog.incrementProgressBy(1);
 		}
 	}
 
@@ -180,7 +172,7 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	 * finished.
 	 */
 	public void detachFromActivity() {
-		if (DEBUG_GRID_GAME_FILE_CONVERTER) {
+		if (DEBUG_GRID_CONVERTER) {
 			Log.d(TAG, "Detach from activity");
 		}
 
@@ -192,10 +184,10 @@ public class GameFileConverter extends AsyncTask<Void, Void, Void> {
 	 * Dismisses the progress dialog which was shown on start of this ASync
 	 * task. The ASync task however still keeps running until finished.
 	 */
-	void dismissProgressDialog() {
-		if (mProgressDialog != null) {
-			mProgressDialog.dismiss();
-			mProgressDialog = null;
+	private void dismissProgressDialog() {
+		if (progressDialog != null) {
+			progressDialog.dismiss();
+			progressDialog = null;
 		}
 	}
 }
