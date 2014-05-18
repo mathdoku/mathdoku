@@ -46,7 +46,6 @@ public class GridGeneratorAsyncTaskTest {
 
 	private class GridGeneratorAsyncTaskListener implements
 			GridGeneratorAsyncTaskListenerIface {
-		private boolean onGeneratedIsCalled = false;
 		private boolean onFinishGridGeneratorIsCalled = false;
 		private int onFinishGridGeneratorGridCount = 0;
 		private boolean onCancelGridGeneratorAsyncTaskIsCalled = false;
@@ -55,7 +54,6 @@ public class GridGeneratorAsyncTaskTest {
 
 		@Override
 		public void onGridGenerated() {
-			onGeneratedIsCalled = true;
 		}
 
 		@Override
@@ -100,14 +98,14 @@ public class GridGeneratorAsyncTaskTest {
 		new GridGeneratorAsyncTask(null);
 	}
 
-	// AsyncTask rethrows exceptions always a runtime exception.
+	// AsyncTask rethrows exceptions always as runtime exception.
 	@Test(expected = RuntimeException.class)
 	public void execute_NoGridGeneratingParameters_ThrowsRuntimeException()
 			throws Exception {
 		gridGeneratorAsyncTask.execute();
 	}
 
-	// AsyncTask rethrows exceptions always a runtime exception.
+	// AsyncTask rethrows exceptions always as runtime exception.
 	@Test(expected = RuntimeException.class)
 	public void execute_EmptyGridGeneratingParametersArray_ThrowsGridGeneratingException()
 			throws Exception {
