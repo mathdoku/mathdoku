@@ -146,7 +146,7 @@ public class GridStorageTest {
 		gridStorage.setObjectsCreator(mGridStorageTestObjectsCreator);
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void fromStorageString_StorageStringIsNull_NullPointerException()
 			throws Exception {
 		String storageString = null;
@@ -155,7 +155,7 @@ public class GridStorageTest {
 		gridStorage.fromStorageString(storageString, revisionNumber);
 	}
 
-	@Test
+	@Test(expected = StorageException.class)
 	public void fromStorageString_InvalidLineId_False() throws Exception {
 		String storageString = "WRONG:this is not a valid grid storage string";
 		int revisionNumber = 596;
@@ -201,7 +201,7 @@ public class GridStorageTest {
 		gridStorage.fromStorageString(storageString, revisionNumber);
 	}
 
-	@Test
+	@Test(expected = StorageException.class)
 	public void fromStorageString_RevisionIdTooLow_False() throws Exception {
 		String storageString = "GRID:true:true:1";
 		int revisionNumber = 368;

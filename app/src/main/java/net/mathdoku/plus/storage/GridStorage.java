@@ -69,31 +69,9 @@ public class GridStorage {
 	 */
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public boolean fromStorageString(String line, int savedWithRevisionNumber) {
-		if (line == null) {
-			throw new NullPointerException("Parameter line cannot be null");
-		}
+		validateParametersFromStorageString(line, savedWithRevisionNumber);
 
-		String[] viewParts = line
-				.split(StorageDelimiter.FIELD_DELIMITER_LEVEL1);
-
-		// Only process the storage string if it starts with the correct
-		// identifier.
-		if (viewParts == null || !SAVE_GAME_GRID_LINE.equals(viewParts[0])) {
-			return false;
-		}
-
-		int expectedNumberOfElements = savedWithRevisionNumber <= 595 ? 4 : 3;
-		if (viewParts.length != expectedNumberOfElements) {
-			throw new InvalidParameterException(
-					"Wrong number of elements in grid storage string");
-		}
-
-		// When upgrading to MathDoku v2 the history is not converted. As of
-		// revision 369 all logic for handling games stored with older versions
-		// is removed.
-		if (savedWithRevisionNumber <= 368) {
-			return false;
-		}
+		String[] viewParts = getViewParts(line, savedWithRevisionNumber);
 
 		// Process all parts
 		int index = 1;
@@ -109,6 +87,42 @@ public class GridStorage {
 		mCellChanges = null;
 
 		return true;
+	}
+
+	private void validateParametersFromStorageString(String line,
+			int savedWithRevisionNumber) {
+		if (line == null) {
+			throw new IllegalArgumentException("Parameter line cannot be null");
+		}
+
+		// When upgrading to MathDoku v2 the history is not converted. As of
+		// revision 369 all logic for handling games stored with older versions
+		// is removed.
+		if (savedWithRevisionNumber <= 368) {
+			throw new StorageException(String.format(
+					"Cannot process storage strings of grid created with revision"
+							+ " %d or before.", savedWithRevisionNumber));
+		}
+	}
+
+	private String[] getViewParts(String line, int savedWithRevisionNumber) {
+		String[] viewParts = line
+				.split(StorageDelimiter.FIELD_DELIMITER_LEVEL1);
+
+		// Only process the storage string if it starts with the correct
+		// identifier.
+		if (viewParts == null || !SAVE_GAME_GRID_LINE.equals(viewParts[0])) {
+			throw new StorageException(String.format(
+					"Invalid grid storage string '%s'.", line));
+		}
+
+		int expectedNumberOfElements = savedWithRevisionNumber <= 595 ? 4 : 3;
+		if (viewParts.length != expectedNumberOfElements) {
+			throw new InvalidParameterException(
+					"Wrong number of elements in grid storage string");
+		}
+
+		return viewParts;
 	}
 
 	/**
