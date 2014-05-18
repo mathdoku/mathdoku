@@ -29,7 +29,7 @@ import java.util.Random;
  * Testing of this application. Variables and methods should not be used in
  * production code.
  * <p/>
- * Checks on variable {@link net.mathdoku.plus.config.Config#mAppMode} should
+ * Checks on variable {@link net.mathdoku.plus.config.Config#APP_MODE} should
  * always be made in such a way that the result can be determined at compile
  * time. In this way the enclosed block will not be included in the compiled
  * case when the condition for executing the block evaluates to false. Example
@@ -63,7 +63,7 @@ public class DevelopmentHelper {
 	 */
 	public static boolean onDevelopmentHelperOption(
 			PuzzleFragmentActivity puzzleFragmentActivity, int menuId, Grid grid) {
-		if (Config.mAppMode == AppMode.DEVELOPMENT) {
+		if (Config.APP_MODE == AppMode.DEVELOPMENT) {
 			switch (menuId) {
 			case R.id.development_mode_generate_games:
 				// Generate games
@@ -105,7 +105,7 @@ public class DevelopmentHelper {
 	 */
 	private static void generateGames(
 			final PuzzleFragmentActivity puzzleFragmentActivity) {
-		if (Config.mAppMode == AppMode.DEVELOPMENT) {
+		if (Config.APP_MODE == AppMode.DEVELOPMENT) {
 			puzzleFragmentActivity.mGeneratePuzzleProgressDialog = new GeneratePuzzleProgressDialog(
 					puzzleFragmentActivity,
 					createArrayOfRandomGridGeneratingParameters(10));
@@ -140,7 +140,7 @@ public class DevelopmentHelper {
 	public static void generateGamesReady(
 			final PuzzleFragmentActivity puzzleFragmentActivity,
 			int numberOfGamesGenerated) {
-		if (Config.mAppMode == AppMode.DEVELOPMENT) {
+		if (Config.APP_MODE == AppMode.DEVELOPMENT) {
 			new AlertDialog.Builder(puzzleFragmentActivity)
 					.setTitle("Games generated")
 					.setMessage(
@@ -169,7 +169,7 @@ public class DevelopmentHelper {
 	 */
 	private static void resetPreferences(
 			final PuzzleFragmentActivity puzzleFragmentActivity) {
-		if (Config.mAppMode == AppMode.DEVELOPMENT) {
+		if (Config.APP_MODE == AppMode.DEVELOPMENT) {
 			executeDeleteAllPreferences();
 
 			// Show dialog
@@ -210,7 +210,7 @@ public class DevelopmentHelper {
 	 */
 	private static void deleteDatabaseAndPreferences(
 			final PuzzleFragmentActivity puzzleFragmentActivity) {
-		if (Config.mAppMode == AppMode.DEVELOPMENT) {
+		if (Config.APP_MODE == AppMode.DEVELOPMENT) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(
 					puzzleFragmentActivity);
 			builder.setTitle("Delete all data and preferences?")
@@ -252,7 +252,7 @@ public class DevelopmentHelper {
 	 * Deletes all preferences.
 	 */
 	private static void executeDeleteAllPreferences() {
-		if (Config.mAppMode == AppMode.DEVELOPMENT) {
+		if (Config.APP_MODE == AppMode.DEVELOPMENT) {
 			Editor editor = Preferences.getInstance().mSharedPreferences.edit();
 			editor.clear();
 			editor.commit();
@@ -267,7 +267,7 @@ public class DevelopmentHelper {
 	 */
 	private static void executeDeleteDatabase(
 			PuzzleFragmentActivity puzzleFragmentActivity) {
-		if (Config.mAppMode == AppMode.DEVELOPMENT) {
+		if (Config.APP_MODE == AppMode.DEVELOPMENT) {
 			// Close database helper (this will also close the open databases).
 			DatabaseHelper databaseHelper = DatabaseHelper.getInstance();
 			databaseHelper.close();
@@ -292,7 +292,7 @@ public class DevelopmentHelper {
 	 */
 	public static boolean checkDatabaseConsistency(
 			final PuzzleFragmentActivity puzzleFragmentActivity) {
-		if (Config.mAppMode == AppMode.DEVELOPMENT) {
+		if (Config.APP_MODE == AppMode.DEVELOPMENT) {
 			// While developing it regularly occurs that table definitions have
 			// been altered without creating separate database versions. As the
 			// database are accessed when the last game is restarted this
@@ -349,7 +349,7 @@ public class DevelopmentHelper {
 	 * Make options Archive and Statistics visible in the main menu.
 	 */
 	private static void unlockArchiveAndStatistics() {
-		if (Config.mAppMode == AppMode.DEVELOPMENT) {
+		if (Config.APP_MODE == AppMode.DEVELOPMENT) {
 			Editor editor = Preferences.getInstance().mSharedPreferences.edit();
 			editor.putBoolean(Preferences.ARCHIVE_AVAILABLE, true);
 			editor.putBoolean(Preferences.STATISTICS_AVAILABLE, true);
@@ -369,7 +369,7 @@ public class DevelopmentHelper {
 	 */
 	public static void submitManualScore(
 			final PuzzleFragmentActivity puzzleFragmentActivity, final Grid grid) {
-		if (Config.mAppMode == AppMode.DEVELOPMENT
+		if (Config.APP_MODE == AppMode.DEVELOPMENT
 				&& puzzleFragmentActivity
 						.getResources()
 						.getString(R.string.app_id)

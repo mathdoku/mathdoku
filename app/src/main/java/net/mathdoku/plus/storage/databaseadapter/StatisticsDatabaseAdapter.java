@@ -33,7 +33,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	private static final String TAG = StatisticsDatabaseAdapter.class.getName();
 
 	@SuppressWarnings("PointlessBooleanExpression")
-	private static final boolean DEBUG_SQL = Config.mAppMode == AppMode.DEVELOPMENT && false;
+	private static final boolean DEBUG_SQL = Config.APP_MODE == AppMode.DEVELOPMENT && false;
 
 	private static final DatabaseTableDefinition DATABASE_TABLE = defineTable();
 
@@ -185,7 +185,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 	 *            to identify the database version.
 	 */
 	protected void upgradeTable(int oldVersion, int newVersion) {
-		if (Config.mAppMode == AppMode.DEVELOPMENT && oldVersion < 438
+		if (Config.APP_MODE == AppMode.DEVELOPMENT && oldVersion < 438
 				&& newVersion >= 438) {
 			recreateTableInDevelopmentMode();
 		}

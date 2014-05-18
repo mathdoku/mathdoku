@@ -35,7 +35,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	// Remove "&& false" in following line to show the SQL-statements in the
 	// debug information
 	@SuppressWarnings("unused")
-	private static final boolean DEBUG_SQL = Config.mAppMode == AppMode.DEVELOPMENT && false;
+	private static final boolean DEBUG_SQL = Config.APP_MODE == AppMode.DEVELOPMENT && false;
 
 	private static final DatabaseTableDefinition DATABASE_TABLE = defineTable();
 
@@ -101,7 +101,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 	 *            to identify the database version.
 	 */
 	protected void upgradeTable(int oldVersion, int newVersion) {
-		if (Config.mAppMode == AppMode.DEVELOPMENT && oldVersion < 433
+		if (Config.APP_MODE == AppMode.DEVELOPMENT && oldVersion < 433
 				&& newVersion >= 433) {
 			recreateTableInDevelopmentMode();
 		}

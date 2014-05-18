@@ -28,7 +28,7 @@ public class LeaderboardRankUpdater {
 	// Remove "&& false" in following line to show debug information about
 	// converting game files when running in development mode.
 	@SuppressWarnings("PointlessBooleanExpression")
-	private static final boolean DEBUG = Config.mAppMode == AppMode.DEVELOPMENT && false;
+	private static final boolean DEBUG = Config.APP_MODE == AppMode.DEVELOPMENT && false;
 
 	// The leaderboard connector
 	private final LeaderboardConnector mLeaderboardConnector;

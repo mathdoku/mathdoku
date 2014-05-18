@@ -119,7 +119,7 @@ public abstract class DatabaseAdapter {
 			return false;
 		}
 
-		if (Config.mAppMode == AppMode.DEVELOPMENT) {
+		if (Config.APP_MODE == AppMode.DEVELOPMENT) {
 			if (isExistingDatabaseTable()) {
 				Log.e(TAG, String.format(
 						"Change in table '%s' detected. Table has not yet been "
@@ -145,7 +145,7 @@ public abstract class DatabaseAdapter {
 	 * is only available when running in development way.
 	 */
 	protected void recreateTableInDevelopmentMode() {
-		if (Config.mAppMode == AppMode.DEVELOPMENT) {
+		if (Config.APP_MODE == AppMode.DEVELOPMENT) {
 			dropTable();
 			createTable();
 		}
@@ -168,7 +168,7 @@ public abstract class DatabaseAdapter {
 	}
 
 	void execAndLogSQL(String sql) {
-		if (Config.mAppMode == AppMode.DEVELOPMENT) {
+		if (Config.APP_MODE == AppMode.DEVELOPMENT) {
 			Log.i(TAG, "Executing SQL: " + sql);
 		}
 		sqliteDatabase.execSQL(sql);

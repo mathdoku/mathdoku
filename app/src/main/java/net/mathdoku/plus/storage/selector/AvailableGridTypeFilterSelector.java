@@ -26,7 +26,7 @@ public class AvailableGridTypeFilterSelector extends SolvingAttemptSelector {
 	// Remove "&& false" in following line to show the SQL-statements in the
 	// debug information
 	@SuppressWarnings("PointlessBooleanExpression")
-	private static final boolean DEBUG_SQL = Config.mAppMode == Config.AppMode.DEVELOPMENT && false;
+	private static final boolean DEBUG_SQL = Config.APP_MODE == Config.AppMode.DEVELOPMENT && false;
 
 	private static final String KEY_PROJECTION_GRID_SIZE = "projection_grid_size";
 	private final List<GridTypeFilter> gridTypeFilterList;

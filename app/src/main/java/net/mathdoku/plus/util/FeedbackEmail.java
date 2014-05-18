@@ -289,7 +289,7 @@ public class FeedbackEmail {
 									uris.add(FileProvider
 											.getUri(FileProvider.FEEDBACK_LOG_FILE_NAME));
 								}
-								if (Config.mAppMode == Config.AppMode.DEVELOPMENT
+								if (Config.APP_MODE == Config.AppMode.DEVELOPMENT
 										&& copyDatabase(FileProvider.DATABASE_FILE_NAME)) {
 									uris.add(FileProvider
 											.getUri(FileProvider.DATABASE_FILE_NAME));

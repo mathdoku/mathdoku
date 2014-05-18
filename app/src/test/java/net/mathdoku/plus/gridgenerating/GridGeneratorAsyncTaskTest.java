@@ -158,7 +158,7 @@ public class GridGeneratorAsyncTaskTest {
 	@Test
 	public void onPostExecute_TwoSetsOfGridGeneratingParameters_TaskIsExecuted()
 			throws Exception {
-		if (Config.mAppMode == Config.AppMode.DEVELOPMENT) {
+		if (Config.APP_MODE == Config.AppMode.DEVELOPMENT) {
 			gridGeneratorAsyncTask.execute(
 					mock(GridGeneratingParameters.class),
 					mock(GridGeneratingParameters.class));

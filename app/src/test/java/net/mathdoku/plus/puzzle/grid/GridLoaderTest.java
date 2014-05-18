@@ -449,7 +449,7 @@ public class GridLoaderTest {
 		// Even when running the unit test in the debug variant, the grid loader
 		// should not throw development exceptions as the tests below only test
 		// the release variant in which no such exceptions are thrown.
-		if (Config.mAppMode == Config.AppMode.DEVELOPMENT) {
+		if (Config.APP_MODE == Config.AppMode.DEVELOPMENT) {
 			// Disable this until all unit tests succeed in development mode!
 			mGridLoader.setThrowExceptionOnError(false);
 		}

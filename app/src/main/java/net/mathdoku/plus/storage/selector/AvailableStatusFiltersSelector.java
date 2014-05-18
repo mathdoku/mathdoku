@@ -27,7 +27,7 @@ public class AvailableStatusFiltersSelector extends SolvingAttemptSelector {
 	// Remove "&& false" in following line to show the SQL-statements in the
 	// debug information
 	@SuppressWarnings("PointlessBooleanExpression")
-	private static final boolean DEBUG_SQL = Config.mAppMode == Config.AppMode.DEVELOPMENT && false;
+	private static final boolean DEBUG_SQL = Config.APP_MODE == Config.AppMode.DEVELOPMENT && false;
 
 	private static final String KEY_PROJECTION_STATUS_FILTER = "status_filter";
 	private final List<StatusFilter> statusFilterList;

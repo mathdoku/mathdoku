@@ -28,7 +28,7 @@ public class HistoricStatisticsSelector {
 			.getName();
 
 	@SuppressWarnings("PointlessBooleanExpression")
-	private static final boolean DEBUG_SQL = Config.mAppMode == Config.AppMode.DEVELOPMENT && false;
+	private static final boolean DEBUG_SQL = Config.APP_MODE == Config.AppMode.DEVELOPMENT && false;
 
 	// Columns in the DatabaseProjection
 	public static final String DATA_COL_ID = "id";

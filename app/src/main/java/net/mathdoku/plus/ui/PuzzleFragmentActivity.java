@@ -148,7 +148,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		setContentView(R.layout.puzzle_activity_fragment);
 
 		// Check if database is consistent.
-		if (Config.mAppMode == AppMode.DEVELOPMENT) {
+		if (Config.APP_MODE == AppMode.DEVELOPMENT) {
 			if (!DevelopmentHelper.checkDatabaseConsistency(this)) {
 				// Skip remainder of onCreate because further database access
 				// can result in a forced close.
@@ -248,7 +248,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.puzzle_menu, menu);
 
-		if (Config.mAppMode == AppMode.DEVELOPMENT) {
+		if (Config.APP_MODE == AppMode.DEVELOPMENT) {
 			inflater.inflate(R.menu.development_mode_menu, menu);
 		}
 		return true;
@@ -376,7 +376,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		}
 
 		// When running in development mode, an extra menu is available.
-		if (Config.mAppMode == AppMode.DEVELOPMENT) {
+		if (Config.APP_MODE == AppMode.DEVELOPMENT) {
 			if ((menuItem = menu.findItem(R.id.menu_development_mode)) != null) {
 				menuItem.setVisible(true);
 			}
@@ -489,7 +489,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 
 			// When running in development mode it should be checked whether a
 			// development menu item was selected.
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
+			if (Config.APP_MODE == AppMode.DEVELOPMENT) {
 				if (mPuzzleFragment != null) {
 					// Cancel old timer
 					mPuzzleFragment.stopTimer();
@@ -604,7 +604,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		alertDialogBuilder
 				.setTitle(
 						getResources().getString(R.string.application_name)
-								+ (Config.mAppMode == AppMode.DEVELOPMENT ? " r"
+								+ (Config.APP_MODE == AppMode.DEVELOPMENT ? " r"
 										+ Util.getPackageVersionNumber() + " "
 										: " ")
 								+ getResources()

@@ -15,7 +15,7 @@ public class SwipeMotion extends Motion {
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
 	@SuppressWarnings("PointlessBooleanExpression")
-	private static final boolean DEBUG_SWIPE_MOTION = Config.mAppMode == AppMode.DEVELOPMENT && false;
+	private static final boolean DEBUG_SWIPE_MOTION = Config.APP_MODE == AppMode.DEVELOPMENT && false;
 
 	// Possible statuses of the swipe motion
 	private enum Status {
@@ -164,7 +164,7 @@ public class SwipeMotion extends Motion {
 		} else if (mStatus == Status.RELEASED || mStatus == Status.FINISHED) {
 			// Already released. Nothing to do here.
 			return;
-		} else if (Config.mAppMode == AppMode.DEVELOPMENT) {
+		} else if (Config.APP_MODE == AppMode.DEVELOPMENT) {
 			throw new IllegalStateException(getErrorIllegalStateTransition(
 					mStatus.toString(), Status.RELEASED.toString()));
 		}
@@ -221,7 +221,7 @@ public class SwipeMotion extends Motion {
 	void finish() {
 		if (mStatus == Status.RELEASED) {
 			mStatus = Status.FINISHED;
-		} else if (Config.mAppMode == AppMode.DEVELOPMENT
+		} else if (Config.APP_MODE == AppMode.DEVELOPMENT
 				&& mStatus != Status.FINISHED) {
 			throw new IllegalStateException(getErrorIllegalStateTransition(
 					mStatus.toString(), Status.FINISHED.toString()));

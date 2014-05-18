@@ -296,7 +296,7 @@ public class Grid {
 	 * available in DEVELOPMENT mode.
 	 */
 	public boolean unrevealSolution() {
-		if (Config.mAppMode == AppMode.DEVELOPMENT) {
+		if (Config.APP_MODE == AppMode.DEVELOPMENT) {
 			mRevealed = false;
 			if (mGridStatistics != null) {
 				mGridStatistics.mSolutionRevealed = false;

@@ -21,7 +21,7 @@ public class GridSolver {
 	// filling the DancingLinesX data structure when running in development
 	// mode.
 	@SuppressWarnings("PointlessBooleanExpression")
-	public static final boolean DEBUG_DLX = Config.mAppMode == AppMode.DEVELOPMENT && false;
+	public static final boolean DEBUG_DLX = Config.APP_MODE == AppMode.DEVELOPMENT && false;
 
 	private final DancingLinesX dancingLinesX;
 	private final int mGridSize;
@@ -212,7 +212,7 @@ public class GridSolver {
 	 * @return True in case exactly one solution exists for this grid.
 	 */
 	public boolean hasUniqueSolution() {
-		if (Config.mAppMode == AppMode.DEVELOPMENT && DEBUG_DLX) {
+		if (Config.APP_MODE == AppMode.DEVELOPMENT && DEBUG_DLX) {
 			initialize(true); // Needed to compute complexity in development
 								// mode
 
@@ -285,7 +285,7 @@ public class GridSolver {
 	 */
 	@SuppressWarnings("UnusedReturnValue")
 	private int getPuzzleComplexity() {
-		if (Config.mAppMode == AppMode.DEVELOPMENT) {
+		if (Config.APP_MODE == AppMode.DEVELOPMENT) {
 			// ///////////////////////////////////////////////////////////////////////
 			// NOT READY FOR PRODUCTION MODE YET.
 			//

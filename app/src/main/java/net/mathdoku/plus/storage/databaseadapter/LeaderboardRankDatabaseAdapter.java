@@ -30,7 +30,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	// Remove "&& false" in following line to show the SQL-statements in the
 	// debug information
 	@SuppressWarnings("PointlessBooleanExpression")
-	public static final boolean DEBUG_SQL = Config.mAppMode == Config.AppMode.DEVELOPMENT && false;
+	public static final boolean DEBUG_SQL = Config.APP_MODE == Config.AppMode.DEVELOPMENT && false;
 
 	// Score origins statuses:
 	// LOCAL_DATABASE: the score is based on a solving attempt which is stored
@@ -135,7 +135,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 	 *            to identify the database version.
 	 */
 	protected void upgradeTable(int oldVersion, int newVersion) {
-		if (Config.mAppMode == Config.AppMode.DEVELOPMENT && oldVersion < 587
+		if (Config.APP_MODE == Config.AppMode.DEVELOPMENT && oldVersion < 587
 				&& newVersion >= 587) {
 			recreateTableInDevelopmentMode();
 		}

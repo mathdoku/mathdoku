@@ -21,7 +21,7 @@ public class CellChangeStorage {
 	// Remove "&& false" in following line to show debug information about
 	// reading information from a storage string
 	@SuppressWarnings("PointlessBooleanExpression")
-	private static final boolean DEBUG_STORAGE_STRING = Config.mAppMode == Config.AppMode.DEVELOPMENT && false;
+	private static final boolean DEBUG_STORAGE_STRING = Config.APP_MODE == Config.AppMode.DEVELOPMENT && false;
 	private static final String DEBUG_LINE = "Line: ";
 
 	private Cell mCell;

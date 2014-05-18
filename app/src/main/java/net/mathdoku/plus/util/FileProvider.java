@@ -49,7 +49,7 @@ public class FileProvider extends ContentProvider {
 				AVOIDABLE_MOVES_CHART_ID);
 		uriMatcher.addURI(PROVIDER_NAME, CHEATS_CHART_FILE_NAME,
 				CHEATS_CHART_ID);
-		if (Config.mAppMode == Config.AppMode.DEVELOPMENT) {
+		if (Config.APP_MODE == Config.AppMode.DEVELOPMENT) {
 			uriMatcher.addURI(PROVIDER_NAME, DATABASE_FILE_NAME, DATABASE_ID);
 		}
 	}

@@ -84,7 +84,7 @@ public class GridGeneratorAsyncTask extends
 
 		if (gridGeneratingParametersArray.length == 1) {
 			generateInDevelopmentMode = false;
-		} else if (Config.mAppMode == AppMode.DEVELOPMENT
+		} else if (Config.APP_MODE == AppMode.DEVELOPMENT
 				&& gridGeneratingParametersArray.length > 1) {
 			generateInDevelopmentMode = true;
 		} else {
@@ -155,7 +155,7 @@ public class GridGeneratorAsyncTask extends
 
 	@Override
 	protected void onPostExecute(List<Grid> generatedGrids) {
-		if (Config.mAppMode == AppMode.DEVELOPMENT
+		if (Config.APP_MODE == AppMode.DEVELOPMENT
 				&& forceSlowGeneratingExceptionInDevelopmentMode) {
 			throw new GridGeneratingException(
 					"Investigate slow game generation. See logcat for more info.");

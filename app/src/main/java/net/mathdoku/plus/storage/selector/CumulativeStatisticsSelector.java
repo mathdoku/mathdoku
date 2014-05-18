@@ -24,7 +24,7 @@ public class CumulativeStatisticsSelector {
 			.getName();
 
 	@SuppressWarnings("PointlessBooleanExpression")
-	private static final boolean DEBUG_SQL = Config.mAppMode == Config.AppMode.DEVELOPMENT && false;
+	private static final boolean DEBUG_SQL = Config.APP_MODE == Config.AppMode.DEVELOPMENT && false;
 
 	private final int minGridSize;
 	private final int maxGridSize;

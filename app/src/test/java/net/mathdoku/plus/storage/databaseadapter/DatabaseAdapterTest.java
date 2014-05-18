@@ -175,7 +175,7 @@ public class DatabaseAdapterTest {
 
 	@Test
 	public void recreateTableInDevelopmentMode() throws Exception {
-		if (Config.mAppMode == Config.AppMode.DEVELOPMENT) {
+		if (Config.APP_MODE == Config.AppMode.DEVELOPMENT) {
 			assertThat(databaseAdapterStub.createTable(), is(true));
 
 			DatabaseAdapterStub databaseAdapterStubWithAdditionalColumn = new DatabaseAdapterStub();

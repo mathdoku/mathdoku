@@ -30,7 +30,7 @@ public class GridGenerator implements GridGeneratorIface {
 	// Remove "&& false" in following line to show debug information about
 	// creating cages when running in development mode.
 	@SuppressWarnings("PointlessBooleanExpression")
-	private static final boolean DEBUG_GRID_GENERATOR = Config.mAppMode == Config.AppMode.DEVELOPMENT && false;
+	private static final boolean DEBUG_GRID_GENERATOR = Config.APP_MODE == Config.AppMode.DEVELOPMENT && false;
 	@SuppressWarnings("PointlessBooleanExpression")
 	public static final boolean DEBUG_GRID_GENERATOR_FULL = DEBUG_GRID_GENERATOR && false;
 
@@ -191,7 +191,7 @@ public class GridGenerator implements GridGeneratorIface {
 	}
 
 	private void cancelOnSlowGridGeneration() {
-		if (Config.mAppMode == Config.AppMode.DEVELOPMENT
+		if (Config.APP_MODE == Config.AppMode.DEVELOPMENT
 				&& System.currentTimeMillis() - mTimeStarted > 30 * 1000) {
 			// Sometimes grid generation takes too long. Until I have a game
 			// seed which reproduces this problem I can not fix it. If such

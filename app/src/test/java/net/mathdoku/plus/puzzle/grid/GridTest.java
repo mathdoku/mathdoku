@@ -490,7 +490,7 @@ public class GridTest {
 	@Test
 	public void unrevealSolution() throws Exception {
 		Grid grid = mGridBuilderStub.build();
-		Config.AppMode actualAppMode = Config.mAppMode;
+		Config.AppMode actualAppMode = Config.APP_MODE;
 		Config.AppMode expectedAppMode = Config.AppMode.DEVELOPMENT;
 
 		assertThat("Development mode", actualAppMode, is(expectedAppMode));

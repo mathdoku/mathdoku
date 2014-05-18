@@ -80,7 +80,7 @@ public class Cheat {
 			mPenaltyTimeMillisecondsBase = 0;
 			mTipTitle = "";
 			mTipText = "";
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
+			if (Config.APP_MODE == AppMode.DEVELOPMENT) {
 				throw new IllegalArgumentException(
 						"Invalid value for parameter cheatType used in call to method Cheat(Context, CheatType).");
 			}
@@ -121,7 +121,7 @@ public class Cheat {
 			mPenaltyTimeMillisecondsBase = 0;
 			mPenaltyTimeMillisecondsPerOccurrence = 0;
 			mConditionalOccurrences = 0;
-			if (Config.mAppMode == AppMode.DEVELOPMENT) {
+			if (Config.APP_MODE == AppMode.DEVELOPMENT) {
 				throw new IllegalArgumentException(
 						"Invalid value for parameter cheatType used in call to method Cheat(Context, CheatType).");
 			}

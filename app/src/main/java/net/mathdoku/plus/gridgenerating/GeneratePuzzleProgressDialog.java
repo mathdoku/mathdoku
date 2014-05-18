@@ -30,7 +30,7 @@ public class GeneratePuzzleProgressDialog implements
 
 	// Remove "&& false" in following line to show debug information.
 	@SuppressWarnings("PointlessBooleanExpression")
-	static final boolean DEBUG = Config.mAppMode == Config.AppMode.DEVELOPMENT && false;
+	static final boolean DEBUG = Config.APP_MODE == Config.AppMode.DEVELOPMENT && false;
 
 	private int numberOfGamesToGenerate;
 	private GridGeneratorAsyncTaskIface gridGeneratorAsyncTask;
@@ -127,7 +127,7 @@ public class GeneratePuzzleProgressDialog implements
 		});
 
 		// Set style of dialog.
-		if (Config.mAppMode == AppMode.DEVELOPMENT
+		if (Config.APP_MODE == AppMode.DEVELOPMENT
 				&& numberOfGamesToGenerate > 1) {
 			progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 			progressDialog.setMax(numberOfGamesToGenerate);

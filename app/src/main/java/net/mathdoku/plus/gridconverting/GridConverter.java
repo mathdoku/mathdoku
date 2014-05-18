@@ -24,7 +24,7 @@ public class GridConverter extends AsyncTask<Void, Void, Void> {
 	// Remove "&& false" in following line to show debug information about
 	// converting game files when running in development mode.
 	@SuppressWarnings("PointlessBooleanExpression")
-	private static final boolean DEBUG_GRID_CONVERTER = Config.mAppMode == AppMode.DEVELOPMENT && false;
+	private static final boolean DEBUG_GRID_CONVERTER = Config.APP_MODE == AppMode.DEVELOPMENT && false;
 
 	// The activity which started this task
 	private PuzzleFragmentActivity mActivity;

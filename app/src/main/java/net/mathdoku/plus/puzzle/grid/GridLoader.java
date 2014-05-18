@@ -118,7 +118,7 @@ public class GridLoader {
 
 		// Only throw exceptions when running in development mode. In production
 		// mode the grid load just fails without an error.
-		setThrowExceptionOnError(Config.mAppMode == Config.AppMode.DEVELOPMENT);
+		setThrowExceptionOnError(Config.APP_MODE == Config.AppMode.DEVELOPMENT);
 	}
 
 	public void setObjectsCreator(GridLoader.ObjectsCreator objectsCreator) {

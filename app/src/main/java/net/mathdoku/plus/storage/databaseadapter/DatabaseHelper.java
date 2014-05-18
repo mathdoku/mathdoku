@@ -176,7 +176,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	public void deleteDatabase(Context context) {
-		if (Config.mAppMode == Config.AppMode.DEVELOPMENT && context != null) {
+		if (Config.APP_MODE == Config.AppMode.DEVELOPMENT && context != null) {
 			context.deleteDatabase(DATABASE_NAME);
 		}
 	}
