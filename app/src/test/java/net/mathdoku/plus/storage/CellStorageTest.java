@@ -23,24 +23,24 @@ public class CellStorageTest {
 	private CellStorage mCellStorage = new CellStorage();
 	private String mLine;
 
-	@Test(expected = NullPointerException.class)
-	public void FromStorageString_NullLine_False() throws Exception {
+	@Test(expected = IllegalArgumentException.class)
+	public void getCellBuilderFromStorageStringNullLine_False() throws Exception {
 		mLine = null;
 		int mRevisionNumber = 369;
 		assertThat(mCellStorage.getCellBuilderFromStorageString(mLine,
 				mRevisionNumber), is(nullValue()));
 	}
 
-	@Test
-	public void FromStorageString_RevisionIdToLow_False() throws Exception {
+	@Test(expected = StorageException.class)
+	public void getCellBuilderFromStorageStringRevisionIdToLow_False() throws Exception {
 		mLine = "** NOT RELEVANT FOR THIS TEST **";
 		int mRevisionNumber = 369;
 		assertThat(mCellStorage.getCellBuilderFromStorageString(mLine,
 				mRevisionNumber), is(nullValue()));
 	}
 
-	@Test
-	public void FromStorageString_InvalidLineId_False() throws Exception {
+	@Test(expected = StorageException.class)
+	public void getCellBuilderFromStorageStringInvalidLineId_False() throws Exception {
 		mLine = "WRONG:this is not a cell storage string identifier";
 		int mRevisionNumber = 369;
 		assertThat(mCellStorage.getCellBuilderFromStorageString(mLine,
@@ -48,7 +48,7 @@ public class CellStorageTest {
 	}
 
 	@Test(expected = InvalidParameterException.class)
-	public void FromStorageString_Revision369AndHigherStorageStringHasTooLittleElements_False()
+	public void getCellBuilderFromStorageStringRevision369AndHigherStorageStringHasTooLittleElements_False()
 			throws Exception {
 		mLine = "CELL:2:3:4:5:6:7:8:9:10";
 		int mRevisionNumber = 369;
@@ -57,7 +57,7 @@ public class CellStorageTest {
 	}
 
 	@Test(expected = InvalidParameterException.class)
-	public void FromStorageString_Revision597AndHigherStorageStringHasTooLittleElements_False()
+	public void getCellBuilderFromStorageStringRevision597AndHigherStorageStringHasTooLittleElements_False()
 			throws Exception {
 		mLine = "CELL:2:3:4:5:6:7:8";
 		int mRevisionNumber = 597;
@@ -66,7 +66,7 @@ public class CellStorageTest {
 	}
 
 	@Test(expected = InvalidParameterException.class)
-	public void FromStorageString_Revision369AndHigherStorageStringHasTooManyElements_False()
+	public void getCellBuilderFromStorageStringRevision369AndHigherStorageStringHasTooManyElements_False()
 			throws Exception {
 		mLine = "CELL:2:3:4:5:6:7:8:9:10:11:12";
 		int mRevisionNumber = 369;
@@ -75,7 +75,7 @@ public class CellStorageTest {
 	}
 
 	@Test(expected = InvalidParameterException.class)
-	public void FromStorageString_Revision597AndHigherStorageStringHasTooManyElements_False()
+	public void getCellBuilderFromStorageStringRevision597AndHigherStorageStringHasTooManyElements_False()
 			throws Exception {
 		mLine = "CELL:2:3:4:5:6:7:8:9:10";
 		int mRevisionNumber = 597;
@@ -84,7 +84,7 @@ public class CellStorageTest {
 	}
 
 	@Test
-	public void FromStorageString_Revision369AndHigherValidLineWithoutPossibleValues_True()
+	public void getCellBuilderFromStorageStringRevision369AndHigherValidLineWithoutPossibleValues_True()
 			throws Exception {
 		mLine = "CELL:1:2:3:4+:5:6::true:false:false";
 		int mRevisionNumber = 369;
@@ -102,7 +102,7 @@ public class CellStorageTest {
 	}
 
 	@Test
-	public void FromStorageString_Revision597AndHigherValidLineWithoutPossibleValues_True()
+	public void getCellBuilderFromStorageStringRevision597AndHigherValidLineWithoutPossibleValues_True()
 			throws Exception {
 		mLine = "CELL:1:2-:3:4::true:false:false";
 		int mRevisionNumber = 597;
@@ -120,7 +120,7 @@ public class CellStorageTest {
 	}
 
 	@Test
-	public void FromStorageString_Revision597AndHigherValidLineWithSinglePossibleValue_True()
+	public void getCellBuilderFromStorageStringRevision597AndHigherValidLineWithSinglePossibleValue_True()
 			throws Exception {
 		mLine = "CELL:1:2-:3:0:4,:false:true:false";
 		int mRevisionNumber = 597;
@@ -140,7 +140,7 @@ public class CellStorageTest {
 	}
 
 	@Test
-	public void FromStorageString_Revision369AndHigherValidLineWithMultiplePossibleValues_True()
+	public void getCellBuilderFromStorageStringRevision369AndHigherValidLineWithMultiplePossibleValues_True()
 			throws Exception {
 		mLine = "CELL:1:2:3:4+:5:0:1,2,3,4,:false:false:true";
 		int mRevisionNumber = 369;
@@ -163,7 +163,7 @@ public class CellStorageTest {
 	}
 
 	@Test
-	public void FromStorageString_Revision597AndHigherValidLineWithMultiplePossibleValues_True()
+	public void getCellBuilderFromStorageStringRevision597AndHigherValidLineWithMultiplePossibleValues_True()
 			throws Exception {
 		mLine = "CELL:1:2-:3:0:1,2,3,4,:false:false:true";
 		int mRevisionNumber = 597;

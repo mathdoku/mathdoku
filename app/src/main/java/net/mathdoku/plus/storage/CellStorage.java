@@ -35,33 +35,9 @@ public class CellStorage {
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public CellBuilder getCellBuilderFromStorageString(String line,
 			int savedWithRevisionNumber) {
-		if (line == null) {
-			throw new NullPointerException("Parameter line cannot be null");
-		}
+		validateGetCellBuilderFromStorageString(line, savedWithRevisionNumber);
 
-		// When upgrading to MathDoku v2 the history is not converted. As of
-		// revision 369 all logic for handling games stored with older versions
-		// is removed.
-		if (savedWithRevisionNumber <= 368) {
-			return null;
-		}
-
-		String[] cellParts = line
-				.split(StorageDelimiter.FIELD_DELIMITER_LEVEL1);
-
-		// Only process the storage string if it starts with the correct
-		// identifier.
-		if (cellParts == null || !SAVE_GAME_CELL_LINE.equals(cellParts[0])) {
-			return null;
-		}
-
-		int expectedNumberOfElements = savedWithRevisionNumber <= 596 ? 11 : 9;
-		if (cellParts.length != expectedNumberOfElements) {
-			throw new InvalidParameterException(
-					"Wrong number of elements in cell storage string. Got "
-							+ cellParts.length + ", expected "
-							+ expectedNumberOfElements + ".");
-		}
+		String[] cellParts = getCellParts(line, savedWithRevisionNumber);
 
 		CellBuilder cellBuilder = new CellBuilder();
 
@@ -76,24 +52,60 @@ public class CellStorage {
 		cellBuilder.setCageText(cellParts[index++]);
 		cellBuilder.setCorrectValue(Integer.parseInt(cellParts[index++]));
 		cellBuilder.setEnteredValue(Integer.parseInt(cellParts[index++]));
-
-		// Get possible values
-		List<Integer> possibles = new ArrayList<Integer>();
-		if (!cellParts[index].equals("")) {
-			for (String possible : cellParts[index]
-					.split(StorageDelimiter.FIELD_DELIMITER_LEVEL2)) {
-				possibles.add(Integer.parseInt(possible));
-			}
-		}
-		index++;
-		cellBuilder.setPossibles(possibles);
-
+		cellBuilder.setPossibles(getPossibleValuesFromCellPart(cellParts[index++]));
 		cellBuilder.setInvalidValueHighlight(Boolean
 				.parseBoolean(cellParts[index++]));
 		cellBuilder.setRevealed(Boolean.parseBoolean(cellParts[index++]));
 		cellBuilder.setSelected(Boolean.parseBoolean(cellParts[index++]));
 
 		return cellBuilder;
+	}
+
+	private void validateGetCellBuilderFromStorageString(String line,
+															int savedWithRevisionNumber) {
+		if (line == null) {
+			throw new IllegalArgumentException("Parameter line cannot be null");
+		}
+
+		// When upgrading to MathDoku v2 the history is not converted. As of
+		// revision 369 all logic for handling games stored with older versions
+		// is removed.
+		if (savedWithRevisionNumber <= 368) {
+			throw new StorageException(String.format(
+					"Cannot process storage strings of cages created with revision"
+							+ " %d or before.", savedWithRevisionNumber));
+		}
+	}
+
+	private String[] getCellParts(String line, int savedWithRevisionNumber) {
+		String[] cellParts = line
+				.split(StorageDelimiter.FIELD_DELIMITER_LEVEL1);
+		// Only process the storage string if it starts with the correct
+		// identifier.
+		if (cellParts == null || !SAVE_GAME_CELL_LINE.equals(cellParts[0])) {
+			throw new StorageException(String.format(
+					"Invalid cage storage string '%s'.", line));
+		}
+
+		int expectedNumberOfElements = savedWithRevisionNumber <= 596 ? 11 : 9;
+		if (cellParts.length != expectedNumberOfElements) {
+			throw new InvalidParameterException(
+					"Wrong number of elements in cell storage string. Got "
+							+ cellParts.length + ", expected "
+							+ expectedNumberOfElements + ".");
+		}
+		return cellParts;
+	}
+
+	private List<Integer> getPossibleValuesFromCellPart(String cellPart) {
+		List<Integer> possibles = new ArrayList<Integer>();
+		if (!cellPart.isEmpty()) {
+			for (String possible : cellPart
+					.split(StorageDelimiter.FIELD_DELIMITER_LEVEL2)) {
+				possibles.add(Integer.parseInt(possible));
+			}
+		}
+		return possibles;
 	}
 
 	/**
