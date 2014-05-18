@@ -245,7 +245,7 @@ public class GridLoader {
 		mCells = mObjectsCreator.createArrayListOfCells();
 
 		String line = solvingAttemptStorage.getLine();
-		while (loadCell(line)) {
+		while (CellStorage.containsCellStorageData(line) && loadCell(line)) {
 			line = solvingAttemptStorage.getNextLine();
 		}
 		// Check if expected number of cells is read.
@@ -264,10 +264,6 @@ public class GridLoader {
 	}
 
 	private boolean loadCell(String line) {
-		if (line == null) {
-			return false;
-		}
-
 		CellStorage mCellStorage = mObjectsCreator.createCellStorage();
 		CellBuilder cellBuilder = mCellStorage.getCellBuilderFromStorageString(
 				line, mSavedWithRevision);
@@ -286,7 +282,7 @@ public class GridLoader {
 		mCages = mObjectsCreator.createArrayListOfCages();
 
 		String line = solvingAttemptStorage.getLine();
-		while (loadCage(line)) {
+		while (CageStorage.containsCageStorageData(line) && loadCage(line)) {
 			line = solvingAttemptStorage.getNextLine();
 		}
 

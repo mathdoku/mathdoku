@@ -1,7 +1,7 @@
 package net.mathdoku.plus.storage;
 
-import net.mathdoku.plus.puzzle.cell.CellBuilder;
 import net.mathdoku.plus.puzzle.cell.Cell;
+import net.mathdoku.plus.puzzle.cell.CellBuilder;
 import net.mathdoku.plus.storage.selector.StorageDelimiter;
 
 import java.security.InvalidParameterException;
@@ -16,12 +16,16 @@ public class CellStorage {
 	@SuppressWarnings("unused")
 	private static final String TAG = CellStorage.class.getName();
 
-	/*
-	 * Each line in the entire storage string of a Grid contains information
-	 * about the type of data stored on the line. Lines containing data for a
-	 * Grid Cell starts with following identifier.
+	private static final String LINE_IDENTIFIER = "CELL";
+
+	/**
+	 * Checks quickly whether the given line contains CellStorage data.
 	 */
-	private static final String SAVE_GAME_CELL_LINE = "CELL";
+	public static boolean containsCellStorageData(String line) {
+		return line != null
+				&& line.startsWith(LINE_IDENTIFIER
+						+ StorageDelimiter.FIELD_DELIMITER_LEVEL1);
+	}
 
 	/**
 	 * Read cell information from a storage string which was created with
@@ -52,7 +56,8 @@ public class CellStorage {
 		cellBuilder.setCageText(cellParts[index++]);
 		cellBuilder.setCorrectValue(Integer.parseInt(cellParts[index++]));
 		cellBuilder.setEnteredValue(Integer.parseInt(cellParts[index++]));
-		cellBuilder.setPossibles(getPossibleValuesFromCellPart(cellParts[index++]));
+		cellBuilder
+				.setPossibles(getPossibleValuesFromCellPart(cellParts[index++]));
 		cellBuilder.setInvalidValueHighlight(Boolean
 				.parseBoolean(cellParts[index++]));
 		cellBuilder.setRevealed(Boolean.parseBoolean(cellParts[index++]));
@@ -62,7 +67,7 @@ public class CellStorage {
 	}
 
 	private void validateGetCellBuilderFromStorageString(String line,
-															int savedWithRevisionNumber) {
+			int savedWithRevisionNumber) {
 		if (line == null) {
 			throw new IllegalArgumentException("Parameter line cannot be null");
 		}
@@ -82,9 +87,9 @@ public class CellStorage {
 				.split(StorageDelimiter.FIELD_DELIMITER_LEVEL1);
 		// Only process the storage string if it starts with the correct
 		// identifier.
-		if (cellParts == null || !SAVE_GAME_CELL_LINE.equals(cellParts[0])) {
+		if (cellParts == null || !LINE_IDENTIFIER.equals(cellParts[0])) {
 			throw new StorageException(String.format(
-					"Invalid cage storage string '%s'.", line));
+					"Invalid cell storage string '%s'.", line));
 		}
 
 		int expectedNumberOfElements = savedWithRevisionNumber <= 596 ? 11 : 9;
@@ -115,7 +120,7 @@ public class CellStorage {
 	 * @return A string representation of the grid cell.
 	 */
 	public String toStorageString(Cell cell) {
-		String storageString = SAVE_GAME_CELL_LINE
+		String storageString = LINE_IDENTIFIER
 				+ StorageDelimiter.FIELD_DELIMITER_LEVEL1 + cell.getCellId()
 				+ StorageDelimiter.FIELD_DELIMITER_LEVEL1 + cell.getCageText()
 				+ StorageDelimiter.FIELD_DELIMITER_LEVEL1

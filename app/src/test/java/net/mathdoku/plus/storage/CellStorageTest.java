@@ -23,6 +23,21 @@ public class CellStorageTest {
 	private CellStorage mCellStorage = new CellStorage();
 	private String mLine;
 
+	@Test
+	public void containsCellStorageData_LineIsNull_False() throws Exception {
+		assertThat(CellStorage.containsCellStorageData(null), is(false));
+	}
+
+	@Test
+	public void containsCellStorageData_LineStartsWithInvalidId_False() throws Exception {
+		assertThat(CellStorage.containsCellStorageData("INVALID LINE IDENTIFIER AT START OF LINE"), is(false));
+	}
+
+	@Test
+	public void containsCellStorageData_LineStartsWithCorrectId_True() throws Exception {
+		assertThat(CellStorage.containsCellStorageData("CELL:OTHER DATA"), is(true));
+	}
+
 	@Test(expected = IllegalArgumentException.class)
 	public void getCellBuilderFromStorageStringNullLine_False() throws Exception {
 		mLine = null;

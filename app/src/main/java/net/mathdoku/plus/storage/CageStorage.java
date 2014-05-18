@@ -26,6 +26,13 @@ public class CageStorage {
 	}
 
 	/**
+	 * Checks quickly whether the given line contains CellChangeStorage data.
+	 */
+	public static boolean containsCageStorageData(String line) {
+		return line != null && line.startsWith(CAGE_LINE_ID + StorageDelimiter.FIELD_DELIMITER_LEVEL1);
+	}
+
+	/**
 	 * Read cage information from a storage string which was created with
 	 * {@link #toStorageString(net.mathdoku.plus.puzzle.cage.Cage)} before.
 	 * 

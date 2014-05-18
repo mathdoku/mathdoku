@@ -159,6 +159,8 @@ public class GridLoaderTest {
 				stringBuilder.append(StorageDelimiter.EOL_DELIMITER);
 			}
 			for (int i = 1; i <= mNumberOfCells; i++) {
+				// Line must start with real identifier of cell storage line
+				stringBuilder.append("CELL:");
 				stringBuilder.append("** CELL " + i + " DATA **");
 				stringBuilder.append(StorageDelimiter.EOL_DELIMITER);
 			}
@@ -168,6 +170,8 @@ public class GridLoaderTest {
 				stringBuilder.append(StorageDelimiter.EOL_DELIMITER);
 			}
 			for (int i = 1; i <= mNumberOfCages; i++) {
+				// Line must start with real identifier of cage storage line
+				stringBuilder.append("CAGE:");
 				stringBuilder.append("** CAGE " + i + " DATA **");
 				stringBuilder.append(StorageDelimiter.EOL_DELIMITER);
 			}

@@ -25,6 +25,22 @@ public class CageStorageTest {
 	private int mRevisionNumber = 596;
 	private List<Cell> mCells = new ArrayList<Cell>();
 
+	@Test
+	public void containsCageStorageData_LineIsNull_False() throws Exception {
+		assertThat(CageStorage.containsCageStorageData(null), is(false));
+	}
+
+	@Test
+	public void containsCageStorageData_LineStartsWithInvalidId_False() throws Exception {
+		assertThat(CageStorage.containsCageStorageData("INVALID LINE IDENTIFIER AT START OF LINE"), is(false));
+	}
+
+	@Test
+	public void containsCageStorageData_LineStartsWithCorrectId_True() throws Exception {
+		assertThat(CageStorage.containsCageStorageData("CAGE:OTHER DATA"), is(true));
+	}
+
+
 	@Test(expected = IllegalArgumentException.class)
 	public void fromStorageString_NullLine_False() throws Exception {
 		mLine = null;
