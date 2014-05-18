@@ -58,7 +58,7 @@ public class CellChangeStoragePatternMatcher {
 
 	public List<Integer> getPreviousPossibleValues() {
 		List<Integer> previousPossibleValues = new ArrayList<Integer>();
-		if (!matcherInner.group(GROUP_PREVIOUS_POSSIBLE_VALUES).equals("")) {
+		if (!matcherInner.group(GROUP_PREVIOUS_POSSIBLE_VALUES).isEmpty()) {
 			for (String possible : matcherInner.group(
 					GROUP_PREVIOUS_POSSIBLE_VALUES).split(
 					StorageDelimiter.FIELD_DELIMITER_LEVEL2)) {
@@ -71,13 +71,6 @@ public class CellChangeStoragePatternMatcher {
 	public List<String> getRelatedCellChanges() {
 		return new RelatedCellChangeSplitter(
 				matcherInner.group(GROUP_RELATED_CELL_CHANGED)).parse();
-	}
-
-	private List<String> parseRelatedCellChanges(
-			String concatenatedStringOfCellChanges) {
-		return new RelatedCellChangeSplitter(concatenatedStringOfCellChanges)
-				.parse();
-
 	}
 
 	public boolean matchesInner(String line) {
