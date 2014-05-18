@@ -12,6 +12,9 @@ import net.mathdoku.plus.R;
 import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.painter.Painter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 class PuzzlePreferenceFragment extends PreferenceFragment implements
 		OnSharedPreferenceChangeListener {
 
@@ -30,27 +33,25 @@ class PuzzlePreferenceFragment extends PreferenceFragment implements
 		setInputMethodSummary();
 
 		// Build list of possible values for the outer swipe circle preference
-		String[] entries = new String[7];
-		String[] entryValues = new String[7];
-		int index = 0;
+		List<String> entries= new ArrayList<String>();
+		List<String> entryValues = new ArrayList<String>();
 		for (int gridSize = GridType.getSmallestGridSize(); gridSize <= GridType
 				.getBiggestGridSize(); gridSize++) {
-			entries[index] = getResources()
+			entries.add(getResources()
 					.getString(
 							R.string.puzzle_setting_outer_swipe_circle_visible_from_grid_size_short,
-							gridSize);
-			entryValues[index] = Integer.toString(gridSize);
-			index++;
+							gridSize));
+			entries.add(Integer.toString(gridSize));
 		}
-		entries[index] = getResources().getString(
-				R.string.puzzle_setting_outer_swipe_circle_visible_never);
-		entryValues[index] = Integer.toString(Integer.MAX_VALUE);
+		entries.add(getResources().getString(
+				R.string.puzzle_setting_outer_swipe_circle_visible_never));
+		entryValues.add(Integer.toString(Integer.MAX_VALUE));
 
 		// Set entries to the list preferences
 		ListPreference listPreference = (ListPreference) findPreference(Preferences.PUZZLE_SETTING_OUTER_SWIPE_CIRCLE);
 		if (listPreference != null) {
-			listPreference.setEntries(entries);
-			listPreference.setEntryValues(entryValues);
+			listPreference.setEntries(entries.toArray(new String[entries.size()]));
+			listPreference.setEntryValues(entryValues.toArray(new String[entryValues.size()]));
 			listPreference.setValue(mPreferences
 					.getOuterSwipeCircleVisibility());
 		}
