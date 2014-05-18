@@ -120,8 +120,7 @@ public class CageStorageTest {
 		when(cageMock.getId()).thenReturn(1);
 		when(cageMock.getOperator()).thenReturn(CageOperator.MULTIPLY);
 		when(cageMock.getResult()).thenReturn(4);
-		List<Cell> cells = new ArrayList<Cell>();
-		when(cageMock.getListOfCells()).thenReturn(cells);
+		when(cageMock.getCells()).thenReturn(new int[] {});
 		when(cageMock.isOperatorHidden()).thenReturn(false);
 
 		assertThat(CageStorage.toStorageString(cageMock),
@@ -135,11 +134,7 @@ public class CageStorageTest {
 		when(cageMock.getId()).thenReturn(1);
 		when(cageMock.getOperator()).thenReturn(CageOperator.SUBTRACT);
 		when(cageMock.getResult()).thenReturn(3);
-		List<Cell> cells = new ArrayList<Cell>();
-		Cell cell = mock(Cell.class);
-		when(cell.getCellId()).thenReturn(4);
-		cells.add(cell);
-		when(cageMock.getListOfCells()).thenReturn(cells);
+		when(cageMock.getCells()).thenReturn(new int[] {4});
 		when(cageMock.isOperatorHidden()).thenReturn(false);
 
 		assertThat(CageStorage.toStorageString(cageMock),
@@ -153,13 +148,7 @@ public class CageStorageTest {
 		when(cageMock.getId()).thenReturn(1);
 		when(cageMock.getOperator()).thenReturn(CageOperator.DIVIDE);
 		when(cageMock.getResult()).thenReturn(3);
-		List<Cell> cells = new ArrayList<Cell>();
-		Cell cell = mock(Cell.class);
-		when(cell.getCellId()).thenReturn(5, 6, 7);
-		cells.add(cell);
-		cells.add(cell);
-		cells.add(cell);
-		when(cageMock.getListOfCells()).thenReturn(cells);
+		when(cageMock.getCells()).thenReturn(new int[] {5, 6, 7});
 		when(cageMock.isOperatorHidden()).thenReturn(false);
 
 		assertThat(CageStorage.toStorageString(cageMock),

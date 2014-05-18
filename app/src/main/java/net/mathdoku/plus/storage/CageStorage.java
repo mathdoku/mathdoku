@@ -147,22 +147,23 @@ public class CageStorage {
 	 * @return A string representation of the grid cage.
 	 */
 	public static String toStorageString(Cage cage) {
-		String storageString = CAGE_LINE_ID
-				+ StorageDelimiter.FIELD_DELIMITER_LEVEL1 + cage.getId()
-				+ StorageDelimiter.FIELD_DELIMITER_LEVEL1
-				+ cage.getOperator().getId()
-				+ StorageDelimiter.FIELD_DELIMITER_LEVEL1 + cage.getResult()
-				+ StorageDelimiter.FIELD_DELIMITER_LEVEL1;
-		List<Cell> cells = cage.getListOfCells();
-		if (cells != null) {
-			for (Cell cell : cells) {
-				storageString += cell.getCellId()
-						+ StorageDelimiter.FIELD_DELIMITER_LEVEL2;
-			}
-		}
-		storageString += StorageDelimiter.FIELD_DELIMITER_LEVEL1
-				+ Boolean.toString(cage.isOperatorHidden());
+		StringBuilder stringBuilder = new StringBuilder();
 
-		return storageString;
+		stringBuilder.append(CAGE_LINE_ID);
+		stringBuilder.append(StorageDelimiter.FIELD_DELIMITER_LEVEL1);
+		stringBuilder.append(cage.getId());
+		stringBuilder.append(StorageDelimiter.FIELD_DELIMITER_LEVEL1);
+		stringBuilder.append(cage.getOperator().getId());
+		stringBuilder.append(StorageDelimiter.FIELD_DELIMITER_LEVEL1);
+		stringBuilder.append(cage.getResult());
+		stringBuilder.append(StorageDelimiter.FIELD_DELIMITER_LEVEL1);
+		for (int cellId : cage.getCells()) {
+			stringBuilder.append(cellId);
+			stringBuilder.append(StorageDelimiter.FIELD_DELIMITER_LEVEL2);
+		}
+		stringBuilder.append(StorageDelimiter.FIELD_DELIMITER_LEVEL1);
+		stringBuilder.append(Boolean.toString(cage.isOperatorHidden()));
+
+		return stringBuilder.toString();
 	}
 }
