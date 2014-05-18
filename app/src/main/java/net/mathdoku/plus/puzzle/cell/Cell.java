@@ -14,7 +14,7 @@ public class Cell {
 	@SuppressWarnings("unused")
 	private static final String TAG = Cell.class.getName();
 
-	public final static int NO_ENTERED_VALUE = 0;
+	public static final int NO_ENTERED_VALUE = 0;
 
 	// Index of the cell (left to right, top to bottom, zero based)
 	private final int mId;
@@ -60,7 +60,7 @@ public class Cell {
 
 		// Check if required parameters are specified
 		validateCellParametersThrowsExceptionOnError(cellBuilder);
-		validatePossiblesThrowsExceptionOnError(cellBuilder);
+		validatePossiblesThrowsExceptionOnError();
 		validateCorrectValueThrowsExceptionOnError(cellBuilder);
 		validateCageReferenceThrowsExceptionOnError(cellBuilder);
 
@@ -90,7 +90,7 @@ public class Cell {
 		}
 	}
 
-	private void validatePossiblesThrowsExceptionOnError(CellBuilder cellBuilder) {
+	private void validatePossiblesThrowsExceptionOnError() {
 		if (mPossibles == null) {
 			throw new InvalidGridException("Parameter mPossibles is null.");
 		}
