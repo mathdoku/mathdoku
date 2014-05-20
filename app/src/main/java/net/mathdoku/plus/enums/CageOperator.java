@@ -5,38 +5,34 @@ public enum CageOperator {
 	// values are persisted.
 	NONE(0, ""), ADD(1, "+"), SUBTRACT(2, "-"), MULTIPLY(3, "x"), DIVIDE(4, "/");
 
-	private int mCageOperatorId;
-	private String mCageOperatorSign;
+	private int cageOperatorId;
+	private String cageOperatorSign;
 
 	private CageOperator(int cageOperatorId, String cageOperatorSign) {
-		mCageOperatorId = cageOperatorId;
-		mCageOperatorSign = cageOperatorSign;
+		this.cageOperatorId = cageOperatorId;
+		this.cageOperatorSign = cageOperatorSign;
 	}
 
-	public static CageOperator fromId(String cageOperatorId)
-			throws IllegalArgumentException {
-		int id = Integer.parseInt(cageOperatorId);
+	public static CageOperator fromId(String cageOperatorId) {
 		try {
-			switch (id) {
-			case 0:
-				return NONE;
-			case 1:
-				return ADD;
-			case 2:
-				return SUBTRACT;
-			case 3:
-				return MULTIPLY;
-			case 4:
-				return DIVIDE;
-			default:
-				throw new IllegalArgumentException(
-						getErrorStringCannotConvertIdToCageOperator(cageOperatorId));
-			}
+			return fromId(Integer.parseInt(cageOperatorId));
 		} catch (NumberFormatException e) {
 			throw new IllegalArgumentException(
 					getErrorStringCannotConvertIdToCageOperator(cageOperatorId),
 					e);
 		}
+	}
+
+	private static CageOperator fromId(int cageOperatorId) {
+		for (CageOperator cageOperator : values()) {
+			if (cageOperator.cageOperatorId == cageOperatorId) {
+				return cageOperator;
+			}
+		}
+
+		throw new IllegalArgumentException(
+				getErrorStringCannotConvertIdToCageOperator(String
+						.valueOf(cageOperatorId)));
 	}
 
 	private static String getErrorStringCannotConvertIdToCageOperator(
@@ -46,10 +42,10 @@ public enum CageOperator {
 	}
 
 	public int getId() {
-		return mCageOperatorId;
+		return cageOperatorId;
 	}
 
 	public String getSign() {
-		return mCageOperatorSign;
+		return cageOperatorSign;
 	}
 }
