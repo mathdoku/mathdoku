@@ -20,9 +20,9 @@ public enum GridType {
 	//
 	GRID_9X9(9, GridTypeFilter.GRID_9X9);
 
-	private final static GridType GRID_TYPE_WITH_SMALLEST_SIZE = GridType
+	private static final GridType GRID_TYPE_WITH_SMALLEST_SIZE = GridType
 			.values()[0];
-	private final static GridType GRID_TYPE_WITH_BIGGEST_SIZE = GridType
+	private static final GridType GRID_TYPE_WITH_BIGGEST_SIZE = GridType
 			.values()[GridType.values().length - 1];
 
 	private final int size;
