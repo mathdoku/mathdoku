@@ -8,39 +8,32 @@ public enum PuzzleComplexity {
 	@SuppressWarnings("unused")
 	private static final String TAG = PuzzleComplexity.class.getName();
 
-	private final int mPuzzleComplexityId;
+	private final int puzzleComplexityId;
 
 	private PuzzleComplexity(int puzzleComplexityId) {
-		mPuzzleComplexityId = puzzleComplexityId;
+		this.puzzleComplexityId = puzzleComplexityId;
 	}
 
-	public static PuzzleComplexity fromId(String puzzleComplexityId)
-			throws IllegalArgumentException {
-		int id = -1;
+	public static PuzzleComplexity fromId(String puzzleComplexityId) {
 		try {
-			id = Integer.parseInt(puzzleComplexityId);
-			switch (id) {
-			case 0:
-				return RANDOM;
-			case 1:
-				return VERY_EASY;
-			case 2:
-				return EASY;
-			case 3:
-				return NORMAL;
-			case 4:
-				return DIFFICULT;
-			case 5:
-				return VERY_DIFFICULT;
-			default:
-				throw new IllegalArgumentException(
-						getErrorStringCannotConvertIdToPuzzleComplexity(puzzleComplexityId));
-			}
+			return fromId(Integer.parseInt(puzzleComplexityId));
 		} catch (NumberFormatException e) {
 			throw new IllegalArgumentException(
 					getErrorStringCannotConvertIdToPuzzleComplexity(puzzleComplexityId),
 					e);
 		}
+	}
+
+	public static PuzzleComplexity fromId(int puzzleComplexityId) {
+		for (PuzzleComplexity puzzleComplexity : values()) {
+			if (puzzleComplexity.puzzleComplexityId == puzzleComplexityId) {
+				return puzzleComplexity;
+			}
+		}
+
+		throw new IllegalArgumentException(
+				getErrorStringCannotConvertIdToPuzzleComplexity(String
+						.valueOf(puzzleComplexityId)));
 	}
 
 	private static String getErrorStringCannotConvertIdToPuzzleComplexity(
@@ -50,6 +43,6 @@ public enum PuzzleComplexity {
 	}
 
 	public int getId() {
-		return mPuzzleComplexityId;
+		return puzzleComplexityId;
 	}
 }
