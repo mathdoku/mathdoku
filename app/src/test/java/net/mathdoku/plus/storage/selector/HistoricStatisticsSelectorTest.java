@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.List;
 
-import databasehelper.CsvImporter.CsvImporter;
+import csvimporter.DatabaseCsvImporter;
 import robolectric.RobolectricGradleTestRunner;
 import robolectric.TestRunnerHelper;
 
@@ -35,12 +35,12 @@ public class HistoricStatisticsSelectorTest {
 			TestRunnerHelper.setup(HistoricStatisticsSelectorTest.class
 					.getCanonicalName());
 			String pathToImportFile = "net/mathdoku/plus/storage/databaseadapter/selector/";
-			new CsvImporter(pathToImportFile
+			new DatabaseCsvImporter(pathToImportFile
 					+ "HistoricStatisticsSelectorTest_grid.csv",
-					new GridDatabaseAdapter()).importIntoDatabase();
-			new CsvImporter(pathToImportFile
+					new GridDatabaseAdapter()).importFile();
+			new DatabaseCsvImporter(pathToImportFile
 					+ "HistoricStatisticsSelectorTest_statistics.csv",
-					new StatisticsDatabaseAdapter()).importIntoDatabase();
+					new StatisticsDatabaseAdapter()).importFile();
 			setupAtFirstTestIsExecuted = true;
 		}
 	}

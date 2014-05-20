@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import databasehelper.CsvImporter.CsvImporter;
+import csvimporter.DatabaseCsvImporter;
 import robolectric.RobolectricGradleTestRunner;
 import robolectric.TestRunnerHelper;
 
@@ -33,12 +33,12 @@ public class CumulativeStatisticsSelectorTest {
 			TestRunnerHelper.setup(CumulativeStatisticsSelectorTest.class
 					.getCanonicalName());
 			String pathToImportFile = "net/mathdoku/plus/storage/databaseadapter/selector/";
-			new CsvImporter(pathToImportFile
+			new DatabaseCsvImporter(pathToImportFile
 					+ "CumulativeStatisticsSelectorTest_grid.csv",
-					new GridDatabaseAdapter()).importIntoDatabase();
-			new CsvImporter(pathToImportFile
+					new GridDatabaseAdapter()).importFile();
+			new DatabaseCsvImporter(pathToImportFile
 					+ "CumulativeStatisticsSelectorTest_statistics.csv",
-					new StatisticsDatabaseAdapter()).importIntoDatabase();
+					new StatisticsDatabaseAdapter()).importFile();
 			setupAtFirstTestIsExecuted = true;
 		}
 	}
