@@ -1,0 +1,10 @@
+// ----------------------------------------------------------------------
+// ---------- Preference import file for class PreferenceCsvImporterTest.
+// ----------------------------------------------------------------------
+
+name#type#value
+LongPreference1#long#111111111
+LongPreference2#Long#222222222
+
+// Next line contains to few columns
+LongPreference3#long

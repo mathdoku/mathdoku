@@ -1,0 +1,23 @@
+// ----------------------------------------------------------------------
+// ---------- Preference import file for class PreferenceCsvImporterTest.
+// ----------------------------------------------------------------------
+
+name#type#value
+StringPreference1#string#hello world
+StringPreference2#String#Hello World
+StringPreference3#STRING#HELLO WORLD
+
+IntegerPreference1#int#1
+IntegerPreference2#Int#2
+IntegerPreference3#INT#3
+
+LongPreference1#long#111111111
+LongPreference2#Long#222222222
+LongPreference3#LONG#333333333
+
+BooleanPreferenceTrue1#boolean#true
+BooleanPreferenceTrue2#boolean#True
+BooleanPreferenceTrue3#boolean#TRUE
+BooleanPreferenceTrue4#boolean#false
+BooleanPreferenceTrue5#Boolean#false
+BooleanPreferenceTrue6#BOOLEAN#false

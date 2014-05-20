@@ -1,0 +1,10 @@
+// ----------------------------------------------------------------------
+// ---------- Preference import file for class PreferenceCsvImporterTest.
+// ----------------------------------------------------------------------
+
+name#type#value
+StringPreference1#string#hello world
+StringPreference2#String#Hello World
+
+// Next line contains an invalid data type
+StringPreference3#FloatingString#abc.def
