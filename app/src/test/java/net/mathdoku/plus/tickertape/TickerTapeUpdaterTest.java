@@ -1,4 +1,4 @@
-package net.mathdoku.plus.hint;
+package net.mathdoku.plus.tickertape;
 
 import android.view.View;
 

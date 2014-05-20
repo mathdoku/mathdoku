@@ -41,7 +41,7 @@ import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.puzzle.grid.GridLoader;
 import net.mathdoku.plus.puzzle.ui.GridInputMode;
 import net.mathdoku.plus.puzzle.ui.GridPlayerView;
-import net.mathdoku.plus.hint.TickerTape;
+import net.mathdoku.plus.tickertape.TickerTape;
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.tip.TipCheat;
 import net.mathdoku.plus.tip.TipDialog;

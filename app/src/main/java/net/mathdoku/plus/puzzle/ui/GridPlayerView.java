@@ -10,7 +10,7 @@ import net.mathdoku.plus.Preferences.PuzzleSettingInputMethod;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.puzzle.cell.Cell;
 import net.mathdoku.plus.puzzle.grid.Grid;
-import net.mathdoku.plus.hint.TickerTape;
+import net.mathdoku.plus.tickertape.TickerTape;
 
 /**
  * This class implements the swiping functionality on top of the grid base
