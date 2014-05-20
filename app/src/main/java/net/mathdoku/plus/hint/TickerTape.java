@@ -1,7 +1,6 @@
 package net.mathdoku.plus.hint;
 
 import android.content.Context;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
@@ -19,93 +18,20 @@ public class TickerTape extends HorizontalScrollView {
 	@SuppressWarnings("unused")
 	private static final String TAG = TickerTape.class.getName();
 
-	private final LinearLayout mTickerTapeLinearLayout;
+	private static final int SCROLL_STEP_SIZE = 100;
 
-	// Context in which the ticker tape is created.
-	private final Context mContext;
+	// Private package access for unit testing.
+	static final int ID_VIEW_TICKER_TAPE_LINEAR_LAYOUT = 1012;
 
-	// Size of text within the ticker tape.
-	private final int mTextSizeInDIP;
-
-	// Speed of horizontal scrolling
-	private final int mScrollStepSize = 100;
-
-	// Conditions which need to be satisfied for automatic removal of ticker
-	// tape
-	private boolean mEraseConditionSet;
-	private int mMinDisplayCycles;
-	private int mMinDisplayItems;
-	private long mMinDisplayTime;
-
-	// Ticker tape is disabled;
-	private boolean mDisabled;
-
-	// The runnable which will update the ticker tape at regular intervals
-	private class TickerTapeUpdaterRunnable implements Runnable {
-		// The time at which this runnable was started
-		private boolean mStartedMoving = false;
-		private long mStartTime;
-
-		// Flag whether this runnable should be cancelled.
-		private boolean mIsCancelled = false;
-
-		// The number of items which have been displayed completely.
-		private int mCountDisplayedItems;
-
-		@Override
-		public void run() {
-			if (!mIsCancelled) {
-				if (!mStartedMoving) {
-					// First display the message and do not move yet.
-					mStartedMoving = true;
-					mStartTime = System.currentTimeMillis();
-					mCountDisplayedItems = 0;
-					setVisibility(View.VISIBLE);
-				} else {
-					// Update the scroll view
-					mCountDisplayedItems += moveToNextPosition();
-
-					// Repeat after a short while unless canceled and the
-					// erase conditions have not yet been met.
-					if (mEraseConditionSet
-							&& mCountDisplayedItems >= mMinDisplayItems
-							&& System.currentTimeMillis() >= mStartTime
-									+ mMinDisplayTime) {
-						hide();
-						return;
-					}
-				}
-
-				// Repeat unless cancelled in between.
-				if (!mIsCancelled && mTickerTapeUpdaterHandler != null) {
-					mTickerTapeUpdaterHandler.postDelayed(this, 400);
-				}
-			}
-		}
-
-		/**
-		 * Inform the runnable that it should be cancelled as soon as possible.
-		 */
-		public void cancel() {
-			mIsCancelled = true;
-		}
-
-		/**
-		 * Checks whether the runnable will be cancelled on the next occasion.
-		 * 
-		 * @return True in case the runnable will be cancelled on the next
-		 *         occasion. False otherwise.
-		 */
-		public boolean isCancelled() {
-			return mIsCancelled;
-		}
-	}
-
-	// The handler and runnable which takes care of updating the ticker tape
-	private Handler mTickerTapeUpdaterHandler;
-	private TickerTapeUpdaterRunnable mTickerTapeUpdaterRunnable;
-
-	private final List<TextView> mTextViewList = new ArrayList<TextView>();
+	private final Context context;
+	private final LinearLayout tickerTapeLinearLayout;
+	private final int textSizeInDIP;
+	private boolean isEraseConditionSet;
+	private int minDisplayCycles;
+	private long minDisplayTime;
+	private boolean isDisabled;
+	private TickerTapeUpdater tickerTapeUpdater;
+	private final List<TextView> textViewList = new ArrayList<TextView>();
 
 	/**
 	 * Creates a new instance of {@see TickerTape}.
@@ -117,47 +43,43 @@ public class TickerTape extends HorizontalScrollView {
 		super(context, attrs);
 
 		// Save the context for later use
-		mContext = context;
+		this.context = context;
 
 		// Determine text size
 		// noinspection ConstantConditions,ConstantConditions
 		int textSizeInPixels = getResources().getDimensionPixelSize(
 				R.dimen.text_size_default);
-		mTextSizeInDIP = (int) (getResources().getDimension(
+		textSizeInDIP = (int) (getResources().getDimension(
 				R.dimen.text_size_default) / getResources().getDisplayMetrics().density);
 
-		// Determine margins for text (25% of text height)
-		int mTextTopMargin;
-		int mTextBottomMargin = mTextTopMargin = textSizeInPixels / 4;
+		// The total vertical margin is 50% of the text height. As the text will
+		// be vertically centered, approximately a margin of 25% of the text
+		// height will be visible both above and below the text.
+		int mTextVerticalMargin = textSizeInPixels / 2;
 
 		// Set layout parameters of the horizontal scroll view.
 		setLayoutParams(new LayoutParams(
 				android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-				mTextTopMargin + textSizeInPixels + mTextBottomMargin));
+				textSizeInPixels + mTextVerticalMargin));
 
 		// Add a linear layout to the scroll view which will hold all the text
 		// view for all items.
-		mTickerTapeLinearLayout = new LinearLayout(mContext);
-		mTickerTapeLinearLayout.setLayoutParams(new LayoutParams(
+		tickerTapeLinearLayout = new LinearLayout(this.context);
+		tickerTapeLinearLayout.setId(ID_VIEW_TICKER_TAPE_LINEAR_LAYOUT);
+		tickerTapeLinearLayout.setLayoutParams(new LayoutParams(
 				android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-				mTextTopMargin + textSizeInPixels + mTextBottomMargin));
-		addView(mTickerTapeLinearLayout);
+				textSizeInPixels + mTextVerticalMargin));
+		addView(tickerTapeLinearLayout);
 
-		// disable scroll bar
 		setHorizontalScrollBarEnabled(false);
-
-		// set color
 		setBackgroundColor(Painter
 				.getInstance()
 				.getTickerTapePainter()
 				.getBackgroundColor());
 
-		mDisabled = false;
-		// Hide by default
 		setVisibility(View.INVISIBLE);
-
-		// By default no conditions for automatic erasing will be set
-		mEraseConditionSet = false;
+		isDisabled = false;
+		isEraseConditionSet = false;
 	}
 
 	/**
@@ -168,60 +90,76 @@ public class TickerTape extends HorizontalScrollView {
 	 * @return The ticker tape object itself so it can be used as a builder.
 	 */
 	public TickerTape addItem(String string) {
-		// Create a new text view for this item
-		TextView textView = new TextView(mContext);
-		textView.setText(string);
-
-		// Use a DIP text size as the height of ticker tape layout has been set
-		// to a fixed height.
-		textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, mTextSizeInDIP);
-
-		textView.setId(mTextViewList.size());
-		textView.setLayoutParams(new LayoutParams(
-				android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
-				android.view.ViewGroup.LayoutParams.MATCH_PARENT));
-		textView.setPadding(0, 0, 4 * mScrollStepSize, 0);
-		textView.setTextColor(Painter
-				.getInstance()
-				.getTickerTapePainter()
-				.getTextColor());
-
-		// Add the text view to the layout and the list of text views.
-		mTickerTapeLinearLayout.addView(textView);
-		mTextViewList.add(textView);
+		TextView textView = createItemTextView(string);
+		tickerTapeLinearLayout.addView(textView);
+		textViewList.add(textView);
 
 		invalidate();
 
 		return this;
 	}
 
+	private TextView createItemTextView(String string) {
+		TextView textView = new TextView(context);
+		textView.setText(string);
+
+		// Ticker tape layout has been set to a fixed height, so use DIP text
+		// size
+		textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSizeInDIP);
+
+		textView.setId(textViewList.size());
+		textView.setLayoutParams(new LayoutParams(
+				android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+				android.view.ViewGroup.LayoutParams.MATCH_PARENT));
+		textView.setPadding(0, 0, 4 * SCROLL_STEP_SIZE, 0);
+		textView.setTextColor(Painter
+				.getInstance()
+				.getTickerTapePainter()
+				.getTextColor());
+
+		return textView;
+	}
+
 	/**
-	 * Sets whether the ticker tape is completely disabled.
+	 * Disables the ticker tape completely.
 	 * 
-	 * @param disabled
-	 *            True in case the ticker tape has to be disabled completely.
 	 */
-	public void setDisabled(boolean disabled) {
-		mDisabled = disabled;
-		if (mDisabled) {
-			hide();
-		}
+	public void disable() {
+		isDisabled = true;
+		hide();
 	}
 
 	/**
 	 * Show the ticker tape and start moving the items in the ticker tape.
 	 */
 	public void show() {
-		if (!mDisabled) {
-			startMoving();
+		if (isDisabled) {
+			return;
 		}
+
+		// In case only one item has been added, this item is duplicated. In
+		// this way the message nicely scrolls away on the left while the
+		// duplicate message flows in from the right.
+		if (textViewList.size() == 1) {
+			addItem(getCurrentItem());
+		}
+
+		if (tickerTapeUpdater == null || tickerTapeUpdater.isCancelled()) {
+			tickerTapeUpdater = createTickerTapeUpdaterRunnable();
+		}
+		tickerTapeUpdater.startMoving();
+	}
+
+	// Package private access for unit testing
+	TickerTapeUpdater createTickerTapeUpdaterRunnable() {
+		return new TickerTapeUpdater(this);
 	}
 
 	/**
-	 * Hides the ticker tape and stop moving the items in the ticker tape.
+	 * Hides the ticker tape and stops moving the items in the ticker tape.
 	 */
-	private void hide() {
-		if (mDisabled) {
+	void hide() {
+		if (isDisabled) {
 			setVisibility(View.GONE);
 		} else {
 			setVisibility(View.INVISIBLE);
@@ -231,95 +169,70 @@ public class TickerTape extends HorizontalScrollView {
 	}
 
 	/**
-	 * Starts moving the ticker tape.
+	 * Update the scroll position to the next position.
 	 */
-	private void startMoving() {
-		if (mDisabled) {
-			return;
-		}
+	void moveToNextPosition() {
+		if (hasNeedForScrolling() && !scrollToNextPositionInCurrentItem()) {
+			moveCurrentItemToEndOfList();
 
-		// Determine how many items have to be displayed at least.
-		mMinDisplayItems = mMinDisplayCycles * mTextViewList.size();
-
-		// In case only one item has been added, this item is duplicated. In
-		// this way the message nicely scrolls away on the left while the
-		// duplicate message flows in from the right.
-		if (mTextViewList.size() == 1) {
-			// noinspection ConstantConditions
-			addItem(mTextViewList.get(0).getText().toString());
+			// Reset scroll position to beginning of the new current item.
+			scrollTo(0, 0);
 		}
+	}
 
-		// Define handler and runnable for repeatable updating of the ticker
-		// tape.
-		if (mTickerTapeUpdaterHandler == null) {
-			mTickerTapeUpdaterHandler = new Handler();
-		}
-		if (mTickerTapeUpdaterRunnable == null
-				|| mTickerTapeUpdaterRunnable.isCancelled()) {
-			mTickerTapeUpdaterRunnable = new TickerTapeUpdaterRunnable();
-		}
+	private boolean hasNeedForScrolling() {
+		return computeHorizontalScrollRange() > getWidth();
+	}
 
-		// Start moving the ticker tape after an initial delay
-		mTickerTapeUpdaterHandler.postDelayed(mTickerTapeUpdaterRunnable, 300);
+	String getCurrentItem() {
+		return textViewList.isEmpty() ? null : textViewList
+				.get(0)
+				.getText()
+				.toString();
 	}
 
 	/**
-	 * Update the scroll position to the next position.
+	 * Scrolls to the next position.
 	 * 
-	 * @return 1 in case the next item is displayed. 0 in case the current item
-	 *         is moved.
+	 * @return True is the next scroll position is valid for the current item.
+	 *         False otherwise.
 	 */
-	private int moveToNextPosition() {
-		boolean displayNextItem = false;
+	private boolean scrollToNextPositionInCurrentItem() {
+		int newScrollPos = getNextScrollPosition();
+		scrollTo(newScrollPos, 0);
 
-		// Only move the scroll position in case the total width of the
-		// containing text views is greater than the available width.
-		if (computeHorizontalScrollRange() > getWidth()) {
+		// Check whether the scroll position has been set on the requested
+		// position. In case getScrollX() < newScrollPos the scroll position is
+		// only moved partially and the next item has to be displayed.
+		return newScrollPos <= textViewList.get(0).getWidth()
+				&& getScrollX() >= newScrollPos;
+	}
 
-			// Determine next scroll position
-			int newScrollPos = getScrollX() + mScrollStepSize;
+	private int getNextScrollPosition() {
+		return getScrollX() + SCROLL_STEP_SIZE;
+	}
 
-			// Scroll to new position
-			scrollTo(newScrollPos, 0);
+	private void moveCurrentItemToEndOfList() {
+		if (textViewList.size() > 1) {
+			TextView textView = textViewList.get(0);
 
-			// Change order of items in scroll view and items list.
-			if (newScrollPos >= mTextViewList.get(0).getWidth()
-					|| getScrollX() < newScrollPos) {
-				// Check whether the scroll position has been set on the
-				// requested position (getScrollX() < newScrollPos) is a hack.
-				// Without this check the ticker will stop updating the long
-				// item as soon as the visible part of this long item plus the
-				// total width of all other items is less than the display
-				// width.
+			// Remove the item which currently is at front of the list.
+			tickerTapeLinearLayout.removeView(textView);
+			textViewList.remove(textView);
 
-				// Show next item in list if applicable
-				if (mTextViewList.size() > 1) {
-					TextView textView = mTextViewList.get(0);
-
-					// Remove the item which currently is at front of the list.
-					mTickerTapeLinearLayout.removeView(textView);
-					mTextViewList.remove(textView);
-
-					// Than add the item again to the end.
-					mTickerTapeLinearLayout.addView(textView);
-					mTextViewList.add(textView);
-				}
-				displayNextItem = true;
-
-				// Reset scroll position to beginning of the first item.
-				scrollTo(0, 0);
-			}
+			// Than add the item again to the end.
+			tickerTapeLinearLayout.addView(textView);
+			textViewList.add(textView);
 		}
-
-		return displayNextItem ? 1 : 0;
 	}
 
 	/**
 	 * Cancel updates of the ticker tape.
 	 */
 	public void cancel() {
-		if (mTickerTapeUpdaterRunnable != null) {
-			mTickerTapeUpdaterRunnable.cancel();
+		if (tickerTapeUpdater != null) {
+			tickerTapeUpdater.cancel();
+			tickerTapeUpdater = null;
 		}
 	}
 
@@ -338,9 +251,9 @@ public class TickerTape extends HorizontalScrollView {
 	@SuppressWarnings("SameParameterValue")
 	public TickerTape setEraseConditions(int minDisplayCycles,
 			long minDisplayTime) {
-		mEraseConditionSet = true;
-		mMinDisplayCycles = minDisplayCycles;
-		mMinDisplayTime = minDisplayTime;
+		isEraseConditionSet = true;
+		this.minDisplayCycles = minDisplayCycles;
+		this.minDisplayTime = minDisplayTime;
 
 		return this;
 	}
@@ -352,18 +265,29 @@ public class TickerTape extends HorizontalScrollView {
 	 * @return The ticker tape object itself so it can be used as a builder.
 	 */
 	public TickerTape reset() {
-		// Hide the ticker tape and Cancel updating
 		hide();
-
-		// Clear the list
-		while (mTextViewList.size() > 0) {
-
-			// Remove the item which currently is at front of the list.
-			TextView textView = mTextViewList.get(0);
-			mTickerTapeLinearLayout.removeView(textView);
-			mTextViewList.remove(0);
-		}
+		tickerTapeLinearLayout.removeAllViewsInLayout();
+		textViewList.clear();
 
 		return this;
+	}
+
+	/**
+	 * Checks if the eraseCondition is set and whether it is fulfilled already.
+	 * 
+	 * @param countItemsDisplayedCompletely
+	 *            The number of items which have been displayed completely.
+	 * @param actualDisplayTime
+	 *            The time the ticker tape has been displayed actually.
+	 * @return True in case the erase condition is set and fulfilled. False
+	 *         otherwise.
+	 */
+	boolean isEraseConditionFulfilled(int countItemsDisplayedCompletely,
+			long actualDisplayTime) {
+		return isEraseConditionSet
+				&& countItemsDisplayedCompletely >= minDisplayCycles
+						* textViewList.size()
+				&& actualDisplayTime >= minDisplayTime;
+
 	}
 }

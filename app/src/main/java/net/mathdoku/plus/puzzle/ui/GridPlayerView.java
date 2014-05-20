@@ -163,7 +163,7 @@ public class GridPlayerView extends GridBasePlayerView {
 							// motions have been completed.
 							if (mPreferences.getSwipeValidMotionCounter() >= MIN_VALID_SWIPE_MOTIONS) {
 								mSwipeMotion.setOnUpdateListener(null);
-								mTickerTape.setDisabled(true);
+								mTickerTape.disable();
 							}
 						}
 					} else {
@@ -475,8 +475,8 @@ public class GridPlayerView extends GridBasePlayerView {
 	public void setSwipeInputMethodEnabled(boolean swipeInputMethodEnabled) {
 		mSwipeInputMethodEnabled = swipeInputMethodEnabled;
 		setSwipeBorder(mSwipeInputMethodEnabled);
-		if (mTickerTape != null) {
-			mTickerTape.setDisabled(!mSwipeInputMethodEnabled);
+		if (mTickerTape != null && !mSwipeInputMethodEnabled) {
+			mTickerTape.disable();
 		}
 	}
 }
