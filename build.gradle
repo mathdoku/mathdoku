@@ -40,7 +40,7 @@ configure(allprojects) {
 
     ext.jUnitVersion                = '4.10'
     ext.mockitoCoreVersion          = '1.9.5+'
-    ext.robolectricVersion          = '2.3-SNAPSHOT'
+    ext.robolectricVersion          = '2.3'
     ext.festAndroidVersion          = '1.0.+'
 }
 
