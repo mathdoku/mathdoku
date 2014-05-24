@@ -145,13 +145,13 @@ public abstract class CsvImporter {
 				}
 			}
 		}
-		importCompletedSuccessfull();
+		importCompletedSuccessful();
 	}
 
 	protected abstract void importLine(String line);
 
 	// Subclasses should override this method in case additional work has to be done when entire file is imported successfully.
-	protected void importCompletedSuccessfull() {}
+	protected void importCompletedSuccessful() {}
 
 	private String removeEnclosingQuotationMarks(String value) {
 		if (value != null && value.startsWith("\"") && value.endsWith("\"")) {
