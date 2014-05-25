@@ -25,6 +25,9 @@ public class PreferenceCsvImporter extends CsvImporter {
 		if (sharedPreferences == null) {
 			throw new CsvImporterException("Shared preferences cannot be null.");
 		}
+		if (!sharedPreferences.getAll().isEmpty()) {
+			throw new CsvImporterException("Empty collection of shared preferences expected.");
+		}
 		this.editor = sharedPreferences.edit();
 	}
 
@@ -65,7 +68,7 @@ public class PreferenceCsvImporter extends CsvImporter {
 	}
 
 	@Override
-	protected void importCompletedSuccessfull() {
+	protected void importCompletedSuccessful() {
 		editor.commit();
 	}
 }
