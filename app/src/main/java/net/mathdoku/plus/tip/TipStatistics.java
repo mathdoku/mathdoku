@@ -1,13 +1,13 @@
 package net.mathdoku.plus.tip;
 
+import android.content.Context;
+
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
 
-import android.content.Context;
-
 public class TipStatistics extends TipDialog {
 
-	private static final String TIP_NAME = "Tip.TipStatistics.DisplayAgain";
+	private static final String TIP_NAME = "Statistics";
 	private static final TipPriority TIP_PRIORITY = TipPriority.LOW;
 
 	/**

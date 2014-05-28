@@ -1,12 +1,13 @@
 package net.mathdoku.plus.tip;
 
+import android.content.Context;
+
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
-import android.content.Context;
 
 public class TipLeaderboardCreateGame extends TipDialog {
 
-	private static final String TIP_NAME = "Tip.LeaderboardCreateGame.DisplayAgain";
+	private static final String TIP_NAME = "LeaderboardCreateGame";
 	private static final TipPriority TIP_PRIORITY = TipPriority.LOW;
 
 	/**

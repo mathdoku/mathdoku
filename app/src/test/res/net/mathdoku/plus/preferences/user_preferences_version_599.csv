@@ -1,0 +1,76 @@
+// ----------------------------------------------------------------------
+// This file is not yet used in a unit test. It will be used as soon as
+// the preferences will be changed again.
+// ----------------------------------------------------------------------
+
+
+// ----------------------------------------------------------------------
+// ---------- Preference import file for class PreferenceCsvImporterTest.
+// ----------------------------------------------------------------------
+// The user version of the preference file should have a NON-DEFAULT
+// value for each preferences to distinct it from the default preferences
+// file.
+// ----------------------------------------------------------------------
+name#type#value
+Tip.ArchiveAvailable.DisplayAgain#boolean#false
+Tip.ArchiveAvailable.LastDisplayTime#long#1000000000001
+Tip.BadCageMath.DisplayAgain#boolean#false
+Tip.BadCageMath.LastDisplayTime#long#1000000000002
+Tip.Cheat.CheckProgress.DisplayAgain#boolean#false
+Tip.Cheat.CheckProgress.LastDisplayTime#long#1000000000003
+Tip.CopyCellValues.DisplayAgain#boolean#false
+Tip.CopyCellValues.LastDisplayTime#long#1000000000004
+Tip.DuplicateValue.DisplayAgain#boolean#false
+Tip.DuplicateValue.LastDisplayTime#long#1000000000006
+Tip.IncorrectValue.DisplayAgain#boolean#false
+Tip.IncorrectValue.LastDisplayTime#long#1000000000007
+Tip.OrderOfValuesInCage.DisplayAgain#boolean#false
+Tip.OrderOfValuesInCage.LastDisplayTime#long#1000000000005
+Tip.Statistics.DisplayAgain#boolean#false
+Tip.Statistics.LastDisplayTime#long#1000000000008
+app_current_version#int#599
+archive_available#boolean#true
+archive_grid_last_showed#int#-1
+archive_setting_chart_description_visible#boolean#true
+archive_setting_size_filter_size_visible#boolean#false
+archive_setting_status_filter_visible#boolean#true
+archive_size_filter_last_value#string#ALL
+archive_status_filter_last_value#string#ALL
+leaderboard_all_initialized#boolean#true
+leaderboard_filter_last_value#string#ALL_LEADERBOARDS
+leaderboard_tab_last_showed#int#3
+puzzle_hide_goole_plus_sign_in_till_next_top_score#boolean#true
+puzzle_input_mode_changed_counter#int#0
+puzzle_input_mode_copy_counter#int#0
+puzzle_input_mode_copy_enabled#boolean#false
+puzzle_input_mode_last_used#string#NORMAL
+puzzle_parameter_complexity#string#VERY_EASY
+puzzle_parameter_operators_visible#boolean#true
+puzzle_parameter_size#int#6
+puzzle_setting_bad_cage_math_visible#boolean#true
+puzzle_setting_clear_maybes#boolean#false
+puzzle_setting_colored_digits#boolean#true
+puzzle_setting_duplicate_digits_visible#boolean#true
+puzzle_setting_full_screen#boolean#true
+puzzle_setting_input_method#string#BUTTONS_ONLY
+puzzle_setting_maybes_displayed_in_grid#boolean#true
+puzzle_setting_outer_swipe_circle#int#4
+puzzle_setting_sound_effects#boolean#false
+puzzle_setting_theme#string#theme_light
+puzzle_setting_timer_visible#boolean#true
+puzzle_setting_wake_lock#boolean#true
+statistics_available#boolean#true
+statistics_setting_chart_description_visible#boolean#true
+statistics_setting_elapsed_time_chart_maximum_games#int#100
+statistics_tab_last_showed#int#1
+swipe_digit_1_counter#int#0
+swipe_digit_2_counter#int#0
+swipe_digit_3_counter#int#0
+swipe_digit_4_counter#int#0
+swipe_digit_5_counter#int#0
+swipe_digit_6_counter#int#0
+swipe_digit_7_counter#int#0
+swipe_digit_8_counter#int#0
+swipe_digit_9_counter#int#0
+swipe_invalid_motion_counter#int#0
+swipe_valid_motion_counter#int#0

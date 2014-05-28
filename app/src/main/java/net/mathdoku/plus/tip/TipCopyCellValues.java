@@ -9,8 +9,7 @@ import net.mathdoku.plus.puzzle.cell.Cell;
 import net.mathdoku.plus.puzzle.grid.Grid;
 
 public class TipCopyCellValues extends TipDialog {
-
-	private static final String TIP_NAME = "Tip.CopyCellValues.DisplayAgain";
+	private static final String TIP_NAME = "CopyCellValues";
 	private static final TipPriority TIP_PRIORITY = TipPriority.LOW;
 
 	/**

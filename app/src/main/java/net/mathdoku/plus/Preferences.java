@@ -8,16 +8,20 @@ import android.preference.PreferenceManager;
 import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.enums.PuzzleComplexity;
+import net.mathdoku.plus.enums.StatusFilter;
 import net.mathdoku.plus.leaderboard.ui.LeaderboardFragmentActivity.LeaderboardFilter;
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.painter.Painter.GridTheme;
 import net.mathdoku.plus.puzzle.ui.GridInputMode;
-import net.mathdoku.plus.enums.StatusFilter;
 import net.mathdoku.plus.tip.TipDialog;
 import net.mathdoku.plus.util.SingletonInstanceNotInstantiated;
 
 import java.util.Locale;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Preferences {
 	@SuppressWarnings("unused")
@@ -225,6 +229,9 @@ public class Preferences {
 	private static final int PUZZLE_INPUT_MODE_COPY_COUNTER_ID = 12;
 	private int[] counters = null;
 
+	public static final long TIP_LAST_DISPLAY_TIME_DEFAULT = 0L;
+	public static final boolean TIP_DISPLAY_AGAIN_DEFAULT = true;
+
 	/**
 	 * Creates a new instance of {@link Preferences}.
 	 * 
@@ -310,8 +317,7 @@ public class Preferences {
 		// set to the default value when installing/upgrading the app. If this
 		// is not done then most settings won't be displayed with the default
 		// value.
-
-		if (previousInstalledVersion < 583 && currentVersion >= 583) {
+		if (previousInstalledVersion < 586 && currentVersion >= 586) {
 			editor.putBoolean(PUZZLE_SETTING_CLEAR_MAYBES,
 					PUZZLE_SETTING_CLEAR_MAYBES_DEFAULT)
 					.putBoolean(PUZZLE_SETTING_PLAY_SOUND_EFFECTS,
@@ -381,48 +387,120 @@ public class Preferences {
 					.putString(PUZZLE_INPUT_MODE_LAST_USED,
 							PUZZLE_INPUT_MODE_LAST_USED_DEFAULT)
 					.putBoolean(PUZZLE_INPUT_MODE_COPY_ENABLED,
-							PUZZLE_INPUT_MODE_COPY_ENABLED_DEFAULT);
-		}
-		if (previousInstalledVersion < 586 && currentVersion >= 586) {
-			editor
+							PUZZLE_INPUT_MODE_COPY_ENABLED_DEFAULT)
 					.putBoolean(
 							PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE,
 							PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE_DEFAULT);
 		}
+		// App version 587 is an official release to the Play Store. Preferences
+		// of this version should not be merged with older versions as long it
+		// has active users.
 		if (previousInstalledVersion < 587 && currentVersion >= 587) {
-			editor.putInt(LEADERBOARD_TAB_LAST_SHOWED,
-					LEADERBOARD_TAB_LAST_SHOWED_DEFAULT);
-			editor.putBoolean(LEADERBOARD_ALL_INITIALIZED,
-					LEADERBOARD_ALL_INITIALIZED_DEFAULT);
-			editor.putString(LEADERBOARD_FILTER_LAST_VALUE,
-					LEADERBOARD_FILTER_LAST_VALUE_DEFAULT);
+			upgradeToVersion587(editor);
 		}
+		// App version 594 is an official release to the Play Store. Preferences
+		// of this version should not be merged with older versions as long it
+		// has active users.
 		if (previousInstalledVersion < 595 && currentVersion >= 595) {
-			editor.putInt(LEADERBOARD_DETAILS_VIEWED_COUNTER,
-					LEADERBOARD_DETAILS_VIEWED_COUNTER_DEFAULT);
-			editor.putInt(LEADERBOARD_GAMES_CREATED_COUNTER,
-					LEADERBOARD_GAMES_CREATED_COUNTER_DEFAULT);
-			editor.putInt(LEADERBOARD_OVERVIEW_VIEWED_COUNTER,
-					LEADERBOARD_OVERVIEW_VIEWED_COUNTER_DEFAULT);
+			upgradeToVersion595(editor);
 		}
 		if (previousInstalledVersion < 598 && currentVersion >= 598) {
-			// Remove obsolete preferences
-			editor.remove("puzzle_parameter_size")
-					.remove("archive_size_filter_last_value")
-					.remove("archive_setting_size_filter_size_visible");
+			upgradeToVersion598(editor);
 
-			// Add new preferences. Values are not converted from old
-			// preferences.
-			editor.putString(ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE,
-					ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE_DEFAULT)
-					.putBoolean(ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE,
-							ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE_DEFAULT)
-					.putString(PUZZLE_PARAMETER_GRID_SIZE,
-							PUZZLE_PARAMETER_GRID_SIZE_DEFAULT);
+		}
+		if (previousInstalledVersion < 599 && currentVersion >= 599) {
+			upgradeToVersion599(editor);
 		}
 
 		editor.putInt(APP_CURRENT_VERSION, currentVersion);
 		editor.commit();
+	}
+
+	private void upgradeToVersion587(Editor editor) {
+		editor.putInt(LEADERBOARD_TAB_LAST_SHOWED,
+				LEADERBOARD_TAB_LAST_SHOWED_DEFAULT);
+		editor.putBoolean(LEADERBOARD_ALL_INITIALIZED,
+				LEADERBOARD_ALL_INITIALIZED_DEFAULT);
+		editor.putString(LEADERBOARD_FILTER_LAST_VALUE,
+				LEADERBOARD_FILTER_LAST_VALUE_DEFAULT);
+	}
+
+	private void upgradeToVersion595(Editor editor) {
+		editor.putInt(LEADERBOARD_DETAILS_VIEWED_COUNTER,
+					  LEADERBOARD_DETAILS_VIEWED_COUNTER_DEFAULT);
+		editor.putInt(LEADERBOARD_GAMES_CREATED_COUNTER,
+					  LEADERBOARD_GAMES_CREATED_COUNTER_DEFAULT);
+		editor.putInt(LEADERBOARD_OVERVIEW_VIEWED_COUNTER,
+					  LEADERBOARD_OVERVIEW_VIEWED_COUNTER_DEFAULT);
+	}
+
+	private void upgradeToVersion598(Editor editor) {
+		// Remove obsolete preferences
+		editor.remove("puzzle_parameter_size")
+				.remove("archive_size_filter_last_value")
+				.remove("archive_setting_size_filter_size_visible");
+
+		// Add new preferences. Values are not converted from old
+		// preferences.
+		editor.putString(ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE,
+						 ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE_DEFAULT)
+				.putBoolean(ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE,
+							ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE_DEFAULT)
+				.putString(PUZZLE_PARAMETER_GRID_SIZE, PUZZLE_PARAMETER_GRID_SIZE_DEFAULT);
+	}
+
+	private void upgradeToVersion599(Editor editor) {
+		renameTipDisplayAgainVersion599(editor);
+		renameTipLastDisplayTimeVersion599(editor);
+	}
+
+	/**
+	 * Renames preferences with pattern below:
+	 * Tip.Tip.TipPreference.DisplayAgain.DisplayAgain
+	 * Tip.Tip.Preference.DisplayAgain.DisplayAgain
+	 *
+	 * @param editor The preferences editor in which changes have to be made.
+	 */
+	private void renameTipDisplayAgainVersion599(Editor editor) {
+		String regExp = "Tip\\.Tip\\.(?:Tip)*(.*)\\.DisplayAgain\\.DisplayAgain";
+		Pattern pattern = Pattern.compile(regExp);
+		for (String preference : mSharedPreferences.getAll().keySet()) {
+			Matcher matcher = pattern.matcher(preference);
+			if (matcher.matches()) {
+				String tipShortName = matcher.group(1);
+				String newName = TipDialog
+						.getPreferenceStringDisplayTipAgain(tipShortName);
+				editor.putBoolean(newName, mSharedPreferences.getBoolean(
+						preference, TIP_DISPLAY_AGAIN_DEFAULT));
+				editor.remove(preference);
+			}
+		}
+	}
+
+	/**
+	 * Renames preferences with pattern below:
+	 * Tip.Tip.TipPreference.DisplayAgain.DisplayAgain
+	 * Tip.Tip.Preference.DisplayAgain.DisplayAgain
+	 *
+	 * @param editor The preferences editor in which changes have to be made.
+	 */
+	private void renameTipLastDisplayTimeVersion599(Editor editor) {
+		// The name was not only double wrapped but the inner
+		// name also referred to DisplayAgain instead of
+		// LastDisplayTime.
+		String regExp = "Tip\\.Tip\\.(?:Tip)*(.*)\\.DisplayAgain\\.LastDisplayTime";
+		Pattern pattern = Pattern.compile(regExp);
+		for (String preference : mSharedPreferences.getAll().keySet()) {
+			Matcher matcher = pattern.matcher(preference);
+			if (matcher.matches()) {
+				String tipShortName = matcher.group(1);
+				String newName = TipDialog
+						.getPreferenceStringLastDisplayTime(tipShortName);
+				editor.putLong(newName, mSharedPreferences.getLong(preference,
+						TIP_LAST_DISPLAY_TIME_DEFAULT));
+				editor.remove(preference);
+			}
+		}
 	}
 
 	/**
@@ -519,7 +597,8 @@ public class Preferences {
 	 */
 	public boolean getTipDisplayAgain(String tip) {
 		return mSharedPreferences.getBoolean(
-				TipDialog.getPreferenceStringDisplayTipAgain(tip), true);
+				TipDialog.getPreferenceStringDisplayTipAgain(tip),
+				TIP_DISPLAY_AGAIN_DEFAULT);
 	}
 
 	/**
@@ -531,7 +610,8 @@ public class Preferences {
 	 */
 	public long getTipLastDisplayTime(String tip) {
 		return mSharedPreferences.getLong(
-				TipDialog.getPreferenceStringLastDisplayTime(tip), 0L);
+				TipDialog.getPreferenceStringLastDisplayTime(tip),
+				TIP_LAST_DISPLAY_TIME_DEFAULT);
 	}
 
 	/**
@@ -963,8 +1043,10 @@ public class Preferences {
 	 * @return The number of times the input mode has been changed.
 	 */
 	public int getInputModeChangedCounter() {
-		return mSharedPreferences.getInt(PUZZLE_INPUT_MODE_CHANGED_COUNTER,
-				PUZZLE_INPUT_MODE_CHANGED_COUNTER_DEFAULT);
+		if (counters == null) {
+			initializeCounters();
+		}
+		return counters[PUZZLE_INPUT_MODE_CHANGED_COUNTER_ID];
 	}
 
 	/**
@@ -973,8 +1055,10 @@ public class Preferences {
 	 * @return The number of times the input mode has been set top copy mode.
 	 */
 	public int getInputModeCopyCounter() {
-		return mSharedPreferences.getInt(PUZZLE_INPUT_MODE_COPY_COUNTER,
-				PUZZLE_INPUT_MODE_COPY_COUNTER_DEFAULT);
+		if (counters == null) {
+			initializeCounters();
+		}
+		return counters[PUZZLE_INPUT_MODE_COPY_COUNTER_ID];
 	}
 
 	/**
@@ -1357,5 +1441,31 @@ public class Preferences {
 				getLeaderboardsOverviewViewed() + 1);
 		editor.apply();
 
+	}
+
+	@Override
+	public String toString() {
+		SortedMap<String, String> sortedMap = new TreeMap<String, String>();
+
+		for (Map.Entry<String, ?> entry : getAllSharedPreferences().entrySet()) {
+			if (entry != null) {
+				String key = entry.getKey();
+				if (key == null) {
+					continue;
+				}
+				Object value = entry.getValue();
+				sortedMap.put(key, value == null ? "" : value.toString());
+			}
+		}
+
+		StringBuilder stringBuilder = new StringBuilder();
+		for (Map.Entry<String, String> entry : sortedMap.entrySet()) {
+			stringBuilder.append(entry.getKey());
+			stringBuilder.append(" = ");
+			stringBuilder.append(entry.getValue());
+			stringBuilder.append("\n");
+		}
+
+		return stringBuilder.toString();
 	}
 }

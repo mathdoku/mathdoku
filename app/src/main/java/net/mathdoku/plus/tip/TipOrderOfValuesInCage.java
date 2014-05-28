@@ -9,7 +9,7 @@ import net.mathdoku.plus.puzzle.cage.Cage;
 
 public class TipOrderOfValuesInCage extends TipDialog {
 
-	private static final String TIP_NAME = "Tip.OrderOfValuesInCage.DisplayAgain";
+	private static final String TIP_NAME = "OrderOfValuesInCage";
 	private static final TipPriority TIP_PRIORITY = TipPriority.LOW;
 
 	/**
