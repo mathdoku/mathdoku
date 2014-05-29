@@ -14,8 +14,8 @@ public class TipCopyCellValues extends TipDialog {
 
 	/**
 	 * Creates a new tip dialog which explains that cell values can be copied
-	 * from one cell to another cell.</br>
-	 * <p/>
+	 * from one cell to another cell.
+	 * 
 	 * For performance reasons this method should only be called in case the
 	 * static call to method {@link #toBeDisplayed} returned true.
 	 * 
@@ -52,29 +52,7 @@ public class TipCopyCellValues extends TipDialog {
 			return false;
 		}
 
-		if (grid == null) {
-			return false;
-		}
-
-		Cell cell = grid.getSelectedCell();
-		if (cell == null) {
-			return false;
-		}
-
-		// Only display in case the cell contains at least 3 maybe values. This
-		// is not strictly necessary for copying but the tip will make more
-		// sense when a cell contains multiple values.
-		if (cell.countPossibles() < 3) {
-			return false;
-		}
-
-		// Ensure that the cell is contained in a multiple cell cage from which
-		// at least one cell is still empty. This is not strictly necessary for
-		// copying but the tip will make more sense in case the cell values can
-		// be copied to another cell in the same cage.
-		Cage cage = grid.getCage(cell);
-		if (cage == null || cage.getNumberOfCells() <= 1
-				|| !cage.hasEmptyCells()) {
+		if (doNotDisplayBasedOnGrid(grid)) {
 			return false;
 		}
 
@@ -87,5 +65,39 @@ public class TipCopyCellValues extends TipDialog {
 		// Determine on basis of preferences whether the tip should be shown.
 		return TipDialog
 				.getDisplayTipAgain(preferences, TIP_NAME, TIP_PRIORITY);
+	}
+
+	private static boolean doNotDisplayBasedOnGrid(Grid grid) {
+		if (grid == null) {
+			return true;
+		}
+
+		Cell cell = grid.getSelectedCell();
+		if (cell == null) {
+			return true;
+		}
+
+		// Only display in case the cell contains at least 3 maybe values. This
+		// is not strictly necessary for copying but the tip will make more
+		// sense when a cell contains multiple values.
+		if (cell.countPossibles() < 3) {
+			return true;
+		}
+
+		Cage cage = grid.getCage(cell);
+		if (doNotDisplayBasedOnCage(cage)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private static boolean doNotDisplayBasedOnCage(Cage cage) {
+		// Ensure that the cage has multiple cells of which at least one cell is
+		// still empty. This is not strictly necessary for copying but the tip
+		// will make more sense in case the cell values can be copied to another
+		// cell in the same cage.
+		return cage == null || cage.getNumberOfCells() <= 1
+				|| !cage.hasEmptyCells();
 	}
 }
