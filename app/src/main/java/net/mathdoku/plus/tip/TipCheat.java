@@ -1,13 +1,12 @@
 package net.mathdoku.plus.tip;
 
+import android.content.Context;
+
 import net.mathdoku.plus.Cheat;
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
 
-import android.content.Context;
-
-public class TipCheat extends TipDialog implements
-		TipDialog.OnClickCloseListener {
+public class TipCheat extends TipDialog {
 
 	/*
 	 * Note: this class is used for multiple different cheats.
@@ -79,11 +78,11 @@ public class TipCheat extends TipDialog implements
 			return TIP_NAME_OPERATOR_REVEALED;
 		case SOLUTION_REVEALED:
 			return TIP_NAME_SOLUTION_REVEALED;
+		default:
+			throw new IllegalStateException(String.format(
+					"No tip implemented for cheat type '%s'", cheat
+							.getType()
+							.toString()));
 		}
-		return null;
-	}
-
-	@Override
-	public void onTipDialogClose() {
 	}
 }

@@ -12,7 +12,7 @@ import static org.mockito.Mockito.when;
 public class TipBaseTest {
 	protected Preferences preferencesMock = mock(Preferences.class);
 	private boolean instantiatedBySubclass = false;
-	private boolean initMockOnBaseInvoked = false;
+	private long minTimeIntervalBetweenTwoConsecutiveDisplays;
 	private long tipLastDisplayTime;
 	private String preferenceName;
 
@@ -20,15 +20,23 @@ public class TipBaseTest {
 			long minTimeIntervalBetweenTwoConsecutiveDisplays) {
 		instantiatedBySubclass = true;
 		this.preferenceName = preferenceName;
+		this.minTimeIntervalBetweenTwoConsecutiveDisplays = minTimeIntervalBetweenTwoConsecutiveDisplays;
 
-		// By default the tip is checked to be displayed exactly after the
-		// minimal time interval needed between two consecutive displays of the
-		// same dialog is passed.
-		tipLastDisplayTime = System.currentTimeMillis()
-				- minTimeIntervalBetweenTwoConsecutiveDisplays;
+		setIsDisplayedLongEnoughAgo();
 
 		// Reset static singleton for consecutive unit tests
-		TipCopyCellValues.resetDisplayedDialogs();
+		TipDialog.resetDisplayedDialogs();
+	}
+
+	/**
+	 * Sets the interval between the current invocation and the last time the
+	 * dialog was actually displayed to the bare minimum period. As a result the
+	 * dialog should be displayed again (if all other conditions are matched as
+	 * well).
+	 */
+	private void setIsDisplayedLongEnoughAgo() {
+		tipLastDisplayTime = System.currentTimeMillis()
+				- minTimeIntervalBetweenTwoConsecutiveDisplays;
 	}
 
 	@Test
@@ -64,12 +72,20 @@ public class TipBaseTest {
 	public void toBeDisplayed_DisplayTooShortAgo_DialogIsNotDisplayed()
 			throws Exception {
 		if (instantiatedBySubclass) {
-			// Increase last display time with 1 millisecond. As a results the
-			// time interval between this check and the last time the dialog was
-			// displayed is exactly one millisecond to short.
-			tipLastDisplayTime++;
+			setIsDisplayedNotLongEnoughAgo();
 			initMocks();
 			assertThatDialogIsDisplayed(is(false));
 		}
+	}
+
+	/**
+	 * Sets the interval between the current invocation and the last time the
+	 * dialog was actually displayed to the maximum period which is just too
+	 * short for the dialog to be displayed again.
+	 */
+	protected void setIsDisplayedNotLongEnoughAgo() {
+		// Use a margin of 2 milliseconds to prevent false negative results.
+		tipLastDisplayTime = System.currentTimeMillis()
+				- minTimeIntervalBetweenTwoConsecutiveDisplays + 2;
 	}
 }
