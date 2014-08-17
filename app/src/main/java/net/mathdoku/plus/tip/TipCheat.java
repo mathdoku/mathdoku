@@ -26,14 +26,7 @@ public class TipCheat extends TipDialog {
 	 */
 	public TipCheat(Context context, Cheat cheat) {
 		super(context, getTipName(cheat), TIP_PRIORITY);
-
-		// Set the title
-		String mTitle = cheat.getTipTitle();
-
-		// Determine body text
-		String mText = cheat.getTipText();
-
-		build(R.drawable.alert, mTitle, mText, null);
+		build(R.drawable.alert, cheat.getTipTitle(), cheat.getTipText(), null);
 	}
 
 	/**
