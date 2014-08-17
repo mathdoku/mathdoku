@@ -57,7 +57,7 @@ public class TipDialog extends AlertDialog {
 	private OnClickCloseListener mOnClickCloseListener;
 
 	public interface OnClickCloseListener {
-		public void onTipDialogClose();
+		void onTipDialogClose();
 	}
 
 	/**
@@ -92,8 +92,7 @@ public class TipDialog extends AlertDialog {
 			Log.i(TAG, "Added dialog " + mTip);
 		}
 
-		// Check if this tip should be shown (again)
-		mDisplayAgain = displayTip();
+		mDisplayAgain = mPreferences.getTipDisplayAgain(mTip);
 	}
 
 	/**
@@ -109,25 +108,21 @@ public class TipDialog extends AlertDialog {
 	 *            The image to be shown with this tip. It is preferred to have
 	 *            an image in each tip. In case the tip can no be clarified with
 	 *            an image use value null.
-	 * @return The tip dialog so the method can be chained.
+	 * @return True if the dialog is build. False otherwise.
 	 */
-	TipDialog build(int tipIconResId, String tipTitle, String tipText,
+	boolean build(int tipIconResId, String tipTitle, String tipText,
 			Drawable tipImage) {
 		// Check if dialog should be built.
 		if (!mDisplayAgain) {
-			return this;
+			return false;
 		}
 
 		// Fill the fields for this dialog
 		LayoutInflater inflater = LayoutInflater.from(mContext);
 		View tipView = inflater.inflate(R.layout.tip_dialog, null);
-		if (tipView == null) {
-			return this;
-		}
 
-		TextView textView = (TextView) tipView
-				.findViewById(R.id.dialog_tip_text);
-		textView.setText(tipText);
+		((TextView) tipView.findViewById(R.id.dialog_tip_text))
+				.setText(tipText);
 
 		ImageView imageView = (ImageView) tipView
 				.findViewById(R.id.dialog_tip_image);
@@ -218,7 +213,7 @@ public class TipDialog extends AlertDialog {
 			}
 		});
 
-		return this;
+		return true;
 	}
 
 	/**
@@ -231,28 +226,14 @@ public class TipDialog extends AlertDialog {
 		}
 	}
 
-	/**
-	 * Checks if this tips needs to be displayed. If so, it is displayed as
-	 * well. If not, nothing will happen.
-	 */
 	@Override
 	public void show() {
-		// Check if dialog should be show.
 		if (!mDisplayAgain) {
-			return;
+			throw new IllegalStateException(
+					"Show tip dialog should not be called when do not display again is set.");
 		}
 
-		// Display dialog
 		super.show();
-	}
-
-	/**
-	 * Check whether this tip will be shown.
-	 * 
-	 * @return True in case the tip has to be shown. False otherwise.
-	 */
-	boolean displayTip() {
-		return mPreferences.getTipDisplayAgain(mTip);
 	}
 
 	/**
