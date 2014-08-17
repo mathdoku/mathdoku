@@ -1,9 +1,9 @@
 package net.mathdoku.plus.tip;
 
+import android.content.Context;
+
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
-
-import android.content.Context;
 
 public class TipBadCageMath extends TipDialog {
 
@@ -20,12 +20,12 @@ public class TipBadCageMath extends TipDialog {
 	public TipBadCageMath(Context context) {
 		super(context, TIP_NAME, TIP_PRIORITY);
 
-		build(
-				R.drawable.alert,
+		build(R.drawable.alert,
 				context.getResources().getString(
-						R.string.dialog_tip_bad_cage_math_title),
-				context.getResources().getString(
-						R.string.dialog_tip_bad_cage_math_text), null).show();
+						R.string.dialog_tip_bad_cage_math_title), context
+						.getResources()
+						.getString(R.string.dialog_tip_bad_cage_math_text),
+				null);
 	}
 
 	/**

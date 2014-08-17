@@ -25,13 +25,12 @@ public class TipCopyCellValues extends TipDialog {
 	public TipCopyCellValues(Context context) {
 		super(context, TIP_NAME, TIP_PRIORITY);
 
-		build(
-				R.drawable.lightbulb,
+		build(R.drawable.lightbulb,
 				context.getResources().getString(
-						R.string.dialog_tip_copy_cell_values_title),
-				context.getResources().getString(
-						R.string.dialog_tip_copy_cell_values_text), null)
-				.show();
+						R.string.dialog_tip_copy_cell_values_title), context
+						.getResources()
+						.getString(R.string.dialog_tip_copy_cell_values_text),
+				null);
 	}
 
 	/**

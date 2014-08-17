@@ -20,12 +20,12 @@ public class TipDuplicateValue extends TipDialog {
 	public TipDuplicateValue(Context context) {
 		super(context, TIP_NAME, TIP_PRIORITY);
 
-		build(
-				R.drawable.alert,
+		build(R.drawable.alert,
 				context.getResources().getString(
-						R.string.dialog_tip_duplicate_value_title),
-				context.getResources().getString(
-						R.string.dialog_tip_duplicate_value_text), null).show();
+						R.string.dialog_tip_duplicate_value_title), context
+						.getResources()
+						.getString(R.string.dialog_tip_duplicate_value_text),
+				null);
 	}
 
 	/**

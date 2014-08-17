@@ -23,13 +23,12 @@ public class TipLeaderboardViewDetails extends TipDialog {
 	public TipLeaderboardViewDetails(Context context) {
 		super(context, TIP_NAME, TIP_PRIORITY);
 
-		build(
-				R.drawable.lightbulb,
+		build(R.drawable.lightbulb,
 				context.getResources().getString(
 						R.string.dialog_tip_leaderboard_view_details_title),
 				context.getResources().getString(
 						R.string.dialog_tip_leaderboard_view_details_text),
-				null).show();
+				null);
 	}
 
 	/**

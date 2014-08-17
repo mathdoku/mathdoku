@@ -1,15 +1,5 @@
 package net.mathdoku.plus.leaderboard.ui;
 
-import net.mathdoku.plus.R;
-import net.mathdoku.plus.leaderboard.LeaderboardConnector;
-import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankDatabaseAdapter;
-import net.mathdoku.plus.tip.TipLeaderboardCreateGame;
-import net.mathdoku.plus.tip.TipLeaderboardViewDetails;
-import net.mathdoku.plus.ui.GooglePlusSignInDialog;
-import net.mathdoku.plus.ui.PuzzleFragmentActivity;
-import net.mathdoku.plus.ui.base.GooglePlayServiceFragmentActivity;
-import net.mathdoku.plus.util.FeedbackEmail;
-
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
@@ -30,6 +20,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.google.android.gms.games.GamesClient;
+
+import net.mathdoku.plus.R;
+import net.mathdoku.plus.leaderboard.LeaderboardConnector;
+import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankDatabaseAdapter;
+import net.mathdoku.plus.tip.TipLeaderboardCreateGame;
+import net.mathdoku.plus.tip.TipLeaderboardViewDetails;
+import net.mathdoku.plus.ui.GooglePlusSignInDialog;
+import net.mathdoku.plus.ui.PuzzleFragmentActivity;
+import net.mathdoku.plus.ui.base.GooglePlayServiceFragmentActivity;
+import net.mathdoku.plus.util.FeedbackEmail;
 
 public class LeaderboardFragmentActivity extends
 		GooglePlayServiceFragmentActivity implements ActionBar.TabListener {
@@ -292,12 +292,12 @@ public class LeaderboardFragmentActivity extends
 						if (TipLeaderboardViewDetails
 								.toBeDisplayed(mMathDokuPreferences)) {
 							new TipLeaderboardViewDetails(
-									LeaderboardFragmentActivity.this);
+									LeaderboardFragmentActivity.this).show();
 						}
 						if (TipLeaderboardCreateGame
 								.toBeDisplayed(mMathDokuPreferences)) {
 							new TipLeaderboardCreateGame(
-									LeaderboardFragmentActivity.this);
+									LeaderboardFragmentActivity.this).show();
 						}
 					}
 				});
@@ -305,10 +305,10 @@ public class LeaderboardFragmentActivity extends
 		if (mLeaderboardRankUpdaterProgressDialog.hasNoLeaderboardUpdated()) {
 			// No dialog was shown and the onDismissListener is not called.
 			if (TipLeaderboardViewDetails.toBeDisplayed(mMathDokuPreferences)) {
-				new TipLeaderboardViewDetails(LeaderboardFragmentActivity.this);
+				new TipLeaderboardViewDetails(LeaderboardFragmentActivity.this).show();
 			}
 			if (TipLeaderboardCreateGame.toBeDisplayed(mMathDokuPreferences)) {
-				new TipLeaderboardCreateGame(LeaderboardFragmentActivity.this);
+				new TipLeaderboardCreateGame(LeaderboardFragmentActivity.this).show();
 			}
 		}
 	}

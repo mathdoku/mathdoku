@@ -25,14 +25,13 @@ public class TipOrderOfValuesInCage extends TipDialog {
 	public TipOrderOfValuesInCage(Context context) {
 		super(context, TIP_NAME, TIP_PRIORITY);
 
-		build(
-				R.drawable.lightbulb,
+		build(R.drawable.lightbulb,
 				context.getResources().getString(
 						R.string.dialog_tip_order_of_values_in_cage_title),
 				context.getResources().getString(
 						R.string.dialog_tip_order_of_values_in_cage_text),
 				context.getResources().getDrawable(
-						R.drawable.tip_order_of_values_in_cage)).show();
+						R.drawable.tip_order_of_values_in_cage));
 	}
 
 	/**

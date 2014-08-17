@@ -25,8 +25,7 @@ public class TipArchiveAvailable extends TipDialog {
 				context.getResources().getString(
 						R.string.dialog_tip_archive_available_title),
 				context.getResources().getString(
-						R.string.dialog_tip_archive_available_text), null)
-				.show();
+						R.string.dialog_tip_archive_available_text), null);
 	}
 
 	/**

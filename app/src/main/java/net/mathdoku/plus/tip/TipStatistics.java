@@ -20,12 +20,11 @@ public class TipStatistics extends TipDialog {
 	public TipStatistics(Context context) {
 		super(context, TIP_NAME, TIP_PRIORITY);
 
-		build(
-				R.drawable.lightbulb,
+		build(R.drawable.lightbulb,
 				context.getResources().getString(
-						R.string.dialog_tip_statistics_title),
-				context.getResources().getString(
-						R.string.dialog_tip_statistics_text), null).show();
+						R.string.dialog_tip_statistics_title), context
+						.getResources()
+						.getString(R.string.dialog_tip_statistics_text), null);
 	}
 
 	/**
