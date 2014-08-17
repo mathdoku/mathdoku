@@ -12,36 +12,35 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
-public class TipArchiveAvailableTest extends TipBaseTest {
+public class TipStatisticsTest extends TipBaseTest {
 	// All fields below are defaulted to a value which result in method
 	// toBeDisplayed to return true.
-	private boolean archiveAvailable = true;
+	private boolean statisticsAvailable = true;
 
 	@Before
 	public void setUp() {
 		super.setUp();
 		long minTimeIntervalBetweenTwoConsecutiveDisplays = 12 * 60 * 60 * 1000;
-		super.setUpTimeIntervalBetweenTwoConsecutiveDisplays(
-				"ArchiveAvailable",
+		super.setUpTimeIntervalBetweenTwoConsecutiveDisplays("Statistics",
 				minTimeIntervalBetweenTwoConsecutiveDisplays);
 	}
 
 	@Override
 	protected void initMocks() {
 		super.initMocks();
-		when(preferencesMock.isArchiveAvailable()).thenReturn(archiveAvailable);
+		when(preferencesMock.isStatisticsAvailable()).thenReturn(
+				statisticsAvailable);
 	}
 
 	@Override
 	protected void assertThatDialogToBeDisplayed(Matcher<Boolean> booleanMatcher) {
-		assertThat(TipArchiveAvailable.toBeDisplayed(preferencesMock),
-				booleanMatcher);
+		assertThat(TipStatistics.toBeDisplayed(preferencesMock), booleanMatcher);
 	}
 
 	@Test
-	public void toBeDisplayed_ArchiveIsNotYetAvailable_DialogIsNotDisplayed()
+	public void toBeDisplayed_StatisticsNotAvailable_DialogIsNotDisplayed()
 			throws Exception {
-		archiveAvailable = false;
+		statisticsAvailable = false;
 		initMocks();
 		assertThatDialogToBeDisplayed(is(false));
 	}

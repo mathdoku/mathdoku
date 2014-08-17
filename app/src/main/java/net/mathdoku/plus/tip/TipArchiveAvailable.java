@@ -20,12 +20,12 @@ public class TipArchiveAvailable extends TipDialog {
 	public TipArchiveAvailable(Context context) {
 		super(context, TIP_NAME, TIP_PRIORITY);
 
-		build(
-				R.drawable.lightbulb,
+		build(R.drawable.lightbulb,
 				context.getResources().getString(
-						R.string.dialog_tip_archive_available_title),
-				context.getResources().getString(
-						R.string.dialog_tip_archive_available_text), null);
+						R.string.dialog_tip_archive_available_title), context
+						.getResources()
+						.getString(R.string.dialog_tip_archive_available_text),
+				null);
 	}
 
 	/**

@@ -12,36 +12,49 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
-public class TipArchiveAvailableTest extends TipBaseTest {
+public class TipLeaderboardViewDetailsTest extends TipBaseTest {
 	// All fields below are defaulted to a value which result in method
 	// toBeDisplayed to return true.
-	private boolean archiveAvailable = true;
+	private int leaderboardDetailsViewed = 0;
+	private int leaderBoardsOverviewViewed = 2;
 
 	@Before
 	public void setUp() {
 		super.setUp();
-		long minTimeIntervalBetweenTwoConsecutiveDisplays = 12 * 60 * 60 * 1000;
+		long minTimeIntervalBetweenTwoConsecutiveDisplays = 2 * 24 * 60 * 60
+				* 1000;
 		super.setUpTimeIntervalBetweenTwoConsecutiveDisplays(
-				"ArchiveAvailable",
+				"LeaderboardViewDetails",
 				minTimeIntervalBetweenTwoConsecutiveDisplays);
 	}
 
 	@Override
 	protected void initMocks() {
 		super.initMocks();
-		when(preferencesMock.isArchiveAvailable()).thenReturn(archiveAvailable);
+		when(preferencesMock.getLeaderboardsDetailsViewed()).thenReturn(
+				leaderboardDetailsViewed);
+		when(preferencesMock.getLeaderboardsOverviewViewed()).thenReturn(
+				leaderBoardsOverviewViewed);
 	}
 
 	@Override
 	protected void assertThatDialogToBeDisplayed(Matcher<Boolean> booleanMatcher) {
-		assertThat(TipArchiveAvailable.toBeDisplayed(preferencesMock),
+		assertThat(TipLeaderboardViewDetails.toBeDisplayed(preferencesMock),
 				booleanMatcher);
 	}
 
 	@Test
-	public void toBeDisplayed_ArchiveIsNotYetAvailable_DialogIsNotDisplayed()
+	public void toBeDisplayed_TooManyLeaderboardHaveBeenCreated_DialogIsNotDisplayed()
 			throws Exception {
-		archiveAvailable = false;
+		leaderboardDetailsViewed = 1;
+		initMocks();
+		assertThatDialogToBeDisplayed(is(false));
+	}
+
+	@Test
+	public void toBeDisplayed_TooFewLeaderboardOverviewsHaveBeenViewed_DialogIsNotDisplayed()
+			throws Exception {
+		leaderBoardsOverviewViewed = 1;
 		initMocks();
 		assertThatDialogToBeDisplayed(is(false));
 	}

@@ -11,18 +11,15 @@ public class TipBadCageMathTest extends TipBaseTest {
 
 	@Before
 	public void setUp() {
+		super.setUp();
 		long minTimeIntervalBetweenTwoConsecutiveDisplays = 5 * 60 * 1000;
-		super.setUp("BadCageMath", minTimeIntervalBetweenTwoConsecutiveDisplays);
+		super.setUpTimeIntervalBetweenTwoConsecutiveDisplays("BadCageMath",
+				minTimeIntervalBetweenTwoConsecutiveDisplays);
 	}
 
 	@Override
-	protected void initMocks() {
-		super.initMocks();
-	}
-
-	@Override
-	protected void assertThatDialogIsDisplayed(Matcher<Boolean> booleanMatcher) {
+	protected void assertThatDialogToBeDisplayed(Matcher<Boolean> booleanMatcher) {
 		assertThat(TipBadCageMath.toBeDisplayed(preferencesMock),
-				   booleanMatcher);
+				booleanMatcher);
 	}
 }

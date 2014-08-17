@@ -47,10 +47,15 @@ public class TipOrderOfValuesInCage extends TipDialog {
 	 * @return True in case the tip might be displayed. False otherwise.
 	 */
 	public static boolean toBeDisplayed(Preferences preferences, Cage cage) {
+		// No tip to be displayed for non existing cages
+		if (cage == null) {
+			return false;
+		}
+
 		CageOperator cageOperator = cage.getOperator();
 
-		// No tip to be displayed for non existing cages or single cell cages
-		if (cage == null || cageOperator == CageOperator.NONE) {
+		// No tip to be displayed for cages without operators
+		if (cageOperator == CageOperator.NONE) {
 			return false;
 		}
 

@@ -30,9 +30,10 @@ public class TipCopyCellValuesTest extends TipBaseTest {
 
 	@Before
 	public void setUp() {
-		long minTimeIntervalBetweenTwoConsecutiveDisplays = 2 * 60 * 60
-				* 1000;
-		super.setUp("CopyCellValues", minTimeIntervalBetweenTwoConsecutiveDisplays);
+		super.setUp();
+		long minTimeIntervalBetweenTwoConsecutiveDisplays = 2 * 60 * 60 * 1000;
+		super.setUpTimeIntervalBetweenTwoConsecutiveDisplays("CopyCellValues",
+				minTimeIntervalBetweenTwoConsecutiveDisplays);
 	}
 
 	@Override
@@ -60,9 +61,9 @@ public class TipCopyCellValuesTest extends TipBaseTest {
 	}
 
 	@Override
-	protected void assertThatDialogIsDisplayed(Matcher<Boolean> booleanMatcher) {
+	protected void assertThatDialogToBeDisplayed(Matcher<Boolean> booleanMatcher) {
 		assertThat(TipCopyCellValues.toBeDisplayed(preferencesMock, gridMock),
-				   booleanMatcher);
+				booleanMatcher);
 	}
 
 	@Test
@@ -70,7 +71,7 @@ public class TipCopyCellValuesTest extends TipBaseTest {
 			throws Exception {
 		inputModeCopyCounter = 10;
 		initMocks();
-		assertThatDialogIsDisplayed(is(false));
+		assertThatDialogToBeDisplayed(is(false));
 	}
 
 	@Test
@@ -78,7 +79,7 @@ public class TipCopyCellValuesTest extends TipBaseTest {
 			throws Exception {
 		gridMock = null;
 		initMocks();
-		assertThatDialogIsDisplayed(is(false));
+		assertThatDialogToBeDisplayed(is(false));
 	}
 
 	@Test
@@ -86,7 +87,7 @@ public class TipCopyCellValuesTest extends TipBaseTest {
 			throws Exception {
 		selectedCellMock = null;
 		initMocks();
-		assertThatDialogIsDisplayed(is(false));
+		assertThatDialogToBeDisplayed(is(false));
 	}
 
 	@Test
@@ -94,7 +95,7 @@ public class TipCopyCellValuesTest extends TipBaseTest {
 			throws Exception {
 		countPossiblesInSelectedGridCell = 2;
 		initMocks();
-		assertThatDialogIsDisplayed(is(false));
+		assertThatDialogToBeDisplayed(is(false));
 	}
 
 	@Test
@@ -102,7 +103,7 @@ public class TipCopyCellValuesTest extends TipBaseTest {
 			throws Exception {
 		selectedCageMock = null;
 		initMocks();
-		assertThatDialogIsDisplayed(is(false));
+		assertThatDialogToBeDisplayed(is(false));
 	}
 
 	@Test
@@ -110,7 +111,7 @@ public class TipCopyCellValuesTest extends TipBaseTest {
 			throws Exception {
 		numberOfCellsInSelectedCage = 1;
 		initMocks();
-		assertThatDialogIsDisplayed(is(false));
+		assertThatDialogToBeDisplayed(is(false));
 	}
 
 	@Test
@@ -118,6 +119,6 @@ public class TipCopyCellValuesTest extends TipBaseTest {
 			throws Exception {
 		hasEmptyCellInSelectedCages = false;
 		initMocks();
-		assertThatDialogIsDisplayed(is(false));
+		assertThatDialogToBeDisplayed(is(false));
 	}
 }

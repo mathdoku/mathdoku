@@ -171,7 +171,8 @@ public class TipDialogTest {
 		assertThatSecondaryTipDialogIsDisplayed(false);
 	}
 
-	private void assertThatSecondaryTipDialogIsDisplayed(boolean displaySecondaryTip) {
+	private void assertThatSecondaryTipDialogIsDisplayed(
+			boolean displaySecondaryTip) {
 		setTipDisplayAgain(primaryTipName, true);
 		showPrimaryTipDialog();
 		String secondaryTipName = "** secondary tip **";
@@ -227,7 +228,8 @@ public class TipDialogTest {
 				});
 		primaryTipDialog.show();
 
-		// Either close or cancel the dialog to invoke the onClickCLoseListener which will throw the exception set in the listener above.
+		// Either close or cancel the dialog to invoke the onClickCLoseListener
+		// which will throw the exception set in the listener above.
 		primaryTipDialog.cancel();
 	}
 }

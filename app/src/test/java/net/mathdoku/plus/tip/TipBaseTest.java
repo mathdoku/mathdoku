@@ -16,16 +16,19 @@ public class TipBaseTest {
 	private long tipLastDisplayTime;
 	private String preferenceName;
 
-	protected void setUp(String preferenceName,
+	public void setUp() {
+		// Reset static singleton for consecutive unit tests
+		TipDialog.resetDisplayedDialogs();
+	}
+
+	protected void setUpTimeIntervalBetweenTwoConsecutiveDisplays(
+			String preferenceName,
 			long minTimeIntervalBetweenTwoConsecutiveDisplays) {
 		instantiatedBySubclass = true;
 		this.preferenceName = preferenceName;
 		this.minTimeIntervalBetweenTwoConsecutiveDisplays = minTimeIntervalBetweenTwoConsecutiveDisplays;
 
 		setIsDisplayedLongEnoughAgo();
-
-		// Reset static singleton for consecutive unit tests
-		TipDialog.resetDisplayedDialogs();
 	}
 
 	/**
@@ -44,7 +47,7 @@ public class TipBaseTest {
 			throws Exception {
 		if (instantiatedBySubclass) {
 			initMocks();
-			assertThatDialogIsDisplayed(is(true));
+			assertThatDialogToBeDisplayed(is(true));
 		}
 	}
 
@@ -61,11 +64,11 @@ public class TipBaseTest {
 				tipLastDisplayTime);
 	}
 
-	protected void assertThatDialogIsDisplayed(Matcher<Boolean> booleanMatcher) {
+	protected void assertThatDialogToBeDisplayed(Matcher<Boolean> booleanMatcher) {
 		// Unit test does not allow abstract class. Throw exception if method
 		// not overridden.
 		throw new IllegalStateException(
-				"Subclass should override method assertThatDialogIsDisplayed.");
+				"Subclass should override method assertThatDialogToBeDisplayed.");
 	}
 
 	@Test
@@ -74,7 +77,7 @@ public class TipBaseTest {
 		if (instantiatedBySubclass) {
 			setIsDisplayedNotLongEnoughAgo();
 			initMocks();
-			assertThatDialogIsDisplayed(is(false));
+			assertThatDialogToBeDisplayed(is(false));
 		}
 	}
 
