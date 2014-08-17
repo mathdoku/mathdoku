@@ -88,9 +88,7 @@ public class TipDialog extends AlertDialog {
 
 		// Register this tip as the one and only displayed dialog
 		mDisplayedDialog = this;
-		if (DEBUG_TIP_DIALOG) {
-			Log.i(TAG, "Added dialog " + mTip);
-		}
+		debug(TAG, "Added dialog " + mTip);
 
 		mDisplayAgain = mPreferences.getTipDisplayAgain(mTip);
 	}
@@ -144,61 +142,12 @@ public class TipDialog extends AlertDialog {
 		// Allow all possibilities for cancelling
 		setCancelable(true);
 		setCanceledOnTouchOutside(true);
-		setOnCancelListener(new OnCancelListener() {
-			@Override
-			public void onCancel(DialogInterface dialog) {
-				// After closing this dialog, a new TipDialog may be
-				// raised immediately.
-				if (DEBUG_TIP_DIALOG) {
-					Log.i(TAG, "OnClose: removed dialog after click on cancel "
-							+ mTip);
-				}
-				mDisplayedDialog = null;
-
-				// Store time at which the tip was last displayed
-				mPreferences.setTipLastDisplayTime(mTip,
-						System.currentTimeMillis());
-
-				// If an additional close listener was set, it needs to
-				// be called.
-				if (mOnClickCloseListener != null) {
-					mOnClickCloseListener.onTipDialogClose();
-				}
-			}
-		});
+		setOnCancelListener(new OnTipDialogCancelListener());
 
 		setButton(DialogInterface.BUTTON_POSITIVE, mContext
 				.getResources()
 				.getString(R.string.dialog_general_button_close),
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int id) {
-						// Check if do not show again checkbox is
-						// checked
-						if (checkBoxView.isChecked()) {
-							mPreferences.setTipDoNotDisplayAgain(mTip);
-						}
-
-						// After closing this dialog, a new TipDialog may be
-						// raised immediately.
-						if (DEBUG_TIP_DIALOG) {
-							Log.i(TAG,
-									"OnClose: removed dialog after click on close "
-											+ mTip);
-						}
-						mDisplayedDialog = null;
-
-						// Store time at which the tip was last displayed
-						mPreferences.setTipLastDisplayTime(mTip,
-								System.currentTimeMillis());
-
-						// If an additional close listener was set, it needs to
-						// be called.
-						if (mOnClickCloseListener != null) {
-							mOnClickCloseListener.onTipDialogClose();
-						}
-					}
-				});
+				new OnTipDialogCloseListener(checkBoxView));
 
 		// In case the dialog is shown, it is registered as the displayed
 		// tip dialog. On dismissal of the dialog it has to be unregistered.
@@ -206,9 +155,7 @@ public class TipDialog extends AlertDialog {
 
 			@Override
 			public void onDismiss(DialogInterface dialog) {
-				if (DEBUG_TIP_DIALOG) {
-					Log.i(TAG, "OnDismiss: removed dialog in dismiss " + mTip);
-				}
+				debug(TAG, "OnDismiss: removed dialog in dismiss " + mTip);
 				mDisplayedDialog = null;
 			}
 		});
@@ -245,31 +192,24 @@ public class TipDialog extends AlertDialog {
 			TipPriority priority) {
 		// Check do-not-show-again-preference for this tip first.
 		if (!preferences.getTipDisplayAgain(tip)) {
-			if (DEBUG_TIP_DIALOG) {
-				Log.i(TAG, tip + ": do-not-show-again enabled");
-			}
+			debug(TAG, tip + ": do-not-show-again enabled");
 			return false;
 		}
 
 		// If already a dialog is showed, check whether it has to be replaced
 		// with a higher priority dialog.
 		if (mDisplayedDialog != null) {
-			if (DEBUG_TIP_DIALOG) {
-				Log.i(TAG, tip + ": priority (" + priority.ordinal()
-						+ ") compared with priority of "
-						+ mDisplayedDialog.mTip + "("
-						+ mDisplayedDialog.mPriority.ordinal() + ")");
-			}
+			debug(TAG, tip + ": priority (" + priority.ordinal()
+					+ ") compared with priority of " + mDisplayedDialog.mTip
+					+ "(" + mDisplayedDialog.mPriority.ordinal() + ")");
 
 			// Do not display in case priority is lower than priority of already
 			// displayed dialog.
 			if (priority.ordinal() < mDisplayedDialog.mPriority.ordinal()) {
-				if (DEBUG_TIP_DIALOG) {
-					Log
-							.i(TAG,
-									tip
-											+ ": do not replace as priority is lower than already displayed tip");
-				}
+				Log
+						.i(TAG,
+								tip
+										+ ": do not replace as priority is lower than already displayed tip");
 				return false;
 			}
 
@@ -277,19 +217,13 @@ public class TipDialog extends AlertDialog {
 			// kept.
 			if (priority.ordinal() == mDisplayedDialog.mPriority.ordinal()
 					&& new Random().nextBoolean()) {
-				if (DEBUG_TIP_DIALOG) {
-					Log
-							.i(TAG,
-									tip
-											+ ": equal priorities. Randomly determined to replace");
-				}
+				Log.i(TAG, tip
+						+ ": equal priorities. Randomly determined to replace");
 				return false;
 			}
 		}
 
-		if (DEBUG_TIP_DIALOG) {
-			Log.i(TAG, tip + ": to be showed");
-		}
+		debug(TAG, tip + ": to be showed");
 		return true;
 	}
 
@@ -331,5 +265,63 @@ public class TipDialog extends AlertDialog {
 		mOnClickCloseListener = onClickCloseListener;
 
 		return this;
+	}
+
+	private class OnTipDialogCancelListener implements OnCancelListener {
+		@Override
+		public void onCancel(DialogInterface dialog) {
+			// After closing this dialog, a new TipDialog may be
+			// raised immediately.
+			debug(TAG, "OnClose: removed dialog after click on cancel " + mTip);
+			mDisplayedDialog = null;
+
+			// Store time at which the tip was last displayed
+			mPreferences
+					.setTipLastDisplayTime(mTip, System.currentTimeMillis());
+
+			// If an additional close listener was set, it needs to
+			// be called.
+			if (mOnClickCloseListener != null) {
+				mOnClickCloseListener.onTipDialogClose();
+			}
+		}
+	}
+
+	private class OnTipDialogCloseListener implements OnClickListener {
+		private final CheckBox checkBoxView;
+
+		public OnTipDialogCloseListener(CheckBox checkBoxView) {
+			this.checkBoxView = checkBoxView;
+		}
+
+		@Override
+		public void onClick(DialogInterface dialog, int id) {
+			// Check if do not show again checkbox is
+			// checked
+			if (checkBoxView.isChecked()) {
+				mPreferences.setTipDoNotDisplayAgain(mTip);
+			}
+
+			// After closing this dialog, a new TipDialog may be
+			// raised immediately.
+			debug(TAG, "OnClose: removed dialog after click on close " + mTip);
+			mDisplayedDialog = null;
+
+			// Store time at which the tip was last displayed
+			mPreferences
+					.setTipLastDisplayTime(mTip, System.currentTimeMillis());
+
+			// If an additional close listener was set, it needs to
+			// be called.
+			if (mOnClickCloseListener != null) {
+				mOnClickCloseListener.onTipDialogClose();
+			}
+		}
+	}
+
+	private static void debug(String tag, String message) {
+		if (DEBUG_TIP_DIALOG) {
+			Log.d(tag, message);
+		}
 	}
 }
