@@ -61,8 +61,7 @@ public class TipOrderOfValuesInCage extends TipDialog {
 
 		// No tip to be displayed in case operators are visible and values have
 		// to be added or multiplied.
-		if (!cage.isOperatorHidden()
-				&& (cageOperator == CageOperator.ADD || cageOperator == CageOperator.MULTIPLY)) {
+		if (isOrderOfValuesNotRelevant(cage, cageOperator)) {
 			return false;
 		}
 
@@ -75,5 +74,10 @@ public class TipOrderOfValuesInCage extends TipDialog {
 		// Determine on basis of preferences whether the tip should be shown.
 		return TipDialog
 				.getDisplayTipAgain(preferences, TIP_NAME, TIP_PRIORITY);
+	}
+
+	private static boolean isOrderOfValuesNotRelevant(Cage cage, CageOperator cageOperator) {
+		return !cage.isOperatorHidden()
+				&& (cageOperator == CageOperator.ADD || cageOperator == CageOperator.MULTIPLY);
 	}
 }
