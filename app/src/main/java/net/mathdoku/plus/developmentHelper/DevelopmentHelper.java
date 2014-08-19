@@ -50,6 +50,11 @@ import java.util.Random;
 public class DevelopmentHelper {
 	@SuppressWarnings("unused")
 	private static final String TAG = DevelopmentHelper.class.getName();
+	private static final String CANCEL = "Cancel";
+
+	// Prevent accidental instantiation of helper class.
+	private DevelopmentHelper() {
+	}
 
 	/**
 	 * Checks if given menu item id can be processed by the development helper.
@@ -61,38 +66,33 @@ public class DevelopmentHelper {
 	 * @return True in case the menu item is processed successfully. False
 	 *         otherwise.
 	 */
+	// Suppress warnings for cyclomatic redundancy check
+	@SuppressWarnings("all")
 	public static boolean onDevelopmentHelperOption(
 			PuzzleFragmentActivity puzzleFragmentActivity, int menuId, Grid grid) {
-		if (Config.APP_MODE == AppMode.DEVELOPMENT) {
-			switch (menuId) {
-			case R.id.development_mode_generate_games:
-				// Generate games
-				generateGames(puzzleFragmentActivity);
-				return true;
-			case R.id.development_mode_reset_preferences:
-				resetPreferences(puzzleFragmentActivity);
-				return true;
-			case R.id.development_mode_unlock_archive:
-				unlockArchiveAndStatistics();
-				return true;
-			case R.id.development_mode_delete_database_and_preferences:
-				deleteDatabaseAndPreferences(puzzleFragmentActivity);
-				return true;
-			case R.id.development_mode_submit_manual_score:
-				if (grid != null && !grid.isActive()) {
-					submitManualScore(puzzleFragmentActivity, grid);
-				}
-				return true;
-			case R.id.development_mode_generate_test_helper:
-				if (grid != null) {
-					new TestHelperCodeGenerator(grid).logCode();
-				}
-				return true;
-			default:
-				return false;
-			}
+		if (Config.APP_MODE != AppMode.DEVELOPMENT) {
+			return false;
 		}
-		return false;
+
+		switch (menuId) {
+		case R.id.development_mode_generate_games:
+			return generateGames(puzzleFragmentActivity);
+		case R.id.development_mode_reset_preferences:
+			return resetPreferences(puzzleFragmentActivity);
+		case R.id.development_mode_unlock_archive:
+			return unlockArchiveAndStatistics();
+		case R.id.development_mode_delete_database_and_preferences:
+			return deleteDatabaseAndPreferences(puzzleFragmentActivity);
+		case R.id.development_mode_submit_manual_score:
+			return submitManualScore(puzzleFragmentActivity, grid);
+		case R.id.development_mode_generate_test_helper:
+			if (grid != null) {
+				new TestHelperCodeGenerator(grid).logCode();
+			}
+			return true;
+		default:
+			return false;
+		}
 	}
 
 	/**
@@ -103,14 +103,18 @@ public class DevelopmentHelper {
 	 *            The activity in which context the confirmation dialog will be
 	 *            shown.
 	 */
-	private static void generateGames(
+	private static boolean generateGames(
 			final PuzzleFragmentActivity puzzleFragmentActivity) {
-		if (Config.APP_MODE == AppMode.DEVELOPMENT) {
-			puzzleFragmentActivity.mGeneratePuzzleProgressDialog = new GeneratePuzzleProgressDialog(
-					puzzleFragmentActivity,
-					createArrayOfRandomGridGeneratingParameters(10));
-			puzzleFragmentActivity.mGeneratePuzzleProgressDialog.show();
+		if (Config.APP_MODE != AppMode.DEVELOPMENT) {
+			return false;
 		}
+
+		puzzleFragmentActivity.mGeneratePuzzleProgressDialog = new GeneratePuzzleProgressDialog(
+				puzzleFragmentActivity,
+				createArrayOfRandomGridGeneratingParameters(10));
+		puzzleFragmentActivity.mGeneratePuzzleProgressDialog.show();
+
+		return true;
 	}
 
 	private static GridGeneratingParameters[] createArrayOfRandomGridGeneratingParameters(
@@ -137,6 +141,44 @@ public class DevelopmentHelper {
 		return gridTypes[randomIndex];
 	}
 
+	/**
+	 * Removes all preferences. After restart of the app the preferences will be
+	 * initialized with default values. Saved games will not be deleted!
+	 *
+	 * @param puzzleFragmentActivity
+	 *            The activity in which context the preferences are have to be
+	 *            reset.
+	 */
+	private static boolean resetPreferences(
+			final PuzzleFragmentActivity puzzleFragmentActivity) {
+		if (Config.APP_MODE != AppMode.DEVELOPMENT) {
+			return false;
+		}
+
+		executeDeleteAllPreferences();
+
+		// Show dialog
+		new AlertDialog.Builder(puzzleFragmentActivity)
+				.setMessage(
+						"All preferences have been removed. After restart "
+								+ "of the app the " + "preferences will be "
+								+ "initialized with default values.")
+				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int id) {
+						// Restart the activity
+						Intent intent = new Intent(puzzleFragmentActivity,
+												   ArchivePreferenceActivity.class);
+						puzzleFragmentActivity.getBaseContext().startActivity(
+								intent);
+						puzzleFragmentActivity.finish();
+					}
+				})
+				.show();
+
+		return true;
+	}
+
 	public static void generateGamesReady(
 			final PuzzleFragmentActivity puzzleFragmentActivity,
 			int numberOfGamesGenerated) {
@@ -160,46 +202,6 @@ public class DevelopmentHelper {
 	}
 
 	/**
-	 * Removes all preferences. After restart of the app the preferences will be
-	 * initialized with default values. Saved games will not be deleted!
-	 * 
-	 * @param puzzleFragmentActivity
-	 *            The activity in which context the preferences are have to be
-	 *            reset.
-	 */
-	private static void resetPreferences(
-			final PuzzleFragmentActivity puzzleFragmentActivity) {
-		if (Config.APP_MODE == AppMode.DEVELOPMENT) {
-			executeDeleteAllPreferences();
-
-			// Show dialog
-			new AlertDialog.Builder(puzzleFragmentActivity)
-					.setMessage(
-							"All preferences have been removed. After restart "
-									+ "of the app the "
-									+ "preferences will be "
-									+ "initialized with default values.")
-					.setPositiveButton("OK",
-							new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog,
-										int id) {
-									// Restart the activity
-									// puzzleFragmentActivity.recreate();
-									Intent intent = new Intent(
-											puzzleFragmentActivity,
-											ArchivePreferenceActivity.class);
-									puzzleFragmentActivity
-											.getBaseContext()
-											.startActivity(intent);
-									puzzleFragmentActivity.finish();
-								}
-							})
-					.show();
-		}
-	}
-
-	/**
 	 * Delete all data (games, database and preferences). It is provided as an
 	 * easy access instead of using the button in the AppInfo dialog which
 	 * involves opening the application manager.
@@ -208,36 +210,38 @@ public class DevelopmentHelper {
 	 *            The activity in which context the database and preferences are
 	 *            deleted.
 	 */
-	private static void deleteDatabaseAndPreferences(
+	private static boolean deleteDatabaseAndPreferences(
 			final PuzzleFragmentActivity puzzleFragmentActivity) {
-		if (Config.APP_MODE == AppMode.DEVELOPMENT) {
-			AlertDialog.Builder builder = new AlertDialog.Builder(
-					puzzleFragmentActivity);
-			builder.setTitle("Delete all data and preferences?")
-					.setMessage(
-							"All data and preferences for MathDoku+ will be deleted.")
-					.setNegativeButton("Cancel",
-							new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog,
-										int id) {
-									// Do nothing
-								}
-							})
-					.setPositiveButton("Delete all",
-							new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog,
-										int id) {
-									executeDeleteAllPreferences();
-									executeDeleteDatabase(puzzleFragmentActivity);
-									restartApp(puzzleFragmentActivity);
-
-								}
-							});
-			AlertDialog dialog = builder.create();
-			dialog.show();
+		if (Config.APP_MODE != AppMode.DEVELOPMENT) {
+			return false;
 		}
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(
+				puzzleFragmentActivity);
+		builder.setTitle("Delete all data and preferences?")
+				.setMessage(
+						"All data and preferences for MathDoku+ will be deleted.")
+				.setNegativeButton(CANCEL,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int id) {
+								// Do nothing
+							}
+						})
+				.setPositiveButton("Delete all",
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int id) {
+								executeDeleteAllPreferences();
+								executeDeleteDatabase(puzzleFragmentActivity);
+								restartApp(puzzleFragmentActivity);
+
+							}
+						});
+		AlertDialog dialog = builder.create();
+		dialog.show();
+
+		return true;
 	}
 
 	private static void restartApp(PuzzleFragmentActivity puzzleFragmentActivity) {
@@ -319,7 +323,7 @@ public class DevelopmentHelper {
 										+ "database.\n"
 										+ "If you continue to use this this might "
 										+ "result in (unhandled) exceptions.")
-						.setNegativeButton("Cancel",
+						.setNegativeButton(CANCEL,
 								new DialogInterface.OnClickListener() {
 									@Override
 									public void onClick(DialogInterface dialog,
@@ -348,13 +352,17 @@ public class DevelopmentHelper {
 	/**
 	 * Make options Archive and Statistics visible in the main menu.
 	 */
-	private static void unlockArchiveAndStatistics() {
-		if (Config.APP_MODE == AppMode.DEVELOPMENT) {
-			Editor editor = Preferences.getInstance().mSharedPreferences.edit();
-			editor.putBoolean(Preferences.ARCHIVE_AVAILABLE, true);
-			editor.putBoolean(Preferences.STATISTICS_AVAILABLE, true);
-			editor.commit();
+	private static boolean unlockArchiveAndStatistics() {
+		if (Config.APP_MODE != AppMode.DEVELOPMENT) {
+			return false;
 		}
+
+		Editor editor = Preferences.getInstance().mSharedPreferences.edit();
+		editor.putBoolean(Preferences.ARCHIVE_AVAILABLE, true);
+		editor.putBoolean(Preferences.STATISTICS_AVAILABLE, true);
+		editor.commit();
+
+		return true;
 	}
 
 	/**
@@ -367,55 +375,81 @@ public class DevelopmentHelper {
 	 * @param grid
 	 *            The grid for which a score is submitted.
 	 */
-	public static void submitManualScore(
+	public static boolean submitManualScore(
 			final PuzzleFragmentActivity puzzleFragmentActivity, final Grid grid) {
-		if (Config.APP_MODE == AppMode.DEVELOPMENT
-				&& puzzleFragmentActivity
-						.getResources()
-						.getString(R.string.app_id)
-						.equals("282401107486")) {
-			LayoutInflater li = LayoutInflater.from(puzzleFragmentActivity);
-			View view = li.inflate(R.layout.leaderboard_score, null);
-			assert view != null;
+		if (Config.APP_MODE != AppMode.DEVELOPMENT
+				|| hasGooglePlayAppIdDevelopment(puzzleFragmentActivity)) {
+			return false;
+		}
 
-			final TextView manualLeaderboardScore = (TextView) view
-					.findViewById(R.id.manual_leaderboard_score);
-			assert manualLeaderboardScore != null;
+		if (grid == null || grid.isActive()) {
+			return false;
+		}
 
-			AlertDialog.Builder builder = new AlertDialog.Builder(
-					puzzleFragmentActivity);
-			builder.setTitle("Manually submit a score to the leaderboard")
-					.setView(view)
-					.setPositiveButton("Submit",
-							new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog,
-										int id) {
-									// Change real score of puzzle with manually
-									// entered score
-									// noinspection ConstantConditions
-									long score = Long
-											.valueOf(manualLeaderboardScore
-													.getText()
-													.toString());
-									if (score > 0) {
-										// Manipulate grid and statistics so it
-										// can be re-submitted again.
-										if (grid.isSolutionRevealed()) {
-											grid.unrevealSolution();
-										}
-										GridStatistics gridStatistics = grid
-												.getGridStatistics();
-										gridStatistics.mElapsedTime = score;
-										gridStatistics.mCheatPenaltyTime = 0;
-										gridStatistics.mReplayCount = 0;
-										puzzleFragmentActivity
-												.onPuzzleFinishedListener(grid);
-									}
-								}
-							});
-			AlertDialog dialog = builder.create();
-			dialog.show();
+		LayoutInflater li = LayoutInflater.from(puzzleFragmentActivity);
+		View view = li.inflate(R.layout.leaderboard_score, null);
+		assert view != null;
+
+		final TextView manualLeaderboardScore = (TextView) view
+				.findViewById(R.id.manual_leaderboard_score);
+		assert manualLeaderboardScore != null;
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(
+				puzzleFragmentActivity);
+		builder.setTitle("Manually submit a score to the leaderboard")
+				.setView(view)
+				.setPositiveButton("Submit", new ManualSubmitScoreToLeaderboardListener(
+						manualLeaderboardScore, grid, puzzleFragmentActivity));
+		AlertDialog dialog = builder.create();
+		dialog.show();
+
+		return true;
+	}
+
+	private static boolean hasGooglePlayAppIdDevelopment(
+			PuzzleFragmentActivity puzzleFragmentActivity) {
+		String googlePlayServiceDevelopmentAppId = "282401107486";
+		if (!googlePlayServiceDevelopmentAppId
+				.equals(puzzleFragmentActivity.getResources()
+								.getString(R.string.app_id))) {
+			return true;
+		}
+		return false;
+	}
+
+	private static class ManualSubmitScoreToLeaderboardListener implements DialogInterface.OnClickListener {
+		private final TextView manualLeaderboardScore;
+		private final Grid grid;
+		private final PuzzleFragmentActivity puzzleFragmentActivity;
+
+		public ManualSubmitScoreToLeaderboardListener(TextView manualLeaderboardScore, Grid grid, PuzzleFragmentActivity puzzleFragmentActivity) {
+			this.manualLeaderboardScore = manualLeaderboardScore;
+			this.grid = grid;
+			this.puzzleFragmentActivity = puzzleFragmentActivity;
+		}
+
+		@Override
+		public void onClick(DialogInterface dialog, int id) {
+			// Change real score of puzzle with manually
+			// entered score
+			// noinspection ConstantConditions
+			long score = Long
+					.valueOf(manualLeaderboardScore.getText()
+									 .toString());
+			if (score > 0) {
+				// Manipulate grid and statistics so it
+				// can be re-submitted again.
+				if (grid.isSolutionRevealed()) {
+					grid.unrevealSolution();
+				}
+				GridStatistics gridStatistics = grid
+						.getGridStatistics();
+				gridStatistics.mElapsedTime = score;
+				gridStatistics.mCheatPenaltyTime = 0;
+				gridStatistics.mReplayCount = 0;
+				puzzleFragmentActivity
+						.onPuzzleFinishedListener(grid);
+			}
 		}
 	}
 }

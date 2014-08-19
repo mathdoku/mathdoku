@@ -10,6 +10,8 @@ import net.mathdoku.plus.puzzle.grid.Grid;
 /**
  * Write a skeleton for a TestHelper class to the log messages.
  */
+// Suppress all warning because of string duplications. De-duplication of string makes this code less readable.
+@SuppressWarnings("all")
 public class TestHelperCodeGenerator {
 	@SuppressWarnings("unused")
 	private static final String TAG = TestHelperCodeGenerator.class.getName();
