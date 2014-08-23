@@ -3,7 +3,7 @@ package net.mathdoku.plus.leaderboard.ui;
 import org.junit.Before;
 import org.junit.Test;
 
-public class LeaderboardFragmentTest {
+public class LeaderboardOverviewTest {
 	@Before
 	public void setUp() throws Exception {
 

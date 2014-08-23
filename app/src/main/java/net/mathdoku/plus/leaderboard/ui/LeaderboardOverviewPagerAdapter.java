@@ -33,13 +33,13 @@ class LeaderboardOverviewPagerAdapter extends FragmentPagerAdapter {
 	@Override
 	public android.support.v4.app.Fragment getItem(int index) {
 		Bundle bundle = new Bundle();
-		bundle.putInt(LeaderboardFragment.ARG_GRID_SIZE,
+		bundle.putInt(LeaderboardOverview.ARG_GRID_SIZE,
 				GRID_SIZES_WITH_LEADERBOARD[index].getGridSize());
-		bundle.putInt(LeaderboardFragment.ARG_FILTER,
+		bundle.putInt(LeaderboardOverview.ARG_FILTER,
 				mLeaderboardOverviewActivity.getLeaderboardFilter().ordinal());
 
 		// Create fragment and pass the bundle
-		android.support.v4.app.Fragment fragment = new LeaderboardFragment();
+		android.support.v4.app.Fragment fragment = new LeaderboardOverview();
 		fragment.setArguments(bundle);
 
 		return fragment;
@@ -69,10 +69,10 @@ class LeaderboardOverviewPagerAdapter extends FragmentPagerAdapter {
 	 * @return The fragment corresponding with the given position in the adapter
 	 *         of the view pager.
 	 */
-	public LeaderboardFragment getFragment(ViewPager viewPager, int position,
+	public LeaderboardOverview getFragment(ViewPager viewPager, int position,
 			FragmentManager fragmentManager) {
 		String name = makeFragmentName(viewPager.getId(), position);
-		return (LeaderboardFragment) fragmentManager.findFragmentByTag(name);
+		return (LeaderboardOverview) fragmentManager.findFragmentByTag(name);
 	}
 
 	/**

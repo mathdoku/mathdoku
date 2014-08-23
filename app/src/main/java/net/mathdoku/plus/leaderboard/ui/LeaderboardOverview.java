@@ -14,9 +14,14 @@ import net.mathdoku.plus.leaderboard.ui.LeaderboardOverviewActivity.LeaderboardF
 import java.util.ArrayList;
 import java.util.List;
 
-public class LeaderboardFragment extends android.support.v4.app.Fragment {
+/**
+ * This class displays a {@link android.support.v4.app.Fragment} for an overview
+ * of related leaderboards. The overview can optionally be filtered. It is
+ * however guaranteed that at least 1 item is displayed.
+ */
+public class LeaderboardOverview extends android.support.v4.app.Fragment {
 	@SuppressWarnings("unused")
-	private static final String TAG = LeaderboardFragment.class.getName();
+	private static final String TAG = LeaderboardOverview.class.getName();
 
 	public static final String ARG_GRID_SIZE = "Leaderboard.arg_grid_size";
 	public static final String ARG_FILTER = "Leaderboard.arg_filter";

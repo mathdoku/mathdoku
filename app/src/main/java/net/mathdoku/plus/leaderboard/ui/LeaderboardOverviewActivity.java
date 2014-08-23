@@ -96,15 +96,15 @@ public class LeaderboardOverviewActivity extends
 					@Override
 					public void onPageSelected(int position) {
 						// Get the fragment on the selected position
-						LeaderboardFragment leaderboardFragment = mLeaderboardOverviewPagerAdapter
+						LeaderboardOverview leaderboardOverview = mLeaderboardOverviewPagerAdapter
 								.getFragment(mViewPager, position,
 										getSupportFragmentManager());
 
 						// Inform the fragment about the current filter as it
 						// may be changed since in case the fragment was
 						// displayed before.
-						if (leaderboardFragment != null) {
-							leaderboardFragment
+						if (leaderboardOverview != null) {
+							leaderboardOverview
 									.setLeaderboardFilter(getLeaderboardFilter());
 						}
 
@@ -363,13 +363,13 @@ public class LeaderboardOverviewActivity extends
 				mLeaderboardFilter = LeaderboardFilter.values()[(int) id];
 
 				// Get the fragment which is currently displayed
-				LeaderboardFragment leaderboardFragment = mLeaderboardOverviewPagerAdapter
+				LeaderboardOverview leaderboardOverview = mLeaderboardOverviewPagerAdapter
 						.getFragment(mViewPager, mViewPager.getCurrentItem(),
 								getSupportFragmentManager());
 
 				// Inform the fragment about the change of filter.
-				if (leaderboardFragment != null) {
-					leaderboardFragment
+				if (leaderboardOverview != null) {
+					leaderboardOverview
 							.setLeaderboardFilter(mLeaderboardFilter);
 				}
 			}
@@ -425,15 +425,15 @@ public class LeaderboardOverviewActivity extends
 
 						for (int i = minPosition; i <= maxPosition; i++) {
 							// Get the fragment on the selected position
-							LeaderboardFragment leaderboardFragment = mLeaderboardOverviewPagerAdapter
+							LeaderboardOverview leaderboardOverview = mLeaderboardOverviewPagerAdapter
 									.getFragment(mViewPager, i,
 											getSupportFragmentManager());
 
 							// Refresh content of the fragment as the
 							// leaderboard data may be changed since in case the
 							// fragment created.
-							if (leaderboardFragment != null) {
-								leaderboardFragment.refresh();
+							if (leaderboardOverview != null) {
+								leaderboardOverview.refresh();
 							}
 						}
 					}
