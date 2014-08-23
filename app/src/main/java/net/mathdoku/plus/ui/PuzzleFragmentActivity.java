@@ -49,7 +49,7 @@ import net.mathdoku.plus.gridgenerating.GridGeneratingParametersBuilder;
 import net.mathdoku.plus.leaderboard.LeaderboardConnector;
 import net.mathdoku.plus.leaderboard.LeaderboardRankUpdater;
 import net.mathdoku.plus.leaderboard.LeaderboardType;
-import net.mathdoku.plus.leaderboard.ui.LeaderboardFragmentActivity;
+import net.mathdoku.plus.leaderboard.ui.LeaderboardOverviewActivity;
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.puzzle.InvalidGridException;
 import net.mathdoku.plus.puzzle.grid.Grid;
@@ -188,8 +188,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			}
 
 			// Restore background process if running.
-			mGridConverter = configurationInstanceState
-					.getGameFileConverter();
+			mGridConverter = configurationInstanceState.getGameFileConverter();
 			if (mGridConverter != null) {
 				mGridConverter.attachToActivity(this);
 			}
@@ -652,8 +651,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			// the latest definitions. On completion of the game file
 			// conversion, method upgradePhase2_UpdatePreferences will be
 			// called.
-			mGridConverter = new GridConverter(this,
-					previousInstalledVersion, packageVersionNumber);
+			mGridConverter = new GridConverter(this, previousInstalledVersion,
+					packageVersionNumber);
 			mGridConverter.execute();
 
 			return true;
@@ -755,7 +754,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 			// task from this activity. It will keep on running until finished.
 			mGridConverter.detachFromActivity();
 		}
-		return new ConfigurationInstanceState(mGeneratePuzzleProgressDialog, mGridConverter);
+		return new ConfigurationInstanceState(mGeneratePuzzleProgressDialog,
+				mGridConverter);
 	}
 
 	@Override
@@ -1210,19 +1210,16 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 						mOnResumeRestartLastGame = true;
 					}
 				}
-				if (bundle
-						.containsKey(NEW_PUZZLE_FOR_LEADERBOARD)
-						&& bundle
-								.getBoolean(NEW_PUZZLE_FOR_LEADERBOARD)
+				if (bundle.containsKey(NEW_PUZZLE_FOR_LEADERBOARD)
+						&& bundle.getBoolean(NEW_PUZZLE_FOR_LEADERBOARD)
 						&& bundle
 								.containsKey(NEW_PUZZLE_FOR_LEADERBOARD_GRID_SIZE)
 						&& bundle
 								.containsKey(NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS)
 						&& bundle
 								.containsKey(NEW_PUZZLE_FOR_LEADERBOARD_PUZZLE_COMPLEXITY)) {
-					GridType gridType = GridType
-							.valueOf(bundle
-									.getString(NEW_PUZZLE_FOR_LEADERBOARD_GRID_SIZE));
+					GridType gridType = GridType.valueOf(bundle
+							.getString(NEW_PUZZLE_FOR_LEADERBOARD_GRID_SIZE));
 					boolean visibleOperators = !bundle
 							.getBoolean(NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS);
 					PuzzleComplexity puzzleComplexity = PuzzleComplexity
@@ -1237,19 +1234,20 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		super.onNewIntent(intent);
 	}
 
-	public static Intent createIntentToStartNewPuzzleFromSelectedLeaderboardFragment(Activity activity, int gridSize, boolean hideOperators, PuzzleComplexity puzzleComplexity) {
-		Intent intent = new Intent(activity,
-								   PuzzleFragmentActivity.class)
-				.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK + Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	public static Intent createIntentToStartNewPuzzleFromSelectedLeaderboardFragment(
+			Activity activity, int gridSize, boolean hideOperators,
+			PuzzleComplexity puzzleComplexity) {
+		Intent intent = new Intent(activity, PuzzleFragmentActivity.class)
+				.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+						+ Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		if (intent != null) {
 			intent.putExtra(NEW_PUZZLE_FOR_LEADERBOARD, true);
-			intent.putExtra(NEW_PUZZLE_FOR_LEADERBOARD_GRID_SIZE,
-							GridType.fromInteger(gridSize).toString());
-			intent.putExtra(
-					NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS,
+			intent.putExtra(NEW_PUZZLE_FOR_LEADERBOARD_GRID_SIZE, GridType
+					.fromInteger(gridSize)
+					.toString());
+			intent.putExtra(NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS,
 					hideOperators);
-			intent.putExtra(
-					NEW_PUZZLE_FOR_LEADERBOARD_PUZZLE_COMPLEXITY,
+			intent.putExtra(NEW_PUZZLE_FOR_LEADERBOARD_PUZZLE_COMPLEXITY,
 					puzzleComplexity.toString());
 		}
 
@@ -1570,7 +1568,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 	 */
 	private void startLeaderboardsOverview() {
 		Intent intentLeaderboards = new Intent(this,
-				LeaderboardFragmentActivity.class);
+				LeaderboardOverviewActivity.class);
 		startActivity(intentLeaderboards);
 		mMathDokuPreferences.increaseLeaderboardsOverviewViewed();
 	}

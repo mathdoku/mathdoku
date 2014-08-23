@@ -21,13 +21,13 @@ class LeaderboardFragmentPagerAdapter extends FragmentPagerAdapter {
 			.getGridSizeWithLeaderboard();
 
 	// Context
-	private final LeaderboardFragmentActivity mLeaderboardFragmentActivity;
+	private final LeaderboardOverviewActivity mLeaderboardOverviewActivity;
 
 	public LeaderboardFragmentPagerAdapter(
-			LeaderboardFragmentActivity leaderboardFragmentActivity,
+			LeaderboardOverviewActivity leaderboardOverviewActivity,
 			android.support.v4.app.FragmentManager fragmentManager) {
 		super(fragmentManager);
-		mLeaderboardFragmentActivity = leaderboardFragmentActivity;
+		mLeaderboardOverviewActivity = leaderboardOverviewActivity;
 	}
 
 	@Override
@@ -36,7 +36,7 @@ class LeaderboardFragmentPagerAdapter extends FragmentPagerAdapter {
 		bundle.putInt(LeaderboardFragment.ARG_GRID_SIZE,
 				GRID_SIZES_WITH_LEADERBOARD[index].getGridSize());
 		bundle.putInt(LeaderboardFragment.ARG_FILTER,
-				mLeaderboardFragmentActivity.getLeaderboardFilter().ordinal());
+				mLeaderboardOverviewActivity.getLeaderboardFilter().ordinal());
 
 		// Create fragment and pass the bundle
 		android.support.v4.app.Fragment fragment = new LeaderboardFragment();

@@ -76,7 +76,7 @@
         <activity android:name=".archive.ui.ArchivePreferenceActivity" />
         <activity android:name=".statistics.ui.StatisticsFragmentActivity" />
         <activity android:name=".statistics.ui.StatisticsPreferenceActivity" />
-        <activity android:name="net.mathdoku.plus.leaderboard.ui.LeaderboardFragmentActivity" />
+        <activity android:name=".leaderboard.ui.LeaderboardOverviewActivity" />
 
         <provider
             android:name="net.mathdoku.plus.util.FileProvider"

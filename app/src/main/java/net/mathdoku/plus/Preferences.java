@@ -9,7 +9,7 @@ import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.enums.StatusFilter;
-import net.mathdoku.plus.leaderboard.ui.LeaderboardFragmentActivity.LeaderboardFilter;
+import net.mathdoku.plus.leaderboard.ui.LeaderboardOverviewActivity.LeaderboardFilter;
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.painter.Painter.GridTheme;
 import net.mathdoku.plus.puzzle.ui.GridInputMode;
@@ -427,11 +427,11 @@ public class Preferences {
 
 	private void upgradeToVersion595(Editor editor) {
 		editor.putInt(LEADERBOARD_DETAILS_VIEWED_COUNTER,
-					  LEADERBOARD_DETAILS_VIEWED_COUNTER_DEFAULT);
+				LEADERBOARD_DETAILS_VIEWED_COUNTER_DEFAULT);
 		editor.putInt(LEADERBOARD_GAMES_CREATED_COUNTER,
-					  LEADERBOARD_GAMES_CREATED_COUNTER_DEFAULT);
+				LEADERBOARD_GAMES_CREATED_COUNTER_DEFAULT);
 		editor.putInt(LEADERBOARD_OVERVIEW_VIEWED_COUNTER,
-					  LEADERBOARD_OVERVIEW_VIEWED_COUNTER_DEFAULT);
+				LEADERBOARD_OVERVIEW_VIEWED_COUNTER_DEFAULT);
 	}
 
 	private void upgradeToVersion598(Editor editor) {
@@ -443,10 +443,11 @@ public class Preferences {
 		// Add new preferences. Values are not converted from old
 		// preferences.
 		editor.putString(ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE,
-						 ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE_DEFAULT)
+				ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE_DEFAULT)
 				.putBoolean(ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE,
-							ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE_DEFAULT)
-				.putString(PUZZLE_PARAMETER_GRID_SIZE, PUZZLE_PARAMETER_GRID_SIZE_DEFAULT);
+						ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE_DEFAULT)
+				.putString(PUZZLE_PARAMETER_GRID_SIZE,
+						PUZZLE_PARAMETER_GRID_SIZE_DEFAULT);
 	}
 
 	private void upgradeToVersion599(Editor editor) {
@@ -458,8 +459,9 @@ public class Preferences {
 	 * Renames preferences with pattern below:
 	 * Tip.Tip.TipPreference.DisplayAgain.DisplayAgain
 	 * Tip.Tip.Preference.DisplayAgain.DisplayAgain
-	 *
-	 * @param editor The preferences editor in which changes have to be made.
+	 * 
+	 * @param editor
+	 *            The preferences editor in which changes have to be made.
 	 */
 	private void renameTipDisplayAgainVersion599(Editor editor) {
 		String regExp = "Tip\\.Tip\\.(?:Tip)*(.*)\\.DisplayAgain\\.DisplayAgain";
@@ -481,8 +483,9 @@ public class Preferences {
 	 * Renames preferences with pattern below:
 	 * Tip.Tip.TipPreference.DisplayAgain.DisplayAgain
 	 * Tip.Tip.Preference.DisplayAgain.DisplayAgain
-	 *
-	 * @param editor The preferences editor in which changes have to be made.
+	 * 
+	 * @param editor
+	 *            The preferences editor in which changes have to be made.
 	 */
 	private void renameTipLastDisplayTimeVersion599(Editor editor) {
 		// The name was not only double wrapped but the inner

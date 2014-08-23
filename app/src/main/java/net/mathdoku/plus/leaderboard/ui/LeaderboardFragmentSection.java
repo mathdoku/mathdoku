@@ -22,8 +22,8 @@ import net.mathdoku.plus.ui.base.GooglePlayServiceFragmentActivity;
 import net.mathdoku.plus.util.Util;
 
 /**
- * Storage for leaderboard details of leaderboards which have to be
- * displayed in the list view.
+ * Storage for leaderboard details of leaderboards which have to be displayed in
+ * the list view.
  */
 public class LeaderboardFragmentSection {
 	private final int mGridSize;
@@ -36,7 +36,7 @@ public class LeaderboardFragmentSection {
 	/**
 	 * Creates a new instance of a {@link LeaderboardFragmentSection} for a
 	 * leaderboard.
-	 *
+	 * 
 	 * @param gridSize
 	 *            The size of the grid.
 	 * @param hideOperators
@@ -44,15 +44,16 @@ public class LeaderboardFragmentSection {
 	 * @param puzzleComplexity
 	 *            The complexity level of the puzzle.
 	 */
-	public LeaderboardFragmentSection(final LeaderboardFragment leaderboardFragment,
-									  int gridSize, boolean hideOperators,
-									  PuzzleComplexity puzzleComplexity) {
+	public LeaderboardFragmentSection(
+			final LeaderboardFragment leaderboardFragment, int gridSize,
+			boolean hideOperators, PuzzleComplexity puzzleComplexity) {
 		mGridSize = gridSize;
 		mHideOperators = hideOperators;
 		mPuzzleComplexity = puzzleComplexity;
 
-				// Get the view and the layout to store the leaderboard section
-		mView = leaderboardFragment.getLayoutInflater().inflate(R.layout.leaderboard_section, null);
+		// Get the view and the layout to store the leaderboard section
+		mView = leaderboardFragment.getLayoutInflater().inflate(
+				R.layout.leaderboard_section, null);
 
 		// noinspection ConstantConditions
 		LinearLayout linearLayout = (LinearLayout) mView
@@ -69,13 +70,13 @@ public class LeaderboardFragmentSection {
 				.findViewById(R.id.leaderboard_rank_display);
 
 		// Get the leaderboard index value
-		int index = LeaderboardType.getIndex(mGridSize, mHideOperators, mPuzzleComplexity);
+		int index = LeaderboardType.getIndex(mGridSize, mHideOperators,
+				mPuzzleComplexity);
 
 		// Determine the leaderboard id for the leaderboard index
 		mLeaderboardId = leaderboardFragment.getResources().getString(
 				LeaderboardType.getResId(index));
-		mLeaderboardIcon.setImageResource(LeaderboardType
-				.getIconResId(index));
+		mLeaderboardIcon.setImageResource(LeaderboardType.getIconResId(index));
 
 		// Retrieve leaderboard score from local database
 		LeaderboardRankRow leaderboardRankRow = new LeaderboardRankDatabaseAdapter()
@@ -90,32 +91,35 @@ public class LeaderboardFragmentSection {
 		} else {
 			mHasScore = true;
 			mLeaderboardScoreLabel.setVisibility(View.VISIBLE);
-			mLeaderboardScoreDisplay
-					.setText(Util.durationTimeToString(leaderboardRankRow.getRawScore()));
+			mLeaderboardScoreDisplay.setText(Util
+					.durationTimeToString(leaderboardRankRow.getRawScore()));
 			mLeaderboardScoreDisplay.setVisibility(View.VISIBLE);
 			mLeaderboardNotPlayed.setVisibility(View.GONE);
-			mLeaderboardRankDisplay.setText(leaderboardRankRow
-					.getRankDisplay());
+			mLeaderboardRankDisplay
+					.setText(leaderboardRankRow.getRankDisplay());
 			mLeaderboardRankDisplay.setVisibility(View.VISIBLE);
 		}
 
 		// Set a listener on the leaderboard linear layout to navigate to
 		// the detail page of the leaderboard on Google Play Services.
 		linearLayout.setClickable(true);
-		linearLayout.setOnClickListener(new OnClickLeaderboardListener(leaderboardFragment));
+		linearLayout.setOnClickListener(new OnClickLeaderboardListener(
+				leaderboardFragment));
 
 		// Attach a long click listener to start a new game for the selected
 		// leaderboard
-		mView.setOnLongClickListener(new OnLongClickLeaderboardListener(leaderboardFragment));
+		mView.setOnLongClickListener(new OnLongClickLeaderboardListener(
+				leaderboardFragment));
 	}
 
 	/**
-	 * Creates a new instance of a {@link LeaderboardFragmentSection} for the dummy
-	 * leaderboard which is shown in case the use has not played any
+	 * Creates a new instance of a {@link LeaderboardFragmentSection} for the
+	 * dummy leaderboard which is shown in case the use has not played any
 	 * leaderboard for this grid size and has enabled filter
 	 * "My leaderboards only".
 	 */
-	public LeaderboardFragmentSection(LeaderboardFragment leaderboardFragment, int gridSize) {
+	public LeaderboardFragmentSection(LeaderboardFragment leaderboardFragment,
+			int gridSize) {
 		mGridSize = gridSize;
 
 		TextView textView = new TextView(leaderboardFragment.getActivity());
@@ -124,10 +128,11 @@ public class LeaderboardFragmentSection {
 				ViewGroup.LayoutParams.WRAP_CONTENT));
 		textView.setText(leaderboardFragment.getResources().getString(
 				R.string.leaderboard_none_played, mGridSize));
-		textView
-				.setTextSize(TypedValue.COMPLEX_UNIT_DIP, (int) (leaderboardFragment.getResources()
-						.getDimension(
-								R.dimen.text_size_default) / leaderboardFragment.getResources()
+		textView.setTextSize(
+				TypedValue.COMPLEX_UNIT_DIP,
+				(int) (leaderboardFragment.getResources().getDimension(
+						R.dimen.text_size_default) / leaderboardFragment
+						.getResources()
 						.getDisplayMetrics().density));
 
 		mView = textView;
@@ -149,10 +154,12 @@ public class LeaderboardFragmentSection {
 		return mHideOperators;
 	}
 
-	private class OnLongClickLeaderboardListener implements View.OnLongClickListener {
+	private class OnLongClickLeaderboardListener implements
+			View.OnLongClickListener {
 		private final LeaderboardFragment leaderboardFragment;
 
-		public OnLongClickLeaderboardListener(LeaderboardFragment leaderboardFragment) {
+		public OnLongClickLeaderboardListener(
+				LeaderboardFragment leaderboardFragment) {
 			this.leaderboardFragment = leaderboardFragment;
 		}
 
@@ -164,13 +171,13 @@ public class LeaderboardFragmentSection {
 			activity.finish();
 
 			// Restart the main activity of MathDoku
-			Intent intent = PuzzleFragmentActivity.createIntentToStartNewPuzzleFromSelectedLeaderboardFragment(
-					activity, mGridSize, mHideOperators, mPuzzleComplexity);
+			Intent intent = PuzzleFragmentActivity
+					.createIntentToStartNewPuzzleFromSelectedLeaderboardFragment(
+							activity, mGridSize, mHideOperators,
+							mPuzzleComplexity);
 			leaderboardFragment.startActivity(intent);
 
-			Preferences
-					.getInstance()
-					.increaseLeaderboardsGamesCreated();
+			Preferences.getInstance().increaseLeaderboardsGamesCreated();
 
 			return true;
 		}
@@ -179,7 +186,8 @@ public class LeaderboardFragmentSection {
 	private class OnClickLeaderboardListener implements View.OnClickListener {
 		private final LeaderboardFragment leaderboardFragment;
 
-		public OnClickLeaderboardListener(LeaderboardFragment leaderboardFragment) {
+		public OnClickLeaderboardListener(
+				LeaderboardFragment leaderboardFragment) {
 			this.leaderboardFragment = leaderboardFragment;
 		}
 
@@ -188,8 +196,8 @@ public class LeaderboardFragmentSection {
 			// Connect to the games client of the activity to start
 			// the Google Play Services leaderboard intent.
 			Activity activity = leaderboardFragment.getActivity();
-			if (activity instanceof LeaderboardFragmentActivity) {
-				GamesClient gamesClient = ((LeaderboardFragmentActivity) activity)
+			if (activity instanceof LeaderboardOverviewActivity) {
+				GamesClient gamesClient = ((LeaderboardOverviewActivity) activity)
 						.getGamesClient();
 				if (gamesClient != null) {
 					Intent intent = gamesClient
@@ -200,7 +208,7 @@ public class LeaderboardFragmentSection {
 						// Therefore the return code of that class is
 						// used here.
 						leaderboardFragment.startActivityForResult(intent,
-																   GooglePlayServiceFragmentActivity.RC_UNUSED);
+								GooglePlayServiceFragmentActivity.RC_UNUSED);
 
 						Preferences
 								.getInstance()

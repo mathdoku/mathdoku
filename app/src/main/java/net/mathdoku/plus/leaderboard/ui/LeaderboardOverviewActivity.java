@@ -31,7 +31,12 @@ import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 import net.mathdoku.plus.ui.base.GooglePlayServiceFragmentActivity;
 import net.mathdoku.plus.util.FeedbackEmail;
 
-public class LeaderboardFragmentActivity extends
+/**
+ * This activity handles displaying the leaderboard overviews. Each leaderboard
+ * overview displays a number of related leaderboards (e.g. of same size) which
+ * additionally can be filtered on certain criteria.
+ */
+public class LeaderboardOverviewActivity extends
 		GooglePlayServiceFragmentActivity implements ActionBar.TabListener {
 
 	/**
@@ -292,12 +297,12 @@ public class LeaderboardFragmentActivity extends
 						if (TipLeaderboardViewDetails
 								.toBeDisplayed(mMathDokuPreferences)) {
 							new TipLeaderboardViewDetails(
-									LeaderboardFragmentActivity.this).show();
+									LeaderboardOverviewActivity.this).show();
 						}
 						if (TipLeaderboardCreateGame
 								.toBeDisplayed(mMathDokuPreferences)) {
 							new TipLeaderboardCreateGame(
-									LeaderboardFragmentActivity.this).show();
+									LeaderboardOverviewActivity.this).show();
 						}
 					}
 				});
@@ -305,10 +310,12 @@ public class LeaderboardFragmentActivity extends
 		if (mLeaderboardRankUpdaterProgressDialog.hasNoLeaderboardUpdated()) {
 			// No dialog was shown and the onDismissListener is not called.
 			if (TipLeaderboardViewDetails.toBeDisplayed(mMathDokuPreferences)) {
-				new TipLeaderboardViewDetails(LeaderboardFragmentActivity.this).show();
+				new TipLeaderboardViewDetails(LeaderboardOverviewActivity.this)
+						.show();
 			}
 			if (TipLeaderboardCreateGame.toBeDisplayed(mMathDokuPreferences)) {
-				new TipLeaderboardCreateGame(LeaderboardFragmentActivity.this).show();
+				new TipLeaderboardCreateGame(LeaderboardOverviewActivity.this)
+						.show();
 			}
 		}
 	}

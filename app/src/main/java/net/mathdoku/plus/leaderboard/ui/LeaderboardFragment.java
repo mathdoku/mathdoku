@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.leaderboard.LeaderboardType;
-import net.mathdoku.plus.leaderboard.ui.LeaderboardFragmentActivity.LeaderboardFilter;
+import net.mathdoku.plus.leaderboard.ui.LeaderboardOverviewActivity.LeaderboardFilter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,8 +127,8 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 
 		boolean hideLeaderboardSectionForEmptyList = false;
 		for (LeaderboardFragmentSection leaderboardSection : mLeaderboardFragmentSectionsAvailable) {
-			if (
-					isLeaderboardFragmentSectionVisibleForLeaderboardFilter(leaderboardSection, mLeaderboardFilter)) {
+			if (isLeaderboardFragmentSectionVisibleForLeaderboardFilter(
+					leaderboardSection, mLeaderboardFilter)) {
 				leaderboardSection.setVisibility(View.VISIBLE);
 				hideLeaderboardSectionForEmptyList = true;
 			} else {
@@ -137,29 +137,31 @@ public class LeaderboardFragment extends android.support.v4.app.Fragment {
 		}
 
 		mLeaderboardFragmentSectionForEmptyList
-				.setVisibility(hideLeaderboardSectionForEmptyList ? View.GONE : View.VISIBLE);
+				.setVisibility(hideLeaderboardSectionForEmptyList ? View.GONE
+						: View.VISIBLE);
 	}
 
-	private boolean isLeaderboardFragmentSectionVisibleForLeaderboardFilter(LeaderboardFragmentSection leaderboardFragmentSection, LeaderboardFragmentActivity.LeaderboardFilter leaderboardFilter) {
-		if (leaderboardFilter == LeaderboardFragmentActivity.LeaderboardFilter.MY_LEADERBOARDS
+	private boolean isLeaderboardFragmentSectionVisibleForLeaderboardFilter(
+			LeaderboardFragmentSection leaderboardFragmentSection,
+			LeaderboardOverviewActivity.LeaderboardFilter leaderboardFilter) {
+		if (leaderboardFilter == LeaderboardOverviewActivity.LeaderboardFilter.MY_LEADERBOARDS
 				&& leaderboardFragmentSection.hasNoScore()) {
 			return false;
 		}
 
-		if (leaderboardFilter == LeaderboardFragmentActivity.LeaderboardFilter.HIDDEN_OPERATORS
+		if (leaderboardFilter == LeaderboardOverviewActivity.LeaderboardFilter.HIDDEN_OPERATORS
 				&& !leaderboardFragmentSection.hasHiddenOperators()) {
 			return false;
 		}
 
 		// noinspection RedundantIfStatement
-		if (leaderboardFilter == LeaderboardFragmentActivity.LeaderboardFilter.VISIBLE_OPERATORS
+		if (leaderboardFilter == LeaderboardOverviewActivity.LeaderboardFilter.VISIBLE_OPERATORS
 				&& leaderboardFragmentSection.hasHiddenOperators()) {
 			return false;
 		}
 
 		return true;
 	}
-
 
 	public LayoutInflater getLayoutInflater() {
 		return mLayoutInflater;

@@ -4,7 +4,7 @@ import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.enums.StatusFilter;
-import net.mathdoku.plus.leaderboard.ui.LeaderboardFragmentActivity;
+import net.mathdoku.plus.leaderboard.ui.LeaderboardOverviewActivity;
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.puzzle.ui.GridInputMode;
 import net.mathdoku.plus.util.Util;
@@ -107,11 +107,11 @@ public class PreferencesDefaultValuesTest {
 	@Test
 	public void getLeaderboardFilterLastValueUsed_GetSetGet() throws Exception {
 		assertThat(preferences.getLeaderboardFilterLastValueUsed(), is(
-				LeaderboardFragmentActivity.LeaderboardFilter.ALL_LEADERBOARDS));
+				LeaderboardOverviewActivity.LeaderboardFilter.ALL_LEADERBOARDS));
 		preferences.setLeaderboardFilterLastValueUsed(
-				LeaderboardFragmentActivity.LeaderboardFilter.MY_LEADERBOARDS);
+				LeaderboardOverviewActivity.LeaderboardFilter.MY_LEADERBOARDS);
 		assertThat(preferences.getLeaderboardFilterLastValueUsed(), is(
-				LeaderboardFragmentActivity.LeaderboardFilter.MY_LEADERBOARDS));
+				LeaderboardOverviewActivity.LeaderboardFilter.MY_LEADERBOARDS));
 	}
 
 	@Test
