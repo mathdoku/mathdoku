@@ -71,8 +71,8 @@ class LeaderboardOverviewPagerAdapter extends FragmentPagerAdapter {
 	 */
 	public LeaderboardOverview getFragment(ViewPager viewPager, int position,
 			FragmentManager fragmentManager) {
-		String name = makeFragmentName(viewPager.getId(), position);
-		return (LeaderboardOverview) fragmentManager.findFragmentByTag(name);
+		return (LeaderboardOverview) fragmentManager.findFragmentByTag(
+				makeFragmentName(viewPager.getId(), position));
 	}
 
 	/**
