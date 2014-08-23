@@ -58,7 +58,7 @@ public class LeaderboardOverviewListItem {
 		// Inflate the view to display one leaderboard
 		mLeaderboardListItemView = leaderboardOverview
 				.getLayoutInflater()
-				.inflate(R.layout.leaderboard_section, null);
+				.inflate(R.layout.leaderboard_overview_list_item, null);
 
 		// noinspection ConstantConditions
 		ImageView mLeaderboardIcon = (ImageView) mLeaderboardListItemView
@@ -142,8 +142,7 @@ public class LeaderboardOverviewListItem {
 		// Attach a long click listener to start a new game for the selected
 		// leaderboard
 		mLeaderboardListItemView
-				.setOnLongClickListener(new OnLongClickLeaderboardListener(
-						leaderboardOverview));
+				.setOnLongClickListener(new OnLongClickLeaderboardListener(leaderboardOverview));
 	}
 
 	/**
@@ -170,8 +169,8 @@ public class LeaderboardOverviewListItem {
 				.getString(R.string.leaderboard_none_played, gridSize));
 		((TextView) mLeaderboardListItemView).setTextSize(
 				TypedValue.COMPLEX_UNIT_DIP,
-				(int) (leaderboardOverview.getResources().getDimension(
-						R.dimen.text_size_default) / leaderboardOverview
+				(int) (leaderboardOverview.getResources().getDimension(R.dimen.text_size_default)
+						/ leaderboardOverview
 						.getResources()
 						.getDisplayMetrics().density));
 	}

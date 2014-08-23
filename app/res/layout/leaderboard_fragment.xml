@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
-        <!-- Note: this layout will be programmatically cleared and filled with one or more occurents of layout "leaderboard_section.xml" will be added here. -->
+        <!-- Note: this layout will be programmatically cleared and filled with one or more occurrences of layout "leaderboard_overview_list_itemw_list_item.xml" will be added here. -->
     </LinearLayout>
 
 </ScrollView>
