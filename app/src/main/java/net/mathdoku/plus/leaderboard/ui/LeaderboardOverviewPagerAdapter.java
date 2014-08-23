@@ -10,11 +10,11 @@ import net.mathdoku.plus.leaderboard.LeaderboardType;
 
 /**
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one
- * of leaderboard pages.
+ * of the leaderboard overviews.
  */
-class LeaderboardFragmentPagerAdapter extends FragmentPagerAdapter {
+class LeaderboardOverviewPagerAdapter extends FragmentPagerAdapter {
 	@SuppressWarnings("unused")
-	private static final String TAG = LeaderboardFragmentPagerAdapter.class
+	private static final String TAG = LeaderboardOverviewPagerAdapter.class
 			.getName();
 
 	private static final GridType[] GRID_SIZES_WITH_LEADERBOARD = LeaderboardType
@@ -23,9 +23,9 @@ class LeaderboardFragmentPagerAdapter extends FragmentPagerAdapter {
 	// Context
 	private final LeaderboardOverviewActivity mLeaderboardOverviewActivity;
 
-	public LeaderboardFragmentPagerAdapter(
-			LeaderboardOverviewActivity leaderboardOverviewActivity,
-			android.support.v4.app.FragmentManager fragmentManager) {
+	public LeaderboardOverviewPagerAdapter(LeaderboardOverviewActivity
+												   leaderboardOverviewActivity, android.support.v4
+			.app.FragmentManager fragmentManager) {
 		super(fragmentManager);
 		mLeaderboardOverviewActivity = leaderboardOverviewActivity;
 	}

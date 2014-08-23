@@ -45,7 +45,7 @@ public class LeaderboardOverviewActivity extends
 	 * {@link android.support.v4.app.FragmentPagerAdapter} derivative is used,
 	 * which will keep every loaded fragment in memory.
 	 */
-	private LeaderboardFragmentPagerAdapter mLeaderboardFragmentPagerAdapter;
+	private LeaderboardOverviewPagerAdapter mLeaderboardOverviewPagerAdapter;
 
 	/**
 	 * The {@link ViewPager} that will display the leaderboard fragments , one
@@ -70,7 +70,7 @@ public class LeaderboardOverviewActivity extends
 		setContentView(R.layout.leaderboard_activity_fragment);
 
 		// Create the adapter that will return the leaderboard fragments.
-		mLeaderboardFragmentPagerAdapter = new LeaderboardFragmentPagerAdapter(
+		mLeaderboardOverviewPagerAdapter = new LeaderboardOverviewPagerAdapter(
 				this, getSupportFragmentManager());
 
 		// Set up the action bar.
@@ -90,13 +90,13 @@ public class LeaderboardOverviewActivity extends
 		// Set up the ViewPager, attaching the adapter and setting up a listener
 		// for when the user swipes between the leaderboard fragments.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
-		mViewPager.setAdapter(mLeaderboardFragmentPagerAdapter);
+		mViewPager.setAdapter(mLeaderboardOverviewPagerAdapter);
 		mViewPager
 				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 					@Override
 					public void onPageSelected(int position) {
 						// Get the fragment on the selected position
-						LeaderboardFragment leaderboardFragment = mLeaderboardFragmentPagerAdapter
+						LeaderboardFragment leaderboardFragment = mLeaderboardOverviewPagerAdapter
 								.getFragment(mViewPager, position,
 										getSupportFragmentManager());
 
@@ -115,14 +115,14 @@ public class LeaderboardOverviewActivity extends
 				});
 
 		// For each of the leaderboard fragments, add a tab to the action bar.
-		for (int i = 0; i < mLeaderboardFragmentPagerAdapter.getCount(); i++) {
+		for (int i = 0; i < mLeaderboardOverviewPagerAdapter.getCount(); i++) {
 			// Create a tab with text corresponding to the page title defined by
 			// the adapter. Also specify this Activity object, which implements
 			// the TabListener interface, as the listener for when this tab is
 			// selected.
 			mActionBar.addTab(mActionBar
 					.newTab()
-					.setText(mLeaderboardFragmentPagerAdapter.getPageTitle(i))
+					.setText(mLeaderboardOverviewPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
 
@@ -130,7 +130,7 @@ public class LeaderboardOverviewActivity extends
 		// not displayed before.
 		int tab = mMathDokuPreferences.getLeaderboardsTabLastDisplayed();
 		mViewPager.setCurrentItem(tab >= 0 ? tab
-				: mLeaderboardFragmentPagerAdapter.getCount() - 1);
+				: mLeaderboardOverviewPagerAdapter.getCount() - 1);
 
 		setFilterSpinner(LeaderboardFilter.ALL_LEADERBOARDS);
 
@@ -363,7 +363,7 @@ public class LeaderboardOverviewActivity extends
 				mLeaderboardFilter = LeaderboardFilter.values()[(int) id];
 
 				// Get the fragment which is currently displayed
-				LeaderboardFragment leaderboardFragment = mLeaderboardFragmentPagerAdapter
+				LeaderboardFragment leaderboardFragment = mLeaderboardOverviewPagerAdapter
 						.getFragment(mViewPager, mViewPager.getCurrentItem(),
 								getSupportFragmentManager());
 
@@ -419,13 +419,13 @@ public class LeaderboardOverviewActivity extends
 								mViewPager.getCurrentItem()
 										- mViewPager.getOffscreenPageLimit());
 						int maxPosition = Math.min(
-								mLeaderboardFragmentPagerAdapter.getCount(),
+								mLeaderboardOverviewPagerAdapter.getCount(),
 								mViewPager.getCurrentItem()
 										+ mViewPager.getOffscreenPageLimit());
 
 						for (int i = minPosition; i <= maxPosition; i++) {
 							// Get the fragment on the selected position
-							LeaderboardFragment leaderboardFragment = mLeaderboardFragmentPagerAdapter
+							LeaderboardFragment leaderboardFragment = mLeaderboardOverviewPagerAdapter
 									.getFragment(mViewPager, i,
 											getSupportFragmentManager());
 
