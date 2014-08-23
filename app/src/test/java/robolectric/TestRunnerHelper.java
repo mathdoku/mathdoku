@@ -74,8 +74,4 @@ public class TestRunnerHelper {
 	public static DatabaseHelper getDatabaseHelper() {
 		return singletonTestRunnerHelper.databaseHelper;
 	}
-
-	public static void closeDatabaseHelper() {
-		singletonTestRunnerHelper.tearDownDatabase();
-	}
 }
