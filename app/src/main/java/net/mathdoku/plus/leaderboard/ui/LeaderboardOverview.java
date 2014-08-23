@@ -40,8 +40,8 @@ public class LeaderboardOverview extends android.support.v4.app.Fragment {
 
 	// The leaderboard fragment sections which are available in this leaderboard
 	// fragment.
-	private List<LeaderboardFragmentSection> mLeaderboardFragmentSectionsAvailable;
-	private LeaderboardFragmentSection mLeaderboardFragmentSectionForEmptyList;
+	private List<LeaderboardOverviewListItem> mLeaderboardFragmentSectionsAvailable;
+	private LeaderboardOverviewListItem mLeaderboardOverviewListItemForEmptyList;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,7 +77,7 @@ public class LeaderboardOverview extends android.support.v4.app.Fragment {
 		// Add leaderboard fragment for each combination of operator visibility
 		// and complexity
 		mLeaderboardFragmentSectionsAvailable = createLeaderboardFragmentSections();
-		for (LeaderboardFragmentSection leaderboardSection : mLeaderboardFragmentSectionsAvailable) {
+		for (LeaderboardOverviewListItem leaderboardSection : mLeaderboardFragmentSectionsAvailable) {
 			linearLayout.addView(leaderboardSection.getView());
 		}
 
@@ -85,39 +85,39 @@ public class LeaderboardOverview extends android.support.v4.app.Fragment {
 		// filter is applied which would not select any of the leaderboard
 		// fragment sections created above. To prevent an empty list from being
 		// shown, the fragment section below will be presented.
-		mLeaderboardFragmentSectionForEmptyList = new LeaderboardFragmentSection(
+		mLeaderboardOverviewListItemForEmptyList = new LeaderboardOverviewListItem(
 				this, mGridSize);
-		linearLayout.addView(mLeaderboardFragmentSectionForEmptyList.getView());
+		linearLayout.addView(mLeaderboardOverviewListItemForEmptyList.getView());
 
 		// Apply the leaderboard filter so the view is initially displayed with
 		// correct filter.
 		setLeaderboardFilter(mLeaderboardFilter);
 	}
 
-	private List<LeaderboardFragmentSection> createLeaderboardFragmentSections() {
-		List<LeaderboardFragmentSection> leaderboardFragmentSections = new ArrayList<LeaderboardFragmentSection>();
-		leaderboardFragmentSections.add(new LeaderboardFragmentSection(this,
+	private List<LeaderboardOverviewListItem> createLeaderboardFragmentSections() {
+		List<LeaderboardOverviewListItem> leaderboardOverviewListItems = new ArrayList<LeaderboardOverviewListItem>();
+		leaderboardOverviewListItems.add(new LeaderboardOverviewListItem(this,
 				mGridSize, false, PuzzleComplexity.VERY_EASY));
-		leaderboardFragmentSections.add(new LeaderboardFragmentSection(this,
+		leaderboardOverviewListItems.add(new LeaderboardOverviewListItem(this,
 				mGridSize, false, PuzzleComplexity.EASY));
-		leaderboardFragmentSections.add(new LeaderboardFragmentSection(this,
+		leaderboardOverviewListItems.add(new LeaderboardOverviewListItem(this,
 				mGridSize, false, PuzzleComplexity.NORMAL));
-		leaderboardFragmentSections.add(new LeaderboardFragmentSection(this,
+		leaderboardOverviewListItems.add(new LeaderboardOverviewListItem(this,
 				mGridSize, false, PuzzleComplexity.DIFFICULT));
-		leaderboardFragmentSections.add(new LeaderboardFragmentSection(this,
+		leaderboardOverviewListItems.add(new LeaderboardOverviewListItem(this,
 				mGridSize, false, PuzzleComplexity.VERY_DIFFICULT));
-		leaderboardFragmentSections.add(new LeaderboardFragmentSection(this,
+		leaderboardOverviewListItems.add(new LeaderboardOverviewListItem(this,
 				mGridSize, true, PuzzleComplexity.VERY_EASY));
-		leaderboardFragmentSections.add(new LeaderboardFragmentSection(this,
+		leaderboardOverviewListItems.add(new LeaderboardOverviewListItem(this,
 				mGridSize, true, PuzzleComplexity.EASY));
-		leaderboardFragmentSections.add(new LeaderboardFragmentSection(this,
+		leaderboardOverviewListItems.add(new LeaderboardOverviewListItem(this,
 				mGridSize, true, PuzzleComplexity.NORMAL));
-		leaderboardFragmentSections.add(new LeaderboardFragmentSection(this,
+		leaderboardOverviewListItems.add(new LeaderboardOverviewListItem(this,
 				mGridSize, true, PuzzleComplexity.DIFFICULT));
-		leaderboardFragmentSections.add(new LeaderboardFragmentSection(this,
+		leaderboardOverviewListItems.add(new LeaderboardOverviewListItem(this,
 				mGridSize, true, PuzzleComplexity.VERY_DIFFICULT));
 
-		return leaderboardFragmentSections;
+		return leaderboardOverviewListItems;
 	}
 
 	/**
@@ -131,7 +131,7 @@ public class LeaderboardOverview extends android.support.v4.app.Fragment {
 		mLeaderboardFilter = leaderboardFilter;
 
 		boolean hideLeaderboardSectionForEmptyList = false;
-		for (LeaderboardFragmentSection leaderboardSection : mLeaderboardFragmentSectionsAvailable) {
+		for (LeaderboardOverviewListItem leaderboardSection : mLeaderboardFragmentSectionsAvailable) {
 			if (isLeaderboardFragmentSectionVisibleForLeaderboardFilter(
 					leaderboardSection, mLeaderboardFilter)) {
 				leaderboardSection.setVisibility(View.VISIBLE);
@@ -141,27 +141,27 @@ public class LeaderboardOverview extends android.support.v4.app.Fragment {
 			}
 		}
 
-		mLeaderboardFragmentSectionForEmptyList
+		mLeaderboardOverviewListItemForEmptyList
 				.setVisibility(hideLeaderboardSectionForEmptyList ? View.GONE
 						: View.VISIBLE);
 	}
 
 	private boolean isLeaderboardFragmentSectionVisibleForLeaderboardFilter(
-			LeaderboardFragmentSection leaderboardFragmentSection,
+			LeaderboardOverviewListItem leaderboardOverviewListItem,
 			LeaderboardOverviewActivity.LeaderboardFilter leaderboardFilter) {
 		if (leaderboardFilter == LeaderboardOverviewActivity.LeaderboardFilter.MY_LEADERBOARDS
-				&& leaderboardFragmentSection.hasNoScore()) {
+				&& leaderboardOverviewListItem.hasNoScore()) {
 			return false;
 		}
 
 		if (leaderboardFilter == LeaderboardOverviewActivity.LeaderboardFilter.HIDDEN_OPERATORS
-				&& !leaderboardFragmentSection.hasHiddenOperators()) {
+				&& !leaderboardOverviewListItem.hasHiddenOperators()) {
 			return false;
 		}
 
 		// noinspection RedundantIfStatement
 		if (leaderboardFilter == LeaderboardOverviewActivity.LeaderboardFilter.VISIBLE_OPERATORS
-				&& leaderboardFragmentSection.hasHiddenOperators()) {
+				&& leaderboardOverviewListItem.hasHiddenOperators()) {
 			return false;
 		}
 
