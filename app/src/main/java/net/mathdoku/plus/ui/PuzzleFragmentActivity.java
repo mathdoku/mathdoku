@@ -1,6 +1,7 @@
 package net.mathdoku.plus.ui;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -40,13 +41,14 @@ import net.mathdoku.plus.developmenthelper.DevelopmentHelper;
 import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.enums.PuzzleComplexity;
+import net.mathdoku.plus.enums.StatusFilter;
+import net.mathdoku.plus.gridconverting.GridConverter;
 import net.mathdoku.plus.gridgenerating.GeneratePuzzleProgressDialog;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParameters;
 import net.mathdoku.plus.gridgenerating.GridGeneratingParametersBuilder;
 import net.mathdoku.plus.leaderboard.LeaderboardConnector;
 import net.mathdoku.plus.leaderboard.LeaderboardRankUpdater;
 import net.mathdoku.plus.leaderboard.LeaderboardType;
-import net.mathdoku.plus.leaderboard.ui.LeaderboardFragment;
 import net.mathdoku.plus.leaderboard.ui.LeaderboardFragmentActivity;
 import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.puzzle.InvalidGridException;
@@ -55,14 +57,12 @@ import net.mathdoku.plus.puzzle.grid.GridLoader;
 import net.mathdoku.plus.puzzle.ui.GridInputMode;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.statistics.ui.StatisticsFragmentActivity;
-import net.mathdoku.plus.gridconverting.GridConverter;
-import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankRowBuilder;
-import net.mathdoku.plus.storage.selector.ArchiveSolvingAttemptSelector;
-import net.mathdoku.plus.enums.StatusFilter;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankDatabaseAdapter.ScoreOrigin;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankRow;
+import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankRowBuilder;
 import net.mathdoku.plus.storage.databaseadapter.SolvingAttemptDatabaseAdapter;
+import net.mathdoku.plus.storage.selector.ArchiveSolvingAttemptSelector;
 import net.mathdoku.plus.tip.TipArchiveAvailable;
 import net.mathdoku.plus.tip.TipDialog;
 import net.mathdoku.plus.tip.TipStatistics;
@@ -79,6 +79,12 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		implements PuzzleFragment.PuzzleFragmentListener {
 	@SuppressWarnings("unused")
 	private static final String TAG = PuzzleFragmentActivity.class.getName();
+
+	// Intent parameters for creating a new game of specified type
+	private static final String NEW_PUZZLE_FOR_LEADERBOARD = "CreateNewGameForLeaderboard";
+	private static final String NEW_PUZZLE_FOR_LEADERBOARD_GRID_SIZE = "CreateNewGameForLeaderboard_Size";
+	private static final String NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS = "CreateNewGameForLeaderboard_HideOperators";
+	private static final String NEW_PUZZLE_FOR_LEADERBOARD_PUZZLE_COMPLEXITY = "CreateNewGameForLeaderboard_PuzzleComplexity";
 
 	// Background tasks for generating a new puzzle and converting game files
 	public GeneratePuzzleProgressDialog mGeneratePuzzleProgressDialog;
@@ -1205,23 +1211,23 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 					}
 				}
 				if (bundle
-						.containsKey(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD)
+						.containsKey(NEW_PUZZLE_FOR_LEADERBOARD)
 						&& bundle
-								.getBoolean(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD)
+								.getBoolean(NEW_PUZZLE_FOR_LEADERBOARD)
 						&& bundle
-								.containsKey(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_GRID_SIZE)
+								.containsKey(NEW_PUZZLE_FOR_LEADERBOARD_GRID_SIZE)
 						&& bundle
-								.containsKey(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS)
+								.containsKey(NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS)
 						&& bundle
-								.containsKey(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_PUZZLE_COMPLEXITY)) {
+								.containsKey(NEW_PUZZLE_FOR_LEADERBOARD_PUZZLE_COMPLEXITY)) {
 					GridType gridType = GridType
 							.valueOf(bundle
-									.getString(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_GRID_SIZE));
+									.getString(NEW_PUZZLE_FOR_LEADERBOARD_GRID_SIZE));
 					boolean visibleOperators = !bundle
-							.getBoolean(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS);
+							.getBoolean(NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS);
 					PuzzleComplexity puzzleComplexity = PuzzleComplexity
 							.valueOf(bundle
-									.getString(LeaderboardFragment.NEW_PUZZLE_FOR_LEADERBOARD_PUZZLE_COMPLEXITY));
+									.getString(NEW_PUZZLE_FOR_LEADERBOARD_PUZZLE_COMPLEXITY));
 					showDialogNewGame(true, gridType, visibleOperators,
 							puzzleComplexity);
 				}
@@ -1229,6 +1235,25 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity
 		}
 
 		super.onNewIntent(intent);
+	}
+
+	public static Intent createIntentToStartNewPuzzleFromSelectedLeaderboardFragment(Activity activity, int gridSize, boolean hideOperators, PuzzleComplexity puzzleComplexity) {
+		Intent intent = new Intent(activity,
+								   PuzzleFragmentActivity.class)
+				.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK + Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		if (intent != null) {
+			intent.putExtra(NEW_PUZZLE_FOR_LEADERBOARD, true);
+			intent.putExtra(NEW_PUZZLE_FOR_LEADERBOARD_GRID_SIZE,
+							GridType.fromInteger(gridSize).toString());
+			intent.putExtra(
+					NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS,
+					hideOperators);
+			intent.putExtra(
+					NEW_PUZZLE_FOR_LEADERBOARD_PUZZLE_COMPLEXITY,
+					puzzleComplexity.toString());
+		}
+
+		return intent;
 	}
 
 	/**
