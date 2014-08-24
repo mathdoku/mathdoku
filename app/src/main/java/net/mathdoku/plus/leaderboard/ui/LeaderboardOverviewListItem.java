@@ -34,8 +34,8 @@ public class LeaderboardOverviewListItem {
 	private final LeaderboardOverviewListItemType leaderboardOverviewListItemType;
 
 	private enum LeaderboardOverviewListItemType {
-		WITH_SCORE, WITHOUT_SCORE, PLACEHOLDER_EMPTY_OVERVIEW
-	};
+		WITH_RANKING_INFORMATION, NO_RANKING_INFORMATION, PLACEHOLDER_EMPTY_OVERVIEW
+	}
 
 	/**
 	 * Creates a new instance of a {@link LeaderboardOverviewListItem} for a
@@ -78,18 +78,58 @@ public class LeaderboardOverviewListItem {
 		setupOnLongClickListener(leaderboardOverview);
 	}
 
+	/**
+	 * Creates a new instance of a {@link LeaderboardOverviewListItem} for the
+	 * dummy leaderboard which is shown in case the use has not played any
+	 * leaderboard for this grid size and has enabled filter
+	 * "My leaderboards only".
+	 */
+	public LeaderboardOverviewListItem(LeaderboardOverview leaderboardOverview,
+			int gridSize) {
+		mLeaderboardId = null;
+		mGridSize = 0;
+		mHideOperators = false;
+		mPuzzleComplexity = null;
+		leaderboardOverviewListItemType = LeaderboardOverviewListItemType.PLACEHOLDER_EMPTY_OVERVIEW;
+
+		mLeaderboardListItemView = new TextView(
+				leaderboardOverview.getContext());
+		mLeaderboardListItemView.setLayoutParams(new ViewGroup.LayoutParams(
+				ViewGroup.LayoutParams.WRAP_CONTENT,
+				ViewGroup.LayoutParams.WRAP_CONTENT));
+		((TextView) mLeaderboardListItemView).setText(leaderboardOverview
+				.getResources()
+				.getString(R.string.leaderboard_none_played, gridSize));
+		((TextView) mLeaderboardListItemView).setTextSize(
+				TypedValue.COMPLEX_UNIT_DIP,
+				(int) (leaderboardOverview.getResources().getDimension(
+						R.dimen.text_size_default) / leaderboardOverview
+						.getResources()
+						.getDisplayMetrics().density));
+	}
+
 	private LeaderboardOverviewListItemType setupView() {
 		// Retrieve leaderboard score from local database
-		LeaderboardRankRow leaderboardRankRow = new LeaderboardRankDatabaseAdapter()
+		LeaderboardRankRow leaderboardRankRow = createLeaderboardRankDatabaseAdapter()
 				.get(mLeaderboardId);
 		if (leaderboardRankRow == null
 				|| leaderboardRankRow.getScoreOrigin() == LeaderboardRankDatabaseAdapter.ScoreOrigin.NONE) {
 			setupViewWithoutRankingInformation();
-			return LeaderboardOverviewListItemType.WITH_SCORE;
+			return LeaderboardOverviewListItemType.NO_RANKING_INFORMATION;
 		} else {
 			setupViewWithRankingInformation(leaderboardRankRow);
-			return LeaderboardOverviewListItemType.WITHOUT_SCORE;
+			return LeaderboardOverviewListItemType.WITH_RANKING_INFORMATION;
 		}
+	}
+
+	/**
+	 * Package private method to allow unit test to overwrite the creation of a
+	 * new Leaderboard Rank Database Adapter.
+	 * 
+	 * @return a new LeaderboardRankDatabaseAdapter
+	 */
+	LeaderboardRankDatabaseAdapter createLeaderboardRankDatabaseAdapter() {
+		return new LeaderboardRankDatabaseAdapter();
 	}
 
 	private void setupViewWithoutRankingInformation() {
@@ -142,37 +182,8 @@ public class LeaderboardOverviewListItem {
 		// Attach a long click listener to start a new game for the selected
 		// leaderboard
 		mLeaderboardListItemView
-				.setOnLongClickListener(new OnLongClickLeaderboardListener(leaderboardOverview));
-	}
-
-	/**
-	 * Creates a new instance of a {@link LeaderboardOverviewListItem} for the
-	 * dummy leaderboard which is shown in case the use has not played any
-	 * leaderboard for this grid size and has enabled filter
-	 * "My leaderboards only".
-	 */
-	public LeaderboardOverviewListItem(LeaderboardOverview leaderboardOverview,
-			int gridSize) {
-		mLeaderboardId = null;
-		mGridSize = 0;
-		mHideOperators = false;
-		mPuzzleComplexity = null;
-		leaderboardOverviewListItemType = LeaderboardOverviewListItemType.PLACEHOLDER_EMPTY_OVERVIEW;
-
-		mLeaderboardListItemView = new TextView(
-				leaderboardOverview.getActivity());
-		mLeaderboardListItemView.setLayoutParams(new ViewGroup.LayoutParams(
-				ViewGroup.LayoutParams.WRAP_CONTENT,
-				ViewGroup.LayoutParams.WRAP_CONTENT));
-		((TextView) mLeaderboardListItemView).setText(leaderboardOverview
-				.getResources()
-				.getString(R.string.leaderboard_none_played, gridSize));
-		((TextView) mLeaderboardListItemView).setTextSize(
-				TypedValue.COMPLEX_UNIT_DIP,
-				(int) (leaderboardOverview.getResources().getDimension(R.dimen.text_size_default)
-						/ leaderboardOverview
-						.getResources()
-						.getDisplayMetrics().density));
+				.setOnLongClickListener(new OnLongClickLeaderboardListener(
+						leaderboardOverview));
 	}
 
 	public View getView() {
@@ -185,7 +196,7 @@ public class LeaderboardOverviewListItem {
 
 	public boolean hasNoScore() {
 		throwExceptionIfCalledForPlaceholder();
-		return leaderboardOverviewListItemType == LeaderboardOverviewListItemType.WITHOUT_SCORE;
+		return leaderboardOverviewListItemType == LeaderboardOverviewListItemType.NO_RANKING_INFORMATION;
 	}
 
 	private void throwExceptionIfCalledForPlaceholder() {
@@ -273,4 +284,5 @@ public class LeaderboardOverviewListItem {
 			return true;
 		}
 	}
+
 }

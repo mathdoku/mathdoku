@@ -1,5 +1,6 @@
 package net.mathdoku.plus.leaderboard.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,8 +17,8 @@ import java.util.List;
 
 /**
  * This class displays a {@link android.support.v4.app.Fragment} for an overview
- * of related leaderboards. The overview can optionally be filtered. It is
- * however guaranteed that at least 1 item is displayed.
+ * of leaderboards having the same size. The overview can optionally be
+ * filtered. It is however guaranteed that at least 1 item is displayed.
  */
 public class LeaderboardOverview extends android.support.v4.app.Fragment {
 	@SuppressWarnings("unused")
@@ -87,7 +88,8 @@ public class LeaderboardOverview extends android.support.v4.app.Fragment {
 		// shown, the fragment section below will be presented.
 		mLeaderboardOverviewListItemForEmptyList = new LeaderboardOverviewListItem(
 				this, mGridSize);
-		linearLayout.addView(mLeaderboardOverviewListItemForEmptyList.getView());
+		linearLayout
+				.addView(mLeaderboardOverviewListItemForEmptyList.getView());
 
 		// Apply the leaderboard filter so the view is initially displayed with
 		// correct filter.
@@ -170,5 +172,9 @@ public class LeaderboardOverview extends android.support.v4.app.Fragment {
 
 	public LayoutInflater getLayoutInflater() {
 		return mLayoutInflater;
+	}
+
+	public Context getContext() {
+		return mRootView.getContext();
 	}
 }
