@@ -94,6 +94,8 @@ public class LeaderboardOverview extends android.support.v4.app.Fragment {
 		// Apply the leaderboard filter so the view is initially displayed with
 		// correct filter.
 		setLeaderboardFilter(mLeaderboardFilter);
+
+		linearLayout.invalidate();
 	}
 
 	private List<LeaderboardOverviewListItem> createLeaderboardFragmentSections() {
