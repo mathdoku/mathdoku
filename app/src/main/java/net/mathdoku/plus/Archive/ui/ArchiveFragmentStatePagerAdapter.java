@@ -7,9 +7,8 @@ import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.enums.GridTypeFilter;
-import net.mathdoku.plus.storage.selector.ArchiveSolvingAttemptSelector;
-import net.mathdoku.plus.storage.databaseadapter.GridDatabaseAdapter;
 import net.mathdoku.plus.enums.StatusFilter;
+import net.mathdoku.plus.storage.selector.ArchiveSolvingAttemptSelector;
 
 import java.util.List;
 
@@ -32,7 +31,7 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	// The list of latest solving attempts which will be shown in the archive.
 	// In case multiple solving attempts exists for a grid, only the latest
 	// solving attempt is displayed.
-	private List<ArchiveSolvingAttemptSelector.LatestSolvingAttemptForGrid> latestSolvingAttemptForGrids;
+	private List<ArchiveSolvingAttemptSelector.LatestSolvingAttemptForGrid> solvingAttemptsInArchive;
 
 	// Selected filters
 	private StatusFilter mStatusFilter;
@@ -57,7 +56,7 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 
 		// Determine id's of grids/solving attempts which are available for
 		// display.
-		setGridIds();
+		updateSolvingAttemptsInArchive();
 	}
 
 	@Override
@@ -77,7 +76,7 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 
 	@Override
 	public int getCount() {
-		return latestSolvingAttemptForGrids.size();
+		return solvingAttemptsInArchive.size();
 	}
 
 	@Override
@@ -109,7 +108,7 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	}
 
 	private boolean isValidPositionInListOfLatestSolvingAttempts(int position) {
-		return position >= 0 && position < latestSolvingAttemptForGrids.size();
+		return position >= 0 && position < solvingAttemptsInArchive.size();
 	}
 
 	/**
@@ -121,7 +120,7 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	public void setStatusFilter(StatusFilter statusFilter) {
 		if (statusFilter != mStatusFilter) {
 			mStatusFilter = statusFilter;
-			setGridIds();
+			updateSolvingAttemptsInArchive();
 		}
 	}
 
@@ -143,7 +142,7 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	public void setSizeFilter(GridTypeFilter sizeFilter) {
 		if (sizeFilter != mGridTypeFilter) {
 			mGridTypeFilter = sizeFilter;
-			setGridIds();
+			updateSolvingAttemptsInArchive();
 		}
 	}
 
@@ -159,10 +158,8 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	/**
 	 * Set all grid id's which can be displayed using the adapter.
 	 */
-	private void setGridIds() {
-		// Determine which grid should be shown
-		GridDatabaseAdapter gridDatabaseAdapter = new GridDatabaseAdapter();
-		latestSolvingAttemptForGrids = new ArchiveSolvingAttemptSelector(
+	private void updateSolvingAttemptsInArchive() {
+		solvingAttemptsInArchive = new ArchiveSolvingAttemptSelector(
 				mStatusFilter, mGridTypeFilter)
 				.getLatestSolvingAttemptIdPerGrid();
 		notifyDataSetChanged();
@@ -178,9 +175,9 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	 *         this adapter.
 	 */
 	public int getPositionOfGridId(int gridId) {
-		for (ArchiveSolvingAttemptSelector.LatestSolvingAttemptForGrid latestSolvingAttemptForGrid : latestSolvingAttemptForGrids) {
+		for (ArchiveSolvingAttemptSelector.LatestSolvingAttemptForGrid latestSolvingAttemptForGrid : solvingAttemptsInArchive) {
 			if (latestSolvingAttemptForGrid.getGridId() == gridId) {
-				return latestSolvingAttemptForGrids
+				return solvingAttemptsInArchive
 						.indexOf(latestSolvingAttemptForGrid);
 			}
 		}
@@ -197,7 +194,7 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	 */
 	public int getGridId(int position) {
 		if (isValidPositionInListOfLatestSolvingAttempts(position)) {
-			return latestSolvingAttemptForGrids.get(position).getGridId();
+			return solvingAttemptsInArchive.get(position).getGridId();
 		} else {
 			return INVALID_POSITION_ID;
 		}
@@ -213,7 +210,7 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	 */
 	public int getSolvingAttemptId(int position) {
 		if (isValidPositionInListOfLatestSolvingAttempts(position)) {
-			return latestSolvingAttemptForGrids
+			return solvingAttemptsInArchive
 					.get(position)
 					.getSolvingAttemptId();
 		} else {
