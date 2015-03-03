@@ -21,7 +21,7 @@ public class LeaderboardType {
 	// All leaderboards as defined in the game service on Google Play. The order
 	// of this array should be kept in sync with the computation of the index
 	// value in method getIndex.
-	private static final int[] mLeaderboardResId = {
+	private static final int[] LEADERBOARD_RES_ID = {
 			// 4x4 leaderboards
 			R.string.leaderboard_4x4__hidden_operators__1_star,
 			R.string.leaderboard_4x4__hidden_operators__2_stars,
@@ -90,8 +90,8 @@ public class LeaderboardType {
 			R.string.leaderboard_9x9__visible_operators__5_stars };
 
 	// Resource id's of the leaderboards. The items in this array should be kept
-	// in sync with array mLeaderboardResId.
-	private static final int[] mLeaderboardIconResId = {
+	// in sync with array LEADERBOARD_RES_ID.
+	private static final int[] LEADERBOARD_ICON_RES_ID = {
 			// 4x4 leaderboards
 			R.drawable.leaderboard_4x4_operators_hidden_1_star,
 			R.drawable.leaderboard_4x4_operators_hidden_2_stars,
@@ -160,7 +160,7 @@ public class LeaderboardType {
 			R.drawable.leaderboard_9x9_operators_visible_5_stars };
 
 	// Maximum number of leaderboards available
-	public static final int MAX_LEADERBOARDS = mLeaderboardResId.length;
+	public static final int MAX_LEADERBOARDS = LEADERBOARD_RES_ID.length;
 
 	// Number of elements for index factor PuzzleComplexity. Note this enum
 	// contains a value RANDOM (ordinal value 0) which is not a real complexity
@@ -228,7 +228,7 @@ public class LeaderboardType {
 		index += (gridSize - GRID_SIZE_SMALLEST) * GRID_SIZE_INDEX_FACTOR;
 
 		// Update leaderboard if an valid index was determined.
-		if (index >= 0 && index < mLeaderboardResId.length) {
+		if (index >= 0 && index < LEADERBOARD_RES_ID.length) {
 			return index;
 		}
 
@@ -253,7 +253,7 @@ public class LeaderboardType {
 		int leaderboardIndex = getIndex(gridSize, hideOperators,
 				puzzleComplexity);
 		if (leaderboardIndex >= 0) {
-			return mLeaderboardResId[leaderboardIndex];
+			return LEADERBOARD_RES_ID[leaderboardIndex];
 		}
 
 		return -1;
@@ -270,8 +270,8 @@ public class LeaderboardType {
 	public static int getResId(int leaderboardIndex) {
 
 		if (leaderboardIndex >= 0
-				&& leaderboardIndex < mLeaderboardResId.length) {
-			return mLeaderboardResId[leaderboardIndex];
+				&& leaderboardIndex < LEADERBOARD_RES_ID.length) {
+			return LEADERBOARD_RES_ID[leaderboardIndex];
 		}
 
 		return -1;
@@ -357,8 +357,8 @@ public class LeaderboardType {
 	public static int getIconResId(int leaderboardIndex) {
 
 		if (leaderboardIndex >= 0
-				&& leaderboardIndex < mLeaderboardIconResId.length) {
-			return mLeaderboardIconResId[leaderboardIndex];
+				&& leaderboardIndex < LEADERBOARD_ICON_RES_ID.length) {
+			return LEADERBOARD_ICON_RES_ID[leaderboardIndex];
 		}
 
 		return -1;
