@@ -91,8 +91,9 @@ public class LeaderboardConnector {
 	 * @param timePlayed
 	 *            The elapsed time for the grid.
 	 */
-	public void submitScore(int gridSize, PuzzleComplexity puzzleComplexity,
-			boolean hideOperators, long timePlayed) {
+	public void submitScore(final int gridSize,
+			final PuzzleComplexity puzzleComplexity,
+			final boolean hideOperators, long timePlayed) {
 		// Check boundaries of time played
 		if (timePlayed <= 0 || timePlayed == Long.MAX_VALUE) {
 			return;
@@ -121,52 +122,9 @@ public class LeaderboardConnector {
 		// Submit the score as immediate. Upon receiving confirmation that the
 		// score was processed by Google Play Services, the leaderboard rank
 		// database can be updated.
-		mGamesClient.submitScoreImmediate(new OnScoreSubmittedListener() {
-			@Override
-			public void onScoreSubmitted(int statusCode,
-					SubmitScoreResult submitScoreResult) {
-				if (statusCode == GamesClient.STATUS_OK
-						&& submitScoreResult != null) {
-					// The score was submitted and processed by Google Play
-					// Services.
-					if (DEBUG) {
-						Log
-								.i(TAG,
-										"The onScoreSubmitted listener for method submitScore has "
-												+ "been called successfully for leaderboard "
-												+ getLeaderboardNameForLogging(submitScoreResult
-														.getLeaderboardId()));
-					}
-
-					// Retrieve the current rank of the player. This rank
-					// information is needed to update the leaderboard rank
-					// information.
-					new LeaderboardRankPlayer(LeaderboardConnector.this,
-							new LeaderboardRankPlayer.Listener() {
-
-								@Override
-								public void onLeaderboardRankLoaded(
-										Leaderboard leaderboard,
-										LeaderboardScore leaderboardScore) {
-									// The leaderboard rank for the current
-									// player has been received.
-									onRankCurrentPlayerReceived(leaderboard,
-											leaderboardScore, true);
-								}
-
-								@Override
-								public void onNoRankFound(
-										Leaderboard leaderboard) {
-									// Nothing to do here. It should not be
-									// possible that the player rank is not
-									// found after it was just successfully
-									// submitted and received.
-								}
-							}).loadCurrentPlayerRank(submitScoreResult
-							.getLeaderboardId());
-				}
-			}
-		}, leaderboardId, timePlayed);
+		mGamesClient.submitScoreImmediate(new OnScoreSubmittedListenerImpl(
+				gridSize, puzzleComplexity, hideOperators), leaderboardId,
+				timePlayed);
 	}
 
 	/**
@@ -178,12 +136,14 @@ public class LeaderboardConnector {
 	 *            The leaderboard score containing the rank for the current
 	 *            player or if such rank does not exists, the rank of the first
 	 *            player. Null in case no player has played this leaderboard.
+	 * @return True in case a new high score was achieved. False otherwise.
 	 */
-	void onRankCurrentPlayerReceived(Leaderboard leaderboard,
-			LeaderboardScore leaderboardScore, boolean displayToast) {
+	boolean updateLeaderboardRankInformation(Leaderboard leaderboard,
+			LeaderboardScore leaderboardScore) {
 		if (leaderboard == null || leaderboardScore == null) {
-			return;
+			return false;
 		}
+		boolean newHighScoreAchieved = true;
 
 		// Get the id of the leaderboard as used by Google Play Services
 		String leaderboardId = leaderboard.getLeaderboardId();
@@ -205,6 +165,7 @@ public class LeaderboardConnector {
 			// than the local top score. This can only happen in case the user
 			// has achieved that score using another device or in case the app
 			// is re-installed or the database was removed manually.
+			newHighScoreAchieved = false;
 			if (DEBUG) {
 				if (leaderboardRankRow.getScoreOrigin() == ScoreOrigin.NONE) {
 					Log
@@ -241,10 +202,6 @@ public class LeaderboardConnector {
 							leaderboardScore.getRank(),
 							leaderboardScore.getDisplayRank())
 					.build();
-
-			// No toast may be displayed as the top score on Google Play
-			// Services was not improved.
-			displayToast = false;
 		} else {
 			leaderboardRankRow = LeaderboardRankRowBuilder
 					.from(leaderboardRankRow)
@@ -254,21 +211,7 @@ public class LeaderboardConnector {
 		}
 		new LeaderboardRankDatabaseAdapter().update(leaderboardRankRow);
 
-		// Display a toast containing the ranking information for the score.
-		if (displayToast) {
-			new TopScoreDialog(mAppFragmentActivity,
-					LeaderboardType.getIconResId(LeaderboardType.getIndex(
-							leaderboardRankRow.getGridSize(),
-							leaderboardRankRow.isOperatorsHidden(),
-							leaderboardRankRow.getPuzzleComplexity())),
-					Util.durationTimeToString(leaderboardScore.getRawScore()),
-					leaderboardScore.getDisplayRank()).show();
-			if (DEBUG) {
-				Log.i(TAG, "Leaderboard: " + leaderboard.getDisplayName()
-						+ "\n" + "Score: " + leaderboardScore.getDisplayScore()
-						+ "\n" + "Rank: " + leaderboardScore.getDisplayRank());
-			}
-		}
+		return newHighScoreAchieved;
 	}
 
 	/**
@@ -314,5 +257,80 @@ public class LeaderboardConnector {
 	 */
 	GamesClient getGamesClient() {
 		return mGamesClient;
+	}
+
+	private class OnScoreSubmittedListenerImpl implements
+			OnScoreSubmittedListener {
+		private final int gridSize;
+		private final PuzzleComplexity puzzleComplexity;
+		private final boolean hideOperators;
+
+		public OnScoreSubmittedListenerImpl(int gridSize,
+				PuzzleComplexity puzzleComplexity, boolean hideOperators) {
+			this.gridSize = gridSize;
+			this.puzzleComplexity = puzzleComplexity;
+			this.hideOperators = hideOperators;
+		}
+
+		@Override
+		public void onScoreSubmitted(int statusCode,
+				SubmitScoreResult submitScoreResult) {
+			if (statusCode == GamesClient.STATUS_OK
+					&& submitScoreResult != null) {
+				// The score was submitted and processed by Google Play
+				// Services.
+				if (DEBUG) {
+					Log
+							.i(TAG,
+									"The onScoreSubmitted listener for method submitScore has "
+											+ "been called successfully for leaderboard "
+											+ getLeaderboardNameForLogging(submitScoreResult
+													.getLeaderboardId()));
+				}
+
+				// Retrieve the current rank of the player. This rank
+				// information is needed to update the leaderboard rank
+				// information.
+				new LeaderboardRankPlayer(LeaderboardConnector.this,
+						new OnScoreSubmittedLeaderboardRankPlayerListener())
+						.loadCurrentPlayerRank(submitScoreResult
+								.getLeaderboardId());
+			}
+		}
+
+		private class OnScoreSubmittedLeaderboardRankPlayerListener implements
+				LeaderboardRankPlayer.Listener {
+			@Override
+			public void onLeaderboardRankLoaded(Leaderboard leaderboard,
+					LeaderboardScore leaderboardScore) {
+				// The leaderboard rank for the current player has been received.
+				boolean newHighScoreAchieved = updateLeaderboardRankInformation(
+						leaderboard, leaderboardScore);
+				if (newHighScoreAchieved) {
+					new TopScoreDialog(mAppFragmentActivity,
+							LeaderboardType.getIconResId(LeaderboardType
+									.getIndex(gridSize, hideOperators,
+											puzzleComplexity)),
+							Util.durationTimeToString(leaderboardScore
+									.getRawScore()),
+							leaderboardScore.getDisplayRank()).show();
+					if (DEBUG) {
+						Log.i(TAG,
+								"Leaderboard: " + leaderboard.getDisplayName()
+										+ "\n" + "Score: "
+										+ leaderboardScore.getDisplayScore()
+										+ "\n" + "Rank: "
+										+ leaderboardScore.getDisplayRank());
+					}
+				}
+			}
+
+			@Override
+			public void onNoRankFound(Leaderboard leaderboard) {
+				// Nothing to do here. It should not be possible
+				// that the player rank is not found after it
+				// was just successfully submitted and received.
+			}
+		}
 	}
 }

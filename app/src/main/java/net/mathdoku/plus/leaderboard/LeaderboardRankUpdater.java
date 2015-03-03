@@ -174,7 +174,7 @@ public class LeaderboardRankUpdater {
 
 	/**
 	 * Get the number of leaderboard ranks that needs to be updated.
-	 * 
+	 *
 	 * @return The number of leaderboard ranks that needs to be updated.
 	 */
 	public int getCount() {
@@ -203,7 +203,7 @@ public class LeaderboardRankUpdater {
 	/**
 	 * Get the number of leaderboards which have been updated with the best
 	 * score of the current player as known by Google Play Services.
-	 * 
+	 *
 	 * @return Get the number of leaderboards which have been updated with the
 	 *         best score of the current player as known by Google Play
 	 *         Services.
@@ -217,8 +217,7 @@ public class LeaderboardRankUpdater {
 		@Override
 		public void onLeaderboardRankLoaded(Leaderboard leaderboard,
 				LeaderboardScore leaderboardScore) {
-			mLeaderboardConnector.onRankCurrentPlayerReceived(leaderboard,
-					leaderboardScore, false);
+			mLeaderboardConnector.updateLeaderboardRankInformation(leaderboard, leaderboardScore);
 			mCountLeaderboardsUpdatedWithScoreForPlayer++;
 			setUpdateFinished();
 		}
