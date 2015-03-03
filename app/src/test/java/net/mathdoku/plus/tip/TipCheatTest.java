@@ -30,7 +30,7 @@ public class TipCheatTest extends TipBaseTest {
 	protected void initMocks() {
 		super.initMocks();
 		if (cheat != null) {
-			when(cheat.getType()).thenReturn(cheatType, cheatType);
+			when(cheat.getType()).thenReturn(cheatType, cheatType, cheatType);
 		}
 	}
 
