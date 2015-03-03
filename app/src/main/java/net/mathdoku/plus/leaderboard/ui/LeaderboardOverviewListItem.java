@@ -9,8 +9,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.games.GamesClient;
-
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.enums.PuzzleComplexity;
@@ -18,7 +16,6 @@ import net.mathdoku.plus.leaderboard.LeaderboardType;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankRow;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
-import net.mathdoku.plus.ui.base.GooglePlayServiceFragmentActivity;
 import net.mathdoku.plus.util.Util;
 
 /**
@@ -224,28 +221,10 @@ public class LeaderboardOverviewListItem {
 
 		@Override
 		public void onClick(View view) {
-			// Connect to the games client of the activity to start
-			// the Google Play Services leaderboard intent.
 			Activity activity = leaderboardOverview.getActivity();
 			if (activity instanceof LeaderboardOverviewActivity) {
-				GamesClient gamesClient = ((LeaderboardOverviewActivity) activity)
-						.getGamesClient();
-				if (gamesClient != null) {
-					Intent intent = gamesClient
-							.getLeaderboardIntent(mLeaderboardId);
-					if (intent != null) {
-						// The OnActivityResult is handled by super
-						// class GooglePlayServiceFragmentActivity.
-						// Therefore the return code of that class is
-						// used here.
-						leaderboardOverview.startActivityForResult(intent,
-								GooglePlayServiceFragmentActivity.RC_UNUSED);
-
-						Preferences
-								.getInstance()
-								.increaseLeaderboardsDetailsViewed();
-					}
-				}
+				((LeaderboardOverviewActivity) activity)
+						.viewLeaderboardDetails(mLeaderboardId);
 			}
 		}
 	}
