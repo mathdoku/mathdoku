@@ -184,6 +184,10 @@ public class LeaderboardType {
 	private static final int GRID_SIZE_INDEX_FACTOR = HIDE_OPERATOR_INDEX_FACTOR
 			* MAX_ELEMENTS_INDEX_FACTOR_OPERATORS;
 
+	private LeaderboardType() {
+		// Prevents accidental instantiation of this utility class.
+	}
+
 	public static GridType[] getGridSizeWithLeaderboard() {
 		return GRID_SIZES_WITH_LEADER_BOARD;
 	}
