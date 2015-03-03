@@ -118,10 +118,8 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	 *            The new value of the status filter.
 	 */
 	public void setStatusFilter(StatusFilter statusFilter) {
-		if (statusFilter != mStatusFilter) {
-			mStatusFilter = statusFilter;
-			updateSolvingAttemptsInArchive();
-		}
+		mStatusFilter = statusFilter;
+		updateSolvingAttemptsInArchive();
 	}
 
 	/**
@@ -140,10 +138,8 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	 *            The new value of the size filter.
 	 */
 	public void setSizeFilter(GridTypeFilter sizeFilter) {
-		if (sizeFilter != mGridTypeFilter) {
-			mGridTypeFilter = sizeFilter;
-			updateSolvingAttemptsInArchive();
-		}
+		mGridTypeFilter = sizeFilter;
+		updateSolvingAttemptsInArchive();
 	}
 
 	/**
