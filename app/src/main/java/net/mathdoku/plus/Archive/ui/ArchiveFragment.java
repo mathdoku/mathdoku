@@ -9,7 +9,6 @@ import android.graphics.Paint.Align;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -24,8 +23,8 @@ import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.puzzle.grid.GridLoader;
 import net.mathdoku.plus.puzzle.ui.GridViewerView;
 import net.mathdoku.plus.statistics.GridStatistics;
-import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 import net.mathdoku.plus.statistics.ui.StatisticsBaseFragment;
+import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 import net.mathdoku.plus.ui.VerticalRatingBar;
 import net.mathdoku.plus.util.Util;
 
@@ -656,16 +655,6 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 				R.dimen.text_size_default) * 2;
 
 		return maxContentHeight;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem menuItem) {
-		int menuId = menuItem.getItemId();
-		switch (menuId) {
-		default:
-			// Chosen menu item is not processed.
-			return false;
-		}
 	}
 
 	/**
