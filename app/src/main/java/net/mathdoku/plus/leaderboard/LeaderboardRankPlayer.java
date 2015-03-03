@@ -41,7 +41,7 @@ class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener {
 		 *            The leaderboard score for the current player which is
 		 *            loaded.
 		 */
-		public void onLeaderboardRankLoaded(Leaderboard leaderboard,
+		void onLeaderboardRankLoaded(Leaderboard leaderboard,
 				LeaderboardScore leaderboardScore);
 
 		/**
@@ -51,7 +51,7 @@ class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener {
 		 *            The leaderboard for which no rank for the current player
 		 *            was found.
 		 */
-		public void onNoRankFound(Leaderboard leaderboard);
+		void onNoRankFound(Leaderboard leaderboard);
 	}
 
 	// The listener to be called when events have been completed.
@@ -67,7 +67,16 @@ class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener {
 	 */
 	public LeaderboardRankPlayer(LeaderboardConnector leaderboardConnector,
 			final LeaderboardRankPlayer.Listener listener) {
+		if (leaderboardConnector == null) {
+			throw new IllegalArgumentException(
+					"LeaderboardConnector can not be null");
+
+		}
 		mLeaderboardConnector = leaderboardConnector;
+
+		if (listener == null) {
+			throw new IllegalArgumentException("Listener can not be null");
+		}
 		mListener = listener;
 	}
 
@@ -80,24 +89,21 @@ class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener {
 	 *            has to be loaded.
 	 */
 	public void loadCurrentPlayerRank(String leaderboardId) {
-		if (mLeaderboardConnector != null) {
-			GamesClient gamesClient = mLeaderboardConnector.getGamesClient();
-
-			if (gamesClient != null) {
-				if (DEBUG) {
-					Log
-							.i(TAG,
-									"Request the current player rank score for leaderboard "
-											+ mLeaderboardConnector
-													.getLeaderboardNameForLogging(leaderboardId));
-				}
-
-				// The scores centered around the current player will be
-				// asynchronously loaded and submitted to the listener.
-				gamesClient.loadPlayerCenteredScores(this, leaderboardId,
-						LeaderboardVariant.TIME_SPAN_ALL_TIME,
-						LeaderboardVariant.COLLECTION_PUBLIC, 1, false);
+		GamesClient gamesClient = mLeaderboardConnector.getGamesClient();
+		if (gamesClient != null) {
+			if (DEBUG) {
+				Log
+						.i(TAG,
+								"Request the current player rank score for leaderboard "
+										+ mLeaderboardConnector
+												.getLeaderboardNameForLogging(leaderboardId));
 			}
+
+			// The scores centered around the current player will be
+			// asynchronously loaded and submitted to the listener.
+			gamesClient.loadPlayerCenteredScores(this, leaderboardId,
+					LeaderboardVariant.TIME_SPAN_ALL_TIME,
+					LeaderboardVariant.COLLECTION_PUBLIC, 1, false);
 		}
 	}
 
@@ -105,44 +111,21 @@ class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener {
 	public void onLeaderboardScoresLoaded(int statusCode,
 			LeaderboardBuffer leaderboardBuffer,
 			LeaderboardScoreBuffer leaderboardScoresBuffer) {
-		// Determine description for the leaderboard which is used for logging
-		// only
-		String leaderboardName = "Unknown";
-		if (DEBUG) {
-			if (mLeaderboardConnector != null && leaderboardBuffer != null
-					&& leaderboardBuffer.getCount() > 0) {
-				leaderboardName = mLeaderboardConnector
-						.getLeaderboardNameForLogging(leaderboardBuffer
-								.get(0)
-								.getLeaderboardId());
-			}
-		}
+		String leaderboardName = DEBUG ? getLeaderboardNameForLogging(leaderboardBuffer)
+				: "Undetermined";
 
 		// First check if results can be processed.
 		if (statusCode != GamesClient.STATUS_OK || leaderboardBuffer == null
 				|| leaderboardBuffer.getCount() == 0
-				|| leaderboardScoresBuffer == null || mListener == null) {
+				|| leaderboardScoresBuffer == null) {
 			if (DEBUG) {
 				Log.i(TAG,
-						"Invalid response when loading the first rank for leaderboard "
-								+ leaderboardName + ":\n" + "   statusCode: "
-								+ statusCode + "\n");
-				if (leaderboardBuffer == null) {
-					Log.i(TAG, "   No leaderboard buffer (null)");
-				} else if (leaderboardBuffer.getCount() == 0) {
-					Log.i(TAG, "   Leaderboard buffer is empty.");
-				}
-				if (leaderboardScoresBuffer == null) {
-					Log.i(TAG, "   No leaderboard scores buffer (null)");
-				}
-				if (leaderboardScoresBuffer == null) {
-					Log.i(TAG, "No listener defined to return rank score to.");
-				}
+						getInvalidResponseResultsMessage(statusCode,
+								leaderboardBuffer, leaderboardScoresBuffer,
+								leaderboardName));
 			}
 			return;
 		}
-
-		assert mLeaderboardConnector != null;
 
 		GamesClient gamesClient = mLeaderboardConnector.getGamesClient();
 		assert gamesClient != null;
@@ -154,26 +137,53 @@ class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener {
 								.getScoreHolder()
 								.getPlayerId())) {
 			// A leaderboard score for the current player is found.
-			if (DEBUG) {
-				Log.i(TAG,
-						"Rank has been loaded for current player on leaderboard "
-								+ leaderboardName);
-			}
-
 			mListener.onLeaderboardRankLoaded(leaderboardBuffer.get(0),
 					leaderboardScoresBuffer.get(0));
 		} else {
 			// Google Play Service will sent the score of the first rank player
 			// in case the current player has not yet registered a score for the
 			// leaderboard. In case no player has registered a score for this
-			// leaderboard an empty score buffer is sent. }
-			if (DEBUG) {
-				Log.i(TAG,
-						"No rank was found for current player on leaderboard "
-								+ leaderboardName);
-			}
-
+			// leaderboard an empty score buffer is sent.
 			mListener.onNoRankFound(leaderboardBuffer.get(0));
 		}
+	}
+
+	private String getInvalidResponseResultsMessage(int statusCode,
+			LeaderboardBuffer leaderboardBuffer,
+			LeaderboardScoreBuffer leaderboardScoresBuffer,
+			String leaderboardName) {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder
+				.append("Invalid response when loading the first rank for leaderboard ");
+		stringBuilder.append(leaderboardName);
+		stringBuilder.append(":\n");
+		stringBuilder.append("   statusCode: ");
+		stringBuilder.append(statusCode);
+		stringBuilder.append("\n");
+		if (leaderboardBuffer == null) {
+			stringBuilder.append("   No leaderboard buffer (null)");
+		} else if (leaderboardBuffer.getCount() == 0) {
+			stringBuilder.append("   Leaderboard buffer is empty.");
+		}
+		if (leaderboardScoresBuffer == null) {
+			stringBuilder.append("   No leaderboard scores buffer (null)");
+		}
+		if (leaderboardScoresBuffer == null) {
+			stringBuilder
+					.append("   No listener defined to return rank score to.");
+		}
+		return stringBuilder.toString();
+	}
+
+	private String getLeaderboardNameForLogging(LeaderboardBuffer leaderboardBuffer) {
+		// Determine description for the leaderboard which is used for logging
+		// only
+		if (leaderboardBuffer != null && leaderboardBuffer.getCount() > 0) {
+			return mLeaderboardConnector
+					.getLeaderboardNameForLogging(leaderboardBuffer
+							.get(0)
+							.getLeaderboardId());
+		}
+		return "Unknown";
 	}
 }
