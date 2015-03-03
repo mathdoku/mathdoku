@@ -54,8 +54,8 @@ class ArchivePreferenceFragment extends PreferenceFragment implements
 	 * option.
 	 */
 	private void setStatusFilterSummary() {
-		Preference preference;
-		if ((preference = findPreference(Preferences.ARCHIVE_SETTING_STATUS_FILTER_VISIBLE)) != null) {
+		Preference preference = findPreference(Preferences.ARCHIVE_SETTING_STATUS_FILTER_VISIBLE);
+		if (preference != null) {
 			int summaryResId = Preferences
 					.getInstance()
 					.isArchiveStatusFilterVisible() ? R.string.archive_settings_show_status_filter_enabled
@@ -69,8 +69,8 @@ class ArchivePreferenceFragment extends PreferenceFragment implements
 	 * option.
 	 */
 	private void setSizeFilterSummary() {
-		Preference preference;
-		if ((preference = findPreference(Preferences.ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE)) != null) {
+		Preference preference = findPreference(Preferences.ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE);
+		if (preference != null) {
 			int summaryResId = Preferences
 					.getInstance()
 					.isArchiveSizeFilterVisible() ? R.string.archive_settings_show_grid_type_filter_enabled
