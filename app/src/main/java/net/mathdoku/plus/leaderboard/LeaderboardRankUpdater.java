@@ -148,63 +148,8 @@ public class LeaderboardRankUpdater {
 									+ " with callback listener");
 		}
 		mLeaderboardConnector.getGamesClient().submitScoreImmediate(
-				new OnScoreSubmittedListener() {
-					@Override
-					public void onScoreSubmitted(int statusCode,
-							SubmitScoreResult submitScoreResult) {
-						if (statusCode == GamesClient.STATUS_OK
-								&& submitScoreResult != null) {
-							// The score was submitted and processed by Google
-							// Play Services.
-							if (DEBUG) {
-								Log
-										.i(TAG,
-												"Score for leaderboard"
-														+ mLeaderboardConnector
-																.getLeaderboardNameForLogging(submitScoreResult
-																		.getLeaderboardId())
-														+ " has been processed by Google Play Services.");
-							}
-
-							// Retrieve the current rank of the
-							// player
-							new LeaderboardRankPlayer(mLeaderboardConnector,
-									new LeaderboardRankPlayer.Listener() {
-
-										@Override
-										public void onLeaderboardRankLoaded(
-												Leaderboard leaderboard,
-												LeaderboardScore leaderboardScore) {
-											mLeaderboardConnector
-													.onRankCurrentPlayerReceived(
-															leaderboard,
-															leaderboardScore,
-															false);
-											mCountLeaderboardsUpdatedWithScoreForPlayer++;
-											setUpdateFinished();
-										}
-
-										@Override
-										public void onNoRankFound(
-												Leaderboard leaderboard) {
-											// Nothing to do here.
-											if (DEBUG) {
-												Log
-														.i(TAG,
-																"ERROR: it should not possible that a player rank "
-																		+ "is not found after it has just been "
-																		+ "successfully submitted and received.");
-											}
-											// Although not possible, still wrap
-											// up just in case...
-											clearLeaderboardRank(leaderboard);
-											setUpdateFinished();
-										}
-									}).loadCurrentPlayerRank(submitScoreResult
-									.getLeaderboardId());
-						}
-					}
-				}, mLeaderboardRankRow.getLeaderboardId(),
+				new OnSubmitScoreImmediateListener(),
+				mLeaderboardRankRow.getLeaderboardId(),
 				mLeaderboardRankRow.getRawScore());
 	}
 
@@ -222,38 +167,8 @@ public class LeaderboardRankUpdater {
 	 * Updates the ranking information of the current leaderboard.
 	 */
 	private void updateRankingInformation() {
-		// Only the ranking information needs to be updated.
 		new LeaderboardRankPlayer(mLeaderboardConnector,
-				new LeaderboardRankPlayer.Listener() {
-					@Override
-					public void onLeaderboardRankLoaded(
-							Leaderboard leaderboard,
-							LeaderboardScore leaderboardScore) {
-						mLeaderboardConnector.onRankCurrentPlayerReceived(
-								leaderboard, leaderboardScore, false);
-						mCountLeaderboardsUpdatedWithScoreForPlayer++;
-						setUpdateFinished();
-					}
-
-					@Override
-					public void onNoRankFound(Leaderboard leaderboard) {
-						// The current player has never played this leaderboard
-						// as no rank for this player was found on Google Play
-						// Services.
-						if (DEBUG) {
-							Log
-									.i(TAG,
-											"No local top score and no ranking information "
-													+ "was found for the current user for leaderboard "
-													+ mLeaderboardConnector
-															.getLeaderboardNameForLogging(leaderboard
-																	.getLeaderboardId())
-													+ ".");
-						}
-						clearLeaderboardRank(leaderboard);
-						setUpdateFinished();
-					}
-				})
+				new UpdateRankingInformationListener())
 				.loadCurrentPlayerRank(mLeaderboardRankRow.getLeaderboardId());
 	}
 
@@ -295,5 +210,60 @@ public class LeaderboardRankUpdater {
 	 */
 	public int getCountUpdatedLeaderboardWithScoreCurrentPlayer() {
 		return mCountLeaderboardsUpdatedWithScoreForPlayer;
+	}
+
+	private class UpdateRankingInformationListener implements
+			LeaderboardRankPlayer.Listener {
+		@Override
+		public void onLeaderboardRankLoaded(Leaderboard leaderboard,
+				LeaderboardScore leaderboardScore) {
+			mLeaderboardConnector.onRankCurrentPlayerReceived(leaderboard,
+					leaderboardScore, false);
+			mCountLeaderboardsUpdatedWithScoreForPlayer++;
+			setUpdateFinished();
+		}
+
+		@Override
+		public void onNoRankFound(Leaderboard leaderboard) {
+			// The current player has never played this leaderboard
+			// as no rank for this player was found on Google Play
+			// Services.
+			if (DEBUG) {
+				Log
+						.i(TAG,
+								"No local top score and no ranking information "
+										+ "was found for the current user for leaderboard "
+										+ mLeaderboardConnector
+												.getLeaderboardNameForLogging(leaderboard
+														.getLeaderboardId())
+										+ ".");
+			}
+			clearLeaderboardRank(leaderboard);
+			setUpdateFinished();
+		}
+	}
+
+	private class OnSubmitScoreImmediateListener implements
+			OnScoreSubmittedListener {
+		@Override
+		public void onScoreSubmitted(int statusCode,
+				SubmitScoreResult submitScoreResult) {
+			if (statusCode == GamesClient.STATUS_OK
+					&& submitScoreResult != null) {
+				// The score was submitted and processed by Google
+				// Play Services.
+				if (DEBUG) {
+					Log
+							.i(TAG,
+									"Score for leaderboard "
+											+ mLeaderboardConnector
+													.getLeaderboardNameForLogging(submitScoreResult
+															.getLeaderboardId())
+											+ " has been processed by Google Play Services.");
+				}
+
+				updateRankingInformation();
+			}
+		}
 	}
 }
