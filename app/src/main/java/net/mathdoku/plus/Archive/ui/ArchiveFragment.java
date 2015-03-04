@@ -22,7 +22,7 @@ import net.mathdoku.plus.puzzle.ui.GridViewerView;
 import net.mathdoku.plus.statistics.GridStatistics;
 import net.mathdoku.plus.statistics.ui.StatisticsBaseFragment;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
-import net.mathdoku.plus.ui.VerticalRatingBar;
+import net.mathdoku.plus.ui.PuzzleParameterDifficultyRatingBar;
 import net.mathdoku.plus.util.Util;
 
 import org.achartengine.ChartFactory;
@@ -67,7 +67,6 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		mPreferences.mSharedPreferences
 				.registerOnSharedPreferenceChangeListener(this);
 
-
 		// Load grid from database
 		mGrid = new GridLoader().load(getSolvingAttemptIdFromBundle());
 		if (mGrid != null) {
@@ -76,7 +75,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 			setGridViewerView(rootView);
 			setArchiveActionButton(rootView);
 			deactivateGrid();
-			setPuzzleParameterDiffiicultyRatingBar(rootView);
+			setPuzzleParameterDifficultyRatingBar(rootView);
 			setDateCreated(rootView);
 			setDateFinished(rootView);
 			setNumberOfReplays(rootView);
@@ -97,7 +96,8 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 					.setVisibility(View.VISIBLE);
 			((TextView) rootView
 					.findViewById(R.id.statistics_general_cheat_penalty_time))
-					.setText(Util.durationTimeToString(mGridStatistics.getCheatPenaltyTime()));
+					.setText(Util.durationTimeToString(mGridStatistics
+							.getCheatPenaltyTime()));
 		}
 	}
 
@@ -115,8 +115,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		if (mGridStatistics != null && mGridStatistics.getReplayCount() > 0) {
 			rootView.findViewById(R.id.statistics_general_replays_row)
 					.setVisibility(View.VISIBLE);
-			((TextView) rootView
-					.findViewById(R.id.statistics_general_replays))
+			((TextView) rootView.findViewById(R.id.statistics_general_replays))
 					.setText(Integer.toString(mGridStatistics.getReplayCount()));
 		}
 	}
@@ -127,8 +126,8 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 					.setVisibility(View.VISIBLE);
 			((TextView) rootView
 					.findViewById(R.id.statistics_general_date_finished))
-					.setText(DateFormat.getDateTimeInstance()
-									 .format(mGridStatistics.mLastMove));
+					.setText(DateFormat.getDateTimeInstance().format(
+							mGridStatistics.mLastMove));
 		}
 	}
 
@@ -139,8 +138,8 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 					.setVisibility(View.VISIBLE);
 			((TextView) rootView
 					.findViewById(R.id.statistics_general_date_created))
-					.setText(DateFormat.getDateTimeInstance()
-									 .format(mGrid.getDateCreated()));
+					.setText(DateFormat.getDateTimeInstance().format(
+							mGrid.getDateCreated()));
 		}
 	}
 
@@ -159,34 +158,10 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		mGridViewerView.setMaximumWidth(getMaxContentHeight(0, 20));
 	}
 
-	private void setPuzzleParameterDiffiicultyRatingBar(View rootView) {
-		final VerticalRatingBar puzzleParameterDifficultyRatingBar = (VerticalRatingBar) rootView
-				.findViewById(R.id.puzzleParameterDifficultyRatingBar);
-		puzzleParameterDifficultyRatingBar.setEnabled(false);
-		switch (mGrid.getPuzzleComplexity()) {
-		case RANDOM:
-			// Note: puzzles will never be stored with this complexity.
-			puzzleParameterDifficultyRatingBar.setNumStars(0);
-			break;
-		case VERY_EASY:
-			puzzleParameterDifficultyRatingBar.setNumStars(1);
-			break;
-		case EASY:
-			puzzleParameterDifficultyRatingBar.setNumStars(2);
-			break;
-		case NORMAL:
-			puzzleParameterDifficultyRatingBar.setNumStars(3);
-			break;
-		case DIFFICULT:
-			puzzleParameterDifficultyRatingBar.setNumStars(4);
-			break;
-		case VERY_DIFFICULT:
-			puzzleParameterDifficultyRatingBar.setNumStars(5);
-			break;
-		default:
-			throw new UnsupportedOperationException(
-					"Unhandled puzzle complexity value");
-		}
+	private void setPuzzleParameterDifficultyRatingBar(View rootView) {
+		((PuzzleParameterDifficultyRatingBar) rootView
+				.findViewById(R.id.puzzleParameterDifficultyRatingBar))
+				.setNumStars(mGrid.getPuzzleComplexity());
 	}
 
 	private void deactivateGrid() {
@@ -208,8 +183,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 
 			// In case the fragment was called by the puzzle fragment
 			// activity the play button will create a similar game.
-			archiveActionButton
-					.setText(R.string.archive_play_similar_puzzle);
+			archiveActionButton.setText(R.string.archive_play_similar_puzzle);
 
 			archiveActionButton.setOnClickListener(new OnClickListener() {
 
@@ -217,9 +191,9 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 				public void onClick(View v) {
 					// Start a game with the same puzzle parameter settings
 					// as were used for creating the last game.
-					puzzleFragmentActivity.startNewGame(mPreferences
-							.getPuzzleParameterGridSize(), !mPreferences
-							.getPuzzleParameterOperatorsVisible(),
+					puzzleFragmentActivity.startNewGame(
+							mPreferences.getPuzzleParameterGridSize(),
+							!mPreferences.getPuzzleParameterOperatorsVisible(),
 							mPreferences.getPuzzleParameterComplexity());
 				}
 			});
@@ -301,22 +275,29 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		int totalCells = mGrid.getGridSize() * mGrid.getGridSize();
 
 		PieChartSeries pieChartSeries = new PieChartSeries(mDefaultTextSize);
-		pieChartSeries.addCategory(getResources().getString(
-				R.string.progress_chart_cells_filled), mGridStatistics.mCellsFilled, totalCells, chartGreen1);
-		pieChartSeries.addCategory(getResources().getString(
-				R.string.progress_chart_cells_revealed), mGridStatistics.mCellsRevealed, totalCells, chartRed1);
-		pieChartSeries.addCategory(getResources().getString(
-				R.string.progress_chart_cells_empty), mGridStatistics.mCellsEmpty, totalCells, chartGrey1);
-		pieChartSeries.addCategory(getResources().getString(
-				R.string.progress_chart_cells_revealed), mGridStatistics.mCellsRevealed, totalCells, chartRed3);
+		pieChartSeries.addCategory(
+				getResources().getString(R.string.progress_chart_cells_filled),
+				mGridStatistics.mCellsFilled, totalCells, chartGreen1);
+		pieChartSeries.addCategory(
+				getResources()
+						.getString(R.string.progress_chart_cells_revealed),
+				mGridStatistics.mCellsRevealed, totalCells, chartRed1);
+		pieChartSeries.addCategory(
+				getResources().getString(R.string.progress_chart_cells_empty),
+				mGridStatistics.mCellsEmpty, totalCells, chartGrey1);
+		pieChartSeries.addCategory(
+				getResources()
+						.getString(R.string.progress_chart_cells_revealed),
+				mGridStatistics.mCellsRevealed, totalCells, chartRed3);
 
-
-		if (pieChartSeries.getCategorySeries().getItemCount() > 1 || mGridStatistics.mCellsRevealed > 0) {
+		if (pieChartSeries.getCategorySeries().getItemCount() > 1
+				|| mGridStatistics.mCellsRevealed > 0) {
 			addChartToStatisticsSection(null,
 					getResources().getString(R.string.progress_chart_title),
-					ChartFactory.getPieChartView(getActivity(), pieChartSeries.getCategorySeries(),
-							pieChartSeries.getRenderer()), null,
-					getResources().getString(R.string.progress_chart_body));
+					ChartFactory.getPieChartView(getActivity(),
+							pieChartSeries.getCategorySeries(),
+							pieChartSeries.getRenderer()), null, getResources()
+							.getString(R.string.progress_chart_body));
 		}
 	}
 

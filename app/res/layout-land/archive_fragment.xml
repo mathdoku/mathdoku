@@ -20,7 +20,7 @@
             <!-- The rating bar will be programmatically rotated to a vertical position. -->
             <!-- Number of starts will programmatically be set to correct number of stars. -->
 
-            <net.mathdoku.plus.ui.VerticalRatingBar
+            <net.mathdoku.plus.ui.PuzzleParameterDifficultyRatingBar
                 android:id="@+id/puzzleParameterDifficultyRatingBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -6,21 +6,26 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.RatingBar;
 
+import net.mathdoku.plus.enums.PuzzleComplexity;
+
 import org.jetbrains.annotations.NotNull;
 
-public class VerticalRatingBar extends RatingBar {
+public class PuzzleParameterDifficultyRatingBar extends RatingBar {
 	private int mWidth, mHeight, mOldWidth, mOldHeight;
 
-	public VerticalRatingBar(Context context) {
+	public PuzzleParameterDifficultyRatingBar(Context context) {
 		super(context);
+		setEnabled(false);
 	}
 
-	public VerticalRatingBar(Context context, AttributeSet attrs, int defStyle) {
+	public PuzzleParameterDifficultyRatingBar(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
+		setEnabled(false);
 	}
 
-	public VerticalRatingBar(Context context, AttributeSet attrs) {
+	public PuzzleParameterDifficultyRatingBar(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		setEnabled(false);
 	}
 
 	@Override
@@ -80,12 +85,40 @@ public class VerticalRatingBar extends RatingBar {
 
 	@Override
 	public synchronized void setProgress(int progress) {
-		if (progress >= 0)
+		if (progress >= 0) {
 			super.setProgress(progress);
-
-		else
+		}
+		else {
 			super.setProgress(0);
+		}
 		onSizeChanged(mWidth, mHeight, mOldWidth, mOldHeight);
 
+	}
+
+	public void setNumStars(PuzzleComplexity puzzleComplexity) {
+		switch (puzzleComplexity) {
+			case RANDOM:
+				// Note: puzzles will never be stored with this complexity.
+				setNumStars(0);
+				break;
+			case VERY_EASY:
+				setNumStars(1);
+				break;
+			case EASY:
+				setNumStars(2);
+				break;
+			case NORMAL:
+				setNumStars(3);
+				break;
+			case DIFFICULT:
+				setNumStars(4);
+				break;
+			case VERY_DIFFICULT:
+				setNumStars(5);
+				break;
+			default:
+				throw new UnsupportedOperationException(
+						"Unhandled puzzle complexity value");
+		}
 	}
 }
