@@ -1,18 +1,14 @@
 package net.mathdoku.plus.statistics.ui;
 
-import net.mathdoku.plus.Preferences;
-import net.mathdoku.plus.R;
-
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.Preference;
-import android.preference.PreferenceFragment;
 
-class StatisticsPreferenceFragment extends PreferenceFragment implements
-		OnSharedPreferenceChangeListener {
+import net.mathdoku.plus.Preferences;
+import net.mathdoku.plus.R;
+import net.mathdoku.plus.ui.base.AppPreferenceFragment;
 
-	private SharedPreferences mSharedPreferences;
+class StatisticsPreferenceFragment extends AppPreferenceFragment {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -21,20 +17,6 @@ class StatisticsPreferenceFragment extends PreferenceFragment implements
 		addPreferencesFromResource(R.xml.statistics_preferences);
 
 		setMaximumGamesElapsedTimeChart();
-	}
-
-	@Override
-	public void onStart() {
-		mSharedPreferences = Preferences.getInstance(getActivity()).mSharedPreferences;
-		mSharedPreferences.registerOnSharedPreferenceChangeListener(this);
-		super.onStart();
-	}
-
-	@Override
-	public void onStop() {
-		mSharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
-
-		super.onPause();
 	}
 
 	@Override

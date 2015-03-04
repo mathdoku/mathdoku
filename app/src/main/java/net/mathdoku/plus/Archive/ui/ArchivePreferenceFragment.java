@@ -1,18 +1,14 @@
 package net.mathdoku.plus.archive.ui;
 
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.Preference;
-import android.preference.PreferenceFragment;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
+import net.mathdoku.plus.ui.base.AppPreferenceFragment;
 
-class ArchivePreferenceFragment extends PreferenceFragment implements
-		OnSharedPreferenceChangeListener {
-
-	private SharedPreferences mSharedPreferences;
+class ArchivePreferenceFragment extends AppPreferenceFragment {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -22,20 +18,6 @@ class ArchivePreferenceFragment extends PreferenceFragment implements
 
 		setStatusFilterSummary();
 		setSizeFilterSummary();
-	}
-
-	@Override
-	public void onStart() {
-		mSharedPreferences = Preferences.getInstance(getActivity()).mSharedPreferences;
-		mSharedPreferences.registerOnSharedPreferenceChangeListener(this);
-		super.onStart();
-	}
-
-	@Override
-	public void onStop() {
-		mSharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
-
-		super.onPause();
 	}
 
 	@Override
