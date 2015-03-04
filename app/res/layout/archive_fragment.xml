@@ -18,7 +18,7 @@
             android:layout_margin="5dp" >
 
             <!-- The rating bar will be programmatically rotated to a vertical position. -->
-            <!-- Number of starts will programmatically be set to correct number of stars. -->
+            <!-- Number of stars will programmatically be set to correct number of stars. -->
 
             <net.mathdoku.plus.ui.VerticalRatingBar
                 android:id="@+id/puzzleParameterDifficultyRatingBar"
