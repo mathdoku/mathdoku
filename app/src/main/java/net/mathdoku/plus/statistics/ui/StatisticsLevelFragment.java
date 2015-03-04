@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -76,9 +75,6 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		mCumulativeStatistics = new CumulativeStatisticsSelector(mMinGridSize,
 				mMaxGridSize).getCumulativeStatistics();
 
-		// Get layout where charts will be drawn and the inflater for
-		// creating new statistics sections.
-		mChartsLayout = (LinearLayout) rootView.findViewById(R.id.chartLayouts);
 		createAllCharts();
 
 		return rootView;
@@ -110,7 +106,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 	 * Creates all charts.
 	 */
 	private void createAllCharts() {
-		mChartsLayout.removeAllViewsInLayout();
+		removeAllCharts();
 
 		// Build all charts for all games at current level
 		boolean statisticsDisplayed = createSolvedUnSolvedChart();
@@ -129,9 +125,8 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 			textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP,
 					mDefaultTextSizeInDIP);
 
-			mChartsLayout.addView(textView);
+			addViewToStatisticsSection(textView);
 		}
-
 	}
 
 	/**
@@ -205,11 +200,10 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		}
 
 		// Add section to activity
-		addStatisticsSection(null,
-				getResources().getString(R.string.solved_chart_title),
-				ChartFactory.getPieChartView(getActivity(), categorySeries,
-						renderer), null,
-				getResources().getString(R.string.solved_chart_body));
+		addChartToStatisticsSection(null, getResources().getString(R.string.solved_chart_title),
+									ChartFactory.getPieChartView(getActivity(), categorySeries,
+																 renderer), null,
+									getResources().getString(R.string.solved_chart_body));
 		return true;
 	}
 
@@ -500,16 +494,14 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 		// exclusive this will result in one single bar per game which is
 		// entirely colored based on status of game.
 		String[] types = typesList.toArray(new String[typesList.size()]);
-		addStatisticsSection(
-				null,
-				getResources().getString(
-						R.string.statistics_elapsed_time_historic_title),
-				ChartFactory.getCombinedXYChartView(getActivity(),
-						xyMultipleSeriesDataset, xyMultipleSeriesRenderer,
-						types),
-				tableLayout,
-				getResources().getString(
-						R.string.statistics_elapsed_time_historic_body));
+		addChartToStatisticsSection(null, getResources().getString(
+				R.string.statistics_elapsed_time_historic_title),
+									ChartFactory.getCombinedXYChartView(getActivity(),
+																		xyMultipleSeriesDataset,
+																		xyMultipleSeriesRenderer,
+																		types), tableLayout,
+									getResources().getString(
+											R.string.statistics_elapsed_time_historic_body));
 
 		return true;
 	}

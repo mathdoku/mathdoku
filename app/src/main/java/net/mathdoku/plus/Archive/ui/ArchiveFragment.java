@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.graphics.Color;
-import android.graphics.Paint.Align;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -13,7 +11,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import net.mathdoku.plus.Preferences;
@@ -30,11 +27,6 @@ import net.mathdoku.plus.util.Util;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.chart.BarChart.Type;
-import org.achartengine.model.CategorySeries;
-import org.achartengine.model.XYMultipleSeriesDataset;
-import org.achartengine.model.XYSeries;
-import org.achartengine.renderer.DefaultRenderer;
-import org.achartengine.renderer.XYMultipleSeriesRenderer;
 
 import java.text.DateFormat;
 
@@ -47,6 +39,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 	private static final String TAG = ArchiveFragment.class.getName();
 
 	public static final String BUNDLE_KEY_SOLVING_ATTEMPT_ID = "solvingAttemptId";
+	private static final int Y_VALUE_CHEAT_SOLUTION_REVEALED = 1;
 
 	private Grid mGrid;
 	private GridStatistics mGridStatistics;
@@ -67,9 +60,6 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		View rootView = super.onCreateView(inflater, R.layout.archive_fragment,
 				container, savedInstanceState);
 
-		Bundle args = getArguments();
-		int solvingAttemptId = args.getInt(BUNDLE_KEY_SOLVING_ATTEMPT_ID);
-
 		// Get preferences
 		mPreferences = Preferences.getInstance();
 		setDisplayChartDescription(mPreferences
@@ -77,169 +67,191 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		mPreferences.mSharedPreferences
 				.registerOnSharedPreferenceChangeListener(this);
 
+
+		// Load grid from database
+		mGrid = new GridLoader().load(getSolvingAttemptIdFromBundle());
+		if (mGrid != null) {
+			mGridStatistics = mGrid.getGridStatistics();
+
+			setGridViewerView(rootView);
+			setArchiveActionButton(rootView);
+			deactivateGrid();
+			setPuzzleParameterDiffiicultyRatingBar(rootView);
+			setDateCreated(rootView);
+			setDateFinished(rootView);
+			setNumberOfReplays(rootView);
+			setElapsedTime(rootView);
+			setCheatPenalty(rootView);
+
+			createAllCharts();
+		}
+
+		return rootView;
+	}
+
+	private void setCheatPenalty(View rootView) {
+		if (mGridStatistics != null
+				&& mGridStatistics.getCheatPenaltyTime() > 0) {
+			rootView.findViewById(
+					R.id.statistics_general_cheat_penalty_time_row)
+					.setVisibility(View.VISIBLE);
+			((TextView) rootView
+					.findViewById(R.id.statistics_general_cheat_penalty_time))
+					.setText(Util.durationTimeToString(mGridStatistics.getCheatPenaltyTime()));
+		}
+	}
+
+	private void setElapsedTime(View rootView) {
+		if (!mGrid.isActive()) {
+			rootView.findViewById(R.id.statistics_general_elapsed_time_row)
+					.setVisibility(View.VISIBLE);
+			((TextView) rootView
+					.findViewById(R.id.statistics_general_elapsed_time))
+					.setText(Util.durationTimeToString(mGrid.getElapsedTime()));
+		}
+	}
+
+	private void setNumberOfReplays(View rootView) {
+		if (mGridStatistics != null && mGridStatistics.getReplayCount() > 0) {
+			rootView.findViewById(R.id.statistics_general_replays_row)
+					.setVisibility(View.VISIBLE);
+			((TextView) rootView
+					.findViewById(R.id.statistics_general_replays))
+					.setText(Integer.toString(mGridStatistics.getReplayCount()));
+		}
+	}
+
+	private void setDateFinished(View rootView) {
+		if (mGridStatistics != null && mGridStatistics.isFinished()) {
+			rootView.findViewById(R.id.statistics_general_date_finished_row)
+					.setVisibility(View.VISIBLE);
+			((TextView) rootView
+					.findViewById(R.id.statistics_general_date_finished))
+					.setText(DateFormat.getDateTimeInstance()
+									 .format(mGridStatistics.mLastMove));
+		}
+	}
+
+	private void setDateCreated(View rootView) {
+		// Set date created
+		if (mGrid.getDateCreated() > 0) {
+			rootView.findViewById(R.id.statistics_general_date_created_row)
+					.setVisibility(View.VISIBLE);
+			((TextView) rootView
+					.findViewById(R.id.statistics_general_date_created))
+					.setText(DateFormat.getDateTimeInstance()
+									 .format(mGrid.getDateCreated()));
+		}
+	}
+
+	private void setGridViewerView(View rootView) {
 		// Get fragment manager and start a transaction.
 		GridViewerView mGridViewerView;
 		mGridViewerView = (GridViewerView) rootView
 				.findViewById(R.id.grid_viewer_view);
 
-		// Load grid from database
-		mGrid = new GridLoader().load(solvingAttemptId);
-		if (mGrid != null) {
-			// Load grid into grid view
-			mGridViewerView.loadNewGrid(mGrid);
+		// Load grid into grid view
+		mGridViewerView.loadNewGrid(mGrid);
 
-			// Set background color of button
-			Button archiveActionButton = (Button) rootView
-					.findViewById(R.id.archiveActionButton);
-			archiveActionButton.setBackgroundColor(Painter
-					.getInstance()
-					.getButtonBackgroundColor());
-			if (getActivity() instanceof PuzzleFragmentActivity) {
-				final PuzzleFragmentActivity puzzleFragmentActivity = (PuzzleFragmentActivity) getActivity();
+		// Restrict the width of the grid viewer view when displayed in
+		// landscape mode to the maximum height of the available area.
+		mGridViewerView.setInScrollView(true);
+		mGridViewerView.setMaximumWidth(getMaxContentHeight(0, 20));
+	}
 
-				// In case the fragment was called by the puzzle fragment
-				// activity the play button will create a similar game.
-				archiveActionButton
-						.setText(R.string.archive_play_similar_puzzle);
-
-				archiveActionButton.setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						// Start a game with the same puzzle parameter settings
-						// as were used for creating the last game.
-						puzzleFragmentActivity.startNewGame(mPreferences
-								.getPuzzleParameterGridSize(), !mPreferences
-								.getPuzzleParameterOperatorsVisible(),
-								mPreferences.getPuzzleParameterComplexity());
-					}
-				});
-
-			} else if (getActivity() instanceof ArchiveFragmentActivity
-					&& mGrid.isActive()) {
-				// The fragment is started by the archive fragment activity. In
-				// case the puzzle isn't finished the action button reloads the
-				// puzzle so it can be continued.
-				archiveActionButton
-						.setText(R.string.archive_continue_unfinished_puzzle);
-
-				archiveActionButton.setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						Intent intent = new Intent();
-						intent.putExtra(BUNDLE_KEY_SOLVING_ATTEMPT_ID,
-								getSolvingAttemptId());
-						getActivity().setResult(Activity.RESULT_OK, intent);
-
-						// Finish the archive activity
-						getActivity().finish();
-					}
-				});
-			} else {
-				archiveActionButton.setVisibility(View.GONE);
-			}
-
-			if (mGrid.isActive()) {
-				// Disable the grid as the user should not be able to click
-				// cells in the archive view
-				mGrid.setActive(false);
-			}
-
-			// Display the difficulty rating.
-			final VerticalRatingBar puzzleParameterDifficultyRatingBar = (VerticalRatingBar) rootView
-					.findViewById(R.id.puzzleParameterDifficultyRatingBar);
-			puzzleParameterDifficultyRatingBar.setEnabled(false);
-			switch (mGrid.getPuzzleComplexity()) {
-			case RANDOM:
-				// Note: puzzles will never be stored with this complexity.
-				puzzleParameterDifficultyRatingBar.setNumStars(0);
-				break;
-			case VERY_EASY:
-				puzzleParameterDifficultyRatingBar.setNumStars(1);
-				break;
-			case EASY:
-				puzzleParameterDifficultyRatingBar.setNumStars(2);
-				break;
-			case NORMAL:
-				puzzleParameterDifficultyRatingBar.setNumStars(3);
-				break;
-			case DIFFICULT:
-				puzzleParameterDifficultyRatingBar.setNumStars(4);
-				break;
-			case VERY_DIFFICULT:
-				puzzleParameterDifficultyRatingBar.setNumStars(5);
-				break;
-			}
-
-			// Restrict the width of the grid viewer view when displayed in
-			// landscape mode to the maximum height of the available area.
-			mGridViewerView.setInScrollView(true);
-			mGridViewerView.setMaximumWidth(getMaxContentHeight(0, 20));
-
-			// Load grid statistics
-			mGridStatistics = mGrid.getGridStatistics();
-
-			// Set date created
-			if (mGrid.getDateCreated() > 0) {
-				rootView.findViewById(R.id.statistics_general_date_created_row)
-						.setVisibility(View.VISIBLE);
-				((TextView) rootView
-						.findViewById(R.id.statistics_general_date_created))
-						.setText(DateFormat.getDateTimeInstance().format(
-								mGrid.getDateCreated()));
-			}
-
-			// Set date finished
-			if (mGridStatistics != null && mGridStatistics.isFinished()) {
-				rootView.findViewById(R.id.statistics_general_date_finished_row)
-						.setVisibility(View.VISIBLE);
-				((TextView) rootView
-						.findViewById(R.id.statistics_general_date_finished))
-						.setText(DateFormat.getDateTimeInstance().format(
-								mGridStatistics.mLastMove));
-			}
-
-			// Show the number of times the puzzle is replayed.
-			if (mGridStatistics != null && mGridStatistics.getReplayCount() > 0) {
-				rootView.findViewById(R.id.statistics_general_replays_row)
-						.setVisibility(View.VISIBLE);
-				((TextView) rootView
-						.findViewById(R.id.statistics_general_replays))
-						.setText(Integer.toString(mGridStatistics
-								.getReplayCount()));
-			}
-
-			// Show elapsed time for puzzles which are solved manually.
-			if (!mGrid.isActive()) {
-				rootView.findViewById(R.id.statistics_general_elapsed_time_row)
-						.setVisibility(View.VISIBLE);
-				((TextView) rootView
-						.findViewById(R.id.statistics_general_elapsed_time))
-						.setText(Util.durationTimeToString(mGrid
-								.getElapsedTime()));
-			}
-
-			// Set cheat penalty time
-			if (mGridStatistics != null
-					&& mGridStatistics.getCheatPenaltyTime() > 0) {
-				rootView.findViewById(
-						R.id.statistics_general_cheat_penalty_time_row)
-						.setVisibility(View.VISIBLE);
-				((TextView) rootView
-						.findViewById(R.id.statistics_general_cheat_penalty_time))
-						.setText(Util.durationTimeToString(mGridStatistics
-								.getCheatPenaltyTime()));
-			}
-
-			// Get layout where charts will be drawn and the inflater for
-			// creating new statistics sections.
-			mChartsLayout = (LinearLayout) rootView
-					.findViewById(R.id.chartLayouts);
-			createAllCharts();
+	private void setPuzzleParameterDiffiicultyRatingBar(View rootView) {
+		final VerticalRatingBar puzzleParameterDifficultyRatingBar = (VerticalRatingBar) rootView
+				.findViewById(R.id.puzzleParameterDifficultyRatingBar);
+		puzzleParameterDifficultyRatingBar.setEnabled(false);
+		switch (mGrid.getPuzzleComplexity()) {
+		case RANDOM:
+			// Note: puzzles will never be stored with this complexity.
+			puzzleParameterDifficultyRatingBar.setNumStars(0);
+			break;
+		case VERY_EASY:
+			puzzleParameterDifficultyRatingBar.setNumStars(1);
+			break;
+		case EASY:
+			puzzleParameterDifficultyRatingBar.setNumStars(2);
+			break;
+		case NORMAL:
+			puzzleParameterDifficultyRatingBar.setNumStars(3);
+			break;
+		case DIFFICULT:
+			puzzleParameterDifficultyRatingBar.setNumStars(4);
+			break;
+		case VERY_DIFFICULT:
+			puzzleParameterDifficultyRatingBar.setNumStars(5);
+			break;
+		default:
+			throw new UnsupportedOperationException(
+					"Unhandled puzzle complexity value");
 		}
+	}
 
-		return rootView;
+	private void deactivateGrid() {
+		if (mGrid.isActive()) {
+			// Disable the grid as the user should not be able to click
+			// cells in the archive view
+			mGrid.setActive(false);
+		}
+	}
+
+	private void setArchiveActionButton(View rootView) {
+		Button archiveActionButton = (Button) rootView
+				.findViewById(R.id.archiveActionButton);
+		archiveActionButton.setBackgroundColor(Painter
+				.getInstance()
+				.getButtonBackgroundColor());
+		if (getActivity() instanceof PuzzleFragmentActivity) {
+			final PuzzleFragmentActivity puzzleFragmentActivity = (PuzzleFragmentActivity) getActivity();
+
+			// In case the fragment was called by the puzzle fragment
+			// activity the play button will create a similar game.
+			archiveActionButton
+					.setText(R.string.archive_play_similar_puzzle);
+
+			archiveActionButton.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					// Start a game with the same puzzle parameter settings
+					// as were used for creating the last game.
+					puzzleFragmentActivity.startNewGame(mPreferences
+							.getPuzzleParameterGridSize(), !mPreferences
+							.getPuzzleParameterOperatorsVisible(),
+							mPreferences.getPuzzleParameterComplexity());
+				}
+			});
+
+		} else if (getActivity() instanceof ArchiveFragmentActivity
+				&& mGrid.isActive()) {
+			// The fragment is started by the archive fragment activity. In
+			// case the puzzle isn't finished the action button reloads the
+			// puzzle so it can be continued.
+			archiveActionButton
+					.setText(R.string.archive_continue_unfinished_puzzle);
+
+			archiveActionButton.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent();
+					intent.putExtra(BUNDLE_KEY_SOLVING_ATTEMPT_ID,
+							getSolvingAttemptId());
+					getActivity().setResult(Activity.RESULT_OK, intent);
+
+					// Finish the archive activity
+					getActivity().finish();
+				}
+			});
+		} else {
+			archiveActionButton.setVisibility(View.GONE);
+		}
+	}
+
+	private int getSolvingAttemptIdFromBundle() {
+		return getArguments().getInt(BUNDLE_KEY_SOLVING_ATTEMPT_ID);
 	}
 
 	@Override
@@ -267,7 +279,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 	 * Creates all charts.
 	 */
 	private void createAllCharts() {
-		mChartsLayout.removeAllViewsInLayout();
+		removeAllCharts();
 
 		// Build all charts for current game only
 		createProgressChart();
@@ -286,67 +298,24 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 		}
 
 		// Determine total number of cells in grid
-		float totalCells = mGrid.getGridSize() * mGrid.getGridSize();
+		int totalCells = mGrid.getGridSize() * mGrid.getGridSize();
 
-		// Count number of categories. Chart will only be displayed it minimal 2
-		// categories are shown.
-		int countCategories = 0;
+		PieChartSeries pieChartSeries = new PieChartSeries(mDefaultTextSize);
+		pieChartSeries.addCategory(getResources().getString(
+				R.string.progress_chart_cells_filled), mGridStatistics.mCellsFilled, totalCells, chartGreen1);
+		pieChartSeries.addCategory(getResources().getString(
+				R.string.progress_chart_cells_revealed), mGridStatistics.mCellsRevealed, totalCells, chartRed1);
+		pieChartSeries.addCategory(getResources().getString(
+				R.string.progress_chart_cells_empty), mGridStatistics.mCellsEmpty, totalCells, chartGrey1);
+		pieChartSeries.addCategory(getResources().getString(
+				R.string.progress_chart_cells_revealed), mGridStatistics.mCellsRevealed, totalCells, chartRed3);
 
-		// Define the renderer
-		DefaultRenderer renderer = new DefaultRenderer();
-		renderer.setShowLabels(false);
-		renderer.setShowLegend(true);
-		renderer.setLegendTextSize(mDefaultTextSize);
-		renderer.setFitLegend(true);
-		renderer.setMargins(new int[] { 0, mDefaultTextSize, mDefaultTextSize,
-				mDefaultTextSize });
 
-		renderer.setZoomButtonsVisible(false);
-		renderer.setZoomEnabled(false);
-		renderer.setPanEnabled(false);
-		renderer.setInScroll(true);
-
-		// Create object for category series and the series renderer
-		CategorySeries categorySeries = new CategorySeries("");
-
-		// Cells filled
-		if (mGridStatistics.mCellsFilled > 0) {
-			categorySeries.add(
-					getResources().getString(
-							R.string.progress_chart_cells_filled)
-							+ " (" + mGridStatistics.mCellsFilled + ")",
-					(double) mGridStatistics.mCellsFilled / totalCells);
-			renderer.addSeriesRenderer(createSimpleSeriesRenderer(chartGreen1));
-			countCategories++;
-		}
-
-		// Cells revealed
-		if (mGridStatistics.mCellsRevealed > 0) {
-			categorySeries.add(
-					getResources().getString(
-							R.string.progress_chart_cells_revealed)
-							+ " (" + mGridStatistics.mCellsRevealed + ")",
-					(double) mGridStatistics.mCellsRevealed / totalCells);
-			renderer.addSeriesRenderer(createSimpleSeriesRenderer(chartRed1));
-			countCategories++;
-		}
-
-		// Cells empty
-		if (mGridStatistics.mCellsEmpty > 0) {
-			categorySeries.add(
-					getResources().getString(
-							R.string.progress_chart_cells_empty)
-							+ " (" + mGridStatistics.mCellsEmpty + ")",
-					(double) mGridStatistics.mCellsEmpty / totalCells);
-			renderer.addSeriesRenderer(createSimpleSeriesRenderer(chartGrey1));
-			countCategories++;
-		}
-
-		if (countCategories > 1 || mGridStatistics.mCellsRevealed > 0) {
-			addStatisticsSection(null,
+		if (pieChartSeries.getCategorySeries().getItemCount() > 1 || mGridStatistics.mCellsRevealed > 0) {
+			addChartToStatisticsSection(null,
 					getResources().getString(R.string.progress_chart_title),
-					ChartFactory.getPieChartView(getActivity(), categorySeries,
-							renderer), null,
+					ChartFactory.getPieChartView(getActivity(), pieChartSeries.getCategorySeries(),
+							pieChartSeries.getRenderer()), null,
 					getResources().getString(R.string.progress_chart_body));
 		}
 	}
@@ -355,259 +324,84 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 	 * Create the chart for the avoidable moves.
 	 */
 	private void createAvoidableMovesChart() {
-		// Build chart for analysis of moves only in case at least one move
-		// has been made.
-		int totalAvoidableMoves = mGridStatistics.mEnteredValueReplaced
-				+ mGridStatistics.mMaybeValue + mGridStatistics.mActionUndoMove
-				+ mGridStatistics.mActionClearCell
-				+ mGridStatistics.mActionClearGrid;
-		if (totalAvoidableMoves == 0) {
-			return;
+		BarChartSeries barChartSeries = new BarChartSeries();
+		barChartSeries.addSeries(
+				getResources().getString(
+						R.string.avoidable_moves_chart_entered_value_replaced),
+				mGridStatistics.mEnteredValueReplaced, chartGreen1);
+		barChartSeries.addSeries(
+				getResources().getString(
+						R.string.avoidable_moves_chart_maybe_value_used),
+				mGridStatistics.mMaybeValue, chartSignal1);
+		barChartSeries.addSeries(
+				getResources().getString(
+						R.string.avoidable_moves_chart_undo_button_used),
+				mGridStatistics.mActionUndoMove, chartSignal2);
+		barChartSeries.addSeries(
+				getResources().getString(
+						R.string.avoidable_moves_chart_clear_used),
+				mGridStatistics.mActionClearCell
+						+ mGridStatistics.mActionClearGrid, chartSignal3);
+
+		if (!barChartSeries.isEmpty()) {
+			barChartSeries.setYTitle(getResources().getString(
+					R.string.avoidable_moves_yaxis_description));
+			barChartSeries.setTextSize(mDefaultTextSize);
+			barChartSeries.setBarWidth(getBarWidth());
+			// Add new statistics section to the activity
+			addChartToStatisticsSection(
+					AVOIDABLE_MOVES_CHART_TAG_ID,
+					getResources().getString(
+							R.string.avoidable_moves_chart_title),
+					ChartFactory.getBarChartView(getActivity(),
+							barChartSeries.getDataset(),
+							barChartSeries.getRenderer(), Type.DEFAULT),
+					null,
+					getResources().getString(
+							R.string.avoidable_moves_chart_body));
 		}
-
-		// Define the renderer
-		XYMultipleSeriesRenderer xyMultipleSeriesRenderer = new XYMultipleSeriesRenderer();
-
-		// Fix background color problem of margin in AChartEngine
-		xyMultipleSeriesRenderer.setMarginsColor(Color.argb(0, 50, 50, 50));
-
-		xyMultipleSeriesRenderer.setLabelsTextSize(mDefaultTextSize);
-		xyMultipleSeriesRenderer.setLegendTextSize(mDefaultTextSize);
-		xyMultipleSeriesRenderer.setFitLegend(true);
-		xyMultipleSeriesRenderer.setMargins(new int[] { 0,
-				2 * mDefaultTextSize, mDefaultTextSize, mDefaultTextSize });
-
-		xyMultipleSeriesRenderer.setXAxisMin(-1);
-		xyMultipleSeriesRenderer.setZoomButtonsVisible(false);
-		xyMultipleSeriesRenderer.setZoomEnabled(false);
-		xyMultipleSeriesRenderer.setPanEnabled(false);
-		xyMultipleSeriesRenderer.setInScroll(true);
-
-		// Setup Y-axis and labels.
-		xyMultipleSeriesRenderer.setYTitle(getResources().getString(
-				R.string.avoidable_moves_yaxis_description));
-		xyMultipleSeriesRenderer.setYLabelsAlign(Align.RIGHT);
-		xyMultipleSeriesRenderer.setYLabelsPadding(5f);
-		xyMultipleSeriesRenderer.setYLabelsVerticalPadding(-1
-				* mDefaultTextSize);
-
-		// Create object for category series and the series renderer
-		XYMultipleSeriesDataset xyMultipleSeriesDataset = new XYMultipleSeriesDataset();
-
-		// While filling the categories the number of categories used and the
-		// maximum Y-value is determined.
-		int categoryIndex = 1;
-		int maxYValue = 0;
-
-		// Bar for number of times an entered value in a cell was replace by
-		// another value.
-		if (mGridStatistics.mEnteredValueReplaced > 0) {
-			XYSeries xySeries = new XYSeries(getResources().getString(
-					R.string.avoidable_moves_chart_entered_value_replaced));
-			xySeries.add(categoryIndex, mGridStatistics.mEnteredValueReplaced);
-			xyMultipleSeriesDataset.addSeries(xySeries);
-			xyMultipleSeriesRenderer
-					.addSeriesRenderer(createSimpleSeriesRenderer(chartGreen1));
-			categoryIndex++;
-			maxYValue = Math.max(maxYValue,
-					mGridStatistics.mEnteredValueReplaced);
-		}
-
-		// Bar for number of maybe values that have been used while playing the
-		// game. Note this is *not* the actual number of possible values
-		// currently visible.
-		if (mGridStatistics.mMaybeValue > 0) {
-			XYSeries xySeries = new XYSeries(getResources().getString(
-					R.string.avoidable_moves_chart_maybe_value_used));
-			xySeries.add(categoryIndex, mGridStatistics.mMaybeValue);
-			xyMultipleSeriesDataset.addSeries(xySeries);
-			xyMultipleSeriesRenderer
-					.addSeriesRenderer(createSimpleSeriesRenderer(chartSignal1));
-			categoryIndex++;
-			maxYValue = Math.max(maxYValue, mGridStatistics.mMaybeValue);
-		}
-
-		// Bar for number of times the undo button was used
-		if (mGridStatistics.mActionUndoMove > 0) {
-			XYSeries xySeries = new XYSeries(getResources().getString(
-					R.string.avoidable_moves_chart_undo_button_used));
-			xySeries.add(categoryIndex, mGridStatistics.mActionUndoMove);
-			xyMultipleSeriesDataset.addSeries(xySeries);
-			xyMultipleSeriesRenderer
-					.addSeriesRenderer(createSimpleSeriesRenderer(chartSignal2));
-			categoryIndex++;
-			maxYValue = Math.max(maxYValue, mGridStatistics.mActionUndoMove);
-		}
-
-		// Bar for number of times a value in a cell or the entire grid is
-		// cleared.
-		int totalClears = mGridStatistics.mActionClearCell
-				+ mGridStatistics.mActionClearGrid;
-		if (totalClears > 0) {
-			XYSeries xySeries = new XYSeries(getResources().getString(
-					R.string.avoidable_moves_chart_clear_used));
-			xySeries.add(categoryIndex, totalClears);
-			xyMultipleSeriesDataset.addSeries(xySeries);
-			xyMultipleSeriesRenderer
-					.addSeriesRenderer(createSimpleSeriesRenderer(chartSignal3));
-			// noinspection UnusedAssignment
-			categoryIndex++;
-			maxYValue = Math.max(maxYValue, totalClears);
-		}
-
-		// Fill dimensions of axis based on number of categories and maximum
-		// Y-value.
-		xyMultipleSeriesRenderer.setXAxisMax(MAX_CATEGORIES_BAR_CHART + 2);
-		xyMultipleSeriesRenderer.setXLabels(0);
-		xyMultipleSeriesRenderer.setYAxisMin(0);
-		xyMultipleSeriesRenderer.setYAxisMax(maxYValue + 1);
-		xyMultipleSeriesRenderer.setYLabels(Math.min(4, maxYValue + 1));
-		xyMultipleSeriesRenderer.setBarWidth(getBarWidth());
-
-		// Add new statistics section to the activity
-		addStatisticsSection(AVOIDABLE_MOVES_CHART_TAG_ID, getResources()
-				.getString(R.string.avoidable_moves_chart_title),
-				ChartFactory.getBarChartView(getActivity(),
-						xyMultipleSeriesDataset, xyMultipleSeriesRenderer,
-						Type.DEFAULT), null,
-				getResources().getString(R.string.avoidable_moves_chart_body));
-
 	}
 
 	/**
 	 * Create bar chart for the cheats which are used
 	 */
 	private void createUsedCheatsChart() {
-		// Build chart for analysis of moves only in case at least one cheat
-		// has been used.
-		int totalCheats = mGridStatistics.mActionCheckProgress
-				+ mGridStatistics.mActionRevealCell
-				+ mGridStatistics.mActionRevealOperator
-				+ (mGridStatistics.isSolutionRevealed() ? 1 : 0);
-		if (totalCheats == 0) {
-			return;
-		}
-
-		// Determine number of cheat categories to show
-		int cheatCategories = (mGridStatistics.mActionCheckProgress > 0 ? 1 : 0)
-				+ (mGridStatistics.mActionRevealCell > 0 ? 1 : 0)
-				+ (mGridStatistics.mActionRevealOperator > 0 ? 1 : 0)
-				+ (mGridStatistics.isSolutionRevealed() ? 1 : 0);
-
-		// Determine the highest number of cheats for a single category
-		int maxCheats = Math.max(mGridStatistics.mActionCheckProgress,
-				mGridStatistics.mActionRevealCell);
-		maxCheats = Math.max(maxCheats, mGridStatistics.mActionCheckProgress);
-		maxCheats = Math.max(maxCheats,
-				mGridStatistics.isSolutionRevealed() ? 1 : 0);
-
-		// Define the renderer
-		XYMultipleSeriesRenderer xyMultipleSeriesRenderer = new XYMultipleSeriesRenderer();
-
-		// Fix background color problem of margin in AChartEngine
-		xyMultipleSeriesRenderer.setMarginsColor(Color.argb(0, 50, 50, 50));
-
-		xyMultipleSeriesRenderer.setLabelsTextSize(mDefaultTextSize);
-		xyMultipleSeriesRenderer.setLegendTextSize(mDefaultTextSize);
-		xyMultipleSeriesRenderer.setFitLegend(true);
-		xyMultipleSeriesRenderer.setMargins(new int[] { 0,
-				2 * mDefaultTextSize, mDefaultTextSize, mDefaultTextSize });
-
-		xyMultipleSeriesRenderer.setXAxisMin(-1);
-		xyMultipleSeriesRenderer.setXAxisMax(cheatCategories + 2);
-		xyMultipleSeriesRenderer.setXLabels(cheatCategories);
-		xyMultipleSeriesRenderer.setYAxisMax(maxCheats + 1);
-		xyMultipleSeriesRenderer.setZoomButtonsVisible(false);
-		xyMultipleSeriesRenderer.setZoomEnabled(false);
-		xyMultipleSeriesRenderer.setPanEnabled(false);
-		xyMultipleSeriesRenderer.setInScroll(true);
-
-		// Setup Y-axis and labels.
-		xyMultipleSeriesRenderer.setYTitle(getResources().getString(
-				R.string.statistics_cheats_yaxis_description));
-		xyMultipleSeriesRenderer.setYAxisMin(0);
-		xyMultipleSeriesRenderer.setYLabelsAlign(Align.RIGHT);
-		xyMultipleSeriesRenderer.setYLabelsPadding(5f);
-		xyMultipleSeriesRenderer.setYLabelsVerticalPadding(-1
-				* mDefaultTextSize);
-
-		// Create object for category series and the series renderer
-		XYMultipleSeriesDataset xyMultipleSeriesDataset = new XYMultipleSeriesDataset();
-
-		// While filling the categories the number of categories used and the
-		// maximum Y-value is determined.
-		int categoryIndex = 1;
-		int maxYValue = 0;
-
-		// Check progress option used
-		if (mGridStatistics.mActionCheckProgress > 0) {
-			XYSeries xySeries = new XYSeries(getResources().getString(
-					R.string.statistics_cheats_check_progress));
-			xySeries.add(categoryIndex, mGridStatistics.mActionCheckProgress);
-			xyMultipleSeriesDataset.addSeries(xySeries);
-			xyMultipleSeriesRenderer
-					.addSeriesRenderer(createSimpleSeriesRenderer(chartRed1));
-			categoryIndex++;
-			maxYValue = Math.max(maxYValue,
-					mGridStatistics.mActionCheckProgress);
-		}
-
-		// Cell revealed option used
-		if (mGridStatistics.mActionRevealCell > 0) {
-			XYSeries xySeries = new XYSeries(getResources().getString(
-					R.string.statistics_cheats_cells_revealed));
-			xySeries.add(categoryIndex, mGridStatistics.mActionRevealCell);
-			xyMultipleSeriesDataset.addSeries(xySeries);
-			xyMultipleSeriesRenderer
-					.addSeriesRenderer(createSimpleSeriesRenderer(chartRed2));
-			categoryIndex++;
-			maxYValue = Math.max(maxYValue, mGridStatistics.mActionRevealCell);
-		}
-
-		// Cage operator revealed option used
-		if (mGridStatistics.mActionRevealOperator > 0) {
-			XYSeries xySeries = new XYSeries(getResources().getString(
-					R.string.statistics_cheats_operators_revealed));
-			xySeries.add(categoryIndex, mGridStatistics.mActionRevealOperator);
-			xyMultipleSeriesDataset.addSeries(xySeries);
-			xyMultipleSeriesRenderer
-					.addSeriesRenderer(createSimpleSeriesRenderer(chartRed3));
-			categoryIndex++;
-			maxYValue = Math.max(maxYValue,
-					mGridStatistics.mActionRevealOperator);
-		}
-
-		// Solution revealed option used
+		BarChartSeries barChartSeries = new BarChartSeries();
+		barChartSeries.addSeries(
+				getResources().getString(
+						R.string.statistics_cheats_check_progress),
+				mGridStatistics.mActionCheckProgress, chartRed1);
+		barChartSeries.addSeries(
+				getResources().getString(
+						R.string.statistics_cheats_cells_revealed),
+				mGridStatistics.mActionRevealCell, chartRed2);
+		barChartSeries.addSeries(
+				getResources().getString(
+						R.string.statistics_cheats_operators_revealed),
+				mGridStatistics.mActionRevealOperator, chartRed3);
 		if (mGridStatistics.isSolutionRevealed()) {
-			XYSeries xySeries = new XYSeries(getResources().getString(
-					R.string.statistics_cheats_solution_revealed));
-			xySeries.add(categoryIndex,
-					mGridStatistics.isSolutionRevealed() ? 1 : 0);
-			xyMultipleSeriesDataset.addSeries(xySeries);
-			xyMultipleSeriesRenderer
-					.addSeriesRenderer(createSimpleSeriesRenderer(chartRed4));
-			// noinspection UnusedAssignment
-			categoryIndex++;
-			maxYValue = Math.max(maxYValue,
-					mGridStatistics.isSolutionRevealed() ? 1 : 0);
+			barChartSeries.addSeries(
+					getResources().getString(
+							R.string.statistics_cheats_solution_revealed),
+					Y_VALUE_CHEAT_SOLUTION_REVEALED, chartRed4);
 		}
 
-		// Fill dimensions of axis based on number of categories and maximum
-		// Y-value.
-		xyMultipleSeriesRenderer.setXAxisMax(MAX_CATEGORIES_BAR_CHART + 2);
-		xyMultipleSeriesRenderer.setXLabels(0);
-		xyMultipleSeriesRenderer.setYAxisMin(0);
-		xyMultipleSeriesRenderer.setYAxisMax(maxYValue + 1);
-		xyMultipleSeriesRenderer.setYLabels(Math.min(4, maxYValue + 1));
-		xyMultipleSeriesRenderer.setBarWidth(getBarWidth());
-
-		addStatisticsSection(
-				CHEATS_CHART_TAG_ID,
-				getResources().getString(R.string.statistics_cheats_used_title),
-				ChartFactory.getBarChartView(getActivity(),
-						xyMultipleSeriesDataset, xyMultipleSeriesRenderer,
-						Type.DEFAULT), null,
-				getResources().getString(R.string.statistics_cheats_used_body));
+		if (!barChartSeries.isEmpty()) {
+			barChartSeries.setYTitle(getResources().getString(
+					R.string.statistics_cheats_yaxis_description));
+			barChartSeries.setTextSize(mDefaultTextSize);
+			barChartSeries.setBarWidth(getBarWidth());
+			addChartToStatisticsSection(
+					CHEATS_CHART_TAG_ID,
+					getResources().getString(
+							R.string.statistics_cheats_used_title),
+					ChartFactory.getBarChartView(getActivity(),
+							barChartSeries.getDataset(),
+							barChartSeries.getRenderer(), Type.DEFAULT),
+					null,
+					getResources().getString(
+							R.string.statistics_cheats_used_body));
+		}
 	}
 
 	/**

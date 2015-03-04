@@ -26,7 +26,7 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	@SuppressWarnings("unused")
 	private static final String TAG = StatisticsBaseFragment.class.getName();
 
-	protected LinearLayout mChartsLayout;
+	private LinearLayout mChartsLayout;
 
 	// Text size for body text
 	protected int mDefaultTextSize;
@@ -76,7 +76,13 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 
 		// Get inflater and return view
 		mLayoutInflater = inflater;
-		return mLayoutInflater.inflate(layout, container, false);
+
+		View rootView = mLayoutInflater.inflate(layout, container, false);
+
+		mChartsLayout = (LinearLayout) rootView
+				.findViewById(R.id.chartLayouts);
+
+		return rootView;
 	}
 
 	/**
@@ -111,8 +117,8 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 	 *            with respect to settings. Null in case explanation is never
 	 *            available.
 	 */
-	protected void addStatisticsSection(String tag, String title,
-			GraphicalView chart, View extraDataView, String explanation) {
+	protected void addChartToStatisticsSection(String tag, String title, GraphicalView chart,
+											   View extraDataView, String explanation) {
 		// Inflate a new view for this statistics section
 		View sectionView = mLayoutInflater.inflate(R.layout.statistics_section,
 				null);
@@ -182,6 +188,12 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 		// Add the section to the general charts layout
 		mChartsLayout.addView(sectionView);
 	}
+
+	protected void addViewToStatisticsSection(View view) {
+		mChartsLayout.addView(view);
+	}
+
+
 
 	/**
 	 * Creates a new row in a data table consisting of two columns (label and
@@ -309,5 +321,9 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 				.min((int) (getActivity().getResources().getDisplayMetrics().widthPixels * ratio),
 						getMaxContentHeight(titleHeightPixels,
 								paddingChartPixels));
+	}
+
+	protected void removeAllCharts() {
+		mChartsLayout.removeAllViewsInLayout();
 	}
 }
