@@ -1,11 +1,13 @@
 package net.mathdoku.plus.archive.ui;
 
-import net.mathdoku.plus.R;
-import net.mathdoku.plus.ui.base.AppActivity;
-
 import android.os.Bundle;
+import android.view.MenuItem;
 
-public class ArchivePreferenceActivity extends AppActivity {
+import net.mathdoku.plus.R;
+import net.mathdoku.plus.ui.base.AppNavUtils;
+import net.mathdoku.plus.ui.base.AppPreferenceActivity;
+
+public class ArchivePreferenceActivity extends AppPreferenceActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -17,5 +19,13 @@ public class ArchivePreferenceActivity extends AppActivity {
 				.beginTransaction()
 				.replace(android.R.id.content, new ArchivePreferenceFragment())
 				.commit();
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem menuItem) {
+		if (menuItem.getItemId() == android.R.id.home) {
+			return AppNavUtils.navigateFromActivityToClass(this, ArchiveFragmentActivity.class);
+		}
+		return super.onOptionsItemSelected(menuItem);
 	}
 }

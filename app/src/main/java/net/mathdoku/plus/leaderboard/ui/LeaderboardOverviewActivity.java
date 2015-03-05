@@ -7,8 +7,6 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,6 +25,7 @@ import net.mathdoku.plus.tip.TipLeaderboardCreateGame;
 import net.mathdoku.plus.tip.TipLeaderboardViewDetails;
 import net.mathdoku.plus.ui.GooglePlusSignInDialog;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
+import net.mathdoku.plus.ui.base.AppNavUtils;
 import net.mathdoku.plus.ui.base.GooglePlayServiceFragmentActivity;
 import net.mathdoku.plus.util.FeedbackEmail;
 
@@ -87,8 +86,8 @@ public class LeaderboardOverviewActivity extends
 		// Show the same page as last time (or the last tab if leaderboard were
 		// not displayed before.
 		int tab = mMathDokuPreferences.getLeaderboardsTabLastDisplayed();
-		mViewPager.setCurrentItem(tab >= 0 ? tab : mLeaderboardOverviewPagerAdapter.getCount() -
-				1);
+		mViewPager.setCurrentItem(tab >= 0 ? tab
+				: mLeaderboardOverviewPagerAdapter.getCount() - 1);
 	}
 
 	private void createActionBarTabPerFragment() {
@@ -99,9 +98,9 @@ public class LeaderboardOverviewActivity extends
 			// the TabListener interface, as the listener for when this tab is
 			// selected.
 			mActionBar.addTab(mActionBar
-									  .newTab()
-									  .setText(mLeaderboardOverviewPagerAdapter.getPageTitle(i))
-									  .setTabListener(this));
+					.newTab()
+					.setText(mLeaderboardOverviewPagerAdapter.getPageTitle(i))
+					.setTabListener(this));
 		}
 	}
 
@@ -208,8 +207,8 @@ public class LeaderboardOverviewActivity extends
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			navigateToParentActivity();
-			return true;
+			return AppNavUtils.navigateFromActivityToClass(this,
+					PuzzleFragmentActivity.class);
 		case R.id.action_refresh_leaderboards:
 			refreshAllLeaderboards();
 			return true;
@@ -221,28 +220,6 @@ public class LeaderboardOverviewActivity extends
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
-		}
-	}
-
-	private void navigateToParentActivity() {
-		// This is called when the Home (Up) button is pressed in the action
-		// bar. Create a simple intent that starts the hierarchical parent
-		// activity and use NavUtils in the Support Package to ensure proper
-		// handling of Up.
-		Intent upIntent = new Intent(this, PuzzleFragmentActivity.class);
-		if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
-			// This activity is not part of the application's task, so
-			// create a new task with a synthesized back stack.
-			// If there are ancestor activities, they should be added here.
-			TaskStackBuilder
-					.create(this)
-					.addNextIntent(upIntent)
-					.startActivities();
-			finish();
-		} else {
-			// This activity is part of the application's task, so simply
-			// navigate up to the hierarchical parent activity.
-			NavUtils.navigateUpTo(this, upIntent);
 		}
 	}
 
@@ -268,7 +245,8 @@ public class LeaderboardOverviewActivity extends
 	}
 
 	private View inflateLeaderboardHelpDialog() {
-		return LayoutInflater.from(this).inflate(R.layout.leaderboard_help_dialog, null);
+		return LayoutInflater.from(this).inflate(
+				R.layout.leaderboard_help_dialog, null);
 	}
 
 	@Override

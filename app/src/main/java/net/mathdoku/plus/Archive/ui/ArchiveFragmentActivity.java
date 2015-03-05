@@ -22,8 +22,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.util.TypedValue;
@@ -39,12 +37,13 @@ import android.widget.Spinner;
 
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.enums.GridTypeFilter;
+import net.mathdoku.plus.enums.StatusFilter;
 import net.mathdoku.plus.painter.PagerTabStripPainter;
 import net.mathdoku.plus.painter.Painter;
-import net.mathdoku.plus.enums.StatusFilter;
 import net.mathdoku.plus.storage.selector.AvailableStatusFiltersSelector;
 import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 import net.mathdoku.plus.ui.base.AppFragmentActivity;
+import net.mathdoku.plus.ui.base.AppNavUtils;
 import net.mathdoku.plus.util.FeedbackEmail;
 import net.mathdoku.plus.util.SharedPuzzle;
 
@@ -216,26 +215,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			// This is called when the Home (Up) button is pressed in the action
-			// bar. Create a simple intent that starts the hierarchical parent
-			// activity and use NavUtils in the Support Package to ensure proper
-			// handling of Up.
-			Intent upIntent = new Intent(this, PuzzleFragmentActivity.class);
-			if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
-				// This activity is not part of the application's task, so
-				// create a new task with a synthesized back stack.
-				// If there are ancestor activities, they should be added here.
-				TaskStackBuilder
-						.create(this)
-						.addNextIntent(upIntent)
-						.startActivities();
-				finish();
-			} else {
-				// This activity is part of the application's task, so simply
-				// navigate up to the hierarchical parent activity.
-				NavUtils.navigateUpTo(this, upIntent);
-			}
-			return true;
+			return AppNavUtils.navigateFromActivityToClass(this, PuzzleFragmentActivity.class);
 		case R.id.action_share:
 			new SharedPuzzle(this).addStatisticsChartsAsAttachments(
 					this.getWindow().getDecorView()).share(
@@ -253,8 +233,9 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 		case R.id.action_help:
 			openHelpDialog();
 			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
-		return super.onOptionsItemSelected(item);
 	}
 
 	void setStatusSpinner() {

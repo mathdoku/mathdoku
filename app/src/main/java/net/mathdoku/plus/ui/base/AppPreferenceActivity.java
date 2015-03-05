@@ -3,22 +3,17 @@ package net.mathdoku.plus.ui.base;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
-import android.support.v4.app.TaskStackBuilder;
-import android.view.MenuItem;
 import android.view.WindowManager;
 
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.storage.databaseadapter.DatabaseHelper;
-import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 import net.mathdoku.plus.util.Util;
 
 @SuppressLint("Registered")
-public class AppActivity extends Activity implements
+public class AppPreferenceActivity extends Activity implements
 		OnSharedPreferenceChangeListener {
 
 	// Preferences
@@ -65,34 +60,6 @@ public class AppActivity extends Activity implements
 		setFullScreenWindowFlag();
 		setKeepScreenOnWindowFlag();
 		super.onResume();
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem menuItem) {
-		switch (menuItem.getItemId()) {
-		case android.R.id.home:
-			// This is called when the Home (Up) button is pressed in the action
-			// bar. Create a simple intent that starts the hierarchical parent
-			// activity and use NavUtils in the Support Package to ensure proper
-			// handling of Up.
-			Intent upIntent = new Intent(this, PuzzleFragmentActivity.class);
-			if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
-				// This activity is not part of the application's task, so
-				// create a new task with a synthesized back stack.
-				// If there are ancestor activities, they should be added here.
-				TaskStackBuilder
-						.create(this)
-						.addNextIntent(upIntent)
-						.startActivities();
-				finish();
-			} else {
-				// This activity is part of the application's task, so simply
-				// navigate up to the hierarchical parent activity.
-				NavUtils.navigateUpTo(this, upIntent);
-			}
-			return true;
-		}
-		return super.onOptionsItemSelected(menuItem);
 	}
 
 	@Override
