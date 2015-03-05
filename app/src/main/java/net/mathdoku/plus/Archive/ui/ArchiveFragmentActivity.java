@@ -428,13 +428,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 										.getString(R.string.action_help))
 				.setIcon(R.drawable.icon)
 				.setView(view)
-				.setNegativeButton(R.string.dialog_general_button_close,
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int whichButton) {
-							}
-						})
+				.setNegativeButton(R.string.dialog_general_button_close, null)
 				.show();
 	}
 
