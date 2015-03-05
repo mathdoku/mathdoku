@@ -257,12 +257,6 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	/**
-	 * Initializes/refreshes the status spinner.
-	 * <p/>
-	 * Returns: True in case the status spinner should be shown. False
-	 * otherwise.
-	 */
 	void setStatusSpinner() {
 		Spinner spinner = (Spinner) mActionBar.getCustomView().findViewById(
 				R.id.spinner_status);
@@ -305,46 +299,9 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 		spinner.setVisibility(availableStatusFilters.size() <= 2 ? View.GONE
 				: View.VISIBLE);
 
-		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view,
-					int position, long id) {
-				// Get the selected status
-				StatusFilter statusFilter = availableStatusFilters
-						.get((int) id);
-
-				// Check if value for status spinner has changed.
-				if (statusFilter != mArchiveFragmentStatePagerAdapter
-						.getStatusFilter()) {
-					// Remember currently displayed grid id.
-					int gridId = getCurrentSelectedGridId();
-
-					// Refresh pager adapter with new status.
-					mArchiveFragmentStatePagerAdapter
-							.setStatusFilter(statusFilter);
-
-					// Refresh the size spinner as the content of the spinners
-					// are related.
-					setSizeSpinner();
-
-					// If possible select the grid id which was selected before
-					// changing the spinner(s). Otherwise select last page.
-					selectGridId(gridId);
-				}
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {
-				// Do nothing
-			}
-		});
+		spinner.setOnItemSelectedListener(new OnStatusFilterSelectedListener(availableStatusFilters));
 	}
 
-	/**
-	 * Initializes/refreshes the sizes spinner.
-	 * <p/>
-	 * Returns: True in case the sizes spinner should be shown. False otherwise.
-	 */
 	void setSizeSpinner() {
 		Spinner spinner = (Spinner) mActionBar.getCustomView().findViewById(
 				R.id.spinner_size);
@@ -378,38 +335,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 				.setVisibility(archiveFragmentGridSizeFilterSpinner.size() <= 2 ? View.GONE
 						: View.VISIBLE);
 
-		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view,
-					int position, long id) {
-				// Remember currently displayed grid id.
-				int gridId = getCurrentSelectedGridId();
-
-				GridTypeFilter newGridTypeFilter = archiveFragmentGridSizeFilterSpinner
-						.get((int) id);
-
-				// Check if value for status spinner has changed.
-				if (mArchiveFragmentStatePagerAdapter.getSelectedSizeFilter() != newGridTypeFilter) {
-					// Refresh pager adapter with new status.
-					mArchiveFragmentStatePagerAdapter
-							.setSizeFilter(newGridTypeFilter);
-
-					// Refresh the status spinner as the content of the spinners
-					// are related.
-					setStatusSpinner();
-
-					// If possible select the grid id which was selected before
-					// changing the spinner(s). Otherwise select last page.
-					selectGridId(gridId);
-				}
-
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {
-				// Do nothing
-			}
-		});
+		spinner.setOnItemSelectedListener(new OnGridSizeFilterItemSelectedListener(archiveFragmentGridSizeFilterSpinner));
 	}
 
 	/**
@@ -530,5 +456,84 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 
 	public ArchiveFragmentStatePagerAdapter getArchiveFragmentStatePagerAdapter() {
 		return mArchiveFragmentStatePagerAdapter;
+	}
+
+	private class OnGridSizeFilterItemSelectedListener implements OnItemSelectedListener {
+		private final ArchiveFragmentGridSizeFilterSpinner archiveFragmentGridSizeFilterSpinner;
+
+		public OnGridSizeFilterItemSelectedListener(ArchiveFragmentGridSizeFilterSpinner archiveFragmentGridSizeFilterSpinner) {
+			this.archiveFragmentGridSizeFilterSpinner = archiveFragmentGridSizeFilterSpinner;
+		}
+
+		@Override
+		public void onItemSelected(AdapterView<?> parent, View view,
+								   int position, long id) {
+			// Remember currently displayed grid id.
+			int gridId = getCurrentSelectedGridId();
+
+			GridTypeFilter newGridTypeFilter = archiveFragmentGridSizeFilterSpinner
+					.get((int) id);
+
+			// Check if value for status spinner has changed.
+			if (mArchiveFragmentStatePagerAdapter.getSelectedSizeFilter() != newGridTypeFilter) {
+				// Refresh pager adapter with new status.
+				mArchiveFragmentStatePagerAdapter
+						.setSizeFilter(newGridTypeFilter);
+
+				// Refresh the status spinner as the content of the spinners
+				// are related.
+				setStatusSpinner();
+
+				// If possible select the grid id which was selected before
+				// changing the spinner(s). Otherwise select last page.
+				selectGridId(gridId);
+			}
+
+		}
+
+		@Override
+		public void onNothingSelected(AdapterView<?> arg0) {
+			// Do nothing
+		}
+	}
+
+	private class OnStatusFilterSelectedListener implements OnItemSelectedListener {
+		private List<StatusFilter> availableStatusFilters;
+
+		public OnStatusFilterSelectedListener(List<StatusFilter> availableStatusFilters) {
+			this.availableStatusFilters = availableStatusFilters;
+		}
+
+		@Override
+		public void onItemSelected(AdapterView<?> parent, View view,
+								   int position, long id) {
+			// Get the selected status
+			StatusFilter statusFilter = availableStatusFilters
+					.get((int) id);
+
+			// Check if value for status spinner has changed.
+			if (statusFilter != mArchiveFragmentStatePagerAdapter
+					.getStatusFilter()) {
+				// Remember currently displayed grid id.
+				int gridId = getCurrentSelectedGridId();
+
+				// Refresh pager adapter with new status.
+				mArchiveFragmentStatePagerAdapter
+						.setStatusFilter(statusFilter);
+
+				// Refresh the size spinner as the content of the spinners
+				// are related.
+				setSizeSpinner();
+
+				// If possible select the grid id which was selected before
+				// changing the spinner(s). Otherwise select last page.
+				selectGridId(gridId);
+			}
+		}
+
+		@Override
+		public void onNothingSelected(AdapterView<?> arg0) {
+			// Do nothing
+		}
 	}
 }
