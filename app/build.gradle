@@ -45,7 +45,7 @@ sonarRunner {
         property 'sonar.dynamicAnalysis', 'reuseReports'
         property 'sonar.surefire.reportsPath','build/instrumentTest-results/connected/'
         property "sonar.language", "java"
-        property "sonar.sources", "src"
+        property "sonar.sources", "src/main/java" // Do not analyze the unit tests because of too many false positives
         property "sonar.binaries", "build"
     }
 }
