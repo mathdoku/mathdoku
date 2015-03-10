@@ -17,10 +17,10 @@ public class Cheat {
 	private final Resources mResources;
 
 	// Constants to convert millisecond to calendar units
-	private final long MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
-	private final long MILLISECONDS_PER_HOUR = 60 * 60 * 1000;
-	private final long MILLISECONDS_PER_MINUTE = 60 * 1000;
-	private final long MILLISECONDS_PER_SECOND = 1000;
+	private final static long MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
+	private final static long MILLISECONDS_PER_HOUR = 60 * 60 * 1000;
+	private final static long MILLISECONDS_PER_MINUTE = 60 * 1000;
+	private final static long MILLISECONDS_PER_SECOND = 1000;
 
 	// The type of cheat
 	private final CheatType mCheatType;
