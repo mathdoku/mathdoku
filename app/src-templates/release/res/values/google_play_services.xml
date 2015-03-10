@@ -7,6 +7,8 @@
 <!-- CHANGES. PERSISTENT CHANGES SHOULD ALWAYS BE MADE IN THE TEMPLATE FILE -->
 <!-- ONLY. -->
 <resources>
+    <integer name="gms_version">@integer/google_play_services_version</integer>
+
     <!-- Identifiers for Google Play Service as used for the RELEASE version. -->
 
     <!-- Note: the game services definition on Google Play also includes definitions -->

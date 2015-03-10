@@ -1,8 +1,8 @@
 package net.mathdoku.plus.enums;
 
-import org.junit.Test;
+import java.util.Arrays;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
+import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;

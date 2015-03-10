@@ -14,7 +14,7 @@ import net.mathdoku.plus.ui.base.AppPreferenceFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-class PuzzlePreferenceFragment extends AppPreferenceFragment {
+public class PuzzlePreferenceFragment extends AppPreferenceFragment {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

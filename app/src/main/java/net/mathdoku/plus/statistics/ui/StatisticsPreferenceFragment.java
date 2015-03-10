@@ -8,7 +8,7 @@ import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.ui.base.AppPreferenceFragment;
 
-class StatisticsPreferenceFragment extends AppPreferenceFragment {
+public class StatisticsPreferenceFragment extends AppPreferenceFragment {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

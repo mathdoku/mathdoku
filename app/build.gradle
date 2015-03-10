@@ -1,37 +1,17 @@
 // This gradle build file relies on extra properties which are defined in the gradle build file for the overall project.
 
-apply plugin: 'android'
-apply plugin: 'android-test'
+apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion androidCompileSdkVersion
     buildToolsVersion androidBuildToolsVersion
 
 	defaultConfig {
+        applicationId appVersionPackage
         minSdkVersion androidMinSdkVersion
         targetSdkVersion androidTargetSdkVersion
-    }
-
-    sourceSets {
-        main {
-            manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src/main/java']
-            resources.srcDirs = ['src/main/java']
-            aidl.srcDirs = ['src/main/java']
-            renderscript.srcDirs = ['src/main/java']
-            res.srcDirs = ['res']
-            assets.srcDirs = ['assets']
-        }
-
-        // The instrumentTest of Android Studio will be used to run unit tests with Robolectric
-        // in a Java VM. To ensure that 1) the unit test are executed and 2) source code completion
-        // and navigation for unit tests in Android Studio works properly the following is done:
-        //   a) Move instrumentTest Root to other location. Note: the unit tests won't run when
-        //      invoking gradle check as long as they are strored in the default instrumentTest
-        //      directory.
-        //   b) Add dependencies for unit testing, mocking, robolectric etc. See dependencies
-        //      section.
-        instrumentTest.setRoot('src/test')
+        versionCode appVersion
+        versionName appVersionName
     }
 
 	applicationVariants.all { variant ->
@@ -43,17 +23,9 @@ android {
                 into '.'
                 include '**/*'
             }
-
-            println "Copy assets from './src/test/res' to '.build/assets/${variant.name}'."
-
-            copy {
-                from "./src/test/res"
-                into "./build/assets/${variant.name}"
-            }
         }
     }
 }
-
 
 // Base Config for a local sonar installation
 // To use: gradle sonarRunner
@@ -71,36 +43,24 @@ sonarRunner {
         property 'sonar.jdbc.password', 'sonar'
         property 'sonar.branch', 'gradle'
         property 'sonar.dynamicAnalysis', 'reuseReports'
-        properties['sonar.sources'] = android.sourceSets.main.java.srcDirs
-        properties['sonar.tests'] = android.sourceSets.instrumentTest.java.srcDirs
-        properties['sonar.binaries'] = file('build/classes/debug')
         property 'sonar.surefire.reportsPath','build/instrumentTest-results/connected/'
+        property "sonar.language", "java"
+        property "sonar.sources", "src"
+        property "sonar.binaries", "build"
     }
 }
 
 dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
     compile "com.google.android.gms:play-services:${googlePlayServicesVersion}"
-    compile "com.android.support:support-v4:${androidSupportV4Version}"
-    compile "com.android.support:appcompat-v7:${androidAppCompatV7Version}"
     compile files("libs/achartengine-${aChartEngineVersion}.jar")
     compile files("libs/annotations.jar")
 
-    // Dependencies for executing the unit tests. These should be kept in sync with the
-    // dependencies for task instrumentTestCompile.
-    testCompile "junit:junit:${jUnitVersion}", "org.mockito:mockito-core:${mockitoCoreVersion}"
+    // Robolectric
+    testCompile "junit:junit:4.12"
+    testCompile  "org.mockito:mockito-core:1.9.5+"
+    testCompile 'org.hamcrest:hamcrest-core:1.1'
+    testCompile 'org.hamcrest:hamcrest-library:1.1'
+    testCompile 'org.hamcrest:hamcrest-integration:1.1'
     testCompile "org.robolectric:robolectric:${robolectricVersion}"
-    testCompile "com.squareup:fest-android:${festAndroidVersion}"
-
-    // The instrumentTest of Android Studio will be used to run unit tests with Robolectric
-    // in a Java VM. To ensure that 1) the unit test are executed and 2) source code completion
-    // and navigation for unit tests in Android Studio works properly the following is done:
-    //   a) Move instrumentTest Root to other location. Note: the unit tests won't run when
-    //      invoking gradle check as long as they are strored in the default instrumentTest
-    //      directory.
-    //   b) Add dependencies for unit testing, mocking, robolectric etc. See dependencies
-    //      section.
-    // The dependencies below should be kept in sync with the dependencies for task testCompile.
-    instrumentTestCompile "junit:junit:${jUnitVersion}", "org.mockito:mockito-core:${mockitoCoreVersion}"
-    instrumentTestCompile "org.robolectric:robolectric:${robolectricVersion}"
-    instrumentTestCompile "com.squareup:fest-android:${festAndroidVersion}"
 }

@@ -3,58 +3,39 @@
 
 buildscript {
 	repositories {
-		mavenCentral()
-		mavenLocal()
-		
-		// Temporarily add repository for snapshot of gradle-android-test-plugin 
-		maven {
-			url 'https://oss.sonatype.org/content/repositories/snapshots/'
-		}
+		jcenter()
 	}
 
     dependencies {
-        // gradle android tools
-        classpath 'com.android.tools.build:gradle:0.7.+'
-		
-        // Gradle Android Unit Testing Plugin:
-		// https://github.com/JakeWharton/gradle-android-test-plugin
-		// Get snapshot in order to get the fix provided in pull request 26.
-		classpath 'com.squareup.gradle:gradle-android-test-plugin:0.9.1-SNAPSHOT'
+        classpath 'com.android.tools.build:gradle:1.1.0'
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
     }
 }
 
 // These are the common version numbers, etc for the rest of the gradle files
 configure(allprojects) {
-    ext.androidVersion              = '4.4'
-    ext.androidSDKVersion           = '19'
-    ext.androidBuildToolsVersion    = '19.0.1'
+    ext.appVersion                  = 599
+    ext.appVersionName              = '2.2.0'
+    ext.appVersionPackage           = 'net.mathdoku.plus'
+
 
     ext.androidMinSdkVersion        = 14
     ext.androidTargetSdkVersion     = 17
     ext.androidCompileSdkVersion    = 18
-    ext.androidSupportV4Version     = '18.0.0'
-    ext.androidAppCompatV7Version   = '+'
+    ext.androidBuildToolsVersion    = "19.1"
+    ext.androidSupportV4Version     = '13.+'
+    ext.androidAppCompatV7Version   = '13.+'
 
     ext.googlePlayServicesVersion   = '4.0.30'
     ext.aChartEngineVersion         = '1.1.0'
 
-    ext.jUnitVersion                = '4.10'
-    ext.mockitoCoreVersion          = '1.9.5+'
-    ext.robolectricVersion          = '2.3'
+    ext.robolectricVersion          = '2.4'
     ext.festAndroidVersion          = '1.0.+'
-}
-
-// inject these settings in all of the sub projects
-configure(subprojects) { subproject ->
-    repositories {
-        mavenCentral()
-		mavenLocal()
-		
-		// Temporarily add repository for snapshot of gradle-android-test-plugin 
-		maven {
-			url 'https://oss.sonatype.org/content/repositories/snapshots/'
-		}
-    }
 }
 
 task wrapper(type: Wrapper) {
