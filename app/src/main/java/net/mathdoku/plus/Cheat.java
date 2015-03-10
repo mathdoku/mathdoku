@@ -179,9 +179,10 @@ public class Cheat {
 		String and = " "
 				+ mResources.getString(R.string.connector_last_two_elements)
 				+ " ";
+		long remainingPenaltyTime = penaltyTime;
 
 		// Determine number of days
-		long days = penaltyTime / MILLISECONDS_PER_DAY;
+		long days = remainingPenaltyTime / MILLISECONDS_PER_DAY;
 		if (days > 1) {
 			penaltyTimeText = Long.toString(days) + " "
 					+ mResources.getString(R.string.time_unit_days_plural);
@@ -191,11 +192,11 @@ public class Cheat {
 		} else {
 			penaltyTimeText = "";
 		}
-		penaltyTime -= days * MILLISECONDS_PER_DAY;
+		remainingPenaltyTime -= days * MILLISECONDS_PER_DAY;
 
-		if (penaltyTime > 0) {
+		if (remainingPenaltyTime > 0) {
 			// Determine number of hours
-			long hours = penaltyTime / MILLISECONDS_PER_HOUR;
+			long hours = remainingPenaltyTime / MILLISECONDS_PER_HOUR;
 			if (hours > 1) {
 				penaltyTimeText += (days > 0 ? and : "") + hours + " "
 						+ mResources.getString(R.string.time_unit_hours_plural);
@@ -207,11 +208,11 @@ public class Cheat {
 			} else {
 				penaltyTimeText += "";
 			}
-			penaltyTime -= hours * MILLISECONDS_PER_HOUR;
+			remainingPenaltyTime -= hours * MILLISECONDS_PER_HOUR;
 
 			// Determine number of minutes
-			if (penaltyTime > 0) {
-				long minutes = penaltyTime / MILLISECONDS_PER_MINUTE;
+			if (remainingPenaltyTime > 0) {
+				long minutes = remainingPenaltyTime / MILLISECONDS_PER_MINUTE;
 				if (minutes > 1) {
 					penaltyTimeText += (days + hours > 0 ? and : "")
 							+ minutes
@@ -226,11 +227,11 @@ public class Cheat {
 				} else {
 					penaltyTimeText += "";
 				}
-				penaltyTime -= minutes * MILLISECONDS_PER_MINUTE;
+				remainingPenaltyTime -= minutes * MILLISECONDS_PER_MINUTE;
 
 				// Determine number of seconds
-				if (penaltyTime > 0) {
-					long seconds = penaltyTime / MILLISECONDS_PER_SECOND;
+				if (remainingPenaltyTime > 0) {
+					long seconds = remainingPenaltyTime / MILLISECONDS_PER_SECOND;
 					if (seconds > 1) {
 						penaltyTimeText += (days + hours + minutes > 0 ? and
 								: "")
