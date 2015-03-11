@@ -3,6 +3,7 @@ package net.mathdoku.plus;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import net.mathdoku.plus.puzzle.cheat.Cheat;
 import net.mathdoku.plus.ui.PuzzleFragment;
 
 /*

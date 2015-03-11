@@ -1,8 +1,9 @@
-package net.mathdoku.plus;
+package net.mathdoku.plus.puzzle.cheat;
 
 import android.content.Context;
 import android.content.res.Resources;
 
+import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 

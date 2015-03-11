@@ -2,7 +2,7 @@ package net.mathdoku.plus.tip;
 
 import android.content.Context;
 
-import net.mathdoku.plus.Cheat;
+import net.mathdoku.plus.puzzle.cheat.Cheat;
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
 

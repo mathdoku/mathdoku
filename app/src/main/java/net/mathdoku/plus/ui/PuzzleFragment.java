@@ -29,7 +29,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import net.mathdoku.plus.Cheat;
+import net.mathdoku.plus.puzzle.cheat.Cheat;
 import net.mathdoku.plus.GameTimer;
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;

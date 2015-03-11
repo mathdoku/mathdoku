@@ -1,6 +1,6 @@
 package net.mathdoku.plus.tip;
 
-import net.mathdoku.plus.Cheat;
+import net.mathdoku.plus.puzzle.cheat.Cheat;
 
 import org.hamcrest.Matcher;
 import org.junit.Before;
