@@ -1,11 +1,8 @@
 package net.mathdoku.plus.puzzle.cheat;
 
-import android.content.Context;
 import android.content.res.Resources;
 
 import net.mathdoku.plus.R;
-import net.mathdoku.plus.config.Config;
-import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.util.Util;
 
 public abstract class Cheat {
@@ -61,31 +58,6 @@ public abstract class Cheat {
 		}
 		if (Util.isNullOrEmpty(cheatParameters.getTipName())) {
 			throw new IllegalStateException("TipName can not be null or empty.");
-		}
-	}
-
-	/**
-	 * Creates a new instance of {@link Cheat} which only consist of a base
-	 * penalty.
-	 * 
-	 * @param context
-	 *            The context in which the cheat is created.
-	 * @param cheatType
-	 *            The type of cheat to be created.
-	 */
-	public Cheat(Context context, CheatType cheatType) {
-		mResources = context.getResources();
-		mCheatType = cheatType;
-		switch (mCheatType) {
-		default:
-			mPenaltyTimeMillisecondsBase = 0;
-			mTipTitle = "";
-			mTipText = "";
-			if (Config.APP_MODE == AppMode.DEVELOPMENT) {
-				throw new IllegalArgumentException(
-						"Invalid value for parameter cheatType used in call to method Cheat(Context, CheatType).");
-			}
-			break;
 		}
 	}
 
