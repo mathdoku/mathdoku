@@ -10,7 +10,7 @@ import net.mathdoku.plus.ui.PuzzleFragment;
  * Controls the timer within the game.
  */
 public class GameTimer extends AsyncTask<Void, Long, Long> {
-	private final static String TAG = GameTimer.class.getName();
+	private static final String TAG = GameTimer.class.getName();
 
 	// References to activity that started the timer and the solving attempt to
 	// which the timer applies

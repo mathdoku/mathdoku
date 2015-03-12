@@ -4,7 +4,7 @@ import android.content.res.Resources;
 
 public class CheatParameters {
 	@SuppressWarnings("unused")
-	private final static String TAG = CheatParameters.class.getName();
+	private static final String TAG = CheatParameters.class.getName();
 
 	private Resources resources;
 

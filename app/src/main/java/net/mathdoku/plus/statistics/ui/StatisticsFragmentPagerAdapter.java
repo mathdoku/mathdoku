@@ -13,15 +13,15 @@ import net.mathdoku.plus.enums.GridTypeFilter;
  * of statistics pages.
  */
 class StatisticsFragmentPagerAdapter extends FragmentPagerAdapter {
-	private final static GridTypeFilter[] GRID_TYPE_FILTERS_IN_PAGER_ADAPTER = {
+	private static final GridTypeFilter[] GRID_TYPE_FILTERS_IN_PAGER_ADAPTER = {
 			GridTypeFilter.ALL, GridTypeFilter.GRID_4X4,
 			GridTypeFilter.GRID_5X5, GridTypeFilter.GRID_6X6,
 			GridTypeFilter.GRID_7X7, GridTypeFilter.GRID_8X8,
 			GridTypeFilter.GRID_9X9 };
-	private final static int MIN_GRID_SIZE_IN_PAGER_ADAPTER = GridType
+	private static final int MIN_GRID_SIZE_IN_PAGER_ADAPTER = GridType
 			.fromGridTypeFilter(GridTypeFilter.GRID_4X4)
 			.getGridSize();
-	private final static int MAX_GRID_SIZE_IN_PAGER_ADAPTER = GridType
+	private static final int MAX_GRID_SIZE_IN_PAGER_ADAPTER = GridType
 			.fromGridTypeFilter(GridTypeFilter.GRID_9X9)
 			.getGridSize();
 

@@ -11,8 +11,8 @@ import java.io.File;
 import java.util.Properties;
 
 public class RobolectricGradleTestRunner extends RobolectricTestRunner {
-	private final static String MANIFEST_PATH = "src/main/AndroidManifest.xml";
-	private final static String ANDROID_STUDIO_APP_PREFIX = "app/";
+	private static final String MANIFEST_PATH = "src/main/AndroidManifest.xml";
+	private static final String ANDROID_STUDIO_APP_PREFIX = "app/";
 	private String appDir;
 
 	public RobolectricGradleTestRunner(Class<?> testClass)

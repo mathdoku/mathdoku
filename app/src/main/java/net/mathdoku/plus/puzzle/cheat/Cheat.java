@@ -10,10 +10,10 @@ public abstract class Cheat {
 	private static final String TAG = Cheat.class.getName();
 
 	// Constants to convert millisecond to calendar units
-	private final static long MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
-	private final static long MILLISECONDS_PER_HOUR = 60 * 60 * 1000;
-	private final static long MILLISECONDS_PER_MINUTE = 60 * 1000;
-	protected final static long MILLISECONDS_PER_SECOND = 1000;
+	private static final long MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
+	private static final long MILLISECONDS_PER_HOUR = 60 * 60 * 1000;
+	private static final long MILLISECONDS_PER_MINUTE = 60 * 1000;
+	protected static final long MILLISECONDS_PER_SECOND = 1000;
 
 	private final Resources resources;
 	private final long penaltyTimeInMilliseconds;
