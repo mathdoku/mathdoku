@@ -9,10 +9,6 @@ public abstract class Cheat {
 	@SuppressWarnings("unused")
 	private static final String TAG = Cheat.class.getName();
 
-	enum CheatType {
-		DUMMY
-	}
-
 	private final Resources mResources;
 
 	// Constants to convert millisecond to calendar units
@@ -20,9 +16,6 @@ public abstract class Cheat {
 	private final static long MILLISECONDS_PER_HOUR = 60 * 60 * 1000;
 	private final static long MILLISECONDS_PER_MINUTE = 60 * 1000;
 	protected final static long MILLISECONDS_PER_SECOND = 1000;
-
-	// The type of cheat
-	private final CheatType mCheatType;
 
 	// Penalty time in milliseconds
 	private final long mPenaltyTimeMillisecondsBase;
@@ -39,17 +32,17 @@ public abstract class Cheat {
 		validateCheatParameters(cheatParameters);
 
 		mResources = cheatParameters.getResources();
-		mCheatType = CheatType.DUMMY; // TODO: remove
-		mPenaltyTimeMillisecondsBase = cheatParameters.getPenaltyTimeInSeconds() * MILLISECONDS_PER_SECOND;
+		mPenaltyTimeMillisecondsBase = cheatParameters
+				.getPenaltyTimeInSeconds() * MILLISECONDS_PER_SECOND;
 		mTipName = cheatParameters.getTipName();
-		mTipTitle = mResources
-				.getString(cheatParameters.getTipTitleResId());
+		mTipTitle = mResources.getString(cheatParameters.getTipTitleResId());
 		mTipText = createTipText(cheatParameters);
 	}
 
 	protected String createTipText(CheatParameters cheatParameters) {
-		return cheatParameters.getResources().getString(cheatParameters.getTipTextResId(),
-									 getPenaltyTimeText(mPenaltyTimeMillisecondsBase));
+		return cheatParameters.getResources().getString(
+				cheatParameters.getTipTextResId(),
+				getPenaltyTimeText(mPenaltyTimeMillisecondsBase));
 	}
 
 	private void validateCheatParameters(CheatParameters cheatParameters) {
@@ -153,7 +146,8 @@ public abstract class Cheat {
 
 				// Determine number of seconds
 				if (remainingPenaltyTime > 0) {
-					long seconds = remainingPenaltyTime / MILLISECONDS_PER_SECOND;
+					long seconds = remainingPenaltyTime
+							/ MILLISECONDS_PER_SECOND;
 					if (seconds > 1) {
 						penaltyTimeText += (days + hours + minutes > 0 ? and
 								: "")
@@ -176,9 +170,6 @@ public abstract class Cheat {
 	}
 
 	public String getTipName() {
-		switch (mCheatType) {
-			default:
-				return mTipName;
-		}
+		return mTipName;
 	}
 }
