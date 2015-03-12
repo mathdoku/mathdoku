@@ -1,5 +1,7 @@
 package net.mathdoku.plus.tip;
 
+import android.app.Activity;
+
 import net.mathdoku.plus.puzzle.cheat.Cheat;
 
 import org.hamcrest.Matcher;
@@ -11,31 +13,18 @@ import robolectric.RobolectricGradleTestRunner;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 public class TipCheatTest extends TipBaseTest {
-	// All fields below are defaulted to a value which result in method
-	// toBeDisplayed to return true.
-	private Cheat cheat = mock(Cheat.class);
-	private Cheat.CheatType cheatType;
+	public static final int OCCURRENCES_CONDITIONAL_PENALTY = 2;
 
 	@Before
 	public void setUp() {
 		super.setUp();
 	}
 
-	@Override
-	protected void initMocks() {
-		super.initMocks();
-		if (cheat != null) {
-			when(cheat.getType()).thenReturn(cheatType, cheatType, cheatType);
-		}
-	}
-
-	@Override
-	protected void assertThatDialogToBeDisplayed(Matcher<Boolean> booleanMatcher) {
+	private void assertThatDialogToBeDisplayed(Cheat cheat,
+			Matcher<Boolean> booleanMatcher) {
 		assertThat(TipCheat.toBeDisplayed(preferencesMock, cheat),
 				booleanMatcher);
 	}
@@ -43,39 +32,39 @@ public class TipCheatTest extends TipBaseTest {
 	@Test
 	public void toBeDisplayed_CellRevealed_DialogIsNotDisplayed()
 			throws Exception {
-		assertThatTipCheatIsNotDisplayed(Cheat.CheatType.CELL_REVEALED,
-				"Cheat.CellRevealed");
+		assertThatTipCheatIsNotDisplayed(new Cheat(new Activity(),
+				Cheat.CheatType.CELL_REVEALED));
 	}
 
-	private void assertThatTipCheatIsNotDisplayed(Cheat.CheatType cheatType,
-			String preferenceName) {
+	private void assertThatTipCheatIsNotDisplayed(Cheat cheat) {
 		long minTimeIntervalBetweenTwoConsecutiveDisplays = 12 * 60 * 60 * 1000;
-		super.setUpTimeIntervalBetweenTwoConsecutiveDisplays(preferenceName,
+		super.setUpTimeIntervalBetweenTwoConsecutiveDisplays(
+				cheat.getTipName(),
 				minTimeIntervalBetweenTwoConsecutiveDisplays);
 		setIsDisplayedNotLongEnoughAgo();
-		this.cheatType = cheatType;
 		initMocks();
-		assertThatDialogToBeDisplayed(is(false));
+		assertThatDialogToBeDisplayed(cheat, is(false));
 	}
 
 	@Test
 	public void toBeDisplayed_CheckProgress_DialogIsNotDisplayed()
 			throws Exception {
-		assertThatTipCheatIsNotDisplayed(Cheat.CheatType.CHECK_PROGRESS_USED,
-				"Cheat.CheckProgress");
+		assertThatTipCheatIsNotDisplayed(new Cheat(new Activity(),
+				Cheat.CheatType.CHECK_PROGRESS_USED,
+				OCCURRENCES_CONDITIONAL_PENALTY));
 	}
 
 	@Test
 	public void toBeDisplayed_OperatorRevealed_DialogIsNotDisplayed()
 			throws Exception {
-		assertThatTipCheatIsNotDisplayed(Cheat.CheatType.OPERATOR_REVEALED,
-				"Cheat.OperatorRevealed");
+		assertThatTipCheatIsNotDisplayed(new Cheat(new Activity(),
+				Cheat.CheatType.OPERATOR_REVEALED));
 	}
 
 	@Test
 	public void toBeDisplayed_SolutionRevealed_DialogIsNotDisplayed()
 			throws Exception {
-		assertThatTipCheatIsNotDisplayed(Cheat.CheatType.SOLUTION_REVEALED,
-				"Cheat.SolutionRevealed");
+		assertThatTipCheatIsNotDisplayed(new Cheat(new Activity(),
+				Cheat.CheatType.SOLUTION_REVEALED));
 	}
 }
