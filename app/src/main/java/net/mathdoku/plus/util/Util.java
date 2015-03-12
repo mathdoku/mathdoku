@@ -103,4 +103,8 @@ public class Util {
 	public static boolean isArrayNullOrEmpty(int[] array) {
 		return array == null || array.length == 0;
 	}
+
+	public static boolean isNullOrEmpty(String string) {
+		return string == null || string.isEmpty();
+	}
 }

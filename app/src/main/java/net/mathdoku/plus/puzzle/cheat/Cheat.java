@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
+import net.mathdoku.plus.util.Util;
 
 public abstract class Cheat {
 	@SuppressWarnings("unused")
@@ -37,6 +38,34 @@ public abstract class Cheat {
 	// Title and text to be used in tip dialogs.
 	private String mTipTitle;
 	private String mTipText;
+	private String mTipName;
+
+	public Cheat(CheatParameters cheatParameters) {
+		if (cheatParameters == null) {
+			throw new IllegalStateException("CheatParameters can not be null");
+		}
+		validateCheatParameters(cheatParameters);
+
+		mResources = cheatParameters.getResources();
+		mCheatType = CheatType.DUMMY; // TODO: remove
+		mConditionalOccurrences = 0; // TODO: to subclasss progress used
+		mPenaltyTimeMillisecondsBase = cheatParameters.getPenaltyTimeInSeconds() * MILLISECONDS_PER_SECOND;
+		mPenaltyTimeMillisecondsPerOccurrence = 0;
+		mTipName = cheatParameters.getTipName();
+		mTipTitle = mResources
+				.getString(cheatParameters.getTipTitleResId());
+		mTipText = mResources.getString(cheatParameters.getTipTextResId(),
+				getPenaltyTimeText(mPenaltyTimeMillisecondsBase));
+	}
+
+	private void validateCheatParameters(CheatParameters cheatParameters) {
+		if (cheatParameters.getResources() == null) {
+			throw new IllegalStateException("Resources can not be null");
+		}
+		if (Util.isNullOrEmpty(cheatParameters.getTipName())) {
+			throw new IllegalStateException("TipName can not be null or empty.");
+		}
+	}
 
 	/**
 	 * Creates a new instance of {@link Cheat} which only consist of a base
