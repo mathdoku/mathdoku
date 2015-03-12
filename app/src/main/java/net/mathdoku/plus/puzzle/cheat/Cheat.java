@@ -7,11 +7,11 @@ import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.config.Config.AppMode;
 
-public class Cheat {
+public abstract class Cheat {
 	@SuppressWarnings("unused")
 	private static final String TAG = Cheat.class.getName();
 
-	public enum CheatType {
+	enum CheatType {
 		CELL_REVEALED, OPERATOR_REVEALED, SOLUTION_REVEALED, CHECK_PROGRESS_USED
 	}
 

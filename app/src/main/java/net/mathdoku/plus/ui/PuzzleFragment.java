@@ -29,20 +29,23 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import net.mathdoku.plus.puzzle.cheat.Cheat;
 import net.mathdoku.plus.GameTimer;
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.enums.CageOperator;
+import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.puzzle.cage.Cage;
 import net.mathdoku.plus.puzzle.cell.Cell;
+import net.mathdoku.plus.puzzle.cheat.CellRevealedCheat;
+import net.mathdoku.plus.puzzle.cheat.CheckProgressUsedCheat;
+import net.mathdoku.plus.puzzle.cheat.OperatorRevealedCheat;
+import net.mathdoku.plus.puzzle.cheat.SolutionRevealedCheat;
 import net.mathdoku.plus.puzzle.digitpositiongrid.DigitPositionGrid;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.puzzle.grid.GridLoader;
 import net.mathdoku.plus.puzzle.ui.GridInputMode;
 import net.mathdoku.plus.puzzle.ui.GridPlayerView;
 import net.mathdoku.plus.tickertape.TickerTape;
-import net.mathdoku.plus.painter.Painter;
 import net.mathdoku.plus.tip.TipCheat;
 import net.mathdoku.plus.tip.TipDialog;
 import net.mathdoku.plus.tip.TipIncorrectValue;
@@ -696,10 +699,13 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 			Cell selectedCell = mGrid.getSelectedCell();
 			setClearAndUndoButtonVisibility(selectedCell);
 
-			Cheat cheat = registerNewCheat(Cheat.CheatType.CELL_REVEALED);
-
-			if (TipCheat.toBeDisplayed(mMathDokuPreferences, cheat)) {
-				new TipCheat(mContext, cheat).show();
+			CellRevealedCheat cellRevealedCheat = new CellRevealedCheat(
+					mContext);
+			if (mTimerTask != null) {
+				mTimerTask.addCheatPenaltyTime(cellRevealedCheat);
+			}
+			if (TipCheat.toBeDisplayed(mMathDokuPreferences, cellRevealedCheat)) {
+				new TipCheat(mContext, cellRevealedCheat).show();
 			}
 
 			mGridPlayerView.invalidate();
@@ -728,34 +734,18 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 	 */
 	void revealOperator() {
 		if (mGrid != null && mGrid.revealOperatorSelectedCage()) {
-			Cheat cheat = registerNewCheat(Cheat.CheatType.OPERATOR_REVEALED);
-
-			// Display tip
-			if (TipCheat.toBeDisplayed(mMathDokuPreferences, cheat)) {
-				new TipCheat(mContext, cheat).show();
+			OperatorRevealedCheat operatorRevealedCheat = new OperatorRevealedCheat(
+					mContext);
+			if (mTimerTask != null) {
+				mTimerTask.addCheatPenaltyTime(operatorRevealedCheat);
+			}
+			if (TipCheat.toBeDisplayed(mMathDokuPreferences,
+					operatorRevealedCheat)) {
+				new TipCheat(mContext, operatorRevealedCheat).show();
 			}
 
 			mGridPlayerView.invalidate();
 		}
-	}
-
-	/**
-	 * Register a new cheat of the given type. The penalty time of the cheat is
-	 * added to the timer.
-	 * 
-	 * @param cheatType
-	 *            The type of cheat to be processed.
-	 */
-	private Cheat registerNewCheat(Cheat.CheatType cheatType) {
-		// Create new cheat
-		Cheat cheat = new Cheat(mContext, cheatType);
-
-		// Add penalty time
-		if (mTimerTask != null) {
-			mTimerTask.addCheatPenaltyTime(cheat);
-		}
-
-		return cheat;
 	}
 
 	/**
@@ -786,17 +776,16 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 
 		// Always create a new cheat as the usage of the function (even in case
 		// all cells are valid) will result in a cheat penalty being counted.
-		Cheat cheat = new Cheat(this.getActivity(),
-				Cheat.CheatType.CHECK_PROGRESS_USED, countNewInvalidChoices);
-
-		// Add penalty time
+		CheckProgressUsedCheat checkProgressUsedCheat = new CheckProgressUsedCheat(
+				this.getActivity(), countNewInvalidChoices);
 		if (mTimerTask != null) {
-			mTimerTask.addCheatPenaltyTime(cheat);
+			mTimerTask.addCheatPenaltyTime(checkProgressUsedCheat);
 		}
 
 		// Display tip or toast
-		if (TipCheat.toBeDisplayed(mMathDokuPreferences, cheat)) {
-			new TipCheat(mContext, cheat).show();
+		if (TipCheat
+				.toBeDisplayed(mMathDokuPreferences, checkProgressUsedCheat)) {
+			new TipCheat(mContext, checkProgressUsedCheat).show();
 		} else if (allEnteredValuesValid) {
 			Toast.makeText(mContext, R.string.ProgressOK, Toast.LENGTH_SHORT)
 					.show();
@@ -900,9 +889,12 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 								// Reveal the solution
 								mGrid.revealSolution();
 
-								// Create the cheat. This also updates the cheat
-								// penalty in the timer.
-								Cheat cheat = registerNewCheat(Cheat.CheatType.SOLUTION_REVEALED);
+								SolutionRevealedCheat solutionRevealedCheat = new SolutionRevealedCheat(
+										mContext);
+								if (mTimerTask != null) {
+									mTimerTask
+											.addCheatPenaltyTime(solutionRevealedCheat);
+								}
 
 								// Stop the timer and unselect the current cell
 								// and cage. Finally save the grid.
@@ -913,10 +905,12 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 								// Check if tip has to be displayed before
 								// informing the listener about finishing the
 								// grid.
-								if (cheat != null
+								if (solutionRevealedCheat != null
 										&& TipCheat.toBeDisplayed(
-												mMathDokuPreferences, cheat)) {
-									new TipCheat(mContext, cheat)
+												mMathDokuPreferences,
+												solutionRevealedCheat)) {
+									new TipCheat(mContext,
+											solutionRevealedCheat)
 											.setOnClickCloseListener(
 													new TipDialog.OnClickCloseListener() {
 														@Override
@@ -1093,7 +1087,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements
 		for (int i = 0; i < mDigitPosition.length; i++) {
 			int value = mDigitPositionGrid.getValue(i);
 			mDigitPosition[i].setText(value > 0 ? Integer.toString(value) : "");
-			// noinspection MagicConstant
+			// noinspection ResourceType
 			mDigitPosition[i]
 					.setVisibility(mDigitPositionGrid.getVisibility(i));
 		}

@@ -2,7 +2,11 @@ package net.mathdoku.plus.tip;
 
 import android.app.Activity;
 
+import net.mathdoku.plus.puzzle.cheat.CellRevealedCheat;
 import net.mathdoku.plus.puzzle.cheat.Cheat;
+import net.mathdoku.plus.puzzle.cheat.CheckProgressUsedCheat;
+import net.mathdoku.plus.puzzle.cheat.OperatorRevealedCheat;
+import net.mathdoku.plus.puzzle.cheat.SolutionRevealedCheat;
 
 import org.hamcrest.Matcher;
 import org.junit.Before;
@@ -32,8 +36,7 @@ public class TipCheatTest extends TipBaseTest {
 	@Test
 	public void toBeDisplayed_CellRevealed_DialogIsNotDisplayed()
 			throws Exception {
-		assertThatTipCheatIsNotDisplayed(new Cheat(new Activity(),
-				Cheat.CheatType.CELL_REVEALED));
+		assertThatTipCheatIsNotDisplayed(new CellRevealedCheat(new Activity()));
 	}
 
 	private void assertThatTipCheatIsNotDisplayed(Cheat cheat) {
@@ -49,22 +52,20 @@ public class TipCheatTest extends TipBaseTest {
 	@Test
 	public void toBeDisplayed_CheckProgress_DialogIsNotDisplayed()
 			throws Exception {
-		assertThatTipCheatIsNotDisplayed(new Cheat(new Activity(),
-				Cheat.CheatType.CHECK_PROGRESS_USED,
-				OCCURRENCES_CONDITIONAL_PENALTY));
+		assertThatTipCheatIsNotDisplayed(new CheckProgressUsedCheat(new Activity(), OCCURRENCES_CONDITIONAL_PENALTY));
 	}
 
 	@Test
 	public void toBeDisplayed_OperatorRevealed_DialogIsNotDisplayed()
 			throws Exception {
-		assertThatTipCheatIsNotDisplayed(new Cheat(new Activity(),
-				Cheat.CheatType.OPERATOR_REVEALED));
+		assertThatTipCheatIsNotDisplayed(new OperatorRevealedCheat(
+				new Activity()));
 	}
 
 	@Test
 	public void toBeDisplayed_SolutionRevealed_DialogIsNotDisplayed()
 			throws Exception {
-		assertThatTipCheatIsNotDisplayed(new Cheat(new Activity(),
-				Cheat.CheatType.SOLUTION_REVEALED));
+		assertThatTipCheatIsNotDisplayed(new SolutionRevealedCheat(
+				new Activity()));
 	}
 }
