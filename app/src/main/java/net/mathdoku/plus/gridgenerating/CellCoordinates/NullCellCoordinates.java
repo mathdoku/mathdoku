@@ -1,20 +1,20 @@
 package net.mathdoku.plus.gridgenerating.cellcoordinates;
 
 public class NullCellCoordinates extends CellCoordinates {
-	private static NullCellCoordinates singletonNullCellCoordinates = null;
+    private static NullCellCoordinates singletonNullCellCoordinates = null;
 
-	private NullCellCoordinates() {
-	}
+    private NullCellCoordinates() {
+    }
 
-	public static NullCellCoordinates create() {
-		if (singletonNullCellCoordinates == null) {
-			singletonNullCellCoordinates = new NullCellCoordinates();
-		}
-		return singletonNullCellCoordinates;
-	}
+    public static NullCellCoordinates create() {
+        if (singletonNullCellCoordinates == null) {
+            singletonNullCellCoordinates = new NullCellCoordinates();
+        }
+        return singletonNullCellCoordinates;
+    }
 
-	@Override
-	public boolean isNull() {
-		return true;
-	}
+    @Override
+    public boolean isNull() {
+        return true;
+    }
 }

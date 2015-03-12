@@ -7,85 +7,84 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CaseWhenHelper {
-	private final List<WhenThenOperand> whenThenOperands;
-	private String elseValue;
+    private final List<WhenThenOperand> whenThenOperands;
+    private String elseValue;
 
-	private static class WhenThenOperand {
-		FieldOperatorValue condition;
-		String value;
-	}
+    private static class WhenThenOperand {
+        FieldOperatorValue condition;
+        String value;
+    }
 
-	public CaseWhenHelper() {
-		whenThenOperands = new ArrayList<WhenThenOperand>();
-	}
+    public CaseWhenHelper() {
+        whenThenOperands = new ArrayList<WhenThenOperand>();
+    }
 
-	public CaseWhenHelper addOperand(FieldOperatorValue condition, String value) {
-		ParameterValidator.validateNotNull(condition);
-		ParameterValidator.validateNotNullOrEmpty(value);
-		WhenThenOperand whenThenOperand = new WhenThenOperand();
-		whenThenOperand.condition = condition;
-		whenThenOperand.value = DatabaseUtil.stringBetweenQuotes(value);
-		whenThenOperands.add(whenThenOperand);
+    public CaseWhenHelper addOperand(FieldOperatorValue condition, String value) {
+        ParameterValidator.validateNotNull(condition);
+        ParameterValidator.validateNotNullOrEmpty(value);
+        WhenThenOperand whenThenOperand = new WhenThenOperand();
+        whenThenOperand.condition = condition;
+        whenThenOperand.value = DatabaseUtil.stringBetweenQuotes(value);
+        whenThenOperands.add(whenThenOperand);
 
-		return this;
-	}
+        return this;
+    }
 
-	public CaseWhenHelper setElseStringValue(String value) {
-		ParameterValidator.validateNotNullOrEmpty(value);
-		elseValue = DatabaseUtil.stringBetweenQuotes(value);
+    public CaseWhenHelper setElseStringValue(String value) {
+        ParameterValidator.validateNotNullOrEmpty(value);
+        elseValue = DatabaseUtil.stringBetweenQuotes(value);
 
-		return this;
-	}
+        return this;
+    }
 
-	@Override
-	public String toString() {
-		if (whenThenOperands.isEmpty()) {
-			throw new IllegalStateException("At least one operand expected.");
-		}
+    @Override
+    public String toString() {
+        if (whenThenOperands.isEmpty()) {
+            throw new IllegalStateException("At least one operand expected.");
+        }
 
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append(" CASE");
-		for (WhenThenOperand whenThenOperand : whenThenOperands) {
-			stringBuilder.append(" WHEN ");
-			stringBuilder.append(whenThenOperand.condition.toString());
-			stringBuilder.append(" THEN ");
-			stringBuilder.append(whenThenOperand.value);
-		}
-		if (elseValue != null) {
-			stringBuilder.append(" ELSE ");
-			stringBuilder.append(elseValue);
-		}
-		stringBuilder.append(" END");
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(" CASE");
+        for (WhenThenOperand whenThenOperand : whenThenOperands) {
+            stringBuilder.append(" WHEN ");
+            stringBuilder.append(whenThenOperand.condition.toString());
+            stringBuilder.append(" THEN ");
+            stringBuilder.append(whenThenOperand.value);
+        }
+        if (elseValue != null) {
+            stringBuilder.append(" ELSE ");
+            stringBuilder.append(elseValue);
+        }
+        stringBuilder.append(" END");
 
-		return stringBuilder.toString();
-	}
+        return stringBuilder.toString();
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (!(o instanceof CaseWhenHelper)) {
-			return false;
-		}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof CaseWhenHelper)) {
+            return false;
+        }
 
-		CaseWhenHelper that = (CaseWhenHelper) o;
+        CaseWhenHelper that = (CaseWhenHelper) o;
 
-		if (elseValue != null ? !elseValue.equals(that.elseValue)
-				: that.elseValue != null) {
-			return false;
-		}
-		if (!whenThenOperands.equals(that.whenThenOperands)) {
-			return false;
-		}
+        if (elseValue != null ? !elseValue.equals(that.elseValue) : that.elseValue != null) {
+            return false;
+        }
+        if (!whenThenOperands.equals(that.whenThenOperands)) {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	public int hashCode() {
-		int result = whenThenOperands.hashCode();
-		result = 31 * result + (elseValue != null ? elseValue.hashCode() : 0);
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        int result = whenThenOperands.hashCode();
+        result = 31 * result + (elseValue != null ? elseValue.hashCode() : 0);
+        return result;
+    }
 }

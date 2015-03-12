@@ -1,16 +1,19 @@
 package net.mathdoku.plus.storage.databaseadapter.database;
 
 public enum DataType {
-	INTEGER("integer"), LONG("long"), BOOLEAN("text"), STRING("text"), TIMESTAMP(
-			"datetime");
+    INTEGER("integer"),
+    LONG("long"),
+    BOOLEAN("text"),
+    STRING("text"),
+    TIMESTAMP("datetime");
 
-	private final String sqliteDataType;
+    private final String sqliteDataType;
 
-	private DataType(String sqliteDataType) {
-		this.sqliteDataType = sqliteDataType;
-	}
+    private DataType(String sqliteDataType) {
+        this.sqliteDataType = sqliteDataType;
+    }
 
-	public String getSqliteDataType() {
-		return sqliteDataType;
-	}
+    public String getSqliteDataType() {
+        return sqliteDataType;
+    }
 }

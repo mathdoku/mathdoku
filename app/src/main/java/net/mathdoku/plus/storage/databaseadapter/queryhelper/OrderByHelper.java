@@ -7,55 +7,52 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrderByHelper {
-	private static final String SORT_ASCENDING = "ASC";
-	private static final String SORT_DESCENDING = "DESC";
+    private static final String SORT_ASCENDING = "ASC";
+    private static final String SORT_DESCENDING = "DESC";
 
-	private List<String> orderByColumns;
+    private List<String> orderByColumns;
 
-	public OrderByHelper() {
-		orderByColumns = new ArrayList<String>();
-	}
+    public OrderByHelper() {
+        orderByColumns = new ArrayList<String>();
+    }
 
-	/**
-	 * Add a column to the list of columns on which is sorted in ascending
-	 * order.
-	 * 
-	 * @param column
-	 *            The column to be added
-	 */
-	public OrderByHelper sortAscending(String column) {
-		addOrderByColumn(column, SORT_ASCENDING);
+    /**
+     * Add a column to the list of columns on which is sorted in ascending order.
+     *
+     * @param column
+     *         The column to be added
+     */
+    public OrderByHelper sortAscending(String column) {
+        addOrderByColumn(column, SORT_ASCENDING);
 
-		return this;
-	}
+        return this;
+    }
 
-	private void addOrderByColumn(String column, String sortOrder) {
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append(DatabaseUtil.stringBetweenBackTicks(column));
-		stringBuilder.append(QueryHelper.SPACE);
-		stringBuilder.append(sortOrder);
-		orderByColumns.add(stringBuilder.toString());
-	}
+    private void addOrderByColumn(String column, String sortOrder) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(DatabaseUtil.stringBetweenBackTicks(column));
+        stringBuilder.append(QueryHelper.SPACE);
+        stringBuilder.append(sortOrder);
+        orderByColumns.add(stringBuilder.toString());
+    }
 
-	/**
-	 * Add a column to the list of columns on which is sorted in descending
-	 * order.
-	 * 
-	 * @param column
-	 *            The column to be added
-	 */
-	public OrderByHelper sortDescending(String column) {
-		addOrderByColumn(column, SORT_DESCENDING);
+    /**
+     * Add a column to the list of columns on which is sorted in descending order.
+     *
+     * @param column
+     *         The column to be added
+     */
+    public OrderByHelper sortDescending(String column) {
+        addOrderByColumn(column, SORT_DESCENDING);
 
-		return this;
-	}
+        return this;
+    }
 
-	@Override
-	public String toString() {
-		if (Util.isListNullOrEmpty(orderByColumns)) {
-			throw new IllegalStateException(
-					"At least one column has to be set.");
-		}
-		return QueryHelper.join(QueryHelper.COMMA, orderByColumns);
-	}
+    @Override
+    public String toString() {
+        if (Util.isListNullOrEmpty(orderByColumns)) {
+            throw new IllegalStateException("At least one column has to be set.");
+        }
+        return QueryHelper.join(QueryHelper.COMMA, orderByColumns);
+    }
 }

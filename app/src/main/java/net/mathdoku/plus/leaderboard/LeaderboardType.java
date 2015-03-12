@@ -5,362 +5,349 @@ import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 
 /**
- * This class is used to translate puzzle characteristics (grid size, visibility
- * of operators and puzzle complexity) to Google Play Service leaderboard id's
- * and vice versa.
+ * This class is used to translate puzzle characteristics (grid size, visibility of operators and
+ * puzzle complexity) to Google Play Service leaderboard id's and vice versa.
  */
 public class LeaderboardType {
-	// All grid sizes for which leaderboards are available. Elements have to be
-	// order in order of ascending size.
-	private static final GridType[] GRID_SIZES_WITH_LEADER_BOARD = {
-			GridType.GRID_4X4, GridType.GRID_5X5, GridType.GRID_6X6,
-			GridType.GRID_7X7, GridType.GRID_8X8, GridType.GRID_9X9 };
-	private static final int GRID_SIZE_SMALLEST = GRID_SIZES_WITH_LEADER_BOARD[0]
-			.getGridSize();
+    // All grid sizes for which leaderboards are available. Elements have to be
+    // order in order of ascending size.
+    private static final GridType[] GRID_SIZES_WITH_LEADER_BOARD = {GridType.GRID_4X4,
+            GridType.GRID_5X5, GridType.GRID_6X6, GridType.GRID_7X7, GridType.GRID_8X8,
+            GridType.GRID_9X9};
+    private static final int GRID_SIZE_SMALLEST = GRID_SIZES_WITH_LEADER_BOARD[0].getGridSize();
 
-	// All leaderboards as defined in the game service on Google Play. The order
-	// of this array should be kept in sync with the computation of the index
-	// value in method getIndex.
-	private static final int[] LEADERBOARD_RES_ID = {
-			// 4x4 leaderboards
-			R.string.leaderboard_4x4__hidden_operators__1_star,
-			R.string.leaderboard_4x4__hidden_operators__2_stars,
-			R.string.leaderboard_4x4__hidden_operators__3_stars,
-			R.string.leaderboard_4x4__hidden_operators__4_stars,
-			R.string.leaderboard_4x4__hidden_operators__5_stars,
-			R.string.leaderboard_4x4__visible_operators__1_star,
-			R.string.leaderboard_4x4__visible_operators__2_stars,
-			R.string.leaderboard_4x4__visible_operators__3_stars,
-			R.string.leaderboard_4x4__visible_operators__4_stars,
-			R.string.leaderboard_4x4__visible_operators__5_stars,
-			// 5x5 leaderboards
-			R.string.leaderboard_5x5__hidden_operators__1_star,
-			R.string.leaderboard_5x5__hidden_operators__2_stars,
-			R.string.leaderboard_5x5__hidden_operators__3_stars,
-			R.string.leaderboard_5x5__hidden_operators__4_stars,
-			R.string.leaderboard_5x5__hidden_operators__5_stars,
-			R.string.leaderboard_5x5__visible_operators__1_star,
-			R.string.leaderboard_5x5__visible_operators__2_stars,
-			R.string.leaderboard_5x5__visible_operators__3_stars,
-			R.string.leaderboard_5x5__visible_operators__4_stars,
-			R.string.leaderboard_5x5__visible_operators__5_stars,
-			// 6x6 leaderboards
-			R.string.leaderboard_6x6__hidden_operators__1_star,
-			R.string.leaderboard_6x6__hidden_operators__2_stars,
-			R.string.leaderboard_6x6__hidden_operators__3_stars,
-			R.string.leaderboard_6x6__hidden_operators__4_stars,
-			R.string.leaderboard_6x6__hidden_operators__5_stars,
-			R.string.leaderboard_6x6__visible_operators__1_star,
-			R.string.leaderboard_6x6__visible_operators__2_stars,
-			R.string.leaderboard_6x6__visible_operators__3_stars,
-			R.string.leaderboard_6x6__visible_operators__4_stars,
-			R.string.leaderboard_6x6__visible_operators__5_stars,
-			// 7x7 leaderboards
-			R.string.leaderboard_7x7__hidden_operators__1_star,
-			R.string.leaderboard_7x7__hidden_operators__2_stars,
-			R.string.leaderboard_7x7__hidden_operators__3_stars,
-			R.string.leaderboard_7x7__hidden_operators__4_stars,
-			R.string.leaderboard_7x7__hidden_operators__5_stars,
-			R.string.leaderboard_7x7__visible_operators__1_star,
-			R.string.leaderboard_7x7__visible_operators__2_stars,
-			R.string.leaderboard_7x7__visible_operators__3_stars,
-			R.string.leaderboard_7x7__visible_operators__4_stars,
-			R.string.leaderboard_7x7__visible_operators__5_stars,
-			// 8x8 leaderboards
-			R.string.leaderboard_8x8__hidden_operators__1_star,
-			R.string.leaderboard_8x8__hidden_operators__2_stars,
-			R.string.leaderboard_8x8__hidden_operators__3_stars,
-			R.string.leaderboard_8x8__hidden_operators__4_stars,
-			R.string.leaderboard_8x8__hidden_operators__5_stars,
-			R.string.leaderboard_8x8__visible_operators__1_star,
-			R.string.leaderboard_8x8__visible_operators__2_stars,
-			R.string.leaderboard_8x8__visible_operators__3_stars,
-			R.string.leaderboard_8x8__visible_operators__4_stars,
-			R.string.leaderboard_8x8__visible_operators__5_stars,
-			// 9x9 leaderboards
-			R.string.leaderboard_9x9__hidden_operators__1_star,
-			R.string.leaderboard_9x9__hidden_operators__2_stars,
-			R.string.leaderboard_9x9__hidden_operators__3_stars,
-			R.string.leaderboard_9x9__hidden_operators__4_stars,
-			R.string.leaderboard_9x9__hidden_operators__5_stars,
-			R.string.leaderboard_9x9__visible_operators__1_star,
-			R.string.leaderboard_9x9__visible_operators__2_stars,
-			R.string.leaderboard_9x9__visible_operators__3_stars,
-			R.string.leaderboard_9x9__visible_operators__4_stars,
-			R.string.leaderboard_9x9__visible_operators__5_stars };
+    // All leaderboards as defined in the game service on Google Play. The order
+    // of this array should be kept in sync with the computation of the index
+    // value in method getIndex.
+    private static final int[] LEADERBOARD_RES_ID = {
+            // 4x4 leaderboards
+            R.string.leaderboard_4x4__hidden_operators__1_star,
+            R.string.leaderboard_4x4__hidden_operators__2_stars,
+            R.string.leaderboard_4x4__hidden_operators__3_stars,
+            R.string.leaderboard_4x4__hidden_operators__4_stars,
+            R.string.leaderboard_4x4__hidden_operators__5_stars,
+            R.string.leaderboard_4x4__visible_operators__1_star,
+            R.string.leaderboard_4x4__visible_operators__2_stars,
+            R.string.leaderboard_4x4__visible_operators__3_stars,
+            R.string.leaderboard_4x4__visible_operators__4_stars,
+            R.string.leaderboard_4x4__visible_operators__5_stars,
+            // 5x5 leaderboards
+            R.string.leaderboard_5x5__hidden_operators__1_star,
+            R.string.leaderboard_5x5__hidden_operators__2_stars,
+            R.string.leaderboard_5x5__hidden_operators__3_stars,
+            R.string.leaderboard_5x5__hidden_operators__4_stars,
+            R.string.leaderboard_5x5__hidden_operators__5_stars,
+            R.string.leaderboard_5x5__visible_operators__1_star,
+            R.string.leaderboard_5x5__visible_operators__2_stars,
+            R.string.leaderboard_5x5__visible_operators__3_stars,
+            R.string.leaderboard_5x5__visible_operators__4_stars,
+            R.string.leaderboard_5x5__visible_operators__5_stars,
+            // 6x6 leaderboards
+            R.string.leaderboard_6x6__hidden_operators__1_star,
+            R.string.leaderboard_6x6__hidden_operators__2_stars,
+            R.string.leaderboard_6x6__hidden_operators__3_stars,
+            R.string.leaderboard_6x6__hidden_operators__4_stars,
+            R.string.leaderboard_6x6__hidden_operators__5_stars,
+            R.string.leaderboard_6x6__visible_operators__1_star,
+            R.string.leaderboard_6x6__visible_operators__2_stars,
+            R.string.leaderboard_6x6__visible_operators__3_stars,
+            R.string.leaderboard_6x6__visible_operators__4_stars,
+            R.string.leaderboard_6x6__visible_operators__5_stars,
+            // 7x7 leaderboards
+            R.string.leaderboard_7x7__hidden_operators__1_star,
+            R.string.leaderboard_7x7__hidden_operators__2_stars,
+            R.string.leaderboard_7x7__hidden_operators__3_stars,
+            R.string.leaderboard_7x7__hidden_operators__4_stars,
+            R.string.leaderboard_7x7__hidden_operators__5_stars,
+            R.string.leaderboard_7x7__visible_operators__1_star,
+            R.string.leaderboard_7x7__visible_operators__2_stars,
+            R.string.leaderboard_7x7__visible_operators__3_stars,
+            R.string.leaderboard_7x7__visible_operators__4_stars,
+            R.string.leaderboard_7x7__visible_operators__5_stars,
+            // 8x8 leaderboards
+            R.string.leaderboard_8x8__hidden_operators__1_star,
+            R.string.leaderboard_8x8__hidden_operators__2_stars,
+            R.string.leaderboard_8x8__hidden_operators__3_stars,
+            R.string.leaderboard_8x8__hidden_operators__4_stars,
+            R.string.leaderboard_8x8__hidden_operators__5_stars,
+            R.string.leaderboard_8x8__visible_operators__1_star,
+            R.string.leaderboard_8x8__visible_operators__2_stars,
+            R.string.leaderboard_8x8__visible_operators__3_stars,
+            R.string.leaderboard_8x8__visible_operators__4_stars,
+            R.string.leaderboard_8x8__visible_operators__5_stars,
+            // 9x9 leaderboards
+            R.string.leaderboard_9x9__hidden_operators__1_star,
+            R.string.leaderboard_9x9__hidden_operators__2_stars,
+            R.string.leaderboard_9x9__hidden_operators__3_stars,
+            R.string.leaderboard_9x9__hidden_operators__4_stars,
+            R.string.leaderboard_9x9__hidden_operators__5_stars,
+            R.string.leaderboard_9x9__visible_operators__1_star,
+            R.string.leaderboard_9x9__visible_operators__2_stars,
+            R.string.leaderboard_9x9__visible_operators__3_stars,
+            R.string.leaderboard_9x9__visible_operators__4_stars,
+            R.string.leaderboard_9x9__visible_operators__5_stars};
 
-	// Resource id's of the leaderboards. The items in this array should be kept
-	// in sync with array LEADERBOARD_RES_ID.
-	private static final int[] LEADERBOARD_ICON_RES_ID = {
-			// 4x4 leaderboards
-			R.drawable.leaderboard_4x4_operators_hidden_1_star,
-			R.drawable.leaderboard_4x4_operators_hidden_2_stars,
-			R.drawable.leaderboard_4x4_operators_hidden_3_stars,
-			R.drawable.leaderboard_4x4_operators_hidden_4_stars,
-			R.drawable.leaderboard_4x4_operators_hidden_5_stars,
-			R.drawable.leaderboard_4x4_operators_visible_1_star,
-			R.drawable.leaderboard_4x4_operators_visible_2_stars,
-			R.drawable.leaderboard_4x4_operators_visible_3_stars,
-			R.drawable.leaderboard_4x4_operators_visible_4_stars,
-			R.drawable.leaderboard_4x4_operators_visible_5_stars,
-			// 5x5 leaderboards
-			R.drawable.leaderboard_5x5_operators_hidden_1_star,
-			R.drawable.leaderboard_5x5_operators_hidden_2_stars,
-			R.drawable.leaderboard_5x5_operators_hidden_3_stars,
-			R.drawable.leaderboard_5x5_operators_hidden_4_stars,
-			R.drawable.leaderboard_5x5_operators_hidden_5_stars,
-			R.drawable.leaderboard_5x5_operators_visible_1_star,
-			R.drawable.leaderboard_5x5_operators_visible_2_stars,
-			R.drawable.leaderboard_5x5_operators_visible_3_stars,
-			R.drawable.leaderboard_5x5_operators_visible_4_stars,
-			R.drawable.leaderboard_5x5_operators_visible_5_stars,
-			// 6x6 leaderboards
-			R.drawable.leaderboard_6x6_operators_hidden_1_star,
-			R.drawable.leaderboard_6x6_operators_hidden_2_stars,
-			R.drawable.leaderboard_6x6_operators_hidden_3_stars,
-			R.drawable.leaderboard_6x6_operators_hidden_4_stars,
-			R.drawable.leaderboard_6x6_operators_hidden_5_stars,
-			R.drawable.leaderboard_6x6_operators_visible_1_star,
-			R.drawable.leaderboard_6x6_operators_visible_2_stars,
-			R.drawable.leaderboard_6x6_operators_visible_3_stars,
-			R.drawable.leaderboard_6x6_operators_visible_4_stars,
-			R.drawable.leaderboard_6x6_operators_visible_5_stars,
-			// 7x7 leaderboards
-			R.drawable.leaderboard_7x7_operators_hidden_1_star,
-			R.drawable.leaderboard_7x7_operators_hidden_2_stars,
-			R.drawable.leaderboard_7x7_operators_hidden_3_stars,
-			R.drawable.leaderboard_7x7_operators_hidden_4_stars,
-			R.drawable.leaderboard_7x7_operators_hidden_5_stars,
-			R.drawable.leaderboard_7x7_operators_visible_1_star,
-			R.drawable.leaderboard_7x7_operators_visible_2_stars,
-			R.drawable.leaderboard_7x7_operators_visible_3_stars,
-			R.drawable.leaderboard_7x7_operators_visible_4_stars,
-			R.drawable.leaderboard_7x7_operators_visible_5_stars,
-			// 8x8 leaderboards
-			R.drawable.leaderboard_8x8_operators_hidden_1_star,
-			R.drawable.leaderboard_8x8_operators_hidden_2_stars,
-			R.drawable.leaderboard_8x8_operators_hidden_3_stars,
-			R.drawable.leaderboard_8x8_operators_hidden_4_stars,
-			R.drawable.leaderboard_8x8_operators_hidden_5_stars,
-			R.drawable.leaderboard_8x8_operators_visible_1_star,
-			R.drawable.leaderboard_8x8_operators_visible_2_stars,
-			R.drawable.leaderboard_8x8_operators_visible_3_stars,
-			R.drawable.leaderboard_8x8_operators_visible_4_stars,
-			R.drawable.leaderboard_8x8_operators_visible_5_stars,
-			// 9x9 leaderboards
-			R.drawable.leaderboard_9x9_operators_hidden_1_star,
-			R.drawable.leaderboard_9x9_operators_hidden_2_stars,
-			R.drawable.leaderboard_9x9_operators_hidden_3_stars,
-			R.drawable.leaderboard_9x9_operators_hidden_4_stars,
-			R.drawable.leaderboard_9x9_operators_hidden_5_stars,
-			R.drawable.leaderboard_9x9_operators_visible_1_star,
-			R.drawable.leaderboard_9x9_operators_visible_2_stars,
-			R.drawable.leaderboard_9x9_operators_visible_3_stars,
-			R.drawable.leaderboard_9x9_operators_visible_4_stars,
-			R.drawable.leaderboard_9x9_operators_visible_5_stars };
+    // Resource id's of the leaderboards. The items in this array should be kept
+    // in sync with array LEADERBOARD_RES_ID.
+    private static final int[] LEADERBOARD_ICON_RES_ID = {
+            // 4x4 leaderboards
+            R.drawable.leaderboard_4x4_operators_hidden_1_star,
+            R.drawable.leaderboard_4x4_operators_hidden_2_stars,
+            R.drawable.leaderboard_4x4_operators_hidden_3_stars,
+            R.drawable.leaderboard_4x4_operators_hidden_4_stars,
+            R.drawable.leaderboard_4x4_operators_hidden_5_stars,
+            R.drawable.leaderboard_4x4_operators_visible_1_star,
+            R.drawable.leaderboard_4x4_operators_visible_2_stars,
+            R.drawable.leaderboard_4x4_operators_visible_3_stars,
+            R.drawable.leaderboard_4x4_operators_visible_4_stars,
+            R.drawable.leaderboard_4x4_operators_visible_5_stars,
+            // 5x5 leaderboards
+            R.drawable.leaderboard_5x5_operators_hidden_1_star,
+            R.drawable.leaderboard_5x5_operators_hidden_2_stars,
+            R.drawable.leaderboard_5x5_operators_hidden_3_stars,
+            R.drawable.leaderboard_5x5_operators_hidden_4_stars,
+            R.drawable.leaderboard_5x5_operators_hidden_5_stars,
+            R.drawable.leaderboard_5x5_operators_visible_1_star,
+            R.drawable.leaderboard_5x5_operators_visible_2_stars,
+            R.drawable.leaderboard_5x5_operators_visible_3_stars,
+            R.drawable.leaderboard_5x5_operators_visible_4_stars,
+            R.drawable.leaderboard_5x5_operators_visible_5_stars,
+            // 6x6 leaderboards
+            R.drawable.leaderboard_6x6_operators_hidden_1_star,
+            R.drawable.leaderboard_6x6_operators_hidden_2_stars,
+            R.drawable.leaderboard_6x6_operators_hidden_3_stars,
+            R.drawable.leaderboard_6x6_operators_hidden_4_stars,
+            R.drawable.leaderboard_6x6_operators_hidden_5_stars,
+            R.drawable.leaderboard_6x6_operators_visible_1_star,
+            R.drawable.leaderboard_6x6_operators_visible_2_stars,
+            R.drawable.leaderboard_6x6_operators_visible_3_stars,
+            R.drawable.leaderboard_6x6_operators_visible_4_stars,
+            R.drawable.leaderboard_6x6_operators_visible_5_stars,
+            // 7x7 leaderboards
+            R.drawable.leaderboard_7x7_operators_hidden_1_star,
+            R.drawable.leaderboard_7x7_operators_hidden_2_stars,
+            R.drawable.leaderboard_7x7_operators_hidden_3_stars,
+            R.drawable.leaderboard_7x7_operators_hidden_4_stars,
+            R.drawable.leaderboard_7x7_operators_hidden_5_stars,
+            R.drawable.leaderboard_7x7_operators_visible_1_star,
+            R.drawable.leaderboard_7x7_operators_visible_2_stars,
+            R.drawable.leaderboard_7x7_operators_visible_3_stars,
+            R.drawable.leaderboard_7x7_operators_visible_4_stars,
+            R.drawable.leaderboard_7x7_operators_visible_5_stars,
+            // 8x8 leaderboards
+            R.drawable.leaderboard_8x8_operators_hidden_1_star,
+            R.drawable.leaderboard_8x8_operators_hidden_2_stars,
+            R.drawable.leaderboard_8x8_operators_hidden_3_stars,
+            R.drawable.leaderboard_8x8_operators_hidden_4_stars,
+            R.drawable.leaderboard_8x8_operators_hidden_5_stars,
+            R.drawable.leaderboard_8x8_operators_visible_1_star,
+            R.drawable.leaderboard_8x8_operators_visible_2_stars,
+            R.drawable.leaderboard_8x8_operators_visible_3_stars,
+            R.drawable.leaderboard_8x8_operators_visible_4_stars,
+            R.drawable.leaderboard_8x8_operators_visible_5_stars,
+            // 9x9 leaderboards
+            R.drawable.leaderboard_9x9_operators_hidden_1_star,
+            R.drawable.leaderboard_9x9_operators_hidden_2_stars,
+            R.drawable.leaderboard_9x9_operators_hidden_3_stars,
+            R.drawable.leaderboard_9x9_operators_hidden_4_stars,
+            R.drawable.leaderboard_9x9_operators_hidden_5_stars,
+            R.drawable.leaderboard_9x9_operators_visible_1_star,
+            R.drawable.leaderboard_9x9_operators_visible_2_stars,
+            R.drawable.leaderboard_9x9_operators_visible_3_stars,
+            R.drawable.leaderboard_9x9_operators_visible_4_stars,
+            R.drawable.leaderboard_9x9_operators_visible_5_stars};
 
-	// Maximum number of leaderboards available
-	public static final int MAX_LEADERBOARDS = LEADERBOARD_RES_ID.length;
+    // Maximum number of leaderboards available
+    public static final int MAX_LEADERBOARDS = LEADERBOARD_RES_ID.length;
 
-	// Number of elements for index factor PuzzleComplexity. Note this enum
-	// contains a value RANDOM (ordinal value 0) which is not a real complexity
-	// factor (no leaderboards exists for it) and therefore needs to be
-	// excluded.
-	private static final int PUZZLE_COMPLEXITY_OFFSET = PuzzleComplexity.RANDOM
-			.ordinal() == 0 ? 1 : 0;
-	private static final int MAX_ELEMENTS_INDEX_FACTOR_PUZZLE_COMPLEXITY = PuzzleComplexity
-			.values().length - 1;
+    // Number of elements for index factor PuzzleComplexity. Note this enum
+    // contains a value RANDOM (ordinal value 0) which is not a real complexity
+    // factor (no leaderboards exists for it) and therefore needs to be
+    // excluded.
+    private static final int PUZZLE_COMPLEXITY_OFFSET = PuzzleComplexity.RANDOM.ordinal() == 0 ?
+            1 : 0;
+    private static final int MAX_ELEMENTS_INDEX_FACTOR_PUZZLE_COMPLEXITY = PuzzleComplexity
+            .values().length - 1;
 
-	// Number of elements for index factor operator visibility. Boolean value
-	// has only 2 values.
-	private static final int MAX_ELEMENTS_INDEX_FACTOR_OPERATORS = 2;
+    // Number of elements for index factor operator visibility. Boolean value
+    // has only 2 values.
+    private static final int MAX_ELEMENTS_INDEX_FACTOR_OPERATORS = 2;
 
-	// When computing the index it is computed using following index factors.
-	// Each index factor is the product of all possible combinations of previous
-	// factors.
-	private static final int PUZZLE_COMPLEXITY_INDEX_FACTOR = 1;
-	@SuppressWarnings("PointlessArithmeticExpression")
-	private static final int HIDE_OPERATOR_INDEX_FACTOR = 1 * MAX_ELEMENTS_INDEX_FACTOR_PUZZLE_COMPLEXITY;
-	private static final int GRID_SIZE_INDEX_FACTOR = HIDE_OPERATOR_INDEX_FACTOR
-			* MAX_ELEMENTS_INDEX_FACTOR_OPERATORS;
+    // When computing the index it is computed using following index factors.
+    // Each index factor is the product of all possible combinations of previous
+    // factors.
+    private static final int PUZZLE_COMPLEXITY_INDEX_FACTOR = 1;
+    @SuppressWarnings("PointlessArithmeticExpression")
+    private static final int HIDE_OPERATOR_INDEX_FACTOR = 1 *
+            MAX_ELEMENTS_INDEX_FACTOR_PUZZLE_COMPLEXITY;
+    private static final int GRID_SIZE_INDEX_FACTOR = HIDE_OPERATOR_INDEX_FACTOR *
+            MAX_ELEMENTS_INDEX_FACTOR_OPERATORS;
 
-	private LeaderboardType() {
-		// Prevents accidental instantiation of this utility class.
-	}
+    private LeaderboardType() {
+        // Prevents accidental instantiation of this utility class.
+    }
 
-	public static GridType[] getGridSizeWithLeaderboard() {
-		return GRID_SIZES_WITH_LEADER_BOARD;
-	}
+    public static GridType[] getGridSizeWithLeaderboard() {
+        return GRID_SIZES_WITH_LEADER_BOARD;
+    }
 
-	public static boolean notDefinedForGridSize(int gridSize) {
-		for (GridType gridTypeWithLeaderBoard : GRID_SIZES_WITH_LEADER_BOARD) {
-			if (gridTypeWithLeaderBoard.getGridSize() == gridSize) {
-				return false;
-			}
-		}
-		return true;
-	}
+    public static boolean notDefinedForGridSize(int gridSize) {
+        for (GridType gridTypeWithLeaderBoard : GRID_SIZES_WITH_LEADER_BOARD) {
+            if (gridTypeWithLeaderBoard.getGridSize() == gridSize) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-	/**
-	 * Get the leaderboard index for the given combination of grid size,
-	 * operator visibility and puzzle complexity.
-	 * 
-	 * @param gridSize
-	 *            The size of the grid.
-	 * @param hideOperators
-	 *            True in case operator are visible. False otherwise.
-	 * @param puzzleComplexity
-	 *            The complexity of the grid (currently not yet in use).
-	 * @return The index associated with the leaderboard. -1 in case of an
-	 *         error.
-	 */
-	public static int getIndex(int gridSize, boolean hideOperators,
-			PuzzleComplexity puzzleComplexity) {
+    /**
+     * Get the leaderboard index for the given combination of grid size, operator visibility and
+     * puzzle complexity.
+     *
+     * @param gridSize
+     *         The size of the grid.
+     * @param hideOperators
+     *         True in case operator are visible. False otherwise.
+     * @param puzzleComplexity
+     *         The complexity of the grid (currently not yet in use).
+     * @return The index associated with the leaderboard. -1 in case of an error.
+     */
+    public static int getIndex(int gridSize, boolean hideOperators,
+                               PuzzleComplexity puzzleComplexity) {
 
-		// Test whether grid size is within known size.
-		assert gridSize >= GridType.getSmallestGridSize()
-				&& gridSize <= GridType.getBiggestGridSize();
+        // Test whether grid size is within known size.
+        assert gridSize >= GridType.getSmallestGridSize() && gridSize <= GridType
+                .getBiggestGridSize();
 
-		// Determine the leaderboard index to use.
-		int index = (puzzleComplexity.ordinal() - PUZZLE_COMPLEXITY_OFFSET)
-				* PUZZLE_COMPLEXITY_INDEX_FACTOR;
-		index += (hideOperators ? 0 : 1) * HIDE_OPERATOR_INDEX_FACTOR;
-		index += (gridSize - GRID_SIZE_SMALLEST) * GRID_SIZE_INDEX_FACTOR;
+        // Determine the leaderboard index to use.
+        int index = (puzzleComplexity.ordinal() - PUZZLE_COMPLEXITY_OFFSET) *
+                PUZZLE_COMPLEXITY_INDEX_FACTOR;
+        index += (hideOperators ? 0 : 1) * HIDE_OPERATOR_INDEX_FACTOR;
+        index += (gridSize - GRID_SIZE_SMALLEST) * GRID_SIZE_INDEX_FACTOR;
 
-		// Update leaderboard if an valid index was determined.
-		if (index >= 0 && index < LEADERBOARD_RES_ID.length) {
-			return index;
-		}
+        // Update leaderboard if an valid index was determined.
+        if (index >= 0 && index < LEADERBOARD_RES_ID.length) {
+            return index;
+        }
 
-		return -1;
-	}
+        return -1;
+    }
 
-	/**
-	 * Get the leaderboard resource id for the given combination of grid size,
-	 * operator visibility and puzzle complexity.
-	 * 
-	 * @param gridSize
-	 *            The size of the grid.
-	 * @param hideOperators
-	 *            True in case operator are visible. False otherwise.
-	 * @param puzzleComplexity
-	 *            The complexity of the grid (currently not yet in use).
-	 * @return The resource id associated with the leaderboard. -1 in case of an
-	 *         error.
-	 */
-	public static int getResId(int gridSize, boolean hideOperators,
-			PuzzleComplexity puzzleComplexity) {
-		int leaderboardIndex = getIndex(gridSize, hideOperators,
-				puzzleComplexity);
-		if (leaderboardIndex >= 0) {
-			return LEADERBOARD_RES_ID[leaderboardIndex];
-		}
+    /**
+     * Get the leaderboard resource id for the given combination of grid size, operator visibility
+     * and puzzle complexity.
+     *
+     * @param gridSize
+     *         The size of the grid.
+     * @param hideOperators
+     *         True in case operator are visible. False otherwise.
+     * @param puzzleComplexity
+     *         The complexity of the grid (currently not yet in use).
+     * @return The resource id associated with the leaderboard. -1 in case of an error.
+     */
+    public static int getResId(int gridSize, boolean hideOperators,
+                               PuzzleComplexity puzzleComplexity) {
+        int leaderboardIndex = getIndex(gridSize, hideOperators, puzzleComplexity);
+        if (leaderboardIndex >= 0) {
+            return LEADERBOARD_RES_ID[leaderboardIndex];
+        }
 
-		return -1;
-	}
+        return -1;
+    }
 
-	/**
-	 * Get the leaderboard resource id for the given index.
-	 * 
-	 * @param leaderboardIndex
-	 *            The index of the leaderboard which has to be returned.
-	 * @return The resource id associated with the leaderboard. -1 in case of an
-	 *         error.
-	 */
-	public static int getResId(int leaderboardIndex) {
+    /**
+     * Get the leaderboard resource id for the given index.
+     *
+     * @param leaderboardIndex
+     *         The index of the leaderboard which has to be returned.
+     * @return The resource id associated with the leaderboard. -1 in case of an error.
+     */
+    public static int getResId(int leaderboardIndex) {
 
-		if (leaderboardIndex >= 0
-				&& leaderboardIndex < LEADERBOARD_RES_ID.length) {
-			return LEADERBOARD_RES_ID[leaderboardIndex];
-		}
+        if (leaderboardIndex >= 0 && leaderboardIndex < LEADERBOARD_RES_ID.length) {
+            return LEADERBOARD_RES_ID[leaderboardIndex];
+        }
 
-		return -1;
-	}
+        return -1;
+    }
 
-	/**
-	 * Gets the grid size for the given index of leaderboard types.
-	 * 
-	 * @param index
-	 *            The index for which the grid size of the leaderboard type has
-	 *            to be determined.
-	 * @return The grid size of the leaderboard type. -1 in case of an error.
-	 */
-	public static int getGridSize(int index) {
-		if (index < 0 || index >= MAX_LEADERBOARDS) {
-			return -1;
-		}
+    /**
+     * Gets the grid size for the given index of leaderboard types.
+     *
+     * @param index
+     *         The index for which the grid size of the leaderboard type has to be determined.
+     * @return The grid size of the leaderboard type. -1 in case of an error.
+     */
+    public static int getGridSize(int index) {
+        if (index < 0 || index >= MAX_LEADERBOARDS) {
+            return -1;
+        }
 
-		// As grid size is the biggest factor it is not needed to strip other
-		// factors from index.
-		int gridSize = index / GRID_SIZE_INDEX_FACTOR
-				+ GridType.getSmallestGridSize();
+        // As grid size is the biggest factor it is not needed to strip other
+        // factors from index.
+        int gridSize = index / GRID_SIZE_INDEX_FACTOR + GridType.getSmallestGridSize();
 
-		// Test whether a valid grid size has been computed.
-		assert gridSize >= GridType.getSmallestGridSize()
-				&& gridSize <= GridType.getBiggestGridSize();
+        // Test whether a valid grid size has been computed.
+        assert gridSize >= GridType.getSmallestGridSize() && gridSize <= GridType
+                .getBiggestGridSize();
 
-		return gridSize;
-	}
+        return gridSize;
+    }
 
-	/**
-	 * Checks whether the operators for the given index of leaderboard types are
-	 * hidden.
-	 * 
-	 * @param index
-	 *            The index for which the visibility of the operators of the
-	 *            leaderboard type has to be determined.
-	 * @return True in case the operators for this leaderboard type are hidden.
-	 *         False otherwise.
-	 */
-	public static boolean hasHiddenOperator(int index) {
-		// Strip bigger factors from the index.
-		int remainder = index % GRID_SIZE_INDEX_FACTOR;
+    /**
+     * Checks whether the operators for the given index of leaderboard types are hidden.
+     *
+     * @param index
+     *         The index for which the visibility of the operators of the leaderboard type has to be
+     *         determined.
+     * @return True in case the operators for this leaderboard type are hidden. False otherwise.
+     */
+    public static boolean hasHiddenOperator(int index) {
+        // Strip bigger factors from the index.
+        int remainder = index % GRID_SIZE_INDEX_FACTOR;
 
-		// Get operator visibility
-		remainder /= HIDE_OPERATOR_INDEX_FACTOR;
+        // Get operator visibility
+        remainder /= HIDE_OPERATOR_INDEX_FACTOR;
 
-		// Test whether a valid remainder has been computed.
-		assert remainder == 0 || remainder == 1;
+        // Test whether a valid remainder has been computed.
+        assert remainder == 0 || remainder == 1;
 
-		return remainder == 0;
-	}
+        return remainder == 0;
+    }
 
-	/**
-	 * Gets the puzzle complexity for the given index of leaderboard types.
-	 * 
-	 * @param index
-	 *            The index for which the puzzle complexity of the leaderboard
-	 *            type has to be determined.
-	 * @return The puzzle complexity of the leaderboard type.
-	 */
-	public static PuzzleComplexity getPuzzleComplexity(int index) {
-		// Strip bigger factors from the index.
-		int remainder = index % HIDE_OPERATOR_INDEX_FACTOR;
+    /**
+     * Gets the puzzle complexity for the given index of leaderboard types.
+     *
+     * @param index
+     *         The index for which the puzzle complexity of the leaderboard type has to be
+     *         determined.
+     * @return The puzzle complexity of the leaderboard type.
+     */
+    public static PuzzleComplexity getPuzzleComplexity(int index) {
+        // Strip bigger factors from the index.
+        int remainder = index % HIDE_OPERATOR_INDEX_FACTOR;
 
-		// Get puzzle complexity
-		remainder /= PUZZLE_COMPLEXITY_INDEX_FACTOR;
-		assert remainder >= 0
-				&& remainder <= MAX_ELEMENTS_INDEX_FACTOR_PUZZLE_COMPLEXITY;
-		remainder += PUZZLE_COMPLEXITY_OFFSET;
+        // Get puzzle complexity
+        remainder /= PUZZLE_COMPLEXITY_INDEX_FACTOR;
+        assert remainder >= 0 && remainder <= MAX_ELEMENTS_INDEX_FACTOR_PUZZLE_COMPLEXITY;
+        remainder += PUZZLE_COMPLEXITY_OFFSET;
 
-		return PuzzleComplexity.values()[remainder];
-	}
+        return PuzzleComplexity.values()[remainder];
+    }
 
-	/**
-	 * Get the leaderboard icon resource id for the given index.
-	 * 
-	 * @param leaderboardIndex
-	 *            The index of the leaderboard icon which has to be returned.
-	 * @return The icon resource id associated with the leaderboard. -1 in case
-	 *         of an error.
-	 */
-	public static int getIconResId(int leaderboardIndex) {
+    /**
+     * Get the leaderboard icon resource id for the given index.
+     *
+     * @param leaderboardIndex
+     *         The index of the leaderboard icon which has to be returned.
+     * @return The icon resource id associated with the leaderboard. -1 in case of an error.
+     */
+    public static int getIconResId(int leaderboardIndex) {
 
-		if (leaderboardIndex >= 0
-				&& leaderboardIndex < LEADERBOARD_ICON_RES_ID.length) {
-			return LEADERBOARD_ICON_RES_ID[leaderboardIndex];
-		}
+        if (leaderboardIndex >= 0 && leaderboardIndex < LEADERBOARD_ICON_RES_ID.length) {
+            return LEADERBOARD_ICON_RES_ID[leaderboardIndex];
+        }
 
-		return -1;
-	}
+        return -1;
+    }
 }
