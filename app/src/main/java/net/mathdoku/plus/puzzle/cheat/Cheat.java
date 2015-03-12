@@ -13,7 +13,7 @@ public abstract class Cheat {
 	private static final String TAG = Cheat.class.getName();
 
 	enum CheatType {
-		CHECK_PROGRESS_USED, DUMMY
+		DUMMY
 	}
 
 	private final Resources mResources;
@@ -22,18 +22,13 @@ public abstract class Cheat {
 	private final static long MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 	private final static long MILLISECONDS_PER_HOUR = 60 * 60 * 1000;
 	private final static long MILLISECONDS_PER_MINUTE = 60 * 1000;
-	private final static long MILLISECONDS_PER_SECOND = 1000;
+	protected final static long MILLISECONDS_PER_SECOND = 1000;
 
 	// The type of cheat
 	private final CheatType mCheatType;
 
-	// The penalty consists of a base penalty and an optionally a penalty per
-	// occurrence of a certain condition relevant for the cheat.
-	private final int mConditionalOccurrences;
-
 	// Penalty time in milliseconds
 	private final long mPenaltyTimeMillisecondsBase;
-	private final long mPenaltyTimeMillisecondsPerOccurrence;
 
 	// Title and text to be used in tip dialogs.
 	private String mTipTitle;
@@ -48,14 +43,16 @@ public abstract class Cheat {
 
 		mResources = cheatParameters.getResources();
 		mCheatType = CheatType.DUMMY; // TODO: remove
-		mConditionalOccurrences = 0; // TODO: to subclasss progress used
 		mPenaltyTimeMillisecondsBase = cheatParameters.getPenaltyTimeInSeconds() * MILLISECONDS_PER_SECOND;
-		mPenaltyTimeMillisecondsPerOccurrence = 0;
 		mTipName = cheatParameters.getTipName();
 		mTipTitle = mResources
 				.getString(cheatParameters.getTipTitleResId());
-		mTipText = mResources.getString(cheatParameters.getTipTextResId(),
-				getPenaltyTimeText(mPenaltyTimeMillisecondsBase));
+		mTipText = createTipText(cheatParameters);
+	}
+
+	protected String createTipText(CheatParameters cheatParameters) {
+		return cheatParameters.getResources().getString(cheatParameters.getTipTextResId(),
+									 getPenaltyTimeText(mPenaltyTimeMillisecondsBase));
 	}
 
 	private void validateCheatParameters(CheatParameters cheatParameters) {
@@ -79,8 +76,6 @@ public abstract class Cheat {
 	public Cheat(Context context, CheatType cheatType) {
 		mResources = context.getResources();
 		mCheatType = cheatType;
-		mPenaltyTimeMillisecondsPerOccurrence = 0;
-		mConditionalOccurrences = 0;
 		switch (mCheatType) {
 		default:
 			mPenaltyTimeMillisecondsBase = 0;
@@ -95,54 +90,12 @@ public abstract class Cheat {
 	}
 
 	/**
-	 * Creates a new instance of {@link Cheat} which consist of a base and a
-	 * conditional penalty.
-	 * 
-	 * @param context
-	 *            The context in which the cheat is created.
-	 * @param occurrencesConditionalPenalty
-	 *            The number of occurrences of the conditional penalty.
-	 * @param cheatType
-	 *            The type of cheat to be created.
-	 */
-	@SuppressWarnings("SameParameterValue")
-	public Cheat(Context context, CheatType cheatType,
-			int occurrencesConditionalPenalty) {
-		mResources = context.getResources();
-		mCheatType = cheatType;
-
-		switch (mCheatType) {
-		case CHECK_PROGRESS_USED:
-			mPenaltyTimeMillisecondsBase = 20 * MILLISECONDS_PER_SECOND;
-			mPenaltyTimeMillisecondsPerOccurrence = 15 * MILLISECONDS_PER_SECOND;
-			mConditionalOccurrences = occurrencesConditionalPenalty;
-			mTipTitle = mResources
-					.getString(R.string.dialog_tip_cheat_check_progress_title);
-			mTipText = mResources.getString(
-					R.string.dialog_tip_cheat_check_progress_text,
-					getPenaltyTimeText(mPenaltyTimeMillisecondsBase),
-					getPenaltyTimeText(mPenaltyTimeMillisecondsPerOccurrence));
-			break;
-		default:
-			mPenaltyTimeMillisecondsBase = 0;
-			mPenaltyTimeMillisecondsPerOccurrence = 0;
-			mConditionalOccurrences = 0;
-			if (Config.APP_MODE == AppMode.DEVELOPMENT) {
-				throw new IllegalArgumentException(
-						"Invalid value for parameter cheatType used in call to method Cheat(Context, CheatType).");
-			}
-			break;
-		}
-	}
-
-	/**
 	 * Get the penalty time for this cheat.
 	 * 
 	 * @return The penalty time in milliseconds for this cheat.
 	 */
 	public long getPenaltyTimeMilliseconds() {
-		return mPenaltyTimeMillisecondsBase + mConditionalOccurrences
-				* mPenaltyTimeMillisecondsPerOccurrence;
+		return mPenaltyTimeMillisecondsBase;
 	}
 
 	/**
@@ -180,7 +133,7 @@ public abstract class Cheat {
 	 *            The penalty time in milliseconds.
 	 * @return A formatted text.
 	 */
-	private String getPenaltyTimeText(long penaltyTime) {
+	protected String getPenaltyTimeText(long penaltyTime) {
 		String penaltyTimeText;
 		String and = " "
 				+ mResources.getString(R.string.connector_last_two_elements)
@@ -259,15 +212,8 @@ public abstract class Cheat {
 		return penaltyTimeText;
 	}
 
-	/*
- * Note: this class is used for multiple different cheats.
- */
-	private static final String TIP_NAME_CHECK_PROGRESS_USED = "Cheat.CheckProgress";
-
 	public String getTipName() {
 		switch (mCheatType) {
-			case CHECK_PROGRESS_USED:
-				return TIP_NAME_CHECK_PROGRESS_USED;
 			default:
 				return mTipName;
 		}
