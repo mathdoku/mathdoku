@@ -8,11 +8,11 @@ public class CheckProgressUsedCheat extends Cheat {
 	private static final String TIP_NAME = "Cheat.CheckProgress";
 	private static final int PENALTY_TIME_IN_SECONDS = 20;
 	private static final int PENALTY_TIME_PER_INVALID_ENTRY_IN_SECONDS = 15;
-	private final long invalidEntriesPenaltyTimeMilliseconds;
+	private final long invalidEntriesPenaltyTimeInMilliseconds;
 
 	public CheckProgressUsedCheat(Context context, int countInvalidEntries) {
 		super(createCheatParameters(context));
-		invalidEntriesPenaltyTimeMilliseconds = countInvalidEntries
+		invalidEntriesPenaltyTimeInMilliseconds = countInvalidEntries
 				* PENALTY_TIME_PER_INVALID_ENTRY_IN_SECONDS
 				* MILLISECONDS_PER_SECOND;
 	}
@@ -31,13 +31,13 @@ public class CheckProgressUsedCheat extends Cheat {
 	protected String createTipText(CheatParameters cheatParameters) {
 		return cheatParameters.getResources().getString(
 				cheatParameters.getTipTextResId(),
-				super.getPenaltyTimeMilliseconds(),
-				getPenaltyTimeText(invalidEntriesPenaltyTimeMilliseconds));
+				super.getPenaltyTimeInMilliseconds(),
+				getPenaltyTimeText(invalidEntriesPenaltyTimeInMilliseconds));
 	}
 
 	@Override
-	public long getPenaltyTimeMilliseconds() {
-		return super.getPenaltyTimeMilliseconds()
-				+ invalidEntriesPenaltyTimeMilliseconds;
+	public long getPenaltyTimeInMilliseconds() {
+		return super.getPenaltyTimeInMilliseconds()
+				+ invalidEntriesPenaltyTimeInMilliseconds;
 	}
 }

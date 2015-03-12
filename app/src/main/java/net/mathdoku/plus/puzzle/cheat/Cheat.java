@@ -9,18 +9,15 @@ public abstract class Cheat {
 	@SuppressWarnings("unused")
 	private static final String TAG = Cheat.class.getName();
 
-	private final Resources mResources;
-
 	// Constants to convert millisecond to calendar units
 	private final static long MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 	private final static long MILLISECONDS_PER_HOUR = 60 * 60 * 1000;
 	private final static long MILLISECONDS_PER_MINUTE = 60 * 1000;
 	protected final static long MILLISECONDS_PER_SECOND = 1000;
 
-	// Penalty time in milliseconds
-	private final long mPenaltyTimeMillisecondsBase;
+	private final Resources resources;
+	private final long penaltyTimeInMilliseconds;
 
-	// Title and text to be used in tip dialogs.
 	private String mTipTitle;
 	private String mTipText;
 	private String mTipName;
@@ -31,18 +28,12 @@ public abstract class Cheat {
 		}
 		validateCheatParameters(cheatParameters);
 
-		mResources = cheatParameters.getResources();
-		mPenaltyTimeMillisecondsBase = cheatParameters
+		resources = cheatParameters.getResources();
+		penaltyTimeInMilliseconds = cheatParameters
 				.getPenaltyTimeInSeconds() * MILLISECONDS_PER_SECOND;
 		mTipName = cheatParameters.getTipName();
-		mTipTitle = mResources.getString(cheatParameters.getTipTitleResId());
+		mTipTitle = resources.getString(cheatParameters.getTipTitleResId());
 		mTipText = createTipText(cheatParameters);
-	}
-
-	protected String createTipText(CheatParameters cheatParameters) {
-		return cheatParameters.getResources().getString(
-				cheatParameters.getTipTextResId(),
-				getPenaltyTimeText(mPenaltyTimeMillisecondsBase));
 	}
 
 	private void validateCheatParameters(CheatParameters cheatParameters) {
@@ -54,45 +45,28 @@ public abstract class Cheat {
 		}
 	}
 
-	/**
-	 * Get the penalty time for this cheat.
-	 * 
-	 * @return The penalty time in milliseconds for this cheat.
-	 */
-	public long getPenaltyTimeMilliseconds() {
-		return mPenaltyTimeMillisecondsBase;
+	protected String createTipText(CheatParameters cheatParameters) {
+		return cheatParameters.getResources().getString(
+				cheatParameters.getTipTextResId(),
+				getPenaltyTimeText(penaltyTimeInMilliseconds));
 	}
 
-	/**
-	 * Get the title to be displayed in the tip cheat dialog.
-	 * 
-	 * @return The title to be displayed in the tip cheat dialog.
-	 */
+	public long getPenaltyTimeInMilliseconds() {
+		return penaltyTimeInMilliseconds;
+	}
+
 	public String getTipTitle() {
 		return mTipTitle;
 	}
 
-	/**
-	 * Get the text to be displayed in the tip cheat dialog.
-	 * 
-	 * @return The text to be displayed in the tip cheat dialog.
-	 */
 	public String getTipText() {
 		return mTipText;
 	}
 
-	/**
-	 * Converts a given penalty time from milliseconds to a formatted text
-	 * string.
-	 * 
-	 * @param penaltyTime
-	 *            The penalty time in milliseconds.
-	 * @return A formatted text.
-	 */
 	protected String getPenaltyTimeText(long penaltyTime) {
 		String penaltyTimeText;
 		String and = " "
-				+ mResources.getString(R.string.connector_last_two_elements)
+				+ resources.getString(R.string.connector_last_two_elements)
 				+ " ";
 		long remainingPenaltyTime = penaltyTime;
 
@@ -100,10 +74,10 @@ public abstract class Cheat {
 		long days = remainingPenaltyTime / MILLISECONDS_PER_DAY;
 		if (days > 1) {
 			penaltyTimeText = Long.toString(days) + " "
-					+ mResources.getString(R.string.time_unit_days_plural);
+					+ resources.getString(R.string.time_unit_days_plural);
 		} else if (days == 1) {
 			penaltyTimeText = "1 "
-					+ mResources.getString(R.string.time_unit_days_singular);
+					+ resources.getString(R.string.time_unit_days_singular);
 		} else {
 			penaltyTimeText = "";
 		}
@@ -114,11 +88,11 @@ public abstract class Cheat {
 			long hours = remainingPenaltyTime / MILLISECONDS_PER_HOUR;
 			if (hours > 1) {
 				penaltyTimeText += (days > 0 ? and : "") + hours + " "
-						+ mResources.getString(R.string.time_unit_hours_plural);
+						+ resources.getString(R.string.time_unit_hours_plural);
 			} else if (hours == 1) {
 				penaltyTimeText += (days > 0 ? and : "")
 						+ "1 "
-						+ mResources
+						+ resources
 								.getString(R.string.time_unit_hours_singular);
 			} else {
 				penaltyTimeText += "";
@@ -132,12 +106,12 @@ public abstract class Cheat {
 					penaltyTimeText += (days + hours > 0 ? and : "")
 							+ minutes
 							+ " "
-							+ mResources
+							+ resources
 									.getString(R.string.time_unit_minutes_plural);
 				} else if (minutes == 1) {
 					penaltyTimeText += (days + hours > 0 ? and : "")
 							+ "1 "
-							+ mResources
+							+ resources
 									.getString(R.string.time_unit_minutes_singular);
 				} else {
 					penaltyTimeText += "";
@@ -153,14 +127,14 @@ public abstract class Cheat {
 								: "")
 								+ seconds
 								+ " "
-								+ mResources
+								+ resources
 										.getString(R.string.time_unit_seconds_plural);
 					} else if (seconds == 1) {
 						penaltyTimeText += (days + hours + minutes > 0 ? and
 								: "")
 								+ seconds
 								+ " "
-								+ mResources
+								+ resources
 										.getString(R.string.time_unit_seconds_singular);
 					}
 				}
