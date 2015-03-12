@@ -12,6 +12,7 @@ import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
 
 import robolectric.RobolectricGradleTestRunner;
 
@@ -21,10 +22,13 @@ import static org.junit.Assert.assertThat;
 @RunWith(RobolectricGradleTestRunner.class)
 public class TipCheatTest extends TipBaseTest {
 	public static final int OCCURRENCES_CONDITIONAL_PENALTY = 2;
+	private Activity activity;
 
 	@Before
 	public void setUp() {
-		super.setUp();
+			activity = Robolectric.buildActivity(Activity.class).create().get();
+
+			super.setUp();
 	}
 
 	private void assertThatDialogToBeDisplayed(Cheat cheat,
@@ -36,7 +40,7 @@ public class TipCheatTest extends TipBaseTest {
 	@Test
 	public void toBeDisplayed_CellRevealed_DialogIsNotDisplayed()
 			throws Exception {
-		assertThatTipCheatIsNotDisplayed(new CellRevealedCheat(new Activity()));
+		assertThatTipCheatIsNotDisplayed(new CellRevealedCheat(activity));
 	}
 
 	private void assertThatTipCheatIsNotDisplayed(Cheat cheat) {
