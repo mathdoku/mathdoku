@@ -13,7 +13,7 @@ public abstract class Cheat {
 	private static final String TAG = Cheat.class.getName();
 
 	enum CheatType {
-		SOLUTION_REVEALED, CHECK_PROGRESS_USED, DUMMY
+		CHECK_PROGRESS_USED, DUMMY
 	}
 
 	private final Resources mResources;
@@ -82,14 +82,6 @@ public abstract class Cheat {
 		mPenaltyTimeMillisecondsPerOccurrence = 0;
 		mConditionalOccurrences = 0;
 		switch (mCheatType) {
-		case SOLUTION_REVEALED:
-			mPenaltyTimeMillisecondsBase = MILLISECONDS_PER_DAY;
-			mTipTitle = mResources
-					.getString(R.string.dialog_tip_cheat_reveal_solution_title);
-			mTipText = mResources.getString(
-					R.string.dialog_tip_cheat_reveal_solution_text,
-					getPenaltyTimeText(mPenaltyTimeMillisecondsBase));
-			break;
 		default:
 			mPenaltyTimeMillisecondsBase = 0;
 			mTipTitle = "";
@@ -271,14 +263,11 @@ public abstract class Cheat {
  * Note: this class is used for multiple different cheats.
  */
 	private static final String TIP_NAME_CHECK_PROGRESS_USED = "Cheat.CheckProgress";
-	private static final String TIP_NAME_SOLUTION_REVEALED = "Cheat.SolutionRevealed";
 
 	public String getTipName() {
 		switch (mCheatType) {
 			case CHECK_PROGRESS_USED:
 				return TIP_NAME_CHECK_PROGRESS_USED;
-			case SOLUTION_REVEALED:
-				return TIP_NAME_SOLUTION_REVEALED;
 			default:
 				return mTipName;
 		}
