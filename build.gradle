@@ -28,14 +28,11 @@ configure(allprojects) {
     ext.androidTargetSdkVersion     = 17
     ext.androidCompileSdkVersion    = 18
     ext.androidBuildToolsVersion    = "19.1"
-    ext.androidSupportV4Version     = '13.+'
-    ext.androidAppCompatV7Version   = '13.+'
 
     ext.googlePlayServicesVersion   = '4.0.30'
     ext.aChartEngineVersion         = '1.1.0'
 
     ext.robolectricVersion          = '2.4'
-    ext.festAndroidVersion          = '1.0.+'
 }
 
 task wrapper(type: Wrapper) {
