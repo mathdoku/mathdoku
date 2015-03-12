@@ -7,14 +7,6 @@ import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
 
 public class TipCheat extends TipDialog {
-
-	/*
-	 * Note: this class is used for multiple different cheats.
-	 */
-	private static final String TIP_NAME_CELL_REVEALED = "Cheat.CellRevealed";
-	private static final String TIP_NAME_CHECK_PROGRESS_USED = "Cheat.CheckProgress";
-	private static final String TIP_NAME_OPERATOR_REVEALED = "Cheat.OperatorRevealed";
-	private static final String TIP_NAME_SOLUTION_REVEALED = "Cheat.SolutionRevealed";
 	private static final TipPriority TIP_PRIORITY = TipPriority.LOW;
 
 	/**
@@ -62,20 +54,6 @@ public class TipCheat extends TipDialog {
 	 * @return The preference name associated with the cheat.
 	 */
 	private static String getTipName(Cheat cheat) {
-		switch (cheat.getType()) {
-		case CELL_REVEALED:
-			return TIP_NAME_CELL_REVEALED;
-		case CHECK_PROGRESS_USED:
-			return TIP_NAME_CHECK_PROGRESS_USED;
-		case OPERATOR_REVEALED:
-			return TIP_NAME_OPERATOR_REVEALED;
-		case SOLUTION_REVEALED:
-			return TIP_NAME_SOLUTION_REVEALED;
-		default:
-			throw new IllegalStateException(String.format(
-					"No tip implemented for cheat type '%s'", cheat
-							.getType()
-							.toString()));
-		}
+		return cheat.getTipName();
 	}
 }
