@@ -26,11 +26,6 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
     @SuppressWarnings("unused")
     private static final String TAG = LeaderboardRankDatabaseAdapter.class.getName();
 
-    // Remove "&& false" in following line to show the SQL-statements in the
-    // debug information
-    @SuppressWarnings("PointlessBooleanExpression")
-    public static final boolean DEBUG_SQL = Config.APP_MODE == Config.AppMode.DEVELOPMENT && false;
-
     // Score origins statuses:
     // LOCAL_DATABASE: the score is based on a solving attempt which is stored
     // in the local database.

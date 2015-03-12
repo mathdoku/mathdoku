@@ -30,11 +30,6 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
     @SuppressWarnings("unused")
     private static final String TAG = SolvingAttemptDatabaseAdapter.class.getName();
 
-    // Remove "&& false" in following line to show the SQL-statements in the
-    // debug information
-    @SuppressWarnings("unused")
-    private static final boolean DEBUG_SQL = Config.APP_MODE == AppMode.DEVELOPMENT && false;
-
     private static final DatabaseTableDefinition DATABASE_TABLE = defineTable();
 
     // Columns for table
