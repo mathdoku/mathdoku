@@ -89,15 +89,6 @@ public abstract class Cheat {
 	}
 
 	/**
-	 * Get the type of the cheat.
-	 * 
-	 * @return The type of the cheat.
-	 */
-	public CheatType getType() {
-		return mCheatType;
-	}
-
-	/**
 	 * Converts a given penalty time from milliseconds to a formatted text
 	 * string.
 	 * 
