@@ -60,22 +60,21 @@ public class PuzzleParameterDifficultyRatingBar extends RatingBar {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-
                 setSelected(true);
                 setPressed(true);
                 break;
             case MotionEvent.ACTION_MOVE:
                 setProgress(getMax() - (int) (getMax() * event.getY() / getHeight()));
                 onSizeChanged(getWidth(), getHeight(), 0, 0);
-
                 break;
             case MotionEvent.ACTION_UP:
                 setSelected(false);
                 setPressed(false);
                 break;
-
             case MotionEvent.ACTION_CANCEL:
                 break;
+            default:
+                throw new IllegalStateException("Unexpected action");
         }
         return true;
     }
