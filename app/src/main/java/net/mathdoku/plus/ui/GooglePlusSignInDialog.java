@@ -81,20 +81,27 @@ public class GooglePlusSignInDialog extends Dialog implements android.view.View.
 
         switch (v.getId()) {
             case R.id.sign_in_button:
-                if (mListener != null) {
-                    mListener.onGooglePlusSignInStart();
-                }
+                onClickSignIn();
                 break;
             case R.id.sign_in_cancel_button:
-                if (mListener != null) {
-                    mListener.onGooglePlusSignInCancelled();
-                }
-                dismiss();
+                onClickCancel();
                 break;
             default:
                 break;
         }
         dismiss();
+    }
+
+    private void onClickSignIn() {
+        if (mListener != null) {
+            mListener.onGooglePlusSignInStart();
+        }
+    }
+
+    private void onClickCancel() {
+        if (mListener != null) {
+            mListener.onGooglePlusSignInCancelled();
+        }
     }
 
     /**
