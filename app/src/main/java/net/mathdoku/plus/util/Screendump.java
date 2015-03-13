@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -61,10 +62,9 @@ public class Screendump {
         // Write the created bitmap to a file.
         FileOutputStream out = null;
         try {
-
             out = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.PNG, COMPRESS_FACTOR, out);
-        } catch (Exception e) {
+        } catch (FileNotFoundException e) {
             Log.d(TAG, "Error while writing to file with screendump.", e);
             return false;
         } finally {
