@@ -13,8 +13,7 @@ import com.google.android.gms.games.leaderboard.OnLeaderboardScoresLoadedListene
 import net.mathdoku.plus.config.Config;
 
 /**
- * This class is used to retrieve the rank for the current player from Google Play Services for a
- * specific leaderboard.
+ * This class is used to retrieve the rank for the current player from Google Play Services for a specific leaderboard.
  */
 class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener {
     @SuppressWarnings("unused")
@@ -59,8 +58,8 @@ class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener {
      * @param listener
      *         The listener to be called when applicable.
      */
-    public LeaderboardRankPlayer(LeaderboardConnector leaderboardConnector,
-                                 final LeaderboardRankPlayer.Listener listener) {
+    public LeaderboardRankPlayer(LeaderboardConnector leaderboardConnector, final LeaderboardRankPlayer.Listener
+            listener) {
         if (leaderboardConnector == null) {
             throw new IllegalArgumentException("LeaderboardConnector can not be null");
 
@@ -84,15 +83,14 @@ class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener {
         if (gamesClient != null) {
             if (DEBUG) {
                 Log.i(TAG,
-                      "Request the current player rank score for leaderboard " +
-                              mLeaderboardConnector.getLeaderboardNameForLogging(
+                      "Request the current player rank score for leaderboard " + mLeaderboardConnector
+                              .getLeaderboardNameForLogging(
                               leaderboardId));
             }
 
             // The scores centered around the current player will be
             // asynchronously loaded and submitted to the listener.
-            gamesClient.loadPlayerCenteredScores(this, leaderboardId,
-                                                 LeaderboardVariant.TIME_SPAN_ALL_TIME,
+            gamesClient.loadPlayerCenteredScores(this, leaderboardId, LeaderboardVariant.TIME_SPAN_ALL_TIME,
                                                  LeaderboardVariant.COLLECTION_PUBLIC, 1, false);
         }
     }
@@ -100,15 +98,13 @@ class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener {
     @Override
     public void onLeaderboardScoresLoaded(int statusCode, LeaderboardBuffer leaderboardBuffer,
                                           LeaderboardScoreBuffer leaderboardScoresBuffer) {
-        String leaderboardName = DEBUG ? getLeaderboardNameForLogging(
-                leaderboardBuffer) : "Undetermined";
+        String leaderboardName = DEBUG ? getLeaderboardNameForLogging(leaderboardBuffer) : "Undetermined";
 
         // First check if results can be processed.
-        if (statusCode != GamesClient.STATUS_OK || leaderboardBuffer == null || leaderboardBuffer
-                .getCount() == 0 || leaderboardScoresBuffer == null) {
+        if (statusCode != GamesClient.STATUS_OK || leaderboardBuffer == null || leaderboardBuffer.getCount() == 0 ||
+                leaderboardScoresBuffer == null) {
             if (DEBUG) {
-                Log.i(TAG, getInvalidResponseResultsMessage(statusCode, leaderboardBuffer,
-                                                            leaderboardScoresBuffer,
+                Log.i(TAG, getInvalidResponseResultsMessage(statusCode, leaderboardBuffer, leaderboardScoresBuffer,
                                                             leaderboardName));
             }
             return;
@@ -122,8 +118,7 @@ class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener {
                                 .getScoreHolder()
                                 .getPlayerId())) {
             // A leaderboard score for the current player is found.
-            mListener.onLeaderboardRankLoaded(leaderboardBuffer.get(0),
-                                              leaderboardScoresBuffer.get(0));
+            mListener.onLeaderboardRankLoaded(leaderboardBuffer.get(0), leaderboardScoresBuffer.get(0));
         } else {
             // Google Play Service will sent the score of the first rank player
             // in case the current player has not yet registered a score for the
@@ -133,10 +128,8 @@ class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener {
         }
     }
 
-    private String getInvalidResponseResultsMessage(int statusCode,
-                                                    LeaderboardBuffer leaderboardBuffer,
-                                                    LeaderboardScoreBuffer
-                                                            leaderboardScoresBuffer,
+    private String getInvalidResponseResultsMessage(int statusCode, LeaderboardBuffer leaderboardBuffer,
+                                                    LeaderboardScoreBuffer leaderboardScoresBuffer,
                                                     String leaderboardName) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Invalid response when loading the first rank for leaderboard ");

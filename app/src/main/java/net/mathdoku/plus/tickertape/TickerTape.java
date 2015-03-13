@@ -64,9 +64,8 @@ public class TickerTape extends HorizontalScrollView {
         // view for all items.
         tickerTapeLinearLayout = new LinearLayout(this.context);
         tickerTapeLinearLayout.setId(ID_VIEW_TICKER_TAPE_LINEAR_LAYOUT);
-        tickerTapeLinearLayout.setLayoutParams(
-                new LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-                                 textSizeInPixels + mTextVerticalMargin));
+        tickerTapeLinearLayout.setLayoutParams(new LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                                                                textSizeInPixels + mTextVerticalMargin));
         addView(tickerTapeLinearLayout);
 
         setHorizontalScrollBarEnabled(false);
@@ -106,8 +105,7 @@ public class TickerTape extends HorizontalScrollView {
 
         textView.setId(textViewList.size());
         textView.setLayoutParams(new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
-                                                  android.view.ViewGroup.LayoutParams
-                                                          .MATCH_PARENT));
+                                                  android.view.ViewGroup.LayoutParams.MATCH_PARENT));
         textView.setPadding(0, 0, 4 * SCROLL_STEP_SIZE, 0);
         textView.setTextColor(Painter.getInstance()
                                       .getTickerTapePainter()
@@ -230,8 +228,8 @@ public class TickerTape extends HorizontalScrollView {
     }
 
     /**
-     * Set the conditions after which the ticker tape should be erased automatically. Note: all
-     * conditions have to be met before the ticker tape is erased.
+     * Set the conditions after which the ticker tape should be erased automatically. Note: all conditions have to be
+     * met before the ticker tape is erased.
      *
      * @param minDisplayCycles
      *         The minimum number of times each message has to be displayed.
@@ -271,7 +269,8 @@ public class TickerTape extends HorizontalScrollView {
      * @return True in case the erase condition is set and fulfilled. False otherwise.
      */
     boolean isEraseConditionFulfilled(int countItemsDisplayedCompletely, long actualDisplayTime) {
-        return isEraseConditionSet && countItemsDisplayedCompletely >= minDisplayCycles * textViewList.size() && actualDisplayTime >= minDisplayTime;
+        return isEraseConditionSet && countItemsDisplayedCompletely >= minDisplayCycles * textViewList.size() &&
+                actualDisplayTime >= minDisplayTime;
 
     }
 }

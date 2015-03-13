@@ -38,8 +38,7 @@ public class ArchiveSolvingAttemptSelector extends SolvingAttemptSelector {
         private final int statusFilter;
         private final int size;
 
-        public LatestSolvingAttemptForGrid(int gridId, int solvingAttemptId, int statusFilter,
-                                           int size) {
+        public LatestSolvingAttemptForGrid(int gridId, int solvingAttemptId, int statusFilter, int size) {
             this.gridId = gridId;
             this.solvingAttemptId = solvingAttemptId;
             this.statusFilter = statusFilter;
@@ -106,27 +105,26 @@ public class ArchiveSolvingAttemptSelector extends SolvingAttemptSelector {
     }
 
     private List<LatestSolvingAttemptForGrid> retrieveFromDatabase() {
-        List<LatestSolvingAttemptForGrid> latestSolvingAttemptForGrids = new
-                ArrayList<LatestSolvingAttemptForGrid>();
+        List<LatestSolvingAttemptForGrid> latestSolvingAttemptForGrids = new ArrayList<LatestSolvingAttemptForGrid>();
         Cursor cursor = null;
         try {
             cursor = getCursor();
             if (cursor != null && cursor.moveToFirst()) {
                 do {
-                    latestSolvingAttemptForGrids.add(
-                            new LatestSolvingAttemptForGrid(getGridIdFromCursor(cursor),
-                                                            getSolvingAttemptIdFromCursor(cursor),
-                                                            getSolvingAttemptStatusFromCursor(
-                                                                    cursor),
-                                                            getGridSizeFromCursor(cursor)));
+                    latestSolvingAttemptForGrids.add(new LatestSolvingAttemptForGrid(getGridIdFromCursor(cursor),
+                                                                                     getSolvingAttemptIdFromCursor(
+                                                                                             cursor),
+                                                                                     getSolvingAttemptStatusFromCursor(
+                                                                                             cursor),
+                                                                                     getGridSizeFromCursor(cursor)));
 
                 } while (cursor.moveToNext());
             }
         } catch (SQLiteException e) {
-            throw new DatabaseAdapterException(String.format(
-                    "Cannot retrieve latest solving attempt per grid from the database " + "" +
-                            "(status filter = %s, size filter = %s).",
-                    statusFilter.toString(), gridTypeFilter.toString()), e);
+            throw new DatabaseAdapterException(
+                    String.format("Cannot retrieve latest solving attempt per grid from the database " + "" +
+                                          "(status filter = %s, size filter = %s).", statusFilter.toString(),
+                                  gridTypeFilter.toString()), e);
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -137,15 +135,12 @@ public class ArchiveSolvingAttemptSelector extends SolvingAttemptSelector {
 
     protected DatabaseProjection getDatabaseProjection() {
         DatabaseProjection databaseProjection = new DatabaseProjection();
-        databaseProjection.put(KEY_PROJECTION_GRID_ID, GridDatabaseAdapter.TABLE_NAME,
-                               GridDatabaseAdapter.KEY_ROWID);
-        databaseProjection.put(KEY_PROJECTION_SOLVING_ATTEMPT_ID,
-                               SolvingAttemptDatabaseAdapter.TABLE_NAME,
+        databaseProjection.put(KEY_PROJECTION_GRID_ID, GridDatabaseAdapter.TABLE_NAME, GridDatabaseAdapter.KEY_ROWID);
+        databaseProjection.put(KEY_PROJECTION_SOLVING_ATTEMPT_ID, SolvingAttemptDatabaseAdapter.TABLE_NAME,
                                SolvingAttemptDatabaseAdapter.KEY_ROWID);
         databaseProjection.put(KEY_PROJECTION_STATUS, SolvingAttemptDatabaseAdapter.TABLE_NAME,
                                SolvingAttemptDatabaseAdapter.KEY_STATUS);
-        databaseProjection.put(KEY_PROJECTION_SIZE, GridDatabaseAdapter.TABLE_NAME,
-                               GridDatabaseAdapter.KEY_GRID_SIZE);
+        databaseProjection.put(KEY_PROJECTION_SIZE, GridDatabaseAdapter.TABLE_NAME, GridDatabaseAdapter.KEY_GRID_SIZE);
         return databaseProjection;
     }
 
@@ -166,8 +161,8 @@ public class ArchiveSolvingAttemptSelector extends SolvingAttemptSelector {
     }
 
     /**
-     * Get the complete list of solving attempts. In case multiple solving attempts exists for a
-     * single grid, only the most recent solving attempt of such a grid is included in the list.
+     * Get the complete list of solving attempts. In case multiple solving attempts exists for a single grid, only the
+     * most recent solving attempt of such a grid is included in the list.
      *
      * @return The list of the latest solving attempt per grid.
      */

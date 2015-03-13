@@ -54,12 +54,10 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
     public static final String BUNDLE_KEY_SOLVING_ATTEMPT_ID = "solvingAttemptId";
 
     /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide fragments representing
-     * each object in a collection. We use a {@link android.support.v4.app
-     * .FragmentStatePagerAdapter}
-     * derivative, which will destroy and re-create fragments as needed, saving and restoring their
-     * state in the process. This is important to conserve memory and is a best practice when
-     * allowing navigation between objects in a potentially large collection.
+     * The {@link android.support.v4.view.PagerAdapter} that will provide fragments representing each object in a
+     * collection. We use a {@link android.support.v4.app .FragmentStatePagerAdapter} derivative, which will destroy and
+     * re-create fragments as needed, saving and restoring their state in the process. This is important to conserve
+     * memory and is a best practice when allowing navigation between objects in a potentially large collection.
      */
     private ArchiveFragmentStatePagerAdapter mArchiveFragmentStatePagerAdapter;
 
@@ -82,16 +80,13 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
         // representing an object in the collection.
         // ViewPager and its adapters use support library fragments, so we must
         // use getSupportFragmentManager.
-        mArchiveFragmentStatePagerAdapter = new ArchiveFragmentStatePagerAdapter(
-                getSupportFragmentManager(), this);
+        mArchiveFragmentStatePagerAdapter = new ArchiveFragmentStatePagerAdapter(getSupportFragmentManager(), this);
 
         // Get preferences for displaying the filter.
         mShowStatusFilter = mMathDokuPreferences.isArchiveStatusFilterVisible();
         mShowSizeFilter = mMathDokuPreferences.isArchiveSizeFilterVisible();
-        mArchiveFragmentStatePagerAdapter.setStatusFilter(
-                mMathDokuPreferences.getArchiveStatusFilterLastValueUsed());
-        mArchiveFragmentStatePagerAdapter.setSizeFilter(
-                mMathDokuPreferences.getArchiveSizeFilterLastValueUsed());
+        mArchiveFragmentStatePagerAdapter.setStatusFilter(mMathDokuPreferences.getArchiveStatusFilterLastValueUsed());
+        mArchiveFragmentStatePagerAdapter.setSizeFilter(mMathDokuPreferences.getArchiveSizeFilterLastValueUsed());
 
         mActionBar = getActionBar();
         if (mActionBar != null) {
@@ -123,8 +118,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
         pagerTabStrip.setBackgroundColor(pagerTabStripPainter.getBackgroundColor());
         pagerTabStrip.setTextColor(pagerTabStripPainter.getTextColor());
         pagerTabStrip.setTextSize(TypedValue.COMPLEX_UNIT_SP, getResources().getDimension(
-                net.mathdoku.plus.R.dimen.text_size_default) / getResources().getDisplayMetrics()
-                .density);
+                net.mathdoku.plus.R.dimen.text_size_default) / getResources().getDisplayMetrics().density);
         pagerTabStrip.setGravity(Gravity.BOTTOM);
 
         // Non primary items are semi transparent.
@@ -181,8 +175,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
     @Override
     protected void onPause() {
         // Save preferences
-        mMathDokuPreferences.setArchiveStatusFilterLastValueUsed(
-                mArchiveFragmentStatePagerAdapter.getStatusFilter());
+        mMathDokuPreferences.setArchiveStatusFilterLastValueUsed(mArchiveFragmentStatePagerAdapter.getStatusFilter());
         mMathDokuPreferences.setArchiveSizeFilterLastValueUsed(
                 mArchiveFragmentStatePagerAdapter.getSelectedSizeFilter());
         mMathDokuPreferences.setArchiveGridIdLastShowed(getCurrentSelectedGridId());
@@ -235,8 +228,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
         }
 
         final List<StatusFilter> availableStatusFilters = new AvailableStatusFiltersSelector(
-                mArchiveFragmentStatePagerAdapter.getSelectedSizeFilter())
-                .getAvailableStatusFilters();
+                mArchiveFragmentStatePagerAdapter.getSelectedSizeFilter()).getAvailableStatusFilters();
 
         // Load the list of descriptions for statuses actually used into the
         // array adapter.
@@ -246,9 +238,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
             statusFilterDescriptions[index++] = getResources().getStringArray(
                     R.array.archive_status_filter)[statusFilter.ordinal()];
         }
-        ArrayAdapter<String> adapterStatus = new ArrayAdapter<String>(this,
-                                                                      android.R.layout
-                                                                              .simple_spinner_item,
+        ArrayAdapter<String> adapterStatus = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,
                                                                       statusFilterDescriptions);
         adapterStatus.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -264,8 +254,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
         // selection.
         spinner.setVisibility(availableStatusFilters.size() <= 2 ? View.GONE : View.VISIBLE);
 
-        spinner.setOnItemSelectedListener(
-                new OnStatusFilterSelectedListener(availableStatusFilters));
+        spinner.setOnItemSelectedListener(new OnStatusFilterSelectedListener(availableStatusFilters));
     }
 
     void setSizeSpinner() {
@@ -282,10 +271,9 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
 
         // Load the list of descriptions for sizes actually used into the
         // array adapter.
-        ArrayAdapter<String> adapterStatus = new ArrayAdapter<String>(this,
-                                                                      android.R.layout
-                                                                              .simple_spinner_item,
-                                                                      archiveFragmentGridSizeFilterSpinner.getSpinnerElements());
+        ArrayAdapter<String> adapterStatus = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,
+                                                                      archiveFragmentGridSizeFilterSpinner
+                                                                              .getSpinnerElements());
         adapterStatus.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         // Build the spinner
@@ -296,8 +284,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
         // Hide spinner if only two choices are available. As one of those
         // choices is always "ALL" the choices will result in an identical
         // selection.
-        spinner.setVisibility(
-                archiveFragmentGridSizeFilterSpinner.size() <= 2 ? View.GONE : View.VISIBLE);
+        spinner.setVisibility(archiveFragmentGridSizeFilterSpinner.size() <= 2 ? View.GONE : View.VISIBLE);
 
         spinner.setOnItemSelectedListener(
                 new OnGridSizeFilterItemSelectedListener(archiveFragmentGridSizeFilterSpinner));
@@ -340,16 +327,14 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
      */
     private int getSolvingAttemptIdForCurrentSelectedGrid() {
         if (mArchiveFragmentStatePagerAdapter != null && mViewPager != null) {
-            return mArchiveFragmentStatePagerAdapter.getSolvingAttemptId(
-                    mViewPager.getCurrentItem());
+            return mArchiveFragmentStatePagerAdapter.getSolvingAttemptId(mViewPager.getCurrentItem());
         } else {
             return -1;
         }
     }
 
     /**
-     * Select the page with the given grid id. In case the specified grid id was not found, the last
-     * page is selected.
+     * Select the page with the given grid id. In case the specified grid id was not found, the last page is selected.
      *
      * @param gridId
      *         The grid id for which the corresponding page in the archive has to be selected.
@@ -381,8 +366,7 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
                 .setNegativeButton(R.string.dialog_replay_puzzle_confirmation_negative_button,
                                    new DialogInterface.OnClickListener() {
                                        @Override
-                                       public void onClick(DialogInterface dialog,
-                                                           int whichButton) {
+                                       public void onClick(DialogInterface dialog, int whichButton) {
                                            //
                                        }
                                    })
@@ -410,7 +394,8 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
     private class OnGridSizeFilterItemSelectedListener implements OnItemSelectedListener {
         private final ArchiveFragmentGridSizeFilterSpinner archiveFragmentGridSizeFilterSpinner;
 
-        public OnGridSizeFilterItemSelectedListener(ArchiveFragmentGridSizeFilterSpinner archiveFragmentGridSizeFilterSpinner) {
+        public OnGridSizeFilterItemSelectedListener(ArchiveFragmentGridSizeFilterSpinner
+                                                            archiveFragmentGridSizeFilterSpinner) {
             this.archiveFragmentGridSizeFilterSpinner = archiveFragmentGridSizeFilterSpinner;
         }
 

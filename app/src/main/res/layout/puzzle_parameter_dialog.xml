@@ -1,8 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="5dp" >
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="5dp">
 
     <RelativeLayout
         android:id="@+id/puzzleParameterSizeRelativeLayout"
@@ -10,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="5dp" >
+        android:layout_marginTop="5dp">
 
         <TextView
             android:id="@+id/puzzleParameterSizeTextView"
@@ -19,14 +18,14 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:text="@string/dialog_puzzle_parameters_puzzle_size"
-            android:textSize="@dimen/dialog_text_size_body" />
+            android:textSize="@dimen/dialog_text_size_body"/>
 
         <Spinner
             android:id="@+id/puzzleParameterSizeSpinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/puzzleParameterSizeTextView" />
+            android:layout_toRightOf="@+id/puzzleParameterSizeTextView"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -35,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/puzzleParameterSizeRelativeLayout"
-        android:layout_marginTop="5dp" >
+        android:layout_marginTop="5dp">
 
         <TextView
             android:id="@+id/puzzleParameterDisplayOperatorsTextView"
@@ -44,7 +43,7 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:text="@string/dialog_puzzle_parameters_operators_in_cage_visible"
-            android:textSize="@dimen/dialog_text_size_body" />
+            android:textSize="@dimen/dialog_text_size_body"/>
 
         <CheckBox
             android:id="@+id/puzzleParameterDisplayOperatorsCheckBox"
@@ -52,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/puzzleParameterDisplayOperatorsTextView"
-            android:checked="true" />
+            android:checked="true"/>
     </RelativeLayout>
 
     <TextView
@@ -63,7 +62,7 @@
         android:layout_below="@+id/puzzleParameterDisplayOperatorsRelativeLayout"
         android:layout_marginTop="5dp"
         android:text="@string/dialog_puzzle_parameters_difficulty"
-        android:textSize="@dimen/dialog_text_size_body" />
+        android:textSize="@dimen/dialog_text_size_body"/>
 
     <RelativeLayout
         android:id="@+id/puzzleParameterDifficultyRelativeLayout"
@@ -71,7 +70,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/puzzleParameterDifficultyTextView"
-        android:layout_marginTop="5dp" >
+        android:layout_marginTop="5dp">
 
         <RatingBar
             android:id="@+id/puzzleParameterDifficultyRatingBar"
@@ -82,7 +81,7 @@
             android:max="5"
             android:numStars="5"
             android:rating="1"
-            android:stepSize="1" />
+            android:stepSize="1"/>
 
         <net.mathdoku.plus.ui.CheckableImageView
             android:id="@+id/puzzleParameterDifficultyRandom"
@@ -92,7 +91,7 @@
             android:layout_toRightOf="@+id/puzzleParameterDifficultyRatingBar"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:src="@drawable/random_complexity" />
+            android:src="@drawable/random_complexity"/>
     </RelativeLayout>
 
 </RelativeLayout>

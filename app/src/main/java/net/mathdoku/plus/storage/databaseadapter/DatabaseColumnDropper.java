@@ -10,8 +10,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Utility class to drop a column from an existing table. This class should not be removed even in
- * case it is currently only used in the unit tests.
+ * Utility class to drop a column from an existing table. This class should not be removed even in case it is currently
+ * only used in the unit tests.
  */
 public class DatabaseColumnDropper {
     @SuppressWarnings("unused")
@@ -46,8 +46,7 @@ public class DatabaseColumnDropper {
             databaseAdapter.setTransactionSuccessful();
         } catch (Exception e) {
             throw new DatabaseException(
-                    String.format("Error while dropping column(s) from table %s.",
-                                  databaseAdapter.getTableName()), e);
+                    String.format("Error while dropping column(s) from table %s.", databaseAdapter.getTableName()), e);
         } finally {
             databaseAdapter.endTransaction();
         }
@@ -56,9 +55,8 @@ public class DatabaseColumnDropper {
 
     private void validateColumnsToBeDropped() {
         if (columnsToBeDropped == null || columnsToBeDropped.length == 0) {
-            throw new DatabaseException(
-                    String.format("Parameter columnsToBeDropped has an invalid value '%s'.",
-                                  Arrays.toString(columnsToBeDropped)));
+            throw new DatabaseException(String.format("Parameter columnsToBeDropped has an invalid value '%s'.",
+                                                      Arrays.toString(columnsToBeDropped)));
         }
         for (String columnToBeDropped : columnsToBeDropped) {
             validateColumnToBeDropped(columnToBeDropped);
@@ -69,12 +67,10 @@ public class DatabaseColumnDropper {
         if (columnToBeDropped == null || columnToBeDropped.trim()
                 .isEmpty()) {
             throw new DatabaseException(
-                    String.format("Parameter columnToBeDropped has an invalid value '%s'.",
-                                  columnToBeDropped));
+                    String.format("Parameter columnToBeDropped has an invalid value '%s'.", columnToBeDropped));
         }
         if (!currentColumnList.contains(columnToBeDropped)) {
-            throw new DatabaseException(
-                    String.format("Column '%s' is not an existing column.", columnToBeDropped));
+            throw new DatabaseException(String.format("Column '%s' is not an existing column.", columnToBeDropped));
         }
     }
 
@@ -85,17 +81,15 @@ public class DatabaseColumnDropper {
     }
 
     private void validateColumnsRemaining() {
-        if (newColumnList == null || newColumnList.isEmpty() || newColumnList.equals(
-                currentColumnList)) {
-            throw new DatabaseException(String.format(
-                    "Remaining list of columns which are not deleted is not valid:" + " %s.",
-                    newColumnList));
+        if (newColumnList == null || newColumnList.isEmpty() || newColumnList.equals(currentColumnList)) {
+            throw new DatabaseException(
+                    String.format("Remaining list of columns which are not deleted is not valid:" + " %s.",
+                                  newColumnList));
         }
     }
 
     private String getRenameTableToTemporaryTableSQL() {
-        return String.format("ALTER TABLE %s RENAME TO %s;", databaseAdapter.getTableName(),
-                             getTempTableName());
+        return String.format("ALTER TABLE %s RENAME TO %s;", databaseAdapter.getTableName(), getTempTableName());
     }
 
     private String getTempTableName() {

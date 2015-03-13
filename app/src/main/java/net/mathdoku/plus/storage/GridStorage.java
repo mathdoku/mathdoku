@@ -58,13 +58,11 @@ public class GridStorage {
     }
 
     /**
-     * Read view information from or a storage string which was created with @ GridView#getId()}
-     * before.
+     * Read view information from or a storage string which was created with @ GridView#getId()} before.
      *
      * @param line
      *         The line containing the view information.
-     * @return True in case the given line contains view information and is processed correctly.
-     * False otherwise.
+     * @return True in case the given line contains view information and is processed correctly. False otherwise.
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean fromStorageString(String line, int savedWithRevisionNumber) {
@@ -97,10 +95,9 @@ public class GridStorage {
         // revision 369 all logic for handling games stored with older versions
         // is removed.
         if (savedWithRevisionNumber <= 368) {
-            throw new StorageException(String.format(
-                    "Cannot process storage strings of grid created with revision" + " %d or " +
-                            "before.",
-                    savedWithRevisionNumber));
+            throw new StorageException(
+                    String.format("Cannot process storage strings of grid created with revision" + " %d or " +
+                                          "before.", savedWithRevisionNumber));
         }
     }
 

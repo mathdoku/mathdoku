@@ -6,15 +6,13 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * This class is used to select a a random item from a list of items with given type. The same
- * selector instance can be used multiple times to select the next random item from the list. Each
- * item in the list will only be chosen once.
+ * This class is used to select a a random item from a list of items with given type. The same selector instance can be
+ * used multiple times to select the next random item from the list. Each item in the list will only be chosen once.
  * <p/>
- * A specific item can be set (optional) which will not be chosen until all other elements have been
- * chosen before.
+ * A specific item can be set (optional) which will not be chosen until all other elements have been chosen before.
  * <p/>
- * Each item has a certain weight which affects the chance of the item to be chose. A bigger weight
- * increases the chance the item is chosen.
+ * Each item has a certain weight which affects the chance of the item to be chose. A bigger weight increases the chance
+ * the item is chosen.
  *
  * @param <T>
  *         The data type of the items in the list.
@@ -61,9 +59,8 @@ public class RandomWeightedListItemSelector<T> {
     public T next() {
         if (list.isEmpty()) {
             if (lastItemToBeSelected == null) {
-                throw new IllegalStateException(
-                        "List is empty. Last item to be selected (if applicable) has already " +
-                                "been" + " returned.");
+                throw new IllegalStateException("List is empty. Last item to be selected (if applicable) has already " +
+                                                        "been" + " returned.");
             }
             T nextItem = lastItemToBeSelected;
             lastItemToBeSelected = null;

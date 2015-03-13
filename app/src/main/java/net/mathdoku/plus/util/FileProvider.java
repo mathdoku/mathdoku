@@ -15,9 +15,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 /**
- * The file provider can only be used to get access to files which have to be send as email
- * attachment. Beware that files may not include personal data as all apps can access this
- * provider.
+ * The file provider can only be used to get access to files which have to be send as email attachment. Beware that
+ * files may not include personal data as all apps can access this provider.
  */
 public class FileProvider extends ContentProvider {
     private static final String PROVIDER_NAME = FileProvider.class.getName();
@@ -107,8 +106,7 @@ public class FileProvider extends ContentProvider {
 
         File file = new File(dir, uri.getLastPathSegment());
         if (file.exists()) {
-            cursor = new MatrixCursor(
-                    new String[]{OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE});
+            cursor = new MatrixCursor(new String[]{OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE});
             cursor.addRow(new Object[]{uri.getLastPathSegment(), file.length()});
         }
 

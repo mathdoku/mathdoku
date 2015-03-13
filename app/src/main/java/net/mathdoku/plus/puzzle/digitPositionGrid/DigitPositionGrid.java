@@ -3,8 +3,7 @@ package net.mathdoku.plus.puzzle.digitpositiongrid;
 import android.view.View;
 
 /**
- * The DigitPositionGrid is used to determine which digit is shown at each position in a grid of
- * positions.
+ * The DigitPositionGrid is used to determine which digit is shown at each position in a grid of positions.
  */
 public class DigitPositionGrid {
     @SuppressWarnings("unused")

@@ -27,8 +27,8 @@ public class CellChangeStoragePatternMatcher {
     // Regexp and groups inside. Groups 4 - 6 are helper groups which are
     // needed to ensure the validity of the cell information but are not
     // used programmatic.
-    private static final String REGEXP_INNER = "^\\[(\\d+)" + StorageDelimiter
-            .FIELD_DELIMITER_LEVEL1 + "(\\d*)" + StorageDelimiter.FIELD_DELIMITER_LEVEL1 + "(" +
+    private static final String REGEXP_INNER = "^\\[(\\d+)" + StorageDelimiter.FIELD_DELIMITER_LEVEL1 + "(\\d*)" +
+            StorageDelimiter.FIELD_DELIMITER_LEVEL1 + "(" +
             "(\\d*)|((\\d*" + StorageDelimiter.FIELD_DELIMITER_LEVEL2 + ")+))" + StorageDelimiter
             .FIELD_DELIMITER_LEVEL1 + "(.*)\\]$";
     private static final int GROUP_CELL_NUMBER = 1;
@@ -67,8 +67,7 @@ public class CellChangeStoragePatternMatcher {
     }
 
     public List<String> getRelatedCellChanges() {
-        return new RelatedCellChangeSplitter(
-                matcherInner.group(GROUP_RELATED_CELL_CHANGED)).parse();
+        return new RelatedCellChangeSplitter(matcherInner.group(GROUP_RELATED_CELL_CHANGED)).parse();
     }
 
     public boolean matchesInner(String line) {
@@ -175,9 +174,9 @@ public class CellChangeStoragePatternMatcher {
         private void validateFieldDelimiter(char c) {
             if (levelNestedGroup == 0 && !Character.toString(c)
                     .equals(StorageDelimiter.FIELD_DELIMITER_LEVEL2)) {
-                throw new IllegalStateException(String.format(
-                        "Unexpected character '%c' at position %d in group" + " '%s'.", c, index,
-                        concatenatedStringOfCellChanges));
+                throw new IllegalStateException(
+                        String.format("Unexpected character '%c' at position %d in group" + " '%s'.", c, index,
+                                      concatenatedStringOfCellChanges));
             }
         }
     }

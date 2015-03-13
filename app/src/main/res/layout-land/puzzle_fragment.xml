@@ -2,14 +2,14 @@
 <!-- Background of the top layout has been set to black to solve an issue with -->
 <!-- subtle color differences between the relative and the linear layouts. -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:mathdoku="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/topLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#000"
-    android:paddingTop="1dp"
-    tools:ignore="Overdraw">
+                xmlns:tools="http://schemas.android.com/tools"
+                xmlns:mathdoku="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/topLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#000"
+                android:paddingTop="1dp"
+                tools:ignore="Overdraw">
 
     <RelativeLayout
         android:id="@+id/puzzleGrid"
@@ -17,13 +17,13 @@
         android:layout_height="fill_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:visibility="gone" >
+        android:visibility="gone">
 
         <net.mathdoku.plus.puzzle.ui.GridPlayerView
             android:id="@+id/grid_player_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true" />
+            android:layout_centerVertical="true"/>
 
         <TextView
             android:id="@+id/solvedText"
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:text="@string/main_ui_solved_messsage"
             android:textSize="@dimen/text_size_giant"
-            android:visibility="gone" />
+            android:visibility="gone"/>
     </RelativeLayout>
 
     <net.mathdoku.plus.puzzle.ui.GridPlayerRelativeLayout
@@ -43,7 +43,7 @@
         mathdoku:layout_alignGridPlayerViewBottom="visible_grid"
         mathdoku:layout_alignGridPlayerViewTop="visible_grid"
         android:paddingLeft="10dp"
-        android:paddingRight="10dp" >
+        android:paddingRight="10dp">
 
         <TextView
             android:id="@+id/timerText"
@@ -54,7 +54,7 @@
             android:paddingLeft="10dp"
             android:textSize="@dimen/text_size_default"
             android:textStyle="bold"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
         <net.mathdoku.plus.tickertape.TickerTape
             android:id="@+id/tickerTape"
@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/timerText"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="10dp"/>
 
         <TableLayout
             android:id="@+id/controlsPadBigTableLayout"
@@ -74,11 +74,11 @@
             android:layout_centerVertical="true"
             android:layout_marginBottom="5dp"
             android:paddingTop="10dp"
-            android:weightSum="4" >
+            android:weightSum="4">
 
             <TableRow
                 android:id="@+id/controlsButtonRow1"
-                android:layout_weight="1" >
+                android:layout_weight="1">
 
                 <Button
                     android:id="@+id/digitPosition1"
@@ -90,7 +90,7 @@
                     android:minHeight="@dimen/controls_pad_min_height_buttons"
                     android:textSize="@dimen/controls_text_size_default"
                     android:textStyle="bold"
-                    tools:ignore="ButtonStyle" />
+                    tools:ignore="ButtonStyle"/>
 
                 <Button
                     android:id="@+id/digitPosition2"
@@ -102,7 +102,7 @@
                     android:minHeight="@dimen/controls_pad_min_height_buttons"
                     android:textSize="@dimen/controls_text_size_default"
                     android:textStyle="bold"
-                    tools:ignore="ButtonStyle" />
+                    tools:ignore="ButtonStyle"/>
 
                 <Button
                     android:id="@+id/digitPosition3"
@@ -114,12 +114,12 @@
                     android:minHeight="@dimen/controls_pad_min_height_buttons"
                     android:textSize="@dimen/controls_text_size_default"
                     android:textStyle="bold"
-                    tools:ignore="ButtonStyle" />
+                    tools:ignore="ButtonStyle"/>
             </TableRow>
 
             <TableRow
                 android:id="@+id/controlsButtonRow2"
-                android:layout_weight="1" >
+                android:layout_weight="1">
 
                 <Button
                     android:id="@+id/digitPosition4"
@@ -131,7 +131,7 @@
                     android:minHeight="@dimen/controls_pad_min_height_buttons"
                     android:textSize="@dimen/controls_text_size_default"
                     android:textStyle="bold"
-                    tools:ignore="ButtonStyle" />
+                    tools:ignore="ButtonStyle"/>
 
                 <Button
                     android:id="@+id/digitPosition5"
@@ -143,7 +143,7 @@
                     android:minHeight="@dimen/controls_pad_min_height_buttons"
                     android:textSize="@dimen/controls_text_size_default"
                     android:textStyle="bold"
-                    tools:ignore="ButtonStyle" />
+                    tools:ignore="ButtonStyle"/>
 
                 <Button
                     android:id="@+id/digitPosition6"
@@ -155,7 +155,7 @@
                     android:minHeight="@dimen/controls_pad_min_height_buttons"
                     android:textSize="@dimen/controls_text_size_default"
                     android:textStyle="bold"
-                    tools:ignore="ButtonStyle" />
+                    tools:ignore="ButtonStyle"/>
             </TableRow>
 
             <!-- The third row is an optional row which is only needed for puzzles of grid size 7 -->
@@ -165,7 +165,7 @@
             <TableRow
                 android:id="@+id/controlsButtonRow3"
                 android:layout_weight="1"
-                android:visibility="gone" >
+                android:visibility="gone">
 
                 <Button
                     android:id="@+id/digitPosition7"
@@ -177,7 +177,7 @@
                     android:minHeight="@dimen/controls_pad_min_height_buttons"
                     android:textSize="@dimen/controls_text_size_default"
                     android:textStyle="bold"
-                    tools:ignore="ButtonStyle" />
+                    tools:ignore="ButtonStyle"/>
 
                 <Button
                     android:id="@+id/digitPosition8"
@@ -189,7 +189,7 @@
                     android:minHeight="@dimen/controls_pad_min_height_buttons"
                     android:textSize="@dimen/controls_text_size_default"
                     android:textStyle="bold"
-                    tools:ignore="ButtonStyle" />
+                    tools:ignore="ButtonStyle"/>
 
                 <Button
                     android:id="@+id/digitPosition9"
@@ -201,12 +201,12 @@
                     android:minHeight="@dimen/controls_pad_min_height_buttons"
                     android:textSize="@dimen/controls_text_size_default"
                     android:textStyle="bold"
-                    tools:ignore="ButtonStyle" />
+                    tools:ignore="ButtonStyle"/>
             </TableRow>
 
             <TableRow
                 android:id="@+id/controlsButtonRow4"
-                android:layout_weight="1" >
+                android:layout_weight="1">
 
                 <Button
                     android:id="@+id/clearButton"
@@ -220,7 +220,7 @@
                     android:text="@string/main_ui_clear"
                     android:textSize="@dimen/controls_text_size_default"
                     android:textStyle="bold"
-                    tools:ignore="ButtonStyle" />
+                    tools:ignore="ButtonStyle"/>
 
                 <Button
                     android:id="@+id/undoButton"
@@ -234,7 +234,7 @@
                     android:text="@string/main_ui_undo"
                     android:textSize="@dimen/controls_text_size_default"
                     android:textStyle="bold"
-                    tools:ignore="ButtonStyle" />
+                    tools:ignore="ButtonStyle"/>
             </TableRow>
         </TableLayout>
 
@@ -244,7 +244,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
-            android:visibility="gone" >
+            android:visibility="gone">
 
             <Button
                 android:id="@+id/clearButtonSwipeOnly"
@@ -257,7 +257,7 @@
                 android:text="@string/main_ui_clear"
                 android:textSize="@dimen/controls_text_size_default"
                 android:textStyle="bold"
-                tools:ignore="ButtonStyle" />
+                tools:ignore="ButtonStyle"/>
 
             <Button
                 android:id="@+id/undoButtonSwipeOnly"
@@ -270,7 +270,7 @@
                 android:text="@string/main_ui_undo"
                 android:textSize="@dimen/controls_text_size_default"
                 android:textStyle="bold"
-                tools:ignore="ButtonStyle" />
+                tools:ignore="ButtonStyle"/>
         </LinearLayout>
     </net.mathdoku.plus.puzzle.ui.GridPlayerRelativeLayout>
 

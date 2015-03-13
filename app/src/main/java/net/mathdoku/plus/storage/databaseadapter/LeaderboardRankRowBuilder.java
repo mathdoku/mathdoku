@@ -9,8 +9,7 @@ public class LeaderboardRankRowBuilder {
     private final boolean operatorsHidden;
     private final PuzzleComplexity puzzleComplexity;
 
-    private LeaderboardRankDatabaseAdapter.ScoreOrigin scoreOrigin =
-            LeaderboardRankDatabaseAdapter.ScoreOrigin.NONE;
+    private LeaderboardRankDatabaseAdapter.ScoreOrigin scoreOrigin = LeaderboardRankDatabaseAdapter.ScoreOrigin.NONE;
 
     // The unique row id of the statistics row which is the best rank for the
     // player
@@ -48,8 +47,8 @@ public class LeaderboardRankRowBuilder {
     /**
      * Constructs a builder for a new leaderboard rank which is already stored in the database.
      */
-    public LeaderboardRankRowBuilder(int id, String leaderboardId, int gridSize,
-                                     boolean operatorsHidden, PuzzleComplexity puzzleComplexity) {
+    public LeaderboardRankRowBuilder(int id, String leaderboardId, int gridSize, boolean operatorsHidden,
+                                     PuzzleComplexity puzzleComplexity) {
         this.id = id;
         this.leaderboardId = leaderboardId;
         this.gridSize = gridSize;
@@ -80,14 +79,10 @@ public class LeaderboardRankRowBuilder {
     public static LeaderboardRankRowBuilder from(LeaderboardRankRow leaderboardRankRow, int newId) {
         LeaderboardRankRowBuilder leaderboardRankRowBuilder;
 
-        leaderboardRankRowBuilder = new LeaderboardRankRowBuilder(newId,
-                                                                  leaderboardRankRow
-                                                                          .getLeaderboardId(),
+        leaderboardRankRowBuilder = new LeaderboardRankRowBuilder(newId, leaderboardRankRow.getLeaderboardId(),
                                                                   leaderboardRankRow.getGridSize(),
-                                                                  leaderboardRankRow
-                                                                          .isOperatorsHidden(),
-                                                                  leaderboardRankRow
-                                                                          .getPuzzleComplexity());
+                                                                  leaderboardRankRow.isOperatorsHidden(),
+                                                                  leaderboardRankRow.getPuzzleComplexity());
         leaderboardRankRowBuilder.scoreOrigin = leaderboardRankRow.getScoreOrigin();
         leaderboardRankRowBuilder.statisticsId = leaderboardRankRow.getStatisticsId();
         leaderboardRankRowBuilder.rawScore = leaderboardRankRow.getRawScore();
@@ -101,8 +96,7 @@ public class LeaderboardRankRowBuilder {
     }
 
     /**
-     * Updates the score. Preferred usage is {@link LeaderboardRankRowBuilder#setScoreLocal(int,
-     * long)} .
+     * Updates the score. Preferred usage is {@link LeaderboardRankRowBuilder#setScoreLocal(int, long)} .
      *
      * @param scoreOrigin
      *         Origin of the score.
@@ -114,9 +108,8 @@ public class LeaderboardRankRowBuilder {
      *         The date and time on which the score is achieved.
      * @return The updated leaderboard rank row builder.
      */
-    public LeaderboardRankRowBuilder setScore(LeaderboardRankDatabaseAdapter.ScoreOrigin
-                                                      scoreOrigin, int statisticsId,
-                                              long rawScore, long timestamp) {
+    public LeaderboardRankRowBuilder setScore(LeaderboardRankDatabaseAdapter.ScoreOrigin scoreOrigin,
+                                              int statisticsId, long rawScore, long timestamp) {
         validateRawScore(scoreOrigin, rawScore);
         validateScoreOrigin(scoreOrigin, statisticsId);
         this.scoreOrigin = scoreOrigin;
@@ -127,8 +120,7 @@ public class LeaderboardRankRowBuilder {
         return this;
     }
 
-    private void validateRawScore(LeaderboardRankDatabaseAdapter.ScoreOrigin scoreOrigin,
-                                  long rawScore) {
+    private void validateRawScore(LeaderboardRankDatabaseAdapter.ScoreOrigin scoreOrigin, long rawScore) {
         if (scoreOrigin != LeaderboardRankDatabaseAdapter.ScoreOrigin.NONE && rawScore <= 0) {
             throwRawScoreIllegalArgumentException();
         }
@@ -141,14 +133,11 @@ public class LeaderboardRankRowBuilder {
         throw new IllegalArgumentException("Parameter rawScore is invalid.");
     }
 
-    private void validateScoreOrigin(LeaderboardRankDatabaseAdapter.ScoreOrigin scoreOrigin,
-                                     int statisticsId) {
-        if (scoreOrigin == LeaderboardRankDatabaseAdapter.ScoreOrigin.LOCAL_DATABASE &&
-                statisticsId <= 0) {
+    private void validateScoreOrigin(LeaderboardRankDatabaseAdapter.ScoreOrigin scoreOrigin, int statisticsId) {
+        if (scoreOrigin == LeaderboardRankDatabaseAdapter.ScoreOrigin.LOCAL_DATABASE && statisticsId <= 0) {
             throwStatisticsIdIllegalArgumentException();
         }
-        if (scoreOrigin != LeaderboardRankDatabaseAdapter.ScoreOrigin.LOCAL_DATABASE &&
-                statisticsId != 0) {
+        if (scoreOrigin != LeaderboardRankDatabaseAdapter.ScoreOrigin.LOCAL_DATABASE && statisticsId != 0) {
             throwStatisticsIdIllegalArgumentException();
         }
     }
@@ -195,8 +184,7 @@ public class LeaderboardRankRowBuilder {
     public LeaderboardRankRowBuilder setScoreAndRank(long rawScore, long rank, String rankDisplay) {
         long timestamp = System.currentTimeMillis();
         setScore(LeaderboardRankDatabaseAdapter.ScoreOrigin.EXTERNAL, 0, rawScore, timestamp);
-        setRank(LeaderboardRankDatabaseAdapter.RankStatus.TOP_RANK_UPDATED, rank, rankDisplay,
-                timestamp);
+        setRank(LeaderboardRankDatabaseAdapter.RankStatus.TOP_RANK_UPDATED, rank, rankDisplay, timestamp);
 
         return this;
     }
@@ -214,9 +202,8 @@ public class LeaderboardRankRowBuilder {
         return setScoreAndRank(rawScore, rank, rankDisplay);
     }
 
-    public LeaderboardRankRowBuilder setRank(LeaderboardRankDatabaseAdapter.RankStatus
-                                                     rankStatus, long rank, String rankDisplay,
-                                             long timestamp) {
+    public LeaderboardRankRowBuilder setRank(LeaderboardRankDatabaseAdapter.RankStatus rankStatus, long rank,
+                                             String rankDisplay, long timestamp) {
         this.rankStatus = rankStatus;
         this.rank = rank;
         this.rankDisplay = rankDisplay;
@@ -231,8 +218,7 @@ public class LeaderboardRankRowBuilder {
      * @return The updated leaderboard rank row builder.
      */
     public LeaderboardRankRowBuilder setRankNotAvailable() {
-        setRank(LeaderboardRankDatabaseAdapter.RankStatus.TOP_RANK_NOT_AVAILABLE, 0, null,
-                System.currentTimeMillis());
+        setRank(LeaderboardRankDatabaseAdapter.RankStatus.TOP_RANK_NOT_AVAILABLE, 0, null, System.currentTimeMillis());
 
         return this;
     }

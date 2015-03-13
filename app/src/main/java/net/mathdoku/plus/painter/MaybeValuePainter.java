@@ -112,11 +112,10 @@ public class MaybeValuePainter extends DigitPainter {
     }
 
     /**
-     * Gets the digit position grid which has to be used to display maybe values inside a cell in
-     * case the maybes have to displayed as a grid. the cell.
+     * Gets the digit position grid which has to be used to display maybe values inside a cell in case the maybes have
+     * to displayed as a grid. the cell.
      *
-     * @return The digit position grid object used to display maybe values in a grid format inside a
-     * cell.
+     * @return The digit position grid object used to display maybe values in a grid format inside a cell.
      */
     public DigitPositionGrid getDigitPositionGrid() {
         return mDigitPositionGrid;
@@ -124,6 +123,7 @@ public class MaybeValuePainter extends DigitPainter {
 
     @Override
     public Paint getTextPaintMaybeInputMode() {
-        return mDigitPainterMode == DigitPainterMode.INPUT_MODE_BASED ? mTextPaintMaybeInputMode : mTextPaintNormalInputMode;
+        return mDigitPainterMode == DigitPainterMode.INPUT_MODE_BASED ? mTextPaintMaybeInputMode :
+                mTextPaintNormalInputMode;
     }
 }

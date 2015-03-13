@@ -39,13 +39,11 @@ public class GridSaver {
         }
 
         public SolvingAttemptRow createSolvingAttempt(int solvingAttemptId, int gridId,
-                                                      long solvingAttemptDateCreated,
-                                                      long solvingAttemptDateUpdated,
+                                                      long solvingAttemptDateCreated, long solvingAttemptDateUpdated,
                                                       SolvingAttemptStatus solvingAttemptStatus,
                                                       int savedWithRevision, String storageString) {
-            return new SolvingAttemptRow(solvingAttemptId, gridId, solvingAttemptDateCreated,
-                                         solvingAttemptDateUpdated, solvingAttemptStatus,
-                                         savedWithRevision, storageString);
+            return new SolvingAttemptRow(solvingAttemptId, gridId, solvingAttemptDateCreated, solvingAttemptDateUpdated,
+                                         solvingAttemptStatus, savedWithRevision, storageString);
         }
 
         public GridStorage createGridStorage() {
@@ -116,14 +114,18 @@ public class GridSaver {
     }
 
     private boolean saveSolvingAttempt(Grid grid) {
-        mDateUpdated = mSolvingAttemptId >= 0 && mSetDateUpdatedOnUpdateOfSolvingAttempt ? System
-                .currentTimeMillis() : grid.getDateSaved();
-        SolvingAttemptRow solvingAttemptRow = mObjectsCreator.createSolvingAttempt(
-                mSolvingAttemptId, mRowId, grid.getDateCreated(), mDateUpdated,
-                SolvingAttemptStatus.getDerivedStatus(grid.isSolutionRevealed(), grid.isActive(),
-                                                      grid.isEmpty()),
-                Util.getPackageVersionNumber(), mObjectsCreator.createGridStorage()
-                .toStorageString(grid));
+        mDateUpdated = mSolvingAttemptId >= 0 && mSetDateUpdatedOnUpdateOfSolvingAttempt ? System.currentTimeMillis()
+                : grid.getDateSaved();
+        SolvingAttemptRow solvingAttemptRow = mObjectsCreator.createSolvingAttempt(mSolvingAttemptId, mRowId,
+                                                                                   grid.getDateCreated(), mDateUpdated,
+                                                                                   SolvingAttemptStatus
+                                                                                           .getDerivedStatus(
+                                                                                           grid.isSolutionRevealed(),
+                                                                                           grid.isActive(),
+                                                                                           grid.isEmpty()),
+                                                                                   Util.getPackageVersionNumber(),
+                                                                                   mObjectsCreator.createGridStorage()
+                                                                                           .toStorageString(grid));
 
         // Insert or update the solving attempt.
         SolvingAttemptDatabaseAdapter solvingAttemptDatabaseAdapter = mObjectsCreator
@@ -142,8 +144,7 @@ public class GridSaver {
 
     private boolean saveStatistics(Grid grid) {
         // Insert or update the grid statistics.
-        StatisticsDatabaseAdapter statisticsDatabaseAdapter = mObjectsCreator
-                .createStatisticsDatabaseAdapter();
+        StatisticsDatabaseAdapter statisticsDatabaseAdapter = mObjectsCreator.createStatisticsDatabaseAdapter();
         if (mGridStatistics.mId < 0) {
             mGridStatistics.mGridId = mRowId;
             mGridStatistics.mCellsEmpty = grid.getGridSize() * grid.getGridSize();
@@ -167,12 +168,11 @@ public class GridSaver {
             // In case a replay of the grid is finished the statistics which
             // have to included in the cumulative and the historic statistics
             // should be changed to the current solving attempt.
-            if (!grid.isActive() && mGridStatistics.getReplayCount() > 0 && !mGridStatistics
-                    .isIncludedInStatistics()) {
+            if (!grid.isActive() && mGridStatistics.getReplayCount() > 0 && !mGridStatistics.isIncludedInStatistics()) {
                 // Note: do not return false in case following fails as it is
                 // not relevant to the user.
-                statisticsDatabaseAdapter.updateSolvingAttemptToBeIncludedInStatistics(
-                        grid.getRowId(), grid.getSolvingAttemptId());
+                statisticsDatabaseAdapter.updateSolvingAttemptToBeIncludedInStatistics(grid.getRowId(),
+                                                                                       grid.getSolvingAttemptId());
             }
 
             return true;

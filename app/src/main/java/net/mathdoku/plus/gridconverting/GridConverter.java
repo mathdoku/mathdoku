@@ -69,8 +69,7 @@ public class GridConverter extends AsyncTask<Void, Void, Void> {
      *         The activity to which results will be sent on completion of this task.
      */
     public void attachToActivity(PuzzleFragmentActivity activity) {
-        if (((Object) activity).equals(
-                mActivity) && progressDialog != null && progressDialog.isShowing()) {
+        if (((Object) activity).equals(mActivity) && progressDialog != null && progressDialog.isShowing()) {
             // Casting to Object is needed due to bug in Android Studio and/or
             // IntelliJ IDEA Community edition:
             // http://youtrack.jetbrains.com/issue/IDEA-79680
@@ -162,8 +161,8 @@ public class GridConverter extends AsyncTask<Void, Void, Void> {
     }
 
     /**
-     * Detaches the activity form the ASyn task. The progress dialog which was shown will be
-     * dismissed. The ASync task however still keeps running until finished.
+     * Detaches the activity form the ASyn task. The progress dialog which was shown will be dismissed. The ASync task
+     * however still keeps running until finished.
      */
     public void detachFromActivity() {
         if (DEBUG) {
@@ -175,8 +174,8 @@ public class GridConverter extends AsyncTask<Void, Void, Void> {
     }
 
     /**
-     * Dismisses the progress dialog which was shown on start of this ASync task. The ASync task
-     * however still keeps running until finished.
+     * Dismisses the progress dialog which was shown on start of this ASync task. The ASync task however still keeps
+     * running until finished.
      */
     private void dismissProgressDialog() {
         if (progressDialog != null) {

@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class holds all data needed to build a new {@link net.mathdoku.plus.puzzle.cell.Cell}
- * instance.
+ * This class holds all data needed to build a new {@link net.mathdoku.plus.puzzle.cell.Cell} instance.
  */
 public class CellBuilder {
     private int mGridSize; // Required
@@ -115,11 +114,10 @@ public class CellBuilder {
     }
 
     /**
-     * Perform a lenient check on the correct value when building the cell. This allows the correct
-     * value to be equal to zero. This is needed in case a grid is being build solely on a grid
-     * definition which does not contain the correct values. After the grid is created, the correct
-     * values are determined with the GridSolver class. This method cannot be used in conjunction
-     * with setSkipCheckCageReferenceOnBuild.
+     * Perform a lenient check on the correct value when building the cell. This allows the correct value to be equal to
+     * zero. This is needed in case a grid is being build solely on a grid definition which does not contain the correct
+     * values. After the grid is created, the correct values are determined with the GridSolver class. This method
+     * cannot be used in conjunction with setSkipCheckCageReferenceOnBuild.
      */
     public CellBuilder setLenientCheckCorrectValueOnBuild() {
         mCellBuilderErrorChecking = CellBuilderErrorChecking.LENIENT_CORRECT_VALUE_CHECK;
@@ -130,8 +128,8 @@ public class CellBuilder {
     /**
      * Skips checking the cage reference.
      * <p/>
-     * In case of generating a grid the cells are created before the cages. The cage checks should
-     * therefore be deferred. Cannot be used in conjunction with setDeferCageCheck.
+     * In case of generating a grid the cells are created before the cages. The cage checks should therefore be
+     * deferred. Cannot be used in conjunction with setDeferCageCheck.
      */
     public CellBuilder setSkipCheckCageReferenceOnBuild() {
         mCellBuilderErrorChecking = CellBuilderErrorChecking.SKIP_CAGE_CHECK;

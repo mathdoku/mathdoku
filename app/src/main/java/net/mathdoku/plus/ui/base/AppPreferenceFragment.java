@@ -5,8 +5,8 @@ import android.preference.PreferenceFragment;
 
 import net.mathdoku.plus.Preferences;
 
-public abstract class AppPreferenceFragment extends PreferenceFragment implements
-        SharedPreferences.OnSharedPreferenceChangeListener {
+public abstract class AppPreferenceFragment extends PreferenceFragment implements SharedPreferences
+        .OnSharedPreferenceChangeListener {
     private SharedPreferences mSharedPreferences;
 
     @Override

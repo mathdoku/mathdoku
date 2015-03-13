@@ -83,8 +83,7 @@ public class GridSolver {
                 if (comboGenerator == null) {
                     comboGenerator = new ComboGenerator(mGridSize);
                 }
-                cage.setPossibleCombos(
-                        comboGenerator.getPossibleCombos(cage, cage.getListOfCells()));
+                cage.setPossibleCombos(comboGenerator.getPossibleCombos(cage, cage.getListOfCells()));
             }
             int possibleMovesInCage = cage.getPossibleCombos()
                     .size();
@@ -123,8 +122,8 @@ public class GridSolver {
             for (int[] possibleCombo : possibleCombos) {
                 if (DEBUG) {
                     Log.i(TAG,
-                          "Combo " + comboIndex + " - Cage " + cage.getId() + " with " + cage
-                                  .getNumberOfCells() + " cells");
+                          "Combo " + comboIndex + " - Cage " + cage.getId() + " with " + cage.getNumberOfCells() + " " +
+                                  "cells");
                 }
 
                 // Is this permutation used for cage "cageCount"? The cage
@@ -143,27 +142,25 @@ public class GridSolver {
                     // Fill data structure for DancingLinesX algorithm
 
                     // Is digit "possibleCombo[i]" used in column getColumn()?
-                    constraintNumber = totalCages + mGridSize * (possibleCombo[i] - 1) + cell
-                            .getColumn() + 1;
+                    constraintNumber = totalCages + mGridSize * (possibleCombo[i] - 1) + cell.getColumn() + 1;
                     dancingLinesX.addNode(constraintNumber, comboIndex); // Column
                     // constraint
 
                     // Is digit "possibleCombo[i]" used in row getRow()?
-                    constraintNumber = totalCages + gridSizeSquare + mGridSize *
-                            (possibleCombo[i] - 1) + cell.getRow() + 1;
+                    constraintNumber = totalCages + gridSizeSquare + mGridSize * (possibleCombo[i] - 1) + cell.getRow
+                            () + 1;
                     dancingLinesX.addNode(constraintNumber, comboIndex); // Row
                     // constraint
 
                     // Fill data structure for uncovering solution if needed
                     if (uncoverSolution) {
                         mMoves.add(
-                                new Move(cage.getId(), comboIndex, cell.getRow(), cell.getColumn(),
-                                         possibleCombo[i]));
+                                new Move(cage.getId(), comboIndex, cell.getRow(), cell.getColumn(), possibleCombo[i]));
                     }
                     if (DEBUG) {
                         Log.i(TAG,
-                              "  Cell " + cell.getCellId() + " row =" + cell.getRow() + " col = "
-                                      + cell.getColumn() + " value = " + possibleCombo[i]);
+                              "  Cell " + cell.getCellId() + " row =" + cell.getRow() + " col = " + cell.getColumn()
+                                      + " value = " + possibleCombo[i]);
                     }
                 }
 
@@ -177,9 +174,8 @@ public class GridSolver {
     }
 
     /**
-     * Comparator to sort cages based on the number of possible moves, the number of cells in the
-     * cage and/or the cage id. This order of the cages determine how efficient the puzzle solving
-     * will be.
+     * Comparator to sort cages based on the number of possible moves, the number of cells in the cage and/or the cage
+     * id. This order of the cages determine how efficient the puzzle solving will be.
      */
     private class SortCagesOnNumberOfMoves implements Comparator<Cage> {
         @Override
@@ -231,8 +227,7 @@ public class GridSolver {
     /**
      * Determines the unique solution for this grid.
      *
-     * @return The solution of the grid if and oly if the grid has exactly one unique solution. NULL
-     * otherwise.
+     * @return The solution of the grid if and oly if the grid has exactly one unique solution. NULL otherwise.
      */
     public int[][] getSolutionGrid() {
         initialize(true);
@@ -378,8 +373,7 @@ public class GridSolver {
                             // to
                             // see if it fails.
                             if (DEBUG) {
-                                Log.i(TAG,
-                                      "Select cage " + move.mCageId + " with complexity " + possiblePermutations);
+                                Log.i(TAG, "Select cage " + move.mCageId + " with complexity " + possiblePermutations);
                             }
                             puzzleComplexity *= possiblePermutations;
                             previousCageId = move.mCageId;

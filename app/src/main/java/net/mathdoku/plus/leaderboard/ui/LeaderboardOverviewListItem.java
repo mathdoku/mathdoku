@@ -19,8 +19,8 @@ import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 import net.mathdoku.plus.util.Util;
 
 /**
- * Storage for leaderboard details of a single leaderboard which might be displayed in a Leaderboard
- * Overview list view.
+ * Storage for leaderboard details of a single leaderboard which might be displayed in a Leaderboard Overview list
+ * view.
  */
 public class LeaderboardOverviewListItem {
     private final String mLeaderboardId;
@@ -46,9 +46,8 @@ public class LeaderboardOverviewListItem {
      * @param puzzleComplexity
      *         The complexity level of the puzzle.
      */
-    public LeaderboardOverviewListItem(final LeaderboardOverview leaderboardOverview,
-                                       int gridSize, boolean hideOperators,
-                                       PuzzleComplexity puzzleComplexity) {
+    public LeaderboardOverviewListItem(final LeaderboardOverview leaderboardOverview, int gridSize,
+                                       boolean hideOperators, PuzzleComplexity puzzleComplexity) {
         mGridSize = gridSize;
         mHideOperators = hideOperators;
         mPuzzleComplexity = puzzleComplexity;
@@ -58,8 +57,7 @@ public class LeaderboardOverviewListItem {
                 .inflate(R.layout.leaderboard_overview_list_item, null);
 
         // noinspection ConstantConditions
-        ImageView mLeaderboardIcon = (ImageView) mLeaderboardListItemView.findViewById(
-                R.id.leaderboard_icon);
+        ImageView mLeaderboardIcon = (ImageView) mLeaderboardListItemView.findViewById(R.id.leaderboard_icon);
 
         // Get the leaderboard index value
         int index = LeaderboardType.getIndex(mGridSize, mHideOperators, mPuzzleComplexity);
@@ -75,39 +73,34 @@ public class LeaderboardOverviewListItem {
     }
 
     /**
-     * Creates a new instance of a {@link LeaderboardOverviewListItem} for the dummy leaderboard
-     * which is shown in case the use has not played any leaderboard for this grid size and has
-     * enabled filter "My leaderboards only".
+     * Creates a new instance of a {@link LeaderboardOverviewListItem} for the dummy leaderboard which is shown in case
+     * the use has not played any leaderboard for this grid size and has enabled filter "My leaderboards only".
      */
     public LeaderboardOverviewListItem(LeaderboardOverview leaderboardOverview, int gridSize) {
         mLeaderboardId = null;
         mGridSize = 0;
         mHideOperators = false;
         mPuzzleComplexity = null;
-        leaderboardOverviewListItemType = LeaderboardOverviewListItemType
-                .PLACEHOLDER_EMPTY_OVERVIEW;
+        leaderboardOverviewListItemType = LeaderboardOverviewListItemType.PLACEHOLDER_EMPTY_OVERVIEW;
 
         mLeaderboardListItemView = new TextView(leaderboardOverview.getContext());
         mLeaderboardListItemView.setLayoutParams(
-                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                                           ViewGroup.LayoutParams.WRAP_CONTENT));
+                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         ((TextView) mLeaderboardListItemView).setText(leaderboardOverview.getResources()
-                                                              .getString(
-                                                                      R.string.leaderboard_none_played,
-                                                                      gridSize));
+                                                              .getString(R.string.leaderboard_none_played, gridSize));
         ((TextView) mLeaderboardListItemView).setTextSize(TypedValue.COMPLEX_UNIT_DIP,
                                                           (int) (leaderboardOverview.getResources()
                                                                   .getDimension(
-                                                                          R.dimen.text_size_default) / leaderboardOverview.getResources()
+                                                                          R.dimen.text_size_default) /
+                                                                  leaderboardOverview.getResources()
                                                                   .getDisplayMetrics().density));
     }
 
     private LeaderboardOverviewListItemType setupView() {
         // Retrieve leaderboard score from local database
-        LeaderboardRankRow leaderboardRankRow = createLeaderboardRankDatabaseAdapter().get(
-                mLeaderboardId);
-        if (leaderboardRankRow == null || leaderboardRankRow.getScoreOrigin() ==
-                LeaderboardRankDatabaseAdapter.ScoreOrigin.NONE) {
+        LeaderboardRankRow leaderboardRankRow = createLeaderboardRankDatabaseAdapter().get(mLeaderboardId);
+        if (leaderboardRankRow == null || leaderboardRankRow.getScoreOrigin() == LeaderboardRankDatabaseAdapter
+                .ScoreOrigin.NONE) {
             setupViewWithoutRankingInformation();
             return LeaderboardOverviewListItemType.NO_RANKING_INFORMATION;
         } else {
@@ -117,8 +110,7 @@ public class LeaderboardOverviewListItem {
     }
 
     /**
-     * Package private method to allow unit test to overwrite the creation of a new Leaderboard Rank
-     * Database Adapter.
+     * Package private method to allow unit test to overwrite the creation of a new Leaderboard Rank Database Adapter.
      *
      * @return a new LeaderboardRankDatabaseAdapter
      */
@@ -127,29 +119,21 @@ public class LeaderboardOverviewListItem {
     }
 
     private void setupViewWithoutRankingInformation() {
-        ((TextView) mLeaderboardListItemView.findViewById(
-                R.id.leaderboard_score_label)).setVisibility(View.GONE);
-        ((TextView) mLeaderboardListItemView.findViewById(
-                R.id.leaderboard_score_display)).setVisibility(View.GONE);
-        ((TextView) mLeaderboardListItemView.findViewById(
-                R.id.leaderboard_not_played)).setVisibility(View.VISIBLE);
-        ((TextView) mLeaderboardListItemView.findViewById(
-                R.id.leaderboard_rank_display)).setVisibility(View.GONE);
+        ((TextView) mLeaderboardListItemView.findViewById(R.id.leaderboard_score_label)).setVisibility(View.GONE);
+        ((TextView) mLeaderboardListItemView.findViewById(R.id.leaderboard_score_display)).setVisibility(View.GONE);
+        ((TextView) mLeaderboardListItemView.findViewById(R.id.leaderboard_not_played)).setVisibility(View.VISIBLE);
+        ((TextView) mLeaderboardListItemView.findViewById(R.id.leaderboard_rank_display)).setVisibility(View.GONE);
     }
 
     private void setupViewWithRankingInformation(LeaderboardRankRow leaderboardRankRow) {
-        ((TextView) mLeaderboardListItemView.findViewById(
-                R.id.leaderboard_score_label)).setVisibility(View.VISIBLE);
+        ((TextView) mLeaderboardListItemView.findViewById(R.id.leaderboard_score_label)).setVisibility(View.VISIBLE);
         ((TextView) mLeaderboardListItemView.findViewById(R.id.leaderboard_score_display)).setText(
                 Util.durationTimeToString(leaderboardRankRow.getRawScore()));
-        ((TextView) mLeaderboardListItemView.findViewById(
-                R.id.leaderboard_score_display)).setVisibility(View.VISIBLE);
-        ((TextView) mLeaderboardListItemView.findViewById(
-                R.id.leaderboard_not_played)).setVisibility(View.GONE);
+        ((TextView) mLeaderboardListItemView.findViewById(R.id.leaderboard_score_display)).setVisibility(View.VISIBLE);
+        ((TextView) mLeaderboardListItemView.findViewById(R.id.leaderboard_not_played)).setVisibility(View.GONE);
         ((TextView) mLeaderboardListItemView.findViewById(R.id.leaderboard_rank_display)).setText(
                 leaderboardRankRow.getRankDisplay());
-        ((TextView) mLeaderboardListItemView.findViewById(
-                R.id.leaderboard_rank_display)).setVisibility(View.VISIBLE);
+        ((TextView) mLeaderboardListItemView.findViewById(R.id.leaderboard_rank_display)).setVisibility(View.VISIBLE);
     }
 
     private void setupOnClickListener(LeaderboardOverview leaderboardOverview) {
@@ -162,8 +146,7 @@ public class LeaderboardOverviewListItem {
     private void setupOnLongClickListener(LeaderboardOverview leaderboardOverview) {
         // Attach a long click listener to start a new game for the selected
         // leaderboard
-        mLeaderboardListItemView.setOnLongClickListener(
-                new OnLongClickLeaderboardListener(leaderboardOverview));
+        mLeaderboardListItemView.setOnLongClickListener(new OnLongClickLeaderboardListener(leaderboardOverview));
     }
 
     public View getView() {
@@ -176,13 +159,11 @@ public class LeaderboardOverviewListItem {
 
     public boolean hasNoScore() {
         throwExceptionIfCalledForPlaceholder();
-        return leaderboardOverviewListItemType == LeaderboardOverviewListItemType
-                .NO_RANKING_INFORMATION;
+        return leaderboardOverviewListItemType == LeaderboardOverviewListItemType.NO_RANKING_INFORMATION;
     }
 
     private void throwExceptionIfCalledForPlaceholder() {
-        if (leaderboardOverviewListItemType == LeaderboardOverviewListItemType
-                .PLACEHOLDER_EMPTY_OVERVIEW) {
+        if (leaderboardOverviewListItemType == LeaderboardOverviewListItemType.PLACEHOLDER_EMPTY_OVERVIEW) {
             throw new IllegalStateException("Should not be called for the placeholder item.");
         }
     }
@@ -212,8 +193,8 @@ public class LeaderboardOverviewListItem {
     }
 
     /**
-     * Finishes the current activity and starts a new puzzle with the same size, complexity and
-     * visibility of the operators as the leaderboard which was long clicked.
+     * Finishes the current activity and starts a new puzzle with the same size, complexity and visibility of the
+     * operators as the leaderboard which was long clicked.
      */
     private class OnLongClickLeaderboardListener implements View.OnLongClickListener {
         private final LeaderboardOverview leaderboardOverview;
@@ -231,8 +212,10 @@ public class LeaderboardOverviewListItem {
 
             // Start a new puzzle with the same size, complexity and visibility
             // of the operators as the leaderboard which was long clicked.
-            Intent intent = PuzzleFragmentActivity.createIntentToStartNewPuzzleFromSelectedLeaderboardFragment(
-                    activity, mGridSize, mHideOperators, mPuzzleComplexity);
+            Intent intent = PuzzleFragmentActivity.createIntentToStartNewPuzzleFromSelectedLeaderboardFragment(activity,
+                                                                                                               mGridSize,
+                                                                                                               mHideOperators,
+                                                                                                               mPuzzleComplexity);
             leaderboardOverview.startActivity(intent);
 
             Preferences.getInstance()

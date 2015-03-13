@@ -49,6 +49,7 @@ public class EnteredValuePainter extends DigitPainter {
 
     @Override
     public Paint getTextPaintNormalInputMode() {
-        return mDigitPainterMode == DigitPainterMode.INPUT_MODE_BASED ? mTextPaintNormalInputMode : mTextPaintMaybeInputMode;
+        return mDigitPainterMode == DigitPainterMode.INPUT_MODE_BASED ? mTextPaintNormalInputMode :
+                mTextPaintMaybeInputMode;
     }
 }

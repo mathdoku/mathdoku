@@ -30,8 +30,7 @@ public class JoinHelper {
     @Override
     public String toString() {
         if (joinType == null || joinType.isEmpty()) {
-            throw new IllegalStateException(
-                    "Join type and right hand side parameters have not been set.");
+            throw new IllegalStateException("Join type and right hand side parameters have not been set.");
         }
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(QueryHelper.SPACE);
@@ -41,13 +40,11 @@ public class JoinHelper {
         stringBuilder.append(QueryHelper.SPACE);
         stringBuilder.append(DatabaseUtil.stringBetweenBackTicks(rightHandTableName));
         stringBuilder.append(" ON ");
-        stringBuilder.append(
-                DatabaseUtil.tableAndColumnBetweenBackTicks(leftHandTableName, leftHandColumnName));
+        stringBuilder.append(DatabaseUtil.tableAndColumnBetweenBackTicks(leftHandTableName, leftHandColumnName));
         stringBuilder.append(QueryHelper.SPACE);
         stringBuilder.append(EQUALS_OPERATOR);
         stringBuilder.append(QueryHelper.SPACE);
-        stringBuilder.append(DatabaseUtil.tableAndColumnBetweenBackTicks(rightHandTableName,
-                                                                         rightHandColumnName));
+        stringBuilder.append(DatabaseUtil.tableAndColumnBetweenBackTicks(rightHandTableName, rightHandColumnName));
         return stringBuilder.toString();
     }
 

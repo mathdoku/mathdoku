@@ -43,11 +43,11 @@ public class GridBuilder {
     }
 
     /**
-     * Sets the Grids Object Creator which has to be passed to the Grid constructor. This is not an
-     * ObjectCreator for class GridBuilder itself.
+     * Sets the Grids Object Creator which has to be passed to the Grid constructor. This is not an ObjectCreator for
+     * class GridBuilder itself.
      * <p/>
-     * This method is intended to be called in unit tests only in case the Grid.ObjectsCreator of
-     * class Grid needs to be overridden.
+     * This method is intended to be called in unit tests only in case the Grid.ObjectsCreator of class Grid needs to be
+     * overridden.
      *
      * @param gridObjectsCreator
      *         The Grid.ObjectCreator to be passed to the Grid constructor.
@@ -63,8 +63,7 @@ public class GridBuilder {
         return this;
     }
 
-    public GridBuilder setGridGeneratingParameters(GridGeneratingParameters
-                                                           gridGeneratingParameters) {
+    public GridBuilder setGridGeneratingParameters(GridGeneratingParameters gridGeneratingParameters) {
         mGridGeneratingParameters = gridGeneratingParameters;
         return this;
     }
@@ -146,8 +145,7 @@ public class GridBuilder {
         stringBuilder.append("\tmSolvingAttemptId=" + mSolvingAttemptId + "\n");
         stringBuilder.append("\tmCells count=" + (mCells == null ? "null" : mCells.size()) + "\n");
         stringBuilder.append("\tmCages count=" + (mCages == null ? "null" : mCages.size()) + "\n");
-        stringBuilder.append(
-                "\tmCellChanges count=" + (mCellChanges == null ? "null" : mCellChanges.size()) + "\n");
+        stringBuilder.append("\tmCellChanges count=" + (mCellChanges == null ? "null" : mCellChanges.size()) + "\n");
         stringBuilder.append("\tmActive=" + mActive + "\n");
         stringBuilder.append("\tmRevealed=" + mRevealed + "\n");
         stringBuilder.append('}');

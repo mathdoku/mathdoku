@@ -18,8 +18,7 @@ public class ConditionList implements ConditionListElement {
     }
 
     public static String getFieldLessThanValue(String column, String value) {
-        return new FieldOperatorStringValue(column, FieldOperatorValue.Operator.LESS_THAN,
-                                            value).toString();
+        return new FieldOperatorStringValue(column, FieldOperatorValue.Operator.LESS_THAN, value).toString();
     }
 
     public ConditionList addOperand(ConditionListElement conditionListElement) {
@@ -38,8 +37,7 @@ public class ConditionList implements ConditionListElement {
 
     private void validateNumberOfOperands(int minimumOperandsRequired) {
         if (conditionListElements.size() < minimumOperandsRequired) {
-            throw new IllegalStateException(
-                    String.format("At least %d operand(s) expected.", minimumOperandsRequired));
+            throw new IllegalStateException(String.format("At least %d operand(s) expected.", minimumOperandsRequired));
         }
     }
 
@@ -57,8 +55,7 @@ public class ConditionList implements ConditionListElement {
             return conditionListElements.get(0)
                     .toString();
         } else {
-            return QueryHelper.joinBetweenParentheses(operatorBetweenConditions,
-                                                      conditionListElements);
+            return QueryHelper.joinBetweenParentheses(operatorBetweenConditions, conditionListElements);
         }
     }
 }

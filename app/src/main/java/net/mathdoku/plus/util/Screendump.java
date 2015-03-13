@@ -40,8 +40,7 @@ public class Screendump {
         }
 
         // Create bitmap and canvas and draw the view on this canvas.
-        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),
-                                            Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         view.draw(canvas);
 

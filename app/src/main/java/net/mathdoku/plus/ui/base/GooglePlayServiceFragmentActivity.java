@@ -24,24 +24,22 @@ import com.google.android.gms.games.GamesClient;
 import com.google.android.gms.plus.PlusClient;
 
 /**
- * Example base class for games. This implementation takes care of setting up the GamesClient object
- * and managing its lifecycle. Subclasses only need to override the @link{#onSignInSucceeded} and
- * @link{#onSignInFailed} abstract methods. To initiate the sign-in flow when the user clicks the
- * sign-in button, subclasses should call @link{#beginUserInitiatedSignIn}. By default, this class
- * only instantiates the GamesClient object. If the PlusClient or AppStateClient objects are also
- * wanted, call the GooglePlayServiceFragmentActivity(int) constructor and specify the requested
- * clients. For example, to request PlusClient and GamesClient,
- * use GooglePlayServiceFragmentActivity(CLIENT_GAMES
- * | CLIENT_PLUS). To request all available clients, use GooglePlayServiceFragmentActivity
- * (CLIENT_ALL).
- * Alternatively, you can also specify the requested clients via {@link #setRequestedClients}, but
- * you must do so before {@link #onCreate} gets called, otherwise the call will have no effect.
+ * Example base class for games. This implementation takes care of setting up the GamesClient object and managing its
+ * lifecycle. Subclasses only need to override the @link{#onSignInSucceeded} and
  *
  * @author Bruno Oliveira (Google)
+ * @link{#onSignInFailed} abstract methods. To initiate the sign-in flow when the user clicks the sign-in button,
+ * subclasses should call @link{#beginUserInitiatedSignIn}. By default, this class only instantiates the GamesClient
+ * object. If the PlusClient or AppStateClient objects are also wanted, call the GooglePlayServiceFragmentActivity(int)
+ * constructor and specify the requested clients. For example, to request PlusClient and GamesClient, use
+ * GooglePlayServiceFragmentActivity(CLIENT_GAMES | CLIENT_PLUS). To request all available clients, use
+ * GooglePlayServiceFragmentActivity (CLIENT_ALL). Alternatively, you can also specify the requested clients via {@link
+ * #setRequestedClients}, but you must do so before {@link #onCreate} gets called, otherwise the call will have no
+ * effect.
  */
 @SuppressWarnings("WeakerAccess")
-public abstract class GooglePlayServiceFragmentActivity extends AppFragmentActivity implements
-        GameHelper.GameHelperListener {
+public abstract class GooglePlayServiceFragmentActivity extends AppFragmentActivity implements GameHelper
+        .GameHelperListener {
 
     // The game helper object. This class is mainly a wrapper around this
     // object.
@@ -85,8 +83,7 @@ public abstract class GooglePlayServiceFragmentActivity extends AppFragmentActiv
      * Constructs a GooglePlayServiceFragmentActivity with the requested clients.
      *
      * @param requestedClients
-     *         The requested clients (a combination of CLIENT_GAMES, CLIENT_PLUS and
-     *         CLIENT_APPSTATE).
+     *         The requested clients (a combination of CLIENT_GAMES, CLIENT_PLUS and CLIENT_APPSTATE).
      */
     protected GooglePlayServiceFragmentActivity(int requestedClients) {
         super();
@@ -94,14 +91,13 @@ public abstract class GooglePlayServiceFragmentActivity extends AppFragmentActiv
     }
 
     /**
-     * Sets the requested clients. The preferred way to set the requested clients is via the
-     * constructor, but this method is available if for some reason your code cannot do this in the
-     * constructor. This must be called before onCreate in order to have any effect. If called after
-     * onCreate, this method is a no-op.
+     * Sets the requested clients. The preferred way to set the requested clients is via the constructor, but this
+     * method is available if for some reason your code cannot do this in the constructor. This must be called before
+     * onCreate in order to have any effect. If called after onCreate, this method is a no-op.
      *
      * @param requestedClients
-     *         A combination of the flags CLIENT_GAMES, CLIENT_PLUS and CLIENT_APPSTATE, or
-     *         CLIENT_ALL to request all available clients.
+     *         A combination of the flags CLIENT_GAMES, CLIENT_PLUS and CLIENT_APPSTATE, or CLIENT_ALL to request all
+     *         available clients.
      * @param additionalScopes
      *         . Scopes that should also be requested when the auth request is made.
      */

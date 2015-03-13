@@ -27,8 +27,7 @@ abstract class BorderPainter extends BasePainter {
      * Change the width of the border of the grid.
      *
      * @param thin
-     *         True in case a small border needs to be set. False in case a normal border should be
-     *         used.
+     *         True in case a small border needs to be set. False in case a normal border should be used.
      */
     protected abstract void setBorderSizes(boolean thin);
 

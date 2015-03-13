@@ -3,8 +3,8 @@ package net.mathdoku.plus.storage.databaseadapter;
 import net.mathdoku.plus.enums.SolvingAttemptStatus;
 
 /**
- * Mapping for records in database table SolvingAttemptRow. Note: it depends on the specific query
- * which was executed whether a field is filled.
+ * Mapping for records in database table SolvingAttemptRow. Note: it depends on the specific query which was executed
+ * whether a field is filled.
  */
 public class SolvingAttemptRow {
     private final int solvingAttemptId;
@@ -23,9 +23,8 @@ public class SolvingAttemptRow {
     private final String storageString;
 
     public SolvingAttemptRow(int solvingAttemptId, int gridId, long solvingAttemptDateCreated,
-                             long solvingAttemptDateUpdated,
-                             SolvingAttemptStatus solvingAttemptStatus, int savedWithRevision,
-                             String storageString) {
+                             long solvingAttemptDateUpdated, SolvingAttemptStatus solvingAttemptStatus,
+                             int savedWithRevision, String storageString) {
         this.solvingAttemptId = solvingAttemptId;
         this.gridId = gridId;
         this.solvingAttemptDateCreated = solvingAttemptDateCreated;
@@ -36,9 +35,8 @@ public class SolvingAttemptRow {
     }
 
     public SolvingAttemptRow(SolvingAttemptRow source, int newSolvingAttemptId) {
-        this(newSolvingAttemptId, source.gridId, source.solvingAttemptDateCreated,
-             source.solvingAttemptDateUpdated, source.solvingAttemptStatus,
-             source.savedWithRevision, source.storageString);
+        this(newSolvingAttemptId, source.gridId, source.solvingAttemptDateCreated, source.solvingAttemptDateUpdated,
+             source.solvingAttemptStatus, source.savedWithRevision, source.storageString);
     }
 
     public int getSolvingAttemptId() {
@@ -122,8 +120,7 @@ public class SolvingAttemptRow {
         if (solvingAttemptStatus != that.solvingAttemptStatus) {
             return false;
         }
-        if (storageString != null ? !storageString.equals(
-                that.storageString) : that.storageString != null) {
+        if (storageString != null ? !storageString.equals(that.storageString) : that.storageString != null) {
             return false;
         }
 

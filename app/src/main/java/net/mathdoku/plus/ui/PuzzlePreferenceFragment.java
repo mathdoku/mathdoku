@@ -29,20 +29,17 @@ public class PuzzlePreferenceFragment extends AppPreferenceFragment {
         // Build list of possible values for the outer swipe circle preference
         List<String> entries = new ArrayList<String>();
         List<String> entryValues = new ArrayList<String>();
-        for (int gridSize = GridType.getSmallestGridSize(); gridSize <= GridType
-                .getBiggestGridSize(); gridSize++) {
-            entries.add(getResources().getString(
-                    R.string.puzzle_setting_outer_swipe_circle_visible_from_grid_size_short,
-                    gridSize));
+        for (int gridSize = GridType.getSmallestGridSize(); gridSize <= GridType.getBiggestGridSize(); gridSize++) {
+            entries.add(
+                    getResources().getString(R.string.puzzle_setting_outer_swipe_circle_visible_from_grid_size_short,
+                                             gridSize));
             entries.add(Integer.toString(gridSize));
         }
-        entries.add(
-                getResources().getString(R.string.puzzle_setting_outer_swipe_circle_visible_never));
+        entries.add(getResources().getString(R.string.puzzle_setting_outer_swipe_circle_visible_never));
         entryValues.add(Integer.toString(Integer.MAX_VALUE));
 
         // Set entries to the list preferences
-        ListPreference listPreference = (ListPreference) findPreference(
-                Preferences.PUZZLE_SETTING_OUTER_SWIPE_CIRCLE);
+        ListPreference listPreference = (ListPreference) findPreference(Preferences.PUZZLE_SETTING_OUTER_SWIPE_CIRCLE);
         if (listPreference != null) {
             listPreference.setEntries(entries.toArray(new String[entries.size()]));
             listPreference.setEntryValues(entryValues.toArray(new String[entryValues.size()]));
@@ -74,8 +71,8 @@ public class PuzzlePreferenceFragment extends AppPreferenceFragment {
         Preference preference = findPreference(Preferences.PUZZLE_SETTING_THEME);
         if (preference != null) {
             preference.setSummary(getResources().getString(Preferences.getInstance()
-                                                                   .getTheme() == Painter
-                    .GridTheme.LIGHT ? R.string.theme_light : R.string.theme_dark));
+                                                                   .getTheme() == Painter.GridTheme.LIGHT ? R.string
+                    .theme_light : R.string.theme_dark));
         }
     }
 
@@ -88,16 +85,13 @@ public class PuzzlePreferenceFragment extends AppPreferenceFragment {
             switch (Preferences.getInstance()
                     .getDigitInputMethod()) {
                 case SWIPE_ONLY:
-                    preference.setSummary(
-                            getResources().getString(R.string.input_method_swipe_only));
+                    preference.setSummary(getResources().getString(R.string.input_method_swipe_only));
                     break;
                 case SWIPE_AND_BUTTONS:
-                    preference.setSummary(
-                            getResources().getString(R.string.input_method_swipe_and_buttons));
+                    preference.setSummary(getResources().getString(R.string.input_method_swipe_and_buttons));
                     break;
                 case BUTTONS_ONLY:
-                    preference.setSummary(
-                            getResources().getString(R.string.input_method_buttons_only));
+                    preference.setSummary(getResources().getString(R.string.input_method_buttons_only));
                     break;
             }
         }
@@ -111,14 +105,14 @@ public class PuzzlePreferenceFragment extends AppPreferenceFragment {
         if (preference != null) {
             if (Preferences.getInstance()
                     .isOuterSwipeCircleNeverVisible()) {
-                preference.setSummary(getResources().getString(
-                        R.string.puzzle_setting_outer_swipe_circle_visible_never));
+                preference.setSummary(
+                        getResources().getString(R.string.puzzle_setting_outer_swipe_circle_visible_never));
             } else {
                 String outerSwipeCircleVisibility = Preferences.getInstance()
                         .getOuterSwipeCircleVisibility();
-                preference.setSummary(getResources().getString(
-                        R.string.puzzle_setting_outer_swipe_circle_visible_from_grid_size_long,
-                        Integer.valueOf(outerSwipeCircleVisibility)));
+                preference.setSummary(
+                        getResources().getString(R.string.puzzle_setting_outer_swipe_circle_visible_from_grid_size_long,
+                                                 Integer.valueOf(outerSwipeCircleVisibility)));
             }
         }
     }

@@ -63,8 +63,8 @@ class GridDefinitionSplitter {
             puzzleComplexity = PuzzleComplexity.fromId(gridDefinitionElements[ID_PART_COMPLEXITY]);
         } catch (IllegalArgumentException e) {
             throw new InvalidGridException(
-                    String.format("Grid definition '%s' has invalid complexity '%s'.",
-                                  gridDefinition, gridDefinitionElements[ID_PART_COMPLEXITY]), e);
+                    String.format("Grid definition '%s' has invalid complexity '%s'.", gridDefinition,
+                                  gridDefinitionElements[ID_PART_COMPLEXITY]), e);
         }
 
         return puzzleComplexity;

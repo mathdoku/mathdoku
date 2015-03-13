@@ -28,42 +28,41 @@ public class DatabaseProjection extends HashMap<String, String> {
     }
 
     /**
-     * Add a column to the projection. Preferred usage is {@link #put(String, String, String)} or
-     * {@link #put(DatabaseProjection.Aggregation, String, String)} .
+     * Add a column to the projection. Preferred usage is {@link #put(String, String, String)} or {@link
+     * #put(DatabaseProjection.Aggregation, String, String)} .
      * <p/>
-     * Note: In contradiction to other put functions, the target and source columns are not back
-     * ticked. If appropriate this should have been done in or before call to this method.
+     * Note: In contradiction to other put functions, the target and source columns are not back ticked. If appropriate
+     * this should have been done in or before call to this method.
      *
      * @param targetColumn
-     *         The name of the target column. Its name should be unique for this projection. This is
-     *         not checked by this method.
+     *         The name of the target column. Its name should be unique for this projection. This is not checked by this
+     *         method.
      * @param sourceColumn
-     *         Name of column on which the aggregation function will be applied to determine the
-     *         value of the target column.
-     * @return If constructed value ("[sourceColumn] AS [ `targetColumn`]") already exists, its
-     * value is returned. If the value does not yet exists, null is returned.
+     *         Name of column on which the aggregation function will be applied to determine the value of the target
+     *         column.
+     * @return If constructed value ("[sourceColumn] AS [ `targetColumn`]") already exists, its value is returned. If
+     * the value does not yet exists, null is returned.
      */
     @Override
     public String put(String targetColumn, String sourceColumn) {
         ParameterValidator.validateNotNullOrEmpty(targetColumn);
         ParameterValidator.validateNotNullOrEmpty(sourceColumn);
-        return super.put(targetColumn,
-                         sourceColumn + " AS " + DatabaseUtil.stringBetweenBackTicks(targetColumn));
+        return super.put(targetColumn, sourceColumn + " AS " + DatabaseUtil.stringBetweenBackTicks(targetColumn));
     }
 
     /**
      * Add a column to the projection.
      *
      * @param targetColumn
-     *         The name of the target column. Its name should be unique for this projection. This is
-     *         not checked by this method.
+     *         The name of the target column. Its name should be unique for this projection. This is not checked by this
+     *         method.
      * @param sourceTable
      *         Name of table in which the source column can be found.
      * @param sourceColumn
-     *         Name of column on which the aggregation function will be applied to determine the
-     *         value of the target column.
-     * @return If constructed value ("[`sourceTable`.`sourceColumn`] AS [ `targetColumn`]") already
-     * exists, its value is returned. If the value does not yet exists, null is returned.
+     *         Name of column on which the aggregation function will be applied to determine the value of the target
+     *         column.
+     * @return If constructed value ("[`sourceTable`.`sourceColumn`] AS [ `targetColumn`]") already exists, its value is
+     * returned. If the value does not yet exists, null is returned.
      */
     @SuppressWarnings("UnusedReturnValue")
     public String put(String targetColumn, String sourceTable, String sourceColumn) {
@@ -72,8 +71,8 @@ public class DatabaseProjection extends HashMap<String, String> {
         ParameterValidator.validateNotNullOrEmpty(sourceColumn);
 
         String target = DatabaseUtil.stringBetweenBackTicks(targetColumn);
-        String source = DatabaseUtil.stringBetweenBackTicks(
-                sourceTable) + "." + DatabaseUtil.stringBetweenBackTicks(sourceColumn);
+        String source = DatabaseUtil.stringBetweenBackTicks(sourceTable) + "." + DatabaseUtil.stringBetweenBackTicks(
+                sourceColumn);
 
         return super.put(targetColumn, source + " AS " + target);
     }
@@ -86,10 +85,10 @@ public class DatabaseProjection extends HashMap<String, String> {
      * @param sourceTable
      *         Name of table in which the source column can be found.
      * @param sourceColumn
-     *         Name of column on which the aggregation function will be applied to determine the
-     *         value of the target column. Can be NULL for aggregation COUNT.
-     * @return If constructed value already exists, its value is returned. If the value does not yet
-     * exists, null is returned.
+     *         Name of column on which the aggregation function will be applied to determine the value of the target
+     *         column. Can be NULL for aggregation COUNT.
+     * @return If constructed value already exists, its value is returned. If the value does not yet exists, null is
+     * returned.
      */
     public String put(Aggregation aggregation, String sourceTable, String sourceColumn) {
         ParameterValidator.validateNotNull(aggregation);
@@ -98,8 +97,8 @@ public class DatabaseProjection extends HashMap<String, String> {
 
         String targetKey = aggregation.getAggregationColumnNameForColumn(sourceColumn);
         String target = DatabaseUtil.stringBetweenBackTicks(targetKey);
-        String source = DatabaseUtil.stringBetweenBackTicks(
-                sourceTable) + "." + DatabaseUtil.stringBetweenBackTicks(sourceColumn);
+        String source = DatabaseUtil.stringBetweenBackTicks(sourceTable) + "." + DatabaseUtil.stringBetweenBackTicks(
+                sourceColumn);
 
         String aggregatedSource;
         switch (aggregation) {

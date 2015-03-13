@@ -18,8 +18,7 @@ import net.mathdoku.plus.ui.base.AppFragmentActivity;
 import net.mathdoku.plus.ui.base.AppNavUtils;
 import net.mathdoku.plus.util.FeedbackEmail;
 
-public class StatisticsFragmentActivity extends AppFragmentActivity implements ActionBar
-        .TabListener {
+public class StatisticsFragmentActivity extends AppFragmentActivity implements ActionBar.TabListener {
 
     /**
      * The {@link ViewPager} that will display the statistics fragments , one at a time.
@@ -34,8 +33,7 @@ public class StatisticsFragmentActivity extends AppFragmentActivity implements A
         // Create the adapter that will return the statistics fragments. A
         // {@link android.support.v4.app.FragmentPagerAdapter} derivative is
         // used, which will keep every loaded fragment in memory.
-        StatisticsFragmentPagerAdapter statisticsFragmentPagerAdapter = new
-                StatisticsFragmentPagerAdapter(
+        StatisticsFragmentPagerAdapter statisticsFragmentPagerAdapter = new StatisticsFragmentPagerAdapter(
                 getSupportFragmentManager(), this);
 
         // Set up the action bar.
@@ -144,13 +142,12 @@ public class StatisticsFragmentActivity extends AppFragmentActivity implements A
         LayoutInflater li = LayoutInflater.from(this);
         View view = li.inflate(R.layout.statistics_help_dialog, null);
 
-        new AlertDialog.Builder(this).setTitle(getResources().getString(
-                                                       R.string.action_statistics) + " " + getResources().getString(
-                                                       R.string.action_help))
+        new AlertDialog.Builder(this).setTitle(
+                getResources().getString(R.string.action_statistics) + " " + getResources().getString(
+                        R.string.action_help))
                 .setIcon(R.drawable.icon)
                 .setView(view)
-                .setPositiveButton(R.string.dialog_general_button_close,
-                                   new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.dialog_general_button_close, new DialogInterface.OnClickListener() {
                                        @Override
                                        public void onClick(DialogInterface dialog, int whichButton) {
                                            // Do nothing

@@ -32,8 +32,7 @@ public class HistoricStatisticsSelector {
 
     // Columns in the DatabaseProjection
     public static final String DATA_COL_ID = "id";
-    public static final String PROJECTION_ELAPSED_TIME_EXCLUDING_CHEAT_PENALTY =
-            "elapsed_time_excluding_cheat_penalty";
+    public static final String PROJECTION_ELAPSED_TIME_EXCLUDING_CHEAT_PENALTY = "elapsed_time_excluding_cheat_penalty";
     public static final String PROJECTION_CHEAT_PENALTY = "cheat_penalty";
     public static final String PROJECTION_SOLVING_ATTEMPT_STATUS = "series";
 
@@ -107,11 +106,9 @@ public class HistoricStatisticsSelector {
 
         @Override
         public int hashCode() {
-            int result = (int) (elapsedTimeExcludingCheatPenalty ^
-                    (elapsedTimeExcludingCheatPenalty >>> 32));
+            int result = (int) (elapsedTimeExcludingCheatPenalty ^ (elapsedTimeExcludingCheatPenalty >>> 32));
             result = 31 * result + (int) (cheatPenalty ^ (cheatPenalty >>> 32));
-            result = 31 * result + (solvingAttemptStatus != null ? solvingAttemptStatus.hashCode
-                    () : 0);
+            result = 31 * result + (solvingAttemptStatus != null ? solvingAttemptStatus.hashCode() : 0);
             return result;
         }
     }
@@ -127,23 +124,20 @@ public class HistoricStatisticsSelector {
         sqliteQueryBuilder.setProjectionMap(DATABASE_PROJECTION);
         sqliteQueryBuilder.setTables(getJoinString());
         if (DEBUG) {
-            String sql = sqliteQueryBuilder.buildQuery(DATABASE_PROJECTION.getAllColumnNames(),
-                                                       getSelectionString(), null, null,
-                                                       StatisticsDatabaseAdapter.KEY_GRID_ID, null);
+            String sql = sqliteQueryBuilder.buildQuery(DATABASE_PROJECTION.getAllColumnNames(), getSelectionString(),
+                                                       null, null, StatisticsDatabaseAdapter.KEY_GRID_ID, null);
             Log.i(TAG, sql);
         }
 
         Cursor cursor;
         try {
             cursor = sqliteQueryBuilder.query(DatabaseHelper.getInstance()
-                                                      .getReadableDatabase(),
-                                              DATABASE_PROJECTION.getAllColumnNames(),
+                                                      .getReadableDatabase(), DATABASE_PROJECTION.getAllColumnNames(),
                                               getSelectionString(), null, null, null,
                                               StatisticsDatabaseAdapter.KEY_GRID_ID);
         } catch (SQLiteException e) {
             throw new DatabaseAdapterException(String.format(
-                    "Cannot retrieve the historic statistics for grids with sizes '%d-%d' from " +
-                            "database.",
+                    "Cannot retrieve the historic statistics for grids with sizes '%d-%d' from " + "database.",
                     minGridSize, maxGridSize), e);
         }
 
@@ -156,8 +150,7 @@ public class HistoricStatisticsSelector {
     }
 
     private String getJoinString() {
-        return new JoinHelper(GridDatabaseAdapter.TABLE_NAME,
-                              GridDatabaseAdapter.KEY_ROWID).innerJoinWith(
+        return new JoinHelper(GridDatabaseAdapter.TABLE_NAME, GridDatabaseAdapter.KEY_ROWID).innerJoinWith(
                 StatisticsDatabaseAdapter.TABLE_NAME, StatisticsDatabaseAdapter.KEY_GRID_ID)
                 .toString();
     }
@@ -165,11 +158,9 @@ public class HistoricStatisticsSelector {
     private String getSelectionString() {
         ConditionList conditionList = new ConditionList();
         conditionList.addOperand(
-                new FieldBetweenIntegerValues(GridDatabaseAdapter.KEY_GRID_SIZE, minGridSize,
-                                              maxGridSize));
-        conditionList.addOperand(
-                new FieldOperatorBooleanValue(StatisticsDatabaseAdapter.KEY_INCLUDE_IN_STATISTICS,
-                                              FieldOperatorValue.Operator.EQUALS, true));
+                new FieldBetweenIntegerValues(GridDatabaseAdapter.KEY_GRID_SIZE, minGridSize, maxGridSize));
+        conditionList.addOperand(new FieldOperatorBooleanValue(StatisticsDatabaseAdapter.KEY_INCLUDE_IN_STATISTICS,
+                                                               FieldOperatorValue.Operator.EQUALS, true));
         conditionList.setAndOperator();
         return conditionList.toString();
     }
@@ -181,10 +172,9 @@ public class HistoricStatisticsSelector {
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 // Fill new data point
-                DataPoint dataPoint = new DataPoint(
-                        getElapsedTimeExcludingCheatPenaltyFromCursor(cursor),
-                        getCheatPenaltyFromCursor(cursor),
-                        SolvingAttemptStatus.valueOf(getSolvingAttemptStatusFromCursor(cursor)));
+                DataPoint dataPoint = new DataPoint(getElapsedTimeExcludingCheatPenaltyFromCursor(cursor),
+                                                    getCheatPenaltyFromCursor(cursor), SolvingAttemptStatus.valueOf(
+                        getSolvingAttemptStatusFromCursor(cursor)));
 
                 // Add data point to the list
                 dataPoints.add(dataPoint);
@@ -194,8 +184,7 @@ public class HistoricStatisticsSelector {
     }
 
     private long getElapsedTimeExcludingCheatPenaltyFromCursor(Cursor cursor) {
-        return cursor.getLong(
-                cursor.getColumnIndexOrThrow(PROJECTION_ELAPSED_TIME_EXCLUDING_CHEAT_PENALTY));
+        return cursor.getLong(cursor.getColumnIndexOrThrow(PROJECTION_ELAPSED_TIME_EXCLUDING_CHEAT_PENALTY));
     }
 
     private long getCheatPenaltyFromCursor(Cursor cursor) {
@@ -208,11 +197,11 @@ public class HistoricStatisticsSelector {
 
     private static DatabaseProjection buildDatabaseProjection() {
         DatabaseProjection databaseProjection = new DatabaseProjection();
-        databaseProjection.put(DATA_COL_ID, StatisticsDatabaseAdapter.TABLE_NAME,
-                               StatisticsDatabaseAdapter.KEY_ROWID);
+        databaseProjection.put(DATA_COL_ID, StatisticsDatabaseAdapter.TABLE_NAME, StatisticsDatabaseAdapter.KEY_ROWID);
         databaseProjection.put(PROJECTION_ELAPSED_TIME_EXCLUDING_CHEAT_PENALTY,
                                StatisticsDatabaseAdapter.getPrefixedColumnName(
-                                       StatisticsDatabaseAdapter.KEY_ELAPSED_TIME) + " - " + StatisticsDatabaseAdapter.getPrefixedColumnName(
+                                       StatisticsDatabaseAdapter.KEY_ELAPSED_TIME) + " - " +
+                                       StatisticsDatabaseAdapter.getPrefixedColumnName(
                                        StatisticsDatabaseAdapter.KEY_CHEAT_PENALTY_TIME));
 
         databaseProjection.put(PROJECTION_CHEAT_PENALTY, StatisticsDatabaseAdapter.TABLE_NAME,
@@ -225,14 +214,12 @@ public class HistoricStatisticsSelector {
 
     private static String getStatusColumnProjection() {
         CaseWhenHelper caseWhenHelper = new CaseWhenHelper();
-        caseWhenHelper.addOperand(
-                new FieldOperatorBooleanValue(StatisticsDatabaseAdapter.KEY_FINISHED,
-                                              FieldOperatorValue.Operator.NOT_EQUALS, true),
-                SolvingAttemptStatus.UNFINISHED.toString());
-        caseWhenHelper.addOperand(
-                new FieldOperatorBooleanValue(StatisticsDatabaseAdapter.KEY_ACTION_REVEAL_SOLUTION,
-                                              FieldOperatorValue.Operator.EQUALS, true),
-                SolvingAttemptStatus.REVEALED_SOLUTION.toString());
+        caseWhenHelper.addOperand(new FieldOperatorBooleanValue(StatisticsDatabaseAdapter.KEY_FINISHED,
+                                                                FieldOperatorValue.Operator.NOT_EQUALS, true),
+                                  SolvingAttemptStatus.UNFINISHED.toString());
+        caseWhenHelper.addOperand(new FieldOperatorBooleanValue(StatisticsDatabaseAdapter.KEY_ACTION_REVEAL_SOLUTION,
+                                                                FieldOperatorValue.Operator.EQUALS, true),
+                                  SolvingAttemptStatus.REVEALED_SOLUTION.toString());
         caseWhenHelper.setElseStringValue(SolvingAttemptStatus.FINISHED_SOLVED.toString());
 
         return caseWhenHelper.toString();

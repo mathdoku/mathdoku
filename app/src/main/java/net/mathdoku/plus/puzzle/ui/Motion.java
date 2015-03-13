@@ -31,8 +31,7 @@ public class Motion {
     static final int X_POS = 0;
     static final int Y_POS = 1;
 
-    public Motion(GridBasePlayerView gridBasePlayerView, float gridViewBorderWidth,
-                  float cellSize) {
+    public Motion(GridBasePlayerView gridBasePlayerView, float gridViewBorderWidth, float cellSize) {
         // Determine size of the grid
         Grid grid = gridBasePlayerView.getGrid();
         mGridSize = grid == null ? 1 : grid.getGridSize();
@@ -93,8 +92,7 @@ public class Motion {
     }
 
     /**
-     * Clear the double tap detection. Wait till next touch down to start double tap detection
-     * again.
+     * Clear the double tap detection. Wait till next touch down to start double tap detection again.
      */
     public void clearDoubleTap() {
         mDoubleTapTouchDownTime = 0;
@@ -108,9 +106,8 @@ public class Motion {
      *         The absolute x-position on the display
      * @param yPos
      *         The absolute y-position on the display
-     * @return The (x,y)-position relative to the grid. For x-position -1 means left of grid,
-     * mGridSize means right of grid. For y-position -1 means above grid, mGridSize means below
-     * grid.
+     * @return The (x,y)-position relative to the grid. For x-position -1 means left of grid, mGridSize means right of
+     * grid. For y-position -1 means above grid, mGridSize means below grid.
      */
     int[] toGridCoordinates(float xPos, float yPos) {
         int[] coordinates = {-1, -1};
@@ -159,30 +156,28 @@ public class Motion {
     }
 
     /**
-     * Get the pixel coordinate for which the touch down event was registered for the given
-     * dimension.
+     * Get the pixel coordinate for which the touch down event was registered for the given dimension.
      *
      * @param dimension
      *         The dimension of the coordinated which has to be returned.
      * @return The pixel coordinate for which the touch down event was registered.
      */
     float getTouchDownPixelCoordinate(int dimension) {
-        return dimension == X_POS || dimension == Y_POS ? mTouchDownPixelCoordinates[dimension] :
-                -1f;
+        return dimension == X_POS || dimension == Y_POS ? mTouchDownPixelCoordinates[dimension] : -1f;
     }
 
     /**
-     * Checks if given coordinates match with coordinates of the cell for the touch down event was
-     * registered.
+     * Checks if given coordinates match with coordinates of the cell for the touch down event was registered.
      *
      * @param coordinates
-     *         The (x,y) coordinates which have to be compared with the coordinates of the cell for
-     *         the touch down event was registered.
+     *         The (x,y) coordinates which have to be compared with the coordinates of the cell for the touch down event
+     *         was registered.
      * @return True in case the coordinates match. False otherwise.
      */
     boolean equalsCoordinatesTouchDownCell(int[] coordinates) {
-        return coordinates != null && mTouchDownCellCoordinates != null && coordinates.length ==
-                2 && mTouchDownCellCoordinates.length == 2 && coordinates[X_POS] == mTouchDownCellCoordinates[X_POS] && coordinates[Y_POS] == mTouchDownCellCoordinates[Y_POS];
+        return coordinates != null && mTouchDownCellCoordinates != null && coordinates.length == 2 &&
+                mTouchDownCellCoordinates.length == 2 && coordinates[X_POS] == mTouchDownCellCoordinates[X_POS] &&
+                coordinates[Y_POS] == mTouchDownCellCoordinates[Y_POS];
     }
 
     /**
@@ -191,7 +186,8 @@ public class Motion {
      * @return True in case a position inside the grid was touched. False otherwise.
      */
     public boolean isTouchDownInsideGrid() {
-        return !(mTouchDownCellCoordinates[X_POS] > mGridSize - 1 || mTouchDownCellCoordinates[X_POS] < 0 || mTouchDownCellCoordinates[Y_POS] > mGridSize - 1 || mTouchDownCellCoordinates[Y_POS] < 0);
+        return !(mTouchDownCellCoordinates[X_POS] > mGridSize - 1 || mTouchDownCellCoordinates[X_POS] < 0 ||
+                mTouchDownCellCoordinates[Y_POS] > mGridSize - 1 || mTouchDownCellCoordinates[Y_POS] < 0);
 
     }
 }

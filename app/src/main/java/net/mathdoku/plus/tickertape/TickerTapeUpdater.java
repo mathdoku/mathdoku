@@ -33,8 +33,7 @@ class TickerTapeUpdater implements Runnable {
         if (!isCancelled) {
             String currentItemBeforeUpdate = tickerTape.getCurrentItem();
             tickerTape.moveToNextPosition();
-            countItemsDisplayedCompletely += currentItemBeforeUpdate.equals(
-                    tickerTape.getCurrentItem()) ? 0 : 1;
+            countItemsDisplayedCompletely += currentItemBeforeUpdate.equals(tickerTape.getCurrentItem()) ? 0 : 1;
 
             if (tickerTape.isEraseConditionFulfilled(countItemsDisplayedCompletely,
                                                      System.currentTimeMillis() - startTime)) {

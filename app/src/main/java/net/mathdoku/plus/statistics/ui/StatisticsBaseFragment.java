@@ -55,19 +55,16 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
     static final int chartRed5 = 0xFFFE9980;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return onCreateView(inflater, R.layout.statistics_fragment, container, savedInstanceState);
     }
 
-    protected View onCreateView(LayoutInflater inflater, int layout, ViewGroup container,
-                                @SuppressWarnings(
+    protected View onCreateView(LayoutInflater inflater, int layout, ViewGroup container, @SuppressWarnings(
             "UnusedParameters") Bundle savedInstanceState) {
         // Get default sizes for text
         mDefaultTextSize = getResources().getDimensionPixelSize(R.dimen.text_size_default);
         mDefaultTextSizeInDIP = (int) (getResources().getDimension(
-                net.mathdoku.plus.R.dimen.text_size_default) / getResources().getDisplayMetrics()
-                .density);
+                net.mathdoku.plus.R.dimen.text_size_default) / getResources().getDisplayMetrics().density);
 
         // Chart description will be displayed by default.
         mDisplayStatisticDescription = true;
@@ -108,11 +105,11 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
      * @param extraDataView
      *         An additional view which has to be displayed between chart and explanation.
      * @param explanation
-     *         The explanatory text of this section which will be displayed with respect to
-     *         settings. Null in case explanation is never available.
+     *         The explanatory text of this section which will be displayed with respect to settings. Null in case
+     *         explanation is never available.
      */
-    protected void addChartToStatisticsSection(String tag, String title, GraphicalView chart,
-                                               View extraDataView, String explanation) {
+    protected void addChartToStatisticsSection(String tag, String title, GraphicalView chart, View extraDataView,
+                                               String explanation) {
         // Inflate a new view for this statistics section
         View sectionView = mLayoutInflater.inflate(R.layout.statistics_section, null);
         if (sectionView == null) {
@@ -138,17 +135,14 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 
         // Add chart
         if (chart != null) {
-            LinearLayout linearLayout = (LinearLayout) sectionView.findViewById(
-                    R.id.statistics_section_chart);
+            LinearLayout linearLayout = (LinearLayout) sectionView.findViewById(R.id.statistics_section_chart);
             if (linearLayout != null) {
-                int paddingChartDIP = linearLayout.getPaddingTop() + linearLayout
-                        .getPaddingBottom();
+                int paddingChartDIP = linearLayout.getPaddingTop() + linearLayout.getPaddingBottom();
 
                 // The height of the achartengine view has to be set explicitly
                 // else it won't be displayed.
                 chart.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-                                                       getMaxChartHeight(titleHeightDIP,
-                                                                         paddingChartDIP)));
+                                                       getMaxChartHeight(titleHeightDIP, paddingChartDIP)));
 
                 linearLayout.addView(chart);
                 linearLayout.setVisibility(View.VISIBLE);
@@ -157,8 +151,7 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 
         // Add extra data
         if (extraDataView != null) {
-            LinearLayout linearLayout = (LinearLayout) sectionView.findViewById(
-                    R.id.statistics_section_extra_data);
+            LinearLayout linearLayout = (LinearLayout) sectionView.findViewById(R.id.statistics_section_extra_data);
             if (linearLayout != null) {
                 linearLayout.setVisibility(View.VISIBLE);
                 linearLayout.addView(extraDataView);
@@ -167,8 +160,7 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
 
         // Add body text for explaining the chart
         if (explanation != null && !explanation.isEmpty() && mDisplayStatisticDescription) {
-            TextView textView = (TextView) sectionView.findViewById(
-                    R.id.statistics_section_explanation);
+            TextView textView = (TextView) sectionView.findViewById(R.id.statistics_section_explanation);
             if (textView != null) {
                 textView.setText(explanation);
                 textView.setVisibility(View.VISIBLE);
@@ -195,15 +187,14 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
      *         The value (optional) for the row
      * @return The table row with fields for label and optionally the value.
      */
-    TableRow createDataTableRow(TableLayout.LayoutParams tableLayoutParams, String label,
-                                String value) {
+    TableRow createDataTableRow(TableLayout.LayoutParams tableLayoutParams, String label, String value) {
         // Create new TableRow
         TableRow tableRow = new TableRow(getActivity());
         tableRow.setLayoutParams(tableLayoutParams);
 
         // Set layout parameters for fields in the row
-        TableRow.LayoutParams tableRowLayoutParams = new TableRow.LayoutParams(
-                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        TableRow.LayoutParams tableRowLayoutParams = new TableRow.LayoutParams(LayoutParams.WRAP_CONTENT,
+                                                                               LayoutParams.WRAP_CONTENT);
 
         // Add label to row
         TextView textViewLabel = new TextView(getActivity());
@@ -235,14 +226,13 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
     }
 
     /**
-     * Determine the height to be used for the charts. The title and the chart should be entirely
-     * visible without scrolling.
+     * Determine the height to be used for the charts. The title and the chart should be entirely visible without
+     * scrolling.
      *
      * @param titleHeightPixels
      *         The height needed to display the title inclusive top and bottom padding.
      * @param paddingChartPixels
-     *         The height of the top and bottom padding set on the layout to which the chart is
-     *         added.
+     *         The height of the top and bottom padding set on the layout to which the chart is added.
      * @return The height to be set on the chart.
      */
     protected int getMaxContentHeight(int titleHeightPixels, int paddingChartPixels) {
@@ -260,10 +250,8 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
         // Calculate ActionBar height
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
-        if (theme != null && theme.resolveAttribute(android.R.attr.actionBarSize, typedValue,
-                                                    true)) {
-            maxContentHeight -= TypedValue.complexToDimensionPixelSize(typedValue.data,
-                                                                       displayMetrics);
+        if (theme != null && theme.resolveAttribute(android.R.attr.actionBarSize, typedValue, true)) {
+            maxContentHeight -= TypedValue.complexToDimensionPixelSize(typedValue.data, displayMetrics);
         }
 
         // Subtract height (inclusive padding) of chart title and padding of the
@@ -274,14 +262,13 @@ public class StatisticsBaseFragment extends android.support.v4.app.Fragment {
     }
 
     /**
-     * Determine the height to be used for the charts. The title and the chart should be entirely
-     * visible without scrolling.
+     * Determine the height to be used for the charts. The title and the chart should be entirely visible without
+     * scrolling.
      *
      * @param titleHeightPixels
      *         The height needed to display the title inclusive top and bottom padding.
      * @param paddingChartPixels
-     *         The height of the top and bottom padding set on the layout to which the chart is
-     *         added.
+     *         The height of the top and bottom padding set on the layout to which the chart is added.
      * @return The height to be set on the chart.
      */
     private int getMaxChartHeight(int titleHeightPixels, int paddingChartPixels) {

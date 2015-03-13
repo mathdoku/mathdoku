@@ -14,8 +14,7 @@ public class DivisionCageResult extends CageResult {
             return new DivisionCageResult(cellValues[0], cellValues[1]);
         }
         throw new IllegalStateException(
-                String.format("Cannot instantiate with specified values: %s",
-                              Arrays.toString(cellValues)));
+                String.format("Cannot instantiate with specified values: %s", Arrays.toString(cellValues)));
     }
 
     public static boolean canBeCreated(int... cellValues) {

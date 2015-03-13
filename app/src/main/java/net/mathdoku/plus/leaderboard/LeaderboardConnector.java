@@ -46,8 +46,7 @@ public class LeaderboardConnector {
      * @param gamesClient
      *         The games client which has to be used by the leaderboard connector.
      */
-    public LeaderboardConnector(AppFragmentActivity appFragmentActivity,
-                                final GamesClient gamesClient) {
+    public LeaderboardConnector(AppFragmentActivity appFragmentActivity, final GamesClient gamesClient) {
         mGamesClient = gamesClient;
         mAppFragmentActivity = appFragmentActivity;
 
@@ -80,13 +79,12 @@ public class LeaderboardConnector {
      * @param puzzleComplexity
      *         The complexity of the grid to which the score applies.
      * @param hideOperators
-     *         True in case of the grid to which the score applies had hidden operators. False
-     *         otherwise.
+     *         True in case of the grid to which the score applies had hidden operators. False otherwise.
      * @param timePlayed
      *         The elapsed time for the grid.
      */
-    public void submitScore(final int gridSize, final PuzzleComplexity puzzleComplexity,
-                            final boolean hideOperators, long timePlayed) {
+    public void submitScore(final int gridSize, final PuzzleComplexity puzzleComplexity, final boolean hideOperators,
+                            long timePlayed) {
         // Check boundaries of time played
         if (timePlayed <= 0 || timePlayed == Long.MAX_VALUE) {
             return;
@@ -103,23 +101,19 @@ public class LeaderboardConnector {
 
         // Determine the leaderboardId to which the score has to be submitted.
         String leaderboardId = mAppFragmentActivity.getResources()
-                .getString(LeaderboardType.getResId(
-                                   LeaderboardType.getIndex(gridSize, hideOperators,
-                                                            puzzleComplexity)));
+                .getString(
+                        LeaderboardType.getResId(LeaderboardType.getIndex(gridSize, hideOperators, puzzleComplexity)));
 
         if (DEBUG) {
-            Log.i(TAG,
-                  "Submit new score " + timePlayed + " for leaderboard" +
-                          getLeaderboardNameForLogging(
-                          leaderboardId) + " with callback listener");
+            Log.i(TAG, "Submit new score " + timePlayed + " for leaderboard" +
+                          getLeaderboardNameForLogging(leaderboardId) + " with callback listener");
         }
 
         // Submit the score as immediate. Upon receiving confirmation that the
         // score was processed by Google Play Services, the leaderboard rank
         // database can be updated.
-        mGamesClient.submitScoreImmediate(
-                new OnScoreSubmittedListenerImpl(gridSize, puzzleComplexity, hideOperators),
-                leaderboardId, timePlayed);
+        mGamesClient.submitScoreImmediate(new OnScoreSubmittedListenerImpl(gridSize, puzzleComplexity, hideOperators),
+                                          leaderboardId, timePlayed);
     }
 
     /**
@@ -128,13 +122,11 @@ public class LeaderboardConnector {
      * @param leaderboard
      *         The leaderboard for which a leaderboard score is received.
      * @param leaderboardScore
-     *         The leaderboard score containing the rank for the current player or if such rank does
-     *         not exists, the rank of the first player. Null in case no player has played this
-     *         leaderboard.
+     *         The leaderboard score containing the rank for the current player or if such rank does not exists, the
+     *         rank of the first player. Null in case no player has played this leaderboard.
      * @return True in case a new high score was achieved. False otherwise.
      */
-    boolean updateLeaderboardRankInformation(Leaderboard leaderboard,
-                                             LeaderboardScore leaderboardScore) {
+    boolean updateLeaderboardRankInformation(Leaderboard leaderboard, LeaderboardScore leaderboardScore) {
         if (leaderboard == null || leaderboardScore == null) {
             return false;
         }
@@ -144,18 +136,15 @@ public class LeaderboardConnector {
         String leaderboardId = leaderboard.getLeaderboardId();
 
         if (DEBUG) {
-            Log.i(TAG,
-                  "Received rank for current Player on leaderboard" + getLeaderboardNameForLogging(
-                          leaderboardId));
+            Log.i(TAG, "Received rank for current Player on leaderboard" + getLeaderboardNameForLogging(leaderboardId));
         }
 
-        LeaderboardRankDatabaseAdapter leaderboardRankDatabaseAdapter = new
-                LeaderboardRankDatabaseAdapter();
+        LeaderboardRankDatabaseAdapter leaderboardRankDatabaseAdapter = new LeaderboardRankDatabaseAdapter();
 
         // Get the current score registered for the leaderboard.
         LeaderboardRankRow leaderboardRankRow = leaderboardRankDatabaseAdapter.get(leaderboardId);
-        if (leaderboardRankRow.getScoreOrigin() == ScoreOrigin.NONE || leaderboardRankRow
-                .getRawScore() > leaderboardScore.getRawScore()) {
+        if (leaderboardRankRow.getScoreOrigin() == ScoreOrigin.NONE || leaderboardRankRow.getRawScore() >
+                leaderboardScore.getRawScore()) {
             // The score which was registered on Google Play Services is better
             // than the local top score. This can only happen in case the user
             // has achieved that score using another device or in case the app
@@ -163,15 +152,13 @@ public class LeaderboardConnector {
             newHighScoreAchieved = false;
             if (DEBUG) {
                 if (leaderboardRankRow.getScoreOrigin() == ScoreOrigin.NONE) {
-                    Log.i(TAG,
-                          "No local score does yet exist for leaderboard " +
+                    Log.i(TAG, "No local score does yet exist for leaderboard " +
                                   getLeaderboardNameForLogging(
-                                  leaderboardId) + ". The top score as registered on Google " +
+                                          leaderboardId) + ". The top score as registered on Google " +
                                   "Play Services (" + leaderboardScore.getRawScore() + ") " +
                                   "will be set as the best score for this leaderboard.");
                 } else {
-                    Log.i(TAG,
-                          "The local top score (" + leaderboardRankRow.getRawScore() + ") is not " +
+                    Log.i(TAG, "The local top score (" + leaderboardRankRow.getRawScore() + ") is not " +
                                   "" + "as good as the top score as registered on Google Play " +
                                   "Services (" + leaderboardScore.getRawScore() + ") for " +
                                   "leaderboard" + getLeaderboardNameForLogging(
@@ -197,8 +184,8 @@ public class LeaderboardConnector {
     }
 
     /**
-     * Get the name for a leaderboard based on the leaderboard id as used by Google Play Services.
-     * Should only be used in DEBUG mode.
+     * Get the name for a leaderboard based on the leaderboard id as used by Google Play Services. Should only be used
+     * in DEBUG mode.
      *
      * @param leaderboardId
      *         The leaderboard id as used by Google Play Services.
@@ -214,11 +201,9 @@ public class LeaderboardConnector {
             // Search for the leaderboard id
             for (int i = 0; i < mLeaderboardId.length; i++) {
                 if (mLeaderboardId[i].equals(leaderboardId)) {
-                    return "[size " + LeaderboardType.getGridSize(
-                            i) + ", " + (LeaderboardType.hasHiddenOperator(
+                    return "[size " + LeaderboardType.getGridSize(i) + ", " + (LeaderboardType.hasHiddenOperator(
                             i) ? "hidden operators" : "visible operators") + ", " +
-                            "" + LeaderboardType.getPuzzleComplexity(
-                            i)
+                            "" + LeaderboardType.getPuzzleComplexity(i)
                             .toString() + "]";
                 }
             }
@@ -244,8 +229,7 @@ public class LeaderboardConnector {
         private final PuzzleComplexity puzzleComplexity;
         private final boolean hideOperators;
 
-        public OnScoreSubmittedListenerImpl(int gridSize, PuzzleComplexity puzzleComplexity,
-                                            boolean hideOperators) {
+        public OnScoreSubmittedListenerImpl(int gridSize, PuzzleComplexity puzzleComplexity, boolean hideOperators) {
             this.gridSize = gridSize;
             this.puzzleComplexity = puzzleComplexity;
             this.hideOperators = hideOperators;
@@ -257,19 +241,16 @@ public class LeaderboardConnector {
                 // The score was submitted and processed by Google Play
                 // Services.
                 if (DEBUG) {
-                    Log.i(TAG,
-                          "The onScoreSubmitted listener for method submitScore has " + "been " +
+                    Log.i(TAG, "The onScoreSubmitted listener for method submitScore has " + "been " +
                                   "called successfully for leaderboard " +
-                                  getLeaderboardNameForLogging(
-                                  submitScoreResult.getLeaderboardId()));
+                                  getLeaderboardNameForLogging(submitScoreResult.getLeaderboardId()));
                 }
 
                 // Retrieve the current rank of the player. This rank
                 // information is needed to update the leaderboard rank
                 // information.
                 new LeaderboardRankPlayer(LeaderboardConnector.this,
-                                          new OnScoreSubmittedLeaderboardRankPlayerListener())
-                        .loadCurrentPlayerRank(
+                                          new OnScoreSubmittedLeaderboardRankPlayerListener()).loadCurrentPlayerRank(
                         submitScoreResult.getLeaderboardId());
             }
         }
@@ -278,8 +259,7 @@ public class LeaderboardConnector {
             @Override
             public void onLeaderboardRankLoaded(Leaderboard leaderboard, LeaderboardScore leaderboardScore) {
                 // The leaderboard rank for the current player has been received.
-                boolean newHighScoreAchieved = updateLeaderboardRankInformation(leaderboard,
-                                                                                leaderboardScore);
+                boolean newHighScoreAchieved = updateLeaderboardRankInformation(leaderboard, leaderboardScore);
                 if (newHighScoreAchieved) {
                     new TopScoreDialog(mAppFragmentActivity, LeaderboardType.getIconResId(
                             LeaderboardType.getIndex(gridSize, hideOperators, puzzleComplexity)),
@@ -287,7 +267,8 @@ public class LeaderboardConnector {
                                        leaderboardScore.getDisplayRank()).show();
                     if (DEBUG) {
                         Log.i(TAG,
-                              "Leaderboard: " + leaderboard.getDisplayName() + "\n" + "Score: " + leaderboardScore.getDisplayScore() + "\n" + "Rank: " + leaderboardScore.getDisplayRank());
+                              "Leaderboard: " + leaderboard.getDisplayName() + "\n" + "Score: " + leaderboardScore
+                                      .getDisplayScore() + "\n" + "Rank: " + leaderboardScore.getDisplayRank());
                     }
                 }
             }

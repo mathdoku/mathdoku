@@ -17,232 +17,222 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class GridCreator {
-	public static final String FIELD_SEPARATOR_GRID_DEFINITION_PART = ":";
-	private final GridBuilder mGridBuilder;
-	private Grid mGrid;
-	private boolean mSetCorrectEnteredValueToAllCells;
-	private static final int ID_NO_CELL_SELECTED = -1;
-	private int mSelectedCellId = ID_NO_CELL_SELECTED;
-	public static final long DO_NOT_USE_TO_REGENERATE_GRID = 0;
+    public static final String FIELD_SEPARATOR_GRID_DEFINITION_PART = ":";
+    private final GridBuilder mGridBuilder;
+    private Grid mGrid;
+    private boolean mSetCorrectEnteredValueToAllCells;
+    private static final int ID_NO_CELL_SELECTED = -1;
+    private int mSelectedCellId = ID_NO_CELL_SELECTED;
+    public static final long DO_NOT_USE_TO_REGENERATE_GRID = 0;
 
-	protected GridCreator() {
-		mGridBuilder = new GridBuilder();
-	}
+    protected GridCreator() {
+        mGridBuilder = new GridBuilder();
+    }
 
-	/**
-	 * Set a cell as selected cell. By default no cell is selected.
-	 */
-	public GridCreator setSelectedCell(int cellId) {
-		if (mGrid != null) {
-			throw new UnexpectedMethodInvocationException(
-					"Method should be called before the grid is build.");
-		}
-		mSelectedCellId = cellId;
+    /**
+     * Set a cell as selected cell. By default no cell is selected.
+     */
+    public GridCreator setSelectedCell(int cellId) {
+        if (mGrid != null) {
+            throw new UnexpectedMethodInvocationException("Method should be called before the grid is build.");
+        }
+        mSelectedCellId = cellId;
 
-		return this;
-	}
+        return this;
+    }
 
-	public GridCreator setEmptyGrid() {
-		if (mGrid != null) {
-			throw new UnexpectedMethodInvocationException(
-					"Grid has already been build by other method invocation.");
-		}
-		mSetCorrectEnteredValueToAllCells = false;
-		createGrid();
+    public GridCreator setEmptyGrid() {
+        if (mGrid != null) {
+            throw new UnexpectedMethodInvocationException("Grid has already been build by other method invocation.");
+        }
+        mSetCorrectEnteredValueToAllCells = false;
+        createGrid();
 
-		return this;
-	}
+        return this;
+    }
 
-	public GridCreator setCorrectEnteredValueToAllCells() {
-		if (mGrid != null) {
-			throw new UnexpectedMethodInvocationException(
-					"Grid has already been build by other method invocation.");
-		}
-		mSetCorrectEnteredValueToAllCells = true;
-		createGrid();
+    public GridCreator setCorrectEnteredValueToAllCells() {
+        if (mGrid != null) {
+            throw new UnexpectedMethodInvocationException("Grid has already been build by other method invocation.");
+        }
+        mSetCorrectEnteredValueToAllCells = true;
+        createGrid();
 
-		return this;
-	}
+        return this;
+    }
 
-	private void createGrid() {
-		GridGeneratingParameters gridGeneratingParameters = getGridGeneratingParameters();
-		List<Cage> cages = getCages();
-		List<Cell> cells = getCells();
+    private void createGrid() {
+        GridGeneratingParameters gridGeneratingParameters = getGridGeneratingParameters();
+        List<Cage> cages = getCages();
+        List<Cell> cells = getCells();
 
-		mGridBuilder
-				.setGridSize(getGridType().getGridSize())
-				.setGridGeneratingParameters(gridGeneratingParameters)
-				.setCells(cells)
-				.setCages(cages);
-		if (mSetCorrectEnteredValueToAllCells) {
-			mGridBuilder.setActive(false);
-		}
+        mGridBuilder.setGridSize(getGridType().getGridSize())
+                .setGridGeneratingParameters(gridGeneratingParameters)
+                .setCells(cells)
+                .setCages(cages);
+        if (mSetCorrectEnteredValueToAllCells) {
+            mGridBuilder.setActive(false);
+        }
 
-		mGrid = mGridBuilder.build();
-	}
+        mGrid = mGridBuilder.build();
+    }
 
-	public GridGeneratingParameters getGridGeneratingParameters() {
-		return new GridGeneratingParametersBuilder()
-				.setGridType(getGridType())
-				.setHideOperators(getHideOperator())
-				.setPuzzleComplexity(getPuzzleComplexity())
-				.setGameSeed(getGameSeed())
-				.setGeneratorVersionNumber(getGeneratorVersionNumber())
-				.setMaxCageResult(getMaxCageResult())
-				.setMaxCageSize(getMaxCageSize())
-				.createGridGeneratingParameters();
-	}
+    public GridGeneratingParameters getGridGeneratingParameters() {
+        return new GridGeneratingParametersBuilder().setGridType(getGridType())
+                .setHideOperators(getHideOperator())
+                .setPuzzleComplexity(getPuzzleComplexity())
+                .setGameSeed(getGameSeed())
+                .setGeneratorVersionNumber(getGeneratorVersionNumber())
+                .setMaxCageResult(getMaxCageResult())
+                .setMaxCageSize(getMaxCageSize())
+                .createGridGeneratingParameters();
+    }
 
-	public List<Cage> getCages() {
-		List<Cage> cages = new ArrayList<Cage>();
+    public List<Cage> getCages() {
+        List<Cage> cages = new ArrayList<Cage>();
 
-		for (int cageId = 0; cageId < getResultPerCage().length; cageId++) {
-			Cage cage = new CageBuilder()
-					.setId(cageId)
-					.setHideOperator(getHideOperator())
-					.setCells(getCells(cageId))
-					.setResult(getResultPerCage()[cageId])
-					.setCageOperator(getCageOperatorPerCage()[cageId])
-					.build();
-			cages.add(cage);
-		}
+        for (int cageId = 0; cageId < getResultPerCage().length; cageId++) {
+            Cage cage = new CageBuilder().setId(cageId)
+                    .setHideOperator(getHideOperator())
+                    .setCells(getCells(cageId))
+                    .setResult(getResultPerCage()[cageId])
+                    .setCageOperator(getCageOperatorPerCage()[cageId])
+                    .build();
+            cages.add(cage);
+        }
 
-		return cages;
-	}
+        return cages;
+    }
 
-	protected int[] getCells(int cageId) {
-		int[] cells = new int[getNumberOfCellsForCage(cageId)];
-		int count = 0;
-		for (int i = 0; i < getCageIdPerCell().length; i++) {
-			if (getCageIdPerCell()[i] == cageId) {
-				cells[count++] = i;
-			}
-		}
+    protected int[] getCells(int cageId) {
+        int[] cells = new int[getNumberOfCellsForCage(cageId)];
+        int count = 0;
+        for (int i = 0; i < getCageIdPerCell().length; i++) {
+            if (getCageIdPerCell()[i] == cageId) {
+                cells[count++] = i;
+            }
+        }
 
-		return cells;
-	}
+        return cells;
+    }
 
-	private int getNumberOfCellsForCage(int cageId) {
-		int count = 0;
-		for (int id : getCageIdPerCell()) {
-			if (id == cageId) {
-				count++;
-			}
-		}
-		return count;
-	}
+    private int getNumberOfCellsForCage(int cageId) {
+        int count = 0;
+        for (int id : getCageIdPerCell()) {
+            if (id == cageId) {
+                count++;
+            }
+        }
+        return count;
+    }
 
-	public List<Cell> getCells() {
-		List<Cell> cells = new ArrayList<Cell>();
-		for (int cellNumber = 0; cellNumber < getCorrectValuePerCell().length; cellNumber++) {
-			cells.add(createCell(cellNumber,
-					getCorrectValuePerCell()[cellNumber],
-					getCageIdPerCell()[cellNumber]));
-		}
+    public List<Cell> getCells() {
+        List<Cell> cells = new ArrayList<Cell>();
+        for (int cellNumber = 0; cellNumber < getCorrectValuePerCell().length; cellNumber++) {
+            cells.add(createCell(cellNumber, getCorrectValuePerCell()[cellNumber], getCageIdPerCell()[cellNumber]));
+        }
 
-		return cells;
-	}
+        return cells;
+    }
 
-	protected Cell createCell(int cellNumber, int cellValue, int cageId) {
-		CellBuilder cellBuilder = new CellBuilder()
-				.setGridSize(getGridType().getGridSize())
-				.setId(cellNumber)
-				.setCorrectValue(cellValue)
-				.setCageId(cageId);
-		if (mSetCorrectEnteredValueToAllCells) {
-			cellBuilder.setEnteredValue(cellValue);
-		}
-		if (cellNumber == mSelectedCellId) {
-			cellBuilder.setSelected(true);
-		}
+    protected Cell createCell(int cellNumber, int cellValue, int cageId) {
+        CellBuilder cellBuilder = new CellBuilder().setGridSize(getGridType().getGridSize())
+                .setId(cellNumber)
+                .setCorrectValue(cellValue)
+                .setCageId(cageId);
+        if (mSetCorrectEnteredValueToAllCells) {
+            cellBuilder.setEnteredValue(cellValue);
+        }
+        if (cellNumber == mSelectedCellId) {
+            cellBuilder.setSelected(true);
+        }
 
-		return cellBuilder.build();
-	}
+        return cellBuilder.build();
+    }
 
-	public Grid getGrid() {
-		if (mGrid == null) {
-			throw new UnexpectedMethodInvocationException(
-					"Method should not be called before the grid is build with setEmptyGrid or setCorrectEnteredValueToAllCells.");
-		}
-		return mGrid;
-	}
+    public Grid getGrid() {
+        if (mGrid == null) {
+            throw new UnexpectedMethodInvocationException(
+                    "Method should not be called before the grid is build with setEmptyGrid or " +
+                            "setCorrectEnteredValueToAllCells.");
+        }
+        return mGrid;
+    }
 
-	public int getIdTopLeftCellOfCageContainingCellWithId(int cellId) {
-		int cageId = getCageIdPerCell()[cellId];
-		return getIdTopLeftCelOfCage(cageId);
-	}
+    public int getIdTopLeftCellOfCageContainingCellWithId(int cellId) {
+        int cageId = getCageIdPerCell()[cellId];
+        return getIdTopLeftCelOfCage(cageId);
+    }
 
-	private int getIdTopLeftCelOfCage(int cageId) {
-		for (int i = 0; i < getCageIdPerCell().length; i++) {
-			if (getCageIdPerCell()[i] == cageId) {
-				return i;
-			}
-		}
-		return -1;
-	}
+    private int getIdTopLeftCelOfCage(int cageId) {
+        for (int i = 0; i < getCageIdPerCell().length; i++) {
+            if (getCageIdPerCell()[i] == cageId) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
-	public GridCreator setCorrectEnteredValueInCell(int cellId) {
-		Cell cell = mGrid.getCell(cellId);
-		int correctValue = cell.getCorrectValue();
-		cell.setEnteredValue(correctValue);
+    public GridCreator setCorrectEnteredValueInCell(int cellId) {
+        Cell cell = mGrid.getCell(cellId);
+        int correctValue = cell.getCorrectValue();
+        cell.setEnteredValue(correctValue);
 
-		return this;
-	}
+        return this;
+    }
 
-	public GridCreator setIncorrectEnteredValueInCell(int cellId) {
-		Cell cell = mGrid.getCell(cellId);
-		int correctValue = cell.getCorrectValue();
-		cell.setEnteredValue(correctValue == 1 ? getGridType().getGridSize()
-				: 1);
+    public GridCreator setIncorrectEnteredValueInCell(int cellId) {
+        Cell cell = mGrid.getCell(cellId);
+        int correctValue = cell.getCorrectValue();
+        cell.setEnteredValue(correctValue == 1 ? getGridType().getGridSize() : 1);
 
-		return this;
-	}
+        return this;
+    }
 
-	public int getCageIdOfCell(int cellId) {
-		return getCageIdPerCell()[cellId];
-	}
+    public int getCageIdOfCell(int cellId) {
+        return getCageIdPerCell()[cellId];
+    }
 
-	public final boolean canBeRegenerated() {
-		return getGameSeed() != DO_NOT_USE_TO_REGENERATE_GRID;
-	}
+    public final boolean canBeRegenerated() {
+        return getGameSeed() != DO_NOT_USE_TO_REGENERATE_GRID;
+    }
 
-	/**
-	 * Override in subclass in case the grid can be regenerated using its game
-	 * seed.
-	 */
-	protected long getGameSeed() {
-		return DO_NOT_USE_TO_REGENERATE_GRID;
-	}
+    /**
+     * Override in subclass in case the grid can be regenerated using its game seed.
+     */
+    protected long getGameSeed() {
+        return DO_NOT_USE_TO_REGENERATE_GRID;
+    }
 
-	protected abstract GridType getGridType();
+    protected abstract GridType getGridType();
 
-	protected abstract boolean getHideOperator();
+    protected abstract boolean getHideOperator();
 
-	protected abstract PuzzleComplexity getPuzzleComplexity();
+    protected abstract PuzzleComplexity getPuzzleComplexity();
 
-	protected abstract int getGeneratorVersionNumber();
+    protected abstract int getGeneratorVersionNumber();
 
-	protected abstract int getMaxCageResult();
+    protected abstract int getMaxCageResult();
 
-	protected abstract int getMaxCageSize();
+    protected abstract int getMaxCageSize();
 
-	protected abstract int[] getCorrectValuePerCell();
+    protected abstract int[] getCorrectValuePerCell();
 
-	protected abstract int[] getCageIdPerCell();
+    protected abstract int[] getCageIdPerCell();
 
-	protected abstract int[] getResultPerCage();
+    protected abstract int[] getResultPerCage();
 
-	protected abstract CageOperator[] getCageOperatorPerCage();
+    protected abstract CageOperator[] getCageOperatorPerCage();
 
-	public abstract String getGridDefinition();
+    public abstract String getGridDefinition();
 
-	public int getIdOfUpperLeftCellOfCageWithMultipleCellsAndAnUnrevealedCageOperator() {
-		for (Cage cage : mGrid.getCages()) {
-			if (cage.isOperatorHidden() && cage.getNumberOfCells() > 1) {
-				return cage.getIdUpperLeftCell();
-			}
-		}
-		throw new IllegalStateException(
-				"This grid has no cage having multiple cells for which the cage operator is not yet unrevealed.");
-	}
+    public int getIdOfUpperLeftCellOfCageWithMultipleCellsAndAnUnrevealedCageOperator() {
+        for (Cage cage : mGrid.getCages()) {
+            if (cage.isOperatorHidden() && cage.getNumberOfCells() > 1) {
+                return cage.getIdUpperLeftCell();
+            }
+        }
+        throw new IllegalStateException(
+                "This grid has no cage having multiple cells for which the cage operator is not yet unrevealed.");
+    }
 }

@@ -52,8 +52,8 @@ public class Painter {
     /**
      * Creates a new instance of {@link net.mathdoku.plus.painter.Painter}.
      * <p/>
-     * This object can not be instantiated directly. Use {@link #getInstance()} to get the singleton
-     * reference to the GridPainter object.
+     * This object can not be instantiated directly. Use {@link #getInstance()} to get the singleton reference to the
+     * GridPainter object.
      */
     private Painter() {
         // Set the typeface
@@ -86,8 +86,7 @@ public class Painter {
     }
 
     /**
-     * Gets the singleton reference to the GridPainter object. If it does not yet exist then it will
-     * be created.
+     * Gets the singleton reference to the GridPainter object. If it does not yet exist then it will be created.
      *
      * @return The singleton reference to the GridPainter object.
      */
@@ -104,8 +103,7 @@ public class Painter {
      * Change the width of the border of the grid.
      *
      * @param thin
-     *         True in case a small border needs to be set. False in case a normal border should be
-     *         used.
+     *         True in case a small border needs to be set. False in case a normal border should be used.
      */
     private void setBorderSizes(boolean thin) {
         mGridPainter.setBorderSizes(thin);

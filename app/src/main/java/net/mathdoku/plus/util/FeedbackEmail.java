@@ -60,8 +60,7 @@ public class FeedbackEmail {
     }
 
     /**
-     * Create a log file containing basic information about the device, the configuration and the
-     * preferences.
+     * Create a log file containing basic information about the device, the configuration and the preferences.
      *
      * @param filename
      *         The name of the log file to be created.
@@ -182,8 +181,7 @@ public class FeedbackEmail {
             String key = entry.getKey();
             String value = entry.getValue();
 
-            logLine += FIELD_DELIMITER_LEVEL1 + key + FIELD_DELIMITER_LEVEL2 + (value == null ?
-                    "" : value);
+            logLine += FIELD_DELIMITER_LEVEL1 + key + FIELD_DELIMITER_LEVEL2 + (value == null ? "" : value);
         }
         writeLine(logLine + EOL_DELIMITER);
     }
@@ -230,52 +228,38 @@ public class FeedbackEmail {
                                 .getDecorView(), FileProvider.SCREENDUMP_FILE_NAME);
 
         new AlertDialog.Builder(mActivity).setTitle(mActivity.getResources()
-                                                            .getString(
-                                                                    R.string.dialog_send_feedback_title))
+                                                            .getString(R.string.dialog_send_feedback_title))
                 .setMessage(mActivity.getResources()
                                     .getString(R.string.dialog_send_feedback_text))
-                .setNegativeButton(R.string.dialog_general_button_close,
-                                   new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.dialog_general_button_close, new DialogInterface.OnClickListener() {
                                        @Override
-                                       public void onClick(DialogInterface dialog,
-                                                           int whichButton) {
+                                       public void onClick(DialogInterface dialog, int whichButton) {
                                            // Do nothing
                                        }
                                    })
                 .setPositiveButton(R.string.dialog_send_feedback_positive_button,
                                    new DialogInterface.OnClickListener() {
                                        @Override
-                                       public void onClick(DialogInterface dialog,
-                                                           int whichButton) {
+                                       public void onClick(DialogInterface dialog, int whichButton) {
                                            // Send log file
                                            Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
                                            intent.setType("message/rfc822");
-                                           intent.putExtra(Intent.EXTRA_EMAIL,
-                                                           new String[]{"info@mathdoku.net"});
-                                           intent.putExtra(Intent.EXTRA_SUBJECT,
-                                                           mActivity.getResources()
-                                                                   .getString(
-                                                                           R.string.feedback_email_subject));
-                                           intent.putExtra(Intent.EXTRA_TEXT,
-                                                           mActivity.getResources()
-                                                                   .getString(
-                                                                           R.string.feedback_email_body));
+                                           intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"info@mathdoku.net"});
+                                           intent.putExtra(Intent.EXTRA_SUBJECT, mActivity.getResources()
+                                                                   .getString(R.string.feedback_email_subject));
+                                           intent.putExtra(Intent.EXTRA_TEXT, mActivity.getResources()
+                                                                   .getString(R.string.feedback_email_body));
 
                                            List<Uri> uris = new ArrayList<Uri>();
-                                           uris.add(FileProvider.getUri(
-                                                   FileProvider.SCREENDUMP_FILE_NAME));
+                                           uris.add(FileProvider.getUri(FileProvider.SCREENDUMP_FILE_NAME));
                                            if (createLogFile(FileProvider.FEEDBACK_LOG_FILE_NAME)) {
-                                               uris.add(FileProvider.getUri(
-                                                       FileProvider.FEEDBACK_LOG_FILE_NAME));
+                                               uris.add(FileProvider.getUri(FileProvider.FEEDBACK_LOG_FILE_NAME));
                                            }
-                                           if (Config.APP_MODE == Config.AppMode.DEVELOPMENT &&
-                                                   copyDatabase(
+                                           if (Config.APP_MODE == Config.AppMode.DEVELOPMENT && copyDatabase(
                                                    FileProvider.DATABASE_FILE_NAME)) {
-                                               uris.add(FileProvider.getUri(
-                                                       FileProvider.DATABASE_FILE_NAME));
+                                               uris.add(FileProvider.getUri(FileProvider.DATABASE_FILE_NAME));
                                            }
-                                           intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM,
-                                                                              (ArrayList<?
+                                           intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, (ArrayList<?
                                                                                       extends
                                                                                       Parcelable>) uris);
                                            try {
@@ -285,20 +269,19 @@ public class FeedbackEmail {
                                                                                                             R.string.dialog_send_feedback_title)));
                                            } catch (android.content.ActivityNotFoundException ex) {
                                                Log.d(TAG, "No email app installed", ex);
-                                               AlertDialog.Builder builder = new AlertDialog.Builder(
-                                                       mActivity);
-                                               builder.setTitle(
-                                                       R.string.dialog_no_email_client_found_title)
+                                               AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                                               builder.setTitle(R.string.dialog_no_email_client_found_title)
                                                        .setMessage(
                                                                R.string.dialog_sending_feedback_email_is_not_possible_body)
-                                                       .setNeutralButton(
-                                                               R.string.dialog_general_button_close,
-                                                               new DialogInterface.OnClickListener() {
-                                                                   @Override
-                                                                   public void onClick(DialogInterface dialog, int id) {
-                                                                       // Do nothing
-                                                                   }
-                                                               })
+                                                       .setNeutralButton(R.string.dialog_general_button_close,
+                                                                         new DialogInterface.OnClickListener() {
+                                                                             @Override
+                                                                             public void onClick(DialogInterface
+                                                                                                         dialog,
+                                                                                                 int id) {
+                                                                                 // Do nothing
+                                                                             }
+                                                                         })
                                                        .create()
                                                        .show();
                                            }
@@ -322,8 +305,7 @@ public class FeedbackEmail {
 
         final Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("message/rfc822");
-        List<ResolveInfo> list = packageManager.queryIntentActivities(intent,
-                                                                      PackageManager.MATCH_DEFAULT_ONLY);
+        List<ResolveInfo> list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
 
         return list.size() <= 0;
     }

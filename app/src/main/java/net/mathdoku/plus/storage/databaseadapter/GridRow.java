@@ -66,8 +66,7 @@ public class GridRow {
             return false;
         }
         if (getGridGeneratingParameters() != null ? !getGridGeneratingParameters().equals(
-                gridRow.getGridGeneratingParameters()) : gridRow.getGridGeneratingParameters() !=
-                null) {
+                gridRow.getGridGeneratingParameters()) : gridRow.getGridGeneratingParameters() != null) {
             return false;
         }
 

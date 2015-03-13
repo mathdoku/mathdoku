@@ -18,9 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class creates the unique definition for a grid. This definition is used to uniquely identify
- * grid stored in the database of share via url's. Also the class is able to recreate a grid based
- * on the grid definition.
+ * This class creates the unique definition for a grid. This definition is used to uniquely identify grid stored in the
+ * database of share via url's. Also the class is able to recreate a grid based on the grid definition.
  */
 public class GridDefinition {
     @SuppressWarnings("unused")
@@ -96,8 +95,7 @@ public class GridDefinition {
             gridType = GridType.getFromNumberOfCells(cellCount);
         } catch (IllegalArgumentException e) {
             throw new InvalidGridException(
-                    String.format("Definition '%s' contains an invalid number of cells.",
-                                  gridDefinition), e);
+                    String.format("Definition '%s' contains an invalid number of cells.", gridDefinition), e);
         }
         gridSize = gridType.getGridSize();
     }
@@ -148,8 +146,7 @@ public class GridDefinition {
         int cageId = cageDefinitionSplitter.getCageId();
         if (cageId < 0 || cageId >= mCountCellsPerCage.length) {
             throw new InvalidGridException(
-                    String.format("Cage id '%d' in cage definition '%s' is not valid.", cageId,
-                                  cageDefinition));
+                    String.format("Cage id '%d' in cage definition '%s' is not valid.", cageId, cageDefinition));
         }
         cageBuilder.setId(cageId);
         cageBuilder.setResult(cageDefinitionSplitter.getResult());
@@ -199,15 +196,14 @@ public class GridDefinition {
         }
         if (solution.length != gridSize) {
             throw new InvalidGridException(
-                    String.format("Solution array has %d rows while %d rows were expected.",
-                                  solution.length, gridSize));
+                    String.format("Solution array has %d rows while %d rows were expected.", solution.length,
+                                  gridSize));
         }
         for (int row = 0; row < gridSize; row++) {
             if (solution[row].length != gridSize) {
-                throw new InvalidGridException(String.format(
-                        "Solution array has %d columns in row %d while %d columns " + "were " +
-                                "expected.",
-                        solution == null ? 0 : solution[row].length, row, gridSize));
+                throw new InvalidGridException(
+                        String.format("Solution array has %d columns in row %d while %d columns " + "were " +
+                                              "expected.", solution == null ? 0 : solution[row].length, row, gridSize));
             }
         }
 
@@ -220,7 +216,8 @@ public class GridDefinition {
      * @return The grid created from the definition. Null in case of an error.
      */
     public Grid createGrid() {
-        GridGeneratingParametersBuilder mGridGeneratingParametersBuilder = objectsCreator.createGridGeneratingParametersBuilder();
+        GridGeneratingParametersBuilder mGridGeneratingParametersBuilder = objectsCreator
+                .createGridGeneratingParametersBuilder();
         mGridGeneratingParametersBuilder.setGridType(gridType);
         // The complexity is not needed to rebuild the puzzle, but it is stored
         // as it is a great communicator to the (receiving) user how difficult
@@ -232,8 +229,7 @@ public class GridDefinition {
         return gridBuilder.setGridSize(gridSize)
                 .setCells(mCells)
                 .setCages(mCages)
-                .setGridGeneratingParameters(
-                        mGridGeneratingParametersBuilder.createGridGeneratingParameters())
+                .setGridGeneratingParameters(mGridGeneratingParametersBuilder.createGridGeneratingParameters())
                 .build();
     }
 

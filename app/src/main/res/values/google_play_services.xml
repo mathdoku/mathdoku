@@ -12,9 +12,9 @@
     <!-- Identifiers for Google Play Service as used for DEVELOPMENT (DBUG) TESTING -->
 
     <!-- Note: the game services definition on Google Play also includes definitions -->
-	<!-- for archievements as this is required in order to release the Play Services. -->
-	<!-- The achievement definitions are not used in the app and therefore have not -->
-	<!-- been added to the list below.  -->
+    <!-- for archievements as this is required in order to release the Play Services. -->
+    <!-- The achievement definitions are not used in the app and therefore have not -->
+    <!-- been added to the list below.  -->
 
     <!-- Google Play Games Services id's when app is build in DEBUG mode. -->
     <string name="app_id" translatable="false">282401107486</string>

@@ -21,20 +21,17 @@ public class TipCheat extends TipDialog {
     }
 
     /**
-     * Checks whether this tip has to be displayed. Should be called statically before creating this
-     * object.
+     * Checks whether this tip has to be displayed. Should be called statically before creating this object.
      *
      * @param preferences
-     *         Preferences of the activity for which has to be checked whether this tip should be
-     *         shown.
+     *         Preferences of the activity for which has to be checked whether this tip should be shown.
      * @param cheat
      *         The cheat for which has to be checked if it might be displayed.
      * @return True in case the tip might be displayed. False otherwise.
      */
     public static boolean toBeDisplayed(Preferences preferences, Cheat cheat) {
         // Do not display in case it was displayed less than 12 hours ago
-        if (preferences.getTipLastDisplayTime(
-                getTipName(cheat)) > System.currentTimeMillis() - 12 * 60 * 60 * 1000) {
+        if (preferences.getTipLastDisplayTime(getTipName(cheat)) > System.currentTimeMillis() - 12 * 60 * 60 * 1000) {
             return false;
         }
 

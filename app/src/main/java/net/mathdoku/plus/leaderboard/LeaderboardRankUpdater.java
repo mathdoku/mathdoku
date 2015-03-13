@@ -17,8 +17,8 @@ import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankRowBuilder;
 import java.text.DateFormat;
 
 /**
- * This class updates one single leaderboard rank in the database with the latest ranking
- * information from Google Play Services.
+ * This class updates one single leaderboard rank in the database with the latest ranking information from Google Play
+ * Services.
  */
 public class LeaderboardRankUpdater {
     @SuppressWarnings("unused")
@@ -80,8 +80,8 @@ public class LeaderboardRankUpdater {
     }
 
     /**
-     * Updates the current leaderboard rank. Note that the updates are processed asynchronously.
-     * Upon completing updating all leaderboard, the listener will be called.
+     * Updates the current leaderboard rank. Note that the updates are processed asynchronously. Upon completing
+     * updating all leaderboard, the listener will be called.
      */
     public void update() {
         // In case the update is not yet started then get the first leaderboard
@@ -98,8 +98,8 @@ public class LeaderboardRankUpdater {
             }
         } else {
             // Update this leaderboard rank.
-            if (mLeaderboardRankRow.getScoreOrigin() == ScoreOrigin.LOCAL_DATABASE &&
-                    mLeaderboardRankRow.getRawScore() > 0) {
+            if (mLeaderboardRankRow.getScoreOrigin() == ScoreOrigin.LOCAL_DATABASE && mLeaderboardRankRow.getRawScore
+                    () > 0) {
                 // A local top score was already registered for this
                 // leaderboard. This score is submitted which will also result
                 // in updating the ranking information.
@@ -122,13 +122,12 @@ public class LeaderboardRankUpdater {
     }
 
     /**
-     * Submits the current top score of the leaderboard rank as a new score to Google Play Services.
-     * As a result the ranking information will be updated as well.
+     * Submits the current top score of the leaderboard rank as a new score to Google Play Services. As a result the
+     * ranking information will be updated as well.
      */
     private void submitLocalTopScore() {
         if (DEBUG) {
-            Log.i(TAG,
-                  "Submit score (" + mLeaderboardRankRow.getRawScore() + ") for existing " +
+            Log.i(TAG, "Submit score (" + mLeaderboardRankRow.getRawScore() + ") for existing " +
                           "leaderboard" + mLeaderboardConnector.getLeaderboardNameForLogging(
                           mLeaderboardRankRow.getLeaderboardId()) + " which was last submitted on" +
                           " " + DateFormat.getDateTimeInstance()
@@ -136,14 +135,12 @@ public class LeaderboardRankUpdater {
                           "listener");
         }
         mLeaderboardConnector.getGamesClient()
-                .submitScoreImmediate(new OnSubmitScoreImmediateListener(),
-                                      mLeaderboardRankRow.getLeaderboardId(),
+                .submitScoreImmediate(new OnSubmitScoreImmediateListener(), mLeaderboardRankRow.getLeaderboardId(),
                                       mLeaderboardRankRow.getRawScore());
     }
 
     private void clearLeaderboardRank(Leaderboard leaderboard) {
-        LeaderboardRankDatabaseAdapter leaderboardRankDatabaseAdapter = new
-                LeaderboardRankDatabaseAdapter();
+        LeaderboardRankDatabaseAdapter leaderboardRankDatabaseAdapter = new LeaderboardRankDatabaseAdapter();
         LeaderboardRankRow leaderboardRankRow = LeaderboardRankRowBuilder.from(
                 leaderboardRankDatabaseAdapter.get(leaderboard.getLeaderboardId()))
                 .setRankNotAvailable()
@@ -155,8 +152,7 @@ public class LeaderboardRankUpdater {
      * Updates the ranking information of the current leaderboard.
      */
     private void updateRankingInformation() {
-        new LeaderboardRankPlayer(mLeaderboardConnector,
-                                  new UpdateRankingInformationListener()).loadCurrentPlayerRank(
+        new LeaderboardRankPlayer(mLeaderboardConnector, new UpdateRankingInformationListener()).loadCurrentPlayerRank(
                 mLeaderboardRankRow.getLeaderboardId());
     }
 
@@ -170,8 +166,8 @@ public class LeaderboardRankUpdater {
     }
 
     /**
-     * Wrap up after finishing the update of a leaderboard rank. Listener will be informed. Next
-     * leaderboard will be updated.
+     * Wrap up after finishing the update of a leaderboard rank. Listener will be informed. Next leaderboard will be
+     * updated.
      */
     private void setUpdateFinished() {
         // Inform listener if no more leaderboard ranks need to be updated.
@@ -187,11 +183,11 @@ public class LeaderboardRankUpdater {
     }
 
     /**
-     * Get the number of leaderboards which have been updated with the best score of the current
-     * player as known by Google Play Services.
+     * Get the number of leaderboards which have been updated with the best score of the current player as known by
+     * Google Play Services.
      *
-     * @return Get the number of leaderboards which have been updated with the best score of the
-     * current player as known by Google Play Services.
+     * @return Get the number of leaderboards which have been updated with the best score of the current player as known
+     * by Google Play Services.
      */
     public int getCountUpdatedLeaderboardWithScoreCurrentPlayer() {
         return mCountLeaderboardsUpdatedWithScoreForPlayer;
@@ -199,8 +195,7 @@ public class LeaderboardRankUpdater {
 
     private class UpdateRankingInformationListener implements LeaderboardRankPlayer.Listener {
         @Override
-        public void onLeaderboardRankLoaded(Leaderboard leaderboard,
-                                            LeaderboardScore leaderboardScore) {
+        public void onLeaderboardRankLoaded(Leaderboard leaderboard, LeaderboardScore leaderboardScore) {
             mLeaderboardConnector.updateLeaderboardRankInformation(leaderboard, leaderboardScore);
             mCountLeaderboardsUpdatedWithScoreForPlayer++;
             setUpdateFinished();
@@ -212,10 +207,8 @@ public class LeaderboardRankUpdater {
             // as no rank for this player was found on Google Play
             // Services.
             if (DEBUG) {
-                Log.i(TAG,
-                      "No local top score and no ranking information " + "was found for the " +
-                              "current user for leaderboard " + mLeaderboardConnector
-                              .getLeaderboardNameForLogging(
+                Log.i(TAG, "No local top score and no ranking information " + "was found for the " +
+                              "current user for leaderboard " + mLeaderboardConnector.getLeaderboardNameForLogging(
                               leaderboard.getLeaderboardId()) + ".");
             }
             clearLeaderboardRank(leaderboard);
@@ -230,9 +223,9 @@ public class LeaderboardRankUpdater {
                 // The score was submitted and processed by Google
                 // Play Services.
                 if (DEBUG) {
-                    Log.i(TAG,
-                          "Score for leaderboard " + mLeaderboardConnector.getLeaderboardNameForLogging(
-                                  submitScoreResult.getLeaderboardId()) + " has been processed by Google Play Services.");
+                    Log.i(TAG, "Score for leaderboard " + mLeaderboardConnector.getLeaderboardNameForLogging(
+                                  submitScoreResult.getLeaderboardId()) + " has been processed by Google Play " +
+                            "Services.");
                 }
 
                 updateRankingInformation();

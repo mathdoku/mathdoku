@@ -21,55 +21,48 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricGradleTestRunner.class)
 public class TipCheatTest extends TipBaseTest {
-	public static final int OCCURRENCES_CONDITIONAL_PENALTY = 2;
-	private Activity activity;
+    public static final int OCCURRENCES_CONDITIONAL_PENALTY = 2;
+    private Activity activity;
 
-	@Before
-	public void setUp() {
-			activity = Robolectric.buildActivity(Activity.class).create().get();
+    @Before
+    public void setUp() {
+        activity = Robolectric.buildActivity(Activity.class)
+                .create()
+                .get();
 
-			super.setUp();
-	}
+        super.setUp();
+    }
 
-	private void assertThatDialogToBeDisplayed(Cheat cheat,
-			Matcher<Boolean> booleanMatcher) {
-		assertThat(TipCheat.toBeDisplayed(preferencesMock, cheat),
-				booleanMatcher);
-	}
+    private void assertThatDialogToBeDisplayed(Cheat cheat, Matcher<Boolean> booleanMatcher) {
+        assertThat(TipCheat.toBeDisplayed(preferencesMock, cheat), booleanMatcher);
+    }
 
-	@Test
-	public void toBeDisplayed_CellRevealed_DialogIsNotDisplayed()
-			throws Exception {
-		assertThatTipCheatIsNotDisplayed(new CellRevealedCheat(activity));
-	}
+    @Test
+    public void toBeDisplayed_CellRevealed_DialogIsNotDisplayed() throws Exception {
+        assertThatTipCheatIsNotDisplayed(new CellRevealedCheat(activity));
+    }
 
-	private void assertThatTipCheatIsNotDisplayed(Cheat cheat) {
-		long minTimeIntervalBetweenTwoConsecutiveDisplays = 12 * 60 * 60 * 1000;
-		super.setUpTimeIntervalBetweenTwoConsecutiveDisplays(
-				cheat.getTipName(),
-				minTimeIntervalBetweenTwoConsecutiveDisplays);
-		setIsDisplayedNotLongEnoughAgo();
-		initMocks();
-		assertThatDialogToBeDisplayed(cheat, is(false));
-	}
+    private void assertThatTipCheatIsNotDisplayed(Cheat cheat) {
+        long minTimeIntervalBetweenTwoConsecutiveDisplays = 12 * 60 * 60 * 1000;
+        super.setUpTimeIntervalBetweenTwoConsecutiveDisplays(cheat.getTipName(),
+                                                             minTimeIntervalBetweenTwoConsecutiveDisplays);
+        setIsDisplayedNotLongEnoughAgo();
+        initMocks();
+        assertThatDialogToBeDisplayed(cheat, is(false));
+    }
 
-	@Test
-	public void toBeDisplayed_CheckProgress_DialogIsNotDisplayed()
-			throws Exception {
-		assertThatTipCheatIsNotDisplayed(new CheckProgressUsedCheat(new Activity(), OCCURRENCES_CONDITIONAL_PENALTY));
-	}
+    @Test
+    public void toBeDisplayed_CheckProgress_DialogIsNotDisplayed() throws Exception {
+        assertThatTipCheatIsNotDisplayed(new CheckProgressUsedCheat(new Activity(), OCCURRENCES_CONDITIONAL_PENALTY));
+    }
 
-	@Test
-	public void toBeDisplayed_OperatorRevealed_DialogIsNotDisplayed()
-			throws Exception {
-		assertThatTipCheatIsNotDisplayed(new OperatorRevealedCheat(
-				new Activity()));
-	}
+    @Test
+    public void toBeDisplayed_OperatorRevealed_DialogIsNotDisplayed() throws Exception {
+        assertThatTipCheatIsNotDisplayed(new OperatorRevealedCheat(new Activity()));
+    }
 
-	@Test
-	public void toBeDisplayed_SolutionRevealed_DialogIsNotDisplayed()
-			throws Exception {
-		assertThatTipCheatIsNotDisplayed(new SolutionRevealedCheat(
-				new Activity()));
-	}
+    @Test
+    public void toBeDisplayed_SolutionRevealed_DialogIsNotDisplayed() throws Exception {
+        assertThatTipCheatIsNotDisplayed(new SolutionRevealedCheat(new Activity()));
+    }
 }

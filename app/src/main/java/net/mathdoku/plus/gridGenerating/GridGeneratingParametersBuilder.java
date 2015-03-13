@@ -33,10 +33,9 @@ public class GridGeneratingParametersBuilder {
         generatorVersionNumber = Util.getPackageVersionNumber();
     }
 
-    public static GridGeneratingParametersBuilder createCopyOfGridGeneratingParameters
-            (GridGeneratingParameters gridGeneratingParameters) {
-        return new GridGeneratingParametersBuilder().setGridType(
-                gridGeneratingParameters.getGridType())
+    public static GridGeneratingParametersBuilder createCopyOfGridGeneratingParameters(GridGeneratingParameters
+                                                                                               gridGeneratingParameters) {
+        return new GridGeneratingParametersBuilder().setGridType(gridGeneratingParameters.getGridType())
                 .setHideOperators(gridGeneratingParameters.isHideOperators())
                 .setPuzzleComplexity(gridGeneratingParameters.getPuzzleComplexity())
                 .setGeneratorVersionNumber(gridGeneratingParameters.getGeneratorVersionNumber())
@@ -56,11 +55,12 @@ public class GridGeneratingParametersBuilder {
         return this;
     }
 
-    private void throwErrorWhenDependingParameterHasBeenOverridden(boolean isDependingParameterOverridden, String parameter) {
+    private void throwErrorWhenDependingParameterHasBeenOverridden(boolean isDependingParameterOverridden,
+                                                                   String parameter) {
         if (isDependingParameterOverridden) {
-            throw new GridGeneratingException(String.format(
-                    "Parameter '%s' can not be set again once any of its depending" + " " +
-                            "parameters" + " have been overridden.", parameter));
+            throw new GridGeneratingException(
+                    String.format("Parameter '%s' can not be set again once any of its depending" + " " +
+                                          "parameters" + " have been overridden.", parameter));
 
         }
     }
@@ -72,8 +72,8 @@ public class GridGeneratingParametersBuilder {
     }
 
     public GridGeneratingParametersBuilder setPuzzleComplexity(PuzzleComplexity puzzleComplexity) {
-        throwErrorWhenDependingParameterHasBeenOverridden(
-                isParameterDependentOnPuzzleComplexityOverridden, PUZZLE_COMPLEXITY_PARAMETER_NAME);
+        throwErrorWhenDependingParameterHasBeenOverridden(isParameterDependentOnPuzzleComplexityOverridden,
+                                                          PUZZLE_COMPLEXITY_PARAMETER_NAME);
         this.puzzleComplexity = puzzleComplexity;
 
         switch (puzzleComplexity) {
@@ -93,9 +93,9 @@ public class GridGeneratingParametersBuilder {
                 setVeryDifficultPuzzleComplexity();
                 break;
             default:
-                throw new GridGeneratingException(String.format(
-                        "Method setRandomPuzzleComplexity can not be used for " + "complexity " +
-                                "'%s'.", puzzleComplexity.toString()));
+                throw new GridGeneratingException(
+                        String.format("Method setRandomPuzzleComplexity can not be used for " + "complexity " +
+                                              "'%s'.", puzzleComplexity.toString()));
         }
         isPuzzleComplexitySet = true;
 
@@ -173,8 +173,7 @@ public class GridGeneratingParametersBuilder {
     private void throwErrorWhenPuzzleComplexityHasNotYetBeenSet(String parameter) {
         if (!isPuzzleComplexitySet) {
             throw new GridGeneratingException(String.format(
-                    "Parameter '%s' can only be set after parameter " + "'PuzzleComplexity' has "
-                            + "been set first.",
+                    "Parameter '%s' can only be set after parameter " + "'PuzzleComplexity' has " + "been set first.",
                     parameter));
         }
     }
@@ -188,8 +187,7 @@ public class GridGeneratingParametersBuilder {
 
     public GridGeneratingParametersBuilder setMaxCagePermutations(int maxCagePermutations) {
         throwErrorWhenPuzzleComplexityHasNotYetBeenSet("MaxCagePermutations");
-        isParameterDependentOnPuzzleComplexityOverridden = maxCagePermutations != this
-                .maxCagePermutations;
+        isParameterDependentOnPuzzleComplexityOverridden = maxCagePermutations != this.maxCagePermutations;
         this.maxCagePermutations = maxCagePermutations;
         return this;
     }
@@ -197,8 +195,8 @@ public class GridGeneratingParametersBuilder {
     public GridGeneratingParametersBuilder setMaxSingleCellCages(int maxSingleCellCages) {
         if (!isGridTypeSet) {
             throw new GridGeneratingException(
-                    "Parameter 'MaxSingleCellCages' can only be set after parameter 'GridType' "
-                            + "has been set first.");
+                    "Parameter 'MaxSingleCellCages' can only be set after parameter 'GridType' " + "has been set " +
+                            "first.");
         }
         isParameterDependentOnGridTypeOverridden = maxSingleCellCages != this.maxSingleCellCages;
         this.maxSingleCellCages = maxSingleCellCages;
@@ -220,8 +218,7 @@ public class GridGeneratingParametersBuilder {
     private void throwErrorWhenParameterNotSet(boolean parameterIsSet, String parameter) {
         if (!parameterIsSet) {
             throw new GridGeneratingException(
-                    String.format("Required parameter '%s' is not set in builder '%s'.", parameter,
-                                  this.getClass()
+                    String.format("Required parameter '%s' is not set in builder '%s'.", parameter, this.getClass()
                                           .getSimpleName()));
         }
     }

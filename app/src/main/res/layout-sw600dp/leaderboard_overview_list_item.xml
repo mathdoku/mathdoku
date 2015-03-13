@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/leaderboard_section_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:paddingBottom="2dp"
-    android:paddingTop="2dp" >
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/leaderboard_section_layout"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="horizontal"
+              android:paddingBottom="2dp"
+              android:paddingTop="2dp">
 
     <ImageView
         android:id="@+id/leaderboard_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingRight="10dp"
-        tools:ignore="ContentDescription" />
+        tools:ignore="ContentDescription"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/leaderboard_score_label"
@@ -29,7 +29,7 @@
             android:lines="1"
             android:paddingRight="10dp"
             android:text="@string/leaderboard_score_label"
-            android:textSize="@dimen/text_size_default" />
+            android:textSize="@dimen/text_size_default"/>
 
         <TextView
             android:id="@+id/leaderboard_score_display"
@@ -38,7 +38,7 @@
             android:layout_weight="3"
             android:gravity="right"
             android:lines="1"
-            android:textSize="@dimen/text_size_leaderboard_big" />
+            android:textSize="@dimen/text_size_leaderboard_big"/>
 
         <TextView
             android:id="@+id/leaderboard_rank_display"
@@ -49,14 +49,14 @@
             android:gravity="right"
             android:lines="1"
             android:paddingRight="10dp"
-            android:textSize="@dimen/text_size_default" />
+            android:textSize="@dimen/text_size_default"/>
 
         <TextView
             android:id="@+id/leaderboard_not_played"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/leaderboard_not_played"
-            android:textSize="@dimen/text_size_default" />
+            android:textSize="@dimen/text_size_default"/>
     </LinearLayout>
 
 </LinearLayout>

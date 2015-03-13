@@ -30,17 +30,15 @@ import net.mathdoku.plus.ui.base.GooglePlayServiceFragmentActivity;
 import net.mathdoku.plus.util.FeedbackEmail;
 
 /**
- * This activity handles displaying the leaderboard overviews. Each leaderboard overview displays a
- * number of related leaderboards (e.g. of same size) which additionally can be filtered on certain
- * criteria.
+ * This activity handles displaying the leaderboard overviews. Each leaderboard overview displays a number of related
+ * leaderboards (e.g. of same size) which additionally can be filtered on certain criteria.
  */
-public class LeaderboardOverviewActivity extends GooglePlayServiceFragmentActivity implements
-        ActionBar.TabListener {
+public class LeaderboardOverviewActivity extends GooglePlayServiceFragmentActivity implements ActionBar.TabListener {
 
     /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide fragments for each of the
-     * leaderboard fragments. A {@link android.support.v4.app.FragmentPagerAdapter} derivative is
-     * used, which will keep every loaded fragment in memory.
+     * The {@link android.support.v4.view.PagerAdapter} that will provide fragments for each of the leaderboard
+     * fragments. A {@link android.support.v4.app.FragmentPagerAdapter} derivative is used, which will keep every loaded
+     * fragment in memory.
      */
     private LeaderboardOverviewPagerAdapter mLeaderboardOverviewPagerAdapter;
 
@@ -68,8 +66,7 @@ public class LeaderboardOverviewActivity extends GooglePlayServiceFragmentActivi
         setContentView(R.layout.leaderboard_activity_fragment);
 
         // Create the adapter that will return the leaderboard fragments.
-        mLeaderboardOverviewPagerAdapter = new LeaderboardOverviewPagerAdapter(this,
-                                                                               getSupportFragmentManager());
+        mLeaderboardOverviewPagerAdapter = new LeaderboardOverviewPagerAdapter(this, getSupportFragmentManager());
 
         initializeViewPager();
         initializeActionBar();
@@ -77,10 +74,10 @@ public class LeaderboardOverviewActivity extends GooglePlayServiceFragmentActivi
         selectTabLastDisplayed();
         setFilterSpinner(LeaderboardFilter.ALL_LEADERBOARDS);
 
-		/*
-         * Styling of the pager tab strip is not possible from within code. See
-		 * values-v14/styles.xml for styling of the action bar tab.
-		 */
+         /*
+         * Styling of the pager tab strip is not possible from within code. See values-v14/styles.xml for styling of
+         * the action bar tab.
+         */
     }
 
     private void selectTabLastDisplayed() {
@@ -128,8 +125,8 @@ public class LeaderboardOverviewActivity extends GooglePlayServiceFragmentActivi
         @Override
         public void onPageSelected(int position) {
             // Get the fragment on the selected position
-            LeaderboardOverview leaderboardOverview = mLeaderboardOverviewPagerAdapter.getFragment(
-                    mViewPager, position, getSupportFragmentManager());
+            LeaderboardOverview leaderboardOverview = mLeaderboardOverviewPagerAdapter.getFragment(mViewPager, position,
+                                                                                                   getSupportFragmentManager());
 
             // Inform the fragment about the current filter as it may be changed
             // since in case the fragment was displayed before.
@@ -213,17 +210,13 @@ public class LeaderboardOverviewActivity extends GooglePlayServiceFragmentActivi
     }
 
     private void openHelpDialog() {
-        new AlertDialog.Builder(this).setTitle(getResources().getString(
-                                                       R.string.leaderboard_actionbar_title) + " " +
-                                                       "" + getResources().getString(
-                                                       R.string.action_help))
+        new AlertDialog.Builder(this).setTitle(getResources().getString(R.string.leaderboard_actionbar_title) + " " +
+                                                       "" + getResources().getString(R.string.action_help))
                 .setIcon(R.drawable.icon)
                 .setView(inflateLeaderboardHelpDialog())
-                .setPositiveButton(R.string.dialog_general_button_close,
-                                   new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.dialog_general_button_close, new DialogInterface.OnClickListener() {
                                        @Override
-                                       public void onClick(DialogInterface dialog,
-                                                           int whichButton) {
+                                       public void onClick(DialogInterface dialog, int whichButton) {
                                            // Do nothing
                                        }
                                    })
@@ -238,19 +231,19 @@ public class LeaderboardOverviewActivity extends GooglePlayServiceFragmentActivi
     @Override
     public void onSignInFailed() {
         GooglePlusSignInDialog googlePlusSignInDialog = new GooglePlusSignInDialog(this,
-                                                                                   new GooglePlusSignInDialog.Listener() {
+                                                                                   new GooglePlusSignInDialog
+                                                                                           .Listener() {
                                                                                        @Override
-                                                                                       public
-                                                                                       void
+                                                                                       public void
                                                                                        onGooglePlusSignInStart() {
                                                                                            beginUserInitiatedSignIn();
                                                                                        }
 
                                                                                        @Override
-                                                                                       public
-                                                                                       void
+                                                                                       public void
                                                                                        onGooglePlusSignInCancelled() {
-                                                                                           // Leaderboards can not be viewed when not signed in.
+                                                                                           // Leaderboards can not be
+                                                                                           // viewed when not signed in.
                                                                                            finish();
                                                                                        }
                                                                                    }).setMessage(
@@ -260,16 +253,14 @@ public class LeaderboardOverviewActivity extends GooglePlayServiceFragmentActivi
     }
 
     /**
-     * After a successful sign in to Google+ the leaderboards are updated if needed. If so, a
-     * progress dialog is shown.
+     * After a successful sign in to Google+ the leaderboards are updated if needed. If so, a progress dialog is shown.
      */
     private void onSignInSucceeded() {
         mLeaderboardRankUpdaterProgressDialog = new LeaderboardRankUpdaterProgressDialog(this,
-                                                                                         new LeaderboardConnector(
-                                                                                                 this,
-                                                                                                 getGamesClient()));
-        mLeaderboardRankUpdaterProgressDialog.setMessage(getResources().getString(
-                R.string.dialog_leaderboard_rank_update_selected_leaderboards_message));
+                                                                                         new LeaderboardConnector(this,
+                                                                                                                  getGamesClient()));
+        mLeaderboardRankUpdaterProgressDialog.setMessage(
+                getResources().getString(R.string.dialog_leaderboard_rank_update_selected_leaderboards_message));
         mLeaderboardRankUpdaterProgressDialog.setCancelable(true);
         mLeaderboardRankUpdaterProgressDialog.setOnDismissListener(new OnDismissListener() {
             @Override
@@ -308,15 +299,13 @@ public class LeaderboardOverviewActivity extends GooglePlayServiceFragmentActivi
     }
 
     /**
-     * Initializes/refreshes the filter spinner. Returns: True in case the filter spinner should be
-     * shown. False otherwise.
+     * Initializes/refreshes the filter spinner. Returns: True in case the filter spinner should be shown. False
+     * otherwise.
      */
     void setFilterSpinner(LeaderboardFilter leaderboardFilter) {
         Spinner spinner = (Spinner) mActionBar.getCustomView()
                 .findViewById(R.id.leaderboard_filter_spinner);
-        ArrayAdapter<String> adapterStatus = new ArrayAdapter<String>(this,
-                                                                      android.R.layout
-                                                                              .simple_spinner_item,
+        ArrayAdapter<String> adapterStatus = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,
                                                                       getResources().getStringArray(
                                                                               R.array.leaderboard_filter));
         adapterStatus.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -336,8 +325,10 @@ public class LeaderboardOverviewActivity extends GooglePlayServiceFragmentActivi
             mLeaderboardFilter = LeaderboardFilter.values()[(int) id];
 
             // Get the fragment which is currently displayed
-            LeaderboardOverview leaderboardOverview = mLeaderboardOverviewPagerAdapter.getFragment(
-                    mViewPager, mViewPager.getCurrentItem(), getSupportFragmentManager());
+            LeaderboardOverview leaderboardOverview = mLeaderboardOverviewPagerAdapter.getFragment(mViewPager,
+                                                                                                   mViewPager
+                                                                                                           .getCurrentItem(),
+                                                                                                   getSupportFragmentManager());
 
             // Inform the fragment about the change of filter.
             if (leaderboardOverview != null) {
@@ -370,11 +361,10 @@ public class LeaderboardOverviewActivity extends GooglePlayServiceFragmentActivi
 
         // Start the leaderboard updater
         mLeaderboardRankUpdaterProgressDialog = new LeaderboardRankUpdaterProgressDialog(this,
-                                                                                         new LeaderboardConnector(
-                                                                                                 this,
-                                                                                                 getGamesClient()));
-        mLeaderboardRankUpdaterProgressDialog.setMessage(getResources().getString(
-                R.string.dialog_leaderboard_rank_update_all_leaderboards_message));
+                                                                                         new LeaderboardConnector(this,
+                                                                                                                  getGamesClient()));
+        mLeaderboardRankUpdaterProgressDialog.setMessage(
+                getResources().getString(R.string.dialog_leaderboard_rank_update_all_leaderboards_message));
         mLeaderboardRankUpdaterProgressDialog.setCancelable(false);
         mLeaderboardRankUpdaterProgressDialog.setOnDismissListener(
                 new LeaderBoardRankUpdaterProgressDialogOnDismissListener());
@@ -388,15 +378,14 @@ public class LeaderboardOverviewActivity extends GooglePlayServiceFragmentActivi
 
             // Get the first and last position of the fragments which are
             // currently loaded by the view pager.
-            int minPosition = Math.max(0,
-                                       mViewPager.getCurrentItem() - mViewPager.getOffscreenPageLimit());
+            int minPosition = Math.max(0, mViewPager.getCurrentItem() - mViewPager.getOffscreenPageLimit());
             int maxPosition = Math.min(mLeaderboardOverviewPagerAdapter.getCount(),
                                        mViewPager.getCurrentItem() + mViewPager.getOffscreenPageLimit());
 
             for (int i = minPosition; i <= maxPosition; i++) {
                 // Get the fragment on the selected position
-                LeaderboardOverview leaderboardOverview = mLeaderboardOverviewPagerAdapter.getFragment(
-                        mViewPager, i, getSupportFragmentManager());
+                LeaderboardOverview leaderboardOverview = mLeaderboardOverviewPagerAdapter.getFragment(mViewPager, i,
+                                                                                                       getSupportFragmentManager());
 
                 // Refresh content of the fragment as the leaderboard data may
                 // be changed since in case the fragment created.

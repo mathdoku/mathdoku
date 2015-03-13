@@ -1,10 +1,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/statistics_section"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    tools:context=".StatisticsActivity" >
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/statistics_section"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              tools:context=".StatisticsActivity">
 
     <TextView
         android:id="@+id/statistics_section_title"
@@ -18,7 +18,7 @@
         android:paddingTop="10dp"
         android:textSize="@dimen/text_size_heading"
         android:textStyle="bold"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/statistics_section_chart"
@@ -27,7 +27,7 @@
         android:orientation="vertical"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/statistics_section_extra_data"
@@ -39,7 +39,7 @@
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:textSize="@dimen/text_size_default"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/statistics_section_explanation"
@@ -49,6 +49,6 @@
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:textSize="@dimen/text_size_default"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
 </LinearLayout>

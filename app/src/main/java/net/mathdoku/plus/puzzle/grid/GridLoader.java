@@ -95,8 +95,7 @@ public class GridLoader {
             return new Cell(cellBuilder);
         }
 
-        public CageBuilder createCageBuilderFromStorageString(String line, int savedWithRevision,
-                                                              List<Cell> cells) {
+        public CageBuilder createCageBuilderFromStorageString(String line, int savedWithRevision, List<Cell> cells) {
             return CageStorage.getCageBuilderFromStorageString(line, savedWithRevision, cells);
         }
     }
@@ -141,8 +140,7 @@ public class GridLoader {
         mGridBuilder = mObjectsCreator.createGridBuilder()
                 .setDateCreated(solvingAttemptRow.getSolvingAttemptDateCreated())
                 .setDateUpdated(solvingAttemptRow.getSolvingAttemptDateUpdated())
-                .setSolvingAttemptId(solvingAttemptRow.getGridId(),
-                                     solvingAttemptRow.getSolvingAttemptId());
+                .setSolvingAttemptId(solvingAttemptRow.getGridId(), solvingAttemptRow.getSolvingAttemptId());
         GridRow gridRow = mObjectsCreator.createGridDatabaseAdapter()
                 .get(solvingAttemptRow.getGridId());
         if (gridRow == null || gridRow.getGridSize() <= 0) {
@@ -155,8 +153,7 @@ public class GridLoader {
 
         // SolvingAttemptStorage can only be processed after the grid size and
         // revision number is known.
-        if (!loadFromStorageStrings(solvingAttemptRow) || !loadStatistics(
-                solvingAttemptRow.getSolvingAttemptId())) {
+        if (!loadFromStorageStrings(solvingAttemptRow) || !loadStatistics(solvingAttemptRow.getSolvingAttemptId())) {
             return null;
         }
 
@@ -181,22 +178,20 @@ public class GridLoader {
         }
 
         try {
-            SolvingAttemptStorage solvingAttemptStorage = mObjectsCreator
-                    .createSolvingAttemptStorage(solvingAttemptRow.getStorageString());
+            SolvingAttemptStorage solvingAttemptStorage = mObjectsCreator.createSolvingAttemptStorage(
+                    solvingAttemptRow.getStorageString());
             loadGridStorage(solvingAttemptStorage);
             loadCells(solvingAttemptStorage);
             loadCages(solvingAttemptStorage);
             loadCellChanges(solvingAttemptStorage);
         } catch (NumberFormatException e) {
-            return errorOnLoadStorageString(String.format(
-                                                    "Invalid Number format error when restoring " +
-                                                            "solving attempt with id %d.",
-                                                    solvingAttemptRow.getSolvingAttemptId()), e);
+            return errorOnLoadStorageString(
+                    String.format("Invalid Number format error when restoring " + "solving attempt with id %d.",
+                                  solvingAttemptRow.getSolvingAttemptId()), e);
         } catch (InvalidGridException e) {
-            return errorOnLoadStorageString(String.format(
-                                                    "Loading of solving attempt data with id %d " +
-                                                            "to grid builder failed.'",
-                                                    solvingAttemptRow.getSolvingAttemptId()), e);
+            return errorOnLoadStorageString(
+                    String.format("Loading of solving attempt data with id %d " + "to grid builder failed.'",
+                                  solvingAttemptRow.getSolvingAttemptId()), e);
         }
 
         return true;
@@ -219,8 +214,7 @@ public class GridLoader {
 
         line = solvingAttemptStorage.getNextLine();
         if (line == null) {
-            throw new InvalidGridException(
-                    "Unexpected end of solving attempt after processing view information.");
+            throw new InvalidGridException("Unexpected end of solving attempt after processing view information.");
         }
 
         return true;
@@ -236,9 +230,9 @@ public class GridLoader {
         // Check if expected number of cells is read.
         if (mCells.size() != mGridBuilder.mGridSize * mGridBuilder.mGridSize) {
 
-            throw new InvalidGridException(
-                    String.format("Unexpected number of cells loaded. Expected: %d, actual %d.",
-                                  mGridBuilder.mGridSize * mGridBuilder.mGridSize, mCells.size()));
+            throw new InvalidGridException(String.format("Unexpected number of cells loaded. Expected: %d, actual %d.",
+                                                         mGridBuilder.mGridSize * mGridBuilder.mGridSize,
+                                                         mCells.size()));
         }
         mGridBuilder.setCells(mCells);
 
@@ -247,8 +241,7 @@ public class GridLoader {
 
     private boolean loadCell(String line) {
         CellStorage mCellStorage = mObjectsCreator.createCellStorage();
-        CellBuilder cellBuilder = mCellStorage.getCellBuilderFromStorageString(line,
-                                                                               mSavedWithRevision);
+        CellBuilder cellBuilder = mCellStorage.getCellBuilderFromStorageString(line, mSavedWithRevision);
         if (cellBuilder == null) {
             return false;
         }
@@ -285,9 +278,7 @@ public class GridLoader {
             return false;
         }
 
-        CageBuilder cageBuilder = mObjectsCreator.createCageBuilderFromStorageString(line,
-                                                                                     mSavedWithRevision,
-                                                                                     mCells);
+        CageBuilder cageBuilder = mObjectsCreator.createCageBuilderFromStorageString(line, mSavedWithRevision, mCells);
         if (cageBuilder == null) {
             return false;
         }
@@ -340,8 +331,7 @@ public class GridLoader {
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean loadStatistics(int solvingAttemptId) {
         StatisticsDatabaseAdapter statisticsDatabaseAdapter = mObjectsCreator.createStatisticsDatabaseAdapter();
-        GridStatistics gridStatistics = statisticsDatabaseAdapter.getStatisticsForSolvingAttempt(
-                solvingAttemptId);
+        GridStatistics gridStatistics = statisticsDatabaseAdapter.getStatisticsForSolvingAttempt(solvingAttemptId);
         mGridBuilder.setGridStatistics(gridStatistics);
 
         return gridStatistics != null;

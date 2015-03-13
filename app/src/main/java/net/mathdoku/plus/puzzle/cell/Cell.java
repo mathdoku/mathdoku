@@ -74,17 +74,14 @@ public class Cell {
         try {
             GridType.fromInteger(gridSize);
         } catch (IllegalArgumentException e) {
-            throw new InvalidGridException(
-                    String.format("Parameter gridSize (%d) has an invalid value.", gridSize), e);
+            throw new InvalidGridException(String.format("Parameter gridSize (%d) has an invalid value.", gridSize), e);
         }
         if (mId < 0) {
-            throw new InvalidGridException(
-                    String.format("Parameter mId (%d) has an invalid value.", mId));
+            throw new InvalidGridException(String.format("Parameter mId (%d) has an invalid value.", mId));
         }
         if (mEnteredValue < 0 || mEnteredValue > mMaxValue) {
             throw new InvalidGridException(
-                    String.format("Parameter mEnteredValue (%d) has an invalid value.",
-                                  mEnteredValue));
+                    String.format("Parameter mEnteredValue (%d) has an invalid value.", mEnteredValue));
         }
     }
 
@@ -95,28 +92,24 @@ public class Cell {
 
         for (int possible : mPossibles) {
             if (possible <= 0 || possible > mMaxValue) {
-                throw new InvalidGridException(String.format(
-                        "Parameter mPossible contains a possible value (%d) with " + "an invalid " +
-                                "" + "value.",
-                        possible));
+                throw new InvalidGridException(
+                        String.format("Parameter mPossible contains a possible value (%d) with " + "an invalid " +
+                                              "" + "value.", possible));
             }
         }
     }
 
     private void validateCorrectValueThrowsExceptionOnError(CellBuilder cellBuilder) {
-        int minimumCorrectValue = cellBuilder.performLenientCorrectValueCheck() ? CellBuilder
-                .CORRECT_VALUE_NOT_SET : 1;
+        int minimumCorrectValue = cellBuilder.performLenientCorrectValueCheck() ? CellBuilder.CORRECT_VALUE_NOT_SET : 1;
         if (mCorrectValue < minimumCorrectValue || mCorrectValue > mMaxValue) {
             throw new InvalidGridException(
-                    String.format("Parameter mCorrectValue (%d) has an invalid value.",
-                                  mCorrectValue));
+                    String.format("Parameter mCorrectValue (%d) has an invalid value.", mCorrectValue));
         }
     }
 
     private void validateCageReferenceThrowsExceptionOnError(CellBuilder cellBuilder) {
         if (cellBuilder.performCageReferenceCheck() && mCageId < 0) {
-            throw new InvalidGridException(
-                    String.format("Parameter mCageId (%d) has an invalid value.", mCageId));
+            throw new InvalidGridException(String.format("Parameter mCageId (%d) has an invalid value.", mCageId));
         }
     }
 
@@ -219,8 +212,8 @@ public class Cell {
      *
      * @param newValue
      *         The new value for the cell. Use 0 to clear the cell.
-     * @return True if the new value is set as entered value. False otherwise. Also in case the
-     * entered value isn't changed, false is returned.
+     * @return True if the new value is set as entered value. False otherwise. Also in case the entered value isn't
+     * changed, false is returned.
      */
     public boolean setEnteredValue(int newValue) {
         if (isValueNotValid(newValue) && newValue != NO_ENTERED_VALUE) {
@@ -271,8 +264,7 @@ public class Cell {
                     // Empty cell is filled in
                     gridStatistics.decreaseCounter(StatisticsCounterType.CELLS_EMPTY);
                     gridStatistics.increaseCounter(StatisticsCounterType.CELLS_FILLED);
-                } else if (oldEnteredValue != NO_ENTERED_VALUE && newEnteredValue ==
-                        NO_ENTERED_VALUE) {
+                } else if (oldEnteredValue != NO_ENTERED_VALUE && newEnteredValue == NO_ENTERED_VALUE) {
                     // Non empty cell is cleared
                     gridStatistics.decreaseCounter(StatisticsCounterType.CELLS_FILLED);
                     gridStatistics.increaseCounter(StatisticsCounterType.CELLS_EMPTY);
@@ -325,9 +317,8 @@ public class Cell {
     }
 
     /**
-     * Checks whether the cell is highlighted as invalid. Note: a cell can contain an invalid value
-     * without being marked as invalid. A cell will only be marked as invalid after using the option
-     * "Check Progress".
+     * Checks whether the cell is highlighted as invalid. Note: a cell can contain an invalid value without being marked
+     * as invalid. A cell will only be marked as invalid after using the option "Check Progress".
      *
      * @return True in case the cell has been marked as invalid. False otherwise.
      */
@@ -383,18 +374,16 @@ public class Cell {
      *
      * @param digit
      *         The digit which is to be checked.
-     * @return True in case the digit is registered as a possible value for this cell. False
-     * otherwise.
+     * @return True in case the digit is registered as a possible value for this cell. False otherwise.
      */
     public boolean hasPossible(int digit) {
         return mPossibles.indexOf(digit) >= 0;
     }
 
     /**
-     * Reveals the correct value of a cell. Note, revealing a cell containing the correct value is
-     * handled the same way as revealing the cell which does not contain a correct value. In this
-     * way, revealing a cell cannot be abused as a way of using check progress for a single cell
-     * without having a penalty to be paid.
+     * Reveals the correct value of a cell. Note, revealing a cell containing the correct value is handled the same way
+     * as revealing the cell which does not contain a correct value. In this way, revealing a cell cannot be abused as a
+     * way of using check progress for a single cell without having a penalty to be paid.
      */
     public void revealCorrectValue() {
         // Update the grid statistics only in case the cell is revealed for the
@@ -403,8 +392,7 @@ public class Cell {
             if (mGrid != null) {
                 GridStatistics gridStatistics = mGrid.getGridStatistics();
                 gridStatistics.decreaseCounter(
-                        hasEnteredValue() ? StatisticsCounterType.CELLS_FILLED :
-                                StatisticsCounterType.CELLS_EMPTY);
+                        hasEnteredValue() ? StatisticsCounterType.CELLS_FILLED : StatisticsCounterType.CELLS_EMPTY);
                 gridStatistics.increaseCounter(StatisticsCounterType.CELLS_REVEALED);
             }
             mRevealed = true;

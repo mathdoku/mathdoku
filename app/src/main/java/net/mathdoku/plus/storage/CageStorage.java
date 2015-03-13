@@ -28,26 +28,24 @@ public class CageStorage {
      * Checks quickly whether the given line contains CellChangeStorage data.
      */
     public static boolean containsCageStorageData(String line) {
-        return line != null && line.startsWith(
-                CAGE_LINE_ID + StorageDelimiter.FIELD_DELIMITER_LEVEL1);
+        return line != null && line.startsWith(CAGE_LINE_ID + StorageDelimiter.FIELD_DELIMITER_LEVEL1);
     }
 
     /**
-     * Read cage information from a storage string which was created with {@link
-     * #toStorageString(net.mathdoku.plus.puzzle.cage.Cage)} before.
+     * Read cage information from a storage string which was created with {@link #toStorageString(net.mathdoku.plus
+     * .puzzle.cage.Cage)}
+     * before.
      *
      * @param line
      *         The line containing the cage information.
      * @param savedWithRevisionNumber
      *         The revision number of the app which was used to created the storage string.
      * @param cells
-     *         The cells to which the cell id's in the storage string refer. Be aware that the
-     *         contents (i.e. the cage id) of the cells is being set.
-     * @return True in case the given line contains cage information and is processed correctly.
-     * False otherwise.
+     *         The cells to which the cell id's in the storage string refer. Be aware that the contents (i.e. the cage
+     *         id) of the cells is being set.
+     * @return True in case the given line contains cage information and is processed correctly. False otherwise.
      */
-    public static CageBuilder getCageBuilderFromStorageString(String line,
-                                                              int savedWithRevisionNumber,
+    public static CageBuilder getCageBuilderFromStorageString(String line, int savedWithRevisionNumber,
                                                               List<Cell> cells) {
         validateParametersGetCageBuilderFromStorageString(line, savedWithRevisionNumber, cells);
 
@@ -78,8 +76,8 @@ public class CageStorage {
         return cageBuilder;
     }
 
-    private static void validateParametersGetCageBuilderFromStorageString(String line,
-                                                                          int savedWithRevisionNumber, List<Cell> cells) {
+    private static void validateParametersGetCageBuilderFromStorageString(String line, int savedWithRevisionNumber,
+                                                                          List<Cell> cells) {
         if (line == null) {
             throw new IllegalArgumentException("Parameter line cannot be null");
         }
@@ -88,10 +86,9 @@ public class CageStorage {
         // revision 369 all logic for handling games stored with older versions
         // is removed.
         if (savedWithRevisionNumber <= 368) {
-            throw new StorageException(String.format(
-                    "Cannot process storage strings of cages created with revision" + " %d or " +
-                            "before.",
-                    savedWithRevisionNumber));
+            throw new StorageException(
+                    String.format("Cannot process storage strings of cages created with revision" + " %d or " +
+                                          "before.", savedWithRevisionNumber));
         }
 
         if (Util.isListNullOrEmpty(cells)) {
@@ -131,9 +128,8 @@ public class CageStorage {
 
         int expectedNumberOfElements = 6;
         if (cageParts.length != expectedNumberOfElements) {
-            throw new StorageException(
-                    "Wrong number of elements in cage storage string. Got " + cageParts.length +
-                            ", expected " + expectedNumberOfElements + ".");
+            throw new StorageException("Wrong number of elements in cage storage string. Got " + cageParts.length +
+                                               ", expected " + expectedNumberOfElements + ".");
         }
         return cageParts;
     }

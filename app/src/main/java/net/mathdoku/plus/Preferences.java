@@ -53,29 +53,22 @@ public class Preferences {
     private static final String ARCHIVE_GRID_LAST_SHOWED = "archive_grid_last_showed";
     private static final int ARCHIVE_GRID_LAST_SHOWED_DEFAULT = -1;
 
-    private static final String ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE =
-            "archive_grid_type_filter_last_value";
-    private static final String ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE_DEFAULT = GridTypeFilter.ALL
-            .toString();
+    private static final String ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE = "archive_grid_type_filter_last_value";
+    private static final String ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE_DEFAULT = GridTypeFilter.ALL.toString();
 
-    private static final String ARCHIVE_STATUS_FILTER_LAST_VALUE =
-            "archive_status_filter_last_value";
-    private static final String ARCHIVE_STATUS_FILTER_LAST_VALUE_DEFAULT = StatusFilter.ALL
-            .toString();
+    private static final String ARCHIVE_STATUS_FILTER_LAST_VALUE = "archive_status_filter_last_value";
+    private static final String ARCHIVE_STATUS_FILTER_LAST_VALUE_DEFAULT = StatusFilter.ALL.toString();
 
     // Keep value of key in sync with value in archive_preferences.xml
-    public static final String ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE =
-            "archive_setting_grid_type_filter_visible";
+    public static final String ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE = "archive_setting_grid_type_filter_visible";
     private static final boolean ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE_DEFAULT = false;
 
     // Keep value of key in sync with value in archive_preferences.xml
-    public static final String ARCHIVE_SETTING_STATUS_FILTER_VISIBLE =
-            "archive_setting_status_filter_visible";
+    public static final String ARCHIVE_SETTING_STATUS_FILTER_VISIBLE = "archive_setting_status_filter_visible";
     private static final boolean ARCHIVE_SETTING_STATUS_FILTER_VISIBLE_DEFAULT = true;
 
     // Keep value of key in sync with value in archive_preferences.xml
-    public static final String ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE =
-            "archive_setting_chart_description_visible";
+    public static final String ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE = "archive_setting_chart_description_visible";
     private static final boolean ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT = true;
 
     // Leaderboard settings
@@ -83,18 +76,15 @@ public class Preferences {
     private static final boolean LEADERBOARD_ALL_INITIALIZED_DEFAULT = false;
 
     private static final String LEADERBOARD_FILTER_LAST_VALUE = "leaderboard_filter_last_value";
-    private static final String LEADERBOARD_FILTER_LAST_VALUE_DEFAULT = LeaderboardFilter
-            .ALL_LEADERBOARDS.toString();
+    private static final String LEADERBOARD_FILTER_LAST_VALUE_DEFAULT = LeaderboardFilter.ALL_LEADERBOARDS.toString();
 
     private static final String LEADERBOARD_TAB_LAST_SHOWED = "leaderboard_tab_last_showed";
     private static final int LEADERBOARD_TAB_LAST_SHOWED_DEFAULT = 0;
 
-    private static final String LEADERBOARD_DETAILS_VIEWED_COUNTER =
-            "leaderboard_details_viewed_counter";
+    private static final String LEADERBOARD_DETAILS_VIEWED_COUNTER = "leaderboard_details_viewed_counter";
     private static final int LEADERBOARD_DETAILS_VIEWED_COUNTER_DEFAULT = 0;
 
-    private static final String LEADERBOARD_GAMES_CREATED_COUNTER =
-            "leaderboard_games_created_counter";
+    private static final String LEADERBOARD_GAMES_CREATED_COUNTER = "leaderboard_games_created_counter";
     private static final int LEADERBOARD_GAMES_CREATED_COUNTER_DEFAULT = 0;
 
     private static final String LEADERBOARD_OVERVIEW_VIEWED_COUNTER = "leaderboard_overview_viewed";
@@ -102,31 +92,26 @@ public class Preferences {
 
     private static final String PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE =
             "puzzle_hide_google_plus_sign_in_till_next_top_score";
-    private static final boolean PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE_DEFAULT =
-            false;
+    private static final boolean PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE_DEFAULT = false;
 
     // Puzzle input mode settings
-    private static final String PUZZLE_INPUT_MODE_CHANGED_COUNTER =
-            "puzzle_input_mode_changed_counter";
+    private static final String PUZZLE_INPUT_MODE_CHANGED_COUNTER = "puzzle_input_mode_changed_counter";
     private static final int PUZZLE_INPUT_MODE_CHANGED_COUNTER_DEFAULT = 0;
 
     private static final String PUZZLE_INPUT_MODE_COPY_COUNTER = "puzzle_input_mode_copy_counter";
     private static final int PUZZLE_INPUT_MODE_COPY_COUNTER_DEFAULT = 0;
 
     private static final String PUZZLE_INPUT_MODE_LAST_USED = "puzzle_input_mode_last_used";
-    private static final String PUZZLE_INPUT_MODE_LAST_USED_DEFAULT = GridInputMode.NORMAL
-            .toString();
+    private static final String PUZZLE_INPUT_MODE_LAST_USED_DEFAULT = GridInputMode.NORMAL.toString();
 
     private static final String PUZZLE_INPUT_MODE_COPY_ENABLED = "puzzle_input_mode_copy_enabled";
     private static final boolean PUZZLE_INPUT_MODE_COPY_ENABLED_DEFAULT = false;
 
     // Puzzle parameters settings to be set as default values for next game
     private static final String PUZZLE_PARAMETER_COMPLEXITY = "puzzle_parameter_complexity";
-    private static final String PUZZLE_PARAMETER_COMPLEXITY_DEFAULT = PuzzleComplexity.VERY_EASY
-            .toString();
+    private static final String PUZZLE_PARAMETER_COMPLEXITY_DEFAULT = PuzzleComplexity.VERY_EASY.toString();
 
-    private static final String PUZZLE_PARAMETER_OPERATORS_VISIBLE =
-            "puzzle_parameter_operators_visible";
+    private static final String PUZZLE_PARAMETER_OPERATORS_VISIBLE = "puzzle_parameter_operators_visible";
     private static final boolean PUZZLE_PARAMETER_OPERATORS_VISIBLE_DEFAULT = true;
 
     private static final String PUZZLE_PARAMETER_GRID_SIZE = "puzzle_parameter_grid_size";
@@ -135,8 +120,7 @@ public class Preferences {
     // Puzzle setting preferences
 
     // Keep value of key in sync with value in puzzle_preferences.xml
-    private static final String PUZZLE_SETTING_BAD_CAGE_MATHS_VISIBLE =
-            "puzzle_setting_bad_cage_math_visible";
+    private static final String PUZZLE_SETTING_BAD_CAGE_MATHS_VISIBLE = "puzzle_setting_bad_cage_math_visible";
     private static final boolean PUZZLE_SETTING_BAD_CAGE_MATHS_VISIBLE_DEFAULT = true;
 
     // Keep value of key in sync with value in puzzle_preferences.xml
@@ -148,8 +132,7 @@ public class Preferences {
     private static final boolean PUZZLE_SETTING_COLORED_DIGITS_DEFAULT = true;
 
     // Keep value of key in sync with value in puzzle_preferences.xml
-    private static final String PUZZLE_SETTING_DUPLICATE_DIGITS_VISIBLE =
-            "puzzle_setting_duplicate_digits_visible";
+    private static final String PUZZLE_SETTING_DUPLICATE_DIGITS_VISIBLE = "puzzle_setting_duplicate_digits_visible";
     private static final boolean PUZZLE_SETTING_DUPLICATE_DIGITS_VISIBLE_DEFAULT = true;
 
     // Keep value of key in sync with value in puzzle_preferences.xml
@@ -164,20 +147,16 @@ public class Preferences {
 
     // Keep value of key in sync with value in puzzle_preferences.xml
     public static final String PUZZLE_SETTING_INPUT_METHOD = "puzzle_setting_input_method";
-    private static final String PUZZLE_SETTING_INPUT_METHOD_DEFAULT = PuzzleSettingInputMethod
-            .SWIPE_ONLY.toString();
+    private static final String PUZZLE_SETTING_INPUT_METHOD_DEFAULT = PuzzleSettingInputMethod.SWIPE_ONLY.toString();
 
     // Keep value of key in sync with value in puzzle_preferences.xml
-    private static final String PUZZLE_SETTING_MAYBES_DISPLAYED_IN_GRID =
-            "puzzle_setting_maybes_displayed_in_grid";
+    private static final String PUZZLE_SETTING_MAYBES_DISPLAYED_IN_GRID = "puzzle_setting_maybes_displayed_in_grid";
     private static final boolean PUZZLE_SETTING_MAYBES_DISPLAYED_IN_GRID_DEFAULT = true;
 
     // Keep value of key in sync with value in puzzle_preferences.xml
-    public static final String PUZZLE_SETTING_OUTER_SWIPE_CIRCLE =
-            "puzzle_setting_outer_swipe_circle";
+    public static final String PUZZLE_SETTING_OUTER_SWIPE_CIRCLE = "puzzle_setting_outer_swipe_circle";
     private static final String PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_DEFAULT = "4";
-    private static final String PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_NEVER_VISIBLE = Integer.toString(
-            Integer.MAX_VALUE);
+    private static final String PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_NEVER_VISIBLE = Integer.toString(Integer.MAX_VALUE);
 
     // Keep value of key in sync with value in puzzle_preferences.xml
     private static final String PUZZLE_SETTING_PLAY_SOUND_EFFECTS = "puzzle_setting_sound_effects";
@@ -209,9 +188,7 @@ public class Preferences {
     // Keep value of key in sync with value in statistics_preferences.xml
     public static final String STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES =
             "statistics_setting_elapsed_time_chart_maximum_games";
-    private static final String STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES_DEFAULT =
-            Integer.toString(
-            100);
+    private static final String STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES_DEFAULT = Integer.toString(100);
 
     private static final String STATISTICS_TAB_LAST_SHOWED = "statistics_tab_last_showed";
     private static final int STATISTICS_TAB_LAST_SHOWED_DEFAULT = -1;
@@ -255,8 +232,7 @@ public class Preferences {
      * Creates a new instance of {@link Preferences}.
      * <p/>
      * This object can not be instantiated directly. Use {@link #getInstance()} or {@link
-     * #getInstance(android.content.Context)} to get the singleton reference to the Preference
-     * object.
+     * #getInstance(android.content.Context)} to get the singleton reference to the Preference object.
      *
      * @param context
      *         The context for which the preferences have to be determined.
@@ -266,8 +242,7 @@ public class Preferences {
     }
 
     /**
-     * Gets the singleton reference to the Preference object. If it does not yet exist then it will
-     * be created.
+     * Gets the singleton reference to the Preference object. If it does not yet exist then it will be created.
      *
      * @param context
      *         The context in which the GridPainter is created.
@@ -283,19 +258,17 @@ public class Preferences {
     }
 
     /**
-     * Creates new instance of {@link net.mathdoku.plus.Preferences}. All objects in this class will
-     * be created with the given Preferences.ObjectsCreator. This method is intended for unit
-     * testing.
+     * Creates new instance of {@link net.mathdoku.plus.Preferences}. All objects in this class will be created with the
+     * given Preferences.ObjectsCreator. This method is intended for unit testing.
      *
      * @param context
      *         The context in which the Preference object is created.
      * @param objectsCreator
-     *         The Preferences.ObjectsCreator to be used by this class. Only create methods for
-     *         which the default implementation does not suffice, should be overridden.
+     *         The Preferences.ObjectsCreator to be used by this class. Only create methods for which the default
+     *         implementation does not suffice, should be overridden.
      * @return The singleton instance for the Preferences.
      */
-    public static Preferences getInstance(Context context, Preferences.ObjectsCreator
-            objectsCreator) {
+    public static Preferences getInstance(Context context, Preferences.ObjectsCreator objectsCreator) {
         if (objectsCreator != null) {
             mPreferencesSingletonInstance = objectsCreator.createPreferences(context);
         }
@@ -303,8 +276,7 @@ public class Preferences {
     }
 
     /**
-     * Gets the singleton reference to the Preferences object. If it does not yet exist an exception
-     * will be thrown.
+     * Gets the singleton reference to the Preferences object. If it does not yet exist an exception will be thrown.
      *
      * @return The singleton reference to the Preferences object.
      */
@@ -334,10 +306,8 @@ public class Preferences {
         // value.
         if (previousInstalledVersion < 586 && currentVersion >= 586) {
             editor.putBoolean(PUZZLE_SETTING_CLEAR_MAYBES, PUZZLE_SETTING_CLEAR_MAYBES_DEFAULT)
-                    .putBoolean(PUZZLE_SETTING_PLAY_SOUND_EFFECTS,
-                                PUZZLE_SETTING_PLAY_SOUND_EFFECTS_DEFAULT)
-                    .putBoolean(PUZZLE_SETTING_BAD_CAGE_MATHS_VISIBLE,
-                                PUZZLE_SETTING_BAD_CAGE_MATHS_VISIBLE_DEFAULT)
+                    .putBoolean(PUZZLE_SETTING_PLAY_SOUND_EFFECTS, PUZZLE_SETTING_PLAY_SOUND_EFFECTS_DEFAULT)
+                    .putBoolean(PUZZLE_SETTING_BAD_CAGE_MATHS_VISIBLE, PUZZLE_SETTING_BAD_CAGE_MATHS_VISIBLE_DEFAULT)
                     .putBoolean(PUZZLE_SETTING_DUPLICATE_DIGITS_VISIBLE,
                                 PUZZLE_SETTING_DUPLICATE_DIGITS_VISIBLE_DEFAULT)
                     .putBoolean(PUZZLE_SETTING_MAYBES_DISPLAYED_IN_GRID,
@@ -345,19 +315,15 @@ public class Preferences {
                     .putBoolean(PUZZLE_SETTING_TIMER_VISIBLE, PUZZLE_SETTING_TIMER_VISIBLE_DEFAULT)
                     .putString(PUZZLE_SETTING_THEME, PUZZLE_SETTING_THEME_DEFAULT)
                     .putBoolean(PUZZLE_SETTING_WAKE_LOCK, PUZZLE_SETTING_WAKE_LOCK_DEFAULT)
-                    .putString(ARCHIVE_STATUS_FILTER_LAST_VALUE,
-                               ARCHIVE_STATUS_FILTER_LAST_VALUE_DEFAULT)
+                    .putString(ARCHIVE_STATUS_FILTER_LAST_VALUE, ARCHIVE_STATUS_FILTER_LAST_VALUE_DEFAULT)
                     .putInt(ARCHIVE_GRID_LAST_SHOWED, ARCHIVE_GRID_LAST_SHOWED_DEFAULT)
-                    .putBoolean(PUZZLE_SETTING_COLORED_DIGITS,
-                                PUZZLE_SETTING_COLORED_DIGITS_DEFAULT)
+                    .putBoolean(PUZZLE_SETTING_COLORED_DIGITS, PUZZLE_SETTING_COLORED_DIGITS_DEFAULT)
                     .putString(STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES,
                                STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES_DEFAULT)
                     .putBoolean(PUZZLE_SETTING_FULL_SCREEN, PUZZLE_SETTING_FULL_SCREEN_DEFAULT)
-                    .putInt(PUZZLE_INPUT_MODE_CHANGED_COUNTER,
-                            PUZZLE_INPUT_MODE_CHANGED_COUNTER_DEFAULT)
+                    .putInt(PUZZLE_INPUT_MODE_CHANGED_COUNTER, PUZZLE_INPUT_MODE_CHANGED_COUNTER_DEFAULT)
                     .putString(PUZZLE_PARAMETER_COMPLEXITY, PUZZLE_PARAMETER_COMPLEXITY_DEFAULT)
-                    .putBoolean(PUZZLE_PARAMETER_OPERATORS_VISIBLE,
-                                PUZZLE_PARAMETER_OPERATORS_VISIBLE_DEFAULT)
+                    .putBoolean(PUZZLE_PARAMETER_OPERATORS_VISIBLE, PUZZLE_PARAMETER_OPERATORS_VISIBLE_DEFAULT)
                     .putBoolean(ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE,
                                 ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT)
                     .putBoolean(ARCHIVE_SETTING_CHART_DESCRIPTION_VISIBLE,
@@ -366,8 +332,7 @@ public class Preferences {
                                 STATISTICS_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT)
                     .putBoolean(STATISTICS_SETTING_CHART_DESCRIPTION_VISIBLE,
                                 STATISTICS_SETTING_CHART_DESCRIPTION_VISIBLE_DEFAULT)
-                    .putBoolean(ARCHIVE_SETTING_STATUS_FILTER_VISIBLE,
-                                ARCHIVE_SETTING_STATUS_FILTER_VISIBLE_DEFAULT)
+                    .putBoolean(ARCHIVE_SETTING_STATUS_FILTER_VISIBLE, ARCHIVE_SETTING_STATUS_FILTER_VISIBLE_DEFAULT)
                     .putBoolean(ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE,
                                 ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE_DEFAULT)
                     .putInt(SWIPE_INVALID_MOTION_COUNTER, SWIPE_DIGIT_COUNTER_DEFAULT)
@@ -382,13 +347,11 @@ public class Preferences {
                     .putInt(SWIPE_DIGIT_8_COUNTER, SWIPE_DIGIT_COUNTER_DEFAULT)
                     .putInt(SWIPE_DIGIT_9_COUNTER, SWIPE_DIGIT_COUNTER_DEFAULT)
                     .putInt(STATISTICS_TAB_LAST_SHOWED, STATISTICS_TAB_LAST_SHOWED_DEFAULT)
-                    .putString(PUZZLE_SETTING_OUTER_SWIPE_CIRCLE,
-                               PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_DEFAULT)
+                    .putString(PUZZLE_SETTING_OUTER_SWIPE_CIRCLE, PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_DEFAULT)
                     .putInt(PUZZLE_INPUT_MODE_COPY_COUNTER, PUZZLE_INPUT_MODE_COPY_COUNTER_DEFAULT)
                     .putString(PUZZLE_SETTING_INPUT_METHOD, PUZZLE_SETTING_INPUT_METHOD_DEFAULT)
                     .putString(PUZZLE_INPUT_MODE_LAST_USED, PUZZLE_INPUT_MODE_LAST_USED_DEFAULT)
-                    .putBoolean(PUZZLE_INPUT_MODE_COPY_ENABLED,
-                                PUZZLE_INPUT_MODE_COPY_ENABLED_DEFAULT)
+                    .putBoolean(PUZZLE_INPUT_MODE_COPY_ENABLED, PUZZLE_INPUT_MODE_COPY_ENABLED_DEFAULT)
                     .putBoolean(PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE,
                                 PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE_DEFAULT);
         }
@@ -423,11 +386,9 @@ public class Preferences {
     }
 
     private void upgradeToVersion595(Editor editor) {
-        editor.putInt(LEADERBOARD_DETAILS_VIEWED_COUNTER,
-                      LEADERBOARD_DETAILS_VIEWED_COUNTER_DEFAULT);
+        editor.putInt(LEADERBOARD_DETAILS_VIEWED_COUNTER, LEADERBOARD_DETAILS_VIEWED_COUNTER_DEFAULT);
         editor.putInt(LEADERBOARD_GAMES_CREATED_COUNTER, LEADERBOARD_GAMES_CREATED_COUNTER_DEFAULT);
-        editor.putInt(LEADERBOARD_OVERVIEW_VIEWED_COUNTER,
-                      LEADERBOARD_OVERVIEW_VIEWED_COUNTER_DEFAULT);
+        editor.putInt(LEADERBOARD_OVERVIEW_VIEWED_COUNTER, LEADERBOARD_OVERVIEW_VIEWED_COUNTER_DEFAULT);
     }
 
     private void upgradeToVersion598(Editor editor) {
@@ -438,10 +399,8 @@ public class Preferences {
 
         // Add new preferences. Values are not converted from old
         // preferences.
-        editor.putString(ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE,
-                         ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE_DEFAULT)
-                .putBoolean(ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE,
-                            ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE_DEFAULT)
+        editor.putString(ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE, ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE_DEFAULT)
+                .putBoolean(ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE, ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE_DEFAULT)
                 .putString(PUZZLE_PARAMETER_GRID_SIZE, PUZZLE_PARAMETER_GRID_SIZE_DEFAULT);
     }
 
@@ -466,8 +425,7 @@ public class Preferences {
             if (matcher.matches()) {
                 String tipShortName = matcher.group(1);
                 String newName = TipDialog.getPreferenceStringDisplayTipAgain(tipShortName);
-                editor.putBoolean(newName, mSharedPreferences.getBoolean(preference,
-                                                                         TIP_DISPLAY_AGAIN_DEFAULT));
+                editor.putBoolean(newName, mSharedPreferences.getBoolean(preference, TIP_DISPLAY_AGAIN_DEFAULT));
                 editor.remove(preference);
             }
         }
@@ -492,8 +450,7 @@ public class Preferences {
             if (matcher.matches()) {
                 String tipShortName = matcher.group(1);
                 String newName = TipDialog.getPreferenceStringLastDisplayTime(tipShortName);
-                editor.putLong(newName, mSharedPreferences.getLong(preference,
-                                                                   TIP_LAST_DISPLAY_TIME_DEFAULT));
+                editor.putLong(newName, mSharedPreferences.getLong(preference, TIP_LAST_DISPLAY_TIME_DEFAULT));
                 editor.remove(preference);
             }
         }
@@ -505,8 +462,7 @@ public class Preferences {
      * @return True in case the timer should be displayed. False otherwise.
      */
     public boolean isTimerVisible() {
-        return mSharedPreferences.getBoolean(PUZZLE_SETTING_TIMER_VISIBLE,
-                                             PUZZLE_SETTING_TIMER_VISIBLE_DEFAULT);
+        return mSharedPreferences.getBoolean(PUZZLE_SETTING_TIMER_VISIBLE, PUZZLE_SETTING_TIMER_VISIBLE_DEFAULT);
     }
 
     /**
@@ -515,8 +471,7 @@ public class Preferences {
      * @return The current theme.
      */
     public Painter.GridTheme getTheme() {
-        String theme = mSharedPreferences.getString(PUZZLE_SETTING_THEME,
-                                                    PUZZLE_SETTING_THEME_DEFAULT);
+        String theme = mSharedPreferences.getString(PUZZLE_SETTING_THEME, PUZZLE_SETTING_THEME_DEFAULT);
 
         if (theme.equals(PUZZLE_SETTING_THEME_DARK)) {
             return GridTheme.DARK;
@@ -526,15 +481,13 @@ public class Preferences {
     }
 
     /**
-     * Checks whether redundant possible values in the same column or row should be removed
-     * automatically.
+     * Checks whether redundant possible values in the same column or row should be removed automatically.
      *
-     * @return True in case redundant possible values in the same column or row should be removed
-     * automatically. False otherwise.
+     * @return True in case redundant possible values in the same column or row should be removed automatically. False
+     * otherwise.
      */
     public boolean isPuzzleSettingClearMaybesEnabled() {
-        return mSharedPreferences.getBoolean(PUZZLE_SETTING_CLEAR_MAYBES,
-                                             PUZZLE_SETTING_CLEAR_MAYBES_DEFAULT);
+        return mSharedPreferences.getBoolean(PUZZLE_SETTING_CLEAR_MAYBES, PUZZLE_SETTING_CLEAR_MAYBES_DEFAULT);
     }
 
     /**
@@ -552,8 +505,7 @@ public class Preferences {
      * @return True in case it should be prevented that the screen get locked while playing.
      */
     public boolean isWakeLockEnabled() {
-        return mSharedPreferences.getBoolean(PUZZLE_SETTING_WAKE_LOCK,
-                                             PUZZLE_SETTING_WAKE_LOCK_DEFAULT);
+        return mSharedPreferences.getBoolean(PUZZLE_SETTING_WAKE_LOCK, PUZZLE_SETTING_WAKE_LOCK_DEFAULT);
     }
 
     /**
@@ -579,9 +531,8 @@ public class Preferences {
     }
 
     /**
-     * Check whether this tip will be shown. This method should only be called by the Tip-classes
-     * only. Use method toBeDisplayed of a specific Tip-class to determine whether a tip should be
-     * shown.
+     * Check whether this tip will be shown. This method should only be called by the Tip-classes only. Use method
+     * toBeDisplayed of a specific Tip-class to determine whether a tip should be shown.
      *
      * @param tip
      *         The name of the tip.
@@ -640,8 +591,7 @@ public class Preferences {
     /**
      * Checks whether maybes should be shown in the same pattern as the digit buttons.
      *
-     * @return True in case maybes should be shown in the same pattern as the digit buttons. False
-     * otherwise.
+     * @return True in case maybes should be shown in the same pattern as the digit buttons. False otherwise.
      */
     public boolean isMaybesDisplayedInGrid() {
         return mSharedPreferences.getBoolean(PUZZLE_SETTING_MAYBES_DISPLAYED_IN_GRID,
@@ -681,8 +631,7 @@ public class Preferences {
     /**
      * Checks whether the filter status should be shown in the archive action bar.
      *
-     * @return True in case the filter status should be shown in the archive action bar. False
-     * otherwise.
+     * @return True in case the filter status should be shown in the archive action bar. False otherwise.
      */
     public boolean isArchiveStatusFilterVisible() {
         return mSharedPreferences.getBoolean(ARCHIVE_SETTING_STATUS_FILTER_VISIBLE,
@@ -692,8 +641,7 @@ public class Preferences {
     /**
      * Checks whether the size status should be shown in the archive action bar.
      *
-     * @return True in case the size filter should be shown in the archive action bar. False
-     * otherwise.
+     * @return True in case the size filter should be shown in the archive action bar. False otherwise.
      */
     public boolean isArchiveSizeFilterVisible() {
         return mSharedPreferences.getBoolean(ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE,
@@ -764,9 +712,8 @@ public class Preferences {
      * @return The last value used for the size filter in the archive.
      */
     public GridTypeFilter getArchiveSizeFilterLastValueUsed() {
-        return GridTypeFilter.valueOf(
-                mSharedPreferences.getString(ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE,
-                                             ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE_DEFAULT));
+        return GridTypeFilter.valueOf(mSharedPreferences.getString(ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE,
+                                                                   ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE_DEFAULT));
     }
 
     /**
@@ -787,8 +734,7 @@ public class Preferences {
      * @return The id of the grid which was last shown in the archive.
      */
     public int getArchiveGridIdLastShowed() {
-        return mSharedPreferences.getInt(ARCHIVE_GRID_LAST_SHOWED,
-                                         ARCHIVE_GRID_LAST_SHOWED_DEFAULT);
+        return mSharedPreferences.getInt(ARCHIVE_GRID_LAST_SHOWED, ARCHIVE_GRID_LAST_SHOWED_DEFAULT);
     }
 
     /**
@@ -811,8 +757,8 @@ public class Preferences {
             counters = new int[13];
             counters[PUZZLE_INPUT_MODE_CHANGED_COUNTER_ID] = mSharedPreferences.getInt(
                     PUZZLE_INPUT_MODE_CHANGED_COUNTER, PUZZLE_INPUT_MODE_CHANGED_COUNTER_DEFAULT);
-            counters[PUZZLE_INPUT_MODE_COPY_COUNTER_ID] = mSharedPreferences.getInt(
-                    PUZZLE_INPUT_MODE_COPY_COUNTER, PUZZLE_INPUT_MODE_CHANGED_COUNTER_DEFAULT);
+            counters[PUZZLE_INPUT_MODE_COPY_COUNTER_ID] = mSharedPreferences.getInt(PUZZLE_INPUT_MODE_COPY_COUNTER,
+                                                                                    PUZZLE_INPUT_MODE_CHANGED_COUNTER_DEFAULT);
             counters[SWIPE_DIGIT_1_COUNTER_ID] = mSharedPreferences.getInt(SWIPE_DIGIT_1_COUNTER,
                                                                            SWIPE_DIGIT_COUNTER_DEFAULT);
             counters[SWIPE_DIGIT_2_COUNTER_ID] = mSharedPreferences.getInt(SWIPE_DIGIT_2_COUNTER,
@@ -831,18 +777,18 @@ public class Preferences {
                                                                            SWIPE_DIGIT_COUNTER_DEFAULT);
             counters[SWIPE_DIGIT_9_COUNTER_ID] = mSharedPreferences.getInt(SWIPE_DIGIT_9_COUNTER,
                                                                            SWIPE_DIGIT_COUNTER_DEFAULT);
-            counters[SWIPE_VALID_MOTION_COUNTER_ID] = mSharedPreferences.getInt(
-                    SWIPE_VALID_MOTION_COUNTER, SWIPE_DIGIT_COUNTER_DEFAULT);
-            counters[SWIPE_INVALID_MOTION_COUNTER_ID] = mSharedPreferences.getInt(
-                    SWIPE_INVALID_MOTION_COUNTER, SWIPE_DIGIT_COUNTER_DEFAULT);
+            counters[SWIPE_VALID_MOTION_COUNTER_ID] = mSharedPreferences.getInt(SWIPE_VALID_MOTION_COUNTER,
+                                                                                SWIPE_DIGIT_COUNTER_DEFAULT);
+            counters[SWIPE_INVALID_MOTION_COUNTER_ID] = mSharedPreferences.getInt(SWIPE_INVALID_MOTION_COUNTER,
+                                                                                  SWIPE_DIGIT_COUNTER_DEFAULT);
         }
     }
 
     /**
      * Increase the current value of a preference counter with 1 occurrence.
      * <p/>
-     * <b>Note:</b> For performance reasons the counter preferences are not updated on calling this
-     * method. Call commitCounters() to commit counters to storage.
+     * <b>Note:</b> For performance reasons the counter preferences are not updated on calling this method. Call
+     * commitCounters() to commit counters to storage.
      *
      * @param counterId
      *         The id of the preferences counter.
@@ -899,13 +845,12 @@ public class Preferences {
     }
 
     /**
-     * Increase the number of times a swipe motion for the given digit has been successfully
-     * completed. Also the total number of completed swipe motions is increased.
+     * Increase the number of times a swipe motion for the given digit has been successfully completed. Also the total
+     * number of completed swipe motions is increased.
      *
      * @param digit
      *         The digit for which the counter has to be determined.
-     * @return The (updated) number of times a swipe motion for the given digit has been
-     * successfully completed.
+     * @return The (updated) number of times a swipe motion for the given digit has been successfully completed.
      */
     public int increaseSwipeValidMotionCounter(int digit) {
         increaseCounter(SWIPE_VALID_MOTION_COUNTER_ID);
@@ -927,17 +872,14 @@ public class Preferences {
      * @return The maximum number of games which should be shown in a elapsed-time-chart.
      */
     public int getStatisticsSettingElapsedTimeChartMaximumGames() {
-        return Integer.parseInt(
-                mSharedPreferences.getString(STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES,
-                                             STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES_DEFAULT));
+        return Integer.parseInt(mSharedPreferences.getString(STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES,
+                                                             STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES_DEFAULT));
     }
 
     /**
-     * Increase the number of times the input mode has been changed from normal to maybe or vice
-     * versa.
+     * Increase the number of times the input mode has been changed from normal to maybe or vice versa.
      *
-     * @return The (updated) number of times the input mode has been changed from normal to maybe or
-     * vice versa.
+     * @return The (updated) number of times the input mode has been changed from normal to maybe or vice versa.
      */
     @SuppressWarnings("UnusedReturnValue")
     public int increaseInputModeChangedCounter() {
@@ -960,10 +902,8 @@ public class Preferences {
     public void commitCounters() {
         if (counters != null) {
             Editor editor = mSharedPreferences.edit();
-            editor.putInt(PUZZLE_INPUT_MODE_CHANGED_COUNTER,
-                          counters[PUZZLE_INPUT_MODE_CHANGED_COUNTER_ID]);
-            editor.putInt(PUZZLE_INPUT_MODE_COPY_COUNTER,
-                          counters[PUZZLE_INPUT_MODE_COPY_COUNTER_ID]);
+            editor.putInt(PUZZLE_INPUT_MODE_CHANGED_COUNTER, counters[PUZZLE_INPUT_MODE_CHANGED_COUNTER_ID]);
+            editor.putInt(PUZZLE_INPUT_MODE_COPY_COUNTER, counters[PUZZLE_INPUT_MODE_COPY_COUNTER_ID]);
             editor.putInt(SWIPE_DIGIT_1_COUNTER, counters[SWIPE_DIGIT_1_COUNTER_ID]);
             editor.putInt(SWIPE_DIGIT_2_COUNTER, counters[SWIPE_DIGIT_2_COUNTER_ID]);
             editor.putInt(SWIPE_DIGIT_3_COUNTER, counters[SWIPE_DIGIT_3_COUNTER_ID]);
@@ -1009,8 +949,8 @@ public class Preferences {
      * @return The complexity of the puzzle which was last generated.
      */
     public PuzzleComplexity getPuzzleParameterComplexity() {
-        return PuzzleComplexity.valueOf(mSharedPreferences.getString(PUZZLE_PARAMETER_COMPLEXITY,
-                                                                     PUZZLE_PARAMETER_COMPLEXITY_DEFAULT));
+        return PuzzleComplexity.valueOf(
+                mSharedPreferences.getString(PUZZLE_PARAMETER_COMPLEXITY, PUZZLE_PARAMETER_COMPLEXITY_DEFAULT));
     }
 
     /**
@@ -1050,8 +990,8 @@ public class Preferences {
      * @return The size of the puzzle which was last generated.
      */
     public GridType getPuzzleParameterGridSize() {
-        return GridType.valueOf(mSharedPreferences.getString(PUZZLE_PARAMETER_GRID_SIZE,
-                                                             PUZZLE_PARAMETER_GRID_SIZE_DEFAULT));
+        return GridType.valueOf(
+                mSharedPreferences.getString(PUZZLE_PARAMETER_GRID_SIZE, PUZZLE_PARAMETER_GRID_SIZE_DEFAULT));
     }
 
     /**
@@ -1069,19 +1009,17 @@ public class Preferences {
      * @return True in case the activity should request full screen mode while playing.
      */
     public boolean isFullScreenEnabled() {
-        return mSharedPreferences.getBoolean(PUZZLE_SETTING_FULL_SCREEN,
-                                             PUZZLE_SETTING_FULL_SCREEN_DEFAULT);
+        return mSharedPreferences.getBoolean(PUZZLE_SETTING_FULL_SCREEN, PUZZLE_SETTING_FULL_SCREEN_DEFAULT);
     }
 
     /**
      * Checks whether maybes and definitive digits should be displayed in distinct colors.
      *
-     * @return True in case distinct colors have to be used for displaying maybes and definitive
-     * digits. False in case the same color is used for both type of digits.
+     * @return True in case distinct colors have to be used for displaying maybes and definitive digits. False in case
+     * the same color is used for both type of digits.
      */
     public boolean isColoredDigitsVisible() {
-        return mSharedPreferences.getBoolean(PUZZLE_SETTING_COLORED_DIGITS,
-                                             PUZZLE_SETTING_COLORED_DIGITS_DEFAULT);
+        return mSharedPreferences.getBoolean(PUZZLE_SETTING_COLORED_DIGITS, PUZZLE_SETTING_COLORED_DIGITS_DEFAULT);
     }
 
     /**
@@ -1090,8 +1028,7 @@ public class Preferences {
      * @return The tab which was displayed last time the statistics were displayed.
      */
     public int getStatisticsTabLastDisplayed() {
-        return mSharedPreferences.getInt(STATISTICS_TAB_LAST_SHOWED,
-                                         STATISTICS_TAB_LAST_SHOWED_DEFAULT);
+        return mSharedPreferences.getInt(STATISTICS_TAB_LAST_SHOWED, STATISTICS_TAB_LAST_SHOWED_DEFAULT);
     }
 
     /**
@@ -1107,16 +1044,14 @@ public class Preferences {
      * Checks whether the outer swipe circle is visible for the given grid size.
      *
      * @param gridSize
-     *         The grid size for which it has to be checked whether the outer swipe circle should be
-     *         shown.
+     *         The grid size for which it has to be checked whether the outer swipe circle should be shown.
      * @return True in case the outer swipe circle should be displayed. False otherwise.
      */
     public boolean isOuterSwipeCircleVisible(int gridSize) {
-        String puzzleSettingOuterSwipeCircle = mSharedPreferences.getString(
-                PUZZLE_SETTING_OUTER_SWIPE_CIRCLE, PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_DEFAULT);
+        String puzzleSettingOuterSwipeCircle = mSharedPreferences.getString(PUZZLE_SETTING_OUTER_SWIPE_CIRCLE,
+                                                                            PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_DEFAULT);
         int minGridSize = puzzleSettingOuterSwipeCircle.equals(
-                PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_NEVER_VISIBLE) ? Integer.MAX_VALUE : Integer
-                .valueOf(
+                PUZZLE_SETTING_OUTER_SWIPE_CIRCLE_NEVER_VISIBLE) ? Integer.MAX_VALUE : Integer.valueOf(
                 puzzleSettingOuterSwipeCircle);
 
         return gridSize >= minGridSize;
@@ -1148,8 +1083,7 @@ public class Preferences {
      */
     public PuzzleSettingInputMethod getDigitInputMethod() {
         return PuzzleSettingInputMethod.valueOf(
-                mSharedPreferences.getString(PUZZLE_SETTING_INPUT_METHOD,
-                                             PUZZLE_SETTING_INPUT_METHOD_DEFAULT)
+                mSharedPreferences.getString(PUZZLE_SETTING_INPUT_METHOD, PUZZLE_SETTING_INPUT_METHOD_DEFAULT)
                         .toUpperCase(Locale.getDefault()));
     }
 
@@ -1159,14 +1093,11 @@ public class Preferences {
     public void setDigitInputMethod(boolean enableSwipe, boolean enableButtons) {
         Editor editor = mSharedPreferences.edit();
         if (enableSwipe && !enableButtons) {
-            editor.putString(PUZZLE_SETTING_INPUT_METHOD,
-                             PuzzleSettingInputMethod.SWIPE_ONLY.toString());
+            editor.putString(PUZZLE_SETTING_INPUT_METHOD, PuzzleSettingInputMethod.SWIPE_ONLY.toString());
         } else if (!enableSwipe && enableButtons) {
-            editor.putString(PUZZLE_SETTING_INPUT_METHOD,
-                             PuzzleSettingInputMethod.BUTTONS_ONLY.toString());
+            editor.putString(PUZZLE_SETTING_INPUT_METHOD, PuzzleSettingInputMethod.BUTTONS_ONLY.toString());
         } else {
-            editor.putString(PUZZLE_SETTING_INPUT_METHOD,
-                             PuzzleSettingInputMethod.SWIPE_AND_BUTTONS.toString());
+            editor.putString(PUZZLE_SETTING_INPUT_METHOD, PuzzleSettingInputMethod.SWIPE_AND_BUTTONS.toString());
         }
         editor.apply();
     }
@@ -1177,8 +1108,8 @@ public class Preferences {
      * @param copyModeEnabled
      *         True in case the copy mode is enabled.
      * @param gridInputMode
-     *         The current input mode if copy mode is disabled. The previous input mode before copy
-     *         mode in case copy mode is enabled.
+     *         The current input mode if copy mode is disabled. The previous input mode before copy mode in case copy
+     *         mode is enabled.
      */
     public void setGridInputMode(boolean copyModeEnabled, GridInputMode gridInputMode) {
         Editor editor = mSharedPreferences.edit();
@@ -1193,8 +1124,8 @@ public class Preferences {
      * @return The last used grid input mode.
      */
     public GridInputMode getGridInputMode() {
-        return GridInputMode.valueOf(mSharedPreferences.getString(PUZZLE_INPUT_MODE_LAST_USED,
-                                                                  PUZZLE_INPUT_MODE_LAST_USED_DEFAULT));
+        return GridInputMode.valueOf(
+                mSharedPreferences.getString(PUZZLE_INPUT_MODE_LAST_USED, PUZZLE_INPUT_MODE_LAST_USED_DEFAULT));
     }
 
     /**
@@ -1203,8 +1134,7 @@ public class Preferences {
      * @return True in case the copy mode was enabled.
      */
     public boolean isGridInputModeCopyEnabled() {
-        return mSharedPreferences.getBoolean(PUZZLE_INPUT_MODE_COPY_ENABLED,
-                                             PUZZLE_INPUT_MODE_COPY_ENABLED_DEFAULT);
+        return mSharedPreferences.getBoolean(PUZZLE_INPUT_MODE_COPY_ENABLED, PUZZLE_INPUT_MODE_COPY_ENABLED_DEFAULT);
     }
 
     /**
@@ -1218,8 +1148,7 @@ public class Preferences {
     }
 
     /**
-     * Set whether the checkbox "Hide till next top score is achieved" should be checked by
-     * default.
+     * Set whether the checkbox "Hide till next top score is achieved" should be checked by default.
      *
      * @param checked
      *         True in case it is checked by default. False otherwise.
@@ -1236,8 +1165,7 @@ public class Preferences {
      * @return The tab which was displayed last time the leaderboards were displayed.
      */
     public int getLeaderboardsTabLastDisplayed() {
-        return mSharedPreferences.getInt(LEADERBOARD_TAB_LAST_SHOWED,
-                                         LEADERBOARD_TAB_LAST_SHOWED_DEFAULT);
+        return mSharedPreferences.getInt(LEADERBOARD_TAB_LAST_SHOWED, LEADERBOARD_TAB_LAST_SHOWED_DEFAULT);
     }
 
     /**
@@ -1255,8 +1183,7 @@ public class Preferences {
      * @return True in case all leaderboards have been initialized. False otherwise.
      */
     public boolean isLeaderboardsInitialized() {
-        return mSharedPreferences.getBoolean(LEADERBOARD_ALL_INITIALIZED,
-                                             LEADERBOARD_ALL_INITIALIZED_DEFAULT);
+        return mSharedPreferences.getBoolean(LEADERBOARD_ALL_INITIALIZED, LEADERBOARD_ALL_INITIALIZED_DEFAULT);
     }
 
     /**
@@ -1274,8 +1201,8 @@ public class Preferences {
      * @return The last value used for the leaderboard filter in the leaderboards overview.
      */
     public LeaderboardFilter getLeaderboardFilterLastValueUsed() {
-        return LeaderboardFilter.valueOf(mSharedPreferences.getString(LEADERBOARD_FILTER_LAST_VALUE,
-                                                                      LEADERBOARD_FILTER_LAST_VALUE_DEFAULT));
+        return LeaderboardFilter.valueOf(
+                mSharedPreferences.getString(LEADERBOARD_FILTER_LAST_VALUE, LEADERBOARD_FILTER_LAST_VALUE_DEFAULT));
     }
 
     /**
@@ -1316,8 +1243,7 @@ public class Preferences {
      * @return The number of times a game for a leaderboard is created.
      */
     public int getLeaderboardsGamesCreated() {
-        return mSharedPreferences.getInt(LEADERBOARD_GAMES_CREATED_COUNTER,
-                                         LEADERBOARD_GAMES_CREATED_COUNTER_DEFAULT);
+        return mSharedPreferences.getInt(LEADERBOARD_GAMES_CREATED_COUNTER, LEADERBOARD_GAMES_CREATED_COUNTER_DEFAULT);
     }
 
     /**

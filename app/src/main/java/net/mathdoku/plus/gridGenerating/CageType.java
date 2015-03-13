@@ -39,8 +39,7 @@ public class CageType {
             throw new IllegalArgumentException("Cage type matrix should not be empty.");
         }
         if (hasRowsOfDifferentLength(cageTypeMatrix)) {
-            throw new IllegalArgumentException(
-                    "All rows in cage type matrix should have same length.");
+            throw new IllegalArgumentException("All rows in cage type matrix should have same length.");
         }
         if (isEmpty(cageTypeMatrix)) {
             throw new IllegalArgumentException("Cage type matrix can not be empty.");
@@ -85,8 +84,7 @@ public class CageType {
         } else {
             boolean[][] strippedCageTypeMatrix = new boolean[height][width];
             for (int row = top; row <= bottom; row++) {
-                System.arraycopy(cageTypeMatrix[row], left, strippedCageTypeMatrix[row - top], 0,
-                                 width);
+                System.arraycopy(cageTypeMatrix[row], left, strippedCageTypeMatrix[row - top], 0, width);
             }
             return strippedCageTypeMatrix;
         }
@@ -100,8 +98,7 @@ public class CageType {
                 }
             }
         }
-        throw new IllegalStateException(
-                "Cannot determine top row of used area when matrix is empty.");
+        throw new IllegalStateException("Cannot determine top row of used area when matrix is empty.");
     }
 
     private int getLeftColumnOfUsedArea(boolean[][] cageTypeMatrix) {
@@ -112,8 +109,7 @@ public class CageType {
                 }
             }
         }
-        throw new IllegalStateException(
-                "Cannot determine left column of used area when matrix is empty.");
+        throw new IllegalStateException("Cannot determine left column of used area when matrix is empty.");
     }
 
     private int getBottomRowOfUsedArea(boolean[][] cageTypeMatrix) {
@@ -124,8 +120,7 @@ public class CageType {
                 }
             }
         }
-        throw new IllegalStateException(
-                "Cannot determine bottom row of used area when matrix is empty.");
+        throw new IllegalStateException("Cannot determine bottom row of used area when matrix is empty.");
     }
 
     private int getRightMostColumnOfUserArea(boolean[][] cageTypeMatrix) {
@@ -136,8 +131,7 @@ public class CageType {
                 }
             }
         }
-        throw new IllegalStateException(
-                "Cannot determine right column of used area when matrix is empty.");
+        throw new IllegalStateException("Cannot determine right column of used area when matrix is empty.");
     }
 
     private int initSize() {
@@ -180,9 +174,9 @@ public class CageType {
     }
 
     /**
-     * Get a cage type matrix with a margin of 1 row/column with unused cells around the entire
-     * shape. So a shape with dimensions 2x3 will be extended to 4x5. The original shape will be
-     * shifted by one position to the bottom and one position to the right.
+     * Get a cage type matrix with a margin of 1 row/column with unused cells around the entire shape. So a shape with
+     * dimensions 2x3 will be extended to 4x5. The original shape will be shifted by one position to the bottom and one
+     * position to the right.
      *
      * @return An extended cage type matrix with unused cells around the entire shape.
      */
@@ -202,8 +196,8 @@ public class CageType {
      *
      * @param originCell
      *         The cell (0 based) at which the origin cell of the cage type will be placed.
-     * @return An array of coordinates (row,col) of cells involved. The caller needs to check
-     * whether all returned coordinates are valid.
+     * @return An array of coordinates (row,col) of cells involved. The caller needs to check whether all returned
+     * coordinates are valid.
      */
     public CellCoordinates[] getCellCoordinatesOfAllCellsInCage(CellCoordinates originCell) {
         int columnOffset = getColumnOffsetToFirstUsedCellOnTheFirstRow();
@@ -218,8 +212,9 @@ public class CageType {
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < columns; col++) {
                 if (usedCells[row][col]) {
-                    cellCoordinates[coordinatesIndex++] = new CellCoordinates(
-                            originCell.getRow() + row, originCell.getColumn() + col - columnOffset);
+                    cellCoordinates[coordinatesIndex++] = new CellCoordinates(originCell.getRow() + row,
+                                                                              originCell.getColumn() + col -
+                                                                                      columnOffset);
                 }
             }
         }
@@ -237,8 +232,7 @@ public class CageType {
                 return col;
             }
         }
-        throw new IllegalStateException(
-                "Cannot determine offset to first used cell if top row is empty");
+        throw new IllegalStateException("Cannot determine offset to first used cell if top row is empty");
     }
 
     public CellCoordinates getCellCoordinatesTopLeftCell() {

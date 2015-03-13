@@ -21,8 +21,7 @@ public enum CageOperator {
         try {
             return fromId(Integer.parseInt(cageOperatorId));
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(
-                    getErrorStringCannotConvertIdToCageOperator(cageOperatorId), e);
+            throw new IllegalArgumentException(getErrorStringCannotConvertIdToCageOperator(cageOperatorId), e);
         }
     }
 
@@ -33,8 +32,7 @@ public enum CageOperator {
             }
         }
 
-        throw new IllegalArgumentException(
-                getErrorStringCannotConvertIdToCageOperator(String.valueOf(cageOperatorId)));
+        throw new IllegalArgumentException(getErrorStringCannotConvertIdToCageOperator(String.valueOf(cageOperatorId)));
     }
 
     private static String getErrorStringCannotConvertIdToCageOperator(String cageOperatorId) {

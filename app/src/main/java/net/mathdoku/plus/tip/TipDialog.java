@@ -140,7 +140,7 @@ public class TipDialog extends AlertDialog {
         setOnCancelListener(new OnTipDialogCancelListener());
 
         setButton(DialogInterface.BUTTON_POSITIVE, mContext.getResources()
-                          .getString(R.string.dialog_general_button_close), new OnTipDialogCloseListener(checkBoxView));
+                .getString(R.string.dialog_general_button_close), new OnTipDialogCloseListener(checkBoxView));
 
         // In case the dialog is shown, it is registered as the displayed
         // tip dialog. On dismissal of the dialog it has to be unregistered.
@@ -191,7 +191,7 @@ public class TipDialog extends AlertDialog {
         // with a higher priority dialog.
         if (mDisplayedDialog != null) {
             debug(TAG, tip + ": priority (" + priority.ordinal() + ") compared with priority of " +
-                          mDisplayedDialog.mTip + "(" + mDisplayedDialog.mPriority.ordinal() + ")");
+                    mDisplayedDialog.mTip + "(" + mDisplayedDialog.mPriority.ordinal() + ")");
 
             // Do not display in case priority is lower than priority of already
             // displayed dialog.

@@ -105,8 +105,7 @@ public class GridBasePlayerView extends GridViewerView implements OnTouchListene
                     mMotion.clearDoubleTap();
                 } else if (mMotion.isTouchDownInsideGrid() && mTouchedListener != null) {
                     // Inform listener about the cell which was tapped.
-                    mTouchedListener.gridTouched(
-                            mGrid.setSelectedCell(mMotion.getTouchDownCellCoordinates()));
+                    mTouchedListener.gridTouched(mGrid.setSelectedCell(mMotion.getTouchDownCellCoordinates()));
                     invalidate();
                 }
 
@@ -211,9 +210,7 @@ public class GridBasePlayerView extends GridViewerView implements OnTouchListene
                         // and column.
                         mGrid.clearRedundantPossiblesInSameRowOrColumn(cellChange);
                     }
-                    if (newValue != selectedCell.getCorrectValue() && TipIncorrectValue
-                            .toBeDisplayed(
-                            mPreferences)) {
+                    if (newValue != selectedCell.getCorrectValue() && TipIncorrectValue.toBeDisplayed(mPreferences)) {
                         new TipIncorrectValue(mContext).show();
                     }
                 }
@@ -313,8 +310,7 @@ public class GridBasePlayerView extends GridViewerView implements OnTouchListene
     private void checkGridValidity(Cell selectedCell) {
         // Mark all cells having a duplicate cell value. If a duplicate value is
         // found, check whether the duplicate value tip should be displayed.
-        if (mGrid != null && mGrid.markDuplicateValues() && TipDuplicateValue.toBeDisplayed(
-                mPreferences)) {
+        if (mGrid != null && mGrid.markDuplicateValues() && TipDuplicateValue.toBeDisplayed(mPreferences)) {
             new TipDuplicateValue(mContext).show();
         }
 
@@ -334,8 +330,8 @@ public class GridBasePlayerView extends GridViewerView implements OnTouchListene
      */
     @Override
     public GridInputMode getRestrictedGridInputMode() {
-        return mInputMode == GridInputMode.COPY && mCopyInputModeState != null ?
-                mCopyInputModeState.mPreviousInputMode : mInputMode;
+        return mInputMode == GridInputMode.COPY && mCopyInputModeState != null ? mCopyInputModeState
+                .mPreviousInputMode : mInputMode;
     }
 
     /**
@@ -390,8 +386,7 @@ public class GridBasePlayerView extends GridViewerView implements OnTouchListene
 
             // Inform listeners about change in input mode
             if (mOnInputModeChangedListener != null) {
-                mOnInputModeChangedListener.onInputModeChanged(
-                        mCopyInputModeState.mPreviousInputMode, true);
+                mOnInputModeChangedListener.onInputModeChanged(mCopyInputModeState.mPreviousInputMode, true);
             }
         } else {
             // Restore input mode to the last know value before the copy mode
@@ -401,16 +396,15 @@ public class GridBasePlayerView extends GridViewerView implements OnTouchListene
 
                 // Inform listeners about change in input mode
                 if (mOnInputModeChangedListener != null) {
-                    mOnInputModeChangedListener.onInputModeChanged(
-                            mCopyInputModeState.mPreviousInputMode, false);
+                    mOnInputModeChangedListener.onInputModeChanged(mCopyInputModeState.mPreviousInputMode, false);
                 }
             }
         }
     }
 
     /**
-     * Toggle the input mode between normal and maybe. Or if currently in another input mode than
-     * return to either normal or maybe mode dependent on which of these modes was used last.
+     * Toggle the input mode between normal and maybe. Or if currently in another input mode than return to either
+     * normal or maybe mode dependent on which of these modes was used last.
      */
     void toggleInputMode() {
         switch (mInputMode) {

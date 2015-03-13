@@ -20,23 +20,20 @@ public class TipDuplicateValue extends TipDialog {
         super(context, TIP_NAME, TIP_PRIORITY);
 
         build(R.drawable.alert, context.getResources()
-                      .getString(R.string.dialog_tip_duplicate_value_title), context.getResources()
+                .getString(R.string.dialog_tip_duplicate_value_title), context.getResources()
                       .getString(R.string.dialog_tip_duplicate_value_text), null);
     }
 
     /**
-     * Checks whether this tip has to be displayed. Should be called statically before creating this
-     * object.
+     * Checks whether this tip has to be displayed. Should be called statically before creating this object.
      *
      * @param preferences
-     *         Preferences of the activity for which has to be checked whether this tip should be
-     *         shown.
+     *         Preferences of the activity for which has to be checked whether this tip should be shown.
      * @return True in case the tip might be displayed. False otherwise.
      */
     public static boolean toBeDisplayed(Preferences preferences) {
         // Do not display in case it was displayed less than 2 minutes ago.
-        if (preferences.getTipLastDisplayTime(
-                TIP_NAME) > System.currentTimeMillis() - 2 * 60 * 1000) {
+        if (preferences.getTipLastDisplayTime(TIP_NAME) > System.currentTimeMillis() - 2 * 60 * 1000) {
             return false;
         }
 

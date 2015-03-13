@@ -25,20 +25,19 @@ import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 import java.util.Random;
 
 /**
- * The Development Helper class is intended to support Development and Unit Testing of this
- * application. Variables and methods should not be used in production code.
+ * The Development Helper class is intended to support Development and Unit Testing of this application. Variables and
+ * methods should not be used in production code.
  * <p/>
- * Checks on variable {@link net.mathdoku.plus.config.Config#APP_MODE} should always be made in such
- * a way that the result can be determined at compile time. In this way the enclosed block will not
- * be included in the compiled case when the condition for executing the block evaluates to false.
- * Example of intended usage:
+ * Checks on variable {@link net.mathdoku.plus.config.Config#APP_MODE} should always be made in such a way that the
+ * result can be determined at compile time. In this way the enclosed block will not be included in the compiled case
+ * when the condition for executing the block evaluates to false. Example of intended usage:
  * <p/>
  * <p/>
- * <code> if (DevelopmentHelper.mode == AppMode.UNIT_TESTING) { // code which should only be
- * included in case the app is used for unit // testing } </code>
+ * <code> if (DevelopmentHelper.mode == AppMode.UNIT_TESTING) { // code which should only be included in case the app is
+ * used for unit // testing } </code>
  * <p/>
- * IMPORTANT: Use block above also in all helper function in this class. In this way all development
- * code will not be compiled into the APK as long as the development mode is turned off.
+ * IMPORTANT: Use block above also in all helper function in this class. In this way all development code will not be
+ * compiled into the APK as long as the development mode is turned off.
  */
 public class DevelopmentHelper {
     @SuppressWarnings("unused")
@@ -60,9 +59,8 @@ public class DevelopmentHelper {
      */
     // Suppress warnings for cyclomatic redundancy check
     @SuppressWarnings("all")
-    public static boolean onDevelopmentHelperOption(PuzzleFragmentActivity
-                                                                puzzleFragmentActivity,
-                                                    int menuId, Grid grid) {
+    public static boolean onDevelopmentHelperOption(PuzzleFragmentActivity puzzleFragmentActivity, int menuId,
+                                                    Grid grid) {
         if (Config.APP_MODE != AppMode.DEVELOPMENT) {
             return false;
         }
@@ -89,8 +87,8 @@ public class DevelopmentHelper {
     }
 
     /**
-     * Generate dummy games. A dummy game is not a real game which can be played as it is not
-     * checked on having a unique solution.
+     * Generate dummy games. A dummy game is not a real game which can be played as it is not checked on having a unique
+     * solution.
      *
      * @param puzzleFragmentActivity
      *         The activity in which context the confirmation dialog will be shown.
@@ -100,8 +98,9 @@ public class DevelopmentHelper {
             return false;
         }
 
-        puzzleFragmentActivity.mGeneratePuzzleProgressDialog = new GeneratePuzzleProgressDialog(
-                puzzleFragmentActivity, createArrayOfRandomGridGeneratingParameters(10));
+        puzzleFragmentActivity.mGeneratePuzzleProgressDialog = new GeneratePuzzleProgressDialog(puzzleFragmentActivity,
+                                                                                                createArrayOfRandomGridGeneratingParameters(
+                                                                                                        10));
         puzzleFragmentActivity.mGeneratePuzzleProgressDialog.show();
 
         return true;
@@ -131,8 +130,8 @@ public class DevelopmentHelper {
     }
 
     /**
-     * Removes all preferences. After restart of the app the preferences will be initialized with
-     * default values. Saved games will not be deleted!
+     * Removes all preferences. After restart of the app the preferences will be initialized with default values. Saved
+     * games will not be deleted!
      *
      * @param puzzleFragmentActivity
      *         The activity in which context the preferences are have to be reset.
@@ -152,8 +151,7 @@ public class DevelopmentHelper {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         // Restart the activity
-                        Intent intent = new Intent(puzzleFragmentActivity,
-                                                   ArchivePreferenceActivity.class);
+                        Intent intent = new Intent(puzzleFragmentActivity, ArchivePreferenceActivity.class);
                         puzzleFragmentActivity.getBaseContext()
                                 .startActivity(intent);
                         puzzleFragmentActivity.finish();
@@ -168,29 +166,27 @@ public class DevelopmentHelper {
                                           int numberOfGamesGenerated) {
         if (Config.APP_MODE == AppMode.DEVELOPMENT) {
             new AlertDialog.Builder(puzzleFragmentActivity).setTitle("Games generated")
-                    .setMessage(Integer.toString(
-                                        numberOfGamesGenerated) + " games have been generated. " +
+                    .setMessage(Integer.toString(numberOfGamesGenerated) + " games have been generated. " +
                                         "Note that it is not " + "guaranteed that those puzzles " +
                                         "have unique solutions.")
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                           @Override
-                                           public void onClick(DialogInterface dialog, int id) {
-                                               // Do nothing
-                                           }
-                                       })
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            // Do nothing
+                        }
+                    })
                     .show();
         }
     }
 
     /**
-     * Delete all data (games, database and preferences). It is provided as an easy access instead
-     * of using the button in the AppInfo dialog which involves opening the application manager.
+     * Delete all data (games, database and preferences). It is provided as an easy access instead of using the button
+     * in the AppInfo dialog which involves opening the application manager.
      *
      * @param puzzleFragmentActivity
      *         The activity in which context the database and preferences are deleted.
      */
-    private static boolean deleteDatabaseAndPreferences(final PuzzleFragmentActivity
-                                                                puzzleFragmentActivity) {
+    private static boolean deleteDatabaseAndPreferences(final PuzzleFragmentActivity puzzleFragmentActivity) {
         if (Config.APP_MODE != AppMode.DEVELOPMENT) {
             return false;
         }
@@ -199,20 +195,20 @@ public class DevelopmentHelper {
         builder.setTitle("Delete all data and preferences?")
                 .setMessage("All data and preferences for MathDoku+ will be deleted.")
                 .setNegativeButton(CANCEL, new DialogInterface.OnClickListener() {
-                                       @Override
-                                       public void onClick(DialogInterface dialog, int id) {
-                                           // Do nothing
-                                       }
-                                   })
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        // Do nothing
+                    }
+                })
                 .setPositiveButton("Delete all", new DialogInterface.OnClickListener() {
-                                       @Override
-                                       public void onClick(DialogInterface dialog, int id) {
-                                           executeDeleteAllPreferences();
-                                           executeDeleteDatabase(puzzleFragmentActivity);
-                                           restartApp(puzzleFragmentActivity);
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        executeDeleteAllPreferences();
+                        executeDeleteDatabase(puzzleFragmentActivity);
+                        restartApp(puzzleFragmentActivity);
 
-                                       }
-                                   });
+                    }
+                });
         AlertDialog dialog = builder.create();
         dialog.show();
 
@@ -266,8 +262,7 @@ public class DevelopmentHelper {
      *         The activity in which context the database is checked.
      * @return False in case the database is not consistent. True otherwise.
      */
-    public static boolean checkDatabaseConsistency(final PuzzleFragmentActivity
-                                                           puzzleFragmentActivity) {
+    public static boolean checkDatabaseConsistency(final PuzzleFragmentActivity puzzleFragmentActivity) {
         if (Config.APP_MODE == AppMode.DEVELOPMENT) {
             // While developing it regularly occurs that table definitions have
             // been altered without creating separate database versions. As the
@@ -285,22 +280,20 @@ public class DevelopmentHelper {
             if (databaseHelper.hasChangedTableDefinitions()) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(puzzleFragmentActivity);
                 builder.setTitle("Database is inconsistent?")
-                        .setMessage(
-                                "The database is not consistent. This is probably due " + "to a " +
-                                        "table alteration (see log messages) " + "without " +
-                                        "changing the revision number in " + "the manifest. " +
-                                        "Either update the revision " + "number in the manifest " +
-                                        "or delete the " + "database.\n" + "If you continue to " +
-                                        "use this this might " + "result in (unhandled) " +
-                                        "exceptions.")
+                        .setMessage("The database is not consistent. This is probably due " + "to a " +
+                                            "table alteration (see log messages) " + "without " +
+                                            "changing the revision number in " + "the manifest. " +
+                                            "Either update the revision " + "number in the manifest " +
+                                            "or delete the " + "database.\n" + "If you continue to " +
+                                            "use this this might " + "result in (unhandled) " +
+                                            "exceptions.")
                         .setNegativeButton(CANCEL, new DialogInterface.OnClickListener() {
-                                               @Override
-                                               public void onClick(DialogInterface dialog, int id) {
-                                                   // Do nothing
-                                               }
-                                           })
-                        .setPositiveButton("Delete database",
-                                           new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                // Do nothing
+                            }
+                        })
+                        .setPositiveButton("Delete database", new DialogInterface.OnClickListener() {
                                                @Override
                                                public void onClick(DialogInterface dialog, int id) {
                                                    executeDeleteDatabase(puzzleFragmentActivity);
@@ -333,18 +326,16 @@ public class DevelopmentHelper {
     }
 
     /**
-     * Ask the user to enter a score manually for the given puzzle. This dialog is intended for
-     * testing the leaderboards.
+     * Ask the user to enter a score manually for the given puzzle. This dialog is intended for testing the
+     * leaderboards.
      *
      * @param puzzleFragmentActivity
      *         The puzzle fragment activity which is use to submit a score manually.
      * @param grid
      *         The grid for which a score is submitted.
      */
-    public static boolean submitManualScore(final PuzzleFragmentActivity puzzleFragmentActivity,
-                                            final Grid grid) {
-        if (Config.APP_MODE != AppMode.DEVELOPMENT || hasGooglePlayAppIdDevelopment(
-                puzzleFragmentActivity)) {
+    public static boolean submitManualScore(final PuzzleFragmentActivity puzzleFragmentActivity, final Grid grid) {
+        if (Config.APP_MODE != AppMode.DEVELOPMENT || hasGooglePlayAppIdDevelopment(puzzleFragmentActivity)) {
             return false;
         }
 
@@ -356,15 +347,14 @@ public class DevelopmentHelper {
         View view = li.inflate(R.layout.leaderboard_score, null);
         assert view != null;
 
-        final TextView manualLeaderboardScore = (TextView) view.findViewById(
-                R.id.manual_leaderboard_score);
+        final TextView manualLeaderboardScore = (TextView) view.findViewById(R.id.manual_leaderboard_score);
         assert manualLeaderboardScore != null;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(puzzleFragmentActivity);
         builder.setTitle("Manually submit a score to the leaderboard")
                 .setView(view)
-                .setPositiveButton("Submit", new ManualSubmitScoreToLeaderboardListener(
-                        manualLeaderboardScore, grid, puzzleFragmentActivity));
+                .setPositiveButton("Submit", new ManualSubmitScoreToLeaderboardListener(manualLeaderboardScore, grid,
+                                                                                        puzzleFragmentActivity));
         AlertDialog dialog = builder.create();
         dialog.show();
 
@@ -385,7 +375,8 @@ public class DevelopmentHelper {
         private final Grid grid;
         private final PuzzleFragmentActivity puzzleFragmentActivity;
 
-        public ManualSubmitScoreToLeaderboardListener(TextView manualLeaderboardScore, Grid grid, PuzzleFragmentActivity puzzleFragmentActivity) {
+        public ManualSubmitScoreToLeaderboardListener(TextView manualLeaderboardScore, Grid grid,
+                                                      PuzzleFragmentActivity puzzleFragmentActivity) {
             this.manualLeaderboardScore = manualLeaderboardScore;
             this.grid = grid;
             this.puzzleFragmentActivity = puzzleFragmentActivity;

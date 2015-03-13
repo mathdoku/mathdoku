@@ -10,8 +10,7 @@ import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.util.SingletonInstanceNotInstantiated;
 
 /**
- * The DatabaseHelper is a generic access point for this application to communicate with one SQLite
- * database.
+ * The DatabaseHelper is a generic access point for this application to communicate with one SQLite database.
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
     @SuppressWarnings("unused")
@@ -30,8 +29,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Constructor should be private to prevent direct instantiation. Call the static factory method
-     * "getInstance()" instead.
+     * Constructor should be private to prevent direct instantiation. Call the static factory method "getInstance()"
+     * instead.
      *
      * @param context
      *         : The context in which the database helper is needed.
@@ -42,8 +41,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Gets the singleton reference of {@link DatabaseHelper}. If it does not yet exist then it will
-     * be created.
+     * Gets the singleton reference of {@link DatabaseHelper}. If it does not yet exist then it will be created.
      *
      * @param context
      *         The context in which the GridPainter is created.
@@ -65,8 +63,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Gets the singleton reference to the DatabaseHelper object. If it does not yet exist an
-     * exception will be thrown.
+     * Gets the singleton reference to the DatabaseHelper object. If it does not yet exist an exception will be thrown.
      *
      * @return The singleton reference to the DatabaseHelper object.
      */
@@ -78,9 +75,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Begin a transaction for the database connected to this DatabaseHelper object. As it is a
-     * shortcut for DatabaseHelper.getInstance().getWriteableDatabase().beginTransaction() you have
-     * to be sure that the DatabaseHelper has been instantiated before.
+     * Begin a transaction for the database connected to this DatabaseHelper object. As it is a shortcut for
+     * DatabaseHelper.getInstance().getWriteableDatabase().beginTransaction() you have to be sure that the
+     * DatabaseHelper has been instantiated before.
      */
     public void beginTransaction() {
         SQLiteDatabase sqliteDatabase = getWritableDatabase();
@@ -90,9 +87,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * End a transaction for the database connected to this DatabaseHelper object. As it is a
-     * shortcut for DatabaseHelper.getInstance().getWriteableDatabase().endTransaction() you have to
-     * be sure that the DatabaseHelper has been instantiated before.
+     * End a transaction for the database connected to this DatabaseHelper object. As it is a shortcut for
+     * DatabaseHelper.getInstance().getWriteableDatabase().endTransaction() you have to be sure that the DatabaseHelper
+     * has been instantiated before.
      */
     public void endTransaction() {
         SQLiteDatabase sqliteDatabase = getWritableDatabase();
@@ -102,9 +99,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Commit a transaction for the database connected to this DatabaseHelper object. As it is a
-     * shortcut for DatabaseHelper.getInstance().getWriteableDatabase ().setTransactionSuccessful()
-     * you have to be sure that the DatabaseHelper has been instantiated before.
+     * Commit a transaction for the database connected to this DatabaseHelper object. As it is a shortcut for
+     * DatabaseHelper.getInstance().getWriteableDatabase ().setTransactionSuccessful() you have to be sure that the
+     * DatabaseHelper has been instantiated before.
      */
     public void setTransactionSuccessful() {
         SQLiteDatabase sqliteDatabase = getWritableDatabase();

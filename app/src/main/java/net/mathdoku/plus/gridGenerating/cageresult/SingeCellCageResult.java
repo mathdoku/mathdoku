@@ -14,8 +14,7 @@ public class SingeCellCageResult extends CageResult {
             return new SingeCellCageResult(cellValues[0]);
         }
         throw new IllegalStateException(
-                String.format("Cannot instantiate with specified values: %s",
-                              Arrays.toString(cellValues)));
+                String.format("Cannot instantiate with specified values: %s", Arrays.toString(cellValues)));
     }
 
     public static boolean canBeCreated(int... cellValues) {

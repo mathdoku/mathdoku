@@ -27,17 +27,15 @@ public class StatisticsPreferenceFragment extends AppPreferenceFragment {
     }
 
     /**
-     * Set summary for option "maximum games elapsed time chart" based on current value of the
-     * option.
+     * Set summary for option "maximum games elapsed time chart" based on current value of the option.
      */
     void setMaximumGamesElapsedTimeChart() {
-        Preference preference = findPreference(
-                Preferences.STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES);
+        Preference preference = findPreference(Preferences.STATISTICS_SETTING_ELAPSED_TIME_CHART_MAXIMUM_GAMES);
         if (preference != null) {
-            preference.setSummary(getResources().getString(
-                    R.string.statistics_setting_elapsed_time_chart_maximum_puzzles_summary,
-                    Preferences.getInstance()
-                            .getStatisticsSettingElapsedTimeChartMaximumGames()));
+            preference.setSummary(
+                    getResources().getString(R.string.statistics_setting_elapsed_time_chart_maximum_puzzles_summary,
+                                             Preferences.getInstance()
+                                                     .getStatisticsSettingElapsedTimeChartMaximumGames()));
         }
     }
 }

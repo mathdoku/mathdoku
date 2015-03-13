@@ -73,13 +73,12 @@ public class Cage {
     private void validateNumberOfCellsThrowsExceptionOnError() {
         if (Util.isArrayNullOrEmpty(mCells)) {
             throw new InvalidGridException(
-                    "Cannot create a cage without a list of cell id's. mCells = " + (mCells ==
-                            null ? "null" : "empty list"));
+                    "Cannot create a cage without a list of cell id's. mCells = " + (mCells == null ? "null" : "empty" +
+                            " list"));
         }
         if (hasInvalidNumberOfCellsForOperator()) {
-            throw new InvalidGridException(
-                    "Cage has an invalid number of cells (" + mCells.length + ") for operator " +
-                            mCageOperator.toString() + ".");
+            throw new InvalidGridException("Cage has an invalid number of cells (" + mCells.length + ") for operator " +
+                                                   mCageOperator.toString() + ".");
         }
     }
 
@@ -181,12 +180,11 @@ public class Cage {
     }
 
     /**
-     * Checks whether the cage arithmetic is correct using the values the user has filled in. If
-     * needed the border of the cage will be updated to reflect a change of state. For single cell
-     * cages the math will never be incorrect.
+     * Checks whether the cage arithmetic is correct using the values the user has filled in. If needed the border of
+     * the cage will be updated to reflect a change of state. For single cell cages the math will never be incorrect.
      *
-     * @return True in case the math on the entered values in the cage does not contain an error or
-     * in case not all cells in the cage have been filled in.
+     * @return True in case the math on the entered values in the cage does not contain an error or in case not all
+     * cells in the cage have been filled in.
      */
     public boolean checkMathOnEnteredValues() {
         if (mGrid == null) {
@@ -197,8 +195,7 @@ public class Cage {
 
         List<Integer> enteredValues = mGrid.getEnteredValuesForCells(mCells);
         if (enteredValues != null && enteredValues.size() == mCells.length) {
-            mMathOnEnteredValuesIsCorrect = mHideOperator ?
-                    checkMathOnEnteredValuesWithHiddenOperators(
+            mMathOnEnteredValuesIsCorrect = mHideOperator ? checkMathOnEnteredValuesWithHiddenOperators(
                     enteredValues) : checkMathOnEnteredValuesWithVisibleOperators(enteredValues);
         } else {
             // At least one cell is empty. So math is not incorrect.

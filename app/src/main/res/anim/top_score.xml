@@ -1,6 +1,6 @@
 <!-- Animation for the leaderboard icon in the top score dialog. -->
 <set xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shareInterpolator="false" >
+     android:shareInterpolator="false">
 
     <!-- Start with a fast rotating image -->
     <rotate
@@ -10,7 +10,7 @@
         android:pivotX="50%"
         android:pivotY="50%"
         android:startOffset="0"
-        android:toDegrees="360" />
+        android:toDegrees="360"/>
 
     <!-- Continue with a decelerating rotation. Note: offset should be equal -->
     <!-- to duration of first animation. -->
@@ -21,7 +21,7 @@
         android:pivotX="50%"
         android:pivotY="50%"
         android:startOffset="500"
-        android:toDegrees="360" />
+        android:toDegrees="360"/>
 
     <!-- While rotating also scale the image. As scaling has to start together -->
     <!-- with first rotation do not apply an offset. Also the entire duration -->
@@ -37,6 +37,6 @@
         android:pivotY="50%"
         android:startOffset="0"
         android:toXScale="100%"
-        android:toYScale="100%" />
+        android:toYScale="100%"/>
 
 </set>

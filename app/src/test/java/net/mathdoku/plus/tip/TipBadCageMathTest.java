@@ -6,20 +6,19 @@ import org.junit.Before;
 import static org.junit.Assert.assertThat;
 
 public class TipBadCageMathTest extends TipBaseTest {
-	// All fields below are defaulted to a value which result in method
-	// toBeDisplayed to return true.
+    // All fields below are defaulted to a value which result in method
+    // toBeDisplayed to return true.
 
-	@Before
-	public void setUp() {
-		super.setUp();
-		long minTimeIntervalBetweenTwoConsecutiveDisplays = 5 * 60 * 1000;
-		super.setUpTimeIntervalBetweenTwoConsecutiveDisplays("BadCageMath",
-				minTimeIntervalBetweenTwoConsecutiveDisplays);
-	}
+    @Before
+    public void setUp() {
+        super.setUp();
+        long minTimeIntervalBetweenTwoConsecutiveDisplays = 5 * 60 * 1000;
+        super.setUpTimeIntervalBetweenTwoConsecutiveDisplays("BadCageMath",
+                                                             minTimeIntervalBetweenTwoConsecutiveDisplays);
+    }
 
-	@Override
-	protected void assertThatDialogToBeDisplayed(Matcher<Boolean> booleanMatcher) {
-		assertThat(TipBadCageMath.toBeDisplayed(preferencesMock),
-				booleanMatcher);
-	}
+    @Override
+    protected void assertThatDialogToBeDisplayed(Matcher<Boolean> booleanMatcher) {
+        assertThat(TipBadCageMath.toBeDisplayed(preferencesMock), booleanMatcher);
+    }
 }

@@ -73,15 +73,12 @@ public class SharedPuzzle {
 
         // Strip slash of start of prefix
         if (mSharedPuzzlePathPrefixMathdokuOriginal.charAt(0) == '/') {
-            mSharedPuzzlePathPrefixMathdokuOriginal = mSharedPuzzlePathPrefixMathdokuOriginal
-                    .substring(
-                    1);
+            mSharedPuzzlePathPrefixMathdokuOriginal = mSharedPuzzlePathPrefixMathdokuOriginal.substring(1);
         }
     }
 
     /**
-     * Start an email client with a prepared email which can be used to share a game with another
-     * user.
+     * Start an email client with a prepared email which can be used to share a game with another user.
      */
     public void share(int solvingAttemptId) {
         Grid grid = new GridLoader().load(solvingAttemptId);
@@ -107,24 +104,21 @@ public class SharedPuzzle {
             String bodyText;
             if (grid.isActive()) {
                 bodyText = mContext.getResources()
-                        .getString(R.string.share_unfinished_puzzle_body,
-                                   toHtmlLink(shareURL, mathDokuPuzzle), "<br/>",
-                                   toHtmlLink(downloadUrl, "Google Play"), "<br/><br/>",
-                                   "<br/><br/>", shareURL + "<br/><br/>", downloadUrl);
+                        .getString(R.string.share_unfinished_puzzle_body, toHtmlLink(shareURL, mathDokuPuzzle), "<br/>",
+                                   toHtmlLink(downloadUrl, "Google Play"), "<br/><br/>", "<br/><br/>",
+                                   shareURL + "<br/><br/>", downloadUrl);
             } else {
                 bodyText = mContext.getResources()
-                        .getString(R.string.share_finished_puzzle_body,
-                                   toHtmlLink(shareURL, mathDokuPuzzle),
+                        .getString(R.string.share_finished_puzzle_body, toHtmlLink(shareURL, mathDokuPuzzle),
                                    Util.durationTimeToString(grid.getElapsedTime()), "<br/>",
-                                   toHtmlLink(downloadUrl, "Google Play"), "<br/><br/>",
-                                   "<br/><br/>", shareURL + "<br/><br/>", downloadUrl);
+                                   toHtmlLink(downloadUrl, "Google Play"), "<br/><br/>", "<br/><br/>",
+                                   shareURL + "<br/><br/>", downloadUrl);
             }
             intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(bodyText));
 
             // Store attachments uris
             if (mUris != null && mUris.size() > 0) {
-                intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM,
-                                                   (ArrayList<? extends Parcelable>) mUris);
+                intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, (ArrayList<? extends Parcelable>) mUris);
             }
 
             // Start activity choosers
@@ -137,8 +131,7 @@ public class SharedPuzzle {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                 builder.setTitle(R.string.dialog_no_email_client_found_title)
                         .setMessage(R.string.dialog_sharing_puzzles_is_not_possible_body)
-                        .setNeutralButton(R.string.dialog_general_button_close,
-                                          new DialogInterface.OnClickListener() {
+                        .setNeutralButton(R.string.dialog_general_button_close, new DialogInterface.OnClickListener() {
                                               @Override
                                               public void onClick(DialogInterface dialog, int id) {
                                                   // Do nothing
@@ -164,13 +157,12 @@ public class SharedPuzzle {
     }
 
     /**
-     * Extract certain statistics charts from the given view and add them as attachments to the
-     * share email. This method has to be called before calling {@see #share(int)}.
+     * Extract certain statistics charts from the given view and add them as attachments to the share email. This method
+     * has to be called before calling {@see #share(int)}.
      *
      * @param view
      *         The view from which the statistics charts have to be extracted.
-     * @return The reference to the {@see SharedPuzzle} object itself so it can be used as a
-     * builder.
+     * @return The reference to the {@see SharedPuzzle} object itself so it can be used as a builder.
      */
     public SharedPuzzle addStatisticsChartsAsAttachments(View view) {
         if (view != null) {
@@ -207,8 +199,8 @@ public class SharedPuzzle {
      */
     private String getShareUrl(String gridDefinition) {
         return mSharedPuzzleSchemeMathdokuPlus + "://" + mSharedPuzzleHostMathdokuPlus + "/" +
-                mSharedPuzzlePathPrefixMathdokuPlus + "/" + SHARE_URI_VERSION_MATHDOKU_PLUS + "/"
-                + gridDefinition + "/" + gridDefinition.hashCode();
+                mSharedPuzzlePathPrefixMathdokuPlus + "/" + SHARE_URI_VERSION_MATHDOKU_PLUS + "/" + gridDefinition +
+                "/" + gridDefinition.hashCode();
     }
 
     /**
@@ -216,8 +208,7 @@ public class SharedPuzzle {
      *
      * @param uri
      *         The uri to be checked.
-     * @return The grid definition as stored in the uri. Null in case the given uri is not a valid
-     * share url.
+     * @return The grid definition as stored in the uri. Null in case the given uri is not a valid share url.
      */
     public String getGridDefinitionFromUrl(Uri uri) {
         if (uri == null) {
@@ -235,8 +226,7 @@ public class SharedPuzzle {
         }
 
         // Check if a Mathdoku Plus uri was specified.
-        if (scheme.equals(mSharedPuzzleSchemeMathdokuPlus) && host.equals(
-                mSharedPuzzleHostMathdokuPlus)) {
+        if (scheme.equals(mSharedPuzzleSchemeMathdokuPlus) && host.equals(mSharedPuzzleHostMathdokuPlus)) {
             String gridDefinition = getGridDefinitionFromMathdokuPlusUrl(uri);
             if (gridDefinition != null) {
                 return gridDefinition;
@@ -244,8 +234,7 @@ public class SharedPuzzle {
         }
 
         // Check if a Mathdoku Original uri was specified.
-        if (scheme.equals(mSharedPuzzleSchemeMathdokuOriginal) && host.equals(
-                mSharedPuzzleHostMathdokuOriginal)) {
+        if (scheme.equals(mSharedPuzzleSchemeMathdokuOriginal) && host.equals(mSharedPuzzleHostMathdokuOriginal)) {
             return getGridDefinitionFromMathdokuOriginalUrl(uri);
         }
 
@@ -258,8 +247,7 @@ public class SharedPuzzle {
      *
      * @param uri
      *         The uri to be checked.
-     * @return The grid definition as stored in the uri. Null in case the given uri is not a valid
-     * share url.
+     * @return The grid definition as stored in the uri. Null in case the given uri is not a valid share url.
      */
     private String getGridDefinitionFromMathdokuPlusUrl(Uri uri) {
         if (uri == null) {
@@ -277,8 +265,7 @@ public class SharedPuzzle {
         }
 
         // Only process when valid scheme and host are specified.
-        if (!scheme.equals(mSharedPuzzleSchemeMathdokuPlus) || !host.equals(
-                mSharedPuzzleHostMathdokuPlus)) {
+        if (!scheme.equals(mSharedPuzzleSchemeMathdokuPlus) || !host.equals(mSharedPuzzleHostMathdokuPlus)) {
             return null;
         }
 
@@ -316,8 +303,7 @@ public class SharedPuzzle {
      *
      * @param uri
      *         The uri to be checked.
-     * @return The grid definition as stored in the uri. Null in case the given uri is not a valid
-     * share url.
+     * @return The grid definition as stored in the uri. Null in case the given uri is not a valid share url.
      */
     private String getGridDefinitionFromMathdokuOriginalUrl(Uri uri) {
         if (uri == null) {
@@ -335,8 +321,7 @@ public class SharedPuzzle {
         }
 
         // Only process when valid scheme and host are specified.
-        if (!scheme.equals(mSharedPuzzleSchemeMathdokuOriginal) || !host.equals(
-                mSharedPuzzleHostMathdokuOriginal)) {
+        if (!scheme.equals(mSharedPuzzleSchemeMathdokuOriginal) || !host.equals(mSharedPuzzleHostMathdokuOriginal)) {
             return null;
         }
 

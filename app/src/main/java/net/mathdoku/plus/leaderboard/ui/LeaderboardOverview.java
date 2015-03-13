@@ -16,9 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class displays a {@link android.support.v4.app.Fragment} for an overview of leaderboards
- * having the same size. The overview can optionally be filtered. It is however guaranteed that at
- * least 1 item is displayed.
+ * This class displays a {@link android.support.v4.app.Fragment} for an overview of leaderboards having the same size.
+ * The overview can optionally be filtered. It is however guaranteed that at least 1 item is displayed.
  */
 public class LeaderboardOverview extends android.support.v4.app.Fragment {
     @SuppressWarnings("unused")
@@ -45,8 +44,7 @@ public class LeaderboardOverview extends android.support.v4.app.Fragment {
     private LeaderboardOverviewListItem mLeaderboardOverviewListItemForEmptyList;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mLayoutInflater = inflater;
         mRootView = inflater.inflate(R.layout.leaderboard_fragment, container, false);
 
@@ -75,8 +73,7 @@ public class LeaderboardOverview extends android.support.v4.app.Fragment {
         // Add leaderboard fragment for each combination of operator visibility
         // and complexity
         mLeaderboardFragmentSectionsAvailable = createLeaderboardFragmentSections();
-        for (LeaderboardOverviewListItem leaderboardSection :
-                mLeaderboardFragmentSectionsAvailable) {
+        for (LeaderboardOverviewListItem leaderboardSection : mLeaderboardFragmentSectionsAvailable) {
             linearLayout.addView(leaderboardSection.getView());
         }
 
@@ -95,39 +92,33 @@ public class LeaderboardOverview extends android.support.v4.app.Fragment {
     }
 
     private List<LeaderboardOverviewListItem> createLeaderboardFragmentSections() {
-        List<LeaderboardOverviewListItem> leaderboardOverviewListItems = new
-                ArrayList<LeaderboardOverviewListItem>();
-        leaderboardOverviewListItems.add(new LeaderboardOverviewListItem(this, mGridSize, false,
-                                                                         PuzzleComplexity
-                                                                                 .VERY_EASY));
+        List<LeaderboardOverviewListItem> leaderboardOverviewListItems = new ArrayList<LeaderboardOverviewListItem>();
+        leaderboardOverviewListItems.add(
+                new LeaderboardOverviewListItem(this, mGridSize, false, PuzzleComplexity.VERY_EASY));
         leaderboardOverviewListItems.add(
                 new LeaderboardOverviewListItem(this, mGridSize, false, PuzzleComplexity.EASY));
         leaderboardOverviewListItems.add(
                 new LeaderboardOverviewListItem(this, mGridSize, false, PuzzleComplexity.NORMAL));
-        leaderboardOverviewListItems.add(new LeaderboardOverviewListItem(this, mGridSize, false,
-                                                                         PuzzleComplexity
-                                                                                 .DIFFICULT));
-        leaderboardOverviewListItems.add(new LeaderboardOverviewListItem(this, mGridSize, false,
-                                                                         PuzzleComplexity
-                                                                                 .VERY_DIFFICULT));
+        leaderboardOverviewListItems.add(
+                new LeaderboardOverviewListItem(this, mGridSize, false, PuzzleComplexity.DIFFICULT));
+        leaderboardOverviewListItems.add(
+                new LeaderboardOverviewListItem(this, mGridSize, false, PuzzleComplexity.VERY_DIFFICULT));
         leaderboardOverviewListItems.add(
                 new LeaderboardOverviewListItem(this, mGridSize, true, PuzzleComplexity.VERY_EASY));
-        leaderboardOverviewListItems.add(
-                new LeaderboardOverviewListItem(this, mGridSize, true, PuzzleComplexity.EASY));
+        leaderboardOverviewListItems.add(new LeaderboardOverviewListItem(this, mGridSize, true, PuzzleComplexity.EASY));
         leaderboardOverviewListItems.add(
                 new LeaderboardOverviewListItem(this, mGridSize, true, PuzzleComplexity.NORMAL));
         leaderboardOverviewListItems.add(
                 new LeaderboardOverviewListItem(this, mGridSize, true, PuzzleComplexity.DIFFICULT));
-        leaderboardOverviewListItems.add(new LeaderboardOverviewListItem(this, mGridSize, true,
-                                                                         PuzzleComplexity
-                                                                                 .VERY_DIFFICULT));
+        leaderboardOverviewListItems.add(
+                new LeaderboardOverviewListItem(this, mGridSize, true, PuzzleComplexity.VERY_DIFFICULT));
 
         return leaderboardOverviewListItems;
     }
 
     /**
-     * Apply the given filter to the list of available leaderboards and only display the
-     * leaderboards that are valid for this filter.
+     * Apply the given filter to the list of available leaderboards and only display the leaderboards that are valid for
+     * this filter.
      *
      * @param leaderboardFilter
      *         The filter to be applied.
@@ -136,10 +127,8 @@ public class LeaderboardOverview extends android.support.v4.app.Fragment {
         mLeaderboardFilter = leaderboardFilter;
 
         boolean hideLeaderboardSectionForEmptyList = false;
-        for (LeaderboardOverviewListItem leaderboardSection :
-                mLeaderboardFragmentSectionsAvailable) {
-            if (isLeaderboardFragmentSectionVisibleForLeaderboardFilter(leaderboardSection,
-                                                                        mLeaderboardFilter)) {
+        for (LeaderboardOverviewListItem leaderboardSection : mLeaderboardFragmentSectionsAvailable) {
+            if (isLeaderboardFragmentSectionVisibleForLeaderboardFilter(leaderboardSection, mLeaderboardFilter)) {
                 leaderboardSection.setVisibility(View.VISIBLE);
                 hideLeaderboardSectionForEmptyList = true;
             } else {
@@ -151,17 +140,24 @@ public class LeaderboardOverview extends android.support.v4.app.Fragment {
                 hideLeaderboardSectionForEmptyList ? View.GONE : View.VISIBLE);
     }
 
-    private boolean isLeaderboardFragmentSectionVisibleForLeaderboardFilter(LeaderboardOverviewListItem leaderboardOverviewListItem, LeaderboardOverviewActivity.LeaderboardFilter leaderboardFilter) {
-        if (leaderboardFilter == LeaderboardOverviewActivity.LeaderboardFilter.MY_LEADERBOARDS && leaderboardOverviewListItem.hasNoScore()) {
+    private boolean isLeaderboardFragmentSectionVisibleForLeaderboardFilter(LeaderboardOverviewListItem
+                                                                                    leaderboardOverviewListItem,
+                                                                            LeaderboardOverviewActivity
+                                                                                    .LeaderboardFilter
+                                                                                    leaderboardFilter) {
+        if (leaderboardFilter == LeaderboardOverviewActivity.LeaderboardFilter.MY_LEADERBOARDS &&
+                leaderboardOverviewListItem.hasNoScore()) {
             return false;
         }
 
-        if (leaderboardFilter == LeaderboardOverviewActivity.LeaderboardFilter.HIDDEN_OPERATORS && !leaderboardOverviewListItem.hasHiddenOperators()) {
+        if (leaderboardFilter == LeaderboardOverviewActivity.LeaderboardFilter.HIDDEN_OPERATORS &&
+                !leaderboardOverviewListItem.hasHiddenOperators()) {
             return false;
         }
 
         // noinspection RedundantIfStatement
-        if (leaderboardFilter == LeaderboardOverviewActivity.LeaderboardFilter.VISIBLE_OPERATORS && leaderboardOverviewListItem.hasHiddenOperators()) {
+        if (leaderboardFilter == LeaderboardOverviewActivity.LeaderboardFilter.VISIBLE_OPERATORS &&
+                leaderboardOverviewListItem.hasHiddenOperators()) {
             return false;
         }
 

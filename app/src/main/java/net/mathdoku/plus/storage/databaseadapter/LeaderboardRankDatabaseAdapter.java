@@ -83,32 +83,22 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 
     private static DatabaseTableDefinition defineTable() {
         DatabaseTableDefinition databaseTableDefinition = new DatabaseTableDefinition(TABLE_NAME);
-        databaseTableDefinition.addColumn(
-                new DatabaseColumnDefinition(KEY_ROWID, DataType.INTEGER).setPrimaryKey());
-        databaseTableDefinition.addColumn(
-                new DatabaseColumnDefinition(KEY_LEADERBOARD_ID, DataType.STRING).setNotNull()
-                        .setUniqueKey());
-        databaseTableDefinition.addColumn(
-                new DatabaseColumnDefinition(KEY_GRID_SIZE, DataType.INTEGER).setNotNull());
+        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_ROWID, DataType.INTEGER).setPrimaryKey());
+        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_LEADERBOARD_ID, DataType.STRING).setNotNull()
+                                                  .setUniqueKey());
+        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_GRID_SIZE, DataType.INTEGER).setNotNull());
         databaseTableDefinition.addColumn(
                 new DatabaseColumnDefinition(KEY_HIDDEN_OPERATORS, DataType.STRING).setNotNull());
         databaseTableDefinition.addColumn(
                 new DatabaseColumnDefinition(KEY_PUZZLE_COMPLEXITY, DataType.STRING).setNotNull());
-        databaseTableDefinition.addColumn(
-                new DatabaseColumnDefinition(KEY_SCORE_ORIGIN, DataType.STRING).setNotNull());
-        databaseTableDefinition.addColumn(
-                new DatabaseColumnDefinition(KEY_SCORE_STATISTICS_ID, DataType.INTEGER));
-        databaseTableDefinition.addColumn(
-                new DatabaseColumnDefinition(KEY_SCORE_RAW_SCORE, DataType.LONG));
-        databaseTableDefinition.addColumn(
-                new DatabaseColumnDefinition(KEY_SCORE_DATE_SUBMITTED, DataType.TIMESTAMP));
-        databaseTableDefinition.addColumn(
-                new DatabaseColumnDefinition(KEY_RANK_STATUS, DataType.STRING).setNotNull());
+        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_SCORE_ORIGIN, DataType.STRING).setNotNull());
+        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_SCORE_STATISTICS_ID, DataType.INTEGER));
+        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_SCORE_RAW_SCORE, DataType.LONG));
+        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_SCORE_DATE_SUBMITTED, DataType.TIMESTAMP));
+        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_RANK_STATUS, DataType.STRING).setNotNull());
         databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_RANK, DataType.LONG));
-        databaseTableDefinition.addColumn(
-                new DatabaseColumnDefinition(KEY_RANK_DISPLAY, DataType.STRING));
-        databaseTableDefinition.addColumn(
-                new DatabaseColumnDefinition(KEY_RANK_DATE_LAST_UPDATED, DataType.TIMESTAMP));
+        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_RANK_DISPLAY, DataType.STRING));
+        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_RANK_DATE_LAST_UPDATED, DataType.TIMESTAMP));
         databaseTableDefinition.build();
 
         return databaseTableDefinition;
@@ -123,15 +113,12 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
      * Upgrades the table to an other version.
      *
      * @param oldVersion
-     *         The old version of the database. Use the app revision number to identify the database
-     *         version.
+     *         The old version of the database. Use the app revision number to identify the database version.
      * @param newVersion
-     *         The new version of the database. Use the app revision number to identify the database
-     *         version.
+     *         The new version of the database. Use the app revision number to identify the database version.
      */
     protected void upgradeTable(int oldVersion, int newVersion) {
-        if (Config.APP_MODE == Config.AppMode.DEVELOPMENT && oldVersion < 587 && newVersion >=
-                587) {
+        if (Config.APP_MODE == Config.AppMode.DEVELOPMENT && oldVersion < 587 && newVersion >= 587) {
             recreateTableInDevelopmentMode();
         }
     }
@@ -151,8 +138,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
         try {
             id = (int) sqliteDatabase.insertOrThrow(TABLE_NAME, null, contentValues);
         } catch (SQLiteConstraintException e) {
-            throw new DatabaseAdapterException(
-                    "Cannot insert new initialized leaderboard in database.", e);
+            throw new DatabaseAdapterException("Cannot insert new initialized leaderboard in database.", e);
         }
 
         return LeaderboardRankRowBuilder.from(leaderboardRankRow, id)
@@ -164,8 +150,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
         contentValues.put(KEY_ROWID, leaderboardRankRow.getRowId());
         contentValues.put(KEY_LEADERBOARD_ID, leaderboardRankRow.getLeaderboardId());
         contentValues.put(KEY_GRID_SIZE, leaderboardRankRow.getGridSize());
-        contentValues.put(KEY_HIDDEN_OPERATORS,
-                          DatabaseUtil.toSQLiteBoolean(leaderboardRankRow.isOperatorsHidden()));
+        contentValues.put(KEY_HIDDEN_OPERATORS, DatabaseUtil.toSQLiteBoolean(leaderboardRankRow.isOperatorsHidden()));
         contentValues.put(KEY_PUZZLE_COMPLEXITY, leaderboardRankRow.getPuzzleComplexity()
                 .toString());
         contentValues.put(KEY_SCORE_ORIGIN, leaderboardRankRow.getScoreOrigin()
@@ -193,8 +178,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
     public boolean update(LeaderboardRankRow leaderboardRankRow) {
         return sqliteDatabase.update(TABLE_NAME, getContentValues(leaderboardRankRow),
                                      KEY_LEADERBOARD_ID + " = " + DatabaseUtil.stringBetweenQuotes(
-                                             String.valueOf(leaderboardRankRow.getLeaderboardId())),
-                                     null) == 1;
+                                             String.valueOf(leaderboardRankRow.getLeaderboardId())), null) == 1;
 
     }
 
@@ -210,13 +194,11 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
         Cursor cursor = null;
         try {
             cursor = sqliteDatabase.query(true, TABLE_NAME, DATABASE_TABLE.getColumnNames(),
-                                          getLeaderboardSelectionString(leaderboardId), null, null,
-                                          null, null, null);
+                                          getLeaderboardSelectionString(leaderboardId), null, null, null, null, null);
             leaderboardRankRow = toLeaderboardRankRow(cursor);
         } catch (SQLiteException e) {
             throw new DatabaseAdapterException(
-                    String.format("Cannot retrieve leaderboard rank id '%s' from database",
-                                  leaderboardId), e);
+                    String.format("Cannot retrieve leaderboard rank id '%s' from database", leaderboardId), e);
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -235,8 +217,8 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
      *
      * @param cursor
      *         The cursor to be converted.
-     * @return A LeaderboardRankRow object for the first leaderboard rank record stored in the given
-     * cursor. Null in case of an error.
+     * @return A LeaderboardRankRow object for the first leaderboard rank record stored in the given cursor. Null in
+     * case of an error.
      */
     private LeaderboardRankRow toLeaderboardRankRow(Cursor cursor) {
         if (cursor == null || !cursor.moveToFirst()) {
@@ -245,16 +227,16 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
         }
 
         // Convert cursor record to a leaderboard rank row.
-        LeaderboardRankRow leaderboardRankRow = new LeaderboardRankRowBuilder(
-                getRowIdFromCursor(cursor), getLeaderboardIdFromCursor(cursor),
-                getGridSizeFromCursor(cursor), getHideOperatorsFromCursor(cursor),
-                getPuzzleComplexityFromCursor(cursor)).setScore(getScoreOriginFromCursor(cursor),
-                                                                getStatisticsIdFromCursor(cursor),
-                                                                getRawScoreFromCursor(cursor),
-                                                                getDateScoreSubmittedFromCursor(
-                                                                        cursor))
-                .setRank(getRankStatusFromCursor(cursor), getRankFromCursor(cursor),
-                         getRankDisplayFromCursor(cursor), getDateLastUpdatedFromCursor(cursor))
+        LeaderboardRankRow leaderboardRankRow = new LeaderboardRankRowBuilder(getRowIdFromCursor(cursor),
+                                                                              getLeaderboardIdFromCursor(cursor),
+                                                                              getGridSizeFromCursor(cursor),
+                                                                              getHideOperatorsFromCursor(cursor),
+                                                                              getPuzzleComplexityFromCursor(
+                                                                                      cursor)).setScore(
+                getScoreOriginFromCursor(cursor), getStatisticsIdFromCursor(cursor), getRawScoreFromCursor(cursor),
+                getDateScoreSubmittedFromCursor(cursor))
+                .setRank(getRankStatusFromCursor(cursor), getRankFromCursor(cursor), getRankDisplayFromCursor(cursor),
+                         getDateLastUpdatedFromCursor(cursor))
                 .build();
 
         return leaderboardRankRow;
@@ -273,18 +255,15 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
     }
 
     private boolean getHideOperatorsFromCursor(Cursor cursor) {
-        return DatabaseUtil.valueOfSQLiteBoolean(
-                cursor.getString(cursor.getColumnIndexOrThrow(KEY_HIDDEN_OPERATORS)));
+        return DatabaseUtil.valueOfSQLiteBoolean(cursor.getString(cursor.getColumnIndexOrThrow(KEY_HIDDEN_OPERATORS)));
     }
 
     private PuzzleComplexity getPuzzleComplexityFromCursor(Cursor cursor) {
-        return PuzzleComplexity.valueOf(
-                cursor.getString(cursor.getColumnIndexOrThrow(KEY_PUZZLE_COMPLEXITY)));
+        return PuzzleComplexity.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(KEY_PUZZLE_COMPLEXITY)));
     }
 
     private ScoreOrigin getScoreOriginFromCursor(Cursor cursor) {
-        return ScoreOrigin.valueOf(
-                cursor.getString(cursor.getColumnIndexOrThrow(KEY_SCORE_ORIGIN)));
+        return ScoreOrigin.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(KEY_SCORE_ORIGIN)));
     }
 
     private int getStatisticsIdFromCursor(Cursor cursor) {
@@ -326,8 +305,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
      */
     public static String getPrefixedColumnName(String column) {
         ParameterValidator.validateNotNullOrEmpty(column);
-        return DatabaseUtil.stringBetweenBackTicks(
-                TABLE_NAME) + "." + DatabaseUtil.stringBetweenBackTicks(column);
+        return DatabaseUtil.stringBetweenBackTicks(TABLE_NAME) + "." + DatabaseUtil.stringBetweenBackTicks(column);
     }
 
     /**
@@ -344,8 +322,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
                                           getOrderByMostOutdatedLeaderboardRank(), "1");
             leaderboardRankRow = toLeaderboardRankRow(cursor);
         } catch (SQLiteException e) {
-            throw new DatabaseAdapterException(
-                    "Cannot retrieve most outdated leaderboard rank from database", e);
+            throw new DatabaseAdapterException("Cannot retrieve most outdated leaderboard rank from database", e);
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -376,9 +353,8 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
         try {
             // Build selection and order by clauses
             String[] columns = new String[]{"COUNT(1)"};
-            cursor = sqliteDatabase.query(true, TABLE_NAME, columns,
-                                          getSelectionOutdatedLeaderboardRanks(), null, null, null,
-                                          null, null);
+            cursor = sqliteDatabase.query(true, TABLE_NAME, columns, getSelectionOutdatedLeaderboardRanks(), null, null,
+                                          null, null, null);
 
             if (cursor == null || !cursor.moveToFirst()) {
                 // No record found
@@ -388,8 +364,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
             // Convert cursor record to a count of grids
             count = cursor.getInt(0);
         } catch (SQLiteException e) {
-            throw new DatabaseAdapterException(
-                    "Cannot count number of outdated leaderboard ranks in database", e);
+            throw new DatabaseAdapterException("Cannot count number of outdated leaderboard ranks in database", e);
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -408,33 +383,33 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
 
         // Include all leaderboards for which the rank status equals
         // TO_BE_UPDATED
-        conditionList.addOperand(
-                new FieldOperatorStringValue(KEY_RANK_STATUS, FieldOperatorValue.Operator.EQUALS,
-                                             RankStatus.TO_BE_UPDATED.toString()));
+        conditionList.addOperand(new FieldOperatorStringValue(KEY_RANK_STATUS, FieldOperatorValue.Operator.EQUALS,
+                                                              RankStatus.TO_BE_UPDATED.toString()));
 
         long interval15MinutesInMillis = 15 * 60 * 1000;
-        conditionList.addOperand(getConditionListStatusNotUpdatedInIntervalInMillisBeforeSystemTime(
-                RankStatus.TOP_RANK_UPDATED, interval15MinutesInMillis));
+        conditionList.addOperand(
+                getConditionListStatusNotUpdatedInIntervalInMillisBeforeSystemTime(RankStatus.TOP_RANK_UPDATED,
+                                                                                   interval15MinutesInMillis));
 
         long interval24HoursInMillis = 24 * 60 * 60 * 1000;
-        conditionList.addOperand(getConditionListStatusNotUpdatedInIntervalInMillisBeforeSystemTime(
-                RankStatus.TOP_RANK_NOT_AVAILABLE, interval24HoursInMillis));
+        conditionList.addOperand(
+                getConditionListStatusNotUpdatedInIntervalInMillisBeforeSystemTime(RankStatus.TOP_RANK_NOT_AVAILABLE,
+                                                                                   interval24HoursInMillis));
         conditionList.setOrOperator();
 
         return conditionList.toString();
     }
 
-    private ConditionList getConditionListStatusNotUpdatedInIntervalInMillisBeforeSystemTime(RankStatus rankStatus, long intervalInMillis) {
-        String intervalInMillisString = DatabaseUtil.getCurrentMinusOffsetSQLiteTimestamp(
-                intervalInMillis);
+    private ConditionList getConditionListStatusNotUpdatedInIntervalInMillisBeforeSystemTime(RankStatus rankStatus,
+                                                                                             long intervalInMillis) {
+        String intervalInMillisString = DatabaseUtil.getCurrentMinusOffsetSQLiteTimestamp(intervalInMillis);
 
         ConditionList conditionList = new ConditionList();
+        conditionList.addOperand(new FieldOperatorStringValue(KEY_RANK_STATUS, FieldOperatorValue.Operator.EQUALS,
+                                                              rankStatus.toString()));
         conditionList.addOperand(
-                new FieldOperatorStringValue(KEY_RANK_STATUS, FieldOperatorValue.Operator.EQUALS,
-                                             rankStatus.toString()));
-        conditionList.addOperand(new FieldOperatorStringValue(KEY_RANK_DATE_LAST_UPDATED,
-                                                              FieldOperatorValue.Operator.LESS_THAN,
-                                                              intervalInMillisString));
+                new FieldOperatorStringValue(KEY_RANK_DATE_LAST_UPDATED, FieldOperatorValue.Operator.LESS_THAN,
+                                             intervalInMillisString));
         conditionList.setAndOperator();
 
         return conditionList;
@@ -447,8 +422,7 @@ public class LeaderboardRankDatabaseAdapter extends DatabaseAdapter {
     public void setAllRanksToBeUpdated() {
         try {
             UpdateQueryHelper updateQueryHelper = new UpdateQueryHelper(TABLE_NAME);
-            updateQueryHelper.setColumnToValue(KEY_RANK_STATUS,
-                                               RankStatus.TO_BE_UPDATED.toString());
+            updateQueryHelper.setColumnToValue(KEY_RANK_STATUS, RankStatus.TO_BE_UPDATED.toString());
             updateQueryHelper.setColumnToNull(KEY_RANK);
             updateQueryHelper.setColumnToNull(KEY_RANK_DISPLAY);
             updateQueryHelper.setColumnToNull(KEY_RANK_DATE_LAST_UPDATED);

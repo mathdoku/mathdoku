@@ -23,8 +23,7 @@ class CageOperatorGenerator {
     private Map<CageResult, Integer> possibleCageResults;
     private final CageResult cageResult;
 
-    public CageOperatorGenerator(GridGeneratingParameters gridGeneratingParameters,
-                                 Random random, int... cellValues) {
+    public CageOperatorGenerator(GridGeneratingParameters gridGeneratingParameters, Random random, int... cellValues) {
         this.gridGeneratingParameters = gridGeneratingParameters;
         this.random = random;
         this.cellValues = cellValues;
@@ -44,8 +43,7 @@ class CageOperatorGenerator {
         }
 
         throw new IllegalStateException(
-                "Cannot select a random cage operator as the random index is bigger than the " +
-                        "total weight.");
+                "Cannot select a random cage operator as the random index is bigger than the " + "total weight.");
     }
 
     private int getTotalWeightPossibleCageResults() {
@@ -82,8 +80,7 @@ class CageOperatorGenerator {
 
     private void addPossibleCageResultMultiply(int weight) {
         if (CageResult.canBeCreated(CageOperator.MULTIPLY, cellValues)) {
-            CageResult cageResultMultiplyOperator = CageResult.create(CageOperator.MULTIPLY,
-                                                                      cellValues);
+            CageResult cageResultMultiplyOperator = CageResult.create(CageOperator.MULTIPLY, cellValues);
             if (cageResultMultiplyOperator.isValid() && cageResultMultiplyOperator.getResult() <=
                     gridGeneratingParameters.getMaxCageResult()) {
                 possibleCageResults.put(cageResultMultiplyOperator, weight);

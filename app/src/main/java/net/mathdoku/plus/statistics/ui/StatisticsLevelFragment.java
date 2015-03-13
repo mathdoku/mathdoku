@@ -37,11 +37,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A fragment representing the statistics for a specific grid size or the cumulative statistics for
- * all levels.
+ * A fragment representing the statistics for a specific grid size or the cumulative statistics for all levels.
  */
-public class StatisticsLevelFragment extends StatisticsBaseFragment implements
-        OnSharedPreferenceChangeListener {
+public class StatisticsLevelFragment extends StatisticsBaseFragment implements OnSharedPreferenceChangeListener {
 
     public static final String ARG_GRID_SIZE_MIN = "grid_size_min";
     public static final String ARG_GRID_SIZE_MAX = "grid_size_max";
@@ -55,8 +53,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
     private Preferences mPreferences;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
 
         // Get minimum and maximum grid size from bundle
@@ -69,9 +66,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
         setDisplayChartDescription(mPreferences.isStatisticsChartDescriptionVisible());
         mPreferences.mSharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
-        mCumulativeStatistics = new CumulativeStatisticsSelector(mMinGridSize,
-                                                                 mMaxGridSize)
-                .getCumulativeStatistics();
+        mCumulativeStatistics = new CumulativeStatisticsSelector(mMinGridSize, mMaxGridSize).getCumulativeStatistics();
 
         createAllCharts();
 
@@ -110,10 +105,9 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
         // Check if at least one statistic is displayed.
         if (!statisticsDisplayed) {
             TextView textView = new TextView(getActivity());
-            textView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                                                      ViewGroup.LayoutParams.WRAP_CONTENT));
-            textView.setText(
-                    getResources().getString(R.string.statistics_not_available, mMinGridSize));
+            textView.setLayoutParams(
+                    new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            textView.setText(getResources().getString(R.string.statistics_not_available, mMinGridSize));
             textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, mDefaultTextSizeInDIP);
 
             addViewToStatisticsSection(textView);
@@ -155,46 +149,39 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
 
         // Games solved manually
         if (mCumulativeStatistics.mCountSolvedManually > 0) {
-            categorySeries.add(getResources().getString(
-                                       R.string.chart_serie_solved) + " (" +
+            categorySeries.add(getResources().getString(R.string.chart_serie_solved) + " (" +
                                        mCumulativeStatistics.mCountSolvedManually + ")",
-                               (double) mCumulativeStatistics.mCountSolvedManually /
-                                       mCumulativeStatistics.mCountStarted);
+                               (double) mCumulativeStatistics.mCountSolvedManually / mCumulativeStatistics
+                                       .mCountStarted);
             renderer.addSeriesRenderer(createSimpleSeriesRenderer(chartGreen1));
         }
 
         // Games for which the solution is revealed
         if (mCumulativeStatistics.mCountSolutionRevealed > 0) {
-            categorySeries.add(getResources().getString(
-                                       R.string.chart_serie_solution_revealed) + " (" +
+            categorySeries.add(getResources().getString(R.string.chart_serie_solution_revealed) + " (" +
                                        mCumulativeStatistics.mCountSolutionRevealed + ")",
-                               (double) mCumulativeStatistics.mCountSolutionRevealed /
-                                       mCumulativeStatistics.mCountStarted);
+                               (double) mCumulativeStatistics.mCountSolutionRevealed / mCumulativeStatistics
+                                       .mCountStarted);
             renderer.addSeriesRenderer(createSimpleSeriesRenderer(chartRed1));
         }
 
         // Games which have not yet been finished
-        int countUnfinished = mCumulativeStatistics.mCountStarted - mCumulativeStatistics
-                .mCountFinished;
+        int countUnfinished = mCumulativeStatistics.mCountStarted - mCumulativeStatistics.mCountFinished;
         if (countUnfinished > 0) {
-            categorySeries.add(getResources().getString(
-                                       R.string.chart_serie_unfinished) + " (" + countUnfinished
-                                       + ")",
+            categorySeries.add(getResources().getString(R.string.chart_serie_unfinished) + " (" + countUnfinished + ")",
                                (double) countUnfinished / mCumulativeStatistics.mCountStarted);
             renderer.addSeriesRenderer(createSimpleSeriesRenderer(chartGrey1));
         }
 
         // Add section to activity
         addChartToStatisticsSection(null, getResources().getString(R.string.solved_chart_title),
-                                    ChartFactory.getPieChartView(getActivity(), categorySeries,
-                                                                 renderer), null,
+                                    ChartFactory.getPieChartView(getActivity(), categorySeries, renderer), null,
                                     getResources().getString(R.string.solved_chart_body));
         return true;
     }
 
     /**
-     * Create a combined bar and line chart which displays the elapsed time per game and the
-     * historic average.
+     * Create a combined bar and line chart which displays the elapsed time per game and the historic average.
      *
      * @return True in case the chart has been created. False otherwise.
      */
@@ -221,10 +208,8 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
         xyMultipleSeriesRenderer.setLegendTextSize(mDefaultTextSize);
         xyMultipleSeriesRenderer.setXAxisMin(historicStatistics.getIndexFirstEntry() - 1);
         xyMultipleSeriesRenderer.setXAxisMax(historicStatistics.getCountIndexEntries() + 1);
-        xyMultipleSeriesRenderer.setXLabels(
-                (int) Math.min(historicStatistics.getCountIndexEntries() + 1, 4));
-        xyMultipleSeriesRenderer.setMargins(
-                new int[]{0, 2 * mDefaultTextSize, 2 * mDefaultTextSize, mDefaultTextSize});
+        xyMultipleSeriesRenderer.setXLabels((int) Math.min(historicStatistics.getCountIndexEntries() + 1, 4));
+        xyMultipleSeriesRenderer.setMargins(new int[]{0, 2 * mDefaultTextSize, 2 * mDefaultTextSize, mDefaultTextSize});
         xyMultipleSeriesRenderer.setZoomButtonsVisible(false);
         xyMultipleSeriesRenderer.setZoomEnabled(false);
         xyMultipleSeriesRenderer.setPanEnabled(false);
@@ -256,26 +241,22 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
         switch (yScale) {
             case DAYS:
                 xyMultipleSeriesRenderer.setYTitle(getResources().getString(
-                        R.string.statistics_elapsed_time_historic_title) + " (" + getResources()
-                        .getString(
+                        R.string.statistics_elapsed_time_historic_title) + " (" + getResources().getString(
                         R.string.time_unit_days_plural) + ")");
                 break;
             case HOURS:
                 xyMultipleSeriesRenderer.setYTitle(getResources().getString(
-                        R.string.statistics_elapsed_time_historic_title) + " (" + getResources()
-                        .getString(
+                        R.string.statistics_elapsed_time_historic_title) + " (" + getResources().getString(
                         R.string.time_unit_hours_plural) + ")");
                 break;
             case MINUTES:
                 xyMultipleSeriesRenderer.setYTitle(getResources().getString(
-                        R.string.statistics_elapsed_time_historic_title) + " (" + getResources()
-                        .getString(
+                        R.string.statistics_elapsed_time_historic_title) + " (" + getResources().getString(
                         R.string.time_unit_minutes_plural) + ")");
                 break;
             case SECONDS:
                 xyMultipleSeriesRenderer.setYTitle(getResources().getString(
-                        R.string.statistics_elapsed_time_historic_title) + " (" + getResources()
-                        .getString(
+                        R.string.statistics_elapsed_time_historic_title) + " (" + getResources().getString(
                         R.string.time_unit_seconds_plural) + ")");
                 break;
             case NO_SCALE:
@@ -293,11 +274,10 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
         // Add series for elapsed time (including cheat time) of solved games
         if (historicStatistics.isXYSeriesUsed(SolvingAttemptStatus.FINISHED_SOLVED, true, true)) {
             typesList.add(BarChart.TYPE);
-            xyMultipleSeriesDataset.addSeries(
-                    historicStatistics.getXYSeries(SolvingAttemptStatus.FINISHED_SOLVED,
-                                                   getResources().getString(
-                                                           R.string.statistics_elapsed_time_historic_elapsed_time_solved),
-                                                   yScale, true, true));
+            xyMultipleSeriesDataset.addSeries(historicStatistics.getXYSeries(SolvingAttemptStatus.FINISHED_SOLVED,
+                                                                             getResources().getString(
+                                                                                     R.string.statistics_elapsed_time_historic_elapsed_time_solved),
+                                                                             yScale, true, true));
             xyMultipleSeriesRenderer.addSeriesRenderer(createSimpleSeriesRenderer(chartGreen1));
         }
 
@@ -307,11 +287,10 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
         // Add series for cheat time of solved games
         if (historicStatistics.isXYSeriesUsed(SolvingAttemptStatus.FINISHED_SOLVED, false, true)) {
             typesList.add(BarChart.TYPE);
-            xyMultipleSeriesDataset.addSeries(
-                    historicStatistics.getXYSeries(SolvingAttemptStatus.FINISHED_SOLVED,
-                                                   getResources().getString(
-                                                           R.string.statistics_elapsed_time_historic_cheat_time),
-                                                   yScale, false, true));
+            xyMultipleSeriesDataset.addSeries(historicStatistics.getXYSeries(SolvingAttemptStatus.FINISHED_SOLVED,
+                                                                             getResources().getString(
+                                                                                     R.string.statistics_elapsed_time_historic_cheat_time),
+                                                                             yScale, false, true));
 
             SimpleSeriesRenderer simpleSeriesRenderer = createSimpleSeriesRenderer(chartRed1);
 
@@ -330,22 +309,20 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
         if (historicStatistics.isXYSeriesUsed(SolvingAttemptStatus.UNFINISHED, true, true)) {
             // Elapsed time so far including cheats
             typesList.add(BarChart.TYPE);
-            xyMultipleSeriesDataset.addSeries(
-                    historicStatistics.getXYSeries(SolvingAttemptStatus.UNFINISHED,
-                                                   getResources().getString(
-                                                           R.string.statistics_elapsed_time_historic_elapsed_time_unfinished),
-                                                   yScale, true, true));
+            xyMultipleSeriesDataset.addSeries(historicStatistics.getXYSeries(SolvingAttemptStatus.UNFINISHED,
+                                                                             getResources().getString(
+                                                                                     R.string.statistics_elapsed_time_historic_elapsed_time_unfinished),
+                                                                             yScale, true, true));
             xyMultipleSeriesRenderer.addSeriesRenderer(createSimpleSeriesRenderer(chartGrey1));
         }
 
         // Add series for cheat time of solved games
         if (historicStatistics.isXYSeriesUsed(SolvingAttemptStatus.UNFINISHED, false, true)) {
             typesList.add(BarChart.TYPE);
-            xyMultipleSeriesDataset.addSeries(
-                    historicStatistics.getXYSeries(SolvingAttemptStatus.UNFINISHED,
-                                                   getResources().getString(
-                                                           R.string.statistics_elapsed_time_historic_cheat_time),
-                                                   yScale, false, true));
+            xyMultipleSeriesDataset.addSeries(historicStatistics.getXYSeries(SolvingAttemptStatus.UNFINISHED,
+                                                                             getResources().getString(
+                                                                                     R.string.statistics_elapsed_time_historic_cheat_time),
+                                                                             yScale, false, true));
             SimpleSeriesRenderer simpleSeriesRenderer = createSimpleSeriesRenderer(chartRed1);
 
             // Cheat legend should only be displayed once
@@ -362,8 +339,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
             typesList.add(BarChart.TYPE);
 
             xyMultipleSeriesDataset.addSeries(historicStatistics.getXYSeriesSolutionRevealed(
-                    getResources().getString(R.string.statistics_elapsed_time_historic_cheat_time),
-                    maxY, true, true));
+                    getResources().getString(R.string.statistics_elapsed_time_historic_cheat_time), maxY, true, true));
 
             SimpleSeriesRenderer simpleSeriesRenderer = createSimpleSeriesRenderer(chartRed1);
 
@@ -381,10 +357,10 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
         // is displayed as a line chart, it can only be shown if at least two
         // data points in the series are available.
         if (historicStatistics.isXYSeriesUsed(SolvingAttemptStatus.FINISHED_SOLVED, true, true)) {
-            XYSeries xySeries = historicStatistics.getXYSeriesHistoricAverage(
-                    SolvingAttemptStatus.FINISHED_SOLVED, getResources().getString(
-                            R.string.statistics_elapsed_time_historic_solved_average_serie),
-                    yScale);
+            XYSeries xySeries = historicStatistics.getXYSeriesHistoricAverage(SolvingAttemptStatus.FINISHED_SOLVED,
+                                                                              getResources().getString(
+                                                                                      R.string.statistics_elapsed_time_historic_solved_average_serie),
+                                                                              yScale);
             if (xySeries.getItemCount() > 1) {
                 typesList.add(LineChart.TYPE);
                 xyMultipleSeriesDataset.addSeries(xySeries);
@@ -399,41 +375,33 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements
         TableLayout tableLayout = null;
         if (historicStatistics.isXYSeriesUsed(SolvingAttemptStatus.FINISHED_SOLVED, true, true)) {
             tableLayout = new TableLayout(getActivity());
-            TableLayout.LayoutParams tableLayoutParams = new TableLayout.LayoutParams(
-                    LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+            TableLayout.LayoutParams tableLayoutParams = new TableLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+                                                                                      LayoutParams.WRAP_CONTENT);
             tableLayout.setLayoutParams(tableLayoutParams);
 
             tableLayout.addView(createDataTableRow(tableLayoutParams, getResources().getString(
-                                                           R.string.chart_serie_solved) + String.format(
-                                                           " (%d)",
-                                                           mCumulativeStatistics.mCountSolvedManually),
+                                                           R.string.chart_serie_solved) + String.format(" (%d)",
+                                                                                                        mCumulativeStatistics.mCountSolvedManually),
                                                    null));
             tableLayout.addView(createDataTableRow(tableLayoutParams, getResources().getString(
                                                            R.string.statistics_elapsed_time_historic_solved_fastest),
-                                                   Util.durationTimeToString(
-                                                           historicStatistics.getSolvedFastest())));
+                                                   Util.durationTimeToString(historicStatistics.getSolvedFastest())));
             tableLayout.addView(createDataTableRow(tableLayoutParams, getResources().getString(
                                                            R.string.statistics_elapsed_time_historic_solved_average),
-                                                   Util.durationTimeToString(
-                                                           historicStatistics.getSolvedAverage())));
+                                                   Util.durationTimeToString(historicStatistics.getSolvedAverage())));
             tableLayout.addView(createDataTableRow(tableLayoutParams, getResources().getString(
                                                            R.string.statistics_elapsed_time_historic_solved_slowest),
-                                                   Util.durationTimeToString(
-                                                           historicStatistics.getSolvedSlowest())));
+                                                   Util.durationTimeToString(historicStatistics.getSolvedSlowest())));
         }
 
         // Display as stacked bar chart here. As the series are mutually
         // exclusive this will result in one single bar per game which is
         // entirely colored based on status of game.
         String[] types = typesList.toArray(new String[typesList.size()]);
-        addChartToStatisticsSection(null, getResources().getString(
-                                            R.string.statistics_elapsed_time_historic_title),
-                                    ChartFactory.getCombinedXYChartView(getActivity(),
-                                                                        xyMultipleSeriesDataset,
-                                                                        xyMultipleSeriesRenderer,
-                                                                        types), tableLayout,
-                                    getResources().getString(
-                                            R.string.statistics_elapsed_time_historic_body));
+        addChartToStatisticsSection(null, getResources().getString(R.string.statistics_elapsed_time_historic_title),
+                                    ChartFactory.getCombinedXYChartView(getActivity(), xyMultipleSeriesDataset,
+                                                                        xyMultipleSeriesRenderer, types), tableLayout,
+                                    getResources().getString(R.string.statistics_elapsed_time_historic_body));
 
         return true;
     }

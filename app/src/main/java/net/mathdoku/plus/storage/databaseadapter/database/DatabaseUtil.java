@@ -85,8 +85,7 @@ public class DatabaseUtil {
         if (value.equals(SQLITE_FALSE)) {
             return false;
         }
-        throw new IllegalStateException(
-                String.format("Value %s is not a valid SQLite boolean value.", value));
+        throw new IllegalStateException(String.format("Value %s is not a valid SQLite boolean value.", value));
     }
 
     /**
@@ -107,8 +106,7 @@ public class DatabaseUtil {
      *
      * @param offsetInMillisBefore
      *         Offset in milliseconds before current date time.
-     * @return The string representation of the current date and time minus the given offset as it
-     * is stored in SQLite.
+     * @return The string representation of the current date and time minus the given offset as it is stored in SQLite.
      */
     public static String getCurrentMinusOffsetSQLiteTimestamp(long offsetInMillisBefore) {
         return toSQLiteTimestamp(getCurrentDateTime() - offsetInMillisBefore);
@@ -145,8 +143,7 @@ public class DatabaseUtil {
      *
      * @param value
      *         The string value to be converted.
-     * @return The long value representing the given string value. 0 in case a null value was
-     * passed.
+     * @return The long value representing the given string value. 0 in case a null value was passed.
      */
     public static long valueOfSQLiteTimestamp(String value) {
         return value == null ? 0 : java.sql.Timestamp.valueOf(value)

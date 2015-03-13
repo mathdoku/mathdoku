@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The database adapter for the solving attempt table. For each grid one or more solving attempt
- * records can exists in the database. For grid created with version 2 of this app, a statistics
- * record will exist. For grids created with an older version, statistics data is not available.
+ * The database adapter for the solving attempt table. For each grid one or more solving attempt records can exists in
+ * the database. For grid created with version 2 of this app, a statistics record will exist. For grids created with an
+ * older version, statistics data is not available.
  */
 public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
     @SuppressWarnings("unused")
@@ -53,22 +53,17 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 
     private static DatabaseTableDefinition defineTable() {
         DatabaseTableDefinition databaseTableDefinition = new DatabaseTableDefinition(TABLE_NAME);
-        databaseTableDefinition.addColumn(
-                new DatabaseColumnDefinition(KEY_ROWID, DataType.INTEGER).setPrimaryKey());
-        databaseTableDefinition.addColumn(
-                new DatabaseColumnDefinition(KEY_GRID_ID, DataType.INTEGER).setNotNull());
+        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_ROWID, DataType.INTEGER).setPrimaryKey());
+        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_GRID_ID, DataType.INTEGER).setNotNull());
         databaseTableDefinition.addColumn(
                 new DatabaseColumnDefinition(KEY_DATE_CREATED, DataType.TIMESTAMP).setNotNull());
         databaseTableDefinition.addColumn(
                 new DatabaseColumnDefinition(KEY_DATE_UPDATED, DataType.TIMESTAMP).setNotNull());
-        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_SAVED_WITH_REVISION,
-                                                                       DataType.INTEGER)
-                                                  .setNotNull());
         databaseTableDefinition.addColumn(
-                new DatabaseColumnDefinition(KEY_DATA, DataType.STRING).setNotNull());
-        databaseTableDefinition.addColumn(
-                new DatabaseColumnDefinition(KEY_STATUS, DataType.INTEGER).setNotNull()
-                        .setDefaultValue(SolvingAttemptStatus.UNDETERMINED.getId()));
+                new DatabaseColumnDefinition(KEY_SAVED_WITH_REVISION, DataType.INTEGER).setNotNull());
+        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_DATA, DataType.STRING).setNotNull());
+        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_STATUS, DataType.INTEGER).setNotNull()
+                                                  .setDefaultValue(SolvingAttemptStatus.UNDETERMINED.getId()));
         databaseTableDefinition.setForeignKey(
                 new DatabaseForeignKeyDefinition(KEY_GRID_ID, GridDatabaseAdapter.TABLE_NAME,
                                                  GridDatabaseAdapter.KEY_ROWID));
@@ -87,11 +82,9 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
      * Upgrades the table to an other version.
      *
      * @param oldVersion
-     *         The old version of the database. Use the app revision number to identify the database
-     *         version.
+     *         The old version of the database. Use the app revision number to identify the database version.
      * @param newVersion
-     *         The new version of the database. Use the app revision number to identify the database
-     *         version.
+     *         The new version of the database. Use the app revision number to identify the database version.
      */
     protected void upgradeTable(int oldVersion, int newVersion) {
         if (Config.APP_MODE == AppMode.DEVELOPMENT && oldVersion < 433 && newVersion >= 433) {
@@ -104,17 +97,17 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
      *
      * @param solvingAttemptRow
      *         The solving attempt to be inserted.
-     * @return The solving attempt record with an updated row is in case the record is successfully
-     * inserted. Null in case of an error.
+     * @return The solving attempt record with an updated row is in case the record is successfully inserted. Null in
+     * case of an error.
      */
     public SolvingAttemptRow insert(SolvingAttemptRow solvingAttemptRow) {
         ParameterValidator.validateNotNull(solvingAttemptRow);
         ContentValues initialValues = new ContentValues();
         initialValues.put(KEY_GRID_ID, solvingAttemptRow.getGridId());
-        initialValues.put(KEY_DATE_CREATED, DatabaseUtil.toSQLiteTimestamp(
-                solvingAttemptRow.getSolvingAttemptDateCreated()));
-        initialValues.put(KEY_DATE_UPDATED, DatabaseUtil.toSQLiteTimestamp(
-                solvingAttemptRow.getSolvingAttemptDateUpdated()));
+        initialValues.put(KEY_DATE_CREATED,
+                          DatabaseUtil.toSQLiteTimestamp(solvingAttemptRow.getSolvingAttemptDateCreated()));
+        initialValues.put(KEY_DATE_UPDATED,
+                          DatabaseUtil.toSQLiteTimestamp(solvingAttemptRow.getSolvingAttemptDateUpdated()));
         initialValues.put(KEY_SAVED_WITH_REVISION, solvingAttemptRow.getSavedWithRevision());
         initialValues.put(KEY_DATA, solvingAttemptRow.getStorageString());
         initialValues.put(KEY_STATUS, solvingAttemptRow.getSolvingAttemptStatus()
@@ -142,8 +135,8 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
         Cursor cursor = null;
         try {
             cursor = sqliteDatabase.query(true, TABLE_NAME, DATABASE_TABLE.getColumnNames(),
-                                          getSolvingAttemptIdSelectionString(solvingAttemptId),
-                                          null, null, null, null, null);
+                                          getSolvingAttemptIdSelectionString(solvingAttemptId), null, null, null, null,
+                                          null);
 
             if (cursor == null || !cursor.moveToFirst()) {
                 // No record found for this grid.
@@ -152,16 +145,14 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
 
             // Convert cursor record to a SolvingAttemptRow row
             solvingAttemptRow = new SolvingAttemptRow(getSolvingAttemptIdFromCursor(cursor),
-                                                      getGridIdFromCursor(cursor),
-                                                      getDateCreatedFromCursor(cursor),
+                                                      getGridIdFromCursor(cursor), getDateCreatedFromCursor(cursor),
                                                       getDateUpdatedFromCursor(cursor),
                                                       getSolvingAttemptStatusFromCursor(cursor),
                                                       getSavedWithRevisionFromCursor(cursor),
                                                       getStorageStringFromCursor(cursor));
         } catch (SQLiteException e) {
             throw new DatabaseAdapterException(
-                    String.format("Cannot retrieve solving attempt with id '%d' from database.",
-                                  solvingAttemptId), e);
+                    String.format("Cannot retrieve solving attempt with id '%d' from database.", solvingAttemptId), e);
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -184,18 +175,15 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
     }
 
     private long getDateCreatedFromCursor(Cursor cursor) {
-        return DatabaseUtil.valueOfSQLiteTimestamp(
-                cursor.getString(cursor.getColumnIndexOrThrow(KEY_DATE_CREATED)));
+        return DatabaseUtil.valueOfSQLiteTimestamp(cursor.getString(cursor.getColumnIndexOrThrow(KEY_DATE_CREATED)));
     }
 
     private long getDateUpdatedFromCursor(Cursor cursor) {
-        return DatabaseUtil.valueOfSQLiteTimestamp(
-                cursor.getString(cursor.getColumnIndexOrThrow(KEY_DATE_UPDATED)));
+        return DatabaseUtil.valueOfSQLiteTimestamp(cursor.getString(cursor.getColumnIndexOrThrow(KEY_DATE_UPDATED)));
     }
 
     private SolvingAttemptStatus getSolvingAttemptStatusFromCursor(Cursor cursor) {
-        return SolvingAttemptStatus.valueOf(
-                cursor.getInt(cursor.getColumnIndexOrThrow(KEY_STATUS)));
+        return SolvingAttemptStatus.valueOf(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_STATUS)));
     }
 
     private int getSavedWithRevisionFromCursor(Cursor cursor) {
@@ -217,8 +205,8 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
         try {
             OrderByHelper orderByHelper = new OrderByHelper();
             orderByHelper.sortDescending(KEY_DATE_UPDATED);
-            cursor = sqliteDatabase.query(true, TABLE_NAME, new String[]{KEY_ROWID}, null, null,
-                                          null, null, orderByHelper.toString(), "1");
+            cursor = sqliteDatabase.query(true, TABLE_NAME, new String[]{KEY_ROWID}, null, null, null, null,
+                                          orderByHelper.toString(), "1");
 
             if (cursor == null || !cursor.moveToFirst()) {
                 // No record found
@@ -228,8 +216,8 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
             // Convert cursor record to a SolvingAttemptRow row
             id = getSolvingAttemptIdFromCursor(cursor);
         } catch (SQLiteException e) {
-            throw new DatabaseAdapterException(
-                    "Cannot retrieve the most recent played solving attempt id in database.", e);
+            throw new DatabaseAdapterException("Cannot retrieve the most recent played solving attempt id in database.",
+                                               e);
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -248,16 +236,15 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
     public boolean update(SolvingAttemptRow solvingAttemptRow) {
         ParameterValidator.validateNotNull(solvingAttemptRow);
         ContentValues contentValues = new ContentValues();
-        contentValues.put(KEY_DATE_UPDATED, DatabaseUtil.toSQLiteTimestamp(
-                solvingAttemptRow.getSolvingAttemptDateUpdated()));
+        contentValues.put(KEY_DATE_UPDATED,
+                          DatabaseUtil.toSQLiteTimestamp(solvingAttemptRow.getSolvingAttemptDateUpdated()));
         contentValues.put(KEY_SAVED_WITH_REVISION, solvingAttemptRow.getSavedWithRevision());
         contentValues.put(KEY_DATA, solvingAttemptRow.getStorageString());
         contentValues.put(KEY_STATUS, solvingAttemptRow.getSolvingAttemptStatus()
                 .getId());
 
         return sqliteDatabase.update(TABLE_NAME, contentValues,
-                                     KEY_ROWID + " = " + solvingAttemptRow.getSolvingAttemptId(),
-                                     null) == 1;
+                                     KEY_ROWID + " = " + solvingAttemptRow.getSolvingAttemptId(), null) == 1;
     }
 
     /**
@@ -272,8 +259,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
         try {
             // Currently all solving attempts are returned. In future this can
             // be restricted to games which are not solved.
-            cursor = sqliteDatabase.query(true, TABLE_NAME, columns, null, null, null, null, null,
-                                          null);
+            cursor = sqliteDatabase.query(true, TABLE_NAME, columns, null, null, null, null, null, null);
 
             if (cursor != null && cursor.moveToFirst()) {
                 do {
@@ -282,8 +268,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
             }
         } catch (SQLiteException e) {
             throw new DatabaseAdapterException(
-                    "Cannot retrieve all solving attempt id's from database which have to be converted.",
-                    e);
+                    "Cannot retrieve all solving attempt id's from database which have to be converted.", e);
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -301,8 +286,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
      */
     public static String getPrefixedColumnName(String column) {
         ParameterValidator.validateNotNullOrEmpty(column);
-        return DatabaseUtil.stringBetweenBackTicks(
-                TABLE_NAME) + "." + DatabaseUtil.stringBetweenBackTicks(column);
+        return DatabaseUtil.stringBetweenBackTicks(TABLE_NAME) + "." + DatabaseUtil.stringBetweenBackTicks(column);
     }
 
     /**
@@ -316,9 +300,8 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
         int count = 0;
         Cursor cursor = null;
         try {
-            cursor = sqliteDatabase.query(true, TABLE_NAME, new String[]{"COUNT(1)"},
-                                          getGridIdSelectionString(gridId), null, null, null, null,
-                                          null);
+            cursor = sqliteDatabase.query(true, TABLE_NAME, new String[]{"COUNT(1)"}, getGridIdSelectionString(gridId),
+                                          null, null, null, null, null);
 
             if (cursor == null || !cursor.moveToFirst()) {
                 // No record found for this grid.
@@ -328,9 +311,9 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
             // Convert cursor record to a SolvingAttemptRow row
             count = cursor.getInt(0);
         } catch (SQLiteException e) {
-            throw new DatabaseAdapterException(String.format(
-                    "Cannot count the number of solving attempts for grid with id '%d' from database.",
-                    gridId), e);
+            throw new DatabaseAdapterException(
+                    String.format("Cannot count the number of solving attempts for grid with id '%d' from database.",
+                                  gridId), e);
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -340,8 +323,7 @@ public class SolvingAttemptDatabaseAdapter extends DatabaseAdapter {
     }
 
     private String getGridIdSelectionString(int gridId) {
-        return new FieldOperatorIntegerValue(KEY_GRID_ID, FieldOperatorValue.Operator.EQUALS,
-                                             gridId).toString();
+        return new FieldOperatorIntegerValue(KEY_GRID_ID, FieldOperatorValue.Operator.EQUALS, gridId).toString();
 
     }
 }

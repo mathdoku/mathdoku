@@ -26,8 +26,7 @@ public class ArchiveFragmentGridSizeFilterSpinner {
     public ArchiveFragmentGridSizeFilterSpinner(ArchiveFragmentActivity archiveFragmentActivity) {
         objectsCreator = new ObjectsCreator();
         this.archiveFragmentActivity = archiveFragmentActivity;
-        archiveFragmentStatePagerAdapter = archiveFragmentActivity
-                .getArchiveFragmentStatePagerAdapter();
+        archiveFragmentStatePagerAdapter = archiveFragmentActivity.getArchiveFragmentStatePagerAdapter();
         gridTypeFilters = getGridTypeFilters();
     }
 
@@ -45,8 +44,8 @@ public class ArchiveFragmentGridSizeFilterSpinner {
         return new AvailableGridTypeFilterSelector(statusFilter);
     }
 
-    public ArchiveFragmentGridSizeFilterSpinner setObjectsCreator
-            (ArchiveFragmentGridSizeFilterSpinner.ObjectsCreator objectsCreator) {
+    public ArchiveFragmentGridSizeFilterSpinner setObjectsCreator(ArchiveFragmentGridSizeFilterSpinner.ObjectsCreator
+                                                                          objectsCreator) {
         if (this.objectsCreator == null) {
             throw new InvalidParameterException("Parameter objectsCreator cannot be null.");
         }

@@ -12,8 +12,7 @@ import net.mathdoku.plus.storage.databaseadapter.DatabaseHelper;
 import net.mathdoku.plus.util.Util;
 
 @SuppressLint("Registered")
-public class AppFragmentActivity extends FragmentActivity implements
-        OnSharedPreferenceChangeListener {
+public class AppFragmentActivity extends FragmentActivity implements OnSharedPreferenceChangeListener {
 
     // Preferences
     protected Preferences mMathDokuPreferences;
@@ -37,8 +36,7 @@ public class AppFragmentActivity extends FragmentActivity implements
     @Override
     protected void onDestroy() {
         if (mMathDokuPreferences != null && mMathDokuPreferences.mSharedPreferences != null) {
-            mMathDokuPreferences.mSharedPreferences.unregisterOnSharedPreferenceChangeListener(
-                    this);
+            mMathDokuPreferences.mSharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
         }
         super.onDestroy();
     }
@@ -61,8 +59,7 @@ public class AppFragmentActivity extends FragmentActivity implements
     }
 
     /**
-     * Sets the full screen flag for the window in which the activity is shown based on the app
-     * preference.
+     * Sets the full screen flag for the window in which the activity is shown based on the app preference.
      */
     private void setFullScreenWindowFlag() {
         // Check whether full screen mode is preferred.
@@ -75,8 +72,7 @@ public class AppFragmentActivity extends FragmentActivity implements
     }
 
     /**
-     * Sets the keep screen on flag for the given window in which the activity is shown based on the
-     * app preference.
+     * Sets the keep screen on flag for the given window in which the activity is shown based on the app preference.
      */
     private void setKeepScreenOnWindowFlag() {
         if (mMathDokuPreferences.isWakeLockEnabled()) {

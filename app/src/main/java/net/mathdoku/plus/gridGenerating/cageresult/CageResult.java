@@ -45,11 +45,10 @@ public abstract class CageResult {
         return canBeCreated;
     }
 
-    private static void throwExceptionForInvalidOperator(CageOperator cageOperator,
-                                                         int[] cellValues) {
+    private static void throwExceptionForInvalidOperator(CageOperator cageOperator, int[] cellValues) {
         throw new IllegalArgumentException(
-                String.format("Operator '%s' not allowed for cell values '%s'.",
-                              cageOperator.toString(), Arrays.toString(cellValues)));
+                String.format("Operator '%s' not allowed for cell values '%s'.", cageOperator.toString(),
+                              Arrays.toString(cellValues)));
     }
 
     public static CageResult create(CageOperator cageOperator, int... cellValues) {

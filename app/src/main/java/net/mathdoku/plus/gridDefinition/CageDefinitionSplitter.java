@@ -19,8 +19,7 @@ class CageDefinitionSplitter {
         cageDefinitionElements = cageDefinition.split(GridDefinitionDelimiter.LEVEL2);
         if (cageDefinitionElements == null || cageDefinitionElements.length != 3) {
             throw new InvalidGridException(
-                    String.format("Cage definition '%s' has invalid number of elements.",
-                                  cageDefinition));
+                    String.format("Cage definition '%s' has invalid number of elements.", cageDefinition));
         }
     }
 
@@ -37,9 +36,8 @@ class CageDefinitionSplitter {
         try {
             cageOperator = CageOperator.fromId(cageDefinitionElements[CAGE_OPERATOR_ID]);
         } catch (IllegalArgumentException e) {
-            throw new InvalidGridException(
-                    String.format("Invalid cage operator '%s' in cage definition '%s'.",
-                                  cageDefinitionElements[CAGE_OPERATOR_ID], cageDefinition), e);
+            throw new InvalidGridException(String.format("Invalid cage operator '%s' in cage definition '%s'.",
+                                                         cageDefinitionElements[CAGE_OPERATOR_ID], cageDefinition), e);
         }
 
         return cageOperator;

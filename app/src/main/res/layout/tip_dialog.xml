@@ -1,38 +1,38 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingBottom="10dp"
-    android:paddingTop="10dp" >
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:paddingBottom="10dp"
+              android:paddingTop="10dp">
 
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2"
-        android:paddingBottom="10dp" >
+        android:paddingBottom="10dp">
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingLeft="10dp"
-            android:paddingRight="10dp" >
+            android:paddingRight="10dp">
 
             <TextView
                 android:id="@+id/dialog_tip_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="10dp"
-                android:textSize="@dimen/dialog_text_size_body" />
+                android:textSize="@dimen/dialog_text_size_body"/>
 
             <ImageView
                 android:id="@+id/dialog_tip_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:scaleType="centerInside"
-                tools:ignore="ContentDescription" />
+                tools:ignore="ContentDescription"/>
         </LinearLayout>
     </ScrollView>
 
@@ -41,9 +41,9 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:text="@string/dialog_tip_do_not_show_again" >
+        android:text="@string/dialog_tip_do_not_show_again">
 
-        <requestFocus />
+        <requestFocus/>
     </CheckBox>
 
 </LinearLayout>

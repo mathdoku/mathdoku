@@ -13,11 +13,11 @@ public class TipOrderOfValuesInCage extends TipDialog {
     private static final TipPriority TIP_PRIORITY = TipPriority.LOW;
 
     /**
-     * Creates a new tip dialog which explains that the order of values in the cell of the cage is
-     * not relevant for solving the cage arithmetic. </br>
+     * Creates a new tip dialog which explains that the order of values in the cell of the cage is not relevant for
+     * solving the cage arithmetic. </br>
      * <p/>
-     * For performance reasons this method should only be called in case the static call to method
-     * {@link #toBeDisplayed} returned true.
+     * For performance reasons this method should only be called in case the static call to method {@link
+     * #toBeDisplayed} returned true.
      *
      * @param context
      *         The activity in which this tip has to be shown.
@@ -26,20 +26,16 @@ public class TipOrderOfValuesInCage extends TipDialog {
         super(context, TIP_NAME, TIP_PRIORITY);
 
         build(R.drawable.lightbulb, context.getResources()
-                      .getString(R.string.dialog_tip_order_of_values_in_cage_title),
-              context.getResources()
-                      .getString(R.string.dialog_tip_order_of_values_in_cage_text),
-              context.getResources()
+                      .getString(R.string.dialog_tip_order_of_values_in_cage_title), context.getResources()
+                      .getString(R.string.dialog_tip_order_of_values_in_cage_text), context.getResources()
                       .getDrawable(R.drawable.tip_order_of_values_in_cage));
     }
 
     /**
-     * Checks whether this tip has to be displayed. Should be called statically before creating this
-     * object.
+     * Checks whether this tip has to be displayed. Should be called statically before creating this object.
      *
      * @param preferences
-     *         Preferences of the activity for which has to be checked whether this tip should be
-     *         shown.
+     *         Preferences of the activity for which has to be checked whether this tip should be shown.
      * @param cage
      *         The cage for which it will be checked if it is appropriate to show this tip.
      * @return True in case the tip might be displayed. False otherwise.
@@ -64,8 +60,7 @@ public class TipOrderOfValuesInCage extends TipDialog {
         }
 
         // Do not display in case it was displayed less than 2 minutes ago.
-        if (preferences.getTipLastDisplayTime(
-                TIP_NAME) > System.currentTimeMillis() - 5 * 60 * 1000) {
+        if (preferences.getTipLastDisplayTime(TIP_NAME) > System.currentTimeMillis() - 5 * 60 * 1000) {
             return false;
         }
 

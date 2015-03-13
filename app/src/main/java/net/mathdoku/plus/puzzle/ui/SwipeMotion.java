@@ -140,8 +140,8 @@ public class SwipeMotion extends Motion {
             cellDrawer = mGridPlayerView.getCellDrawer(touchDownCellCoordinates[Y_POS],
                                                        touchDownCellCoordinates[X_POS]);
         }
-        mTouchDownCellCenterPixelCoordinates = cellDrawer == null ? getTouchDownPixelCoordinates
-                ().clone() : cellDrawer.getCellCentreCoordinates(
+        mTouchDownCellCenterPixelCoordinates = cellDrawer == null ? getTouchDownPixelCoordinates().clone() :
+                cellDrawer.getCellCentreCoordinates(
                 mGridPlayerViewBorderWidth);
 
         // Touch down has been fully completed.
@@ -225,8 +225,7 @@ public class SwipeMotion extends Motion {
     }
 
     private String getErrorIllegalStateTransition(String fromState, String toState) {
-        return String.format("Swipe Motion status can not be changed from %s to %s", fromState,
-                             toState);
+        return String.format("Swipe Motion status can not be changed from %s to %s", fromState, toState);
     }
 
     /**
@@ -265,9 +264,8 @@ public class SwipeMotion extends Motion {
 
         // Determine coordinates of new current swipe position on the actual
         // swipe position
-        mCurrentSwipePositionCellCoordinates = toGridCoordinates(
-                mCurrentSwipePositionPixelCoordinates[X_POS],
-                mCurrentSwipePositionPixelCoordinates[Y_POS]);
+        mCurrentSwipePositionCellCoordinates = toGridCoordinates(mCurrentSwipePositionPixelCoordinates[X_POS],
+                                                                 mCurrentSwipePositionPixelCoordinates[Y_POS]);
     }
 
     /**
@@ -292,8 +290,7 @@ public class SwipeMotion extends Motion {
 
         // Check whether current swipe position is inside or outside the touch
         // down cell.
-        boolean inTouchDownCell = equalsCoordinatesTouchDownCell(
-                mCurrentSwipePositionCellCoordinates);
+        boolean inTouchDownCell = equalsCoordinatesTouchDownCell(mCurrentSwipePositionCellCoordinates);
 
         // Determine the digit for the current swipe position.
         if (inTouchDownCell) {
@@ -327,11 +324,9 @@ public class SwipeMotion extends Motion {
         // In case the current swipe position is outside the touch down cell
         // than the distance is measured between the center of the touch down
         // cell and the current position.
-        float deltaX = mCurrentSwipePositionPixelCoordinates[X_POS] - (inTouchDownCell ?
-                getTouchDownPixelCoordinate(
+        float deltaX = mCurrentSwipePositionPixelCoordinates[X_POS] - (inTouchDownCell ? getTouchDownPixelCoordinate(
                 X_POS) : mTouchDownCellCenterPixelCoordinates[X_POS]);
-        float deltaY = mCurrentSwipePositionPixelCoordinates[Y_POS] - (inTouchDownCell ?
-                getTouchDownPixelCoordinate(
+        float deltaY = mCurrentSwipePositionPixelCoordinates[Y_POS] - (inTouchDownCell ? getTouchDownPixelCoordinate(
                 Y_POS) : mTouchDownCellCenterPixelCoordinates[Y_POS]);
         if (Math.sqrt(deltaX * deltaX + deltaY * deltaY) < 10) {
             // The distance is too small to be accepted.
@@ -354,20 +349,17 @@ public class SwipeMotion extends Motion {
             Log.i(TAG, "getDigit");
             if (inTouchDownCell) {
                 Log.i(TAG,
-                      "Current swipe position inside touch down cell. Angle computed to real " +
-                              "touch down position");
-                Log.i(TAG, " - start = (" + getTouchDownPixelCoordinate(
-                        X_POS) + ", " + getTouchDownPixelCoordinate(Y_POS) + ")");
+                      "Current swipe position inside touch down cell. Angle computed to real " + "touch down position");
+                Log.i(TAG, " - start = (" + getTouchDownPixelCoordinate(X_POS) + ", " + getTouchDownPixelCoordinate(
+                        Y_POS) + ")");
             } else {
                 Log.i(TAG,
-                      "Current swipe position outside touch down cell. Angle computed to center " +
-                              "of touch down cell");
-                Log.i(TAG,
-                      " - start = (" + mTouchDownCellCenterPixelCoordinates[X_POS] + ", " +
+                      "Current swipe position outside touch down cell. Angle computed to center " + "of touch down " +
+                              "cell");
+                Log.i(TAG, " - start = (" + mTouchDownCellCenterPixelCoordinates[X_POS] + ", " +
                               "" + mTouchDownCellCenterPixelCoordinates[Y_POS] + ")");
             }
-            Log.i(TAG,
-                  " - current = (" + mCurrentSwipePositionPixelCoordinates[X_POS] + ", " +
+            Log.i(TAG, " - current = (" + mCurrentSwipePositionPixelCoordinates[X_POS] + ", " +
                           "" + mCurrentSwipePositionPixelCoordinates[Y_POS] + ")");
             Log.i(TAG, " - deltaX = " + deltaX + " - deltaY = " + deltaY);
             Log.i(TAG, " - angle = " + angle);
@@ -407,30 +399,23 @@ public class SwipeMotion extends Motion {
                         break;
                     case 4: // fall through
                     case 5:
-                        acceptDigit = mGridPlayerView.getOrientation() == Configuration
-                                .ORIENTATION_PORTRAIT &&
+                        acceptDigit = mGridPlayerView.getOrientation() == Configuration.ORIENTATION_PORTRAIT &&
                                 mCurrentSwipePositionCellCoordinates[X_POS] == mGridSize - 1;
                         break;
                     case 6:
-                        acceptDigit = mGridPlayerView.getOrientation() == Configuration
-                                .ORIENTATION_PORTRAIT &&
-                                mCurrentSwipePositionCellCoordinates[X_POS] == mGridSize - 1 ||
-                                mGridPlayerView.getOrientation() == Configuration
-                                        .ORIENTATION_LANDSCAPE &&
-                                        mCurrentSwipePositionCellCoordinates[Y_POS] == mGridSize
-                                                - 1;
+                        acceptDigit = mGridPlayerView.getOrientation() == Configuration.ORIENTATION_PORTRAIT &&
+                                mCurrentSwipePositionCellCoordinates[X_POS] == mGridSize - 1 || mGridPlayerView
+                                .getOrientation() == Configuration.ORIENTATION_LANDSCAPE &&
+                                mCurrentSwipePositionCellCoordinates[Y_POS] == mGridSize - 1;
                         break;
                     case 7:
-                        acceptDigit = mGridPlayerView.getOrientation() == Configuration
-                                .ORIENTATION_LANDSCAPE &&
+                        acceptDigit = mGridPlayerView.getOrientation() == Configuration.ORIENTATION_LANDSCAPE &&
                                 mCurrentSwipePositionCellCoordinates[Y_POS] == mGridSize - 1;
                         break;
                     case 8:
-                        acceptDigit = mCurrentSwipePositionCellCoordinates[X_POS] == 0 ||
-                                mGridPlayerView.getOrientation() == Configuration
-                                        .ORIENTATION_LANDSCAPE &&
-                                        mCurrentSwipePositionCellCoordinates[Y_POS] == mGridSize
-                                                - 1;
+                        acceptDigit = mCurrentSwipePositionCellCoordinates[X_POS] == 0 || mGridPlayerView
+                                .getOrientation() == Configuration.ORIENTATION_LANDSCAPE &&
+                                mCurrentSwipePositionCellCoordinates[Y_POS] == mGridSize - 1;
                         break;
                     case 9:
                         acceptDigit = mCurrentSwipePositionCellCoordinates[X_POS] == 0;
@@ -481,24 +466,23 @@ public class SwipeMotion extends Motion {
         }
 
         // Update at start of motion
-        if (mPreviousSwipePositionCellCoordinates == null && mCurrentSwipePositionCellCoordinates
-                != null) {
+        if (mPreviousSwipePositionCellCoordinates == null && mCurrentSwipePositionCellCoordinates != null) {
             mPreviousSwipePositionEventTime = mCurrentSwipePositionEventTime;
             return true;
         }
 
         // Update when the motion has reached another cell
-        if (mPreviousSwipePositionCellCoordinates != null && mCurrentSwipePositionCellCoordinates
-                != null) {
-            if (mPreviousSwipePositionCellCoordinates[X_POS] !=
-                    mCurrentSwipePositionCellCoordinates[X_POS] || mPreviousSwipePositionCellCoordinates[Y_POS] != mCurrentSwipePositionCellCoordinates[Y_POS]) {
+        if (mPreviousSwipePositionCellCoordinates != null && mCurrentSwipePositionCellCoordinates != null) {
+            if (mPreviousSwipePositionCellCoordinates[X_POS] != mCurrentSwipePositionCellCoordinates[X_POS] ||
+                    mPreviousSwipePositionCellCoordinates[Y_POS] != mCurrentSwipePositionCellCoordinates[Y_POS]) {
                 mPreviousSwipePositionEventTime = mCurrentSwipePositionEventTime;
                 return true;
             }
         }
 
         // Update if the last update was 100 milliseconds or longer ago
-        if (mPreviousSwipePositionEventTime > 0 && mCurrentSwipePositionEventTime > 0 && mCurrentSwipePositionEventTime - mPreviousSwipePositionEventTime > 100) {
+        if (mPreviousSwipePositionEventTime > 0 && mCurrentSwipePositionEventTime > 0 &&
+                mCurrentSwipePositionEventTime - mPreviousSwipePositionEventTime > 100) {
             mPreviousSwipePositionEventTime = mCurrentSwipePositionEventTime;
             return true;
         }
@@ -508,11 +492,10 @@ public class SwipeMotion extends Motion {
     }
 
     /**
-     * Checks whether the current swipe position results in another digit compared to the previous
-     * swipe position.
+     * Checks whether the current swipe position results in another digit compared to the previous swipe position.
      *
-     * @return True in case the swipe motion will result in another digit being selected compared to
-     * the previous swipe position. False if still the same digit will be selected.
+     * @return True in case the swipe motion will result in another digit being selected compared to the previous swipe
+     * position. False if still the same digit will be selected.
      */
     boolean hasChangedDigit() {
         return mPreviousSwipePositionDigit != mCurrentSwipePositionDigit;
@@ -539,14 +522,12 @@ public class SwipeMotion extends Motion {
     }
 
     /**
-     * Get the angle which separates the segment of the given digit with the next (clock wise)
-     * digit.
+     * Get the angle which separates the segment of the given digit with the next (clock wise) digit.
      *
      * @param digit
-     *         The digit of the segment for which the angle has to be determined which separates
-     *         this segment from the next segment.
-     * @return The angle to which separates the segment of the given digit with the next (clock
-     * wise) digit.
+     *         The digit of the segment for which the angle has to be determined which separates this segment from the
+     *         next segment.
+     * @return The angle to which separates the segment of the given digit with the next (clock wise) digit.
      */
     public static int getAngleToNextSwipeSegment(int digit) {
         return SWIPE_ANGLE_OFFSET_91 + digit * SWIPE_SEGMENT_ANGLE;

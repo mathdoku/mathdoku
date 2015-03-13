@@ -75,17 +75,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity implements
-        PuzzleFragment.PuzzleFragmentListener {
+public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity implements PuzzleFragment
+        .PuzzleFragmentListener {
     @SuppressWarnings("unused")
     private static final String TAG = PuzzleFragmentActivity.class.getName();
 
     // Intent parameters for creating a new game of specified type
     private static final String NEW_PUZZLE_FOR_LEADERBOARD = "CreateNewGameForLeaderboard";
-    private static final String NEW_PUZZLE_FOR_LEADERBOARD_GRID_SIZE =
-            "CreateNewGameForLeaderboard_Size";
-    private static final String NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS =
-            "CreateNewGameForLeaderboard_HideOperators";
+    private static final String NEW_PUZZLE_FOR_LEADERBOARD_GRID_SIZE = "CreateNewGameForLeaderboard_Size";
+    private static final String NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS = "CreateNewGameForLeaderboard_HideOperators";
     private static final String NEW_PUZZLE_FOR_LEADERBOARD_PUZZLE_COMPLEXITY =
             "CreateNewGameForLeaderboard_PuzzleComplexity";
 
@@ -170,8 +168,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
         final ActionBar actionBar = getActionBar();
         if (actionBar != null) {
             actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-            actionBar.setSubtitle(
-                    getResources().getString(R.string.action_bar_subtitle_puzzle_fragment));
+            actionBar.setSubtitle(getResources().getString(R.string.action_bar_subtitle_puzzle_fragment));
         }
 
         // Set up the navigation drawer.
@@ -181,8 +178,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
         // configuration change.
         Object object = this.getLastCustomNonConfigurationInstance();
         if (object != null && object.getClass() == ConfigurationInstanceState.class) {
-            ConfigurationInstanceState configurationInstanceState = (ConfigurationInstanceState)
-                    object;
+            ConfigurationInstanceState configurationInstanceState = (ConfigurationInstanceState) object;
 
             // Restore background process if running.
             mGeneratePuzzleProgressDialog = configurationInstanceState.getGridGeneratorTask();
@@ -268,8 +264,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
     public boolean onPrepareOptionsMenu(Menu menu) {
         // If the navigation drawer is open, hide action items related to the
         // content view
-        boolean drawerOpen = !(mDrawerLayout == null || mDrawerListView == null) && mDrawerLayout
-                .isDrawerOpen(
+        boolean drawerOpen = !(mDrawerLayout == null || mDrawerListView == null) && mDrawerLayout.isDrawerOpen(
                 mDrawerListView);
 
         // Determine which fragment is active
@@ -278,9 +273,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
         // Set visibility for menu option input mode
         MenuItem menuItem = menu.findItem(R.id.action_input_mode);
         if (menuItem != null) {
-            menuItem.setVisible(
-                    !drawerOpen && mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT &&
-                            mPuzzleFragment != null && mPuzzleFragment.isActive());
+            menuItem.setVisible(!drawerOpen && mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT &&
+                                        mPuzzleFragment != null && mPuzzleFragment.isActive());
             if (menuItem.isVisible()) {
                 menuItem.setIcon(mPuzzleFragment.getActionCurrentInputModeIconResId())
                         .setTitle(mPuzzleFragment.getActionCurrentInputModeTitleResId());
@@ -289,23 +283,20 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
 
         // Set visibility for menu option copy cell values
         if ((menuItem = menu.findItem(R.id.action_copy_cell_values)) != null) {
-            menuItem.setVisible(
-                    !drawerOpen && mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT &&
-                            mPuzzleFragment != null && mPuzzleFragment.showCopyCellValues());
+            menuItem.setVisible(!drawerOpen && mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT &&
+                                        mPuzzleFragment != null && mPuzzleFragment.showCopyCellValues());
         }
 
         // Set visibility for menu option check progress
         if ((menuItem = menu.findItem(R.id.checkprogress)) != null) {
-            menuItem.setVisible(
-                    !drawerOpen && mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT &&
-                            mPuzzleFragment != null && mPuzzleFragment.showCheckProgress());
+            menuItem.setVisible(!drawerOpen && mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT &&
+                                        mPuzzleFragment != null && mPuzzleFragment.showCheckProgress());
         }
 
         // Set visibility for menu option to reveal a cell
         if ((menuItem = menu.findItem(R.id.action_reveal_cell)) != null) {
-            menuItem.setVisible(
-                    !drawerOpen && mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT &&
-                            mPuzzleFragment != null && mPuzzleFragment.showRevealCell());
+            menuItem.setVisible(!drawerOpen && mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT &&
+                                        mPuzzleFragment != null && mPuzzleFragment.showRevealCell());
             if (menuItem.isVisible()) {
                 showCheats = true;
             }
@@ -313,9 +304,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
 
         // Set visibility for menu option to reveal a operator
         if ((menuItem = menu.findItem(R.id.action_reveal_operator)) != null) {
-            menuItem.setVisible(
-                    !drawerOpen && mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT &&
-                            mPuzzleFragment != null && mPuzzleFragment.showRevealOperator());
+            menuItem.setVisible(!drawerOpen && mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT &&
+                                        mPuzzleFragment != null && mPuzzleFragment.showRevealOperator());
             if (menuItem.isVisible()) {
                 showCheats = true;
             }
@@ -323,9 +313,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
 
         // Set visibility for menu option to reveal the solution
         if ((menuItem = menu.findItem(R.id.action_show_solution)) != null) {
-            menuItem.setVisible(
-                    !drawerOpen && mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT &&
-                            mPuzzleFragment != null && mPuzzleFragment.showRevealSolution());
+            menuItem.setVisible(!drawerOpen && mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT &&
+                                        mPuzzleFragment != null && mPuzzleFragment.showRevealSolution());
             if (menuItem.isVisible()) {
                 showCheats = true;
             }
@@ -340,17 +329,16 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
 
         // Set visibility for menu option to clear the grid
         if ((menuItem = menu.findItem(R.id.action_clear_grid)) != null) {
-            menuItem.setVisible(
-                    !drawerOpen && mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT &&
-                            mPuzzleFragment != null && mPuzzleFragment.showClearGrid());
+            menuItem.setVisible(!drawerOpen && mActiveFragmentType == FragmentType.PUZZLE_FRAGMENT &&
+                                        mPuzzleFragment != null && mPuzzleFragment.showClearGrid());
         }
 
         // Determine position of new game button
         if ((menuItem = menu.findItem(R.id.action_new_game)) != null) {
             menuItem.setVisible(!drawerOpen)
                     .setShowAsAction(
-                            mPuzzleFragment != null && mPuzzleFragment.isActive() ? MenuItem
-                                    .SHOW_AS_ACTION_NEVER : MenuItem.SHOW_AS_ACTION_ALWAYS);
+                            mPuzzleFragment != null && mPuzzleFragment.isActive() ? MenuItem.SHOW_AS_ACTION_NEVER :
+                                    MenuItem.SHOW_AS_ACTION_ALWAYS);
         }
 
         // Display the share button on the action bar dependent on the fragment
@@ -358,8 +346,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
         if ((menuItem = menu.findItem(R.id.action_share)) != null) {
             menuItem.setVisible(!drawerOpen)
                     .setShowAsAction(
-                            mArchiveFragment != null ? MenuItem.SHOW_AS_ACTION_IF_ROOM : MenuItem
-                                    .SHOW_AS_ACTION_NEVER);
+                            mArchiveFragment != null ? MenuItem.SHOW_AS_ACTION_IF_ROOM : MenuItem.SHOW_AS_ACTION_NEVER);
         }
 
         // The replay button on the action bar is only visible in case the
@@ -372,8 +359,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
 
         // Determine visibility of sign out button
         if ((menuItem = menu.findItem(R.id.action_sign_out_google_play_services)) != null) {
-            menuItem.setVisible(
-                    mLeaderboardConnector != null && mLeaderboardConnector.isSignedIn());
+            menuItem.setVisible(mLeaderboardConnector != null && mLeaderboardConnector.isSignedIn());
         }
 
         // When running in development mode, an extra menu is available.
@@ -396,8 +382,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         // First pass the event to ActionBarDrawerToggle, if it returns
         // true, then it has handled the app icon touch event
-        if (mActionBarDrawerToggle != null && mActionBarDrawerToggle.onOptionsItemSelected(
-                menuItem)) {
+        if (mActionBarDrawerToggle != null && mActionBarDrawerToggle.onOptionsItemSelected(menuItem)) {
             return true;
         }
 
@@ -466,8 +451,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
                 mLeaderboardConnector = null;
                 return true;
             case R.id.action_google_plus_community:
-                startActivity(new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(
-                        getResources().getString(R.string.google_plus_community_url))));
+                startActivity(new Intent(android.content.Intent.ACTION_VIEW,
+                                         Uri.parse(getResources().getString(R.string.google_plus_community_url))));
                 return true;
             case R.id.action_puzzle_settings:
                 startActivity(new Intent(this, PuzzlePreferenceActivity.class));
@@ -491,9 +476,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
                         mPuzzleFragment.stopTimer();
                     }
 
-                    boolean processedByDevelopmentHelper = DevelopmentHelper
-                            .onDevelopmentHelperOption(
-                            this, menuId, getActiveFragmentGrid());
+                    boolean processedByDevelopmentHelper = DevelopmentHelper.onDevelopmentHelperOption(this, menuId,
+                                                                                                       getActiveFragmentGrid());
                     if (mPuzzleFragment != null) {
                         mPuzzleFragment.startTimer();
                     }
@@ -522,28 +506,23 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
      * @param hideOperators
      *         True in case operators should be hidden in the new puzzle.
      */
-    public void startNewGame(GridType gridType, boolean hideOperators,
-                             PuzzleComplexity puzzleComplexity) {
+    public void startNewGame(GridType gridType, boolean hideOperators, PuzzleComplexity puzzleComplexity) {
         if (mPuzzleFragment != null) {
             mPuzzleFragment.prepareLoadNewGame();
         }
 
         // Start a background task to generate the new grid. As soon as the new
         // grid is created, the method onNewGridReady will be called.
-        mGeneratePuzzleProgressDialog = new GeneratePuzzleProgressDialog(this,
-                                                                         createGridGeneratingParameters(
-                                                                                 gridType,
-                                                                                 hideOperators,
-                                                                                 puzzleComplexity));
+        mGeneratePuzzleProgressDialog = new GeneratePuzzleProgressDialog(this, createGridGeneratingParameters(gridType,
+                                                                                                              hideOperators,
+                                                                                                              puzzleComplexity));
         mGeneratePuzzleProgressDialog.show();
     }
 
-    private GridGeneratingParameters createGridGeneratingParameters(GridType gridType,
-                                                                    boolean hideOperators,
-                                                                    PuzzleComplexity
-                                                                            puzzleComplexity) {
-        GridGeneratingParametersBuilder gridGeneratingParametersBuilder = new
-                GridGeneratingParametersBuilder().setGridType(
+    private GridGeneratingParameters createGridGeneratingParameters(GridType gridType, boolean hideOperators,
+                                                                    PuzzleComplexity puzzleComplexity) {
+        GridGeneratingParametersBuilder gridGeneratingParametersBuilder = new GridGeneratingParametersBuilder()
+                .setGridType(
                 gridType)
                 .setHideOperators(hideOperators);
         if (puzzleComplexity == PuzzleComplexity.RANDOM) {
@@ -572,8 +551,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
      * Displays the Help Dialog.
      *
      * @param cleanInstall
-     *         True in case the help dialog is displayed after a clean install. False in case of an
-     *         upgrade.
+     *         True in case the help dialog is displayed after a clean install. False in case of an upgrade.
      */
     private void openHelpDialog(boolean cleanInstall) {
         // Get view and put relevant information into the view.
@@ -589,9 +567,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
         }
 
         if ((tv = (TextView) view.findViewById(R.id.dialog_help_version_body)) != null) {
-            tv.setText(
-                    Util.getPackageVersionName() + " (revision " + Util.getPackageVersionNumber()
-                            + ")");
+            tv.setText(Util.getPackageVersionName() + " (revision " + Util.getPackageVersionNumber() + ")");
         }
 
         if ((tv = (TextView) view.findViewById(R.id.help_project_home_link)) != null) {
@@ -601,25 +577,21 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
         final PuzzleFragmentActivity puzzleFragmentActivity = this;
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(puzzleFragmentActivity);
         alertDialogBuilder.setTitle(getResources().getString(
-                                            R.string.application_name) + (Config.APP_MODE ==
-                AppMode.DEVELOPMENT ? " r" + Util.getPackageVersionNumber() + " " : " ") +
-                                            getResources().getString(
-                                            R.string.action_help))
+                R.string.application_name) + (Config.APP_MODE == AppMode.DEVELOPMENT ? " r" + Util
+                .getPackageVersionNumber() + " " : " ") +
+                                            getResources().getString(R.string.action_help))
                 .setIcon(R.drawable.icon)
                 .setView(view)
-                .setNegativeButton(R.string.dialog_general_button_close,
-                                   new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.dialog_general_button_close, new DialogInterface.OnClickListener() {
                                        @Override
-                                       public void onClick(DialogInterface dialog,
-                                                           int whichButton) {
+                                       public void onClick(DialogInterface dialog, int whichButton) {
                                        }
                                    });
         alertDialogBuilder.show();
     }
 
     /**
-     * Checks whether a new version of the game has been installed. If so, modify preferences and
-     * convert if necessary.
+     * Checks whether a new version of the game has been installed. If so, modify preferences and convert if necessary.
      */
     private boolean isUpgradeRunning() {
         if (mGridConverter != null) {
@@ -641,8 +613,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
             // the latest definitions. On completion of the game file
             // conversion, method upgradePhase2_UpdatePreferences will be
             // called.
-            mGridConverter = new GridConverter(this, previousInstalledVersion,
-                                               packageVersionNumber);
+            mGridConverter = new GridConverter(this, previousInstalledVersion, packageVersionNumber);
             mGridConverter.execute();
 
             return true;
@@ -672,18 +643,22 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
         if (!mMathDokuPreferences.isLeaderboardsInitialized()) {
             Resources resources = getResources();
             String leaderboardId;
-            LeaderboardRankDatabaseAdapter leaderboardRankDatabaseAdapter = new
-                    LeaderboardRankDatabaseAdapter();
+            LeaderboardRankDatabaseAdapter leaderboardRankDatabaseAdapter = new LeaderboardRankDatabaseAdapter();
             for (int i = 0; i < LeaderboardType.MAX_LEADERBOARDS; i++) {
                 // Get the Google+ leaderboard id
                 leaderboardId = resources.getString(LeaderboardType.getResId(i));
 
                 // Create a leaderboard record if currently does not yet exist.
                 if (leaderboardRankDatabaseAdapter.get(leaderboardId) == null) {
-                    LeaderboardRankRow leaderboardRankRow = new LeaderboardRankRowBuilder(
-                            leaderboardId, LeaderboardType.getGridSize(i),
-                            LeaderboardType.hasHiddenOperator(i),
-                            LeaderboardType.getPuzzleComplexity(i)).build();
+                    LeaderboardRankRow leaderboardRankRow = new LeaderboardRankRowBuilder(leaderboardId,
+                                                                                          LeaderboardType.getGridSize(
+                                                                                                  i),
+                                                                                          LeaderboardType
+                                                                                                  .hasHiddenOperator(
+                                                                                                  i),
+                                                                                          LeaderboardType
+                                                                                                  .getPuzzleComplexity(
+                                                                                                  i)).build();
                     leaderboardRankDatabaseAdapter.insert(leaderboardRankRow);
                 }
             }
@@ -770,8 +745,9 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
         // Enable the archive as soon as 5 games have been solved. Note: as the
         // gird is actually not yet saved in the database at this moment the
         // check on the number of completed games is lowered with 1.
-        if (!mMathDokuPreferences.isArchiveAvailable() && new ArchiveSolvingAttemptSelector(
-                StatusFilter.SOLVED, GridTypeFilter.ALL).countGrids() >= 4) {
+        if (!mMathDokuPreferences.isArchiveAvailable() && new ArchiveSolvingAttemptSelector(StatusFilter.SOLVED,
+                                                                                            GridTypeFilter.ALL)
+                .countGrids() >= 4) {
             mMathDokuPreferences.setArchiveVisible();
             setNavigationDrawer();
         }
@@ -786,19 +762,16 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
 
             // Determine the leaderboard for this puzzle
             int leaderboardResId = LeaderboardType.getResId(grid.getGridSize(),
-                                                            gridGeneratingParameters
-                                                                    .isHideOperators(),
-                                                            gridGeneratingParameters
-                                                                    .getPuzzleComplexity());
+                                                            gridGeneratingParameters.isHideOperators(),
+                                                            gridGeneratingParameters.getPuzzleComplexity());
             String leaderboardId = getResources().getString(leaderboardResId);
 
             // Retrieve the best score for this leaderboard
-            LeaderboardRankRow leaderboardRankRow = new LeaderboardRankDatabaseAdapter().get(
-                    leaderboardId);
+            LeaderboardRankRow leaderboardRankRow = new LeaderboardRankDatabaseAdapter().get(leaderboardId);
 
             // Check if a new top score is achieved.
-            boolean newTopScore = leaderboardRankRow.getScoreOrigin() == ScoreOrigin.NONE || grid
-                    .getElapsedTime() < leaderboardRankRow.getRawScore();
+            boolean newTopScore = leaderboardRankRow.getScoreOrigin() == ScoreOrigin.NONE || grid.getElapsedTime() <
+                    leaderboardRankRow.getRawScore();
 
             // Store the top score in the leaderboard table.
             if (newTopScore) {
@@ -812,8 +785,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
             if (mLeaderboardConnector == null || !mLeaderboardConnector.isSignedIn()) {
                 // The user is not logged in to Google Plus. Check whether the
                 // sign in dialog should be shown.
-                boolean hideTillNextTopScore = mMathDokuPreferences
-                        .isHideTillNextTopScoreAchievedChecked();
+                boolean hideTillNextTopScore = mMathDokuPreferences.isHideTillNextTopScoreAchievedChecked();
                 if (!hideTillNextTopScore || newTopScore) {
                     // In case the google sign dialog is shown, the score will
                     // be processed after the sign in has succeeded.
@@ -835,8 +807,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
                 GridStatistics gridStatistics = grid.getGridStatistics();
                 if (gridStatistics != null) {
                     mLeaderboardConnector.submitScore(grid.getGridSize(),
-                                                      gridGeneratingParameters
-                                                              .getPuzzleComplexity(),
+                                                      gridGeneratingParameters.getPuzzleComplexity(),
                                                       gridGeneratingParameters.isHideOperators(),
                                                       grid.getElapsedTime());
                 }
@@ -940,10 +911,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
                     }
                 }
             } catch (InvalidGridException e) {
-                Log.d(TAG,
-                      "PuzzleFragmentActivity.restartLastGame can not load solvingAttempt with id" +
-                              " '" + solvingAttemptId + "'.",
-                      e);
+                Log.d(TAG, "PuzzleFragmentActivity.restartLastGame can not load solvingAttempt with id" +
+                              " '" + solvingAttemptId + "'.", e);
             }
         } else {
             showDialogNewGame(false);
@@ -951,9 +920,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
     }
 
     /**
-     * Shows the dialog in which the parameters have to specified which will be used to create the
-     * new game. The parameters will be defaulted to the values used to create the last puzzle (as
-     * stored in the preferences).
+     * Shows the dialog in which the parameters have to specified which will be used to create the new game. The
+     * parameters will be defaulted to the values used to create the last puzzle (as stored in the preferences).
      *
      * @param cancelable
      *         True in case the dialog can be cancelled.
@@ -965,8 +933,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
     }
 
     /**
-     * Shows the dialog in which the parameters have to specified which will be used to create the
-     * new game. The parameters will be defaulted to the given values.
+     * Shows the dialog in which the parameters have to specified which will be used to create the new game. The
+     * parameters will be defaulted to the given values.
      *
      * @param cancelable
      *         True in case the dialog can be cancelled.
@@ -977,8 +945,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
      * @param puzzleComplexity
      *         Complexity of the puzzle new puzzle.
      */
-    private void showDialogNewGame(final boolean cancelable, GridType gridType,
-                                   boolean visibleOperators, PuzzleComplexity puzzleComplexity) {
+    private void showDialogNewGame(final boolean cancelable, GridType gridType, boolean visibleOperators,
+                                   PuzzleComplexity puzzleComplexity) {
         // Get view and put relevant information into the view.
         LayoutInflater layoutInflater = LayoutInflater.from(this);
         View view = layoutInflater.inflate(R.layout.puzzle_parameter_dialog, null);
@@ -987,21 +955,17 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
         }
 
         // Get views for the puzzle generating parameters
-        final Spinner puzzleParameterSizeSpinner = (Spinner) view.findViewById(
-                R.id.puzzleParameterSizeSpinner);
+        final Spinner puzzleParameterSizeSpinner = (Spinner) view.findViewById(R.id.puzzleParameterSizeSpinner);
         final CheckBox puzzleParameterDisplayOperatorsCheckBox = (CheckBox) view.findViewById(
                 R.id.puzzleParameterDisplayOperatorsCheckBox);
         final RatingBar puzzleParameterDifficultyRatingBar = (RatingBar) view.findViewById(
                 R.id.puzzleParameterDifficultyRatingBar);
-        final CheckableImageView puzzleParameterDifficultyRandom = (CheckableImageView) view
-                .findViewById(
+        final CheckableImageView puzzleParameterDifficultyRandom = (CheckableImageView) view.findViewById(
                 R.id.puzzleParameterDifficultyRandom);
 
         // Populate the spinner. Initial value is set to value used for
         // generating the previous puzzle.
-        ArrayAdapter<String> adapterStatus = new ArrayAdapter<String>(this,
-                                                                      android.R.layout
-                                                                              .simple_spinner_item,
+        ArrayAdapter<String> adapterStatus = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,
                                                                       getAllGridSizeDescriptions());
         adapterStatus.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         puzzleParameterSizeSpinner.setAdapter(adapterStatus);
@@ -1035,18 +999,20 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
                 puzzleParameterDifficultyRatingBar.setRating(5);
                 break;
         }
-        puzzleParameterDifficultyRatingBar.setOnRatingBarChangeListener(
-                new OnRatingBarChangeListener() {
+        puzzleParameterDifficultyRatingBar.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
 
-                    @Override
-                    public void onRatingChanged(RatingBar ratingBar, float rating,
-                                                boolean fromUser) {
-                        if (fromUser) {
-                            puzzleParameterDifficultyRandom.setChecked(rating < 0.5f);
-                            puzzleParameterDifficultyRandom.invalidate();
-                        }
-                    }
-                });
+                                                                            @Override
+                                                                            public void onRatingChanged(RatingBar
+                                                                                                                ratingBar, float rating, boolean fromUser) {
+                                                                                if (fromUser) {
+                                                                                    puzzleParameterDifficultyRandom
+                                                                                            .setChecked(
+                                                                                            rating < 0.5f);
+                                                                                    puzzleParameterDifficultyRandom
+                                                                                            .invalidate();
+                                                                                }
+                                                                            }
+                                                                        });
         puzzleParameterDifficultyRandom.setOnTouchListener(new OnTouchListener() {
 
             @Override
@@ -1073,8 +1039,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
                                                  new DialogInterface.OnClickListener() {
 
                                                      @Override
-                                                     public void onClick(DialogInterface dialog,
-                                                                         int which) {
+                                                     public void onClick(DialogInterface dialog, int which) {
                                                          // do nothing
                                                      }
                                                  });
@@ -1082,44 +1047,34 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
         alertDialogBuilder.setNeutralButton(R.string.dialog_puzzle_parameters_neutral_button,
                                             new DialogInterface.OnClickListener() {
                                                 @Override
-                                                public void onClick(DialogInterface dialog,
-                                                                    int whichButton) {
+                                                public void onClick(DialogInterface dialog, int whichButton) {
                                                     // Transform size spinner to grid size
                                                     GridType gridType = GridType.fromZeroBasedIndex(
-                                                            (int) puzzleParameterSizeSpinner
-                                                                    .getSelectedItemId());
+                                                            (int) puzzleParameterSizeSpinner.getSelectedItemId());
 
                                                     // Transform rating to puzzle complexity.
                                                     int rating = Math.round(
-                                                            puzzleParameterDifficultyRatingBar
-                                                                    .getRating());
+                                                            puzzleParameterDifficultyRatingBar.getRating());
                                                     PuzzleComplexity puzzleComplexity;
                                                     if (rating >= 5) {
-                                                        puzzleComplexity = PuzzleComplexity
-                                                                .VERY_DIFFICULT;
+                                                        puzzleComplexity = PuzzleComplexity.VERY_DIFFICULT;
                                                     } else if (rating >= 4) {
-                                                        puzzleComplexity = PuzzleComplexity
-                                                                .DIFFICULT;
+                                                        puzzleComplexity = PuzzleComplexity.DIFFICULT;
                                                     } else if (rating >= 3) {
                                                         puzzleComplexity = PuzzleComplexity.NORMAL;
                                                     } else if (rating >= 2) {
                                                         puzzleComplexity = PuzzleComplexity.EASY;
                                                     } else if (rating >= 1) {
-                                                        puzzleComplexity = PuzzleComplexity
-                                                                .VERY_EASY;
+                                                        puzzleComplexity = PuzzleComplexity.VERY_EASY;
                                                     } else {
                                                         puzzleComplexity = PuzzleComplexity.RANDOM;
                                                     }
 
                                                     // Store current settings in the preferences
-                                                    mMathDokuPreferences.setPuzzleParameterGridSize(
-                                                            gridType);
-                                                    mMathDokuPreferences
-                                                            .setPuzzleParameterOperatorsVisible(
+                                                    mMathDokuPreferences.setPuzzleParameterGridSize(gridType);
+                                                    mMathDokuPreferences.setPuzzleParameterOperatorsVisible(
                                                             puzzleParameterDisplayOperatorsCheckBox.isChecked());
-                                                    mMathDokuPreferences
-                                                            .setPuzzleParameterComplexity(
-                                                            puzzleComplexity);
+                                                    mMathDokuPreferences.setPuzzleParameterComplexity(puzzleComplexity);
 
                                                     // Start a new game with specified parameters
                                                     startNewGame(gridType,
@@ -1134,8 +1089,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
         GridType[] gridTypes = GridType.values();
         String[] gridSizeDescriptions = new String[gridTypes.length];
         for (int i = 0; i < gridTypes.length; i++) {
-            gridSizeDescriptions[i] = getString(R.string.grid_description_short,
-                                                gridTypes[i].getGridSize(),
+            gridSizeDescriptions[i] = getString(R.string.grid_description_short, gridTypes[i].getGridSize(),
                                                 gridTypes[i].getGridSize());
         }
         return gridSizeDescriptions;
@@ -1150,8 +1104,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
             if (intent != null) {
                 Bundle bundle = intent.getExtras();
                 if (bundle != null) {
-                    int solvingAttemptId = bundle.getInt(
-                            ArchiveFragmentActivity.BUNDLE_KEY_SOLVING_ATTEMPT_ID);
+                    int solvingAttemptId = bundle.getInt(ArchiveFragmentActivity.BUNDLE_KEY_SOLVING_ATTEMPT_ID);
                     if (solvingAttemptId >= 0) {
                         // In onActivityResult fragments can not be manipulated
                         // as this results in IllegalStateException [Can not
@@ -1172,8 +1125,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
             Bundle bundle = intent.getExtras();
 
             if (bundle != null) {
-                if (bundle.containsKey(
-                        SharedPuzzleActivity.RESTART_LAST_GAME_SHARED_PUZZLE) && bundle.getBoolean(
+                if (bundle.containsKey(SharedPuzzleActivity.RESTART_LAST_GAME_SHARED_PUZZLE) && bundle.getBoolean(
                         SharedPuzzleActivity.RESTART_LAST_GAME_SHARED_PUZZLE)) {
                     if (mPuzzleFragment != null) {
                         restartLastGame();
@@ -1192,10 +1144,8 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
                         NEW_PUZZLE_FOR_LEADERBOARD_GRID_SIZE) && bundle.containsKey(
                         NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS) && bundle.containsKey(
                         NEW_PUZZLE_FOR_LEADERBOARD_PUZZLE_COMPLEXITY)) {
-                    GridType gridType = GridType.valueOf(
-                            bundle.getString(NEW_PUZZLE_FOR_LEADERBOARD_GRID_SIZE));
-                    boolean visibleOperators = !bundle.getBoolean(
-                            NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS);
+                    GridType gridType = GridType.valueOf(bundle.getString(NEW_PUZZLE_FOR_LEADERBOARD_GRID_SIZE));
+                    boolean visibleOperators = !bundle.getBoolean(NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS);
                     PuzzleComplexity puzzleComplexity = PuzzleComplexity.valueOf(
                             bundle.getString(NEW_PUZZLE_FOR_LEADERBOARD_PUZZLE_COMPLEXITY));
                     showDialogNewGame(true, gridType, visibleOperators, puzzleComplexity);
@@ -1206,8 +1156,10 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
         super.onNewIntent(intent);
     }
 
-    public static Intent createIntentToStartNewPuzzleFromSelectedLeaderboardFragment(Activity
-                                                                                             activity, int gridSize, boolean hideOperators, PuzzleComplexity puzzleComplexity) {
+    public static Intent createIntentToStartNewPuzzleFromSelectedLeaderboardFragment(Activity activity, int gridSize,
+                                                                                     boolean hideOperators,
+                                                                                     PuzzleComplexity
+                                                                                             puzzleComplexity) {
         Intent intent = new Intent(activity, PuzzleFragmentActivity.class).setFlags(
                 Intent.FLAG_ACTIVITY_NEW_TASK + Intent.FLAG_ACTIVITY_CLEAR_TOP);
         if (intent != null) {
@@ -1215,8 +1167,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
             intent.putExtra(NEW_PUZZLE_FOR_LEADERBOARD_GRID_SIZE, GridType.fromInteger(gridSize)
                     .toString());
             intent.putExtra(NEW_PUZZLE_FOR_LEADERBOARD_HIDE_OPERATORS, hideOperators);
-            intent.putExtra(NEW_PUZZLE_FOR_LEADERBOARD_PUZZLE_COMPLEXITY,
-                            puzzleComplexity.toString());
+            intent.putExtra(NEW_PUZZLE_FOR_LEADERBOARD_PUZZLE_COMPLEXITY, puzzleComplexity.toString());
         }
 
         return intent;
@@ -1249,15 +1200,11 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
                 if (mArchiveFragment != null) {
                     showDialogNewGame(true);
                 }
-            } else if (mNavigationDrawerItems[position].equals(
-                    getResources().getString(R.string.action_archive))) {
-                Intent intentArchive = new Intent(PuzzleFragmentActivity.this,
-                                                  ArchiveFragmentActivity.class);
+            } else if (mNavigationDrawerItems[position].equals(getResources().getString(R.string.action_archive))) {
+                Intent intentArchive = new Intent(PuzzleFragmentActivity.this, ArchiveFragmentActivity.class);
                 startActivityForResult(intentArchive, REQUEST_ARCHIVE);
-            } else if (mNavigationDrawerItems[position].equals(
-                    getResources().getString(R.string.action_statistics))) {
-                Intent intentStatistics = new Intent(PuzzleFragmentActivity.this,
-                                                     StatisticsFragmentActivity.class);
+            } else if (mNavigationDrawerItems[position].equals(getResources().getString(R.string.action_statistics))) {
+                Intent intentStatistics = new Intent(PuzzleFragmentActivity.this, StatisticsFragmentActivity.class);
                 startActivity(intentStatistics);
             } else if (mNavigationDrawerItems[position].equals(
                     getResources().getString(R.string.action_leaderboards))) {
@@ -1268,12 +1215,11 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
     }
 
     /**
-     * Set the navigation drawer. The drawer can be open in following ways:<br> - tapping the drawer
-     * or the app icon<br> - tapping the left side of the screen.
+     * Set the navigation drawer. The drawer can be open in following ways:<br> - tapping the drawer or the app icon<br>
+     * - tapping the left side of the screen.
      * <p/>
-     * The drawer icon will only be visible as soon as at least one item is available for display in
-     * the drawer. As of that moment it will be possible to open the drawer by tapping the drawer or
-     * the app icon.
+     * The drawer icon will only be visible as soon as at least one item is available for display in the drawer. As of
+     * that moment it will be possible to open the drawer by tapping the drawer or the app icon.
      */
     private void setNavigationDrawer() {
         // The drawer will be opened automatically in case a new item has been
@@ -1289,8 +1235,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
         // as a navigation item. In case the user opens the drawer accidentally
         // by tapping the left side of the screen before the archive or
         // statistics are unlocked it will be less confusing.
-        navigationDrawerItems.add(
-                getResources().getString(R.string.action_bar_subtitle_puzzle_fragment));
+        navigationDrawerItems.add(getResources().getString(R.string.action_bar_subtitle_puzzle_fragment));
 
         // Add archive if unlocked
         if (mMathDokuPreferences.isArchiveAvailable()) {
@@ -1321,8 +1266,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
                     .contains(string);
         }
 
-        mNavigationDrawerItems = navigationDrawerItems.toArray(
-                new String[navigationDrawerItems.size()]);
+        mNavigationDrawerItems = navigationDrawerItems.toArray(new String[navigationDrawerItems.size()]);
 
         // Set up the action bar for displaying the drawer icon and making the
         // app icon clickable in order to display the drawer.
@@ -1336,8 +1280,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
 
         // Set up the navigation drawer.
         mDrawerLayout = (DrawerLayout) findViewById(R.id.puzzle_activity_drawer_layout);
-        mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                                                           R.drawable.ic_drawer,
+        mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer,
                                                            R.string.navigation_drawer_open,
                                                            R.string.navigation_drawer_close) {
 
@@ -1355,8 +1298,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
 
                 // Reset the subtitle
                 if (actionBar != null) {
-                    actionBar.setSubtitle(
-                            getResources().getString(R.string.action_bar_subtitle_puzzle_fragment));
+                    actionBar.setSubtitle(getResources().getString(R.string.action_bar_subtitle_puzzle_fragment));
                 }
             }
 
@@ -1391,8 +1333,7 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
 
         // Set the adapter for the list view containing the navigation items
         mDrawerListView.setAdapter(
-                new ArrayAdapter<String>(this, R.layout.navigation_drawer_list_item,
-                                         mNavigationDrawerItems));
+                new ArrayAdapter<String>(this, R.layout.navigation_drawer_list_item, mNavigationDrawerItems));
 
         // Set the list's click listener
         mDrawerListView.setOnItemClickListener(new NavigationDrawerItemClickListener());
@@ -1458,27 +1399,23 @@ public class PuzzleFragmentActivity extends GooglePlayServiceFragmentActivity im
         LayoutInflater li = LayoutInflater.from(this);
         View view = li.inflate(R.layout.input_method_dialog, null);
 
-        new AlertDialog.Builder(this).setTitle(
-                getResources().getString(R.string.choose_input_method_title))
+        new AlertDialog.Builder(this).setTitle(getResources().getString(R.string.choose_input_method_title))
                 .setIcon(R.drawable.icon)
                 .setView(view)
                 .setCancelable(false)
-                .setNegativeButton(R.string.input_method_swipe_only,
-                                   new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.input_method_swipe_only, new DialogInterface.OnClickListener() {
                                        @Override
                                        public void onClick(DialogInterface dialog, int whichButton) {
                                            mMathDokuPreferences.setDigitInputMethod(true, false);
                                        }
                                    })
-                .setNeutralButton(R.string.input_method_swipe_and_buttons,
-                                  new DialogInterface.OnClickListener() {
+                .setNeutralButton(R.string.input_method_swipe_and_buttons, new DialogInterface.OnClickListener() {
                                       @Override
                                       public void onClick(DialogInterface dialog, int whichButton) {
                                           mMathDokuPreferences.setDigitInputMethod(true, true);
                                       }
                                   })
-                .setPositiveButton(R.string.input_method_buttons_only,
-                                   new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.input_method_buttons_only, new DialogInterface.OnClickListener() {
                                        @Override
                                        public void onClick(DialogInterface dialog, int whichButton) {
                                            mMathDokuPreferences.setDigitInputMethod(false, true);

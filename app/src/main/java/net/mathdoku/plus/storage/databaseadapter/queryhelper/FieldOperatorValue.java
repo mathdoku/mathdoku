@@ -4,8 +4,8 @@ import net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil;
 import net.mathdoku.plus.util.ParameterValidator;
 
 /**
- * This class represents a field with an unquoted string value. Use class FieldOperatorStringValue
- * in case the string value on the right hand side has to be surrounded with quotes.
+ * This class represents a field with an unquoted string value. Use class FieldOperatorStringValue in case the string
+ * value on the right hand side has to be surrounded with quotes.
  */
 public class FieldOperatorValue implements ConditionListElement {
     protected static final String SPACE = " ";
@@ -48,8 +48,7 @@ public class FieldOperatorValue implements ConditionListElement {
         ParameterValidator.validateNotNull(operator);
         ParameterValidator.validateNotNullOrEmpty(value);
         if (operator == Operator.BETWEEN) {
-            throw new IllegalArgumentException(
-                    "Operator 'BETWEEN' can not be used in this context.");
+            throw new IllegalArgumentException("Operator 'BETWEEN' can not be used in this context.");
         }
         this.field = field;
         this.operator = operator;

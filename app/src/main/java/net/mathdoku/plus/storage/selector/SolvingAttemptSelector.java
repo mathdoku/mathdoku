@@ -15,9 +15,8 @@ import net.mathdoku.plus.storage.databaseadapter.database.DatabaseProjection;
 import net.mathdoku.plus.storage.databaseadapter.database.DatabaseUtil;
 
 /**
- * This class builds a cursor for selecting the latest solving attempt per grid. If applicable the
- * grids are filter based on a given GridType. If applicable the solving attempts are filtered on a
- * given Status.
+ * This class builds a cursor for selecting the latest solving attempt per grid. If applicable the grids are filter
+ * based on a given GridType. If applicable the solving attempts are filtered on a given Status.
  */
 
 public abstract class SolvingAttemptSelector {
@@ -55,25 +54,20 @@ public abstract class SolvingAttemptSelector {
         SQLiteQueryBuilder sqliteQueryBuilder = getSqLiteQueryBuilder(databaseProjection);
 
         if (enableLogging) {
-            String sql = sqliteQueryBuilder.buildQuery(databaseProjection.getAllColumnNames(),
-                                                       getSelectionString(), groupByString, null,
-                                                       orderByString, null);
+            String sql = sqliteQueryBuilder.buildQuery(databaseProjection.getAllColumnNames(), getSelectionString(),
+                                                       groupByString, null, orderByString, null);
             Log.i(TAG, sql);
         }
 
         return sqliteQueryBuilder.query(DatabaseHelper.getInstance()
-                                                .getReadableDatabase(),
-                                        databaseProjection.getAllColumnNames(),
-                                        getSelectionString(), null, groupByString, null,
-                                        orderByString);
+                                                .getReadableDatabase(), databaseProjection.getAllColumnNames(),
+                                        getSelectionString(), null, groupByString, null, orderByString);
     }
 
     /**
-     * Gets the database projection which is used to feed the cursor with the columns to be
-     * retrieved.
+     * Gets the database projection which is used to feed the cursor with the columns to be retrieved.
      *
-     * @return The database projection which is used to feed the cursor with the columns to be
-     * retrieved.
+     * @return The database projection which is used to feed the cursor with the columns to be retrieved.
      */
     protected abstract DatabaseProjection getDatabaseProjection();
 
@@ -90,11 +84,10 @@ public abstract class SolvingAttemptSelector {
         stringBuilder.append(" INNER JOIN ");
         stringBuilder.append(SolvingAttemptDatabaseAdapter.TABLE_NAME);
         stringBuilder.append(" ON ");
-        stringBuilder.append(SolvingAttemptDatabaseAdapter.getPrefixedColumnName(
-                SolvingAttemptDatabaseAdapter.KEY_GRID_ID));
-        stringBuilder.append(SQLITE_KEYWORD_EQUALS);
         stringBuilder.append(
-                GridDatabaseAdapter.getPrefixedColumnName(GridDatabaseAdapter.KEY_ROWID));
+                SolvingAttemptDatabaseAdapter.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_GRID_ID));
+        stringBuilder.append(SQLITE_KEYWORD_EQUALS);
+        stringBuilder.append(GridDatabaseAdapter.getPrefixedColumnName(GridDatabaseAdapter.KEY_ROWID));
 
         return stringBuilder.toString();
     }
@@ -113,13 +106,13 @@ public abstract class SolvingAttemptSelector {
         stringBuilder.append(" as sa2 where sa2.");
         stringBuilder.append(SolvingAttemptDatabaseAdapter.KEY_GRID_ID);
         stringBuilder.append(SQLITE_KEYWORD_EQUALS);
-        stringBuilder.append(SolvingAttemptDatabaseAdapter.getPrefixedColumnName(
-                SolvingAttemptDatabaseAdapter.KEY_GRID_ID));
+        stringBuilder.append(
+                SolvingAttemptDatabaseAdapter.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_GRID_ID));
         stringBuilder.append(" and sa2.");
         stringBuilder.append(SolvingAttemptDatabaseAdapter.KEY_ROWID);
         stringBuilder.append(" > ");
-        stringBuilder.append(SolvingAttemptDatabaseAdapter.getPrefixedColumnName(
-                SolvingAttemptDatabaseAdapter.KEY_ROWID));
+        stringBuilder.append(
+                SolvingAttemptDatabaseAdapter.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_ROWID));
         stringBuilder.append(") ");
         stringBuilder.append(getStatusSelectionString());
         stringBuilder.append(getSizeSelectionString());
@@ -133,13 +126,12 @@ public abstract class SolvingAttemptSelector {
             stringBuilder.append(SQLITE_KEYWORD_AND);
             stringBuilder.append(" (");
             int countSolvingAttemptStatuses = 0;
-            for (SolvingAttemptStatus solvingAttemptStatus : statusFilter
-                    .getAllAttachedSolvingAttemptStatuses()) {
+            for (SolvingAttemptStatus solvingAttemptStatus : statusFilter.getAllAttachedSolvingAttemptStatuses()) {
                 if (countSolvingAttemptStatuses > 0) {
                     stringBuilder.append(" OR ");
                 }
-                stringBuilder.append(SolvingAttemptDatabaseAdapter.getPrefixedColumnName(
-                        SolvingAttemptDatabaseAdapter.KEY_STATUS));
+                stringBuilder.append(
+                        SolvingAttemptDatabaseAdapter.getPrefixedColumnName(SolvingAttemptDatabaseAdapter.KEY_STATUS));
                 stringBuilder.append(SQLITE_KEYWORD_EQUALS);
                 stringBuilder.append(solvingAttemptStatus.getId());
                 countSolvingAttemptStatuses++;
@@ -153,8 +145,7 @@ public abstract class SolvingAttemptSelector {
         StringBuilder stringBuilder = new StringBuilder();
         if (gridTypeFilter != GridTypeFilter.ALL) {
             stringBuilder.append(SQLITE_KEYWORD_AND);
-            stringBuilder.append(
-                    GridDatabaseAdapter.getPrefixedColumnName(GridDatabaseAdapter.KEY_GRID_SIZE));
+            stringBuilder.append(GridDatabaseAdapter.getPrefixedColumnName(GridDatabaseAdapter.KEY_GRID_SIZE));
             stringBuilder.append(SQLITE_KEYWORD_EQUALS);
             stringBuilder.append(GridType.fromGridTypeFilter(gridTypeFilter)
                                          .getGridSize());

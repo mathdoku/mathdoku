@@ -16,8 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class selects all StatusFilters which are applicable when grids with a given GridType are
- * selected.
+ * This class selects all StatusFilters which are applicable when grids with a given GridType are selected.
  */
 public class AvailableStatusFiltersSelector extends SolvingAttemptSelector {
     @SuppressWarnings("unused")
@@ -47,15 +46,13 @@ public class AvailableStatusFiltersSelector extends SolvingAttemptSelector {
             cursor = getCursor();
             if (cursor != null && cursor.moveToFirst()) {
                 do {
-                    statusFilters.add(
-                            StatusFilter.valueOf(getProjectionStatusFilterFromCursor(cursor)));
+                    statusFilters.add(StatusFilter.valueOf(getProjectionStatusFilterFromCursor(cursor)));
                 } while (cursor.moveToNext());
             }
         } catch (SQLiteException e) {
-            throw new DatabaseAdapterException(String.format(
-                    "Cannot retrieve used statuses of latest solving attempt per grid from" + " " +
-                            "the database (size filter = %s).",
-                    gridTypeFilter.toString()), e);
+            throw new DatabaseAdapterException(
+                    String.format("Cannot retrieve used statuses of latest solving attempt per grid from" + " " +
+                                          "the database (size filter = %s).", gridTypeFilter.toString()), e);
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -80,14 +77,12 @@ public class AvailableStatusFiltersSelector extends SolvingAttemptSelector {
         for (SolvingAttemptStatus solvingAttemptStatus : SolvingAttemptStatus.values()) {
             if (solvingAttemptStatus.getAttachedToStatusFilter() != null) {
                 stringBuilder.append(" WHEN ");
-                stringBuilder.append(DatabaseUtil.stringBetweenBackTicks(
-                        SolvingAttemptDatabaseAdapter.KEY_STATUS));
+                stringBuilder.append(DatabaseUtil.stringBetweenBackTicks(SolvingAttemptDatabaseAdapter.KEY_STATUS));
                 stringBuilder.append(" = ");
                 stringBuilder.append(solvingAttemptStatus.getId());
                 stringBuilder.append(" THEN ");
-                stringBuilder.append(DatabaseUtil.stringBetweenQuotes(
-                        solvingAttemptStatus.getAttachedToStatusFilter()
-                                .name()));
+                stringBuilder.append(DatabaseUtil.stringBetweenQuotes(solvingAttemptStatus.getAttachedToStatusFilter()
+                                                                              .name()));
             }
         }
         stringBuilder.append(" END");

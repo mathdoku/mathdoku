@@ -9,8 +9,7 @@ public class SingletonInstanceNotInstantiated extends RuntimeException {
      * Creates a new instance of {@link SingletonInstanceNotInstantiated}.
      */
     public SingletonInstanceNotInstantiated() {
-        super("Can not get singleton instance as long a the class has not been instantiated " +
-                      "before.");
+        super("Can not get singleton instance as long a the class has not been instantiated " + "before.");
     }
 
     /**

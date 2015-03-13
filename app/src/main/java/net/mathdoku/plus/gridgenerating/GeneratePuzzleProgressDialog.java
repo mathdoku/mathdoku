@@ -17,9 +17,9 @@ import net.mathdoku.plus.ui.PuzzleFragmentActivity;
 import java.util.List;
 
 /**
- * This class presents a progress dialog while the grid is generated asynchronously. The
- * onNewGridReady method of the passed activity will be called as the grid has been generated as
- * long as the activity is still attached to this class.
+ * This class presents a progress dialog while the grid is generated asynchronously. The onNewGridReady method of the
+ * passed activity will be called as the grid has been generated as long as the activity is still attached to this
+ * class.
  */
 public class GeneratePuzzleProgressDialog implements GridGeneratorAsyncTaskListenerIface {
     @SuppressWarnings("unused")
@@ -49,8 +49,8 @@ public class GeneratePuzzleProgressDialog implements GridGeneratorAsyncTaskListe
      * @param activity
      *         The activity from which this task is started.
      * @param gridGeneratingParameters
-     *         The parameters to be used to create the new grid. Only in development mode an array
-     *         of grid generating parameters is accepted as well.
+     *         The parameters to be used to create the new grid. Only in development mode an array of grid generating
+     *         parameters is accepted as well.
      */
     public GeneratePuzzleProgressDialog(PuzzleFragmentActivity activity,
                                         GridGeneratingParameters... gridGeneratingParameters) {
@@ -71,8 +71,7 @@ public class GeneratePuzzleProgressDialog implements GridGeneratorAsyncTaskListe
      */
     public GeneratePuzzleProgressDialog attachToActivity(PuzzleFragmentActivity activity) {
         if (((Object) activity).equals(
-                mPuzzleFragmentActivity) && mProgressDialog != null && mProgressDialog.isShowing
-                ()) {
+                mPuzzleFragmentActivity) && mProgressDialog != null && mProgressDialog.isShowing()) {
             // Casting to Object is needed due to bug in Android Studio and/or
             // IntelliJ IDEA Community edition:
             // http://youtrack.jetbrains.com/issue/IDEA-79680
@@ -131,8 +130,8 @@ public class GeneratePuzzleProgressDialog implements GridGeneratorAsyncTaskListe
     }
 
     /**
-     * Detaches the activity form the task. The progress dialog that was shown by this task will be
-     * dismissed. The task, however, still keeps running until the grid is generated.
+     * Detaches the activity form the task. The progress dialog that was shown by this task will be dismissed. The task,
+     * however, still keeps running until the grid is generated.
      */
     public void detachFromActivity() {
         if (DEBUG) {

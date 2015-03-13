@@ -20,8 +20,7 @@ public class CandidateCageCreatorParameters {
         return this;
     }
 
-    public CandidateCageCreatorParameters setCorrectValueMatrix(Matrix<Integer>
-                                                                        correctValueMatrix) {
+    public CandidateCageCreatorParameters setCorrectValueMatrix(Matrix<Integer> correctValueMatrix) {
         this.correctValueMatrix = correctValueMatrix;
         overlappingSubsetChecker = new OverlappingSubsetChecker(correctValueMatrix);
         return this;

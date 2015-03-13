@@ -38,8 +38,7 @@ public abstract class DatabaseAdapter {
     // Package private access, intended for DatabaseHelper only
     static final DatabaseAdapter[] getAllDatabaseAdapters(SQLiteDatabase sqLiteDatabase) {
         return new DatabaseAdapter[]{new GridDatabaseAdapter(sqLiteDatabase),
-                new SolvingAttemptDatabaseAdapter(sqLiteDatabase),
-                new StatisticsDatabaseAdapter(sqLiteDatabase),
+                new SolvingAttemptDatabaseAdapter(sqLiteDatabase), new StatisticsDatabaseAdapter(sqLiteDatabase),
                 new LeaderboardRankDatabaseAdapter(sqLiteDatabase)};
     }
 
@@ -48,8 +47,7 @@ public abstract class DatabaseAdapter {
             execAndLogSQL(getDatabaseTableDefinition().getCreateTableSQL());
         } catch (SQLiteException e) {
             throw new DatabaseAdapterException(
-                    String.format("Table %s already exists. Cannot create table.", getTableName()),
-                    e);
+                    String.format("Table %s already exists. Cannot create table.", getTableName()), e);
         }
         return isExistingDatabaseTable();
     }
@@ -65,19 +63,17 @@ public abstract class DatabaseAdapter {
     /**
      * Get the definition for the given table as it is currently stored in the database.
      *
-     * @return The definition for the given table as it is currently stored in the database. Empty
-     * string if the table does not yet exist.
+     * @return The definition for the given table as it is currently stored in the database. Empty string if the table
+     * does not yet exist.
      */
     public String getCurrentDefinitionOfDatabaseTable() {
         final String columnSql = "sql";
         String[] columns = {columnSql};
 
-        Cursor cursor = sqliteDatabase.query(true, "sqlite_master", columns,
-                                             getTableSelectionString(), null, null, null, null,
-                                             null);
+        Cursor cursor = sqliteDatabase.query(true, "sqlite_master", columns, getTableSelectionString(), null, null,
+                                             null, null, null);
         if (cursor != null) {
-            String sql = cursor.moveToFirst() ? cursor.getString(
-                    cursor.getColumnIndexOrThrow(columnSql)) : "";
+            String sql = cursor.moveToFirst() ? cursor.getString(cursor.getColumnIndexOrThrow(columnSql)) : "";
             cursor.close();
             return sql;
         }
@@ -87,10 +83,8 @@ public abstract class DatabaseAdapter {
     private String getTableSelectionString() {
         ConditionList conditionList = new ConditionList();
         conditionList.addOperand(
-                new FieldOperatorStringValue("name", FieldOperatorValue.Operator.EQUALS,
-                                             getTableName()));
-        conditionList.addOperand(
-                new FieldOperatorStringValue("type", FieldOperatorValue.Operator.EQUALS, "table"));
+                new FieldOperatorStringValue("name", FieldOperatorValue.Operator.EQUALS, getTableName()));
+        conditionList.addOperand(new FieldOperatorStringValue("type", FieldOperatorValue.Operator.EQUALS, "table"));
         conditionList.setAndOperator();
         return conditionList.toString();
     }
@@ -105,31 +99,28 @@ public abstract class DatabaseAdapter {
     }
 
     /**
-     * Checks the table definition, of a table which has been created in the database before, with
-     * the expected table definition as defined in the software.
+     * Checks the table definition, of a table which has been created in the database before, with the expected table
+     * definition as defined in the software.
      *
-     * @return True in case the definition of an already existing table does not match with the
-     * expected definition. False otherwise.
+     * @return True in case the definition of an already existing table does not match with the expected definition.
+     * False otherwise.
      */
     @SuppressLint("DefaultLocale")
     public boolean isTableDefinitionChanged() {
-        if (getCurrentDefinitionOfDatabaseTable().equalsIgnoreCase(
-                getDatabaseTableDefinition().getCreateTableSQL())) {
+        if (getCurrentDefinitionOfDatabaseTable().equalsIgnoreCase(getDatabaseTableDefinition().getCreateTableSQL())) {
             return false;
         }
 
         if (Config.APP_MODE == AppMode.DEVELOPMENT) {
             if (isExistingDatabaseTable()) {
-                Log.e(TAG, String.format(
-                        "Change in table '%s' detected. Table has not yet been " + "upgraded.",
-                        getTableName()));
+                Log.e(TAG, String.format("Change in table '%s' detected. Table has not yet been " + "upgraded.",
+                                         getTableName()));
                 Log.e(TAG, "Database-version: " + getCurrentDefinitionOfDatabaseTable());
             } else {
                 Log.e(TAG, String.format("Table '%s' not found in database.", getTableName()));
             }
 
-            Log.e(TAG,
-                  "Expected table definition: " + getDatabaseTableDefinition().getCreateTableSQL()
+            Log.e(TAG, "Expected table definition: " + getDatabaseTableDefinition().getCreateTableSQL()
                           .toUpperCase());
         }
 
@@ -137,8 +128,8 @@ public abstract class DatabaseAdapter {
     }
 
     /**
-     * Drop the table and create a table for this database adapter. This method is only available
-     * when running in development way.
+     * Drop the table and create a table for this database adapter. This method is only available when running in
+     * development way.
      */
     protected void recreateTableInDevelopmentMode() {
         if (Config.APP_MODE == AppMode.DEVELOPMENT) {
@@ -156,8 +147,7 @@ public abstract class DatabaseAdapter {
             execAndLogSQL("DROP TABLE " + getTableName());
         } catch (SQLiteException e) {
             throw new DatabaseAdapterException(
-                    String.format("Table %s does not exist. Cannot drop table.", getTableName()),
-                    e);
+                    String.format("Table %s does not exist. Cannot drop table.", getTableName()), e);
         }
 
         return !isExistingDatabaseTable();

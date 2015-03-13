@@ -33,8 +33,7 @@ import java.text.DateFormat;
 /**
  * An archive fragment representing a puzzle which is archived.
  */
-public class ArchiveFragment extends StatisticsBaseFragment implements
-        OnSharedPreferenceChangeListener {
+public class ArchiveFragment extends StatisticsBaseFragment implements OnSharedPreferenceChangeListener {
     @SuppressWarnings("unused")
     private static final String TAG = ArchiveFragment.class.getName();
 
@@ -55,10 +54,8 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
     private Preferences mPreferences;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View rootView = super.onCreateView(inflater, R.layout.archive_fragment, container,
-                                           savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = super.onCreateView(inflater, R.layout.archive_fragment, container, savedInstanceState);
 
         // Get preferences
         mPreferences = Preferences.getInstance();
@@ -166,8 +163,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
         archiveActionButton.setBackgroundColor(Painter.getInstance()
                                                        .getButtonBackgroundColor());
         if (getActivity() instanceof PuzzleFragmentActivity) {
-            final PuzzleFragmentActivity puzzleFragmentActivity = (PuzzleFragmentActivity)
-                    getActivity();
+            final PuzzleFragmentActivity puzzleFragmentActivity = (PuzzleFragmentActivity) getActivity();
 
             // In case the fragment was called by the puzzle fragment
             // activity the play button will create a similar game.
@@ -180,10 +176,8 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
                     // Start a game with the same puzzle parameter settings
                     // as were used for creating the last game.
                     puzzleFragmentActivity.startNewGame(mPreferences.getPuzzleParameterGridSize(),
-                                                        !mPreferences
-                                                                .getPuzzleParameterOperatorsVisible(),
-                                                        mPreferences.getPuzzleParameterComplexity
-                                                                ());
+                                                        !mPreferences.getPuzzleParameterOperatorsVisible(),
+                                                        mPreferences.getPuzzleParameterComplexity());
                 }
             });
 
@@ -268,13 +262,9 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
 
         if (pieChartSeries.getCategorySeries()
                 .getItemCount() > 1 || mGridStatistics.mCellsRevealed > 0) {
-            addChartToStatisticsSection(null,
-                                        getResources().getString(R.string.progress_chart_title),
-                                        ChartFactory.getPieChartView(getActivity(),
-                                                                     pieChartSeries
-                                                                             .getCategorySeries(),
-                                                                     pieChartSeries.getRenderer()),
-                                        null,
+            addChartToStatisticsSection(null, getResources().getString(R.string.progress_chart_title),
+                                        ChartFactory.getPieChartView(getActivity(), pieChartSeries.getCategorySeries(),
+                                                                     pieChartSeries.getRenderer()), null,
                                         getResources().getString(R.string.progress_chart_body));
         }
     }
@@ -284,33 +274,25 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
      */
     private void createAvoidableMovesChart() {
         BarChartSeries barChartSeries = new BarChartSeries();
-        barChartSeries.addSeries(
-                getResources().getString(R.string.avoidable_moves_chart_entered_value_replaced),
-                mGridStatistics.mEnteredValueReplaced, chartGreen1);
-        barChartSeries.addSeries(
-                getResources().getString(R.string.avoidable_moves_chart_maybe_value_used),
-                mGridStatistics.mMaybeValue, chartSignal1);
-        barChartSeries.addSeries(
-                getResources().getString(R.string.avoidable_moves_chart_undo_button_used),
-                mGridStatistics.mActionUndoMove, chartSignal2);
-        barChartSeries.addSeries(
-                getResources().getString(R.string.avoidable_moves_chart_clear_used),
-                mGridStatistics.mActionClearCell + mGridStatistics.mActionClearGrid, chartSignal3);
+        barChartSeries.addSeries(getResources().getString(R.string.avoidable_moves_chart_entered_value_replaced),
+                                 mGridStatistics.mEnteredValueReplaced, chartGreen1);
+        barChartSeries.addSeries(getResources().getString(R.string.avoidable_moves_chart_maybe_value_used),
+                                 mGridStatistics.mMaybeValue, chartSignal1);
+        barChartSeries.addSeries(getResources().getString(R.string.avoidable_moves_chart_undo_button_used),
+                                 mGridStatistics.mActionUndoMove, chartSignal2);
+        barChartSeries.addSeries(getResources().getString(R.string.avoidable_moves_chart_clear_used),
+                                 mGridStatistics.mActionClearCell + mGridStatistics.mActionClearGrid, chartSignal3);
 
         if (!barChartSeries.isEmpty()) {
-            barChartSeries.setYTitle(
-                    getResources().getString(R.string.avoidable_moves_yaxis_description));
+            barChartSeries.setYTitle(getResources().getString(R.string.avoidable_moves_yaxis_description));
             barChartSeries.setTextSize(mDefaultTextSize);
             barChartSeries.setBarWidth(getBarWidth());
             // Add new statistics section to the activity
-            addChartToStatisticsSection(AVOIDABLE_MOVES_CHART_TAG_ID, getResources().getString(
-                                                R.string.avoidable_moves_chart_title),
-                                        ChartFactory.getBarChartView(getActivity(),
-                                                                     barChartSeries.getDataset(),
-                                                                     barChartSeries.getRenderer(),
-                                                                     Type.DEFAULT), null,
-                                        getResources().getString(
-                                                R.string.avoidable_moves_chart_body));
+            addChartToStatisticsSection(AVOIDABLE_MOVES_CHART_TAG_ID,
+                                        getResources().getString(R.string.avoidable_moves_chart_title),
+                                        ChartFactory.getBarChartView(getActivity(), barChartSeries.getDataset(),
+                                                                     barChartSeries.getRenderer(), Type.DEFAULT), null,
+                                        getResources().getString(R.string.avoidable_moves_chart_body));
         }
     }
 
@@ -319,34 +301,26 @@ public class ArchiveFragment extends StatisticsBaseFragment implements
      */
     private void createUsedCheatsChart() {
         BarChartSeries barChartSeries = new BarChartSeries();
-        barChartSeries.addSeries(
-                getResources().getString(R.string.statistics_cheats_check_progress),
-                mGridStatistics.mActionCheckProgress, chartRed1);
-        barChartSeries.addSeries(
-                getResources().getString(R.string.statistics_cheats_cells_revealed),
-                mGridStatistics.mActionRevealCell, chartRed2);
-        barChartSeries.addSeries(
-                getResources().getString(R.string.statistics_cheats_operators_revealed),
-                mGridStatistics.mActionRevealOperator, chartRed3);
+        barChartSeries.addSeries(getResources().getString(R.string.statistics_cheats_check_progress),
+                                 mGridStatistics.mActionCheckProgress, chartRed1);
+        barChartSeries.addSeries(getResources().getString(R.string.statistics_cheats_cells_revealed),
+                                 mGridStatistics.mActionRevealCell, chartRed2);
+        barChartSeries.addSeries(getResources().getString(R.string.statistics_cheats_operators_revealed),
+                                 mGridStatistics.mActionRevealOperator, chartRed3);
         if (mGridStatistics.isSolutionRevealed()) {
-            barChartSeries.addSeries(
-                    getResources().getString(R.string.statistics_cheats_solution_revealed),
-                    Y_VALUE_CHEAT_SOLUTION_REVEALED, chartRed4);
+            barChartSeries.addSeries(getResources().getString(R.string.statistics_cheats_solution_revealed),
+                                     Y_VALUE_CHEAT_SOLUTION_REVEALED, chartRed4);
         }
 
         if (!barChartSeries.isEmpty()) {
-            barChartSeries.setYTitle(
-                    getResources().getString(R.string.statistics_cheats_yaxis_description));
+            barChartSeries.setYTitle(getResources().getString(R.string.statistics_cheats_yaxis_description));
             barChartSeries.setTextSize(mDefaultTextSize);
             barChartSeries.setBarWidth(getBarWidth());
-            addChartToStatisticsSection(CHEATS_CHART_TAG_ID, getResources().getString(
-                                                R.string.statistics_cheats_used_title),
-                                        ChartFactory.getBarChartView(getActivity(),
-                                                                     barChartSeries.getDataset(),
-                                                                     barChartSeries.getRenderer(),
-                                                                     Type.DEFAULT), null,
-                                        getResources().getString(
-                                                R.string.statistics_cheats_used_body));
+            addChartToStatisticsSection(CHEATS_CHART_TAG_ID,
+                                        getResources().getString(R.string.statistics_cheats_used_title),
+                                        ChartFactory.getBarChartView(getActivity(), barChartSeries.getDataset(),
+                                                                     barChartSeries.getRenderer(), Type.DEFAULT), null,
+                                        getResources().getString(R.string.statistics_cheats_used_body));
         }
     }
 

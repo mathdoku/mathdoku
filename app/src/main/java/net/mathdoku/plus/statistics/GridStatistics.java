@@ -224,8 +224,8 @@ public class GridStatistics {
     /**
      * If the grid is replayed, get the number of times the grid is replayed so far.
      *
-     * @return 0 in case the grid is not replayed. 1 in case this grid is replayed once, 2 in case
-     * it is replayed twice, etc.
+     * @return 0 in case the grid is not replayed. 1 in case this grid is replayed once, 2 in case it is replayed twice,
+     * etc.
      */
     public int getReplayCount() {
         return mReplayCount;

@@ -25,13 +25,12 @@ public class UpdateQueryHelper {
      *         The value to be set. Null is allowed to clear the column.
      */
     public void setColumnToValue(String column, String value) {
-        columnsToSet.add(new FieldOperatorStringValue(column, FieldOperatorValue.Operator.EQUALS,
-                                                      value).toString());
+        columnsToSet.add(new FieldOperatorStringValue(column, FieldOperatorValue.Operator.EQUALS, value).toString());
     }
 
     /**
-     * Set the column to the value which is derived with the given SQL derivation statement (right
-     * hand side of equation only).
+     * Set the column to the value which is derived with the given SQL derivation statement (right hand side of equation
+     * only).
      *
      * @param column
      *         The column to be set.
@@ -39,8 +38,7 @@ public class UpdateQueryHelper {
      *         The value to be set. Null is allowed to clear the column.
      */
     public void setColumnToStatement(String column, String sqlStatement) {
-        columnsToSet.add(new FieldOperatorValue(column, FieldOperatorValue.Operator.EQUALS,
-                                                sqlStatement).toString());
+        columnsToSet.add(new FieldOperatorValue(column, FieldOperatorValue.Operator.EQUALS, sqlStatement).toString());
     }
 
     /**

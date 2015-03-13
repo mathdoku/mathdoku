@@ -10,17 +10,16 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricGradleTestRunner.class)
 public class TipDuplicateValueTest extends TipBaseTest {
-	@Before
-	public void setUp() {
-		super.setUp();
-		long minTimeIntervalBetweenTwoConsecutiveDisplays = 2 * 60 * 1000;
-		super.setUpTimeIntervalBetweenTwoConsecutiveDisplays("DuplicateValue",
-				minTimeIntervalBetweenTwoConsecutiveDisplays);
-	}
+    @Before
+    public void setUp() {
+        super.setUp();
+        long minTimeIntervalBetweenTwoConsecutiveDisplays = 2 * 60 * 1000;
+        super.setUpTimeIntervalBetweenTwoConsecutiveDisplays("DuplicateValue",
+                                                             minTimeIntervalBetweenTwoConsecutiveDisplays);
+    }
 
-	@Override
-	protected void assertThatDialogToBeDisplayed(Matcher<Boolean> booleanMatcher) {
-		assertThat(TipDuplicateValue.toBeDisplayed(preferencesMock),
-				booleanMatcher);
-	}
+    @Override
+    protected void assertThatDialogToBeDisplayed(Matcher<Boolean> booleanMatcher) {
+        assertThat(TipDuplicateValue.toBeDisplayed(preferencesMock), booleanMatcher);
+    }
 }

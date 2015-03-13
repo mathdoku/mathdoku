@@ -12,8 +12,8 @@ import net.mathdoku.plus.storage.selector.ArchiveSolvingAttemptSelector;
 import java.util.List;
 
 /**
- * A {@link android.support.v4.app.FragmentStatePagerAdapter} that returns a fragment representing
- * an object in the collection.
+ * A {@link android.support.v4.app.FragmentStatePagerAdapter} that returns a fragment representing an object in the
+ * collection.
  */
 class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 
@@ -29,8 +29,7 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
     // The list of latest solving attempts which will be shown in the archive.
     // In case multiple solving attempts exists for a grid, only the latest
     // solving attempt is displayed.
-    private List<ArchiveSolvingAttemptSelector.LatestSolvingAttemptForGrid>
-            solvingAttemptsInArchive;
+    private List<ArchiveSolvingAttemptSelector.LatestSolvingAttemptForGrid> solvingAttemptsInArchive;
 
     // Selected filters
     private StatusFilter mStatusFilter;
@@ -39,8 +38,7 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
     // Label used in the pager strip
     private static String mLabelPuzzleNumber;
 
-    public ArchiveFragmentStatePagerAdapter(android.support.v4.app.FragmentManager
-                                                    fragmentManager,
+    public ArchiveFragmentStatePagerAdapter(android.support.v4.app.FragmentManager fragmentManager,
                                             ArchiveFragmentActivity archiveFragmentActivity) {
         super(fragmentManager);
 
@@ -80,8 +78,7 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         if (isValidPositionInListOfLatestSolvingAttempts(position)) {
-            int relativePosition = position - mArchiveFragmentActivity
-                    .getViewPagerCurrentPosition();
+            int relativePosition = position - mArchiveFragmentActivity.getViewPagerCurrentPosition();
 
             StringBuilder stringBuilder = new StringBuilder();
             if (relativePosition < 0) {
@@ -164,12 +161,12 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
      *
      * @param gridId
      *         The grid id to be found.
-     * @return The position in the adapter at which the given grid is placed. {@value
-     * #UNKNOWN_GRID_ID} in case the grid id is not known to this adapter.
+     * @return The position in the adapter at which the given grid is placed. {@value #UNKNOWN_GRID_ID} in case the grid
+     * id is not known to this adapter.
      */
     public int getPositionOfGridId(int gridId) {
-        for (ArchiveSolvingAttemptSelector.LatestSolvingAttemptForGrid
-                latestSolvingAttemptForGrid : solvingAttemptsInArchive) {
+        for (ArchiveSolvingAttemptSelector.LatestSolvingAttemptForGrid latestSolvingAttemptForGrid :
+                solvingAttemptsInArchive) {
             if (latestSolvingAttemptForGrid.getGridId() == gridId) {
                 return solvingAttemptsInArchive.indexOf(latestSolvingAttemptForGrid);
             }

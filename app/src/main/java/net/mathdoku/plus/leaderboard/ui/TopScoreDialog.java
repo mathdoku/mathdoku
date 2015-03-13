@@ -18,9 +18,8 @@ import net.mathdoku.plus.R;
 import net.mathdoku.plus.ui.base.AppFragmentActivity;
 
 /**
- * This class display a dialog containing a new top score. This dialog has no title or buttons and
- * therefore looks like a toast. But unlike a toast it has to dismissed by the user by tapping on or
- * outside the dialog.
+ * This class display a dialog containing a new top score. This dialog has no title or buttons and therefore looks like
+ * a toast. But unlike a toast it has to dismissed by the user by tapping on or outside the dialog.
  */
 public class TopScoreDialog extends AlertDialog {
 
@@ -29,8 +28,8 @@ public class TopScoreDialog extends AlertDialog {
     private final String mDisplayRank;
     private final int mOrientation;
 
-    public TopScoreDialog(AppFragmentActivity appFragmentActivity, int leaderboardIconResID,
-                          String displayScore, String displayRank) {
+    public TopScoreDialog(AppFragmentActivity appFragmentActivity, int leaderboardIconResID, String displayScore,
+                          String displayRank) {
         super(appFragmentActivity);
         mLeaderboardIconResID = leaderboardIconResID;
         mDisplayScore = displayScore;
@@ -45,23 +44,19 @@ public class TopScoreDialog extends AlertDialog {
 
         // Set the layout to the custom top score layout
         setContentView(R.layout.top_score_dialog);
-        ((ImageView) findViewById(R.id.dialog_top_score_leaderboard_icon)).setImageResource(
-                mLeaderboardIconResID);
+        ((ImageView) findViewById(R.id.dialog_top_score_leaderboard_icon)).setImageResource(mLeaderboardIconResID);
         ((TextView) findViewById(R.id.dialog_top_score_score)).setText(mDisplayScore);
         ((TextView) findViewById(R.id.dialog_top_score_rank)).setText(mDisplayRank);
 
         // Set touch listener so touches on the dialog will also dismiss the
         // dialog.
         findViewById(R.id.dialog_top_score_layout).setOnTouchListener(new OnTouchListener() {
-                                                                          @Override
-                                                                          public boolean onTouch
-                                                                                  (View v,
-                                                                                   MotionEvent
-                                                                                           event) {
-                                                                              dismiss();
-                                                                              return true;
-                                                                          }
-                                                                      });
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                dismiss();
+                return true;
+            }
+        });
 
         // Align the dialog dependent on the orientation of the device
         Window window = getWindow();

@@ -23,8 +23,7 @@ public enum PuzzleComplexity {
         try {
             return fromId(Integer.parseInt(puzzleComplexityId));
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(
-                    getErrorStringCannotConvertIdToPuzzleComplexity(puzzleComplexityId), e);
+            throw new IllegalArgumentException(getErrorStringCannotConvertIdToPuzzleComplexity(puzzleComplexityId), e);
         }
     }
 
@@ -35,8 +34,8 @@ public enum PuzzleComplexity {
             }
         }
 
-        throw new IllegalArgumentException(getErrorStringCannotConvertIdToPuzzleComplexity(
-                String.valueOf(puzzleComplexityId)));
+        throw new IllegalArgumentException(
+                getErrorStringCannotConvertIdToPuzzleComplexity(String.valueOf(puzzleComplexityId)));
     }
 
     private static String getErrorStringCannotConvertIdToPuzzleComplexity(String puzzleComplexityId) {

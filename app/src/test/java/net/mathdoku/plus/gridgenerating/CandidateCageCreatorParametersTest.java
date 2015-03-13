@@ -8,18 +8,14 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 public class CandidateCageCreatorParametersTest {
-	@Test
-	public void setCorrectValueMatrix() throws Exception {
-		Matrix<Integer> matrix = new Matrix<Integer>(2, -1);
+    @Test
+    public void setCorrectValueMatrix() throws Exception {
+        Matrix<Integer> matrix = new Matrix<Integer>(2, -1);
 
-		CandidateCageCreatorParameters candidateCageCreatorParameters = new CandidateCageCreatorParameters();
+        CandidateCageCreatorParameters candidateCageCreatorParameters = new CandidateCageCreatorParameters();
 
-		assertThat(
-				candidateCageCreatorParameters.getOverlappingSubsetChecker(),
-				is(nullValue()));
-		candidateCageCreatorParameters.setCorrectValueMatrix(matrix);
-		assertThat(
-				candidateCageCreatorParameters.getOverlappingSubsetChecker(),
-				is(notNullValue()));
-	}
+        assertThat(candidateCageCreatorParameters.getOverlappingSubsetChecker(), is(nullValue()));
+        candidateCageCreatorParameters.setCorrectValueMatrix(matrix);
+        assertThat(candidateCageCreatorParameters.getOverlappingSubsetChecker(), is(notNullValue()));
+    }
 }

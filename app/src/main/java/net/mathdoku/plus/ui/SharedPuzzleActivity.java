@@ -44,11 +44,9 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
                     .setTitle(R.string.dialog_invalid_share_url_title)
                     .setMessage(R.string.dialog_invalid_share_url_body)
                     .setCancelable(false)
-                    .setNeutralButton(R.string.dialog_general_button_close,
-                                      new DialogInterface.OnClickListener() {
+                    .setNeutralButton(R.string.dialog_general_button_close, new DialogInterface.OnClickListener() {
                                           @Override
-                                          public void onClick(DialogInterface dialog,
-                                                              int whichButton) {
+                                          public void onClick(DialogInterface dialog, int whichButton) {
                                               finish();
                                           }
                                       })
@@ -80,8 +78,8 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
         ((GridViewerView) findViewById(R.id.grid_viewer_view)).loadNewGrid(mGrid);
 
         // Display the difficulty rating.
-        ((PuzzleParameterDifficultyRatingBar) findViewById(
-                R.id.puzzleParameterDifficultyRatingBar)).setNumStars(mGrid.getPuzzleComplexity());
+        ((PuzzleParameterDifficultyRatingBar) findViewById(R.id.puzzleParameterDifficultyRatingBar)).setNumStars(
+                mGrid.getPuzzleComplexity());
     }
 
     @Override
@@ -147,13 +145,11 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
             startPuzzleFragment();
         } else {
             new AlertDialog.Builder(this).setTitle(R.string.shared_puzzle_exists_title)
-                    .setMessage(getResources().getString(R.string.shared_puzzle_exists_message,
-                                                         gridRow.getGridId()))
+                    .setMessage(getResources().getString(R.string.shared_puzzle_exists_message, gridRow.getGridId()))
                     .setNegativeButton(R.string.shared_puzzle_exists_negative_button,
                                        new DialogInterface.OnClickListener() {
                                            @Override
-                                           public void onClick(DialogInterface dialog,
-                                                               int whichButton) {
+                                           public void onClick(DialogInterface dialog, int whichButton) {
                                                // Finish the preview activity
                                                finish();
                                            }

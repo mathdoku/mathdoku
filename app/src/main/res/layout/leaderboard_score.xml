@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Score"
-        tools:ignore="HardcodedText" />
+        tools:ignore="HardcodedText"/>
 
     <EditText
         android:id="@+id/manual_leaderboard_score"
@@ -16,9 +16,9 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:ems="10"
-        android:inputType="number" >
+        android:inputType="number">
 
-        <requestFocus />
+        <requestFocus/>
     </EditText>
 
 </LinearLayout>

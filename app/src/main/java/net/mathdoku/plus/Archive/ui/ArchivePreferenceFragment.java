@@ -37,8 +37,7 @@ public class ArchivePreferenceFragment extends AppPreferenceFragment {
         Preference preference = findPreference(Preferences.ARCHIVE_SETTING_STATUS_FILTER_VISIBLE);
         if (preference != null) {
             int summaryResId = Preferences.getInstance()
-                    .isArchiveStatusFilterVisible() ? R.string
-                    .archive_settings_show_status_filter_enabled : R.string
+                    .isArchiveStatusFilterVisible() ? R.string.archive_settings_show_status_filter_enabled : R.string
                     .archive_settings_show_status_filter_disabled;
             preference.setSummary(getResources().getString(summaryResId));
         }
@@ -48,11 +47,11 @@ public class ArchivePreferenceFragment extends AppPreferenceFragment {
      * Set summary for option "show size filter" based on current value of the option.
      */
     private void setSizeFilterSummary() {
-        Preference preference = findPreference(
-                Preferences.ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE);
+        Preference preference = findPreference(Preferences.ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE);
         if (preference != null) {
             int summaryResId = Preferences.getInstance()
-                    .isArchiveSizeFilterVisible() ? R.string.archive_settings_show_grid_type_filter_enabled : R.string.archive_settings_show_grid_type_filter_disabled;
+                    .isArchiveSizeFilterVisible() ? R.string.archive_settings_show_grid_type_filter_enabled : R
+                    .string.archive_settings_show_grid_type_filter_disabled;
             preference.setSummary(getResources().getString(summaryResId));
         }
     }

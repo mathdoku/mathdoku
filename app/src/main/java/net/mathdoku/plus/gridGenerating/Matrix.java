@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class implements a two dimensional matrix of the given type. The matrix is always a square
- * (it contains the same number as rows as columns).
+ * This class implements a two dimensional matrix of the given type. The matrix is always a square (it contains the same
+ * number as rows as columns).
  *
  * @param <T>
  */
@@ -57,8 +57,7 @@ public class Matrix<T> {
 
     public boolean containsInvalidCellCoordinates(CellCoordinates... cellCoordinatesArray) {
         for (CellCoordinates cellCoordinates : cellCoordinatesArray) {
-            if (cellCoordinates.isNull() || isInvalidPosition(cellCoordinates.getRow(),
-                                                              cellCoordinates.getColumn())) {
+            if (cellCoordinates.isNull() || isInvalidPosition(cellCoordinates.getRow(), cellCoordinates.getColumn())) {
                 return true;
             }
         }
@@ -207,8 +206,7 @@ public class Matrix<T> {
         if (transposedFromOriginal != matrix.transposedFromOriginal) {
             return false;
         }
-        if (emptyValue != null ? !emptyValue.equals(
-                matrix.emptyValue) : matrix.emptyValue != null) {
+        if (emptyValue != null ? !emptyValue.equals(matrix.emptyValue) : matrix.emptyValue != null) {
             return false;
         }
         for (int row = 0; row < size; row++) {

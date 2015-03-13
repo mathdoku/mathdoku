@@ -9,8 +9,7 @@ import java.util.List;
  */
 public interface GridGeneratorAsyncTaskListenerIface {
     /**
-     * Inform the listener if a grid is generated. This event is only sent in case multiple grids
-     * have to be generated.
+     * Inform the listener if a grid is generated. This event is only sent in case multiple grids have to be generated.
      */
     void onGridGenerated();
 
@@ -23,8 +22,7 @@ public interface GridGeneratorAsyncTaskListenerIface {
     void onFinishGridGenerator(List<Grid> grids);
 
     /**
-     * Inform the listener if the grid generating task has been cancelled by the async task or its
-     * super class.
+     * Inform the listener if the grid generating task has been cancelled by the async task or its super class.
      */
     void onCancelGridGeneratorAsyncTask();
 

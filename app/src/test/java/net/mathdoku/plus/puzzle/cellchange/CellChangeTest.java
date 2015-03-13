@@ -19,46 +19,45 @@ import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 public class CellChangeTest {
-	@Test
-	public void restore_CellWithValue_UndoForCellIsCalledWithCorrectParameters() {
-		int expectedEnteredValue = 123;
-		List<Integer> expectedMaybeValues = new ArrayList<Integer>();
+    @Test
+    public void restore_CellWithValue_UndoForCellIsCalledWithCorrectParameters() {
+        int expectedEnteredValue = 123;
+        List<Integer> expectedMaybeValues = new ArrayList<Integer>();
 
-		// Init the Grid Cell Mock
-		Cell cellMock = mock(Cell.class);
-		when(cellMock.getEnteredValue()).thenReturn(expectedEnteredValue);
-		when(cellMock.getPossibles()).thenReturn(expectedMaybeValues);
-		CellChange cellChange = new CellChange(cellMock);
+        // Init the Grid Cell Mock
+        Cell cellMock = mock(Cell.class);
+        when(cellMock.getEnteredValue()).thenReturn(expectedEnteredValue);
+        when(cellMock.getPossibles()).thenReturn(expectedMaybeValues);
+        CellChange cellChange = new CellChange(cellMock);
 
-		// Restore the cell change which ...
-		cellChange.restore();
+        // Restore the cell change which ...
+        cellChange.restore();
 
-		// ... results in undoing the change to the user value.
-		verify(cellMock).setEnteredValue(expectedEnteredValue);
-		verify(cellMock, never()).addPossible(anyInt());
-	}
+        // ... results in undoing the change to the user value.
+        verify(cellMock).setEnteredValue(expectedEnteredValue);
+        verify(cellMock, never()).addPossible(anyInt());
+    }
 
-	@Test
-	public void restore_CellWithMultipleMaybeValues_UndoForCellIsCalledWithCorrectParameters() {
-		int expectedEnteredValue = Cell.NO_ENTERED_VALUE;
-		List<Integer> expectedMaybeValues = new ArrayList<Integer>();
-		expectedMaybeValues.add(1);
-		expectedMaybeValues.add(2);
-		expectedMaybeValues.add(3);
+    @Test
+    public void restore_CellWithMultipleMaybeValues_UndoForCellIsCalledWithCorrectParameters() {
+        int expectedEnteredValue = Cell.NO_ENTERED_VALUE;
+        List<Integer> expectedMaybeValues = new ArrayList<Integer>();
+        expectedMaybeValues.add(1);
+        expectedMaybeValues.add(2);
+        expectedMaybeValues.add(3);
 
-		// Init the Grid Cell Mock
-		Cell cellMock = mock(Cell.class);
-		when(cellMock.getEnteredValue()).thenReturn(expectedEnteredValue);
-		when(cellMock.getPossibles()).thenReturn(expectedMaybeValues);
-		CellChange cellChange = new CellChange(cellMock);
+        // Init the Grid Cell Mock
+        Cell cellMock = mock(Cell.class);
+        when(cellMock.getEnteredValue()).thenReturn(expectedEnteredValue);
+        when(cellMock.getPossibles()).thenReturn(expectedMaybeValues);
+        CellChange cellChange = new CellChange(cellMock);
 
-		// Restore the cell change which ...
-		cellChange.restore();
+        // Restore the cell change which ...
+        cellChange.restore();
 
-		// ... results in undoing the change to the user value and the maybe
-		// values for the cell
-		verify(cellMock).setEnteredValue(expectedEnteredValue);
-		verify(cellMock, times(expectedMaybeValues.size())).addPossible(
-				anyInt());
-	}
+        // ... results in undoing the change to the user value and the maybe
+        // values for the cell
+        verify(cellMock).setEnteredValue(expectedEnteredValue);
+        verify(cellMock, times(expectedMaybeValues.size())).addPossible(anyInt());
+    }
 }

@@ -9,21 +9,18 @@ import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.leaderboard.LeaderboardType;
 
 /**
- * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one of the leaderboard
- * overviews.
+ * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one of the leaderboard overviews.
  */
 class LeaderboardOverviewPagerAdapter extends FragmentPagerAdapter {
     @SuppressWarnings("unused")
     private static final String TAG = LeaderboardOverviewPagerAdapter.class.getName();
 
-    private static final GridType[] GRID_SIZES_WITH_LEADERBOARD = LeaderboardType
-            .getGridSizeWithLeaderboard();
+    private static final GridType[] GRID_SIZES_WITH_LEADERBOARD = LeaderboardType.getGridSizeWithLeaderboard();
 
     // Context
     private final LeaderboardOverviewActivity mLeaderboardOverviewActivity;
 
-    public LeaderboardOverviewPagerAdapter(LeaderboardOverviewActivity
-                                                   leaderboardOverviewActivity,
+    public LeaderboardOverviewPagerAdapter(LeaderboardOverviewActivity leaderboardOverviewActivity,
                                            android.support.v4.app.FragmentManager fragmentManager) {
         super(fragmentManager);
         mLeaderboardOverviewActivity = leaderboardOverviewActivity;
@@ -32,10 +29,8 @@ class LeaderboardOverviewPagerAdapter extends FragmentPagerAdapter {
     @Override
     public android.support.v4.app.Fragment getItem(int index) {
         Bundle bundle = new Bundle();
-        bundle.putInt(LeaderboardOverview.ARG_GRID_SIZE,
-                      GRID_SIZES_WITH_LEADERBOARD[index].getGridSize());
-        bundle.putInt(LeaderboardOverview.ARG_FILTER,
-                      mLeaderboardOverviewActivity.getLeaderboardFilter()
+        bundle.putInt(LeaderboardOverview.ARG_GRID_SIZE, GRID_SIZES_WITH_LEADERBOARD[index].getGridSize());
+        bundle.putInt(LeaderboardOverview.ARG_FILTER, mLeaderboardOverviewActivity.getLeaderboardFilter()
                               .ordinal());
 
         // Create fragment and pass the bundle
@@ -66,10 +61,8 @@ class LeaderboardOverviewPagerAdapter extends FragmentPagerAdapter {
      *         The fragment manager from which the fragment has to be retrieved.
      * @return The fragment corresponding with the given position in the adapter of the view pager.
      */
-    public LeaderboardOverview getFragment(ViewPager viewPager, int position,
-                                           FragmentManager fragmentManager) {
-        return (LeaderboardOverview) fragmentManager.findFragmentByTag(
-                makeFragmentName(viewPager.getId(), position));
+    public LeaderboardOverview getFragment(ViewPager viewPager, int position, FragmentManager fragmentManager) {
+        return (LeaderboardOverview) fragmentManager.findFragmentByTag(makeFragmentName(viewPager.getId(), position));
     }
 
     /**

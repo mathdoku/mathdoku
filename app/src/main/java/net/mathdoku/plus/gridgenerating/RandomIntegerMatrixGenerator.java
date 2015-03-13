@@ -3,8 +3,8 @@ package net.mathdoku.plus.gridgenerating;
 import java.util.Random;
 
 /**
- * Creates an Integer Matrix filled with random values. Each number from 1 to the maximum value is
- * used exactly once in each row and exactly once in each column.
+ * Creates an Integer Matrix filled with random values. Each number from 1 to the maximum value is used exactly once in
+ * each row and exactly once in each column.
  */
 public class RandomIntegerMatrixGenerator {
     static final int CORRECT_VALUE_NOT_SET = -1;
@@ -38,8 +38,7 @@ public class RandomIntegerMatrixGenerator {
                 return;
             }
         }
-        throw new GridGeneratingException(
-                String.format("Too many tries to randomize value %d.", value));
+        throw new GridGeneratingException(String.format("Too many tries to randomize value %d.", value));
     }
 
     private boolean tryToRandomizeValue(int value) {
@@ -59,8 +58,8 @@ public class RandomIntegerMatrixGenerator {
     }
 
     /**
-     * Finds a random column in the given row in which the given value can be place without
-     * violation the constraint that the value is already used in the column.
+     * Finds a random column in the given row in which the given value can be place without violation the constraint
+     * that the value is already used in the column.
      */
     private int getRandomEligibleColumnOnRowForValue(int row, int value) {
         // todo: probably this is not the most efficient way to determine the
@@ -68,8 +67,7 @@ public class RandomIntegerMatrixGenerator {
         // which still can be chosen and select a random position from this
         // list. For this moment this is not the most important performance
         // bottleneck.
-        for (int attempts = 1; attempts <= MAX_ATTEMPTS_TO_GET_AN_ELIGIBLE_COLUMN_FOR_A_ROW;
-             attempts++) {
+        for (int attempts = 1; attempts <= MAX_ATTEMPTS_TO_GET_AN_ELIGIBLE_COLUMN_FOR_A_ROW; attempts++) {
             int column = random.nextInt(size);
             if (integerMatrix.isEmpty(row, column) && !integerMatrix.getColumn(column)
                     .contains(value)) {

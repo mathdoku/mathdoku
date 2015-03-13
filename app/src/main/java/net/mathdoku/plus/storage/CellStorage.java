@@ -21,18 +21,17 @@ public class CellStorage {
      * Checks quickly whether the given line contains CellStorage data.
      */
     public static boolean containsCellStorageData(String line) {
-        return line != null && line.startsWith(
-                LINE_IDENTIFIER + StorageDelimiter.FIELD_DELIMITER_LEVEL1);
+        return line != null && line.startsWith(LINE_IDENTIFIER + StorageDelimiter.FIELD_DELIMITER_LEVEL1);
     }
 
     /**
-     * Read cell information from a storage string which was created with {@link
-     * #toStorageString(net.mathdoku.plus.puzzle.cell.Cell)} before.
+     * Read cell information from a storage string which was created with {@link #toStorageString(net.mathdoku.plus
+     * .puzzle.cell.Cell)}
+     * before.
      *
      * @param line
      *         The line containing the cell information.
-     * @return True in case the given line contains cell information and is processed correctly.
-     * False otherwise.
+     * @return True in case the given line contains cell information and is processed correctly. False otherwise.
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public CellBuilder getCellBuilderFromStorageString(String line, int savedWithRevisionNumber) {
@@ -70,10 +69,9 @@ public class CellStorage {
         // revision 369 all logic for handling games stored with older versions
         // is removed.
         if (savedWithRevisionNumber <= 368) {
-            throw new StorageException(String.format(
-                    "Cannot process storage strings of cages created with revision" + " %d or " +
-                            "before.",
-                    savedWithRevisionNumber));
+            throw new StorageException(
+                    String.format("Cannot process storage strings of cages created with revision" + " %d or " +
+                                          "before.", savedWithRevisionNumber));
         }
     }
 
@@ -105,14 +103,13 @@ public class CellStorage {
     }
 
     /**
-     * Create a string representation of the Grid Cell which can be used to store a grid cell in a
-     * saved game.
+     * Create a string representation of the Grid Cell which can be used to store a grid cell in a saved game.
      *
      * @return A string representation of the grid cell.
      */
     public String toStorageString(Cell cell) {
-        String storageString = LINE_IDENTIFIER + StorageDelimiter.FIELD_DELIMITER_LEVEL1 + cell
-                .getCellId() + StorageDelimiter.FIELD_DELIMITER_LEVEL1 + cell.getCageText() +
+        String storageString = LINE_IDENTIFIER + StorageDelimiter.FIELD_DELIMITER_LEVEL1 + cell.getCellId() +
+                StorageDelimiter.FIELD_DELIMITER_LEVEL1 + cell.getCageText() +
                 StorageDelimiter.FIELD_DELIMITER_LEVEL1 + cell.getCorrectValue() +
                 StorageDelimiter.FIELD_DELIMITER_LEVEL1 + cell.getEnteredValue() +
                 StorageDelimiter.FIELD_DELIMITER_LEVEL1;
@@ -121,8 +118,7 @@ public class CellStorage {
         }
         storageString += StorageDelimiter.FIELD_DELIMITER_LEVEL1 + Boolean.toString(
                 cell.hasInvalidValueHighlight()) + StorageDelimiter.FIELD_DELIMITER_LEVEL1 + Boolean.toString(
-                cell.isRevealed()) + StorageDelimiter.FIELD_DELIMITER_LEVEL1 + Boolean.toString(
-                cell.isSelected());
+                cell.isRevealed()) + StorageDelimiter.FIELD_DELIMITER_LEVEL1 + Boolean.toString(cell.isSelected());
 
         return storageString;
     }

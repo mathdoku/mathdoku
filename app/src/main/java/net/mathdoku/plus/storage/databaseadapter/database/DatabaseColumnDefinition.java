@@ -34,8 +34,7 @@ public class DatabaseColumnDefinition {
     }
 
     public DatabaseColumnDefinition setDefaultValue(String defaultValue) {
-        setDefaultValueAsString(
-                DatabaseUtil.stringBetweenBackTicks(defaultValue == null ? "" : defaultValue));
+        setDefaultValueAsString(DatabaseUtil.stringBetweenBackTicks(defaultValue == null ? "" : defaultValue));
         return this;
     }
 
@@ -50,8 +49,7 @@ public class DatabaseColumnDefinition {
     }
 
     public DatabaseColumnDefinition setDefaultValue(boolean booleanValue) {
-        setDefaultValueAsString(
-                DatabaseUtil.stringBetweenBackTicks(DatabaseUtil.toSQLiteBoolean(booleanValue)));
+        setDefaultValueAsString(DatabaseUtil.stringBetweenBackTicks(DatabaseUtil.toSQLiteBoolean(booleanValue)));
         return this;
     }
 

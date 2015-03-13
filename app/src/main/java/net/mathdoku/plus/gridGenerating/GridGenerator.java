@@ -183,22 +183,19 @@ public class GridGenerator implements GridGeneratorIface {
     }
 
     private void cancelOnSlowGridGeneration() {
-        if (Config.APP_MODE == Config.AppMode.DEVELOPMENT && System.currentTimeMillis() -
-                mTimeStarted > 30 * 1000) {
+        if (Config.APP_MODE == Config.AppMode.DEVELOPMENT && System.currentTimeMillis() - mTimeStarted > 30 * 1000) {
             // Sometimes grid generation takes too long. Until I have a game
             // seed which reproduces this problem I can not fix it. If such
             // a game is found in development, an exception will be thrown
             // to investigate it.
-            final int elapsedTimeInSeconds = (int) ((System.currentTimeMillis() - mTimeStarted) /
-                    1000);
+            final int elapsedTimeInSeconds = (int) ((System.currentTimeMillis() - mTimeStarted) / 1000);
             signalSlowGridGeneration(elapsedTimeInSeconds);
         }
     }
 
     private void signalSlowGridGeneration(int elapsedTimeInSeconds) {
-        String message = String.format(
-                "Game generation took too long (%d) secs. Generating is aborted",
-                elapsedTimeInSeconds);
+        String message = String.format("Game generation took too long (%d) secs. Generating is aborted",
+                                       elapsedTimeInSeconds);
         gridGeneratorListener.updateProgressDetailLevel(message);
         gridGeneratorListener.signalSlowGridGeneration();
         Log.i(TAG, message);
@@ -252,8 +249,7 @@ public class GridGenerator implements GridGeneratorIface {
         cageIdMatrix = new Matrix<Integer>(gridSizeValue, Cage.CAGE_ID_NOT_SET);
         mCages.clear();
 
-        if (gridGeneratingParameters.getMaxCageSize() >= CageTypeGenerator
-                .MAX_SIZE_STANDARD_CAGE_TYPE) {
+        if (gridGeneratingParameters.getMaxCageSize() >= CageTypeGenerator.MAX_SIZE_STANDARD_CAGE_TYPE) {
             createFirstCageWithBiggerSize();
             cancelOnSlowGridGeneration();
             if (gridGeneratorListener.isCancelled()) {
@@ -262,8 +258,7 @@ public class GridGenerator implements GridGeneratorIface {
         }
 
         // Fill remainder of grid
-        CellCoordinates coordinatesCellNotInAnyCage = cageIdMatrix
-                .getCellCoordinatesForFirstEmptyCell();
+        CellCoordinates coordinatesCellNotInAnyCage = cageIdMatrix.getCellCoordinatesForFirstEmptyCell();
         while (coordinatesCellNotInAnyCage.isNotNull()) {
             cancelOnSlowGridGeneration();
             if (gridGeneratorListener.isCancelled()) {
@@ -281,8 +276,7 @@ public class GridGenerator implements GridGeneratorIface {
     }
 
     private boolean gridHasUniqueGridDefinition() {
-        String gridDefinition = new GridDefinitionCreator(mCells, mCages,
-                                                          gridGeneratingParameters).invoke();
+        String gridDefinition = new GridDefinitionCreator(mCells, mCages, gridGeneratingParameters).invoke();
         if (new GridDatabaseAdapter().getByGridDefinition(gridDefinition) != null) {
             if (developmentMode) {
                 gridGeneratorListener.updateProgressDetailLevel("Grid has been generated before.");
@@ -305,8 +299,8 @@ public class GridGenerator implements GridGeneratorIface {
     }
 
     private boolean attemptToCreateFirstCageWithBiggerSize() {
-        CageType cageType = mCageTypeGenerator.getRandomCageType(
-                gridGeneratingParameters.getMaxCageSize(), gridSizeValue, gridSizeValue, mRandom);
+        CageType cageType = mCageTypeGenerator.getRandomCageType(gridGeneratingParameters.getMaxCageSize(),
+                                                                 gridSizeValue, gridSizeValue, mRandom);
         if (cageType != null) {
             CellCoordinates coordinatesTopLeft = getCellCoordinatesForFirstCage(cageType);
             if (createCageAtCoordinates(cageType, coordinatesTopLeft,
@@ -334,18 +328,15 @@ public class GridGenerator implements GridGeneratorIface {
 
     private CellCoordinates getCellCoordinatesForFirstCage(CageType cageType) {
         if (!mCages.isEmpty()) {
-            throw new IllegalStateException(
-                    "Only to be used if no other cells are placed in the grid.");
+            throw new IllegalStateException("Only to be used if no other cells are placed in the grid.");
         }
 
         CellCoordinates topLeftCellInCageType = cageType.getCellCoordinatesTopLeftCell();
 
         // Use +1 in calls to randomizer to prevent exceptions in case the
         // entire height and/or width is needed for the cage type.
-        int startRow = topLeftCellInCageType.getRow() + mRandom.nextInt(
-                gridSizeValue - cageType.getHeight() + 1);
-        int startCol = topLeftCellInCageType.getColumn() + mRandom.nextInt(
-                gridSizeValue - cageType.getWidth() + 1);
+        int startRow = topLeftCellInCageType.getRow() + mRandom.nextInt(gridSizeValue - cageType.getHeight() + 1);
+        int startCol = topLeftCellInCageType.getColumn() + mRandom.nextInt(gridSizeValue - cageType.getWidth() + 1);
         return new CellCoordinates(startRow, startCol);
     }
 
@@ -382,15 +373,13 @@ public class GridGenerator implements GridGeneratorIface {
      * @param cageType
      *         The type of cage to be created.
      * @param originCell
-     *         the cell at which the cage will be placed. The coordinates of the cells to be used
-     *         for the cage.
+     *         the cell at which the cage will be placed. The coordinates of the cells to be used for the cage.
      * @param maxPermutations
-     *         The maximum permutations allowed to create the cage. Use 0 in case no checking on the
-     *         number of permutations needs to be done.
+     *         The maximum permutations allowed to create the cage. Use 0 in case no checking on the number of
+     *         permutations needs to be done.
      * @return True if the cage is created. False otherwise.
      */
-    private boolean createCageAtCoordinates(CageType cageType, CellCoordinates originCell,
-                                            int maxPermutations) {
+    private boolean createCageAtCoordinates(CageType cageType, CellCoordinates originCell, int maxPermutations) {
         if (cageType == null || originCell == null) {
             return false;
         }
@@ -408,8 +397,7 @@ public class GridGenerator implements GridGeneratorIface {
         }
 
         if (candidateCage.isValid()) {
-            CellCoordinates[] cellCoordinatesOfAllCellsInCage = cageType
-                    .getCellCoordinatesOfAllCellsInCage(originCell);
+            CellCoordinates[] cellCoordinatesOfAllCellsInCage = cageType.getCellCoordinatesOfAllCellsInCage(originCell);
             addCageToSolution(candidateCage, cellCoordinatesOfAllCellsInCage);
 
             mCages.add(candidateCage);
@@ -419,8 +407,7 @@ public class GridGenerator implements GridGeneratorIface {
         return false;
     }
 
-    private boolean candidateCageHasTooManyPermutations(Cage candidateCage, List<Cell> cells,
-                                                        int maxPermutations) {
+    private boolean candidateCageHasTooManyPermutations(Cage candidateCage, List<Cell> cells, int maxPermutations) {
         ComboGenerator comboGenerator = gridGeneratingParameters.createComboGenerator();
         List<int[]> possibleCombos = comboGenerator.getPossibleCombos(candidateCage, cells);
         if (possibleCombos.size() > maxPermutations) {
@@ -428,8 +415,8 @@ public class GridGenerator implements GridGeneratorIface {
             // unique solution for the puzzle.
             if (DEBUG_FULL) {
                 debugLog(
-                        "This cage type has been rejected as it has more than %d initial " +
-                                "permutations which fulfill the cage requirement.",
+                        "This cage type has been rejected as it has more than %d initial " + "permutations which " +
+                                "fulfill the cage requirement.",
                         maxPermutations);
             }
             return true;
@@ -442,8 +429,8 @@ public class GridGenerator implements GridGeneratorIface {
 
     private CandidateCageCreator createCandidateCageCreator() {
         CandidateCageCreatorParameters candidateCageCreatorParameters;
-        candidateCageCreatorParameters = new CandidateCageCreatorParameters()
-                .setGridGeneratingParameters(gridGeneratingParameters)
+        candidateCageCreatorParameters = new CandidateCageCreatorParameters().setGridGeneratingParameters(
+                gridGeneratingParameters)
                 .setRandom(mRandom)
                 .setCorrectValueMatrix(correctValueMatrix)
                 .setCageIdMatrix(cageIdMatrix);
@@ -473,8 +460,7 @@ public class GridGenerator implements GridGeneratorIface {
     }
 
     /**
-     * Create a new cage which originates at the given cell. The cage type for this cage will be
-     * randomly determined.
+     * Create a new cage which originates at the given cell. The cage type for this cage will be randomly determined.
      *
      * @param originCell
      *         The cell at which a randomly selected cage has to be placed.
@@ -486,10 +472,9 @@ public class GridGenerator implements GridGeneratorIface {
             Log.d(TAG, "Determine valid cages for " + originCell);
         }
 
-        RandomListItemSelector<CageType> randomCageTypeSelector = new
-                RandomListItemSelector<CageType>(
-                mRandom, mCageTypeGenerator.getCageTypesWithSizeEqualOrLessThan(
-                gridGeneratingParameters.getMaxCageSize()));
+        RandomListItemSelector<CageType> randomCageTypeSelector = new RandomListItemSelector<CageType>(mRandom,
+                                                                                                       mCageTypeGenerator.getCageTypesWithSizeEqualOrLessThan(
+                                                                                                               gridGeneratingParameters.getMaxCageSize()));
         randomCageTypeSelector.setLastItemToBeSelected(mCageTypeGenerator.getSingleCellCageType());
         while (!randomCageTypeSelector.isEmpty()) {
             cancelOnSlowGridGeneration();
@@ -509,8 +494,7 @@ public class GridGenerator implements GridGeneratorIface {
             }
         }
 
-        throw new IllegalStateException(
-                "Should not reach this point as the single cell cage will be selected above!");
+        throw new IllegalStateException("Should not reach this point as the single cell cage will be selected above!");
     }
 
     private boolean hasTooManySingleCellCages(CageType selectedCageType) {

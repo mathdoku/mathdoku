@@ -30,8 +30,7 @@ public class CandidateCageCreator {
         overlappingSubsetChecker = candidateCageCreatorParameters.getOverlappingSubsetChecker();
     }
 
-    public boolean cageTypeDoesNotFitAtCellCoordinates(CageType cageType,
-                                                       CellCoordinates originCell) {
+    public boolean cageTypeDoesNotFitAtCellCoordinates(CageType cageType, CellCoordinates originCell) {
         cellCoordinatesOfAllCellsInCage = cageType.getCellCoordinatesOfAllCellsInCage(originCell);
         if (cageIdMatrix.containsInvalidCellCoordinates(cellCoordinatesOfAllCellsInCage)) {
             return true;
@@ -44,12 +43,9 @@ public class CandidateCageCreator {
         return hasOverlappingSubsetOfValues(cellCoordinatesOfAllCellsInCage);
     }
 
-    private boolean hasOverlappingSubsetOfValues(CellCoordinates[]
-                                                         cellCoordinatesOfAllCellsInCage) {
-        Matrix<Boolean> usedCellsForNewCageMatrix = new Matrix<Boolean>(correctValueMatrix.size(),
-                                                                        false);
-        usedCellsForNewCageMatrix.setValueToAllCellCoordinates(true,
-                                                               cellCoordinatesOfAllCellsInCage);
+    private boolean hasOverlappingSubsetOfValues(CellCoordinates[] cellCoordinatesOfAllCellsInCage) {
+        Matrix<Boolean> usedCellsForNewCageMatrix = new Matrix<Boolean>(correctValueMatrix.size(), false);
+        usedCellsForNewCageMatrix.setValueToAllCellCoordinates(true, cellCoordinatesOfAllCellsInCage);
 
         if (debugLogging) {
             // Print solution, cage matrix and maskNewCage
@@ -88,9 +84,7 @@ public class CandidateCageCreator {
             line += "   ";
             for (int col = 0; col < gridSizeValue; col++) {
                 line += " " + (cageIdMatrix.isEmpty(row, col) ? emptyCell : String.format("%03d",
-                                                                                          cageIdMatrix.get(
-                                                                                                  row,
-                                                                                                  col)));
+                                                                                          cageIdMatrix.get(row, col)));
             }
             if (maskNewCage != null) {
                 line += "   ";
@@ -108,8 +102,7 @@ public class CandidateCageCreator {
 
         cageBuilder.setCells(getAllCellIds(cells));
 
-        CageOperatorGenerator cageOperatorGenerator = candidateCageCreatorParameters
-                .createCageOperatorGenerator(
+        CageOperatorGenerator cageOperatorGenerator = candidateCageCreatorParameters.createCageOperatorGenerator(
                 getAllCorrectValues(cells));
 
         CageOperator cageOperator = cageOperatorGenerator.getCageOperator();

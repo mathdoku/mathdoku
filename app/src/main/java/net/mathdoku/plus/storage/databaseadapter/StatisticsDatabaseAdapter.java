@@ -23,10 +23,9 @@ import net.mathdoku.plus.storage.databaseadapter.queryhelper.UpdateQueryHelper;
 import net.mathdoku.plus.util.ParameterValidator;
 
 /**
- * The database adapter for the statistics table. For each grid zero or more statistics records can
- * exists in the database. Only for historic games no statistics will exist. Multiple statistics
- * will only exist in case a game is replayed in order to try to improve the statistics for the
- * grid.
+ * The database adapter for the statistics table. For each grid zero or more statistics records can exists in the
+ * database. Only for historic games no statistics will exist. Multiple statistics will only exist in case a game is
+ * replayed in order to try to improve the statistics for the grid.
  */
 public class StatisticsDatabaseAdapter extends DatabaseAdapter {
     @SuppressWarnings("unused")
@@ -58,8 +57,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
     public static final String KEY_ACTION_REVEAL_CELL = "action_reveal_cell";
     public static final String KEY_ACTION_REVEAL_OPERATOR = "action_reveal_operators";
     public static final String KEY_ACTION_CHECK_PROGRESS = "action_check_progress";
-    public static final String KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND =
-            "check_progress_invalid_cells_found";
+    public static final String KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND = "check_progress_invalid_cells_found";
     public static final String KEY_ACTION_REVEAL_SOLUTION = "action_reveal_solution";
     public static final String KEY_SOLVED_MANUALLY = "solved_manually";
     public static final String KEY_FINISHED = "finished";
@@ -81,42 +79,32 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 
     private static DatabaseTableDefinition defineTable() {
         DatabaseTableDefinition databaseTableDefinition = new DatabaseTableDefinition(TABLE_NAME);
-        databaseTableDefinition.addColumn(
-                new DatabaseColumnDefinition(KEY_ROWID, DataType.INTEGER).setPrimaryKey());
-        databaseTableDefinition.addColumn(
-                new DatabaseColumnDefinition(KEY_GRID_ID, DataType.INTEGER).setNotNull());
-        databaseTableDefinition.addColumn(
-                new DatabaseColumnDefinition(KEY_REPLAY, DataType.INTEGER).setNotNull()
-                        .setDefaultValue(0));
+        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_ROWID, DataType.INTEGER).setPrimaryKey());
+        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_GRID_ID, DataType.INTEGER).setNotNull());
+        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_REPLAY, DataType.INTEGER).setNotNull()
+                                                  .setDefaultValue(0));
         databaseTableDefinition.addColumn(
                 new DatabaseColumnDefinition(KEY_FIRST_MOVE, DataType.TIMESTAMP).setNotNull());
-        databaseTableDefinition.addColumn(
-                new DatabaseColumnDefinition(KEY_LAST_MOVE, DataType.TIMESTAMP).setNotNull());
-        databaseTableDefinition.addColumn(
-                new DatabaseColumnDefinition(KEY_ELAPSED_TIME, DataType.LONG).setNotNull()
-                        .setDefaultValue(0));
+        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_LAST_MOVE, DataType.TIMESTAMP).setNotNull());
+        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_ELAPSED_TIME, DataType.LONG).setNotNull()
+                                                  .setDefaultValue(0));
         databaseTableDefinition.addColumn(
                 new DatabaseColumnDefinition(KEY_CHEAT_PENALTY_TIME, DataType.LONG).setNotNull()
                         .setDefaultValue(0));
-        databaseTableDefinition.addColumn(
-                new DatabaseColumnDefinition(KEY_CELLS_FILLED, DataType.INTEGER).setNotNull()
-                        .setDefaultValue(0));
-        databaseTableDefinition.addColumn(
-                new DatabaseColumnDefinition(KEY_CELLS_EMPTY, DataType.INTEGER).setNotNull()
-                        .setDefaultValue(0));
+        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_CELLS_FILLED, DataType.INTEGER).setNotNull()
+                                                  .setDefaultValue(0));
+        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_CELLS_EMPTY, DataType.INTEGER).setNotNull()
+                                                  .setDefaultValue(0));
         databaseTableDefinition.addColumn(
                 new DatabaseColumnDefinition(KEY_CELLS_REVEALED, DataType.INTEGER).setNotNull()
                         .setDefaultValue(0));
-        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_USER_VALUES_REPLACED,
-                                                                       DataType.INTEGER)
-                                                  .setNotNull()
+        databaseTableDefinition.addColumn(
+                new DatabaseColumnDefinition(KEY_USER_VALUES_REPLACED, DataType.INTEGER).setNotNull()
+                        .setDefaultValue(0));
+        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_POSSIBLES, DataType.INTEGER).setNotNull()
                                                   .setDefaultValue(0));
-        databaseTableDefinition.addColumn(
-                new DatabaseColumnDefinition(KEY_POSSIBLES, DataType.INTEGER).setNotNull()
-                        .setDefaultValue(0));
-        databaseTableDefinition.addColumn(
-                new DatabaseColumnDefinition(KEY_ACTION_UNDOS, DataType.INTEGER).setNotNull()
-                        .setDefaultValue(0));
+        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_ACTION_UNDOS, DataType.INTEGER).setNotNull()
+                                                  .setDefaultValue(0));
         databaseTableDefinition.addColumn(
                 new DatabaseColumnDefinition(KEY_ACTION_CLEAR_CELL, DataType.INTEGER).setNotNull()
                         .setDefaultValue(0));
@@ -126,32 +114,26 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
         databaseTableDefinition.addColumn(
                 new DatabaseColumnDefinition(KEY_ACTION_REVEAL_CELL, DataType.INTEGER).setNotNull()
                         .setDefaultValue(0));
-        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_ACTION_REVEAL_OPERATOR,
-                                                                       DataType.INTEGER)
-                                                  .setNotNull()
-                                                  .setDefaultValue(0));
-        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_ACTION_CHECK_PROGRESS,
-                                                                       DataType.INTEGER)
-                                                  .setNotNull()
-                                                  .setDefaultValue(0));
         databaseTableDefinition.addColumn(
-                new DatabaseColumnDefinition(KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND,
-                                             DataType.INTEGER).setNotNull()
+                new DatabaseColumnDefinition(KEY_ACTION_REVEAL_OPERATOR, DataType.INTEGER).setNotNull()
                         .setDefaultValue(0));
-        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_ACTION_REVEAL_SOLUTION,
-                                                                       DataType.BOOLEAN)
-                                                  .setNotNull()
-                                                  .setDefaultValue(false));
+        databaseTableDefinition.addColumn(
+                new DatabaseColumnDefinition(KEY_ACTION_CHECK_PROGRESS, DataType.INTEGER).setNotNull()
+                        .setDefaultValue(0));
+        databaseTableDefinition.addColumn(
+                new DatabaseColumnDefinition(KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND, DataType.INTEGER).setNotNull()
+                        .setDefaultValue(0));
+        databaseTableDefinition.addColumn(
+                new DatabaseColumnDefinition(KEY_ACTION_REVEAL_SOLUTION, DataType.BOOLEAN).setNotNull()
+                        .setDefaultValue(false));
         databaseTableDefinition.addColumn(
                 new DatabaseColumnDefinition(KEY_SOLVED_MANUALLY, DataType.BOOLEAN).setNotNull()
                         .setDefaultValue(false));
-        databaseTableDefinition.addColumn(
-                new DatabaseColumnDefinition(KEY_FINISHED, DataType.BOOLEAN).setNotNull()
-                        .setDefaultValue(false));
-        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_INCLUDE_IN_STATISTICS,
-                                                                       DataType.BOOLEAN)
-                                                  .setNotNull()
+        databaseTableDefinition.addColumn(new DatabaseColumnDefinition(KEY_FINISHED, DataType.BOOLEAN).setNotNull()
                                                   .setDefaultValue(false));
+        databaseTableDefinition.addColumn(
+                new DatabaseColumnDefinition(KEY_INCLUDE_IN_STATISTICS, DataType.BOOLEAN).setNotNull()
+                        .setDefaultValue(false));
         databaseTableDefinition.setForeignKey(
                 new DatabaseForeignKeyDefinition(KEY_GRID_ID, GridDatabaseAdapter.TABLE_NAME,
                                                  GridDatabaseAdapter.KEY_ROWID));
@@ -169,11 +151,9 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
      * Upgrades the table to an other version.
      *
      * @param oldVersion
-     *         The old version of the database. Use the app revision number to identify the database
-     *         version.
+     *         The old version of the database. Use the app revision number to identify the database version.
      * @param newVersion
-     *         The new version of the database. Use the app revision number to identify the database
-     *         version.
+     *         The new version of the database. Use the app revision number to identify the database version.
      */
     protected void upgradeTable(int oldVersion, int newVersion) {
         if (Config.APP_MODE == AppMode.DEVELOPMENT && oldVersion < 438 && newVersion >= 438) {
@@ -196,8 +176,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
         contentValues.put(KEY_CELLS_EMPTY, gridStatistics.mCellsEmpty);
         contentValues.put(KEY_FIRST_MOVE, gridStatistics.mFirstMove.toString());
         contentValues.put(KEY_LAST_MOVE, gridStatistics.mLastMove.toString());
-        contentValues.put(KEY_INCLUDE_IN_STATISTICS,
-                          Boolean.toString(gridStatistics.mIncludedInStatistics));
+        contentValues.put(KEY_INCLUDE_IN_STATISTICS, Boolean.toString(gridStatistics.mIncludedInStatistics));
 
         long id;
         try {
@@ -232,8 +211,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
                                           //
                                           DATABASE_TABLE.getColumnNames(),
                                           // Note: statistics id equals solving attempt id
-                                          getStatisticsIdSelectionString(solvingAttemptId), null,
-                                          null,
+                                          getStatisticsIdSelectionString(solvingAttemptId), null, null,
                                           //
                                           null,
                                           //
@@ -244,8 +222,8 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
             gridStatistics = getGridStatisticsFromCursor(cursor);
         } catch (SQLiteException e) {
             throw new DatabaseAdapterException(
-                    String.format("Cannot retrieve statistics for grid with id '%d' from database.",
-                                  solvingAttemptId), e);
+                    String.format("Cannot retrieve statistics for grid with id '%d' from database.", solvingAttemptId),
+                    e);
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -255,8 +233,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
     }
 
     private String getStatisticsIdSelectionString(int statisticsRowId) {
-        return new FieldOperatorIntegerValue(KEY_ROWID, FieldOperatorValue.Operator.EQUALS,
-                                             statisticsRowId).toString();
+        return new FieldOperatorIntegerValue(KEY_ROWID, FieldOperatorValue.Operator.EQUALS, statisticsRowId).toString();
     }
 
     /**
@@ -264,8 +241,8 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
      *
      * @param cursor
      *         The cursor to be converted.
-     * @return A GridStatistics object for the first statistics record stored in the given cursor.
-     * Null in case of an error.
+     * @return A GridStatistics object for the first statistics record stored in the given cursor. Null in case of an
+     * error.
      */
     private GridStatistics getGridStatisticsFromCursor(Cursor cursor) {
         if (cursor == null || !cursor.moveToFirst()) {
@@ -278,37 +255,27 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
         gridStatistics.mId = cursor.getInt(getRowIdColumnFromCursor(cursor));
         gridStatistics.mGridId = cursor.getInt(getGridIdColumnFromCursor(cursor));
         gridStatistics.mReplayCount = cursor.getInt(getReplayCountColumnFromCursor(cursor));
-        gridStatistics.mFirstMove = DatabaseUtil.toSQLTimestamp(
-                cursor.getString(getFirstMoveColumnFromCursor(cursor)));
-        gridStatistics.mLastMove = DatabaseUtil.toSQLTimestamp(
-                cursor.getString(getLastMoveColumnFromCursor(cursor)));
+        gridStatistics.mFirstMove = DatabaseUtil.toSQLTimestamp(cursor.getString(getFirstMoveColumnFromCursor(cursor)));
+        gridStatistics.mLastMove = DatabaseUtil.toSQLTimestamp(cursor.getString(getLastMoveColumnFromCursor(cursor)));
         gridStatistics.mElapsedTime = cursor.getLong(getElapsedTimeColumnFromCursor(cursor));
-        gridStatistics.mCheatPenaltyTime = cursor.getLong(
-                getCheatPenaltyTimeColumnFromCursor(cursor));
+        gridStatistics.mCheatPenaltyTime = cursor.getLong(getCheatPenaltyTimeColumnFromCursor(cursor));
         gridStatistics.mCellsFilled = cursor.getInt(getCellFilledColumnFromCursor(cursor));
         gridStatistics.mCellsEmpty = cursor.getInt(getCellsEmptyColumnFromCursor(cursor));
         gridStatistics.mCellsRevealed = cursor.getInt(getCellRevealedColumnFromCursor(cursor));
-        gridStatistics.mEnteredValueReplaced = cursor.getInt(
-                getEnteredValueReplacedColumnFromCursor(cursor));
+        gridStatistics.mEnteredValueReplaced = cursor.getInt(getEnteredValueReplacedColumnFromCursor(cursor));
         gridStatistics.mMaybeValue = cursor.getInt(getMaybeValueColumnFromCursor(cursor));
         gridStatistics.mActionUndoMove = cursor.getInt(getActionUndoMoveColumnFromCursor(cursor));
         gridStatistics.mActionClearCell = cursor.getInt(getActionClearCellColumnFromCursor(cursor));
         gridStatistics.mActionClearGrid = cursor.getInt(getActionClearGridColumnFromCursor(cursor));
-        gridStatistics.mActionRevealCell = cursor.getInt(
-                getActionRevealCellColumnFromCursor(cursor));
-        gridStatistics.mActionRevealOperator = cursor.getInt(
-                getActionRevealOperatorColumnFromCursor(cursor));
-        gridStatistics.mActionCheckProgress = cursor.getInt(
-                getActionCheckProgressColumnFromCursor(cursor));
+        gridStatistics.mActionRevealCell = cursor.getInt(getActionRevealCellColumnFromCursor(cursor));
+        gridStatistics.mActionRevealOperator = cursor.getInt(getActionRevealOperatorColumnFromCursor(cursor));
+        gridStatistics.mActionCheckProgress = cursor.getInt(getActionCheckProgressColumnFromCursor(cursor));
         gridStatistics.mCheckProgressInvalidCellsFound = cursor.getInt(
                 getCheckProgressInvalidCellsFoundColumnFromCursor(cursor));
-        gridStatistics.mSolutionRevealed = Boolean.valueOf(
-                getSolutionRevealedStatusColumnFromCursor(cursor));
-        gridStatistics.mSolvedManually = Boolean.valueOf(
-                getSolvedManuallyStatusColumnFromCursor(cursor));
+        gridStatistics.mSolutionRevealed = Boolean.valueOf(getSolutionRevealedStatusColumnFromCursor(cursor));
+        gridStatistics.mSolvedManually = Boolean.valueOf(getSolvedManuallyStatusColumnFromCursor(cursor));
         gridStatistics.mFinished = Boolean.valueOf(getFinishedStatusColumnFromCursor(cursor));
-        gridStatistics.mIncludedInStatistics = Boolean.valueOf(
-                getIncludeInStatisticsColumnFromCursor(cursor));
+        gridStatistics.mIncludedInStatistics = Boolean.valueOf(getIncludeInStatisticsColumnFromCursor(cursor));
 
         return gridStatistics;
     }
@@ -406,8 +373,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
     }
 
     /**
-     * Update the given statistics. It is required that the record already exists. The id should
-     * never be changed.
+     * Update the given statistics. It is required that the record already exists. The id should never be changed.
      *
      * @param gridStatistics
      *         The statistics to be updated.
@@ -429,17 +395,13 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
         newValues.put(KEY_ACTION_REVEAL_CELL, gridStatistics.mActionRevealCell);
         newValues.put(KEY_ACTION_REVEAL_OPERATOR, gridStatistics.mActionRevealOperator);
         newValues.put(KEY_ACTION_CHECK_PROGRESS, gridStatistics.mActionCheckProgress);
-        newValues.put(KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND,
-                      gridStatistics.mCheckProgressInvalidCellsFound);
-        newValues.put(KEY_ACTION_REVEAL_SOLUTION,
-                      Boolean.toString(gridStatistics.mSolutionRevealed));
+        newValues.put(KEY_CHECK_PROGRESS_INVALID_CELLS_FOUND, gridStatistics.mCheckProgressInvalidCellsFound);
+        newValues.put(KEY_ACTION_REVEAL_SOLUTION, Boolean.toString(gridStatistics.mSolutionRevealed));
         newValues.put(KEY_SOLVED_MANUALLY, Boolean.toString(gridStatistics.mSolvedManually));
         newValues.put(KEY_FINISHED, Boolean.toString(gridStatistics.mFinished));
-        newValues.put(KEY_INCLUDE_IN_STATISTICS,
-                      Boolean.toString(gridStatistics.mIncludedInStatistics));
+        newValues.put(KEY_INCLUDE_IN_STATISTICS, Boolean.toString(gridStatistics.mIncludedInStatistics));
 
-        return sqliteDatabase.update(TABLE_NAME, newValues, KEY_ROWID + " = " + gridStatistics.mId,
-                                     null) == 1;
+        return sqliteDatabase.update(TABLE_NAME, newValues, KEY_ROWID + " = " + gridStatistics.mId, null) == 1;
     }
 
     /**
@@ -455,34 +417,30 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
     }
 
     /**
-     * Set the new solving attempt which has to be included for a specific grid in case the
-     * cumulative or historic statistics are retrieved.
+     * Set the new solving attempt which has to be included for a specific grid in case the cumulative or historic
+     * statistics are retrieved.
      *
      * @param gridId
      *         The grid id for which the solving attempts have to changed.
      * @param statisticsIdToBeIncluded
-     *         The row id of the statistics record which has to be included as *the* statistics of
-     *         the grid when retrieving the cumulative or historic statistics are retrieved.
+     *         The row id of the statistics record which has to be included as *the* statistics of the grid when
+     *         retrieving the cumulative or historic statistics are retrieved.
      */
     public void updateSolvingAttemptToBeIncludedInStatistics(int gridId, int statisticsIdToBeIncluded) {
         UpdateQueryHelper updateQueryHelper = new UpdateQueryHelper(TABLE_NAME);
         updateQueryHelper.setColumnToStatement(KEY_INCLUDE_IN_STATISTICS,
-                                               getDerivationNewValueIncludeInStatistics(
-                                                       statisticsIdToBeIncluded));
+                                               getDerivationNewValueIncludeInStatistics(statisticsIdToBeIncluded));
 
         ConditionList conditionListInner = new ConditionList();
         conditionListInner.addOperand(
-                new FieldOperatorIntegerValue(KEY_ROWID, FieldOperatorValue.Operator.EQUALS,
-                                              statisticsIdToBeIncluded));
-        conditionListInner.addOperand(new FieldOperatorBooleanValue(KEY_INCLUDE_IN_STATISTICS,
-                                                                    FieldOperatorValue.Operator.EQUALS,
-                                                                    true));
+                new FieldOperatorIntegerValue(KEY_ROWID, FieldOperatorValue.Operator.EQUALS, statisticsIdToBeIncluded));
+        conditionListInner.addOperand(
+                new FieldOperatorBooleanValue(KEY_INCLUDE_IN_STATISTICS, FieldOperatorValue.Operator.EQUALS, true));
         conditionListInner.setOrOperator();
 
         ConditionList conditionListOuter = new ConditionList();
         conditionListOuter.addOperand(
-                new FieldOperatorIntegerValue(KEY_GRID_ID, FieldOperatorValue.Operator.EQUALS,
-                                              gridId));
+                new FieldOperatorIntegerValue(KEY_GRID_ID, FieldOperatorValue.Operator.EQUALS, gridId));
         conditionListOuter.addOperand(conditionListInner);
         conditionListOuter.setAndOperator();
 
@@ -494,9 +452,8 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
         try {
             sqliteDatabase.execSQL(updateQueryHelper.toString());
         } catch (SQLiteException e) {
-            throw new DatabaseAdapterException(String.format(
-                    "Cannot update the grid statistics in database for grid with id '%d'.", gridId),
-                                               e);
+            throw new DatabaseAdapterException(
+                    String.format("Cannot update the grid statistics in database for grid with id '%d'.", gridId), e);
         }
     }
 

@@ -11,8 +11,7 @@ public class InvalidGridException extends RuntimeException {
     }
 
     /**
-     * Constructs a new {@code InvalidGridException} with the current stack trace and the specified
-     * detail message.
+     * Constructs a new {@code InvalidGridException} with the current stack trace and the specified detail message.
      *
      * @param detailMessage
      *         the detail message for this exception.
@@ -22,8 +21,8 @@ public class InvalidGridException extends RuntimeException {
     }
 
     /**
-     * Constructs a new {@code InvalidGridException} with the current stack trace, the specified
-     * detail message and the specified cause.
+     * Constructs a new {@code InvalidGridException} with the current stack trace, the specified detail message and the
+     * specified cause.
      *
      * @param detailMessage
      *         the detail message for this exception.
@@ -35,8 +34,7 @@ public class InvalidGridException extends RuntimeException {
     }
 
     /**
-     * Constructs a new {@code InvalidGridException} with the current stack trace and the specified
-     * cause.
+     * Constructs a new {@code InvalidGridException} with the current stack trace and the specified cause.
      *
      * @param throwable
      *         the cause of this exception.

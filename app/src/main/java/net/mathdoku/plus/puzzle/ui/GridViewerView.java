@@ -108,8 +108,8 @@ public class GridViewerView extends View {
     }
 
     /**
-     * Actually draw the locked. This method should always be encapsulated within a synchronize
-     * block</p> <code> synchronized (mGrid.mLock) { onDrawLocked(canvas); // other stuff } </code>
+     * Actually draw the locked. This method should always be encapsulated within a synchronize block</p> <code>
+     * synchronized (mGrid.mLock) { onDrawLocked(canvas); // other stuff } </code>
      *
      * @param canvas
      *         The canvas on which should be drawn.
@@ -119,16 +119,15 @@ public class GridViewerView extends View {
         // to be avoided that lines do overlap.
         Paint borderPaint = mGridPainter.getBorderPaint();
         canvas.drawRect(0, 0, mViewSize - mBorderWidth, mBorderWidth, borderPaint);
-        canvas.drawRect(mViewSize - mBorderWidth, 0, mViewSize, mViewSize - mBorderWidth,
-                        borderPaint);
+        canvas.drawRect(mViewSize - mBorderWidth, 0, mViewSize, mViewSize - mBorderWidth, borderPaint);
         canvas.drawRect(mBorderWidth, mViewSize - mBorderWidth, mViewSize, mViewSize, borderPaint);
         canvas.drawRect(0, mBorderWidth, 0 + mBorderWidth, mViewSize, borderPaint);
 
         // Draw background of the inner grid itself. This background is a
         // bit extended outside the inner grid which gives a nice outline
         // around the grid in the light theme.
-        canvas.drawRect(mBorderWidth - 1, mBorderWidth - 1, mViewSize - mBorderWidth + 2,
-                        mViewSize - mBorderWidth + 2, mGridPainter.getBackgroundPaint());
+        canvas.drawRect(mBorderWidth - 1, mBorderWidth - 1, mViewSize - mBorderWidth + 2, mViewSize - mBorderWidth + 2,
+                        mGridPainter.getBackgroundPaint());
 
         // Update the current cell size
         mPainter.setCellSize(mCellSize);
@@ -180,8 +179,7 @@ public class GridViewerView extends View {
                 }
                 if (column + 1 < mGridSize) {
                     mCellDrawer[row][column].setReferencesToCellToRight(cells[row][column + 1],
-                                                                        mCellDrawer[row][column +
-                                                                                1]);
+                                                                        mCellDrawer[row][column + 1]);
                 }
                 if (row + 1 < mGridSize) {
                     mCellDrawer[row][column].setReferencesToCellBelow(cells[row + 1][column],
@@ -189,8 +187,7 @@ public class GridViewerView extends View {
                 }
                 if (column > 0) {
                     mCellDrawer[row][column].setReferencesToCellToLeft(cells[row][column - 1],
-                                                                       mCellDrawer[row][column -
-                                                                               1]);
+                                                                       mCellDrawer[row][column - 1]);
                 }
             }
         }
@@ -261,14 +258,13 @@ public class GridViewerView extends View {
     }
 
     /**
-     * Sets the {@link net.mathdoku.plus.puzzle.digitpositiongrid.DigitPositionGrid} used to
-     * position the digit buttons for reuse when drawing the maybe values.
+     * Sets the {@link net.mathdoku.plus.puzzle.digitpositiongrid.DigitPositionGrid} used to position the digit buttons
+     * for reuse when drawing the maybe values.
      */
     private void setDigitPositionGrid() {
         // Determine the layout which has to be used for drawing the possible
         // values inside a cell.
-        DigitPositionGrid mDigitPositionGrid = mGrid != null ? new DigitPositionGrid(
-                mGrid.getGridSize()) : null;
+        DigitPositionGrid mDigitPositionGrid = mGrid != null ? new DigitPositionGrid(mGrid.getGridSize()) : null;
 
         // Propagate the digit position grid to the maybe painter which is used
         // by the cell drawer to paint the maybe digits inside a cell.
@@ -302,8 +298,8 @@ public class GridViewerView extends View {
     }
 
     /**
-     * Set the maximum size of the grid viewer view. Should only be called in case the the grid
-     * viewer view is displayed in a scroll view while the device is in landscape mode.
+     * Set the maximum size of the grid viewer view. Should only be called in case the the grid viewer view is displayed
+     * in a scroll view while the device is in landscape mode.
      *
      * @param maxSize
      *         The maximum size (width and height) to be used for the grid view.
@@ -316,8 +312,7 @@ public class GridViewerView extends View {
      * Indicates whether this grid viewer view is displayed inside a scroll view.
      *
      * @param inScrollView
-     *         True in case the grid viewer view is displayed inside a scroll view. False
-     *         otherwise.
+     *         True in case the grid viewer view is displayed inside a scroll view. False otherwise.
      */
     @SuppressWarnings("SameParameterValue")
     public void setInScrollView(boolean inScrollView) {
@@ -325,12 +320,10 @@ public class GridViewerView extends View {
     }
 
     /**
-     * Enables/disables an additional border around the visible grid which can be use for handling
-     * the swipe events.
+     * Enables/disables an additional border around the visible grid which can be use for handling the swipe events.
      *
      * @param swipeBorder
-     *         True in case an additional swipe border has to be measured by the viewer. False
-     *         otherwise.
+     *         True in case an additional swipe border has to be measured by the viewer. False otherwise.
      */
     void setSwipeBorder(boolean swipeBorder) {
         mSwipeBorder = swipeBorder;
@@ -348,7 +341,8 @@ public class GridViewerView extends View {
         // Update the painter which is used by the cell drawer when drawing the
         // cell.
         mPainter.setColorMode(
-                mPreferences.isColoredDigitsVisible() ? DigitPainterMode.INPUT_MODE_BASED : DigitPainterMode.MONOCHROME);
+                mPreferences.isColoredDigitsVisible() ? DigitPainterMode.INPUT_MODE_BASED : DigitPainterMode
+                        .MONOCHROME);
 
         // Reset borders of cells as they are affected by the preferences.
         mGrid.invalidateBordersOfAllCells();

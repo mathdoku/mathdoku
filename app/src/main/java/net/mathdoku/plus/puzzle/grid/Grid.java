@@ -55,10 +55,8 @@ public class Grid {
             return new GridStatistics();
         }
 
-        public GridGeneratingParameters createGridGeneratingParameters(GridType gridType,
-                                                                       boolean hideOperators,
-                                                                       PuzzleComplexity
-                                                                               puzzleComplexity,
+        public GridGeneratingParameters createGridGeneratingParameters(GridType gridType, boolean hideOperators,
+                                                                       PuzzleComplexity puzzleComplexity,
                                                                        int packageVersionNumber) {
             return new GridGeneratingParametersBuilder().setGridType(gridType)
                     .setHideOperators(hideOperators)
@@ -100,8 +98,8 @@ public class Grid {
     }
 
     /**
-     * Prevent the Grid from being instantiated directly. To create a new instance of {@link Grid}
-     * the GridBuilder has to be used.
+     * Prevent the Grid from being instantiated directly. To create a new instance of {@link Grid} the GridBuilder has
+     * to be used.
      */
     private Grid() {
         throw new InvalidGridException("Grid can only be instantiated via the GridBuilder.");
@@ -113,8 +111,8 @@ public class Grid {
         mSolvedListener = null;
 
         // Get defaults from builder
-        mObjectsCreator = gridBuilder.mGridObjectsCreator == null ? new Grid.ObjectsCreator() :
-                gridBuilder.mGridObjectsCreator;
+        mObjectsCreator = gridBuilder.mGridObjectsCreator == null ? new Grid.ObjectsCreator() : gridBuilder
+                .mGridObjectsCreator;
         mGridSize = gridBuilder.mGridSize;
         mGridGeneratingParameters = gridBuilder.mGridGeneratingParameters;
         mGridStatistics = gridBuilder.mGridStatistics;
@@ -169,45 +167,39 @@ public class Grid {
     }
 
     private void validateGridSizeThrowsExceptionOnError() {
-        if (mGridSize < GridType.getSmallestGridSize() || mGridSize > GridType.getBiggestGridSize
-                ()) {
-            throw new InvalidGridException(
-                    String.format("GridType '%d' is not a valid grid size.", mGridSize));
+        if (mGridSize < GridType.getSmallestGridSize() || mGridSize > GridType.getBiggestGridSize()) {
+            throw new InvalidGridException(String.format("GridType '%d' is not a valid grid size.", mGridSize));
         }
     }
 
     private void validateCellsThrowsExceptionOnError() {
         if (Util.isListNullOrEmpty(mCells)) {
-            throw new InvalidGridException(
-                    "Cannot create a grid without a list of cells. mCells is null or empty.");
+            throw new InvalidGridException("Cannot create a grid without a list of cells. mCells is null or empty.");
         }
         if (mCells.size() != mGridSize * mGridSize) {
-            throw new InvalidGridException(
-                    "Cannot create a grid if number of cells does not match with grid size. " +
-                            "Expected " + mGridSize * mGridSize + " cells, " +
-                            "got " + mCells.size() + " cells.");
+            throw new InvalidGridException("Cannot create a grid if number of cells does not match with grid size. " +
+                                                   "Expected " + mGridSize * mGridSize + " cells, " +
+                                                   "got " + mCells.size() + " cells.");
         }
     }
 
     private void validateCagesThrowsExceptionOnError() {
         if (Util.isListNullOrEmpty(mCages)) {
-            throw new InvalidGridException(
-                    "Cannot create a grid without a list of cages. mCages is null or empty.");
+            throw new InvalidGridException("Cannot create a grid without a list of cages. mCages is null or empty.");
         }
     }
 
     private void validateGridGeneratingParametersThrowsExceptionOnError() {
         if (mGridGeneratingParameters == null) {
-            throw new InvalidGridException(
-                    "Cannot create a grid without gridGeneratingParameters.");
+            throw new InvalidGridException("Cannot create a grid without gridGeneratingParameters.");
         }
     }
 
     /**
      * Get the cage of the cell which is currently selected.
      *
-     * @return The cage to which the currently selected cell belongs. Null in case no cell is
-     * selected or no cage exists.
+     * @return The cage to which the currently selected cell belongs. Null in case no cell is selected or no cage
+     * exists.
      */
     public Cage getSelectedCage() {
         if (mSelectedCell == null) {
@@ -287,8 +279,7 @@ public class Grid {
     }
 
     /**
-     * Unreveal the solution by setting the user value to the actual value. Only available in
-     * DEVELOPMENT mode.
+     * Unreveal the solution by setting the user value to the actual value. Only available in DEVELOPMENT mode.
      */
     public boolean unrevealSolution() {
         if (Config.APP_MODE == AppMode.DEVELOPMENT) {
@@ -332,8 +323,7 @@ public class Grid {
     // Checks whether the user has made any mistakes
 
     /**
-     * Checks whether all cells which are filled with a user value are filled with the correct
-     * value.
+     * Checks whether all cells which are filled with a user value are filled with the correct value.
      *
      * @return True in case the user has made no mistakes so far.
      */
@@ -488,8 +478,8 @@ public class Grid {
     }
 
     /**
-     * Clear the user value of the selected cell from the list of possible values in all other cells
-     * in the same row or in the same column as the selected cell.
+     * Clear the user value of the selected cell from the list of possible values in all other cells in the same row or
+     * in the same column as the selected cell.
      *
      * @param originalCellChange
      *         The cell which was originally changed.
@@ -503,8 +493,7 @@ public class Grid {
         int columnSelectedCell = mSelectedCell.getColumn();
         int valueSelectedCell = mSelectedCell.getEnteredValue();
         for (Cell cell : mCells) {
-            if ((cell.getRow() == rowSelectedCell || cell.getColumn() == columnSelectedCell) &&
-                    cell.hasPossible(
+            if ((cell.getRow() == rowSelectedCell || cell.getColumn() == columnSelectedCell) && cell.hasPossible(
                     valueSelectedCell)) {
                 originalCellChange.addRelatedMove(new CellChange(cell));
                 cell.removePossible(valueSelectedCell);
@@ -515,8 +504,7 @@ public class Grid {
     /**
      * Check if user has revealed the solution of this puzzle.
      *
-     * @return True in case the user has solved the puzzle by requesting the solution. False
-     * otherwise.
+     * @return True in case the user has solved the puzzle by requesting the solution. False otherwise.
      */
     public boolean isSolutionRevealed() {
         return this.mRevealed;
@@ -643,11 +631,10 @@ public class Grid {
     }
 
     /**
-     * Checks if the grid does not contain any user value. It is not relevant whether the grid does
-     * contain maybe values.
+     * Checks if the grid does not contain any user value. It is not relevant whether the grid does contain maybe
+     * values.
      *
-     * @return True in case no user values have been filled in. False in case at least one user
-     * value is filled in.
+     * @return True in case no user values have been filled in. False in case at least one user value is filled in.
      */
     public boolean containsNoEnteredValues() {
         for (Cell cell : mCells) {
@@ -729,23 +716,23 @@ public class Grid {
     /**
      * Highlight those cells where the user has made a mistake.
      *
-     * @return The number of cells which have been marked as invalid. Cells which were already
-     * marked as invalid will not be counted again.
+     * @return The number of cells which have been marked as invalid. Cells which were already marked as invalid will
+     * not be counted again.
      */
     public int markInvalidChoices() {
         int countNewInvalids = 0;
 
         mGridStatistics.increaseCounter(StatisticsCounterType.ACTION_CHECK_PROGRESS);
         for (Cell cell : mCells) {
-            if (cell.hasEnteredValue() && !cell.hasInvalidValueHighlight() && cell
-                    .getEnteredValue() != cell.getCorrectValue()) {
+            if (cell.hasEnteredValue() && !cell.hasInvalidValueHighlight() && cell.getEnteredValue() != cell
+                    .getCorrectValue()) {
                 cell.setInvalidHighlight();
                 countNewInvalids++;
             }
         }
         if (countNewInvalids > 0) {
-            mGridStatistics.increaseCounter(
-                    StatisticsCounterType.CHECK_PROGRESS_INVALIDS_CELLS_FOUND, countNewInvalids);
+            mGridStatistics.increaseCounter(StatisticsCounterType.CHECK_PROGRESS_INVALIDS_CELLS_FOUND,
+                                            countNewInvalids);
         }
 
         return countNewInvalids;
@@ -838,9 +825,9 @@ public class Grid {
      *
      * @param cells
      *         The list of cells for which the user values have to be returned.
-     * @return The user values which are filled in for the given cells. Null in case of an error. In
-     * case the returned arrays contains less elements than the number of cells given this indicates
-     * that not all cells have a user value.
+     * @return The user values which are filled in for the given cells. Null in case of an error. In case the returned
+     * arrays contains less elements than the number of cells given this indicates that not all cells have a user
+     * value.
      */
     public List<Integer> getEnteredValuesForCells(int[] cells) {
         List<Integer> enteredValues = new ArrayList<Integer>();
@@ -972,8 +959,7 @@ public class Grid {
                     // duplicate value. Note: in case the same value is used
                     // more than twice in the same row, the first cell will be
                     // marked multiple times as duplicate.
-                    markCellAsDuplicate(
-                            digitUsedInRow[rowConstraintsDimension1][constraintsDimension2]);
+                    markCellAsDuplicate(digitUsedInRow[rowConstraintsDimension1][constraintsDimension2]);
                     cellHasDuplicateEnteredValue = true;
                     duplicateValueFound = true;
                 }
@@ -988,8 +974,7 @@ public class Grid {
                     // duplicate value. Note: in case the same value is used
                     // more than twice in the same row, the first cell will be
                     // marked multiple times as duplicate.
-                    markCellAsDuplicate(
-                            digitUsedInColumn[columnConstraintsDimension1][constraintsDimension2]);
+                    markCellAsDuplicate(digitUsedInColumn[columnConstraintsDimension1][constraintsDimension2]);
                     cellHasDuplicateEnteredValue = true;
                     duplicateValueFound = true;
                 }

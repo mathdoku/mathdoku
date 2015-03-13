@@ -64,8 +64,8 @@ public class CellChange {
     }
 
     /**
-     * Relates cell changes which belong together. In case a cell change is restored, all its
-     * related cell changes will be restored as well.
+     * Relates cell changes which belong together. In case a cell change is restored, all its related cell changes will
+     * be restored as well.
      *
      * @param relatedCellChange
      *         The cell change which will be related to this cell change.
@@ -120,8 +120,8 @@ public class CellChange {
         // reference
         // fields are all treated differently.
         return mPreviousEnteredValue == lhs.mPreviousEnteredValue && mCell.equals(
-                lhs.mCell) && (mPreviousPossibleValues == null ? lhs.mPreviousPossibleValues ==
-                null : mPreviousPossibleValues.equals(
+                lhs.mCell) && (mPreviousPossibleValues == null ? lhs.mPreviousPossibleValues == null :
+                mPreviousPossibleValues.equals(
                 lhs.mPreviousPossibleValues));
     }
 

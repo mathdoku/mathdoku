@@ -14,8 +14,7 @@ public class AdditionCageResult extends CageResult {
             return new AdditionCageResult(cellValues);
         }
         throw new IllegalStateException(
-                String.format("Cannot instantiate with specified values: %s",
-                              Arrays.toString(cellValues)));
+                String.format("Cannot instantiate with specified values: %s", Arrays.toString(cellValues)));
     }
 
     public static boolean canBeCreated(int... cellValues) {

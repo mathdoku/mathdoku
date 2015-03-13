@@ -26,8 +26,8 @@ public class ComboGenerator {
      *         The cage for which all possible combo's have to be determined.
      * @param cells
      *         The list of cells for this cage.
-     * @return The list of all possible combinations. Null in case no combinations or too many
-     * permutations have been found.
+     * @return The list of all possible combinations. Null in case no combinations or too many permutations have been
+     * found.
      */
     public List<int[]> getPossibleCombos(Cage cage, List<Cell> cells) {
         mResult = cage.getResult();
@@ -61,8 +61,8 @@ public class ComboGenerator {
         if (mCageCells.size() == 2) {
             for (int i1 = 1; i1 <= mGridSize; i1++) {
                 for (int i2 = i1 + 1; i2 <= mGridSize; i2++) {
-                    if (i2 - i1 == mResult || i1 - i2 == mResult || mResult * i1 == i2 || mResult
-                            * i2 == i1 || i1 + i2 == mResult || i1 * i2 == mResult) {
+                    if (i2 - i1 == mResult || i1 - i2 == mResult || mResult * i1 == i2 || mResult * i2 == i1 || i1 +
+                            i2 == mResult || i1 * i2 == mResult) {
                         int[] numbers = {i1, i2};
                         resultCombos.add(numbers);
                         numbers = new int[]{i2, i1};
@@ -223,8 +223,8 @@ public class ComboGenerator {
     }
 
     /**
-     * Checks if the given permutation can be filled in in the cells of the cages without violating
-     * the rule that a digit can be used only once on each row and each column.
+     * Checks if the given permutation can be filled in in the cells of the cages without violating the rule that a
+     * digit can be used only once on each row and each column.
      *
      * @param possibles
      *         The permutation which has to be checked.

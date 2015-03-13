@@ -25,95 +25,85 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricGradleTestRunner.class)
 public class AvailableGridTypeFilterSelectorTest {
-	private static List<GridTypeFilter> gridTypeFilterListAllStatuses;
-	private static List<GridTypeFilter> gridTypeFilterListWithStatusSolved;
-	private static List<GridTypeFilter> gridTypeFilterListWithStatusUnfinished;
+    private static List<GridTypeFilter> gridTypeFilterListAllStatuses;
+    private static List<GridTypeFilter> gridTypeFilterListWithStatusSolved;
+    private static List<GridTypeFilter> gridTypeFilterListWithStatusUnfinished;
 
-	@Before
-	public void setup() {
-		TestRunnerHelper.setup(this.getClass().getCanonicalName());
+    @Before
+    public void setup() {
+        TestRunnerHelper.setup(this.getClass()
+                                       .getCanonicalName());
 
-		gridTypeFilterListAllStatuses = createAndInitializeNewGridTypeFilterList();
-		gridTypeFilterListWithStatusSolved = createAndInitializeNewGridTypeFilterList();
-		gridTypeFilterListWithStatusUnfinished = createAndInitializeNewGridTypeFilterList();
-		createAndSaveGrid(GridCreator4x4
-				.create()
-				.setCorrectEnteredValueToAllCells()
-				.getGrid());
-		createAndSaveGrid(GridCreator5x5
-				.create()
-				.setCorrectEnteredValueToAllCells()
-				.getGrid());
-		createAndSaveGrid(GridCreator4x4HiddenOperators
-				.create()
-				.setEmptyGrid()
-				.getGrid());
-	}
+        gridTypeFilterListAllStatuses = createAndInitializeNewGridTypeFilterList();
+        gridTypeFilterListWithStatusSolved = createAndInitializeNewGridTypeFilterList();
+        gridTypeFilterListWithStatusUnfinished = createAndInitializeNewGridTypeFilterList();
+        createAndSaveGrid(GridCreator4x4.create()
+                                  .setCorrectEnteredValueToAllCells()
+                                  .getGrid());
+        createAndSaveGrid(GridCreator5x5.create()
+                                  .setCorrectEnteredValueToAllCells()
+                                  .getGrid());
+        createAndSaveGrid(GridCreator4x4HiddenOperators.create()
+                                  .setEmptyGrid()
+                                  .getGrid());
+    }
 
-	private List<GridTypeFilter> createAndInitializeNewGridTypeFilterList() {
-		List<GridTypeFilter> gridTypeFilterList = new ArrayList<GridTypeFilter>();
+    private List<GridTypeFilter> createAndInitializeNewGridTypeFilterList() {
+        List<GridTypeFilter> gridTypeFilterList = new ArrayList<GridTypeFilter>();
 
-		gridTypeFilterList.add(GridTypeFilter.ALL);
+        gridTypeFilterList.add(GridTypeFilter.ALL);
 
-		return gridTypeFilterList;
-	}
+        return gridTypeFilterList;
+    }
 
-	@After
-	public void tearDown() {
-		TestRunnerHelper.tearDown();
-	}
+    @After
+    public void tearDown() {
+        TestRunnerHelper.tearDown();
+    }
 
-	private void createAndSaveGrid(Grid grid) {
-		assertThat(grid.save(), is(true));
+    private void createAndSaveGrid(Grid grid) {
+        assertThat(grid.save(), is(true));
 
-		GridTypeFilter gridTypeFilter = grid
-				.getGridGeneratingParameters()
-				.getGridType()
-				.getAttachedToGridTypeFilter();
-		if (!gridTypeFilterListAllStatuses.contains(gridTypeFilter)) {
-			gridTypeFilterListAllStatuses.add(gridTypeFilter);
-		}
+        GridTypeFilter gridTypeFilter = grid.getGridGeneratingParameters()
+                .getGridType()
+                .getAttachedToGridTypeFilter();
+        if (!gridTypeFilterListAllStatuses.contains(gridTypeFilter)) {
+            gridTypeFilterListAllStatuses.add(gridTypeFilter);
+        }
 
-		StatusFilter statusFilter = SolvingAttemptStatus
-				.getDerivedStatus(grid.isSolutionRevealed(), grid.isActive(),
-						grid.isEmpty())
-				.getAttachedToStatusFilter();
-		if (statusFilter == StatusFilter.SOLVED
-				&& !gridTypeFilterListWithStatusSolved.contains(gridTypeFilter)) {
-			gridTypeFilterListWithStatusSolved.add(gridTypeFilter);
-		}
-		if (statusFilter == StatusFilter.UNFINISHED
-				&& !gridTypeFilterListWithStatusUnfinished
-						.contains(gridTypeFilter)) {
-			gridTypeFilterListWithStatusUnfinished.add(gridTypeFilter);
-		}
-	}
+        StatusFilter statusFilter = SolvingAttemptStatus.getDerivedStatus(grid.isSolutionRevealed(), grid.isActive(),
+                                                                          grid.isEmpty())
+                .getAttachedToStatusFilter();
+        if (statusFilter == StatusFilter.SOLVED && !gridTypeFilterListWithStatusSolved.contains(gridTypeFilter)) {
+            gridTypeFilterListWithStatusSolved.add(gridTypeFilter);
+        }
+        if (statusFilter == StatusFilter.UNFINISHED && !gridTypeFilterListWithStatusUnfinished.contains(
+                gridTypeFilter)) {
+            gridTypeFilterListWithStatusUnfinished.add(gridTypeFilter);
+        }
+    }
 
-	@Test
-	public void getAvailableGridTypeFilters_GridAllStatuses() throws Exception {
-		assertThatGridTypeFilterList(StatusFilter.ALL,
-				gridTypeFilterListAllStatuses);
-	}
+    @Test
+    public void getAvailableGridTypeFilters_GridAllStatuses() throws Exception {
+        assertThatGridTypeFilterList(StatusFilter.ALL, gridTypeFilterListAllStatuses);
+    }
 
-	private void assertThatGridTypeFilterList(StatusFilter statusFilter,
-			List<GridTypeFilter> expectedGridTypeFilterList) {
-		List<GridTypeFilter> resultGridTypeFilters = new AvailableGridTypeFilterSelector(
-				statusFilter).getAvailableGridTypeFilters();
-		Collections.sort(resultGridTypeFilters);
-		Collections.sort(expectedGridTypeFilterList);
-		assertThat(resultGridTypeFilters, is(expectedGridTypeFilterList));
-	}
+    private void assertThatGridTypeFilterList(StatusFilter statusFilter,
+                                              List<GridTypeFilter> expectedGridTypeFilterList) {
+        List<GridTypeFilter> resultGridTypeFilters = new AvailableGridTypeFilterSelector(
+                statusFilter).getAvailableGridTypeFilters();
+        Collections.sort(resultGridTypeFilters);
+        Collections.sort(expectedGridTypeFilterList);
+        assertThat(resultGridTypeFilters, is(expectedGridTypeFilterList));
+    }
 
-	@Test
-	public void getAvailableGridTypeFilters_AllSolvedGrids() throws Exception {
-		assertThatGridTypeFilterList(StatusFilter.SOLVED,
-				gridTypeFilterListWithStatusSolved);
-	}
+    @Test
+    public void getAvailableGridTypeFilters_AllSolvedGrids() throws Exception {
+        assertThatGridTypeFilterList(StatusFilter.SOLVED, gridTypeFilterListWithStatusSolved);
+    }
 
-	@Test
-	public void getAvailableGridTypeFilters_AllUnfinishedGrids()
-			throws Exception {
-		assertThatGridTypeFilterList(StatusFilter.UNFINISHED,
-				gridTypeFilterListWithStatusUnfinished);
-	}
+    @Test
+    public void getAvailableGridTypeFilters_AllUnfinishedGrids() throws Exception {
+        assertThatGridTypeFilterList(StatusFilter.UNFINISHED, gridTypeFilterListWithStatusUnfinished);
+    }
 }

@@ -181,15 +181,13 @@ public class LeaderboardRankRow {
         if (statisticsId != that.statisticsId) {
             return false;
         }
-        if (leaderboardId != null ? !leaderboardId.equals(
-                that.leaderboardId) : that.leaderboardId != null) {
+        if (leaderboardId != null ? !leaderboardId.equals(that.leaderboardId) : that.leaderboardId != null) {
             return false;
         }
         if (puzzleComplexity != that.puzzleComplexity) {
             return false;
         }
-        if (rankDisplay != null ? !rankDisplay.equals(
-                that.rankDisplay) : that.rankDisplay != null) {
+        if (rankDisplay != null ? !rankDisplay.equals(that.rankDisplay) : that.rankDisplay != null) {
             return false;
         }
         if (rankStatus != that.rankStatus) {

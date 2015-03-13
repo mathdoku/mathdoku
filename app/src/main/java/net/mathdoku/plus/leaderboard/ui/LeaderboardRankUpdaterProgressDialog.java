@@ -10,8 +10,7 @@ import net.mathdoku.plus.ui.base.AppFragmentActivity;
 /**
  * Displays a progress dialog while updating all leaderboards.
  */
-public class LeaderboardRankUpdaterProgressDialog extends ProgressDialog implements
-        LeaderboardRankUpdater.Listener {
+public class LeaderboardRankUpdaterProgressDialog extends ProgressDialog implements LeaderboardRankUpdater.Listener {
     @SuppressWarnings("unused")
     private static final String TAG = LeaderboardRankUpdaterProgressDialog.class.getName();
 
@@ -69,8 +68,8 @@ public class LeaderboardRankUpdaterProgressDialog extends ProgressDialog impleme
     /**
      * Checks whether at least one leaderboard has been updated with the best score of a user.
      *
-     * @return True in case no leaderboards have been updated (e.d. the user does not have a score
-     * registered on Google Play Services).
+     * @return True in case no leaderboards have been updated (e.d. the user does not have a score registered on Google
+     * Play Services).
      */
     public boolean hasNoLeaderboardUpdated() {
         return mLeaderboardRankUpdater.getCountUpdatedLeaderboardWithScoreCurrentPlayer() == 0;

@@ -32,8 +32,8 @@ public enum SolvingAttemptStatus {
         for (SolvingAttemptStatus solvingAttemptStatus : values()) {
             if (solvingAttemptStatus.solvingAttemptStatusId == id) {
                 if (firstSolvingAttemptStatus != null) {
-                    throw new IllegalStateException(String.format(
-                            "Value '%d' is mapped to multiple solving attempt statuses.", id));
+                    throw new IllegalStateException(
+                            String.format("Value '%d' is mapped to multiple solving attempt statuses.", id));
                 }
                 firstSolvingAttemptStatus = solvingAttemptStatus;
             }
@@ -57,8 +57,7 @@ public enum SolvingAttemptStatus {
      * @param isActive
      *         True is the solving attempt is active. False otherwise.
      * @param isEmpty
-     *         True is no user values and no maybe values are filled in for the solving attempt.
-     *         False otherwise.
+     *         True is no user values and no maybe values are filled in for the solving attempt. False otherwise.
      * @return The status of the solving attempt.
      */
     public static SolvingAttemptStatus getDerivedStatus(boolean isRevealed, boolean isActive, boolean isEmpty) {

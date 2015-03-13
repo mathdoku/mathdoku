@@ -15,8 +15,7 @@ public class WeightedItem<T> {
             throw new IllegalArgumentException("Cannot instantiate an null item");
         }
         if (weight <= 0) {
-            throw new IllegalArgumentException(
-                    String.format("Cannot instantiate with weight '%d'.", weight));
+            throw new IllegalArgumentException(String.format("Cannot instantiate with weight '%d'.", weight));
         }
         this.weight = weight;
         this.item = item;

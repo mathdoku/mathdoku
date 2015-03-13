@@ -21,8 +21,7 @@ public enum GridType {
     GRID_9X9(9, GridTypeFilter.GRID_9X9);
 
     private static final GridType GRID_TYPE_WITH_SMALLEST_SIZE = GridType.values()[0];
-    private static final GridType GRID_TYPE_WITH_BIGGEST_SIZE = GridType.values()[GridType.values
-            ().length - 1];
+    private static final GridType GRID_TYPE_WITH_BIGGEST_SIZE = GridType.values()[GridType.values().length - 1];
 
     private final int size;
     private final GridTypeFilter attachedToGridTypeFilter;
@@ -49,8 +48,7 @@ public enum GridType {
     }
 
     public static GridType fromInteger(int gridSize) {
-        if (gridSize < GRID_TYPE_WITH_SMALLEST_SIZE.size || gridSize >
-                GRID_TYPE_WITH_BIGGEST_SIZE.size) {
+        if (gridSize < GRID_TYPE_WITH_SMALLEST_SIZE.size || gridSize > GRID_TYPE_WITH_BIGGEST_SIZE.size) {
             throw new IllegalArgumentException(
                     String.format("Size %d cannot be converted to a valid GridType.", gridSize));
         }
@@ -73,9 +71,9 @@ public enum GridType {
     public static GridType getFromNumberOfCells(int numberOfCells) {
         int gridSize = (int) Math.sqrt(numberOfCells);
         if (gridSize * gridSize != numberOfCells) {
-            throw new IllegalArgumentException(String.format(
-                    "Cannot determine a valid grid size for number of cells equal to %d.",
-                    numberOfCells));
+            throw new IllegalArgumentException(
+                    String.format("Cannot determine a valid grid size for number of cells equal to %d.",
+                                  numberOfCells));
         }
         return fromInteger(gridSize);
     }
@@ -93,10 +91,9 @@ public enum GridType {
         for (GridType gridType : values()) {
             if (gridType.getAttachedToGridTypeFilter() == gridTypeFilter) {
                 if (firstGridType != null) {
-                    throw new IllegalStateException(String.format(
-                            "Cannot determine grid type as GridTypeFilter '%s' is " + "attached " +
-                                    "to multiple grid types.",
-                            gridTypeFilter.name()));
+                    throw new IllegalStateException(
+                            String.format("Cannot determine grid type as GridTypeFilter '%s' is " + "attached " +
+                                                  "to multiple grid types.", gridTypeFilter.name()));
                 }
                 firstGridType = gridType;
             }

@@ -28,21 +28,18 @@ public class CellChangeStorage {
     private List<CellChange> mRelatedCellChanges;
 
     /**
-     * Read cell information from or a storage string which was created with @ Cell#getId()}
-     * before.
+     * Read cell information from or a storage string which was created with @ Cell#getId()} before.
      *
      * @param line
      *         The line containing the cell information.
      * @param cells
      *         The list of cells to which undo information can be related.
-     * @return True in case the given line contains cell information and is processed correctly.
-     * False otherwise.
+     * @return True in case the given line contains cell information and is processed correctly. False otherwise.
      */
     public boolean fromStorageString(String line, List<Cell> cells, int savedWithRevisionNumber) {
         validateParametersFromStorageString(line, savedWithRevisionNumber);
 
-        CellChangeStoragePatternMatcher cellChangeStoragePatternMatcher = new
-                CellChangeStoragePatternMatcher();
+        CellChangeStoragePatternMatcher cellChangeStoragePatternMatcher = new CellChangeStoragePatternMatcher();
         if (!cellChangeStoragePatternMatcher.matchesOuter(line)) {
             // Line does not match the pattern of a line including the object
             // type identifier
@@ -50,8 +47,7 @@ public class CellChangeStorage {
         }
 
         if (DEBUG) {
-            Log.d(TAG,
-                  "---------------------------------------------------------------------------");
+            Log.d(TAG, "---------------------------------------------------------------------------");
             Log.d(TAG, DEBUG_LINE + line);
             cellChangeStoragePatternMatcher.debugLogOuter();
         }
@@ -69,16 +65,14 @@ public class CellChangeStorage {
         // revision 369 all logic for handling games stored with older versions
         // is removed.
         if (savedWithRevisionNumber <= 368) {
-            throw new StorageException(String.format(
-                    "Cannot process storage strings of cell changes created with revision" + " %d" +
-                            " or before.",
-                    savedWithRevisionNumber));
+            throw new StorageException(
+                    String.format("Cannot process storage strings of cell changes created with revision" + " %d" +
+                                          " or before.", savedWithRevisionNumber));
         }
     }
 
     /**
-     * Read cell information from or a storage string which was created with @ Cell#getId()}
-     * before.
+     * Read cell information from or a storage string which was created with @ Cell#getId()} before.
      *
      * @param line
      *         The line containing the cell information.
@@ -86,20 +80,17 @@ public class CellChangeStorage {
      *         The level of recursion. The top level should start at 1.
      * @param cells
      *         The list of cells to which undo information can be related.
-     * @return True in case the given line contains cell information and is processed correctly.
-     * False otherwise.
+     * @return True in case the given line contains cell information and is processed correctly. False otherwise.
      */
     private boolean fromStorageStringRecursive(String line, int level, List<Cell> cells) {
         if (DEBUG) {
             Log.i(TAG, getDebugLogIndent(level) + DEBUG_LINE + line);
         }
 
-        CellChangeStoragePatternMatcher cellChangeStoragePatternMatcher = new
-                CellChangeStoragePatternMatcher();
+        CellChangeStoragePatternMatcher cellChangeStoragePatternMatcher = new CellChangeStoragePatternMatcher();
         if (!cellChangeStoragePatternMatcher.matchesInner(line)) {
             if (DEBUG) {
-                Log.i(TAG,
-                      getDebugLogIndent(level) + "Can not process this line. Format is invalid");
+                Log.i(TAG, getDebugLogIndent(level) + "Can not process this line. Format is invalid");
             }
             return false;
         }
@@ -113,12 +104,10 @@ public class CellChangeStorage {
         mPreviousPossibleValues = cellChangeStoragePatternMatcher.getPreviousPossibleValues();
         mRelatedCellChanges = new ArrayList<CellChange>();
 
-        for (String relatedCellChangeString : cellChangeStoragePatternMatcher
-                .getRelatedCellChanges()) {
+        for (String relatedCellChangeString : cellChangeStoragePatternMatcher.getRelatedCellChanges()) {
             if (!relatedCellChangeString.isEmpty()) {
                 CellChangeStorage relatedCellChangeStorage = new CellChangeStorage();
-                if (!relatedCellChangeStorage.fromStorageStringRecursive(relatedCellChangeString,
-                                                                         level + 1, cells)) {
+                if (!relatedCellChangeStorage.fromStorageStringRecursive(relatedCellChangeString, level + 1, cells)) {
                     return false;
                 }
                 mRelatedCellChanges.add(new CellChange(relatedCellChangeStorage));
@@ -137,20 +126,19 @@ public class CellChangeStorage {
     }
 
     /**
-     * Create a string representation of the Cell Change which can be used to store a Cell Change in
-     * a saved game.
+     * Create a string representation of the Cell Change which can be used to store a Cell Change in a saved game.
      *
      * @return A string representation of the grid cell.
      */
     public String toStorageString(CellChange cellChange) {
-        return CellChangeStoragePatternMatcher.SAVE_GAME_CELL_CHANGE_LINE + StorageDelimiter
-                .FIELD_DELIMITER_LEVEL1 + toStorageStringRecursive(
+        return CellChangeStoragePatternMatcher.SAVE_GAME_CELL_CHANGE_LINE + StorageDelimiter.FIELD_DELIMITER_LEVEL1 +
+                toStorageStringRecursive(
                 cellChange);
     }
 
     /**
-     * Create a string representation (recursive) of the Cell Change which can be used to store a
-     * Cell Change in a saved game.
+     * Create a string representation (recursive) of the Cell Change which can be used to store a Cell Change in a saved
+     * game.
      *
      * @return A string representation of the grid cell.
      */
@@ -160,11 +148,10 @@ public class CellChangeStorage {
         mPreviousPossibleValues = rootCellChange.getPreviousPossibleValues();
         mRelatedCellChanges = rootCellChange.getRelatedCellChanges();
 
-        String storageString = "[" + mCell.getCellId() + StorageDelimiter.FIELD_DELIMITER_LEVEL1
-                + mPreviousEnteredValue + StorageDelimiter.FIELD_DELIMITER_LEVEL1;
+        String storageString = "[" + mCell.getCellId() + StorageDelimiter.FIELD_DELIMITER_LEVEL1 +
+                mPreviousEnteredValue + StorageDelimiter.FIELD_DELIMITER_LEVEL1;
         for (int previousPossibleValue : mPreviousPossibleValues) {
-            storageString += Integer.toString(
-                    previousPossibleValue) + StorageDelimiter.FIELD_DELIMITER_LEVEL2;
+            storageString += Integer.toString(previousPossibleValue) + StorageDelimiter.FIELD_DELIMITER_LEVEL2;
         }
         storageString += StorageDelimiter.FIELD_DELIMITER_LEVEL1;
         if (mRelatedCellChanges != null) {

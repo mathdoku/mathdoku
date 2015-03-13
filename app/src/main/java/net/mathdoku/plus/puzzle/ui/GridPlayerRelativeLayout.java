@@ -9,8 +9,8 @@ import net.mathdoku.plus.R;
 import net.mathdoku.plus.painter.Painter;
 
 /**
- * This GridPlayerRelativeLayout should be used in case a relative layout is needed which is aligned
- * with the visible grid (i.e. excluding the swipe border on the outside of the visible grid).
+ * This GridPlayerRelativeLayout should be used in case a relative layout is needed which is aligned with the visible
+ * grid (i.e. excluding the swipe border on the outside of the visible grid).
  */
 public class GridPlayerRelativeLayout extends RelativeLayout {
     @SuppressWarnings("unused")
@@ -38,17 +38,13 @@ public class GridPlayerRelativeLayout extends RelativeLayout {
         if (typedArray != null) {
             try {
                 mLeftMarginAdjustment = typedArray.getInt(
-                        R.styleable.GridPlayerViewLayoutAlign_layout_alignGridPlayerViewLeft,
-                        1) == 0;
+                        R.styleable.GridPlayerViewLayoutAlign_layout_alignGridPlayerViewLeft, 1) == 0;
                 mTopMarginAdjustment = typedArray.getInt(
-                        R.styleable.GridPlayerViewLayoutAlign_layout_alignGridPlayerViewTop,
-                        1) == 0;
+                        R.styleable.GridPlayerViewLayoutAlign_layout_alignGridPlayerViewTop, 1) == 0;
                 mRightMarginAdjustment = typedArray.getInt(
-                        R.styleable.GridPlayerViewLayoutAlign_layout_alignGridPlayerViewRight,
-                        1) == 0;
+                        R.styleable.GridPlayerViewLayoutAlign_layout_alignGridPlayerViewRight, 1) == 0;
                 mBottomMarginAdjustment = typedArray.getInt(
-                        R.styleable.GridPlayerViewLayoutAlign_layout_alignGridPlayerViewBottom,
-                        1) == 0;
+                        R.styleable.GridPlayerViewLayoutAlign_layout_alignGridPlayerViewBottom, 1) == 0;
             } finally {
                 typedArray.recycle();
             }

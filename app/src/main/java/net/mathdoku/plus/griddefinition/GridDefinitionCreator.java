@@ -11,14 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Converts the definition of this grid to a string. This definitions only consists of information
- * needed to rebuild the puzzle. It does not include information about how it was created or about
- * the current status of solving. This definition is unique regardless of grid size and or the
- * version of the grid generator used.
+ * Converts the definition of this grid to a string. This definitions only consists of information needed to rebuild the
+ * puzzle. It does not include information about how it was created or about the current status of solving. This
+ * definition is unique regardless of grid size and or the version of the grid generator used.
  * <p/>
- * The id's of the cages are reindexed so the list of top-left-cells of the cages are sorted in
- * order of increasing cell numbers. In this way to identical grids in which only the cage id's are
- * different result in identical grid definitions.
+ * The id's of the cages are reindexed so the list of top-left-cells of the cages are sorted in order of increasing cell
+ * numbers. In this way to identical grids in which only the cage id's are different result in identical grid
+ * definitions.
  */
 public class GridDefinitionCreator {
     private final List<Cell> cells;
@@ -43,8 +42,7 @@ public class GridDefinitionCreator {
             throw new InvalidParameterException("Parameter cages cannot be null or empty list.");
         }
         if (gridGeneratingParameters == null) {
-            throw new InvalidParameterException(
-                    "Parameter gridGeneratingParameters cannot be null.");
+            throw new InvalidParameterException("Parameter gridGeneratingParameters cannot be null.");
         }
     }
 

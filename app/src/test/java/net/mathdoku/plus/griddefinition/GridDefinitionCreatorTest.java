@@ -30,93 +30,82 @@ import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 public class GridDefinitionCreatorTest {
-	@Before
-	public void setup() {
-		// Instantiate the singleton classes
-		Activity activity = new Activity();
-		new Util(activity);
-	}
+    @Before
+    public void setup() {
+        // Instantiate the singleton classes
+        Activity activity = new Activity();
+        new Util(activity);
+    }
 
-	@Test(expected = InvalidParameterException.class)
-	public void invoke_ArrayListCellsIsNull_ThrowsInvalidParameterException()
-			throws Exception {
-		List<Cell> cells = null;
-		List<Cage> cages = mock(ArrayList.class);
-		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
+    @Test(expected = InvalidParameterException.class)
+    public void invoke_ArrayListCellsIsNull_ThrowsInvalidParameterException() throws Exception {
+        List<Cell> cells = null;
+        List<Cage> cages = mock(ArrayList.class);
+        GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
 
-		new GridDefinitionCreator(cells, cages, gridGeneratingParameters)
-				.invoke();
-	}
+        new GridDefinitionCreator(cells, cages, gridGeneratingParameters).invoke();
+    }
 
-	@Test(expected = InvalidParameterException.class)
-	public void invoke_ArrayListCellsIsEmpty_ThrowsInvalidParameterException()
-			throws Exception {
-		List<Cell> cells = new ArrayList<Cell>();
-		List<Cage> cages = mock(ArrayList.class);
-		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
+    @Test(expected = InvalidParameterException.class)
+    public void invoke_ArrayListCellsIsEmpty_ThrowsInvalidParameterException() throws Exception {
+        List<Cell> cells = new ArrayList<Cell>();
+        List<Cage> cages = mock(ArrayList.class);
+        GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
 
-		new GridDefinitionCreator(cells, cages, gridGeneratingParameters)
-				.invoke();
-	}
+        new GridDefinitionCreator(cells, cages, gridGeneratingParameters).invoke();
+    }
 
-	@Test(expected = InvalidParameterException.class)
-	public void invoke_ArrayListCagesIsNull_ThrowsInvalidParameterException()
-			throws Exception {
-		List<Cell> cells = mock(ArrayList.class);
-		when(cells.size()).thenReturn(1);
-		List<Cage> cages = null;
-		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
+    @Test(expected = InvalidParameterException.class)
+    public void invoke_ArrayListCagesIsNull_ThrowsInvalidParameterException() throws Exception {
+        List<Cell> cells = mock(ArrayList.class);
+        when(cells.size()).thenReturn(1);
+        List<Cage> cages = null;
+        GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
 
-		new GridDefinitionCreator(cells, cages, gridGeneratingParameters)
-				.invoke();
-	}
+        new GridDefinitionCreator(cells, cages, gridGeneratingParameters).invoke();
+    }
 
-	@Test(expected = InvalidParameterException.class)
-	public void invoke_ArrayListCagesIsEmpty_ThrowsInvalidParameterException()
-			throws Exception {
-		List<Cell> cells = mock(ArrayList.class);
-		when(cells.size()).thenReturn(1);
-		List<Cage> cages = new ArrayList<Cage>();
-		GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
+    @Test(expected = InvalidParameterException.class)
+    public void invoke_ArrayListCagesIsEmpty_ThrowsInvalidParameterException() throws Exception {
+        List<Cell> cells = mock(ArrayList.class);
+        when(cells.size()).thenReturn(1);
+        List<Cage> cages = new ArrayList<Cage>();
+        GridGeneratingParameters gridGeneratingParameters = mock(GridGeneratingParameters.class);
 
-		new GridDefinitionCreator(cells, cages, gridGeneratingParameters)
-				.invoke();
-	}
+        new GridDefinitionCreator(cells, cages, gridGeneratingParameters).invoke();
+    }
 
-	@Test(expected = InvalidParameterException.class)
-	public void invoke_GridGeneratingParametersIsNull_ThrowsInvalidParameterException()
-			throws Exception {
-		List<Cell> cells = mock(ArrayList.class);
-		when(cells.size()).thenReturn(1);
-		List<Cage> cages = mock(ArrayList.class);
-		when(cages.size()).thenReturn(1);
-		GridGeneratingParameters gridGeneratingParameters = null;
+    @Test(expected = InvalidParameterException.class)
+    public void invoke_GridGeneratingParametersIsNull_ThrowsInvalidParameterException() throws Exception {
+        List<Cell> cells = mock(ArrayList.class);
+        when(cells.size()).thenReturn(1);
+        List<Cage> cages = mock(ArrayList.class);
+        when(cages.size()).thenReturn(1);
+        GridGeneratingParameters gridGeneratingParameters = null;
 
-		new GridDefinitionCreator(cells, cages, gridGeneratingParameters)
-				.invoke();
-	}
+        new GridDefinitionCreator(cells, cages, gridGeneratingParameters).invoke();
+    }
 
-	@Test
-	public void invoke_TestGrid2x2_GridDefinitionCreated() throws Exception {
-		assertGridDefinition(GridCreator2x2.create());
-	}
+    @Test
+    public void invoke_TestGrid2x2_GridDefinitionCreated() throws Exception {
+        assertGridDefinition(GridCreator2x2.create());
+    }
 
-	private void assertGridDefinition(GridCreator gridCreator) {
-		Grid grid = gridCreator.setEmptyGrid().getGrid();
-		String gridDefinition = new GridDefinitionCreator(grid.getCells(),
-				grid.getCages(), grid.getGridGeneratingParameters()).invoke();
-		assertThat(gridDefinition, is(equalTo(gridCreator.getGridDefinition())));
-	}
+    private void assertGridDefinition(GridCreator gridCreator) {
+        Grid grid = gridCreator.setEmptyGrid()
+                .getGrid();
+        String gridDefinition = new GridDefinitionCreator(grid.getCells(), grid.getCages(),
+                                                          grid.getGridGeneratingParameters()).invoke();
+        assertThat(gridDefinition, is(equalTo(gridCreator.getGridDefinition())));
+    }
 
-	@Test
-	public void invoke_TestGrid4x4_GridDefinitionCreated() throws Exception {
-		assertGridDefinition(GridCreator4x4.create());
-	}
+    @Test
+    public void invoke_TestGrid4x4_GridDefinitionCreated() throws Exception {
+        assertGridDefinition(GridCreator4x4.create());
+    }
 
-	@Test
-	public void invoke_TestGrid4x4CageIdsNotConsecutive_GridDefinitionCreated()
-			throws Exception {
-		assertGridDefinition(GridCreator4x4CageIdsNotConsecutiveNorSorted
-				.create());
-	}
+    @Test
+    public void invoke_TestGrid4x4CageIdsNotConsecutive_GridDefinitionCreated() throws Exception {
+        assertGridDefinition(GridCreator4x4CageIdsNotConsecutiveNorSorted.create());
+    }
 }
