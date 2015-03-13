@@ -198,6 +198,8 @@ public class ArchiveFragmentActivity extends AppFragmentActivity {
     }
 
     @Override
+    // Suppress warnings about cyclomatic complexity
+    @SuppressWarnings("all")
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
