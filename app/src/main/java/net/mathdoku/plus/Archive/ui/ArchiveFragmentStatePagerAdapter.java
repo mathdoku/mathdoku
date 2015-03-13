@@ -17,9 +17,9 @@ import java.util.List;
  */
 class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 
-    // Replace Config.DisabledAlways() on following line with Config.EnabledInDevelopmentModeOnly()
+    // Replace Config.disabledAlways() on following line with Config.enabledInDevelopmentModeOnly()
     // to show debug information when running in development mode.
-    private static final boolean DEBUG = Config.DisabledAlways();
+    private static final boolean DEBUG = Config.disabledAlways();
 
     private static final int UNKNOWN_GRID_ID = -1;
     private static final int INVALID_POSITION_ID = -2;

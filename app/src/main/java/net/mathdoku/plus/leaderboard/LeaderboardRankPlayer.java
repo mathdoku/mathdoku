@@ -19,9 +19,9 @@ class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener {
     @SuppressWarnings("unused")
     private static final String TAG = LeaderboardRankPlayer.class.getName();
 
-    // Replace Config.DisabledAlways() on following line with Config.EnabledInDevelopmentModeOnly()
+    // Replace Config.disabledAlways() on following line with Config.enabledInDevelopmentModeOnly()
     // to show debug information when running in development mode.
-    private static final boolean DEBUG = Config.DisabledAlways();
+    private static final boolean DEBUG = Config.disabledAlways();
 
     // The games client which is connected to Google Play Services
     private final LeaderboardConnector mLeaderboardConnector;

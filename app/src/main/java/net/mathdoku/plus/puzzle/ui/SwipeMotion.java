@@ -12,9 +12,9 @@ public class SwipeMotion extends Motion {
     @SuppressWarnings("unused")
     private static final String TAG = SwipeMotion.class.getName();
 
-    // Replace Config.DisabledAlways() on following line with Config.EnabledInDevelopmentModeOnly()
+    // Replace Config.disabledAlways() on following line with Config.enabledInDevelopmentModeOnly()
     // to show debug information when running in development mode.
-    private static final boolean DEBUG = Config.DisabledAlways();
+    private static final boolean DEBUG = Config.disabledAlways();
 
     // Possible statuses of the swipe motion
     private enum Status {

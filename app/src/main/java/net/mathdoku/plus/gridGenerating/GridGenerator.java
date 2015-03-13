@@ -27,10 +27,10 @@ public class GridGenerator implements GridGeneratorIface {
     @SuppressWarnings("unused")
     private static final String TAG = GridGenerator.class.getName();
 
-    // Replace Config.DisabledAlways() on following line with Config.EnabledInDevelopmentModeOnly()
+    // Replace Config.disabledAlways() on following line with Config.enabledInDevelopmentModeOnly()
     // to show debug information when running in development mode.
-    static final boolean DEBUG_NORMAL = Config.DisabledAlways();
-    static final boolean DEBUG_FULL = Config.DisabledAlways();
+    static final boolean DEBUG_NORMAL = Config.disabledAlways();
+    static final boolean DEBUG_FULL = Config.disabledAlways();
 
     private static final int MAX_ATTEMPTS_TO_FILL_GRID_WITH_CAGES = 20;
     private final GridGeneratorListenerIface gridGeneratorListener;

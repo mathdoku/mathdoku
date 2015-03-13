@@ -20,9 +20,9 @@ public class GridConverter extends AsyncTask<Void, Void, Void> {
     @SuppressWarnings("unused")
     private static final String TAG = GridConverter.class.getName();
 
-    // Replace Config.DisabledAlways() on following line with Config.EnabledInDevelopmentModeOnly()
+    // Replace Config.disabledAlways() on following line with Config.enabledInDevelopmentModeOnly()
     // to show debug information when running in development mode.
-    private static final boolean DEBUG = Config.DisabledAlways();
+    private static final boolean DEBUG = Config.disabledAlways();
 
     // The activity which started this task
     private PuzzleFragmentActivity mActivity;

@@ -33,12 +33,12 @@ public class Config {
 
     public static final AppMode APP_MODE = AppMode.PRODUCTION;
 
-    public static boolean EnabledInDevelopmentModeOnly() {
+    public static boolean enabledInDevelopmentModeOnly() {
         return Config.APP_MODE == AppMode.DEVELOPMENT;
     }
 
     // Convenience method for code readability of initialization of debug variables.
-    public static boolean DisabledAlways() {
+    public static boolean disabledAlways() {
         return false;
     }
 }

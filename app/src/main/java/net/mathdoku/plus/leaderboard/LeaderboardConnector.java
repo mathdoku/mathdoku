@@ -23,9 +23,9 @@ public class LeaderboardConnector {
     @SuppressWarnings("unused")
     private static final String TAG = LeaderboardConnector.class.getName();
 
-    // Replace Config.DisabledAlways() on following line with Config.EnabledInDevelopmentModeOnly()
+    // Replace Config.disabledAlways() on following line with Config.enabledInDevelopmentModeOnly()
     // to show debug information when running in development mode.
-    public static final boolean DEBUG = Config.DisabledAlways();
+    public static final boolean DEBUG = Config.disabledAlways();
 
     // Reference to the games client of google play services.
     private final GamesClient mGamesClient;
