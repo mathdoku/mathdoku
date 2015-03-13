@@ -18,6 +18,12 @@ public class Screendump {
 
     private final Context mContext;
 
+    private class FileCreationError extends IOException {
+        public FileCreationError(String message) {
+            super(message);
+        }
+    }
+
     /**
      * Creates a new instance of {@link Screendump}.
      *
@@ -46,24 +52,17 @@ public class Screendump {
         Canvas canvas = new Canvas(bitmap);
         view.draw(canvas);
 
-        // Create file
-        File file = new File(mContext.getFilesDir(), filename);
-        if (!file.exists()) {
-            try {
-                if (!file.createNewFile()) {
-                    return false;
-                }
-            } catch (IOException e) {
-                Log.d(TAG, "Error while creating file for screendump.", e);
-                return false;
-            }
-        }
+        return writeBitmapToFile(bitmap, filename);
+    }
 
-        // Write the created bitmap to a file.
+    private boolean writeBitmapToFile(Bitmap bitmap, String filename) {
         FileOutputStream out = null;
         try {
-            out = new FileOutputStream(file);
+            out = new FileOutputStream(getFile(filename));
             bitmap.compress(Bitmap.CompressFormat.PNG, COMPRESS_FACTOR, out);
+        } catch (FileCreationError fileCreationError) {
+            Log.d(TAG, "Error while writing to file with screendump.", fileCreationError);
+            return false;
         } catch (FileNotFoundException e) {
             Log.d(TAG, "Error while writing to file with screendump.", e);
             return false;
@@ -76,7 +75,16 @@ public class Screendump {
                 }
             }
         }
-
         return true;
+    }
+
+    private File getFile(String filename) throws FileCreationError {
+        File file = new File(mContext.getFilesDir(), filename);
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            throw new FileCreationError("Can not create a new file.");
+        }
+        return file;
     }
 }
