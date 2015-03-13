@@ -11,8 +11,8 @@ package net.mathdoku.plus.config;
  * <p/>
  * <pre>
  * if (Config.APP_MODE == AppMode.DEVELOPMENT) {
- * 	// code which should only be included in case the app is used for unit
- * 	// testing
+ *     // code which should only be included in case the app is used for unit
+ *     //testing
  * }
  * </pre>
  * <p/>

@@ -81,10 +81,10 @@ public class StatisticsFragmentActivity extends AppFragmentActivity implements A
         int tab = mMathDokuPreferences.getStatisticsTabLastDisplayed();
         mViewPager.setCurrentItem(tab >= 0 ? tab : statisticsFragmentPagerAdapter.getCount() - 1);
 
-		/*
-         * Styling of the pager tab strip is not possible from within code. See
-		 * values-v14/styles.xml for styling of the action bar tab.
-		 */
+        /*
+         * Styling of the pager tab strip is not possible from within code. See values-v14/styles.xml for styling of
+         * the action bar tab.
+         */
     }
 
     @Override
@@ -148,11 +148,11 @@ public class StatisticsFragmentActivity extends AppFragmentActivity implements A
                 .setIcon(R.drawable.icon)
                 .setView(view)
                 .setPositiveButton(R.string.dialog_general_button_close, new DialogInterface.OnClickListener() {
-                                       @Override
-                                       public void onClick(DialogInterface dialog, int whichButton) {
-                                           // Do nothing
-                                       }
-                                   })
+                    @Override
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // Do nothing
+                    }
+                })
                 .show();
     }
 }

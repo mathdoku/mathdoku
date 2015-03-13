@@ -213,11 +213,10 @@ public class GridLoaderTest {
             @Override
             public Grid build() {
                 /*
-				 * As the stub does not contain real data, building the grid
-				 * would always fail. As unit testing of the Grid constructor is
-				 * not inside the scope of these unit tests, a mock is returned
-				 * whenever the build is called.
-				 */
+                 * As the stub does not contain real data, building the grid would always fail. As unit testing of
+                 * the Grid constructor is not inside the scope of these unit tests,
+                 * a mock is returned whenever the build is called.
+                 */
                 return mock(Grid.class);
             }
         };

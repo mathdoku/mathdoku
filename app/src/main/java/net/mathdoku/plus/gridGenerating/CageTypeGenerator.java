@@ -16,16 +16,16 @@ public class CageTypeGenerator {
      * <p/>
      * <p/>
      * <pre>
-     * 	MaxSize    #cage_types     #cumulative
-     *        1              1               1
-     *        2              2               3
-     *        3              6               9
-     *        4             19              28
-     *        5             63              91
-     *        6            216             307
-     *        7            760           1,067
-     *        8          2,725           3,792
-     *        9          9,910          13,702
+     * MaxSize    #cage_types     #cumulative
+     *       1              1               1
+     *       2              2               3
+     *       3              6               9
+     *       4             19              28
+     *       5             63              91
+     *       6            216             307
+     *       7            760           1,067
+     *       8          2,725           3,792
+     *       9          9,910          13,702
      * </pre>
      */
     public static final int MAX_SIZE_STANDARD_CAGE_TYPE = 5;

@@ -634,14 +634,10 @@ public class GridTest {
         // values).
         // In both cases the user value equals 0 before and after the actual
         // undo, indicating that the cell does not contain a user value.
-        when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.getEnteredValue()).thenReturn( //
-                                                                                        0 /*
-                         * value before actual undo
-						 */,
-                                                                                        //
-                                                                                        0 /*
-						 * value after actual undo
-						 */);
+        int value_before_actual_undo = 0;
+        int value_after_actual_undo = 0;
+        when(mGridBuilderStub.mAnyCellMockOfDefaultSetup.getEnteredValue()).thenReturn(value_before_actual_undo,
+                                                                                       value_after_actual_undo);
         when(mCellChangeMock.getCell()).thenReturn(mGridBuilderStub.mAnyCellMockOfDefaultSetup);
         mGridBuilderStub.setCellChangesInitializedWith(mCellChangeMock);
         int numberOfMovesBeforeUndo = mGridBuilderStub.mCellChanges.size();
@@ -1403,7 +1399,8 @@ public class GridTest {
     }
 
     @Test
-    public void revealOperatorSelectedCage_NoCageSelectedForCageWithVisibleOperator_OperatorRevealed() throws Exception {
+    public void revealOperatorSelectedCage_NoCageSelectedForCageWithVisibleOperator_OperatorRevealed() throws
+            Exception {
         Grid grid = mGridBuilderStub.build();
 
         assertThat(grid.revealOperatorSelectedCage(), is(false));
@@ -1442,7 +1439,8 @@ public class GridTest {
     }
 
     @Test
-    public void getEnteredValuesForCells_GetValueForOneCellNotHavingAEnteredValue_NoEnteredValuesReturned() throws Exception {
+    public void getEnteredValuesForCells_GetValueForOneCellNotHavingAEnteredValue_NoEnteredValuesReturned() throws
+            Exception {
         int idOfCell = 4;
         when(mGridBuilderStub.mCellMockOfDefaultSetup[idOfCell].hasEnteredValue()).thenReturn(false);
         Grid grid = mGridBuilderStub.build();
@@ -1452,7 +1450,8 @@ public class GridTest {
     }
 
     @Test
-    public void getEnteredValuesForCells_GetValueForMultipleCellsAllHavingAEnteredValue_EnteredValuesReturned() throws Exception {
+    public void getEnteredValuesForCells_GetValueForMultipleCellsAllHavingAEnteredValue_EnteredValuesReturned()
+            throws Exception {
         int idOfCell_1 = 4;
         int valueOfCell_1 = 3;
         when(mGridBuilderStub.mCellMockOfDefaultSetup[idOfCell_1].hasEnteredValue()).thenReturn(true);
@@ -1470,7 +1469,8 @@ public class GridTest {
     }
 
     @Test
-    public void getEnteredValuesForCells_GetValueForMultipleCellsNotAllHavingAEnteredValue_EnteredValuesReturned() throws Exception {
+    public void getEnteredValuesForCells_GetValueForMultipleCellsNotAllHavingAEnteredValue_EnteredValuesReturned()
+            throws Exception {
         int idOfCell_1 = 4;
         int valueOfCell_1 = 3;
         when(mGridBuilderStub.mCellMockOfDefaultSetup[idOfCell_1].hasEnteredValue()).thenReturn(true);

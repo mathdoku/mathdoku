@@ -13,6 +13,7 @@ import java.io.IOException;
 public class Screendump {
     @SuppressWarnings("unused")
     private static final String TAG = Screendump.class.getName();
+    public static final int COMPRESS_FACTOR = 1;
 
     private final Context mContext;
 
@@ -62,12 +63,7 @@ public class Screendump {
         try {
 
             out = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 1, out); /*
-                                                                 * Compress
-																 * factor is not
-																 * used not used
-																 * with PNG
-																 */
+            bitmap.compress(Bitmap.CompressFormat.PNG, COMPRESS_FACTOR, out);
         } catch (Exception e) {
             Log.d(TAG, "Error while writing to file with screendump.", e);
             return false;

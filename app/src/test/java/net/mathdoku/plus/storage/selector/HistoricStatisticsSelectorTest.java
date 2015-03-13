@@ -27,11 +27,10 @@ public class HistoricStatisticsSelectorTest {
     public void setUp() throws Exception {
         if (!setupAtFirstTestIsExecuted) {
             /*
-			 * Ideally this would have been executed in the @BeforeClass setup.
-			 * This is however not possible as the Robolectric.application is
-			 * not yet set when executing a @BeforeClass method. As a result it
-			 * is not possible to open the database helper correctly.
-			 */
+             * Ideally this would have been executed in the @BeforeClass setup. This is however not possible as the
+             * Robolectric.application is not yet set when executing a @BeforeClass method. As a result it is not
+             * possible to open the database helper correctly.
+             */
             TestRunnerHelper.setup(HistoricStatisticsSelectorTest.class.getCanonicalName());
             String pathToImportFile = "net/mathdoku/plus/storage/databaseadapter/selector/";
             new DatabaseCsvImporter(pathToImportFile + "HistoricStatisticsSelectorTest_grid.csv",

@@ -56,10 +56,9 @@ class CageOperatorGenerator {
 
     private void addPossibleCageResults() {
         /*
-         * The list of possible cage results contains all valid cage results and
-		 * the cumulative relative weight which is used to select a cage result
-		 * randomly.
-		 */
+         * The list of possible cage results contains all valid cage results and the cumulative relative weight which
+         * is used to select a cage result randomly.
+         */
         possibleCageResults = new LinkedHashMap<CageResult, Integer>();
 
         addPossibleCageResult(CageOperator.NONE, WEIGHT_CAGE_RESULT_WITH_NONE_OPERATOR);
