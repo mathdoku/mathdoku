@@ -1,7 +1,5 @@
 package net.mathdoku.plus.painter;
 
-import net.mathdoku.plus.painter.Painter.GridTheme;
-
 public class SolvedTextPainter extends BasePainter {
 
     private final int mTextColor;
@@ -12,16 +10,6 @@ public class SolvedTextPainter extends BasePainter {
 
         mTextColor = 0xFF002F00;
         mBackgroundColor = 0xD0DECA1E;
-    }
-
-    @Override
-    public void setTheme(GridTheme theme) {
-        // Not needed for this painter.
-    }
-
-    @Override
-    protected void setCellSize(float size) {
-        // Not needed for this painter.
     }
 
     /**

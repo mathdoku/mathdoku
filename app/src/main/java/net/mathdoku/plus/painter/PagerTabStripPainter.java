@@ -1,7 +1,5 @@
 package net.mathdoku.plus.painter;
 
-import net.mathdoku.plus.painter.Painter.GridTheme;
-
 public class PagerTabStripPainter extends BasePainter {
 
     private final int mTextColor;
@@ -12,16 +10,6 @@ public class PagerTabStripPainter extends BasePainter {
 
         mTextColor = 0xFFFFFFFF;
         mBackgroundColor = mPainter.getButtonBackgroundColor();
-    }
-
-    @Override
-    public void setTheme(GridTheme theme) {
-        // Not needed for this painter.
-    }
-
-    @Override
-    protected void setCellSize(float size) {
-        // Not needed for this painter.
     }
 
     /**

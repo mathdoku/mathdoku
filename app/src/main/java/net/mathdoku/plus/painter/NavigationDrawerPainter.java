@@ -1,7 +1,5 @@
 package net.mathdoku.plus.painter;
 
-import net.mathdoku.plus.painter.Painter.GridTheme;
-
 public class NavigationDrawerPainter extends BasePainter {
 
     private final int mBackgroundColor;
@@ -10,16 +8,6 @@ public class NavigationDrawerPainter extends BasePainter {
         super(painter);
 
         mBackgroundColor = 0xFF222222;
-    }
-
-    @Override
-    public void setTheme(GridTheme theme) {
-        // Not needed for this painter.
-    }
-
-    @Override
-    protected void setCellSize(float size) {
-        // Not needed for this painter.
     }
 
     /**
