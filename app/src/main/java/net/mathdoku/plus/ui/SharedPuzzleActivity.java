@@ -45,11 +45,11 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
                     .setMessage(R.string.dialog_invalid_share_url_body)
                     .setCancelable(false)
                     .setNeutralButton(R.string.dialog_general_button_close, new DialogInterface.OnClickListener() {
-                                          @Override
-                                          public void onClick(DialogInterface dialog, int whichButton) {
-                                              finish();
-                                          }
-                                      })
+                        @Override
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            finish();
+                        }
+                    })
                     .show();
             return;
         }
@@ -91,13 +91,11 @@ public class SharedPuzzleActivity extends AppFragmentActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
-        int menuId = menuItem.getItemId();
-        switch (menuId) {
-            case R.id.action_send_feedback:
-                new FeedbackEmail(this).show();
-                return true;
-            default:
-                return super.onOptionsItemSelected(menuItem);
+        if (menuItem.getItemId() == R.id.action_send_feedback) {
+            new FeedbackEmail(this).show();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(menuItem);
         }
     }
 
