@@ -14,22 +14,20 @@ import android.widget.TextView;
 import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
-import net.mathdoku.plus.config.Config.AppMode;
 
 import java.util.Random;
 
 /**
- * For each tip this class has to be extended. The constructor of the subclass determine the
- * preference, title, text and image to be used for this tip.
+ * For each tip this class has to be extended. The constructor of the subclass determine the preference, title, text and
+ * image to be used for this tip.
  */
 public class TipDialog extends AlertDialog {
     @SuppressWarnings("unused")
     private static final String TAG = TipDialog.class.getName();
 
-    // Remove "&& false" in following line to show debug information about
-    // creating cages when running in development mode.
-    @SuppressWarnings("PointlessBooleanExpression")
-    private static final boolean DEBUG_TIP_DIALOG = Config.APP_MODE == AppMode.DEVELOPMENT && false;
+    // Replace Config.DisabledAlways() on following line with Config.EnabledInDevelopmentModeOnly()
+    // to show debug information when running in development mode.
+    private static final boolean DEBUG = Config.DisabledAlways();
 
     // Context in which the tip is created.
     private final Context mContext;
@@ -105,8 +103,8 @@ public class TipDialog extends AlertDialog {
      * @param tipText
      *         The body text of the tip.
      * @param tipImage
-     *         The image to be shown with this tip. It is preferred to have an image in each tip. In
-     *         case the tip can no be clarified with an image use value null.
+     *         The image to be shown with this tip. It is preferred to have an image in each tip. In case the tip can no
+     *         be clarified with an image use value null.
      * @return True if the dialog is build. False otherwise.
      */
     boolean build(int tipIconResId, String tipTitle, String tipText, Drawable tipImage) {
@@ -129,8 +127,7 @@ public class TipDialog extends AlertDialog {
             imageView.setVisibility(View.GONE);
         }
 
-        final CheckBox checkBoxView = (CheckBox) tipView.findViewById(
-                R.id.dialog_tip_do_not_show_again);
+        final CheckBox checkBoxView = (CheckBox) tipView.findViewById(R.id.dialog_tip_do_not_show_again);
 
         setView(tipView);
 
@@ -143,8 +140,7 @@ public class TipDialog extends AlertDialog {
         setOnCancelListener(new OnTipDialogCancelListener());
 
         setButton(DialogInterface.BUTTON_POSITIVE, mContext.getResources()
-                          .getString(R.string.dialog_general_button_close),
-                  new OnTipDialogCloseListener(checkBoxView));
+                          .getString(R.string.dialog_general_button_close), new OnTipDialogCloseListener(checkBoxView));
 
         // In case the dialog is shown, it is registered as the displayed
         // tip dialog. On dismissal of the dialog it has to be unregistered.
@@ -173,8 +169,7 @@ public class TipDialog extends AlertDialog {
     @Override
     public void show() {
         if (!mDisplayAgain) {
-            throw new IllegalStateException(
-                    "Show tip dialog should not be called when do not display again is set.");
+            throw new IllegalStateException("Show tip dialog should not be called when do not display again is set.");
         }
 
         super.show();
@@ -195,22 +190,19 @@ public class TipDialog extends AlertDialog {
         // If already a dialog is showed, check whether it has to be replaced
         // with a higher priority dialog.
         if (mDisplayedDialog != null) {
-            debug(TAG,
-                  tip + ": priority (" + priority.ordinal() + ") compared with priority of " +
+            debug(TAG, tip + ": priority (" + priority.ordinal() + ") compared with priority of " +
                           mDisplayedDialog.mTip + "(" + mDisplayedDialog.mPriority.ordinal() + ")");
 
             // Do not display in case priority is lower than priority of already
             // displayed dialog.
             if (priority.ordinal() < mDisplayedDialog.mPriority.ordinal()) {
-                Log.i(TAG,
-                      tip + ": do not replace as priority is lower than already displayed tip");
+                Log.i(TAG, tip + ": do not replace as priority is lower than already displayed tip");
                 return false;
             }
 
             // In case of equals priority it is randomly decided which dialog is
             // kept.
-            if (priority.ordinal() == mDisplayedDialog.mPriority.ordinal() && new Random()
-                    .nextBoolean()) {
+            if (priority.ordinal() == mDisplayedDialog.mPriority.ordinal() && new Random().nextBoolean()) {
                 Log.i(TAG, tip + ": equal priorities. Randomly determined to replace");
                 return false;
             }
@@ -232,13 +224,11 @@ public class TipDialog extends AlertDialog {
     }
 
     /**
-     * Gets the preference name which is used to store the timestamp at which the was last
-     * displayed.
+     * Gets the preference name which is used to store the timestamp at which the was last displayed.
      *
      * @param tip
      *         The name of the tip.
-     * @return The preference name which is used to store the timestamp at which the was last
-     * displayed.
+     * @return The preference name which is used to store the timestamp at which the was last displayed.
      */
     public static String getPreferenceStringLastDisplayTime(String tip) {
         return "Tip." + tip + ".LastDisplayTime";
@@ -308,7 +298,7 @@ public class TipDialog extends AlertDialog {
     }
 
     private static void debug(String tag, String message) {
-        if (DEBUG_TIP_DIALOG) {
+        if (DEBUG) {
             Log.d(tag, message);
         }
     }

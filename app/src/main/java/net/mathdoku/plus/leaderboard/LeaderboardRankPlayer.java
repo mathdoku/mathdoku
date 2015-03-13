@@ -11,7 +11,6 @@ import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.android.gms.games.leaderboard.OnLeaderboardScoresLoadedListener;
 
 import net.mathdoku.plus.config.Config;
-import net.mathdoku.plus.config.Config.AppMode;
 
 /**
  * This class is used to retrieve the rank for the current player from Google Play Services for a
@@ -21,10 +20,9 @@ class LeaderboardRankPlayer implements OnLeaderboardScoresLoadedListener {
     @SuppressWarnings("unused")
     private static final String TAG = LeaderboardRankPlayer.class.getName();
 
-    // Remove "&& false" in following line to show debug information about
-    // creating cages when running in development mode.
-    @SuppressWarnings("PointlessBooleanExpression")
-    private static final boolean DEBUG = Config.APP_MODE == AppMode.DEVELOPMENT && false;
+    // Replace Config.DisabledAlways() on following line with Config.EnabledInDevelopmentModeOnly()
+    // to show debug information when running in development mode.
+    private static final boolean DEBUG = Config.DisabledAlways();
 
     // The games client which is connected to Google Play Services
     private final LeaderboardConnector mLeaderboardConnector;

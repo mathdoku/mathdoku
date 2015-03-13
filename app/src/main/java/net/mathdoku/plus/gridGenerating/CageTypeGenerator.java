@@ -113,7 +113,7 @@ public class CageTypeGenerator {
                                                          int column) {
         CageType cageType = createCageTypeByExtendingToRowColumn(newCageTypeMatrix, row, column);
         boolean added = cageTypeList.addUnique(cageType);
-        if (GridGenerator.DEBUG_GRID_GENERATOR_FULL && added) {
+        if (GridGenerator.DEBUG_NORMAL && added) {
             Log.i(TAG, "Found a new cage type:\n" + cageType.toString());
         }
     }
@@ -132,7 +132,7 @@ public class CageTypeGenerator {
     }
 
     private void logNumberOfGeneratedCageTypes() {
-        if (GridGenerator.DEBUG_GRID_GENERATOR_FULL) {
+        if (GridGenerator.DEBUG_FULL) {
             int maxCageSize = 0;
             for (CageType cageType : cageTypeList) {
                 maxCageSize = Math.max(maxCageSize, cageType.size());

@@ -17,11 +17,9 @@ public class GridSolver {
     @SuppressWarnings("unused")
     private static final String TAG = GridSolver.class.getName();
 
-    // Remove "&& false" in following line to show debug information about
-    // filling the DancingLinesX data structure when running in development
-    // mode.
-    @SuppressWarnings("PointlessBooleanExpression")
-    public static final boolean DEBUG_DLX = Config.APP_MODE == AppMode.DEVELOPMENT && false;
+    // Replace Config.DisabledAlways() on following line with Config.EnabledInDevelopmentModeOnly()
+    // to show debug information when running in development mode.
+    public static final boolean DEBUG = Config.DisabledAlways();
 
     private final DancingLinesX dancingLinesX;
     private final int mGridSize;
@@ -101,7 +99,7 @@ public class GridSolver {
         // moves.
         List<Cage> sortedCages = new ArrayList<Cage>(mCages);
         Collections.sort(sortedCages, new SortCagesOnNumberOfMoves());
-        if (DEBUG_DLX) {
+        if (DEBUG) {
             for (Cage cage : sortedCages) {
                 Log.i(TAG, "Cage " + cage.getId() + " has " + cage.getPossibleCombos()
                         .size() + " permutations with " + cage.getNumberOfCells() + " cells");
@@ -123,7 +121,7 @@ public class GridSolver {
         for (Cage cage : sortedCages) {
             List<int[]> possibleCombos = cage.getPossibleCombos();
             for (int[] possibleCombo : possibleCombos) {
-                if (DEBUG_DLX) {
+                if (DEBUG) {
                     Log.i(TAG,
                           "Combo " + comboIndex + " - Cage " + cage.getId() + " with " + cage
                                   .getNumberOfCells() + " cells");
@@ -162,7 +160,7 @@ public class GridSolver {
                                 new Move(cage.getId(), comboIndex, cell.getRow(), cell.getColumn(),
                                          possibleCombo[i]));
                     }
-                    if (DEBUG_DLX) {
+                    if (DEBUG) {
                         Log.i(TAG,
                               "  Cell " + cell.getCellId() + " row =" + cell.getRow() + " col = "
                                       + cell.getColumn() + " value = " + possibleCombo[i]);
@@ -209,7 +207,7 @@ public class GridSolver {
      * @return True in case exactly one solution exists for this grid.
      */
     public boolean hasUniqueSolution() {
-        if (Config.APP_MODE == AppMode.DEVELOPMENT && DEBUG_DLX) {
+        if (Config.APP_MODE == AppMode.DEVELOPMENT && DEBUG) {
             initialize(true); // Needed to compute complexity in development
             // mode
 
@@ -261,7 +259,7 @@ public class GridSolver {
             }
         }
 
-        if (DEBUG_DLX) {
+        if (DEBUG) {
             for (int row = 0; row < this.mGridSize; row++) {
                 String line = "";
                 for (int col = 0; col < this.mGridSize; col++) {
@@ -292,7 +290,7 @@ public class GridSolver {
             // subjective difficulty.
             // ///////////////////////////////////////////////////////////////////////
 
-            if (DEBUG_DLX) {
+            if (DEBUG) {
                 Log.i(TAG, "Determine puzzle complexity");
             }
             int[][] solutionGrid = new int[mGridSize][mGridSize];
@@ -379,7 +377,7 @@ public class GridSolver {
                             // combination has to be chosen at random to check
                             // to
                             // see if it fails.
-                            if (DEBUG_DLX) {
+                            if (DEBUG) {
                                 Log.i(TAG,
                                       "Select cage " + move.mCageId + " with complexity " + possiblePermutations);
                             }
@@ -392,7 +390,7 @@ public class GridSolver {
 
                     }
                 }
-                if (DEBUG_DLX) {
+                if (DEBUG) {
                     Log.i(TAG, "*********** MOVE " + moveCount++ + " ***********");
                     for (int row = 0; row < this.mGridSize; row++) {
                         String line = "";
@@ -403,7 +401,7 @@ public class GridSolver {
                     }
                 }
             }
-            if (DEBUG_DLX) {
+            if (DEBUG) {
                 Log.i(TAG,
                       "Total complexity of puzzle " + puzzleComplexity + " (or " + dancingLinesX.complexity + "??)");
             }

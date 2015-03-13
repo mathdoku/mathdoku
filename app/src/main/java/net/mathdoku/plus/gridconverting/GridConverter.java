@@ -6,7 +6,6 @@ import android.util.Log;
 
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
-import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.puzzle.grid.GridLoader;
 import net.mathdoku.plus.storage.databaseadapter.SolvingAttemptDatabaseAdapter;
@@ -21,11 +20,9 @@ public class GridConverter extends AsyncTask<Void, Void, Void> {
     @SuppressWarnings("unused")
     private static final String TAG = GridConverter.class.getName();
 
-    // Remove "&& false" in following line to show debug information about
-    // converting game files when running in development mode.
-    @SuppressWarnings("PointlessBooleanExpression")
-    private static final boolean DEBUG_GRID_CONVERTER = Config.APP_MODE == AppMode.DEVELOPMENT &&
-            false;
+    // Replace Config.DisabledAlways() on following line with Config.EnabledInDevelopmentModeOnly()
+    // to show debug information when running in development mode.
+    private static final boolean DEBUG = Config.DisabledAlways();
 
     // The activity which started this task
     private PuzzleFragmentActivity mActivity;
@@ -82,7 +79,7 @@ public class GridConverter extends AsyncTask<Void, Void, Void> {
             return;
         }
 
-        if (DEBUG_GRID_CONVERTER) {
+        if (DEBUG) {
             Log.i(TAG, "Attach to activity");
         }
 
@@ -169,7 +166,7 @@ public class GridConverter extends AsyncTask<Void, Void, Void> {
      * dismissed. The ASync task however still keeps running until finished.
      */
     public void detachFromActivity() {
-        if (DEBUG_GRID_CONVERTER) {
+        if (DEBUG) {
             Log.d(TAG, "Detach from activity");
         }
 

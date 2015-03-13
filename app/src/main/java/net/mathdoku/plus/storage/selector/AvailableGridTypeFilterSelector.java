@@ -22,17 +22,16 @@ public class AvailableGridTypeFilterSelector extends SolvingAttemptSelector {
     @SuppressWarnings("unused")
     private static final String TAG = AvailableStatusFiltersSelector.class.getName();
 
-    // Remove "&& false" in following line to show the SQL-statements in the
-    // debug information
-    @SuppressWarnings("PointlessBooleanExpression")
-    private static final boolean DEBUG_SQL = Config.APP_MODE == Config.AppMode.DEVELOPMENT && false;
+    // Replace Config.DisabledAlways() on following line with Config.EnabledInDevelopmentModeOnly()
+    // to show debug information when running in development mode.
+    private static final boolean DEBUG = Config.DisabledAlways();
 
     private static final String KEY_PROJECTION_GRID_SIZE = "projection_grid_size";
     private final List<GridTypeFilter> gridTypeFilterList;
 
     public AvailableGridTypeFilterSelector(StatusFilter statusFilter) {
         super(statusFilter, GridTypeFilter.ALL);
-        setEnableLogging(DEBUG_SQL);
+        setEnableLogging(DEBUG);
         setOrderByString(KEY_PROJECTION_GRID_SIZE);
         setGroupByString(KEY_PROJECTION_GRID_SIZE);
         gridTypeFilterList = retrieveFromDatabase();

@@ -175,7 +175,7 @@ public class DancingLinesX {
         if (root.getRight() == root) {
             countSolutions++;
             foundSolution = new ArrayList<Integer>(trySolution);
-            if (GridSolver.DEBUG_DLX) {
+            if (GridSolver.DEBUG) {
                 Log.i(TAG,
                       "Solution " + countSolutions + " found which consists of following moves: "
                               + trySolution.toString());

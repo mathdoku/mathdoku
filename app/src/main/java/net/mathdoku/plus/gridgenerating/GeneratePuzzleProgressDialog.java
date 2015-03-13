@@ -25,9 +25,9 @@ public class GeneratePuzzleProgressDialog implements GridGeneratorAsyncTaskListe
     @SuppressWarnings("unused")
     private static final String TAG = GeneratePuzzleProgressDialog.class.getName();
 
-    // Remove "&& false" in following line to show debug information.
-    @SuppressWarnings("PointlessBooleanExpression")
-    static final boolean DEBUG = Config.APP_MODE == Config.AppMode.DEVELOPMENT && false;
+    // Replace Config.DisabledAlways() on following line with Config.EnabledInDevelopmentModeOnly()
+    // to show debug information when running in development mode.
+    private static final boolean DEBUG = Config.DisabledAlways();
 
     private int numberOfGamesToGenerate;
     private GridGeneratorAsyncTaskIface gridGeneratorAsyncTask;

@@ -32,8 +32,9 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
     @SuppressWarnings("unused")
     private static final String TAG = StatisticsDatabaseAdapter.class.getName();
 
-    @SuppressWarnings("PointlessBooleanExpression")
-    private static final boolean DEBUG_SQL = Config.APP_MODE == AppMode.DEVELOPMENT && false;
+    // Replace Config.DisabledAlways() on following line with Config.EnabledInDevelopmentModeOnly()
+    // to show debug information when running in development mode.
+    private static final boolean DEBUG = Config.DisabledAlways();
 
     private static final DatabaseTableDefinition DATABASE_TABLE = defineTable();
 
@@ -487,7 +488,7 @@ public class StatisticsDatabaseAdapter extends DatabaseAdapter {
 
         updateQueryHelper.setWhereCondition(conditionListOuter);
 
-        if (DEBUG_SQL) {
+        if (DEBUG) {
             Log.i(TAG, updateQueryHelper.toString());
         }
         try {

@@ -26,8 +26,9 @@ public class HistoricStatisticsSelector {
     @SuppressWarnings("unused")
     private static final String TAG = HistoricStatisticsSelector.class.getName();
 
-    @SuppressWarnings("PointlessBooleanExpression")
-    private static final boolean DEBUG_SQL = Config.APP_MODE == Config.AppMode.DEVELOPMENT && false;
+    // Replace Config.DisabledAlways() on following line with Config.EnabledInDevelopmentModeOnly()
+    // to show debug information when running in development mode.
+    private static final boolean DEBUG = Config.DisabledAlways();
 
     // Columns in the DatabaseProjection
     public static final String DATA_COL_ID = "id";
@@ -125,7 +126,7 @@ public class HistoricStatisticsSelector {
         SQLiteQueryBuilder sqliteQueryBuilder = new SQLiteQueryBuilder();
         sqliteQueryBuilder.setProjectionMap(DATABASE_PROJECTION);
         sqliteQueryBuilder.setTables(getJoinString());
-        if (DEBUG_SQL) {
+        if (DEBUG) {
             String sql = sqliteQueryBuilder.buildQuery(DATABASE_PROJECTION.getAllColumnNames(),
                                                        getSelectionString(), null, null,
                                                        StatisticsDatabaseAdapter.KEY_GRID_ID, null);

@@ -10,7 +10,6 @@ import com.google.android.gms.games.leaderboard.OnScoreSubmittedListener;
 import com.google.android.gms.games.leaderboard.SubmitScoreResult;
 
 import net.mathdoku.plus.config.Config;
-import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.enums.PuzzleComplexity;
 import net.mathdoku.plus.leaderboard.ui.TopScoreDialog;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankDatabaseAdapter;
@@ -24,10 +23,9 @@ public class LeaderboardConnector {
     @SuppressWarnings("unused")
     private static final String TAG = LeaderboardConnector.class.getName();
 
-    // Remove "&& false" in following line to show debug information about
-    // creating cages when running in development mode.
-    @SuppressWarnings("PointlessBooleanExpression")
-    public static final boolean DEBUG = Config.APP_MODE == AppMode.DEVELOPMENT && false;
+    // Replace Config.DisabledAlways() on following line with Config.EnabledInDevelopmentModeOnly()
+    // to show debug information when running in development mode.
+    public static final boolean DEBUG = Config.DisabledAlways();
 
     // Reference to the games client of google play services.
     private final GamesClient mGamesClient;

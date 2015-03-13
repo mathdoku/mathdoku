@@ -9,7 +9,6 @@ import com.google.android.gms.games.leaderboard.OnScoreSubmittedListener;
 import com.google.android.gms.games.leaderboard.SubmitScoreResult;
 
 import net.mathdoku.plus.config.Config;
-import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankDatabaseAdapter;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankDatabaseAdapter.ScoreOrigin;
 import net.mathdoku.plus.storage.databaseadapter.LeaderboardRankRow;
@@ -25,10 +24,9 @@ public class LeaderboardRankUpdater {
     @SuppressWarnings("unused")
     private static final String TAG = LeaderboardRankUpdater.class.getName();
 
-    // Remove "&& false" in following line to show debug information about
-    // converting game files when running in development mode.
-    @SuppressWarnings("PointlessBooleanExpression")
-    private static final boolean DEBUG = Config.APP_MODE == AppMode.DEVELOPMENT && false;
+    // Replace Config.DisabledAlways() on following line with Config.EnabledInDevelopmentModeOnly()
+    // to show debug information when running in development mode.
+    private static final boolean DEBUG = Config.DisabledAlways();
 
     // The leaderboard connector
     private final LeaderboardConnector mLeaderboardConnector;

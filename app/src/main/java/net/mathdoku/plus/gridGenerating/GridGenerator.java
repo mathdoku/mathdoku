@@ -27,13 +27,10 @@ public class GridGenerator implements GridGeneratorIface {
     @SuppressWarnings("unused")
     private static final String TAG = GridGenerator.class.getName();
 
-    // Remove "&& false" in following line to show debug information about
-    // creating cages when running in development mode.
-    @SuppressWarnings("PointlessBooleanExpression")
-    private static final boolean DEBUG_GRID_GENERATOR = Config.APP_MODE == Config.AppMode
-            .DEVELOPMENT && false;
-    @SuppressWarnings("PointlessBooleanExpression")
-    public static final boolean DEBUG_GRID_GENERATOR_FULL = DEBUG_GRID_GENERATOR && false;
+    // Replace Config.DisabledAlways() on following line with Config.EnabledInDevelopmentModeOnly()
+    // to show debug information when running in development mode.
+    static final boolean DEBUG_NORMAL = Config.DisabledAlways();
+    static final boolean DEBUG_FULL = Config.DisabledAlways();
 
     private static final int MAX_ATTEMPTS_TO_FILL_GRID_WITH_CAGES = 20;
     private final GridGeneratorListenerIface gridGeneratorListener;
@@ -68,7 +65,7 @@ public class GridGenerator implements GridGeneratorIface {
         // method changes, it will not be possible to recreate the grids!
         mRandom = new Random(this.gridGeneratingParameters.getGameSeed());
 
-        if (DEBUG_GRID_GENERATOR) {
+        if (DEBUG_NORMAL) {
             debugLog(this.gridGeneratingParameters.toString());
         }
 
@@ -91,7 +88,7 @@ public class GridGenerator implements GridGeneratorIface {
             grid = attemptToCreateGrid();
             cancelOnSlowGridGeneration();
         }
-        if (DEBUG_GRID_GENERATOR) {
+        if (DEBUG_NORMAL) {
             debugLog("Finished create grid in %d attempts.", attemptsToCreateGrid);
         }
 
@@ -145,7 +142,7 @@ public class GridGenerator implements GridGeneratorIface {
 
     private boolean hasNonUniqueSolution(Grid grid) {
         if (developmentMode) {
-            if (DEBUG_GRID_GENERATOR) {
+            if (DEBUG_NORMAL) {
                 debugLog("The uniqueness of the solution of this grid has not been verified.");
             }
             // In development mode, the uniqueness of the grid is not relevant
@@ -154,16 +151,16 @@ public class GridGenerator implements GridGeneratorIface {
             return false;
         }
 
-        if (DEBUG_GRID_GENERATOR) {
+        if (DEBUG_NORMAL) {
             gridGeneratorListener.updateProgressDetailLevel("Verify unique solution");
         }
         if (new GridSolver(gridSizeValue, grid.getCages()).hasUniqueSolution()) {
-            if (DEBUG_GRID_GENERATOR) {
+            if (DEBUG_NORMAL) {
                 debugLog("This grid has a unique solution.");
             }
             return false;
         } else {
-            if (DEBUG_GRID_GENERATOR) {
+            if (DEBUG_NORMAL) {
                 debugLog("This grid does not have a unique solution.");
             }
             return true;
@@ -412,8 +409,7 @@ public class GridGenerator implements GridGeneratorIface {
 
         if (candidateCage.isValid()) {
             CellCoordinates[] cellCoordinatesOfAllCellsInCage = cageType
-                    .getCellCoordinatesOfAllCellsInCage(
-                    originCell);
+                    .getCellCoordinatesOfAllCellsInCage(originCell);
             addCageToSolution(candidateCage, cellCoordinatesOfAllCellsInCage);
 
             mCages.add(candidateCage);
@@ -430,7 +426,7 @@ public class GridGenerator implements GridGeneratorIface {
         if (possibleCombos.size() > maxPermutations) {
             // If a cage has many permutations it reduces the chance to find a
             // unique solution for the puzzle.
-            if (DEBUG_GRID_GENERATOR_FULL) {
+            if (DEBUG_FULL) {
                 debugLog(
                         "This cage type has been rejected as it has more than %d initial " +
                                 "permutations which fulfill the cage requirement.",
@@ -447,13 +443,11 @@ public class GridGenerator implements GridGeneratorIface {
     private CandidateCageCreator createCandidateCageCreator() {
         CandidateCageCreatorParameters candidateCageCreatorParameters;
         candidateCageCreatorParameters = new CandidateCageCreatorParameters()
-                .setGridGeneratingParameters(
-                gridGeneratingParameters)
+                .setGridGeneratingParameters(gridGeneratingParameters)
                 .setRandom(mRandom)
                 .setCorrectValueMatrix(correctValueMatrix)
                 .setCageIdMatrix(cageIdMatrix);
-        return new CandidateCageCreator(candidateCageCreatorParameters).enableLogging(
-                DEBUG_GRID_GENERATOR_FULL);
+        return new CandidateCageCreator(candidateCageCreatorParameters).enableLogging(DEBUG_FULL);
     }
 
     private void addCageToSolution(Cage cage, CellCoordinates[] cellCoordinatesOfAllCellsInCage) {
@@ -488,7 +482,7 @@ public class GridGenerator implements GridGeneratorIface {
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean createCageWithNormalSize(CellCoordinates originCell) {
-        if (DEBUG_GRID_GENERATOR_FULL) {
+        if (DEBUG_FULL) {
             Log.d(TAG, "Determine valid cages for " + originCell);
         }
 

@@ -12,11 +12,9 @@ public class SwipeMotion extends Motion {
     @SuppressWarnings("unused")
     private static final String TAG = SwipeMotion.class.getName();
 
-    // Remove "&& false" in following line to show debug information about
-    // creating cages when running in development mode.
-    @SuppressWarnings("PointlessBooleanExpression")
-    private static final boolean DEBUG_SWIPE_MOTION = Config.APP_MODE == AppMode.DEVELOPMENT &&
-            false;
+    // Replace Config.DisabledAlways() on following line with Config.EnabledInDevelopmentModeOnly()
+    // to show debug information when running in development mode.
+    private static final boolean DEBUG = Config.DisabledAlways();
 
     // Possible statuses of the swipe motion
     private enum Status {
@@ -337,7 +335,7 @@ public class SwipeMotion extends Motion {
                 Y_POS) : mTouchDownCellCenterPixelCoordinates[Y_POS]);
         if (Math.sqrt(deltaX * deltaX + deltaY * deltaY) < 10) {
             // The distance is too small to be accepted.
-            if (DEBUG_SWIPE_MOTION) {
+            if (DEBUG) {
                 Log.i(TAG, " - deltaX = " + deltaX + " - deltaY = " + deltaY);
             }
             return false;
@@ -352,7 +350,7 @@ public class SwipeMotion extends Motion {
         double angle = Math.toDegrees(Math.atan2(deltaY, deltaX)) + -1 * SWIPE_ANGLE_OFFSET_91;
         int digit = angle < 0 ? 9 : (int) (angle / SWIPE_SEGMENT_ANGLE) + 1;
 
-        if (DEBUG_SWIPE_MOTION) {
+        if (DEBUG) {
             Log.i(TAG, "getDigit");
             if (inTouchDownCell) {
                 Log.i(TAG,
@@ -456,7 +454,7 @@ public class SwipeMotion extends Motion {
         // The current swipe position does not correspond with a selectable
         // digit for this grid
         // size.
-        if (DEBUG_SWIPE_MOTION) {
+        if (DEBUG) {
             Log.i(TAG, "Current swipe position does not correspond with a selectable digit.");
         }
 

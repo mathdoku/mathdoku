@@ -17,11 +17,9 @@ public class CellChangeStorage {
     @SuppressWarnings("unused")
     private static final String TAG = CellChangeStorage.class.getName();
 
-    // Remove "&& false" in following line to show debug information about
-    // reading information from a storage string
-    @SuppressWarnings("PointlessBooleanExpression")
-    private static final boolean DEBUG_STORAGE_STRING = Config.APP_MODE == Config.AppMode
-            .DEVELOPMENT && false;
+    // Replace Config.DisabledAlways() on following line with Config.EnabledInDevelopmentModeOnly()
+    // to show debug information when running in development mode.
+    private static final boolean DEBUG = Config.DisabledAlways();
     private static final String DEBUG_LINE = "Line: ";
 
     private Cell mCell;
@@ -51,7 +49,7 @@ public class CellChangeStorage {
             return false;
         }
 
-        if (DEBUG_STORAGE_STRING) {
+        if (DEBUG) {
             Log.d(TAG,
                   "---------------------------------------------------------------------------");
             Log.d(TAG, DEBUG_LINE + line);
@@ -92,21 +90,21 @@ public class CellChangeStorage {
      * False otherwise.
      */
     private boolean fromStorageStringRecursive(String line, int level, List<Cell> cells) {
-        if (DEBUG_STORAGE_STRING) {
+        if (DEBUG) {
             Log.i(TAG, getDebugLogIndent(level) + DEBUG_LINE + line);
         }
 
         CellChangeStoragePatternMatcher cellChangeStoragePatternMatcher = new
                 CellChangeStoragePatternMatcher();
         if (!cellChangeStoragePatternMatcher.matchesInner(line)) {
-            if (DEBUG_STORAGE_STRING) {
+            if (DEBUG) {
                 Log.i(TAG,
                       getDebugLogIndent(level) + "Can not process this line. Format is invalid");
             }
             return false;
         }
 
-        if (DEBUG_STORAGE_STRING) {
+        if (DEBUG) {
             cellChangeStoragePatternMatcher.debugLogInner(getDebugLogIndent(level));
         }
 

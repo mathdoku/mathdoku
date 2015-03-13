@@ -5,7 +5,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import net.mathdoku.plus.R;
 import net.mathdoku.plus.config.Config;
-import net.mathdoku.plus.config.Config.AppMode;
 import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.enums.StatusFilter;
 import net.mathdoku.plus.storage.selector.ArchiveSolvingAttemptSelector;
@@ -18,11 +17,9 @@ import java.util.List;
  */
 class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 
-    // Remove "&& false" in following line to show the solving attempt id in the
-    // pager title of the archive.
-    @SuppressWarnings("PointlessBooleanExpression")
-    private static final boolean DEBUG_SHOW_SOLVING_ATTEMPT_ID = Config.APP_MODE == AppMode
-            .DEVELOPMENT && false;
+    // Replace Config.DisabledAlways() on following line with Config.EnabledInDevelopmentModeOnly()
+    // to show debug information when running in development mode.
+    private static final boolean DEBUG = Config.DisabledAlways();
 
     private static final int UNKNOWN_GRID_ID = -1;
     private static final int INVALID_POSITION_ID = -2;
@@ -94,7 +91,7 @@ class ArchiveFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
             }
             stringBuilder.append(" ");
             stringBuilder.append(getGridId(position));
-            if (DEBUG_SHOW_SOLVING_ATTEMPT_ID) {
+            if (DEBUG) {
                 stringBuilder.append(" (");
                 stringBuilder.append(getSolvingAttemptId(position));
                 stringBuilder.append(")");
