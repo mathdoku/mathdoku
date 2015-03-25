@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import net.mathdoku.plus.puzzle.cheat.Cheat;
+import net.mathdoku.plus.puzzle.grid.Grid;
 import net.mathdoku.plus.ui.PuzzleFragment;
 
 /*
@@ -12,48 +13,42 @@ import net.mathdoku.plus.ui.PuzzleFragment;
 public class GameTimer extends AsyncTask<Void, Long, Long> {
     private static final String TAG = GameTimer.class.getName();
 
-    // References to activity that started the timer and the solving attempt to
-    // which the timer applies
-    private final PuzzleFragment mPuzzleFragment;
+    // References to activity that started the timer and the solving attempt to which the timer applies
+    private final PuzzleFragment puzzleFragment;
     private final int solvingAttemptId;
 
-    // Starting point of timer. Note this is not the real time at which the game
-    // started but the actual time at which the timer started minus the time
-    // elapsed until then.
-    private Long mStartTime;
+    // Starting point of timer. Note this is not the real time at which the game started but the actual time at which
+    // the timer started minus the time elapsed until then.
+    private Long startTime;
 
-    // Time elapsed while (dis)playing the current grid.
-    public Long mElapsedTime = (long) 0;
+    private Long elapsedMillisSinceStartTime = (long) 0;
 
-    // Time added to the real playing time because of using cheats. Effectively
-    // the starting time of the game is decreased.
-    public Long mCheatPenaltyTime = (long) 0;
+    // Time added to the real playing time because of using cheats. Effectively the starting time of the game is
+    // decreased.
+    private Long cheatPenaltyTimeInMilliseconds = (long) 0;
 
-    public GameTimer(PuzzleFragment puzzleFragmentActivity, int solvingAttemptId) {
-        mPuzzleFragment = puzzleFragmentActivity;
-        this.solvingAttemptId = solvingAttemptId;
+    public GameTimer(PuzzleFragment puzzleFragment, Grid grid) {
+        this.puzzleFragment = puzzleFragment;
+        solvingAttemptId = grid.getSolvingAttemptId();
+        elapsedMillisSinceStartTime = grid.getElapsedTime();
+        cheatPenaltyTimeInMilliseconds = grid.getCheatPenaltyTime();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see android.os.AsyncTask#doInBackground(Params[])
-     */
     @Override
     protected Long doInBackground(Void... arg0) {
         long previousTime = 0;
 
         if (this.isCancelled()) {
-            return mElapsedTime;
+            return elapsedMillisSinceStartTime;
         }
 
-        mStartTime = System.currentTimeMillis() - mElapsedTime;
-        publishProgress(mElapsedTime);
+        startTime = System.currentTimeMillis() - elapsedMillisSinceStartTime;
+        publishProgress(elapsedMillisSinceStartTime);
         while (!this.isCancelled()) {
-            mElapsedTime = System.currentTimeMillis() - mStartTime;
-            if (mElapsedTime - previousTime > 1000) {
-                publishProgress(mElapsedTime);
-                previousTime = mElapsedTime;
+            elapsedMillisSinceStartTime = System.currentTimeMillis() - startTime;
+            if (elapsedMillisSinceStartTime - previousTime > 1000) {
+                publishProgress(elapsedMillisSinceStartTime);
+                previousTime = elapsedMillisSinceStartTime;
             }
             try {
                 Thread.sleep(100);
@@ -62,18 +57,13 @@ public class GameTimer extends AsyncTask<Void, Long, Long> {
                 Log.d(TAG, "Sleep of game timer is cancelled (not an error).", e);
             }
         }
-        return mElapsedTime;
+        return elapsedMillisSinceStartTime;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see android.os.AsyncTask#onProgressUpdate(Progress[])
-     */
     @Override
     protected void onProgressUpdate(Long... time) {
-        if (!this.isCancelled() && time.length > 0 && mPuzzleFragment != null) {
-            mPuzzleFragment.setElapsedTime(time[0]);
+        if (!this.isCancelled() && time.length > 0 && puzzleFragment != null) {
+            puzzleFragment.setElapsedTime(time[0]);
         }
     }
 
@@ -84,14 +74,20 @@ public class GameTimer extends AsyncTask<Void, Long, Long> {
      *         The cheat for which the elapsed time has to be increased.
      */
     public void addCheatPenaltyTime(Cheat cheat) {
-        long cheatPenaltyTime = cheat.getPenaltyTimeInMilliseconds();
-
-        mStartTime -= cheatPenaltyTime;
-        mElapsedTime += cheatPenaltyTime;
-        mCheatPenaltyTime += cheatPenaltyTime;
+        startTime -= cheat.getPenaltyTimeInMilliseconds();
+        elapsedMillisSinceStartTime += cheat.getPenaltyTimeInMilliseconds();
+        cheatPenaltyTimeInMilliseconds += cheat.getPenaltyTimeInMilliseconds();
     }
 
     public boolean isCreatedForSolvingAttemptId(int solvingAttemptId) {
         return this.solvingAttemptId == solvingAttemptId;
+    }
+
+    public Long getElapsedMillisSinceStartTime() {
+        return elapsedMillisSinceStartTime;
+    }
+
+    public Long getCheatPenaltyTimeInMilliseconds() {
+        return cheatPenaltyTimeInMilliseconds;
     }
 }

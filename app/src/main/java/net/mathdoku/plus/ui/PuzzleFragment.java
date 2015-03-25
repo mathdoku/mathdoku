@@ -557,9 +557,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements S
         stopTimer();
 
         if (mGrid != null && mGrid.isActive()) {
-            mTimerTask = new GameTimer(this, mGrid.getSolvingAttemptId());
-            mTimerTask.mElapsedTime = mGrid.getElapsedTime();
-            mTimerTask.mCheatPenaltyTime = mGrid.getCheatPenaltyTime();
+            mTimerTask = new GameTimer(this, mGrid);
             if (mMathDokuPreferences.isTimerVisible()) {
                 mTimerText.setVisibility(View.VISIBLE);
             } else {
@@ -576,7 +574,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements S
         // Stop timer if running
         if (mTimerTask != null && !mTimerTask.isCancelled()) {
             if (mGrid != null && mTimerTask.isCreatedForSolvingAttemptId(mGrid.getSolvingAttemptId())) {
-                this.mGrid.setElapsedTime(mTimerTask.mElapsedTime, mTimerTask.mCheatPenaltyTime);
+                this.mGrid.setElapsedTime(mTimerTask.getElapsedMillisSinceStartTime(),
+                                          mTimerTask.getCheatPenaltyTimeInMilliseconds());
             }
             mTimerTask.cancel(true);
         }
