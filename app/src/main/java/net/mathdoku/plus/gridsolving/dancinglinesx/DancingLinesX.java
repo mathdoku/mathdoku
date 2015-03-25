@@ -20,7 +20,7 @@ public class DancingLinesX {
     private final DancingLinesXColumn root = new DancingLinesXColumn();
     private DancingLinesXColumn[] colHeaders;
     private DancingLinesXNode[] nodes;
-    private int numNodes;
+    private int numberOfNodesAllocated;
     private DancingLinesXNode lastNodeAdded;
     private List<Integer> trySolution;
     private List<Integer> foundSolution;
@@ -43,7 +43,7 @@ public class DancingLinesX {
         }
 
         nodes = new DancingLinesXNode[numNodes + 1];
-        this.numNodes = 0; // None allocated
+        this.numberOfNodesAllocated = 0;
 
         DancingLinesXColumn prev = root;
         for (int i = 1; i <= numCols; i++) {
@@ -133,19 +133,19 @@ public class DancingLinesX {
     }
 
     public void addNode(int columnIndex, int rowIndex) {
-        nodes[++numNodes] = new DancingLinesXNode(colHeaders[columnIndex], rowIndex);
+        nodes[++numberOfNodesAllocated] = new DancingLinesXNode(colHeaders[columnIndex], rowIndex);
         if (previousRowIndex == rowIndex) {
-            nodes[numNodes].setLeft(lastNodeAdded);
-            nodes[numNodes].setRight(lastNodeAdded.getRight());
-            lastNodeAdded.setRight(nodes[numNodes]);
-            nodes[numNodes].getRight()
-                    .setLeft(nodes[numNodes]);
+            nodes[numberOfNodesAllocated].setLeft(lastNodeAdded);
+            nodes[numberOfNodesAllocated].setRight(lastNodeAdded.getRight());
+            lastNodeAdded.setRight(nodes[numberOfNodesAllocated]);
+            nodes[numberOfNodesAllocated].getRight()
+                    .setLeft(nodes[numberOfNodesAllocated]);
         } else {
             previousRowIndex = rowIndex;
-            nodes[numNodes].setLeft(nodes[numNodes]);
-            nodes[numNodes].setRight(nodes[numNodes]);
+            nodes[numberOfNodesAllocated].setLeft(nodes[numberOfNodesAllocated]);
+            nodes[numberOfNodesAllocated].setRight(nodes[numberOfNodesAllocated]);
         }
-        lastNodeAdded = nodes[numNodes];
+        lastNodeAdded = nodes[numberOfNodesAllocated];
     }
 
     /**
