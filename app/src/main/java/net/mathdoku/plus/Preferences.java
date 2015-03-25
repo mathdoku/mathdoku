@@ -838,8 +838,9 @@ public class Preferences {
                 return SWIPE_DIGIT_8_COUNTER_ID;
             case 9:
                 return SWIPE_DIGIT_9_COUNTER_ID;
+            default:
+                return -1;
         }
-        return -1;
     }
 
     /**
