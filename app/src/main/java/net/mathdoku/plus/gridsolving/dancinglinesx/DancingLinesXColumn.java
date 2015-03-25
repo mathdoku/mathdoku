@@ -1,7 +1,7 @@
 package net.mathdoku.plus.gridsolving.dancinglinesx;
 
 class DancingLinesXColumn extends DancingLinesX2DNode {
-    private int size; // Number of items in column
+    private int size;
 
     public DancingLinesXColumn() {
         size = 0;
