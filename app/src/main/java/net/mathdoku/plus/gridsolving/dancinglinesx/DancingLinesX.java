@@ -28,7 +28,8 @@ public class DancingLinesX {
     private boolean isValid;
     private int previousRowIndex = -1;
     private SolveType solveType;
-    public int complexity;
+
+    private int complexity;
 
     public DancingLinesX() {
         trySolution = new ArrayList<Integer>();
@@ -225,5 +226,9 @@ public class DancingLinesX {
             }
             uncoverCol(chosenCol);
         }
+    }
+
+    public int getComplexity() {
+        return complexity;
     }
 }

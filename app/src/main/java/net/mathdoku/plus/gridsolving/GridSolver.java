@@ -396,8 +396,8 @@ public class GridSolver {
                 }
             }
             if (DEBUG) {
-                Log.i(TAG,
-                      "Total complexity of puzzle " + puzzleComplexity + " (or " + dancingLinesX.complexity + "??)");
+                Log.i(TAG, "Total complexity of puzzle " + puzzleComplexity + " (or " + dancingLinesX.getComplexity() +
+                              "??)");
             }
 
             return puzzleComplexity;
