@@ -818,6 +818,7 @@ public class Preferences {
      *         The digit for which the preference has to be determined.
      * @return The preference name associated with the discovery of the given digit.
      */
+    @SuppressWarnings("all")
     private int getSwipeDigitDiscoveredPreferenceName(int digit) {
         switch (digit) {
             case 1:
