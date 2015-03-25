@@ -291,10 +291,19 @@ public class Preferences {
      *         The new version to which the preferences need to be upgraded.
      */
     public void upgrade(int previousInstalledVersion, int currentVersion) {
-
-        // Update preferences
         Editor editor = mSharedPreferences.edit();
 
+        upgradeToVersion586(previousInstalledVersion, currentVersion, editor);
+        upgradeToVersion587(previousInstalledVersion, currentVersion, editor);
+        upgradeToVersion595(previousInstalledVersion, currentVersion, editor);
+        upgradeToVersion598(previousInstalledVersion, currentVersion, editor);
+        upgradeToVersion599(previousInstalledVersion, currentVersion, editor);
+
+        editor.putInt(APP_CURRENT_VERSION, currentVersion);
+        editor.commit();
+    }
+
+    private void upgradeToVersion586(int previousInstalledVersion, int currentVersion, Editor editor) {
         // Each new setting which is displayed via the settings menu has to be
         // set to the default value when installing/upgrading the app. If this
         // is not done then most settings won't be displayed with the default
@@ -350,58 +359,52 @@ public class Preferences {
                     .putBoolean(PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE,
                                 PUZZLE_HIDE_GOOGLE_PLUS_SIGN_IN_TILL_NEXT_TOP_SCORE_DEFAULT);
         }
+    }
+
+    private void upgradeToVersion587(int previousInstalledVersion, int currentVersion, Editor editor) {
         // App version 587 is an official release to the Play Store. Preferences
         // of this version should not be merged with older versions as long it
         // has active users.
         if (previousInstalledVersion < 587 && currentVersion >= 587) {
-            upgradeToVersion587(editor);
+            editor.putInt(LEADERBOARD_TAB_LAST_SHOWED, LEADERBOARD_TAB_LAST_SHOWED_DEFAULT);
+            editor.putBoolean(LEADERBOARD_ALL_INITIALIZED, LEADERBOARD_ALL_INITIALIZED_DEFAULT);
+            editor.putString(LEADERBOARD_FILTER_LAST_VALUE, LEADERBOARD_FILTER_LAST_VALUE_DEFAULT);
         }
+    }
+
+    private void upgradeToVersion595(int previousInstalledVersion, int currentVersion, Editor editor) {
         // App version 594 is an official release to the Play Store. Preferences
         // of this version should not be merged with older versions as long it
         // has active users.
         if (previousInstalledVersion < 595 && currentVersion >= 595) {
-            upgradeToVersion595(editor);
+            editor.putInt(LEADERBOARD_DETAILS_VIEWED_COUNTER, LEADERBOARD_DETAILS_VIEWED_COUNTER_DEFAULT);
+            editor.putInt(LEADERBOARD_GAMES_CREATED_COUNTER, LEADERBOARD_GAMES_CREATED_COUNTER_DEFAULT);
+            editor.putInt(LEADERBOARD_OVERVIEW_VIEWED_COUNTER, LEADERBOARD_OVERVIEW_VIEWED_COUNTER_DEFAULT);
         }
+    }
+
+    private void upgradeToVersion598(int previousInstalledVersion, int currentVersion, Editor editor) {
         if (previousInstalledVersion < 598 && currentVersion >= 598) {
-            upgradeToVersion598(editor);
+            // Remove obsolete preferences
+            editor.remove("puzzle_parameter_size")
+                    .remove("archive_size_filter_last_value")
+                    .remove("archive_setting_size_filter_size_visible");
+
+            // Add new preferences. Values are not converted from old
+            // preferences.
+            editor.putString(ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE, ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE_DEFAULT)
+                    .putBoolean(ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE,
+                                ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE_DEFAULT)
+                    .putString(PUZZLE_PARAMETER_GRID_SIZE, PUZZLE_PARAMETER_GRID_SIZE_DEFAULT);
 
         }
+    }
+
+    private void upgradeToVersion599(int previousInstalledVersion, int currentVersion, Editor editor) {
         if (previousInstalledVersion < 599 && currentVersion >= 599) {
-            upgradeToVersion599(editor);
+            renameTipDisplayAgainVersion599(editor);
+            renameTipLastDisplayTimeVersion599(editor);
         }
-
-        editor.putInt(APP_CURRENT_VERSION, currentVersion);
-        editor.commit();
-    }
-
-    private void upgradeToVersion587(Editor editor) {
-        editor.putInt(LEADERBOARD_TAB_LAST_SHOWED, LEADERBOARD_TAB_LAST_SHOWED_DEFAULT);
-        editor.putBoolean(LEADERBOARD_ALL_INITIALIZED, LEADERBOARD_ALL_INITIALIZED_DEFAULT);
-        editor.putString(LEADERBOARD_FILTER_LAST_VALUE, LEADERBOARD_FILTER_LAST_VALUE_DEFAULT);
-    }
-
-    private void upgradeToVersion595(Editor editor) {
-        editor.putInt(LEADERBOARD_DETAILS_VIEWED_COUNTER, LEADERBOARD_DETAILS_VIEWED_COUNTER_DEFAULT);
-        editor.putInt(LEADERBOARD_GAMES_CREATED_COUNTER, LEADERBOARD_GAMES_CREATED_COUNTER_DEFAULT);
-        editor.putInt(LEADERBOARD_OVERVIEW_VIEWED_COUNTER, LEADERBOARD_OVERVIEW_VIEWED_COUNTER_DEFAULT);
-    }
-
-    private void upgradeToVersion598(Editor editor) {
-        // Remove obsolete preferences
-        editor.remove("puzzle_parameter_size")
-                .remove("archive_size_filter_last_value")
-                .remove("archive_setting_size_filter_size_visible");
-
-        // Add new preferences. Values are not converted from old
-        // preferences.
-        editor.putString(ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE, ARCHIVE_GRID_TYPE_FILTER_LAST_VALUE_DEFAULT)
-                .putBoolean(ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE, ARCHIVE_SETTING_GRID_TYPE_FILTER_VISIBLE_DEFAULT)
-                .putString(PUZZLE_PARAMETER_GRID_SIZE, PUZZLE_PARAMETER_GRID_SIZE_DEFAULT);
-    }
-
-    private void upgradeToVersion599(Editor editor) {
-        renameTipDisplayAgainVersion599(editor);
-        renameTipLastDisplayTimeVersion599(editor);
     }
 
     /**
