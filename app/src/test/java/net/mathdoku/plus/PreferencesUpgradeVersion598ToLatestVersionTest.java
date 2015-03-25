@@ -21,8 +21,7 @@ public class PreferencesUpgradeVersion598ToLatestVersionTest extends Preferences
     @Before
     public void setUp() throws Exception {
         super.setUp(this.getClass()
-                            .getCanonicalName(), APP_VERSION);
-        ImportPreferenceFile("user_preferences_version_598.csv");
+                            .getCanonicalName(), APP_VERSION, "user_preferences_version_598.csv");
     }
 
     @Test

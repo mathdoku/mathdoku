@@ -147,7 +147,7 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements S
 
         mPainter = Painter.getInstance();
         mMathDokuPreferences = Preferences.getInstance();
-        mMathDokuPreferences.mSharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        mMathDokuPreferences.registerOnSharedPreferenceChangeListener(this);
 
         mPuzzleGridLayout = (RelativeLayout) mRootView.findViewById(R.id.puzzleGrid);
         mGridPlayerView = (GridPlayerView) mRootView.findViewById(R.id.grid_player_view);
@@ -314,8 +314,8 @@ public class PuzzleFragment extends android.support.v4.app.Fragment implements S
 
     @Override
     public void onDestroy() {
-        if (mMathDokuPreferences != null && mMathDokuPreferences.mSharedPreferences != null) {
-            mMathDokuPreferences.mSharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+        if (mMathDokuPreferences != null) {
+            mMathDokuPreferences.unregisterOnSharedPreferenceChangeListener(this);
         }
         super.onDestroy();
     }

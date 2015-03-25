@@ -26,8 +26,7 @@ public class AppFragmentActivity extends FragmentActivity implements OnSharedPre
         DatabaseHelper.getInstance(this);
         new Util(this);
 
-        // Register listener for changes of the share preferences.
-        mMathDokuPreferences.mSharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        mMathDokuPreferences.registerOnSharedPreferenceChangeListener(this);
 
         setFullScreenWindowFlag();
         setKeepScreenOnWindowFlag();
@@ -35,8 +34,8 @@ public class AppFragmentActivity extends FragmentActivity implements OnSharedPre
 
     @Override
     protected void onDestroy() {
-        if (mMathDokuPreferences != null && mMathDokuPreferences.mSharedPreferences != null) {
-            mMathDokuPreferences.mSharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+        if (mMathDokuPreferences != null) {
+            mMathDokuPreferences.unregisterOnSharedPreferenceChangeListener(this);
         }
         super.onDestroy();
     }

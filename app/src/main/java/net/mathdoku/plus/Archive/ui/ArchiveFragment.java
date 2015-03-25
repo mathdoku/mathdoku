@@ -60,7 +60,7 @@ public class ArchiveFragment extends StatisticsBaseFragment implements OnSharedP
         // Get preferences
         mPreferences = Preferences.getInstance();
         setDisplayChartDescription(mPreferences.isArchiveChartDescriptionVisible());
-        mPreferences.mSharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        mPreferences.registerOnSharedPreferenceChangeListener(this);
 
         // Load grid from database
         mGrid = new GridLoader().load(getSolvingAttemptIdFromBundle());
@@ -210,8 +210,8 @@ public class ArchiveFragment extends StatisticsBaseFragment implements OnSharedP
 
     @Override
     public void onDestroy() {
-        if (mPreferences != null && mPreferences.mSharedPreferences != null) {
-            mPreferences.mSharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+        if (mPreferences != null) {
+            mPreferences.unregisterOnSharedPreferenceChangeListener(this);
         }
         super.onDestroy();
     }

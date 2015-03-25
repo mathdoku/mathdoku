@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
+import net.mathdoku.plus.config.Config;
 import net.mathdoku.plus.enums.GridType;
 import net.mathdoku.plus.enums.GridTypeFilter;
 import net.mathdoku.plus.enums.PuzzleComplexity;
@@ -39,8 +40,7 @@ public class Preferences {
         }
     }
 
-    // Actual preferences
-    public final SharedPreferences mSharedPreferences;
+    private final SharedPreferences mSharedPreferences;
 
     // Global APP preferences
     private static final String APP_CURRENT_VERSION = "app_current_version";
@@ -228,17 +228,12 @@ public class Preferences {
     public static final long TIP_LAST_DISPLAY_TIME_DEFAULT = 0L;
     public static final boolean TIP_DISPLAY_AGAIN_DEFAULT = true;
 
-    /**
-     * Creates a new instance of {@link Preferences}.
-     * <p/>
-     * This object can not be instantiated directly. Use {@link #getInstance()} or {@link
-     * #getInstance(android.content.Context)} to get the singleton reference to the Preference object.
-     *
-     * @param context
-     *         The context for which the preferences have to be determined.
-     */
     private Preferences(Context context) {
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+    }
+
+    Preferences(SharedPreferences sharedPreferences) {
+        mSharedPreferences = sharedPreferences;
     }
 
     /**
@@ -943,6 +938,13 @@ public class Preferences {
         return counters[PUZZLE_INPUT_MODE_COPY_COUNTER_ID];
     }
 
+    public int getSwipeInvalidMotionCounter() {
+        if (counters == null) {
+            initializeCounters();
+        }
+        return counters[SWIPE_INVALID_MOTION_COUNTER_ID];
+    }
+
     /**
      * Get the complexity of the puzzle which was last generated.
      *
@@ -1300,5 +1302,43 @@ public class Preferences {
         }
 
         return stringBuilder.toString();
+    }
+
+    public void registerOnSharedPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        if (mSharedPreferences != null) {
+            mSharedPreferences.registerOnSharedPreferenceChangeListener(listener);
+        }
+    }
+
+    public void unregisterOnSharedPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener
+                                                                   listener) {
+        if (mSharedPreferences != null) {
+            mSharedPreferences.unregisterOnSharedPreferenceChangeListener(listener);
+        }
+    }
+
+    public void deleteAllPreferences() {
+        if (Config.APP_MODE == Config.AppMode.DEVELOPMENT) {
+            Editor editor = mSharedPreferences.edit();
+            editor.clear();
+            editor.commit();
+        } else {
+            throw new IllegalStateException("Not allowed to delete all preferences in current AppMode.");
+        }
+    }
+
+    public void unlockArchiveAndStatistics() {
+        if (Config.APP_MODE == Config.AppMode.DEVELOPMENT) {
+            Editor editor = mSharedPreferences.edit();
+            editor.putBoolean(Preferences.ARCHIVE_AVAILABLE, true);
+            editor.putBoolean(Preferences.STATISTICS_AVAILABLE, true);
+            editor.commit();
+        } else {
+            throw new IllegalStateException("Not allowed to unlock archive and statistics in current AppMode.");
+        }
+    }
+
+    public boolean contains(String preferenceName) {
+        return mSharedPreferences.contains(preferenceName);
     }
 }

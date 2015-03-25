@@ -315,29 +315,19 @@ public class PreferencesDefaultValuesTest {
 
     @Test
     public void increaseSwipeInvalidMotionCounter_GetSetGet() throws Exception {
-        assertThat(getSwipeInvalidMotionCounter(), is(0));
+        assertThat(preferences.getSwipeInvalidMotionCounter(), is(0));
         preferences.increaseSwipeInvalidMotionCounter();
         preferences.increaseSwipeInvalidMotionCounter();
         preferences.commitCounters();
-        assertThat(getSwipeInvalidMotionCounter(), is(2));
-    }
-
-    private int getSwipeInvalidMotionCounter() {
-        // Class preferences does not contain a getter method for this preference.
-        return preferences.mSharedPreferences.getInt("swipe_invalid_motion_counter", -999);
+        assertThat(preferences.getSwipeInvalidMotionCounter(), is(2));
     }
 
     @Test
     public void increaseSwipeValidMotionCounter_GetSetGet() throws Exception {
-        assertThat(getSwipeValidMotionCounter("swipe_digit_3_counter"), is(0));
+        assertThat(preferences.getSwipeValidMotionCounter(), is(0));
         preferences.increaseSwipeValidMotionCounter(3);
-        preferences.increaseSwipeValidMotionCounter(3);
+        preferences.increaseSwipeValidMotionCounter(9);
         preferences.commitCounters();
-        assertThat(getSwipeValidMotionCounter("swipe_digit_3_counter"), is(2));
-    }
-
-    private int getSwipeValidMotionCounter(String swipeCounter) {
-        // Class preferences does not contain a getter method for this preference.
-        return preferences.mSharedPreferences.getInt(swipeCounter, -999);
+        assertThat(preferences.getSwipeValidMotionCounter(), is(2));
     }
 }

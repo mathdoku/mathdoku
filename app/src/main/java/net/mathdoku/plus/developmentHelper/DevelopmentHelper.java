@@ -3,7 +3,6 @@ package net.mathdoku.plus.developmenthelper;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences.Editor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -227,9 +226,7 @@ public class DevelopmentHelper {
      */
     private static void executeDeleteAllPreferences() {
         if (Config.APP_MODE == AppMode.DEVELOPMENT) {
-            Editor editor = Preferences.getInstance().mSharedPreferences.edit();
-            editor.clear();
-            editor.commit();
+            Preferences.getInstance().deleteAllPreferences();
         }
     }
 
@@ -317,10 +314,7 @@ public class DevelopmentHelper {
             return false;
         }
 
-        Editor editor = Preferences.getInstance().mSharedPreferences.edit();
-        editor.putBoolean(Preferences.ARCHIVE_AVAILABLE, true);
-        editor.putBoolean(Preferences.STATISTICS_AVAILABLE, true);
-        editor.commit();
+        Preferences.getInstance().unlockArchiveAndStatistics();
 
         return true;
     }

@@ -1,5 +1,9 @@
 package net.mathdoku.plus;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
 import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Test;
@@ -18,28 +22,24 @@ public class PreferencesUpgradeToLatestVersionTest {
     private String preferencesBeforeUpgrade;
     private boolean instantiatedBySubclass = false;
 
-    protected void setUp(String subclassName, int appVersion) {
+    protected void setUp(String subclassName, int appVersion, final String fileNamePreferencesCSV) {
         this.appVersion = appVersion;
         TestRunnerHelper.setup(subclassName);
-        preferences = Preferences.getInstance(TestRunnerHelper.getActivity());
-        testCounter++;
-        instantiatedBySubclass = true;
-    }
 
-    protected void ImportPreferenceFile(String fileNamePreferencesCSV) {
-        clearAllPreferences();
-        new PreferenceCsvImporter(getPathToFile(fileNamePreferencesCSV), preferences.mSharedPreferences).importFile();
+        preferences = Preferences.getInstance(TestRunnerHelper.getActivity(), new Preferences.ObjectsCreator() {
+            @Override
+            public Preferences createPreferences(Context context) {
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(TestRunnerHelper
+                                                                                                            .getActivity());
+                new PreferenceCsvImporter(getPathToFile(fileNamePreferencesCSV), sharedPreferences).importFile();
+
+                return new Preferences(sharedPreferences);
+            }
+        });
         fileNameImportedPreferencesCSV = fileNamePreferencesCSV;
         preferencesBeforeUpgrade = preferences.toString();
-    }
-
-    /**
-     * Removes all existing preferences (a possible remainder of a previous unit test).
-     */
-    private void clearAllPreferences() {
-        preferences.mSharedPreferences.edit()
-                .clear()
-                .commit();
+        testCounter++;
+        instantiatedBySubclass = true;
     }
 
     private String getPathToFile(String filename) {
@@ -91,7 +91,7 @@ public class PreferencesUpgradeToLatestVersionTest {
     }
 
     private boolean containsPreferenceWithName(String preferenceName) {
-        return preferences.mSharedPreferences.contains(preferenceName);
+        return preferences.contains(preferenceName);
     }
 
     private void assertThatPreferenceDoesNotExists(String preferenceName) {

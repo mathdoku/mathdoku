@@ -64,7 +64,7 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
         // Get preferences
         mPreferences = Preferences.getInstance();
         setDisplayChartDescription(mPreferences.isStatisticsChartDescriptionVisible());
-        mPreferences.mSharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        mPreferences.registerOnSharedPreferenceChangeListener(this);
 
         mCumulativeStatistics = new CumulativeStatisticsSelector(mMinGridSize, mMaxGridSize).getCumulativeStatistics();
 
@@ -75,8 +75,8 @@ public class StatisticsLevelFragment extends StatisticsBaseFragment implements O
 
     @Override
     public void onDestroy() {
-        if (mPreferences != null && mPreferences.mSharedPreferences != null) {
-            mPreferences.mSharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+        if (mPreferences != null) {
+            mPreferences.unregisterOnSharedPreferenceChangeListener(this);
         }
         super.onDestroy();
     }
