@@ -227,7 +227,7 @@ public class GridSolver {
     /**
      * Determines the unique solution for this grid.
      *
-     * @return The solution of the grid if and oly if the grid has exactly one unique solution. NULL otherwise.
+     * @return The solution of the grid if and only if the grid has exactly one unique solution. NULL otherwise.
      */
     public int[][] getSolutionGrid() {
         initialize(true);
