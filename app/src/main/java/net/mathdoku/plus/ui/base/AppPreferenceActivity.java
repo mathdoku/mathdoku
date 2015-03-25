@@ -3,34 +3,24 @@ package net.mathdoku.plus.ui.base;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
-import android.view.WindowManager;
 
-import net.mathdoku.plus.Preferences;
 import net.mathdoku.plus.storage.databaseadapter.DatabaseHelper;
 import net.mathdoku.plus.util.Util;
 
 @SuppressLint("Registered")
-public class AppPreferenceActivity extends Activity implements OnSharedPreferenceChangeListener {
-
-    // Preferences
-    private Preferences mMathDokuPreferences;
+public class AppPreferenceActivity extends Activity {
+    private WindowPreference windowPreference;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Initialize global objects (singleton instances)
-        mMathDokuPreferences = Preferences.getInstance(this);
         DatabaseHelper.getInstance(this);
         new Util(this);
 
-        mMathDokuPreferences.registerOnSharedPreferenceChangeListener(this);
-
-        setFullScreenWindowFlag();
-        setKeepScreenOnWindowFlag();
+        windowPreference = new WindowPreference(this);
 
         // Set up the action bar.
         final ActionBar actionBar = getActionBar();
@@ -44,51 +34,14 @@ public class AppPreferenceActivity extends Activity implements OnSharedPreferenc
 
     @Override
     protected void onDestroy() {
-        if (mMathDokuPreferences != null) {
-            mMathDokuPreferences.unregisterOnSharedPreferenceChangeListener(this);
-        }
+        windowPreference.onDestroy();
         super.onDestroy();
     }
 
     @Override
     public void onResume() {
-        setFullScreenWindowFlag();
-        setKeepScreenOnWindowFlag();
+        windowPreference.onResume();
         super.onResume();
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(Preferences.PUZZLE_SETTING_FULL_SCREEN)) {
-            setFullScreenWindowFlag();
-        }
-        if (key.equals(Preferences.PUZZLE_SETTING_WAKE_LOCK)) {
-            setKeepScreenOnWindowFlag();
-        }
-    }
-
-    /**
-     * Sets the full screen flag for the window in which the activity is shown based on the app preference.
-     */
-    private void setFullScreenWindowFlag() {
-        // Check whether full screen mode is preferred.
-        if (mMathDokuPreferences.isFullScreenEnabled()) {
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        } else {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        }
-    }
-
-    /**
-     * Sets the keep screen on flag for the given window in which the activity is shown based on the app preference.
-     */
-    private void setKeepScreenOnWindowFlag() {
-        if (mMathDokuPreferences.isWakeLockEnabled()) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        } else {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        }
     }
 
     @Override
