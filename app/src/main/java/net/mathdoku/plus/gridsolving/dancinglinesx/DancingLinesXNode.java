@@ -1,6 +1,6 @@
 package net.mathdoku.plus.gridsolving.dancinglinesx;
 
-class DancingLinesXNode extends DancingLinesX2DNode {
+class DancingLinesXNode extends Node {
     public DancingLinesXNode(DancingLinesXColumn col, int ri) {
         RowIdx = ri;
         C = col;

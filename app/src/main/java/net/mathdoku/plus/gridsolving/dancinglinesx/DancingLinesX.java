@@ -64,7 +64,7 @@ public class DancingLinesX {
     }
 
     private void coverCol(DancingLinesXColumn coverCol) {
-        DancingLinesX2DNode i, j;
+        Node i, j;
         coverCol.getRight()
                 .setLeft(coverCol.getLeft());
         coverCol.getLeft()
@@ -87,7 +87,7 @@ public class DancingLinesX {
     }
 
     private void uncoverCol(DancingLinesXColumn uncoverCol) {
-        DancingLinesX2DNode i, j;
+        Node i, j;
 
         i = uncoverCol.getUp();
         while (i != uncoverCol) {
@@ -170,7 +170,7 @@ public class DancingLinesX {
 
     private void search(int k) {
         DancingLinesXColumn chosenCol;
-        DancingLinesX2DNode r, j;
+        Node r, j;
 
         // A solution is found in case all columns are covered
         if (root.getRight() == root) {
