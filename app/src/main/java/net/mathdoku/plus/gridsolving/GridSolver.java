@@ -123,14 +123,15 @@ public class GridSolver {
                                   "cells");
                 }
 
-                dancingLinesX.addNode(comboIndex, getCageConstraintIndex(cageCount));
+                dancingLinesX.addPermutation(comboIndex, getCageConstraintIndex(cageCount));
 
                 // Apply the permutation of "possibleCombo" to the cells in the cages
                 for (int i = 0; i < cage.getNumberOfCells(); i++) {
                     Cell cell = cage.getCell(i);
 
-                    dancingLinesX.addNode(comboIndex, getRowConstraintIndex(cell.getRow(), possibleCombo[i]));
-                    dancingLinesX.addNode(comboIndex, getColumnConstraintIndex(cell.getColumn(), possibleCombo[i]));
+                    dancingLinesX.addPermutation(comboIndex, getRowConstraintIndex(cell.getRow(), possibleCombo[i]));
+                    dancingLinesX.addPermutation(comboIndex,
+                                                 getColumnConstraintIndex(cell.getColumn(), possibleCombo[i]));
 
                     // Fill data structure for uncovering solution if needed
                     if (uncoverSolution) {

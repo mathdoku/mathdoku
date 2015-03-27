@@ -19,9 +19,9 @@ public class DancingLinesX {
 
     private final ConstraintNode root = new ConstraintNode();
     private ConstraintNode[] colHeaders;
-    private DancingLinesXNode[] nodes;
+    private PermutationNode[] nodes;
     private int numberOfNodesAllocated;
-    private DancingLinesXNode lastNodeAdded;
+    private PermutationNode lastNodeAdded;
     private List<Integer> trySolution;
     private List<Integer> foundSolution;
     private int countSolutions;
@@ -42,7 +42,7 @@ public class DancingLinesX {
             colHeaders[c] = new ConstraintNode();
         }
 
-        nodes = new DancingLinesXNode[numNodes + 1];
+        nodes = new PermutationNode[numNodes + 1];
         this.numberOfNodesAllocated = 0;
 
         ConstraintNode prev = root;
@@ -78,7 +78,7 @@ public class DancingLinesX {
                         .setUp(j.getUp());
                 j.getUp()
                         .setDown(j.getDown());
-                ((DancingLinesXNode) j).getColumn()
+                ((PermutationNode) j).getConstraintNode()
                         .decreaseNumberOfPermutations();
                 j = j.getRight();
             }
@@ -93,7 +93,7 @@ public class DancingLinesX {
         while (i != uncoverCol) {
             j = i.getLeft();
             while (j != i) {
-                ((DancingLinesXNode) j).getColumn()
+                ((PermutationNode) j).getConstraintNode()
                         .increaseNumberOfPermutations();
                 j.getDown()
                         .setUp(j);
@@ -132,8 +132,8 @@ public class DancingLinesX {
         }
     }
 
-    public void addNode(int rowIndex, int columnIndex) {
-        nodes[++numberOfNodesAllocated] = new DancingLinesXNode(colHeaders[columnIndex], rowIndex);
+    public void addPermutation(int rowIndex, int columnIndex) {
+        nodes[++numberOfNodesAllocated] = new PermutationNode(colHeaders[columnIndex], rowIndex);
         if (previousRowIndex == rowIndex) {
             nodes[numberOfNodesAllocated].setLeft(lastNodeAdded);
             nodes[numberOfNodesAllocated].setRight(lastNodeAdded.getRight());
@@ -199,13 +199,13 @@ public class DancingLinesX {
 
             while (r != chosenCol) {
                 if (k >= trySolution.size()) {
-                    trySolution.add(((DancingLinesXNode) r).getRowIdx());
+                    trySolution.add(((PermutationNode) r).getPermutationIndex());
                 } else {
-                    trySolution.set(k, ((DancingLinesXNode) r).getRowIdx());
+                    trySolution.set(k, ((PermutationNode) r).getPermutationIndex());
                 }
                 j = r.getRight();
                 while (j != r) {
-                    coverCol(((DancingLinesXNode) j).getColumn());
+                    coverCol(((PermutationNode) j).getConstraintNode());
                     j = j.getRight();
                 }
                 search(k + 1);
@@ -219,7 +219,7 @@ public class DancingLinesX {
                 }
                 j = r.getLeft();
                 while (j != r) {
-                    uncoverCol(((DancingLinesXNode) j).getColumn());
+                    uncoverCol(((PermutationNode) j).getConstraintNode());
                     j = j.getLeft();
                 }
                 r = r.getDown();
