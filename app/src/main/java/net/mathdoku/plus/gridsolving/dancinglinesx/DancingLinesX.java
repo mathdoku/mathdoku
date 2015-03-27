@@ -132,7 +132,7 @@ public class DancingLinesX {
         }
     }
 
-    public void addNode(int columnIndex, int rowIndex) {
+    public void addNode(int rowIndex, int columnIndex) {
         nodes[++numberOfNodesAllocated] = new DancingLinesXNode(colHeaders[columnIndex], rowIndex);
         if (previousRowIndex == rowIndex) {
             nodes[numberOfNodesAllocated].setLeft(lastNodeAdded);

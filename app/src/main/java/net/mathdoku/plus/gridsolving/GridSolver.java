@@ -131,7 +131,7 @@ public class GridSolver {
                 // the number of possible permutations this has a positive
                 // influence on the solving time.
                 constraintNumber = cageCount;
-                dancingLinesX.addNode(constraintNumber, comboIndex); // Cage constraint
+                dancingLinesX.addNode(comboIndex, constraintNumber); // Cage constraint
 
                 // Apply the permutation of "possibleCombo" to the cells in the
                 // cages
@@ -142,12 +142,12 @@ public class GridSolver {
 
                     // Is digit "possibleCombo[i]" used in column getColumn()?
                     constraintNumber = totalCages + mGridSize * (possibleCombo[i] - 1) + cell.getColumn();
-                    dancingLinesX.addNode(constraintNumber, comboIndex); // Column constraint
+                    dancingLinesX.addNode(comboIndex, constraintNumber); // Column constraint
 
                     // Is digit "possibleCombo[i]" used in row getRow()?
                     constraintNumber = totalCages + gridSizeSquare + mGridSize * (possibleCombo[i] - 1) + cell.getRow
                             ();
-                    dancingLinesX.addNode(constraintNumber, comboIndex); // Row constraint
+                    dancingLinesX.addNode(comboIndex, constraintNumber); // Row constraint
 
                     // Fill data structure for uncovering solution if needed
                     if (uncoverSolution) {
