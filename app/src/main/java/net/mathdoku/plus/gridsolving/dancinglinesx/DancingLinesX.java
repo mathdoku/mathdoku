@@ -18,7 +18,7 @@ public class DancingLinesX {
     }
 
     private final ConstraintNode root = new ConstraintNode();
-    private ConstraintNode[] colHeaders;
+    private ConstraintNode[] constraintNodes;
     private PermutationNode[] nodes;
     private int numberOfNodesAllocated;
     private PermutationNode lastNodeAdded;
@@ -37,22 +37,22 @@ public class DancingLinesX {
     }
 
     public void init(int numCols, int numNodes) {
-        colHeaders = new ConstraintNode[numCols];
-        for (int c = 0; c < colHeaders.length; c++) {
-            colHeaders[c] = new ConstraintNode();
+        constraintNodes = new ConstraintNode[numCols];
+        for (int c = 0; c < constraintNodes.length; c++) {
+            constraintNodes[c] = new ConstraintNode();
         }
 
         nodes = new PermutationNode[numNodes + 1];
         this.numberOfNodesAllocated = 0;
 
         ConstraintNode prev = root;
-        for (int i = 0; i < colHeaders.length; i++) {
-            prev.setRight(colHeaders[i]);
-            colHeaders[i].setLeft(prev);
-            prev = colHeaders[i];
+        for (int i = 0; i < constraintNodes.length; i++) {
+            prev.setRight(constraintNodes[i]);
+            constraintNodes[i].setLeft(prev);
+            prev = constraintNodes[i];
         }
-        root.setLeft(colHeaders[colHeaders.length - 1]);
-        colHeaders[colHeaders.length - 1].setRight(root);
+        root.setLeft(constraintNodes[constraintNodes.length - 1]);
+        constraintNodes[constraintNodes.length - 1].setRight(root);
     }
 
     public int getRowsInSolution() {
@@ -133,7 +133,7 @@ public class DancingLinesX {
     }
 
     public void addPermutation(int rowIndex, int columnIndex) {
-        nodes[++numberOfNodesAllocated] = new PermutationNode(colHeaders[columnIndex], rowIndex);
+        nodes[++numberOfNodesAllocated] = new PermutationNode(constraintNodes[columnIndex], rowIndex);
         if (previousRowIndex == rowIndex) {
             nodes[numberOfNodesAllocated].setLeft(lastNodeAdded);
             nodes[numberOfNodesAllocated].setRight(lastNodeAdded.getRight());
