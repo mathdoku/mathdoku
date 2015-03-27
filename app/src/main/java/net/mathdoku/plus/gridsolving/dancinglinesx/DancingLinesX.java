@@ -37,8 +37,8 @@ public class DancingLinesX {
     }
 
     public void init(int numCols, int numNodes) {
-        colHeaders = new ConstraintNode[numCols + 1];
-        for (int c = 1; c <= numCols; c++) {
+        colHeaders = new ConstraintNode[numCols];
+        for (int c = 0; c < colHeaders.length; c++) {
             colHeaders[c] = new ConstraintNode();
         }
 
@@ -46,13 +46,13 @@ public class DancingLinesX {
         this.numberOfNodesAllocated = 0;
 
         ConstraintNode prev = root;
-        for (int i = 1; i <= numCols; i++) {
+        for (int i = 0; i < colHeaders.length; i++) {
             prev.setRight(colHeaders[i]);
             colHeaders[i].setLeft(prev);
             prev = colHeaders[i];
         }
-        root.setLeft(colHeaders[numCols]);
-        colHeaders[numCols].setRight(root);
+        root.setLeft(colHeaders[colHeaders.length - 1]);
+        colHeaders[colHeaders.length - 1].setRight(root);
     }
 
     public int getRowsInSolution() {
