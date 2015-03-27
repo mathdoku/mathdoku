@@ -132,16 +132,16 @@ public class DancingLinesX {
         }
     }
 
-    public void addPermutation(int rowIndex, int columnIndex) {
-        nodes[++numberOfNodesAllocated] = new PermutationNode(constraintNodes[columnIndex], rowIndex);
-        if (previousRowIndex == rowIndex) {
+    public void addPermutation(int permutationIndex, int constraintIndex) {
+        nodes[++numberOfNodesAllocated] = new PermutationNode(constraintNodes[constraintIndex], permutationIndex);
+        if (previousRowIndex == permutationIndex) {
             nodes[numberOfNodesAllocated].setLeft(lastNodeAdded);
             nodes[numberOfNodesAllocated].setRight(lastNodeAdded.getRight());
             lastNodeAdded.setRight(nodes[numberOfNodesAllocated]);
             nodes[numberOfNodesAllocated].getRight()
                     .setLeft(nodes[numberOfNodesAllocated]);
         } else {
-            previousRowIndex = rowIndex;
+            previousRowIndex = permutationIndex;
             nodes[numberOfNodesAllocated].setLeft(nodes[numberOfNodesAllocated]);
             nodes[numberOfNodesAllocated].setRight(nodes[numberOfNodesAllocated]);
         }
